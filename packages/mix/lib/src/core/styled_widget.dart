@@ -90,7 +90,43 @@ class SpecBuilder extends StatelessWidget {
   // List of modifier types in the desired order
   final List<Type> orderOfModifiers;
 
-  // Method to apply modifiers to the child widget
+  @override
+  Widget build(BuildContext context) {
+    Widget current = Builder(
+      builder: (_) => MixComposer(
+        inherit: inherit,
+        style: style,
+        orderOfModifiers: orderOfModifiers,
+        builder: builder,
+      ),
+    );
+    // Check if the widget needs widget state and if it's not available in the context
+    final needsWidgetState =
+        _hasWidgetStateVariant && MixWidgetState.of(context) == null;
+
+    if (needsWidgetState || controller != null) {
+      current = Interactable(controller: controller, child: current);
+    }
+
+    // Otherwise, directly build the mixed child widget
+    return current;
+  }
+}
+
+class MixComposer extends StatelessWidget {
+  const MixComposer({
+    super.key,
+    this.inherit = false,
+    required this.style,
+    this.orderOfModifiers = const [],
+    required this.builder,
+  });
+
+  final bool inherit;
+  final Style style;
+  final List<Type> orderOfModifiers;
+  final Widget Function(BuildContext) builder;
+
   Widget _applyModifiers(MixData mix, Widget child) {
     // Get the list of WidgetModifierAttribute from the mix
     final modifiers = mix
@@ -116,9 +152,8 @@ class SpecBuilder extends StatelessWidget {
           );
   }
 
-  // Method to build the mixed child widget
-  Widget _buildMixedChild(BuildContext context) {
-    // Get the inherited mix if inherit flag is true, otherwise null
+  @override
+  Widget build(BuildContext context) {
     final inheritedMix = inherit ? Mix.maybeOfInherited(context) : null;
     // Get the mix from the style
     final mix = style.of(context);
@@ -130,20 +165,5 @@ class SpecBuilder extends StatelessWidget {
       data: mergedMix,
       child: _applyModifiers(mergedMix, Builder(builder: builder)),
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    Widget current = Builder(builder: _buildMixedChild);
-    // Check if the widget needs widget state and if it's not available in the context
-    final needsWidgetState =
-        _hasWidgetStateVariant && MixWidgetState.of(context) == null;
-
-    if (needsWidgetState || controller != null) {
-      current = Interactable(controller: controller, child: current);
-    }
-
-    // Otherwise, directly build the mixed child widget
-    return current;
   }
 }
