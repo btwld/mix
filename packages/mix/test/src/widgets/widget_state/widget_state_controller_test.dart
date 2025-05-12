@@ -67,34 +67,34 @@ void main() {
   group('WidgetStatesController', () {
     test('initial state values', () {
       final controller = WidgetStatesController();
-      expect(controller.disabled, isFalse);
-      expect(controller.hovered, isFalse);
-      expect(controller.focused, isFalse);
-      expect(controller.pressed, isFalse);
-      expect(controller.dragged, isFalse);
-      expect(controller.selected, isFalse);
+      expect(controller.has(WidgetState.disabled), isFalse);
+      expect(controller.has(WidgetState.hovered), isFalse);
+      expect(controller.has(WidgetState.focused), isFalse);
+      expect(controller.has(WidgetState.pressed), isFalse);
+      expect(controller.has(WidgetState.dragged), isFalse);
+      expect(controller.has(WidgetState.selected), isFalse);
     });
 
     test('update individual state', () {
       final controller = WidgetStatesController();
 
       controller.disabled = true;
-      expect(controller.disabled, isTrue);
+      expect(controller.has(WidgetState.disabled), isTrue);
 
       controller.hovered = true;
-      expect(controller.hovered, isTrue);
+      expect(controller.has(WidgetState.hovered), isTrue);
 
       controller.focused = true;
-      expect(controller.focused, isTrue);
+      expect(controller.has(WidgetState.focused), isTrue);
 
       controller.pressed = true;
-      expect(controller.pressed, isTrue);
+      expect(controller.has(WidgetState.pressed), isTrue);
 
       controller.dragged = true;
-      expect(controller.dragged, isTrue);
+      expect(controller.has(WidgetState.dragged), isTrue);
 
       controller.selected = true;
-      expect(controller.selected, isTrue);
+      expect(controller.has(WidgetState.selected), isTrue);
     });
 
     test('batch update states', () {
@@ -106,12 +106,12 @@ void main() {
         (WidgetState.focused, true),
       ]);
 
-      expect(controller.disabled, isTrue);
-      expect(controller.hovered, isTrue);
-      expect(controller.focused, isTrue);
-      expect(controller.pressed, isFalse);
-      expect(controller.dragged, isFalse);
-      expect(controller.selected, isFalse);
+      expect(controller.has(WidgetState.disabled), isTrue);
+      expect(controller.has(WidgetState.hovered), isTrue);
+      expect(controller.has(WidgetState.focused), isTrue);
+      expect(controller.has(WidgetState.pressed), isFalse);
+      expect(controller.has(WidgetState.dragged), isFalse);
+      expect(controller.has(WidgetState.selected), isFalse);
     });
 
     test('notifyListeners called on state change', () {
@@ -120,7 +120,7 @@ void main() {
       var notifyListenersCallCount = 0;
       controller.addListener(() => notifyListenersCallCount++);
 
-      controller.disabled = true;
+      controller.update(WidgetState.disabled, true);
       expect(notifyListenersCallCount, 1);
 
       controller.batch([
@@ -148,14 +148,8 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: MixWidgetStateModel(
-            disabled: controller.disabled,
-            hovered: controller.hovered,
-            focused: controller.focused,
-            pressed: controller.pressed,
-            dragged: controller.dragged,
-            selected: controller.selected,
-            error: controller.error,
+          home: MixWidgetStateModel.fromSet(
+            states: controller.value,
             child: Container(),
           ),
         ),
@@ -290,9 +284,10 @@ void main() {
                   builder: (BuildContext context) {
                     return Column(
                       children: [
-                        Text('Disabled: ${controller.disabled}'),
-                        Text('Hovered: ${controller.hovered}'),
-                        Text('Pressed: ${controller.pressed}'),
+                        Text(
+                            'Disabled: ${controller.has(WidgetState.disabled)}'),
+                        Text('Hovered: ${controller.has(WidgetState.hovered)}'),
+                        Text('Pressed: ${controller.has(WidgetState.pressed)}'),
                       ],
                     );
                   },

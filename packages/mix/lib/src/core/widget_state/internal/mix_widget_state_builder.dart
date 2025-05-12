@@ -18,14 +18,8 @@ class MixWidgetStateBuilder extends StatelessWidget {
     return ListenableBuilder(
       listenable: controller,
       builder: (context, _) {
-        return MixWidgetStateModel(
-          disabled: controller.disabled,
-          hovered: controller.hovered,
-          focused: controller.focused,
-          pressed: controller.pressed,
-          dragged: controller.dragged,
-          selected: controller.selected,
-          error: controller.error,
+        return MixWidgetStateModel.fromSet(
+          states: controller.value,
           child: Builder(builder: builder),
         );
       },

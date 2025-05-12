@@ -23,24 +23,31 @@ extension MixWidgetStatesExt on WidgetStatesController {
   /// accessible for testing purposes.
 
   /// Whether the widget is currently in the disabled state.
+  @Deprecated('Use the method has() instead. has(WidgetState.disabled)')
   bool get disabled => value.hasDisabled;
 
   /// Whether the widget is currently being hovered over.
+  @Deprecated('Use the method has() instead. has(WidgetState.hovered)')
   bool get hovered => value.hasHovered;
 
   /// Whether the widget currently has focus.
+  @Deprecated('Use the method has() instead. has(WidgetState.focused)')
   bool get focused => value.hasFocused;
 
   /// Whether the widget is currently being pressed.
+  @Deprecated('Use the method has() instead. has(WidgetState.pressed)')
   bool get pressed => value.hasPressed;
 
   /// Whether the widget is currently being dragged.
+  @Deprecated('Use the method has() instead. has(WidgetState.dragged)')
   bool get dragged => value.hasDragged;
 
   /// Whether the widget is currently in the selected state.
+  @Deprecated('Use the method has() instead. has(WidgetState.selected)')
   bool get selected => value.hasSelected;
 
   /// Whether the widget is currently in the error state.
+  @Deprecated('Use the method has() instead. has(WidgetState.error)')
   bool get error => value.hasError;
 
   /// Sets whether the widget is in the disabled state.
@@ -68,7 +75,7 @@ extension MixWidgetStatesExt on WidgetStatesController {
   bool has(WidgetState key) => value.contains(key);
 }
 
-extension MixSetWidgetStatesExt on Set<WidgetState> {
+extension on Set<WidgetState> {
   bool get hasDisabled => contains(WidgetState.disabled);
   bool get hasHovered => contains(WidgetState.hovered);
   bool get hasFocused => contains(WidgetState.focused);
