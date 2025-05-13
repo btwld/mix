@@ -8,19 +8,15 @@ class ButtonStyle extends SpecStyle<ButtonSpecUtility> {
     final $ = spec.utilities;
 
     final iconStyle = [
-      $.icon.chain
-        ..size(24)
-        ..color.white(),
+      $.icon.size(18),
+      $.icon.color.white(),
     ];
 
     final labelStyle = [
-      $.label.chain
-        ..textHeightBehavior.heightToFirstAscent.off()
-        ..textHeightBehavior.heightToLastDescent.on()
-        ..style.fontSize(14)
-        ..style.height(1.5)
-        ..style.color.white()
-        ..style.fontWeight.w500(),
+      $.textStyle.fontSize(14),
+      $.textStyle.height(1.5),
+      $.textStyle.color.white(),
+      $.textStyle.fontWeight.w500(),
     ];
 
     final spinnerStyle = [
@@ -35,11 +31,7 @@ class ButtonStyle extends SpecStyle<ButtonSpecUtility> {
         ..borderRadius(6)
         ..color.black()
         ..padding.vertical(8)
-        ..padding.horizontal(12)
-        ..flex.mainAxisAlignment.center()
-        ..flex.crossAxisAlignment.center()
-        ..flex.mainAxisSize.min()
-        ..flex.gap(8),
+        ..padding.horizontal(12),
       spec.on.disabled($.container.color.grey.shade400()),
     ];
 
@@ -62,7 +54,7 @@ class ButtonDarkStyle extends ButtonStyle {
     return Style.create([
       super.makeStyle(spec).call(),
       $.container.color.white(),
-      $.label.style.color.black(),
+      $.textStyle.color.black(),
     ]);
   }
 }

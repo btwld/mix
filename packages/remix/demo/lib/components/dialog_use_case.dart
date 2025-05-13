@@ -29,7 +29,7 @@ Widget buildButtonUseCase(BuildContext context) {
     child: Scaffold(
       body: Builder(builder: (context) {
         return Center(
-          child: Button(
+          child: RxButton(
             label: 'Show dialog',
             onPressed: () {
               showDialog(
@@ -43,7 +43,7 @@ Widget buildButtonUseCase(BuildContext context) {
                       description: description,
                       actions: actions
                           ? [
-                              Button(
+                              RxButton(
                                 label: 'Save',
                                 onPressed: () {},
                               ),

@@ -36,9 +36,9 @@ mixin _$ButtonSpec on Spec<ButtonSpec> {
   /// replaced with the new values.
   @override
   ButtonSpec copyWith({
-    FlexBoxSpec? container,
-    IconSpec? icon,
-    TextSpec? label,
+    BoxSpec? container,
+    IconThemeData? icon,
+    TextStyle? label,
     WidgetModifiersData? modifiers,
     SpinnerSpec? spinner,
     AnimatedData? animated,
@@ -46,7 +46,7 @@ mixin _$ButtonSpec on Spec<ButtonSpec> {
     return ButtonSpec(
       container: container ?? _$this.container,
       icon: icon ?? _$this.icon,
-      label: label ?? _$this.label,
+      label: label ?? _$this.textStyle,
       modifiers: modifiers ?? _$this.modifiers,
       spinner: spinner ?? _$this.spinner,
       animated: animated ?? _$this.animated,
@@ -63,9 +63,9 @@ mixin _$ButtonSpec on Spec<ButtonSpec> {
   ///
   /// The interpolation is performed on each property of the [ButtonSpec] using the appropriate
   /// interpolation method:
-  /// - [FlexBoxSpec.lerp] for [container].
-  /// - [IconSpec.lerp] for [icon].
-  /// - [TextSpec.lerp] for [label].
+  /// - [BoxSpec.lerp] for [container].
+  /// - [IconThemeData.lerp] for [icon].
+  /// - [MixHelpers.lerpTextStyle] for [label].
   /// - [SpinnerSpec.lerp] for [spinner].
   /// For [modifiers] and [animated], the interpolation is performed using a step function.
   /// If [t] is less than 0.5, the value from the current [ButtonSpec] is used. Otherwise, the value
@@ -79,8 +79,8 @@ mixin _$ButtonSpec on Spec<ButtonSpec> {
 
     return ButtonSpec(
       container: _$this.container.lerp(other.container, t),
-      icon: _$this.icon.lerp(other.icon, t),
-      label: _$this.label.lerp(other.label, t),
+      icon: IconThemeData.lerp(_$this.icon, other.icon, t)!,
+      label: MixHelpers.lerpTextStyle(_$this.textStyle, other.textStyle, t)!,
       modifiers: other.modifiers,
       spinner: _$this.spinner.lerp(other.spinner, t),
       animated: t < 0.5 ? _$this.animated : other.animated,
@@ -95,7 +95,7 @@ mixin _$ButtonSpec on Spec<ButtonSpec> {
   List<Object?> get props => [
         _$this.container,
         _$this.icon,
-        _$this.label,
+        _$this.textStyle,
         _$this.modifiers,
         _$this.spinner,
         _$this.animated,
@@ -108,8 +108,8 @@ mixin _$ButtonSpec on Spec<ButtonSpec> {
         DiagnosticsProperty('container', _$this.container, defaultValue: null));
     properties
         .add(DiagnosticsProperty('icon', _$this.icon, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('label', _$this.label, defaultValue: null));
+    properties.add(
+        DiagnosticsProperty('label', _$this.textStyle, defaultValue: null));
     properties.add(
         DiagnosticsProperty('modifiers', _$this.modifiers, defaultValue: null));
     properties.add(
@@ -128,9 +128,9 @@ mixin _$ButtonSpec on Spec<ButtonSpec> {
 /// the [ButtonSpec] constructor.
 class ButtonSpecAttribute extends SpecAttribute<ButtonSpec>
     with Diagnosticable {
-  final FlexBoxSpecAttribute? container;
-  final IconSpecAttribute? icon;
-  final TextSpecAttribute? label;
+  final BoxSpecAttribute? container;
+  final IconThemeDataDto? icon;
+  final TextStyleDto? label;
   final SpinnerSpecAttribute? spinner;
 
   const ButtonSpecAttribute({
@@ -220,13 +220,13 @@ class ButtonSpecAttribute extends SpecAttribute<ButtonSpec>
 class ButtonSpecUtility<T extends Attribute>
     extends SpecUtility<T, ButtonSpecAttribute> {
   /// Utility for defining [ButtonSpecAttribute.container]
-  late final container = FlexBoxSpecUtility((v) => only(container: v));
+  late final container = BoxSpecUtility((v) => only(container: v));
 
   /// Utility for defining [ButtonSpecAttribute.icon]
-  late final icon = IconSpecUtility((v) => only(icon: v));
+  late final icon = IconThemeDataUtility((v) => only(icon: v));
 
   /// Utility for defining [ButtonSpecAttribute.label]
-  late final label = TextSpecUtility((v) => only(label: v));
+  late final textStyle = TextStyleUtility((v) => only(label: v));
 
   /// Utility for defining [ButtonSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
@@ -248,9 +248,9 @@ class ButtonSpecUtility<T extends Attribute>
   /// Returns a new [ButtonSpecAttribute] with the specified properties.
   @override
   T only({
-    FlexBoxSpecAttribute? container,
-    IconSpecAttribute? icon,
-    TextSpecAttribute? label,
+    BoxSpecAttribute? container,
+    IconThemeDataDto? icon,
+    TextStyleDto? label,
     WidgetModifiersDataDto? modifiers,
     SpinnerSpecAttribute? spinner,
     AnimatedDataDto? animated,

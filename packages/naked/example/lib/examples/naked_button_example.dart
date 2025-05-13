@@ -1008,7 +1008,7 @@ class _LoadingButtonsState extends State<LoadingButtons> {
             //     <span>Click to Load</span>
             //   )}
             // </button>
-            loading: _isSpinnerLoading,
+            // loading: _isSpinnerLoading,
             onPressed: _isSpinnerLoading ? null : handleSpinnerClick,
             onHoverState: (value) => setState(() => _isSpinnerHovered = value),
             onPressedState: (value) =>
@@ -1083,7 +1083,7 @@ class _LoadingButtonsState extends State<LoadingButtons> {
             //   )}
             //   <span className="relative z-10">{isLoading2 ? 'Processing...' : 'Submit'}</span>
             // </button>
-            loading: _isProgressLoading,
+            // loading: _isProgressLoading,
             onPressed: _isProgressLoading ? null : handleProgressClick,
             onHoverState: (value) => setState(() => _isProgressHovered = value),
             onPressedState: (value) =>
