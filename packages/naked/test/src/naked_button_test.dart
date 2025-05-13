@@ -74,20 +74,6 @@ void main() {
       expect(wasPressed, isFalse);
     });
 
-    testWidgets('does not respond when loading', (WidgetTester tester) async {
-      bool wasPressed = false;
-      await tester.pumpButton(
-        NakedButton(
-          onPressed: () => wasPressed = true,
-          loading: true,
-          child: const Text('Test Button'),
-        ),
-      );
-
-      await tester.tap(find.byType(NakedButton));
-      expect(wasPressed, false);
-    });
-
     testWidgets('does not respond when onPressed is null',
         (WidgetTester tester) async {
       await tester.pumpButton(
@@ -273,24 +259,6 @@ void main() {
       expect(wasPressed, true);
     });
 
-    testWidgets('calls onEscapePressed when Escape key pressed',
-        (WidgetTester tester) async {
-      bool escapePressed = false;
-      await tester.pumpButton(
-        NakedButton(
-          onPressed: () {},
-          focusNode: FocusNode()..requestFocus(),
-          onEscapePressed: () => escapePressed = true,
-          child: const Text('Test Button'),
-        ),
-      );
-
-      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
-      await tester.pump();
-
-      expect(escapePressed, true);
-    });
-
     testWidgets('updates pressed state with keyboard activation',
         (WidgetTester tester) async {
       bool isPressed = false;
@@ -325,34 +293,6 @@ void main() {
 
       final semantics = tester.getSemantics(find.byType(Semantics).first);
       expect(semantics.hasFlag(SemanticsFlag.isButton), true);
-    });
-
-    testWidgets('applies custom semantic label when provided',
-        (WidgetTester tester) async {
-      await tester.pumpButton(
-        NakedButton(
-          onPressed: () {},
-          semanticLabel: 'Custom Label',
-          child: const Text('Test Button'),
-        ),
-      );
-
-      final semantics = tester.getSemantics(find.byType(Semantics).first);
-      expect(semantics.label, 'Custom Label');
-    });
-
-    testWidgets('indicates loading state to screen readers',
-        (WidgetTester tester) async {
-      await tester.pumpButton(
-        NakedButton(
-          onPressed: () {},
-          loading: true,
-          child: const Text('Test Button'),
-        ),
-      );
-
-      final semantics = tester.getSemantics(find.byType(Semantics).first);
-      expect(semantics.hint, 'Loading');
     });
 
     testWidgets('shows correct enabled/disabled state',

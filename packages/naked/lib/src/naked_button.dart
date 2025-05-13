@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:naked/src/utilities/naked_focus_manager.dart';
+import 'package:naked/src/utilities/event_extensions.dart';
+import 'package:naked/src/utilities/internal_focus.dart';
+
+import 'utilities/state_regions.dart';
 
 /// A fully customizable button with no default styling.
 ///
 /// NakedButton provides interaction behavior and accessibility features
 /// without imposing any visual styling, giving consumers complete design freedom.
-/// It integrates with [NakedFocusManager] to provide enhanced keyboard accessibility
+/// It integrates with [Focus] to provide enhanced keyboard accessibility
 /// and focus management.
 ///
 /// This component handles various interaction states (hover, pressed, focused, disabled, loading)
@@ -88,11 +91,11 @@ class NakedButton extends StatefulWidget {
   /// Use this to update the visual appearance when the button receives or loses focus.
   final ValueChanged<bool>? onFocusState;
 
-  /// Whether the button is in a loading state.
+  /// Called when disabled state changes.
   ///
-  /// When true, the button will not respond to user interaction.
-  /// Use this to display a loading indicator or similar visual feedback.
-  final bool loading;
+  /// Provides the current disabled state (true when disabled, false otherwise).
+  /// Use this to update the visual appearance when the button is disabled.
+  final ValueChanged<bool>? onDisabledState;
 
   /// Whether the button is disabled.
   ///
@@ -100,10 +103,15 @@ class NakedButton extends StatefulWidget {
   /// whether [onPressed] is provided.
   final bool enabled;
 
-  /// Optional semantic label for accessibility.
+  /// Whether the button should be treated as a semantic button.
   ///
-  /// Provides a description of the button's purpose for screen readers.
-  /// If not provided, screen readers will use the text content of the button.
+  /// When true, the button will be treated as a semantic button and will
+  /// have a semantic label and hint.
+  final bool isSemanticButton;
+
+  /// The semantic label for the button.
+  ///
+  /// This label will be used to describe the button to users of assistive technologies.
   final String? semanticLabel;
 
   /// The cursor to show when hovering over the button.
@@ -123,10 +131,11 @@ class NakedButton extends StatefulWidget {
   /// If not provided, the button will create its own focus node.
   final FocusNode? focusNode;
 
-  /// Called when the escape key is pressed while the button has focus.
+  /// Whether the button should be focused when first built.
   ///
-  /// This can be used to cancel actions or dismiss dialogs.
-  final VoidCallback? onEscapePressed;
+  /// When true, the button will receive focus when it is first built.
+  /// This is useful for making the button the initial focus target in a form or dialog.
+  final bool autofocus;
 
   /// Creates a naked button.
   ///
@@ -139,96 +148,83 @@ class NakedButton extends StatefulWidget {
     this.onHoverState,
     this.onPressedState,
     this.onFocusState,
-    this.loading = false,
+    this.onDisabledState,
     this.enabled = true,
+    this.isSemanticButton = true,
     this.semanticLabel,
     this.cursor = SystemMouseCursors.click,
     this.enableHapticFeedback = true,
     this.focusNode,
-    this.onEscapePressed,
+    this.autofocus = false,
   });
+
+  bool get _isEnabled => enabled && onPressed != null;
 
   @override
   State<NakedButton> createState() => _NakedButtonState();
 }
 
-class _NakedButtonState extends State<NakedButton> {
-  late final FocusNode effectiveFocusNode = widget.focusNode ?? FocusNode();
+class _NakedButtonState extends State<NakedButton>
+    with KeyboardActionHandler, EffectiveFocusNodeHandler {
+  @override
+  FocusNode? get widgetFocusNode => widget.focusNode;
+
+  // KeyboardActionHandler
+  @override
+  ValueChanged<bool>? get onPressedState => widget.onPressedState;
 
   @override
-  void dispose() {
-    if (widget.focusNode == null) {
-      effectiveFocusNode.dispose();
+  VoidCallback get onkeyAction => handleTap;
+
+  void handleTap() {
+    if (!widget._isEnabled) return;
+    if (widget.enableHapticFeedback) {
+      HapticFeedback.lightImpact();
     }
-    super.dispose();
+    widget.onPressed?.call();
+  }
+
+  @override
+  void didUpdateWidget(NakedButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget._isEnabled != widget._isEnabled) {
+      widget.onDisabledState?.call(!widget._isEnabled);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.onDisabledState?.call(!widget._isEnabled);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final isInteractive =
-        widget.enabled && !widget.loading && widget.onPressed != null;
-
-    void handleTap() {
-      if (isInteractive) {
-        if (widget.enableHapticFeedback) {
-          HapticFeedback.lightImpact();
-        }
-        widget.onPressed?.call();
-      }
-    }
-
     return Semantics(
-      button: true,
-      enabled: isInteractive,
       label: widget.semanticLabel,
-      hint: widget.loading ? 'Loading' : null,
-      onTap: isInteractive ? handleTap : null,
+      enabled: widget._isEnabled,
+      container: true,
+      button: widget.isSemanticButton,
       excludeSemantics: true,
       child: Focus(
         focusNode: effectiveFocusNode,
         onFocusChange: widget.onFocusState,
-        onKeyEvent: (node, event) {
-          if (!isInteractive) return KeyEventResult.ignored;
-
-          if (event is KeyDownEvent && event.logicalKey.isSpaceOrEnter) {
-            widget.onPressedState?.call(true);
-            return KeyEventResult.handled;
-          } else if (event is KeyUpEvent && event.logicalKey.isSpaceOrEnter) {
-            widget.onPressedState?.call(false);
-            handleTap();
-            return KeyEventResult.handled;
-          } else if (event is KeyUpEvent &&
-              event.logicalKey == LogicalKeyboardKey.escape) {
-            widget.onEscapePressed?.call();
-            return KeyEventResult.handled;
-          }
-          return KeyEventResult.ignored;
-        },
-        child: MouseRegion(
-          cursor: isInteractive ? widget.cursor : SystemMouseCursors.forbidden,
-          onEnter:
-              isInteractive ? (_) => widget.onHoverState?.call(true) : null,
-          onExit:
-              isInteractive ? (_) => widget.onHoverState?.call(false) : null,
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTapDown:
-                isInteractive ? (_) => widget.onPressedState?.call(true) : null,
-            onTapUp: isInteractive
-                ? (_) => widget.onPressedState?.call(false)
-                : null,
-            onTapCancel:
-                isInteractive ? () => widget.onPressedState?.call(false) : null,
-            onTap: isInteractive ? handleTap : null,
+        autofocus: widget.autofocus,
+        onKeyEvent: widget._isEnabled ? handleOnKeyEvent : null,
+        child: HoverStateRegion(
+          enabled: widget._isEnabled,
+          cursor: widget.cursor,
+          onHoverState: widget.onHoverState,
+          child: PressedStateRegion(
+            enabled: widget._isEnabled,
+            onPressedState: widget.onPressedState,
+            onTap: handleTap,
             child: widget.child,
           ),
         ),
       ),
     );
   }
-}
-
-extension LogicalKeyboardKeyExtension on LogicalKeyboardKey {
-  bool get isSpaceOrEnter =>
-      this == LogicalKeyboardKey.space || this == LogicalKeyboardKey.enter;
 }
