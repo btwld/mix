@@ -6,7 +6,7 @@ import 'package:mix/src/core/widget_state/widget_state_controller.dart';
 void main() {
   group('InteractiveMixState', () {
     testWidgets('should update enabled state', (WidgetTester tester) async {
-      final controller = MixWidgetStateController();
+      final controller = WidgetStatesController();
 
       controller.disabled = true;
       await tester.pumpWidget(
@@ -31,7 +31,7 @@ void main() {
     });
 
     testWidgets('should update focused state', (WidgetTester tester) async {
-      final controller = MixWidgetStateController();
+      final controller = WidgetStatesController();
       controller.focused = true;
       await tester.pumpWidget(
         MixWidgetStateBuilder(
@@ -54,7 +54,7 @@ void main() {
     });
 
     testWidgets('should update hovered state', (WidgetTester tester) async {
-      final controller = MixWidgetStateController();
+      final controller = WidgetStatesController();
 
       controller.hovered = true;
 

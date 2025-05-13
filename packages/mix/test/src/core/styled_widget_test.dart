@@ -89,7 +89,7 @@ void main() {
       testWidgets(
         'When a SpecBuilder has a controller, it should wrap the child with Interactable',
         (tester) async {
-          final controller = MixWidgetStateController();
+          final controller = WidgetStatesController();
           await tester.pumpWidget(
             SpecBuilder(
               controller: controller,
@@ -186,7 +186,7 @@ void main() {
         (tester) async {
           await tester.pumpWidget(
             SpecBuilder(
-              controller: MixWidgetStateController(),
+              controller: WidgetStatesController(),
               style: Style($box.color(Colors.red)),
               builder: (context) => const SizedBox(),
             ),

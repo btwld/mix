@@ -144,7 +144,7 @@ class Pressable extends StatefulWidget {
   /// Actions to be bound to the widget
   final Map<Type, Action<Intent>>? actions;
 
-  final MixWidgetStateController? controller;
+  final WidgetStatesController? controller;
 
   /// The duration to wait after the press is released before the state of pressed is removed
   final Duration unpressDelay;
@@ -155,12 +155,12 @@ class Pressable extends StatefulWidget {
 
 @visibleForTesting
 class PressableWidgetState extends State<Pressable> {
-  late final MixWidgetStateController _controller;
+  late final WidgetStatesController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = widget.controller ?? MixWidgetStateController();
+    _controller = widget.controller ?? WidgetStatesController();
   }
 
   @override
@@ -259,7 +259,7 @@ class Interactable extends StatefulWidget {
   final bool enabled;
   final MouseCursor mouseCursor;
 
-  final MixWidgetStateController? controller;
+  final WidgetStatesController? controller;
 
   final bool canRequestFocus;
 
@@ -286,12 +286,12 @@ class Interactable extends StatefulWidget {
 }
 
 class _InteractableState extends State<Interactable> {
-  late final MixWidgetStateController _controller;
+  late final WidgetStatesController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = widget.controller ?? MixWidgetStateController();
+    _controller = widget.controller ?? WidgetStatesController();
 
     _controller.disabled = !widget.enabled;
   }

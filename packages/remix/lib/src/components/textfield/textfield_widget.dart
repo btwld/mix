@@ -227,7 +227,7 @@ class TextField extends StatefulWidget {
 class _TextFieldState extends State<TextField>
     with RestorationMixin
     implements TextSelectionGestureDetectorBuilderDelegate, AutofillClient {
-  late MixWidgetStateController _statesController;
+  late WidgetStatesController _statesController;
 
   late _TextFieldSelectionGestureDetectorBuilder
       _selectionGestureDetectorBuilder;
@@ -252,7 +252,7 @@ class _TextFieldState extends State<TextField>
   @override
   void initState() {
     super.initState();
-    _statesController = MixWidgetStateController();
+    _statesController = WidgetStatesController();
 
     _selectionGestureDetectorBuilder =
         _TextFieldSelectionGestureDetectorBuilder(state: this);

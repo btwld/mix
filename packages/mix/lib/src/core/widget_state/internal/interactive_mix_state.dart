@@ -24,7 +24,7 @@ class InteractiveMixStateWidget extends StatefulWidget {
   final bool enabled;
   final MouseCursor mouseCursor;
 
-  final MixWidgetStateController? controller;
+  final WidgetStatesController? controller;
 
   final bool canRequestFocus;
 
@@ -51,11 +51,11 @@ class InteractiveMixStateWidget extends StatefulWidget {
 }
 
 class _InteractiveStateBuilderState extends State<InteractiveMixStateWidget> {
-  late final MixWidgetStateController _controller;
+  late final WidgetStatesController _controller;
   @override
   void initState() {
     super.initState();
-    _controller = widget.controller ?? MixWidgetStateController();
+    _controller = widget.controller ?? WidgetStatesController();
 
     _controller.disabled = !widget.enabled;
   }

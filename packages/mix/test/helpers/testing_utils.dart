@@ -122,7 +122,7 @@ extension WidgetTesterExt on WidgetTester {
     bool pressed = false,
     bool hovered = false,
   }) async {
-    final controller = MixWidgetStateController();
+    final controller = WidgetStatesController();
 
     controller.disabled = disabled;
     controller.focused = focused;

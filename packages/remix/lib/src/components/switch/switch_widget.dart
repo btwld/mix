@@ -30,12 +30,12 @@ class Switch extends StatefulWidget {
 }
 
 class _SwitchState extends State<Switch> {
-  late final MixWidgetStateController _controller;
+  late final WidgetStatesController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = MixWidgetStateController()
+    _controller = WidgetStatesController()
       ..selected = widget.value
       ..disabled = widget.disabled;
   }

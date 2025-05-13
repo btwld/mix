@@ -58,11 +58,11 @@ class _SliderState extends State<Slider> with TickerProviderStateMixin {
   double _sliderWidth = 0.0;
   double _thumbWidth = 0.0;
 
-  late MixWidgetStateController _controller;
+  late WidgetStatesController _controller;
   @override
   void initState() {
     super.initState();
-    _controller = MixWidgetStateController()..disabled = widget.disabled;
+    _controller = WidgetStatesController()..disabled = widget.disabled;
   }
 
   double _calculateValue(Offset localPosition) {
@@ -81,7 +81,7 @@ class _SliderState extends State<Slider> with TickerProviderStateMixin {
     return widget.min + percent * (widget.max - widget.min);
   }
 
-  void _handleInteraction(void Function(MixWidgetStateController) callback) {
+  void _handleInteraction(void Function(WidgetStatesController) callback) {
     if (_controller.disabled) return;
     callback(_controller);
   }

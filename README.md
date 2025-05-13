@@ -3,7 +3,7 @@
   <img alt="Mix logo" src="https://raw.githubusercontent.com/leoafarias/mix/main/assets/light.svg">
 </picture>
 
-![GitHub stars](https://img.shields.io/github/stars/conceptadev/mix?style=for-the-badge&logo=GitHub&logoColor=black&labelColor=white&color=dddddd)
+![GitHub stars](https://img.shields.io/github/stars/btwld/mix?style=for-the-badge&logo=GitHub&logoColor=black&labelColor=white&color=dddddd)
 [![Pub Version](https://img.shields.io/pub/v/mix?label=version&style=for-the-badge)](https://pub.dev/packages/mix/changelog)
 ![Pub Likes](https://img.shields.io/pub/likes/mix?label=Pub%20Likes&style=for-the-badge)
 ![Pub Points](https://img.shields.io/pub/points/mix?label=Pub%20Points&style=for-the-badge) [![MIT Licence](https://img.shields.io/github/license/leoafarias/mix?style=for-the-badge&longCache=true)](https://opensource.org/licenses/mit-license.php) [![Awesome Flutter](https://img.shields.io/badge/awesome-flutter-purple?longCache=true&style=for-the-badge)](https://github.com/Solido/awesome-flutter)
@@ -115,6 +115,6 @@ Learn more about [utilities](https://fluttermix.com/docs/overview/utility-first)
 
 ## Contributors
 
-<a href="https://github.com/conceptadev/mix/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=conceptadev/mix" />
+<a href="https://github.com/btwld/mix/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=btwld/mix" />
 </a>

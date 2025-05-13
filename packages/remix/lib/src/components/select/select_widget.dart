@@ -44,7 +44,7 @@ class Select<T> extends StatefulWidget {
 }
 
 class SelectState<T> extends State<Select<T>> {
-  late final MixWidgetStateController _menuStateController;
+  late final WidgetStatesController _menuStateController;
 
   final _link = LayerLink();
 
@@ -52,7 +52,7 @@ class SelectState<T> extends State<Select<T>> {
   void initState() {
     super.initState();
 
-    _menuStateController = MixWidgetStateController()..selected = false;
+    _menuStateController = WidgetStatesController()..selected = false;
   }
 
   void openMenu() {
