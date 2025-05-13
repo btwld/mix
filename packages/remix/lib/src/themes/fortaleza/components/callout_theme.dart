@@ -1,6 +1,6 @@
 import 'package:mix/mix.dart';
 
-import '../../../components/callout/callout.dart';
+import '../../../components/feedback/callout/callout.dart';
 import '../tokens.dart';
 
 class FortalezaCalloutStyle extends CalloutStyle {

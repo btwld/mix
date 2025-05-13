@@ -1,6 +1,6 @@
 import 'package:mix/mix.dart';
 
-import '../../../components/spinner/spinner.dart';
+import '../../../components/feedback/spinner/spinner.dart';
 import '../tokens.dart';
 
 class FortalezaSpinnerStyle extends SpinnerStyle {

@@ -1,6 +1,6 @@
 import 'package:mix/mix.dart';
 
-import '../../../components/textfield/textfield.dart';
+import '../../../components/form/textfield/textfield.dart';
 import '../tokens.dart';
 
 class FortalezaTextFieldStyle extends TextFieldStyle {
