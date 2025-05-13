@@ -1,6 +1,6 @@
 import 'package:mix/mix.dart';
 
-import '../../../components/divider/divider.dart';
+import '../../../components/layout/divider/divider.dart';
 import '../tokens.dart';
 
 class FortalezaDividerStyle extends DividerStyle {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' as m;
 import 'package:flutter/widgets.dart';
 
-import '../components/toast/toast.dart';
+import '../components/feedback/toast/toast.dart';
 import 'theme/remix_theme.dart';
 
 //ignore: avoid-unnecessary-stateful-widgets

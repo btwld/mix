@@ -1,6 +1,6 @@
 import 'package:mix/mix.dart';
 
-import '../../../components/dialog/dialog.dart';
+import '../../../components/feedback/dialog/dialog.dart';
 import '../tokens.dart';
 
 class FortalezaDialogStyle extends DialogStyle {

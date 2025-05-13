@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../../../components/button/button.dart';
+import '../../../components/action/button/button.dart';
 import '../tokens.dart';
 
 class FortalezaButtonStyle extends ButtonStyle {

@@ -1,6 +1,6 @@
 import 'package:mix/mix.dart';
 
-import '../../../components/segmented_control/segmented_control.dart';
+import '../../../components/navigation/segmented_control/segmented_control.dart';
 import '../tokens.dart';
 
 class FortalezaSegmentedControlStyle extends SegmentedControlStyle {
