@@ -90,13 +90,11 @@ class SpecBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget current = Builder(
-      builder: (_) => MixBuilder(
-        inherit: inherit,
-        style: style,
-        orderOfModifiers: orderOfModifiers,
-        builder: builder,
-      ),
+    Widget current = MixBuilder(
+      inherit: inherit,
+      style: style,
+      orderOfModifiers: orderOfModifiers,
+      builder: builder,
     );
     // Check if the widget needs widget state and if it's not available in the context
     final needsWidgetState =
