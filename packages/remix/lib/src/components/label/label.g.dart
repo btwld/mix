@@ -45,7 +45,7 @@ mixin _$LabelSpec on Spec<LabelSpec> {
     return LabelSpec(
       spacing: spacing ?? _$this.spacing,
       icon: icon ?? _$this.icon,
-      label: label ?? _$this.textStyle,
+      label: label ?? _$this.label,
       modifiers: modifiers ?? _$this.modifiers,
       animated: animated ?? _$this.animated,
     );
@@ -91,7 +91,7 @@ mixin _$LabelSpec on Spec<LabelSpec> {
   List<Object?> get props => [
         _$this.spacing,
         _$this.icon,
-        _$this.textStyle,
+        _$this.label,
         _$this.modifiers,
         _$this.animated,
       ];
@@ -103,8 +103,8 @@ mixin _$LabelSpec on Spec<LabelSpec> {
         DiagnosticsProperty('spacing', _$this.spacing, defaultValue: null));
     properties
         .add(DiagnosticsProperty('icon', _$this.icon, defaultValue: null));
-    properties.add(
-        DiagnosticsProperty('label', _$this.textStyle, defaultValue: null));
+    properties
+        .add(DiagnosticsProperty('label', _$this.label, defaultValue: null));
     properties.add(
         DiagnosticsProperty('modifiers', _$this.modifiers, defaultValue: null));
     properties.add(
