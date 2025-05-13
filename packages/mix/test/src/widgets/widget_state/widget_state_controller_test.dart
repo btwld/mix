@@ -148,14 +148,14 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: MixWidgetStateModel.fromSet(
+          home: MixWidgetState.fromSet(
             states: controller.value,
             child: Container(),
           ),
         ),
       );
       final foundModel =
-          MixWidgetStateModel.of(tester.element(find.byType(Container)));
+          MixWidgetState.of(tester.element(find.byType(Container)));
       expect(foundModel, isNotNull);
       expect(foundModel!.disabled, isTrue);
       expect(foundModel.hovered, isTrue);
@@ -169,7 +169,7 @@ void main() {
     testWidgets('hasStateOf returns if state is set', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: MixWidgetStateModel(
+          home: MixWidgetState(
             disabled: true,
             hovered: false,
             focused: false,
@@ -180,14 +180,14 @@ void main() {
             child: Builder(
               builder: (context) {
                 expect(
-                  MixWidgetStateModel.hasStateOf(
+                  MixWidgetState.hasStateOf(
                     context,
                     WidgetState.disabled,
                   ),
                   isTrue,
                 );
                 expect(
-                  MixWidgetStateModel.hasStateOf(
+                  MixWidgetState.hasStateOf(
                     context,
                     WidgetState.hovered,
                   ),
@@ -202,7 +202,7 @@ void main() {
     });
 
     test('updateShouldNotify returns true if value changed', () {
-      final oldModel = MixWidgetStateModel(
+      final oldModel = MixWidgetState(
         disabled: false,
         hovered: false,
         focused: false,
@@ -212,7 +212,7 @@ void main() {
         error: false,
         child: Container(),
       );
-      final newModel = MixWidgetStateModel(
+      final newModel = MixWidgetState(
         disabled: true,
         hovered: false,
         focused: false,
@@ -227,7 +227,7 @@ void main() {
     });
 
     test('updateShouldNotifyDependent returns if a dependency changed', () {
-      final oldModel = MixWidgetStateModel(
+      final oldModel = MixWidgetState(
         disabled: false,
         hovered: false,
         focused: false,
@@ -237,7 +237,7 @@ void main() {
         error: false,
         child: Container(),
       );
-      final newModel = MixWidgetStateModel(
+      final newModel = MixWidgetState(
         disabled: true,
         hovered: false,
         focused: false,

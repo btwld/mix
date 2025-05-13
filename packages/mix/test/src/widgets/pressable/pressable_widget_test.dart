@@ -43,9 +43,9 @@ void main() {
       final secondContext = tester.element(find.byKey(secondKey));
       final thirdContext = tester.element(find.byKey(thirdKey));
 
-      final firstNotifier = MixWidgetStateModel.of(firstContext);
-      final secondNotifier = MixWidgetStateModel.of(secondContext);
-      final thirdNotifier = MixWidgetStateModel.of(thirdContext);
+      final firstNotifier = MixWidgetState.of(firstContext);
+      final secondNotifier = MixWidgetState.of(secondContext);
+      final thirdNotifier = MixWidgetState.of(thirdContext);
 
       expect(onEnabledAttr.variant.when(firstContext), false,
           reason: 'First Pressable should be disabled');

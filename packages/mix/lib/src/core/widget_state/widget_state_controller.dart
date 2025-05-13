@@ -1,10 +1,5 @@
 import "package:flutter/material.dart";
 
-extension MixWidgetState on WidgetState {
-  static const of = MixWidgetStateModel.of;
-  static const hasStateOf = MixWidgetStateModel.hasStateOf;
-}
-
 /// A controller that manages the state of a widget.
 ///
 /// [MixWidgetStateController] tracks various states of a widget, such as
@@ -85,7 +80,7 @@ extension on Set<WidgetState> {
   bool get hasError => contains(WidgetState.error);
 }
 
-class MixWidgetStateModel extends InheritedModel<WidgetState> {
+class MixWidgetState extends InheritedModel<WidgetState> {
   final bool disabled;
   final bool hovered;
   final bool focused;
@@ -94,7 +89,7 @@ class MixWidgetStateModel extends InheritedModel<WidgetState> {
   final bool selected;
   final bool error;
 
-  MixWidgetStateModel.fromSet({
+  MixWidgetState.fromSet({
     super.key,
     required Set<WidgetState> states,
     required super.child,
@@ -106,7 +101,7 @@ class MixWidgetStateModel extends InheritedModel<WidgetState> {
         selected = states.hasSelected,
         error = states.hasError;
 
-  const MixWidgetStateModel({
+  const MixWidgetState({
     super.key,
     required this.disabled,
     required this.hovered,
@@ -118,8 +113,8 @@ class MixWidgetStateModel extends InheritedModel<WidgetState> {
     required super.child,
   });
 
-  static MixWidgetStateModel? of(BuildContext context, [WidgetState? state]) {
-    return InheritedModel.inheritFrom<MixWidgetStateModel>(
+  static MixWidgetState? of(BuildContext context, [WidgetState? state]) {
+    return InheritedModel.inheritFrom<MixWidgetState>(
       context,
       aspect: state,
     );
@@ -144,7 +139,7 @@ class MixWidgetStateModel extends InheritedModel<WidgetState> {
   }
 
   @override
-  bool updateShouldNotify(MixWidgetStateModel oldWidget) {
+  bool updateShouldNotify(MixWidgetState oldWidget) {
     return oldWidget.disabled != disabled ||
         oldWidget.hovered != hovered ||
         oldWidget.focused != focused ||
@@ -156,7 +151,7 @@ class MixWidgetStateModel extends InheritedModel<WidgetState> {
 
   @override
   bool updateShouldNotifyDependent(
-    MixWidgetStateModel oldWidget,
+    MixWidgetState oldWidget,
     Set<WidgetState> dependencies,
   ) {
     return oldWidget.disabled != disabled && dependencies.hasDisabled ||
