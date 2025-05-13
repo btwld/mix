@@ -46,7 +46,7 @@ class DropdownMenu extends StatefulWidget {
 }
 
 class DropdownMenuState extends State<DropdownMenu> {
-  late final MixWidgetStateController _menuStateController;
+  late final WidgetStatesController _menuStateController;
 
   final _link = LayerLink();
 
@@ -54,7 +54,7 @@ class DropdownMenuState extends State<DropdownMenu> {
   void initState() {
     super.initState();
 
-    _menuStateController = MixWidgetStateController()..selected = widget.open;
+    _menuStateController = WidgetStatesController()..selected = widget.open;
   }
 
   @override

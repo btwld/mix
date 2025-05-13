@@ -45,12 +45,12 @@ class Radio<T> extends StatefulWidget {
 }
 
 class _RadioState<T> extends State<Radio<T>> {
-  late final MixWidgetStateController _controller;
+  late final WidgetStatesController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = MixWidgetStateController()
+    _controller = WidgetStatesController()
       ..selected = widget._selected
       ..disabled = widget.disabled;
   }

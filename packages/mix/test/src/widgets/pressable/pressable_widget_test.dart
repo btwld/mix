@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-import 'package:mix/src/core/widget_state/internal/mix_widget_state_builder.dart';
 
 import '../../../helpers/testing_utils.dart';
 
@@ -44,9 +43,9 @@ void main() {
       final secondContext = tester.element(find.byKey(secondKey));
       final thirdContext = tester.element(find.byKey(thirdKey));
 
-      final firstNotifier = MixWidgetStateModel.of(firstContext);
-      final secondNotifier = MixWidgetStateModel.of(secondContext);
-      final thirdNotifier = MixWidgetStateModel.of(thirdContext);
+      final firstNotifier = MixWidgetState.of(firstContext);
+      final secondNotifier = MixWidgetState.of(secondContext);
+      final thirdNotifier = MixWidgetState.of(thirdContext);
 
       expect(onEnabledAttr.variant.when(firstContext), false,
           reason: 'First Pressable should be disabled');
@@ -710,12 +709,12 @@ class _DisposalPressable extends StatefulWidget {
 }
 
 class _DisposalPressableState extends State<_DisposalPressable> {
-  late final MixWidgetStateController _controller;
+  late final WidgetStatesController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = MixWidgetStateController();
+    _controller = WidgetStatesController();
   }
 
   @override

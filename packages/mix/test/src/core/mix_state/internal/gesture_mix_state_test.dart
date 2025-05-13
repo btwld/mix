@@ -9,7 +9,7 @@ void main() {
     const key = Key('context_key');
     const unpressDelay = Duration(milliseconds: 500);
 
-    final controller = MixWidgetStateController();
+    final controller = WidgetStatesController();
 
     GestureMixStateWidget buildGestureMixStateWidget({
       Duration unpressDelay = unpressDelay,
@@ -132,8 +132,7 @@ void main() {
 
       await tester.tap(find.byType(GestureMixStateWidget));
       final context = tester.element(find.byKey(key));
-      expect(
-          MixWidgetState.hasStateOf(context, WidgetState.pressed), isFalse);
+      expect(MixWidgetState.hasStateOf(context, WidgetState.pressed), isFalse);
     });
 
     testWidgets('GesturableWidget pan functions test', (

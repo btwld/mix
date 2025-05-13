@@ -35,12 +35,12 @@ class SegmentedControl extends StatefulWidget {
 }
 
 class _SegmentedControlState extends State<SegmentedControl> {
-  late final MixWidgetStateController controller;
+  late final WidgetStatesController controller;
 
   @override
   void initState() {
     super.initState();
-    controller = MixWidgetStateController()..selected = true;
+    controller = WidgetStatesController()..selected = true;
   }
 
   @override

@@ -1,12 +1,10 @@
 import 'package:flutter/widgets.dart';
 
-import '../modifiers/internal/render_widget_modifier.dart';
 import '../variants/widget_state_variant.dart';
 import '../widgets/pressable_widget.dart';
 import 'factory/mix_data.dart';
-import 'factory/mix_provider.dart';
 import 'factory/style_mix.dart';
-import 'modifier.dart';
+import 'internal/experimental/mix_builder.dart';
 import 'widget_state/widget_state_controller.dart';
 
 /// An abstract widget for applying custom styles.
@@ -82,7 +80,7 @@ class SpecBuilder extends StatelessWidget {
   // Required builder function
   final Widget Function(BuildContext) builder;
   // Optional controller for managing widget state
-  final MixWidgetStateController? controller;
+  final WidgetStatesController? controller;
   // Style to be applied to the widget
   final Style style;
   // Flag to determine if the style should be inherited
@@ -90,51 +88,14 @@ class SpecBuilder extends StatelessWidget {
   // List of modifier types in the desired order
   final List<Type> orderOfModifiers;
 
-  // Method to apply modifiers to the child widget
-  Widget _applyModifiers(MixData mix, Widget child) {
-    // Get the list of WidgetModifierAttribute from the mix
-    final modifiers = mix
-        .whereType<WidgetModifierSpecAttribute>()
-        .map((e) => e.resolve(mix))
-        .toList();
-
-    // If the mix is animated, use RenderAnimatedModifiers, otherwise use RenderModifiers
-    return mix.isAnimated
-        ? RenderAnimatedModifiers(
-            modifiers: modifiers,
-            duration: mix.animation!.duration,
-            mix: mix,
-            orderOfModifiers: orderOfModifiers,
-            curve: mix.animation!.curve,
-            child: child,
-          )
-        : RenderModifiers(
-            modifiers: modifiers,
-            mix: mix,
-            orderOfModifiers: orderOfModifiers,
-            child: child,
-          );
-  }
-
-  // Method to build the mixed child widget
-  Widget _buildMixedChild(BuildContext context) {
-    // Get the inherited mix if inherit flag is true, otherwise null
-    final inheritedMix = inherit ? Mix.maybeOfInherited(context) : null;
-    // Get the mix from the style
-    final mix = style.of(context);
-    // Merge the inherited mix with the current mix, or use the current mix if no inherited mix
-    final mergedMix = inheritedMix?.merge(mix) ?? mix;
-
-    // Return a Mix widget with the merged mix and the child widget with modifiers applied
-    return Mix(
-      data: mergedMix,
-      child: _applyModifiers(mergedMix, Builder(builder: builder)),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    Widget current = Builder(builder: _buildMixedChild);
+    Widget current = MixBuilder(
+      inherit: inherit,
+      style: style,
+      orderOfModifiers: orderOfModifiers,
+      builder: builder,
+    );
     // Check if the widget needs widget state and if it's not available in the context
     final needsWidgetState =
         _hasWidgetStateVariant && MixWidgetState.of(context) == null;

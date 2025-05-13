@@ -23,12 +23,12 @@ class Accordion extends StatefulWidget {
 }
 
 class _AccordionState extends State<Accordion> {
-  late MixWidgetStateController _controller;
+  late WidgetStatesController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = MixWidgetStateController()..selected = widget.expanded;
+    _controller = WidgetStatesController()..selected = widget.expanded;
   }
 
   void _handleTap() {

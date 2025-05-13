@@ -42,12 +42,12 @@ class Chip extends StatefulWidget {
 }
 
 class _ChipState extends State<Chip> {
-  late final MixWidgetStateController _controller;
+  late final WidgetStatesController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = MixWidgetStateController();
+    _controller = WidgetStatesController();
     _controller.selected = widget.value;
     _controller.disabled = widget.disabled;
   }

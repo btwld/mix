@@ -31,7 +31,7 @@ class GestureMixStateWidget extends StatefulWidget {
   final Widget child;
 
   /// The controller for the widget state.
-  final MixWidgetStateController? controller;
+  final WidgetStatesController? controller;
 
   /// Whether to provide feedback for gestures.
   final bool enableFeedback;
@@ -86,13 +86,13 @@ class GestureMixStateWidget extends StatefulWidget {
 class _GestureMixStateWidgetState extends State<GestureMixStateWidget> {
   int _pressCount = 0;
   Timer? _timer;
-  late final MixWidgetStateController _controller;
+  late final WidgetStatesController _controller;
   bool _longPressed = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = widget.controller ?? MixWidgetStateController();
+    _controller = widget.controller ?? WidgetStatesController();
   }
 
   void _setLongPressed(bool value) {
@@ -158,7 +158,8 @@ class _GestureMixStateWidgetState extends State<GestureMixStateWidget> {
 
   void _unpressAfterDelay(int initialPressCount) {
     void unpressCallback() {
-      if (_controller.pressed && _pressCount == initialPressCount) {
+      if (_controller.has(WidgetState.pressed) &&
+          _pressCount == initialPressCount) {
         _controller.pressed = false;
       }
     }
