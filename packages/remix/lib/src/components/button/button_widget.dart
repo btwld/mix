@@ -136,6 +136,8 @@ class RxButton extends StatefulWidget implements Disableable {
 }
 
 class _RxButtonState extends State<RxButton> with MixControllerMixin {
+  bool get _isEnabled => widget.enabled && !widget.loading;
+
   /// Builds the loading overlay that shows a spinner while preserving layout.
   Widget _buildLoadingOverlay(ButtonSpec spec, Widget child) {
     final Widget spinner = widget.spinnerWidget ?? spec.spinner();
@@ -165,11 +167,14 @@ class _RxButtonState extends State<RxButton> with MixControllerMixin {
       onDisabledState: (state) {
         mixController.disabled = state;
       },
-      enabled: widget.enabled,
+      onHoverState: (state) {
+        mixController.hovered = state;
+      },
+      enabled: _isEnabled,
       enableHapticFeedback: widget.enableHapticFeedback,
       child: RemixBuilder(
         style: style.makeStyle(configuration).animate(),
-        states: mixController.value,
+        mixController: mixController,
         builder: (context) {
           final spec = ButtonSpec.of(context);
 
