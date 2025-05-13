@@ -34,13 +34,42 @@ class RxButton extends StatefulWidget implements Disableable {
     this.style = const ButtonStyle(),
   }) : child = RxLabel(label, icon: leadingIcon);
 
+  /// Creates a Remix button with only an icon.
+  ///
+  /// This constructor creates a button with just an icon and no label.
+  /// The [icon] parameter is required and will be displayed as the button's content.
+  ///
+  /// Example:
+  /// ```dart
+  /// RxButton.icon(
+  ///   icon: Icons.star,
+  ///   onPressed: () {},
+  /// )
+  /// ```
+  RxButton.icon({
+    super.key,
+    required IconData icon,
+    this.enabled = true,
+    this.loading = false,
+    this.spinnerWidget,
+    this.enableHapticFeedback = true,
+    required this.onPressed,
+    this.focusNode,
+    this.style = const ButtonStyle(),
+  }) : child = Icon(icon);
+
   /// Creates a Remix button with a raw child widget.
   ///
   /// This constructor allows for custom button content beyond the default layout.
   /// The [child] parameter must be provided and will be used as the button's content.
   ///
   /// Example:
-
+  /// ```dart
+  /// RxButton.raw(
+  ///   child: Icon(Icons.star),
+  ///   onPressed: () {},
+  /// )
+  /// ```
   const RxButton.raw({
     super.key,
     required this.child,
