@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../../../components/accordion/accordion.dart';
+import '../../../components/content_presentation/accordion/accordion.dart';
 import '../tokens.dart';
 
 class FortalezaAccordionStyle extends AccordionStyle {
