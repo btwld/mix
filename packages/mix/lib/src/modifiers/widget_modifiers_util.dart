@@ -4,6 +4,7 @@ import '../core/utility.dart';
 import 'align_widget_modifier.dart';
 import 'aspect_ratio_widget_modifier.dart';
 import 'clip_widget_modifier.dart';
+import 'default_text_style_widget_modifier.dart';
 import 'flexible_widget_modifier.dart';
 import 'fractionally_sized_box_widget_modifier.dart';
 import 'intrinsic_widget_modifier.dart';
@@ -34,6 +35,7 @@ abstract class ModifierUtility<T extends Attribute, Value>
   late final flexible = FlexibleModifierSpecUtility(only);
   late final expanded = flexible.expanded;
   late final transform = TransformModifierSpecUtility(only);
+  late final defaultTextStyle = DefaultTextStyleModifierSpecUtility(only);
 
   late final scale = transform.scale;
   late final align = AlignModifierSpecUtility(only);
