@@ -1,6 +1,6 @@
 import 'package:mix/mix.dart';
 
-import '../../../components/avatar/avatar.dart';
+import '../../../components/content_presentation/avatar/avatar.dart';
 import '../tokens.dart';
 
 class FortalezaAvatarStyle extends AvatarStyle {
@@ -18,12 +18,12 @@ class FortalezaAvatarStyle extends AvatarStyle {
 
     final solidVariant = Style(
       $.container.color.$accent(),
-      $.fallback.style.color.$neutral(1),
+      $.fallbackTextStyle.color.$neutral(1),
     );
 
     final softVariant = Style(
       $.container.color.$accent(4),
-      $.fallback.style.color.$accent(),
+      $.fallbackTextStyle.color.$accent(),
     );
 
     return Style.create([baseStyle(), solidVariant(), soft(softVariant())]);
@@ -38,10 +38,10 @@ class FortalezaDarkAvatarStyle extends FortalezaAvatarStyle {
     final $ = spec.utilities;
     final baseStyle = super.makeStyle(spec);
 
-    final solid = Style($.fallback.style.color.$neutral(12));
+    final solid = Style($.fallbackTextStyle.color.$neutral(12));
     final soft = Style(
       $.container.color.$accent(3),
-      $.fallback.style.color.$accent(11),
+      $.fallbackTextStyle.color.$accent(11),
     );
 
     return Style.create([

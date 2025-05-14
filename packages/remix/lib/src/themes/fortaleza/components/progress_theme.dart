@@ -1,6 +1,6 @@
 import 'package:mix/mix.dart';
 
-import '../../../components/progress/progress.dart';
+import '../../../components/feedback/progress/progress.dart';
 import '../tokens.dart';
 
 class FortalezaProgressStyle extends ProgressStyle {

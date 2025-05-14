@@ -1,6 +1,6 @@
 import 'package:mix/mix.dart';
 
-import '../../../components/dropdown_menu/dropdown_menu.dart';
+import '../../../components/utility/dropdown_menu/dropdown_menu.dart';
 import '../tokens.dart';
 
 class FortalezaDropdownMenuStyle extends DropdownMenuStyle {

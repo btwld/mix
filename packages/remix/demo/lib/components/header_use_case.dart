@@ -37,7 +37,10 @@ Widget buildCard(BuildContext context) {
       const SizedBox(
         height: 16,
       ),
-      Button(label: 'Button', onPressed: () {}),
+      RxButton(
+        label: 'Button',
+        onPressed: () {},
+      ),
     ],
   );
 

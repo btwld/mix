@@ -24,7 +24,7 @@ Widget buildButtonUseCase(BuildContext context) {
     child: Scaffold(
       body: Builder(builder: (context) {
         return Center(
-          child: Button(
+          child: RxButton(
             label: 'Show toast',
             onPressed: () {
               showToast(
