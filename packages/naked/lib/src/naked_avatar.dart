@@ -83,13 +83,9 @@ class NakedAvatar extends StatelessWidget {
           )
         : null;
 
-    return Semantics(
-      label: semanticLabel,
-      image: image != null,
-      child: imageWidgetBuilder(
-        context,
-        child,
-      ),
+    return imageWidgetBuilder(
+      context,
+      child,
     );
   }
 }
