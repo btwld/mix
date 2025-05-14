@@ -40,7 +40,7 @@ mixin _$IconThemeModifierSpec on WidgetModifierSpec<IconThemeModifierSpec> {
     if (other == null) return _$this;
 
     return IconThemeModifierSpec(
-      data: IconThemeData.lerp(_$this.data, other.data, t)!,
+      data: IconThemeData.lerp(_$this.data, other.data, t),
     );
   }
 

@@ -79,7 +79,7 @@ mixin _$ButtonSpec on Spec<ButtonSpec> {
 
     return ButtonSpec(
       container: _$this.container.lerp(other.container, t),
-      icon: IconThemeData.lerp(_$this.icon, other.icon, t)!,
+      icon: IconThemeData.lerp(_$this.icon, other.icon, t),
       textStyle:
           MixHelpers.lerpTextStyle(_$this.textStyle, other.textStyle, t)!,
       modifiers: other.modifiers,

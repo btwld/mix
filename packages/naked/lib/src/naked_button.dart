@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:naked/src/utilities/internal_focus.dart';
 
 import 'utilities/pressed_state_region.dart';
 
@@ -163,11 +162,7 @@ class NakedButton extends StatefulWidget {
   State<NakedButton> createState() => _NakedButtonState();
 }
 
-class _NakedButtonState extends State<NakedButton>
-    with EffectiveFocusNodeHandler {
-  @override
-  FocusNode? get widgetFocusNode => widget.focusNode;
-
+class _NakedButtonState extends State<NakedButton> {
   late final Map<Type, Action<Intent>> _actionMap = <Type, Action<Intent>>{
     ActivateIntent: CallbackAction<ActivateIntent>(onInvoke: handleTap),
     ButtonActivateIntent:
@@ -208,8 +203,8 @@ class _NakedButtonState extends State<NakedButton>
       excludeSemantics: true,
       child: FocusableActionDetector(
         actions: _actionMap,
-        onShowFocusHighlight: widget.onFocusState,
-        focusNode: effectiveFocusNode,
+        onFocusChange: widget.onFocusState,
+        focusNode: widget.focusNode,
         enabled: widget._isEnabled,
         autofocus: widget.autofocus,
         onShowHoverHighlight: widget.onHoverState,
