@@ -1,30 +1,5 @@
 import 'package:flutter/widgets.dart';
 
-class HoverStateRegion extends StatelessWidget {
-  final bool enabled;
-  final void Function(bool)? onHoverState;
-  final MouseCursor cursor;
-  final Widget child;
-
-  const HoverStateRegion({
-    super.key,
-    required this.child,
-    this.onHoverState,
-    this.cursor = SystemMouseCursors.click,
-    this.enabled = true,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: enabled ? cursor : SystemMouseCursors.forbidden,
-      onEnter: enabled ? (_) => onHoverState?.call(true) : null,
-      onExit: enabled ? (_) => onHoverState?.call(false) : null,
-      child: child,
-    );
-  }
-}
-
 class PressedStateRegion extends StatelessWidget {
   final bool enabled;
   final void Function(bool)? onPressedState;

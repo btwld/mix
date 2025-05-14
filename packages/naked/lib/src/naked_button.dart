@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:naked/src/utilities/event_extensions.dart';
 import 'package:naked/src/utilities/internal_focus.dart';
 
-import 'utilities/state_regions.dart';
+import 'utilities/pressed_state_region.dart';
 
 /// A fully customizable button with no default styling.
 ///
@@ -165,18 +164,17 @@ class NakedButton extends StatefulWidget {
 }
 
 class _NakedButtonState extends State<NakedButton>
-    with KeyboardActionHandler, EffectiveFocusNodeHandler {
+    with EffectiveFocusNodeHandler {
   @override
   FocusNode? get widgetFocusNode => widget.focusNode;
 
-  // KeyboardActionHandler
-  @override
-  ValueChanged<bool>? get onPressedState => widget.onPressedState;
+  late final Map<Type, Action<Intent>> _actionMap = <Type, Action<Intent>>{
+    ActivateIntent: CallbackAction<ActivateIntent>(onInvoke: handleTap),
+    ButtonActivateIntent:
+        CallbackAction<ButtonActivateIntent>(onInvoke: handleTap),
+  };
 
-  @override
-  VoidCallback get onkeyAction => handleTap;
-
-  void handleTap() {
+  void handleTap([Intent? intent]) {
     if (!widget._isEnabled) return;
     if (widget.enableHapticFeedback) {
       HapticFeedback.lightImpact();
@@ -208,21 +206,19 @@ class _NakedButtonState extends State<NakedButton>
       container: true,
       button: widget.isSemanticButton,
       excludeSemantics: true,
-      child: Focus(
+      child: FocusableActionDetector(
+        actions: _actionMap,
+        onShowFocusHighlight: widget.onFocusState,
         focusNode: effectiveFocusNode,
-        onFocusChange: widget.onFocusState,
+        enabled: widget._isEnabled,
         autofocus: widget.autofocus,
-        onKeyEvent: widget._isEnabled ? handleOnKeyEvent : null,
-        child: HoverStateRegion(
+        onShowHoverHighlight: widget.onHoverState,
+        mouseCursor: widget.cursor,
+        child: PressedStateRegion(
           enabled: widget._isEnabled,
-          cursor: widget.cursor,
-          onHoverState: widget.onHoverState,
-          child: PressedStateRegion(
-            enabled: widget._isEnabled,
-            onPressedState: widget.onPressedState,
-            onTap: handleTap,
-            child: widget.child,
-          ),
+          onPressedState: widget.onPressedState,
+          onTap: handleTap,
+          child: widget.child,
         ),
       ),
     );
