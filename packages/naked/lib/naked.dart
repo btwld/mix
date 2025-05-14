@@ -26,6 +26,7 @@ export 'src/naked_select.dart';
 export 'src/naked_slider.dart';
 export 'src/naked_tabs.dart';
 export 'src/naked_textfield.dart';
+export 'src/naked_toast.dart';
 export 'src/naked_tooltip.dart';
 // Export utilities
 export 'src/utilities/utilities.dart';
