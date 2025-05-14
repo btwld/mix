@@ -38,14 +38,14 @@ mixin _$AvatarSpec on Spec<AvatarSpec> {
   AvatarSpec copyWith({
     BoxSpec? container,
     ImageSpec? image,
-    TextSpec? fallback,
+    TextStyle? fallbackTextStyle,
     StackSpec? stack,
     AnimatedData? animated,
   }) {
     return AvatarSpec(
       container: container ?? _$this.container,
       image: image ?? _$this.image,
-      fallback: fallback ?? _$this.fallback,
+      fallbackTextStyle: fallbackTextStyle ?? _$this.fallbackTextStyle,
       stack: stack ?? _$this.stack,
       animated: animated ?? _$this.animated,
     );
@@ -63,7 +63,7 @@ mixin _$AvatarSpec on Spec<AvatarSpec> {
   /// interpolation method:
   /// - [BoxSpec.lerp] for [container].
   /// - [ImageSpec.lerp] for [image].
-  /// - [TextSpec.lerp] for [fallback].
+  /// - [MixHelpers.lerpTextStyle] for [fallbackTextStyle].
   /// - [StackSpec.lerp] for [stack].
   /// For [animated], the interpolation is performed using a step function.
   /// If [t] is less than 0.5, the value from the current [AvatarSpec] is used. Otherwise, the value
@@ -78,7 +78,8 @@ mixin _$AvatarSpec on Spec<AvatarSpec> {
     return AvatarSpec(
       container: _$this.container.lerp(other.container, t),
       image: _$this.image.lerp(other.image, t),
-      fallback: _$this.fallback.lerp(other.fallback, t),
+      fallbackTextStyle: MixHelpers.lerpTextStyle(
+          _$this.fallbackTextStyle, other.fallbackTextStyle, t)!,
       stack: _$this.stack.lerp(other.stack, t),
       animated: t < 0.5 ? _$this.animated : other.animated,
     );
@@ -92,7 +93,7 @@ mixin _$AvatarSpec on Spec<AvatarSpec> {
   List<Object?> get props => [
         _$this.container,
         _$this.image,
-        _$this.fallback,
+        _$this.fallbackTextStyle,
         _$this.stack,
         _$this.animated,
       ];
@@ -110,13 +111,13 @@ mixin _$AvatarSpec on Spec<AvatarSpec> {
 class AvatarSpecAttribute extends SpecAttribute<AvatarSpec> {
   final BoxSpecAttribute? container;
   final ImageSpecAttribute? image;
-  final TextSpecAttribute? fallback;
+  final TextStyleDto? fallbackTextStyle;
   final StackSpecAttribute? stack;
 
   const AvatarSpecAttribute({
     this.container,
     this.image,
-    this.fallback,
+    this.fallbackTextStyle,
     this.stack,
     super.animated,
   });
@@ -134,7 +135,7 @@ class AvatarSpecAttribute extends SpecAttribute<AvatarSpec> {
     return AvatarSpec(
       container: container?.resolve(mix),
       image: image?.resolve(mix),
-      fallback: fallback?.resolve(mix),
+      fallbackTextStyle: fallbackTextStyle?.resolve(mix),
       stack: stack?.resolve(mix),
       animated: animated?.resolve(mix) ?? mix.animation,
     );
@@ -155,7 +156,8 @@ class AvatarSpecAttribute extends SpecAttribute<AvatarSpec> {
     return AvatarSpecAttribute(
       container: container?.merge(other.container) ?? other.container,
       image: image?.merge(other.image) ?? other.image,
-      fallback: fallback?.merge(other.fallback) ?? other.fallback,
+      fallbackTextStyle: fallbackTextStyle?.merge(other.fallbackTextStyle) ??
+          other.fallbackTextStyle,
       stack: stack?.merge(other.stack) ?? other.stack,
       animated: animated?.merge(other.animated) ?? other.animated,
     );
@@ -169,7 +171,7 @@ class AvatarSpecAttribute extends SpecAttribute<AvatarSpec> {
   List<Object?> get props => [
         container,
         image,
-        fallback,
+        fallbackTextStyle,
         stack,
         animated,
       ];
@@ -187,8 +189,9 @@ class AvatarSpecUtility<T extends Attribute>
   /// Utility for defining [AvatarSpecAttribute.image]
   late final image = ImageSpecUtility((v) => only(image: v));
 
-  /// Utility for defining [AvatarSpecAttribute.fallback]
-  late final fallback = TextSpecUtility((v) => only(fallback: v));
+  /// Utility for defining [AvatarSpecAttribute.fallbackTextStyle]
+  late final fallbackTextStyle =
+      TextStyleUtility((v) => only(fallbackTextStyle: v));
 
   /// Utility for defining [AvatarSpecAttribute.stack]
   late final stack = StackSpecUtility((v) => only(stack: v));
@@ -209,14 +212,14 @@ class AvatarSpecUtility<T extends Attribute>
   T only({
     BoxSpecAttribute? container,
     ImageSpecAttribute? image,
-    TextSpecAttribute? fallback,
+    TextStyleDto? fallbackTextStyle,
     StackSpecAttribute? stack,
     AnimatedDataDto? animated,
   }) {
     return builder(AvatarSpecAttribute(
       container: container,
       image: image,
-      fallback: fallback,
+      fallbackTextStyle: fallbackTextStyle,
       stack: stack,
       animated: animated,
     ));

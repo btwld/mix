@@ -1,16 +1,26 @@
 part of 'avatar.dart';
 
 class Avatar extends StatelessWidget {
-  const Avatar({
+  Avatar({
     super.key,
     this.image,
-    required this.fallbackBuilder,
-    this.variants = const [],
-    this.style,
+    required String fallbackLabel,
+    this.onError,
+    this.style = const AvatarStyle(),
+  }) : fallback = Text(fallbackLabel);
+
+  const Avatar.raw({
+    super.key,
+    this.image,
+    required this.fallback,
+    this.onError,
+    this.style = const AvatarStyle(),
   });
 
   /// The image to display in the avatar.
   final ImageProvider<Object>? image;
+
+  final void Function(Object, StackTrace?)? onError;
 
   /// A builder for the fallback widget.
   ///
@@ -27,22 +37,17 @@ class Avatar extends StatelessWidget {
   ///   ),
   /// );
   /// ```
-  final WidgetSpecBuilder<TextSpec> fallbackBuilder;
-
-  /// {@macro remix.component.variants}
-  final List<Variant> variants;
+  final Widget fallback;
 
   /// {@macro remix.component.style}
-  final AvatarStyle? style;
+  final AvatarStyle style;
 
   @override
   Widget build(BuildContext context) {
-    final style = this.style ?? context.remix.components.avatar;
-
     final configuration = SpecConfiguration(context, AvatarSpecUtility.self);
 
     return SpecBuilder(
-      style: style.makeStyle(configuration).applyVariants(variants),
+      style: style.makeStyle(configuration),
       builder: (context) {
         final spec = AvatarSpec.of(context);
 
@@ -50,18 +55,25 @@ class Avatar extends StatelessWidget {
         final ImageWidget = spec.image;
         final StackWidget = spec.stack;
 
-        return ContainerWidget(
-          child: StackWidget(
-            children: [
-              fallbackBuilder(spec.fallback),
-              if (image != null)
-                ImageWidget(
-                  image: image!,
-                  errorBuilder: (context, error, stackTrace) =>
-                      const SizedBox(),
-                ),
-            ],
+        return NakedAvatar(
+          image: image,
+          imageWidgetBuilder: (context, child) => ContainerWidget(
+            child: DefaultTextStyle(
+              style: spec.fallbackTextStyle,
+              child: StackWidget(
+                children: [
+                  fallback,
+                  if (image != null)
+                    ImageWidget(
+                      image: image!,
+                      errorBuilder: (context, error, stackTrace) =>
+                          const SizedBox(),
+                    ),
+                ],
+              ),
+            ),
           ),
+          onError: onError,
         );
       },
     );
