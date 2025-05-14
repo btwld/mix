@@ -155,7 +155,7 @@ class _BasicAccordionState extends State<_BasicAccordion> {
 
           return NakedAccordionItem<String>(
             value: id,
-            trigger: NakedAccordionTrigger<String>(
+            trigger: (_) => NakedAccordionTrigger<String>(
               onHoverState: (hovered) =>
                   setState(() => _hoveredItems[id] = hovered),
               onFocusState: (focused) =>
@@ -193,7 +193,7 @@ class _BasicAccordionState extends State<_BasicAccordion> {
                 ),
               ),
             ),
-            content: Container(
+            child: Container(
               padding: const EdgeInsets.all(16),
               color: Colors.blue.shade50,
               child: Text(
@@ -265,7 +265,7 @@ class _ColoredAccordionState extends State<_ColoredAccordion> {
 
         return NakedAccordionItem<String>(
           value: id,
-          trigger: NakedAccordionTrigger<String>(
+          trigger: (_) => NakedAccordionTrigger<String>(
             onHoverState: (isHovered) =>
                 setState(() => _hoverStates[id] = isHovered),
             onFocusState: (isFocused) =>
@@ -273,10 +273,10 @@ class _ColoredAccordionState extends State<_ColoredAccordion> {
             child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.1),
+                color: color.withOpacity(0.1),
                 border: Border.all(
-                  color: color.withValues(
-                    alpha: isHovered
+                  color: color.withOpacity(
+                    isHovered
                         ? 0.8
                         : isFocused
                             ? 0.6
@@ -291,30 +291,30 @@ class _ColoredAccordionState extends State<_ColoredAccordion> {
                     child: Text(
                       item['title'] as String,
                       style: TextStyle(
-                        color: color.withValues(alpha: 0.8),
+                        color: color.withOpacity(0.8),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
                   Icon(
                     isExpanded ? Icons.expand_less : Icons.expand_more,
-                    color: color.withValues(alpha: 0.6),
+                    color: color.withOpacity(0.6),
                   ),
                 ],
               ),
             ),
           ),
-          content: Container(
+          child: Container(
             padding: const EdgeInsets.all(16),
             margin: const EdgeInsets.only(top: 8),
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.05),
+              color: color.withOpacity(0.05),
               borderRadius: const BorderRadius.all(Radius.circular(8)),
             ),
             child: Text(
               item['content'] as String,
               style: TextStyle(
-                color: color.withValues(alpha: 0.7),
+                color: color.withOpacity(0.7),
               ),
             ),
           ),
@@ -378,7 +378,7 @@ class _BorderedAccordionState extends State<_BorderedAccordion> {
 
         return NakedAccordionItem<String>(
           value: id,
-          trigger: NakedAccordionTrigger<String>(
+          trigger: (_) => NakedAccordionTrigger<String>(
             onHoverState: (isHovered) =>
                 setState(() => _hoverStates[id] = isHovered),
             onFocusState: (isFocused) =>
@@ -422,7 +422,7 @@ class _BorderedAccordionState extends State<_BorderedAccordion> {
               ),
             ),
           ),
-          content: Container(
+          child: Container(
             padding: const EdgeInsets.all(16),
             margin: const EdgeInsets.only(bottom: 8),
             decoration: BoxDecoration(
@@ -519,7 +519,7 @@ class _AccordionGroupState extends State<_AccordionGroup> {
 
           return NakedAccordionItem<String>(
             value: id,
-            trigger: NakedAccordionTrigger<String>(
+            trigger: (_) => NakedAccordionTrigger<String>(
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -557,7 +557,7 @@ class _AccordionGroupState extends State<_AccordionGroup> {
                 ),
               ),
             ),
-            content: Container(
+            child: Container(
               padding: const EdgeInsets.all(16),
               color: const Color(0xFFF9FAFB),
               child: Text(
@@ -670,7 +670,7 @@ class _NestedAccordionState extends State<_NestedAccordion> {
 
           return NakedAccordionItem<String>(
             value: id,
-            trigger: NakedAccordionTrigger<String>(
+            trigger: (_) => NakedAccordionTrigger<String>(
               child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -705,7 +705,7 @@ class _NestedAccordionState extends State<_NestedAccordion> {
                 ),
               ),
             ),
-            content: Container(
+            child: Container(
               padding: const EdgeInsets.all(16),
               color: const Color(0xFFEEF2FF), // indigo-50
               child: Column(
@@ -746,7 +746,7 @@ class _NestedAccordionState extends State<_NestedAccordion> {
 
                         return NakedAccordionItem<String>(
                           value: childId,
-                          trigger: NakedAccordionTrigger<String>(
+                          trigger: (_) => NakedAccordionTrigger<String>(
                             child: Container(
                               margin: const EdgeInsets.only(top: 8),
                               padding: const EdgeInsets.all(12),
@@ -757,7 +757,7 @@ class _NestedAccordionState extends State<_NestedAccordion> {
                                 borderRadius: BorderRadius.circular(8),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.05),
+                                    color: Colors.black.withOpacity(0.05),
                                     blurRadius: 2,
                                     offset: const Offset(0, 1),
                                   ),
@@ -788,7 +788,7 @@ class _NestedAccordionState extends State<_NestedAccordion> {
                               ),
                             ),
                           ),
-                          content: Container(
+                          child: Container(
                             padding: const EdgeInsets.all(12),
                             margin: const EdgeInsets.only(top: 4),
                             decoration: BoxDecoration(
@@ -900,7 +900,7 @@ class _IconAccordionState extends State<_IconAccordion> {
             children: [
               NakedAccordionItem<String>(
                 value: id,
-                trigger: NakedAccordionTrigger<String>(
+                trigger: (_) => NakedAccordionTrigger<String>(
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Row(
@@ -909,7 +909,7 @@ class _IconAccordionState extends State<_IconAccordion> {
                           width: 40,
                           height: 40,
                           decoration: BoxDecoration(
-                            color: iconColor.withValues(alpha: 0.1),
+                            color: iconColor.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Center(
@@ -940,7 +940,7 @@ class _IconAccordionState extends State<_IconAccordion> {
                     ),
                   ),
                 ),
-                content: Container(
+                child: Container(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                   decoration: BoxDecoration(
                     border: Border(
@@ -1036,8 +1036,8 @@ class _CardAccordionState extends State<_CardAccordion> {
               boxShadow: [
                 BoxShadow(
                   color: isExpanded
-                      ? gradient[0].withValues(alpha: 0.3)
-                      : Colors.grey.withValues(alpha: 0.1),
+                      ? gradient[0].withOpacity(0.3)
+                      : Colors.grey.withOpacity(0.1),
                   blurRadius: isExpanded ? 15 : 5,
                   offset: const Offset(0, 5),
                 ),
@@ -1059,7 +1059,7 @@ class _CardAccordionState extends State<_CardAccordion> {
               children: [
                 NakedAccordionItem<String>(
                   value: id,
-                  trigger: NakedAccordionTrigger<String>(
+                  trigger: (_) => NakedAccordionTrigger<String>(
                     child: Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
@@ -1104,7 +1104,7 @@ class _CardAccordionState extends State<_CardAccordion> {
                                 '/${item['period']}',
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: Colors.white.withValues(alpha: 0.8),
+                                  color: Colors.white.withOpacity(0.8),
                                 ),
                               ),
                             ],
@@ -1117,7 +1117,7 @@ class _CardAccordionState extends State<_CardAccordion> {
                                 isExpanded
                                     ? Icons.expand_less
                                     : Icons.expand_more,
-                                color: Colors.white.withValues(alpha: 0.8),
+                                color: Colors.white.withOpacity(0.8),
                               ),
                             ],
                           ),
@@ -1125,7 +1125,7 @@ class _CardAccordionState extends State<_CardAccordion> {
                       ),
                     ),
                   ),
-                  content: AnimatedContainer(
+                  child: AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
@@ -1135,7 +1135,7 @@ class _CardAccordionState extends State<_CardAccordion> {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withValues(alpha: 0.05),
+                          color: Colors.grey.withOpacity(0.05),
                           blurRadius: 5,
                           offset: const Offset(0, 3),
                         ),
