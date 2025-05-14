@@ -213,7 +213,8 @@ class _NakedButtonState extends State<NakedButton>
         enabled: widget._isEnabled,
         autofocus: widget.autofocus,
         onShowHoverHighlight: widget.onHoverState,
-        mouseCursor: widget.cursor,
+        mouseCursor:
+            widget._isEnabled ? widget.cursor : SystemMouseCursors.forbidden,
         child: PressedStateRegion(
           enabled: widget._isEnabled,
           onPressedState: widget.onPressedState,
