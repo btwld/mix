@@ -40,11 +40,11 @@ class FortalezaButtonStyle extends ButtonStyle {
 
       return Style.create([
         $.container.color(color),
-        spec.on.hover($.container.color(color.withOpacity(0.8))),
+        spec.on.hover($.container.color(color.withValues(alpha: 0.8))),
         soft(
-          $.container.color(color.withOpacity(0.1)),
+          $.container.color(color.withValues(alpha: 0.1)),
           $.label.style.color(color),
-          spec.on.hover($.container.color(color.withOpacity(0.2))),
+          spec.on.hover($.container.color(color.withValues(alpha: 0.2))),
           spec.on.disabled(disabled()),
         ),
         outline(
@@ -58,11 +58,11 @@ class FortalezaButtonStyle extends ButtonStyle {
           spec.on.disabled(borderedDisabled()),
         ),
         surface(
-          $.container.color(color.withOpacity(0.1)),
-          $.container.border.color(color.withOpacity(0.7)),
+          $.container.color(color.withValues(alpha: 0.1)),
+          $.container.border.color(color.withValues(alpha: 0.7)),
           $.label.style.color(color),
           spec.on.hover(
-            $.container.color(color.withOpacity(0.2)),
+            $.container.color(color.withValues(alpha: 0.2)),
             $.container.border.color.withOpacity(0.8),
           ),
           spec.on.disabled(borderedDisabled()),

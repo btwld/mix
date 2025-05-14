@@ -17,8 +17,6 @@ class ExtractAttributes extends DartAssist {
     AstNode? ancestorNode;
 
     ancestorNode = node.thisOrAncestorMatching<Block>((node) {
-      print('node ${node.runtimeType}');
-
       return node is Block;
     });
 
@@ -56,8 +54,6 @@ class ExtractAttributes extends DartAssist {
 
     ancestorNode =
         node.thisOrAncestorMatching<TopLevelVariableDeclaration>((node) {
-      print(node);
-
       return node is TopLevelVariableDeclaration;
     });
 

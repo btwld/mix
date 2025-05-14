@@ -97,7 +97,7 @@ enum SliderDirection {
 ///                   ),
 ///                   boxShadow: [
 ///                     BoxShadow(
-///                       color: Colors.black.withOpacity(0.1),
+///                       color: Colors.black.withValues(alpha: 0.1),
 ///                       blurRadius: 4,
 ///                       offset: Offset(0, 2),
 ///                     ),
@@ -348,7 +348,7 @@ class _NakedSliderState extends State<NakedSlider> {
         ? widget.largeKeyboardStep
         : widget.keyboardStep;
 
-  if (widget.divisions != null) {
+    if (widget.divisions != null) {
       final divisionStep = (widget.max - widget.min) / widget.divisions!;
       step = divisionStep;
     }

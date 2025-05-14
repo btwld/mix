@@ -67,7 +67,7 @@ ColorSwatch<int> getColorSwatch(Color color) {
   final lowStep = (1.0 - lightness) / lowDivisor;
   final highStep = lightness / highDivisor;
 
-  return ColorSwatch(color.value, {
+  return ColorSwatch(color.toInt32, {
     50: (hslColor.withLightness(lightness + (lowStep * 5))).toColor(),
     100: (hslColor.withLightness(lightness + (lowStep * 4))).toColor(),
     200: (hslColor.withLightness(lightness + (lowStep * 3))).toColor(),
@@ -99,4 +99,25 @@ Color getTextColor(Color background) {
   }
 
   return white;
+}
+
+extension on Color {
+  static int floatToInt8(double x) {
+    return (x * 255.0).round() & 0xff;
+  }
+
+  /// A 32 bit value representing this color.
+  ///
+  /// The bits are assigned as follows:
+  ///
+  /// * Bits 24-31 are the alpha value.
+  /// * Bits 16-23 are the red value.
+  /// * Bits 8-15 are the green value.
+  /// * Bits 0-7 are the blue value.
+  int get toInt32 {
+    return floatToInt8(a) << 24 |
+        floatToInt8(r) << 16 |
+        floatToInt8(g) << 8 |
+        floatToInt8(b) << 0;
+  }
 }

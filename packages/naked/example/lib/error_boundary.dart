@@ -82,7 +82,7 @@ class ErrorBoundaryState extends State<ErrorBoundary> {
 
           // Return a placeholder while waiting for the state update
           return Container(
-            color: Colors.red.withOpacity(0.1),
+            color: Colors.red.withValues(alpha: 0.1),
             height: 100,
             width: double.infinity,
             child: const Center(

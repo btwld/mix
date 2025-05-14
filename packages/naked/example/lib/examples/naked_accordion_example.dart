@@ -273,10 +273,10 @@ class _ColoredAccordionState extends State<_ColoredAccordion> {
             child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                color: color.withValues(alpha: 0.1),
                 border: Border.all(
-                  color: color.withOpacity(
-                    isHovered
+                  color: color.withValues(
+                    alpha: isHovered
                         ? 0.8
                         : isFocused
                             ? 0.6
@@ -291,14 +291,14 @@ class _ColoredAccordionState extends State<_ColoredAccordion> {
                     child: Text(
                       item['title'] as String,
                       style: TextStyle(
-                        color: color.withOpacity(0.8),
+                        color: color.withValues(alpha: 0.8),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
                   Icon(
                     isExpanded ? Icons.expand_less : Icons.expand_more,
-                    color: color.withOpacity(0.6),
+                    color: color.withValues(alpha: 0.6),
                   ),
                 ],
               ),
@@ -308,13 +308,13 @@ class _ColoredAccordionState extends State<_ColoredAccordion> {
             padding: const EdgeInsets.all(16),
             margin: const EdgeInsets.only(top: 8),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.05),
+              color: color.withValues(alpha: 0.05),
               borderRadius: const BorderRadius.all(Radius.circular(8)),
             ),
             child: Text(
               item['content'] as String,
               style: TextStyle(
-                color: color.withOpacity(0.7),
+                color: color.withValues(alpha: 0.7),
               ),
             ),
           ),
@@ -757,7 +757,7 @@ class _NestedAccordionState extends State<_NestedAccordion> {
                                 borderRadius: BorderRadius.circular(8),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(0.05),
+                                    color: Colors.black.withValues(alpha: 0.05),
                                     blurRadius: 2,
                                     offset: const Offset(0, 1),
                                   ),
@@ -909,7 +909,7 @@ class _IconAccordionState extends State<_IconAccordion> {
                           width: 40,
                           height: 40,
                           decoration: BoxDecoration(
-                            color: iconColor.withOpacity(0.1),
+                            color: iconColor.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Center(
@@ -1036,8 +1036,8 @@ class _CardAccordionState extends State<_CardAccordion> {
               boxShadow: [
                 BoxShadow(
                   color: isExpanded
-                      ? gradient[0].withOpacity(0.3)
-                      : Colors.grey.withOpacity(0.1),
+                      ? gradient[0].withValues(alpha: 0.3)
+                      : Colors.grey.withValues(alpha: 0.1),
                   blurRadius: isExpanded ? 15 : 5,
                   offset: const Offset(0, 5),
                 ),
@@ -1104,7 +1104,7 @@ class _CardAccordionState extends State<_CardAccordion> {
                                 '/${item['period']}',
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: Colors.white.withOpacity(0.8),
+                                  color: Colors.white.withValues(alpha: 0.8),
                                 ),
                               ),
                             ],
@@ -1117,7 +1117,7 @@ class _CardAccordionState extends State<_CardAccordion> {
                                 isExpanded
                                     ? Icons.expand_less
                                     : Icons.expand_more,
-                                color: Colors.white.withOpacity(0.8),
+                                color: Colors.white.withValues(alpha: 0.8),
                               ),
                             ],
                           ),
@@ -1135,7 +1135,7 @@ class _CardAccordionState extends State<_CardAccordion> {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.05),
+                          color: Colors.grey.withValues(alpha: 0.05),
                           blurRadius: 5,
                           offset: const Offset(0, 3),
                         ),

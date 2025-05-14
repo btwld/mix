@@ -14,7 +14,7 @@ class SegmentedControlStyle extends SpecStyle<SegmentedControlSpecUtility> {
         ..wrap.intrinsicHeight()
         ..padding.all(4)
         ..borderRadius.all(8)
-        ..color(Colors.black.withOpacity(0.07)),
+        ..color(Colors.black.withValues(alpha: 0.07)),
     ];
 
     final dividerStyle = [
@@ -33,11 +33,11 @@ class SegmentedControlStyle extends SpecStyle<SegmentedControlSpecUtility> {
 
     final itemStyle = [
       $.item.label.chain
-        ..style.color(Colors.black.withOpacity(0.6))
+        ..style.color(Colors.black.withValues(alpha: 0.6))
         ..style.fontSize(14),
       $.item.icon.chain
         ..size(20)
-        ..color(Colors.black.withOpacity(0.6)),
+        ..color(Colors.black.withValues(alpha: 0.6)),
       $.item.container.chain
         ..padding.vertical(6)
         ..padding.horizontal(12)
@@ -45,13 +45,13 @@ class SegmentedControlStyle extends SpecStyle<SegmentedControlSpecUtility> {
       spec.on.selected(
         $.item.container.chain
           ..color.white()
-          ..shadow.color(Colors.black.withOpacity(0.1))
+          ..shadow.color(Colors.black.withValues(alpha: 0.1))
           ..shadow.offset(0, 2)
           ..shadow.spreadRadius(1)
           ..shadow.blurRadius(4),
         $.item.chain
-          ..icon.color(Colors.black.withOpacity(1))
-          ..label.style.color(Colors.black.withOpacity(1)),
+          ..icon.color(Colors.black.withValues(alpha: 1))
+          ..label.style.color(Colors.black.withValues(alpha: 1)),
       ),
     ];
 

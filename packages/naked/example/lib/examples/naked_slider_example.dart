@@ -99,7 +99,7 @@ class _NakedSliderExampleState extends State<NakedSliderExample> {
               borderRadius: BorderRadius.circular(8),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 ),
@@ -198,7 +198,7 @@ class _BasicSliderState extends State<BasicSlider> {
                           boxShadow: [
                             if (isHovered || isFocused || isDragging)
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
+                                color: Colors.black.withValues(alpha: 0.1),
                                 blurRadius: 4,
                                 offset: const Offset(0, 2),
                               ),
@@ -320,7 +320,7 @@ class _SliderWithValueState extends State<SliderWithValue> {
                           boxShadow: [
                             if (isHovered || isFocused || isDragging)
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
+                                color: Colors.black.withValues(alpha: 0.1),
                                 blurRadius: 4,
                                 offset: const Offset(0, 2),
                               ),
@@ -516,7 +516,7 @@ class _SliderWithValueState extends State<SliderWithValue> {
 //                               boxShadow: [
 //                                 if (isHovered || isFocused || isDragging)
 //                                   BoxShadow(
-//                                     color: Colors.black.withOpacity(0.1),
+//                                     color: Colors.black.withValues(alpha: 0.1),
 //                                     blurRadius: 4,
 //                                     offset: const Offset(0, 2),
 //                                   ),
@@ -689,7 +689,8 @@ class _SliderVariantsState extends State<SliderVariants> {
                                 boxShadow: [
                                   if (isHovered || isFocused || isDragging)
                                     BoxShadow(
-                                      color: Colors.black.withOpacity(0.1),
+                                      color:
+                                          Colors.black.withValues(alpha: 0.1),
                                       blurRadius: 4,
                                       offset: const Offset(0, 2),
                                     ),
@@ -821,7 +822,8 @@ class _SliderWithIconsState extends State<SliderWithIcons> {
                                     boxShadow: [
                                       if (isHovered || isFocused || isDragging)
                                         BoxShadow(
-                                          color: Colors.black.withOpacity(0.1),
+                                          color: Colors.black
+                                              .withValues(alpha: 0.1),
                                           blurRadius: 4,
                                           offset: const Offset(0, 2),
                                         ),
@@ -943,7 +945,8 @@ class _SliderWithIconsState extends State<SliderWithIcons> {
                                     boxShadow: [
                                       if (isHovered || isFocused || isDragging)
                                         BoxShadow(
-                                          color: Colors.black.withOpacity(0.1),
+                                          color: Colors.black
+                                              .withValues(alpha: 0.1),
                                           blurRadius: 4,
                                           offset: const Offset(0, 2),
                                         ),
@@ -1108,7 +1111,7 @@ class _SteppedSliderState extends State<SteppedSlider> {
                           boxShadow: [
                             if (isHovered || isFocused || isDragging)
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
+                                color: Colors.black.withValues(alpha: 0.1),
                                 blurRadius: 4,
                                 offset: const Offset(0, 2),
                               ),
@@ -1279,7 +1282,7 @@ class _VerticalSliderState extends State<VerticalSlider> {
                             boxShadow: [
                               if (isHovered || isFocused || isDragging)
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
+                                  color: Colors.black.withValues(alpha: 0.1),
                                   blurRadius: 4,
                                   offset: const Offset(0, 2),
                                 ),

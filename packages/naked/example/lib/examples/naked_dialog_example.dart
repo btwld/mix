@@ -133,7 +133,7 @@ class NakedDialogExample extends StatelessWidget {
   void _showColoredBarrierDialog(BuildContext context) {
     showNakedDialog(
       context: context,
-      barrierColor: Colors.blue.withOpacity(0.5),
+      barrierColor: Colors.blue.withValues(alpha: 0.5),
       barrierLabel: 'Custom barrier label',
       builder: (context) => Center(
         child: Container(
@@ -144,7 +144,7 @@ class NakedDialogExample extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withValues(alpha: 0.2),
                 spreadRadius: 5,
                 blurRadius: 10,
               ),

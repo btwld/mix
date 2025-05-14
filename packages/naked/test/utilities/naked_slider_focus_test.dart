@@ -31,7 +31,7 @@ void main() {
                         width: 200,
                         height: 30,
                         decoration: BoxDecoration(
-                          color: Colors.blue.withOpacity(0.3),
+                          color: Colors.blue.withValues(alpha: 0.3),
                         ),
                       ),
                     ),
@@ -110,7 +110,7 @@ void main() {
                         width: 30,
                         height: 200,
                         decoration: BoxDecoration(
-                          color: Colors.blue.withOpacity(0.3),
+                          color: Colors.blue.withValues(alpha: 0.3),
                         ),
                       ),
                     ),
@@ -182,7 +182,7 @@ void main() {
                           width: 200,
                           height: 30,
                           decoration: BoxDecoration(
-                            color: Colors.blue.withOpacity(0.3),
+                            color: Colors.blue.withValues(alpha: 0.3),
                           ),
                         ),
                       ),

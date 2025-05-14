@@ -76,7 +76,9 @@ final inOrder_1 = Style(
   $icon.color.amber(),
   $text.capitalize(),
   $stack.fit.expand(),
-  $on.dark(),
+  $on.dark(
+    $box.height(20),
+  ),
   $with.clipOval(),
   _style(),
   test(),
@@ -84,7 +86,9 @@ final inOrder_1 = Style(
 
 final inOrder_2 = Style(
   $flex.column(),
-  $on.dark(),
+  $on.dark(
+    $box.height(20),
+  ),
   $text.capitalize(),
   $with.clipOval(),
   _style(),

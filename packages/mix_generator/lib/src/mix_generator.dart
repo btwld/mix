@@ -239,33 +239,33 @@ class MixGenerator extends Generator {
     if (type.element is! ClassElement) return null;
 
     final element = type.element as ClassElement;
-    print(
+    _logger.info(
       '_findMetadataForType: Looking for metadata for type ${element.name}',
     );
 
     for (final node in graph.getAllNodes()) {
       if (node.element == element) {
-        print('  Found metadata of type: ${node.runtimeType}');
+        _logger.info('  Found metadata of type: ${node.runtimeType}');
 
         return node;
       }
     }
 
-    print('  No metadata found for type ${element.name}');
+    _logger.info('  No metadata found for type ${element.name}');
 
     return null;
   }
 
   List<BaseMetadata> _sortByDependencies(DependencyGraph graph) {
     final sortedNodes = graph.sortTopologically();
-    print('_sortByDependencies: Sorted ${sortedNodes.length} nodes');
+    _logger.info('_sortByDependencies: Sorted ${sortedNodes.length} nodes');
     for (var i = 0; i < sortedNodes.length && i < 5; i++) {
-      print(
+      _logger.info(
         '  Node $i: ${sortedNodes[i].runtimeType} - ${sortedNodes[i].name}',
       );
     }
     if (sortedNodes.length > 5) {
-      print('  ... and ${sortedNodes.length - 5} more nodes');
+      _logger.info('  ... and ${sortedNodes.length - 5} more nodes');
     }
 
     return sortedNodes;
@@ -310,7 +310,7 @@ class MixGenerator extends Generator {
       debugSink.writeln('  Added ${types.length} types to _discoveredTypes');
       debugSink.close();
     } catch (e) {
-      print('Error writing debug file: $e');
+      _logger.info('Error writing debug file: $e');
     }
 
     _discoveredTypes.addAll(types);
@@ -605,7 +605,7 @@ class MixGenerator extends Generator {
       final utilityElements = _getAnnotatedElements(library, _utilityChecker);
       final tokenElements = _getAnnotatedElements(library, _tokensChecker);
 
-      print(
+      _logger.info(
         'Generate: Found ${specElements.length} spec elements, ${propertyElements.length} property elements, '
         '${utilityElements.length} utility elements, ${tokenElements.length} token elements',
       );
@@ -624,7 +624,7 @@ class MixGenerator extends Generator {
       final utilityMetadata = _createUtilityMetadata(utilityElements);
       final tokenMetadata = _createTokenMetadata(tokenElements);
 
-      print(
+      _logger.info(
         'Generated metadata: ${specMetadata.length} specs, ${propertyMetadata.length} properties, '
         '${utilityMetadata.length} utilities, ${tokenMetadata.length} tokens',
       );
@@ -642,12 +642,14 @@ class MixGenerator extends Generator {
           .whereType<ClassElement>()
           .toList();
 
-      print('Source ordered elements: ${sourceOrderedElements.length}');
+      _logger.info('Source ordered elements: ${sourceOrderedElements.length}');
       for (var i = 0; i < sourceOrderedElements.length && i < 5; i++) {
-        print('  Element $i: ${sourceOrderedElements[i].name}');
+        _logger.info('  Element $i: ${sourceOrderedElements[i].name}');
       }
       if (sourceOrderedElements.length > 5) {
-        print('  ... and ${sourceOrderedElements.length - 5} more elements');
+        _logger.info(
+          '  ... and ${sourceOrderedElements.length - 5} more elements',
+        );
       }
 
       // 4. Build dependency graph (needed for type registration)
@@ -658,7 +660,7 @@ class MixGenerator extends Generator {
         tokenMetadata,
       );
 
-      print(
+      _logger.info(
         'Built dependency graph with ${dependencyGraph.getAllNodes().length} nodes',
       );
 
@@ -692,7 +694,7 @@ class MixGenerator extends Generator {
         ...tokenMetadata,
       ]) {
         metadataMap[metadata.element] = metadata;
-        print(
+        _logger.info(
           'Added to metadataMap: ${metadata.element.name} -> ${metadata.runtimeType}',
         );
       }

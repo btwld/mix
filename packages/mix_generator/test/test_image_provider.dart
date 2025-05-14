@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:analyzer/dart/element/type.dart';
 import 'package:mix_generator/src/core/type_registry.dart';
 import 'package:mix_generator/src/core/utils/extensions.dart';

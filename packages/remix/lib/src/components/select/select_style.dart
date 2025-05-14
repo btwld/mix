@@ -27,14 +27,14 @@ class SelectStyle extends SpecStyle<SelectSpecUtility> {
         ..style.fontSize(14)
         ..style.color.black(),
       spec.on.disabled(
-        $.button.container.color(Colors.black.withOpacity(0.05)),
+        $.button.container.color(Colors.black.withValues(alpha: 0.05)),
       ),
     ];
 
     final menuStyle = [
       $.menu.container.chain
         ..borderRadius(6)
-        ..shadow.color(Colors.black.withOpacity(0.07))
+        ..shadow.color(Colors.black.withValues(alpha: 0.07))
         ..shadow.blurRadius(5)
         ..color.white()
         ..border.color.black12()

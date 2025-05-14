@@ -120,7 +120,7 @@ class _TextFieldExamplePageState extends State<TextFieldExamplePage> {
                   boxShadow: _searchFocused
                       ? [
                           BoxShadow(
-                            color: Colors.blue.withOpacity(0.1),
+                            color: Colors.blue.withValues(alpha: 0.1),
                             blurRadius: 8,
                             offset: const Offset(0, 3),
                           ),
@@ -184,7 +184,7 @@ class _TextFieldExamplePageState extends State<TextFieldExamplePage> {
                   boxShadow: _gradientFocused
                       ? [
                           BoxShadow(
-                            color: Colors.purple.withOpacity(0.5),
+                            color: Colors.purple.withValues(alpha: 0.5),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           )
@@ -238,7 +238,7 @@ class _TextFieldExamplePageState extends State<TextFieldExamplePage> {
                     color: _currencyFocused
                         ? Colors.green
                         : _currencyHovered
-                            ? Colors.green.withOpacity(0.5)
+                            ? Colors.green.withValues(alpha: 0.5)
                             : Colors.grey.shade300,
                     width: _currencyFocused || _currencyHovered ? 2 : 1,
                   ),

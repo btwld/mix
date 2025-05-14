@@ -95,7 +95,7 @@ class NakedTabsExample extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 4,
                 offset: const Offset(0, 1),
               ),
@@ -161,7 +161,6 @@ class _BasicTabsState extends State<_BasicTabs> {
                               setState(() => _hoverStates[id] = hover),
                           onFocusState: (focus) => setState(() {
                             _focusStates[id] = focus;
-                            print(' id: $id, focus: $focus');
                           }),
                           onPressedState: (press) =>
                               setState(() => _pressStates[id] = press),
@@ -182,7 +181,8 @@ class _BasicTabsState extends State<_BasicTabs> {
                               boxShadow: isActive
                                   ? [
                                       BoxShadow(
-                                        color: Colors.black.withOpacity(0.05),
+                                        color: Colors.black
+                                            .withValues(alpha: 0.05),
                                         blurRadius: 4,
                                         offset: const Offset(0, 1),
                                       ),
@@ -219,7 +219,6 @@ class _BasicTabsState extends State<_BasicTabs> {
                       children: [
                         TextButton(
                           onPressed: () {
-                            print('object');
                             _focusNode.requestFocus();
                           },
                           child: const Text('object'),
@@ -336,13 +335,14 @@ class _TabsWithIconsState extends State<_TabsWithIcons> {
                                       ? const Color(0xFFE5E7EB)
                                       : isHovered || isFocused
                                           ? const Color(0xFFE5E7EB)
-                                              .withOpacity(0.5)
+                                              .withValues(alpha: 0.5)
                                           : Colors.transparent,
                               borderRadius: BorderRadius.circular(6),
                               boxShadow: isActive
                                   ? [
                                       BoxShadow(
-                                        color: Colors.black.withOpacity(0.05),
+                                        color: Colors.black
+                                            .withValues(alpha: 0.05),
                                         blurRadius: 4,
                                         offset: const Offset(0, 1),
                                       ),
@@ -767,13 +767,13 @@ class _CardTabsState extends State<_CardTabs> {
                                   ? [
                                       BoxShadow(
                                         color: const Color(0xFF3B82F6)
-                                            .withOpacity(0.05),
+                                            .withValues(alpha: 0.05),
                                         blurRadius: 4,
                                         offset: const Offset(0, 1),
                                       ),
                                       BoxShadow(
                                         color: const Color(0xFF3B82F6)
-                                            .withOpacity(0.1),
+                                            .withValues(alpha: 0.1),
                                         blurRadius: 1,
                                         offset: const Offset(0, 0),
                                       ),
@@ -1157,7 +1157,7 @@ class _ResponsiveTabsGridState extends State<_ResponsiveTabsGrid> {
                   border: Border.all(color: const Color(0xFFE5E7EB)),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withValues(alpha: 0.05),
                       blurRadius: 4,
                       offset: const Offset(0, 2),
                     ),
@@ -1324,37 +1324,25 @@ class _MyAppState extends State<MyApp> {
             NakedTabPanel(
               tabId: 'tab1',
               child: TextButton(
-                onFocusChange: (isFocused) {
-                  print('Panel 1 isFocused: $isFocused');
-                },
+                onFocusChange: (isFocused) {},
                 child: const Text('Panel 1'),
-                onPressed: () {
-                  print('Color 1');
-                },
+                onPressed: () {},
               ),
             ),
             NakedTabPanel(
               tabId: 'tab2',
               child: TextButton(
                 child: const Text('Panel 2'),
-                onFocusChange: (isFocused) {
-                  print('Panel 2 isFocused: $isFocused');
-                },
-                onPressed: () {
-                  print('Color 2');
-                },
+                onFocusChange: (isFocused) {},
+                onPressed: () {},
               ),
             ),
             NakedTabPanel(
               tabId: 'tab3',
               child: TextButton(
                 child: const Text('Panel 3'),
-                onFocusChange: (isFocused) {
-                  print('Panel 3 isFocused: $isFocused');
-                },
-                onPressed: () {
-                  print('Color 3');
-                },
+                onFocusChange: (isFocused) {},
+                onPressed: () {},
               ),
             ),
           ],
@@ -1387,11 +1375,9 @@ class _TabState extends State<Tab> {
     return NakedTab(
       onFocusState: (isFocused) => setState(() {
         isSemiSelected = isFocused;
-        print('${widget.tabId} isFocused: $isFocused');
       }),
       onHoverState: (isHovered) => setState(() {
         isSemiSelected = isHovered;
-        print('${widget.tabId} isHovered: $isHovered');
       }),
       tabId: widget.tabId,
       child: Container(

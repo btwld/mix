@@ -1,7 +1,7 @@
 name: mix_lint
 description: A linter for the mix package
 version: 0.1.3
-repository: https://github.com/conceptadev/mix
+repository: https://github.com/btwld/mix
 
 environment:
   sdk: ">=3.6.0 <4.0.0"

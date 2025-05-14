@@ -662,7 +662,7 @@ class _NakedTextFieldState extends State<NakedTextField>
         paintCursorAboveText = true;
         cursorOpacityAnimates ??= true;
         cursorColor = widget.cursorColor ?? CupertinoColors.activeBlue;
-        selectionColor = CupertinoColors.activeBlue.withOpacity(0.40);
+        selectionColor = CupertinoColors.activeBlue.withValues(alpha: 0.40);
         cursorRadius ??= const Radius.circular(2.0);
         cursorOffset = Offset(
           iOSHorizontalOffset / MediaQuery.devicePixelRatioOf(context),
@@ -674,7 +674,7 @@ class _NakedTextFieldState extends State<NakedTextField>
         paintCursorAboveText = true;
         cursorOpacityAnimates ??= false;
         cursorColor = widget.cursorColor ?? CupertinoColors.activeBlue;
-        selectionColor = CupertinoColors.activeBlue.withOpacity(0.40);
+        selectionColor = CupertinoColors.activeBlue.withValues(alpha: 0.40);
         cursorRadius ??= const Radius.circular(2.0);
         cursorOffset = Offset(
           iOSHorizontalOffset / MediaQuery.devicePixelRatioOf(context),
@@ -687,7 +687,7 @@ class _NakedTextFieldState extends State<NakedTextField>
         paintCursorAboveText = false;
         cursorOpacityAnimates ??= false;
         cursorColor = widget.cursorColor ?? theme.colorScheme.primary;
-        selectionColor = theme.colorScheme.primary.withOpacity(0.40);
+        selectionColor = theme.colorScheme.primary.withValues(alpha: 0.40);
       case TargetPlatform.linux:
       case TargetPlatform.windows:
         forcePressEnabled = false;
@@ -695,7 +695,7 @@ class _NakedTextFieldState extends State<NakedTextField>
         paintCursorAboveText = false;
         cursorOpacityAnimates ??= false;
         cursorColor = widget.cursorColor ?? theme.colorScheme.primary;
-        selectionColor = theme.colorScheme.primary.withOpacity(0.40);
+        selectionColor = theme.colorScheme.primary.withValues(alpha: 0.40);
     }
 
     Widget child = TextFieldTapRegion(

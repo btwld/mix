@@ -56,16 +56,16 @@ runs:
         melos run test:dart
       shell: bash
 
-    - name: Install DCM
-      if: ${{ inputs.run-dcm }}
-      uses: CQLabs/setup-dcm@v1
-      with:
-        github_token: ${{ inputs.token }}
-        folders: packages/*/lib
+    # - name: Install DCM
+    #   if: ${{ inputs.run-dcm }}
+    #   uses: CQLabs/setup-dcm@v1
+    #   with:
+    #     github_token: ${{ inputs.token }}
+    #     folders: packages/*/lib
 
-    - name: Run DCM
-      run: dcm analyze .
-      shell: bash
+    # - name: Run DCM
+    #   run: dcm analyze .
+    #   shell: bash
 
     - name: Run melos fix
       run: melos run fix

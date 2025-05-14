@@ -1,6 +1,6 @@
 name: remix
 description: Completely unstyled, widgets designed to integrate with Mix
-repository: https://github.com/conceptadev/mix/tree/main/packages/remix
+repository: https://github.com/btwld/mix/tree/main/packages/remix
 homepage: https://www.fluttermix.com/
 
 version: 0.0.4+1

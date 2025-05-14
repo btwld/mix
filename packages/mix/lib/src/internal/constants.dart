@@ -1,3 +1,3 @@
 const kDefaultAnimationDuration = Duration(milliseconds: 200);
 
-const mixIssuesUrl = 'https://github.com/conceptadev/mix/issues/new/choose';
+const mixIssuesUrl = 'https://github.com/btwld/mix/issues/new/choose';

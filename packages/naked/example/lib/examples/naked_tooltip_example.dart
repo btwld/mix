@@ -39,10 +39,10 @@ class MyTooltip extends StatefulWidget {
   const MyTooltip({super.key});
 
   @override
-  _MyTooltipState createState() => _MyTooltipState();
+  MyTooltipState createState() => MyTooltipState();
 }
 
-class _MyTooltipState extends State<MyTooltip>
+class MyTooltipState extends State<MyTooltip>
     with SingleTickerProviderStateMixin {
   late final _controller = OverlayPortalController();
   late final animationController = AnimationController(

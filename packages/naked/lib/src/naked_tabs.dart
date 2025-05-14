@@ -104,7 +104,7 @@ import 'package:flutter/services.dart';
 ///             color: isSelected
 ///                 ? Colors.blue
 ///                 : isFocused
-///                     ? Colors.blue.withOpacity(0.5)
+///                     ? Colors.blue.withValues(alpha: 0.5)
 ///                     : Colors.grey,
 ///             width: isFocused ? 2 : 1,
 ///           ),
@@ -112,7 +112,7 @@ import 'package:flutter/services.dart';
 ///           boxShadow: isSelected
 ///               ? [
 ///                   BoxShadow(
-///                     color: Colors.blue.withOpacity(0.3),
+///                     color: Colors.blue.withValues(alpha: 0.3),
 ///                     blurRadius: 4,
 ///                     offset: const Offset(0, 2),
 ///                   ),

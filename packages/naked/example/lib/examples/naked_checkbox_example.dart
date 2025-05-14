@@ -116,7 +116,7 @@ class _NakedCheckboxExampleState extends State<NakedCheckboxExample> {
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             spreadRadius: 1,
             blurRadius: 3,
             offset: const Offset(0, 1), // subtle shadow
@@ -338,34 +338,34 @@ class _BasicCheckboxStatesState extends State<BasicCheckboxStates> {
       if (isFocused) {
         // Darken border slightly for focus
         effectiveBorderColor =
-            Color.alphaBlend(Colors.black.withOpacity(0.3), color);
+            Color.alphaBlend(Colors.black.withValues(alpha: 0.3), color);
         // Create a semi-transparent outer ring color
-        focusRingColor = color.withOpacity(0.3);
+        focusRingColor = color.withValues(alpha: 0.3);
       }
 
       // --- Hover State --- (Subtle background/border change)
       if (isHovered) {
         effectiveBorderColor =
-            Color.alphaBlend(Colors.black.withOpacity(0.2), color);
+            Color.alphaBlend(Colors.black.withValues(alpha: 0.2), color);
         if (!isChecked && !isIndeterminate) {
           // Light background tint on hover when unchecked
           effectiveBgColor =
-              Color.alphaBlend(color.withOpacity(0.05), Colors.white);
+              Color.alphaBlend(color.withValues(alpha: 0.05), Colors.white);
         }
       }
 
       // --- Pressed State --- (More noticeable background/border change)
       if (isPressed) {
         effectiveBorderColor =
-            Color.alphaBlend(Colors.black.withOpacity(0.4), color);
+            Color.alphaBlend(Colors.black.withValues(alpha: 0.4), color);
         if (!isChecked && !isIndeterminate) {
           // Darker background tint on press when unchecked
           effectiveBgColor =
-              Color.alphaBlend(color.withOpacity(0.1), Colors.white);
+              Color.alphaBlend(color.withValues(alpha: 0.1), Colors.white);
         } else {
           // Darken the main color slightly when pressed & checked/indeterminate
           effectiveBgColor =
-              Color.alphaBlend(Colors.black.withOpacity(0.2), color);
+              Color.alphaBlend(Colors.black.withValues(alpha: 0.2), color);
         }
       }
     }
@@ -615,26 +615,26 @@ class _ParentChildCheckboxesState extends State<ParentChildCheckboxes> {
     if (!isDisabled) {
       if (isFocused) {
         effectiveBorderColor =
-            Color.alphaBlend(Colors.black.withOpacity(0.3), color);
-        focusRingColor = color.withOpacity(0.3);
+            Color.alphaBlend(Colors.black.withValues(alpha: 0.3), color);
+        focusRingColor = color.withValues(alpha: 0.3);
       }
       if (isHovered) {
         effectiveBorderColor =
-            Color.alphaBlend(Colors.black.withOpacity(0.2), color);
+            Color.alphaBlend(Colors.black.withValues(alpha: 0.2), color);
         if (!isChecked && !isIndeterminate) {
           effectiveBgColor =
-              Color.alphaBlend(color.withOpacity(0.05), Colors.white);
+              Color.alphaBlend(color.withValues(alpha: 0.05), Colors.white);
         }
       }
       if (isPressed) {
         effectiveBorderColor =
-            Color.alphaBlend(Colors.black.withOpacity(0.4), color);
+            Color.alphaBlend(Colors.black.withValues(alpha: 0.4), color);
         if (!isChecked && !isIndeterminate) {
           effectiveBgColor =
-              Color.alphaBlend(color.withOpacity(0.1), Colors.white);
+              Color.alphaBlend(color.withValues(alpha: 0.1), Colors.white);
         } else {
           effectiveBgColor =
-              Color.alphaBlend(Colors.black.withOpacity(0.2), color);
+              Color.alphaBlend(Colors.black.withValues(alpha: 0.2), color);
         }
       }
     }
@@ -824,9 +824,9 @@ class _StyledCheckboxVariantState extends State<StyledCheckboxVariant> {
         // Button to toggle indeterminate state (matches reference)
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: baseColor.withOpacity(0.1),
-            foregroundColor:
-                Color.alphaBlend(Colors.black.withOpacity(0.7), baseColor),
+            backgroundColor: baseColor.withValues(alpha: 0.1),
+            foregroundColor: Color.alphaBlend(
+                Colors.black.withValues(alpha: 0.7), baseColor),
             elevation: 0,
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             textStyle: const TextStyle(fontSize: 11),
@@ -864,26 +864,26 @@ class _StyledCheckboxVariantState extends State<StyledCheckboxVariant> {
     if (!isDisabled) {
       if (isFocused) {
         effectiveBorderColor =
-            Color.alphaBlend(Colors.black.withOpacity(0.3), color);
-        focusRingColor = color.withOpacity(0.3);
+            Color.alphaBlend(Colors.black.withValues(alpha: 0.3), color);
+        focusRingColor = color.withValues(alpha: 0.3);
       }
       if (isHovered) {
         effectiveBorderColor =
-            Color.alphaBlend(Colors.black.withOpacity(0.2), color);
+            Color.alphaBlend(Colors.black.withValues(alpha: 0.2), color);
         if (!isChecked && !isIndeterminate) {
           effectiveBgColor =
-              Color.alphaBlend(color.withOpacity(0.05), Colors.white);
+              Color.alphaBlend(color.withValues(alpha: 0.05), Colors.white);
         }
       }
       if (isPressed) {
         effectiveBorderColor =
-            Color.alphaBlend(Colors.black.withOpacity(0.4), color);
+            Color.alphaBlend(Colors.black.withValues(alpha: 0.4), color);
         if (!isChecked && !isIndeterminate) {
           effectiveBgColor =
-              Color.alphaBlend(color.withOpacity(0.1), Colors.white);
+              Color.alphaBlend(color.withValues(alpha: 0.1), Colors.white);
         } else {
           effectiveBgColor =
-              Color.alphaBlend(Colors.black.withOpacity(0.2), color);
+              Color.alphaBlend(Colors.black.withValues(alpha: 0.2), color);
         }
       }
     }
@@ -947,26 +947,26 @@ class _StyledCheckboxVariantState extends State<StyledCheckboxVariant> {
     if (!isDisabled) {
       if (isFocused) {
         effectiveBorderColor =
-            Color.alphaBlend(Colors.black.withOpacity(0.3), color);
-        focusRingColor = color.withOpacity(0.3);
+            Color.alphaBlend(Colors.black.withValues(alpha: 0.3), color);
+        focusRingColor = color.withValues(alpha: 0.3);
       }
       if (isHovered) {
         effectiveBorderColor =
-            Color.alphaBlend(Colors.black.withOpacity(0.2), color);
+            Color.alphaBlend(Colors.black.withValues(alpha: 0.2), color);
         if (!isChecked && !isIndeterminate) {
           effectiveBgColor =
-              Color.alphaBlend(color.withOpacity(0.05), Colors.white);
+              Color.alphaBlend(color.withValues(alpha: 0.05), Colors.white);
         }
       }
       if (isPressed) {
         effectiveBorderColor =
-            Color.alphaBlend(Colors.black.withOpacity(0.4), color);
+            Color.alphaBlend(Colors.black.withValues(alpha: 0.4), color);
         if (!isChecked && !isIndeterminate) {
           effectiveBgColor =
-              Color.alphaBlend(color.withOpacity(0.1), Colors.white);
+              Color.alphaBlend(color.withValues(alpha: 0.1), Colors.white);
         } else {
           effectiveBgColor =
-              Color.alphaBlend(Colors.black.withOpacity(0.2), color);
+              Color.alphaBlend(Colors.black.withValues(alpha: 0.2), color);
         }
       }
     }
@@ -1302,26 +1302,26 @@ class _SelectionExampleState extends State<SelectionExample> {
     if (!isDisabled) {
       if (isFocused) {
         effectiveBorderColor =
-            Color.alphaBlend(Colors.black.withOpacity(0.3), color);
-        focusRingColor = color.withOpacity(0.3);
+            Color.alphaBlend(Colors.black.withValues(alpha: 0.3), color);
+        focusRingColor = color.withValues(alpha: 0.3);
       }
       if (isHovered) {
         effectiveBorderColor =
-            Color.alphaBlend(Colors.black.withOpacity(0.2), color);
+            Color.alphaBlend(Colors.black.withValues(alpha: 0.2), color);
         if (!isChecked && !isIndeterminate) {
           effectiveBgColor =
-              Color.alphaBlend(color.withOpacity(0.05), Colors.white);
+              Color.alphaBlend(color.withValues(alpha: 0.05), Colors.white);
         }
       }
       if (isPressed) {
         effectiveBorderColor =
-            Color.alphaBlend(Colors.black.withOpacity(0.4), color);
+            Color.alphaBlend(Colors.black.withValues(alpha: 0.4), color);
         if (!isChecked && !isIndeterminate) {
           effectiveBgColor =
-              Color.alphaBlend(color.withOpacity(0.1), Colors.white);
+              Color.alphaBlend(color.withValues(alpha: 0.1), Colors.white);
         } else {
           effectiveBgColor =
-              Color.alphaBlend(Colors.black.withOpacity(0.2), color);
+              Color.alphaBlend(Colors.black.withValues(alpha: 0.2), color);
         }
       }
     }
@@ -1564,7 +1564,7 @@ class _FocusCheckboxExampleState extends State<FocusCheckboxExample> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           color: value
-              ? color.withOpacity(0.1)
+              ? color.withValues(alpha: 0.1)
               : isPressed
                   ? const Color(0xFFE5E7EB)
                   : isHovered
@@ -1615,7 +1615,7 @@ class _FocusCheckboxExampleState extends State<FocusCheckboxExample> {
               Icon(
                 Icons.keyboard_tab,
                 size: 16,
-                color: color.withOpacity(0.5),
+                color: color.withValues(alpha: 0.5),
               ),
           ],
         ),
