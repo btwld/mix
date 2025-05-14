@@ -3,7 +3,6 @@ import 'package:example/examples/naked_tooltip_example.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-// Import examples
 import 'examples/naked_accordion_example.dart';
 import 'examples/naked_avatar_example.dart';
 import 'examples/naked_button_example.dart';
