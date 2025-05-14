@@ -38,7 +38,7 @@ mixin _$ButtonSpec on Spec<ButtonSpec> {
   ButtonSpec copyWith({
     BoxSpec? container,
     IconThemeData? icon,
-    TextStyle? label,
+    TextStyle? textStyle,
     WidgetModifiersData? modifiers,
     SpinnerSpec? spinner,
     AnimatedData? animated,
@@ -46,7 +46,7 @@ mixin _$ButtonSpec on Spec<ButtonSpec> {
     return ButtonSpec(
       container: container ?? _$this.container,
       icon: icon ?? _$this.icon,
-      label: label ?? _$this.textStyle,
+      textStyle: textStyle ?? _$this.textStyle,
       modifiers: modifiers ?? _$this.modifiers,
       spinner: spinner ?? _$this.spinner,
       animated: animated ?? _$this.animated,
@@ -65,7 +65,7 @@ mixin _$ButtonSpec on Spec<ButtonSpec> {
   /// interpolation method:
   /// - [BoxSpec.lerp] for [container].
   /// - [IconThemeData.lerp] for [icon].
-  /// - [MixHelpers.lerpTextStyle] for [label].
+  /// - [MixHelpers.lerpTextStyle] for [textStyle].
   /// - [SpinnerSpec.lerp] for [spinner].
   /// For [modifiers] and [animated], the interpolation is performed using a step function.
   /// If [t] is less than 0.5, the value from the current [ButtonSpec] is used. Otherwise, the value
@@ -79,8 +79,9 @@ mixin _$ButtonSpec on Spec<ButtonSpec> {
 
     return ButtonSpec(
       container: _$this.container.lerp(other.container, t),
-      icon: IconThemeData.lerp(_$this.icon, other.icon, t),
-      label: MixHelpers.lerpTextStyle(_$this.textStyle, other.textStyle, t)!,
+      icon: IconThemeData.lerp(_$this.icon, other.icon, t)!,
+      textStyle:
+          MixHelpers.lerpTextStyle(_$this.textStyle, other.textStyle, t)!,
       modifiers: other.modifiers,
       spinner: _$this.spinner.lerp(other.spinner, t),
       animated: t < 0.5 ? _$this.animated : other.animated,
@@ -109,7 +110,7 @@ mixin _$ButtonSpec on Spec<ButtonSpec> {
     properties
         .add(DiagnosticsProperty('icon', _$this.icon, defaultValue: null));
     properties.add(
-        DiagnosticsProperty('label', _$this.textStyle, defaultValue: null));
+        DiagnosticsProperty('textStyle', _$this.textStyle, defaultValue: null));
     properties.add(
         DiagnosticsProperty('modifiers', _$this.modifiers, defaultValue: null));
     properties.add(
@@ -130,13 +131,13 @@ class ButtonSpecAttribute extends SpecAttribute<ButtonSpec>
     with Diagnosticable {
   final BoxSpecAttribute? container;
   final IconThemeDataDto? icon;
-  final TextStyleDto? label;
+  final TextStyleDto? textStyle;
   final SpinnerSpecAttribute? spinner;
 
   const ButtonSpecAttribute({
     this.container,
     this.icon,
-    this.label,
+    this.textStyle,
     super.modifiers,
     this.spinner,
     super.animated,
@@ -155,7 +156,7 @@ class ButtonSpecAttribute extends SpecAttribute<ButtonSpec>
     return ButtonSpec(
       container: container?.resolve(mix),
       icon: icon?.resolve(mix),
-      label: label?.resolve(mix),
+      textStyle: textStyle?.resolve(mix),
       modifiers: modifiers?.resolve(mix),
       spinner: spinner?.resolve(mix),
       animated: animated?.resolve(mix) ?? mix.animation,
@@ -177,7 +178,7 @@ class ButtonSpecAttribute extends SpecAttribute<ButtonSpec>
     return ButtonSpecAttribute(
       container: container?.merge(other.container) ?? other.container,
       icon: icon?.merge(other.icon) ?? other.icon,
-      label: label?.merge(other.label) ?? other.label,
+      textStyle: textStyle?.merge(other.textStyle) ?? other.textStyle,
       modifiers: modifiers?.merge(other.modifiers) ?? other.modifiers,
       spinner: spinner?.merge(other.spinner) ?? other.spinner,
       animated: animated?.merge(other.animated) ?? other.animated,
@@ -192,7 +193,7 @@ class ButtonSpecAttribute extends SpecAttribute<ButtonSpec>
   List<Object?> get props => [
         container,
         icon,
-        label,
+        textStyle,
         modifiers,
         spinner,
         animated,
@@ -204,7 +205,8 @@ class ButtonSpecAttribute extends SpecAttribute<ButtonSpec>
     properties
         .add(DiagnosticsProperty('container', container, defaultValue: null));
     properties.add(DiagnosticsProperty('icon', icon, defaultValue: null));
-    properties.add(DiagnosticsProperty('label', label, defaultValue: null));
+    properties
+        .add(DiagnosticsProperty('textStyle', textStyle, defaultValue: null));
     properties
         .add(DiagnosticsProperty('modifiers', modifiers, defaultValue: null));
     properties.add(DiagnosticsProperty('spinner', spinner, defaultValue: null));
@@ -225,8 +227,8 @@ class ButtonSpecUtility<T extends Attribute>
   /// Utility for defining [ButtonSpecAttribute.icon]
   late final icon = IconThemeDataUtility((v) => only(icon: v));
 
-  /// Utility for defining [ButtonSpecAttribute.label]
-  late final textStyle = TextStyleUtility((v) => only(label: v));
+  /// Utility for defining [ButtonSpecAttribute.textStyle]
+  late final textStyle = TextStyleUtility((v) => only(textStyle: v));
 
   /// Utility for defining [ButtonSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
@@ -250,7 +252,7 @@ class ButtonSpecUtility<T extends Attribute>
   T only({
     BoxSpecAttribute? container,
     IconThemeDataDto? icon,
-    TextStyleDto? label,
+    TextStyleDto? textStyle,
     WidgetModifiersDataDto? modifiers,
     SpinnerSpecAttribute? spinner,
     AnimatedDataDto? animated,
@@ -258,7 +260,7 @@ class ButtonSpecUtility<T extends Attribute>
     return builder(ButtonSpecAttribute(
       container: container,
       icon: icon,
-      label: label,
+      textStyle: textStyle,
       modifiers: modifiers,
       spinner: spinner,
       animated: animated,

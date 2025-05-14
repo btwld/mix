@@ -41,13 +41,13 @@ class ButtonSpec extends Spec<ButtonSpec> with _$ButtonSpec, Diagnosticable {
   const ButtonSpec({
     BoxSpec? container,
     IconThemeData? icon,
-    TextStyle? label,
+    TextStyle? textStyle,
     super.modifiers,
     SpinnerSpec? spinner,
     super.animated,
   })  : container = container ?? const BoxSpec(),
         icon = icon ?? const IconThemeData(),
-        textStyle = label ?? const TextStyle(),
+        textStyle = textStyle ?? const TextStyle(),
         spinner = spinner ?? const SpinnerSpec();
 
   @override
