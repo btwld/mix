@@ -1,9 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
+import 'package:naked/naked.dart';
 
-import '../../../core/theme/remix_theme.dart';
-import '../../../helpers/component_builder.dart';
 import '../../../helpers/utility_extension.dart';
 
 part 'avatar.g.dart';
@@ -15,7 +14,7 @@ base class AvatarSpec extends Spec<AvatarSpec> with _$AvatarSpec {
   final BoxSpec container;
   final StackSpec stack;
   final ImageSpec image;
-  final TextSpec fallback;
+  final TextStyle fallbackTextStyle;
 
   /// {@macro avatar_spec_of}
   static const of = _$AvatarSpec.of;
@@ -25,11 +24,11 @@ base class AvatarSpec extends Spec<AvatarSpec> with _$AvatarSpec {
   const AvatarSpec({
     BoxSpec? container,
     ImageSpec? image,
-    TextSpec? fallback,
+    TextStyle? fallbackTextStyle,
     StackSpec? stack,
     super.animated,
   })  : stack = stack ?? const StackSpec(),
         container = container ?? const BoxSpec(),
         image = image ?? const ImageSpec(),
-        fallback = fallback ?? const TextSpec();
+        fallbackTextStyle = fallbackTextStyle ?? const TextStyle();
 }
