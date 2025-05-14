@@ -6,13 +6,13 @@ class NakedAccordionExample extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return const SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Beautiful Accordion Examples',
               style: TextStyle(
                 fontSize: 32,
@@ -20,62 +20,74 @@ class NakedAccordionExample extends StatelessWidget {
                 color: Color(0xFF1F2937), // text-gray-800
               ),
             ),
-            const SizedBox(height: 48),
+            SizedBox(height: 48),
 
             // Basic Accordion
-            _buildSection(
-              'Simple Accordion',
-              const _BasicAccordion(),
+            SectionWidget(
+              title: 'Simple Accordion',
+              child: BasicAccordion(),
             ),
-            const SizedBox(height: 48),
+            SizedBox(height: 48),
 
             // Styled Variations
-            _buildSection(
-              'Styled Variations',
-              const Row(
+            SectionWidget(
+              title: 'Styled Variations',
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(child: _ColoredAccordion()),
+                  Expanded(child: ColoredAccordion()),
                   SizedBox(width: 24),
-                  Expanded(child: _BorderedAccordion()),
+                  Expanded(child: BorderedAccordion()),
                 ],
               ),
             ),
-            const SizedBox(height: 48),
+            SizedBox(height: 48),
 
             // Accordion Group
-            _buildSection(
-              'Accordion Group (Only one open at a time)',
-              const _AccordionGroup(),
+            SectionWidget(
+              title: 'Accordion Group (Only one open at a time)',
+              child: AccordionGroup(),
             ),
-            const SizedBox(height: 48),
+            SizedBox(height: 48),
 
             // Nested Accordions
-            _buildSection(
-              'Nested Accordions',
-              const _NestedAccordion(),
+            SectionWidget(
+              title: 'Nested Accordions',
+              child: NestedAccordion(),
             ),
-            const SizedBox(height: 48),
+            SizedBox(height: 48),
 
             // Icon Accordions
-            _buildSection(
-              'Accordion with Icons',
-              const _IconAccordion(),
+            SectionWidget(
+              title: 'Accordion with Icons',
+              child: IconAccordion(),
             ),
-            const SizedBox(height: 48),
+            SizedBox(height: 48),
 
             // Card Style Accordions
-            _buildSection(
-              'Card Style Accordion',
-              const _CardAccordion(),
+            SectionWidget(
+              title: 'Card Style Accordion',
+              child: CardAccordion(),
             ),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildSection(String title, Widget content) {
+class SectionWidget extends StatelessWidget {
+  final String title;
+  final Widget child;
+
+  const SectionWidget({
+    super.key,
+    required this.title,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -88,20 +100,20 @@ class NakedAccordionExample extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        content,
+        child,
       ],
     );
   }
 }
 
-class _BasicAccordion extends StatefulWidget {
-  const _BasicAccordion();
+class BasicAccordion extends StatefulWidget {
+  const BasicAccordion({super.key});
 
   @override
-  State<_BasicAccordion> createState() => _BasicAccordionState();
+  State<BasicAccordion> createState() => _BasicAccordionState();
 }
 
-class _BasicAccordionState extends State<_BasicAccordion> {
+class _BasicAccordionState extends State<BasicAccordion> {
   final AccordionController<String> _controller = AccordionController<String>();
   final Map<String, bool> _hoveredItems = {};
   final Map<String, bool> _focusedItems = {};
@@ -137,17 +149,6 @@ class _BasicAccordionState extends State<_BasicAccordion> {
       clipBehavior: Clip.antiAlias,
       child: NakedAccordion<String>(
         controller: _controller,
-        onTriggerPressed: (value) {
-          setState(() {
-            if (_controller.values.contains(value)) {
-              _controller.close(value);
-            } else {
-              // Close all other items when opening a new one (single mode)
-              _controller.clear();
-              _controller.open(value);
-            }
-          });
-        },
         children: items.map((item) {
           final String id = item['id'] as String;
           final bool isExpanded = _controller.values.contains(id);
@@ -155,41 +156,42 @@ class _BasicAccordionState extends State<_BasicAccordion> {
 
           return NakedAccordionItem<String>(
             value: id,
-            trigger: (_) => NakedAccordionTrigger<String>(
-              onHoverState: (hovered) =>
-                  setState(() => _hoveredItems[id] = hovered),
-              onFocusState: (focused) =>
-                  setState(() => _focusedItems[id] = focused),
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: isExpanded
-                      ? Colors.blue.shade100
-                      : isHovered
-                          ? Colors.grey.shade300
-                          : Colors.grey.shade200,
-                  border: Border(
-                    bottom: BorderSide(color: Colors.grey.shade300),
+            trigger: (context, isExpanded, toggle) => MouseRegion(
+              onEnter: (_) => setState(() => _hoveredItems[id] = true),
+              onExit: (_) => setState(() => _hoveredItems[id] = false),
+              child: GestureDetector(
+                onTap: toggle,
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: isExpanded
+                        ? Colors.blue.shade100
+                        : isHovered
+                            ? Colors.grey.shade300
+                            : Colors.grey.shade200,
+                    border: Border(
+                      bottom: BorderSide(color: Colors.grey.shade300),
+                    ),
                   ),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        item['title'] as String,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          color: isExpanded
-                              ? Colors.blue.shade800
-                              : Colors.grey.shade800,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          item['title'] as String,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            color: isExpanded
+                                ? Colors.blue.shade800
+                                : Colors.grey.shade800,
+                          ),
                         ),
                       ),
-                    ),
-                    Icon(
-                      isExpanded ? Icons.expand_less : Icons.expand_more,
-                      color: isExpanded ? Colors.blue : Colors.grey.shade600,
-                    ),
-                  ],
+                      Icon(
+                        isExpanded ? Icons.expand_less : Icons.expand_more,
+                        color: isExpanded ? Colors.blue : Colors.grey.shade600,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -211,14 +213,14 @@ class _BasicAccordionState extends State<_BasicAccordion> {
   }
 }
 
-class _ColoredAccordion extends StatefulWidget {
-  const _ColoredAccordion();
+class ColoredAccordion extends StatefulWidget {
+  const ColoredAccordion({super.key});
 
   @override
-  State<_ColoredAccordion> createState() => _ColoredAccordionState();
+  State<ColoredAccordion> createState() => _ColoredAccordionState();
 }
 
-class _ColoredAccordionState extends State<_ColoredAccordion> {
+class _ColoredAccordionState extends State<ColoredAccordion> {
   final AccordionController<String> _controller = AccordionController<String>();
   final Map<String, bool> _hoverStates = {};
   final Map<String, bool> _focusStates = {};
@@ -250,12 +252,6 @@ class _ColoredAccordionState extends State<_ColoredAccordion> {
   Widget build(BuildContext context) {
     return NakedAccordion<String>(
       controller: _controller,
-      onTriggerPressed: (value) {
-        setState(() {
-          // Allow multiple items to be expanded
-          _controller.toggle(value);
-        });
-      },
       children: items.map((item) {
         final String id = item['id'] as String;
         final Color color = item['color'] as Color;
@@ -265,42 +261,43 @@ class _ColoredAccordionState extends State<_ColoredAccordion> {
 
         return NakedAccordionItem<String>(
           value: id,
-          trigger: (_) => NakedAccordionTrigger<String>(
-            onHoverState: (isHovered) =>
-                setState(() => _hoverStates[id] = isHovered),
-            onFocusState: (isFocused) =>
-                setState(() => _focusStates[id] = isFocused),
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
-                border: Border.all(
-                  color: color.withOpacity(
-                    isHovered
-                        ? 0.8
-                        : isFocused
-                            ? 0.6
-                            : 0.3,
-                  ),
-                ),
-                borderRadius: const BorderRadius.all(Radius.circular(8)),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      item['title'] as String,
-                      style: TextStyle(
-                        color: color.withOpacity(0.8),
-                        fontWeight: FontWeight.w500,
-                      ),
+          trigger: (context, isExpanded, toggle) => MouseRegion(
+            onEnter: (_) => setState(() => _hoverStates[id] = true),
+            onExit: (_) => setState(() => _hoverStates[id] = false),
+            child: GestureDetector(
+              onTap: toggle,
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.1),
+                  border: Border.all(
+                    color: color.withOpacity(
+                      isHovered
+                          ? 0.8
+                          : isFocused
+                              ? 0.6
+                              : 0.3,
                     ),
                   ),
-                  Icon(
-                    isExpanded ? Icons.expand_less : Icons.expand_more,
-                    color: color.withOpacity(0.6),
-                  ),
-                ],
+                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        item['title'] as String,
+                        style: TextStyle(
+                          color: color.withOpacity(0.8),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    Icon(
+                      isExpanded ? Icons.expand_less : Icons.expand_more,
+                      color: color.withOpacity(0.6),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -324,14 +321,14 @@ class _ColoredAccordionState extends State<_ColoredAccordion> {
   }
 }
 
-class _BorderedAccordion extends StatefulWidget {
-  const _BorderedAccordion();
+class BorderedAccordion extends StatefulWidget {
+  const BorderedAccordion({super.key});
 
   @override
-  State<_BorderedAccordion> createState() => _BorderedAccordionState();
+  State<BorderedAccordion> createState() => _BorderedAccordionState();
 }
 
-class _BorderedAccordionState extends State<_BorderedAccordion> {
+class _BorderedAccordionState extends State<BorderedAccordion> {
   final AccordionController<String> _controller = AccordionController<String>();
   final Map<String, bool> _hoverStates = {};
   final Map<String, bool> _focusStates = {};
@@ -361,64 +358,54 @@ class _BorderedAccordionState extends State<_BorderedAccordion> {
   Widget build(BuildContext context) {
     return NakedAccordion<String>(
       controller: _controller,
-      onTriggerPressed: (value) {
-        setState(() {
-          if (_controller.values.contains(value)) {
-            _controller.close(value);
-          } else {
-            // Single mode - close other items
-            _controller.clear();
-            _controller.open(value);
-          }
-        });
-      },
       children: items.map((item) {
         final String id = item['id'] as String;
         final bool isExpanded = _controller.values.contains(id);
 
         return NakedAccordionItem<String>(
           value: id,
-          trigger: (_) => NakedAccordionTrigger<String>(
-            onHoverState: (isHovered) =>
-                setState(() => _hoverStates[id] = isHovered),
-            onFocusState: (isFocused) =>
-                setState(() => _focusStates[id] = isFocused),
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: isExpanded
-                      ? const Color(0xFF8B5CF6) // purple-500
-                      : _hoverStates[id] == true
-                          ? const Color(0xFFA78BFA) // purple-400
-                          : _focusStates[id] == true
-                              ? const Color(0xFFC4B5FD) // purple-300
-                              : Colors.grey.shade300,
-                  width: isExpanded ? 2 : 1,
-                ),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      item['title'] as String,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: isExpanded
-                            ? const Color(0xFF6D28D9) // purple-700
-                            : Colors.grey.shade800,
-                      ),
-                    ),
-                  ),
-                  Icon(
-                    isExpanded ? Icons.expand_less : Icons.expand_more,
+          trigger: (context, isExpanded, toggle) => MouseRegion(
+            onEnter: (_) => setState(() => _hoverStates[id] = true),
+            onExit: (_) => setState(() => _hoverStates[id] = false),
+            child: GestureDetector(
+              onTap: toggle,
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
                     color: isExpanded
                         ? const Color(0xFF8B5CF6) // purple-500
-                        : Colors.grey.shade500,
+                        : _hoverStates[id] == true
+                            ? const Color(0xFFA78BFA) // purple-400
+                            : _focusStates[id] == true
+                                ? const Color(0xFFC4B5FD) // purple-300
+                                : Colors.grey.shade300,
+                    width: isExpanded ? 2 : 1,
                   ),
-                ],
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        item['title'] as String,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: isExpanded
+                              ? const Color(0xFF6D28D9) // purple-700
+                              : Colors.grey.shade800,
+                        ),
+                      ),
+                    ),
+                    Icon(
+                      isExpanded ? Icons.expand_less : Icons.expand_more,
+                      color: isExpanded
+                          ? const Color(0xFF8B5CF6) // purple-500
+                          : Colors.grey.shade500,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -446,14 +433,14 @@ class _BorderedAccordionState extends State<_BorderedAccordion> {
   }
 }
 
-class _AccordionGroup extends StatefulWidget {
-  const _AccordionGroup();
+class AccordionGroup extends StatefulWidget {
+  const AccordionGroup({super.key});
 
   @override
-  State<_AccordionGroup> createState() => _AccordionGroupState();
+  State<AccordionGroup> createState() => _AccordionGroupState();
 }
 
-class _AccordionGroupState extends State<_AccordionGroup> {
+class _AccordionGroupState extends State<AccordionGroup> {
   final AccordionController<String> _controller = AccordionController<String>();
 
   final List<Map<String, dynamic>> items = [
@@ -501,25 +488,14 @@ class _AccordionGroupState extends State<_AccordionGroup> {
       clipBehavior: Clip.antiAlias,
       child: NakedAccordion<String>(
         controller: _controller,
-        onTriggerPressed: (value) {
-          setState(() {
-            if (_controller.values.contains(value)) {
-              // Don't allow closing the active item
-              return;
-            } else {
-              // Single mode - close other items
-              _controller.clear();
-              _controller.open(value);
-            }
-          });
-        },
         children: items.map((item) {
           final String id = item['id'] as String;
           final bool isActive = _controller.values.contains(id);
 
           return NakedAccordionItem<String>(
             value: id,
-            trigger: (_) => NakedAccordionTrigger<String>(
+            trigger: (context, isExpanded, toggle) => GestureDetector(
+              onTap: toggle,
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -575,14 +551,14 @@ class _AccordionGroupState extends State<_AccordionGroup> {
   }
 }
 
-class _NestedAccordion extends StatefulWidget {
-  const _NestedAccordion();
+class NestedAccordion extends StatefulWidget {
+  const NestedAccordion({super.key});
 
   @override
-  State<_NestedAccordion> createState() => _NestedAccordionState();
+  State<NestedAccordion> createState() => _NestedAccordionState();
 }
 
-class _NestedAccordionState extends State<_NestedAccordion> {
+class _NestedAccordionState extends State<NestedAccordion> {
   final AccordionController<String> _parentController =
       AccordionController<String>();
   final Map<String, AccordionController<String>> _childControllers = {};
@@ -656,11 +632,6 @@ class _NestedAccordionState extends State<_NestedAccordion> {
       ),
       child: NakedAccordion<String>(
         controller: _parentController,
-        onTriggerPressed: (value) {
-          setState(() {
-            _parentController.toggle(value);
-          });
-        },
         children: items.map((item) {
           final String id = item['id'] as String;
           final List<Map<String, dynamic>> children =
@@ -670,7 +641,8 @@ class _NestedAccordionState extends State<_NestedAccordion> {
 
           return NakedAccordionItem<String>(
             value: id,
-            trigger: (_) => NakedAccordionTrigger<String>(
+            trigger: (context, isExpanded, toggle) => GestureDetector(
+              onTap: toggle,
               child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -734,11 +706,6 @@ class _NestedAccordionState extends State<_NestedAccordion> {
                     ),
                     child: NakedAccordion<String>(
                       controller: childController,
-                      onTriggerPressed: (childId) {
-                        setState(() {
-                          childController.toggle(childId);
-                        });
-                      },
                       children: children.map((child) {
                         final String childId = child['id'] as String;
                         final bool isChildExpanded =
@@ -746,7 +713,9 @@ class _NestedAccordionState extends State<_NestedAccordion> {
 
                         return NakedAccordionItem<String>(
                           value: childId,
-                          trigger: (_) => NakedAccordionTrigger<String>(
+                          trigger: (context, isExpanded, toggle) =>
+                              GestureDetector(
+                            onTap: toggle,
                             child: Container(
                               margin: const EdgeInsets.only(top: 8),
                               padding: const EdgeInsets.all(12),
@@ -818,14 +787,14 @@ class _NestedAccordionState extends State<_NestedAccordion> {
   }
 }
 
-class _IconAccordion extends StatefulWidget {
-  const _IconAccordion();
+class IconAccordion extends StatefulWidget {
+  const IconAccordion({super.key});
 
   @override
-  State<_IconAccordion> createState() => _IconAccordionState();
+  State<IconAccordion> createState() => _IconAccordionState();
 }
 
-class _IconAccordionState extends State<_IconAccordion> {
+class _IconAccordionState extends State<IconAccordion> {
   final Map<String, AccordionController<String>> _controllers = {};
 
   final List<Map<String, dynamic>> items = [
@@ -892,15 +861,11 @@ class _IconAccordionState extends State<_IconAccordion> {
           ),
           child: NakedAccordion<String>(
             controller: controller,
-            onTriggerPressed: (value) {
-              setState(() {
-                controller.toggle(value);
-              });
-            },
             children: [
               NakedAccordionItem<String>(
                 value: id,
-                trigger: (_) => NakedAccordionTrigger<String>(
+                trigger: (context, isExpanded, toggle) => GestureDetector(
+                  onTap: toggle,
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Row(
@@ -967,14 +932,14 @@ class _IconAccordionState extends State<_IconAccordion> {
   }
 }
 
-class _CardAccordion extends StatefulWidget {
-  const _CardAccordion();
+class CardAccordion extends StatefulWidget {
+  const CardAccordion({super.key});
 
   @override
-  State<_CardAccordion> createState() => _CardAccordionState();
+  State<CardAccordion> createState() => _CardAccordionState();
 }
 
-class _CardAccordionState extends State<_CardAccordion> {
+class _CardAccordionState extends State<CardAccordion> {
   final AccordionController<String> _controller = AccordionController<String>();
 
   final List<Map<String, dynamic>> items = [
@@ -1045,21 +1010,11 @@ class _CardAccordionState extends State<_CardAccordion> {
             ),
             child: NakedAccordion<String>(
               controller: _controller,
-              onTriggerPressed: (value) {
-                setState(() {
-                  if (_controller.values.contains(value)) {
-                    _controller.close(value);
-                  } else {
-                    // Single mode - close others when opening this one
-                    _controller.clear();
-                    _controller.open(value);
-                  }
-                });
-              },
               children: [
                 NakedAccordionItem<String>(
                   value: id,
-                  trigger: (_) => NakedAccordionTrigger<String>(
+                  trigger: (context, isExpanded, toggle) => GestureDetector(
+                    onTap: toggle,
                     child: Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
@@ -1078,46 +1033,46 @@ class _CardAccordionState extends State<_CardAccordion> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            item['title'] as String,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
                           Row(
-                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                            textBaseline: TextBaseline.alphabetic,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                item['title'] as String,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              Icon(
+                                isExpanded
+                                    ? Icons.keyboard_arrow_up
+                                    : Icons.keyboard_arrow_down,
+                                color: Colors.white.withOpacity(0.8),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
                                 item['price'] as String,
                                 style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
                                   color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 28,
                                 ),
                               ),
                               const SizedBox(width: 4),
-                              Text(
-                                '/${item['period']}',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.white.withOpacity(0.8),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 4),
+                                child: Text(
+                                  '/ ${item['period']}',
+                                  style: TextStyle(
+                                    color: Colors.white.withOpacity(0.8),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Icon(
-                                isExpanded
-                                    ? Icons.expand_less
-                                    : Icons.expand_more,
-                                color: Colors.white.withOpacity(0.8),
                               ),
                             ],
                           ),
@@ -1125,8 +1080,7 @@ class _CardAccordionState extends State<_CardAccordion> {
                       ),
                     ),
                   ),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
+                  child: Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       color: Colors.white,

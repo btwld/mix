@@ -1,81 +1,40 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 /// A fully customizable accordion with no default styling.
 ///
-/// NakedAccordion provides expandable/collapsible sections with accessibility features
-/// without imposing any visual styling, giving consumers complete design freedom.
-/// It manages the state of expanded sections through an [AccordionController] and provides
-/// callbacks for custom state handling.
+/// NakedAccordion provides expandable/collapsible sections without imposing any visual styling,
+/// giving consumers complete design freedom. It manages the state of expanded sections through
+/// an [AccordionController].
 ///
 /// This component includes:
 /// - [AccordionController]: Manages which sections are expanded/collapsed
 /// - [NakedAccordion]: The container for accordion items
 /// - [NakedAccordionItem]: Individual collapsible sections
-/// - [NakedAccordionTrigger]: Handles user interaction for expanding/collapsing
 ///
 /// Example:
 /// ```dart
-/// class MyAccordion extends StatefulWidget {
-///   @override
-///   _MyAccordionState createState() => _MyAccordionState();
-/// }
+/// final controller = AccordionController<String>();
 ///
-/// class _MyAccordionState extends State<MyAccordion> {
-///   final AccordionController<String> controller = AccordionController<String>();
-///   bool isHovered = false;
-///   bool isPressed = false;
-///   bool isFocused = false;
-///
-///   @override
-///   Widget build(BuildContext context) {
-///     return NakedAccordion<String>(
-///       controller: controller,
-///       initialExpandedValues: ['section1'],
-///       children: [
-///         NakedAccordionItem<String>(
-///           value: 'section1',
-///           trigger: (isExpanded) => NakedAccordionTrigger<String>(
-///             onHoverState: (hover) => setState(() => isHovered = hover),
-///             onPressedState: (pressed) => setState(() => isPressed = pressed),
-///             onFocusState: (focused) => setState(() => isFocused = focused),
-///             child: Container(
-///               padding: EdgeInsets.all(16),
-///               decoration: BoxDecoration(
-///                 color: isPressed
-///                     ? Colors.blue.shade700
-///                     : isHovered
-///                         ? Colors.blue.shade600
-///                         : Colors.blue.shade500,
-///                 borderRadius: BorderRadius.circular(4),
-///               ),
-///               child: Row(
-///                 children: [
-///                   Text('Section 1', style: TextStyle(color: Colors.white)),
-///                   Spacer(),
-///                   Icon(
-///                     isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-///                     color: Colors.white,
-///                   ),
-///                 ],
-///               ),
-///             ),
-///           ),
-///           child: Container(
-///             padding: EdgeInsets.all(16),
-///             child: Text('Content for section 1'),
-///           ),
-///           transitionBuilder: (child) => AnimatedSwitcher(
-///             duration: Duration(milliseconds: 300),
-///             child: child,
-///           ),
-///         ),
-///         // Add more NakedAccordionItems as needed
-///       ],
-///     );
-///   }
-/// }
+/// NakedAccordion<String>(
+///   controller: controller,
+///   initialExpandedValues: ['section1'],
+///   children: [
+///     NakedAccordionItem<String>(
+///       value: 'section1',
+///       trigger: (context, isExpanded, toggle) {
+///         return TextButton(
+///           onPressed: toggle,
+///           child: Text(isExpanded ? 'Close' : 'Open'),
+///         );
+///       },
+///       child: Text('Content for section 1'),
+///       transitionBuilder: (child) => AnimatedSwitcher(
+///         duration: Duration(milliseconds: 300),
+///         child: child,
+///       ),
+///     ),
+///   ],
+/// )
 /// ```
 
 /// Controller that manages the state of an accordion.
@@ -145,16 +104,6 @@ class AccordionController<T> with ChangeNotifier {
   }
 
   bool contains(T value) => values.contains(value);
-
-  @override
-  bool operator ==(Object other) {
-    return other is AccordionController &&
-        runtimeType == other.runtimeType &&
-        setEquals(values, other.values);
-  }
-
-  @override
-  int get hashCode => values.hashCode;
 }
 
 /// A container widget for accordion items with no default styling.
@@ -174,11 +123,6 @@ class NakedAccordion<T> extends StatefulWidget {
   /// Values that should be expanded when the accordion is first built.
   final List<T> initialExpandedValues;
 
-  /// Called when an accordion trigger is pressed.
-  ///
-  /// This callback receives the value of the item whose trigger was pressed.
-  final void Function(T value)? onTriggerPressed;
-
   /// Creates a naked accordion.
   ///
   /// The [children] should be [NakedAccordionItem] widgets with the same
@@ -188,7 +132,6 @@ class NakedAccordion<T> extends StatefulWidget {
     required this.children,
     required this.controller,
     this.initialExpandedValues = const [],
-    this.onTriggerPressed,
   });
 
   @override
@@ -222,7 +165,11 @@ class _NakedAccordionState<T> extends State<NakedAccordion<T>> {
   }
 }
 
-typedef BooleanWidgetBuilder = Widget Function(bool isExpanded);
+typedef NakedAccordionTriggerBuilder = Widget Function(
+  BuildContext context,
+  bool isExpanded,
+  VoidCallback toggle,
+);
 
 /// An individual item in a [NakedAccordion].
 ///
@@ -234,8 +181,11 @@ typedef BooleanWidgetBuilder = Widget Function(bool isExpanded);
 class NakedAccordionItem<T> extends StatefulWidget {
   /// Builder function that creates the trigger widget.
   ///
-  /// The boolean parameter indicates whether the item is currently expanded.
-  final BooleanWidgetBuilder trigger;
+  /// The builder provides:
+  /// - [BuildContext] for accessing theme and other data
+  /// - [bool] indicating if the item is expanded
+  /// - [VoidCallback] to toggle expansion state
+  final NakedAccordionTriggerBuilder trigger;
 
   /// Optional builder to customize the transition when expanding/collapsing.
   ///
@@ -253,10 +203,14 @@ class NakedAccordionItem<T> extends StatefulWidget {
   /// Optional semantic label describing the section for screen readers.
   final String? semanticLabel;
 
-  /// Whether this accordion item can be interacted with.
-  ///
-  /// When false, the trigger cannot be used to expand/collapse the item.
-  final bool enabled;
+  /// Optional callback to handle focus state changes.
+  final ValueChanged<bool>? onFocusState;
+
+  /// Whether the item should be focused when the accordion is opened.
+  final bool autoFocus;
+
+  /// The focus node for the item.
+  final FocusNode? focusNode;
 
   /// Creates a naked accordion item.
   ///
@@ -269,7 +223,9 @@ class NakedAccordionItem<T> extends StatefulWidget {
     required this.child,
     this.transitionBuilder,
     this.semanticLabel,
-    this.enabled = true,
+    this.onFocusState,
+    this.autoFocus = false,
+    this.focusNode,
   });
 
   @override
@@ -280,195 +236,35 @@ class _NakedAccordionItemState<T> extends State<NakedAccordionItem<T>> {
   @override
   Widget build(BuildContext context) {
     final state = context.findAncestorStateOfType<_NakedAccordionState<T>>();
-    return ListenableBuilder(
-      listenable: state!._controller,
-      builder: (context, child) {
-        final isExpanded = state._controller.contains(widget.value);
-        final child = isExpanded ? widget.child : const SizedBox.shrink();
+    return FocusableActionDetector(
+      onFocusChange: widget.onFocusState,
+      autofocus: widget.autoFocus,
+      focusNode: widget.focusNode,
+      child: ListenableBuilder(
+        listenable: state!._controller,
+        builder: (context, child) {
+          final isExpanded = state._controller.contains(widget.value);
+          final child = isExpanded ? widget.child : const SizedBox.shrink();
 
-        return AccordionItemScope(
-          expanded: isExpanded,
-          child: Semantics(
+          return Semantics(
             container: true,
             label: widget.semanticLabel,
-            explicitChildNodes: true,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                widget.trigger(isExpanded),
-                Semantics(
-                  container: true,
-                  liveRegion: true,
-                  child: widget.transitionBuilder != null
-                      ? widget.transitionBuilder!(child)
-                      : child,
+                widget.trigger(
+                  context,
+                  isExpanded,
+                  () => state._controller.toggle(widget.value),
                 ),
+                widget.transitionBuilder != null
+                    ? widget.transitionBuilder!(child)
+                    : child,
               ],
             ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class AccordionItemScope extends InheritedWidget {
-  final bool expanded;
-
-  const AccordionItemScope({
-    super.key,
-    required this.expanded,
-    required super.child,
-  });
-
-  static AccordionItemScope of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<AccordionItemScope>()!;
-  }
-
-  @override
-  bool updateShouldNotify(AccordionItemScope oldWidget) {
-    return expanded != oldWidget.expanded;
-  }
-}
-
-/// A trigger widget for expanding and collapsing a [NakedAccordionItem].
-///
-/// This widget provides interaction handling and accessibility features
-/// without imposing any visual styling. It supports mouse hover, press,
-/// and keyboard focus states with callbacks to allow custom styling.
-///
-/// Generic type [T] should match the type used in the [AccordionController].
-class NakedAccordionTrigger<T> extends StatefulWidget {
-  /// The child widget to display.
-  ///
-  /// This widget should represent the visual appearance of the trigger.
-  final Widget child;
-
-  /// Called when hover state changes.
-  ///
-  /// Provides the current hover state (true when hovered, false otherwise).
-  final ValueChanged<bool>? onHoverState;
-
-  /// Called when pressed state changes.
-  ///
-  /// Provides the current pressed state (true when pressed, false otherwise).
-  final ValueChanged<bool>? onPressedState;
-
-  /// Optional semantic label for accessibility.
-  ///
-  /// If not provided, the system will attempt to infer a label from the child.
-  final String? semanticLabel;
-
-  /// Optional focus node for the trigger.
-  ///
-  /// If provided, the trigger will use this focus node.
-  final FocusNode? focusNode;
-
-  /// Called when focus state changes.
-  ///
-  /// Provides the current focus state (true when focused, false otherwise).
-  final ValueChanged<bool>? onFocusState;
-
-  /// Creates a naked accordion trigger.
-  ///
-  /// The [child] parameter is required and represents the visual appearance
-  /// of the trigger in all states.
-  const NakedAccordionTrigger({
-    super.key,
-    required this.child,
-    this.onHoverState,
-    this.onPressedState,
-    this.semanticLabel,
-    this.focusNode,
-    this.onFocusState,
-  });
-
-  @override
-  State<NakedAccordionTrigger<T>> createState() =>
-      _NakedAccordionTriggerState<T>();
-}
-
-class _NakedAccordionTriggerState<T> extends State<NakedAccordionTrigger<T>> {
-  late final FocusNode _focusNode = widget.focusNode ?? FocusNode();
-
-  @override
-  void dispose() {
-    if (widget.focusNode == null) {
-      _focusNode.dispose();
-    }
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final accordionScope =
-        context.findAncestorStateOfType<_NakedAccordionState<T>>();
-
-    final itemScope =
-        context.findAncestorStateOfType<_NakedAccordionItemState<T>>()!;
-    final isExpanded = AccordionItemScope.of(context).expanded;
-    final isInteractive = itemScope.widget.enabled;
-
-    void handleTap() {
-      accordionScope?.widget.onTriggerPressed?.call(itemScope.widget.value);
-    }
-
-    return Focus(
-      focusNode: widget.focusNode,
-      canRequestFocus: isInteractive,
-      onKeyEvent: (node, event) {
-        if (!isInteractive) return KeyEventResult.ignored;
-
-        if (event is KeyDownEvent && event.logicalKey.isSpaceOrEnter) {
-          widget.onPressedState?.call(true);
-
-          return KeyEventResult.handled;
-        } else if (event is KeyUpEvent && event.logicalKey.isSpaceOrEnter) {
-          widget.onPressedState?.call(false);
-          handleTap();
-
-          return KeyEventResult.handled;
-        }
-
-        return KeyEventResult.ignored;
-      },
-      onFocusChange: (focused) {
-        if (focused) {
-          widget.onFocusState?.call(true);
-        } else {
-          widget.onFocusState?.call(false);
-        }
-      },
-      child: MouseRegion(
-        onEnter: isInteractive ? (_) => widget.onHoverState?.call(true) : null,
-        onExit: isInteractive ? (_) => widget.onHoverState?.call(false) : null,
-        cursor: isInteractive
-            ? SystemMouseCursors.click
-            : SystemMouseCursors.forbidden,
-        child: GestureDetector(
-          onTap: isInteractive ? handleTap : null,
-          onTapDown:
-              isInteractive ? (_) => widget.onPressedState?.call(true) : null,
-          onTapUp:
-              isInteractive ? (_) => widget.onPressedState?.call(false) : null,
-          onTapCancel:
-              isInteractive ? () => widget.onPressedState?.call(false) : null,
-          child: Semantics(
-            button: true,
-            label: widget.semanticLabel,
-            excludeSemantics: widget.semanticLabel != null,
-            onTap: isInteractive ? handleTap : null,
-            toggled: isExpanded,
-            hint: isExpanded ? 'Collapse' : 'Expand',
-            child: widget.child,
-          ),
-        ),
+          );
+        },
       ),
     );
   }
-}
-
-extension on LogicalKeyboardKey {
-  bool get isSpaceOrEnter =>
-      this == LogicalKeyboardKey.space || this == LogicalKeyboardKey.enter;
 }
