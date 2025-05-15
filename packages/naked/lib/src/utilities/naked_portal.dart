@@ -3,16 +3,18 @@ import 'package:flutter/material.dart';
 class NakedPortal extends StatefulWidget {
   final OverlayPortalController controller;
   final WidgetBuilder overlayChildBuilder;
+  final bool useRootOverlay;
   final Widget? child;
-  final AlignmentPair alignment;
-  final List<AlignmentPair> fallbackAlignments;
+  final PositionConfig alignment;
+  final List<PositionConfig> fallbackAlignments;
 
   const NakedPortal({
     super.key,
     required this.controller,
     required this.overlayChildBuilder,
     this.child,
-    this.alignment = const AlignmentPair(
+    this.useRootOverlay = false,
+    this.alignment = const PositionConfig(
       target: Alignment.topCenter,
       follower: Alignment.bottomCenter,
     ),
@@ -27,6 +29,7 @@ class _NakedPortalState extends State<NakedPortal> {
   Widget _overlayBuilder(BuildContext context) {
     final OverlayState overlayState = Overlay.of(
       context,
+      rootOverlay: widget.useRootOverlay,
       debugRequiredFor: widget,
     );
     final RenderBox box = this.context.findRenderObject()! as RenderBox;
@@ -59,12 +62,12 @@ class _NakedPortalState extends State<NakedPortal> {
   }
 }
 
-class AlignmentPair {
+class PositionConfig {
   final Alignment target;
   final Alignment follower;
   final Offset offset;
 
-  const AlignmentPair({
+  const PositionConfig({
     required this.target,
     required this.follower,
     this.offset = Offset.zero,
@@ -88,9 +91,9 @@ class _NakedPositionDelegate extends SingleChildLayoutDelegate {
   /// tooltip.
   final Size targetSize;
 
-  final AlignmentPair alignment;
+  final PositionConfig alignment;
 
-  final List<AlignmentPair> fallbackAlignments;
+  final List<PositionConfig> fallbackAlignments;
 
   @override
   BoxConstraints getConstraintsForChild(BoxConstraints constraints) =>
@@ -119,8 +122,8 @@ Offset _calculateOverlayPosition({
   required Size targetSize,
   required Offset targetPosition,
   required Size overlaySize,
-  required AlignmentPair alignment,
-  List<AlignmentPair> fallbackAlignments = const [],
+  required PositionConfig alignment,
+  List<PositionConfig> fallbackAlignments = const [],
 }) {
   final allAlignments = [alignment, ...fallbackAlignments];
 
@@ -150,7 +153,7 @@ Offset _calculateAlignedOffset({
   required Offset targetTopLeft,
   required Size targetSize,
   required Size overlaySize,
-  required AlignmentPair alignment,
+  required PositionConfig alignment,
 }) {
   final targetAnchorOffset = alignment.target.alongSize(targetSize);
   final followerAnchorOffset = alignment.follower.alongSize(overlaySize);
