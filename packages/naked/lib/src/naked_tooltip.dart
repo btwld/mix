@@ -117,7 +117,7 @@ class NakedTooltip extends StatefulWidget {
   final String? semanticLabel;
 
   /// The fallback alignments for the tooltip.
-  final List<AlignmentPair> fallbackAlignments;
+  final List<PositionConfig> fallbackAlignments;
 
   /// Creates a naked tooltip.
   ///
@@ -152,7 +152,7 @@ class _NakedTooltipState extends State<NakedTooltip> {
     return Semantics(
       container: true,
       child: NakedPortal(
-        alignment: AlignmentPair(
+        alignment: PositionConfig(
           target: widget.targetAnchor,
           follower: widget.followerAnchor,
           offset: widget.offset,

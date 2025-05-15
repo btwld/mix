@@ -6,7 +6,7 @@ import 'package:naked/naked.dart';
 
 // Test extensions for NakedMenu
 extension _NakedMenuFinders on CommonFinders {
-  Finder nakedMenuContent() => byType(NakedMenuContent);
+  Finder nakedMenuContent() => byType(_NakedMenuContent);
   Finder nakedMenuItem() => byType(NakedMenuItem);
   Finder nakedMenuItemWithText(String text) =>
       find.descendant(of: nakedMenuItem(), matching: find.text(text));
@@ -25,7 +25,7 @@ extension _NakedMenuTester on WidgetTester {
     ));
   }
 
-  Future<void> closeMenuWithEscape() async {
+  Future<void> pressEsc() async {
     await sendKeyEvent(LogicalKeyboardKey.escape);
     await pumpAndSettle();
   }
@@ -50,21 +50,26 @@ extension _NakedMenuTester on WidgetTester {
 extension _NakedMenuMatcher on WidgetTester {
   bool isMenuOpen() => any(find.nakedMenuContent());
 
-  bool isMenuClosed() => !any(find.nakedMenuContent());
+  // bool isMenuClosed() => !any(find.nakedMenuContent());
 }
 
 void main() {
   group('NakedMenu', () {
     group('Basic Functionality', () {
-      testWidgets('Renders child widget', (WidgetTester tester) async {
-        await tester.pumpMenu(
-          const NakedMenu(
-            open: true,
-            menu: NakedMenuContent(
-              child: Text('Menu Content'),
-            ),
-            child: Text('child'),
+      NakedMenu buildBasicMenu(OverlayPortalController controller) {
+        return NakedMenu(
+          controller: controller,
+          overlayBuilder: (_) => const _NakedMenuContent(
+            child: Text('Menu Content'),
           ),
+          builder: (_) => const Text('child'),
+        );
+      }
+
+      testWidgets('Renders child widget', (WidgetTester tester) async {
+        final controller = OverlayPortalController();
+        await tester.pumpMenu(
+          buildBasicMenu(controller),
         );
 
         expect(find.text('child'), findsOneWidget);
@@ -73,24 +78,20 @@ void main() {
 
       testWidgets('Renders menu content when open',
           (WidgetTester tester) async {
+        final controller = OverlayPortalController();
         await tester.pumpMenu(
-          const NakedMenu(
-            open: true,
-            menu: NakedMenuContent(
-              child: Text('Menu Content'),
-            ),
-            child: Text('child'),
-          ),
+          buildBasicMenu(controller),
         );
-
+        controller.show();
         await tester.pump();
+
         expect(find.text('child'), findsOneWidget);
         expect(find.text('Menu Content'), findsOneWidget);
       });
 
-      testWidgets('Opens when open property is true',
+      testWidgets('Opens when controller.show() is called',
           (WidgetTester tester) async {
-        bool isOpen = false;
+        final controller = OverlayPortalController();
 
         await tester.pumpMenu(
           StatefulBuilder(
@@ -98,15 +99,15 @@ void main() {
               return Column(
                 children: [
                   NakedButton(
-                    onPressed: () => setState(() => isOpen = true),
+                    onPressed: () => controller.show(),
                     child: const Text('Open Menu'),
                   ),
                   NakedMenu(
-                    open: isOpen,
-                    menu: const NakedMenuContent(
+                    controller: controller,
+                    overlayBuilder: (_) => const _NakedMenuContent(
                       child: Text('Menu Content'),
                     ),
-                    child: const Text('child'),
+                    builder: (_) => const Text('child'),
                   ),
                 ],
               );
@@ -122,30 +123,29 @@ void main() {
 
       testWidgets('Closes when open property is false',
           (WidgetTester tester) async {
-        bool isOpen = true;
-
+        final controller = OverlayPortalController();
         await tester.pumpMenu(
           StatefulBuilder(
             builder: (context, setState) {
               return Column(
                 children: [
                   NakedButton(
-                    onPressed: () => setState(() => isOpen = false),
+                    onPressed: () => controller.hide(),
                     child: const Text('Close Menu'),
                   ),
                   NakedMenu(
-                    open: isOpen,
-                    menu: const NakedMenuContent(
+                    controller: controller,
+                    overlayBuilder: (_) => const _NakedMenuContent(
                       child: Text('Menu Content'),
                     ),
-                    child: const Text('child'),
+                    builder: (_) => const Text('child'),
                   ),
                 ],
               );
             },
           ),
         );
-
+        controller.show();
         await tester.pump();
         expect(find.text('Menu Content'), findsOneWidget);
         await tester.tap(find.text('Close Menu'));
@@ -153,43 +153,28 @@ void main() {
         expect(find.text('Menu Content'), findsNothing);
       });
 
-      testWidgets('Does not respond when disabled',
-          (WidgetTester tester) async {
-        bool onMenuCloseCalled = false;
-
-        await tester.pumpMenu(
-          NakedMenu(
-            enabled: false,
-            onMenuClose: () => onMenuCloseCalled = true,
-            menu: const NakedMenuContent(
-              child: Text('Menu Content'),
-            ),
-            child: const Text('child'),
-          ),
-        );
-
-        await tester.tap(find.text('child'));
-        expect(onMenuCloseCalled, false);
-      });
-
       testWidgets('Places menu according to menuAlignment parameter',
           (WidgetTester tester) async {
+        final controller = OverlayPortalController();
+        const trigger = Key('trigger');
         await tester.pumpMenu(
           Center(
             child: NakedMenu(
-              open: true,
-              menuAlignment: const AlignmentPair(
+              controller: controller,
+              menuAlignment: const PositionConfig(
                 target: Alignment.bottomCenter,
                 follower: Alignment.topCenter,
+                offset: Offset.zero,
               ),
-              menu: const NakedMenuContent(
+              overlayBuilder: (_) => const _NakedMenuContent(
                 child: SizedBox(
                   width: 200,
                   height: 100,
                   child: Center(child: Text('Menu Content')),
                 ),
               ),
-              child: Container(
+              builder: (_) => Container(
+                key: trigger,
                 width: 100,
                 height: 40,
                 color: Colors.blue,
@@ -199,56 +184,70 @@ void main() {
           ),
         );
 
+        controller.show();
+
         await tester.pump();
         expect(find.byType(NakedMenu), findsOneWidget);
-        expect(find.byType(NakedMenuContent), findsOneWidget);
+        expect(find.byType(_NakedMenuContent), findsOneWidget);
 
-        expect(find.text('Menu Content'), findsOneWidget);
+        // Get the positions of the trigger and menu
+        final triggerBottomLeft = tester.getBottomLeft(find.byKey(trigger));
+        final menuTopLeft = tester.getTopLeft(find.byType(_NakedMenuContent));
+
+        // Menu should be centered above the trigger with 4px gap
+        expect(menuTopLeft.dy, triggerBottomLeft.dy);
+
+        // Get the positions of the trigger and menu
+        final triggerCenter = tester.getCenter(find.byKey(trigger));
+        final menuCenter = tester.getCenter(find.byType(_NakedMenuContent));
+
+        expect(menuCenter.dx, triggerCenter.dx);
       });
     });
 
     group('State Management', () {
-      testWidgets('Closes when Escape key pressed',
+      testWidgets('calls onMenuClose when Escape key pressed',
           (WidgetTester tester) async {
-        bool isOpen = true;
+        bool onMenuCloseCalled = false;
 
+        final controller = OverlayPortalController();
         await tester.pumpMenu(
           StatefulBuilder(
             builder: (context, setState) {
               return NakedMenu(
-                open: isOpen,
-                onMenuClose: () => setState(() => isOpen = false),
-                menu: const NakedMenuContent(
+                onClose: () => onMenuCloseCalled = true,
+                controller: controller,
+                overlayBuilder: (_) => const _NakedMenuContent(
                   child: Text('Menu Content'),
                 ),
-                child: const Text('child'),
+                builder: (_) => const Text('child'),
               );
             },
           ),
         );
+        controller.show();
 
         await tester.pumpAndSettle();
         expect(tester.isMenuOpen(), true);
 
-        await tester.closeMenuWithEscape();
-        expect(isOpen, false);
-        expect(tester.isMenuClosed(), true);
+        await tester.pressEsc();
+        await tester.pumpAndSettle();
+        expect(onMenuCloseCalled, true);
       });
 
-      testWidgets('Closes when menu item selected (if closeOnSelect is true)',
+      testWidgets(
+          'calls onMenuClose when menu item selected (if closeOnSelect is true)',
           (WidgetTester tester) async {
-        bool isOpen = true;
-
+        bool onMenuCloseCalled = false;
+        final controller = OverlayPortalController();
         await tester.pumpMenu(
           StatefulBuilder(
             builder: (context, setState) {
               return NakedMenu(
-                open: isOpen,
+                controller: controller,
                 closeOnSelect: true,
-                onMenuClose: () {
-                  setState(() => isOpen = false);
-                },
-                menu: NakedMenuContent(
+                onClose: () => onMenuCloseCalled = true,
+                overlayBuilder: (_) => _NakedMenuContent(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -262,11 +261,13 @@ void main() {
                     ],
                   ),
                 ),
-                child: const Text('child'),
+                builder: (_) => const Text('child'),
               );
             },
           ),
         );
+
+        controller.show();
 
         await tester.pump();
         expect(tester.isMenuOpen(), true);
@@ -274,8 +275,7 @@ void main() {
         await tester.tap(find.text('Item 1'));
         await tester.pumpAndSettle();
 
-        expect(isOpen, false);
-        expect(tester.isMenuClosed(), true);
+        expect(onMenuCloseCalled, true);
       });
     });
 
@@ -284,12 +284,12 @@ void main() {
           (WidgetTester tester) async {
         bool item1Focused = false;
         bool item2Focused = false;
-
+        final controller = OverlayPortalController();
         await tester.pumpMenu(
           Center(
             child: NakedMenu(
-              open: true,
-              menu: NakedMenuContent(
+              controller: controller,
+              overlayBuilder: (_) => _NakedMenuContent(
                 child: Column(
                   children: [
                     NakedMenuItem(
@@ -309,10 +309,12 @@ void main() {
                   ],
                 ),
               ),
-              child: const Text('child'),
+              builder: (_) => const Text('child'),
             ),
           ),
         );
+
+        controller.show();
 
         await tester.pump();
         expect(find.text('Item 1'), findsOneWidget);
@@ -356,7 +358,7 @@ void main() {
   group('NakedMenuContent', () {
     testWidgets('Renders child widget(s)', (WidgetTester tester) async {
       await tester.pumpMenu(
-        const NakedMenuContent(
+        const _NakedMenuContent(
           child: Text('Menu Content'),
         ),
       );
@@ -364,9 +366,12 @@ void main() {
       expect(find.text('Menu Content'), findsOneWidget);
     });
 
-    testWidgets('Closes when clicking outside (if closeOnClickOutside is true)',
+    testWidgets(
+        'calls onMenuClose when clicking outside (if consumeOutsideTaps is true)',
         (WidgetTester tester) async {
-      bool isOpen = true;
+      bool onMenuCloseCalled = false;
+
+      final controller = OverlayPortalController();
 
       await tester.pumpMenu(
         StatefulBuilder(
@@ -389,17 +394,17 @@ void main() {
                   top: 100,
                   left: 100,
                   child: NakedMenu(
-                    open: isOpen,
-                    onMenuClose: () => setState(() => isOpen = false),
-                    menu: const NakedMenuContent(
-                      closeOnClickOutside: true,
+                    controller: controller,
+                    onClose: () => onMenuCloseCalled = true,
+                    overlayBuilder: (_) => const _NakedMenuContent(
+                      consumeOutsideTaps: true,
                       child: SizedBox(
                         width: 100,
                         height: 50,
                         child: Center(child: Text('Menu Content')),
                       ),
                     ),
-                    child: const Text('child'),
+                    builder: (_) => const Text('child'),
                   ),
                 ),
               ],
@@ -407,14 +412,14 @@ void main() {
           },
         ),
       );
+      controller.show();
 
       await tester.pump();
       expect(tester.isMenuOpen(), true);
 
       // Tap outside the menu
       await tester.tapOutsideMenu();
-      expect(isOpen, false);
-      expect(tester.isMenuClosed(), true);
+      expect(onMenuCloseCalled, true);
     });
   });
 

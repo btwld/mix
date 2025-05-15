@@ -106,11 +106,11 @@ class NakedSelect<T> extends StatefulWidget {
 
   /// The alignment of the menu relative to its trigger.
   /// Specifies how to position the menu when it opens.
-  final AlignmentPair menuAlignment;
+  final PositionConfig menuAlignment;
 
   /// Alternative alignments to try if the menu doesn't fit in the preferred position.
   /// The menu will try each alignment in order until finding one that fits.
-  final List<AlignmentPair> fallbackAlignments;
+  final List<PositionConfig> fallbackAlignments;
 
   /// Offset from the target position.
   /// Allows fine-tuning of the menu position relative to the trigger.
@@ -137,12 +137,12 @@ class NakedSelect<T> extends StatefulWidget {
     this.enableTypeAhead = true,
     this.typeAheadDebounceTime = const Duration(milliseconds: 500),
     this.offset = const Offset(0, 4),
-    this.menuAlignment = const AlignmentPair(
+    this.menuAlignment = const PositionConfig(
       target: Alignment.bottomLeft,
       follower: Alignment.topLeft,
     ),
     this.fallbackAlignments = const [
-      AlignmentPair(
+      PositionConfig(
         target: Alignment.topLeft,
         follower: Alignment.bottomLeft,
         offset: Offset(0, -8),
@@ -292,7 +292,7 @@ class _NakedSelectState<T> extends State<NakedSelect<T>> {
       container: true,
       label: widget.semanticLabel,
       child: NakedPortal(
-        alignment: AlignmentPair(
+        alignment: PositionConfig(
           target: widget.menuAlignment.target,
           follower: widget.menuAlignment.follower,
           offset: widget.offset,
