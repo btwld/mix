@@ -8,7 +8,7 @@ extension WidgetTesterExtension on WidgetTester {
   Future<void> pumpMaterialWidget(Widget widget) async {
     await pumpWidget(
       MaterialApp(
-        home: widget,
+        home: Scaffold(body: widget),
       ),
     );
   }
@@ -42,10 +42,10 @@ extension WidgetTesterExtension on WidgetTester {
   }
 
   void expectCursor(SystemMouseCursor cursor, {required Key on}) async {
-    final region = widget<FocusableActionDetector>(find
-        .descendant(of: find.byKey(on), matching: find.byType(FocusableActionDetector))
+    final region = widget<MouseRegion>(find
+        .descendant(of: find.byKey(on), matching: find.byType(MouseRegion))
         .first);
 
-    expect(region.mouseCursor, cursor);
+    expect(region.cursor, cursor);
   }
 }

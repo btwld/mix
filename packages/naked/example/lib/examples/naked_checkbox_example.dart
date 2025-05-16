@@ -15,77 +15,80 @@ class _NakedCheckboxExampleState extends State<NakedCheckboxExample> {
     final screenWidth = MediaQuery.of(context).size.width;
     final crossAxisCount = screenWidth > 600 ? 2 : 1; // Example breakpoint
 
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header
-            Center(
-              child: Text(
-                'Checkbox Examples',
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[800],
-                    ),
+    return FocusTraversalGroup(
+      policy: WidgetOrderTraversalPolicy(),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Center(
+                child: Text(
+                  'Checkbox Examples',
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey[800],
+                      ),
+                ),
               ),
-            ),
-            const SizedBox(height: 24),
+              const SizedBox(height: 24),
 
-            // --- Basic Checkbox States Section ---
-            _buildSectionTitle('Basic Checkbox States'),
-            _buildSectionContainer(
-              child: const BasicCheckboxStates(),
-            ),
-            const SizedBox(height: 40),
-
-            // --- Parent-Child Checkboxes Section ---
-            _buildSectionTitle(
-                'Parent-Child Checkboxes with Indeterminate State'),
-            _buildSectionContainer(
-              child: const ParentChildCheckboxes(),
-            ),
-            const SizedBox(height: 40),
-
-            // --- Custom Styled Checkboxes Section ---
-            _buildSectionTitle('Custom Styled Checkboxes'),
-            _buildSectionContainer(
-              child: GridView.count(
-                crossAxisCount: crossAxisCount,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                // Adjust aspect ratio for better layout, especially on mobile
-                childAspectRatio: (screenWidth / crossAxisCount) /
-                    (crossAxisCount == 1 ? 120 : 150),
-                children: const [
-                  // Replace placeholders with the actual StyledCheckboxes component
-                  // We'll wrap each style in its own state management widget
-                  StyledCheckboxVariant(style: CheckboxStyle.primary),
-                  StyledCheckboxVariant(style: CheckboxStyle.customWithIcon),
-                  StyledCheckboxVariant(style: CheckboxStyle.rounded),
-                  StyledCheckboxVariant(style: CheckboxStyle.squared),
-                ],
+              // --- Basic Checkbox States Section ---
+              _buildSectionTitle('Basic Checkbox States'),
+              _buildSectionContainer(
+                child: const BasicCheckboxStates(),
               ),
-            ),
-            const SizedBox(height: 40),
+              const SizedBox(height: 40),
 
-            // --- Focus and Keyboard Navigation Example ---
-            _buildSectionTitle('Focus and Keyboard Navigation'),
-            _buildSectionContainer(
-              child: const FocusCheckboxExample(),
-            ),
-            const SizedBox(height: 40),
+              // --- Parent-Child Checkboxes Section ---
+              _buildSectionTitle(
+                  'Parent-Child Checkboxes with Indeterminate State'),
+              _buildSectionContainer(
+                child: const ParentChildCheckboxes(),
+              ),
+              const SizedBox(height: 40),
 
-            // --- Advanced Selection Example Section ---
-            _buildSectionTitle('Advanced Selection Example'),
-            _buildSectionContainer(
-              child: const SelectionExample(),
-            ),
-            const SizedBox(height: 40),
-          ],
+              // --- Custom Styled Checkboxes Section ---
+              _buildSectionTitle('Custom Styled Checkboxes'),
+              _buildSectionContainer(
+                child: GridView.count(
+                  crossAxisCount: crossAxisCount,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  // Adjust aspect ratio for better layout, especially on mobile
+                  childAspectRatio: (screenWidth / crossAxisCount) /
+                      (crossAxisCount == 1 ? 120 : 150),
+                  children: const [
+                    // Replace placeholders with the actual StyledCheckboxes component
+                    // We'll wrap each style in its own state management widget
+                    StyledCheckboxVariant(style: CheckboxStyle.primary),
+                    StyledCheckboxVariant(style: CheckboxStyle.customWithIcon),
+                    StyledCheckboxVariant(style: CheckboxStyle.rounded),
+                    StyledCheckboxVariant(style: CheckboxStyle.squared),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 40),
+
+              // --- Focus and Keyboard Navigation Example ---
+              _buildSectionTitle('Focus and Keyboard Navigation'),
+              _buildSectionContainer(
+                child: const FocusCheckboxExample(),
+              ),
+              const SizedBox(height: 40),
+
+              // --- Advanced Selection Example Section ---
+              _buildSectionTitle('Advanced Selection Example'),
+              _buildSectionContainer(
+                child: const SelectionExample(),
+              ),
+              const SizedBox(height: 40),
+            ],
+          ),
         ),
       ),
     );
@@ -185,11 +188,11 @@ class _BasicCheckboxStatesState extends State<BasicCheckboxStates> {
         Row(
           children: [
             NakedCheckbox(
-              checked: _isChecked,
-              indeterminate: _isIndeterminate,
+              value: _isChecked,
+              tristate: _isIndeterminate,
               onChanged: (value) {
                 setState(() {
-                  _isChecked = value;
+                  _isChecked = value ?? false;
                   _isIndeterminate =
                       false; // Clicking resolves indeterminate state
                 });
@@ -292,8 +295,8 @@ class _BasicCheckboxStatesState extends State<BasicCheckboxStates> {
       child: Row(
         children: [
           NakedCheckbox(
-            checked: isChecked,
-            indeterminate: isIndeterminate,
+            value: isChecked,
+            tristate: isIndeterminate,
             enabled: isDisabled,
             onChanged: isDisabled ? null : (v) {}, // No-op for demo
             // Web Reference (React/Tailwind): input element
@@ -520,8 +523,8 @@ class _ParentChildCheckboxesState extends State<ParentChildCheckboxes> {
           child: Row(
             children: [
               NakedCheckbox(
-                checked: _parentCheckedValue,
-                indeterminate: _isParentIndeterminate,
+                value: _parentCheckedValue,
+                tristate: _isParentIndeterminate,
                 onChanged: (value) => _handleParentChange(value),
                 onHoverState: (value) =>
                     setState(() => _isParentHovered = value),
@@ -567,9 +570,10 @@ class _ParentChildCheckboxesState extends State<ParentChildCheckboxes> {
                 child: Row(
                   children: [
                     NakedCheckbox(
-                      checked: item.isChecked,
+                      value: item.isChecked,
                       // Children are never indeterminate themselves
-                      onChanged: (value) => _handleChildChange(item.id, value),
+                      onChanged: (value) =>
+                          _handleChildChange(item.id, value ?? false),
                       child: _buildDefaultCheckboxVisual(
                         isChecked: item.isChecked,
                         // Pass base color, visual builder handles states
@@ -801,8 +805,8 @@ class _StyledCheckboxVariantState extends State<StyledCheckboxVariant> {
           mainAxisSize: MainAxisSize.min,
           children: [
             NakedCheckbox(
-              checked: _isChecked,
-              indeterminate: _isIndeterminate,
+              value: _isChecked,
+              tristate: _isIndeterminate,
               onChanged: (value) => _toggleChecked(), // Simplified toggle
               onHoverState: (value) => setState(() => _isHovered = value),
               onPressedState: (value) => setState(() => _isPressed = value),
@@ -1206,8 +1210,8 @@ class _SelectionExampleState extends State<SelectionExample> {
                     child: Row(
                       children: [
                         NakedCheckbox(
-                          checked: category.allItemsChecked,
-                          indeterminate: category.isIndeterminate,
+                          value: category.allItemsChecked,
+                          tristate: category.isIndeterminate,
                           onChanged: (value) =>
                               _handleCategoryChange(category, value),
                           // Web Reference: w-5 h-5 rounded text-blue-600 focus:ring-blue-500
@@ -1249,9 +1253,9 @@ class _SelectionExampleState extends State<SelectionExample> {
                             const SizedBox(
                                 width: 28), // Indentation like the pl-6
                             NakedCheckbox(
-                              checked: item.isChecked,
-                              onChanged: (value) =>
-                                  _handleItemChange(category, item, value),
+                              value: item.isChecked,
+                              onChanged: (value) => _handleItemChange(
+                                  category, item, value ?? false),
                               // Web Reference: w-5 h-5 rounded text-blue-500 focus:ring-blue-500
                               child: _buildDefaultCheckboxVisual(
                                 isChecked: item.isChecked,
@@ -1528,13 +1532,13 @@ class _FocusCheckboxExampleState extends State<FocusCheckboxExample> {
     final bool isPressed = _pressStates[id] ?? false;
 
     return NakedCheckbox(
-      checked: value,
+      value: value,
       onChanged: onChanged,
-      onEscapePressed: () {
-        setState(() {
-          _lastAction = 'Escape pressed on $label';
-        });
-      },
+      // onEscapePressed: () {
+      //   setState(() {
+      //     _lastAction = 'Escape pressed on $label';
+      //   });
+      // },
       onHoverState: (hover) {
         setState(() {
           _hoverStates[id] = hover;

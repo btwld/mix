@@ -2,7 +2,6 @@ export 'naked_accordion.dart';
 export 'naked_avatar.dart';
 export 'naked_button.dart';
 export 'naked_checkbox.dart';
-export 'naked_radio_button.dart';
 export 'naked_radio_group.dart';
 export 'naked_select.dart';
 export 'naked_slider.dart';

@@ -126,6 +126,7 @@ class _BasicMenuExampleState extends State<BasicMenuExample> {
     );
   }
 
+  final controller = OverlayPortalController();
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -134,16 +135,15 @@ class _BasicMenuExampleState extends State<BasicMenuExample> {
         Text('Last selected: $_lastAction'),
         const SizedBox(height: 16),
         NakedMenu(
-          open: _isMenuOpen,
-          onMenuClose: () => setState(() => _isMenuOpen = false),
-          offset: const Offset(0, 4),
-          menuAlignment: const AlignmentPair(
+          controller: controller,
+          closeOnSelect: true,
+          menuAlignment: const PositionConfig(
             target: Alignment.bottomLeft,
             follower: Alignment.topLeft,
           ),
-          menu: _buildMenuContent(),
-          child: ElevatedButton.icon(
-            onPressed: () => setState(() => _isMenuOpen = !_isMenuOpen),
+          overlayBuilder: (context) => _buildMenuContent(),
+          builder: (context) => ElevatedButton.icon(
+            onPressed: () => controller.show(),
             icon: const Icon(Icons.menu, color: Colors.white),
             label: const Text('Open Menu'),
           ),
@@ -153,47 +153,45 @@ class _BasicMenuExampleState extends State<BasicMenuExample> {
   }
 
   Widget _buildMenuContent() {
-    return NakedMenuContent(
-      child: Container(
-        width: 200,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildMenuItem(
-              'Edit',
-              Icons.edit_outlined,
-              () => _handleAction('Edit'),
-            ),
-            _buildMenuItem(
-              'Duplicate',
-              Icons.copy_outlined,
-              () => _handleAction('Duplicate'),
-            ),
-            _buildMenuItem(
-              'Share',
-              Icons.share_outlined,
-              () => _handleAction('Share'),
-            ),
-            _buildDivider(),
-            _buildMenuItem(
-              'Delete',
-              Icons.delete_outline,
-              () => _handleAction('Delete'),
-              color: Colors.red,
-            ),
-          ],
-        ),
+    return Container(
+      width: 200,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildMenuItem(
+            'Edit',
+            Icons.edit_outlined,
+            () => _handleAction('Edit'),
+          ),
+          _buildMenuItem(
+            'Duplicate',
+            Icons.copy_outlined,
+            () => _handleAction('Duplicate'),
+          ),
+          _buildMenuItem(
+            'Share',
+            Icons.share_outlined,
+            () => _handleAction('Share'),
+          ),
+          _buildDivider(),
+          _buildMenuItem(
+            'Delete',
+            Icons.delete_outline,
+            () => _handleAction('Delete'),
+            color: Colors.red,
+          ),
+        ],
       ),
     );
   }
@@ -252,6 +250,8 @@ class _KeyboardNavExampleState extends State<KeyboardNavExample> {
     );
   }
 
+  final controller = OverlayPortalController();
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -267,10 +267,10 @@ class _KeyboardNavExampleState extends State<KeyboardNavExample> {
         ),
         const SizedBox(height: 16),
         NakedMenu(
-          open: _isMenuOpen,
-          onMenuClose: () => setState(() => _isMenuOpen = false),
-          menu: _buildMenuContent(),
-          child: ElevatedButton.icon(
+          controller: controller,
+          closeOnSelect: true,
+          overlayBuilder: (context) => _buildMenuContent(),
+          builder: (context) => ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.primary,
               foregroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -289,51 +289,49 @@ class _KeyboardNavExampleState extends State<KeyboardNavExample> {
   }
 
   Widget _buildMenuContent() {
-    return NakedMenuContent(
-      child: Container(
-        width: 240,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.15),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-          border: Border.all(color: Colors.grey.shade200),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildKeyboardItem(
-              'profile',
-              'View Profile',
-              Icons.person_outline,
-              () => _handleAction('View Profile'),
-            ),
-            _buildKeyboardItem(
-              'settings',
-              'Settings',
-              Icons.settings_outlined,
-              () => _handleAction('Settings'),
-            ),
-            _buildKeyboardItem(
-              'help',
-              'Help & Support',
-              Icons.help_outline,
-              () => _handleAction('Help & Support'),
-            ),
-            _buildDivider(),
-            _buildKeyboardItem(
-              'logout',
-              'Logout',
-              Icons.logout,
-              () => _handleAction('Logout'),
-            ),
-          ],
-        ),
+    return Container(
+      width: 240,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.15),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildKeyboardItem(
+            'profile',
+            'View Profile',
+            Icons.person_outline,
+            () => _handleAction('View Profile'),
+          ),
+          _buildKeyboardItem(
+            'settings',
+            'Settings',
+            Icons.settings_outlined,
+            () => _handleAction('Settings'),
+          ),
+          _buildKeyboardItem(
+            'help',
+            'Help & Support',
+            Icons.help_outline,
+            () => _handleAction('Help & Support'),
+          ),
+          _buildDivider(),
+          _buildKeyboardItem(
+            'logout',
+            'Logout',
+            Icons.logout,
+            () => _handleAction('Logout'),
+          ),
+        ],
       ),
     );
   }
@@ -363,7 +361,7 @@ class _KeyboardNavExampleState extends State<KeyboardNavExample> {
                   ? Theme.of(context)
                       .colorScheme
                       .primaryContainer
-                      .withValues(alpha: 0.4)
+                      .withOpacity(0.4)
                   : Colors.transparent,
               borderRadius: BorderRadius.circular(4),
             ),
@@ -434,6 +432,7 @@ class _StyledMenuExampleState extends State<StyledMenuExample> {
     );
   }
 
+  final controller = OverlayPortalController();
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -442,15 +441,14 @@ class _StyledMenuExampleState extends State<StyledMenuExample> {
         Text('Last selected: $_lastAction'),
         const SizedBox(height: 16),
         NakedMenu(
-          open: _isMenuOpen,
-          onMenuClose: () => setState(() => _isMenuOpen = false),
-          offset: const Offset(0, 8),
-          menuAlignment: const AlignmentPair(
+          controller: controller,
+          closeOnSelect: true,
+          menuAlignment: const PositionConfig(
             target: Alignment.bottomLeft,
             follower: Alignment.topLeft,
           ),
-          menu: _buildStyledMenuContent(),
-          child: _buildTriggerButton(),
+          overlayBuilder: (context) => _buildStyledMenuContent(),
+          builder: (context) => _buildTriggerButton(),
         ),
       ],
     );
@@ -507,63 +505,61 @@ class _StyledMenuExampleState extends State<StyledMenuExample> {
   }
 
   Widget _buildStyledMenuContent() {
-    return NakedMenuContent(
-      child: Container(
-        width: 260,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.15),
-              blurRadius: 20,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text(
-                'Choose Theme',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
+    return Container(
+      width: 260,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.15),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Text(
+              'Choose Theme',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
               ),
             ),
-            _buildStyledMenuItem(
-              'light',
-              'Light Theme',
-              Icons.light_mode,
-              () => _handleAction('Light Theme'),
-              Colors.amber,
-            ),
-            _buildStyledMenuItem(
-              'dark',
-              'Dark Theme',
-              Icons.dark_mode,
-              () => _handleAction('Dark Theme'),
-              Colors.indigo,
-            ),
-            _buildStyledMenuItem(
-              'system',
-              'System Default',
-              Icons.settings_outlined,
-              () => _handleAction('System Default'),
-              Colors.blueGrey,
-            ),
-            _buildStyledMenuItem(
-              'custom',
-              'Custom Theme',
-              Icons.color_lens_outlined,
-              () => _handleAction('Custom Theme'),
-              Colors.deepPurple,
-            ),
-          ],
-        ),
+          ),
+          _buildStyledMenuItem(
+            'light',
+            'Light Theme',
+            Icons.light_mode,
+            () => _handleAction('Light Theme'),
+            Colors.amber,
+          ),
+          _buildStyledMenuItem(
+            'dark',
+            'Dark Theme',
+            Icons.dark_mode,
+            () => _handleAction('Dark Theme'),
+            Colors.indigo,
+          ),
+          _buildStyledMenuItem(
+            'system',
+            'System Default',
+            Icons.settings_outlined,
+            () => _handleAction('System Default'),
+            Colors.blueGrey,
+          ),
+          _buildStyledMenuItem(
+            'custom',
+            'Custom Theme',
+            Icons.color_lens_outlined,
+            () => _handleAction('Custom Theme'),
+            Colors.deepPurple,
+          ),
+        ],
       ),
     );
   }
@@ -595,9 +591,8 @@ class _StyledMenuExampleState extends State<StyledMenuExample> {
               vertical: 12,
             ),
             decoration: BoxDecoration(
-              color: isHovered
-                  ? accentColor.withValues(alpha: 0.1)
-                  : Colors.transparent,
+              color:
+                  isHovered ? accentColor.withOpacity(0.1) : Colors.transparent,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
@@ -605,9 +600,8 @@ class _StyledMenuExampleState extends State<StyledMenuExample> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: isHovered
-                        ? accentColor
-                        : accentColor.withValues(alpha: 0.2),
+                    color:
+                        isHovered ? accentColor : accentColor.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
@@ -658,6 +652,8 @@ class _MultiSectionMenuExampleState extends State<MultiSectionMenuExample> {
     );
   }
 
+  final controller = OverlayPortalController();
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -666,12 +662,11 @@ class _MultiSectionMenuExampleState extends State<MultiSectionMenuExample> {
         Text('Last selected: $_lastAction'),
         const SizedBox(height: 16),
         NakedMenu(
-          open: _isMenuOpen,
-          onMenuClose: () => setState(() => _isMenuOpen = false),
-          offset: const Offset(0, 4),
-          menu: _buildMultiSectionMenu(),
-          child: OutlinedButton.icon(
-            onPressed: () => setState(() => _isMenuOpen = !_isMenuOpen),
+          controller: controller,
+          closeOnSelect: true,
+          overlayBuilder: (context) => _buildMultiSectionMenu(),
+          builder: (context) => OutlinedButton.icon(
+            onPressed: () => controller.show(),
             icon: const Icon(Icons.format_list_bulleted),
             label: const Text('Multi-section Menu'),
           ),
@@ -681,106 +676,104 @@ class _MultiSectionMenuExampleState extends State<MultiSectionMenuExample> {
   }
 
   Widget _buildMultiSectionMenu() {
-    return NakedMenuContent(
-      child: Container(
-        width: 280,
-        constraints: const BoxConstraints(maxHeight: 400),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
+    return Container(
+      width: 280,
+      constraints: const BoxConstraints(maxHeight: 400),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildSectionHeader('File Operations'),
+            _buildSectionItem(
+              'New File',
+              Icons.note_add,
+              () => _handleAction('New File'),
+            ),
+            _buildSectionItem(
+              'Open Recent',
+              Icons.history,
+              () => _handleAction('Open Recent'),
+            ),
+            _buildSectionItem(
+              'Save',
+              Icons.save,
+              () => _handleAction('Save'),
+            ),
+            _buildSectionItem(
+              'Save As',
+              Icons.save_as,
+              () => _handleAction('Save As'),
+            ),
+            const Divider(),
+            _buildSectionHeader('Edit Operations'),
+            _buildSectionItem(
+              'Undo',
+              Icons.undo,
+              () => _handleAction('Undo'),
+            ),
+            _buildSectionItem(
+              'Redo',
+              Icons.redo,
+              () => _handleAction('Redo'),
+            ),
+            _buildSectionItem(
+              'Find',
+              Icons.search,
+              () => _handleAction('Find'),
+            ),
+            _buildSectionItem(
+              'Replace',
+              Icons.find_replace,
+              () => _handleAction('Replace'),
+            ),
+            const Divider(),
+            _buildSectionHeader('View'),
+            _buildSectionItem(
+              'Toggle Sidebar',
+              Icons.vertical_split,
+              () => _handleAction('Toggle Sidebar'),
+            ),
+            _buildSectionItem(
+              'Toggle Terminal',
+              Icons.terminal,
+              () => _handleAction('Toggle Terminal'),
+            ),
+            _buildSectionItem(
+              'Toggle Full Screen',
+              Icons.fullscreen,
+              () => _handleAction('Toggle Full Screen'),
+            ),
+            const Divider(),
+            _buildSectionHeader('Account'),
+            _buildSectionItem(
+              'Profile',
+              Icons.account_circle,
+              () => _handleAction('Profile'),
+            ),
+            _buildSectionItem(
+              'Settings',
+              Icons.settings,
+              () => _handleAction('Settings'),
+            ),
+            _buildSectionItem(
+              'Logout',
+              Icons.logout,
+              () => _handleAction('Logout'),
+              color: Colors.red,
             ),
           ],
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildSectionHeader('File Operations'),
-              _buildSectionItem(
-                'New File',
-                Icons.note_add,
-                () => _handleAction('New File'),
-              ),
-              _buildSectionItem(
-                'Open Recent',
-                Icons.history,
-                () => _handleAction('Open Recent'),
-              ),
-              _buildSectionItem(
-                'Save',
-                Icons.save,
-                () => _handleAction('Save'),
-              ),
-              _buildSectionItem(
-                'Save As',
-                Icons.save_as,
-                () => _handleAction('Save As'),
-              ),
-              const Divider(),
-              _buildSectionHeader('Edit Operations'),
-              _buildSectionItem(
-                'Undo',
-                Icons.undo,
-                () => _handleAction('Undo'),
-              ),
-              _buildSectionItem(
-                'Redo',
-                Icons.redo,
-                () => _handleAction('Redo'),
-              ),
-              _buildSectionItem(
-                'Find',
-                Icons.search,
-                () => _handleAction('Find'),
-              ),
-              _buildSectionItem(
-                'Replace',
-                Icons.find_replace,
-                () => _handleAction('Replace'),
-              ),
-              const Divider(),
-              _buildSectionHeader('View'),
-              _buildSectionItem(
-                'Toggle Sidebar',
-                Icons.vertical_split,
-                () => _handleAction('Toggle Sidebar'),
-              ),
-              _buildSectionItem(
-                'Toggle Terminal',
-                Icons.terminal,
-                () => _handleAction('Toggle Terminal'),
-              ),
-              _buildSectionItem(
-                'Toggle Full Screen',
-                Icons.fullscreen,
-                () => _handleAction('Toggle Full Screen'),
-              ),
-              const Divider(),
-              _buildSectionHeader('Account'),
-              _buildSectionItem(
-                'Profile',
-                Icons.account_circle,
-                () => _handleAction('Profile'),
-              ),
-              _buildSectionItem(
-                'Settings',
-                Icons.settings,
-                () => _handleAction('Settings'),
-              ),
-              _buildSectionItem(
-                'Logout',
-                Icons.logout,
-                () => _handleAction('Logout'),
-                color: Colors.red,
-              ),
-            ],
-          ),
         ),
       ),
     );
@@ -817,8 +810,7 @@ class _MultiSectionMenuExampleState extends State<MultiSectionMenuExample> {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color:
-              isHovered ? itemColor.withValues(alpha: 0.1) : Colors.transparent,
+          color: isHovered ? itemColor.withOpacity(0.1) : Colors.transparent,
         ),
         child: Row(
           children: [
