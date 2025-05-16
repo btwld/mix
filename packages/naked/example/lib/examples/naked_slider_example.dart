@@ -1230,7 +1230,7 @@ class _VerticalSliderExampleState extends State<VerticalSliderExample> {
           // Slider
           NakedSlider(
             value: _value / 100,
-            direction: SliderDirection.vertical,
+            direction: Axis.vertical,
             onChanged: (value) => setState(() {
               _value = value * 100;
             }),
@@ -1738,7 +1738,7 @@ class _VerticalSliderState extends State<VerticalSlider> {
           // Slider
           NakedSlider(
             value: _value / 100,
-            direction: SliderDirection.vertical,
+            direction: Axis.vertical,
             onChanged: (value) => setState(() {
               _value = value * 100;
             }),
