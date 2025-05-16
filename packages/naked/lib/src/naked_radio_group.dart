@@ -11,7 +11,7 @@ import 'utilities/pressed_state_region.dart';
 /// without imposing any visual styling.
 ///
 /// The radio group handles keyboard navigation between radio buttons using arrow keys.
-/// When a radio button is focused, arrow keys will move focus to the next/previous 
+/// When a radio button is focused, arrow keys will move focus to the next/previous
 /// enabled radio button in reading order. Selection follows focus.
 class NakedRadioGroup<T> extends StatefulWidget {
   /// The currently selected value within the group.
