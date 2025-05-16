@@ -483,6 +483,8 @@ class _NakedTextFieldState extends State<NakedTextField>
     }
   }
 
+  int get _currentLength => _effectiveController.value.text.characters.length;
+
   @override
   String? get restorationId => widget.restorationId;
 
@@ -654,6 +656,15 @@ class _NakedTextFieldState extends State<NakedTextField>
     Color selectionColor;
     Radius? cursorRadius = widget.cursorRadius;
 
+    final int? semanticsMaxValueLength;
+    if (_effectiveMaxLengthEnforcement != MaxLengthEnforcement.none &&
+        widget.maxLength != null &&
+        widget.maxLength! > 0) {
+      semanticsMaxValueLength = widget.maxLength;
+    } else {
+      semanticsMaxValueLength = null;
+    }
+
     // Configure platform-specific properties
     switch (theme.platform) {
       case TargetPlatform.iOS:
@@ -773,6 +784,8 @@ class _NakedTextFieldState extends State<NakedTextField>
 
     return Semantics(
       enabled: widget.enabled,
+      currentValueLength: _currentLength,
+      maxValueLength: semanticsMaxValueLength,
       onTap: widget.readOnly
           ? null
           : () {
