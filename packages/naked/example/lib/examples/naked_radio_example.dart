@@ -15,7 +15,7 @@ class _BasicRadioExampleState extends State<BasicRadioExample> {
   @override
   Widget build(BuildContext context) {
     return NakedRadioGroup<String>(
-      value: _selectedOption,
+      groupValue: _selectedOption,
       onChanged: (value) {
         setState(() {
           _selectedOption = value;
@@ -50,7 +50,7 @@ class _BasicRadioExampleState extends State<BasicRadioExample> {
               onPressedState: (isPressed) =>
                   setInnerState(() => isPressed = isPressed),
               onFocusState: (isFocused) => {},
-              child: Container(
+              builder: (context, isSelected) => Container(
                 width: 20,
                 height: 20,
                 decoration: BoxDecoration(
@@ -105,7 +105,7 @@ class _StyledRadioExampleState extends State<StyledRadioExample> {
   @override
   Widget build(BuildContext context) {
     return NakedRadioGroup<String>(
-      value: _selectedOption,
+      groupValue: _selectedOption,
       onChanged: (value) {
         setState(() {
           _selectedOption = value;
@@ -136,14 +136,13 @@ class _StyledRadioExampleState extends State<StyledRadioExample> {
           children: [
             NakedRadioButton<String>(
               value: value,
-              semanticLabel: label,
               onHoverState: (isHovered) =>
                   setInnerState(() => isHovered = isHovered),
               onPressedState: (isPressed) =>
                   setInnerState(() => isPressed = isPressed),
               onFocusState: (isFocused) =>
                   setInnerState(() => isFocused = isFocused),
-              child: AnimatedContainer(
+              builder: (context, isSelected) => AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 width: 80,
                 height: 60,
@@ -241,7 +240,7 @@ class _FormRadioExampleState extends State<FormRadioExample> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   NakedRadioGroup<String>(
-                    value: state.value,
+                    groupValue: state.value,
                     onChanged: (value) {
                       state.didChange(value);
                       setState(() {
@@ -299,12 +298,11 @@ class _FormRadioExampleState extends State<FormRadioExample> {
           children: [
             NakedRadioButton<String>(
               value: value,
-              semanticLabel: label,
               onHoverState: (isHovered) =>
                   setInnerState(() => isHovered = isHovered),
               onPressedState: (isPressed) =>
                   setInnerState(() => isPressed = isPressed),
-              child: Container(
+              builder: (context, isSelected) => Container(
                 width: 20,
                 height: 20,
                 decoration: BoxDecoration(
@@ -371,7 +369,7 @@ class _DisabledRadioExampleState extends State<DisabledRadioExample> {
         const Text('Disabled Group:'),
         const SizedBox(height: 8),
         NakedRadioGroup<String>(
-          value: _selectedOption,
+          groupValue: _selectedOption,
           onChanged: (value) {
             setState(() {
               _selectedOption = value;
@@ -393,7 +391,7 @@ class _DisabledRadioExampleState extends State<DisabledRadioExample> {
         const Text('Individual Disabled Buttons:'),
         const SizedBox(height: 8),
         NakedRadioGroup<String>(
-          value: _selectedOption,
+          groupValue: _selectedOption,
           onChanged: (value) {
             setState(() {
               _selectedOption = value;
@@ -417,7 +415,7 @@ class _DisabledRadioExampleState extends State<DisabledRadioExample> {
         NakedRadioButton<String>(
           value: value,
           enabled: isOptionDisabled,
-          child: Container(
+          builder: (context, isSelected) => Container(
             width: 20,
             height: 20,
             decoration: BoxDecoration(
@@ -576,7 +574,7 @@ class _BasicRadioButtonsState extends State<BasicRadioButtons> {
         ),
         const SizedBox(height: 16),
         NakedRadioGroup<String>(
-          value: _selected,
+          groupValue: _selected,
           onChanged: (value) {
             if (value != null) {
               setState(() => _selected = value);
@@ -593,51 +591,43 @@ class _BasicRadioButtonsState extends State<BasicRadioButtons> {
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: NakedRadioButton<String>(
                     value: option['id']!,
-                    child: Builder(
-                      builder: (context) {
-                        final isSelected = _selected == option['id'];
-
-                        return Row(
-                          children: [
-                            Container(
-                              width: 16,
-                              height: 16,
+                    builder: (context, isSelected) => Row(
+                      children: [
+                        Container(
+                          width: 16,
+                          height: 16,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: isSelected
+                                  ? const Color(0xFF3B82F6) // border-blue-500
+                                  : const Color(0xFFD1D5DB), // border-gray-300
+                              width: 2,
+                            ),
+                          ),
+                          child: Center(
+                            child: Container(
+                              width: 8,
+                              height: 8,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: isSelected
-                                      ? const Color(
-                                          0xFF3B82F6) // border-blue-500
-                                      : const Color(
-                                          0xFFD1D5DB), // border-gray-300
-                                  width: 2,
-                                ),
-                              ),
-                              child: Center(
-                                child: Container(
-                                  width: 8,
-                                  height: 8,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: isSelected
-                                        ? const Color(0xFF3B82F6) // bg-blue-500
-                                        : Colors.transparent,
-                                  ),
-                                ),
+                                color: isSelected
+                                    ? const Color(0xFF3B82F6) // bg-blue-500
+                                    : Colors.transparent,
                               ),
                             ),
-                            const SizedBox(width: 8),
-                            Text(
-                              option['label']!,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: Color(0xFF374151), // text-gray-700
-                              ),
-                            ),
-                          ],
-                        );
-                      },
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          option['label']!,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFF374151), // text-gray-700
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -705,7 +695,7 @@ class _RadioButtonVariantsState extends State<RadioButtonVariants> {
               ),
               const SizedBox(height: 16),
               NakedRadioGroup<String>(
-                value: _variants['primary'],
+                groupValue: _variants['primary'],
                 onChanged: (value) {
                   if (value != null) {
                     _handleChange('primary', value);
@@ -718,51 +708,43 @@ class _RadioButtonVariantsState extends State<RadioButtonVariants> {
                         padding: const EdgeInsets.only(bottom: 8.0),
                         child: NakedRadioButton<String>(
                           value: size,
-                          child: Builder(
-                            builder: (context) {
-                              final isSelected = _variants['primary'] == size;
-                              return Row(
-                                children: [
-                                  Container(
-                                    width: 16,
-                                    height: 16,
+                          builder: (context, isSelected) => Row(
+                            children: [
+                              Container(
+                                width: 16,
+                                height: 16,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: isSelected
+                                        ? const Color(0xFF3B82F6) // blue-500
+                                        : const Color(0xFFD1D5DB), // gray-300
+                                    width: 2,
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Container(
+                                    width: 8,
+                                    height: 8,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: isSelected
-                                            ? const Color(
-                                                0xFF3B82F6) // blue-500
-                                            : const Color(
-                                                0xFFD1D5DB), // gray-300
-                                        width: 2,
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Container(
-                                        width: 8,
-                                        height: 8,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: isSelected
-                                              ? const Color(
-                                                  0xFF3B82F6) // blue-500
-                                              : Colors.transparent,
-                                        ),
-                                      ),
+                                      color: isSelected
+                                          ? const Color(0xFF3B82F6) // blue-500
+                                          : Colors.transparent,
                                     ),
                                   ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    size[0].toUpperCase() + size.substring(1),
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      color: Color(0xFF374151), // text-gray-700
-                                    ),
-                                  ),
-                                ],
-                              );
-                            },
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                size[0].toUpperCase() + size.substring(1),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color(0xFF374151), // text-gray-700
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -801,7 +783,7 @@ class _RadioButtonVariantsState extends State<RadioButtonVariants> {
               ),
               const SizedBox(height: 16),
               NakedRadioGroup<String>(
-                value: _variants['outline'],
+                groupValue: _variants['outline'],
                 onChanged: (value) {
                   if (value != null) {
                     _handleChange('outline', value);
@@ -814,52 +796,44 @@ class _RadioButtonVariantsState extends State<RadioButtonVariants> {
                         padding: const EdgeInsets.only(bottom: 8.0),
                         child: NakedRadioButton<String>(
                           value: period,
-                          child: Builder(
-                            builder: (context) {
-                              final isSelected = _variants['outline'] == period;
-                              return Row(
-                                children: [
-                                  Container(
-                                    width: 16,
-                                    height: 16,
+                          builder: (context, isSelected) => Row(
+                            children: [
+                              Container(
+                                width: 16,
+                                height: 16,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: isSelected
+                                        ? const Color(0xFF6366F1) // indigo-500
+                                        : const Color(0xFF9CA3AF), // gray-400
+                                    width: 2,
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Container(
+                                    width: 8,
+                                    height: 8,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: isSelected
-                                            ? const Color(
-                                                0xFF6366F1) // indigo-500
-                                            : const Color(
-                                                0xFF9CA3AF), // gray-400
-                                        width: 2,
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Container(
-                                        width: 8,
-                                        height: 8,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: isSelected
-                                              ? const Color(
-                                                  0xFF6366F1) // indigo-500
-                                              : Colors.transparent,
-                                        ),
-                                      ),
+                                      color: isSelected
+                                          ? const Color(
+                                              0xFF6366F1) // indigo-500
+                                          : Colors.transparent,
                                     ),
                                   ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    period[0].toUpperCase() +
-                                        period.substring(1),
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      color: Color(0xFF374151), // text-gray-700
-                                    ),
-                                  ),
-                                ],
-                              );
-                            },
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                period[0].toUpperCase() + period.substring(1),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color(0xFF374151), // text-gray-700
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -898,7 +872,7 @@ class _RadioButtonVariantsState extends State<RadioButtonVariants> {
               ),
               const SizedBox(height: 16),
               NakedRadioGroup<String>(
-                value: _variants['colored'],
+                groupValue: _variants['colored'],
                 onChanged: (value) {
                   if (value != null) {
                     _handleChange('colored', value);
@@ -924,51 +898,44 @@ class _RadioButtonVariantsState extends State<RadioButtonVariants> {
                         padding: const EdgeInsets.only(bottom: 8.0),
                         child: NakedRadioButton<String>(
                           value: color['id'] as String,
-                          child: Builder(
-                            builder: (context) {
-                              final isSelected =
-                                  _variants['colored'] == color['id'];
-                              return Row(
-                                children: [
-                                  Container(
-                                    width: 16,
-                                    height: 16,
+                          builder: (context, isSelected) => Row(
+                            children: [
+                              Container(
+                                width: 16,
+                                height: 16,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: isSelected
+                                        ? color['color'] as Color
+                                        : const Color(0xFFD1D5DB), // gray-300
+                                    width: 2,
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Container(
+                                    width: 8,
+                                    height: 8,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: isSelected
-                                            ? color['color'] as Color
-                                            : const Color(
-                                                0xFFD1D5DB), // gray-300
-                                        width: 2,
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Container(
-                                        width: 8,
-                                        height: 8,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: isSelected
-                                              ? color['color'] as Color
-                                              : Colors.transparent,
-                                        ),
-                                      ),
+                                      color: isSelected
+                                          ? color['color'] as Color
+                                          : Colors.transparent,
                                     ),
                                   ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    color['id'].toString()[0].toUpperCase() +
-                                        color['id'].toString().substring(1),
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      color: Color(0xFF374151), // text-gray-700
-                                    ),
-                                  ),
-                                ],
-                              );
-                            },
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                color['id'].toString()[0].toUpperCase() +
+                                    color['id'].toString().substring(1),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color(0xFF374151), // text-gray-700
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -1007,7 +974,7 @@ class _RadioButtonVariantsState extends State<RadioButtonVariants> {
               ),
               const SizedBox(height: 16),
               NakedRadioGroup<String>(
-                value: _variants['disabled'],
+                groupValue: _variants['disabled'],
                 onChanged: (value) {
                   if (value != null) {
                     _handleChange('disabled', value);
@@ -1032,69 +999,64 @@ class _RadioButtonVariantsState extends State<RadioButtonVariants> {
                         child: NakedRadioButton<String>(
                           value: option['id'] as String,
                           enabled: option['enabled'] as bool,
-                          child: Builder(
-                            builder: (context) {
-                              final isSelected =
-                                  _variants['disabled'] == option['id'];
-                              final isEnabled = option['enabled'] as bool;
-                              return Row(
-                                children: [
-                                  Container(
-                                    width: 16,
-                                    height: 16,
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          color: isEnabled
-                                              ? const Color(
-                                                  0xFF3B82F6) // gray-200
-                                              : isSelected
-                                                  ? const Color(
-                                                      0xFFE5E7EB) // blue-500
-                                                  : const Color(
-                                                      0xFFD1D5DB), // gray-300
-                                          width: 2,
-                                        ),
+                          builder: (context, isSelected) {
+                            final isEnabled = option['enabled'] as bool;
+                            return Row(
+                              children: [
+                                Container(
+                                  width: 16,
+                                  height: 16,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
                                         color: isEnabled
-                                            ? Colors.white
-                                            : const Color(
-                                                0xFFF3F4F6) // gray-100,
-                                        ),
-                                    child: Center(
-                                      child: Container(
-                                        width: 8,
-                                        height: 8,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: !isEnabled
-                                              ? isSelected
-                                                  ? const Color(
-                                                      0xFFD1D5DB) // gray-300
-                                                  : Colors.transparent
-                                              : isSelected
-                                                  ? const Color(
-                                                      0xFF3B82F6) // blue-500
-                                                  : Colors.transparent,
-                                        ),
+                                            ? const Color(
+                                                0xFF3B82F6) // gray-200
+                                            : isSelected
+                                                ? const Color(
+                                                    0xFFE5E7EB) // blue-500
+                                                : const Color(
+                                                    0xFFD1D5DB), // gray-300
+                                        width: 2,
+                                      ),
+                                      color: isEnabled
+                                          ? Colors.white
+                                          : const Color(0xFFF3F4F6) // gray-100,
+                                      ),
+                                  child: Center(
+                                    child: Container(
+                                      width: 8,
+                                      height: 8,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: !isEnabled
+                                            ? isSelected
+                                                ? const Color(
+                                                    0xFFD1D5DB) // gray-300
+                                                : Colors.transparent
+                                            : isSelected
+                                                ? const Color(
+                                                    0xFF3B82F6) // blue-500
+                                                : Colors.transparent,
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    option['label'] as String,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      color: !isEnabled
-                                          ? const Color(0xFF9CA3AF) // gray-400
-                                          : const Color(
-                                              0xFF374151), // text-gray-700
-                                    ),
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  option['label'] as String,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: !isEnabled
+                                        ? const Color(0xFF9CA3AF) // gray-400
+                                        : const Color(
+                                            0xFF374151), // text-gray-700
                                   ),
-                                ],
-                              );
-                            },
-                          ),
+                                ),
+                              ],
+                            );
+                          },
                         ),
                       ),
                   ],
@@ -1198,19 +1160,19 @@ class _FocusRadioExampleState extends State<FocusRadioExample> {
 
         // Radio group with focus management
         NakedRadioGroup<String>(
-          value: _selectedOption,
+          groupValue: _selectedOption,
           onChanged: (value) {
             setState(() {
               _selectedOption = value;
               _lastAction = 'Selected: ${_getLabelById(value)}';
             });
           },
-          onEscapePressed: () {
-            setState(() {
-              _selectedOption = null;
-              _lastAction = 'Selection cleared with Escape key';
-            });
-          },
+          // onEscapePressed: () {
+          //   setState(() {
+          //     _selectedOption = null;
+          //     _lastAction = 'Selection cleared with Escape key';
+          //   });
+          // },
           child: Column(
             children: _options.map((option) {
               final String id = option['id']!;
@@ -1260,7 +1222,7 @@ class _FocusRadioExampleState extends State<FocusRadioExample> {
           }
         });
       },
-      child: Container(
+      builder: (context, isSelected) => Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
