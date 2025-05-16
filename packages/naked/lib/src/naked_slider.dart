@@ -218,8 +218,7 @@ class NakedSlider extends StatefulWidget {
 class _NakedSliderState extends State<NakedSlider> {
   late FocusNode _focusNode;
   bool _isDragging = false;
-  bool _isHovered = false;
-  bool _isFocused = false;
+
   Offset? _dragStartPosition;
   double? _dragStartValue;
 
@@ -400,21 +399,16 @@ class _NakedSliderState extends State<NakedSlider> {
           _handleKeyEvent(event);
           return KeyEventResult.handled;
         },
-        onFocusChange: (focused) {
-          setState(() => _isFocused = focused);
-          widget.onFocusState?.call(focused);
-        },
+        onFocusChange: widget.onFocusState,
         child: MouseRegion(
           cursor: isInteractive ? widget.cursor : SystemMouseCursors.forbidden,
           onEnter: isInteractive
               ? (_) {
-                  setState(() => _isHovered = true);
                   widget.onHoverState?.call(true);
                 }
               : null,
           onExit: isInteractive
               ? (_) {
-                  setState(() => _isHovered = false);
                   widget.onHoverState?.call(false);
                 }
               : null,
