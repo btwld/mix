@@ -8,7 +8,7 @@ extension WidgetTesterExtension on WidgetTester {
   Future<void> pumpMaterialWidget(Widget widget) async {
     await pumpWidget(
       MaterialApp(
-        home: widget,
+        home: Scaffold(body: widget),
       ),
     );
   }
