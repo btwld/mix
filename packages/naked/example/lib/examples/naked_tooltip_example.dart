@@ -71,7 +71,7 @@ class MyTooltipState extends State<MyTooltip>
   Widget build(BuildContext context) {
     return NakedTooltip(
       fallbackAlignments: const [
-        AlignmentPair(
+        PositionConfig(
           target: Alignment.topCenter,
           follower: Alignment.bottomCenter,
           offset: Offset(0, -8),

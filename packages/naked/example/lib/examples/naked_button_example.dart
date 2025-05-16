@@ -22,7 +22,6 @@ class _NakedButtonExampleState extends State<NakedButtonExample> {
 
   @override
   Widget build(BuildContext context) {
-    final isWideScreen = MediaQuery.of(context).size.width > 600;
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
