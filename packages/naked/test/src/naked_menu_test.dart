@@ -5,14 +5,6 @@ import 'package:naked/naked.dart';
 
 import 'helpers/simulate_hover.dart';
 
-// Test extensions for NakedMenu
-extension _NakedMenuFinders on CommonFinders {
-  Finder nakedMenuItem() => byType(NakedMenuItem);
-  Finder nakedMenuItemWithText(String text) =>
-      find.descendant(of: nakedMenuItem(), matching: find.text(text));
-}
-
-// Test extensions for WidgetTester to interact with NakedMenu
 extension _NakedMenuTester on WidgetTester {
   Future<void> pressEsc() async {
     await sendKeyEvent(LogicalKeyboardKey.escape);
