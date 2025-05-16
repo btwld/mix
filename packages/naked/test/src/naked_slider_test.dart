@@ -231,6 +231,9 @@ void main() {
     });
 
     testWidgets('calls onHoverState when hovered', (WidgetTester tester) async {
+      FocusManager.instance.highlightStrategy =
+          FocusHighlightStrategy.alwaysTraditional;
+
       bool isHovered = false;
       await tester.pumpMaterialWidget(
         Padding(
@@ -361,7 +364,6 @@ void main() {
         focusNode.requestFocus();
         await tester.pump();
 
-        // Test arrow keys
         for (final keyTest in [
           (key: LogicalKeyboardKey.arrowRight, expectedValue: 0.6),
           (key: LogicalKeyboardKey.arrowLeft, expectedValue: 0.5),
@@ -611,6 +613,7 @@ void main() {
       await tester.sendKeyDownEvent(LogicalKeyboardKey.shift);
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
       await tester.sendKeyUpEvent(LogicalKeyboardKey.shift);
+
       await tester.pump();
 
       expect(value, 0.7);

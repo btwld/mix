@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:naked/src/utilities/naked_focus_manager.dart';
 
-export 'naked_slider.dart' show NakedSliderState;
-
 /// Direction of the slider (horizontal or vertical).
 enum SliderDirection {
   /// Horizontal slider (left to right)
@@ -216,24 +214,67 @@ class NakedSlider extends StatefulWidget {
 }
 
 class _NakedSliderState extends State<NakedSlider> {
-  late FocusNode _focusNode;
   bool _isDragging = false;
 
   Offset? _dragStartPosition;
   double? _dragStartValue;
 
-  @override
-  void initState() {
-    super.initState();
-    _focusNode = widget.focusNode ?? FocusNode();
+  Map<ShortcutActivator, Intent> get _shortcuts {
+    final bool isRTL = Directionality.of(context) == TextDirection.rtl;
+    const arrowLeft = LogicalKeyboardKey.arrowLeft;
+    const arrowRight = LogicalKeyboardKey.arrowRight;
+    const arrowUp = LogicalKeyboardKey.arrowUp;
+    const arrowDown = LogicalKeyboardKey.arrowDown;
+    const home = LogicalKeyboardKey.home;
+    const end = LogicalKeyboardKey.end;
+
+    final decrementIntent = SingleActivator(isRTL ? arrowRight : arrowLeft);
+    final incrementIntent = SingleActivator(isRTL ? arrowLeft : arrowRight);
+
+    final shiftDecrementIntent =
+        SingleActivator(isRTL ? arrowRight : arrowLeft, shift: true);
+    final shiftIncrementIntent =
+        SingleActivator(isRTL ? arrowLeft : arrowRight, shift: true);
+
+    return {
+      // Horizontal
+      incrementIntent: const _SliderIncrementIntent(),
+      decrementIntent: const _SliderDecrementIntent(),
+      shiftDecrementIntent: const _SliderShiftDecrementIntent(),
+      shiftIncrementIntent: const _SliderShiftIncrementIntent(),
+
+      // Vertical
+      const SingleActivator(arrowUp): const _SliderIncrementIntent(),
+      const SingleActivator(arrowUp, shift: true):
+          const _SliderShiftIncrementIntent(),
+
+      const SingleActivator(arrowDown): const _SliderDecrementIntent(),
+      const SingleActivator(arrowDown, shift: true):
+          const _SliderShiftDecrementIntent(),
+
+      // Home/End
+      const SingleActivator(home): const _SliderSetToMinIntent(),
+      const SingleActivator(end): const _SliderSetToMaxIntent(),
+    };
   }
 
-  @override
-  void dispose() {
-    if (widget.focusNode == null) {
-      _focusNode.dispose();
+  Map<Type, Action<Intent>> get _actions {
+    return {
+      _SliderIncrementIntent: _SliderIncrementAction(this),
+      _SliderDecrementIntent: _SliderDecrementAction(this),
+      _SliderShiftDecrementIntent:
+          _SliderDecrementAction(this, isShiftPressed: true),
+      _SliderShiftIncrementIntent:
+          _SliderIncrementAction(this, isShiftPressed: true),
+      _SliderSetToMinIntent: _SliderSetToMinAction(this),
+      _SliderSetToMaxIntent: _SliderSetToMaxAction(this),
+    };
+  }
+
+  void _callOnChangeIfNeeded(double value) {
+    if (value != widget.value) {
+      widget.onChanged?.call(value);
     }
-    super.dispose();
   }
 
   double _normalizeValue(double value) {
@@ -304,64 +345,11 @@ class _NakedSliderState extends State<NakedSlider> {
     widget.onDragEnd?.call(widget.value);
   }
 
-  void _handleKeyEvent(KeyEvent event) {
-    if (!widget.enabled || widget.onChanged == null) return;
+  double _calculateStep(bool isShiftPressed) {
+    final divisions = widget.divisions;
+    if (divisions != null) return (widget.max - widget.min) / divisions;
 
-    double step = HardwareKeyboard.instance.isShiftPressed
-        ? widget.largeKeyboardStep
-        : widget.keyboardStep;
-
-    if (widget.divisions != null) {
-      final divisionStep = (widget.max - widget.min) / widget.divisions!;
-      step = divisionStep;
-    }
-
-    double newValue = widget.value;
-
-    // Get text direction for horizontal sliders
-    final TextDirection textDirection = Directionality.of(context);
-    final bool isRTL = textDirection == TextDirection.rtl;
-
-    if (event is KeyDownEvent) {
-      if (widget.direction == SliderDirection.horizontal) {
-        if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
-          // In RTL, right arrow decreases value
-          newValue += isRTL ? -step : step;
-        } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-          // In RTL, left arrow increases value
-          newValue += isRTL ? step : -step;
-        } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-          newValue += step;
-        } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-          newValue -= step;
-        } else if (event.logicalKey == LogicalKeyboardKey.home) {
-          newValue = widget.min;
-        } else if (event.logicalKey == LogicalKeyboardKey.end) {
-          newValue = widget.max;
-        }
-      } else {
-        // Vertical slider has inverted up/down controls
-        if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-          newValue += step;
-        } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-          newValue -= step;
-        } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
-          newValue += step;
-        } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-          newValue -= step;
-        } else if (event.logicalKey == LogicalKeyboardKey.home) {
-          newValue = widget.min;
-        } else if (event.logicalKey == LogicalKeyboardKey.end) {
-          newValue = widget.max;
-        }
-      }
-
-      newValue = _normalizeValue(newValue);
-
-      if (newValue != widget.value) {
-        widget.onChanged?.call(newValue);
-      }
-    }
+    return isShiftPressed ? widget.largeKeyboardStep : widget.keyboardStep;
   }
 
   @override
@@ -388,60 +376,122 @@ class _NakedSliderState extends State<NakedSlider> {
           '${((decreasedValue - widget.min) / (widget.max - widget.min) * 100).round()}%',
       enabled: isInteractive,
       excludeSemantics: true,
-      child: Focus(
-        focusNode: _focusNode,
-        skipTraversal: false,
-        onKeyEvent: (node, event) {
-          if (!isInteractive) return KeyEventResult.ignored;
-          if (event.logicalKey == LogicalKeyboardKey.tab) {
-            return KeyEventResult.ignored;
-          }
-          _handleKeyEvent(event);
-          return KeyEventResult.handled;
-        },
+      child: FocusableActionDetector(
+        shortcuts: _shortcuts,
+        actions: _actions,
+        descendantsAreTraversable: false,
+        focusNode: widget.focusNode,
         onFocusChange: widget.onFocusState,
-        child: MouseRegion(
-          cursor: isInteractive ? widget.cursor : SystemMouseCursors.forbidden,
-          onEnter: isInteractive
-              ? (_) {
-                  widget.onHoverState?.call(true);
-                }
-              : null,
-          onExit: isInteractive
-              ? (_) {
-                  widget.onHoverState?.call(false);
-                }
-              : null,
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onHorizontalDragStart:
-                widget.direction == SliderDirection.horizontal && isInteractive
-                    ? _handleDragStart
-                    : null,
-            onHorizontalDragUpdate:
-                widget.direction == SliderDirection.horizontal && isInteractive
-                    ? _handleDragUpdate
-                    : null,
-            onHorizontalDragEnd:
-                widget.direction == SliderDirection.horizontal && isInteractive
-                    ? _handleDragEnd
-                    : null,
-            onVerticalDragStart:
-                widget.direction == SliderDirection.vertical && isInteractive
-                    ? _handleDragStart
-                    : null,
-            onVerticalDragUpdate:
-                widget.direction == SliderDirection.vertical && isInteractive
-                    ? _handleDragUpdate
-                    : null,
-            onVerticalDragEnd:
-                widget.direction == SliderDirection.vertical && isInteractive
-                    ? _handleDragEnd
-                    : null,
-            child: widget.child,
-          ),
+        enabled: isInteractive,
+        mouseCursor:
+            isInteractive ? widget.cursor : SystemMouseCursors.forbidden,
+        onShowHoverHighlight: widget.onHoverState,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onHorizontalDragStart:
+              widget.direction == SliderDirection.horizontal && isInteractive
+                  ? _handleDragStart
+                  : null,
+          onHorizontalDragUpdate:
+              widget.direction == SliderDirection.horizontal && isInteractive
+                  ? _handleDragUpdate
+                  : null,
+          onHorizontalDragEnd:
+              widget.direction == SliderDirection.horizontal && isInteractive
+                  ? _handleDragEnd
+                  : null,
+          onVerticalDragStart:
+              widget.direction == SliderDirection.vertical && isInteractive
+                  ? _handleDragStart
+                  : null,
+          onVerticalDragUpdate:
+              widget.direction == SliderDirection.vertical && isInteractive
+                  ? _handleDragUpdate
+                  : null,
+          onVerticalDragEnd:
+              widget.direction == SliderDirection.vertical && isInteractive
+                  ? _handleDragEnd
+                  : null,
+          child: widget.child,
         ),
       ),
     );
+  }
+}
+
+class _SliderShiftIncrementIntent extends _SliderIncrementIntent {
+  const _SliderShiftIncrementIntent();
+}
+
+class _SliderShiftDecrementIntent extends _SliderDecrementIntent {
+  const _SliderShiftDecrementIntent();
+}
+
+class _SliderIncrementIntent extends Intent {
+  const _SliderIncrementIntent();
+}
+
+class _SliderDecrementIntent extends Intent {
+  const _SliderDecrementIntent();
+}
+
+class _SliderSetToMinIntent extends Intent {
+  const _SliderSetToMinIntent();
+}
+
+class _SliderSetToMaxIntent extends Intent {
+  const _SliderSetToMaxIntent();
+}
+
+// Create actions that respond to these intents
+
+class _SliderIncrementAction extends Action<_SliderIncrementIntent> {
+  _SliderIncrementAction(this.state, {this.isShiftPressed = false});
+
+  final _NakedSliderState state;
+  final bool isShiftPressed;
+
+  @override
+  void invoke(_SliderIncrementIntent intent) {
+    final step = state._calculateStep(isShiftPressed);
+
+    final newValue = state._normalizeValue(state.widget.value + step);
+    state._callOnChangeIfNeeded(newValue);
+  }
+}
+
+class _SliderDecrementAction extends Action<_SliderDecrementIntent> {
+  _SliderDecrementAction(this.state, {this.isShiftPressed = false});
+
+  final _NakedSliderState state;
+  final bool isShiftPressed;
+  @override
+  void invoke(_SliderDecrementIntent intent) {
+    final step = state._calculateStep(isShiftPressed);
+
+    final newValue = state._normalizeValue(state.widget.value - step);
+    state._callOnChangeIfNeeded(newValue);
+  }
+}
+
+class _SliderSetToMinAction extends Action<_SliderSetToMinIntent> {
+  _SliderSetToMinAction(this.state);
+
+  final _NakedSliderState state;
+
+  @override
+  void invoke(_SliderSetToMinIntent intent) {
+    state._callOnChangeIfNeeded(state.widget.min);
+  }
+}
+
+class _SliderSetToMaxAction extends Action<_SliderSetToMaxIntent> {
+  _SliderSetToMaxAction(this.state);
+
+  final _NakedSliderState state;
+
+  @override
+  void invoke(_SliderSetToMaxIntent intent) {
+    state._callOnChangeIfNeeded(state.widget.max);
   }
 }
