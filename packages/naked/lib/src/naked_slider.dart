@@ -2,15 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:naked/src/utilities/naked_focus_manager.dart';
 
-/// Direction of the slider (horizontal or vertical).
-enum SliderDirection {
-  /// Horizontal slider (left to right)
-  horizontal,
-
-  /// Vertical slider (bottom to top)
-  vertical,
-}
-
 /// A fully customizable slider with no default styling.
 ///
 /// NakedSlider provides interaction behavior and accessibility
@@ -162,7 +153,7 @@ class NakedSlider extends StatefulWidget {
   /// Direction of the slider.
   ///
   /// Can be horizontal (left to right) or vertical (bottom to top).
-  final SliderDirection direction;
+  final Axis direction;
 
   /// Number of discrete divisions.
   ///
@@ -203,7 +194,7 @@ class NakedSlider extends StatefulWidget {
     this.semanticLabel,
     this.cursor = SystemMouseCursors.click,
     this.focusNode,
-    this.direction = SliderDirection.horizontal,
+    this.direction = Axis.horizontal,
     this.divisions,
     this.keyboardStep = 0.01,
     this.largeKeyboardStep = 0.1,
@@ -316,11 +307,10 @@ class _NakedSliderState extends State<NakedSlider> {
     if (box == null) return;
 
     // Convert the drag delta to a value change
-    double dragExtent = widget.direction == SliderDirection.horizontal
-        ? box.size.width
-        : box.size.height;
+    double dragExtent =
+        widget.direction == Axis.horizontal ? box.size.width : box.size.height;
 
-    double dragDistance = widget.direction == SliderDirection.horizontal
+    double dragDistance = widget.direction == Axis.horizontal
         ? dragDelta.dx
         : -dragDelta.dy; // Invert for vertical slider (up is positive)
 
@@ -389,29 +379,28 @@ class _NakedSliderState extends State<NakedSlider> {
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onHorizontalDragStart:
-              widget.direction == SliderDirection.horizontal && isInteractive
+              widget.direction == Axis.horizontal && isInteractive
                   ? _handleDragStart
                   : null,
           onHorizontalDragUpdate:
-              widget.direction == SliderDirection.horizontal && isInteractive
+              widget.direction == Axis.horizontal && isInteractive
                   ? _handleDragUpdate
                   : null,
           onHorizontalDragEnd:
-              widget.direction == SliderDirection.horizontal && isInteractive
+              widget.direction == Axis.horizontal && isInteractive
                   ? _handleDragEnd
                   : null,
           onVerticalDragStart:
-              widget.direction == SliderDirection.vertical && isInteractive
+              widget.direction == Axis.vertical && isInteractive
                   ? _handleDragStart
                   : null,
           onVerticalDragUpdate:
-              widget.direction == SliderDirection.vertical && isInteractive
+              widget.direction == Axis.vertical && isInteractive
                   ? _handleDragUpdate
                   : null,
-          onVerticalDragEnd:
-              widget.direction == SliderDirection.vertical && isInteractive
-                  ? _handleDragEnd
-                  : null,
+          onVerticalDragEnd: widget.direction == Axis.vertical && isInteractive
+              ? _handleDragEnd
+              : null,
           child: widget.child,
         ),
       ),
