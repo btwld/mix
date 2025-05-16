@@ -9,10 +9,9 @@ import 'package:naked/src/utilities/naked_focus_manager.dart';
 /// It uses direct callbacks for state changes, giving consumers control over
 /// their own state management.
 ///
-/// The component integrates with [NakedFocusManager] to provide enhanced
-/// keyboard navigation and focus handling. This includes:
-/// - Arrow keys for small value adjustments
-/// - Page Up/Down for larger adjustments
+/// The component provides enhanced keyboard navigation and focus handling:
+/// - Arrow keys for small value adjustments (using [keyboardStep])
+/// - Shift + Arrow keys for larger adjustments (using [largeKeyboardStep]) 
 /// - Home/End keys to jump to min/max values
 /// - RTL (right-to-left) language support for horizontal sliders
 /// - Vertical direction support with appropriate key mappings
@@ -164,14 +163,12 @@ class NakedSlider extends StatefulWidget {
   ///
   /// This value is used when arrow keys are pressed to increment or decrement
   /// the slider value. Default is 0.01 (1% of the slider range).
-  /// Used by [NakedFocusManager] for keyboard navigation.
   final double keyboardStep;
 
-  /// Step size for large keyboard navigation (e.g., Page Up/Down).
+  /// Step size for large keyboard navigation.
   ///
-  /// This value is used when Page Up/Down keys are pressed, or when arrow keys
-  /// are pressed while holding Shift. Default is 0.1 (10% of the slider range).
-  /// Used by [NakedFocusManager] for keyboard navigation.
+  /// This value is used when arrow keys are pressed while holding Shift.
+  /// Default is 0.1 (10% of the slider range).
   final double largeKeyboardStep;
 
   /// Creates a naked slider.
