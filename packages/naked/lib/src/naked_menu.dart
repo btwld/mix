@@ -342,7 +342,7 @@ class NakedMenuItem extends StatelessWidget {
     }
 
     return NakedButton(
-      onPressed: onPress,
+      onPressed: onPressed != null ? onPress : null,
       onHoverState: onHoverState,
       onPressedState: onPressedState,
       onFocusState: onFocusState,
