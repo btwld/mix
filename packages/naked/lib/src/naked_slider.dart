@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:naked/src/utilities/naked_focus_manager.dart';
 
 /// A fully customizable slider with no default styling.
 ///
@@ -11,7 +10,7 @@ import 'package:naked/src/utilities/naked_focus_manager.dart';
 ///
 /// The component provides enhanced keyboard navigation and focus handling:
 /// - Arrow keys for small value adjustments (using [keyboardStep])
-/// - Shift + Arrow keys for larger adjustments (using [largeKeyboardStep]) 
+/// - Shift + Arrow keys for larger adjustments (using [largeKeyboardStep])
 /// - Home/End keys to jump to min/max values
 /// - RTL (right-to-left) language support for horizontal sliders
 /// - Vertical direction support with appropriate key mappings

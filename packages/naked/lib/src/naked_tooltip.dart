@@ -114,7 +114,10 @@ class NakedTooltip extends StatefulWidget {
   final Offset offset;
 
   /// Optional semantic label for accessibility.
-  final String? semanticLabel;
+  final String? tooltipSemantics;
+
+  /// Whether to exclude the tooltip from the semantics tree.
+  final bool excludeFromSemantics;
 
   /// The fallback alignments for the tooltip.
   final List<PositionConfig> fallbackAlignments;
@@ -130,7 +133,8 @@ class NakedTooltip extends StatefulWidget {
     this.followerAnchor = Alignment.bottomCenter,
     this.targetAnchor = Alignment.topCenter,
     this.offset = const Offset(0, -8),
-    this.semanticLabel,
+    this.tooltipSemantics,
+    this.excludeFromSemantics = false,
     this.fallbackAlignments = const [],
   });
 
@@ -151,6 +155,8 @@ class _NakedTooltipState extends State<NakedTooltip> {
   Widget build(BuildContext context) {
     return Semantics(
       container: true,
+      tooltip: widget.excludeFromSemantics ? null : widget.tooltipSemantics,
+      excludeSemantics: widget.excludeFromSemantics,
       child: NakedPortal(
         alignment: PositionConfig(
           target: widget.targetAnchor,

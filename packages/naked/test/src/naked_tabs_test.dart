@@ -1,40 +1,12 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:naked/naked.dart';
 
+import 'helpers/simulate_hover.dart';
+
 extension _WidgetTesterX on WidgetTester {
-  Future<void> pumpTabs(Widget widget) async {
-    await pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: widget,
-      ),
-    );
-  }
-
-  Future<TestGesture> simulateHover(Type type) async {
-    final gesture = await createGesture(kind: PointerDeviceKind.mouse);
-    await gesture.addPointer(location: Offset.zero);
-    addTearDown(gesture.removePointer);
-    await pump();
-
-    await gesture.moveTo(getCenter(find.byType(type)));
-    await pump();
-
-    return gesture;
-  }
-
-  void expectCursor(SystemMouseCursor cursor, {required Finder on}) async {
-    final enabledMouseRegion = widget<MouseRegion>(
-        find.ancestor(of: on, matching: find.byType(MouseRegion)).first);
-
-    expect(enabledMouseRegion.cursor, cursor);
-  }
-
   SemanticsNode getSemanticsNode({required Type of, required Type matching}) {
     return getSemantics(
       find
@@ -80,7 +52,7 @@ class _CounterState extends State<_Counter> {
 void main() {
   group('Basic Functionality', () {
     testWidgets('renders child widgets', (WidgetTester tester) async {
-      await tester.pumpTabs(
+      await tester.pumpMaterialWidget(
         const NakedTabGroup(
           selectedTabId: 'tab1',
           child: Column(
@@ -109,7 +81,7 @@ void main() {
     });
 
     testWidgets('shows selected tab panel', (WidgetTester tester) async {
-      await tester.pumpTabs(
+      await tester.pumpMaterialWidget(
         const NakedTabGroup(
           selectedTabId: 'tab2',
           child: Column(
@@ -147,7 +119,7 @@ void main() {
 
     testWidgets('changes selected tab on tap', (WidgetTester tester) async {
       String selectedTabId = 'tab1';
-      await tester.pumpTabs(
+      await tester.pumpMaterialWidget(
         StatefulBuilder(
           builder: (context, setState) {
             return NakedTabGroup(
@@ -198,7 +170,7 @@ void main() {
     testWidgets('ignores tab selection when NakedTabs is disabled',
         (WidgetTester tester) async {
       String selectedTabId = 'tab1';
-      await tester.pumpTabs(
+      await tester.pumpMaterialWidget(
         StatefulBuilder(
           builder: (context, setState) {
             return NakedTabGroup(
@@ -247,7 +219,7 @@ void main() {
     testWidgets('ignores tab selection when individual tab is disabled',
         (WidgetTester tester) async {
       String selectedTabId = 'tab1';
-      await tester.pumpTabs(
+      await tester.pumpMaterialWidget(
         StatefulBuilder(
           builder: (context, setState) {
             return NakedTabGroup(
@@ -317,43 +289,47 @@ void main() {
   group('State Callbacks', () {
     testWidgets('calls onHoverState when hovered', (WidgetTester tester) async {
       bool isHovered = false;
-      await tester.pumpTabs(
-        NakedTabGroup(
-          selectedTabId: 'tab1',
-          child: Column(
-            children: [
-              NakedTabList(
-                child: Row(
-                  children: [
-                    NakedTab(
-                      tabId: 'tab1',
-                      onHoverState: (value) => isHovered = value,
-                      child: const Text('Tab 1'),
-                    ),
-                  ],
+      final key = GlobalKey();
+      await tester.pumpMaterialWidget(
+        Padding(
+          padding: const EdgeInsets.all(1),
+          child: NakedTabGroup(
+            selectedTabId: 'tab1',
+            child: Column(
+              children: [
+                NakedTabList(
+                  child: Row(
+                    children: [
+                      NakedTab(
+                        key: key,
+                        tabId: 'tab1',
+                        onHoverState: (value) => isHovered = value,
+                        child: const Text('Tab 1'),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const NakedTabPanel(
-                tabId: 'tab1',
-                child: Text('Panel 1'),
-              ),
-            ],
+                const NakedTabPanel(
+                  tabId: 'tab1',
+                  child: Text('Panel 1'),
+                ),
+              ],
+            ),
           ),
         ),
       );
 
-      final gesture = await tester.simulateHover(NakedTab);
-      expect(isHovered, true);
+      await tester.simulateHover(key, onHover: () {
+        expect(isHovered, true);
+      });
 
-      await gesture.removePointer();
-      await tester.pump();
       expect(isHovered, false);
     });
 
     testWidgets('calls onPressedState on tap down/up',
         (WidgetTester tester) async {
       bool isPressed = false;
-      await tester.pumpTabs(
+      await tester.pumpMaterialWidget(
         NakedTabGroup(
           selectedTabId: 'tab1',
           child: Column(
@@ -392,7 +368,7 @@ void main() {
       bool isFocused = false;
       final focusNode = FocusNode();
 
-      await tester.pumpTabs(
+      await tester.pumpMaterialWidget(
         NakedTabGroup(
           selectedTabId: 'tab1',
           child: Column(
@@ -433,7 +409,7 @@ void main() {
       String selectedTabId = 'tab1';
       final focusNode = FocusNode();
 
-      await tester.pumpTabs(
+      await tester.pumpMaterialWidget(
         StatefulBuilder(
           builder: (context, setState) {
             return NakedTabGroup(
@@ -483,7 +459,7 @@ void main() {
     testWidgets('navigates tabs with arrow keys in horizontal orientation',
         (WidgetTester tester) async {
       String selectedTabId = 'tab1';
-      await tester.pumpTabs(
+      await tester.pumpMaterialWidget(
         StatefulBuilder(
           builder: (context, setState) {
             return NakedTabGroup(
@@ -633,7 +609,7 @@ void main() {
   group('Accessibility', () {
     testWidgets('provides correct semantics for tab list',
         (WidgetTester tester) async {
-      await tester.pumpTabs(
+      await tester.pumpMaterialWidget(
         const NakedTabGroup(
           selectedTabId: 'tab1',
           child: Column(
@@ -667,7 +643,7 @@ void main() {
 
     testWidgets('provides correct semantics for tab',
         (WidgetTester tester) async {
-      await tester.pumpTabs(
+      await tester.pumpMaterialWidget(
         const NakedTabGroup(
           selectedTabId: 'tab1',
           child: Column(
@@ -702,7 +678,7 @@ void main() {
 
     testWidgets('provides selected state for selected tab',
         (WidgetTester tester) async {
-      await tester.pumpTabs(
+      await tester.pumpMaterialWidget(
         const NakedTabGroup(
           selectedTabId: 'tab1',
           child: Column(
@@ -745,7 +721,7 @@ void main() {
   group('Orientation', () {
     testWidgets('handles vertical orientation', (WidgetTester tester) async {
       String selectedTabId = 'tab1';
-      await tester.pumpTabs(
+      await tester.pumpMaterialWidget(
         StatefulBuilder(
           builder: (context, setState) {
             return NakedTabGroup(
@@ -816,7 +792,7 @@ void main() {
         (maintainState: true, expectedCount: 2),
         (maintainState: false, expectedCount: 1),
       ]) {
-        await tester.pumpTabs(
+        await tester.pumpMaterialWidget(
           MaterialApp(
             home: Scaffold(
               body: StatefulBuilder(
@@ -887,8 +863,11 @@ void main() {
   group('Cursor', () {
     testWidgets('shows appropriate cursor based on interactive state',
         (WidgetTester tester) async {
-      await tester.pumpTabs(
-        const NakedTabGroup(
+      final key = GlobalKey();
+      final disabledKey = GlobalKey();
+
+      await tester.pumpMaterialWidget(
+        NakedTabGroup(
           selectedTabId: 'tab1',
           child: Column(
             children: [
@@ -896,18 +875,20 @@ void main() {
                 child: Row(
                   children: [
                     NakedTab(
+                      key: key,
                       tabId: 'tab1',
-                      child: Text('Enabled Tab'),
+                      child: const Text('Enabled Tab'),
                     ),
                     NakedTab(
+                      key: disabledKey,
                       tabId: 'tab2',
                       enabled: false,
-                      child: Text('Disabled Tab'),
+                      child: const Text('Disabled Tab'),
                     ),
                   ],
                 ),
               ),
-              NakedTabPanel(
+              const NakedTabPanel(
                 tabId: 'tab1',
                 child: Text('Panel 1'),
               ),
@@ -918,12 +899,12 @@ void main() {
 
       tester.expectCursor(
         SystemMouseCursors.click,
-        on: find.text('Enabled Tab'),
+        on: key,
       );
 
       tester.expectCursor(
         SystemMouseCursors.forbidden,
-        on: find.text('Disabled Tab'),
+        on: disabledKey,
       );
     });
   });
