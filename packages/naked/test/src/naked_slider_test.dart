@@ -61,7 +61,7 @@ void main() {
         NakedSlider(
           key: testKey,
           value: value,
-          direction: SliderDirection.vertical,
+          direction: Axis.vertical,
           onChanged: (newValue) => value = newValue,
           child: _anyWidget(),
         ),
@@ -339,10 +339,7 @@ void main() {
     testWidgets(
         'responds to (right/left) and (up/down) keys in (horizontal/vertical) mode',
         (WidgetTester tester) async {
-      for (final direction in [
-        SliderDirection.horizontal,
-        SliderDirection.vertical
-      ]) {
+      for (final direction in [Axis.horizontal, Axis.vertical]) {
         double value = 0.5;
         final focusNode = FocusNode();
 
