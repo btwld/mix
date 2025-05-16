@@ -215,42 +215,6 @@ class NakedSlider extends StatefulWidget {
   State<NakedSlider> createState() => _NakedSliderState();
 }
 
-/// Provides state information to the slider's child widget.
-class NakedSliderState extends InheritedWidget {
-  /// Whether the slider is currently being hovered.
-  final bool isHovered;
-
-  /// Whether the slider is currently focused.
-  final bool isFocused;
-
-  /// Whether the slider is currently being dragged.
-  final bool isDragging;
-
-  /// Creates a naked slider state.
-  const NakedSliderState({
-    super.key,
-    required super.child,
-    required this.isHovered,
-    required this.isFocused,
-    required this.isDragging,
-  });
-
-  /// Gets the current slider state from the context.
-  static NakedSliderState of(BuildContext context) {
-    final state =
-        context.dependOnInheritedWidgetOfExactType<NakedSliderState>();
-    assert(state != null, 'No NakedSliderState found in context');
-    return state!;
-  }
-
-  @override
-  bool updateShouldNotify(NakedSliderState oldWidget) {
-    return isHovered != oldWidget.isHovered ||
-        isFocused != oldWidget.isFocused ||
-        isDragging != oldWidget.isDragging;
-  }
-}
-
 class _NakedSliderState extends State<NakedSlider> {
   late FocusNode _focusNode;
   bool _isDragging = false;
@@ -480,12 +444,7 @@ class _NakedSliderState extends State<NakedSlider> {
                 widget.direction == SliderDirection.vertical && isInteractive
                     ? _handleDragEnd
                     : null,
-            child: NakedSliderState(
-              isHovered: _isHovered,
-              isFocused: _isFocused,
-              isDragging: _isDragging,
-              child: widget.child,
-            ),
+            child: widget.child,
           ),
         ),
       ),

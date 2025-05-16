@@ -5,38 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:naked/naked.dart';
 
-extension _WidgetTesterX on WidgetTester {
-  Future<void> pumpSlider(
-    Widget widget, {
-    TextDirection textDirection = TextDirection.ltr,
-  }) async {
-    await pumpWidget(Directionality(
-      textDirection: textDirection,
-      child: Center(
-        child: widget,
-      ),
-    ));
-  }
-
-  Future<TestGesture> simulateHover(Type type) async {
-    final gesture = await createGesture(kind: PointerDeviceKind.mouse);
-    await gesture.addPointer(location: Offset.zero);
-    addTearDown(gesture.removePointer);
-    await pump();
-
-    await gesture.moveTo(getCenter(find.byType(type)));
-    await pump();
-
-    return gesture;
-  }
-
-  void expectCursor(SystemMouseCursor cursor, {required Finder on}) async {
-    final enabledMouseRegion = widget<MouseRegion>(
-        find.descendant(of: on, matching: find.byType(MouseRegion)).first);
-
-    expect(enabledMouseRegion.cursor, cursor);
-  }
-}
+import 'helpers/simulate_hover.dart';
 
 Widget _anyWidget() => const SizedBox(
       width: 200,
@@ -50,7 +19,7 @@ void main() {
 
   group('Basic Functionality', () {
     testWidgets('child renders correctly', (WidgetTester tester) async {
-      await tester.pumpSlider(
+      await tester.pumpMaterialWidget(
         NakedSlider(
           value: 0.5,
           onChanged: (_) {},
@@ -63,7 +32,7 @@ void main() {
     testWidgets('value changes when dragged horizontally',
         (WidgetTester tester) async {
       double value = 0.5;
-      await tester.pumpSlider(
+      await tester.pumpMaterialWidget(
         NakedSlider(
           key: testKey,
           value: value,
@@ -88,7 +57,7 @@ void main() {
     testWidgets('value changes when dragged vertically',
         (WidgetTester tester) async {
       double value = 0.5;
-      await tester.pumpSlider(
+      await tester.pumpMaterialWidget(
         NakedSlider(
           key: testKey,
           value: value,
@@ -114,7 +83,7 @@ void main() {
     testWidgets('constrains value between min and max',
         (WidgetTester tester) async {
       double value = 0.5;
-      await tester.pumpSlider(
+      await tester.pumpMaterialWidget(
         NakedSlider(
           key: testKey,
           value: value,
@@ -140,7 +109,7 @@ void main() {
 
     testWidgets('does not respond when disabled', (WidgetTester tester) async {
       double value = 0.5;
-      await tester.pumpSlider(
+      await tester.pumpMaterialWidget(
         NakedSlider(
           key: testKey,
           value: value,
@@ -163,7 +132,7 @@ void main() {
     testWidgets('does not respond when onChanged is null',
         (WidgetTester tester) async {
       double value = 0.5;
-      await tester.pumpSlider(
+      await tester.pumpMaterialWidget(
         NakedSlider(
           key: testKey,
           value: value,
@@ -184,7 +153,7 @@ void main() {
 
     testWidgets('supports discrete divisions', (WidgetTester tester) async {
       double value = 0.5;
-      await tester.pumpSlider(
+      await tester.pumpMaterialWidget(
         StatefulBuilder(
           builder: (context, setState) => NakedSlider(
             key: testKey,
@@ -215,7 +184,7 @@ void main() {
       bool isDragging = false;
       bool isFocused = false;
 
-      await tester.pumpSlider(
+      await tester.pumpMaterialWidget(
         NakedSlider(
           key: testKey,
           value: 0.5,
@@ -229,8 +198,9 @@ void main() {
       );
 
       // Test hover
-      await tester.simulateHover(NakedSlider);
-      expect(isHovered, false);
+      await tester.simulateHover(testKey, onHover: () {
+        expect(isHovered, false);
+      });
 
       // Test drag
       final gesture =
@@ -243,7 +213,7 @@ void main() {
 
       // Test focus
       final focusNode = FocusNode();
-      await tester.pumpSlider(
+      await tester.pumpMaterialWidget(
         NakedSlider(
           key: testKey,
           value: 0.5,
@@ -262,28 +232,30 @@ void main() {
 
     testWidgets('calls onHoverState when hovered', (WidgetTester tester) async {
       bool isHovered = false;
-      await tester.pumpSlider(
-        NakedSlider(
-          key: testKey,
-          value: 0.5,
-          onChanged: (_) {},
-          onHoverState: (value) => isHovered = value,
-          child: _anyWidget(),
+      await tester.pumpMaterialWidget(
+        Padding(
+          padding: const EdgeInsets.all(1.0),
+          child: NakedSlider(
+            key: testKey,
+            value: 0.5,
+            onChanged: (_) {},
+            onHoverState: (value) => isHovered = value,
+            child: _anyWidget(),
+          ),
         ),
       );
 
-      final gesture = await tester.simulateHover(NakedSlider);
-      expect(isHovered, true);
+      await tester.simulateHover(testKey, onHover: () {
+        expect(isHovered, true);
+      });
 
-      await gesture.moveTo(Offset.zero);
-      await tester.pump();
       expect(isHovered, false);
     });
 
     testWidgets('calls onDraggingState when dragged',
         (WidgetTester tester) async {
       bool isDragging = false;
-      await tester.pumpSlider(
+      await tester.pumpMaterialWidget(
         NakedSlider(
           key: testKey,
           value: 0.5,
@@ -311,7 +283,7 @@ void main() {
       bool isFocused = false;
       final focusNode = FocusNode();
 
-      await tester.pumpSlider(
+      await tester.pumpMaterialWidget(
         NakedSlider(
           key: testKey,
           value: 0.5,
@@ -338,7 +310,7 @@ void main() {
       bool dragStarted = false;
       double? endValue;
 
-      await tester.pumpSlider(
+      await tester.pumpMaterialWidget(
         NakedSlider(
           key: testKey,
           value: 0.5,
@@ -371,7 +343,7 @@ void main() {
         double value = 0.5;
         final focusNode = FocusNode();
 
-        await tester.pumpSlider(
+        await tester.pumpMaterialWidget(
           StatefulBuilder(builder: (context, setState) {
             return NakedSlider(
               key: testKey,
@@ -407,7 +379,7 @@ void main() {
         (WidgetTester tester) async {
       double value = 0.3;
       final focusNode = FocusNode();
-      await tester.pumpSlider(
+      await tester.pumpMaterialWidget(
         StatefulBuilder(builder: (context, setState) {
           return NakedSlider(
             key: testKey,
@@ -439,7 +411,7 @@ void main() {
       double value = 0.5;
       final focusNode = FocusNode();
 
-      await tester.pumpSlider(
+      await tester.pumpMaterialWidget(
         NakedSlider(
           key: testKey,
           value: value,
@@ -468,7 +440,7 @@ void main() {
   group('Accessibility', () {
     testWidgets('provides semantic slider property',
         (WidgetTester tester) async {
-      await tester.pumpSlider(
+      await tester.pumpMaterialWidget(
         NakedSlider(
           key: testKey,
           value: 0.5,
@@ -482,7 +454,7 @@ void main() {
     });
 
     testWidgets('provides semantic label', (WidgetTester tester) async {
-      await tester.pumpSlider(
+      await tester.pumpMaterialWidget(
         NakedSlider(
           key: testKey,
           value: 0.5,
@@ -499,7 +471,7 @@ void main() {
     testWidgets('shows correct enabled/disabled state',
         (WidgetTester tester) async {
       for (var enabled in [true, false]) {
-        await tester.pumpSlider(
+        await tester.pumpMaterialWidget(
           NakedSlider(
             key: testKey,
             value: 0.5,
@@ -518,17 +490,20 @@ void main() {
   group('Cursor', () {
     testWidgets('shows appropriate cursor based on interactive state',
         (WidgetTester tester) async {
-      await tester.pumpSlider(
+      const enabledKey = Key('enabled');
+      const disabledKey = Key('disabled');
+
+      await tester.pumpMaterialWidget(
         Column(
           children: [
             NakedSlider(
-              key: const Key('enabled'),
+              key: enabledKey,
               value: 0.5,
               onChanged: (_) {},
               child: _anyWidget(),
             ),
             NakedSlider(
-              key: const Key('disabled'),
+              key: disabledKey,
               value: 0.5,
               enabled: false,
               onChanged: (_) {},
@@ -540,42 +515,13 @@ void main() {
 
       tester.expectCursor(
         SystemMouseCursors.click,
-        on: find.byKey(const Key('enabled')),
+        on: enabledKey,
       );
 
       tester.expectCursor(
         SystemMouseCursors.forbidden,
-        on: find.byKey(const Key('disabled')),
+        on: disabledKey,
       );
-    });
-  });
-
-  group('InheritedWidget', () {
-    testWidgets('provides state via NakedSliderState',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: NakedSlider(
-              value: 0.5,
-              onChanged: (_) {},
-              child: Builder(
-                builder: (context) {
-                  final state = NakedSliderState.of(context);
-                  return Text(
-                    'Hovered: ${state.isHovered}, '
-                    'Focused: ${state.isFocused}, '
-                    'Dragging: ${state.isDragging}',
-                  );
-                },
-              ),
-            ),
-          ),
-        ),
-      );
-
-      expect(find.text('Hovered: false, Focused: false, Dragging: false'),
-          findsOneWidget);
     });
   });
 
@@ -585,20 +531,22 @@ void main() {
       double value = 0.5;
       final focusNode = FocusNode();
 
-      await tester.pumpSlider(
-        Center(
-          child: StatefulBuilder(builder: (context, setState) {
-            return NakedSlider(
-              key: testKey,
-              value: value,
-              keyboardStep: 0.1,
-              focusNode: focusNode,
-              onChanged: (newValue) => setState(() => value = newValue),
-              child: _anyWidget(),
-            );
-          }),
+      await tester.pumpMaterialWidget(
+        Directionality(
+          textDirection: TextDirection.rtl,
+          child: Center(
+            child: StatefulBuilder(builder: (context, setState) {
+              return NakedSlider(
+                key: testKey,
+                value: value,
+                keyboardStep: 0.1,
+                focusNode: focusNode,
+                onChanged: (newValue) => setState(() => value = newValue),
+                child: _anyWidget(),
+              );
+            }),
+          ),
         ),
-        textDirection: TextDirection.rtl,
       );
 
       // Focus the slider
@@ -620,7 +568,7 @@ void main() {
   group('Additional Features', () {
     testWidgets('uses custom cursor when provided',
         (WidgetTester tester) async {
-      await tester.pumpSlider(
+      await tester.pumpMaterialWidget(
         NakedSlider(
           key: testKey,
           value: 0.5,
@@ -632,7 +580,7 @@ void main() {
 
       tester.expectCursor(
         SystemMouseCursors.precise,
-        on: find.byKey(testKey),
+        on: testKey,
       );
     });
 
@@ -641,7 +589,7 @@ void main() {
       double value = 0.5;
       final focusNode = FocusNode();
 
-      await tester.pumpSlider(
+      await tester.pumpMaterialWidget(
         StatefulBuilder(builder: (context, setState) {
           return NakedSlider(
             key: testKey,
@@ -671,7 +619,7 @@ void main() {
     testWidgets('works with custom min/max range', (WidgetTester tester) async {
       double value = 0.0;
 
-      await tester.pumpSlider(
+      await tester.pumpMaterialWidget(
         StatefulBuilder(builder: (context, setState) {
           return NakedSlider(
             key: testKey,
