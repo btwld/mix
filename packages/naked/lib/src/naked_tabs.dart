@@ -29,7 +29,7 @@ import 'package:flutter/services.dart';
 ///
 ///   @override
 ///   Widget build(BuildContext context) {
-///     return NakedTabs(
+///     return NakedTabGroup(
 ///       selectedTabId: _selectedTabId,
 ///       onSelectedTabIdChanged: (tabId) => setState(() => _selectedTabId = tabId),
 ///       child: Column(
@@ -104,7 +104,7 @@ import 'package:flutter/services.dart';
 ///             color: isSelected
 ///                 ? Colors.blue
 ///                 : isFocused
-///                     ? Colors.blue.withValues(alpha: 0.5)
+///                     ? Colors.blue.withOpacity(0.5)
 ///                     : Colors.grey,
 ///             width: isFocused ? 2 : 1,
 ///           ),
@@ -112,7 +112,7 @@ import 'package:flutter/services.dart';
 ///           boxShadow: isSelected
 ///               ? [
 ///                   BoxShadow(
-///                     color: Colors.blue.withValues(alpha: 0.3),
+///                     color: Colors.blue.withOpacity(0.3),
 ///                     blurRadius: 4,
 ///                     offset: const Offset(0, 2),
 ///                   ),
@@ -198,7 +198,7 @@ class _NakedTabGroupState extends State<NakedTabGroup> {
       container: true,
       label: widget.semanticLabel,
       explicitChildNodes: true,
-      child: _NakedTabsScope(
+      child: NakedTabsScope(
         selectedTabId: widget.selectedTabId,
         onSelectedTabIdChanged: _selectTab,
         orientation: widget.orientation,
@@ -210,7 +210,7 @@ class _NakedTabGroupState extends State<NakedTabGroup> {
 }
 
 /// The scope that provides tabs state to its descendants.
-class _NakedTabsScope extends InheritedWidget {
+class NakedTabsScope extends InheritedWidget {
   /// The ID of the currently selected tab.
   final String selectedTabId;
 
@@ -223,7 +223,8 @@ class _NakedTabsScope extends InheritedWidget {
   /// Whether the tabs component is enabled.
   final bool enabled;
 
-  const _NakedTabsScope({
+  const NakedTabsScope({
+    super.key,
     required this.selectedTabId,
     required this.onSelectedTabIdChanged,
     required this.orientation,
@@ -243,12 +244,20 @@ class _NakedTabsScope extends InheritedWidget {
     }
   }
 
-  static _NakedTabsScope? of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<_NakedTabsScope>();
+  static NakedTabsScope of(BuildContext context) {
+    if (context.findAncestorWidgetOfExactType<NakedTabsScope>() == null) {
+      throw FlutterError(
+          'NakedTabsScope.of() was called with a context that does not contain a NakedTabsScope widget.\n'
+          'No NakedTabsScope ancestor could be found starting from the context that was passed.\n'
+          'This can happen when a NakedTab or NakedTabPanel is used outside of a NakedTabGroup.\n'
+          'The context used was:\n'
+          '  $context');
+    }
+    return context.dependOnInheritedWidgetOfExactType<NakedTabsScope>()!;
   }
 
   @override
-  bool updateShouldNotify(_NakedTabsScope oldWidget) {
+  bool updateShouldNotify(NakedTabsScope oldWidget) {
     return selectedTabId != oldWidget.selectedTabId ||
         orientation != oldWidget.orientation ||
         enabled != oldWidget.enabled;
@@ -384,8 +393,8 @@ class _NakedTabState extends State<NakedTab> {
   void _handleTap() {
     if (!widget.enabled) return;
 
-    final tabsScope = _NakedTabsScope.of(context);
-    if (tabsScope == null || !tabsScope.enabled) return;
+    final tabsScope = NakedTabsScope.of(context);
+    if (!tabsScope.enabled) return;
 
     if (widget.enableHapticFeedback) {
       HapticFeedback.selectionClick();
@@ -400,8 +409,8 @@ class _NakedTabState extends State<NakedTab> {
   KeyEventResult _handleKeyEvent(FocusNode node, KeyEvent event) {
     if (!widget.enabled) return KeyEventResult.ignored;
 
-    final tabsScope = _NakedTabsScope.of(context);
-    if (tabsScope == null || !tabsScope.enabled) {
+    final tabsScope = NakedTabsScope.of(context);
+    if (!tabsScope.enabled) {
       return KeyEventResult.ignored;
     }
 
@@ -444,10 +453,9 @@ class _NakedTabState extends State<NakedTab> {
 
   @override
   Widget build(BuildContext context) {
-    final tabsScope = _NakedTabsScope.of(context);
-    final isSelected = tabsScope?.isTabSelected(widget.tabId) ?? false;
-    final isInteractive =
-        widget.enabled && (tabsScope != null && tabsScope.enabled);
+    final tabsScope = NakedTabsScope.of(context);
+    final isSelected = tabsScope.isTabSelected(widget.tabId);
+    final isInteractive = widget.enabled && (tabsScope.enabled);
 
     return Semantics(
       container: true,
@@ -520,8 +528,8 @@ class NakedTabPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tabsScope = _NakedTabsScope.of(context);
-    final isSelected = tabsScope?.isTabSelected(tabId) ?? false;
+    final tabsScope = NakedTabsScope.of(context);
+    final isSelected = tabsScope.isTabSelected(tabId);
 
     if (!isSelected && !maintainState) {
       return const SizedBox();
