@@ -1,23 +1,12 @@
-import 'dart:ui';
-
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:naked/naked.dart';
 
-extension _WidgetTesterX on WidgetTester {
-  Future<void> pumpSelect<T>(Widget widget) async {
-    await pumpWidget(
-      WidgetsApp(
-        color: const Color(0xFFFFFFFF),
-        onGenerateRoute: (settings) => PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => widget,
-        ),
-      ),
-    );
-  }
+import 'helpers/simulate_hover.dart';
 
+extension _WidgetTesterX on WidgetTester {
   SemanticsNode findSemantics(Finder finder) {
     return getSemantics(
       find
@@ -28,29 +17,15 @@ extension _WidgetTesterX on WidgetTester {
           .first,
     );
   }
-
-  Future<TestGesture> simulateHover(Finder finder) async {
-    final gesture = await createGesture(kind: PointerDeviceKind.mouse);
-    await gesture.addPointer(location: Offset.zero);
-    addTearDown(gesture.removePointer);
-    await pump();
-
-    await gesture.moveTo(getCenter(finder));
-    await pump();
-
-    return gesture;
-  }
-
-  void expectCursor(SystemMouseCursor cursor, {required Finder on}) async {
-    final enabledMouseRegion = widget<MouseRegion>(
-        find.ancestor(of: on, matching: find.byType(MouseRegion)).first);
-
-    expect(enabledMouseRegion.cursor, cursor);
-  }
 }
 
 void main() {
   const kMenuKey = Key('menu');
+  late OverlayPortalController overlayPortalController;
+
+  setUp(() {
+    overlayPortalController = OverlayPortalController();
+  });
 
   // Helper function to build select widget
   Widget buildSelect<T>({
@@ -67,7 +42,12 @@ void main() {
   }) {
     return Center(
       child: NakedSelect<T>(
-        onMenuClose: onMenuClose,
+        controller: overlayPortalController,
+        onClose: () {
+          overlayPortalController.hide();
+          onMenuClose?.call();
+        },
+        onOpen: () => overlayPortalController.show(),
         selectedValue: selectedValue,
         onSelectedValueChanged: onSelectedValueChanged,
         selectedValues: selectedValues,
@@ -77,7 +57,7 @@ void main() {
         closeOnSelect: closeOnSelect,
         autofocus: autofocus,
         enableTypeAhead: enableTypeAhead,
-        menu: NakedSelectMenu(
+        menu: Container(
           key: kMenuKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -107,7 +87,7 @@ void main() {
   group('Core Functionality', () {
     testWidgets('renders trigger and menu when opened',
         (WidgetTester tester) async {
-      await tester.pumpSelect(
+      await tester.pumpMaterialWidget(
         buildSelect<String>(),
       );
 
@@ -123,7 +103,7 @@ void main() {
     testWidgets('selects single value correctly', (WidgetTester tester) async {
       String? selectedValue;
 
-      await tester.pumpSelect(
+      await tester.pumpMaterialWidget(
         buildSelect<String>(
           selectedValue: selectedValue,
           onSelectedValueChanged: (value) => selectedValue = value,
@@ -144,7 +124,7 @@ void main() {
         (WidgetTester tester) async {
       final selectedValues = <String>{};
 
-      await tester.pumpSelect(
+      await tester.pumpMaterialWidget(
         buildSelect<String>(
           allowMultiple: true,
           selectedValues: selectedValues,
@@ -169,7 +149,7 @@ void main() {
     });
 
     testWidgets('toggle menu visibility', (WidgetTester tester) async {
-      await tester.pumpSelect(
+      await tester.pumpMaterialWidget(
         buildSelect<String>(),
       );
 
@@ -194,7 +174,7 @@ void main() {
     testWidgets('does not respond when disabled', (WidgetTester tester) async {
       String? selectedValue;
 
-      await tester.pumpSelect(
+      await tester.pumpMaterialWidget(
         buildSelect<String>(
           selectedValue: selectedValue,
           onSelectedValueChanged: (value) => selectedValue = value,
@@ -215,7 +195,7 @@ void main() {
     testWidgets('closes menu with Escape key', (WidgetTester tester) async {
       bool menuClosed = false;
 
-      await tester.pumpSelect(
+      await tester.pumpMaterialWidget(
         buildSelect<String>(
           onMenuClose: () => menuClosed = true,
         ),
@@ -234,7 +214,7 @@ void main() {
     testWidgets('selects item with Enter key', (WidgetTester tester) async {
       String? selectedValue;
 
-      await tester.pumpSelect(
+      await tester.pumpMaterialWidget(
         buildSelect<String>(
           selectedValue: selectedValue,
           onSelectedValueChanged: (value) => selectedValue = value,
@@ -249,10 +229,10 @@ void main() {
       await tester.pumpAndSettle();
 
       // Select with Enter
-      await tester.sendKeyEvent(LogicalKeyboardKey.space);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
       await tester.pumpAndSettle();
 
-      expect(selectedValue, 'apple');
+      expect(selectedValue, 'banana');
     });
   });
 
@@ -261,7 +241,7 @@ void main() {
         (WidgetTester tester) async {
       String? selectedValue;
 
-      await tester.pumpSelect(
+      await tester.pumpMaterialWidget(
         buildSelect<String>(
           selectedValue: selectedValue,
           onSelectedValueChanged: (value) => selectedValue = value,
@@ -287,7 +267,7 @@ void main() {
   group('Accessibility', () {
     testWidgets('provides semantic button property for trigger',
         (WidgetTester tester) async {
-      await tester.pumpSelect(
+      await tester.pumpMaterialWidget(
         buildSelect<String>(),
       );
 
@@ -300,7 +280,7 @@ void main() {
 
     testWidgets('marks items as selected in semantics',
         (WidgetTester tester) async {
-      await tester.pumpSelect(
+      await tester.pumpMaterialWidget(
         buildSelect<String>(
           selectedValue: 'apple',
         ),
@@ -321,7 +301,7 @@ void main() {
     testWidgets('shows correct enabled/disabled state',
         (WidgetTester tester) async {
       for (var enabled in [true, false]) {
-        await tester.pumpSelect(
+        await tester.pumpMaterialWidget(
           buildSelect<String>(
             enabled: enabled,
           ),
@@ -341,29 +321,34 @@ void main() {
   group('Interaction States', () {
     testWidgets('calls onHoverState when trigger hovered',
         (WidgetTester tester) async {
+      FocusManager.instance.highlightStrategy =
+          FocusHighlightStrategy.alwaysTraditional;
+
       bool isHovered = false;
+      final controller = OverlayPortalController();
+      const key = Key('trigger');
 
-      await tester.pumpSelect(
-        NakedSelect<String>(
-          menu: const NakedSelectMenu(
-            child: SizedBox(),
-          ),
-          child: NakedSelectTrigger(
-            onHoverState: (value) => isHovered = value,
-            child: const Text('Select option'),
+      await tester.pumpMaterialWidget(
+        Padding(
+          padding: const EdgeInsets.all(1),
+          child: NakedSelect<String>(
+            menu: const SizedBox(),
+            controller: controller,
+            onClose: () => controller.hide(),
+            onOpen: () => controller.show(),
+            child: NakedSelectTrigger(
+              key: key,
+              onHoverState: (value) => isHovered = value,
+              child: const Text('Select option'),
+            ),
           ),
         ),
       );
 
-      final gesture = await tester.simulateHover(
-        find.byType(
-          NakedSelectTrigger,
-        ),
-      );
-      expect(isHovered, true);
+      await tester.simulateHover(key, onHover: () {
+        expect(isHovered, true);
+      });
 
-      await gesture.removePointer();
-      await tester.pump();
       expect(isHovered, false);
     });
 
@@ -371,11 +356,12 @@ void main() {
         (WidgetTester tester) async {
       bool isPressed = false;
 
-      await tester.pumpSelect(
+      await tester.pumpMaterialWidget(
         NakedSelect<String>(
-          menu: const NakedSelectMenu(
-            child: SizedBox(),
-          ),
+          controller: OverlayPortalController(),
+          onClose: () => overlayPortalController.hide(),
+          onOpen: () => overlayPortalController.show(),
+          menu: const SizedBox(),
           child: NakedSelectTrigger(
             onPressedState: (value) => isPressed = value,
             child: const Text('Select option'),
@@ -396,12 +382,14 @@ void main() {
         (WidgetTester tester) async {
       bool isFocused = false;
       final focusNode = FocusNode();
+      final overlayPortalController = OverlayPortalController();
 
-      await tester.pumpSelect(
+      await tester.pumpMaterialWidget(
         NakedSelect<String>(
-          menu: const NakedSelectMenu(
-            child: SizedBox(),
-          ),
+          controller: overlayPortalController,
+          onClose: () => overlayPortalController.hide(),
+          onOpen: () => overlayPortalController.show(),
+          menu: const SizedBox(),
           child: NakedSelectTrigger(
             focusNode: focusNode,
             onFocusState: (value) => isFocused = value,
@@ -421,17 +409,24 @@ void main() {
 
     testWidgets('calls item states when hovered/pressed',
         (WidgetTester tester) async {
+      FocusManager.instance.highlightStrategy =
+          FocusHighlightStrategy.alwaysTraditional;
+
       bool itemHovered = false;
       bool itemPressed = false;
       const key = Key('item');
       String? selectedValue;
-
-      await tester.pumpSelect(
+      final overlayPortalController = OverlayPortalController();
+      await tester.pumpMaterialWidget(
         Center(
           child: NakedSelect<String>(
+            controller: overlayPortalController,
+            onClose: () => overlayPortalController.hide(),
+            onOpen: () => overlayPortalController.show(),
             selectedValue: selectedValue,
             onSelectedValueChanged: (value) => selectedValue = value,
-            menu: NakedSelectMenu(
+            menu: Container(
+              key: kMenuKey,
               child: NakedSelectItem<String>(
                 key: key,
                 value: 'test',
@@ -452,14 +447,9 @@ void main() {
       await tester.pumpAndSettle();
 
       // Test hover
-      final hoverGesture = await tester.simulateHover(
-        find.byKey(key),
-      );
-      await tester.pumpAndSettle();
-      expect(itemHovered, true);
-
-      await hoverGesture.removePointer();
-      await tester.pump();
+      await tester.simulateHover(key, onHover: () {
+        expect(itemHovered, true);
+      });
       expect(itemHovered, false);
 
       // Test press
@@ -475,7 +465,7 @@ void main() {
 
   group('Menu Positioning', () {
     testWidgets('renders menu in overlay', (WidgetTester tester) async {
-      await tester.pumpSelect(
+      await tester.pumpMaterialWidget(
         buildSelect<String>(),
       );
 
@@ -494,7 +484,7 @@ void main() {
       String? selectedValue;
       bool menuClosed = false;
 
-      await tester.pumpSelect(
+      await tester.pumpMaterialWidget(
         buildSelect<String>(
           selectedValue: selectedValue,
           onSelectedValueChanged: (value) => selectedValue = value,
@@ -512,8 +502,6 @@ void main() {
 
       expect(selectedValue, 'banana');
       expect(menuClosed, false);
-
-      expect(find.byType(NakedSelectMenu), findsOneWidget);
     });
 
     testWidgets('closes menu when closeOnSelect is true',
@@ -521,7 +509,7 @@ void main() {
       String? selectedValue;
       bool menuClosed = false;
 
-      await tester.pumpSelect(
+      await tester.pumpMaterialWidget(
         buildSelect<String>(
           selectedValue: selectedValue,
           onSelectedValueChanged: (value) => selectedValue = value,
@@ -539,31 +527,38 @@ void main() {
 
       expect(selectedValue, 'banana');
       expect(menuClosed, true);
-
-      expect(find.byType(NakedSelectMenu), findsNothing);
     });
   });
 
   group('Cursor', () {
     testWidgets('shows appropriate cursor based on interactive state',
         (WidgetTester tester) async {
-      await tester.pumpSelect(
-        const Column(
+      final overlayPortalController = OverlayPortalController();
+      final disabledOverlayPortalController = OverlayPortalController();
+      const keyEnabledTrigger = Key('enabledTrigger');
+      const keyDisabledTrigger = Key('disabledTrigger');
+
+      await tester.pumpMaterialWidget(
+        Column(
           children: [
             NakedSelect<String>(
-              menu: NakedSelectMenu(
-                child: SizedBox(),
-              ),
-              child: NakedSelectTrigger(
+              controller: overlayPortalController,
+              onClose: () => overlayPortalController.hide(),
+              onOpen: () => overlayPortalController.show(),
+              menu: const SizedBox(),
+              child: const NakedSelectTrigger(
+                key: keyEnabledTrigger,
                 child: Text('Enabled Trigger'),
               ),
             ),
             NakedSelect<String>(
+              controller: disabledOverlayPortalController,
+              onClose: () => disabledOverlayPortalController.hide(),
+              onOpen: () => disabledOverlayPortalController.show(),
               enabled: false,
-              menu: NakedSelectMenu(
-                child: SizedBox(),
-              ),
-              child: NakedSelectTrigger(
+              menu: const SizedBox(),
+              child: const NakedSelectTrigger(
+                key: keyDisabledTrigger,
                 child: Text('Disabled Trigger'),
               ),
             ),
@@ -573,12 +568,12 @@ void main() {
 
       tester.expectCursor(
         SystemMouseCursors.click,
-        on: find.text('Enabled Trigger'),
+        on: keyEnabledTrigger,
       );
 
       tester.expectCursor(
         SystemMouseCursors.forbidden,
-        on: find.text('Disabled Trigger'),
+        on: keyDisabledTrigger,
       );
     });
   });

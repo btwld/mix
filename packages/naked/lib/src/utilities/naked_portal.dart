@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class NakedPortal extends StatefulWidget {
   final OverlayPortalController controller;
-  final WidgetBuilder overlayChildBuilder;
+  final WidgetBuilder overlayBuilder;
   final bool useRootOverlay;
   final Widget? child;
   final PositionConfig alignment;
@@ -11,7 +11,7 @@ class NakedPortal extends StatefulWidget {
   const NakedPortal({
     super.key,
     required this.controller,
-    required this.overlayChildBuilder,
+    required this.overlayBuilder,
     this.child,
     this.useRootOverlay = false,
     this.alignment = const PositionConfig(
@@ -47,7 +47,7 @@ class _NakedPortalState extends State<NakedPortal> {
           alignment: widget.alignment,
           fallbackAlignments: widget.fallbackAlignments,
         ),
-        child: widget.overlayChildBuilder(context),
+        child: widget.overlayBuilder(context),
       ),
     );
   }

@@ -11,12 +11,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Naked Menu Demo',
+      title: 'Naked Select Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Naked Menu Demo'),
+      home: const MyHomePage(title: 'Naked Select Demo'),
     );
   }
 }
@@ -31,17 +31,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String _lastAction = 'None';
-  final controller = OverlayPortalController();
+  String? selectedValue;
+  Set<String> selectedValues = {};
+  bool isHovered = false;
+  bool isPressed = false;
+  bool isFocused = false;
 
-  void _handleAction(String action) {
-    setState(() {
-      _lastAction = action;
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Selected: $action')),
-    );
-  }
+  final _singleSelectController = OverlayPortalController();
+  final _multiSelectController = OverlayPortalController();
 
   @override
   Widget build(BuildContext context) {
@@ -54,19 +51,126 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('Last selected: $_lastAction'),
+            // Single selection example
+            Text('Single Selection: $selectedValue'),
             const SizedBox(height: 16),
-            TextButton(
-              onPressed: () => controller.show(),
-              child: const Text('Show Menu'),
+            NakedSelect<String>(
+              selectedValue: selectedValue,
+              onSelectedValueChanged: (value) =>
+                  setState(() => selectedValue = value),
+              controller: _singleSelectController,
+              onClose: () => _singleSelectController.hide(),
+              onOpen: () {
+                _singleSelectController.show();
+              },
+              menu: Container(
+                constraints: const BoxConstraints(maxWidth: 200),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(4),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: const Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SelectOption(value: 'Apple'),
+                    SelectOption(value: 'Banana'),
+                    SelectOption(value: 'Orange'),
+                  ],
+                ),
+              ),
+              child: NakedSelectTrigger(
+                onHoverState: (value) => setState(() => isHovered = value),
+                onPressedState: (value) => setState(() => isPressed = value),
+                onFocusState: (value) => setState(() => isFocused = value),
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: isPressed
+                        ? Colors.blue[200]
+                        : isHovered
+                            ? Colors.blue[100]
+                            : Colors.white,
+                    border: Border.all(
+                      color: isFocused ? Colors.blue : Colors.grey,
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(selectedValue ?? 'Select a fruit'),
+                ),
+              ),
             ),
-            TextButton(
-              onPressed: () => controller.show(),
-              child: const Text('Show Menu'),
-            ),
-            TextButton(
-              onPressed: () => controller.show(),
-              child: const Text('Show Menu'),
+
+            const SizedBox(height: 32),
+
+            // Multiple selection example
+            Text('Multiple Selection: ${selectedValues.join(", ")}'),
+            const SizedBox(height: 16),
+            NakedSelect<String>(
+              allowMultiple: true,
+              selectedValues: selectedValues,
+              onSelectedValuesChanged: (values) =>
+                  setState(() => selectedValues = values),
+              closeOnSelect: false,
+              controller: _multiSelectController,
+              onClose: () => _multiSelectController.hide(),
+              onOpen: () => _multiSelectController.show(),
+              menu: Container(
+                constraints: const BoxConstraints(maxWidth: 200),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(4),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: const Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SelectOption(value: 'Apple'),
+                    SelectOption(value: 'Banana'),
+                    SelectOption(value: 'Orange'),
+                    SelectOption(value: 'Mango'),
+                    SelectOption(value: 'Pear'),
+                  ],
+                ),
+              ),
+              child: NakedSelectTrigger(
+                onHoverState: (value) => setState(() => isHovered = value),
+                onPressedState: (value) => setState(() => isPressed = value),
+                onFocusState: (value) => setState(() => isFocused = value),
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: isPressed
+                        ? Colors.green[200]
+                        : isHovered
+                            ? Colors.green[100]
+                            : Colors.white,
+                    border: Border.all(
+                      color: isFocused ? Colors.green : Colors.grey,
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(selectedValues.isEmpty
+                      ? 'Select fruits'
+                      : selectedValues.join(', ')),
+                ),
+              ),
             ),
           ],
         ),
@@ -75,42 +179,51 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class MenuItem extends StatefulWidget {
-  const MenuItem({super.key, required this.title, required this.onPressed});
+class SelectOption extends StatefulWidget {
+  final String value;
 
-  final String title;
-  final VoidCallback onPressed;
+  const SelectOption({super.key, required this.value});
 
   @override
-  State<MenuItem> createState() => _MenuItemState();
+  State<SelectOption> createState() => _SelectOptionState();
 }
 
-class _MenuItemState extends State<MenuItem> {
-  bool isFocused = false;
+class _SelectOptionState extends State<SelectOption> {
   bool isHovered = false;
+  bool isPressed = false;
+  bool isFocused = false;
 
   @override
   Widget build(BuildContext context) {
-    return NakedMenuItem(
-      onPressed: widget.onPressed,
-      child: SizedBox(
-        height: 30,
+    return NakedSelectItem<String>(
+      value: widget.value,
+      onHoverState: (value) => setState(() => isHovered = value),
+      onPressedState: (value) => setState(() => isPressed = value),
+      onFocusState: (value) {
+        setState(() => isFocused = value);
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: isPressed
+              ? Colors.blue[200]
+              : isHovered
+                  ? Colors.blue[100]
+                  : Colors.white,
+          border: Border(
+            bottom: BorderSide(color: Colors.grey[300]!),
+          ),
+        ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              widget.title,
-              style: TextStyle(
-                color: isFocused ? Colors.red : Colors.black,
-                fontWeight: isFocused ? FontWeight.bold : FontWeight.normal,
-              ),
-            ),
-            if (isHovered) const Icon(Icons.chevron_right),
+            Text(widget.value),
+            if (isFocused) ...[
+              const Spacer(),
+              const Icon(Icons.keyboard_arrow_right, size: 16),
+            ],
           ],
         ),
       ),
-      onHoverState: (isHovered) => setState(() => this.isHovered = isHovered),
-      onFocusState: (isFocused) => setState(() => this.isFocused = isFocused),
     );
   }
 }
