@@ -3,9 +3,12 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
+import 'package:naked/naked.dart';
 
-import '../../core/theme/remix_theme.dart';
-import '../../helpers/component_builder.dart';
+import '../../../mix/attributes/icon_theme_data.dart';
+import '../../helpers/mix_controller_mixin.dart';
+import '../../helpers/remix_builder.dart';
+import '../label/label.dart';
 import '../spinner/spinner.dart';
 
 part 'button.g.dart';
@@ -14,9 +17,18 @@ part 'button_widget.dart';
 
 @MixableSpec()
 class ButtonSpec extends Spec<ButtonSpec> with _$ButtonSpec, Diagnosticable {
-  final FlexBoxSpec container;
-  final IconSpec icon;
-  final TextSpec label;
+  final BoxSpec container;
+
+  @MixableField(
+    dto: MixableFieldType(type: 'IconThemeDataDto'),
+    utilities: [
+      MixableFieldUtility(
+        type: 'IconThemeDataUtility',
+      ),
+    ],
+  )
+  final IconThemeData icon;
+  final TextStyle textStyle;
 
   @MixableField(dto: MixableFieldType(type: 'SpinnerSpecAttribute'))
   final SpinnerSpec spinner;
@@ -27,39 +39,16 @@ class ButtonSpec extends Spec<ButtonSpec> with _$ButtonSpec, Diagnosticable {
   static const from = _$ButtonSpec.from;
 
   const ButtonSpec({
-    FlexBoxSpec? container,
-    IconSpec? icon,
-    TextSpec? label,
+    BoxSpec? container,
+    IconThemeData? icon,
+    TextStyle? textStyle,
     super.modifiers,
     SpinnerSpec? spinner,
     super.animated,
-  })  : container = container ?? const FlexBoxSpec(),
-        icon = icon ?? const IconSpec(),
-        label = label ?? const TextSpec(),
+  })  : container = container ?? const BoxSpec(),
+        icon = icon ?? const IconThemeData(),
+        textStyle = textStyle ?? const TextStyle(),
         spinner = spinner ?? const SpinnerSpec();
-
-  Widget call({
-    Key? key,
-    required String label,
-    bool disabled = false,
-    bool loading = false,
-    IconData? iconLeft,
-    IconData? iconRight,
-    WidgetSpecBuilder<SpinnerSpec>? spinnerBuilder,
-    required void Function() onPressed,
-  }) {
-    return ButtonSpecWidget(
-      key: key,
-      spec: this,
-      label: label,
-      disabled: disabled,
-      loading: loading,
-      iconLeft: iconLeft,
-      iconRight: iconRight,
-      spinnerBuilder: spinnerBuilder,
-      onPressed: onPressed,
-    );
-  }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {

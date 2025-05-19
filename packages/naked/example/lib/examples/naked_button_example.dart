@@ -14,8 +14,15 @@ class _NakedButtonExampleState extends State<NakedButtonExample> {
   // Global state tracking
   String _lastAction = 'None';
 
+  void _updateLastAction(String action) {
+    setState(() {
+      _lastAction = action;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isWideScreen = MediaQuery.of(context).size.width > 600;
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -46,52 +53,44 @@ class _NakedButtonExampleState extends State<NakedButtonExample> {
             ),
 
             // Basic Buttons Section
-            _buildSectionTitle('Basic Buttons'),
-            _buildGridLayout(
-              columnCount: MediaQuery.of(context).size.width > 600 ? 4 : 2,
+            const SectionTitleWidget(title: 'Basic Buttons'),
+            StyledSectionContainerWidget(
               child: BasicButtons(
-                onButtonPressed: (action) =>
-                    setState(() => _lastAction = action),
+                onButtonPressed: _updateLastAction,
               ),
             ),
             const SizedBox(height: 40),
 
             // Button States Section
-            _buildSectionTitle('Button States'),
+            const SectionTitleWidget(title: 'Button States'),
             ButtonStates(
-              onButtonPressed: (action) => setState(() => _lastAction = action),
+              onButtonPressed: _updateLastAction,
             ),
             const SizedBox(height: 40),
 
             // Toggle Buttons Section
-            _buildSectionTitle('Toggle Buttons'),
-            _buildGridLayout(
-              columnCount: MediaQuery.of(context).size.width > 600 ? 3 : 1,
+            const SectionTitleWidget(title: 'Toggle Buttons'),
+            StyledSectionContainerWidget(
               child: ToggleButtons(
-                onButtonPressed: (action) =>
-                    setState(() => _lastAction = action),
+                onButtonPressed: _updateLastAction,
               ),
             ),
             const SizedBox(height: 40),
 
             // Loading Buttons Section
-            _buildSectionTitle('Loading Buttons'),
-            _buildGridLayout(
-              columnCount: MediaQuery.of(context).size.width > 600 ? 2 : 1,
+            const SectionTitleWidget(title: 'Loading Buttons'),
+            StyledSectionContainerWidget(
               child: LoadingButtons(
-                onButtonPressed: (action) =>
-                    setState(() => _lastAction = action),
+                onButtonPressed: _updateLastAction,
               ),
             ),
             const SizedBox(height: 40),
 
             // Styled Buttons Section
-            _buildSectionTitle('Styled Buttons'),
-            _buildGridLayout(
-              columnCount: MediaQuery.of(context).size.width > 600 ? 3 : 1,
+            const SectionTitleWidget(title: 'Styled Buttons'),
+            StyledSectionContainerWidget(
               child: StyledButtons(
-                onButtonPressed: (action) =>
-                    setState(() => _lastAction = action),
+                onButtonPressed: _updateLastAction,
               ),
             ),
           ],
@@ -99,8 +98,15 @@ class _NakedButtonExampleState extends State<NakedButtonExample> {
       ),
     );
   }
+}
 
-  Widget _buildSectionTitle(String title) {
+// Helper Widget for Section Titles
+class SectionTitleWidget extends StatelessWidget {
+  final String title;
+  const SectionTitleWidget({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Text(
@@ -113,11 +119,17 @@ class _NakedButtonExampleState extends State<NakedButtonExample> {
       ),
     );
   }
+}
 
-  Widget _buildGridLayout({
-    required int columnCount,
-    required Widget child,
-  }) {
+// Helper Widget for Styled Section Container
+class StyledSectionContainerWidget extends StatelessWidget {
+  final Widget child;
+  const StyledSectionContainerWidget({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    // Determine column count based on screen width if needed, or pass it as a parameter
+    // For now, this widget focuses on the container styling
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(8.0),
@@ -126,6 +138,73 @@ class _NakedButtonExampleState extends State<NakedButtonExample> {
         borderRadius: BorderRadius.circular(8),
       ),
       child: child,
+    );
+  }
+}
+
+// Helper Widget for Subsection Titles
+class SubsectionTitleWidget extends StatelessWidget {
+  final String title;
+  const SubsectionTitleWidget({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          color: Colors.grey[700],
+        ),
+      ),
+    );
+  }
+}
+
+// Helper Widget for Card Containers
+class CardContainerWidget extends StatelessWidget {
+  final String title;
+  final Widget child;
+
+  const CardContainerWidget({
+    super.key,
+    required this.title,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 2,
+            offset: const Offset(0, 1),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey[700],
+            ),
+          ),
+          const SizedBox(height: 12),
+          child,
+        ],
+      ),
     );
   }
 }
@@ -216,12 +295,12 @@ class _BasicButtonsState extends State<BasicButtons> {
     return Wrap(
       spacing: 8,
       runSpacing: 8,
-      children: buttons.map((button) {
-        String label = button['label'];
-        Color color = button['color'];
-        Color hoverColor = button['hoverColor'] ?? color;
-        Color textColor = button['textColor'];
-        bool hasBorder = button['hasBorder'] ?? false;
+      children: buttons.map((buttonData) {
+        String label = buttonData['label'];
+        Color color = buttonData['color'];
+        Color hoverColor = buttonData['hoverColor'] ?? color;
+        Color textColor = buttonData['textColor'];
+        bool hasBorder = buttonData['hasBorder'] ?? false;
 
         return NakedButton(
           // Web Reference (React + Tailwind):
@@ -246,12 +325,12 @@ class _BasicButtonsState extends State<BasicButtons> {
                   ? Border.all(color: Colors.grey[300]!)
                   : focusStates[label]!
                       ? Border.all(
-                          color: Colors.black.withValues(alpha: 0.5), width: 2)
+                          color: Colors.black.withOpacity(0.5), width: 2)
                       : null,
               boxShadow: hoverStates[label]! && !pressedStates[label]!
                   ? [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
+                        color: Colors.black.withOpacity(0.1),
                         blurRadius: 4,
                         offset: const Offset(0, 2),
                       )
@@ -350,8 +429,7 @@ class _ButtonStatesState extends State<ButtonStates> {
                       borderRadius: BorderRadius.circular(4),
                       border: _isHoverSlideFocused
                           ? Border.all(
-                              color: Colors.black.withValues(alpha: 0.5),
-                              width: 2)
+                              color: Colors.black.withOpacity(0.5), width: 2)
                           : null,
                     ),
                     child: const Text(
@@ -421,7 +499,7 @@ class _ButtonStatesState extends State<ButtonStates> {
                   borderRadius: BorderRadius.circular(4),
                   border: Border.all(
                     color: _isColorChangeFocused
-                        ? Colors.black.withValues(alpha: 0.5)
+                        ? Colors.black.withOpacity(0.5)
                         : Colors.purple[600]!,
                     width: _isColorChangeFocused ? 2 : 1,
                   ),
@@ -466,12 +544,12 @@ class _ButtonStatesState extends State<ButtonStates> {
                   borderRadius: BorderRadius.circular(4),
                   border: _isElevationFocused
                       ? Border.all(
-                          color: Colors.black.withValues(alpha: 0.5), width: 2)
+                          color: Colors.black.withOpacity(0.5), width: 2)
                       : null,
                   boxShadow: _isElevationHovered && !_isElevationPressed
                       ? [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.3),
+                            color: Colors.black.withOpacity(0.3),
                             blurRadius: 8,
                             offset: const Offset(0, 4),
                           )
@@ -518,7 +596,7 @@ class _ButtonStatesState extends State<ButtonStates> {
                   borderRadius: BorderRadius.circular(4),
                   border: _isScaleFocused
                       ? Border.all(
-                          color: Colors.black.withValues(alpha: 0.5), width: 2)
+                          color: Colors.black.withOpacity(0.5), width: 2)
                       : null,
                 ),
                 child: const Text(
@@ -550,12 +628,12 @@ class _ButtonStatesState extends State<ButtonStates> {
                   borderRadius: BorderRadius.circular(4),
                   border: _isShadowFocused
                       ? Border.all(
-                          color: Colors.black.withValues(alpha: 0.5), width: 2)
+                          color: Colors.black.withOpacity(0.5), width: 2)
                       : null,
                   boxShadow: _isShadowPressed
                       ? [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.2),
+                            color: Colors.black.withOpacity(0.2),
                             blurRadius: 4,
                             offset: const Offset(0, 0),
                             spreadRadius: -2,
@@ -596,7 +674,7 @@ class _ButtonStatesState extends State<ButtonStates> {
                   borderRadius: BorderRadius.circular(4),
                   border: _isPushDownFocused
                       ? Border.all(
-                          color: Colors.black.withValues(alpha: 0.5), width: 2)
+                          color: Colors.black.withOpacity(0.5), width: 2)
                       : null,
                 ),
                 child: const Text(
@@ -769,8 +847,7 @@ class _ToggleButtonsState extends State<ToggleButtons> {
                 color: _simpleToggleState ? Colors.blue : Colors.grey[200],
                 borderRadius: BorderRadius.circular(4),
                 border: _simpleToggleFocused
-                    ? Border.all(
-                        color: Colors.black.withValues(alpha: 0.5), width: 2)
+                    ? Border.all(color: Colors.black.withOpacity(0.5), width: 2)
                     : null,
               ),
               child: Center(
@@ -815,8 +892,7 @@ class _ToggleButtonsState extends State<ToggleButtons> {
                 color: _iconToggleState ? Colors.green : Colors.red,
                 borderRadius: BorderRadius.circular(4),
                 border: _iconToggleFocused
-                    ? Border.all(
-                        color: Colors.black.withValues(alpha: 0.5), width: 2)
+                    ? Border.all(color: Colors.black.withOpacity(0.5), width: 2)
                     : null,
               ),
               child: Row(
@@ -870,8 +946,7 @@ class _ToggleButtonsState extends State<ToggleButtons> {
                 color: _themeToggleState ? Colors.grey[800] : Colors.blue[100],
                 borderRadius: BorderRadius.circular(50),
                 border: _themeToggleFocused
-                    ? Border.all(
-                        color: Colors.black.withValues(alpha: 0.5), width: 2)
+                    ? Border.all(color: Colors.black.withOpacity(0.5), width: 2)
                     : null,
               ),
               child: Icon(
@@ -896,7 +971,7 @@ class _ToggleButtonsState extends State<ToggleButtons> {
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Colors.black.withOpacity(0.05),
             blurRadius: 2,
             offset: const Offset(0, 1),
           ),
@@ -1012,7 +1087,7 @@ class _LoadingButtonsState extends State<LoadingButtons> {
             //     <span>Click to Load</span>
             //   )}
             // </button>
-            loading: _isSpinnerLoading,
+            // loading: _isSpinnerLoading,
             onPressed: _isSpinnerLoading ? null : handleSpinnerClick,
             onHoverState: (value) => setState(() => _isSpinnerHovered = value),
             onPressedState: (value) =>
@@ -1031,8 +1106,7 @@ class _LoadingButtonsState extends State<LoadingButtons> {
                             : Colors.blue,
                 borderRadius: BorderRadius.circular(4),
                 border: _isSpinnerFocused && !_isSpinnerLoading
-                    ? Border.all(
-                        color: Colors.black.withValues(alpha: 0.5), width: 2)
+                    ? Border.all(color: Colors.black.withOpacity(0.5), width: 2)
                     : null,
               ),
               child: Center(
@@ -1088,7 +1162,7 @@ class _LoadingButtonsState extends State<LoadingButtons> {
             //   )}
             //   <span className="relative z-10">{isLoading2 ? 'Processing...' : 'Submit'}</span>
             // </button>
-            loading: _isProgressLoading,
+            // loading: _isProgressLoading,
             onPressed: _isProgressLoading ? null : handleProgressClick,
             onHoverState: (value) => setState(() => _isProgressHovered = value),
             onPressedState: (value) =>
@@ -1111,8 +1185,7 @@ class _LoadingButtonsState extends State<LoadingButtons> {
                     borderRadius: BorderRadius.circular(4),
                     border: _isProgressFocused && !_isProgressLoading
                         ? Border.all(
-                            color: Colors.black.withValues(alpha: 0.5),
-                            width: 2)
+                            color: Colors.black.withOpacity(0.5), width: 2)
                         : null,
                   ),
                   child: Center(
@@ -1171,7 +1244,7 @@ class _LoadingButtonsState extends State<LoadingButtons> {
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Colors.black.withOpacity(0.05),
             blurRadius: 2,
             offset: const Offset(0, 1),
           ),
@@ -1249,20 +1322,19 @@ class _StyledButtonsState extends State<StyledButtons> {
                 ),
                 borderRadius: BorderRadius.circular(8),
                 border: _isGradientFocused
-                    ? Border.all(
-                        color: Colors.black.withValues(alpha: 0.5), width: 2)
+                    ? Border.all(color: Colors.black.withOpacity(0.5), width: 2)
                     : null,
                 boxShadow: _isGradientHovered && !_isGradientPressed
                     ? [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.2),
+                          color: Colors.black.withOpacity(0.2),
                           blurRadius: 8,
                           offset: const Offset(0, 4),
                         )
                       ]
                     : [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.1),
+                          color: Colors.black.withOpacity(0.1),
                           blurRadius: 4,
                           offset: const Offset(0, 2),
                         )
@@ -1295,7 +1367,7 @@ class _StyledButtonsState extends State<StyledButtons> {
             borderRadius: BorderRadius.circular(8),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
+                color: Colors.black.withOpacity(0.05),
                 blurRadius: 2,
                 offset: const Offset(0, 1),
               ),
@@ -1334,13 +1406,13 @@ class _StyledButtonsState extends State<StyledButtons> {
                           vertical: 12, horizontal: 16),
                       decoration: BoxDecoration(
                         color: _isGlassHovered
-                            ? Colors.white.withValues(alpha: 0.4)
-                            : Colors.white.withValues(alpha: 0.3),
+                            ? Colors.white.withOpacity(0.4)
+                            : Colors.white.withOpacity(0.3),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
                           color: _isGlassFocused
-                              ? Colors.black.withValues(alpha: 0.5)
-                              : Colors.white.withValues(alpha: 0.5),
+                              ? Colors.black.withOpacity(0.5)
+                              : Colors.white.withOpacity(0.5),
                           width: _isGlassFocused ? 2 : 1,
                         ),
                       ),
@@ -1385,8 +1457,7 @@ class _StyledButtonsState extends State<StyledButtons> {
                         : Colors.blue,
                 borderRadius: BorderRadius.circular(8),
                 border: _isArrowFocused
-                    ? Border.all(
-                        color: Colors.black.withValues(alpha: 0.5), width: 2)
+                    ? Border.all(color: Colors.black.withOpacity(0.5), width: 2)
                     : null,
               ),
               child: Row(
@@ -1428,7 +1499,7 @@ class _StyledButtonsState extends State<StyledButtons> {
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Colors.black.withOpacity(0.05),
             blurRadius: 2,
             offset: const Offset(0, 1),
           ),

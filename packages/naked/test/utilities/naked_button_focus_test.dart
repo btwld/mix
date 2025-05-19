@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:naked/naked.dart';
 
@@ -32,43 +31,6 @@ void main() {
 
     // Verify focus callback was called
     expect(gotFocus, true);
-
-    // Clean up
-    focusNode.dispose();
-  });
-
-  testWidgets('NakedButton calls onEscapePressed when escape key is pressed',
-      (WidgetTester tester) async {
-    bool escapeCalled = false;
-    final focusNode = FocusNode();
-
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: Center(
-            child: NakedButton(
-              focusNode: focusNode,
-              onPressed: () {},
-              onEscapePressed: () {
-                escapeCalled = true;
-              },
-              child: const Text('Test Button'),
-            ),
-          ),
-        ),
-      ),
-    );
-
-    // Focus the button
-    focusNode.requestFocus();
-    await tester.pump();
-
-    // Press escape key
-    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
-    await tester.pump();
-
-    // Verify escape callback was called
-    expect(escapeCalled, true);
 
     // Clean up
     focusNode.dispose();

@@ -1,115 +1,148 @@
 part of 'button.dart';
 
-class Button extends StatelessWidget {
-  const Button({
+/// A customizable button component that supports icons, loading states, and styling.
+/// The button integrates with the Mix styling system and follows Remix design patterns.
+///
+/// Example:
+/// ```dart
+/// RxButton(
+///   label: 'Click Me',
+///   leadingIcon: Icons.star,
+///   onPressed: () {
+///     print('Button pressed!');
+///   },
+///   style: ButtonStyle(
+///     // Custom styling...
+///   ),
+/// )
+/// ```
+class RxButton extends StatefulWidget implements Disableable {
+  /// Creates a Remix button.
+  ///
+  /// The [label] and [onPressed] parameters are required.
+  /// Other parameters allow customizing the button's appearance and behavior.
+  RxButton({
     super.key,
-    required this.label,
-    this.disabled = false,
+    required String label,
+    IconData? leadingIcon,
+    this.enabled = true,
     this.loading = false,
-    this.iconLeft,
-    this.iconRight,
-    this.spinnerBuilder,
-    this.variants = const [],
+    this.spinnerWidget,
+    this.enableHapticFeedback = true,
     required this.onPressed,
-    this.style,
+    this.focusNode,
+    this.style = const ButtonStyle(),
+  }) : child = RxLabel(label, icon: leadingIcon);
+
+  /// Creates a Remix button with only an icon.
+  ///
+  /// This constructor creates a button with just an icon and no label.
+  /// The [icon] parameter is required and will be displayed as the button's content.
+  ///
+  /// Example:
+  /// ```dart
+  /// RxButton.icon(
+  ///   icon: Icons.star,
+  ///   onPressed: () {},
+  /// )
+  /// ```
+  RxButton.icon({
+    super.key,
+    required IconData icon,
+    this.enabled = true,
+    this.loading = false,
+    this.spinnerWidget,
+    this.enableHapticFeedback = true,
+    required this.onPressed,
+    this.focusNode,
+    this.style = const ButtonStyle(),
+  }) : child = Icon(icon);
+
+  /// Creates a Remix button with a raw child widget.
+  ///
+  /// This constructor allows for custom button content beyond the default layout.
+  /// The [child] parameter must be provided and will be used as the button's content.
+  ///
+  /// Example:
+  /// ```dart
+  /// RxButton.raw(
+  ///   child: Icon(Icons.star),
+  ///   onPressed: () {},
+  /// )
+  /// ```
+  const RxButton.raw({
+    super.key,
+    required this.child,
+    this.enabled = true,
+    this.loading = false,
+    this.spinnerWidget,
+    this.enableHapticFeedback = true,
+    required this.onPressed,
+    this.focusNode,
+    this.style = const ButtonStyle(),
   });
 
-  /// The text content displayed in the center of the button.
-  final String label;
+  /// Whether the button is enabled.
+  ///
+  /// When false, the button will not respond to user interaction and
+  /// will be visually styled as disabled.
+  @override
+  final bool enabled;
 
-  /// {@macro remix.component.disabled}
-  final bool disabled;
-
-  /// {@macro remix.component.loading}
+  /// Whether the button is in a loading state.
+  ///
+  /// When true, the button will display a spinner and become non-interactive.
+  /// The spinner can be customized via [spinnerWidget].
   final bool loading;
 
-  /// The icon displayed in the left side of the button.
-  final IconData? iconLeft;
-
-  /// The icon displayed in the right side of the button.
-  final IconData? iconRight;
-
-  /// {@macro remix.component.onPressed}
+  /// Callback function called when the button is pressed.
+  ///
+  /// If null, the button will be considered disabled.
   final VoidCallback? onPressed;
 
-  /// A builder that returns a [Widget] for the button's spinner.
+  /// Optional focus node to control the button's focus behavior.
+  final FocusNode? focusNode;
+
+  /// Custom widget to display when the button is in loading state.
   ///
-  /// This builder creates a widget to display when the button is loading.
+  /// If not provided, a default spinner from the button's spec will be used.
   ///
-  /// {@macro remix.widget_spec_builder.text_spec}
-  ///
+  /// Example:
   /// ```dart
-  /// Button(
-  ///   label: 'Click me',
+  /// RxButton(
+  ///   label: 'Submit',
+  ///   loading: true,
+  ///   spinnerWidget: CircularProgressIndicator(),
   ///   onPressed: () {},
-  ///   spinnerBuilder: (spec) => spec(),
-  /// );
+  /// )
   /// ```
-  final WidgetSpecBuilder<SpinnerSpec>? spinnerBuilder;
+  final Widget? spinnerWidget;
 
-  /// {@macro remix.component.variants}
-  final List<Variant> variants;
+  /// The style configuration for the button.
+  ///
+  /// Controls visual properties like colors, padding, typography etc.
+  final ButtonStyle style;
 
-  /// {@macro remix.component.style}
-  final ButtonStyle? style;
+  /// Whether to provide haptic feedback when the button is pressed.
+  ///
+  /// Defaults to true.
+  final bool enableHapticFeedback;
+
+  /// The child widget to display inside the button.
+  final Widget child;
 
   @override
-  Widget build(BuildContext context) {
-    final isDisabled = disabled || loading;
-
-    final style = this.style ?? context.remix.components.button;
-    final configuration = SpecConfiguration(context, ButtonSpecUtility.self);
-
-    return Pressable(
-      enabled: !isDisabled,
-      onPress: disabled || loading ? null : onPressed,
-      child: SpecBuilder(
-        style: style.makeStyle(configuration).applyVariants(variants),
-        builder: (context) {
-          return ButtonSpecWidget(
-            spec: ButtonSpec.of(context),
-            label: label,
-            disabled: disabled,
-            loading: loading,
-            iconLeft: iconLeft,
-            iconRight: iconRight,
-            spinnerBuilder: spinnerBuilder,
-            onPressed: onPressed,
-          );
-        },
-      ),
-    );
-  }
+  State<RxButton> createState() => _RxButtonState();
 }
 
-class ButtonSpecWidget extends StatelessWidget {
-  const ButtonSpecWidget({
-    super.key,
-    required this.label,
-    this.disabled = false,
-    this.loading = false,
-    this.iconLeft,
-    this.iconRight,
-    this.spinnerBuilder,
-    required this.onPressed,
-    this.spec,
-  });
+class _RxButtonState extends State<RxButton> with MixControllerMixin {
+  bool get _isEnabled => widget.enabled && !widget.loading;
 
-  final String label;
-  final bool disabled;
-  final bool loading;
-  final IconData? iconLeft;
-  final IconData? iconRight;
-  final VoidCallback? onPressed;
-  final WidgetSpecBuilder<SpinnerSpec>? spinnerBuilder;
-  final ButtonSpec? spec;
-
-  bool get _hasIcon => iconLeft != null || iconRight != null;
-
+  /// Builds the loading overlay that shows a spinner while preserving layout.
   Widget _buildLoadingOverlay(ButtonSpec spec, Widget child) {
-    final Widget spinner = spinnerBuilder?.call(spec.spinner) ?? spec.spinner();
+    final Widget spinner = widget.spinnerWidget ?? spec.spinner();
 
-    return loading
+    return widget.loading
         ? Stack(
             alignment: Alignment.center,
             children: [spinner, Opacity(opacity: 0.0, child: child)],
@@ -117,24 +150,47 @@ class ButtonSpecWidget extends StatelessWidget {
         : child;
   }
 
-  Widget _buildChildren(ButtonSpec spec) {
-    final flexWidget = spec.container.flex(
-      direction: Axis.horizontal,
-      children: [
-        if (iconLeft != null) spec.icon(iconLeft),
-        // If there is no icon always render the label
-        if (label.isNotEmpty || !_hasIcon) spec.label(label),
-        if (iconRight != null) spec.icon(iconRight),
-      ],
-    );
-
-    return loading ? _buildLoadingOverlay(spec, flexWidget) : flexWidget;
-  }
-
   @override
   Widget build(BuildContext context) {
-    final spec = this.spec ?? const ButtonSpec();
+    final style = widget.style;
+    final configuration = SpecConfiguration(context, ButtonSpecUtility.self);
 
-    return spec.container.box(child: _buildChildren(spec));
+    return NakedButton(
+      onPressed: widget.onPressed,
+      focusNode: widget.focusNode,
+      onPressedState: (state) {
+        mixController.pressed = state;
+      },
+      onFocusState: (state) {
+        mixController.focused = state;
+      },
+      onDisabledState: (state) {
+        mixController.disabled = state;
+      },
+      onHoverState: (state) {
+        mixController.hovered = state;
+      },
+      enabled: _isEnabled,
+      enableHapticFeedback: widget.enableHapticFeedback,
+      child: RemixBuilder(
+        style: style.makeStyle(configuration).animate(),
+        mixController: mixController,
+        builder: (context) {
+          final spec = ButtonSpec.of(context);
+
+          return spec.container(
+            child: DefaultTextStyle(
+              style: spec.textStyle,
+              child: IconTheme(
+                data: spec.icon,
+                child: widget.loading
+                    ? _buildLoadingOverlay(spec, widget.child)
+                    : widget.child,
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 }

@@ -43,16 +43,16 @@ class FortalezaButtonStyle extends ButtonStyle {
         spec.on.hover($.container.color(color.withValues(alpha: 0.8))),
         soft(
           $.container.color(color.withValues(alpha: 0.1)),
-          $.label.style.color(color),
+          $.textStyle.color(color),
           spec.on.hover($.container.color(color.withValues(alpha: 0.2))),
           spec.on.disabled(disabled()),
         ),
         outline(
           $.container.color.transparent(),
           $.container.border.color(color),
-          $.label.style.color(color),
+          $.textStyle.color(color),
           spec.on.hover(
-            $.label.style.color.withOpacity(0.8),
+            $.textStyle.color.withOpacity(0.8),
             $.container.color.transparent(),
           ),
           spec.on.disabled(borderedDisabled()),
@@ -60,7 +60,7 @@ class FortalezaButtonStyle extends ButtonStyle {
         surface(
           $.container.color(color.withValues(alpha: 0.1)),
           $.container.border.color(color.withValues(alpha: 0.7)),
-          $.label.style.color(color),
+          // $.label.style.color(color),
           spec.on.hover(
             $.container.color(color.withValues(alpha: 0.2)),
             $.container.border.color.withOpacity(0.8),
@@ -69,7 +69,7 @@ class FortalezaButtonStyle extends ButtonStyle {
         ),
         ghost(
           $.container.color.transparent(),
-          $.label.style.color(color),
+          // $.label.style.color(color),
           spec.on.hover($.container.color.withOpacity(0.1)),
         ),
       ]);
@@ -80,21 +80,22 @@ class FortalezaButtonStyle extends ButtonStyle {
       $.container.chain
         ..padding.vertical.$space2()
         ..padding.horizontal.$space3()
-        ..flex.gap.$space2(),
-      $.label.style.$text2(),
+      // ..flex.gap.$space2()
+      ,
+      // $.label.style.$text2(),
       $.icon.size(14),
       $.spinner.size(14),
     );
 
     final onDisabledForeground = $on.disabled(
       $.container.color.$neutralAlpha(4),
-      $.label.style.color.$neutral(8),
+      // $.label.style.color.$neutral(8),
       $.icon.color.$neutral(8),
       $.spinner.color.$neutral(8),
     );
 
     final overrides = Style.create([
-      if (textStyle != null) $.label.style.as(textStyle!),
+      // if (textStyle != null) $.label.style.as(textStyle!),
       if (padding != null) $.container.padding.as(padding!),
       if (radius != null) $.container.borderRadius(radius!),
     ]);
