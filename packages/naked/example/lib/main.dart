@@ -1,4 +1,5 @@
 // import 'package:example/examples/naked_tooltip_example.dart';
+import 'package:example/examples/naked_select_example.dart';
 import 'package:example/examples/naked_tooltip_example.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,7 +11,6 @@ import 'examples/naked_checkbox_example.dart';
 import 'examples/naked_dialog_example.dart';
 import 'examples/naked_menu_example.dart';
 import 'examples/naked_radio_example.dart';
-import 'examples/naked_select_example.dart';
 import 'examples/naked_slider_example.dart';
 import 'examples/naked_tabs_example.dart';
 import 'examples/textfield_example_page.dart';

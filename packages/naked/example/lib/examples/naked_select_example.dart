@@ -60,6 +60,11 @@ class _NakedSelectExampleState extends State<NakedSelectExample> {
   final Map<String, bool> _searchItemFocusStates = {};
   final Map<String, bool> _searchItemPressStates = {};
 
+  final OverlayPortalController _basicController = OverlayPortalController();
+  final OverlayPortalController _multipleController = OverlayPortalController();
+  final OverlayPortalController _searchOverlayController =
+      OverlayPortalController();
+
   // Options
   final List<String> _fruitOptions = [
     'Apple',
@@ -204,19 +209,24 @@ class _NakedSelectExampleState extends State<NakedSelectExample> {
 
   Widget _buildBasicSelect() {
     return NakedSelect<String>(
+      onClose: () {
+        _basicController.hide();
+      },
+      onOpen: () {
+        _basicController.show();
+      },
+      controller: _basicController,
       selectedValue: _basicSelectedValue,
       onSelectedValueChanged: (value) =>
           setState(() => _basicSelectedValue = value),
-      menu: NakedSelectMenu(
-        child: _buildMenuContainer(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: _fruitOptions
-                .map((fruit) => _buildBasicSelectItem(fruit))
-                .toList(),
-          ),
-          color: Colors.blue,
+      menu: _buildMenuContainer(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: _fruitOptions
+              .map((fruit) => _buildBasicSelectItem(fruit))
+              .toList(),
         ),
+        color: Colors.blue,
       ),
       child: NakedSelectTrigger(
         onHoverState: (value) => setState(() => _isBasicTriggerHovered = value),
@@ -257,21 +267,26 @@ class _NakedSelectExampleState extends State<NakedSelectExample> {
 
   Widget _buildMultipleSelect() {
     return NakedSelect<String>(
+      onClose: () {
+        _multipleController.hide();
+      },
+      onOpen: () {
+        _multipleController.show();
+      },
+      controller: _multipleController,
       allowMultiple: true,
       selectedValues: _multipleSelectedValues,
       onSelectedValuesChanged: (values) =>
           setState(() => _multipleSelectedValues = values),
       closeOnSelect: false,
-      menu: NakedSelectMenu(
-        child: _buildMenuContainer(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: _fruitOptions
-                .map((fruit) => _buildMultipleSelectItem(fruit))
-                .toList(),
-          ),
-          color: Colors.teal,
+      menu: _buildMenuContainer(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: _fruitOptions
+              .map((fruit) => _buildMultipleSelectItem(fruit))
+              .toList(),
         ),
+        color: Colors.teal,
       ),
       child: NakedSelectTrigger(
         onHoverState: (value) =>
@@ -299,7 +314,7 @@ class _NakedSelectExampleState extends State<NakedSelectExample> {
 
     return NakedSelectItem<String>(
       value: fruit,
-      isSelected: isSelected,
+      // isSelected: isSelected,
       onHoverState: (value) =>
           setState(() => _multipleItemHoverStates[fruit] = value),
       onFocusState: (value) =>
@@ -324,17 +339,18 @@ class _NakedSelectExampleState extends State<NakedSelectExample> {
       onSelectedValueChanged: (value) =>
           setState(() => _disabledSelectedValue = value),
       enabled: false,
-      menu: NakedSelectMenu(
-        child: _buildMenuContainer(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: _fruitOptions
-                .map((fruit) => _buildBasicSelectItem(fruit))
-                .toList(),
-          ),
-          color: Colors.grey,
+      controller: OverlayPortalController(),
+      menu: _buildMenuContainer(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: _fruitOptions
+              .map((fruit) => _buildBasicSelectItem(fruit))
+              .toList(),
         ),
+        color: Colors.grey,
       ),
+      onClose: () {},
+      onOpen: () {},
       child: NakedSelectTrigger(
         onHoverState: (value) =>
             setState(() => _isDisabledTriggerHovered = value),
@@ -383,7 +399,8 @@ class _NakedSelectExampleState extends State<NakedSelectExample> {
       },
       child: NakedSelect<String>(
         enableTypeAhead: false,
-        onMenuClose: () {
+        onClose: () {
+          _searchOverlayController.hide();
           setState(() {
             _searchController.clear();
             _keyboardSelectedIndex = -1;
@@ -392,38 +409,40 @@ class _NakedSelectExampleState extends State<NakedSelectExample> {
         selectedValue: _searchSelectedValue,
         onSelectedValueChanged: (value) =>
             setState(() => _searchSelectedValue = value),
-        menu: NakedSelectMenu(
-          child: _buildMenuContainer(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildSearchField(),
-                const Divider(height: 1),
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxHeight: 200),
-                  child: filteredOptions.isEmpty
-                      ? const Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: Text('No colors found'),
-                        )
-                      : SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: List.generate(
-                              filteredOptions.length,
-                              (index) => _buildSearchSelectItem(
-                                  filteredOptions[index],
-                                  isKeyboardSelected:
-                                      index == _keyboardSelectedIndex),
-                            ),
+        menu: _buildMenuContainer(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildSearchField(),
+              const Divider(height: 1),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxHeight: 200),
+                child: filteredOptions.isEmpty
+                    ? const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Text('No colors found'),
+                      )
+                    : SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: List.generate(
+                            filteredOptions.length,
+                            (index) => _buildSearchSelectItem(
+                                filteredOptions[index],
+                                isKeyboardSelected:
+                                    index == _keyboardSelectedIndex),
                           ),
                         ),
-                ),
-              ],
-            ),
-            color: Colors.purple,
+                      ),
+              ),
+            ],
           ),
+          color: Colors.purple,
         ),
+        onOpen: () {
+          _searchOverlayController.show();
+        },
+        controller: _searchOverlayController,
         child: NakedSelectTrigger(
           onHoverState: (value) =>
               setState(() => _isSearchTriggerHovered = value),
