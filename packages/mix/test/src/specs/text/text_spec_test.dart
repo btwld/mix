@@ -330,6 +330,7 @@ void main() {
 
       expect(textSpec.overflow, TextOverflow.ellipsis);
       expect(textSpec.textAlign, TextAlign.center);
+      // ignore: deprecated_member_use_from_same_package
       expect(textSpec.textScaleFactor, 1.5);
       expect(textSpec.maxLines, 3);
       expect(textSpec.style?.color, Colors.blue);

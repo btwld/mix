@@ -82,7 +82,7 @@ class _SliderState extends State<Slider> with TickerProviderStateMixin {
   }
 
   void _handleInteraction(void Function(WidgetStatesController) callback) {
-    if (_controller.disabled) return;
+    if (_controller.has(WidgetState.disabled)) return;
     callback(_controller);
   }
 

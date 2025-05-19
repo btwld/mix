@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -353,11 +355,11 @@ void main() {
     });
 
     testWidgets(
-        r'must restyle using attributes inside ($on.longPress | $on.hover) when hovered',
+        r'must restyle using attributes when either variant condition is met',
         (WidgetTester tester) async {
       await pumpTestCase(
         tester: tester,
-        condition: ($on.longPress | $on.hover),
+        condition: ($on.dark | $on.hover),
         action: () => tester.hoverAndSettle(find.byType(PressableBox)),
       );
     });

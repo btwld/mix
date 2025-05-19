@@ -1,4 +1,3 @@
-
 // import 'package:example/examples/naked_tooltip_example.dart';
 import 'package:example/examples/naked_tooltip_example.dart';
 import 'package:flutter/material.dart';
@@ -16,11 +15,10 @@ import 'examples/naked_select_example.dart';
 import 'examples/naked_slider_example.dart';
 import 'examples/naked_tabs_example.dart';
 import 'examples/textfield_example_page.dart';
-import 'url_strategy.dart';
 
 void main() {
   // Initialize URL strategy before running the app
-  UrlStrategy.initialize();
+
   runApp(const MyApp());
 }
 
@@ -209,11 +207,10 @@ class _ShowcaseAppState extends State<ShowcaseApp> {
 
   // Method to update URL path when tab changes
   void _updateUrlForDestination(int index) {
-    final destination = destinations()[index];
-    final path = '/${destination.label.toLowerCase().replaceAll(' ', '-')}';
+    // final destination = destinations()[index];
+    // final path = '/${destination.label.toLowerCase().replaceAll(' ', '-')}';
 
     // Update browser URL without adding to history stack
-    updateUrl(path);
   }
 
   @override

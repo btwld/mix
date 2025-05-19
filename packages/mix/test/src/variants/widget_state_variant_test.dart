@@ -8,6 +8,7 @@ import '../../helpers/testing_utils.dart';
 
 void main() {
   const onPressed = OnPressVariant();
+  // ignore: deprecated_member_use_from_same_package
   const onLongPressed = OnLongPressVariant();
   const onFocused = OnFocusedVariant();
   const onEnabled = OnNotVariant(OnDisabledVariant());

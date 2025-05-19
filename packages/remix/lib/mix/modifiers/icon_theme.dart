@@ -13,9 +13,7 @@ final class IconThemeModifierSpec
     with _$IconThemeModifierSpec, Diagnosticable {
   @MixableField(
     dto: MixableFieldType(type: 'IconThemeDataDto'),
-    utilities: [
-      MixableFieldUtility(type: 'IconThemeDataUtility'),
-    ],
+    utilities: [MixableFieldUtility(type: 'IconThemeDataUtility')],
   )
   final IconThemeData data;
 
@@ -30,9 +28,6 @@ final class IconThemeModifierSpec
 
   @override
   Widget build(Widget child) {
-    return IconTheme(
-      data: data,
-      child: child,
-    );
+    return IconTheme(data: data, child: child);
   }
 }

@@ -32,7 +32,7 @@ class _AccordionState extends State<Accordion> {
   }
 
   void _handleTap() {
-    _controller.selected = !_controller.selected;
+    _controller.selected = !_controller.has(WidgetState.selected);
     widget.onChanged?.call(widget.expanded);
   }
 

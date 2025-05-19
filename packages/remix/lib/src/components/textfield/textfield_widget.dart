@@ -603,6 +603,7 @@ class _TextFieldState extends State<TextField>
                         autofillClient: this,
                         clipBehavior: widget.clipBehavior,
                         restorationId: 'editable',
+                        // ignore: deprecated_member_use
                         scribbleEnabled: widget.scribbleEnabled,
                         enableIMEPersonalizedLearning:
                             widget.enableIMEPersonalizedLearning,

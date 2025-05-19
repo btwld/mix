@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/source/source_range.dart';
@@ -132,7 +133,9 @@ class ExtractAttributes extends DartAssist {
 
         try {
           extractor.applyRefactor(unit.content);
-        } catch (e) {}
+        } catch (e) {
+          log(e.toString());
+        }
       });
     });
   }

@@ -121,7 +121,7 @@ class SelectState<T> extends State<Select<T>> {
         ),
       ),
       onTapOutside: closeMenu,
-      showOverlay: _menuStateController.selected,
+      showOverlay: _menuStateController.has(WidgetState.selected),
       animationDuration: animatedStyle?.animated.duration ?? Duration.zero,
       link: _link,
     );
