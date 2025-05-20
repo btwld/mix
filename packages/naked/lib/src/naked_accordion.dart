@@ -44,7 +44,7 @@ class AccordionController<T> with ChangeNotifier {
   ///
   /// Will not close if doing so would violate the [min] constraint.
   void close(T value) {
-    if (min > 0 && values.length <= min) {
+    if (min > 0 && values.length < min) {
       return;
     }
     values.remove(value);
