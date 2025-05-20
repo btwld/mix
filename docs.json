@@ -16,6 +16,10 @@
         {
           "title": "NakedAccordion",
           "href": "/accordion"
+        },
+        {
+          "title": "NakedMenu",
+          "href": "/menu"
         }
       ]
     }
