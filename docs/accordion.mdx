@@ -4,10 +4,8 @@ title: NakedAccordion
 
 NakedAccordion provides expandable/collapsible sections without imposing any visual styling, giving consumers complete design freedom. It manages the state of expanded sections through an `AccordionController` and allows for fully customizable transitions.
 
-<Info>
-  You can find this example in our GitHub repository.
-</Info>
-<CodeGroup title="An implementation of NakedAccordion" defaultLanguage="dart">
+You can find this example in our GitHub repository.
+
 ```dart
 final controller = AccordionController<String>();
 
@@ -43,14 +41,9 @@ NakedAccordion<String>(
 )
 ```
 
-</CodeGroup>
-
-
 ## AccordionController
 
 The `AccordionController` manages the state of the accordion, keeping track of which items are expanded or collapsed.
-
-### Constructor
 
 ```dart
 AccordionController({
@@ -84,8 +77,9 @@ Checks if an item with the given value is currently expanded.
 #### clear() → `void`
 Removes all expanded values.
 
-#### openAll(List<T> newValues) → `void`
+#### openAll(List&lt;T&gt; newValues) → `void`
 Opens all accordion items with the given values.
+
 
 ## NakedAccordion
 
