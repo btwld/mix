@@ -8,6 +8,10 @@
         {
           "title": "NakedButton",
           "href": "/button"
+        },
+        {
+          "title": "NakedCheckbox",
+          "href": "/checkbox"
         }
       ]
     }

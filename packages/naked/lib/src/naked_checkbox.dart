@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:naked/src/utilities/naked_focus_manager.dart';
 import 'package:naked/src/utilities/pressed_state_region.dart';
 
 /// A fully customizable checkbox with no default styling.
 ///
 /// NakedCheckbox provides core interaction behavior and accessibility
 /// without imposing any visual styling, giving consumers complete design freedom.
-/// It integrates with [NakedFocusManager] to provide enhanced keyboard accessibility
-/// and focus management including:
-///
-/// - Space/Enter key toggling
-/// - Focus restoration
-/// - Improved screen reader announcements
+/// It integrates with [FocusableActionDetector] to provide enhanced keyboard accessibility,
+/// hover detection, and focus management.
 ///
 /// This component uses direct callbacks for state changes instead of managing its
 /// own state, giving consumers control over their state management approach.
@@ -33,10 +28,10 @@ import 'package:naked/src/utilities/pressed_state_region.dart';
 ///   @override
 ///   Widget build(BuildContext context) {
 ///     return NakedCheckbox(
-///       isChecked: _isChecked,
+///       value: _isChecked,
 ///       onChanged: (value) {
 ///         setState(() {
-///           _isChecked = value;
+///           _isChecked = value!;
 ///         });
 ///       },
 ///       onHoverState: (isHovered) => setState(() => _isHovered = isHovered),
@@ -72,8 +67,7 @@ import 'package:naked/src/utilities/pressed_state_region.dart';
 ///
 /// See also:
 ///
-///  * [NakedRadio], a component that allows users to select one option from a set.
-///  * [NakedSwitch], a component that allows users to toggle between two states.
+///  * [NakedButton], a component that allows users to trigger actions.
 ///  * The Flutter `Checkbox` widget, which provides a similar functionality with
 ///    Material Design styling.
 ///  * The Naked library documentation for more examples and customization options.
@@ -82,7 +76,7 @@ class NakedCheckbox extends StatefulWidget {
   ///
   /// This widget should represent the visual appearance of the checkbox.
   /// You're responsible for rendering different visual states based on
-  /// the callback properties (isChecked, onHoverState, etc.).
+  /// the callback properties (value, onHoverState, etc.).
   final Widget child;
 
   /// Whether this checkbox is checked.
