@@ -1,4 +1,3 @@
-
 // import 'package:example/examples/naked_tooltip_example.dart';
 import 'package:example/examples/naked_tooltip_example.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +60,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         // Card styling
-        cardTheme: const CardTheme(
+        cardTheme: const CardThemeData(
           color: Colors.white,
           elevation: 0,
           shape: RoundedRectangleBorder(
