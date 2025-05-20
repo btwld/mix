@@ -116,7 +116,6 @@ class BasicAccordion extends StatefulWidget {
 class _BasicAccordionState extends State<BasicAccordion> {
   final AccordionController<String> _controller = AccordionController<String>();
   final Map<String, bool> _hoveredItems = {};
-  final Map<String, bool> _focusedItems = {};
 
   final List<Map<String, dynamic>> items = [
     {
@@ -151,7 +150,7 @@ class _BasicAccordionState extends State<BasicAccordion> {
         controller: _controller,
         children: items.map((item) {
           final String id = item['id'] as String;
-          final bool isExpanded = _controller.values.contains(id);
+
           final bool isHovered = _hoveredItems[id] ?? false;
 
           return NakedAccordionItem<String>(
@@ -255,7 +254,6 @@ class _ColoredAccordionState extends State<ColoredAccordion> {
       children: items.map((item) {
         final String id = item['id'] as String;
         final Color color = item['color'] as Color;
-        final bool isExpanded = _controller.values.contains(id);
         final bool isHovered = _hoverStates[id] ?? false;
         final bool isFocused = _focusStates[id] ?? false;
 
@@ -360,7 +358,6 @@ class _BorderedAccordionState extends State<BorderedAccordion> {
       controller: _controller,
       children: items.map((item) {
         final String id = item['id'] as String;
-        final bool isExpanded = _controller.values.contains(id);
 
         return NakedAccordionItem<String>(
           value: id,
@@ -636,7 +633,6 @@ class _NestedAccordionState extends State<NestedAccordion> {
           final String id = item['id'] as String;
           final List<Map<String, dynamic>> children =
               (item['children'] as List<dynamic>).cast<Map<String, dynamic>>();
-          final bool isExpanded = _parentController.values.contains(id);
           final childController = _childControllers[id]!;
 
           return NakedAccordionItem<String>(
@@ -850,7 +846,6 @@ class _IconAccordionState extends State<IconAccordion> {
         final IconData icon = item['icon'] as IconData;
         final Color iconColor = item['iconColor'] as Color;
         final controller = _controllers[id]!;
-        final bool isExpanded = controller.values.contains(id);
 
         return Container(
           margin: const EdgeInsets.only(bottom: 8),
