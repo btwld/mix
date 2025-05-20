@@ -1,5 +1,89 @@
 import 'package:flutter/widgets.dart';
 
+/// Controller that manages the state of an accordion.
+///
+/// This controller keeps track of which accordion items are expanded or collapsed
+/// and provides methods to open, close, or toggle items. It can also enforce
+/// minimum and maximum limits on the number of expanded items.
+///
+/// Generic type [T] represents the unique identifier for each accordion item.
+/// This could be a String, int, or any other type that can uniquely identify sections.
+class AccordionController<T> with ChangeNotifier {
+  /// Creates an accordion controller.
+  ///
+  /// [min] specifies the minimum number of expanded items (default: 0).
+  /// [max] specifies the maximum number of expanded items (optional).
+  /// When [max] is specified and reached, opening a new item will close the oldest one.
+  AccordionController({this.min = 0, this.max});
+
+  /// The minimum number of expanded items allowed.
+  final int min;
+
+  /// The maximum number of expanded items allowed.
+  /// If null, there is no maximum limit.
+  final int? max;
+
+  /// Set of currently expanded values.
+  final Set<T> values = {};
+
+  /// Opens the accordion item with the given [value].
+  ///
+  /// If [max] is specified and the maximum number of expanded items is reached,
+  /// this will close the oldest expanded item to maintain the limit.
+  void open(T value) {
+    if (max != null && values.length >= max!) {
+      close(values.first);
+      values.add(value);
+    } else {
+      values.add(value);
+    }
+    notifyListeners();
+  }
+
+  /// Closes the accordion item with the given [value].
+  ///
+  /// Will not close if doing so would violate the [min] constraint.
+  void close(T value) {
+    if (min > 0 && values.length <= min) {
+      return;
+    }
+    values.remove(value);
+    notifyListeners();
+  }
+
+  /// Toggles the accordion item with the given [value].
+  ///
+  /// If the item is expanded, it will be closed (subject to [min] constraint).
+  /// If the item is collapsed, it will be opened (subject to [max] constraint).
+  void toggle(T value) {
+    if (values.contains(value)) {
+      close(value);
+    } else {
+      open(value);
+    }
+    notifyListeners();
+  }
+
+  /// Removes all expanded values.
+  ///
+  /// Note that if [min] is greater than 0, this operation may not be allowed.
+  void clear() {
+    values.clear();
+    notifyListeners();
+  }
+
+  /// Opens all accordion items with the given [newValues].
+  ///
+  /// Note that if [max] is specified, only the first [max] items will be opened.
+  void openAll(List<T> newValues) {
+    values.addAll(newValues);
+    notifyListeners();
+  }
+
+  /// Checks if an item with the given [value] is currently expanded.
+  bool contains(T value) => values.contains(value);
+}
+
 /// A fully customizable accordion with no default styling.
 ///
 /// NakedAccordion provides expandable/collapsible sections without imposing any visual styling,
@@ -36,83 +120,6 @@ import 'package:flutter/widgets.dart';
 ///   ],
 /// )
 /// ```
-
-/// Controller that manages the state of an accordion.
-///
-/// This controller keeps track of which accordion items are expanded or collapsed
-/// and provides methods to open, close, or toggle items. It can also enforce
-/// minimum and maximum limits on the number of expanded items.
-///
-/// Generic type [T] represents the unique identifier for each accordion item.
-class AccordionController<T> with ChangeNotifier {
-  /// Creates an accordion controller.
-  ///
-  /// [min] specifies the minimum number of expanded items (default: 0).
-  /// [max] specifies the maximum number of expanded items (optional).
-  /// When [max] is specified and reached, opening a new item will close the oldest one.
-  AccordionController({this.min = 0, this.max});
-
-  /// The minimum number of expanded items allowed.
-  final int min;
-
-  /// The maximum number of expanded items allowed.
-  /// If null, there is no maximum limit.
-  final int? max;
-
-  /// Set of currently expanded values.
-  final Set<T> values = {};
-
-  /// Opens the accordion item with the given [value].
-  ///
-  /// If [max] is specified and the maximum number of expanded items is reached,
-  /// this will close the oldest expanded item to maintain the limit.
-  void open(T value) {
-    if (max != null && values.length >= max!) {
-      close(values.first);
-      values.add(value);
-    } else {
-      values.add(value);
-    }
-    notifyListeners();
-  }
-
-  void close(T value) {
-    if (min > 0 && values.length <= min) {
-      return;
-    }
-    values.remove(value);
-    notifyListeners();
-  }
-
-  void toggle(T value) {
-    if (values.contains(value)) {
-      close(value);
-    } else {
-      open(value);
-    }
-    notifyListeners();
-  }
-
-  void clear() {
-    values.clear();
-    notifyListeners();
-  }
-
-  void openAll(List<T> newValues) {
-    values.addAll(newValues);
-    notifyListeners();
-  }
-
-  bool contains(T value) => values.contains(value);
-}
-
-/// A container widget for accordion items with no default styling.
-///
-/// NakedAccordion provides the structure for organizing collapsible sections
-/// but leaves the visual styling entirely to the consumer. It uses an
-/// [AccordionController] to manage which sections are expanded or collapsed.
-///
-/// Generic type [T] should match the type used in the [AccordionController].
 class NakedAccordion<T> extends StatefulWidget {
   /// The accordion items to display.
   final List<Widget> children;

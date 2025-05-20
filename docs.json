@@ -12,6 +12,10 @@
         {
           "title": "NakedCheckbox",
           "href": "/checkbox"
+        },
+        {
+          "title": "NakedAccordion",
+          "href": "/accordion"
         }
       ]
     }
