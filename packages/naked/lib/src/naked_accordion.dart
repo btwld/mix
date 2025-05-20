@@ -14,7 +14,12 @@ class AccordionController<T> with ChangeNotifier {
   /// [min] specifies the minimum number of expanded items (default: 0).
   /// [max] specifies the maximum number of expanded items (optional).
   /// When [max] is specified and reached, opening a new item will close the oldest one.
-  AccordionController({this.min = 0, this.max});
+  AccordionController({this.min = 0, this.max})
+      : assert(min >= 0, 'min must be greater than or equal to 0'),
+        assert(
+          max == null || max >= min,
+          'max must be greater than or equal to min',
+        );
 
   /// The minimum number of expanded items allowed.
   final int min;
@@ -32,7 +37,7 @@ class AccordionController<T> with ChangeNotifier {
   /// this will close the oldest expanded item to maintain the limit.
   void open(T value) {
     if (max != null && values.length >= max!) {
-      close(values.first);
+      values.remove(values.first);
       values.add(value);
     } else {
       values.add(value);
@@ -44,7 +49,7 @@ class AccordionController<T> with ChangeNotifier {
   ///
   /// Will not close if doing so would violate the [min] constraint.
   void close(T value) {
-    if (min > 0 && values.length < min) {
+    if (min > 0 && values.length <= min) {
       return;
     }
     values.remove(value);

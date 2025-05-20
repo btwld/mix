@@ -254,6 +254,40 @@ void main() {
       expect(find.text('Content 2'), findsOneWidget);
     });
 
+    testWidgets('controller respects both min and max constraints',
+        (WidgetTester tester) async {
+      controller = AccordionController<String>(min: 1, max: 1);
+
+      await tester.pumpMaterialWidget(buildControlledAccordion());
+
+      // Open first item
+      controller.open('item1');
+      await tester.pump();
+
+      expect(find.text('Close 1'), findsOneWidget);
+      expect(find.text('Content 1'), findsOneWidget);
+      expect(find.text('Open 2'), findsOneWidget);
+      expect(find.text('Content 2'), findsNothing);
+
+      // Open second item - both should remain open since max=2
+      controller.open('item2');
+      await tester.pump();
+
+      expect(find.text('Open 1'), findsOneWidget);
+      expect(find.text('Content 1'), findsNothing);
+      expect(find.text('Close 2'), findsOneWidget);
+      expect(find.text('Content 2'), findsOneWidget);
+
+      // Try to close item1 - should fail since min=1 and item2 would be only one open
+      controller.close('item2');
+      await tester.pump();
+
+      expect(find.text('Open 1'), findsOneWidget);
+      expect(find.text('Content 1'), findsNothing);
+      expect(find.text('Close 2'), findsOneWidget);
+      expect(find.text('Content 2'), findsOneWidget);
+    });
+
     testWidgets('controller.clear() collapses all items',
         (WidgetTester tester) async {
       controller.open('item1');
