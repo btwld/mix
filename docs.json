@@ -1,0 +1,15 @@
+{
+    "name": "naked",
+    "description": "A widget library providing unstyled, behavior-focused components for Flutter.",
+    "sidebar": [
+    {
+      "group": "Widgets",
+      "pages": [
+        {
+          "title": "NakedButton",
+          "href": "/button"
+        }
+      ]
+    }
+  ]
+  }

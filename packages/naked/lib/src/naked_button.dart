@@ -7,8 +7,8 @@ import 'utilities/pressed_state_region.dart';
 ///
 /// NakedButton provides interaction behavior and accessibility features
 /// without imposing any visual styling, giving consumers complete design freedom.
-/// It integrates with [Focus] to provide enhanced keyboard accessibility
-/// and focus management.
+/// It integrates with [FocusableActionDetector] to provide enhanced keyboard accessibility,
+/// hover detection, and focus management.
 ///
 /// This component handles various interaction states (hover, pressed, focused, disabled, loading)
 /// and provides direct callbacks to allow consumers to manage their own visual state.
