@@ -90,32 +90,36 @@ void main() {
   });
 
   group('State Callback Tests', () {
-    // testWidgets('reports hover state changes', (WidgetTester tester) async {
-    //   bool isHovered = false;
+    testWidgets('reports hover state changes', (WidgetTester tester) async {
+      FocusManager.instance.highlightStrategy =
+          FocusHighlightStrategy.alwaysTraditional;
+      bool isHovered = false;
 
-    //   await tester.pumpMaterialWidget(
-    //     NakedRadioGroup<String>(
-    //       groupValue: 'test',
-    //       onChanged: (_) {},
-    //       child: NakedRadioButton<String>(
-    //         key: _key,
-    //         value: 'test',
-    //         onHoverState: (value) => isHovered = value,
-    //         builder: (context, selected) => Container(
-    //           width: 24,
-    //           height: 24,
-    //           color: Colors.red,
-    //         ),
-    //       ),
-    //     ),
-    //   );
+      await tester.pumpMaterialWidget(
+        Padding(
+          padding: const EdgeInsets.all(1.0),
+          child: NakedRadioGroup<String>(
+            groupValue: 'test',
+            onChanged: (_) {},
+            child: NakedRadioButton<String>(
+              key: _key,
+              value: 'test',
+              onHoverState: (value) => isHovered = value,
+              builder: (context, selected) => Container(
+                width: 24,
+                height: 24,
+                color: Colors.red,
+              ),
+            ),
+          ),
+        ),
+      );
 
-    //   await tester.simulateHover(_key, onHover: () {
-    //     print('object 2');
-    //     // expect(isHovered, true);
-    //   });
-    //   // expect(isHovered, false);
-    // });
+      await tester.simulateHover(_key, onHover: () {
+        expect(isHovered, true);
+      });
+      expect(isHovered, false);
+    });
 
     testWidgets('reports pressed state changes', (WidgetTester tester) async {
       bool isPressed = false;
