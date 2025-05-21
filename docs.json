@@ -24,6 +24,10 @@
         {
           "title": "NakedRadioGroup",
           "href": "/radio_group"
+        },
+        {
+          "title": "NakedSlider",
+          "href": "/slider"
         }
       ]
     }
