@@ -383,14 +383,20 @@ void main() {
 
     group('State Callbacks', () {
       testWidgets('Calls hover state callback', (WidgetTester tester) async {
+        FocusManager.instance.highlightStrategy =
+            FocusHighlightStrategy.alwaysTraditional;
         bool hovered = false;
         const key = Key('menuItem');
         await tester.pumpMaterialWidget(
-          NakedMenuItem(
-            key: key,
-            onHoverState: (value) => hovered = value,
-            child: const Text(
-              'Menu Item',
+          Padding(
+            padding: const EdgeInsets.all(1),
+            child: NakedMenuItem(
+              key: key,
+              onPressed: () {},
+              onHoverState: (value) => hovered = value,
+              child: const Text(
+                'Menu Item',
+              ),
             ),
           ),
         );
@@ -420,11 +426,14 @@ void main() {
       });
 
       testWidgets('Calls focus state callback', (WidgetTester tester) async {
+        FocusManager.instance.highlightStrategy =
+            FocusHighlightStrategy.alwaysTraditional;
         bool focused = false;
         final focusNode = FocusNode();
 
         await tester.pumpMaterialWidget(
           NakedMenuItem(
+            onPressed: () {},
             focusNode: focusNode,
             onFocusState: (value) => focused = value,
             child: const Text('Menu Item'),
