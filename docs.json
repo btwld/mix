@@ -20,6 +20,10 @@
         {
           "title": "NakedMenu",
           "href": "/menu"
+        },
+        {
+          "title": "NakedRadioGroup",
+          "href": "/radio_group"
         }
       ]
     }
