@@ -99,7 +99,7 @@ class NakedTooltip extends StatefulWidget {
   final Widget child;
 
   /// The widget to display in the tooltip.
-  final WidgetBuilder tooltipWidgetBuilder;
+  final WidgetBuilder tooltipBuilder;
 
   /// Whether the tooltip is currently visible.
   final OverlayPortalController controller;
@@ -128,7 +128,7 @@ class NakedTooltip extends StatefulWidget {
   const NakedTooltip({
     super.key,
     required this.child,
-    required this.tooltipWidgetBuilder,
+    required this.tooltipBuilder,
     required this.controller,
     this.followerAnchor = Alignment.bottomCenter,
     this.targetAnchor = Alignment.topCenter,
@@ -164,7 +164,7 @@ class _NakedTooltipState extends State<NakedTooltip> {
           offset: widget.offset,
         ),
         fallbackAlignments: widget.fallbackAlignments,
-        overlayChildBuilder: widget.tooltipWidgetBuilder,
+        overlayChildBuilder: widget.tooltipBuilder,
         controller: widget.controller,
         child: widget.child,
       ),

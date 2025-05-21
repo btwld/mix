@@ -28,6 +28,14 @@
         {
           "title": "NakedSlider",
           "href": "/slider"
+        },
+        {
+          "title": "NakedTabs",
+          "href": "/tabs"
+        },
+        {
+          "title": "NakedTooltip",
+          "href": "/tooltip"
         }
       ]
     }

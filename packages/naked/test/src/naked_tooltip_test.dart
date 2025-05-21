@@ -24,7 +24,7 @@ void main() {
       await tester.pumpTooltip(
         NakedTooltip(
           controller: OverlayPortalController(),
-          tooltipWidgetBuilder: (context) => const Text('Tooltip Content'),
+          tooltipBuilder: (context) => const Text('Tooltip Content'),
           child: const Text('Hover Me'),
         ),
       );
@@ -39,7 +39,7 @@ void main() {
 
       await tester.pumpTooltip(
         NakedTooltip(
-          tooltipWidgetBuilder: (context) => const Text('Tooltip Content'),
+          tooltipBuilder: (context) => const Text('Tooltip Content'),
           controller: controller,
           child: const Text('Hover Me'),
         ),
@@ -56,7 +56,7 @@ void main() {
 
       await tester.pumpTooltip(
         NakedTooltip(
-          tooltipWidgetBuilder: (context) => const Text('Tooltip Content'),
+          tooltipBuilder: (context) => const Text('Tooltip Content'),
           controller: controller,
           child: const Text('Hover Me'),
         ),
@@ -82,7 +82,7 @@ void main() {
       await tester.pumpTooltip(
         Center(
           child: NakedTooltip(
-            tooltipWidgetBuilder: (context) => SizedBox(
+            tooltipBuilder: (context) => SizedBox(
               key: tooltipKey,
               width: 100,
               height: 50,
@@ -131,7 +131,7 @@ void main() {
       await tester.pumpTooltip(
         Center(
           child: NakedTooltip(
-            tooltipWidgetBuilder: (context) => SizedBox(
+            tooltipBuilder: (context) => SizedBox(
               key: tooltipKey,
               width: 100,
               height: 50,
@@ -172,7 +172,7 @@ void main() {
 
       await tester.pumpTooltip(
         NakedTooltip(
-          tooltipWidgetBuilder: (context) => const Text('Tooltip Content'),
+          tooltipBuilder: (context) => const Text('Tooltip Content'),
           controller: controller,
           child: const Text('Hover Me'),
         ),

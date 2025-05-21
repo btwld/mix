@@ -80,7 +80,7 @@ class MyTooltipState extends State<MyTooltip>
       targetAnchor: Alignment.bottomCenter,
       followerAnchor: Alignment.topCenter,
       offset: const Offset(0, 8),
-      tooltipWidgetBuilder: (context) => FadeTransition(
+      tooltipBuilder: (context) => FadeTransition(
         opacity: _animation,
         child: Container(
           padding: const EdgeInsets.all(8),
