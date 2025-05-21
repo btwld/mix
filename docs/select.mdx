@@ -1,0 +1,320 @@
+---
+title: NakedSelect
+---
+
+NakedSelect provides a fully customizable dropdown/select component with no default styling, giving developers complete control over appearance while maintaining all the complex interaction patterns and accessibility features of a dropdown menu.
+
+<Info>
+  You can find examples in our [GitHub repository](https://github.com/btwld/mix/blob/main/packages/naked/example/lib/api/naked_select.0.dart).
+</Info>
+
+<CodeGroup title="NakedSelect Usage Example" defaultLanguage="dart">
+```dart
+class MySelect extends StatefulWidget {
+  const MySelect({super.key});
+
+  @override
+  State<MySelect> createState() => _MySelectState();
+}
+
+class _MySelectState extends State<MySelect> {
+  final _controller = OverlayPortalController();
+  String? _selectedValue;
+  bool _isHovered = false;
+  bool _isFocused = false;
+
+  Color get borderColor {
+    if (_isFocused) return Colors.blue;
+    if (_isHovered) return Colors.grey.shade400;
+    return Colors.grey.shade300;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 200,
+      child: NakedSelect<String>(
+        selectedValue: _selectedValue,
+        onSelectedValueChanged: (value) {
+          setState(() => _selectedValue = value);
+        },
+        controller: _controller,
+        onOpen: () {
+          _controller.show();
+        },
+        onClose: () {
+          _controller.hide();
+        },
+        menu: Container(
+          margin: const EdgeInsets.only(top: 4),
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: .1),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: const SizedBox(
+            width: 200,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                NakedSelectItem<String>(
+                  value: 'Option 1',
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Text('Option 1'),
+                  ),
+                ),
+                NakedSelectItem<String>(
+                  value: 'Option 2',
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Text('Option 2'),
+                  ),
+                ),
+                NakedSelectItem<String>(
+                  value: 'Option 3',
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Text('Option 3'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        child: NakedSelectTrigger(
+          onHoverState: (isHovered) => setState(() => _isHovered = isHovered),
+          onFocusState: (isFocused) => setState(() => _isFocused = isFocused),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: borderColor,
+                width: 1,
+              ),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(_selectedValue ?? 'Select an option'),
+                const Icon(Icons.arrow_drop_down, size: 24),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+</CodeGroup>
+
+## Constructor
+
+### NakedSelect
+
+```dart
+const NakedSelect({
+  Key? key,
+  required this.child,
+  required this.menu,
+  required this.onClose,
+  required this.onOpen,
+  required this.controller,
+  this.selectedValue,
+  this.onSelectedValueChanged,
+  this.selectedValues,
+  this.onSelectedValuesChanged,
+  this.allowMultiple = false,
+  this.enabled = true,
+  this.semanticLabel,
+  this.closeOnSelect = true,
+  this.autofocus = true,
+  this.enableTypeAhead = true,
+  this.typeAheadDebounceTime = const Duration(milliseconds: 500),
+  this.menuAlignment = const PositionConfig(
+    target: Alignment.bottomLeft,
+    follower: Alignment.topLeft,
+    offset: Offset(0, 4),
+  ),
+  this.fallbackAlignments = const [
+    PositionConfig(
+      target: Alignment.topLeft,
+      follower: Alignment.bottomLeft,
+      offset: Offset(0, -8),
+    ),
+  ],
+  this.closeOnClickOutside = true,
+})
+```
+
+### NakedSelectTrigger
+
+```dart
+const NakedSelectTrigger({
+  Key? key,
+  required this.child,
+  this.onHoverState,
+  this.onPressedState,
+  this.onFocusState,
+  this.semanticLabel,
+  this.cursor = SystemMouseCursors.click,
+  this.enableHapticFeedback = true,
+  this.focusNode,
+  this.autofocus = true,
+})
+```
+
+### NakedSelectItem
+
+```dart
+const NakedSelectItem({
+  Key? key,
+  required this.child,
+  required this.value,
+  this.onHoverState,
+  this.onPressedState,
+  this.onFocusState,
+  this.enabled = true,
+  this.semanticLabel,
+  this.cursor = SystemMouseCursors.click,
+  this.enableHapticFeedback = true,
+  this.focusNode,
+  this.autofocus = true,
+})
+```
+
+## Properties
+
+### NakedSelect
+
+#### child → `Widget`
+The target widget that triggers the select dropdown. This should typically be a `NakedSelectTrigger`.
+
+#### menu → `Widget`
+The menu widget to display when the dropdown is open. This should contain `NakedSelectItem` widgets.
+
+#### onClose → `VoidCallback?`
+Called when the menu closes, either through selection or external interaction.
+
+#### onOpen → `VoidCallback?`
+Called when the menu is opened.
+
+#### controller → `OverlayPortalController`
+Controller to manage the overlay portal state.
+
+#### selectedValue → `T?`
+The currently selected value in single selection mode. Only used when `allowMultiple` is false.
+
+#### onSelectedValueChanged → `ValueChanged<T?>?`
+Called when the selected value changes in single selection mode.
+
+#### selectedValues → `Set<T>?`
+The set of currently selected values in multiple selection mode. Required when `allowMultiple` is true.
+
+#### onSelectedValuesChanged → `ValueChanged<Set<T>>?`
+Called when selected values change in multiple selection mode.
+
+#### allowMultiple → `bool`
+Whether to allow selecting multiple items. When true, `selectedValues` and `onSelectedValuesChanged` must be provided. Defaults to false.
+
+#### enabled → `bool`
+Whether the select is enabled and can be interacted with. Defaults to true.
+
+#### semanticLabel → `String?`
+Semantic label for accessibility. Used by screen readers to identify the select component.
+
+#### closeOnSelect → `bool`
+Whether to automatically close the dropdown when an item is selected. Defaults to true.
+
+#### autofocus → `bool`
+Whether to automatically focus the menu when opened. Defaults to true.
+
+#### enableTypeAhead → `bool`
+Whether to enable type-ahead selection for quick keyboard navigation. Defaults to true.
+
+#### typeAheadDebounceTime → `Duration`
+Duration before resetting the type-ahead search buffer. Defaults to 500ms.
+
+#### menuAlignment → `PositionConfig`
+The alignment of the menu relative to its trigger.
+
+#### fallbackAlignments → `List<PositionConfig>`
+Alternative alignments to try if the menu doesn't fit in the preferred position.
+
+#### closeOnClickOutside → `bool`
+Whether to close the menu when clicking outside. Defaults to true.
+
+### NakedSelectTrigger
+
+#### child → `Widget`
+The child widget to display. This widget will be wrapped with interaction handlers.
+
+#### onHoverState → `ValueChanged<bool>?`
+Called when the hover state changes. Use this to update the visual appearance on hover.
+
+#### onPressedState → `ValueChanged<bool>?`
+Called when the pressed state changes. Use this to update the visual appearance while pressed.
+
+#### onFocusState → `ValueChanged<bool>?`
+Called when the focus state changes. Use this to update the visual appearance when focused.
+
+#### semanticLabel → `String?`
+Semantic label for accessibility. Used by screen readers to identify the trigger.
+
+#### cursor → `MouseCursor`
+The cursor to show when hovering over the trigger. Defaults to `SystemMouseCursors.click`.
+
+#### enableHapticFeedback → `bool`
+Whether to provide haptic feedback when tapped. Defaults to true.
+
+#### focusNode → `FocusNode?`
+Optional focus node to control focus behavior.
+
+#### autofocus → `bool`
+Whether to automatically focus the trigger when opened. Defaults to true.
+
+### NakedSelectItem
+
+#### child → `Widget`
+The child widget to display. This widget will be wrapped with interaction handlers.
+
+#### value → `T`
+The value associated with this item. This value will be passed to the select's onChange callback when selected.
+
+#### onHoverState → `ValueChanged<bool>?`
+Called when the hover state changes. Use this to update the visual appearance on hover.
+
+#### onPressedState → `ValueChanged<bool>?`
+Called when the pressed state changes. Use this to update the visual appearance while pressed.
+
+#### onFocusState → `ValueChanged<bool>?`
+Called when the focus state changes. Use this to update the visual appearance when focused.
+
+#### enabled → `bool`
+Whether this item is enabled and can be selected. Defaults to true.
+
+#### semanticLabel → `String?`
+Semantic label for accessibility. Used by screen readers to identify the item.
+
+#### cursor → `MouseCursor`
+The cursor to show when hovering over this item. Defaults to `SystemMouseCursors.click`.
+
+#### enableHapticFeedback → `bool`
+Whether to provide haptic feedback when selected. Defaults to true.
+
+#### focusNode → `FocusNode?`
+Optional focus node to control focus behavior.
+
+#### autofocus → `bool`
+Whether to automatically focus this item. Defaults to true.
