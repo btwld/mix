@@ -164,7 +164,7 @@ class _NakedTooltipState extends State<NakedTooltip> {
           offset: widget.offset,
         ),
         fallbackAlignments: widget.fallbackAlignments,
-        overlayChildBuilder: widget.tooltipBuilder,
+        overlayBuilder: widget.tooltipBuilder,
         controller: widget.controller,
         child: widget.child,
       ),
