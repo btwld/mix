@@ -39,8 +39,6 @@ class _BasicRadioExampleState extends State<BasicRadioExample> {
 
     return StatefulBuilder(
       builder: (context, setInnerState) {
-        final isSelected = _selectedOption == value;
-
         return Row(
           children: [
             NakedRadioButton<String>(
@@ -1191,7 +1189,6 @@ class _FocusRadioExampleState extends State<FocusRadioExample> {
   }
 
   Widget _buildFocusableRadioOption(String id, String label, Color color) {
-    final bool isSelected = _selectedOption == id;
     final bool isHovered = _hoverStates[id] ?? false;
     final bool isFocused = _focusStates[id] ?? false;
     final bool isPressed = _pressStates[id] ?? false;
