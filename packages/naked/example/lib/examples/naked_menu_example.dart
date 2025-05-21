@@ -113,13 +113,11 @@ class BasicMenuExample extends StatefulWidget {
 }
 
 class _BasicMenuExampleState extends State<BasicMenuExample> {
-  bool _isMenuOpen = false;
   String _lastAction = 'None';
 
   void _handleAction(String action) {
     setState(() {
       _lastAction = action;
-      _isMenuOpen = false;
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Selected: $action')),
@@ -638,14 +636,12 @@ class MultiSectionMenuExample extends StatefulWidget {
 }
 
 class _MultiSectionMenuExampleState extends State<MultiSectionMenuExample> {
-  bool _isMenuOpen = false;
   String _lastAction = 'None';
   final Map<String, bool> _hoverStates = {};
 
   void _handleAction(String action) {
     setState(() {
       _lastAction = action;
-      _isMenuOpen = false;
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Selected: $action')),
