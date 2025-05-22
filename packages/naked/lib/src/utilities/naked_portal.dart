@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 class NakedPortal extends StatefulWidget {
@@ -173,4 +175,65 @@ bool _isOverlayFullyVisible(
       overlayTopLeft.dy >= 0 &&
       overlayTopLeft.dx + overlaySize.width <= screenSize.width &&
       overlayTopLeft.dy + overlaySize.height <= screenSize.height;
+}
+
+enum OverlayChildLifecycleState { present, pendingRemoval, removed }
+
+typedef OverlayChildLifecycleCallback = void Function(
+  OverlayChildLifecycleState state,
+);
+
+abstract class OverlayChildLifecycle {
+  final Duration removalDelay;
+
+  final OverlayChildLifecycleCallback? onStateChange;
+
+  OverlayChildLifecycle({
+    this.onStateChange,
+    this.removalDelay = Duration.zero,
+  });
+}
+
+mixin OverlayChildLifecycleMixin<T extends StatefulWidget> on State<T> {
+  OverlayChildLifecycle get overlayChildLifecycle =>
+      widget as OverlayChildLifecycle;
+
+  final OverlayPortalController controller = OverlayPortalController();
+
+  Timer? _removalTimer;
+  OverlayChildLifecycleCallback? get _onStateChange =>
+      overlayChildLifecycle.onStateChange;
+
+  final showNotifier = ValueNotifier<bool>(false);
+
+  @override
+  void initState() {
+    super.initState();
+    showNotifier.addListener(_handleShowNotifierChange);
+  }
+
+  @override
+  void dispose() {
+    _removalTimer?.cancel();
+    showNotifier.removeListener(_handleShowNotifierChange);
+    super.dispose();
+  }
+
+  void _handleShowNotifierChange() {
+    if (showNotifier.value) {
+      _removalTimer?.cancel();
+      controller.show();
+      _onStateChange?.call(OverlayChildLifecycleState.present);
+    } else {
+      _onStateChange?.call(OverlayChildLifecycleState.pendingRemoval);
+      _removalTimer?.cancel();
+      _removalTimer = Timer(
+        overlayChildLifecycle.removalDelay,
+        () {
+          controller.hide();
+          _onStateChange?.call(OverlayChildLifecycleState.removed);
+        },
+      );
+    }
+  }
 }

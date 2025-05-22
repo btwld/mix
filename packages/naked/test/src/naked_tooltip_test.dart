@@ -169,7 +169,7 @@ void main() {
     testWidgets('waitDuration delays tooltip appearance',
         (WidgetTester tester) async {
       final targetKey = GlobalKey();
-      final stateChanges = <TooltipLifecycleState>[];
+      final stateChanges = <OverlayChildLifecycleState>[];
 
       await tester.pumpMaterialWidget(
         Center(
@@ -208,7 +208,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 25));
       await tester.pump();
       expect(find.text('Tooltip Content'), findsOneWidget);
-      expect(stateChanges, [TooltipLifecycleState.present]);
+      expect(stateChanges, [OverlayChildLifecycleState.present]);
 
       await gesture.moveTo(Offset.zero);
       await tester.pumpAndSettle();
@@ -216,7 +216,7 @@ void main() {
 
     testWidgets('showDuration auto-hides tooltip', (WidgetTester tester) async {
       final targetKey = GlobalKey();
-      final stateChanges = <TooltipLifecycleState>[];
+      final stateChanges = <OverlayChildLifecycleState>[];
 
       await tester.pumpMaterialWidget(
         Center(
@@ -243,7 +243,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Tooltip Content'), findsOneWidget);
-      expect(stateChanges, [TooltipLifecycleState.present]);
+      expect(stateChanges, [OverlayChildLifecycleState.present]);
 
       // Move mouse away - tooltip should still be visible
       await gesture.moveTo(Offset.zero);
@@ -259,16 +259,16 @@ void main() {
       await tester.pump();
       expect(find.text('Tooltip Content'), findsNothing);
       expect(stateChanges, [
-        TooltipLifecycleState.present,
-        TooltipLifecycleState.pendingRemoval,
-        TooltipLifecycleState.removed
+        OverlayChildLifecycleState.present,
+        OverlayChildLifecycleState.pendingRemoval,
+        OverlayChildLifecycleState.removed
       ]);
     });
 
     testWidgets('removalDelay delays removing tooltip from overlay',
         (WidgetTester tester) async {
       final targetKey = GlobalKey();
-      final stateChanges = <TooltipLifecycleState>[];
+      final stateChanges = <OverlayChildLifecycleState>[];
 
       await tester.pumpMaterialWidget(
         Center(
@@ -295,15 +295,15 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Tooltip Content'), findsOneWidget);
-      expect(stateChanges, [TooltipLifecycleState.present]);
+      expect(stateChanges, [OverlayChildLifecycleState.present]);
 
       // Move mouse away - tooltip should still be visible
       await gesture.moveTo(Offset.zero);
       await tester.pumpAndSettle();
 
       expect(stateChanges, [
-        TooltipLifecycleState.present,
-        TooltipLifecycleState.pendingRemoval,
+        OverlayChildLifecycleState.present,
+        OverlayChildLifecycleState.pendingRemoval,
       ]);
       // Wait for half the show duration - tooltip should still be visible
       await tester.pump(const Duration(milliseconds: 250));
@@ -314,9 +314,9 @@ void main() {
       await tester.pump();
 
       expect(stateChanges, [
-        TooltipLifecycleState.present,
-        TooltipLifecycleState.pendingRemoval,
-        TooltipLifecycleState.removed
+        OverlayChildLifecycleState.present,
+        OverlayChildLifecycleState.pendingRemoval,
+        OverlayChildLifecycleState.removed
       ]);
     });
   });

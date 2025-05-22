@@ -28,8 +28,7 @@ class SelectExample extends StatefulWidget {
   State<SelectExample> createState() => _SelectExampleState();
 }
 
-class _SelectExampleState extends State<SelectExample> {
-  final _controller = OverlayPortalController();
+class _SelectExampleState extends State<SelectExample> with TickerProviderStateMixin {
   String? _selectedValue;
   bool _isHovered = false;
   bool _isFocused = false;
@@ -46,15 +45,9 @@ class _SelectExampleState extends State<SelectExample> {
       width: 200,
       child: NakedSelect<String>(
         selectedValue: _selectedValue,
+        closeOnSelect: true,
         onSelectedValueChanged: (value) {
           setState(() => _selectedValue = value);
-        },
-        controller: _controller,
-        onOpen: () {
-          _controller.show();
-        },
-        onClose: () {
-          _controller.hide();
         },
         menu: Container(
           margin: const EdgeInsets.only(top: 4),

@@ -95,7 +95,7 @@ import 'package:naked/naked.dart';
 ///   }
 /// }
 /// ```
-class NakedTooltip extends StatefulWidget {
+class NakedTooltip extends StatefulWidget implements OverlayChildLifecycle {
   /// The widget that triggers the tooltip.
   final Widget child;
 
@@ -127,10 +127,12 @@ class NakedTooltip extends StatefulWidget {
   final Duration waitDuration;
 
   /// The duration to wait before removing the Widget from the Overlay after the tooltip is hidden.
+  @override
   final Duration removalDelay;
 
   /// The event handler for the tooltip.
-  final void Function(TooltipLifecycleState state)? onStateChange;
+  @override
+  final void Function(OverlayChildLifecycleState state)? onStateChange;
 
   /// Creates a naked tooltip.
   ///
@@ -155,43 +157,15 @@ class NakedTooltip extends StatefulWidget {
   State<NakedTooltip> createState() => _NakedTooltipState();
 }
 
-enum TooltipLifecycleState { present, pendingRemoval, removed }
-
-class _NakedTooltipState extends State<NakedTooltip> {
-  final _controller = OverlayPortalController();
-  final _showNotifier = ValueNotifier<bool>(false);
+class _NakedTooltipState extends State<NakedTooltip>
+    with OverlayChildLifecycleMixin {
   Timer? _showTimer;
   Timer? _waitTimer;
-  Timer? _removeTimer;
-
-  @override
-  void initState() {
-    super.initState();
-    _showNotifier.addListener(_handleShowNotifierChange);
-  }
-
-  void _handleShowNotifierChange() {
-    if (_showNotifier.value) {
-      _removeTimer?.cancel();
-      _controller.show();
-      widget.onStateChange?.call(TooltipLifecycleState.present);
-    } else {
-      widget.onStateChange?.call(TooltipLifecycleState.pendingRemoval);
-      _removeTimer?.cancel();
-      _removeTimer = Timer(widget.removalDelay, () {
-        _controller.hide();
-        widget.onStateChange?.call(TooltipLifecycleState.removed);
-      });
-    }
-  }
 
   @override
   void dispose() {
-    _showNotifier.removeListener(_handleShowNotifierChange);
-    _showNotifier.dispose();
     _showTimer?.cancel();
     _waitTimer?.cancel();
-    _removeTimer?.cancel();
     super.dispose();
   }
 
@@ -202,7 +176,7 @@ class _NakedTooltipState extends State<NakedTooltip> {
       tooltip: widget.excludeFromSemantics ? null : widget.tooltipSemantics,
       excludeSemantics: widget.excludeFromSemantics,
       child: ListenableBuilder(
-        listenable: _showNotifier,
+        listenable: showNotifier,
         builder: (context, child) {
           return NakedPortal(
             alignment: PositionConfig(
@@ -212,20 +186,20 @@ class _NakedTooltipState extends State<NakedTooltip> {
             ),
             fallbackAlignments: widget.fallbackAlignments,
             overlayBuilder: widget.tooltipBuilder,
-            controller: _controller,
+            controller: controller,
             child: MouseRegion(
               onEnter: (_) {
                 _showTimer?.cancel();
                 _waitTimer?.cancel();
                 _waitTimer = Timer(widget.waitDuration, () {
-                  _showNotifier.value = true;
+                  showNotifier.value = true;
                 });
               },
               onExit: (_) {
                 _showTimer?.cancel();
                 _waitTimer?.cancel();
                 _showTimer = Timer(widget.showDuration, () {
-                  _showNotifier.value = false;
+                  showNotifier.value = false;
                 });
               },
               child: widget.child,

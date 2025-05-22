@@ -17,7 +17,7 @@ class SelectExample extends StatefulWidget {
   State<SelectExample> createState() => _SelectExampleState();
 }
 
-class _SelectExampleState extends State<SelectExample> {
+class _SelectExampleState extends State<SelectExample> with TickerProviderStateMixin {
   final _controller = OverlayPortalController();
   String? _selectedValue;
   bool _isHovered = false;
@@ -35,15 +35,9 @@ class _SelectExampleState extends State<SelectExample> {
       width: 200,
       child: NakedSelect<String>(
         selectedValue: _selectedValue,
+        closeOnSelect: true,
         onSelectedValueChanged: (value) {
           setState(() => _selectedValue = value);
-        },
-        controller: _controller,
-        onOpen: () {
-          _controller.show();
-        },
-        onClose: () {
-          _controller.hide();
         },
         menu: Container(
           margin: const EdgeInsets.only(top: 4),
@@ -119,19 +113,18 @@ class _SelectExampleState extends State<SelectExample> {
 ```
 </CodeGroup>
 
-## Constructor
-
-### NakedSelect
+## NakedSelect
 
 ```dart
 const NakedSelect({
   Key? key,
   required this.child,
   required this.menu,
-  required this.onClose,
-  required this.onOpen,
-  required this.controller,
+  this.onClose,
+  this.onOpen,
   this.selectedValue,
+  this.onStateChange,
+  this.removalDelay = Duration.zero,
   this.onSelectedValueChanged,
   this.selectedValues,
   this.onSelectedValuesChanged,
@@ -157,46 +150,7 @@ const NakedSelect({
   this.closeOnClickOutside = true,
 })
 ```
-
-### NakedSelectTrigger
-
-```dart
-const NakedSelectTrigger({
-  Key? key,
-  required this.child,
-  this.onHoverState,
-  this.onPressedState,
-  this.onFocusState,
-  this.semanticLabel,
-  this.cursor = SystemMouseCursors.click,
-  this.enableHapticFeedback = true,
-  this.focusNode,
-  this.autofocus = true,
-})
-```
-
-### NakedSelectItem
-
-```dart
-const NakedSelectItem({
-  Key? key,
-  required this.child,
-  required this.value,
-  this.onHoverState,
-  this.onPressedState,
-  this.onFocusState,
-  this.enabled = true,
-  this.semanticLabel,
-  this.cursor = SystemMouseCursors.click,
-  this.enableHapticFeedback = true,
-  this.focusNode,
-  this.autofocus = true,
-})
-```
-
-## Properties
-
-### NakedSelect
+### Properties
 
 #### child → `Widget`
 The target widget that triggers the select dropdown. This should typically be a `NakedSelectTrigger`.
@@ -210,8 +164,11 @@ Called when the menu closes, either through selection or external interaction.
 #### onOpen → `VoidCallback?`
 Called when the menu is opened.
 
-#### controller → `OverlayPortalController`
-Controller to manage the overlay portal state.
+#### removalDelay → `Duration`
+The duration to wait before removing the widget from the overlay after the menu is closed. Defaults to `Duration.zero`.
+
+#### onStateChange → `Function(OverlayChildLifecycleState state)?`
+Optional callback for handling overlay state changes.
 
 #### selectedValue → `T?`
 The currently selected value in single selection mode. Only used when `allowMultiple` is false.
@@ -255,7 +212,25 @@ Alternative alignments to try if the menu doesn't fit in the preferred position.
 #### closeOnClickOutside → `bool`
 Whether to close the menu when clicking outside. Defaults to true.
 
-### NakedSelectTrigger
+
+## NakedSelectTrigger
+
+```dart
+const NakedSelectTrigger({
+  Key? key,
+  required this.child,
+  this.onHoverState,
+  this.onPressedState,
+  this.onFocusState,
+  this.semanticLabel,
+  this.cursor = SystemMouseCursors.click,
+  this.enableHapticFeedback = true,
+  this.focusNode,
+  this.autofocus = true,
+})
+```
+
+### Properties
 
 #### child → `Widget`
 The child widget to display. This widget will be wrapped with interaction handlers.
@@ -284,7 +259,27 @@ Optional focus node to control focus behavior.
 #### autofocus → `bool`
 Whether to automatically focus the trigger when opened. Defaults to true.
 
-### NakedSelectItem
+
+## NakedSelectItem
+
+```dart
+const NakedSelectItem({
+  Key? key,
+  required this.child,
+  required this.value,
+  this.onHoverState,
+  this.onPressedState,
+  this.onFocusState,
+  this.enabled = true,
+  this.semanticLabel,
+  this.cursor = SystemMouseCursors.click,
+  this.enableHapticFeedback = true,
+  this.focusNode,
+  this.autofocus = true,
+})
+```
+
+### Properties
 
 #### child → `Widget`
 The child widget to display. This widget will be wrapped with interaction handlers.

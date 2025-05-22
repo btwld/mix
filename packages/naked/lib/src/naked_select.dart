@@ -50,7 +50,7 @@ import 'utilities/overlay_content_menu.dart';
 ///   onMenuClose: () => {},
 /// )
 /// ```
-class NakedSelect<T> extends StatefulWidget {
+class NakedSelect<T> extends StatefulWidget implements OverlayChildLifecycle {
   /// The target widget that triggers the select dropdown.
   /// This should typically be a [NakedSelectTrigger].
   final Widget child;
@@ -117,10 +117,16 @@ class NakedSelect<T> extends StatefulWidget {
   /// Called when the menu is opened.
   final VoidCallback? onOpen;
 
-  final OverlayPortalController controller;
-
   /// Whether to close the menu when clicking outside.
   final bool closeOnClickOutside;
+
+  /// The duration to wait before removing the Widget from the Overlay after the menu is closed.
+  @override
+  final Duration removalDelay;
+
+  /// The event handler for the menu.
+  @override
+  final void Function(OverlayChildLifecycleState state)? onStateChange;
 
   /// Creates a naked select dropdown.
   ///
@@ -130,10 +136,11 @@ class NakedSelect<T> extends StatefulWidget {
     super.key,
     required this.child,
     required this.menu,
-    required this.onClose,
-    required this.onOpen,
-    required this.controller,
+    this.onClose,
+    this.onOpen,
     this.selectedValue,
+    this.onStateChange,
+    this.removalDelay = Duration.zero,
     this.onSelectedValueChanged,
     this.selectedValues,
     this.onSelectedValuesChanged,
@@ -166,10 +173,11 @@ class NakedSelect<T> extends StatefulWidget {
   State<NakedSelect<T>> createState() => _NakedSelectState<T>();
 }
 
-class _NakedSelectState<T> extends State<NakedSelect<T>> {
+class _NakedSelectState<T> extends State<NakedSelect<T>>
+    with OverlayChildLifecycleMixin {
   late final _isMultipleSelection =
       widget.allowMultiple && widget.selectedValues != null;
-  bool get _isOpen => widget.controller.isShowing;
+  bool get _isOpen => controller.isShowing;
 
   // For type-ahead functionality
   String _typeAheadBuffer = '';
@@ -184,11 +192,21 @@ class _NakedSelectState<T> extends State<NakedSelect<T>> {
 
   void toggleMenu() {
     if (_isOpen) {
-      widget.onClose?.call();
-      _selectableItems.clear();
+      closeMenu();
     } else {
-      widget.onOpen?.call();
+      openMenu();
     }
+  }
+
+  void openMenu() {
+    widget.onOpen?.call();
+    showNotifier.value = true;
+  }
+
+  void closeMenu() {
+    widget.onClose?.call();
+    _selectableItems.clear();
+    showNotifier.value = false;
   }
 
   void _cancelTypeAheadTimer() {
@@ -246,7 +264,7 @@ class _NakedSelectState<T> extends State<NakedSelect<T>> {
     }
 
     if (widget.closeOnSelect) {
-      widget.onClose?.call();
+      toggleMenu();
     }
   }
 
@@ -267,12 +285,12 @@ class _NakedSelectState<T> extends State<NakedSelect<T>> {
         child: NakedPortal(
           alignment: widget.menuAlignment,
           fallbackAlignments: widget.fallbackAlignments,
-          controller: widget.controller,
+          controller: controller,
           overlayBuilder: (context) {
             return NakedOverlayContentMenu(
               consumeOutsideTaps: widget.closeOnClickOutside,
-              onClose: widget.onClose,
-              controller: widget.controller,
+              onClose: closeMenu,
+              controller: controller,
               onKeyEvent: (event) {
                 // Type-ahead with character keys
                 final character = event.character;
