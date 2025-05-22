@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         backgroundColor: Colors.white,
         body: Center(
-          child: MyRadioGroup(),
+          child: RadioGroupExample(),
         ),
       ),
     );
@@ -26,14 +26,14 @@ enum RadioOption {
   apple,
 }
 
-class MyRadioGroup extends StatefulWidget {
-  const MyRadioGroup({super.key});
+class RadioGroupExample extends StatefulWidget {
+  const RadioGroupExample({super.key});
 
   @override
-  State<MyRadioGroup> createState() => _MyRadioGroupState();
+  State<RadioGroupExample> createState() => _RadioGroupExampleState();
 }
 
-class _MyRadioGroupState extends State<MyRadioGroup> {
+class _RadioGroupExampleState extends State<RadioGroupExample> {
   RadioOption _selectedValue = RadioOption.banana;
 
   @override

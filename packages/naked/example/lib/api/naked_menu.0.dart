@@ -14,21 +14,21 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         backgroundColor: Colors.white,
         body: Center(
-          child: ExampleMenu(),
+          child: MenuExample(),
         ),
       ),
     );
   }
 }
 
-class ExampleMenu extends StatefulWidget {
-  const ExampleMenu({super.key});
+class MenuExample extends StatefulWidget {
+  const MenuExample({super.key});
 
   @override
-  State<ExampleMenu> createState() => _ExampleMenuState();
+  State<MenuExample> createState() => _MenuExampleState();
 }
 
-class _ExampleMenuState extends State<ExampleMenu> {
+class _MenuExampleState extends State<MenuExample> {
   final _controller = OverlayPortalController();
 
   void _onItemPressed(String item) {

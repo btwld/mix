@@ -14,21 +14,21 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         backgroundColor: Colors.white,
         body: Center(
-          child: MyTabs(),
+          child: TabsExample(),
         ),
       ),
     );
   }
 }
 
-class MyTabs extends StatefulWidget {
-  const MyTabs({super.key});
+class TabsExample extends StatefulWidget {
+  const TabsExample({super.key});
 
   @override
-  State<MyTabs> createState() => _MyTabsState();
+  State<TabsExample> createState() => _TabsExampleState();
 }
 
-class _MyTabsState extends State<MyTabs> {
+class _TabsExampleState extends State<TabsExample> {
   String _selectedTabId = 'light';
 
   @override

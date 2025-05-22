@@ -9,20 +9,19 @@ NakedRadioGroup provides a context provider for managing a single selection acro
 </Info>
 <CodeGroup title="Usage Example" defaultLanguage="dart">
 ```dart
-
 enum RadioOption {
   banana,
   apple,
 }
 
-class MyRadioGroup extends StatefulWidget {
-  const MyRadioGroup({super.key});
+class RadioGroupExample extends StatefulWidget {
+  const RadioGroupExample({super.key});
 
   @override
-  State<MyRadioGroup> createState() => _MyRadioGroupState();
+  State<RadioGroupExample> createState() => _RadioGroupExampleState();
 }
 
-class _MyRadioGroupState extends State<MyRadioGroup> {
+class _RadioGroupExampleState extends State<RadioGroupExample> {
   RadioOption _selectedValue = RadioOption.banana;
 
   @override

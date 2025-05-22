@@ -10,14 +10,14 @@ NakedSelect provides a fully customizable dropdown/select component with no defa
 
 <CodeGroup title="Usage Example" defaultLanguage="dart">
 ```dart
-class MySelect extends StatefulWidget {
-  const MySelect({super.key});
+class SelectExample extends StatefulWidget {
+  const SelectExample({super.key});
 
   @override
-  State<MySelect> createState() => _MySelectState();
+  State<SelectExample> createState() => _SelectExampleState();
 }
 
-class _MySelectState extends State<MySelect> {
+class _SelectExampleState extends State<SelectExample> {
   final _controller = OverlayPortalController();
   String? _selectedValue;
   bool _isHovered = false;

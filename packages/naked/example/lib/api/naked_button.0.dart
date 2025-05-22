@@ -12,22 +12,23 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       home: Scaffold(
+        backgroundColor: Colors.white,
         body: Center(
-          child: ExampleButton(),
+          child: ButtonExample(),
         ),
       ),
     );
   }
 }
 
-class ExampleButton extends StatefulWidget {
-  const ExampleButton({super.key});
+class ButtonExample extends StatefulWidget {
+  const ButtonExample({super.key});
 
   @override
-  State<ExampleButton> createState() => _ExampleButtonState();
+  State<ButtonExample> createState() => _ButtonExampleState();
 }
 
-class _ExampleButtonState extends State<ExampleButton> {
+class _ButtonExampleState extends State<ButtonExample> {
   bool _isHovered = false;
   bool _isPressed = false;
   bool _isFocused = false;

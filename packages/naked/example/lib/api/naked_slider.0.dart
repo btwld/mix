@@ -14,21 +14,21 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         backgroundColor: Colors.white,
         body: Center(
-          child: MySlider(),
+          child: SliderExample(),
         ),
       ),
     );
   }
 }
 
-class MySlider extends StatefulWidget {
-  const MySlider({super.key});
+class SliderExample extends StatefulWidget {
+  const SliderExample({super.key});
 
   @override
-  State<MySlider> createState() => _MySliderState();
+  State<SliderExample> createState() => _SliderExampleState();
 }
 
-class _MySliderState extends State<MySlider> {
+class _SliderExampleState extends State<SliderExample> {
   double _value = 0.5;
 
   @override

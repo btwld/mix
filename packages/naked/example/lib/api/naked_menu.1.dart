@@ -14,21 +14,21 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         backgroundColor: Colors.white,
         body: Center(
-          child: ExampleMenu(),
+          child: AnimatedMenuExample(),
         ),
       ),
     );
   }
 }
 
-class ExampleMenu extends StatefulWidget {
-  const ExampleMenu({super.key});
+class AnimatedMenuExample extends StatefulWidget {
+  const AnimatedMenuExample({super.key});
 
   @override
-  State<ExampleMenu> createState() => _ExampleMenuState();
+  State<AnimatedMenuExample> createState() => _AnimatedMenuExampleState();
 }
 
-class _ExampleMenuState extends State<ExampleMenu>
+class _AnimatedMenuExampleState extends State<AnimatedMenuExample>
     with TickerProviderStateMixin {
   final _controller = OverlayPortalController();
   final _isOpened = ValueNotifier(false);

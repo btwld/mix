@@ -14,21 +14,21 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         backgroundColor: Colors.white,
         body: Center(
-          child: MySelect(),
+          child: SelectExample(),
         ),
       ),
     );
   }
 }
 
-class MySelect extends StatefulWidget {
-  const MySelect({super.key});
+class SelectExample extends StatefulWidget {
+  const SelectExample({super.key});
 
   @override
-  State<MySelect> createState() => _MySelectState();
+  State<SelectExample> createState() => _SelectExampleState();
 }
 
-class _MySelectState extends State<MySelect> {
+class _SelectExampleState extends State<SelectExample> {
   final _controller = OverlayPortalController();
   String? _selectedValue;
   bool _isHovered = false;

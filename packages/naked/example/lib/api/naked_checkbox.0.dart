@@ -12,22 +12,23 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       home: Scaffold(
+        backgroundColor: Colors.white,
         body: Center(
-          child: ExampleCheckbox(),
+          child: CheckboxExample(),
         ),
       ),
     );
   }
 }
 
-class ExampleCheckbox extends StatefulWidget {
-  const ExampleCheckbox({super.key});
+class CheckboxExample extends StatefulWidget {
+  const CheckboxExample({super.key});
 
   @override
-  State<ExampleCheckbox> createState() => _ExampleCheckboxState();
+  State<CheckboxExample> createState() => _CheckboxExampleState();
 }
 
-class _ExampleCheckboxState extends State<ExampleCheckbox> {
+class _CheckboxExampleState extends State<CheckboxExample> {
   bool _isChecked = false;
   bool _isHovered = false;
   bool _isPressed = false;

@@ -12,22 +12,23 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       home: Scaffold(
+        backgroundColor: Colors.white,
         body: Center(
-          child: ExampleAccordion(),
+          child: AccordionExample(),
         ),
       ),
     );
   }
 }
 
-class ExampleAccordion extends StatefulWidget {
-  const ExampleAccordion({super.key});
+class AccordionExample extends StatefulWidget {
+  const AccordionExample({super.key});
 
   @override
-  State<ExampleAccordion> createState() => _ExampleAccordionState();
+  State<AccordionExample> createState() => _AccordionExampleState();
 }
 
-class _ExampleAccordionState extends State<ExampleAccordion>
+class _AccordionExampleState extends State<AccordionExample>
     with TickerProviderStateMixin {
   final _controller = AccordionController<String>(max: 1, min: 1);
   late final _animationController = AnimationController(

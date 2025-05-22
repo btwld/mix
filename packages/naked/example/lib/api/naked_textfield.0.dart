@@ -14,21 +14,21 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         backgroundColor: Colors.white,
         body: Center(
-          child: MyTextField(),
+          child: TextFieldExample(),
         ),
       ),
     );
   }
 }
 
-class MyTextField extends StatefulWidget {
-  const MyTextField({super.key});
+class TextFieldExample extends StatefulWidget {
+  const TextFieldExample({super.key});
 
   @override
-  State<MyTextField> createState() => _MyTextFieldState();
+  State<TextFieldExample> createState() => _TextFieldExampleState();
 }
 
-class _MyTextFieldState extends State<MyTextField> {
+class _TextFieldExampleState extends State<TextFieldExample> {
   bool _isHovered = false;
   bool _isPressed = false;
   bool _isFocused = false;
@@ -50,6 +50,7 @@ class _MyTextFieldState extends State<MyTextField> {
       width: 300,
       child: NakedTextField(
         cursorColor: Colors.grey.shade700,
+        
         onHoverState: (isHovered) => setState(() => _isHovered = isHovered),
         onPressedState: (isPressed) => setState(() => _isPressed = isPressed),
         onFocusState: (isFocused) => setState(() => _isFocused = isFocused),

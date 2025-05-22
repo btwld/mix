@@ -10,14 +10,14 @@ This component uses direct callbacks for state changes instead of managing its o
 </Info>
 <CodeGroup title="Usage Example" defaultLanguage="dart">
 ```dart
-class MyCheckbox extends StatefulWidget {
-  const MyCheckbox({super.key});
+class CheckboxExample extends StatefulWidget {
+  const CheckboxExample({super.key});
 
   @override
-  State<MyCheckbox> createState() => _MyCheckboxState();
+  State<CheckboxExample> createState() => _CheckboxExampleState();
 }
 
-class _MyCheckboxState extends State<MyCheckbox> {
+class _CheckboxExampleState extends State<CheckboxExample> {
   bool _isChecked = false;
   bool _isHovered = false;
   bool _isPressed = false;

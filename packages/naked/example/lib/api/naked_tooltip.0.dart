@@ -14,21 +14,21 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         backgroundColor: Colors.white,
         body: Center(
-          child: MyTooltip(),
+          child: TooltipExample(),
         ),
       ),
     );
   }
 }
 
-class MyTooltip extends StatefulWidget {
-  const MyTooltip({super.key});
+class TooltipExample extends StatefulWidget {
+  const TooltipExample({super.key});
 
   @override
-  State<MyTooltip> createState() => _MyTooltipState();
+  State<TooltipExample> createState() => _TooltipExampleState();
 }
 
-class _MyTooltipState extends State<MyTooltip>
+class _TooltipExampleState extends State<TooltipExample>
     with SingleTickerProviderStateMixin {
   late final _animationController = AnimationController(
     duration: const Duration(milliseconds: 300),

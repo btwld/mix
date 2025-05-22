@@ -14,21 +14,21 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         backgroundColor: Colors.white,
         body: Center(
-          child: MySelect(),
+          child: AnimatedSelectExample(),
         ),
       ),
     );
   }
 }
 
-class MySelect extends StatefulWidget {
-  const MySelect({super.key});
+class AnimatedSelectExample extends StatefulWidget {
+  const AnimatedSelectExample({super.key});
 
   @override
-  State<MySelect> createState() => _MySelectState();
+  State<AnimatedSelectExample> createState() => _AnimatedSelectExampleState();
 }
 
-class _MySelectState extends State<MySelect> with TickerProviderStateMixin {
+class _AnimatedSelectExampleState extends State<AnimatedSelectExample> with TickerProviderStateMixin {
   final _controller = OverlayPortalController();
   String? _selectedValue;
   bool _isHovered = false;

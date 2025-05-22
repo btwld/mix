@@ -10,14 +10,14 @@ NakedAccordion provides expandable/collapsible sections without imposing any vis
 
 <CodeGroup title="Usage Example" defaultLanguage="dart">
 ```dart
-class MyAccordion extends StatefulWidget {
-  const MyAccordion({super.key});
+class AccordionExample extends StatefulWidget {
+  const AccordionExample({super.key});
 
   @override
-  State<MyAccordion> createState() => _MyAccordionState();
+  State<AccordionExample> createState() => _AccordionExampleState();
 }
 
-class _MyAccordionState extends State<MyAccordion>
+class _AccordionExampleState extends State<AccordionExample>
     with TickerProviderStateMixin {
   final _controller = AccordionController<String>(max: 1, min: 1);
   late final _animationController = AnimationController(
