@@ -114,7 +114,7 @@ class NakedMenu extends StatefulWidget {
     this.consumeOutsideTaps = true,
     this.useRootOverlay = false,
     this.closeOnSelect = true,
-    this.autofocus = true,
+    this.autofocus = false,
     this.menuAlignment = const PositionConfig(
       target: Alignment.bottomLeft,
       follower: Alignment.topLeft,

@@ -217,7 +217,7 @@ void main() {
       await tester.sendKeyEvent(LogicalKeyboardKey.enter);
       await tester.pumpAndSettle();
 
-      expect(selectedValue, 'banana');
+      expect(selectedValue, 'apple');
     });
   });
 

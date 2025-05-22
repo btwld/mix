@@ -132,7 +132,7 @@ const NakedSelect({
   this.enabled = true,
   this.semanticLabel,
   this.closeOnSelect = true,
-  this.autofocus = true,
+  this.autofocus = false,
   this.enableTypeAhead = true,
   this.typeAheadDebounceTime = const Duration(milliseconds: 500),
   this.menuAlignment = const PositionConfig(
@@ -195,7 +195,7 @@ Semantic label for accessibility. Used by screen readers to identify the select 
 Whether to automatically close the dropdown when an item is selected. Defaults to true.
 
 #### autofocus → `bool`
-Whether to automatically focus the menu when opened. Defaults to true.
+Whether to automatically focus the menu when opened. Defaults to false.
 
 #### enableTypeAhead → `bool`
 Whether to enable type-ahead selection for quick keyboard navigation. Defaults to true.
@@ -226,7 +226,7 @@ const NakedSelectTrigger({
   this.cursor = SystemMouseCursors.click,
   this.enableHapticFeedback = true,
   this.focusNode,
-  this.autofocus = true,
+  this.autofocus = false,
 })
 ```
 
@@ -257,7 +257,7 @@ Whether to provide haptic feedback when tapped. Defaults to true.
 Optional focus node to control focus behavior.
 
 #### autofocus → `bool`
-Whether to automatically focus the trigger when opened. Defaults to true.
+Whether to automatically focus the trigger when opened. Defaults to false.
 
 
 ## NakedSelectItem
@@ -275,7 +275,7 @@ const NakedSelectItem({
   this.cursor = SystemMouseCursors.click,
   this.enableHapticFeedback = true,
   this.focusNode,
-  this.autofocus = true,
+  this.autofocus = false,
 })
 ```
 
@@ -312,4 +312,4 @@ Whether to provide haptic feedback when selected. Defaults to true.
 Optional focus node to control focus behavior.
 
 #### autofocus → `bool`
-Whether to automatically focus this item. Defaults to true.
+Whether to automatically focus this item. Defaults to false.

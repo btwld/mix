@@ -142,7 +142,7 @@ const NakedMenu({
   this.consumeOutsideTaps = true,
   this.useRootOverlay = false,
   this.closeOnSelect = true,
-  this.autofocus = true,
+  this.autofocus = false,
   this.menuAlignment = const PositionConfig(
     target: Alignment.bottomLeft,
     follower: Alignment.topLeft,
@@ -182,7 +182,7 @@ Whether to use the root overlay for rendering the menu. Defaults to false.
 Whether to close the menu when an item is selected. Defaults to true.
 
 #### autofocus → `bool`
-Whether to automatically focus the menu when opened. Defaults to true.
+Whether to automatically focus the menu when opened. Defaults to false.
 
 #### menuAlignment → `PositionConfig`
 The alignment of the menu relative to its target. Specifies how the menu should be positioned.

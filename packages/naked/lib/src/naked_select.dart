@@ -148,7 +148,7 @@ class NakedSelect<T> extends StatefulWidget implements OverlayChildLifecycle {
     this.enabled = true,
     this.semanticLabel,
     this.closeOnSelect = true,
-    this.autofocus = true,
+    this.autofocus = false,
     this.enableTypeAhead = true,
     this.typeAheadDebounceTime = const Duration(milliseconds: 500),
     this.menuAlignment = const PositionConfig(
@@ -443,7 +443,7 @@ class NakedSelectTrigger extends StatefulWidget {
     this.cursor = SystemMouseCursors.click,
     this.enableHapticFeedback = true,
     this.focusNode,
-    this.autofocus = true,
+    this.autofocus = false,
   });
 
   @override
@@ -559,7 +559,7 @@ class NakedSelectItem<T> extends StatefulWidget {
     this.cursor = SystemMouseCursors.click,
     this.enableHapticFeedback = true,
     this.focusNode,
-    this.autofocus = true,
+    this.autofocus = false,
   });
 
   @override
