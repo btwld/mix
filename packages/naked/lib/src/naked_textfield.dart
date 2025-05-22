@@ -16,13 +16,12 @@ import 'package:flutter/services.dart';
 /// selection, and accessibility features while allowing custom visual representation
 /// through the required [builder] parameter.
 ///
-/// NakedTextField handles various interaction states (hover, pressed, focused, disabled)
-/// and provides callbacks to allow consumers to manage their own visual state:
-/// - [onHoverState]: Notifies when mouse hover state changes
-/// - [onPressedState]: Notifies when pressed state changes
-/// - [onFocusState]: Notifies when focus state changes
+/// The widget handles various interaction states and provides callbacks:
+/// - [onHoverState]: Called when mouse hover state changes (true when hovered)
+/// - [onPressedState]: Called when pressed state changes (true when pressed)
+/// - [onFocusState]: Called when focus state changes (true when focused)
 ///
-/// Example:
+/// Example usage:
 /// ```dart
 /// class MyCustomTextField extends StatefulWidget {
 ///   final TextEditingController controller;
@@ -86,14 +85,18 @@ import 'package:flutter/services.dart';
 /// }
 /// ```
 ///
-/// A simplified text field that maintains all behavior but removes styling and decoration.
-///
-/// This widget provides all the core functionality of a TextField without the visual styling
-/// and decoration features of the standard Material TextField.
+/// The widget provides a simplified text field that:
+/// - Maintains all core text editing functionality
+/// - Removes default Material styling and decoration
+/// - Allows complete customization through the builder pattern
+/// - Handles all standard text field interactions
+/// - Supports accessibility features
+/// - Provides state callbacks for hover, press and focus
 class NakedTextField extends StatefulWidget {
   /// Creates a simplified text field.
   const NakedTextField({
     super.key,
+    this.groupId = EditableText,
     this.controller,
     this.focusNode,
     this.undoController,
@@ -135,10 +138,9 @@ class NakedTextField extends StatefulWidget {
     this.enableInteractiveSelection = true,
     this.selectionControls,
     this.onPressed,
-    this.onPressedAlwaysCalled = false,
+    this.onTapAlwaysCalled = false,
     this.onPressedState,
-    this.onPressOutside,
-    // this.onPressUpOutside,
+    this.onTapOutside,
     this.scrollController,
     this.scrollPhysics,
     this.autofillHints = const <String>[],
@@ -153,7 +155,9 @@ class NakedTextField extends StatefulWidget {
     this.magnifierConfiguration,
     this.onHoverState,
     this.onFocusState,
+    this.style,
     required this.builder,
+    this.ignorePointers,
   })  : assert(obscuringCharacter.length == 1),
         smartDashesType = smartDashesType ??
             (obscureText ? SmartDashesType.disabled : SmartDashesType.enabled),
@@ -299,7 +303,7 @@ class NakedTextField extends StatefulWidget {
   final GestureTapCallback? onPressed;
 
   /// Whether onPressed should be called for every tap.
-  final bool onPressedAlwaysCalled;
+  final bool onTapAlwaysCalled;
 
   /// Called when the pressed state changes.
   ///
@@ -309,7 +313,7 @@ class NakedTextField extends StatefulWidget {
   final ValueChanged<bool>? onPressedState;
 
   /// Called when a tap is detected outside of the field.
-  final TapRegionCallback? onPressOutside;
+  final TapRegionCallback? onTapOutside;
 
   // TODO: Implement this on the Next version of Flutter
   /// Called when a tap up is detected outside of the field.
@@ -365,7 +369,21 @@ class NakedTextField extends StatefulWidget {
   /// - `false` when the text field loses focus
   final ValueChanged<bool>? onFocusState;
 
-  final Widget Function(BuildContext context, Widget child) builder;
+  /// The group ID for the text field.
+  final Object groupId;
+
+  /// The style of the text field.
+  final TextStyle? style;
+
+  /// Whether to ignore pointers.
+  final bool? ignorePointers;
+
+  /// Required builder function that allows complete customization of the text field's appearance.
+  ///
+  /// The builder receives:
+  /// - [context] The build context
+  /// - [editableText] The core EditableText widget that should be included in the custom layout
+  final Widget Function(BuildContext context, Widget editableText) builder;
 
   @override
   State<NakedTextField> createState() => _NakedTextFieldState();
@@ -482,8 +500,6 @@ class _NakedTextFieldState extends State<NakedTextField>
       _registerController();
     }
   }
-
-  int get _currentLength => _effectiveController.value.text.characters.length;
 
   @override
   String? get restorationId => widget.restorationId;
@@ -617,10 +633,11 @@ class _NakedTextFieldState extends State<NakedTextField>
     assert(debugCheckHasDirectionality(context));
 
     final ThemeData theme = Theme.of(context);
-    final TextStyle style = TextStyle(
-      color: widget.enabled ? Colors.black : Colors.grey,
-      fontSize: 16.0,
-    );
+    final TextStyle style = widget.style ??
+        TextStyle(
+          color: widget.enabled ? Colors.black : Colors.grey,
+          fontSize: 16.0,
+        );
     final Brightness keyboardAppearance =
         widget.keyboardAppearance ?? theme.brightness;
     final TextEditingController controller = _effectiveController;
@@ -655,15 +672,6 @@ class _NakedTextFieldState extends State<NakedTextField>
     Color cursorColor;
     Color selectionColor;
     Radius? cursorRadius = widget.cursorRadius;
-
-    final int? semanticsMaxValueLength;
-    if (_effectiveMaxLengthEnforcement != MaxLengthEnforcement.none &&
-        widget.maxLength != null &&
-        widget.maxLength! > 0) {
-      semanticsMaxValueLength = widget.maxLength;
-    } else {
-      semanticsMaxValueLength = null;
-    }
 
     // Configure platform-specific properties
     switch (theme.platform) {
@@ -710,73 +718,78 @@ class _NakedTextFieldState extends State<NakedTextField>
     }
 
     Widget child = TextFieldTapRegion(
-      child: RepaintBoundary(
-        child: UnmanagedRestorationScope(
-          bucket: bucket,
-          child: EditableText(
-            key: editableTextKey,
-            readOnly: widget.readOnly || !widget.enabled,
-            showCursor: widget.showCursor,
-            showSelectionHandles: _showSelectionHandles,
-            controller: controller,
-            focusNode: focusNode,
-            undoController: widget.undoController,
-            keyboardType: widget.keyboardType,
-            textInputAction: widget.textInputAction,
-            textCapitalization: widget.textCapitalization,
-            style: style,
-            textAlign: widget.textAlign,
-            textDirection: widget.textDirection,
-            autofocus: widget.autofocus,
-            obscuringCharacter: widget.obscuringCharacter,
-            obscureText: widget.obscureText,
-            autocorrect: widget.autocorrect,
-            smartDashesType: widget.smartDashesType,
-            smartQuotesType: widget.smartQuotesType,
-            enableSuggestions: widget.enableSuggestions,
-            maxLines: widget.maxLines,
-            minLines: widget.minLines,
-            expands: widget.expands,
-            selectionColor: focusNode.hasFocus ? selectionColor : null,
-            selectionControls: widget.enableInteractiveSelection
-                ? textSelectionControls
-                : null,
-            onChanged: widget.onChanged,
-            onSelectionChanged: _handleSelectionChanged,
-            onEditingComplete: widget.onEditingComplete,
-            onSubmitted: widget.onSubmitted,
-            onAppPrivateCommand: widget.onAppPrivateCommand,
-            onSelectionHandleTapped: _handleSelectionHandleTapped,
-            onTapOutside: widget.onPressOutside,
-            // onTapUpOutside: widget.onPressUpOutside,
-            inputFormatters: formatters,
-            rendererIgnoresPointer: true,
-            cursorWidth: widget.cursorWidth,
-            cursorHeight: widget.cursorHeight,
-            cursorRadius: cursorRadius,
-            cursorColor: cursorColor,
-            selectionHeightStyle: widget.selectionHeightStyle,
-            selectionWidthStyle: widget.selectionWidthStyle,
-            cursorOpacityAnimates: cursorOpacityAnimates,
-            cursorOffset: cursorOffset,
-            paintCursorAboveText: paintCursorAboveText,
-            backgroundCursorColor: CupertinoColors.inactiveGray,
-            scrollPadding: widget.scrollPadding,
-            keyboardAppearance: keyboardAppearance,
-            enableInteractiveSelection: widget.enableInteractiveSelection,
-            dragStartBehavior: widget.dragStartBehavior,
-            scrollController: widget.scrollController,
-            scrollPhysics: widget.scrollPhysics,
-            autofillClient: this,
-            clipBehavior: widget.clipBehavior,
-            restorationId: 'editable',
-            scribbleEnabled: widget.scribbleEnabled,
-            enableIMEPersonalizedLearning: widget.enableIMEPersonalizedLearning,
-            contentInsertionConfiguration: widget.contentInsertionConfiguration,
-            contextMenuBuilder: widget.contextMenuBuilder,
-            spellCheckConfiguration: spellCheckConfiguration,
-            magnifierConfiguration: widget.magnifierConfiguration ??
-                TextMagnifier.adaptiveMagnifierConfiguration,
+      child: IgnorePointer(
+        ignoring: widget.ignorePointers ?? !widget.enabled,
+        child: RepaintBoundary(
+          child: UnmanagedRestorationScope(
+            bucket: bucket,
+            child: EditableText(
+              groupId: widget.groupId,
+              key: editableTextKey,
+              readOnly: widget.readOnly || !widget.enabled,
+              showCursor: widget.showCursor,
+              showSelectionHandles: _showSelectionHandles,
+              controller: controller,
+              focusNode: focusNode,
+              undoController: widget.undoController,
+              keyboardType: widget.keyboardType,
+              textInputAction: widget.textInputAction,
+              textCapitalization: widget.textCapitalization,
+              style: widget.style ?? style,
+              textAlign: widget.textAlign,
+              textDirection: widget.textDirection,
+              autofocus: widget.autofocus,
+              obscuringCharacter: widget.obscuringCharacter,
+              obscureText: widget.obscureText,
+              autocorrect: widget.autocorrect,
+              smartDashesType: widget.smartDashesType,
+              smartQuotesType: widget.smartQuotesType,
+              enableSuggestions: widget.enableSuggestions,
+              maxLines: widget.maxLines,
+              minLines: widget.minLines,
+              expands: widget.expands,
+              selectionColor: focusNode.hasFocus ? selectionColor : null,
+              selectionControls: widget.enableInteractiveSelection
+                  ? textSelectionControls
+                  : null,
+              onChanged: widget.onChanged,
+              onSelectionChanged: _handleSelectionChanged,
+              onEditingComplete: widget.onEditingComplete,
+              onSubmitted: widget.onSubmitted,
+              onAppPrivateCommand: widget.onAppPrivateCommand,
+              onSelectionHandleTapped: _handleSelectionHandleTapped,
+              onTapOutside: widget.onTapOutside,
+              inputFormatters: formatters,
+              rendererIgnoresPointer: true,
+              cursorWidth: widget.cursorWidth,
+              cursorHeight: widget.cursorHeight,
+              cursorRadius: cursorRadius,
+              cursorColor: cursorColor,
+              selectionHeightStyle: widget.selectionHeightStyle,
+              selectionWidthStyle: widget.selectionWidthStyle,
+              cursorOpacityAnimates: cursorOpacityAnimates,
+              cursorOffset: cursorOffset,
+              paintCursorAboveText: paintCursorAboveText,
+              backgroundCursorColor: CupertinoColors.inactiveGray,
+              scrollPadding: widget.scrollPadding,
+              keyboardAppearance: keyboardAppearance,
+              enableInteractiveSelection: widget.enableInteractiveSelection,
+              dragStartBehavior: widget.dragStartBehavior,
+              scrollController: widget.scrollController,
+              scrollPhysics: widget.scrollPhysics,
+              autofillClient: this,
+              clipBehavior: widget.clipBehavior,
+              restorationId: 'editable',
+              scribbleEnabled: widget.scribbleEnabled,
+              enableIMEPersonalizedLearning:
+                  widget.enableIMEPersonalizedLearning,
+              contentInsertionConfiguration:
+                  widget.contentInsertionConfiguration,
+              contextMenuBuilder: widget.contextMenuBuilder,
+              spellCheckConfiguration: spellCheckConfiguration,
+              magnifierConfiguration: widget.magnifierConfiguration ??
+                  TextMagnifier.adaptiveMagnifierConfiguration,
+            ),
           ),
         ),
       ),
@@ -784,8 +797,6 @@ class _NakedTextFieldState extends State<NakedTextField>
 
     return Semantics(
       enabled: widget.enabled,
-      currentValueLength: _currentLength,
-      maxValueLength: semanticsMaxValueLength,
       onTap: widget.readOnly
           ? null
           : () {
@@ -819,7 +830,7 @@ class _TextFieldSelectionGestureDetectorBuilder
   final _NakedTextFieldState _state;
 
   @override
-  bool get onUserTapAlwaysCalled => _state.widget.onPressedAlwaysCalled;
+  bool get onUserTapAlwaysCalled => _state.widget.onTapAlwaysCalled;
 
   @override
   void onUserTap() {

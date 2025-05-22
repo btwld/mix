@@ -43,7 +43,7 @@ class _TextFieldExampleState extends State<TextFieldExample> {
         onHoverState: (isHovered) => setState(() => _isHovered = isHovered),
         onPressedState: (isPressed) => setState(() => _isPressed = isPressed),
         onFocusState: (isFocused) => setState(() => _isFocused = isFocused),
-        builder: (context, textArea) {
+        builder: (context, child) {
           return AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -63,7 +63,7 @@ class _TextFieldExampleState extends State<TextFieldExample> {
                   ),
               ],
             ),
-            child: textArea,
+            child: child,
           );
         },
       ),
@@ -78,6 +78,7 @@ class _TextFieldExampleState extends State<TextFieldExample> {
 ```dart
 const NakedTextField({
   Key? key,
+  this.groupId = EditableText,
   this.controller,
   this.focusNode,
   this.undoController,
@@ -119,9 +120,9 @@ const NakedTextField({
   this.enableInteractiveSelection = true,
   this.selectionControls,
   this.onPressed,
-  this.onPressedAlwaysCalled = false,
+  this.onTapAlwaysCalled = false,
   this.onPressedState,
-  this.onPressOutside,
+  this.onTapOutside,
   this.scrollController,
   this.scrollPhysics,
   this.autofillHints = const <String>[],
@@ -136,7 +137,9 @@ const NakedTextField({
   this.magnifierConfiguration,
   this.onHoverState,
   this.onFocusState,
+  this.style,
   required this.builder,
+  this.ignorePointers,
 })
 ```
 
@@ -265,7 +268,7 @@ Controls the selection handles and contextual toolbar.
 #### onPressed → `GestureTapCallback?`
 Triggered when the user taps on the field.
 
-#### onPressedAlwaysCalled → `bool`
+#### onTapAlwaysCalled → `bool`
 Whether onPressed should be called for every tap. Defaults to false.
 
 #### onPressedState → `ValueChanged<bool>?`
@@ -273,7 +276,7 @@ Called when the pressed state changes. Provides the current pressed state as a b
 - `true` when the text field is pressed
 - `false` when the text field is released
 
-#### onPressOutside → `TapRegionCallback?`
+#### onTapOutside → `TapRegionCallback?`
 Called when a tap is detected outside of the field.
 
 #### scrollController → `ScrollController?`
@@ -321,6 +324,15 @@ Called when the hover state changes. Provides the current hover state as a boole
 Called when the focus state changes. Provides the current focus state as a boolean parameter:
 - `true` when the text field gains focus
 - `false` when the text field loses focus
+
+#### groupId → `Object`
+The group ID for the text field. Defaults to EditableText.
+
+#### style → `TextStyle?`
+The style of the text field.
+
+#### ignorePointers → `bool?`
+Whether to ignore pointers. When true, the text field will not respond to pointer events.
 
 #### builder → `Widget Function(BuildContext context, Widget child)`
 Required builder function to create the custom appearance of the text field.

@@ -50,14 +50,18 @@ class _TextFieldExampleState extends State<TextFieldExample> {
       width: 300,
       child: NakedTextField(
         cursorColor: Colors.grey.shade700,
-        
+        style: TextStyle(
+          color: Colors.grey.shade700,
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+        ),
         onHoverState: (isHovered) => setState(() => _isHovered = isHovered),
         onPressedState: (isPressed) => setState(() => _isPressed = isPressed),
         onFocusState: (isFocused) => setState(() => _isFocused = isFocused),
         builder: (context, textArea) {
           return AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: _backgroundColor,
