@@ -52,10 +52,10 @@ class _TooltipExampleState extends State<TooltipExample>
       removalDelay: const Duration(milliseconds: 300),
       onStateChange: (state) {
         switch (state) {
-          case TooltipLifecycleState.present:
+          case OverlayChildLifecycleState.present:
             _animationController.forward();
             break;
-          case TooltipLifecycleState.pendingRemoval:
+          case OverlayChildLifecycleState.pendingRemoval:
             _animationController.reverse();
             break;
           default:

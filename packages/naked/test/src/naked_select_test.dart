@@ -21,11 +21,6 @@ extension _WidgetTesterX on WidgetTester {
 
 void main() {
   const kMenuKey = Key('menu');
-  late OverlayPortalController overlayPortalController;
-
-  setUp(() {
-    overlayPortalController = OverlayPortalController();
-  });
 
   // Helper function to build select widget
   Widget buildSelect<T>({
@@ -42,12 +37,6 @@ void main() {
   }) {
     return Center(
       child: NakedSelect<T>(
-        controller: overlayPortalController,
-        onClose: () {
-          overlayPortalController.hide();
-          onMenuClose?.call();
-        },
-        onOpen: () => overlayPortalController.show(),
         selectedValue: selectedValue,
         onSelectedValueChanged: onSelectedValueChanged,
         selectedValues: selectedValues,
@@ -193,12 +182,8 @@ void main() {
 
   group('Keyboard Navigation', () {
     testWidgets('closes menu with Escape key', (WidgetTester tester) async {
-      bool menuClosed = false;
-
       await tester.pumpMaterialWidget(
-        buildSelect<String>(
-          onMenuClose: () => menuClosed = true,
-        ),
+        buildSelect<String>(),
       );
 
       // Open menu
@@ -206,9 +191,9 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.sendKeyEvent(LogicalKeyboardKey.escape);
-      await tester.pump();
+      await tester.pumpAndSettle();
 
-      expect(menuClosed, true);
+      expect(find.text('Apple'), findsNothing);
     });
 
     testWidgets('selects item with Enter key', (WidgetTester tester) async {
@@ -325,7 +310,6 @@ void main() {
           FocusHighlightStrategy.alwaysTraditional;
 
       bool isHovered = false;
-      final controller = OverlayPortalController();
       const key = Key('trigger');
 
       await tester.pumpMaterialWidget(
@@ -333,9 +317,6 @@ void main() {
           padding: const EdgeInsets.all(1),
           child: NakedSelect<String>(
             menu: const SizedBox(),
-            controller: controller,
-            onClose: () => controller.hide(),
-            onOpen: () => controller.show(),
             child: NakedSelectTrigger(
               key: key,
               onHoverState: (value) => isHovered = value,
@@ -358,9 +339,6 @@ void main() {
 
       await tester.pumpMaterialWidget(
         NakedSelect<String>(
-          controller: OverlayPortalController(),
-          onClose: () => overlayPortalController.hide(),
-          onOpen: () => overlayPortalController.show(),
           menu: const SizedBox(),
           child: NakedSelectTrigger(
             onPressedState: (value) => isPressed = value,
@@ -386,7 +364,6 @@ void main() {
 
       await tester.pumpMaterialWidget(
         NakedSelect<String>(
-          controller: overlayPortalController,
           onClose: () => overlayPortalController.hide(),
           onOpen: () => overlayPortalController.show(),
           menu: const SizedBox(),
@@ -416,13 +393,10 @@ void main() {
       bool itemPressed = false;
       const key = Key('item');
       String? selectedValue;
-      final overlayPortalController = OverlayPortalController();
+
       await tester.pumpMaterialWidget(
         Center(
           child: NakedSelect<String>(
-            controller: overlayPortalController,
-            onClose: () => overlayPortalController.hide(),
-            onOpen: () => overlayPortalController.show(),
             selectedValue: selectedValue,
             onSelectedValueChanged: (value) => selectedValue = value,
             menu: Container(
@@ -507,13 +481,11 @@ void main() {
     testWidgets('closes menu when closeOnSelect is true',
         (WidgetTester tester) async {
       String? selectedValue;
-      bool menuClosed = false;
 
       await tester.pumpMaterialWidget(
         buildSelect<String>(
           selectedValue: selectedValue,
           onSelectedValueChanged: (value) => selectedValue = value,
-          onMenuClose: () => menuClosed = true,
           closeOnSelect: true,
         ),
       );
@@ -526,38 +498,30 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(selectedValue, 'banana');
-      expect(menuClosed, true);
+      expect(find.text('Apple'), findsNothing);
     });
   });
 
   group('Cursor', () {
     testWidgets('shows appropriate cursor based on interactive state',
         (WidgetTester tester) async {
-      final overlayPortalController = OverlayPortalController();
-      final disabledOverlayPortalController = OverlayPortalController();
       const keyEnabledTrigger = Key('enabledTrigger');
       const keyDisabledTrigger = Key('disabledTrigger');
 
       await tester.pumpMaterialWidget(
-        Column(
+        const Column(
           children: [
             NakedSelect<String>(
-              controller: overlayPortalController,
-              onClose: () => overlayPortalController.hide(),
-              onOpen: () => overlayPortalController.show(),
-              menu: const SizedBox(),
-              child: const NakedSelectTrigger(
+              menu: SizedBox(),
+              child: NakedSelectTrigger(
                 key: keyEnabledTrigger,
                 child: Text('Enabled Trigger'),
               ),
             ),
             NakedSelect<String>(
-              controller: disabledOverlayPortalController,
-              onClose: () => disabledOverlayPortalController.hide(),
-              onOpen: () => disabledOverlayPortalController.show(),
               enabled: false,
-              menu: const SizedBox(),
-              child: const NakedSelectTrigger(
+              menu: SizedBox(),
+              child: NakedSelectTrigger(
                 key: keyDisabledTrigger,
                 child: Text('Disabled Trigger'),
               ),
