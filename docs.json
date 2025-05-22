@@ -2,9 +2,18 @@
     "name": "naked",
     "description": "A widget library providing unstyled, behavior-focused components for Flutter.",
     "sidebar": [
-    {
-      "group": "Widgets",
-      "pages": [
+      {
+        "group": "Introduction",
+        "pages": [
+          {
+            "title": "Getting Started",
+            "href": "/index"
+          }
+        ]
+      },
+      {
+        "group": "Widgets",
+        "pages": [
         {
           "title": "NakedAccordion",
           "href": "/accordion"
