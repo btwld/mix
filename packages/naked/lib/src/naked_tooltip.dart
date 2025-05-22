@@ -147,7 +147,7 @@ class NakedTooltip extends StatefulWidget {
     this.tooltipSemantics,
     this.excludeFromSemantics = false,
     this.fallbackAlignments = const [],
-    this.removalDelay = const Duration(seconds: 0),
+    this.removalDelay = Duration.zero,
     this.onStateChange,
   });
 
