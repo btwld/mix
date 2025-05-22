@@ -94,7 +94,7 @@ class MyTooltipState extends State<MyTooltip>
           ),
         ),
       ),
-      controller: _controller,
+      // controller: _controller,
       child: MouseRegion(
         onEnter: (_) {
           _timer?.cancel();

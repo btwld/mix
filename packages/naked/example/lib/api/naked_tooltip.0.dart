@@ -30,14 +30,9 @@ class MyTooltip extends StatefulWidget {
 
 class _MyTooltipState extends State<MyTooltip>
     with SingleTickerProviderStateMixin {
-  late final _controller = OverlayPortalController();
   late final _animationController = AnimationController(
-    duration: const Duration(milliseconds: 200),
+    duration: const Duration(milliseconds: 300),
     vsync: this,
-  );
-  late final _animation = CurvedAnimation(
-    parent: _animationController,
-    curve: Curves.easeOutCubic,
   );
 
   @override
@@ -52,38 +47,52 @@ class _MyTooltipState extends State<MyTooltip>
       targetAnchor: Alignment.topCenter,
       followerAnchor: Alignment.bottomCenter,
       offset: const Offset(0, -4),
-      tooltipBuilder: (context) => FadeTransition(
-        opacity: _animation,
-        child: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.grey[700],
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: const Text(
-            'This is a tooltip',
-            style: TextStyle(color: Colors.white),
+      waitDuration: const Duration(seconds: 0),
+      showDuration: const Duration(seconds: 0),
+      removalDelay: const Duration(milliseconds: 300),
+      onStateChange: (state) {
+        switch (state) {
+          case TooltipLifecycleState.present:
+            _animationController.forward();
+            break;
+          case TooltipLifecycleState.pendingRemoval:
+            _animationController.reverse();
+            break;
+          default:
+            break;
+        }
+      },
+      tooltipBuilder: (context) => SlideTransition(
+        position: _animationController.drive(Tween<Offset>(
+          begin: const Offset(0, 0.1),
+          end: const Offset(0, 0),
+        )),
+        child: FadeTransition(
+          opacity: _animationController,
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.grey[700],
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: const Text(
+              'This is a tooltip',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ),
       ),
-      controller: _controller,
-      child: MouseRegion(
-        onEnter: (_) {
-          _controller.show();
-          _animationController.forward();
-        },
-        onExit: (_) {
-          _animationController.reverse().then((_) {
-            _controller.hide();
-          });
-        },
-        child: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: const Color(0xFF3D3D3D),
-            borderRadius: BorderRadius.circular(4),
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: const Color(0xFF3D3D3D),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: const Text(
+          'Hover me',
+          style: TextStyle(
+            color: Colors.white,
           ),
-          child: const Text('Hover me', style: TextStyle(color: Colors.white)),
         ),
       ),
     );

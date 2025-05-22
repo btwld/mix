@@ -1,15 +1,26 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:naked/naked.dart';
 
+import 'helpers/simulate_hover.dart';
+
 extension _WidgetTesterX on WidgetTester {
-  Future<void> pumpTooltip(Widget widget) async {
-    await pumpWidget(Directionality(
-      textDirection: TextDirection.ltr,
-      child: Overlay(
-        initialEntries: [OverlayEntry(builder: (context) => widget)],
-      ),
-    ));
+  Future<void> simulateHoverOnTooltip(Key key,
+      {required VoidCallback? onHover}) async {
+    final gesture = await createGesture(kind: PointerDeviceKind.mouse);
+    await gesture.addPointer(location: Offset.zero);
+    addTearDown(gesture.removePointer);
+    await pumpAndSettle();
+
+    await gesture.moveTo(getCenter(find.byKey(key)));
+    await pumpAndSettle();
+
+    onHover?.call();
+
+    await gesture.moveTo(Offset.zero);
+    await pumpAndSettle();
   }
 }
 
@@ -21,9 +32,8 @@ void _expectDistance(Offset offset1, Offset offset2, double expectedDistance) {
 void main() {
   group('Basic Functionality', () {
     testWidgets('renders child widget', (WidgetTester tester) async {
-      await tester.pumpTooltip(
+      await tester.pumpMaterialWidget(
         NakedTooltip(
-          controller: OverlayPortalController(),
           tooltipBuilder: (context) => const Text('Tooltip Content'),
           child: const Text('Hover Me'),
         ),
@@ -33,41 +43,29 @@ void main() {
       expect(find.text('Tooltip Content'), findsNothing);
     });
 
-    testWidgets('shows tooltip when controller.show is called',
+    testWidgets('shows and hides tooltip on hover',
         (WidgetTester tester) async {
-      final controller = OverlayPortalController();
-
-      await tester.pumpTooltip(
-        NakedTooltip(
-          tooltipBuilder: (context) => const Text('Tooltip Content'),
-          controller: controller,
-          child: const Text('Hover Me'),
+      final targetKey = GlobalKey();
+      await tester.pumpMaterialWidget(
+        Padding(
+          padding: const EdgeInsets.all(1.0),
+          child: NakedTooltip(
+            key: targetKey,
+            tooltipBuilder: (context) => const Text('Tooltip Content'),
+            waitDuration: Duration.zero,
+            showDuration: Duration.zero,
+            removalDelay: Duration.zero,
+            child: const Text('Hover Me'),
+          ),
         ),
       );
 
-      controller.show();
-      await tester.pump();
-      expect(find.text('Tooltip Content'), findsOneWidget);
-    });
+      expect(find.text('Tooltip Content'), findsNothing);
 
-    testWidgets('hides tooltip when controller.hide is called',
-        (WidgetTester tester) async {
-      final controller = OverlayPortalController();
+      await tester.simulateHoverOnTooltip(targetKey, onHover: () {
+        expect(find.text('Tooltip Content'), findsOneWidget);
+      });
 
-      await tester.pumpTooltip(
-        NakedTooltip(
-          tooltipBuilder: (context) => const Text('Tooltip Content'),
-          controller: controller,
-          child: const Text('Hover Me'),
-        ),
-      );
-
-      controller.show();
-      await tester.pump();
-      expect(find.text('Tooltip Content'), findsOneWidget);
-
-      controller.hide();
-      await tester.pump();
       expect(find.text('Tooltip Content'), findsNothing);
     });
   });
@@ -77,9 +75,8 @@ void main() {
         (WidgetTester tester) async {
       final targetKey = GlobalKey();
       final tooltipKey = GlobalKey();
-      final controller = OverlayPortalController();
 
-      await tester.pumpTooltip(
+      await tester.pumpMaterialWidget(
         Center(
           child: NakedTooltip(
             tooltipBuilder: (context) => SizedBox(
@@ -88,7 +85,7 @@ void main() {
               height: 50,
               child: const Text('tooltip'),
             ),
-            controller: controller,
+            waitDuration: Duration.zero,
             targetAnchor: Alignment.topLeft,
             followerAnchor: Alignment.bottomLeft,
             offset: Offset.zero,
@@ -102,8 +99,10 @@ void main() {
         ),
       );
 
-      controller.show();
-      await tester.pump(const Duration(milliseconds: 100));
+      await tester.simulateHoverOnTooltip(targetKey, onHover: () {
+        expect(find.text('tooltip'), findsOneWidget);
+      });
+      await tester.pump();
 
       final targetFinder = find.byKey(targetKey);
       final tooltipFinder = find.byKey(tooltipKey);
@@ -126,9 +125,8 @@ void main() {
     testWidgets('applies offset correctly', (WidgetTester tester) async {
       final targetKey = GlobalKey();
       final tooltipKey = GlobalKey();
-      final controller = OverlayPortalController();
 
-      await tester.pumpTooltip(
+      await tester.pumpMaterialWidget(
         Center(
           child: NakedTooltip(
             tooltipBuilder: (context) => SizedBox(
@@ -137,7 +135,7 @@ void main() {
               height: 50,
               child: const Text('Tooltip Content'),
             ),
-            controller: controller,
+            waitDuration: Duration.zero,
             targetAnchor: Alignment.topLeft,
             followerAnchor: Alignment.bottomLeft,
             offset: const Offset(0, 10),
@@ -151,7 +149,9 @@ void main() {
         ),
       );
 
-      controller.show();
+      await tester.simulateHoverOnTooltip(targetKey, onHover: () {
+        expect(find.text('Tooltip Content'), findsOneWidget);
+      });
       await tester.pump();
 
       final targetFinder = find.byKey(targetKey);
@@ -165,28 +165,207 @@ void main() {
     });
   });
 
-  group('Controller', () {
-    testWidgets('controller toggles tooltip visibility',
+  group('Timing and State Changes', () {
+    testWidgets('waitDuration delays tooltip appearance',
         (WidgetTester tester) async {
-      final controller = OverlayPortalController();
+      final targetKey = GlobalKey();
+      final stateChanges = <TooltipLifecycleState>[];
 
-      await tester.pumpTooltip(
-        NakedTooltip(
-          tooltipBuilder: (context) => const Text('Tooltip Content'),
-          controller: controller,
-          child: const Text('Hover Me'),
+      await tester.pumpMaterialWidget(
+        Center(
+          child: NakedTooltip(
+            key: targetKey,
+            tooltipBuilder: (context) => const Text('Tooltip Content'),
+            waitDuration: const Duration(milliseconds: 50),
+            showDuration: Duration.zero,
+            removalDelay: Duration.zero,
+            onStateChange: stateChanges.add,
+            child: const Text('Hover Me'),
+          ),
         ),
       );
 
+      // Create gesture without pumpAndSettle
+      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer(location: Offset.zero);
+      addTearDown(gesture.removePointer);
+      await tester.pump();
+
+      // Move to hover but don't settle (to test timing precisely)
+      await gesture.moveTo(tester.getCenter(find.byKey(targetKey)));
+      await tester.pump();
+
+      // Tooltip should not be visible immediately
+      expect(find.text('Tooltip Content'), findsNothing);
+      expect(stateChanges, isEmpty);
+
+      // Wait for half the wait duration - should still not be visible
+      await tester.pump(const Duration(milliseconds: 25));
+      expect(find.text('Tooltip Content'), findsNothing);
+      expect(stateChanges, isEmpty);
+
+      // Wait for the full wait duration - should now be visible
+      await tester.pump(const Duration(milliseconds: 25));
+      await tester.pump();
+      expect(find.text('Tooltip Content'), findsOneWidget);
+      expect(stateChanges, [TooltipLifecycleState.present]);
+
+      await gesture.moveTo(Offset.zero);
+      await tester.pumpAndSettle();
+    });
+
+    testWidgets('waitDuration delays tooltip appearance',
+        (WidgetTester tester) async {
+      final targetKey = GlobalKey();
+      final stateChanges = <TooltipLifecycleState>[];
+
+      await tester.pumpMaterialWidget(
+        Center(
+          child: NakedTooltip(
+            key: targetKey,
+            tooltipBuilder: (context) => const Text('Tooltip Content'),
+            waitDuration: const Duration(milliseconds: 50),
+            showDuration: Duration.zero,
+            removalDelay: Duration.zero,
+            onStateChange: stateChanges.add,
+            child: const Text('Hover Me'),
+          ),
+        ),
+      );
+
+      // Start hover gesture manually to control timing precisely
+      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer(location: Offset.zero);
+      addTearDown(gesture.removePointer);
+      await tester.pump();
+
+      // Move to target
+      await gesture.moveTo(tester.getCenter(find.byKey(targetKey)));
+      await tester.pump();
+
+      // Should not be visible yet
+      expect(find.text('Tooltip Content'), findsNothing);
+      expect(stateChanges, isEmpty);
+
+      // Wait half the duration
+      await tester.pump(const Duration(milliseconds: 25));
       expect(find.text('Tooltip Content'), findsNothing);
 
-      controller.show();
+      // Wait remaining time - should appear now
+      await tester.pump(const Duration(milliseconds: 25));
+      await tester.pump();
+      expect(find.text('Tooltip Content'), findsOneWidget);
+      expect(stateChanges, [TooltipLifecycleState.present]);
+
+      // Clean up
+      await gesture.moveTo(Offset.zero);
+      await tester.pumpAndSettle();
+    });
+
+    testWidgets('showDuration auto-hides tooltip', (WidgetTester tester) async {
+      final targetKey = GlobalKey();
+      final stateChanges = <TooltipLifecycleState>[];
+
+      await tester.pumpMaterialWidget(
+        Center(
+          child: NakedTooltip(
+            key: targetKey,
+            tooltipBuilder: (context) => const Text('Tooltip Content'),
+            waitDuration: Duration.zero,
+            showDuration: const Duration(milliseconds: 50),
+            removalDelay: Duration.zero,
+            onStateChange: stateChanges.add,
+            child: const Text('Hover Me'),
+          ),
+        ),
+      );
+
+      // Custom hover simulation to control timing
+      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer(location: Offset.zero);
+      addTearDown(gesture.removePointer);
+      await tester.pump();
+
+      // Move to hover position
+      await gesture.moveTo(tester.getCenter(find.byKey(targetKey)));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Tooltip Content'), findsOneWidget);
+      expect(stateChanges, [TooltipLifecycleState.present]);
+
+      // Move mouse away - tooltip should still be visible
+      await gesture.moveTo(Offset.zero);
       await tester.pump();
       expect(find.text('Tooltip Content'), findsOneWidget);
 
-      controller.hide();
+      // Wait for half the show duration - tooltip should still be visible
+      await tester.pump(const Duration(milliseconds: 25));
+      expect(find.text('Tooltip Content'), findsOneWidget);
+
+      // Wait for the full show duration - tooltip should be hidden
+      await tester.pump(const Duration(milliseconds: 25));
       await tester.pump();
       expect(find.text('Tooltip Content'), findsNothing);
+      expect(stateChanges, [
+        TooltipLifecycleState.present,
+        TooltipLifecycleState.pendingRemoval,
+        TooltipLifecycleState.removed
+      ]);
+    });
+
+    testWidgets('removalDelay delays removing tooltip from overlay',
+        (WidgetTester tester) async {
+      final targetKey = GlobalKey();
+      final stateChanges = <TooltipLifecycleState>[];
+
+      await tester.pumpMaterialWidget(
+        Center(
+          child: NakedTooltip(
+            key: targetKey,
+            tooltipBuilder: (context) => const Text('Tooltip Content'),
+            waitDuration: Duration.zero,
+            showDuration: Duration.zero,
+            removalDelay: const Duration(milliseconds: 500),
+            onStateChange: stateChanges.add,
+            child: const Text('Hover Me'),
+          ),
+        ),
+      );
+
+      // Custom hover simulation to control timing
+      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer(location: Offset.zero);
+      addTearDown(gesture.removePointer);
+      await tester.pump();
+
+      // Move to hover position
+      await gesture.moveTo(tester.getCenter(find.byKey(targetKey)));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Tooltip Content'), findsOneWidget);
+      expect(stateChanges, [TooltipLifecycleState.present]);
+
+      // Move mouse away - tooltip should still be visible
+      await gesture.moveTo(Offset.zero);
+      await tester.pumpAndSettle();
+
+      expect(stateChanges, [
+        TooltipLifecycleState.present,
+        TooltipLifecycleState.pendingRemoval,
+      ]);
+      // Wait for half the show duration - tooltip should still be visible
+      await tester.pump(const Duration(milliseconds: 250));
+      expect(find.text('Tooltip Content'), findsOneWidget);
+
+      // Wait for the full show duration - tooltip should be hidden
+      await tester.pump(const Duration(milliseconds: 250));
+      await tester.pump();
+
+      expect(stateChanges, [
+        TooltipLifecycleState.present,
+        TooltipLifecycleState.pendingRemoval,
+        TooltipLifecycleState.removed
+      ]);
     });
   });
 }

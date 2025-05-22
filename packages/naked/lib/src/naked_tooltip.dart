@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:naked/naked.dart';
 
@@ -12,97 +14,93 @@ import 'package:naked/naked.dart';
 ///
 /// Example:
 /// ```dart
-// class MyTooltip extends StatefulWidget {
-//   @override
-//   _MyTooltipState createState() => _MyTooltipState();
-// }
-
-// class _MyTooltipState extends State<MyTooltip>
-//     with SingleTickerProviderStateMixin {
-//   late final _controller = OverlayPortalController();
-//   late final animationController = AnimationController(
-//     duration: const Duration(milliseconds: 2000),
-//     vsync: this,
-//   );
-//   late final CurvedAnimation _animation;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _animation = CurvedAnimation(
-//       parent: animationController,
-//       curve: Curves.easeInOut,
-//     );
-//   }
-
-//   @override
-//   void dispose() {
-//     animationController.dispose();
-//     super.dispose();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return NakedTooltip(
-//       fallbackAlignments: [
-//         AlignmentPair(
-//           target: Alignment.topCenter,
-//           follower: Alignment.bottomCenter,
-//           offset: const Offset(0, -8),
-//         ),
-//       ],
-//       targetAnchor: Alignment.bottomCenter,
-//       followerAnchor: Alignment.topCenter,
-//       offset: const Offset(0, 8),
-//       tooltipWidgetBuilder:
-//           (context) => FadeTransition(
-//             opacity: _animation,
-//             child: Container(
-//               padding: EdgeInsets.all(8),
-//               decoration: BoxDecoration(
-//                 color: Colors.grey[800],
-//                 borderRadius: BorderRadius.circular(4),
-//               ),
-//               child: Text(
-//                 'This is a tooltip',
-//                 style: TextStyle(color: Colors.white),
-//               ),
-//             ),
-//           ),
-//       controller: _controller,
-//       child: MouseRegion(
-//         onEnter: (_) {
-//           _controller.show();
-//           animationController.forward();
-//         },
-//         onExit: (_) {
-//           animationController.reverse().then((_) {
-//             _controller.hide();
-//           });
-//         },
-//         child: Container(
-//           padding: EdgeInsets.all(8),
-//           decoration: BoxDecoration(
-//             color: const Color(0xFF2196F3),
-//             borderRadius: BorderRadius.circular(4),
-//           ),
-//           child: Text('Hover me', style: TextStyle(color: Colors.white)),
-//         ),
-//       ),
-//     );
-//   }
-// }
+/// class MyTooltip extends StatefulWidget {
+///   @override
+///   _MyTooltipState createState() => _MyTooltipState();
+/// }
+///
+/// class _MyTooltipState extends State<MyTooltip>
+///     with SingleTickerProviderStateMixin {
+///   late final _controller = OverlayPortalController();
+///   late final animationController = AnimationController(
+///     duration: const Duration(milliseconds: 2000),
+///     vsync: this,
+///   );
+///   late final CurvedAnimation _animation;
+///
+///   @override
+///   void initState() {
+///     super.initState();
+///     _animation = CurvedAnimation(
+///       parent: animationController,
+///       curve: Curves.easeInOut,
+///     );
+///   }
+///
+///   @override
+///   void dispose() {
+///     animationController.dispose();
+///     super.dispose();
+///   }
+///
+///   @override
+///   Widget build(BuildContext context) {
+///     return NakedTooltip(
+///       fallbackAlignments: [
+///         AlignmentPair(
+///           target: Alignment.topCenter,
+///           follower: Alignment.bottomCenter,
+///           offset: const Offset(0, -8),
+///         ),
+///       ],
+///       targetAnchor: Alignment.bottomCenter,
+///       followerAnchor: Alignment.topCenter,
+///       offset: const Offset(0, 8),
+///       tooltipWidgetBuilder:
+///           (context) => FadeTransition(
+///             opacity: _animation,
+///             child: Container(
+///               padding: EdgeInsets.all(8),
+///               decoration: BoxDecoration(
+///                 color: Colors.grey[800],
+///                 borderRadius: BorderRadius.circular(4),
+///               ),
+///               child: Text(
+///                 'This is a tooltip',
+///                 style: TextStyle(color: Colors.white),
+///               ),
+///             ),
+///           ),
+///       controller: _controller,
+///       child: MouseRegion(
+///         onEnter: (_) {
+///           _controller.show();
+///           animationController.forward();
+///         },
+///         onExit: (_) {
+///           animationController.reverse().then((_) {
+///             _controller.hide();
+///           });
+///         },
+///         child: Container(
+///           padding: EdgeInsets.all(8),
+///           decoration: BoxDecoration(
+///             color: const Color(0xFF2196F3),
+///             borderRadius: BorderRadius.circular(4),
+///           ),
+///           child: Text('Hover me', style: TextStyle(color: Colors.white)),
+///         ),
+///       ),
+///     );
+///   }
+/// }
 /// ```
-
 class NakedTooltip extends StatefulWidget {
   /// The widget that triggers the tooltip.
   final Widget child;
 
   /// The widget to display in the tooltip.
   final WidgetBuilder tooltipBuilder;
-
-  /// Whether the tooltip is currently visible.
-  final OverlayPortalController controller;
 
   /// The anchor point on the tooltip that should be aligned with the target.
   final Alignment followerAnchor;
@@ -122,6 +120,18 @@ class NakedTooltip extends StatefulWidget {
   /// The fallback alignments for the tooltip.
   final List<PositionConfig> fallbackAlignments;
 
+  /// The duration for which the tooltip remains visible.
+  final Duration showDuration;
+
+  /// The duration to wait before showing the tooltip after hover.
+  final Duration waitDuration;
+
+  /// The duration to wait before removing the Widget from the Overlay after the tooltip is hidden.
+  final Duration removalDelay;
+
+  /// The event handler for the tooltip.
+  final void Function(TooltipLifecycleState state)? onStateChange;
+
   /// Creates a naked tooltip.
   ///
   /// The [child] and [tooltipWidget] parameters are required.
@@ -129,25 +139,59 @@ class NakedTooltip extends StatefulWidget {
     super.key,
     required this.child,
     required this.tooltipBuilder,
-    required this.controller,
+    this.showDuration = const Duration(seconds: 2),
+    this.waitDuration = const Duration(seconds: 1),
     this.followerAnchor = Alignment.bottomCenter,
     this.targetAnchor = Alignment.topCenter,
     this.offset = const Offset(0, -8),
     this.tooltipSemantics,
     this.excludeFromSemantics = false,
     this.fallbackAlignments = const [],
+    this.removalDelay = const Duration(seconds: 0),
+    this.onStateChange,
   });
 
   @override
   State<NakedTooltip> createState() => _NakedTooltipState();
 }
 
+enum TooltipLifecycleState { present, pendingRemoval, removed }
+
 class _NakedTooltipState extends State<NakedTooltip> {
+  final _controller = OverlayPortalController();
+  final _showNotifier = ValueNotifier<bool>(false);
+  Timer? _showTimer;
+  Timer? _waitTimer;
+  Timer? _removeTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _showNotifier.addListener(_handleShowNotifierChange);
+  }
+
+  void _handleShowNotifierChange() {
+    if (_showNotifier.value) {
+      _removeTimer?.cancel();
+      _controller.show();
+      widget.onStateChange?.call(TooltipLifecycleState.present);
+    } else {
+      widget.onStateChange?.call(TooltipLifecycleState.pendingRemoval);
+      _removeTimer?.cancel();
+      _removeTimer = Timer(widget.removalDelay, () {
+        _controller.hide();
+        widget.onStateChange?.call(TooltipLifecycleState.removed);
+      });
+    }
+  }
+
   @override
   void dispose() {
-    if (widget.controller.isShowing) {
-      widget.controller.hide();
-    }
+    _showNotifier.removeListener(_handleShowNotifierChange);
+    _showNotifier.dispose();
+    _showTimer?.cancel();
+    _waitTimer?.cancel();
+    _removeTimer?.cancel();
     super.dispose();
   }
 
@@ -157,16 +201,37 @@ class _NakedTooltipState extends State<NakedTooltip> {
       container: true,
       tooltip: widget.excludeFromSemantics ? null : widget.tooltipSemantics,
       excludeSemantics: widget.excludeFromSemantics,
-      child: NakedPortal(
-        alignment: PositionConfig(
-          target: widget.targetAnchor,
-          follower: widget.followerAnchor,
-          offset: widget.offset,
-        ),
-        fallbackAlignments: widget.fallbackAlignments,
-        overlayBuilder: widget.tooltipBuilder,
-        controller: widget.controller,
-        child: widget.child,
+      child: ListenableBuilder(
+        listenable: _showNotifier,
+        builder: (context, child) {
+          return NakedPortal(
+            alignment: PositionConfig(
+              target: widget.targetAnchor,
+              follower: widget.followerAnchor,
+              offset: widget.offset,
+            ),
+            fallbackAlignments: widget.fallbackAlignments,
+            overlayBuilder: widget.tooltipBuilder,
+            controller: _controller,
+            child: MouseRegion(
+              onEnter: (_) {
+                _showTimer?.cancel();
+                _waitTimer?.cancel();
+                _waitTimer = Timer(widget.waitDuration, () {
+                  _showNotifier.value = true;
+                });
+              },
+              onExit: (_) {
+                _showTimer?.cancel();
+                _waitTimer?.cancel();
+                _showTimer = Timer(widget.showDuration, () {
+                  _showNotifier.value = false;
+                });
+              },
+              child: widget.child,
+            ),
+          );
+        },
       ),
     );
   }
