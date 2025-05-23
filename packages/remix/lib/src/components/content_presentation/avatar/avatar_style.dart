@@ -8,11 +8,9 @@ class AvatarStyle extends SpecStyle<AvatarSpecUtility> {
     final $ = spec.utilities;
 
     final fallbackStyle = [
-      $.fallback.chain
-        ..textAlign.center()
-        ..style.fontWeight.w400()
-        ..style.fontSize(16)
-        ..style.color.black(),
+      $.fallbackTextStyle.fontWeight.w400(),
+      $.fallbackTextStyle.fontSize(16),
+      $.fallbackTextStyle.color.black(),
     ];
 
     final containerStyle = [
@@ -46,7 +44,7 @@ class AvatarDarkStyle extends AvatarStyle {
     return Style.create([
       super.makeStyle(spec).call(),
       $.container.color.white.shade(75),
-      $.fallback.style.color.white(),
+      $.fallbackTextStyle.color.white(),
     ]);
   }
 }
