@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:naked/naked.dart';
+
+import 'utilities/naked_portal.dart';
 
 /// A fully customizable tooltip with no default styling.
 ///
