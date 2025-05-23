@@ -19,7 +19,7 @@ class RxLabel extends StatelessWidget {
   const RxLabel(
     this.label, {
     super.key,
-    required this.icon,
+    this.icon,
     this.style = const LabelStyle(),
   });
 
@@ -44,10 +44,7 @@ class RxLabel extends StatelessWidget {
         return Row(
           mainAxisSize: MainAxisSize.min,
           spacing: spec.spacing,
-          children: [
-            if (icon != null) spec.icon(icon),
-            spec.label(label),
-          ],
+          children: [if (icon != null) spec.icon(icon), spec.label(label)],
         );
       },
     );

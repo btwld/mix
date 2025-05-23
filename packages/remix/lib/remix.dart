@@ -18,32 +18,32 @@
 
 library remix;
 
+export 'src/components/action/button/button.dart';
+
 /// COMPONENTS
 export 'src/components/content_presentation/accordion/accordion.dart';
 export 'src/components/content_presentation/avatar/avatar.dart';
-export 'src/components/utility/badge/badge.dart';
-export 'src/components/action/button/button.dart';
-export 'src/components/feedback/callout/callout.dart';
 export 'src/components/content_presentation/card/card.dart';
-export 'src/components/form/checkbox/checkbox.dart';
 export 'src/components/content_presentation/chip/chip.dart';
-export 'src/components/feedback/dialog/dialog.dart';
-export 'src/components/layout/divider/divider.dart';
-export 'src/components/utility/dropdown_menu/dropdown_menu.dart';
-export 'src/components/layout/header/header.dart';
-export 'src/components/action/icon_button/icon_button.dart';
 export 'src/components/content_presentation/label/label.dart';
 export 'src/components/content_presentation/menu_item/menu_item.dart';
+export 'src/components/feedback/callout/callout.dart';
+export 'src/components/feedback/dialog/dialog.dart';
 export 'src/components/feedback/progress/progress.dart';
+export 'src/components/feedback/spinner/spinner.dart';
+export 'src/components/feedback/toast/toast.dart';
+export 'src/components/form/checkbox/checkbox.dart';
 export 'src/components/form/radio/radio.dart';
-export 'src/components/layout/scaffold/scaffold.dart';
-export 'src/components/navigation/segmented_control/segmented_control.dart';
 export 'src/components/form/select/select.dart';
 export 'src/components/form/slider/slider.dart';
-export 'src/components/feedback/spinner/spinner.dart';
 export 'src/components/form/switch/switch.dart';
 export 'src/components/form/textfield/textfield.dart';
-export 'src/components/feedback/toast/toast.dart';
+export 'src/components/layout/divider/divider.dart';
+export 'src/components/layout/header/header.dart';
+export 'src/components/layout/scaffold/scaffold.dart';
+export 'src/components/navigation/segmented_control/segmented_control.dart';
+export 'src/components/utility/badge/badge.dart';
+export 'src/components/utility/dropdown_menu/dropdown_menu.dart';
 
 /// APP
 export 'src/core/remix_app.dart';
