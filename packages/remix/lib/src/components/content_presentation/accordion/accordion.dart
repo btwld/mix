@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:mix/experimental.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
@@ -10,29 +10,44 @@ import '../../../helpers/spec_style.dart';
 part 'accordion.g.dart';
 part 'accordion_style.dart';
 part 'accordion_widget.dart';
-part 'header/accordion_header.dart';
-part 'header/accordion_header_spec_widget.dart';
 
 @MixableSpec()
 base class AccordionSpec extends Spec<AccordionSpec> with _$AccordionSpec {
-  final FlexBoxSpec container;
-
-  @MixableField(dto: MixableFieldType(type: 'AccordionHeaderSpecAttribute'))
-  final AccordionHeaderSpec header;
-
+  final BoxSpec itemContainer;
   final BoxSpec contentContainer;
+  final FlexBoxSpec headerContainer;
+  @MixableField(
+    dto: MixableFieldType(type: 'IconThemeDataDto'),
+    utilities: [MixableFieldUtility(type: 'IconThemeDataUtility')],
+  )
+  final IconThemeData leadingIcon;
 
-  /// {@macro accordion_spec_of}
+  @MixableField(
+    dto: MixableFieldType(type: 'IconThemeDataDto'),
+    utilities: [MixableFieldUtility(type: 'IconThemeDataUtility')],
+  )
+  final IconThemeData trailingIcon;
+  final TextStyle titleStyle;
+  final TextStyle contentStyle;
+
   static const of = _$AccordionSpec.of;
 
   static const from = _$AccordionSpec.from;
 
   const AccordionSpec({
-    AccordionHeaderSpec? header,
-    FlexBoxSpec? container,
+    BoxSpec? itemContainer,
     BoxSpec? contentContainer,
+    FlexBoxSpec? headerContainer,
+    IconThemeData? leadingIcon,
+    IconThemeData? trailingIcon,
+    TextStyle? titleStyle,
+    TextStyle? contentStyle,
     super.animated,
-  })  : container = container ?? const FlexBoxSpec(),
-        header = header ?? const AccordionHeaderSpec(),
-        contentContainer = contentContainer ?? const BoxSpec();
+  })  : itemContainer = itemContainer ?? const BoxSpec(),
+        contentContainer = contentContainer ?? const BoxSpec(),
+        headerContainer = headerContainer ?? const FlexBoxSpec(),
+        leadingIcon = leadingIcon ?? const IconThemeData(),
+        trailingIcon = trailingIcon ?? const IconThemeData(),
+        titleStyle = titleStyle ?? const TextStyle(),
+        contentStyle = contentStyle ?? const TextStyle();
 }

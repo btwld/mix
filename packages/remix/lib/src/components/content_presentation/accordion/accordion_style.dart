@@ -33,7 +33,25 @@ class AccordionStyle extends SpecStyle<AccordionSpecUtility> {
       spec.on.selected($.header.trailingIcon.wrap.transform.rotate.d180()),
     ];
 
-    return Style.create([...flexContainerStyle, ...headerStyle]);
+    final contentStyle = [
+      $.contentContainer.chain
+        ..color.white()
+        ..padding.bottom(16)
+        ..width.infinity(),
+    ];
+
+    final disabled = $on.disabled(
+      $.titleStyle.color.grey.shade600(),
+      $.headerContainer.color.grey.shade200(),
+    );
+
+    return Style.create([
+      ...headerStyle,
+      ...contentStyle,
+      $.itemContainer.border.bottom.color.grey(),
+      $on.focus($.headerContainer.color.red()),
+      disabled,
+    ]).animate(duration: const Duration(milliseconds: 200));
   }
 }
 

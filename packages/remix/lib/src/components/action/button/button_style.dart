@@ -1,60 +1,76 @@
-// part of 'button.dart';
+part of 'button.dart';
 
-// class ButtonStyle extends SpecStyle<ButtonSpecUtility> {
-//   const ButtonStyle();
+class ButtonStyle extends SpecStyle<ButtonSpecUtility> {
+  const ButtonStyle();
 
-//   @override
-//   Style makeStyle(SpecConfiguration<ButtonSpecUtility> spec) {
-//     final $ = spec.utilities;
+  @override
+  Style makeStyle(SpecConfiguration<ButtonSpecUtility> spec) {
+    final $ = spec.utilities;
 
-//     final iconStyle = [
-//       $.icon.size(18),
-//       $.icon.color.white(),
-//     ];
+    final iconStyle = [$.icon.size(18), $.icon.color.white()];
 
-//     final labelStyle = [
-//       $.textStyle.fontSize(14),
-//       $.textStyle.height(1.5),
-//       $.textStyle.color.white(),
-//       $.textStyle.fontWeight.w500(),
-//     ];
+    final labelStyle = [
+      $.textStyle.fontSize(14),
+      $.textStyle.height(1.5),
+      $.textStyle.color.white(),
+      $.textStyle.fontWeight.w500(),
+    ];
 
-//     final spinnerStyle = [
-//       $.spinner.chain
-//         ..strokeWidth(0.9)
-//         ..size(15)
-//         ..color.white(),
-//     ];
+    final spinnerStyle = [
+      $.spinner.chain
+        ..strokeWidth(0.9)
+        ..size(15)
+        ..color.white(),
+    ];
 
-//     final flexboxStyle = [
-//       $.container.chain
-//         ..borderRadius(6)
-//         ..color.black()
-//         ..padding.vertical(8)
-//         ..padding.horizontal(12),
-//       spec.on.disabled($.container.color.grey.shade400()),
-//     ];
+    final flexboxStyle = [
+      $.container.chain
+        ..borderRadius(6)
+        ..color.black()
+        ..padding.vertical(8)
+        ..padding.horizontal(12),
+      spec.on.disabled($.container.color.grey.shade400()),
+    ];
 
-//     return Style.create([
-//       ...flexboxStyle,
-//       ...iconStyle,
-//       ...labelStyle,
-//       ...spinnerStyle,
-//     ]);
-//   }
-// }
+    final darkStyle = Style(
+      $on.dark($.container.color.black(), $.textStyle.color.white()),
+    );
 
-// class ButtonDarkStyle extends ButtonStyle {
-//   const ButtonDarkStyle();
+    return Style.create([
+      ...flexboxStyle,
+      ...iconStyle,
+      ...labelStyle,
+      ...spinnerStyle,
+      darkStyle(),
+    ]);
+  }
+}
 
-//   @override
-//   Style makeStyle(SpecConfiguration<ButtonSpecUtility> spec) {
-//     final $ = spec.utilities;
+class IconButtonStyle extends ButtonStyle {
+  const IconButtonStyle();
 
-//     return Style.create([
-//       super.makeStyle(spec).call(),
-//       $.container.color.white(),
-//       $.textStyle.color.black(),
-//     ]);
-//   }
-// }
+  @override
+  Style makeStyle(SpecConfiguration<ButtonSpecUtility> spec) {
+    final $ = spec.utilities;
+    final flexboxStyle = [
+      $.container.chain
+        ..borderRadius(6)
+        ..color.black()
+        ..padding(8),
+      spec.on.disabled($.container.color.grey.shade400()),
+    ];
+
+    final iconStyle = [$.icon.size(18), $.icon.color.white()];
+
+    final darkStyle = Style(
+      $on.dark($.container.color.white(), $.textStyle.color.black()),
+    );
+
+    return Style.create([
+      super.makeStyle(spec).call(),
+      ...flexboxStyle,
+      ...iconStyle,
+      darkStyle(),
+    ]);
+  }
+}
