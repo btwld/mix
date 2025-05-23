@@ -1,7 +1,7 @@
 part of 'button.dart';
 
-class ButtonStyle extends SpecStyle<ButtonSpecUtility> {
-  const ButtonStyle();
+class RxButtonStyle extends SpecStyle<ButtonSpecUtility> {
+  const RxButtonStyle();
 
   @override
   Style makeStyle(SpecConfiguration<ButtonSpecUtility> spec) {
@@ -46,8 +46,8 @@ class ButtonStyle extends SpecStyle<ButtonSpecUtility> {
   }
 }
 
-class IconButtonStyle extends ButtonStyle {
-  const IconButtonStyle();
+class RxIconButtonStyle extends RxButtonStyle {
+  const RxIconButtonStyle();
 
   @override
   Style makeStyle(SpecConfiguration<ButtonSpecUtility> spec) {

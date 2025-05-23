@@ -31,7 +31,7 @@ class RxButton extends StatefulWidget implements Disableable {
     this.enableHapticFeedback = true,
     required this.onPressed,
     this.focusNode,
-    this.style = const ButtonStyle(),
+    this.style = const RxButtonStyle(),
   }) : child = RxLabel(label, icon: leadingIcon);
 
   /// Creates a Remix button with only an icon.
@@ -55,7 +55,7 @@ class RxButton extends StatefulWidget implements Disableable {
     this.enableHapticFeedback = true,
     required this.onPressed,
     this.focusNode,
-    this.style = const IconButtonStyle(),
+    this.style = const RxIconButtonStyle(),
   }) : child = Icon(icon);
 
   /// Creates a Remix button with a raw child widget.
@@ -79,7 +79,7 @@ class RxButton extends StatefulWidget implements Disableable {
     this.enableHapticFeedback = true,
     required this.onPressed,
     this.focusNode,
-    this.style = const ButtonStyle(),
+    this.style = const RxButtonStyle(),
   });
 
   /// Whether the button is enabled.
@@ -121,7 +121,7 @@ class RxButton extends StatefulWidget implements Disableable {
   /// The style configuration for the button.
   ///
   /// Controls visual properties like colors, padding, typography etc.
-  final ButtonStyle style;
+  final RxButtonStyle style;
 
   /// Whether to provide haptic feedback when the button is pressed.
   ///
