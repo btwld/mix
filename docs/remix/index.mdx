@@ -1,0 +1,119 @@
+---
+title: Remix
+description: Remix is a modern, expressive design system built on top of Naked and Mix.
+---
+
+**Remix** is a design system for Flutter that focuses purely on Style and UI, giving developers the full expressive power of Mix to define appearance with clarity and control.
+
+## Key Features
+- Powerful styling via Mix’s utility-first system
+- Prebuilt UI components ready to customize or extend
+- Reactive styles driven by component state and context
+
+Whether you’re creating your own design system or scaling a product UI, Remix gives you the tools to build expressive, consistent, and fully themeable interfaces—while keeping business logic entirely in your hands.
+
+### Available Components
+- `RxButton`
+- `RxAccordion`
+
+## Getting Started
+
+### Installation
+
+Add the Naked UI library to your Flutter project:
+
+```yaml
+dependencies:
+  remix: ^latest_version  # Check for the latest version at https://pub.dev/packages/remix
+  mix: ^latest_version  # Check for the latest version at https://pub.dev/packages/mix
+```
+
+Then run:
+
+```bash
+flutter pub get
+```
+
+### Basic Usage
+
+Here’s how to use a RxButton out of the box:
+
+```dart
+import 'package:remix/remix.dart';
+
+return RxButton(
+  onPressed: () {},
+  child: const Text('Click me'),
+);
+```
+
+Remix components are styled using Mix, allowing you to fully customize their appearance through styles. But in Remix, you need to use a special kind of Style that is created for each component. In this case, we need to use the `RxButtonStyle` class.
+
+```dart
+import 'package:remix/remix.dart';
+
+return RxButton(
+  onPressed: () {},
+  child: const Text('Click me'),
+  style: CustomButtonStyle(),
+);
+
+class CustomButtonStyle extends RxButtonStyle {
+  @override
+  Style makeStyle(SpecConfiguration<ButtonSpecUtility> spec) {
+    final $ = spec.utilities;
+
+    final iconStyle = [$.icon.size(18), $.icon.color.white()];
+
+    final labelStyle = [
+      $.textStyle.fontSize(14),
+      $.textStyle.color.white(),
+      $.textStyle.fontWeight.w400(),
+    ];
+
+    final flexboxStyle = [
+      $.container.chain
+        ..borderRadius(8)
+        ..color.redAccent()
+        ..padding.vertical(12)
+        ..padding.horizontal(16),
+    ];
+
+    return Style.create([
+      ...flexboxStyle,
+      ...iconStyle,
+      ...labelStyle,
+    ]);
+  }
+}
+```
+
+### Animations
+
+Remix also provides powerful animation capabilities once it's built with Mix. For example, we can add a scale animation when the button is pressed by using the `$on.press()` variant and the `animate()` method. This creates a smooth visual feedback when users interact with the button:
+
+```dart
+import 'package:remix/remix.dart';
+
+class CustomButtonStyle extends RxButtonStyle {
+  @override
+  Style makeStyle(SpecConfiguration<ButtonSpecUtility> spec) {
+    // ... existing code ...
+
+    final flexboxStyle = [
+      $.container.chain
+        ..borderRadius(8)
+        ..color.redAccent()
+        ..padding.vertical(12)
+        ..padding.horizontal(16),
+      $on.press($.container.wrap.scale(0.95)), // [!code focus]
+    ];
+
+    return Style.create([
+      ...flexboxStyle,
+      ...iconStyle,
+      ...labelStyle,
+    ]).animate(); // [!code focus]
+  }
+}
+```
