@@ -1,9 +1,10 @@
 {
-  "name": "naked",
+  "name": "Concepta Tech",
   "description": "A widget library providing unstyled, behavior-focused components for Flutter.",
   "sidebar": [
     {
       "group": "Introduction",
+      "tab": "naked",
       "pages": [
         {
           "title": "Getting Started",
@@ -13,6 +14,7 @@
     },
     {
       "group": "Widgets",
+      "tab": "naked",
       "pages": [
         {
           "title": "NakedAccordion",
@@ -55,6 +57,32 @@
           "href": "/naked/tooltip"
         }
       ]
+    },
+    {
+      "group": "Introduction",
+      "tab": "remix",
+      "pages": [
+        {
+          "title": "Remix",
+          "href": "/remix/"
+        },
+        {
+          "title": "RxButton",
+          "href": "/remix/button"
+        }
+      ]
+    }
+  ],
+  "tabs": [
+    {
+      "id": "naked",
+      "title": "Naked",
+      "href": "/"
+    },
+    {
+      "id": "remix",
+      "title": "Remix",
+      "href": "/remix"
     }
   ]
 }

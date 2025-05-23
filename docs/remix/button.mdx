@@ -1,0 +1,203 @@
+---
+title: RxButton
+---
+
+RxButton is a customizable button component that supports icons, loading states, and comprehensive styling through the Mix styling system. It follows Remix design patterns and provides enhanced accessibility features, haptic feedback, and multiple constructor variants for different use cases.
+
+<CodeGroup title="Usage Example" defaultLanguage="dart">
+```dart
+class ButtonExample extends StatefulWidget {
+  const ButtonExample({super.key});
+
+  @override
+  State<ButtonExample> createState() => _ButtonExampleState();
+}
+
+class _ButtonExampleState extends State<ButtonExample> {
+  bool _isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      spacing: 16,
+      children: [
+        // Basic button with label
+        RxButton(
+          label: 'Click Me',
+          onPressed: () {
+            debugPrint('Button pressed!');
+          },
+        ),
+        
+        // Label and icon
+        RxButton(
+          label: 'Star this',
+          leadingIcon: Icons.star,
+          onPressed: () {
+            debugPrint('Star button pressed!');
+          },
+        ),
+        
+        // Icon-only button
+        RxButton.icon(
+          Icons.favorite,
+          onPressed: () {
+            debugPrint('Heart button pressed!');
+          },
+        ),
+        
+        // Loading button
+        RxButton(
+          label: 'Submit',
+          loading: _isLoading,
+          onPressed: _isLoading ? null : () {
+            setState(() => _isLoading = true);
+            // Simulate async operation
+            Future.delayed(const Duration(seconds: 2), () {
+              setState(() => _isLoading = false);
+            });
+          },
+        ),
+        
+        // Raw button with custom child
+        RxButton.raw(
+          child: RxLabel('Download'),
+          onPressed: () {},
+        ),
+      ],
+    );
+  }
+}
+```
+</CodeGroup>
+
+## Constructors
+
+### Default Constructor
+```dart
+RxButton({
+  Key? key,
+  required String label,
+  IconData? leadingIcon,
+  bool enabled = true,
+  bool loading = false,
+  Widget? spinnerWidget,
+  bool enableHapticFeedback = true,
+  required VoidCallback? onPressed,
+  FocusNode? focusNode,
+  RxButtonStyle style = const RxButtonStyle(),
+})
+```
+
+Creates a Remix button with a text label and optional leading icon.
+
+### Icon Constructor
+```dart
+RxButton.icon(
+  IconData icon, {
+  Key? key,
+  bool enabled = true,
+  bool loading = false,
+  Widget? spinnerWidget,
+  bool enableHapticFeedback = true,
+  required VoidCallback? onPressed,
+  FocusNode? focusNode,
+  RxButtonStyle style = const RxIconButtonStyle(),
+})
+```
+
+Creates a Remix button with only an icon and no label.
+
+### Raw Constructor
+```dart
+const RxButton.raw({
+  Key? key,
+  required Widget child,
+  bool enabled = true,
+  bool loading = false,
+  Widget? spinnerWidget,
+  bool enableHapticFeedback = true,
+  required VoidCallback? onPressed,
+  FocusNode? focusNode,
+  RxButtonStyle style = const RxButtonStyle(),
+})
+```
+
+Creates a Remix button with a custom child widget, allowing complete control over the button's content.
+
+## Properties
+
+#### enabled → `bool`
+Whether the button is enabled. When false, the button will not respond to user interaction and will be visually styled as disabled. Defaults to true.
+
+#### loading → `bool`
+Whether the button is in a loading state. When true, the button will display a spinner and become non-interactive. The spinner can be customized via `spinnerWidget`. Defaults to false.
+
+#### onPressed → `VoidCallback?`
+Callback function called when the button is pressed. If null, the button will be considered disabled.
+
+#### focusNode → `FocusNode?`
+Optional focus node to control the button's focus behavior.
+
+#### spinnerWidget → `Widget?`
+Custom widget to display when the button is in loading state. If not provided, a default spinner from the button's spec will be used.
+
+#### style → `RxButtonStyle`
+The style configuration for the button. Controls visual properties like colors, padding, typography, etc. Defaults to `RxButtonStyle()`.
+
+#### enableHapticFeedback → `bool`
+Whether to provide haptic feedback when the button is pressed. Defaults to true.
+
+#### child → `Widget`
+The child widget to display inside the button. This is set automatically by the constructors or provided directly in the `.raw` constructor.
+
+## Styling with RxButtonStyle
+
+RxButton uses the Mix styling system through `RxButtonStyle` to provide comprehensive theming capabilities. You can customize the button's appearance by providing a custom style with properties from the `ButtonSpec` class.
+
+```dart
+port 'package:remix/remix.dart';
+
+class ButtonStyleExample extends RxButtonStyle {
+  @override
+  Style makeStyle(SpecConfiguration<ButtonSpecUtility> spec) {
+    final $ = spec.utilities;
+
+    final iconStyle = [$.icon.size(18), $.icon.color.white()];
+
+    final labelStyle = [
+      $.textStyle.fontSize(14),
+      $.textStyle.color.white(),
+      $.textStyle.fontWeight.w400(),
+    ];
+
+    final flexboxStyle = [
+      $.container.chain
+        ..borderRadius(8)
+        ..color.redAccent()
+        ..padding.vertical(12)
+        ..padding.horizontal(16),
+      $on.press($.container.wrap.scale(0.95)),
+    ];
+
+    return Style.create([
+      ...flexboxStyle,
+      ...iconStyle,
+      ...labelStyle,
+    ]).animate();
+  }
+}
+```
+
+### Spec Properties
+
+The `ButtonSpec` provides access to three main styling areas through the `$` utilities:
+
+#### Container (`$.container`) → `BoxSpec`
+The main container that wraps the button's content.
+
+#### Icon (`$.icon`) → `IconThemeData`
+The icon displayed inside the button. It's is applied to a `IconTheme` widget so every icon inside the button will inherit the same base style.
+
+#### Text Style (`$.textStyle`) → `TextStyle`
+The text style applied to the button's label. It's is applied to a `DefaultTextStyle` widget so every `Text` widget inside the button will inherit the same base style.
