@@ -118,13 +118,13 @@ class _RxAccordionItemState<T> extends State<RxAccordionItem<T>>
 
           return spec.itemContainer(
             child: NakedAccordionItem<T>(
-              trigger: (_, isExpanded, toogle) {
+              trigger: (_, isExpanded, toggle) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   mixController.update(WidgetState.selected, isExpanded);
                 });
 
                 return NakedButton(
-                  onPressed: toogle,
+                  onPressed: toggle,
                   onHoverState: (state) {
                     setState(() {
                       mixController.hovered = state;
