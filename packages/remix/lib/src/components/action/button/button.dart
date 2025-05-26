@@ -5,7 +5,7 @@ import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 import 'package:naked/naked.dart';
 
-import '../../../../mix/attributes/icon_theme_data.dart';
+import '../../../mix/attributes/icon_theme_data.dart';
 import '../../../helpers/mix_controller_mixin.dart';
 import '../../../helpers/remix_builder.dart';
 import '../../content_presentation/label/label.dart';

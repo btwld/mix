@@ -1,4 +1,5 @@
-import '../../../remix.dart';
+import '../../components/content_presentation/accordion/accordion.dart';
+import '../../core/theme/component.dart';
 import 'components/avatar_theme.dart';
 import 'components/badge_theme.dart';
 import 'components/callout_theme.dart';
