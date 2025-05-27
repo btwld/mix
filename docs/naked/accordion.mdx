@@ -2,7 +2,7 @@
 title: NakedAccordion
 ---
 
-NakedAccordion provides expandable/collapsible sections without imposing any visual styling, giving consumers complete design freedom. It manages the state of expanded sections through an `AccordionController` and allows for fully customizable transitions.
+NakedAccordion provides expandable/collapsible sections without imposing any visual styling, giving consumers complete design freedom. It manages the state of expanded sections through an `NakedAccordionController` and allows for fully customizable transitions.
 
 <Info>
   You can find this example in our [GitHub repository](https://github.com/btwld/mix/blob/main/packages/naked/example/lib/api/naked_accordion.0.dart).
@@ -18,7 +18,7 @@ class AccordionExample extends StatefulWidget {
 }
 
 class _AccordionExampleState extends State<AccordionExample> {
-  final _controller = AccordionController<String>(max: 1, min: 1);
+  final _controller = NakedAccordionController<String>(max: 1, min: 1);
 
   @override
   Widget build(BuildContext context) {
@@ -144,12 +144,12 @@ class _AccordionItemState extends State<AccordionItem> {
 ```
 </CodeGroup>
 
-## AccordionController
+## NakedAccordionController
 
-The `AccordionController` manages the state of the accordion, keeping track of which items are expanded or collapsed.
+The `NakedAccordionController` manages the state of the accordion, keeping track of which items are expanded or collapsed.
 
 ```dart
-AccordionController({
+NakedAccordionController({
   this.min = 0,
   this.max,
 })
@@ -202,7 +202,7 @@ const NakedAccordion({
 #### children → `List<Widget>`
 The accordion items to display. These should be `NakedAccordionItem` widgets.
 
-#### controller → `AccordionController<T>`
+#### controller → `NakedAccordionController<T>`
 The controller that manages which items are expanded or collapsed.
 
 #### initialExpandedValues → `List<T>`
@@ -232,7 +232,7 @@ const NakedAccordionItem({
 Builder function that creates the trigger widget. The builder provides the current BuildContext, a boolean indicating if the item is expanded, and a callback to toggle the expansion state.
 
 #### value → `T`
-The unique identifier for this accordion item. This value is used by the AccordionController to track expansion state.
+The unique identifier for this accordion item. This value is used by the NakedAccordionController to track expansion state.
 
 #### child → `Widget`
 The content displayed when this item is expanded.
