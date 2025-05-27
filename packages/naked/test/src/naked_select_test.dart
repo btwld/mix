@@ -35,41 +35,51 @@ void main() {
     bool autofocus = true,
     bool enableTypeAhead = true,
   }) {
-    return Center(
-      child: NakedSelect<T>(
-        selectedValue: selectedValue,
-        onSelectedValueChanged: onSelectedValueChanged,
-        selectedValues: selectedValues,
-        onSelectedValuesChanged: onSelectedValuesChanged,
-        allowMultiple: allowMultiple,
-        enabled: enabled,
-        closeOnSelect: closeOnSelect,
-        autofocus: autofocus,
-        enableTypeAhead: enableTypeAhead,
-        menu: Container(
-          key: kMenuKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              NakedSelectItem<T>(
-                value: 'apple' as T,
-                child: const Text('Apple'),
-              ),
-              NakedSelectItem<T>(
-                value: 'banana' as T,
-                child: const Text('Banana'),
-              ),
-              NakedSelectItem<T>(
-                value: 'orange' as T,
-                child: const Text('Orange'),
-              ),
-            ],
+    final menu = Container(
+      key: kMenuKey,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          NakedSelectItem<T>(
+            value: 'apple' as T,
+            child: const Text('Apple'),
           ),
-        ),
-        child: const NakedSelectTrigger(
-          child: Text('Select option'),
-        ),
+          NakedSelectItem<T>(
+            value: 'banana' as T,
+            child: const Text('Banana'),
+          ),
+          NakedSelectItem<T>(
+            value: 'orange' as T,
+            child: const Text('Orange'),
+          ),
+        ],
       ),
+    );
+    const child = NakedSelectTrigger(
+      child: Text('Select option'),
+    );
+    return Center(
+      child: allowMultiple
+          ? NakedSelect.multiple(
+              selectedValues: selectedValues,
+              onSelectedValuesChanged: onSelectedValuesChanged,
+              enabled: enabled,
+              closeOnSelect: closeOnSelect,
+              autofocus: autofocus,
+              enableTypeAhead: enableTypeAhead,
+              menu: menu,
+              child: child,
+            )
+          : NakedSelect(
+              selectedValue: selectedValue,
+              onSelectedValueChanged: onSelectedValueChanged,
+              enabled: enabled,
+              closeOnSelect: closeOnSelect,
+              autofocus: autofocus,
+              enableTypeAhead: enableTypeAhead,
+              menu: menu,
+              child: child,
+            ),
     );
   }
 

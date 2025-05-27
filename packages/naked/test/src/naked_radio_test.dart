@@ -16,9 +16,9 @@ void main() {
         NakedRadioGroup<String>(
           groupValue: null,
           onChanged: (_) {},
-          child: NakedRadioButton<String>(
+          child: const NakedRadio<String>(
             value: 'test',
-            builder: (context, selected) => const Text('Test Radio'),
+            child: Text('Test Radio'),
           ),
         ),
       );
@@ -34,9 +34,9 @@ void main() {
       };
 
       await tester.pumpMaterialWidget(
-        NakedRadioButton<String>(
+        const NakedRadio<String>(
           value: 'test',
-          builder: (context, selected) => const SizedBox(width: 24, height: 24),
+          child: SizedBox(width: 24, height: 24),
         ),
       );
 
@@ -54,15 +54,14 @@ void main() {
         NakedRadioGroup<String>(
           groupValue: null,
           onChanged: (value) => selectedValue = value,
-          child: NakedRadioButton<String>(
+          child: const NakedRadio<String>(
             value: 'test',
-            builder: (context, selected) =>
-                const SizedBox(width: 24, height: 24),
+            child: SizedBox(width: 24, height: 24),
           ),
         ),
       );
 
-      await tester.tap(find.byType(NakedRadioButton<String>));
+      await tester.tap(find.byType(NakedRadio<String>));
       expect(selectedValue, 'test');
     });
 
@@ -75,15 +74,14 @@ void main() {
         NakedRadioGroup<String>(
           groupValue: selectedValue,
           onChanged: (_) => wasChanged = true,
-          child: NakedRadioButton<String>(
+          child: const NakedRadio<String>(
             value: 'test',
-            builder: (context, selected) =>
-                const SizedBox(width: 24, height: 24),
+            child: SizedBox(width: 24, height: 24),
           ),
         ),
       );
 
-      await tester.tap(find.byType(NakedRadioButton<String>));
+      await tester.tap(find.byType(NakedRadio<String>));
       expect(wasChanged,
           isFalse); // Should not call onChanged when already selected
     });
@@ -101,11 +99,11 @@ void main() {
           child: NakedRadioGroup<String>(
             groupValue: 'test',
             onChanged: (_) {},
-            child: NakedRadioButton<String>(
+            child: NakedRadio<String>(
               key: _key,
               value: 'test',
               onHoverState: (value) => isHovered = value,
-              builder: (context, selected) => Container(
+              child: Container(
                 width: 24,
                 height: 24,
                 color: Colors.red,
@@ -128,16 +126,15 @@ void main() {
         NakedRadioGroup<String>(
           groupValue: null,
           onChanged: (_) {},
-          child: NakedRadioButton<String>(
+          child: NakedRadio<String>(
             value: 'test',
             onPressedState: (value) => isPressed = value,
-            builder: (context, selected) =>
-                const SizedBox(width: 24, height: 24),
+            child: const SizedBox(width: 24, height: 24),
           ),
         ),
       );
 
-      final gesture = await tester.press(find.byType(NakedRadioButton<String>));
+      final gesture = await tester.press(find.byType(NakedRadio<String>));
       await tester.pump();
       expect(isPressed, true);
 
@@ -154,12 +151,11 @@ void main() {
         NakedRadioGroup<String>(
           groupValue: null,
           onChanged: (_) {},
-          child: NakedRadioButton<String>(
+          child: NakedRadio<String>(
             value: 'test',
             onFocusState: (value) => isFocused = value,
             focusNode: focusNode,
-            builder: (context, selected) =>
-                const SizedBox(width: 24, height: 24),
+            child: const SizedBox(width: 24, height: 24),
           ),
         ),
       );
@@ -182,11 +178,10 @@ void main() {
         NakedRadioGroup<String>(
           groupValue: 'test', // Selected
           onChanged: (_) {},
-          child: NakedRadioButton<String>(
+          child: NakedRadio<String>(
             key: key,
             value: 'test',
-            builder: (context, selected) =>
-                const SizedBox(width: 24, height: 24),
+            child: const SizedBox(width: 24, height: 24),
           ),
         ),
       );
@@ -205,11 +200,10 @@ void main() {
         NakedRadioGroup<String>(
           groupValue: null,
           onChanged: (value) => selectedValue = value,
-          child: NakedRadioButton<String>(
+          child: NakedRadio<String>(
             value: 'test',
             focusNode: focusNode,
-            builder: (context, selected) =>
-                const SizedBox(width: 24, height: 24),
+            child: const SizedBox(width: 24, height: 24),
           ),
         ),
       );
@@ -233,12 +227,11 @@ void main() {
         NakedRadioGroup<String>(
           groupValue: null,
           onChanged: (_) {},
-          child: NakedRadioButton<String>(
+          child: NakedRadio<String>(
             value: 'test',
             focusNode: focusNode,
             onFocusState: (value) => isFocused = value,
-            builder: (context, selected) =>
-                const SizedBox(width: 24, height: 24),
+            child: const SizedBox(width: 24, height: 24),
           ),
         ),
       );
@@ -257,11 +250,10 @@ void main() {
         NakedRadioGroup<String>(
           groupValue: null,
           onChanged: (_) {},
-          child: NakedRadioButton<String>(
+          child: NakedRadio<String>(
             value: 'test',
             focusNode: customFocusNode,
-            builder: (context, selected) =>
-                const SizedBox(width: 24, height: 24),
+            child: const SizedBox(width: 24, height: 24),
           ),
         ),
       );
@@ -281,16 +273,15 @@ void main() {
         NakedRadioGroup<String>(
           groupValue: null,
           onChanged: (_) => wasChanged = true,
-          child: NakedRadioButton<String>(
+          child: const NakedRadio<String>(
             value: 'test',
             enabled: false,
-            builder: (context, selected) =>
-                const SizedBox(width: 24, height: 24),
+            child: SizedBox(width: 24, height: 24),
           ),
         ),
       );
 
-      await tester.tap(find.byType(NakedRadioButton<String>));
+      await tester.tap(find.byType(NakedRadio<String>));
       expect(wasChanged, false);
     });
 
@@ -303,15 +294,14 @@ void main() {
           groupValue: null,
           onChanged: (_) => wasChanged = true,
           enabled: false,
-          child: NakedRadioButton<String>(
+          child: const NakedRadio<String>(
             value: 'test',
-            builder: (context, selected) =>
-                const SizedBox(width: 24, height: 24),
+            child: SizedBox(width: 24, height: 24),
           ),
         ),
       );
 
-      await tester.tap(find.byType(NakedRadioButton<String>));
+      await tester.tap(find.byType(NakedRadio<String>));
       expect(wasChanged, false);
     });
 
@@ -321,12 +311,11 @@ void main() {
         NakedRadioGroup<String>(
           groupValue: null,
           onChanged: (_) {},
-          child: NakedRadioButton<String>(
+          child: const NakedRadio<String>(
             key: _key,
             value: 'test',
             enabled: false,
-            builder: (context, selected) =>
-                const SizedBox(width: 24, height: 24),
+            child: SizedBox(width: 24, height: 24),
           ),
         ),
       );
@@ -344,11 +333,10 @@ void main() {
           key: _key,
           groupValue: null,
           onChanged: (_) {},
-          child: NakedRadioButton<String>(
+          child: const NakedRadio<String>(
             value: 'test',
             cursor: SystemMouseCursors.help,
-            builder: (context, selected) =>
-                const SizedBox(width: 24, height: 24),
+            child: SizedBox(width: 24, height: 24),
           ),
         ),
       );

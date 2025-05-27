@@ -47,8 +47,8 @@ class NakedRadioGroup<T> extends StatefulWidget {
 }
 
 class _NakedRadioGroupState<T> extends State<NakedRadioGroup<T>> {
-  // List of radio button values in order
-  final Set<_NakedRadioButtonState<T>> _radios = {};
+  // Set of registered radio buttons
+  final Set<_NakedRadioState<T>> _radios = {};
 
   late final Map<ShortcutActivator, Intent> _radioGroupShortcuts =
       <ShortcutActivator, Intent>{
@@ -62,7 +62,7 @@ class _NakedRadioGroupState<T> extends State<NakedRadioGroup<T>> {
         VoidCallbackIntent(_selectPreviousRadio),
   };
 
-  void _registerRadioButton(_NakedRadioButtonState<T> radio) {
+  void _registerRadioButton(_NakedRadioState<T> radio) {
     _radios.add(radio);
   }
 
@@ -72,7 +72,7 @@ class _NakedRadioGroupState<T> extends State<NakedRadioGroup<T>> {
     if (enabledRadios.length <= 1) {
       return;
     }
-    final (int, _NakedRadioButtonState<T>)? selected =
+    final (int, _NakedRadioState<T>)? selected =
         enabledRadios.indexed.firstWhereOrNull(
       (e) => e.$2._focusNode.hasFocus,
     );
@@ -152,20 +152,15 @@ class _NakedRadioGroupScope<T> extends InheritedWidget {
   }
 }
 
-typedef NakedRadioButtonBuilder = Widget Function(
-  BuildContext context,
-  bool selected,
-);
-
 /// A fully customizable radio button with no default styling.
 ///
-/// NakedRadioButton provides interaction behavior and accessibility
+/// NakedRadio provides interaction behavior and accessibility
 /// without imposing any visual styling, allowing complete design freedom.
 /// It must be used within a NakedRadioGroup to function properly.
 ///
 /// Features:
-/// - Customizable appearance through builder function
-/// - Hover, pressed and focus state callbacks
+/// - Customizable appearance through child widget
+/// - Hover, pressed, select and focus state callbacks
 /// - Keyboard navigation support via arrow keys
 /// - Selection follows focus
 /// - Haptic feedback on selection
@@ -174,34 +169,30 @@ typedef NakedRadioButtonBuilder = Widget Function(
 ///
 /// Example:
 /// ```dart
-/// NakedRadioButton<String>(
+/// NakedRadio<String>(
 ///   value: 'option1',
-///   builder: (context, selected) {
-///     return Container(
-///       width: 20,
-///       height: 20,
-///       decoration: BoxDecoration(
-///         shape: BoxShape.circle,
-///         border: Border.all(
-///           color: selected ? Colors.blue : Colors.grey,
-///         ),
+///   child: Container(
+///     width: 20,
+///     height: 20,
+///     decoration: BoxDecoration(
+///       shape: BoxShape.circle,
+///       border: Border.all(
+///         color: selected ? Colors.blue : Colors.grey,
 ///       ),
-///       child: selected
-///         ? Center(child: Icon(Icons.check, size: 16))
-///         : null,
-///     );
-///   },
+///     ),
+///     child: selected
+///       ? Center(child: Icon(Icons.check, size: 16))
+///       : null,
+///   ),
 ///   onHoverState: (isHovered) => print('Hover: $isHovered'),
 ///   onPressedState: (isPressed) => print('Pressed: $isPressed'),
+///   onSelectState: (isSelected) => print('Selected: $isSelected'),
 ///   onFocusState: (isFocused) => print('Focus: $isFocused'),
 /// )
 /// ```
-class NakedRadioButton<T> extends StatefulWidget {
-  /// The builder function that creates the radio button's visual representation.
-  ///
-  /// The builder receives the current context and selected state, and should return
-  /// a widget that represents the radio button in that state.
-  final NakedRadioButtonBuilder builder;
+class NakedRadio<T> extends StatefulWidget {
+  /// The child widget that represents the radio button visually.
+  final Widget child;
 
   /// The value this radio button represents.
   ///
@@ -217,6 +208,11 @@ class NakedRadioButton<T> extends StatefulWidget {
   ///
   /// Can be used to update visual feedback when the user presses the radio button.
   final ValueChanged<bool>? onPressedState;
+
+  /// Called when select state changes.
+  ///
+  /// Can be used to update visual feedback when the radio button is selected.
+  final ValueChanged<bool>? onSelectState;
 
   /// Called when focus state changes.
   ///
@@ -250,14 +246,15 @@ class NakedRadioButton<T> extends StatefulWidget {
 
   /// Creates a naked radio button.
   ///
-  /// The [builder] and [value] parameters are required.
+  /// The [child] and [value] parameters are required.
   /// This component must be used within a NakedRadioGroup.
-  const NakedRadioButton({
+  const NakedRadio({
     super.key,
-    required this.builder,
+    required this.child,
     required this.value,
     this.onHoverState,
     this.onPressedState,
+    this.onSelectState,
     this.onFocusState,
     this.enabled = true,
     this.cursor = SystemMouseCursors.click,
@@ -267,10 +264,10 @@ class NakedRadioButton<T> extends StatefulWidget {
   });
 
   @override
-  State<NakedRadioButton<T>> createState() => _NakedRadioButtonState<T>();
+  State<NakedRadio<T>> createState() => _NakedRadioState<T>();
 }
 
-class _NakedRadioButtonState<T> extends State<NakedRadioButton<T>> {
+class _NakedRadioState<T> extends State<NakedRadio<T>> {
   late final FocusNode _focusNode = widget.focusNode ?? FocusNode();
   _NakedRadioGroupScope<T> get _group => _NakedRadioGroupScope.of<T>(context);
   ValueChanged<T?>? get onChanged => _group.state.widget.onChanged;
@@ -300,7 +297,7 @@ class _NakedRadioButtonState<T> extends State<NakedRadioButton<T>> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     final group = _NakedRadioGroupScope.of<T>(context);
-    // group.state._unregisterRadioButton(this);
+    // Register this radio button with the group
     group.state._registerRadioButton(this);
   }
 
@@ -329,6 +326,9 @@ class _NakedRadioButtonState<T> extends State<NakedRadioButton<T>> {
       case TargetPlatform.macOS:
         accessibilitySelected = isSelected;
     }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.onSelectState?.call(isSelected);
+    });
 
     return Semantics(
       checked: isSelected,
@@ -352,7 +352,7 @@ class _NakedRadioButtonState<T> extends State<NakedRadioButton<T>> {
           enabled: isInteractive,
           onTap: _handleTap,
           child: Builder(
-            builder: (context) => widget.builder(context, isSelected),
+            builder: (context) => widget.child,
           ),
         ),
       ),
@@ -373,7 +373,7 @@ extension _IterableExt<T> on Iterable<T> {
 
 class _SkipUnselectedRadioPolicy<T> extends ReadingOrderTraversalPolicy {
   _SkipUnselectedRadioPolicy(this.radios, this.groupValue);
-  final Set<_NakedRadioButtonState<T>> radios;
+  final Set<_NakedRadioState<T>> radios;
   final T? groupValue;
   @override
   Iterable<FocusNode> sortDescendants(
@@ -385,9 +385,9 @@ class _SkipUnselectedRadioPolicy<T> extends ReadingOrderTraversalPolicy {
     // Nodes that are not selected AND not currently focused, since we can't
     // remove the focused node from the sorted result.
     final Set<FocusNode> nodeToSkip = radios
-        .where((_NakedRadioButtonState<T> radio) =>
+        .where((_NakedRadioState<T> radio) =>
             groupValue != radio.widget.value && radio._focusNode != currentNode)
-        .map<FocusNode>((_NakedRadioButtonState<T> radio) => radio._focusNode)
+        .map<FocusNode>((_NakedRadioState<T> radio) => radio._focusNode)
         .toSet();
     final Iterable<FocusNode> skipsNonSelected = descendants.where(
       (FocusNode node) => !nodeToSkip.contains(node),
