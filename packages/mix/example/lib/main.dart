@@ -45,6 +45,13 @@ Style style() => Style(
       $on.breakpoint(const Breakpoint(minWidth: 0, maxWidth: 365))(
         $flexbox.chain.flex.direction(Axis.vertical),
       ),
+      Style.builder((context) {
+        final isSmall = MediaQuery.of(context).size.width < 365;
+
+        return Style(
+          isSmall ? $icon.color.blue() : $icon.color.green(),
+        );
+      })(),
     ).animate(
       duration: const Duration(milliseconds: 200),
       curve: Curves.easeInOut,

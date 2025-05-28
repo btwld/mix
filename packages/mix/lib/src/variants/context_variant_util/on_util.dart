@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../core/element.dart';
+import '../../core/factory/style_mix.dart';
 import '../../theme/tokens/breakpoints_token.dart';
 import '../widget_state_variant.dart';
 import 'on_breakpoint_util.dart';
@@ -62,7 +64,10 @@ class OnContextVariantUtility {
   /// For example, if the specified [variant] evaluates to `true`,
   /// the [OnNotVariant] with that variant will evaluate to `false`, and vice versa.
   final not = OnNotVariant.new;
-  static final self = OnContextVariantUtility._();
 
+  static final self = OnContextVariantUtility._();
   OnContextVariantUtility._();
+
+  Attribute builder(Style Function(BuildContext context) builder) =>
+      StyleVariantBuilder(builder).build();
 }

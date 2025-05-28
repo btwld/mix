@@ -7,6 +7,17 @@ import '../core/widget_state/internal/mouse_region_mix_state.dart';
 import '../core/widget_state/widget_state_controller.dart';
 import 'context_variant.dart';
 
+class StyleVariantBuilder extends ContextVariant {
+  final Style Function(BuildContext context) builder;
+
+  const StyleVariantBuilder(this.builder);
+
+  @override
+  bool when(BuildContext context) => true;
+
+  ContextVariantBuilder build() => ContextVariantBuilder(builder, this);
+}
+
 @immutable
 abstract class MixWidgetStateVariant<Value> extends ContextVariant {
   @override

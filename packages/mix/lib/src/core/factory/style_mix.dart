@@ -8,6 +8,7 @@ import '../../internal/compare_mixin.dart';
 import '../../internal/helper_util.dart';
 import '../../specs/spec_util.dart';
 import '../../variants/variant_attribute.dart';
+import '../../variants/widget_state_variant.dart';
 import '../attributes_map.dart';
 import '../element.dart';
 import '../spec.dart';
@@ -85,6 +86,10 @@ class Style with EqualityMixin {
     ].whereType<Attribute>();
 
     return Style.create(params);
+  }
+
+  factory Style.builder(Style Function(BuildContext context) builder) {
+    return Style.create([StyleVariantBuilder(builder).build()]);
   }
 
   /// Constructs a `Style` from an iterable of [Attribute] instances.
