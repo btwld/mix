@@ -33,17 +33,22 @@ class AccordionStyle extends SpecStyle<AccordionSpecUtility> {
       spec.on.selected($.header.trailingIcon.wrap.transform.rotate.d180()),
     ];
 
-    final contentStyle = [
-      $.contentContainer.chain
-        ..color.white()
-        ..padding.bottom(16)
-        ..width.infinity(),
-    ];
+    accordion.leadingIcon.size(18);
 
-    final disabled = $on.disabled(
-      $.titleStyle.color.grey.shade600(),
-      $.headerContainer.color.grey.shade200(),
-    );
+    accordion.titleStyle
+      ..fontSize(14)
+      ..color.black()
+      ..letterSpacing(0.4)
+      ..fontWeight.w500();
+
+    accordion.contentStyle.color.black();
+
+    accordion.contentContainer
+      ..color.white()
+      ..padding.bottom(16)
+      ..width.infinity();
+
+    accordion.itemContainer.border.bottom.color.grey();
 
     return Style.create([
       ...headerStyle,

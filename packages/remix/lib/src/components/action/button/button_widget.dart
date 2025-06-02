@@ -153,7 +153,6 @@ class _RxButtonState extends State<RxButton> with MixControllerMixin {
   @override
   Widget build(BuildContext context) {
     final style = widget.style;
-    final configuration = SpecConfiguration(context, ButtonSpecUtility.self);
 
     return NakedButton(
       onPressed: widget.onPressed,
@@ -188,7 +187,9 @@ class _RxButtonState extends State<RxButton> with MixControllerMixin {
             ),
           );
         },
-        style: style.makeStyle(configuration).animate(),
+        style: style.buildStyle(
+          StyleSheet(() => ButtonSpecUtility((v) => v, mutable: true)),
+        ),
         mixController: mixController,
       ),
     );

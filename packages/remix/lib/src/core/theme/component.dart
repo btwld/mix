@@ -100,7 +100,7 @@ class RemixComponentTheme {
 
   factory RemixComponentTheme.dark() {
     return RemixComponentTheme.light().copyWith(
-      accordion: const AccordionDarkStyle(),
+      accordion: const AccordionStyle(),
       avatar: const AvatarDarkStyle(),
       badge: const BadgeDarkStyle(),
       callout: const CalloutDarkStyle(),
