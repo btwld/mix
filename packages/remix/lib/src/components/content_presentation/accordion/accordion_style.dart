@@ -4,54 +4,47 @@ class AccordionStyle extends SpecStyle<AccordionSpecUtility> {
   const AccordionStyle();
 
   @override
-  Style makeStyle(SpecConfiguration<AccordionSpecUtility> spec) {
-    final $ = spec.utilities;
-
-    final headerStyle = [
-      $.headerContainer.chain
+  Style buildStyle(StyleSheet<AccordionSpecUtility> style) {
+    return style((accordion) {
+      accordion.headerContainer
         ..padding.vertical(16)
-        ..color.white(),
-      $.leadingIcon.size(18),
-      $.titleStyle.fontSize(14),
-      $.titleStyle.letterSpacing(0.4),
-      $.titleStyle.fontWeight.w500(),
-      spec.on.hover($.titleStyle.decoration.underline()),
-    ];
+        ..color.white();
 
-    final contentStyle = [
-      $.contentContainer.chain
+      accordion.leadingIcon.size(18);
+
+      accordion.titleStyle
+        ..fontSize(14)
+        ..color.black()
+        ..letterSpacing(0.4)
+        ..fontWeight.w500();
+
+      accordion.contentStyle.color.black();
+
+      accordion.contentContainer
         ..color.white()
         ..padding.bottom(16)
-        ..width.infinity(),
-    ];
+        ..width.infinity();
 
-    final disabled = $on.disabled(
-      $.titleStyle.color.grey.shade600(),
-      $.headerContainer.color.grey.shade200(),
-    );
+      accordion.itemContainer.border.bottom.color.grey();
 
-    return Style.create([
-      ...headerStyle,
-      ...contentStyle,
-      $.itemContainer.border.bottom.color.grey(),
-      $on.focus($.headerContainer.color.red()),
-      disabled,
-    ]).animate(duration: const Duration(milliseconds: 200));
-  }
-}
+      style.variant(const OnHoverVariant(), (accordion) {
+        accordion.titleStyle.decoration.underline();
+      });
 
-class AccordionDarkStyle extends AccordionStyle {
-  const AccordionDarkStyle();
+      style.variant(const OnFocusedVariant(), (accordion) {
+        accordion.headerContainer.color.red();
+      });
 
-  @override
-  Style makeStyle(SpecConfiguration<AccordionSpecUtility> spec) {
-    final $ = spec.utilities;
+      style.variant(const OnDisabledVariant(), (accordion) {
+        accordion.titleStyle.color.grey.shade600();
+        accordion.headerContainer.color.grey.shade200();
+      });
 
-    return Style.create([
-      super.makeStyle(spec).call(),
-      $.itemContainer.border.bottom.color.grey.shade700(),
-      // $.title.style.color.white(),
-      $.leadingIcon.color.white(),
-    ]);
+      style.variant(const OnBrightnessVariant(Brightness.dark), (accordion) {
+        accordion
+          ..leadingIcon.color.white()
+          ..itemContainer.border.bottom.color.grey.shade700();
+      });
+    }).animate(duration: const Duration(milliseconds: 200));
   }
 }

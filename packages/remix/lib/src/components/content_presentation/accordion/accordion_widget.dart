@@ -110,8 +110,8 @@ class _RxAccordionItemState<T> extends State<RxAccordionItem<T>>
     return MixWidgetState.fromSet(
       states: mixController.value,
       child: MixBuilder(
-        style: data.style.makeStyle(
-          SpecConfiguration(context, AccordionSpecUtility.self),
+        style: data.style.buildStyle(
+          StyleSheet(() => AccordionSpecUtility((v) => v, mutable: true)),
         ),
         builder: (context) {
           final spec = AccordionSpec.of(context);
