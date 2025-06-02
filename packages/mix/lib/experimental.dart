@@ -13,4 +13,5 @@
 
 library mix_experimental;
 
+export 'src/core/experimental/spec_style.dart';
 export 'src/core/internal/experimental/mix_builder.dart';
