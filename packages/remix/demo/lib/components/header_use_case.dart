@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' as m;
 import 'package:mix/mix.dart';
 import 'package:remix/remix.dart';
-import 'package:remix/themes/fortaleza.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
@@ -30,9 +29,8 @@ Widget buildCard(BuildContext context) {
 
   final actions = Row(
     children: [
-      IconButton(
+      RxButton.icon(
         CupertinoIcons.trash,
-        variants: const [FortalezaIconButtonStyle.ghost],
         onPressed: () {},
       ),
       const SizedBox(

@@ -4,51 +4,47 @@ class AccordionStyle extends SpecStyle<AccordionSpecUtility> {
   const AccordionStyle();
 
   @override
-  Style makeStyle(SpecConfiguration<AccordionSpecUtility> spec) {
-    final $ = spec.utilities;
-
-    final flexContainerStyle = [
-      $.container.chain
-        ..flex.mainAxisSize.min()
-        ..clipBehavior.antiAlias()
-        ..border.bottom.color.grey.shade400(),
-    ];
-
-    final headerStyle = [
-      $.header.container.chain
-        ..flex.gap(6)
-        ..width.infinity()
+  Style buildStyle(StyleSheet<AccordionSpecUtility> style) {
+    return style((accordion) {
+      accordion.headerContainer
         ..padding.vertical(16)
-        ..color.transparent(),
-      $.header.chain
-        ..leadingIcon.size(18)
-        ..trailingIcon.wrap.transform.rotate(0)
-        ..trailingIcon.size(18),
-      $.header.text.chain
-        ..style.fontSize(16)
-        ..style.letterSpacing(0.4)
-        ..style.fontWeight.w600()
-        ..style.decoration.none(),
-      spec.on.hover($.header.text.style.decoration.underline()),
-      spec.on.selected($.header.trailingIcon.wrap.transform.rotate.d180()),
-    ];
+        ..color.white();
 
-    return Style.create([...flexContainerStyle, ...headerStyle]);
-  }
-}
+      accordion.leadingIcon.size(18);
 
-class AccordionDarkStyle extends AccordionStyle {
-  const AccordionDarkStyle();
+      accordion.titleStyle
+        ..fontSize(14)
+        ..color.black()
+        ..letterSpacing(0.4)
+        ..fontWeight.w500();
 
-  @override
-  Style makeStyle(SpecConfiguration<AccordionSpecUtility> spec) {
-    final $ = spec.utilities;
+      accordion.contentStyle.color.black();
 
-    return Style.create([
-      super.makeStyle(spec).call(),
-      $.container.border.bottom.color.grey.shade700(),
-      $.header.text.style.color.white(),
-      $.header.trailingIcon.color.white(),
-    ]);
+      accordion.contentContainer
+        ..color.white()
+        ..padding.bottom(16)
+        ..width.infinity();
+
+      accordion.itemContainer.border.bottom.color.grey();
+
+      style.variant(const OnHoverVariant(), (accordion) {
+        accordion.titleStyle.decoration.underline();
+      });
+
+      style.variant(const OnFocusedVariant(), (accordion) {
+        accordion.headerContainer.color.red();
+      });
+
+      style.variant(const OnDisabledVariant(), (accordion) {
+        accordion.titleStyle.color.grey.shade600();
+        accordion.headerContainer.color.grey.shade200();
+      });
+
+      style.variant(const OnBrightnessVariant(Brightness.dark), (accordion) {
+        accordion
+          ..leadingIcon.color.white()
+          ..itemContainer.border.bottom.color.grey.shade700();
+      });
+    }).animate(duration: const Duration(milliseconds: 200));
   }
 }
