@@ -33,7 +33,7 @@ class FlexBox extends StyledWidget {
     super.key,
     super.inherit,
     required this.direction,
-    required this.children,
+    this.children = const <Widget>[],
     super.orderOfModifiers = const [],
   });
 
@@ -70,7 +70,7 @@ class FlexBoxSpecWidget extends StatelessWidget {
   const FlexBoxSpecWidget({
     super.key,
     this.spec,
-    required this.children,
+    this.children = const <Widget>[],
     required this.direction,
     this.orderOfModifiers = const [],
   });
@@ -102,7 +102,7 @@ class AnimatedFlexBoxSpecWidget extends ImplicitlyAnimatedWidget {
   const AnimatedFlexBoxSpecWidget({
     super.key,
     required this.spec,
-    required this.children,
+    this.children = const <Widget>[],
     required this.direction,
     this.orderOfModifiers = const [],
     super.curve,

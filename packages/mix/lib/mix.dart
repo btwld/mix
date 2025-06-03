@@ -68,6 +68,7 @@ export 'src/core/helpers.dart';
 export 'src/core/modifier.dart';
 export 'src/core/spec.dart';
 export 'src/core/styled_widget.dart';
+export 'src/core/styled_widget_deprecation.dart';
 export 'src/core/utility.dart';
 export 'src/core/variant.dart';
 export 'src/core/widget_state/widget_state_controller.dart';

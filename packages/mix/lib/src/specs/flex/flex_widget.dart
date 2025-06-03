@@ -24,6 +24,16 @@ import 'flex_spec.dart';
 ///   children: [Widget1(), Widget2(), Widget3()],
 /// );
 /// ```
+@Deprecated(
+  'Use FlexBox instead. '
+  'StyledFlex has been replaced with FlexBox for better naming consistency. '
+  'This widget will be removed in v2.0.0.\n\n'
+  'Migration example:\n'
+  '// Before\n'
+  'StyledFlex(direction: Axis.horizontal, style: myStyle, children: [...])\n'
+  '// After\n'
+  'FlexBox(direction: Axis.horizontal, style: myStyle, children: [...])',
+)
 class StyledFlex extends StyledWidget {
   const StyledFlex({
     super.style,
@@ -168,6 +178,16 @@ class AnimatedFlexSpecWidgetState
 ///   children: [Widget1(), Widget2()],
 /// );
 /// ```
+@Deprecated(
+  'Use HBox instead. '
+  'StyledRow has been replaced with HBox for better naming consistency. '
+  'This widget will be removed in v2.0.0.\n\n'
+  'Migration example:\n'
+  '// Before\n'
+  'StyledRow(style: myStyle, children: [...])\n'
+  '// After\n'
+  'HBox(style: myStyle, children: [...])',
+)
 class StyledRow extends StyledFlex {
   const StyledRow({
     super.style,
@@ -193,6 +213,16 @@ class StyledRow extends StyledFlex {
 ///   children: [Widget1(), Widget2()],
 /// );
 /// ```
+@Deprecated(
+  'Use VBox instead. '
+  'StyledColumn has been replaced with VBox for better naming consistency. '
+  'This widget will be removed in v2.0.0.\n\n'
+  'Migration example:\n'
+  '// Before\n'
+  'StyledColumn(style: myStyle, children: [...])\n'
+  '// After\n'
+  'VBox(style: myStyle, children: [...])',
+)
 class StyledColumn extends StyledFlex {
   const StyledColumn({
     super.style,

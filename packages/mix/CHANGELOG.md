@@ -1,3 +1,16 @@
+## 1.7.0
+
+ - **DEPRECATED**: Styled widgets in favor of new naming conventions
+   - `StyledRow` → Use `HBox` instead
+   - `StyledColumn` → Use `VBox` instead
+   - `StyledFlex` → Use `FlexBox` instead
+   - `StyledStack` → Use `ZBox` instead
+   - `Style.row()` method → Use `Style.hbox()` instead
+   - `Style.column()` method → Use `Style.vbox()` instead
+ - **FIX**: FlexBox children parameter is now optional for better API compatibility
+ - **FEAT**: Added deprecation constants and migration examples
+ - **DOCS**: Updated example projects to use new widget names
+
 ## 1.6.0
 
  - **REFACTOR**: Rename `MixableProperty` to `MixableType` (#574)
