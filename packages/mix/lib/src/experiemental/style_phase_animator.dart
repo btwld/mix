@@ -16,23 +16,28 @@ class PhaseAnimationData {
     this.curve = Curves.easeInOut,
     this.delay = Duration.zero,
   });
+
+  const PhaseAnimationData.zero()
+      : duration = Duration.zero,
+        curve = Curves.easeInOut,
+        delay = Duration.zero;
 }
 
 class StylePhaseAnimator extends StatefulWidget {
   const StylePhaseAnimator({
     super.key,
     this.repeat = true,
-    required this.initialStyle,
     required this.phases,
     required this.animation,
     required this.child,
+    required this.trigger,
   });
 
   final bool repeat;
-  final Style initialStyle;
   final Map<Variant, Style> phases;
   final PhaseAnimationData Function(Variant phase) animation;
   final Widget child;
+  final Object trigger;
 
   @override
   State<StylePhaseAnimator> createState() => _StylePhaseAnimatorState();
@@ -40,12 +45,11 @@ class StylePhaseAnimator extends StatefulWidget {
 
 class _StylePhaseAnimatorState extends State<StylePhaseAnimator>
     with TickerProviderStateMixin {
-  static const _initialVariant = Variant('phase.animator.initial');
-
-  Style get _definitiveStyle => widget.initialStyle.addAll(
+  Style get _definitiveStyle => Style.create(
         widget.phases.entries.map((e) => e.key(e.value())),
       );
-  List<Variant> get _variants => [_initialVariant, ...widget.phases.keys];
+
+  List<Variant> get _variants => widget.phases.keys.toList();
 
   int _currentIndex = 0;
   Variant get _currentVariant => _variants[_currentIndex];
@@ -59,7 +63,6 @@ class _StylePhaseAnimatorState extends State<StylePhaseAnimator>
   @override
   void initState() {
     super.initState();
-    _controller.forward();
     _controller.addStatusListener(animationListener);
   }
 
@@ -77,16 +80,36 @@ class _StylePhaseAnimatorState extends State<StylePhaseAnimator>
   }
 
   @override
+  void didUpdateWidget(covariant StylePhaseAnimator oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.trigger != widget.trigger) {
+      print('trigger changed ${DateTime.now()}');
+      _currentIndex = 0;
+      _controller.forward(from: 0);
+    }
+  }
+
+  @override
   void dispose() {
     _timer?.cancel();
     _timer = null;
+    _controller.removeStatusListener(animationListener);
     _controller.dispose();
     super.dispose();
   }
 
-  void animationListener(status) {
+  void animationListener(AnimationStatus status) {
     if (status == AnimationStatus.completed) {
-      _timer = Timer(widget.animation(_variants[_currentIndex]).delay, () {
+      if (!widget.repeat && _currentIndex == _variants.length - 1) {
+        _timer?.cancel();
+        _timer = null;
+
+        return;
+      }
+
+      final delay = widget.animation(_variants[_currentIndex]).delay;
+
+      _timer = Timer(delay, () {
         _next();
         _controller.duration =
             widget.animation(_variants[_currentIndex]).duration;
