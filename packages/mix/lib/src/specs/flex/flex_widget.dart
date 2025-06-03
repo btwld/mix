@@ -24,6 +24,33 @@ import 'flex_spec.dart';
 ///   children: [Widget1(), Widget2(), Widget3()],
 /// );
 /// ```
+///
+/// ## Migration
+///
+/// Replace `StyledFlex` with `FlexBox`. The parameters are largely the same.
+///
+/// ### Before:
+/// ```dart
+/// StyledFlex(
+///   direction: Axis.horizontal,
+///   style: Style($flex.gap(10), $flex.mainAxisAlignment.center()),
+///   children: const [Text('Hello'), Text('World')],
+/// )
+/// ```
+///
+/// ### After:
+/// ```dart
+/// FlexBox(
+///   direction: Axis.horizontal,
+///   style: Style($flex.gap(10), $flex.mainAxisAlignment.center()),
+///   children: const [Text('Hello'), Text('World')],
+/// )
+/// ```
+@Deprecated(
+  'Use [FlexBox] instead. '
+  '[StyledFlex] has been replaced with [FlexBox] for better naming consistency. '
+  'This widget will be removed in v2.0.0.',
+)
 class StyledFlex extends StyledWidget {
   const StyledFlex({
     super.style,
@@ -168,6 +195,31 @@ class AnimatedFlexSpecWidgetState
 ///   children: [Widget1(), Widget2()],
 /// );
 /// ```
+///
+/// ## Migration
+///
+/// Replace `StyledRow` with `HBox`. The parameters are largely the same.
+///
+/// ### Before:
+/// ```dart
+/// StyledRow(
+///   style: Style($flex.gap(10), $flex.mainAxisAlignment.center()),
+///   children: const [Text('Hello'), Text('World')],
+/// )
+/// ```
+///
+/// ### After:
+/// ```dart
+/// HBox(
+///   style: Style($flex.gap(10), $flex.mainAxisAlignment.center()),
+///   children: const [Text('Hello'), Text('World')],
+/// )
+/// ```
+@Deprecated(
+  'Use [HBox] instead. '
+  '[StyledRow] has been replaced with [HBox] for better naming consistency. '
+  'This widget will be removed in v2.0.0.',
+)
 class StyledRow extends StyledFlex {
   const StyledRow({
     super.style,
@@ -193,6 +245,31 @@ class StyledRow extends StyledFlex {
 ///   children: [Widget1(), Widget2()],
 /// );
 /// ```
+///
+/// ## Migration
+///
+/// Replace `StyledColumn` with `VBox`. The parameters are largely the same.
+///
+/// ### Before:
+/// ```dart
+/// StyledColumn(
+///   style: Style($flex.gap(10), $flex.mainAxisAlignment.center()),
+///   children: const [Text('Hello'), Text('World')],
+/// )
+/// ```
+///
+/// ### After:
+/// ```dart
+/// VBox(
+///   style: Style($flex.gap(10), $flex.mainAxisAlignment.center()),
+///   children: const [Text('Hello'), Text('World')],
+/// )
+/// ```
+@Deprecated(
+  'Use [VBox] instead. '
+  '[StyledColumn] has been replaced with [VBox] for better naming consistency. '
+  'This widget will be removed in v2.0.0.',
+)
 class StyledColumn extends StyledFlex {
   const StyledColumn({
     super.style,

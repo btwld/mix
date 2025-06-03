@@ -107,12 +107,12 @@ void main() {
         home: Column(
           children: [
             style.row(key: keyOne, children: [const SizedBox()]),
-            StyledRow(
+            HBox(
               style: style,
               key: keyTwo,
               children: const [SizedBox()],
             ),
-            StyledRow(
+            HBox(
               style: const Style.empty(),
               key: keyThree,
               children: const [SizedBox()],
@@ -122,9 +122,9 @@ void main() {
       ),
     );
 
-    final containerOne = tester.widget<StyledRow>(find.byKey(keyOne));
-    final containerTwo = tester.widget<StyledRow>(find.byKey(keyTwo));
-    final containerThree = tester.widget<StyledRow>(find.byKey(keyThree));
+    final containerOne = tester.widget<HBox>(find.byKey(keyOne));
+    final containerTwo = tester.widget<HBox>(find.byKey(keyTwo));
+    final containerThree = tester.widget<HBox>(find.byKey(keyThree));
 
     expect(containerOne.style, style);
     expect(containerTwo.style, style);
@@ -193,12 +193,12 @@ void main() {
         home: Column(
           children: [
             style.column(key: keyOne, children: [const SizedBox()]),
-            StyledColumn(
+            VBox(
               style: style,
               key: keyTwo,
               children: const [SizedBox()],
             ),
-            StyledColumn(
+            VBox(
               style: const Style.empty(),
               key: keyThree,
               children: const [SizedBox()],
@@ -208,9 +208,9 @@ void main() {
       ),
     );
 
-    final containerOne = tester.widget<StyledColumn>(find.byKey(keyOne));
-    final containerTwo = tester.widget<StyledColumn>(find.byKey(keyTwo));
-    final containerThree = tester.widget<StyledColumn>(find.byKey(keyThree));
+    final containerOne = tester.widget<VBox>(find.byKey(keyOne));
+    final containerTwo = tester.widget<VBox>(find.byKey(keyTwo));
+    final containerThree = tester.widget<VBox>(find.byKey(keyThree));
 
     expect(containerOne.style, style);
     expect(containerTwo.style, style);

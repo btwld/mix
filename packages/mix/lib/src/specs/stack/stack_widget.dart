@@ -18,6 +18,38 @@ import 'stack_spec.dart';
 ///     Inherits from [StyledWidget].
 ///   - [key]: The key for the widget. Inherits from [StyledWidget].
 ///   - [style]: The [Style] to be applied. Inherits from [StyledWidget].
+///
+/// ## Migration
+///
+/// Replace `StyledStack` with `ZBox`. The parameters are largely the same.
+/// `ZBox` also inherently supports all `Box` attributes like `width`, `height`, `color`, etc.
+///
+/// ### Before:
+/// ```dart
+/// StyledStack(
+///   style: Style($stack.alignment.center()),
+///   children: const [
+///     MyWidget1(),
+///     MyWidget2(),
+///   ],
+/// )
+/// ```
+///
+/// ### After:
+/// ```dart
+/// ZBox(
+///   style: Style($stack.alignment.center()),
+///   children: const [
+///     MyWidget1(),
+///     MyWidget2(),
+///   ],
+/// )
+/// ```
+@Deprecated(
+  'Use ZBox instead. '
+  'StyledStack has been replaced with ZBox for better naming consistency. '
+  'This widget will be removed in v2.0.0.',
+)
 class StyledStack extends StyledWidget {
   const StyledStack({
     this.children = const <Widget>[],

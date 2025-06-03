@@ -46,13 +46,17 @@ extension StyleExt on Style {
     );
   }
 
-  StyledRow row({
+  /// Creates an [HBox] widget with the current style.
+  ///
+  /// This is a convenience method equivalent to `HBox(style: this, children: children)`.
+  /// Previously, this method created a `StyledRow`.
+  HBox row({
     required List<Widget> children,
     bool inherit = false,
     Key? key,
     Style? style,
   }) {
-    return StyledRow(
+    return HBox(
       key: key,
       style: merge(style),
       inherit: inherit,
@@ -90,13 +94,17 @@ extension StyleExt on Style {
     );
   }
 
-  StyledColumn column({
+  /// Creates a [VBox] widget with the current style.
+  ///
+  /// This is a convenience method equivalent to `VBox(style: this, children: children)`.
+  /// Previously, this method created a `StyledColumn`.
+  VBox column({
     required List<Widget> children,
     bool inherit = false,
     Key? key,
     Style? style,
   }) {
-    return StyledColumn(
+    return VBox(
       key: key,
       style: merge(style),
       inherit: inherit,

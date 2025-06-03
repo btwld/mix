@@ -292,11 +292,14 @@ void main() {
     },
   );
 
+  // StyledRow is deprecated, but we keep the test to ensure it still works.
+  // ignore: deprecated_member_use_from_same_package
+  @Deprecated('Use HBox instead. This test will be removed in v6.0.0')
   testWidgets(
     'StyledRow should apply modifiers only once',
     (tester) async {
       await tester.pumpMaterialApp(
-        VBox(
+        StyledRow(
           style: Style(
             $flex.gap(10),
             $with.align(),
@@ -314,6 +317,9 @@ void main() {
     },
   );
 
+  // StyledColumn is deprecated, but we keep the test to ensure it still works.
+  // ignore: deprecated_member_use_from_same_package
+  @Deprecated('Use VBox instead. This test will be removed in v6.0.0')
   testWidgets(
     'StyledColumn should apply modifiers only once',
     (tester) async {
@@ -336,6 +342,9 @@ void main() {
     },
   );
 
+  // StyledFlex is deprecated, but we keep the test to ensure it still works.
+  // ignore: deprecated_member_use_from_same_package
+  @Deprecated('Use FlexBox instead. This test will be removed in v6.0.0')
   testWidgets(
     'StyledFlex should apply modifiers only once',
     (tester) async {

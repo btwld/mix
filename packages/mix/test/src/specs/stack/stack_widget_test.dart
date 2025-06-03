@@ -59,6 +59,9 @@ void main() {
     expect(stackWidget.textDirection, TextDirection.ltr);
   });
 
+  // StyledStack is deprecated, but we keep the test to ensure it still works.
+  // ignore: deprecated_member_use_from_same_package
+  @Deprecated('Use ZBox instead. This test will be removed in v6.0.0')
   testWidgets(
     'StyledStack should apply modifiers only once',
     (tester) async {
