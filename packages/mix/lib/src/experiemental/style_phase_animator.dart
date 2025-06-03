@@ -6,45 +6,64 @@ import '../core/factory/style_mix.dart';
 import '../core/styled_widget.dart';
 import '../core/variant.dart';
 
+/// Configuration data for a single phase animation.
+///
+/// Defines the [duration], [curve] and [delay] for transitioning to a phase.
 class PhaseAnimationData {
+  /// The duration of the animation.
   final Duration duration;
+
+  /// The curve to use for the animation.
   final Curve curve;
+
+  /// Optional delay before starting the animation.
   final Duration delay;
 
+  /// Creates animation data with the specified parameters.
   const PhaseAnimationData({
     this.duration = const Duration(milliseconds: 200),
     this.curve = Curves.easeInOut,
     this.delay = Duration.zero,
   });
 
+  /// Creates animation data with zero duration and delay.
   const PhaseAnimationData.zero()
       : duration = Duration.zero,
         curve = Curves.easeInOut,
         delay = Duration.zero;
 }
 
+/// A widget that animates through style phases when its trigger changes.
 class StylePhaseAnimator extends StatefulWidget {
+  /// Creates a StylePhaseAnimator.
+  ///
+  /// The [phases], [animation], [child] and [trigger] parameters must not be null.
   const StylePhaseAnimator({
     super.key,
-    this.repeat = true,
     required this.phases,
     required this.animation,
     required this.child,
     required this.trigger,
   });
 
-  final bool repeat;
+  /// The map of variants to their corresponding styles.
   final Map<Variant, Style> phases;
+
+  /// Function that returns animation configuration for each phase.
   final PhaseAnimationData Function(Variant phase) animation;
+
+  /// The widget to apply the animated styles to.
   final Widget child;
+
+  /// Object that triggers the animation cycle when it changes.
+  /// The trigger is used to restart the animation when it changes.
   final Object trigger;
 
   @override
   State<StylePhaseAnimator> createState() => _StylePhaseAnimatorState();
 }
 
-class _StylePhaseAnimatorState extends State<StylePhaseAnimator>
-    with TickerProviderStateMixin {
+class _StylePhaseAnimatorState extends State<StylePhaseAnimator> {
   Style get _definitiveStyle => Style.create(
         widget.phases.entries.map((e) => e.key(e.value())),
       );
@@ -53,23 +72,11 @@ class _StylePhaseAnimatorState extends State<StylePhaseAnimator>
 
   int _currentIndex = 0;
   Variant get _currentVariant => _variants[_currentIndex];
-  Timer? _timer;
-
-  late final AnimationController _controller = AnimationController(
-    duration: widget.animation(_variants[_currentIndex]).duration,
-    vsync: this,
-  );
-
-  @override
-  void initState() {
-    super.initState();
-    _controller.addStatusListener(animationListener);
-  }
 
   void _next() {
     final int nextIndex;
-    if (widget.repeat) {
-      nextIndex = (_currentIndex + 1) % _variants.length;
+    if (_currentIndex == _variants.length - 1) {
+      nextIndex = 0;
     } else {
       nextIndex = (_currentIndex + 1).clamp(0, _variants.length - 1);
     }
@@ -79,51 +86,40 @@ class _StylePhaseAnimatorState extends State<StylePhaseAnimator>
     });
   }
 
-  @override
-  void didUpdateWidget(covariant StylePhaseAnimator oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.trigger != widget.trigger) {
-      print('trigger changed ${DateTime.now()}');
-      _currentIndex = 0;
-      _controller.forward(from: 0);
+  void _runAnimation() async {
+    for (var i = 0; i < _variants.length; i++) {
+      final variant = _variants[i];
+      final delay = widget.animation(variant).delay;
+      final duration = widget.animation(variant).duration;
+      if (i == 0) {
+        _next();
+        continue;
+      }
+      await Future.delayed(delay + duration, () {
+        if (mounted) _next();
+      });
     }
   }
 
   @override
-  void dispose() {
-    _timer?.cancel();
-    _timer = null;
-    _controller.removeStatusListener(animationListener);
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void animationListener(AnimationStatus status) {
-    if (status == AnimationStatus.completed) {
-      if (!widget.repeat && _currentIndex == _variants.length - 1) {
-        _timer?.cancel();
-        _timer = null;
-
-        return;
-      }
-
-      final delay = widget.animation(_variants[_currentIndex]).delay;
-
-      _timer = Timer(delay, () {
-        _next();
-        _controller.duration =
-            widget.animation(_variants[_currentIndex]).duration;
-        _controller.forward(from: 0);
+  void didUpdateWidget(covariant StylePhaseAnimator oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.trigger != widget.trigger) {
+      _currentIndex = 0;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _runAnimation();
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final animation = widget.animation(_currentVariant);
+
     return SpecBuilder(
       style: _definitiveStyle.applyVariant(_currentVariant).animate(
-            duration: widget.animation(_currentVariant).duration,
-            curve: widget.animation(_currentVariant).curve,
+            duration: animation.duration,
+            curve: animation.curve,
           ),
       builder: (context) {
         return widget.child;
