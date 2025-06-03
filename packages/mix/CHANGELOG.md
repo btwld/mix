@@ -1,4 +1,4 @@
-## 1.7.0
+## Next Release
 
  - **DEPRECATED**: Styled widgets in favor of new naming conventions
    - `StyledRow` → Use `HBox` instead
