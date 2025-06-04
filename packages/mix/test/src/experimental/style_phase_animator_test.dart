@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-import 'package:mix/src/experiemental/style_phase_animator.dart';
+import 'package:mix/src/experimental/style_phase_animator.dart';
 
 enum TestPhases implements PhaseVariant {
   phase1,
