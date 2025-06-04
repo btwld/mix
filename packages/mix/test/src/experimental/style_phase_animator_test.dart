@@ -264,6 +264,45 @@ void main() {
       );
     });
 
+    testWidgets('should animate infinitely when no trigger is provided',
+        (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: StylePhaseAnimator(
+            phases: testPhases,
+            animation: (_) => const PhaseAnimationData(
+              duration: Duration(milliseconds: 100),
+              curve: Curves.linear,
+            ),
+            builder: (context, style, variant) => testChild,
+          ),
+        ),
+      );
+
+      // Initial phase
+      BoxSpec boxSpec = getBoxSpec(tester);
+      expect(boxSpec.height, 100);
+      expect(boxSpec.width, 100);
+
+      // After first phase animation
+      await tester.pump();
+      boxSpec = getBoxSpec(tester);
+      expect(boxSpec.height, 200);
+      expect(boxSpec.width, 200);
+
+      // After second phase animation
+      await tester.pump(const Duration(milliseconds: 100));
+      boxSpec = getBoxSpec(tester);
+      expect(boxSpec.height, 300);
+      expect(boxSpec.width, 300);
+
+      // Should loop back to first phase
+      await tester.pump(const Duration(milliseconds: 100));
+      boxSpec = getBoxSpec(tester);
+      expect(boxSpec.height, 100);
+      expect(boxSpec.width, 100);
+    });
+
     group('Animation timing', () {
       Widget buildExampleWithTwoPhases(
         String trigger, {
