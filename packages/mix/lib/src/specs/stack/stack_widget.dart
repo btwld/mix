@@ -20,6 +20,16 @@ import 'stack_spec.dart';
 ///     Inherits from [StyledWidget].
 ///   - [key]: The key for the widget. Inherits from [StyledWidget].
 ///   - [style]: The [Style] to be applied. Inherits from [StyledWidget].
+@Deprecated(
+  'Use ZBox instead. '
+  'StyledStack has been replaced with ZBox which combines Box and Stack functionality. '
+  'This widget will be removed in v2.0.0.\n\n'
+  'Migration example:\n'
+  '// Before\n'
+  'StyledStack(style: myStyle, children: [...])\n'
+  '// After\n'
+  'ZBox(style: myStyle, children: [...])',
+)
 class StyledStack extends StyledWidget {
   const StyledStack({
     this.children = const <Widget>[],
@@ -94,7 +104,7 @@ class AnimatedStackSpecWidget extends ImplicitlyAnimatedSpecWidget<StackSpec> {
   }
 }
 
-/// [ZBox] - A styled widget that combines the functionalities of [Box] and [StyledStack].
+/// [ZBox] - A styled widget that combines the functionalities of [Box] and Stack.
 ///
 /// This widget is designed to apply a `Style` to a stack layout, making it a combination
 /// of a box and a stack. It is ideal for scenarios where you need to create a stacked layout
