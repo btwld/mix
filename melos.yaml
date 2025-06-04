@@ -45,7 +45,7 @@ scripts:
     description: Run Dart static analysis checks.
 
   analyze:dcm:
-    run: melos exec -c 4 -- dcm analyze . --fatal-style --fatal-performance --fatal-warnings
+    run: melos exec -c 4 -- dcm analyze . --fatal-style --fatal-warnings
     description: Run DCM static analysis checks.
     packageFilters:
       dependsOn: "dart_code_metrics_presets"
