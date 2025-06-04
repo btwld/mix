@@ -33,8 +33,20 @@ class PhaseAnimationData {
         delay = Duration.zero;
 }
 
+typedef PhaseAnimatorWidgetBuilder = Widget Function(
+  BuildContext context,
+  Style style,
+  Variant variant,
+);
+
+abstract class PhaseVariant {
+  const PhaseVariant();
+
+  Variant get variant;
+}
+
 /// A widget that animates through style phases when its trigger changes.
-class StylePhaseAnimator extends StatefulWidget {
+class StylePhaseAnimator<V extends PhaseVariant> extends StatefulWidget {
   /// Creates a StylePhaseAnimator.
   ///
   /// The [phases], [animation], [child] and [trigger] parameters must not be null.
@@ -42,43 +54,46 @@ class StylePhaseAnimator extends StatefulWidget {
     super.key,
     required this.phases,
     required this.animation,
-    required this.child,
+    required this.builder,
     required this.trigger,
-  });
+  }) : assert(phases.length > 1, 'Phases map must have at least 2 phases');
 
   /// The map of variants to their corresponding styles.
-  final Map<Variant, Style> phases;
+  final Map<V, Style> phases;
 
   /// Function that returns animation configuration for each phase.
-  final PhaseAnimationData Function(Variant phase) animation;
+  final PhaseAnimationData Function(V phase) animation;
 
   /// The widget to apply the animated styles to.
-  final Widget child;
+  final PhaseAnimatorWidgetBuilder builder;
 
   /// Object that triggers the animation cycle when it changes.
   /// The trigger is used to restart the animation when it changes.
   final Object trigger;
 
   @override
-  State<StylePhaseAnimator> createState() => _StylePhaseAnimatorState();
+  State<StylePhaseAnimator<V>> createState() => _StylePhaseAnimatorState<V>();
 }
 
-class _StylePhaseAnimatorState extends State<StylePhaseAnimator> {
+class _StylePhaseAnimatorState<V extends PhaseVariant>
+    extends State<StylePhaseAnimator<V>> {
   Style get _definitiveStyle => Style.create(
-        widget.phases.entries.map((e) => e.key(e.value())),
+        widget.phases.entries.map((e) => e.key.variant(e.value())),
       );
 
-  List<Variant> get _variants => widget.phases.keys.toList();
+  List<V> get _variants => widget.phases.keys.toList();
 
   int _currentIndex = 0;
-  Variant get _currentVariant => _variants[_currentIndex];
+  V get _currentVariant => _variants[_currentIndex];
+
+  Timer? _animationTimer;
 
   void _next() {
     final int nextIndex;
     if (_currentIndex == _variants.length - 1) {
       nextIndex = 0;
     } else {
-      nextIndex = (_currentIndex + 1).clamp(0, _variants.length - 1);
+      nextIndex = (_currentIndex + 1);
     }
 
     setState(() {
@@ -87,22 +102,40 @@ class _StylePhaseAnimatorState extends State<StylePhaseAnimator> {
   }
 
   void _runAnimation() async {
+    _animationTimer?.cancel();
+
     for (var i = 0; i < _variants.length; i++) {
       final variant = _variants[i];
       final delay = widget.animation(variant).delay;
       final duration = widget.animation(variant).duration;
+
       if (i == 0) {
         _next();
         continue;
       }
-      await Future.delayed(delay + duration, () {
+
+      await _waitForTimer(delay + duration).then((_) {
         if (mounted) _next();
       });
     }
   }
 
+  Future<void> _waitForTimer(Duration duration) {
+    final completer = Completer<void>();
+    _animationTimer = Timer(duration, () => completer.complete());
+
+    return completer.future;
+  }
+
   @override
-  void didUpdateWidget(covariant StylePhaseAnimator oldWidget) {
+  void dispose() {
+    _animationTimer?.cancel();
+    _animationTimer = null;
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant StylePhaseAnimator<V> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.trigger != widget.trigger) {
       _currentIndex = 0;
@@ -115,14 +148,16 @@ class _StylePhaseAnimatorState extends State<StylePhaseAnimator> {
   @override
   Widget build(BuildContext context) {
     final animation = widget.animation(_currentVariant);
+    final style =
+        _definitiveStyle.applyVariant(_currentVariant.variant).animate(
+              duration: animation.duration,
+              curve: animation.curve,
+            );
 
     return SpecBuilder(
-      style: _definitiveStyle.applyVariant(_currentVariant).animate(
-            duration: animation.duration,
-            curve: animation.curve,
-          ),
+      style: style,
       builder: (context) {
-        return widget.child;
+        return widget.builder(context, style, _currentVariant.variant);
       },
     );
   }
