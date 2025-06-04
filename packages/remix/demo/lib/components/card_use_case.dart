@@ -17,7 +17,7 @@ Widget buildCard(BuildContext context) {
         variants: [
           context.knobs.variant(FortalezaCardStyle.variants),
         ],
-        child: StyledRow(
+        child: HBox(
           style: Style(
             $flex.gap(12),
             $flex.mainAxisSize.min(),

@@ -28,7 +28,7 @@ class TodoCheckboxListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Pressable(
       onPress: () => onChanged(!checked),
-      child: StyledRow(
+      child: HBox(
         style: Style(
           $flex.gap(32),
           $flex.mainAxisAlignment.spaceBetween(),
