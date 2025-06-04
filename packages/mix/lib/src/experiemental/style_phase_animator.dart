@@ -55,7 +55,7 @@ class StylePhaseAnimator<V extends PhaseVariant> extends StatefulWidget {
     required this.phases,
     required this.animation,
     required this.builder,
-    required this.trigger,
+    this.trigger,
   }) : assert(phases.length > 1, 'Phases map must have at least 2 phases');
 
   /// The map of variants to their corresponding styles.
@@ -69,7 +69,7 @@ class StylePhaseAnimator<V extends PhaseVariant> extends StatefulWidget {
 
   /// Object that triggers the animation cycle when it changes.
   /// The trigger is used to restart the animation when it changes.
-  final Object trigger;
+  final Object? trigger;
 
   @override
   State<StylePhaseAnimator<V>> createState() => _StylePhaseAnimatorState<V>();
@@ -86,7 +86,19 @@ class _StylePhaseAnimatorState<V extends PhaseVariant>
   int _currentIndex = 0;
   V get _currentVariant => _variants[_currentIndex];
 
+  bool get _hasTrigger => widget.trigger != null;
+  bool _firstAnimation = true;
+
   Timer? _animationTimer;
+  @override
+  void initState() {
+    super.initState();
+    if (!_hasTrigger) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _runInfiniteAnimation();
+      });
+    }
+  }
 
   void _next() {
     final int nextIndex;
@@ -101,9 +113,7 @@ class _StylePhaseAnimatorState<V extends PhaseVariant>
     });
   }
 
-  void _runAnimation() async {
-    _animationTimer?.cancel();
-
+  Future<void> _runAnimation() async {
     for (var i = 0; i < _variants.length; i++) {
       final variant = _variants[i];
       final delay = widget.animation(variant).delay;
@@ -117,6 +127,27 @@ class _StylePhaseAnimatorState<V extends PhaseVariant>
       await _waitForTimer(delay + duration).then((_) {
         if (mounted) _next();
       });
+    }
+  }
+
+  void _runInfiniteAnimation() async {
+    _animationTimer?.cancel();
+    while (true) {
+      for (var i = 0; i < _variants.length; i++) {
+        final variant = _variants[i];
+        final delay = widget.animation(variant).delay;
+        final duration = widget.animation(variant).duration;
+
+        if (i == 0 && _firstAnimation) {
+          _firstAnimation = false;
+          _next();
+          continue;
+        }
+
+        await _waitForTimer(delay + duration).then((_) {
+          if (mounted) _next();
+        });
+      }
     }
   }
 
@@ -137,9 +168,10 @@ class _StylePhaseAnimatorState<V extends PhaseVariant>
   @override
   void didUpdateWidget(covariant StylePhaseAnimator<V> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.trigger != widget.trigger) {
+    if (_hasTrigger && oldWidget.trigger != widget.trigger) {
       _currentIndex = 0;
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        _animationTimer?.cancel();
         _runAnimation();
       });
     }
