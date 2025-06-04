@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 
+import '../../core/spec_widget.dart';
+import '../../core/animated_spec_widget.dart';
 import '../../core/styled_widget.dart';
 import '../../modifiers/internal/render_widget_modifier.dart';
 import '../box/box_spec.dart';
@@ -40,16 +42,15 @@ class StyledStack extends StyledWidget {
   }
 }
 
-class StackSpecWidget extends StatelessWidget {
+class StackSpecWidget extends SpecWidget<StackSpec> {
   const StackSpecWidget({
-    this.spec,
+    super.spec,
     this.children,
     this.orderOfModifiers = const [],
     super.key,
   });
 
   final List<Widget>? children;
-  final StackSpec? spec;
   final List<Type> orderOfModifiers;
 
   @override
@@ -69,10 +70,10 @@ class StackSpecWidget extends StatelessWidget {
   }
 }
 
-class AnimatedStackSpecWidget extends ImplicitlyAnimatedWidget {
+class AnimatedStackSpecWidget extends ImplicitlyAnimatedSpecWidget<StackSpec> {
   const AnimatedStackSpecWidget({
     super.key,
-    required this.spec,
+    required super.spec,
     required this.children,
     this.orderOfModifiers = const [],
     super.curve,
@@ -80,37 +81,15 @@ class AnimatedStackSpecWidget extends ImplicitlyAnimatedWidget {
     super.onEnd,
   });
 
-  final StackSpec spec;
   final List<Widget> children;
   final List<Type> orderOfModifiers;
 
   @override
-  AnimatedStackSpecWidgetState createState() => AnimatedStackSpecWidgetState();
-}
-
-class AnimatedStackSpecWidgetState
-    extends AnimatedWidgetBaseState<AnimatedStackSpecWidget> {
-  StackSpecTween? _specTween;
-
-  @override
-  // ignore: avoid-dynamic
-  void forEachTween(TweenVisitor<dynamic> visitor) {
-    _specTween = visitor(
-      _specTween,
-      widget.spec,
-      // ignore: avoid-dynamic
-      (dynamic value) => StackSpecTween(begin: value as StackSpec),
-    ) as StackSpecTween?;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final spec = _specTween!.evaluate(animation);
-
+  Widget build(BuildContext context, StackSpec animatedSpec) {
     return StackSpecWidget(
-      spec: spec,
-      orderOfModifiers: widget.orderOfModifiers,
-      children: widget.children,
+      spec: animatedSpec,
+      orderOfModifiers: orderOfModifiers,
+      children: children,
     );
   }
 }

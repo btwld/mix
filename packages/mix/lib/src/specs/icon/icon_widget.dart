@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/spec_widget.dart';
+import '../../core/animated_spec_widget.dart';
 import '../../core/styled_widget.dart';
 import '../../modifiers/internal/render_widget_modifier.dart';
 import 'icon_spec.dart';
@@ -27,29 +29,20 @@ class StyledIcon extends StyledWidget {
     return withMix(context, (context) {
       final spec = IconSpec.of(context);
 
-      return spec.isAnimated
-          ? AnimatedIconSpecWidget(
-              icon,
-              spec: spec,
-              semanticLabel: semanticLabel,
-              textDirection: textDirection,
-              curve: spec.animated!.curve,
-              duration: spec.animated!.duration,
-            )
-          : IconSpecWidget(
-              icon,
-              spec: spec,
-              semanticLabel: semanticLabel,
-              textDirection: textDirection,
-            );
+      return spec(
+        icon,
+        semanticLabel: semanticLabel,
+        textDirection: textDirection,
+        orderOfModifiers: orderOfModifiers,
+      );
     });
   }
 }
 
-class IconSpecWidget extends StatelessWidget {
+class IconSpecWidget extends SpecWidget<IconSpec> {
   const IconSpecWidget(
     this.icon, {
-    this.spec,
+    super.spec,
     this.semanticLabel,
     super.key,
     this.textDirection,
@@ -59,7 +52,6 @@ class IconSpecWidget extends StatelessWidget {
   });
 
   final IconData? icon;
-  final IconSpec? spec;
   final String? semanticLabel;
   final TextDirection? textDirection;
   final List<Type> orderOfModifiers;
@@ -121,10 +113,10 @@ class AnimatedStyledIcon extends StyledWidget {
   }
 }
 
-class AnimatedIconSpecWidget extends ImplicitlyAnimatedWidget {
+class AnimatedIconSpecWidget extends ImplicitlyAnimatedSpecWidget<IconSpec> {
   const AnimatedIconSpecWidget(
     this.icon, {
-    required this.spec,
+    required super.spec,
     super.key,
     this.semanticLabel,
     this.textDirection,
@@ -137,41 +129,18 @@ class AnimatedIconSpecWidget extends ImplicitlyAnimatedWidget {
   });
 
   final IconData? icon;
-  final IconSpec spec;
   final String? semanticLabel;
   final TextDirection? textDirection;
   final List<Type> orderOfModifiers;
 
   @override
-  // ignore: library_private_types_in_public_api
-  _AnimatedIconSpecState createState() => _AnimatedIconSpecState();
-}
-
-class _AnimatedIconSpecState
-    extends AnimatedWidgetBaseState<AnimatedIconSpecWidget> {
-  IconSpecTween? _spec;
-
-  @override
-  // ignore: avoid-dynamic
-  void forEachTween(TweenVisitor<dynamic> visitor) {
-    _spec = visitor(
-      _spec,
-      widget.spec,
-      // ignore: avoid-dynamic
-      (dynamic value) => IconSpecTween(begin: value as IconSpec?),
-    ) as IconSpecTween?;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final spec = _spec?.evaluate(animation);
-
+  Widget build(BuildContext context, IconSpec animatedSpec) {
     return IconSpecWidget(
-      widget.icon,
-      spec: spec,
-      semanticLabel: widget.semanticLabel,
-      textDirection: widget.textDirection,
-      orderOfModifiers: widget.orderOfModifiers,
+      icon,
+      spec: animatedSpec,
+      semanticLabel: semanticLabel,
+      textDirection: textDirection,
+      orderOfModifiers: orderOfModifiers,
     );
   }
 }

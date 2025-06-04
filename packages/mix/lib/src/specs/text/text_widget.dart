@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/spec_widget.dart';
+import '../../core/animated_spec_widget.dart';
 import '../../core/styled_widget.dart';
 import '../../modifiers/internal/render_widget_modifier.dart';
 import 'text_spec.dart';
@@ -58,10 +60,10 @@ class StyledText extends StyledWidget {
   }
 }
 
-class TextSpecWidget extends StatelessWidget {
+class TextSpecWidget extends SpecWidget<TextSpec> {
   const TextSpecWidget(
     this.text, {
-    required this.spec,
+    super.spec,
     this.semanticsLabel,
     this.locale,
     this.orderOfModifiers = const [],
@@ -71,7 +73,6 @@ class TextSpecWidget extends StatelessWidget {
   final String text;
   final String? semanticsLabel;
   final Locale? locale;
-  final TextSpec? spec;
   final List<Type> orderOfModifiers;
 
   @override
@@ -101,10 +102,10 @@ class TextSpecWidget extends StatelessWidget {
   }
 }
 
-class AnimatedTextSpecWidget extends ImplicitlyAnimatedWidget {
+class AnimatedTextSpecWidget extends ImplicitlyAnimatedSpecWidget<TextSpec> {
   const AnimatedTextSpecWidget(
     this.text, {
-    this.spec,
+    required super.spec,
     this.semanticsLabel,
     this.locale,
     this.orderOfModifiers = const [],
@@ -117,38 +118,16 @@ class AnimatedTextSpecWidget extends ImplicitlyAnimatedWidget {
   final String text;
   final String? semanticsLabel;
   final Locale? locale;
-  final TextSpec? spec;
   final List<Type> orderOfModifiers;
-  @override
-  AnimatedWidgetBaseState<AnimatedTextSpecWidget> createState() =>
-      _AnimatedTextSpecWidgetState();
-}
-
-class _AnimatedTextSpecWidgetState
-    extends AnimatedWidgetBaseState<AnimatedTextSpecWidget> {
-  TextSpecTween? _textSpecTween;
 
   @override
-  // ignore: avoid-dynamic
-  void forEachTween(TweenVisitor<dynamic> visitor) {
-    _textSpecTween = visitor(
-      _textSpecTween,
-      widget.spec,
-      // ignore: avoid-dynamic
-      (dynamic value) => TextSpecTween(begin: value as TextSpec),
-    ) as TextSpecTween?;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final spec = _textSpecTween!.evaluate(animation)!;
-
+  Widget build(BuildContext context, TextSpec animatedSpec) {
     return TextSpecWidget(
-      widget.text,
-      spec: spec,
-      semanticsLabel: widget.semanticsLabel,
-      locale: widget.locale,
-      orderOfModifiers: widget.orderOfModifiers,
+      text,
+      spec: animatedSpec,
+      semanticsLabel: semanticsLabel,
+      locale: locale,
+      orderOfModifiers: orderOfModifiers,
     );
   }
 }

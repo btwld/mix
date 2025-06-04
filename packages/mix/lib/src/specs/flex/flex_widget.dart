@@ -2,6 +2,8 @@
 
 import 'package:flutter/widgets.dart';
 
+import '../../core/spec_widget.dart';
+import '../../core/animated_spec_widget.dart';
 import '../../core/styled_widget.dart';
 import '../../modifiers/internal/render_widget_modifier.dart';
 import 'flex_spec.dart';
@@ -47,10 +49,10 @@ class StyledFlex extends StyledWidget {
   }
 }
 
-class FlexSpecWidget extends StatelessWidget {
+class FlexSpecWidget extends SpecWidget<FlexSpec> {
   const FlexSpecWidget({
     super.key,
-    this.spec,
+    super.spec,
     required this.children,
     required this.direction,
     this.orderOfModifiers = const [],
@@ -58,7 +60,6 @@ class FlexSpecWidget extends StatelessWidget {
 
   final List<Widget> children;
   final Axis direction;
-  final FlexSpec? spec;
   final List<Type> orderOfModifiers;
 
   Axis get _definitiveDirection => spec?.direction ?? direction;
@@ -105,10 +106,10 @@ class FlexSpecWidget extends StatelessWidget {
   }
 }
 
-class AnimatedFlexSpecWidget extends ImplicitlyAnimatedWidget {
+class AnimatedFlexSpecWidget extends ImplicitlyAnimatedSpecWidget<FlexSpec> {
   const AnimatedFlexSpecWidget({
     super.key,
-    required this.spec,
+    required super.spec,
     required this.children,
     required this.direction,
     this.orderOfModifiers = const [],
@@ -117,37 +118,17 @@ class AnimatedFlexSpecWidget extends ImplicitlyAnimatedWidget {
     super.onEnd,
   });
 
-  final FlexSpec spec;
   final List<Widget> children;
   final Axis direction;
   final List<Type> orderOfModifiers;
 
   @override
-  AnimatedFlexSpecWidgetState createState() => AnimatedFlexSpecWidgetState();
-}
-
-class AnimatedFlexSpecWidgetState
-    extends AnimatedWidgetBaseState<AnimatedFlexSpecWidget> {
-  FlexSpecTween? _specTween;
-
-  @override
-  // ignore: avoid-dynamic
-  void forEachTween(TweenVisitor<dynamic> visitor) {
-    _specTween = visitor(
-      _specTween,
-      widget.spec,
-      // ignore: avoid-dynamic
-      (dynamic value) => FlexSpecTween(begin: value as FlexSpec),
-    ) as FlexSpecTween?;
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, FlexSpec animatedSpec) {
     return FlexSpecWidget(
-      spec: _specTween?.evaluate(animation),
-      direction: widget.direction,
-      orderOfModifiers: widget.orderOfModifiers,
-      children: widget.children,
+      spec: animatedSpec,
+      direction: direction,
+      orderOfModifiers: orderOfModifiers,
+      children: children,
     );
   }
 }
