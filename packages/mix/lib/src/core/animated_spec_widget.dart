@@ -48,7 +48,8 @@ abstract class ImplicitlyAnimatedSpecWidget<S extends Spec<S>>
 
   @override
   ImplicitlyAnimatedWidgetState<ImplicitlyAnimatedSpecWidget<S>>
-      createState() => _ImplicitlyAnimatedSpecWidgetState<S>();
+      createState() => _ImplicitlyAnimatedSpecWidgetStateMixin<S,
+          ImplicitlyAnimatedSpecWidget<S>>();
 
   /// Builds the widget using the current animated spec.
   ///
@@ -60,8 +61,9 @@ abstract class ImplicitlyAnimatedSpecWidget<S extends Spec<S>>
   Widget build(BuildContext context, S animatedSpec);
 }
 
-class _ImplicitlyAnimatedSpecWidgetState<S extends Spec<S>>
-    extends ImplicitlyAnimatedWidgetState<ImplicitlyAnimatedSpecWidget<S>> {
+class _ImplicitlyAnimatedSpecWidgetStateMixin<S extends Spec<S>,
+        W extends ImplicitlyAnimatedSpecWidget<S>>
+    extends AnimatedWidgetBaseState<W> {
   SpecTween<S>? _specTween;
 
   @override
