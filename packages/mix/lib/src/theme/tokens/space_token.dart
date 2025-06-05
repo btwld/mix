@@ -25,7 +25,7 @@ extension SpaceRefExt on SpaceRef {
 /// A space token defines a value for controlling the
 /// size of UI elements.
 @immutable
-class SpaceToken extends MixToken<double> {
+class SpaceToken extends MixToken<double> with MixTokenCallable<double> {
   /// A constant constructor that accepts a `String` argument named [name].
   /// Name needs to be unique per token
   ///

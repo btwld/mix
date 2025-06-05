@@ -9,7 +9,7 @@ import 'mix_token.dart';
 ///
 /// To resolve the color value statically, pass a [Color] value to the constructor.
 @immutable
-class ColorToken extends MixToken<Color> {
+class ColorToken extends MixToken<Color> with MixTokenCallable<Color> {
   const ColorToken(super.name);
 
   /// Calls the [ColorToken] to create a [ColorRef] instance.

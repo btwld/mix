@@ -44,7 +44,7 @@ class Breakpoint {
 /// - [BreakpointToken.medium]
 /// - [BreakpointToken.large]
 @immutable
-class BreakpointToken extends MixToken<Breakpoint> {
+class BreakpointToken extends MixToken<Breakpoint> with MixTokenCallable<Breakpoint> {
   /// The extra-small breakpoint token.
   static const xsmall = _breakpointXsmall;
 

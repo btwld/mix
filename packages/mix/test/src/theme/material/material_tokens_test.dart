@@ -11,7 +11,11 @@ void main() {
   group('Material tokens', () {
     Value refResolver<T extends MixToken<Value>, R extends TokenRef<T>, Value>(
         R ref, BuildContext context) {
-      return ref.token.resolve(context);
+      final token = ref.token;
+      if (token is MixTokenCallable<Value>) {
+        return token.resolve(context);
+      }
+      throw StateError('Token does not implement MixTokenCallable');
     }
 
     testWidgets('colors', (tester) async {

@@ -4,7 +4,7 @@ import '../../internal/mix_error.dart';
 import '../mix/mix_theme.dart';
 import 'mix_token.dart';
 
-class TextStyleToken extends MixToken<TextStyle> {
+class TextStyleToken extends MixToken<TextStyle> with MixTokenCallable<TextStyle> {
   const TextStyleToken(super.name);
 
   @override
