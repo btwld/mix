@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../core/spec_widget.dart';
 import '../../core/animated_spec_widget.dart';
+import '../../core/spec_widget.dart';
 import '../../core/styled_widget.dart';
 import '../../modifiers/internal/render_widget_modifier.dart';
 import 'icon_spec.dart';
@@ -32,8 +32,8 @@ class StyledIcon extends StyledWidget {
       return spec(
         icon,
         semanticLabel: semanticLabel,
-        textDirection: textDirection,
         orderOfModifiers: orderOfModifiers,
+        textDirection: textDirection,
       );
     });
   }

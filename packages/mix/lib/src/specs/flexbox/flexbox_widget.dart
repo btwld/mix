@@ -2,9 +2,9 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../../core/spec_widget.dart';
 import '../../core/animated_spec_widget.dart';
 import '../../core/factory/mix_provider.dart';
+import '../../core/spec_widget.dart';
 import '../../core/styled_widget.dart';
 import '../../modifiers/internal/render_widget_modifier.dart';
 import '../box/box_spec.dart';
@@ -71,7 +71,7 @@ class FlexBox extends StyledWidget {
 class FlexBoxSpecWidget extends SpecWidget<FlexBoxSpec> {
   const FlexBoxSpecWidget({
     super.key,
-    this.spec,
+    super.spec,
     this.children = const <Widget>[],
     required this.direction,
     this.orderOfModifiers = const [],
@@ -99,10 +99,11 @@ class FlexBoxSpecWidget extends SpecWidget<FlexBoxSpec> {
   }
 }
 
-class AnimatedFlexBoxSpecWidget extends ImplicitlyAnimatedSpecWidget<FlexBoxSpec> {
+class AnimatedFlexBoxSpecWidget
+    extends ImplicitlyAnimatedSpecWidget<FlexBoxSpec> {
   const AnimatedFlexBoxSpecWidget({
     super.key,
-    required this.spec,
+    required super.spec,
     this.children = const <Widget>[],
     required this.direction,
     this.orderOfModifiers = const [],

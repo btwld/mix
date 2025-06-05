@@ -55,7 +55,12 @@ final class IconSpec extends Spec<IconSpec> with _$IconSpec, Diagnosticable {
     super.modifiers,
   });
 
-  Widget call(IconData? icon, {String? semanticLabel}) {
+  Widget call(
+    IconData? icon, {
+    String? semanticLabel,
+    List<Type> orderOfModifiers = const [],
+    TextDirection? textDirection,
+  }) {
     return isAnimated
         ? AnimatedIconSpecWidget(
             icon,
@@ -64,12 +69,14 @@ final class IconSpec extends Spec<IconSpec> with _$IconSpec, Diagnosticable {
             textDirection: textDirection,
             curve: animated!.curve,
             duration: animated!.duration,
+            orderOfModifiers: orderOfModifiers,
           )
         : IconSpecWidget(
             icon,
             spec: this,
             semanticLabel: semanticLabel,
             textDirection: textDirection,
+            orderOfModifiers: orderOfModifiers,
           );
   }
 

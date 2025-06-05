@@ -63,6 +63,7 @@ final class ImageSpec extends Spec<ImageSpec> with _$ImageSpec, Diagnosticable {
     bool isAntiAlias = false,
     bool matchTextDirection = false,
     Animation<double>? opacity,
+    List<Type> orderOfModifiers = const [],
   }) {
     return isAnimated
         ? AnimatedImageSpecWidget(
@@ -78,10 +79,12 @@ final class ImageSpec extends Spec<ImageSpec> with _$ImageSpec, Diagnosticable {
             gaplessPlayback: gaplessPlayback,
             isAntiAlias: isAntiAlias,
             matchTextDirection: matchTextDirection,
+            orderOfModifiers: orderOfModifiers,
             opacity: opacity,
           )
         : ImageSpecWidget(
             spec: this,
+            orderOfModifiers: orderOfModifiers,
             image: image,
             frameBuilder: frameBuilder,
             loadingBuilder: loadingBuilder,

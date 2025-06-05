@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/spec_widget.dart';
 import '../../core/animated_spec_widget.dart';
+import '../../core/spec_widget.dart';
 import '../../core/styled_widget.dart';
 import '../../internal/constants.dart';
 import '../../modifiers/internal/render_widget_modifier.dart';
@@ -51,8 +51,8 @@ class StyledImage extends StyledWidget {
         gaplessPlayback: gaplessPlayback,
         isAntiAlias: isAntiAlias,
         matchTextDirection: matchTextDirection,
-        orderOfModifiers: orderOfModifiers,
         opacity: opacity,
+        orderOfModifiers: orderOfModifiers,
       );
     });
   }
