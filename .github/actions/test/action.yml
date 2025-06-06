@@ -21,18 +21,14 @@ runs:
       uses: actions/checkout@v4
     
     - name: Install FVM
-      shell: bash
-      run: |
-        curl -fsSL https://fvm.app/install.sh | bash
-        export PATH="/home/runner/.fvm_flutter/bin:$PATH"
-        echo $PATH
-        which fvm
+        run: |
+          curl -fsSL https://fvm.app/install.sh | bash
+          echo "FVM installed at /home/runner/.fvm_flutter/bin"
 
-    - name: Debug PATH
-      shell: bash
+    - name: Use Flutter version with FVM
       run: |
-        echo $PATH
-        which fvm
+        /home/runner/.fvm_flutter/bin/fvm --version
+        /home/runner/.fvm_flutter/bin/fvm use ${{ inputs.flutter-version }} --force
 
     - uses: kuhnroyal/flutter-fvm-config-action@v2
       id: fvm-config-action
