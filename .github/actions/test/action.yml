@@ -20,13 +20,13 @@ runs:
     - name: Checkout mix repo
       uses: actions/checkout@v4
 
-    - uses: gerlero/brew-install@v1
-      with:
-        packages: fvm
+    - uses: tecolicom/actions-use-homebrew-tools@v1
 
     - name: Use Flutter version with FVM
       shell: bash
       run: |
+        brew tap leoafarias/fvm
+        brew install fvm
         fvm --version
         fvm use ${{ inputs.flutter-version }} --force
 
