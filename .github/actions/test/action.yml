@@ -19,6 +19,17 @@ runs:
   steps:
     - name: Checkout mix repo
       uses: actions/checkout@v4
+
+    - name: Install Homebrew
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential curl file git
+        NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> $GITHUB_ENV
+
+    - uses: gerlero/brew-install@v1
+      with:  
+        packages: fvm
     
     - name: Install FVM
       shell: bash
