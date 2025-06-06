@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
+import '../../experimental.dart';
 import '../attributes/animated/animated_data.dart';
 import '../attributes/animated/animated_data_dto.dart';
 import '../attributes/modifiers/widget_modifiers_data.dart';
@@ -104,5 +105,8 @@ class SpecConfiguration<U extends SpecUtility> {
 abstract class SpecStyle<U extends SpecUtility> {
   const SpecStyle();
 
-  Style makeStyle(SpecConfiguration<U> spec);
+  @Deprecated('Use buildStyle instead')
+  Style makeStyle(SpecConfiguration<U> spec) => const Style.empty();
+
+  Style buildStyle(StyleSheet<U> style) => const Style.empty();
 }
