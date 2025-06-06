@@ -25,7 +25,6 @@ runs:
       run: |
         curl -fsSL https://fvm.app/install.sh | bash
         export PATH="$HOME/.pub-cache/bin:$PATH"
-        fvm use ${{ inputs.flutter-version }} --force
 
 
     - uses: kuhnroyal/flutter-fvm-config-action@v2
