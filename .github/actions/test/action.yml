@@ -21,11 +21,13 @@ runs:
       uses: actions/checkout@v4
     
     - name: Install FVM
+      shell: bash
       run: |
         curl -fsSL https://fvm.app/install.sh | bash
         echo "FVM installed at /home/runner/.fvm_flutter/bin"
 
     - name: Use Flutter version with FVM
+      shell: bash
       run: |
         /home/runner/.fvm_flutter/bin/fvm --version
         /home/runner/.fvm_flutter/bin/fvm use ${{ inputs.flutter-version }} --force
