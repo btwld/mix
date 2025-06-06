@@ -24,7 +24,7 @@ runs:
       shell: bash
       run: |
         curl -fsSL https://fvm.app/install.sh | bash
-        export PATH="$HOME/.pub-cache/bin:$PATH"
+        echo "$HOME/.pub-cache/bin" >> "$GITHUB_PATH"
 
     - name: FVM use version
       shell: bash
