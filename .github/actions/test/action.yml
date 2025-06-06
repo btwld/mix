@@ -25,8 +25,8 @@ runs:
       run: |
         curl -fsSL https://fvm.app/install.sh | bash
         export PATH="/home/runner/.fvm_flutter/bin:$PATH"
-        fvm --version
-        fvm use ${{ inputs.flutter-version }} --force
+        echo $PATH
+        which fvm
 
     - name: Debug PATH
       shell: bash
