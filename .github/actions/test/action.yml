@@ -24,7 +24,7 @@ runs:
       shell: bash
       run: |
         NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://fvm.app/install.sh)"
-        find ~ -type f -name fvm
+        echo "/home/runner/.fvm_flutter/bin/fvm" >> $GITHUB_PATH
 
 
     - uses: kuhnroyal/flutter-fvm-config-action@v2
