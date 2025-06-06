@@ -23,8 +23,7 @@ runs:
     - name: Install FVM
       shell: bash
       run: |
-        curl -fsSL https://fvm.app/install.sh | bash
-        NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://fvm.app/install.sh)"
         echo "PATH=/home/runner/.fvm_flutter/bin:$PATH" >> $GITHUB_ENV
         fvm use ${{ inputs.flutter-version }} --force
 
