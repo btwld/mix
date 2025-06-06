@@ -16,11 +16,11 @@ mixin _$ToastSpec on Spec<ToastSpec> {
   }
 
   /// {@template toast_spec_of}
-  /// Retrieves the [ToastSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [ToastSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [ToastSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [ToastSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [ToastSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [ToastSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$ToastSpec on Spec<ToastSpec> {
   /// ```
   /// {@endtemplate}
   static ToastSpec of(BuildContext context) {
-    return _$ToastSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<ToastSpec>(context) ?? const ToastSpec();
   }
 
   /// Creates a copy of this [ToastSpec] but with the given fields

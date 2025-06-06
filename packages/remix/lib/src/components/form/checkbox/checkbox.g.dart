@@ -16,11 +16,11 @@ mixin _$CheckboxSpec on Spec<CheckboxSpec> {
   }
 
   /// {@template checkbox_spec_of}
-  /// Retrieves the [CheckboxSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [CheckboxSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [CheckboxSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [CheckboxSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [CheckboxSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [CheckboxSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$CheckboxSpec on Spec<CheckboxSpec> {
   /// ```
   /// {@endtemplate}
   static CheckboxSpec of(BuildContext context) {
-    return _$CheckboxSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<CheckboxSpec>(context) ?? const CheckboxSpec();
   }
 
   /// Creates a copy of this [CheckboxSpec] but with the given fields

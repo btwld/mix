@@ -16,11 +16,11 @@ mixin _$ScaffoldSpec on Spec<ScaffoldSpec> {
   }
 
   /// {@template scaffold_spec_of}
-  /// Retrieves the [ScaffoldSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [ScaffoldSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [ScaffoldSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [ScaffoldSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [ScaffoldSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [ScaffoldSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$ScaffoldSpec on Spec<ScaffoldSpec> {
   /// ```
   /// {@endtemplate}
   static ScaffoldSpec of(BuildContext context) {
-    return _$ScaffoldSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<ScaffoldSpec>(context) ?? const ScaffoldSpec();
   }
 
   /// Creates a copy of this [ScaffoldSpec] but with the given fields

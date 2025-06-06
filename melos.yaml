@@ -72,14 +72,34 @@ scripts:
       dependsOn: "build_runner"
 
   gen:build:
-    run: melos run gen:clean && melos exec --order-dependents -- dart run build_runner build --delete-conflicting-outputs
+    run: melos run gen:clean && melos run gen:build:flutter && melos run gen:build:dart
     description: Generate code for all packages
+
+  gen:build:flutter:
+    run: melos exec --category=flutter_projects --order-dependents -- flutter pub run build_runner build --delete-conflicting-outputs
+    description: Generate code for Flutter packages
+    packageFilters:
+      dependsOn: "build_runner"
+
+  gen:build:dart:
+    run: melos exec --category=dart_projects --order-dependents -- dart run build_runner build --delete-conflicting-outputs
+    description: Generate code for Dart packages
     packageFilters:
       dependsOn: "build_runner"
 
   gen:clean:
-    run: melos exec --order-dependents -- dart run build_runner clean
+    run: melos run gen:clean:flutter && melos run gen:clean:dart
     description: Clean generated code for all packages
+
+  gen:clean:flutter:
+    run: melos exec --category=flutter_projects --order-dependents -- flutter pub run build_runner clean
+    description: Clean generated code for Flutter packages
+    packageFilters:
+      dependsOn: "build_runner"
+
+  gen:clean:dart:
+    run: melos exec --category=dart_projects --order-dependents -- dart run build_runner clean
+    description: Clean generated code for Dart packages
     packageFilters:
       dependsOn: "build_runner"
 

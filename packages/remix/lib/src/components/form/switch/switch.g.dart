@@ -16,11 +16,11 @@ mixin _$SwitchSpec on Spec<SwitchSpec> {
   }
 
   /// {@template switch_spec_of}
-  /// Retrieves the [SwitchSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [SwitchSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [SwitchSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [SwitchSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [SwitchSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [SwitchSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$SwitchSpec on Spec<SwitchSpec> {
   /// ```
   /// {@endtemplate}
   static SwitchSpec of(BuildContext context) {
-    return _$SwitchSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<SwitchSpec>(context) ?? const SwitchSpec();
   }
 
   /// Creates a copy of this [SwitchSpec] but with the given fields

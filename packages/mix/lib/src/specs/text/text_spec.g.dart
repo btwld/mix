@@ -31,7 +31,6 @@ mixin _$TextSpec on Spec<TextSpec> {
   /// ```
   /// {@endtemplate}
   static TextSpec of(BuildContext context) {
-    // SURGICAL REBUILD: Only rebuilds when TextSpec changes
     return ComputedStyle.specOf<TextSpec>(context) ?? const TextSpec();
   }
 

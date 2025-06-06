@@ -29,7 +29,6 @@ mixin _$FlexSpec on Spec<FlexSpec> {
   /// ```
   /// {@endtemplate}
   static FlexSpec of(BuildContext context) {
-    // SURGICAL REBUILD: Only rebuilds when FlexSpec changes
     return ComputedStyle.specOf<FlexSpec>(context) ?? const FlexSpec();
   }
 

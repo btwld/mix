@@ -29,7 +29,6 @@ mixin _$IconSpec on Spec<IconSpec> {
   /// ```
   /// {@endtemplate}
   static IconSpec of(BuildContext context) {
-    // SURGICAL REBUILD: Only rebuilds when IconSpec changes
     return ComputedStyle.specOf<IconSpec>(context) ?? const IconSpec();
   }
 

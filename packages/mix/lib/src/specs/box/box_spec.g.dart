@@ -28,7 +28,6 @@ mixin _$BoxSpec on Spec<BoxSpec> {
   /// ```
   /// {@endtemplate}
   static BoxSpec of(BuildContext context) {
-    // SURGICAL REBUILD: Only rebuilds when BoxSpec changes
     return ComputedStyle.specOf<BoxSpec>(context) ?? const BoxSpec();
   }
 

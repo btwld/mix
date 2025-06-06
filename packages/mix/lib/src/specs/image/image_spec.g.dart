@@ -29,7 +29,6 @@ mixin _$ImageSpec on Spec<ImageSpec> {
   /// ```
   /// {@endtemplate}
   static ImageSpec of(BuildContext context) {
-    // SURGICAL REBUILD: Only rebuilds when ImageSpec changes
     return ComputedStyle.specOf<ImageSpec>(context) ?? const ImageSpec();
   }
 

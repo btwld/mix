@@ -29,7 +29,6 @@ mixin _$StackSpec on Spec<StackSpec> {
   /// ```
   /// {@endtemplate}
   static StackSpec of(BuildContext context) {
-    // SURGICAL REBUILD: Only rebuilds when StackSpec changes
     return ComputedStyle.specOf<StackSpec>(context) ?? const StackSpec();
   }
 

@@ -16,11 +16,11 @@ mixin _$ProgressSpec on Spec<ProgressSpec> {
   }
 
   /// {@template progress_spec_of}
-  /// Retrieves the [ProgressSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [ProgressSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [ProgressSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [ProgressSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [ProgressSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [ProgressSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$ProgressSpec on Spec<ProgressSpec> {
   /// ```
   /// {@endtemplate}
   static ProgressSpec of(BuildContext context) {
-    return _$ProgressSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<ProgressSpec>(context) ?? const ProgressSpec();
   }
 
   /// Creates a copy of this [ProgressSpec] but with the given fields

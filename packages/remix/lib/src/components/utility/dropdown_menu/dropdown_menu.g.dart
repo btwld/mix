@@ -16,11 +16,11 @@ mixin _$DropdownMenuSpec on Spec<DropdownMenuSpec> {
   }
 
   /// {@template dropdown_menu_spec_of}
-  /// Retrieves the [DropdownMenuSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [DropdownMenuSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [DropdownMenuSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [DropdownMenuSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [DropdownMenuSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [DropdownMenuSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,8 @@ mixin _$DropdownMenuSpec on Spec<DropdownMenuSpec> {
   /// ```
   /// {@endtemplate}
   static DropdownMenuSpec of(BuildContext context) {
-    return _$DropdownMenuSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<DropdownMenuSpec>(context) ??
+        const DropdownMenuSpec();
   }
 
   /// Creates a copy of this [DropdownMenuSpec] but with the given fields
@@ -263,11 +264,11 @@ mixin _$DropdownMenuContainerSpec on Spec<DropdownMenuContainerSpec> {
   }
 
   /// {@template dropdown_menu_container_spec_of}
-  /// Retrieves the [DropdownMenuContainerSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [DropdownMenuContainerSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [DropdownMenuContainerSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [DropdownMenuContainerSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [DropdownMenuContainerSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [DropdownMenuContainerSpec].
   ///
   /// Example:
   ///
@@ -276,7 +277,8 @@ mixin _$DropdownMenuContainerSpec on Spec<DropdownMenuContainerSpec> {
   /// ```
   /// {@endtemplate}
   static DropdownMenuContainerSpec of(BuildContext context) {
-    return _$DropdownMenuContainerSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<DropdownMenuContainerSpec>(context) ??
+        const DropdownMenuContainerSpec();
   }
 
   /// Creates a copy of this [DropdownMenuContainerSpec] but with the given fields
@@ -510,11 +512,11 @@ mixin _$DropdownMenuItemSpec on Spec<DropdownMenuItemSpec> {
   }
 
   /// {@template dropdown_menu_item_spec_of}
-  /// Retrieves the [DropdownMenuItemSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [DropdownMenuItemSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [DropdownMenuItemSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [DropdownMenuItemSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [DropdownMenuItemSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [DropdownMenuItemSpec].
   ///
   /// Example:
   ///
@@ -523,7 +525,8 @@ mixin _$DropdownMenuItemSpec on Spec<DropdownMenuItemSpec> {
   /// ```
   /// {@endtemplate}
   static DropdownMenuItemSpec of(BuildContext context) {
-    return _$DropdownMenuItemSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<DropdownMenuItemSpec>(context) ??
+        const DropdownMenuItemSpec();
   }
 
   /// Creates a copy of this [DropdownMenuItemSpec] but with the given fields
