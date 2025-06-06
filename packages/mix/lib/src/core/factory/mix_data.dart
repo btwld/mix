@@ -14,9 +14,17 @@ import '../modifier.dart';
 import '../spec.dart';
 import 'style_mix.dart';
 
-/// This class is used for encapsulating all [MixData] related operations.
-/// It contains a mixture of properties and methods useful for handling different attributes,
-/// modifiers and token resolvers.
+// TODO: Consider renaming MixData to MixContext
+// MixContext would be a more accurate name as this class provides the contextual
+// environment for attribute resolution (tokens, context, animation state) rather than
+// being a simple data container. The "Context" naming would also enable more fluid
+// refresh and update patterns, making the relationship with BuildContext clearer.
+
+/// Context for resolving [SpecAttribute]s into concrete values.
+///
+/// Encapsulates the build context, token resolver, and attribute collection
+/// needed for style resolution. Acts as the contextual environment during
+/// the style computation process.
 @immutable
 class MixData with Diagnosticable {
   final AnimatedData? animation;
@@ -26,9 +34,7 @@ class MixData with Diagnosticable {
 
   final MixTokenResolver _tokenResolver;
 
-  /// A Private constructor for the [MixData] class that initializes its main variables.
-  ///
-  /// It takes in [attributes] and [resolver] as required parameters.
+  /// Creates a [MixData] instance with the given parameters.
   const MixData._({
     required MixTokenResolver resolver,
     required AttributeMap attributes,
@@ -48,17 +54,13 @@ class MixData with Diagnosticable {
     );
   }
 
-  /// Alias for animation.isAnimated
+  /// Whether this style data includes animation configuration.
   bool get isAnimated => animation != null;
 
-  /// Getter for [MixTokenResolver].
-  ///
-  /// Returns [_tokenResolver].
+  /// Token resolver for resolving design tokens in this context.
   MixTokenResolver get tokens => _tokenResolver;
 
-  /// Getter for [_attributes].
-  ///
-  /// Returns [_attributes].
+  /// Attribute collection for testing purposes.
   @visibleForTesting
   AttributeMap get attributes => _attributes;
 
@@ -77,7 +79,7 @@ class MixData with Diagnosticable {
     return copyWith(attributes: AttributeMap(inheritableAttributes));
   }
 
-  /// Finds and returns an [VisualAttribute] of type [A], or null if not found.
+  /// Returns the resolved attribute of type [A], or null if not found.
   A? attributeOf<A extends SpecAttribute>() {
     final attributes = _attributes.whereType<A>();
     if (attributes.isEmpty) return null;

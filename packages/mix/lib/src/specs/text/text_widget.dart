@@ -6,36 +6,23 @@ import '../../core/styled_widget.dart';
 import '../../modifiers/internal/render_widget_modifier.dart';
 import 'text_spec.dart';
 
-/// [StyledText] - A styled widget for displaying text with a mix of styles.
+/// A styled text widget for displaying text with Mix styling.
 ///
-/// This widget extends [StyledWidget] and provides a way to display text with
-/// styles defined in a `Style`. It is ideal for creating text elements in your
-/// UI where the text styling needs to be dynamic and controlled through a styling system.
+/// Applies [TextSpec] styling to display text with custom appearance.
+/// Supports style inheritance from ancestor [StyledWidget]s.
 ///
-/// The [StyledText] is particularly useful when you need text elements that adapt
-/// their styles based on different conditions or states, providing a more flexible
-/// and maintainable approach compared to static styling.
-///
-/// Parameters:
-///   - [text]: The text string to display.
-///   - [semanticsLabel]: An optional semantics label for the text, used by screen readers.
-///   - [style]: The [Style] to be applied to the text. Inherits from [StyledWidget].
-///   - [key]: The key for the widget. Inherits from [StyledWidget].
-///   - [inherit]: Determines whether the [StyledText] should inherit styles from its ancestors.
-///     Default is `true`. Inherits from [StyledWidget].
-///   - [locale]: The locale used for the text, affecting how it is displayed.
-///
-/// Example usage:
+/// Example:
 /// ```dart
 /// StyledText(
-///   'content',
-///   style: myStyle,
+///   'Hello World',
+///   style: Style(
+///     $text.color.red(),
+///     $text.fontSize(16),
+///   ),
 /// )
 /// ```
-///
-/// This example shows a `StyledText` widget displaying the string 'content'
-/// with the styles defined in `myStyle`.
 class StyledText extends StyledWidget {
+  /// Creates a styled text widget.
   const StyledText(
     this.text, {
     this.semanticsLabel,
@@ -46,17 +33,27 @@ class StyledText extends StyledWidget {
     super.orderOfModifiers = const [],
   });
 
+  /// Text content to display.
   final String text;
+  
+  /// Alternative semantics label for accessibility.
   final String? semanticsLabel;
+  
+  /// Locale for text rendering and formatting.
   final Locale? locale;
 
   @override
   Widget build(BuildContext context) {
-    return withMix(context, (contextNew) {
-      final spec = TextSpec.of(contextNew);
+    return SpecBuilder(
+      inherit: inherit,
+      style: style,
+      orderOfModifiers: orderOfModifiers,
+      builder: (context) {
+        final spec = TextSpec.of(context);
 
-      return spec(text, semanticsLabel: semanticsLabel, locale: locale);
-    });
+        return spec(text, semanticsLabel: semanticsLabel, locale: locale);
+      },
+    );
   }
 }
 

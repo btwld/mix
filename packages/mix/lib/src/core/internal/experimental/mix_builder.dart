@@ -1,12 +1,42 @@
 import 'package:flutter/widgets.dart';
 
 import '../../../modifiers/internal/render_widget_modifier.dart';
+import '../../computed_style/computed_style.dart';
+import '../../computed_style/computed_style_provider.dart';
 import '../../factory/mix_data.dart';
 import '../../factory/mix_provider.dart';
 import '../../factory/style_mix.dart';
-import '../../modifier.dart';
 
-class MixBuilder extends StatelessWidget {
+/// High-performance widget builder with [ComputedStyle] caching.
+///
+/// Creates [MixData] with inheritance support, computes [ComputedStyle], and
+/// provides it via [ComputedStyleProvider] for efficient spec-specific rebuilds.
+///
+/// Implements intelligent caching to minimize expensive computations:
+/// - Reuses computed styles when input [style] remains unchanged
+/// - Invalidates cache when [style] or [inherit] flag changes
+/// - Automatically releases cache when widget is disposed
+///
+/// This caching provides significant performance benefits for complex widgets
+/// with frequent rebuilds, especially those using style inheritance.
+///
+/// - **O(1) spec lookups**: ComputedStyle pre-resolves all specs into a Map
+/// - **Surgical rebuilds**: Widgets only rebuild when their specific spec changes
+/// - **Reduced allocations**: Caching prevents recreating identical objects
+///
+/// Example:
+/// ```dart
+/// MixBuilder(
+///   style: myStyle,
+///   inherit: true,
+///   builder: (context) {
+///     // Only rebuilds when BoxSpec changes
+///     final boxSpec = BoxSpec.of(context);
+///     return Container(decoration: boxSpec.decoration);
+///   },
+/// )
+/// ```
+class MixBuilder extends StatefulWidget {
   const MixBuilder({
     super.key,
     this.inherit = false,
@@ -15,48 +45,94 @@ class MixBuilder extends StatelessWidget {
     required this.builder,
   });
 
+  /// Whether to inherit style from parent widgets.
   final bool inherit;
+
+  /// The style to apply to the widget.
   final Style style;
+
+  /// Order in which modifiers should be applied.
   final List<Type> orderOfModifiers;
+
+  /// Function that builds the widget content.
   final Widget Function(BuildContext) builder;
 
-  Widget _applyModifiers(MixData mix, Widget child) {
-    // Get the list of WidgetModifierAttribute from the mix
-    final modifiers = mix
-        .whereType<WidgetModifierSpecAttribute>()
-        .map((e) => e.resolve(mix))
-        .toList();
+  @override
+  State<MixBuilder> createState() => _MixBuilderState();
+}
 
-    // If the mix is animated, use RenderAnimatedModifiers, otherwise use RenderModifiers
-    return mix.isAnimated
+class _MixBuilderState extends State<MixBuilder> {
+  // Cache to avoid recreating on every build
+  Style? _lastStyle;
+  MixData? _cachedMixData;
+  ComputedStyle? _cachedComputedStyle;
+
+  void _invalidateCache() {
+    _lastStyle = null;
+    _cachedMixData = null;
+    _cachedComputedStyle = null;
+  }
+
+  Widget _applyModifiers() {
+    final child = Builder(builder: widget.builder);
+
+    final modifiers = _cachedComputedStyle!.modifiers;
+    if (modifiers.isEmpty) return child;
+
+    // We still need MixData for modifier ordering/normalization
+    return _cachedComputedStyle!.isAnimated
         ? RenderAnimatedModifiers(
             modifiers: modifiers,
-            duration: mix.animation!.duration,
-            mix: mix,
-            orderOfModifiers: orderOfModifiers,
-            curve: mix.animation!.curve,
+            duration: _cachedComputedStyle!.animation!.duration,
+            mix: _cachedMixData!,
+            orderOfModifiers: widget.orderOfModifiers,
+            curve: _cachedComputedStyle!.animation!.curve,
             child: child,
           )
         : RenderModifiers(
             modifiers: modifiers,
-            mix: mix,
-            orderOfModifiers: orderOfModifiers,
+            mix: _cachedMixData!,
+            orderOfModifiers: widget.orderOfModifiers,
             child: child,
           );
   }
 
   @override
-  Widget build(BuildContext context) {
-    final inheritedMix = inherit ? Mix.maybeOfInherited(context) : null;
-    // Get the mix from the style
-    final mix = style.of(context);
-    // Merge the inherited mix with the current mix, or use the current mix if no inherited mix
-    final mergedMix = inheritedMix?.merge(mix) ?? mix;
+  void didUpdateWidget(MixBuilder oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.style != widget.style ||
+        oldWidget.inherit != widget.inherit) {
+      _invalidateCache();
+    }
+  }
 
-    // Return a Mix widget with the merged mix and the child widget with modifiers applied
+  @override
+  Widget build(BuildContext context) {
+    // Step 1: Create or reuse MixData (handles inheritance)
+    if (_cachedMixData == null || _lastStyle != widget.style) {
+      // Create base MixData
+      _cachedMixData = widget.style.of(context);
+
+      // Handle inheritance at MixData level
+      if (widget.inherit) {
+        final inherited = Mix.maybeOfInherited(context);
+        if (inherited != null) {
+          _cachedMixData = inherited.merge(_cachedMixData!);
+        }
+      }
+
+      // Step 2: Compute ComputedStyle from final MixData
+      _cachedComputedStyle = ComputedStyle.compute(_cachedMixData!);
+      _lastStyle = widget.style;
+    }
+
+    // Step 3: Provide both MixData (for inheritance) and ComputedStyle (for surgical rebuilds)
     return Mix(
-      data: mergedMix,
-      child: _applyModifiers(mergedMix, Builder(builder: builder)),
+      data: _cachedMixData,
+      child: ComputedStyleProvider(
+        style: _cachedComputedStyle!,
+        child: _applyModifiers(),
+      ),
     );
   }
 }

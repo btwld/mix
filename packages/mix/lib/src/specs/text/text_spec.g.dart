@@ -18,11 +18,11 @@ mixin _$TextSpec on Spec<TextSpec> {
   }
 
   /// {@template text_spec_of}
-  /// Retrieves the [TextSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [TextSpec] from the nearest [ComputedStyleProvider] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [TextSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [TextSpec].
+  /// This method uses [ComputedStyleProvider.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [TextSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyleProvider] is found, this method returns an empty [TextSpec].
   ///
   /// Example:
   ///
@@ -31,7 +31,8 @@ mixin _$TextSpec on Spec<TextSpec> {
   /// ```
   /// {@endtemplate}
   static TextSpec of(BuildContext context) {
-    return _$TextSpec.from(Mix.of(context));
+    // SURGICAL REBUILD: Only rebuilds when TextSpec changes
+    return ComputedStyleProvider.specOf<TextSpec>(context) ?? const TextSpec();
   }
 
   /// Creates a copy of this [TextSpec] but with the given fields

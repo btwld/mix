@@ -55,6 +55,8 @@ export 'src/attributes/text_height_behavior/text_height_behavior_dto.dart';
 export 'src/attributes/text_style/text_style_dto.dart';
 export 'src/attributes/text_style/text_style_util.dart';
 export 'src/core/attributes_map.dart';
+export 'src/core/computed_style/computed_style.dart';
+export 'src/core/computed_style/computed_style_provider.dart';
 export 'src/core/deprecation_notices.dart';
 export 'src/core/directive.dart';
 

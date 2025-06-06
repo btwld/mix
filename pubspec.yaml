@@ -8,5 +8,7 @@ dev_dependencies:
   lint_staged: ^0.5.1
   melos: ^6.1.0
 
+  flutter: any
+  meta: any
 lint_staged:
   '**.dart': dart fix --apply && dcm fix

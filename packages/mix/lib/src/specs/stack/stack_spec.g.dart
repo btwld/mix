@@ -16,11 +16,11 @@ mixin _$StackSpec on Spec<StackSpec> {
   }
 
   /// {@template stack_spec_of}
-  /// Retrieves the [StackSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [StackSpec] from the nearest [ComputedStyleProvider] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [StackSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [StackSpec].
+  /// This method uses [ComputedStyleProvider.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [StackSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyleProvider] is found, this method returns an empty [StackSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,9 @@ mixin _$StackSpec on Spec<StackSpec> {
   /// ```
   /// {@endtemplate}
   static StackSpec of(BuildContext context) {
-    return _$StackSpec.from(Mix.of(context));
+    // SURGICAL REBUILD: Only rebuilds when StackSpec changes
+    return ComputedStyleProvider.specOf<StackSpec>(context) ??
+        const StackSpec();
   }
 
   /// Creates a copy of this [StackSpec] but with the given fields

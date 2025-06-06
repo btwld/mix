@@ -16,11 +16,11 @@ mixin _$FlexSpec on Spec<FlexSpec> {
   }
 
   /// {@template flex_spec_of}
-  /// Retrieves the [FlexSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [FlexSpec] from the nearest [ComputedStyleProvider] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [FlexSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [FlexSpec].
+  /// This method uses [ComputedStyleProvider.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [FlexSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyleProvider] is found, this method returns an empty [FlexSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,8 @@ mixin _$FlexSpec on Spec<FlexSpec> {
   /// ```
   /// {@endtemplate}
   static FlexSpec of(BuildContext context) {
-    return _$FlexSpec.from(Mix.of(context));
+    // SURGICAL REBUILD: Only rebuilds when FlexSpec changes
+    return ComputedStyleProvider.specOf<FlexSpec>(context) ?? const FlexSpec();
   }
 
   /// Creates a copy of this [FlexSpec] but with the given fields

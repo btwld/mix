@@ -197,11 +197,11 @@ void main() {
       );
 
       testWidgets(
-        'When a SpecBuilder has an animated style, it should use RenderAnimatedModifiers',
+        'When a SpecBuilder has an animated style with modifiers, it should use RenderAnimatedModifiers',
         (tester) async {
           await tester.pumpWidget(
             SpecBuilder(
-              style: Style($box.color(Colors.red)).animate(),
+              style: Style($with.scale(2.0)).animate(),
               builder: (context) => const SizedBox(),
             ),
           );
@@ -211,11 +211,11 @@ void main() {
       );
 
       testWidgets(
-        'When a SpecBuilder has a non-animated style, it should use RenderModifiers',
+        'When a SpecBuilder has a non-animated style with modifiers, it should use RenderModifiers',
         (tester) async {
           await tester.pumpWidget(
             SpecBuilder(
-              style: Style($box.color(Colors.red)),
+              style: Style($with.scale(2.0)),
               builder: (context) => const SizedBox(),
             ),
           );

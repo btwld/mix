@@ -387,11 +387,15 @@ class WidgetWithTestableBuild extends StyledWidget {
 
   @override
   Widget build(BuildContext context) {
-    return withMix(context, (_) {
-      onBuild(context);
-
-      return const SizedBox();
-    });
+    return SpecBuilder(
+      inherit: inherit,
+      style: style,
+      orderOfModifiers: orderOfModifiers,
+      builder: (context) {
+        onBuild(context);
+        return const SizedBox();
+      },
+    );
   }
 }
 
