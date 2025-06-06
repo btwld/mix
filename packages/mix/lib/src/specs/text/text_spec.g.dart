@@ -110,7 +110,7 @@ mixin _$TextSpec on Spec<TextSpec> {
       textDirection: t < 0.5 ? _$this.textDirection : other.textDirection,
       softWrap: t < 0.5 ? _$this.softWrap : other.softWrap,
       directive: t < 0.5 ? _$this.directive : other.directive,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
       modifiers: other.modifiers,
     );
   }

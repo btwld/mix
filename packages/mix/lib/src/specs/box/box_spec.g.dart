@@ -108,7 +108,7 @@ mixin _$BoxSpec on Spec<BoxSpec> {
       width: MixHelpers.lerpDouble(_$this.width, other.width, t),
       height: MixHelpers.lerpDouble(_$this.height, other.height, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 

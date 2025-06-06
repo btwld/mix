@@ -72,7 +72,7 @@ mixin _$FlexBoxSpec on Spec<FlexBoxSpec> {
     if (other == null) return _$this;
 
     return FlexBoxSpec(
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
       modifiers: other.modifiers,
       box: _$this.box.lerp(other.box, t),
       flex: _$this.flex.lerp(other.flex, t),

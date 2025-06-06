@@ -97,7 +97,7 @@ mixin _$FlexSpec on Spec<FlexSpec> {
       textBaseline: t < 0.5 ? _$this.textBaseline : other.textBaseline,
       clipBehavior: t < 0.5 ? _$this.clipBehavior : other.clipBehavior,
       gap: MixHelpers.lerpDouble(_$this.gap, other.gap, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
       modifiers: other.modifiers,
     );
   }

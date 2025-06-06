@@ -79,7 +79,7 @@ mixin _$StackSpec on Spec<StackSpec> {
       fit: t < 0.5 ? _$this.fit : other.fit,
       textDirection: t < 0.5 ? _$this.textDirection : other.textDirection,
       clipBehavior: t < 0.5 ? _$this.clipBehavior : other.clipBehavior,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
       modifiers: other.modifiers,
     );
   }
