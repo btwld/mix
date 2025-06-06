@@ -1,12 +1,12 @@
 import 'package:flutter/widgets.dart';
 
 import '../../../modifiers/internal/render_widget_modifier.dart';
+import '../../../theme/mix/mix_theme.dart';
 import '../../computed_style/computed_style.dart';
 import '../../computed_style/computed_style_provider.dart';
 import '../../factory/mix_data.dart';
 import '../../factory/mix_provider.dart';
 import '../../factory/style_mix.dart';
-import '../../../theme/mix/mix_theme.dart';
 
 /// High-performance widget builder with [ComputedStyle] caching.
 ///
@@ -75,7 +75,6 @@ class _MixBuilderState extends State<MixBuilder> {
     _cachedComputedStyle = null;
   }
 
-
   @override
   void didUpdateWidget(MixBuilder oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -93,7 +92,7 @@ class _MixBuilderState extends State<MixBuilder> {
       _invalidateCache();
       _lastTheme = currentTheme;
     }
-    
+
     // Step 1: Create or reuse MixData (handles inheritance)
     if (_cachedMixData == null || _lastStyle != widget.style) {
       // Create base MixData
@@ -120,8 +119,8 @@ class _MixBuilderState extends State<MixBuilder> {
         child: Builder(
           builder: (context) {
             // Step 4: Build child with modifiers
-            Widget child = widget.builder(context);
-            
+            Widget child = Builder(builder: widget.builder);
+
             final modifiers = _cachedComputedStyle!.modifiers;
             if (modifiers.isNotEmpty) {
               child = _cachedComputedStyle!.isAnimated
@@ -141,7 +140,7 @@ class _MixBuilderState extends State<MixBuilder> {
                       child: child,
                     );
             }
-            
+
             return child;
           },
         ),
