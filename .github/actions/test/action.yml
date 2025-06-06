@@ -24,7 +24,8 @@ runs:
       shell: bash
       run: |
         curl -fsSL https://fvm.app/install.sh | bash
-        echo "$HOME/.pub-cache/bin" >> "$GITHUB_PATH"
+        export PATH="$HOME/.pub-cache/bin:$PATH"
+        fvm use ${{ inputs.flutter-version }} --force
 
     - name: FVM use version
       shell: bash
