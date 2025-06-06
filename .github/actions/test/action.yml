@@ -28,8 +28,8 @@ runs:
         fvm --version
         fvm use ${{ inputs.flutter-version }} --force
 
-
     - name: Debug PATH
+      shell: bash
       run: |
         echo $PATH
         which fvm
