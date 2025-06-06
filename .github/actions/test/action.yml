@@ -21,9 +21,10 @@ runs:
       uses: actions/checkout@v4
 
     - name: Install FVM via Brew
-        run: |
-          brew install fvm
-          fvm --version
+      shell: bash
+      run: |
+        brew install fvm
+        fvm --version
     
     - name: Install FVM
       shell: bash
