@@ -27,9 +27,10 @@ runs:
         echo "PATH=/home/runner/.fvm_flutter/bin/fvm:$PATH" >> $GITHUB_ENV
 
     - name: Use FVM
+      shell: bash
       run: |
-        /home/runner/.fvm_flutter/bin/fvm/fvm --version
-        /home/runner/.fvm_flutter/bin/fvm/fvm use ${{ inputs.flutter-version }} --force
+        fvm --version
+        fvm use ${{ inputs.flutter-version }} --force
 
     - uses: kuhnroyal/flutter-fvm-config-action@v2
       id: fvm-config-action
