@@ -33,7 +33,6 @@ runs:
       run: |
         brew tap leoafarias/fvm
         brew install fvm
-        curl -fsSL https://fvm.app/install.sh | bash
         fvm use ${{ inputs.flutter-version }} --force
 
 
