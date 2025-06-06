@@ -20,26 +20,9 @@ runs:
     - name: Checkout mix repo
       uses: actions/checkout@v4
 
-    - name: Install Homebrew
-      shell: bash
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y build-essential curl file git
-        NONINTERACTIVE=1 bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.profile
-        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-
-    - name: Install FVM via Brew
-      shell: bash
-      run: |
-        brew install fvm
-        fvm --version
-    
-    - name: Install FVM
-      shell: bash
-      run: |
-        brew install fvm
-        echo "FVM installed at /home/runner/.fvm_flutter/bin"
+    - uses: gerlero/brew-install@v1
+      with:
+        packages: fvm
 
     - name: Use Flutter version with FVM
       shell: bash
