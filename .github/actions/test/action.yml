@@ -25,6 +25,7 @@ runs:
       run: |
         curl -fsSL https://fvm.app/install.sh | bash
         fvm use ${{ inputs.flutter-version }} --force
+        source /home/runner/.bashrc
 
 
     - uses: kuhnroyal/flutter-fvm-config-action@v2
