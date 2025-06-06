@@ -24,7 +24,7 @@ runs:
       shell: bash
       run: |
         curl -fsSL https://fvm.app/install.sh | bash
-        source /home/runner/.bashrc
+        source $HOME/.bashrc
         fvm use ${{ inputs.flutter-version }} --force
 
 
