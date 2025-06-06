@@ -5,6 +5,5 @@
     "mincompat": "3.27.0"
   },
   "runPubGetOnSdkChanges": true,
-  "updateVscodeSettings": true,
   "updateGitIgnore": false
 }

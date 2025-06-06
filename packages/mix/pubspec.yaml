@@ -12,6 +12,7 @@ dependencies:
   mix_annotations: ^0.4.0
   flutter:
     sdk: flutter
+  meta: ^1.15.0
 
 dev_dependencies:
   flutter_lints: ^4.0.0

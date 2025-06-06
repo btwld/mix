@@ -1,43 +1,43 @@
 {
   "folders": [
-	{
-		"name": "root",
-		"path": "."
-	},
-	{
-		"name": "mix",
-		"path": "packages/mix"
-	},
-	{
-		"name": "mix_generator",
-		"path": "packages/mix_generator"
-	},
-	{
-		"name": "mix_annotations",
-		"path": "packages/mix_annotations"
-	},
-	{
-		"name": "remix",
-		"path": "packages/remix"
-	},
-	{
-		"name": "mix_animate",
-		"path": "packages/mix_animate"
-	}
-],
+    {
+      "name": "root",
+      "path": "."
+    },
+    {
+      "name": "mix",
+      "path": "packages/mix"
+    },
+    {
+      "name": "mix_generator",
+      "path": "packages/mix_generator"
+    },
+    {
+      "name": "mix_annotations",
+      "path": "packages/mix_annotations"
+    },
+    {
+      "name": "remix",
+      "path": "packages/remix"
+    },
+    {
+      "name": "mix_animate",
+      "path": "packages/mix_animate"
+    }
+  ],
   "settings": {
-    "dart.flutterSdkPath": ".fvm/flutter_sdk",
-	"search.exclude": {
-		".fvm/**": true,
-		"website":true,
-	  },
-	  "files.watcherExclude": {
-		".fvm/**": true,
-		"website":true,
-	  },
-	  "files.exclude": {
-		".fvm/**": true,
-		"website":true,
-	},
-}
+    "dart.flutterSdkPath": ".fvm/versions/3.27.0",
+    "search.exclude": {
+      ".fvm/**": true,
+      "website": true
+    },
+    "files.watcherExclude": {
+      ".fvm/**": true,
+      "website": true
+    },
+    "files.exclude": {
+      ".fvm/**": true,
+      "website": true
+    }
+  }
 }

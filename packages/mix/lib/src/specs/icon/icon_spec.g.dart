@@ -16,11 +16,11 @@ mixin _$IconSpec on Spec<IconSpec> {
   }
 
   /// {@template icon_spec_of}
-  /// Retrieves the [IconSpec] from the nearest [ComputedStyleProvider] ancestor in the widget tree.
+  /// Retrieves the [IconSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [ComputedStyleProvider.specOf] for surgical rebuilds - only widgets
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
   /// that call this method will rebuild when [IconSpec] changes, not when other specs change.
-  /// If no ancestor [ComputedStyleProvider] is found, this method returns an empty [IconSpec].
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [IconSpec].
   ///
   /// Example:
   ///
@@ -30,7 +30,7 @@ mixin _$IconSpec on Spec<IconSpec> {
   /// {@endtemplate}
   static IconSpec of(BuildContext context) {
     // SURGICAL REBUILD: Only rebuilds when IconSpec changes
-    return ComputedStyleProvider.specOf<IconSpec>(context) ?? const IconSpec();
+    return ComputedStyle.specOf<IconSpec>(context) ?? const IconSpec();
   }
 
   /// Creates a copy of this [IconSpec] but with the given fields

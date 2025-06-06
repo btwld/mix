@@ -1,7 +1,6 @@
 # yaml-language-server: $schema=./schemas/melos.yaml.schema.json
 name: mix_workspace
 
-sdkPath: .fvm/flutter_sdk
 packages:
   - packages/*
   - packages/mix/example
@@ -13,6 +12,8 @@ command:
     environment:
       sdk: ">=3.6.0 <4.0.0"
       flutter: ">=3.27.0"
+    dependencies:
+      meta: ^1.15.0
     dev_dependencies:
       flutter_lints: ^4.0.0
       dart_code_metrics_presets: ^2.14.0

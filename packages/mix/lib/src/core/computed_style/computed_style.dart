@@ -1,15 +1,18 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:meta/meta.dart';
 
 import '../../attributes/animated/animated_data.dart';
 import '../factory/mix_data.dart';
 import '../modifier.dart';
 import '../spec.dart';
+import 'computed_style_provider.dart';
 
-/// Resolved specs from a [Style] definition optimized for widget access.
+/// Resolved styling specifications optimized for widget consumption.
 ///
-/// Represents the final form of a [Style] where all [SpecAttribute]s have been
-/// resolved into concrete [Spec] objects. Provides O(1) lookup performance for
-/// widgets accessing styling information.
+/// Represents the computed result of a [Style] with all [SpecAttribute]s
+/// resolved into concrete [Spec] objects. Provides O(1) spec lookup and
+/// selective dependency tracking for optimal rebuild performance.
 @immutable
 class ComputedStyle with Diagnosticable {
   final Map<Type, Spec> _specs;
@@ -31,30 +34,21 @@ class ComputedStyle with Diagnosticable {
         _modifiers = const [],
         _animation = null;
 
-  /// Creates a [ComputedStyle] by resolving all [SpecAttribute]s in [mixData].
+  /// Creates a [ComputedStyle] by resolving all styling attributes.
   ///
-  /// Processes the [mixData] and resolves all [SpecAttribute]s into their final
-  /// [Spec] objects. The resulting [ComputedStyle] contains:
-  ///
-  /// - A map of resolved specs indexed by type for O(1) lookup
-  /// - A list of widget modifiers to be applied
-  /// - Animation data if the style is animated
-  ///
-  /// This computation is performed once when the style changes, and the
-  /// resulting [ComputedStyle] is cached for performance. Widgets can then
-  /// selectively depend on specific spec types through [ComputedStyleProvider]
-  /// for surgical rebuilds.
+  /// Resolves [SpecAttribute]s from [mixData] into concrete [Spec] objects
+  /// for efficient widget access. The computation is performed once when the
+  /// style changes, with results cached for performance.
   ///
   /// Example:
   /// ```dart
-  /// final mixData = MixData.create(context, style);
   /// final computedStyle = ComputedStyle.compute(mixData);
   /// ```
   factory ComputedStyle.compute(MixData mixData) {
     final specs = <Type, Spec>{};
     final modifiers = <WidgetModifierSpec>[];
 
-    // Dynamically resolve ALL SpecAttributes using existing MixData method
+    // Separate modifiers from regular specs for different processing
     for (final attribute in mixData.whereType<SpecAttribute>()) {
       if (attribute is WidgetModifierSpecAttribute) {
         modifiers.add(attribute.resolve(mixData) as WidgetModifierSpec);
@@ -71,26 +65,51 @@ class ComputedStyle with Diagnosticable {
     );
   }
 
-  /// Widget modifiers to be applied to the styled widget.
+  /// Returns a specific spec type with selective rebuild optimization.
+  ///
+  /// Widgets calling this method only rebuild when the specific spec type [T]
+  /// changes, providing better performance than [of] or [maybeOf].
+  static T? specOf<T extends Spec<T>>(BuildContext context) {
+    final provider = InheritedModel.inheritFrom<ComputedStyleProvider>(
+      context,
+      aspect: T, // Only rebuild when T changes
+    );
+
+    return provider?.style.getSpec();
+  }
+
+  /// Returns the computed style, or null if no provider exists.
+  static ComputedStyle? maybeOf(BuildContext context) {
+    return InheritedModel.inheritFrom<ComputedStyleProvider>(context)?.style;
+  }
+
+  /// Returns the computed style, throwing if no provider exists.
+  static ComputedStyle of(BuildContext context) {
+    final computedStyle = maybeOf(context);
+    assert(computedStyle != null,
+        'ComputedStyleProvider not found in widget tree.');
+
+    return computedStyle!;
+  }
+
+  /// Widget modifiers to apply during rendering.
   List<WidgetModifierSpec> get modifiers => _modifiers;
 
-  /// Animation configuration for this style.
+  /// Animation configuration, if any.
   AnimatedData? get animation => _animation;
 
-  /// Whether this style contains animation data.
+  /// Whether this style includes animation data.
   bool get isAnimated => animation != null;
 
-  /// Unmodifiable view of all registered specs for debugging.
-  /// Returns an unmodifiable view of the internal specs map
+  /// Debugging view of all resolved specs.
   @visibleForTesting
   Map<Type, Spec> get debugSpecs => Map.unmodifiable(_specs);
 
-  /// Returns the spec of type [T], or null if not found.
-  T? specOf<T extends Spec<T>>() => _specs[T] as T?;
+  /// Gets a specific spec by type, or null if not found.
+  T? getSpec<T extends Spec<T>>() => _specs[T] as T?;
 
-  /// Returns the spec of the given [type], or null if not found.
-  ///
-  /// Used internally by [ComputedStyleProvider] for type-based lookup.
+  /// Gets a spec by runtime type for internal provider use.
+  @internal
   Spec? specOfType(Type type) => _specs[type];
 
   @override
@@ -112,5 +131,9 @@ class ComputedStyle with Diagnosticable {
   }
 
   @override
-  int get hashCode => Object.hash(_specs, _modifiers, _animation);
+  int get hashCode => Object.hash(
+        Object.hashAllUnordered(_specs.entries.map((e) => Object.hash(e.key, e.value))),
+        Object.hashAll(_modifiers),
+        _animation,
+      );
 }

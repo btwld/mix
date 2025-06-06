@@ -87,6 +87,15 @@ class MixData with Diagnosticable {
     return _mergeAttributes(attributes) ?? attributes.last;
   }
 
+  @Deprecated(
+    'Use ComputedStyle.of(context).modifiers.whereType<M>() instead. '
+    'Prefer ComputedStyle for optimized access with surgical rebuilds. Will be removed in v2.0.0.\n'
+    'Migration:\n'
+    '// Before\n'
+    'final scaleModifiers = mixData.modifiersOf<TransformModifierSpec>();\n'
+    '// After\n'
+    'final scaleModifiers = ComputedStyle.of(context).modifiers.whereType<TransformModifierSpec>().toList();',
+  )
   List<WidgetModifierSpec<dynamic>>
       modifiersOf<M extends WidgetModifierSpec<dynamic>>() {
     return modifiers.whereType<M>().toList();
@@ -96,10 +105,29 @@ class MixData with Diagnosticable {
     return _attributes.whereType();
   }
 
+  @Deprecated(
+    'Use whereType<T>().isNotEmpty or attributeOf<T>() != null instead. '
+    'This method provides unclear semantics and will be removed in v2.0.0.\n'
+    'Migration:\n'
+    '// Before\n'
+    'if (mixData.contains<BoxSpecAttribute>()) { ... }\n'
+    '// After\n'
+    'if (mixData.attributeOf<BoxSpecAttribute>() != null) { ... }',
+  )
   bool contains<T>() {
     return _attributes.values.any((attr) => attr is T);
   }
 
+  @Deprecated(
+    'Use ComputedStyle.specOf<T>(context) for pre-resolved specs instead. '
+    'Prefer accessing resolved values through ComputedStyle for optimized performance. Will be removed in v2.0.0.\n'
+    'Migration:\n'
+    '// Before\n'
+    'final color = mixData.resolvableOf<Color, ColorUtilityAttribute>();\n'
+    '// After\n'
+    'final boxSpec = ComputedStyle.specOf<BoxSpec>(context);\n'
+    'final color = boxSpec?.decoration?.color; // Access resolved values from specs',
+  )
   Value? resolvableOf<Value, A extends SpecAttribute<Value>>() {
     final attribute = _attributes.attributeOfType<A>();
 

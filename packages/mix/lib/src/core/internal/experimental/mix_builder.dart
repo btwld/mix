@@ -6,6 +6,7 @@ import '../../computed_style/computed_style_provider.dart';
 import '../../factory/mix_data.dart';
 import '../../factory/mix_provider.dart';
 import '../../factory/style_mix.dart';
+import '../../../theme/mix/mix_theme.dart';
 
 /// High-performance widget builder with [ComputedStyle] caching.
 ///
@@ -66,6 +67,7 @@ class _MixBuilderState extends State<MixBuilder> {
   Style? _lastStyle;
   MixData? _cachedMixData;
   ComputedStyle? _cachedComputedStyle;
+  MixThemeData? _lastTheme; // Add theme tracking
 
   void _invalidateCache() {
     _lastStyle = null;
@@ -73,29 +75,6 @@ class _MixBuilderState extends State<MixBuilder> {
     _cachedComputedStyle = null;
   }
 
-  Widget _applyModifiers() {
-    final child = Builder(builder: widget.builder);
-
-    final modifiers = _cachedComputedStyle!.modifiers;
-    if (modifiers.isEmpty) return child;
-
-    // We still need MixData for modifier ordering/normalization
-    return _cachedComputedStyle!.isAnimated
-        ? RenderAnimatedModifiers(
-            modifiers: modifiers,
-            duration: _cachedComputedStyle!.animation!.duration,
-            mix: _cachedMixData!,
-            orderOfModifiers: widget.orderOfModifiers,
-            curve: _cachedComputedStyle!.animation!.curve,
-            child: child,
-          )
-        : RenderModifiers(
-            modifiers: modifiers,
-            mix: _cachedMixData!,
-            orderOfModifiers: widget.orderOfModifiers,
-            child: child,
-          );
-  }
 
   @override
   void didUpdateWidget(MixBuilder oldWidget) {
@@ -108,6 +87,13 @@ class _MixBuilderState extends State<MixBuilder> {
 
   @override
   Widget build(BuildContext context) {
+    // Check if theme has changed and invalidate cache if needed
+    final currentTheme = MixTheme.maybeOf(context);
+    if (_lastTheme != currentTheme) {
+      _invalidateCache();
+      _lastTheme = currentTheme;
+    }
+    
     // Step 1: Create or reuse MixData (handles inheritance)
     if (_cachedMixData == null || _lastStyle != widget.style) {
       // Create base MixData
@@ -131,7 +117,34 @@ class _MixBuilderState extends State<MixBuilder> {
       data: _cachedMixData,
       child: ComputedStyleProvider(
         style: _cachedComputedStyle!,
-        child: _applyModifiers(),
+        child: Builder(
+          builder: (context) {
+            // Step 4: Build child with modifiers
+            Widget child = widget.builder(context);
+            
+            final modifiers = _cachedComputedStyle!.modifiers;
+            if (modifiers.isNotEmpty) {
+              child = _cachedComputedStyle!.isAnimated
+                  ? RenderAnimatedModifiers(
+                      modifiers: modifiers,
+                      duration: _cachedComputedStyle!.animation!.duration,
+                      mix: _cachedMixData!,
+                      orderOfModifiers: widget.orderOfModifiers,
+                      curve: _cachedComputedStyle!.animation!.curve,
+                      onEnd: _cachedComputedStyle!.animation!.onEnd,
+                      child: child,
+                    )
+                  : RenderModifiers(
+                      modifiers: modifiers,
+                      mix: _cachedMixData!,
+                      orderOfModifiers: widget.orderOfModifiers,
+                      child: child,
+                    );
+            }
+            
+            return child;
+          },
+        ),
       ),
     );
   }

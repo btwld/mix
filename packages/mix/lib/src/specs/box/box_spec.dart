@@ -14,7 +14,7 @@ import '../../attributes/modifiers/widget_modifiers_util.dart';
 import '../../attributes/scalars/scalar_util.dart';
 import '../../attributes/spacing/edge_insets_dto.dart';
 import '../../attributes/spacing/spacing_util.dart';
-import '../../core/computed_style/computed_style_provider.dart';
+import '../../core/computed_style/computed_style.dart';
 import '../../core/element.dart';
 import '../../core/factory/mix_data.dart';
 import '../../core/helpers.dart';

@@ -15,11 +15,11 @@ mixin _$BoxSpec on Spec<BoxSpec> {
   }
 
   /// {@template box_spec_of}
-  /// Retrieves the [BoxSpec] from the nearest [ComputedStyleProvider] ancestor in the widget tree.
+  /// Retrieves the [BoxSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [ComputedStyleProvider.specOf] for surgical rebuilds - only widgets
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
   /// that call this method will rebuild when [BoxSpec] changes, not when other specs change.
-  /// If no ancestor [ComputedStyleProvider] is found, this method returns an empty [BoxSpec].
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [BoxSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$BoxSpec on Spec<BoxSpec> {
   /// {@endtemplate}
   static BoxSpec of(BuildContext context) {
     // SURGICAL REBUILD: Only rebuilds when BoxSpec changes
-    return ComputedStyleProvider.specOf<BoxSpec>(context) ?? const BoxSpec();
+    return ComputedStyle.specOf<BoxSpec>(context) ?? const BoxSpec();
   }
 
   /// Creates a copy of this [BoxSpec] but with the given fields

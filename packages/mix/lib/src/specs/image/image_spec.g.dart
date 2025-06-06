@@ -16,11 +16,11 @@ mixin _$ImageSpec on Spec<ImageSpec> {
   }
 
   /// {@template image_spec_of}
-  /// Retrieves the [ImageSpec] from the nearest [ComputedStyleProvider] ancestor in the widget tree.
+  /// Retrieves the [ImageSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [ComputedStyleProvider.specOf] for surgical rebuilds - only widgets
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
   /// that call this method will rebuild when [ImageSpec] changes, not when other specs change.
-  /// If no ancestor [ComputedStyleProvider] is found, this method returns an empty [ImageSpec].
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [ImageSpec].
   ///
   /// Example:
   ///
@@ -30,8 +30,7 @@ mixin _$ImageSpec on Spec<ImageSpec> {
   /// {@endtemplate}
   static ImageSpec of(BuildContext context) {
     // SURGICAL REBUILD: Only rebuilds when ImageSpec changes
-    return ComputedStyleProvider.specOf<ImageSpec>(context) ??
-        const ImageSpec();
+    return ComputedStyle.specOf<ImageSpec>(context) ?? const ImageSpec();
   }
 
   /// Creates a copy of this [ImageSpec] but with the given fields

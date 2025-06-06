@@ -14,7 +14,7 @@ import '../../attributes/strut_style/strut_style_dto.dart';
 import '../../attributes/text_height_behavior/text_height_behavior_dto.dart';
 import '../../attributes/text_style/text_style_dto.dart';
 import '../../attributes/text_style/text_style_util.dart';
-import '../../core/computed_style/computed_style_provider.dart';
+import '../../core/computed_style/computed_style.dart';
 import '../../core/directive.dart';
 import '../../core/element.dart';
 import '../../core/factory/mix_data.dart';

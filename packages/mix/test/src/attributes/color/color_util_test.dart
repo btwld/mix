@@ -41,7 +41,7 @@ void main() {
       );
 
       final result = MockMixData(style);
-      final value = result.resolvableOf<Color, TestColorAttribute>()!;
+      final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
 
       expect(value, Colors.red.withValues(alpha: 0.5));
     });
@@ -71,7 +71,7 @@ void main() {
       );
 
       final result = MockMixData(style);
-      final value = result.resolvableOf<Color, TestColorAttribute>()!;
+      final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
 
       expect(value, Colors.red.withAlpha(50));
     });
@@ -99,7 +99,7 @@ void main() {
       final style = Style(colorUtility(Colors.red), colorUtility.darken(10));
 
       final result = MockMixData(style);
-      final value = result.resolvableOf<Color, TestColorAttribute>()!;
+      final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
 
       expect(value, Colors.red.darken(10));
     });
@@ -130,7 +130,7 @@ void main() {
       );
 
       final result = MockMixData(style);
-      final value = result.resolvableOf<Color, TestColorAttribute>()!;
+      final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
 
       expect(value, Colors.red.lighten(10));
     });
@@ -161,7 +161,7 @@ void main() {
       );
 
       final result = MockMixData(style);
-      final value = result.resolvableOf<Color, TestColorAttribute>()!;
+      final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
 
       expect(value, Colors.red.saturate(10));
     });
@@ -195,7 +195,7 @@ void main() {
       );
 
       final result = MockMixData(style);
-      final value = result.resolvableOf<Color, TestColorAttribute>()!;
+      final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
 
       expect(value, Colors.red.desaturate(10));
     });
@@ -223,7 +223,7 @@ void main() {
       final style = Style(colorUtility(Colors.red), colorUtility.tint(10));
 
       final result = MockMixData(style);
-      final value = result.resolvableOf<Color, TestColorAttribute>()!;
+      final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
       expect(value, Colors.red.tint(10));
     });
 
@@ -250,7 +250,7 @@ void main() {
       final style = Style(colorUtility(Colors.red), colorUtility.shade(10));
 
       final result = MockMixData(style);
-      final value = result.resolvableOf<Color, TestColorAttribute>()!;
+      final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
 
       expect(value, Colors.red.shade(10));
     });
@@ -281,7 +281,7 @@ void main() {
       );
 
       final result = MockMixData(style);
-      final value = result.resolvableOf<Color, TestColorAttribute>()!;
+      final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
 
       expect(value, Colors.red.brighten(10));
     });
@@ -306,7 +306,7 @@ void main() {
       );
 
       final result = MockMixData(style);
-      final value = result.resolvableOf<Color, TestColorAttribute>()!;
+      final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
 
       expect(value, Colors.red.lighten(10).darken(10).withValues(alpha: 0.5));
     });
@@ -453,7 +453,7 @@ void main() {
 
       final result1 = firstWayStyle.of(MockBuildContext());
       final result2 = secondWayStyle.of(MockBuildContext());
-      final value = result1.resolvableOf<Color, TestColorAttribute>()!;
+      final value = result1.attributeOf<TestColorAttribute>()?.resolve(result1);
 
       expect(value, Colors.red.lighten(10).darken(10).withValues(alpha: 0.5));
       expect(firstWayStyle, secondWayStyle);

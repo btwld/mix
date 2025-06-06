@@ -11,7 +11,7 @@ import '../../attributes/gap/space_dto.dart';
 import '../../attributes/modifiers/widget_modifiers_data.dart';
 import '../../attributes/modifiers/widget_modifiers_data_dto.dart';
 import '../../attributes/modifiers/widget_modifiers_util.dart';
-import '../../core/computed_style/computed_style_provider.dart';
+import '../../core/computed_style/computed_style.dart';
 import '../../core/element.dart';
 import '../../core/factory/mix_data.dart';
 import '../../core/helpers.dart';

@@ -10,9 +10,9 @@ void main() {
       test('empty constructor creates empty ComputedStyle', () {
         const computedStyle = ComputedStyle.empty();
 
-        expect(computedStyle.specOf<BoxSpec>(), isNull);
-        expect(computedStyle.specOf<TextSpec>(), isNull);
-        expect(computedStyle.specOf<IconSpec>(), isNull);
+        expect(computedStyle.getSpec<BoxSpec>(), isNull);
+        expect(computedStyle.getSpec<TextSpec>(), isNull);
+        expect(computedStyle.getSpec<IconSpec>(), isNull);
         expect(computedStyle.modifiers, isEmpty);
         expect(computedStyle.animation, isNull);
         expect(computedStyle.isAnimated, isFalse);
@@ -30,20 +30,20 @@ void main() {
         final computedStyle = ComputedStyle.compute(mixData);
 
         // Verify all specs are resolved
-        expect(computedStyle.specOf<BoxSpec>(), isNotNull);
-        expect(computedStyle.specOf<TextSpec>(), isNotNull);
-        expect(computedStyle.specOf<IconSpec>(), isNotNull);
+        expect(computedStyle.getSpec<BoxSpec>(), isNotNull);
+        expect(computedStyle.getSpec<TextSpec>(), isNotNull);
+        expect(computedStyle.getSpec<IconSpec>(), isNotNull);
 
         // Verify specific values
-        final boxSpec = computedStyle.specOf<BoxSpec>()!;
+        final boxSpec = computedStyle.getSpec<BoxSpec>()!;
         expect(boxSpec.padding, const EdgeInsets.all(16));
         expect((boxSpec.decoration as BoxDecoration?)?.color,
             const Color(0xFF000000));
 
-        final textSpec = computedStyle.specOf<TextSpec>()!;
+        final textSpec = computedStyle.getSpec<TextSpec>()!;
         expect(textSpec.style?.fontSize, 16);
 
-        final iconSpec = computedStyle.specOf<IconSpec>()!;
+        final iconSpec = computedStyle.getSpec<IconSpec>()!;
         expect(iconSpec.size, 24);
       });
 
@@ -65,11 +65,11 @@ void main() {
         final computedStyle = ComputedStyle.compute(mergedMixData);
 
         // Should have both BoxSpec and TextSpec
-        final boxSpec = computedStyle.specOf<BoxSpec>()!;
+        final boxSpec = computedStyle.getSpec<BoxSpec>()!;
         expect(boxSpec.padding, const EdgeInsets.all(16));
         expect(boxSpec.margin, const EdgeInsets.all(8));
 
-        final textSpec = computedStyle.specOf<TextSpec>()!;
+        final textSpec = computedStyle.getSpec<TextSpec>()!;
         expect(textSpec.style?.fontSize, 16);
       });
 
