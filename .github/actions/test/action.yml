@@ -27,14 +27,12 @@ runs:
         sudo apt-get install -y build-essential curl file git
         NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         echo "PATH=/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:$PATH" >> $GITHUB_ENV
-
-    - uses: gerlero/brew-install@v1
-      with:  
-        packages: fvm
     
     - name: Install FVM
       shell: bash
       run: |
+        brew tap leoafarias/fvm
+        brew install fvm
         curl -fsSL https://fvm.app/install.sh | bash
         fvm use ${{ inputs.flutter-version }} --force
 
