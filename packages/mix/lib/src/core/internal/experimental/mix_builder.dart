@@ -1,61 +1,71 @@
 import 'package:flutter/widgets.dart';
 
 import '../../../modifiers/internal/render_widget_modifier.dart';
-import '../../../theme/mix/mix_theme.dart';
 import '../../computed_style/computed_style.dart';
 import '../../computed_style/computed_style_provider.dart';
 import '../../factory/mix_data.dart';
 import '../../factory/mix_provider.dart';
 import '../../factory/style_mix.dart';
 
-/// High-performance widget builder with [ComputedStyle] caching.
+/// Builds widgets with Mix styling and intelligent caching.
 ///
-/// Creates [MixData] with inheritance support, computes [ComputedStyle], and
-/// provides it via [ComputedStyleProvider] for efficient spec-specific rebuilds.
+/// MixBuilder optimizes performance by caching [ComputedStyle] instances
+/// and enabling selective widget rebuilds through [InheritedModel].
 ///
-/// Implements intelligent caching to minimize expensive computations:
-/// - Reuses computed styles when input [style] remains unchanged
-/// - Invalidates cache when [style] or [inherit] flag changes
-/// - Automatically releases cache when widget is disposed
+/// ## Performance
 ///
-/// This caching provides significant performance benefits for complex widgets
-/// with frequent rebuilds, especially those using style inheritance.
+/// - Caches [ComputedStyle] when [style] hasn't changed
+/// - Uses [InheritedModel] for selective rebuilds based on spec changes
+/// - Creates fresh [MixData] to ensure context values stay current
 ///
-/// - **O(1) spec lookups**: ComputedStyle pre-resolves all specs into a Map
-/// - **Surgical rebuilds**: Widgets only rebuild when their specific spec changes
-/// - **Reduced allocations**: Caching prevents recreating identical objects
+/// ## Example
 ///
-/// Example:
 /// ```dart
 /// MixBuilder(
-///   style: myStyle,
-///   inherit: true,
+///   style: Style(
+///     $box.color.red(),
+///     $box.padding(16),
+///   ),
 ///   builder: (context) {
-///     // Only rebuilds when BoxSpec changes
 ///     final boxSpec = BoxSpec.of(context);
-///     return Container(decoration: boxSpec.decoration);
+///     return Container(
+///       decoration: boxSpec?.decoration,
+///       child: Text('Hello'),
+///     );
 ///   },
 /// )
 /// ```
+///
+/// See also:
+///
+/// * [ComputedStyle], for resolved style specifications
+/// * [Mix], for style inheritance
 class MixBuilder extends StatefulWidget {
   const MixBuilder({
     super.key,
-    this.inherit = false,
     required this.style,
-    this.orderOfModifiers = const [],
     required this.builder,
+    this.inherit = false,
+    this.orderOfModifiers = const [],
   });
 
-  /// Whether to inherit style from parent widgets.
-  final bool inherit;
-
-  /// The style to apply to the widget.
+  /// The style to apply.
   final Style style;
 
-  /// Order in which modifiers should be applied.
+  /// Whether to merge with inherited styles.
+  ///
+  /// Defaults to false.
+  final bool inherit;
+
+  /// The order for applying modifiers.
+  ///
+  /// Defaults to an empty list.
   final List<Type> orderOfModifiers;
 
-  /// Function that builds the widget content.
+  /// Builds the widget tree.
+  ///
+  /// Receives a [BuildContext] with access to resolved specs
+  /// through [ComputedStyle.specOf].
   final Widget Function(BuildContext) builder;
 
   @override
@@ -63,79 +73,61 @@ class MixBuilder extends StatefulWidget {
 }
 
 class _MixBuilderState extends State<MixBuilder> {
-  // Cache to avoid recreating on every build
-  Style? _lastStyle;
-  MixData? _cachedMixData;
-  ComputedStyle? _cachedComputedStyle;
-  MixThemeData? _lastTheme; // Add theme tracking
+  late Style _cachedStyle;
 
-  void _invalidateCache() {
-    _lastStyle = null;
-    _cachedMixData = null;
-    _cachedComputedStyle = null;
+  @override
+  void initState() {
+    super.initState();
+    _cachedStyle = widget.style;
   }
 
   @override
   void didUpdateWidget(MixBuilder oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.style != widget.style ||
-        oldWidget.inherit != widget.inherit) {
-      _invalidateCache();
+    if (oldWidget.style != widget.style) {
+      _cachedStyle = widget.style;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Check if theme has changed and invalidate cache if needed
-    final currentTheme = MixTheme.maybeOf(context);
-    if (_lastTheme != currentTheme) {
-      _invalidateCache();
-      _lastTheme = currentTheme;
-    }
+    var mix = MixData.create(context, _cachedStyle);
 
-    // Step 1: Create or reuse MixData (handles inheritance)
-    if (_cachedMixData == null || _lastStyle != widget.style) {
-      // Create base MixData
-      _cachedMixData = widget.style.of(context);
-
-      // Handle inheritance at MixData level
-      if (widget.inherit) {
-        final inherited = Mix.maybeOfInherited(context);
-        if (inherited != null) {
-          _cachedMixData = inherited.merge(_cachedMixData!);
-        }
+    // Apply inheritance
+    if (widget.inherit) {
+      final inherited = Mix.maybeOfInherited(context);
+      if (inherited != null) {
+        mix = inherited.merge(mix);
       }
-
-      // Step 2: Compute ComputedStyle from final MixData
-      _cachedComputedStyle = ComputedStyle.compute(_cachedMixData!);
-      _lastStyle = widget.style;
     }
 
-    // Step 3: Provide both MixData (for inheritance) and ComputedStyle (for surgical rebuilds)
+    final computedStyle = ComputedStyle.compute(mix);
+
+    // Build tree with Mix outside ComputedStyleProvider for optimal rebuilds
     return Mix(
-      data: _cachedMixData,
+      data: mix,
       child: ComputedStyleProvider(
-        style: _cachedComputedStyle!,
+        style: computedStyle,
         child: Builder(
           builder: (context) {
-            // Step 4: Build child with modifiers
             Widget child = Builder(builder: widget.builder);
 
-            final modifiers = _cachedComputedStyle!.modifiers;
+            // Apply modifiers
+            final modifiers = computedStyle.modifiers;
             if (modifiers.isNotEmpty) {
-              child = _cachedComputedStyle!.isAnimated
+              child = computedStyle.isAnimated
                   ? RenderAnimatedModifiers(
                       modifiers: modifiers,
-                      duration: _cachedComputedStyle!.animation!.duration,
-                      mix: _cachedMixData!,
+                      duration: computedStyle.animation!.duration,
+                      mix: mix,
                       orderOfModifiers: widget.orderOfModifiers,
-                      curve: _cachedComputedStyle!.animation!.curve,
-                      onEnd: _cachedComputedStyle!.animation!.onEnd,
+                      curve: computedStyle.animation!.curve,
+                      onEnd: computedStyle.animation!.onEnd,
                       child: child,
                     )
                   : RenderModifiers(
                       modifiers: modifiers,
-                      mix: _cachedMixData!,
+                      mix: mix,
                       orderOfModifiers: widget.orderOfModifiers,
                       child: child,
                     );

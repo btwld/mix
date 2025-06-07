@@ -36,7 +36,7 @@ class ComputedStyle with Diagnosticable {
 
   /// Creates a [ComputedStyle] by resolving all styling attributes.
   ///
-  /// Resolves [SpecAttribute]s from [mixData] into concrete [Spec] objects
+  /// Resolves [SpecAttribute]s from [mix] into concrete [Spec] objects
   /// for efficient widget access. The computation is performed once when the
   /// style changes, with results cached for performance.
   ///
@@ -44,16 +44,16 @@ class ComputedStyle with Diagnosticable {
   /// ```dart
   /// final computedStyle = ComputedStyle.compute(mixData);
   /// ```
-  factory ComputedStyle.compute(MixData mixData) {
+  factory ComputedStyle.compute(MixData mix) {
     final specs = <Type, Spec>{};
     final modifiers = <WidgetModifierSpec>[];
 
     // Separate modifiers from regular specs for different processing
-    for (final attribute in mixData.whereType<SpecAttribute>()) {
+    for (final attribute in mix.whereType<SpecAttribute>()) {
       if (attribute is WidgetModifierSpecAttribute) {
-        modifiers.add(attribute.resolve(mixData) as WidgetModifierSpec);
+        modifiers.add(attribute.resolve(mix) as WidgetModifierSpec);
       } else {
-        final resolved = attribute.resolve(mixData);
+        final resolved = attribute.resolve(mix);
         specs[resolved.runtimeType] = resolved;
       }
     }
@@ -61,7 +61,7 @@ class ComputedStyle with Diagnosticable {
     return ComputedStyle._(
       specs: specs,
       modifiers: modifiers,
-      animation: mixData.animation,
+      animation: mix.animation,
     );
   }
 
@@ -132,7 +132,8 @@ class ComputedStyle with Diagnosticable {
 
   @override
   int get hashCode => Object.hash(
-        Object.hashAllUnordered(_specs.entries.map((e) => Object.hash(e.key, e.value))),
+        Object.hashAllUnordered(
+            _specs.entries.map((e) => Object.hash(e.key, e.value))),
         Object.hashAll(_modifiers),
         _animation,
       );

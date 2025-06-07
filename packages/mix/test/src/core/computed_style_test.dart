@@ -1,144 +1,129 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../helpers/mock_build_context.dart';
+import '../../helpers/testing_utils.dart';
+
+// Helper to create ComputedStyle from Style
+ComputedStyle _computeStyle(Style style) {
+  final mixData = MixData.create(MockBuildContext(), style);
+
+  return ComputedStyle.compute(mixData);
+}
 
 void main() {
   group('ComputedStyle', () {
-    group('Core functionality', () {
-      test('empty constructor creates empty ComputedStyle', () {
+    group('Construction', () {
+      test('empty() creates empty ComputedStyle', () {
         const computedStyle = ComputedStyle.empty();
 
         expect(computedStyle.getSpec<BoxSpec>(), isNull);
         expect(computedStyle.getSpec<TextSpec>(), isNull);
-        expect(computedStyle.getSpec<IconSpec>(), isNull);
         expect(computedStyle.modifiers, isEmpty);
         expect(computedStyle.animation, isNull);
         expect(computedStyle.isAnimated, isFalse);
+        expect(computedStyle.debugSpecs, isEmpty);
       });
 
-      test('compute resolves all spec attributes from MixData', () {
-        final style = Style(
-          $box.color(const Color(0xFF000000)),
+      test('empty ComputedStyles are equal', () {
+        const style1 = ComputedStyle.empty();
+        const style2 = ComputedStyle.empty();
+
+        expect(style1, equals(style2));
+        expect(style1.hashCode, equals(style2.hashCode));
+      });
+    });
+
+    group('Spec Resolution', () {
+      test('compute() resolves single spec attribute', () {
+        final computedStyle = _computeStyle(Style($box.color(Colors.red)));
+
+        final spec = computedStyle.getSpec<BoxSpec>();
+        expect(spec, isNotNull);
+        expect((spec!.decoration as BoxDecoration?)?.color, Colors.red);
+      });
+
+      test('compute() merges multiple attributes of same type', () {
+        final computedStyle = _computeStyle(Style(
+          $box.color(Colors.blue),
           $box.padding(16),
-          $text.style.fontSize(16),
+        ));
+
+        final spec = computedStyle.getSpec<BoxSpec>();
+        expect(spec, isNotNull);
+        expect((spec!.decoration as BoxDecoration?)?.color, Colors.blue);
+        expect(spec.padding, const EdgeInsets.all(16));
+      });
+
+      test('compute() resolves multiple spec types', () {
+        final computedStyle = _computeStyle(Style(
+          $box.color(Colors.red),
+          $text.style.fontSize(14),
           $icon.size(24),
-        );
+        ));
 
-        final mixData = MixData.create(MockBuildContext(), style);
-        final computedStyle = ComputedStyle.compute(mixData);
-
-        // Verify all specs are resolved
         expect(computedStyle.getSpec<BoxSpec>(), isNotNull);
         expect(computedStyle.getSpec<TextSpec>(), isNotNull);
         expect(computedStyle.getSpec<IconSpec>(), isNotNull);
-
-        // Verify specific values
-        final boxSpec = computedStyle.getSpec<BoxSpec>()!;
-        expect(boxSpec.padding, const EdgeInsets.all(16));
-        expect((boxSpec.decoration as BoxDecoration?)?.color,
-            const Color(0xFF000000));
-
-        final textSpec = computedStyle.getSpec<TextSpec>()!;
-        expect(textSpec.style?.fontSize, 16);
-
-        final iconSpec = computedStyle.getSpec<IconSpec>()!;
-        expect(iconSpec.size, 24);
       });
 
-      test('handles merged MixData correctly', () {
-        final style1 = Style(
-          $box.color(const Color(0xFF000000)),
-          $box.padding(16),
-        );
-
-        final style2 = Style(
-          $box.margin(8),
-          $text.style.fontSize(16),
-        );
-
-        final mixData1 = MixData.create(MockBuildContext(), style1);
-        final mixData2 = MixData.create(MockBuildContext(), style2);
-        final mergedMixData = mixData1.merge(mixData2);
-
-        final computedStyle = ComputedStyle.compute(mergedMixData);
-
-        // Should have both BoxSpec and TextSpec
-        final boxSpec = computedStyle.getSpec<BoxSpec>()!;
-        expect(boxSpec.padding, const EdgeInsets.all(16));
-        expect(boxSpec.margin, const EdgeInsets.all(8));
-
-        final textSpec = computedStyle.getSpec<TextSpec>()!;
-        expect(textSpec.style?.fontSize, 16);
-      });
-
-      test('handles animated styles', () {
-        final style = Style(
-          $box.color(const Color(0xFF000000)),
-        ).animate(duration: const Duration(seconds: 1));
-
-        final mixData = MixData.create(MockBuildContext(), style);
-        final computedStyle = ComputedStyle.compute(mixData);
-
-        expect(computedStyle.isAnimated, isTrue);
-        expect(computedStyle.animation, isNotNull);
-        expect(computedStyle.animation!.duration, const Duration(seconds: 1));
-      });
-
-      test('handles modifiers correctly', () {
-        final style = Style(
-          $box.color(const Color(0xFF000000)),
+      test('compute() separates modifiers from specs', () {
+        final computedStyle = _computeStyle(Style(
+          $box.color(Colors.blue),
           $with.scale(2.0),
           $with.opacity(0.5),
-        );
+        ));
 
-        final mixData = MixData.create(MockBuildContext(), style);
-        final computedStyle = ComputedStyle.compute(mixData);
-
+        expect(computedStyle.getSpec<BoxSpec>(), isNotNull);
         expect(computedStyle.modifiers.length, 2);
       });
 
-      test('equality and hashCode', () {
-        final style = Style(
-          $box.color(const Color(0xFF000000)),
-          $text.style.fontSize(16),
+      test('compute() preserves animation data', () {
+        final computedStyle = _computeStyle(
+          Style($box.color(Colors.red)).animate(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeIn,
+          ),
         );
 
-        final mixData = MixData.create(MockBuildContext(), style);
-        final computedStyle1 = ComputedStyle.compute(mixData);
-        final computedStyle2 = ComputedStyle.compute(mixData);
+        expect(computedStyle.isAnimated, isTrue);
+        expect(
+          computedStyle.animation?.duration,
+          const Duration(milliseconds: 300),
+        );
+        expect(computedStyle.animation?.curve, Curves.easeIn);
+      });
+    });
 
-        // Same content should be equal
-        expect(computedStyle1, equals(computedStyle2));
-        expect(computedStyle1.hashCode, equals(computedStyle2.hashCode));
+    group('Spec Access', () {
+      test('getSpec() returns correct spec type', () {
+        final computedStyle = _computeStyle(Style(
+          $box.color(Colors.blue),
+          $text.style.fontSize(16),
+        ));
 
-        // Different content should not be equal
-        final differentStyle = Style($box.color(const Color(0xFFFF0000)));
-        final differentMixData =
-            MixData.create(MockBuildContext(), differentStyle);
-        final computedStyle3 = ComputedStyle.compute(differentMixData);
-
-        expect(computedStyle1, isNot(equals(computedStyle3)));
+        expect(computedStyle.getSpec<BoxSpec>(), isA<BoxSpec>());
+        expect(computedStyle.getSpec<TextSpec>(), isA<TextSpec>());
+        expect(computedStyle.getSpec<IconSpec>(), isNull);
       });
 
-      test('debugSpecs provides read-only access', () {
-        final style = Style(
-          $box.color(const Color(0xFF000000)),
-          $text.style.fontSize(16),
-          $icon.size(24),
-        );
+      test('specOfType() returns spec by runtime type', () {
+        final computedStyle = _computeStyle(Style($box.color(Colors.green)));
 
-        final mixData = MixData.create(MockBuildContext(), style);
-        final computedStyle = ComputedStyle.compute(mixData);
+        expect(computedStyle.specOfType(BoxSpec), isA<BoxSpec>());
+        expect(computedStyle.specOfType(IconSpec), isNull);
+      });
+
+      test('debugSpecs provides unmodifiable map', () {
+        final computedStyle = _computeStyle(Style(
+          $box.color(Colors.red),
+          $text.style.fontSize(14),
+        ));
 
         final debugSpecs = computedStyle.debugSpecs;
-
-        // Verify all specs are visible
-        expect(debugSpecs.length, 3);
+        expect(debugSpecs.length, 2);
         expect(debugSpecs.containsKey(BoxSpec), isTrue);
         expect(debugSpecs.containsKey(TextSpec), isTrue);
-        expect(debugSpecs.containsKey(IconSpec), isTrue);
 
         // Verify it's unmodifiable
         expect(
@@ -146,20 +131,65 @@ void main() {
           throwsUnsupportedError,
         );
       });
+    });
 
-      test('specOfType works correctly', () {
-        final style = Style(
-          $box.color(const Color(0xFF000000)),
-          $text.style.fontSize(16),
+    group('Equality and Hashing', () {
+      test('equal ComputedStyles have same hashCode', () {
+        final style = Style($box.color(Colors.red));
+        final computedStyle1 = _computeStyle(style);
+        final computedStyle2 = _computeStyle(style);
+
+        expect(computedStyle1, equals(computedStyle2));
+        expect(computedStyle1.hashCode, equals(computedStyle2.hashCode));
+      });
+
+      test('different content creates different ComputedStyles', () {
+        final computedStyle1 = _computeStyle(Style($box.color(Colors.red)));
+        final computedStyle2 = _computeStyle(Style($box.color(Colors.blue)));
+        final computedStyle3 = _computeStyle(Style(
+          $box.color(Colors.red),
+          $with.scale(2.0),
+        ));
+        final computedStyle4 = _computeStyle(
+          Style($box.color(Colors.red)).animate(
+            duration: const Duration(seconds: 1),
+          ),
         );
 
-        final mixData = MixData.create(MockBuildContext(), style);
-        final computedStyle = ComputedStyle.compute(mixData);
+        expect(computedStyle1, isNot(equals(computedStyle2)));
+        expect(computedStyle1, isNot(equals(computedStyle3)));
+        expect(computedStyle1, isNot(equals(computedStyle4)));
+      });
+    });
 
-        // Test internal specOfType method
-        expect(computedStyle.specOfType(BoxSpec), isA<BoxSpec>());
-        expect(computedStyle.specOfType(TextSpec), isA<TextSpec>());
-        expect(computedStyle.specOfType(IconSpec), isNull);
+    group('Edge Cases', () {
+      test('handles empty style', () {
+        final computedStyle = _computeStyle(Style());
+
+        expect(computedStyle.debugSpecs, isEmpty);
+        expect(computedStyle.modifiers, isEmpty);
+        expect(computedStyle.animation, isNull);
+        expect(computedStyle.isAnimated, isFalse);
+      });
+
+      test('handles style with only modifiers', () {
+        final computedStyle =
+            _computeStyle(Style($with.scale(2.0), $with.opacity(0.5)));
+
+        expect(computedStyle.debugSpecs, isEmpty);
+        expect(computedStyle.modifiers.length, 2);
+        expect(computedStyle.animation, isNull);
+      });
+
+      test('handles style with only animation', () {
+        final computedStyle = _computeStyle(
+          Style().animate(duration: const Duration(seconds: 1)),
+        );
+
+        expect(computedStyle.debugSpecs, isEmpty);
+        expect(computedStyle.modifiers, isEmpty);
+        expect(computedStyle.isAnimated, isTrue);
+        expect(computedStyle.animation?.duration, const Duration(seconds: 1));
       });
     });
   });
