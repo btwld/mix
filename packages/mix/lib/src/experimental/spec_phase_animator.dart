@@ -34,7 +34,7 @@ class SpecPhaseAnimationData extends AnimatedData {
 }
 
 class SpecPhaseAnimator<Phase extends Object, A extends SpecAttribute,
-    S extends Spec<S>> extends StatefulWidget {
+    S extends Spec<S>> extends StatelessWidget {
   const SpecPhaseAnimator({
     super.key,
     required this.phases,
@@ -50,24 +50,14 @@ class SpecPhaseAnimator<Phase extends Object, A extends SpecAttribute,
   final SpecAnimatorWidgetBuilder builder;
   final Object? trigger;
 
-  @override
-  State<SpecPhaseAnimator<Phase, A, S>> createState() =>
-      _SpecPhaseAnimatorState<Phase, A, S>();
-}
-
-class _SpecPhaseAnimatorState<Phase extends Object, A extends SpecAttribute,
-        S extends Spec<S>> extends State<SpecPhaseAnimator<Phase, A, S>>
-    with SingleTickerProviderStateMixin {
-  late final _controller = AnimationController(vsync: this);
-
   _PhaseData<Phase, A> _buildPhaseData() {
     final phaseData = <Phase, _PhaseDataUnit<A>>{};
-    for (final phase in widget.phases) {
+    for (final phase in phases) {
       phaseData[phase] = (
-        attribute: widget.phaseBuilder(phase).styles.values.firstWhere(
+        attribute: phaseBuilder(phase).styles.values.firstWhere(
               (e) => e is A,
             ) as A,
-        animation: widget.animation(phase),
+        animation: animation(phase),
       );
     }
 
@@ -75,22 +65,14 @@ class _SpecPhaseAnimatorState<Phase extends Object, A extends SpecAttribute,
   }
 
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final scope = _SpecPhaseAnimatorScope.maybeOf<Phase, A, S>(context);
-
     return _SpecPhaseAnimatorScope<Phase, A, S>(
       data: _buildPhaseData(),
-      controllers: [...?scope?.controllers, _controller],
-      child: _SpecPhaseAnimatorRunner<Phase, A, S>(
-        phases: widget.phases,
-        builder: widget.builder,
-        trigger: widget.trigger,
+      trigger: trigger,
+      child: _SpecPhaseAnimator<Phase, A, S>(
+        phases: phases,
+        builder: builder,
+        trigger: trigger,
       ),
     );
   }
@@ -100,41 +82,33 @@ class _SpecPhaseAnimatorScope<Phase extends Object, A extends SpecAttribute,
     S extends Spec<S>> extends InheritedWidget {
   const _SpecPhaseAnimatorScope({
     required this.data,
+    required this.trigger,
     required super.child,
-    required this.controllers,
   });
 
   static _SpecPhaseAnimatorScope<Phase, A, S>
       of<Phase extends Object, A extends SpecAttribute, S extends Spec<S>>(
     BuildContext context,
   ) {
-    final scope = maybeOf<Phase, A, S>(context);
-    if (scope == null) {
-      throw FlutterError('No _SpecPhaseAnimatorScope found in context');
-    }
+    final scope = context.dependOnInheritedWidgetOfExactType<
+        _SpecPhaseAnimatorScope<Phase, A, S>>();
+    assert(scope != null, 'No _SpecPhaseAnimatorScope found in context');
 
-    return scope;
-  }
-
-  static _SpecPhaseAnimatorScope<Phase, A, S>?
-      maybeOf<Phase extends Object, A extends SpecAttribute, S extends Spec<S>>(
-    BuildContext context,
-  ) {
-    return context.dependOnInheritedWidgetOfExactType();
+    return scope!;
   }
 
   final _PhaseData<Phase, A> data;
-  final List<AnimationController> controllers;
+  final Object? trigger;
 
   @override
   bool updateShouldNotify(_SpecPhaseAnimatorScope<Phase, A, S> oldWidget) {
-    return data != oldWidget.data;
+    return data != oldWidget.data || trigger != oldWidget.trigger;
   }
 }
 
-class _SpecPhaseAnimatorRunner<Phase extends Object, A extends SpecAttribute,
+class _SpecPhaseAnimator<Phase extends Object, A extends SpecAttribute,
     S extends Spec<S>> extends StatefulWidget {
-  const _SpecPhaseAnimatorRunner({
+  const _SpecPhaseAnimator({
     required this.phases,
     required this.builder,
     this.trigger,
@@ -146,27 +120,29 @@ class _SpecPhaseAnimatorRunner<Phase extends Object, A extends SpecAttribute,
   final Object? trigger;
 
   @override
-  State<_SpecPhaseAnimatorRunner<Phase, A, S>> createState() =>
-      _SpecPhaseAnimatorRunnerState<Phase, A, S>();
+  State<_SpecPhaseAnimator<Phase, A, S>> createState() =>
+      _SpecPhaseAnimatorState<Phase, A, S>();
 }
 
-class _SpecPhaseAnimatorRunnerState<
-        Phase extends Object,
-        A extends SpecAttribute,
-        S extends Spec<S>> extends State<_SpecPhaseAnimatorRunner<Phase, A, S>>
+class _SpecPhaseAnimatorState<Phase extends Object, A extends SpecAttribute,
+        S extends Spec<S>> extends State<_SpecPhaseAnimator<Phase, A, S>>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+  );
+
+  late Object? _cachedTrigger = widget.trigger;
+  _PhaseData<Phase, A>? _cachedData;
+
   TweenSequence<S?>? _sequence;
-  bool _shouldRestartAnimation = false;
-  bool get _isInfinite => widget.trigger == null;
 
   @override
   void initState() {
     super.initState();
 
-    _controller = AnimationController(vsync: this);
+    final shouldRepeat = widget.trigger == null;
 
-    if (_isInfinite) {
+    if (shouldRepeat) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _controller.repeat();
       });
@@ -216,26 +192,19 @@ class _SpecPhaseAnimatorRunnerState<
     super.didChangeDependencies();
     final scope = _SpecPhaseAnimatorScope.of<Phase, A, S>(context);
 
-    _configureAnimation(scope.data);
-  }
+    if (_cachedData != scope.data) {
+      _cachedData = scope.data;
+      _configureAnimation(scope.data);
+    }
 
-  @override
-  void didUpdateWidget(
-    covariant _SpecPhaseAnimatorRunner<Phase, A, S> oldWidget,
-  ) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.trigger != widget.trigger) {
-      _shouldRestartAnimation = true;
+    if (_cachedTrigger != scope.trigger) {
+      _cachedTrigger = scope.trigger;
+      _controller.forward(from: 0);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_shouldRestartAnimation) {
-      _controller.forward(from: 0);
-      _shouldRestartAnimation = false;
-    }
-
     return AnimatedBuilder(
       animation: _controller,
       builder: (_, child) {
