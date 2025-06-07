@@ -68,7 +68,6 @@ class SpecPhaseAnimator<Phase extends Object, A extends SpecAttribute,
   Widget build(BuildContext context) {
     return _SpecPhaseAnimatorScope<Phase, A, S>(
       data: _buildPhaseData(),
-      trigger: trigger,
       child: _SpecPhaseAnimator<Phase, A, S>(
         phases: phases,
         builder: builder,
@@ -80,11 +79,7 @@ class SpecPhaseAnimator<Phase extends Object, A extends SpecAttribute,
 
 class _SpecPhaseAnimatorScope<Phase extends Object, A extends SpecAttribute,
     S extends Spec<S>> extends InheritedWidget {
-  const _SpecPhaseAnimatorScope({
-    required this.data,
-    required this.trigger,
-    required super.child,
-  });
+  const _SpecPhaseAnimatorScope({required this.data, required super.child});
 
   static _SpecPhaseAnimatorScope<Phase, A, S>
       of<Phase extends Object, A extends SpecAttribute, S extends Spec<S>>(
@@ -98,11 +93,10 @@ class _SpecPhaseAnimatorScope<Phase extends Object, A extends SpecAttribute,
   }
 
   final _PhaseData<Phase, A> data;
-  final Object? trigger;
 
   @override
   bool updateShouldNotify(_SpecPhaseAnimatorScope<Phase, A, S> oldWidget) {
-    return data != oldWidget.data || trigger != oldWidget.trigger;
+    return data != oldWidget.data;
   }
 }
 
@@ -127,22 +121,18 @@ class _SpecPhaseAnimator<Phase extends Object, A extends SpecAttribute,
 class _SpecPhaseAnimatorState<Phase extends Object, A extends SpecAttribute,
         S extends Spec<S>> extends State<_SpecPhaseAnimator<Phase, A, S>>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    vsync: this,
-  );
-
-  late Object? _cachedTrigger = widget.trigger;
-  _PhaseData<Phase, A>? _cachedData;
-
+  late final AnimationController _controller;
   TweenSequence<S?>? _sequence;
+  bool _shouldRestartAnimation = false;
+  bool get _isInfinite => widget.trigger == null;
 
   @override
   void initState() {
     super.initState();
 
-    final shouldRepeat = widget.trigger == null;
+    _controller = AnimationController(vsync: this);
 
-    if (shouldRepeat) {
+    if (_isInfinite) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _controller.repeat();
       });
@@ -192,19 +182,24 @@ class _SpecPhaseAnimatorState<Phase extends Object, A extends SpecAttribute,
     super.didChangeDependencies();
     final scope = _SpecPhaseAnimatorScope.of<Phase, A, S>(context);
 
-    if (_cachedData != scope.data) {
-      _cachedData = scope.data;
-      _configureAnimation(scope.data);
-    }
+    _configureAnimation(scope.data);
+  }
 
-    if (_cachedTrigger != scope.trigger) {
-      _cachedTrigger = scope.trigger;
-      _controller.forward(from: 0);
+  @override
+  void didUpdateWidget(covariant _SpecPhaseAnimator<Phase, A, S> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.trigger != widget.trigger) {
+      _shouldRestartAnimation = true;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_shouldRestartAnimation) {
+      _controller.forward(from: 0);
+      _shouldRestartAnimation = false;
+    }
+
     return AnimatedBuilder(
       animation: _controller,
       builder: (_, child) {
