@@ -37,6 +37,17 @@ final class ScrollViewModifierSpec
   }
 
   @override
+  ScrollViewModifierSpecAttribute toAttribute() {
+    return ScrollViewModifierSpecAttribute(
+      scrollDirection: scrollDirection,
+      reverse: reverse,
+      padding: padding?.toDto(),
+      physics: physics,
+      clipBehavior: clipBehavior,
+    );
+  }
+
+  @override
   Widget build(Widget child) {
     return SingleChildScrollView(
       scrollDirection: scrollDirection ?? Axis.vertical,

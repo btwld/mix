@@ -19,6 +19,11 @@ class MouseCursorDecoratorSpec
   const MouseCursorDecoratorSpec({this.mouseCursor});
 
   @override
+  MouseCursorDecoratorSpecAttribute toAttribute() {
+    return MouseCursorDecoratorSpecAttribute(mouseCursor: mouseCursor);
+  }
+
+  @override
   Widget build(Widget child) {
     return MouseRegion(
       cursor: mouseCursor ?? MouseCursor.defer,

@@ -33,6 +33,15 @@ final class FractionallySizedBoxModifierSpec
   }
 
   @override
+  FractionallySizedBoxModifierSpecAttribute toAttribute() {
+    return FractionallySizedBoxModifierSpecAttribute(
+      widthFactor: widthFactor,
+      heightFactor: heightFactor,
+      alignment: alignment,
+    );
+  }
+
+  @override
   Widget build(Widget child) {
     return FractionallySizedBox(
       alignment: alignment ?? Alignment.center,

@@ -26,6 +26,9 @@ abstract class WidgetModifierSpec<Self extends WidgetModifierSpec<Self>>
     return begin ?? end;
   }
 
+  @override
+  WidgetModifierSpecAttribute<Self> toAttribute();
+
   Widget build(Widget child);
 }
 

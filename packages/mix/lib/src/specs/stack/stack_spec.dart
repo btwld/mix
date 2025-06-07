@@ -50,6 +50,16 @@ final class StackSpec extends Spec<StackSpec> with _$StackSpec, Diagnosticable {
   }
 
   @override
+  StackSpecAttribute toAttribute() {
+    return StackSpecAttribute(
+      alignment: alignment,
+      fit: fit,
+      textDirection: textDirection,
+      clipBehavior: clipBehavior,
+    );
+  }
+
+  @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     _debugFillProperties(properties);

@@ -28,6 +28,11 @@ final class AspectRatioModifierSpec
   }
 
   @override
+  WidgetModifierSpecAttribute<AspectRatioModifierSpec> toAttribute() {
+    return AspectRatioModifierSpecAttribute(aspectRatio: aspectRatio);
+  }
+
+  @override
   Widget build(Widget child) {
     return AspectRatio(aspectRatio: aspectRatio, child: child);
   }

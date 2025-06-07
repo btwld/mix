@@ -99,6 +99,21 @@ final class ImageSpec extends Spec<ImageSpec> with _$ImageSpec, Diagnosticable {
   }
 
   @override
+  ImageSpecAttribute toAttribute() {
+    return ImageSpecAttribute(
+      width: width,
+      height: height,
+      color: color?.toDto(),
+      repeat: repeat,
+      fit: fit,
+      alignment: alignment,
+      centerSlice: centerSlice,
+      filterQuality: filterQuality,
+      colorBlendMode: colorBlendMode,
+    );
+  }
+
+  @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     _debugFillProperties(properties);
