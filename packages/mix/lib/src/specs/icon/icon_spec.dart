@@ -81,6 +81,21 @@ final class IconSpec extends Spec<IconSpec> with _$IconSpec, Diagnosticable {
   }
 
   @override
+  IconSpecAttribute toAttribute() {
+    return IconSpecAttribute(
+      color: color?.toDto(),
+      size: size,
+      weight: weight,
+      grade: grade,
+      opticalSize: opticalSize,
+      shadows: shadows?.map((s) => s.toDto()).toList(),
+      textDirection: textDirection,
+      applyTextScaling: applyTextScaling,
+      fill: fill,
+    );
+  }
+
+  @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     _debugFillProperties(properties);

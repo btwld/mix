@@ -23,6 +23,11 @@ final class ResetModifierSpec extends WidgetModifierSpec<ResetModifierSpec>
   }
 
   @override
+  WidgetModifierSpecAttribute<ResetModifierSpec> toAttribute() {
+    return const ResetModifierSpecAttribute();
+  }
+
+  @override
   Widget build(Widget child) {
     return child;
   }

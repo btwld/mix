@@ -36,6 +36,9 @@ abstract class WidgetModifierSpec<Self extends WidgetModifierSpec<Self>>
     return begin ?? end;
   }
 
+  @override
+  WidgetModifierSpecAttribute<Self> toAttribute();
+
   /// Builds the modified widget by wrapping or transforming [child].
   Widget build(Widget child);
 }

@@ -30,6 +30,11 @@ final class OpacityModifierSpec extends WidgetModifierSpec<OpacityModifierSpec>
   }
 
   @override
+  OpacityModifierSpecAttribute toAttribute() {
+    return OpacityModifierSpecAttribute(opacity: opacity);
+  }
+
+  @override
   Widget build(Widget child) {
     return Opacity(opacity: opacity, child: child);
   }

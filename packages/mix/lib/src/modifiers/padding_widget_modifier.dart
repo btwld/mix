@@ -28,6 +28,11 @@ final class PaddingModifierSpec extends WidgetModifierSpec<PaddingModifierSpec>
   }
 
   @override
+  PaddingModifierSpecAttribute toAttribute() {
+    return PaddingModifierSpecAttribute(padding: padding.toDto());
+  }
+
+  @override
   Widget build(Widget child) {
     return Padding(padding: padding, child: child);
   }

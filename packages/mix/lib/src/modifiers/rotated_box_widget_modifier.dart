@@ -28,6 +28,11 @@ final class RotatedBoxModifierSpec
   }
 
   @override
+  RotatedBoxModifierSpecAttribute toAttribute() {
+    return RotatedBoxModifierSpecAttribute(quarterTurns: quarterTurns);
+  }
+
+  @override
   RotatedBoxModifierSpec lerp(RotatedBoxModifierSpec? other, double t) {
     if (other == null) return _$this;
 

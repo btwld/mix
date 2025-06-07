@@ -28,6 +28,14 @@ final class ClipOvalModifierSpec
   }
 
   @override
+  ClipOvalModifierSpecAttribute toAttribute() {
+    return ClipOvalModifierSpecAttribute(
+      clipper: clipper,
+      clipBehavior: clipBehavior,
+    );
+  }
+
+  @override
   Widget build(Widget child) {
     return ClipOval(
       clipper: clipper,
@@ -50,6 +58,14 @@ final class ClipRectModifierSpec
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     _debugFillProperties(properties);
+  }
+
+  @override
+  ClipRectModifierSpecAttribute toAttribute() {
+    return ClipRectModifierSpecAttribute(
+      clipper: clipper,
+      clipBehavior: clipBehavior,
+    );
   }
 
   @override
@@ -82,6 +98,15 @@ final class ClipRRectModifierSpec
   }
 
   @override
+  ClipRRectModifierSpecAttribute toAttribute() {
+    return ClipRRectModifierSpecAttribute(
+      borderRadius: borderRadius?.toDto(),
+      clipper: clipper,
+      clipBehavior: clipBehavior,
+    );
+  }
+
+  @override
   Widget build(Widget child) {
     return ClipRRect(
       borderRadius: borderRadius ?? BorderRadius.zero,
@@ -108,6 +133,14 @@ final class ClipPathModifierSpec
   }
 
   @override
+  ClipPathModifierSpecAttribute toAttribute() {
+    return ClipPathModifierSpecAttribute(
+      clipper: clipper,
+      clipBehavior: clipBehavior,
+    );
+  }
+
+  @override
   Widget build(Widget child) {
     return ClipPath(
       clipper: clipper,
@@ -129,6 +162,11 @@ final class ClipTriangleModifierSpec
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     _debugFillProperties(properties);
+  }
+
+  @override
+  ClipTriangleModifierSpecAttribute toAttribute() {
+    return ClipTriangleModifierSpecAttribute(clipBehavior: clipBehavior);
   }
 
   @override

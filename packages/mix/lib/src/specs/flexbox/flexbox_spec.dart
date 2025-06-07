@@ -93,6 +93,14 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec>
   }
 
   @override
+  FlexBoxSpecAttribute toAttribute() {
+    return FlexBoxSpecAttribute(
+      box: box.toAttribute(),
+      flex: flex.toAttribute(),
+    );
+  }
+
+  @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     _debugFillProperties(properties);

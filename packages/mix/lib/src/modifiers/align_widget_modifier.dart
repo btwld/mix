@@ -8,6 +8,7 @@ import '../core/element.dart';
 import '../core/factory/mix_data.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
+import '../core/spec.dart';
 import '../core/utility.dart';
 
 part 'align_widget_modifier.g.dart';
@@ -29,6 +30,15 @@ final class AlignModifierSpec extends WidgetModifierSpec<AlignModifierSpec>
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     _debugFillProperties(properties);
+  }
+
+  @override
+  WidgetModifierSpecAttribute<AlignModifierSpec> toAttribute() {
+    return AlignModifierSpecAttribute(
+      alignment: alignment,
+      widthFactor: widthFactor,
+      heightFactor: heightFactor,
+    );
   }
 
   @override

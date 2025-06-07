@@ -80,6 +80,21 @@ final class FlexSpec extends Spec<FlexSpec> with _$FlexSpec, Diagnosticable {
   }
 
   @override
+  FlexSpecAttribute toAttribute() {
+    return FlexSpecAttribute(
+      crossAxisAlignment: crossAxisAlignment,
+      mainAxisAlignment: mainAxisAlignment,
+      mainAxisSize: mainAxisSize,
+      verticalDirection: verticalDirection,
+      direction: direction,
+      textDirection: textDirection,
+      textBaseline: textBaseline,
+      clipBehavior: clipBehavior,
+      gap: gap != null ? SpaceDto(gap!) : null,
+    );
+  }
+
+  @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     _debugFillProperties(properties);

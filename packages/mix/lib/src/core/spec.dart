@@ -33,6 +33,8 @@ abstract class Spec<T extends Spec<T>> with EqualityMixin {
 
   /// Linearly interpolate with another [Spec] object.
   T lerp(covariant T? other, double t);
+
+  SpecAttribute<T> toAttribute();
 }
 
 /// An abstract class representing a resolvable attribute.

@@ -28,6 +28,11 @@ final class SizedBoxModifierSpec
   }
 
   @override
+  SizedBoxModifierSpecAttribute toAttribute() {
+    return SizedBoxModifierSpecAttribute(width: width, height: height);
+  }
+
+  @override
   Widget build(Widget child) {
     return SizedBox(width: width, height: height, child: child);
   }
