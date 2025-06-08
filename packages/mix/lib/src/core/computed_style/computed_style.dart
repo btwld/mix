@@ -133,7 +133,8 @@ class ComputedStyle with Diagnosticable {
   @override
   int get hashCode => Object.hash(
         Object.hashAllUnordered(
-            _specs.entries.map((e) => Object.hash(e.key, e.value))),
+          _specs.entries.map((e) => Object.hash(e.key, e.value)),
+        ),
         Object.hashAll(_modifiers),
         _animation,
       );

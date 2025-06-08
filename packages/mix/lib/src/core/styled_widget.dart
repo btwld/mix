@@ -1,10 +1,8 @@
 import 'package:flutter/widgets.dart';
 
-import '../variants/widget_state_variant.dart';
 import '../widgets/pressable_widget.dart';
 import 'factory/style_mix.dart';
 import 'internal/experimental/mix_builder.dart';
-import 'widget_state/widget_state_controller.dart';
 
 /// Base class for widgets that apply [Style] definitions.
 ///
@@ -50,22 +48,40 @@ abstract class StyledWidget extends StatelessWidget {
 
 /// Builds widgets with styling and interactive state management.
 ///
-/// Processes styles through [MixBuilder] and automatically wraps widgets
-/// with [Interactable] when interactive variants are present. Use this for
-/// widgets requiring interactive states (hover, press, focus) or custom
-/// [WidgetStatesController] management.
+/// SpecBuilder wraps [MixBuilder] internally and adds interactive state
+/// management capabilities. It automatically detects widget state variants
+/// and wraps widgets with [Interactable] when needed.
+///
+/// ## Architecture
+///
+/// SpecBuilder follows a layered approach:
+/// 1. **Core**: Uses [MixBuilder] for style processing and caching
+/// 2. **Enhancement**: Adds widget state detection and Interactable wrapping
+/// 3. **Optimization**: Smart caching that respects widget state variants
+///
+/// ## Usage
+///
+/// Use SpecBuilder for widgets requiring interactive states (hover, press, focus)
+/// or custom [WidgetStatesController] management.
+///
+/// ```dart
+/// SpecBuilder(
+///   style: Style(
+///     $box.color.red(),
+///     $on.hover($box.color.blue()),
+///   ),
+///   builder: (context) => BoxSpec.of(context)(),
+/// )
+/// ```
 class SpecBuilder extends StatelessWidget {
   const SpecBuilder({
     super.key,
     this.inherit = false,
     this.controller,
     this.style = const Style.empty(),
-    List<Type>? orderOfModifiers,
+    this.orderOfModifiers = const [],
     required this.builder,
-  }) : orderOfModifiers = orderOfModifiers ?? const [];
-
-  bool get _hasWidgetStateVariant => style.variants.values
-      .any((attr) => attr.variant is MixWidgetStateVariant);
+  });
 
   /// Function that builds the widget content.
   final Widget Function(BuildContext) builder;
@@ -80,24 +96,18 @@ class SpecBuilder extends StatelessWidget {
   final bool inherit;
 
   /// Order in which modifiers should be applied.
+  ///
+  /// Defaults to an empty list, which uses the default modifier order.
   final List<Type> orderOfModifiers;
 
   @override
   Widget build(BuildContext context) {
-    Widget current = MixBuilder(
-      inherit: inherit,
+    return MixBuilder(
       style: style,
-      orderOfModifiers: orderOfModifiers,
       builder: builder,
+      inherit: inherit,
+      orderOfModifiers: orderOfModifiers,
+      controller: controller,
     );
-
-    final needsWidgetState =
-        _hasWidgetStateVariant && MixWidgetState.of(context) == null;
-
-    if (needsWidgetState || controller != null) {
-      current = Interactable(controller: controller, child: current);
-    }
-
-    return current;
   }
 }
