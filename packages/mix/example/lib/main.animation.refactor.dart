@@ -7,7 +7,7 @@ import 'package:mix/mix.dart';
 
 void main() {
   runApp(
-    const BlockGroup(),
+    const BellAnimation(),
   );
 }
 
@@ -24,59 +24,68 @@ class _BellAnimationState extends State<BellAnimation> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      showPerformanceOverlay: true,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
-      home: Center(
-        child: SpecBuilder(builder: (context) {
-          return SpecPhaseAnimator<bool, BoxSpecAttribute, BoxSpec>(
-            trigger: count,
-            phases: const [false, true],
-            phaseBuilder: (phase) => Style(
-              $box.transform(Matrix4.identity()..scale(phase ? 2.0 : 1.0)),
-              $box.transformAlignment.center(),
-            ),
-            animation: (phase) => SpecPhaseAnimationData(
-              duration: Duration(milliseconds: phase ? 700 : 300),
-              curve: Curves.easeInOut,
-            ),
-            builder: (context, scaleStyle) {
-              return SpecPhaseAnimator<double, BoxSpecAttribute, BoxSpec>(
+      home: GridView.count(
+        crossAxisCount: 10,
+        shrinkWrap: true,
+        children: List.generate(
+          100,
+          (index) => Center(
+            child: SpecBuilder(builder: (context) {
+              return SpecPhaseAnimator<bool, BoxSpecAttribute, BoxSpec>(
                 trigger: count,
-                phases: const [0, -8, 8, 4, -4, 3, -3, 2, -2, 1, -1, 0],
+                phases: const [false, true],
                 phaseBuilder: (phase) => Style(
-                  $box.transform(Matrix4.identity()..translate(phase, 0, 0)),
+                  $box.transform(Matrix4.identity()..scale(phase ? 2.0 : 1.0)),
+                  $box.transformAlignment.center(),
                 ),
-                animation: (_) => const SpecPhaseAnimationData(
-                  duration: Duration(milliseconds: 100),
+                animation: (phase) => SpecPhaseAnimationData(
+                  duration: Duration(milliseconds: phase ? 700 : 300),
                   curve: Curves.easeInOut,
                 ),
-                builder: (context, translateStyle) {
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        count++;
-                      });
-                    },
-                    child: Box(
-                      style: scaleStyle,
-                      child: Box(
-                        style: Style(
-                          scaleStyle(),
-                          translateStyle(),
-                          $icon.color(Colors.yellowAccent.shade700),
-                        ),
-                        child: const StyledIcon(
-                          CupertinoIcons.bell_fill,
-                        ),
-                      ),
+                builder: (context, scaleStyle) {
+                  return SpecPhaseAnimator<double, BoxSpecAttribute, BoxSpec>(
+                    trigger: count,
+                    phases: const [0, -8, 8, 4, -4, 3, -3, 2, -2, 1, -1, 0],
+                    phaseBuilder: (phase) => Style(
+                      $box.transform(
+                          Matrix4.identity()..translate(phase, 0, 0)),
                     ),
+                    animation: (_) => const SpecPhaseAnimationData(
+                      duration: Duration(milliseconds: 100),
+                      curve: Curves.easeInOut,
+                    ),
+                    builder: (context, translateStyle) {
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            count++;
+                          });
+                        },
+                        child: Box(
+                          style: scaleStyle,
+                          child: Box(
+                            style: Style(
+                              scaleStyle(),
+                              translateStyle(),
+                              $icon.color(Colors.yellowAccent.shade700),
+                            ),
+                            child: const StyledIcon(
+                              CupertinoIcons.bell_fill,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   );
                 },
               );
-            },
-          );
-        }),
+            }),
+          ),
+        ),
       ),
     );
   }
