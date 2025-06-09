@@ -15,4 +15,3 @@ library mix_experimental;
 
 export 'src/core/internal/experimental/mix_builder.dart';
 export 'src/experimental/spec_phase_animator.dart';
-export 'src/experimental/style_phase_animator.dart';
