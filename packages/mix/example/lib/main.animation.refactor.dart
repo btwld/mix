@@ -125,7 +125,7 @@ class AnimatedBlock extends StatefulWidget {
   State<AnimatedBlock> createState() => _AnimatedBlockState();
 }
 
-const int _rows = 1;
+const int _rows = 19;
 const int _cols = 19;
 const double _size = 20;
 const double _spacing = 8;
