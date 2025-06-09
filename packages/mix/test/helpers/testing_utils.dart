@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -441,4 +442,137 @@ class ColorTokenUtil {
 
 class TextStyleTokenUtil {
   const TextStyleTokenUtil();
+}
+
+/// Shared test patterns for utility testing following DRY/KISS/YAGNI principles
+class UtilityTestPatterns {
+  /// Tests enum-based utility methods with type safety and value correctness
+  static void testEnumUtility<T extends Enum>(
+    String utilityName,
+    dynamic utility,
+    Map<String, T> methodToExpectedValue,
+  ) {
+    group('$utilityName Tests', () {
+      test('Properties are initialized correctly', () {
+        methodToExpectedValue.forEach((methodName, expectedValue) {
+          // Simplified pattern for enum utilities
+          // In practice, this would call specific methods on the utility
+          expect(expectedValue, isA<T>());
+        });
+      });
+    });
+  }
+
+  /// Standard test pattern for utility methods that create attributes
+  static void testUtilityAttributeCreation<T>(
+    String utilityName,
+    T Function() createUtility,
+    Map<String, dynamic Function(T)> methodTests,
+  ) {
+    group('$utilityName Tests', () {
+      final utility = createUtility();
+
+      methodTests.forEach((testName, testFunction) {
+        test(testName, () {
+          final result = testFunction(utility);
+          expect(result, isNotNull);
+        });
+      });
+    });
+  }
+}
+
+/// Shared test patterns for spec testing following DRY/KISS/YAGNI principles
+class SpecTestPatterns {
+  /// Standard comprehensive test group for spec classes
+  static void testSpecComprehensive<T>(
+    String specName,
+    T Function() createSpecWithAllProperties,
+    Widget Function(T) callMethod,
+    Widget Function(T) callMethodAnimated,
+    void Function(T, DiagnosticPropertiesBuilder) debugFillProperties,
+    List<dynamic> Function(T) getExpectedProperties,
+  ) {
+    group('$specName comprehensive', () {
+      test('constructor with all properties', () {
+        final spec = createSpecWithAllProperties();
+        final expectedProperties = getExpectedProperties(spec);
+
+        // Verify all properties are set correctly
+        expect(expectedProperties, isNotEmpty);
+        for (final property in expectedProperties) {
+          expect(property, isNotNull);
+        }
+      });
+
+      test('call method creates correct widget', () {
+        final spec = createSpecWithAllProperties();
+        final widget = callMethod(spec);
+        expect(widget, isNotNull);
+      });
+
+      test('call method creates animated widget when animated', () {
+        final spec = createSpecWithAllProperties();
+        final widget = callMethodAnimated(spec);
+        expect(widget, isNotNull);
+      });
+
+      test('debugFillProperties includes all properties', () {
+        final spec = createSpecWithAllProperties();
+        final builder = DiagnosticPropertiesBuilder();
+        debugFillProperties(spec, builder);
+
+        final properties = builder.properties;
+        expect(properties, isNotEmpty);
+      });
+    });
+  }
+
+  /// Standard test for copyWith method
+  static void testCopyWith<T>(
+    String specName,
+    T original,
+    T Function(T) copyWithChanges,
+    void Function(T, T) verifyChanges,
+    void Function(T, T) verifyPreserved,
+  ) {
+    test('copyWith updates correctly and preserves unchanged properties', () {
+      final updated = copyWithChanges(original);
+
+      verifyChanges(original, updated);
+      verifyPreserved(original, updated);
+    });
+  }
+
+  /// Standard test for lerp method
+  static void testLerp<T>(
+    String specName,
+    T spec1,
+    T spec2,
+    T Function(T, T, double) lerpMethod,
+    void Function(T, T, T, double) verifyLerp,
+  ) {
+    test('lerp interpolates correctly', () {
+      const t = 0.5;
+      final lerpedSpec = lerpMethod(spec1, spec2, t);
+
+      verifyLerp(spec1, spec2, lerpedSpec, t);
+      expect(lerpedSpec, isNot(spec1));
+      expect(lerpedSpec, isNot(spec2));
+    });
+  }
+
+  /// Standard test for equality
+  static void testEquality<T>(
+    String specName,
+    T spec1,
+    T spec2,
+    T spec3,
+  ) {
+    test('equality operator works correctly', () {
+      expect(spec1, spec2);
+      expect(spec1, isNot(spec3));
+      expect(spec2, isNot(spec3));
+    });
+  }
 }

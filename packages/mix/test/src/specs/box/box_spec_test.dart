@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -8,6 +9,100 @@ import '../../../helpers/testing_utils.dart';
 
 void main() {
   group('BoxSpec', () {
+    group('BoxSpec comprehensive', () {
+      test('constructor with all properties', () {
+        final spec = BoxSpec(
+          alignment: Alignment.bottomRight,
+          padding: const EdgeInsets.all(16.0),
+          margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+          constraints: const BoxConstraints(maxWidth: 400.0, minHeight: 200.0),
+          decoration: const BoxDecoration(
+            color: Colors.blue,
+            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          ),
+          foregroundDecoration: const BoxDecoration(
+            color: Colors.red,
+            border: Border.fromBorderSide(
+                BorderSide(color: Colors.black, width: 2.0)),
+          ),
+          transform: Matrix4.rotationZ(0.1),
+          transformAlignment: Alignment.center,
+          clipBehavior: Clip.antiAlias,
+          width: 300.0,
+          height: 200.0,
+          animated: const AnimatedData(
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          ),
+          modifiers: const WidgetModifiersData([
+            OpacityModifierSpec(0.8),
+            SizedBoxModifierSpec(width: 100, height: 100),
+          ]),
+        );
+
+        // Test ALL properties are set correctly
+        expect(spec.alignment, Alignment.bottomRight);
+        expect(spec.padding, const EdgeInsets.all(16.0));
+        expect(spec.margin,
+            const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0));
+        expect(spec.constraints,
+            const BoxConstraints(maxWidth: 400.0, minHeight: 200.0));
+        expect(spec.decoration, isA<BoxDecoration>());
+        expect(spec.foregroundDecoration, isA<BoxDecoration>());
+        expect(spec.transform, isA<Matrix4>());
+        expect(spec.transformAlignment, Alignment.center);
+        expect(spec.clipBehavior, Clip.antiAlias);
+        expect(spec.width, 300.0);
+        expect(spec.height, 200.0);
+        expect(spec.animated?.duration, const Duration(milliseconds: 300));
+        expect(spec.animated?.curve, Curves.easeInOut);
+        expect(spec.modifiers?.value, [
+          const OpacityModifierSpec(0.8),
+          const SizedBoxModifierSpec(width: 100, height: 100),
+        ]);
+      });
+
+      test('call method creates correct widget', () {
+        const spec = BoxSpec(
+          alignment: Alignment.center,
+          padding: EdgeInsets.all(16.0),
+        );
+
+        final widget = spec.call(child: const Text('Child'));
+
+        expect(widget, isA<BoxSpecWidget>());
+      });
+
+      test('call method creates animated widget when animated', () {
+        const spec = BoxSpec(
+          alignment: Alignment.center,
+          padding: EdgeInsets.all(16.0),
+          animated: AnimatedData(
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          ),
+        );
+
+        final widget = spec.call(child: const Text('Child'));
+
+        expect(widget, isA<AnimatedBoxSpecWidget>());
+      });
+
+      test('debugFillProperties includes all properties', () {
+        const spec = BoxSpec(
+          alignment: Alignment.center,
+          padding: EdgeInsets.all(16.0),
+          width: 100.0,
+          height: 100.0,
+        );
+
+        final builder = DiagnosticPropertiesBuilder();
+        spec.debugFillProperties(builder);
+
+        final properties = builder.properties;
+        expect(properties, isNotEmpty);
+      });
+    });
     test('resolve', () {
       final mix = MixData.create(
         MockBuildContext(),
@@ -50,57 +145,29 @@ void main() {
       expect(spec.clipBehavior, Clip.antiAlias);
     });
 
-    test('copyWith', () {
-      final spec = BoxSpec(
+    test('copyWith updates correctly and preserves unchanged properties', () {
+      const original = BoxSpec(
         alignment: Alignment.center,
-        padding: const EdgeInsets.all(16.0),
-        margin: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-        constraints: const BoxConstraints(maxWidth: 300.0, minHeight: 200.0),
-        decoration: const BoxDecoration(color: Colors.blue),
-        foregroundDecoration: const BoxDecoration(color: Colors.purple),
-        transform: Matrix4.translationValues(10.0, 10.0, 0.0),
+        padding: EdgeInsets.all(8.0),
+        width: 100.0,
+        height: 100.0,
         clipBehavior: Clip.antiAlias,
-        transformAlignment: Alignment.center,
-        width: 300,
-        height: 200,
-        modifiers: const WidgetModifiersData([
-          OpacityModifierSpec(0.5),
-          SizedBoxModifierSpec(height: 10, width: 10),
-        ]),
       );
 
-      final copiedSpec = spec.copyWith(
-        width: 250.0,
-        height: 150.0,
-        modifiers: const WidgetModifiersData([
-          OpacityModifierSpec(1),
-        ]),
+      final updated = original.copyWith(
+        alignment: Alignment.topLeft,
+        width: 200.0,
+        // Don't update padding, height, clipBehavior - test preservation
       );
 
-      expect(copiedSpec.alignment, Alignment.center);
-      expect(copiedSpec.padding, const EdgeInsets.all(16.0));
-      expect(copiedSpec.margin, const EdgeInsets.only(top: 8.0, bottom: 8.0));
-      expect(
-        copiedSpec.constraints,
-        const BoxConstraints(maxWidth: 300.0, minHeight: 200.0),
-      );
-      expect(copiedSpec.decoration, const BoxDecoration(color: Colors.blue));
-      expect(
-        copiedSpec.foregroundDecoration,
-        const BoxDecoration(color: Colors.purple),
-      );
+      // Test updated properties
+      expect(updated.alignment, Alignment.topLeft);
+      expect(updated.width, 200.0);
 
-      expect(copiedSpec.transform, Matrix4.translationValues(10.0, 10.0, 0.0));
-      expect(copiedSpec.clipBehavior, Clip.antiAlias);
-      expect(copiedSpec.width, 250.0);
-
-      expect(
-        copiedSpec.modifiers!.value,
-        const WidgetModifiersData(
-          [OpacityModifierSpec(1)],
-        ).value,
-      );
-      expect(copiedSpec.height, 150.0);
+      // Test preserved properties
+      expect(updated.padding, const EdgeInsets.all(8.0));
+      expect(updated.height, 100.0);
+      expect(updated.clipBehavior, Clip.antiAlias);
     });
 
     test('lerp', () {

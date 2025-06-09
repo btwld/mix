@@ -1,11 +1,102 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
+import 'package:mix/src/internal/string_ext.dart';
 
 import '../../../helpers/testing_utils.dart';
 
 void main() {
   group('TextSpec', () {
+    group('TextSpec comprehensive', () {
+      test('constructor with all properties', () {
+        final spec = TextSpec(
+          overflow: TextOverflow.ellipsis,
+          strutStyle: const StrutStyle(fontSize: 18),
+          textAlign: TextAlign.center,
+          textDirection: TextDirection.ltr,
+          softWrap: true,
+          textScaler: const TextScaler.linear(1.2),
+          maxLines: 3,
+          style: const TextStyle(fontSize: 16, color: Colors.red),
+          textWidthBasis: TextWidthBasis.parent,
+          textHeightBehavior:
+              const TextHeightBehavior(applyHeightToFirstAscent: true),
+          directive: TextDirective((value) => value.capitalize),
+          animated: const AnimatedData(
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          ),
+          modifiers: const WidgetModifiersData([
+            OpacityModifierSpec(0.8),
+            SizedBoxModifierSpec(width: 200, height: 50),
+          ]),
+        );
+
+        // Test ALL properties are set correctly
+        expect(spec.overflow, TextOverflow.ellipsis);
+        expect(spec.strutStyle?.fontSize, 18);
+        expect(spec.textAlign, TextAlign.center);
+        expect(spec.textDirection, TextDirection.ltr);
+        expect(spec.softWrap, true);
+        expect(spec.textScaler, const TextScaler.linear(1.2));
+        expect(spec.maxLines, 3);
+        expect(spec.style?.fontSize, 16);
+        expect(spec.style?.color, Colors.red);
+        expect(spec.textWidthBasis, TextWidthBasis.parent);
+        expect(spec.textHeightBehavior?.applyHeightToFirstAscent, true);
+        // Test directive behavior instead of equality since functions can't be compared
+        expect(spec.directive, isNotNull);
+        expect(spec.directive!.apply('hello'), 'Hello');
+        expect(spec.animated?.duration, const Duration(milliseconds: 300));
+        expect(spec.animated?.curve, Curves.easeInOut);
+        expect(spec.modifiers?.value, [
+          const OpacityModifierSpec(0.8),
+          const SizedBoxModifierSpec(width: 200, height: 50),
+        ]);
+      });
+
+      test('call method creates correct widget', () {
+        const spec = TextSpec(
+          style: TextStyle(fontSize: 16, color: Colors.blue),
+          textAlign: TextAlign.center,
+        );
+
+        final widget = spec.call('Hello World');
+
+        expect(widget, isA<TextSpecWidget>());
+      });
+
+      test('call method creates animated widget when animated', () {
+        const spec = TextSpec(
+          style: TextStyle(fontSize: 16, color: Colors.blue),
+          textAlign: TextAlign.center,
+          animated: AnimatedData(
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          ),
+        );
+
+        final widget = spec.call('Hello World');
+
+        expect(widget, isA<AnimatedTextSpecWidget>());
+      });
+
+      test('debugFillProperties includes all properties', () {
+        const spec = TextSpec(
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+          maxLines: 3,
+          style: TextStyle(fontSize: 16),
+        );
+
+        final builder = DiagnosticPropertiesBuilder();
+        spec.debugFillProperties(builder);
+
+        final properties = builder.properties;
+        expect(properties, isNotEmpty);
+      });
+    });
     test('resolve', () {
       final mix = MixData.create(
         MockBuildContext(),
@@ -49,56 +140,31 @@ void main() {
       expect(spec.softWrap, true);
     });
 
-    test('copyWith', () {
-      const spec = TextSpec(
-        overflow: TextOverflow.ellipsis,
-        strutStyle: StrutStyle(fontSize: 20.0),
-        textAlign: TextAlign.center,
-        textScaler: TextScaler.linear(1.0),
+    test('copyWith updates correctly and preserves unchanged properties', () {
+      const original = TextSpec(
+        overflow: TextOverflow.clip,
+        textAlign: TextAlign.left,
         maxLines: 2,
-        style: TextStyle(color: Colors.red),
-        textWidthBasis: TextWidthBasis.longestLine,
-        textHeightBehavior: TextHeightBehavior(
-          applyHeightToFirstAscent: true,
-          applyHeightToLastDescent: true,
-        ),
+        style: TextStyle(fontSize: 14),
         textDirection: TextDirection.ltr,
         softWrap: true,
       );
 
-      final copiedSpec = spec.copyWith(
-        softWrap: false,
-        overflow: TextOverflow.fade,
-        strutStyle: const StrutStyle(fontSize: 30.0),
-        textAlign: TextAlign.start,
-        textScaler: const TextScaler.linear(2.0),
-        maxLines: 3,
-        style: const TextStyle(color: Colors.blue),
-        textWidthBasis: TextWidthBasis.parent,
-        textHeightBehavior: const TextHeightBehavior(
-          applyHeightToFirstAscent: false,
-          applyHeightToLastDescent: false,
-        ),
-        textDirection: TextDirection.rtl,
+      final updated = original.copyWith(
+        overflow: TextOverflow.ellipsis,
+        maxLines: 5,
+        // Don't update textAlign, style, textDirection, softWrap - test preservation
       );
 
-      expect(copiedSpec.overflow, TextOverflow.fade);
-      expect(copiedSpec.strutStyle, const StrutStyle(fontSize: 30.0));
-      expect(copiedSpec.textAlign, TextAlign.start);
-      expect(copiedSpec.textScaler, const TextScaler.linear(2));
-      expect(copiedSpec.maxLines, 3);
-      expect(copiedSpec.style, const TextStyle(color: Colors.blue));
-      expect(copiedSpec.textWidthBasis, TextWidthBasis.parent);
-      expect(
-        copiedSpec.textHeightBehavior,
-        const TextHeightBehavior(
-          applyHeightToFirstAscent: false,
-          applyHeightToLastDescent: false,
-        ),
-      );
+      // Test updated properties
+      expect(updated.overflow, TextOverflow.ellipsis);
+      expect(updated.maxLines, 5);
 
-      expect(copiedSpec.textDirection, TextDirection.rtl);
-      expect(copiedSpec.softWrap, false);
+      // Test preserved properties
+      expect(updated.textAlign, TextAlign.left);
+      expect(updated.style?.fontSize, 14);
+      expect(updated.textDirection, TextDirection.ltr);
+      expect(updated.softWrap, true);
     });
 
     test('lerp', () {

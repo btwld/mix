@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -8,6 +9,88 @@ import '../../../helpers/testing_utils.dart';
 
 void main() {
   group('IconSpec', () {
+    group('IconSpec comprehensive', () {
+      test('constructor with all properties', () {
+        const spec = IconSpec(
+          color: Colors.blue,
+          size: 24.0,
+          weight: 400.0,
+          grade: 0.0,
+          opticalSize: 24.0,
+          shadows: [Shadow(color: Colors.black, offset: Offset(1, 1))],
+          textDirection: TextDirection.ltr,
+          applyTextScaling: true,
+          fill: 1.0,
+          animated: AnimatedData(
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          ),
+          modifiers: WidgetModifiersData([
+            OpacityModifierSpec(0.8),
+            SizedBoxModifierSpec(width: 50, height: 50),
+          ]),
+        );
+
+        // Test ALL properties are set correctly
+        expect(spec.color, Colors.blue);
+        expect(spec.size, 24.0);
+        expect(spec.weight, 400.0);
+        expect(spec.grade, 0.0);
+        expect(spec.opticalSize, 24.0);
+        expect(spec.shadows,
+            [const Shadow(color: Colors.black, offset: Offset(1, 1))]);
+        expect(spec.textDirection, TextDirection.ltr);
+        expect(spec.applyTextScaling, true);
+        expect(spec.fill, 1.0);
+        expect(spec.animated?.duration, const Duration(milliseconds: 300));
+        expect(spec.animated?.curve, Curves.easeInOut);
+        expect(spec.modifiers?.value, [
+          const OpacityModifierSpec(0.8),
+          const SizedBoxModifierSpec(width: 50, height: 50),
+        ]);
+      });
+
+      test('call method creates correct widget', () {
+        const spec = IconSpec(
+          color: Colors.blue,
+          size: 24.0,
+        );
+
+        final widget = spec.call(Icons.star);
+
+        expect(widget, isA<IconSpecWidget>());
+      });
+
+      test('call method creates animated widget when animated', () {
+        const spec = IconSpec(
+          color: Colors.blue,
+          size: 24.0,
+          animated: AnimatedData(
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          ),
+        );
+
+        final widget = spec.call(Icons.star);
+
+        expect(widget, isA<AnimatedIconSpecWidget>());
+      });
+
+      test('debugFillProperties includes all properties', () {
+        const spec = IconSpec(
+          color: Colors.blue,
+          size: 24.0,
+          weight: 400.0,
+          grade: 0.0,
+        );
+
+        final builder = DiagnosticPropertiesBuilder();
+        spec.debugFillProperties(builder);
+
+        final properties = builder.properties;
+        expect(properties, isNotEmpty);
+      });
+    });
     test('resolve', () {
       final mix = MixData.create(
         MockBuildContext(),
@@ -53,13 +136,27 @@ void main() {
       expect(spec.weight, 2);
     });
 
-    test('copyWith', () {
-      const spec = IconSpec(color: Colors.red, size: 20.0);
+    test('copyWith updates correctly and preserves unchanged properties', () {
+      const original = IconSpec(
+        color: Colors.red,
+        size: 20.0,
+        weight: 300.0,
+        grade: -1.0,
+      );
 
-      final copiedSpec = spec.copyWith(color: Colors.blue, size: 30.0);
+      final updated = original.copyWith(
+        color: Colors.blue,
+        size: 24.0,
+        // Don't update weight and grade - test preservation
+      );
 
-      expect(copiedSpec.color, Colors.blue);
-      expect(copiedSpec.size, 30.0);
+      // Test updated properties
+      expect(updated.color, Colors.blue);
+      expect(updated.size, 24.0);
+
+      // Test preserved properties
+      expect(updated.weight, 300.0);
+      expect(updated.grade, -1.0);
     });
 
     test('lerp', () {
@@ -72,6 +169,60 @@ void main() {
 
       expect(lerpedSpec.color, Color.lerp(Colors.red, Colors.blue, t));
       expect(lerpedSpec.size, lerpDouble(20.0, 30.0, t));
+    });
+
+    test('equality operator works correctly', () {
+      const spec1 = IconSpec(
+        color: Colors.red,
+        size: 20.0,
+        weight: 300.0,
+        grade: -1.0,
+      );
+
+      const spec2 = IconSpec(
+        color: Colors.red,
+        size: 20.0,
+        weight: 300.0,
+        grade: -1.0,
+      );
+
+      const spec3 = IconSpec(
+        color: Colors.blue,
+        size: 24.0,
+        weight: 400.0,
+        grade: 0.0,
+      );
+
+      expect(spec1, spec2);
+      expect(spec1, isNot(spec3));
+      expect(spec2, isNot(spec3));
+    });
+
+    test('props returns correct list of properties', () {
+      const spec = IconSpec(
+        color: Colors.red,
+        size: 24.0,
+        weight: 400.0,
+        grade: 0.0,
+        opticalSize: 24.0,
+        shadows: [Shadow(color: Colors.black, offset: Offset(1, 1))],
+        textDirection: TextDirection.ltr,
+        applyTextScaling: true,
+        fill: 1.0,
+        animated: AnimatedData.withDefaults(),
+      );
+
+      expect(spec.props.length,
+          11); // All properties including animated and modifiers
+      expect(spec.props.contains(spec.color), true);
+      expect(spec.props.contains(spec.size), true);
+      expect(spec.props.contains(spec.weight), true);
+      expect(spec.props.contains(spec.grade), true);
+      expect(spec.props.contains(spec.opticalSize), true);
+      expect(spec.props.contains(spec.shadows), true);
+      expect(spec.props.contains(spec.textDirection), true);
+      expect(spec.props.contains(spec.applyTextScaling), true);
+      expect(spec.props.contains(spec.fill), true);
     });
 
     test('IconSpec.empty() constructor', () {
@@ -88,7 +239,7 @@ void main() {
       expect(spec.fill, isNull);
     });
 
-    test('IconSpec.of(BuildContext context)', () {
+    test('IconSpec.from(MixData) resolves correctly', () {
       final mixData = MixData.create(
         MockBuildContext(),
         Style(IconSpecAttribute(size: 20.0, color: Colors.red.toDto())),

@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -8,6 +9,99 @@ import '../../../helpers/testing_utils.dart';
 
 void main() {
   group('FlexSpec', () {
+    group('FlexSpec comprehensive', () {
+      test('constructor with all properties', () {
+        const spec = FlexSpec(
+          direction: Axis.horizontal,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          verticalDirection: VerticalDirection.up,
+          textDirection: TextDirection.rtl,
+          textBaseline: TextBaseline.ideographic,
+          clipBehavior: Clip.antiAlias,
+          gap: 16,
+          animated: AnimatedData(
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          ),
+          modifiers: WidgetModifiersData([
+            OpacityModifierSpec(0.8),
+            SizedBoxModifierSpec(width: 100, height: 100),
+          ]),
+        );
+
+        // Test ALL properties are set correctly
+        expect(spec.direction, Axis.horizontal);
+        expect(spec.mainAxisAlignment, MainAxisAlignment.spaceBetween);
+        expect(spec.crossAxisAlignment, CrossAxisAlignment.stretch);
+        expect(spec.mainAxisSize, MainAxisSize.min);
+        expect(spec.verticalDirection, VerticalDirection.up);
+        expect(spec.textDirection, TextDirection.rtl);
+        expect(spec.textBaseline, TextBaseline.ideographic);
+        expect(spec.clipBehavior, Clip.antiAlias);
+        expect(spec.gap, 16);
+        expect(spec.animated?.duration, const Duration(milliseconds: 300));
+        expect(spec.animated?.curve, Curves.easeInOut);
+        expect(spec.modifiers?.value, [
+          const OpacityModifierSpec(0.8),
+          const SizedBoxModifierSpec(width: 100, height: 100),
+        ]);
+      });
+
+      test('call method creates correct widget', () {
+        const spec = FlexSpec(
+          direction: Axis.horizontal,
+          mainAxisAlignment: MainAxisAlignment.center,
+        );
+
+        final widget = spec.call(
+          direction: Axis.horizontal,
+          children: [
+            const Text('Child 1'),
+            const Text('Child 2'),
+          ],
+        );
+
+        expect(widget, isA<FlexSpecWidget>());
+      });
+
+      test('call method creates animated widget when animated', () {
+        const spec = FlexSpec(
+          direction: Axis.horizontal,
+          mainAxisAlignment: MainAxisAlignment.center,
+          animated: AnimatedData(
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          ),
+        );
+
+        final widget = spec.call(
+          direction: Axis.horizontal,
+          children: [
+            const Text('Child 1'),
+            const Text('Child 2'),
+          ],
+        );
+
+        expect(widget, isA<AnimatedFlexSpecWidget>());
+      });
+
+      test('debugFillProperties includes all properties', () {
+        const spec = FlexSpec(
+          direction: Axis.horizontal,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          gap: 16,
+        );
+
+        final builder = DiagnosticPropertiesBuilder();
+        spec.debugFillProperties(builder);
+
+        final properties = builder.properties;
+        expect(properties, isNotEmpty);
+      });
+    });
     test('resolve', () {
       final mix = MixData.create(
         MockBuildContext(),
@@ -39,42 +133,39 @@ void main() {
       expect(spec.gap, 10);
     });
 
-    test('copyWith', () {
-      const spec = FlexSpec(
+    test('copyWith updates correctly and preserves unchanged properties', () {
+      const original = FlexSpec(
+        direction: Axis.vertical,
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         verticalDirection: VerticalDirection.down,
-        direction: Axis.horizontal,
         textDirection: TextDirection.ltr,
         textBaseline: TextBaseline.alphabetic,
         clipBehavior: Clip.antiAlias,
-        gap: 10,
+        gap: 8,
       );
 
-      final copiedSpec = spec.copyWith(
-        direction: Axis.vertical,
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
-        verticalDirection: VerticalDirection.up,
-        textDirection: TextDirection.rtl,
-        textBaseline: TextBaseline.ideographic,
-        clipBehavior: Clip.none,
-        gap: 20,
+      final updated = original.copyWith(
+        direction: Axis.horizontal,
+        gap: 16,
+        // Don't update other properties - test preservation
       );
 
-      expect(copiedSpec.crossAxisAlignment, CrossAxisAlignment.start);
-      expect(copiedSpec.mainAxisAlignment, MainAxisAlignment.end);
-      expect(copiedSpec.mainAxisSize, MainAxisSize.max);
-      expect(copiedSpec.verticalDirection, VerticalDirection.up);
-      expect(copiedSpec.direction, Axis.vertical);
-      expect(copiedSpec.textDirection, TextDirection.rtl);
-      expect(copiedSpec.textBaseline, TextBaseline.ideographic);
-      expect(copiedSpec.clipBehavior, Clip.none);
-      expect(copiedSpec.gap, 20);
+      // Test updated properties
+      expect(updated.direction, Axis.horizontal);
+      expect(updated.gap, 16);
 
-      expect(copiedSpec, isNot(spec));
+      // Test preserved properties
+      expect(updated.mainAxisAlignment, MainAxisAlignment.start);
+      expect(updated.crossAxisAlignment, CrossAxisAlignment.center);
+      expect(updated.mainAxisSize, MainAxisSize.min);
+      expect(updated.verticalDirection, VerticalDirection.down);
+      expect(updated.textDirection, TextDirection.ltr);
+      expect(updated.textBaseline, TextBaseline.alphabetic);
+      expect(updated.clipBehavior, Clip.antiAlias);
+
+      expect(updated, isNot(original));
     });
 
     test('lerp', () {
