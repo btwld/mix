@@ -9,4 +9,4 @@ dev_dependencies:
 lint_staged:
   '**.dart': dart fix --apply && dcm fix
 dependencies:
-  melos: ^6.3.3
+  melos: ^6.3.2
