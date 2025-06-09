@@ -55,10 +55,25 @@ runs:
       shell: bash    
       run: melos run brb
 
+    - name: Calculate concurrency cores
+      id: cpu-cores
+      shell: bash
+      run: |
+        # Get optimal concurrency count (half of available cores)
+        CONCURRENCY=$(.github/scripts/get_concurrency_cores.sh --debug)
+        echo "count=$CONCURRENCY" >> $GITHUB_OUTPUT
+
     - name: Run Test
       run: |
-        melos run test:flutter
-        melos run test:dart
+        # Run tests with dynamic concurrency based on available CPU cores
+        CONCURRENCY=${{ steps.cpu-cores.outputs.count }}
+        echo "Running tests with concurrency=$CONCURRENCY"
+        
+        # Run Flutter tests with concurrency
+        melos exec --category=flutter_projects -- flutter test --concurrency=$CONCURRENCY
+        
+        # Run Dart tests with concurrency
+        melos exec --category=dart_projects -- dart test --concurrency=$CONCURRENCY
       shell: bash
 
     - name: Install DCM
@@ -69,7 +84,7 @@ runs:
         folders: packages/*/lib
 
     - name: Run DCM
-      run: dcm analyze .
+      run: dcm analyze . --concurrency=${{ steps.cpu-cores.outputs.count }}
       shell: bash
 
     - name: Run melos fix
