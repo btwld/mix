@@ -40,7 +40,7 @@ class _BellAnimationState extends State<BellAnimation> {
               duration: Duration(milliseconds: phase ? 700 : 300),
               curve: Curves.easeInOut,
             ),
-            builder: (context, scaleStyle, phase) {
+            builder: (context, scaleStyle) {
               return SpecPhaseAnimator<double, BoxSpecAttribute, BoxSpec>(
                 trigger: count,
                 phases: const [0, -8, 8, 4, -4, 3, -3, 2, -2, 1, -1, 0],
@@ -51,7 +51,7 @@ class _BellAnimationState extends State<BellAnimation> {
                   duration: Duration(milliseconds: 100),
                   curve: Curves.easeInOut,
                 ),
-                builder: (context, translateStyle, phase) {
+                builder: (context, translateStyle) {
                   return GestureDetector(
                     onTap: () {
                       setState(() {
@@ -200,7 +200,7 @@ class _AnimatedBlockState extends State<AnimatedBlock> {
                 };
               },
               trigger: count,
-              builder: (context, scaleStyle, phase) {
+              builder: (context, scaleStyle) {
                 return GestureDetector(
                   onTap: () {
                     setState(() {

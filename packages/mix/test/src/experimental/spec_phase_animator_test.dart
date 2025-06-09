@@ -21,7 +21,7 @@ void main() {
                   curve: Curves.linear,
                 ),
                 trigger: 0,
-                builder: (_, style, __) {
+                builder: (_, style) {
                   buildCount++;
                   return Box(style: style);
                 },
