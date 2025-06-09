@@ -84,7 +84,7 @@ runs:
         folders: packages/*/lib
 
     - name: Run DCM
-      run: dcm analyze .
+      run: dcm analyze . --concurrency=${{ steps.cpu-cores.outputs.count }}
       shell: bash
 
     - name: Run melos fix
