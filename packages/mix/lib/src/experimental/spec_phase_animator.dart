@@ -34,7 +34,7 @@ class SpecPhaseAnimationData extends AnimatedData {
 }
 
 class SpecPhaseAnimator<Phase extends Object, A extends SpecAttribute,
-    S extends Spec<S>> extends StatelessWidget {
+    S extends Spec<S>> extends StatefulWidget {
   const SpecPhaseAnimator({
     super.key,
     required this.phases,
@@ -50,14 +50,24 @@ class SpecPhaseAnimator<Phase extends Object, A extends SpecAttribute,
   final SpecAnimatorWidgetBuilder builder;
   final Object? trigger;
 
+  @override
+  State<SpecPhaseAnimator<Phase, A, S>> createState() =>
+      _SpecPhaseAnimatorState<Phase, A, S>();
+}
+
+class _SpecPhaseAnimatorState<Phase extends Object, A extends SpecAttribute,
+        S extends Spec<S>> extends State<SpecPhaseAnimator<Phase, A, S>>
+    with SingleTickerProviderStateMixin {
+  late final _controller = AnimationController(vsync: this);
+
   _PhaseData<Phase, A> _buildPhaseData() {
     final phaseData = <Phase, _PhaseDataUnit<A>>{};
-    for (final phase in phases) {
+    for (final phase in widget.phases) {
       phaseData[phase] = (
-        attribute: phaseBuilder(phase).styles.values.firstWhere(
+        attribute: widget.phaseBuilder(phase).styles.values.firstWhere(
               (e) => e is A,
             ) as A,
-        animation: animation(phase),
+        animation: widget.animation(phase),
       );
     }
 
@@ -65,13 +75,22 @@ class SpecPhaseAnimator<Phase extends Object, A extends SpecAttribute,
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final scope = _SpecPhaseAnimatorScope.maybeOf<Phase, A, S>(context);
+
     return _SpecPhaseAnimatorScope<Phase, A, S>(
       data: _buildPhaseData(),
-      child: _SpecPhaseAnimator<Phase, A, S>(
-        phases: phases,
-        builder: builder,
-        trigger: trigger,
+      controllers: [...?scope?.controllers, _controller],
+      child: _SpecPhaseAnimatorRunner<Phase, A, S>(
+        phases: widget.phases,
+        builder: widget.builder,
+        trigger: widget.trigger,
       ),
     );
   }
@@ -79,20 +98,33 @@ class SpecPhaseAnimator<Phase extends Object, A extends SpecAttribute,
 
 class _SpecPhaseAnimatorScope<Phase extends Object, A extends SpecAttribute,
     S extends Spec<S>> extends InheritedWidget {
-  const _SpecPhaseAnimatorScope({required this.data, required super.child});
+  const _SpecPhaseAnimatorScope({
+    required this.data,
+    required super.child,
+    required this.controllers,
+  });
 
   static _SpecPhaseAnimatorScope<Phase, A, S>
       of<Phase extends Object, A extends SpecAttribute, S extends Spec<S>>(
     BuildContext context,
   ) {
-    final scope = context.dependOnInheritedWidgetOfExactType<
-        _SpecPhaseAnimatorScope<Phase, A, S>>();
-    assert(scope != null, 'No _SpecPhaseAnimatorScope found in context');
+    final scope = maybeOf<Phase, A, S>(context);
+    if (scope == null) {
+      throw FlutterError('No _SpecPhaseAnimatorScope found in context');
+    }
 
-    return scope!;
+    return scope;
+  }
+
+  static _SpecPhaseAnimatorScope<Phase, A, S>?
+      maybeOf<Phase extends Object, A extends SpecAttribute, S extends Spec<S>>(
+    BuildContext context,
+  ) {
+    return context.dependOnInheritedWidgetOfExactType();
   }
 
   final _PhaseData<Phase, A> data;
+  final List<AnimationController> controllers;
 
   @override
   bool updateShouldNotify(_SpecPhaseAnimatorScope<Phase, A, S> oldWidget) {
@@ -100,9 +132,9 @@ class _SpecPhaseAnimatorScope<Phase extends Object, A extends SpecAttribute,
   }
 }
 
-class _SpecPhaseAnimator<Phase extends Object, A extends SpecAttribute,
+class _SpecPhaseAnimatorRunner<Phase extends Object, A extends SpecAttribute,
     S extends Spec<S>> extends StatefulWidget {
-  const _SpecPhaseAnimator({
+  const _SpecPhaseAnimatorRunner({
     required this.phases,
     required this.builder,
     this.trigger,
@@ -114,12 +146,14 @@ class _SpecPhaseAnimator<Phase extends Object, A extends SpecAttribute,
   final Object? trigger;
 
   @override
-  State<_SpecPhaseAnimator<Phase, A, S>> createState() =>
-      _SpecPhaseAnimatorState<Phase, A, S>();
+  State<_SpecPhaseAnimatorRunner<Phase, A, S>> createState() =>
+      _SpecPhaseAnimatorRunnerState<Phase, A, S>();
 }
 
-class _SpecPhaseAnimatorState<Phase extends Object, A extends SpecAttribute,
-        S extends Spec<S>> extends State<_SpecPhaseAnimator<Phase, A, S>>
+class _SpecPhaseAnimatorRunnerState<
+        Phase extends Object,
+        A extends SpecAttribute,
+        S extends Spec<S>> extends State<_SpecPhaseAnimatorRunner<Phase, A, S>>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   TweenSequence<S?>? _sequence;
@@ -186,7 +220,9 @@ class _SpecPhaseAnimatorState<Phase extends Object, A extends SpecAttribute,
   }
 
   @override
-  void didUpdateWidget(covariant _SpecPhaseAnimator<Phase, A, S> oldWidget) {
+  void didUpdateWidget(
+    covariant _SpecPhaseAnimatorRunner<Phase, A, S> oldWidget,
+  ) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.trigger != widget.trigger) {
       _shouldRestartAnimation = true;
