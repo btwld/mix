@@ -36,7 +36,7 @@ export 'src/attributes/constraints/constraints_dto.dart';
 export 'src/attributes/decoration/decoration_dto.dart';
 export 'src/attributes/decoration/image/decoration_image_dto.dart';
 export 'src/attributes/enum/enum_util.dart';
-export 'src/attributes/gap/gap_util.dart';
+export 'src/attributes/gap/spacing_util.dart';
 export 'src/attributes/gap/space_dto.dart';
 export 'src/attributes/gradient/gradient_dto.dart';
 export 'src/attributes/modifiers/widget_modifiers_data.dart';

@@ -44,7 +44,8 @@ mixin _$FlexSpec on Spec<FlexSpec> {
     TextDirection? textDirection,
     TextBaseline? textBaseline,
     Clip? clipBehavior,
-    double? gap,
+    double? spacing,
+    @Deprecated('Use spacing instead') double? gap,
     AnimatedData? animated,
     WidgetModifiersData? modifiers,
   }) {
@@ -57,7 +58,7 @@ mixin _$FlexSpec on Spec<FlexSpec> {
       textDirection: textDirection ?? _$this.textDirection,
       textBaseline: textBaseline ?? _$this.textBaseline,
       clipBehavior: clipBehavior ?? _$this.clipBehavior,
-      gap: gap ?? _$this.gap,
+      spacing: spacing ?? gap ?? _$this.spacing,
       animated: animated ?? _$this.animated,
       modifiers: modifiers ?? _$this.modifiers,
     );
@@ -73,7 +74,7 @@ mixin _$FlexSpec on Spec<FlexSpec> {
   ///
   /// The interpolation is performed on each property of the [FlexSpec] using the appropriate
   /// interpolation method:
-  /// - [MixHelpers.lerpDouble] for [gap].
+  /// - [MixHelpers.lerpDouble] for [spacing].
   /// For [crossAxisAlignment] and [mainAxisAlignment] and [mainAxisSize] and [verticalDirection] and [direction] and [textDirection] and [textBaseline] and [clipBehavior] and [animated] and [modifiers], the interpolation is performed using a step function.
   /// If [t] is less than 0.5, the value from the current [FlexSpec] is used. Otherwise, the value
   /// from the [other] [FlexSpec] is used.
@@ -96,7 +97,7 @@ mixin _$FlexSpec on Spec<FlexSpec> {
       textDirection: t < 0.5 ? _$this.textDirection : other.textDirection,
       textBaseline: t < 0.5 ? _$this.textBaseline : other.textBaseline,
       clipBehavior: t < 0.5 ? _$this.clipBehavior : other.clipBehavior,
-      gap: MixHelpers.lerpDouble(_$this.gap, other.gap, t),
+      spacing: MixHelpers.lerpDouble(_$this.spacing, other.spacing, t),
       animated: _$this.animated ?? other.animated,
       modifiers: other.modifiers,
     );
@@ -116,7 +117,7 @@ mixin _$FlexSpec on Spec<FlexSpec> {
         _$this.textDirection,
         _$this.textBaseline,
         _$this.clipBehavior,
-        _$this.gap,
+        _$this.spacing,
         _$this.animated,
         _$this.modifiers,
       ];
@@ -143,141 +144,12 @@ mixin _$FlexSpec on Spec<FlexSpec> {
         defaultValue: null));
     properties.add(DiagnosticsProperty('clipBehavior', _$this.clipBehavior,
         defaultValue: null));
-    properties.add(DiagnosticsProperty('gap', _$this.gap, defaultValue: null));
+    properties.add(
+        DiagnosticsProperty('spacing', _$this.spacing, defaultValue: null));
     properties.add(
         DiagnosticsProperty('animated', _$this.animated, defaultValue: null));
     properties.add(
         DiagnosticsProperty('modifiers', _$this.modifiers, defaultValue: null));
-  }
-}
-
-/// Represents the attributes of a [FlexSpec].
-///
-/// This class encapsulates properties defining the layout and
-/// appearance of a [FlexSpec].
-///
-/// Use this class to configure the attributes of a [FlexSpec] and pass it to
-/// the [FlexSpec] constructor.
-class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
-  final CrossAxisAlignment? crossAxisAlignment;
-  final MainAxisAlignment? mainAxisAlignment;
-  final MainAxisSize? mainAxisSize;
-  final VerticalDirection? verticalDirection;
-  final Axis? direction;
-  final TextDirection? textDirection;
-  final TextBaseline? textBaseline;
-  final Clip? clipBehavior;
-  final SpaceDto? gap;
-
-  const FlexSpecAttribute({
-    this.crossAxisAlignment,
-    this.mainAxisAlignment,
-    this.mainAxisSize,
-    this.verticalDirection,
-    this.direction,
-    this.textDirection,
-    this.textBaseline,
-    this.clipBehavior,
-    this.gap,
-    super.animated,
-    super.modifiers,
-  });
-
-  /// Resolves to [FlexSpec] using the provided [MixData].
-  ///
-  /// If a property is null in the [MixData], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
-  ///
-  /// ```dart
-  /// final flexSpec = FlexSpecAttribute(...).resolve(mix);
-  /// ```
-  @override
-  FlexSpec resolve(MixData mix) {
-    return FlexSpec(
-      crossAxisAlignment: crossAxisAlignment,
-      mainAxisAlignment: mainAxisAlignment,
-      mainAxisSize: mainAxisSize,
-      verticalDirection: verticalDirection,
-      direction: direction,
-      textDirection: textDirection,
-      textBaseline: textBaseline,
-      clipBehavior: clipBehavior,
-      gap: gap?.resolve(mix),
-      animated: animated?.resolve(mix) ?? mix.animation,
-      modifiers: modifiers?.resolve(mix),
-    );
-  }
-
-  /// Merges the properties of this [FlexSpecAttribute] with the properties of [other].
-  ///
-  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [FlexSpecAttribute] with the properties of [other] taking precedence over
-  /// the corresponding properties of this instance.
-  ///
-  /// Properties from [other] that are null will fall back
-  /// to the values from this instance.
-  @override
-  FlexSpecAttribute merge(FlexSpecAttribute? other) {
-    if (other == null) return this;
-
-    return FlexSpecAttribute(
-      crossAxisAlignment: other.crossAxisAlignment ?? crossAxisAlignment,
-      mainAxisAlignment: other.mainAxisAlignment ?? mainAxisAlignment,
-      mainAxisSize: other.mainAxisSize ?? mainAxisSize,
-      verticalDirection: other.verticalDirection ?? verticalDirection,
-      direction: other.direction ?? direction,
-      textDirection: other.textDirection ?? textDirection,
-      textBaseline: other.textBaseline ?? textBaseline,
-      clipBehavior: other.clipBehavior ?? clipBehavior,
-      gap: gap?.merge(other.gap) ?? other.gap,
-      animated: animated?.merge(other.animated) ?? other.animated,
-      modifiers: modifiers?.merge(other.modifiers) ?? other.modifiers,
-    );
-  }
-
-  /// The list of properties that constitute the state of this [FlexSpecAttribute].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [FlexSpecAttribute] instances for equality.
-  @override
-  List<Object?> get props => [
-        crossAxisAlignment,
-        mainAxisAlignment,
-        mainAxisSize,
-        verticalDirection,
-        direction,
-        textDirection,
-        textBaseline,
-        clipBehavior,
-        gap,
-        animated,
-        modifiers,
-      ];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('crossAxisAlignment', crossAxisAlignment,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty('mainAxisAlignment', mainAxisAlignment,
-        defaultValue: null));
-    properties.add(
-        DiagnosticsProperty('mainAxisSize', mainAxisSize, defaultValue: null));
-    properties.add(DiagnosticsProperty('verticalDirection', verticalDirection,
-        defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('direction', direction, defaultValue: null));
-    properties.add(DiagnosticsProperty('textDirection', textDirection,
-        defaultValue: null));
-    properties.add(
-        DiagnosticsProperty('textBaseline', textBaseline, defaultValue: null));
-    properties.add(
-        DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null));
-    properties.add(DiagnosticsProperty('gap', gap, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('animated', animated, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('modifiers', modifiers, defaultValue: null));
   }
 }
 
@@ -321,8 +193,8 @@ class FlexSpecUtility<T extends Attribute>
   /// Utility for defining [FlexSpecAttribute.clipBehavior]
   late final clipBehavior = ClipUtility((v) => only(clipBehavior: v));
 
-  /// Utility for defining [FlexSpecAttribute.gap]
-  late final gap = GapUtility((v) => only(gap: v));
+  /// Utility for defining [FlexSpecAttribute.spacing]
+  late final spacing = FlexSpacingUtility((v) => only(spacing: v));
 
   /// Utility for defining [FlexSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
@@ -349,7 +221,7 @@ class FlexSpecUtility<T extends Attribute>
     TextDirection? textDirection,
     TextBaseline? textBaseline,
     Clip? clipBehavior,
-    SpaceDto? gap,
+    SpaceDto? spacing,
     AnimatedDataDto? animated,
     WidgetModifiersDataDto? modifiers,
   }) {
@@ -362,7 +234,7 @@ class FlexSpecUtility<T extends Attribute>
       textDirection: textDirection,
       textBaseline: textBaseline,
       clipBehavior: clipBehavior,
-      gap: gap,
+      spacing: spacing,
       animated: animated,
       modifiers: modifiers,
     ));

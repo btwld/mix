@@ -163,7 +163,8 @@ extension $FortalezaSpaceSpacingSideUtilityX<T extends Attribute>
   T $space9() => ref(_structFortalezaSpace.space9);
 }
 
-extension $FortalezaSpaceGapUtilityX<T extends Attribute> on GapUtility<T> {
+extension $FortalezaSpaceGapUtilityX<T extends Attribute>
+    on FlexSpacingUtility<T> {
   T $space1() => ref(_structFortalezaSpace.space1);
   T $space2() => ref(_structFortalezaSpace.space2);
   T $space3() => ref(_structFortalezaSpace.space3);

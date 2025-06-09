@@ -89,8 +89,8 @@ void main() {
         ),
       );
 
-      final sizedBox = tester.widget<SizedBox>(find.byType(SizedBox));
-      expect(sizedBox.height, 16);
+      final flex = tester.widget<Flex>(find.byType(Flex));
+      expect(flex.spacing, 16);
     });
   });
 
@@ -223,11 +223,10 @@ void main() {
               ),
               Row(
                 mainAxisAlignment: e,
+                spacing: spacing,
                 children: const [
                   SizedBox(height: 30, width: 30, key: Key('3')),
-                  SizedBox(width: spacing),
                   SizedBox(height: 30, width: 30, key: Key('4')),
-                  SizedBox(width: spacing),
                   SizedBox(height: 30, width: 30, key: Key('5')),
                 ],
               )
