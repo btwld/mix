@@ -16,11 +16,11 @@ mixin _$ChipSpec on Spec<ChipSpec> {
   }
 
   /// {@template chip_spec_of}
-  /// Retrieves the [ChipSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [ChipSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [ChipSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [ChipSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [ChipSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [ChipSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$ChipSpec on Spec<ChipSpec> {
   /// ```
   /// {@endtemplate}
   static ChipSpec of(BuildContext context) {
-    return _$ChipSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<ChipSpec>(context) ?? const ChipSpec();
   }
 
   /// Creates a copy of this [ChipSpec] but with the given fields

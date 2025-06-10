@@ -16,11 +16,11 @@ mixin _$AvatarSpec on Spec<AvatarSpec> {
   }
 
   /// {@template avatar_spec_of}
-  /// Retrieves the [AvatarSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [AvatarSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [AvatarSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [AvatarSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [AvatarSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [AvatarSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$AvatarSpec on Spec<AvatarSpec> {
   /// ```
   /// {@endtemplate}
   static AvatarSpec of(BuildContext context) {
-    return _$AvatarSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<AvatarSpec>(context) ?? const AvatarSpec();
   }
 
   /// Creates a copy of this [AvatarSpec] but with the given fields

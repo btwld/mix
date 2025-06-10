@@ -16,11 +16,11 @@ mixin _$SpinnerSpec on Spec<SpinnerSpec> {
   }
 
   /// {@template spinner_spec_of}
-  /// Retrieves the [SpinnerSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [SpinnerSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [SpinnerSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [SpinnerSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [SpinnerSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [SpinnerSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$SpinnerSpec on Spec<SpinnerSpec> {
   /// ```
   /// {@endtemplate}
   static SpinnerSpec of(BuildContext context) {
-    return _$SpinnerSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<SpinnerSpec>(context) ?? const SpinnerSpec();
   }
 
   /// Creates a copy of this [SpinnerSpec] but with the given fields

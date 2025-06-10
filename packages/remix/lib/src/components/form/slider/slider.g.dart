@@ -15,11 +15,11 @@ mixin _$SliderSpec on Spec<SliderSpec> {
   }
 
   /// {@template slider_spec_of}
-  /// Retrieves the [SliderSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [SliderSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [SliderSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [SliderSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [SliderSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [SliderSpec].
   ///
   /// Example:
   ///
@@ -28,7 +28,7 @@ mixin _$SliderSpec on Spec<SliderSpec> {
   /// ```
   /// {@endtemplate}
   static SliderSpec of(BuildContext context) {
-    return _$SliderSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<SliderSpec>(context) ?? SliderSpec();
   }
 
   /// Creates a copy of this [SliderSpec] but with the given fields

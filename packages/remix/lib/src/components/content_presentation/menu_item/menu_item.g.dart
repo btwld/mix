@@ -16,11 +16,11 @@ mixin _$MenuItemSpec on Spec<MenuItemSpec> {
   }
 
   /// {@template menu_item_spec_of}
-  /// Retrieves the [MenuItemSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [MenuItemSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [MenuItemSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [MenuItemSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [MenuItemSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [MenuItemSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$MenuItemSpec on Spec<MenuItemSpec> {
   /// ```
   /// {@endtemplate}
   static MenuItemSpec of(BuildContext context) {
-    return _$MenuItemSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<MenuItemSpec>(context) ?? const MenuItemSpec();
   }
 
   /// Creates a copy of this [MenuItemSpec] but with the given fields

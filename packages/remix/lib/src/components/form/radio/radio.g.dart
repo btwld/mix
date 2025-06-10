@@ -16,11 +16,11 @@ mixin _$RadioSpec on Spec<RadioSpec> {
   }
 
   /// {@template radio_spec_of}
-  /// Retrieves the [RadioSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [RadioSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [RadioSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [RadioSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [RadioSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [RadioSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$RadioSpec on Spec<RadioSpec> {
   /// ```
   /// {@endtemplate}
   static RadioSpec of(BuildContext context) {
-    return _$RadioSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<RadioSpec>(context) ?? const RadioSpec();
   }
 
   /// Creates a copy of this [RadioSpec] but with the given fields

@@ -16,11 +16,11 @@ mixin _$LabelSpec on Spec<LabelSpec> {
   }
 
   /// {@template label_spec_of}
-  /// Retrieves the [LabelSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [LabelSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [LabelSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [LabelSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [LabelSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [LabelSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$LabelSpec on Spec<LabelSpec> {
   /// ```
   /// {@endtemplate}
   static LabelSpec of(BuildContext context) {
-    return _$LabelSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<LabelSpec>(context) ?? const LabelSpec();
   }
 
   /// Creates a copy of this [LabelSpec] but with the given fields

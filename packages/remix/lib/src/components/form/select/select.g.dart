@@ -16,11 +16,11 @@ mixin _$SelectSpec on Spec<SelectSpec> {
   }
 
   /// {@template select_spec_of}
-  /// Retrieves the [SelectSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [SelectSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [SelectSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [SelectSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [SelectSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [SelectSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$SelectSpec on Spec<SelectSpec> {
   /// ```
   /// {@endtemplate}
   static SelectSpec of(BuildContext context) {
-    return _$SelectSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<SelectSpec>(context) ?? const SelectSpec();
   }
 
   /// Creates a copy of this [SelectSpec] but with the given fields
@@ -299,11 +299,11 @@ mixin _$SelectMenuSpec on Spec<SelectMenuSpec> {
   }
 
   /// {@template select_menu_spec_of}
-  /// Retrieves the [SelectMenuSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [SelectMenuSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [SelectMenuSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [SelectMenuSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [SelectMenuSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [SelectMenuSpec].
   ///
   /// Example:
   ///
@@ -312,7 +312,8 @@ mixin _$SelectMenuSpec on Spec<SelectMenuSpec> {
   /// ```
   /// {@endtemplate}
   static SelectMenuSpec of(BuildContext context) {
-    return _$SelectMenuSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<SelectMenuSpec>(context) ??
+        const SelectMenuSpec();
   }
 
   /// Creates a copy of this [SelectMenuSpec] but with the given fields
@@ -545,11 +546,11 @@ mixin _$SelectMenuItemSpec on Spec<SelectMenuItemSpec> {
   }
 
   /// {@template select_menu_item_spec_of}
-  /// Retrieves the [SelectMenuItemSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [SelectMenuItemSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [SelectMenuItemSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [SelectMenuItemSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [SelectMenuItemSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [SelectMenuItemSpec].
   ///
   /// Example:
   ///
@@ -558,7 +559,8 @@ mixin _$SelectMenuItemSpec on Spec<SelectMenuItemSpec> {
   /// ```
   /// {@endtemplate}
   static SelectMenuItemSpec of(BuildContext context) {
-    return _$SelectMenuItemSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<SelectMenuItemSpec>(context) ??
+        const SelectMenuItemSpec();
   }
 
   /// Creates a copy of this [SelectMenuItemSpec] but with the given fields
@@ -809,11 +811,11 @@ mixin _$SelectTriggerSpec on Spec<SelectTriggerSpec> {
   }
 
   /// {@template select_trigger_spec_of}
-  /// Retrieves the [SelectTriggerSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [SelectTriggerSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [SelectTriggerSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [SelectTriggerSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [SelectTriggerSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [SelectTriggerSpec].
   ///
   /// Example:
   ///
@@ -822,7 +824,8 @@ mixin _$SelectTriggerSpec on Spec<SelectTriggerSpec> {
   /// ```
   /// {@endtemplate}
   static SelectTriggerSpec of(BuildContext context) {
-    return _$SelectTriggerSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<SelectTriggerSpec>(context) ??
+        const SelectTriggerSpec();
   }
 
   /// Creates a copy of this [SelectTriggerSpec] but with the given fields

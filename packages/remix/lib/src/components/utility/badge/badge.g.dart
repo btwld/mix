@@ -16,11 +16,11 @@ mixin _$BadgeSpec on Spec<BadgeSpec> {
   }
 
   /// {@template badge_spec_of}
-  /// Retrieves the [BadgeSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [BadgeSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [BadgeSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [BadgeSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [BadgeSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [BadgeSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$BadgeSpec on Spec<BadgeSpec> {
   /// ```
   /// {@endtemplate}
   static BadgeSpec of(BuildContext context) {
-    return _$BadgeSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<BadgeSpec>(context) ?? const BadgeSpec();
   }
 
   /// Creates a copy of this [BadgeSpec] but with the given fields

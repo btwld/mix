@@ -8,18 +8,10 @@ import '../box/box_spec.dart';
 import '../box/box_widget.dart';
 import 'stack_spec.dart';
 
-/// [StyledStack] - A styled widget that creates a stack layout with a mix of styles.
+/// A styled stack widget for layering widgets with Mix styling.
 ///
-/// This widget extends [StyledWidget] and is designed to arrange its [children] in a stack,
-/// applying the styles defined in a `Style`. It is useful when you need to layer widgets
-/// on top of each other and control their styling in a unified manner.
-///
-/// Parameters:
-///   - [children]: The list of widgets to stack on top of each other.
-///   - [inherit]: Determines whether the [StyledStack] should inherit styles from its ancestors.
-///     Inherits from [StyledWidget].
-///   - [key]: The key for the widget. Inherits from [StyledWidget].
-///   - [style]: The [Style] to be applied. Inherits from [StyledWidget].
+/// Applies styling to arrange [children] in a stack layout. Use [ZBox] instead
+/// for new development as this widget combines Box and Stack functionality.
 @Deprecated(
   'Use ZBox instead. '
   'StyledStack has been replaced with ZBox which combines Box and Stack functionality. '
@@ -129,13 +121,18 @@ class ZBox extends StyledWidget {
 
   @override
   Widget build(BuildContext context) {
-    // The withMix method is used to apply the styling context to both the box and the stack.
-    return withMix(context, (mix) {
-      final boxSpec = BoxSpec.of(mix);
-      final stackSpec = StackSpec.of(mix);
+    // Use SpecBuilder to apply the styling context to both the box and the stack.
+    return SpecBuilder(
+      inherit: inherit,
+      style: style,
+      orderOfModifiers: orderOfModifiers,
+      builder: (context) {
+        final boxSpec = BoxSpec.of(context);
+        final stackSpec = StackSpec.of(context);
 
-      return boxSpec(child: stackSpec(children: children));
-    });
+        return boxSpec(child: stackSpec(children: children));
+      },
+    );
   }
 }
 
