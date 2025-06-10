@@ -73,25 +73,6 @@ void main() {
       final flex = tester.widget<Flex>(find.byType(Flex));
       expect(flex.direction, Axis.vertical);
     });
-
-    testWidgets('changes its gap direction when direction is modified',
-        (tester) async {
-      await tester.pumpMaterialApp(
-        const Center(
-          child: FlexSpecWidget(
-            direction: Axis.horizontal,
-            spec: FlexSpec(direction: Axis.vertical, gap: 16),
-            children: [
-              StyledText('test'),
-              StyledText('case'),
-            ],
-          ),
-        ),
-      );
-
-      final sizedBox = tester.widget<SizedBox>(find.byType(SizedBox));
-      expect(sizedBox.height, 16);
-    });
   });
 
   testWidgets(
@@ -223,11 +204,10 @@ void main() {
               ),
               Row(
                 mainAxisAlignment: e,
+                spacing: spacing,
                 children: const [
                   SizedBox(height: 30, width: 30, key: Key('3')),
-                  SizedBox(width: spacing),
                   SizedBox(height: 30, width: 30, key: Key('4')),
-                  SizedBox(width: spacing),
                   SizedBox(height: 30, width: 30, key: Key('5')),
                 ],
               )
