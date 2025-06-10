@@ -41,11 +41,20 @@ final class FlexSpec extends Spec<FlexSpec> with _$FlexSpec, Diagnosticable {
   final TextBaseline? textBaseline;
   final Clip? clipBehavior;
 
+  @Deprecated(
+    'Use spacing instead. '
+    'The gap property has been replaced with spacing for better naming consistency. '
+    'This property will be removed in v2.0.0.\n',
+  )
   @MixableField(
     dto: MixableFieldType(type: SpaceDto),
-    utilities: [
-      MixableFieldUtility(alias: 'spacing', type: FlexSpacingUtility),
-    ],
+    utilities: [MixableFieldUtility(type: FlexSpacingUtility)],
+  )
+  final double? gap;
+
+  @MixableField(
+    dto: MixableFieldType(type: SpaceDto),
+    utilities: [MixableFieldUtility(type: FlexSpacingUtility)],
   )
   final double? spacing;
 
@@ -63,13 +72,16 @@ final class FlexSpec extends Spec<FlexSpec> with _$FlexSpec, Diagnosticable {
     this.textBaseline,
     this.clipBehavior,
     double? spacing,
-    @Deprecated('Use spacing instead') double? gap,
+    @Deprecated(
+      'Use spacing instead. '
+      'The gap property has been replaced with spacing for better naming consistency. '
+      'This property will be removed in v2.0.0.\n',
+    )
+    double? gap,
     super.animated,
     super.modifiers,
-  }) : spacing = spacing ?? gap;
-
-  @Deprecated('Use spacing instead')
-  double? get gap => spacing;
+  })  : spacing = spacing ?? gap,
+        gap = gap ?? spacing;
 
   Widget call({List<Widget> children = const [], required Axis direction}) {
     return isAnimated
@@ -122,12 +134,21 @@ class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
     this.textBaseline,
     this.clipBehavior,
     SpaceDto? spacing,
-    @Deprecated('Use spacing instead') SpaceDto? gap,
+    @Deprecated(
+      'Use spacing instead. '
+      'The gap property has been replaced with spacing for better naming consistency. '
+      'This property will be removed in v2.0.0.\n',
+    )
+    SpaceDto? gap,
     super.animated,
     super.modifiers,
   }) : spacing = spacing ?? gap;
 
-  @Deprecated('Use spacing instead')
+  @Deprecated(
+    'Use spacing instead. '
+    'The gap property has been replaced with spacing for better naming consistency. '
+    'This property will be removed in v2.0.0.\n',
+  )
   SpaceDto? get gap => spacing;
 
   /// Resolves to [FlexSpec] using the provided [MixData].
@@ -245,6 +266,10 @@ class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
 
 extension FlexSpecUtilityExt<T extends Attribute> on FlexSpecUtility<T> {
   /// Utility for defining [FlexSpecAttribute.gap]
-  @Deprecated('Use spacing instead')
+  @Deprecated(
+    'Use spacing instead. '
+    'The gap property has been replaced with spacing for better naming consistency. '
+    'This property will be removed in v2.0.0.\n',
+  )
   FlexSpacingUtility<T> get gap => FlexSpacingUtility((v) => only(spacing: v));
 }

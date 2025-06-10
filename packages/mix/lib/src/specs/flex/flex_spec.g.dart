@@ -6,6 +6,8 @@ part of 'flex_spec.dart';
 // MixGenerator
 // **************************************************************************
 
+// ignore_for_file: deprecated_member_use_from_same_package
+
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 /// A mixin that provides spec functionality for [FlexSpec].
@@ -45,7 +47,7 @@ mixin _$FlexSpec on Spec<FlexSpec> {
     TextBaseline? textBaseline,
     Clip? clipBehavior,
     double? spacing,
-    @Deprecated('Use spacing instead') double? gap,
+    double? gap,
     AnimatedData? animated,
     WidgetModifiersData? modifiers,
   }) {
@@ -58,7 +60,8 @@ mixin _$FlexSpec on Spec<FlexSpec> {
       textDirection: textDirection ?? _$this.textDirection,
       textBaseline: textBaseline ?? _$this.textBaseline,
       clipBehavior: clipBehavior ?? _$this.clipBehavior,
-      spacing: spacing ?? gap ?? _$this.spacing,
+      spacing: spacing ?? _$this.spacing,
+      gap: gap ?? _$this.gap,
       animated: animated ?? _$this.animated,
       modifiers: modifiers ?? _$this.modifiers,
     );
@@ -74,7 +77,7 @@ mixin _$FlexSpec on Spec<FlexSpec> {
   ///
   /// The interpolation is performed on each property of the [FlexSpec] using the appropriate
   /// interpolation method:
-  /// - [MixHelpers.lerpDouble] for [spacing].
+  /// - [MixHelpers.lerpDouble] for [spacing] and [gap].
   /// For [crossAxisAlignment] and [mainAxisAlignment] and [mainAxisSize] and [verticalDirection] and [direction] and [textDirection] and [textBaseline] and [clipBehavior] and [animated] and [modifiers], the interpolation is performed using a step function.
   /// If [t] is less than 0.5, the value from the current [FlexSpec] is used. Otherwise, the value
   /// from the [other] [FlexSpec] is used.
@@ -98,6 +101,7 @@ mixin _$FlexSpec on Spec<FlexSpec> {
       textBaseline: t < 0.5 ? _$this.textBaseline : other.textBaseline,
       clipBehavior: t < 0.5 ? _$this.clipBehavior : other.clipBehavior,
       spacing: MixHelpers.lerpDouble(_$this.spacing, other.spacing, t),
+      gap: MixHelpers.lerpDouble(_$this.gap, other.gap, t),
       animated: _$this.animated ?? other.animated,
       modifiers: other.modifiers,
     );
@@ -118,6 +122,7 @@ mixin _$FlexSpec on Spec<FlexSpec> {
         _$this.textBaseline,
         _$this.clipBehavior,
         _$this.spacing,
+        _$this.gap,
         _$this.animated,
         _$this.modifiers,
       ];
@@ -146,6 +151,7 @@ mixin _$FlexSpec on Spec<FlexSpec> {
         defaultValue: null));
     properties.add(
         DiagnosticsProperty('spacing', _$this.spacing, defaultValue: null));
+    properties.add(DiagnosticsProperty('gap', _$this.gap, defaultValue: null));
     properties.add(
         DiagnosticsProperty('animated', _$this.animated, defaultValue: null));
     properties.add(
@@ -196,6 +202,9 @@ class FlexSpecUtility<T extends Attribute>
   /// Utility for defining [FlexSpecAttribute.spacing]
   late final spacing = FlexSpacingUtility((v) => only(spacing: v));
 
+  /// Utility for defining [FlexSpecAttribute.gap]
+  late final gap = FlexSpacingUtility((v) => only(gap: v));
+
   /// Utility for defining [FlexSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
@@ -222,6 +231,7 @@ class FlexSpecUtility<T extends Attribute>
     TextBaseline? textBaseline,
     Clip? clipBehavior,
     SpaceDto? spacing,
+    SpaceDto? gap,
     AnimatedDataDto? animated,
     WidgetModifiersDataDto? modifiers,
   }) {
@@ -235,6 +245,7 @@ class FlexSpecUtility<T extends Attribute>
       textBaseline: textBaseline,
       clipBehavior: clipBehavior,
       spacing: spacing,
+      gap: gap,
       animated: animated,
       modifiers: modifiers,
     ));
