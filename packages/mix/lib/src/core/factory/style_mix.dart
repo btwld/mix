@@ -102,6 +102,9 @@ class Style with EqualityMixin {
 
     for (final attribute in attributes) {
       switch (attribute) {
+        case FluentAttribute():
+          styleList.add(attribute.value);
+          applyVariants.addAll(attribute.variants);
         case SpecAttribute():
           styleList.add(attribute);
         case VariantAttribute():

@@ -7,9 +7,12 @@ import '../attributes/modifiers/widget_modifiers_data.dart';
 import '../attributes/modifiers/widget_modifiers_data_dto.dart';
 import '../internal/compare_mixin.dart';
 import '../variants/context_variant_util/on_util.dart';
+import '../variants/variant_attribute.dart';
+import '../variants/widget_state_variant.dart';
 import 'element.dart';
 import 'factory/mix_data.dart';
 import 'factory/style_mix.dart';
+import 'variant.dart';
 
 @immutable
 abstract class Spec<T extends Spec<T>> with EqualityMixin {
@@ -105,4 +108,63 @@ abstract class SpecStyle<U extends SpecUtility> {
   const SpecStyle();
 
   Style makeStyle(SpecConfiguration<U> spec);
+}
+
+/// An abstract class representing a resolvable attribute.
+///
+/// This class extends the [Attribute] class and provides a generic type [Self] and [Value].
+/// The [Self] type represents the concrete implementation of the attribute, while the [Value] type represents the resolvable value.
+abstract class FluentAttribute<Attr, S, Self> extends Mixable<S>
+    implements Attribute {
+  final Attr value;
+  final List<VariantAttribute> variants;
+
+  // final AnimatedDataDto? animated;
+  // final WidgetModifiersDataDto? modifiers;
+
+  const FluentAttribute(this.value, {this.variants = const []});
+
+  FluentAttribute<Attr, S, Self> _addContextVariant({
+    required Attribute Function(Self) value,
+    required VariantAttribute variant,
+  }) =>
+      constructor(this.value, variants: [...variants, variant])
+          as FluentAttribute<Attr, S, Self>;
+
+  @protected
+  // ignore: avoid-unused-parameters
+  Self Function(Attr value, {List<VariantAttribute> variants}) get constructor;
+  Self Function() get constructorEmpty;
+
+  FluentAttribute<Attr, S, Self> onHover(Attribute Function(Self) value) =>
+      _addContextVariant(
+        value: value,
+        variant: const OnHoverVariant().call(value(constructorEmpty())),
+      );
+
+  FluentAttribute<Attr, S, Self> onVariant(
+    Variant variant,
+    Attribute Function(Self) value,
+  ) =>
+      _addContextVariant(
+        value: value,
+        variant: variant(value(this as Self)),
+      );
+
+  FluentAttribute<Attr, S, Self> onPress(Attribute Function(Self) value) =>
+      _addContextVariant(
+        value: value,
+        variant: const OnPressVariant().call(value(constructorEmpty())),
+      );
+
+  @override
+  FluentAttribute<Attr, S, Self> merge(
+    covariant FluentAttribute<Attr, S, Self>? other,
+  );
+
+  @override
+  S resolve(MixData mix);
+
+  @override
+  List<Object?> get props => [value, variants];
 }
