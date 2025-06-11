@@ -163,7 +163,7 @@ class BoxStyle extends FluentAttribute<BoxSpecAttribute, BoxSpec, BoxStyle> {
   }
 
   @override
-  List<Object?> get props => [value];
+  List<Object?> get props => [value, variants];
 
   @override
   BoxStyle Function(BoxSpecAttribute value, {List<VariantAttribute> variants})
