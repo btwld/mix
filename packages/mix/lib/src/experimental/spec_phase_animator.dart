@@ -58,8 +58,6 @@ class SpecPhaseAnimator<Phase extends Object, A extends SpecAttribute,
 class _SpecPhaseAnimatorState<Phase extends Object, A extends SpecAttribute,
         S extends Spec<S>> extends State<SpecPhaseAnimator<Phase, A, S>>
     with SingleTickerProviderStateMixin {
-  late final _controller = AnimationController(vsync: this);
-
   _PhaseData<Phase, A> _buildPhaseData() {
     final phaseData = <Phase, _PhaseDataUnit<A>>{};
     for (final phase in widget.phases) {
@@ -75,18 +73,9 @@ class _SpecPhaseAnimatorState<Phase extends Object, A extends SpecAttribute,
   }
 
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final scope = _SpecPhaseAnimatorScope.maybeOf<Phase, A, S>(context);
-
     return _SpecPhaseAnimatorScope<Phase, A, S>(
       data: _buildPhaseData(),
-      controllers: [...?scope?.controllers, _controller],
       child: _SpecPhaseAnimatorRunner<Phase, A, S>(
         phases: widget.phases,
         builder: widget.builder,
@@ -98,11 +87,7 @@ class _SpecPhaseAnimatorState<Phase extends Object, A extends SpecAttribute,
 
 class _SpecPhaseAnimatorScope<Phase extends Object, A extends SpecAttribute,
     S extends Spec<S>> extends InheritedWidget {
-  const _SpecPhaseAnimatorScope({
-    required this.data,
-    required super.child,
-    required this.controllers,
-  });
+  const _SpecPhaseAnimatorScope({required this.data, required super.child});
 
   static _SpecPhaseAnimatorScope<Phase, A, S>
       of<Phase extends Object, A extends SpecAttribute, S extends Spec<S>>(
@@ -124,7 +109,6 @@ class _SpecPhaseAnimatorScope<Phase extends Object, A extends SpecAttribute,
   }
 
   final _PhaseData<Phase, A> data;
-  final List<AnimationController> controllers;
 
   @override
   bool updateShouldNotify(_SpecPhaseAnimatorScope<Phase, A, S> oldWidget) {
