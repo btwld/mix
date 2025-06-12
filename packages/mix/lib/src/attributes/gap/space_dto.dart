@@ -2,7 +2,6 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../core/element.dart';
 import '../../core/factory/mix_data.dart';
-import '../../theme/tokens/space_token.dart';
 import '../../theme/tokens/token.dart';
 
 part 'space_dto.g.dart';
@@ -23,12 +22,9 @@ class SpaceDto extends Mixable<double> with _$SpaceDto {
 
   @override
   double resolve(MixData mix) {
-    // Handle token resolution first
+    // Direct token resolution using unified resolver system
     if (token != null) {
-      // Resolve through the token resolver using the old token type for compatibility
-      final spaceToken = SpaceToken(token!.name);
-
-      return mix.tokens.spaceToken(spaceToken);
+      return mix.tokens.resolveToken<double>(token!.name);
     }
 
     return mix.tokens.spaceTokenRef(value ?? 0);

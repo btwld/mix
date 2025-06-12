@@ -40,10 +40,10 @@ void main() {
       const smallToken = Token<double>('small');
       const largeToken = Token<double>('large');
       
-      final theme = MixThemeData(
-        spaces: {
-          SpaceToken(smallToken.name): 8.0,
-          SpaceToken(largeToken.name): 24.0,
+      final theme = MixThemeData.unified(
+        tokens: {
+          smallToken.name: 8.0,
+          largeToken.name: 24.0,
         },
       );
 
