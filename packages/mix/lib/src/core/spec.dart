@@ -7,6 +7,8 @@ import '../attributes/modifiers/widget_modifiers_data.dart';
 import '../attributes/modifiers/widget_modifiers_data_dto.dart';
 import '../internal/compare_mixin.dart';
 import '../variants/context_variant_util/on_util.dart';
+import '../variants/variant_attribute.dart';
+import 'attributes_map.dart';
 import 'element.dart';
 import 'factory/mix_data.dart';
 import 'factory/style_mix.dart';
@@ -55,6 +57,7 @@ abstract class SpecAttribute<Value> extends Mixable<Value>
 
 abstract class SpecUtility<T extends Attribute, V> extends Attribute {
   T? attributeValue;
+  List<VariantAttribute> variantAttributes;
 
   @protected
   @visibleForTesting
@@ -62,8 +65,11 @@ abstract class SpecUtility<T extends Attribute, V> extends Attribute {
 
   final bool _mutable;
 
-  SpecUtility(this.attributeBuilder, {bool mutable = false})
-      : _mutable = mutable;
+  SpecUtility(
+    this.attributeBuilder, {
+    bool mutable = false,
+    this.variantAttributes = const [],
+  }) : _mutable = mutable;
 
   static T selfBuilder<T>(T value) => value;
 
@@ -87,6 +93,18 @@ abstract class SpecUtility<T extends Attribute, V> extends Attribute {
 
   @override
   get props => [attributeValue];
+}
+
+mixin UtilityStyleMix<T extends SpecAttribute, V> on SpecUtility<T, V>
+    implements BaseStyle {
+  @override
+  AttributeMap<SpecAttribute> get styles => AttributeMap([
+        if (attributeValue case final value?) value,
+      ]);
+
+  @override
+  AttributeMap<VariantAttribute> get variants =>
+      AttributeMap([...variantAttributes]);
 }
 
 class SpecConfiguration<U extends SpecUtility> {

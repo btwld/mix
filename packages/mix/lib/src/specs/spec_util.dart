@@ -11,6 +11,7 @@ import 'text/text_spec.dart';
 
 const _mixUtility = MixUtilities();
 
+@Deprecated('Use BoxStyle instead')
 BoxSpecUtility<BoxSpecAttribute> get $box => _mixUtility.box;
 FlexBoxSpecUtility<FlexBoxSpecAttribute> get $flexbox => _mixUtility.flexbox;
 FlexSpecUtility<FlexSpecAttribute> get $flex => _mixUtility.flex;

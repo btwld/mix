@@ -42,7 +42,7 @@ class PressableBox extends StatelessWidget {
   /// If this callback and [onPress] are null, then `PressableBox` will be disabled automatically.
   final VoidCallback? onLongPress;
 
-  final Style? style;
+  final BaseStyle? style;
   final Widget child;
   final bool enabled;
   final FocusNode? focusNode;

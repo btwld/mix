@@ -142,3 +142,7 @@ final class BoxSpec extends Spec<BoxSpec> with _$BoxSpec, Diagnosticable {
     _debugFillProperties(properties);
   }
 }
+
+class BoxStyle extends BoxSpecUtility<BoxSpecAttribute> with UtilityStyleMix {
+  BoxStyle() : super((v) => v, mutable: true);
+}

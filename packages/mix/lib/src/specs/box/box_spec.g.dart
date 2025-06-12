@@ -414,9 +414,11 @@ class BoxSpecUtility<T extends Attribute>
 
   BoxSpecUtility(super.builder, {super.mutable});
 
+  @Deprecated('Use BoxStyle() instead')
   BoxSpecUtility<T> get chain =>
       BoxSpecUtility(attributeBuilder, mutable: true);
 
+  @Deprecated('Use BoxStyle() instead')
   static BoxSpecUtility<BoxSpecAttribute> get self => BoxSpecUtility((v) => v);
 
   /// Returns a new [BoxSpecAttribute] with the specified properties.

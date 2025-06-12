@@ -14,6 +14,19 @@ import '../spec.dart';
 import '../variant.dart';
 import 'mix_data.dart';
 
+class BaseStyle with EqualityMixin {
+  final AttributeMap<SpecAttribute> styles;
+  final AttributeMap<VariantAttribute> variants;
+
+  const BaseStyle({required this.styles, required this.variants});
+  const BaseStyle.empty()
+      : styles = const AttributeMap.empty(),
+        variants = const AttributeMap.empty();
+
+  @override
+  List<Object?> get props => [styles, variants];
+}
+
 /// A utility class for managing a collection of styling attributes and variants.
 ///
 /// The `Style` class is used to encapsulate a set of styling attributes and
@@ -26,21 +39,17 @@ import 'mix_data.dart';
 /// final style = Style(attribute1, attribute2, attribute3);
 /// final updatedStyle = style.variant(myVariant);
 /// ```
-class Style with EqualityMixin {
-  /// Visual attributes contained in this mix.
-  final AttributeMap<SpecAttribute> styles;
-
-  /// The variant attributes contained in this mix.
-  final AttributeMap<VariantAttribute> variants;
-
+class Style extends BaseStyle {
   /// A constant, empty mix for use with const constructor widgets.
   ///
   /// This can be used as a default or initial value where a `Style` is required.
   const Style.empty()
-      : styles = const AttributeMap.empty(),
-        variants = const AttributeMap.empty();
+      : super(
+          styles: const AttributeMap.empty(),
+          variants: const AttributeMap.empty(),
+        );
 
-  const Style._({required this.styles, required this.variants});
+  const Style._({required super.styles, required super.variants});
 
   /// Creates a new `Style` instance with a specified list of [Attribute]s.
   ///
@@ -110,8 +119,10 @@ class Style with EqualityMixin {
           applyVariants.addAll(attribute.value.variants.values);
           styleList.addAll(attribute.value.styles.values);
         case SpecUtility():
-          if (attribute.attributeValue != null) {
-            final nestedStyle = Style.create([attribute.attributeValue!]);
+          if (attribute.attributeValue case final value?) {
+            final nestedStyle = Style.create(
+              [value, ...attribute.variantAttributes],
+            );
             styleList.addAll(nestedStyle.styles.values);
             applyVariants.addAll(nestedStyle.variants.values);
           }

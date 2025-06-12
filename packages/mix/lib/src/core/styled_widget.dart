@@ -13,14 +13,14 @@ import 'internal/experimental/mix_builder.dart';
 abstract class StyledWidget extends StatelessWidget {
   /// Creates a styled widget.
   const StyledWidget({
-    Style? style,
+    BaseStyle? style,
     super.key,
     this.inherit = false,
     required this.orderOfModifiers,
-  }) : style = style ?? const Style.empty();
+  }) : style = style ?? const BaseStyle.empty();
 
   /// The style to apply to this widget.
-  final Style style;
+  final BaseStyle style;
 
   /// Whether to inherit style from the nearest [StyledWidget] ancestor.
   final bool inherit;
@@ -78,7 +78,7 @@ class SpecBuilder extends StatelessWidget {
     super.key,
     this.inherit = false,
     this.controller,
-    this.style = const Style.empty(),
+    this.style = const BaseStyle.empty(),
     this.orderOfModifiers = const [],
     required this.builder,
   });
@@ -90,7 +90,7 @@ class SpecBuilder extends StatelessWidget {
   final WidgetStatesController? controller;
 
   /// Style to apply to the widget.
-  final Style style;
+  final BaseStyle style;
 
   /// Whether to inherit style from parent widgets.
   final bool inherit;
