@@ -16,11 +16,11 @@ mixin _$CardSpec on Spec<CardSpec> {
   }
 
   /// {@template card_spec_of}
-  /// Retrieves the [CardSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [CardSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [CardSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [CardSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [CardSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [CardSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$CardSpec on Spec<CardSpec> {
   /// ```
   /// {@endtemplate}
   static CardSpec of(BuildContext context) {
-    return _$CardSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<CardSpec>(context) ?? const CardSpec();
   }
 
   /// Creates a copy of this [CardSpec] but with the given fields

@@ -81,14 +81,6 @@ extension on Set<WidgetState> {
 }
 
 class MixWidgetState extends InheritedModel<WidgetState> {
-  final bool disabled;
-  final bool hovered;
-  final bool focused;
-  final bool pressed;
-  final bool dragged;
-  final bool selected;
-  final bool error;
-
   MixWidgetState.fromSet({
     super.key,
     required Set<WidgetState> states,
@@ -137,6 +129,18 @@ class MixWidgetState extends InheritedModel<WidgetState> {
       WidgetState.scrolledUnder => false,
     };
   }
+
+  final bool disabled;
+  final bool hovered;
+  final bool focused;
+
+  final bool pressed;
+
+  final bool dragged;
+
+  final bool selected;
+
+  final bool error;
 
   @override
   bool updateShouldNotify(MixWidgetState oldWidget) {

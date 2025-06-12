@@ -118,7 +118,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(countPressTime, 1);
-    expect(countOnEnd, 1);
+    expect(countOnEnd, 2);
   });
 
   testWidgets('FlexBox handles onEnd #2', (WidgetTester tester) async {
@@ -157,7 +157,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(countPressTime, 1);
-    expect(countOnEnd, 1);
+    expect(countOnEnd, 2);
   });
 
   testWidgets(

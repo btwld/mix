@@ -2,30 +2,31 @@
 
 import 'package:flutter/widgets.dart';
 
+import '../../core/animated_spec_widget.dart';
 import '../../core/factory/mix_provider.dart';
+import '../../core/spec_widget.dart';
 import '../../core/styled_widget.dart';
 import '../../modifiers/internal/render_widget_modifier.dart';
 import '../box/box_spec.dart';
 import '../flex/flex_spec.dart';
 import 'flexbox_spec.dart';
 
-/// A flex container widget with integrated `Style` for enhanced styling.
+/// A styled flex container widget combining box and flex capabilities.
 ///
-/// `FlexBox` combines the features of `StyledContainer` and `StyledFlex`, offering
-/// a powerful tool for creating flexible layouts with advanced styling capabilities
-/// through `Style`. It's perfect for designing complex layouts that require both
-/// container and flex properties with uniform styling.
+/// Applies both [BoxSpec] and [FlexSpec] styling to create flexible layouts
+/// with advanced styling through the Mix framework. Combines container and
+/// flex properties for complex layouts.
 ///
-/// The `direction` parameter sets the layout's orientation, while the `Style`
-/// integration simplifies the process of applying consistent styles to all elements.
-///
-/// Example Usage:
+/// Example:
 /// ```dart
 /// FlexBox(
 ///   direction: Axis.horizontal,
-///   style: yourStyle,
+///   style: Style(
+///     $flex.gap(8),
+///     $box.padding.all(16),
+///   ),
 ///   children: [Widget1(), Widget2()],
-/// );
+/// )
 /// ```
 class FlexBox extends StyledWidget {
   const FlexBox({
@@ -45,31 +46,36 @@ class FlexBox extends StyledWidget {
     // TODO: the support for FlexBoxSpec using BoxSpec and FlexSpec is a temporary
     // solution to not break the existing API. it should be implemented using only
     // FlexBoxSpec in the next major version.
-    return withMix(context, (context) {
-      final mixData = Mix.of(context);
+    return SpecBuilder(
+      inherit: inherit,
+      style: style,
+      orderOfModifiers: orderOfModifiers,
+      builder: (context) {
+        final mixData = Mix.of(context);
 
-      final spec =
-          mixData.attributeOf<FlexBoxSpecAttribute>()?.resolve(mixData);
+        final spec =
+            mixData.attributeOf<FlexBoxSpecAttribute>()?.resolve(mixData);
 
-      final boxSpec = spec?.box ?? BoxSpec.of(context);
-      final flexSpec = spec?.flex ?? FlexSpec.of(context);
+        final boxSpec = spec?.box ?? BoxSpec.of(context);
+        final flexSpec = spec?.flex ?? FlexSpec.of(context);
 
-      final newSpec = FlexBoxSpec(
-        animated: spec?.animated,
-        modifiers: spec?.modifiers,
-        box: boxSpec,
-        flex: flexSpec,
-      );
+        final newSpec = FlexBoxSpec(
+          animated: spec?.animated,
+          modifiers: spec?.modifiers,
+          box: boxSpec,
+          flex: flexSpec,
+        );
 
-      return newSpec(direction: direction, children: children);
-    });
+        return newSpec(direction: direction, children: children);
+      },
+    );
   }
 }
 
-class FlexBoxSpecWidget extends StatelessWidget {
+class FlexBoxSpecWidget extends SpecWidget<FlexBoxSpec> {
   const FlexBoxSpecWidget({
     super.key,
-    this.spec,
+    super.spec,
     this.children = const <Widget>[],
     required this.direction,
     this.orderOfModifiers = const [],
@@ -77,7 +83,6 @@ class FlexBoxSpecWidget extends StatelessWidget {
 
   final List<Widget> children;
   final Axis direction;
-  final FlexBoxSpec? spec;
   final List<Type> orderOfModifiers;
 
   @override
@@ -98,10 +103,11 @@ class FlexBoxSpecWidget extends StatelessWidget {
   }
 }
 
-class AnimatedFlexBoxSpecWidget extends ImplicitlyAnimatedWidget {
+class AnimatedFlexBoxSpecWidget
+    extends ImplicitlyAnimatedSpecWidget<FlexBoxSpec> {
   const AnimatedFlexBoxSpecWidget({
     super.key,
-    required this.spec,
+    required super.spec,
     this.children = const <Widget>[],
     required this.direction,
     this.orderOfModifiers = const [],
@@ -110,38 +116,17 @@ class AnimatedFlexBoxSpecWidget extends ImplicitlyAnimatedWidget {
     super.onEnd,
   });
 
-  final FlexBoxSpec spec;
   final List<Widget> children;
   final Axis direction;
   final List<Type> orderOfModifiers;
 
   @override
-  AnimatedFlexBoxSpecWidgetState createState() =>
-      AnimatedFlexBoxSpecWidgetState();
-}
-
-class AnimatedFlexBoxSpecWidgetState
-    extends AnimatedWidgetBaseState<AnimatedFlexBoxSpecWidget> {
-  FlexBoxSpecTween? _specTween;
-
-  @override
-  // ignore: avoid-dynamic
-  void forEachTween(TweenVisitor<dynamic> visitor) {
-    _specTween = visitor(
-      _specTween,
-      widget.spec,
-      // ignore: avoid-dynamic
-      (dynamic value) => FlexBoxSpecTween(begin: value as FlexBoxSpec),
-    ) as FlexBoxSpecTween?;
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, FlexBoxSpec animatedSpec) {
     return FlexBoxSpecWidget(
-      spec: _specTween?.evaluate(animation),
-      direction: widget.direction,
-      orderOfModifiers: widget.orderOfModifiers,
-      children: widget.children,
+      spec: animatedSpec,
+      direction: direction,
+      orderOfModifiers: orderOfModifiers,
+      children: children,
     );
   }
 }

@@ -16,11 +16,11 @@ mixin _$AccordionSpec on Spec<AccordionSpec> {
   }
 
   /// {@template accordion_spec_of}
-  /// Retrieves the [AccordionSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [AccordionSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [AccordionSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [AccordionSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [AccordionSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [AccordionSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,8 @@ mixin _$AccordionSpec on Spec<AccordionSpec> {
   /// ```
   /// {@endtemplate}
   static AccordionSpec of(BuildContext context) {
-    return _$AccordionSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<AccordionSpec>(context) ??
+        const AccordionSpec();
   }
 
   /// Creates a copy of this [AccordionSpec] but with the given fields
@@ -242,11 +243,11 @@ mixin _$AccordionHeaderSpec on Spec<AccordionHeaderSpec> {
   }
 
   /// {@template accordion_header_spec_of}
-  /// Retrieves the [AccordionHeaderSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [AccordionHeaderSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [AccordionHeaderSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [AccordionHeaderSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [AccordionHeaderSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [AccordionHeaderSpec].
   ///
   /// Example:
   ///
@@ -255,7 +256,8 @@ mixin _$AccordionHeaderSpec on Spec<AccordionHeaderSpec> {
   /// ```
   /// {@endtemplate}
   static AccordionHeaderSpec of(BuildContext context) {
-    return _$AccordionHeaderSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<AccordionHeaderSpec>(context) ??
+        const AccordionHeaderSpec();
   }
 
   /// Creates a copy of this [AccordionHeaderSpec] but with the given fields

@@ -16,11 +16,11 @@ mixin _$SegmentedControlSpec on Spec<SegmentedControlSpec> {
   }
 
   /// {@template segmented_control_spec_of}
-  /// Retrieves the [SegmentedControlSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [SegmentedControlSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [SegmentedControlSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [SegmentedControlSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [SegmentedControlSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [SegmentedControlSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,8 @@ mixin _$SegmentedControlSpec on Spec<SegmentedControlSpec> {
   /// ```
   /// {@endtemplate}
   static SegmentedControlSpec of(BuildContext context) {
-    return _$SegmentedControlSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<SegmentedControlSpec>(context) ??
+        const SegmentedControlSpec();
   }
 
   /// Creates a copy of this [SegmentedControlSpec] but with the given fields
@@ -315,11 +316,11 @@ mixin _$SegmentButtonSpec on Spec<SegmentButtonSpec> {
   }
 
   /// {@template segment_button_spec_of}
-  /// Retrieves the [SegmentButtonSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [SegmentButtonSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [SegmentButtonSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [SegmentButtonSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [SegmentButtonSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [SegmentButtonSpec].
   ///
   /// Example:
   ///
@@ -328,7 +329,8 @@ mixin _$SegmentButtonSpec on Spec<SegmentButtonSpec> {
   /// ```
   /// {@endtemplate}
   static SegmentButtonSpec of(BuildContext context) {
-    return _$SegmentButtonSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<SegmentButtonSpec>(context) ??
+        const SegmentButtonSpec();
   }
 
   /// Creates a copy of this [SegmentButtonSpec] but with the given fields

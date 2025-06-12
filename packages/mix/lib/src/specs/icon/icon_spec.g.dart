@@ -16,11 +16,11 @@ mixin _$IconSpec on Spec<IconSpec> {
   }
 
   /// {@template icon_spec_of}
-  /// Retrieves the [IconSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [IconSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [IconSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [IconSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [IconSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [IconSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$IconSpec on Spec<IconSpec> {
   /// ```
   /// {@endtemplate}
   static IconSpec of(BuildContext context) {
-    return _$IconSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<IconSpec>(context) ?? const IconSpec();
   }
 
   /// Creates a copy of this [IconSpec] but with the given fields
@@ -98,7 +98,7 @@ mixin _$IconSpec on Spec<IconSpec> {
       applyTextScaling:
           t < 0.5 ? _$this.applyTextScaling : other.applyTextScaling,
       fill: MixHelpers.lerpDouble(_$this.fill, other.fill, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
       modifiers: other.modifiers,
     );
   }

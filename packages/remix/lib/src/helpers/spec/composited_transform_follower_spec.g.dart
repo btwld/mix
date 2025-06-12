@@ -19,11 +19,11 @@ mixin _$CompositedTransformFollowerSpec
   }
 
   /// {@template composited_transform_follower_spec_of}
-  /// Retrieves the [CompositedTransformFollowerSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [CompositedTransformFollowerSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [CompositedTransformFollowerSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [CompositedTransformFollowerSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [CompositedTransformFollowerSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [CompositedTransformFollowerSpec].
   ///
   /// Example:
   ///
@@ -32,7 +32,8 @@ mixin _$CompositedTransformFollowerSpec
   /// ```
   /// {@endtemplate}
   static CompositedTransformFollowerSpec of(BuildContext context) {
-    return _$CompositedTransformFollowerSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<CompositedTransformFollowerSpec>(context) ??
+        const CompositedTransformFollowerSpec();
   }
 
   /// Creates a copy of this [CompositedTransformFollowerSpec] but with the given fields

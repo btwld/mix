@@ -109,7 +109,7 @@ void main() {
     });
 
     test(
-        'modifiersOf returns a list of resolved WidgetModifierSpec of the specified type',
+        'modifiers.whereType returns a list of resolved WidgetModifierSpec of the specified type',
         () {
       final style = Style(
         $with.scale(2.0),
@@ -121,11 +121,11 @@ void main() {
 
       final mixData = MixData.create(MockBuildContext(), style);
 
-      final modifiers = mixData.modifiersOf();
+      final modifiers = mixData.modifiers;
 
       expect(modifiers.length, 5);
 
-      final scaleModifiers = mixData.modifiersOf<TransformModifierSpec>();
+      final scaleModifiers = mixData.modifiers.whereType<TransformModifierSpec>().toList();
       expect(scaleModifiers, [
         TransformModifierSpec(
           transform: Matrix4.diagonal3Values(2.0, 2.0, 1.0),
@@ -133,23 +133,23 @@ void main() {
         ),
       ]);
 
-      final opacityModifiers = mixData.modifiersOf<OpacityModifierSpec>();
+      final opacityModifiers = mixData.modifiers.whereType<OpacityModifierSpec>().toList();
       expect(opacityModifiers, [const OpacityModifierSpec(0.5)]);
 
-      final visibilityModifiers = mixData.modifiersOf<VisibilityModifierSpec>();
+      final visibilityModifiers = mixData.modifiers.whereType<VisibilityModifierSpec>().toList();
       expect(visibilityModifiers, [const VisibilityModifierSpec(true)]);
 
-      final clipModifiers = mixData.modifiersOf<ClipOvalModifierSpec>();
+      final clipModifiers = mixData.modifiers.whereType<ClipOvalModifierSpec>().toList();
       expect(clipModifiers, [const ClipOvalModifierSpec()]);
 
       final aspectRatioModifiers =
-          mixData.modifiersOf<AspectRatioModifierSpec>();
+          mixData.modifiers.whereType<AspectRatioModifierSpec>().toList();
       expect(aspectRatioModifiers, [const AspectRatioModifierSpec(2.0)]);
 
-      final customModifiers = mixData.modifiersOf<ClipPathModifierSpec>();
+      final customModifiers = mixData.modifiers.whereType<ClipPathModifierSpec>().toList();
       expect(customModifiers, isEmpty);
 
-      final nonExistentModifiers = mixData.modifiersOf<ClipRectModifierSpec>();
+      final nonExistentModifiers = mixData.modifiers.whereType<ClipRectModifierSpec>().toList();
       expect(nonExistentModifiers, isEmpty);
     });
 

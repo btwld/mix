@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 
+import '../../core/animated_spec_widget.dart';
+import '../../core/spec_widget.dart';
 import '../../core/styled_widget.dart';
 import '../../internal/constants.dart';
 import '../../modifiers/internal/render_widget_modifier.dart';
@@ -39,46 +41,28 @@ class StyledImage extends StyledWidget {
     return withMix(context, (context) {
       final spec = ImageSpec.of(context);
 
-      return spec.isAnimated
-          ? AnimatedImageSpecWidget(
-              spec: spec,
-              image: image,
-              frameBuilder: frameBuilder,
-              loadingBuilder: loadingBuilder,
-              errorBuilder: errorBuilder,
-              semanticLabel: semanticLabel,
-              excludeFromSemantics: excludeFromSemantics,
-              duration: spec.animated!.duration,
-              curve: spec.animated!.curve,
-              gaplessPlayback: gaplessPlayback,
-              isAntiAlias: isAntiAlias,
-              matchTextDirection: matchTextDirection,
-              orderOfModifiers: orderOfModifiers,
-              opacity: opacity,
-            )
-          : ImageSpecWidget(
-              spec: spec,
-              orderOfModifiers: orderOfModifiers,
-              image: image,
-              frameBuilder: frameBuilder,
-              loadingBuilder: loadingBuilder,
-              errorBuilder: errorBuilder,
-              semanticLabel: semanticLabel,
-              excludeFromSemantics: excludeFromSemantics,
-              gaplessPlayback: gaplessPlayback,
-              isAntiAlias: isAntiAlias,
-              opacity: opacity,
-              matchTextDirection: matchTextDirection,
-            );
+      return spec(
+        image: image,
+        frameBuilder: frameBuilder,
+        loadingBuilder: loadingBuilder,
+        errorBuilder: errorBuilder,
+        semanticLabel: semanticLabel,
+        excludeFromSemantics: excludeFromSemantics,
+        gaplessPlayback: gaplessPlayback,
+        isAntiAlias: isAntiAlias,
+        matchTextDirection: matchTextDirection,
+        opacity: opacity,
+        orderOfModifiers: orderOfModifiers,
+      );
     });
   }
 }
 
-class ImageSpecWidget extends StatelessWidget {
+class ImageSpecWidget extends SpecWidget<ImageSpec> {
   const ImageSpecWidget({
     super.key,
     this.orderOfModifiers = const [],
-    this.spec,
+    super.spec,
     required this.image,
     this.frameBuilder,
     this.loadingBuilder,
@@ -91,7 +75,6 @@ class ImageSpecWidget extends StatelessWidget {
     this.matchTextDirection = false,
   });
 
-  final ImageSpec? spec;
   final ImageProvider<Object> image;
   final ImageFrameBuilder? frameBuilder;
   final ImageLoadingBuilder? loadingBuilder;
@@ -134,9 +117,9 @@ class ImageSpecWidget extends StatelessWidget {
   }
 }
 
-class AnimatedImageSpecWidget extends ImplicitlyAnimatedWidget {
+class AnimatedImageSpecWidget extends ImplicitlyAnimatedSpecWidget<ImageSpec> {
   const AnimatedImageSpecWidget({
-    this.spec,
+    required super.spec,
     required this.image,
     this.frameBuilder,
     this.loadingBuilder,
@@ -154,7 +137,6 @@ class AnimatedImageSpecWidget extends ImplicitlyAnimatedWidget {
     this.opacity,
   });
 
-  final ImageSpec? spec;
   final ImageProvider<Object> image;
   final ImageFrameBuilder? frameBuilder;
   final ImageLoadingBuilder? loadingBuilder;
@@ -168,43 +150,20 @@ class AnimatedImageSpecWidget extends ImplicitlyAnimatedWidget {
   final List<Type> orderOfModifiers;
 
   @override
-  AnimatedWidgetBaseState<AnimatedImageSpecWidget> createState() =>
-      _AnimateImageSpecState();
-}
-
-class _AnimateImageSpecState
-    extends AnimatedWidgetBaseState<AnimatedImageSpecWidget> {
-  ImageSpecTween? _spec;
-
-  // forEachTween
-  @override
-  // ignore: avoid-dynamic
-  void forEachTween(TweenVisitor<dynamic> visitor) {
-    _spec = visitor(
-      _spec,
-      widget.spec,
-      // ignore: avoid-dynamic
-      (dynamic value) => ImageSpecTween(begin: value as ImageSpec?),
-    ) as ImageSpecTween?;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final spec = _spec?.evaluate(animation);
-
+  Widget build(BuildContext context, ImageSpec animatedSpec) {
     return ImageSpecWidget(
-      spec: spec,
-      orderOfModifiers: widget.orderOfModifiers,
-      image: widget.image,
-      frameBuilder: widget.frameBuilder,
-      loadingBuilder: widget.loadingBuilder,
-      errorBuilder: widget.errorBuilder,
-      semanticLabel: widget.semanticLabel,
-      excludeFromSemantics: widget.excludeFromSemantics,
-      gaplessPlayback: widget.gaplessPlayback,
-      isAntiAlias: widget.isAntiAlias,
-      opacity: widget.opacity,
-      matchTextDirection: widget.matchTextDirection,
+      spec: animatedSpec,
+      orderOfModifiers: orderOfModifiers,
+      image: image,
+      frameBuilder: frameBuilder,
+      loadingBuilder: loadingBuilder,
+      errorBuilder: errorBuilder,
+      semanticLabel: semanticLabel,
+      excludeFromSemantics: excludeFromSemantics,
+      gaplessPlayback: gaplessPlayback,
+      isAntiAlias: isAntiAlias,
+      opacity: opacity,
+      matchTextDirection: matchTextDirection,
     );
   }
 }

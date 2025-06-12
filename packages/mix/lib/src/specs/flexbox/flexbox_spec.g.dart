@@ -16,11 +16,11 @@ mixin _$FlexBoxSpec on Spec<FlexBoxSpec> {
   }
 
   /// {@template flex_box_spec_of}
-  /// Retrieves the [FlexBoxSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [FlexBoxSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [FlexBoxSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [FlexBoxSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [FlexBoxSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [FlexBoxSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$FlexBoxSpec on Spec<FlexBoxSpec> {
   /// ```
   /// {@endtemplate}
   static FlexBoxSpec of(BuildContext context) {
-    return _$FlexBoxSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<FlexBoxSpec>(context) ?? const FlexBoxSpec();
   }
 
   /// Creates a copy of this [FlexBoxSpec] but with the given fields
@@ -72,7 +72,7 @@ mixin _$FlexBoxSpec on Spec<FlexBoxSpec> {
     if (other == null) return _$this;
 
     return FlexBoxSpec(
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
       modifiers: other.modifiers,
       box: _$this.box.lerp(other.box, t),
       flex: _$this.flex.lerp(other.flex, t),
