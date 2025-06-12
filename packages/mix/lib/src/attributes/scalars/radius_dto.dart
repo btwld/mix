@@ -25,9 +25,9 @@ class RadiusDto extends Mixable<Radius> with Diagnosticable {
 
   @override
   Radius resolve(MixData mix) {
-    // Direct token resolution using unified resolver system
+    // Type-safe, direct token resolution using MixToken object
     if (token != null) {
-      return mix.tokens.resolveToken(token!.name);
+      return mix.tokens.resolveToken<Radius>(token!);
     }
 
     return value ?? Radius.zero;

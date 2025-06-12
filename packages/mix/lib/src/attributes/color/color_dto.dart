@@ -45,9 +45,9 @@ class ColorDto extends Mixable<Color> with Diagnosticable {
   Color resolve(MixData mix) {
     Color color;
 
-    // Direct token resolution using unified resolver system
+    // Type-safe, direct token resolution using MixToken object
     if (token != null) {
-      color = mix.tokens.resolveToken<Color>(token!.name);
+      color = mix.tokens.resolveToken<Color>(token!);
     } else {
       color = value ?? defaultColor;
     }

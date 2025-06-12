@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
 import '../mix/mix_theme.dart';
@@ -13,71 +14,78 @@ class MixTokenResolver {
 
   const MixTokenResolver(this._context);
 
-  /// Fallback resolution for legacy token storage during migration.
-  T _fallbackResolve<T>(String tokenName) {
-    throw StateError(
-        'Token "$tokenName" not found in unified tokens map and legacy fallback not implemented yet');
-  }
-
-  /// Resolves a token by name to the specified type.
+  /// Type-safe token resolution using MixToken<T> objects as keys.
   ///
-  /// First checks the unified token storage, then falls back to legacy
-  /// resolution for backwards compatibility.
+  /// This is the primary method for resolving tokens in the unified system.
+  /// Uses the MixToken object directly as a map key for type safety.
   ///
   /// Throws [StateError] if the token is not found or resolves to an
   /// unexpected type.
-  T resolveToken<T>(String tokenName) {
+  T resolveToken<T>(MixToken<T> token) {
     final theme = MixTheme.of(_context);
-
-    // Check unified token storage first
-    if (theme.tokens != null) {
-      final resolver = theme.tokens![tokenName];
-      if (resolver != null) {
-        final resolved = resolver.resolve(_context);
-        if (resolved is T) {
-          return resolved;
-        }
-        throw StateError(
-            'Token "$tokenName" resolved to ${resolved.runtimeType}, expected $T');
-      }
+    final value = theme.tokens[token];
+    
+    if (value == null) {
+      throw StateError('Token "${token.name}" not found in theme');
     }
-
-    // Fallback to legacy resolution for backwards compatibility
-    return _fallbackResolve(tokenName);
+    
+    // Handle function values (for dynamic/context-dependent values)
+    if (value is T Function(BuildContext)) {
+      return value(_context);
+    }
+    
+    // Handle direct values with type safety
+    if (value is T) {
+      return value;
+    }
+    
+    throw StateError(
+      'Token "${token.name}" has type ${value.runtimeType} but expected $T'
+    );
+  }
+  
+  /// Legacy string-based resolution for backwards compatibility.
+  /// 
+  /// @deprecated Use resolveToken(MixToken<T>) instead
+  @Deprecated('Use resolveToken(MixToken<T>) instead')
+  T resolveTokenByName<T>(String tokenName) {
+    final theme = MixTheme.of(_context);
+    
+    // Find token by name in the map - less efficient but backwards compatible
+    final tokenEntry = theme.tokens.entries
+        .cast<MapEntry<MixToken<dynamic>, dynamic>>()
+        .where((entry) => entry.key.name == tokenName)
+        .firstOrNull;
+    
+    if (tokenEntry == null) {
+      throw StateError('Token "$tokenName" not found in theme');
+    }
+    
+    // Cast the token to the expected type and resolve
+    final typedToken = tokenEntry.key as MixToken<T>;
+    return resolveToken<T>(typedToken);
   }
 
   Color colorToken(MixToken<Color> token) {
-    if (token is MixTokenCallable<Color>) {
-      return token.resolve(_context);
-    }
-    throw StateError('Token does not implement MixTokenCallable');
+    return resolveToken<Color>(token);
   }
 
   Color colorRef(ColorRef ref) => colorToken(ref.token);
 
   Radius radiiToken(MixToken<Radius> token) {
-    if (token is MixTokenCallable<Radius>) {
-      return token.resolve(_context);
-    }
-    throw StateError('Token does not implement MixTokenCallable');
+    return resolveToken<Radius>(token);
   }
 
   Radius radiiRef(RadiusRef ref) => radiiToken(ref.token);
 
   TextStyle textStyleToken(MixToken<TextStyle> token) {
-    if (token is MixTokenCallable<TextStyle>) {
-      return token.resolve(_context);
-    }
-    throw StateError('Token does not implement MixTokenCallable');
+    return resolveToken<TextStyle>(token);
   }
 
   TextStyle textStyleRef(TextStyleRef ref) => textStyleToken(ref.token);
 
   double spaceToken(MixToken<double> token) {
-    if (token is MixTokenCallable<double>) {
-      return token.resolve(_context);
-    }
-    throw StateError('Token does not implement MixTokenCallable');
+    return resolveToken<double>(token);
   }
 
   double spaceTokenRef(SpaceRef spaceRef) {

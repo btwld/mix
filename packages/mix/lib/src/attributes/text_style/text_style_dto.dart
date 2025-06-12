@@ -200,9 +200,9 @@ final class TextStyleDto extends Mixable<TextStyle>
   /// merging all [TextStyleData] objects, and resolving to a final [TextStyle].
   @override
   TextStyle resolve(MixData mix) {
-    // Direct token resolution using unified resolver system
+    // Type-safe, direct token resolution using MixToken object
     if (token != null) {
-      return mix.tokens.resolveToken<TextStyle>(token!.name);
+      return mix.tokens.resolveToken<TextStyle>(token!);
     }
 
     final result = value

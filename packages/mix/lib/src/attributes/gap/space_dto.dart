@@ -22,11 +22,11 @@ class SpaceDto extends Mixable<double> with _$SpaceDto {
 
   @override
   double resolve(MixData mix) {
-    // Direct token resolution using unified resolver system
+    // Type-safe, direct resolution using MixToken object
     if (token != null) {
-      return mix.tokens.resolveToken<double>(token!.name);
+      return mix.tokens.resolveToken<double>(token!);
     }
-
-    return mix.tokens.spaceTokenRef(value ?? 0);
+    
+    return value ?? 0.0;
   }
 }
