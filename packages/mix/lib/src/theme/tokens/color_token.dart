@@ -8,6 +8,13 @@ import 'mix_token.dart';
 /// The color value can be resolved statically or dynamically.
 ///
 /// To resolve the color value statically, pass a [Color] value to the constructor.
+///
+/// @Deprecated: Use Token<Color> instead.
+@Deprecated(
+  'Use Token<Color> instead. '
+  'This will be removed in v3.0.0. '
+  'Migration: ColorToken("primary") → Token<Color>("primary")',
+)
 @immutable
 class ColorToken extends MixToken<Color> with MixTokenCallable<Color> {
   const ColorToken(super.name);
@@ -123,10 +130,10 @@ class ColorResolver extends Color with WithTokenResolver<Color> {
 ///
 /// This is used to reference a color token in a theme, and is used to resolve the color value.
 /// Allows pass a [ColorToken] as a [Color] value.
-class ColorRef extends Color with TokenRef<ColorToken> {
+class ColorRef extends Color with TokenRef<MixToken<Color>> {
   /// The token associated with the color reference.
   @override
-  final ColorToken token;
+  final MixToken<Color> token;
 
   const ColorRef(this.token) : super(0);
 

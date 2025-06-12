@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import '../../core/element.dart';
 import '../../core/factory/mix_data.dart';
 import '../../theme/tokens/color_token.dart';
+import '../../theme/tokens/token.dart';
 import 'color_directives.dart';
 import 'color_directives_impl.dart';
 
@@ -19,10 +20,13 @@ import 'color_directives_impl.dart';
 @immutable
 class ColorDto extends Mixable<Color> with Diagnosticable {
   final Color? value;
+  final Token<Color>? token;
   final List<ColorDirective> directives;
 
-  const ColorDto.raw({this.value, this.directives = const []});
+  const ColorDto.raw({this.value, this.token, this.directives = const []});
   const ColorDto(Color value) : this.raw(value: value);
+
+  factory ColorDto.token(Token<Color> token) => ColorDto.raw(token: token);
 
   ColorDto.directive(ColorDirective directive)
       : this.raw(directives: [directive]);
@@ -40,6 +44,14 @@ class ColorDto extends Mixable<Color> with Diagnosticable {
 
   @override
   Color resolve(MixData mix) {
+    // Handle token resolution first
+    if (token != null) {
+      // Resolve through the token resolver using the old token type for compatibility
+      final colorToken = ColorToken(token!.name);
+
+      return mix.tokens.colorToken(colorToken);
+    }
+
     Color color = value ?? defaultColor;
 
     if (color is ColorRef) {
@@ -59,6 +71,7 @@ class ColorDto extends Mixable<Color> with Diagnosticable {
 
     return ColorDto.raw(
       value: other.value ?? value,
+      token: other.token ?? token,
       directives: _applyResetIfNeeded([...directives, ...other.directives]),
     );
   }
@@ -66,6 +79,12 @@ class ColorDto extends Mixable<Color> with Diagnosticable {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
+
+    if (token != null) {
+      properties.add(DiagnosticsProperty('token', token?.toString()));
+
+      return;
+    }
 
     Color color = value ?? defaultColor;
 
@@ -77,7 +96,7 @@ class ColorDto extends Mixable<Color> with Diagnosticable {
   }
 
   @override
-  List<Object?> get props => [value, directives];
+  List<Object?> get props => [value, token, directives];
 }
 
 extension ColorExt on Color {

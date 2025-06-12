@@ -131,8 +131,13 @@ base class TextStyleData extends Mixable<TextStyle>
 final class TextStyleDto extends Mixable<TextStyle>
     with _$TextStyleDto, Diagnosticable {
   final List<TextStyleData> value;
+  final Token<TextStyle>? token;
+
   @MixableConstructor()
-  const TextStyleDto._({this.value = const []});
+  const TextStyleDto._({this.value = const [], this.token});
+
+  factory TextStyleDto.token(Token<TextStyle> token) =>
+      TextStyleDto._(token: token);
 
   factory TextStyleDto({
     ColorDto? color,
@@ -196,6 +201,14 @@ final class TextStyleDto extends Mixable<TextStyle>
   /// Finally, it resolves the resulting [TextStyleData] to a TextStyle.
   @override
   TextStyle resolve(MixData mix) {
+    // Handle token resolution first
+    if (token != null) {
+      // Resolve through the token resolver using the old token type for compatibility
+      final textStyleToken = TextStyleToken(token!.name);
+
+      return mix.tokens.textStyleToken(textStyleToken);
+    }
+
     final result = value
         .map((e) => e is TextStyleDataRef ? e.resolve(mix)._toData() : e)
         .reduce((a, b) => a.merge(b))

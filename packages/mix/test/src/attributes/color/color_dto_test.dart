@@ -36,7 +36,7 @@ void main() {
 
         final mockMixData = MixData.create(buildContext, Style());
 
-        final colorRef = testColorToken();
+        final ColorRef colorRef = testColorToken();
         final colorDto = ColorDto(colorRef);
         final resolvedValue = colorDto.resolve(mockMixData);
 

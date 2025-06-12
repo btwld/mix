@@ -9,14 +9,6 @@ import '../../../helpers/testing_utils.dart';
 void main() {
   // Create a test that checks if all the values of these tokens match the ThemeData from the MaterialApp
   group('Material tokens', () {
-    Value refResolver<T extends MixToken<Value>, R extends TokenRef<T>, Value>(
-        R ref, BuildContext context) {
-      final token = ref.token;
-      if (token is MixTokenCallable<Value>) {
-        return token.resolve(context);
-      }
-      throw StateError('Token does not implement MixTokenCallable');
-    }
 
     testWidgets('colors', (tester) async {
       final theme = ThemeData.light();
@@ -27,42 +19,42 @@ void main() {
       final context = tester.element(find.byType(Container));
       final colors = const MaterialTokens().colorScheme;
 
-      expect(refResolver(colors.primary(), context), theme.colorScheme.primary);
+      expect(colors.primary.resolve(context), theme.colorScheme.primary);
       expect(
-        refResolver(colors.secondary(), context),
+        colors.secondary.resolve(context),
         theme.colorScheme.secondary,
       );
       expect(
-        refResolver(colors.tertiary(), context),
+        colors.tertiary.resolve(context),
         theme.colorScheme.tertiary,
       );
-      expect(refResolver(colors.surface(), context), theme.colorScheme.surface);
+      expect(colors.surface.resolve(context), theme.colorScheme.surface);
       expect(
-        refResolver(colors.background(), context),
+        colors.background.resolve(context),
         theme.colorScheme.background,
       );
-      expect(refResolver(colors.error(), context), theme.colorScheme.error);
+      expect(colors.error.resolve(context), theme.colorScheme.error);
       expect(
-        refResolver(colors.onPrimary(), context),
+        colors.onPrimary.resolve(context),
         theme.colorScheme.onPrimary,
       );
       expect(
-        refResolver(colors.onSecondary(), context),
+        colors.onSecondary.resolve(context),
         theme.colorScheme.onSecondary,
       );
       expect(
-        refResolver(colors.onTertiary(), context),
+        colors.onTertiary.resolve(context),
         theme.colorScheme.onTertiary,
       );
       expect(
-        refResolver(colors.onSurface(), context),
+        colors.onSurface.resolve(context),
         theme.colorScheme.onSurface,
       );
       expect(
-        refResolver(colors.onBackground(), context),
+        colors.onBackground.resolve(context),
         theme.colorScheme.onBackground,
       );
-      expect(refResolver(colors.onError(), context), theme.colorScheme.onError);
+      expect(colors.onError.resolve(context), theme.colorScheme.onError);
     });
 
     testWidgets('Material 3 textStyles', (tester) async {
@@ -76,63 +68,63 @@ void main() {
 
       final textStyles = const MaterialTokens().textTheme;
       expect(
-        refResolver(textStyles.displayLarge(), context),
+        textStyles.displayLarge.resolve(context),
         theme.textTheme.displayLarge,
       );
       expect(
-        refResolver(textStyles.displayMedium(), context),
+        textStyles.displayMedium.resolve(context),
         theme.textTheme.displayMedium,
       );
       expect(
-        refResolver(textStyles.displaySmall(), context),
+        textStyles.displaySmall.resolve(context),
         theme.textTheme.displaySmall,
       );
       expect(
-        refResolver(textStyles.headlineLarge(), context),
+        textStyles.headlineLarge.resolve(context),
         theme.textTheme.headlineLarge,
       );
       expect(
-        refResolver(textStyles.headlineMedium(), context),
+        textStyles.headlineMedium.resolve(context),
         theme.textTheme.headlineMedium,
       );
       expect(
-        refResolver(textStyles.headlineSmall(), context),
+        textStyles.headlineSmall.resolve(context),
         theme.textTheme.headlineSmall,
       );
       expect(
-        refResolver(textStyles.titleLarge(), context),
+        textStyles.titleLarge.resolve(context),
         theme.textTheme.titleLarge,
       );
       expect(
-        refResolver(textStyles.titleMedium(), context),
+        textStyles.titleMedium.resolve(context),
         theme.textTheme.titleMedium,
       );
       expect(
-        refResolver(textStyles.titleSmall(), context),
+        textStyles.titleSmall.resolve(context),
         theme.textTheme.titleSmall,
       );
       expect(
-        refResolver(textStyles.bodyLarge(), context),
+        textStyles.bodyLarge.resolve(context),
         theme.textTheme.bodyLarge,
       );
       expect(
-        refResolver(textStyles.bodyMedium(), context),
+        textStyles.bodyMedium.resolve(context),
         theme.textTheme.bodyMedium,
       );
       expect(
-        refResolver(textStyles.bodySmall(), context),
+        textStyles.bodySmall.resolve(context),
         theme.textTheme.bodySmall,
       );
       expect(
-        refResolver(textStyles.labelLarge(), context),
+        textStyles.labelLarge.resolve(context),
         theme.textTheme.labelLarge,
       );
       expect(
-        refResolver(textStyles.labelMedium(), context),
+        textStyles.labelMedium.resolve(context),
         theme.textTheme.labelMedium,
       );
       expect(
-        refResolver(textStyles.labelSmall(), context),
+        textStyles.labelSmall.resolve(context),
         theme.textTheme.labelSmall,
       );
     });

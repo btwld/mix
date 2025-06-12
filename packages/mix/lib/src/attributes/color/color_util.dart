@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/element.dart';
 import '../../core/utility.dart';
 import '../../theme/tokens/color_token.dart';
+import '../../theme/tokens/token.dart';
 import 'color_directives.dart';
 import 'color_directives_impl.dart';
 import 'color_dto.dart';
@@ -117,4 +118,8 @@ base mixin ColorDirectiveMixin<T extends Attribute> on BaseColorUtility<T> {
       );
   T withHue(double hue) => directive(HueColorDirective(hue));
   T withValue(double value) => directive(ValueColorDirective(value));
+}
+
+extension ColorUtilityTokens<T extends Attribute> on ColorUtility<T> {
+  T token(Token<Color> token) => builder(ColorDto.token(token));
 }

@@ -5,6 +5,14 @@ import '../../internal/diagnostic_properties_builder_ext.dart';
 import '../mix/mix_theme.dart';
 import 'mix_token.dart';
 
+/// A token representing a radius value in the Mix theme.
+///
+/// @Deprecated: Use Token<Radius> instead.
+@Deprecated(
+  'Use Token<Radius> instead. '
+  'This will be removed in v3.0.0. '
+  'Migration: RadiusToken("small") → Token<Radius>("small")',
+)
 class RadiusToken extends MixToken<Radius> with MixTokenCallable<Radius> {
   const RadiusToken(super.name);
 

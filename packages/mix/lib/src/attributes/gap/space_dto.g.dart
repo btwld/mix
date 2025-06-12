@@ -24,6 +24,7 @@ mixin _$SpaceDto on Mixable<double> {
 
     return SpaceDto._(
       value: other.value ?? _$this.value,
+      token: other.token ?? _$this.token,
     );
   }
 
@@ -34,6 +35,7 @@ mixin _$SpaceDto on Mixable<double> {
   @override
   List<Object?> get props => [
         _$this.value,
+        _$this.token,
       ];
 
   /// Returns this instance as a [SpaceDto].

@@ -196,3 +196,7 @@ final class StrokeAlignUtility<T extends Attribute>
   T inside() => builder(-1);
   T outside() => builder(1);
 }
+
+extension RadiusUtilityTokens<T extends Attribute> on RadiusUtility<T> {
+  T token(Token<Radius> token) => ref(RadiusToken(token.name));
+}
