@@ -19,11 +19,48 @@ runs:
   steps:
     - name: Checkout mix repo
       uses: actions/checkout@v4
+
+    # Cache FVM installation
+    - name: Cache FVM
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.fvm
+          /home/runner/.fvm_flutter
+        key: fvm-${{ runner.os }}-${{ inputs.flutter-version }}
+        restore-keys: |
+          fvm-${{ runner.os }}-
+
+    # Cache Pub dependencies  
+    - name: Cache Pub dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.pub-cache
+          **/pubspec.lock
+        key: pub-cache-${{ runner.os }}-${{ hashFiles('**/pubspec.yaml') }}
+        restore-keys: |
+          pub-cache-${{ runner.os }}-
+
+    # Cache Dart tools and build artifacts
+    - name: Cache Dart tools and build
+      uses: actions/cache@v4
+      with:
+        path: |
+          **/.dart_tool
+          **/build
+          **/.packages
+        key: dart-tools-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}-${{ hashFiles('**/*.dart') }}
+        restore-keys: |
+          dart-tools-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}-
+          dart-tools-${{ runner.os }}-
     
     - name: Install FVM
       shell: bash
       run: |
-        NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://fvm.app/install.sh)"
+        if ! command -v fvm &> /dev/null; then
+          NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://fvm.app/install.sh)"
+        fi
         echo "PATH=/home/runner/.fvm_flutter/bin/fvm:$PATH" >> $GITHUB_ENV
 
     - name: Use FVM
@@ -53,7 +90,10 @@ runs:
       
     - name: Run build runner
       shell: bash    
-      run: melos run brb
+      run: |
+        echo "Running build runner on packages that need code generation..."
+        # Only run build runner on packages with code generation needs
+        melos exec --depends-on="build_runner" -- dart run build_runner build --delete-conflicting-outputs
 
     - name: Run Test
       run: |
@@ -62,13 +102,13 @@ runs:
       shell: bash
 
     - name: Install DCM
-      if: ${{ inputs.run-dcm }}
+      if: ${{ inputs.run-dcm == 'true' }}
       uses: CQLabs/setup-dcm@v1
       with:
         github_token: ${{ inputs.token }}
-        folders: packages/*/lib
 
     - name: Run DCM
+      if: ${{ inputs.run-dcm == 'true' }}
       run: dcm analyze .
       shell: bash
 

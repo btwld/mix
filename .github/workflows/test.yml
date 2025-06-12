@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout mix repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Run Tests
         uses: ./.github/actions/test/
         with:
@@ -39,11 +39,11 @@ jobs:
     name: Test Min SDK
     steps:
       - name: Checkout mix repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Run Tests
         uses: ./.github/actions/test/
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          run-dcm: false
+          run-dcm: 'false'
           flutter-version: '3.27.0'
