@@ -15,6 +15,8 @@ abstract base class BaseColorUtility<T extends Attribute>
   const BaseColorUtility(super.builder);
 
   T _buildColor(Color color) => builder(ColorDto(color));
+  
+  T token(Token<Color> token) => builder(ColorDto.token(token));
 }
 
 @immutable
@@ -120,6 +122,3 @@ base mixin ColorDirectiveMixin<T extends Attribute> on BaseColorUtility<T> {
   T withValue(double value) => directive(ValueColorDirective(value));
 }
 
-extension ColorUtilityTokens<T extends Attribute> on ColorUtility<T> {
-  T token(Token<Color> token) => builder(ColorDto.token(token));
-}

@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import '../../internal/iterable_ext.dart';
 
 @immutable
+// ignore: avoid-unused-generics
 class MixToken<T> {
   final String name;
   const MixToken(this.name);
@@ -53,8 +54,9 @@ class StyledTokens<T extends MixToken<V>, V> {
   T? findByRef(V value) {
     return _map.keys.firstWhereOrNull((token) {
       if (token is MixTokenCallable<V>) {
-        return token.call() == value;
+        return token() == value;
       }
+
       return false;
     });
   }

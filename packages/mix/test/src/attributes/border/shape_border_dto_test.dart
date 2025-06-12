@@ -609,7 +609,7 @@ void main() {
       final dto2 = RoundedRectangleBorderDto(
           side: BorderSideDto(color: Colors.red.toDto()));
       final expectedResult = RoundedRectangleBorderDto(
-        borderRadius: const BorderRadiusDto(topLeft: Radius.circular(10)),
+        borderRadius: BorderRadiusDto(topLeft: Radius.circular(10)),
         side: BorderSideDto(color: Colors.red.toDto()),
       );
       expect(ShapeBorderDto.tryToMerge(dto1, dto2), equals(expectedResult));
@@ -634,7 +634,7 @@ void main() {
       final dto2 = RoundedRectangleBorderDto(
           side: BorderSideDto(color: Colors.red.toDto()));
       final expectedResult = RoundedRectangleBorderDto(
-        borderRadius: const BorderRadiusDto(topLeft: Radius.circular(10)),
+        borderRadius: BorderRadiusDto(topLeft: Radius.circular(10)),
         side: BorderSideDto(color: Colors.red.toDto()),
       );
       expect(OutlinedBorderDto.tryToMerge(dto1, dto2), equals(expectedResult));

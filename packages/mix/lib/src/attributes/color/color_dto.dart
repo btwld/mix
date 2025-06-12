@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 
 import '../../core/element.dart';
 import '../../core/factory/mix_data.dart';
-import '../../theme/tokens/color_token.dart';
 import '../../theme/tokens/token.dart';
 import 'color_directives.dart';
 import 'color_directives_impl.dart';
@@ -11,10 +10,10 @@ import 'color_directives_impl.dart';
 /// A Data transfer object that represents a [Color] value.
 ///
 /// This DTO is used to resolve a [Color] value from a [MixData] instance.
+/// It can hold either a direct color value or a token reference.
 ///
 /// See also:
-/// * [ColorToken], which is used to resolve a [Color] value from a [MixData] instance.
-/// * [ColorRef], which is used to reference a [Color] value from a [MixData] instance.
+/// * [Token], which is used to reference theme values.
 /// * [Color], which is the Flutter equivalent class.
 /// {@category DTO}
 @immutable
@@ -44,20 +43,16 @@ class ColorDto extends Mixable<Color> with Diagnosticable {
 
   @override
   Color resolve(MixData mix) {
-    // Handle token resolution first
+    Color color;
+
+    // Direct token resolution using unified resolver system
     if (token != null) {
-      // Resolve through the token resolver using the old token type for compatibility
-      final colorToken = ColorToken(token!.name);
-
-      return mix.tokens.colorToken(colorToken);
+      color = mix.tokens.resolveToken<Color>(token!.name);
+    } else {
+      color = value ?? defaultColor;
     }
 
-    Color color = value ?? defaultColor;
-
-    if (color is ColorRef) {
-      color = mix.tokens.colorRef(color);
-    }
-
+    // Apply directives
     for (final directive in directives) {
       color = directive.modify(color);
     }
@@ -86,12 +81,7 @@ class ColorDto extends Mixable<Color> with Diagnosticable {
       return;
     }
 
-    Color color = value ?? defaultColor;
-
-    if (color is ColorRef) {
-      properties.add(DiagnosticsProperty('token', color.token.name));
-    }
-
+    final color = value ?? defaultColor;
     properties.add(ColorProperty('color', color));
   }
 

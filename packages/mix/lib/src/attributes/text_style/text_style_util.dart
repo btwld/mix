@@ -36,6 +36,8 @@ final class TextStyleUtility<T extends Attribute>
   late final fontFamily = FontFamilyUtility((v) => call(fontFamily: v));
 
   TextStyleUtility(super.builder) : super(valueToDto: (v) => v.toDto());
+  
+  T token(Token<TextStyle> token) => builder(TextStyleDto.token(token));
 
   T height(double v) => only(height: v);
 
@@ -167,6 +169,3 @@ final class TextStyleUtility<T extends Attribute>
   }
 }
 
-extension TextStyleUtilityTokens<T extends Attribute> on TextStyleUtility<T> {
-  T token(Token<TextStyle> token) => builder(TextStyleDto.token(token));
-}

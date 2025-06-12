@@ -44,29 +44,21 @@ void main() {
       expect(token1.hashCode, isNot(equals(token3.hashCode)));
     });
 
-    test('call() creates appropriate ref types', () {
+    test('token is simple data container (no call method)', () {
       const colorToken = Token<Color>('primary');
       const spaceToken = Token<double>('large');
-      const radiusToken = Token<Radius>('small');
-      const textStyleToken = Token<TextStyle>('heading');
       
-      final colorRef = colorToken();
-      final spaceRef = spaceToken();
-      final radiusRef = radiusToken();
-      final textStyleRef = textStyleToken();
-      
-      expect(colorRef, isA<ColorRef>());
-      expect(spaceRef, isA<double>());
-      expect(spaceRef, lessThan(0)); // Negative hashcode hack
-      expect(radiusRef, isA<RadiusRef>());
-      expect(textStyleRef, isA<TextStyleRef>());
+      expect(colorToken.name, 'primary');
+      expect(spaceToken.name, 'large');
+      expect(colorToken.runtimeType.toString(), 'Token<Color>');
+      expect(spaceToken.runtimeType.toString(), 'Token<double>');
     });
 
-    testWidgets('resolve() works with theme data', (tester) async {
+    testWidgets('resolve() works with unified theme storage', (tester) async {
       const token = Token<Color>('primary');
-      final theme = MixThemeData(
-        colors: {
-          ColorToken(token.name): Colors.blue,
+      final theme = MixThemeData.unified(
+        tokens: const {
+          'primary': Colors.blue,
         },
       );
 
@@ -85,32 +77,28 @@ void main() {
 
     testWidgets('resolve() throws for undefined tokens', (tester) async {
       const token = Token<Color>('undefined');
-      final theme = MixThemeData();
+      final theme = MixThemeData.unified();
       
       await tester.pumpWidget(createWithMixTheme(theme));
       final context = tester.element(find.byType(Container));
       
       expect(
         () => token.resolve(context),
-        throwsAssertionError,
+        throwsStateError,
       );
     });
 
-    testWidgets('unsupported types throw appropriate errors', (tester) async {
-      const token = Token<String>('unsupported');
+    testWidgets('unified resolver works with any type', (tester) async {
+      const token = Token<String>('message');
+      final theme = MixThemeData.unified(
+        tokens: const {'message': 'Hello World'},
+      );
       
-      await tester.pumpWidget(createWithMixTheme(MixThemeData()));
+      await tester.pumpWidget(createWithMixTheme(theme));
       final context = tester.element(find.byType(Container));
       
-      expect(
-        () => token.resolve(context),
-        throwsUnsupportedError,
-      );
-      
-      expect(
-        () => token(),
-        throwsUnsupportedError,
-      );
+      final resolved = token.resolve(context);
+      expect(resolved, equals('Hello World'));
     });
   });
 }

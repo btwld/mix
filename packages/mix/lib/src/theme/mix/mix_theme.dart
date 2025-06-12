@@ -9,6 +9,7 @@ import '../tokens/mix_token.dart';
 import '../tokens/radius_token.dart';
 import '../tokens/space_token.dart';
 import '../tokens/text_style_token.dart';
+import '../tokens/value_resolver.dart';
 
 class MixTheme extends InheritedWidget {
   const MixTheme({required this.data, super.key, required super.child});
@@ -34,13 +35,19 @@ class MixTheme extends InheritedWidget {
 
 @immutable
 class MixThemeData {
+  /// Legacy token storage for backwards compatibility.
   final StyledTokens<RadiusToken, Radius> radii;
   final StyledTokens<ColorToken, Color> colors;
   final StyledTokens<TextStyleToken, TextStyle> textStyles;
-
   final StyledTokens<BreakpointToken, Breakpoint> breakpoints;
   final StyledTokens<SpaceToken, double> spaces;
   final List<Type>? defaultOrderOfModifiers;
+  
+  /// Unified token storage using resolvers.
+  /// 
+  /// Maps token names to their resolvers. This replaces the need for
+  /// separate maps per type and supports any value type.
+  final Map<String, ValueResolver<dynamic>>? tokens;
 
   const MixThemeData.raw({
     required this.textStyles,
@@ -49,6 +56,7 @@ class MixThemeData {
     required this.radii,
     required this.spaces,
     this.defaultOrderOfModifiers,
+    this.tokens,
   });
 
   const MixThemeData.empty()
@@ -98,6 +106,32 @@ class MixThemeData {
         defaultOrderOfModifiers: defaultOrderOfModifiers,
       ),
     );
+  }
+
+  /// Creates theme data using unified token storage.
+  /// 
+  /// This factory converts any value types to resolvers automatically.
+  /// Legacy token maps are left empty for backwards compatibility.
+  factory MixThemeData.unified({
+    Map<String, dynamic>? tokens,
+    List<Type>? defaultOrderOfModifiers,
+  }) {
+    return MixThemeData.raw(
+      textStyles: const StyledTokens.empty(),
+      colors: const StyledTokens.empty(),
+      breakpoints: const StyledTokens.empty(),
+      radii: const StyledTokens.empty(),
+      spaces: const StyledTokens.empty(),
+      defaultOrderOfModifiers: defaultOrderOfModifiers,
+      tokens: _convertTokensToResolvers(tokens),
+    );
+  }
+
+  /// Converts a map of values to resolvers.
+  static Map<String, ValueResolver<dynamic>>? _convertTokensToResolvers(Map<String, dynamic>? tokens) {
+    if (tokens == null || tokens.isEmpty) return null;
+    
+    return tokens.map((key, value) => MapEntry(key, createResolver(value)));
   }
 
   /// Combine all [themes] into a single [MixThemeData] root.

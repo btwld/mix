@@ -21,27 +21,23 @@ void main() {
       );
     }
 
-    // Testing ColorDto.resolve with ColorRef
+    // Testing ColorDto.resolve with unified token system
     testWidgets(
-      'ColorDto.resolve should resolve ColorRef correctly',
+      'ColorDto.resolve should resolve tokens using unified resolver',
       (tester) async {
-        const testColorToken = ColorToken('test');
+        const testToken = Token<Color>('test-color');
 
         await tester.pumpWithMixTheme(
           Container(),
-          theme: MixThemeData(colors: {testColorToken: Colors.red}),
+          theme: MixThemeData.unified(tokens: const {'test-color': Colors.red}),
         );
 
         final buildContext = tester.element(find.byType(Container));
-
         final mockMixData = MixData.create(buildContext, Style());
 
-        final ColorRef colorRef = testColorToken();
-        final colorDto = ColorDto(colorRef);
+        final colorDto = ColorDto.token(testToken);
         final resolvedValue = colorDto.resolve(mockMixData);
 
-        expect(colorRef, isA<ColorRef>());
-        expect(colorRef.token, testColorToken);
         expect(resolvedValue, isA<Color>());
         expect(resolvedValue, Colors.red);
       },
