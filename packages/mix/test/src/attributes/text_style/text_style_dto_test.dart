@@ -141,4 +141,33 @@ void main() {
     expect(attr.value.first, isA<TextStyleDataRef>());
     expect((attr.value.first as TextStyleDataRef).ref.token, token);
   });
+
+  testWidgets('TextStyleDto.token resolves using unified resolver system',
+      (tester) async {
+    const testToken = Token<TextStyle>('test-text-style');
+
+    await tester.pumpWithMixTheme(
+      Container(),
+      theme: MixThemeData.unified(
+        tokens: {
+          'test-text-style': const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.blue,
+          ),
+        },
+      ),
+    );
+
+    final buildContext = tester.element(find.byType(Container));
+    final mockMixData = MixData.create(buildContext, Style());
+
+    final textStyleDto = TextStyleDto.token(testToken);
+    final resolvedValue = textStyleDto.resolve(mockMixData);
+
+    expect(resolvedValue, isA<TextStyle>());
+    expect(resolvedValue.fontSize, 24);
+    expect(resolvedValue.fontWeight, FontWeight.bold);
+    expect(resolvedValue.color, Colors.blue);
+  });
 }
