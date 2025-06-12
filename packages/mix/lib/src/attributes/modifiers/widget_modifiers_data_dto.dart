@@ -7,8 +7,7 @@ import '../../core/modifier.dart';
 import '../../modifiers/internal/reset_modifier.dart';
 import 'widget_modifiers_data.dart';
 
-class WidgetModifiersDataDto extends Mixable<WidgetModifiersData>
-    with Diagnosticable {
+class WidgetModifiersDataDto extends Mixable<WidgetModifiersData> {
   final List<WidgetModifierSpecAttribute> value;
 
   const WidgetModifiersDataDto(this.value);

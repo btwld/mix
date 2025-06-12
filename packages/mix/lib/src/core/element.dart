@@ -27,7 +27,7 @@ typedef StyledAttribute = SpecAttribute;
 @Deprecated('Use Mixable instead')
 typedef Dto<Value> = Mixable<Value>;
 
-abstract class Mixable<Value> extends StyleElement {
+abstract class Mixable<Value> extends StyleElement with Diagnosticable {
   const Mixable();
 
   Value resolve(MixData mix);
