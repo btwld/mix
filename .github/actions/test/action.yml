@@ -62,23 +62,25 @@ runs:
       shell: bash
 
     - name: Install DCM
-      if: ${{ inputs.run-dcm }}
+      if: ${{ inputs.run-dcm == 'true' }}
       uses: CQLabs/setup-dcm@v1
       with:
         github_token: ${{ inputs.token }}
         folders: packages/*/lib
 
-    - name: Run DCM
-      run: dcm analyze .
-      shell: bash
-
     - name: Run melos fix
       run: melos run fix
       shell: bash
 
-    # Lint
-    - name: analyze
-      run: melos run --no-select analyze
+    # Lint - Run Dart analysis
+    - name: Dart analyze
+      run: melos run analyze:dart
+      shell: bash
+
+    # Lint - Run DCM analysis (only if DCM is enabled)
+    - name: DCM analyze
+      if: ${{ inputs.run-dcm == 'true' }}
+      run: melos run analyze:dcm
       shell: bash
       
     # - name: Run custom_lint
