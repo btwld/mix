@@ -84,7 +84,7 @@ mixin _$CheckboxSpec on Spec<CheckboxSpec> {
       container: _$this.container.lerp(other.container, t),
       label: _$this.label.lerp(other.label, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 

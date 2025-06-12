@@ -86,7 +86,7 @@ mixin _$SegmentedControlSpec on Spec<SegmentedControlSpec> {
       divider: _$this.divider.lerp(other.divider, t),
       item: _$this.item.lerp(other.item, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -384,7 +384,7 @@ mixin _$SegmentButtonSpec on Spec<SegmentButtonSpec> {
       icon: _$this.icon.lerp(other.icon, t),
       label: _$this.label.lerp(other.label, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 

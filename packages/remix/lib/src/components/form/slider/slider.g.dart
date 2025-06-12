@@ -79,7 +79,7 @@ mixin _$SliderSpec on Spec<SliderSpec> {
       activeTrack: _$this.activeTrack.lerp(other.activeTrack, t),
       division: _$this.division.lerp(other.division, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 

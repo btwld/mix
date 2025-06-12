@@ -182,7 +182,7 @@ mixin _$TextFieldSpec on Spec<TextFieldSpec> {
           _$this.floatingLabelHeight, other.floatingLabelHeight, t)!,
       floatingLabelStyle: MixHelpers.lerpTextStyle(
           _$this.floatingLabelStyle, other.floatingLabelStyle, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
       modifiers: other.modifiers,
     );
   }

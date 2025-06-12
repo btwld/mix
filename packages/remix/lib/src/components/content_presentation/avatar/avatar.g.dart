@@ -80,7 +80,7 @@ mixin _$AvatarSpec on Spec<AvatarSpec> {
       image: _$this.image.lerp(other.image, t),
       fallback: _$this.fallback.lerp(other.fallback, t),
       stack: _$this.stack.lerp(other.stack, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 

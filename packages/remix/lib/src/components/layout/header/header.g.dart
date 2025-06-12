@@ -82,7 +82,7 @@ mixin _$HeaderSpec on Spec<HeaderSpec> {
       titleGroup: _$this.titleGroup.lerp(other.titleGroup, t),
       title: _$this.title.lerp(other.title, t),
       subtitle: _$this.subtitle.lerp(other.subtitle, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 

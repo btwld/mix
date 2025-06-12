@@ -83,7 +83,7 @@ mixin _$RadioSpec on Spec<RadioSpec> {
       container: _$this.container.lerp(other.container, t),
       text: _$this.text.lerp(other.text, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 

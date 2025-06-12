@@ -72,7 +72,7 @@ mixin _$BadgeSpec on Spec<BadgeSpec> {
     return BadgeSpec(
       container: _$this.container.lerp(other.container, t),
       label: _$this.label.lerp(other.label, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 

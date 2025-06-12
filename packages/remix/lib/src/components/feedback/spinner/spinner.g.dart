@@ -85,7 +85,7 @@ mixin _$SpinnerSpec on Spec<SpinnerSpec> {
       duration: t < 0.5 ? _$this.duration : other.duration,
       style: t < 0.5 ? _$this.style : other.style,
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 

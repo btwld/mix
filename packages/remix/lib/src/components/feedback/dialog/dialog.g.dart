@@ -82,7 +82,7 @@ mixin _$DialogSpec on Spec<DialogSpec> {
       description: _$this.description.lerp(other.description, t),
       actionsContainer: _$this.actionsContainer.lerp(other.actionsContainer, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 

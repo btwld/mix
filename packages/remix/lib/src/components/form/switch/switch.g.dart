@@ -73,7 +73,7 @@ mixin _$SwitchSpec on Spec<SwitchSpec> {
     return SwitchSpec(
       container: _$this.container.lerp(other.container, t),
       indicator: _$this.indicator.lerp(other.indicator, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
       modifiers: other.modifiers,
     );
   }

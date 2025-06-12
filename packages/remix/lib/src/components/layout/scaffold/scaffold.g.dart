@@ -70,7 +70,7 @@ mixin _$ScaffoldSpec on Spec<ScaffoldSpec> {
 
     return ScaffoldSpec(
       container: _$this.container.lerp(other.container, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
       modifiers: other.modifiers,
     );
   }

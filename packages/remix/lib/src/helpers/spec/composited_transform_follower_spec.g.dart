@@ -85,7 +85,7 @@ mixin _$CompositedTransformFollowerSpec
       followerAnchor: AlignmentGeometry.lerp(
           _$this.followerAnchor, other.followerAnchor, t)!,
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 

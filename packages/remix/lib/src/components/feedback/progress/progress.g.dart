@@ -79,7 +79,7 @@ mixin _$ProgressSpec on Spec<ProgressSpec> {
       track: _$this.track.lerp(other.track, t),
       fill: _$this.fill.lerp(other.fill, t),
       outerContainer: _$this.outerContainer.lerp(other.outerContainer, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
       modifiers: other.modifiers,
     );
   }

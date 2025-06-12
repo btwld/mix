@@ -76,7 +76,7 @@ mixin _$DropdownMenuSpec on Spec<DropdownMenuSpec> {
       menu: _$this.menu.lerp(other.menu, t),
       item: _$this.item.lerp(other.item, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -323,7 +323,7 @@ mixin _$DropdownMenuContainerSpec on Spec<DropdownMenuContainerSpec> {
       container: _$this.container.lerp(other.container, t),
       autoWidth: t < 0.5 ? _$this.autoWidth : other.autoWidth,
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -576,7 +576,7 @@ mixin _$DropdownMenuItemSpec on Spec<DropdownMenuItemSpec> {
       text: _$this.text.lerp(other.text, t),
       container: _$this.container.lerp(other.container, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 

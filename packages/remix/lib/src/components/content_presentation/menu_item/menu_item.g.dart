@@ -87,7 +87,7 @@ mixin _$MenuItemSpec on Spec<MenuItemSpec> {
       title: _$this.title.lerp(other.title, t),
       subtitle: _$this.subtitle.lerp(other.subtitle, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 

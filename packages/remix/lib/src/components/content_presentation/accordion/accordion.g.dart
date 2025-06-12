@@ -77,7 +77,7 @@ mixin _$AccordionSpec on Spec<AccordionSpec> {
       header: _$this.header.lerp(other.header, t),
       container: _$this.container.lerp(other.container, t),
       contentContainer: _$this.contentContainer.lerp(other.contentContainer, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -307,7 +307,7 @@ mixin _$AccordionHeaderSpec on Spec<AccordionHeaderSpec> {
       leadingIcon: _$this.leadingIcon.lerp(other.leadingIcon, t),
       text: _$this.text.lerp(other.text, t),
       trailingIcon: _$this.trailingIcon.lerp(other.trailingIcon, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 

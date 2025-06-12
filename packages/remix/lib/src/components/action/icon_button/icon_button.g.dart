@@ -80,7 +80,7 @@ mixin _$IconButtonSpec on Spec<IconButtonSpec> {
       icon: _$this.icon.lerp(other.icon, t),
       modifiers: other.modifiers,
       spinner: _$this.spinner.lerp(other.spinner, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 

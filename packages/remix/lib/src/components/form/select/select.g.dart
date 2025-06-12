@@ -83,7 +83,7 @@ mixin _$SelectSpec on Spec<SelectSpec> {
       item: _$this.item.lerp(other.item, t),
       position: _$this.position.lerp(other.position, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -358,7 +358,7 @@ mixin _$SelectMenuSpec on Spec<SelectMenuSpec> {
       container: _$this.container.lerp(other.container, t),
       autoWidth: t < 0.5 ? _$this.autoWidth : other.autoWidth,
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -610,7 +610,7 @@ mixin _$SelectMenuItemSpec on Spec<SelectMenuItemSpec> {
       text: _$this.text.lerp(other.text, t),
       container: _$this.container.lerp(other.container, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -875,7 +875,7 @@ mixin _$SelectTriggerSpec on Spec<SelectTriggerSpec> {
       icon: _$this.icon.lerp(other.icon, t),
       label: _$this.label.lerp(other.label, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
