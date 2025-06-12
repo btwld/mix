@@ -57,8 +57,8 @@ void main() {
     testWidgets('resolve() works with unified theme storage', (tester) async {
       const token = MixToken<Color>('primary');
       final theme = MixThemeData.unified(
-        tokens: const {
-          'primary': Colors.blue,
+        tokens: {
+          token: Colors.blue,
         },
       );
 
@@ -71,20 +71,20 @@ void main() {
 
       final context = tester.element(find.byType(Container));
       final mixData = MixData.create(context, Style());
-      final resolved = mixData.tokens.resolveToken<Color>(token.name);
+      final resolved = mixData.tokens.resolveToken<Color>(token);
       
       expect(resolved, equals(Colors.blue));
     });
 
     testWidgets('resolve() throws for undefined tokens', (tester) async {
       const token = MixToken<Color>('undefined');
-      final theme = MixThemeData.unified();
+      final theme = MixThemeData.unified(tokens: const {});
       
       await tester.pumpWidget(createWithMixTheme(theme));
       final context = tester.element(find.byType(Container));
       
       expect(
-        () => MixData.create(context, Style()).tokens.resolveToken<Color>(token.name),
+        () => MixData.create(context, Style()).tokens.resolveToken<Color>(token),
         throwsStateError,
       );
     });
@@ -92,14 +92,14 @@ void main() {
     testWidgets('unified resolver works with any type', (tester) async {
       const token = MixToken<String>('message');
       final theme = MixThemeData.unified(
-        tokens: const {'message': 'Hello World'},
+        tokens: {token: 'Hello World'},
       );
       
       await tester.pumpWidget(createWithMixTheme(theme));
       final context = tester.element(find.byType(Container));
       
       final mixData = MixData.create(context, Style());
-      final resolved = mixData.tokens.resolveToken<String>(token.name);
+      final resolved = mixData.tokens.resolveToken<String>(token);
       expect(resolved, equals('Hello World'));
     });
   });

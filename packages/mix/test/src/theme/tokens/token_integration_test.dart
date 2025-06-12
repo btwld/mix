@@ -42,8 +42,8 @@ void main() {
       
       final theme = MixThemeData.unified(
         tokens: {
-          smallToken.name: 8.0,
-          largeToken.name: 24.0,
+          smallToken: 8.0,
+          largeToken: 24.0,
         },
       );
 

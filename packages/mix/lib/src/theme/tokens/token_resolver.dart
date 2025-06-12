@@ -23,25 +23,22 @@ class MixTokenResolver {
   /// unexpected type.
   T resolveToken<T>(MixToken<T> token) {
     final theme = MixTheme.of(_context);
-    final value = theme.tokens[token];
     
-    if (value == null) {
-      throw StateError('Token "${token.name}" not found in theme');
+    // Check unified token storage first
+    if (theme.tokens != null) {
+      final resolver = theme.tokens![token];
+      if (resolver != null) {
+        final resolved = resolver.resolve(_context);
+        if (resolved is T) {
+          return resolved;
+        }
+        throw StateError(
+          'Token "${token.name}" resolved to ${resolved.runtimeType}, expected $T'
+        );
+      }
     }
     
-    // Handle function values (for dynamic/context-dependent values)
-    if (value is T Function(BuildContext)) {
-      return value(_context);
-    }
-    
-    // Handle direct values with type safety
-    if (value is T) {
-      return value;
-    }
-    
-    throw StateError(
-      'Token "${token.name}" has type ${value.runtimeType} but expected $T'
-    );
+    throw StateError('Token "${token.name}" not found in theme');
   }
   
   /// Legacy string-based resolution for backwards compatibility.
@@ -52,8 +49,11 @@ class MixTokenResolver {
     final theme = MixTheme.of(_context);
     
     // Find token by name in the map - less efficient but backwards compatible
-    final tokenEntry = theme.tokens.entries
-        .cast<MapEntry<MixToken<dynamic>, dynamic>>()
+    if (theme.tokens == null) {
+      throw StateError('Token "$tokenName" not found in theme');
+    }
+    
+    final tokenEntry = theme.tokens!.entries
         .where((entry) => entry.key.name == tokenName)
         .firstOrNull;
     

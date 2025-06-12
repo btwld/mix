@@ -29,7 +29,7 @@ void main() {
 
         await tester.pumpWithMixTheme(
           Container(),
-          theme: MixThemeData.unified(tokens: const {'test-color': Colors.red}),
+          theme: MixThemeData.unified(tokens: {testToken: Colors.red}),
         );
 
         final buildContext = tester.element(find.byType(Container));

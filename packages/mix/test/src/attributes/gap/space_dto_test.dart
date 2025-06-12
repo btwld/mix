@@ -20,7 +20,7 @@ void main() {
         Container(),
         theme: MixThemeData.unified(
           tokens: {
-            'test-space': 16.0,
+            testToken: 16.0,
           },
         ),
       );

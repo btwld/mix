@@ -150,7 +150,7 @@ void main() {
       Container(),
       theme: MixThemeData.unified(
         tokens: {
-          'test-text-style': const TextStyle(
+          testToken: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
             color: Colors.blue,
