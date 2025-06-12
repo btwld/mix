@@ -9,7 +9,7 @@ part 'text_height_behavior_dto.g.dart';
 
 @MixableType(components: GeneratedPropertyComponents.skipUtility)
 base class TextHeightBehaviorDto extends Mixable<TextHeightBehavior>
-    with _$TextHeightBehaviorDto, Diagnosticable {
+    with _$TextHeightBehaviorDto {
   final bool? applyHeightToFirstAscent;
   final bool? applyHeightToLastDescent;
   final TextLeadingDistribution? leadingDistribution;

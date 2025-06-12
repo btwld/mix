@@ -50,7 +50,7 @@ final class TextStyleDataRef extends TextStyleData {
 // and this will allow more predictable behavior overall.
 @MixableType(components: GeneratedPropertyComponents.none)
 base class TextStyleData extends Mixable<TextStyle>
-    with _$TextStyleData, Diagnosticable {
+    with _$TextStyleData {
   final String? fontFamily;
   final FontWeight? fontWeight;
   final FontStyle? fontStyle;
@@ -129,7 +129,7 @@ base class TextStyleData extends Mixable<TextStyle>
   mergeLists: false,
 )
 final class TextStyleDto extends Mixable<TextStyle>
-    with _$TextStyleDto, Diagnosticable {
+    with _$TextStyleDto {
   final List<TextStyleData> value;
   @MixableConstructor()
   const TextStyleDto._({this.value = const []});
