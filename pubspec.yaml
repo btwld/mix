@@ -5,10 +5,5 @@ environment:
 
 dev_dependencies:
   husky: ^0.1.7
-  lint_staged: ^0.5.1
-lint_staged:
-  '**.dart': 
-    - melos run analyze
-    - melos run fix
 dependencies:
   melos: ^6.3.2
