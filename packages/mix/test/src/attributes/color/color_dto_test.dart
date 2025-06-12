@@ -25,7 +25,7 @@ void main() {
     testWidgets(
       'ColorDto.resolve should resolve tokens using unified resolver',
       (tester) async {
-        const testToken = Token<Color>('test-color');
+        const testToken = MixToken<Color>('test-color');
 
         await tester.pumpWithMixTheme(
           Container(),

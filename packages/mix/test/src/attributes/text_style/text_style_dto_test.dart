@@ -144,7 +144,7 @@ void main() {
 
   testWidgets('TextStyleDto.token resolves using unified resolver system',
       (tester) async {
-    const testToken = Token<TextStyle>('test-text-style');
+    const testToken = MixToken<TextStyle>('test-text-style');
 
     await tester.pumpWithMixTheme(
       Container(),

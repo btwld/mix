@@ -5,8 +5,8 @@ import 'package:mix/mix.dart';
 void main() {
   group('Token Integration Tests', () {
     testWidgets('ColorDto with Token<Color> integration', (tester) async {
-      const primaryToken = Token<Color>('primary');
-      const secondaryToken = Token<Color>('secondary');
+      const primaryToken = MixToken<Color>('primary');
+      const secondaryToken = MixToken<Color>('secondary');
       
       final theme = MixThemeData(
         colors: {
@@ -37,8 +37,8 @@ void main() {
     });
 
     testWidgets('SpaceDto with Token<double> integration', (tester) async {
-      const smallToken = Token<double>('small');
-      const largeToken = Token<double>('large');
+      const smallToken = MixToken<double>('small');
+      const largeToken = MixToken<double>('large');
       
       final theme = MixThemeData.unified(
         tokens: {
@@ -69,8 +69,8 @@ void main() {
     });
 
     testWidgets('TextStyleDto with Token<TextStyle> integration', (tester) async {
-      const headingToken = Token<TextStyle>('heading');
-      const bodyToken = Token<TextStyle>('body');
+      const headingToken = MixToken<TextStyle>('heading');
+      const bodyToken = MixToken<TextStyle>('body');
       
       const headingStyle = TextStyle(fontSize: 24, fontWeight: FontWeight.bold);
       const bodyStyle = TextStyle(fontSize: 16);
@@ -105,8 +105,8 @@ void main() {
     });
 
     testWidgets('Utility extensions work with tokens', (tester) async {
-      const primaryToken = Token<Color>('primary');
-      const spacingToken = Token<double>('spacing');
+      const primaryToken = MixToken<Color>('primary');
+      const spacingToken = MixToken<double>('spacing');
       
       final theme = MixThemeData(
         colors: {
@@ -146,8 +146,8 @@ void main() {
       const oldSpaceToken = SpaceToken('large');
       
       // New tokens with same names
-      const newColorToken = Token<Color>('primary');
-      const newSpaceToken = Token<double>('large');
+      const newColorToken = MixToken<Color>('primary');
+      const newSpaceToken = MixToken<double>('large');
       
       // Names should match for theme lookup
       expect(oldColorToken.name, equals(newColorToken.name));

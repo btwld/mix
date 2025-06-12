@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/element.dart';
 import '../../core/utility.dart';
 import '../../theme/tokens/color_token.dart';
-import '../../theme/tokens/token.dart';
+import '../../theme/tokens/mix_token.dart';
 import 'color_directives.dart';
 import 'color_directives_impl.dart';
 import 'color_dto.dart';
@@ -15,8 +15,8 @@ abstract base class BaseColorUtility<T extends Attribute>
   const BaseColorUtility(super.builder);
 
   T _buildColor(Color color) => builder(ColorDto(color));
-  
-  T token(Token<Color> token) => builder(ColorDto.token(token));
+
+  T token(MixToken<Color> token) => builder(ColorDto.token(token));
 }
 
 @immutable
@@ -121,4 +121,3 @@ base mixin ColorDirectiveMixin<T extends Attribute> on BaseColorUtility<T> {
   T withHue(double hue) => directive(HueColorDirective(hue));
   T withValue(double value) => directive(ValueColorDirective(value));
 }
-

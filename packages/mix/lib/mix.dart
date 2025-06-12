@@ -120,7 +120,6 @@ export 'src/theme/tokens/mix_token.dart';
 export 'src/theme/tokens/radius_token.dart';
 export 'src/theme/tokens/space_token.dart';
 export 'src/theme/tokens/text_style_token.dart';
-export 'src/theme/tokens/token.dart';
 export 'src/theme/tokens/token_resolver.dart';
 export 'src/theme/tokens/token_util.dart';
 

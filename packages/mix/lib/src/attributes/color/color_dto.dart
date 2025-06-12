@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../core/element.dart';
 import '../../core/factory/mix_data.dart';
-import '../../theme/tokens/token.dart';
+import '../../theme/tokens/mix_token.dart';
 import 'color_directives.dart';
 import 'color_directives_impl.dart';
 
@@ -19,13 +19,13 @@ import 'color_directives_impl.dart';
 @immutable
 class ColorDto extends Mixable<Color> with Diagnosticable {
   final Color? value;
-  final Token<Color>? token;
+  final MixToken<Color>? token;
   final List<ColorDirective> directives;
 
   const ColorDto.raw({this.value, this.token, this.directives = const []});
   const ColorDto(Color value) : this.raw(value: value);
 
-  factory ColorDto.token(Token<Color> token) => ColorDto.raw(token: token);
+  factory ColorDto.token(MixToken<Color> token) => ColorDto.raw(token: token);
 
   ColorDto.directive(ColorDirective directive)
       : this.raw(directives: [directive]);

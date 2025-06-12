@@ -14,7 +14,7 @@ void main() {
 
     testWidgets('SpaceDto.token resolves using unified resolver system',
         (tester) async {
-      const testToken = Token<double>('test-space');
+      const testToken = MixToken<double>('test-space');
 
       await tester.pumpWithMixTheme(
         Container(),

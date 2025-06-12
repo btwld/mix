@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../core/element.dart';
 import '../../core/factory/mix_data.dart';
-import '../../theme/tokens/token.dart';
+import '../../theme/tokens/mix_token.dart';
 
 /// A Data transfer object that represents a [Radius] value.
 ///
@@ -16,12 +16,12 @@ import '../../theme/tokens/token.dart';
 @immutable
 class RadiusDto extends Mixable<Radius> with Diagnosticable {
   final Radius? value;
-  final Token<Radius>? token;
+  final MixToken<Radius>? token;
 
   const RadiusDto.raw({this.value, this.token});
   const RadiusDto(Radius value) : this.raw(value: value);
 
-  factory RadiusDto.token(Token<Radius> token) => RadiusDto.raw(token: token);
+  factory RadiusDto.token(MixToken<Radius> token) => RadiusDto.raw(token: token);
 
   @override
   Radius resolve(MixData mix) {

@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import '../../core/element.dart';
 import '../../core/utility.dart';
 import '../../theme/tokens/space_token.dart';
-import '../../theme/tokens/token.dart';
+import '../../theme/tokens/mix_token.dart';
 import 'edge_insets_dto.dart';
 
 @Deprecated('Use EdgeInsetsGeometryUtility instead')
@@ -118,5 +118,5 @@ class SpacingSideUtility<T extends Attribute> extends MixUtility<T, double> {
 }
 
 extension SpacingTokens<T extends Attribute> on SpacingSideUtility<T> {
-  T token(Token<double> token) => ref(SpaceToken(token.name));
+  T token(MixToken<double> token) => ref(SpaceToken(token.name));
 }

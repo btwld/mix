@@ -131,12 +131,12 @@ base class TextStyleData extends Mixable<TextStyle>
 final class TextStyleDto extends Mixable<TextStyle>
     with _$TextStyleDto, Diagnosticable {
   final List<TextStyleData> value;
-  final Token<TextStyle>? token;
+  final MixToken<TextStyle>? token;
 
   @MixableConstructor()
   const TextStyleDto._({this.value = const [], this.token});
 
-  factory TextStyleDto.token(Token<TextStyle> token) =>
+  factory TextStyleDto.token(MixToken<TextStyle> token) =>
       TextStyleDto._(token: token);
 
   factory TextStyleDto({
