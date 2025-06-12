@@ -25,12 +25,6 @@ extension SpaceRefExt on SpaceRef {
 /// A space token defines a value for controlling the
 /// size of UI elements.
 ///
-/// @Deprecated: Use Token<double> instead.
-@Deprecated(
-  'Use Token<double> instead. '
-  'This will be removed in v3.0.0. '
-  'Migration: SpaceToken("large") → Token<double>("large")',
-)
 @immutable
 class SpaceToken extends MixToken<double> with MixTokenCallable<double> {
   /// A constant constructor that accepts a `String` argument named [name].

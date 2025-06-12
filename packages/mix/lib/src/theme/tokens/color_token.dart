@@ -9,12 +9,6 @@ import 'mix_token.dart';
 ///
 /// To resolve the color value statically, pass a [Color] value to the constructor.
 ///
-/// @Deprecated: Use Token<Color> instead.
-@Deprecated(
-  'Use Token<Color> instead. '
-  'This will be removed in v3.0.0. '
-  'Migration: ColorToken("primary") → Token<Color>("primary")',
-)
 @immutable
 class ColorToken extends MixToken<Color> with MixTokenCallable<Color> {
   const ColorToken(super.name);
