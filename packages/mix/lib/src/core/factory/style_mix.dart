@@ -3,7 +3,6 @@
 import 'package:flutter/widgets.dart';
 
 import '../../attributes/animated/animated_data.dart';
-import '../../attributes/nested_style/nested_style_attribute.dart';
 import '../../internal/helper_util.dart';
 import '../../specs/spec_util.dart';
 import '../../variants/variant_attribute.dart';
@@ -107,9 +106,6 @@ class Style extends StyleElement {
           styleList.add(element);
         case VariantAttribute():
           applyVariants.add(element);
-        case NestedStyleAttribute():
-          applyVariants.addAll(element.value.variants.values);
-          styleList.addAll(element.value.styles.values);
         case SpecUtility():
           if (element.attributeValue != null) {
             final nestedStyle = Style.create([element.attributeValue!]);
@@ -131,7 +127,7 @@ class Style extends StyleElement {
             ),
             ErrorHint(
               'StyleElements must be subclasses of one of the following types: '
-              'SpecAttribute, VariantAttribute, NestedStyleAttribute, SpecUtility, or Style. '
+              'SpecAttribute, VariantAttribute, SpecUtility, or Style. '
               'For DTOs, use utility functions like \$box.color() instead of direct DTOs.',
             ),
           ]);
@@ -162,8 +158,8 @@ class Style extends StyleElement {
   /// Returns all utilities, allowing you to use your own namespace
   static MixUtilities utilities() => const MixUtilities();
 
-  static get asAttribute => const SpreadFunctionParams<StyleElement, Attribute>(
-        NestedStyleAttribute.fromList,
+  static get asAttribute => const SpreadFunctionParams<StyleElement, Style>(
+        Style.create,
       );
 
   bool get isAnimated => this is AnimatedStyle;
@@ -299,11 +295,12 @@ class Style extends StyleElement {
     return mergedStyle.applyVariants(selectedVariants);
   }
 
-  /// Returns a new `NestedStyleAttribute` instance that wraps the current `Style` instance.
+  /// Deprecated: This method is no longer needed.
   ///
-  /// This method is used to create a nested style attribute, which can be used to apply a `Style` instance
-  /// as an attribute within another `Style` instance.
-  NestedStyleAttribute call() => NestedStyleAttribute(this);
+  /// You can now pass a Style instance directly without wrapping it in a call.
+  /// For example, instead of `style()`, just use `style`.
+  @Deprecated('Pass the Style instance directly instead of using style()')
+  Style call() => this;
 
   /// Picks and applies only the attributes within the specified [Variant] instances, and returns a new `Style`.
   ///
