@@ -14,7 +14,7 @@ void main() {
       List<String> initialExpandedValues = const [],
     }) {
       return NakedAccordion<String>(
-        controller: AccordionController(),
+        controller: NakedAccordionController(),
         initialExpandedValues: initialExpandedValues,
         children: [
           NakedAccordionItem<String>(
@@ -66,7 +66,7 @@ void main() {
       required bool autoFocus,
     }) {
       return NakedAccordion<String>(
-        controller: AccordionController<String>(),
+        controller: NakedAccordionController<String>(),
         children: [
           NakedAccordionItem<String>(
             value: 'item1',
@@ -106,7 +106,7 @@ void main() {
     testWidgets('autofocus works correctly', (WidgetTester tester) async {
       await tester.pumpMaterialWidget(
         NakedAccordion<String>(
-          controller: AccordionController<String>(),
+          controller: NakedAccordionController<String>(),
           children: [
             NakedAccordionItem<String>(
               value: 'item1',
@@ -125,10 +125,10 @@ void main() {
   });
 
   group('Controlled Expansion', () {
-    late AccordionController<String> controller;
+    late NakedAccordionController<String> controller;
 
     setUp(() {
-      controller = AccordionController<String>();
+      controller = NakedAccordionController<String>();
     });
 
     Widget buildControlledAccordion() {
@@ -214,7 +214,7 @@ void main() {
 
     testWidgets('controller respects min expanded items',
         (WidgetTester tester) async {
-      controller = AccordionController<String>(min: 1);
+      controller = NakedAccordionController<String>(min: 1);
       controller.open('item1');
 
       await tester.pumpMaterialWidget(buildControlledAccordion());
@@ -232,7 +232,7 @@ void main() {
 
     testWidgets('controller respects max expanded items',
         (WidgetTester tester) async {
-      controller = AccordionController<String>(max: 1);
+      controller = NakedAccordionController<String>(max: 1);
 
       await tester.pumpMaterialWidget(buildControlledAccordion());
 
@@ -256,7 +256,7 @@ void main() {
 
     testWidgets('controller respects both min and max constraints',
         (WidgetTester tester) async {
-      controller = AccordionController<String>(min: 1, max: 1);
+      controller = NakedAccordionController<String>(min: 1, max: 1);
 
       await tester.pumpMaterialWidget(buildControlledAccordion());
 

@@ -29,7 +29,7 @@ class AccordionExample extends StatefulWidget {
 }
 
 class _AccordionExampleState extends State<AccordionExample> {
-  final _controller = AccordionController<String>(max: 1, min: 1);
+  final _controller = NakedAccordionController<String>(max: 1, min: 1);
 
   @override
   Widget build(BuildContext context) {

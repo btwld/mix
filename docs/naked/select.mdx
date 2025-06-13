@@ -197,8 +197,10 @@ class SelectItem extends StatefulWidget {
 class _SelectItemState extends State<SelectItem> {
   bool _isHovered = false;
   bool _isFocused = false;
+  bool _isSelected = false;
 
   Color get backgroundColor {
+    if (_isSelected) return Colors.blue.shade100;
     if (_isHovered) return Colors.grey.shade100;
     if (_isFocused) return Colors.grey.shade200;
     return Colors.white;
@@ -210,6 +212,7 @@ class _SelectItemState extends State<SelectItem> {
       value: widget.value,
       onHoverState: (isHovered) => setState(() => _isHovered = isHovered),
       onFocusState: (isFocused) => setState(() => _isFocused = isFocused),
+      onSelectState: (isSelected) => setState(() => _isSelected = isSelected),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         decoration: BoxDecoration(
@@ -237,9 +240,37 @@ const NakedSelect({
   this.onStateChange,
   this.removalDelay = Duration.zero,
   this.onSelectedValueChanged,
+  this.enabled = true,
+  this.semanticLabel,
+  this.closeOnSelect = true,
+  this.autofocus = false,
+  this.enableTypeAhead = true,
+  this.typeAheadDebounceTime = const Duration(milliseconds: 500),
+  this.menuAlignment = const PositionConfig(
+    target: Alignment.bottomLeft,
+    follower: Alignment.topLeft,
+    offset: Offset(0, 4),
+  ),
+  this.fallbackAlignments = const [
+    PositionConfig(
+      target: Alignment.topLeft,
+      follower: Alignment.bottomLeft,
+      offset: Offset(0, -8),
+    ),
+  ],
+  this.closeOnClickOutside = true,
+})
+
+const NakedSelect.multiple({
+  Key? key,
+  required this.child,
+  required this.menu,
+  this.onClose,
+  this.onOpen,
+  this.onStateChange,
+  this.removalDelay = Duration.zero,
   this.selectedValues,
   this.onSelectedValuesChanged,
-  this.allowMultiple = false,
   this.enabled = true,
   this.semanticLabel,
   this.closeOnSelect = true,
@@ -282,19 +313,16 @@ The duration to wait before removing the widget from the overlay after the menu 
 Optional callback for handling overlay state changes.
 
 #### selectedValue → `T?`
-The currently selected value in single selection mode. Only used when `allowMultiple` is false.
+The currently selected value in single selection mode. Only used in the default constructor.
 
 #### onSelectedValueChanged → `ValueChanged<T?>?`
-Called when the selected value changes in single selection mode.
+Called when the selected value changes in single selection mode. Only used in the default constructor.
 
 #### selectedValues → `Set<T>?`
-The set of currently selected values in multiple selection mode. Required when `allowMultiple` is true.
+The set of currently selected values in multiple selection mode. Only used in the `.multiple` constructor.
 
 #### onSelectedValuesChanged → `ValueChanged<Set<T>>?`
-Called when selected values change in multiple selection mode.
-
-#### allowMultiple → `bool`
-Whether to allow selecting multiple items. When true, `selectedValues` and `onSelectedValuesChanged` must be provided. Defaults to false.
+Called when selected values change in multiple selection mode. Only used in the `.multiple` constructor.
 
 #### enabled → `bool`
 Whether the select is enabled and can be interacted with. Defaults to true.
@@ -381,6 +409,7 @@ const NakedSelectItem({
   this.onHoverState,
   this.onPressedState,
   this.onFocusState,
+  this.onSelectState,
   this.enabled = true,
   this.semanticLabel,
   this.cursor = SystemMouseCursors.click,
@@ -406,6 +435,9 @@ Called when the pressed state changes. Use this to update the visual appearance 
 
 #### onFocusState → `ValueChanged<bool>?`
 Called when the focus state changes. Use this to update the visual appearance when focused.
+
+#### onSelectState → `ValueChanged<bool>?`
+Called when the selection state changes. Use this to update the visual appearance when this item is selected or deselected.
 
 #### enabled → `bool`
 Whether this item is enabled and can be selected. Defaults to true.

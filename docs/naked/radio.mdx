@@ -1,5 +1,5 @@
 ---
-title: NakedRadioGroup
+title: NakedRadio
 ---
 
 NakedRadioGroup provides a context provider for managing a single selection across multiple radio buttons without imposing any visual styling. It handles keyboard navigation between radio buttons using arrow keys and provides a simple callback-based API.
@@ -59,6 +59,7 @@ class _RadioButtonState extends State<RadioButton> {
   bool _isHovered = false;
   bool _isPressed = false;
   bool _isFocused = false;
+  bool _isSelected = false;
 
   Color getBorderColor(bool isSelected) {
     const baseColor = Color(0xFF3D3D3D);
@@ -76,31 +77,29 @@ class _RadioButtonState extends State<RadioButton> {
 
   @override
   Widget build(BuildContext context) {
-    return NakedRadioButton<RadioOption>(
+    return NakedRadio<RadioOption>(
       value: widget.value,
       onFocusState: (focused) => setState(() => _isFocused = focused),
       onHoverState: (hovered) => setState(() => _isHovered = hovered),
       onPressedState: (pressed) => setState(() => _isPressed = pressed),
-      builder: (_, selected) {
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 100),
-          width: 20,
-          height: 20,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: getBorderColor(selected),
-              width: selected ? 6 : 2,
-            ),
-            borderRadius: BorderRadius.circular(10),
+      onSelectState: (selected) => setState(() => _isSelected = selected),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 100),
+        width: 20,
+        height: 20,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: getBorderColor(_isSelected),
+            width: _isSelected ? 6 : 2,
           ),
-        );
-      },
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
     );
   }
 }
 ```
 </CodeGroup>
-
 ## Constructor
 
 ```dart
