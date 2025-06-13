@@ -10,7 +10,7 @@ part of 'menu_item.dart';
 
 /// A mixin that provides spec functionality for [MenuItemSpec].
 mixin _$MenuItemSpec on Spec<MenuItemSpec> {
-  static MenuItemSpec from(MixData mix) {
+  static MenuItemSpec from(MixContext mix) {
     return mix.attributeOf<MenuItemSpecAttribute>()?.resolve(mix) ??
         const MenuItemSpec();
   }
@@ -152,16 +152,16 @@ class MenuItemSpecAttribute extends SpecAttribute<MenuItemSpec>
     super.animated,
   });
 
-  /// Resolves to [MenuItemSpec] using the provided [MixData].
+  /// Resolves to [MenuItemSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final menuItemSpec = MenuItemSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  MenuItemSpec resolve(MixData mix) {
+  MenuItemSpec resolve(MixContext mix) {
     return MenuItemSpec(
       container: container?.resolve(mix),
       titleSubtitleContainer: titleSubtitleContainer?.resolve(mix),

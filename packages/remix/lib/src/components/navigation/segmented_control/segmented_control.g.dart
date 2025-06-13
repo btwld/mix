@@ -10,7 +10,7 @@ part of 'segmented_control.dart';
 
 /// A mixin that provides spec functionality for [SegmentedControlSpec].
 mixin _$SegmentedControlSpec on Spec<SegmentedControlSpec> {
-  static SegmentedControlSpec from(MixData mix) {
+  static SegmentedControlSpec from(MixContext mix) {
     return mix.attributeOf<SegmentedControlSpecAttribute>()?.resolve(mix) ??
         const SegmentedControlSpec();
   }
@@ -150,16 +150,16 @@ class SegmentedControlSpecAttribute extends SpecAttribute<SegmentedControlSpec>
     super.animated,
   });
 
-  /// Resolves to [SegmentedControlSpec] using the provided [MixData].
+  /// Resolves to [SegmentedControlSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final segmentedControlSpec = SegmentedControlSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  SegmentedControlSpec resolve(MixData mix) {
+  SegmentedControlSpec resolve(MixContext mix) {
     return SegmentedControlSpec(
       container: container?.resolve(mix),
       flex: flex?.resolve(mix),
@@ -320,7 +320,7 @@ class SegmentedControlSpecTween extends Tween<SegmentedControlSpec?> {
 
 /// A mixin that provides spec functionality for [SegmentButtonSpec].
 mixin _$SegmentButtonSpec on Spec<SegmentButtonSpec> {
-  static SegmentButtonSpec from(MixData mix) {
+  static SegmentButtonSpec from(MixContext mix) {
     return mix.attributeOf<SegmentButtonSpecAttribute>()?.resolve(mix) ??
         const SegmentButtonSpec();
   }
@@ -453,16 +453,16 @@ class SegmentButtonSpecAttribute extends SpecAttribute<SegmentButtonSpec>
     super.animated,
   });
 
-  /// Resolves to [SegmentButtonSpec] using the provided [MixData].
+  /// Resolves to [SegmentButtonSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final segmentButtonSpec = SegmentButtonSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  SegmentButtonSpec resolve(MixData mix) {
+  SegmentButtonSpec resolve(MixContext mix) {
     return SegmentButtonSpec(
       container: container?.resolve(mix),
       flex: flex?.resolve(mix),

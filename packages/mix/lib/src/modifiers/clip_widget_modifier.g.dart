@@ -87,16 +87,16 @@ class ClipOvalModifierSpecAttribute
     this.clipBehavior,
   });
 
-  /// Resolves to [ClipOvalModifierSpec] using the provided [MixData].
+  /// Resolves to [ClipOvalModifierSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final clipOvalModifierSpec = ClipOvalModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  ClipOvalModifierSpec resolve(MixData mix) {
+  ClipOvalModifierSpec resolve(MixContext mix) {
     return ClipOvalModifierSpec(
       clipper: clipper,
       clipBehavior: clipBehavior,
@@ -243,16 +243,16 @@ class ClipRectModifierSpecAttribute
     this.clipBehavior,
   });
 
-  /// Resolves to [ClipRectModifierSpec] using the provided [MixData].
+  /// Resolves to [ClipRectModifierSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final clipRectModifierSpec = ClipRectModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  ClipRectModifierSpec resolve(MixData mix) {
+  ClipRectModifierSpec resolve(MixContext mix) {
     return ClipRectModifierSpec(
       clipper: clipper,
       clipBehavior: clipBehavior,
@@ -409,16 +409,16 @@ class ClipRRectModifierSpecAttribute
     this.clipBehavior,
   });
 
-  /// Resolves to [ClipRRectModifierSpec] using the provided [MixData].
+  /// Resolves to [ClipRRectModifierSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final clipRRectModifierSpec = ClipRRectModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  ClipRRectModifierSpec resolve(MixData mix) {
+  ClipRRectModifierSpec resolve(MixContext mix) {
     return ClipRRectModifierSpec(
       borderRadius: borderRadius?.resolve(mix),
       clipper: clipper,
@@ -571,16 +571,16 @@ class ClipPathModifierSpecAttribute
     this.clipBehavior,
   });
 
-  /// Resolves to [ClipPathModifierSpec] using the provided [MixData].
+  /// Resolves to [ClipPathModifierSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final clipPathModifierSpec = ClipPathModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  ClipPathModifierSpec resolve(MixData mix) {
+  ClipPathModifierSpec resolve(MixContext mix) {
     return ClipPathModifierSpec(
       clipper: clipper,
       clipBehavior: clipBehavior,
@@ -720,16 +720,16 @@ class ClipTriangleModifierSpecAttribute
     this.clipBehavior,
   });
 
-  /// Resolves to [ClipTriangleModifierSpec] using the provided [MixData].
+  /// Resolves to [ClipTriangleModifierSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final clipTriangleModifierSpec = ClipTriangleModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  ClipTriangleModifierSpec resolve(MixData mix) {
+  ClipTriangleModifierSpec resolve(MixContext mix) {
     return ClipTriangleModifierSpec(
       clipBehavior: clipBehavior,
     );

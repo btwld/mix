@@ -199,7 +199,7 @@ class Style extends StyleElement {
     return merge(Style.create(elements));
   }
 
-  MixData of(BuildContext context) => MixData.create(context, this);
+  MixContext of(BuildContext context) => MixContext.create(context, this);
 
   /// Returns a `AnimatedStyle` from this `Style` with the provided [duration] and [curve].
   AnimatedStyle animate({

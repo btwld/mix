@@ -10,7 +10,7 @@ part of 'icon_button.dart';
 
 /// A mixin that provides spec functionality for [IconButtonSpec].
 mixin _$IconButtonSpec on Spec<IconButtonSpec> {
-  static IconButtonSpec from(MixData mix) {
+  static IconButtonSpec from(MixContext mix) {
     return mix.attributeOf<IconButtonSpecAttribute>()?.resolve(mix) ??
         const IconButtonSpec();
   }
@@ -134,16 +134,16 @@ class IconButtonSpecAttribute extends SpecAttribute<IconButtonSpec>
     super.animated,
   });
 
-  /// Resolves to [IconButtonSpec] using the provided [MixData].
+  /// Resolves to [IconButtonSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final iconButtonSpec = IconButtonSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  IconButtonSpec resolve(MixData mix) {
+  IconButtonSpec resolve(MixContext mix) {
     return IconButtonSpec(
       container: container?.resolve(mix),
       icon: icon?.resolve(mix),

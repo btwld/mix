@@ -98,7 +98,7 @@ class RenderModifiers extends StatelessWidget {
   final Widget child;
 
   /// TODO: remove this parameter in the future
-  final MixData? mix;
+  final MixContext? mix;
   final List<Type> orderOfModifiers;
   final List<WidgetModifierSpec<dynamic>> modifiers;
 
@@ -144,7 +144,7 @@ class RenderAnimatedModifiers extends StatelessWidget {
   });
 
   final Widget child;
-  final MixData? mix;
+  final MixContext? mix;
   final List<Type> orderOfModifiers;
   final List<WidgetModifierSpec<dynamic>> modifiers;
   final Duration duration;
@@ -302,7 +302,7 @@ class ModifierSpecTween extends Tween<WidgetModifierSpec> {
       WidgetModifierSpec.lerpValue(begin, end, t)!;
 }
 
-List<Type> _normalizeOrderedTypes(MixData? mix, List<Type>? orderedTypes) {
+List<Type> _normalizeOrderedTypes(MixContext? mix, List<Type>? orderedTypes) {
   orderedTypes ??= [];
   if (mix == null) return orderedTypes;
 
@@ -325,7 +325,7 @@ List<Type> _normalizeOrderedTypes(MixData? mix, List<Type>? orderedTypes) {
 
 @visibleForTesting
 List<WidgetModifierSpec<dynamic>> combineModifiers(
-  MixData? mix,
+  MixContext? mix,
   List<WidgetModifierSpec<dynamic>> modifiers,
   List<Type> orderOfModifiers, {
   List<Type>? defaultOrder,

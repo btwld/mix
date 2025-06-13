@@ -28,7 +28,7 @@ typedef Dto<Value> = Mixable<Value>;
 abstract class Mixable<Value> extends StyleElement {
   const Mixable();
 
-  Value resolve(MixData mix);
+  Value resolve(MixContext mix);
 
   @override
   Mixable<Value> merge(covariant Mixable<Value>? other);

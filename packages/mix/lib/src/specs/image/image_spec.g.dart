@@ -10,7 +10,7 @@ part of 'image_spec.dart';
 
 /// A mixin that provides spec functionality for [ImageSpec].
 mixin _$ImageSpec on Spec<ImageSpec> {
-  static ImageSpec from(MixData mix) {
+  static ImageSpec from(MixContext mix) {
     return mix.attributeOf<ImageSpecAttribute>()?.resolve(mix) ??
         const ImageSpec();
   }
@@ -180,16 +180,16 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
     super.modifiers,
   });
 
-  /// Resolves to [ImageSpec] using the provided [MixData].
+  /// Resolves to [ImageSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final imageSpec = ImageSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  ImageSpec resolve(MixData mix) {
+  ImageSpec resolve(MixContext mix) {
     return ImageSpec(
       width: width,
       height: height,

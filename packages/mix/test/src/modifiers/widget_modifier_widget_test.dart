@@ -17,7 +17,7 @@ void main() {
     const CustomModifierAttribute(),
   );
 
-  final mixData = MixData.create(MockBuildContext(), style);
+  final mixData = MixContext.create(MockBuildContext(), style);
 
   group('RenderModifiers', () {
     testWidgets('Renders modifiers in the correct order', (tester) async {
@@ -82,7 +82,7 @@ void main() {
     });
 
     testWidgets('Renders child when no modifiers are provided', (tester) async {
-      final mixData = MixData.create(MockBuildContext(), Style());
+      final mixData = MixContext.create(MockBuildContext(), Style());
 
       await tester.pumpMaterialApp(
         RenderModifiers(
@@ -97,7 +97,7 @@ void main() {
     });
 
     testWidgets('Renders child when orderOfModifiers is empty', (tester) async {
-      final mixData = MixData.create(MockBuildContext(), style);
+      final mixData = MixContext.create(MockBuildContext(), style);
 
       await tester.pumpMaterialApp(
         RenderModifiers(
@@ -260,7 +260,7 @@ void main() {
 
   group('RenderAnimatedModifiers', () {
     testWidgets('Renders animated modifiers', (tester) async {
-      final mixData = MixData.create(MockBuildContext(), style);
+      final mixData = MixContext.create(MockBuildContext(), style);
 
       await tester.pumpMaterialApp(
         RenderAnimatedModifiers(

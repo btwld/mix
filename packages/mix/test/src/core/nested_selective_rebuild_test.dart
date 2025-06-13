@@ -76,7 +76,7 @@ class _StyleContainerState extends State<StyleContainer> {
       $box.color(_currentBoxColor),
       $text.style.fontSize(_currentTextSize),
     );
-    final mixData = MixData.create(MockBuildContext(), style);
+    final mixData = MixContext.create(MockBuildContext(), style);
     _computedStyle = ComputedStyle.compute(mixData);
   }
 

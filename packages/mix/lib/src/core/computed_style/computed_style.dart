@@ -44,7 +44,7 @@ class ComputedStyle with Diagnosticable {
   /// ```dart
   /// final computedStyle = ComputedStyle.compute(mixData);
   /// ```
-  factory ComputedStyle.compute(MixData mix) {
+  factory ComputedStyle.compute(MixContext mix) {
     final specs = <Type, Spec>{};
     final modifiers = <WidgetModifierSpec>[];
 

@@ -32,7 +32,7 @@ final class _TestAttribute extends SpecAttribute<_TestSpec> {
   }
 
   @override
-  _TestSpec resolve(MixData mix) {
+  _TestSpec resolve(MixContext mix) {
     return _TestSpec(dto: dto?.resolve(mix));
   }
 
