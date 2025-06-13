@@ -54,7 +54,7 @@ class MixBuilder extends StatefulWidget {
   });
 
   /// The style to apply.
-  final Style style;
+  final BaseStyle style;
 
   /// Whether to merge with inherited styles.
   ///
@@ -83,7 +83,7 @@ class MixBuilder extends StatefulWidget {
 }
 
 class _MixBuilderState extends State<MixBuilder> {
-  late Style _cachedStyle;
+  late BaseStyle _cachedStyle;
   late final WidgetStatesController _controller;
 
   /// Checks if the style contains widget state variants that require
