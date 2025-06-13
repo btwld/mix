@@ -117,7 +117,7 @@ class Style extends BaseStyle {
             styleList.addAll(nestedStyle.styles.values);
             applyVariants.addAll(nestedStyle.variants.values);
           }
-        case Style():
+        case BaseStyle():
           // Handle nested Style instances by flattening them
           styleList.addAll(element.styles.values);
           applyVariants.addAll(element.variants.values);
