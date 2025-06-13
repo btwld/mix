@@ -40,7 +40,7 @@ mixin _$SelectSpec on Spec<SelectSpec> {
     SelectMenuSpec? menu,
     SelectMenuItemSpec? item,
     CompositedTransformFollowerSpec? position,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return SelectSpec(
@@ -262,7 +262,7 @@ class SelectSpecUtility<T extends StyleElement>
     SelectMenuSpecAttribute? menu,
     SelectMenuItemSpecAttribute? item,
     CompositedTransformFollowerSpecAttribute? position,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(SelectSpecAttribute(
@@ -331,7 +331,7 @@ mixin _$SelectMenuSpec on Spec<SelectMenuSpec> {
   SelectMenuSpec copyWith({
     FlexBoxSpec? container,
     bool? autoWidth,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return SelectMenuSpec(
@@ -520,7 +520,7 @@ class SelectMenuSpecUtility<T extends StyleElement>
   T only({
     FlexBoxSpecAttribute? container,
     bool? autoWidth,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(SelectMenuSpecAttribute(
@@ -588,7 +588,7 @@ mixin _$SelectMenuItemSpec on Spec<SelectMenuItemSpec> {
     IconSpec? icon,
     TextSpec? text,
     FlexBoxSpec? container,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return SelectMenuItemSpec(
@@ -794,7 +794,7 @@ class SelectMenuItemSpecUtility<T extends StyleElement>
     IconSpecAttribute? icon,
     TextSpecAttribute? text,
     FlexBoxSpecAttribute? container,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(SelectMenuItemSpecAttribute(
@@ -863,7 +863,7 @@ mixin _$SelectTriggerSpec on Spec<SelectTriggerSpec> {
     FlexBoxSpec? container,
     IconSpec? icon,
     TextSpec? label,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return SelectTriggerSpec(
@@ -1069,7 +1069,7 @@ class SelectTriggerSpecUtility<T extends StyleElement>
     FlexBoxSpecAttribute? container,
     IconSpecAttribute? icon,
     TextSpecAttribute? label,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(SelectTriggerSpecAttribute(

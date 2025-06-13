@@ -39,7 +39,7 @@ mixin _$DropdownMenuSpec on Spec<DropdownMenuSpec> {
   DropdownMenuSpec copyWith({
     DropdownMenuContainerSpec? menu,
     DropdownMenuItemSpec? item,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return DropdownMenuSpec(
@@ -228,7 +228,7 @@ class DropdownMenuSpecUtility<T extends StyleElement>
   T only({
     DropdownMenuContainerSpecAttribute? menu,
     DropdownMenuItemSpecAttribute? item,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(DropdownMenuSpecAttribute(
@@ -297,7 +297,7 @@ mixin _$DropdownMenuContainerSpec on Spec<DropdownMenuContainerSpec> {
   DropdownMenuContainerSpec copyWith({
     FlexBoxSpec? container,
     bool? autoWidth,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return DropdownMenuContainerSpec(
@@ -488,7 +488,7 @@ class DropdownMenuContainerSpecUtility<T extends StyleElement>
   T only({
     FlexBoxSpecAttribute? container,
     bool? autoWidth,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(DropdownMenuContainerSpecAttribute(
@@ -556,7 +556,7 @@ mixin _$DropdownMenuItemSpec on Spec<DropdownMenuItemSpec> {
     IconSpec? icon,
     TextSpec? text,
     FlexBoxSpec? container,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return DropdownMenuItemSpec(
@@ -762,7 +762,7 @@ class DropdownMenuItemSpecUtility<T extends StyleElement>
     IconSpecAttribute? icon,
     TextSpecAttribute? text,
     FlexBoxSpecAttribute? container,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(DropdownMenuItemSpecAttribute(

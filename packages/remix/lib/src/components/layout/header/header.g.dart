@@ -37,7 +37,7 @@ mixin _$HeaderSpec on Spec<HeaderSpec> {
   @override
   HeaderSpec copyWith({
     FlexBoxSpec? container,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     FlexSpec? titleGroup,
     TextSpec? title,
     TextSpec? subtitle,
@@ -259,7 +259,7 @@ class HeaderSpecUtility<T extends StyleElement>
   @override
   T only({
     FlexBoxSpecAttribute? container,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     FlexSpecAttribute? titleGroup,
     TextSpecAttribute? title,
     TextSpecAttribute? subtitle,

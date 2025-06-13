@@ -41,7 +41,7 @@ mixin _$MenuItemSpec on Spec<MenuItemSpec> {
     IconSpec? icon,
     TextSpec? title,
     TextSpec? subtitle,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return MenuItemSpec(
@@ -285,7 +285,7 @@ class MenuItemSpecUtility<T extends StyleElement>
     IconSpecAttribute? icon,
     TextSpecAttribute? title,
     TextSpecAttribute? subtitle,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(MenuItemSpecAttribute(

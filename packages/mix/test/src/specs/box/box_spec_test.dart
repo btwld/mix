@@ -21,7 +21,7 @@ void main() {
             decoration: const BoxDecorationDto(color: ColorDto(Colors.blue)),
             transform: Matrix4.translationValues(10.0, 10.0, 0.0),
             clipBehavior: Clip.antiAlias,
-            modifiers: const WidgetModifiersDataDto([
+            modifiers: const WidgetModifiersConfigDto([
               OpacityModifierSpecAttribute(opacity: 1),
               SizedBoxModifierSpecAttribute(height: 10, width: 10),
             ]),
@@ -63,7 +63,7 @@ void main() {
         transformAlignment: Alignment.center,
         width: 300,
         height: 200,
-        modifiers: const WidgetModifiersData([
+        modifiers: const WidgetModifiersConfig([
           OpacityModifierSpec(0.5),
           SizedBoxModifierSpec(height: 10, width: 10),
         ]),
@@ -72,7 +72,7 @@ void main() {
       final copiedSpec = spec.copyWith(
         width: 250.0,
         height: 150.0,
-        modifiers: const WidgetModifiersData([
+        modifiers: const WidgetModifiersConfig([
           OpacityModifierSpec(1),
         ]),
       );
@@ -96,7 +96,7 @@ void main() {
 
       expect(
         copiedSpec.modifiers!.value,
-        const WidgetModifiersData(
+        const WidgetModifiersConfig(
           [OpacityModifierSpec(1)],
         ).value,
       );
@@ -116,7 +116,7 @@ void main() {
         clipBehavior: Clip.none,
         width: 300,
         height: 200,
-        modifiers: const WidgetModifiersData([
+        modifiers: const WidgetModifiersConfig([
           OpacityModifierSpec(0.5),
           SizedBoxModifierSpec(height: 10, width: 10),
         ]),
@@ -134,7 +134,7 @@ void main() {
         transformAlignment: Alignment.center,
         width: 400,
         height: 300,
-        modifiers: const WidgetModifiersData([
+        modifiers: const WidgetModifiersConfig([
           OpacityModifierSpec(1),
           SizedBoxModifierSpec(height: 100, width: 100),
         ]),
@@ -200,14 +200,14 @@ void main() {
 
     test('lerp modifiers', () {
       const spec1 = BoxSpec(
-        modifiers: WidgetModifiersData([
+        modifiers: WidgetModifiersConfig([
           OpacityModifierSpec(0.5),
           SizedBoxModifierSpec(height: 10, width: 10),
         ]),
       );
 
       const spec2 = BoxSpec(
-        modifiers: WidgetModifiersData([
+        modifiers: WidgetModifiersConfig([
           OpacityModifierSpec(1),
           SizedBoxModifierSpec(height: 100, width: 100),
         ]),
@@ -217,7 +217,7 @@ void main() {
 
       expect(
         lerpedSpecStart.modifiers,
-        const WidgetModifiersData([
+        const WidgetModifiersConfig([
           OpacityModifierSpec(1),
           SizedBoxModifierSpec(height: 100, width: 100),
         ]),
@@ -227,7 +227,7 @@ void main() {
 
       expect(
         lerpedSpecMid.modifiers,
-        const WidgetModifiersData([
+        const WidgetModifiersConfig([
           OpacityModifierSpec(1),
           SizedBoxModifierSpec(height: 100, width: 100),
         ]),
@@ -237,7 +237,7 @@ void main() {
 
       expect(
         lerpedSpecEnd.modifiers,
-        const WidgetModifiersData([
+        const WidgetModifiersConfig([
           OpacityModifierSpec(1),
           SizedBoxModifierSpec(height: 100, width: 100),
         ]),
@@ -258,7 +258,7 @@ void main() {
         clipBehavior: Clip.none,
         width: 300,
         height: 200,
-        modifiers: const WidgetModifiersData([
+        modifiers: const WidgetModifiersConfig([
           OpacityModifierSpec(0.5),
           SizedBoxModifierSpec(height: 10, width: 10),
         ]),
@@ -276,7 +276,7 @@ void main() {
         clipBehavior: Clip.none,
         width: 300,
         height: 200,
-        modifiers: const WidgetModifiersData([
+        modifiers: const WidgetModifiersConfig([
           OpacityModifierSpec(0.5),
           SizedBoxModifierSpec(height: 10, width: 10),
         ]),
@@ -305,7 +305,7 @@ void main() {
         clipBehavior: Clip.antiAlias,
         width: 100,
         height: 100,
-        modifiers: const WidgetModifiersDataDto([
+        modifiers: const WidgetModifiersConfigDto([
           OpacityModifierSpecAttribute(opacity: 0.5),
           SizedBoxModifierSpecAttribute(height: 10, width: 10),
         ]),
@@ -330,7 +330,7 @@ void main() {
           clipBehavior: Clip.antiAliasWithSaveLayer,
           width: 200,
           height: 200,
-          modifiers: const WidgetModifiersDataDto([
+          modifiers: const WidgetModifiersConfigDto([
             SizedBoxModifierSpecAttribute(width: 100),
           ]),
         ),

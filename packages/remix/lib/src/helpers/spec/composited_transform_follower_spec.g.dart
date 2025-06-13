@@ -43,7 +43,7 @@ mixin _$CompositedTransformFollowerSpec
     Offset? offset,
     AlignmentGeometry? targetAnchor,
     AlignmentGeometry? followerAnchor,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return CompositedTransformFollowerSpec(
@@ -257,7 +257,7 @@ class CompositedTransformFollowerSpecUtility<T extends StyleElement>
     Offset? offset,
     AlignmentGeometry? targetAnchor,
     AlignmentGeometry? followerAnchor,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(CompositedTransformFollowerSpecAttribute(

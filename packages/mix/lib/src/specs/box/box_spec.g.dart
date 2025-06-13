@@ -46,7 +46,7 @@ mixin _$BoxSpec on Spec<BoxSpec> {
     Clip? clipBehavior,
     double? width,
     double? height,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return BoxSpec(
@@ -442,7 +442,7 @@ class BoxSpecUtility<T extends StyleElement>
     Clip? clipBehavior,
     double? width,
     double? height,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(BoxSpecAttribute(

@@ -38,7 +38,7 @@ mixin _$ScaffoldSpec on Spec<ScaffoldSpec> {
   ScaffoldSpec copyWith({
     BoxSpec? container,
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
   }) {
     return ScaffoldSpec(
       container: container ?? _$this.container,
@@ -211,7 +211,7 @@ class ScaffoldSpecUtility<T extends StyleElement>
   T only({
     BoxSpecAttribute? container,
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(ScaffoldSpecAttribute(
       container: container,

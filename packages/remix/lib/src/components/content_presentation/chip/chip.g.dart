@@ -39,7 +39,7 @@ mixin _$ChipSpec on Spec<ChipSpec> {
     FlexBoxSpec? container,
     IconSpec? icon,
     TextSpec? label,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return ChipSpec(
@@ -243,7 +243,7 @@ class ChipSpecUtility<T extends StyleElement>
     FlexBoxSpecAttribute? container,
     IconSpecAttribute? icon,
     TextSpecAttribute? label,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(ChipSpecAttribute(

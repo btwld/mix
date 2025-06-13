@@ -39,7 +39,7 @@ mixin _$IconButtonSpec on Spec<IconButtonSpec> {
   IconButtonSpec copyWith({
     BoxSpec? container,
     IconSpec? icon,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     SpinnerSpec? spinner,
     AnimatedData? animated,
   }) {
@@ -244,7 +244,7 @@ class IconButtonSpecUtility<T extends StyleElement>
   T only({
     BoxSpecAttribute? container,
     IconSpecAttribute? icon,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     SpinnerSpecAttribute? spinner,
     AnimatedDataDto? animated,
   }) {

@@ -39,7 +39,7 @@ mixin _$CalloutSpec on Spec<CalloutSpec> {
     FlexBoxSpec? container,
     IconSpec? icon,
     TextSpec? text,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return CalloutSpec(
@@ -217,7 +217,7 @@ class CalloutSpecUtility<T extends StyleElement>
     FlexBoxSpecAttribute? container,
     IconSpecAttribute? icon,
     TextSpecAttribute? text,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(CalloutSpecAttribute(

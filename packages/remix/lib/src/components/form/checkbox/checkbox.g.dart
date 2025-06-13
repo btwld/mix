@@ -40,7 +40,7 @@ mixin _$CheckboxSpec on Spec<CheckboxSpec> {
     IconSpec? indicator,
     FlexBoxSpec? container,
     TextSpec? label,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return CheckboxSpec(
@@ -267,7 +267,7 @@ class CheckboxSpecUtility<T extends StyleElement>
     IconSpecAttribute? indicator,
     FlexBoxSpecAttribute? container,
     TextSpecAttribute? label,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(CheckboxSpecAttribute(

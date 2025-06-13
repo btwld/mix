@@ -39,7 +39,7 @@ mixin _$LabelSpec on Spec<LabelSpec> {
     double? spacing,
     IconSpec? icon,
     TextSpec? label,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return LabelSpec(
@@ -242,7 +242,7 @@ class LabelSpecUtility<T extends StyleElement>
     double? spacing,
     IconSpecAttribute? icon,
     TextSpecAttribute? label,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(LabelSpecAttribute(

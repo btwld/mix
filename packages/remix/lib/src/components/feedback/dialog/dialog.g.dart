@@ -40,7 +40,7 @@ mixin _$DialogSpec on Spec<DialogSpec> {
     TextSpec? title,
     TextSpec? description,
     FlexSpec? actionsContainer,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return DialogSpec(
@@ -265,7 +265,7 @@ class DialogSpecUtility<T extends StyleElement>
     TextSpecAttribute? title,
     TextSpecAttribute? description,
     FlexSpecAttribute? actionsContainer,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(DialogSpecAttribute(

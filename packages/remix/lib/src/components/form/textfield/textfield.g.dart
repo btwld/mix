@@ -66,7 +66,7 @@ mixin _$TextFieldSpec on Spec<TextFieldSpec> {
     double? floatingLabelHeight,
     TextStyle? floatingLabelStyle,
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
   }) {
     return TextFieldSpec(
       style: style ?? _$this.style,
@@ -739,7 +739,7 @@ class TextFieldSpecUtility<T extends StyleElement>
     double? floatingLabelHeight,
     TextStyleDto? floatingLabelStyle,
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(TextFieldSpecAttribute(
       style: style,

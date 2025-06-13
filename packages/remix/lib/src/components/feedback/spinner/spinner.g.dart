@@ -41,7 +41,7 @@ mixin _$SpinnerSpec on Spec<SpinnerSpec> {
     Color? color,
     Duration? duration,
     SpinnerTypeStyle? style,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return SpinnerSpec(
@@ -277,7 +277,7 @@ class SpinnerSpecUtility<T extends StyleElement>
     ColorDto? color,
     Duration? duration,
     SpinnerTypeStyle? style,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(SpinnerSpecAttribute(
