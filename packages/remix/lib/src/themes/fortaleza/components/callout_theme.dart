@@ -52,11 +52,7 @@ class FortalezaCalloutStyle extends CalloutStyle {
     );
 
     return Style.create(
-      [
-        baseOverrides,
-        surface(surfaceVariant),
-        outline(outlineVariant),
-      ],
+      [baseOverrides, surface(surfaceVariant), outline(outlineVariant)],
     );
   }
 }

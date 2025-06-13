@@ -7,11 +7,9 @@ class IconButtonStyle extends SpecStyle<IconButtonSpecUtility> {
   Style makeStyle(SpecConfiguration<IconButtonSpecUtility> spec) {
     final $ = spec.utilities;
 
-    final iconStyle = [
-      $.icon
-        ..size(16)
-        ..color.white(),
-    ];
+    final iconStyle = $.icon
+      ..size(16)
+      ..color.white();
 
     final spinnerStyle = [
       $.spinner
@@ -29,7 +27,7 @@ class IconButtonStyle extends SpecStyle<IconButtonSpecUtility> {
       spec.on.disabled($.container.color.grey.shade400()),
     ];
 
-    return Style.create([...iconStyle, ...containerStyle, ...spinnerStyle]);
+    return Style.create([iconStyle, ...containerStyle, ...spinnerStyle]);
   }
 }
 

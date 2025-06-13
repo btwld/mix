@@ -7,11 +7,9 @@ class ChipStyle extends SpecStyle<ChipSpecUtility> {
   Style makeStyle(SpecConfiguration<ChipSpecUtility> spec) {
     final $ = spec.utilities;
 
-    final iconStyle = [
-      $.icon
-        ..size(18)
-        ..color.black(),
-    ];
+    final iconStyle = $.icon
+      ..size(18)
+      ..color.black();
 
     final labelStyle = [
       $.label
@@ -46,8 +44,8 @@ class ChipStyle extends SpecStyle<ChipSpecUtility> {
 
     return Style.create([
       ...containerStyle,
-      ...iconStyle,
       ...labelStyle,
+      iconStyle,
       disabledStyle,
     ]);
   }
