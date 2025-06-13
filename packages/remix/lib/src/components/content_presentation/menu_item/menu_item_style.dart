@@ -59,7 +59,7 @@ class MenuItemDarkStyle extends MenuItemStyle {
     );
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       $.title.style.color.white(),
       $.icon.color.white(),
       spec.on.disabled(disabled),

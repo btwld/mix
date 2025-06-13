@@ -51,6 +51,6 @@ class FortalezaAccordionStyle extends AccordionStyle {
       ),
     );
 
-    return Style.create([baseStyle(), style()]);
+    return Style.create([baseStyle, style]);
   }
 }

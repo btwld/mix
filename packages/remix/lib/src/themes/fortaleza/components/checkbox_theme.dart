@@ -83,12 +83,12 @@ class FortalezaCheckboxStyle extends CheckboxStyle {
 
     return Style.create(
       [
-        baseStyle(),
-        baseOverrides(),
-        spec.on.disabled(disabledVariant()),
+        baseStyle,
+        baseOverrides,
+        spec.on.disabled(disabledVariant),
         $.indicatorContainer.border.style.none(),
-        surfaceVariant(),
-        soft(softVariant()),
+        surfaceVariant,
+        soft(softVariant),
       ],
     );
   }

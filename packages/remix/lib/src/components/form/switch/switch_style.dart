@@ -54,7 +54,7 @@ class SwitchDarkStyle extends SwitchStyle {
     final $ = spec.utilities;
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       $.indicator.color.black(),
       $.container.color.white12(),
       spec.on.selected($.container.color.white()),

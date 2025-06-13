@@ -41,7 +41,7 @@ class IconButtonDarkStyle extends IconButtonStyle {
     final $ = spec.utilities;
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       $.container.color.white(),
       $.icon.color.black(),
       $.spinner.color.black(),

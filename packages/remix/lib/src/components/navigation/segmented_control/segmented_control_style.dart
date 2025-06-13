@@ -72,7 +72,7 @@ class SegmentedControlDarkStyle extends SegmentedControlStyle {
     final $ = spec.utilities;
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       $.container.color.white12(),
       $.item.label.style.color.white38(),
       spec.on.selected(

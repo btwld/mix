@@ -50,7 +50,7 @@ class CalloutDarkStyle extends CalloutStyle {
     final iconStyle = [$.icon.color.white()];
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       ...flexContainerStyle,
       ...textStyle,
       ...iconStyle,

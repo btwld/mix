@@ -34,7 +34,7 @@ class FortalezaCardStyle extends CardStyle {
     );
 
     return Style.create(
-      [baseStyle(), surfaceVariant(), ghost(ghostVariant())],
+      [baseStyle, surfaceVariant, ghost(ghostVariant)],
     ).animate(duration: const Duration(milliseconds: 100));
   }
 }

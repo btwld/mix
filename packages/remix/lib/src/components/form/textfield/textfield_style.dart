@@ -123,7 +123,7 @@ class TextFieldStyle extends SpecStyle<TextFieldSpecUtility> {
     final focus = spec.on.focus($.container.border.all.color.black());
 
     return Style.create([
-      platformSettings(spec).call(),
+      platformSettings(spec),
       outerContainerStyle,
       $.floatingLabel.off(),
       $.selectionColor.black12(),
@@ -166,7 +166,7 @@ class TextFieldDarkStyle extends TextFieldStyle {
     final focus = spec.on.focus($.container.border.all.color.white());
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       cursor,
       containerStyle,
       focus,

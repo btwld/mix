@@ -38,6 +38,6 @@ class SpinnerDarkStyle extends SpinnerStyle {
   Style makeStyle(SpecConfiguration<SpinnerSpecUtility> spec) {
     final $ = spec.utilities;
 
-    return Style.create([super.makeStyle(spec).call(), $.color.white()]);
+    return Style.create([super.makeStyle(spec), $.color.white()]);
   }
 }

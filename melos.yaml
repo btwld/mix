@@ -138,12 +138,3 @@ scripts:
   verify_version_pubspec_changelog:
     run: ./scripts/verify_changelogs.sh packages
     description: Verify that all packages have the same version
-
-  # Pre-commit scripts - only run on changed packages
-  precommit:analyze:
-    run: melos exec --diff=HEAD~1 -- dart analyze --fatal-infos . && melos exec --diff=HEAD~1 --depends-on="dart_code_metrics_presets" -- dcm analyze . --fatal-style --fatal-warnings
-    description: Run static analysis on changed packages only
-    
-  precommit:fix:
-    run: melos exec --diff=HEAD~1 -- dart fix --apply . && melos exec --diff=HEAD~1 --depends-on="dart_code_metrics_presets" -- dcm fix .
-    description: Apply fixes to changed packages only

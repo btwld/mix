@@ -61,12 +61,12 @@ class FortalezaChipStyle extends ChipStyle {
     ]);
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       ...containerStyle,
       ...iconStyle,
       ...labelStyle,
       ...disabledStyle,
-      ghost(ghostStyle()),
+      ghost(ghostStyle),
     ]).animate(duration: const Duration(milliseconds: 150));
   }
 }

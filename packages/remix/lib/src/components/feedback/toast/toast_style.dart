@@ -51,7 +51,7 @@ class ToastDarkStyle extends ToastStyle {
     final $ = spec.utilities;
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       $
         ..container.color.black()
         ..container.border.color.white30()

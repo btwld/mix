@@ -14,12 +14,9 @@ else
   exit 1
 fi
 
-# Run melos commands on changed packages only
-echo "Running analysis on changed packages..."
-melos run precommit:analyze
-
-echo "Applying fixes to changed packages..."  
-melos run precommit:fix
+# Run lint_staged on staged files
+echo "Running lint_staged..."
+dart run lint_staged
 
 
 # dart format --line-length 80 --set-exit-if-changed lib test

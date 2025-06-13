@@ -40,7 +40,7 @@ class BadgeDarkStyle extends BadgeStyle {
     final $ = spec.utilities;
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       $.container.color.white(),
       $.label.style.color.black(),
     ]);

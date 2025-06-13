@@ -5,5 +5,9 @@ environment:
 
 dev_dependencies:
   husky: ^0.1.7
+  lint_staged: ^0.5.1
 dependencies:
   melos: ^6.3.2
+
+lint_staged:
+  '**/*.dart': dart fix --apply && dart analyze --fatal-infos

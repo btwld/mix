@@ -26,7 +26,7 @@ class FortalezaDialogStyle extends DialogStyle {
 
     return Style.create(
       [
-        super.makeStyle(spec).call(),
+        super.makeStyle(spec),
         containerStyle,
         titleStyle,
         descriptionStyle,

@@ -77,7 +77,7 @@ class ChipDarkStyle extends ChipStyle {
     final labelStyle = $.label..style.color.white();
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       ...containerStyle,
       labelStyle,
     ]);

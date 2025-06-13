@@ -45,7 +45,7 @@ class AccordionDarkStyle extends AccordionStyle {
     final $ = spec.utilities;
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       $.container.border.bottom.color.grey.shade700(),
       $.header.text.style.color.white(),
       $.header.trailingIcon.color.white(),

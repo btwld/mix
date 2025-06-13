@@ -30,7 +30,7 @@ class DividerDarkStyle extends DividerStyle {
     final $ = spec.utilities;
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       $.container.color.grey.shade800(),
     ]);
   }

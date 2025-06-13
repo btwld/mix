@@ -72,7 +72,7 @@ class DropdownMenuDarkStyle extends DropdownMenuStyle {
     final itemStyle = $.item.text.style.color.white();
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       menuStyle,
       itemStyle,
       spec.on.hover($.item.container.color.white12()),

@@ -17,7 +17,7 @@ class FortalezaCalloutStyle extends CalloutStyle {
 
     final baseStyle = super.makeStyle(spec);
     final baseOverrides = Style(
-      baseStyle(),
+      baseStyle,
       $.container
         ..borderRadius(8)
         ..color.$accent(3)
@@ -53,9 +53,9 @@ class FortalezaCalloutStyle extends CalloutStyle {
 
     return Style.create(
       [
-        baseOverrides(),
-        surface(surfaceVariant()),
-        outline(outlineVariant()),
+        baseOverrides,
+        surface(surfaceVariant),
+        outline(outlineVariant),
       ],
     );
   }

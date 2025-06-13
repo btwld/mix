@@ -44,7 +44,7 @@ class AvatarDarkStyle extends AvatarStyle {
     final $ = spec.utilities;
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       $.container.color.white.shade(75),
       $.fallback.style.color.white(),
     ]);

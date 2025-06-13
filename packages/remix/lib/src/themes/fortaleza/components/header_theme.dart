@@ -28,6 +28,6 @@ class FortalezaHeaderStyle extends HeaderStyle {
         ..style.color.$neutral(11),
     );
 
-    return Style.create([baseStyle(), containerStyle(), textStyle()]);
+    return Style.create([baseStyle, containerStyle, textStyle]);
   }
 }

@@ -61,7 +61,7 @@ class CheckboxDarkStyle extends CheckboxStyle {
     final $ = spec.utilities;
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       $.indicatorContainer.border.all.color.white(),
       $.indicator.color.black(),
       $.label.style.color.white(),

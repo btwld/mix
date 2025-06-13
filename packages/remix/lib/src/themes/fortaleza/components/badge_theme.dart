@@ -49,11 +49,11 @@ class FortalezaBadgeStyle extends BadgeStyle {
 
     return Style.create(
       [
-        baseStyle(),
-        baseStyleOverride(),
-        soft(softVariant()),
-        surface(surfaceVariant()),
-        outline(outlineVariant()),
+        baseStyle,
+        baseStyleOverride,
+        soft(softVariant),
+        surface(surfaceVariant),
+        outline(outlineVariant),
       ],
     );
   }
@@ -75,10 +75,10 @@ class FortalezaDarkBadgeStyle extends FortalezaBadgeStyle {
     final surface = Style($.container.color.$accent(1));
 
     return Style.create([
-      baseStyle(),
-      baseStyleOverride(),
-      FortalezaBadgeStyle.soft(soft()),
-      FortalezaBadgeStyle.surface(surface()),
+      baseStyle,
+      baseStyleOverride,
+      FortalezaBadgeStyle.soft(soft),
+      FortalezaBadgeStyle.surface(surface),
     ]);
   }
 }
