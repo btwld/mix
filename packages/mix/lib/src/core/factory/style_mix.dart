@@ -158,6 +158,10 @@ class Style extends StyleElement {
   /// Returns all utilities, allowing you to use your own namespace
   static MixUtilities utilities() => const MixUtilities();
 
+  @Deprecated(
+    'The "asAttribute" method is deprecated and will be removed in a v2.0. '
+    'Please use the Style instance directly.',
+  )
   static get asAttribute => const SpreadFunctionParams<StyleElement, Style>(
         Style.create,
       );
