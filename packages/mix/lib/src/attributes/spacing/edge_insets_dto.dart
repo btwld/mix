@@ -88,7 +88,7 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
 
 @MixableType()
 final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets>
-    with _$EdgeInsetsDto, Diagnosticable {
+    with _$EdgeInsetsDto {
   final double? left;
   final double? right;
 

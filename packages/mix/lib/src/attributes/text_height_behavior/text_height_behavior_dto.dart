@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_relative_imports,avoid-importing-entrypoint-exports
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
@@ -9,7 +8,7 @@ part 'text_height_behavior_dto.g.dart';
 
 @MixableType(components: GeneratedPropertyComponents.skipUtility)
 base class TextHeightBehaviorDto extends Mixable<TextHeightBehavior>
-    with _$TextHeightBehaviorDto, Diagnosticable {
+    with _$TextHeightBehaviorDto {
   final bool? applyHeightToFirstAscent;
   final bool? applyHeightToLastDescent;
   final TextLeadingDistribution? leadingDistribution;

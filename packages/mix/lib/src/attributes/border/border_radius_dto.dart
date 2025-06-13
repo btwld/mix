@@ -22,7 +22,7 @@ part 'border_radius_dto.g.dart';
 /// - [BorderRadiusGeometry], which is the Flutter counterpart of this class.
 @immutable
 sealed class BorderRadiusGeometryDto<T extends BorderRadiusGeometry>
-    extends Mixable<T> with Diagnosticable {
+    extends Mixable<T> {
   const BorderRadiusGeometryDto();
 
   Radius? get topLeft;
