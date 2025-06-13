@@ -220,10 +220,19 @@ class ChipSpecUtility<T extends Attribute>
   /// Utility for defining [ChipSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  ChipSpecUtility(super.builder, {super.mutable});
+  ChipSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  ChipSpecUtility<T> get chain =>
-      ChipSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  ChipSpecUtility<T> get chain => ChipSpecUtility(attributeBuilder);
 
   static ChipSpecUtility<ChipSpecAttribute> get self =>
       ChipSpecUtility((v) => v);

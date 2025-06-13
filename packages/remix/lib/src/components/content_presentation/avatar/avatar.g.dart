@@ -196,10 +196,19 @@ class AvatarSpecUtility<T extends Attribute>
   /// Utility for defining [AvatarSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  AvatarSpecUtility(super.builder, {super.mutable});
+  AvatarSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  AvatarSpecUtility<T> get chain =>
-      AvatarSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  AvatarSpecUtility<T> get chain => AvatarSpecUtility(attributeBuilder);
 
   static AvatarSpecUtility<AvatarSpecAttribute> get self =>
       AvatarSpecUtility((v) => v);

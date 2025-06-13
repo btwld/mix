@@ -219,10 +219,19 @@ class LabelSpecUtility<T extends Attribute>
   /// Utility for defining [LabelSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  LabelSpecUtility(super.builder, {super.mutable});
+  LabelSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  LabelSpecUtility<T> get chain =>
-      LabelSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  LabelSpecUtility<T> get chain => LabelSpecUtility(attributeBuilder);
 
   static LabelSpecUtility<LabelSpecAttribute> get self =>
       LabelSpecUtility((v) => v);

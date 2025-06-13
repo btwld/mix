@@ -690,10 +690,19 @@ class TextFieldSpecUtility<T extends Attribute>
   /// Utility for defining [TextFieldSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  TextFieldSpecUtility(super.builder, {super.mutable});
+  TextFieldSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  TextFieldSpecUtility<T> get chain =>
-      TextFieldSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  TextFieldSpecUtility<T> get chain => TextFieldSpecUtility(attributeBuilder);
 
   static TextFieldSpecUtility<TextFieldSpecAttribute> get self =>
       TextFieldSpecUtility((v) => v);

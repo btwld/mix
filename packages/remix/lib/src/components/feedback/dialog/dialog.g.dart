@@ -241,10 +241,19 @@ class DialogSpecUtility<T extends Attribute>
   /// Utility for defining [DialogSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  DialogSpecUtility(super.builder, {super.mutable});
+  DialogSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  DialogSpecUtility<T> get chain =>
-      DialogSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  DialogSpecUtility<T> get chain => DialogSpecUtility(attributeBuilder);
 
   static DialogSpecUtility<DialogSpecAttribute> get self =>
       DialogSpecUtility((v) => v);

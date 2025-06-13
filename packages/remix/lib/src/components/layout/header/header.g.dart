@@ -238,10 +238,19 @@ class HeaderSpecUtility<T extends Attribute>
   /// Utility for defining [HeaderSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  HeaderSpecUtility(super.builder, {super.mutable});
+  HeaderSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  HeaderSpecUtility<T> get chain =>
-      HeaderSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  HeaderSpecUtility<T> get chain => HeaderSpecUtility(attributeBuilder);
 
   static HeaderSpecUtility<HeaderSpecAttribute> get self =>
       HeaderSpecUtility((v) => v);

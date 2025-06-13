@@ -186,10 +186,19 @@ class AccordionSpecUtility<T extends Attribute>
   /// Utility for defining [AccordionSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  AccordionSpecUtility(super.builder, {super.mutable});
+  AccordionSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  AccordionSpecUtility<T> get chain =>
-      AccordionSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  AccordionSpecUtility<T> get chain => AccordionSpecUtility(attributeBuilder);
 
   static AccordionSpecUtility<AccordionSpecAttribute> get self =>
       AccordionSpecUtility((v) => v);
@@ -424,10 +433,20 @@ class AccordionHeaderSpecUtility<T extends Attribute>
   /// Utility for defining [AccordionHeaderSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  AccordionHeaderSpecUtility(super.builder, {super.mutable});
+  AccordionHeaderSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
   AccordionHeaderSpecUtility<T> get chain =>
-      AccordionHeaderSpecUtility(attributeBuilder, mutable: true);
+      AccordionHeaderSpecUtility(attributeBuilder);
 
   static AccordionHeaderSpecUtility<AccordionHeaderSpecAttribute> get self =>
       AccordionHeaderSpecUtility((v) => v);

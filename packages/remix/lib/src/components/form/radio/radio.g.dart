@@ -241,10 +241,19 @@ class RadioSpecUtility<T extends Attribute>
   /// Utility for defining [RadioSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  RadioSpecUtility(super.builder, {super.mutable});
+  RadioSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  RadioSpecUtility<T> get chain =>
-      RadioSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  RadioSpecUtility<T> get chain => RadioSpecUtility(attributeBuilder);
 
   static RadioSpecUtility<RadioSpecAttribute> get self =>
       RadioSpecUtility((v) => v);

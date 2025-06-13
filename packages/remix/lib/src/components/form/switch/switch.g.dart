@@ -205,10 +205,19 @@ class SwitchSpecUtility<T extends Attribute>
   /// Utility for defining [SwitchSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  SwitchSpecUtility(super.builder, {super.mutable});
+  SwitchSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  SwitchSpecUtility<T> get chain =>
-      SwitchSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  SwitchSpecUtility<T> get chain => SwitchSpecUtility(attributeBuilder);
 
   static SwitchSpecUtility<SwitchSpecAttribute> get self =>
       SwitchSpecUtility((v) => v);

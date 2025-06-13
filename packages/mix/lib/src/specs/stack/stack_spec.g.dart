@@ -235,10 +235,19 @@ class StackSpecUtility<T extends Attribute>
   /// Utility for defining [StackSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  StackSpecUtility(super.builder, {super.mutable});
+  StackSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  StackSpecUtility<T> get chain =>
-      StackSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  StackSpecUtility<T> get chain => StackSpecUtility(attributeBuilder);
 
   static StackSpecUtility<StackSpecAttribute> get self =>
       StackSpecUtility((v) => v);

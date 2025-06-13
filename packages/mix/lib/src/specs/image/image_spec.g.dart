@@ -314,10 +314,19 @@ class ImageSpecUtility<T extends Attribute>
   /// Utility for defining [ImageSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  ImageSpecUtility(super.builder, {super.mutable});
+  ImageSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  ImageSpecUtility<T> get chain =>
-      ImageSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  ImageSpecUtility<T> get chain => ImageSpecUtility(attributeBuilder);
 
   static ImageSpecUtility<ImageSpecAttribute> get self =>
       ImageSpecUtility((v) => v);

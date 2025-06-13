@@ -232,10 +232,20 @@ class CompositedTransformFollowerSpecUtility<T extends Attribute>
   /// Utility for defining [CompositedTransformFollowerSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  CompositedTransformFollowerSpecUtility(super.builder, {super.mutable});
+  CompositedTransformFollowerSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
   CompositedTransformFollowerSpecUtility<T> get chain =>
-      CompositedTransformFollowerSpecUtility(attributeBuilder, mutable: true);
+      CompositedTransformFollowerSpecUtility(attributeBuilder);
 
   static CompositedTransformFollowerSpecUtility<
           CompositedTransformFollowerSpecAttribute>

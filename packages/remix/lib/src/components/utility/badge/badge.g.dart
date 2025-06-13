@@ -170,10 +170,19 @@ class BadgeSpecUtility<T extends Attribute>
   /// Utility for defining [BadgeSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  BadgeSpecUtility(super.builder, {super.mutable});
+  BadgeSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  BadgeSpecUtility<T> get chain =>
-      BadgeSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  BadgeSpecUtility<T> get chain => BadgeSpecUtility(attributeBuilder);
 
   static BadgeSpecUtility<BadgeSpecAttribute> get self =>
       BadgeSpecUtility((v) => v);

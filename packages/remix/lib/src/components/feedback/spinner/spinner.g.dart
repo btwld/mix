@@ -252,10 +252,19 @@ class SpinnerSpecUtility<T extends Attribute>
   /// Utility for defining [SpinnerSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  SpinnerSpecUtility(super.builder, {super.mutable});
+  SpinnerSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  SpinnerSpecUtility<T> get chain =>
-      SpinnerSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  SpinnerSpecUtility<T> get chain => SpinnerSpecUtility(attributeBuilder);
 
   static SpinnerSpecUtility<SpinnerSpecAttribute> get self =>
       SpinnerSpecUtility((v) => v);

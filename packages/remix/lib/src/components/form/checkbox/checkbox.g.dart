@@ -243,10 +243,19 @@ class CheckboxSpecUtility<T extends Attribute>
   /// Utility for defining [CheckboxSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  CheckboxSpecUtility(super.builder, {super.mutable});
+  CheckboxSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  CheckboxSpecUtility<T> get chain =>
-      CheckboxSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  CheckboxSpecUtility<T> get chain => CheckboxSpecUtility(attributeBuilder);
 
   static CheckboxSpecUtility<CheckboxSpecAttribute> get self =>
       CheckboxSpecUtility((v) => v);

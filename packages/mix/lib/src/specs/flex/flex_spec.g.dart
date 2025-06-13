@@ -330,10 +330,19 @@ class FlexSpecUtility<T extends Attribute>
   /// Utility for defining [FlexSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  FlexSpecUtility(super.builder, {super.mutable});
+  FlexSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  FlexSpecUtility<T> get chain =>
-      FlexSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  FlexSpecUtility<T> get chain => FlexSpecUtility(attributeBuilder);
 
   static FlexSpecUtility<FlexSpecAttribute> get self =>
       FlexSpecUtility((v) => v);

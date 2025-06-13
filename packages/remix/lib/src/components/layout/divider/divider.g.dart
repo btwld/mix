@@ -189,10 +189,19 @@ class DividerSpecUtility<T extends Attribute>
   /// Utility for defining [DividerSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  DividerSpecUtility(super.builder, {super.mutable});
+  DividerSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  DividerSpecUtility<T> get chain =>
-      DividerSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  DividerSpecUtility<T> get chain => DividerSpecUtility(attributeBuilder);
 
   static DividerSpecUtility<DividerSpecAttribute> get self =>
       DividerSpecUtility((v) => v);

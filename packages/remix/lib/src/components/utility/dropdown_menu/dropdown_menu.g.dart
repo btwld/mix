@@ -205,10 +205,20 @@ class DropdownMenuSpecUtility<T extends Attribute>
   /// Utility for defining [DropdownMenuSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  DropdownMenuSpecUtility(super.builder, {super.mutable});
+  DropdownMenuSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
   DropdownMenuSpecUtility<T> get chain =>
-      DropdownMenuSpecUtility(attributeBuilder, mutable: true);
+      DropdownMenuSpecUtility(attributeBuilder);
 
   static DropdownMenuSpecUtility<DropdownMenuSpecAttribute> get self =>
       DropdownMenuSpecUtility((v) => v);
@@ -455,10 +465,20 @@ class DropdownMenuContainerSpecUtility<T extends Attribute>
   /// Utility for defining [DropdownMenuContainerSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  DropdownMenuContainerSpecUtility(super.builder, {super.mutable});
+  DropdownMenuContainerSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
   DropdownMenuContainerSpecUtility<T> get chain =>
-      DropdownMenuContainerSpecUtility(attributeBuilder, mutable: true);
+      DropdownMenuContainerSpecUtility(attributeBuilder);
 
   static DropdownMenuContainerSpecUtility<DropdownMenuContainerSpecAttribute>
       get self => DropdownMenuContainerSpecUtility((v) => v);
@@ -718,10 +738,20 @@ class DropdownMenuItemSpecUtility<T extends Attribute>
   /// Utility for defining [DropdownMenuItemSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  DropdownMenuItemSpecUtility(super.builder, {super.mutable});
+  DropdownMenuItemSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
   DropdownMenuItemSpecUtility<T> get chain =>
-      DropdownMenuItemSpecUtility(attributeBuilder, mutable: true);
+      DropdownMenuItemSpecUtility(attributeBuilder);
 
   static DropdownMenuItemSpecUtility<DropdownMenuItemSpecAttribute> get self =>
       DropdownMenuItemSpecUtility((v) => v);

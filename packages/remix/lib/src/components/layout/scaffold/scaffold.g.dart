@@ -189,10 +189,19 @@ class ScaffoldSpecUtility<T extends Attribute>
   /// Utility for defining [ScaffoldSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  ScaffoldSpecUtility(super.builder, {super.mutable});
+  ScaffoldSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  ScaffoldSpecUtility<T> get chain =>
-      ScaffoldSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  ScaffoldSpecUtility<T> get chain => ScaffoldSpecUtility(attributeBuilder);
 
   static ScaffoldSpecUtility<ScaffoldSpecAttribute> get self =>
       ScaffoldSpecUtility((v) => v);

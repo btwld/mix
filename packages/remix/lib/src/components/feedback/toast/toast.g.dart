@@ -243,10 +243,19 @@ class ToastSpecUtility<T extends Attribute>
   /// Utility for defining [ToastSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  ToastSpecUtility(super.builder, {super.mutable});
+  ToastSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  ToastSpecUtility<T> get chain =>
-      ToastSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  ToastSpecUtility<T> get chain => ToastSpecUtility(attributeBuilder);
 
   static ToastSpecUtility<ToastSpecAttribute> get self =>
       ToastSpecUtility((v) => v);

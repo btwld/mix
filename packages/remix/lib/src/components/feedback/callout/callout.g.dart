@@ -194,10 +194,19 @@ class CalloutSpecUtility<T extends Attribute>
   /// Utility for defining [CalloutSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  CalloutSpecUtility(super.builder, {super.mutable});
+  CalloutSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  CalloutSpecUtility<T> get chain =>
-      CalloutSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  CalloutSpecUtility<T> get chain => CalloutSpecUtility(attributeBuilder);
 
   static CalloutSpecUtility<CalloutSpecAttribute> get self =>
       CalloutSpecUtility((v) => v);

@@ -234,10 +234,19 @@ class SliderSpecUtility<T extends Attribute>
   /// Utility for defining [SliderSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  SliderSpecUtility(super.builder, {super.mutable});
+  SliderSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  SliderSpecUtility<T> get chain =>
-      SliderSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  SliderSpecUtility<T> get chain => SliderSpecUtility(attributeBuilder);
 
   static SliderSpecUtility<SliderSpecAttribute> get self =>
       SliderSpecUtility((v) => v);

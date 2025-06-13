@@ -260,10 +260,19 @@ class MenuItemSpecUtility<T extends Attribute>
   /// Utility for defining [MenuItemSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  MenuItemSpecUtility(super.builder, {super.mutable});
+  MenuItemSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  MenuItemSpecUtility<T> get chain =>
-      MenuItemSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  MenuItemSpecUtility<T> get chain => MenuItemSpecUtility(attributeBuilder);
 
   static MenuItemSpecUtility<MenuItemSpecAttribute> get self =>
       MenuItemSpecUtility((v) => v);

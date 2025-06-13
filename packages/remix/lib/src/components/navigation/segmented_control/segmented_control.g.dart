@@ -253,10 +253,20 @@ class SegmentedControlSpecUtility<T extends Attribute>
   /// Utility for defining [SegmentedControlSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  SegmentedControlSpecUtility(super.builder, {super.mutable});
+  SegmentedControlSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
   SegmentedControlSpecUtility<T> get chain =>
-      SegmentedControlSpecUtility(attributeBuilder, mutable: true);
+      SegmentedControlSpecUtility(attributeBuilder);
 
   static SegmentedControlSpecUtility<SegmentedControlSpecAttribute> get self =>
       SegmentedControlSpecUtility((v) => v);
@@ -538,10 +548,20 @@ class SegmentButtonSpecUtility<T extends Attribute>
   /// Utility for defining [SegmentButtonSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  SegmentButtonSpecUtility(super.builder, {super.mutable});
+  SegmentButtonSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
   SegmentButtonSpecUtility<T> get chain =>
-      SegmentButtonSpecUtility(attributeBuilder, mutable: true);
+      SegmentButtonSpecUtility(attributeBuilder);
 
   static SegmentButtonSpecUtility<SegmentButtonSpecAttribute> get self =>
       SegmentButtonSpecUtility((v) => v);

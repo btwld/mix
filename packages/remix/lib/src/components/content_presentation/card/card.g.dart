@@ -188,10 +188,19 @@ class CardSpecUtility<T extends Attribute>
   /// Utility for defining [CardSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  CardSpecUtility(super.builder, {super.mutable});
+  CardSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  CardSpecUtility<T> get chain =>
-      CardSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  CardSpecUtility<T> get chain => CardSpecUtility(attributeBuilder);
 
   static CardSpecUtility<CardSpecAttribute> get self =>
       CardSpecUtility((v) => v);

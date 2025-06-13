@@ -222,10 +222,19 @@ class IconButtonSpecUtility<T extends Attribute>
   /// Utility for defining [IconButtonSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  IconButtonSpecUtility(super.builder, {super.mutable});
+  IconButtonSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  IconButtonSpecUtility<T> get chain =>
-      IconButtonSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  IconButtonSpecUtility<T> get chain => IconButtonSpecUtility(attributeBuilder);
 
   static IconButtonSpecUtility<IconButtonSpecAttribute> get self =>
       IconButtonSpecUtility((v) => v);

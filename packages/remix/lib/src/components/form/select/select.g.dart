@@ -238,10 +238,19 @@ class SelectSpecUtility<T extends Attribute>
   /// Utility for defining [SelectSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  SelectSpecUtility(super.builder, {super.mutable});
+  SelectSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  SelectSpecUtility<T> get chain =>
-      SelectSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  SelectSpecUtility<T> get chain => SelectSpecUtility(attributeBuilder);
 
   static SelectSpecUtility<SelectSpecAttribute> get self =>
       SelectSpecUtility((v) => v);
@@ -489,10 +498,19 @@ class SelectMenuSpecUtility<T extends Attribute>
   /// Utility for defining [SelectMenuSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  SelectMenuSpecUtility(super.builder, {super.mutable});
+  SelectMenuSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  SelectMenuSpecUtility<T> get chain =>
-      SelectMenuSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  SelectMenuSpecUtility<T> get chain => SelectMenuSpecUtility(attributeBuilder);
 
   static SelectMenuSpecUtility<SelectMenuSpecAttribute> get self =>
       SelectMenuSpecUtility((v) => v);
@@ -752,10 +770,20 @@ class SelectMenuItemSpecUtility<T extends Attribute>
   /// Utility for defining [SelectMenuItemSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  SelectMenuItemSpecUtility(super.builder, {super.mutable});
+  SelectMenuItemSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
   SelectMenuItemSpecUtility<T> get chain =>
-      SelectMenuItemSpecUtility(attributeBuilder, mutable: true);
+      SelectMenuItemSpecUtility(attributeBuilder);
 
   static SelectMenuItemSpecUtility<SelectMenuItemSpecAttribute> get self =>
       SelectMenuItemSpecUtility((v) => v);
@@ -1017,10 +1045,20 @@ class SelectTriggerSpecUtility<T extends Attribute>
   /// Utility for defining [SelectTriggerSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  SelectTriggerSpecUtility(super.builder, {super.mutable});
+  SelectTriggerSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
   SelectTriggerSpecUtility<T> get chain =>
-      SelectTriggerSpecUtility(attributeBuilder, mutable: true);
+      SelectTriggerSpecUtility(attributeBuilder);
 
   static SelectTriggerSpecUtility<SelectTriggerSpecAttribute> get self =>
       SelectTriggerSpecUtility((v) => v);
