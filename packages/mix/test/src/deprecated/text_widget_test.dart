@@ -90,7 +90,7 @@ void main() {
     expect(textWidget.textDirection, mixedTextWidget.textDirection);
     expect(textWidget.softWrap, mixedTextWidget.softWrap);
     expect(textWidget.overflow, mixedTextWidget.overflow);
-    expect(textWidget.textScaleFactor, mixedTextWidget.textScaleFactor);
+    expect(textWidget.textScaler, mixedTextWidget.textScaler);
     expect(textWidget.maxLines, mixedTextWidget.maxLines);
     expect(textWidget.textWidthBasis, mixedTextWidget.textWidthBasis);
     expect(textWidget.textHeightBehavior, mixedTextWidget.textHeightBehavior);
