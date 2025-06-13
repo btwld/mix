@@ -10,16 +10,16 @@ part of 'icon_theme_data.dart';
 
 /// A mixin that provides DTO functionality for [IconThemeDataDto].
 mixin _$IconThemeDataDto on Mixable<IconThemeData> {
-  /// Resolves to [IconThemeData] using the provided [MixData].
+  /// Resolves to [IconThemeData] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final iconThemeData = IconThemeDataDto(...).resolve(mix);
   /// ```
   @override
-  IconThemeData resolve(MixData mix) {
+  IconThemeData resolve(MixContext mix) {
     return IconThemeData(
       size: _$this.size,
       fill: _$this.fill,

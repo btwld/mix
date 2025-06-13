@@ -9,7 +9,7 @@ import '../../../helpers/testing_utils.dart';
 void main() {
   group('FlexBoxSpec', () {
     test('resolve', () {
-      final mix = MixData.create(
+      final mix = MixContext.create(
         MockBuildContext(),
         Style(
           FlexBoxSpecAttribute(

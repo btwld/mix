@@ -10,7 +10,7 @@ part of 'switch.dart';
 
 /// A mixin that provides spec functionality for [SwitchSpec].
 mixin _$SwitchSpec on Spec<SwitchSpec> {
-  static SwitchSpec from(MixData mix) {
+  static SwitchSpec from(MixContext mix) {
     return mix.attributeOf<SwitchSpecAttribute>()?.resolve(mix) ??
         const SwitchSpec();
   }
@@ -123,16 +123,16 @@ class SwitchSpecAttribute extends SpecAttribute<SwitchSpec>
     super.modifiers,
   });
 
-  /// Resolves to [SwitchSpec] using the provided [MixData].
+  /// Resolves to [SwitchSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final switchSpec = SwitchSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  SwitchSpec resolve(MixData mix) {
+  SwitchSpec resolve(MixContext mix) {
     return SwitchSpec(
       container: container?.resolve(mix),
       indicator: indicator?.resolve(mix),

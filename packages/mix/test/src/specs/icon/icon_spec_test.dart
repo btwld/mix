@@ -9,7 +9,7 @@ import '../../../helpers/testing_utils.dart';
 void main() {
   group('IconSpec', () {
     test('resolve', () {
-      final mix = MixData.create(
+      final mix = MixContext.create(
         MockBuildContext(),
         Style(
           IconSpecAttribute(
@@ -89,7 +89,7 @@ void main() {
     });
 
     test('IconSpec.of(BuildContext context)', () {
-      final mixData = MixData.create(
+      final mixData = MixContext.create(
         MockBuildContext(),
         Style(IconSpecAttribute(size: 20.0, color: Colors.red.toDto())),
       );

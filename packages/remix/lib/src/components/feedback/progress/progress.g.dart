@@ -10,7 +10,7 @@ part of 'progress.dart';
 
 /// A mixin that provides spec functionality for [ProgressSpec].
 mixin _$ProgressSpec on Spec<ProgressSpec> {
-  static ProgressSpec from(MixData mix) {
+  static ProgressSpec from(MixContext mix) {
     return mix.attributeOf<ProgressSpecAttribute>()?.resolve(mix) ??
         const ProgressSpec();
   }
@@ -139,16 +139,16 @@ class ProgressSpecAttribute extends SpecAttribute<ProgressSpec>
     super.modifiers,
   });
 
-  /// Resolves to [ProgressSpec] using the provided [MixData].
+  /// Resolves to [ProgressSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final progressSpec = ProgressSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  ProgressSpec resolve(MixData mix) {
+  ProgressSpec resolve(MixContext mix) {
     return ProgressSpec(
       container: container?.resolve(mix),
       track: track?.resolve(mix),

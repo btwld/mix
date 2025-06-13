@@ -10,7 +10,7 @@ part of 'accordion.dart';
 
 /// A mixin that provides spec functionality for [AccordionSpec].
 mixin _$AccordionSpec on Spec<AccordionSpec> {
-  static AccordionSpec from(MixData mix) {
+  static AccordionSpec from(MixContext mix) {
     return mix.attributeOf<AccordionSpecAttribute>()?.resolve(mix) ??
         const AccordionSpec();
   }
@@ -115,16 +115,16 @@ class AccordionSpecAttribute extends SpecAttribute<AccordionSpec> {
     super.animated,
   });
 
-  /// Resolves to [AccordionSpec] using the provided [MixData].
+  /// Resolves to [AccordionSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final accordionSpec = AccordionSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  AccordionSpec resolve(MixData mix) {
+  AccordionSpec resolve(MixContext mix) {
     return AccordionSpec(
       header: header?.resolve(mix),
       container: container?.resolve(mix),
@@ -246,7 +246,7 @@ class AccordionSpecTween extends Tween<AccordionSpec?> {
 
 /// A mixin that provides spec functionality for [AccordionHeaderSpec].
 mixin _$AccordionHeaderSpec on Spec<AccordionHeaderSpec> {
-  static AccordionHeaderSpec from(MixData mix) {
+  static AccordionHeaderSpec from(MixContext mix) {
     return mix.attributeOf<AccordionHeaderSpecAttribute>()?.resolve(mix) ??
         const AccordionHeaderSpec();
   }
@@ -357,16 +357,16 @@ class AccordionHeaderSpecAttribute extends SpecAttribute<AccordionHeaderSpec> {
     super.animated,
   });
 
-  /// Resolves to [AccordionHeaderSpec] using the provided [MixData].
+  /// Resolves to [AccordionHeaderSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final accordionHeaderSpec = AccordionHeaderSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  AccordionHeaderSpec resolve(MixData mix) {
+  AccordionHeaderSpec resolve(MixContext mix) {
     return AccordionHeaderSpec(
       container: container?.resolve(mix),
       leadingIcon: leadingIcon?.resolve(mix),

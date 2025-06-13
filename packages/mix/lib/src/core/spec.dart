@@ -47,7 +47,7 @@ abstract class SpecAttribute<Value> extends StyleElement
   const SpecAttribute({this.animated, this.modifiers});
 
   @override
-  Value resolve(MixData mix);
+  Value resolve(MixContext mix);
 
   @override
   SpecAttribute<Value> merge(covariant SpecAttribute<Value>? other);

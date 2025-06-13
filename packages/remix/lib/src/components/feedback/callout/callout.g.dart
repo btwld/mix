@@ -10,7 +10,7 @@ part of 'callout.dart';
 
 /// A mixin that provides spec functionality for [CalloutSpec].
 mixin _$CalloutSpec on Spec<CalloutSpec> {
-  static CalloutSpec from(MixData mix) {
+  static CalloutSpec from(MixContext mix) {
     return mix.attributeOf<CalloutSpecAttribute>()?.resolve(mix) ??
         const CalloutSpec();
   }
@@ -119,16 +119,16 @@ class CalloutSpecAttribute extends SpecAttribute<CalloutSpec> {
     super.animated,
   });
 
-  /// Resolves to [CalloutSpec] using the provided [MixData].
+  /// Resolves to [CalloutSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final calloutSpec = CalloutSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  CalloutSpec resolve(MixData mix) {
+  CalloutSpec resolve(MixContext mix) {
     return CalloutSpec(
       container: container?.resolve(mix),
       icon: icon?.resolve(mix),

@@ -10,16 +10,16 @@ part of 'shadow_dto.dart';
 
 /// A mixin that provides DTO functionality for [ShadowDto].
 mixin _$ShadowDto on Mixable<Shadow>, HasDefaultValue<Shadow> {
-  /// Resolves to [Shadow] using the provided [MixData].
+  /// Resolves to [Shadow] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final shadow = ShadowDto(...).resolve(mix);
   /// ```
   @override
-  Shadow resolve(MixData mix) {
+  Shadow resolve(MixContext mix) {
     return Shadow(
       blurRadius: _$this.blurRadius ?? defaultValue.blurRadius,
       color: _$this.color?.resolve(mix) ?? defaultValue.color,
@@ -127,16 +127,16 @@ extension ListShadowMixExt on List<Shadow> {
 
 /// A mixin that provides DTO functionality for [BoxShadowDto].
 mixin _$BoxShadowDto on Mixable<BoxShadow>, HasDefaultValue<BoxShadow> {
-  /// Resolves to [BoxShadow] using the provided [MixData].
+  /// Resolves to [BoxShadow] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final boxShadow = BoxShadowDto(...).resolve(mix);
   /// ```
   @override
-  BoxShadow resolve(MixData mix) {
+  BoxShadow resolve(MixContext mix) {
     return BoxShadow(
       color: _$this.color?.resolve(mix) ?? defaultValue.color,
       offset: _$this.offset ?? defaultValue.offset,

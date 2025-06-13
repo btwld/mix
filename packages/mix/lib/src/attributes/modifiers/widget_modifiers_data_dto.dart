@@ -32,7 +32,7 @@ class WidgetModifiersDataDto extends Mixable<WidgetModifiersData>
   }
 
   @override
-  WidgetModifiersData resolve(MixData mix) {
+  WidgetModifiersData resolve(MixContext mix) {
     return WidgetModifiersData(value.map((e) => e.resolve(mix)).toList());
   }
 
