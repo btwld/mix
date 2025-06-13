@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 
 import '../../attributes/animated/animated_data.dart';
 import '../../attributes/nested_style/nested_style_attribute.dart';
-import '../../internal/compare_mixin.dart';
 import '../../internal/helper_util.dart';
 import '../../specs/spec_util.dart';
 import '../../variants/variant_attribute.dart';
@@ -26,7 +25,7 @@ import 'mix_data.dart';
 /// final style = Style(attribute1, attribute2, attribute3);
 /// final updatedStyle = style.variant(myVariant);
 /// ```
-class Style with EqualityMixin {
+class Style extends StyleElement {
   /// Visual attributes contained in this mix.
   final AttributeMap<SpecAttribute> styles;
 
@@ -42,11 +41,12 @@ class Style with EqualityMixin {
 
   const Style._({required this.styles, required this.variants});
 
-  /// Creates a new `Style` instance with a specified list of [Attribute]s.
+  /// Creates a new `Style` instance with a specified list of [StyleElement]s.
   ///
   /// This factory constructor initializes a `Style` with a list of
-  /// attributes provided as individual parameters. Only non-null attributes
-  /// are included in the resulting `Style`.
+  /// style elements provided as individual parameters. Only non-null elements
+  /// are included in the resulting `Style`. Since Attribute extends StyleElement,
+  /// this is backward compatible with existing code.
   ///
   /// There is no specific reason for only 20 parameters. This is just a
   /// reasonable number of parameters to support. If you need more than 20,
@@ -58,75 +58,81 @@ class Style with EqualityMixin {
   /// final style = Style(attribute1, attribute2, attribute3);
   /// ```
   factory Style([
-    Attribute? p1,
-    Attribute? p2,
-    Attribute? p3,
-    Attribute? p4,
-    Attribute? p5,
-    Attribute? p6,
-    Attribute? p7,
-    Attribute? p8,
-    Attribute? p9,
-    Attribute? p10,
-    Attribute? p11,
-    Attribute? p12,
-    Attribute? p13,
-    Attribute? p14,
-    Attribute? p15,
-    Attribute? p16,
-    Attribute? p17,
-    Attribute? p18,
-    Attribute? p19,
-    Attribute? p20,
+    StyleElement? p1,
+    StyleElement? p2,
+    StyleElement? p3,
+    StyleElement? p4,
+    StyleElement? p5,
+    StyleElement? p6,
+    StyleElement? p7,
+    StyleElement? p8,
+    StyleElement? p9,
+    StyleElement? p10,
+    StyleElement? p11,
+    StyleElement? p12,
+    StyleElement? p13,
+    StyleElement? p14,
+    StyleElement? p15,
+    StyleElement? p16,
+    StyleElement? p17,
+    StyleElement? p18,
+    StyleElement? p19,
+    StyleElement? p20,
   ]) {
     final params = [
       p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, //
       p11, p12, p13, p14, p15, p16, p17, p18, p19, p20,
-    ].whereType<Attribute>();
+    ].whereType<StyleElement>();
 
     return Style.create(params);
   }
 
-  /// Constructs a `Style` from an iterable of [Attribute] instances.
+  /// Constructs a `Style` from an iterable of [StyleElement] instances.
   ///
-  /// This factory constructor segregates the attributes into visual and variant
+  /// This factory constructor segregates the style elements into visual and variant
   /// attributes, initializing a new `Style` with these segregated collections.
+  /// Since Attribute extends StyleElement, this is backward compatible.
   ///
   /// Example:
   /// ```dart
   /// final style = Style.create([attribute1, attribute2]);
   /// ```
-  factory Style.create(Iterable<Attribute> attributes) {
+  factory Style.create(Iterable<StyleElement> elements) {
     final applyVariants = <VariantAttribute>[];
     final styleList = <SpecAttribute>[];
 
-    for (final attribute in attributes) {
-      switch (attribute) {
+    for (final element in elements) {
+      switch (element) {
         case SpecAttribute():
-          styleList.add(attribute);
+          styleList.add(element);
         case VariantAttribute():
-          applyVariants.add(attribute);
+          applyVariants.add(element);
         case NestedStyleAttribute():
-          applyVariants.addAll(attribute.value.variants.values);
-          styleList.addAll(attribute.value.styles.values);
+          applyVariants.addAll(element.value.variants.values);
+          styleList.addAll(element.value.styles.values);
         case SpecUtility():
-          if (attribute.attributeValue != null) {
-            final nestedStyle = Style.create([attribute.attributeValue!]);
+          if (element.attributeValue != null) {
+            final nestedStyle = Style.create([element.attributeValue!]);
             styleList.addAll(nestedStyle.styles.values);
             applyVariants.addAll(nestedStyle.variants.values);
           }
+        case Style():
+          // Handle nested Style instances by flattening them
+          styleList.addAll(element.styles.values);
+          applyVariants.addAll(element.variants.values);
         default:
+          // For other StyleElement types (like Mixable/DTOs), we don't support them yet
           throw FlutterError.fromParts([
             ErrorSummary(
-              'Unsupported attribute type encountered in Style creation.',
+              'Unsupported StyleElement type encountered in Style creation.',
             ),
             ErrorDescription(
-              'The attribute of type ${attribute.runtimeType} is not supported.',
+              'The StyleElement of type ${element.runtimeType} is not supported.',
             ),
             ErrorHint(
-              'Custom Attributes must be subclasses of one of the following types: '
-              'StyledAttribute, VariantAttribute, NestedStyleAttribute, or SpecUtility. '
-              'Please ensure your attribute implements one of these supported types.',
+              'StyleElements must be subclasses of one of the following types: '
+              'SpecAttribute, VariantAttribute, NestedStyleAttribute, SpecUtility, or Style. '
+              'For DTOs, use utility functions like \$box.color() instead of direct DTOs.',
             ),
           ]);
       }
@@ -156,16 +162,16 @@ class Style with EqualityMixin {
   /// Returns all utilities, allowing you to use your own namespace
   static MixUtilities utilities() => const MixUtilities();
 
-  static get asAttribute => const SpreadFunctionParams<Attribute, Attribute>(
+  static get asAttribute => const SpreadFunctionParams<StyleElement, Attribute>(
         NestedStyleAttribute.fromList,
       );
 
   bool get isAnimated => this is AnimatedStyle;
 
-  /// Returns a list of all attributes contained in this mix.
+  /// Returns a list of all style elements contained in this mix.
   ///
   /// This includes both visual and variant attributes.
-  Iterable<Attribute> get values => [...styles.values, ...variants.values];
+  Iterable<StyleElement> get values => [...styles.values, ...variants.values];
 
   /// Returns true if this Style does not contain any attributes or variants.
   bool get isEmpty => styles.isEmpty && variants.isEmpty;
@@ -178,8 +184,8 @@ class Style with EqualityMixin {
   /// This includes both visual and variant attributes.
   int get length => values.length;
 
-  /// Allows to create a new `Style` by using this mix as a base and adding additional attributes.
-  SpreadFunctionParams<Attribute, Style> get add =>
+  /// Allows to create a new `Style` by using this mix as a base and adding additional style elements.
+  SpreadFunctionParams<StyleElement, Style> get add =>
       SpreadFunctionParams(addAll);
 
   /// Selects a single or positional params list of [Variant] and returns a new `Style` with the selected variants.
@@ -189,8 +195,8 @@ class Style with EqualityMixin {
   SpreadFunctionParams<Variant, Style> get applyVariant =>
       SpreadFunctionParams(applyVariants);
 
-  Style addAll(Iterable<Attribute> attributes) {
-    return merge(Style.create(attributes));
+  Style addAll(Iterable<StyleElement> elements) {
+    return merge(Style.create(elements));
   }
 
   MixData of(BuildContext context) => MixData.create(context, this);
@@ -219,29 +225,6 @@ class Style with EqualityMixin {
       styles: styles ?? this.styles,
       variants: variants ?? this.variants,
     );
-  }
-
-  /// Merges this mix with the provided [Style] instances and returns the resulting `Style`.
-  ///
-  /// This method combines the visual and variant attributes of this mix and the provided [Style] instances.
-  /// If a null value is provided for any of the parameters, it is ignored.
-  ///
-  /// This method combines the visual and variant attributes of this mix and the provided [mix].
-  Style merge(Style? style) {
-    if (style == null) return this;
-
-    final mergedStyles = styles.merge(style.styles);
-    final mergedVariants = variants.merge(style.variants);
-
-    if (style is AnimatedStyle) {
-      return AnimatedStyle._(
-        styles: mergedStyles,
-        variants: mergedVariants,
-        animated: style.animated,
-      );
-    }
-
-    return copyWith(styles: mergedStyles, variants: mergedVariants);
   }
 
   /// Selects multiple [Variant] instances and returns a new `Style` with the selected variants.
@@ -368,8 +351,32 @@ class Style with EqualityMixin {
     return pickedStyle.pickVariants(pickedVariants, isRecursive: true);
   }
 
+  /// Merges this mix with the provided [Style] instances and returns the resulting `Style`.
+  ///
+  /// This method combines the visual and variant attributes of this mix and the provided [Style] instances.
+  /// If a null value is provided for any of the parameters, it is ignored.
+  ///
+  /// This method combines the visual and variant attributes of this mix and the provided [mix].
   @override
-  get props => [styles, variants];
+  Style merge(Style? style) {
+    if (style == null) return this;
+
+    final mergedStyles = styles.merge(style.styles);
+    final mergedVariants = variants.merge(style.variants);
+
+    if (style is AnimatedStyle) {
+      return AnimatedStyle._(
+        styles: mergedStyles,
+        variants: mergedVariants,
+        animated: style.animated,
+      );
+    }
+
+    return copyWith(styles: mergedStyles, variants: mergedVariants);
+  }
+
+  @override
+  List<Object?> get props => [styles, variants];
 }
 
 class AnimatedStyle extends Style {

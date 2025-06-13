@@ -10,8 +10,8 @@ final class NestedStyleAttribute extends Attribute {
 
   const NestedStyleAttribute(this.value);
 
-  factory NestedStyleAttribute.fromList(List<Attribute> attributes) {
-    return NestedStyleAttribute(Style.create(attributes));
+  factory NestedStyleAttribute.fromList(List<StyleElement> elements) {
+    return NestedStyleAttribute(Style.create(elements));
   }
 
   @override

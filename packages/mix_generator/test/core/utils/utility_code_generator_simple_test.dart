@@ -33,7 +33,7 @@ void main() {
       expect(
           result,
           contains(
-              'ColorUtility<T> get chain => ColorUtility(attributeBuilder, mutable: true);'));
+              'ColorUtility<T> get chain => ColorUtility(attributeBuilder);'));
     });
 
     test('selfGetter creates correct static getter', () {
