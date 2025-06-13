@@ -37,7 +37,7 @@ sealed class BorderRadiusGeometryDto<T extends BorderRadiusGeometry>
   Radius getRadiusValue(MixData mix, Radius? radius) {
     if (radius == null) return Radius.zero;
 
-    return radius is RadiusRef ? mix.tokens.radiiRef(radius) : radius;
+    return radius;
   }
 
   @override

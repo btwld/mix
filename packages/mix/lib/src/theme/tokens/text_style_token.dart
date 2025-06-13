@@ -1,10 +1,14 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'package:flutter/widgets.dart';
 
 import '../../internal/mix_error.dart';
 import '../mix/mix_theme.dart';
 import 'mix_token.dart';
 
-class TextStyleToken extends MixToken<TextStyle> {
+/// A token representing a text style value in the Mix theme.
+///
+class TextStyleToken extends MixToken<TextStyle> with MixTokenCallable<TextStyle> {
   const TextStyleToken(super.name);
 
   @override

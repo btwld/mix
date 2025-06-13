@@ -5,7 +5,9 @@ import '../../internal/diagnostic_properties_builder_ext.dart';
 import '../mix/mix_theme.dart';
 import 'mix_token.dart';
 
-class RadiusToken extends MixToken<Radius> {
+/// A token representing a radius value in the Mix theme.
+///
+class RadiusToken extends MixToken<Radius> with MixTokenCallable<Radius> {
   const RadiusToken(super.name);
 
   @override

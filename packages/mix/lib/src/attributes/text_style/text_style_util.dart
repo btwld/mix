@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../core/element.dart';
 import '../../theme/tokens/text_style_token.dart';
+import '../../theme/tokens/mix_token.dart';
 import '../color/color_dto.dart';
 import '../color/color_util.dart';
 import '../enum/enum_util.dart';
@@ -35,6 +36,8 @@ final class TextStyleUtility<T extends Attribute>
   late final fontFamily = FontFamilyUtility((v) => call(fontFamily: v));
 
   TextStyleUtility(super.builder) : super(valueToDto: (v) => v.toDto());
+  
+  T token(MixToken<TextStyle> token) => builder(TextStyleDto.token(token));
 
   T height(double v) => only(height: v);
 
@@ -165,3 +168,4 @@ final class TextStyleUtility<T extends Attribute>
     return builder(textStyle);
   }
 }
+

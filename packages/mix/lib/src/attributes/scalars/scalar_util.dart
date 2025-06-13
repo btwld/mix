@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
+
 part 'scalar_util.g.dart';
 
 @MixableUtility(referenceType: Alignment)
@@ -196,3 +197,5 @@ final class StrokeAlignUtility<T extends Attribute>
   T inside() => builder(-1);
   T outside() => builder(1);
 }
+
+// Extension removed - token() method is now built into RadiusUtility

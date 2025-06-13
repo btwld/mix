@@ -5,13 +5,10 @@ import 'package:flutter/widgets.dart';
 import '../../internal/iterable_ext.dart';
 
 @immutable
-abstract class MixToken<T> {
+// ignore: avoid-unused-generics
+class MixToken<T> {
   final String name;
   const MixToken(this.name);
-
-  T call();
-
-  T resolve(BuildContext context);
 
   @override
   operator ==(Object other) {
@@ -24,6 +21,12 @@ abstract class MixToken<T> {
 
   @override
   int get hashCode => Object.hash(name, runtimeType);
+}
+
+/// Mixin that provides call() and resolve() methods for MixToken implementations
+mixin MixTokenCallable<T> on MixToken<T> {
+  T call();
+  T resolve(BuildContext context);
 }
 
 mixin TokenRef<T extends MixToken> {
@@ -49,7 +52,13 @@ class StyledTokens<T extends MixToken<V>, V> {
   // Looks for the token the value set within the MixToken
   // TODO: Needs to be optimized, but this is a temporary solution
   T? findByRef(V value) {
-    return _map.keys.firstWhereOrNull((token) => token() == value);
+    return _map.keys.firstWhereOrNull((token) {
+      if (token is MixTokenCallable<V>) {
+        return token() == value;
+      }
+
+      return false;
+    });
   }
 
   StyledTokens<T, V> merge(StyledTokens<T, V> other) {

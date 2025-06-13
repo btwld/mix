@@ -10,7 +10,8 @@ void main() {
     test('Constructor assigns name correctly', () {
       const colorToken = ColorToken('testName');
       expect(colorToken.name, 'testName');
-      expect(colorToken().token, colorToken);
+      final ColorRef colorRef = colorToken();
+      expect(colorRef.token, colorToken);
     });
 
     // Equality Operator Test
@@ -139,14 +140,14 @@ void main() {
   group('ColorSwatchToken Tests', () {
     test('Constructor assigns name and swatch correctly', () {
       const swatchToken =
-          ColorSwatchToken('testSwatch', {100: 'color100', 200: 'color200'});
+          ColorSwatchToken<int>('testSwatch', {100: 'color100', 200: 'color200'});
       expect(swatchToken.name, 'testSwatch');
       expect(swatchToken.swatch, {100: 'color100', 200: 'color200'});
     });
 
     test('[] operator returns ColorTokenOfSwatch', () {
       const swatchToken =
-          ColorSwatchToken('testSwatch', {100: 'color100', 200: 'color200'});
+          ColorSwatchToken<int>('testSwatch', {100: 'color100', 200: 'color200'});
       final tokenOfSwatch = swatchToken[100];
       expect(tokenOfSwatch, isA<ColorTokenOfSwatch>());
       expect(tokenOfSwatch.name, 'color100');
@@ -178,7 +179,7 @@ void main() {
 
     testWidgets('resolve method returns correct ColorSwatch', (tester) async {
       const swatchToken =
-          ColorSwatchToken('testSwatch', {100: 'color100', 200: 'color200'});
+          ColorSwatchToken<int>('testSwatch', {100: 'color100', 200: 'color200'});
       final theme = MixThemeData(
         colors: {
           swatchToken:
@@ -200,7 +201,7 @@ void main() {
   group('ColorTokenOfSwatch Tests', () {
     test('Constructor assigns name, swatchToken, and index correctly', () {
       const swatchToken =
-          ColorSwatchToken('testSwatch', {100: 'color100', 200: 'color200'});
+          ColorSwatchToken<int>('testSwatch', {100: 'color100', 200: 'color200'});
       const tokenOfSwatch = ColorTokenOfSwatch('color100', swatchToken, 100);
       expect(tokenOfSwatch.name, 'color100');
       expect(tokenOfSwatch.swatchToken, swatchToken);
@@ -209,7 +210,7 @@ void main() {
 
     testWidgets('resolve method returns correct Color', (tester) async {
       const swatchToken =
-          ColorSwatchToken('testSwatch', {100: 'color100', 200: 'color200'});
+          ColorSwatchToken<int>('testSwatch', {100: 'color100', 200: 'color200'});
       const tokenOfSwatch = ColorTokenOfSwatch('color100', swatchToken, 100);
       final theme = MixThemeData(
         colors: {

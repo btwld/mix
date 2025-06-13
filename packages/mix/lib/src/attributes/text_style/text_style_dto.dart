@@ -131,8 +131,13 @@ base class TextStyleData extends Mixable<TextStyle>
 final class TextStyleDto extends Mixable<TextStyle>
     with _$TextStyleDto, Diagnosticable {
   final List<TextStyleData> value;
+  final MixToken<TextStyle>? token;
+
   @MixableConstructor()
-  const TextStyleDto._({this.value = const []});
+  const TextStyleDto._({this.value = const [], this.token});
+
+  factory TextStyleDto.token(MixToken<TextStyle> token) =>
+      TextStyleDto._(token: token);
 
   factory TextStyleDto({
     ColorDto? color,
@@ -188,14 +193,18 @@ final class TextStyleDto extends Mixable<TextStyle>
     return TextStyleDto._(value: [TextStyleDataRef(ref: token())]);
   }
 
-  /// This method resolves the [TextStyleDto] to a TextStyle.
-  /// It maps over the values list and checks if each TextStyleDto is a token reference.
-  /// If it is, it resolves the token reference and converts it to a [TextStyleData].
-  /// If it's not a token reference, it leaves the [TextStyleData] as is.
-  /// Then it reduces the list of [TextStyleData] objects to a single [TextStyleData] by merging them.
-  /// Finally, it resolves the resulting [TextStyleData] to a TextStyle.
+  /// Resolves this [TextStyleDto] to a [TextStyle].
+  /// 
+  /// If a token is present, resolves it directly using the unified resolver system.
+  /// Otherwise, processes the value list by resolving any token references,
+  /// merging all [TextStyleData] objects, and resolving to a final [TextStyle].
   @override
   TextStyle resolve(MixData mix) {
+    // Type-safe, direct token resolution using MixToken object
+    if (token != null) {
+      return mix.tokens.resolveToken<TextStyle>(token!);
+    }
+
     final result = value
         .map((e) => e is TextStyleDataRef ? e.resolve(mix)._toData() : e)
         .reduce((a, b) => a.merge(b))
