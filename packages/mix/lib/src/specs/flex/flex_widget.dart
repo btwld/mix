@@ -2,8 +2,8 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../../core/spec_widget.dart';
 import '../../core/animated_spec_widget.dart';
+import '../../core/spec_widget.dart';
 import '../../core/styled_widget.dart';
 import '../../modifiers/internal/render_widget_modifier.dart';
 import 'flex_spec.dart';
@@ -72,27 +72,11 @@ class FlexSpecWidget extends SpecWidget<FlexSpec> {
   final Axis direction;
   final List<Type> orderOfModifiers;
 
-  Axis get _definitiveDirection => spec?.direction ?? direction;
-
-  List<Widget> _buildChildren(double? gap) {
-    if (gap == null) return children;
-
-    if (children.isEmpty) return [];
-
-    return List.generate(children.length + children.length - 1, (index) {
-      if (index.isEven) return children[index ~/ 2];
-
-      return _definitiveDirection == Axis.horizontal
-          ? SizedBox(width: gap)
-          : SizedBox(height: gap);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final gap = spec?.gap;
     final flexWidget = Flex(
-      direction: _definitiveDirection,
+      direction: spec?.direction ?? direction,
       mainAxisAlignment:
           spec?.mainAxisAlignment ?? _defaultFlex.mainAxisAlignment,
       mainAxisSize: spec?.mainAxisSize ?? _defaultFlex.mainAxisSize,
@@ -103,7 +87,8 @@ class FlexSpecWidget extends SpecWidget<FlexSpec> {
           spec?.verticalDirection ?? _defaultFlex.verticalDirection,
       textBaseline: spec?.textBaseline ?? _defaultFlex.textBaseline,
       clipBehavior: spec?.clipBehavior ?? _defaultFlex.clipBehavior,
-      children: _buildChildren(gap),
+      spacing: gap ?? _defaultFlex.spacing,
+      children: children,
     );
 
     return spec == null
