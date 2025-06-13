@@ -42,7 +42,7 @@ class MixData with Diagnosticable {
   })  : _attributes = attributes,
         _tokenResolver = resolver;
 
-  factory MixData.create(BuildContext context, Style style) {
+  factory MixData.create(BuildContext context, BaseStyle style) {
     final attributeList = applyContextToVisualAttributes(context, style);
 
     final resolver = MixTokenResolver(context);
@@ -186,7 +186,7 @@ class MixData with Diagnosticable {
 @visibleForTesting
 List<SpecAttribute> applyContextToVisualAttributes(
   BuildContext context,
-  Style mix,
+  BaseStyle mix,
 ) {
   if (mix.variants.isEmpty) {
     return mix.styles.values;
@@ -196,7 +196,7 @@ List<SpecAttribute> applyContextToVisualAttributes(
     (a, b) => a.priority.value.compareTo(b.priority.value),
   );
 
-  Style style = Style.create(mix.styles.values);
+  BaseStyle style = Style.create(mix.styles.values);
 
   for (final variant in prioritizedVariants) {
     style = _applyVariants(context, style, variant);
@@ -205,9 +205,9 @@ List<SpecAttribute> applyContextToVisualAttributes(
   return applyContextToVisualAttributes(context, style);
 }
 
-Style _applyVariants(
+BaseStyle _applyVariants(
   BuildContext context,
-  Style style,
+  BaseStyle style,
   VariantAttribute variantAttribute,
 ) {
   if (variantAttribute is ContextVariantBuilder) {

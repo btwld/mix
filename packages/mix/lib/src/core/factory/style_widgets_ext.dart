@@ -9,15 +9,21 @@ import '../../specs/text/text_widget.dart';
 import 'style_mix.dart';
 
 extension StyleExt on Style {
+  Style _mergeIfNeed(BaseStyle? style) {
+    if (style == null) return this;
+
+    return Style.create([this, style]);
+  }
+
   Box container({
     required Widget child,
     bool inherit = false,
     Key? key,
-    Style? style,
+    BaseStyle? style,
   }) {
     return Box(
       key: key,
-      style: merge(style),
+      style: _mergeIfNeed(style),
       inherit: inherit,
       child: child,
     );
@@ -27,20 +33,25 @@ extension StyleExt on Style {
     required Widget child,
     bool inherit = false,
     Key? key,
-    Style? style,
+    BaseStyle? style,
   }) {
-    return container(key: key, inherit: inherit, style: style, child: child);
+    return container(
+      key: key,
+      inherit: inherit,
+      style: _mergeIfNeed(style),
+      child: child,
+    );
   }
 
   HBox hbox({
     required List<Widget> children,
     bool inherit = false,
     Key? key,
-    Style? style,
+    BaseStyle? style,
   }) {
     return HBox(
       key: key,
-      style: merge(style),
+      style: _mergeIfNeed(style),
       inherit: inherit,
       children: children,
     );
@@ -60,11 +71,11 @@ extension StyleExt on Style {
     required List<Widget> children,
     bool inherit = false,
     Key? key,
-    Style? style,
+    BaseStyle? style,
   }) {
     return StyledRow(
       key: key,
-      style: merge(style),
+      style: _mergeIfNeed(style),
       inherit: inherit,
       children: children,
     );
@@ -75,13 +86,13 @@ extension StyleExt on Style {
     bool inherit = false,
     Key? key,
     String? semanticsLabel,
-    Style? style,
+    BaseStyle? style,
   }) {
     return StyledText(
       text,
       key: key,
       semanticsLabel: semanticsLabel,
-      style: merge(style),
+      style: _mergeIfNeed(style),
       inherit: inherit,
     );
   }
@@ -90,11 +101,11 @@ extension StyleExt on Style {
     required List<Widget> children,
     bool inherit = false,
     Key? key,
-    Style? style,
+    BaseStyle? style,
   }) {
     return VBox(
       key: key,
-      style: merge(style),
+      style: _mergeIfNeed(style),
       inherit: inherit,
       children: children,
     );
@@ -114,11 +125,11 @@ extension StyleExt on Style {
     required List<Widget> children,
     bool inherit = false,
     Key? key,
-    Style? style,
+    BaseStyle? style,
   }) {
     return StyledColumn(
       key: key,
-      style: merge(style),
+      style: _mergeIfNeed(style),
       inherit: inherit,
       children: children,
     );
@@ -128,8 +139,13 @@ extension StyleExt on Style {
     IconData icon, {
     bool inherit = false,
     Key? key,
-    Style? style,
+    BaseStyle? style,
   }) {
-    return StyledIcon(icon, key: key, style: merge(style), inherit: inherit);
+    return StyledIcon(
+      icon,
+      key: key,
+      style: _mergeIfNeed(style),
+      inherit: inherit,
+    );
   }
 }
