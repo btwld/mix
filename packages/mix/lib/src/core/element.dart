@@ -25,12 +25,12 @@ typedef StyledAttribute = SpecAttribute;
 @Deprecated('Use Mixable instead')
 typedef Dto<Value> = Mixable<Value>;
 
-abstract class Mixable<Value> extends StyleElement {
+abstract class Mixable<Value> with EqualityMixin {
   const Mixable();
 
-  Value resolve(MixData mix);
+  Object get mergeKey => runtimeType;
 
-  @override
+  Value resolve(MixData mix);
   Mixable<Value> merge(covariant Mixable<Value>? other);
 }
 
