@@ -8,7 +8,7 @@ class ProgressStyle extends SpecStyle<ProgressSpecUtility> {
     final $ = spec.utilities;
 
     final containerStyle = [
-      $.container.chain
+      $.container
         ..height(6)
         ..clipBehavior.antiAlias()
         ..borderRadius(99),

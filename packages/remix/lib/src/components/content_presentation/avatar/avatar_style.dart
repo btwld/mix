@@ -8,7 +8,7 @@ class AvatarStyle extends SpecStyle<AvatarSpecUtility> {
     final $ = spec.utilities;
 
     final fallbackStyle = [
-      $.fallback.chain
+      $.fallback
         ..textAlign.center()
         ..style.fontWeight.w400()
         ..style.fontSize(16)
@@ -16,7 +16,7 @@ class AvatarStyle extends SpecStyle<AvatarSpecUtility> {
     ];
 
     final containerStyle = [
-      $.container.chain
+      $.container
         ..color.black12()
         ..alignment.center()
         ..size(40)

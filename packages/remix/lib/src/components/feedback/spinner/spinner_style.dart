@@ -12,7 +12,7 @@ class SpinnerStyle extends SpecStyle<SpinnerSpecUtility> {
     final $ = spec.utilities;
 
     final spinnerStyle = [
-      $.chain
+      $
         ..size(24)
         ..strokeWidth(1.5)
         ..color.black()

@@ -17,13 +17,13 @@ class FortalezaChipStyle extends ChipStyle {
     final iconStyle = [$.icon.color.$accent()];
 
     final labelStyle = [
-      $.label.chain
+      $.label
         ..style.$text2()
         ..style.color.$accent(),
     ];
 
     final containerStyle = [
-      $.container.chain
+      $.container
         ..flex.gap.$space2()
         ..borderRadius(20)
         ..color.$accent(2)
@@ -45,7 +45,7 @@ class FortalezaChipStyle extends ChipStyle {
     ];
 
     final ghostStyle = Style.create([
-      $.container.chain
+      $.container
         ..borderRadius(6)
         ..color.$accent(1)
         ..border.style.none()

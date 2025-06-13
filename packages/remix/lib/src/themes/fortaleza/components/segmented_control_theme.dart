@@ -21,7 +21,7 @@ class FortalezaSegmentedControlStyle extends SegmentedControlStyle {
       $.divider.color.$neutral(7),
       spec.on.selected(
         $.item.container.color.$neutral(1),
-        $.item.chain
+        $.item
           ..container.shadow.color.transparent()
           ..container.border.all.color.$neutral(7),
       ),
@@ -47,7 +47,7 @@ class FortalezaDarkSegmentedControlStyle
       $on.selected(
         $.item.container.borderRadius.all.$radius1(),
         $.item.container.color.$neutral(4),
-        $.item.chain
+        $.item
           ..label.style.color.$neutral(12)
           ..container.shadow.color.transparent()
           ..container.border.all.color.$neutral(7),

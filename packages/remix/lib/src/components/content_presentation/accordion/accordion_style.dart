@@ -8,23 +8,23 @@ class AccordionStyle extends SpecStyle<AccordionSpecUtility> {
     final $ = spec.utilities;
 
     final flexContainerStyle = [
-      $.container.chain
+      $.container
         ..flex.mainAxisSize.min()
         ..clipBehavior.antiAlias()
         ..border.bottom.color.grey.shade400(),
     ];
 
     final headerStyle = [
-      $.header.container.chain
+      $.header.container
         ..flex.gap(6)
         ..width.infinity()
         ..padding.vertical(16)
         ..color.transparent(),
-      $.header.chain
+      $.header
         ..leadingIcon.size(18)
         ..trailingIcon.wrap.transform.rotate(0)
         ..trailingIcon.size(18),
-      $.header.text.chain
+      $.header.text
         ..style.fontSize(16)
         ..style.letterSpacing(0.4)
         ..style.fontWeight.w600()

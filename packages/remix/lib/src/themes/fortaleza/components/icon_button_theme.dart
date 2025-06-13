@@ -50,7 +50,7 @@ class FortalezaIconButtonStyle extends IconButtonStyle {
     );
 
     final outlineVariant = Style(
-      $.container.chain
+      $.container
         ..color.transparent()
         ..border.width(1)
         ..border.strokeAlign(0)
@@ -59,7 +59,7 @@ class FortalezaIconButtonStyle extends IconButtonStyle {
       $.icon.color.$accentAlpha(11),
       spec.on.hover($.container.color.$accentAlpha(2)),
       spec.on.disabled(
-        $.container.chain
+        $.container
           ..border.color.$neutralAlpha(8)
           ..color.transparent(),
       ),

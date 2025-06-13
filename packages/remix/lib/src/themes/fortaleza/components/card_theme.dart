@@ -17,7 +17,7 @@ class FortalezaCardStyle extends CardStyle {
     final baseStyle = super.makeStyle(spec);
 
     final surfaceVariant = Style(
-      $.container.chain
+      $.container
         ..padding.all.$space3()
         ..borderRadius.all.$radius2()
         ..border.all.color.$neutral(6)
@@ -26,7 +26,7 @@ class FortalezaCardStyle extends CardStyle {
     );
 
     final ghostVariant = Style(
-      $.container.chain
+      $.container
         ..border.none()
         ..color.$neutral(2)
         ..color.withOpacity(0),

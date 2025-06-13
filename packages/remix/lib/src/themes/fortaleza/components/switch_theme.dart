@@ -18,26 +18,26 @@ class FortalezaSwitchStyle extends SwitchStyle {
 
     final baseThemeOverrides = Style(
       $.indicator.color.$neutral(1),
-      $.container.chain
+      $.container
         ..padding.all(1)
         ..color.$neutral(4)
         ..border.all.width(1)
         ..border.all.color.$neutral(7),
       spec.on.disabled(
-        $.container.chain
+        $.container
           ..color.$neutral(4)
           ..border.all.color.$neutral(7),
         $.indicator.color.$neutral(3),
       ),
       spec.on.selected(
-        $.container.chain
+        $.container
           ..color.$accent(9)
           ..border.all.color.$accent(10),
       ),
     );
 
     final softVariant = Style(
-      $.container.chain
+      $.container
         ..border.all.style.none()
         ..color.$neutral(6),
       $.indicator.color.$neutral(1),
@@ -65,7 +65,7 @@ class FortalezaDarkSwitchStyle extends FortalezaSwitchStyle {
 
     final soft = Style(
       $.indicator.color.$neutral(12),
-      $.container.chain
+      $.container
         ..color.$neutral(3)
         ..padding.all(1)
         ..border.color.$neutralAlpha(7)

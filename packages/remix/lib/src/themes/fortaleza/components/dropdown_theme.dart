@@ -13,7 +13,7 @@ class FortalezaDropdownMenuStyle extends DropdownMenuStyle {
     final baseStyle = super.makeStyle(spec);
 
     final baseThemeOverrides = Style(
-      $.menu.container.chain
+      $.menu.container
         ..color.$neutral(1)
         ..border.all.color.$neutral(6)
         ..wrap.intrinsicWidth()

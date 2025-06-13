@@ -8,7 +8,7 @@ class SwitchStyle extends SpecStyle<SwitchSpecUtility> {
     final $ = spec.utilities;
 
     final containerStyle = [
-      $.container.chain
+      $.container
         ..height(24)
         ..width(44)
         ..borderRadius(99)
@@ -18,7 +18,7 @@ class SwitchStyle extends SpecStyle<SwitchSpecUtility> {
         ..animated.curve.spring(stiffness: 100, dampingRatio: 1)
         ..animated.duration(const Duration(milliseconds: 300)),
       spec.on.selected(
-        $.container.chain
+        $.container
           ..alignment.centerRight()
           ..color.black(),
       ),
@@ -26,7 +26,7 @@ class SwitchStyle extends SpecStyle<SwitchSpecUtility> {
     ];
 
     final indicatorStyle = [
-      $.indicator.chain
+      $.indicator
         ..wrap.align(alignment: Alignment.centerLeft)
         ..color.white()
         ..shape.circle()

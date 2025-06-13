@@ -8,20 +8,20 @@ class IconButtonStyle extends SpecStyle<IconButtonSpecUtility> {
     final $ = spec.utilities;
 
     final iconStyle = [
-      $.icon.chain
+      $.icon
         ..size(16)
         ..color.white(),
     ];
 
     final spinnerStyle = [
-      $.spinner.chain
+      $.spinner
         ..strokeWidth(0.9)
         ..size(15)
         ..color.white(),
     ];
 
     final containerStyle = [
-      $.container.chain
+      $.container
         ..borderRadius(6)
         ..color.black()
         ..padding.vertical(8)
