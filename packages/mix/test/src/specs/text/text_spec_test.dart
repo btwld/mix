@@ -290,7 +290,7 @@ void main() {
     test('fluent behavior', () {
       final text = TextSpecUtility.self;
 
-      final util = text.chain
+      final util = text
         ..overflow.ellipsis()
         ..textAlign.center()
         ..textScaleFactor(1.5)
@@ -371,7 +371,7 @@ void main() {
     test('Mutate behavior and not on same utility', () {
       final text = TextSpecUtility.self;
 
-      final textValue = text.chain;
+      final textValue = text;
       textValue
         ..maxLines(3)
         ..style.color.red()

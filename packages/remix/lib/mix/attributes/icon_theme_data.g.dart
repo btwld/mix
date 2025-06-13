@@ -83,7 +83,7 @@ mixin _$IconThemeDataDto on Mixable<IconThemeData> {
 ///
 /// This class provides methods to set individual properties of a [IconThemeData].
 /// Use the methods of this class to configure specific properties of a [IconThemeData].
-class IconThemeDataUtility<T extends Attribute>
+class IconThemeDataUtility<T extends StyleElement>
     extends DtoUtility<T, IconThemeDataDto, IconThemeData> {
   /// Utility for defining [IconThemeDataDto.size]
   late final size = DoubleUtility((v) => only(size: v));

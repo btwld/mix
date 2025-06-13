@@ -222,7 +222,7 @@ class ToastSpecAttribute extends SpecAttribute<ToastSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [ToastSpec].
 /// Use the methods of this class to configure specific properties of a [ToastSpec].
-class ToastSpecUtility<T extends Attribute>
+class ToastSpecUtility<T extends StyleElement>
     extends SpecUtility<T, ToastSpecAttribute> {
   /// Utility for defining [ToastSpecAttribute.container]
   late final container = FlexBoxSpecUtility((v) => only(container: v));

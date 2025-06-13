@@ -68,7 +68,7 @@ mixin _$BoxConstraintsDto on Mixable<BoxConstraints> {
 ///
 /// This class provides methods to set individual properties of a [BoxConstraints].
 /// Use the methods of this class to configure specific properties of a [BoxConstraints].
-class BoxConstraintsUtility<T extends Attribute>
+class BoxConstraintsUtility<T extends StyleElement>
     extends DtoUtility<T, BoxConstraintsDto, BoxConstraints> {
   /// Utility for defining [BoxConstraintsDto.minWidth]
   late final minWidth = DoubleUtility((v) => only(minWidth: v));

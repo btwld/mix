@@ -217,7 +217,7 @@ class SelectSpecAttribute extends SpecAttribute<SelectSpec>
 ///
 /// This class provides methods to set individual properties of a [SelectSpec].
 /// Use the methods of this class to configure specific properties of a [SelectSpec].
-class SelectSpecUtility<T extends Attribute>
+class SelectSpecUtility<T extends StyleElement>
     extends SpecUtility<T, SelectSpecAttribute> {
   /// Utility for defining [SelectSpecAttribute.button]
   late final button = SelectTriggerSpecUtility((v) => only(button: v));
@@ -484,7 +484,7 @@ class SelectMenuSpecAttribute extends SpecAttribute<SelectMenuSpec>
 ///
 /// This class provides methods to set individual properties of a [SelectMenuSpec].
 /// Use the methods of this class to configure specific properties of a [SelectMenuSpec].
-class SelectMenuSpecUtility<T extends Attribute>
+class SelectMenuSpecUtility<T extends StyleElement>
     extends SpecUtility<T, SelectMenuSpecAttribute> {
   /// Utility for defining [SelectMenuSpecAttribute.container]
   late final container = FlexBoxSpecUtility((v) => only(container: v));
@@ -753,7 +753,7 @@ class SelectMenuItemSpecAttribute extends SpecAttribute<SelectMenuItemSpec>
 ///
 /// This class provides methods to set individual properties of a [SelectMenuItemSpec].
 /// Use the methods of this class to configure specific properties of a [SelectMenuItemSpec].
-class SelectMenuItemSpecUtility<T extends Attribute>
+class SelectMenuItemSpecUtility<T extends StyleElement>
     extends SpecUtility<T, SelectMenuItemSpecAttribute> {
   /// Utility for defining [SelectMenuItemSpecAttribute.icon]
   late final icon = IconSpecUtility((v) => only(icon: v));
@@ -1028,7 +1028,7 @@ class SelectTriggerSpecAttribute extends SpecAttribute<SelectTriggerSpec>
 ///
 /// This class provides methods to set individual properties of a [SelectTriggerSpec].
 /// Use the methods of this class to configure specific properties of a [SelectTriggerSpec].
-class SelectTriggerSpecUtility<T extends Attribute>
+class SelectTriggerSpecUtility<T extends StyleElement>
     extends SpecUtility<T, SelectTriggerSpecAttribute> {
   /// Utility for defining [SelectTriggerSpecAttribute.container]
   late final container = FlexBoxSpecUtility((v) => only(container: v));

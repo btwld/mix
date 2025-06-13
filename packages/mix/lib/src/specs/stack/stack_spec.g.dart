@@ -214,7 +214,7 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [StackSpec].
 /// Use the methods of this class to configure specific properties of a [StackSpec].
-class StackSpecUtility<T extends Attribute>
+class StackSpecUtility<T extends StyleElement>
     extends SpecUtility<T, StackSpecAttribute> {
   /// Utility for defining [StackSpecAttribute.alignment]
   late final alignment = AlignmentGeometryUtility((v) => only(alignment: v));

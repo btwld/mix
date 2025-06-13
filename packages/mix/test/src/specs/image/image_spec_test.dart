@@ -124,7 +124,7 @@ void main() {
     test('fluent behavior', () {
       final image = ImageSpecUtility.self;
 
-      final util = image.chain
+      final util = image
         ..width(100)
         ..height(200)
         ..color.red()
@@ -191,7 +191,7 @@ void main() {
     test('Mutate behavior and not on same utility', () {
       final image = ImageSpecUtility.self;
 
-      final imageValue = image.chain;
+      final imageValue = image;
       imageValue
         ..width(100)
         ..color.red()

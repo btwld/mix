@@ -81,7 +81,7 @@ mixin _$DecorationImageDto
 ///
 /// This class provides methods to set individual properties of a [DecorationImage].
 /// Use the methods of this class to configure specific properties of a [DecorationImage].
-class DecorationImageUtility<T extends Attribute>
+class DecorationImageUtility<T extends StyleElement>
     extends DtoUtility<T, DecorationImageDto, DecorationImage> {
   /// Utility for defining [DecorationImageDto.image]
   late final provider = ImageProviderUtility((v) => only(image: v));

@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_relative_imports, avoid-importing-entrypoint-exports
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
@@ -140,8 +140,22 @@ final class BorderRadiusDirectionalDto
 extension BorderRadiusGeometryMixExt on BorderRadiusGeometry {
   BorderRadiusGeometryDto toDto() {
     final self = this;
-    if (self is BorderRadius) return self.toDto();
-    if (self is BorderRadiusDirectional) return self.toDto();
+    if (self is BorderRadius) {
+      return BorderRadiusDto(
+        topLeft: self.topLeft,
+        topRight: self.topRight,
+        bottomLeft: self.bottomLeft,
+        bottomRight: self.bottomRight,
+      );
+    }
+    if (self is BorderRadiusDirectional) {
+      return BorderRadiusDirectionalDto(
+        topStart: self.topStart,
+        topEnd: self.topEnd,
+        bottomStart: self.bottomStart,
+        bottomEnd: self.bottomEnd,
+      );
+    }
 
     throw MixError.unsupportedTypeInDto(
       BorderRadiusGeometry,

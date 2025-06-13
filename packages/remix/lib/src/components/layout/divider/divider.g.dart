@@ -178,7 +178,7 @@ class DividerSpecAttribute extends SpecAttribute<DividerSpec>
 ///
 /// This class provides methods to set individual properties of a [DividerSpec].
 /// Use the methods of this class to configure specific properties of a [DividerSpec].
-class DividerSpecUtility<T extends Attribute>
+class DividerSpecUtility<T extends StyleElement>
     extends SpecUtility<T, DividerSpecAttribute> {
   /// Utility for defining [DividerSpecAttribute.container]
   late final container = BoxSpecUtility((v) => only(container: v));

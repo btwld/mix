@@ -11,7 +11,7 @@ void main() {
       expect(
           result,
           contains(
-              'A utility class for creating [Attribute] instances from [Color] values.'));
+              'A utility class for creating [StyleElement] instances from [Color] values.'));
       expect(result, contains('This class extends [MixUtility]'));
     });
 

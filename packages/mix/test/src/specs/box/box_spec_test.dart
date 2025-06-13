@@ -376,7 +376,7 @@ void main() {
     test('fluent behavior', () {
       final box = BoxSpecUtility.self;
 
-      final util = box.chain
+      final util = box
         ..alignment.center()
         ..padding(8);
 
@@ -405,15 +405,11 @@ void main() {
 
     // Test mutable behavior for multiple boxes
     test('Immutable behavior when having multiple boxes', () {
-      final boxUtil = BoxSpecUtility.self;
-      final box1 = boxUtil.chain..padding(10);
-      final box2 = boxUtil.chain..padding(20);
+      final box1 = BoxSpecUtility.self.padding(10);
+      final box2 = BoxSpecUtility.self.padding(20);
 
-      final attr1 = box1.attributeValue!;
-      final attr2 = box2.attributeValue!;
-
-      expect(attr1.padding, const EdgeInsets.all(10.0).toDto());
-      expect(attr2.padding, const EdgeInsets.all(20.0).toDto());
+      expect(box1.padding, const EdgeInsets.all(10.0).toDto());
+      expect(box2.padding, const EdgeInsets.all(20.0).toDto());
 
       final style1 = Style(box1);
       final style2 = Style(box2);
@@ -437,7 +433,7 @@ void main() {
     test('Mutate behavior and not on same utility', () {
       final box = BoxSpecUtility.self;
 
-      final boxValue = box.chain;
+      final boxValue = box;
       boxValue
         ..padding(10)
         ..color.red()

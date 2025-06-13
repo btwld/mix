@@ -51,13 +51,18 @@ class Box extends StyledWidget {
   @override
   Widget build(BuildContext context) {
     // Apply styling from StyledWidget to a BoxSpecWidget.
-    // This method uses `withMix` to get the `MixData` and then applies it to `BoxSpecWidget`,
+    // This method uses `SpecBuilder` to get the `MixData` and then applies it to `BoxSpecWidget`,
     // effectively styling the [child].
-    return withMix(context, (context) {
-      final spec = BoxSpec.of(context);
+    return SpecBuilder(
+      inherit: inherit,
+      style: style,
+      orderOfModifiers: orderOfModifiers,
+      builder: (context) {
+        final spec = BoxSpec.of(context);
 
-      return spec(child: child);
-    });
+        return spec(child: child);
+      },
+    );
   }
 }
 

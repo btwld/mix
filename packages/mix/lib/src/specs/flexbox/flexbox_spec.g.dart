@@ -189,7 +189,7 @@ class FlexBoxSpecAttribute extends SpecAttribute<FlexBoxSpec>
 ///
 /// This class provides methods to set individual properties of a [FlexBoxSpec].
 /// Use the methods of this class to configure specific properties of a [FlexBoxSpec].
-class FlexBoxSpecUtility<T extends Attribute>
+class FlexBoxSpecUtility<T extends StyleElement>
     extends SpecUtility<T, FlexBoxSpecAttribute> {
   /// Utility for defining [FlexBoxSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));

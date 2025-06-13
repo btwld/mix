@@ -116,7 +116,7 @@ void main() {
     test('fluent behavior', () {
       final icon = IconSpecUtility.self;
 
-      final util = icon.chain
+      final util = icon
         ..color.red()
         ..size(24)
         ..weight(500)
@@ -197,7 +197,7 @@ void main() {
     test('Mutate behavior and not on same utility', () {
       final icon = IconSpecUtility.self;
 
-      final iconValue = icon.chain;
+      final iconValue = icon;
       iconValue
         ..size(24)
         ..color.red()

@@ -77,7 +77,7 @@ void main() {
     test('fluent behavior', () {
       final stack = StackSpecUtility.self;
 
-      final util = stack.chain
+      final util = stack
         ..alignment.topLeft()
         ..fit.expand()
         ..textDirection.rtl()
@@ -144,7 +144,7 @@ void main() {
     test('Mutate behavior and not on same utility', () {
       final stack = StackSpecUtility.self;
 
-      final stackValue = stack.chain;
+      final stackValue = stack;
       stackValue
         ..alignment.topLeft()
         ..fit.expand()

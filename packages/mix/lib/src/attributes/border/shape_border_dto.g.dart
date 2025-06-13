@@ -63,7 +63,7 @@ mixin _$RoundedRectangleBorderDto on Mixable<RoundedRectangleBorder> {
 ///
 /// This class provides methods to set individual properties of a [RoundedRectangleBorder].
 /// Use the methods of this class to configure specific properties of a [RoundedRectangleBorder].
-class RoundedRectangleBorderUtility<T extends Attribute>
+class RoundedRectangleBorderUtility<T extends StyleElement>
     extends DtoUtility<T, RoundedRectangleBorderDto, RoundedRectangleBorder> {
   /// Utility for defining [RoundedRectangleBorderDto.borderRadius]
   late final borderRadius =
@@ -172,7 +172,7 @@ mixin _$BeveledRectangleBorderDto on Mixable<BeveledRectangleBorder> {
 ///
 /// This class provides methods to set individual properties of a [BeveledRectangleBorder].
 /// Use the methods of this class to configure specific properties of a [BeveledRectangleBorder].
-class BeveledRectangleBorderUtility<T extends Attribute>
+class BeveledRectangleBorderUtility<T extends StyleElement>
     extends DtoUtility<T, BeveledRectangleBorderDto, BeveledRectangleBorder> {
   /// Utility for defining [BeveledRectangleBorderDto.borderRadius]
   late final borderRadius =
@@ -282,8 +282,9 @@ mixin _$ContinuousRectangleBorderDto on Mixable<ContinuousRectangleBorder> {
 ///
 /// This class provides methods to set individual properties of a [ContinuousRectangleBorder].
 /// Use the methods of this class to configure specific properties of a [ContinuousRectangleBorder].
-class ContinuousRectangleBorderUtility<T extends Attribute> extends DtoUtility<
-    T, ContinuousRectangleBorderDto, ContinuousRectangleBorder> {
+class ContinuousRectangleBorderUtility<T extends StyleElement>
+    extends DtoUtility<T, ContinuousRectangleBorderDto,
+        ContinuousRectangleBorder> {
   /// Utility for defining [ContinuousRectangleBorderDto.borderRadius]
   late final borderRadius =
       BorderRadiusGeometryUtility((v) => only(borderRadius: v));
@@ -391,7 +392,7 @@ mixin _$CircleBorderDto on Mixable<CircleBorder> {
 ///
 /// This class provides methods to set individual properties of a [CircleBorder].
 /// Use the methods of this class to configure specific properties of a [CircleBorder].
-class CircleBorderUtility<T extends Attribute>
+class CircleBorderUtility<T extends StyleElement>
     extends DtoUtility<T, CircleBorderDto, CircleBorder> {
   /// Utility for defining [CircleBorderDto.side]
   late final side = BorderSideUtility((v) => only(side: v));
@@ -512,7 +513,7 @@ mixin _$StarBorderDto on Mixable<StarBorder> {
 ///
 /// This class provides methods to set individual properties of a [StarBorder].
 /// Use the methods of this class to configure specific properties of a [StarBorder].
-class StarBorderUtility<T extends Attribute>
+class StarBorderUtility<T extends StyleElement>
     extends DtoUtility<T, StarBorderDto, StarBorder> {
   /// Utility for defining [StarBorderDto.side]
   late final side = BorderSideUtility((v) => only(side: v));
@@ -667,7 +668,7 @@ mixin _$LinearBorderDto on Mixable<LinearBorder> {
 ///
 /// This class provides methods to set individual properties of a [LinearBorder].
 /// Use the methods of this class to configure specific properties of a [LinearBorder].
-class LinearBorderUtility<T extends Attribute>
+class LinearBorderUtility<T extends StyleElement>
     extends DtoUtility<T, LinearBorderDto, LinearBorder> {
   /// Utility for defining [LinearBorderDto.side]
   late final side = BorderSideUtility((v) => only(side: v));
@@ -797,7 +798,7 @@ mixin _$LinearBorderEdgeDto on Mixable<LinearBorderEdge> {
 ///
 /// This class provides methods to set individual properties of a [LinearBorderEdge].
 /// Use the methods of this class to configure specific properties of a [LinearBorderEdge].
-class LinearBorderEdgeUtility<T extends Attribute>
+class LinearBorderEdgeUtility<T extends StyleElement>
     extends DtoUtility<T, LinearBorderEdgeDto, LinearBorderEdge> {
   /// Utility for defining [LinearBorderEdgeDto.size]
   late final size = DoubleUtility((v) => only(size: v));
@@ -900,7 +901,7 @@ mixin _$StadiumBorderDto on Mixable<StadiumBorder> {
 ///
 /// This class provides methods to set individual properties of a [StadiumBorder].
 /// Use the methods of this class to configure specific properties of a [StadiumBorder].
-class StadiumBorderUtility<T extends Attribute>
+class StadiumBorderUtility<T extends StyleElement>
     extends DtoUtility<T, StadiumBorderDto, StadiumBorder> {
   /// Utility for defining [StadiumBorderDto.side]
   late final side = BorderSideUtility((v) => only(side: v));

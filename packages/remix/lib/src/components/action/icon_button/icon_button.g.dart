@@ -205,7 +205,7 @@ class IconButtonSpecAttribute extends SpecAttribute<IconButtonSpec>
 ///
 /// This class provides methods to set individual properties of a [IconButtonSpec].
 /// Use the methods of this class to configure specific properties of a [IconButtonSpec].
-class IconButtonSpecUtility<T extends Attribute>
+class IconButtonSpecUtility<T extends StyleElement>
     extends SpecUtility<T, IconButtonSpecAttribute> {
   /// Utility for defining [IconButtonSpecAttribute.container]
   late final container = BoxSpecUtility((v) => only(container: v));

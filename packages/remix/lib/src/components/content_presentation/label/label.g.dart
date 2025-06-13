@@ -202,7 +202,7 @@ class LabelSpecAttribute extends SpecAttribute<LabelSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [LabelSpec].
 /// Use the methods of this class to configure specific properties of a [LabelSpec].
-class LabelSpecUtility<T extends Attribute>
+class LabelSpecUtility<T extends StyleElement>
     extends SpecUtility<T, LabelSpecAttribute> {
   /// Utility for defining [LabelSpecAttribute.spacing]
   late final spacing = DoubleUtility((v) => only(spacing: v));

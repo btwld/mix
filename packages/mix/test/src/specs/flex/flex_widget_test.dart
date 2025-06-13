@@ -293,7 +293,7 @@ void main() {
   );
 
   testWidgets(
-    'StyledRow should apply modifiers only once',
+    'HBox should apply modifiers only once',
     (tester) async {
       await tester.pumpMaterialApp(
         VBox(
@@ -315,10 +315,10 @@ void main() {
   );
 
   testWidgets(
-    'StyledColumn should apply modifiers only once',
+    'VBox should apply modifiers only once',
     (tester) async {
       await tester.pumpMaterialApp(
-        StyledColumn(
+        VBox(
           style: Style(
             $flex.gap(10),
             $with.align(),
@@ -337,10 +337,10 @@ void main() {
   );
 
   testWidgets(
-    'StyledFlex should apply modifiers only once',
+    'FlexBox should apply modifiers only once',
     (tester) async {
       await tester.pumpMaterialApp(
-        StyledFlex(
+        FlexBox(
           direction: Axis.horizontal,
           style: Style(
             $flex.gap(10),

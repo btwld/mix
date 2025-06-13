@@ -329,7 +329,7 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [TextSpec].
 /// Use the methods of this class to configure specific properties of a [TextSpec].
-class TextSpecUtility<T extends Attribute>
+class TextSpecUtility<T extends StyleElement>
     extends SpecUtility<T, TextSpecAttribute> {
   /// Utility for defining [TextSpecAttribute.overflow]
   late final overflow = TextOverflowUtility((v) => only(overflow: v));

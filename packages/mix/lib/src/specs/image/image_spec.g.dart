@@ -278,7 +278,7 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [ImageSpec].
 /// Use the methods of this class to configure specific properties of a [ImageSpec].
-class ImageSpecUtility<T extends Attribute>
+class ImageSpecUtility<T extends StyleElement>
     extends SpecUtility<T, ImageSpecAttribute> {
   /// Utility for defining [ImageSpecAttribute.width]
   late final width = DoubleUtility((v) => only(width: v));

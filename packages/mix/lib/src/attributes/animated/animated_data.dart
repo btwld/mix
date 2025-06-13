@@ -1,5 +1,5 @@
 import 'package:flutter/animation.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 import '../../internal/constants.dart';
 import 'animated_data_dto.dart';
@@ -13,7 +13,7 @@ class AnimatedData {
   final VoidCallback? _onEnd;
   final Curve? _curve;
   final Duration? _duration;
-  
+
   /// Creates animation data with the specified parameters.
   const AnimatedData({
     required Duration? duration,

@@ -308,7 +308,7 @@ void main() {
     test('fluent behavior', () {
       final flexBox = FlexBoxSpecUtility.self;
 
-      final util = flexBox.chain
+      final util = flexBox
         ..box.alignment.center()
         ..box.padding(8)
         ..flex.mainAxisAlignment.center()
@@ -394,7 +394,7 @@ void main() {
     test('Mutate behavior and not on same utility', () {
       final flexBox = FlexBoxSpecUtility.self;
 
-      final flexBoxValue = flexBox.chain;
+      final flexBoxValue = flexBox;
       flexBoxValue
         ..box.padding(10)
         ..box.color.red()

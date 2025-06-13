@@ -220,7 +220,7 @@ class RadioSpecAttribute extends SpecAttribute<RadioSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [RadioSpec].
 /// Use the methods of this class to configure specific properties of a [RadioSpec].
-class RadioSpecUtility<T extends Attribute>
+class RadioSpecUtility<T extends StyleElement>
     extends SpecUtility<T, RadioSpecAttribute> {
   /// Utility for defining [RadioSpecAttribute.indicatorContainer]
   late final indicatorContainer =

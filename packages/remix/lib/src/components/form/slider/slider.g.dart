@@ -214,7 +214,7 @@ class SliderSpecAttribute extends SpecAttribute<SliderSpec>
 ///
 /// This class provides methods to set individual properties of a [SliderSpec].
 /// Use the methods of this class to configure specific properties of a [SliderSpec].
-class SliderSpecUtility<T extends Attribute>
+class SliderSpecUtility<T extends StyleElement>
     extends SpecUtility<T, SliderSpecAttribute> {
   /// Utility for defining [SliderSpecAttribute.thumb]
   late final thumb = BoxSpecUtility((v) => only(thumb: v));

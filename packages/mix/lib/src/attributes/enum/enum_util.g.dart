@@ -9,631 +9,633 @@ part of 'enum_util.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 /// {@template vertical_direction_utility}
-/// A utility class for creating [Attribute] instances from [VerticalDirection] values.
+/// A utility class for creating [StyleElement] instances from [VerticalDirection] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [Attribute] instances
+/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [VerticalDirection] values.
 /// {@endtemplate}
-mixin _$VerticalDirectionUtility<T extends Attribute>
+mixin _$VerticalDirectionUtility<T extends StyleElement>
     on MixUtility<T, VerticalDirection> {
-  /// Creates an [Attribute] instance with the specified VerticalDirection value.
+  /// Creates a [StyleElement] instance with the specified VerticalDirection value.
   T call(VerticalDirection value) => builder(value);
 
-  /// Creates an [Attribute] instance with [VerticalDirection.up] value.
+  /// Creates a [StyleElement] instance with [VerticalDirection.up] value.
   T up() => builder(VerticalDirection.up);
 
-  /// Creates an [Attribute] instance with [VerticalDirection.down] value.
+  /// Creates a [StyleElement] instance with [VerticalDirection.down] value.
   T down() => builder(VerticalDirection.down);
 }
 
 /// {@template border_style_utility}
-/// A utility class for creating [Attribute] instances from [BorderStyle] values.
+/// A utility class for creating [StyleElement] instances from [BorderStyle] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [Attribute] instances
+/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [BorderStyle] values.
 /// {@endtemplate}
-mixin _$BorderStyleUtility<T extends Attribute> on MixUtility<T, BorderStyle> {
-  /// Creates an [Attribute] instance with the specified BorderStyle value.
+mixin _$BorderStyleUtility<T extends StyleElement>
+    on MixUtility<T, BorderStyle> {
+  /// Creates a [StyleElement] instance with the specified BorderStyle value.
   T call(BorderStyle value) => builder(value);
 
-  /// Creates an [Attribute] instance with [BorderStyle.none] value.
+  /// Creates a [StyleElement] instance with [BorderStyle.none] value.
   T none() => builder(BorderStyle.none);
 
-  /// Creates an [Attribute] instance with [BorderStyle.solid] value.
+  /// Creates a [StyleElement] instance with [BorderStyle.solid] value.
   T solid() => builder(BorderStyle.solid);
 }
 
 /// {@template clip_utility}
-/// A utility class for creating [Attribute] instances from [Clip] values.
+/// A utility class for creating [StyleElement] instances from [Clip] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [Attribute] instances
+/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [Clip] values.
 /// {@endtemplate}
-mixin _$ClipUtility<T extends Attribute> on MixUtility<T, Clip> {
-  /// Creates an [Attribute] instance with the specified Clip value.
+mixin _$ClipUtility<T extends StyleElement> on MixUtility<T, Clip> {
+  /// Creates a [StyleElement] instance with the specified Clip value.
   T call(Clip value) => builder(value);
 
-  /// Creates an [Attribute] instance with [Clip.none] value.
+  /// Creates a [StyleElement] instance with [Clip.none] value.
   T none() => builder(Clip.none);
 
-  /// Creates an [Attribute] instance with [Clip.hardEdge] value.
+  /// Creates a [StyleElement] instance with [Clip.hardEdge] value.
   T hardEdge() => builder(Clip.hardEdge);
 
-  /// Creates an [Attribute] instance with [Clip.antiAlias] value.
+  /// Creates a [StyleElement] instance with [Clip.antiAlias] value.
   T antiAlias() => builder(Clip.antiAlias);
 
-  /// Creates an [Attribute] instance with [Clip.antiAliasWithSaveLayer] value.
+  /// Creates a [StyleElement] instance with [Clip.antiAliasWithSaveLayer] value.
   T antiAliasWithSaveLayer() => builder(Clip.antiAliasWithSaveLayer);
 }
 
 /// {@template axis_utility}
-/// A utility class for creating [Attribute] instances from [Axis] values.
+/// A utility class for creating [StyleElement] instances from [Axis] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [Attribute] instances
+/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [Axis] values.
 /// {@endtemplate}
-mixin _$AxisUtility<T extends Attribute> on MixUtility<T, Axis> {
-  /// Creates an [Attribute] instance with the specified Axis value.
+mixin _$AxisUtility<T extends StyleElement> on MixUtility<T, Axis> {
+  /// Creates a [StyleElement] instance with the specified Axis value.
   T call(Axis value) => builder(value);
 
-  /// Creates an [Attribute] instance with [Axis.horizontal] value.
+  /// Creates a [StyleElement] instance with [Axis.horizontal] value.
   T horizontal() => builder(Axis.horizontal);
 
-  /// Creates an [Attribute] instance with [Axis.vertical] value.
+  /// Creates a [StyleElement] instance with [Axis.vertical] value.
   T vertical() => builder(Axis.vertical);
 }
 
 /// {@template flex_fit_utility}
-/// A utility class for creating [Attribute] instances from [FlexFit] values.
+/// A utility class for creating [StyleElement] instances from [FlexFit] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [Attribute] instances
+/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [FlexFit] values.
 /// {@endtemplate}
-mixin _$FlexFitUtility<T extends Attribute> on MixUtility<T, FlexFit> {
-  /// Creates an [Attribute] instance with the specified FlexFit value.
+mixin _$FlexFitUtility<T extends StyleElement> on MixUtility<T, FlexFit> {
+  /// Creates a [StyleElement] instance with the specified FlexFit value.
   T call(FlexFit value) => builder(value);
 
-  /// Creates an [Attribute] instance with [FlexFit.tight] value.
+  /// Creates a [StyleElement] instance with [FlexFit.tight] value.
   T tight() => builder(FlexFit.tight);
 
-  /// Creates an [Attribute] instance with [FlexFit.loose] value.
+  /// Creates a [StyleElement] instance with [FlexFit.loose] value.
   T loose() => builder(FlexFit.loose);
 }
 
 /// {@template stack_fit_utility}
-/// A utility class for creating [Attribute] instances from [StackFit] values.
+/// A utility class for creating [StyleElement] instances from [StackFit] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [Attribute] instances
+/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [StackFit] values.
 /// {@endtemplate}
-mixin _$StackFitUtility<T extends Attribute> on MixUtility<T, StackFit> {
-  /// Creates an [Attribute] instance with the specified StackFit value.
+mixin _$StackFitUtility<T extends StyleElement> on MixUtility<T, StackFit> {
+  /// Creates a [StyleElement] instance with the specified StackFit value.
   T call(StackFit value) => builder(value);
 
-  /// Creates an [Attribute] instance with [StackFit.loose] value.
+  /// Creates a [StyleElement] instance with [StackFit.loose] value.
   T loose() => builder(StackFit.loose);
 
-  /// Creates an [Attribute] instance with [StackFit.expand] value.
+  /// Creates a [StyleElement] instance with [StackFit.expand] value.
   T expand() => builder(StackFit.expand);
 
-  /// Creates an [Attribute] instance with [StackFit.passthrough] value.
+  /// Creates a [StyleElement] instance with [StackFit.passthrough] value.
   T passthrough() => builder(StackFit.passthrough);
 }
 
 /// {@template image_repeat_utility}
-/// A utility class for creating [Attribute] instances from [ImageRepeat] values.
+/// A utility class for creating [StyleElement] instances from [ImageRepeat] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [Attribute] instances
+/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [ImageRepeat] values.
 /// {@endtemplate}
-mixin _$ImageRepeatUtility<T extends Attribute> on MixUtility<T, ImageRepeat> {
-  /// Creates an [Attribute] instance with [ImageRepeat.repeat] value.
+mixin _$ImageRepeatUtility<T extends StyleElement>
+    on MixUtility<T, ImageRepeat> {
+  /// Creates a [StyleElement] instance with [ImageRepeat.repeat] value.
   T repeat() => builder(ImageRepeat.repeat);
 
-  /// Creates an [Attribute] instance with [ImageRepeat.repeatX] value.
+  /// Creates a [StyleElement] instance with [ImageRepeat.repeatX] value.
   T repeatX() => builder(ImageRepeat.repeatX);
 
-  /// Creates an [Attribute] instance with [ImageRepeat.repeatY] value.
+  /// Creates a [StyleElement] instance with [ImageRepeat.repeatY] value.
   T repeatY() => builder(ImageRepeat.repeatY);
 
-  /// Creates an [Attribute] instance with [ImageRepeat.noRepeat] value.
+  /// Creates a [StyleElement] instance with [ImageRepeat.noRepeat] value.
   T noRepeat() => builder(ImageRepeat.noRepeat);
 }
 
 /// {@template text_direction_utility}
-/// A utility class for creating [Attribute] instances from [TextDirection] values.
+/// A utility class for creating [StyleElement] instances from [TextDirection] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [Attribute] instances
+/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextDirection] values.
 /// {@endtemplate}
-mixin _$TextDirectionUtility<T extends Attribute>
+mixin _$TextDirectionUtility<T extends StyleElement>
     on MixUtility<T, TextDirection> {
-  /// Creates an [Attribute] instance with the specified TextDirection value.
+  /// Creates a [StyleElement] instance with the specified TextDirection value.
   T call(TextDirection value) => builder(value);
 
-  /// Creates an [Attribute] instance with [TextDirection.rtl] value.
+  /// Creates a [StyleElement] instance with [TextDirection.rtl] value.
   T rtl() => builder(TextDirection.rtl);
 
-  /// Creates an [Attribute] instance with [TextDirection.ltr] value.
+  /// Creates a [StyleElement] instance with [TextDirection.ltr] value.
   T ltr() => builder(TextDirection.ltr);
 }
 
 /// {@template text_leading_distribution_utility}
-/// A utility class for creating [Attribute] instances from [TextLeadingDistribution] values.
+/// A utility class for creating [StyleElement] instances from [TextLeadingDistribution] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [Attribute] instances
+/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextLeadingDistribution] values.
 /// {@endtemplate}
-mixin _$TextLeadingDistributionUtility<T extends Attribute>
+mixin _$TextLeadingDistributionUtility<T extends StyleElement>
     on MixUtility<T, TextLeadingDistribution> {
-  /// Creates an [Attribute] instance with the specified TextLeadingDistribution value.
+  /// Creates a [StyleElement] instance with the specified TextLeadingDistribution value.
   T call(TextLeadingDistribution value) => builder(value);
 
-  /// Creates an [Attribute] instance with [TextLeadingDistribution.proportional] value.
+  /// Creates a [StyleElement] instance with [TextLeadingDistribution.proportional] value.
   T proportional() => builder(TextLeadingDistribution.proportional);
 
-  /// Creates an [Attribute] instance with [TextLeadingDistribution.even] value.
+  /// Creates a [StyleElement] instance with [TextLeadingDistribution.even] value.
   T even() => builder(TextLeadingDistribution.even);
 }
 
 /// {@template tile_mode_utility}
-/// A utility class for creating [Attribute] instances from [TileMode] values.
+/// A utility class for creating [StyleElement] instances from [TileMode] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [Attribute] instances
+/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TileMode] values.
 /// {@endtemplate}
-mixin _$TileModeUtility<T extends Attribute> on MixUtility<T, TileMode> {
-  /// Creates an [Attribute] instance with the specified TileMode value.
+mixin _$TileModeUtility<T extends StyleElement> on MixUtility<T, TileMode> {
+  /// Creates a [StyleElement] instance with the specified TileMode value.
   T call(TileMode value) => builder(value);
 
-  /// Creates an [Attribute] instance with [TileMode.clamp] value.
+  /// Creates a [StyleElement] instance with [TileMode.clamp] value.
   T clamp() => builder(TileMode.clamp);
 
-  /// Creates an [Attribute] instance with [TileMode.repeated] value.
+  /// Creates a [StyleElement] instance with [TileMode.repeated] value.
   T repeated() => builder(TileMode.repeated);
 
-  /// Creates an [Attribute] instance with [TileMode.mirror] value.
+  /// Creates a [StyleElement] instance with [TileMode.mirror] value.
   T mirror() => builder(TileMode.mirror);
 
-  /// Creates an [Attribute] instance with [TileMode.decal] value.
+  /// Creates a [StyleElement] instance with [TileMode.decal] value.
   T decal() => builder(TileMode.decal);
 }
 
 /// {@template main_axis_alignment_utility}
-/// A utility class for creating [Attribute] instances from [MainAxisAlignment] values.
+/// A utility class for creating [StyleElement] instances from [MainAxisAlignment] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [Attribute] instances
+/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [MainAxisAlignment] values.
 /// {@endtemplate}
-mixin _$MainAxisAlignmentUtility<T extends Attribute>
+mixin _$MainAxisAlignmentUtility<T extends StyleElement>
     on MixUtility<T, MainAxisAlignment> {
-  /// Creates an [Attribute] instance with the specified MainAxisAlignment value.
+  /// Creates a [StyleElement] instance with the specified MainAxisAlignment value.
   T call(MainAxisAlignment value) => builder(value);
 
-  /// Creates an [Attribute] instance with [MainAxisAlignment.start] value.
+  /// Creates a [StyleElement] instance with [MainAxisAlignment.start] value.
   T start() => builder(MainAxisAlignment.start);
 
-  /// Creates an [Attribute] instance with [MainAxisAlignment.end] value.
+  /// Creates a [StyleElement] instance with [MainAxisAlignment.end] value.
   T end() => builder(MainAxisAlignment.end);
 
-  /// Creates an [Attribute] instance with [MainAxisAlignment.center] value.
+  /// Creates a [StyleElement] instance with [MainAxisAlignment.center] value.
   T center() => builder(MainAxisAlignment.center);
 
-  /// Creates an [Attribute] instance with [MainAxisAlignment.spaceBetween] value.
+  /// Creates a [StyleElement] instance with [MainAxisAlignment.spaceBetween] value.
   T spaceBetween() => builder(MainAxisAlignment.spaceBetween);
 
-  /// Creates an [Attribute] instance with [MainAxisAlignment.spaceAround] value.
+  /// Creates a [StyleElement] instance with [MainAxisAlignment.spaceAround] value.
   T spaceAround() => builder(MainAxisAlignment.spaceAround);
 
-  /// Creates an [Attribute] instance with [MainAxisAlignment.spaceEvenly] value.
+  /// Creates a [StyleElement] instance with [MainAxisAlignment.spaceEvenly] value.
   T spaceEvenly() => builder(MainAxisAlignment.spaceEvenly);
 }
 
 /// {@template cross_axis_alignment_utility}
-/// A utility class for creating [Attribute] instances from [CrossAxisAlignment] values.
+/// A utility class for creating [StyleElement] instances from [CrossAxisAlignment] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [Attribute] instances
+/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [CrossAxisAlignment] values.
 /// {@endtemplate}
-mixin _$CrossAxisAlignmentUtility<T extends Attribute>
+mixin _$CrossAxisAlignmentUtility<T extends StyleElement>
     on MixUtility<T, CrossAxisAlignment> {
-  /// Creates an [Attribute] instance with the specified CrossAxisAlignment value.
+  /// Creates a [StyleElement] instance with the specified CrossAxisAlignment value.
   T call(CrossAxisAlignment value) => builder(value);
 
-  /// Creates an [Attribute] instance with [CrossAxisAlignment.start] value.
+  /// Creates a [StyleElement] instance with [CrossAxisAlignment.start] value.
   T start() => builder(CrossAxisAlignment.start);
 
-  /// Creates an [Attribute] instance with [CrossAxisAlignment.end] value.
+  /// Creates a [StyleElement] instance with [CrossAxisAlignment.end] value.
   T end() => builder(CrossAxisAlignment.end);
 
-  /// Creates an [Attribute] instance with [CrossAxisAlignment.center] value.
+  /// Creates a [StyleElement] instance with [CrossAxisAlignment.center] value.
   T center() => builder(CrossAxisAlignment.center);
 
-  /// Creates an [Attribute] instance with [CrossAxisAlignment.stretch] value.
+  /// Creates a [StyleElement] instance with [CrossAxisAlignment.stretch] value.
   T stretch() => builder(CrossAxisAlignment.stretch);
 
-  /// Creates an [Attribute] instance with [CrossAxisAlignment.baseline] value.
+  /// Creates a [StyleElement] instance with [CrossAxisAlignment.baseline] value.
   T baseline() => builder(CrossAxisAlignment.baseline);
 }
 
 /// {@template main_axis_size_utility}
-/// A utility class for creating [Attribute] instances from [MainAxisSize] values.
+/// A utility class for creating [StyleElement] instances from [MainAxisSize] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [Attribute] instances
+/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [MainAxisSize] values.
 /// {@endtemplate}
-mixin _$MainAxisSizeUtility<T extends Attribute>
+mixin _$MainAxisSizeUtility<T extends StyleElement>
     on MixUtility<T, MainAxisSize> {
-  /// Creates an [Attribute] instance with the specified MainAxisSize value.
+  /// Creates a [StyleElement] instance with the specified MainAxisSize value.
   T call(MainAxisSize value) => builder(value);
 
-  /// Creates an [Attribute] instance with [MainAxisSize.min] value.
+  /// Creates a [StyleElement] instance with [MainAxisSize.min] value.
   T min() => builder(MainAxisSize.min);
 
-  /// Creates an [Attribute] instance with [MainAxisSize.max] value.
+  /// Creates a [StyleElement] instance with [MainAxisSize.max] value.
   T max() => builder(MainAxisSize.max);
 }
 
 /// {@template box_fit_utility}
-/// A utility class for creating [Attribute] instances from [BoxFit] values.
+/// A utility class for creating [StyleElement] instances from [BoxFit] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [Attribute] instances
+/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [BoxFit] values.
 /// {@endtemplate}
-mixin _$BoxFitUtility<T extends Attribute> on MixUtility<T, BoxFit> {
-  /// Creates an [Attribute] instance with the specified BoxFit value.
+mixin _$BoxFitUtility<T extends StyleElement> on MixUtility<T, BoxFit> {
+  /// Creates a [StyleElement] instance with the specified BoxFit value.
   T call(BoxFit value) => builder(value);
 
-  /// Creates an [Attribute] instance with [BoxFit.fill] value.
+  /// Creates a [StyleElement] instance with [BoxFit.fill] value.
   T fill() => builder(BoxFit.fill);
 
-  /// Creates an [Attribute] instance with [BoxFit.contain] value.
+  /// Creates a [StyleElement] instance with [BoxFit.contain] value.
   T contain() => builder(BoxFit.contain);
 
-  /// Creates an [Attribute] instance with [BoxFit.cover] value.
+  /// Creates a [StyleElement] instance with [BoxFit.cover] value.
   T cover() => builder(BoxFit.cover);
 
-  /// Creates an [Attribute] instance with [BoxFit.fitWidth] value.
+  /// Creates a [StyleElement] instance with [BoxFit.fitWidth] value.
   T fitWidth() => builder(BoxFit.fitWidth);
 
-  /// Creates an [Attribute] instance with [BoxFit.fitHeight] value.
+  /// Creates a [StyleElement] instance with [BoxFit.fitHeight] value.
   T fitHeight() => builder(BoxFit.fitHeight);
 
-  /// Creates an [Attribute] instance with [BoxFit.none] value.
+  /// Creates a [StyleElement] instance with [BoxFit.none] value.
   T none() => builder(BoxFit.none);
 
-  /// Creates an [Attribute] instance with [BoxFit.scaleDown] value.
+  /// Creates a [StyleElement] instance with [BoxFit.scaleDown] value.
   T scaleDown() => builder(BoxFit.scaleDown);
 }
 
 /// {@template blend_mode_utility}
-/// A utility class for creating [Attribute] instances from [BlendMode] values.
+/// A utility class for creating [StyleElement] instances from [BlendMode] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [Attribute] instances
+/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [BlendMode] values.
 /// {@endtemplate}
-mixin _$BlendModeUtility<T extends Attribute> on MixUtility<T, BlendMode> {
-  /// Creates an [Attribute] instance with the specified BlendMode value.
+mixin _$BlendModeUtility<T extends StyleElement> on MixUtility<T, BlendMode> {
+  /// Creates a [StyleElement] instance with the specified BlendMode value.
   T call(BlendMode value) => builder(value);
 
-  /// Creates an [Attribute] instance with [BlendMode.clear] value.
+  /// Creates a [StyleElement] instance with [BlendMode.clear] value.
   T clear() => builder(BlendMode.clear);
 
-  /// Creates an [Attribute] instance with [BlendMode.src] value.
+  /// Creates a [StyleElement] instance with [BlendMode.src] value.
   T src() => builder(BlendMode.src);
 
-  /// Creates an [Attribute] instance with [BlendMode.dst] value.
+  /// Creates a [StyleElement] instance with [BlendMode.dst] value.
   T dst() => builder(BlendMode.dst);
 
-  /// Creates an [Attribute] instance with [BlendMode.srcOver] value.
+  /// Creates a [StyleElement] instance with [BlendMode.srcOver] value.
   T srcOver() => builder(BlendMode.srcOver);
 
-  /// Creates an [Attribute] instance with [BlendMode.dstOver] value.
+  /// Creates a [StyleElement] instance with [BlendMode.dstOver] value.
   T dstOver() => builder(BlendMode.dstOver);
 
-  /// Creates an [Attribute] instance with [BlendMode.srcIn] value.
+  /// Creates a [StyleElement] instance with [BlendMode.srcIn] value.
   T srcIn() => builder(BlendMode.srcIn);
 
-  /// Creates an [Attribute] instance with [BlendMode.dstIn] value.
+  /// Creates a [StyleElement] instance with [BlendMode.dstIn] value.
   T dstIn() => builder(BlendMode.dstIn);
 
-  /// Creates an [Attribute] instance with [BlendMode.srcOut] value.
+  /// Creates a [StyleElement] instance with [BlendMode.srcOut] value.
   T srcOut() => builder(BlendMode.srcOut);
 
-  /// Creates an [Attribute] instance with [BlendMode.dstOut] value.
+  /// Creates a [StyleElement] instance with [BlendMode.dstOut] value.
   T dstOut() => builder(BlendMode.dstOut);
 
-  /// Creates an [Attribute] instance with [BlendMode.srcATop] value.
+  /// Creates a [StyleElement] instance with [BlendMode.srcATop] value.
   T srcATop() => builder(BlendMode.srcATop);
 
-  /// Creates an [Attribute] instance with [BlendMode.dstATop] value.
+  /// Creates a [StyleElement] instance with [BlendMode.dstATop] value.
   T dstATop() => builder(BlendMode.dstATop);
 
-  /// Creates an [Attribute] instance with [BlendMode.xor] value.
+  /// Creates a [StyleElement] instance with [BlendMode.xor] value.
   T xor() => builder(BlendMode.xor);
 
-  /// Creates an [Attribute] instance with [BlendMode.plus] value.
+  /// Creates a [StyleElement] instance with [BlendMode.plus] value.
   T plus() => builder(BlendMode.plus);
 
-  /// Creates an [Attribute] instance with [BlendMode.modulate] value.
+  /// Creates a [StyleElement] instance with [BlendMode.modulate] value.
   T modulate() => builder(BlendMode.modulate);
 
-  /// Creates an [Attribute] instance with [BlendMode.screen] value.
+  /// Creates a [StyleElement] instance with [BlendMode.screen] value.
   T screen() => builder(BlendMode.screen);
 
-  /// Creates an [Attribute] instance with [BlendMode.overlay] value.
+  /// Creates a [StyleElement] instance with [BlendMode.overlay] value.
   T overlay() => builder(BlendMode.overlay);
 
-  /// Creates an [Attribute] instance with [BlendMode.darken] value.
+  /// Creates a [StyleElement] instance with [BlendMode.darken] value.
   T darken() => builder(BlendMode.darken);
 
-  /// Creates an [Attribute] instance with [BlendMode.lighten] value.
+  /// Creates a [StyleElement] instance with [BlendMode.lighten] value.
   T lighten() => builder(BlendMode.lighten);
 
-  /// Creates an [Attribute] instance with [BlendMode.colorDodge] value.
+  /// Creates a [StyleElement] instance with [BlendMode.colorDodge] value.
   T colorDodge() => builder(BlendMode.colorDodge);
 
-  /// Creates an [Attribute] instance with [BlendMode.colorBurn] value.
+  /// Creates a [StyleElement] instance with [BlendMode.colorBurn] value.
   T colorBurn() => builder(BlendMode.colorBurn);
 
-  /// Creates an [Attribute] instance with [BlendMode.hardLight] value.
+  /// Creates a [StyleElement] instance with [BlendMode.hardLight] value.
   T hardLight() => builder(BlendMode.hardLight);
 
-  /// Creates an [Attribute] instance with [BlendMode.softLight] value.
+  /// Creates a [StyleElement] instance with [BlendMode.softLight] value.
   T softLight() => builder(BlendMode.softLight);
 
-  /// Creates an [Attribute] instance with [BlendMode.difference] value.
+  /// Creates a [StyleElement] instance with [BlendMode.difference] value.
   T difference() => builder(BlendMode.difference);
 
-  /// Creates an [Attribute] instance with [BlendMode.exclusion] value.
+  /// Creates a [StyleElement] instance with [BlendMode.exclusion] value.
   T exclusion() => builder(BlendMode.exclusion);
 
-  /// Creates an [Attribute] instance with [BlendMode.multiply] value.
+  /// Creates a [StyleElement] instance with [BlendMode.multiply] value.
   T multiply() => builder(BlendMode.multiply);
 
-  /// Creates an [Attribute] instance with [BlendMode.hue] value.
+  /// Creates a [StyleElement] instance with [BlendMode.hue] value.
   T hue() => builder(BlendMode.hue);
 
-  /// Creates an [Attribute] instance with [BlendMode.saturation] value.
+  /// Creates a [StyleElement] instance with [BlendMode.saturation] value.
   T saturation() => builder(BlendMode.saturation);
 
-  /// Creates an [Attribute] instance with [BlendMode.color] value.
+  /// Creates a [StyleElement] instance with [BlendMode.color] value.
   T color() => builder(BlendMode.color);
 
-  /// Creates an [Attribute] instance with [BlendMode.luminosity] value.
+  /// Creates a [StyleElement] instance with [BlendMode.luminosity] value.
   T luminosity() => builder(BlendMode.luminosity);
 }
 
 /// {@template box_shape_utility}
-/// A utility class for creating [Attribute] instances from [BoxShape] values.
+/// A utility class for creating [StyleElement] instances from [BoxShape] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [Attribute] instances
+/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [BoxShape] values.
 /// {@endtemplate}
-mixin _$BoxShapeUtility<T extends Attribute> on MixUtility<T, BoxShape> {
-  /// Creates an [Attribute] instance with the specified BoxShape value.
+mixin _$BoxShapeUtility<T extends StyleElement> on MixUtility<T, BoxShape> {
+  /// Creates a [StyleElement] instance with the specified BoxShape value.
   T call(BoxShape value) => builder(value);
 
-  /// Creates an [Attribute] instance with [BoxShape.rectangle] value.
+  /// Creates a [StyleElement] instance with [BoxShape.rectangle] value.
   T rectangle() => builder(BoxShape.rectangle);
 
-  /// Creates an [Attribute] instance with [BoxShape.circle] value.
+  /// Creates a [StyleElement] instance with [BoxShape.circle] value.
   T circle() => builder(BoxShape.circle);
 }
 
 /// {@template font_style_utility}
-/// A utility class for creating [Attribute] instances from [FontStyle] values.
+/// A utility class for creating [StyleElement] instances from [FontStyle] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [Attribute] instances
+/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [FontStyle] values.
 /// {@endtemplate}
-mixin _$FontStyleUtility<T extends Attribute> on MixUtility<T, FontStyle> {
-  /// Creates an [Attribute] instance with the specified FontStyle value.
+mixin _$FontStyleUtility<T extends StyleElement> on MixUtility<T, FontStyle> {
+  /// Creates a [StyleElement] instance with the specified FontStyle value.
   T call(FontStyle value) => builder(value);
 
-  /// Creates an [Attribute] instance with [FontStyle.normal] value.
+  /// Creates a [StyleElement] instance with [FontStyle.normal] value.
   T normal() => builder(FontStyle.normal);
 
-  /// Creates an [Attribute] instance with [FontStyle.italic] value.
+  /// Creates a [StyleElement] instance with [FontStyle.italic] value.
   T italic() => builder(FontStyle.italic);
 }
 
 /// {@template text_decoration_style_utility}
-/// A utility class for creating [Attribute] instances from [TextDecorationStyle] values.
+/// A utility class for creating [StyleElement] instances from [TextDecorationStyle] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [Attribute] instances
+/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextDecorationStyle] values.
 /// {@endtemplate}
-mixin _$TextDecorationStyleUtility<T extends Attribute>
+mixin _$TextDecorationStyleUtility<T extends StyleElement>
     on MixUtility<T, TextDecorationStyle> {
-  /// Creates an [Attribute] instance with the specified TextDecorationStyle value.
+  /// Creates a [StyleElement] instance with the specified TextDecorationStyle value.
   T call(TextDecorationStyle value) => builder(value);
 
-  /// Creates an [Attribute] instance with [TextDecorationStyle.solid] value.
+  /// Creates a [StyleElement] instance with [TextDecorationStyle.solid] value.
   T solid() => builder(TextDecorationStyle.solid);
 
-  /// Creates an [Attribute] instance with [TextDecorationStyle.double] value.
+  /// Creates a [StyleElement] instance with [TextDecorationStyle.double] value.
   T double() => builder(TextDecorationStyle.double);
 
-  /// Creates an [Attribute] instance with [TextDecorationStyle.dotted] value.
+  /// Creates a [StyleElement] instance with [TextDecorationStyle.dotted] value.
   T dotted() => builder(TextDecorationStyle.dotted);
 
-  /// Creates an [Attribute] instance with [TextDecorationStyle.dashed] value.
+  /// Creates a [StyleElement] instance with [TextDecorationStyle.dashed] value.
   T dashed() => builder(TextDecorationStyle.dashed);
 
-  /// Creates an [Attribute] instance with [TextDecorationStyle.wavy] value.
+  /// Creates a [StyleElement] instance with [TextDecorationStyle.wavy] value.
   T wavy() => builder(TextDecorationStyle.wavy);
 }
 
 /// {@template text_baseline_utility}
-/// A utility class for creating [Attribute] instances from [TextBaseline] values.
+/// A utility class for creating [StyleElement] instances from [TextBaseline] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [Attribute] instances
+/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextBaseline] values.
 /// {@endtemplate}
-mixin _$TextBaselineUtility<T extends Attribute>
+mixin _$TextBaselineUtility<T extends StyleElement>
     on MixUtility<T, TextBaseline> {
-  /// Creates an [Attribute] instance with the specified TextBaseline value.
+  /// Creates a [StyleElement] instance with the specified TextBaseline value.
   T call(TextBaseline value) => builder(value);
 
-  /// Creates an [Attribute] instance with [TextBaseline.alphabetic] value.
+  /// Creates a [StyleElement] instance with [TextBaseline.alphabetic] value.
   T alphabetic() => builder(TextBaseline.alphabetic);
 
-  /// Creates an [Attribute] instance with [TextBaseline.ideographic] value.
+  /// Creates a [StyleElement] instance with [TextBaseline.ideographic] value.
   T ideographic() => builder(TextBaseline.ideographic);
 }
 
 /// {@template text_overflow_utility}
-/// A utility class for creating [Attribute] instances from [TextOverflow] values.
+/// A utility class for creating [StyleElement] instances from [TextOverflow] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [Attribute] instances
+/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextOverflow] values.
 /// {@endtemplate}
-mixin _$TextOverflowUtility<T extends Attribute>
+mixin _$TextOverflowUtility<T extends StyleElement>
     on MixUtility<T, TextOverflow> {
-  /// Creates an [Attribute] instance with the specified TextOverflow value.
+  /// Creates a [StyleElement] instance with the specified TextOverflow value.
   T call(TextOverflow value) => builder(value);
 
-  /// Creates an [Attribute] instance with [TextOverflow.clip] value.
+  /// Creates a [StyleElement] instance with [TextOverflow.clip] value.
   T clip() => builder(TextOverflow.clip);
 
-  /// Creates an [Attribute] instance with [TextOverflow.fade] value.
+  /// Creates a [StyleElement] instance with [TextOverflow.fade] value.
   T fade() => builder(TextOverflow.fade);
 
-  /// Creates an [Attribute] instance with [TextOverflow.ellipsis] value.
+  /// Creates a [StyleElement] instance with [TextOverflow.ellipsis] value.
   T ellipsis() => builder(TextOverflow.ellipsis);
 
-  /// Creates an [Attribute] instance with [TextOverflow.visible] value.
+  /// Creates a [StyleElement] instance with [TextOverflow.visible] value.
   T visible() => builder(TextOverflow.visible);
 }
 
 /// {@template text_width_basis_utility}
-/// A utility class for creating [Attribute] instances from [TextWidthBasis] values.
+/// A utility class for creating [StyleElement] instances from [TextWidthBasis] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [Attribute] instances
+/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextWidthBasis] values.
 /// {@endtemplate}
-mixin _$TextWidthBasisUtility<T extends Attribute>
+mixin _$TextWidthBasisUtility<T extends StyleElement>
     on MixUtility<T, TextWidthBasis> {
-  /// Creates an [Attribute] instance with the specified TextWidthBasis value.
+  /// Creates a [StyleElement] instance with the specified TextWidthBasis value.
   T call(TextWidthBasis value) => builder(value);
 
-  /// Creates an [Attribute] instance with [TextWidthBasis.parent] value.
+  /// Creates a [StyleElement] instance with [TextWidthBasis.parent] value.
   T parent() => builder(TextWidthBasis.parent);
 
-  /// Creates an [Attribute] instance with [TextWidthBasis.longestLine] value.
+  /// Creates a [StyleElement] instance with [TextWidthBasis.longestLine] value.
   T longestLine() => builder(TextWidthBasis.longestLine);
 }
 
 /// {@template text_align_utility}
-/// A utility class for creating [Attribute] instances from [TextAlign] values.
+/// A utility class for creating [StyleElement] instances from [TextAlign] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [Attribute] instances
+/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextAlign] values.
 /// {@endtemplate}
-mixin _$TextAlignUtility<T extends Attribute> on MixUtility<T, TextAlign> {
-  /// Creates an [Attribute] instance with the specified TextAlign value.
+mixin _$TextAlignUtility<T extends StyleElement> on MixUtility<T, TextAlign> {
+  /// Creates a [StyleElement] instance with the specified TextAlign value.
   T call(TextAlign value) => builder(value);
 
-  /// Creates an [Attribute] instance with [TextAlign.left] value.
+  /// Creates a [StyleElement] instance with [TextAlign.left] value.
   T left() => builder(TextAlign.left);
 
-  /// Creates an [Attribute] instance with [TextAlign.right] value.
+  /// Creates a [StyleElement] instance with [TextAlign.right] value.
   T right() => builder(TextAlign.right);
 
-  /// Creates an [Attribute] instance with [TextAlign.center] value.
+  /// Creates a [StyleElement] instance with [TextAlign.center] value.
   T center() => builder(TextAlign.center);
 
-  /// Creates an [Attribute] instance with [TextAlign.justify] value.
+  /// Creates a [StyleElement] instance with [TextAlign.justify] value.
   T justify() => builder(TextAlign.justify);
 
-  /// Creates an [Attribute] instance with [TextAlign.start] value.
+  /// Creates a [StyleElement] instance with [TextAlign.start] value.
   T start() => builder(TextAlign.start);
 
-  /// Creates an [Attribute] instance with [TextAlign.end] value.
+  /// Creates a [StyleElement] instance with [TextAlign.end] value.
   T end() => builder(TextAlign.end);
 }
 
 /// {@template filter_quality_utility}
-/// A utility class for creating [Attribute] instances from [FilterQuality] values.
+/// A utility class for creating [StyleElement] instances from [FilterQuality] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [Attribute] instances
+/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [FilterQuality] values.
 /// {@endtemplate}
-mixin _$FilterQualityUtility<T extends Attribute>
+mixin _$FilterQualityUtility<T extends StyleElement>
     on MixUtility<T, FilterQuality> {
-  /// Creates an [Attribute] instance with the specified FilterQuality value.
+  /// Creates a [StyleElement] instance with the specified FilterQuality value.
   T call(FilterQuality value) => builder(value);
 
-  /// Creates an [Attribute] instance with [FilterQuality.none] value.
+  /// Creates a [StyleElement] instance with [FilterQuality.none] value.
   T none() => builder(FilterQuality.none);
 
-  /// Creates an [Attribute] instance with [FilterQuality.low] value.
+  /// Creates a [StyleElement] instance with [FilterQuality.low] value.
   T low() => builder(FilterQuality.low);
 
-  /// Creates an [Attribute] instance with [FilterQuality.medium] value.
+  /// Creates a [StyleElement] instance with [FilterQuality.medium] value.
   T medium() => builder(FilterQuality.medium);
 
-  /// Creates an [Attribute] instance with [FilterQuality.high] value.
+  /// Creates a [StyleElement] instance with [FilterQuality.high] value.
   T high() => builder(FilterQuality.high);
 }
 
 /// {@template wrap_alignment_utility}
-/// A utility class for creating [Attribute] instances from [WrapAlignment] values.
+/// A utility class for creating [StyleElement] instances from [WrapAlignment] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [Attribute] instances
+/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [WrapAlignment] values.
 /// {@endtemplate}
-mixin _$WrapAlignmentUtility<T extends Attribute>
+mixin _$WrapAlignmentUtility<T extends StyleElement>
     on MixUtility<T, WrapAlignment> {
-  /// Creates an [Attribute] instance with the specified WrapAlignment value.
+  /// Creates a [StyleElement] instance with the specified WrapAlignment value.
   T call(WrapAlignment value) => builder(value);
 
-  /// Creates an [Attribute] instance with [WrapAlignment.start] value.
+  /// Creates a [StyleElement] instance with [WrapAlignment.start] value.
   T start() => builder(WrapAlignment.start);
 
-  /// Creates an [Attribute] instance with [WrapAlignment.end] value.
+  /// Creates a [StyleElement] instance with [WrapAlignment.end] value.
   T end() => builder(WrapAlignment.end);
 
-  /// Creates an [Attribute] instance with [WrapAlignment.center] value.
+  /// Creates a [StyleElement] instance with [WrapAlignment.center] value.
   T center() => builder(WrapAlignment.center);
 
-  /// Creates an [Attribute] instance with [WrapAlignment.spaceBetween] value.
+  /// Creates a [StyleElement] instance with [WrapAlignment.spaceBetween] value.
   T spaceBetween() => builder(WrapAlignment.spaceBetween);
 
-  /// Creates an [Attribute] instance with [WrapAlignment.spaceAround] value.
+  /// Creates a [StyleElement] instance with [WrapAlignment.spaceAround] value.
   T spaceAround() => builder(WrapAlignment.spaceAround);
 
-  /// Creates an [Attribute] instance with [WrapAlignment.spaceEvenly] value.
+  /// Creates a [StyleElement] instance with [WrapAlignment.spaceEvenly] value.
   T spaceEvenly() => builder(WrapAlignment.spaceEvenly);
 }
 
 /// {@template table_cell_vertical_alignment_utility}
-/// A utility class for creating [Attribute] instances from [TableCellVerticalAlignment] values.
+/// A utility class for creating [StyleElement] instances from [TableCellVerticalAlignment] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [Attribute] instances
+/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TableCellVerticalAlignment] values.
 /// {@endtemplate}
-mixin _$TableCellVerticalAlignmentUtility<T extends Attribute>
+mixin _$TableCellVerticalAlignmentUtility<T extends StyleElement>
     on MixUtility<T, TableCellVerticalAlignment> {
-  /// Creates an [Attribute] instance with the specified TableCellVerticalAlignment value.
+  /// Creates a [StyleElement] instance with the specified TableCellVerticalAlignment value.
   T call(TableCellVerticalAlignment value) => builder(value);
 
-  /// Creates an [Attribute] instance with [TableCellVerticalAlignment.top] value.
+  /// Creates a [StyleElement] instance with [TableCellVerticalAlignment.top] value.
   T top() => builder(TableCellVerticalAlignment.top);
 
-  /// Creates an [Attribute] instance with [TableCellVerticalAlignment.middle] value.
+  /// Creates a [StyleElement] instance with [TableCellVerticalAlignment.middle] value.
   T middle() => builder(TableCellVerticalAlignment.middle);
 
-  /// Creates an [Attribute] instance with [TableCellVerticalAlignment.bottom] value.
+  /// Creates a [StyleElement] instance with [TableCellVerticalAlignment.bottom] value.
   T bottom() => builder(TableCellVerticalAlignment.bottom);
 
-  /// Creates an [Attribute] instance with [TableCellVerticalAlignment.baseline] value.
+  /// Creates a [StyleElement] instance with [TableCellVerticalAlignment.baseline] value.
   T baseline() => builder(TableCellVerticalAlignment.baseline);
 
-  /// Creates an [Attribute] instance with [TableCellVerticalAlignment.fill] value.
+  /// Creates a [StyleElement] instance with [TableCellVerticalAlignment.fill] value.
   T fill() => builder(TableCellVerticalAlignment.fill);
 
-  /// Creates an [Attribute] instance with [TableCellVerticalAlignment.intrinsicHeight] value.
+  /// Creates a [StyleElement] instance with [TableCellVerticalAlignment.intrinsicHeight] value.
   T intrinsicHeight() => builder(TableCellVerticalAlignment.intrinsicHeight);
 }

@@ -203,7 +203,7 @@ class ChipSpecAttribute extends SpecAttribute<ChipSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [ChipSpec].
 /// Use the methods of this class to configure specific properties of a [ChipSpec].
-class ChipSpecUtility<T extends Attribute>
+class ChipSpecUtility<T extends StyleElement>
     extends SpecUtility<T, ChipSpecAttribute> {
   /// Utility for defining [ChipSpecAttribute.container]
   late final container = FlexBoxSpecUtility((v) => only(container: v));

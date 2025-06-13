@@ -280,7 +280,7 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [IconSpec].
 /// Use the methods of this class to configure specific properties of a [IconSpec].
-class IconSpecUtility<T extends Attribute>
+class IconSpecUtility<T extends StyleElement>
     extends SpecUtility<T, IconSpecAttribute> {
   /// Utility for defining [IconSpecAttribute.color]
   late final color = ColorUtility((v) => only(color: v));

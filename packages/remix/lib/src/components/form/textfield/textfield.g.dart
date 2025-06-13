@@ -586,7 +586,7 @@ class TextFieldSpecAttribute extends SpecAttribute<TextFieldSpec>
 ///
 /// This class provides methods to set individual properties of a [TextFieldSpec].
 /// Use the methods of this class to configure specific properties of a [TextFieldSpec].
-class TextFieldSpecUtility<T extends Attribute>
+class TextFieldSpecUtility<T extends StyleElement>
     extends SpecUtility<T, TextFieldSpecAttribute> {
   /// Utility for defining [TextFieldSpecAttribute.style]
   late final style = TextStyleUtility((v) => only(style: v));

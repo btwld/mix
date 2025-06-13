@@ -165,7 +165,7 @@ void main() {
     test('fluent behavior', () {
       final flex = FlexSpecUtility.self;
 
-      final util = flex.chain
+      final util = flex
         ..direction.horizontal()
         ..mainAxisAlignment.center()
         ..crossAxisAlignment.center()
@@ -254,7 +254,7 @@ void main() {
     test('Mutate behavior and not on same utility', () {
       final flex = FlexSpecUtility.self;
 
-      final flexValue = flex.chain;
+      final flexValue = flex;
       flexValue
         ..gap(10)
         ..direction.horizontal()
