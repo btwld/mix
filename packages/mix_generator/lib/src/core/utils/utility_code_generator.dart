@@ -465,7 +465,11 @@ late final $aliasName = $utilityExpression;
   /// Creates a getter to enable chained configuration.
   static String chainGetter(String utilityName) {
     return '''
-  $utilityName<T> get chain => $utilityName(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  $utilityName<T> get chain => $utilityName(attributeBuilder);
 ''';
   }
 

@@ -16,11 +16,11 @@ mixin _$TextFieldSpec on Spec<TextFieldSpec> {
   }
 
   /// {@template text_field_spec_of}
-  /// Retrieves the [TextFieldSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [TextFieldSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [TextFieldSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [TextFieldSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [TextFieldSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [TextFieldSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,8 @@ mixin _$TextFieldSpec on Spec<TextFieldSpec> {
   /// ```
   /// {@endtemplate}
   static TextFieldSpec of(BuildContext context) {
-    return _$TextFieldSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<TextFieldSpec>(context) ??
+        const TextFieldSpec();
   }
 
   /// Creates a copy of this [TextFieldSpec] but with the given fields
@@ -181,7 +182,7 @@ mixin _$TextFieldSpec on Spec<TextFieldSpec> {
           _$this.floatingLabelHeight, other.floatingLabelHeight, t)!,
       floatingLabelStyle: MixHelpers.lerpTextStyle(
           _$this.floatingLabelStyle, other.floatingLabelStyle, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
       modifiers: other.modifiers,
     );
   }
@@ -689,10 +690,19 @@ class TextFieldSpecUtility<T extends Attribute>
   /// Utility for defining [TextFieldSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  TextFieldSpecUtility(super.builder, {super.mutable});
+  TextFieldSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  TextFieldSpecUtility<T> get chain =>
-      TextFieldSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  TextFieldSpecUtility<T> get chain => TextFieldSpecUtility(attributeBuilder);
 
   static TextFieldSpecUtility<TextFieldSpecAttribute> get self =>
       TextFieldSpecUtility((v) => v);

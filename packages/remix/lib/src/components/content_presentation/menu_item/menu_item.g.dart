@@ -16,11 +16,11 @@ mixin _$MenuItemSpec on Spec<MenuItemSpec> {
   }
 
   /// {@template menu_item_spec_of}
-  /// Retrieves the [MenuItemSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [MenuItemSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [MenuItemSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [MenuItemSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [MenuItemSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [MenuItemSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$MenuItemSpec on Spec<MenuItemSpec> {
   /// ```
   /// {@endtemplate}
   static MenuItemSpec of(BuildContext context) {
-    return _$MenuItemSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<MenuItemSpec>(context) ?? const MenuItemSpec();
   }
 
   /// Creates a copy of this [MenuItemSpec] but with the given fields
@@ -87,7 +87,7 @@ mixin _$MenuItemSpec on Spec<MenuItemSpec> {
       title: _$this.title.lerp(other.title, t),
       subtitle: _$this.subtitle.lerp(other.subtitle, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -260,10 +260,19 @@ class MenuItemSpecUtility<T extends Attribute>
   /// Utility for defining [MenuItemSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  MenuItemSpecUtility(super.builder, {super.mutable});
+  MenuItemSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  MenuItemSpecUtility<T> get chain =>
-      MenuItemSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  MenuItemSpecUtility<T> get chain => MenuItemSpecUtility(attributeBuilder);
 
   static MenuItemSpecUtility<MenuItemSpecAttribute> get self =>
       MenuItemSpecUtility((v) => v);

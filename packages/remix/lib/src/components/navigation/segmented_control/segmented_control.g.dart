@@ -16,11 +16,11 @@ mixin _$SegmentedControlSpec on Spec<SegmentedControlSpec> {
   }
 
   /// {@template segmented_control_spec_of}
-  /// Retrieves the [SegmentedControlSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [SegmentedControlSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [SegmentedControlSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [SegmentedControlSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [SegmentedControlSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [SegmentedControlSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,8 @@ mixin _$SegmentedControlSpec on Spec<SegmentedControlSpec> {
   /// ```
   /// {@endtemplate}
   static SegmentedControlSpec of(BuildContext context) {
-    return _$SegmentedControlSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<SegmentedControlSpec>(context) ??
+        const SegmentedControlSpec();
   }
 
   /// Creates a copy of this [SegmentedControlSpec] but with the given fields
@@ -85,7 +86,7 @@ mixin _$SegmentedControlSpec on Spec<SegmentedControlSpec> {
       divider: _$this.divider.lerp(other.divider, t),
       item: _$this.item.lerp(other.item, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -252,10 +253,20 @@ class SegmentedControlSpecUtility<T extends Attribute>
   /// Utility for defining [SegmentedControlSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  SegmentedControlSpecUtility(super.builder, {super.mutable});
+  SegmentedControlSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
   SegmentedControlSpecUtility<T> get chain =>
-      SegmentedControlSpecUtility(attributeBuilder, mutable: true);
+      SegmentedControlSpecUtility(attributeBuilder);
 
   static SegmentedControlSpecUtility<SegmentedControlSpecAttribute> get self =>
       SegmentedControlSpecUtility((v) => v);
@@ -315,11 +326,11 @@ mixin _$SegmentButtonSpec on Spec<SegmentButtonSpec> {
   }
 
   /// {@template segment_button_spec_of}
-  /// Retrieves the [SegmentButtonSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [SegmentButtonSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [SegmentButtonSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [SegmentButtonSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [SegmentButtonSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [SegmentButtonSpec].
   ///
   /// Example:
   ///
@@ -328,7 +339,8 @@ mixin _$SegmentButtonSpec on Spec<SegmentButtonSpec> {
   /// ```
   /// {@endtemplate}
   static SegmentButtonSpec of(BuildContext context) {
-    return _$SegmentButtonSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<SegmentButtonSpec>(context) ??
+        const SegmentButtonSpec();
   }
 
   /// Creates a copy of this [SegmentButtonSpec] but with the given fields
@@ -382,7 +394,7 @@ mixin _$SegmentButtonSpec on Spec<SegmentButtonSpec> {
       icon: _$this.icon.lerp(other.icon, t),
       label: _$this.label.lerp(other.label, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -536,10 +548,20 @@ class SegmentButtonSpecUtility<T extends Attribute>
   /// Utility for defining [SegmentButtonSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  SegmentButtonSpecUtility(super.builder, {super.mutable});
+  SegmentButtonSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
   SegmentButtonSpecUtility<T> get chain =>
-      SegmentButtonSpecUtility(attributeBuilder, mutable: true);
+      SegmentButtonSpecUtility(attributeBuilder);
 
   static SegmentButtonSpecUtility<SegmentButtonSpecAttribute> get self =>
       SegmentButtonSpecUtility((v) => v);

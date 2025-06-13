@@ -16,11 +16,11 @@ mixin _$LabelSpec on Spec<LabelSpec> {
   }
 
   /// {@template label_spec_of}
-  /// Retrieves the [LabelSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [LabelSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [LabelSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [LabelSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [LabelSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [LabelSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$LabelSpec on Spec<LabelSpec> {
   /// ```
   /// {@endtemplate}
   static LabelSpec of(BuildContext context) {
-    return _$LabelSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<LabelSpec>(context) ?? const LabelSpec();
   }
 
   /// Creates a copy of this [LabelSpec] but with the given fields
@@ -79,7 +79,7 @@ mixin _$LabelSpec on Spec<LabelSpec> {
       icon: _$this.icon.lerp(other.icon, t),
       label: _$this.label.lerp(other.label, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -219,10 +219,19 @@ class LabelSpecUtility<T extends Attribute>
   /// Utility for defining [LabelSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  LabelSpecUtility(super.builder, {super.mutable});
+  LabelSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  LabelSpecUtility<T> get chain =>
-      LabelSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  LabelSpecUtility<T> get chain => LabelSpecUtility(attributeBuilder);
 
   static LabelSpecUtility<LabelSpecAttribute> get self =>
       LabelSpecUtility((v) => v);

@@ -531,11 +531,24 @@ void main() {
     });
   });
 
-  group('Style.asAttribute', () {
+  group('Nested Style', () {
+    test('merging a nested empty style should not alter the parent style attributes', () {
+      final sut = Style(
+        attribute1,
+        Style(null),
+      );
+
+      final expectedStyle = Style(
+        attribute1,
+      );
+
+      expect(sut, expectedStyle);
+    });
+
     test('should merge with the attributes in parent style', () {
       final sut = Style(
         attribute1,
-        Style.asAttribute(attribute2),
+        Style(attribute2),
       );
 
       final expectedStyle = Style(
@@ -556,7 +569,7 @@ void main() {
 
       final style = Style(
         attribute1,
-        Style.asAttribute(attribute2),
+        Style(attribute2),
       );
 
       final animatedStyle = AnimatedStyle(
@@ -585,7 +598,7 @@ void main() {
 
       final style = Style(
         attribute1,
-        Style.asAttribute(attribute2),
+        Style(attribute2),
       );
 
       final result = animatedStyle.merge(style);

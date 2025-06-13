@@ -2,6 +2,8 @@
 
 import 'package:flutter/widgets.dart';
 
+import '../../core/spec_widget.dart';
+import '../../core/animated_spec_widget.dart';
 import '../../core/styled_widget.dart';
 import '../../modifiers/internal/render_widget_modifier.dart';
 import 'flex_spec.dart';
@@ -24,6 +26,16 @@ import 'flex_spec.dart';
 ///   children: [Widget1(), Widget2(), Widget3()],
 /// );
 /// ```
+@Deprecated(
+  'Use FlexBox instead. '
+  'StyledFlex has been replaced with FlexBox for better naming consistency. '
+  'This widget will be removed in v2.0.0.\n\n'
+  'Migration example:\n'
+  '// Before\n'
+  'StyledFlex(direction: Axis.horizontal, style: myStyle, children: [...])\n'
+  '// After\n'
+  'FlexBox(direction: Axis.horizontal, style: myStyle, children: [...])',
+)
 class StyledFlex extends StyledWidget {
   const StyledFlex({
     super.style,
@@ -47,10 +59,10 @@ class StyledFlex extends StyledWidget {
   }
 }
 
-class FlexSpecWidget extends StatelessWidget {
+class FlexSpecWidget extends SpecWidget<FlexSpec> {
   const FlexSpecWidget({
     super.key,
-    this.spec,
+    super.spec,
     required this.children,
     required this.direction,
     this.orderOfModifiers = const [],
@@ -58,7 +70,6 @@ class FlexSpecWidget extends StatelessWidget {
 
   final List<Widget> children;
   final Axis direction;
-  final FlexSpec? spec;
   final List<Type> orderOfModifiers;
 
   Axis get _definitiveDirection => spec?.direction ?? direction;
@@ -105,10 +116,10 @@ class FlexSpecWidget extends StatelessWidget {
   }
 }
 
-class AnimatedFlexSpecWidget extends ImplicitlyAnimatedWidget {
+class AnimatedFlexSpecWidget extends ImplicitlyAnimatedSpecWidget<FlexSpec> {
   const AnimatedFlexSpecWidget({
     super.key,
-    required this.spec,
+    required super.spec,
     required this.children,
     required this.direction,
     this.orderOfModifiers = const [],
@@ -117,37 +128,17 @@ class AnimatedFlexSpecWidget extends ImplicitlyAnimatedWidget {
     super.onEnd,
   });
 
-  final FlexSpec spec;
   final List<Widget> children;
   final Axis direction;
   final List<Type> orderOfModifiers;
 
   @override
-  AnimatedFlexSpecWidgetState createState() => AnimatedFlexSpecWidgetState();
-}
-
-class AnimatedFlexSpecWidgetState
-    extends AnimatedWidgetBaseState<AnimatedFlexSpecWidget> {
-  FlexSpecTween? _specTween;
-
-  @override
-  // ignore: avoid-dynamic
-  void forEachTween(TweenVisitor<dynamic> visitor) {
-    _specTween = visitor(
-      _specTween,
-      widget.spec,
-      // ignore: avoid-dynamic
-      (dynamic value) => FlexSpecTween(begin: value as FlexSpec),
-    ) as FlexSpecTween?;
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, FlexSpec animatedSpec) {
     return FlexSpecWidget(
-      spec: _specTween?.evaluate(animation),
-      direction: widget.direction,
-      orderOfModifiers: widget.orderOfModifiers,
-      children: widget.children,
+      spec: animatedSpec,
+      direction: direction,
+      orderOfModifiers: orderOfModifiers,
+      children: children,
     );
   }
 }
@@ -168,6 +159,16 @@ class AnimatedFlexSpecWidgetState
 ///   children: [Widget1(), Widget2()],
 /// );
 /// ```
+@Deprecated(
+  'Use HBox instead. '
+  'StyledRow has been replaced with HBox for better naming consistency. '
+  'This widget will be removed in v2.0.0.\n\n'
+  'Migration example:\n'
+  '// Before\n'
+  'StyledRow(style: myStyle, children: [...])\n'
+  '// After\n'
+  'HBox(style: myStyle, children: [...])',
+)
 class StyledRow extends StyledFlex {
   const StyledRow({
     super.style,
@@ -193,6 +194,16 @@ class StyledRow extends StyledFlex {
 ///   children: [Widget1(), Widget2()],
 /// );
 /// ```
+@Deprecated(
+  'Use VBox instead. '
+  'StyledColumn has been replaced with VBox for better naming consistency. '
+  'This widget will be removed in v2.0.0.\n\n'
+  'Migration example:\n'
+  '// Before\n'
+  'StyledColumn(style: myStyle, children: [...])\n'
+  '// After\n'
+  'VBox(style: myStyle, children: [...])',
+)
 class StyledColumn extends StyledFlex {
   const StyledColumn({
     super.style,

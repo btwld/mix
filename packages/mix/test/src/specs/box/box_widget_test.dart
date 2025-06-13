@@ -97,7 +97,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(countPressTime, 1);
-    expect(countOnEnd, 1);
+    expect(countOnEnd, 2);
   });
 
   testWidgets('BoxSpec properties should match Container properties',

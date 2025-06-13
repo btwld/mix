@@ -16,11 +16,11 @@ mixin _$DividerSpec on Spec<DividerSpec> {
   }
 
   /// {@template divider_spec_of}
-  /// Retrieves the [DividerSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [DividerSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [DividerSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [DividerSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [DividerSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [DividerSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$DividerSpec on Spec<DividerSpec> {
   /// ```
   /// {@endtemplate}
   static DividerSpec of(BuildContext context) {
-    return _$DividerSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<DividerSpec>(context) ?? const DividerSpec();
   }
 
   /// Creates a copy of this [DividerSpec] but with the given fields
@@ -70,7 +70,7 @@ mixin _$DividerSpec on Spec<DividerSpec> {
 
     return DividerSpec(
       container: _$this.container.lerp(other.container, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
       modifiers: other.modifiers,
     );
   }
@@ -189,10 +189,19 @@ class DividerSpecUtility<T extends Attribute>
   /// Utility for defining [DividerSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  DividerSpecUtility(super.builder, {super.mutable});
+  DividerSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  DividerSpecUtility<T> get chain =>
-      DividerSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  DividerSpecUtility<T> get chain => DividerSpecUtility(attributeBuilder);
 
   static DividerSpecUtility<DividerSpecAttribute> get self =>
       DividerSpecUtility((v) => v);

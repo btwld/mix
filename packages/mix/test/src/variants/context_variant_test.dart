@@ -102,8 +102,7 @@ void main() {
       expect(builder.props, equals([variant]));
     });
 
-    test(
-        'build method should return a NestedStyleAttribute with the result of the function',
+    test('build method should return a Style with the result of the function',
         () {
       const variant = _MockContextVariant();
       final style = Style();

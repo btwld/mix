@@ -30,7 +30,13 @@ class SpecUtilityBuilder implements CodeBuilder {
 ''',
       extendsClass: 'SpecUtility<T, $attributeName>',
       typeParameters: '<T extends Attribute>',
-      constructorCode: '$utilityName(super.builder, {super.mutable});',
+      constructorCode: '''$utilityName(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });''',
 
       // The fields you want in the generated class
       fields: generatedFields,

@@ -16,11 +16,11 @@ mixin _$ProgressSpec on Spec<ProgressSpec> {
   }
 
   /// {@template progress_spec_of}
-  /// Retrieves the [ProgressSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [ProgressSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [ProgressSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [ProgressSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [ProgressSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [ProgressSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$ProgressSpec on Spec<ProgressSpec> {
   /// ```
   /// {@endtemplate}
   static ProgressSpec of(BuildContext context) {
-    return _$ProgressSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<ProgressSpec>(context) ?? const ProgressSpec();
   }
 
   /// Creates a copy of this [ProgressSpec] but with the given fields
@@ -79,7 +79,7 @@ mixin _$ProgressSpec on Spec<ProgressSpec> {
       track: _$this.track.lerp(other.track, t),
       fill: _$this.fill.lerp(other.fill, t),
       outerContainer: _$this.outerContainer.lerp(other.outerContainer, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
       modifiers: other.modifiers,
     );
   }
@@ -236,10 +236,19 @@ class ProgressSpecUtility<T extends Attribute>
   /// Utility for defining [ProgressSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  ProgressSpecUtility(super.builder, {super.mutable});
+  ProgressSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  ProgressSpecUtility<T> get chain =>
-      ProgressSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  ProgressSpecUtility<T> get chain => ProgressSpecUtility(attributeBuilder);
 
   static ProgressSpecUtility<ProgressSpecAttribute> get self =>
       ProgressSpecUtility((v) => v);

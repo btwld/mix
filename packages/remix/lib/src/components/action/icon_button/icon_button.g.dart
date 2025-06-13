@@ -16,11 +16,11 @@ mixin _$IconButtonSpec on Spec<IconButtonSpec> {
   }
 
   /// {@template icon_button_spec_of}
-  /// Retrieves the [IconButtonSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [IconButtonSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [IconButtonSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [IconButtonSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [IconButtonSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [IconButtonSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,8 @@ mixin _$IconButtonSpec on Spec<IconButtonSpec> {
   /// ```
   /// {@endtemplate}
   static IconButtonSpec of(BuildContext context) {
-    return _$IconButtonSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<IconButtonSpec>(context) ??
+        const IconButtonSpec();
   }
 
   /// Creates a copy of this [IconButtonSpec] but with the given fields
@@ -79,7 +80,7 @@ mixin _$IconButtonSpec on Spec<IconButtonSpec> {
       icon: _$this.icon.lerp(other.icon, t),
       modifiers: other.modifiers,
       spinner: _$this.spinner.lerp(other.spinner, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -221,10 +222,19 @@ class IconButtonSpecUtility<T extends Attribute>
   /// Utility for defining [IconButtonSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  IconButtonSpecUtility(super.builder, {super.mutable});
+  IconButtonSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  IconButtonSpecUtility<T> get chain =>
-      IconButtonSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  IconButtonSpecUtility<T> get chain => IconButtonSpecUtility(attributeBuilder);
 
   static IconButtonSpecUtility<IconButtonSpecAttribute> get self =>
       IconButtonSpecUtility((v) => v);

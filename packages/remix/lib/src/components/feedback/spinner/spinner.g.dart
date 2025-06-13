@@ -16,11 +16,11 @@ mixin _$SpinnerSpec on Spec<SpinnerSpec> {
   }
 
   /// {@template spinner_spec_of}
-  /// Retrieves the [SpinnerSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [SpinnerSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [SpinnerSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [SpinnerSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [SpinnerSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [SpinnerSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$SpinnerSpec on Spec<SpinnerSpec> {
   /// ```
   /// {@endtemplate}
   static SpinnerSpec of(BuildContext context) {
-    return _$SpinnerSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<SpinnerSpec>(context) ?? const SpinnerSpec();
   }
 
   /// Creates a copy of this [SpinnerSpec] but with the given fields
@@ -85,7 +85,7 @@ mixin _$SpinnerSpec on Spec<SpinnerSpec> {
       duration: t < 0.5 ? _$this.duration : other.duration,
       style: t < 0.5 ? _$this.style : other.style,
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -252,10 +252,19 @@ class SpinnerSpecUtility<T extends Attribute>
   /// Utility for defining [SpinnerSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  SpinnerSpecUtility(super.builder, {super.mutable});
+  SpinnerSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  SpinnerSpecUtility<T> get chain =>
-      SpinnerSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  SpinnerSpecUtility<T> get chain => SpinnerSpecUtility(attributeBuilder);
 
   static SpinnerSpecUtility<SpinnerSpecAttribute> get self =>
       SpinnerSpecUtility((v) => v);

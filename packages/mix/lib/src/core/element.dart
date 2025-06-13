@@ -16,10 +16,8 @@ abstract class StyleElement with EqualityMixin {
   StyleElement merge(covariant StyleElement? other);
 }
 
-/// Similar to a StyleElement but can be passed as an attribute of `Style`
-abstract class Attribute extends StyleElement {
-  const Attribute();
-}
+@Deprecated('Use StyleElement instead')
+typedef Attribute = StyleElement;
 
 @Deprecated('Use StyleAttribute instead')
 typedef StyledAttribute = SpecAttribute;
@@ -42,8 +40,8 @@ mixin HasDefaultValue<Value> {
   Value get defaultValue;
 }
 
-abstract class DtoUtility<A extends Attribute, D extends Mixable<Value>, Value>
-    extends MixUtility<A, D> {
+abstract class DtoUtility<A extends StyleElement, D extends Mixable<Value>,
+    Value> extends MixUtility<A, D> {
   final D Function(Value) _fromValue;
   const DtoUtility(super.builder, {required D Function(Value) valueToDto})
       : _fromValue = valueToDto;

@@ -1,23 +1,17 @@
 import 'package:flutter/widgets.dart';
 
-import '../variants/widget_state_variant.dart';
 import '../widgets/pressable_widget.dart';
-import 'factory/mix_data.dart';
 import 'factory/style_mix.dart';
 import 'internal/experimental/mix_builder.dart';
-import 'widget_state/widget_state_controller.dart';
 
-/// An abstract widget for applying custom styles.
+/// Base class for widgets that apply [Style] definitions.
 ///
-/// `StyledWidget` serves as a base class for widgets that need custom styling.
-/// It facilitates the application of a `Style` object to the widget and optionally
-/// allows this style to be inherited from its parent. This class is intended to be
-/// extended by more concrete widgets that implement specific styled behavior.
+/// Provides style inheritance from parent [StyledWidget]s and handles
+/// style application through the Mix framework. Extend this class to
+/// create widgets that can be styled using Mix.
 
 abstract class StyledWidget extends StatelessWidget {
-  /// Constructor for a styled widget.
-  ///
-  /// Takes a [Style] object and an optional [inherit] flag.
+  /// Creates a styled widget.
   const StyledWidget({
     Style? style,
     super.key,
@@ -25,26 +19,20 @@ abstract class StyledWidget extends StatelessWidget {
     required this.orderOfModifiers,
   }) : style = style ?? const Style.empty();
 
-  /// The style to apply to the widget.
-  ///
-  /// Defines the appearance of the widget using a [Style] object. If null, defaults
-  /// to an empty [Style], meaning no style is applied.
+  /// The style to apply to this widget.
   final Style style;
 
-  /// Whether the widget should inherit its style from its parent.
-  ///
-  /// If set to true, the widget will merge its style with the style from the nearest
-  /// [StyledWidget] ancestor in the widget tree. Defaults to false.
+  /// Whether to inherit style from the nearest [StyledWidget] ancestor.
   final bool inherit;
 
+  /// The order in which modifiers should be applied.
   final List<Type> orderOfModifiers;
 
-  /// Applies a mix of inherited and local styles to the widget.
+  /// Applies styling to [builder] with inheritance and state management.
   ///
-  /// Accepts a [BuildContext] and a [MixData] builder. It computes the final style by
-  /// merging the inherited style with the local style, then applies it to the widget.
-  /// This method is typically used in the `build` method of widgets extending
-  /// [StyledWidget] to provide the actual styled widget.
+  /// Merges inherited and local styles before applying them to the widget
+  /// built by [builder]. Handles widget state variants automatically.
+  @Deprecated('Use SpecBuilder directly for better clarity')
   Widget withMix(
     BuildContext context,
     Widget Function(BuildContext context) builder,
@@ -58,53 +46,68 @@ abstract class StyledWidget extends StatelessWidget {
   }
 }
 
-/// A styled widget that builds its child using a [MixData] object.
+/// Builds widgets with styling and interactive state management.
 ///
-/// `SpecBuilder` is a concrete implementation of [StyledWidget] that
-/// builds its child using a [withMix] method from [StyledWidget].
-/// This widget is useful for creating custom styled widgets.
+/// SpecBuilder wraps [MixBuilder] internally and adds interactive state
+/// management capabilities. It automatically detects widget state variants
+/// and wraps widgets with [Interactable] when needed.
+///
+/// ## Architecture
+///
+/// SpecBuilder follows a layered approach:
+/// 1. **Core**: Uses [MixBuilder] for style processing and caching
+/// 2. **Enhancement**: Adds widget state detection and Interactable wrapping
+/// 3. **Optimization**: Smart caching that respects widget state variants
+///
+/// ## Usage
+///
+/// Use SpecBuilder for widgets requiring interactive states (hover, press, focus)
+/// or custom [WidgetStatesController] management.
+///
+/// ```dart
+/// SpecBuilder(
+///   style: Style(
+///     $box.color.red(),
+///     $on.hover($box.color.blue()),
+///   ),
+///   builder: (context) => BoxSpec.of(context)(),
+/// )
+/// ```
 class SpecBuilder extends StatelessWidget {
-  // Requires a builder function and accepts optional parameters
   const SpecBuilder({
     super.key,
     this.inherit = false,
     this.controller,
     this.style = const Style.empty(),
-    List<Type>? orderOfModifiers,
+    this.orderOfModifiers = const [],
     required this.builder,
-  }) : orderOfModifiers = orderOfModifiers ?? const [];
+  });
 
-  bool get _hasWidgetStateVariant => style.variants.values
-      .any((attr) => attr.variant is MixWidgetStateVariant);
-
-  // Required builder function
+  /// Function that builds the widget content.
   final Widget Function(BuildContext) builder;
-  // Optional controller for managing widget state
+
+  /// Optional controller for managing widget state.
   final WidgetStatesController? controller;
-  // Style to be applied to the widget
+
+  /// Style to apply to the widget.
   final Style style;
-  // Flag to determine if the style should be inherited
+
+  /// Whether to inherit style from parent widgets.
   final bool inherit;
-  // List of modifier types in the desired order
+
+  /// Order in which modifiers should be applied.
+  ///
+  /// Defaults to an empty list, which uses the default modifier order.
   final List<Type> orderOfModifiers;
 
   @override
   Widget build(BuildContext context) {
-    Widget current = MixBuilder(
-      inherit: inherit,
+    return MixBuilder(
       style: style,
-      orderOfModifiers: orderOfModifiers,
       builder: builder,
+      inherit: inherit,
+      orderOfModifiers: orderOfModifiers,
+      controller: controller,
     );
-    // Check if the widget needs widget state and if it's not available in the context
-    final needsWidgetState =
-        _hasWidgetStateVariant && MixWidgetState.of(context) == null;
-
-    if (needsWidgetState || controller != null) {
-      current = Interactable(controller: controller, child: current);
-    }
-
-    // Otherwise, directly build the mixed child widget
-    return current;
   }
 }

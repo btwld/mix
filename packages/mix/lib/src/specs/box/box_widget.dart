@@ -1,6 +1,8 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/factory/mix_provider.dart';
+import '../../core/spec_widget.dart';
+import '../../core/animated_spec_widget.dart';
 import '../../core/styled_widget.dart';
 import '../../modifiers/internal/render_widget_modifier.dart';
 import 'box_spec.dart';
@@ -59,16 +61,15 @@ class Box extends StyledWidget {
   }
 }
 
-class BoxSpecWidget extends StatelessWidget {
+class BoxSpecWidget extends SpecWidget<BoxSpec> {
   const BoxSpecWidget({
-    required this.spec,
+    super.spec,
     super.key,
     this.child,
     this.orderOfModifiers = const [],
   });
 
   final Widget? child;
-  final BoxSpec? spec;
   final List<Type> orderOfModifiers;
 
   @override
@@ -94,9 +95,9 @@ class BoxSpecWidget extends StatelessWidget {
   }
 }
 
-class AnimatedBoxSpecWidget extends ImplicitlyAnimatedWidget {
+class AnimatedBoxSpecWidget extends ImplicitlyAnimatedSpecWidget<BoxSpec> {
   const AnimatedBoxSpecWidget({
-    required this.spec,
+    required super.spec,
     super.key,
     this.child,
     required super.duration,
@@ -106,37 +107,14 @@ class AnimatedBoxSpecWidget extends ImplicitlyAnimatedWidget {
   });
 
   final Widget? child;
-  final BoxSpec spec;
   final List<Type> orderOfModifiers;
 
   @override
-  AnimatedWidgetBaseState<AnimatedBoxSpecWidget> createState() =>
-      _AnimatedBoxSpecWidgetState();
-}
-
-class _AnimatedBoxSpecWidgetState
-    extends AnimatedWidgetBaseState<AnimatedBoxSpecWidget> {
-  BoxSpecTween? _boxSpec;
-
-  @override
-  // ignore: avoid-dynamic
-  void forEachTween(TweenVisitor<dynamic> visitor) {
-    _boxSpec = visitor(
-      _boxSpec,
-      widget.spec,
-      // ignore: avoid-dynamic
-      (dynamic value) => BoxSpecTween(begin: value as BoxSpec?),
-    ) as BoxSpecTween?;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final spec = _boxSpec?.evaluate(animation);
-
+  Widget build(BuildContext context, BoxSpec animatedSpec) {
     return BoxSpecWidget(
-      spec: spec,
-      orderOfModifiers: widget.orderOfModifiers,
-      child: widget.child,
+      spec: animatedSpec,
+      orderOfModifiers: orderOfModifiers,
+      child: child,
     );
   }
 }

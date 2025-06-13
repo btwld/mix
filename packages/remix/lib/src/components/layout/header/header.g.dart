@@ -16,11 +16,11 @@ mixin _$HeaderSpec on Spec<HeaderSpec> {
   }
 
   /// {@template header_spec_of}
-  /// Retrieves the [HeaderSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [HeaderSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [HeaderSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [HeaderSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [HeaderSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [HeaderSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$HeaderSpec on Spec<HeaderSpec> {
   /// ```
   /// {@endtemplate}
   static HeaderSpec of(BuildContext context) {
-    return _$HeaderSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<HeaderSpec>(context) ?? const HeaderSpec();
   }
 
   /// Creates a copy of this [HeaderSpec] but with the given fields
@@ -82,7 +82,7 @@ mixin _$HeaderSpec on Spec<HeaderSpec> {
       titleGroup: _$this.titleGroup.lerp(other.titleGroup, t),
       title: _$this.title.lerp(other.title, t),
       subtitle: _$this.subtitle.lerp(other.subtitle, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -238,10 +238,19 @@ class HeaderSpecUtility<T extends Attribute>
   /// Utility for defining [HeaderSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  HeaderSpecUtility(super.builder, {super.mutable});
+  HeaderSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  HeaderSpecUtility<T> get chain =>
-      HeaderSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  HeaderSpecUtility<T> get chain => HeaderSpecUtility(attributeBuilder);
 
   static HeaderSpecUtility<HeaderSpecAttribute> get self =>
       HeaderSpecUtility((v) => v);

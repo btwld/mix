@@ -15,11 +15,11 @@ mixin _$BoxSpec on Spec<BoxSpec> {
   }
 
   /// {@template box_spec_of}
-  /// Retrieves the [BoxSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [BoxSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [BoxSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [BoxSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [BoxSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [BoxSpec].
   ///
   /// Example:
   ///
@@ -28,7 +28,7 @@ mixin _$BoxSpec on Spec<BoxSpec> {
   /// ```
   /// {@endtemplate}
   static BoxSpec of(BuildContext context) {
-    return _$BoxSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<BoxSpec>(context) ?? const BoxSpec();
   }
 
   /// Creates a copy of this [BoxSpec] but with the given fields
@@ -108,7 +108,7 @@ mixin _$BoxSpec on Spec<BoxSpec> {
       width: MixHelpers.lerpDouble(_$this.width, other.width, t),
       height: MixHelpers.lerpDouble(_$this.height, other.height, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -412,10 +412,19 @@ class BoxSpecUtility<T extends Attribute>
   /// Utility for defining [BoxSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  BoxSpecUtility(super.builder, {super.mutable});
+  BoxSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  BoxSpecUtility<T> get chain =>
-      BoxSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  BoxSpecUtility<T> get chain => BoxSpecUtility(attributeBuilder);
 
   static BoxSpecUtility<BoxSpecAttribute> get self => BoxSpecUtility((v) => v);
 

@@ -16,11 +16,11 @@ mixin _$CheckboxSpec on Spec<CheckboxSpec> {
   }
 
   /// {@template checkbox_spec_of}
-  /// Retrieves the [CheckboxSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [CheckboxSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [CheckboxSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [CheckboxSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [CheckboxSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [CheckboxSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$CheckboxSpec on Spec<CheckboxSpec> {
   /// ```
   /// {@endtemplate}
   static CheckboxSpec of(BuildContext context) {
-    return _$CheckboxSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<CheckboxSpec>(context) ?? const CheckboxSpec();
   }
 
   /// Creates a copy of this [CheckboxSpec] but with the given fields
@@ -84,7 +84,7 @@ mixin _$CheckboxSpec on Spec<CheckboxSpec> {
       container: _$this.container.lerp(other.container, t),
       label: _$this.label.lerp(other.label, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -243,10 +243,19 @@ class CheckboxSpecUtility<T extends Attribute>
   /// Utility for defining [CheckboxSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  CheckboxSpecUtility(super.builder, {super.mutable});
+  CheckboxSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  CheckboxSpecUtility<T> get chain =>
-      CheckboxSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  CheckboxSpecUtility<T> get chain => CheckboxSpecUtility(attributeBuilder);
 
   static CheckboxSpecUtility<CheckboxSpecAttribute> get self =>
       CheckboxSpecUtility((v) => v);

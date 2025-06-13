@@ -16,11 +16,11 @@ mixin _$AccordionSpec on Spec<AccordionSpec> {
   }
 
   /// {@template accordion_spec_of}
-  /// Retrieves the [AccordionSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [AccordionSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [AccordionSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [AccordionSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [AccordionSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [AccordionSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,8 @@ mixin _$AccordionSpec on Spec<AccordionSpec> {
   /// ```
   /// {@endtemplate}
   static AccordionSpec of(BuildContext context) {
-    return _$AccordionSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<AccordionSpec>(context) ??
+        const AccordionSpec();
   }
 
   /// Creates a copy of this [AccordionSpec] but with the given fields
@@ -76,7 +77,7 @@ mixin _$AccordionSpec on Spec<AccordionSpec> {
       header: _$this.header.lerp(other.header, t),
       container: _$this.container.lerp(other.container, t),
       contentContainer: _$this.contentContainer.lerp(other.contentContainer, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -185,10 +186,19 @@ class AccordionSpecUtility<T extends Attribute>
   /// Utility for defining [AccordionSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  AccordionSpecUtility(super.builder, {super.mutable});
+  AccordionSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  AccordionSpecUtility<T> get chain =>
-      AccordionSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  AccordionSpecUtility<T> get chain => AccordionSpecUtility(attributeBuilder);
 
   static AccordionSpecUtility<AccordionSpecAttribute> get self =>
       AccordionSpecUtility((v) => v);
@@ -242,11 +252,11 @@ mixin _$AccordionHeaderSpec on Spec<AccordionHeaderSpec> {
   }
 
   /// {@template accordion_header_spec_of}
-  /// Retrieves the [AccordionHeaderSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [AccordionHeaderSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [AccordionHeaderSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [AccordionHeaderSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [AccordionHeaderSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [AccordionHeaderSpec].
   ///
   /// Example:
   ///
@@ -255,7 +265,8 @@ mixin _$AccordionHeaderSpec on Spec<AccordionHeaderSpec> {
   /// ```
   /// {@endtemplate}
   static AccordionHeaderSpec of(BuildContext context) {
-    return _$AccordionHeaderSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<AccordionHeaderSpec>(context) ??
+        const AccordionHeaderSpec();
   }
 
   /// Creates a copy of this [AccordionHeaderSpec] but with the given fields
@@ -305,7 +316,7 @@ mixin _$AccordionHeaderSpec on Spec<AccordionHeaderSpec> {
       leadingIcon: _$this.leadingIcon.lerp(other.leadingIcon, t),
       text: _$this.text.lerp(other.text, t),
       trailingIcon: _$this.trailingIcon.lerp(other.trailingIcon, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -422,10 +433,20 @@ class AccordionHeaderSpecUtility<T extends Attribute>
   /// Utility for defining [AccordionHeaderSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  AccordionHeaderSpecUtility(super.builder, {super.mutable});
+  AccordionHeaderSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
   AccordionHeaderSpecUtility<T> get chain =>
-      AccordionHeaderSpecUtility(attributeBuilder, mutable: true);
+      AccordionHeaderSpecUtility(attributeBuilder);
 
   static AccordionHeaderSpecUtility<AccordionHeaderSpecAttribute> get self =>
       AccordionHeaderSpecUtility((v) => v);

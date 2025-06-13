@@ -13,9 +13,9 @@ import '../../attributes/modifiers/widget_modifiers_data_dto.dart';
 import '../../attributes/modifiers/widget_modifiers_util.dart';
 import '../../attributes/shadow/shadow_dto.dart';
 import '../../attributes/shadow/shadow_util.dart';
+import '../../core/computed_style/computed_style.dart';
 import '../../core/element.dart';
 import '../../core/factory/mix_data.dart';
-import '../../core/factory/mix_provider.dart';
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
 import '../../core/utility.dart';
@@ -55,7 +55,12 @@ final class IconSpec extends Spec<IconSpec> with _$IconSpec, Diagnosticable {
     super.modifiers,
   });
 
-  Widget call(IconData? icon, {String? semanticLabel}) {
+  Widget call(
+    IconData? icon, {
+    String? semanticLabel,
+    List<Type> orderOfModifiers = const [],
+    TextDirection? textDirection,
+  }) {
     return isAnimated
         ? AnimatedIconSpecWidget(
             icon,
@@ -64,12 +69,14 @@ final class IconSpec extends Spec<IconSpec> with _$IconSpec, Diagnosticable {
             textDirection: textDirection,
             curve: animated!.curve,
             duration: animated!.duration,
+            orderOfModifiers: orderOfModifiers,
           )
         : IconSpecWidget(
             icon,
             spec: this,
             semanticLabel: semanticLabel,
             textDirection: textDirection,
+            orderOfModifiers: orderOfModifiers,
           );
   }
 

@@ -16,11 +16,11 @@ mixin _$AvatarSpec on Spec<AvatarSpec> {
   }
 
   /// {@template avatar_spec_of}
-  /// Retrieves the [AvatarSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [AvatarSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [AvatarSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [AvatarSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [AvatarSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [AvatarSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$AvatarSpec on Spec<AvatarSpec> {
   /// ```
   /// {@endtemplate}
   static AvatarSpec of(BuildContext context) {
-    return _$AvatarSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<AvatarSpec>(context) ?? const AvatarSpec();
   }
 
   /// Creates a copy of this [AvatarSpec] but with the given fields
@@ -80,7 +80,7 @@ mixin _$AvatarSpec on Spec<AvatarSpec> {
       image: _$this.image.lerp(other.image, t),
       fallback: _$this.fallback.lerp(other.fallback, t),
       stack: _$this.stack.lerp(other.stack, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -196,10 +196,19 @@ class AvatarSpecUtility<T extends Attribute>
   /// Utility for defining [AvatarSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  AvatarSpecUtility(super.builder, {super.mutable});
+  AvatarSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  AvatarSpecUtility<T> get chain =>
-      AvatarSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  AvatarSpecUtility<T> get chain => AvatarSpecUtility(attributeBuilder);
 
   static AvatarSpecUtility<AvatarSpecAttribute> get self =>
       AvatarSpecUtility((v) => v);

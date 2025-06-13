@@ -55,11 +55,11 @@ mixin _\$TestSpec on Spec<TestSpec> {
 }
 
   /// {@template test_spec_of}
-/// Retrieves the [TestSpec] from the nearest [Mix] ancestor in the widget tree.
+/// Retrieves the [TestSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
 ///
-/// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-/// given [BuildContext], and then retrieves the [TestSpec] from that [Mix].
-/// If no ancestor [Mix] is found, this method returns an empty [TestSpec].
+/// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+/// that call this method will rebuild when [TestSpec] changes, not when other specs change.
+/// If no ancestor [ComputedStyle] is found, this method returns an empty [TestSpec].
 ///
 /// Example:
 ///
@@ -68,7 +68,7 @@ mixin _\$TestSpec on Spec<TestSpec> {
 /// ```
 /// {@endtemplate}
 static TestSpec of(BuildContext context) {
-  return _\$TestSpec.from(Mix.of(context));
+  return ComputedStyle.specOf<TestSpec>(context) ?? const TestSpec();
 }
 
     /// Creates a copy of this [TestSpec] but with the given fields
@@ -256,11 +256,11 @@ mixin _\$DiagnosticableSpec on Spec<DiagnosticableSpec> {
 }
 
   /// {@template diagnosticable_spec_of}
-/// Retrieves the [DiagnosticableSpec] from the nearest [Mix] ancestor in the widget tree.
+/// Retrieves the [DiagnosticableSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
 ///
-/// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-/// given [BuildContext], and then retrieves the [DiagnosticableSpec] from that [Mix].
-/// If no ancestor [Mix] is found, this method returns an empty [DiagnosticableSpec].
+/// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+/// that call this method will rebuild when [DiagnosticableSpec] changes, not when other specs change.
+/// If no ancestor [ComputedStyle] is found, this method returns an empty [DiagnosticableSpec].
 ///
 /// Example:
 ///
@@ -269,7 +269,7 @@ mixin _\$DiagnosticableSpec on Spec<DiagnosticableSpec> {
 /// ```
 /// {@endtemplate}
 static DiagnosticableSpec of(BuildContext context) {
-  return _\$DiagnosticableSpec.from(Mix.of(context));
+  return ComputedStyle.specOf<DiagnosticableSpec>(context) ?? const DiagnosticableSpec();
 }
 
     /// Creates a copy of this [DiagnosticableSpec] but with the given fields
@@ -385,11 +385,11 @@ mixin _\$ExistingMethodsSpec on Spec<ExistingMethodsSpec> {
 }
 
   /// {@template existing_methods_spec_of}
-/// Retrieves the [ExistingMethodsSpec] from the nearest [Mix] ancestor in the widget tree.
+/// Retrieves the [ExistingMethodsSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
 ///
-/// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-/// given [BuildContext], and then retrieves the [ExistingMethodsSpec] from that [Mix].
-/// If no ancestor [Mix] is found, this method returns an empty [ExistingMethodsSpec].
+/// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+/// that call this method will rebuild when [ExistingMethodsSpec] changes, not when other specs change.
+/// If no ancestor [ComputedStyle] is found, this method returns an empty [ExistingMethodsSpec].
 ///
 /// Example:
 ///
@@ -398,7 +398,7 @@ mixin _\$ExistingMethodsSpec on Spec<ExistingMethodsSpec> {
 /// ```
 /// {@endtemplate}
 static ExistingMethodsSpec of(BuildContext context) {
-  return _\$ExistingMethodsSpec.from(Mix.of(context));
+  return ComputedStyle.specOf<ExistingMethodsSpec>(context) ?? const ExistingMethodsSpec();
 }
 
   /// Linearly interpolates between this [ExistingMethodsSpec] and another [ExistingMethodsSpec] based on the given parameter [t].

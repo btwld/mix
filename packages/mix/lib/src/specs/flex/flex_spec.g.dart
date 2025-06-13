@@ -16,11 +16,11 @@ mixin _$FlexSpec on Spec<FlexSpec> {
   }
 
   /// {@template flex_spec_of}
-  /// Retrieves the [FlexSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [FlexSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [FlexSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [FlexSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [FlexSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [FlexSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$FlexSpec on Spec<FlexSpec> {
   /// ```
   /// {@endtemplate}
   static FlexSpec of(BuildContext context) {
-    return _$FlexSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<FlexSpec>(context) ?? const FlexSpec();
   }
 
   /// Creates a copy of this [FlexSpec] but with the given fields
@@ -97,7 +97,7 @@ mixin _$FlexSpec on Spec<FlexSpec> {
       textBaseline: t < 0.5 ? _$this.textBaseline : other.textBaseline,
       clipBehavior: t < 0.5 ? _$this.clipBehavior : other.clipBehavior,
       gap: MixHelpers.lerpDouble(_$this.gap, other.gap, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
       modifiers: other.modifiers,
     );
   }
@@ -330,10 +330,19 @@ class FlexSpecUtility<T extends Attribute>
   /// Utility for defining [FlexSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  FlexSpecUtility(super.builder, {super.mutable});
+  FlexSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  FlexSpecUtility<T> get chain =>
-      FlexSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  FlexSpecUtility<T> get chain => FlexSpecUtility(attributeBuilder);
 
   static FlexSpecUtility<FlexSpecAttribute> get self =>
       FlexSpecUtility((v) => v);

@@ -16,11 +16,11 @@ mixin _$CalloutSpec on Spec<CalloutSpec> {
   }
 
   /// {@template callout_spec_of}
-  /// Retrieves the [CalloutSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [CalloutSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [CalloutSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [CalloutSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [CalloutSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [CalloutSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$CalloutSpec on Spec<CalloutSpec> {
   /// ```
   /// {@endtemplate}
   static CalloutSpec of(BuildContext context) {
-    return _$CalloutSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<CalloutSpec>(context) ?? const CalloutSpec();
   }
 
   /// Creates a copy of this [CalloutSpec] but with the given fields
@@ -79,7 +79,7 @@ mixin _$CalloutSpec on Spec<CalloutSpec> {
       icon: _$this.icon.lerp(other.icon, t),
       text: _$this.text.lerp(other.text, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -194,10 +194,19 @@ class CalloutSpecUtility<T extends Attribute>
   /// Utility for defining [CalloutSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  CalloutSpecUtility(super.builder, {super.mutable});
+  CalloutSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  CalloutSpecUtility<T> get chain =>
-      CalloutSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  CalloutSpecUtility<T> get chain => CalloutSpecUtility(attributeBuilder);
 
   static CalloutSpecUtility<CalloutSpecAttribute> get self =>
       CalloutSpecUtility((v) => v);

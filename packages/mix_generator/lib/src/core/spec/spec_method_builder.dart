@@ -113,6 +113,16 @@ $lerpMethodsDocs$stepMethodDocs
 
 /// Generates the lerp expression for a single field
 String _getLerpExpression(ParameterMetadata field, bool isInternalRef) {
+  // Special handling for AnimatedData to preserve callbacks
+  if (field.name == 'animated' ||
+      field.type == 'AnimatedData' ||
+      field.type == 'AnimatedData?') {
+    final thisFieldName = isInternalRef ? field.asInternalRef : field.name;
+    final otherFieldName = 'other.${field.name}';
+
+    return '$thisFieldName ?? $otherFieldName';
+  }
+
   if (!field.annotation.isLerpable) {
     return 'other.${field.name}';
   }

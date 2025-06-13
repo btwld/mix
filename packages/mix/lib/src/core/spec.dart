@@ -60,18 +60,20 @@ abstract class SpecUtility<T extends Attribute, V> extends Attribute {
   @visibleForTesting
   final T Function(V) attributeBuilder;
 
-  final bool _mutable;
-
-  SpecUtility(this.attributeBuilder, {bool mutable = false})
-      : _mutable = mutable;
+  SpecUtility(
+    this.attributeBuilder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    bool? mutable,
+  });
 
   static T selfBuilder<T>(T value) => value;
 
   T builder(V v) {
     final attribute = attributeBuilder(v);
-    if (_mutable) {
-      attributeValue = (attributeValue?.merge(attribute) ?? attribute) as T;
-    }
+    // Always mutable - accumulate state in attributeValue
+    attributeValue = (attributeValue?.merge(attribute) ?? attribute) as T;
 
     return attribute;
   }

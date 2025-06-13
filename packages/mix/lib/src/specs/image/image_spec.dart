@@ -12,9 +12,9 @@ import '../../attributes/modifiers/widget_modifiers_data.dart';
 import '../../attributes/modifiers/widget_modifiers_data_dto.dart';
 import '../../attributes/modifiers/widget_modifiers_util.dart';
 import '../../attributes/scalars/scalar_util.dart';
+import '../../core/computed_style/computed_style.dart';
 import '../../core/element.dart';
 import '../../core/factory/mix_data.dart';
-import '../../core/factory/mix_provider.dart';
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
 import '../../core/utility.dart';
@@ -63,6 +63,7 @@ final class ImageSpec extends Spec<ImageSpec> with _$ImageSpec, Diagnosticable {
     bool isAntiAlias = false,
     bool matchTextDirection = false,
     Animation<double>? opacity,
+    List<Type> orderOfModifiers = const [],
   }) {
     return isAnimated
         ? AnimatedImageSpecWidget(
@@ -78,10 +79,12 @@ final class ImageSpec extends Spec<ImageSpec> with _$ImageSpec, Diagnosticable {
             gaplessPlayback: gaplessPlayback,
             isAntiAlias: isAntiAlias,
             matchTextDirection: matchTextDirection,
+            orderOfModifiers: orderOfModifiers,
             opacity: opacity,
           )
         : ImageSpecWidget(
             spec: this,
+            orderOfModifiers: orderOfModifiers,
             image: image,
             frameBuilder: frameBuilder,
             loadingBuilder: loadingBuilder,

@@ -16,11 +16,11 @@ mixin _$DropdownMenuSpec on Spec<DropdownMenuSpec> {
   }
 
   /// {@template dropdown_menu_spec_of}
-  /// Retrieves the [DropdownMenuSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [DropdownMenuSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [DropdownMenuSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [DropdownMenuSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [DropdownMenuSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [DropdownMenuSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,8 @@ mixin _$DropdownMenuSpec on Spec<DropdownMenuSpec> {
   /// ```
   /// {@endtemplate}
   static DropdownMenuSpec of(BuildContext context) {
-    return _$DropdownMenuSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<DropdownMenuSpec>(context) ??
+        const DropdownMenuSpec();
   }
 
   /// Creates a copy of this [DropdownMenuSpec] but with the given fields
@@ -75,7 +76,7 @@ mixin _$DropdownMenuSpec on Spec<DropdownMenuSpec> {
       menu: _$this.menu.lerp(other.menu, t),
       item: _$this.item.lerp(other.item, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -204,10 +205,20 @@ class DropdownMenuSpecUtility<T extends Attribute>
   /// Utility for defining [DropdownMenuSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  DropdownMenuSpecUtility(super.builder, {super.mutable});
+  DropdownMenuSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
   DropdownMenuSpecUtility<T> get chain =>
-      DropdownMenuSpecUtility(attributeBuilder, mutable: true);
+      DropdownMenuSpecUtility(attributeBuilder);
 
   static DropdownMenuSpecUtility<DropdownMenuSpecAttribute> get self =>
       DropdownMenuSpecUtility((v) => v);
@@ -263,11 +274,11 @@ mixin _$DropdownMenuContainerSpec on Spec<DropdownMenuContainerSpec> {
   }
 
   /// {@template dropdown_menu_container_spec_of}
-  /// Retrieves the [DropdownMenuContainerSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [DropdownMenuContainerSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [DropdownMenuContainerSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [DropdownMenuContainerSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [DropdownMenuContainerSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [DropdownMenuContainerSpec].
   ///
   /// Example:
   ///
@@ -276,7 +287,8 @@ mixin _$DropdownMenuContainerSpec on Spec<DropdownMenuContainerSpec> {
   /// ```
   /// {@endtemplate}
   static DropdownMenuContainerSpec of(BuildContext context) {
-    return _$DropdownMenuContainerSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<DropdownMenuContainerSpec>(context) ??
+        const DropdownMenuContainerSpec();
   }
 
   /// Creates a copy of this [DropdownMenuContainerSpec] but with the given fields
@@ -321,7 +333,7 @@ mixin _$DropdownMenuContainerSpec on Spec<DropdownMenuContainerSpec> {
       container: _$this.container.lerp(other.container, t),
       autoWidth: t < 0.5 ? _$this.autoWidth : other.autoWidth,
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -453,10 +465,20 @@ class DropdownMenuContainerSpecUtility<T extends Attribute>
   /// Utility for defining [DropdownMenuContainerSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  DropdownMenuContainerSpecUtility(super.builder, {super.mutable});
+  DropdownMenuContainerSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
   DropdownMenuContainerSpecUtility<T> get chain =>
-      DropdownMenuContainerSpecUtility(attributeBuilder, mutable: true);
+      DropdownMenuContainerSpecUtility(attributeBuilder);
 
   static DropdownMenuContainerSpecUtility<DropdownMenuContainerSpecAttribute>
       get self => DropdownMenuContainerSpecUtility((v) => v);
@@ -510,11 +532,11 @@ mixin _$DropdownMenuItemSpec on Spec<DropdownMenuItemSpec> {
   }
 
   /// {@template dropdown_menu_item_spec_of}
-  /// Retrieves the [DropdownMenuItemSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [DropdownMenuItemSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [DropdownMenuItemSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [DropdownMenuItemSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [DropdownMenuItemSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [DropdownMenuItemSpec].
   ///
   /// Example:
   ///
@@ -523,7 +545,8 @@ mixin _$DropdownMenuItemSpec on Spec<DropdownMenuItemSpec> {
   /// ```
   /// {@endtemplate}
   static DropdownMenuItemSpec of(BuildContext context) {
-    return _$DropdownMenuItemSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<DropdownMenuItemSpec>(context) ??
+        const DropdownMenuItemSpec();
   }
 
   /// Creates a copy of this [DropdownMenuItemSpec] but with the given fields
@@ -573,7 +596,7 @@ mixin _$DropdownMenuItemSpec on Spec<DropdownMenuItemSpec> {
       text: _$this.text.lerp(other.text, t),
       container: _$this.container.lerp(other.container, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -715,10 +738,20 @@ class DropdownMenuItemSpecUtility<T extends Attribute>
   /// Utility for defining [DropdownMenuItemSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  DropdownMenuItemSpecUtility(super.builder, {super.mutable});
+  DropdownMenuItemSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
   DropdownMenuItemSpecUtility<T> get chain =>
-      DropdownMenuItemSpecUtility(attributeBuilder, mutable: true);
+      DropdownMenuItemSpecUtility(attributeBuilder);
 
   static DropdownMenuItemSpecUtility<DropdownMenuItemSpecAttribute> get self =>
       DropdownMenuItemSpecUtility((v) => v);
