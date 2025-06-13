@@ -30,7 +30,7 @@ class FortalezaToastStyle extends ToastStyle {
       ..style.color.$neutral(9);
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       containerStyle,
       titleSubtitleContainerStyle,
       titleStyle,

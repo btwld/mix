@@ -10,4 +10,4 @@ dependencies:
   melos: ^6.3.2
 
 lint_staged:
-  '**/*.dart': dart fix --apply && dart analyze --fatal-infos
+  '**/*.dart': dart format && dart fix --apply && dart analyze

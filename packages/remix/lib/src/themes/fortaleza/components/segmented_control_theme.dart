@@ -27,7 +27,7 @@ class FortalezaSegmentedControlStyle extends SegmentedControlStyle {
       ),
     );
 
-    return Style.create([baseStyle(), style()]);
+    return Style.create([baseStyle, style]);
   }
 }
 
@@ -54,6 +54,6 @@ class FortalezaDarkSegmentedControlStyle
       ),
     );
 
-    return Style.create([baseStyle(), style()]);
+    return Style.create([baseStyle, style]);
   }
 }

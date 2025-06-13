@@ -48,9 +48,7 @@ class FortalezaSwitchStyle extends SwitchStyle {
       ),
     );
 
-    return Style.create(
-      [baseStyle(), baseThemeOverrides(), soft(softVariant())],
-    );
+    return Style.create([baseStyle, baseThemeOverrides, soft(softVariant)]);
   }
 }
 
@@ -61,7 +59,7 @@ class FortalezaDarkSwitchStyle extends FortalezaSwitchStyle {
   Style makeStyle(SpecConfiguration<SwitchSpecUtility> spec) {
     final $ = spec.utilities;
 
-    final baseStyle = Style(super.makeStyle(spec).call());
+    final baseStyle = Style(super.makeStyle(spec));
 
     final soft = Style(
       $.indicator.color.$neutral(12),
@@ -86,9 +84,9 @@ class FortalezaDarkSwitchStyle extends FortalezaSwitchStyle {
     );
 
     return Style(
-      baseStyle(),
-      baseThemeOverrides(),
-      FortalezaSwitchStyle.soft(soft()),
+      baseStyle,
+      baseThemeOverrides,
+      FortalezaSwitchStyle.soft(soft),
     );
   }
 }

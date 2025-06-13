@@ -79,10 +79,10 @@ class FortalezaSelectStyle extends SelectStyle {
 
     return Style.create(
       [
-        baseStyle(),
-        baseThemeOverrides(),
-        soft(softVariant()),
-        ghost(ghostVariant()),
+        baseStyle,
+        baseThemeOverrides,
+        soft(softVariant),
+        ghost(ghostVariant),
       ],
     ).animate(duration: const Duration(milliseconds: 100));
   }
@@ -95,7 +95,7 @@ class FortalezaDarkSelectStyle extends FortalezaSelectStyle {
   Style makeStyle(SpecConfiguration<SelectSpecUtility> spec) {
     final $ = spec.utilities;
 
-    final baseStyle = Style(super.makeStyle(spec).call());
+    final baseStyle = Style(super.makeStyle(spec));
 
     final baseThemeOverrides = Style(
       $.button
@@ -117,9 +117,9 @@ class FortalezaDarkSelectStyle extends FortalezaSelectStyle {
     );
 
     return Style.create([
-      baseStyle(),
-      baseThemeOverrides(),
-      FortalezaSelectStyle.ghost(ghost()),
+      baseStyle,
+      baseThemeOverrides,
+      FortalezaSelectStyle.ghost(ghost),
     ]);
   }
 }

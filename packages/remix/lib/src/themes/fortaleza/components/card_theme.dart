@@ -33,8 +33,7 @@ class FortalezaCardStyle extends CardStyle {
       spec.on.hover($.container.color.withOpacity(1)),
     );
 
-    return Style.create(
-      [baseStyle, surfaceVariant, ghost(ghostVariant)],
-    ).animate(duration: const Duration(milliseconds: 100));
+    return Style.create([baseStyle, surfaceVariant, ghost(ghostVariant)])
+        .animate(duration: const Duration(milliseconds: 100));
   }
 }

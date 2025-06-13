@@ -67,10 +67,10 @@ class FortalezaRadioStyle extends RadioStyle {
 
     return Style.create(
       [
-        baseStyle(),
-        surfaceVariant(),
-        spec.on.disabled(disabledVariant()),
-        soft(softVariant()),
+        baseStyle,
+        surfaceVariant,
+        spec.on.disabled(disabledVariant),
+        soft(softVariant),
       ],
     ).animate(
       duration: const Duration(milliseconds: 100),

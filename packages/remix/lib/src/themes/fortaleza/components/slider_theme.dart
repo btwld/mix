@@ -41,7 +41,7 @@ class FortalezaSliderStyle extends SliderStyle {
     );
 
     return Style.create([
-      baseStyle(),
+      baseStyle,
       divisions,
       thumb,
       track,

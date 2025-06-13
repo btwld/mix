@@ -25,12 +25,7 @@ class FortalezaDialogStyle extends DialogStyle {
       ..style.color.$neutral(9);
 
     return Style.create(
-      [
-        super.makeStyle(spec),
-        containerStyle,
-        titleStyle,
-        descriptionStyle,
-      ],
+      [super.makeStyle(spec), containerStyle, titleStyle, descriptionStyle],
     );
   }
 }

@@ -47,7 +47,7 @@ class FortalezaTextFieldStyle extends TextFieldStyle {
     );
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       $.floatingLabel.on(),
       $.cursorColor.$neutral(12),
       containerStyle,

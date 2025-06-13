@@ -39,7 +39,7 @@ class FortalezaMenuItemStyle extends MenuItemStyle {
       ..icon.color.$neutral(8);
 
     return Style.create([
-      baseStyle(),
+      baseStyle,
       titleSubtitleLayout,
       container,
       title,
