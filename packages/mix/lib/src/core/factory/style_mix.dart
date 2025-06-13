@@ -23,6 +23,9 @@ sealed class BaseStyle extends StyleElement {
   const BaseStyle.empty()
       : styles = const AttributeMap.empty(),
         variants = const AttributeMap.empty();
+
+  @override
+  BaseStyle merge(covariant BaseStyle? style);
 }
 
 /// A utility class for managing a collection of styling attributes and variants.

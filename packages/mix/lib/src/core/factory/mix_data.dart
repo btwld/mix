@@ -196,7 +196,7 @@ List<SpecAttribute> applyContextToVisualAttributes(
     (a, b) => a.priority.value.compareTo(b.priority.value),
   );
 
-  Style style = Style.create(mix.styles.values);
+  BaseStyle style = Style.create(mix.styles.values);
 
   for (final variant in prioritizedVariants) {
     style = _applyVariants(context, style, variant);
@@ -205,9 +205,9 @@ List<SpecAttribute> applyContextToVisualAttributes(
   return applyContextToVisualAttributes(context, style);
 }
 
-Style _applyVariants(
+BaseStyle _applyVariants(
   BuildContext context,
-  Style style,
+  BaseStyle style,
   VariantAttribute variantAttribute,
 ) {
   if (variantAttribute is ContextVariantBuilder) {
