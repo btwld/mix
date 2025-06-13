@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../core/factory/style_mix.dart';
 import '../core/widget_state/internal/gesture_mix_state.dart';
