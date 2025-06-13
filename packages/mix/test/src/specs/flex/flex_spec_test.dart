@@ -177,7 +177,7 @@ void main() {
         ..gap(10);
 
       final attr = util.attributeValue!;
-      expect(util, isA<Attribute>());
+      expect(util, isA<StyleElement>());
       expect(attr.direction, Axis.horizontal);
       expect(attr.mainAxisAlignment, MainAxisAlignment.center);
       expect(attr.crossAxisAlignment, CrossAxisAlignment.center);

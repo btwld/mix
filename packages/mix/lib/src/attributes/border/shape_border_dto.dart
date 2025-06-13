@@ -292,7 +292,7 @@ extension ShapeBorderExt on ShapeBorder {
   }
 }
 
-class ShapeBorderUtility<T extends Attribute>
+class ShapeBorderUtility<T extends StyleElement>
     extends MixUtility<T, ShapeBorderDto> {
   late final beveledRectangle = BeveledRectangleBorderUtility(builder);
 

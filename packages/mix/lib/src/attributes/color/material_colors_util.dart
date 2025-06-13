@@ -4,7 +4,7 @@ import '../../core/element.dart';
 import 'color_util.dart';
 
 @immutable
-final class MaterialColorUtility<T extends Attribute>
+final class MaterialColorUtility<T extends StyleElement>
     extends FoundationColorUtility<T, MaterialColor> {
   late final shade50 = FoundationColorUtility(builder, color.shade50);
   late final shade100 = FoundationColorUtility(builder, color.shade100);
@@ -19,7 +19,7 @@ final class MaterialColorUtility<T extends Attribute>
   MaterialColorUtility(super.builder, super.color);
 }
 
-base mixin MaterialColorsMixin<T extends Attribute> on BaseColorUtility<T> {
+base mixin MaterialColorsMixin<T extends StyleElement> on BaseColorUtility<T> {
   late final _color = MaterialColorUtility.new;
   late final _accent = MaterialAccentColorUtility.new;
   late final red = _color(builder, Colors.red);
@@ -60,7 +60,7 @@ base mixin MaterialColorsMixin<T extends Attribute> on BaseColorUtility<T> {
 }
 
 @immutable
-final class MaterialAccentColorUtility<T extends Attribute>
+final class MaterialAccentColorUtility<T extends StyleElement>
     extends FoundationColorUtility<T, MaterialAccentColor> {
   late final shade100 = FoundationColorUtility(builder, color.shade100);
   late final shade200 = FoundationColorUtility(builder, color.shade200);

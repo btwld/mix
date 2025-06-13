@@ -302,7 +302,7 @@ void main() {
 
       final attr = util.attributeValue!;
 
-      expect(util, isA<Attribute>());
+      expect(util, isA<StyleElement>());
       expect(attr.overflow, TextOverflow.ellipsis);
       expect(attr.textAlign, TextAlign.center);
       expect(attr.textScaleFactor, 1.5);

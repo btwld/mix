@@ -132,7 +132,7 @@ void main() {
 
       final attr = util.attributeValue!;
 
-      expect(util, isA<Attribute>());
+      expect(util, isA<StyleElement>());
       expect(attr.width, 100);
       expect(attr.height, 200);
       expect(attr.color, Colors.red.toDto());

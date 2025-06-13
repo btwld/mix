@@ -5,7 +5,7 @@ import '../core/factory/style_mix.dart';
 import '../core/variant.dart';
 
 @immutable
-class VariantAttribute<V extends IVariant> extends Attribute {
+class VariantAttribute<V extends IVariant> extends StyleElement {
   final V variant;
   final Style _style;
   const VariantAttribute(this.variant, Style style) : _style = style;

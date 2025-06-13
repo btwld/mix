@@ -46,7 +46,7 @@ class ToastDarkStyle extends ToastStyle {
   const ToastDarkStyle();
   @override
   Style makeStyle(
-    covariant SpecConfiguration<ToastSpecUtility<Attribute>> spec,
+    covariant SpecConfiguration<ToastSpecUtility<StyleElement>> spec,
   ) {
     final $ = spec.utilities;
 

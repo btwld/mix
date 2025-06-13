@@ -85,7 +85,7 @@ void main() {
 
       final attr = util.attributeValue!;
 
-      expect(util, isA<Attribute>());
+      expect(util, isA<StyleElement>());
       expect(attr.alignment, Alignment.topLeft);
       expect(attr.fit, StackFit.expand);
       expect(attr.textDirection, TextDirection.rtl);

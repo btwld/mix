@@ -172,7 +172,7 @@ extension GradientExt on Gradient {
 /// It also provides a method for converting a generic [Gradient] object to a specific type [T].
 ///
 /// Accepts a [builder] function that takes a [GradientDto] and returns an object of type [T].
-final class GradientUtility<T extends Attribute>
+final class GradientUtility<T extends StyleElement>
     extends MixUtility<T, GradientDto> {
   late final radial = RadialGradientUtility(builder);
   late final linear = LinearGradientUtility(builder);

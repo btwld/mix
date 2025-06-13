@@ -286,7 +286,7 @@ final class MockStringScalarAttribute
   String resolve(MixData mix) => value;
 }
 
-final class MockInvalidAttribute extends Attribute {
+final class MockInvalidAttribute extends StyleElement {
   const MockInvalidAttribute();
 
   @override

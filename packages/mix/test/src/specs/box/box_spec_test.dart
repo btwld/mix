@@ -382,7 +382,7 @@ void main() {
 
       final attr = util.attributeValue!;
 
-      expect(util, isA<Attribute>());
+      expect(util, isA<StyleElement>());
       expect(attr.alignment, Alignment.center);
       expect(attr.padding, const EdgeInsets.all(8.0).toDto());
       expect(attr.margin, null);

@@ -53,7 +53,7 @@ abstract class WidgetModifierSpecAttribute<
 }
 
 abstract class WidgetModifierUtility<
-    T extends Attribute,
+    T extends StyleElement,
     D extends WidgetModifierSpecAttribute<Value>,
     Value extends WidgetModifierSpec<Value>> extends MixUtility<T, D> {
   const WidgetModifierUtility(super.builder);

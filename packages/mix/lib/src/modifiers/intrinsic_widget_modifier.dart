@@ -47,13 +47,13 @@ final class IntrinsicWidthModifierSpec
   }
 }
 
-final class IntrinsicHeightModifierSpecUtility<T extends Attribute>
+final class IntrinsicHeightModifierSpecUtility<T extends StyleElement>
     extends MixUtility<T, IntrinsicHeightModifierSpecAttribute> {
   const IntrinsicHeightModifierSpecUtility(super.builder);
   T call() => builder(const IntrinsicHeightModifierSpecAttribute());
 }
 
-final class IntrinsicWidthModifierSpecUtility<T extends Attribute>
+final class IntrinsicWidthModifierSpecUtility<T extends StyleElement>
     extends MixUtility<T, IntrinsicWidthModifierSpecAttribute> {
   const IntrinsicWidthModifierSpecUtility(super.builder);
   T call() => builder(const IntrinsicWidthModifierSpecAttribute());

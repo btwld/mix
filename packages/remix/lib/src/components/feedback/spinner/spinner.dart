@@ -63,7 +63,7 @@ final class SpinnerSpec extends Spec<SpinnerSpec>
   }
 }
 
-final class SpinnerTypeStyleUtility<T extends Attribute>
+final class SpinnerTypeStyleUtility<T extends StyleElement>
     extends ScalarUtility<T, SpinnerTypeStyle> {
   const SpinnerTypeStyleUtility(super.builder);
 

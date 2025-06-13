@@ -55,31 +55,31 @@ class Variant extends IVariant {
   const Variant(this.name);
 
   VariantAttribute call([
-    Attribute? p1,
-    Attribute? p2,
-    Attribute? p3,
-    Attribute? p4,
-    Attribute? p5,
-    Attribute? p6,
-    Attribute? p7,
-    Attribute? p8,
-    Attribute? p9,
-    Attribute? p10,
-    Attribute? p11,
-    Attribute? p12,
-    Attribute? p13,
-    Attribute? p14,
-    Attribute? p15,
-    Attribute? p16,
-    Attribute? p17,
-    Attribute? p18,
-    Attribute? p19,
-    Attribute? p20,
+    StyleElement? p1,
+    StyleElement? p2,
+    StyleElement? p3,
+    StyleElement? p4,
+    StyleElement? p5,
+    StyleElement? p6,
+    StyleElement? p7,
+    StyleElement? p8,
+    StyleElement? p9,
+    StyleElement? p10,
+    StyleElement? p11,
+    StyleElement? p12,
+    StyleElement? p13,
+    StyleElement? p14,
+    StyleElement? p15,
+    StyleElement? p16,
+    StyleElement? p17,
+    StyleElement? p18,
+    StyleElement? p19,
+    StyleElement? p20,
   ]) {
     final params = [
       p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, //
       p11, p12, p13, p14, p15, p16, p17, p18, p19, p20,
-    ].whereType<Attribute>();
+    ].whereType<StyleElement>();
 
     return VariantAttribute(this, Style.create(params));
   }
@@ -161,31 +161,31 @@ class MultiVariant extends IVariant {
   }
 
   VariantAttribute call([
-    Attribute? p1,
-    Attribute? p2,
-    Attribute? p3,
-    Attribute? p4,
-    Attribute? p5,
-    Attribute? p6,
-    Attribute? p7,
-    Attribute? p8,
-    Attribute? p9,
-    Attribute? p10,
-    Attribute? p11,
-    Attribute? p12,
-    Attribute? p13,
-    Attribute? p14,
-    Attribute? p15,
-    Attribute? p16,
-    Attribute? p17,
-    Attribute? p18,
-    Attribute? p19,
-    Attribute? p20,
+    StyleElement? p1,
+    StyleElement? p2,
+    StyleElement? p3,
+    StyleElement? p4,
+    StyleElement? p5,
+    StyleElement? p6,
+    StyleElement? p7,
+    StyleElement? p8,
+    StyleElement? p9,
+    StyleElement? p10,
+    StyleElement? p11,
+    StyleElement? p12,
+    StyleElement? p13,
+    StyleElement? p14,
+    StyleElement? p15,
+    StyleElement? p16,
+    StyleElement? p17,
+    StyleElement? p18,
+    StyleElement? p19,
+    StyleElement? p20,
   ]) {
     final params = [
       p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, //
       p11, p12, p13, p14, p15, p16, p17, p18, p19, p20,
-    ].whereType<Attribute>();
+    ].whereType<StyleElement>();
 
     return VariantAttribute(this, Style.create(params));
   }

@@ -37,10 +37,10 @@ abstract class Spec<T extends Spec<T>> with EqualityMixin {
 
 /// An abstract class representing a resolvable attribute.
 ///
-/// This class extends the [Attribute] class and provides a generic type [Self] and [Value].
+/// This class extends the [StyleElement] class and provides a generic type [Self] and [Value].
 /// The [Self] type represents the concrete implementation of the attribute, while the [Value] type represents the resolvable value.
 abstract class SpecAttribute<Value> extends Mixable<Value>
-    implements Attribute {
+    implements StyleElement {
   final AnimatedDataDto? animated;
   final WidgetModifiersDataDto? modifiers;
 
@@ -53,7 +53,7 @@ abstract class SpecAttribute<Value> extends Mixable<Value>
   SpecAttribute<Value> merge(covariant SpecAttribute<Value>? other);
 }
 
-abstract class SpecUtility<T extends Attribute, V> extends Attribute {
+abstract class SpecUtility<T extends StyleElement, V> extends StyleElement {
   T? attributeValue;
 
   @protected

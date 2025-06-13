@@ -87,6 +87,6 @@ final class IconSpec extends Spec<IconSpec> with _$IconSpec, Diagnosticable {
   }
 }
 
-extension IconSpecUtilityExt<T extends Attribute> on IconSpecUtility<T> {
+extension IconSpecUtilityExt<T extends StyleElement> on IconSpecUtility<T> {
   ShadowUtility get shadow => ShadowUtility((v) => only(shadows: [v]));
 }
