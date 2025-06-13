@@ -421,40 +421,8 @@ void main() {
   });
 
   group('BlendModeUtility Tests', () {
-    test('Properties are initialized correctly', () {
-      const utility = BlendModeUtility(UtilityTestAttribute.new);
-      expect(utility.clear().value, BlendMode.clear);
-      expect(utility.src().value, BlendMode.src);
-      expect(utility.dst().value, BlendMode.dst);
-      expect(utility.srcOver().value, BlendMode.srcOver);
-      expect(utility.dstOver().value, BlendMode.dstOver);
-      expect(utility.srcIn().value, BlendMode.srcIn);
-      expect(utility.dstIn().value, BlendMode.dstIn);
-      expect(utility.srcOut().value, BlendMode.srcOut);
-      expect(utility.dstOut().value, BlendMode.dstOut);
-      expect(utility.srcATop().value, BlendMode.srcATop);
-      expect(utility.dstATop().value, BlendMode.dstATop);
-      expect(utility.xor().value, BlendMode.xor);
-      expect(utility.plus().value, BlendMode.plus);
-    });
-  });
-
-  group('BlendModeUtility Tests', () {
     const utility = BlendModeUtility(UtilityTestAttribute.new);
     test('Properties are initialized correctly', () {
-      expect(utility.clear().value, isA<BlendMode>());
-      expect(utility.src().value, isA<BlendMode>());
-      expect(utility.dst().value, isA<BlendMode>());
-      expect(utility.srcOver().value, isA<BlendMode>());
-      expect(utility.dstOver().value, isA<BlendMode>());
-      expect(utility.srcIn().value, isA<BlendMode>());
-      expect(utility.dstIn().value, isA<BlendMode>());
-      expect(utility.srcOut().value, isA<BlendMode>());
-      expect(utility.dstOut().value, isA<BlendMode>());
-      expect(utility.srcATop().value, isA<BlendMode>());
-      expect(utility.dstATop().value, isA<BlendMode>());
-      expect(utility.xor().value, isA<BlendMode>());
-      expect(utility.plus().value, isA<BlendMode>());
       expect(utility.clear().value, BlendMode.clear);
       expect(utility.src().value, BlendMode.src);
       expect(utility.dst().value, BlendMode.dst);
@@ -985,6 +953,122 @@ void main() {
       expect(utility.elasticOut().value, Curves.elasticOut);
       expect(utility.elasticInOut().value, Curves.elasticInOut);
       expect(utility.ease().value, isA<Curve>());
+    });
+
+    test('spring method creates SpringCurve correctly', () {
+      final springCurve = utility.spring();
+      expect(springCurve.value, isA<SpringCurve>());
+      expect(springCurve.value, isA<Curve>());
+    });
+
+    test('spring method with custom parameters', () {
+      final springCurve = utility.spring(
+        stiffness: 2.0,
+        dampingRatio: 0.8,
+        mass: 1.5,
+      );
+      expect(springCurve.value, isA<SpringCurve>());
+      expect(springCurve.value, isA<Curve>());
+    });
+  });
+
+  group('SpringCurve Tests', () {
+    test('default constructor creates valid curve', () {
+      final curve = SpringCurve();
+      expect(curve, isA<SpringCurve>());
+      expect(curve, isA<Curve>());
+
+      // Test transform method works
+      expect(curve.transform(0.0), isA<double>());
+      expect(curve.transform(0.5), isA<double>());
+      expect(curve.transform(1.0), isA<double>());
+    });
+
+    test('constructor with custom parameters', () {
+      final curve = SpringCurve(
+        stiffness: 2.0,
+        dampingRatio: 0.8,
+        mass: 1.5,
+      );
+      expect(curve, isA<SpringCurve>());
+      expect(curve.transform(0.5), isA<double>());
+    });
+
+    test('durationBased constructor creates valid curve', () {
+      final curve = SpringCurve.durationBased(
+        duration: const Duration(milliseconds: 300),
+      );
+      expect(curve, isA<SpringCurve>());
+      expect(curve.transform(0.5), isA<double>());
+    });
+
+    test('durationBased constructor with bounce parameter', () {
+      final curve = SpringCurve.durationBased(
+        duration: const Duration(milliseconds: 500),
+        bounce: 0.3,
+      );
+      expect(curve, isA<SpringCurve>());
+      expect(curve.transform(0.5), isA<double>());
+    });
+
+    test('bounce parameter validation', () {
+      // Valid bounce values
+      expect(
+        () => SpringCurve.durationBased(
+          duration: const Duration(milliseconds: 300),
+          bounce: -1.0,
+        ),
+        returnsNormally,
+      );
+
+      expect(
+        () => SpringCurve.durationBased(
+          duration: const Duration(milliseconds: 300),
+          bounce: 1.0,
+        ),
+        returnsNormally,
+      );
+
+      // Invalid bounce values
+      expect(
+        () => SpringCurve.durationBased(
+          duration: const Duration(milliseconds: 300),
+          bounce: -1.1,
+        ),
+        throwsAssertionError,
+      );
+
+      expect(
+        () => SpringCurve.durationBased(
+          duration: const Duration(milliseconds: 300),
+          bounce: 1.1,
+        ),
+        throwsAssertionError,
+      );
+    });
+
+    test('transform produces consistent results', () {
+      final curve = SpringCurve(stiffness: 2.0, dampingRatio: 0.8);
+
+      final result1 = curve.transform(0.5);
+      final result2 = curve.transform(0.5);
+
+      expect(result1, equals(result2));
+    });
+
+    test('transform handles boundary values', () {
+      final curve = SpringCurve();
+
+      expect(curve.transform(0.0), isA<double>());
+      expect(curve.transform(1.0), isA<double>());
+    });
+
+    test('different configurations produce valid curves', () {
+      final curve1 = SpringCurve(stiffness: 1.0, dampingRatio: 0.5);
+      final curve2 = SpringCurve(stiffness: 5.0, dampingRatio: 1.0);
+
+      expect(curve1.transform(0.5), isA<double>());
+      expect(curve2.transform(0.5), isA<double>());
     });
   });
 

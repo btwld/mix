@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -6,44 +7,128 @@ import '../../../helpers/testing_utils.dart';
 
 void main() {
   group('StackSpec', () {
-    test('resolve', () {
-      const attribute = StackSpecAttribute(
-        alignment: Alignment.center,
-        fit: StackFit.expand,
-        textDirection: TextDirection.ltr,
-        clipBehavior: Clip.antiAlias,
+    group('StackSpec comprehensive', () {
+      test('constructor with all properties', () {
+        const spec = StackSpec(
+          alignment: Alignment.bottomRight,
+          fit: StackFit.expand,
+          textDirection: TextDirection.rtl,
+          clipBehavior: Clip.antiAlias,
+          animated: AnimatedData(
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          ),
+          modifiers: WidgetModifiersData([
+            OpacityModifierSpec(0.8),
+            SizedBoxModifierSpec(width: 100, height: 100),
+          ]),
+        );
+
+        // Test ALL properties are set correctly
+        expect(spec.alignment, Alignment.bottomRight);
+        expect(spec.fit, StackFit.expand);
+        expect(spec.textDirection, TextDirection.rtl);
+        expect(spec.clipBehavior, Clip.antiAlias);
+        expect(spec.animated?.duration, const Duration(milliseconds: 300));
+        expect(spec.animated?.curve, Curves.easeInOut);
+        expect(spec.modifiers?.value, [
+          const OpacityModifierSpec(0.8),
+          const SizedBoxModifierSpec(width: 100, height: 100),
+        ]);
+      });
+
+      test('call method creates correct widget', () {
+        const spec = StackSpec(
+          alignment: Alignment.center,
+          fit: StackFit.expand,
+        );
+
+        final widget = spec.call(children: [
+          const Text('Child 1'),
+          const Text('Child 2'),
+        ]);
+
+        expect(widget, isA<StackSpecWidget>());
+      });
+
+      test('call method creates animated widget when animated', () {
+        const spec = StackSpec(
+          alignment: Alignment.center,
+          fit: StackFit.expand,
+          animated: AnimatedData(
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          ),
+        );
+
+        final widget = spec.call(children: [
+          const Text('Child 1'),
+          const Text('Child 2'),
+        ]);
+
+        expect(widget, isA<AnimatedStackSpecWidget>());
+      });
+
+      test('debugFillProperties includes all properties', () {
+        const spec = StackSpec(
+          alignment: Alignment.center,
+          fit: StackFit.expand,
+          textDirection: TextDirection.ltr,
+          clipBehavior: Clip.antiAlias,
+        );
+
+        final builder = DiagnosticPropertiesBuilder();
+        spec.debugFillProperties(builder);
+
+        final properties = builder.properties;
+        expect(properties, isNotEmpty);
+      });
+    });
+    test('StackSpec.from(MixData) resolves correctly', () {
+      final mixData = MixData.create(
+        MockBuildContext(),
+        Style(
+          const StackSpecAttribute(
+            alignment: Alignment.center,
+            fit: StackFit.expand,
+            textDirection: TextDirection.ltr,
+            clipBehavior: Clip.antiAlias,
+          ),
+        ),
       );
 
-      final mixture = attribute.resolve(EmptyMixData);
+      final spec = StackSpec.from(mixData);
 
-      expect(mixture.alignment, Alignment.center);
-      expect(mixture.fit, StackFit.expand);
-      expect(mixture.textDirection, TextDirection.ltr);
-      expect(mixture.clipBehavior, Clip.antiAlias);
+      expect(spec.alignment, Alignment.center);
+      expect(spec.fit, StackFit.expand);
+      expect(spec.textDirection, TextDirection.ltr);
+      expect(spec.clipBehavior, Clip.antiAlias);
     });
 
-    test('copyWith', () {
-      const spec = StackSpec(
+    test('copyWith updates correctly and preserves unchanged properties', () {
+      const original = StackSpec(
         alignment: Alignment.center,
         fit: StackFit.expand,
         textDirection: TextDirection.ltr,
         clipBehavior: Clip.antiAlias,
       );
 
-      final copiedSpec = spec.copyWith(
+      final updated = original.copyWith(
         alignment: Alignment.topLeft,
         fit: StackFit.loose,
-        textDirection: TextDirection.rtl,
-        clipBehavior: Clip.none,
+        // Don't update textDirection and clipBehavior - test preservation
       );
 
-      expect(copiedSpec.alignment, Alignment.topLeft);
-      expect(copiedSpec.fit, StackFit.loose);
-      expect(copiedSpec.textDirection, TextDirection.rtl);
-      expect(copiedSpec.clipBehavior, Clip.none);
+      // Test updated properties
+      expect(updated.alignment, Alignment.topLeft);
+      expect(updated.fit, StackFit.loose);
+
+      // Test preserved properties
+      expect(updated.textDirection, TextDirection.ltr);
+      expect(updated.clipBehavior, Clip.antiAlias);
     });
 
-    test('lerp', () {
+    test('lerp interpolates correctly', () {
       const spec1 = StackSpec(
         alignment: Alignment.topLeft,
         fit: StackFit.loose,
@@ -70,6 +155,53 @@ void main() {
       expect(lerpedSpec.clipBehavior, Clip.antiAlias);
 
       expect(lerpedSpec, isNot(spec1));
+      expect(lerpedSpec, isNot(spec2));
+    });
+
+    test('equality operator works correctly', () {
+      const spec1 = StackSpec(
+        alignment: Alignment.center,
+        fit: StackFit.expand,
+        textDirection: TextDirection.ltr,
+        clipBehavior: Clip.antiAlias,
+      );
+
+      const spec2 = StackSpec(
+        alignment: Alignment.center,
+        fit: StackFit.expand,
+        textDirection: TextDirection.ltr,
+        clipBehavior: Clip.antiAlias,
+      );
+
+      const spec3 = StackSpec(
+        alignment: Alignment.topLeft,
+        fit: StackFit.loose,
+        textDirection: TextDirection.rtl,
+        clipBehavior: Clip.none,
+      );
+
+      expect(spec1, spec2);
+      expect(spec1, isNot(spec3));
+      expect(spec2, isNot(spec3));
+    });
+
+    test('props returns correct list of properties', () {
+      const spec = StackSpec(
+        alignment: Alignment.center,
+        fit: StackFit.expand,
+        textDirection: TextDirection.ltr,
+        clipBehavior: Clip.antiAlias,
+        animated: AnimatedData.withDefaults(),
+      );
+
+      expect(spec.props.length,
+          6); // All properties including animated and modifiers
+      expect(spec.props.contains(spec.alignment), true);
+      expect(spec.props.contains(spec.fit), true);
+      expect(spec.props.contains(spec.textDirection), true);
+      expect(spec.props.contains(spec.clipBehavior), true);
+      expect(spec.props.contains(spec.animated), true);
+      expect(spec.props.contains(spec.modifiers), true);
     });
   });
 

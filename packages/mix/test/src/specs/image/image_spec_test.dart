@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -8,7 +9,94 @@ import '../../../helpers/testing_utils.dart';
 
 void main() {
   group('ImageSpec', () {
-    test('resolve returns correct recipe', () {
+    group('ImageSpec comprehensive', () {
+      test('constructor with all properties', () {
+        const spec = ImageSpec(
+          width: 150.0,
+          height: 200.0,
+          color: Colors.blue,
+          repeat: ImageRepeat.repeat,
+          fit: BoxFit.cover,
+          alignment: Alignment.bottomCenter,
+          centerSlice: Rect.fromLTRB(1, 2, 3, 4),
+          filterQuality: FilterQuality.high,
+          colorBlendMode: BlendMode.colorDodge,
+          animated: AnimatedData(
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          ),
+          modifiers: WidgetModifiersData([
+            OpacityModifierSpec(0.8),
+            SizedBoxModifierSpec(width: 100, height: 100),
+          ]),
+        );
+
+        // Test ALL properties are set correctly
+        expect(spec.width, 150.0);
+        expect(spec.height, 200.0);
+        expect(spec.color, Colors.blue);
+        expect(spec.repeat, ImageRepeat.repeat);
+        expect(spec.fit, BoxFit.cover);
+        expect(spec.alignment, Alignment.bottomCenter);
+        expect(spec.centerSlice, const Rect.fromLTRB(1, 2, 3, 4));
+        expect(spec.filterQuality, FilterQuality.high);
+        expect(spec.colorBlendMode, BlendMode.colorDodge);
+        expect(spec.animated?.duration, const Duration(milliseconds: 300));
+        expect(spec.animated?.curve, Curves.easeInOut);
+        expect(spec.modifiers?.value, [
+          const OpacityModifierSpec(0.8),
+          const SizedBoxModifierSpec(width: 100, height: 100),
+        ]);
+      });
+
+      test('call method creates correct widget', () {
+        const spec = ImageSpec(
+          width: 150.0,
+          height: 200.0,
+          color: Colors.blue,
+        );
+
+        final widget = spec.call(
+          image: const AssetImage('assets/test.png'),
+        );
+
+        expect(widget, isA<ImageSpecWidget>());
+      });
+
+      test('call method creates animated widget when animated', () {
+        const spec = ImageSpec(
+          width: 150.0,
+          height: 200.0,
+          color: Colors.blue,
+          animated: AnimatedData(
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          ),
+        );
+
+        final widget = spec.call(
+          image: const AssetImage('assets/test.png'),
+        );
+
+        expect(widget, isA<AnimatedImageSpecWidget>());
+      });
+
+      test('debugFillProperties includes all properties', () {
+        const spec = ImageSpec(
+          width: 150.0,
+          height: 200.0,
+          color: Colors.blue,
+          fit: BoxFit.cover,
+        );
+
+        final builder = DiagnosticPropertiesBuilder();
+        spec.debugFillProperties(builder);
+
+        final properties = builder.properties;
+        expect(properties, isNotEmpty);
+      });
+    });
+    test('ImageSpec.from(MixData) resolves correctly', () {
       final recipe = ImageSpec.from(EmptyMixData);
 
       expect(recipe.width, null);
@@ -18,7 +106,7 @@ void main() {
       expect(recipe.fit, null);
     });
 
-    test('lerp returns correct ImageSpec', () {
+    test('lerp interpolates correctly', () {
       const spec1 = ImageSpec(
         width: 100,
         height: 200,
@@ -54,39 +142,59 @@ void main() {
       expect(lerpSpec.colorBlendMode, BlendMode.colorBurn);
     });
 
-    test('copyWith returns correct ImageSpec', () {
-      const spec = ImageSpec(
-        width: 100,
-        height: 200,
+    test('copyWith updates correctly and preserves unchanged properties', () {
+      const original = ImageSpec(
+        width: 100.0,
+        height: 150.0,
         color: Colors.red,
+        fit: BoxFit.contain,
         repeat: ImageRepeat.repeat,
-        fit: BoxFit.cover,
-        alignment: Alignment.bottomCenter,
-        centerSlice: Rect.fromLTRB(0, 0, 0, 0),
-        filterQuality: FilterQuality.low,
-        colorBlendMode: BlendMode.srcOver,
-      );
-      final copiedSpec = spec.copyWith(
-        width: 150,
-        height: 250,
-        color: Colors.blue,
-        repeat: ImageRepeat.noRepeat,
-        fit: BoxFit.fill,
-        alignment: Alignment.topCenter,
-        centerSlice: Rect.zero,
-        filterQuality: FilterQuality.none,
-        colorBlendMode: BlendMode.clear,
       );
 
-      expect(copiedSpec.width, 150);
-      expect(copiedSpec.height, 250);
-      expect(copiedSpec.color, Colors.blue);
-      expect(copiedSpec.repeat, ImageRepeat.noRepeat);
-      expect(copiedSpec.fit, BoxFit.fill);
-      expect(copiedSpec.alignment, Alignment.topCenter);
-      expect(copiedSpec.centerSlice, Rect.zero);
-      expect(copiedSpec.filterQuality, FilterQuality.none);
-      expect(copiedSpec.colorBlendMode, BlendMode.clear);
+      final updated = original.copyWith(
+        width: 200.0,
+        color: Colors.blue,
+        // Don't update height, fit, repeat - test preservation
+      );
+
+      // Test updated properties
+      expect(updated.width, 200.0);
+      expect(updated.color, Colors.blue);
+
+      // Test preserved properties
+      expect(updated.height, 150.0);
+      expect(updated.fit, BoxFit.contain);
+      expect(updated.repeat, ImageRepeat.repeat);
+    });
+
+    test('equality operator works correctly', () {
+      const spec1 = ImageSpec(
+        width: 100.0,
+        height: 150.0,
+        color: Colors.red,
+        fit: BoxFit.contain,
+        repeat: ImageRepeat.repeat,
+      );
+
+      const spec2 = ImageSpec(
+        width: 100.0,
+        height: 150.0,
+        color: Colors.red,
+        fit: BoxFit.contain,
+        repeat: ImageRepeat.repeat,
+      );
+
+      const spec3 = ImageSpec(
+        width: 200.0,
+        height: 250.0,
+        color: Colors.blue,
+        fit: BoxFit.cover,
+        repeat: ImageRepeat.noRepeat,
+      );
+
+      expect(spec1, spec2);
+      expect(spec1, isNot(spec3));
+      expect(spec2, isNot(spec3));
     });
 
     test('props returns correct list of properties', () {

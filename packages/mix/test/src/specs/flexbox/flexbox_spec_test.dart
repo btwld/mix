@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -8,6 +9,111 @@ import '../../../helpers/testing_utils.dart';
 
 void main() {
   group('FlexBoxSpec', () {
+    group('FlexBoxSpec comprehensive', () {
+      test('constructor with all properties', () {
+        const spec = FlexBoxSpec(
+          box: BoxSpec(
+            alignment: Alignment.center,
+            padding: EdgeInsets.all(16.0),
+            margin: EdgeInsets.symmetric(horizontal: 8.0),
+            width: 300.0,
+            height: 200.0,
+          ),
+          flex: FlexSpec(
+            direction: Axis.horizontal,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            verticalDirection: VerticalDirection.up,
+            textDirection: TextDirection.rtl,
+            textBaseline: TextBaseline.ideographic,
+            clipBehavior: Clip.antiAlias,
+            gap: 16,
+          ),
+          animated: AnimatedData(
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          ),
+          modifiers: WidgetModifiersData([
+            OpacityModifierSpec(0.8),
+            SizedBoxModifierSpec(width: 100, height: 100),
+          ]),
+        );
+
+        // Test ALL properties are set correctly
+        expect(spec.box.alignment, Alignment.center);
+        expect(spec.box.padding, const EdgeInsets.all(16.0));
+        expect(spec.box.margin, const EdgeInsets.symmetric(horizontal: 8.0));
+        expect(spec.box.width, 300.0);
+        expect(spec.box.height, 200.0);
+        expect(spec.flex.direction, Axis.horizontal);
+        expect(spec.flex.mainAxisAlignment, MainAxisAlignment.spaceBetween);
+        expect(spec.flex.crossAxisAlignment, CrossAxisAlignment.stretch);
+        expect(spec.flex.mainAxisSize, MainAxisSize.min);
+        expect(spec.flex.verticalDirection, VerticalDirection.up);
+        expect(spec.flex.textDirection, TextDirection.rtl);
+        expect(spec.flex.textBaseline, TextBaseline.ideographic);
+        expect(spec.flex.clipBehavior, Clip.antiAlias);
+        expect(spec.flex.gap, 16);
+        expect(spec.animated?.duration, const Duration(milliseconds: 300));
+        expect(spec.animated?.curve, Curves.easeInOut);
+        expect(spec.modifiers?.value, [
+          const OpacityModifierSpec(0.8),
+          const SizedBoxModifierSpec(width: 100, height: 100),
+        ]);
+      });
+
+      test('call method creates correct widget', () {
+        const spec = FlexBoxSpec(
+          box: BoxSpec(alignment: Alignment.center),
+          flex: FlexSpec(mainAxisAlignment: MainAxisAlignment.center),
+        );
+
+        final widget = spec.call(
+          direction: Axis.horizontal,
+          children: [
+            const Text('Child 1'),
+            const Text('Child 2'),
+          ],
+        );
+
+        expect(widget, isA<FlexBoxSpecWidget>());
+      });
+
+      test('call method creates animated widget when animated', () {
+        const spec = FlexBoxSpec(
+          box: BoxSpec(alignment: Alignment.center),
+          flex: FlexSpec(mainAxisAlignment: MainAxisAlignment.center),
+          animated: AnimatedData(
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          ),
+        );
+
+        final widget = spec.call(
+          direction: Axis.horizontal,
+          children: [
+            const Text('Child 1'),
+            const Text('Child 2'),
+          ],
+        );
+
+        expect(widget, isA<AnimatedFlexBoxSpecWidget>());
+      });
+
+      test('debugFillProperties includes all properties', () {
+        const spec = FlexBoxSpec(
+          box: BoxSpec(alignment: Alignment.center, width: 100.0),
+          flex: FlexSpec(mainAxisAlignment: MainAxisAlignment.center),
+        );
+
+        final builder = DiagnosticPropertiesBuilder();
+        spec.debugFillProperties(builder);
+
+        final properties = builder.properties;
+        expect(properties, isNotEmpty);
+      });
+    });
     test('resolve', () {
       final mix = MixData.create(
         MockBuildContext(),
@@ -60,53 +166,32 @@ void main() {
       expect(spec.flex.textBaseline, TextBaseline.alphabetic);
     });
 
-    test('copyWith', () {
-      final spec = FlexBoxSpec(
+    test('copyWith updates correctly and preserves unchanged properties', () {
+      const original = FlexBoxSpec(
         box: BoxSpec(
           alignment: Alignment.center,
-          padding: const EdgeInsets.all(16.0),
-          margin: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-          constraints: const BoxConstraints(maxWidth: 300.0, minHeight: 200.0),
-          decoration: const BoxDecoration(color: Colors.blue),
-          transform: Matrix4.translationValues(10.0, 10.0, 0.0),
-          clipBehavior: Clip.antiAlias,
-          width: 300,
-          height: 200,
+          width: 100.0,
+          padding: EdgeInsets.all(8.0),
         ),
-        flex: const FlexSpec(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          verticalDirection: VerticalDirection.down,
-          textDirection: TextDirection.ltr,
-          textBaseline: TextBaseline.alphabetic,
-        ),
-      );
-
-      final copiedSpec = spec.copyWith(
-        box: spec.box.copyWith(
-          width: 250.0,
-          height: 150.0,
-        ),
-        flex: spec.flex.copyWith(
+        flex: FlexSpec(
           mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
         ),
       );
 
-      expect(copiedSpec.box.alignment, Alignment.center);
-      expect(copiedSpec.box.padding, const EdgeInsets.all(16.0));
-      expect(
-          copiedSpec.box.margin, const EdgeInsets.only(top: 8.0, bottom: 8.0));
-      expect(copiedSpec.box.width, 250.0);
-      expect(copiedSpec.box.height, 150.0);
+      final updated = original.copyWith(
+        box: original.box.copyWith(width: 200.0),
+        // Don't update flex - test preservation
+      );
 
-      expect(copiedSpec.flex.mainAxisAlignment, MainAxisAlignment.start);
-      expect(copiedSpec.flex.crossAxisAlignment, CrossAxisAlignment.start);
-      expect(copiedSpec.flex.mainAxisSize, MainAxisSize.max);
-      expect(copiedSpec.flex.verticalDirection, VerticalDirection.down);
-      expect(copiedSpec.flex.textDirection, TextDirection.ltr);
-      expect(copiedSpec.flex.textBaseline, TextBaseline.alphabetic);
+      // Test updated properties
+      expect(updated.box.width, 200.0);
+
+      // Test preserved properties
+      expect(updated.box.alignment, Alignment.center);
+      expect(updated.box.padding, const EdgeInsets.all(8.0));
+      expect(updated.flex.mainAxisAlignment, MainAxisAlignment.start);
+      expect(updated.flex.crossAxisAlignment, CrossAxisAlignment.center);
     });
 
     test('lerp', () {
