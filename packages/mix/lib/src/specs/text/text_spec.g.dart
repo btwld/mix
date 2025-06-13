@@ -51,7 +51,7 @@ mixin _$TextSpec on Spec<TextSpec> {
     bool? softWrap,
     TextDirective? directive,
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
   }) {
     return TextSpec(
       overflow: overflow ?? _$this.overflow,
@@ -487,7 +487,7 @@ class TextSpecUtility<T extends StyleElement>
     bool? softWrap,
     TextDirectiveDto? directive,
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(TextSpecAttribute(
       overflow: overflow,

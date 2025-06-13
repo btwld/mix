@@ -40,7 +40,7 @@ mixin _$ToastSpec on Spec<ToastSpec> {
     FlexBoxSpec? titleSubtitleContainer,
     TextSpec? title,
     TextSpec? subtitle,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return ToastSpec(
@@ -267,7 +267,7 @@ class ToastSpecUtility<T extends StyleElement>
     FlexBoxSpecAttribute? titleSubtitleContainer,
     TextSpecAttribute? title,
     TextSpecAttribute? subtitle,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(ToastSpecAttribute(

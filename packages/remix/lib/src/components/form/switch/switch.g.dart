@@ -39,7 +39,7 @@ mixin _$SwitchSpec on Spec<SwitchSpec> {
     BoxSpec? container,
     BoxSpec? indicator,
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
   }) {
     return SwitchSpec(
       container: container ?? _$this.container,
@@ -228,7 +228,7 @@ class SwitchSpecUtility<T extends StyleElement>
     BoxSpecAttribute? container,
     BoxSpecAttribute? indicator,
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(SwitchSpecAttribute(
       container: container,

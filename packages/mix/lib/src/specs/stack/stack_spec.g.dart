@@ -41,7 +41,7 @@ mixin _$StackSpec on Spec<StackSpec> {
     TextDirection? textDirection,
     Clip? clipBehavior,
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
   }) {
     return StackSpec(
       alignment: alignment ?? _$this.alignment,
@@ -260,7 +260,7 @@ class StackSpecUtility<T extends StyleElement>
     TextDirection? textDirection,
     Clip? clipBehavior,
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(StackSpecAttribute(
       alignment: alignment,

@@ -39,7 +39,7 @@ mixin _$SliderSpec on Spec<SliderSpec> {
     BoxSpec? track,
     BoxSpec? activeTrack,
     BoxSpec? division,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return SliderSpec(
@@ -258,7 +258,7 @@ class SliderSpecUtility<T extends StyleElement>
     BoxSpecAttribute? track,
     BoxSpecAttribute? activeTrack,
     BoxSpecAttribute? division,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(SliderSpecAttribute(

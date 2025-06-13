@@ -38,7 +38,7 @@ mixin _$DividerSpec on Spec<DividerSpec> {
   DividerSpec copyWith({
     BoxSpec? container,
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
   }) {
     return DividerSpec(
       container: container ?? _$this.container,
@@ -211,7 +211,7 @@ class DividerSpecUtility<T extends StyleElement>
   T only({
     BoxSpecAttribute? container,
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(DividerSpecAttribute(
       container: container,

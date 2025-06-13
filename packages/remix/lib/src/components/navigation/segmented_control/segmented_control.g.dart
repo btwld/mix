@@ -42,7 +42,7 @@ mixin _$SegmentedControlSpec on Spec<SegmentedControlSpec> {
     bool? showDivider,
     BoxSpec? divider,
     SegmentButtonSpec? item,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return SegmentedControlSpec(
@@ -279,7 +279,7 @@ class SegmentedControlSpecUtility<T extends StyleElement>
     bool? showDivider,
     BoxSpecAttribute? divider,
     SegmentButtonSpecAttribute? item,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(SegmentedControlSpecAttribute(
@@ -351,7 +351,7 @@ mixin _$SegmentButtonSpec on Spec<SegmentButtonSpec> {
     FlexSpec? flex,
     IconSpec? icon,
     TextSpec? label,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return SegmentButtonSpec(
@@ -573,7 +573,7 @@ class SegmentButtonSpecUtility<T extends StyleElement>
     FlexSpecAttribute? flex,
     IconSpecAttribute? icon,
     TextSpecAttribute? label,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(SegmentButtonSpecAttribute(

@@ -8,10 +8,10 @@ import '../../../helpers/testing_utils.dart';
 void main() {
   group('WidgetModifiersDataDto', () {
     test('merge combines two WidgetModifiersDataDto instances correctly', () {
-      final dto1 = WidgetModifiersDataDto([
+      final dto1 = WidgetModifiersConfigDto([
         TransformModifierSpecAttribute(transform: Matrix4.identity()),
       ]);
-      const dto2 = WidgetModifiersDataDto([
+      const dto2 = WidgetModifiersConfigDto([
         OpacityModifierSpecAttribute(opacity: 0.5),
       ]);
 
@@ -29,15 +29,15 @@ void main() {
     });
 
     test('merge with cleaner removes previous modifiers ', () {
-      final dto1 = WidgetModifiersDataDto([
+      final dto1 = WidgetModifiersConfigDto([
         TransformModifierSpecAttribute(transform: Matrix4.identity()),
       ]);
 
-      const cleaner = WidgetModifiersDataDto([
+      const cleaner = WidgetModifiersConfigDto([
         ResetModifierSpecAttribute(),
       ]);
 
-      const dto2 = WidgetModifiersDataDto([
+      const dto2 = WidgetModifiersConfigDto([
         OpacityModifierSpecAttribute(opacity: 0.5),
       ]);
 
@@ -56,7 +56,7 @@ void main() {
     });
 
     test('merge returns the same instance when other is null', () {
-      final dto = WidgetModifiersDataDto([
+      final dto = WidgetModifiersConfigDto([
         TransformModifierSpecAttribute(transform: Matrix4.identity()),
       ]);
 
@@ -66,7 +66,7 @@ void main() {
     });
 
     test('resolve creates WidgetModifiersData with resolved modifiers', () {
-      final dto = WidgetModifiersDataDto([
+      final dto = WidgetModifiersConfigDto([
         TransformModifierSpecAttribute(transform: Matrix4.identity()),
         const OpacityModifierSpecAttribute(opacity: 0.5),
       ]);
@@ -89,7 +89,7 @@ void main() {
         TransformModifierSpecAttribute(transform: Matrix4.identity()),
         const OpacityModifierSpecAttribute(opacity: 0.5),
       ];
-      final dto = WidgetModifiersDataDto(modifiers);
+      final dto = WidgetModifiersConfigDto(modifiers);
 
       expect(dto.props, [modifiers]);
     });

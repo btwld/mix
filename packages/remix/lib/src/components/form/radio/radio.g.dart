@@ -40,7 +40,7 @@ mixin _$RadioSpec on Spec<RadioSpec> {
     BoxSpec? indicator,
     FlexBoxSpec? container,
     TextSpec? text,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return RadioSpec(
@@ -265,7 +265,7 @@ class RadioSpecUtility<T extends StyleElement>
     BoxSpecAttribute? indicator,
     FlexBoxSpecAttribute? container,
     TextSpecAttribute? text,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(RadioSpecAttribute(

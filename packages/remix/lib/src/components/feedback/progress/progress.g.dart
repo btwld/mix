@@ -41,7 +41,7 @@ mixin _$ProgressSpec on Spec<ProgressSpec> {
     BoxSpec? fill,
     BoxSpec? outerContainer,
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
   }) {
     return ProgressSpec(
       container: container ?? _$this.container,
@@ -261,7 +261,7 @@ class ProgressSpecUtility<T extends StyleElement>
     BoxSpecAttribute? fill,
     BoxSpecAttribute? outerContainer,
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(ProgressSpecAttribute(
       container: container,

@@ -46,7 +46,7 @@ mixin _$FlexSpec on Spec<FlexSpec> {
     Clip? clipBehavior,
     double? gap,
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
   }) {
     return FlexSpec(
       crossAxisAlignment: crossAxisAlignment ?? _$this.crossAxisAlignment,
@@ -360,7 +360,7 @@ class FlexSpecUtility<T extends StyleElement>
     Clip? clipBehavior,
     SpaceDto? gap,
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(FlexSpecAttribute(
       crossAxisAlignment: crossAxisAlignment,

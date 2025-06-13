@@ -46,7 +46,7 @@ mixin _$IconSpec on Spec<IconSpec> {
     bool? applyTextScaling,
     double? fill,
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
   }) {
     return IconSpec(
       color: color ?? _$this.color,
@@ -346,7 +346,7 @@ class IconSpecUtility<T extends StyleElement>
     bool? applyTextScaling,
     double? fill,
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(IconSpecAttribute(
       color: color,

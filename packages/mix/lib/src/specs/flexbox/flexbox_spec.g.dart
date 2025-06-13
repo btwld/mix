@@ -37,7 +37,7 @@ mixin _$FlexBoxSpec on Spec<FlexBoxSpec> {
   @override
   FlexBoxSpec copyWith({
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     BoxSpec? box,
     FlexSpec? flex,
   }) {
@@ -311,7 +311,7 @@ class FlexBoxSpecUtility<T extends StyleElement>
   @override
   T only({
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     BoxSpecAttribute? box,
     FlexSpecAttribute? flex,
   }) {

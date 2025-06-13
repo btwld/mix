@@ -37,7 +37,7 @@ mixin _$CardSpec on Spec<CardSpec> {
   @override
   CardSpec copyWith({
     BoxSpec? container,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return CardSpec(
@@ -209,7 +209,7 @@ class CardSpecUtility<T extends StyleElement>
   @override
   T only({
     BoxSpecAttribute? container,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(CardSpecAttribute(
