@@ -10,7 +10,7 @@ part of 'slider.dart';
 
 /// A mixin that provides spec functionality for [SliderSpec].
 mixin _$SliderSpec on Spec<SliderSpec> {
-  static SliderSpec from(MixData mix) {
+  static SliderSpec from(MixContext mix) {
     return mix.attributeOf<SliderSpecAttribute>()?.resolve(mix) ?? SliderSpec();
   }
 
@@ -39,7 +39,7 @@ mixin _$SliderSpec on Spec<SliderSpec> {
     BoxSpec? track,
     BoxSpec? activeTrack,
     BoxSpec? division,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return SliderSpec(
@@ -138,16 +138,16 @@ class SliderSpecAttribute extends SpecAttribute<SliderSpec>
     super.animated,
   });
 
-  /// Resolves to [SliderSpec] using the provided [MixData].
+  /// Resolves to [SliderSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final sliderSpec = SliderSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  SliderSpec resolve(MixData mix) {
+  SliderSpec resolve(MixContext mix) {
     return SliderSpec(
       thumb: thumb?.resolve(mix),
       track: track?.resolve(mix),
@@ -258,7 +258,7 @@ class SliderSpecUtility<T extends StyleElement>
     BoxSpecAttribute? track,
     BoxSpecAttribute? activeTrack,
     BoxSpecAttribute? division,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(SliderSpecAttribute(

@@ -10,7 +10,7 @@ part of 'dialog.dart';
 
 /// A mixin that provides spec functionality for [DialogSpec].
 mixin _$DialogSpec on Spec<DialogSpec> {
-  static DialogSpec from(MixData mix) {
+  static DialogSpec from(MixContext mix) {
     return mix.attributeOf<DialogSpecAttribute>()?.resolve(mix) ??
         const DialogSpec();
   }
@@ -40,7 +40,7 @@ mixin _$DialogSpec on Spec<DialogSpec> {
     TextSpec? title,
     TextSpec? description,
     FlexSpec? actionsContainer,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return DialogSpec(
@@ -142,16 +142,16 @@ class DialogSpecAttribute extends SpecAttribute<DialogSpec>
     super.animated,
   });
 
-  /// Resolves to [DialogSpec] using the provided [MixData].
+  /// Resolves to [DialogSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final dialogSpec = DialogSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  DialogSpec resolve(MixData mix) {
+  DialogSpec resolve(MixContext mix) {
     return DialogSpec(
       container: container?.resolve(mix),
       title: title?.resolve(mix),
@@ -265,7 +265,7 @@ class DialogSpecUtility<T extends StyleElement>
     TextSpecAttribute? title,
     TextSpecAttribute? description,
     FlexSpecAttribute? actionsContainer,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(DialogSpecAttribute(

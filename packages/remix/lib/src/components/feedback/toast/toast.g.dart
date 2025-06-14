@@ -10,7 +10,7 @@ part of 'toast.dart';
 
 /// A mixin that provides spec functionality for [ToastSpec].
 mixin _$ToastSpec on Spec<ToastSpec> {
-  static ToastSpec from(MixData mix) {
+  static ToastSpec from(MixContext mix) {
     return mix.attributeOf<ToastSpecAttribute>()?.resolve(mix) ??
         const ToastSpec();
   }
@@ -40,7 +40,7 @@ mixin _$ToastSpec on Spec<ToastSpec> {
     FlexBoxSpec? titleSubtitleContainer,
     TextSpec? title,
     TextSpec? subtitle,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return ToastSpec(
@@ -142,16 +142,16 @@ class ToastSpecAttribute extends SpecAttribute<ToastSpec> with Diagnosticable {
     super.animated,
   });
 
-  /// Resolves to [ToastSpec] using the provided [MixData].
+  /// Resolves to [ToastSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final toastSpec = ToastSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  ToastSpec resolve(MixData mix) {
+  ToastSpec resolve(MixContext mix) {
     return ToastSpec(
       container: container?.resolve(mix),
       titleSubtitleContainer: titleSubtitleContainer?.resolve(mix),
@@ -267,7 +267,7 @@ class ToastSpecUtility<T extends StyleElement>
     FlexBoxSpecAttribute? titleSubtitleContainer,
     TextSpecAttribute? title,
     TextSpecAttribute? subtitle,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(ToastSpecAttribute(

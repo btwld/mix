@@ -22,7 +22,7 @@ class AnimatedDataDto extends Mixable<AnimatedData> {
         onEnd = null;
 
   @override
-  AnimatedData resolve(MixData mix) {
+  AnimatedData resolve(MixContext mix) {
     return AnimatedData(duration: duration, curve: curve, onEnd: onEnd);
   }
 

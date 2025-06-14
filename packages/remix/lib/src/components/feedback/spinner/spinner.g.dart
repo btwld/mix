@@ -10,7 +10,7 @@ part of 'spinner.dart';
 
 /// A mixin that provides spec functionality for [SpinnerSpec].
 mixin _$SpinnerSpec on Spec<SpinnerSpec> {
-  static SpinnerSpec from(MixData mix) {
+  static SpinnerSpec from(MixContext mix) {
     return mix.attributeOf<SpinnerSpecAttribute>()?.resolve(mix) ??
         const SpinnerSpec();
   }
@@ -41,7 +41,7 @@ mixin _$SpinnerSpec on Spec<SpinnerSpec> {
     Color? color,
     Duration? duration,
     SpinnerTypeStyle? style,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return SpinnerSpec(
@@ -149,16 +149,16 @@ class SpinnerSpecAttribute extends SpecAttribute<SpinnerSpec>
     super.animated,
   });
 
-  /// Resolves to [SpinnerSpec] using the provided [MixData].
+  /// Resolves to [SpinnerSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final spinnerSpec = SpinnerSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  SpinnerSpec resolve(MixData mix) {
+  SpinnerSpec resolve(MixContext mix) {
     return SpinnerSpec(
       size: size,
       strokeWidth: strokeWidth,
@@ -277,7 +277,7 @@ class SpinnerSpecUtility<T extends StyleElement>
     ColorDto? color,
     Duration? duration,
     SpinnerTypeStyle? style,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(SpinnerSpecAttribute(

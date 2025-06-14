@@ -6,7 +6,7 @@ import '../../helpers/testing_utils.dart';
 
 // Helper to create ComputedStyle from Style
 ComputedStyle _computeStyle(Style style) {
-  final mixData = MixData.create(MockBuildContext(), style);
+  final mixData = MixContext.create(MockBuildContext(), style);
 
   return ComputedStyle.compute(mixData);
 }

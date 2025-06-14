@@ -10,7 +10,7 @@ part of 'avatar.dart';
 
 /// A mixin that provides spec functionality for [AvatarSpec].
 mixin _$AvatarSpec on Spec<AvatarSpec> {
-  static AvatarSpec from(MixData mix) {
+  static AvatarSpec from(MixContext mix) {
     return mix.attributeOf<AvatarSpecAttribute>()?.resolve(mix) ??
         const AvatarSpec();
   }
@@ -121,16 +121,16 @@ class AvatarSpecAttribute extends SpecAttribute<AvatarSpec> {
     super.animated,
   });
 
-  /// Resolves to [AvatarSpec] using the provided [MixData].
+  /// Resolves to [AvatarSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final avatarSpec = AvatarSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  AvatarSpec resolve(MixData mix) {
+  AvatarSpec resolve(MixContext mix) {
     return AvatarSpec(
       container: container?.resolve(mix),
       image: image?.resolve(mix),

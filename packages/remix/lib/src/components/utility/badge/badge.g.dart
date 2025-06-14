@@ -10,7 +10,7 @@ part of 'badge.dart';
 
 /// A mixin that provides spec functionality for [BadgeSpec].
 mixin _$BadgeSpec on Spec<BadgeSpec> {
-  static BadgeSpec from(MixData mix) {
+  static BadgeSpec from(MixContext mix) {
     return mix.attributeOf<BadgeSpecAttribute>()?.resolve(mix) ??
         const BadgeSpec();
   }
@@ -107,16 +107,16 @@ class BadgeSpecAttribute extends SpecAttribute<BadgeSpec> {
     super.animated,
   });
 
-  /// Resolves to [BadgeSpec] using the provided [MixData].
+  /// Resolves to [BadgeSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final badgeSpec = BadgeSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  BadgeSpec resolve(MixData mix) {
+  BadgeSpec resolve(MixContext mix) {
     return BadgeSpec(
       container: container?.resolve(mix),
       label: label?.resolve(mix),

@@ -10,7 +10,7 @@ part of 'radio.dart';
 
 /// A mixin that provides spec functionality for [RadioSpec].
 mixin _$RadioSpec on Spec<RadioSpec> {
-  static RadioSpec from(MixData mix) {
+  static RadioSpec from(MixContext mix) {
     return mix.attributeOf<RadioSpecAttribute>()?.resolve(mix) ??
         const RadioSpec();
   }
@@ -40,7 +40,7 @@ mixin _$RadioSpec on Spec<RadioSpec> {
     BoxSpec? indicator,
     FlexBoxSpec? container,
     TextSpec? text,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return RadioSpec(
@@ -142,16 +142,16 @@ class RadioSpecAttribute extends SpecAttribute<RadioSpec> with Diagnosticable {
     super.animated,
   });
 
-  /// Resolves to [RadioSpec] using the provided [MixData].
+  /// Resolves to [RadioSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final radioSpec = RadioSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  RadioSpec resolve(MixData mix) {
+  RadioSpec resolve(MixContext mix) {
     return RadioSpec(
       indicatorContainer: indicatorContainer?.resolve(mix),
       indicator: indicator?.resolve(mix),
@@ -265,7 +265,7 @@ class RadioSpecUtility<T extends StyleElement>
     BoxSpecAttribute? indicator,
     FlexBoxSpecAttribute? container,
     TextSpecAttribute? text,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(RadioSpecAttribute(

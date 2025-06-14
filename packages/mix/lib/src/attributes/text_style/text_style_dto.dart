@@ -32,7 +32,7 @@ final class TextStyleDataRef extends TextStyleData {
   }
 
   @override
-  TextStyle resolve(MixData mix) => mix.tokens.textStyleRef(ref);
+  TextStyle resolve(MixContext mix) => mix.tokens.textStyleRef(ref);
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -195,7 +195,7 @@ final class TextStyleDto extends Mixable<TextStyle>
   /// Then it reduces the list of [TextStyleData] objects to a single [TextStyleData] by merging them.
   /// Finally, it resolves the resulting [TextStyleData] to a TextStyle.
   @override
-  TextStyle resolve(MixData mix) {
+  TextStyle resolve(MixContext mix) {
     final result = value
         .map((e) => e is TextStyleDataRef ? e.resolve(mix)._toData() : e)
         .reduce((a, b) => a.merge(b))

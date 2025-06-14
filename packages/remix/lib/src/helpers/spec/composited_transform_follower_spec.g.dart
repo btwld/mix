@@ -11,7 +11,7 @@ part of 'composited_transform_follower_spec.dart';
 /// A mixin that provides spec functionality for [CompositedTransformFollowerSpec].
 mixin _$CompositedTransformFollowerSpec
     on Spec<CompositedTransformFollowerSpec> {
-  static CompositedTransformFollowerSpec from(MixData mix) {
+  static CompositedTransformFollowerSpec from(MixContext mix) {
     return mix
             .attributeOf<CompositedTransformFollowerSpecAttribute>()
             ?.resolve(mix) ??
@@ -43,7 +43,7 @@ mixin _$CompositedTransformFollowerSpec
     Offset? offset,
     AlignmentGeometry? targetAnchor,
     AlignmentGeometry? followerAnchor,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return CompositedTransformFollowerSpec(
@@ -140,16 +140,16 @@ class CompositedTransformFollowerSpecAttribute
     super.animated,
   });
 
-  /// Resolves to [CompositedTransformFollowerSpec] using the provided [MixData].
+  /// Resolves to [CompositedTransformFollowerSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final compositedTransformFollowerSpec = CompositedTransformFollowerSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  CompositedTransformFollowerSpec resolve(MixData mix) {
+  CompositedTransformFollowerSpec resolve(MixContext mix) {
     return CompositedTransformFollowerSpec(
       offset: offset,
       targetAnchor: targetAnchor,
@@ -257,7 +257,7 @@ class CompositedTransformFollowerSpecUtility<T extends StyleElement>
     Offset? offset,
     AlignmentGeometry? targetAnchor,
     AlignmentGeometry? followerAnchor,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(CompositedTransformFollowerSpecAttribute(

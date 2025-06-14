@@ -5,16 +5,21 @@ import '../../core/element.dart';
 import '../../core/factory/mix_data.dart';
 import '../../core/modifier.dart';
 import '../../modifiers/internal/reset_modifier.dart';
-import 'widget_modifiers_data.dart';
+import 'widget_modifiers_config.dart';
 
-class WidgetModifiersDataDto extends Mixable<WidgetModifiersData>
+@Deprecated(
+  'Use WidgetModifiersConfigDto instead. This will be removed in version 2.0',
+)
+typedef WidgetModifiersDataDto = WidgetModifiersConfigDto;
+
+class WidgetModifiersConfigDto extends Mixable<WidgetModifiersConfig>
     with Diagnosticable {
   final List<WidgetModifierSpecAttribute> value;
 
-  const WidgetModifiersDataDto(this.value);
+  const WidgetModifiersConfigDto(this.value);
 
   @override
-  WidgetModifiersDataDto merge(WidgetModifiersDataDto? other) {
+  WidgetModifiersConfigDto merge(WidgetModifiersConfigDto? other) {
     if (other == null) return this;
     final thisMap = AttributeMap(value);
 
@@ -22,18 +27,18 @@ class WidgetModifiersDataDto extends Mixable<WidgetModifiersData>
         other.value.lastIndexWhere((e) => e is ResetModifierSpecAttribute);
 
     if (resetIndex != -1) {
-      return WidgetModifiersDataDto(other.value.sublist(resetIndex));
+      return WidgetModifiersConfigDto(other.value.sublist(resetIndex));
     }
 
     final otherMap = AttributeMap(other.value);
     final mergedMap = thisMap.merge(otherMap).values;
 
-    return WidgetModifiersDataDto(mergedMap);
+    return WidgetModifiersConfigDto(mergedMap);
   }
 
   @override
-  WidgetModifiersData resolve(MixData mix) {
-    return WidgetModifiersData(value.map((e) => e.resolve(mix)).toList());
+  WidgetModifiersConfig resolve(MixContext mix) {
+    return WidgetModifiersConfig(value.map((e) => e.resolve(mix)).toList());
   }
 
   @override

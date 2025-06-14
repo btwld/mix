@@ -10,7 +10,7 @@ part of 'select.dart';
 
 /// A mixin that provides spec functionality for [SelectSpec].
 mixin _$SelectSpec on Spec<SelectSpec> {
-  static SelectSpec from(MixData mix) {
+  static SelectSpec from(MixContext mix) {
     return mix.attributeOf<SelectSpecAttribute>()?.resolve(mix) ??
         const SelectSpec();
   }
@@ -40,7 +40,7 @@ mixin _$SelectSpec on Spec<SelectSpec> {
     SelectMenuSpec? menu,
     SelectMenuItemSpec? item,
     CompositedTransformFollowerSpec? position,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return SelectSpec(
@@ -142,16 +142,16 @@ class SelectSpecAttribute extends SpecAttribute<SelectSpec>
     super.animated,
   });
 
-  /// Resolves to [SelectSpec] using the provided [MixData].
+  /// Resolves to [SelectSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final selectSpec = SelectSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  SelectSpec resolve(MixData mix) {
+  SelectSpec resolve(MixContext mix) {
     return SelectSpec(
       button: button?.resolve(mix),
       menu: menu?.resolve(mix),
@@ -262,7 +262,7 @@ class SelectSpecUtility<T extends StyleElement>
     SelectMenuSpecAttribute? menu,
     SelectMenuItemSpecAttribute? item,
     CompositedTransformFollowerSpecAttribute? position,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(SelectSpecAttribute(
@@ -302,7 +302,7 @@ class SelectSpecTween extends Tween<SelectSpec?> {
 
 /// A mixin that provides spec functionality for [SelectMenuSpec].
 mixin _$SelectMenuSpec on Spec<SelectMenuSpec> {
-  static SelectMenuSpec from(MixData mix) {
+  static SelectMenuSpec from(MixContext mix) {
     return mix.attributeOf<SelectMenuSpecAttribute>()?.resolve(mix) ??
         const SelectMenuSpec();
   }
@@ -331,7 +331,7 @@ mixin _$SelectMenuSpec on Spec<SelectMenuSpec> {
   SelectMenuSpec copyWith({
     FlexBoxSpec? container,
     bool? autoWidth,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return SelectMenuSpec(
@@ -416,16 +416,16 @@ class SelectMenuSpecAttribute extends SpecAttribute<SelectMenuSpec>
     super.animated,
   });
 
-  /// Resolves to [SelectMenuSpec] using the provided [MixData].
+  /// Resolves to [SelectMenuSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final selectMenuSpec = SelectMenuSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  SelectMenuSpec resolve(MixData mix) {
+  SelectMenuSpec resolve(MixContext mix) {
     return SelectMenuSpec(
       container: container?.resolve(mix),
       autoWidth: autoWidth,
@@ -520,7 +520,7 @@ class SelectMenuSpecUtility<T extends StyleElement>
   T only({
     FlexBoxSpecAttribute? container,
     bool? autoWidth,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(SelectMenuSpecAttribute(
@@ -558,7 +558,7 @@ class SelectMenuSpecTween extends Tween<SelectMenuSpec?> {
 
 /// A mixin that provides spec functionality for [SelectMenuItemSpec].
 mixin _$SelectMenuItemSpec on Spec<SelectMenuItemSpec> {
-  static SelectMenuItemSpec from(MixData mix) {
+  static SelectMenuItemSpec from(MixContext mix) {
     return mix.attributeOf<SelectMenuItemSpecAttribute>()?.resolve(mix) ??
         const SelectMenuItemSpec();
   }
@@ -588,7 +588,7 @@ mixin _$SelectMenuItemSpec on Spec<SelectMenuItemSpec> {
     IconSpec? icon,
     TextSpec? text,
     FlexBoxSpec? container,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return SelectMenuItemSpec(
@@ -682,16 +682,16 @@ class SelectMenuItemSpecAttribute extends SpecAttribute<SelectMenuItemSpec>
     super.animated,
   });
 
-  /// Resolves to [SelectMenuItemSpec] using the provided [MixData].
+  /// Resolves to [SelectMenuItemSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final selectMenuItemSpec = SelectMenuItemSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  SelectMenuItemSpec resolve(MixData mix) {
+  SelectMenuItemSpec resolve(MixContext mix) {
     return SelectMenuItemSpec(
       icon: icon?.resolve(mix),
       text: text?.resolve(mix),
@@ -794,7 +794,7 @@ class SelectMenuItemSpecUtility<T extends StyleElement>
     IconSpecAttribute? icon,
     TextSpecAttribute? text,
     FlexBoxSpecAttribute? container,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(SelectMenuItemSpecAttribute(
@@ -833,7 +833,7 @@ class SelectMenuItemSpecTween extends Tween<SelectMenuItemSpec?> {
 
 /// A mixin that provides spec functionality for [SelectTriggerSpec].
 mixin _$SelectTriggerSpec on Spec<SelectTriggerSpec> {
-  static SelectTriggerSpec from(MixData mix) {
+  static SelectTriggerSpec from(MixContext mix) {
     return mix.attributeOf<SelectTriggerSpecAttribute>()?.resolve(mix) ??
         const SelectTriggerSpec();
   }
@@ -863,7 +863,7 @@ mixin _$SelectTriggerSpec on Spec<SelectTriggerSpec> {
     FlexBoxSpec? container,
     IconSpec? icon,
     TextSpec? label,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return SelectTriggerSpec(
@@ -957,16 +957,16 @@ class SelectTriggerSpecAttribute extends SpecAttribute<SelectTriggerSpec>
     super.animated,
   });
 
-  /// Resolves to [SelectTriggerSpec] using the provided [MixData].
+  /// Resolves to [SelectTriggerSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final selectTriggerSpec = SelectTriggerSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  SelectTriggerSpec resolve(MixData mix) {
+  SelectTriggerSpec resolve(MixContext mix) {
     return SelectTriggerSpec(
       container: container?.resolve(mix),
       icon: icon?.resolve(mix),
@@ -1069,7 +1069,7 @@ class SelectTriggerSpecUtility<T extends StyleElement>
     FlexBoxSpecAttribute? container,
     IconSpecAttribute? icon,
     TextSpecAttribute? label,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(SelectTriggerSpecAttribute(

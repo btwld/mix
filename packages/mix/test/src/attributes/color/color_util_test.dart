@@ -15,7 +15,7 @@ final class TestColorAttribute extends SpecAttribute<Color> {
   }
 
   @override
-  Color resolve(MixData mix) {
+  Color resolve(MixContext mix) {
     return value?.resolve(mix) ?? Colors.transparent;
   }
 
