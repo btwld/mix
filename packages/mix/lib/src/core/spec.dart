@@ -51,6 +51,9 @@ abstract class SpecAttribute<Value> extends Mixable<Value>
 
   @override
   SpecAttribute<Value> merge(covariant SpecAttribute<Value>? other);
+
+  @override
+  Object get mergeKey => runtimeType;
 }
 
 abstract class SpecUtility<T extends StyleElement, V> extends StyleElement {
