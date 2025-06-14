@@ -355,6 +355,11 @@ final class CustomWidgetModifierSpec
   Widget build(Widget child) {
     return Padding(padding: const EdgeInsets.all(8.0), child: child);
   }
+
+  @override
+  CustomModifierAttribute toAttribute() {
+    return CustomModifierAttribute(value);
+  }
 }
 
 final class CustomModifierAttribute
