@@ -10,7 +10,7 @@ part of 'flex_spec.dart';
 
 /// A mixin that provides spec functionality for [FlexSpec].
 mixin _$FlexSpec on Spec<FlexSpec> {
-  static FlexSpec from(MixContext mix) {
+  static FlexSpec from(MixData mix) {
     return mix.attributeOf<FlexSpecAttribute>()?.resolve(mix) ??
         const FlexSpec();
   }
@@ -183,16 +183,16 @@ class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
     super.modifiers,
   });
 
-  /// Resolves to [FlexSpec] using the provided [MixContext].
+  /// Resolves to [FlexSpec] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final flexSpec = FlexSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  FlexSpec resolve(MixContext mix) {
+  FlexSpec resolve(MixData mix) {
     return FlexSpec(
       crossAxisAlignment: crossAxisAlignment,
       mainAxisAlignment: mainAxisAlignment,

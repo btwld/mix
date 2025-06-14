@@ -60,16 +60,16 @@ class ResetModifierSpecAttribute
     extends WidgetModifierSpecAttribute<ResetModifierSpec> with Diagnosticable {
   const ResetModifierSpecAttribute();
 
-  /// Resolves to [ResetModifierSpec] using the provided [MixContext].
+  /// Resolves to [ResetModifierSpec] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final resetModifierSpec = ResetModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  ResetModifierSpec resolve(MixContext mix) {
+  ResetModifierSpec resolve(MixData mix) {
     // ignore: prefer_const_constructors
     return ResetModifierSpec();
   }

@@ -63,16 +63,16 @@ class IntrinsicHeightModifierSpecAttribute
     with Diagnosticable {
   const IntrinsicHeightModifierSpecAttribute();
 
-  /// Resolves to [IntrinsicHeightModifierSpec] using the provided [MixContext].
+  /// Resolves to [IntrinsicHeightModifierSpec] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final intrinsicHeightModifierSpec = IntrinsicHeightModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  IntrinsicHeightModifierSpec resolve(MixContext mix) {
+  IntrinsicHeightModifierSpec resolve(MixData mix) {
     // ignore: prefer_const_constructors
     return IntrinsicHeightModifierSpec();
   }
@@ -185,16 +185,16 @@ class IntrinsicWidthModifierSpecAttribute
     with Diagnosticable {
   const IntrinsicWidthModifierSpecAttribute();
 
-  /// Resolves to [IntrinsicWidthModifierSpec] using the provided [MixContext].
+  /// Resolves to [IntrinsicWidthModifierSpec] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final intrinsicWidthModifierSpec = IntrinsicWidthModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  IntrinsicWidthModifierSpec resolve(MixContext mix) {
+  IntrinsicWidthModifierSpec resolve(MixData mix) {
     // ignore: prefer_const_constructors
     return IntrinsicWidthModifierSpec();
   }

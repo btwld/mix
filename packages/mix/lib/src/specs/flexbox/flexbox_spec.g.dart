@@ -10,7 +10,7 @@ part of 'flexbox_spec.dart';
 
 /// A mixin that provides spec functionality for [FlexBoxSpec].
 mixin _$FlexBoxSpec on Spec<FlexBoxSpec> {
-  static FlexBoxSpec from(MixContext mix) {
+  static FlexBoxSpec from(MixData mix) {
     return mix.attributeOf<FlexBoxSpecAttribute>()?.resolve(mix) ??
         const FlexBoxSpec();
   }
@@ -123,16 +123,16 @@ class FlexBoxSpecAttribute extends SpecAttribute<FlexBoxSpec>
     this.flex,
   });
 
-  /// Resolves to [FlexBoxSpec] using the provided [MixContext].
+  /// Resolves to [FlexBoxSpec] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final flexBoxSpec = FlexBoxSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  FlexBoxSpec resolve(MixContext mix) {
+  FlexBoxSpec resolve(MixData mix) {
     return FlexBoxSpec(
       animated: animated?.resolve(mix) ?? mix.animation,
       modifiers: modifiers?.resolve(mix),

@@ -86,16 +86,16 @@ class FlexibleModifierSpecAttribute
     this.fit,
   });
 
-  /// Resolves to [FlexibleModifierSpec] using the provided [MixContext].
+  /// Resolves to [FlexibleModifierSpec] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final flexibleModifierSpec = FlexibleModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  FlexibleModifierSpec resolve(MixContext mix) {
+  FlexibleModifierSpec resolve(MixData mix) {
     return FlexibleModifierSpec(
       flex: flex,
       fit: fit,

@@ -10,16 +10,16 @@ part of 'shape_border_dto.dart';
 
 /// A mixin that provides DTO functionality for [RoundedRectangleBorderDto].
 mixin _$RoundedRectangleBorderDto on Mixable<RoundedRectangleBorder> {
-  /// Resolves to [RoundedRectangleBorder] using the provided [MixContext].
+  /// Resolves to [RoundedRectangleBorder] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final roundedRectangleBorder = RoundedRectangleBorderDto(...).resolve(mix);
   /// ```
   @override
-  RoundedRectangleBorder resolve(MixContext mix) {
+  RoundedRectangleBorder resolve(MixData mix) {
     return RoundedRectangleBorder(
       borderRadius: _$this.borderRadius?.resolve(mix) ?? BorderRadius.zero,
       side: _$this.side?.resolve(mix) ?? BorderSide.none,
@@ -119,16 +119,16 @@ extension ListRoundedRectangleBorderMixExt on List<RoundedRectangleBorder> {
 
 /// A mixin that provides DTO functionality for [BeveledRectangleBorderDto].
 mixin _$BeveledRectangleBorderDto on Mixable<BeveledRectangleBorder> {
-  /// Resolves to [BeveledRectangleBorder] using the provided [MixContext].
+  /// Resolves to [BeveledRectangleBorder] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final beveledRectangleBorder = BeveledRectangleBorderDto(...).resolve(mix);
   /// ```
   @override
-  BeveledRectangleBorder resolve(MixContext mix) {
+  BeveledRectangleBorder resolve(MixData mix) {
     return BeveledRectangleBorder(
       borderRadius: _$this.borderRadius?.resolve(mix) ?? BorderRadius.zero,
       side: _$this.side?.resolve(mix) ?? BorderSide.none,
@@ -228,16 +228,16 @@ extension ListBeveledRectangleBorderMixExt on List<BeveledRectangleBorder> {
 
 /// A mixin that provides DTO functionality for [ContinuousRectangleBorderDto].
 mixin _$ContinuousRectangleBorderDto on Mixable<ContinuousRectangleBorder> {
-  /// Resolves to [ContinuousRectangleBorder] using the provided [MixContext].
+  /// Resolves to [ContinuousRectangleBorder] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final continuousRectangleBorder = ContinuousRectangleBorderDto(...).resolve(mix);
   /// ```
   @override
-  ContinuousRectangleBorder resolve(MixContext mix) {
+  ContinuousRectangleBorder resolve(MixData mix) {
     return ContinuousRectangleBorder(
       borderRadius: _$this.borderRadius?.resolve(mix) ?? BorderRadius.zero,
       side: _$this.side?.resolve(mix) ?? BorderSide.none,
@@ -340,16 +340,16 @@ extension ListContinuousRectangleBorderMixExt
 
 /// A mixin that provides DTO functionality for [CircleBorderDto].
 mixin _$CircleBorderDto on Mixable<CircleBorder> {
-  /// Resolves to [CircleBorder] using the provided [MixContext].
+  /// Resolves to [CircleBorder] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final circleBorder = CircleBorderDto(...).resolve(mix);
   /// ```
   @override
-  CircleBorder resolve(MixContext mix) {
+  CircleBorder resolve(MixData mix) {
     return CircleBorder(
       side: _$this.side?.resolve(mix) ?? BorderSide.none,
       eccentricity: _$this.eccentricity ?? 0.0,
@@ -446,16 +446,16 @@ extension ListCircleBorderMixExt on List<CircleBorder> {
 
 /// A mixin that provides DTO functionality for [StarBorderDto].
 mixin _$StarBorderDto on Mixable<StarBorder> {
-  /// Resolves to [StarBorder] using the provided [MixContext].
+  /// Resolves to [StarBorder] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final starBorder = StarBorderDto(...).resolve(mix);
   /// ```
   @override
-  StarBorder resolve(MixContext mix) {
+  StarBorder resolve(MixData mix) {
     return StarBorder(
       side: _$this.side?.resolve(mix) ?? BorderSide.none,
       points: _$this.points ?? 5,
@@ -607,16 +607,16 @@ extension ListStarBorderMixExt on List<StarBorder> {
 
 /// A mixin that provides DTO functionality for [LinearBorderDto].
 mixin _$LinearBorderDto on Mixable<LinearBorder> {
-  /// Resolves to [LinearBorder] using the provided [MixContext].
+  /// Resolves to [LinearBorder] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final linearBorder = LinearBorderDto(...).resolve(mix);
   /// ```
   @override
-  LinearBorder resolve(MixContext mix) {
+  LinearBorder resolve(MixData mix) {
     return LinearBorder(
       side: _$this.side?.resolve(mix) ?? BorderSide.none,
       start: _$this.start?.resolve(mix),
@@ -746,16 +746,16 @@ extension ListLinearBorderMixExt on List<LinearBorder> {
 
 /// A mixin that provides DTO functionality for [LinearBorderEdgeDto].
 mixin _$LinearBorderEdgeDto on Mixable<LinearBorderEdge> {
-  /// Resolves to [LinearBorderEdge] using the provided [MixContext].
+  /// Resolves to [LinearBorderEdge] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final linearBorderEdge = LinearBorderEdgeDto(...).resolve(mix);
   /// ```
   @override
-  LinearBorderEdge resolve(MixContext mix) {
+  LinearBorderEdge resolve(MixData mix) {
     return LinearBorderEdge(
       size: _$this.size ?? 1.0,
       alignment: _$this.alignment ?? 0.0,
@@ -852,16 +852,16 @@ extension ListLinearBorderEdgeMixExt on List<LinearBorderEdge> {
 
 /// A mixin that provides DTO functionality for [StadiumBorderDto].
 mixin _$StadiumBorderDto on Mixable<StadiumBorder> {
-  /// Resolves to [StadiumBorder] using the provided [MixContext].
+  /// Resolves to [StadiumBorder] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final stadiumBorder = StadiumBorderDto(...).resolve(mix);
   /// ```
   @override
-  StadiumBorder resolve(MixContext mix) {
+  StadiumBorder resolve(MixData mix) {
     return StadiumBorder(
       side: _$this.side?.resolve(mix) ?? BorderSide.none,
     );

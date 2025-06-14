@@ -8,7 +8,8 @@ import '../../modifiers/internal/reset_modifier.dart';
 import 'widget_modifiers_config.dart';
 
 @Deprecated(
-    'Use WidgetModifiersConfigDto instead. This will be removed in version 2.0')
+  'Use WidgetModifiersConfigDto instead. This will be removed in version 2.0',
+)
 typedef WidgetModifiersDataDto = WidgetModifiersConfigDto;
 
 class WidgetModifiersConfigDto extends Mixable<WidgetModifiersConfig>

@@ -95,16 +95,16 @@ class AlignModifierSpecAttribute
     this.heightFactor,
   });
 
-  /// Resolves to [AlignModifierSpec] using the provided [MixContext].
+  /// Resolves to [AlignModifierSpec] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final alignModifierSpec = AlignModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  AlignModifierSpec resolve(MixContext mix) {
+  AlignModifierSpec resolve(MixData mix) {
     return AlignModifierSpec(
       alignment: alignment,
       widthFactor: widthFactor,
