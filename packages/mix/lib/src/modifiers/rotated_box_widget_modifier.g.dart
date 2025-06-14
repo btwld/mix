@@ -54,16 +54,16 @@ class RotatedBoxModifierSpecAttribute
     this.quarterTurns,
   });
 
-  /// Resolves to [RotatedBoxModifierSpec] using the provided [MixContext].
+  /// Resolves to [RotatedBoxModifierSpec] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final rotatedBoxModifierSpec = RotatedBoxModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  RotatedBoxModifierSpec resolve(MixContext mix) {
+  RotatedBoxModifierSpec resolve(MixData mix) {
     return RotatedBoxModifierSpec(
       quarterTurns,
     );

@@ -10,7 +10,7 @@ part of 'icon_spec.dart';
 
 /// A mixin that provides spec functionality for [IconSpec].
 mixin _$IconSpec on Spec<IconSpec> {
-  static IconSpec from(MixContext mix) {
+  static IconSpec from(MixData mix) {
     return mix.attributeOf<IconSpecAttribute>()?.resolve(mix) ??
         const IconSpec();
   }
@@ -183,16 +183,16 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
     super.modifiers,
   });
 
-  /// Resolves to [IconSpec] using the provided [MixContext].
+  /// Resolves to [IconSpec] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final iconSpec = IconSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  IconSpec resolve(MixContext mix) {
+  IconSpec resolve(MixData mix) {
     return IconSpec(
       color: color?.resolve(mix),
       size: size,

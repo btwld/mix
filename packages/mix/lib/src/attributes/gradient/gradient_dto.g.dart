@@ -11,16 +11,16 @@ part of 'gradient_dto.dart';
 /// A mixin that provides DTO functionality for [LinearGradientDto].
 mixin _$LinearGradientDto
     on Mixable<LinearGradient>, HasDefaultValue<LinearGradient> {
-  /// Resolves to [LinearGradient] using the provided [MixContext].
+  /// Resolves to [LinearGradient] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final linearGradient = LinearGradientDto(...).resolve(mix);
   /// ```
   @override
-  LinearGradient resolve(MixContext mix) {
+  LinearGradient resolve(MixData mix) {
     return LinearGradient(
       begin: _$this.begin ?? defaultValue.begin,
       end: _$this.end ?? defaultValue.end,
@@ -163,16 +163,16 @@ extension ListLinearGradientMixExt on List<LinearGradient> {
 /// A mixin that provides DTO functionality for [RadialGradientDto].
 mixin _$RadialGradientDto
     on Mixable<RadialGradient>, HasDefaultValue<RadialGradient> {
-  /// Resolves to [RadialGradient] using the provided [MixContext].
+  /// Resolves to [RadialGradient] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final radialGradient = RadialGradientDto(...).resolve(mix);
   /// ```
   @override
-  RadialGradient resolve(MixContext mix) {
+  RadialGradient resolve(MixData mix) {
     return RadialGradient(
       center: _$this.center ?? defaultValue.center,
       radius: _$this.radius ?? defaultValue.radius,
@@ -337,16 +337,16 @@ extension ListRadialGradientMixExt on List<RadialGradient> {
 /// A mixin that provides DTO functionality for [SweepGradientDto].
 mixin _$SweepGradientDto
     on Mixable<SweepGradient>, HasDefaultValue<SweepGradient> {
-  /// Resolves to [SweepGradient] using the provided [MixContext].
+  /// Resolves to [SweepGradient] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final sweepGradient = SweepGradientDto(...).resolve(mix);
   /// ```
   @override
-  SweepGradient resolve(MixContext mix) {
+  SweepGradient resolve(MixData mix) {
     return SweepGradient(
       center: _$this.center ?? defaultValue.center,
       startAngle: _$this.startAngle ?? defaultValue.startAngle,

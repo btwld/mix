@@ -79,16 +79,16 @@ class VisibilityModifierSpecAttribute
     this.visible,
   });
 
-  /// Resolves to [VisibilityModifierSpec] using the provided [MixContext].
+  /// Resolves to [VisibilityModifierSpec] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final visibilityModifierSpec = VisibilityModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  VisibilityModifierSpec resolve(MixContext mix) {
+  VisibilityModifierSpec resolve(MixData mix) {
     return VisibilityModifierSpec(
       visible,
     );

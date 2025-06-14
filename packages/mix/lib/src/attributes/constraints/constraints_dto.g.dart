@@ -10,16 +10,16 @@ part of 'constraints_dto.dart';
 
 /// A mixin that provides DTO functionality for [BoxConstraintsDto].
 mixin _$BoxConstraintsDto on Mixable<BoxConstraints> {
-  /// Resolves to [BoxConstraints] using the provided [MixContext].
+  /// Resolves to [BoxConstraints] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final boxConstraints = BoxConstraintsDto(...).resolve(mix);
   /// ```
   @override
-  BoxConstraints resolve(MixContext mix) {
+  BoxConstraints resolve(MixData mix) {
     return BoxConstraints(
       minWidth: _$this.minWidth ?? 0.0,
       maxWidth: _$this.maxWidth ?? double.infinity,

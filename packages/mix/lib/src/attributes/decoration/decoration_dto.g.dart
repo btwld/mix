@@ -10,16 +10,16 @@ part of 'decoration_dto.dart';
 
 /// A mixin that provides DTO functionality for [BoxDecorationDto].
 mixin _$BoxDecorationDto on Mixable<BoxDecoration> {
-  /// Resolves to [BoxDecoration] using the provided [MixContext].
+  /// Resolves to [BoxDecoration] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final boxDecoration = BoxDecorationDto(...).resolve(mix);
   /// ```
   @override
-  BoxDecoration resolve(MixContext mix) {
+  BoxDecoration resolve(MixData mix) {
     return BoxDecoration(
       border: _$this.border?.resolve(mix),
       borderRadius: _$this.borderRadius?.resolve(mix),
@@ -199,16 +199,16 @@ extension ListBoxDecorationMixExt on List<BoxDecoration> {
 /// A mixin that provides DTO functionality for [ShapeDecorationDto].
 mixin _$ShapeDecorationDto
     on Mixable<ShapeDecoration>, HasDefaultValue<ShapeDecoration> {
-  /// Resolves to [ShapeDecoration] using the provided [MixContext].
+  /// Resolves to [ShapeDecoration] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final shapeDecoration = ShapeDecorationDto(...).resolve(mix);
   /// ```
   @override
-  ShapeDecoration resolve(MixContext mix) {
+  ShapeDecoration resolve(MixData mix) {
     return ShapeDecoration(
       shape: _$this.shape?.resolve(mix) ?? defaultValue.shape,
       color: _$this.color?.resolve(mix) ?? defaultValue.color,

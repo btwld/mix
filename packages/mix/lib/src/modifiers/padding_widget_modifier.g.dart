@@ -77,16 +77,16 @@ class PaddingModifierSpecAttribute
     this.padding,
   });
 
-  /// Resolves to [PaddingModifierSpec] using the provided [MixContext].
+  /// Resolves to [PaddingModifierSpec] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final paddingModifierSpec = PaddingModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  PaddingModifierSpec resolve(MixContext mix) {
+  PaddingModifierSpec resolve(MixData mix) {
     return PaddingModifierSpec(
       padding?.resolve(mix),
     );

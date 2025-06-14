@@ -10,16 +10,16 @@ part of 'text_height_behavior_dto.dart';
 
 /// A mixin that provides DTO functionality for [TextHeightBehaviorDto].
 mixin _$TextHeightBehaviorDto on Mixable<TextHeightBehavior> {
-  /// Resolves to [TextHeightBehavior] using the provided [MixContext].
+  /// Resolves to [TextHeightBehavior] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final textHeightBehavior = TextHeightBehaviorDto(...).resolve(mix);
   /// ```
   @override
-  TextHeightBehavior resolve(MixContext mix) {
+  TextHeightBehavior resolve(MixData mix) {
     return TextHeightBehavior(
       applyHeightToFirstAscent: _$this.applyHeightToFirstAscent ?? true,
       applyHeightToLastDescent: _$this.applyHeightToLastDescent ?? true,

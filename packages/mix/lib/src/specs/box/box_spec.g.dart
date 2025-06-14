@@ -10,7 +10,7 @@ part of 'box_spec.dart';
 
 /// A mixin that provides spec functionality for [BoxSpec].
 mixin _$BoxSpec on Spec<BoxSpec> {
-  static BoxSpec from(MixContext mix) {
+  static BoxSpec from(MixData mix) {
     return mix.attributeOf<BoxSpecAttribute>()?.resolve(mix) ?? const BoxSpec();
   }
 
@@ -203,16 +203,16 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
     super.animated,
   });
 
-  /// Resolves to [BoxSpec] using the provided [MixContext].
+  /// Resolves to [BoxSpec] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final boxSpec = BoxSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  BoxSpec resolve(MixContext mix) {
+  BoxSpec resolve(MixData mix) {
     return BoxSpec(
       alignment: alignment,
       padding: padding?.resolve(mix),

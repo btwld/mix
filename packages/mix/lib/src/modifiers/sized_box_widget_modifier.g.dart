@@ -85,16 +85,16 @@ class SizedBoxModifierSpecAttribute
     this.height,
   });
 
-  /// Resolves to [SizedBoxModifierSpec] using the provided [MixContext].
+  /// Resolves to [SizedBoxModifierSpec] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final sizedBoxModifierSpec = SizedBoxModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  SizedBoxModifierSpec resolve(MixContext mix) {
+  SizedBoxModifierSpec resolve(MixData mix) {
     return SizedBoxModifierSpec(
       width: width,
       height: height,

@@ -77,16 +77,16 @@ class OpacityModifierSpecAttribute
     this.opacity,
   });
 
-  /// Resolves to [OpacityModifierSpec] using the provided [MixContext].
+  /// Resolves to [OpacityModifierSpec] using the provided [MixData].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [MixData], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final opacityModifierSpec = OpacityModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  OpacityModifierSpec resolve(MixContext mix) {
+  OpacityModifierSpec resolve(MixData mix) {
     return OpacityModifierSpec(
       opacity,
     );
