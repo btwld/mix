@@ -7,7 +7,7 @@ import '../../../helpers/testing_utils.dart';
 void main() {
   group('TextSpec', () {
     test('resolve', () {
-      final mix = MixData.create(
+      final mix = MixContext.create(
         MockBuildContext(),
         Style(
           TextSpecAttribute(
@@ -183,7 +183,7 @@ void main() {
     });
 
     test('TextSpec.from(MixData mix)', () {
-      final mixData = MixData.create(
+      final mixData = MixContext.create(
         MockBuildContext(),
         Style(
           TextSpecAttribute(

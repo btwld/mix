@@ -10,7 +10,7 @@ part of 'chip.dart';
 
 /// A mixin that provides spec functionality for [ChipSpec].
 mixin _$ChipSpec on Spec<ChipSpec> {
-  static ChipSpec from(MixData mix) {
+  static ChipSpec from(MixContext mix) {
     return mix.attributeOf<ChipSpecAttribute>()?.resolve(mix) ??
         const ChipSpec();
   }
@@ -39,7 +39,7 @@ mixin _$ChipSpec on Spec<ChipSpec> {
     FlexBoxSpec? container,
     IconSpec? icon,
     TextSpec? label,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return ChipSpec(
@@ -132,16 +132,16 @@ class ChipSpecAttribute extends SpecAttribute<ChipSpec> with Diagnosticable {
     super.animated,
   });
 
-  /// Resolves to [ChipSpec] using the provided [MixData].
+  /// Resolves to [ChipSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final chipSpec = ChipSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  ChipSpec resolve(MixData mix) {
+  ChipSpec resolve(MixContext mix) {
     return ChipSpec(
       container: container?.resolve(mix),
       icon: icon?.resolve(mix),
@@ -243,7 +243,7 @@ class ChipSpecUtility<T extends StyleElement>
     FlexBoxSpecAttribute? container,
     IconSpecAttribute? icon,
     TextSpecAttribute? label,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(ChipSpecAttribute(

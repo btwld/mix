@@ -46,7 +46,7 @@ mixin _$ImageSpec on Spec<ImageSpec> {
     FilterQuality? filterQuality,
     BlendMode? colorBlendMode,
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
   }) {
     return ImageSpec(
       width: width ?? _$this.width,
@@ -344,7 +344,7 @@ class ImageSpecUtility<T extends StyleElement>
     FilterQuality? filterQuality,
     BlendMode? colorBlendMode,
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(ImageSpecAttribute(
       width: width,

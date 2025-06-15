@@ -3,8 +3,8 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 import '../attributes/animated/animated_data.dart';
 import '../attributes/animated/animated_data_dto.dart';
-import '../attributes/modifiers/widget_modifiers_data.dart';
-import '../attributes/modifiers/widget_modifiers_data_dto.dart';
+import '../attributes/modifiers/widget_modifiers_config.dart';
+import '../attributes/modifiers/widget_modifiers_config_dto.dart';
 import '../internal/compare_mixin.dart';
 import '../variants/context_variant_util/on_util.dart';
 import 'element.dart';
@@ -19,7 +19,7 @@ abstract class Spec<T extends Spec<T>> with EqualityMixin {
     utilities: [MixableFieldUtility(alias: 'wrap')],
     isLerpable: false,
   )
-  final WidgetModifiersData? modifiers;
+  final WidgetModifiersConfig? modifiers;
 
   const Spec({this.animated, this.modifiers});
 
@@ -47,7 +47,7 @@ abstract class SpecAttribute<Value> extends StyleElement
   const SpecAttribute({this.animated, this.modifiers});
 
   @override
-  Value resolve(MixData mix);
+  Value resolve(MixContext mix);
 
   @override
   SpecAttribute<Value> merge(covariant SpecAttribute<Value>? other);

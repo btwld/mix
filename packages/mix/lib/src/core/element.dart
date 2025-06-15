@@ -28,7 +28,7 @@ typedef Dto<Value> = Mixable<Value>;
 abstract class Mixable<Value> with EqualityMixin {
   const Mixable();
 
-  Value resolve(MixData mix);
+  Value resolve(MixContext mix);
   Mixable<Value> merge(covariant Mixable<Value>? other);
 }
 

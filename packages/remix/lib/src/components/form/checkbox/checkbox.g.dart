@@ -10,7 +10,7 @@ part of 'checkbox.dart';
 
 /// A mixin that provides spec functionality for [CheckboxSpec].
 mixin _$CheckboxSpec on Spec<CheckboxSpec> {
-  static CheckboxSpec from(MixData mix) {
+  static CheckboxSpec from(MixContext mix) {
     return mix.attributeOf<CheckboxSpecAttribute>()?.resolve(mix) ??
         const CheckboxSpec();
   }
@@ -40,7 +40,7 @@ mixin _$CheckboxSpec on Spec<CheckboxSpec> {
     IconSpec? indicator,
     FlexBoxSpec? container,
     TextSpec? label,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return CheckboxSpec(
@@ -144,16 +144,16 @@ class CheckboxSpecAttribute extends SpecAttribute<CheckboxSpec>
     super.animated,
   });
 
-  /// Resolves to [CheckboxSpec] using the provided [MixData].
+  /// Resolves to [CheckboxSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final checkboxSpec = CheckboxSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  CheckboxSpec resolve(MixData mix) {
+  CheckboxSpec resolve(MixContext mix) {
     return CheckboxSpec(
       indicatorContainer: indicatorContainer?.resolve(mix),
       indicator: indicator?.resolve(mix),
@@ -267,7 +267,7 @@ class CheckboxSpecUtility<T extends StyleElement>
     IconSpecAttribute? indicator,
     FlexBoxSpecAttribute? container,
     TextSpecAttribute? label,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(CheckboxSpecAttribute(

@@ -10,7 +10,7 @@ part of 'divider.dart';
 
 /// A mixin that provides spec functionality for [DividerSpec].
 mixin _$DividerSpec on Spec<DividerSpec> {
-  static DividerSpec from(MixData mix) {
+  static DividerSpec from(MixContext mix) {
     return mix.attributeOf<DividerSpecAttribute>()?.resolve(mix) ??
         const DividerSpec();
   }
@@ -38,7 +38,7 @@ mixin _$DividerSpec on Spec<DividerSpec> {
   DividerSpec copyWith({
     BoxSpec? container,
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
   }) {
     return DividerSpec(
       container: container ?? _$this.container,
@@ -115,16 +115,16 @@ class DividerSpecAttribute extends SpecAttribute<DividerSpec>
     super.modifiers,
   });
 
-  /// Resolves to [DividerSpec] using the provided [MixData].
+  /// Resolves to [DividerSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final dividerSpec = DividerSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  DividerSpec resolve(MixData mix) {
+  DividerSpec resolve(MixContext mix) {
     return DividerSpec(
       container: container?.resolve(mix),
       animated: animated?.resolve(mix) ?? mix.animation,
@@ -211,7 +211,7 @@ class DividerSpecUtility<T extends StyleElement>
   T only({
     BoxSpecAttribute? container,
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(DividerSpecAttribute(
       container: container,

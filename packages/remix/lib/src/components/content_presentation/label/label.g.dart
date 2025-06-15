@@ -10,7 +10,7 @@ part of 'label.dart';
 
 /// A mixin that provides spec functionality for [LabelSpec].
 mixin _$LabelSpec on Spec<LabelSpec> {
-  static LabelSpec from(MixData mix) {
+  static LabelSpec from(MixContext mix) {
     return mix.attributeOf<LabelSpecAttribute>()?.resolve(mix) ??
         const LabelSpec();
   }
@@ -39,7 +39,7 @@ mixin _$LabelSpec on Spec<LabelSpec> {
     double? spacing,
     IconSpec? icon,
     TextSpec? label,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return LabelSpec(
@@ -132,16 +132,16 @@ class LabelSpecAttribute extends SpecAttribute<LabelSpec> with Diagnosticable {
     super.animated,
   });
 
-  /// Resolves to [LabelSpec] using the provided [MixData].
+  /// Resolves to [LabelSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final labelSpec = LabelSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  LabelSpec resolve(MixData mix) {
+  LabelSpec resolve(MixContext mix) {
     return LabelSpec(
       spacing: spacing,
       icon: icon?.resolve(mix),
@@ -242,7 +242,7 @@ class LabelSpecUtility<T extends StyleElement>
     double? spacing,
     IconSpecAttribute? icon,
     TextSpecAttribute? label,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(LabelSpecAttribute(

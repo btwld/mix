@@ -24,11 +24,11 @@ class MockBuildContext extends BuildContext {
   }
 }
 
-MixData MockMixData(Style style) {
-  return MixData.create(MockBuildContext(), style);
+MixContext MockMixData(Style style) {
+  return MixContext.create(MockBuildContext(), style);
 }
 
-final EmptyMixData = MixData.create(MockBuildContext(), const Style.empty());
+final EmptyMixData = MixContext.create(MockBuildContext(), const Style.empty());
 
 MediaQuery createMediaQuery({
   Size? size,
@@ -183,7 +183,7 @@ final class MockDoubleScalarAttribute
   const MockDoubleScalarAttribute(super.value);
 
   @override
-  double resolve(MixData mix) => value;
+  double resolve(MixContext mix) => value;
 }
 
 class MockContextVariantCondition extends ContextVariant {
@@ -208,7 +208,7 @@ final class MockIntScalarAttribute
   const MockIntScalarAttribute(super.value);
 
   @override
-  int resolve(MixData mix) => value;
+  int resolve(MixContext mix) => value;
 }
 
 class MockContextVariant extends ContextVariant {
@@ -225,7 +225,7 @@ final class MockBooleanScalarAttribute
   const MockBooleanScalarAttribute(super.value);
 
   @override
-  bool resolve(MixData mix) => value;
+  bool resolve(MixContext mix) => value;
 }
 
 abstract class _MockSpecAttribute<T> extends SpecAttribute<T> {
@@ -233,7 +233,7 @@ abstract class _MockSpecAttribute<T> extends SpecAttribute<T> {
   const _MockSpecAttribute(this._value);
 
   @override
-  T resolve(MixData mix) => _value;
+  T resolve(MixContext mix) => _value;
 
   @override
   _MockSpecAttribute<T> merge(_MockSpecAttribute<T>? other);
@@ -283,7 +283,7 @@ final class MockStringScalarAttribute
   const MockStringScalarAttribute(super.value);
 
   @override
-  String resolve(MixData mix) => value;
+  String resolve(MixContext mix) => value;
 }
 
 final class MockInvalidAttribute extends StyleElement {
@@ -305,7 +305,7 @@ final class UtilityTestAttribute<T>
   const UtilityTestAttribute(super.value);
 
   @override
-  T resolve(MixData mix) => value;
+  T resolve(MixContext mix) => value;
 }
 
 final class UtilityTestDtoAttribute<T extends Mixable<V>, V>
@@ -314,7 +314,7 @@ final class UtilityTestDtoAttribute<T extends Mixable<V>, V>
   const UtilityTestDtoAttribute(this.value);
 
   @override
-  V resolve(MixData mix) {
+  V resolve(MixContext mix) {
     return value.resolve(mix);
   }
 
@@ -363,7 +363,7 @@ final class CustomModifierAttribute
   const CustomModifierAttribute([this.value = true]);
 
   @override
-  CustomWidgetModifierSpec resolve(MixData mix) {
+  CustomWidgetModifierSpec resolve(MixContext mix) {
     return CustomWidgetModifierSpec(value ?? true);
   }
 

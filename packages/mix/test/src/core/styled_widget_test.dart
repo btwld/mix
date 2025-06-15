@@ -70,7 +70,7 @@ void main() {
           $box.color(Colors.red),
         );
 
-        final mixData = MixData.create(MockBuildContext(), style);
+        final mixData = MixContext.create(MockBuildContext(), style);
 
         tester.pumpWidget(
           SpecBuilder(

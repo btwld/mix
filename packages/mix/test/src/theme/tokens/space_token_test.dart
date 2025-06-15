@@ -52,7 +52,7 @@ void main() {
 
       final context = tester.element(find.byType(Container));
 
-      final mixData = MixData.create(context, const Style.empty());
+      final mixData = MixContext.create(context, const Style.empty());
 
       expect(mixData.tokens.spaceToken(smallSpaceToken), 4);
       expect(mixData.tokens.spaceToken(mediumSpaceToken), 8);

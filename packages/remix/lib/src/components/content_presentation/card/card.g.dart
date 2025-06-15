@@ -10,7 +10,7 @@ part of 'card.dart';
 
 /// A mixin that provides spec functionality for [CardSpec].
 mixin _$CardSpec on Spec<CardSpec> {
-  static CardSpec from(MixData mix) {
+  static CardSpec from(MixContext mix) {
     return mix.attributeOf<CardSpecAttribute>()?.resolve(mix) ??
         const CardSpec();
   }
@@ -37,7 +37,7 @@ mixin _$CardSpec on Spec<CardSpec> {
   @override
   CardSpec copyWith({
     BoxSpec? container,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return CardSpec(
@@ -114,16 +114,16 @@ class CardSpecAttribute extends SpecAttribute<CardSpec> with Diagnosticable {
     super.animated,
   });
 
-  /// Resolves to [CardSpec] using the provided [MixData].
+  /// Resolves to [CardSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final cardSpec = CardSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  CardSpec resolve(MixData mix) {
+  CardSpec resolve(MixContext mix) {
     return CardSpec(
       container: container?.resolve(mix),
       modifiers: modifiers?.resolve(mix),
@@ -209,7 +209,7 @@ class CardSpecUtility<T extends StyleElement>
   @override
   T only({
     BoxSpecAttribute? container,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(CardSpecAttribute(

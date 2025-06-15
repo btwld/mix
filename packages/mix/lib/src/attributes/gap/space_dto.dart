@@ -16,7 +16,7 @@ class SpaceDto extends Mixable<double> with _$SpaceDto {
   const SpaceDto(this.value);
 
   @override
-  double resolve(MixData mix) {
+  double resolve(MixContext mix) {
     return mix.tokens.spaceTokenRef(value ?? 0);
   }
 }

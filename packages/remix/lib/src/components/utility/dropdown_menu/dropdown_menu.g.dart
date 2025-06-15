@@ -10,7 +10,7 @@ part of 'dropdown_menu.dart';
 
 /// A mixin that provides spec functionality for [DropdownMenuSpec].
 mixin _$DropdownMenuSpec on Spec<DropdownMenuSpec> {
-  static DropdownMenuSpec from(MixData mix) {
+  static DropdownMenuSpec from(MixContext mix) {
     return mix.attributeOf<DropdownMenuSpecAttribute>()?.resolve(mix) ??
         const DropdownMenuSpec();
   }
@@ -39,7 +39,7 @@ mixin _$DropdownMenuSpec on Spec<DropdownMenuSpec> {
   DropdownMenuSpec copyWith({
     DropdownMenuContainerSpec? menu,
     DropdownMenuItemSpec? item,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return DropdownMenuSpec(
@@ -125,16 +125,16 @@ class DropdownMenuSpecAttribute extends SpecAttribute<DropdownMenuSpec>
     super.animated,
   });
 
-  /// Resolves to [DropdownMenuSpec] using the provided [MixData].
+  /// Resolves to [DropdownMenuSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final dropdownMenuSpec = DropdownMenuSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  DropdownMenuSpec resolve(MixData mix) {
+  DropdownMenuSpec resolve(MixContext mix) {
     return DropdownMenuSpec(
       menu: menu?.resolve(mix),
       item: item?.resolve(mix),
@@ -228,7 +228,7 @@ class DropdownMenuSpecUtility<T extends StyleElement>
   T only({
     DropdownMenuContainerSpecAttribute? menu,
     DropdownMenuItemSpecAttribute? item,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(DropdownMenuSpecAttribute(
@@ -266,7 +266,7 @@ class DropdownMenuSpecTween extends Tween<DropdownMenuSpec?> {
 
 /// A mixin that provides spec functionality for [DropdownMenuContainerSpec].
 mixin _$DropdownMenuContainerSpec on Spec<DropdownMenuContainerSpec> {
-  static DropdownMenuContainerSpec from(MixData mix) {
+  static DropdownMenuContainerSpec from(MixContext mix) {
     return mix
             .attributeOf<DropdownMenuContainerSpecAttribute>()
             ?.resolve(mix) ??
@@ -297,7 +297,7 @@ mixin _$DropdownMenuContainerSpec on Spec<DropdownMenuContainerSpec> {
   DropdownMenuContainerSpec copyWith({
     FlexBoxSpec? container,
     bool? autoWidth,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return DropdownMenuContainerSpec(
@@ -382,16 +382,16 @@ class DropdownMenuContainerSpecAttribute
     super.animated,
   });
 
-  /// Resolves to [DropdownMenuContainerSpec] using the provided [MixData].
+  /// Resolves to [DropdownMenuContainerSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final dropdownMenuContainerSpec = DropdownMenuContainerSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  DropdownMenuContainerSpec resolve(MixData mix) {
+  DropdownMenuContainerSpec resolve(MixContext mix) {
     return DropdownMenuContainerSpec(
       container: container?.resolve(mix),
       autoWidth: autoWidth,
@@ -488,7 +488,7 @@ class DropdownMenuContainerSpecUtility<T extends StyleElement>
   T only({
     FlexBoxSpecAttribute? container,
     bool? autoWidth,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(DropdownMenuContainerSpecAttribute(
@@ -526,7 +526,7 @@ class DropdownMenuContainerSpecTween extends Tween<DropdownMenuContainerSpec?> {
 
 /// A mixin that provides spec functionality for [DropdownMenuItemSpec].
 mixin _$DropdownMenuItemSpec on Spec<DropdownMenuItemSpec> {
-  static DropdownMenuItemSpec from(MixData mix) {
+  static DropdownMenuItemSpec from(MixContext mix) {
     return mix.attributeOf<DropdownMenuItemSpecAttribute>()?.resolve(mix) ??
         const DropdownMenuItemSpec();
   }
@@ -556,7 +556,7 @@ mixin _$DropdownMenuItemSpec on Spec<DropdownMenuItemSpec> {
     IconSpec? icon,
     TextSpec? text,
     FlexBoxSpec? container,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return DropdownMenuItemSpec(
@@ -650,16 +650,16 @@ class DropdownMenuItemSpecAttribute extends SpecAttribute<DropdownMenuItemSpec>
     super.animated,
   });
 
-  /// Resolves to [DropdownMenuItemSpec] using the provided [MixData].
+  /// Resolves to [DropdownMenuItemSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final dropdownMenuItemSpec = DropdownMenuItemSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  DropdownMenuItemSpec resolve(MixData mix) {
+  DropdownMenuItemSpec resolve(MixContext mix) {
     return DropdownMenuItemSpec(
       icon: icon?.resolve(mix),
       text: text?.resolve(mix),
@@ -762,7 +762,7 @@ class DropdownMenuItemSpecUtility<T extends StyleElement>
     IconSpecAttribute? icon,
     TextSpecAttribute? text,
     FlexBoxSpecAttribute? container,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(DropdownMenuItemSpecAttribute(

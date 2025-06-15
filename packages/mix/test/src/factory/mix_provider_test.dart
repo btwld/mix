@@ -12,12 +12,12 @@ void main() {
         $with.scale(2),
       );
 
-      final mixData = MixData.create(
+      final mixData = MixContext.create(
         MockBuildContext(),
         style,
       );
 
-      final expectedMixData = MixData.create(
+      final expectedMixData = MixContext.create(
         MockBuildContext(),
         Style(
           $icon.color.black(),

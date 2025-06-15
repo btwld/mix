@@ -100,7 +100,7 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets>
   const EdgeInsetsDto.none() : this.all(0);
 
   @override
-  EdgeInsets resolve(MixData mix) {
+  EdgeInsets resolve(MixContext mix) {
     return EdgeInsets.only(
       left: mix.tokens.spaceTokenRef(left ?? 0),
       top: mix.tokens.spaceTokenRef(top ?? 0),
@@ -140,7 +140,7 @@ final class EdgeInsetsDirectionalDto
   });
 
   @override
-  EdgeInsetsDirectional resolve(MixData mix) {
+  EdgeInsetsDirectional resolve(MixContext mix) {
     return EdgeInsetsDirectional.only(
       start: mix.tokens.spaceTokenRef(start ?? 0),
       top: mix.tokens.spaceTokenRef(top ?? 0),

@@ -10,7 +10,7 @@ part of 'textfield.dart';
 
 /// A mixin that provides spec functionality for [TextFieldSpec].
 mixin _$TextFieldSpec on Spec<TextFieldSpec> {
-  static TextFieldSpec from(MixData mix) {
+  static TextFieldSpec from(MixContext mix) {
     return mix.attributeOf<TextFieldSpecAttribute>()?.resolve(mix) ??
         const TextFieldSpec();
   }
@@ -66,7 +66,7 @@ mixin _$TextFieldSpec on Spec<TextFieldSpec> {
     double? floatingLabelHeight,
     TextStyle? floatingLabelStyle,
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
   }) {
     return TextFieldSpec(
       style: style ?? _$this.style,
@@ -372,16 +372,16 @@ class TextFieldSpecAttribute extends SpecAttribute<TextFieldSpec>
     super.modifiers,
   });
 
-  /// Resolves to [TextFieldSpec] using the provided [MixData].
+  /// Resolves to [TextFieldSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final textFieldSpec = TextFieldSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  TextFieldSpec resolve(MixData mix) {
+  TextFieldSpec resolve(MixContext mix) {
     return TextFieldSpec(
       style: style?.resolve(mix),
       textAlign: textAlign,
@@ -739,7 +739,7 @@ class TextFieldSpecUtility<T extends StyleElement>
     double? floatingLabelHeight,
     TextStyleDto? floatingLabelStyle,
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(TextFieldSpecAttribute(
       style: style,
