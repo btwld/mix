@@ -56,7 +56,7 @@ class Mix extends InheritedWidget {
   /// [MixData] will be a merge of the ancestor's and the newly created one.
   static Mix build(
     BuildContext context, {
-    required Style style,
+    required BaseStyle style,
     required Widget Function(MixData mix) builder,
   }) {
     MixData mixData = MixData.create(context, style);

@@ -12,6 +12,22 @@ import '../spec.dart';
 import '../variant.dart';
 import 'mix_data.dart';
 
+sealed class BaseStyle extends StyleElement {
+  /// Visual attributes contained in this mix.
+  final AttributeMap<SpecAttribute> styles;
+
+  /// The variant attributes contained in this mix.
+  final AttributeMap<VariantAttribute> variants;
+
+  const BaseStyle({required this.styles, required this.variants});
+  const BaseStyle.empty()
+      : styles = const AttributeMap.empty(),
+        variants = const AttributeMap.empty();
+
+  @override
+  BaseStyle merge(covariant BaseStyle? style);
+}
+
 /// A utility class for managing a collection of styling attributes and variants.
 ///
 /// The `Style` class is used to encapsulate a set of styling attributes and
@@ -24,21 +40,13 @@ import 'mix_data.dart';
 /// final style = Style(attribute1, attribute2, attribute3);
 /// final updatedStyle = style.variant(myVariant);
 /// ```
-class Style extends StyleElement {
-  /// Visual attributes contained in this mix.
-  final AttributeMap<SpecAttribute> styles;
-
-  /// The variant attributes contained in this mix.
-  final AttributeMap<VariantAttribute> variants;
-
+class Style extends BaseStyle {
   /// A constant, empty mix for use with const constructor widgets.
   ///
   /// This can be used as a default or initial value where a `Style` is required.
-  const Style.empty()
-      : styles = const AttributeMap.empty(),
-        variants = const AttributeMap.empty();
+  const Style.empty() : super.empty();
 
-  const Style._({required this.styles, required this.variants});
+  const Style._({required super.styles, required super.variants});
 
   /// Creates a new `Style` instance with a specified list of [StyleElement]s.
   ///
@@ -112,7 +120,7 @@ class Style extends StyleElement {
             styleList.addAll(nestedStyle.styles.values);
             applyVariants.addAll(nestedStyle.variants.values);
           }
-        case Style():
+        case BaseStyle():
           // Handle nested Style instances by flattening them
           styleList.addAll(element.styles.values);
           applyVariants.addAll(element.variants.values);
