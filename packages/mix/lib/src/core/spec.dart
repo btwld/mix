@@ -42,7 +42,7 @@ abstract class Spec<T extends Spec<T>> with EqualityMixin {
 abstract class SpecAttribute<Value> extends StyleElement
     implements Mixable<Value> {
   final AnimatedDataDto? animated;
-  final WidgetModifiersConfigDto? modifiers;
+  final WidgetModifiersDataDto? modifiers;
 
   const SpecAttribute({this.animated, this.modifiers});
 

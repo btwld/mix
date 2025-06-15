@@ -6,8 +6,8 @@ import 'package:mix/src/modifiers/internal/reset_modifier.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-  group('WidgetModifiersDataDto', () {
-    test('merge combines two WidgetModifiersDataDto instances correctly', () {
+  group('WidgetModifiersConfigDto', () {
+    test('merge combines two WidgetModifiersConfigDto instances correctly', () {
       final dto1 = WidgetModifiersConfigDto([
         TransformModifierSpecAttribute(transform: Matrix4.identity()),
       ]);
