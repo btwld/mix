@@ -65,27 +65,39 @@ mixin _$ScrollViewModifierSpec on WidgetModifierSpec<ScrollViewModifierSpec> {
   /// compare two [ScrollViewModifierSpec] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.scrollDirection,
-        _$this.reverse,
-        _$this.padding,
-        _$this.physics,
-        _$this.clipBehavior,
-      ];
+    _$this.scrollDirection,
+    _$this.reverse,
+    _$this.padding,
+    _$this.physics,
+    _$this.clipBehavior,
+  ];
 
   ScrollViewModifierSpec get _$this => this as ScrollViewModifierSpec;
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    properties.add(DiagnosticsProperty(
-        'scrollDirection', _$this.scrollDirection,
-        defaultValue: null));
     properties.add(
-        DiagnosticsProperty('reverse', _$this.reverse, defaultValue: null));
+      DiagnosticsProperty(
+        'scrollDirection',
+        _$this.scrollDirection,
+        defaultValue: null,
+      ),
+    );
     properties.add(
-        DiagnosticsProperty('padding', _$this.padding, defaultValue: null));
+      DiagnosticsProperty('reverse', _$this.reverse, defaultValue: null),
+    );
     properties.add(
-        DiagnosticsProperty('physics', _$this.physics, defaultValue: null));
-    properties.add(DiagnosticsProperty('clipBehavior', _$this.clipBehavior,
-        defaultValue: null));
+      DiagnosticsProperty('padding', _$this.padding, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('physics', _$this.physics, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'clipBehavior',
+        _$this.clipBehavior,
+        defaultValue: null,
+      ),
+    );
   }
 }
 
@@ -142,7 +154,8 @@ class ScrollViewModifierSpecAttribute
   /// to the values from this instance.
   @override
   ScrollViewModifierSpecAttribute merge(
-      ScrollViewModifierSpecAttribute? other) {
+    ScrollViewModifierSpecAttribute? other,
+  ) {
     if (other == null) return this;
 
     return ScrollViewModifierSpecAttribute(
@@ -160,23 +173,29 @@ class ScrollViewModifierSpecAttribute
   /// compare two [ScrollViewModifierSpecAttribute] instances for equality.
   @override
   List<Object?> get props => [
-        scrollDirection,
-        reverse,
-        padding,
-        physics,
-        clipBehavior,
-      ];
+    scrollDirection,
+    reverse,
+    padding,
+    physics,
+    clipBehavior,
+  ];
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('scrollDirection', scrollDirection,
-        defaultValue: null));
+    properties.add(
+      DiagnosticsProperty(
+        'scrollDirection',
+        scrollDirection,
+        defaultValue: null,
+      ),
+    );
     properties.add(DiagnosticsProperty('reverse', reverse, defaultValue: null));
     properties.add(DiagnosticsProperty('padding', padding, defaultValue: null));
     properties.add(DiagnosticsProperty('physics', physics, defaultValue: null));
     properties.add(
-        DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null));
+      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
+    );
   }
 }
 
@@ -185,10 +204,7 @@ class ScrollViewModifierSpecAttribute
 /// This class can be used in animations to smoothly transition between
 /// different [ScrollViewModifierSpec] specifications.
 class ScrollViewModifierSpecTween extends Tween<ScrollViewModifierSpec?> {
-  ScrollViewModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  ScrollViewModifierSpecTween({super.begin, super.end});
 
   @override
   ScrollViewModifierSpec lerp(double t) {

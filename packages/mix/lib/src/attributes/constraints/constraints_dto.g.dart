@@ -54,11 +54,11 @@ mixin _$BoxConstraintsDto on Mixable<BoxConstraints> {
   /// compare two [BoxConstraintsDto] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.minWidth,
-        _$this.maxWidth,
-        _$this.minHeight,
-        _$this.maxHeight,
-      ];
+    _$this.minWidth,
+    _$this.maxWidth,
+    _$this.minHeight,
+    _$this.maxHeight,
+  ];
 
   /// Returns this instance as a [BoxConstraintsDto].
   BoxConstraintsDto get _$this => this as BoxConstraintsDto;
@@ -92,12 +92,14 @@ class BoxConstraintsUtility<T extends StyleElement>
     double? minHeight,
     double? maxHeight,
   }) {
-    return builder(BoxConstraintsDto(
-      minWidth: minWidth,
-      maxWidth: maxWidth,
-      minHeight: minHeight,
-      maxHeight: maxHeight,
-    ));
+    return builder(
+      BoxConstraintsDto(
+        minWidth: minWidth,
+        maxWidth: maxWidth,
+        minHeight: minHeight,
+        maxHeight: maxHeight,
+      ),
+    );
   }
 
   T call({

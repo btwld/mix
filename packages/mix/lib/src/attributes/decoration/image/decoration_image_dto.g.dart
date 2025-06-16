@@ -63,15 +63,15 @@ mixin _$DecorationImageDto
   /// compare two [DecorationImageDto] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.image,
-        _$this.fit,
-        _$this.alignment,
-        _$this.centerSlice,
-        _$this.repeat,
-        _$this.filterQuality,
-        _$this.invertColors,
-        _$this.isAntiAlias,
-      ];
+    _$this.image,
+    _$this.fit,
+    _$this.alignment,
+    _$this.centerSlice,
+    _$this.repeat,
+    _$this.filterQuality,
+    _$this.invertColors,
+    _$this.isAntiAlias,
+  ];
 
   /// Returns this instance as a [DecorationImageDto].
   DecorationImageDto get _$this => this as DecorationImageDto;
@@ -99,8 +99,9 @@ class DecorationImageUtility<T extends StyleElement>
   late final repeat = ImageRepeatUtility((v) => only(repeat: v));
 
   /// Utility for defining [DecorationImageDto.filterQuality]
-  late final filterQuality =
-      FilterQualityUtility((v) => only(filterQuality: v));
+  late final filterQuality = FilterQualityUtility(
+    (v) => only(filterQuality: v),
+  );
 
   /// Utility for defining [DecorationImageDto.invertColors]
   late final invertColors = BoolUtility((v) => only(invertColors: v));
@@ -122,16 +123,18 @@ class DecorationImageUtility<T extends StyleElement>
     bool? invertColors,
     bool? isAntiAlias,
   }) {
-    return builder(DecorationImageDto(
-      image: image,
-      fit: fit,
-      alignment: alignment,
-      centerSlice: centerSlice,
-      repeat: repeat,
-      filterQuality: filterQuality,
-      invertColors: invertColors,
-      isAntiAlias: isAntiAlias,
-    ));
+    return builder(
+      DecorationImageDto(
+        image: image,
+        fit: fit,
+        alignment: alignment,
+        centerSlice: centerSlice,
+        repeat: repeat,
+        filterQuality: filterQuality,
+        invertColors: invertColors,
+        isAntiAlias: isAntiAlias,
+      ),
+    );
   }
 
   T call({

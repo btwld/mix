@@ -26,7 +26,8 @@ mixin _$LinearGradientDto
       end: _$this.end ?? defaultValue.end,
       tileMode: _$this.tileMode ?? defaultValue.tileMode,
       transform: _$this.transform ?? defaultValue.transform,
-      colors: _$this.colors?.map((e) => e.resolve(mix)).toList() ??
+      colors:
+          _$this.colors?.map((e) => e.resolve(mix)).toList() ??
           defaultValue.colors,
       stops: _$this.stops ?? defaultValue.stops,
     );
@@ -60,13 +61,13 @@ mixin _$LinearGradientDto
   /// compare two [LinearGradientDto] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.begin,
-        _$this.end,
-        _$this.tileMode,
-        _$this.transform,
-        _$this.colors,
-        _$this.stops,
-      ];
+    _$this.begin,
+    _$this.end,
+    _$this.tileMode,
+    _$this.transform,
+    _$this.colors,
+    _$this.stops,
+  ];
 
   /// Returns this instance as a [LinearGradientDto].
   LinearGradientDto get _$this => this as LinearGradientDto;
@@ -108,14 +109,16 @@ class LinearGradientUtility<T extends StyleElement>
     List<ColorDto>? colors,
     List<double>? stops,
   }) {
-    return builder(LinearGradientDto(
-      begin: begin,
-      end: end,
-      tileMode: tileMode,
-      transform: transform,
-      colors: colors,
-      stops: stops,
-    ));
+    return builder(
+      LinearGradientDto(
+        begin: begin,
+        end: end,
+        tileMode: tileMode,
+        transform: transform,
+        colors: colors,
+        stops: stops,
+      ),
+    );
   }
 
   T call({
@@ -180,7 +183,8 @@ mixin _$RadialGradientDto
       focal: _$this.focal ?? defaultValue.focal,
       focalRadius: _$this.focalRadius ?? defaultValue.focalRadius,
       transform: _$this.transform ?? defaultValue.transform,
-      colors: _$this.colors?.map((e) => e.resolve(mix)).toList() ??
+      colors:
+          _$this.colors?.map((e) => e.resolve(mix)).toList() ??
           defaultValue.colors,
       stops: _$this.stops ?? defaultValue.stops,
     );
@@ -216,15 +220,15 @@ mixin _$RadialGradientDto
   /// compare two [RadialGradientDto] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.center,
-        _$this.radius,
-        _$this.tileMode,
-        _$this.focal,
-        _$this.focalRadius,
-        _$this.transform,
-        _$this.colors,
-        _$this.stops,
-      ];
+    _$this.center,
+    _$this.radius,
+    _$this.tileMode,
+    _$this.focal,
+    _$this.focalRadius,
+    _$this.transform,
+    _$this.colors,
+    _$this.stops,
+  ];
 
   /// Returns this instance as a [RadialGradientDto].
   RadialGradientDto get _$this => this as RadialGradientDto;
@@ -274,16 +278,18 @@ class RadialGradientUtility<T extends StyleElement>
     List<ColorDto>? colors,
     List<double>? stops,
   }) {
-    return builder(RadialGradientDto(
-      center: center,
-      radius: radius,
-      tileMode: tileMode,
-      focal: focal,
-      focalRadius: focalRadius,
-      transform: transform,
-      colors: colors,
-      stops: stops,
-    ));
+    return builder(
+      RadialGradientDto(
+        center: center,
+        radius: radius,
+        tileMode: tileMode,
+        focal: focal,
+        focalRadius: focalRadius,
+        transform: transform,
+        colors: colors,
+        stops: stops,
+      ),
+    );
   }
 
   T call({
@@ -353,7 +359,8 @@ mixin _$SweepGradientDto
       endAngle: _$this.endAngle ?? defaultValue.endAngle,
       tileMode: _$this.tileMode ?? defaultValue.tileMode,
       transform: _$this.transform ?? defaultValue.transform,
-      colors: _$this.colors?.map((e) => e.resolve(mix)).toList() ??
+      colors:
+          _$this.colors?.map((e) => e.resolve(mix)).toList() ??
           defaultValue.colors,
       stops: _$this.stops ?? defaultValue.stops,
     );
@@ -388,14 +395,14 @@ mixin _$SweepGradientDto
   /// compare two [SweepGradientDto] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.center,
-        _$this.startAngle,
-        _$this.endAngle,
-        _$this.tileMode,
-        _$this.transform,
-        _$this.colors,
-        _$this.stops,
-      ];
+    _$this.center,
+    _$this.startAngle,
+    _$this.endAngle,
+    _$this.tileMode,
+    _$this.transform,
+    _$this.colors,
+    _$this.stops,
+  ];
 
   /// Returns this instance as a [SweepGradientDto].
   SweepGradientDto get _$this => this as SweepGradientDto;
@@ -441,15 +448,17 @@ class SweepGradientUtility<T extends StyleElement>
     List<ColorDto>? colors,
     List<double>? stops,
   }) {
-    return builder(SweepGradientDto(
-      center: center,
-      startAngle: startAngle,
-      endAngle: endAngle,
-      tileMode: tileMode,
-      transform: transform,
-      colors: colors,
-      stops: stops,
-    ));
+    return builder(
+      SweepGradientDto(
+        center: center,
+        startAngle: startAngle,
+        endAngle: endAngle,
+        tileMode: tileMode,
+        transform: transform,
+        colors: colors,
+        stops: stops,
+      ),
+    );
   }
 
   T call({

@@ -13,12 +13,8 @@ mixin _$VisibilityModifierSpec on WidgetModifierSpec<VisibilityModifierSpec> {
   /// Creates a copy of this [VisibilityModifierSpec] but with the given fields
   /// replaced with the new values.
   @override
-  VisibilityModifierSpec copyWith({
-    bool? visible,
-  }) {
-    return VisibilityModifierSpec(
-      visible ?? _$this.visible,
-    );
+  VisibilityModifierSpec copyWith({bool? visible}) {
+    return VisibilityModifierSpec(visible ?? _$this.visible);
   }
 
   /// Linearly interpolates between this [VisibilityModifierSpec] and another [VisibilityModifierSpec] based on the given parameter [t].
@@ -41,9 +37,7 @@ mixin _$VisibilityModifierSpec on WidgetModifierSpec<VisibilityModifierSpec> {
   VisibilityModifierSpec lerp(VisibilityModifierSpec? other, double t) {
     if (other == null) return _$this;
 
-    return VisibilityModifierSpec(
-      t < 0.5 ? _$this.visible : other.visible,
-    );
+    return VisibilityModifierSpec(t < 0.5 ? _$this.visible : other.visible);
   }
 
   /// The list of properties that constitute the state of this [VisibilityModifierSpec].
@@ -51,15 +45,14 @@ mixin _$VisibilityModifierSpec on WidgetModifierSpec<VisibilityModifierSpec> {
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [VisibilityModifierSpec] instances for equality.
   @override
-  List<Object?> get props => [
-        _$this.visible,
-      ];
+  List<Object?> get props => [_$this.visible];
 
   VisibilityModifierSpec get _$this => this as VisibilityModifierSpec;
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties.add(
-        DiagnosticsProperty('visible', _$this.visible, defaultValue: null));
+      DiagnosticsProperty('visible', _$this.visible, defaultValue: null),
+    );
   }
 }
 
@@ -75,9 +68,7 @@ class VisibilityModifierSpecAttribute
     with Diagnosticable {
   final bool? visible;
 
-  const VisibilityModifierSpecAttribute({
-    this.visible,
-  });
+  const VisibilityModifierSpecAttribute({this.visible});
 
   /// Resolves to [VisibilityModifierSpec] using the provided [MixData].
   ///
@@ -89,9 +80,7 @@ class VisibilityModifierSpecAttribute
   /// ```
   @override
   VisibilityModifierSpec resolve(MixData mix) {
-    return VisibilityModifierSpec(
-      visible,
-    );
+    return VisibilityModifierSpec(visible);
   }
 
   /// Merges the properties of this [VisibilityModifierSpecAttribute] with the properties of [other].
@@ -104,12 +93,11 @@ class VisibilityModifierSpecAttribute
   /// to the values from this instance.
   @override
   VisibilityModifierSpecAttribute merge(
-      VisibilityModifierSpecAttribute? other) {
+    VisibilityModifierSpecAttribute? other,
+  ) {
     if (other == null) return this;
 
-    return VisibilityModifierSpecAttribute(
-      visible: other.visible ?? visible,
-    );
+    return VisibilityModifierSpecAttribute(visible: other.visible ?? visible);
   }
 
   /// The list of properties that constitute the state of this [VisibilityModifierSpecAttribute].
@@ -117,9 +105,7 @@ class VisibilityModifierSpecAttribute
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [VisibilityModifierSpecAttribute] instances for equality.
   @override
-  List<Object?> get props => [
-        visible,
-      ];
+  List<Object?> get props => [visible];
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -133,10 +119,7 @@ class VisibilityModifierSpecAttribute
 /// This class can be used in animations to smoothly transition between
 /// different [VisibilityModifierSpec] specifications.
 class VisibilityModifierSpecTween extends Tween<VisibilityModifierSpec?> {
-  VisibilityModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  VisibilityModifierSpecTween({super.begin, super.end});
 
   @override
   VisibilityModifierSpec lerp(double t) {

@@ -477,10 +477,14 @@ mixin _$RectUtility<T extends StyleElement> on MixUtility<T, Rect> {
   }
 
   /// Creates a [StyleElement] instance using the [Rect.fromCenter] constructor.
-  T fromCenter(
-      {required Offset center, required double width, required double height}) {
+  T fromCenter({
+    required Offset center,
+    required double width,
+    required double height,
+  }) {
     return builder(
-        Rect.fromCenter(center: center, width: width, height: height));
+      Rect.fromCenter(center: center, width: width, height: height),
+    );
   }
 
   /// Creates a [StyleElement] instance using the [Rect.fromPoints] constructor.
@@ -630,22 +634,35 @@ mixin _$TableColumnWidthUtility<T extends StyleElement>
 mixin _$TableBorderUtility<T extends StyleElement>
     on MixUtility<T, TableBorder> {
   /// Creates a [StyleElement] instance using the [TableBorder.all] constructor.
-  T all(
-      {Color color = const Color(0xFF000000),
-      double width = 1.0,
-      BorderStyle style = BorderStyle.solid,
-      BorderRadius borderRadius = BorderRadius.zero}) {
-    return builder(TableBorder.all(
-        color: color, width: width, style: style, borderRadius: borderRadius));
+  T all({
+    Color color = const Color(0xFF000000),
+    double width = 1.0,
+    BorderStyle style = BorderStyle.solid,
+    BorderRadius borderRadius = BorderRadius.zero,
+  }) {
+    return builder(
+      TableBorder.all(
+        color: color,
+        width: width,
+        style: style,
+        borderRadius: borderRadius,
+      ),
+    );
   }
 
   /// Creates a [StyleElement] instance using the [TableBorder.symmetric] constructor.
-  T symmetric(
-      {BorderSide inside = BorderSide.none,
-      BorderSide outside = BorderSide.none,
-      BorderRadius borderRadius = BorderRadius.zero}) {
-    return builder(TableBorder.symmetric(
-        inside: inside, outside: outside, borderRadius: borderRadius));
+  T symmetric({
+    BorderSide inside = BorderSide.none,
+    BorderSide outside = BorderSide.none,
+    BorderRadius borderRadius = BorderRadius.zero,
+  }) {
+    return builder(
+      TableBorder.symmetric(
+        inside: inside,
+        outside: outside,
+        borderRadius: borderRadius,
+      ),
+    );
   }
 
   /// Creates a [StyleElement] instance with the specified TableBorder value.

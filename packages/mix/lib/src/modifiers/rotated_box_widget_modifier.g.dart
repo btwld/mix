@@ -13,12 +13,8 @@ mixin _$RotatedBoxModifierSpec on WidgetModifierSpec<RotatedBoxModifierSpec> {
   /// Creates a copy of this [RotatedBoxModifierSpec] but with the given fields
   /// replaced with the new values.
   @override
-  RotatedBoxModifierSpec copyWith({
-    int? quarterTurns,
-  }) {
-    return RotatedBoxModifierSpec(
-      quarterTurns ?? _$this.quarterTurns,
-    );
+  RotatedBoxModifierSpec copyWith({int? quarterTurns}) {
+    return RotatedBoxModifierSpec(quarterTurns ?? _$this.quarterTurns);
   }
 
   /// The list of properties that constitute the state of this [RotatedBoxModifierSpec].
@@ -26,15 +22,18 @@ mixin _$RotatedBoxModifierSpec on WidgetModifierSpec<RotatedBoxModifierSpec> {
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [RotatedBoxModifierSpec] instances for equality.
   @override
-  List<Object?> get props => [
-        _$this.quarterTurns,
-      ];
+  List<Object?> get props => [_$this.quarterTurns];
 
   RotatedBoxModifierSpec get _$this => this as RotatedBoxModifierSpec;
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    properties.add(DiagnosticsProperty('quarterTurns', _$this.quarterTurns,
-        defaultValue: null));
+    properties.add(
+      DiagnosticsProperty(
+        'quarterTurns',
+        _$this.quarterTurns,
+        defaultValue: null,
+      ),
+    );
   }
 }
 
@@ -50,9 +49,7 @@ class RotatedBoxModifierSpecAttribute
     with Diagnosticable {
   final int? quarterTurns;
 
-  const RotatedBoxModifierSpecAttribute({
-    this.quarterTurns,
-  });
+  const RotatedBoxModifierSpecAttribute({this.quarterTurns});
 
   /// Resolves to [RotatedBoxModifierSpec] using the provided [MixData].
   ///
@@ -64,9 +61,7 @@ class RotatedBoxModifierSpecAttribute
   /// ```
   @override
   RotatedBoxModifierSpec resolve(MixData mix) {
-    return RotatedBoxModifierSpec(
-      quarterTurns,
-    );
+    return RotatedBoxModifierSpec(quarterTurns);
   }
 
   /// Merges the properties of this [RotatedBoxModifierSpecAttribute] with the properties of [other].
@@ -79,7 +74,8 @@ class RotatedBoxModifierSpecAttribute
   /// to the values from this instance.
   @override
   RotatedBoxModifierSpecAttribute merge(
-      RotatedBoxModifierSpecAttribute? other) {
+    RotatedBoxModifierSpecAttribute? other,
+  ) {
     if (other == null) return this;
 
     return RotatedBoxModifierSpecAttribute(
@@ -92,15 +88,14 @@ class RotatedBoxModifierSpecAttribute
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [RotatedBoxModifierSpecAttribute] instances for equality.
   @override
-  List<Object?> get props => [
-        quarterTurns,
-      ];
+  List<Object?> get props => [quarterTurns];
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(
-        DiagnosticsProperty('quarterTurns', quarterTurns, defaultValue: null));
+      DiagnosticsProperty('quarterTurns', quarterTurns, defaultValue: null),
+    );
   }
 }
 
@@ -109,10 +104,7 @@ class RotatedBoxModifierSpecAttribute
 /// This class can be used in animations to smoothly transition between
 /// different [RotatedBoxModifierSpec] specifications.
 class RotatedBoxModifierSpecTween extends Tween<RotatedBoxModifierSpec?> {
-  RotatedBoxModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  RotatedBoxModifierSpecTween({super.begin, super.end});
 
   @override
   RotatedBoxModifierSpec lerp(double t) {

@@ -36,11 +36,11 @@ mixin _$EdgeInsetsDto on Mixable<EdgeInsets> {
   /// compare two [EdgeInsetsDto] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.top,
-        _$this.bottom,
-        _$this.left,
-        _$this.right,
-      ];
+    _$this.top,
+    _$this.bottom,
+    _$this.left,
+    _$this.right,
+  ];
 
   /// Returns this instance as a [EdgeInsetsDto].
   EdgeInsetsDto get _$this => this as EdgeInsetsDto;
@@ -74,32 +74,14 @@ class EdgeInsetsUtility<T extends StyleElement>
 
   /// Returns a new [EdgeInsetsDto] with the specified properties.
   @override
-  T only({
-    double? top,
-    double? bottom,
-    double? left,
-    double? right,
-  }) {
-    return builder(EdgeInsetsDto(
-      top: top,
-      bottom: bottom,
-      left: left,
-      right: right,
-    ));
+  T only({double? top, double? bottom, double? left, double? right}) {
+    return builder(
+      EdgeInsetsDto(top: top, bottom: bottom, left: left, right: right),
+    );
   }
 
-  T call({
-    double? top,
-    double? bottom,
-    double? left,
-    double? right,
-  }) {
-    return only(
-      top: top,
-      bottom: bottom,
-      left: left,
-      right: right,
-    );
+  T call({double? top, double? bottom, double? left, double? right}) {
+    return only(top: top, bottom: bottom, left: left, right: right);
   }
 }
 
@@ -107,12 +89,7 @@ class EdgeInsetsUtility<T extends StyleElement>
 extension EdgeInsetsMixExt on EdgeInsets {
   /// Converts this [EdgeInsets] to a [EdgeInsetsDto].
   EdgeInsetsDto toDto() {
-    return EdgeInsetsDto(
-      top: top,
-      bottom: bottom,
-      left: left,
-      right: right,
-    );
+    return EdgeInsetsDto(top: top, bottom: bottom, left: left, right: right);
   }
 }
 
@@ -152,11 +129,11 @@ mixin _$EdgeInsetsDirectionalDto on Mixable<EdgeInsetsDirectional> {
   /// compare two [EdgeInsetsDirectionalDto] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.top,
-        _$this.bottom,
-        _$this.start,
-        _$this.end,
-      ];
+    _$this.top,
+    _$this.bottom,
+    _$this.start,
+    _$this.end,
+  ];
 
   /// Returns this instance as a [EdgeInsetsDirectionalDto].
   EdgeInsetsDirectionalDto get _$this => this as EdgeInsetsDirectionalDto;
@@ -181,7 +158,7 @@ class EdgeInsetsDirectionalUtility<T extends StyleElement>
   late final end = DoubleUtility((v) => only(end: v));
 
   EdgeInsetsDirectionalUtility(super.builder)
-      : super(valueToDto: (v) => v.toDto());
+    : super(valueToDto: (v) => v.toDto());
 
   /// Creates a [StyleElement] instance using the [EdgeInsetsDirectionalDto.all] constructor.
   T all(double value) => builder(EdgeInsetsDirectionalDto.all(value));
@@ -191,32 +168,19 @@ class EdgeInsetsDirectionalUtility<T extends StyleElement>
 
   /// Returns a new [EdgeInsetsDirectionalDto] with the specified properties.
   @override
-  T only({
-    double? top,
-    double? bottom,
-    double? start,
-    double? end,
-  }) {
-    return builder(EdgeInsetsDirectionalDto(
-      top: top,
-      bottom: bottom,
-      start: start,
-      end: end,
-    ));
+  T only({double? top, double? bottom, double? start, double? end}) {
+    return builder(
+      EdgeInsetsDirectionalDto(
+        top: top,
+        bottom: bottom,
+        start: start,
+        end: end,
+      ),
+    );
   }
 
-  T call({
-    double? top,
-    double? bottom,
-    double? start,
-    double? end,
-  }) {
-    return only(
-      top: top,
-      bottom: bottom,
-      start: start,
-      end: end,
-    );
+  T call({double? top, double? bottom, double? start, double? end}) {
+    return only(top: top, bottom: bottom, start: start, end: end);
   }
 }
 

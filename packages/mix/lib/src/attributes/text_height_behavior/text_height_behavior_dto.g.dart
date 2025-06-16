@@ -56,10 +56,10 @@ mixin _$TextHeightBehaviorDto on Mixable<TextHeightBehavior> {
   /// compare two [TextHeightBehaviorDto] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.applyHeightToFirstAscent,
-        _$this.applyHeightToLastDescent,
-        _$this.leadingDistribution,
-      ];
+    _$this.applyHeightToFirstAscent,
+    _$this.applyHeightToLastDescent,
+    _$this.leadingDistribution,
+  ];
 
   /// Returns this instance as a [TextHeightBehaviorDto].
   TextHeightBehaviorDto get _$this => this as TextHeightBehaviorDto;

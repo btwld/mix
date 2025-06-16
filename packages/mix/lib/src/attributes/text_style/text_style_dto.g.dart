@@ -59,23 +59,31 @@ mixin _$TextStyleData on Mixable<TextStyle> {
 
     return TextStyleData(
       background: other.background ?? _$this.background,
-      backgroundColor: _$this.backgroundColor?.merge(other.backgroundColor) ??
+      backgroundColor:
+          _$this.backgroundColor?.merge(other.backgroundColor) ??
           other.backgroundColor,
       color: _$this.color?.merge(other.color) ?? other.color,
       debugLabel: other.debugLabel ?? _$this.debugLabel,
       decoration: other.decoration ?? _$this.decoration,
-      decorationColor: _$this.decorationColor?.merge(other.decorationColor) ??
+      decorationColor:
+          _$this.decorationColor?.merge(other.decorationColor) ??
           other.decorationColor,
       decorationStyle: other.decorationStyle ?? _$this.decorationStyle,
       decorationThickness:
           other.decorationThickness ?? _$this.decorationThickness,
       fontFamily: other.fontFamily ?? _$this.fontFamily,
       fontFamilyFallback: MixHelpers.mergeList(
-          _$this.fontFamilyFallback, other.fontFamilyFallback),
-      fontVariations:
-          MixHelpers.mergeList(_$this.fontVariations, other.fontVariations),
-      fontFeatures:
-          MixHelpers.mergeList(_$this.fontFeatures, other.fontFeatures),
+        _$this.fontFamilyFallback,
+        other.fontFamilyFallback,
+      ),
+      fontVariations: MixHelpers.mergeList(
+        _$this.fontVariations,
+        other.fontVariations,
+      ),
+      fontFeatures: MixHelpers.mergeList(
+        _$this.fontFeatures,
+        other.fontFeatures,
+      ),
       fontSize: other.fontSize ?? _$this.fontSize,
       fontStyle: other.fontStyle ?? _$this.fontStyle,
       fontWeight: other.fontWeight ?? _$this.fontWeight,
@@ -94,28 +102,28 @@ mixin _$TextStyleData on Mixable<TextStyle> {
   /// compare two [TextStyleData] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.background,
-        _$this.backgroundColor,
-        _$this.color,
-        _$this.debugLabel,
-        _$this.decoration,
-        _$this.decorationColor,
-        _$this.decorationStyle,
-        _$this.decorationThickness,
-        _$this.fontFamily,
-        _$this.fontFamilyFallback,
-        _$this.fontVariations,
-        _$this.fontFeatures,
-        _$this.fontSize,
-        _$this.fontStyle,
-        _$this.fontWeight,
-        _$this.foreground,
-        _$this.height,
-        _$this.letterSpacing,
-        _$this.shadows,
-        _$this.textBaseline,
-        _$this.wordSpacing,
-      ];
+    _$this.background,
+    _$this.backgroundColor,
+    _$this.color,
+    _$this.debugLabel,
+    _$this.decoration,
+    _$this.decorationColor,
+    _$this.decorationStyle,
+    _$this.decorationThickness,
+    _$this.fontFamily,
+    _$this.fontFamilyFallback,
+    _$this.fontVariations,
+    _$this.fontFeatures,
+    _$this.fontSize,
+    _$this.fontStyle,
+    _$this.fontWeight,
+    _$this.foreground,
+    _$this.height,
+    _$this.letterSpacing,
+    _$this.shadows,
+    _$this.textBaseline,
+    _$this.wordSpacing,
+  ];
 
   /// Returns this instance as a [TextStyleData].
   TextStyleData get _$this => this as TextStyleData;
@@ -135,9 +143,7 @@ mixin _$TextStyleDto on Mixable<TextStyle> {
   TextStyleDto merge(TextStyleDto? other) {
     if (other == null) return _$this;
 
-    return TextStyleDto._(
-      value: [..._$this.value, ...other.value],
-    );
+    return TextStyleDto._(value: [..._$this.value, ...other.value]);
   }
 
   /// The list of properties that constitute the state of this [TextStyleDto].
@@ -145,9 +151,7 @@ mixin _$TextStyleDto on Mixable<TextStyle> {
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [TextStyleDto] instances for equality.
   @override
-  List<Object?> get props => [
-        _$this.value,
-      ];
+  List<Object?> get props => [_$this.value];
 
   /// Returns this instance as a [TextStyleDto].
   TextStyleDto get _$this => this as TextStyleDto;

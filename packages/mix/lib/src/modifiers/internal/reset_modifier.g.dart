@@ -57,7 +57,8 @@ mixin _$ResetModifierSpec on WidgetModifierSpec<ResetModifierSpec> {
 /// Use this class to configure the attributes of a [ResetModifierSpec] and pass it to
 /// the [ResetModifierSpec] constructor.
 class ResetModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<ResetModifierSpec> with Diagnosticable {
+    extends WidgetModifierSpecAttribute<ResetModifierSpec>
+    with Diagnosticable {
   const ResetModifierSpecAttribute();
 
   /// Resolves to [ResetModifierSpec] using the provided [MixData].
@@ -107,10 +108,7 @@ class ResetModifierSpecAttribute
 /// This class can be used in animations to smoothly transition between
 /// different [ResetModifierSpec] specifications.
 class ResetModifierSpecTween extends Tween<ResetModifierSpec?> {
-  ResetModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  ResetModifierSpecTween({super.begin, super.end});
 
   @override
   ResetModifierSpec lerp(double t) {

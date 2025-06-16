@@ -90,28 +90,41 @@ mixin _$StackSpec on Spec<StackSpec> {
   /// compare two [StackSpec] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.alignment,
-        _$this.fit,
-        _$this.textDirection,
-        _$this.clipBehavior,
-        _$this.animated,
-        _$this.modifiers,
-      ];
+    _$this.alignment,
+    _$this.fit,
+    _$this.textDirection,
+    _$this.clipBehavior,
+    _$this.animated,
+    _$this.modifiers,
+  ];
 
   StackSpec get _$this => this as StackSpec;
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties.add(
-        DiagnosticsProperty('alignment', _$this.alignment, defaultValue: null));
+      DiagnosticsProperty('alignment', _$this.alignment, defaultValue: null),
+    );
     properties.add(DiagnosticsProperty('fit', _$this.fit, defaultValue: null));
-    properties.add(DiagnosticsProperty('textDirection', _$this.textDirection,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty('clipBehavior', _$this.clipBehavior,
-        defaultValue: null));
     properties.add(
-        DiagnosticsProperty('animated', _$this.animated, defaultValue: null));
+      DiagnosticsProperty(
+        'textDirection',
+        _$this.textDirection,
+        defaultValue: null,
+      ),
+    );
     properties.add(
-        DiagnosticsProperty('modifiers', _$this.modifiers, defaultValue: null));
+      DiagnosticsProperty(
+        'clipBehavior',
+        _$this.clipBehavior,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty('animated', _$this.animated, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('modifiers', _$this.modifiers, defaultValue: null),
+    );
   }
 }
 
@@ -185,28 +198,33 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
   /// compare two [StackSpecAttribute] instances for equality.
   @override
   List<Object?> get props => [
-        alignment,
-        fit,
-        textDirection,
-        clipBehavior,
-        animated,
-        modifiers,
-      ];
+    alignment,
+    fit,
+    textDirection,
+    clipBehavior,
+    animated,
+    modifiers,
+  ];
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties
-        .add(DiagnosticsProperty('alignment', alignment, defaultValue: null));
-    properties.add(DiagnosticsProperty('fit', fit, defaultValue: null));
-    properties.add(DiagnosticsProperty('textDirection', textDirection,
-        defaultValue: null));
     properties.add(
-        DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('animated', animated, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('modifiers', modifiers, defaultValue: null));
+      DiagnosticsProperty('alignment', alignment, defaultValue: null),
+    );
+    properties.add(DiagnosticsProperty('fit', fit, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('textDirection', textDirection, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('animated', animated, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
+    );
   }
 }
 
@@ -223,8 +241,9 @@ class StackSpecUtility<T extends StyleElement>
   late final fit = StackFitUtility((v) => only(fit: v));
 
   /// Utility for defining [StackSpecAttribute.textDirection]
-  late final textDirection =
-      TextDirectionUtility((v) => only(textDirection: v));
+  late final textDirection = TextDirectionUtility(
+    (v) => only(textDirection: v),
+  );
 
   /// Utility for defining [StackSpecAttribute.clipBehavior]
   late final clipBehavior = ClipUtility((v) => only(clipBehavior: v));
@@ -262,14 +281,16 @@ class StackSpecUtility<T extends StyleElement>
     AnimatedDataDto? animated,
     WidgetModifiersConfigDto? modifiers,
   }) {
-    return builder(StackSpecAttribute(
-      alignment: alignment,
-      fit: fit,
-      textDirection: textDirection,
-      clipBehavior: clipBehavior,
-      animated: animated,
-      modifiers: modifiers,
-    ));
+    return builder(
+      StackSpecAttribute(
+        alignment: alignment,
+        fit: fit,
+        textDirection: textDirection,
+        clipBehavior: clipBehavior,
+        animated: animated,
+        modifiers: modifiers,
+      ),
+    );
   }
 }
 
@@ -278,10 +299,7 @@ class StackSpecUtility<T extends StyleElement>
 /// This class can be used in animations to smoothly transition between
 /// different [StackSpec] specifications.
 class StackSpecTween extends Tween<StackSpec?> {
-  StackSpecTween({
-    super.begin,
-    super.end,
-  });
+  StackSpecTween({super.begin, super.end});
 
   @override
   StackSpec lerp(double t) {
