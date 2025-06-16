@@ -18,7 +18,10 @@ import 'stack_widget.dart';
 
 part 'stack_spec.g.dart';
 
-@MixableSpec()
+@MixableSpec(
+  components:
+      GeneratedSpecComponents.defaultComponents | GeneratedSpecComponents.style,
+)
 final class StackSpec extends Spec<StackSpec> with _$StackSpec, Diagnosticable {
   final AlignmentGeometry? alignment;
   final StackFit? fit;

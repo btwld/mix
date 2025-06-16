@@ -23,7 +23,10 @@ import 'icon_widget.dart';
 
 part 'icon_spec.g.dart';
 
-@MixableSpec()
+@MixableSpec(
+  components:
+      GeneratedSpecComponents.defaultComponents | GeneratedSpecComponents.style,
+)
 final class IconSpec extends Spec<IconSpec> with _$IconSpec, Diagnosticable {
   final Color? color;
   final double? size;

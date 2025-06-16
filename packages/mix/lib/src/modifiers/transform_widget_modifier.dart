@@ -14,10 +14,7 @@ import '../core/utility.dart';
 
 part 'transform_widget_modifier.g.dart';
 
-@MixableSpec(
-  components:
-      GeneratedSpecComponents.skipUtility & GeneratedSpecComponents.skipStyle,
-)
+@MixableSpec(components: GeneratedSpecComponents.skipUtility)
 final class TransformModifierSpec
     extends WidgetModifierSpec<TransformModifierSpec>
     with _$TransformModifierSpec, Diagnosticable {

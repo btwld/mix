@@ -12,10 +12,7 @@ import '../core/utility.dart';
 
 part 'align_widget_modifier.g.dart';
 
-@MixableSpec(
-  components:
-      GeneratedSpecComponents.skipUtility & GeneratedSpecComponents.skipStyle,
-)
+@MixableSpec(components: GeneratedSpecComponents.skipUtility)
 final class AlignModifierSpec extends WidgetModifierSpec<AlignModifierSpec>
     with _$AlignModifierSpec, Diagnosticable {
   final AlignmentGeometry? alignment;

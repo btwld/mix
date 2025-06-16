@@ -10,7 +10,7 @@ class MixableSpec {
 
   const MixableSpec({
     this.methods = GeneratedSpecMethods.all,
-    this.components = GeneratedSpecComponents.all,
+    this.components = GeneratedSpecComponents.defaultComponents,
   });
 }
 

@@ -12,10 +12,7 @@ import '../core/utility.dart';
 
 part 'sized_box_widget_modifier.g.dart';
 
-@MixableSpec(
-  components:
-      GeneratedSpecComponents.skipUtility & GeneratedSpecComponents.skipStyle,
-)
+@MixableSpec(components: GeneratedSpecComponents.skipUtility)
 final class SizedBoxModifierSpec
     extends WidgetModifierSpec<SizedBoxModifierSpec>
     with _$SizedBoxModifierSpec, Diagnosticable {
