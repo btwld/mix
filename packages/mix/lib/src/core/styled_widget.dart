@@ -1,8 +1,10 @@
 import 'package:flutter/widgets.dart';
 
+import '../variants/widget_state_variant.dart';
 import '../widgets/pressable_widget.dart';
 import 'factory/style_mix.dart';
 import 'internal/experimental/mix_builder.dart';
+import 'widget_state/widget_state_controller.dart';
 
 /// Base class for widgets that apply [Style] definitions.
 ///
@@ -73,7 +75,7 @@ abstract class StyledWidget extends StatelessWidget {
 ///   builder: (context) => BoxSpec.of(context)(),
 /// )
 /// ```
-class SpecBuilder extends StatelessWidget {
+class SpecBuilder extends StatefulWidget {
   const SpecBuilder({
     super.key,
     this.inherit = false,
@@ -101,13 +103,49 @@ class SpecBuilder extends StatelessWidget {
   final List<Type> orderOfModifiers;
 
   @override
+  State<SpecBuilder> createState() => _SpecBuilderState();
+}
+
+class _SpecBuilderState extends State<SpecBuilder> {
+  late final WidgetStatesController _controller;
+
+  /// Checks if the style contains widget state variants that require
+  /// interactive state management.
+  bool get _hasWidgetStateVariant => widget.style.variants.values
+      .any((attr) => attr.variant is MixWidgetStateVariant);
+
+  /// Determines if we should wrap with Interactable widget.
+  bool get _shouldWrapWithInteractable =>
+      _hasWidgetStateVariant || widget.controller != null;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = widget.controller ?? WidgetStatesController();
+  }
+
+  @override
+  void dispose() {
+    // Only dispose controllers we created internally
+    if (widget.controller == null) {
+      _controller.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MixBuilder(
-      style: style,
-      builder: builder,
-      inherit: inherit,
-      orderOfModifiers: orderOfModifiers,
-      controller: controller,
+    final builder = MixBuilder(
+      style: widget.style,
+      builder: widget.builder,
+      inherit: widget.inherit,
+      orderOfModifiers: widget.orderOfModifiers,
     );
+
+    if (_shouldWrapWithInteractable && MixWidgetState.of(context) == null) {
+      return Interactable(controller: widget.controller, child: builder);
+    }
+
+    return builder;
   }
 }
