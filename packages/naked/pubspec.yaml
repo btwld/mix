@@ -4,8 +4,8 @@ version: 0.0.1-dev.0 # Or keep 0.0.1 if that's correct
 repository: https://github.com/leofarias/naked # Restore original repo URL
 
 environment:
-  sdk: ">=3.6.0 <4.0.0" # Restore original SDK constraint
-  flutter: ">=3.27.0" # Restore original Flutter constraint
+  sdk: ">=3.7.0 <4.0.0" # Restore original SDK constraint
+  flutter: ">=3.29.0" # Restore original Flutter constraint
 
 dependencies:
   flutter:
@@ -14,7 +14,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0 # Restore original lints version
+  flutter_lints: ^5.0.0 # Restore original lints version
 
 # The following section is specific to Flutter packages.
 flutter:

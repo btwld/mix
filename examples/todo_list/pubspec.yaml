@@ -6,8 +6,8 @@ publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.6.0 <4.0.0"
-  flutter: ">=3.27.0"
+  sdk: ">=3.7.0 <4.0.0"
+  flutter: ">=3.29.0"
 
 dependencies:
   flutter:
@@ -24,13 +24,13 @@ dependencies:
 dev_dependencies:
   mix_generator:
     path: ../../packages/mix_generator
-  build_runner: ^2.4.9
+  build_runner: ^2.5.0
   flutter_test:
     sdk: flutter
   mix_lint:
     path: ../../packages/mix_lint
 
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
 
 flutter:
   uses-material-design: true

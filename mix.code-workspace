@@ -26,7 +26,7 @@
     }
   ],
   "settings": {
-    "dart.flutterSdkPath": ".fvm/versions/3.27.0",
+    "dart.flutterSdkPath": ".fvm/versions/3.29.0",
     "search.exclude": {
       ".fvm/**": true,
       "website": true
