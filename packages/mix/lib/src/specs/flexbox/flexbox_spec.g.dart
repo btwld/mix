@@ -324,6 +324,14 @@ class FlexBoxSpecUtility<T extends StyleElement>
   }
 }
 
+/// A concrete implementation of [FlexBoxSpecUtility] for creating styling configurations.
+///
+/// This class provides a convenient way to define styling properties and is designed
+/// for direct usage in styling contexts.
+class StyleFlexBox extends FlexBoxSpecUtility<FlexBoxSpecAttribute> {
+  StyleFlexBox() : super((v) => v);
+}
+
 /// A tween that interpolates between two [FlexBoxSpec] instances.
 ///
 /// This class can be used in animations to smoothly transition between

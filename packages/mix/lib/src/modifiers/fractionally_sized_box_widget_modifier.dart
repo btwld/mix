@@ -12,7 +12,10 @@ import '../core/utility.dart';
 
 part 'fractionally_sized_box_widget_modifier.g.dart';
 
-@MixableSpec(components: GeneratedSpecComponents.skipUtility)
+@MixableSpec(
+  components:
+      GeneratedSpecComponents.skipUtility & GeneratedSpecComponents.skipStyle,
+)
 final class FractionallySizedBoxModifierSpec
     extends WidgetModifierSpec<FractionallySizedBoxModifierSpec>
     with _$FractionallySizedBoxModifierSpec, Diagnosticable {

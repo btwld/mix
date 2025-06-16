@@ -24,13 +24,14 @@ class MyApp extends StatelessWidget {
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Center(
-        child: FlexBox(
-          style: style(),
-          direction: Axis.horizontal,
-          children: const [
-            StyledIcon(Icons.image),
-            StyledText('Hello World'),
-          ],
+        child: Box(
+          style: Style(
+            StyleBox()
+              ..color.red()
+              ..padding(10)
+              ..height(100)
+              ..width(100),
+          ),
         ),
       ),
     );

@@ -10,7 +10,10 @@ import '../core/utility.dart';
 
 part 'mouse_cursor_modifier.g.dart';
 
-@MixableSpec(components: GeneratedSpecComponents.skipUtility)
+@MixableSpec(
+  components:
+      GeneratedSpecComponents.skipUtility & GeneratedSpecComponents.skipStyle,
+)
 class MouseCursorDecoratorSpec
     extends WidgetModifierSpec<MouseCursorDecoratorSpec>
     with _$MouseCursorDecoratorSpec {

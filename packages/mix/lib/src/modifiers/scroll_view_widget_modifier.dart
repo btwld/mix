@@ -12,7 +12,10 @@ import '../core/utility.dart';
 
 part 'scroll_view_widget_modifier.g.dart';
 
-@MixableSpec(components: GeneratedSpecComponents.skipUtility)
+@MixableSpec(
+  components:
+      GeneratedSpecComponents.skipUtility & GeneratedSpecComponents.skipStyle,
+)
 final class ScrollViewModifierSpec
     extends WidgetModifierSpec<ScrollViewModifierSpec>
     with _$ScrollViewModifierSpec, Diagnosticable {

@@ -12,7 +12,10 @@ import '../core/utility.dart';
 
 part 'aspect_ratio_widget_modifier.g.dart';
 
-@MixableSpec(components: GeneratedSpecComponents.skipUtility)
+@MixableSpec(
+  components:
+      GeneratedSpecComponents.skipUtility & GeneratedSpecComponents.skipStyle,
+)
 final class AspectRatioModifierSpec
     extends WidgetModifierSpec<AspectRatioModifierSpec>
     with _$AspectRatioModifierSpec, Diagnosticable {

@@ -364,6 +364,14 @@ class IconSpecUtility<T extends StyleElement>
   }
 }
 
+/// A concrete implementation of [IconSpecUtility] for creating styling configurations.
+///
+/// This class provides a convenient way to define styling properties and is designed
+/// for direct usage in styling contexts.
+class StyleIcon extends IconSpecUtility<IconSpecAttribute> {
+  StyleIcon() : super((v) => v);
+}
+
 /// A tween that interpolates between two [IconSpec] instances.
 ///
 /// This class can be used in animations to smoothly transition between
