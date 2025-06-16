@@ -324,7 +324,7 @@ class FlexBoxSpecUtility<T extends StyleElement>
   }
 }
 
-/// A concrete implementation of [FlexBoxSpecUtility] for creating styling configurations.
+/// A concrete implementation of [FlexBoxSpecUtility] for creating a Style with a [FlexBoxSpecAttribute].
 ///
 /// This class provides a convenient way to define styling properties and is designed
 /// for direct usage in styling contexts.

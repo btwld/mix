@@ -364,7 +364,7 @@ class IconSpecUtility<T extends StyleElement>
   }
 }
 
-/// A concrete implementation of [IconSpecUtility] for creating styling configurations.
+/// A concrete implementation of [IconSpecUtility] for creating a Style with a [IconSpecAttribute].
 ///
 /// This class provides a convenient way to define styling properties and is designed
 /// for direct usage in styling contexts.

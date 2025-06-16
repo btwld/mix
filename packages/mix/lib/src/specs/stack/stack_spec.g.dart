@@ -273,7 +273,7 @@ class StackSpecUtility<T extends StyleElement>
   }
 }
 
-/// A concrete implementation of [StackSpecUtility] for creating styling configurations.
+/// A concrete implementation of [StackSpecUtility] for creating a Style with a [StackSpecAttribute].
 ///
 /// This class provides a convenient way to define styling properties and is designed
 /// for direct usage in styling contexts.
