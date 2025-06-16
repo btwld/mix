@@ -25,12 +25,13 @@ class MyApp extends StatelessWidget {
       textDirection: TextDirection.ltr,
       child: Center(
         child: Box(
-          style: Style(
-            StyleBox()
-              ..color.red()
-              ..padding(10)
-              ..height(100)
-              ..width(100),
+          child: FlexBox(
+            style: style(),
+            direction: Axis.horizontal,
+            children: const [
+              StyledIcon(Icons.image),
+              StyledText('Hello World'),
+            ],
           ),
         ),
       ),
