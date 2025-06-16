@@ -352,7 +352,7 @@ void _testWhenWithThreeVariants({
 Widget _buildDefaultTestCase(Style style, List<Variant> variants) {
   return Builder(
     builder: (context) {
-      final mixData = MixData.create(context, style.applyVariants(variants));
+      final mixData = MixContext.create(context, style.applyVariants(variants));
 
       final box = BoxSpec.from(mixData);
       final icon = IconSpec.from(mixData);
@@ -369,7 +369,7 @@ Widget _buildDefaultTestCase(Style style, List<Variant> variants) {
 Widget _buildTestCaseToVerifyIfNull(Style style, List<Variant> variants) {
   return Builder(
     builder: (context) {
-      final mixData = MixData.create(context, style.applyVariants(variants));
+      final mixData = MixContext.create(context, style.applyVariants(variants));
 
       final box = BoxSpec.from(mixData);
       final icon = IconSpec.from(mixData);

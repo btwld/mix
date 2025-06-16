@@ -14,17 +14,17 @@ class FortalezaSliderStyle extends SliderStyle {
     final baseStyle = super.makeStyle(spec);
     final divisions = $.division.color.$neutralAlpha(8);
 
-    final thumb = $.thumb.chain
+    final thumb = $.thumb
       ..color.$neutral(1)
       ..shape.circle.side.color.$accent(9);
 
-    final track = $.track.chain
+    final track = $.track
       ..color.resetDirectives()
       ..color.$accent(4)
       ..height(6)
       ..borderRadius.all(10);
 
-    final activeTrack = $.activeTrack.chain
+    final activeTrack = $.activeTrack
       ..color.resetDirectives()
       ..color.$accent(9)
       ..height(6)
@@ -41,7 +41,7 @@ class FortalezaSliderStyle extends SliderStyle {
     );
 
     return Style.create([
-      baseStyle(),
+      baseStyle,
       divisions,
       thumb,
       track,

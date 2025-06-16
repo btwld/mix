@@ -10,7 +10,7 @@ part of 'slider.dart';
 
 /// A mixin that provides spec functionality for [SliderSpec].
 mixin _$SliderSpec on Spec<SliderSpec> {
-  static SliderSpec from(MixData mix) {
+  static SliderSpec from(MixContext mix) {
     return mix.attributeOf<SliderSpecAttribute>()?.resolve(mix) ?? SliderSpec();
   }
 
@@ -39,7 +39,7 @@ mixin _$SliderSpec on Spec<SliderSpec> {
     BoxSpec? track,
     BoxSpec? activeTrack,
     BoxSpec? division,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return SliderSpec(
@@ -79,7 +79,7 @@ mixin _$SliderSpec on Spec<SliderSpec> {
       activeTrack: _$this.activeTrack.lerp(other.activeTrack, t),
       division: _$this.division.lerp(other.division, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -138,16 +138,16 @@ class SliderSpecAttribute extends SpecAttribute<SliderSpec>
     super.animated,
   });
 
-  /// Resolves to [SliderSpec] using the provided [MixData].
+  /// Resolves to [SliderSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final sliderSpec = SliderSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  SliderSpec resolve(MixData mix) {
+  SliderSpec resolve(MixContext mix) {
     return SliderSpec(
       thumb: thumb?.resolve(mix),
       track: track?.resolve(mix),
@@ -214,7 +214,7 @@ class SliderSpecAttribute extends SpecAttribute<SliderSpec>
 ///
 /// This class provides methods to set individual properties of a [SliderSpec].
 /// Use the methods of this class to configure specific properties of a [SliderSpec].
-class SliderSpecUtility<T extends Attribute>
+class SliderSpecUtility<T extends StyleElement>
     extends SpecUtility<T, SliderSpecAttribute> {
   /// Utility for defining [SliderSpecAttribute.thumb]
   late final thumb = BoxSpecUtility((v) => only(thumb: v));
@@ -234,10 +234,19 @@ class SliderSpecUtility<T extends Attribute>
   /// Utility for defining [SliderSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  SliderSpecUtility(super.builder, {super.mutable});
+  SliderSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  SliderSpecUtility<T> get chain =>
-      SliderSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  SliderSpecUtility<T> get chain => SliderSpecUtility(attributeBuilder);
 
   static SliderSpecUtility<SliderSpecAttribute> get self =>
       SliderSpecUtility((v) => v);
@@ -249,7 +258,7 @@ class SliderSpecUtility<T extends Attribute>
     BoxSpecAttribute? track,
     BoxSpecAttribute? activeTrack,
     BoxSpecAttribute? division,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(SliderSpecAttribute(

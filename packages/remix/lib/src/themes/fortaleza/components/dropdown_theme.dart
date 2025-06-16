@@ -13,7 +13,7 @@ class FortalezaDropdownMenuStyle extends DropdownMenuStyle {
     final baseStyle = super.makeStyle(spec);
 
     final baseThemeOverrides = Style(
-      $.menu.container.chain
+      $.menu.container
         ..color.$neutral(1)
         ..border.all.color.$neutral(6)
         ..wrap.intrinsicWidth()
@@ -23,7 +23,7 @@ class FortalezaDropdownMenuStyle extends DropdownMenuStyle {
       spec.on.hover($.item.container.color.$neutral(4)),
     );
 
-    return Style.create([baseStyle(), baseThemeOverrides()])
+    return Style.create([baseStyle, baseThemeOverrides])
         .animate(duration: const Duration(milliseconds: 100));
   }
 }

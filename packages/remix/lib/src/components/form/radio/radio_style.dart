@@ -8,7 +8,7 @@ class RadioStyle extends SpecStyle<RadioSpecUtility> {
     final $ = spec.utilities;
 
     final indicatorContainerStyle = [
-      $.indicatorContainer.chain
+      $.indicatorContainer
         ..borderRadius(99)
         ..alignment.center()
         ..size(14)
@@ -18,7 +18,7 @@ class RadioStyle extends SpecStyle<RadioSpecUtility> {
     ];
 
     final indicatorStyle = [
-      $.indicator.chain
+      $.indicator
         ..borderRadius(99)
         ..color.black()
         ..wrap.padding.all(2)
@@ -28,13 +28,13 @@ class RadioStyle extends SpecStyle<RadioSpecUtility> {
       spec.on.disabled($.indicator.color.black45()),
     ];
 
-    final textStyle = $.text.chain
+    final textStyle = $.text
       ..style.fontSize(14)
       ..style.height(1)
       ..style.fontWeight.w500()
       ..textHeightBehavior.heightToFirstAscent.off();
 
-    final containerStyle = $.container.chain
+    final containerStyle = $.container
       ..flex.row()
       ..flex.mainAxisSize.min()
       ..flex.mainAxisAlignment.start()
@@ -61,7 +61,7 @@ class RadioDarkStyle extends RadioStyle {
     final $ = spec.utilities;
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       $.indicatorContainer.border.all.color.white(),
       $.indicator.color.white(),
       $.text.style.color.white(),

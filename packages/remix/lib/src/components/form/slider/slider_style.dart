@@ -7,13 +7,13 @@ class SliderStyle extends SpecStyle<SliderSpecUtility> {
   Style makeStyle(SpecConfiguration<SliderSpecUtility> spec) {
     final $ = spec.utilities;
 
-    final divisions = $.division.chain
+    final divisions = $.division
       ..shape.circle()
       ..color.black26()
       ..height(3)
       ..width(3);
 
-    final thumb = $.thumb.chain
+    final thumb = $.thumb
       ..shape.circle()
       ..color.white()
       ..height(20)
@@ -23,12 +23,12 @@ class SliderStyle extends SpecStyle<SliderSpecUtility> {
       ..shape.circle.side.style.solid()
       ..shape.circle.side.strokeAlign(BorderSide.strokeAlignInside);
 
-    final track = $.track.chain
+    final track = $.track
       ..color.grey.shade300()
       ..height(6)
       ..borderRadius.all(10);
 
-    final activeTrack = $.activeTrack.chain
+    final activeTrack = $.activeTrack
       ..color.black()
       ..height(6)
       ..borderRadius.all(10);
@@ -56,16 +56,11 @@ class SliderDarkStyle extends SliderStyle {
 
     final track = $.track.color.grey.shade800();
 
-    final thumb = $.thumb.chain
+    final thumb = $.thumb
       ..color.black()
       ..shape.circle.side.color.white();
 
-    return Style.create([
-      super.makeStyle(spec).call(),
-      activeTrack,
-      track,
-      thumb,
-    ]).animate(
+    return Style.create([super.makeStyle(spec), activeTrack, track, thumb]).animate(
       duration: const Duration(milliseconds: 150),
       curve: Curves.easeInOut,
     );

@@ -45,15 +45,15 @@ abstract class WidgetModifierSpecAttribute<
     with Diagnosticable {
   const WidgetModifierSpecAttribute();
 
-  /// Resolves the attribute to a [WidgetModifierSpec] using the provided [MixData].
-  /// If a property is null in the [MixData], it falls back to the
+  /// Resolves the attribute to a [WidgetModifierSpec] using the provided [MixContext].
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   @override
-  Value resolve(MixData mix);
+  Value resolve(MixContext mix);
 }
 
 abstract class WidgetModifierUtility<
-    T extends Attribute,
+    T extends StyleElement,
     D extends WidgetModifierSpecAttribute<Value>,
     Value extends WidgetModifierSpec<Value>> extends MixUtility<T, D> {
   const WidgetModifierUtility(super.builder);

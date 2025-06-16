@@ -10,7 +10,7 @@ class FortalezaToastStyle extends ToastStyle {
   Style makeStyle(SpecConfiguration<ToastSpecUtility> spec) {
     final $ = spec.utilities;
 
-    final containerStyle = $.container.chain
+    final containerStyle = $.container
       ..borderRadius.all.$radius2()
       ..color.$neutral(2)
       ..border.all.color.$neutral(6)
@@ -21,16 +21,16 @@ class FortalezaToastStyle extends ToastStyle {
     final titleSubtitleContainerStyle =
         $.titleSubtitleContainer.flex.gap.$space1();
 
-    final titleStyle = $.title.chain
+    final titleStyle = $.title
       ..style.$text2()
       ..style.color.$neutral(12);
 
-    final subtitleStyle = $.subtitle.chain
+    final subtitleStyle = $.subtitle
       ..style.$text1()
       ..style.color.$neutral(9);
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       containerStyle,
       titleSubtitleContainerStyle,
       titleStyle,

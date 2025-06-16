@@ -7,7 +7,7 @@ class ToastStyle extends SpecStyle<ToastSpecUtility> {
   Style makeStyle(SpecConfiguration<ToastSpecUtility> spec) {
     final $ = spec.utilities;
 
-    final containerStyle = $.container.chain
+    final containerStyle = $.container
       ..borderRadius(6)
       ..color.white()
       ..border.all.color.black12()
@@ -19,17 +19,17 @@ class ToastStyle extends SpecStyle<ToastSpecUtility> {
       ..flex.mainAxisSize.min()
       ..flex.gap(16);
 
-    final titleSubtitleContainerStyle = $.titleSubtitleContainer.flex.chain
+    final titleSubtitleContainerStyle = $.titleSubtitleContainer.flex
       ..direction.vertical()
       ..crossAxisAlignment.start()
       ..gap(4)
       ..mainAxisSize.min();
 
-    final titleStyle = $.title.chain
+    final titleStyle = $.title
       ..style.bold()
       ..style.fontSize(14);
 
-    final subtitleStyle = $.subtitle.chain
+    final subtitleStyle = $.subtitle
       ..style.fontSize(13)
       ..style.color.black54();
 
@@ -46,13 +46,13 @@ class ToastDarkStyle extends ToastStyle {
   const ToastDarkStyle();
   @override
   Style makeStyle(
-    covariant SpecConfiguration<ToastSpecUtility<Attribute>> spec,
+    covariant SpecConfiguration<ToastSpecUtility<StyleElement>> spec,
   ) {
     final $ = spec.utilities;
 
     return Style.create([
-      super.makeStyle(spec).call(),
-      $.chain
+      super.makeStyle(spec),
+      $
         ..container.color.black()
         ..container.border.color.white30()
         ..subtitle.color.white70()

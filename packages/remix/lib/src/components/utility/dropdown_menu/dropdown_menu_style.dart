@@ -10,7 +10,7 @@ class DropdownMenuStyle extends SpecStyle<DropdownMenuSpecUtility> {
     final $ = spec.utilities;
 
     final menuStyle = [
-      $.menu.container.chain
+      $.menu.container
         ..borderRadius(6)
         ..shadow.color.black.withOpacity(0.07)
         ..shadow.blurRadius(5)
@@ -25,7 +25,7 @@ class DropdownMenuStyle extends SpecStyle<DropdownMenuSpecUtility> {
         ..flex.crossAxisAlignment.start(),
       $.menu.autoWidth.off(),
       spec.on.selected(
-        $.menu.container.chain
+        $.menu.container
           ..box.wrap.transform.scale(1)
           ..box.wrap.opacity(1)
           ..box.wrap.padding.top(4),
@@ -33,13 +33,13 @@ class DropdownMenuStyle extends SpecStyle<DropdownMenuSpecUtility> {
     ];
 
     final itemStyle = [
-      $.item.container.chain
+      $.item.container
         ..borderRadius(6)
         ..padding.vertical(8)
         ..padding.horizontal(6)
         ..width.infinity()
         ..flex.gap(6),
-      $.item.text.chain
+      $.item.text
         ..style.color.black()
         ..style.fontSize(14),
       $.item.icon.size(20),
@@ -65,14 +65,14 @@ class DropdownMenuDarkStyle extends DropdownMenuStyle {
   Style makeStyle(SpecConfiguration<DropdownMenuSpecUtility> spec) {
     final $ = spec.utilities;
 
-    final menuStyle = $.menu.container.chain
+    final menuStyle = $.menu.container
       ..color.black()
       ..border.all.color.white12();
 
     final itemStyle = $.item.text.style.color.white();
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       menuStyle,
       itemStyle,
       spec.on.hover($.item.container.color.white12()),

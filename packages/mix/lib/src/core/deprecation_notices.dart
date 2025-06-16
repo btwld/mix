@@ -20,7 +20,7 @@ import '../variants/widget_state_variant.dart';
 import 'element.dart';
 import 'modifier.dart';
 
-extension ImageSpecUtilityDeprecationX<T extends Attribute>
+extension ImageSpecUtilityDeprecationX<T extends StyleElement>
     on ImageSpecUtility<T> {
   @Deprecated(
     'To match Flutter naming conventions, use `colorBlendMode` instead.',

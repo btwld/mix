@@ -15,7 +15,7 @@ class FortalezaAccordionStyle extends AccordionStyle {
 
     final style = Style(
       // Container
-      $.container.chain
+      $.container
         ..border.all.color.$neutral(2)
         ..shape.roundedRectangle.borderRadius(6)
         ..shape.roundedRectangle.side.width(1)
@@ -27,7 +27,7 @@ class FortalezaAccordionStyle extends AccordionStyle {
         ..color.$neutral(2),
 
       // Header
-      $.header.chain
+      $.header
         ..container.padding.horizontal.$space4()
         ..text.style.fontWeight.w400()
         ..text.style.color.$neutral(12)
@@ -36,7 +36,7 @@ class FortalezaAccordionStyle extends AccordionStyle {
         ..container.animated.curve.easeInCubic()
         ..container.animated.duration(const Duration(milliseconds: 100)),
 
-      $.contentContainer.chain
+      $.contentContainer
         ..padding.all.$space3()
         ..border.style.none()
         ..border.top.color.$neutral(6)
@@ -51,6 +51,6 @@ class FortalezaAccordionStyle extends AccordionStyle {
       ),
     );
 
-    return Style.create([baseStyle(), style()]);
+    return Style.create([baseStyle, style]);
   }
 }

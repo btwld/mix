@@ -19,12 +19,12 @@ class FortalezaSelectStyle extends SelectStyle {
 
     final baseThemeOverrides = Style(
       $.menu.autoWidth.on(),
-      $.menu.container.chain
+      $.menu.container
         ..color.$neutral(1)
         ..border.all.color.$neutral(6)
         ..wrap.intrinsicWidth()
         ..padding.all.$space2(),
-      $.button.chain
+      $.button
         ..container.border.all.color.$neutral(6)
         ..container.color.$neutral(1)
         ..icon.color.$accentAlpha(12)
@@ -32,7 +32,7 @@ class FortalezaSelectStyle extends SelectStyle {
         ..container.flex.mainAxisSize.min(),
       $.item.container.padding.horizontal.$space3(),
       spec.on.disabled(
-        $.button.chain
+        $.button
           ..container.color.$neutral(2)
           ..container.border.all.color.$neutral(8)
           ..label.style.color.$neutral(11)
@@ -46,31 +46,31 @@ class FortalezaSelectStyle extends SelectStyle {
     );
 
     final softVariant = Style(
-      $.button.container.chain
+      $.button.container
         ..color.$accent(3)
         ..border.none(),
       $.button.label.style.color.$accent(12),
       $.item.text.style.color.$accent(12),
       spec.on.hover(
         $.button.container.color.$accent(4),
-        $.item.chain
+        $.item
           ..container.color.$accent(4)
           ..text.style.color.$accent(12),
       ),
     );
 
     final ghostVariant = Style(
-      $.button.container.chain
+      $.button.container
         ..color.transparent()
         ..border.none(),
       spec.on.hover(
         $.button.container.color.$accent(4),
-        $.item.chain
+        $.item
           ..container.color.$accent(4)
           ..text.style.color.$accent(12),
       ),
       spec.on.disabled(
-        $.button.chain
+        $.button
           ..container.color.transparent()
           ..label.style.color.$neutral(11)
           ..icon.color.$neutral(9),
@@ -79,10 +79,10 @@ class FortalezaSelectStyle extends SelectStyle {
 
     return Style.create(
       [
-        baseStyle(),
-        baseThemeOverrides(),
-        soft(softVariant()),
-        ghost(ghostVariant()),
+        baseStyle,
+        baseThemeOverrides,
+        soft(softVariant),
+        ghost(ghostVariant),
       ],
     ).animate(duration: const Duration(milliseconds: 100));
   }
@@ -95,10 +95,10 @@ class FortalezaDarkSelectStyle extends FortalezaSelectStyle {
   Style makeStyle(SpecConfiguration<SelectSpecUtility> spec) {
     final $ = spec.utilities;
 
-    final baseStyle = Style(super.makeStyle(spec).call());
+    final baseStyle = Style(super.makeStyle(spec));
 
     final baseThemeOverrides = Style(
-      $.button.chain
+      $.button
         ..label.style.color.$neutral(12)
         ..container.color.$neutral(1)
         ..container.border.all.color.$neutral(7),
@@ -108,7 +108,7 @@ class FortalezaDarkSelectStyle extends FortalezaSelectStyle {
     );
 
     final ghost = Style(
-      $.button.chain
+      $.button
         ..label.style.color.$accent(12)
         ..icon.color.$accent(12)
         ..container.color.transparent()
@@ -117,9 +117,9 @@ class FortalezaDarkSelectStyle extends FortalezaSelectStyle {
     );
 
     return Style.create([
-      baseStyle(),
-      baseThemeOverrides(),
-      FortalezaSelectStyle.ghost(ghost()),
+      baseStyle,
+      baseThemeOverrides,
+      FortalezaSelectStyle.ghost(ghost),
     ]);
   }
 }

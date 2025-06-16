@@ -7,14 +7,12 @@ class ChipStyle extends SpecStyle<ChipSpecUtility> {
   Style makeStyle(SpecConfiguration<ChipSpecUtility> spec) {
     final $ = spec.utilities;
 
-    final iconStyle = [
-      $.icon.chain
-        ..size(18)
-        ..color.black(),
-    ];
+    final iconStyle = $.icon
+      ..size(18)
+      ..color.black();
 
     final labelStyle = [
-      $.label.chain
+      $.label
         ..textHeightBehavior.heightToFirstAscent.off()
         ..textHeightBehavior.heightToLastDescent.on()
         ..style.fontSize(14)
@@ -24,7 +22,7 @@ class ChipStyle extends SpecStyle<ChipSpecUtility> {
     ];
 
     final containerStyle = [
-      $.container.chain
+      $.container
         ..borderRadius(6)
         ..color.white()
         ..border.all.width(1)
@@ -46,8 +44,8 @@ class ChipStyle extends SpecStyle<ChipSpecUtility> {
 
     return Style.create([
       ...containerStyle,
-      ...iconStyle,
       ...labelStyle,
+      iconStyle,
       disabledStyle,
     ]);
   }
@@ -61,7 +59,7 @@ class ChipDarkStyle extends ChipStyle {
     final $ = spec.utilities;
 
     final containerStyle = [
-      $.container.chain
+      $.container
         ..border.all.color.grey.shade900()
         ..color.black(),
       $.icon.color.white(),
@@ -74,10 +72,10 @@ class ChipDarkStyle extends ChipStyle {
       ),
     ];
 
-    final labelStyle = $.label.chain..style.color.white();
+    final labelStyle = $.label..style.color.white();
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       ...containerStyle,
       labelStyle,
     ]);

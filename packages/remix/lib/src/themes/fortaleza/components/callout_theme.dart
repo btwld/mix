@@ -17,8 +17,8 @@ class FortalezaCalloutStyle extends CalloutStyle {
 
     final baseStyle = super.makeStyle(spec);
     final baseOverrides = Style(
-      baseStyle(),
-      $.container.chain
+      baseStyle,
+      $.container
         ..borderRadius(8)
         ..color.$accent(3)
         ..border.all.width(0)
@@ -27,16 +27,16 @@ class FortalezaCalloutStyle extends CalloutStyle {
         ..flex.gap.$space3()
         ..flex.crossAxisAlignment.center()
         ..flex.mainAxisAlignment.start(),
-      $.icon.chain
+      $.icon
         ..color.$accentAlpha(11)
         ..size(20),
-      $.text.chain
+      $.text
         ..style.color.$accentAlpha(11)
         ..style.fontWeight.w400(),
     );
 
     final surfaceVariant = Style(
-      $.container.chain
+      $.container
         ..border.all.style.solid()
         ..color.$accentAlpha(3)
         ..border.width(1)
@@ -44,7 +44,7 @@ class FortalezaCalloutStyle extends CalloutStyle {
     );
 
     final outlineVariant = Style(
-      $.container.chain
+      $.container
         ..border.all.style.solid()
         ..color.transparent()
         ..border.width(1)
@@ -52,11 +52,7 @@ class FortalezaCalloutStyle extends CalloutStyle {
     );
 
     return Style.create(
-      [
-        baseOverrides(),
-        surface(surfaceVariant()),
-        outline(outlineVariant()),
-      ],
+      [baseOverrides, surface(surfaceVariant), outline(outlineVariant)],
     );
   }
 }

@@ -39,11 +39,11 @@ class MyApp extends StatelessWidget {
 
 Style style() => Style(
       $icon.color.red(),
-      $flexbox.chain
+      $flexbox
         ..flex.direction(Axis.horizontal)
         ..flex.mainAxisSize.min(),
       $on.breakpoint(const Breakpoint(minWidth: 0, maxWidth: 365))(
-        $flexbox.chain.flex.direction(Axis.vertical),
+        $flexbox.flex.direction(Axis.vertical),
       ),
     ).animate(
       duration: const Duration(milliseconds: 200),

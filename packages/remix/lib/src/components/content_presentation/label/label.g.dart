@@ -10,7 +10,7 @@ part of 'label.dart';
 
 /// A mixin that provides spec functionality for [LabelSpec].
 mixin _$LabelSpec on Spec<LabelSpec> {
-  static LabelSpec from(MixData mix) {
+  static LabelSpec from(MixContext mix) {
     return mix.attributeOf<LabelSpecAttribute>()?.resolve(mix) ??
         const LabelSpec();
   }
@@ -39,7 +39,7 @@ mixin _$LabelSpec on Spec<LabelSpec> {
     double? spacing,
     IconSpec? icon,
     TextSpec? label,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return LabelSpec(
@@ -79,7 +79,7 @@ mixin _$LabelSpec on Spec<LabelSpec> {
       icon: _$this.icon.lerp(other.icon, t),
       label: _$this.label.lerp(other.label, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -132,16 +132,16 @@ class LabelSpecAttribute extends SpecAttribute<LabelSpec> with Diagnosticable {
     super.animated,
   });
 
-  /// Resolves to [LabelSpec] using the provided [MixData].
+  /// Resolves to [LabelSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final labelSpec = LabelSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  LabelSpec resolve(MixData mix) {
+  LabelSpec resolve(MixContext mix) {
     return LabelSpec(
       spacing: spacing,
       icon: icon?.resolve(mix),
@@ -202,7 +202,7 @@ class LabelSpecAttribute extends SpecAttribute<LabelSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [LabelSpec].
 /// Use the methods of this class to configure specific properties of a [LabelSpec].
-class LabelSpecUtility<T extends Attribute>
+class LabelSpecUtility<T extends StyleElement>
     extends SpecUtility<T, LabelSpecAttribute> {
   /// Utility for defining [LabelSpecAttribute.spacing]
   late final spacing = DoubleUtility((v) => only(spacing: v));
@@ -219,10 +219,19 @@ class LabelSpecUtility<T extends Attribute>
   /// Utility for defining [LabelSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  LabelSpecUtility(super.builder, {super.mutable});
+  LabelSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  LabelSpecUtility<T> get chain =>
-      LabelSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  LabelSpecUtility<T> get chain => LabelSpecUtility(attributeBuilder);
 
   static LabelSpecUtility<LabelSpecAttribute> get self =>
       LabelSpecUtility((v) => v);
@@ -233,7 +242,7 @@ class LabelSpecUtility<T extends Attribute>
     double? spacing,
     IconSpecAttribute? icon,
     TextSpecAttribute? label,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(LabelSpecAttribute(

@@ -18,7 +18,7 @@ class FortalezaBadgeStyle extends BadgeStyle {
 
     final baseStyle = super.makeStyle(spec);
     final baseStyleOverride = Style(
-      $.container.chain
+      $.container
         ..borderRadius.all.$radius1()
         ..padding.horizontal.$space2()
         ..padding.vertical.$space1()
@@ -32,7 +32,7 @@ class FortalezaBadgeStyle extends BadgeStyle {
     );
 
     final surfaceVariant = Style(
-      $.container.chain
+      $.container
         ..color.$accentAlpha(2)
         ..border.all.width(1)
         ..border.all.color.$accent(6),
@@ -40,7 +40,7 @@ class FortalezaBadgeStyle extends BadgeStyle {
     );
 
     final outlineVariant = Style(
-      $.container.chain
+      $.container
         ..color.transparent()
         ..border.width(1)
         ..border.color.$accent(8),
@@ -49,11 +49,11 @@ class FortalezaBadgeStyle extends BadgeStyle {
 
     return Style.create(
       [
-        baseStyle(),
-        baseStyleOverride(),
-        soft(softVariant()),
-        surface(surfaceVariant()),
-        outline(outlineVariant()),
+        baseStyle,
+        baseStyleOverride,
+        soft(softVariant),
+        surface(surfaceVariant),
+        outline(outlineVariant),
       ],
     );
   }
@@ -75,10 +75,10 @@ class FortalezaDarkBadgeStyle extends FortalezaBadgeStyle {
     final surface = Style($.container.color.$accent(1));
 
     return Style.create([
-      baseStyle(),
-      baseStyleOverride(),
-      FortalezaBadgeStyle.soft(soft()),
-      FortalezaBadgeStyle.surface(surface()),
+      baseStyle,
+      baseStyleOverride,
+      FortalezaBadgeStyle.soft(soft),
+      FortalezaBadgeStyle.surface(surface),
     ]);
   }
 }

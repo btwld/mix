@@ -10,7 +10,7 @@ part of 'avatar.dart';
 
 /// A mixin that provides spec functionality for [AvatarSpec].
 mixin _$AvatarSpec on Spec<AvatarSpec> {
-  static AvatarSpec from(MixData mix) {
+  static AvatarSpec from(MixContext mix) {
     return mix.attributeOf<AvatarSpecAttribute>()?.resolve(mix) ??
         const AvatarSpec();
   }
@@ -80,7 +80,7 @@ mixin _$AvatarSpec on Spec<AvatarSpec> {
       image: _$this.image.lerp(other.image, t),
       fallback: _$this.fallback.lerp(other.fallback, t),
       stack: _$this.stack.lerp(other.stack, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -121,16 +121,16 @@ class AvatarSpecAttribute extends SpecAttribute<AvatarSpec> {
     super.animated,
   });
 
-  /// Resolves to [AvatarSpec] using the provided [MixData].
+  /// Resolves to [AvatarSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final avatarSpec = AvatarSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  AvatarSpec resolve(MixData mix) {
+  AvatarSpec resolve(MixContext mix) {
     return AvatarSpec(
       container: container?.resolve(mix),
       image: image?.resolve(mix),
@@ -179,7 +179,7 @@ class AvatarSpecAttribute extends SpecAttribute<AvatarSpec> {
 ///
 /// This class provides methods to set individual properties of a [AvatarSpec].
 /// Use the methods of this class to configure specific properties of a [AvatarSpec].
-class AvatarSpecUtility<T extends Attribute>
+class AvatarSpecUtility<T extends StyleElement>
     extends SpecUtility<T, AvatarSpecAttribute> {
   /// Utility for defining [AvatarSpecAttribute.container]
   late final container = BoxSpecUtility((v) => only(container: v));
@@ -196,10 +196,19 @@ class AvatarSpecUtility<T extends Attribute>
   /// Utility for defining [AvatarSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  AvatarSpecUtility(super.builder, {super.mutable});
+  AvatarSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  AvatarSpecUtility<T> get chain =>
-      AvatarSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  AvatarSpecUtility<T> get chain => AvatarSpecUtility(attributeBuilder);
 
   static AvatarSpecUtility<AvatarSpecAttribute> get self =>
       AvatarSpecUtility((v) => v);

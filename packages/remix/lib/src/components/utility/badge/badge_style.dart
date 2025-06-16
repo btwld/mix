@@ -10,7 +10,7 @@ class BadgeStyle extends SpecStyle<BadgeSpecUtility> {
     final $ = spec.utilities;
 
     final containerStyle = [
-      $.container.chain
+      $.container
         ..color.black()
         ..borderRadius.all(10)
         ..padding.horizontal(10)
@@ -18,7 +18,7 @@ class BadgeStyle extends SpecStyle<BadgeSpecUtility> {
     ];
 
     final labelStyle = [
-      $.label.chain
+      $.label
         ..textHeightBehavior.heightToFirstAscent.off()
         ..textHeightBehavior.heightToLastDescent.on()
         ..textAlign.center()
@@ -40,7 +40,7 @@ class BadgeDarkStyle extends BadgeStyle {
     final $ = spec.utilities;
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       $.container.color.white(),
       $.label.style.color.black(),
     ]);

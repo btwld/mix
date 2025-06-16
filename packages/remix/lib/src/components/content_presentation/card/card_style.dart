@@ -8,7 +8,7 @@ class CardStyle extends SpecStyle<CardSpecUtility> {
     final $ = spec.utilities;
 
     final containerStyle = [
-      $.container.chain
+      $.container
         ..borderRadius(4)
         ..color.white()
         ..border.all.color.black12()
@@ -27,11 +27,11 @@ class CardDarkStyle extends CardStyle {
     final $ = spec.utilities;
 
     final containerStyle = [
-      $.container.chain
+      $.container
         ..color.black()
         ..border.all.color.white30(),
     ];
 
-    return Style.create([super.makeStyle(spec).call(), ...containerStyle]);
+    return Style.create([super.makeStyle(spec), ...containerStyle]);
   }
 }

@@ -10,7 +10,7 @@ part of 'radio.dart';
 
 /// A mixin that provides spec functionality for [RadioSpec].
 mixin _$RadioSpec on Spec<RadioSpec> {
-  static RadioSpec from(MixData mix) {
+  static RadioSpec from(MixContext mix) {
     return mix.attributeOf<RadioSpecAttribute>()?.resolve(mix) ??
         const RadioSpec();
   }
@@ -40,7 +40,7 @@ mixin _$RadioSpec on Spec<RadioSpec> {
     BoxSpec? indicator,
     FlexBoxSpec? container,
     TextSpec? text,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return RadioSpec(
@@ -83,7 +83,7 @@ mixin _$RadioSpec on Spec<RadioSpec> {
       container: _$this.container.lerp(other.container, t),
       text: _$this.text.lerp(other.text, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -142,16 +142,16 @@ class RadioSpecAttribute extends SpecAttribute<RadioSpec> with Diagnosticable {
     super.animated,
   });
 
-  /// Resolves to [RadioSpec] using the provided [MixData].
+  /// Resolves to [RadioSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final radioSpec = RadioSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  RadioSpec resolve(MixData mix) {
+  RadioSpec resolve(MixContext mix) {
     return RadioSpec(
       indicatorContainer: indicatorContainer?.resolve(mix),
       indicator: indicator?.resolve(mix),
@@ -220,7 +220,7 @@ class RadioSpecAttribute extends SpecAttribute<RadioSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [RadioSpec].
 /// Use the methods of this class to configure specific properties of a [RadioSpec].
-class RadioSpecUtility<T extends Attribute>
+class RadioSpecUtility<T extends StyleElement>
     extends SpecUtility<T, RadioSpecAttribute> {
   /// Utility for defining [RadioSpecAttribute.indicatorContainer]
   late final indicatorContainer =
@@ -241,10 +241,19 @@ class RadioSpecUtility<T extends Attribute>
   /// Utility for defining [RadioSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  RadioSpecUtility(super.builder, {super.mutable});
+  RadioSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  RadioSpecUtility<T> get chain =>
-      RadioSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  RadioSpecUtility<T> get chain => RadioSpecUtility(attributeBuilder);
 
   static RadioSpecUtility<RadioSpecAttribute> get self =>
       RadioSpecUtility((v) => v);
@@ -256,7 +265,7 @@ class RadioSpecUtility<T extends Attribute>
     BoxSpecAttribute? indicator,
     FlexBoxSpecAttribute? container,
     TextSpecAttribute? text,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(RadioSpecAttribute(

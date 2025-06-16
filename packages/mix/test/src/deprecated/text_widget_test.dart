@@ -33,7 +33,7 @@ void main() {
       textDirection: TextDirection.rtl,
       softWrap: false,
       overflow: TextOverflow.ellipsis,
-      textScaleFactor: 1.5,
+      textScaler: TextScaler.linear(1.5),
       maxLines: 3,
       textWidthBasis: TextWidthBasis.longestLine,
       textHeightBehavior: TextHeightBehavior(applyHeightToFirstAscent: false),
@@ -49,7 +49,7 @@ void main() {
       textDirection: textSpec.textDirection,
       softWrap: textSpec.softWrap,
       overflow: textSpec.overflow,
-      textScaleFactor: textSpec.textScaleFactor,
+      textScaler: textSpec.textScaler,
       maxLines: textSpec.maxLines,
       textWidthBasis: textSpec.textWidthBasis,
       textHeightBehavior: textSpec.textHeightBehavior,
@@ -90,7 +90,7 @@ void main() {
     expect(textWidget.textDirection, mixedTextWidget.textDirection);
     expect(textWidget.softWrap, mixedTextWidget.softWrap);
     expect(textWidget.overflow, mixedTextWidget.overflow);
-    expect(textWidget.textScaleFactor, mixedTextWidget.textScaleFactor);
+    expect(textWidget.textScaler, mixedTextWidget.textScaler);
     expect(textWidget.maxLines, mixedTextWidget.maxLines);
     expect(textWidget.textWidthBasis, mixedTextWidget.textWidthBasis);
     expect(textWidget.textHeightBehavior, mixedTextWidget.textHeightBehavior);

@@ -9,11 +9,11 @@ import 'color_directives_impl.dart';
 
 /// A Data transfer object that represents a [Color] value.
 ///
-/// This DTO is used to resolve a [Color] value from a [MixData] instance.
+/// This DTO is used to resolve a [Color] value from a [MixContext] instance.
 ///
 /// See also:
-/// * [ColorToken], which is used to resolve a [Color] value from a [MixData] instance.
-/// * [ColorRef], which is used to reference a [Color] value from a [MixData] instance.
+/// * [ColorToken], which is used to resolve a [Color] value from a [MixContext] instance.
+/// * [ColorRef], which is used to reference a [Color] value from a [MixContext] instance.
 /// * [Color], which is the Flutter equivalent class.
 /// {@category DTO}
 @immutable
@@ -39,7 +39,7 @@ class ColorDto extends Mixable<Color> with Diagnosticable {
   Color get defaultColor => const Color(0x00000000);
 
   @override
-  Color resolve(MixData mix) {
+  Color resolve(MixContext mix) {
     Color color = value ?? defaultColor;
 
     if (color is ColorRef) {

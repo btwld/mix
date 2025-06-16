@@ -10,7 +10,7 @@ part of 'switch.dart';
 
 /// A mixin that provides spec functionality for [SwitchSpec].
 mixin _$SwitchSpec on Spec<SwitchSpec> {
-  static SwitchSpec from(MixData mix) {
+  static SwitchSpec from(MixContext mix) {
     return mix.attributeOf<SwitchSpecAttribute>()?.resolve(mix) ??
         const SwitchSpec();
   }
@@ -39,7 +39,7 @@ mixin _$SwitchSpec on Spec<SwitchSpec> {
     BoxSpec? container,
     BoxSpec? indicator,
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
   }) {
     return SwitchSpec(
       container: container ?? _$this.container,
@@ -73,7 +73,7 @@ mixin _$SwitchSpec on Spec<SwitchSpec> {
     return SwitchSpec(
       container: _$this.container.lerp(other.container, t),
       indicator: _$this.indicator.lerp(other.indicator, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
       modifiers: other.modifiers,
     );
   }
@@ -123,16 +123,16 @@ class SwitchSpecAttribute extends SpecAttribute<SwitchSpec>
     super.modifiers,
   });
 
-  /// Resolves to [SwitchSpec] using the provided [MixData].
+  /// Resolves to [SwitchSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final switchSpec = SwitchSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  SwitchSpec resolve(MixData mix) {
+  SwitchSpec resolve(MixContext mix) {
     return SwitchSpec(
       container: container?.resolve(mix),
       indicator: indicator?.resolve(mix),
@@ -191,7 +191,7 @@ class SwitchSpecAttribute extends SpecAttribute<SwitchSpec>
 ///
 /// This class provides methods to set individual properties of a [SwitchSpec].
 /// Use the methods of this class to configure specific properties of a [SwitchSpec].
-class SwitchSpecUtility<T extends Attribute>
+class SwitchSpecUtility<T extends StyleElement>
     extends SpecUtility<T, SwitchSpecAttribute> {
   /// Utility for defining [SwitchSpecAttribute.container]
   late final container = BoxSpecUtility((v) => only(container: v));
@@ -205,10 +205,19 @@ class SwitchSpecUtility<T extends Attribute>
   /// Utility for defining [SwitchSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  SwitchSpecUtility(super.builder, {super.mutable});
+  SwitchSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  SwitchSpecUtility<T> get chain =>
-      SwitchSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  SwitchSpecUtility<T> get chain => SwitchSpecUtility(attributeBuilder);
 
   static SwitchSpecUtility<SwitchSpecAttribute> get self =>
       SwitchSpecUtility((v) => v);
@@ -219,7 +228,7 @@ class SwitchSpecUtility<T extends Attribute>
     BoxSpecAttribute? container,
     BoxSpecAttribute? indicator,
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(SwitchSpecAttribute(
       container: container,

@@ -19,7 +19,7 @@ import '../../widget_state/widget_state_controller.dart';
 ///
 /// - Caches [ComputedStyle] when [style] hasn't changed
 /// - Uses [InheritedModel] for selective rebuilds based on spec changes
-/// - Creates fresh [MixData] to ensure context values stay current
+/// - Creates fresh [MixContext] to ensure context values stay current
 ///
 /// ## Example
 ///
@@ -121,7 +121,7 @@ class _MixBuilderState extends State<MixBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    var mix = MixData.create(context, _cachedStyle);
+    var mix = MixContext.create(context, _cachedStyle);
 
     // Apply inheritance
     if (widget.inherit) {

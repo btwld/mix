@@ -14,7 +14,7 @@ void main() {
       $stack.textDirection.ltr(),
     );
     await tester.pumpMaterialApp(
-      StyledStack(
+      ZBox(
         style: style,
         children: [
           Container(color: const Color(0xFF000000), width: 100, height: 100),
@@ -26,7 +26,10 @@ void main() {
     final stackWidget = tester.widget<Stack>(find.byType(Stack));
 
     expect(find.byType(Stack), findsOneWidget);
-    expect(find.byType(Container), findsNWidgets(2));
+    expect(
+        find.byType(Container),
+        findsNWidgets(
+            3)); // ZBox creates 1 internal Container + 2 child Containers
     expect(stackWidget.alignment, Alignment.topCenter);
     expect(stackWidget.fit, StackFit.expand);
     expect(stackWidget.clipBehavior, Clip.antiAlias);
@@ -60,10 +63,10 @@ void main() {
   });
 
   testWidgets(
-    'StyledStack should apply modifiers only once',
+    'ZBox should apply modifiers only once',
     (tester) async {
       await tester.pumpMaterialApp(
-        StyledStack(
+        ZBox(
           style: Style(
             $flex.gap(10),
             $with.align(),

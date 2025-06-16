@@ -10,7 +10,7 @@ part of 'accordion.dart';
 
 /// A mixin that provides spec functionality for [AccordionSpec].
 mixin _$AccordionSpec on Spec<AccordionSpec> {
-  static AccordionSpec from(MixData mix) {
+  static AccordionSpec from(MixContext mix) {
     return mix.attributeOf<AccordionSpecAttribute>()?.resolve(mix) ??
         const AccordionSpec();
   }
@@ -77,7 +77,7 @@ mixin _$AccordionSpec on Spec<AccordionSpec> {
       header: _$this.header.lerp(other.header, t),
       container: _$this.container.lerp(other.container, t),
       contentContainer: _$this.contentContainer.lerp(other.contentContainer, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -115,16 +115,16 @@ class AccordionSpecAttribute extends SpecAttribute<AccordionSpec> {
     super.animated,
   });
 
-  /// Resolves to [AccordionSpec] using the provided [MixData].
+  /// Resolves to [AccordionSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final accordionSpec = AccordionSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  AccordionSpec resolve(MixData mix) {
+  AccordionSpec resolve(MixContext mix) {
     return AccordionSpec(
       header: header?.resolve(mix),
       container: container?.resolve(mix),
@@ -171,7 +171,7 @@ class AccordionSpecAttribute extends SpecAttribute<AccordionSpec> {
 ///
 /// This class provides methods to set individual properties of a [AccordionSpec].
 /// Use the methods of this class to configure specific properties of a [AccordionSpec].
-class AccordionSpecUtility<T extends Attribute>
+class AccordionSpecUtility<T extends StyleElement>
     extends SpecUtility<T, AccordionSpecAttribute> {
   /// Utility for defining [AccordionSpecAttribute.header]
   late final header = AccordionHeaderSpecUtility((v) => only(header: v));
@@ -186,10 +186,19 @@ class AccordionSpecUtility<T extends Attribute>
   /// Utility for defining [AccordionSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  AccordionSpecUtility(super.builder, {super.mutable});
+  AccordionSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  AccordionSpecUtility<T> get chain =>
-      AccordionSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  AccordionSpecUtility<T> get chain => AccordionSpecUtility(attributeBuilder);
 
   static AccordionSpecUtility<AccordionSpecAttribute> get self =>
       AccordionSpecUtility((v) => v);
@@ -237,7 +246,7 @@ class AccordionSpecTween extends Tween<AccordionSpec?> {
 
 /// A mixin that provides spec functionality for [AccordionHeaderSpec].
 mixin _$AccordionHeaderSpec on Spec<AccordionHeaderSpec> {
-  static AccordionHeaderSpec from(MixData mix) {
+  static AccordionHeaderSpec from(MixContext mix) {
     return mix.attributeOf<AccordionHeaderSpecAttribute>()?.resolve(mix) ??
         const AccordionHeaderSpec();
   }
@@ -307,7 +316,7 @@ mixin _$AccordionHeaderSpec on Spec<AccordionHeaderSpec> {
       leadingIcon: _$this.leadingIcon.lerp(other.leadingIcon, t),
       text: _$this.text.lerp(other.text, t),
       trailingIcon: _$this.trailingIcon.lerp(other.trailingIcon, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -348,16 +357,16 @@ class AccordionHeaderSpecAttribute extends SpecAttribute<AccordionHeaderSpec> {
     super.animated,
   });
 
-  /// Resolves to [AccordionHeaderSpec] using the provided [MixData].
+  /// Resolves to [AccordionHeaderSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final accordionHeaderSpec = AccordionHeaderSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  AccordionHeaderSpec resolve(MixData mix) {
+  AccordionHeaderSpec resolve(MixContext mix) {
     return AccordionHeaderSpec(
       container: container?.resolve(mix),
       leadingIcon: leadingIcon?.resolve(mix),
@@ -407,7 +416,7 @@ class AccordionHeaderSpecAttribute extends SpecAttribute<AccordionHeaderSpec> {
 ///
 /// This class provides methods to set individual properties of a [AccordionHeaderSpec].
 /// Use the methods of this class to configure specific properties of a [AccordionHeaderSpec].
-class AccordionHeaderSpecUtility<T extends Attribute>
+class AccordionHeaderSpecUtility<T extends StyleElement>
     extends SpecUtility<T, AccordionHeaderSpecAttribute> {
   /// Utility for defining [AccordionHeaderSpecAttribute.container]
   late final container = FlexBoxSpecUtility((v) => only(container: v));
@@ -424,10 +433,20 @@ class AccordionHeaderSpecUtility<T extends Attribute>
   /// Utility for defining [AccordionHeaderSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  AccordionHeaderSpecUtility(super.builder, {super.mutable});
+  AccordionHeaderSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
   AccordionHeaderSpecUtility<T> get chain =>
-      AccordionHeaderSpecUtility(attributeBuilder, mutable: true);
+      AccordionHeaderSpecUtility(attributeBuilder);
 
   static AccordionHeaderSpecUtility<AccordionHeaderSpecAttribute> get self =>
       AccordionHeaderSpecUtility((v) => v);

@@ -19,7 +19,7 @@ class FortalezaSpinnerStyle extends SpinnerStyle {
     final softVariant = Style($.color.$accent(8));
 
     return Style.create(
-      [baseStyle(), $.color.$accent(), $.style.solid(), soft(softVariant())],
+      [baseStyle, $.color.$accent(), $.style.solid(), soft(softVariant)],
     );
   }
 }

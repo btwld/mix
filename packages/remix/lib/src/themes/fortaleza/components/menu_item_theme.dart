@@ -13,17 +13,17 @@ class FortalezaMenuItemStyle extends MenuItemStyle {
     final baseStyle = super.makeStyle(spec);
     final titleSubtitleLayout = $.titleSubtitleContainer.flex.gap.$space1();
 
-    final title = $.title.chain
+    final title = $.title
       ..style.$text2()
       ..style.color.resetDirectives()
       ..style.color.$neutral(12);
 
-    final subtitle = $.subtitle.chain
+    final subtitle = $.subtitle
       ..style.$text1()
       ..style.color.resetDirectives()
       ..style.color.$neutral(9);
 
-    final container = $.container.chain
+    final container = $.container
       ..padding.all.$space3()
       ..padding.right.$space4()
       ..borderRadius.all.$radius2()
@@ -33,13 +33,13 @@ class FortalezaMenuItemStyle extends MenuItemStyle {
 
     final hovered = $.container.color.$accent(3);
 
-    final disabled = $.chain
+    final disabled = $
       ..title.style.color.$neutral(9)
       ..subtitle.style.color.$neutral(8)
       ..icon.color.$neutral(8);
 
     return Style.create([
-      baseStyle(),
+      baseStyle,
       titleSubtitleLayout,
       container,
       title,

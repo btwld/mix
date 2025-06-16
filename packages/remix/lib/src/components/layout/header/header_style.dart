@@ -8,21 +8,21 @@ class HeaderStyle extends SpecStyle<HeaderSpecUtility> {
     final $ = spec.utilities;
 
     final textStyle = [
-      $.titleGroup.chain
+      $.titleGroup
         ..crossAxisAlignment.start()
         ..mainAxisAlignment.start()
         ..mainAxisSize.min()
         ..gap(4),
-      $.title.chain
+      $.title
         ..style.bold()
         ..fontSize(18),
-      $.subtitle.chain
+      $.subtitle
         ..fontSize(14)
         ..color.grey.shade800(),
     ];
 
     final containerStyle = [
-      $.container.chain
+      $.container
         ..padding(20)
         ..height(88)
         ..color.white()
@@ -48,7 +48,7 @@ class HeaderDarkStyle extends HeaderStyle {
     final containerStyle = [$.container.color.black()];
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       ...textStyle,
       ...containerStyle,
     ]);

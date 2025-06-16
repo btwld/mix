@@ -8,7 +8,7 @@ class ProgressStyle extends SpecStyle<ProgressSpecUtility> {
     final $ = spec.utilities;
 
     final containerStyle = [
-      $.container.chain
+      $.container
         ..height(6)
         ..clipBehavior.antiAlias()
         ..borderRadius(99),
@@ -30,7 +30,7 @@ class ProgressDarkStyle extends ProgressStyle {
     final $ = spec.utilities;
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       $.track.color.white12(),
       $.fill.color.white(),
     ]);

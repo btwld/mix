@@ -19,7 +19,7 @@ class FortalezaProgressStyle extends ProgressStyle {
       $.container.clipBehavior.hardEdge(),
       $.track.color.$neutral(3),
       $.fill.color.$accent(9),
-      $.outerContainer.chain
+      $.outerContainer
         ..clipBehavior.hardEdge()
         ..shapeDecoration.shape.roundedRectangle()
         ..border.width(1)
@@ -32,6 +32,6 @@ class FortalezaProgressStyle extends ProgressStyle {
       $.outerContainer.border.style.none(),
     );
 
-    return Style.create([baseStyle(), baseOverrides(), soft(softVariant())]);
+    return Style.create([baseStyle, baseOverrides, soft(softVariant)]);
   }
 }

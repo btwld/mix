@@ -18,7 +18,7 @@ class FortalezaCheckboxStyle extends CheckboxStyle {
     final baseStyle = super.makeStyle(spec);
     final baseOverrides = Style(
       $.indicator.wrap.scale(0.5),
-      $.indicatorContainer.chain
+      $.indicatorContainer
         ..border.all.width(0)
         ..border.all.style.none(),
       $.label.style.color.$neutral(12),
@@ -26,14 +26,14 @@ class FortalezaCheckboxStyle extends CheckboxStyle {
     );
 
     final surfaceVariant = Style(
-      $.indicatorContainer.chain
+      $.indicatorContainer
         ..border.strokeAlign(BorderSide.strokeAlignInside)
         ..border.color.$neutral(9)
         ..border.style.solid(),
       $.indicator.color.$white(),
       spec.on.hover($.indicatorContainer.color.$neutral(3)),
       spec.on.selected(
-        $.indicatorContainer.chain
+        $.indicatorContainer
           ..color.transparent()
           ..border.width(0)
           ..border.style.none()
@@ -46,7 +46,7 @@ class FortalezaCheckboxStyle extends CheckboxStyle {
         $.indicatorContainer.border.all.color.$neutral(9),
         spec.on.selected(
           $.indicator.color.$neutral(8),
-          $.indicatorContainer.chain
+          $.indicatorContainer
             ..color.$neutral(3)
             ..border.width(1)
             ..border.all.color.$neutral(8)
@@ -74,7 +74,7 @@ class FortalezaCheckboxStyle extends CheckboxStyle {
     );
 
     final disabledVariant = Style(
-      $.indicatorContainer.chain
+      $.indicatorContainer
         ..color.$neutral(3)
         ..border.color.$neutral(5),
       $.indicator.color.$neutral(7),
@@ -83,12 +83,12 @@ class FortalezaCheckboxStyle extends CheckboxStyle {
 
     return Style.create(
       [
-        baseStyle(),
-        baseOverrides(),
-        spec.on.disabled(disabledVariant()),
+        baseStyle,
+        baseOverrides,
+        spec.on.disabled(disabledVariant),
         $.indicatorContainer.border.style.none(),
-        surfaceVariant(),
-        soft(softVariant()),
+        surfaceVariant,
+        soft(softVariant),
       ],
     );
   }

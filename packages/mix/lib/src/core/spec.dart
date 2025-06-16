@@ -3,8 +3,8 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 import '../attributes/animated/animated_data.dart';
 import '../attributes/animated/animated_data_dto.dart';
-import '../attributes/modifiers/widget_modifiers_data.dart';
-import '../attributes/modifiers/widget_modifiers_data_dto.dart';
+import '../attributes/modifiers/widget_modifiers_config.dart';
+import '../attributes/modifiers/widget_modifiers_config_dto.dart';
 import '../internal/compare_mixin.dart';
 import '../variants/context_variant_util/on_util.dart';
 import 'element.dart';
@@ -19,7 +19,7 @@ abstract class Spec<T extends Spec<T>> with EqualityMixin {
     utilities: [MixableFieldUtility(alias: 'wrap')],
     isLerpable: false,
   )
-  final WidgetModifiersData? modifiers;
+  final WidgetModifiersConfig? modifiers;
 
   const Spec({this.animated, this.modifiers});
 
@@ -37,41 +37,43 @@ abstract class Spec<T extends Spec<T>> with EqualityMixin {
 
 /// An abstract class representing a resolvable attribute.
 ///
-/// This class extends the [Attribute] class and provides a generic type [Self] and [Value].
+/// This class extends the [StyleElement] class and provides a generic type [Self] and [Value].
 /// The [Self] type represents the concrete implementation of the attribute, while the [Value] type represents the resolvable value.
-abstract class SpecAttribute<Value> extends Mixable<Value>
-    implements Attribute {
+abstract class SpecAttribute<Value> extends StyleElement
+    implements Mixable<Value> {
   final AnimatedDataDto? animated;
   final WidgetModifiersDataDto? modifiers;
 
   const SpecAttribute({this.animated, this.modifiers});
 
   @override
-  Value resolve(MixData mix);
+  Value resolve(MixContext mix);
 
   @override
   SpecAttribute<Value> merge(covariant SpecAttribute<Value>? other);
 }
 
-abstract class SpecUtility<T extends Attribute, V> extends Attribute {
+abstract class SpecUtility<T extends StyleElement, V> extends StyleElement {
   T? attributeValue;
 
   @protected
   @visibleForTesting
   final T Function(V) attributeBuilder;
 
-  final bool _mutable;
-
-  SpecUtility(this.attributeBuilder, {bool mutable = false})
-      : _mutable = mutable;
+  SpecUtility(
+    this.attributeBuilder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    bool? mutable,
+  });
 
   static T selfBuilder<T>(T value) => value;
 
   T builder(V v) {
     final attribute = attributeBuilder(v);
-    if (_mutable) {
-      attributeValue = (attributeValue?.merge(attribute) ?? attribute) as T;
-    }
+    // Always mutable - accumulate state in attributeValue
+    attributeValue = (attributeValue?.merge(attribute) ?? attribute) as T;
 
     return attribute;
   }

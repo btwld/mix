@@ -26,16 +26,21 @@ class StyledIcon extends StyledWidget {
 
   @override
   Widget build(BuildContext context) {
-    return withMix(context, (context) {
-      final spec = IconSpec.of(context);
+    return SpecBuilder(
+      inherit: inherit,
+      style: style,
+      orderOfModifiers: orderOfModifiers,
+      builder: (context) {
+        final spec = IconSpec.of(context);
 
-      return spec(
-        icon,
-        semanticLabel: semanticLabel,
-        orderOfModifiers: orderOfModifiers,
-        textDirection: textDirection,
-      );
-    });
+        return spec(
+          icon,
+          semanticLabel: semanticLabel,
+          orderOfModifiers: orderOfModifiers,
+          textDirection: textDirection,
+        );
+      },
+    );
   }
 }
 
@@ -98,18 +103,23 @@ class AnimatedStyledIcon extends StyledWidget {
 
   @override
   Widget build(BuildContext context) {
-    return withMix(context, (context) {
-      final spec = IconSpec.of(context);
+    return SpecBuilder(
+      inherit: inherit,
+      style: style,
+      orderOfModifiers: orderOfModifiers,
+      builder: (context) {
+        final spec = IconSpec.of(context);
 
-      return AnimatedIcon(
-        icon: icon,
-        progress: progress,
-        color: spec.color,
-        size: spec.size,
-        semanticLabel: semanticLabel,
-        textDirection: textDirection,
-      );
-    });
+        return AnimatedIcon(
+          icon: icon,
+          progress: progress,
+          color: spec.color,
+          size: spec.size,
+          semanticLabel: semanticLabel,
+          textDirection: textDirection,
+        );
+      },
+    );
   }
 }
 

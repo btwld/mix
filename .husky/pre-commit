@@ -2,7 +2,7 @@
 
 . "$(dirname -- "$0")/_/husky.sh"
 
-# Find the absolute path to the fvm command
+# Find the absolute path to the fvm command  
 FVM_PATH=$(command -v fvm)
 
 # Check if fvm command is found
@@ -14,6 +14,8 @@ else
   exit 1
 fi
 
+# Run lint_staged on staged files
+echo "Running lint_staged..."
 dart run lint_staged
 
 

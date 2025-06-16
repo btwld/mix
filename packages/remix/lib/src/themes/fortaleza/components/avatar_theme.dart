@@ -26,7 +26,7 @@ class FortalezaAvatarStyle extends AvatarStyle {
       $.fallback.style.color.$accent(),
     );
 
-    return Style.create([baseStyle(), solidVariant(), soft(softVariant())]);
+    return Style.create([baseStyle, solidVariant, soft(softVariant)]);
   }
 }
 
@@ -44,10 +44,6 @@ class FortalezaDarkAvatarStyle extends FortalezaAvatarStyle {
       $.fallback.style.color.$accent(11),
     );
 
-    return Style.create([
-      baseStyle(),
-      solid(),
-      FortalezaAvatarStyle.soft(soft()),
-    ]);
+    return Style.create([baseStyle, solid, FortalezaAvatarStyle.soft(soft)]);
   }
 }

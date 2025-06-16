@@ -10,7 +10,7 @@ part of 'spinner.dart';
 
 /// A mixin that provides spec functionality for [SpinnerSpec].
 mixin _$SpinnerSpec on Spec<SpinnerSpec> {
-  static SpinnerSpec from(MixData mix) {
+  static SpinnerSpec from(MixContext mix) {
     return mix.attributeOf<SpinnerSpecAttribute>()?.resolve(mix) ??
         const SpinnerSpec();
   }
@@ -41,7 +41,7 @@ mixin _$SpinnerSpec on Spec<SpinnerSpec> {
     Color? color,
     Duration? duration,
     SpinnerTypeStyle? style,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return SpinnerSpec(
@@ -85,7 +85,7 @@ mixin _$SpinnerSpec on Spec<SpinnerSpec> {
       duration: t < 0.5 ? _$this.duration : other.duration,
       style: t < 0.5 ? _$this.style : other.style,
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -149,16 +149,16 @@ class SpinnerSpecAttribute extends SpecAttribute<SpinnerSpec>
     super.animated,
   });
 
-  /// Resolves to [SpinnerSpec] using the provided [MixData].
+  /// Resolves to [SpinnerSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final spinnerSpec = SpinnerSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  SpinnerSpec resolve(MixData mix) {
+  SpinnerSpec resolve(MixContext mix) {
     return SpinnerSpec(
       size: size,
       strokeWidth: strokeWidth,
@@ -229,7 +229,7 @@ class SpinnerSpecAttribute extends SpecAttribute<SpinnerSpec>
 ///
 /// This class provides methods to set individual properties of a [SpinnerSpec].
 /// Use the methods of this class to configure specific properties of a [SpinnerSpec].
-class SpinnerSpecUtility<T extends Attribute>
+class SpinnerSpecUtility<T extends StyleElement>
     extends SpecUtility<T, SpinnerSpecAttribute> {
   /// Utility for defining [SpinnerSpecAttribute.size]
   late final size = DoubleUtility((v) => only(size: v));
@@ -252,10 +252,19 @@ class SpinnerSpecUtility<T extends Attribute>
   /// Utility for defining [SpinnerSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  SpinnerSpecUtility(super.builder, {super.mutable});
+  SpinnerSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  SpinnerSpecUtility<T> get chain =>
-      SpinnerSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  SpinnerSpecUtility<T> get chain => SpinnerSpecUtility(attributeBuilder);
 
   static SpinnerSpecUtility<SpinnerSpecAttribute> get self =>
       SpinnerSpecUtility((v) => v);
@@ -268,7 +277,7 @@ class SpinnerSpecUtility<T extends Attribute>
     ColorDto? color,
     Duration? duration,
     SpinnerTypeStyle? style,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(SpinnerSpecAttribute(

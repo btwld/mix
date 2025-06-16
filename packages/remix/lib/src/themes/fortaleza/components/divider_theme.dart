@@ -13,6 +13,6 @@ class FortalezaDividerStyle extends DividerStyle {
     final baseStyle = super.makeStyle(spec);
     final containerStyle = [$.container.color.$neutral(5)];
 
-    return Style.create([baseStyle(), ...containerStyle]);
+    return Style.create([baseStyle, ...containerStyle]);
   }
 }

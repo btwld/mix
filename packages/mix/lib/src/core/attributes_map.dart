@@ -7,7 +7,7 @@ import 'element.dart';
 import 'spec.dart';
 
 // @nodoc
-class AttributeMap<T extends Attribute> {
+class AttributeMap<T extends StyleElement> {
   final LinkedHashMap<Object, T>? _map;
 
   const AttributeMap._(this._map);
@@ -18,7 +18,7 @@ class AttributeMap<T extends Attribute> {
     return AttributeMap._(_mergeMap(attributes));
   }
 
-  static LinkedHashMap<Object, Attr> _mergeMap<Attr extends Attribute>(
+  static LinkedHashMap<Object, Attr> _mergeMap<Attr extends StyleElement>(
     Iterable<Attr> attributes,
   ) {
     final map = LinkedHashMap<Object, Attr>();

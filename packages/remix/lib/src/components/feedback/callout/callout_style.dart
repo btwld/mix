@@ -10,7 +10,7 @@ class CalloutStyle extends SpecStyle<CalloutSpecUtility> {
     final $ = spec.utilities;
 
     final flexContainerStyle = [
-      $.container.chain
+      $.container
         ..borderRadius(6)
         ..color.white()
         ..padding(12)
@@ -23,7 +23,7 @@ class CalloutStyle extends SpecStyle<CalloutSpecUtility> {
     final iconStyle = [$.icon.color.black(), $.icon.size(16)];
 
     final textStyle = [
-      $.text.chain
+      $.text
         ..style.color.black()
         ..style.fontSize(14)
         ..style.fontWeight.w500(),
@@ -40,7 +40,7 @@ class CalloutDarkStyle extends CalloutStyle {
   Style makeStyle(SpecConfiguration<CalloutSpecUtility> spec) {
     final $ = spec.utilities;
     final flexContainerStyle = [
-      $.container.chain
+      $.container
         ..color.black()
         ..border.all.color.white30(),
     ];
@@ -50,7 +50,7 @@ class CalloutDarkStyle extends CalloutStyle {
     final iconStyle = [$.icon.color.white()];
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       ...flexContainerStyle,
       ...textStyle,
       ...iconStyle,

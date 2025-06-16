@@ -10,7 +10,7 @@ part of 'card.dart';
 
 /// A mixin that provides spec functionality for [CardSpec].
 mixin _$CardSpec on Spec<CardSpec> {
-  static CardSpec from(MixData mix) {
+  static CardSpec from(MixContext mix) {
     return mix.attributeOf<CardSpecAttribute>()?.resolve(mix) ??
         const CardSpec();
   }
@@ -37,7 +37,7 @@ mixin _$CardSpec on Spec<CardSpec> {
   @override
   CardSpec copyWith({
     BoxSpec? container,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return CardSpec(
@@ -71,7 +71,7 @@ mixin _$CardSpec on Spec<CardSpec> {
     return CardSpec(
       container: _$this.container.lerp(other.container, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -114,16 +114,16 @@ class CardSpecAttribute extends SpecAttribute<CardSpec> with Diagnosticable {
     super.animated,
   });
 
-  /// Resolves to [CardSpec] using the provided [MixData].
+  /// Resolves to [CardSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final cardSpec = CardSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  CardSpec resolve(MixData mix) {
+  CardSpec resolve(MixContext mix) {
     return CardSpec(
       container: container?.resolve(mix),
       modifiers: modifiers?.resolve(mix),
@@ -177,7 +177,7 @@ class CardSpecAttribute extends SpecAttribute<CardSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [CardSpec].
 /// Use the methods of this class to configure specific properties of a [CardSpec].
-class CardSpecUtility<T extends Attribute>
+class CardSpecUtility<T extends StyleElement>
     extends SpecUtility<T, CardSpecAttribute> {
   /// Utility for defining [CardSpecAttribute.container]
   late final container = BoxSpecUtility((v) => only(container: v));
@@ -188,10 +188,19 @@ class CardSpecUtility<T extends Attribute>
   /// Utility for defining [CardSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  CardSpecUtility(super.builder, {super.mutable});
+  CardSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  CardSpecUtility<T> get chain =>
-      CardSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  CardSpecUtility<T> get chain => CardSpecUtility(attributeBuilder);
 
   static CardSpecUtility<CardSpecAttribute> get self =>
       CardSpecUtility((v) => v);
@@ -200,7 +209,7 @@ class CardSpecUtility<T extends Attribute>
   @override
   T only({
     BoxSpecAttribute? container,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(CardSpecAttribute(

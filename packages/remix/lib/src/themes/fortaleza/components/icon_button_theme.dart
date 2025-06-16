@@ -19,7 +19,7 @@ class FortalezaIconButtonStyle extends IconButtonStyle {
 
     final baseStyle = super.makeStyle(spec);
     final baseOverrides = Style(
-      baseStyle(),
+      baseStyle,
       $.container.padding.all.$space2(),
       $.icon.size(16),
       $.spinner.size(14),
@@ -50,7 +50,7 @@ class FortalezaIconButtonStyle extends IconButtonStyle {
     );
 
     final outlineVariant = Style(
-      $.container.chain
+      $.container
         ..color.transparent()
         ..border.width(1)
         ..border.strokeAlign(0)
@@ -59,14 +59,14 @@ class FortalezaIconButtonStyle extends IconButtonStyle {
       $.icon.color.$accentAlpha(11),
       spec.on.hover($.container.color.$accentAlpha(2)),
       spec.on.disabled(
-        $.container.chain
+        $.container
           ..border.color.$neutralAlpha(8)
           ..color.transparent(),
       ),
     );
 
     final surfaceVariant = Style(
-      outlineVariant(),
+      outlineVariant,
       $.container.color.$accentAlpha(3),
       spec.on.hover(
         $.container.color.$accentAlpha(4),
@@ -86,13 +86,13 @@ class FortalezaIconButtonStyle extends IconButtonStyle {
 
     return Style.create(
       [
-        baseOverrides(),
+        baseOverrides,
         onDisabledForeground,
-        solidVariant(),
-        soft(softVariant()),
-        outline(outlineVariant()),
-        surface(surfaceVariant()),
-        ghost(ghostVariant()),
+        solidVariant,
+        soft(softVariant),
+        outline(outlineVariant),
+        surface(surfaceVariant),
+        ghost(ghostVariant),
       ],
     );
   }

@@ -9,7 +9,7 @@ import 'color_dto.dart';
 import 'material_colors_util.dart';
 
 @immutable
-abstract base class BaseColorUtility<T extends Attribute>
+abstract base class BaseColorUtility<T extends StyleElement>
     extends MixUtility<T, ColorDto> {
   const BaseColorUtility(super.builder);
 
@@ -17,7 +17,7 @@ abstract base class BaseColorUtility<T extends Attribute>
 }
 
 @immutable
-base class FoundationColorUtility<T extends Attribute, C extends Color>
+base class FoundationColorUtility<T extends StyleElement, C extends Color>
     extends BaseColorUtility<T> with ColorDirectiveMixin<T> {
   final C color;
   const FoundationColorUtility(super.builder, this.color);
@@ -28,25 +28,25 @@ base class FoundationColorUtility<T extends Attribute, C extends Color>
       builder(ColorDto.raw(value: color, directives: [directive]));
 }
 
-/// A utility class for building [Attribute] instances from a list of [ColorDto] objects.
+/// A utility class for building [StyleElement] instances from a list of [ColorDto] objects.
 ///
-/// This class extends [MixUtility] and provides a convenient way to create [Attribute]
+/// This class extends [MixUtility] and provides a convenient way to create [StyleElement]
 /// instances by transforming a list of [Color] objects into a list of [ColorDto] objects.
-final class ColorListUtility<T extends Attribute>
+final class ColorListUtility<T extends StyleElement>
     extends MixUtility<T, List<ColorDto>> {
   const ColorListUtility(super.builder);
 
-  /// Creates an [Attribute] instance from a list of [Color] objects.
+  /// Creates an [StyleElement] instance from a list of [Color] objects.
   ///
   /// This method maps each [Color] object to a [ColorDto] object and passes the
-  /// resulting list to the [builder] function to create the [Attribute] instance.
+  /// resulting list to the [builder] function to create the [StyleElement] instance.
   T call(List<Color> colors) {
     return builder(colors.map((e) => e.toDto()).toList());
   }
 }
 
 @immutable
-final class ColorUtility<T extends Attribute> extends BaseColorUtility<T>
+final class ColorUtility<T extends StyleElement> extends BaseColorUtility<T>
     with ColorDirectiveMixin<T>, MaterialColorsMixin<T>, BasicColorsMixin<T> {
   ColorUtility(super.builder);
 
@@ -57,7 +57,7 @@ final class ColorUtility<T extends Attribute> extends BaseColorUtility<T>
 
 typedef ColorModifier = Color Function(Color);
 
-base mixin BasicColorsMixin<T extends Attribute> on BaseColorUtility<T> {
+base mixin BasicColorsMixin<T extends StyleElement> on BaseColorUtility<T> {
   late final transparent = FoundationColorUtility(builder, Colors.transparent);
 
   late final black = FoundationColorUtility(builder, Colors.black);
@@ -93,7 +93,7 @@ base mixin BasicColorsMixin<T extends Attribute> on BaseColorUtility<T> {
   late final white10 = FoundationColorUtility(builder, Colors.white10);
 }
 
-base mixin ColorDirectiveMixin<T extends Attribute> on BaseColorUtility<T> {
+base mixin ColorDirectiveMixin<T extends StyleElement> on BaseColorUtility<T> {
   T directive(ColorDirective directive) =>
       builder(ColorDto.directive(directive));
   T withOpacity(double opacity) => directive(OpacityColorDirective(opacity));

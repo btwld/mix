@@ -70,8 +70,7 @@ void main() {
       expect(props, contains(variant));
     });
 
-    test('build should return a NestedStyleAttribute with the result of fn',
-        () {
+    test('build should return a Style with the result of fn', () {
       const variant = _MockContextVariant();
       final style = Style(const MockIntScalarAttribute(1));
       fn(BuildContext context) => style;

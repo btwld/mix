@@ -10,7 +10,7 @@ part of 'textfield.dart';
 
 /// A mixin that provides spec functionality for [TextFieldSpec].
 mixin _$TextFieldSpec on Spec<TextFieldSpec> {
-  static TextFieldSpec from(MixData mix) {
+  static TextFieldSpec from(MixContext mix) {
     return mix.attributeOf<TextFieldSpecAttribute>()?.resolve(mix) ??
         const TextFieldSpec();
   }
@@ -66,7 +66,7 @@ mixin _$TextFieldSpec on Spec<TextFieldSpec> {
     double? floatingLabelHeight,
     TextStyle? floatingLabelStyle,
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
   }) {
     return TextFieldSpec(
       style: style ?? _$this.style,
@@ -182,7 +182,7 @@ mixin _$TextFieldSpec on Spec<TextFieldSpec> {
           _$this.floatingLabelHeight, other.floatingLabelHeight, t)!,
       floatingLabelStyle: MixHelpers.lerpTextStyle(
           _$this.floatingLabelStyle, other.floatingLabelStyle, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
       modifiers: other.modifiers,
     );
   }
@@ -372,16 +372,16 @@ class TextFieldSpecAttribute extends SpecAttribute<TextFieldSpec>
     super.modifiers,
   });
 
-  /// Resolves to [TextFieldSpec] using the provided [MixData].
+  /// Resolves to [TextFieldSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final textFieldSpec = TextFieldSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  TextFieldSpec resolve(MixData mix) {
+  TextFieldSpec resolve(MixContext mix) {
     return TextFieldSpec(
       style: style?.resolve(mix),
       textAlign: textAlign,
@@ -586,7 +586,7 @@ class TextFieldSpecAttribute extends SpecAttribute<TextFieldSpec>
 ///
 /// This class provides methods to set individual properties of a [TextFieldSpec].
 /// Use the methods of this class to configure specific properties of a [TextFieldSpec].
-class TextFieldSpecUtility<T extends Attribute>
+class TextFieldSpecUtility<T extends StyleElement>
     extends SpecUtility<T, TextFieldSpecAttribute> {
   /// Utility for defining [TextFieldSpecAttribute.style]
   late final style = TextStyleUtility((v) => only(style: v));
@@ -690,10 +690,19 @@ class TextFieldSpecUtility<T extends Attribute>
   /// Utility for defining [TextFieldSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  TextFieldSpecUtility(super.builder, {super.mutable});
+  TextFieldSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  TextFieldSpecUtility<T> get chain =>
-      TextFieldSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  TextFieldSpecUtility<T> get chain => TextFieldSpecUtility(attributeBuilder);
 
   static TextFieldSpecUtility<TextFieldSpecAttribute> get self =>
       TextFieldSpecUtility((v) => v);
@@ -730,7 +739,7 @@ class TextFieldSpecUtility<T extends Attribute>
     double? floatingLabelHeight,
     TextStyleDto? floatingLabelStyle,
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(TextFieldSpecAttribute(
       style: style,

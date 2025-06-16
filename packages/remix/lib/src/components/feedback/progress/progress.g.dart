@@ -10,7 +10,7 @@ part of 'progress.dart';
 
 /// A mixin that provides spec functionality for [ProgressSpec].
 mixin _$ProgressSpec on Spec<ProgressSpec> {
-  static ProgressSpec from(MixData mix) {
+  static ProgressSpec from(MixContext mix) {
     return mix.attributeOf<ProgressSpecAttribute>()?.resolve(mix) ??
         const ProgressSpec();
   }
@@ -41,7 +41,7 @@ mixin _$ProgressSpec on Spec<ProgressSpec> {
     BoxSpec? fill,
     BoxSpec? outerContainer,
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
   }) {
     return ProgressSpec(
       container: container ?? _$this.container,
@@ -79,7 +79,7 @@ mixin _$ProgressSpec on Spec<ProgressSpec> {
       track: _$this.track.lerp(other.track, t),
       fill: _$this.fill.lerp(other.fill, t),
       outerContainer: _$this.outerContainer.lerp(other.outerContainer, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
       modifiers: other.modifiers,
     );
   }
@@ -139,16 +139,16 @@ class ProgressSpecAttribute extends SpecAttribute<ProgressSpec>
     super.modifiers,
   });
 
-  /// Resolves to [ProgressSpec] using the provided [MixData].
+  /// Resolves to [ProgressSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final progressSpec = ProgressSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  ProgressSpec resolve(MixData mix) {
+  ProgressSpec resolve(MixContext mix) {
     return ProgressSpec(
       container: container?.resolve(mix),
       track: track?.resolve(mix),
@@ -216,7 +216,7 @@ class ProgressSpecAttribute extends SpecAttribute<ProgressSpec>
 ///
 /// This class provides methods to set individual properties of a [ProgressSpec].
 /// Use the methods of this class to configure specific properties of a [ProgressSpec].
-class ProgressSpecUtility<T extends Attribute>
+class ProgressSpecUtility<T extends StyleElement>
     extends SpecUtility<T, ProgressSpecAttribute> {
   /// Utility for defining [ProgressSpecAttribute.container]
   late final container = BoxSpecUtility((v) => only(container: v));
@@ -236,10 +236,19 @@ class ProgressSpecUtility<T extends Attribute>
   /// Utility for defining [ProgressSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  ProgressSpecUtility(super.builder, {super.mutable});
+  ProgressSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  ProgressSpecUtility<T> get chain =>
-      ProgressSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  ProgressSpecUtility<T> get chain => ProgressSpecUtility(attributeBuilder);
 
   static ProgressSpecUtility<ProgressSpecAttribute> get self =>
       ProgressSpecUtility((v) => v);
@@ -252,7 +261,7 @@ class ProgressSpecUtility<T extends Attribute>
     BoxSpecAttribute? fill,
     BoxSpecAttribute? outerContainer,
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(ProgressSpecAttribute(
       container: container,

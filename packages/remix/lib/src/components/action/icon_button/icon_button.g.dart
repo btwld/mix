@@ -10,7 +10,7 @@ part of 'icon_button.dart';
 
 /// A mixin that provides spec functionality for [IconButtonSpec].
 mixin _$IconButtonSpec on Spec<IconButtonSpec> {
-  static IconButtonSpec from(MixData mix) {
+  static IconButtonSpec from(MixContext mix) {
     return mix.attributeOf<IconButtonSpecAttribute>()?.resolve(mix) ??
         const IconButtonSpec();
   }
@@ -39,7 +39,7 @@ mixin _$IconButtonSpec on Spec<IconButtonSpec> {
   IconButtonSpec copyWith({
     BoxSpec? container,
     IconSpec? icon,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     SpinnerSpec? spinner,
     AnimatedData? animated,
   }) {
@@ -80,7 +80,7 @@ mixin _$IconButtonSpec on Spec<IconButtonSpec> {
       icon: _$this.icon.lerp(other.icon, t),
       modifiers: other.modifiers,
       spinner: _$this.spinner.lerp(other.spinner, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -134,16 +134,16 @@ class IconButtonSpecAttribute extends SpecAttribute<IconButtonSpec>
     super.animated,
   });
 
-  /// Resolves to [IconButtonSpec] using the provided [MixData].
+  /// Resolves to [IconButtonSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final iconButtonSpec = IconButtonSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  IconButtonSpec resolve(MixData mix) {
+  IconButtonSpec resolve(MixContext mix) {
     return IconButtonSpec(
       container: container?.resolve(mix),
       icon: icon?.resolve(mix),
@@ -205,7 +205,7 @@ class IconButtonSpecAttribute extends SpecAttribute<IconButtonSpec>
 ///
 /// This class provides methods to set individual properties of a [IconButtonSpec].
 /// Use the methods of this class to configure specific properties of a [IconButtonSpec].
-class IconButtonSpecUtility<T extends Attribute>
+class IconButtonSpecUtility<T extends StyleElement>
     extends SpecUtility<T, IconButtonSpecAttribute> {
   /// Utility for defining [IconButtonSpecAttribute.container]
   late final container = BoxSpecUtility((v) => only(container: v));
@@ -222,10 +222,19 @@ class IconButtonSpecUtility<T extends Attribute>
   /// Utility for defining [IconButtonSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  IconButtonSpecUtility(super.builder, {super.mutable});
+  IconButtonSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  IconButtonSpecUtility<T> get chain =>
-      IconButtonSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  IconButtonSpecUtility<T> get chain => IconButtonSpecUtility(attributeBuilder);
 
   static IconButtonSpecUtility<IconButtonSpecAttribute> get self =>
       IconButtonSpecUtility((v) => v);
@@ -235,7 +244,7 @@ class IconButtonSpecUtility<T extends Attribute>
   T only({
     BoxSpecAttribute? container,
     IconSpecAttribute? icon,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     SpinnerSpecAttribute? spinner,
     AnimatedDataDto? animated,
   }) {

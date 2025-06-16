@@ -31,7 +31,7 @@ class TextFieldStyle extends SpecStyle<TextFieldSpecUtility> {
     final $ = spec.utilities;
 
     final iOS = spec.on.ios(
-      $.chain
+      $
         ..paintCursorAboveText.on()
         ..cursorOpacityAnimates.on()
         ..cursorRadius(2)
@@ -42,13 +42,13 @@ class TextFieldStyle extends SpecStyle<TextFieldSpecUtility> {
     );
 
     final androidAndFuchsia = (spec.on.android | spec.on.fuchsia)(
-      $.chain
+      $
         ..paintCursorAboveText.off()
         ..cursorOpacityAnimates.off(),
     );
 
     final macos = spec.on.macos(
-      $.chain
+      $
         ..paintCursorAboveText.on()
         ..cursorOpacityAnimates.off()
         ..cursorRadius(2)
@@ -59,13 +59,13 @@ class TextFieldStyle extends SpecStyle<TextFieldSpecUtility> {
     );
 
     final windows = spec.on.windows(
-      $.chain
+      $
         ..paintCursorAboveText.off()
         ..cursorOpacityAnimates.off(),
     );
 
     final linux = spec.on.linux(
-      $.chain
+      $
         ..paintCursorAboveText.off()
         ..cursorOpacityAnimates.off(),
     );
@@ -79,7 +79,7 @@ class TextFieldStyle extends SpecStyle<TextFieldSpecUtility> {
 
     final $ = spec.utilities;
 
-    final containerStyle = $.container.chain
+    final containerStyle = $.container
       ..color.white()
       ..padding.horizontal(10)
       ..padding.vertical(8)
@@ -95,14 +95,14 @@ class TextFieldStyle extends SpecStyle<TextFieldSpecUtility> {
       ..flex.crossAxisAlignment.center()
       ..flex.gap(8);
 
-    final outerContainerStyle = $.outerContainer.flex.chain
+    final outerContainerStyle = $.outerContainer.flex
       ..direction.vertical()
       ..mainAxisSize.min()
       ..mainAxisAlignment.start()
       ..crossAxisAlignment.start()
       ..gap(6);
 
-    final textStyle = $.chain
+    final textStyle = $
       ..style.color.black87()
       ..style.fontSize(14);
 
@@ -111,11 +111,11 @@ class TextFieldStyle extends SpecStyle<TextFieldSpecUtility> {
       $.hintTextStyle.fontSize(14),
     ];
 
-    final icon = $.icon.chain
+    final icon = $.icon
       ..color.grey.shade800()
       ..size(18);
 
-    final helperStyle = $.helperText.chain
+    final helperStyle = $.helperText
       ..style.color.black54()
       ..style.fontSize(12)
       ..wrap.padding.left(12);
@@ -123,7 +123,7 @@ class TextFieldStyle extends SpecStyle<TextFieldSpecUtility> {
     final focus = spec.on.focus($.container.border.all.color.black());
 
     return Style.create([
-      platformSettings(spec).call(),
+      platformSettings(spec),
       outerContainerStyle,
       $.floatingLabel.off(),
       $.selectionColor.black12(),
@@ -145,7 +145,7 @@ class TextFieldDarkStyle extends TextFieldStyle {
     final $ = spec.utilities;
     final cursor = $.cursorColor.grey.shade100();
 
-    final containerStyle = $.container.chain
+    final containerStyle = $.container
       ..color.black()
       ..border.all.color.grey.shade800()
       ..shadow.spreadRadius(0)
@@ -166,7 +166,7 @@ class TextFieldDarkStyle extends TextFieldStyle {
     final focus = spec.on.focus($.container.border.all.color.white());
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       cursor,
       containerStyle,
       focus,

@@ -111,7 +111,7 @@ Map<${settings.token}, $typeStr> ${_kFunctionToMapName(metadata.name)}(${metadat
 
     for (final utility in settings.utilities) {
       buffer.writeln('''
-extension ${_kUtilityExtensionName(metadata.name, utility)}<T extends Attribute> on $utility<T> {
+extension ${_kUtilityExtensionName(metadata.name, utility)}<T extends StyleElement> on $utility<T> {
   ${tokenFields.map(generateMethod).join('\n  ')}
 }
 ''');

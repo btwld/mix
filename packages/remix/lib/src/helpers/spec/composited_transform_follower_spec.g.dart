@@ -11,7 +11,7 @@ part of 'composited_transform_follower_spec.dart';
 /// A mixin that provides spec functionality for [CompositedTransformFollowerSpec].
 mixin _$CompositedTransformFollowerSpec
     on Spec<CompositedTransformFollowerSpec> {
-  static CompositedTransformFollowerSpec from(MixData mix) {
+  static CompositedTransformFollowerSpec from(MixContext mix) {
     return mix
             .attributeOf<CompositedTransformFollowerSpecAttribute>()
             ?.resolve(mix) ??
@@ -43,7 +43,7 @@ mixin _$CompositedTransformFollowerSpec
     Offset? offset,
     AlignmentGeometry? targetAnchor,
     AlignmentGeometry? followerAnchor,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return CompositedTransformFollowerSpec(
@@ -85,7 +85,7 @@ mixin _$CompositedTransformFollowerSpec
       followerAnchor: AlignmentGeometry.lerp(
           _$this.followerAnchor, other.followerAnchor, t)!,
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -140,16 +140,16 @@ class CompositedTransformFollowerSpecAttribute
     super.animated,
   });
 
-  /// Resolves to [CompositedTransformFollowerSpec] using the provided [MixData].
+  /// Resolves to [CompositedTransformFollowerSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final compositedTransformFollowerSpec = CompositedTransformFollowerSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  CompositedTransformFollowerSpec resolve(MixData mix) {
+  CompositedTransformFollowerSpec resolve(MixContext mix) {
     return CompositedTransformFollowerSpec(
       offset: offset,
       targetAnchor: targetAnchor,
@@ -213,7 +213,7 @@ class CompositedTransformFollowerSpecAttribute
 ///
 /// This class provides methods to set individual properties of a [CompositedTransformFollowerSpec].
 /// Use the methods of this class to configure specific properties of a [CompositedTransformFollowerSpec].
-class CompositedTransformFollowerSpecUtility<T extends Attribute>
+class CompositedTransformFollowerSpecUtility<T extends StyleElement>
     extends SpecUtility<T, CompositedTransformFollowerSpecAttribute> {
   /// Utility for defining [CompositedTransformFollowerSpecAttribute.offset]
   late final offset = OffsetUtility((v) => only(offset: v));
@@ -232,10 +232,20 @@ class CompositedTransformFollowerSpecUtility<T extends Attribute>
   /// Utility for defining [CompositedTransformFollowerSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  CompositedTransformFollowerSpecUtility(super.builder, {super.mutable});
+  CompositedTransformFollowerSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
   CompositedTransformFollowerSpecUtility<T> get chain =>
-      CompositedTransformFollowerSpecUtility(attributeBuilder, mutable: true);
+      CompositedTransformFollowerSpecUtility(attributeBuilder);
 
   static CompositedTransformFollowerSpecUtility<
           CompositedTransformFollowerSpecAttribute>
@@ -247,7 +257,7 @@ class CompositedTransformFollowerSpecUtility<T extends Attribute>
     Offset? offset,
     AlignmentGeometry? targetAnchor,
     AlignmentGeometry? followerAnchor,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(CompositedTransformFollowerSpecAttribute(

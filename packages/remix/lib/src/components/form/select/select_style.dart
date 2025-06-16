@@ -14,16 +14,16 @@ class SelectStyle extends SpecStyle<SelectSpecUtility> {
     ];
 
     final buttonStyle = [
-      $.button.container.chain
+      $.button.container
         ..flex.mainAxisAlignment.spaceBetween()
         ..color.white()
         ..padding.all(10)
         ..border.color.black12()
         ..borderRadius(6),
-      $.button.icon.chain
+      $.button.icon
         ..size(20)
         ..color.black45(),
-      $.button.label.chain
+      $.button.label
         ..style.fontSize(14)
         ..style.color.black(),
       spec.on.disabled(
@@ -32,7 +32,7 @@ class SelectStyle extends SpecStyle<SelectSpecUtility> {
     ];
 
     final menuStyle = [
-      $.menu.container.chain
+      $.menu.container
         ..borderRadius(6)
         ..shadow.color(Colors.black.withValues(alpha: 0.07))
         ..shadow.blurRadius(5)
@@ -48,7 +48,7 @@ class SelectStyle extends SpecStyle<SelectSpecUtility> {
       $.menu.wrap.transform.scale(1.5),
       $.menu.autoWidth.off(),
       spec.on.selected(
-        $.menu.container.chain
+        $.menu.container
           ..box.wrap.transform.scale(1)
           ..box.wrap.opacity(1)
           ..box.wrap.padding.top(4),
@@ -56,13 +56,13 @@ class SelectStyle extends SpecStyle<SelectSpecUtility> {
     ];
 
     final itemStyle = [
-      $.item.container.chain
+      $.item.container
         ..borderRadius(6)
         ..padding.vertical(8)
         ..padding.horizontal(6)
         ..width.infinity()
         ..flex.gap(6),
-      $.item.text.chain
+      $.item.text
         ..style.color.black()
         ..style.fontSize(14),
       $.item.icon.size(20),
@@ -88,20 +88,20 @@ class SelectDarkStyle extends SelectStyle {
   Style makeStyle(SpecConfiguration<SelectSpecUtility> spec) {
     final $ = spec.utilities;
 
-    final buttonStyle = $.button.chain
+    final buttonStyle = $.button
       ..container.color.black()
       ..container.border.color.white12()
       ..icon.color.white54()
       ..label.style.color.white();
 
-    final menuStyle = $.menu.container.chain
+    final menuStyle = $.menu.container
       ..color.black()
       ..border.all.color.white12();
 
     final itemStyle = $.item.text.style.color.white();
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       buttonStyle,
       menuStyle,
       itemStyle,

@@ -19,33 +19,33 @@ class FortalezaRadioStyle extends RadioStyle {
 
     final surfaceVariant = Style(
       $.indicator.wrap.padding.all(3.5),
-      $.indicatorContainer.chain
+      $.indicatorContainer
         ..color.$neutral(1)
         ..border.width(1)
         ..border.color.$neutral(8),
-      $.indicator.chain..color.$white(),
+      $.indicator..color.$white(),
       $.text.style.color.$neutral(12),
       spec.on.hover(
-        $.indicatorContainer.chain
+        $.indicatorContainer
           ..color.$accentAlpha(4)
           ..border.color.$accentAlpha(8),
       ),
       spec.on.selected(
-        $.indicatorContainer.chain
+        $.indicatorContainer
           ..border.none()
           ..color.$accent(9),
       ),
       (spec.on.selected &
           spec.on.hover)($.indicatorContainer.color.$accent(11)),
       (spec.on.disabled & spec.on.selected)(
-        $.indicatorContainer.chain
+        $.indicatorContainer
           ..color.$neutral(3)
           ..border.style.solid(),
       ),
     );
 
     final disabledVariant = Style(
-      $.indicatorContainer.chain
+      $.indicatorContainer
         ..color.$neutral(3)
         ..border.color.$neutral(5),
       $.indicator.color.$neutral(7),
@@ -67,10 +67,10 @@ class FortalezaRadioStyle extends RadioStyle {
 
     return Style.create(
       [
-        baseStyle(),
-        surfaceVariant(),
-        spec.on.disabled(disabledVariant()),
-        soft(softVariant()),
+        baseStyle,
+        surfaceVariant,
+        spec.on.disabled(disabledVariant),
+        soft(softVariant),
       ],
     ).animate(
       duration: const Duration(milliseconds: 100),

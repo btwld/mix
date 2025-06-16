@@ -13,21 +13,21 @@ class FortalezaHeaderStyle extends HeaderStyle {
     final baseStyle = super.makeStyle(spec);
 
     final containerStyle = Style(
-      $.container.chain
+      $.container
         ..padding.all.$space4()
         ..color.$neutral(2),
     );
 
     final textStyle = Style(
       $.titleGroup.gap(0),
-      $.title.chain
+      $.title
         ..style.$text4()
         ..style.color.$neutral(12),
-      $.subtitle.chain
+      $.subtitle
         ..style.$text2()
         ..style.color.$neutral(11),
     );
 
-    return Style.create([baseStyle(), containerStyle(), textStyle()]);
+    return Style.create([baseStyle, containerStyle, textStyle]);
   }
 }

@@ -115,7 +115,7 @@ void main() {
       ]);
 
       final color = colorDto.resolve(
-        MixData.create(
+        MixContext.create(
           MockBuildContext(),
           Style(),
         ),
@@ -131,7 +131,7 @@ void main() {
       ]);
 
       final color = colorDto.resolve(
-        MixData.create(
+        MixContext.create(
           MockBuildContext(),
           Style(),
         ),
@@ -150,7 +150,7 @@ void main() {
       ]);
 
       final color = colorDto.resolve(
-        MixData.create(
+        MixContext.create(
           MockBuildContext(),
           Style(),
         ),
@@ -166,7 +166,7 @@ void main() {
       ]);
 
       final color = colorDto.resolve(
-        MixData.create(
+        MixContext.create(
           MockBuildContext(),
           Style(),
         ),
@@ -182,7 +182,7 @@ void main() {
       ]);
 
       final color = colorDto.resolve(
-        MixData.create(
+        MixContext.create(
           MockBuildContext(),
           Style(),
         ),
@@ -198,7 +198,7 @@ void main() {
       ]);
 
       final color = colorDto.resolve(
-        MixData.create(
+        MixContext.create(
           MockBuildContext(),
           Style(),
         ),
@@ -214,7 +214,7 @@ void main() {
       ]);
 
       final color = colorDto.resolve(
-        MixData.create(
+        MixContext.create(
           MockBuildContext(),
           Style(),
         ),
@@ -230,7 +230,7 @@ void main() {
       ]);
 
       final color = colorDto.resolve(
-        MixData.create(
+        MixContext.create(
           MockBuildContext(),
           Style(),
         ),
@@ -246,7 +246,7 @@ void main() {
       ]);
 
       final color = colorDto.resolve(
-        MixData.create(
+        MixContext.create(
           MockBuildContext(),
           Style(),
         ),
@@ -262,7 +262,7 @@ void main() {
       ]);
 
       final color = colorDto.resolve(
-        MixData.create(
+        MixContext.create(
           MockBuildContext(),
           Style(),
         ),
@@ -278,7 +278,7 @@ void main() {
       ]);
 
       final color = colorDto.resolve(
-        MixData.create(
+        MixContext.create(
           MockBuildContext(),
           Style(),
         ),

@@ -37,7 +37,7 @@ mixin _$FlexBoxSpec on Spec<FlexBoxSpec> {
   @override
   FlexBoxSpec copyWith({
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     BoxSpec? box,
     FlexSpec? flex,
   }) {
@@ -189,7 +189,7 @@ class FlexBoxSpecAttribute extends SpecAttribute<FlexBoxSpec>
 ///
 /// This class provides methods to set individual properties of a [FlexBoxSpec].
 /// Use the methods of this class to configure specific properties of a [FlexBoxSpec].
-class FlexBoxSpecUtility<T extends Attribute>
+class FlexBoxSpecUtility<T extends StyleElement>
     extends SpecUtility<T, FlexBoxSpecAttribute> {
   /// Utility for defining [FlexBoxSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
@@ -290,10 +290,19 @@ class FlexBoxSpecUtility<T extends Attribute>
   /// Utility for defining [FlexBoxSpecAttribute.flex]
   late final flex = FlexSpecUtility((v) => only(flex: v));
 
-  FlexBoxSpecUtility(super.builder, {super.mutable});
+  FlexBoxSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  FlexBoxSpecUtility<T> get chain =>
-      FlexBoxSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  FlexBoxSpecUtility<T> get chain => FlexBoxSpecUtility(attributeBuilder);
 
   static FlexBoxSpecUtility<FlexBoxSpecAttribute> get self =>
       FlexBoxSpecUtility((v) => v);
@@ -302,7 +311,7 @@ class FlexBoxSpecUtility<T extends Attribute>
   @override
   T only({
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     BoxSpecAttribute? box,
     FlexSpecAttribute? flex,
   }) {

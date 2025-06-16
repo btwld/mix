@@ -46,7 +46,7 @@ mixin _$ImageSpec on Spec<ImageSpec> {
     FilterQuality? filterQuality,
     BlendMode? colorBlendMode,
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
   }) {
     return ImageSpec(
       width: width ?? _$this.width,
@@ -278,7 +278,7 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [ImageSpec].
 /// Use the methods of this class to configure specific properties of a [ImageSpec].
-class ImageSpecUtility<T extends Attribute>
+class ImageSpecUtility<T extends StyleElement>
     extends SpecUtility<T, ImageSpecAttribute> {
   /// Utility for defining [ImageSpecAttribute.width]
   late final width = DoubleUtility((v) => only(width: v));
@@ -314,10 +314,19 @@ class ImageSpecUtility<T extends Attribute>
   /// Utility for defining [ImageSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  ImageSpecUtility(super.builder, {super.mutable});
+  ImageSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  ImageSpecUtility<T> get chain =>
-      ImageSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  ImageSpecUtility<T> get chain => ImageSpecUtility(attributeBuilder);
 
   static ImageSpecUtility<ImageSpecAttribute> get self =>
       ImageSpecUtility((v) => v);
@@ -335,7 +344,7 @@ class ImageSpecUtility<T extends Attribute>
     FilterQuality? filterQuality,
     BlendMode? colorBlendMode,
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(ImageSpecAttribute(
       width: width,

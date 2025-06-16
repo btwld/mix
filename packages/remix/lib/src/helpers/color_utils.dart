@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-extension ColorUtilityExt<T extends Attribute> on ColorUtility<T> {
+extension ColorUtilityExt<T extends StyleElement> on ColorUtility<T> {
   T alphaBlend(Color foreground, Color background) =>
       call(Color.alphaBlend(foreground, background));
 }
