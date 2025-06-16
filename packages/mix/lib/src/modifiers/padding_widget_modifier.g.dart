@@ -163,15 +163,6 @@ class PaddingModifierSpecUtility<T extends StyleElement>
   }
 }
 
-/// A concrete implementation of [PaddingModifierSpecUtility] for creating styling configurations.
-///
-/// This class provides a convenient way to define styling properties and is designed
-/// for direct usage in styling contexts.
-class StylePaddingModifier
-    extends PaddingModifierSpecUtility<PaddingModifierSpecAttribute> {
-  StylePaddingModifier() : super((v) => v);
-}
-
 /// A tween that interpolates between two [PaddingModifierSpec] instances.
 ///
 /// This class can be used in animations to smoothly transition between
