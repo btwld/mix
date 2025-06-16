@@ -13,7 +13,7 @@ import '../core/spec.dart';
 
 part 'padding_widget_modifier.g.dart';
 
-@MixableSpec(components: GeneratedSpecComponents.skipStyle)
+@MixableSpec()
 final class PaddingModifierSpec extends WidgetModifierSpec<PaddingModifierSpec>
     with _$PaddingModifierSpec, Diagnosticable {
   final EdgeInsetsGeometry padding;

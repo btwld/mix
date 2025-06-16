@@ -15,10 +15,7 @@ part 'opacity_widget_modifier.g.dart';
 /// A modifier that wraps a widget with the [Opacity] widget.
 ///
 /// The [Opacity] widget is used to make a widget partially transparent.
-@MixableSpec(
-  components:
-      GeneratedSpecComponents.skipUtility & GeneratedSpecComponents.skipStyle,
-)
+@MixableSpec(components: GeneratedSpecComponents.skipUtility)
 final class OpacityModifierSpec extends WidgetModifierSpec<OpacityModifierSpec>
     with _$OpacityModifierSpec, Diagnosticable {
   /// The [opacity] argument must not be null and

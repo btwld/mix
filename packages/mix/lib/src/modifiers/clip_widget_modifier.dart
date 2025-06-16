@@ -12,10 +12,7 @@ import '../core/utility.dart';
 
 part 'clip_widget_modifier.g.dart';
 
-@MixableSpec(
-  components:
-      GeneratedSpecComponents.skipUtility & GeneratedSpecComponents.skipStyle,
-)
+@MixableSpec(components: GeneratedSpecComponents.skipUtility)
 final class ClipOvalModifierSpec
     extends WidgetModifierSpec<ClipOvalModifierSpec>
     with _$ClipOvalModifierSpec, Diagnosticable {
@@ -40,10 +37,7 @@ final class ClipOvalModifierSpec
   }
 }
 
-@MixableSpec(
-  components:
-      GeneratedSpecComponents.skipUtility & GeneratedSpecComponents.skipStyle,
-)
+@MixableSpec(components: GeneratedSpecComponents.skipUtility)
 final class ClipRectModifierSpec
     extends WidgetModifierSpec<ClipRectModifierSpec>
     with _$ClipRectModifierSpec, Diagnosticable {
@@ -68,10 +62,7 @@ final class ClipRectModifierSpec
   }
 }
 
-@MixableSpec(
-  components:
-      GeneratedSpecComponents.skipUtility & GeneratedSpecComponents.skipStyle,
-)
+@MixableSpec(components: GeneratedSpecComponents.skipUtility)
 final class ClipRRectModifierSpec
     extends WidgetModifierSpec<ClipRRectModifierSpec>
     with _$ClipRRectModifierSpec, Diagnosticable {
@@ -101,10 +92,7 @@ final class ClipRRectModifierSpec
   }
 }
 
-@MixableSpec(
-  components:
-      GeneratedSpecComponents.skipUtility & GeneratedSpecComponents.skipStyle,
-)
+@MixableSpec(components: GeneratedSpecComponents.skipUtility)
 final class ClipPathModifierSpec
     extends WidgetModifierSpec<ClipPathModifierSpec>
     with _$ClipPathModifierSpec, Diagnosticable {
@@ -129,10 +117,7 @@ final class ClipPathModifierSpec
   }
 }
 
-@MixableSpec(
-  components:
-      GeneratedSpecComponents.skipUtility & GeneratedSpecComponents.skipStyle,
-)
+@MixableSpec(components: GeneratedSpecComponents.skipUtility)
 final class ClipTriangleModifierSpec
     extends WidgetModifierSpec<ClipTriangleModifierSpec>
     with _$ClipTriangleModifierSpec, Diagnosticable {

@@ -53,7 +53,10 @@ const _style = MixableFieldUtility(
   ],
 );
 
-@MixableSpec()
+@MixableSpec(
+  components:
+      GeneratedSpecComponents.defaultComponents | GeneratedSpecComponents.style,
+)
 final class TextSpec extends Spec<TextSpec> with _$TextSpec, Diagnosticable {
   final TextOverflow? overflow;
   final StrutStyle? strutStyle;

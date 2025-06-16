@@ -11,10 +11,7 @@ import '../core/utility.dart';
 
 part 'intrinsic_widget_modifier.g.dart';
 
-@MixableSpec(
-  components:
-      GeneratedSpecComponents.skipUtility & GeneratedSpecComponents.skipStyle,
-)
+@MixableSpec(components: GeneratedSpecComponents.skipUtility)
 final class IntrinsicHeightModifierSpec
     extends WidgetModifierSpec<IntrinsicHeightModifierSpec>
     with _$IntrinsicHeightModifierSpec, Diagnosticable {
@@ -32,10 +29,7 @@ final class IntrinsicHeightModifierSpec
   }
 }
 
-@MixableSpec(
-  components:
-      GeneratedSpecComponents.skipUtility & GeneratedSpecComponents.skipStyle,
-)
+@MixableSpec(components: GeneratedSpecComponents.skipUtility)
 final class IntrinsicWidthModifierSpec
     extends WidgetModifierSpec<IntrinsicWidthModifierSpec>
     with _$IntrinsicWidthModifierSpec, Diagnosticable {
