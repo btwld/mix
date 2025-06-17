@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -10,44 +11,32 @@ import '../../helpers/testing_utils.dart';
 void main() {
   group('SpecBuilder', () {
     testWidgets(
-        '''When a parent StyledWidget has a Style and inherited property is true, the SpecBuilder.builder should have access to the parent's style attributes in the MixData''',
+        r'should access parent style attributes if inherit is true, otherwise should not',
         (tester) async {
-      tester.pumpWidget(
-        Box(
-          style: Style($box.height(100)),
-          child: SpecBuilder(
-            inherit: true,
-            builder: (context) {
-              final mix = Mix.of(context);
-              expect(mix.attributeOf<BoxSpecAttribute>()!.height, 100);
-              return const SizedBox();
-            },
-          ),
-        ),
-      );
-    });
+      for (var inherit in [true, false]) {
+        double? inheritedValue;
 
-    testWidgets(
-      '''When a parent StyledWidget has a Style and inherited property is false, the SpecBuilder.builder should not have access to the parent's style attributes in the MixData''',
-      (tester) async {
-        tester.pumpWidget(
+        await tester.pumpWidget(
           Box(
             style: Style($box.height(100)),
             child: SpecBuilder(
-              inherit: false,
+              inherit: inherit,
               builder: (context) {
                 final mix = Mix.of(context);
-                expect(mix.attributeOf<BoxSpecAttribute>(), isNull);
+                inheritedValue = mix.attributeOf<BoxSpecAttribute>()?.height;
+
                 return const SizedBox();
               },
             ),
           ),
         );
-      },
-    );
+
+        expect(inheritedValue, inherit ? 100 : null);
+      }
+    });
 
     testWidgets(
-      '''When a parent SpecBuilder has no Style, the MixData in SpecBuilder.builder should have no attributes''',
+      'should have no attributes in MixData when a parent SpecBuilder has no Style',
       (tester) async {
         tester.pumpWidget(
           SpecBuilder(
@@ -62,7 +51,7 @@ void main() {
     );
 
     testWidgets(
-      '''When a parent StyledWidget has a Style, the MixData in SpecBuilder.builder should have the same attributes''',
+      'should have the same attributes in MixData as the parent StyledWidget when inherit is true',
       (tester) async {
         final style = Style(
           $box.height(100),
@@ -85,27 +74,52 @@ void main() {
         );
       },
     );
-    group('SpecBuilder', () {
-      testWidgets(
-        'When a SpecBuilder has a controller, it should wrap the child with Interactable',
-        (tester) async {
-          final controller = WidgetStatesController();
-          await tester.pumpWidget(
-            SpecBuilder(
-              controller: controller,
-              builder: (context) => const SizedBox(),
+
+    testWidgets(
+      'should wrap the child with Interactable when a controller is provided',
+      (tester) async {
+        final controller = WidgetStatesController();
+        await tester.pumpWidget(
+          SpecBuilder(
+            controller: controller,
+            builder: (context) => const SizedBox(),
+          ),
+        );
+
+        expect(find.byType(Interactable), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'should wrap the child with Interactable when a style with MixWidgetStateVariant is provided',
+      (tester) async {
+        await tester.pumpWidget(
+          SpecBuilder(
+            style: Style(
+              $box.color(
+                Colors.red,
+              ),
+              $on.press(
+                $box.color(Colors.blue),
+              ),
             ),
-          );
+            builder: (context) => const SizedBox(),
+          ),
+        );
 
-          expect(find.byType(InteractiveMixStateWidget), findsOneWidget);
-        },
-      );
+        expect(find.byType(InteractiveMixStateWidget), findsOneWidget);
+      },
+    );
 
-      testWidgets(
-        'When a SpecBuilder has a style with MixWidgetStateVariant, it should wrap the child with Interactable',
-        (tester) async {
-          await tester.pumpWidget(
-            SpecBuilder(
+    // Create a test that already has a Interactable and ther is only one InteractiveMixStateWidget
+    testWidgets(
+      'should not wrap the child with Interactable when a controller and a style with MixWidgetStateVariant are provided',
+      (tester) async {
+        final key = GlobalKey();
+        await tester.pumpWidget(
+          Interactable(
+            key: key,
+            child: SpecBuilder(
               style: Style(
                 $box.color(
                   Colors.red,
@@ -116,113 +130,119 @@ void main() {
               ),
               builder: (context) => const SizedBox(),
             ),
-          );
+          ),
+        );
 
-          expect(find.byType(InteractiveMixStateWidget), findsOneWidget);
-        },
-      );
+        final interactableFinder = find.descendant(
+          of: find.byKey(key),
+          matching: find.byType(Interactable),
+        );
 
-      testWidgets(
-        'When a SpecBuilder has a style with OnHoverVariant, it should wrap the child with MouseRegionMixStateWidget',
-        (tester) async {
-          await tester.pumpWidget(
-            SpecBuilder(
+        expect(interactableFinder, findsNothing);
+      },
+    );
+
+    testWidgets(
+      'should wrap the child with MouseRegionMixStateWidget when a style with OnHoverVariant is provided',
+      (tester) async {
+        FocusManager.instance.highlightStrategy =
+            FocusHighlightStrategy.alwaysTraditional;
+
+        await tester.pumpWidget(
+          Center(
+            child: SpecBuilder(
               style: Style(
                 $box.color(Colors.red),
-                $on.hover.event((event) {
-                  return const Style.empty();
-                }),
-              ),
-              builder: (context) => const SizedBox(),
-            ),
-          );
-
-          expect(find.byType(MouseRegionMixStateWidget), findsOneWidget);
-          expect(find.byType(InteractiveMixStateWidget), findsOneWidget);
-        },
-      );
-
-      // Create a test that already has a Interactable and ther is only one InteractiveMixStateWidget
-      testWidgets(
-        'When a SpecBuilder has a controller and a style with MixWidgetStateVariant, it should wrap the child with Interactable',
-        (tester) async {
-          await tester.pumpWidget(
-            Interactable(
-              child: SpecBuilder(
-                style: Style(
-                  $box.color(
-                    Colors.red,
-                  ),
-                  $on.press(
-                    $box.color(Colors.blue),
-                  ),
+                $box.width(100),
+                $box.height(100),
+                $on.hover(
+                  $box.color(Colors.blue),
+                  $box.width(200),
+                  $box.height(200),
                 ),
-                builder: (context) => const SizedBox(),
               ),
+              builder: (context) => const Box(inherit: true),
             ),
-          );
+          ),
+        );
 
-          expect(find.byType(InteractiveMixStateWidget), findsOneWidget);
-        },
-      );
+        final boxFinder = find.byType(Box);
 
-      //  do not add interactive mix state if its not needed
-      testWidgets(
-        'When a SpecBuilder has a controller and a style with MixWidgetStateVariant, it should wrap the child with Interactable',
-        (tester) async {
-          await tester.pumpWidget(
-            SpecBuilder(
-              style: Style($box.color(Colors.red)),
-              builder: (context) => const SizedBox(),
-            ),
-          );
+        // Simulate a hover event
+        final gesture =
+            await tester.createGesture(kind: PointerDeviceKind.mouse);
+        await gesture.addPointer(location: tester.getCenter(boxFinder));
+        await tester.pumpAndSettle();
 
-          expect(find.byType(InteractiveMixStateWidget), findsNothing);
-        },
-      );
+        // Check if the color of the Box is blue
+        final boxSpec = BoxSpec.of(tester.element(boxFinder));
+        expect((boxSpec.decoration as BoxDecoration).color, Colors.blue);
+        expect(boxSpec.width, 200);
+        expect(boxSpec.height, 200);
 
-      testWidgets(
-        'When a SpecBuilder has a controller it should wrap the widget',
-        (tester) async {
-          await tester.pumpWidget(
-            SpecBuilder(
-              controller: WidgetStatesController(),
-              style: Style($box.color(Colors.red)),
-              builder: (context) => const SizedBox(),
-            ),
-          );
+        await gesture.removePointer();
 
-          expect(find.byType(InteractiveMixStateWidget), findsOneWidget);
-        },
-      );
+        expect(find.byType(MouseRegionMixStateWidget), findsOneWidget);
+        expect(find.byType(Interactable), findsOneWidget);
+      },
+    );
 
-      testWidgets(
-        'When a SpecBuilder has an animated style with modifiers, it should use RenderAnimatedModifiers',
-        (tester) async {
-          await tester.pumpWidget(
-            SpecBuilder(
-              style: Style($with.scale(2.0)).animate(),
-              builder: (context) => const SizedBox(),
-            ),
-          );
+    //  do not add interactive mix state if its not needed
+    testWidgets(
+      'should not wrap the child with Interactable when a controller and a style with MixWidgetStateVariant are provided',
+      (tester) async {
+        await tester.pumpWidget(
+          SpecBuilder(
+            style: Style($box.color(Colors.red)),
+            builder: (context) => const SizedBox(),
+          ),
+        );
 
-          expect(find.byType(RenderAnimatedModifiers), findsOneWidget);
-        },
-      );
+        expect(find.byType(Interactable), findsNothing);
+      },
+    );
 
-      testWidgets(
-        'When a SpecBuilder has a non-animated style with modifiers, it should use RenderModifiers',
-        (tester) async {
-          await tester.pumpWidget(
-            SpecBuilder(
-              style: Style($with.scale(2.0)),
-              builder: (context) => const SizedBox(),
-            ),
-          );
+    testWidgets(
+      'should wrap the child with Interactable when a controller and no MixWidgetState InheritedModel are provided',
+      (tester) async {
+        await tester.pumpWidget(
+          SpecBuilder(
+            controller: WidgetStatesController(),
+            style: Style($box.color(Colors.red)),
+            builder: (context) => const SizedBox(),
+          ),
+        );
 
-          expect(find.byType(RenderModifiers), findsOneWidget);
-        },
-      );
-    });
+        expect(find.byType(Interactable), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'should use RenderAnimatedModifiers when a style with modifiers is animated',
+      (tester) async {
+        await tester.pumpWidget(
+          SpecBuilder(
+            style: Style($with.scale(2.0)).animate(),
+            builder: (context) => const SizedBox(),
+          ),
+        );
+
+        expect(find.byType(RenderAnimatedModifiers), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'should use RenderModifiers when a style with modifiers is not animated',
+      (tester) async {
+        await tester.pumpWidget(
+          SpecBuilder(
+            style: Style($with.scale(2.0)),
+            builder: (context) => const SizedBox(),
+          ),
+        );
+
+        expect(find.byType(RenderModifiers), findsOneWidget);
+      },
+    );
   });
 }
