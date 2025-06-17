@@ -56,7 +56,7 @@ void main() {}
 //       expect(generatedCode,
 //           contains('const TestSpecAttribute({this.name, this.age'));
 //       expect(generatedCode,
-//           contains('@override\n  TestSpec resolve(MixData mix)'));
+//           contains('@override\n  TestSpec resolve(MixContext mix)'));
 //       expect(generatedCode, contains('return TestSpec('));
 //       expect(
 //           generatedCode,
@@ -137,7 +137,7 @@ void main() {}
 //       expect(
 //           generatedCode, contains('const TestWidgetModifierSpecAttribute({'));
 //       expect(generatedCode,
-//           contains('@override\n  TestWidgetModifierSpec resolve(MixData mix)'));
+//           contains('@override\n  TestWidgetModifierSpec resolve(MixContext mix)'));
 //       expect(generatedCode, contains('return TestWidgetModifierSpec('));
 //       expect(
 //           generatedCode,

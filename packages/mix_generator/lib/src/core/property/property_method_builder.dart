@@ -88,16 +88,16 @@ class MixableTypeMethods {
     const defaultValueRef = 'defaultValue';
 
     return '''
-  /// Resolves to [$resolvedType] using the provided [MixData].
+  /// Resolves to [$resolvedType] using the provided [MixContext].
   /// 
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `$defaultValueRef` for that property.
   ///
   /// ```dart
   /// final ${resolvedType.lowerCaseFirst} = $className(...).resolve(mix);
   /// ```
   @override
-  $resolvedType resolve(MixData mix) {
+  $resolvedType resolve(MixContext mix) {
   $constIgnoreRule
     return $resolvedType$constructorRef(
       $params

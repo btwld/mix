@@ -197,8 +197,8 @@ class SpecUtility {
 }
 
 /// Mix data container
-class MixData {
-  const MixData();
+class MixContext {
+  const MixContext();
 }
 
 /// Base class for all style elements

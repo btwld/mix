@@ -18,9 +18,9 @@ class SpecMixinBuilder implements CodeBuilder {
     final className = metadata.name;
     final specAttributeName = '${className}Attribute';
 
-    // Static from method to create from MixData
+    // Static from method to create from MixContext
     final fromMethod = '''
-static $className from(MixData mix) {
+static $className from(MixContext mix) {
   return mix.attributeOf<$specAttributeName>()?.resolve(mix) ?? ${metadata.isConst ? 'const' : ''} $className${metadata.constructorRef}();
 }''';
 
