@@ -1,9 +1,6 @@
 ## 0.4.1
 
- - **REFACTOR**: Rename `MixableProperty` to `MixableType` (#574).
- - **REFACTOR**: mix generator clean up and mix semantic changes (#569).
  - **FEAT**: Add generated style-focused modifiers and specs (#652).
- - **FEAT**: Create code gen for design tokens (#521).
 
 ## 0.4.0
 
