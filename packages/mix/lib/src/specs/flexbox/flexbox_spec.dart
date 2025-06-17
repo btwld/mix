@@ -9,7 +9,6 @@ import '../../attributes/modifiers/widget_modifiers_config.dart';
 import '../../attributes/modifiers/widget_modifiers_config_dto.dart';
 import '../../attributes/modifiers/widget_modifiers_util.dart';
 import '../../core/computed_style/computed_style.dart';
-import '../../core/element.dart';
 import '../../core/factory/mix_data.dart';
 import '../../core/spec.dart';
 import '../box/box_spec.dart';

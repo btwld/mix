@@ -1,4 +1,3 @@
-import '../core/element.dart';
 import '../core/modifier.dart';
 import '../core/spec.dart';
 import '../core/utility.dart';

@@ -1,7 +1,6 @@
 // ignore_for_file: non_constant_identifier_names, constant_identifier_names, long-parameter-list, prefer-named-boolean-parameters
 
 import 'package:flutter/widgets.dart';
-import 'package:meta/meta.dart';
 
 import '../../attributes/animated/animated_data.dart';
 import '../../internal/helper_util.dart';
@@ -455,7 +454,6 @@ class AnimatedStyle extends Style {
   }
 }
 
-@internal
 abstract class StyleUtility<T extends SpecAttribute> extends BaseStyle<T> {
   @override
   AttributeMap<T> styles = AttributeMap<T>.empty();

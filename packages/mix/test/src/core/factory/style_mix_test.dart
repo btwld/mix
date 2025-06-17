@@ -250,12 +250,8 @@ class _TestStyleUtility extends StyleUtility<MockSpecIntAttribute> {
   AttributeMap<MockSpecIntAttribute> styles =
       const AttributeMap<MockSpecIntAttribute>.empty();
 
-  @override
-  AttributeMap<VariantAttribute> variants = const AttributeMap.empty();
-
   _TestStyleUtility({
     this.styles = const AttributeMap.empty(),
-    this.variants = const AttributeMap.empty(),
   });
 
   MockSpecIntAttribute value(int v) {
@@ -271,11 +267,4 @@ class _TestStyleUtility extends StyleUtility<MockSpecIntAttribute> {
 
   @override
   List<Object?> get props => [styles, variants];
-}
-
-class _MockContextVariant extends ContextVariant {
-  const _MockContextVariant();
-
-  @override
-  bool when(BuildContext context) => true;
 }
