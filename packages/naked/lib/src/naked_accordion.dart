@@ -8,13 +8,13 @@ import 'package:flutter/widgets.dart';
 ///
 /// Generic type [T] represents the unique identifier for each accordion item.
 /// This could be a String, int, or any other type that can uniquely identify sections.
-class AccordionController<T> with ChangeNotifier {
+class NakedAccordionController<T> with ChangeNotifier {
   /// Creates an accordion controller.
   ///
   /// [min] specifies the minimum number of expanded items (default: 0).
   /// [max] specifies the maximum number of expanded items (optional).
   /// When [max] is specified and reached, opening a new item will close the oldest one.
-  AccordionController({this.min = 0, this.max})
+  NakedAccordionController({this.min = 0, this.max})
       : assert(min >= 0, 'min must be greater than or equal to 0'),
         assert(
           max == null || max >= min,
@@ -93,10 +93,10 @@ class AccordionController<T> with ChangeNotifier {
 ///
 /// NakedAccordion provides expandable/collapsible sections without imposing any visual styling,
 /// giving consumers complete design freedom. It manages the state of expanded sections through
-/// an [AccordionController].
+/// an [NakedAccordionController].
 ///
 /// This component includes:
-/// - [AccordionController]: Manages which sections are expanded/collapsed
+/// - [NakedAccordionController]: Manages which sections are expanded/collapsed
 /// - [NakedAccordion]: The container for accordion items
 /// - [NakedAccordionItem]: Individual collapsible sections
 ///
@@ -130,7 +130,7 @@ class NakedAccordion<T> extends StatefulWidget {
   final List<Widget> children;
 
   /// The controller that manages which items are expanded or collapsed.
-  final AccordionController<T> controller;
+  final NakedAccordionController<T> controller;
 
   /// Values that should be expanded when the accordion is first built.
   final List<T> initialExpandedValues;
@@ -189,7 +189,7 @@ typedef NakedAccordionTriggerBuilder = Widget Function(
 /// and content that is shown when expanded. The [transitionBuilder] can be
 /// used to customize how content appears/disappears.
 ///
-/// Generic type [T] should match the type used in the [AccordionController].
+/// Generic type [T] should match the type used in the [NakedAccordionController].
 class NakedAccordionItem<T> extends StatefulWidget {
   /// Builder function that creates the trigger widget.
   ///
@@ -209,7 +209,7 @@ class NakedAccordionItem<T> extends StatefulWidget {
 
   /// The unique identifier for this accordion item.
   ///
-  /// This value is used by the [AccordionController] to track expansion state.
+  /// This value is used by the [NakedAccordionController] to track expansion state.
   final T value;
 
   /// Optional semantic label describing the section for screen readers.

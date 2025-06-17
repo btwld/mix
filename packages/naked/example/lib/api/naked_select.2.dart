@@ -14,23 +14,24 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         backgroundColor: Colors.white,
         body: Center(
-          child: AnimatedSelectExample(),
+          child: AnimatedMultiSelectExample(),
         ),
       ),
     );
   }
 }
 
-class AnimatedSelectExample extends StatefulWidget {
-  const AnimatedSelectExample({super.key});
+class AnimatedMultiSelectExample extends StatefulWidget {
+  const AnimatedMultiSelectExample({super.key});
 
   @override
-  State<AnimatedSelectExample> createState() => _AnimatedSelectExampleState();
+  State<AnimatedMultiSelectExample> createState() =>
+      _AnimatedMultiSelectExampleState();
 }
 
-class _AnimatedSelectExampleState extends State<AnimatedSelectExample>
+class _AnimatedMultiSelectExampleState extends State<AnimatedMultiSelectExample>
     with TickerProviderStateMixin {
-  String? _selectedValue;
+  final Set<String> _selectedValues = {};
   bool _isHovered = false;
   bool _isFocused = false;
 
@@ -91,10 +92,15 @@ class _AnimatedSelectExampleState extends State<AnimatedSelectExample>
   Widget build(BuildContext context) {
     return SizedBox(
       width: 250,
-      child: NakedSelect<String>(
-        selectedValue: _selectedValue,
-        onSelectedValueChanged: (value) {
-          setState(() => _selectedValue = value);
+      child: NakedSelect<String>.multiple(
+        selectedValues: _selectedValues,
+        closeOnSelect: false,
+        onSelectedValuesChanged: (values) {
+          if (values.length >= 3) {
+            return;
+          }
+          setState(() => _selectedValues.clear());
+          setState(() => _selectedValues.addAll(values));
         },
         removalDelay: const Duration(milliseconds: 200),
         onStateChange: (state) {
@@ -134,16 +140,20 @@ class _AnimatedSelectExampleState extends State<AnimatedSelectExample>
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     SelectItem(
-                      value: 'Option 1',
-                      label: 'Option 1',
+                      value: 'Apple',
+                      label: 'Apple',
                     ),
                     SelectItem(
-                      value: 'Option 2',
-                      label: 'Option 2',
+                      value: 'Banana',
+                      label: 'Banana',
                     ),
                     SelectItem(
-                      value: 'Option 3',
-                      label: 'Option 3',
+                      value: 'Orange',
+                      label: 'Orange',
+                    ),
+                    SelectItem(
+                      value: 'Mango',
+                      label: 'Mango',
                     ),
                   ],
                 ),
@@ -170,7 +180,18 @@ class _AnimatedSelectExampleState extends State<AnimatedSelectExample>
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(_selectedValue ?? 'Select your favorite fruit'),
+                Expanded(
+                  child: _selectedValues.isEmpty
+                      ? const Text('Select 2 of your favorites fruits')
+                      : Row(
+                          spacing: 6,
+                          children: _selectedValues
+                              .map(
+                                (e) => SelectedItem(value: e, label: e),
+                              )
+                              .toList(),
+                        ),
+                ),
                 const Icon(
                   Icons.keyboard_arrow_down_rounded,
                   size: 24,
@@ -179,6 +200,53 @@ class _AnimatedSelectExampleState extends State<AnimatedSelectExample>
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class SelectedItem extends StatefulWidget {
+  const SelectedItem({
+    super.key,
+    required this.value,
+    required this.label,
+  });
+
+  final String value;
+  final String label;
+
+  @override
+  State<SelectedItem> createState() => _SelectedItemState();
+}
+
+class _SelectedItemState extends State<SelectedItem> {
+  @override
+  Widget build(BuildContext context) {
+    return NakedSelectItem<String>(
+      value: widget.value,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade100,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: Colors.grey.shade300,
+            width: 1,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          spacing: 4,
+          children: [
+            Text(widget.label,
+                style: TextStyle(fontSize: 12, color: Colors.grey.shade700)),
+            const Icon(
+              Icons.close_rounded,
+              size: 16,
+              color: Colors.grey,
+            ),
+          ],
         ),
       ),
     );
@@ -202,9 +270,10 @@ class SelectItem extends StatefulWidget {
 class _SelectItemState extends State<SelectItem> {
   bool _isHovered = false;
   bool _isFocused = false;
+  bool _isSelected = false;
 
   Color get backgroundColor {
-    if (_isHovered) return Colors.grey.shade100;
+    if (_isHovered || _isSelected) return Colors.grey.shade100;
     if (_isFocused) return Colors.grey.shade200;
     return Colors.white;
   }
@@ -215,13 +284,24 @@ class _SelectItemState extends State<SelectItem> {
       value: widget.value,
       onHoverState: (isHovered) => setState(() => _isHovered = isHovered),
       onFocusState: (isFocused) => setState(() => _isFocused = isFocused),
+      onSelectState: (isSelected) => setState(() => _isSelected = isSelected),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         decoration: BoxDecoration(
           color: backgroundColor,
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Text(widget.label),
+        child: Row(
+          children: [
+            Expanded(child: Text(widget.label)),
+            if (_isSelected)
+              const Icon(
+                Icons.check_rounded,
+                size: 16,
+                color: Colors.grey,
+              ),
+          ],
+        ),
       ),
     );
   }
