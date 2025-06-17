@@ -5,7 +5,7 @@ homepage: https://github.com/btwld/mix
 repository: https://github.com/btwld/mix
 
 environment:
-  sdk: ">=3.6.0 <4.0.0"
+  sdk: ">=3.7.0 <4.0.0"
 
 dependencies:
   mix_annotations: ^0.4.0
@@ -20,9 +20,9 @@ dependencies:
 
 dev_dependencies:
   test: ^1.24.4
-  build_runner: ^2.4.9
+  build_runner: ^2.5.0
   build_test: ^2.2.2
   source_gen_test: ^1.0.6
   # Lint
-  dart_code_metrics_presets: ^2.14.0
-  flutter_lints: ^4.0.0
+  dart_code_metrics_presets: ^2.22.0
+  flutter_lints: ^5.0.0
