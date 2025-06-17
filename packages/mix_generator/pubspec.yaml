@@ -20,7 +20,7 @@ dependencies:
 
 dev_dependencies:
   test: ^1.24.4
-  build_runner: ^2.5.0
+  build_runner: ^2.4.2
   build_test: ^2.2.2
   source_gen_test: ^1.0.6
   # Lint

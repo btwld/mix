@@ -24,7 +24,7 @@ dependencies:
 dev_dependencies:
   mix_generator:
     path: ../../packages/mix_generator
-  build_runner: ^2.5.0
+  build_runner: ^2.4.2
   flutter_test:
     sdk: flutter
   mix_lint:
