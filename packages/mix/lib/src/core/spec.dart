@@ -1,13 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
-import '../attributes/animated/animated_data.dart';
-import '../attributes/animated/animated_data_dto.dart';
-import '../attributes/modifiers/widget_modifiers_config.dart';
-import '../attributes/modifiers/widget_modifiers_config_dto.dart';
+import '../../mix.dart';
 import '../internal/compare_mixin.dart';
-import 'element.dart';
-import 'factory/mix_data.dart';
+import '../variants/context_builder.dart';
 
 @immutable
 abstract class Spec<T extends Spec<T>> with EqualityMixin {
@@ -51,8 +47,12 @@ abstract class SpecAttribute<Value> extends StyleElement
   SpecAttribute<Value> merge(covariant SpecAttribute<Value>? other);
 }
 
-abstract class SpecUtility<T extends StyleElement, V> extends StyleElement {
-  T? attributeValue;
+abstract class SpecUtility<T extends SpecAttribute, V> extends BaseStyle<T> {
+  @override
+  AttributeMap<T> styles = AttributeMap<T>.empty();
+
+  @override
+  AttributeMap<VariantAttribute> variants = const AttributeMap.empty();
 
   @protected
   @visibleForTesting
@@ -68,19 +68,30 @@ abstract class SpecUtility<T extends StyleElement, V> extends StyleElement {
 
   static T selfBuilder<T>(T value) => value;
 
+  // ignore: avoid-inferrable-type-arguments
+  T? get attributeValue => styles.attributeOfType<T>();
+
   T builder(V v) {
     final attribute = attributeBuilder(v);
     // Always mutable - accumulate state in attributeValue
-    attributeValue = (attributeValue?.merge(attribute) ?? attribute) as T;
+    styles = styles.merge(AttributeMap([attribute]));
 
     return attribute;
+  }
+
+  void variant(VariantAttribute attribute) {
+    variants = variants.merge(AttributeMap([attribute]));
+  }
+
+  void context(Style Function(BuildContext context) builder) {
+    final variant = ContextVariantBuilder(builder, const ContextBuilder());
+    variants = variants.merge(AttributeMap([variant]));
   }
 
   T only();
   @override
   SpecUtility<T, V> merge(covariant SpecUtility<T, V> other) {
-    attributeValue = (attributeValue?.merge(other.attributeValue) ??
-        other.attributeValue) as T;
+    styles = styles.merge(other.styles);
 
     return this;
   }

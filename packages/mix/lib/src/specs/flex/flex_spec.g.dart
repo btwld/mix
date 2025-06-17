@@ -285,7 +285,7 @@ class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [FlexSpec].
 /// Use the methods of this class to configure specific properties of a [FlexSpec].
-class FlexSpecUtility<T extends StyleElement>
+class FlexSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, FlexSpecAttribute> {
   /// Utility for defining [FlexSpecAttribute.crossAxisAlignment]
   late final crossAxisAlignment =

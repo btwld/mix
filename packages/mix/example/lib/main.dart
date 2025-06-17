@@ -21,17 +21,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
+    return const Directionality(
       textDirection: TextDirection.ltr,
       child: Center(
-        child: FlexBox(
-          style: style(),
-          direction: Axis.horizontal,
-          children: const [
-            StyledIcon(Icons.image),
-            StyledText('Hello World'),
-          ],
-        ),
+        child: Box(),
       ),
     );
   }

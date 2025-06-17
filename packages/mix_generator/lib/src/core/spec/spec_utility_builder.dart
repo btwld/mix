@@ -29,7 +29,7 @@ class SpecUtilityBuilder implements CodeBuilder {
 /// Use the methods of this class to configure specific properties of a [$specName].
 ''',
       extendsClass: 'SpecUtility<T, $attributeName>',
-      typeParameters: '<T extends StyleElement>',
+      typeParameters: '<T extends SpecAttribute>',
       constructorCode: '''$utilityName(
     super.builder, {
     @Deprecated(

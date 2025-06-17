@@ -12,6 +12,12 @@ import '../spec.dart';
 import '../variant.dart';
 import 'mix_data.dart';
 
+abstract class BaseStyle<T extends SpecAttribute> extends StyleElement {
+  const BaseStyle();
+  AttributeMap<T> get styles;
+  AttributeMap<VariantAttribute> get variants;
+}
+
 /// A utility class for managing a collection of styling attributes and variants.
 ///
 /// The `Style` class is used to encapsulate a set of styling attributes and
@@ -24,11 +30,11 @@ import 'mix_data.dart';
 /// final style = Style(attribute1, attribute2, attribute3);
 /// final updatedStyle = style.variant(myVariant);
 /// ```
-class Style extends StyleElement {
-  /// Visual attributes contained in this mix.
+class Style extends BaseStyle<SpecAttribute> {
+  @override
   final AttributeMap<SpecAttribute> styles;
 
-  /// The variant attributes contained in this mix.
+  @override
   final AttributeMap<VariantAttribute> variants;
 
   /// A constant, empty mix for use with const constructor widgets.
@@ -39,6 +45,10 @@ class Style extends StyleElement {
         variants = const AttributeMap.empty();
 
   const Style._({required this.styles, required this.variants});
+
+  Style.from(BaseStyle style)
+      : styles = style.styles,
+        variants = style.variants;
 
   /// Creates a new `Style` instance with a specified list of [StyleElement]s.
   ///

@@ -1,5 +1,6 @@
 import '../core/element.dart';
 import '../core/modifier.dart';
+import '../core/spec.dart';
 import '../core/utility.dart';
 import 'align_widget_modifier.dart';
 import 'aspect_ratio_widget_modifier.dart';
@@ -17,7 +18,7 @@ import 'sized_box_widget_modifier.dart';
 import 'transform_widget_modifier.dart';
 import 'visibility_widget_modifier.dart';
 
-abstract class ModifierUtility<T extends StyleElement, Value>
+abstract class ModifierUtility<T extends SpecAttribute, Value>
     extends MixUtility<T, Value> {
   late final intrinsicWidth = IntrinsicWidthModifierSpecUtility(only);
   late final intrinsicHeight = IntrinsicHeightModifierSpecUtility(only);
@@ -53,7 +54,7 @@ abstract class ModifierUtility<T extends StyleElement, Value>
   T only(WidgetModifierSpecAttribute attribute);
 }
 
-class WithModifierUtility<T extends StyleElement>
+class WithModifierUtility<T extends SpecAttribute>
     extends ModifierUtility<T, WidgetModifierSpecAttribute> {
   static final self = WithModifierUtility(MixUtility.selfBuilder);
 
