@@ -174,6 +174,27 @@ void main() {
       });
 
       test(
+          'ContextVariantBuilder should apply Style based on when() return value',
+          () {
+        for (var whenReturnValue in [true, false]) {
+          final variant = _MockContextVariant(whenReturnValue: whenReturnValue);
+          final style = Style(const MockIntScalarAttribute(1));
+          final builder = ContextVariantBuilder((_) => style, variant);
+
+          final attributesList = applyContextToVisualAttributes(
+            MockBuildContext(),
+            Style(builder),
+          );
+
+          if (whenReturnValue) {
+            expect(attributesList, equals([const MockIntScalarAttribute(1)]));
+          } else {
+            expect(attributesList, isEmpty);
+          }
+        }
+      });
+
+      test(
           'must return the same Style that was inputted when is only Variants in the Style',
           () {
         _testApplyContextToVisualAttributes(
@@ -579,4 +600,12 @@ void _testApplyContextToVisualAttributes({
   ]);
 
   expect(attributeList, expectedStyle.styles.values);
+}
+
+class _MockContextVariant extends ContextVariant {
+  final bool whenReturnValue;
+  const _MockContextVariant({this.whenReturnValue = true});
+
+  @override
+  bool when(BuildContext context) => whenReturnValue;
 }
