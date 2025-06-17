@@ -6,10 +6,8 @@ import '../attributes/animated/animated_data_dto.dart';
 import '../attributes/modifiers/widget_modifiers_config.dart';
 import '../attributes/modifiers/widget_modifiers_config_dto.dart';
 import '../internal/compare_mixin.dart';
-import '../variants/context_variant_util/on_util.dart';
 import 'element.dart';
 import 'factory/mix_data.dart';
-import 'factory/style_mix.dart';
 
 @immutable
 abstract class Spec<T extends Spec<T>> with EqualityMixin {
@@ -89,22 +87,4 @@ abstract class SpecUtility<T extends StyleElement, V> extends StyleElement {
 
   @override
   get props => [attributeValue];
-}
-
-class SpecConfiguration<U extends SpecUtility> {
-  final BuildContext context;
-
-  final U _utility;
-
-  const SpecConfiguration(this.context, this._utility);
-
-  OnContextVariantUtility get on => OnContextVariantUtility.self;
-
-  U get utilities => _utility;
-}
-
-abstract class SpecStyle<U extends SpecUtility> {
-  const SpecStyle();
-
-  Style makeStyle(SpecConfiguration<U> spec);
 }
