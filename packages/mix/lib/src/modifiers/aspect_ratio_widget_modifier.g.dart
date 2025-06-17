@@ -77,16 +77,16 @@ class AspectRatioModifierSpecAttribute
     this.aspectRatio,
   });
 
-  /// Resolves to [AspectRatioModifierSpec] using the provided [MixData].
+  /// Resolves to [AspectRatioModifierSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final aspectRatioModifierSpec = AspectRatioModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  AspectRatioModifierSpec resolve(MixData mix) {
+  AspectRatioModifierSpec resolve(MixContext mix) {
     return AspectRatioModifierSpec(
       aspectRatio,
     );

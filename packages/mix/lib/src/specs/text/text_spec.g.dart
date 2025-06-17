@@ -12,7 +12,7 @@ part of 'text_spec.dart';
 
 /// A mixin that provides spec functionality for [TextSpec].
 mixin _$TextSpec on Spec<TextSpec> {
-  static TextSpec from(MixData mix) {
+  static TextSpec from(MixContext mix) {
     return mix.attributeOf<TextSpecAttribute>()?.resolve(mix) ??
         const TextSpec();
   }
@@ -211,16 +211,16 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
     super.modifiers,
   });
 
-  /// Resolves to [TextSpec] using the provided [MixData].
+  /// Resolves to [TextSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final textSpec = TextSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  TextSpec resolve(MixData mix) {
+  TextSpec resolve(MixContext mix) {
     return TextSpec(
       overflow: overflow,
       strutStyle: strutStyle?.resolve(mix),

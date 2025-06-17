@@ -11,16 +11,16 @@ part of 'decoration_image_dto.dart';
 /// A mixin that provides DTO functionality for [DecorationImageDto].
 mixin _$DecorationImageDto
     on Mixable<DecorationImage>, HasDefaultValue<DecorationImage> {
-  /// Resolves to [DecorationImage] using the provided [MixData].
+  /// Resolves to [DecorationImage] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final decorationImage = DecorationImageDto(...).resolve(mix);
   /// ```
   @override
-  DecorationImage resolve(MixData mix) {
+  DecorationImage resolve(MixContext mix) {
     return DecorationImage(
       image: _$this.image ?? defaultValue.image,
       fit: _$this.fit ?? defaultValue.fit,

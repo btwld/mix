@@ -10,7 +10,7 @@ part of 'stack_spec.dart';
 
 /// A mixin that provides spec functionality for [StackSpec].
 mixin _$StackSpec on Spec<StackSpec> {
-  static StackSpec from(MixData mix) {
+  static StackSpec from(MixContext mix) {
     return mix.attributeOf<StackSpecAttribute>()?.resolve(mix) ??
         const StackSpec();
   }
@@ -137,16 +137,16 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
     super.modifiers,
   });
 
-  /// Resolves to [StackSpec] using the provided [MixData].
+  /// Resolves to [StackSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final stackSpec = StackSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  StackSpec resolve(MixData mix) {
+  StackSpec resolve(MixContext mix) {
     return StackSpec(
       alignment: alignment,
       fit: fit,

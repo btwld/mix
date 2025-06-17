@@ -133,16 +133,16 @@ class DefaultTextStyleModifierSpecAttribute
     this.textHeightBehavior,
   });
 
-  /// Resolves to [DefaultTextStyleModifierSpec] using the provided [MixData].
+  /// Resolves to [DefaultTextStyleModifierSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final defaultTextStyleModifierSpec = DefaultTextStyleModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  DefaultTextStyleModifierSpec resolve(MixData mix) {
+  DefaultTextStyleModifierSpec resolve(MixContext mix) {
     return DefaultTextStyleModifierSpec(
       style: style?.resolve(mix),
       textAlign: textAlign,
