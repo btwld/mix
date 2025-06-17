@@ -212,7 +212,8 @@ Style _applyVariants(
   Style style,
   VariantAttribute variantAttribute,
 ) {
-  if (variantAttribute is ContextVariantBuilder) {
+  if (variantAttribute is ContextVariantBuilder &&
+      variantAttribute.variant.when(context)) {
     return style.merge(variantAttribute.build(context));
   }
 
