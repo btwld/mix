@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' as m;
 import 'package:flutter/widgets.dart';
 import 'package:remix/remix.dart';
 import 'package:widgetbook/widgetbook.dart';
@@ -24,8 +25,8 @@ Widget buildButtonUseCase(BuildContext context) {
     child: Scaffold(
       body: Builder(builder: (context) {
         return Center(
-          child: Button(
-            label: 'Show toast',
+          child: m.TextButton(
+            child: const Text('Show toast'),
             onPressed: () {
               showToast(
                 context: context,

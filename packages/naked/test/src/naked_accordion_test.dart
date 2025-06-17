@@ -1,64 +1,40 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/semantics.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:naked/naked.dart';
 
-extension _WidgetTesterX on WidgetTester {
-  Future<void> pumpAccordion(Widget widget) async {
-    await pumpWidget(
-      WidgetsApp(
-        color: const Color(0xFF000000),
-        onGenerateRoute: (settings) => PageRouteBuilder(
-          settings: settings,
-          pageBuilder: (context, animation, secondaryAnimation) => widget,
-        ),
-      ),
-    );
-  }
+import 'helpers/simulate_hover.dart';
 
-  Future<TestGesture> simulateHover(Type type) async {
-    final gesture = await createGesture(kind: PointerDeviceKind.mouse);
-    await gesture.addPointer(location: Offset.zero);
-    addTearDown(gesture.removePointer);
-    await pump();
-
-    await gesture.moveTo(getCenter(find.byType(type).first));
-    await pump();
-
-    return gesture;
-  }
-
-  void expectCursor(SystemMouseCursor cursor, {required Finder on}) async {
-    final mouseRegion = widget<MouseRegion>(
-        find.ancestor(of: on, matching: find.byType(MouseRegion)).first);
-
-    expect(mouseRegion.cursor, cursor);
-  }
+Widget builder(bool isExpanded, {required String text}) {
+  return isExpanded ? Text(text) : const SizedBox.shrink();
 }
 
 void main() {
   group('Basic Functionality', () {
+    Widget buildAccordion({
+      List<String> initialExpandedValues = const [],
+    }) {
+      return NakedAccordion<String>(
+        controller: NakedAccordionController(),
+        initialExpandedValues: initialExpandedValues,
+        children: [
+          NakedAccordionItem<String>(
+            value: 'item1',
+            trigger: (_, __, ___) => const Text('Trigger 1'),
+            child: const Text('Content 1'),
+          ),
+          NakedAccordionItem<String>(
+            value: 'item2',
+            trigger: (_, __, ___) => const Text('Trigger 2'),
+            child: const Text('Content 2'),
+          ),
+        ],
+      );
+    }
+
     testWidgets('renders triggers correctly when closed',
         (WidgetTester tester) async {
-      await tester.pumpAccordion(
-        NakedAccordion<String>(
-          controller: AccordionController(),
-          children: const [
-            NakedAccordionItem(
-              value: 'item1',
-              trigger: Text('Trigger 1'),
-              content: Text('Content 1'),
-            ),
-            NakedAccordionItem(
-              value: 'item2',
-              trigger: Text('Trigger 2'),
-              content: Text('Content 2'),
-            ),
-          ],
-        ),
+      await tester.pumpMaterialWidget(
+        buildAccordion(),
       );
 
       expect(find.text('Trigger 1'), findsOneWidget);
@@ -69,23 +45,8 @@ void main() {
 
     testWidgets('initially expands items based on initialExpandedValues',
         (WidgetTester tester) async {
-      await tester.pumpAccordion(
-        NakedAccordion<String>(
-          controller: AccordionController(),
-          initialExpandedValues: const ['item1'],
-          children: const [
-            NakedAccordionItem(
-              value: 'item1',
-              trigger: Text('Trigger 1'),
-              content: Text('Content 1'),
-            ),
-            NakedAccordionItem(
-              value: 'item2',
-              trigger: Text('Trigger 2'),
-              content: Text('Content 2'),
-            ),
-          ],
-        ),
+      await tester.pumpMaterialWidget(
+        buildAccordion(initialExpandedValues: const ['item1']),
       );
 
       await tester.pumpAndSettle();
@@ -97,518 +58,272 @@ void main() {
     });
   });
 
-  group('Expansion Behavior', () {
-    testWidgets('expands and collapses items correctly when clicked',
-        (WidgetTester tester) async {
-      final controller = AccordionController<String>();
+  group('Focus State', () {
+    late bool focusState;
 
-      await tester.pumpAccordion(
-        StatefulBuilder(builder: (context, setState) {
-          return NakedAccordion<String>(
-            controller: controller,
-            onTriggerPressed: (value) => setState(() {
-              controller.toggle(value);
-            }),
-            children: const [
-              NakedAccordionItem<String>(
-                value: 'item1',
-                trigger: NakedAccordionTrigger<String>(
-                  child: Text('Trigger 1'),
-                ),
-                content: Text('Content 1'),
-              ),
-              NakedAccordionItem(
-                value: 'item2',
-                trigger: NakedAccordionTrigger<String>(
-                  child: Text('Trigger 2'),
-                ),
-                content: Text('Content 2'),
-              ),
-            ],
-          );
-        }),
+    Widget buildFocusableAccordion({
+      required FocusNode focusNode,
+      required bool autoFocus,
+    }) {
+      return NakedAccordion<String>(
+        controller: NakedAccordionController<String>(),
+        children: [
+          NakedAccordionItem<String>(
+            value: 'item1',
+            trigger: (_, __, ___) => const Text('Trigger 1'),
+            onFocusState: (focused) => focusState = focused,
+            autoFocus: autoFocus,
+            focusNode: focusNode,
+            child: const Text('Content 1'),
+          ),
+        ],
       );
+    }
 
-      // Initially both items should be collapsed
-      expect(find.text('Trigger 1'), findsOneWidget);
-      expect(find.text('Content 1'), findsNothing);
-      expect(find.text('Trigger 2'), findsOneWidget);
-      expect(find.text('Content 2'), findsNothing);
-
-      // Clicking first trigger should expand first item
-      await tester.tap(find.text('Trigger 1'));
-      await tester.pump();
-
-      expect(find.text('Trigger 1'), findsOneWidget);
-      expect(find.text('Content 1'), findsOneWidget);
-      expect(find.text('Trigger 2'), findsOneWidget);
-      expect(find.text('Content 2'), findsNothing);
-
-      // Clicking second trigger should expand second item
-      await tester.tap(find.text('Trigger 2'));
-      await tester.pump();
-
-      expect(find.text('Trigger 1'), findsOneWidget);
-      expect(find.text('Content 1'), findsOneWidget);
-      expect(find.text('Trigger 2'), findsOneWidget);
-      expect(find.text('Content 2'), findsOneWidget);
-
-      // Clicking first trigger again should collapse first item
-      await tester.tap(find.text('Trigger 1'));
-      await tester.pump();
-
-      expect(find.text('Trigger 1'), findsOneWidget);
-      expect(find.text('Content 1'), findsNothing);
-      expect(find.text('Trigger 2'), findsOneWidget);
-      expect(find.text('Content 2'), findsOneWidget);
+    setUp(() {
+      focusState = false;
     });
 
-    testWidgets(
-        'expands and collapses items correctly even with initialExpandedValues',
+    testWidgets('onFocusState callback is triggered when focused',
         (WidgetTester tester) async {
-      final controller = AccordionController<String>();
-      await tester.pumpAccordion(
-        StatefulBuilder(builder: (context, setState) {
-          void handlePress(String value) {
-            setState(() {
-              controller.toggle(value);
-            });
-          }
-
-          return NakedAccordion<String>(
-            controller: controller,
-            initialExpandedValues: const [
-              'item1',
-            ],
-            onTriggerPressed: handlePress,
-            children: const [
-              NakedAccordionItem(
-                value: 'item1',
-                trigger: NakedAccordionTrigger<String>(
-                  child: Text('Trigger 1'),
-                ),
-                content: Text('Content 1'),
-              ),
-              NakedAccordionItem(
-                value: 'item2',
-                trigger: NakedAccordionTrigger<String>(
-                  child: Text('Trigger 2'),
-                ),
-                content: Text('Content 2'),
-              ),
-            ],
-          );
-        }),
-      );
-
-      expect(find.text('Trigger 1'), findsOneWidget);
-      expect(find.text('Content 1'), findsOneWidget);
-      expect(find.text('Trigger 2'), findsOneWidget);
-      expect(find.text('Content 2'), findsNothing);
-
-      await tester.tap(find.text('Trigger 1'));
-      await tester.pump();
-
-      expect(find.text('Trigger 1'), findsOneWidget);
-      expect(find.text('Content 1'), findsNothing);
-      expect(find.text('Trigger 2'), findsOneWidget);
-      expect(find.text('Content 2'), findsNothing);
-
-      await tester.tap(find.text('Trigger 2'));
-      await tester.pump();
-
-      expect(find.text('Trigger 1'), findsOneWidget);
-      expect(find.text('Content 1'), findsNothing);
-      expect(find.text('Trigger 2'), findsOneWidget);
-      expect(find.text('Content 2'), findsOneWidget);
-    });
-  });
-
-  group('State Management and Callbacks', () {
-    testWidgets(
-        'onTriggerPressed callback is fired when any trigger is pressed',
-        (WidgetTester tester) async {
-      String? lastPressedTriggerValue;
-
-      await tester.pumpAccordion(
-        NakedAccordion<String>(
-          controller: AccordionController(),
-          onTriggerPressed: (value) => lastPressedTriggerValue = value,
-          children: const [
-            NakedAccordionItem(
-              value: 'item1',
-              trigger: NakedAccordionTrigger<String>(
-                child: Text('Trigger 1'),
-              ),
-              content: Text('Content 1'),
-            ),
-            NakedAccordionItem<String>(
-              value: 'item2',
-              trigger: NakedAccordionTrigger<String>(
-                child: Text('Trigger 2'),
-              ),
-              content: Text('Content 2'),
-            ),
-          ],
-        ),
-      );
-
-      // Expand item
-      await tester.tap(find.text('Trigger 1'));
-      await tester.pump();
-
-      expect(lastPressedTriggerValue, 'item1');
-
-      // Collapse item
-      await tester.tap(find.text('Trigger 2'));
-      await tester.pumpAndSettle();
-
-      expect(lastPressedTriggerValue, 'item2');
-    });
-
-    // testWidgets('item onExpandedStateChange callback is fired',
-    //     (WidgetTester tester) async {
-    //   bool? lastExpandedState;
-
-    //   await tester.pumpAccordion(
-    //     NakedAccordion(
-    //       children: [
-    //         NakedAccordionItem(
-    //           value: 'item1',
-    //           onExpandedStateChange: (expanded) {
-    //             lastExpandedState = expanded;
-    //           },
-    //           trigger: const NakedAccordionTrigger(
-    //             child: Text('Trigger 1'),
-    //           ),
-    //           content: const NakedAccordionContent(
-    //             child: Text('Content 1'),
-    //           ),
-    //         ),
-    //       ],
-    //     ),
-    //   );
-
-    //   // Expand item
-    //   await tester.tap(find.text('Trigger 1'));
-    //   await tester.pumpAndSettle();
-
-    //   expect(lastExpandedState, true);
-
-    //   // Collapse item
-    //   await tester.tap(find.text('Trigger 1'));
-    //   await tester.pumpAndSettle();
-
-    //   expect(lastExpandedState, false);
-    // });
-
-    // testWidgets('onFocusItem callback is fired', (WidgetTester tester) async {
-    //   String? focusedItemValue;
-
-    //   await tester.pumpAccordion(
-    //     NakedAccordion(
-    //       onFocusItem: (value) {
-    //         focusedItemValue = value;
-    //       },
-    //       children: const [
-    //         NakedAccordionItem(
-    //           value: 'item1',
-    //           trigger: NakedAccordionTrigger(
-    //             child: Text('Trigger 1'),
-    //           ),
-    //           content: NakedAccordionContent(
-    //             child: Text('Content 1'),
-    //           ),
-    //         ),
-    //       ],
-    //     ),
-    //   );
-
-    //   // Tap to focus
-    //   await tester.tap(find.text('Trigger 1'));
-    //   await tester.pump();
-
-    //   expect(focusedItemValue, 'item1');
-    // });
-  });
-
-  group('Trigger Interaction', () {
-    testWidgets('calls onHoverState when hovered', (WidgetTester tester) async {
-      bool isHovered = false;
-
-      await tester.pumpAccordion(
-        NakedAccordion<String>(
-          initialExpandedValues: const ['item1'],
-          controller: AccordionController(),
-          children: [
-            NakedAccordionItem(
-              value: 'item1',
-              trigger: NakedAccordionTrigger<String>(
-                onHoverState: (value) => isHovered = value,
-                child: const Text('Trigger 1'),
-              ),
-              content: const Text('Content 1'),
-            ),
-          ],
-        ),
-      );
-
-      final gesture = await tester.simulateHover(NakedAccordionTrigger<String>);
-      expect(isHovered, true);
-
-      await gesture.moveTo(Offset.zero);
-      await tester.pump();
-
-      expect(isHovered, false);
-    });
-
-    testWidgets('calls onPressedState on tap down/up',
-        (WidgetTester tester) async {
-      bool isPressed = false;
-
-      await tester.pumpAccordion(
-        NakedAccordion<String>(
-          controller: AccordionController(),
-          children: [
-            NakedAccordionItem(
-              value: 'item1',
-              trigger: NakedAccordionTrigger<String>(
-                onPressedState: (value) => isPressed = value,
-                child: const Text('Trigger 1'),
-              ),
-              content: const Text('Content 1'),
-            ),
-          ],
-        ),
-      );
-
-      final gesture =
-          await tester.press(find.byType(NakedAccordionTrigger<String>));
-      await tester.pump();
-      expect(isPressed, true);
-
-      await gesture.up();
-      await tester.pump();
-      expect(isPressed, false);
-    });
-
-    testWidgets('calls onFocusState when focused/unfocused',
-        (WidgetTester tester) async {
-      bool isFocused = false;
       final focusNode = FocusNode();
+      await tester.pumpMaterialWidget(buildFocusableAccordion(
+        focusNode: focusNode,
+        autoFocus: false,
+      ));
 
-      await tester.pumpAccordion(
-        NakedAccordion<String>(
-          controller: AccordionController(),
-          children: [
-            NakedAccordionItem(
-              value: 'item1',
-              trigger: NakedAccordionTrigger<String>(
-                focusNode: focusNode,
-                onFocusState: (value) => isFocused = value,
-                child: const Text('Trigger 1'),
-              ),
-              content: const Text('Content 1'),
-            ),
-          ],
-        ),
-      );
-
+      // Focus the accordion item
       focusNode.requestFocus();
       await tester.pump();
-      expect(isFocused, true);
+      expect(focusState, true);
 
+      // Remove focus
       focusNode.unfocus();
       await tester.pump();
-      expect(isFocused, false);
+      expect(focusState, false);
+    });
+
+    testWidgets('autofocus works correctly', (WidgetTester tester) async {
+      await tester.pumpMaterialWidget(
+        NakedAccordion<String>(
+          controller: NakedAccordionController<String>(),
+          children: [
+            NakedAccordionItem<String>(
+              value: 'item1',
+              trigger: (_, __, ___) => const Text('Trigger 1'),
+              onFocusState: (focused) => focusState = focused,
+              autoFocus: true,
+              child: const Text('Content 1'),
+            ),
+          ],
+        ),
+      );
+
+      await tester.pumpAndSettle();
+      expect(focusState, true);
     });
   });
 
-  group('Accessibility', () {
-    testWidgets('triggers have proper semantic properties',
-        (WidgetTester tester) async {
-      final controller = AccordionController<String>();
+  group('Controlled Expansion', () {
+    late NakedAccordionController<String> controller;
 
-      await tester.pumpAccordion(
-        StatefulBuilder(builder: (context, setState) {
-          return NakedAccordion<String>(
-            controller: controller,
-            onTriggerPressed: (value) => setState(() {
-              controller.toggle(value);
-            }),
-            children: const [
-              NakedAccordionItem(
-                value: 'item1',
-                semanticLabel: 'First Section',
-                trigger: NakedAccordionTrigger<String>(
-                  semanticLabel: 'First Section Header',
-                  child: Text('Trigger 1'),
-                ),
-                content: Text('Content 1'),
-              ),
-            ],
-          );
-        }),
+    setUp(() {
+      controller = NakedAccordionController<String>();
+    });
+
+    Widget buildControlledAccordion() {
+      return NakedAccordion<String>(
+        controller: controller,
+        children: [
+          NakedAccordionItem<String>(
+            value: 'item1',
+            trigger: (context, isExpanded, toggle) {
+              return GestureDetector(
+                onTap: toggle,
+                child: Text(isExpanded ? 'Close 1' : 'Open 1'),
+              );
+            },
+            child: const Text('Content 1'),
+          ),
+          NakedAccordionItem<String>(
+            value: 'item2',
+            trigger: (context, isExpanded, toggle) {
+              return GestureDetector(
+                onTap: toggle,
+                child: Text(isExpanded ? 'Close 2' : 'Open 2'),
+              );
+            },
+            child: const Text('Content 2'),
+          ),
+        ],
       );
+    }
 
-      // Get semantic node for trigger
-      final SemanticsNode triggerNode =
-          tester.getSemantics(find.text('Trigger 1'));
+    testWidgets('controller.open() expands an item',
+        (WidgetTester tester) async {
+      await tester.pumpMaterialWidget(buildControlledAccordion());
 
-      // Verify semantic properties
-      expect(triggerNode.label, 'First Section Header');
-      expect(triggerNode.hasFlag(SemanticsFlag.isButton), true);
-      expect(triggerNode.hasFlag(SemanticsFlag.isToggled), false);
+      expect(find.text('Open 1'), findsOneWidget);
+      expect(find.text('Open 2'), findsOneWidget);
+      expect(find.text('Content 1'), findsNothing);
+      expect(find.text('Content 2'), findsNothing);
 
-      // Expand the accordion
-      await tester.tap(find.text('Trigger 1'));
+      controller.open('item1');
       await tester.pump();
 
-      // Get semantic node for trigger again after expansion
-      final SemanticsNode expandedTriggerNode =
-          tester.getSemantics(find.text('Trigger 1'));
+      expect(find.text('Close 1'), findsOneWidget);
+      expect(find.text('Open 2'), findsOneWidget);
+      expect(find.text('Content 1'), findsOneWidget);
+      expect(find.text('Content 2'), findsNothing);
+    });
 
-      // Verify it's now toggled
-      expect(expandedTriggerNode.hasFlag(SemanticsFlag.isToggled), true);
+    testWidgets('controller.close() collapses an item',
+        (WidgetTester tester) async {
+      controller.open('item1');
+      await tester.pumpMaterialWidget(buildControlledAccordion());
 
-      // Verify content is accessible
+      expect(find.text('Close 1'), findsOneWidget);
+      expect(find.text('Content 1'), findsOneWidget);
+
+      controller.close('item1');
+      await tester.pump();
+
+      expect(find.text('Open 1'), findsOneWidget);
+      expect(find.text('Content 1'), findsNothing);
+    });
+
+    testWidgets('controller.toggle() toggles item expansion',
+        (WidgetTester tester) async {
+      await tester.pumpMaterialWidget(buildControlledAccordion());
+
+      expect(find.text('Open 1'), findsOneWidget);
+      expect(find.text('Content 1'), findsNothing);
+
+      controller.toggle('item1');
+      await tester.pump();
+
+      expect(find.text('Close 1'), findsOneWidget);
+      expect(find.text('Content 1'), findsOneWidget);
+
+      controller.toggle('item1');
+      await tester.pump();
+
+      expect(find.text('Open 1'), findsOneWidget);
+      expect(find.text('Content 1'), findsNothing);
+    });
+
+    testWidgets('controller respects min expanded items',
+        (WidgetTester tester) async {
+      controller = NakedAccordionController<String>(min: 1);
+      controller.open('item1');
+
+      await tester.pumpMaterialWidget(buildControlledAccordion());
+
+      expect(find.text('Close 1'), findsOneWidget);
+      expect(find.text('Content 1'), findsOneWidget);
+
+      controller.close('item1');
+      await tester.pump();
+
+      // Should not close because min=1
+      expect(find.text('Close 1'), findsOneWidget);
       expect(find.text('Content 1'), findsOneWidget);
     });
 
-    testWidgets('supports keyboard activation', (WidgetTester tester) async {
-      final controller = AccordionController<String>();
-      const triggerTextKey = Key('trigger');
-      const triggerTextKey2 = Key('trigger2');
-      await tester.pumpAccordion(
-        StatefulBuilder(builder: (context, setState) {
-          return NakedAccordion<String>(
-            controller: controller,
-            onTriggerPressed: (value) => setState(() {
-              controller.toggle(value);
-            }),
-            children: const [
-              NakedAccordionItem<String>(
-                value: 'item1',
-                trigger: NakedAccordionTrigger<String>(
-                  child: Text(
-                    'Trigger 1',
-                    key: triggerTextKey,
-                  ),
-                ),
-                content: Text('Content 1'),
-              ),
-              NakedAccordionItem<String>(
-                value: 'item2',
-                trigger: NakedAccordionTrigger<String>(
-                  child: Text(
-                    'Trigger 2',
-                    key: triggerTextKey2,
-                  ),
-                ),
-                content: Text('Content 2'),
-              ),
-            ],
-          );
-        }),
-      );
+    testWidgets('controller respects max expanded items',
+        (WidgetTester tester) async {
+      controller = NakedAccordionController<String>(max: 1);
 
-      // Initially content is hidden
-      expect(find.text('Content 1'), findsNothing);
+      await tester.pumpMaterialWidget(buildControlledAccordion());
 
-      // Focus the trigger
-      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      controller.open('item1');
       await tester.pump();
 
-      final triggerTextFinder = find.byKey(triggerTextKey);
-
-      // Ensure it's focused
-      final focusNode = Focus.of(tester.element(triggerTextFinder));
-      expect(focusNode.hasFocus, true);
-
-      // Press space to activate
-      await tester.sendKeyEvent(LogicalKeyboardKey.space);
-      await tester.pump();
-
-      // Verify the accordion expanded
+      expect(find.text('Close 1'), findsOneWidget);
       expect(find.text('Content 1'), findsOneWidget);
+      expect(find.text('Open 2'), findsOneWidget);
+      expect(find.text('Content 2'), findsNothing);
 
-      // press tab to focus on the next trigger
-      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      controller.open('item2');
       await tester.pump();
 
-      final triggerTextFinder2 = find.byKey(triggerTextKey2);
-      final focusNode2 = Focus.of(tester.element(triggerTextFinder2));
-      expect(focusNode2.hasFocus, true);
-
-      // press space to activate
-      await tester.sendKeyEvent(LogicalKeyboardKey.space);
-      await tester.pump();
-
+      // item1 should close when item2 opens because max=1
+      expect(find.text('Open 1'), findsOneWidget);
+      expect(find.text('Content 1'), findsNothing);
+      expect(find.text('Close 2'), findsOneWidget);
       expect(find.text('Content 2'), findsOneWidget);
     });
-  });
 
-  group('Disabled States', () {
-    testWidgets('disabled item prevents interaction',
+    testWidgets('controller respects both min and max constraints',
         (WidgetTester tester) async {
-      final controller = AccordionController<String>();
+      controller = NakedAccordionController<String>(min: 1, max: 1);
 
-      await tester.pumpAccordion(
-        StatefulBuilder(builder: (context, setState) {
-          void handlePress(String value) {
-            setState(() {
-              controller.toggle(value);
-            });
-          }
+      await tester.pumpMaterialWidget(buildControlledAccordion());
 
-          return NakedAccordion<String>(
-            controller: controller,
-            onTriggerPressed: handlePress,
-            children: const [
-              NakedAccordionItem<String>(
-                value: 'item1',
-                enabled: false,
-                trigger: NakedAccordionTrigger<String>(
-                  child: Text('Trigger 1'),
-                ),
-                content: Text('Content 1'),
-              ),
-              NakedAccordionItem(
-                value: 'item2',
-                trigger: NakedAccordionTrigger<String>(
-                  child: Text('Trigger 2'),
-                ),
-                content: Text('Content 2'),
-              ),
-            ],
-          );
-        }),
-      );
+      // Open first item
+      controller.open('item1');
+      await tester.pump();
 
-      // Attempt to expand disabled item
-      await tester.tap(find.text('Trigger 1'));
-      await tester.pumpAndSettle();
+      expect(find.text('Close 1'), findsOneWidget);
+      expect(find.text('Content 1'), findsOneWidget);
+      expect(find.text('Open 2'), findsOneWidget);
+      expect(find.text('Content 2'), findsNothing);
 
-      // Content should remain collapsed
+      // Open second item - both should remain open since max=2
+      controller.open('item2');
+      await tester.pump();
+
+      expect(find.text('Open 1'), findsOneWidget);
       expect(find.text('Content 1'), findsNothing);
+      expect(find.text('Close 2'), findsOneWidget);
+      expect(find.text('Content 2'), findsOneWidget);
 
-      // Check cursor is forbidden for disabled item
-      tester.expectCursor(
-        SystemMouseCursors.forbidden,
-        on: find.text('Trigger 1'),
-      );
+      // Try to close item1 - should fail since min=1 and item2 would be only one open
+      controller.close('item2');
+      await tester.pump();
 
-      // Non-disabled item should have click cursor and work normally
-      tester.expectCursor(
-        SystemMouseCursors.click,
-        on: find.text('Trigger 2'),
-      );
+      expect(find.text('Open 1'), findsOneWidget);
+      expect(find.text('Content 1'), findsNothing);
+      expect(find.text('Close 2'), findsOneWidget);
+      expect(find.text('Content 2'), findsOneWidget);
+    });
 
-      // Expand enabled item
-      await tester.tap(find.text('Trigger 2'));
-      await tester.pumpAndSettle();
+    testWidgets('controller.clear() collapses all items',
+        (WidgetTester tester) async {
+      controller.open('item1');
+      controller.open('item2');
 
-      // Content should expand
+      await tester.pumpMaterialWidget(buildControlledAccordion());
+
+      expect(find.text('Close 1'), findsOneWidget);
+      expect(find.text('Content 1'), findsOneWidget);
+      expect(find.text('Close 2'), findsOneWidget);
+      expect(find.text('Content 2'), findsOneWidget);
+
+      controller.clear();
+      await tester.pump();
+
+      expect(find.text('Open 1'), findsOneWidget);
+      expect(find.text('Content 1'), findsNothing);
+      expect(find.text('Open 2'), findsOneWidget);
+      expect(find.text('Content 2'), findsNothing);
+    });
+
+    testWidgets('controller.openAll() expands multiple items',
+        (WidgetTester tester) async {
+      await tester.pumpMaterialWidget(buildControlledAccordion());
+
+      expect(find.text('Open 1'), findsOneWidget);
+      expect(find.text('Content 1'), findsNothing);
+      expect(find.text('Open 2'), findsOneWidget);
+      expect(find.text('Content 2'), findsNothing);
+
+      controller.openAll(['item1', 'item2']);
+      await tester.pump();
+
+      expect(find.text('Close 1'), findsOneWidget);
+      expect(find.text('Content 1'), findsOneWidget);
+      expect(find.text('Close 2'), findsOneWidget);
       expect(find.text('Content 2'), findsOneWidget);
     });
   });

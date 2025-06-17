@@ -222,7 +222,7 @@ mixin _$BorderSideDto on Mixable<BorderSide>, HasDefaultValue<BorderSide> {
 ///
 /// This class provides methods to set individual properties of a [BorderSide].
 /// Use the methods of this class to configure specific properties of a [BorderSide].
-class BorderSideUtility<T extends Attribute>
+class BorderSideUtility<T extends StyleElement>
     extends DtoUtility<T, BorderSideDto, BorderSide> {
   /// Utility for defining [BorderSideDto.color]
   late final color = ColorUtility((v) => only(color: v));
@@ -238,7 +238,7 @@ class BorderSideUtility<T extends Attribute>
 
   BorderSideUtility(super.builder) : super(valueToDto: (v) => v.toDto());
 
-  /// Creates an [Attribute] instance using the [BorderSideDto.none] constructor.
+  /// Creates a [StyleElement] instance using the [BorderSideDto.none] constructor.
   T none() => builder(const BorderSideDto.none());
 
   /// Returns a new [BorderSideDto] with the specified properties.

@@ -1,6 +1,6 @@
 import 'package:mix/mix.dart';
 
-import '../../../components/chip/chip.dart';
+import '../../../components/content_presentation/chip/chip.dart';
 import '../tokens.dart';
 
 class FortalezaChipStyle extends ChipStyle {
@@ -17,13 +17,13 @@ class FortalezaChipStyle extends ChipStyle {
     final iconStyle = [$.icon.color.$accent()];
 
     final labelStyle = [
-      $.label.chain
+      $.label
         ..style.$text2()
         ..style.color.$accent(),
     ];
 
     final containerStyle = [
-      $.container.chain
+      $.container
         ..flex.gap.$space2()
         ..borderRadius(20)
         ..color.$accent(2)
@@ -45,7 +45,7 @@ class FortalezaChipStyle extends ChipStyle {
     ];
 
     final ghostStyle = Style.create([
-      $.container.chain
+      $.container
         ..borderRadius(6)
         ..color.$accent(1)
         ..border.style.none()
@@ -61,12 +61,12 @@ class FortalezaChipStyle extends ChipStyle {
     ]);
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       ...containerStyle,
       ...iconStyle,
       ...labelStyle,
       ...disabledStyle,
-      ghost(ghostStyle()),
+      ghost(ghostStyle),
     ]).animate(duration: const Duration(milliseconds: 150));
   }
 }

@@ -1,0 +1,144 @@
+---
+title: NakedButton
+---
+
+NakedButton provides interaction behavior and accessibility features without imposing any visual styling, giving consumers complete design freedom. It integrates with `FocusableActionDetector` to provide enhanced keyboard accessibility, hover detection, and focus management.
+
+
+<Info>
+  You can find this example in our [GitHub repository](https://github.com/btwld/mix/blob/main/packages/naked/example/lib/api/naked_button.0.dart).
+</Info>
+<CodeGroup title="Usage Example" defaultLanguage="dart">
+```dart
+class ButtonExample extends StatefulWidget {
+  const ButtonExample({super.key});
+
+  @override
+  State<ButtonExample> createState() => _ButtonExampleState();
+}
+
+class _ButtonExampleState extends State<ButtonExample> {
+  bool _isHovered = false;
+  bool _isPressed = false;
+  bool _isFocused = false;
+
+  Color get backgroundColor {
+    const baseColor = Color(0xFF3D3D3D);
+    if (_isPressed) {
+      return baseColor.withValues(alpha: 0.8);
+    }
+    if (_isHovered) {
+      return baseColor.withValues(alpha: 0.9);
+    }
+    return baseColor;
+  }
+
+  double get scale {
+    if (_isPressed) {
+      return 0.95;
+    }
+    return 1;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return NakedButton(
+      onPressed: () {
+        debugPrint('Button pressed!');
+      },
+      onHoverState: (isHovered) => setState(() => _isHovered = isHovered),
+      onPressedState: (isPressed) => setState(() => _isPressed = isPressed),
+      onFocusState: (isFocused) => setState(() => _isFocused = isFocused),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: _isFocused ? Colors.black : Colors.transparent,
+            width: 1,
+          ),
+        ),
+        child: AnimatedScale(
+          scale: scale,
+          duration: const Duration(milliseconds: 200),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Text(
+              'Button',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+</CodeGroup>
+
+## Constructor
+
+```dart
+const NakedButton({
+  Key? key,
+  required this.child,
+  this.onPressed,
+  this.onHoverState,
+  this.onPressedState,
+  this.onFocusState,
+  this.onDisabledState,
+  this.enabled = true,
+  this.isSemanticButton = true,
+  this.semanticLabel,
+  this.cursor = SystemMouseCursors.click,
+  this.enableHapticFeedback = true,
+  this.focusNode,
+  this.autofocus = false,
+})
+```
+
+## Properties
+
+#### child  → `Widget`
+The child widget to display. This widget should represent the visual appearance of the button.
+
+#### onPressed → `VoidCallback?`
+Called when the button is tapped or activated via keyboard. If null, the button will be considered disabled.
+
+#### onHoverState → `ValueChanged<bool>?`
+Called when hover state changes. Provides the current hover state (true when hovered, false otherwise).
+
+#### onPressedState → `ValueChanged<bool>?`
+Called when pressed state changes. Provides the current pressed state (true when pressed, false otherwise).
+
+#### onFocusState → `ValueChanged<bool>?`
+Called when focus state changes. Provides the current focus state (true when focused, false otherwise).
+
+#### onDisabledState → `ValueChanged<bool>?`
+Called when disabled state changes. Provides the current disabled state (true when disabled, false otherwise).
+
+#### enabled → `bool`
+Whether the button is enabled. Defaults to true.
+
+#### isSemanticButton → `bool`
+Whether the button should be treated as a semantic button. Defaults to true.
+
+#### semanticLabel → `String?`
+The semantic label for the button used by assistive technologies.
+
+#### cursor → `MouseCursor`
+The cursor to show when hovering over the button. Defaults to SystemMouseCursors.click.
+
+#### enableHapticFeedback → `bool`
+Whether to provide haptic feedback on press. Defaults to true.
+
+#### focusNode → `FocusNode?`
+Optional focus node to control focus behavior.
+
+#### autofocus → `bool`
+Whether the button should be focused when first built. Defaults to false.

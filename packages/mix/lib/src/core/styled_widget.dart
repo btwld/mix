@@ -1,25 +1,19 @@
 import 'package:flutter/widgets.dart';
 
-import '../modifiers/internal/render_widget_modifier.dart';
 import '../variants/widget_state_variant.dart';
 import '../widgets/pressable_widget.dart';
-import 'factory/mix_data.dart';
-import 'factory/mix_provider.dart';
 import 'factory/style_mix.dart';
-import 'modifier.dart';
+import 'internal/experimental/mix_builder.dart';
 import 'widget_state/widget_state_controller.dart';
 
-/// An abstract widget for applying custom styles.
+/// Base class for widgets that apply [Style] definitions.
 ///
-/// `StyledWidget` serves as a base class for widgets that need custom styling.
-/// It facilitates the application of a `Style` object to the widget and optionally
-/// allows this style to be inherited from its parent. This class is intended to be
-/// extended by more concrete widgets that implement specific styled behavior.
+/// Provides style inheritance from parent [StyledWidget]s and handles
+/// style application through the Mix framework. Extend this class to
+/// create widgets that can be styled using Mix.
 
 abstract class StyledWidget extends StatelessWidget {
-  /// Constructor for a styled widget.
-  ///
-  /// Takes a [Style] object and an optional [inherit] flag.
+  /// Creates a styled widget.
   const StyledWidget({
     Style? style,
     super.key,
@@ -27,26 +21,20 @@ abstract class StyledWidget extends StatelessWidget {
     required this.orderOfModifiers,
   }) : style = style ?? const Style.empty();
 
-  /// The style to apply to the widget.
-  ///
-  /// Defines the appearance of the widget using a [Style] object. If null, defaults
-  /// to an empty [Style], meaning no style is applied.
+  /// The style to apply to this widget.
   final Style style;
 
-  /// Whether the widget should inherit its style from its parent.
-  ///
-  /// If set to true, the widget will merge its style with the style from the nearest
-  /// [StyledWidget] ancestor in the widget tree. Defaults to false.
+  /// Whether to inherit style from the nearest [StyledWidget] ancestor.
   final bool inherit;
 
+  /// The order in which modifiers should be applied.
   final List<Type> orderOfModifiers;
 
-  /// Applies a mix of inherited and local styles to the widget.
+  /// Applies styling to [builder] with inheritance and state management.
   ///
-  /// Accepts a [BuildContext] and a [MixData] builder. It computes the final style by
-  /// merging the inherited style with the local style, then applies it to the widget.
-  /// This method is typically used in the `build` method of widgets extending
-  /// [StyledWidget] to provide the actual styled widget.
+  /// Merges inherited and local styles before applying them to the widget
+  /// built by [builder]. Handles widget state variants automatically.
+  @Deprecated('Use SpecBuilder directly for better clarity')
   Widget withMix(
     BuildContext context,
     Widget Function(BuildContext context) builder,
@@ -60,90 +48,104 @@ abstract class StyledWidget extends StatelessWidget {
   }
 }
 
-/// A styled widget that builds its child using a [MixData] object.
+/// Builds widgets with styling and interactive state management.
 ///
-/// `SpecBuilder` is a concrete implementation of [StyledWidget] that
-/// builds its child using a [withMix] method from [StyledWidget].
-/// This widget is useful for creating custom styled widgets.
-class SpecBuilder extends StatelessWidget {
-  // Requires a builder function and accepts optional parameters
+/// SpecBuilder wraps [MixBuilder] internally and adds interactive state
+/// management capabilities. It automatically detects widget state variants
+/// and wraps widgets with [Interactable] when needed.
+///
+/// ## Architecture
+///
+/// SpecBuilder follows a layered approach:
+/// 1. **Core**: Uses [MixBuilder] for style processing and caching
+/// 2. **Enhancement**: Adds widget state detection and Interactable wrapping
+/// 3. **Optimization**: Smart caching that respects widget state variants
+///
+/// ## Usage
+///
+/// Use SpecBuilder for widgets requiring interactive states (hover, press, focus)
+/// or custom [WidgetStatesController] management.
+///
+/// ```dart
+/// SpecBuilder(
+///   style: Style(
+///     $box.color.red(),
+///     $on.hover($box.color.blue()),
+///   ),
+///   builder: (context) => BoxSpec.of(context)(),
+/// )
+/// ```
+class SpecBuilder extends StatefulWidget {
   const SpecBuilder({
     super.key,
     this.inherit = false,
     this.controller,
     this.style = const Style.empty(),
-    List<Type>? orderOfModifiers,
+    this.orderOfModifiers = const [],
     required this.builder,
-  }) : orderOfModifiers = orderOfModifiers ?? const [];
+  });
 
-  bool get _hasWidgetStateVariant => style.variants.values
-      .any((attr) => attr.variant is MixWidgetStateVariant);
-
-  // Required builder function
+  /// Function that builds the widget content.
   final Widget Function(BuildContext) builder;
-  // Optional controller for managing widget state
-  final MixWidgetStateController? controller;
-  // Style to be applied to the widget
+
+  /// Optional controller for managing widget state.
+  final WidgetStatesController? controller;
+
+  /// Style to apply to the widget.
   final Style style;
-  // Flag to determine if the style should be inherited
+
+  /// Whether to inherit style from parent widgets.
   final bool inherit;
-  // List of modifier types in the desired order
+
+  /// Order in which modifiers should be applied.
+  ///
+  /// Defaults to an empty list, which uses the default modifier order.
   final List<Type> orderOfModifiers;
 
-  // Method to apply modifiers to the child widget
-  Widget _applyModifiers(MixData mix, Widget child) {
-    // Get the list of WidgetModifierAttribute from the mix
-    final modifiers = mix
-        .whereType<WidgetModifierSpecAttribute>()
-        .map((e) => e.resolve(mix))
-        .toList();
+  @override
+  State<SpecBuilder> createState() => _SpecBuilderState();
+}
 
-    // If the mix is animated, use RenderAnimatedModifiers, otherwise use RenderModifiers
-    return mix.isAnimated
-        ? RenderAnimatedModifiers(
-            modifiers: modifiers,
-            duration: mix.animation!.duration,
-            mix: mix,
-            orderOfModifiers: orderOfModifiers,
-            curve: mix.animation!.curve,
-            child: child,
-          )
-        : RenderModifiers(
-            modifiers: modifiers,
-            mix: mix,
-            orderOfModifiers: orderOfModifiers,
-            child: child,
-          );
+class _SpecBuilderState extends State<SpecBuilder> {
+  late final WidgetStatesController _controller;
+
+  /// Checks if the style contains widget state variants that require
+  /// interactive state management.
+  bool get _hasWidgetStateVariant => widget.style.variants.values
+      .any((attr) => attr.variant is MixWidgetStateVariant);
+
+  /// Determines if we should wrap with Interactable widget.
+  bool get _shouldWrapWithInteractable =>
+      _hasWidgetStateVariant || widget.controller != null;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = widget.controller ?? WidgetStatesController();
   }
 
-  // Method to build the mixed child widget
-  Widget _buildMixedChild(BuildContext context) {
-    // Get the inherited mix if inherit flag is true, otherwise null
-    final inheritedMix = inherit ? Mix.maybeOfInherited(context) : null;
-    // Get the mix from the style
-    final mix = style.of(context);
-    // Merge the inherited mix with the current mix, or use the current mix if no inherited mix
-    final mergedMix = inheritedMix?.merge(mix) ?? mix;
-
-    // Return a Mix widget with the merged mix and the child widget with modifiers applied
-    return Mix(
-      data: mergedMix,
-      child: _applyModifiers(mergedMix, Builder(builder: builder)),
-    );
+  @override
+  void dispose() {
+    // Only dispose controllers we created internally
+    if (widget.controller == null) {
+      _controller.dispose();
+    }
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget current = Builder(builder: _buildMixedChild);
-    // Check if the widget needs widget state and if it's not available in the context
-    final needsWidgetState =
-        _hasWidgetStateVariant && MixWidgetState.of(context) == null;
+    final builder = MixBuilder(
+      style: widget.style,
+      builder: widget.builder,
+      inherit: widget.inherit,
+      orderOfModifiers: widget.orderOfModifiers,
+    );
 
-    if (needsWidgetState || controller != null) {
-      current = Interactable(controller: controller, child: current);
+    if (_shouldWrapWithInteractable && MixWidgetState.of(context) == null) {
+      return Interactable(controller: widget.controller, child: builder);
     }
 
-    // Otherwise, directly build the mixed child widget
-    return current;
+    return builder;
   }
 }

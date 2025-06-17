@@ -14,11 +14,21 @@ import '../modifier.dart';
 import '../spec.dart';
 import 'style_mix.dart';
 
-/// This class is used for encapsulating all [MixData] related operations.
-/// It contains a mixture of properties and methods useful for handling different attributes,
-/// modifiers and token resolvers.
+@Deprecated('Use MixContext instead. This will be removed in version 2.0')
+typedef MixData = MixContext;
+
+// MixContext would be a more accurate name as this class provides the contextual
+// environment for attribute resolution (tokens, context, animation state) rather than
+// being a simple data container. The "Context" naming would also enable more fluid
+// refresh and update patterns, making the relationship with BuildContext clearer.
+
+/// Context for resolving [SpecAttribute]s into concrete values.
+///
+/// Encapsulates the build context, token resolver, and attribute collection
+/// needed for style resolution. Acts as the contextual environment during
+/// the style computation process.
 @immutable
-class MixData with Diagnosticable {
+class MixContext with Diagnosticable {
   final AnimatedData? animation;
 
   // Instance variables for widget attributes, widget modifiers and token resolver.
@@ -26,39 +36,33 @@ class MixData with Diagnosticable {
 
   final MixTokenResolver _tokenResolver;
 
-  /// A Private constructor for the [MixData] class that initializes its main variables.
-  ///
-  /// It takes in [attributes] and [resolver] as required parameters.
-  const MixData._({
+  /// Creates a [MixContext] instance with the given parameters.
+  const MixContext._({
     required MixTokenResolver resolver,
     required AttributeMap attributes,
     required this.animation,
   })  : _attributes = attributes,
         _tokenResolver = resolver;
 
-  factory MixData.create(BuildContext context, Style style) {
+  factory MixContext.create(BuildContext context, Style style) {
     final attributeList = applyContextToVisualAttributes(context, style);
 
     final resolver = MixTokenResolver(context);
 
-    return MixData._(
+    return MixContext._(
       resolver: resolver,
       attributes: AttributeMap(attributeList),
       animation: style is AnimatedStyle ? style.animated : null,
     );
   }
 
-  /// Alias for animation.isAnimated
+  /// Whether this style data includes animation configuration.
   bool get isAnimated => animation != null;
 
-  /// Getter for [MixTokenResolver].
-  ///
-  /// Returns [_tokenResolver].
+  /// Token resolver for resolving design tokens in this context.
   MixTokenResolver get tokens => _tokenResolver;
 
-  /// Getter for [_attributes].
-  ///
-  /// Returns [_attributes].
+  /// Attribute collection for testing purposes.
   @visibleForTesting
   AttributeMap get attributes => _attributes;
 
@@ -69,7 +73,7 @@ class MixData with Diagnosticable {
         .toList();
   }
 
-  MixData toInheritable() {
+  MixContext toInheritable() {
     final inheritableAttributes = _attributes.values.where(
       (attr) => attr is! WidgetModifierSpecAttribute,
     );
@@ -77,7 +81,7 @@ class MixData with Diagnosticable {
     return copyWith(attributes: AttributeMap(inheritableAttributes));
   }
 
-  /// Finds and returns an [VisualAttribute] of type [A], or null if not found.
+  /// Returns the resolved attribute of type [A], or null if not found.
   A? attributeOf<A extends SpecAttribute>() {
     final attributes = _attributes.whereType<A>();
     if (attributes.isEmpty) return null;
@@ -85,6 +89,15 @@ class MixData with Diagnosticable {
     return _mergeAttributes(attributes) ?? attributes.last;
   }
 
+  @Deprecated(
+    'Use ComputedStyle.of(context).modifiers.whereType<M>() instead. '
+    'Prefer ComputedStyle for optimized access with surgical rebuilds. Will be removed in v2.0.0.\n'
+    'Migration:\n'
+    '// Before\n'
+    'final scaleModifiers = mixData.modifiersOf<TransformModifierSpec>();\n'
+    '// After\n'
+    'final scaleModifiers = ComputedStyle.of(context).modifiers.whereType<TransformModifierSpec>().toList();',
+  )
   List<WidgetModifierSpec<dynamic>>
       modifiersOf<M extends WidgetModifierSpec<dynamic>>() {
     return modifiers.whereType<M>().toList();
@@ -94,10 +107,29 @@ class MixData with Diagnosticable {
     return _attributes.whereType();
   }
 
+  @Deprecated(
+    'Use whereType<T>().isNotEmpty or attributeOf<T>() != null instead. '
+    'This method provides unclear semantics and will be removed in v2.0.0.\n'
+    'Migration:\n'
+    '// Before\n'
+    'if (mixData.contains<BoxSpecAttribute>()) { ... }\n'
+    '// After\n'
+    'if (mixData.attributeOf<BoxSpecAttribute>() != null) { ... }',
+  )
   bool contains<T>() {
     return _attributes.values.any((attr) => attr is T);
   }
 
+  @Deprecated(
+    'Use ComputedStyle.specOf<T>(context) for pre-resolved specs instead. '
+    'Prefer accessing resolved values through ComputedStyle for optimized performance. Will be removed in v2.0.0.\n'
+    'Migration:\n'
+    '// Before\n'
+    'final color = mixData.resolvableOf<Color, ColorUtilityAttribute>();\n'
+    '// After\n'
+    'final boxSpec = ComputedStyle.specOf<BoxSpec>(context);\n'
+    'final color = boxSpec?.decoration?.color; // Access resolved values from specs',
+  )
   Value? resolvableOf<Value, A extends SpecAttribute<Value>>() {
     final attribute = _attributes.attributeOfType<A>();
 
@@ -105,20 +137,20 @@ class MixData with Diagnosticable {
   }
 
   // /// Merges this [MixData] with another, prioritizing this instance's properties.
-  MixData merge(MixData other) {
-    return MixData._(
+  MixContext merge(MixContext other) {
+    return MixContext._(
       resolver: other._tokenResolver,
       attributes: _attributes.merge(other._attributes),
       animation: other.animation ?? animation,
     );
   }
 
-  MixData copyWith({
+  MixContext copyWith({
     AttributeMap? attributes,
     AnimatedData? animation,
     MixTokenResolver? resolver,
   }) {
-    return MixData._(
+    return MixContext._(
       resolver: resolver ?? _tokenResolver,
       attributes: attributes ?? _attributes,
       animation: animation ?? this.animation,
@@ -129,7 +161,7 @@ class MixData with Diagnosticable {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is MixData &&
+    return other is MixContext &&
         other._attributes == _attributes &&
         other.animation == animation;
   }

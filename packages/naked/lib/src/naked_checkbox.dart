@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:naked/src/utilities/naked_focus_manager.dart';
+import 'package:naked/src/utilities/pressed_state_region.dart';
 
 /// A fully customizable checkbox with no default styling.
 ///
 /// NakedCheckbox provides core interaction behavior and accessibility
 /// without imposing any visual styling, giving consumers complete design freedom.
-/// It integrates with [NakedFocusManager] to provide enhanced keyboard accessibility
-/// and focus management including:
-///
-/// - Space/Enter key toggling
-/// - Focus restoration
-/// - Improved screen reader announcements
+/// It integrates with [FocusableActionDetector] to provide enhanced keyboard accessibility,
+/// hover detection, and focus management.
 ///
 /// This component uses direct callbacks for state changes instead of managing its
 /// own state, giving consumers control over their state management approach.
@@ -32,10 +28,10 @@ import 'package:naked/src/utilities/naked_focus_manager.dart';
 ///   @override
 ///   Widget build(BuildContext context) {
 ///     return NakedCheckbox(
-///       isChecked: _isChecked,
+///       value: _isChecked,
 ///       onChanged: (value) {
 ///         setState(() {
-///           _isChecked = value;
+///           _isChecked = value!;
 ///         });
 ///       },
 ///       onHoverState: (isHovered) => setState(() => _isHovered = isHovered),
@@ -71,37 +67,39 @@ import 'package:naked/src/utilities/naked_focus_manager.dart';
 ///
 /// See also:
 ///
-///  * [NakedRadio], a component that allows users to select one option from a set.
-///  * [NakedSwitch], a component that allows users to toggle between two states.
+///  * [NakedButton], a component that allows users to trigger actions.
 ///  * The Flutter `Checkbox` widget, which provides a similar functionality with
 ///    Material Design styling.
 ///  * The Naked library documentation for more examples and customization options.
-class NakedCheckbox extends StatelessWidget {
+class NakedCheckbox extends StatefulWidget {
   /// The child widget to display.
   ///
   /// This widget should represent the visual appearance of the checkbox.
   /// You're responsible for rendering different visual states based on
-  /// the callback properties (isChecked, onHoverState, etc.).
+  /// the callback properties (value, onHoverState, etc.).
   final Widget child;
 
-  /// Whether the checkbox is checked.
+  /// Whether this checkbox is checked.
   ///
-  /// Use this to control the checked state of the checkbox.
-  /// The checkbox will not change this value on its own.
-  final bool checked;
+  /// When [tristate] is true, a value of null corresponds to the mixed state.
+  /// When [tristate] is false, this value must not be null.
+  final bool? value;
 
-  /// Whether the checkbox is in an indeterminate state.
+  /// If true the checkbox's [value] can be true, false, or null.
   ///
-  /// When true, the checkbox will be rendered in an indeterminate state,
-  /// visually distinct from both checked and unchecked states.
-  /// Typically used for representing partially selected states in hierarchical checkbox groups.
-  final bool indeterminate;
+  /// When a tri-state checkbox ([tristate] is true) is tapped, its [onChanged]
+  /// callback will be applied to true if the current value is false, to null if
+  /// value is true, and to false if value is null (i.e. it cycles through false
+  /// => true => null => false when tapped).
+  ///
+  /// If tristate is false (the default), [value] must not be null.
+  final bool tristate;
 
   /// Called when the checkbox is toggled.
   ///
   /// The callback provides the new state of the checkbox (true for checked, false for unchecked).
   /// If null, the checkbox will be considered disabled and will not respond to user interaction.
-  final ValueChanged<bool>? onChanged;
+  final ValueChanged<bool?>? onChanged;
 
   /// Callback triggered when the checkbox's hover state changes.
   ///
@@ -150,11 +148,10 @@ class NakedCheckbox extends StatelessWidget {
   /// If not provided, the checkbox will create its own focus node.
   final FocusNode? focusNode;
 
-  /// Called when the escape key is pressed while the checkbox has focus.
+  /// Whether the checkbox should be autofocused when the widget is created.
   ///
-  /// This can be used to implement custom escape key handling, such as
-  /// closing a dialog or reverting to a previous state.
-  final VoidCallback? onEscapePressed;
+  /// Defaults to false.
+  final bool autofocus;
 
   /// Creates a naked checkbox.
   ///
@@ -163,8 +160,8 @@ class NakedCheckbox extends StatelessWidget {
   const NakedCheckbox({
     super.key,
     required this.child,
-    this.checked = false,
-    this.indeterminate = false,
+    this.value = false,
+    this.tristate = false,
     this.onChanged,
     this.onHoverState,
     this.onPressedState,
@@ -174,92 +171,60 @@ class NakedCheckbox extends StatelessWidget {
     this.cursor = SystemMouseCursors.click,
     this.enableHapticFeedback = true,
     this.focusNode,
-    this.onEscapePressed,
-  }) : assert(!(checked && indeterminate),
+    this.autofocus = false,
+  }) : assert((tristate || value != null),
             'Checkbox cannot be both checked and indeterminate');
 
   @override
+  State<NakedCheckbox> createState() => _NakedCheckboxState();
+}
+
+class _NakedCheckboxState extends State<NakedCheckbox> {
+  void toggleValue([Intent? _]) {
+    if (!_isInteractive) return;
+
+    if (widget.enableHapticFeedback) {
+      HapticFeedback.selectionClick();
+    }
+
+    switch (widget.value) {
+      case false:
+        widget.onChanged!(true);
+      case true:
+        widget.onChanged!(widget.tristate ? null : false);
+      case null:
+        widget.onChanged!(false);
+    }
+  }
+
+  bool get _isInteractive => widget.enabled && widget.onChanged != null;
+
+  late final Map<Type, Action<Intent>> _actionMap = <Type, Action<Intent>>{
+    ActivateIntent: CallbackAction<ActivateIntent>(onInvoke: toggleValue),
+  };
+
+  @override
   Widget build(BuildContext context) {
-    final isInteractive = enabled && onChanged != null;
-    final effectiveFocusNode = focusNode ?? FocusNode();
-
-    // Gets the current state of the checkbox
-    bool? getCurrentValue() {
-      if (indeterminate) return null;
-      return checked;
-    }
-
-    // Toggle functionality
-    void toggleValue() {
-      if (!isInteractive) return;
-
-      if (enableHapticFeedback) {
-        HapticFeedback.selectionClick();
-      }
-
-      // Calculate the next state:
-      // - If null (indeterminate), go to true (checked)
-      // - If false (unchecked), go to true (checked)
-      // - If true (checked), go to false (unchecked)
-      final currentValue = getCurrentValue();
-      final bool newValue;
-
-      if (currentValue == null) {
-        newValue = true;
-      } else {
-        newValue = !currentValue;
-      }
-
-      onChanged?.call(newValue);
-    }
-
     return Semantics(
-      checked: checked,
-      toggled: indeterminate,
-      enabled: isInteractive,
-      label: semanticLabel,
-      onTap: isInteractive ? toggleValue : null,
-      excludeSemantics: true,
-      child: NakedFocusManager(
-        restoreFocus: true, // Good UX to restore focus when removed
-        autofocus: false, // Let the consumer control autofocus
-        onEscapePressed: onEscapePressed,
-        child: Focus(
-          focusNode: effectiveFocusNode,
-          onFocusChange: onFocusState,
-          onKeyEvent: (node, event) {
-            if (!isInteractive) return KeyEventResult.ignored;
-
-            if (event is KeyDownEvent &&
-                (event.logicalKey == LogicalKeyboardKey.space ||
-                    event.logicalKey == LogicalKeyboardKey.enter)) {
-              onPressedState?.call(true);
-              return KeyEventResult.handled;
-            } else if (event is KeyUpEvent &&
-                (event.logicalKey == LogicalKeyboardKey.space ||
-                    event.logicalKey == LogicalKeyboardKey.enter)) {
-              onPressedState?.call(false);
-              toggleValue();
-              return KeyEventResult.handled;
-            }
-            return KeyEventResult.ignored;
-          },
-          child: MouseRegion(
-            cursor: isInteractive ? cursor : SystemMouseCursors.forbidden,
-            onEnter: isInteractive ? (_) => onHoverState?.call(true) : null,
-            onExit: isInteractive ? (_) => onHoverState?.call(false) : null,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTapDown:
-                  isInteractive ? (_) => onPressedState?.call(true) : null,
-              onTapUp:
-                  isInteractive ? (_) => onPressedState?.call(false) : null,
-              onTapCancel:
-                  isInteractive ? () => onPressedState?.call(false) : null,
-              onTap: isInteractive ? toggleValue : null,
-              child: child,
-            ),
-          ),
+      label: widget.semanticLabel,
+      checked: widget.value ?? false,
+      enabled: _isInteractive,
+      mixed: widget.tristate ? widget.value == null : null,
+      child: FocusableActionDetector(
+        focusNode: widget.focusNode,
+        onFocusChange: widget.onFocusState,
+        actions: _actionMap,
+        enabled: _isInteractive,
+        mouseCursor:
+            _isInteractive ? widget.cursor : SystemMouseCursors.forbidden,
+        onShowFocusHighlight: widget.onFocusState,
+        onShowHoverHighlight: widget.onHoverState,
+        autofocus: widget.autofocus,
+        child: PressedStateRegion(
+          enabled: _isInteractive,
+          onPressedState: widget.onPressedState,
+          onTap: toggleValue,
+          child: widget.child,
         ),
       ),
     );

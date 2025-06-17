@@ -1,13 +1,19 @@
 import 'package:flutter/animation.dart';
-import 'package:flutter/widgets.dart';
 
 import '../../internal/constants.dart';
 import 'animated_data_dto.dart';
 
+/// Configuration data for animated styles in the Mix framework.
+///
+/// Encapsulates animation parameters including duration, curve, and completion
+/// callback for use with animated widgets and style transitions.
+//TODO: Consider chainging this to AnimationConfig, as it will be more descriptive for the new animation system
 class AnimatedData {
   final VoidCallback? _onEnd;
   final Curve? _curve;
   final Duration? _duration;
+
+  /// Creates animation data with the specified parameters.
   const AnimatedData({
     required Duration? duration,
     required Curve? curve,
@@ -16,15 +22,16 @@ class AnimatedData {
         _duration = duration,
         _onEnd = onEnd;
 
+  /// Creates animation data with default settings.
   const AnimatedData.withDefaults()
       : _duration = kDefaultAnimationDuration,
         _curve = Curves.linear,
         _onEnd = null;
 
-  // Se default in case is not set
+  /// Duration of the animation, defaults to [kDefaultAnimationDuration] if not specified.
   Duration get duration => _duration ?? kDefaultAnimationDuration;
 
-  // set default in case its not set
+  /// Animation curve, defaults to [Curves.linear] if not specified.
   Curve get curve => _curve ?? Curves.linear;
 
   VoidCallback? get onEnd => _onEnd;

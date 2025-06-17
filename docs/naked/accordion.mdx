@@ -1,0 +1,253 @@
+---
+title: NakedAccordion
+---
+
+NakedAccordion provides expandable/collapsible sections without imposing any visual styling, giving consumers complete design freedom. It manages the state of expanded sections through an `NakedAccordionController` and allows for fully customizable transitions.
+
+<Info>
+  You can find this example in our [GitHub repository](https://github.com/btwld/mix/blob/main/packages/naked/example/lib/api/naked_accordion.0.dart).
+</Info>
+
+<CodeGroup title="Usage Example" defaultLanguage="dart">
+```dart
+class AccordionExample extends StatefulWidget {
+  const AccordionExample({super.key});
+
+  @override
+  State<AccordionExample> createState() => _AccordionExampleState();
+}
+
+class _AccordionExampleState extends State<AccordionExample> {
+  final _controller = NakedAccordionController<String>(max: 1, min: 1);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 300,
+      child: NakedAccordion<String>(
+        controller: _controller,
+        initialExpandedValues: const ['1'],
+        children: const [
+          AccordionItem(
+            value: '1',
+            title: 'Section 1',
+            content:
+                'This is the content for section 1. You can put anything here!',
+          ),
+          SizedBox(height: 8),
+          AccordionItem(
+            value: '2',
+            title: 'Section 2',
+            content:
+                'This is the content for section 2. You can put anything here!',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class AccordionItem extends StatefulWidget {
+  const AccordionItem({
+    super.key,
+    required this.value,
+    required this.title,
+    required this.content,
+  });
+
+  final String value;
+  final String title;
+  final String content;
+
+  @override
+  State<AccordionItem> createState() => _AccordionItemState();
+}
+
+class _AccordionItemState extends State<AccordionItem> {
+  bool _isHovering = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.grey.shade100,
+      ),
+      child: NakedAccordionItem<String>(
+        value: widget.value,
+        trigger: (context, isExpanded, toggle) {
+          return NakedButton(
+            onPressed: toggle,
+            onHoverState: (isHovering) =>
+                setState(() => _isHovering = isHovering),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: _isHovering || isExpanded
+                      ? Colors.grey.shade100
+                      : Colors.grey.shade300,
+                ),
+                borderRadius: BorderRadius.circular(12),
+                color: _isHovering || isExpanded
+                    ? Colors.grey.shade100
+                    : Colors.white,
+              ),
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    widget.title,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey.shade700,
+                    ),
+                  ),
+                  AnimatedRotation(
+                    turns: isExpanded ? 0.5 : 0,
+                    duration: const Duration(milliseconds: 200),
+                    child: Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: Colors.grey.shade600,
+                      weight: 100,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          child: Text(
+            widget.content,
+            style: const TextStyle(color: Color(0xFF3D3D3D)),
+          ),
+        ),
+        transitionBuilder: (child) => AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          transitionBuilder: (child, animation) {
+            return SizeTransition(
+              axis: Axis.vertical,
+              sizeFactor: animation,
+              axisAlignment: 1,
+              child: child,
+            );
+          },
+          child: child,
+        ),
+      ),
+    );
+  }
+}
+```
+</CodeGroup>
+
+## NakedAccordionController
+
+The `NakedAccordionController` manages the state of the accordion, keeping track of which items are expanded or collapsed.
+
+```dart
+NakedAccordionController({
+  this.min = 0,
+  this.max,
+})
+```
+
+### Properties
+
+#### min → `int`
+The minimum number of expanded items allowed. Defaults to 0.
+
+#### max → `int?`
+The maximum number of expanded items allowed. If null, there is no maximum limit.
+
+### Methods
+
+#### open(T value) → `void`
+Opens the accordion item with the given value.
+
+#### close(T value) → `void`
+Closes the accordion item with the given value.
+
+#### toggle(T value) → `void`
+Toggles the accordion item with the given value.
+
+#### contains(T value) → `bool`
+Checks if an item with the given value is currently expanded.
+
+#### clear() → `void`
+Removes all expanded values.
+
+#### openAll(List&lt;T&gt; newValues) → `void`
+Opens all accordion items with the given values.
+
+
+## NakedAccordion
+
+### Constructor
+
+```dart
+const NakedAccordion({
+  Key? key,
+  required this.children,
+  required this.controller,
+  this.initialExpandedValues = const [],
+})
+```
+
+### Properties
+
+#### children → `List<Widget>`
+The accordion items to display. These should be `NakedAccordionItem` widgets.
+
+#### controller → `NakedAccordionController<T>`
+The controller that manages which items are expanded or collapsed.
+
+#### initialExpandedValues → `List<T>`
+Values that should be expanded when the accordion is first built. Defaults to an empty list.
+
+## NakedAccordionItem
+
+### Constructor
+
+```dart
+const NakedAccordionItem({
+  Key? key,
+  required this.trigger,
+  required this.value,
+  required this.child,
+  this.transitionBuilder,
+  this.semanticLabel,
+  this.onFocusState,
+  this.autoFocus = false,
+  this.focusNode,
+})
+```
+
+### Properties
+
+#### trigger → `NakedAccordionTriggerBuilder`
+Builder function that creates the trigger widget. The builder provides the current BuildContext, a boolean indicating if the item is expanded, and a callback to toggle the expansion state.
+
+#### value → `T`
+The unique identifier for this accordion item. This value is used by the NakedAccordionController to track expansion state.
+
+#### child → `Widget`
+The content displayed when this item is expanded.
+
+#### transitionBuilder → `Widget Function(Widget child)?`
+Optional builder to customize the transition when expanding/collapsing. If not provided, content will appear/disappear instantly.
+
+#### semanticLabel → `String?`
+Optional semantic label describing the section for screen readers.
+
+#### onFocusState → `ValueChanged<bool>?`
+Optional callback to handle focus state changes.
+
+#### autoFocus → `bool`
+Whether the item should be focused when the accordion is opened. Defaults to false.
+
+#### focusNode → `FocusNode?`
+The focus node for the item.

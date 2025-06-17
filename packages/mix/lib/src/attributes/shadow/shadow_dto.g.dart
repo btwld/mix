@@ -65,7 +65,7 @@ mixin _$ShadowDto on Mixable<Shadow>, HasDefaultValue<Shadow> {
 ///
 /// This class provides methods to set individual properties of a [Shadow].
 /// Use the methods of this class to configure specific properties of a [Shadow].
-class ShadowUtility<T extends Attribute>
+class ShadowUtility<T extends StyleElement>
     extends DtoUtility<T, ShadowDto, Shadow> {
   /// Utility for defining [ShadowDto.blurRadius]
   late final blurRadius = DoubleUtility((v) => only(blurRadius: v));
@@ -185,7 +185,7 @@ mixin _$BoxShadowDto on Mixable<BoxShadow>, HasDefaultValue<BoxShadow> {
 ///
 /// This class provides methods to set individual properties of a [BoxShadow].
 /// Use the methods of this class to configure specific properties of a [BoxShadow].
-class BoxShadowUtility<T extends Attribute>
+class BoxShadowUtility<T extends StyleElement>
     extends DtoUtility<T, BoxShadowDto, BoxShadow> {
   /// Utility for defining [BoxShadowDto.color]
   late final color = ColorUtility((v) => only(color: v));

@@ -1,0 +1,60 @@
+{
+  "name": "naked",
+  "description": "A widget library providing unstyled, behavior-focused components for Flutter.",
+  "sidebar": [
+    {
+      "group": "Introduction",
+      "pages": [
+        {
+          "title": "Getting Started",
+          "href": "/"
+        }
+      ]
+    },
+    {
+      "group": "Widgets",
+      "pages": [
+        {
+          "title": "NakedAccordion",
+          "href": "/naked/accordion"
+        },
+        {
+          "title": "NakedButton",
+          "href": "/naked/button"
+        },
+        {
+          "title": "NakedCheckbox",
+          "href": "/naked/checkbox"
+        },
+        {
+          "title": "NakedMenu",
+          "href": "/naked/menu"
+        },
+        {
+          "title": "NakedRadioGroup",
+          "href": "/naked/radio_group"
+        },
+        {
+          "title": "NakedSelect",
+          "href": "/naked/select"
+        },
+        {
+          "title": "NakedSlider",
+          "href": "/naked/slider"
+        },
+        {
+          "title": "NakedTabs",
+          "href": "/naked/tabs"
+        },
+        {
+          "title": "NakedTextField",
+          "href": "/naked/textfield"
+        },
+        {
+          "title": "NakedTooltip",
+          "href": "/naked/tooltip"
+        }
+      ]
+    }
+  ]
+}

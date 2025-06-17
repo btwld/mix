@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' as m;
 import 'package:flutter/widgets.dart';
 import 'package:remix/remix.dart';
 import 'package:widgetbook/widgetbook.dart';
@@ -29,8 +30,8 @@ Widget buildButtonUseCase(BuildContext context) {
     child: Scaffold(
       body: Builder(builder: (context) {
         return Center(
-          child: Button(
-            label: 'Show dialog',
+          child: m.TextButton(
+            child: const Text('Show dialog'),
             onPressed: () {
               showDialog(
                 useRootNavigator: false,
@@ -43,9 +44,9 @@ Widget buildButtonUseCase(BuildContext context) {
                       description: description,
                       actions: actions
                           ? [
-                              Button(
-                                label: 'Save',
+                              m.TextButton(
                                 onPressed: () {},
+                                child: const Text('Save'),
                               ),
                             ]
                           : null,

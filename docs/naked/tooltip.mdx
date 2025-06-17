@@ -1,0 +1,148 @@
+---
+title: NakedTooltip
+---
+
+NakedTooltip provides core tooltip behavior and accessibility without imposing any visual styling, giving consumers complete design freedom. It handles showing and hiding tooltips, positioning the tooltip relative to the target widget, and automatically dismissing the tooltip after a specified duration.
+
+<Info>
+  You can find this example in our [GitHub repository](https://github.com/btwld/mix/blob/main/packages/naked/example/lib/api/naked_tooltip.0.dart).
+</Info>
+<CodeGroup title="Usage Example" defaultLanguage="dart">
+```dart
+lass TooltipExample extends StatefulWidget {
+  const TooltipExample({super.key});
+
+  @override
+  State<TooltipExample> createState() => _TooltipExampleState();
+}
+
+class _TooltipExampleState extends State<TooltipExample>
+    with SingleTickerProviderStateMixin {
+  late final _animationController = AnimationController(
+    duration: const Duration(milliseconds: 300),
+    vsync: this,
+  );
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return NakedTooltip(
+      targetAnchor: Alignment.topCenter,
+      followerAnchor: Alignment.bottomCenter,
+      offset: const Offset(0, -4),
+      waitDuration: const Duration(seconds: 0),
+      showDuration: const Duration(seconds: 0),
+      removalDelay: const Duration(milliseconds: 300),
+      onStateChange: (state) {
+        switch (state) {
+          case TooltipLifecycleState.present:
+            _animationController.forward();
+            break;
+          case TooltipLifecycleState.pendingRemoval:
+            _animationController.reverse();
+            break;
+          default:
+            break;
+        }
+      },
+      tooltipBuilder: (context) => SlideTransition(
+        position: _animationController.drive(Tween<Offset>(
+          begin: const Offset(0, 0.1),
+          end: const Offset(0, 0),
+        )),
+        child: FadeTransition(
+          opacity: _animationController,
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.grey[700],
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: const Text(
+              'This is a tooltip',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+      ),
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: const Color(0xFF3D3D3D),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: const Text(
+          'Hover me',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+</CodeGroup>
+
+## Constructor
+
+```dart
+const NakedTooltip({
+  super.key,
+  required this.child,
+  required this.tooltipBuilder,
+  this.showDuration = const Duration(seconds: 2),
+  this.waitDuration = const Duration(seconds: 1),
+  this.followerAnchor = Alignment.bottomCenter,
+  this.targetAnchor = Alignment.topCenter,
+  this.offset = const Offset(0, -8),
+  this.tooltipSemantics,
+  this.excludeFromSemantics = false,
+  this.fallbackAlignments = const [],
+  this.removalDelay = const Duration(seconds: 0),
+  this.onStateChange,
+})
+```
+
+## Properties
+
+#### child  → `Widget`
+The widget that triggers the tooltip.
+
+#### tooltipBuilder → `WidgetBuilder`
+A builder function that creates the tooltip content. This function is called to generate the tooltip widget dynamically.
+
+#### showDuration → `Duration`
+The duration for which the tooltip remains visible. Defaults to Duration(seconds: 2).
+
+#### waitDuration → `Duration`
+The duration to wait before showing the tooltip after hover. Defaults to Duration(seconds: 1).
+
+#### followerAnchor → `Alignment`
+The anchor point on the tooltip that should be aligned with the target. Defaults to Alignment.bottomCenter.
+
+#### targetAnchor → `Alignment`
+The anchor point on the target that the tooltip should be aligned to. Defaults to Alignment.topCenter.
+
+#### offset → `Offset`
+The offset of the tooltip from the target widget. Defaults to Offset(0, -8).
+
+#### tooltipSemantics → `String?`
+Optional semantic label for accessibility.
+
+#### excludeFromSemantics → `bool`
+Whether to exclude the tooltip from the semantics tree. Defaults to false.
+
+#### fallbackAlignments → `List<PositionConfig>`
+The fallback alignments for the tooltip. These are used if the tooltip doesn't fit in the viewport with the primary alignment. Defaults to an empty list.
+
+#### removalDelay → `Duration`
+The duration to wait before removing the Widget from the Overlay after the tooltip is hidden. Defaults to Duration(seconds: 0).
+
+#### onStateChange → `void Function(TooltipLifecycleState state)?`
+Event handler for tooltip lifecycle state changes. Called when the tooltip state changes (present, pendingRemoval, removed). 

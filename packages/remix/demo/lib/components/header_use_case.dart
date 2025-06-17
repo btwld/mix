@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart' as m;
 import 'package:mix/mix.dart';
 import 'package:remix/remix.dart';
 import 'package:remix/themes/fortaleza.dart';
@@ -37,7 +38,10 @@ Widget buildCard(BuildContext context) {
       const SizedBox(
         height: 16,
       ),
-      Button(label: 'Button', onPressed: () {}),
+      m.TextButton(
+        onPressed: () {},
+        child: const Text('Button'),
+      ),
     ],
   );
 

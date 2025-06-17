@@ -34,7 +34,7 @@ void main() {
 
         final buildContext = tester.element(find.byType(Container));
 
-        final mockMixData = MixData.create(buildContext, Style());
+        final mockMixData = MixContext.create(buildContext, Style());
 
         final colorRef = testColorToken();
         final colorDto = ColorDto(colorRef);
@@ -79,7 +79,7 @@ void main() {
       expect(
         Colors.red,
         colorDto.resolve(
-          MixData.create(
+          MixContext.create(
             MockBuildContext(),
             Style(),
           ),
@@ -94,7 +94,7 @@ void main() {
       expect(
         Colors.red.darken(20),
         colorDto.resolve(
-          MixData.create(
+          MixContext.create(
             MockBuildContext(),
             Style(),
           ),
@@ -115,7 +115,7 @@ void main() {
       expect(
         Colors.red.saturate(20).darken(20),
         colorDto.resolve(
-          MixData.create(
+          MixContext.create(
             MockBuildContext(),
             Style(),
           ),

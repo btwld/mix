@@ -74,7 +74,7 @@ final class _TestModifierAttribute
   const _TestModifierAttribute(this.value);
 
   @override
-  _TestModifierSpec resolve(MixData mix) {
+  _TestModifierSpec resolve(MixContext mix) {
     return _TestModifierSpec(value);
   }
 

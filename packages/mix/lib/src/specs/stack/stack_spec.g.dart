@@ -16,11 +16,11 @@ mixin _$StackSpec on Spec<StackSpec> {
   }
 
   /// {@template stack_spec_of}
-  /// Retrieves the [StackSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [StackSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [StackSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [StackSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [StackSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [StackSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$StackSpec on Spec<StackSpec> {
   /// ```
   /// {@endtemplate}
   static StackSpec of(BuildContext context) {
-    return _$StackSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<StackSpec>(context) ?? const StackSpec();
   }
 
   /// Creates a copy of this [StackSpec] but with the given fields
@@ -41,7 +41,7 @@ mixin _$StackSpec on Spec<StackSpec> {
     TextDirection? textDirection,
     Clip? clipBehavior,
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
   }) {
     return StackSpec(
       alignment: alignment ?? _$this.alignment,
@@ -79,7 +79,7 @@ mixin _$StackSpec on Spec<StackSpec> {
       fit: t < 0.5 ? _$this.fit : other.fit,
       textDirection: t < 0.5 ? _$this.textDirection : other.textDirection,
       clipBehavior: t < 0.5 ? _$this.clipBehavior : other.clipBehavior,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
       modifiers: other.modifiers,
     );
   }
@@ -214,7 +214,7 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [StackSpec].
 /// Use the methods of this class to configure specific properties of a [StackSpec].
-class StackSpecUtility<T extends Attribute>
+class StackSpecUtility<T extends StyleElement>
     extends SpecUtility<T, StackSpecAttribute> {
   /// Utility for defining [StackSpecAttribute.alignment]
   late final alignment = AlignmentGeometryUtility((v) => only(alignment: v));
@@ -235,10 +235,19 @@ class StackSpecUtility<T extends Attribute>
   /// Utility for defining [StackSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  StackSpecUtility(super.builder, {super.mutable});
+  StackSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  StackSpecUtility<T> get chain =>
-      StackSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  StackSpecUtility<T> get chain => StackSpecUtility(attributeBuilder);
 
   static StackSpecUtility<StackSpecAttribute> get self =>
       StackSpecUtility((v) => v);
@@ -251,7 +260,7 @@ class StackSpecUtility<T extends Attribute>
     TextDirection? textDirection,
     Clip? clipBehavior,
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(StackSpecAttribute(
       alignment: alignment,

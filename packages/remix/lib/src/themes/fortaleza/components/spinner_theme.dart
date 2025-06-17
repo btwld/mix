@@ -1,6 +1,6 @@
 import 'package:mix/mix.dart';
 
-import '../../../components/spinner/spinner.dart';
+import '../../../components/feedback/spinner/spinner.dart';
 import '../tokens.dart';
 
 class FortalezaSpinnerStyle extends SpinnerStyle {
@@ -19,7 +19,7 @@ class FortalezaSpinnerStyle extends SpinnerStyle {
     final softVariant = Style($.color.$accent(8));
 
     return Style.create(
-      [baseStyle(), $.color.$accent(), $.style.solid(), soft(softVariant())],
+      [baseStyle, $.color.$accent(), $.style.solid(), soft(softVariant)],
     );
   }
 }

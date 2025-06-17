@@ -14,7 +14,7 @@ module.exports = withNextra({
     return [
       {
         source: "/docs/changelog",
-        destination: "https://github.com/conceptadev/mix/releases",
+        destination: "https://github.com/btwld/mix/releases",
         permanent: true,
       },
     ];

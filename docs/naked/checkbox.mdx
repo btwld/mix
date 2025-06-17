@@ -1,0 +1,159 @@
+---
+title: NakedCheckbox
+---
+NakedCheckbox provides core interaction behavior and accessibility without imposing any visual styling, giving consumers complete design freedom. It integrates with `FocusableActionDetector` to provide enhanced keyboard accessibility, hover detection, and focus management.
+
+This component uses direct callbacks for state changes instead of managing its own state, giving consumers control over their state management approach.
+
+<Info>
+  You can find this example in our [GitHub repository](https://github.com/btwld/mix/blob/main/packages/naked/example/lib/api/naked_checkbox.0.dart).
+</Info>
+<CodeGroup title="Usage Example" defaultLanguage="dart">
+```dart
+class CheckboxExample extends StatefulWidget {
+  const CheckboxExample({super.key});
+
+  @override
+  State<CheckboxExample> createState() => _CheckboxExampleState();
+}
+
+class _CheckboxExampleState extends State<CheckboxExample> {
+  bool _isChecked = false;
+  bool _isHovered = false;
+  bool _isPressed = false;
+  bool _isFocused = false;
+
+  Color get borderColor {
+    const baseColor = Color(0xFF3D3D3D);
+
+    if (_isChecked) {
+      return baseColor;
+    }
+    if (_isFocused) {
+      return baseColor.withValues(alpha: 0.8);
+    }
+    if (_isHovered || _isPressed) {
+      return baseColor.withValues(alpha: 0.6);
+    }
+    return baseColor.withValues(alpha: 0.4);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return NakedCheckbox(
+      value: _isChecked,
+      onChanged: (value) {
+        setState(() {
+          _isChecked = value!;
+        });
+      },
+      onHoverState: (isHovered) => setState(() => _isHovered = isHovered),
+      onPressedState: (isPressed) => setState(() => _isPressed = isPressed),
+      onFocusState: (isFocused) => setState(() => _isFocused = isFocused),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 8,
+        children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            height: 20,
+            width: 20,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: borderColor,
+                width: 2,
+              ),
+              borderRadius: BorderRadius.circular(6),
+              color: _isChecked ? const Color(0xFF3D3D3D) : Colors.transparent,
+            ),
+            child: _isChecked
+                ? const Icon(
+                    Icons.check,
+                    size: 16,
+                    color: Colors.white,
+                  )
+                : null,
+          ),
+          const Text(
+            'Label',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF3D3D3D),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+</CodeGroup>
+
+### See also:
+
+  * [`NakedButton`](https://docs.page/btwld/mix/button), a component that allows users to trigger actions.
+  * The Flutter `Checkbox` widget, which provides a similar functionality with
+    Material Design styling.
+
+## Constructor
+
+```dart
+const NakedCheckbox({
+  Key? key,
+  required this.child,
+  this.value = false,
+  this.tristate = false,
+  this.onChanged,
+  this.onHoverState,
+  this.onPressedState,
+  this.onFocusState,
+  this.enabled = true,
+  this.semanticLabel,
+  this.cursor = SystemMouseCursors.click,
+  this.enableHapticFeedback = true,
+  this.focusNode,
+  this.autofocus = false,
+})
+```
+
+## Properties
+
+#### child → `Widget`
+The child widget to display. This widget should represent the visual appearance of the checkbox.
+
+#### value → `bool?`
+Whether this checkbox is checked. When `tristate` is true, a value of null corresponds to the mixed state. When `tristate` is false, this value must not be null.
+
+#### tristate → `bool`
+If true the checkbox's `value` can be true, false, or null. When a tri-state checkbox is tapped, its `onChanged` callback will cycle through false => true => null => false. Defaults to false.
+
+#### onChanged → `ValueChanged<bool?>?`
+Called when the checkbox is toggled. The callback provides the new state of the checkbox. If null, the checkbox will be considered disabled.
+
+#### onHoverState → `ValueChanged<bool>?`
+Called when hover state changes. Provides the current hover state (true when hovered, false otherwise).
+
+#### onPressedState → `ValueChanged<bool>?`
+Called when pressed state changes. Provides the current pressed state (true when pressed, false otherwise).
+
+#### onFocusState → `ValueChanged<bool>?`
+Called when focus state changes. Provides the current focus state (true when focused, false otherwise).
+
+#### enabled → `bool`
+Whether the checkbox is enabled. Defaults to true.
+
+#### semanticLabel → `String?`
+The semantic label for the checkbox used by assistive technologies.
+
+#### cursor → `MouseCursor`
+The cursor to show when hovering over the checkbox. Defaults to SystemMouseCursors.click.
+
+#### enableHapticFeedback → `bool`
+Whether to provide haptic feedback on tap. Defaults to true.
+
+#### focusNode → `FocusNode?`
+Optional focus node to control focus behavior.
+
+#### autofocus → `bool`
+Whether the checkbox should be focused when first built. Defaults to false.

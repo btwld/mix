@@ -1,6 +1,6 @@
 import 'package:mix/mix.dart';
 
-import '../../../components/avatar/avatar.dart';
+import '../../../components/content_presentation/avatar/avatar.dart';
 import '../tokens.dart';
 
 class FortalezaAvatarStyle extends AvatarStyle {
@@ -26,7 +26,7 @@ class FortalezaAvatarStyle extends AvatarStyle {
       $.fallback.style.color.$accent(),
     );
 
-    return Style.create([baseStyle(), solidVariant(), soft(softVariant())]);
+    return Style.create([baseStyle, solidVariant, soft(softVariant)]);
   }
 }
 
@@ -44,10 +44,6 @@ class FortalezaDarkAvatarStyle extends FortalezaAvatarStyle {
       $.fallback.style.color.$accent(11),
     );
 
-    return Style.create([
-      baseStyle(),
-      solid(),
-      FortalezaAvatarStyle.soft(soft()),
-    ]);
+    return Style.create([baseStyle, solid, FortalezaAvatarStyle.soft(soft)]);
   }
 }

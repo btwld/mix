@@ -39,42 +39,66 @@ class TrackRebuildWidgetState extends State<TrackRebuildWidget> {
   }
 }
 
+extension on WidgetStatesController {
+  /// Batch updates the state of the widget with multiple state changes.
+  ///
+  /// [updates] is a list of tuples, where each tuple contains a state [key]
+  /// and a boolean [add] indicating whether to add or remove the state.
+  /// Listeners are notified if any state has changed.
+  void batch(List<(WidgetState, bool)> updates) {
+    var valueHasChanged = false;
+    for (final update in updates) {
+      final key = update.$1;
+      final add = update.$2;
+      if (add) {
+        valueHasChanged |= value.add(key);
+      } else {
+        valueHasChanged |= value.remove(key);
+      }
+    }
+
+    if (valueHasChanged) {
+      notifyListeners();
+    }
+  }
+}
+
 void main() {
-  group('MixWidgetStateController', () {
+  group('WidgetStatesController', () {
     test('initial state values', () {
-      final controller = MixWidgetStateController();
-      expect(controller.disabled, isFalse);
-      expect(controller.hovered, isFalse);
-      expect(controller.focused, isFalse);
-      expect(controller.pressed, isFalse);
-      expect(controller.dragged, isFalse);
-      expect(controller.selected, isFalse);
+      final controller = WidgetStatesController();
+      expect(controller.has(WidgetState.disabled), isFalse);
+      expect(controller.has(WidgetState.hovered), isFalse);
+      expect(controller.has(WidgetState.focused), isFalse);
+      expect(controller.has(WidgetState.pressed), isFalse);
+      expect(controller.has(WidgetState.dragged), isFalse);
+      expect(controller.has(WidgetState.selected), isFalse);
     });
 
     test('update individual state', () {
-      final controller = MixWidgetStateController();
+      final controller = WidgetStatesController();
 
       controller.disabled = true;
-      expect(controller.disabled, isTrue);
+      expect(controller.has(WidgetState.disabled), isTrue);
 
       controller.hovered = true;
-      expect(controller.hovered, isTrue);
+      expect(controller.has(WidgetState.hovered), isTrue);
 
       controller.focused = true;
-      expect(controller.focused, isTrue);
+      expect(controller.has(WidgetState.focused), isTrue);
 
       controller.pressed = true;
-      expect(controller.pressed, isTrue);
+      expect(controller.has(WidgetState.pressed), isTrue);
 
       controller.dragged = true;
-      expect(controller.dragged, isTrue);
+      expect(controller.has(WidgetState.dragged), isTrue);
 
       controller.selected = true;
-      expect(controller.selected, isTrue);
+      expect(controller.has(WidgetState.selected), isTrue);
     });
 
     test('batch update states', () {
-      final controller = MixWidgetStateController();
+      final controller = WidgetStatesController();
 
       controller.batch([
         (WidgetState.disabled, true),
@@ -82,21 +106,21 @@ void main() {
         (WidgetState.focused, true),
       ]);
 
-      expect(controller.disabled, isTrue);
-      expect(controller.hovered, isTrue);
-      expect(controller.focused, isTrue);
-      expect(controller.pressed, isFalse);
-      expect(controller.dragged, isFalse);
-      expect(controller.selected, isFalse);
+      expect(controller.has(WidgetState.disabled), isTrue);
+      expect(controller.has(WidgetState.hovered), isTrue);
+      expect(controller.has(WidgetState.focused), isTrue);
+      expect(controller.has(WidgetState.pressed), isFalse);
+      expect(controller.has(WidgetState.dragged), isFalse);
+      expect(controller.has(WidgetState.selected), isFalse);
     });
 
     test('notifyListeners called on state change', () {
-      final controller = MixWidgetStateController();
+      final controller = WidgetStatesController();
 
       var notifyListenersCallCount = 0;
       controller.addListener(() => notifyListenersCallCount++);
 
-      controller.disabled = true;
+      controller.update(WidgetState.disabled, true);
       expect(notifyListenersCallCount, 1);
 
       controller.batch([
@@ -112,7 +136,7 @@ void main() {
   });
   group('MixWidgetStateModel', () {
     testWidgets('of finds model', (tester) async {
-      final controller = MixWidgetStateController();
+      final controller = WidgetStatesController();
 
       controller.disabled = true;
       controller.hovered = true;
@@ -124,20 +148,14 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: MixWidgetStateModel(
-            disabled: controller.disabled,
-            hovered: controller.hovered,
-            focused: controller.focused,
-            pressed: controller.pressed,
-            dragged: controller.dragged,
-            selected: controller.selected,
-            error: controller.error,
+          home: MixWidgetState.fromSet(
+            states: controller.value,
             child: Container(),
           ),
         ),
       );
       final foundModel =
-          MixWidgetStateModel.of(tester.element(find.byType(Container)));
+          MixWidgetState.of(tester.element(find.byType(Container)));
       expect(foundModel, isNotNull);
       expect(foundModel!.disabled, isTrue);
       expect(foundModel.hovered, isTrue);
@@ -151,7 +169,7 @@ void main() {
     testWidgets('hasStateOf returns if state is set', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: MixWidgetStateModel(
+          home: MixWidgetState(
             disabled: true,
             hovered: false,
             focused: false,
@@ -162,14 +180,14 @@ void main() {
             child: Builder(
               builder: (context) {
                 expect(
-                  MixWidgetStateModel.hasStateOf(
+                  MixWidgetState.hasStateOf(
                     context,
                     WidgetState.disabled,
                   ),
                   isTrue,
                 );
                 expect(
-                  MixWidgetStateModel.hasStateOf(
+                  MixWidgetState.hasStateOf(
                     context,
                     WidgetState.hovered,
                   ),
@@ -184,7 +202,7 @@ void main() {
     });
 
     test('updateShouldNotify returns true if value changed', () {
-      final oldModel = MixWidgetStateModel(
+      final oldModel = MixWidgetState(
         disabled: false,
         hovered: false,
         focused: false,
@@ -194,7 +212,7 @@ void main() {
         error: false,
         child: Container(),
       );
-      final newModel = MixWidgetStateModel(
+      final newModel = MixWidgetState(
         disabled: true,
         hovered: false,
         focused: false,
@@ -209,7 +227,7 @@ void main() {
     });
 
     test('updateShouldNotifyDependent returns if a dependency changed', () {
-      final oldModel = MixWidgetStateModel(
+      final oldModel = MixWidgetState(
         disabled: false,
         hovered: false,
         focused: false,
@@ -219,7 +237,7 @@ void main() {
         error: false,
         child: Container(),
       );
-      final newModel = MixWidgetStateModel(
+      final newModel = MixWidgetState(
         disabled: true,
         hovered: false,
         focused: false,
@@ -252,7 +270,7 @@ void main() {
       MaterialApp(
         home: StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-            final controller = MixWidgetStateController();
+            final controller = WidgetStatesController();
 
             controller.disabled = false;
             controller.hovered = hovered;
@@ -266,9 +284,10 @@ void main() {
                   builder: (BuildContext context) {
                     return Column(
                       children: [
-                        Text('Disabled: ${controller.disabled}'),
-                        Text('Hovered: ${controller.hovered}'),
-                        Text('Pressed: ${controller.pressed}'),
+                        Text(
+                            'Disabled: ${controller.has(WidgetState.disabled)}'),
+                        Text('Hovered: ${controller.has(WidgetState.hovered)}'),
+                        Text('Pressed: ${controller.has(WidgetState.pressed)}'),
                       ],
                     );
                   },
@@ -306,7 +325,7 @@ void main() {
 
   testWidgets('PressableState updates inherit model',
       (WidgetTester tester) async {
-    final controller = MixWidgetStateController();
+    final controller = WidgetStatesController();
 
     await tester.pumpWidget(
       MaterialApp(

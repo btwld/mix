@@ -18,11 +18,11 @@ mixin _$TextSpec on Spec<TextSpec> {
   }
 
   /// {@template text_spec_of}
-  /// Retrieves the [TextSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [TextSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [TextSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [TextSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [TextSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [TextSpec].
   ///
   /// Example:
   ///
@@ -31,7 +31,7 @@ mixin _$TextSpec on Spec<TextSpec> {
   /// ```
   /// {@endtemplate}
   static TextSpec of(BuildContext context) {
-    return _$TextSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<TextSpec>(context) ?? const TextSpec();
   }
 
   /// Creates a copy of this [TextSpec] but with the given fields
@@ -51,7 +51,7 @@ mixin _$TextSpec on Spec<TextSpec> {
     bool? softWrap,
     TextDirective? directive,
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
   }) {
     return TextSpec(
       overflow: overflow ?? _$this.overflow,
@@ -110,7 +110,7 @@ mixin _$TextSpec on Spec<TextSpec> {
       textDirection: t < 0.5 ? _$this.textDirection : other.textDirection,
       softWrap: t < 0.5 ? _$this.softWrap : other.softWrap,
       directive: t < 0.5 ? _$this.directive : other.directive,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
       modifiers: other.modifiers,
     );
   }
@@ -329,7 +329,7 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [TextSpec].
 /// Use the methods of this class to configure specific properties of a [TextSpec].
-class TextSpecUtility<T extends Attribute>
+class TextSpecUtility<T extends StyleElement>
     extends SpecUtility<T, TextSpecAttribute> {
   /// Utility for defining [TextSpecAttribute.overflow]
   late final overflow = TextOverflowUtility((v) => only(overflow: v));
@@ -454,10 +454,19 @@ class TextSpecUtility<T extends Attribute>
   /// Utility for defining [TextSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  TextSpecUtility(super.builder, {super.mutable});
+  TextSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  TextSpecUtility<T> get chain =>
-      TextSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  TextSpecUtility<T> get chain => TextSpecUtility(attributeBuilder);
 
   static TextSpecUtility<TextSpecAttribute> get self =>
       TextSpecUtility((v) => v);
@@ -478,7 +487,7 @@ class TextSpecUtility<T extends Attribute>
     bool? softWrap,
     TextDirectiveDto? directive,
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(TextSpecAttribute(
       overflow: overflow,

@@ -8,7 +8,7 @@ void main() {
     final flexBoxUtility = FlexBoxSpecUtility.self;
 
     test('call() returns correct instance', () {
-      final flexBox = flexBoxUtility.chain
+      final flexBox = flexBoxUtility
         ..box.alignment.center()
         ..box.padding(10)
         ..box.margin(10)
@@ -35,17 +35,17 @@ void main() {
     });
 
     test('box alignment returns correct instance', () {
-      final flexBox = flexBoxUtility.chain..box.alignment.center();
+      final flexBox = flexBoxUtility..box.alignment.center();
       expect(flexBox.attributeValue!.box!.alignment, Alignment.center);
     });
 
     test('box clipBehavior returns correct instance', () {
-      final flexBox = flexBoxUtility.chain..box.clipBehavior.antiAlias();
+      final flexBox = flexBoxUtility..box.clipBehavior.antiAlias();
       expect(flexBox.attributeValue!.box!.clipBehavior, Clip.antiAlias);
     });
 
     test('box color returns correct instance', () {
-      final flexBox = flexBoxUtility.chain..box.color.blue();
+      final flexBox = flexBoxUtility..box.color.blue();
       expect(
         (flexBox.attributeValue!.box!.decoration as BoxDecorationDto).color,
         const ColorDto(Colors.blue),
@@ -61,7 +61,7 @@ void main() {
     });
 
     test('box height returns correct instance', () {
-      final flexBox = flexBoxUtility.chain..box.height(10);
+      final flexBox = flexBoxUtility..box.height(10);
       expect(flexBox.attributeValue!.box!.height, 10);
     });
 
@@ -74,17 +74,17 @@ void main() {
     });
 
     test('box transform returns correct instance', () {
-      final flexBox = flexBoxUtility.chain..box.transform(Matrix4.identity());
+      final flexBox = flexBoxUtility..box.transform(Matrix4.identity());
       expect(flexBox.attributeValue!.box!.transform, Matrix4.identity());
     });
 
     test('box width returns correct instance', () {
-      final flexBox = flexBoxUtility.chain..box.width(10);
+      final flexBox = flexBoxUtility..box.width(10);
       expect(flexBox.attributeValue!.box!.width, 10);
     });
 
     test('box decoration returns correct instance', () {
-      final flexBox = flexBoxUtility.chain
+      final flexBox = flexBoxUtility
         ..box.decoration(
           borderRadius: BorderRadius.circular(10),
           color: Colors.amber,
@@ -100,7 +100,7 @@ void main() {
     });
 
     test('box foregroundDecoration returns correct instance', () {
-      final flexBox = flexBoxUtility.chain
+      final flexBox = flexBoxUtility
         ..box.foregroundDecoration(
           borderRadius: BorderRadius.circular(10),
           color: Colors.amber,
@@ -121,7 +121,7 @@ void main() {
     });
 
     test('flex properties return correct instances', () {
-      final flexBox = flexBoxUtility.chain
+      final flexBox = flexBoxUtility
         ..flex.mainAxisAlignment.center()
         ..flex.crossAxisAlignment.center()
         ..flex.mainAxisSize.min()

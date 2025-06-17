@@ -1,6 +1,6 @@
 import 'package:mix/mix.dart';
 
-import '../../../components/textfield/textfield.dart';
+import '../../../components/form/textfield/textfield.dart';
 import '../tokens.dart';
 
 class FortalezaTextFieldStyle extends TextFieldStyle {
@@ -10,7 +10,7 @@ class FortalezaTextFieldStyle extends TextFieldStyle {
   Style makeStyle(SpecConfiguration<TextFieldSpecUtility> spec) {
     final $ = spec.utilities;
 
-    final containerStyle = $.container.chain
+    final containerStyle = $.container
       ..color.$neutral(1)
       ..padding.horizontal.$space3()
       ..padding.vertical.$space2()
@@ -41,13 +41,13 @@ class FortalezaTextFieldStyle extends TextFieldStyle {
     final icon = $.icon.color.$accent();
 
     final focus = spec.on.focus(
-      $.container.chain
+      $.container
         ..border.all.color.$accent()
         ..border.all.width(2),
     );
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       $.floatingLabel.on(),
       $.cursorColor.$neutral(12),
       containerStyle,

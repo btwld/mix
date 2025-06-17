@@ -2,7 +2,7 @@ name: mix
 description: An expressive way to effortlessly build design systems in Flutter.
 version: 1.6.0
 homepage: https://github.com/leoafarias/mix
-repository: https://github.com/conceptadev/mix
+repository: https://github.com/btwld/mix
 
 environment:
   sdk: ">=3.6.0 <4.0.0"
@@ -12,6 +12,7 @@ dependencies:
   mix_annotations: ^0.4.0
   flutter:
     sdk: flutter
+  meta: ^1.15.0
 
 dev_dependencies:
   flutter_lints: ^4.0.0

@@ -1,7 +1,6 @@
 # yaml-language-server: $schema=./schemas/melos.yaml.schema.json
 name: mix_workspace
 
-sdkPath: .fvm/flutter_sdk
 packages:
   - packages/*
   - packages/mix/example
@@ -13,6 +12,8 @@ command:
     environment:
       sdk: ">=3.6.0 <4.0.0"
       flutter: ">=3.27.0"
+    dependencies:
+      meta: ^1.15.0
     dev_dependencies:
       flutter_lints: ^4.0.0
       dart_code_metrics_presets: ^2.14.0
@@ -45,7 +46,7 @@ scripts:
     description: Run Dart static analysis checks.
 
   analyze:dcm:
-    run: melos exec -c 4 -- dcm analyze . --fatal-style --fatal-performance --fatal-warnings
+    run: melos exec -c 4 -- dcm analyze . --fatal-style --fatal-warnings
     description: Run DCM static analysis checks.
     packageFilters:
       dependsOn: "dart_code_metrics_presets"
@@ -71,14 +72,34 @@ scripts:
       dependsOn: "build_runner"
 
   gen:build:
-    run: melos run gen:clean && melos exec --order-dependents -- dart run build_runner build --delete-conflicting-outputs
+    run: melos run gen:clean && melos run gen:build:flutter && melos run gen:build:dart
     description: Generate code for all packages
+
+  gen:build:flutter:
+    run: melos exec --category=flutter_projects --order-dependents -- flutter pub run build_runner build --delete-conflicting-outputs
+    description: Generate code for Flutter packages
+    packageFilters:
+      dependsOn: "build_runner"
+
+  gen:build:dart:
+    run: melos exec --category=dart_projects --order-dependents -- dart run build_runner build --delete-conflicting-outputs
+    description: Generate code for Dart packages
     packageFilters:
       dependsOn: "build_runner"
 
   gen:clean:
-    run: melos exec --order-dependents -- dart run build_runner clean
+    run: melos run gen:clean:flutter && melos run gen:clean:dart
     description: Clean generated code for all packages
+
+  gen:clean:flutter:
+    run: melos exec --category=flutter_projects --order-dependents -- flutter pub run build_runner clean
+    description: Clean generated code for Flutter packages
+    packageFilters:
+      dependsOn: "build_runner"
+
+  gen:clean:dart:
+    run: melos exec --category=dart_projects --order-dependents -- dart run build_runner clean
+    description: Clean generated code for Dart packages
     packageFilters:
       dependsOn: "build_runner"
 

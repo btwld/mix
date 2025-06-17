@@ -1,18 +1,22 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 class NakedPortal extends StatefulWidget {
   final OverlayPortalController controller;
-  final WidgetBuilder overlayChildBuilder;
+  final WidgetBuilder overlayBuilder;
+  final bool useRootOverlay;
   final Widget? child;
-  final AlignmentPair alignment;
-  final List<AlignmentPair> fallbackAlignments;
+  final PositionConfig alignment;
+  final List<PositionConfig> fallbackAlignments;
 
   const NakedPortal({
     super.key,
     required this.controller,
-    required this.overlayChildBuilder,
+    required this.overlayBuilder,
     this.child,
-    this.alignment = const AlignmentPair(
+    this.useRootOverlay = false,
+    this.alignment = const PositionConfig(
       target: Alignment.topCenter,
       follower: Alignment.bottomCenter,
     ),
@@ -27,6 +31,7 @@ class _NakedPortalState extends State<NakedPortal> {
   Widget _overlayBuilder(BuildContext context) {
     final OverlayState overlayState = Overlay.of(
       context,
+      rootOverlay: widget.useRootOverlay,
       debugRequiredFor: widget,
     );
     final RenderBox box = this.context.findRenderObject()! as RenderBox;
@@ -44,7 +49,7 @@ class _NakedPortalState extends State<NakedPortal> {
           alignment: widget.alignment,
           fallbackAlignments: widget.fallbackAlignments,
         ),
-        child: widget.overlayChildBuilder(context),
+        child: widget.overlayBuilder(context),
       ),
     );
   }
@@ -59,12 +64,12 @@ class _NakedPortalState extends State<NakedPortal> {
   }
 }
 
-class AlignmentPair {
+class PositionConfig {
   final Alignment target;
   final Alignment follower;
   final Offset offset;
 
-  const AlignmentPair({
+  const PositionConfig({
     required this.target,
     required this.follower,
     this.offset = Offset.zero,
@@ -88,9 +93,9 @@ class _NakedPositionDelegate extends SingleChildLayoutDelegate {
   /// tooltip.
   final Size targetSize;
 
-  final AlignmentPair alignment;
+  final PositionConfig alignment;
 
-  final List<AlignmentPair> fallbackAlignments;
+  final List<PositionConfig> fallbackAlignments;
 
   @override
   BoxConstraints getConstraintsForChild(BoxConstraints constraints) =>
@@ -119,8 +124,8 @@ Offset _calculateOverlayPosition({
   required Size targetSize,
   required Offset targetPosition,
   required Size overlaySize,
-  required AlignmentPair alignment,
-  List<AlignmentPair> fallbackAlignments = const [],
+  required PositionConfig alignment,
+  List<PositionConfig> fallbackAlignments = const [],
 }) {
   final allAlignments = [alignment, ...fallbackAlignments];
 
@@ -150,7 +155,7 @@ Offset _calculateAlignedOffset({
   required Offset targetTopLeft,
   required Size targetSize,
   required Size overlaySize,
-  required AlignmentPair alignment,
+  required PositionConfig alignment,
 }) {
   final targetAnchorOffset = alignment.target.alongSize(targetSize);
   final followerAnchorOffset = alignment.follower.alongSize(overlaySize);
@@ -170,4 +175,65 @@ bool _isOverlayFullyVisible(
       overlayTopLeft.dy >= 0 &&
       overlayTopLeft.dx + overlaySize.width <= screenSize.width &&
       overlayTopLeft.dy + overlaySize.height <= screenSize.height;
+}
+
+enum OverlayChildLifecycleState { present, pendingRemoval, removed }
+
+typedef OverlayChildLifecycleCallback = void Function(
+  OverlayChildLifecycleState state,
+);
+
+abstract class OverlayChildLifecycle {
+  final Duration removalDelay;
+
+  final OverlayChildLifecycleCallback? onStateChange;
+
+  OverlayChildLifecycle({
+    this.onStateChange,
+    this.removalDelay = Duration.zero,
+  });
+}
+
+mixin OverlayChildLifecycleMixin<T extends StatefulWidget> on State<T> {
+  OverlayChildLifecycle get overlayChildLifecycle =>
+      widget as OverlayChildLifecycle;
+
+  final OverlayPortalController controller = OverlayPortalController();
+
+  Timer? _removalTimer;
+  OverlayChildLifecycleCallback? get _onStateChange =>
+      overlayChildLifecycle.onStateChange;
+
+  final showNotifier = ValueNotifier<bool>(false);
+
+  @override
+  void initState() {
+    super.initState();
+    showNotifier.addListener(_handleShowNotifierChange);
+  }
+
+  @override
+  void dispose() {
+    _removalTimer?.cancel();
+    showNotifier.removeListener(_handleShowNotifierChange);
+    super.dispose();
+  }
+
+  void _handleShowNotifierChange() {
+    if (showNotifier.value) {
+      _removalTimer?.cancel();
+      controller.show();
+      _onStateChange?.call(OverlayChildLifecycleState.present);
+    } else {
+      _onStateChange?.call(OverlayChildLifecycleState.pendingRemoval);
+      _removalTimer?.cancel();
+      _removalTimer = Timer(
+        overlayChildLifecycle.removalDelay,
+        () {
+          controller.hide();
+          _onStateChange?.call(OverlayChildLifecycleState.removed);
+        },
+      );
+    }
+  }
 }

@@ -1,33 +1,32 @@
-import '../../components/accordion/accordion.dart';
-import '../../components/avatar/avatar.dart';
-import '../../components/badge/badge.dart';
-import '../../components/button/button.dart';
-import '../../components/callout/callout.dart';
-import '../../components/card/card.dart';
-import '../../components/checkbox/checkbox.dart';
-import '../../components/chip/chip.dart';
-import '../../components/dialog/dialog.dart';
-import '../../components/divider/divider.dart';
-import '../../components/dropdown_menu/dropdown_menu.dart';
-import '../../components/header/header.dart';
-import '../../components/icon_button/icon_button.dart';
-import '../../components/menu_item/menu_item.dart';
-import '../../components/progress/progress.dart';
-import '../../components/radio/radio.dart';
-import '../../components/scaffold/scaffold.dart';
-import '../../components/segmented_control/segmented_control.dart';
-import '../../components/select/select.dart';
-import '../../components/slider/slider.dart';
-import '../../components/spinner/spinner.dart';
-import '../../components/switch/switch.dart';
-import '../../components/textfield/textfield.dart';
-import '../../components/toast/toast.dart';
+import '../../components/action/icon_button/icon_button.dart';
+import '../../components/content_presentation/accordion/accordion.dart';
+import '../../components/content_presentation/avatar/avatar.dart';
+import '../../components/content_presentation/card/card.dart';
+import '../../components/content_presentation/chip/chip.dart';
+import '../../components/content_presentation/menu_item/menu_item.dart';
+import '../../components/feedback/callout/callout.dart';
+import '../../components/feedback/dialog/dialog.dart';
+import '../../components/feedback/progress/progress.dart';
+import '../../components/feedback/spinner/spinner.dart';
+import '../../components/feedback/toast/toast.dart';
+import '../../components/form/checkbox/checkbox.dart';
+import '../../components/form/radio/radio.dart';
+import '../../components/form/select/select.dart';
+import '../../components/form/slider/slider.dart';
+import '../../components/form/switch/switch.dart';
+import '../../components/form/textfield/textfield.dart';
+import '../../components/layout/divider/divider.dart';
+import '../../components/layout/header/header.dart';
+import '../../components/layout/scaffold/scaffold.dart';
+import '../../components/navigation/segmented_control/segmented_control.dart';
+import '../../components/utility/badge/badge.dart';
+import '../../components/utility/dropdown_menu/dropdown_menu.dart';
 
 class RemixComponentTheme {
   final AccordionStyle accordion;
   final AvatarStyle avatar;
   final BadgeStyle badge;
-  final ButtonStyle button;
+  // final ButtonStyle button;
   final CalloutStyle callout;
   final CardStyle card;
   final CheckboxStyle checkbox;
@@ -53,7 +52,7 @@ class RemixComponentTheme {
     required this.accordion,
     required this.avatar,
     required this.badge,
-    required this.button,
+    // required this.button,
     required this.callout,
     required this.card,
     required this.checkbox,
@@ -81,7 +80,7 @@ class RemixComponentTheme {
       accordion: AccordionStyle(),
       avatar: AvatarStyle(),
       badge: BadgeStyle(),
-      button: ButtonStyle(),
+      // button: ButtonStyle(),
       callout: CalloutStyle(),
       card: CardStyle(),
       checkbox: CheckboxStyle(),
@@ -110,7 +109,7 @@ class RemixComponentTheme {
       accordion: const AccordionDarkStyle(),
       avatar: const AvatarDarkStyle(),
       badge: const BadgeDarkStyle(),
-      button: const ButtonDarkStyle(),
+      // button: const ButtonDarkStyle(),
       callout: const CalloutDarkStyle(),
       card: const CardDarkStyle(),
       checkbox: const CheckboxDarkStyle(),
@@ -138,7 +137,7 @@ class RemixComponentTheme {
     AccordionStyle? accordion,
     AvatarStyle? avatar,
     BadgeStyle? badge,
-    ButtonStyle? button,
+    // ButtonStyle? button,
     CalloutStyle? callout,
     CardStyle? card,
     CheckboxStyle? checkbox,
@@ -164,7 +163,7 @@ class RemixComponentTheme {
       accordion: accordion ?? this.accordion,
       avatar: avatar ?? this.avatar,
       badge: badge ?? this.badge,
-      button: button ?? this.button,
+      // button: button ?? this.button,
       callout: callout ?? this.callout,
       card: card ?? this.card,
       checkbox: checkbox ?? this.checkbox,

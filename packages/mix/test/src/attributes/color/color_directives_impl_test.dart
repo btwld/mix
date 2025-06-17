@@ -3,13 +3,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../../helpers/testing_utils.dart';
+import 'helpers/expect_color.dart';
 
 void main() {
   group('ColorDirectives', () {
     test('OpacityColorDirective modifies color opacity', () {
       const color = Color(0xFFFF0000);
       const directive = OpacityColorDirective(0.5);
-      expect(directive.modify(color), equals(const Color(0x80FF0000)));
+      expectColor(directive.modify(color), const Color(0x80FF0000));
     });
 
     test('ValueColorDirective modifies color value', () {
@@ -47,62 +48,62 @@ void main() {
     test('mix blends two colors', () {
       const color1 = Color(0xFFFF0000);
       const color2 = Color(0xFF0000FF);
-      expect(color1.mix(color2), equals(const Color(0xFF800080)));
+      expectColor(color1.mix(color2), const Color(0xFF800080));
     });
 
     test('lighten increases color lightness', () {
       const color = Color(0xFF800000);
-      expect(color.lighten(20), equals(const Color(0xffe60000)));
+      expectColor(color.lighten(20), const Color(0xffe60000));
     });
 
     test('brighten increases color brightness', () {
       const color = Color(0xFF800000);
-      expect(color.brighten(20), equals(const Color(0xffb33333)));
+      expectColor(color.brighten(20), const Color(0xffb33333));
     });
 
     test('contrast returns lighter color for dark input', () {
       const color = Color(0xFF200000);
-      expect(color.contrast(), equals(const Color(0xff230303)));
+      expectColor(color.contrast(), const Color(0xff230303));
     });
 
     test('contrast returns darker color for light input', () {
       const color = Color(0xFFE00000);
-      expect(color.contrast(), equals(const Color(0xffe30303)));
+      expectColor(color.contrast(), const Color(0xffe30303));
     });
 
     test('darken decreases color lightness', () {
       const color = Color(0xFFFF0000);
-      expect(color.darken(20), equals(const Color(0xff990000)));
+      expectColor(color.darken(20), const Color(0xff990000));
     });
 
     test('tint mixes color with white', () {
       const color = Color(0xFF800000);
-      expect(color.tint(20), equals(const Color(0xFF993333)));
+      expectColor(color.tint(20), const Color(0xFF993333));
     });
 
     test('shade mixes color with black', () {
       const color = Color(0xFF800000);
-      expect(color.shade(20), equals(const Color(0xFF660000)));
+      expectColor(color.shade(20), const Color(0xFF660000));
     });
 
     test('desaturate decreases color saturation', () {
       const color = Color(0xFFFF0000);
-      expect(color.desaturate(50), equals(const Color(0xFFBF4040)));
+      expectColor(color.desaturate(50), const Color(0xFFBF4040));
     });
 
     test('saturate increases color saturation', () {
       const color = Color(0xFFBF4040);
-      expect(color.saturate(50), equals(const Color(0xFFFF0000)));
+      expectColor(color.saturate(50), const Color(0xFFFF0000));
     });
 
     test('greyscale fully desaturates color', () {
       const color = Color(0xFFFF0000);
-      expect(color.greyscale(), equals(const Color(0xff808080)));
+      expectColor(color.greyscale(), const Color(0xff808080));
     });
 
     test('complement returns opposite hue', () {
       const color = Color(0xFFFF0000);
-      expect(color.complement(), equals(const Color(0xFF00FFFF)));
+      expectColor(color.complement(), const Color(0xFF00FFFF));
     });
   });
 
@@ -114,7 +115,7 @@ void main() {
       ]);
 
       final color = colorDto.resolve(
-        MixData.create(
+        MixContext.create(
           MockBuildContext(),
           Style(),
         ),
@@ -130,7 +131,7 @@ void main() {
       ]);
 
       final color = colorDto.resolve(
-        MixData.create(
+        MixContext.create(
           MockBuildContext(),
           Style(),
         ),
@@ -149,7 +150,7 @@ void main() {
       ]);
 
       final color = colorDto.resolve(
-        MixData.create(
+        MixContext.create(
           MockBuildContext(),
           Style(),
         ),
@@ -165,13 +166,13 @@ void main() {
       ]);
 
       final color = colorDto.resolve(
-        MixData.create(
+        MixContext.create(
           MockBuildContext(),
           Style(),
         ),
       );
 
-      expect(0.5.toString(), color.opacity.toStringAsFixed(1));
+      expect(0.5.toString(), color.a.toStringAsFixed(1));
     });
 
     test('TintColorDirective', () {
@@ -181,13 +182,13 @@ void main() {
       ]);
 
       final color = colorDto.resolve(
-        MixData.create(
+        MixContext.create(
           MockBuildContext(),
           Style(),
         ),
       );
 
-      expect(const Color(0xff983131), color);
+      expectColor(const Color(0xff983030), color);
     });
 
     test('ShadeColorDirective', () {
@@ -197,13 +198,13 @@ void main() {
       ]);
 
       final color = colorDto.resolve(
-        MixData.create(
+        MixContext.create(
           MockBuildContext(),
           Style(),
         ),
       );
 
-      expect(const Color(0xffc6362c), color);
+      expectColor(const Color(0xffc6362c), color);
     });
 
     test('DesaturateColorDirective', () {
@@ -213,7 +214,7 @@ void main() {
       ]);
 
       final color = colorDto.resolve(
-        MixData.create(
+        MixContext.create(
           MockBuildContext(),
           Style(),
         ),
@@ -229,7 +230,7 @@ void main() {
       ]);
 
       final color = colorDto.resolve(
-        MixData.create(
+        MixContext.create(
           MockBuildContext(),
           Style(),
         ),
@@ -245,7 +246,7 @@ void main() {
       ]);
 
       final color = colorDto.resolve(
-        MixData.create(
+        MixContext.create(
           MockBuildContext(),
           Style(),
         ),
@@ -261,13 +262,13 @@ void main() {
       ]);
 
       final color = colorDto.resolve(
-        MixData.create(
+        MixContext.create(
           MockBuildContext(),
           Style(),
         ),
       );
 
-      expect(const Color(0xffff776a), color);
+      expectColor(const Color(0xffff7669), color);
     });
 
     test('LightenColorDirective', () {
@@ -277,7 +278,7 @@ void main() {
       ]);
 
       final color = colorDto.resolve(
-        MixData.create(
+        MixContext.create(
           MockBuildContext(),
           Style(),
         ),

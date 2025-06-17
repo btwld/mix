@@ -76,7 +76,7 @@ mixin _$LinearGradientDto
 ///
 /// This class provides methods to set individual properties of a [LinearGradient].
 /// Use the methods of this class to configure specific properties of a [LinearGradient].
-class LinearGradientUtility<T extends Attribute>
+class LinearGradientUtility<T extends StyleElement>
     extends DtoUtility<T, LinearGradientDto, LinearGradient> {
   /// Utility for defining [LinearGradientDto.begin]
   late final begin = AlignmentGeometryUtility((v) => only(begin: v));
@@ -234,7 +234,7 @@ mixin _$RadialGradientDto
 ///
 /// This class provides methods to set individual properties of a [RadialGradient].
 /// Use the methods of this class to configure specific properties of a [RadialGradient].
-class RadialGradientUtility<T extends Attribute>
+class RadialGradientUtility<T extends StyleElement>
     extends DtoUtility<T, RadialGradientDto, RadialGradient> {
   /// Utility for defining [RadialGradientDto.center]
   late final center = AlignmentGeometryUtility((v) => only(center: v));
@@ -405,7 +405,7 @@ mixin _$SweepGradientDto
 ///
 /// This class provides methods to set individual properties of a [SweepGradient].
 /// Use the methods of this class to configure specific properties of a [SweepGradient].
-class SweepGradientUtility<T extends Attribute>
+class SweepGradientUtility<T extends StyleElement>
     extends DtoUtility<T, SweepGradientDto, SweepGradient> {
   /// Utility for defining [SweepGradientDto.center]
   late final center = AlignmentGeometryUtility((v) => only(center: v));

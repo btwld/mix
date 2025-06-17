@@ -2,7 +2,6 @@ import '../../core/theme/component.dart';
 import 'components/accordion_theme.dart';
 import 'components/avatar_theme.dart';
 import 'components/badge_theme.dart';
-import 'components/button_theme.dart';
 import 'components/callout_theme.dart';
 import 'components/card_theme.dart';
 import 'components/checkbox_theme.dart';
@@ -29,7 +28,7 @@ class FortalezaComponentTheme extends RemixComponentTheme {
     required super.accordion,
     required super.avatar,
     required super.badge,
-    required super.button,
+    // required super.button,
     required super.callout,
     required super.card,
     required super.checkbox,
@@ -57,7 +56,7 @@ class FortalezaComponentTheme extends RemixComponentTheme {
       accordion: FortalezaAccordionStyle(),
       avatar: FortalezaAvatarStyle(),
       badge: FortalezaBadgeStyle(),
-      button: FortalezaButtonStyle(),
+      // button: FortalezaButtonStyle(),
       callout: FortalezaCalloutStyle(),
       card: FortalezaCardStyle(),
       checkbox: FortalezaCheckboxStyle(),

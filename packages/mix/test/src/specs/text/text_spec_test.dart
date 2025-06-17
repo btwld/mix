@@ -7,7 +7,7 @@ import '../../../helpers/testing_utils.dart';
 void main() {
   group('TextSpec', () {
     test('resolve', () {
-      final mix = MixData.create(
+      final mix = MixContext.create(
         MockBuildContext(),
         Style(
           TextSpecAttribute(
@@ -183,7 +183,7 @@ void main() {
     });
 
     test('TextSpec.from(MixData mix)', () {
-      final mixData = MixData.create(
+      final mixData = MixContext.create(
         MockBuildContext(),
         Style(
           TextSpecAttribute(
@@ -290,10 +290,10 @@ void main() {
     test('fluent behavior', () {
       final text = TextSpecUtility.self;
 
-      final util = text.chain
+      final util = text
         ..overflow.ellipsis()
         ..textAlign.center()
-        ..textScaleFactor(1.5)
+        ..textScaler(const TextScaler.linear(1.5))
         ..maxLines(3)
         ..style.color.blue()
         ..textWidthBasis.longestLine()
@@ -302,10 +302,10 @@ void main() {
 
       final attr = util.attributeValue!;
 
-      expect(util, isA<Attribute>());
+      expect(util, isA<StyleElement>());
       expect(attr.overflow, TextOverflow.ellipsis);
       expect(attr.textAlign, TextAlign.center);
-      expect(attr.textScaleFactor, 1.5);
+      expect(attr.textScaler, const TextScaler.linear(1.5));
       expect(attr.maxLines, 3);
       expect(attr.style?.value.first.color, Colors.blue.toDto());
       expect(attr.textWidthBasis, TextWidthBasis.longestLine);
@@ -318,7 +318,7 @@ void main() {
 
       expect(textAttribute?.overflow, TextOverflow.ellipsis);
       expect(textAttribute?.textAlign, TextAlign.center);
-      expect(textAttribute?.textScaleFactor, 1.5);
+      expect(textAttribute?.textScaler, const TextScaler.linear(1.5));
       expect(textAttribute?.maxLines, 3);
       expect(textAttribute?.style?.value.first.color, Colors.blue.toDto());
       expect(textAttribute?.textWidthBasis, TextWidthBasis.longestLine);
@@ -330,7 +330,7 @@ void main() {
 
       expect(textSpec.overflow, TextOverflow.ellipsis);
       expect(textSpec.textAlign, TextAlign.center);
-      expect(textSpec.textScaleFactor, 1.5);
+      expect(textSpec.textScaler, const TextScaler.linear(1.5));
       expect(textSpec.maxLines, 3);
       expect(textSpec.style?.color, Colors.blue);
       expect(textSpec.textWidthBasis, TextWidthBasis.longestLine);
@@ -371,7 +371,7 @@ void main() {
     test('Mutate behavior and not on same utility', () {
       final text = TextSpecUtility.self;
 
-      final textValue = text.chain;
+      final textValue = text;
       textValue
         ..maxLines(3)
         ..style.color.red()

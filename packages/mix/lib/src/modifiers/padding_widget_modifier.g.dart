@@ -129,15 +129,25 @@ class PaddingModifierSpecAttribute
 ///
 /// This class provides methods to set individual properties of a [PaddingModifierSpec].
 /// Use the methods of this class to configure specific properties of a [PaddingModifierSpec].
-class PaddingModifierSpecUtility<T extends Attribute>
+class PaddingModifierSpecUtility<T extends StyleElement>
     extends SpecUtility<T, PaddingModifierSpecAttribute> {
   /// Utility for defining [PaddingModifierSpecAttribute.padding]
   late final padding = EdgeInsetsGeometryUtility((v) => only(padding: v));
 
-  PaddingModifierSpecUtility(super.builder, {super.mutable});
+  PaddingModifierSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
   PaddingModifierSpecUtility<T> get chain =>
-      PaddingModifierSpecUtility(attributeBuilder, mutable: true);
+      PaddingModifierSpecUtility(attributeBuilder);
 
   static PaddingModifierSpecUtility<PaddingModifierSpecAttribute> get self =>
       PaddingModifierSpecUtility((v) => v);

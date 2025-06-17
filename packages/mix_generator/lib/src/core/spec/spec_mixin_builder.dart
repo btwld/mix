@@ -27,11 +27,11 @@ static $className from(MixData mix) {
     // Static of method to get from BuildContext
     final ofMethod = '''
 /// {@template ${className.snakeCase}_of}
-/// Retrieves the [$className] from the nearest [Mix] ancestor in the widget tree.
+/// Retrieves the [$className] from the nearest [ComputedStyle] ancestor in the widget tree.
 ///
-/// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-/// given [BuildContext], and then retrieves the [$className] from that [Mix].
-/// If no ancestor [Mix] is found, this method returns an empty [$className].
+/// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+/// that call this method will rebuild when [$className] changes, not when other specs change.
+/// If no ancestor [ComputedStyle] is found, this method returns an empty [$className].
 ///
 /// Example:
 ///
@@ -40,7 +40,7 @@ static $className from(MixData mix) {
 /// ```
 /// {@endtemplate}
 static $className of(BuildContext context) {
-  return _\$$className.from(Mix.of(context));
+  return ComputedStyle.specOf<$className>(context) ?? ${metadata.isConst ? 'const' : ''} $className${metadata.constructorRef}();
 }''';
 
     return '$fromMethod\n\n  $ofMethod';

@@ -1,0 +1,197 @@
+---
+title: NakedMenu
+---
+
+NakedMenu provides dropdown menu behavior and accessibility features without imposing any visual styling, giving consumers complete design freedom. It integrates with `NakedPortal` to render menu content in the app overlay, ensuring proper z-index while maintaining context inheritance across the component tree.
+
+<Info>
+  You can find this example in our [GitHub repository](https://github.com/btwld/mix/blob/main/packages/naked/example/lib/api/naked_menu.0.dart).
+</Info>
+<CodeGroup title="Usage Example" defaultLanguage="dart">
+```dart
+class MenuExample extends StatefulWidget {
+  const MenuExample({super.key});
+
+  @override
+  State<MenuExample> createState() => _MenuExampleState();
+}
+
+class _MenuExampleState extends State<MenuExample> {
+  final _controller = OverlayPortalController();
+
+  void _onItemPressed(String item) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Item $item selected')),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return NakedMenu(
+      builder: (context) => NakedButton(
+        onPressed: () => _controller.show(),
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.grey.shade300),
+          ),
+          child: const Icon(Icons.settings, size: 18),
+        ),
+      ),
+      overlayBuilder: (context) => Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: Colors.grey.shade200),
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        constraints: const BoxConstraints(
+          maxWidth: 200,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ItemContent(
+              title: 'Menu Item 1',
+              onPressed: () => _onItemPressed('1'),
+            ),
+            ItemContent(
+              title: 'Menu Item 2',
+              onPressed: () => _onItemPressed('2'),
+            ),
+            ItemContent(
+              title: 'Menu Item 3',
+              onPressed: () => _onItemPressed('3'),
+            ),
+          ],
+        ),
+      ),
+      controller: _controller,
+      onClose: () => _controller.hide(),
+    );
+  }
+}
+
+class ItemContent extends StatefulWidget {
+  const ItemContent({
+    super.key,
+    required this.title,
+    required this.onPressed,
+  });
+
+  final String title;
+  final VoidCallback onPressed;
+
+  @override
+  State<ItemContent> createState() => _ItemContentState();
+}
+
+class _ItemContentState extends State<ItemContent> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return NakedMenuItem(
+      onPressed: widget.onPressed,
+      onHoverState: (isHovered) => setState(() => _isHovered = isHovered),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: _isHovered ? Colors.grey.shade100 : Colors.white,
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child:
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Text(widget.title),
+          AnimatedOpacity(
+            opacity: _isHovered ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 200),
+            child: const Icon(
+              Icons.arrow_forward_ios,
+              size: 12,
+              color: Colors.grey,
+            ),
+          ),
+        ]),
+      ),
+    );
+  }
+}
+```
+</CodeGroup>
+
+## Constructor
+
+```dart
+const NakedMenu({
+  Key? key,
+  required this.builder,
+  required this.overlayBuilder,
+  required this.controller,
+  this.onClose,
+  this.consumeOutsideTaps = true,
+  this.useRootOverlay = false,
+  this.closeOnSelect = true,
+  this.autofocus = false,
+  this.menuAlignment = const PositionConfig(
+    target: Alignment.bottomLeft,
+    follower: Alignment.topLeft,
+    offset: Offset(0, 8),
+  ),
+  this.fallbackAlignments = const [
+    PositionConfig(
+      target: Alignment.topLeft,
+      follower: Alignment.bottomLeft,
+      offset: Offset(0, -8),
+    ),
+  ],
+})
+```
+
+## Properties
+
+#### builder → `WidgetBuilder`
+The target widget that triggers the menu. This is typically a button or other interactive element.
+
+#### overlayBuilder → `WidgetBuilder`
+The menu widget to display when open. This is the content displayed in the overlay when the menu is open.
+
+#### controller → `OverlayPortalController`
+The controller that manages the visibility of the menu. Use this to show, hide, or toggle the menu programmatically.
+
+#### onClose → `VoidCallback?`
+Called when the menu should close.
+
+#### consumeOutsideTaps → `bool`
+Whether to close the menu when clicking outside. Defaults to true.
+
+#### useRootOverlay → `bool`
+Whether to use the root overlay for rendering the menu. Defaults to false.
+
+#### closeOnSelect → `bool`
+Whether to close the menu when an item is selected. Defaults to true.
+
+#### autofocus → `bool`
+Whether to automatically focus the menu when opened. Defaults to false.
+
+#### menuAlignment → `PositionConfig`
+The alignment of the menu relative to its target. Specifies how the menu should be positioned.
+
+#### fallbackAlignments → `List<PositionConfig>`
+Fallback alignments to try if the menu doesn't fit in the preferred position. The menu will try each alignment in order until it finds one that fits.
+
+## Accessibility
+
+Focus management and keyboard navigation are handled automatically. The menu can be closed by pressing Escape, clicking outside (if `consumeOutsideTaps` is true), or selecting an item (if `closeOnSelect` is true). When opened, focus is automatically moved to the menu content.
+
+For accessibility, the menu supports screen readers and keyboard navigation. Menu items should use `NakedMenuItem` which provides proper interaction states and accessibility features.

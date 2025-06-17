@@ -127,7 +127,7 @@ class MixThemeData {
       radii: radii == null ? this.radii : StyledTokens(radii),
       spaces: spaces == null ? this.spaces : StyledTokens(spaces),
       defaultOrderOfModifiers:
-          this.defaultOrderOfModifiers ?? defaultOrderOfModifiers,
+          defaultOrderOfModifiers ?? this.defaultOrderOfModifiers,
     );
   }
 

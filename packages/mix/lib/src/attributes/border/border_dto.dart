@@ -147,8 +147,22 @@ final class BorderSideDto extends Mixable<BorderSide>
 extension BoxBorderExt on BoxBorder {
   BoxBorderDto toDto() {
     final self = this;
-    if (self is Border) return (self).toDto();
-    if (self is BorderDirectional) return (self).toDto();
+    if (self is Border) {
+      return BorderDto(
+        top: self.top.toDto(),
+        bottom: self.bottom.toDto(),
+        left: self.left.toDto(),
+        right: self.right.toDto(),
+      );
+    }
+    if (self is BorderDirectional) {
+      return BorderDirectionalDto(
+        top: self.top.toDto(),
+        bottom: self.bottom.toDto(),
+        start: self.start.toDto(),
+        end: self.end.toDto(),
+      );
+    }
 
     throw MixError.unsupportedTypeInDto(
       BoxBorder,

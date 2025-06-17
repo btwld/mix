@@ -24,7 +24,7 @@ const themeConfig = {
   },
   logo: Logo,
   project: {
-    link: "https://github.com/conceptadev/mix",
+    link: "https://github.com/btwld/mix",
   },
   // banner: {
   //   key: "1.0-beta-doc-wip-notice",
@@ -35,7 +35,7 @@ const themeConfig = {
   //     </a>
   //   ),
   // },
-  docsRepositoryBase: "https://github.com/conceptadev/mix/blob/main/website",
+  docsRepositoryBase: "https://github.com/btwld/mix/blob/main/website",
   search: {
     component: <CustomSearch />,
   },

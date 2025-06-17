@@ -1,0 +1,239 @@
+---
+title: NakedSlider
+---
+
+NakedSlider provides interaction behavior and accessibility features without imposing any visual styling, giving consumers complete design freedom. It integrates with `FocusableActionDetector` to provide enhanced keyboard accessibility, hover detection, and focus management.
+
+<Info>
+  You can find this example in our [GitHub repository](https://github.com/btwld/mix/blob/main/packages/naked/example/lib/api/naked_slider.0.dart).
+</Info>
+<CodeGroup title="Usage Example" defaultLanguage="dart">
+```dart
+class SliderExample extends StatefulWidget {
+  const SliderExample({super.key});
+
+  @override
+  State<SliderExample> createState() => _SliderExampleState();
+}
+
+class _SliderExampleState extends State<SliderExample> {
+  double _value = 0.5;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 200,
+      child: SizedBox(
+        width: double.infinity,
+        height: 20,
+        child: NakedSlider(
+          value: _value,
+          onChanged: (newValue) {
+            setState(() {
+              _value = newValue;
+            });
+          },
+          child: CustomPaint(
+            foregroundPainter: SliderThumbPainter(
+              value: _value,
+              thumbColor: Colors.white,
+              thumbSize: 18,
+              borderColor: Colors.black,
+            ),
+            painter: SliderTrackPainter(
+              value: _value,
+              activeTrackColor: Colors.black,
+              trackColor: Colors.black.withValues(alpha: 0.1),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+</CodeGroup>
+
+<Accordion title="Click to see the CustomPainters">
+```dart
+
+class SliderTrackPainter extends CustomPainter {
+  final double value;
+  final Color activeTrackColor;
+  final Color trackColor;
+
+  SliderTrackPainter({
+    required this.value,
+    required this.activeTrackColor,
+    required this.trackColor,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint backgroundPaint = Paint()
+      ..color = trackColor
+      ..style = PaintingStyle.fill
+      ..strokeWidth = 6.0
+      ..strokeCap = StrokeCap.round;
+
+    final Paint progressPaint = Paint()
+      ..color = activeTrackColor
+      ..style = PaintingStyle.fill
+      ..strokeWidth = 6.0
+      ..strokeCap = StrokeCap.round;
+
+    final double verticalCenter = size.height / 2;
+
+    canvas.drawLine(
+      Offset(0, verticalCenter),
+      Offset(size.width, verticalCenter),
+      backgroundPaint,
+    );
+
+    canvas.drawLine(
+      Offset(0, verticalCenter),
+      Offset(size.width * value, verticalCenter),
+      progressPaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(SliderTrackPainter oldDelegate) {
+    return oldDelegate.value != value ||
+        oldDelegate.activeTrackColor != activeTrackColor ||
+        oldDelegate.trackColor != trackColor;
+  }
+}
+
+class SliderThumbPainter extends CustomPainter {
+  final double value;
+  final double thumbSize;
+  final Color thumbColor;
+  final Color borderColor;
+
+  SliderThumbPainter({
+    required this.value,
+    required this.thumbSize,
+    required this.thumbColor,
+    required this.borderColor,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint thumbPaint = Paint()
+      ..color = thumbColor
+      ..style = PaintingStyle.fill;
+
+    final Paint borderPaint = Paint()
+      ..color = borderColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+
+    final double verticalCenter = size.height / 2;
+
+    canvas.drawCircle(
+      Offset(size.width * value, verticalCenter),
+      thumbSize / 2,
+      thumbPaint,
+    );
+
+    canvas.drawCircle(
+      Offset(size.width * value, verticalCenter),
+      thumbSize / 2,
+      borderPaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(SliderThumbPainter oldDelegate) {
+    return oldDelegate.value != value ||
+        oldDelegate.thumbColor != thumbColor ||
+        oldDelegate.thumbSize != thumbSize;
+  }
+}
+```
+</Accordion>
+
+
+## Constructor
+
+```dart
+const NakedSlider({
+  Key? key,
+  required this.child,
+  required this.value,
+  this.min = 0.0,
+  this.max = 1.0,
+  this.onChanged,
+  this.onDragStart,
+  this.onDragEnd,
+  this.onHoverState,
+  this.onDraggingState,
+  this.onFocusState,
+  this.enabled = true,
+  this.semanticLabel,
+  this.cursor = SystemMouseCursors.click,
+  this.focusNode,
+  this.direction = Axis.horizontal,
+  this.divisions,
+  this.keyboardStep = 0.01,
+  this.largeKeyboardStep = 0.1,
+})
+```
+
+## Properties
+
+#### child  → `Widget`
+The child widget to display. Typically includes a track and thumb visualization.
+
+#### value → `double`
+The current value of the slider.
+
+#### min → `double`
+Minimum value of the slider. Defaults to 0.0.
+
+#### max → `double`
+Maximum value of the slider. Defaults to 1.0.
+
+#### onChanged → `ValueChanged<double>?`
+Called when the slider value changes.
+
+#### onDragStart → `VoidCallback?`
+Called when the user starts dragging the slider.
+
+#### onDragEnd → `ValueChanged<double>?`
+Called when the user ends dragging the slider.
+
+#### onHoverState → `ValueChanged<bool>?`
+Called when hover state changes. Provides the current hover state (true when hovered, false otherwise).
+
+#### onDraggingState → `ValueChanged<bool>?`
+Called when dragging state changes. Provides the current dragging state (true when dragging, false otherwise).
+
+#### onFocusState → `ValueChanged<bool>?`
+Called when focus state changes. Provides the current focus state (true when focused, false otherwise).
+
+#### enabled → `bool`
+Whether the slider is enabled. When true, the slider will respond to user interaction. Defaults to true.
+
+#### semanticLabel → `String?`
+Optional semantic label for accessibility. This is used by screen readers to describe the slider.
+
+#### cursor → `MouseCursor`
+The cursor to show when hovering over the slider. Defaults to SystemMouseCursors.click.
+
+#### focusNode → `FocusNode?`
+Optional focus node to control focus behavior.
+
+#### direction → `Axis`
+Direction of the slider. Can be horizontal (left to right) or vertical (bottom to top). Defaults to Axis.horizontal.
+
+#### divisions → `int?`
+Number of discrete divisions. If null, the slider will be continuous.
+
+#### keyboardStep → `double`
+Step size for keyboard navigation. This value is used when arrow keys are pressed to increment or decrement the slider value. Defaults to 0.01 (1% of the slider range).
+
+#### largeKeyboardStep → `double`
+Step size for large keyboard navigation. This value is used when arrow keys are pressed while holding Shift. Defaults to 0.1 (10% of the slider range).
+

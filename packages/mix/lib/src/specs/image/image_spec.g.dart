@@ -16,11 +16,11 @@ mixin _$ImageSpec on Spec<ImageSpec> {
   }
 
   /// {@template image_spec_of}
-  /// Retrieves the [ImageSpec] from the nearest [Mix] ancestor in the widget tree.
+  /// Retrieves the [ImageSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
-  /// This method uses [Mix.of] to obtain the [Mix] instance associated with the
-  /// given [BuildContext], and then retrieves the [ImageSpec] from that [Mix].
-  /// If no ancestor [Mix] is found, this method returns an empty [ImageSpec].
+  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// that call this method will rebuild when [ImageSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [ImageSpec].
   ///
   /// Example:
   ///
@@ -29,7 +29,7 @@ mixin _$ImageSpec on Spec<ImageSpec> {
   /// ```
   /// {@endtemplate}
   static ImageSpec of(BuildContext context) {
-    return _$ImageSpec.from(Mix.of(context));
+    return ComputedStyle.specOf<ImageSpec>(context) ?? const ImageSpec();
   }
 
   /// Creates a copy of this [ImageSpec] but with the given fields
@@ -46,7 +46,7 @@ mixin _$ImageSpec on Spec<ImageSpec> {
     FilterQuality? filterQuality,
     BlendMode? colorBlendMode,
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
   }) {
     return ImageSpec(
       width: width ?? _$this.width,
@@ -97,7 +97,7 @@ mixin _$ImageSpec on Spec<ImageSpec> {
       centerSlice: Rect.lerp(_$this.centerSlice, other.centerSlice, t),
       filterQuality: t < 0.5 ? _$this.filterQuality : other.filterQuality,
       colorBlendMode: t < 0.5 ? _$this.colorBlendMode : other.colorBlendMode,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
       modifiers: other.modifiers,
     );
   }
@@ -278,7 +278,7 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [ImageSpec].
 /// Use the methods of this class to configure specific properties of a [ImageSpec].
-class ImageSpecUtility<T extends Attribute>
+class ImageSpecUtility<T extends StyleElement>
     extends SpecUtility<T, ImageSpecAttribute> {
   /// Utility for defining [ImageSpecAttribute.width]
   late final width = DoubleUtility((v) => only(width: v));
@@ -314,10 +314,19 @@ class ImageSpecUtility<T extends Attribute>
   /// Utility for defining [ImageSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  ImageSpecUtility(super.builder, {super.mutable});
+  ImageSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  ImageSpecUtility<T> get chain =>
-      ImageSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  ImageSpecUtility<T> get chain => ImageSpecUtility(attributeBuilder);
 
   static ImageSpecUtility<ImageSpecAttribute> get self =>
       ImageSpecUtility((v) => v);
@@ -335,7 +344,7 @@ class ImageSpecUtility<T extends Attribute>
     FilterQuality? filterQuality,
     BlendMode? colorBlendMode,
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(ImageSpecAttribute(
       width: width,

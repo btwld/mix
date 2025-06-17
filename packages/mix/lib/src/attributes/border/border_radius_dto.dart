@@ -34,7 +34,7 @@ sealed class BorderRadiusGeometryDto<T extends BorderRadiusGeometry>
   Radius? get bottomStart;
   Radius? get bottomEnd;
   @visibleForTesting
-  Radius getRadiusValue(MixData mix, Radius? radius) {
+  Radius getRadiusValue(MixContext mix, Radius? radius) {
     if (radius == null) return Radius.zero;
 
     return radius is RadiusRef ? mix.tokens.radiiRef(radius) : radius;
@@ -78,7 +78,7 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius>
   });
 
   @override
-  BorderRadius resolve(MixData mix) {
+  BorderRadius resolve(MixContext mix) {
     return BorderRadius.only(
       topLeft: getRadiusValue(mix, topLeft),
       topRight: getRadiusValue(mix, topRight),
@@ -118,7 +118,7 @@ final class BorderRadiusDirectionalDto
   });
 
   @override
-  BorderRadiusDirectional resolve(MixData mix) {
+  BorderRadiusDirectional resolve(MixContext mix) {
     return BorderRadiusDirectional.only(
       topStart: getRadiusValue(mix, topStart),
       topEnd: getRadiusValue(mix, topEnd),
@@ -140,8 +140,22 @@ final class BorderRadiusDirectionalDto
 extension BorderRadiusGeometryMixExt on BorderRadiusGeometry {
   BorderRadiusGeometryDto toDto() {
     final self = this;
-    if (self is BorderRadius) return self.toDto();
-    if (self is BorderRadiusDirectional) return self.toDto();
+    if (self is BorderRadius) {
+      return BorderRadiusDto(
+        topLeft: self.topLeft,
+        topRight: self.topRight,
+        bottomLeft: self.bottomLeft,
+        bottomRight: self.bottomRight,
+      );
+    }
+    if (self is BorderRadiusDirectional) {
+      return BorderRadiusDirectionalDto(
+        topStart: self.topStart,
+        topEnd: self.topEnd,
+        bottomStart: self.bottomStart,
+        bottomEnd: self.bottomEnd,
+      );
+    }
 
     throw MixError.unsupportedTypeInDto(
       BorderRadiusGeometry,

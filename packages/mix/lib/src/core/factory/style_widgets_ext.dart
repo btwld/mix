@@ -46,6 +46,16 @@ extension StyleExt on Style {
     );
   }
 
+  @Deprecated(
+    'Use hbox() instead. '
+    'The row() method has been replaced with hbox() for better naming consistency. '
+    'This method will be removed in v2.0.0.\n\n'
+    'Migration example:\n'
+    '// Before\n'
+    'style.row(children: [...])\n'
+    '// After\n'
+    'style.hbox(children: [...])',
+  )
   StyledRow row({
     required List<Widget> children,
     bool inherit = false,
@@ -90,6 +100,16 @@ extension StyleExt on Style {
     );
   }
 
+  @Deprecated(
+    'Use vbox() instead. '
+    'The column() method has been replaced with vbox() for better naming consistency. '
+    'This method will be removed in v2.0.0.\n\n'
+    'Migration example:\n'
+    '// Before\n'
+    'style.column(children: [...])\n'
+    '// After\n'
+    'style.vbox(children: [...])',
+  )
   StyledColumn column({
     required List<Widget> children,
     bool inherit = false,

@@ -19,7 +19,7 @@ class OpacityColorDirective extends NumberBasedColorDirective<double> {
   const OpacityColorDirective(super.value);
 
   @override
-  Color modify(Color color) => color.withOpacity(value);
+  Color modify(Color color) => color.withValues(alpha: value);
 }
 
 @immutable
@@ -129,12 +129,7 @@ extension ColorExtUtilities on Color {
   Color mix(Color toColor, [int amount = 50]) {
     final p = RangeError.checkValueInInterval(amount, 0, 100, 'amount') / 100;
 
-    return Color.fromARGB(
-      ((toColor.alpha - alpha) * p + alpha).round(),
-      ((toColor.red - red) * p + red).round(),
-      ((toColor.green - green) * p + green).round(),
-      ((toColor.blue - blue) * p + blue).round(),
-    );
+    return Color.lerp(this, toColor, p)!;
   }
 
   Color lighten([int amount = 10]) {
@@ -148,11 +143,11 @@ extension ColorExtUtilities on Color {
   Color brighten([int amount = 10]) {
     final p = RangeError.checkValueInInterval(amount, 0, 100, 'amount') / 100;
 
-    return Color.fromARGB(
-      alpha,
-      math.max(0, math.min(255, red - (255 * -p).round())),
-      math.max(0, math.min(255, green - (255 * -p).round())),
-      math.max(0, math.min(255, blue - (255 * -p).round())),
+    return Color.from(
+      alpha: a,
+      red: (r - (1 * -p)).clamp(0.0, 1.0),
+      green: (g - (1 * -p)).clamp(0.0, 1.0),
+      blue: (b - (1 * -p)).clamp(0.0, 1.0),
     );
   }
 

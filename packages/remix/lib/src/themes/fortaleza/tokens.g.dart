@@ -35,7 +35,8 @@ Map<ColorToken, Color> _$FortalezaColorToMap(FortalezaColor tokens) {
   };
 }
 
-extension $FortalezaColorColorUtilityX<T extends Attribute> on ColorUtility<T> {
+extension $FortalezaColorColorUtilityX<T extends StyleElement>
+    on ColorUtility<T> {
   T $black() => ref(_structFortalezaColor.black);
   T $white() => ref(_structFortalezaColor.white);
   T $accent([int step = 9]) => ref(_structFortalezaColor.accent[step]);
@@ -92,7 +93,7 @@ Map<RadiusToken, Radius> _$FortalezaRadiusToMap(FortalezaRadius tokens) {
   };
 }
 
-extension $FortalezaRadiusRadiusUtilityX<T extends Attribute>
+extension $FortalezaRadiusRadiusUtilityX<T extends StyleElement>
     on RadiusUtility<T> {
   T $radius1() => ref(_structFortalezaRadius.radius1);
   T $radius2() => ref(_structFortalezaRadius.radius2);
@@ -150,7 +151,7 @@ Map<SpaceToken, double> _$FortalezaSpaceToMap(FortalezaSpace tokens) {
   };
 }
 
-extension $FortalezaSpaceSpacingSideUtilityX<T extends Attribute>
+extension $FortalezaSpaceSpacingSideUtilityX<T extends StyleElement>
     on SpacingSideUtility<T> {
   T $space1() => ref(_structFortalezaSpace.space1);
   T $space2() => ref(_structFortalezaSpace.space2);
@@ -163,7 +164,7 @@ extension $FortalezaSpaceSpacingSideUtilityX<T extends Attribute>
   T $space9() => ref(_structFortalezaSpace.space9);
 }
 
-extension $FortalezaSpaceGapUtilityX<T extends Attribute> on GapUtility<T> {
+extension $FortalezaSpaceGapUtilityX<T extends StyleElement> on GapUtility<T> {
   T $space1() => ref(_structFortalezaSpace.space1);
   T $space2() => ref(_structFortalezaSpace.space2);
   T $space3() => ref(_structFortalezaSpace.space3);
@@ -227,7 +228,7 @@ Map<TextStyleToken, TextStyle> _$FortalezaTextStyleToMap(
   };
 }
 
-extension $FortalezaTextStyleTextStyleUtilityX<T extends Attribute>
+extension $FortalezaTextStyleTextStyleUtilityX<T extends StyleElement>
     on TextStyleUtility<T> {
   T $text1() => ref(_structFortalezaTextStyle.text1);
   T $text2() => ref(_structFortalezaTextStyle.text2);
