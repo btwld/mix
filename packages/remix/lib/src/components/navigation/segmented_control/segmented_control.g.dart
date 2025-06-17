@@ -230,7 +230,7 @@ class SegmentedControlSpecAttribute extends SpecAttribute<SegmentedControlSpec>
 ///
 /// This class provides methods to set individual properties of a [SegmentedControlSpec].
 /// Use the methods of this class to configure specific properties of a [SegmentedControlSpec].
-class SegmentedControlSpecUtility<T extends StyleElement>
+class SegmentedControlSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, SegmentedControlSpecAttribute> {
   /// Utility for defining [SegmentedControlSpecAttribute.container]
   late final container = BoxSpecUtility((v) => only(container: v));
@@ -528,7 +528,7 @@ class SegmentButtonSpecAttribute extends SpecAttribute<SegmentButtonSpec>
 ///
 /// This class provides methods to set individual properties of a [SegmentButtonSpec].
 /// Use the methods of this class to configure specific properties of a [SegmentButtonSpec].
-class SegmentButtonSpecUtility<T extends StyleElement>
+class SegmentButtonSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, SegmentButtonSpecAttribute> {
   /// Utility for defining [SegmentButtonSpecAttribute.container]
   late final container = BoxSpecUtility((v) => only(container: v));

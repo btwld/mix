@@ -213,7 +213,7 @@ class CompositedTransformFollowerSpecAttribute
 ///
 /// This class provides methods to set individual properties of a [CompositedTransformFollowerSpec].
 /// Use the methods of this class to configure specific properties of a [CompositedTransformFollowerSpec].
-class CompositedTransformFollowerSpecUtility<T extends StyleElement>
+class CompositedTransformFollowerSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, CompositedTransformFollowerSpecAttribute> {
   /// Utility for defining [CompositedTransformFollowerSpecAttribute.offset]
   late final offset = OffsetUtility((v) => only(offset: v));

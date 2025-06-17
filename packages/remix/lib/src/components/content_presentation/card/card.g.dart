@@ -177,7 +177,7 @@ class CardSpecAttribute extends SpecAttribute<CardSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [CardSpec].
 /// Use the methods of this class to configure specific properties of a [CardSpec].
-class CardSpecUtility<T extends StyleElement>
+class CardSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, CardSpecAttribute> {
   /// Utility for defining [CardSpecAttribute.container]
   late final container = BoxSpecUtility((v) => only(container: v));

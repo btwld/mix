@@ -177,7 +177,7 @@ class CalloutSpecAttribute extends SpecAttribute<CalloutSpec> {
 ///
 /// This class provides methods to set individual properties of a [CalloutSpec].
 /// Use the methods of this class to configure specific properties of a [CalloutSpec].
-class CalloutSpecUtility<T extends StyleElement>
+class CalloutSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, CalloutSpecAttribute> {
   /// Utility for defining [CalloutSpecAttribute.container]
   late final container = FlexBoxSpecUtility((v) => only(container: v));

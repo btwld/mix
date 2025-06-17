@@ -191,7 +191,7 @@ class DropdownMenuSpecAttribute extends SpecAttribute<DropdownMenuSpec>
 ///
 /// This class provides methods to set individual properties of a [DropdownMenuSpec].
 /// Use the methods of this class to configure specific properties of a [DropdownMenuSpec].
-class DropdownMenuSpecUtility<T extends StyleElement>
+class DropdownMenuSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, DropdownMenuSpecAttribute> {
   /// Utility for defining [DropdownMenuSpecAttribute.menu]
   late final menu = DropdownMenuContainerSpecUtility((v) => only(menu: v));
@@ -451,7 +451,7 @@ class DropdownMenuContainerSpecAttribute
 ///
 /// This class provides methods to set individual properties of a [DropdownMenuContainerSpec].
 /// Use the methods of this class to configure specific properties of a [DropdownMenuContainerSpec].
-class DropdownMenuContainerSpecUtility<T extends StyleElement>
+class DropdownMenuContainerSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, DropdownMenuContainerSpecAttribute> {
   /// Utility for defining [DropdownMenuContainerSpecAttribute.container]
   late final container = FlexBoxSpecUtility((v) => only(container: v));
@@ -721,7 +721,7 @@ class DropdownMenuItemSpecAttribute extends SpecAttribute<DropdownMenuItemSpec>
 ///
 /// This class provides methods to set individual properties of a [DropdownMenuItemSpec].
 /// Use the methods of this class to configure specific properties of a [DropdownMenuItemSpec].
-class DropdownMenuItemSpecUtility<T extends StyleElement>
+class DropdownMenuItemSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, DropdownMenuItemSpecAttribute> {
   /// Utility for defining [DropdownMenuItemSpecAttribute.icon]
   late final icon = IconSpecUtility((v) => only(icon: v));

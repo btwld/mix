@@ -171,7 +171,7 @@ class AccordionSpecAttribute extends SpecAttribute<AccordionSpec> {
 ///
 /// This class provides methods to set individual properties of a [AccordionSpec].
 /// Use the methods of this class to configure specific properties of a [AccordionSpec].
-class AccordionSpecUtility<T extends StyleElement>
+class AccordionSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, AccordionSpecAttribute> {
   /// Utility for defining [AccordionSpecAttribute.header]
   late final header = AccordionHeaderSpecUtility((v) => only(header: v));
@@ -416,7 +416,7 @@ class AccordionHeaderSpecAttribute extends SpecAttribute<AccordionHeaderSpec> {
 ///
 /// This class provides methods to set individual properties of a [AccordionHeaderSpec].
 /// Use the methods of this class to configure specific properties of a [AccordionHeaderSpec].
-class AccordionHeaderSpecUtility<T extends StyleElement>
+class AccordionHeaderSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, AccordionHeaderSpecAttribute> {
   /// Utility for defining [AccordionHeaderSpecAttribute.container]
   late final container = FlexBoxSpecUtility((v) => only(container: v));

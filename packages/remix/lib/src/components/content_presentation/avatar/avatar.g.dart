@@ -179,7 +179,7 @@ class AvatarSpecAttribute extends SpecAttribute<AvatarSpec> {
 ///
 /// This class provides methods to set individual properties of a [AvatarSpec].
 /// Use the methods of this class to configure specific properties of a [AvatarSpec].
-class AvatarSpecUtility<T extends StyleElement>
+class AvatarSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, AvatarSpecAttribute> {
   /// Utility for defining [AvatarSpecAttribute.container]
   late final container = BoxSpecUtility((v) => only(container: v));

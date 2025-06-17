@@ -57,11 +57,7 @@ class Style extends BaseStyle<SpecAttribute> {
   /// Otherwise, it creates a new [Style] instance with the styles and variants from the [BaseStyle].
   factory Style.from(BaseStyle style) {
     if (style is AnimatedStyle) {
-      return AnimatedStyle._(
-        styles: style.styles,
-        variants: style.variants,
-        animated: style.animated,
-      );
+      return style;
     }
 
     if (style is Style) {

@@ -220,7 +220,7 @@ class DialogSpecAttribute extends SpecAttribute<DialogSpec>
 ///
 /// This class provides methods to set individual properties of a [DialogSpec].
 /// Use the methods of this class to configure specific properties of a [DialogSpec].
-class DialogSpecUtility<T extends StyleElement>
+class DialogSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, DialogSpecAttribute> {
   /// Utility for defining [DialogSpecAttribute.container]
   late final container = FlexBoxSpecUtility((v) => only(container: v));

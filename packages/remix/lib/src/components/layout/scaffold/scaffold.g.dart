@@ -178,7 +178,7 @@ class ScaffoldSpecAttribute extends SpecAttribute<ScaffoldSpec>
 ///
 /// This class provides methods to set individual properties of a [ScaffoldSpec].
 /// Use the methods of this class to configure specific properties of a [ScaffoldSpec].
-class ScaffoldSpecUtility<T extends StyleElement>
+class ScaffoldSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, ScaffoldSpecAttribute> {
   /// Utility for defining [ScaffoldSpecAttribute.container]
   late final container = BoxSpecUtility((v) => only(container: v));

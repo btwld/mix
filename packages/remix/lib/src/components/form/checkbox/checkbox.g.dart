@@ -222,7 +222,7 @@ class CheckboxSpecAttribute extends SpecAttribute<CheckboxSpec>
 ///
 /// This class provides methods to set individual properties of a [CheckboxSpec].
 /// Use the methods of this class to configure specific properties of a [CheckboxSpec].
-class CheckboxSpecUtility<T extends StyleElement>
+class CheckboxSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, CheckboxSpecAttribute> {
   /// Utility for defining [CheckboxSpecAttribute.indicatorContainer]
   late final indicatorContainer =

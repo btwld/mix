@@ -236,7 +236,7 @@ class MenuItemSpecAttribute extends SpecAttribute<MenuItemSpec>
 ///
 /// This class provides methods to set individual properties of a [MenuItemSpec].
 /// Use the methods of this class to configure specific properties of a [MenuItemSpec].
-class MenuItemSpecUtility<T extends StyleElement>
+class MenuItemSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, MenuItemSpecAttribute> {
   /// Utility for defining [MenuItemSpecAttribute.container]
   late final container = FlexBoxSpecUtility((v) => only(container: v));

@@ -229,7 +229,7 @@ class SpinnerSpecAttribute extends SpecAttribute<SpinnerSpec>
 ///
 /// This class provides methods to set individual properties of a [SpinnerSpec].
 /// Use the methods of this class to configure specific properties of a [SpinnerSpec].
-class SpinnerSpecUtility<T extends StyleElement>
+class SpinnerSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, SpinnerSpecAttribute> {
   /// Utility for defining [SpinnerSpecAttribute.size]
   late final size = DoubleUtility((v) => only(size: v));

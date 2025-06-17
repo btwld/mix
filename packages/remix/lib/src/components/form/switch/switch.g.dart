@@ -191,7 +191,7 @@ class SwitchSpecAttribute extends SpecAttribute<SwitchSpec>
 ///
 /// This class provides methods to set individual properties of a [SwitchSpec].
 /// Use the methods of this class to configure specific properties of a [SwitchSpec].
-class SwitchSpecUtility<T extends StyleElement>
+class SwitchSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, SwitchSpecAttribute> {
   /// Utility for defining [SwitchSpecAttribute.container]
   late final container = BoxSpecUtility((v) => only(container: v));

@@ -159,7 +159,7 @@ class BadgeSpecAttribute extends SpecAttribute<BadgeSpec> {
 ///
 /// This class provides methods to set individual properties of a [BadgeSpec].
 /// Use the methods of this class to configure specific properties of a [BadgeSpec].
-class BadgeSpecUtility<T extends StyleElement>
+class BadgeSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, BadgeSpecAttribute> {
   /// Utility for defining [BadgeSpecAttribute.container]
   late final container = BoxSpecUtility((v) => only(container: v));

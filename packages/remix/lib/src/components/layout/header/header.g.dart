@@ -218,7 +218,7 @@ class HeaderSpecAttribute extends SpecAttribute<HeaderSpec>
 ///
 /// This class provides methods to set individual properties of a [HeaderSpec].
 /// Use the methods of this class to configure specific properties of a [HeaderSpec].
-class HeaderSpecUtility<T extends StyleElement>
+class HeaderSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, HeaderSpecAttribute> {
   /// Utility for defining [HeaderSpecAttribute.container]
   late final container = FlexBoxSpecUtility((v) => only(container: v));
