@@ -108,46 +108,81 @@ mixin _$FlexSpec on Spec<FlexSpec> {
   /// compare two [FlexSpec] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.crossAxisAlignment,
-        _$this.mainAxisAlignment,
-        _$this.mainAxisSize,
-        _$this.verticalDirection,
-        _$this.direction,
-        _$this.textDirection,
-        _$this.textBaseline,
-        _$this.clipBehavior,
-        _$this.gap,
-        _$this.animated,
-        _$this.modifiers,
-      ];
+    _$this.crossAxisAlignment,
+    _$this.mainAxisAlignment,
+    _$this.mainAxisSize,
+    _$this.verticalDirection,
+    _$this.direction,
+    _$this.textDirection,
+    _$this.textBaseline,
+    _$this.clipBehavior,
+    _$this.gap,
+    _$this.animated,
+    _$this.modifiers,
+  ];
 
   FlexSpec get _$this => this as FlexSpec;
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    properties.add(DiagnosticsProperty(
-        'crossAxisAlignment', _$this.crossAxisAlignment,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty(
-        'mainAxisAlignment', _$this.mainAxisAlignment,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty('mainAxisSize', _$this.mainAxisSize,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty(
-        'verticalDirection', _$this.verticalDirection,
-        defaultValue: null));
     properties.add(
-        DiagnosticsProperty('direction', _$this.direction, defaultValue: null));
-    properties.add(DiagnosticsProperty('textDirection', _$this.textDirection,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty('textBaseline', _$this.textBaseline,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty('clipBehavior', _$this.clipBehavior,
-        defaultValue: null));
+      DiagnosticsProperty(
+        'crossAxisAlignment',
+        _$this.crossAxisAlignment,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'mainAxisAlignment',
+        _$this.mainAxisAlignment,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'mainAxisSize',
+        _$this.mainAxisSize,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'verticalDirection',
+        _$this.verticalDirection,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty('direction', _$this.direction, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'textDirection',
+        _$this.textDirection,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'textBaseline',
+        _$this.textBaseline,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'clipBehavior',
+        _$this.clipBehavior,
+        defaultValue: null,
+      ),
+    );
     properties.add(DiagnosticsProperty('gap', _$this.gap, defaultValue: null));
     properties.add(
-        DiagnosticsProperty('animated', _$this.animated, defaultValue: null));
+      DiagnosticsProperty('animated', _$this.animated, defaultValue: null),
+    );
     properties.add(
-        DiagnosticsProperty('modifiers', _$this.modifiers, defaultValue: null));
+      DiagnosticsProperty('modifiers', _$this.modifiers, defaultValue: null),
+    );
   }
 }
 
@@ -241,43 +276,65 @@ class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
   /// compare two [FlexSpecAttribute] instances for equality.
   @override
   List<Object?> get props => [
-        crossAxisAlignment,
-        mainAxisAlignment,
-        mainAxisSize,
-        verticalDirection,
-        direction,
-        textDirection,
-        textBaseline,
-        clipBehavior,
-        gap,
-        animated,
-        modifiers,
-      ];
+    crossAxisAlignment,
+    mainAxisAlignment,
+    mainAxisSize,
+    verticalDirection,
+    direction,
+    textDirection,
+    textBaseline,
+    clipBehavior,
+    gap,
+    animated,
+    modifiers,
+  ];
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('crossAxisAlignment', crossAxisAlignment,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty('mainAxisAlignment', mainAxisAlignment,
-        defaultValue: null));
     properties.add(
-        DiagnosticsProperty('mainAxisSize', mainAxisSize, defaultValue: null));
-    properties.add(DiagnosticsProperty('verticalDirection', verticalDirection,
-        defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('direction', direction, defaultValue: null));
-    properties.add(DiagnosticsProperty('textDirection', textDirection,
-        defaultValue: null));
+      DiagnosticsProperty(
+        'crossAxisAlignment',
+        crossAxisAlignment,
+        defaultValue: null,
+      ),
+    );
     properties.add(
-        DiagnosticsProperty('textBaseline', textBaseline, defaultValue: null));
+      DiagnosticsProperty(
+        'mainAxisAlignment',
+        mainAxisAlignment,
+        defaultValue: null,
+      ),
+    );
     properties.add(
-        DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null));
+      DiagnosticsProperty('mainAxisSize', mainAxisSize, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'verticalDirection',
+        verticalDirection,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty('direction', direction, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('textDirection', textDirection, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('textBaseline', textBaseline, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
+    );
     properties.add(DiagnosticsProperty('gap', gap, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('animated', animated, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('modifiers', modifiers, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('animated', animated, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
+    );
   }
 }
 
@@ -288,19 +345,22 @@ class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
 class FlexSpecUtility<T extends StyleElement>
     extends SpecUtility<T, FlexSpecAttribute> {
   /// Utility for defining [FlexSpecAttribute.crossAxisAlignment]
-  late final crossAxisAlignment =
-      CrossAxisAlignmentUtility((v) => only(crossAxisAlignment: v));
+  late final crossAxisAlignment = CrossAxisAlignmentUtility(
+    (v) => only(crossAxisAlignment: v),
+  );
 
   /// Utility for defining [FlexSpecAttribute.mainAxisAlignment]
-  late final mainAxisAlignment =
-      MainAxisAlignmentUtility((v) => only(mainAxisAlignment: v));
+  late final mainAxisAlignment = MainAxisAlignmentUtility(
+    (v) => only(mainAxisAlignment: v),
+  );
 
   /// Utility for defining [FlexSpecAttribute.mainAxisSize]
   late final mainAxisSize = MainAxisSizeUtility((v) => only(mainAxisSize: v));
 
   /// Utility for defining [FlexSpecAttribute.verticalDirection]
-  late final verticalDirection =
-      VerticalDirectionUtility((v) => only(verticalDirection: v));
+  late final verticalDirection = VerticalDirectionUtility(
+    (v) => only(verticalDirection: v),
+  );
 
   /// Utility for defining [FlexSpecAttribute.direction]
   late final direction = AxisUtility((v) => only(direction: v));
@@ -312,8 +372,9 @@ class FlexSpecUtility<T extends StyleElement>
   late final column = direction.vertical;
 
   /// Utility for defining [FlexSpecAttribute.textDirection]
-  late final textDirection =
-      TextDirectionUtility((v) => only(textDirection: v));
+  late final textDirection = TextDirectionUtility(
+    (v) => only(textDirection: v),
+  );
 
   /// Utility for defining [FlexSpecAttribute.textBaseline]
   late final textBaseline = TextBaselineUtility((v) => only(textBaseline: v));
@@ -362,19 +423,21 @@ class FlexSpecUtility<T extends StyleElement>
     AnimatedDataDto? animated,
     WidgetModifiersConfigDto? modifiers,
   }) {
-    return builder(FlexSpecAttribute(
-      crossAxisAlignment: crossAxisAlignment,
-      mainAxisAlignment: mainAxisAlignment,
-      mainAxisSize: mainAxisSize,
-      verticalDirection: verticalDirection,
-      direction: direction,
-      textDirection: textDirection,
-      textBaseline: textBaseline,
-      clipBehavior: clipBehavior,
-      gap: gap,
-      animated: animated,
-      modifiers: modifiers,
-    ));
+    return builder(
+      FlexSpecAttribute(
+        crossAxisAlignment: crossAxisAlignment,
+        mainAxisAlignment: mainAxisAlignment,
+        mainAxisSize: mainAxisSize,
+        verticalDirection: verticalDirection,
+        direction: direction,
+        textDirection: textDirection,
+        textBaseline: textBaseline,
+        clipBehavior: clipBehavior,
+        gap: gap,
+        animated: animated,
+        modifiers: modifiers,
+      ),
+    );
   }
 }
 
@@ -383,10 +446,7 @@ class FlexSpecUtility<T extends StyleElement>
 /// This class can be used in animations to smoothly transition between
 /// different [FlexSpec] specifications.
 class FlexSpecTween extends Tween<FlexSpec?> {
-  FlexSpecTween({
-    super.begin,
-    super.end,
-  });
+  FlexSpecTween({super.begin, super.end});
 
   @override
   FlexSpec lerp(double t) {

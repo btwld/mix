@@ -36,11 +36,11 @@ mixin _$BorderRadiusDto on Mixable<BorderRadius> {
   /// compare two [BorderRadiusDto] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.topLeft,
-        _$this.topRight,
-        _$this.bottomLeft,
-        _$this.bottomRight,
-      ];
+    _$this.topLeft,
+    _$this.topRight,
+    _$this.bottomLeft,
+    _$this.bottomRight,
+  ];
 
   /// Returns this instance as a [BorderRadiusDto].
   BorderRadiusDto get _$this => this as BorderRadiusDto;
@@ -95,11 +95,11 @@ mixin _$BorderRadiusDirectionalDto on Mixable<BorderRadiusDirectional> {
   /// compare two [BorderRadiusDirectionalDto] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.topStart,
-        _$this.topEnd,
-        _$this.bottomStart,
-        _$this.bottomEnd,
-      ];
+    _$this.topStart,
+    _$this.topEnd,
+    _$this.bottomStart,
+    _$this.bottomEnd,
+  ];
 
   /// Returns this instance as a [BorderRadiusDirectionalDto].
   BorderRadiusDirectionalDto get _$this => this as BorderRadiusDirectionalDto;

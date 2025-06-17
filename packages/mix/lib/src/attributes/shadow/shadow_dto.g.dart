@@ -51,11 +51,7 @@ mixin _$ShadowDto on Mixable<Shadow>, HasDefaultValue<Shadow> {
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [ShadowDto] instances for equality.
   @override
-  List<Object?> get props => [
-        _$this.blurRadius,
-        _$this.color,
-        _$this.offset,
-      ];
+  List<Object?> get props => [_$this.blurRadius, _$this.color, _$this.offset];
 
   /// Returns this instance as a [ShadowDto].
   ShadowDto get _$this => this as ShadowDto;
@@ -80,28 +76,14 @@ class ShadowUtility<T extends StyleElement>
 
   /// Returns a new [ShadowDto] with the specified properties.
   @override
-  T only({
-    double? blurRadius,
-    ColorDto? color,
-    Offset? offset,
-  }) {
-    return builder(ShadowDto(
-      blurRadius: blurRadius,
-      color: color,
-      offset: offset,
-    ));
+  T only({double? blurRadius, ColorDto? color, Offset? offset}) {
+    return builder(
+      ShadowDto(blurRadius: blurRadius, color: color, offset: offset),
+    );
   }
 
-  T call({
-    double? blurRadius,
-    Color? color,
-    Offset? offset,
-  }) {
-    return only(
-      blurRadius: blurRadius,
-      color: color?.toDto(),
-      offset: offset,
-    );
+  T call({double? blurRadius, Color? color, Offset? offset}) {
+    return only(blurRadius: blurRadius, color: color?.toDto(), offset: offset);
   }
 }
 
@@ -171,11 +153,11 @@ mixin _$BoxShadowDto on Mixable<BoxShadow>, HasDefaultValue<BoxShadow> {
   /// compare two [BoxShadowDto] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.color,
-        _$this.offset,
-        _$this.blurRadius,
-        _$this.spreadRadius,
-      ];
+    _$this.color,
+    _$this.offset,
+    _$this.blurRadius,
+    _$this.spreadRadius,
+  ];
 
   /// Returns this instance as a [BoxShadowDto].
   BoxShadowDto get _$this => this as BoxShadowDto;
@@ -209,12 +191,14 @@ class BoxShadowUtility<T extends StyleElement>
     double? blurRadius,
     double? spreadRadius,
   }) {
-    return builder(BoxShadowDto(
-      color: color,
-      offset: offset,
-      blurRadius: blurRadius,
-      spreadRadius: spreadRadius,
-    ));
+    return builder(
+      BoxShadowDto(
+        color: color,
+        offset: offset,
+        blurRadius: blurRadius,
+        spreadRadius: spreadRadius,
+      ),
+    );
   }
 
   T call({

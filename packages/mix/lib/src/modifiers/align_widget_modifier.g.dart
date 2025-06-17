@@ -46,10 +46,16 @@ mixin _$AlignModifierSpec on WidgetModifierSpec<AlignModifierSpec> {
 
     return AlignModifierSpec(
       alignment: AlignmentGeometry.lerp(_$this.alignment, other.alignment, t),
-      widthFactor:
-          MixHelpers.lerpDouble(_$this.widthFactor, other.widthFactor, t),
-      heightFactor:
-          MixHelpers.lerpDouble(_$this.heightFactor, other.heightFactor, t),
+      widthFactor: MixHelpers.lerpDouble(
+        _$this.widthFactor,
+        other.widthFactor,
+        t,
+      ),
+      heightFactor: MixHelpers.lerpDouble(
+        _$this.heightFactor,
+        other.heightFactor,
+        t,
+      ),
     );
   }
 
@@ -59,20 +65,31 @@ mixin _$AlignModifierSpec on WidgetModifierSpec<AlignModifierSpec> {
   /// compare two [AlignModifierSpec] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.alignment,
-        _$this.widthFactor,
-        _$this.heightFactor,
-      ];
+    _$this.alignment,
+    _$this.widthFactor,
+    _$this.heightFactor,
+  ];
 
   AlignModifierSpec get _$this => this as AlignModifierSpec;
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties.add(
-        DiagnosticsProperty('alignment', _$this.alignment, defaultValue: null));
-    properties.add(DiagnosticsProperty('widthFactor', _$this.widthFactor,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty('heightFactor', _$this.heightFactor,
-        defaultValue: null));
+      DiagnosticsProperty('alignment', _$this.alignment, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'widthFactor',
+        _$this.widthFactor,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'heightFactor',
+        _$this.heightFactor,
+        defaultValue: null,
+      ),
+    );
   }
 }
 
@@ -84,7 +101,8 @@ mixin _$AlignModifierSpec on WidgetModifierSpec<AlignModifierSpec> {
 /// Use this class to configure the attributes of a [AlignModifierSpec] and pass it to
 /// the [AlignModifierSpec] constructor.
 class AlignModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<AlignModifierSpec> with Diagnosticable {
+    extends WidgetModifierSpecAttribute<AlignModifierSpec>
+    with Diagnosticable {
   final AlignmentGeometry? alignment;
   final double? widthFactor;
   final double? heightFactor;
@@ -136,21 +154,20 @@ class AlignModifierSpecAttribute
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [AlignModifierSpecAttribute] instances for equality.
   @override
-  List<Object?> get props => [
-        alignment,
-        widthFactor,
-        heightFactor,
-      ];
+  List<Object?> get props => [alignment, widthFactor, heightFactor];
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties
-        .add(DiagnosticsProperty('alignment', alignment, defaultValue: null));
     properties.add(
-        DiagnosticsProperty('widthFactor', widthFactor, defaultValue: null));
+      DiagnosticsProperty('alignment', alignment, defaultValue: null),
+    );
     properties.add(
-        DiagnosticsProperty('heightFactor', heightFactor, defaultValue: null));
+      DiagnosticsProperty('widthFactor', widthFactor, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('heightFactor', heightFactor, defaultValue: null),
+    );
   }
 }
 
@@ -159,10 +176,7 @@ class AlignModifierSpecAttribute
 /// This class can be used in animations to smoothly transition between
 /// different [AlignModifierSpec] specifications.
 class AlignModifierSpecTween extends Tween<AlignModifierSpec?> {
-  AlignModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  AlignModifierSpecTween({super.begin, super.end});
 
   @override
   AlignModifierSpec lerp(double t) {

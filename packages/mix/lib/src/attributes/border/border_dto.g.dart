@@ -54,11 +54,11 @@ mixin _$BorderDto on Mixable<Border> {
   /// compare two [BorderDto] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.top,
-        _$this.bottom,
-        _$this.left,
-        _$this.right,
-      ];
+    _$this.top,
+    _$this.bottom,
+    _$this.left,
+    _$this.right,
+  ];
 
   /// Returns this instance as a [BorderDto].
   BorderDto get _$this => this as BorderDto;
@@ -131,11 +131,11 @@ mixin _$BorderDirectionalDto on Mixable<BorderDirectional> {
   /// compare two [BorderDirectionalDto] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.top,
-        _$this.bottom,
-        _$this.start,
-        _$this.end,
-      ];
+    _$this.top,
+    _$this.bottom,
+    _$this.start,
+    _$this.end,
+  ];
 
   /// Returns this instance as a [BorderDirectionalDto].
   BorderDirectionalDto get _$this => this as BorderDirectionalDto;
@@ -208,11 +208,11 @@ mixin _$BorderSideDto on Mixable<BorderSide>, HasDefaultValue<BorderSide> {
   /// compare two [BorderSideDto] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.color,
-        _$this.strokeAlign,
-        _$this.style,
-        _$this.width,
-      ];
+    _$this.color,
+    _$this.strokeAlign,
+    _$this.style,
+    _$this.width,
+  ];
 
   /// Returns this instance as a [BorderSideDto].
   BorderSideDto get _$this => this as BorderSideDto;
@@ -249,12 +249,14 @@ class BorderSideUtility<T extends StyleElement>
     BorderStyle? style,
     double? width,
   }) {
-    return builder(BorderSideDto(
-      color: color,
-      strokeAlign: strokeAlign,
-      style: style,
-      width: width,
-    ));
+    return builder(
+      BorderSideDto(
+        color: color,
+        strokeAlign: strokeAlign,
+        style: style,
+        width: width,
+      ),
+    );
   }
 
   T call({

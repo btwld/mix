@@ -33,7 +33,9 @@ mixin _$IntrinsicHeightModifierSpec
   /// different [IntrinsicHeightModifierSpec] configurations.
   @override
   IntrinsicHeightModifierSpec lerp(
-      IntrinsicHeightModifierSpec? other, double t) {
+    IntrinsicHeightModifierSpec? other,
+    double t,
+  ) {
     if (other == null) return _$this;
 
     return const IntrinsicHeightModifierSpec();
@@ -87,7 +89,8 @@ class IntrinsicHeightModifierSpecAttribute
   /// to the values from this instance.
   @override
   IntrinsicHeightModifierSpecAttribute merge(
-      IntrinsicHeightModifierSpecAttribute? other) {
+    IntrinsicHeightModifierSpecAttribute? other,
+  ) {
     if (other == null) return this;
 
     return other;
@@ -112,10 +115,7 @@ class IntrinsicHeightModifierSpecAttribute
 /// different [IntrinsicHeightModifierSpec] specifications.
 class IntrinsicHeightModifierSpecTween
     extends Tween<IntrinsicHeightModifierSpec?> {
-  IntrinsicHeightModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  IntrinsicHeightModifierSpecTween({super.begin, super.end});
 
   @override
   IntrinsicHeightModifierSpec lerp(double t) {
@@ -209,7 +209,8 @@ class IntrinsicWidthModifierSpecAttribute
   /// to the values from this instance.
   @override
   IntrinsicWidthModifierSpecAttribute merge(
-      IntrinsicWidthModifierSpecAttribute? other) {
+    IntrinsicWidthModifierSpecAttribute? other,
+  ) {
     if (other == null) return this;
 
     return other;
@@ -234,10 +235,7 @@ class IntrinsicWidthModifierSpecAttribute
 /// different [IntrinsicWidthModifierSpec] specifications.
 class IntrinsicWidthModifierSpecTween
     extends Tween<IntrinsicWidthModifierSpec?> {
-  IntrinsicWidthModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  IntrinsicWidthModifierSpecTween({super.begin, super.end});
 
   @override
   IntrinsicWidthModifierSpec lerp(double t) {

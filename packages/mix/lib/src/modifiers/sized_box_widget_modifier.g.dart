@@ -13,10 +13,7 @@ mixin _$SizedBoxModifierSpec on WidgetModifierSpec<SizedBoxModifierSpec> {
   /// Creates a copy of this [SizedBoxModifierSpec] but with the given fields
   /// replaced with the new values.
   @override
-  SizedBoxModifierSpec copyWith({
-    double? width,
-    double? height,
-  }) {
+  SizedBoxModifierSpec copyWith({double? width, double? height}) {
     return SizedBoxModifierSpec(
       width: width ?? _$this.width,
       height: height ?? _$this.height,
@@ -52,18 +49,17 @@ mixin _$SizedBoxModifierSpec on WidgetModifierSpec<SizedBoxModifierSpec> {
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [SizedBoxModifierSpec] instances for equality.
   @override
-  List<Object?> get props => [
-        _$this.width,
-        _$this.height,
-      ];
+  List<Object?> get props => [_$this.width, _$this.height];
 
   SizedBoxModifierSpec get _$this => this as SizedBoxModifierSpec;
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    properties
-        .add(DiagnosticsProperty('width', _$this.width, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('height', _$this.height, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('width', _$this.width, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('height', _$this.height, defaultValue: null),
+    );
   }
 }
 
@@ -80,10 +76,7 @@ class SizedBoxModifierSpecAttribute
   final double? width;
   final double? height;
 
-  const SizedBoxModifierSpecAttribute({
-    this.width,
-    this.height,
-  });
+  const SizedBoxModifierSpecAttribute({this.width, this.height});
 
   /// Resolves to [SizedBoxModifierSpec] using the provided [MixData].
   ///
@@ -95,10 +88,7 @@ class SizedBoxModifierSpecAttribute
   /// ```
   @override
   SizedBoxModifierSpec resolve(MixData mix) {
-    return SizedBoxModifierSpec(
-      width: width,
-      height: height,
-    );
+    return SizedBoxModifierSpec(width: width, height: height);
   }
 
   /// Merges the properties of this [SizedBoxModifierSpecAttribute] with the properties of [other].
@@ -124,10 +114,7 @@ class SizedBoxModifierSpecAttribute
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [SizedBoxModifierSpecAttribute] instances for equality.
   @override
-  List<Object?> get props => [
-        width,
-        height,
-      ];
+  List<Object?> get props => [width, height];
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -142,10 +129,7 @@ class SizedBoxModifierSpecAttribute
 /// This class can be used in animations to smoothly transition between
 /// different [SizedBoxModifierSpec] specifications.
 class SizedBoxModifierSpecTween extends Tween<SizedBoxModifierSpec?> {
-  SizedBoxModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  SizedBoxModifierSpecTween({super.begin, super.end});
 
   @override
   SizedBoxModifierSpec lerp(double t) {

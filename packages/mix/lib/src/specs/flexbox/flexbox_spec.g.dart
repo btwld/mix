@@ -85,22 +85,25 @@ mixin _$FlexBoxSpec on Spec<FlexBoxSpec> {
   /// compare two [FlexBoxSpec] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.animated,
-        _$this.modifiers,
-        _$this.box,
-        _$this.flex,
-      ];
+    _$this.animated,
+    _$this.modifiers,
+    _$this.box,
+    _$this.flex,
+  ];
 
   FlexBoxSpec get _$this => this as FlexBoxSpec;
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties.add(
-        DiagnosticsProperty('animated', _$this.animated, defaultValue: null));
+      DiagnosticsProperty('animated', _$this.animated, defaultValue: null),
+    );
     properties.add(
-        DiagnosticsProperty('modifiers', _$this.modifiers, defaultValue: null));
+      DiagnosticsProperty('modifiers', _$this.modifiers, defaultValue: null),
+    );
     properties.add(DiagnosticsProperty('box', _$this.box, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('flex', _$this.flex, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('flex', _$this.flex, defaultValue: null),
+    );
   }
 }
 
@@ -166,20 +169,17 @@ class FlexBoxSpecAttribute extends SpecAttribute<FlexBoxSpec>
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [FlexBoxSpecAttribute] instances for equality.
   @override
-  List<Object?> get props => [
-        animated,
-        modifiers,
-        box,
-        flex,
-      ];
+  List<Object?> get props => [animated, modifiers, box, flex];
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties
-        .add(DiagnosticsProperty('animated', animated, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('modifiers', modifiers, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('animated', animated, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
+    );
     properties.add(DiagnosticsProperty('box', box, defaultValue: null));
     properties.add(DiagnosticsProperty('flex', flex, defaultValue: null));
   }
@@ -315,12 +315,14 @@ class FlexBoxSpecUtility<T extends StyleElement>
     BoxSpecAttribute? box,
     FlexSpecAttribute? flex,
   }) {
-    return builder(FlexBoxSpecAttribute(
-      animated: animated,
-      modifiers: modifiers,
-      box: box,
-      flex: flex,
-    ));
+    return builder(
+      FlexBoxSpecAttribute(
+        animated: animated,
+        modifiers: modifiers,
+        box: box,
+        flex: flex,
+      ),
+    );
   }
 }
 
@@ -329,10 +331,7 @@ class FlexBoxSpecUtility<T extends StyleElement>
 /// This class can be used in animations to smoothly transition between
 /// different [FlexBoxSpec] specifications.
 class FlexBoxSpecTween extends Tween<FlexBoxSpec?> {
-  FlexBoxSpecTween({
-    super.begin,
-    super.end,
-  });
+  FlexBoxSpecTween({super.begin, super.end});
 
   @override
   FlexBoxSpec lerp(double t) {

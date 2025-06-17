@@ -96,14 +96,23 @@ mixin _$BoxSpec on Spec<BoxSpec> {
       alignment: AlignmentGeometry.lerp(_$this.alignment, other.alignment, t),
       padding: EdgeInsetsGeometry.lerp(_$this.padding, other.padding, t),
       margin: EdgeInsetsGeometry.lerp(_$this.margin, other.margin, t),
-      constraints:
-          BoxConstraints.lerp(_$this.constraints, other.constraints, t),
+      constraints: BoxConstraints.lerp(
+        _$this.constraints,
+        other.constraints,
+        t,
+      ),
       decoration: Decoration.lerp(_$this.decoration, other.decoration, t),
       foregroundDecoration: Decoration.lerp(
-          _$this.foregroundDecoration, other.foregroundDecoration, t),
+        _$this.foregroundDecoration,
+        other.foregroundDecoration,
+        t,
+      ),
       transform: MixHelpers.lerpMatrix4(_$this.transform, other.transform, t),
       transformAlignment: AlignmentGeometry.lerp(
-          _$this.transformAlignment, other.transformAlignment, t),
+        _$this.transformAlignment,
+        other.transformAlignment,
+        t,
+      ),
       clipBehavior: t < 0.5 ? _$this.clipBehavior : other.clipBehavior,
       width: MixHelpers.lerpDouble(_$this.width, other.width, t),
       height: MixHelpers.lerpDouble(_$this.height, other.height, t),
@@ -118,52 +127,79 @@ mixin _$BoxSpec on Spec<BoxSpec> {
   /// compare two [BoxSpec] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.alignment,
-        _$this.padding,
-        _$this.margin,
-        _$this.constraints,
-        _$this.decoration,
-        _$this.foregroundDecoration,
-        _$this.transform,
-        _$this.transformAlignment,
-        _$this.clipBehavior,
-        _$this.width,
-        _$this.height,
-        _$this.modifiers,
-        _$this.animated,
-      ];
+    _$this.alignment,
+    _$this.padding,
+    _$this.margin,
+    _$this.constraints,
+    _$this.decoration,
+    _$this.foregroundDecoration,
+    _$this.transform,
+    _$this.transformAlignment,
+    _$this.clipBehavior,
+    _$this.width,
+    _$this.height,
+    _$this.modifiers,
+    _$this.animated,
+  ];
 
   BoxSpec get _$this => this as BoxSpec;
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties.add(
-        DiagnosticsProperty('alignment', _$this.alignment, defaultValue: null));
+      DiagnosticsProperty('alignment', _$this.alignment, defaultValue: null),
+    );
     properties.add(
-        DiagnosticsProperty('padding', _$this.padding, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('margin', _$this.margin, defaultValue: null));
-    properties.add(DiagnosticsProperty('constraints', _$this.constraints,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty('decoration', _$this.decoration,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty(
-        'foregroundDecoration', _$this.foregroundDecoration,
-        defaultValue: null));
+      DiagnosticsProperty('padding', _$this.padding, defaultValue: null),
+    );
     properties.add(
-        DiagnosticsProperty('transform', _$this.transform, defaultValue: null));
-    properties.add(DiagnosticsProperty(
-        'transformAlignment', _$this.transformAlignment,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty('clipBehavior', _$this.clipBehavior,
-        defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('width', _$this.width, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('height', _$this.height, defaultValue: null));
+      DiagnosticsProperty('margin', _$this.margin, defaultValue: null),
+    );
     properties.add(
-        DiagnosticsProperty('modifiers', _$this.modifiers, defaultValue: null));
+      DiagnosticsProperty(
+        'constraints',
+        _$this.constraints,
+        defaultValue: null,
+      ),
+    );
     properties.add(
-        DiagnosticsProperty('animated', _$this.animated, defaultValue: null));
+      DiagnosticsProperty('decoration', _$this.decoration, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'foregroundDecoration',
+        _$this.foregroundDecoration,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty('transform', _$this.transform, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'transformAlignment',
+        _$this.transformAlignment,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'clipBehavior',
+        _$this.clipBehavior,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty('width', _$this.width, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('height', _$this.height, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('modifiers', _$this.modifiers, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('animated', _$this.animated, defaultValue: null),
+    );
   }
 }
 
@@ -249,7 +285,9 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
       constraints: constraints?.merge(other.constraints) ?? other.constraints,
       decoration: DecorationDto.tryToMerge(decoration, other.decoration),
       foregroundDecoration: DecorationDto.tryToMerge(
-          foregroundDecoration, other.foregroundDecoration),
+        foregroundDecoration,
+        other.foregroundDecoration,
+      ),
       transform: other.transform ?? transform,
       transformAlignment: other.transformAlignment ?? transformAlignment,
       clipBehavior: other.clipBehavior ?? clipBehavior,
@@ -266,47 +304,63 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
   /// compare two [BoxSpecAttribute] instances for equality.
   @override
   List<Object?> get props => [
-        alignment,
-        padding,
-        margin,
-        constraints,
-        decoration,
-        foregroundDecoration,
-        transform,
-        transformAlignment,
-        clipBehavior,
-        width,
-        height,
-        modifiers,
-        animated,
-      ];
+    alignment,
+    padding,
+    margin,
+    constraints,
+    decoration,
+    foregroundDecoration,
+    transform,
+    transformAlignment,
+    clipBehavior,
+    width,
+    height,
+    modifiers,
+    animated,
+  ];
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties
-        .add(DiagnosticsProperty('alignment', alignment, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('alignment', alignment, defaultValue: null),
+    );
     properties.add(DiagnosticsProperty('padding', padding, defaultValue: null));
     properties.add(DiagnosticsProperty('margin', margin, defaultValue: null));
     properties.add(
-        DiagnosticsProperty('constraints', constraints, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('decoration', decoration, defaultValue: null));
-    properties.add(DiagnosticsProperty(
-        'foregroundDecoration', foregroundDecoration,
-        defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('transform', transform, defaultValue: null));
-    properties.add(DiagnosticsProperty('transformAlignment', transformAlignment,
-        defaultValue: null));
+      DiagnosticsProperty('constraints', constraints, defaultValue: null),
+    );
     properties.add(
-        DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null));
+      DiagnosticsProperty('decoration', decoration, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'foregroundDecoration',
+        foregroundDecoration,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty('transform', transform, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'transformAlignment',
+        transformAlignment,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
+    );
     properties.add(DiagnosticsProperty('width', width, defaultValue: null));
     properties.add(DiagnosticsProperty('height', height, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('modifiers', modifiers, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('animated', animated, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('animated', animated, defaultValue: null),
+    );
   }
 }
 
@@ -380,22 +434,25 @@ class BoxSpecUtility<T extends StyleElement>
   late final elevation = decoration.elevation;
 
   /// Utility for defining [BoxSpecAttribute.decoration]
-  late final shapeDecoration =
-      ShapeDecorationUtility((v) => only(decoration: v));
+  late final shapeDecoration = ShapeDecorationUtility(
+    (v) => only(decoration: v),
+  );
 
   /// Utility for defining [BoxSpecAttribute.shapeDecoration.shape]
   late final shape = shapeDecoration.shape;
 
   /// Utility for defining [BoxSpecAttribute.foregroundDecoration]
-  late final foregroundDecoration =
-      BoxDecorationUtility((v) => only(foregroundDecoration: v));
+  late final foregroundDecoration = BoxDecorationUtility(
+    (v) => only(foregroundDecoration: v),
+  );
 
   /// Utility for defining [BoxSpecAttribute.transform]
   late final transform = Matrix4Utility((v) => only(transform: v));
 
   /// Utility for defining [BoxSpecAttribute.transformAlignment]
-  late final transformAlignment =
-      AlignmentGeometryUtility((v) => only(transformAlignment: v));
+  late final transformAlignment = AlignmentGeometryUtility(
+    (v) => only(transformAlignment: v),
+  );
 
   /// Utility for defining [BoxSpecAttribute.clipBehavior]
   late final clipBehavior = ClipUtility((v) => only(clipBehavior: v));
@@ -445,21 +502,23 @@ class BoxSpecUtility<T extends StyleElement>
     WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
-    return builder(BoxSpecAttribute(
-      alignment: alignment,
-      padding: padding,
-      margin: margin,
-      constraints: constraints,
-      decoration: decoration,
-      foregroundDecoration: foregroundDecoration,
-      transform: transform,
-      transformAlignment: transformAlignment,
-      clipBehavior: clipBehavior,
-      width: width,
-      height: height,
-      modifiers: modifiers,
-      animated: animated,
-    ));
+    return builder(
+      BoxSpecAttribute(
+        alignment: alignment,
+        padding: padding,
+        margin: margin,
+        constraints: constraints,
+        decoration: decoration,
+        foregroundDecoration: foregroundDecoration,
+        transform: transform,
+        transformAlignment: transformAlignment,
+        clipBehavior: clipBehavior,
+        width: width,
+        height: height,
+        modifiers: modifiers,
+        animated: animated,
+      ),
+    );
   }
 }
 
@@ -468,10 +527,7 @@ class BoxSpecUtility<T extends StyleElement>
 /// This class can be used in animations to smoothly transition between
 /// different [BoxSpec] specifications.
 class BoxSpecTween extends Tween<BoxSpec?> {
-  BoxSpecTween({
-    super.begin,
-    super.end,
-  });
+  BoxSpecTween({super.begin, super.end});
 
   @override
   BoxSpec lerp(double t) {

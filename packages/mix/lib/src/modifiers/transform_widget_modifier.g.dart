@@ -13,10 +13,7 @@ mixin _$TransformModifierSpec on WidgetModifierSpec<TransformModifierSpec> {
   /// Creates a copy of this [TransformModifierSpec] but with the given fields
   /// replaced with the new values.
   @override
-  TransformModifierSpec copyWith({
-    Matrix4? transform,
-    Alignment? alignment,
-  }) {
+  TransformModifierSpec copyWith({Matrix4? transform, Alignment? alignment}) {
     return TransformModifierSpec(
       transform: transform ?? _$this.transform,
       alignment: alignment ?? _$this.alignment,
@@ -53,18 +50,17 @@ mixin _$TransformModifierSpec on WidgetModifierSpec<TransformModifierSpec> {
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [TransformModifierSpec] instances for equality.
   @override
-  List<Object?> get props => [
-        _$this.transform,
-        _$this.alignment,
-      ];
+  List<Object?> get props => [_$this.transform, _$this.alignment];
 
   TransformModifierSpec get _$this => this as TransformModifierSpec;
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties.add(
-        DiagnosticsProperty('transform', _$this.transform, defaultValue: null));
+      DiagnosticsProperty('transform', _$this.transform, defaultValue: null),
+    );
     properties.add(
-        DiagnosticsProperty('alignment', _$this.alignment, defaultValue: null));
+      DiagnosticsProperty('alignment', _$this.alignment, defaultValue: null),
+    );
   }
 }
 
@@ -81,10 +77,7 @@ class TransformModifierSpecAttribute
   final Matrix4? transform;
   final Alignment? alignment;
 
-  const TransformModifierSpecAttribute({
-    this.transform,
-    this.alignment,
-  });
+  const TransformModifierSpecAttribute({this.transform, this.alignment});
 
   /// Resolves to [TransformModifierSpec] using the provided [MixData].
   ///
@@ -96,10 +89,7 @@ class TransformModifierSpecAttribute
   /// ```
   @override
   TransformModifierSpec resolve(MixData mix) {
-    return TransformModifierSpec(
-      transform: transform,
-      alignment: alignment,
-    );
+    return TransformModifierSpec(transform: transform, alignment: alignment);
   }
 
   /// Merges the properties of this [TransformModifierSpecAttribute] with the properties of [other].
@@ -125,18 +115,17 @@ class TransformModifierSpecAttribute
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [TransformModifierSpecAttribute] instances for equality.
   @override
-  List<Object?> get props => [
-        transform,
-        alignment,
-      ];
+  List<Object?> get props => [transform, alignment];
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties
-        .add(DiagnosticsProperty('transform', transform, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('alignment', alignment, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('transform', transform, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('alignment', alignment, defaultValue: null),
+    );
   }
 }
 
@@ -145,10 +134,7 @@ class TransformModifierSpecAttribute
 /// This class can be used in animations to smoothly transition between
 /// different [TransformModifierSpec] specifications.
 class TransformModifierSpecTween extends Tween<TransformModifierSpec?> {
-  TransformModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  TransformModifierSpecTween({super.begin, super.end});
 
   @override
   TransformModifierSpec lerp(double t) {

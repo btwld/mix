@@ -108,43 +108,65 @@ mixin _$ImageSpec on Spec<ImageSpec> {
   /// compare two [ImageSpec] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.width,
-        _$this.height,
-        _$this.color,
-        _$this.repeat,
-        _$this.fit,
-        _$this.alignment,
-        _$this.centerSlice,
-        _$this.filterQuality,
-        _$this.colorBlendMode,
-        _$this.animated,
-        _$this.modifiers,
-      ];
+    _$this.width,
+    _$this.height,
+    _$this.color,
+    _$this.repeat,
+    _$this.fit,
+    _$this.alignment,
+    _$this.centerSlice,
+    _$this.filterQuality,
+    _$this.colorBlendMode,
+    _$this.animated,
+    _$this.modifiers,
+  ];
 
   ImageSpec get _$this => this as ImageSpec;
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    properties
-        .add(DiagnosticsProperty('width', _$this.width, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('height', _$this.height, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('color', _$this.color, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('repeat', _$this.repeat, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('width', _$this.width, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('height', _$this.height, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('color', _$this.color, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('repeat', _$this.repeat, defaultValue: null),
+    );
     properties.add(DiagnosticsProperty('fit', _$this.fit, defaultValue: null));
     properties.add(
-        DiagnosticsProperty('alignment', _$this.alignment, defaultValue: null));
-    properties.add(DiagnosticsProperty('centerSlice', _$this.centerSlice,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty('filterQuality', _$this.filterQuality,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty('colorBlendMode', _$this.colorBlendMode,
-        defaultValue: null));
+      DiagnosticsProperty('alignment', _$this.alignment, defaultValue: null),
+    );
     properties.add(
-        DiagnosticsProperty('animated', _$this.animated, defaultValue: null));
+      DiagnosticsProperty(
+        'centerSlice',
+        _$this.centerSlice,
+        defaultValue: null,
+      ),
+    );
     properties.add(
-        DiagnosticsProperty('modifiers', _$this.modifiers, defaultValue: null));
+      DiagnosticsProperty(
+        'filterQuality',
+        _$this.filterQuality,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'colorBlendMode',
+        _$this.colorBlendMode,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty('animated', _$this.animated, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('modifiers', _$this.modifiers, defaultValue: null),
+    );
   }
 }
 
@@ -238,18 +260,18 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
   /// compare two [ImageSpecAttribute] instances for equality.
   @override
   List<Object?> get props => [
-        width,
-        height,
-        color,
-        repeat,
-        fit,
-        alignment,
-        centerSlice,
-        filterQuality,
-        colorBlendMode,
-        animated,
-        modifiers,
-      ];
+    width,
+    height,
+    color,
+    repeat,
+    fit,
+    alignment,
+    centerSlice,
+    filterQuality,
+    colorBlendMode,
+    animated,
+    modifiers,
+  ];
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -259,18 +281,24 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
     properties.add(DiagnosticsProperty('color', color, defaultValue: null));
     properties.add(DiagnosticsProperty('repeat', repeat, defaultValue: null));
     properties.add(DiagnosticsProperty('fit', fit, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('alignment', alignment, defaultValue: null));
     properties.add(
-        DiagnosticsProperty('centerSlice', centerSlice, defaultValue: null));
-    properties.add(DiagnosticsProperty('filterQuality', filterQuality,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty('colorBlendMode', colorBlendMode,
-        defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('animated', animated, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('modifiers', modifiers, defaultValue: null));
+      DiagnosticsProperty('alignment', alignment, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('centerSlice', centerSlice, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('filterQuality', filterQuality, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('colorBlendMode', colorBlendMode, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('animated', animated, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
+    );
   }
 }
 
@@ -302,8 +330,9 @@ class ImageSpecUtility<T extends StyleElement>
   late final centerSlice = RectUtility((v) => only(centerSlice: v));
 
   /// Utility for defining [ImageSpecAttribute.filterQuality]
-  late final filterQuality =
-      FilterQualityUtility((v) => only(filterQuality: v));
+  late final filterQuality = FilterQualityUtility(
+    (v) => only(filterQuality: v),
+  );
 
   /// Utility for defining [ImageSpecAttribute.colorBlendMode]
   late final colorBlendMode = BlendModeUtility((v) => only(colorBlendMode: v));
@@ -346,19 +375,21 @@ class ImageSpecUtility<T extends StyleElement>
     AnimatedDataDto? animated,
     WidgetModifiersConfigDto? modifiers,
   }) {
-    return builder(ImageSpecAttribute(
-      width: width,
-      height: height,
-      color: color,
-      repeat: repeat,
-      fit: fit,
-      alignment: alignment,
-      centerSlice: centerSlice,
-      filterQuality: filterQuality,
-      colorBlendMode: colorBlendMode,
-      animated: animated,
-      modifiers: modifiers,
-    ));
+    return builder(
+      ImageSpecAttribute(
+        width: width,
+        height: height,
+        color: color,
+        repeat: repeat,
+        fit: fit,
+        alignment: alignment,
+        centerSlice: centerSlice,
+        filterQuality: filterQuality,
+        colorBlendMode: colorBlendMode,
+        animated: animated,
+        modifiers: modifiers,
+      ),
+    );
   }
 }
 
@@ -367,10 +398,7 @@ class ImageSpecUtility<T extends StyleElement>
 /// This class can be used in animations to smoothly transition between
 /// different [ImageSpec] specifications.
 class ImageSpecTween extends Tween<ImageSpec?> {
-  ImageSpecTween({
-    super.begin,
-    super.end,
-  });
+  ImageSpecTween({super.begin, super.end});
 
   @override
   ImageSpec lerp(double t) {

@@ -43,14 +43,22 @@ mixin _$FractionallySizedBoxModifierSpec
   /// different [FractionallySizedBoxModifierSpec] configurations.
   @override
   FractionallySizedBoxModifierSpec lerp(
-      FractionallySizedBoxModifierSpec? other, double t) {
+    FractionallySizedBoxModifierSpec? other,
+    double t,
+  ) {
     if (other == null) return _$this;
 
     return FractionallySizedBoxModifierSpec(
-      widthFactor:
-          MixHelpers.lerpDouble(_$this.widthFactor, other.widthFactor, t),
-      heightFactor:
-          MixHelpers.lerpDouble(_$this.heightFactor, other.heightFactor, t),
+      widthFactor: MixHelpers.lerpDouble(
+        _$this.widthFactor,
+        other.widthFactor,
+        t,
+      ),
+      heightFactor: MixHelpers.lerpDouble(
+        _$this.heightFactor,
+        other.heightFactor,
+        t,
+      ),
       alignment: AlignmentGeometry.lerp(_$this.alignment, other.alignment, t),
     );
   }
@@ -61,21 +69,32 @@ mixin _$FractionallySizedBoxModifierSpec
   /// compare two [FractionallySizedBoxModifierSpec] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.widthFactor,
-        _$this.heightFactor,
-        _$this.alignment,
-      ];
+    _$this.widthFactor,
+    _$this.heightFactor,
+    _$this.alignment,
+  ];
 
   FractionallySizedBoxModifierSpec get _$this =>
       this as FractionallySizedBoxModifierSpec;
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    properties.add(DiagnosticsProperty('widthFactor', _$this.widthFactor,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty('heightFactor', _$this.heightFactor,
-        defaultValue: null));
     properties.add(
-        DiagnosticsProperty('alignment', _$this.alignment, defaultValue: null));
+      DiagnosticsProperty(
+        'widthFactor',
+        _$this.widthFactor,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'heightFactor',
+        _$this.heightFactor,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty('alignment', _$this.alignment, defaultValue: null),
+    );
   }
 }
 
@@ -126,7 +145,8 @@ class FractionallySizedBoxModifierSpecAttribute
   /// to the values from this instance.
   @override
   FractionallySizedBoxModifierSpecAttribute merge(
-      FractionallySizedBoxModifierSpecAttribute? other) {
+    FractionallySizedBoxModifierSpecAttribute? other,
+  ) {
     if (other == null) return this;
 
     return FractionallySizedBoxModifierSpecAttribute(
@@ -141,21 +161,20 @@ class FractionallySizedBoxModifierSpecAttribute
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [FractionallySizedBoxModifierSpecAttribute] instances for equality.
   @override
-  List<Object?> get props => [
-        widthFactor,
-        heightFactor,
-        alignment,
-      ];
+  List<Object?> get props => [widthFactor, heightFactor, alignment];
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(
-        DiagnosticsProperty('widthFactor', widthFactor, defaultValue: null));
+      DiagnosticsProperty('widthFactor', widthFactor, defaultValue: null),
+    );
     properties.add(
-        DiagnosticsProperty('heightFactor', heightFactor, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('alignment', alignment, defaultValue: null));
+      DiagnosticsProperty('heightFactor', heightFactor, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('alignment', alignment, defaultValue: null),
+    );
   }
 }
 
@@ -165,10 +184,7 @@ class FractionallySizedBoxModifierSpecAttribute
 /// different [FractionallySizedBoxModifierSpec] specifications.
 class FractionallySizedBoxModifierSpecTween
     extends Tween<FractionallySizedBoxModifierSpec?> {
-  FractionallySizedBoxModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  FractionallySizedBoxModifierSpecTween({super.begin, super.end});
 
   @override
   FractionallySizedBoxModifierSpec lerp(double t) {

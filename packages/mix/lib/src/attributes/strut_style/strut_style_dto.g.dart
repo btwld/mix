@@ -47,7 +47,9 @@ mixin _$StrutStyleDto on Mixable<StrutStyle> {
     return StrutStyleDto(
       fontFamily: other.fontFamily ?? _$this.fontFamily,
       fontFamilyFallback: MixHelpers.mergeList(
-          _$this.fontFamilyFallback, other.fontFamilyFallback),
+        _$this.fontFamilyFallback,
+        other.fontFamilyFallback,
+      ),
       fontSize: other.fontSize ?? _$this.fontSize,
       fontWeight: other.fontWeight ?? _$this.fontWeight,
       fontStyle: other.fontStyle ?? _$this.fontStyle,
@@ -63,15 +65,15 @@ mixin _$StrutStyleDto on Mixable<StrutStyle> {
   /// compare two [StrutStyleDto] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.fontFamily,
-        _$this.fontFamilyFallback,
-        _$this.fontSize,
-        _$this.fontWeight,
-        _$this.fontStyle,
-        _$this.height,
-        _$this.leading,
-        _$this.forceStrutHeight,
-      ];
+    _$this.fontFamily,
+    _$this.fontFamilyFallback,
+    _$this.fontSize,
+    _$this.fontWeight,
+    _$this.fontStyle,
+    _$this.height,
+    _$this.leading,
+    _$this.forceStrutHeight,
+  ];
 
   /// Returns this instance as a [StrutStyleDto].
   StrutStyleDto get _$this => this as StrutStyleDto;
@@ -87,8 +89,9 @@ class StrutStyleUtility<T extends StyleElement>
   late final fontFamily = FontFamilyUtility((v) => only(fontFamily: v));
 
   /// Utility for defining [StrutStyleDto.fontFamilyFallback]
-  late final fontFamilyFallback =
-      ListUtility<T, String>((v) => only(fontFamilyFallback: v));
+  late final fontFamilyFallback = ListUtility<T, String>(
+    (v) => only(fontFamilyFallback: v),
+  );
 
   /// Utility for defining [StrutStyleDto.fontSize]
   late final fontSize = FontSizeUtility((v) => only(fontSize: v));
@@ -122,16 +125,18 @@ class StrutStyleUtility<T extends StyleElement>
     double? leading,
     bool? forceStrutHeight,
   }) {
-    return builder(StrutStyleDto(
-      fontFamily: fontFamily,
-      fontFamilyFallback: fontFamilyFallback,
-      fontSize: fontSize,
-      fontWeight: fontWeight,
-      fontStyle: fontStyle,
-      height: height,
-      leading: leading,
-      forceStrutHeight: forceStrutHeight,
-    ));
+    return builder(
+      StrutStyleDto(
+        fontFamily: fontFamily,
+        fontFamilyFallback: fontFamilyFallback,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        fontStyle: fontStyle,
+        height: height,
+        leading: leading,
+        forceStrutHeight: forceStrutHeight,
+      ),
+    );
   }
 
   T call({

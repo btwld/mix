@@ -96,11 +96,17 @@ mixin _$TextSpec on Spec<TextSpec> {
 
     return TextSpec(
       overflow: t < 0.5 ? _$this.overflow : other.overflow,
-      strutStyle:
-          MixHelpers.lerpStrutStyle(_$this.strutStyle, other.strutStyle, t),
+      strutStyle: MixHelpers.lerpStrutStyle(
+        _$this.strutStyle,
+        other.strutStyle,
+        t,
+      ),
       textAlign: t < 0.5 ? _$this.textAlign : other.textAlign,
       textScaleFactor: MixHelpers.lerpDouble(
-          _$this.textScaleFactor, other.textScaleFactor, t),
+        _$this.textScaleFactor,
+        other.textScaleFactor,
+        t,
+      ),
       textScaler: t < 0.5 ? _$this.textScaler : other.textScaler,
       maxLines: t < 0.5 ? _$this.maxLines : other.maxLines,
       style: MixHelpers.lerpTextStyle(_$this.style, other.style, t),
@@ -121,55 +127,83 @@ mixin _$TextSpec on Spec<TextSpec> {
   /// compare two [TextSpec] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.overflow,
-        _$this.strutStyle,
-        _$this.textAlign,
-        _$this.textScaleFactor,
-        _$this.textScaler,
-        _$this.maxLines,
-        _$this.style,
-        _$this.textWidthBasis,
-        _$this.textHeightBehavior,
-        _$this.textDirection,
-        _$this.softWrap,
-        _$this.directive,
-        _$this.animated,
-        _$this.modifiers,
-      ];
+    _$this.overflow,
+    _$this.strutStyle,
+    _$this.textAlign,
+    _$this.textScaleFactor,
+    _$this.textScaler,
+    _$this.maxLines,
+    _$this.style,
+    _$this.textWidthBasis,
+    _$this.textHeightBehavior,
+    _$this.textDirection,
+    _$this.softWrap,
+    _$this.directive,
+    _$this.animated,
+    _$this.modifiers,
+  ];
 
   TextSpec get _$this => this as TextSpec;
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties.add(
-        DiagnosticsProperty('overflow', _$this.overflow, defaultValue: null));
-    properties.add(DiagnosticsProperty('strutStyle', _$this.strutStyle,
-        defaultValue: null));
+      DiagnosticsProperty('overflow', _$this.overflow, defaultValue: null),
+    );
     properties.add(
-        DiagnosticsProperty('textAlign', _$this.textAlign, defaultValue: null));
-    properties.add(DiagnosticsProperty(
-        'textScaleFactor', _$this.textScaleFactor,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty('textScaler', _$this.textScaler,
-        defaultValue: null));
+      DiagnosticsProperty('strutStyle', _$this.strutStyle, defaultValue: null),
+    );
     properties.add(
-        DiagnosticsProperty('maxLines', _$this.maxLines, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('style', _$this.style, defaultValue: null));
-    properties.add(DiagnosticsProperty('textWidthBasis', _$this.textWidthBasis,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty(
-        'textHeightBehavior', _$this.textHeightBehavior,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty('textDirection', _$this.textDirection,
-        defaultValue: null));
+      DiagnosticsProperty('textAlign', _$this.textAlign, defaultValue: null),
+    );
     properties.add(
-        DiagnosticsProperty('softWrap', _$this.softWrap, defaultValue: null));
+      DiagnosticsProperty(
+        'textScaleFactor',
+        _$this.textScaleFactor,
+        defaultValue: null,
+      ),
+    );
     properties.add(
-        DiagnosticsProperty('directive', _$this.directive, defaultValue: null));
+      DiagnosticsProperty('textScaler', _$this.textScaler, defaultValue: null),
+    );
     properties.add(
-        DiagnosticsProperty('animated', _$this.animated, defaultValue: null));
+      DiagnosticsProperty('maxLines', _$this.maxLines, defaultValue: null),
+    );
     properties.add(
-        DiagnosticsProperty('modifiers', _$this.modifiers, defaultValue: null));
+      DiagnosticsProperty('style', _$this.style, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'textWidthBasis',
+        _$this.textWidthBasis,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'textHeightBehavior',
+        _$this.textHeightBehavior,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'textDirection',
+        _$this.textDirection,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty('softWrap', _$this.softWrap, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('directive', _$this.directive, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('animated', _$this.animated, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('modifiers', _$this.modifiers, defaultValue: null),
+    );
   }
 }
 
@@ -260,7 +294,8 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
       maxLines: other.maxLines ?? maxLines,
       style: style?.merge(other.style) ?? other.style,
       textWidthBasis: other.textWidthBasis ?? textWidthBasis,
-      textHeightBehavior: textHeightBehavior?.merge(other.textHeightBehavior) ??
+      textHeightBehavior:
+          textHeightBehavior?.merge(other.textHeightBehavior) ??
           other.textHeightBehavior,
       textDirection: other.textDirection ?? textDirection,
       softWrap: other.softWrap ?? softWrap,
@@ -276,52 +311,73 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
   /// compare two [TextSpecAttribute] instances for equality.
   @override
   List<Object?> get props => [
-        overflow,
-        strutStyle,
-        textAlign,
-        textScaleFactor,
-        textScaler,
-        maxLines,
-        style,
-        textWidthBasis,
-        textHeightBehavior,
-        textDirection,
-        softWrap,
-        directive,
-        animated,
-        modifiers,
-      ];
+    overflow,
+    strutStyle,
+    textAlign,
+    textScaleFactor,
+    textScaler,
+    maxLines,
+    style,
+    textWidthBasis,
+    textHeightBehavior,
+    textDirection,
+    softWrap,
+    directive,
+    animated,
+    modifiers,
+  ];
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties
-        .add(DiagnosticsProperty('overflow', overflow, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('strutStyle', strutStyle, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('textAlign', textAlign, defaultValue: null));
-    properties.add(DiagnosticsProperty('textScaleFactor', textScaleFactor,
-        defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('textScaler', textScaler, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('maxLines', maxLines, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('overflow', overflow, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('strutStyle', strutStyle, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('textAlign', textAlign, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'textScaleFactor',
+        textScaleFactor,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty('textScaler', textScaler, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('maxLines', maxLines, defaultValue: null),
+    );
     properties.add(DiagnosticsProperty('style', style, defaultValue: null));
-    properties.add(DiagnosticsProperty('textWidthBasis', textWidthBasis,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty('textHeightBehavior', textHeightBehavior,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty('textDirection', textDirection,
-        defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('softWrap', softWrap, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('directive', directive, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('animated', animated, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('modifiers', modifiers, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('textWidthBasis', textWidthBasis, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'textHeightBehavior',
+        textHeightBehavior,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty('textDirection', textDirection, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('softWrap', softWrap, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('directive', directive, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('animated', animated, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
+    );
   }
 }
 
@@ -416,16 +472,19 @@ class TextSpecUtility<T extends StyleElement>
   late final fontFamilyFallback = style.fontFamilyFallback;
 
   /// Utility for defining [TextSpecAttribute.textWidthBasis]
-  late final textWidthBasis =
-      TextWidthBasisUtility((v) => only(textWidthBasis: v));
+  late final textWidthBasis = TextWidthBasisUtility(
+    (v) => only(textWidthBasis: v),
+  );
 
   /// Utility for defining [TextSpecAttribute.textHeightBehavior]
-  late final textHeightBehavior =
-      TextHeightBehaviorUtility((v) => only(textHeightBehavior: v));
+  late final textHeightBehavior = TextHeightBehaviorUtility(
+    (v) => only(textHeightBehavior: v),
+  );
 
   /// Utility for defining [TextSpecAttribute.textDirection]
-  late final textDirection =
-      TextDirectionUtility((v) => only(textDirection: v));
+  late final textDirection = TextDirectionUtility(
+    (v) => only(textDirection: v),
+  );
 
   /// Utility for defining [TextSpecAttribute.softWrap]
   late final softWrap = BoolUtility((v) => only(softWrap: v));
@@ -489,22 +548,24 @@ class TextSpecUtility<T extends StyleElement>
     AnimatedDataDto? animated,
     WidgetModifiersConfigDto? modifiers,
   }) {
-    return builder(TextSpecAttribute(
-      overflow: overflow,
-      strutStyle: strutStyle,
-      textAlign: textAlign,
-      textScaleFactor: textScaleFactor,
-      textScaler: textScaler,
-      maxLines: maxLines,
-      style: style,
-      textWidthBasis: textWidthBasis,
-      textHeightBehavior: textHeightBehavior,
-      textDirection: textDirection,
-      softWrap: softWrap,
-      directive: directive,
-      animated: animated,
-      modifiers: modifiers,
-    ));
+    return builder(
+      TextSpecAttribute(
+        overflow: overflow,
+        strutStyle: strutStyle,
+        textAlign: textAlign,
+        textScaleFactor: textScaleFactor,
+        textScaler: textScaler,
+        maxLines: maxLines,
+        style: style,
+        textWidthBasis: textWidthBasis,
+        textHeightBehavior: textHeightBehavior,
+        textDirection: textDirection,
+        softWrap: softWrap,
+        directive: directive,
+        animated: animated,
+        modifiers: modifiers,
+      ),
+    );
   }
 }
 
@@ -513,10 +574,7 @@ class TextSpecUtility<T extends StyleElement>
 /// This class can be used in animations to smoothly transition between
 /// different [TextSpec] specifications.
 class TextSpecTween extends Tween<TextSpec?> {
-  TextSpecTween({
-    super.begin,
-    super.end,
-  });
+  TextSpecTween({super.begin, super.end});
 
   @override
   TextSpec lerp(double t) {

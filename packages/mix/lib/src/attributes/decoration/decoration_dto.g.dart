@@ -64,15 +64,15 @@ mixin _$BoxDecorationDto on Mixable<BoxDecoration> {
   /// compare two [BoxDecorationDto] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.border,
-        _$this.borderRadius,
-        _$this.shape,
-        _$this.backgroundBlendMode,
-        _$this.color,
-        _$this.image,
-        _$this.gradient,
-        _$this.boxShadow,
-      ];
+    _$this.border,
+    _$this.borderRadius,
+    _$this.shape,
+    _$this.backgroundBlendMode,
+    _$this.color,
+    _$this.image,
+    _$this.gradient,
+    _$this.boxShadow,
+  ];
 
   /// Returns this instance as a [BoxDecorationDto].
   BoxDecorationDto get _$this => this as BoxDecorationDto;
@@ -91,8 +91,9 @@ class BoxDecorationUtility<T extends StyleElement>
   late final borderDirectional = border.directional;
 
   /// Utility for defining [BoxDecorationDto.borderRadius]
-  late final borderRadius =
-      BorderRadiusGeometryUtility((v) => only(borderRadius: v));
+  late final borderRadius = BorderRadiusGeometryUtility(
+    (v) => only(borderRadius: v),
+  );
 
   /// Utility for defining [BoxDecorationDto.borderRadius.directional]
   late final borderRadiusDirectional = borderRadius.directional;
@@ -101,8 +102,9 @@ class BoxDecorationUtility<T extends StyleElement>
   late final shape = BoxShapeUtility((v) => only(shape: v));
 
   /// Utility for defining [BoxDecorationDto.backgroundBlendMode]
-  late final backgroundBlendMode =
-      BlendModeUtility((v) => only(backgroundBlendMode: v));
+  late final backgroundBlendMode = BlendModeUtility(
+    (v) => only(backgroundBlendMode: v),
+  );
 
   /// Utility for defining [BoxDecorationDto.color]
   late final color = ColorUtility((v) => only(color: v));
@@ -136,16 +138,18 @@ class BoxDecorationUtility<T extends StyleElement>
     GradientDto? gradient,
     List<BoxShadowDto>? boxShadow,
   }) {
-    return builder(BoxDecorationDto(
-      border: border,
-      borderRadius: borderRadius,
-      shape: shape,
-      backgroundBlendMode: backgroundBlendMode,
-      color: color,
-      image: image,
-      gradient: gradient,
-      boxShadow: boxShadow,
-    ));
+    return builder(
+      BoxDecorationDto(
+        border: border,
+        borderRadius: borderRadius,
+        shape: shape,
+        backgroundBlendMode: backgroundBlendMode,
+        color: color,
+        image: image,
+        gradient: gradient,
+        boxShadow: boxShadow,
+      ),
+    );
   }
 
   T call({
@@ -214,7 +218,8 @@ mixin _$ShapeDecorationDto
       color: _$this.color?.resolve(mix) ?? defaultValue.color,
       image: _$this.image?.resolve(mix) ?? defaultValue.image,
       gradient: _$this.gradient?.resolve(mix) ?? defaultValue.gradient,
-      shadows: _$this.shadows?.map((e) => e.resolve(mix)).toList() ??
+      shadows:
+          _$this.shadows?.map((e) => e.resolve(mix)).toList() ??
           defaultValue.shadows,
     );
   }
@@ -246,12 +251,12 @@ mixin _$ShapeDecorationDto
   /// compare two [ShapeDecorationDto] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.shape,
-        _$this.color,
-        _$this.image,
-        _$this.gradient,
-        _$this.shadows,
-      ];
+    _$this.shape,
+    _$this.color,
+    _$this.image,
+    _$this.gradient,
+    _$this.shadows,
+  ];
 
   /// Returns this instance as a [ShapeDecorationDto].
   ShapeDecorationDto get _$this => this as ShapeDecorationDto;
@@ -289,13 +294,15 @@ class ShapeDecorationUtility<T extends StyleElement>
     GradientDto? gradient,
     List<BoxShadowDto>? shadows,
   }) {
-    return builder(ShapeDecorationDto(
-      shape: shape,
-      color: color,
-      image: image,
-      gradient: gradient,
-      shadows: shadows,
-    ));
+    return builder(
+      ShapeDecorationDto(
+        shape: shape,
+        color: color,
+        image: image,
+        gradient: gradient,
+        shadows: shadows,
+      ),
+    );
   }
 
   T call({

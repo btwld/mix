@@ -13,12 +13,8 @@ mixin _$AspectRatioModifierSpec on WidgetModifierSpec<AspectRatioModifierSpec> {
   /// Creates a copy of this [AspectRatioModifierSpec] but with the given fields
   /// replaced with the new values.
   @override
-  AspectRatioModifierSpec copyWith({
-    double? aspectRatio,
-  }) {
-    return AspectRatioModifierSpec(
-      aspectRatio ?? _$this.aspectRatio,
-    );
+  AspectRatioModifierSpec copyWith({double? aspectRatio}) {
+    return AspectRatioModifierSpec(aspectRatio ?? _$this.aspectRatio);
   }
 
   /// Linearly interpolates between this [AspectRatioModifierSpec] and another [AspectRatioModifierSpec] based on the given parameter [t].
@@ -49,15 +45,18 @@ mixin _$AspectRatioModifierSpec on WidgetModifierSpec<AspectRatioModifierSpec> {
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [AspectRatioModifierSpec] instances for equality.
   @override
-  List<Object?> get props => [
-        _$this.aspectRatio,
-      ];
+  List<Object?> get props => [_$this.aspectRatio];
 
   AspectRatioModifierSpec get _$this => this as AspectRatioModifierSpec;
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    properties.add(DiagnosticsProperty('aspectRatio', _$this.aspectRatio,
-        defaultValue: null));
+    properties.add(
+      DiagnosticsProperty(
+        'aspectRatio',
+        _$this.aspectRatio,
+        defaultValue: null,
+      ),
+    );
   }
 }
 
@@ -73,9 +72,7 @@ class AspectRatioModifierSpecAttribute
     with Diagnosticable {
   final double? aspectRatio;
 
-  const AspectRatioModifierSpecAttribute({
-    this.aspectRatio,
-  });
+  const AspectRatioModifierSpecAttribute({this.aspectRatio});
 
   /// Resolves to [AspectRatioModifierSpec] using the provided [MixData].
   ///
@@ -87,9 +84,7 @@ class AspectRatioModifierSpecAttribute
   /// ```
   @override
   AspectRatioModifierSpec resolve(MixData mix) {
-    return AspectRatioModifierSpec(
-      aspectRatio,
-    );
+    return AspectRatioModifierSpec(aspectRatio);
   }
 
   /// Merges the properties of this [AspectRatioModifierSpecAttribute] with the properties of [other].
@@ -102,7 +97,8 @@ class AspectRatioModifierSpecAttribute
   /// to the values from this instance.
   @override
   AspectRatioModifierSpecAttribute merge(
-      AspectRatioModifierSpecAttribute? other) {
+    AspectRatioModifierSpecAttribute? other,
+  ) {
     if (other == null) return this;
 
     return AspectRatioModifierSpecAttribute(
@@ -115,15 +111,14 @@ class AspectRatioModifierSpecAttribute
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [AspectRatioModifierSpecAttribute] instances for equality.
   @override
-  List<Object?> get props => [
-        aspectRatio,
-      ];
+  List<Object?> get props => [aspectRatio];
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(
-        DiagnosticsProperty('aspectRatio', aspectRatio, defaultValue: null));
+      DiagnosticsProperty('aspectRatio', aspectRatio, defaultValue: null),
+    );
   }
 }
 
@@ -132,10 +127,7 @@ class AspectRatioModifierSpecAttribute
 /// This class can be used in animations to smoothly transition between
 /// different [AspectRatioModifierSpec] specifications.
 class AspectRatioModifierSpecTween extends Tween<AspectRatioModifierSpec?> {
-  AspectRatioModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  AspectRatioModifierSpecTween({super.begin, super.end});
 
   @override
   AspectRatioModifierSpec lerp(double t) {

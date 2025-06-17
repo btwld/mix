@@ -22,9 +22,7 @@ mixin _$SpaceDto on Mixable<double> {
   SpaceDto merge(SpaceDto? other) {
     if (other == null) return _$this;
 
-    return SpaceDto._(
-      value: other.value ?? _$this.value,
-    );
+    return SpaceDto._(value: other.value ?? _$this.value);
   }
 
   /// The list of properties that constitute the state of this [SpaceDto].
@@ -32,9 +30,7 @@ mixin _$SpaceDto on Mixable<double> {
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [SpaceDto] instances for equality.
   @override
-  List<Object?> get props => [
-        _$this.value,
-      ];
+  List<Object?> get props => [_$this.value];
 
   /// Returns this instance as a [SpaceDto].
   SpaceDto get _$this => this as SpaceDto;
