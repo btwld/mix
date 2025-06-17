@@ -3,7 +3,6 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../mix.dart';
 import '../internal/compare_mixin.dart';
-import '../variants/context_builder.dart';
 
 @immutable
 abstract class Spec<T extends Spec<T>> with EqualityMixin {
@@ -47,13 +46,7 @@ abstract class SpecAttribute<Value> extends StyleElement
   SpecAttribute<Value> merge(covariant SpecAttribute<Value>? other);
 }
 
-abstract class SpecUtility<T extends SpecAttribute, V> extends BaseStyle<T> {
-  @override
-  AttributeMap<T> styles = AttributeMap<T>.empty();
-
-  @override
-  AttributeMap<VariantAttribute> variants = const AttributeMap.empty();
-
+abstract class SpecUtility<T extends SpecAttribute, V> extends StyleUtility<T> {
   @protected
   @visibleForTesting
   final T Function(V) attributeBuilder;
@@ -68,24 +61,12 @@ abstract class SpecUtility<T extends SpecAttribute, V> extends BaseStyle<T> {
 
   static T selfBuilder<T>(T value) => value;
 
-  // ignore: avoid-inferrable-type-arguments
-  T? get attributeValue => styles.attributeOfType<T>();
-
   T builder(V v) {
     final attribute = attributeBuilder(v);
     // Always mutable - accumulate state in attributeValue
     styles = styles.merge(AttributeMap([attribute]));
 
     return attribute;
-  }
-
-  void variant(VariantAttribute attribute) {
-    variants = variants.merge(AttributeMap([attribute]));
-  }
-
-  void context(Style Function(BuildContext context) builder) {
-    final variant = ContextVariantBuilder(builder, const ContextBuilder());
-    variants = variants.merge(AttributeMap([variant]));
   }
 
   T only();

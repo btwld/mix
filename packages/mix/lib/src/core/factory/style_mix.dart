@@ -1,18 +1,21 @@
 // ignore_for_file: non_constant_identifier_names, constant_identifier_names, long-parameter-list, prefer-named-boolean-parameters
 
 import 'package:flutter/widgets.dart';
+import 'package:meta/meta.dart';
 
 import '../../attributes/animated/animated_data.dart';
 import '../../internal/helper_util.dart';
 import '../../specs/spec_util.dart';
+import '../../variants/context_variant.dart';
 import '../../variants/variant_attribute.dart';
+import '../../variants/widget_state_variant.dart';
 import '../attributes_map.dart';
 import '../element.dart';
 import '../spec.dart';
 import '../variant.dart';
 import 'mix_data.dart';
 
-abstract class BaseStyle<T extends SpecAttribute> extends StyleElement {
+sealed class BaseStyle<T extends SpecAttribute> extends StyleElement {
   const BaseStyle();
   AttributeMap<T> get styles;
   AttributeMap<VariantAttribute> get variants;
@@ -46,9 +49,27 @@ class Style extends BaseStyle<SpecAttribute> {
 
   const Style._({required this.styles, required this.variants});
 
-  Style.from(BaseStyle style)
-      : styles = style.styles,
-        variants = style.variants;
+  /// Creates a new `Style` instance from a [BaseStyle].
+  ///
+  /// This factory constructor creates a new `Style` instance from a [BaseStyle] instance.
+  /// If the [BaseStyle] is an [AnimatedStyle], it creates an [AnimatedStyle] instance.
+  /// If the [BaseStyle] is a [Style], it returns the [Style] instance.
+  /// Otherwise, it creates a new [Style] instance with the styles and variants from the [BaseStyle].
+  factory Style.from(BaseStyle style) {
+    if (style is AnimatedStyle) {
+      return AnimatedStyle._(
+        styles: style.styles,
+        variants: style.variants,
+        animated: style.animated,
+      );
+    }
+
+    if (style is Style) {
+      return style;
+    }
+
+    return Style._(styles: style.styles, variants: style.variants);
+  }
 
   /// Creates a new `Style` instance with a specified list of [StyleElement]s.
   ///
@@ -117,11 +138,9 @@ class Style extends BaseStyle<SpecAttribute> {
         case VariantAttribute():
           applyVariants.add(element);
         case SpecUtility():
-          if (element.attributeValue != null) {
-            final nestedStyle = Style.create([element.attributeValue!]);
-            styleList.addAll(nestedStyle.styles.values);
-            applyVariants.addAll(nestedStyle.variants.values);
-          }
+          final nestedStyle = element;
+          styleList.addAll(nestedStyle.styles.values);
+          applyVariants.addAll(nestedStyle.variants.values);
         case Style():
           // Handle nested Style instances by flattening them
           styleList.addAll(element.styles.values);
@@ -438,4 +457,118 @@ class AnimatedStyle extends Style {
       animated: animated,
     );
   }
+}
+
+@internal
+abstract class StyleUtility<T extends SpecAttribute> extends BaseStyle<T> {
+  @override
+  AttributeMap<T> styles = AttributeMap<T>.empty();
+
+  @override
+  AttributeMap<VariantAttribute> variants = const AttributeMap.empty();
+
+  // ignore: avoid-inferrable-type-arguments
+  T? get attributeValue => styles.attributeOfType<T>();
+
+  /// Adds a variant with associated style.
+  ///
+  /// This method allows you to define conditional styling based on a specific variant.
+  /// When the variant is applied, the associated style will be merged with the base styles.
+  void variant(Variant variant, BaseStyle<T> style) {
+    variants = variants.merge(
+      AttributeMap([VariantAttribute(variant, Style.from(style))]),
+    );
+  }
+
+  /// Adds a context variant with a style builder function.
+  ///
+  /// This method creates a conditional style that is built dynamically when the variant
+  /// condition is met. The styleBuilder function is called to generate the style at runtime.
+  void on(ContextVariant variant, BaseStyle<T> Function() styleBuilder) {
+    variants = variants.merge(
+      AttributeMap([VariantAttribute(variant, Style.from(styleBuilder()))]),
+    );
+  }
+
+  /// Adds a context-dependent style that adapts based on BuildContext.
+  ///
+  /// This method creates a style that can access the current BuildContext to make
+  /// dynamic styling decisions. The styleBuilder function receives the context and
+  /// returns a style based on the current widget tree state.
+  void onContext(BaseStyle<T> Function(BuildContext context) styleBuilder) {
+    final attribute = ContextVariantBuilder(
+      (context) => Style.from(styleBuilder(context)),
+      const _AlwaysTrueContextVariant(),
+    );
+    variants = variants.merge(AttributeMap([attribute]));
+  }
+
+  /// Applies styles when the widget is hovered.
+  ///
+  /// This method adds hover state styling. The provided style will be applied
+  /// when the user hovers over the widget, typically for interactive feedback.
+  void onHover(BaseStyle<T> style) {
+    on(const OnHoverVariant(), () => style);
+  }
+
+  /// Applies styles when the widget is disabled.
+  ///
+  /// This method adds disabled state styling. The provided style will be applied
+  /// when the widget is in a disabled state, often for visual indication that
+  /// the widget is not interactive.
+  void onDisabled(BaseStyle<T> style) {
+    on(const OnDisabledVariant(), () => style);
+  }
+
+  /// Applies styles when the widget is focused.
+  ///
+  /// This method adds focus state styling. The provided style will be applied
+  /// when the widget receives focus, commonly used for accessibility and
+  /// keyboard navigation feedback.
+  void onFocus(BaseStyle<T> style) {
+    on(const OnFocusedVariant(), () => style);
+  }
+
+  /// Applies styles when the widget is selected.
+  ///
+  /// This method adds selected state styling. The provided style will be applied
+  /// when the widget is in a selected state, typically used for items in lists
+  /// or selection-based interfaces.
+  void onSelected(BaseStyle<T> style) {
+    on(const OnSelectedVariant(), () => style);
+  }
+
+  /// Applies styles when the widget is being dragged.
+  ///
+  /// This method adds drag state styling. The provided style will be applied
+  /// when the widget is being dragged, often used for drag-and-drop interfaces
+  /// to provide visual feedback during the drag operation.
+  void onDragged(BaseStyle<T> style) {
+    on(const OnDraggedVariant(), () => style);
+  }
+
+  /// Applies styles when the widget is in an error state.
+  ///
+  /// This method adds error state styling. The provided style will be applied
+  /// when the widget encounters an error condition, commonly used for form
+  /// validation feedback or error indication.
+  void onError(BaseStyle<T> style) {
+    on(const OnErrorVariant(), () => style);
+  }
+
+  /// Applies styles when the widget is pressed.
+  ///
+  /// This method adds pressed state styling. The provided style will be applied
+  /// when the widget is being pressed or activated, typically used for button
+  /// press feedback and interactive elements.
+  void onPressed(BaseStyle<T> style) {
+    on(const OnPressVariant(), () => style);
+  }
+}
+
+class _AlwaysTrueContextVariant extends ContextVariant {
+  const _AlwaysTrueContextVariant();
+
+  @override
+  bool when(BuildContext context) => true;
 }
