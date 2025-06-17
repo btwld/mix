@@ -52,7 +52,7 @@ void main() {}
 //       const expectedCode = '''
 // /// A mixin that provides spec functionality for [TestSpec].
 // mixin _\$TestSpec on Spec<TestSpec> {
-//   static TestSpec from(MixData mix) {
+//   static TestSpec from(MixContext mix) {
 //   return mix.attributeOf<TestSpecAttribute>()?.resolve(mix) ?? const TestSpec();
 // }
 
@@ -253,7 +253,7 @@ void main() {}
 //       const expectedCode = '''
 // /// A mixin that provides spec functionality for [DiagnosticableSpec].
 // mixin _\$DiagnosticableSpec on Spec<DiagnosticableSpec> {
-//   static DiagnosticableSpec from(MixData mix) {
+//   static DiagnosticableSpec from(MixContext mix) {
 //   return mix.attributeOf<DiagnosticableSpecAttribute>()?.resolve(mix) ?? const DiagnosticableSpec();
 // }
 
@@ -382,7 +382,7 @@ void main() {}
 //       const expectedCode = '''
 // /// A mixin that provides spec functionality for [ExistingMethodsSpec].
 // mixin _\$ExistingMethodsSpec on Spec<ExistingMethodsSpec> {
-//   static ExistingMethodsSpec from(MixData mix) {
+//   static ExistingMethodsSpec from(MixContext mix) {
 //   return mix.attributeOf<ExistingMethodsSpecAttribute>()?.resolve(mix) ?? const ExistingMethodsSpec();
 // }
 
