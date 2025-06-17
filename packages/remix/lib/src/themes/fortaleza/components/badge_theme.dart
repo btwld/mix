@@ -1,6 +1,7 @@
 import 'package:mix/mix.dart';
 
 import '../../../components/utility/badge/badge.dart';
+import '../../../helpers/spec_style.dart';
 import '../tokens.dart';
 
 class FortalezaBadgeStyle extends BadgeStyle {

@@ -1,6 +1,7 @@
 import 'package:mix/mix.dart';
 
 import '../../../components/feedback/toast/toast.dart';
+import '../../../helpers/spec_style.dart';
 import '../tokens.dart';
 
 class FortalezaToastStyle extends ToastStyle {

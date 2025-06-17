@@ -1,6 +1,7 @@
 import 'package:mix/mix.dart';
 
 import '../../../components/content_presentation/chip/chip.dart';
+import '../../../helpers/spec_style.dart';
 import '../tokens.dart';
 
 class FortalezaChipStyle extends ChipStyle {

@@ -4,6 +4,8 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
+import '../../../helpers/spec_style.dart';
+
 part 'label.g.dart';
 part 'label_style.dart';
 part 'label_widget.dart';

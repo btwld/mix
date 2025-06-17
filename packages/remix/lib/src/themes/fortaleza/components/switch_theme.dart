@@ -1,6 +1,7 @@
 import 'package:mix/mix.dart';
 
 import '../../../components/form/switch/switch.dart';
+import '../../../helpers/spec_style.dart';
 import '../tokens.dart';
 
 class FortalezaSwitchStyle extends SwitchStyle {

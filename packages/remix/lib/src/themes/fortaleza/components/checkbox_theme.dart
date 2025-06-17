@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../../../components/form/checkbox/checkbox.dart';
+import '../../../helpers/spec_style.dart';
 import '../tokens.dart';
 
 class FortalezaCheckboxStyle extends CheckboxStyle {

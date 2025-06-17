@@ -4,6 +4,7 @@ import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../../core/theme/remix_theme.dart';
+import '../../../helpers/spec_style.dart';
 
 part 'header.g.dart';
 part 'header_style.dart';

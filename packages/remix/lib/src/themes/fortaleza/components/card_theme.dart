@@ -1,6 +1,7 @@
 import 'package:mix/mix.dart';
 
 import '../../../components/content_presentation/card/card.dart';
+import '../../../helpers/spec_style.dart';
 import '../tokens.dart';
 
 class FortalezaCardStyle extends CardStyle {

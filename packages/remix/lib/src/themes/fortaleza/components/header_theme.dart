@@ -1,6 +1,7 @@
 import 'package:mix/mix.dart';
 
 import '../../../components/layout/header/header.dart';
+import '../../../helpers/spec_style.dart';
 import '../tokens.dart';
 
 class FortalezaHeaderStyle extends HeaderStyle {

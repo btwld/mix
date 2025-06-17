@@ -2,6 +2,7 @@ import 'package:flutter/animation.dart';
 import 'package:mix/mix.dart';
 
 import '../../../components/form/slider/slider.dart';
+import '../../../helpers/spec_style.dart';
 import '../tokens.dart';
 
 class FortalezaSliderStyle extends SliderStyle {

@@ -1,6 +1,7 @@
 import 'package:mix/mix.dart';
 
 import '../../../components/content_presentation/avatar/avatar.dart';
+import '../../../helpers/spec_style.dart';
 import '../tokens.dart';
 
 class FortalezaAvatarStyle extends AvatarStyle {

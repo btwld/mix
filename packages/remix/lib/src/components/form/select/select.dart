@@ -7,6 +7,7 @@ import '../../../core/theme/remix_theme.dart';
 import '../../../helpers/object_ext.dart';
 import '../../../helpers/overlay.dart';
 import '../../../helpers/spec/composited_transform_follower_spec.dart';
+import '../../../helpers/spec_style.dart';
 
 part 'item/select_menu.dart';
 part 'item/select_menu_widget.dart';

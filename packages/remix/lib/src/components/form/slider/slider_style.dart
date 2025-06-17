@@ -60,7 +60,8 @@ class SliderDarkStyle extends SliderStyle {
       ..color.black()
       ..shape.circle.side.color.white();
 
-    return Style.create([super.makeStyle(spec), activeTrack, track, thumb]).animate(
+    return Style.create([super.makeStyle(spec), activeTrack, track, thumb])
+        .animate(
       duration: const Duration(milliseconds: 150),
       curve: Curves.easeInOut,
     );

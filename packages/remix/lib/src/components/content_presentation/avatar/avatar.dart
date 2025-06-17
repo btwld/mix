@@ -4,6 +4,7 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../../core/theme/remix_theme.dart';
 import '../../../helpers/component_builder.dart';
+import '../../../helpers/spec_style.dart';
 import '../../../helpers/utility_extension.dart';
 
 part 'avatar.g.dart';

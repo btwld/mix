@@ -1,6 +1,7 @@
 import 'package:mix/mix.dart';
 
 import '../../../components/content_presentation/menu_item/menu_item.dart';
+import '../../../helpers/spec_style.dart';
 import '../tokens.dart';
 
 class FortalezaMenuItemStyle extends MenuItemStyle {

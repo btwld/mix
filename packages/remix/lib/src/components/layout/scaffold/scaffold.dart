@@ -5,6 +5,7 @@ import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../../core/theme/remix_theme.dart';
+import '../../../helpers/spec_style.dart';
 import '../../feedback/toast/toast.dart';
 
 part 'scaffold.g.dart';

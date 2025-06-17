@@ -2,6 +2,7 @@ import 'package:flutter/animation.dart';
 import 'package:mix/mix.dart';
 
 import '../../../components/form/radio/radio.dart';
+import '../../../helpers/spec_style.dart';
 import '../tokens.dart';
 
 class FortalezaRadioStyle extends RadioStyle {

@@ -1,6 +1,7 @@
 import 'package:mix/mix.dart';
 
 import '../../../components/form/select/select.dart';
+import '../../../helpers/spec_style.dart';
 import '../tokens.dart';
 
 class FortalezaSelectStyle extends SelectStyle {

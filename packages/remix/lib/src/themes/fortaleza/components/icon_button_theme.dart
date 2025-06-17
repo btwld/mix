@@ -1,6 +1,7 @@
 import 'package:mix/mix.dart';
 
 import '../../../components/action/icon_button/icon_button.dart';
+import '../../../helpers/spec_style.dart';
 import '../tokens.dart';
 
 class FortalezaIconButtonStyle extends IconButtonStyle {

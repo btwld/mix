@@ -5,6 +5,7 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../../core/theme/remix_theme.dart';
 import '../../../helpers/component_builder.dart';
+import '../../../helpers/spec_style.dart';
 
 part 'menu_item.g.dart';
 part 'menu_item_style.dart';

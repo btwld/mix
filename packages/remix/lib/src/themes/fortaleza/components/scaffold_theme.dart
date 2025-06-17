@@ -1,6 +1,7 @@
 import 'package:mix/mix.dart';
 
 import '../../../components/layout/scaffold/scaffold.dart';
+import '../../../helpers/spec_style.dart';
 import '../tokens.dart';
 
 class FortalezaScaffoldStyle extends ScaffoldStyle {
