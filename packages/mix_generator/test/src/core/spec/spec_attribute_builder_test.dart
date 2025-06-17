@@ -6,6 +6,8 @@
 
 // import '../../helpers/test_helpers.dart';
 
+void main() {}
+
 // void main() {
 //   group('SpecAttributeBuilder', () {
 //     test('builds basic attribute class correctly', () async {

@@ -6,6 +6,8 @@
 
 // import '../../helpers/test_helpers.dart';
 
+void main() {}
+
 // void main() {
 //   group('SpecMixinBuilder', () {
 //     test('builds basic spec mixin correctly', () async {

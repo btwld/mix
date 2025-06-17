@@ -4,6 +4,8 @@
 
 // import '../helpers/test_helpers.dart';
 
+void main() {}
+
 // void main() {
 //   group('TypeRegistry', () {
 //     test('handles Spec classes correctly', () async {

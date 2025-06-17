@@ -6,6 +6,8 @@
 
 // import '../../../src/helpers/test_helpers.dart';
 
+void main() {}
+
 // void main() {
 //   //----------------------------------------------------------------------------
 //   // CORE TYPE UTILITIES TESTS

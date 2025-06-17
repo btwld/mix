@@ -6,6 +6,8 @@
 
 // import '../../helpers/test_helpers.dart';
 
+void main() {}
+
 // void main() {
 //   group('SpecTweenBuilder', () {
 //     test('builds basic tween class correctly', () async {
