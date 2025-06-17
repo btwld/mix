@@ -3,7 +3,7 @@ description: Completely unstyled, widgets designed to integrate with Mix
 repository: https://github.com/btwld/mix/tree/main/packages/remix
 homepage: https://www.fluttermix.com/
 
-version: 0.0.4+1
+version: 0.0.4+2
 
 environment:
   sdk: ">=3.6.0 <4.0.0"
@@ -12,8 +12,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  mix: ^1.6.0
-  mix_annotations: ^0.4.0
+  mix: ^1.7.0
+  mix_annotations: ^0.4.1
   # naked:
   #   path: ../naked
 
@@ -22,7 +22,7 @@ dev_dependencies:
     sdk: flutter
   # custom_lint: ^0.6.4
   # mix_lint: ^0.1.1
-  mix_generator: ^0.4.0
+  mix_generator: ^0.4.1
   build_runner: ^2.4.9
   #lint
   flutter_lints: ^4.0.0

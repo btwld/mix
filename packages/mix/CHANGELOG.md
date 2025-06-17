@@ -1,3 +1,65 @@
+## 1.7.0
+
+ - **REFACTOR**: Move widget state handling from MixBuilder to SpecBuilder (#651).
+ - **REFACTOR**: Rename WidgetModifiersData to WidgetModifiersConfig (#649).
+ - **REFACTOR**: Fix deprecations and modernize codebase (#647).
+ - **REFACTOR**: Remove NestedStyleAttribute and migrate to direct Style usage (#644).
+ - **REFACTOR**: update outdated API (#583).
+ - **REFACTOR**: Deprecate `MixWidgetStateController` (#586).
+ - **REFACTOR**: Use WidgetState instead of MixWidgetState (#582).
+ - **REFACTOR**: Rename `MixableProperty` to `MixableType` (#574).
+ - **REFACTOR**: mix generator clean up and mix semantic changes (#569).
+ - **REFACTOR**: Rewrite Fortaleza theme using the new code gen for tokens (#528).
+ - **REFACTOR**: Solve dcm lint issues (#519).
+ - **REFACTOR**: ShapeBorder merge (#490).
+ - **REFACTOR**: Rewrite all components in the new Archtecture (#467).
+ - **FIX**: FlexSpecWidget prioritizes the direction in spec (#414).
+ - **FIX**: Change Mixable to extend EqualityMixin instead of StyleElement (#648).
+ - **FIX**: copyWith overriding bug (#622).
+ - **FIX**: Order of modifiers implementation on Box, Image and Text (#529).
+ - **FIX**: reset modifiers and directives when using fluentAPI (#482).
+ - **FIX**: Update OnBrightnessVariant to use `MediaQuery` instead of `Theme` (#471).
+ - **FIX**: Correct handling of individual border sides (#408).
+ - **FIX**: Style when merged with an AnimatedStyle should generate an AnimatedStyle (#472).
+ - **FIX**(docs): fix fn level docs for Style::applyVariants (#460).
+ - **FIX**: Shadow list animation (#445).
+ - **FIX**: Added missing widget state utilities (#411).
+ - **FIX**: HitTestBehavior when there is a Interectable in the tree (#437).
+ - **FIX**: Pressable disposes controller only if it creates it (#424).
+ - **FIX**: breakpoint utility merge exception (#421).
+ - **FEAT**: Utilities for text height behavior (#495).
+ - **FEAT**: Create StrokeAlignUtility (#496).
+ - **FEAT**: Add more directives to Colors (#477).
+ - **FEAT**: Improve error messages (#491).
+ - **FEAT**: builder optimization (#629).
+ - **FEAT**: add error state to MixWidgetState (#489).
+ - **FEAT**: Add CustomOutlinedBorder's  (#487).
+ - **FEAT**: remix-styling-configuration (#483).
+ - **FEAT**: transform.translate (#484).
+ - **FEAT**: deprecate styled widgets in favor of new naming conventions (#619).
+ - **FEAT**: Implementing duration extension for int  (#634).
+ - **FEAT**: Accordion interaction based on open variable (#546).
+ - **FEAT**: implement a way to clear inline modifiers (#478).
+ - **FEAT**: Fluent API (#475).
+ - **FEAT**: Create MixBuilder (#581).
+ - **FEAT**: Add generated style-focused modifiers and specs (#652).
+ - **FEAT**: Create mouse cursor Decorator (#263).
+ - **FEAT**: Create Select component (#448).
+ - **FEAT**: unify SpecUtility, Style, and Attributes as compatible values (#643).
+ - **FEAT**: Add parameter onEnd for AnimatedStyle (#458).
+ - **FEAT**: `SingleChildScrollView` widget modifier (#427).
+ - **FEAT**: Create code gen for design tokens (#521).
+ - **FEAT**: "Naked" - A Behavior-First UI Component Library for Flutter (#579).
+ - **FEAT**: Rewrite FlexBox as a Mix's primitive component (#517).
+ - **FEAT**: TargetPlatform and web variants (#431).
+ - **FEAT**: Slider component (#509).
+ - **FEAT**: Improve spring curve.
+ - **FEAT**: Remix improvements and further improvements (#410).
+ - **FEAT**: implement toast component (#503).
+ - **FEAT**: Create a specific utility to Transform.rotate (#434).
+ - **DOCS**: improve mix theme data features explanations (#404).
+ - **DOCS**: Add section for `TokenResolver` (#537).
+
 ## Next Release
 
  - **PERF**: Implemented ComputedStyle with surgical rebuilds via InheritedModel

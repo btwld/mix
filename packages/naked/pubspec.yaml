@@ -1,6 +1,6 @@
 name: naked
 description: A library of behavior-first UI components for Flutter that separate state from presentation.
-version: 0.0.1-dev.0 # Or keep 0.0.1 if that's correct
+version: 0.0.1-dev.1 # Or keep 0.0.1 if that's correct
 repository: https://github.com/leofarias/naked # Restore original repo URL
 
 environment:
