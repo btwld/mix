@@ -1,5 +1,4 @@
 import '../../components/content_presentation/avatar/avatar.dart';
-import '../../components/content_presentation/chip/chip.dart';
 import '../../components/content_presentation/menu_item/menu_item.dart';
 import '../../components/feedback/callout/callout.dart';
 import '../../components/feedback/dialog/dialog.dart';
@@ -26,7 +25,6 @@ class RemixComponentTheme {
   final CalloutStyle callout;
   final CheckboxStyle checkbox;
   final DialogStyle dialog;
-  final ChipStyle chip;
   final DividerStyle divider;
   final HeaderStyle header;
 
@@ -50,7 +48,6 @@ class RemixComponentTheme {
     required this.callout,
     required this.checkbox,
     required this.dialog,
-    required this.chip,
     required this.divider,
     required this.header,
     required this.menuItem,
@@ -75,7 +72,6 @@ class RemixComponentTheme {
       callout: CalloutStyle(),
       checkbox: CheckboxStyle(),
       dialog: DialogStyle(),
-      chip: ChipStyle(),
       divider: DividerStyle(),
       header: HeaderStyle(),
       menuItem: MenuItemStyle(),
@@ -101,7 +97,6 @@ class RemixComponentTheme {
       callout: const CalloutDarkStyle(),
       checkbox: const CheckboxDarkStyle(),
       dialog: const DialogDarkStyle(),
-      chip: const ChipDarkStyle(),
       divider: const DividerDarkStyle(),
       header: const HeaderDarkStyle(),
       menuItem: const MenuItemDarkStyle(),
@@ -126,7 +121,6 @@ class RemixComponentTheme {
     CalloutStyle? callout,
     CheckboxStyle? checkbox,
     DialogStyle? dialog,
-    ChipStyle? chip,
     DividerStyle? divider,
     HeaderStyle? header,
     MenuItemStyle? menuItem,
@@ -149,7 +143,6 @@ class RemixComponentTheme {
       callout: callout ?? this.callout,
       checkbox: checkbox ?? this.checkbox,
       dialog: dialog ?? this.dialog,
-      chip: chip ?? this.chip,
       divider: divider ?? this.divider,
       header: header ?? this.header,
       menuItem: menuItem ?? this.menuItem,

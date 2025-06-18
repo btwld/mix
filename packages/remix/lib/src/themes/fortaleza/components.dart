@@ -3,7 +3,6 @@ import 'components/avatar_theme.dart';
 import 'components/badge_theme.dart';
 import 'components/callout_theme.dart';
 import 'components/checkbox_theme.dart';
-import 'components/chip_theme.dart';
 import 'components/dialog_theme.dart';
 import 'components/divider_theme.dart';
 import 'components/dropdown_theme.dart';
@@ -28,7 +27,6 @@ class FortalezaComponentTheme extends RemixComponentTheme {
     required super.callout,
     required super.checkbox,
     required super.dialog,
-    required super.chip,
     required super.divider,
     required super.header,
     required super.menuItem,
@@ -52,7 +50,6 @@ class FortalezaComponentTheme extends RemixComponentTheme {
       callout: FortalezaCalloutStyle(),
       checkbox: FortalezaCheckboxStyle(),
       dialog: FortalezaDialogStyle(),
-      chip: FortalezaChipStyle(),
       divider: FortalezaDividerStyle(),
       header: FortalezaHeaderStyle(),
       menuItem: FortalezaMenuItemStyle(),

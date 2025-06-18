@@ -16,7 +16,7 @@ import 'package:demo/components/badge_use_case.dart' as _i4;
 import 'package:demo/components/callout_use_case.dart' as _i5;
 import 'package:demo/components/card_use_case.dart' as _i6;
 import 'package:demo/components/checkbox_use_case.dart' as _i7;
-import 'package:demo/components/chip_use_case.dart' as _i8;
+import 'package:demo/components/chip.dart' as _i8;
 import 'package:demo/components/dialog_use_case.dart' as _i9;
 import 'package:demo/components/divider_use_case.dart' as _i10;
 import 'package:demo/components/dropdown_menu.dart' as _i11;
