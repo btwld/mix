@@ -109,87 +109,77 @@ class _RxAccordionItemState<T> extends State<RxAccordionItem<T>>
   Widget build(BuildContext context) {
     final data = _InheritedAccordionStyle.of(context);
 
-    return MixWidgetState.fromSet(
-      states: mixController.value,
-      child: MixBuilder(
-        style: Style(data.style),
-        builder: (context) {
-          final spec = AccordionSpec.of(context);
+    return RemixBuilder(
+      builder: (context) {
+        final spec = AccordionSpec.of(context);
 
-          return spec.itemContainer(
-            child: NakedAccordionItem<T>(
-              trigger: (_, isExpanded, toggle) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  setState(() {
-                    mixController.update(WidgetState.selected, isExpanded);
-                  });
-                });
+        return spec.itemContainer(
+          child: NakedAccordionItem<T>(
+            trigger: (_, isExpanded, toggle) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                mixController.selected = isExpanded;
+              });
 
-                return NakedButton(
-                  onPressed: toggle,
-                  onHoverState: (state) {
-                    setState(() {
-                      mixController.hovered = state;
-                    });
-                  },
-                  onPressedState: (state) {
-                    setState(() {
-                      mixController.pressed = state;
-                    });
-                  },
-                  onFocusState: (state) {
-                    setState(() {
-                      mixController.focused = state;
-                    });
-                  },
-                  enabled: widget.enabled,
-                  focusNode: widget.focusNode,
-                  child: IconTheme(
-                    data: spec.leadingIcon,
-                    child: DefaultTextStyle(
-                      style: spec.titleStyle,
-                      child: spec.headerContainer(
-                        direction: Axis.horizontal,
-                        children: [
-                          widget.header,
-                          const Spacer(),
-                          if (widget.trailingIconBuilder != null)
-                            widget.trailingIconBuilder!(isExpanded)
-                          else
-                            spec.trailingIcon(data.defaultTrailingIcon),
-                        ],
-                      ),
+              return NakedButton(
+                onPressed: toggle,
+                onHoverState: (state) {
+                  mixController.hovered = state;
+                },
+                onPressedState: (state) {
+                  mixController.pressed = state;
+                },
+                onFocusState: (state) {
+                  mixController.focused = state;
+                },
+                enabled: widget.enabled,
+                focusNode: widget.focusNode,
+                child: IconTheme(
+                  data: spec.leadingIcon,
+                  child: DefaultTextStyle(
+                    style: spec.titleStyle,
+                    child: spec.headerContainer(
+                      direction: Axis.horizontal,
+                      children: [
+                        widget.header,
+                        const Spacer(),
+                        if (widget.trailingIconBuilder != null)
+                          widget.trailingIconBuilder!(isExpanded)
+                        else
+                          spec.trailingIcon(data.defaultTrailingIcon),
+                      ],
                     ),
+                  ),
+                ),
+              );
+            },
+            value: widget.value,
+            transitionBuilder: (child) => AnimatedSwitcher(
+              duration: spec.contentContainer.animated?.duration ??
+                  _kAnimationDuration,
+              switchInCurve:
+                  spec.contentContainer.animated?.curve ?? _kAnimationCurve,
+              transitionBuilder: (child, animation) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: SizeTransition(
+                    axis: Axis.vertical,
+                    sizeFactor: animation,
+                    axisAlignment: -1,
+                    child: child,
                   ),
                 );
               },
-              value: widget.value,
-              transitionBuilder: (child) => AnimatedSwitcher(
-                duration: spec.contentContainer.animated?.duration ??
-                    _kAnimationDuration,
-                switchInCurve:
-                    spec.contentContainer.animated?.curve ?? _kAnimationCurve,
-                transitionBuilder: (child, animation) {
-                  return FadeTransition(
-                    opacity: animation,
-                    child: SizeTransition(
-                      axis: Axis.vertical,
-                      sizeFactor: animation,
-                      axisAlignment: -1,
-                      child: child,
-                    ),
-                  );
-                },
-                child: child,
-              ),
-              child: DefaultTextStyle(
-                style: spec.contentStyle,
-                child: spec.contentContainer(child: widget.child),
-              ),
+              child: child,
             ),
-          );
-        },
-      ),
+            child: DefaultTextStyle(
+              style: spec.contentStyle,
+              child: spec.contentContainer(child: widget.child),
+            ),
+          ),
+        );
+      },
+      style: Style(data.style),
+      mixController: mixController,
     );
   }
 }

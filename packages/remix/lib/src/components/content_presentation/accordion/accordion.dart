@@ -6,6 +6,7 @@ import 'package:naked/naked.dart';
 
 import '../../../core/attributes/icon_theme_data.dart';
 import '../../../helpers/mix_controller_mixin.dart';
+import '../../../helpers/remix_builder.dart';
 import '../label/label.dart';
 
 part 'accordion.g.dart';

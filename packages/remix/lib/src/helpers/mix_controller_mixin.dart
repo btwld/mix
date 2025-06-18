@@ -23,12 +23,12 @@ abstract class Errorable {
 }
 
 mixin MixControllerMixin<T extends StatefulWidget> on State<T> {
-  late final MixWidgetStateController mixController;
+  late final WidgetStatesController mixController;
 
   @override
   void initState() {
     super.initState();
-    mixController = MixWidgetStateController();
+    mixController = WidgetStatesController();
   }
 
   @override
