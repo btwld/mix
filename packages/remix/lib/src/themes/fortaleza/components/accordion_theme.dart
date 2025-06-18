@@ -1,18 +1,17 @@
-import 'package:flutter/widgets.dart';
-import 'package:mix/mix.dart';
+// import 'package:flutter/widgets.dart';
+// import 'package:mix/mix.dart';
 
-import '../../../components/content_presentation/accordion/accordion.dart';
-import '../../../helpers/spec_style.dart';
-import '../tokens.dart';
+// import '../../../components/content_presentation/accordion/accordion.dart';
+// import '../tokens.dart';
 
-class FortalezaAccordionStyle extends AccordionStyle {
-  const FortalezaAccordionStyle();
+// class FortalezaAccordionStyle extends AccordionStyle {
+//   const FortalezaAccordionStyle();
 
-  @override
-  Style makeStyle(SpecConfiguration<AccordionSpecUtility> spec) {
-    final $ = spec.utilities;
+//   @override
+//   Style makeStyle(SpecConfiguration<AccordionSpecUtility> spec) {
+//     final $ = spec.utilities;
 
-    final baseStyle = super.makeStyle(spec);
+//     final baseStyle = super.makeStyle(spec);
 
     final style = Style(
       // Container
@@ -44,13 +43,13 @@ class FortalezaAccordionStyle extends AccordionStyle {
         ..animated.curve.spring(stiffness: 100)
         ..animated.duration(const Duration(milliseconds: 250)),
 
-      // Variants
-      spec.on.selected($.contentContainer.border.top.style.solid()),
-      spec.on.hover(
-        $.header.container.color.$neutral(3),
-        $.header.text.style.decoration.none(),
-      ),
-    );
+//       // Variants
+//       spec.on.selected($.contentContainer.border.top.style.solid()),
+//       spec.on.hover(
+//         $.header.container.color.$neutral(3),
+//         $.header.text.style.decoration.none(),
+//       ),
+//     );
 
     return Style.create([baseStyle, style]);
   }

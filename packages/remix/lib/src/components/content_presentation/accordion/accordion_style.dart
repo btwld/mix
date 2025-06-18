@@ -33,7 +33,30 @@ class AccordionStyle extends SpecStyle<AccordionSpecUtility> {
       spec.on.selected($.header.trailingIcon.wrap.transform.rotate.d180()),
     ];
 
-    return Style.create([...flexContainerStyle, ...headerStyle]);
+    accordion.leadingIcon.size(18);
+
+    accordion.titleStyle
+      ..fontSize(14)
+      ..color.black()
+      ..letterSpacing(0.4)
+      ..fontWeight.w500();
+
+    accordion.contentStyle.color.black();
+
+    accordion.contentContainer
+      ..color.white()
+      ..padding.bottom(16)
+      ..width.infinity();
+
+    accordion.itemContainer.border.bottom.color.grey();
+
+    return Style.create([
+      ...headerStyle,
+      ...contentStyle,
+      $.itemContainer.border.bottom.color.grey(),
+      $on.focus($.headerContainer.color.red()),
+      disabled,
+    ]).animate(duration: const Duration(milliseconds: 200));
   }
 }
 

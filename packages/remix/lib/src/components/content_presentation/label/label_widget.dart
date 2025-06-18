@@ -19,7 +19,7 @@ class RxLabel extends StatelessWidget {
   const RxLabel(
     this.label, {
     super.key,
-    required this.icon,
+    this.icon,
     this.style = const LabelStyle(),
   });
 
