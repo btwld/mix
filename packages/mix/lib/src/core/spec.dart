@@ -1,8 +1,13 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
-import '../../mix.dart';
+import '../attributes/animated/animated_data.dart';
+import '../attributes/animated/animated_data_dto.dart';
+import '../attributes/modifiers/widget_modifiers_config.dart';
+import '../attributes/modifiers/widget_modifiers_config_dto.dart';
 import '../internal/compare_mixin.dart';
+import 'element.dart';
+import 'factory/mix_data.dart';
 
 @immutable
 abstract class Spec<T extends Spec<T>> with EqualityMixin {
@@ -45,5 +50,3 @@ abstract class SpecAttribute<Value> extends StyleElement
   @override
   SpecAttribute<Value> merge(covariant SpecAttribute<Value>? other);
 }
-
-
