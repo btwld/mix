@@ -1,37 +1,20 @@
 part of 'card.dart';
 
-class CardStyle extends SpecStyle<CardSpecUtility> {
-  const CardStyle();
+class RxCardStyle extends CardSpecUtility<CardSpecAttribute> {
+  RxCardStyle() : super((v) => v);
 
-  @override
-  Style makeStyle(SpecConfiguration<CardSpecUtility> spec) {
-    final $ = spec.utilities;
+  factory RxCardStyle._default() {
+    final style = RxCardStyle()
+      ..container.borderRadius(8)
+      ..container.color.white()
+      ..container.border.all.color.black12()
+      ..container.padding.all(16);
 
-    final containerStyle = [
-      $.container
-        ..borderRadius(4)
-        ..color.white()
-        ..border.all.color.black12()
-        ..padding.all(8),
-    ];
-
-    return Style.create([...containerStyle]);
+    return style;
   }
-}
-
-class CardDarkStyle extends CardStyle {
-  const CardDarkStyle();
 
   @override
-  Style makeStyle(SpecConfiguration<CardSpecUtility> spec) {
-    final $ = spec.utilities;
-
-    final containerStyle = [
-      $.container
-        ..color.black()
-        ..border.all.color.white30(),
-    ];
-
-    return Style.create([super.makeStyle(spec), ...containerStyle]);
+  RxCardStyle merge(RxCardStyle other) {
+    return super.merge(other) as RxCardStyle;
   }
 }

@@ -2,7 +2,6 @@ import '../../core/theme/component.dart';
 import 'components/avatar_theme.dart';
 import 'components/badge_theme.dart';
 import 'components/callout_theme.dart';
-import 'components/card_theme.dart';
 import 'components/checkbox_theme.dart';
 import 'components/chip_theme.dart';
 import 'components/dialog_theme.dart';
@@ -27,7 +26,6 @@ class FortalezaComponentTheme extends RemixComponentTheme {
     required super.badge,
     // required super.button,
     required super.callout,
-    required super.card,
     required super.checkbox,
     required super.dialog,
     required super.chip,
@@ -51,9 +49,7 @@ class FortalezaComponentTheme extends RemixComponentTheme {
     return const FortalezaComponentTheme(
       avatar: FortalezaAvatarStyle(),
       badge: FortalezaBadgeStyle(),
-      // button: FortalezaButtonStyle(),
       callout: FortalezaCalloutStyle(),
-      card: FortalezaCardStyle(),
       checkbox: FortalezaCheckboxStyle(),
       dialog: FortalezaDialogStyle(),
       chip: FortalezaChipStyle(),
