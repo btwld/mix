@@ -40,7 +40,10 @@ build/
 coverage/
 
 # MacOs related
+**/Pods/
+**/macos/Flutter/GeneratedPluginRegistrant.swift
 **/macos/Flutter/ephemeral
+**/xcuserdata/
 
 # Android related
 **/android/**/gradle-wrapper.jar
@@ -88,6 +91,16 @@ coverage/
 demo/.fvm/flutter_sdk
 website/tsconfig.tsbuildinfo
 node_modules
+
+# Windows
+**/windows/flutter/generated_plugin_registrant.cc
+**/windows/flutter/generated_plugin_registrant.h
+**/windows/flutter/generated_plugins.cmake
+
+# Linux
+**/linux/flutter/generated_plugin_registrant.cc
+**/linux/flutter/generated_plugin_registrant.h
+**/linux/flutter/generated_plugins.cmake
 
 # FVM 
 
