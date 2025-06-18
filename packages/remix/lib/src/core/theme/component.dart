@@ -1,5 +1,4 @@
 import '../../components/content_presentation/avatar/avatar.dart';
-import '../../components/content_presentation/card/card.dart';
 import '../../components/content_presentation/chip/chip.dart';
 import '../../components/content_presentation/menu_item/menu_item.dart';
 import '../../components/feedback/callout/callout.dart';
@@ -25,7 +24,6 @@ class RemixComponentTheme {
   final BadgeStyle badge;
   // final ButtonStyle button;
   final CalloutStyle callout;
-  final CardStyle card;
   final CheckboxStyle checkbox;
   final DialogStyle dialog;
   final ChipStyle chip;
@@ -50,7 +48,6 @@ class RemixComponentTheme {
     required this.badge,
     // required this.button,
     required this.callout,
-    required this.card,
     required this.checkbox,
     required this.dialog,
     required this.chip,
@@ -76,7 +73,6 @@ class RemixComponentTheme {
       badge: BadgeStyle(),
       // button: ButtonStyle(),
       callout: CalloutStyle(),
-      card: CardStyle(),
       checkbox: CheckboxStyle(),
       dialog: DialogStyle(),
       chip: ChipStyle(),
@@ -103,7 +99,6 @@ class RemixComponentTheme {
       badge: const BadgeDarkStyle(),
       // button: const ButtonDarkStyle(),
       callout: const CalloutDarkStyle(),
-      card: const CardDarkStyle(),
       checkbox: const CheckboxDarkStyle(),
       dialog: const DialogDarkStyle(),
       chip: const ChipDarkStyle(),
@@ -129,7 +124,6 @@ class RemixComponentTheme {
     BadgeStyle? badge,
     // ButtonStyle? button,
     CalloutStyle? callout,
-    CardStyle? card,
     CheckboxStyle? checkbox,
     DialogStyle? dialog,
     ChipStyle? chip,
@@ -153,7 +147,6 @@ class RemixComponentTheme {
       badge: badge ?? this.badge,
       // button: button ?? this.button,
       callout: callout ?? this.callout,
-      card: card ?? this.card,
       checkbox: checkbox ?? this.checkbox,
       dialog: dialog ?? this.dialog,
       chip: chip ?? this.chip,
