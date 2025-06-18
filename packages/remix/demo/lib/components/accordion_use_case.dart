@@ -7,8 +7,6 @@ import 'package:remix/remix.dart' hide Scaffold;
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
-final _accordionKey = GlobalKey();
-
 @widgetbook.UseCase(
   name: 'Accordion Component',
   type: RxAccordion,
