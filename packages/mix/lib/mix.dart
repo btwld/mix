@@ -73,6 +73,7 @@ export 'src/core/styled_widget_deprecation.dart';
 export 'src/core/utility.dart';
 export 'src/core/variant.dart';
 export 'src/core/widget_state/widget_state_controller.dart';
+export 'src/helpers/duration.dart';
 
 /// MODIFIERS
 export 'src/modifiers/align_widget_modifier.dart';

@@ -11,7 +11,7 @@ class RemixBuilder extends StatelessWidget {
   });
 
   final WidgetBuilder builder;
-  final Style style;
+  final BaseStyle<SpecAttribute> style;
   final WidgetStatesController mixController;
 
   @override
@@ -21,7 +21,7 @@ class RemixBuilder extends StatelessWidget {
       builder: (_, __) {
         return MixWidgetState.fromSet(
           states: mixController.value,
-          child: MixBuilder(style: style, builder: builder),
+          child: MixBuilder(style: Style(style), builder: builder),
         );
       },
     );

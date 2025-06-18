@@ -14,8 +14,8 @@ dependencies:
     sdk: flutter
   mix: ^1.7.0
   mix_annotations: ^0.4.1
-  # naked:
-  #   path: ../naked
+  naked:
+    path: ../naked
 
 dev_dependencies:
   flutter_test:
