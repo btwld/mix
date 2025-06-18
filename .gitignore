@@ -106,8 +106,4 @@ packages/mix/.cody/ignore
 .orbit
 CLAUDE.md
 .augment/env/setup.sh
-/packages/remix/demo/ios
-/packages/remix/demo/linux
-/packages/remix/demo/macos
-/packages/remix/demo/windows
 
