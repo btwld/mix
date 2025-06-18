@@ -1,4 +1,3 @@
-import '../../components/action/icon_button/icon_button.dart';
 import '../../components/content_presentation/accordion/accordion.dart';
 import '../../components/content_presentation/avatar/avatar.dart';
 import '../../components/content_presentation/card/card.dart';
@@ -34,7 +33,7 @@ class RemixComponentTheme {
   final ChipStyle chip;
   final DividerStyle divider;
   final HeaderStyle header;
-  final IconButtonStyle iconButton;
+
   final MenuItemStyle menuItem;
   final ProgressStyle progress;
   final RadioStyle radio;
@@ -60,7 +59,6 @@ class RemixComponentTheme {
     required this.chip,
     required this.divider,
     required this.header,
-    required this.iconButton,
     required this.menuItem,
     required this.progress,
     required this.radio,
@@ -88,7 +86,6 @@ class RemixComponentTheme {
       chip: ChipStyle(),
       divider: DividerStyle(),
       header: HeaderStyle(),
-      iconButton: IconButtonStyle(),
       menuItem: MenuItemStyle(),
       progress: ProgressStyle(),
       radio: RadioStyle(),
@@ -117,7 +114,6 @@ class RemixComponentTheme {
       chip: const ChipDarkStyle(),
       divider: const DividerDarkStyle(),
       header: const HeaderDarkStyle(),
-      iconButton: const IconButtonDarkStyle(),
       menuItem: const MenuItemDarkStyle(),
       progress: const ProgressDarkStyle(),
       radio: const RadioDarkStyle(),
@@ -145,7 +141,6 @@ class RemixComponentTheme {
     ChipStyle? chip,
     DividerStyle? divider,
     HeaderStyle? header,
-    IconButtonStyle? iconButton,
     MenuItemStyle? menuItem,
     ProgressStyle? progress,
     RadioStyle? radio,
@@ -171,7 +166,6 @@ class RemixComponentTheme {
       chip: chip ?? this.chip,
       divider: divider ?? this.divider,
       header: header ?? this.header,
-      iconButton: iconButton ?? this.iconButton,
       menuItem: menuItem ?? this.menuItem,
       progress: progress ?? this.progress,
       radio: radio ?? this.radio,

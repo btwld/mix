@@ -35,7 +35,7 @@ class _DropdownMenuDemoState extends State<DropdownMenuDemo> {
   Widget build(BuildContext context) {
     return Center(
       child: DropdownMenu(
-        trigger: IconButton(
+        trigger: RxButton.icon(
           m.Icons.menu,
           onPressed: () {
             setState(() {
