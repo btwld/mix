@@ -1,54 +1,25 @@
 part of 'accordion.dart';
 
-class AccordionStyle extends SpecStyle<AccordionSpecUtility> {
-  const AccordionStyle();
+class RxAccordionStyle extends AccordionSpecUtility<AccordionSpecAttribute> {
+  RxAccordionStyle() : super((v) => v);
 
-  @override
-  Style makeStyle(SpecConfiguration<AccordionSpecUtility> spec) {
-    final $ = spec.utilities;
+  factory RxAccordionStyle.themed() {
+    final style = RxAccordionStyle()
+      ..itemContainer.margin.bottom(12)
+      ..itemContainer.border.all.color.grey.shade300()
+      ..itemContainer.borderRadius.circular(12)
+      ..headerContainer.padding(12)
+      ..contentContainer.width.infinity()
+      ..contentContainer.padding(12)
+      ..contentContainer.padding.top(0)
+      ..contentContainer.color.transparent()
+      ..titleStyle.fontSize(14)
+      ..titleStyle.fontWeight.w500()
+      ..titleStyle.color.grey.shade800()
+      ..contentStyle.fontSize(14)
+      ..contentStyle.fontWeight.w400()
+      ..contentStyle.color.grey.shade800();
 
-    final flexContainerStyle = [
-      $.container
-        ..flex.mainAxisSize.min()
-        ..clipBehavior.antiAlias()
-        ..border.bottom.color.grey.shade400(),
-    ];
-
-    final headerStyle = [
-      $.header.container
-        ..flex.gap(6)
-        ..width.infinity()
-        ..padding.vertical(16)
-        ..color.transparent(),
-      $.header
-        ..leadingIcon.size(18)
-        ..trailingIcon.wrap.transform.rotate(0)
-        ..trailingIcon.size(18),
-      $.header.text
-        ..style.fontSize(16)
-        ..style.letterSpacing(0.4)
-        ..style.fontWeight.w600()
-        ..style.decoration.none(),
-      spec.on.hover($.header.text.style.decoration.underline()),
-      spec.on.selected($.header.trailingIcon.wrap.transform.rotate.d180()),
-    ];
-
-    return Style.create([...flexContainerStyle, ...headerStyle]);
-  }
-}
-
-class AccordionDarkStyle extends AccordionStyle {
-  const AccordionDarkStyle();
-
-  @override
-  Style makeStyle(SpecConfiguration<AccordionSpecUtility> spec) {
-    final $ = spec.utilities;
-
-    return Style.create([
-      super.makeStyle(spec),
-      $.container.border.bottom.color.grey.shade700(),
-      $.header.text.style.color.white(),
-      $.header.trailingIcon.color.white(),
-    ]);
+    return style;
   }
 }

@@ -1,5 +1,4 @@
 import '../../core/theme/component.dart';
-import 'components/accordion_theme.dart';
 import 'components/avatar_theme.dart';
 import 'components/badge_theme.dart';
 import 'components/callout_theme.dart';
@@ -24,7 +23,6 @@ import 'components/toast_theme.dart';
 
 class FortalezaComponentTheme extends RemixComponentTheme {
   const FortalezaComponentTheme({
-    required super.accordion,
     required super.avatar,
     required super.badge,
     // required super.button,
@@ -51,7 +49,6 @@ class FortalezaComponentTheme extends RemixComponentTheme {
 
   static RemixComponentTheme light() {
     return const FortalezaComponentTheme(
-      accordion: FortalezaAccordionStyle(),
       avatar: FortalezaAvatarStyle(),
       badge: FortalezaBadgeStyle(),
       // button: FortalezaButtonStyle(),
