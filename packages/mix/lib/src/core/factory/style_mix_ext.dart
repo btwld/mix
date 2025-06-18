@@ -1,6 +1,9 @@
+import 'dart:ui';
+
 import 'package:flutter/widgets.dart';
 
 import '../../variants/context_variant.dart';
+import '../../variants/context_variant_util/on_brightness_util.dart';
 import '../../variants/variant_attribute.dart';
 import '../../variants/widget_state_variant.dart';
 import '../attributes_map.dart';
@@ -123,5 +126,13 @@ class SpecUtilityContextVariantUtility<T extends SpecAttribute, V> {
   /// press feedback and interactive elements.
   void pressed(SpecUtility<T, V> style) {
     _on(const OnPressVariant(), () => style);
+  }
+
+  void dark(SpecUtility<T, V> style) {
+    _on(const OnBrightnessVariant(Brightness.dark), () => style);
+  }
+
+  void light(SpecUtility<T, V> style) {
+    _on(const OnBrightnessVariant(Brightness.light), () => style);
   }
 }
