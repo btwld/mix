@@ -147,7 +147,8 @@ class _RxButtonState extends State<RxButton> with MixControllerMixin {
 
   bool get _isEnabled => widget.enabled && !widget.loading;
 
-  BaseStyle<ButtonSpecAttribute> get _style => widget.style ?? RxButtonStyle();
+  RxButtonStyle get _style =>
+      RxButtonStyle._default().merge(widget.style ?? RxButtonStyle());
 
   @override
   Widget build(BuildContext context) {

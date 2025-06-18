@@ -19,7 +19,7 @@ Widget buildAccordionUseCase(BuildContext context) {
         child: RxAccordion(
           defaultTrailingIcon: context.knobs.iconData(label: 'Trailing Icon') ??
               Icons.keyboard_arrow_down_rounded,
-          style: RxAccordionStyle.themed()
+          style: RxAccordionStyle()
             ..itemContainer.animated.ease(200.ms)
             ..trailingIcon.wrap.transform(Matrix4.identity())
             ..trailingIcon.animated.ease(200.ms)

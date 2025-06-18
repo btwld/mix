@@ -1,11 +1,10 @@
 part of 'button.dart';
 
 class RxButtonStyle extends ButtonSpecUtility<ButtonSpecAttribute> {
-  @protected
-  RxButtonStyle.internal() : super((v) => v);
+  RxButtonStyle() : super((v) => v);
 
-  factory RxButtonStyle() {
-    final style = RxButtonStyle.internal()
+  factory RxButtonStyle._default() {
+    final style = RxButtonStyle()
       ..container.color.black()
       ..container.padding(10)
       ..container.borderRadius(8)
@@ -13,5 +12,10 @@ class RxButtonStyle extends ButtonSpecUtility<ButtonSpecAttribute> {
       ..icon.size(18);
 
     return style;
+  }
+
+  @override
+  RxButtonStyle merge(RxButtonStyle other) {
+    return super.merge(other) as RxButtonStyle;
   }
 }

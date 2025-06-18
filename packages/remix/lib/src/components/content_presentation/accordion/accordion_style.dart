@@ -3,7 +3,7 @@ part of 'accordion.dart';
 class RxAccordionStyle extends AccordionSpecUtility<AccordionSpecAttribute> {
   RxAccordionStyle() : super((v) => v);
 
-  factory RxAccordionStyle.themed() {
+  factory RxAccordionStyle._default() {
     final style = RxAccordionStyle()
       ..itemContainer.margin.bottom(12)
       ..itemContainer.border.all.color.grey.shade300()
@@ -21,5 +21,10 @@ class RxAccordionStyle extends AccordionSpecUtility<AccordionSpecAttribute> {
       ..contentStyle.color.grey.shade800();
 
     return style;
+  }
+
+  @override
+  RxAccordionStyle merge(RxAccordionStyle other) {
+    return super.merge(other) as RxAccordionStyle;
   }
 }

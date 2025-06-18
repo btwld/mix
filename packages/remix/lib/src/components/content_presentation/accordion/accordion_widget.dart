@@ -24,7 +24,9 @@ class _RxAccordionState<T> extends State<RxAccordion<T>> {
   late final NakedAccordionController<T> _controller =
       widget.controller ?? NakedAccordionController<T>();
 
-  RxAccordionStyle get style => widget.style ?? RxAccordionStyle();
+  RxAccordionStyle get style => RxAccordionStyle._default().merge(
+        widget.style ?? RxAccordionStyle(),
+      );
 
   @override
   void dispose() {
