@@ -124,6 +124,18 @@ class _SpecBuilderState extends State<SpecBuilder> {
     _controller = widget.controller ?? WidgetStatesController();
   }
 
+  Style _convertToStyle(BaseStyle style) {
+    if (style is AnimatedStyle) {
+      return style;
+    }
+
+    if (style is Style) {
+      return style;
+    }
+
+    return Style(style);
+  }
+
   @override
   void dispose() {
     // Only dispose controllers we created internally
@@ -136,7 +148,7 @@ class _SpecBuilderState extends State<SpecBuilder> {
   @override
   Widget build(BuildContext context) {
     final builder = MixBuilder(
-      style: Style.from(widget.style),
+      style: _convertToStyle(widget.style),
       builder: widget.builder,
       inherit: widget.inherit,
       orderOfModifiers: widget.orderOfModifiers,

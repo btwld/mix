@@ -46,37 +46,4 @@ abstract class SpecAttribute<Value> extends StyleElement
   SpecAttribute<Value> merge(covariant SpecAttribute<Value>? other);
 }
 
-abstract class SpecUtility<T extends SpecAttribute, V> extends StyleUtility<T> {
-  @protected
-  @visibleForTesting
-  final T Function(V) attributeBuilder;
 
-  SpecUtility(
-    this.attributeBuilder, {
-    @Deprecated(
-      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
-    )
-    bool? mutable,
-  });
-
-  static T selfBuilder<T>(T value) => value;
-
-  T builder(V v) {
-    final attribute = attributeBuilder(v);
-    // Always mutable - accumulate state in attributeValue
-    styles = styles.merge(AttributeMap([attribute]));
-
-    return attribute;
-  }
-
-  T only();
-  @override
-  SpecUtility<T, V> merge(covariant SpecUtility<T, V> other) {
-    styles = styles.merge(other.styles);
-
-    return this;
-  }
-
-  @override
-  get props => [attributeValue];
-}

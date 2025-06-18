@@ -244,5 +244,37 @@ void main() {
         expect(find.byType(RenderModifiers), findsOneWidget);
       },
     );
+
+    testWidgets(
+      'should have attributes in MixData matching the SpecUtility that was passed to the SpecBuilder',
+      (tester) async {
+        tester.pumpWidget(
+          SpecBuilder(
+            style: StyleBox()
+              ..height(100)
+              ..width(100),
+            builder: (context) {
+              final mix = Mix.of(context);
+              expect(mix.attributes.length, 1);
+              expect(
+                mix.attributes.values.first,
+                isA<BoxSpecAttribute>()
+                    .having(
+                      (attribute) => attribute.height,
+                      'height',
+                      100,
+                    )
+                    .having(
+                      (attribute) => attribute.width,
+                      'width',
+                      100,
+                    ),
+              );
+              return const SizedBox();
+            },
+          ),
+        );
+      },
+    );
   });
 }

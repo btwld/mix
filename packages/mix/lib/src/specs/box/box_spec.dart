@@ -16,6 +16,7 @@ import '../../attributes/spacing/edge_insets_dto.dart';
 import '../../attributes/spacing/spacing_util.dart';
 import '../../core/computed_style/computed_style.dart';
 import '../../core/factory/mix_data.dart';
+import '../../core/factory/style_mix.dart';
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
 import '../../core/utility.dart';
