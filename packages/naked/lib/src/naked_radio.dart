@@ -110,7 +110,7 @@ class _NakedRadioGroupState<T> extends State<NakedRadioGroup<T>> {
       policy: _SkipUnselectedRadioPolicy<T>(_radios, widget.groupValue),
       child: Shortcuts(
         shortcuts: _radioGroupShortcuts,
-        child: _NakedRadioGroupScope<T>(
+        child: NakedRadioGroupScope<T>(
           state: this,
           groupValue: widget.groupValue,
           child: widget.child,
@@ -121,12 +121,12 @@ class _NakedRadioGroupState<T> extends State<NakedRadioGroup<T>> {
 }
 
 /// Internal InheritedWidget that provides radio group state to child radio buttons.
-class _NakedRadioGroupScope<T> extends InheritedWidget {
+class NakedRadioGroupScope<T> extends InheritedWidget {
   final _NakedRadioGroupState<T> state;
   final T? groupValue;
 
   /// Creates a radio group scope.
-  const _NakedRadioGroupScope({
+  const NakedRadioGroupScope({
     super.key,
     required this.state,
     required this.groupValue,
@@ -134,9 +134,9 @@ class _NakedRadioGroupScope<T> extends InheritedWidget {
   });
 
   /// Allows radio buttons to access their parent group.
-  static _NakedRadioGroupScope<T> of<T>(BuildContext context) {
+  static NakedRadioGroupScope<T> of<T>(BuildContext context) {
     final group =
-        context.dependOnInheritedWidgetOfExactType<_NakedRadioGroupScope<T>>();
+        context.dependOnInheritedWidgetOfExactType<NakedRadioGroupScope<T>>();
     if (group == null) {
       throw FlutterError(
         'NakedRadioButton must be used within a NakedRadioGroup.\n'
@@ -147,7 +147,7 @@ class _NakedRadioGroupScope<T> extends InheritedWidget {
   }
 
   @override
-  bool updateShouldNotify(_NakedRadioGroupScope<T> oldWidget) {
+  bool updateShouldNotify(NakedRadioGroupScope<T> oldWidget) {
     return state != oldWidget.state || groupValue != oldWidget.groupValue;
   }
 }
@@ -269,7 +269,7 @@ class NakedRadio<T> extends StatefulWidget {
 
 class _NakedRadioState<T> extends State<NakedRadio<T>> {
   late final FocusNode _focusNode = widget.focusNode ?? FocusNode();
-  _NakedRadioGroupScope<T> get _group => _NakedRadioGroupScope.of<T>(context);
+  NakedRadioGroupScope<T> get _group => NakedRadioGroupScope.of<T>(context);
   ValueChanged<T?>? get onChanged => _group.state.widget.onChanged;
 
   @override
@@ -296,7 +296,7 @@ class _NakedRadioState<T> extends State<NakedRadio<T>> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final group = _NakedRadioGroupScope.of<T>(context);
+    final group = NakedRadioGroupScope.of<T>(context);
     // Register this radio button with the group
     group.state._registerRadioButton(this);
   }

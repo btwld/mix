@@ -1,6 +1,8 @@
 import 'package:flutter/widgets.dart';
+import 'package:meta/meta.dart';
 import 'package:mix/mix.dart';
 
+@internal
 class StyleScope<U extends SpecUtility> extends InheritedWidget {
   const StyleScope({super.key, required super.child, required this.style});
 
