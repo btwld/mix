@@ -138,3 +138,8 @@ scripts:
   verify_version_pubspec_changelog:
     run: ./scripts/verify_changelogs.sh packages
     description: Verify that all packages have the same version
+
+  # API compatibility checking with dart_apitool
+  api-check:
+    run: dart scripts/api_check.dart
+    description: "Check API compatibility for mix packages (usage: melos run api-check -- [package] [version])"
