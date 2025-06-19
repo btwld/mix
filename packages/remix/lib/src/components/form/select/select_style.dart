@@ -1,115 +1,37 @@
 part of 'select.dart';
 
-class SelectStyle extends SpecStyle<SelectSpecUtility> {
-  const SelectStyle();
+class RxSelectStyle extends SelectSpecUtility<SelectSpecAttribute> {
+  RxSelectStyle() : super((v) => v);
 
-  @override
-  Style makeStyle(SpecConfiguration<SelectSpecUtility> spec) {
-    final $ = spec.utilities;
-
-    final positionStyle = [
-      $.position.targetAnchor.bottomCenter(),
-      $.position.followerAnchor.topCenter(),
-      $.position.offset(0, 4),
-    ];
-
-    final buttonStyle = [
-      $.button.container
-        ..flex.mainAxisAlignment.spaceBetween()
-        ..color.white()
-        ..padding.all(10)
-        ..border.color.black12()
-        ..borderRadius(6),
-      $.button.icon
-        ..size(20)
-        ..color.black45(),
-      $.button.label
-        ..style.fontSize(14)
-        ..style.color.black(),
-      spec.on.disabled(
-        $.button.container.color(Colors.black.withValues(alpha: 0.05)),
-      ),
-    ];
-
-    final menuStyle = [
-      $.menu.container
-        ..borderRadius(6)
-        ..shadow.color(Colors.black.withValues(alpha: 0.07))
-        ..shadow.blurRadius(5)
-        ..color.white()
-        ..border.color.black12()
-        ..padding.all(4)
-        ..box.wrap.intrinsicWidth()
-        ..box.wrap.transform.scale(0.95)
-        ..box.wrap.opacity(0)
-        ..box.wrap.padding.top(0)
-        ..flex.mainAxisSize.min()
-        ..flex.crossAxisAlignment.start(),
-      $.menu.wrap.transform.scale(1.5),
-      $.menu.autoWidth.off(),
-      spec.on.selected(
-        $.menu.container
-          ..box.wrap.transform.scale(1)
-          ..box.wrap.opacity(1)
-          ..box.wrap.padding.top(4),
-      ),
-    ];
-
-    final itemStyle = [
-      $.item.container
-        ..borderRadius(6)
-        ..padding.vertical(8)
-        ..padding.horizontal(6)
-        ..width.infinity()
-        ..flex.gap(6),
-      $.item.text
-        ..style.color.black()
-        ..style.fontSize(14),
-      $.item.icon.size(20),
-      spec.on.hover($.item.container.color.black12()),
-    ];
-
-    return Style.create([
-      ...itemStyle,
-      ...buttonStyle,
-      ...menuStyle,
-      ...positionStyle,
-    ]).animate(
-      duration: const Duration(milliseconds: 100),
-      curve: Curves.decelerate,
-    );
+  factory RxSelectStyle._default() {
+    return RxSelectStyle()
+      ..trigger.container.flex.mainAxisSize.min()
+      ..trigger.container.color.white()
+      ..trigger.container.padding(8)
+      ..trigger.container.padding.left(12)
+      ..trigger.container.borderRadius.all(8)
+      ..trigger.container.flex.gap(12)
+      ..trigger.container.border.color.grey.shade300()
+      ..trigger.icon.size(18)
+      ..menuContainer.color.white()
+      ..menuContainer.maxWidth(200)
+      ..menuContainer.padding.all(8)
+      ..menuContainer.borderRadius.all(8)
+      ..menuContainer.border.color.grey.shade300()
+      ..item.container.flex.mainAxisAlignment.spaceBetween()
+      ..item.icon.size(16)
+      ..item.container.padding(4)
+      ..item.container.borderRadius(4)
+      ..item.icon.wrap.opacity(0)
+      ..on.selected(
+        RxSelectStyle()
+          ..item.icon.wrap.opacity(1)
+          ..item.container.color.grey.shade100(),
+      );
   }
-}
-
-class SelectDarkStyle extends SelectStyle {
-  const SelectDarkStyle();
 
   @override
-  Style makeStyle(SpecConfiguration<SelectSpecUtility> spec) {
-    final $ = spec.utilities;
-
-    final buttonStyle = $.button
-      ..container.color.black()
-      ..container.border.color.white12()
-      ..icon.color.white54()
-      ..label.style.color.white();
-
-    final menuStyle = $.menu.container
-      ..color.black()
-      ..border.all.color.white12();
-
-    final itemStyle = $.item.text.style.color.white();
-
-    return Style.create([
-      super.makeStyle(spec),
-      buttonStyle,
-      menuStyle,
-      itemStyle,
-      spec.on.hover($.item.container.color.white12()),
-      spec.on.disabled($.button.container.color.white10()),
-    ]).animate(
-      duration: const Duration(milliseconds: 100),
-      curve: Curves.decelerate,
-    );
+  RxSelectStyle merge(RxSelectStyle other) {
+    return super.merge(other) as RxSelectStyle;
   }
 }

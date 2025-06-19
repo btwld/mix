@@ -1,13 +1,11 @@
-import 'package:demo/helpers/knob_builder.dart';
 import 'package:flutter/widgets.dart';
 import 'package:remix/remix.dart';
-import 'package:remix/themes/fortaleza.dart';
-import 'package:widgetbook/widgetbook.dart';
+
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
 @widgetbook.UseCase(
   name: 'Select Component',
-  type: Select,
+  type: RxSelect,
 )
 Widget buildSelect(BuildContext context) {
   return const Scaffold(
@@ -39,26 +37,18 @@ class _SelectDemoState extends State<SelectDemo> {
         children: [
           SizedBox(
             width: 200,
-            child: Select<String>(
-              value: selectedValue,
-              onChanged: (value) => setState(() => selectedValue = value),
-              trigger: SelectTrigger(
-                text: selectedValue,
-                disabled: context.knobs.boolean(
-                  label: 'disabled',
-                  initialValue: false,
-                ),
-              ),
-              variants: [context.knobs.variant(FortalezaSelectStyle.variants)],
+            child: RxSelect<String>(
+              selectedValue: selectedValue,
+              onSelectedValueChanged: (value) =>
+                  setState(() => selectedValue = value ?? ''),
               items: List.generate(
                 items.length,
-                (index) => SelectMenuItem<String>(
+                (index) => RxSelectItem<String>(
                   value: items[index],
-                  child: SelectMenuItemWidget(
-                    text: items[index],
-                  ),
+                  label: items[index],
                 ),
               ),
+              child: Text(selectedValue),
             ),
           ),
         ],

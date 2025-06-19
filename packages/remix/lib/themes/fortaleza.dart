@@ -8,7 +8,6 @@ export '../src/themes/fortaleza/components/divider_theme.dart';
 export '../src/themes/fortaleza/components/header_theme.dart';
 export '../src/themes/fortaleza/components/scaffold_theme.dart';
 export '../src/themes/fortaleza/components/segmented_control_theme.dart';
-export '../src/themes/fortaleza/components/select_theme.dart';
 export '../src/themes/fortaleza/components/slider_theme.dart';
 export '../src/themes/fortaleza/components/spinner_theme.dart';
 export '../src/themes/fortaleza/components/switch_theme.dart';

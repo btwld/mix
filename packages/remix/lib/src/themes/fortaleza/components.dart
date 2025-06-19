@@ -7,7 +7,6 @@ import 'components/dropdown_theme.dart';
 import 'components/header_theme.dart';
 import 'components/scaffold_theme.dart';
 import 'components/segmented_control_theme.dart';
-import 'components/select_theme.dart';
 import 'components/slider_theme.dart';
 import 'components/spinner_theme.dart';
 import 'components/switch_theme.dart';
@@ -23,7 +22,6 @@ class FortalezaComponentTheme extends RemixComponentTheme {
     required super.header,
     required super.scaffold,
     required super.segmentedControl,
-    required super.select,
     required super.spinner,
     required super.switchComponent,
     required super.textField,
@@ -40,7 +38,6 @@ class FortalezaComponentTheme extends RemixComponentTheme {
       header: FortalezaHeaderStyle(),
       scaffold: FortalezaScaffoldStyle(),
       segmentedControl: FortalezaSegmentedControlStyle(),
-      select: FortalezaSelectStyle(),
       spinner: FortalezaSpinnerStyle(),
       switchComponent: FortalezaSwitchStyle(),
       textField: FortalezaTextFieldStyle(),
@@ -54,7 +51,6 @@ class FortalezaComponentTheme extends RemixComponentTheme {
     return FortalezaComponentTheme.light().copyWith(
       badge: const FortalezaDarkBadgeStyle(),
       segmentedControl: const FortalezaDarkSegmentedControlStyle(),
-      select: const FortalezaDarkSelectStyle(),
       switchComponent: const FortalezaDarkSwitchStyle(),
     );
   }

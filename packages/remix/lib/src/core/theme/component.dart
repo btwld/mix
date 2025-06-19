@@ -1,7 +1,6 @@
 import '../../components/feedback/dialog/dialog.dart';
 import '../../components/feedback/spinner/spinner.dart';
 import '../../components/feedback/toast/toast.dart';
-import '../../components/form/select/select.dart';
 import '../../components/form/slider/slider.dart';
 import '../../components/form/switch/switch.dart';
 import '../../components/form/textfield/textfield.dart';
@@ -21,7 +20,6 @@ class RemixComponentTheme {
 
   final ScaffoldStyle scaffold;
   final SegmentedControlStyle segmentedControl;
-  final SelectStyle select;
   final SpinnerStyle spinner;
   final SwitchStyle switchComponent;
   final TextFieldStyle textField;
@@ -38,7 +36,6 @@ class RemixComponentTheme {
     required this.header,
     required this.scaffold,
     required this.segmentedControl,
-    required this.select,
     required this.spinner,
     required this.switchComponent,
     required this.textField,
@@ -58,7 +55,6 @@ class RemixComponentTheme {
 
       scaffold: ScaffoldStyle(),
       segmentedControl: SegmentedControlStyle(),
-      select: SelectStyle(),
       spinner: SpinnerStyle(),
       switchComponent: SwitchStyle(),
       textField: TextFieldStyle(),
@@ -79,7 +75,6 @@ class RemixComponentTheme {
 
       scaffold: const ScaffoldDarkStyle(),
       segmentedControl: const SegmentedControlDarkStyle(),
-      select: const SelectDarkStyle(),
       spinner: const SpinnerDarkStyle(),
       switchComponent: const SwitchDarkStyle(),
       textField: const TextFieldDarkStyle(),
@@ -98,7 +93,6 @@ class RemixComponentTheme {
     HeaderStyle? header,
     ScaffoldStyle? scaffold,
     SegmentedControlStyle? segmentedControl,
-    SelectStyle? select,
     SpinnerStyle? spinner,
     SwitchStyle? switchComponent,
     TextFieldStyle? textField,
@@ -113,7 +107,6 @@ class RemixComponentTheme {
       header: header ?? this.header,
       scaffold: scaffold ?? this.scaffold,
       segmentedControl: segmentedControl ?? this.segmentedControl,
-      select: select ?? this.select,
       spinner: spinner ?? this.spinner,
       switchComponent: switchComponent ?? this.switchComponent,
       textField: textField ?? this.textField,
