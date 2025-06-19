@@ -16,12 +16,7 @@ class RxLabel extends StatelessWidget {
   ///
   /// The [label] parameter is required.
   /// Other parameters allow customizing the label's appearance.
-  const RxLabel(
-    this.label, {
-    super.key,
-    required this.icon,
-    this.style = const LabelStyle(),
-  });
+  const RxLabel(this.label, {super.key, required this.icon, this.style});
 
   /// The text to display in the label
   final String label;
@@ -32,12 +27,14 @@ class RxLabel extends StatelessWidget {
   /// The style configuration for the label.
   ///
   /// Controls visual properties like colors, spacing, typography etc.
-  final LabelStyle style;
+  final RxLabelStyle? style;
+
+  RxLabelStyle get _style => RxLabelStyle().merge(style ?? RxLabelStyle());
 
   @override
   Widget build(BuildContext context) {
     return SpecBuilder(
-      style: style.makeStyle(SpecConfiguration(context, LabelSpecUtility.self)),
+      style: _style,
       builder: (context) {
         final spec = LabelSpec.of(context);
 
