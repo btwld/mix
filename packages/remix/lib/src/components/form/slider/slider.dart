@@ -6,9 +6,9 @@ import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 import 'package:naked/naked.dart';
 
-import '../../../../remix.dart';
 import '../../../helpers/mix_controller_mixin.dart';
 import '../../../helpers/remix_builder.dart';
+import '../../../helpers/utility_extension.dart';
 
 part 'slider.g.dart';
 part 'slider_style.dart';

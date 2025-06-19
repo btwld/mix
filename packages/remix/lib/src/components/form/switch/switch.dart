@@ -2,9 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
+import 'package:naked/naked.dart';
 
-import '../../../core/theme/remix_theme.dart';
-import '../../../helpers/spec_style.dart';
+import '../../../helpers/mix_controller_mixin.dart';
+import '../../../helpers/remix_builder.dart';
 
 part 'switch.g.dart';
 part 'switch_style.dart';

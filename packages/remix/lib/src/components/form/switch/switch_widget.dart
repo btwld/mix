@@ -1,78 +1,59 @@
 part of 'switch.dart';
 
-class Switch extends StatefulWidget {
-  const Switch({
+class RxSwitch extends StatefulWidget implements Disableable, Selectable {
+  const RxSwitch({
     super.key,
-    this.disabled = false,
-    required this.value,
+    this.enabled = true,
+    required this.selected,
     required this.onChanged,
     this.style,
     this.variants = const [],
+    this.enableHapticFeedback = true,
   });
 
   /// Whether the switch is on or off.
-  final bool value;
+  @override
+  final bool selected;
 
   /// {@macro remix.component.onChanged}
   final ValueChanged<bool> onChanged;
 
   /// {@macro remix.component.style}
-  final SwitchStyle? style;
+  final RxSwitchStyle? style;
 
-  /// {@macro remix.component.enabled}
-  final bool disabled;
+  /// {@macro remix.component.disabled}
+  @override
+  final bool enabled;
 
   /// {@macro remix.component.variants}
   final List<Variant> variants;
 
+  /// {@macro naked.component.enableHapticFeedback}
+  final bool enableHapticFeedback;
+
   @override
-  State<Switch> createState() => _SwitchState();
+  State<RxSwitch> createState() => _RxSwitchState();
 }
 
-class _SwitchState extends State<Switch> {
-  late final WidgetStatesController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = WidgetStatesController()
-      ..selected = widget.value
-      ..disabled = widget.disabled;
-  }
-
-  void _handleOnPress() => widget.onChanged(!widget.value);
-
-  @override
-  void didUpdateWidget(Switch oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (oldWidget.value != widget.value) {
-      _controller.selected = widget.value;
-    }
-
-    if (oldWidget.disabled != widget.disabled) {
-      _controller.disabled = widget.disabled;
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+class _RxSwitchState extends State<RxSwitch>
+    with MixControllerMixin, DisableableMixin, SelectableMixin {
+  RxSwitchStyle get _style =>
+      RxSwitchStyle._default().merge(widget.style ?? RxSwitchStyle());
 
   @override
   Widget build(BuildContext context) {
-    final style = widget.style ?? context.remix.components.switchComponent;
-
-    final configuration = SpecConfiguration(context, SwitchSpecUtility.self);
-
-    return Pressable(
-      enabled: !widget.disabled,
-      onPress: widget.disabled ? null : _handleOnPress,
-      controller: _controller,
-      child: SpecBuilder(
-        style: style.makeStyle(configuration).applyVariants(widget.variants),
+    return NakedCheckbox(
+      value: widget.selected,
+      onChanged: (value) => widget.onChanged(value ?? false),
+      onPressedState: (state) {
+        mixController.pressed = state;
+      },
+      onFocusState: (state) {
+        mixController.focused = state;
+      },
+      enabled: widget.enabled,
+      enableHapticFeedback: true,
+      child: RemixBuilder(
         builder: (context) {
           final spec = SwitchSpec.of(context);
 
@@ -81,6 +62,8 @@ class _SwitchState extends State<Switch> {
 
           return containerWidget(child: indicatorWidget());
         },
+        style: Style(_style).applyVariants(widget.variants),
+        controller: mixController,
       ),
     );
   }
