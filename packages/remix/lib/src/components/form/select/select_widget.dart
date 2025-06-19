@@ -1,5 +1,30 @@
 part of 'select.dart';
 
+/// A customizable select component that supports single and multiple selection modes,
+/// various styles, and behaviors. The select component integrates with the Mix styling
+/// system and follows Remix design patterns.
+///
+/// ## Example
+///
+/// ```dart
+/// RxSelect(
+///   selectedValue: _value,
+///   onSelectedValueChanged: (value) {
+///     setState(() {
+///       _value = value;
+///     });
+///   },
+///   items: Options.values
+///       .map((e) => RxSelectItem(value: e, label: e.name.capitalize()))
+///       .toList(),
+///   style: RxSelectStyle()
+///     ..trigger.container.width(200)
+///     ..trigger.container.flex.mainAxisAlignment.spaceBetween(),
+///   child: RxSelectTrigger(
+///     label: _value?.name.capitalize() ?? 'Select an item',
+///   ),
+/// )
+/// ```
 class RxSelect<T> extends StatefulWidget {
   const RxSelect({
     super.key,
@@ -20,11 +45,11 @@ class RxSelect<T> extends StatefulWidget {
         onSelectedValuesChanged = null;
 
   /// The target widget that triggers the select dropdown.
-  /// This should typically be a [RemixNakedSelectTrigger].
+  /// This should typically be a [RxSelectTrigger].
   final Widget child;
 
   /// The menu widget to display when the dropdown is open.
-  /// This should be a [RemixNakedSelectMenu] containing [RemixNakedSelectItem] widgets.
+  /// This should be a [RxNakedSelectMenu] containing [RxSelectItem] widgets.
   final List<Widget> items;
 
   /// Called when the menu closes, either through selection or external interaction.

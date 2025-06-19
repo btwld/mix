@@ -6,17 +6,17 @@ void main() {
   runApp(const MyApp());
 }
 
+enum Options {
+  banana,
+  apple,
+  orange,
+}
+
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
-}
-
-enum Options {
-  banana,
-  apple,
-  orange,
 }
 
 class _MyAppState extends State<MyApp> {

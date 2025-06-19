@@ -1,5 +1,20 @@
 part of 'switch.dart';
 
+/// A customizable switch component that supports various styles and behaviors.
+/// The switch integrates with the Mix styling system and follows Remix design patterns.
+///
+/// ## Example
+///
+/// ```dart
+/// RxSwitch(
+///   selected: true,
+///   onChanged: (value) {
+///     print('Switch toggled: $value');
+///   },
+///   style: RxSwitchStyle(),
+/// )
+/// ```
+
 class RxSwitch extends StatefulWidget implements Disableable, Selectable {
   const RxSwitch({
     super.key,

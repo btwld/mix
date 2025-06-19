@@ -1,5 +1,22 @@
 part of 'textfield.dart';
 
+/// A customizable text field component that supports various input types, styles, and behaviors.
+/// The text field integrates with the Mix styling system and follows Remix design patterns.
+///
+/// ## Example
+///
+/// ```dart
+/// RxTextField(
+///   placeholderText: 'Enter your text',
+///   onChanged: (value) {
+///     print('Text changed: $value');
+///   },
+///   maxLength: 100,
+///   style: RxTextFieldStyle(),
+/// )
+/// ```
+///
+
 class RxTextField extends StatefulWidget implements Disableable, Errorable {
   const RxTextField({
     super.key,
@@ -19,7 +36,7 @@ class RxTextField extends StatefulWidget implements Disableable, Errorable {
     this.showCursor,
     this.obscuringCharacter = '•',
     this.obscureText = false,
-    this.placeholderText,
+    this.hintText,
     this.autocorrect = true,
     this.smartDashesType,
     this.smartQuotesType,
@@ -148,7 +165,7 @@ class RxTextField extends StatefulWidget implements Disableable, Errorable {
   /// {@macro flutter.services.lengthLimitingTextInputFormatter.maxLength}
   final int? maxLength;
 
-  final String? placeholderText;
+  final String? hintText;
   final String? helperText;
   final Widget? prefix;
   final Widget? suffix;
@@ -302,7 +319,7 @@ class _RxTextFieldState extends State<RxTextField>
 
                                 return CustomPaint(
                                   painter: _PlaceholderPainter(
-                                    text: widget.placeholderText ?? '',
+                                    text: widget.hintText ?? '',
                                     textStyle: spec.style.copyWith(
                                       color: spec.hintTextColor,
                                     ),

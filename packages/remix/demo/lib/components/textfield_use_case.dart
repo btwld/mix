@@ -32,7 +32,7 @@ Widget buildButtonUseCase(BuildContext context) {
               label: 'Max Lines',
               initialValue: 1,
             ),
-            placeholderText: context.knobs.string(
+            hintText: context.knobs.string(
               label: 'Hint Text',
               initialValue: 'Hint Text',
             ),

@@ -34,7 +34,7 @@ class _NewWidgetState extends State<NewWidget> {
       body: Center(
         child: RxTextField(
           label: 'Username',
-          placeholderText: 'Remix',
+          hintText: 'Remix',
           helperText: 'This is your public display name.',
           controller: controller,
           style: RxTextFieldStyle()..container.width(300),

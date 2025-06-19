@@ -1,5 +1,39 @@
 part of 'radio.dart';
 
+/// A customizable radio button group component that supports various styles and behaviors.
+/// The radio button group integrates with the Mix styling system and follows Remix design patterns.
+///
+/// ## Example
+///
+/// ```dart
+/// RxRadioGroup<Options>(
+///   value: _value,
+///   onChanged: (value) {
+///     setState(() {
+///       _value = value;
+///     });
+///   },
+///   child: const Column(
+///     spacing: 8,
+///     mainAxisSize: MainAxisSize.min,
+///     crossAxisAlignment: CrossAxisAlignment.start,
+///     children: [
+///       RxRadio(
+///         label: 'Banana',
+///         value: Options.banana,
+///       ),
+///       RxRadio(
+///         label: 'Apple',
+///         value: Options.apple,
+///       ),
+///       RxRadio(
+///         label: 'Orange',
+///         value: Options.orange,
+///       ),
+///     ],
+///   ),
+/// )
+/// ```
 class RxRadioGroup<T> extends StatefulWidget {
   const RxRadioGroup({
     super.key,

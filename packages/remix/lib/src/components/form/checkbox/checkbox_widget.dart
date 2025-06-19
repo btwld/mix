@@ -1,5 +1,27 @@
 part of 'checkbox.dart';
 
+/// A customizable checkbox component that supports various styles and behaviors.
+/// The checkbox integrates with the Mix styling system and follows Remix design patterns.
+///
+/// ## Example
+///
+/// ```dart
+/// RxCheckbox(
+///   selected: _isChecked,
+///   onChanged: (value) {
+///     setState(() {
+///       _isChecked = value;
+///     });
+///   },
+///   iconChecked: Icons.check_rounded,
+///   iconUnchecked: Icons.close_rounded,
+///   style: RxCheckboxStyle()
+///     ..icon.size(24)
+///     ..icon.color(Colors.blue),
+///   label: 'Accept Terms',
+/// )
+/// ```
+
 class RxCheckbox extends StatefulWidget implements Disableable, Selectable {
   const RxCheckbox({
     super.key,

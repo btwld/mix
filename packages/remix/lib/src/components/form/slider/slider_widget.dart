@@ -1,5 +1,21 @@
 part of 'slider.dart';
 
+/// A customizable slider component that supports various styles and behaviors.
+/// The slider integrates with the Mix styling system and follows Remix design patterns.
+///
+/// ## Example
+///
+/// ```dart
+/// RxSlider(
+///   min: 0.0,
+///   max: 100.0,
+///   value: 50.0,
+///   onChanged: (value) {
+///     print('Slider value changed: $value');
+///   },
+///   style: RxSliderStyle(),
+/// )
+/// ```
 class RxSlider extends StatefulWidget implements Disableable {
   const RxSlider({
     super.key,
