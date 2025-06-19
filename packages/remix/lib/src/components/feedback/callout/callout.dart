@@ -9,7 +9,7 @@ part 'callout.g.dart';
 part 'callout_style.dart';
 part 'callout_widget.dart';
 
-@MixableSpec()
+@MixableSpec(methods: GeneratedSpecMethods.skipLerp)
 base class CalloutSpec extends Spec<CalloutSpec> with _$CalloutSpec {
   final FlexBoxSpec container;
 
@@ -35,4 +35,18 @@ base class CalloutSpec extends Spec<CalloutSpec> with _$CalloutSpec {
   })  : container = container ?? const FlexBoxSpec(),
         icon = icon ?? const IconThemeData(),
         textStyle = textStyle ?? const TextStyle();
+
+  @override
+  CalloutSpec lerp(CalloutSpec? other, double t) {
+    if (other == null) return _$this;
+
+    return CalloutSpec(
+      container: _$this.container.lerp(other.container, t),
+      icon: IconThemeData.lerp(_$this.icon, other.icon, t),
+      textStyle:
+          MixHelpers.lerpTextStyle(_$this.textStyle, other.textStyle, t)!,
+      modifiers: other.modifiers,
+      animated: _$this.animated ?? other.animated,
+    );
+  }
 }

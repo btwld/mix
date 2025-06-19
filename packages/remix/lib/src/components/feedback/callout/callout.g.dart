@@ -51,39 +51,6 @@ mixin _$CalloutSpec on Spec<CalloutSpec> {
     );
   }
 
-  /// Linearly interpolates between this [CalloutSpec] and another [CalloutSpec] based on the given parameter [t].
-  ///
-  /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [CalloutSpec] is returned. When [t] is 1.0, the [other] [CalloutSpec] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [CalloutSpec] is returned.
-  ///
-  /// If [other] is null, this method returns the current [CalloutSpec] instance.
-  ///
-  /// The interpolation is performed on each property of the [CalloutSpec] using the appropriate
-  /// interpolation method:
-  /// - [FlexBoxSpec.lerp] for [container].
-  /// - [IconThemeData.lerp] for [icon].
-  /// - [MixHelpers.lerpTextStyle] for [textStyle].
-  /// For [modifiers] and [animated], the interpolation is performed using a step function.
-  /// If [t] is less than 0.5, the value from the current [CalloutSpec] is used. Otherwise, the value
-  /// from the [other] [CalloutSpec] is used.
-  ///
-  /// This method is typically used in animations to smoothly transition between
-  /// different [CalloutSpec] configurations.
-  @override
-  CalloutSpec lerp(CalloutSpec? other, double t) {
-    if (other == null) return _$this;
-
-    return CalloutSpec(
-      container: _$this.container.lerp(other.container, t),
-      icon: IconThemeData.lerp(_$this.icon, other.icon, t)!,
-      textStyle:
-          MixHelpers.lerpTextStyle(_$this.textStyle, other.textStyle, t)!,
-      modifiers: other.modifiers,
-      animated: _$this.animated ?? other.animated,
-    );
-  }
-
   /// The list of properties that constitute the state of this [CalloutSpec].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
