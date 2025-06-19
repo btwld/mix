@@ -8,7 +8,7 @@ final _key = GlobalKey();
 
 @widgetbook.UseCase(
   name: 'Slider Component',
-  type: Slider,
+  type: RxSlider,
 )
 Widget buildButtonUseCase(BuildContext context) {
   final knobState = WidgetbookState.of(context);
@@ -18,11 +18,11 @@ Widget buildButtonUseCase(BuildContext context) {
       body: Center(
         child: SizedBox(
           width: 200,
-          child: Slider(
+          child: RxSlider(
             onChanged: (value) => knobState.updateKnob('value', value),
-            disabled: context.knobs.boolean(
-              label: 'disabled',
-              initialValue: false,
+            enabled: context.knobs.boolean(
+              label: 'enabled',
+              initialValue: true,
             ),
             divisions: context.knobs.int.input(
               label: 'divisions',

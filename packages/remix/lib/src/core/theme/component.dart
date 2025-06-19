@@ -1,7 +1,5 @@
 import '../../components/feedback/dialog/dialog.dart';
-import '../../components/feedback/spinner/spinner.dart';
 import '../../components/feedback/toast/toast.dart';
-import '../../components/form/slider/slider.dart';
 import '../../components/form/switch/switch.dart';
 import '../../components/form/textfield/textfield.dart';
 import '../../components/layout/divider/divider.dart';
@@ -20,11 +18,9 @@ class RemixComponentTheme {
 
   final ScaffoldStyle scaffold;
   final SegmentedControlStyle segmentedControl;
-  final SpinnerStyle spinner;
   final SwitchStyle switchComponent;
   final TextFieldStyle textField;
   final ToastStyle toast;
-  final SliderStyle slider;
   final DropdownMenuStyle dropdownMenu;
 
   const RemixComponentTheme({
@@ -36,11 +32,9 @@ class RemixComponentTheme {
     required this.header,
     required this.scaffold,
     required this.segmentedControl,
-    required this.spinner,
     required this.switchComponent,
     required this.textField,
     required this.toast,
-    required this.slider,
     required this.dropdownMenu,
   });
 
@@ -55,11 +49,9 @@ class RemixComponentTheme {
 
       scaffold: ScaffoldStyle(),
       segmentedControl: SegmentedControlStyle(),
-      spinner: SpinnerStyle(),
       switchComponent: SwitchStyle(),
       textField: TextFieldStyle(),
       toast: ToastStyle(),
-      slider: SliderStyle(),
       dropdownMenu: DropdownMenuStyle(),
     );
   }
@@ -75,11 +67,9 @@ class RemixComponentTheme {
 
       scaffold: const ScaffoldDarkStyle(),
       segmentedControl: const SegmentedControlDarkStyle(),
-      spinner: const SpinnerDarkStyle(),
       switchComponent: const SwitchDarkStyle(),
       textField: const TextFieldDarkStyle(),
       toast: const ToastDarkStyle(),
-      slider: const SliderDarkStyle(),
       dropdownMenu: const DropdownMenuDarkStyle(),
     );
   }
@@ -93,11 +83,9 @@ class RemixComponentTheme {
     HeaderStyle? header,
     ScaffoldStyle? scaffold,
     SegmentedControlStyle? segmentedControl,
-    SpinnerStyle? spinner,
     SwitchStyle? switchComponent,
     TextFieldStyle? textField,
     ToastStyle? toast,
-    SliderStyle? slider,
     DropdownMenuStyle? dropdownMenu,
   }) {
     return RemixComponentTheme(
@@ -107,11 +95,9 @@ class RemixComponentTheme {
       header: header ?? this.header,
       scaffold: scaffold ?? this.scaffold,
       segmentedControl: segmentedControl ?? this.segmentedControl,
-      spinner: spinner ?? this.spinner,
       switchComponent: switchComponent ?? this.switchComponent,
       textField: textField ?? this.textField,
       toast: toast ?? this.toast,
-      slider: slider ?? this.slider,
       dropdownMenu: dropdownMenu ?? this.dropdownMenu,
     );
   }

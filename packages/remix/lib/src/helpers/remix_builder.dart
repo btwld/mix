@@ -1,7 +1,9 @@
 import 'package:flutter/widgets.dart';
+import 'package:meta/meta.dart';
 import 'package:mix/experimental.dart';
 import 'package:mix/mix.dart';
 
+@internal
 class RemixBuilder extends StatelessWidget {
   const RemixBuilder({
     super.key,

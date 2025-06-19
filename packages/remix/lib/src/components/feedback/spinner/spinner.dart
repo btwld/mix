@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
-import '../../../helpers/spec_style.dart';
-
 part 'spinner.g.dart';
 part 'spinner_painter.dart';
 part 'spinner_style.dart';
