@@ -9,7 +9,7 @@ final _key = GlobalKey();
 
 @widgetbook.UseCase(
   name: 'TextField Component',
-  type: TextField,
+  type: RxTextField,
 )
 Widget buildButtonUseCase(BuildContext context) {
   final iconKnob = context.knobs.iconData(label: 'icons', initialValue: null);
@@ -19,7 +19,7 @@ Widget buildButtonUseCase(BuildContext context) {
       body: Center(
         child: SizedBox(
           width: 300,
-          child: TextField(
+          child: RxTextField(
             suffix: context.knobs
                     .boolean(label: 'SuffixWidget', initialValue: false)
                 ? RxButton.icon(
@@ -27,12 +27,12 @@ Widget buildButtonUseCase(BuildContext context) {
                     onPressed: () {},
                   )
                 : null,
-            prefixBuilder: iconKnob != null ? (spec) => spec(iconKnob) : null,
+            prefix: iconKnob != null ? Icon(iconKnob) : null,
             maxLines: context.knobs.int.input(
               label: 'Max Lines',
               initialValue: 1,
             ),
-            hintText: context.knobs.string(
+            placeholderText: context.knobs.string(
               label: 'Hint Text',
               initialValue: 'Hint Text',
             ),

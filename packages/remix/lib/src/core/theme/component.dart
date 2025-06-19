@@ -1,6 +1,5 @@
 import '../../components/feedback/dialog/dialog.dart';
 import '../../components/feedback/toast/toast.dart';
-import '../../components/form/textfield/textfield.dart';
 import '../../components/layout/divider/divider.dart';
 import '../../components/layout/header/header.dart';
 import '../../components/layout/scaffold/scaffold.dart';
@@ -17,7 +16,6 @@ class RemixComponentTheme {
 
   final ScaffoldStyle scaffold;
   final SegmentedControlStyle segmentedControl;
-  final TextFieldStyle textField;
   final ToastStyle toast;
   final DropdownMenuStyle dropdownMenu;
 
@@ -30,7 +28,6 @@ class RemixComponentTheme {
     required this.header,
     required this.scaffold,
     required this.segmentedControl,
-    required this.textField,
     required this.toast,
     required this.dropdownMenu,
   });
@@ -46,7 +43,6 @@ class RemixComponentTheme {
 
       scaffold: ScaffoldStyle(),
       segmentedControl: SegmentedControlStyle(),
-      textField: TextFieldStyle(),
       toast: ToastStyle(),
       dropdownMenu: DropdownMenuStyle(),
     );
@@ -63,7 +59,6 @@ class RemixComponentTheme {
 
       scaffold: const ScaffoldDarkStyle(),
       segmentedControl: const SegmentedControlDarkStyle(),
-      textField: const TextFieldDarkStyle(),
       toast: const ToastDarkStyle(),
       dropdownMenu: const DropdownMenuDarkStyle(),
     );
@@ -78,7 +73,6 @@ class RemixComponentTheme {
     HeaderStyle? header,
     ScaffoldStyle? scaffold,
     SegmentedControlStyle? segmentedControl,
-    TextFieldStyle? textField,
     ToastStyle? toast,
     DropdownMenuStyle? dropdownMenu,
   }) {
@@ -89,7 +83,6 @@ class RemixComponentTheme {
       header: header ?? this.header,
       scaffold: scaffold ?? this.scaffold,
       segmentedControl: segmentedControl ?? this.segmentedControl,
-      textField: textField ?? this.textField,
       toast: toast ?? this.toast,
       dropdownMenu: dropdownMenu ?? this.dropdownMenu,
     );
