@@ -508,14 +508,6 @@ class TextSpecUtility<T extends SpecAttribute>
   }
 }
 
-/// A concrete implementation of [TextSpecUtility] for creating a Style with a [TextSpecAttribute].
-///
-/// This class provides a convenient way to define styling properties and is designed
-/// for direct usage in styling contexts.
-class StyleText extends TextSpecUtility<TextSpecAttribute> {
-  StyleText() : super((v) => v);
-}
-
 /// A tween that interpolates between two [TextSpec] instances.
 ///
 /// This class can be used in animations to smoothly transition between

@@ -22,10 +22,7 @@ import 'image_widget.dart';
 
 part 'image_spec.g.dart';
 
-@MixableSpec(
-  components:
-      GeneratedSpecComponents.defaultComponents | GeneratedSpecComponents.style,
-)
+@MixableSpec()
 final class ImageSpec extends Spec<ImageSpec> with _$ImageSpec, Diagnosticable {
   final double? width, height;
   final Color? color;

@@ -56,10 +56,7 @@ const _boxUtility = MixableFieldUtility(
 );
 
 //TODO: Find a way to reuse as much code as possible from the FlexSpec and BoxSpec
-@MixableSpec(
-  components:
-      GeneratedSpecComponents.defaultComponents | GeneratedSpecComponents.style,
-)
+@MixableSpec()
 final class FlexBoxSpec extends Spec<FlexBoxSpec>
     with _$FlexBoxSpec, Diagnosticable {
   @MixableField(utilities: [_boxUtility])

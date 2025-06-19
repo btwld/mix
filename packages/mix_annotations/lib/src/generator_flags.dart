@@ -1,23 +1,17 @@
 /// Flags to indicate external code entities (classes, extensions, etc.) to generate.
 class GeneratedSpecComponents {
-  static const int none = 0x000;
-  static const int utility = 0x001;
-  static const int attribute = 0x002;
-  static const int resolvableExtension = 0x004;
-  static const int tween = 0x008;
-  static const int style = 0x010;
+  static const int none = 0x00;
+  static const int utility = 0x01;
+  static const int attribute = 0x02;
+  static const int resolvableExtension = 0x04;
+  static const int tween = 0x08;
 
-  @Deprecated('Use defaultComponents instead')
   static const int all = utility | attribute | resolvableExtension | tween;
 
-  static const int defaultComponents =
-      utility | attribute | resolvableExtension | tween;
-
-  static const skipUtility = defaultComponents & ~utility;
-  static const skipAttribute = defaultComponents & ~attribute;
-  static const skipResolvableExtension =
-      defaultComponents & ~resolvableExtension;
-  static const skipTween = defaultComponents & ~tween;
+  static const skipUtility = all & ~utility;
+  static const skipAttribute = all & ~attribute;
+  static const skipResolvableExtension = all & ~resolvableExtension;
+  static const skipTween = all & ~tween;
 
   const GeneratedSpecComponents._();
 }

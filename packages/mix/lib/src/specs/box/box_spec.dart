@@ -59,10 +59,7 @@ const _shapeDecor = MixableFieldUtility(
   properties: [(path: 'shape', alias: 'shape')],
 );
 
-@MixableSpec(
-  components:
-      GeneratedSpecComponents.defaultComponents | GeneratedSpecComponents.style,
-)
+@MixableSpec()
 final class BoxSpec extends Spec<BoxSpec> with _$BoxSpec, Diagnosticable {
   /// {@macro box_spec_of}
   static const of = _$BoxSpec.of;

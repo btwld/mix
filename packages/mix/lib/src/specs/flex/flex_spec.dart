@@ -20,10 +20,7 @@ import 'flex_widget.dart';
 
 part 'flex_spec.g.dart';
 
-@MixableSpec(
-  components:
-      GeneratedSpecComponents.defaultComponents | GeneratedSpecComponents.style,
-)
+@MixableSpec()
 final class FlexSpec extends Spec<FlexSpec> with _$FlexSpec, Diagnosticable {
   @MixableField(
     utilities: [
