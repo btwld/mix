@@ -104,3 +104,7 @@ final class ImageSpec extends Spec<ImageSpec> with _$ImageSpec, Diagnosticable {
     _debugFillProperties(properties);
   }
 }
+
+class ImageStyle extends ImageSpecUtility<ImageSpecAttribute> {
+  ImageStyle() : super((v) => v);
+}

@@ -141,3 +141,7 @@ final class TextSpec extends Spec<TextSpec> with _$TextSpec, Diagnosticable {
     _debugFillProperties(properties);
   }
 }
+
+class MixTextStyle extends TextSpecUtility<TextSpecAttribute> {
+  MixTextStyle() : super((v) => v);
+}
