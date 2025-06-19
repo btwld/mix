@@ -7,7 +7,7 @@ final _key = GlobalKey();
 
 @widgetbook.UseCase(
   name: 'Menu Item Component',
-  type: MenuItem,
+  type: RxMenuItem,
 )
 Widget buildButtonUseCase(BuildContext context) {
   return KeyedSubtree(
@@ -16,7 +16,7 @@ Widget buildButtonUseCase(BuildContext context) {
       body: Center(
         child: SizedBox(
           width: 350,
-          child: MenuItem(
+          child: RxMenuItem(
             title: context.knobs.string(
               label: 'Title',
               initialValue: 'Menu Item',
@@ -26,21 +26,21 @@ Widget buildButtonUseCase(BuildContext context) {
               initialValue: 'Subtitle',
             ),
             onPress: () {},
-            disabled: context.knobs.boolean(
+            enabled: context.knobs.boolean(
               label: 'Disabled',
               initialValue: false,
             ),
-            leadingWidgetBuilder: (icon) => context.knobs.boolean(
+            leading: context.knobs.boolean(
               label: 'Show leading widget',
               initialValue: false,
             )
                 ? Avatar(fallbackBuilder: (spec) => spec('LF'))
                 : const SizedBox.shrink(),
-            trailingWidgetBuilder: (icon) => context.knobs.boolean(
+            trailing: context.knobs.boolean(
               label: 'Show trailing widget',
               initialValue: false,
             )
-                ? icon(Icons.chevron_right)
+                ? const Icon(Icons.chevron_right)
                 : const SizedBox.shrink(),
           ),
         ),

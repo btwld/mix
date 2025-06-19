@@ -4,7 +4,7 @@ class RxChipStyle extends ChipSpecUtility<ChipSpecAttribute> {
   RxChipStyle() : super((v) => v);
 
   factory RxChipStyle._default() {
-    final style = RxChipStyle()
+    return RxChipStyle()
       ..container.borderRadius(8)
       ..container.color.white()
       ..container.border.color.grey.shade300()
@@ -17,8 +17,6 @@ class RxChipStyle extends ChipSpecUtility<ChipSpecAttribute> {
       ..icon.size(18)
       ..label.fontSize(14)
       ..on.selected(RxChipStyle()..container.color.grey.shade200());
-
-    return style;
   }
 
   @override

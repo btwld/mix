@@ -1,5 +1,4 @@
 import '../../components/content_presentation/avatar/avatar.dart';
-import '../../components/content_presentation/menu_item/menu_item.dart';
 import '../../components/feedback/callout/callout.dart';
 import '../../components/feedback/dialog/dialog.dart';
 import '../../components/feedback/progress/progress.dart';
@@ -28,7 +27,6 @@ class RemixComponentTheme {
   final DividerStyle divider;
   final HeaderStyle header;
 
-  final MenuItemStyle menuItem;
   final ProgressStyle progress;
   final RadioStyle radio;
   final ScaffoldStyle scaffold;
@@ -50,7 +48,6 @@ class RemixComponentTheme {
     required this.dialog,
     required this.divider,
     required this.header,
-    required this.menuItem,
     required this.progress,
     required this.radio,
     required this.scaffold,
@@ -74,7 +71,7 @@ class RemixComponentTheme {
       dialog: DialogStyle(),
       divider: DividerStyle(),
       header: HeaderStyle(),
-      menuItem: MenuItemStyle(),
+
       progress: ProgressStyle(),
       radio: RadioStyle(),
       scaffold: ScaffoldStyle(),
@@ -99,7 +96,7 @@ class RemixComponentTheme {
       dialog: const DialogDarkStyle(),
       divider: const DividerDarkStyle(),
       header: const HeaderDarkStyle(),
-      menuItem: const MenuItemDarkStyle(),
+
       progress: const ProgressDarkStyle(),
       radio: const RadioDarkStyle(),
       scaffold: const ScaffoldDarkStyle(),
@@ -123,7 +120,6 @@ class RemixComponentTheme {
     DialogStyle? dialog,
     DividerStyle? divider,
     HeaderStyle? header,
-    MenuItemStyle? menuItem,
     ProgressStyle? progress,
     RadioStyle? radio,
     ScaffoldStyle? scaffold,
@@ -145,7 +141,7 @@ class RemixComponentTheme {
       dialog: dialog ?? this.dialog,
       divider: divider ?? this.divider,
       header: header ?? this.header,
-      menuItem: menuItem ?? this.menuItem,
+
       progress: progress ?? this.progress,
       radio: radio ?? this.radio,
       scaffold: scaffold ?? this.scaffold,

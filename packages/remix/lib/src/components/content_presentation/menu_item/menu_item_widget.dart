@@ -1,16 +1,16 @@
 part of 'menu_item.dart';
 
-class MenuItem extends StatelessWidget {
-  const MenuItem({
+class RxMenuItem extends StatelessWidget {
+  const RxMenuItem({
     super.key,
     required this.title,
     this.subtitle,
-    this.leadingWidgetBuilder,
-    this.trailingWidgetBuilder,
+    this.leading,
+    this.trailing,
     this.onPress,
     this.variants = const [],
     this.style,
-    this.disabled = false,
+    this.enabled = true,
   });
 
   /// The primary text displayed in the menu item.
@@ -22,61 +22,60 @@ class MenuItem extends StatelessWidget {
   /// {@macro remix.component.onPressed}
   final VoidCallback? onPress;
 
-  /// A builder that returns a [Widget] for the menu item's leading icon.
+  /// A widget that represents the leading widget in the menu item.
   ///
-  /// This builder creates a widget to display at the start of the menu item.
+  /// This widget is displayed at the start of the menu item.
   ///
   /// {@macro remix.widget_spec_builder.icon_spec}
   ///
   /// ```dart
   /// MenuItem(
   ///   title: 'Settings',
-  ///   leadingWidgetBuilder: (spec) => spec(Icons.settings),
+  ///   leading: Icon(Icons.settings),
   /// );
   /// ```
-  final WidgetSpecBuilder<IconSpec>? leadingWidgetBuilder;
+  final Widget? leading;
 
-  /// A builder that returns a [Widget] for the menu item's trailing icon.
+  /// A widget that represents the trailing widget in the menu item.
   ///
-  /// This builder creates a widget to display at the end of the menu item.
+  /// This widget is displayed at the end of the menu item.
   ///
   /// {@macro remix.widget_spec_builder.icon_spec}
   ///
   /// ```dart
   /// MenuItem(
-  ///   title: 'Next',
-  ///   trailingWidgetBuilder: (spec) => spec(Icons.chevron_right),
+  ///   title: 'Settings',
+  ///   leading: Icon(Icons.settings),
   /// );
   /// ```
-  final WidgetSpecBuilder<IconSpec>? trailingWidgetBuilder;
+  final Widget? trailing;
 
   /// {@macro remix.component.disabled}
-  final bool disabled;
+  final bool enabled;
 
   /// {@macro remix.component.variants}
   final List<Variant> variants;
 
   /// {@macro remix.component.style}
-  final MenuItemStyle? style;
+  final RxMenuItemStyle? style;
+
+  RxMenuItemStyle get _style =>
+      RxMenuItemStyle._default().merge(style ?? RxMenuItemStyle());
 
   @override
   Widget build(BuildContext context) {
-    final style = this.style ?? context.remix.components.menuItem;
-    final configuration = SpecConfiguration(context, MenuItemSpecUtility.self);
-
     return Pressable(
-      enabled: !disabled,
-      onPress: disabled ? null : onPress,
+      enabled: enabled,
+      onPress: onPress,
       child: SpecBuilder(
-        style: style.makeStyle(configuration).applyVariants([...variants]),
+        style: Style(_style).applyVariants(variants),
         builder: (context) {
           final spec = MenuItemSpec.of(context);
 
           return spec.container(
             direction: Axis.horizontal,
             children: [
-              if (leadingWidgetBuilder != null)
-                leadingWidgetBuilder!(spec.icon),
+              if (leading != null) leading!,
               spec.titleSubtitleContainer(
                 direction: Axis.vertical,
                 children: [
@@ -84,8 +83,7 @@ class MenuItem extends StatelessWidget {
                   if (subtitle != null) spec.subtitle(subtitle!),
                 ],
               ),
-              if (trailingWidgetBuilder != null)
-                trailingWidgetBuilder!(spec.icon),
+              if (trailing != null) trailing!,
             ],
           );
         },

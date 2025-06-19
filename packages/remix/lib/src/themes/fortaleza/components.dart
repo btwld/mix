@@ -7,7 +7,6 @@ import 'components/dialog_theme.dart';
 import 'components/divider_theme.dart';
 import 'components/dropdown_theme.dart';
 import 'components/header_theme.dart';
-import 'components/menu_item_theme.dart';
 import 'components/progress_theme.dart';
 import 'components/radio_theme.dart';
 import 'components/scaffold_theme.dart';
@@ -29,7 +28,6 @@ class FortalezaComponentTheme extends RemixComponentTheme {
     required super.dialog,
     required super.divider,
     required super.header,
-    required super.menuItem,
     required super.progress,
     required super.radio,
     required super.scaffold,
@@ -52,7 +50,6 @@ class FortalezaComponentTheme extends RemixComponentTheme {
       dialog: FortalezaDialogStyle(),
       divider: FortalezaDividerStyle(),
       header: FortalezaHeaderStyle(),
-      menuItem: FortalezaMenuItemStyle(),
       progress: FortalezaProgressStyle(),
       radio: FortalezaRadioStyle(),
       scaffold: FortalezaScaffoldStyle(),

@@ -1,68 +1,23 @@
 part of 'menu_item.dart';
 
-class MenuItemStyle extends SpecStyle<MenuItemSpecUtility> {
-  const MenuItemStyle();
+class RxMenuItemStyle extends MenuItemSpecUtility<MenuItemSpecAttribute> {
+  RxMenuItemStyle() : super((v) => v);
 
-  @override
-  Style makeStyle(SpecConfiguration<MenuItemSpecUtility> spec) {
-    final $ = spec.utilities;
-
-    final titleSubtitleContainer = $.titleSubtitleContainer
-      ..flex.mainAxisAlignment.start()
-      ..flex.crossAxisAlignment.start()
-      ..flex.mainAxisSize.min()
-      ..wrap.expanded()
-      ..flex.gap(4.0);
-
-    final title = $.title.style.fontSize(14.0);
-
-    final subtitle = $.subtitle
-      ..style.fontSize(12.0)
-      ..style.color.grey.shade600()
-      ..maxLines(2);
-
-    final container = $.container
-      ..flex.gap(12)
-      ..padding(12)
-      ..borderRadius(12);
-
-    final icon = $.icon
-      ..size(20)
-      ..color.black87();
-
-    final disabled = spec.on.disabled(
-      $.title.style.color.grey.shade600(),
-      $.subtitle.style.color.grey.shade400(),
-    );
-
-    return Style.create([
-      titleSubtitleContainer,
-      container,
-      title,
-      subtitle,
-      icon,
-      spec.on.disabled(disabled),
-    ]);
+  factory RxMenuItemStyle._default() {
+    return RxMenuItemStyle()
+      ..titleSubtitleContainer.flex.crossAxisAlignment.start()
+      ..titleSubtitleContainer.flex.mainAxisSize.min()
+      ..titleSubtitleContainer.wrap.expanded()
+      ..titleSubtitleContainer.flex.gap(2.0)
+      ..container.flex.gap(12)
+      ..container.padding(12)
+      ..subtitle.style.fontSize(12.0)
+      ..subtitle.style.color.grey.shade600()
+      ..subtitle.maxLines(2);
   }
-}
-
-class MenuItemDarkStyle extends MenuItemStyle {
-  const MenuItemDarkStyle();
 
   @override
-  Style makeStyle(SpecConfiguration<MenuItemSpecUtility> spec) {
-    final $ = spec.utilities;
-
-    final disabled = spec.on.disabled(
-      $.title.style.color.grey.shade400(),
-      $.subtitle.style.color.grey.shade700(),
-    );
-
-    return Style.create([
-      super.makeStyle(spec),
-      $.title.style.color.white(),
-      $.icon.color.white(),
-      spec.on.disabled(disabled),
-    ]);
+  RxMenuItemStyle merge(RxMenuItemStyle other) {
+    return super.merge(other) as RxMenuItemStyle;
   }
 }
