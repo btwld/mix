@@ -1,52 +1,22 @@
 part of 'avatar.dart';
 
-class AvatarStyle extends SpecStyle<AvatarSpecUtility> {
-  const AvatarStyle();
+class RxAvatarStyle extends AvatarSpecUtility<AvatarSpecAttribute> {
+  RxAvatarStyle() : super((v) => v);
 
-  @override
-  Style makeStyle(SpecConfiguration<AvatarSpecUtility> spec) {
-    final $ = spec.utilities;
-
-    final fallbackStyle = [
-      $.fallback
-        ..textAlign.center()
-        ..style.fontWeight.w400()
-        ..style.fontSize(16)
-        ..style.color.black(),
-    ];
-
-    final containerStyle = [
-      $.container
-        ..color.black12()
-        ..alignment.center()
-        ..size(40)
-        ..wrap.clipOval(),
-    ];
-
-    final stackStyle = [$.stack.alignment.center()];
-
-    final imageStyle = [$.image.fit.cover()];
-
-    return Style.create([
-      ...fallbackStyle,
-      ...containerStyle,
-      ...stackStyle,
-      ...imageStyle,
-    ]);
+  factory RxAvatarStyle._default() {
+    return RxAvatarStyle()
+      ..container.size(50)
+      ..container.alignment.center()
+      ..container.shape.circle()
+      ..container.clipBehavior.antiAlias()
+      ..container.color.grey.shade300()
+      ..textStyle.fontSize(18)
+      ..textStyle.fontWeight.w400()
+      ..textStyle.color.black();
   }
-}
-
-class AvatarDarkStyle extends AvatarStyle {
-  const AvatarDarkStyle();
 
   @override
-  Style makeStyle(SpecConfiguration<AvatarSpecUtility> spec) {
-    final $ = spec.utilities;
-
-    return Style.create([
-      super.makeStyle(spec),
-      $.container.color.white.shade(75),
-      $.fallback.style.color.white(),
-    ]);
+  RxAvatarStyle merge(RxAvatarStyle other) {
+    return super.merge(other) as RxAvatarStyle;
   }
 }

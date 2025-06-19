@@ -1,5 +1,4 @@
 import '../../core/theme/component.dart';
-import 'components/avatar_theme.dart';
 import 'components/badge_theme.dart';
 import 'components/callout_theme.dart';
 import 'components/checkbox_theme.dart';
@@ -20,7 +19,6 @@ import 'components/toast_theme.dart';
 
 class FortalezaComponentTheme extends RemixComponentTheme {
   const FortalezaComponentTheme({
-    required super.avatar,
     required super.badge,
     // required super.button,
     required super.callout,
@@ -43,7 +41,6 @@ class FortalezaComponentTheme extends RemixComponentTheme {
 
   static RemixComponentTheme light() {
     return const FortalezaComponentTheme(
-      avatar: FortalezaAvatarStyle(),
       badge: FortalezaBadgeStyle(),
       callout: FortalezaCalloutStyle(),
       checkbox: FortalezaCheckboxStyle(),
@@ -66,7 +63,6 @@ class FortalezaComponentTheme extends RemixComponentTheme {
 
   static RemixComponentTheme dark() {
     return FortalezaComponentTheme.light().copyWith(
-      avatar: const FortalezaDarkAvatarStyle(),
       badge: const FortalezaDarkBadgeStyle(),
       segmentedControl: const FortalezaDarkSegmentedControlStyle(),
       select: const FortalezaDarkSelectStyle(),

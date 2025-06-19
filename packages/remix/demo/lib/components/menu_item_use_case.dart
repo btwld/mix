@@ -34,7 +34,7 @@ Widget buildButtonUseCase(BuildContext context) {
               label: 'Show leading widget',
               initialValue: false,
             )
-                ? Avatar(fallbackBuilder: (spec) => spec('LF'))
+                ? const RxAvatar.raw(child: Text('LF'))
                 : const SizedBox.shrink(),
             trailing: context.knobs.boolean(
               label: 'Show trailing widget',

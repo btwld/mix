@@ -17,9 +17,7 @@ Widget buildCard(BuildContext context) {
             $flex.mainAxisSize.min(),
           ),
           children: [
-            Avatar(
-              fallbackBuilder: (spec) => spec('LF'),
-            ),
+            const RxAvatar.raw(child: Text('LF')),
             Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,

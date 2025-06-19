@@ -1,4 +1,3 @@
-import '../../components/content_presentation/avatar/avatar.dart';
 import '../../components/feedback/callout/callout.dart';
 import '../../components/feedback/dialog/dialog.dart';
 import '../../components/feedback/progress/progress.dart';
@@ -18,7 +17,6 @@ import '../../components/utility/badge/badge.dart';
 import '../../components/utility/dropdown_menu/dropdown_menu.dart';
 
 class RemixComponentTheme {
-  final AvatarStyle avatar;
   final BadgeStyle badge;
   // final ButtonStyle button;
   final CalloutStyle callout;
@@ -40,7 +38,6 @@ class RemixComponentTheme {
   final DropdownMenuStyle dropdownMenu;
 
   const RemixComponentTheme({
-    required this.avatar,
     required this.badge,
     // required this.button,
     required this.callout,
@@ -63,7 +60,6 @@ class RemixComponentTheme {
 
   factory RemixComponentTheme.light() {
     return const RemixComponentTheme(
-      avatar: AvatarStyle(),
       badge: BadgeStyle(),
       // button: ButtonStyle(),
       callout: CalloutStyle(),
@@ -88,7 +84,6 @@ class RemixComponentTheme {
 
   factory RemixComponentTheme.dark() {
     return RemixComponentTheme.light().copyWith(
-      avatar: const AvatarDarkStyle(),
       badge: const BadgeDarkStyle(),
       // button: const ButtonDarkStyle(),
       callout: const CalloutDarkStyle(),
@@ -112,7 +107,6 @@ class RemixComponentTheme {
   }
 
   RemixComponentTheme copyWith({
-    AvatarStyle? avatar,
     BadgeStyle? badge,
     // ButtonStyle? button,
     CalloutStyle? callout,
@@ -133,7 +127,6 @@ class RemixComponentTheme {
     DropdownMenuStyle? dropdownMenu,
   }) {
     return RemixComponentTheme(
-      avatar: avatar ?? this.avatar,
       badge: badge ?? this.badge,
       // button: button ?? this.button,
       callout: callout ?? this.callout,

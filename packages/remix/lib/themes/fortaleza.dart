@@ -1,7 +1,6 @@
 library remix.fortaleza;
 
 export '../src/themes/fortaleza/components.dart';
-export '../src/themes/fortaleza/components/avatar_theme.dart';
 export '../src/themes/fortaleza/components/badge_theme.dart';
 export '../src/themes/fortaleza/components/button_theme.dart';
 export '../src/themes/fortaleza/components/callout_theme.dart';
