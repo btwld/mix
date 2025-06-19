@@ -3,7 +3,8 @@ part of 'button.dart';
 /// A customizable button component that supports icons, loading states, and styling.
 /// The button integrates with the Mix styling system and follows Remix design patterns.
 ///
-/// Example:
+/// ## Example
+///
 /// ```dart
 /// RxButton(
 ///   label: 'Click Me',
@@ -11,8 +12,11 @@ part of 'button.dart';
 ///   onPressed: () {
 ///     print('Button pressed!');
 ///   },
+///   variants: [Variant.primary],
+///   style: RxButtonStyle(),
 /// )
 /// ```
+///
 class RxButton extends StatefulWidget implements Disableable {
   /// Creates a Remix button.
   ///
@@ -28,6 +32,7 @@ class RxButton extends StatefulWidget implements Disableable {
     this.enableHapticFeedback = true,
     required this.onPressed,
     this.focusNode,
+    this.variants = const [],
     this.style,
   }) : child = RxLabel(label, icon: leadingIcon);
 
@@ -41,6 +46,8 @@ class RxButton extends StatefulWidget implements Disableable {
   /// RxButton.icon(
   ///   icon: Icons.star,
   ///   onPressed: () {},
+  ///   variants: [Variant.primary],
+  ///   style: RxButtonStyle(),
   /// )
   /// ```
   RxButton.icon(
@@ -52,6 +59,7 @@ class RxButton extends StatefulWidget implements Disableable {
     this.enableHapticFeedback = true,
     required this.onPressed,
     this.focusNode,
+    this.variants = const [],
     this.style,
   }) : child = Icon(icon);
 
@@ -65,6 +73,8 @@ class RxButton extends StatefulWidget implements Disableable {
   /// RxButton.raw(
   ///   child: Icon(Icons.star),
   ///   onPressed: () {},
+  ///   variants: [Variant.primary],
+  ///   style: RxButtonStyle(),
   /// )
   /// ```
   const RxButton.raw({
@@ -76,6 +86,7 @@ class RxButton extends StatefulWidget implements Disableable {
     this.enableHapticFeedback = true,
     required this.onPressed,
     this.focusNode,
+    this.variants = const [],
     this.style,
   });
 
@@ -127,6 +138,9 @@ class RxButton extends StatefulWidget implements Disableable {
 
   /// The child widget to display inside the button.
   final Widget child;
+
+  /// {@macro remix.component.variants}
+  final List<Variant> variants;
 
   @override
   State<RxButton> createState() => _RxButtonState();
@@ -185,7 +199,7 @@ class _RxButtonState extends State<RxButton> with MixControllerMixin {
             ),
           );
         },
-        style: _style,
+        style: Style(_style).applyVariants(widget.variants),
         mixController: mixController,
       ),
     );

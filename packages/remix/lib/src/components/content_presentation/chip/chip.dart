@@ -12,7 +12,7 @@ part 'chip_style.dart';
 part 'chip_widget.dart';
 
 @MixableSpec()
-class ChipSpec extends Spec<ChipSpec> with _$ChipSpec, Diagnosticable {
+base class ChipSpec extends Spec<ChipSpec> with _$ChipSpec, Diagnosticable {
   final FlexBoxSpec container;
 
   final IconSpec icon;

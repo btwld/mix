@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 abstract class Disableable {
-  /// {@macro remix.component.disabled}
+  /// {@macro remix.component.enabled}
   final bool enabled;
 
   const Disableable({required this.enabled});

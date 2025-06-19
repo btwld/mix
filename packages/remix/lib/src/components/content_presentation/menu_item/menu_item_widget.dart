@@ -1,5 +1,30 @@
 part of 'menu_item.dart';
 
+/// A menu item component that displays a title, and optionally a subtitle, leading, and trailing widgets.
+///
+/// The [RxMenuItem] is a customizable widget that can be used to create a list of items with a consistent style.
+/// It supports various configurations such as enabling/disabling the item, applying style variants, and handling
+/// press actions.
+///
+/// {@macro remix.component}
+///
+/// ## Example
+///
+/// ```dart
+/// RxMenuItem(
+///   title: 'Settings',
+///   subtitle: 'Manage your preferences',
+///   leading: Icon(Icons.settings),
+///   trailing: Icon(Icons.arrow_forward),
+///   onPress: () {
+///     // Handle press action
+///   },
+///   enabled: true,
+///   variants: [Variant.primary],
+///   style: RxMenuItemStyle(),
+/// )
+/// ```
+///
 class RxMenuItem extends StatelessWidget {
   const RxMenuItem({
     super.key,
@@ -50,7 +75,7 @@ class RxMenuItem extends StatelessWidget {
   /// ```
   final Widget? trailing;
 
-  /// {@macro remix.component.disabled}
+  /// {@macro remix.component.enabled}
   final bool enabled;
 
   /// {@macro remix.component.variants}

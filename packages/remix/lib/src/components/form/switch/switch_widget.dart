@@ -19,7 +19,7 @@ class Switch extends StatefulWidget {
   /// {@macro remix.component.style}
   final SwitchStyle? style;
 
-  /// {@macro remix.component.disabled}
+  /// {@macro remix.component.enabled}
   final bool disabled;
 
   /// {@macro remix.component.variants}

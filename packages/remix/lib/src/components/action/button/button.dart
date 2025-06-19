@@ -16,7 +16,8 @@ part 'button_style.dart';
 part 'button_widget.dart';
 
 @MixableSpec(methods: GeneratedSpecMethods.skipLerp)
-class ButtonSpec extends Spec<ButtonSpec> with _$ButtonSpec, Diagnosticable {
+base class ButtonSpec extends Spec<ButtonSpec>
+    with _$ButtonSpec, Diagnosticable {
   final BoxSpec container;
 
   @MixableField(

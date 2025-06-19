@@ -9,7 +9,7 @@ part 'label_style.dart';
 part 'label_widget.dart';
 
 @MixableSpec()
-class LabelSpec extends Spec<LabelSpec> with _$LabelSpec, Diagnosticable {
+base class LabelSpec extends Spec<LabelSpec> with _$LabelSpec, Diagnosticable {
   final double spacing;
   final TextSpec label;
   final IconSpec icon;

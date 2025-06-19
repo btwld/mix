@@ -38,7 +38,7 @@ class Slider extends StatefulWidget {
   /// {@macro remix.component.variants}
   final List<Variant> variants;
 
-  /// {@macro remix.component.disabled}
+  /// {@macro remix.component.enabled}
   final bool disabled;
 
   /// Called when the user starts dragging the slider.

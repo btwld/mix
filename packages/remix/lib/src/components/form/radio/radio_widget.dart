@@ -29,7 +29,7 @@ class Radio<T> extends StatefulWidget {
   /// The label text displayed next to the radio button.
   final String label;
 
-  /// {@macro remix.component.disabled}
+  /// {@macro remix.component.enabled}
   final bool disabled;
 
   /// {@macro remix.component.style}

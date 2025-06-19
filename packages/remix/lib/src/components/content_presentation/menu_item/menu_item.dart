@@ -8,7 +8,7 @@ part 'menu_item_style.dart';
 part 'menu_item_widget.dart';
 
 @MixableSpec()
-class MenuItemSpec extends Spec<MenuItemSpec>
+base class MenuItemSpec extends Spec<MenuItemSpec>
     with _$MenuItemSpec, Diagnosticable {
   final FlexBoxSpec container;
   final FlexBoxSpec titleSubtitleContainer;

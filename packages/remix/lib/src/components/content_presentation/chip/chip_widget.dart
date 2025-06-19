@@ -1,5 +1,27 @@
 part of 'chip.dart';
 
+/// A chip component that can be selected or deselected, with optional icons and a label.
+///
+/// The [RxChip] is a customizable widget that can be used to represent a choice or an action.
+/// It supports various configurations such as enabling/disabling the chip, applying style variants,
+/// and handling selection changes.
+///
+/// ## Example
+///
+/// ```dart
+/// RxChip(
+///   label: 'Option 1',
+///   iconLeft: Icons.check,
+///   selected: true,
+///   onChanged: (bool isSelected) {
+///     // Handle selection change
+///   },
+///   enabled: true,
+///   variants: [Variant.primary],
+///   style: RxChipStyle(),
+/// )
+/// ```
+///
 class RxChip extends StatefulWidget implements Disableable, Selectable {
   RxChip({
     super.key,
@@ -17,6 +39,19 @@ class RxChip extends StatefulWidget implements Disableable, Selectable {
           label: label,
         );
 
+  /// Creates a Remix chip with custom content.
+  ///
+  /// This constructor allows for custom chip content beyond the default layout.
+  ///
+  /// Example:
+  /// ```dart
+  /// RxChip.raw(
+  ///   child: Icon(Icons.star),
+  ///   onChanged: (bool isSelected) {},
+  ///   variants: [Variant.primary],
+  ///   style: RxChipStyle(),
+  /// )
+  /// ```
   const RxChip.raw({
     super.key,
     this.selected = false,
@@ -34,6 +69,7 @@ class RxChip extends StatefulWidget implements Disableable, Selectable {
   @override
   final bool selected;
 
+  /// The child widget to display inside the chip.
   final Widget child;
 
   /// The text content displayed in the center of the component.
@@ -48,7 +84,7 @@ class RxChip extends StatefulWidget implements Disableable, Selectable {
   /// {@macro remix.component.onChanged}
   final void Function(bool)? onChanged;
 
-  /// {@macro remix.component.disabled}
+  /// {@macro remix.component.enabled}
   @override
   final bool enabled;
 
@@ -90,7 +126,7 @@ class _RxChipState extends State<RxChip>
             label: widget.label,
           );
         },
-        style: _style,
+        style: Style(_style).applyVariants(widget.variants),
         mixController: mixController,
       ),
     );

@@ -1,14 +1,18 @@
 part of 'label.dart';
 
 /// A customizable label component that supports icons and styling.
-/// The label integrates with the Mix styling system and follows Remix design patterns.
 ///
-/// Example:
+/// The [RxLabel] widget is designed to display text with optional icons.
+/// It integrates with the Mix styling system and follows Remix design patterns.
+///
+/// ## Example
+///
 /// ```dart
 /// RxLabel(
-///   label: 'Hello',
+///   'Hello World',
 ///   icon: Icons.star,
-///   style: LabelStyle(),
+///   variants: [Variant.primary],
+///   style: RxLabelStyle(),
 /// )
 /// ```
 class RxLabel extends StatelessWidget {
@@ -16,17 +20,24 @@ class RxLabel extends StatelessWidget {
   ///
   /// The [label] parameter is required.
   /// Other parameters allow customizing the label's appearance.
-  const RxLabel(this.label, {super.key, required this.icon, this.style});
+  const RxLabel(
+    this.label, {
+    super.key,
+    this.icon,
+    this.variants = const [],
+    this.style,
+  });
 
-  /// The text to display in the label
+  /// The text to display in the label.
   final String label;
 
-  /// Optional icon to display above the text
+  /// Optional icon to display alongside the text.
   final IconData? icon;
 
-  /// The style configuration for the label.
-  ///
-  /// Controls visual properties like colors, spacing, typography etc.
+  /// {@macro remix.component.variants}
+  final List<Variant> variants;
+
+  /// {@macro remix.component.style}
   final RxLabelStyle? style;
 
   RxLabelStyle get _style => RxLabelStyle().merge(style ?? RxLabelStyle());
@@ -34,7 +45,7 @@ class RxLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SpecBuilder(
-      style: _style,
+      style: Style(_style).applyVariants(variants),
       builder: (context) {
         final spec = LabelSpec.of(context);
 
