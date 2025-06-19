@@ -1,7 +1,20 @@
 part of 'progress.dart';
 
-class Progress extends StatelessWidget {
-  const Progress({
+/// The [RxProgress] widget is used to display a progress bar that indicates a
+/// completion percentage between 0 and 1. It can be customized using the
+/// [variants] and [style] parameters to fit different design needs.
+///
+/// ## Example
+///
+/// ```dart
+/// RxProgress(
+///   value: 0.5,
+///   variants: [Variant.primary],
+///   style: RxProgressStyle(),
+/// )
+/// ```
+class RxProgress extends StatelessWidget {
+  const RxProgress({
     super.key,
     this.style,
     this.variants = const [],
@@ -12,7 +25,7 @@ class Progress extends StatelessWidget {
         );
 
   /// {@macro remix.component.style}
-  final ProgressStyle? style;
+  final RxProgressStyle? style;
 
   /// The progress value between 0 and 1.
   ///
@@ -23,14 +36,13 @@ class Progress extends StatelessWidget {
   /// {@macro remix.component.variants}
   final List<Variant> variants;
 
+  RxProgressStyle get _style =>
+      RxProgressStyle._default().merge(style ?? RxProgressStyle());
+
   @override
   Widget build(BuildContext context) {
-    final style = this.style ?? context.remix.components.progress;
-
-    final configuration = SpecConfiguration(context, ProgressSpecUtility.self);
-
     return SpecBuilder(
-      style: style.makeStyle(configuration).applyVariants(variants),
+      style: Style(_style).applyVariants(variants),
       builder: (context) {
         final spec = ProgressSpec.of(context);
 

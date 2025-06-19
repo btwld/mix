@@ -10,7 +10,7 @@ final _key = GlobalKey();
 
 @widgetbook.UseCase(
   name: 'Callout Component',
-  type: Callout,
+  type: RxCallout,
 )
 Widget buildCalloutUseCase(BuildContext context) {
   return KeyedSubtree(
@@ -19,10 +19,7 @@ Widget buildCalloutUseCase(BuildContext context) {
       body: Center(
         child: SizedBox(
           width: 300,
-          child: Callout(
-            variants: [
-              context.knobs.variant(FortalezaCalloutStyle.variants),
-            ],
+          child: RxCallout(
             icon: m.Icons.info_outline,
             text: 'Lucas',
           ),

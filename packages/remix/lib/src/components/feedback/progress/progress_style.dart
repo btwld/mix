@@ -1,38 +1,22 @@
 part of 'progress.dart';
 
-class ProgressStyle extends SpecStyle<ProgressSpecUtility> {
-  const ProgressStyle();
+class RxProgressStyle extends ProgressSpecUtility<ProgressSpecAttribute> {
+  RxProgressStyle() : super((v) => v);
 
-  @override
-  Style makeStyle(SpecConfiguration<ProgressSpecUtility> spec) {
-    final $ = spec.utilities;
-
-    final containerStyle = [
-      $.container
-        ..height(6)
-        ..clipBehavior.antiAlias()
-        ..borderRadius(99),
-    ];
-
-    final trackStyle = [$.track.color.black12()];
-
-    final fillStyle = [$.fill.color.black()];
-
-    return Style.create([...containerStyle, ...trackStyle, ...fillStyle]);
+  factory RxProgressStyle._default() {
+    return RxProgressStyle()
+      ..container.height(6)
+      ..container.clipBehavior.antiAlias()
+      ..container.shape.stadium()
+      ..fill.color.black()
+      ..fill.borderRadius(99)
+      ..track.color.grey.shade100()
+      ..container.border.width(1)
+      ..container.border.strokeAlign.outside();
   }
-}
-
-class ProgressDarkStyle extends ProgressStyle {
-  const ProgressDarkStyle();
 
   @override
-  Style makeStyle(SpecConfiguration<ProgressSpecUtility> spec) {
-    final $ = spec.utilities;
-
-    return Style.create([
-      super.makeStyle(spec),
-      $.track.color.white12(),
-      $.fill.color.white(),
-    ]);
+  RxProgressStyle merge(RxProgressStyle other) {
+    return super.merge(other) as RxProgressStyle;
   }
 }

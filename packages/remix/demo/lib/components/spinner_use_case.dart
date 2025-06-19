@@ -7,12 +7,12 @@ import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
 @widgetbook.UseCase(
   name: 'Spinner Component',
-  type: Spinner,
+  type: RxSpinner,
 )
 Widget buildSpinnerUseCase(BuildContext context) {
   return Scaffold(
     body: Center(
-      child: Spinner(
+      child: RxSpinner(
         variants: [context.knobs.variant(FortalezaSpinnerStyle.variants)],
       ),
     ),

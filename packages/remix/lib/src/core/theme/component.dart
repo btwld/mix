@@ -1,6 +1,5 @@
 import '../../components/feedback/callout/callout.dart';
 import '../../components/feedback/dialog/dialog.dart';
-import '../../components/feedback/progress/progress.dart';
 import '../../components/feedback/spinner/spinner.dart';
 import '../../components/feedback/toast/toast.dart';
 import '../../components/form/checkbox/checkbox.dart';
@@ -19,13 +18,11 @@ import '../../components/utility/dropdown_menu/dropdown_menu.dart';
 class RemixComponentTheme {
   final BadgeStyle badge;
   // final ButtonStyle button;
-  final CalloutStyle callout;
   final CheckboxStyle checkbox;
   final DialogStyle dialog;
   final DividerStyle divider;
   final HeaderStyle header;
 
-  final ProgressStyle progress;
   final RadioStyle radio;
   final ScaffoldStyle scaffold;
   final SegmentedControlStyle segmentedControl;
@@ -40,12 +37,11 @@ class RemixComponentTheme {
   const RemixComponentTheme({
     required this.badge,
     // required this.button,
-    required this.callout,
+
     required this.checkbox,
     required this.dialog,
     required this.divider,
     required this.header,
-    required this.progress,
     required this.radio,
     required this.scaffold,
     required this.segmentedControl,
@@ -62,13 +58,12 @@ class RemixComponentTheme {
     return const RemixComponentTheme(
       badge: BadgeStyle(),
       // button: ButtonStyle(),
-      callout: CalloutStyle(),
+
       checkbox: CheckboxStyle(),
       dialog: DialogStyle(),
       divider: DividerStyle(),
       header: HeaderStyle(),
 
-      progress: ProgressStyle(),
       radio: RadioStyle(),
       scaffold: ScaffoldStyle(),
       segmentedControl: SegmentedControlStyle(),
@@ -86,13 +81,12 @@ class RemixComponentTheme {
     return RemixComponentTheme.light().copyWith(
       badge: const BadgeDarkStyle(),
       // button: const ButtonDarkStyle(),
-      callout: const CalloutDarkStyle(),
+
       checkbox: const CheckboxDarkStyle(),
       dialog: const DialogDarkStyle(),
       divider: const DividerDarkStyle(),
       header: const HeaderDarkStyle(),
 
-      progress: const ProgressDarkStyle(),
       radio: const RadioDarkStyle(),
       scaffold: const ScaffoldDarkStyle(),
       segmentedControl: const SegmentedControlDarkStyle(),
@@ -109,12 +103,11 @@ class RemixComponentTheme {
   RemixComponentTheme copyWith({
     BadgeStyle? badge,
     // ButtonStyle? button,
-    CalloutStyle? callout,
+
     CheckboxStyle? checkbox,
     DialogStyle? dialog,
     DividerStyle? divider,
     HeaderStyle? header,
-    ProgressStyle? progress,
     RadioStyle? radio,
     ScaffoldStyle? scaffold,
     SegmentedControlStyle? segmentedControl,
@@ -128,14 +121,10 @@ class RemixComponentTheme {
   }) {
     return RemixComponentTheme(
       badge: badge ?? this.badge,
-      // button: button ?? this.button,
-      callout: callout ?? this.callout,
       checkbox: checkbox ?? this.checkbox,
       dialog: dialog ?? this.dialog,
       divider: divider ?? this.divider,
       header: header ?? this.header,
-
-      progress: progress ?? this.progress,
       radio: radio ?? this.radio,
       scaffold: scaffold ?? this.scaffold,
       segmentedControl: segmentedControl ?? this.segmentedControl,

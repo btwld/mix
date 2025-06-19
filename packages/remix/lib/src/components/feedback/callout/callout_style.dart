@@ -2,58 +2,25 @@
 
 part of 'callout.dart';
 
-class CalloutStyle extends SpecStyle<CalloutSpecUtility> {
-  const CalloutStyle();
+class RxCalloutStyle extends CalloutSpecUtility<CalloutSpecAttribute> {
+  RxCalloutStyle() : super((v) => v);
 
-  @override
-  Style makeStyle(SpecConfiguration<CalloutSpecUtility> spec) {
-    final $ = spec.utilities;
-
-    final flexContainerStyle = [
-      $.container
-        ..borderRadius(6)
-        ..color.white()
-        ..padding(12)
-        ..border.all.color.black12()
-        ..flex.mainAxisSize.min()
-        ..flex.gap(8)
-        ..flex.direction.horizontal(),
-    ];
-
-    final iconStyle = [$.icon.color.black(), $.icon.size(16)];
-
-    final textStyle = [
-      $.text
-        ..style.color.black()
-        ..style.fontSize(14)
-        ..style.fontWeight.w500(),
-    ];
-
-    return Style.create([...flexContainerStyle, ...iconStyle, ...textStyle]);
+  factory RxCalloutStyle._default() {
+    return RxCalloutStyle()
+      ..container.borderRadius(6)
+      ..container.color.white()
+      ..container.padding(12)
+      ..container.border.all.color.grey.shade300()
+      ..container.flex.mainAxisSize.min()
+      ..container.flex.gap(8)
+      ..icon.color.black()
+      ..icon.size(16)
+      ..textStyle.color.black()
+      ..textStyle.fontWeight.w500();
   }
-}
-
-class CalloutDarkStyle extends CalloutStyle {
-  const CalloutDarkStyle();
 
   @override
-  Style makeStyle(SpecConfiguration<CalloutSpecUtility> spec) {
-    final $ = spec.utilities;
-    final flexContainerStyle = [
-      $.container
-        ..color.black()
-        ..border.all.color.white30(),
-    ];
-
-    final textStyle = [$.text.style.color.white()];
-
-    final iconStyle = [$.icon.color.white()];
-
-    return Style.create([
-      super.makeStyle(spec),
-      ...flexContainerStyle,
-      ...textStyle,
-      ...iconStyle,
-    ]);
+  RxCalloutStyle merge(RxCalloutStyle other) {
+    return super.merge(other) as RxCalloutStyle;
   }
 }

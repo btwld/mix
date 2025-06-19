@@ -1,22 +1,32 @@
 part of 'spinner.dart';
 
-class Spinner extends StatelessWidget {
-  const Spinner({super.key, this.style, this.variants = const []});
+/// The [RxSpinner] widget is used to display a loading spinner.
+/// It can be customized using the [variants] and [style] parameters to fit different design needs.
+///
+/// ## Example
+///
+/// ```dart
+/// RxSpinner(
+///   variants: [Variant.primary],
+///   style: RxSpinnerStyle(),
+/// )
+/// ```
+///
+class RxSpinner extends StatelessWidget {
+  const RxSpinner({super.key, this.style, this.variants = const []});
 
   /// {@macro remix.component.style}
-  final SpinnerStyle? style;
+  final RxSpinnerStyle? style;
 
   /// {@macro remix.component.variants}
   final List<Variant> variants;
 
+  RxSpinnerStyle get _style => RxSpinnerStyle._default().merge(style ?? RxSpinnerStyle());
+
   @override
   Widget build(BuildContext context) {
-    final style = this.style ?? context.remix.components.spinner;
-
-    final configuration = SpecConfiguration(context, SpinnerSpecUtility.self);
-
     return SpecBuilder(
-      style: style.makeStyle(configuration).applyVariants(variants),
+      style: Style(_style).applyVariants(variants),
       builder: (context) {
         final spinnerWidget = SpinnerSpec.of(context);
 
