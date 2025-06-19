@@ -621,38 +621,6 @@ mixin _$SelectTriggerSpec on Spec<SelectTriggerSpec> {
     );
   }
 
-  /// Linearly interpolates between this [SelectTriggerSpec] and another [SelectTriggerSpec] based on the given parameter [t].
-  ///
-  /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [SelectTriggerSpec] is returned. When [t] is 1.0, the [other] [SelectTriggerSpec] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [SelectTriggerSpec] is returned.
-  ///
-  /// If [other] is null, this method returns the current [SelectTriggerSpec] instance.
-  ///
-  /// The interpolation is performed on each property of the [SelectTriggerSpec] using the appropriate
-  /// interpolation method:
-  /// - [FlexBoxSpec.lerp] for [container].
-  /// - [IconThemeData.lerp] for [icon].
-  /// - [TextSpec.lerp] for [label].
-  /// For [modifiers] and [animated], the interpolation is performed using a step function.
-  /// If [t] is less than 0.5, the value from the current [SelectTriggerSpec] is used. Otherwise, the value
-  /// from the [other] [SelectTriggerSpec] is used.
-  ///
-  /// This method is typically used in animations to smoothly transition between
-  /// different [SelectTriggerSpec] configurations.
-  @override
-  SelectTriggerSpec lerp(SelectTriggerSpec? other, double t) {
-    if (other == null) return _$this;
-
-    return SelectTriggerSpec(
-      container: _$this.container.lerp(other.container, t),
-      icon: IconThemeData.lerp(_$this.icon, other.icon, t)!,
-      label: _$this.label.lerp(other.label, t),
-      modifiers: other.modifiers,
-      animated: _$this.animated ?? other.animated,
-    );
-  }
-
   /// The list of properties that constitute the state of this [SelectTriggerSpec].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to

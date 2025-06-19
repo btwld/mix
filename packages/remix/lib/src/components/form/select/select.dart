@@ -84,7 +84,7 @@ base class SelectMenuItemSpec extends Spec<SelectMenuItemSpec>
   }
 }
 
-@MixableSpec()
+@MixableSpec(methods: GeneratedSpecMethods.skipLerp)
 class SelectTriggerSpec extends Spec<SelectTriggerSpec>
     with _$SelectTriggerSpec, Diagnosticable {
   final FlexBoxSpec container;
@@ -115,5 +115,18 @@ class SelectTriggerSpec extends Spec<SelectTriggerSpec>
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     _debugFillProperties(properties);
+  }
+
+  @override
+  SelectTriggerSpec lerp(SelectTriggerSpec? other, double t) {
+    if (other == null) return _$this;
+
+    return SelectTriggerSpec(
+      container: _$this.container.lerp(other.container, t),
+      icon: IconThemeData.lerp(_$this.icon, other.icon, t),
+      label: _$this.label.lerp(other.label, t),
+      modifiers: other.modifiers,
+      animated: _$this.animated ?? other.animated,
+    );
   }
 }
