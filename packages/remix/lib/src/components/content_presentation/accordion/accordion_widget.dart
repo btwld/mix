@@ -284,7 +284,7 @@ class _RxAccordionItemState<T> extends State<RxAccordionItem<T>>
         );
       },
       style: Style(data.style).applyVariants(data.variants),
-      mixController: mixController,
+      controller: mixController,
     );
   }
 }

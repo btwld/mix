@@ -1,94 +1,129 @@
 part of 'radio.dart';
 
-class Radio<T> extends StatefulWidget {
-  const Radio({
+class RxRadioGroup<T> extends StatefulWidget {
+  const RxRadioGroup({
     super.key,
     required this.value,
     required this.onChanged,
-    required this.groupValue,
-    this.disabled = false,
+    required this.child,
+    this.enabled = true,
     this.style,
-    this.variants = const [],
-    required this.label,
   });
 
-  /// The value associated with this radio button.
-  ///
-  /// This value is compared against [groupValue] to determine if this radio button
-  /// is selected.
-  final T value;
+  final T? value;
 
-  /// {@macro remix.component.onChanged}
-  final ValueChanged<T?> onChanged;
+  /// The callback function that is called when the radio button is tapped.
+  final ValueChanged<T?>? onChanged;
 
-  /// The currently selected value for a group of radio buttons.
-  ///
-  /// When [value] matches [groupValue], this radio button is considered selected.
-  final T? groupValue;
-
-  /// The label text displayed next to the radio button.
-  final String label;
+  /// The child widget that contains the radio button.
+  final Widget child;
 
   /// {@macro remix.component.enabled}
-  final bool disabled;
+  final bool enabled;
 
   /// {@macro remix.component.style}
-  final RadioStyle? style;
-
-  /// {@macro remix.component.variants}
-  final List<Variant> variants;
-
-  bool get _selected => value == groupValue;
+  final RxRadioStyle? style;
 
   @override
-  State<Radio<T>> createState() => _RadioState<T>();
+  State<RxRadioGroup<T>> createState() => _RxRadioGroupState<T>();
 }
 
-class _RadioState<T> extends State<Radio<T>> {
-  late final WidgetStatesController _controller;
+class _RxRadioGroupState<T> extends State<RxRadioGroup<T>> {
+  T? _value;
 
   @override
   void initState() {
     super.initState();
-    _controller = WidgetStatesController()
-      ..selected = widget._selected
-      ..disabled = widget.disabled;
-  }
-
-  void _handleOnPress() {
-    widget.onChanged(widget.value);
+    _value = widget.value;
   }
 
   @override
-  void didUpdateWidget(Radio<T> oldWidget) {
+  void didUpdateWidget(covariant RxRadioGroup<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-
-    if (oldWidget._selected != widget._selected) {
-      _controller.selected = widget._selected;
-    }
-
-    if (oldWidget.disabled != widget.disabled) {
-      _controller.disabled = widget.disabled;
+    if (oldWidget.value != widget.value) {
+      _value = widget.value;
     }
   }
 
+  RxRadioStyle get _style =>
+      RxRadioStyle._default().merge(widget.style ?? RxRadioStyle());
+
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  Widget build(BuildContext context) {
+    return StyleScope<RxRadioStyle>(
+      style: _style,
+      child: NakedRadioGroup<T>(
+        groupValue: _value,
+        onChanged: (value) {
+          setState(() {
+            _value = value;
+          });
+          widget.onChanged?.call(value);
+        },
+        enabled: widget.enabled,
+        child: widget.child,
+      ),
+    );
+  }
+}
+
+class RxRadio<T> extends StatefulWidget implements Disableable {
+  const RxRadio({
+    super.key,
+    required this.value,
+    this.enabled = true,
+    this.focusNode,
+    this.enableHapticFeedback = true,
+    required this.label,
+  });
+
+  final T value;
+  final String label;
+  @override
+  final bool enabled;
+  final FocusNode? focusNode;
+  final bool enableHapticFeedback;
+
+  @override
+  State<RxRadio<T>> createState() => _RxRadioState<T>();
+}
+
+class _RxRadioState<T> extends State<RxRadio<T>>
+    with MixControllerMixin, DisableableMixin {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final group = NakedRadioGroupScope.of<T>(context);
+    mixController.selected = widget.value == group.groupValue;
+    mixController.disabled = !widget.enabled;
   }
 
   @override
   Widget build(BuildContext context) {
-    final style = widget.style ?? context.remix.components.radio;
-    final configuration = SpecConfiguration(context, RadioSpecUtility.self);
+    final style = StyleScope.of<RxRadioStyle>(context)!;
 
-    return Pressable(
-      enabled: !widget.disabled,
-      onPress: widget.disabled ? null : _handleOnPress,
-      controller: _controller,
-      child: SpecBuilder(
-        style: style.makeStyle(configuration).applyVariants(widget.variants),
+    return NakedRadio<T>(
+      value: widget.value,
+      onHoverState: (state) {
+        setState(() {
+          mixController.hovered = state;
+        });
+      },
+      onPressedState: (state) {
+        setState(() {
+          mixController.pressed = state;
+        });
+      },
+      onFocusState: (state) {
+        setState(() {
+          mixController.focused = state;
+        });
+      },
+      enabled: widget.enabled,
+      enableHapticFeedback: widget.enableHapticFeedback,
+      focusNode: widget.focusNode,
+      child: RemixBuilder(
         builder: (context) {
           final spec = RadioSpec.of(context);
 
@@ -105,6 +140,8 @@ class _RadioState<T> extends State<Radio<T>> {
             ],
           );
         },
+        style: Style(style),
+        controller: mixController,
       ),
     );
   }

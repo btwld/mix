@@ -1,74 +1,27 @@
 part of 'radio.dart';
 
-class RadioStyle extends SpecStyle<RadioSpecUtility> {
-  const RadioStyle();
+class RxRadioStyle extends RadioSpecUtility<RadioSpecAttribute> {
+  RxRadioStyle() : super((v) => v);
 
-  @override
-  Style makeStyle(SpecConfiguration<RadioSpecUtility> spec) {
-    final $ = spec.utilities;
-
-    final indicatorContainerStyle = [
-      $.indicatorContainer
-        ..borderRadius(99)
-        ..alignment.center()
-        ..size(14)
-        ..border.all.width(1)
-        ..border.all.color.black(),
-      spec.on.disabled($.indicatorContainer.border.color.black45()),
-    ];
-
-    final indicatorStyle = [
-      $.indicator
-        ..borderRadius(99)
-        ..color.black()
-        ..wrap.padding.all(2)
-        ..wrap.opacity(0)
-        ..wrap.scale(0.5),
-      spec.on.selected($.indicator.wrap.opacity(1), $.indicator.wrap.scale(1)),
-      spec.on.disabled($.indicator.color.black45()),
-    ];
-
-    final textStyle = $.text
-      ..style.fontSize(14)
-      ..style.height(1)
-      ..style.fontWeight.w500()
-      ..textHeightBehavior.heightToFirstAscent.off();
-
-    final containerStyle = $.container
-      ..flex.row()
-      ..flex.mainAxisSize.min()
-      ..flex.mainAxisAlignment.start()
-      ..flex.crossAxisAlignment.center()
-      ..flex.gap(8);
-
-    final disabledStyle = spec.on.disabled($.text.style.color.grey());
-
-    return Style.create([
-      ...indicatorContainerStyle,
-      ...indicatorStyle,
-      textStyle,
-      containerStyle,
-      disabledStyle,
-    ]);
+  factory RxRadioStyle._default() {
+    return RxRadioStyle()
+      ..indicatorContainer.padding.all(3)
+      ..indicatorContainer.border.all.color.grey.shade500()
+      ..indicatorContainer.shape.circle()
+      ..indicator.size(8)
+      ..indicator.shape.circle()
+      ..indicator.color.black()
+      ..text.style.color.black()
+      ..text.style.fontSize(14)
+      ..text.textHeightBehavior.heightToFirstAscent.off()
+      ..container.flex.mainAxisSize.min()
+      ..container.flex.gap(8)
+      ..indicator.wrap.opacity(0)
+      ..on.selected(RxRadioStyle()..indicator.wrap.opacity(1));
   }
-}
-
-class RadioDarkStyle extends RadioStyle {
-  const RadioDarkStyle();
 
   @override
-  Style makeStyle(SpecConfiguration<RadioSpecUtility> spec) {
-    final $ = spec.utilities;
-
-    return Style.create([
-      super.makeStyle(spec),
-      $.indicatorContainer.border.all.color.white(),
-      $.indicator.color.white(),
-      $.text.style.color.white(),
-      spec.on.disabled(
-        $.indicatorContainer.border.all.color.white30(),
-        $.indicator.color.white30(),
-      ),
-    ]);
+  RxRadioStyle merge(RxRadioStyle other) {
+    return super.merge(other) as RxRadioStyle;
   }
 }

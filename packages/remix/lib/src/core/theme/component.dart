@@ -17,12 +17,10 @@ import '../../components/utility/dropdown_menu/dropdown_menu.dart';
 class RemixComponentTheme {
   final BadgeStyle badge;
   // final ButtonStyle button;
-  final CheckboxStyle checkbox;
   final DialogStyle dialog;
   final DividerStyle divider;
   final HeaderStyle header;
 
-  final RadioStyle radio;
   final ScaffoldStyle scaffold;
   final SegmentedControlStyle segmentedControl;
   final SelectStyle select;
@@ -37,11 +35,9 @@ class RemixComponentTheme {
     required this.badge,
     // required this.button,
 
-    required this.checkbox,
     required this.dialog,
     required this.divider,
     required this.header,
-    required this.radio,
     required this.scaffold,
     required this.segmentedControl,
     required this.select,
@@ -58,12 +54,10 @@ class RemixComponentTheme {
       badge: BadgeStyle(),
       // button: ButtonStyle(),
 
-      checkbox: CheckboxStyle(),
       dialog: DialogStyle(),
       divider: DividerStyle(),
       header: HeaderStyle(),
 
-      radio: RadioStyle(),
       scaffold: ScaffoldStyle(),
       segmentedControl: SegmentedControlStyle(),
       select: SelectStyle(),
@@ -81,12 +75,10 @@ class RemixComponentTheme {
       badge: const BadgeDarkStyle(),
       // button: const ButtonDarkStyle(),
 
-      checkbox: const CheckboxDarkStyle(),
       dialog: const DialogDarkStyle(),
       divider: const DividerDarkStyle(),
       header: const HeaderDarkStyle(),
 
-      radio: const RadioDarkStyle(),
       scaffold: const ScaffoldDarkStyle(),
       segmentedControl: const SegmentedControlDarkStyle(),
       select: const SelectDarkStyle(),
@@ -103,11 +95,9 @@ class RemixComponentTheme {
     BadgeStyle? badge,
     // ButtonStyle? button,
 
-    CheckboxStyle? checkbox,
     DialogStyle? dialog,
     DividerStyle? divider,
     HeaderStyle? header,
-    RadioStyle? radio,
     ScaffoldStyle? scaffold,
     SegmentedControlStyle? segmentedControl,
     SelectStyle? select,
@@ -120,11 +110,9 @@ class RemixComponentTheme {
   }) {
     return RemixComponentTheme(
       badge: badge ?? this.badge,
-      checkbox: checkbox ?? this.checkbox,
       dialog: dialog ?? this.dialog,
       divider: divider ?? this.divider,
       header: header ?? this.header,
-      radio: radio ?? this.radio,
       scaffold: scaffold ?? this.scaffold,
       segmentedControl: segmentedControl ?? this.segmentedControl,
       select: select ?? this.select,

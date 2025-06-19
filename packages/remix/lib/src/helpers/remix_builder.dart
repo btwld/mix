@@ -7,20 +7,20 @@ class RemixBuilder extends StatelessWidget {
     super.key,
     required this.builder,
     required this.style,
-    required this.mixController,
+    required this.controller,
   });
 
   final WidgetBuilder builder;
   final BaseStyle<SpecAttribute> style;
-  final WidgetStatesController mixController;
+  final WidgetStatesController controller;
 
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: mixController,
+      listenable: controller,
       builder: (_, __) {
         return MixWidgetState.fromSet(
-          states: mixController.value,
+          states: controller.value,
           child: MixBuilder(style: Style(style), builder: builder),
         );
       },

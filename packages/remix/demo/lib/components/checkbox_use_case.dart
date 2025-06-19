@@ -10,7 +10,7 @@ final _key = GlobalKey();
 
 @widgetbook.UseCase(
   name: 'Checkbox Component',
-  type: Checkbox,
+  type: RxCheckbox,
 )
 Widget buildCheckboxUseCase(BuildContext context) {
   final knobState = WidgetbookState.of(context);
@@ -19,12 +19,10 @@ Widget buildCheckboxUseCase(BuildContext context) {
     body: KeyedSubtree(
       key: _key,
       child: Center(
-        child: Checkbox(
+        child: RxCheckbox(
           label: context.knobs.string(label: 'Label', initialValue: 'Label'),
-          variants: [context.knobs.variant(FortalezaCheckboxStyle.variants)],
-          disabled:
-              context.knobs.boolean(label: 'Disabled', initialValue: false),
-          value: context.knobs.boolean(label: 'Checked', initialValue: true),
+          enabled: context.knobs.boolean(label: 'Enabled', initialValue: true),
+          selected: context.knobs.boolean(label: 'Checked', initialValue: true),
           onChanged: (value) => knobState.updateKnob('Checked', value),
         ),
       ),

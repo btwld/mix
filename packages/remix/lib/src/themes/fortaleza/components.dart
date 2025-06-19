@@ -1,11 +1,10 @@
 import '../../core/theme/component.dart';
 import 'components/badge_theme.dart';
-import 'components/checkbox_theme.dart';
+
 import 'components/dialog_theme.dart';
 import 'components/divider_theme.dart';
 import 'components/dropdown_theme.dart';
 import 'components/header_theme.dart';
-import 'components/radio_theme.dart';
 import 'components/scaffold_theme.dart';
 import 'components/segmented_control_theme.dart';
 import 'components/select_theme.dart';
@@ -19,11 +18,9 @@ class FortalezaComponentTheme extends RemixComponentTheme {
   const FortalezaComponentTheme({
     required super.badge,
     // required super.button,
-    required super.checkbox,
     required super.dialog,
     required super.divider,
     required super.header,
-    required super.radio,
     required super.scaffold,
     required super.segmentedControl,
     required super.select,
@@ -38,11 +35,9 @@ class FortalezaComponentTheme extends RemixComponentTheme {
   static RemixComponentTheme light() {
     return const FortalezaComponentTheme(
       badge: FortalezaBadgeStyle(),
-      checkbox: FortalezaCheckboxStyle(),
       dialog: FortalezaDialogStyle(),
       divider: FortalezaDividerStyle(),
       header: FortalezaHeaderStyle(),
-      radio: FortalezaRadioStyle(),
       scaffold: FortalezaScaffoldStyle(),
       segmentedControl: FortalezaSegmentedControlStyle(),
       select: FortalezaSelectStyle(),

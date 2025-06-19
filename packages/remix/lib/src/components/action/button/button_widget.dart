@@ -200,7 +200,7 @@ class _RxButtonState extends State<RxButton> with MixControllerMixin {
           );
         },
         style: Style(_style).applyVariants(widget.variants),
-        mixController: mixController,
+        controller: mixController,
       ),
     );
   }

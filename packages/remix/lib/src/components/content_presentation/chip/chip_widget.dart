@@ -127,7 +127,7 @@ class _RxChipState extends State<RxChip>
           );
         },
         style: Style(_style).applyVariants(widget.variants),
-        mixController: mixController,
+        controller: mixController,
       ),
     );
   }

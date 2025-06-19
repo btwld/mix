@@ -1,10 +1,10 @@
 part of 'checkbox.dart';
 
-class Checkbox extends StatefulWidget {
-  const Checkbox({
+class RxCheckbox extends StatefulWidget implements Disableable, Selectable {
+  const RxCheckbox({
     super.key,
-    this.disabled = false,
-    this.value = false,
+    this.enabled = true,
+    required this.selected,
     this.onChanged,
     this.iconChecked = Icons.check_rounded,
     this.iconUnchecked,
@@ -13,11 +13,13 @@ class Checkbox extends StatefulWidget {
     this.label,
   });
 
-  /// Whether the checkbox is disabled.
-  final bool disabled;
+  /// {@macro remix.component.enabled}
+  @override
+  final bool enabled;
 
-  /// Whether the checkbox is checked.
-  final bool value;
+  /// {@macro remix.component.selected}
+  @override
+  final bool selected;
 
   /// The icon to display when the checkbox is checked.
   final IconData iconChecked;
@@ -29,7 +31,7 @@ class Checkbox extends StatefulWidget {
   final ValueChanged<bool>? onChanged;
 
   /// {@macro remix.component.style}
-  final CheckboxStyle? style;
+  final RxCheckboxStyle? style;
 
   /// {@macro remix.component.variants}
   final List<Variant> variants;
@@ -38,58 +40,27 @@ class Checkbox extends StatefulWidget {
   final String? label;
 
   @override
-  State<Checkbox> createState() => _CheckboxState();
+  State<RxCheckbox> createState() => _RxCheckboxState();
 }
 
-class _CheckboxState extends State<Checkbox> {
-  late final WidgetStatesController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = WidgetStatesController();
-    _controller.selected = widget.value;
-    _controller.disabled = widget.disabled;
-  }
-
-  void _handleOnPress() => widget.onChanged?.call(!widget.value);
-
-  @override
-  void didUpdateWidget(Checkbox oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (mounted) {
-      if (oldWidget.value != widget.value) {
-        _controller.selected = widget.value;
-      }
-
-      if (oldWidget.disabled != widget.disabled) {
-        _controller.disabled = widget.disabled;
-      }
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+class _RxCheckboxState extends State<RxCheckbox>
+    with MixControllerMixin, DisableableMixin, SelectableMixin {
+  RxCheckboxStyle get _style =>
+      RxCheckboxStyle._default().merge(widget.style ?? RxCheckboxStyle());
 
   @override
   Widget build(BuildContext context) {
-    final style = widget.style ?? context.remix.components.checkbox;
-
-    final configuration = SpecConfiguration(context, CheckboxSpecUtility.self);
-
-    return Pressable(
-      enabled: !widget.disabled,
-      onPress: widget.disabled ? null : _handleOnPress,
-      controller: _controller,
-      child: SpecBuilder(
-        style: style
-            .makeStyle(configuration)
-            .applyVariants(widget.variants)
-            .animate(),
+    return NakedCheckbox(
+      value: widget.selected,
+      onChanged: (value) => widget.onChanged?.call(value ?? false),
+      onPressedState: (state) {
+        mixController.pressed = state;
+      },
+      onFocusState: (state) {
+        mixController.focused = state;
+      },
+      enabled: widget.enabled,
+      child: RemixBuilder(
         builder: (context) {
           final spec = CheckboxSpec.of(context);
 
@@ -102,7 +73,7 @@ class _CheckboxState extends State<Checkbox> {
             children: [
               ContainerWidget(
                 child: IconWidget(
-                  widget.value
+                  widget.selected
                       ? widget.iconChecked
                       : (widget.iconUnchecked ?? widget.iconChecked),
                 ),
@@ -111,6 +82,8 @@ class _CheckboxState extends State<Checkbox> {
             ],
           );
         },
+        style: Style(_style).applyVariants(widget.variants),
+        controller: mixController,
       ),
     );
   }
