@@ -69,7 +69,7 @@ class _AuthBlockState extends State<AuthBlock> {
               children: [
                 FlexBox(
                   direction: Axis.vertical,
-                  style: StyleFlexBox()
+                  style: FlexBoxStyle()
                     ..border.all.color.grey.shade300()
                     ..border.all.strokeAlign.outside()
                     ..clipBehavior.antiAlias()
@@ -121,7 +121,7 @@ class _AuthBlockState extends State<AuthBlock> {
             ),
             StyledText(
               'or',
-              style: StyleText()..color.grey.shade500(),
+              style: StyledTextStyle()..color.grey.shade500(),
             ),
             Column(
               spacing: 8,
