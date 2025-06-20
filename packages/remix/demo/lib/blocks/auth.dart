@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
-import 'package:remix/remix.dart' hide Scaffold;
+import 'package:remix/remix.dart';
 
 void main() {
   runApp(const MyApp());
@@ -119,9 +119,16 @@ class _AuthBlockState extends State<AuthBlock> {
                 ),
               ],
             ),
-            StyledText(
-              'or',
-              style: StyledTextStyle()..color.grey.shade500(),
+            Row(
+              spacing: 8,
+              children: [
+                const Expanded(child: RxDivider()),
+                StyledText(
+                  'or',
+                  style: StyledTextStyle()..color.grey.shade500(),
+                ),
+                const Expanded(child: RxDivider()),
+              ],
             ),
             Column(
               spacing: 8,

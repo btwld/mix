@@ -10,19 +10,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: Scaffold(
         body: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            spacing: 16,
-            children: [
-              const RxSpinner(),
-              RxSpinner(
-                style: RxSpinnerStyle()..style.dotted(),
-              ),
-            ],
-          ),
+          child: RxDivider(),
         ),
       ),
     );

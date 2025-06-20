@@ -20,7 +20,7 @@ import 'package:demo/components/chip.dart' as _i8;
 import 'package:demo/components/dialog_use_case.dart' as _i9;
 import 'package:demo/components/divider_use_case.dart' as _i10;
 import 'package:demo/components/dropdown_menu.dart' as _i11;
-import 'package:demo/components/header_use_case.dart' as _i12;
+
 import 'package:demo/components/menu_item_use_case.dart' as _i13;
 import 'package:demo/components/progress_use_case.dart' as _i14;
 import 'package:demo/components/radio_use_case.dart' as _i15;
@@ -105,13 +105,6 @@ final directories = <_i1.WidgetbookNode>[
         useCase: _i1.WidgetbookUseCase(
           name: 'DropdownMenu Component',
           builder: _i11.buildDropdownMenu,
-        ),
-      ),
-      _i1.WidgetbookLeafComponent(
-        name: 'Header',
-        useCase: _i1.WidgetbookUseCase(
-          name: 'Header Component',
-          builder: _i12.buildCard,
         ),
       ),
       _i1.WidgetbookLeafComponent(

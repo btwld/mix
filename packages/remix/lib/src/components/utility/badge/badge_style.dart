@@ -2,47 +2,22 @@
 
 part of 'badge.dart';
 
-class BadgeStyle extends SpecStyle<BadgeSpecUtility> {
-  const BadgeStyle();
+class RxBadgeStyle extends BadgeSpecUtility {
+  RxBadgeStyle() : super((v) => v);
 
-  @override
-  Style makeStyle(SpecConfiguration<BadgeSpecUtility> spec) {
-    final $ = spec.utilities;
-
-    final containerStyle = [
-      $.container
-        ..color.black()
-        ..borderRadius.all(10)
-        ..padding.horizontal(10)
-        ..padding.vertical(2),
-    ];
-
-    final labelStyle = [
-      $.label
-        ..textHeightBehavior.heightToFirstAscent.off()
-        ..textHeightBehavior.heightToLastDescent.on()
-        ..textAlign.center()
-        ..style.height(1.5)
-        ..style.fontWeight.w500()
-        ..style.fontSize(12)
-        ..style.color.white(),
-    ];
-
-    return Style.create([...containerStyle, ...labelStyle]);
+  factory RxBadgeStyle._default() {
+    return RxBadgeStyle()
+      ..container.color.grey.shade200()
+      ..container.borderRadius.all(10)
+      ..container.padding.horizontal(10)
+      ..container.padding.vertical(2)
+      ..textStyle.color.grey.shade800()
+      ..textStyle.height(1.1)
+      ..icon.size(16);
   }
-}
-
-class BadgeDarkStyle extends BadgeStyle {
-  const BadgeDarkStyle();
 
   @override
-  Style makeStyle(SpecConfiguration<BadgeSpecUtility> spec) {
-    final $ = spec.utilities;
-
-    return Style.create([
-      super.makeStyle(spec),
-      $.container.color.white(),
-      $.label.style.color.black(),
-    ]);
+  RxBadgeStyle merge(covariant RxBadgeStyle other) {
+    return super.merge(other) as RxBadgeStyle;
   }
 }

@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart' as m;
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart' hide DropdownMenu, DropdownMenuItem;
 import 'package:remix/remix.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
@@ -36,7 +35,7 @@ class _DropdownMenuDemoState extends State<DropdownMenuDemo> {
     return Center(
       child: DropdownMenu(
         trigger: RxButton.icon(
-          m.Icons.menu,
+          Icons.menu,
           onPressed: () {
             setState(() {
               open = !open;

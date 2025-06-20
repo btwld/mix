@@ -37,12 +37,14 @@ mixin _$BadgeSpec on Spec<BadgeSpec> {
   @override
   BadgeSpec copyWith({
     BoxSpec? container,
-    TextSpec? label,
+    IconThemeData? icon,
+    TextStyle? textStyle,
     AnimatedData? animated,
   }) {
     return BadgeSpec(
       container: container ?? _$this.container,
-      label: label ?? _$this.label,
+      icon: icon ?? _$this.icon,
+      textStyle: textStyle ?? _$this.textStyle,
       animated: animated ?? _$this.animated,
     );
   }
@@ -58,23 +60,14 @@ mixin _$BadgeSpec on Spec<BadgeSpec> {
   /// The interpolation is performed on each property of the [BadgeSpec] using the appropriate
   /// interpolation method:
   /// - [BoxSpec.lerp] for [container].
-  /// - [TextSpec.lerp] for [label].
+  /// - [IconThemeData.lerp] for [icon].
+  /// - [MixHelpers.lerpTextStyle] for [textStyle].
   /// For [animated], the interpolation is performed using a step function.
   /// If [t] is less than 0.5, the value from the current [BadgeSpec] is used. Otherwise, the value
   /// from the [other] [BadgeSpec] is used.
   ///
   /// This method is typically used in animations to smoothly transition between
   /// different [BadgeSpec] configurations.
-  @override
-  BadgeSpec lerp(BadgeSpec? other, double t) {
-    if (other == null) return _$this;
-
-    return BadgeSpec(
-      container: _$this.container.lerp(other.container, t),
-      label: _$this.label.lerp(other.label, t),
-      animated: _$this.animated ?? other.animated,
-    );
-  }
 
   /// The list of properties that constitute the state of this [BadgeSpec].
   ///
@@ -83,7 +76,8 @@ mixin _$BadgeSpec on Spec<BadgeSpec> {
   @override
   List<Object?> get props => [
         _$this.container,
-        _$this.label,
+        _$this.icon,
+        _$this.textStyle,
         _$this.animated,
       ];
 
@@ -99,11 +93,13 @@ mixin _$BadgeSpec on Spec<BadgeSpec> {
 /// the [BadgeSpec] constructor.
 class BadgeSpecAttribute extends SpecAttribute<BadgeSpec> {
   final BoxSpecAttribute? container;
-  final TextSpecAttribute? label;
+  final IconThemeDataDto? icon;
+  final TextStyleDto? textStyle;
 
   const BadgeSpecAttribute({
     this.container,
-    this.label,
+    this.icon,
+    this.textStyle,
     super.animated,
   });
 
@@ -119,7 +115,8 @@ class BadgeSpecAttribute extends SpecAttribute<BadgeSpec> {
   BadgeSpec resolve(MixContext mix) {
     return BadgeSpec(
       container: container?.resolve(mix),
-      label: label?.resolve(mix),
+      icon: icon?.resolve(mix),
+      textStyle: textStyle?.resolve(mix),
       animated: animated?.resolve(mix) ?? mix.animation,
     );
   }
@@ -138,7 +135,8 @@ class BadgeSpecAttribute extends SpecAttribute<BadgeSpec> {
 
     return BadgeSpecAttribute(
       container: container?.merge(other.container) ?? other.container,
-      label: label?.merge(other.label) ?? other.label,
+      icon: icon?.merge(other.icon) ?? other.icon,
+      textStyle: textStyle?.merge(other.textStyle) ?? other.textStyle,
       animated: animated?.merge(other.animated) ?? other.animated,
     );
   }
@@ -150,7 +148,8 @@ class BadgeSpecAttribute extends SpecAttribute<BadgeSpec> {
   @override
   List<Object?> get props => [
         container,
-        label,
+        icon,
+        textStyle,
         animated,
       ];
 }
@@ -164,8 +163,11 @@ class BadgeSpecUtility<T extends SpecAttribute>
   /// Utility for defining [BadgeSpecAttribute.container]
   late final container = BoxSpecUtility((v) => only(container: v));
 
-  /// Utility for defining [BadgeSpecAttribute.label]
-  late final label = TextSpecUtility((v) => only(label: v));
+  /// Utility for defining [BadgeSpecAttribute.icon]
+  late final icon = IconThemeDataUtility((v) => only(icon: v));
+
+  /// Utility for defining [BadgeSpecAttribute.textStyle]
+  late final textStyle = TextStyleUtility((v) => only(textStyle: v));
 
   /// Utility for defining [BadgeSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
@@ -191,12 +193,14 @@ class BadgeSpecUtility<T extends SpecAttribute>
   @override
   T only({
     BoxSpecAttribute? container,
-    TextSpecAttribute? label,
+    IconThemeDataDto? icon,
+    TextStyleDto? textStyle,
     AnimatedDataDto? animated,
   }) {
     return builder(BadgeSpecAttribute(
       container: container,
-      label: label,
+      icon: icon,
+      textStyle: textStyle,
       animated: animated,
     ));
   }

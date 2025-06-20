@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart' as m;
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:remix/remix.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 

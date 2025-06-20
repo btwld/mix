@@ -1,6 +1,6 @@
 import 'package:demo/helpers/string.dart';
 import 'package:flutter/material.dart';
-import 'package:remix/remix.dart' hide Scaffold;
+import 'package:remix/remix.dart';
 
 void main() {
   runApp(const MyApp());
