@@ -161,6 +161,29 @@ void main() {
     log('MixData.create: $timeElapsed ms');
     expect(mixData.attributes.isNotEmpty, true);
   });
+
+  testWidgets('Box rebuild performance with style', (tester) async {
+    const iterations = 10000;
+    final style = Style(
+      $box.height(100),
+      $box.height(200),
+      $box.color(Colors.red),
+    );
+
+    final totalTime = await tester.runAsync<int>(() async {
+          final stopwatch = Stopwatch()..start();
+          for (var i = 0; i < iterations; i++) {
+            await tester.pumpWidget(Box(style: style));
+          }
+          stopwatch.stop();
+          return stopwatch.elapsedMilliseconds;
+        }) ??
+        0;
+
+    final timePerBuild = totalTime / iterations;
+    log('Box rebuild with style: $timePerBuild ms');
+    expect(style.isNotEmpty, isTrue);
+  });
 }
 
 class StyleWidgetExpensiveAttributge extends StatelessWidget {
