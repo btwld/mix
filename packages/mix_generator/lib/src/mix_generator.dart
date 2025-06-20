@@ -29,7 +29,6 @@ import 'core/property/property_mixin_builder.dart';
 import 'core/property/property_utility_builder.dart';
 import 'core/spec/spec_attribute_builder.dart';
 import 'core/spec/spec_mixin_builder.dart';
-import 'core/spec/spec_style_builder.dart';
 import 'core/spec/spec_tween_builder.dart';
 import 'core/spec/spec_utility_builder.dart';
 import 'core/type_registry.dart';
@@ -362,13 +361,6 @@ class MixGenerator extends Generator {
     if (metadata.generatedComponents.hasFlag(GeneratedSpecComponents.utility)) {
       final utilityBuilder = SpecUtilityBuilder(metadata);
       buffer.writeln(utilityBuilder.build());
-      buffer.writeln();
-    }
-
-    // Generate style class
-    if (metadata.generatedComponents.hasFlag(GeneratedSpecComponents.style)) {
-      final styleBuilder = SpecStyleBuilder(metadata);
-      buffer.writeln(styleBuilder.build());
       buffer.writeln();
     }
 

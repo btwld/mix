@@ -120,3 +120,5 @@ packages/mix/.cody/ignore
 CLAUDE.md
 .augment/env/setup.sh
 
+# API compatibility reports
+api-compat-*.md

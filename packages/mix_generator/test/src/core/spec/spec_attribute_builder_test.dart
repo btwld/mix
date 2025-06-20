@@ -40,7 +40,7 @@ void main() {}
 //         constructor: classElement.unnamedConstructor!,
 //         isAbstract: false,
 //         generatedMethods: GeneratedSpecMethods.all,
-//         generatedComponents: GeneratedSpecComponents.defaultComponents,
+//         generatedComponents: GeneratedSpecComponents.all,
 //         isWidgetModifier: false,
 //       );
 
@@ -118,7 +118,7 @@ void main() {}
 //         constructor: classElement.unnamedConstructor!,
 //         isAbstract: false,
 //         generatedMethods: GeneratedSpecMethods.all,
-//         generatedComponents: GeneratedSpecComponents.defaultComponents,
+//         generatedComponents: GeneratedSpecComponents.all,
 //         isWidgetModifier: true,
 //       );
 
@@ -175,7 +175,7 @@ void main() {}
 //         constructor: classElement.unnamedConstructor!,
 //         isAbstract: false,
 //         generatedMethods: GeneratedSpecMethods.all,
-//         generatedComponents: GeneratedSpecComponents.defaultComponents,,
+//         generatedComponents: GeneratedSpecComponents.all,
 //         isWidgetModifier: false,
 //       );
 

@@ -23,10 +23,7 @@ import 'icon_widget.dart';
 
 part 'icon_spec.g.dart';
 
-@MixableSpec(
-  components:
-      GeneratedSpecComponents.defaultComponents | GeneratedSpecComponents.style,
-)
+@MixableSpec()
 final class IconSpec extends Spec<IconSpec> with _$IconSpec, Diagnosticable {
   final Color? color;
   final double? size;
@@ -92,4 +89,8 @@ final class IconSpec extends Spec<IconSpec> with _$IconSpec, Diagnosticable {
 
 extension IconSpecUtilityExt<T extends SpecAttribute> on IconSpecUtility<T> {
   ShadowUtility get shadow => ShadowUtility((v) => only(shadows: [v]));
+}
+
+class IconStyle extends IconSpecUtility<IconSpecAttribute> {
+  IconStyle() : super((v) => v);
 }

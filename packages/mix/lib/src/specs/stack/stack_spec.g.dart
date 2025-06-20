@@ -273,14 +273,6 @@ class StackSpecUtility<T extends SpecAttribute>
   }
 }
 
-/// A concrete implementation of [StackSpecUtility] for creating a Style with a [StackSpecAttribute].
-///
-/// This class provides a convenient way to define styling properties and is designed
-/// for direct usage in styling contexts.
-class StyleStack extends StackSpecUtility<StackSpecAttribute> {
-  StyleStack() : super((v) => v);
-}
-
 /// A tween that interpolates between two [StackSpec] instances.
 ///
 /// This class can be used in animations to smoothly transition between
