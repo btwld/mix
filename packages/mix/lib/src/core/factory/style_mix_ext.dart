@@ -70,7 +70,7 @@ class SpecUtilityContextVariantUtility<T extends SpecAttribute, V> {
   ///
   /// This method adds hover state styling. The provided style will be applied
   /// when the user hovers over the widget, typically for interactive feedback.
-  void hover(covariant SpecUtility<T, V> style) {
+  void hover(SpecUtility<T, V> style) {
     _on(const OnHoverVariant(), () => style);
   }
 
