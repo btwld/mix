@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' as m;
+
 import 'package:flutter/widgets.dart';
 import 'package:remix/remix.dart';
 import 'package:widgetbook/widgetbook.dart';
@@ -27,7 +28,7 @@ Widget buildButtonUseCase(BuildContext context) {
 
   return KeyedSubtree(
     key: _key,
-    child: Scaffold(
+    child: m.Scaffold(
       body: Builder(builder: (context) {
         return Center(
           child: m.TextButton(

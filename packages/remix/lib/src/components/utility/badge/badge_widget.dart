@@ -1,37 +1,48 @@
 part of 'badge.dart';
 
-class Badge extends StatelessWidget {
-  const Badge({
+class RxBadge extends StatelessWidget {
+  RxBadge({
     super.key,
-    required this.label,
+    String? label,
+    IconData? icon,
+    IconPosition iconPosition = IconPosition.start,
     this.style,
     this.variants = const [],
+  }) : child = RxLabel(label ?? '', icon: icon, iconPosition: iconPosition);
+
+  const RxBadge.raw({
+    super.key,
+    this.style,
+    this.variants = const [],
+    required this.child,
   });
 
   /// The label to display in the badge.
-  final String label;
+  final Widget child;
 
   /// {@macro remix.component.style}
-  final BadgeStyle? style;
+  final RxBadgeStyle? style;
 
   /// {@macro remix.component.variants}
   final List<Variant> variants;
 
+  RxBadgeStyle get _style =>
+      RxBadgeStyle._default().merge(style ?? RxBadgeStyle._default());
+
   @override
   Widget build(BuildContext context) {
-    final style = this.style ?? context.remix.components.badge;
-
-    final configuration = SpecConfiguration(context, BadgeSpecUtility.self);
-
     return SpecBuilder(
-      style: style.makeStyle(configuration).applyVariants(variants),
+      style: Style(_style).applyVariants(variants),
       builder: (context) {
         final spec = BadgeSpec.of(context);
 
-        final ContainerWidget = spec.container;
-        final LabelWidget = spec.label;
-
-        return ContainerWidget(child: LabelWidget(label));
+        return DefaultTextStyle(
+          style: spec.textStyle,
+          child: IconTheme(
+            data: spec.icon,
+            child: spec.container(child: child),
+          ),
+        );
       },
     );
   }

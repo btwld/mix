@@ -39,8 +39,6 @@ export 'src/components/form/slider/slider.dart';
 export 'src/components/form/switch/switch.dart';
 export 'src/components/form/textfield/textfield.dart';
 export 'src/components/layout/divider/divider.dart';
-export 'src/components/layout/header/header.dart';
-export 'src/components/layout/scaffold/scaffold.dart';
 export 'src/components/navigation/segmented_control/segmented_control.dart';
 export 'src/components/utility/badge/badge.dart';
 export 'src/components/utility/dropdown_menu/dropdown_menu.dart';

@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
-import 'package:remix/remix.dart' hide Scaffold;
+import 'package:remix/remix.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,7 +28,11 @@ class MyApp extends StatelessWidget {
                 style: RxButtonStyle()
                   ..container.color.black()
                   ..container.animated.linear(100.ms)
-                  ..on.hover(RxButtonStyle()..container.color.grey.shade800()),
+                  ..on.hover(
+                    RxButtonStyle()
+                      ..container.color.grey.shade800()
+                      ..textStyle.color.white(),
+                  ),
               ),
               RxButton.icon(
                 Icons.add,

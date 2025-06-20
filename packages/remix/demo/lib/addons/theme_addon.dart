@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:remix/remix.dart';
-import 'package:remix/themes/fortaleza.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 
@@ -8,8 +7,8 @@ typedef ThemeMultiBrightness = ({RemixThemeData light, RemixThemeData dark});
 
 final Map<String, ThemeMultiBrightness> themes = {
   'fortaleza': (
-    light: FortalezaThemeData.light(),
-    dark: FortalezaThemeData.dark(),
+    light: RemixThemeData.baseLight(),
+    dark: RemixThemeData.baseDark(),
   ),
   'base': (
     light: RemixThemeData.baseLight(),

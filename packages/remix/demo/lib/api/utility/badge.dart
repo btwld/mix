@@ -12,14 +12,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        backgroundColor: Colors.white,
         body: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Column(
             spacing: 16,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const RxSpinner(),
-              RxSpinner(
-                style: RxSpinnerStyle()..style.dotted(),
+              RxBadge(
+                label: 'New',
+              ),
+              RxBadge(
+                label: 'person',
+                icon: Icons.person,
               ),
             ],
           ),
