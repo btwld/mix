@@ -1,5 +1,10 @@
 part of 'label.dart';
 
+enum IconPosition {
+  start,
+  end,
+}
+
 /// A customizable label component that supports icons and styling.
 ///
 /// The [RxLabel] widget is designed to display text with optional icons.
@@ -26,6 +31,7 @@ class RxLabel extends StatelessWidget {
     this.icon,
     this.variants = const [],
     this.style,
+    this.iconPosition = IconPosition.start,
   });
 
   /// The text to display in the label.
@@ -36,6 +42,8 @@ class RxLabel extends StatelessWidget {
 
   /// {@macro remix.component.variants}
   final List<Variant> variants;
+
+  final IconPosition iconPosition;
 
   /// {@macro remix.component.style}
   final RxLabelStyle? style;
@@ -52,7 +60,13 @@ class RxLabel extends StatelessWidget {
         return Row(
           mainAxisSize: MainAxisSize.min,
           spacing: spec.spacing,
-          children: [if (icon != null) spec.icon(icon), spec.label(label)],
+          children: [
+            if (icon != null && iconPosition == IconPosition.start)
+              spec.icon(icon),
+            spec.label(label),
+            if (icon != null && iconPosition == IconPosition.end)
+              spec.icon(icon),
+          ],
         );
       },
     );

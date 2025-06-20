@@ -79,20 +79,20 @@ class _AuthBlockState extends State<AuthBlock> {
                   children: [
                     RxTextField(
                       controller: usernameController,
-                      placeholderText: 'Username',
+                      hintText: 'Username',
                       style: TextFieldStyle(),
                     ),
                     RxTextField(
                       controller: passwordController,
                       obscureText: !showPassword,
-                      placeholderText: 'Password',
+                      hintText: 'Password',
                       suffix: RxButton(
                         onPressed: () {
                           setState(() {
                             showPassword = !showPassword;
                           });
                         },
-                        label: 'Show',
+                        label: showPassword ? 'Hide' : 'Show',
                         style: LinkButtonStyle()..textStyle.fontSize(14),
                       ),
                       style: TextFieldStyle(),
@@ -126,20 +126,23 @@ class _AuthBlockState extends State<AuthBlock> {
             Column(
               spacing: 8,
               children: [
-                SocialMediaButton(
+                RxButton(
                   label: 'Continue with Apple',
                   onPressed: () {},
                   icon: Icons.apple,
+                  style: SocialMediaButtonStyle(),
                 ),
-                SocialMediaButton(
+                RxButton(
                   label: 'Continue with Facebook',
                   onPressed: () {},
                   icon: Icons.facebook,
+                  style: SocialMediaButtonStyle(),
                 ),
-                SocialMediaButton(
+                RxButton(
                   label: 'Show more options',
                   onPressed: () {},
                   icon: Icons.add,
+                  style: SocialMediaButtonStyle(),
                 ),
               ],
             ),
@@ -181,38 +184,18 @@ class TextFieldStyle extends RxTextFieldStyle {
   }
 }
 
-class SocialMediaButton extends StatelessWidget {
-  const SocialMediaButton({
-    super.key,
-    required this.label,
-    required this.onPressed,
-    required this.icon,
-  });
-
-  final String label;
-  final IconData icon;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return RxButton.raw(
-      onPressed: onPressed,
-      style: RxButtonStyle()
-        ..icon.size(24)
-        ..container.height(56)
-        ..container.color.white()
-        ..container.border.all.color.grey.shade300()
-        ..textStyle.color.black()
-        ..textStyle.fontWeight.w500()
-        ..icon.color.black(),
-      child: Row(
-        spacing: 12,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon),
-          Text(label),
-        ],
-      ),
-    );
+class SocialMediaButtonStyle extends RxButtonStyle {
+  SocialMediaButtonStyle() : super() {
+    container
+      ..alignment.center()
+      ..height(56)
+      ..color.white()
+      ..border.all.color.grey.shade300();
+    textStyle
+      ..color.black()
+      ..fontWeight.w500();
+    icon
+      ..color.black()
+      ..size(24);
   }
 }

@@ -25,7 +25,8 @@ class RxButton extends StatefulWidget implements Disableable {
   RxButton({
     super.key,
     required String label,
-    IconData? leadingIcon,
+    IconData? icon,
+    IconPosition iconPosition = IconPosition.start,
     this.enabled = true,
     this.loading = false,
     this.spinnerWidget,
@@ -34,7 +35,7 @@ class RxButton extends StatefulWidget implements Disableable {
     this.focusNode,
     this.variants = const [],
     this.style,
-  }) : child = RxLabel(label, icon: leadingIcon);
+  }) : child = RxLabel(label, icon: icon, iconPosition: iconPosition);
 
   /// Creates a Remix button with only an icon.
   ///
