@@ -125,14 +125,10 @@ class _AuthBlockState extends State<AuthBlock> {
                 const Expanded(child: RxDivider()),
                 StyledText(
                   'or',
-                  style: StyleText()..color.grey.shade500(),
+                  style: StyledTextStyle()..color.grey.shade500(),
                 ),
                 const Expanded(child: RxDivider()),
               ],
-=======
-            StyledText(
-              'or',
-              style: StyledTextStyle()..color.grey.shade500(),
             ),
             Column(
               spacing: 8,
