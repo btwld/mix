@@ -6,8 +6,8 @@ import '../../attributes/animated/animated_data.dart';
 import '../../attributes/animated/animated_data_dto.dart';
 import '../../attributes/animated/animated_util.dart';
 import '../../attributes/enum/enum_util.dart';
-import '../../attributes/modifiers/widget_modifiers_data.dart';
-import '../../attributes/modifiers/widget_modifiers_data_dto.dart';
+import '../../attributes/modifiers/widget_modifiers_config.dart';
+import '../../attributes/modifiers/widget_modifiers_config_dto.dart';
 import '../../attributes/modifiers/widget_modifiers_util.dart';
 import '../../attributes/scalars/scalar_util.dart';
 import '../../attributes/strut_style/strut_style_dto.dart';
@@ -16,8 +16,8 @@ import '../../attributes/text_style/text_style_dto.dart';
 import '../../attributes/text_style/text_style_util.dart';
 import '../../core/computed_style/computed_style.dart';
 import '../../core/directive.dart';
-import '../../core/element.dart';
 import '../../core/factory/mix_data.dart';
+import '../../core/factory/style_mix.dart';
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
 import '../../core/utility.dart';
@@ -140,4 +140,8 @@ final class TextSpec extends Spec<TextSpec> with _$TextSpec, Diagnosticable {
     super.debugFillProperties(properties);
     _debugFillProperties(properties);
   }
+}
+
+class StyledTextStyle extends TextSpecUtility<TextSpecAttribute> {
+  StyledTextStyle() : super((v) => v);
 }

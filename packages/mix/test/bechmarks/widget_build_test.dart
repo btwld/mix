@@ -135,9 +135,9 @@ void main() {
   test('MixData.create', () {
     const iterations = 10000;
     final stopwatch = Stopwatch()..start();
-    MixData mixData = EmptyMixData;
+    MixContext mixData = EmptyMixData;
     for (int i = 0; i < iterations; i++) {
-      mixData = MixData.create(
+      mixData = MixContext.create(
         MockBuildContext(),
         Style(
           $box.padding(10),

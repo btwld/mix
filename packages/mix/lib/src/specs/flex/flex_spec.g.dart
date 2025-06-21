@@ -10,7 +10,7 @@ part of 'flex_spec.dart';
 
 /// A mixin that provides spec functionality for [FlexSpec].
 mixin _$FlexSpec on Spec<FlexSpec> {
-  static FlexSpec from(MixData mix) {
+  static FlexSpec from(MixContext mix) {
     return mix.attributeOf<FlexSpecAttribute>()?.resolve(mix) ??
         const FlexSpec();
   }
@@ -46,7 +46,7 @@ mixin _$FlexSpec on Spec<FlexSpec> {
     Clip? clipBehavior,
     double? gap,
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
   }) {
     return FlexSpec(
       crossAxisAlignment: crossAxisAlignment ?? _$this.crossAxisAlignment,
@@ -183,16 +183,16 @@ class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
     super.modifiers,
   });
 
-  /// Resolves to [FlexSpec] using the provided [MixData].
+  /// Resolves to [FlexSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final flexSpec = FlexSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  FlexSpec resolve(MixData mix) {
+  FlexSpec resolve(MixContext mix) {
     return FlexSpec(
       crossAxisAlignment: crossAxisAlignment,
       mainAxisAlignment: mainAxisAlignment,
@@ -285,7 +285,7 @@ class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [FlexSpec].
 /// Use the methods of this class to configure specific properties of a [FlexSpec].
-class FlexSpecUtility<T extends Attribute>
+class FlexSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, FlexSpecAttribute> {
   /// Utility for defining [FlexSpecAttribute.crossAxisAlignment]
   late final crossAxisAlignment =
@@ -330,10 +330,19 @@ class FlexSpecUtility<T extends Attribute>
   /// Utility for defining [FlexSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  FlexSpecUtility(super.builder, {super.mutable});
+  FlexSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  FlexSpecUtility<T> get chain =>
-      FlexSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  FlexSpecUtility<T> get chain => FlexSpecUtility(attributeBuilder);
 
   static FlexSpecUtility<FlexSpecAttribute> get self =>
       FlexSpecUtility((v) => v);
@@ -351,7 +360,7 @@ class FlexSpecUtility<T extends Attribute>
     Clip? clipBehavior,
     SpaceDto? gap,
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(FlexSpecAttribute(
       crossAxisAlignment: crossAxisAlignment,

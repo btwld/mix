@@ -51,16 +51,9 @@ class _TooltipExampleState extends State<TooltipExample>
       showDuration: const Duration(seconds: 0),
       removalDelay: const Duration(milliseconds: 300),
       onStateChange: (state) {
-        switch (state) {
-          case OverlayChildLifecycleState.present:
-            _animationController.forward();
-            break;
-          case OverlayChildLifecycleState.pendingRemoval:
-            _animationController.reverse();
-            break;
-          default:
-            break;
-        }
+        state == OverlayChildLifecycleState.present
+            ? _animationController.forward()
+            : _animationController.reverse();
       },
       tooltipBuilder: (context) => SlideTransition(
         position: _animationController.drive(Tween<Offset>(

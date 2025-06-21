@@ -10,7 +10,7 @@ part of 'image_spec.dart';
 
 /// A mixin that provides spec functionality for [ImageSpec].
 mixin _$ImageSpec on Spec<ImageSpec> {
-  static ImageSpec from(MixData mix) {
+  static ImageSpec from(MixContext mix) {
     return mix.attributeOf<ImageSpecAttribute>()?.resolve(mix) ??
         const ImageSpec();
   }
@@ -46,7 +46,7 @@ mixin _$ImageSpec on Spec<ImageSpec> {
     FilterQuality? filterQuality,
     BlendMode? colorBlendMode,
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
   }) {
     return ImageSpec(
       width: width ?? _$this.width,
@@ -180,16 +180,16 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
     super.modifiers,
   });
 
-  /// Resolves to [ImageSpec] using the provided [MixData].
+  /// Resolves to [ImageSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final imageSpec = ImageSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  ImageSpec resolve(MixData mix) {
+  ImageSpec resolve(MixContext mix) {
     return ImageSpec(
       width: width,
       height: height,
@@ -278,7 +278,7 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [ImageSpec].
 /// Use the methods of this class to configure specific properties of a [ImageSpec].
-class ImageSpecUtility<T extends Attribute>
+class ImageSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, ImageSpecAttribute> {
   /// Utility for defining [ImageSpecAttribute.width]
   late final width = DoubleUtility((v) => only(width: v));
@@ -314,10 +314,19 @@ class ImageSpecUtility<T extends Attribute>
   /// Utility for defining [ImageSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  ImageSpecUtility(super.builder, {super.mutable});
+  ImageSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  ImageSpecUtility<T> get chain =>
-      ImageSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  ImageSpecUtility<T> get chain => ImageSpecUtility(attributeBuilder);
 
   static ImageSpecUtility<ImageSpecAttribute> get self =>
       ImageSpecUtility((v) => v);
@@ -335,7 +344,7 @@ class ImageSpecUtility<T extends Attribute>
     FilterQuality? filterQuality,
     BlendMode? colorBlendMode,
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(ImageSpecAttribute(
       width: width,

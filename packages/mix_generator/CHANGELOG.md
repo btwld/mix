@@ -1,3 +1,12 @@
+## 0.4.1
+
+ - **REFACTOR**: Rename WidgetModifiersData to WidgetModifiersConfig (#649).
+ - **REFACTOR**: Fix deprecations and modernize codebase (#647).
+ - **FIX**: update animated property handling to use null coalescing (#637).
+ - **FEAT**: Add generated style-focused modifiers and specs (#652).
+ - **FEAT**: unify SpecUtility, Style, and Attributes as compatible values (#643).
+ - **FEAT**: builder optimization (#629).
+
 ## 0.4.0
 
  - **REFACTOR**: Rename `MixableProperty` to `MixableType` (#574)

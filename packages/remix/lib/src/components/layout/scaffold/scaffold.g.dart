@@ -10,7 +10,7 @@ part of 'scaffold.dart';
 
 /// A mixin that provides spec functionality for [ScaffoldSpec].
 mixin _$ScaffoldSpec on Spec<ScaffoldSpec> {
-  static ScaffoldSpec from(MixData mix) {
+  static ScaffoldSpec from(MixContext mix) {
     return mix.attributeOf<ScaffoldSpecAttribute>()?.resolve(mix) ??
         const ScaffoldSpec();
   }
@@ -38,7 +38,7 @@ mixin _$ScaffoldSpec on Spec<ScaffoldSpec> {
   ScaffoldSpec copyWith({
     BoxSpec? container,
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
   }) {
     return ScaffoldSpec(
       container: container ?? _$this.container,
@@ -70,7 +70,7 @@ mixin _$ScaffoldSpec on Spec<ScaffoldSpec> {
 
     return ScaffoldSpec(
       container: _$this.container.lerp(other.container, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
       modifiers: other.modifiers,
     );
   }
@@ -115,16 +115,16 @@ class ScaffoldSpecAttribute extends SpecAttribute<ScaffoldSpec>
     super.modifiers,
   });
 
-  /// Resolves to [ScaffoldSpec] using the provided [MixData].
+  /// Resolves to [ScaffoldSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final scaffoldSpec = ScaffoldSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  ScaffoldSpec resolve(MixData mix) {
+  ScaffoldSpec resolve(MixContext mix) {
     return ScaffoldSpec(
       container: container?.resolve(mix),
       animated: animated?.resolve(mix) ?? mix.animation,
@@ -178,7 +178,7 @@ class ScaffoldSpecAttribute extends SpecAttribute<ScaffoldSpec>
 ///
 /// This class provides methods to set individual properties of a [ScaffoldSpec].
 /// Use the methods of this class to configure specific properties of a [ScaffoldSpec].
-class ScaffoldSpecUtility<T extends Attribute>
+class ScaffoldSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, ScaffoldSpecAttribute> {
   /// Utility for defining [ScaffoldSpecAttribute.container]
   late final container = BoxSpecUtility((v) => only(container: v));
@@ -189,10 +189,19 @@ class ScaffoldSpecUtility<T extends Attribute>
   /// Utility for defining [ScaffoldSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  ScaffoldSpecUtility(super.builder, {super.mutable});
+  ScaffoldSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  ScaffoldSpecUtility<T> get chain =>
-      ScaffoldSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  ScaffoldSpecUtility<T> get chain => ScaffoldSpecUtility(attributeBuilder);
 
   static ScaffoldSpecUtility<ScaffoldSpecAttribute> get self =>
       ScaffoldSpecUtility((v) => v);
@@ -202,7 +211,7 @@ class ScaffoldSpecUtility<T extends Attribute>
   T only({
     BoxSpecAttribute? container,
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(ScaffoldSpecAttribute(
       container: container,

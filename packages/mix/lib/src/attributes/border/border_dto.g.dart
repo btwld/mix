@@ -10,16 +10,16 @@ part of 'border_dto.dart';
 
 /// A mixin that provides DTO functionality for [BorderDto].
 mixin _$BorderDto on Mixable<Border> {
-  /// Resolves to [Border] using the provided [MixData].
+  /// Resolves to [Border] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final border = BorderDto(...).resolve(mix);
   /// ```
   @override
-  Border resolve(MixData mix) {
+  Border resolve(MixContext mix) {
     return Border(
       top: _$this.top?.resolve(mix) ?? BorderSide.none,
       bottom: _$this.bottom?.resolve(mix) ?? BorderSide.none,
@@ -87,16 +87,16 @@ extension ListBorderMixExt on List<Border> {
 
 /// A mixin that provides DTO functionality for [BorderDirectionalDto].
 mixin _$BorderDirectionalDto on Mixable<BorderDirectional> {
-  /// Resolves to [BorderDirectional] using the provided [MixData].
+  /// Resolves to [BorderDirectional] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final borderDirectional = BorderDirectionalDto(...).resolve(mix);
   /// ```
   @override
-  BorderDirectional resolve(MixData mix) {
+  BorderDirectional resolve(MixContext mix) {
     return BorderDirectional(
       top: _$this.top?.resolve(mix) ?? BorderSide.none,
       bottom: _$this.bottom?.resolve(mix) ?? BorderSide.none,
@@ -164,16 +164,16 @@ extension ListBorderDirectionalMixExt on List<BorderDirectional> {
 
 /// A mixin that provides DTO functionality for [BorderSideDto].
 mixin _$BorderSideDto on Mixable<BorderSide>, HasDefaultValue<BorderSide> {
-  /// Resolves to [BorderSide] using the provided [MixData].
+  /// Resolves to [BorderSide] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final borderSide = BorderSideDto(...).resolve(mix);
   /// ```
   @override
-  BorderSide resolve(MixData mix) {
+  BorderSide resolve(MixContext mix) {
     return BorderSide(
       color: _$this.color?.resolve(mix) ?? defaultValue.color,
       strokeAlign: _$this.strokeAlign ?? defaultValue.strokeAlign,
@@ -222,7 +222,7 @@ mixin _$BorderSideDto on Mixable<BorderSide>, HasDefaultValue<BorderSide> {
 ///
 /// This class provides methods to set individual properties of a [BorderSide].
 /// Use the methods of this class to configure specific properties of a [BorderSide].
-class BorderSideUtility<T extends Attribute>
+class BorderSideUtility<T extends StyleElement>
     extends DtoUtility<T, BorderSideDto, BorderSide> {
   /// Utility for defining [BorderSideDto.color]
   late final color = ColorUtility((v) => only(color: v));
@@ -238,7 +238,7 @@ class BorderSideUtility<T extends Attribute>
 
   BorderSideUtility(super.builder) : super(valueToDto: (v) => v.toDto());
 
-  /// Creates an [Attribute] instance using the [BorderSideDto.none] constructor.
+  /// Creates a [StyleElement] instance using the [BorderSideDto.none] constructor.
   T none() => builder(const BorderSideDto.none());
 
   /// Returns a new [BorderSideDto] with the specified properties.

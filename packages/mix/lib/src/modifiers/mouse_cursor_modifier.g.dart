@@ -74,16 +74,16 @@ class MouseCursorDecoratorSpecAttribute
     this.mouseCursor,
   });
 
-  /// Resolves to [MouseCursorDecoratorSpec] using the provided [MixData].
+  /// Resolves to [MouseCursorDecoratorSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final mouseCursorDecoratorSpec = MouseCursorDecoratorSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  MouseCursorDecoratorSpec resolve(MixData mix) {
+  MouseCursorDecoratorSpec resolve(MixContext mix) {
     return MouseCursorDecoratorSpec(
       mouseCursor: mouseCursor,
     );

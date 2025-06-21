@@ -9,7 +9,7 @@ import '../../../helpers/testing_utils.dart';
 void main() {
   group('FlexBoxSpec', () {
     test('resolve', () {
-      final mix = MixData.create(
+      final mix = MixContext.create(
         MockBuildContext(),
         Style(
           FlexBoxSpecAttribute(
@@ -308,7 +308,7 @@ void main() {
     test('fluent behavior', () {
       final flexBox = FlexBoxSpecUtility.self;
 
-      final util = flexBox.chain
+      final util = flexBox
         ..box.alignment.center()
         ..box.padding(8)
         ..flex.mainAxisAlignment.center()
@@ -316,7 +316,7 @@ void main() {
 
       final attr = util.attributeValue!;
 
-      expect(util, isA<Attribute>());
+      expect(util, isA<StyleElement>());
       expect(attr.box!.alignment, Alignment.center);
       expect(attr.box!.padding, const EdgeInsets.all(8.0).toDto());
       expect(attr.box!.margin, null);
@@ -394,7 +394,7 @@ void main() {
     test('Mutate behavior and not on same utility', () {
       final flexBox = FlexBoxSpecUtility.self;
 
-      final flexBoxValue = flexBox.chain;
+      final flexBoxValue = flexBox;
       flexBoxValue
         ..box.padding(10)
         ..box.color.red()

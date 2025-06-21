@@ -10,7 +10,7 @@ part of 'badge.dart';
 
 /// A mixin that provides spec functionality for [BadgeSpec].
 mixin _$BadgeSpec on Spec<BadgeSpec> {
-  static BadgeSpec from(MixData mix) {
+  static BadgeSpec from(MixContext mix) {
     return mix.attributeOf<BadgeSpecAttribute>()?.resolve(mix) ??
         const BadgeSpec();
   }
@@ -72,7 +72,7 @@ mixin _$BadgeSpec on Spec<BadgeSpec> {
     return BadgeSpec(
       container: _$this.container.lerp(other.container, t),
       label: _$this.label.lerp(other.label, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -107,16 +107,16 @@ class BadgeSpecAttribute extends SpecAttribute<BadgeSpec> {
     super.animated,
   });
 
-  /// Resolves to [BadgeSpec] using the provided [MixData].
+  /// Resolves to [BadgeSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final badgeSpec = BadgeSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  BadgeSpec resolve(MixData mix) {
+  BadgeSpec resolve(MixContext mix) {
     return BadgeSpec(
       container: container?.resolve(mix),
       label: label?.resolve(mix),
@@ -159,7 +159,7 @@ class BadgeSpecAttribute extends SpecAttribute<BadgeSpec> {
 ///
 /// This class provides methods to set individual properties of a [BadgeSpec].
 /// Use the methods of this class to configure specific properties of a [BadgeSpec].
-class BadgeSpecUtility<T extends Attribute>
+class BadgeSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, BadgeSpecAttribute> {
   /// Utility for defining [BadgeSpecAttribute.container]
   late final container = BoxSpecUtility((v) => only(container: v));
@@ -170,10 +170,19 @@ class BadgeSpecUtility<T extends Attribute>
   /// Utility for defining [BadgeSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  BadgeSpecUtility(super.builder, {super.mutable});
+  BadgeSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  BadgeSpecUtility<T> get chain =>
-      BadgeSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  BadgeSpecUtility<T> get chain => BadgeSpecUtility(attributeBuilder);
 
   static BadgeSpecUtility<BadgeSpecAttribute> get self =>
       BadgeSpecUtility((v) => v);

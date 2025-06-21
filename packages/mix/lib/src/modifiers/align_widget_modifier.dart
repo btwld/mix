@@ -42,7 +42,7 @@ final class AlignModifierSpec extends WidgetModifierSpec<AlignModifierSpec>
   }
 }
 
-final class AlignModifierSpecUtility<T extends Attribute>
+final class AlignModifierSpecUtility<T extends StyleElement>
     extends MixUtility<T, AlignModifierSpecAttribute> {
   const AlignModifierSpecUtility(super.builder);
   T call({

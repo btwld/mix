@@ -1,6 +1,7 @@
 import 'package:mix/mix.dart';
 
 import '../../../components/layout/divider/divider.dart';
+import '../../../helpers/spec_style.dart';
 import '../tokens.dart';
 
 class FortalezaDividerStyle extends DividerStyle {
@@ -13,6 +14,6 @@ class FortalezaDividerStyle extends DividerStyle {
     final baseStyle = super.makeStyle(spec);
     final containerStyle = [$.container.color.$neutral(5)];
 
-    return Style.create([baseStyle(), ...containerStyle]);
+    return Style.create([baseStyle, ...containerStyle]);
   }
 }

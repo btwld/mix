@@ -10,7 +10,7 @@ part of 'callout.dart';
 
 /// A mixin that provides spec functionality for [CalloutSpec].
 mixin _$CalloutSpec on Spec<CalloutSpec> {
-  static CalloutSpec from(MixData mix) {
+  static CalloutSpec from(MixContext mix) {
     return mix.attributeOf<CalloutSpecAttribute>()?.resolve(mix) ??
         const CalloutSpec();
   }
@@ -37,49 +37,17 @@ mixin _$CalloutSpec on Spec<CalloutSpec> {
   @override
   CalloutSpec copyWith({
     FlexBoxSpec? container,
-    IconSpec? icon,
-    TextSpec? text,
-    WidgetModifiersData? modifiers,
+    IconThemeData? icon,
+    TextStyle? textStyle,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return CalloutSpec(
       container: container ?? _$this.container,
       icon: icon ?? _$this.icon,
-      text: text ?? _$this.text,
+      textStyle: textStyle ?? _$this.textStyle,
       modifiers: modifiers ?? _$this.modifiers,
       animated: animated ?? _$this.animated,
-    );
-  }
-
-  /// Linearly interpolates between this [CalloutSpec] and another [CalloutSpec] based on the given parameter [t].
-  ///
-  /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [CalloutSpec] is returned. When [t] is 1.0, the [other] [CalloutSpec] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [CalloutSpec] is returned.
-  ///
-  /// If [other] is null, this method returns the current [CalloutSpec] instance.
-  ///
-  /// The interpolation is performed on each property of the [CalloutSpec] using the appropriate
-  /// interpolation method:
-  /// - [FlexBoxSpec.lerp] for [container].
-  /// - [IconSpec.lerp] for [icon].
-  /// - [TextSpec.lerp] for [text].
-  /// For [modifiers] and [animated], the interpolation is performed using a step function.
-  /// If [t] is less than 0.5, the value from the current [CalloutSpec] is used. Otherwise, the value
-  /// from the [other] [CalloutSpec] is used.
-  ///
-  /// This method is typically used in animations to smoothly transition between
-  /// different [CalloutSpec] configurations.
-  @override
-  CalloutSpec lerp(CalloutSpec? other, double t) {
-    if (other == null) return _$this;
-
-    return CalloutSpec(
-      container: _$this.container.lerp(other.container, t),
-      icon: _$this.icon.lerp(other.icon, t),
-      text: _$this.text.lerp(other.text, t),
-      modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
     );
   }
 
@@ -91,7 +59,7 @@ mixin _$CalloutSpec on Spec<CalloutSpec> {
   List<Object?> get props => [
         _$this.container,
         _$this.icon,
-        _$this.text,
+        _$this.textStyle,
         _$this.modifiers,
         _$this.animated,
       ];
@@ -108,31 +76,31 @@ mixin _$CalloutSpec on Spec<CalloutSpec> {
 /// the [CalloutSpec] constructor.
 class CalloutSpecAttribute extends SpecAttribute<CalloutSpec> {
   final FlexBoxSpecAttribute? container;
-  final IconSpecAttribute? icon;
-  final TextSpecAttribute? text;
+  final IconThemeDataDto? icon;
+  final TextStyleDto? textStyle;
 
   const CalloutSpecAttribute({
     this.container,
     this.icon,
-    this.text,
+    this.textStyle,
     super.modifiers,
     super.animated,
   });
 
-  /// Resolves to [CalloutSpec] using the provided [MixData].
+  /// Resolves to [CalloutSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final calloutSpec = CalloutSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  CalloutSpec resolve(MixData mix) {
+  CalloutSpec resolve(MixContext mix) {
     return CalloutSpec(
       container: container?.resolve(mix),
       icon: icon?.resolve(mix),
-      text: text?.resolve(mix),
+      textStyle: textStyle?.resolve(mix),
       modifiers: modifiers?.resolve(mix),
       animated: animated?.resolve(mix) ?? mix.animation,
     );
@@ -153,7 +121,7 @@ class CalloutSpecAttribute extends SpecAttribute<CalloutSpec> {
     return CalloutSpecAttribute(
       container: container?.merge(other.container) ?? other.container,
       icon: icon?.merge(other.icon) ?? other.icon,
-      text: text?.merge(other.text) ?? other.text,
+      textStyle: textStyle?.merge(other.textStyle) ?? other.textStyle,
       modifiers: modifiers?.merge(other.modifiers) ?? other.modifiers,
       animated: animated?.merge(other.animated) ?? other.animated,
     );
@@ -167,7 +135,7 @@ class CalloutSpecAttribute extends SpecAttribute<CalloutSpec> {
   List<Object?> get props => [
         container,
         icon,
-        text,
+        textStyle,
         modifiers,
         animated,
       ];
@@ -177,16 +145,16 @@ class CalloutSpecAttribute extends SpecAttribute<CalloutSpec> {
 ///
 /// This class provides methods to set individual properties of a [CalloutSpec].
 /// Use the methods of this class to configure specific properties of a [CalloutSpec].
-class CalloutSpecUtility<T extends Attribute>
+class CalloutSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, CalloutSpecAttribute> {
   /// Utility for defining [CalloutSpecAttribute.container]
   late final container = FlexBoxSpecUtility((v) => only(container: v));
 
   /// Utility for defining [CalloutSpecAttribute.icon]
-  late final icon = IconSpecUtility((v) => only(icon: v));
+  late final icon = IconThemeDataUtility((v) => only(icon: v));
 
-  /// Utility for defining [CalloutSpecAttribute.text]
-  late final text = TextSpecUtility((v) => only(text: v));
+  /// Utility for defining [CalloutSpecAttribute.textStyle]
+  late final textStyle = TextStyleUtility((v) => only(textStyle: v));
 
   /// Utility for defining [CalloutSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
@@ -194,10 +162,19 @@ class CalloutSpecUtility<T extends Attribute>
   /// Utility for defining [CalloutSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  CalloutSpecUtility(super.builder, {super.mutable});
+  CalloutSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  CalloutSpecUtility<T> get chain =>
-      CalloutSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  CalloutSpecUtility<T> get chain => CalloutSpecUtility(attributeBuilder);
 
   static CalloutSpecUtility<CalloutSpecAttribute> get self =>
       CalloutSpecUtility((v) => v);
@@ -206,15 +183,15 @@ class CalloutSpecUtility<T extends Attribute>
   @override
   T only({
     FlexBoxSpecAttribute? container,
-    IconSpecAttribute? icon,
-    TextSpecAttribute? text,
-    WidgetModifiersDataDto? modifiers,
+    IconThemeDataDto? icon,
+    TextStyleDto? textStyle,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(CalloutSpecAttribute(
       container: container,
       icon: icon,
-      text: text,
+      textStyle: textStyle,
       modifiers: modifiers,
       animated: animated,
     ));

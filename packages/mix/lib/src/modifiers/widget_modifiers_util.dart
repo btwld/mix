@@ -1,9 +1,10 @@
-import '../core/element.dart';
 import '../core/modifier.dart';
+import '../core/spec.dart';
 import '../core/utility.dart';
 import 'align_widget_modifier.dart';
 import 'aspect_ratio_widget_modifier.dart';
 import 'clip_widget_modifier.dart';
+import 'default_text_style_widget_modifier.dart';
 import 'flexible_widget_modifier.dart';
 import 'fractionally_sized_box_widget_modifier.dart';
 import 'intrinsic_widget_modifier.dart';
@@ -16,7 +17,7 @@ import 'sized_box_widget_modifier.dart';
 import 'transform_widget_modifier.dart';
 import 'visibility_widget_modifier.dart';
 
-abstract class ModifierUtility<T extends Attribute, Value>
+abstract class ModifierUtility<T extends SpecAttribute, Value>
     extends MixUtility<T, Value> {
   late final intrinsicWidth = IntrinsicWidthModifierSpecUtility(only);
   late final intrinsicHeight = IntrinsicHeightModifierSpecUtility(only);
@@ -34,6 +35,7 @@ abstract class ModifierUtility<T extends Attribute, Value>
   late final flexible = FlexibleModifierSpecUtility(only);
   late final expanded = flexible.expanded;
   late final transform = TransformModifierSpecUtility(only);
+  late final defaultTextStyle = DefaultTextStyleModifierSpecUtility(only);
 
   late final scale = transform.scale;
   late final align = AlignModifierSpecUtility(only);
@@ -51,7 +53,7 @@ abstract class ModifierUtility<T extends Attribute, Value>
   T only(WidgetModifierSpecAttribute attribute);
 }
 
-class WithModifierUtility<T extends Attribute>
+class WithModifierUtility<T extends SpecAttribute>
     extends ModifierUtility<T, WidgetModifierSpecAttribute> {
   static final self = WithModifierUtility(MixUtility.selfBuilder);
 

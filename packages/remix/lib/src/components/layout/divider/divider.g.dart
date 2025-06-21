@@ -10,7 +10,7 @@ part of 'divider.dart';
 
 /// A mixin that provides spec functionality for [DividerSpec].
 mixin _$DividerSpec on Spec<DividerSpec> {
-  static DividerSpec from(MixData mix) {
+  static DividerSpec from(MixContext mix) {
     return mix.attributeOf<DividerSpecAttribute>()?.resolve(mix) ??
         const DividerSpec();
   }
@@ -38,7 +38,7 @@ mixin _$DividerSpec on Spec<DividerSpec> {
   DividerSpec copyWith({
     BoxSpec? container,
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
   }) {
     return DividerSpec(
       container: container ?? _$this.container,
@@ -70,7 +70,7 @@ mixin _$DividerSpec on Spec<DividerSpec> {
 
     return DividerSpec(
       container: _$this.container.lerp(other.container, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
       modifiers: other.modifiers,
     );
   }
@@ -115,16 +115,16 @@ class DividerSpecAttribute extends SpecAttribute<DividerSpec>
     super.modifiers,
   });
 
-  /// Resolves to [DividerSpec] using the provided [MixData].
+  /// Resolves to [DividerSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final dividerSpec = DividerSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  DividerSpec resolve(MixData mix) {
+  DividerSpec resolve(MixContext mix) {
     return DividerSpec(
       container: container?.resolve(mix),
       animated: animated?.resolve(mix) ?? mix.animation,
@@ -178,7 +178,7 @@ class DividerSpecAttribute extends SpecAttribute<DividerSpec>
 ///
 /// This class provides methods to set individual properties of a [DividerSpec].
 /// Use the methods of this class to configure specific properties of a [DividerSpec].
-class DividerSpecUtility<T extends Attribute>
+class DividerSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, DividerSpecAttribute> {
   /// Utility for defining [DividerSpecAttribute.container]
   late final container = BoxSpecUtility((v) => only(container: v));
@@ -189,10 +189,19 @@ class DividerSpecUtility<T extends Attribute>
   /// Utility for defining [DividerSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  DividerSpecUtility(super.builder, {super.mutable});
+  DividerSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  DividerSpecUtility<T> get chain =>
-      DividerSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  DividerSpecUtility<T> get chain => DividerSpecUtility(attributeBuilder);
 
   static DividerSpecUtility<DividerSpecAttribute> get self =>
       DividerSpecUtility((v) => v);
@@ -202,7 +211,7 @@ class DividerSpecUtility<T extends Attribute>
   T only({
     BoxSpecAttribute? container,
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(DividerSpecAttribute(
       container: container,

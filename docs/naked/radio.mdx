@@ -1,0 +1,203 @@
+---
+title: NakedRadio
+---
+
+NakedRadioGroup provides a context provider for managing a single selection across multiple radio buttons without imposing any visual styling. It handles keyboard navigation between radio buttons using arrow keys and provides a simple callback-based API.
+
+<Info>
+  You can find this example in our [GitHub repository](https://github.com/btwld/mix/blob/main/packages/naked/example/lib/api/naked_radio_group.0.dart).
+</Info>
+<CodeGroup title="Usage Example" defaultLanguage="dart">
+```dart
+enum RadioOption {
+  banana,
+  apple,
+}
+
+class RadioGroupExample extends StatefulWidget {
+  const RadioGroupExample({super.key});
+
+  @override
+  State<RadioGroupExample> createState() => _RadioGroupExampleState();
+}
+
+class _RadioGroupExampleState extends State<RadioGroupExample> {
+  RadioOption _selectedValue = RadioOption.banana;
+
+  @override
+  Widget build(BuildContext context) {
+    return NakedRadioGroup<RadioOption>(
+      groupValue: _selectedValue,
+      onChanged: (value) {
+        setState(() => _selectedValue = value!);
+      },
+      child: const Row(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 8,
+        children: [
+          RadioButton(value: RadioOption.banana),
+          RadioButton(value: RadioOption.apple),
+        ],
+      ),
+    );
+  }
+}
+
+class RadioButton extends StatefulWidget {
+  const RadioButton({
+    super.key,
+    required this.value,
+  });
+
+  final RadioOption value;
+
+  @override
+  State<RadioButton> createState() => _RadioButtonState();
+}
+
+class _RadioButtonState extends State<RadioButton> {
+  bool _isHovered = false;
+  bool _isPressed = false;
+  bool _isFocused = false;
+  bool _isSelected = false;
+
+  Color getBorderColor(bool isSelected) {
+    const baseColor = Color(0xFF3D3D3D);
+    if (isSelected) {
+      return baseColor;
+    }
+    if (_isPressed || _isFocused) {
+      return baseColor.withValues(alpha: 0.6);
+    }
+    if (_isHovered) {
+      return baseColor.withValues(alpha: 0.3);
+    }
+    return baseColor.withValues(alpha: 0.2);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return NakedRadio<RadioOption>(
+      value: widget.value,
+      onFocusState: (focused) => setState(() => _isFocused = focused),
+      onHoverState: (hovered) => setState(() => _isHovered = hovered),
+      onPressedState: (pressed) => setState(() => _isPressed = pressed),
+      onSelectState: (selected) => setState(() => _isSelected = selected),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 100),
+        width: 20,
+        height: 20,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: getBorderColor(_isSelected),
+            width: _isSelected ? 6 : 2,
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+    );
+  }
+}
+```
+</CodeGroup>
+## Constructor
+
+```dart
+const NakedRadioGroup({
+  Key? key,
+  required this.groupValue,
+  required this.onChanged,
+  required this.child,
+  this.enabled = true,
+})
+```
+
+## Properties
+
+#### groupValue → `T?`
+The currently selected value within the group. When this value matches a radio button's value, that button is considered selected.
+
+#### onChanged → `ValueChanged<T?>?`
+Called when a selection changes. Receives the newly selected value.
+
+#### child → `Widget`
+Child widgets, typically containing NakedRadioButton widgets. These buttons will be managed by the radio group.
+
+#### enabled → `bool`
+Whether the entire group is enabled. When false, all radio buttons in the group will not respond to user interaction. Defaults to true.
+
+## Features
+
+- Customizable appearance through NakedRadioButton builder functions
+- Keyboard navigation support via arrow keys (up/down and left/right)
+- Selection follows focus
+- Accessibility support
+- Disabled state handling for the entire group
+
+## Related Components
+
+
+## NakedRadioButton
+
+NakedRadioButton provides interaction behavior and accessibility features without imposing any visual styling, giving complete design freedom. It must be used within a NakedRadioGroup to function properly.
+
+## Constructor
+
+```dart
+const NakedRadioButton({
+  Key? key,
+  required this.builder,
+  required this.value,
+  this.onHoverState,
+  this.onPressedState,
+  this.onFocusState,
+  this.enabled = true,
+  this.cursor = SystemMouseCursors.click,
+  this.enableHapticFeedback = true,
+  this.focusNode,
+  this.autofocus = false,
+})
+```
+
+## Properties
+
+#### builder → `NakedRadioButtonBuilder`
+The builder function that creates the radio button's visual representation. Receives the current context and selected state, and should return a widget.
+
+#### value → `T`
+The value this radio button represents. When this value matches the group's value, this radio button is considered selected.
+
+#### onHoverState → `ValueChanged<bool>?`
+Called when hover state changes. Can be used to update visual feedback when the user hovers over the radio button.
+
+#### onPressedState → `ValueChanged<bool>?`
+Called when pressed state changes. Can be used to update visual feedback when the user presses the radio button.
+
+#### onFocusState → `ValueChanged<bool>?`
+Called when focus state changes. Can be used to update visual feedback when the radio button gains or loses focus.
+
+#### enabled → `bool`
+Whether this radio button is enabled. When false, the radio button will not respond to user interaction, regardless of the group's enabled state. Defaults to true.
+
+#### cursor → `MouseCursor`
+The cursor to show when hovering over the radio button. Defaults to SystemMouseCursors.click.
+
+#### enableHapticFeedback → `bool`
+Whether to provide haptic feedback on tap. When true, triggers a selection click feedback when the radio button is selected. Defaults to true.
+
+#### focusNode → `FocusNode?`
+Optional focus node to control focus behavior. If not provided, a new FocusNode will be created internally.
+
+#### autofocus → `bool`
+Whether to automatically focus this radio button when first built. Defaults to false.
+
+## Features
+
+- Completely customizable appearance through builder function
+- State callbacks for hover, pressed, and focus states
+- Keyboard navigation support via arrow keys (handled by NakedRadioGroup)
+- Selection follows focus
+- Haptic feedback on selection
+- Accessibility support
+- Disabled state handling
+

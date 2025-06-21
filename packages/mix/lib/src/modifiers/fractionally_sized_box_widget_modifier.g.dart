@@ -99,16 +99,16 @@ class FractionallySizedBoxModifierSpecAttribute
     this.alignment,
   });
 
-  /// Resolves to [FractionallySizedBoxModifierSpec] using the provided [MixData].
+  /// Resolves to [FractionallySizedBoxModifierSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final fractionallySizedBoxModifierSpec = FractionallySizedBoxModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  FractionallySizedBoxModifierSpec resolve(MixData mix) {
+  FractionallySizedBoxModifierSpec resolve(MixContext mix) {
     return FractionallySizedBoxModifierSpec(
       widthFactor: widthFactor,
       heightFactor: heightFactor,

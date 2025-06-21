@@ -3,7 +3,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-final class BoxBorderUtility<T extends Attribute>
+final class BoxBorderUtility<T extends StyleElement>
     extends DtoUtility<T, BoxBorderDto, BoxBorder> {
   late final directional = BorderDirectionalUtility(builder);
   late final all = _border.all;
@@ -54,7 +54,7 @@ final class BoxBorderUtility<T extends Attribute>
   }
 }
 
-final class BorderUtility<T extends Attribute>
+final class BorderUtility<T extends StyleElement>
     extends DtoUtility<T, BorderDto, Border> {
   late final all = BorderSideUtility((v) => builder(BorderDto.all(v)));
 
@@ -113,7 +113,7 @@ final class BorderUtility<T extends Attribute>
   }
 }
 
-final class BorderDirectionalUtility<T extends Attribute>
+final class BorderDirectionalUtility<T extends StyleElement>
     extends DtoUtility<T, BorderDirectionalDto, BorderDirectional> {
   late final all =
       BorderSideUtility((v) => builder(BorderDirectionalDto.all(v)));

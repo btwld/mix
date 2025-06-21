@@ -35,10 +35,10 @@ class StyledText extends StyledWidget {
 
   /// Text content to display.
   final String text;
-  
+
   /// Alternative semantics label for accessibility.
   final String? semanticsLabel;
-  
+
   /// Locale for text rendering and formatting.
   final Locale? locale;
 
@@ -87,9 +87,11 @@ class TextSpecWidget extends SpecWidget<TextSpec> {
         locale: locale,
         softWrap: spec?.softWrap,
         overflow: spec?.overflow,
-        // ignore: deprecated_member_use, deprecated_member_use_from_same_package
-        textScaleFactor: spec?.textScaleFactor,
-        textScaler: spec?.textScaler,
+        textScaler: spec?.textScaler ??
+            (spec?.textScaleFactor != null
+                // ignore: deprecated_member_use, deprecated_member_use_from_same_package
+                ? TextScaler.linear(spec!.textScaleFactor!)
+                : null),
         maxLines: spec?.maxLines,
         semanticsLabel: semanticsLabel,
         textWidthBasis: spec?.textWidthBasis,

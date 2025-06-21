@@ -9,7 +9,7 @@ import '../../../helpers/testing_utils.dart';
 void main() {
   group('BoxSpec', () {
     test('resolve', () {
-      final mix = MixData.create(
+      final mix = MixContext.create(
         MockBuildContext(),
         Style(
           BoxSpecAttribute(
@@ -21,7 +21,7 @@ void main() {
             decoration: const BoxDecorationDto(color: ColorDto(Colors.blue)),
             transform: Matrix4.translationValues(10.0, 10.0, 0.0),
             clipBehavior: Clip.antiAlias,
-            modifiers: const WidgetModifiersDataDto([
+            modifiers: const WidgetModifiersConfigDto([
               OpacityModifierSpecAttribute(opacity: 1),
               SizedBoxModifierSpecAttribute(height: 10, width: 10),
             ]),
@@ -63,7 +63,7 @@ void main() {
         transformAlignment: Alignment.center,
         width: 300,
         height: 200,
-        modifiers: const WidgetModifiersData([
+        modifiers: const WidgetModifiersConfig([
           OpacityModifierSpec(0.5),
           SizedBoxModifierSpec(height: 10, width: 10),
         ]),
@@ -72,7 +72,7 @@ void main() {
       final copiedSpec = spec.copyWith(
         width: 250.0,
         height: 150.0,
-        modifiers: const WidgetModifiersData([
+        modifiers: const WidgetModifiersConfig([
           OpacityModifierSpec(1),
         ]),
       );
@@ -96,7 +96,7 @@ void main() {
 
       expect(
         copiedSpec.modifiers!.value,
-        const WidgetModifiersData(
+        const WidgetModifiersConfig(
           [OpacityModifierSpec(1)],
         ).value,
       );
@@ -116,7 +116,7 @@ void main() {
         clipBehavior: Clip.none,
         width: 300,
         height: 200,
-        modifiers: const WidgetModifiersData([
+        modifiers: const WidgetModifiersConfig([
           OpacityModifierSpec(0.5),
           SizedBoxModifierSpec(height: 10, width: 10),
         ]),
@@ -134,7 +134,7 @@ void main() {
         transformAlignment: Alignment.center,
         width: 400,
         height: 300,
-        modifiers: const WidgetModifiersData([
+        modifiers: const WidgetModifiersConfig([
           OpacityModifierSpec(1),
           SizedBoxModifierSpec(height: 100, width: 100),
         ]),
@@ -200,14 +200,14 @@ void main() {
 
     test('lerp modifiers', () {
       const spec1 = BoxSpec(
-        modifiers: WidgetModifiersData([
+        modifiers: WidgetModifiersConfig([
           OpacityModifierSpec(0.5),
           SizedBoxModifierSpec(height: 10, width: 10),
         ]),
       );
 
       const spec2 = BoxSpec(
-        modifiers: WidgetModifiersData([
+        modifiers: WidgetModifiersConfig([
           OpacityModifierSpec(1),
           SizedBoxModifierSpec(height: 100, width: 100),
         ]),
@@ -217,7 +217,7 @@ void main() {
 
       expect(
         lerpedSpecStart.modifiers,
-        const WidgetModifiersData([
+        const WidgetModifiersConfig([
           OpacityModifierSpec(1),
           SizedBoxModifierSpec(height: 100, width: 100),
         ]),
@@ -227,7 +227,7 @@ void main() {
 
       expect(
         lerpedSpecMid.modifiers,
-        const WidgetModifiersData([
+        const WidgetModifiersConfig([
           OpacityModifierSpec(1),
           SizedBoxModifierSpec(height: 100, width: 100),
         ]),
@@ -237,7 +237,7 @@ void main() {
 
       expect(
         lerpedSpecEnd.modifiers,
-        const WidgetModifiersData([
+        const WidgetModifiersConfig([
           OpacityModifierSpec(1),
           SizedBoxModifierSpec(height: 100, width: 100),
         ]),
@@ -258,7 +258,7 @@ void main() {
         clipBehavior: Clip.none,
         width: 300,
         height: 200,
-        modifiers: const WidgetModifiersData([
+        modifiers: const WidgetModifiersConfig([
           OpacityModifierSpec(0.5),
           SizedBoxModifierSpec(height: 10, width: 10),
         ]),
@@ -276,7 +276,7 @@ void main() {
         clipBehavior: Clip.none,
         width: 300,
         height: 200,
-        modifiers: const WidgetModifiersData([
+        modifiers: const WidgetModifiersConfig([
           OpacityModifierSpec(0.5),
           SizedBoxModifierSpec(height: 10, width: 10),
         ]),
@@ -305,7 +305,7 @@ void main() {
         clipBehavior: Clip.antiAlias,
         width: 100,
         height: 100,
-        modifiers: const WidgetModifiersDataDto([
+        modifiers: const WidgetModifiersConfigDto([
           OpacityModifierSpecAttribute(opacity: 0.5),
           SizedBoxModifierSpecAttribute(height: 10, width: 10),
         ]),
@@ -330,7 +330,7 @@ void main() {
           clipBehavior: Clip.antiAliasWithSaveLayer,
           width: 200,
           height: 200,
-          modifiers: const WidgetModifiersDataDto([
+          modifiers: const WidgetModifiersConfigDto([
             SizedBoxModifierSpecAttribute(width: 100),
           ]),
         ),
@@ -376,13 +376,13 @@ void main() {
     test('fluent behavior', () {
       final box = BoxSpecUtility.self;
 
-      final util = box.chain
+      final util = box
         ..alignment.center()
         ..padding(8);
 
       final attr = util.attributeValue!;
 
-      expect(util, isA<Attribute>());
+      expect(util, isA<StyleElement>());
       expect(attr.alignment, Alignment.center);
       expect(attr.padding, const EdgeInsets.all(8.0).toDto());
       expect(attr.margin, null);
@@ -405,15 +405,11 @@ void main() {
 
     // Test mutable behavior for multiple boxes
     test('Immutable behavior when having multiple boxes', () {
-      final boxUtil = BoxSpecUtility.self;
-      final box1 = boxUtil.chain..padding(10);
-      final box2 = boxUtil.chain..padding(20);
+      final box1 = BoxSpecUtility.self.padding(10);
+      final box2 = BoxSpecUtility.self.padding(20);
 
-      final attr1 = box1.attributeValue!;
-      final attr2 = box2.attributeValue!;
-
-      expect(attr1.padding, const EdgeInsets.all(10.0).toDto());
-      expect(attr2.padding, const EdgeInsets.all(20.0).toDto());
+      expect(box1.padding, const EdgeInsets.all(10.0).toDto());
+      expect(box2.padding, const EdgeInsets.all(20.0).toDto());
 
       final style1 = Style(box1);
       final style2 = Style(box2);
@@ -437,7 +433,7 @@ void main() {
     test('Mutate behavior and not on same utility', () {
       final box = BoxSpecUtility.self;
 
-      final boxValue = box.chain;
+      final boxValue = box;
       boxValue
         ..padding(10)
         ..color.red()

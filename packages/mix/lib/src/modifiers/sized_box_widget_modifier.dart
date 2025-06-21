@@ -33,7 +33,7 @@ final class SizedBoxModifierSpec
   }
 }
 
-final class SizedBoxModifierSpecUtility<T extends Attribute>
+final class SizedBoxModifierSpecUtility<T extends StyleElement>
     extends MixUtility<T, SizedBoxModifierSpecAttribute> {
   /// Utility for defining [SizedBoxModifierSpecAttribute.height]
   late final height = DoubleUtility((value) => call(height: value));

@@ -33,15 +33,13 @@ const _widgetSpecBuilder = '';
 /// {@endtemplate}
 ///
 /// {@template remix.component.style}
-/// Customizes the component's appearance, overriding the style from theme.
-/// Use this to create unique variations or apply specific styling that
-/// differs from the global theme.
+/// Customizes the component's appearance with unique or specific styling.
 /// {@endtemplate}
 // const _useStyleFromContext = '';
 ///
-/// {@template remix.component.disabled}
-/// When disabled, the component will not respond to user interaction and will
-/// appear visually distinct to indicate its disabled state.
+/// {@template remix.component.enabled}
+/// When enabled, the component will respond to user interaction and will
+/// appear visually distinct to indicate its enabled state.
 /// {@endtemplate}
 ///
 /// {@template remix.component.loading}

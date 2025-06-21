@@ -1,7 +1,5 @@
-import 'package:demo/helpers/knob_builder.dart';
 import 'package:flutter/widgets.dart';
 import 'package:remix/remix.dart';
-import 'package:remix/themes/fortaleza.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
@@ -9,7 +7,7 @@ final _key = GlobalKey();
 
 @widgetbook.UseCase(
   name: 'Avatar Component',
-  type: Avatar,
+  type: RxAvatar,
 )
 Widget buildAvatarUseCase(BuildContext context) {
   final imageUrl = context.knobs.string(
@@ -24,12 +22,9 @@ Widget buildAvatarUseCase(BuildContext context) {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Avatar(
-              variants: [
-                context.knobs.variant(FortalezaAvatarStyle.variants),
-              ],
+            RxAvatar(
               image: imageUrl.isNotEmpty ? NetworkImage(imageUrl) : null,
-              fallbackBuilder: (spec) => spec('CA'),
+              label: 'CA',
             ),
           ],
         ),

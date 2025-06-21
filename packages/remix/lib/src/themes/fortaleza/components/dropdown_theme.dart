@@ -1,6 +1,7 @@
 import 'package:mix/mix.dart';
 
 import '../../../components/utility/dropdown_menu/dropdown_menu.dart';
+import '../../../helpers/spec_style.dart';
 import '../tokens.dart';
 
 class FortalezaDropdownMenuStyle extends DropdownMenuStyle {
@@ -13,7 +14,7 @@ class FortalezaDropdownMenuStyle extends DropdownMenuStyle {
     final baseStyle = super.makeStyle(spec);
 
     final baseThemeOverrides = Style(
-      $.menu.container.chain
+      $.menu.container
         ..color.$neutral(1)
         ..border.all.color.$neutral(6)
         ..wrap.intrinsicWidth()
@@ -23,7 +24,7 @@ class FortalezaDropdownMenuStyle extends DropdownMenuStyle {
       spec.on.hover($.item.container.color.$neutral(4)),
     );
 
-    return Style.create([baseStyle(), baseThemeOverrides()])
+    return Style.create([baseStyle, baseThemeOverrides])
         .animate(duration: const Duration(milliseconds: 100));
   }
 }

@@ -33,7 +33,7 @@ void main() {
         clipBehavior: Clip.antiAlias,
         gap: SpaceDto(10.0),
       );
-      final mixData = MixData.create(MockBuildContext(), Style(attribute));
+      final mixData = MixContext.create(MockBuildContext(), Style(attribute));
       final resolvedSpec = attribute.resolve(mixData);
 
       expect(resolvedSpec.crossAxisAlignment, CrossAxisAlignment.start);
@@ -56,7 +56,7 @@ void main() {
         },
       );
 
-      late MixData mixData;
+      late MixContext mixData;
 
       await tester.pumpWidget(
         MixTheme(
@@ -65,7 +65,7 @@ void main() {
             home: Scaffold(
               body: Builder(
                 builder: (BuildContext context) {
-                  mixData = MixData.create(
+                  mixData = MixContext.create(
                     context,
                     Style(
                       $flex.gap.ref(token.space.small),

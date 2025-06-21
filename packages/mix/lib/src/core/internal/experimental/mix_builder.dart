@@ -1,14 +1,11 @@
 import 'package:flutter/widgets.dart';
 
 import '../../../modifiers/internal/render_widget_modifier.dart';
-import '../../../variants/widget_state_variant.dart';
-import '../../../widgets/pressable_widget.dart';
 import '../../computed_style/computed_style.dart';
 import '../../computed_style/computed_style_provider.dart';
 import '../../factory/mix_data.dart';
 import '../../factory/mix_provider.dart';
 import '../../factory/style_mix.dart';
-import '../../widget_state/widget_state_controller.dart';
 
 /// Builds widgets with Mix styling and intelligent caching.
 ///
@@ -19,7 +16,7 @@ import '../../widget_state/widget_state_controller.dart';
 ///
 /// - Caches [ComputedStyle] when [style] hasn't changed
 /// - Uses [InheritedModel] for selective rebuilds based on spec changes
-/// - Creates fresh [MixData] to ensure context values stay current
+/// - Creates fresh [MixContext] to ensure context values stay current
 ///
 /// ## Example
 ///
@@ -50,7 +47,6 @@ class MixBuilder extends StatefulWidget {
     required this.builder,
     this.inherit = false,
     this.orderOfModifiers = const [],
-    this.controller,
   });
 
   /// The style to apply.
@@ -66,12 +62,6 @@ class MixBuilder extends StatefulWidget {
   /// Defaults to an empty list.
   final List<Type> orderOfModifiers;
 
-  /// Optional controller for managing widget state.
-  ///
-  /// If null, an internal controller will be created when needed
-  /// for widget state variants.
-  final WidgetStatesController? controller;
-
   /// Builds the widget tree.
   ///
   /// Receives a [BuildContext] with access to resolved specs
@@ -84,22 +74,11 @@ class MixBuilder extends StatefulWidget {
 
 class _MixBuilderState extends State<MixBuilder> {
   late Style _cachedStyle;
-  late final WidgetStatesController _controller;
-
-  /// Checks if the style contains widget state variants that require
-  /// interactive state management.
-  bool get _hasWidgetStateVariant => widget.style.variants.values
-      .any((attr) => attr.variant is MixWidgetStateVariant);
-
-  /// Determines if we should wrap with Interactable widget.
-  bool get _shouldWrapWithInteractable =>
-      _hasWidgetStateVariant || widget.controller != null;
 
   @override
   void initState() {
     super.initState();
     _cachedStyle = widget.style;
-    _controller = widget.controller ?? WidgetStatesController();
   }
 
   @override
@@ -111,17 +90,8 @@ class _MixBuilderState extends State<MixBuilder> {
   }
 
   @override
-  void dispose() {
-    // Only dispose controllers we created internally
-    if (widget.controller == null) {
-      _controller.dispose();
-    }
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    var mix = MixData.create(context, _cachedStyle);
+    var mix = MixContext.create(context, _cachedStyle);
 
     // Apply inheritance
     if (widget.inherit) {
@@ -134,7 +104,7 @@ class _MixBuilderState extends State<MixBuilder> {
     final computedStyle = ComputedStyle.compute(mix);
 
     // Build core widget tree
-    Widget result = Mix(
+    return Mix(
       data: mix,
       child: ComputedStyleProvider(
         style: computedStyle,
@@ -168,12 +138,5 @@ class _MixBuilderState extends State<MixBuilder> {
         ),
       ),
     );
-
-    // Only wrap with Interactable if needed and not already wrapped
-    if (_shouldWrapWithInteractable && MixWidgetState.of(context) == null) {
-      result = Interactable(controller: _controller, child: result);
-    }
-
-    return result;
   }
 }

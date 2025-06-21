@@ -10,7 +10,7 @@ part of 'checkbox.dart';
 
 /// A mixin that provides spec functionality for [CheckboxSpec].
 mixin _$CheckboxSpec on Spec<CheckboxSpec> {
-  static CheckboxSpec from(MixData mix) {
+  static CheckboxSpec from(MixContext mix) {
     return mix.attributeOf<CheckboxSpecAttribute>()?.resolve(mix) ??
         const CheckboxSpec();
   }
@@ -40,7 +40,7 @@ mixin _$CheckboxSpec on Spec<CheckboxSpec> {
     IconSpec? indicator,
     FlexBoxSpec? container,
     TextSpec? label,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return CheckboxSpec(
@@ -84,7 +84,7 @@ mixin _$CheckboxSpec on Spec<CheckboxSpec> {
       container: _$this.container.lerp(other.container, t),
       label: _$this.label.lerp(other.label, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -144,16 +144,16 @@ class CheckboxSpecAttribute extends SpecAttribute<CheckboxSpec>
     super.animated,
   });
 
-  /// Resolves to [CheckboxSpec] using the provided [MixData].
+  /// Resolves to [CheckboxSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final checkboxSpec = CheckboxSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  CheckboxSpec resolve(MixData mix) {
+  CheckboxSpec resolve(MixContext mix) {
     return CheckboxSpec(
       indicatorContainer: indicatorContainer?.resolve(mix),
       indicator: indicator?.resolve(mix),
@@ -222,7 +222,7 @@ class CheckboxSpecAttribute extends SpecAttribute<CheckboxSpec>
 ///
 /// This class provides methods to set individual properties of a [CheckboxSpec].
 /// Use the methods of this class to configure specific properties of a [CheckboxSpec].
-class CheckboxSpecUtility<T extends Attribute>
+class CheckboxSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, CheckboxSpecAttribute> {
   /// Utility for defining [CheckboxSpecAttribute.indicatorContainer]
   late final indicatorContainer =
@@ -243,10 +243,19 @@ class CheckboxSpecUtility<T extends Attribute>
   /// Utility for defining [CheckboxSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  CheckboxSpecUtility(super.builder, {super.mutable});
+  CheckboxSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  CheckboxSpecUtility<T> get chain =>
-      CheckboxSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  CheckboxSpecUtility<T> get chain => CheckboxSpecUtility(attributeBuilder);
 
   static CheckboxSpecUtility<CheckboxSpecAttribute> get self =>
       CheckboxSpecUtility((v) => v);
@@ -258,7 +267,7 @@ class CheckboxSpecUtility<T extends Attribute>
     IconSpecAttribute? indicator,
     FlexBoxSpecAttribute? container,
     TextSpecAttribute? label,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(CheckboxSpecAttribute(

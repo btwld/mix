@@ -3,6 +3,7 @@ import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../../core/theme/remix_theme.dart';
+import '../../../helpers/spec_style.dart';
 
 part 'badge.g.dart';
 part 'badge_style.dart';

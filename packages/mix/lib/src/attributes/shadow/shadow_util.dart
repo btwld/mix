@@ -4,48 +4,48 @@ import '../../core/element.dart';
 import '../../core/utility.dart';
 import 'shadow_dto.dart';
 
-/// A utility class for building [Attribute] instances from a list of [ShadowDto] objects.
+/// A utility class for building [StyleElement] instances from a list of [ShadowDto] objects.
 ///
-/// This class extends [MixUtility] and provides a convenient way to create [Attribute]
+/// This class extends [MixUtility] and provides a convenient way to create [StyleElement]
 /// instances by transforming a list of [BoxShadow] objects into a list of [ShadowDto] objects.
-final class ShadowListUtility<T extends Attribute>
+final class ShadowListUtility<T extends StyleElement>
     extends MixUtility<T, List<ShadowDto>> {
   const ShadowListUtility(super.builder);
 
-  /// Creates an [Attribute] instance from a list of [BoxShadow] objects.
+  /// Creates an [StyleElement] instance from a list of [BoxShadow] objects.
   ///
   /// This method maps each [BoxShadow] object to a [ShadowDto] object and passes the
-  /// resulting list to the [builder] function to create the [Attribute] instance.
+  /// resulting list to the [builder] function to create the [StyleElement] instance.
   T call(List<Shadow> shadows) {
     return builder(shadows.map((e) => e.toDto()).toList());
   }
 }
 
-/// A utility class for building [Attribute] instances from a list of [BoxShadowDto] objects.
+/// A utility class for building [StyleElement] instances from a list of [BoxShadowDto] objects.
 ///
-/// This class extends [MixUtility] and provides a convenient way to create [Attribute]
+/// This class extends [MixUtility] and provides a convenient way to create [StyleElement]
 /// instances by transforming a list of [BoxShadow] objects into a list of [BoxShadowDto] objects.
-final class BoxShadowListUtility<T extends Attribute>
+final class BoxShadowListUtility<T extends StyleElement>
     extends MixUtility<T, List<BoxShadowDto>> {
   late final add = BoxShadowUtility((v) => builder([v]));
 
   BoxShadowListUtility(super.builder);
 
-  /// Creates an [Attribute] instance from a list of [BoxShadow] objects.
+  /// Creates an [StyleElement] instance from a list of [BoxShadow] objects.
   ///
   /// This method maps each [BoxShadow] object to a [BoxShadowDto] object and passes the
-  /// resulting list to the [builder] function to create the [Attribute] instance.
+  /// resulting list to the [builder] function to create the [StyleElement] instance.
   T call(List<BoxShadow> shadows) {
     return builder(shadows.map((e) => e.toDto()).toList());
   }
 }
 
-/// A utility class for building [Attribute] instances from elevation values.
+/// A utility class for building [StyleElement] instances from elevation values.
 ///
-/// This class extends [MixUtility] and provides methods to create [Attribute] instances
+/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// based on predefined elevation values, which are mapped to corresponding lists of
 /// [BoxShadowDto] objects using the [kElevationToShadow] map.
-final class ElevationUtility<T extends Attribute>
+final class ElevationUtility<T extends StyleElement>
     extends MixUtility<T, List<BoxShadowDto>> {
   /// Creates an [T] instance with an elevation of 1.
   late final e1 = one;
@@ -79,11 +79,11 @@ final class ElevationUtility<T extends Attribute>
 
   ElevationUtility(super.builder);
 
-  /// Creates an [Attribute] instance from an elevation value.
+  /// Creates an [StyleElement] instance from an elevation value.
   ///
   /// Retrieves the corresponding list of [BoxShadow] objects from the [kElevationToShadow]
   /// map, maps each [BoxShadow] to a [BoxShadowDto], and passes the resulting list to
-  /// the [builder] function to create the [Attribute] instance.
+  /// the [builder] function to create the [StyleElement] instance.
   ///
   /// Throws an [AssertionError] if the provided [value] is not a valid elevation value.
   T call(int value) {

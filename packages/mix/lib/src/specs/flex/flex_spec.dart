@@ -8,12 +8,12 @@ import '../../attributes/animated/animated_util.dart';
 import '../../attributes/enum/enum_util.dart';
 import '../../attributes/gap/gap_util.dart';
 import '../../attributes/gap/space_dto.dart';
-import '../../attributes/modifiers/widget_modifiers_data.dart';
-import '../../attributes/modifiers/widget_modifiers_data_dto.dart';
+import '../../attributes/modifiers/widget_modifiers_config.dart';
+import '../../attributes/modifiers/widget_modifiers_config_dto.dart';
 import '../../attributes/modifiers/widget_modifiers_util.dart';
 import '../../core/computed_style/computed_style.dart';
-import '../../core/element.dart';
 import '../../core/factory/mix_data.dart';
+import '../../core/factory/style_mix.dart';
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
 import 'flex_widget.dart';
@@ -84,4 +84,8 @@ final class FlexSpec extends Spec<FlexSpec> with _$FlexSpec, Diagnosticable {
     super.debugFillProperties(properties);
     _debugFillProperties(properties);
   }
+}
+
+class FlexStyle extends FlexSpecUtility<FlexSpecAttribute> {
+  FlexStyle() : super((v) => v);
 }

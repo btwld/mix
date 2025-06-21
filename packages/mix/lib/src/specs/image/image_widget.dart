@@ -38,23 +38,28 @@ class StyledImage extends StyledWidget {
 
   @override
   Widget build(BuildContext context) {
-    return withMix(context, (context) {
-      final spec = ImageSpec.of(context);
+    return SpecBuilder(
+      inherit: inherit,
+      style: style,
+      orderOfModifiers: orderOfModifiers,
+      builder: (context) {
+        final spec = ImageSpec.of(context);
 
-      return spec(
-        image: image,
-        frameBuilder: frameBuilder,
-        loadingBuilder: loadingBuilder,
-        errorBuilder: errorBuilder,
-        semanticLabel: semanticLabel,
-        excludeFromSemantics: excludeFromSemantics,
-        gaplessPlayback: gaplessPlayback,
-        isAntiAlias: isAntiAlias,
-        matchTextDirection: matchTextDirection,
-        opacity: opacity,
-        orderOfModifiers: orderOfModifiers,
-      );
-    });
+        return spec(
+          image: image,
+          frameBuilder: frameBuilder,
+          loadingBuilder: loadingBuilder,
+          errorBuilder: errorBuilder,
+          semanticLabel: semanticLabel,
+          excludeFromSemantics: excludeFromSemantics,
+          gaplessPlayback: gaplessPlayback,
+          isAntiAlias: isAntiAlias,
+          matchTextDirection: matchTextDirection,
+          opacity: opacity,
+          orderOfModifiers: orderOfModifiers,
+        );
+      },
+    );
   }
 }
 

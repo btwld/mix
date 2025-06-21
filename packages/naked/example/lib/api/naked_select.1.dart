@@ -98,15 +98,9 @@ class _AnimatedSelectExampleState extends State<AnimatedSelectExample>
         },
         removalDelay: const Duration(milliseconds: 200),
         onStateChange: (state) {
-          switch (state) {
-            case OverlayChildLifecycleState.present:
-              _animationController.forward();
-              break;
-            case OverlayChildLifecycleState.pendingRemoval:
-            case OverlayChildLifecycleState.removed:
-              _animationController.reverse();
-              break;
-          }
+          state == OverlayChildLifecycleState.present
+              ? _animationController.forward()
+              : _animationController.reverse();
         },
         menu: SlideTransition(
           position: _animationController.drive(Tween<Offset>(

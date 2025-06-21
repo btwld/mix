@@ -20,7 +20,7 @@ typedef _BaseDecorProperties = ({
 
 /// A Data transfer object that represents a [Decoration] value.
 ///
-/// This DTO is used to resolve a [Decoration] value from a [MixData] instance.
+/// This DTO is used to resolve a [Decoration] value from a [MixContext] instance.
 ///
 /// This class needs to have the different properties that are not found in the [Modifiers] class.
 /// In order to support merging of [Decoration] values, and reusable of common properties.
@@ -295,7 +295,7 @@ ShapeBorderDto? _fromBoxShape({
   }
 }
 
-class DecorationUtility<T extends Attribute>
+class DecorationUtility<T extends StyleElement>
     extends MixUtility<T, DecorationDto> {
   const DecorationUtility(super.builder);
 

@@ -10,7 +10,7 @@ part of 'chip.dart';
 
 /// A mixin that provides spec functionality for [ChipSpec].
 mixin _$ChipSpec on Spec<ChipSpec> {
-  static ChipSpec from(MixData mix) {
+  static ChipSpec from(MixContext mix) {
     return mix.attributeOf<ChipSpecAttribute>()?.resolve(mix) ??
         const ChipSpec();
   }
@@ -39,7 +39,7 @@ mixin _$ChipSpec on Spec<ChipSpec> {
     FlexBoxSpec? container,
     IconSpec? icon,
     TextSpec? label,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return ChipSpec(
@@ -79,7 +79,7 @@ mixin _$ChipSpec on Spec<ChipSpec> {
       icon: _$this.icon.lerp(other.icon, t),
       label: _$this.label.lerp(other.label, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -132,16 +132,16 @@ class ChipSpecAttribute extends SpecAttribute<ChipSpec> with Diagnosticable {
     super.animated,
   });
 
-  /// Resolves to [ChipSpec] using the provided [MixData].
+  /// Resolves to [ChipSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final chipSpec = ChipSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  ChipSpec resolve(MixData mix) {
+  ChipSpec resolve(MixContext mix) {
     return ChipSpec(
       container: container?.resolve(mix),
       icon: icon?.resolve(mix),
@@ -203,7 +203,7 @@ class ChipSpecAttribute extends SpecAttribute<ChipSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [ChipSpec].
 /// Use the methods of this class to configure specific properties of a [ChipSpec].
-class ChipSpecUtility<T extends Attribute>
+class ChipSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, ChipSpecAttribute> {
   /// Utility for defining [ChipSpecAttribute.container]
   late final container = FlexBoxSpecUtility((v) => only(container: v));
@@ -220,10 +220,19 @@ class ChipSpecUtility<T extends Attribute>
   /// Utility for defining [ChipSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  ChipSpecUtility(super.builder, {super.mutable});
+  ChipSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  ChipSpecUtility<T> get chain =>
-      ChipSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  ChipSpecUtility<T> get chain => ChipSpecUtility(attributeBuilder);
 
   static ChipSpecUtility<ChipSpecAttribute> get self =>
       ChipSpecUtility((v) => v);
@@ -234,7 +243,7 @@ class ChipSpecUtility<T extends Attribute>
     FlexBoxSpecAttribute? container,
     IconSpecAttribute? icon,
     TextSpecAttribute? label,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(ChipSpecAttribute(

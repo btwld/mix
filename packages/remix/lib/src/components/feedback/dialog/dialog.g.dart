@@ -10,7 +10,7 @@ part of 'dialog.dart';
 
 /// A mixin that provides spec functionality for [DialogSpec].
 mixin _$DialogSpec on Spec<DialogSpec> {
-  static DialogSpec from(MixData mix) {
+  static DialogSpec from(MixContext mix) {
     return mix.attributeOf<DialogSpecAttribute>()?.resolve(mix) ??
         const DialogSpec();
   }
@@ -40,7 +40,7 @@ mixin _$DialogSpec on Spec<DialogSpec> {
     TextSpec? title,
     TextSpec? description,
     FlexSpec? actionsContainer,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return DialogSpec(
@@ -82,7 +82,7 @@ mixin _$DialogSpec on Spec<DialogSpec> {
       description: _$this.description.lerp(other.description, t),
       actionsContainer: _$this.actionsContainer.lerp(other.actionsContainer, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -142,16 +142,16 @@ class DialogSpecAttribute extends SpecAttribute<DialogSpec>
     super.animated,
   });
 
-  /// Resolves to [DialogSpec] using the provided [MixData].
+  /// Resolves to [DialogSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final dialogSpec = DialogSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  DialogSpec resolve(MixData mix) {
+  DialogSpec resolve(MixContext mix) {
     return DialogSpec(
       container: container?.resolve(mix),
       title: title?.resolve(mix),
@@ -220,7 +220,7 @@ class DialogSpecAttribute extends SpecAttribute<DialogSpec>
 ///
 /// This class provides methods to set individual properties of a [DialogSpec].
 /// Use the methods of this class to configure specific properties of a [DialogSpec].
-class DialogSpecUtility<T extends Attribute>
+class DialogSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, DialogSpecAttribute> {
   /// Utility for defining [DialogSpecAttribute.container]
   late final container = FlexBoxSpecUtility((v) => only(container: v));
@@ -241,10 +241,19 @@ class DialogSpecUtility<T extends Attribute>
   /// Utility for defining [DialogSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  DialogSpecUtility(super.builder, {super.mutable});
+  DialogSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  DialogSpecUtility<T> get chain =>
-      DialogSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  DialogSpecUtility<T> get chain => DialogSpecUtility(attributeBuilder);
 
   static DialogSpecUtility<DialogSpecAttribute> get self =>
       DialogSpecUtility((v) => v);
@@ -256,7 +265,7 @@ class DialogSpecUtility<T extends Attribute>
     TextSpecAttribute? title,
     TextSpecAttribute? description,
     FlexSpecAttribute? actionsContainer,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(DialogSpecAttribute(

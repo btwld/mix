@@ -6,6 +6,7 @@ import 'package:mix_annotations/mix_annotations.dart';
 import '../../../core/theme/remix_theme.dart';
 import '../../../helpers/object_ext.dart';
 import '../../../helpers/overlay.dart';
+import '../../../helpers/spec_style.dart';
 
 part 'dropdown_menu.g.dart';
 part 'dropdown_menu_style.dart';

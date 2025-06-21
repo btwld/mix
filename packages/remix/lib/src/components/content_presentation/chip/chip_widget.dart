@@ -1,20 +1,76 @@
 part of 'chip.dart';
 
-class Chip extends StatefulWidget {
-  const Chip({
+/// A chip component that can be selected or deselected, with optional icons and a label.
+///
+/// The [RxChip] is a customizable widget that can be used to represent a choice or an action.
+/// It supports various configurations such as enabling/disabling the chip, applying style variants,
+/// and handling selection changes.
+///
+/// ## Example
+///
+/// ```dart
+/// RxChip(
+///   label: 'Option 1',
+///   iconLeft: Icons.check,
+///   selected: true,
+///   onChanged: (bool isSelected) {
+///     // Handle selection change
+///   },
+///   enabled: true,
+///   variants: [Variant.primary],
+///   style: RxChipStyle(),
+/// )
+/// ```
+///
+class RxChip extends StatefulWidget implements Disableable, Selectable {
+  RxChip({
     super.key,
-    this.value = false,
+    this.selected = false,
     this.label,
-    this.disabled = false,
+    this.enabled = true,
     this.iconLeft,
     this.iconRight,
     this.variants = const [],
     required this.onChanged,
     this.style,
+  }) : child = _ChipBody(
+          iconLeft: iconLeft,
+          iconRight: iconRight,
+          label: label,
+        );
+
+  /// Creates a Remix chip with custom content.
+  ///
+  /// This constructor allows for custom chip content beyond the default layout.
+  ///
+  /// Example:
+  /// ```dart
+  /// RxChip.raw(
+  ///   child: Icon(Icons.star),
+  ///   onChanged: (bool isSelected) {},
+  ///   variants: [Variant.primary],
+  ///   style: RxChipStyle(),
+  /// )
+  /// ```
+  const RxChip.raw({
+    super.key,
+    this.selected = false,
+    this.label,
+    this.enabled = true,
+    this.iconLeft,
+    this.iconRight,
+    this.variants = const [],
+    required this.child,
+    required this.onChanged,
+    this.style,
   });
 
   /// Whether the chip is selected or not.
-  final bool value;
+  @override
+  final bool selected;
+
+  /// The child widget to display inside the chip.
+  final Widget child;
 
   /// The text content displayed in the center of the component.
   final String? label;
@@ -28,76 +84,77 @@ class Chip extends StatefulWidget {
   /// {@macro remix.component.onChanged}
   final void Function(bool)? onChanged;
 
-  /// {@macro remix.component.disabled}
-  final bool disabled;
+  /// {@macro remix.component.enabled}
+  @override
+  final bool enabled;
 
   /// {@macro remix.component.variants}
   final List<Variant> variants;
 
   /// {@macro remix.component.style}
-  final ChipStyle? style;
+  final RxChipStyle? style;
 
   @override
-  State<Chip> createState() => _ChipState();
+  State<RxChip> createState() => _RxChipState();
 }
 
-class _ChipState extends State<Chip> {
-  late final WidgetStatesController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = WidgetStatesController();
-    _controller.selected = widget.value;
-    _controller.disabled = widget.disabled;
-  }
-
-  @override
-  void didUpdateWidget(Chip oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (mounted) {
-      if (oldWidget.value != widget.value) {
-        _controller.selected = widget.value;
-      }
-
-      if (oldWidget.disabled != widget.disabled) {
-        _controller.disabled = widget.disabled;
-      }
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+class _RxChipState extends State<RxChip>
+    with MixControllerMixin, DisableableMixin, SelectableMixin {
+  RxChipStyle get _style =>
+      RxChipStyle._default().merge(widget.style ?? RxChipStyle());
 
   @override
   Widget build(BuildContext context) {
-    final style = widget.style ?? context.remix.components.chip;
-    final configuration = SpecConfiguration(context, ChipSpecUtility.self);
-
-    return Pressable(
-      enabled: !widget.disabled,
-      onPress:
-          widget.disabled ? null : () => widget.onChanged?.call(!widget.value),
-      controller: _controller,
-      child: SpecBuilder(
-        style: style.makeStyle(configuration).applyVariants(widget.variants),
+    return NakedCheckbox(
+      value: widget.selected,
+      onChanged: (value) => widget.onChanged?.call(value ?? false),
+      onHoverState: (state) {
+        mixController.hovered = state;
+      },
+      onPressedState: (state) {
+        mixController.pressed = state;
+      },
+      onFocusState: (state) {
+        mixController.focused = state;
+      },
+      enabled: widget.enabled,
+      child: RemixBuilder(
         builder: (context) {
-          final spec = ChipSpec.of(context);
-
-          return spec.container(
-            direction: Axis.horizontal,
-            children: [
-              if (widget.iconLeft != null) spec.icon(widget.iconLeft),
-              if (widget.label?.isNotEmpty == true) spec.label(widget.label!),
-              if (widget.iconRight != null) spec.icon(widget.iconRight),
-            ],
+          return _ChipBody(
+            iconLeft: widget.iconLeft,
+            iconRight: widget.iconRight,
+            label: widget.label,
           );
         },
+        style: Style(_style).applyVariants(widget.variants),
+        controller: mixController,
       ),
+    );
+  }
+}
+
+class _ChipBody extends StatelessWidget {
+  const _ChipBody({
+    required this.iconLeft,
+    required this.iconRight,
+    required this.label,
+  });
+
+  final IconData? iconLeft;
+  final IconData? iconRight;
+  final String? label;
+
+  @override
+  Widget build(BuildContext context) {
+    final spec = ChipSpec.of(context);
+
+    return spec.container(
+      direction: Axis.horizontal,
+      children: [
+        if (iconLeft != null) spec.icon(iconLeft),
+        if (label?.isNotEmpty == true) spec.label(label!),
+        if (iconRight != null) spec.icon(iconRight),
+      ],
     );
   }
 }

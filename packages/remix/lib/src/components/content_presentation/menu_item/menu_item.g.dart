@@ -10,7 +10,7 @@ part of 'menu_item.dart';
 
 /// A mixin that provides spec functionality for [MenuItemSpec].
 mixin _$MenuItemSpec on Spec<MenuItemSpec> {
-  static MenuItemSpec from(MixData mix) {
+  static MenuItemSpec from(MixContext mix) {
     return mix.attributeOf<MenuItemSpecAttribute>()?.resolve(mix) ??
         const MenuItemSpec();
   }
@@ -38,17 +38,15 @@ mixin _$MenuItemSpec on Spec<MenuItemSpec> {
   MenuItemSpec copyWith({
     FlexBoxSpec? container,
     FlexBoxSpec? titleSubtitleContainer,
-    IconSpec? icon,
     TextSpec? title,
     TextSpec? subtitle,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return MenuItemSpec(
       container: container ?? _$this.container,
       titleSubtitleContainer:
           titleSubtitleContainer ?? _$this.titleSubtitleContainer,
-      icon: icon ?? _$this.icon,
       title: title ?? _$this.title,
       subtitle: subtitle ?? _$this.subtitle,
       modifiers: modifiers ?? _$this.modifiers,
@@ -67,7 +65,6 @@ mixin _$MenuItemSpec on Spec<MenuItemSpec> {
   /// The interpolation is performed on each property of the [MenuItemSpec] using the appropriate
   /// interpolation method:
   /// - [FlexBoxSpec.lerp] for [container] and [titleSubtitleContainer].
-  /// - [IconSpec.lerp] for [icon].
   /// - [TextSpec.lerp] for [title] and [subtitle].
   /// For [modifiers] and [animated], the interpolation is performed using a step function.
   /// If [t] is less than 0.5, the value from the current [MenuItemSpec] is used. Otherwise, the value
@@ -83,11 +80,10 @@ mixin _$MenuItemSpec on Spec<MenuItemSpec> {
       container: _$this.container.lerp(other.container, t),
       titleSubtitleContainer:
           _$this.titleSubtitleContainer.lerp(other.titleSubtitleContainer, t),
-      icon: _$this.icon.lerp(other.icon, t),
       title: _$this.title.lerp(other.title, t),
       subtitle: _$this.subtitle.lerp(other.subtitle, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -99,7 +95,6 @@ mixin _$MenuItemSpec on Spec<MenuItemSpec> {
   List<Object?> get props => [
         _$this.container,
         _$this.titleSubtitleContainer,
-        _$this.icon,
         _$this.title,
         _$this.subtitle,
         _$this.modifiers,
@@ -114,8 +109,6 @@ mixin _$MenuItemSpec on Spec<MenuItemSpec> {
     properties.add(DiagnosticsProperty(
         'titleSubtitleContainer', _$this.titleSubtitleContainer,
         defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('icon', _$this.icon, defaultValue: null));
     properties
         .add(DiagnosticsProperty('title', _$this.title, defaultValue: null));
     properties.add(
@@ -138,34 +131,31 @@ class MenuItemSpecAttribute extends SpecAttribute<MenuItemSpec>
     with Diagnosticable {
   final FlexBoxSpecAttribute? container;
   final FlexBoxSpecAttribute? titleSubtitleContainer;
-  final IconSpecAttribute? icon;
   final TextSpecAttribute? title;
   final TextSpecAttribute? subtitle;
 
   const MenuItemSpecAttribute({
     this.container,
     this.titleSubtitleContainer,
-    this.icon,
     this.title,
     this.subtitle,
     super.modifiers,
     super.animated,
   });
 
-  /// Resolves to [MenuItemSpec] using the provided [MixData].
+  /// Resolves to [MenuItemSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final menuItemSpec = MenuItemSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  MenuItemSpec resolve(MixData mix) {
+  MenuItemSpec resolve(MixContext mix) {
     return MenuItemSpec(
       container: container?.resolve(mix),
       titleSubtitleContainer: titleSubtitleContainer?.resolve(mix),
-      icon: icon?.resolve(mix),
       title: title?.resolve(mix),
       subtitle: subtitle?.resolve(mix),
       modifiers: modifiers?.resolve(mix),
@@ -190,7 +180,6 @@ class MenuItemSpecAttribute extends SpecAttribute<MenuItemSpec>
       titleSubtitleContainer:
           titleSubtitleContainer?.merge(other.titleSubtitleContainer) ??
               other.titleSubtitleContainer,
-      icon: icon?.merge(other.icon) ?? other.icon,
       title: title?.merge(other.title) ?? other.title,
       subtitle: subtitle?.merge(other.subtitle) ?? other.subtitle,
       modifiers: modifiers?.merge(other.modifiers) ?? other.modifiers,
@@ -206,7 +195,6 @@ class MenuItemSpecAttribute extends SpecAttribute<MenuItemSpec>
   List<Object?> get props => [
         container,
         titleSubtitleContainer,
-        icon,
         title,
         subtitle,
         modifiers,
@@ -221,7 +209,6 @@ class MenuItemSpecAttribute extends SpecAttribute<MenuItemSpec>
     properties.add(DiagnosticsProperty(
         'titleSubtitleContainer', titleSubtitleContainer,
         defaultValue: null));
-    properties.add(DiagnosticsProperty('icon', icon, defaultValue: null));
     properties.add(DiagnosticsProperty('title', title, defaultValue: null));
     properties
         .add(DiagnosticsProperty('subtitle', subtitle, defaultValue: null));
@@ -236,7 +223,7 @@ class MenuItemSpecAttribute extends SpecAttribute<MenuItemSpec>
 ///
 /// This class provides methods to set individual properties of a [MenuItemSpec].
 /// Use the methods of this class to configure specific properties of a [MenuItemSpec].
-class MenuItemSpecUtility<T extends Attribute>
+class MenuItemSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, MenuItemSpecAttribute> {
   /// Utility for defining [MenuItemSpecAttribute.container]
   late final container = FlexBoxSpecUtility((v) => only(container: v));
@@ -244,9 +231,6 @@ class MenuItemSpecUtility<T extends Attribute>
   /// Utility for defining [MenuItemSpecAttribute.titleSubtitleContainer]
   late final titleSubtitleContainer =
       FlexBoxSpecUtility((v) => only(titleSubtitleContainer: v));
-
-  /// Utility for defining [MenuItemSpecAttribute.icon]
-  late final icon = IconSpecUtility((v) => only(icon: v));
 
   /// Utility for defining [MenuItemSpecAttribute.title]
   late final title = TextSpecUtility((v) => only(title: v));
@@ -260,10 +244,19 @@ class MenuItemSpecUtility<T extends Attribute>
   /// Utility for defining [MenuItemSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  MenuItemSpecUtility(super.builder, {super.mutable});
+  MenuItemSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  MenuItemSpecUtility<T> get chain =>
-      MenuItemSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  MenuItemSpecUtility<T> get chain => MenuItemSpecUtility(attributeBuilder);
 
   static MenuItemSpecUtility<MenuItemSpecAttribute> get self =>
       MenuItemSpecUtility((v) => v);
@@ -273,16 +266,14 @@ class MenuItemSpecUtility<T extends Attribute>
   T only({
     FlexBoxSpecAttribute? container,
     FlexBoxSpecAttribute? titleSubtitleContainer,
-    IconSpecAttribute? icon,
     TextSpecAttribute? title,
     TextSpecAttribute? subtitle,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(MenuItemSpecAttribute(
       container: container,
       titleSubtitleContainer: titleSubtitleContainer,
-      icon: icon,
       title: title,
       subtitle: subtitle,
       modifiers: modifiers,

@@ -1,14 +1,23 @@
 part of 'label.dart';
 
+enum IconPosition {
+  start,
+  end,
+}
+
 /// A customizable label component that supports icons and styling.
-/// The label integrates with the Mix styling system and follows Remix design patterns.
 ///
-/// Example:
+/// The [RxLabel] widget is designed to display text with optional icons.
+/// It integrates with the Mix styling system and follows Remix design patterns.
+///
+/// ## Example
+///
 /// ```dart
 /// RxLabel(
-///   label: 'Hello',
+///   'Hello World',
 ///   icon: Icons.star,
-///   style: LabelStyle(),
+///   variants: [Variant.primary],
+///   style: RxLabelStyle(),
 /// )
 /// ```
 class RxLabel extends StatelessWidget {
@@ -19,32 +28,45 @@ class RxLabel extends StatelessWidget {
   const RxLabel(
     this.label, {
     super.key,
-    required this.icon,
-    this.style = const LabelStyle(),
+    this.icon,
+    this.variants = const [],
+    this.style,
+    this.iconPosition = IconPosition.start,
   });
 
-  /// The text to display in the label
+  /// The text to display in the label.
   final String label;
 
-  /// Optional icon to display above the text
+  /// Optional icon to display alongside the text.
   final IconData? icon;
 
-  /// The style configuration for the label.
-  ///
-  /// Controls visual properties like colors, spacing, typography etc.
-  final LabelStyle style;
+  /// {@macro remix.component.variants}
+  final List<Variant> variants;
+
+  final IconPosition iconPosition;
+
+  /// {@macro remix.component.style}
+  final RxLabelStyle? style;
+
+  RxLabelStyle get _style => RxLabelStyle().merge(style ?? RxLabelStyle());
 
   @override
   Widget build(BuildContext context) {
     return SpecBuilder(
-      style: style.makeStyle(SpecConfiguration(context, LabelSpecUtility.self)),
+      style: Style(_style).applyVariants(variants),
       builder: (context) {
         final spec = LabelSpec.of(context);
 
         return Row(
           mainAxisSize: MainAxisSize.min,
           spacing: spec.spacing,
-          children: [if (icon != null) spec.icon(icon), spec.label(label)],
+          children: [
+            if (icon != null && iconPosition == IconPosition.start)
+              spec.icon(icon),
+            spec.label(label),
+            if (icon != null && iconPosition == IconPosition.end)
+              spec.icon(icon),
+          ],
         );
       },
     );

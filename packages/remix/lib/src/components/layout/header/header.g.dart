@@ -10,7 +10,7 @@ part of 'header.dart';
 
 /// A mixin that provides spec functionality for [HeaderSpec].
 mixin _$HeaderSpec on Spec<HeaderSpec> {
-  static HeaderSpec from(MixData mix) {
+  static HeaderSpec from(MixContext mix) {
     return mix.attributeOf<HeaderSpecAttribute>()?.resolve(mix) ??
         const HeaderSpec();
   }
@@ -37,7 +37,7 @@ mixin _$HeaderSpec on Spec<HeaderSpec> {
   @override
   HeaderSpec copyWith({
     FlexBoxSpec? container,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     FlexSpec? titleGroup,
     TextSpec? title,
     TextSpec? subtitle,
@@ -82,7 +82,7 @@ mixin _$HeaderSpec on Spec<HeaderSpec> {
       titleGroup: _$this.titleGroup.lerp(other.titleGroup, t),
       title: _$this.title.lerp(other.title, t),
       subtitle: _$this.subtitle.lerp(other.subtitle, t),
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -141,16 +141,16 @@ class HeaderSpecAttribute extends SpecAttribute<HeaderSpec>
     super.animated,
   });
 
-  /// Resolves to [HeaderSpec] using the provided [MixData].
+  /// Resolves to [HeaderSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final headerSpec = HeaderSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  HeaderSpec resolve(MixData mix) {
+  HeaderSpec resolve(MixContext mix) {
     return HeaderSpec(
       container: container?.resolve(mix),
       modifiers: modifiers?.resolve(mix),
@@ -218,7 +218,7 @@ class HeaderSpecAttribute extends SpecAttribute<HeaderSpec>
 ///
 /// This class provides methods to set individual properties of a [HeaderSpec].
 /// Use the methods of this class to configure specific properties of a [HeaderSpec].
-class HeaderSpecUtility<T extends Attribute>
+class HeaderSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, HeaderSpecAttribute> {
   /// Utility for defining [HeaderSpecAttribute.container]
   late final container = FlexBoxSpecUtility((v) => only(container: v));
@@ -238,10 +238,19 @@ class HeaderSpecUtility<T extends Attribute>
   /// Utility for defining [HeaderSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  HeaderSpecUtility(super.builder, {super.mutable});
+  HeaderSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  HeaderSpecUtility<T> get chain =>
-      HeaderSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  HeaderSpecUtility<T> get chain => HeaderSpecUtility(attributeBuilder);
 
   static HeaderSpecUtility<HeaderSpecAttribute> get self =>
       HeaderSpecUtility((v) => v);
@@ -250,7 +259,7 @@ class HeaderSpecUtility<T extends Attribute>
   @override
   T only({
     FlexBoxSpecAttribute? container,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     FlexSpecAttribute? titleGroup,
     TextSpecAttribute? title,
     TextSpecAttribute? subtitle,

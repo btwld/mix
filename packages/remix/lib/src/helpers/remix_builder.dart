@@ -1,27 +1,29 @@
 import 'package:flutter/widgets.dart';
+import 'package:meta/meta.dart';
 import 'package:mix/experimental.dart';
 import 'package:mix/mix.dart';
 
+@internal
 class RemixBuilder extends StatelessWidget {
   const RemixBuilder({
     super.key,
     required this.builder,
     required this.style,
-    required this.mixController,
+    required this.controller,
   });
 
   final WidgetBuilder builder;
-  final Style style;
-  final WidgetStatesController mixController;
+  final BaseStyle<SpecAttribute> style;
+  final WidgetStatesController controller;
 
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: mixController,
+      listenable: controller,
       builder: (_, __) {
         return MixWidgetState.fromSet(
-          states: mixController.value,
-          child: MixBuilder(style: style, builder: builder),
+          states: controller.value,
+          child: MixBuilder(style: Style(style), builder: builder),
         );
       },
     );

@@ -11,7 +11,7 @@ class DividerStyle extends SpecStyle<DividerSpecUtility> {
     final $ = spec.utilities;
 
     final containerStyle = [
-      $.container.chain
+      $.container
         ..color.grey.shade300()
         ..borderRadius(99),
       horizontal($.container.height(1)),
@@ -30,7 +30,7 @@ class DividerDarkStyle extends DividerStyle {
     final $ = spec.utilities;
 
     return Style.create([
-      super.makeStyle(spec).call(),
+      super.makeStyle(spec),
       $.container.color.grey.shade800(),
     ]);
   }

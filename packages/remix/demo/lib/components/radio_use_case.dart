@@ -1,8 +1,6 @@
-import 'package:demo/helpers/knob_builder.dart';
 import 'package:demo/helpers/string.dart';
 import 'package:flutter/widgets.dart';
 import 'package:remix/remix.dart';
-import 'package:remix/themes/fortaleza.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
@@ -14,7 +12,7 @@ enum Theme {
 
 @widgetbook.UseCase(
   name: 'Radio Component',
-  type: Radio,
+  type: RxRadio,
 )
 Widget buildRadioUseCase(BuildContext context) {
   return Scaffold(
@@ -30,19 +28,12 @@ Widget buildRadioUseCase(BuildContext context) {
                 .map(
                   (theme) => Padding(
                     padding: const EdgeInsets.all(4.0),
-                    child: Radio<Theme>(
+                    child: RxRadio<Theme>(
                       value: theme,
-                      disabled: context.knobs.boolean(
-                        label: 'Disabled',
-                        initialValue: false,
+                      enabled: context.knobs.boolean(
+                        label: 'Enabled',
+                        initialValue: true,
                       ),
-                      groupValue: _state.value,
-                      onChanged: (value) {
-                        _state.update(value!);
-                      },
-                      variants: [
-                        context.knobs.variant(FortalezaRadioStyle.variants)
-                      ],
                       label: theme.name.capitalize(),
                     ),
                   ),

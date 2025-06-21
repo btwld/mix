@@ -20,7 +20,7 @@ base class TextHeightBehaviorDto extends Mixable<TextHeightBehavior>
   });
 }
 
-final class TextHeightBehaviorUtility<T extends Attribute>
+final class TextHeightBehaviorUtility<T extends StyleElement>
     extends DtoUtility<T, TextHeightBehaviorDto, TextHeightBehavior> {
   late final heightToFirstAscent = BoolUtility(
     (v) => only(applyHeightToFirstAscent: v),

@@ -1,85 +1,26 @@
 part of 'chip.dart';
 
-class ChipStyle extends SpecStyle<ChipSpecUtility> {
-  const ChipStyle();
+class RxChipStyle extends ChipSpecUtility<ChipSpecAttribute> {
+  RxChipStyle() : super((v) => v);
 
-  @override
-  Style makeStyle(SpecConfiguration<ChipSpecUtility> spec) {
-    final $ = spec.utilities;
-
-    final iconStyle = [
-      $.icon.chain
-        ..size(18)
-        ..color.black(),
-    ];
-
-    final labelStyle = [
-      $.label.chain
-        ..textHeightBehavior.heightToFirstAscent.off()
-        ..textHeightBehavior.heightToLastDescent.on()
-        ..style.fontSize(14)
-        ..style.height(1.5)
-        ..style.color.black()
-        ..style.fontWeight.w600(),
-    ];
-
-    final containerStyle = [
-      $.container.chain
-        ..borderRadius(6)
-        ..color.white()
-        ..border.all.width(1)
-        ..border.color.grey.shade200()
-        ..padding.vertical(8)
-        ..padding.horizontal(12)
-        ..flex.mainAxisAlignment.center()
-        ..flex.crossAxisAlignment.center()
-        ..flex.mainAxisSize.min()
-        ..flex.gap(8),
-      spec.on.selected($.container.color.grey.shade200()),
-    ];
-
-    final disabledStyle = spec.on.disabled(
-      $.label.style.color.grey.shade600(),
-      $.icon.color.grey.shade600(),
-      spec.on.selected($.container.color.grey.shade300()),
-    );
-
-    return Style.create([
-      ...containerStyle,
-      ...iconStyle,
-      ...labelStyle,
-      disabledStyle,
-    ]);
+  factory RxChipStyle._default() {
+    return RxChipStyle()
+      ..container.borderRadius(8)
+      ..container.color.white()
+      ..container.border.color.grey.shade300()
+      ..container.padding.vertical(6)
+      ..container.padding.horizontal(8)
+      ..container.flex.mainAxisSize.min()
+      ..container.flex.gap(4)
+      ..container.animated.easeInOut(100.ms)
+      ..container.height(32)
+      ..icon.size(18)
+      ..label.fontSize(14)
+      ..on.selected(RxChipStyle()..container.color.grey.shade200());
   }
-}
-
-class ChipDarkStyle extends ChipStyle {
-  const ChipDarkStyle();
 
   @override
-  Style makeStyle(SpecConfiguration<ChipSpecUtility> spec) {
-    final $ = spec.utilities;
-
-    final containerStyle = [
-      $.container.chain
-        ..border.all.color.grey.shade900()
-        ..color.black(),
-      $.icon.color.white(),
-      spec.on.selected($.container.color.grey.shade900()),
-      spec.on.disabled(
-        $.label.style.color.grey.shade600(),
-        $.icon.color.grey.shade600(),
-        $.container.color.black(),
-        spec.on.selected($.container.color.grey.shade900()),
-      ),
-    ];
-
-    final labelStyle = $.label.chain..style.color.white();
-
-    return Style.create([
-      super.makeStyle(spec).call(),
-      ...containerStyle,
-      labelStyle,
-    ]);
+  RxChipStyle merge(RxChipStyle other) {
+    return super.merge(other) as RxChipStyle;
   }
 }

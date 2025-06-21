@@ -3,19 +3,15 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
-import '../../../core/theme/remix_theme.dart';
-import '../../../helpers/component_builder.dart';
-
 part 'menu_item.g.dart';
 part 'menu_item_style.dart';
 part 'menu_item_widget.dart';
 
 @MixableSpec()
-class MenuItemSpec extends Spec<MenuItemSpec>
+base class MenuItemSpec extends Spec<MenuItemSpec>
     with _$MenuItemSpec, Diagnosticable {
   final FlexBoxSpec container;
   final FlexBoxSpec titleSubtitleContainer;
-  final IconSpec icon;
   final TextSpec title;
   final TextSpec subtitle;
 
@@ -27,14 +23,12 @@ class MenuItemSpec extends Spec<MenuItemSpec>
   const MenuItemSpec({
     FlexBoxSpec? container,
     FlexBoxSpec? titleSubtitleContainer,
-    IconSpec? icon,
     TextSpec? title,
     TextSpec? subtitle,
     super.modifiers,
     super.animated,
   })  : container = container ?? const FlexBoxSpec(),
         titleSubtitleContainer = titleSubtitleContainer ?? const FlexBoxSpec(),
-        icon = icon ?? const IconSpec(),
         title = title ?? const TextSpec(),
         subtitle = subtitle ?? const TextSpec();
 

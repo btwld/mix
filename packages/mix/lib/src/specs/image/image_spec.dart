@@ -8,13 +8,13 @@ import '../../attributes/animated/animated_util.dart';
 import '../../attributes/color/color_dto.dart';
 import '../../attributes/color/color_util.dart';
 import '../../attributes/enum/enum_util.dart';
-import '../../attributes/modifiers/widget_modifiers_data.dart';
-import '../../attributes/modifiers/widget_modifiers_data_dto.dart';
+import '../../attributes/modifiers/widget_modifiers_config.dart';
+import '../../attributes/modifiers/widget_modifiers_config_dto.dart';
 import '../../attributes/modifiers/widget_modifiers_util.dart';
 import '../../attributes/scalars/scalar_util.dart';
 import '../../core/computed_style/computed_style.dart';
-import '../../core/element.dart';
 import '../../core/factory/mix_data.dart';
+import '../../core/factory/style_mix.dart';
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
 import '../../core/utility.dart';
@@ -103,4 +103,8 @@ final class ImageSpec extends Spec<ImageSpec> with _$ImageSpec, Diagnosticable {
     super.debugFillProperties(properties);
     _debugFillProperties(properties);
   }
+}
+
+class ImageStyle extends ImageSpecUtility<ImageSpecAttribute> {
+  ImageStyle() : super((v) => v);
 }

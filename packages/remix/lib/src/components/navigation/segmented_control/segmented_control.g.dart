@@ -10,7 +10,7 @@ part of 'segmented_control.dart';
 
 /// A mixin that provides spec functionality for [SegmentedControlSpec].
 mixin _$SegmentedControlSpec on Spec<SegmentedControlSpec> {
-  static SegmentedControlSpec from(MixData mix) {
+  static SegmentedControlSpec from(MixContext mix) {
     return mix.attributeOf<SegmentedControlSpecAttribute>()?.resolve(mix) ??
         const SegmentedControlSpec();
   }
@@ -42,7 +42,7 @@ mixin _$SegmentedControlSpec on Spec<SegmentedControlSpec> {
     bool? showDivider,
     BoxSpec? divider,
     SegmentButtonSpec? item,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return SegmentedControlSpec(
@@ -86,7 +86,7 @@ mixin _$SegmentedControlSpec on Spec<SegmentedControlSpec> {
       divider: _$this.divider.lerp(other.divider, t),
       item: _$this.item.lerp(other.item, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -150,16 +150,16 @@ class SegmentedControlSpecAttribute extends SpecAttribute<SegmentedControlSpec>
     super.animated,
   });
 
-  /// Resolves to [SegmentedControlSpec] using the provided [MixData].
+  /// Resolves to [SegmentedControlSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final segmentedControlSpec = SegmentedControlSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  SegmentedControlSpec resolve(MixData mix) {
+  SegmentedControlSpec resolve(MixContext mix) {
     return SegmentedControlSpec(
       container: container?.resolve(mix),
       flex: flex?.resolve(mix),
@@ -230,7 +230,7 @@ class SegmentedControlSpecAttribute extends SpecAttribute<SegmentedControlSpec>
 ///
 /// This class provides methods to set individual properties of a [SegmentedControlSpec].
 /// Use the methods of this class to configure specific properties of a [SegmentedControlSpec].
-class SegmentedControlSpecUtility<T extends Attribute>
+class SegmentedControlSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, SegmentedControlSpecAttribute> {
   /// Utility for defining [SegmentedControlSpecAttribute.container]
   late final container = BoxSpecUtility((v) => only(container: v));
@@ -253,10 +253,20 @@ class SegmentedControlSpecUtility<T extends Attribute>
   /// Utility for defining [SegmentedControlSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  SegmentedControlSpecUtility(super.builder, {super.mutable});
+  SegmentedControlSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
   SegmentedControlSpecUtility<T> get chain =>
-      SegmentedControlSpecUtility(attributeBuilder, mutable: true);
+      SegmentedControlSpecUtility(attributeBuilder);
 
   static SegmentedControlSpecUtility<SegmentedControlSpecAttribute> get self =>
       SegmentedControlSpecUtility((v) => v);
@@ -269,7 +279,7 @@ class SegmentedControlSpecUtility<T extends Attribute>
     bool? showDivider,
     BoxSpecAttribute? divider,
     SegmentButtonSpecAttribute? item,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(SegmentedControlSpecAttribute(
@@ -310,7 +320,7 @@ class SegmentedControlSpecTween extends Tween<SegmentedControlSpec?> {
 
 /// A mixin that provides spec functionality for [SegmentButtonSpec].
 mixin _$SegmentButtonSpec on Spec<SegmentButtonSpec> {
-  static SegmentButtonSpec from(MixData mix) {
+  static SegmentButtonSpec from(MixContext mix) {
     return mix.attributeOf<SegmentButtonSpecAttribute>()?.resolve(mix) ??
         const SegmentButtonSpec();
   }
@@ -341,7 +351,7 @@ mixin _$SegmentButtonSpec on Spec<SegmentButtonSpec> {
     FlexSpec? flex,
     IconSpec? icon,
     TextSpec? label,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return SegmentButtonSpec(
@@ -384,7 +394,7 @@ mixin _$SegmentButtonSpec on Spec<SegmentButtonSpec> {
       icon: _$this.icon.lerp(other.icon, t),
       label: _$this.label.lerp(other.label, t),
       modifiers: other.modifiers,
-      animated: t < 0.5 ? _$this.animated : other.animated,
+      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -443,16 +453,16 @@ class SegmentButtonSpecAttribute extends SpecAttribute<SegmentButtonSpec>
     super.animated,
   });
 
-  /// Resolves to [SegmentButtonSpec] using the provided [MixData].
+  /// Resolves to [SegmentButtonSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final segmentButtonSpec = SegmentButtonSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  SegmentButtonSpec resolve(MixData mix) {
+  SegmentButtonSpec resolve(MixContext mix) {
     return SegmentButtonSpec(
       container: container?.resolve(mix),
       flex: flex?.resolve(mix),
@@ -518,7 +528,7 @@ class SegmentButtonSpecAttribute extends SpecAttribute<SegmentButtonSpec>
 ///
 /// This class provides methods to set individual properties of a [SegmentButtonSpec].
 /// Use the methods of this class to configure specific properties of a [SegmentButtonSpec].
-class SegmentButtonSpecUtility<T extends Attribute>
+class SegmentButtonSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, SegmentButtonSpecAttribute> {
   /// Utility for defining [SegmentButtonSpecAttribute.container]
   late final container = BoxSpecUtility((v) => only(container: v));
@@ -538,10 +548,20 @@ class SegmentButtonSpecUtility<T extends Attribute>
   /// Utility for defining [SegmentButtonSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  SegmentButtonSpecUtility(super.builder, {super.mutable});
+  SegmentButtonSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
   SegmentButtonSpecUtility<T> get chain =>
-      SegmentButtonSpecUtility(attributeBuilder, mutable: true);
+      SegmentButtonSpecUtility(attributeBuilder);
 
   static SegmentButtonSpecUtility<SegmentButtonSpecAttribute> get self =>
       SegmentButtonSpecUtility((v) => v);
@@ -553,7 +573,7 @@ class SegmentButtonSpecUtility<T extends Attribute>
     FlexSpecAttribute? flex,
     IconSpecAttribute? icon,
     TextSpecAttribute? label,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(SegmentButtonSpecAttribute(

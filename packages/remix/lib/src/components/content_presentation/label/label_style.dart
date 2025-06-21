@@ -1,9 +1,10 @@
 part of 'label.dart';
 
-class LabelStyle extends SpecStyle<LabelSpecUtility> {
-  const LabelStyle();
+class RxLabelStyle extends LabelSpecUtility<LabelSpecAttribute> {
+  RxLabelStyle() : super((v) => v);
 
   @override
-  Style makeStyle(SpecConfiguration<LabelSpecUtility> spec) =>
-      const Style.empty();
+  RxLabelStyle merge(RxLabelStyle other) {
+    return super.merge(other) as RxLabelStyle;
+  }
 }

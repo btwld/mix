@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+
 import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
@@ -9,7 +9,7 @@ part 'label_style.dart';
 part 'label_widget.dart';
 
 @MixableSpec()
-class LabelSpec extends Spec<LabelSpec> with _$LabelSpec, Diagnosticable {
+base class LabelSpec extends Spec<LabelSpec> with _$LabelSpec, Diagnosticable {
   final double spacing;
   final TextSpec label;
   final IconSpec icon;

@@ -10,7 +10,7 @@ part of 'flexbox_spec.dart';
 
 /// A mixin that provides spec functionality for [FlexBoxSpec].
 mixin _$FlexBoxSpec on Spec<FlexBoxSpec> {
-  static FlexBoxSpec from(MixData mix) {
+  static FlexBoxSpec from(MixContext mix) {
     return mix.attributeOf<FlexBoxSpecAttribute>()?.resolve(mix) ??
         const FlexBoxSpec();
   }
@@ -37,7 +37,7 @@ mixin _$FlexBoxSpec on Spec<FlexBoxSpec> {
   @override
   FlexBoxSpec copyWith({
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     BoxSpec? box,
     FlexSpec? flex,
   }) {
@@ -123,16 +123,16 @@ class FlexBoxSpecAttribute extends SpecAttribute<FlexBoxSpec>
     this.flex,
   });
 
-  /// Resolves to [FlexBoxSpec] using the provided [MixData].
+  /// Resolves to [FlexBoxSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final flexBoxSpec = FlexBoxSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  FlexBoxSpec resolve(MixData mix) {
+  FlexBoxSpec resolve(MixContext mix) {
     return FlexBoxSpec(
       animated: animated?.resolve(mix) ?? mix.animation,
       modifiers: modifiers?.resolve(mix),
@@ -189,7 +189,7 @@ class FlexBoxSpecAttribute extends SpecAttribute<FlexBoxSpec>
 ///
 /// This class provides methods to set individual properties of a [FlexBoxSpec].
 /// Use the methods of this class to configure specific properties of a [FlexBoxSpec].
-class FlexBoxSpecUtility<T extends Attribute>
+class FlexBoxSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, FlexBoxSpecAttribute> {
   /// Utility for defining [FlexBoxSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
@@ -290,10 +290,19 @@ class FlexBoxSpecUtility<T extends Attribute>
   /// Utility for defining [FlexBoxSpecAttribute.flex]
   late final flex = FlexSpecUtility((v) => only(flex: v));
 
-  FlexBoxSpecUtility(super.builder, {super.mutable});
+  FlexBoxSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  FlexBoxSpecUtility<T> get chain =>
-      FlexBoxSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  FlexBoxSpecUtility<T> get chain => FlexBoxSpecUtility(attributeBuilder);
 
   static FlexBoxSpecUtility<FlexBoxSpecAttribute> get self =>
       FlexBoxSpecUtility((v) => v);
@@ -302,7 +311,7 @@ class FlexBoxSpecUtility<T extends Attribute>
   @override
   T only({
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     BoxSpecAttribute? box,
     FlexSpecAttribute? flex,
   }) {

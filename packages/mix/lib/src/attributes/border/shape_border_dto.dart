@@ -268,13 +268,53 @@ abstract class MixOutlinedBorder<T extends OutlinedBorderDto>
 extension ShapeBorderExt on ShapeBorder {
   ShapeBorderDto toDto() {
     final self = this;
-    if (self is BeveledRectangleBorder) return (self).toDto();
-    if (self is CircleBorder) return (self).toDto();
-    if (self is ContinuousRectangleBorder) return (self).toDto();
-    if (self is LinearBorder) return (self).toDto();
-    if (self is RoundedRectangleBorder) return (self).toDto();
-    if (self is StadiumBorder) return (self).toDto();
-    if (self is StarBorder) return (self).toDto();
+    if (self is BeveledRectangleBorder) {
+      return BeveledRectangleBorderDto(
+        borderRadius: self.borderRadius.toDto(),
+        side: self.side.toDto(),
+      );
+    }
+    if (self is CircleBorder) {
+      return CircleBorderDto(
+        side: self.side.toDto(),
+        eccentricity: self.eccentricity,
+      );
+    }
+    if (self is ContinuousRectangleBorder) {
+      return ContinuousRectangleBorderDto(
+        borderRadius: self.borderRadius.toDto(),
+        side: self.side.toDto(),
+      );
+    }
+    if (self is LinearBorder) {
+      return LinearBorderDto(
+        side: self.side.toDto(),
+        start: self.start?.toDto(),
+        end: self.end?.toDto(),
+        top: self.top?.toDto(),
+        bottom: self.bottom?.toDto(),
+      );
+    }
+    if (self is RoundedRectangleBorder) {
+      return RoundedRectangleBorderDto(
+        borderRadius: self.borderRadius.toDto(),
+        side: self.side.toDto(),
+      );
+    }
+    if (self is StadiumBorder) {
+      return StadiumBorderDto(side: self.side.toDto());
+    }
+    if (self is StarBorder) {
+      return StarBorderDto(
+        side: self.side.toDto(),
+        points: self.points,
+        innerRadiusRatio: self.innerRadiusRatio,
+        pointRounding: self.pointRounding,
+        valleyRounding: self.valleyRounding,
+        rotation: self.rotation,
+        squash: self.squash,
+      );
+    }
     if (self is MixOutlinedBorder) return (self).toDto();
 
     throw FlutterError.fromParts([
@@ -292,7 +332,7 @@ extension ShapeBorderExt on ShapeBorder {
   }
 }
 
-class ShapeBorderUtility<T extends Attribute>
+class ShapeBorderUtility<T extends StyleElement>
     extends MixUtility<T, ShapeBorderDto> {
   late final beveledRectangle = BeveledRectangleBorderUtility(builder);
 

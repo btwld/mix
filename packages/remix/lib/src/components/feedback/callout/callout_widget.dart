@@ -1,40 +1,60 @@
 part of 'callout.dart';
 
-class Callout extends StatelessWidget {
-  const Callout({
+/// The [RxCallout] widget is used to display a message with an optional icon.
+/// It can be customized using the [variants] and [style] parameters to fit different design needs.
+///
+/// ## Example
+///
+/// ```dart
+/// RxCallout(
+///   text: 'This is a callout message!',
+///   icon: Icons.info,
+///   variants: [Variant.warning],
+///   style: RxCalloutStyle(),
+/// )
+/// ```
+///
+class RxCallout extends StatelessWidget {
+  RxCallout({
     super.key,
-    this.icon,
-    required this.text,
+    IconData? icon,
+    required String text,
     this.variants = const [],
     this.style,
+  }) : child = RxLabel(text, icon: icon);
+
+  /// This constructor allows for more advanced customization by directly providing a [child] widget.
+  const RxCallout.raw({
+    super.key,
+    this.variants = const [],
+    this.style,
+    required this.child,
   });
-
-  /// The text content displayed in the callout.
-  final String text;
-
-  /// The icon displayed in the callout.
-  final IconData? icon;
 
   /// {@macro remix.component.variants}
   final List<Variant> variants;
 
   /// {@macro remix.component.style}
-  final CalloutStyle? style;
+  final RxCalloutStyle? style;
+
+  final Widget child;
+
+  RxCalloutStyle get _style =>
+      RxCalloutStyle._default().merge(style ?? RxCalloutStyle());
 
   @override
   Widget build(BuildContext context) {
-    final style = this.style ?? context.remix.components.callout;
-
-    final configuration = SpecConfiguration(context, CalloutSpecUtility.self);
-
     return SpecBuilder(
-      style: style.makeStyle(configuration).applyVariants(variants),
+      style: Style(_style).applyVariants(variants),
       builder: (context) {
         final spec = CalloutSpec.of(context);
 
-        return spec.container(
-          direction: Axis.horizontal,
-          children: [if (icon != null) spec.icon(icon!), spec.text(text)],
+        return IconTheme(
+          data: spec.icon,
+          child: DefaultTextStyle(
+            style: spec.textStyle,
+            child: spec.container.box(child: child),
+          ),
         );
       },
     );

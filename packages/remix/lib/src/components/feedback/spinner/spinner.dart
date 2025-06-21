@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
-import '../../../core/theme/remix_theme.dart';
-
 part 'spinner.g.dart';
 part 'spinner_painter.dart';
 part 'spinner_style.dart';
@@ -63,7 +61,7 @@ final class SpinnerSpec extends Spec<SpinnerSpec>
   }
 }
 
-final class SpinnerTypeStyleUtility<T extends Attribute>
+final class SpinnerTypeStyleUtility<T extends StyleElement>
     extends ScalarUtility<T, SpinnerTypeStyle> {
   const SpinnerTypeStyleUtility(super.builder);
 

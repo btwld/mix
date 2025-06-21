@@ -142,9 +142,6 @@ class NakedSelect<T> extends StatefulWidget implements OverlayChildLifecycle {
     this.onStateChange,
     this.removalDelay = Duration.zero,
     this.onSelectedValueChanged,
-    this.selectedValues,
-    this.onSelectedValuesChanged,
-    this.allowMultiple = false,
     this.enabled = true,
     this.semanticLabel,
     this.closeOnSelect = true,
@@ -164,10 +161,42 @@ class NakedSelect<T> extends StatefulWidget implements OverlayChildLifecycle {
       ),
     ],
     this.closeOnClickOutside = true,
-  }) : assert(
-          !allowMultiple || (allowMultiple && selectedValues != null),
-          'selectedValues must be provided when allowMultiple is true',
-        );
+  })  : allowMultiple = false,
+        selectedValues = null,
+        onSelectedValuesChanged = null;
+
+  const NakedSelect.multiple({
+    super.key,
+    required this.child,
+    required this.menu,
+    this.onClose,
+    this.onOpen,
+    this.onStateChange,
+    this.removalDelay = Duration.zero,
+    this.selectedValues,
+    this.onSelectedValuesChanged,
+    this.enabled = true,
+    this.semanticLabel,
+    this.closeOnSelect = true,
+    this.autofocus = false,
+    this.enableTypeAhead = true,
+    this.typeAheadDebounceTime = const Duration(milliseconds: 500),
+    this.menuAlignment = const PositionConfig(
+      target: Alignment.bottomLeft,
+      follower: Alignment.topLeft,
+      offset: Offset(0, 4),
+    ),
+    this.fallbackAlignments = const [
+      PositionConfig(
+        target: Alignment.topLeft,
+        follower: Alignment.bottomLeft,
+        offset: Offset(0, -8),
+      ),
+    ],
+    this.closeOnClickOutside = true,
+  })  : allowMultiple = true,
+        selectedValue = null,
+        onSelectedValueChanged = null;
 
   @override
   State<NakedSelect<T>> createState() => _NakedSelectState<T>();
@@ -264,7 +293,7 @@ class _NakedSelectState<T> extends State<NakedSelect<T>>
     }
 
     if (widget.closeOnSelect) {
-      toggleMenu();
+      closeMenu();
     }
   }
 
@@ -485,21 +514,23 @@ class _NakedSelectTriggerState extends State<NakedSelectTrigger> {
 /// A selectable item within the dropdown menu.
 ///
 /// This component handles the interaction and selection state for individual menu items,
-/// providing callbacks for hover, press, and focus states to enable complete styling control.
+/// providing callbacks for hover, press, focus and selection states to enable complete styling control.
 ///
 /// Key features:
-/// - Customizable cursor and interaction states
+/// - Customizable cursor and interaction states 
 /// - Keyboard selection support
 /// - Optional haptic feedback
 /// - Accessibility support with ARIA attributes
+/// - Selection state tracking
 ///
 /// Example:
 /// ```dart
 /// NakedSelectItem<int>(
 ///   value: 1,
 ///   onHoverState: (isHovered) => setState(() => _isHovered = isHovered),
+///   onSelectState: (isSelected) => setState(() => _isSelected = isSelected),
 ///   child: Container(
-///     color: _isHovered ? Colors.blue[100] : Colors.white,
+///     color: _isSelected ? Colors.blue : (_isHovered ? Colors.blue[100] : Colors.white),
 ///     child: Text('Option 1'),
 ///   ),
 /// )
@@ -524,6 +555,10 @@ class NakedSelectItem<T> extends StatefulWidget {
   /// Called when the focus state changes.
   /// Use this to update the visual appearance when focused.
   final ValueChanged<bool>? onFocusState;
+
+  /// Called when the select state changes.
+  /// Use this to update the visual appearance when selected.
+  final ValueChanged<bool>? onSelectState;
 
   /// Whether this item is enabled and can be selected.
   /// When false, all interaction is disabled.
@@ -554,6 +589,7 @@ class NakedSelectItem<T> extends StatefulWidget {
     this.onHoverState,
     this.onPressedState,
     this.onFocusState,
+    this.onSelectState,
     this.enabled = true,
     this.semanticLabel,
     this.cursor = SystemMouseCursors.click,
@@ -633,6 +669,9 @@ class _NakedSelectItemState<T> extends State<NakedSelectItem<T>> {
 
     final inherited = NakedSelectInherited.of<T>(context);
     final isSelected = inherited.isSelected(context, widget.value);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.onSelectState?.call(isSelected);
+    });
 
     return Semantics(
       enabled: isEffectivelyEnabled,

@@ -86,16 +86,16 @@ class TransformModifierSpecAttribute
     this.alignment,
   });
 
-  /// Resolves to [TransformModifierSpec] using the provided [MixData].
+  /// Resolves to [TransformModifierSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final transformModifierSpec = TransformModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  TransformModifierSpec resolve(MixData mix) {
+  TransformModifierSpec resolve(MixContext mix) {
     return TransformModifierSpec(
       transform: transform,
       alignment: alignment,
