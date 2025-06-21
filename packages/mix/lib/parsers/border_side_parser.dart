@@ -1,12 +1,37 @@
 import 'package:flutter/material.dart';
 
+import 'base/enum_parser.dart';
 import 'base/parser_base.dart';
+import 'color_parser.dart';
 
 /// Parser for BorderSide values
 class BorderSideParser implements Parser<BorderSide> {
   static const instance = BorderSideParser();
 
+  // Reuse existing parsers for consistency
+  static const _colorParser = ColorParser.instance;
+  static const _styleParser = BorderStyleParser();
+
+  // Default values for border side
+  static const Color _defaultColor = Color(0xFF000000);
+  static const BorderStyle _defaultStyle = BorderStyle.solid;
+  static const double _defaultStrokeAlign = BorderSide.strokeAlignInside;
+
   const BorderSideParser();
+
+  BorderSide _parseFromMap(Map<String, Object?> map) {
+    // Reuse ColorParser for consistent color parsing (supports int and hex strings)
+    final color = _colorParser.decode(map['color']) ?? _defaultColor;
+
+    // Reuse EnumParser for consistent BorderStyle parsing
+    final style = _styleParser.decode(map['style']) ?? _defaultStyle;
+
+    return BorderSide(
+      color: color,
+      width: (map['width'] as num?)?.toDouble() ?? 1.0,
+      style: style,
+    );
+  }
 
   /// Safe parsing with error result
   ParseResult<BorderSide> tryDecode(Object? json) {
@@ -25,22 +50,23 @@ class BorderSideParser implements Parser<BorderSide> {
   Object? encode(BorderSide? value) {
     if (value == null) return null;
 
-    // Special case for BorderSide.none
-    if (value == BorderSide.none) return 'none';
+    return switch (value) {
+      // Special case for BorderSide.none
+      BorderSide.none => 'none',
 
-    // Simple case: only width differs from default
-    if (value.color == const Color(0xFF000000) &&
-        value.style == BorderStyle.solid &&
-        value.strokeAlign == BorderSide.strokeAlignInside) {
-      return value.width;
-    }
+      // Simple case: only width differs from defaults
+      _
+          when value.color == _defaultColor &&
+              value.style == _defaultStyle &&
+              value.strokeAlign == _defaultStrokeAlign =>
+        value.width,
 
-    // Full format
-    return {
-      // ignore: deprecated_member_use
-      'color': value.color.value,
-      'width': value.width,
-      'style': value.style.name,
+      // Full format for custom border sides
+      _ => {
+          'color': _colorParser.encode(value.color),
+          'width': value.width,
+          'style': _styleParser.encode(value.style),
+        },
     };
   }
 
@@ -48,37 +74,16 @@ class BorderSideParser implements Parser<BorderSide> {
   BorderSide? decode(Object? json) {
     if (json == null) return null;
 
-    switch (json) {
+    return switch (json) {
       // String shortcuts
-      case 'none':
-        return BorderSide.none;
+      'none' => BorderSide.none,
 
       // Simple width value
-      case num n:
-        return BorderSide(width: n.toDouble());
+      num widthValue => BorderSide(width: widthValue.toDouble()),
 
       // Map format
-      case Map<String, Object?> map:
-        final colorValue = map['color'] as int?;
-        final color =
-            colorValue != null ? Color(colorValue) : const Color(0xFF000000);
-
-        final styleString = map['style'] as String?;
-        final style = styleString != null
-            ? BorderStyle.values.firstWhere(
-                (e) => e.name == styleString,
-                orElse: () => BorderStyle.solid,
-              )
-            : BorderStyle.solid;
-
-        return BorderSide(
-          color: color,
-          width: (map['width'] as num?)?.toDouble() ?? 1.0,
-          style: style,
-        );
-
-      default:
-        return null;
-    }
+      Map<String, Object?> borderMap => _parseFromMap(borderMap),
+      _ => null,
+    };
   }
 }

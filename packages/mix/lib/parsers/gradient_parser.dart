@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'base/parser_base.dart';
-import 'alignment_parser.dart';
-import 'color_parser.dart';
+import 'parsers.dart';
 
 /// Simplified Gradient parser following KISS principle
 class GradientParser implements Parser<Gradient> {
@@ -31,10 +29,10 @@ class GradientParser implements Parser<Gradient> {
       return {
         'type': 'linear',
         'colors':
-            value.colors.map((c) => ColorParser.instance.encode(c)).toList(),
+            value.colors.map((c) => MixParsers.get<Color>()?.encode(c)).toList(),
         'stops': value.stops,
-        'begin': AlignmentParser.instance.encode(value.begin),
-        'end': AlignmentParser.instance.encode(value.end),
+        'begin': MixParsers.get<AlignmentGeometry>()?.encode(value.begin),
+        'end': MixParsers.get<AlignmentGeometry>()?.encode(value.end),
       };
     }
 
@@ -42,9 +40,9 @@ class GradientParser implements Parser<Gradient> {
       return {
         'type': 'radial',
         'colors':
-            value.colors.map((c) => ColorParser.instance.encode(c)).toList(),
+            value.colors.map((c) => MixParsers.get<Color>()?.encode(c)).toList(),
         'stops': value.stops,
-        'center': AlignmentParser.instance.encode(value.center),
+        'center': MixParsers.get<AlignmentGeometry>()?.encode(value.center),
         'radius': value.radius,
       };
     }
@@ -53,9 +51,9 @@ class GradientParser implements Parser<Gradient> {
       return {
         'type': 'sweep',
         'colors':
-            value.colors.map((c) => ColorParser.instance.encode(c)).toList(),
+            value.colors.map((c) => MixParsers.get<Color>()?.encode(c)).toList(),
         'stops': value.stops,
-        'center': AlignmentParser.instance.encode(value.center),
+        'center': MixParsers.get<AlignmentGeometry>()?.encode(value.center),
         'startAngle': value.startAngle,
         'endAngle': value.endAngle,
       };
@@ -76,7 +74,7 @@ class GradientParser implements Parser<Gradient> {
     // Parse colors
     final colorsList = map['colors'] as List?;
     final colors = colorsList
-            ?.map((c) => ColorParser.instance.decode(c))
+            ?.map((c) => MixParsers.get<Color>()?.decode(c))
             .whereType<Color>()
             .toList() ??
         [];
@@ -90,9 +88,9 @@ class GradientParser implements Parser<Gradient> {
     switch (type) {
       case 'linear':
         return LinearGradient(
-          begin: AlignmentParser.instance.decode(map['begin']) ??
+          begin: MixParsers.get<AlignmentGeometry>()?.decode(map['begin']) as Alignment? ??
               Alignment.centerLeft,
-          end: AlignmentParser.instance.decode(map['end']) ??
+          end: MixParsers.get<AlignmentGeometry>()?.decode(map['end']) as Alignment? ??
               Alignment.centerRight,
           colors: colors,
           stops: stops,
@@ -100,7 +98,7 @@ class GradientParser implements Parser<Gradient> {
 
       case 'radial':
         return RadialGradient(
-          center: AlignmentParser.instance.decode(map['center']) ??
+          center: MixParsers.get<AlignmentGeometry>()?.decode(map['center']) as Alignment? ??
               Alignment.center,
           radius: (map['radius'] as num?)?.toDouble() ?? 0.5,
           colors: colors,
@@ -109,7 +107,7 @@ class GradientParser implements Parser<Gradient> {
 
       case 'sweep':
         return SweepGradient(
-          center: AlignmentParser.instance.decode(map['center']) ??
+          center: MixParsers.get<AlignmentGeometry>()?.decode(map['center']) as Alignment? ??
               Alignment.center,
           startAngle: (map['startAngle'] as num?)?.toDouble() ?? 0.0,
           endAngle:

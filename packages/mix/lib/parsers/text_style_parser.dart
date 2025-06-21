@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'base/parser_base.dart';
-import 'color_parser.dart';
+import 'parsers.dart';
 
 /// Parser for TextStyle following KISS principle
 class TextStyleParser implements Parser<TextStyle> {
@@ -53,13 +52,13 @@ class TextStyleParser implements Parser<TextStyle> {
     return TextStyle(
       color: ColorParser.instance.decode(map['color']),
       fontSize: map.getDouble('fontSize'),
-      fontWeight: _decodeFontWeight(map['fontWeight']),
-      fontStyle: _decodeFontStyle(map.getString('fontStyle')),
+      fontWeight: FontWeightParser.instance.decode(map['fontWeight']),
+      fontStyle: MixParsers.get<FontStyle>()?.decode(map.getString('fontStyle')),
       letterSpacing: map.getDouble('letterSpacing'),
       wordSpacing: map.getDouble('wordSpacing'),
       height: map.getDouble('height'),
-      leadingDistribution:
-          _decodeTextLeadingDistribution(map.getString('leadingDistribution')),
+      leadingDistribution: MixParsers.get<TextLeadingDistribution>()
+          ?.decode(map.getString('leadingDistribution')),
       shadows: map
           .getList('shadows')
           ?.map(_decodeShadow)
@@ -67,78 +66,40 @@ class TextStyleParser implements Parser<TextStyle> {
           .toList(),
       decoration: _decodeTextDecoration(map['decoration']),
       decorationColor: ColorParser.instance.decode(map['decorationColor']),
-      decorationStyle:
-          _decodeTextDecorationStyle(map.getString('decorationStyle')),
+      decorationStyle: MixParsers.get<TextDecorationStyle>()
+          ?.decode(map.getString('decorationStyle')),
       decorationThickness: map.getDouble('decorationThickness'),
       fontFamily: map.getString('fontFamily'),
       fontFamilyFallback: map.getList('fontFamilyFallback')?.cast(),
-      overflow: _decodeTextOverflow(map.getString('overflow')),
+      overflow: MixParsers.get<TextOverflow>()?.decode(map.getString('overflow')),
     );
   }
 
-  Object _encodeFontWeight(FontWeight weight) {
-    return switch (weight) {
-      FontWeight.w100 => 100,
-      FontWeight.w200 => 200,
-      FontWeight.w300 => 300,
-      FontWeight.w400 => 400,
-      FontWeight.w500 => 500,
-      FontWeight.w600 => 600,
-      FontWeight.w700 => 700,
-      FontWeight.w800 => 800,
-      FontWeight.w900 => 900,
-      _ => weight.value,
-    };
-  }
-
-  FontWeight? _decodeFontWeight(Object? value) {
-    if (value == null) return null;
-
-    return switch (value) {
-      'thin' || 100 => FontWeight.w100,
-      'extraLight' || 200 => FontWeight.w200,
-      'light' || 300 => FontWeight.w300,
-      'normal' || 'regular' || 400 => FontWeight.w400,
-      'medium' || 500 => FontWeight.w500,
-      'semiBold' || 600 => FontWeight.w600,
-      'bold' || 700 => FontWeight.w700,
-      'extraBold' || 800 => FontWeight.w800,
-      'black' || 900 => FontWeight.w900,
-      num n => FontWeight.values.firstWhere(
-          (w) => w.value == n.toInt(),
-          orElse: () => FontWeight.normal,
-        ),
-      _ => null,
-    };
-  }
-
-  FontStyle? _decodeFontStyle(String? value) {
-    return switch (value) {
-      'italic' => FontStyle.italic,
-      'normal' => FontStyle.normal,
-      _ => null,
-    };
-  }
-
   Object _encodeTextDecoration(TextDecoration decoration) {
-    if (decoration == TextDecoration.none) return 'none';
-    if (decoration == TextDecoration.underline) return 'underline';
-    if (decoration == TextDecoration.overline) return 'overline';
-    if (decoration == TextDecoration.lineThrough) return 'lineThrough';
+    // Handle simple cases first
+    return switch (decoration) {
+      TextDecoration.none => 'none',
+      TextDecoration.underline => 'underline',
+      TextDecoration.overline => 'overline',
+      TextDecoration.lineThrough => 'lineThrough',
+      _ => _encodeCombinedDecorations(decoration),
+    };
+  }
 
-    // Handle combined decorations
-    final decorations = <String>[];
+  Object _encodeCombinedDecorations(TextDecoration decoration) {
+    final decorationNames = <String>[];
+
     if (decoration.contains(TextDecoration.underline)) {
-      decorations.add('underline');
+      decorationNames.add('underline');
     }
     if (decoration.contains(TextDecoration.overline)) {
-      decorations.add('overline');
+      decorationNames.add('overline');
     }
     if (decoration.contains(TextDecoration.lineThrough)) {
-      decorations.add('lineThrough');
+      decorationNames.add('lineThrough');
     }
 
-    return decorations.isEmpty ? 'none' : decorations;
+    return decorationNames.isEmpty ? 'none' : decorationNames;
   }
 
   TextDecoration? _decodeTextDecoration(Object? value) {
@@ -159,39 +120,10 @@ class TextStyleParser implements Parser<TextStyle> {
     };
   }
 
-  TextDecorationStyle? _decodeTextDecorationStyle(String? value) {
-    return switch (value) {
-      'solid' => TextDecorationStyle.solid,
-      'double' => TextDecorationStyle.double,
-      'dotted' => TextDecorationStyle.dotted,
-      'dashed' => TextDecorationStyle.dashed,
-      'wavy' => TextDecorationStyle.wavy,
-      _ => null,
-    };
-  }
-
-  TextLeadingDistribution? _decodeTextLeadingDistribution(String? value) {
-    return switch (value) {
-      'proportional' => TextLeadingDistribution.proportional,
-      'even' => TextLeadingDistribution.even,
-      _ => null,
-    };
-  }
-
-  TextOverflow? _decodeTextOverflow(String? value) {
-    return switch (value) {
-      'clip' => TextOverflow.clip,
-      'fade' => TextOverflow.fade,
-      'ellipsis' => TextOverflow.ellipsis,
-      'visible' => TextOverflow.visible,
-      _ => null,
-    };
-  }
-
   Map<String, Object?> _encodeShadow(Shadow shadow) {
     return {
       'color': ColorParser.instance.encode(shadow.color),
-      'offset': [shadow.offset.dx, shadow.offset.dy],
+      'offset': OffsetParser.instance.encode(shadow.offset),
       'blurRadius': shadow.blurRadius,
     };
   }
@@ -199,15 +131,12 @@ class TextStyleParser implements Parser<TextStyle> {
   Shadow? _decodeShadow(Object? value) {
     if (value is! Map<String, Object?>) return null;
 
-    final map = value;
-    final offset = map.getList('offset');
+    final shadowMap = value;
 
     return Shadow(
-      color: ColorParser.instance.decode(map['color']) ?? Colors.black,
-      offset: offset != null && offset.length >= 2
-          ? Offset((offset[0] as num).toDouble(), (offset[1] as num).toDouble())
-          : Offset.zero,
-      blurRadius: map.getDouble('blurRadius') ?? 0.0,
+      color: ColorParser.instance.decode(shadowMap['color']) ?? Colors.black,
+      offset: OffsetParser.instance.decode(shadowMap['offset']) ?? Offset.zero,
+      blurRadius: shadowMap.getDouble('blurRadius') ?? 0.0,
     );
   }
 
@@ -235,10 +164,10 @@ class TextStyleParser implements Parser<TextStyle> {
       map['fontSize'] = value.fontSize;
     }
     if (value.fontWeight != null) {
-      map['fontWeight'] = _encodeFontWeight(value.fontWeight!);
+      map['fontWeight'] = FontWeightParser.instance.encode(value.fontWeight!);
     }
     if (value.fontStyle != null) {
-      map['fontStyle'] = value.fontStyle!.name;
+      map['fontStyle'] = MixParsers.get<FontStyle>()?.encode(value.fontStyle!);
     }
     if (value.letterSpacing != null) {
       map['letterSpacing'] = value.letterSpacing;
@@ -257,7 +186,8 @@ class TextStyleParser implements Parser<TextStyle> {
           ColorParser.instance.encode(value.decorationColor);
     }
     if (value.decorationStyle != null) {
-      map['decorationStyle'] = value.decorationStyle!.name;
+      map['decorationStyle'] =
+          MixParsers.get<TextDecorationStyle>()?.encode(value.decorationStyle!);
     }
     if (value.decorationThickness != null) {
       map['decorationThickness'] = value.decorationThickness;
@@ -273,10 +203,11 @@ class TextStyleParser implements Parser<TextStyle> {
       map['shadows'] = value.shadows!.map(_encodeShadow).toList();
     }
     if (value.leadingDistribution != null) {
-      map['leadingDistribution'] = value.leadingDistribution!.name;
+      map['leadingDistribution'] =
+          MixParsers.get<TextLeadingDistribution>()?.encode(value.leadingDistribution!);
     }
     if (value.overflow != null) {
-      map['overflow'] = value.overflow!.name;
+      map['overflow'] = MixParsers.get<TextOverflow>()?.encode(value.overflow!);
     }
 
     return map.isEmpty ? null : map;
@@ -286,16 +217,18 @@ class TextStyleParser implements Parser<TextStyle> {
   TextStyle? decode(Object? json) {
     if (json == null) return null;
 
-    return switch (json) {
-      // Just a color
-      _ when ColorParser.instance.decode(json) != null =>
-        TextStyle(color: ColorParser.instance.decode(json)),
+    // Try color parsing first to avoid double calls
+    final color = ColorParser.instance.decode(json);
+    if (color != null) {
+      return TextStyle(color: color);
+    }
 
+    return switch (json) {
       // Just a size
       num size => TextStyle(fontSize: size.toDouble()),
 
       // Full map
-      Map<String, Object?> map => _decodeFromMap(map),
+      Map<String, Object?> textStyleMap => _decodeFromMap(textStyleMap),
       _ => null,
     };
   }

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'base/parser_base.dart';
-import 'color_parser.dart';
-import 'offset_parser.dart';
+import 'parsers.dart';
 
 /// Parser for BoxShadow values
 class BoxShadowParser implements Parser<BoxShadow> {
@@ -31,15 +29,15 @@ class BoxShadowParser implements Parser<BoxShadow> {
     if (value.spreadRadius == 0.0 && value.color == const Color(0xFF000000)) {
       // Just offset and blur
       return {
-        'offset': OffsetParser.instance.encode(value.offset),
+        'offset': MixParsers.get<Offset>()?.encode(value.offset),
         'blur': value.blurRadius,
       };
     }
 
     // Full format
     return {
-      'color': ColorParser.instance.encode(value.color),
-      'offset': OffsetParser.instance.encode(value.offset),
+      'color': MixParsers.get<Color>()?.encode(value.color),
+      'offset': MixParsers.get<Offset>()?.encode(value.offset),
       'blurRadius': value.blurRadius,
       'spreadRadius': value.spreadRadius,
     };
@@ -55,8 +53,8 @@ class BoxShadowParser implements Parser<BoxShadow> {
 
     return BoxShadow(
       color:
-          ColorParser.instance.decode(map['color']) ?? const Color(0xFF000000),
-      offset: OffsetParser.instance.decode(map['offset']) ?? Offset.zero,
+          MixParsers.get<Color>()?.decode(map['color']) ?? const Color(0xFF000000),
+      offset: MixParsers.get<Offset>()?.decode(map['offset']) ?? Offset.zero,
       blurRadius: (map['blurRadius'] as num?)?.toDouble() ??
           (map['blur'] as num?)?.toDouble() ??
           0.0,

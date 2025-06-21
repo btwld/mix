@@ -2,41 +2,30 @@ import 'package:flutter/material.dart';
 
 import 'base/parser_base.dart';
 
-/// Parser for TextHeightBehavior following KISS principle
+/// Parser for TextHeightBehavior following consistent JSON-style mapping
 class TextHeightBehaviorParser implements Parser<TextHeightBehavior> {
   static const instance = TextHeightBehaviorParser();
 
   const TextHeightBehaviorParser();
 
+  /// Safe parsing with error result
+  ParseResult<TextHeightBehavior> tryDecode(Object? json) {
+    try {
+      final result = decode(json);
+
+      return result != null
+          ? ParseSuccess(result)
+          : ParseError('Invalid TextHeightBehavior format', json);
+    } catch (e) {
+      return ParseError(e.toString(), json);
+    }
+  }
+
   @override
   Object? encode(TextHeightBehavior? value) {
     if (value == null) return null;
 
-    // Check if it's just applyHeightToFirstAscent
-    if (value.applyHeightToFirstAscent == true &&
-        value.applyHeightToLastDescent == false) {
-      return 'applyHeightToFirstAscent';
-    }
-
-    // Check if it's just applyHeightToLastDescent
-    if (value.applyHeightToFirstAscent == false &&
-        value.applyHeightToLastDescent == true) {
-      return 'applyHeightToLastDescent';
-    }
-
-    // Check if both are true
-    if (value.applyHeightToFirstAscent == true &&
-        value.applyHeightToLastDescent == true) {
-      return 'all';
-    }
-
-    // Check if both are false
-    if (value.applyHeightToFirstAscent == false &&
-        value.applyHeightToLastDescent == false) {
-      return 'none';
-    }
-
-    // Full map format for clarity
+    // Always use consistent map format for JSON-style behavior
     return {
       'applyHeightToFirstAscent': value.applyHeightToFirstAscent,
       'applyHeightToLastDescent': value.applyHeightToLastDescent,
@@ -48,6 +37,13 @@ class TextHeightBehaviorParser implements Parser<TextHeightBehavior> {
     if (json == null) return null;
 
     return switch (json) {
+      // Support map format (primary)
+      Map<String, Object?> map => TextHeightBehavior(
+          applyHeightToFirstAscent: map.get('applyHeightToFirstAscent') ?? false,
+          applyHeightToLastDescent: map.get('applyHeightToLastDescent') ?? false,
+        ),
+      
+      // Legacy string support for backward compatibility
       'applyHeightToFirstAscent' => const TextHeightBehavior(
           applyHeightToFirstAscent: true,
           applyHeightToLastDescent: false,
@@ -64,12 +60,7 @@ class TextHeightBehaviorParser implements Parser<TextHeightBehavior> {
           applyHeightToFirstAscent: false,
           applyHeightToLastDescent: false,
         ),
-      Map<String, Object?> map => TextHeightBehavior(
-          applyHeightToFirstAscent:
-              map['applyHeightToFirstAscent'] as bool? ?? false,
-          applyHeightToLastDescent:
-              map['applyHeightToLastDescent'] as bool? ?? false,
-        ),
+      
       _ => null,
     };
   }

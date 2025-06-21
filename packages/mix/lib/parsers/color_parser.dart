@@ -5,17 +5,26 @@ import 'base/parser_base.dart';
 /// Simple color parser following KISS principle
 class ColorParser implements Parser<Color> {
   static const instance = ColorParser();
+  
+  // Hex pattern for validation (6 or 8 chars: RRGGBB or AARRGGBB)
+  static final RegExp _hexPattern = RegExp(r'^[0-9A-Fa-f]{6,8}$');
 
   const ColorParser();
 
-  Color? _parseHex(String hex) {
+  Color? _parseHex(String hexString) {
     try {
-      final buffer = hex.substring(1); // Remove #
-      final value = buffer.length == 6
-          ? 'FF$buffer' // Add opacity if not present
-          : buffer;
-
-      return Color(int.parse(value, radix: 16));
+      // Remove # prefix if present
+      final cleanHex = hexString.startsWith('#') 
+          ? hexString.substring(1) 
+          : hexString;
+      
+      // Validate hex format
+      if (!_hexPattern.hasMatch(cleanHex)) return null;
+      
+      // Add full opacity if only RGB provided
+      final fullHex = cleanHex.length == 6 ? 'FF$cleanHex' : cleanHex;
+      
+      return Color(int.parse(fullHex, radix: 16));
     } catch (_) {
       return null;
     }
@@ -47,21 +56,16 @@ class ColorParser implements Parser<Color> {
   Color? decode(Object? json) {
     if (json == null) return null;
 
-    switch (json) {
+    return switch (json) {
       // Handle int values directly
-      case int value:
-        return Color(value);
+      int colorValue => Color(colorValue),
 
-      // Handle hex strings (common use case)
-      case String hex when hex.startsWith('#'):
-        return _parseHex(hex);
+      // Handle hex strings (with or without #)
+      String hexString when hexString.startsWith('#') || 
+                           _hexPattern.hasMatch(hexString) => 
+        _parseHex(hexString),
 
-      // Handle hex without #
-      case String hex when RegExp(r'^[0-9A-Fa-f]{6,8}$').hasMatch(hex):
-        return _parseHex('#$hex');
-
-      default:
-        return null;
-    }
+      _ => null,
+    };
   }
 }

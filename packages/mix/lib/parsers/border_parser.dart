@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'base/parser_base.dart';
-import 'border_side_parser.dart';
+import 'parsers.dart';
 
 /// Parser for Border values
 class BorderParser implements Parser<Border> {
@@ -31,23 +30,23 @@ class BorderParser implements Parser<Border> {
         value.top == value.bottom &&
         value.top == value.left) {
       // Use BorderSideParser for single side
-      return BorderSideParser.instance.encode(value.top);
+      return MixParsers.get<BorderSide>()?.encode(value.top);
     }
 
     // Check if symmetric (vertical/horizontal)
     if (value.top == value.bottom && value.left == value.right) {
       return {
-        'vertical': BorderSideParser.instance.encode(value.left),
-        'horizontal': BorderSideParser.instance.encode(value.top),
+        'vertical': MixParsers.get<BorderSide>()?.encode(value.left),
+        'horizontal': MixParsers.get<BorderSide>()?.encode(value.top),
       };
     }
 
     // Full format
     return {
-      'top': BorderSideParser.instance.encode(value.top),
-      'right': BorderSideParser.instance.encode(value.right),
-      'bottom': BorderSideParser.instance.encode(value.bottom),
-      'left': BorderSideParser.instance.encode(value.left),
+      'top': MixParsers.get<BorderSide>()?.encode(value.top),
+      'right': MixParsers.get<BorderSide>()?.encode(value.right),
+      'bottom': MixParsers.get<BorderSide>()?.encode(value.bottom),
+      'left': MixParsers.get<BorderSide>()?.encode(value.left),
     };
   }
 
@@ -57,7 +56,7 @@ class BorderParser implements Parser<Border> {
 
     // If it's not a map, treat it as a single BorderSide for all sides
     if (json is! Map<String, Object?>) {
-      final side = BorderSideParser.instance.decode(json);
+      final side = MixParsers.get<BorderSide>()?.decode(json);
 
       return side != null
           ? Border.all(
@@ -72,8 +71,8 @@ class BorderParser implements Parser<Border> {
 
     // Check for symmetric format
     if (map.containsKey('vertical') && map.containsKey('horizontal')) {
-      final vertical = BorderSideParser.instance.decode(map['vertical']);
-      final horizontal = BorderSideParser.instance.decode(map['horizontal']);
+      final vertical = MixParsers.get<BorderSide>()?.decode(map['vertical']);
+      final horizontal = MixParsers.get<BorderSide>()?.decode(map['horizontal']);
 
       if (vertical == null || horizontal == null) return null;
 
@@ -82,11 +81,11 @@ class BorderParser implements Parser<Border> {
 
     // Full format
     return Border(
-      top: BorderSideParser.instance.decode(map['top']) ?? BorderSide.none,
-      right: BorderSideParser.instance.decode(map['right']) ?? BorderSide.none,
+      top: MixParsers.get<BorderSide>()?.decode(map['top']) ?? BorderSide.none,
+      right: MixParsers.get<BorderSide>()?.decode(map['right']) ?? BorderSide.none,
       bottom:
-          BorderSideParser.instance.decode(map['bottom']) ?? BorderSide.none,
-      left: BorderSideParser.instance.decode(map['left']) ?? BorderSide.none,
+          MixParsers.get<BorderSide>()?.decode(map['bottom']) ?? BorderSide.none,
+      left: MixParsers.get<BorderSide>()?.decode(map['left']) ?? BorderSide.none,
     );
   }
 }

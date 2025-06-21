@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'base/parser_base.dart';
-import 'border_parser.dart';
-import 'border_radius_parser.dart';
-import 'box_shadow_parser.dart';
-import 'color_parser.dart';
+import 'parsers.dart';
 
 /// Simplified BoxDecoration parser following KISS principle
 class BoxDecorationParser implements Parser<BoxDecoration> {
@@ -33,21 +29,21 @@ class BoxDecorationParser implements Parser<BoxDecoration> {
 
     // Only encode non-null properties
     if (value.color != null) {
-      result['color'] = ColorParser.instance.encode(value.color);
+      result['color'] = MixParsers.get<Color>()?.encode(value.color);
     }
 
     if (value.border is Border) {
-      result['border'] = BorderParser.instance.encode(value.border as Border);
+      result['border'] = MixParsers.get<Border>()?.encode(value.border as Border);
     }
 
     if (value.borderRadius is BorderRadius) {
-      result['borderRadius'] = BorderRadiusParser.instance
-          .encode(value.borderRadius as BorderRadius);
+      result['borderRadius'] = MixParsers.get<BorderRadius>()
+          ?.encode(value.borderRadius as BorderRadius);
     }
 
     if (value.boxShadow != null) {
       result['boxShadow'] = value.boxShadow!
-          .map((shadow) => BoxShadowParser.instance.encode(shadow))
+          .map((shadow) => MixParsers.get<BoxShadow>()?.encode(shadow))
           .toList();
     }
 
@@ -67,7 +63,7 @@ class BoxDecorationParser implements Parser<BoxDecoration> {
 
     // Support simple color value
     if (json is int || json is String) {
-      final color = ColorParser.instance.decode(json);
+      final color = MixParsers.get<Color>()?.decode(json);
 
       return color != null ? BoxDecoration(color: color) : null;
     }
@@ -81,7 +77,7 @@ class BoxDecorationParser implements Parser<BoxDecoration> {
     final shadowList = map['boxShadow'] as List?;
     if (shadowList != null) {
       boxShadow = shadowList
-          .map((s) => BoxShadowParser.instance.decode(s))
+          .map((s) => MixParsers.get<BoxShadow>()?.decode(s))
           .whereType<BoxShadow>()
           .toList();
     }
@@ -97,10 +93,10 @@ class BoxDecorationParser implements Parser<BoxDecoration> {
     }
 
     return BoxDecoration(
-      color: ColorParser.instance.decode(map['color']),
-      border: BorderParser.instance.decode(map['border']),
+      color: MixParsers.get<Color>()?.decode(map['color']),
+      border: MixParsers.get<Border>()?.decode(map['border']),
       borderRadius: shape == BoxShape.rectangle
-          ? BorderRadiusParser.instance.decode(map['borderRadius'])
+          ? MixParsers.get<BorderRadius>()?.decode(map['borderRadius'])
           : null,
       boxShadow: boxShadow,
       shape: shape,
