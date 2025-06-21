@@ -16,11 +16,10 @@ class BoxDecorationParser extends BaseDecorationParser<BoxDecoration> {
     return {
       'type': 'box_decoration',
       'border': value.border is Border
-          ? MixParsers.get<Border>()?.encode(value.border as Border)
+          ? MixParsers.encode(value.border as Border)
           : null,
       'borderRadius': value.borderRadius is BorderRadius
-          ? MixParsers.get<BorderRadius>()
-              ?.encode(value.borderRadius as BorderRadius)
+          ? MixParsers.encode(value.borderRadius as BorderRadius)
           : null,
       'shape': value.shape != BoxShape.rectangle ? value.shape.name : null,
       ...encodeCommon(value),
@@ -33,7 +32,7 @@ class BoxDecorationParser extends BaseDecorationParser<BoxDecoration> {
 
     // Support simple color value
     if (json is int || json is String) {
-      final color = MixParsers.get<Color>()?.decode(json);
+      final color = MixParsers.decode<Color>(json);
 
       return color != null ? BoxDecoration(color: color) : null;
     }
@@ -55,9 +54,9 @@ class BoxDecorationParser extends BaseDecorationParser<BoxDecoration> {
     return BoxDecoration(
       color: decodeColor(map),
       image: decodeImage(map),
-      border: MixParsers.get<Border>()?.decode(map['border']),
+      border: MixParsers.decode<Border>(map['border']),
       borderRadius: shape == BoxShape.rectangle
-          ? MixParsers.get<BorderRadius>()?.decode(map['borderRadius'])
+          ? MixParsers.decode<BorderRadius>(map['borderRadius'])
           : null,
       boxShadow: decodeShadows(map),
       gradient: decodeGradient(map),

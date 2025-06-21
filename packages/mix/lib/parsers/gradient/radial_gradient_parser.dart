@@ -13,7 +13,7 @@ class RadialGradientParser extends BaseGradientParser<RadialGradient> {
 
     return {
       'type': 'radial',
-      'center': MixParsers.get<AlignmentGeometry>()?.encode(value.center),
+      'center': MixParsers.encode(value.center),
       'radius': value.radius,
       ...encodeCommon(value),
     };

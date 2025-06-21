@@ -7,7 +7,10 @@ library mix_parsers;
 // Import for internal use
 import 'package:flutter/material.dart';
 
+import '../src/attributes/animated/animated_data.dart';
+import '../src/attributes/modifiers/widget_modifiers_config.dart';
 import 'alignment_parser.dart';
+import 'animated_data_parser.dart';
 import 'base/enum_parser.dart';
 import 'base/parser_base.dart';
 import 'border_parser.dart';
@@ -36,9 +39,11 @@ import 'strut_style_parser.dart';
 import 'text_height_behavior_parser.dart';
 import 'text_scaler_parser.dart';
 import 'text_style_parser.dart';
+import 'widget_modifiers_config_parser.dart';
 
 // Type parsers (alphabetical order)
 export 'alignment_parser.dart';
+export 'animated_data_parser.dart';
 export 'base/enum_parser.dart';
 // Base classes
 export 'base/parser_base.dart';
@@ -64,10 +69,14 @@ export 'rect_parser.dart';
 export 'shadow/box_shadow_parser.dart';
 export 'shadow/shadow_parser.dart';
 export 'size_parser.dart';
+export 'spec/box_spec_parser.dart';
+export 'spec/icon_spec_parser.dart';
+export 'spec/text_spec_parser.dart';
 export 'strut_style_parser.dart';
 export 'text_height_behavior_parser.dart';
 export 'text_scaler_parser.dart';
 export 'text_style_parser.dart';
+export 'widget_modifiers_config_parser.dart';
 
 // Convenience class for common parsing operations
 class MixParsers {
@@ -119,10 +128,35 @@ class MixParsers {
     TextHeightBehavior: const TextHeightBehaviorParser(),
     TextScaler: const TextScalerParser(),
     TextStyle: const TextStyleParser(),
+    // Spec parsers
+    // BoxSpec: const BoxSpecParser(),
+    // TextSpec: const TextSpecParser(),
+    // IconSpec: const IconSpecParser(),
+    // Animation parsers
+    AnimatedData: const AnimatedDataParser(),
+    // Modifier parsers
+    WidgetModifiersConfig: const WidgetModifiersConfigParser(),
   };
 
   /// Get a parser for a specific type
   static Parser<T>? get<T extends Object>() {
     return _parsers[T] as Parser<T>?;
+  }
+
+  /// Encode a value using the appropriate parser with runtime type checking
+  static Object? encode(Object? value) {
+    if (value == null) return null;
+
+    final valueType = value.runtimeType;
+    final parser = _parsers[valueType];
+
+    return parser?.encode(value as dynamic);
+  }
+
+  /// Decode a value using the appropriate parser
+  static T? decode<T extends Object>(Object? json) {
+    final parser = _parsers[T] as Parser<T>?;
+
+    return parser?.decode(json);
   }
 }

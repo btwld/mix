@@ -15,17 +15,17 @@ class GradientParser extends BaseGradientParser<Gradient> {
 
     // Delegate to LinearGradientParser if it's a LinearGradient
     if (value is LinearGradient) {
-      return MixParsers.get<LinearGradient>()?.encode(value);
+      return MixParsers.encode(value);
     }
 
     // Delegate to RadialGradientParser if it's a RadialGradient
     if (value is RadialGradient) {
-      return MixParsers.get<RadialGradient>()?.encode(value);
+      return MixParsers.encode(value);
     }
 
     // Delegate to SweepGradientParser if it's a SweepGradient
     if (value is SweepGradient) {
-      return MixParsers.get<SweepGradient>()?.encode(value);
+      return MixParsers.encode(value);
     }
 
     // Fallback for unknown gradient types
@@ -43,15 +43,15 @@ class GradientParser extends BaseGradientParser<Gradient> {
     switch (type) {
       case 'linear':
         // Delegate to LinearGradientParser
-        return MixParsers.get<LinearGradient>()?.decode(json);
+        return MixParsers.decode<LinearGradient>(json);
 
       case 'radial':
         // Delegate to RadialGradientParser
-        return MixParsers.get<RadialGradient>()?.decode(json);
+        return MixParsers.decode<RadialGradient>(json);
 
       case 'sweep':
         // Delegate to SweepGradientParser
-        return MixParsers.get<SweepGradient>()?.decode(json);
+        return MixParsers.decode<SweepGradient>(json);
 
       case 'gradient':
       default:

@@ -13,7 +13,7 @@ class ShapeDecorationParser extends BaseDecorationParser<ShapeDecoration> {
 
     return {
       'type': 'shape_decoration',
-      'shape': MixParsers.get<ShapeBorder>()?.encode(value.shape),
+      'shape': MixParsers.encode(value.shape),
       ...encodeCommon(value),
     };
   }
@@ -24,7 +24,7 @@ class ShapeDecorationParser extends BaseDecorationParser<ShapeDecoration> {
 
     final map = json;
 
-    final shape = MixParsers.get<ShapeBorder>()?.decode(map['shape']);
+    final shape = MixParsers.decode<ShapeBorder>(map['shape']);
     if (shape == null) return null; // ShapeDecoration requires a shape
 
     return ShapeDecoration(

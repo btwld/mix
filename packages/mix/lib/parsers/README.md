@@ -122,9 +122,9 @@ class ComplexTypeParser extends Parser<ComplexType> {
     if (value == null) return null;
     
     final builder = MapBuilder()
-      ..addIfNotNull('color', value.color, MixParsers.get<Color>()?.encode)
-      ..addIfNotNull('size', value.size, MixParsers.get<Size>()?.encode)
-      ..addIfNotNull('duration', value.duration, MixParsers.get<Duration>()?.encode);
+      ..addIfNotNull('color', value.color, MixParsers.encode<Color>)
+      ..addIfNotNull('size', value.size, MixParsers.encode<Size>)
+      ..addIfNotNull('duration', value.duration, MixParsers.encode<Duration>);
     
     return builder.build();
   }
@@ -133,9 +133,9 @@ class ComplexTypeParser extends Parser<ComplexType> {
   ComplexType? decode(Object? json) {
     return switch (json) {
       Map<String, Object?> map => ComplexType(
-        color: MixParsers.get<Color>()?.decode(map['color']),
-        size: MixParsers.get<Size>()?.decode(map['size']),
-        duration: MixParsers.get<Duration>()?.decode(map['duration']),
+        color: MixParsers.decode<Color>(map['color']),
+        size: MixParsers.decode<Size>(map['size']),
+        duration: MixParsers.decode<Duration>(map['duration']),
       ),
       _ => null,
     };
@@ -161,11 +161,14 @@ final width = map.getDouble('width') ?? 0.0;
 
 ### Check Parser Exists
 ```dart
-// Always check if parser exists before using
-final colorParser = MixParsers.get<Color>();
-if (colorParser != null) {
-  final encoded = colorParser.encode(someColor);
-  final decoded = colorParser.decode(jsonData);
+// Use the direct encode/decode methods
+final encoded = MixParsers.encode<Color>(someColor);
+final decoded = MixParsers.decode<Color>(jsonData);
+
+// For safe parsing with error handling
+final result = MixParsers.tryDecode<Color>(jsonData);
+if (result.isSuccess) {
+  final color = result.value;
 }
 ```
 
@@ -177,15 +180,14 @@ class MyWidgetParser extends Parser<MyWidget> {
     if (value == null) return null;
     
     final builder = MapBuilder()
-      ..addIfNotNull('color', value.color, MixParsers.get<Color>()?.encode)
-      ..addIfNotNull('padding', value.padding, MixParsers.get<EdgeInsets>()?.encode);
+      ..addIfNotNull('color', value.color, MixParsers.encode<Color>)
+      ..addIfNotNull('padding', value.padding, MixParsers.encode<EdgeInsets>);
     
     // Handle unknown types - store raw or skip
     if (value.customProperty != null) {
-      final customParser = MixParsers.get<CustomType>();
-      if (customParser != null) {
-        builder.addIfNotNull('custom', value.customProperty, customParser.encode);
-      } else {
+      try {
+        builder.addIfNotNull('custom', value.customProperty, MixParsers.encode<CustomType>);
+      } catch (e) {
         // Fallback: store as raw value or skip
         builder.add('custom', value.customProperty.toString());
       }
@@ -198,8 +200,8 @@ class MyWidgetParser extends Parser<MyWidget> {
   MyWidget? decode(Object? json) {
     return switch (json) {
       Map<String, Object?> map => MyWidget(
-        color: MixParsers.get<Color>()?.decode(map['color']),
-        padding: MixParsers.get<EdgeInsets>()?.decode(map['padding']),
+        color: MixParsers.decode<Color>(map['color']),
+        padding: MixParsers.decode<EdgeInsets>(map['padding']),
         // Handle missing parser gracefully
         customProperty: _decodeCustom(map['custom']),
       ),
@@ -208,8 +210,11 @@ class MyWidgetParser extends Parser<MyWidget> {
   }
   
   CustomType? _decodeCustom(Object? json) {
-    final parser = MixParsers.get<CustomType>();
-    return parser?.decode(json); // Returns null if parser missing
+    try {
+      return MixParsers.decode<CustomType>(json);
+    } catch (e) {
+      return null; // Returns null if parser missing or decode fails
+    }
   }
 }
 ```

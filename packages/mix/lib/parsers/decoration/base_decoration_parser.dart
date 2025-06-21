@@ -12,10 +12,10 @@ abstract class BaseDecorationParser<T extends Decoration> extends Parser<T> {
 
     // Handle color property (available in BoxDecoration and ShapeDecoration)
     if (decoration is BoxDecoration && decoration.color != null) {
-      result['color'] = MixParsers.get<Color>()?.encode(decoration.color);
+      result['color'] = MixParsers.encode(decoration.color);
     }
     if (decoration is ShapeDecoration && decoration.color != null) {
-      result['color'] = MixParsers.get<Color>()?.encode(decoration.color);
+      result['color'] = MixParsers.encode(decoration.color);
     }
 
     // Handle shadows (available in both BoxDecoration and ShapeDecoration)
@@ -28,9 +28,7 @@ abstract class BaseDecorationParser<T extends Decoration> extends Parser<T> {
     }
 
     if (shadows != null) {
-      result['shadows'] = shadows
-          .map((shadow) => MixParsers.get<BoxShadow>()?.encode(shadow))
-          .toList();
+      result['shadows'] = shadows.map(MixParsers.encode).toList();
     }
 
     // Handle gradient (available in both BoxDecoration and ShapeDecoration)
@@ -43,7 +41,7 @@ abstract class BaseDecorationParser<T extends Decoration> extends Parser<T> {
     }
 
     if (gradient != null) {
-      result['gradient'] = MixParsers.get<Gradient>()?.encode(gradient);
+      result['gradient'] = MixParsers.encode(gradient);
     }
 
     // Handle image (available in both BoxDecoration and ShapeDecoration)
@@ -56,7 +54,7 @@ abstract class BaseDecorationParser<T extends Decoration> extends Parser<T> {
     }
 
     if (image != null) {
-      result['image'] = MixParsers.get<DecorationImage>()?.encode(image);
+      result['image'] = MixParsers.encode(image);
     }
 
     return result;
@@ -64,7 +62,7 @@ abstract class BaseDecorationParser<T extends Decoration> extends Parser<T> {
 
   /// Decode color from map with fallback
   Color? decodeColor(Map<String, Object?> map) =>
-      MixParsers.get<Color>()?.decode(map['color']);
+      MixParsers.decode(map['color']);
 
   /// Decode shadows from map with fallback
   List<BoxShadow>? decodeShadows(Map<String, Object?> map) {
@@ -72,16 +70,16 @@ abstract class BaseDecorationParser<T extends Decoration> extends Parser<T> {
     if (shadowList == null) return null;
 
     return shadowList
-        .map((s) => MixParsers.get<BoxShadow>()?.decode(s))
+        .map((s) => MixParsers.decode<BoxShadow>(s))
         .whereType<BoxShadow>()
         .toList();
   }
 
   /// Decode gradient from map with fallback
   Gradient? decodeGradient(Map<String, Object?> map) =>
-      MixParsers.get<Gradient>()?.decode(map['gradient']);
+      MixParsers.decode(map['gradient']);
 
   /// Decode decoration image from map with fallback
   DecorationImage? decodeImage(Map<String, Object?> map) =>
-      MixParsers.get<DecorationImage>()?.decode(map['image']);
+      MixParsers.decode(map['image']);
 }

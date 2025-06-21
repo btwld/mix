@@ -15,7 +15,7 @@ class SweepGradientParser extends BaseGradientParser<SweepGradient> {
 
     return {
       'type': 'sweep',
-      'center': MixParsers.get<AlignmentGeometry>()?.encode(value.center),
+      'center': MixParsers.encode(value.center),
       'startAngle': value.startAngle,
       'endAngle': value.endAngle,
       ...encodeCommon(value),

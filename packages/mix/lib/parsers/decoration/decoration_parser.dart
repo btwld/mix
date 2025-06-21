@@ -13,12 +13,12 @@ class DecorationParser extends BaseDecorationParser<Decoration> {
 
     // Delegate to BoxDecorationParser if it's a BoxDecoration
     if (value is BoxDecoration) {
-      return MixParsers.get<BoxDecoration>()?.encode(value);
+      return MixParsers.encode(value);
     }
 
     // Delegate to ShapeDecorationParser if it's a ShapeDecoration
     if (value is ShapeDecoration) {
-      return MixParsers.get<ShapeDecoration>()?.encode(value);
+      return MixParsers.encode(value);
     }
 
     // Fallback for unknown decoration types
@@ -36,11 +36,11 @@ class DecorationParser extends BaseDecorationParser<Decoration> {
     switch (type) {
       case 'box_decoration':
         // Delegate to BoxDecorationParser
-        return MixParsers.get<BoxDecoration>()?.decode(json);
+        return MixParsers.decode<BoxDecoration>(json);
 
       case 'shape_decoration':
         // Delegate to ShapeDecorationParser
-        return MixParsers.get<ShapeDecoration>()?.decode(json);
+        return MixParsers.decode<ShapeDecoration>(json);
 
       case 'decoration':
       default:

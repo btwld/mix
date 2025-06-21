@@ -9,16 +9,14 @@ abstract class BaseGradientParser<T extends Gradient> extends Parser<T> {
   /// Shared encoding logic for all Gradient types
   Map<String, Object?> encodeCommon(Gradient gradient) {
     return {
-      'colors': gradient.colors
-          .map((c) => MixParsers.get<Color>()?.encode(c))
-          .toList(),
+      'colors': gradient.colors.map(MixParsers.encode).toList(),
       'stops': gradient.stops,
     };
   }
 
   /// Decode colors from map with validation
   List<Color> decodeColors(Map<String, Object?> map) {
-    final colors = map.getListOf('colors', MixParsers.get<Color>()?.decode);
+    final colors = map.getListOf('colors', MixParsers.decode<Color>);
     if (colors.isEmpty) {
       throw ArgumentError('Gradient must have at least one color');
     }
@@ -32,8 +30,11 @@ abstract class BaseGradientParser<T extends Gradient> extends Parser<T> {
 
   /// Decode alignment from map with fallback
   AlignmentGeometry decodeAlignment(
-          Map<String, Object?> map, String key, AlignmentGeometry fallback) =>
-      MixParsers.get<AlignmentGeometry>()?.decode(map[key]) ?? fallback;
+    Map<String, Object?> map,
+    String key,
+    AlignmentGeometry fallback,
+  ) =>
+      MixParsers.decode(map[key]) ?? fallback;
 
   /// Decode double value from map with fallback
   double decodeDouble(Map<String, Object?> map, String key, double fallback) =>

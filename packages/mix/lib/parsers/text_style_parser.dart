@@ -13,23 +13,23 @@ class TextStyleParser extends Parser<TextStyle> {
       color: ColorParser.instance.decode(map['color']),
       fontSize: map.getDouble('fontSize'),
       fontWeight: FontWeightParser.instance.decode(map['fontWeight']),
-      fontStyle:
-          MixParsers.get<FontStyle>()?.decode(map.getString('fontStyle')),
+      fontStyle: MixParsers.decode<FontStyle>(map.getString('fontStyle')),
       letterSpacing: map.getDouble('letterSpacing'),
       wordSpacing: map.getDouble('wordSpacing'),
       height: map.getDouble('height'),
-      leadingDistribution: MixParsers.get<TextLeadingDistribution>()
-          ?.decode(map.getString('leadingDistribution')),
+      leadingDistribution: MixParsers.decode<TextLeadingDistribution>(
+        map.getString('leadingDistribution'),
+      ),
       shadows: map.getListOf('shadows', _decodeShadow),
       decoration: _decodeTextDecoration(map['decoration']),
       decorationColor: ColorParser.instance.decode(map['decorationColor']),
-      decorationStyle: MixParsers.get<TextDecorationStyle>()
-          ?.decode(map.getString('decorationStyle')),
+      decorationStyle: MixParsers.decode<TextDecorationStyle>(
+        map.getString('decorationStyle'),
+      ),
       decorationThickness: map.getDouble('decorationThickness'),
       fontFamily: map.getString('fontFamily'),
       fontFamilyFallback: map.getList('fontFamilyFallback')?.cast(),
-      overflow:
-          MixParsers.get<TextOverflow>()?.decode(map.getString('overflow')),
+      overflow: MixParsers.decode<TextOverflow>(map.getString('overflow')),
     );
   }
 
@@ -118,11 +118,7 @@ class TextStyleParser extends Parser<TextStyle> {
         value.fontWeight,
         FontWeightParser.instance.encode,
       )
-      ..addIfNotNull(
-        'fontStyle',
-        value.fontStyle,
-        MixParsers.get<FontStyle>()?.encode,
-      )
+      ..addIfNotNull('fontStyle', value.fontStyle, MixParsers.encode)
       ..addIfNotNull('letterSpacing', value.letterSpacing)
       ..addIfNotNull('wordSpacing', value.wordSpacing)
       ..addIfNotNull('height', value.height)
@@ -135,7 +131,7 @@ class TextStyleParser extends Parser<TextStyle> {
       ..addIfNotNull(
         'decorationStyle',
         value.decorationStyle,
-        MixParsers.get<TextDecorationStyle>()?.encode,
+        MixParsers.encode,
       )
       ..addIfNotNull('decorationThickness', value.decorationThickness)
       ..addIfNotNull('fontFamily', value.fontFamily);
@@ -153,13 +149,9 @@ class TextStyleParser extends Parser<TextStyle> {
       ..addIfNotNull(
         'leadingDistribution',
         value.leadingDistribution,
-        MixParsers.get<TextLeadingDistribution>()?.encode,
+        MixParsers.encode,
       )
-      ..addIfNotNull(
-        'overflow',
-        value.overflow,
-        MixParsers.get<TextOverflow>()?.encode,
-      );
+      ..addIfNotNull('overflow', value.overflow, MixParsers.encode);
 
     return builder.isEmpty ? null : builder.build();
   }

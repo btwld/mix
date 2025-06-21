@@ -13,8 +13,8 @@ class LinearGradientParser extends BaseGradientParser<LinearGradient> {
 
     return {
       'type': 'linear',
-      'begin': MixParsers.get<AlignmentGeometry>()?.encode(value.begin),
-      'end': MixParsers.get<AlignmentGeometry>()?.encode(value.end),
+      'begin': MixParsers.encode(value.begin),
+      'end': MixParsers.encode(value.end),
       ...encodeCommon(value),
     };
   }

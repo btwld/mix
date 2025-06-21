@@ -17,23 +17,23 @@ class BorderParser extends Parser<Border> {
         value.top == value.bottom &&
         value.top == value.left) {
       // Use BorderSideParser for single side
-      return MixParsers.get<BorderSide>()?.encode(value.top);
+      return MixParsers.encode(value.top);
     }
 
     // Check if symmetric (vertical/horizontal)
     if (value.top == value.bottom && value.left == value.right) {
       return {
-        'vertical': MixParsers.get<BorderSide>()?.encode(value.left),
-        'horizontal': MixParsers.get<BorderSide>()?.encode(value.top),
+        'vertical': MixParsers.encode(value.left),
+        'horizontal': MixParsers.encode(value.top),
       };
     }
 
     // Full format
     return {
-      'top': MixParsers.get<BorderSide>()?.encode(value.top),
-      'right': MixParsers.get<BorderSide>()?.encode(value.right),
-      'bottom': MixParsers.get<BorderSide>()?.encode(value.bottom),
-      'left': MixParsers.get<BorderSide>()?.encode(value.left),
+      'top': MixParsers.encode(value.top),
+      'right': MixParsers.encode(value.right),
+      'bottom': MixParsers.encode(value.bottom),
+      'left': MixParsers.encode(value.left),
     };
   }
 
@@ -43,7 +43,7 @@ class BorderParser extends Parser<Border> {
 
     // If it's not a map, treat it as a single BorderSide for all sides
     if (json is! Map<String, Object?>) {
-      final side = MixParsers.get<BorderSide>()?.decode(json);
+      final side = MixParsers.decode<BorderSide>(json);
 
       return side != null
           ? Border.all(
@@ -58,9 +58,8 @@ class BorderParser extends Parser<Border> {
 
     // Check for symmetric format
     if (map.containsKey('vertical') && map.containsKey('horizontal')) {
-      final vertical = MixParsers.get<BorderSide>()?.decode(map['vertical']);
-      final horizontal =
-          MixParsers.get<BorderSide>()?.decode(map['horizontal']);
+      final vertical = MixParsers.decode<BorderSide>(map['vertical']);
+      final horizontal = MixParsers.decode<BorderSide>(map['horizontal']);
 
       if (vertical == null || horizontal == null) return null;
 
@@ -69,13 +68,10 @@ class BorderParser extends Parser<Border> {
 
     // Full format
     return Border(
-      top: MixParsers.get<BorderSide>()?.decode(map['top']) ?? BorderSide.none,
-      right:
-          MixParsers.get<BorderSide>()?.decode(map['right']) ?? BorderSide.none,
-      bottom: MixParsers.get<BorderSide>()?.decode(map['bottom']) ??
-          BorderSide.none,
-      left:
-          MixParsers.get<BorderSide>()?.decode(map['left']) ?? BorderSide.none,
+      top: MixParsers.decode(map['top']) ?? BorderSide.none,
+      right: MixParsers.decode(map['right']) ?? BorderSide.none,
+      bottom: MixParsers.decode(map['bottom']) ?? BorderSide.none,
+      left: MixParsers.decode(map['left']) ?? BorderSide.none,
     );
   }
 }

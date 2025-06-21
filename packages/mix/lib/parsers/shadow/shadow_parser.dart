@@ -13,7 +13,7 @@ class ShadowParser extends BaseShadowParser<Shadow> {
 
     // Delegate to BoxShadowParser if it's a BoxShadow
     if (value is BoxShadow) {
-      return MixParsers.get<BoxShadow>()?.encode(value);
+      return MixParsers.encode(value);
     }
 
     // Handle basic Shadow
@@ -31,7 +31,7 @@ class ShadowParser extends BaseShadowParser<Shadow> {
     switch (type) {
       case 'box_shadow':
         // Delegate to BoxShadowParser
-        return MixParsers.get<BoxShadow>()?.decode(json);
+        return MixParsers.decode<BoxShadow>(json);
 
       case 'shadow':
       default:
