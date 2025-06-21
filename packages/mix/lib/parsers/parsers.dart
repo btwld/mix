@@ -22,7 +22,10 @@ import 'decoration/shape_decoration_parser.dart';
 import 'duration_parser.dart';
 import 'edge_insets_parser.dart';
 import 'font_weight_parser.dart';
-import 'gradient_parser.dart';
+import 'gradient/gradient_parser.dart';
+import 'gradient/linear_gradient_parser.dart';
+import 'gradient/radial_gradient_parser.dart';
+import 'gradient/sweep_gradient_parser.dart';
 import 'matrix4_parser.dart';
 import 'offset_parser.dart';
 import 'rect_parser.dart';
@@ -51,7 +54,10 @@ export 'decoration/shape_decoration_parser.dart';
 export 'duration_parser.dart';
 export 'edge_insets_parser.dart';
 export 'font_weight_parser.dart';
-export 'gradient_parser.dart';
+export 'gradient/gradient_parser.dart';
+export 'gradient/linear_gradient_parser.dart';
+export 'gradient/radial_gradient_parser.dart';
+export 'gradient/sweep_gradient_parser.dart';
 export 'matrix4_parser.dart';
 export 'offset_parser.dart';
 export 'rect_parser.dart';
@@ -101,6 +107,9 @@ class MixParsers {
     EdgeInsets: const EdgeInsetsParser(),
     FontWeight: const FontWeightParser(),
     Gradient: const GradientParser(),
+    LinearGradient: const LinearGradientParser(),
+    RadialGradient: const RadialGradientParser(),
+    SweepGradient: const SweepGradientParser(),
     Matrix4: const Matrix4Parser(),
     Offset: const OffsetParser(),
     Rect: const RectParser(),
