@@ -1,0 +1,109 @@
+import 'package:flutter/material.dart';
+
+import 'base/parser_base.dart';
+import 'border_parser.dart';
+import 'border_radius_parser.dart';
+import 'box_shadow_parser.dart';
+import 'color_parser.dart';
+
+/// Simplified BoxDecoration parser following KISS principle
+class BoxDecorationParser implements Parser<BoxDecoration> {
+  static const instance = BoxDecorationParser();
+
+  const BoxDecorationParser();
+
+  /// Safe parsing with error result
+  ParseResult<BoxDecoration> tryDecode(Object? json) {
+    try {
+      final result = decode(json);
+
+      return result != null
+          ? ParseSuccess(result)
+          : ParseError('Invalid BoxDecoration format', json);
+    } catch (e) {
+      return ParseError(e.toString(), json);
+    }
+  }
+
+  @override
+  Object? encode(BoxDecoration? value) {
+    if (value == null) return null;
+
+    final result = <String, dynamic>{};
+
+    // Only encode non-null properties
+    if (value.color != null) {
+      result['color'] = ColorParser.instance.encode(value.color);
+    }
+
+    if (value.border is Border) {
+      result['border'] = BorderParser.instance.encode(value.border as Border);
+    }
+
+    if (value.borderRadius is BorderRadius) {
+      result['borderRadius'] = BorderRadiusParser.instance
+          .encode(value.borderRadius as BorderRadius);
+    }
+
+    if (value.boxShadow != null) {
+      result['boxShadow'] = value.boxShadow!
+          .map((shadow) => BoxShadowParser.instance.encode(shadow))
+          .toList();
+    }
+
+    if (value.shape != BoxShape.rectangle) {
+      result['shape'] = value.shape.name;
+    }
+
+    // Skip gradient for now (YAGNI - add when needed)
+    // Skip image for now (YAGNI - add when needed)
+
+    return result;
+  }
+
+  @override
+  BoxDecoration? decode(Object? json) {
+    if (json == null) return null;
+
+    // Support simple color value
+    if (json is int || json is String) {
+      final color = ColorParser.instance.decode(json);
+
+      return color != null ? BoxDecoration(color: color) : null;
+    }
+
+    if (json is! Map<String, Object?>) return null;
+
+    final map = json;
+
+    // Parse boxShadow list
+    List<BoxShadow>? boxShadow;
+    final shadowList = map['boxShadow'] as List?;
+    if (shadowList != null) {
+      boxShadow = shadowList
+          .map((s) => BoxShadowParser.instance.decode(s))
+          .whereType<BoxShadow>()
+          .toList();
+    }
+
+    // Parse shape
+    BoxShape shape = BoxShape.rectangle;
+    final shapeString = map['shape'] as String?;
+    if (shapeString != null) {
+      shape = BoxShape.values.firstWhere(
+        (e) => e.name == shapeString,
+        orElse: () => BoxShape.rectangle,
+      );
+    }
+
+    return BoxDecoration(
+      color: ColorParser.instance.decode(map['color']),
+      border: BorderParser.instance.decode(map['border']),
+      borderRadius: shape == BoxShape.rectangle
+          ? BorderRadiusParser.instance.decode(map['borderRadius'])
+          : null,
+      boxShadow: boxShadow,
+      shape: shape,
+    );
+  }
+}
