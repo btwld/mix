@@ -6,6 +6,19 @@ import 'base/parser_base.dart';
 class AlignmentParser implements Parser<AlignmentGeometry> {
   static const instance = AlignmentParser();
 
+  // Map of named alignments for cleaner lookup
+  static const Map<String, Alignment> _namedAlignments = {
+    'center': Alignment.center,
+    'topLeft': Alignment.topLeft,
+    'topCenter': Alignment.topCenter,
+    'topRight': Alignment.topRight,
+    'centerLeft': Alignment.centerLeft,
+    'centerRight': Alignment.centerRight,
+    'bottomLeft': Alignment.bottomLeft,
+    'bottomCenter': Alignment.bottomCenter,
+    'bottomRight': Alignment.bottomRight,
+  };
+
   const AlignmentParser();
 
   /// Safe parsing with error result
@@ -26,16 +39,12 @@ class AlignmentParser implements Parser<AlignmentGeometry> {
     if (value == null) return null;
 
     if (value is Alignment) {
-      // For center alignment, use simple string
-      if (value == Alignment.center) return 'center';
-      if (value == Alignment.topLeft) return 'topLeft';
-      if (value == Alignment.topCenter) return 'topCenter';
-      if (value == Alignment.topRight) return 'topRight';
-      if (value == Alignment.centerLeft) return 'centerLeft';
-      if (value == Alignment.centerRight) return 'centerRight';
-      if (value == Alignment.bottomLeft) return 'bottomLeft';
-      if (value == Alignment.bottomCenter) return 'bottomCenter';
-      if (value == Alignment.bottomRight) return 'bottomRight';
+      // Check for named alignments using modern functional approach
+      final namedAlignment = _namedAlignments.entries
+          .where((entry) => entry.value == value)
+          .firstOrNull;
+      
+      if (namedAlignment != null) return namedAlignment.key;
 
       // For custom values, use array format
       return [value.x, value.y];
@@ -55,25 +64,9 @@ class AlignmentParser implements Parser<AlignmentGeometry> {
     if (json == null) return null;
 
     switch (json) {
-      // Named alignments
-      case 'center':
-        return Alignment.center;
-      case 'topLeft':
-        return Alignment.topLeft;
-      case 'topCenter':
-        return Alignment.topCenter;
-      case 'topRight':
-        return Alignment.topRight;
-      case 'centerLeft':
-        return Alignment.centerLeft;
-      case 'centerRight':
-        return Alignment.centerRight;
-      case 'bottomLeft':
-        return Alignment.bottomLeft;
-      case 'bottomCenter':
-        return Alignment.bottomCenter;
-      case 'bottomRight':
-        return Alignment.bottomRight;
+      // Named alignments using static map
+      case String name when _namedAlignments.containsKey(name):
+        return _namedAlignments[name];
 
       // Array format [x, y]
       case List list when list.length == 2:

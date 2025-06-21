@@ -43,15 +43,12 @@ class CurveParser implements Parser<Curve> {
   Object? encode(Curve? value) {
     if (value == null) return null;
 
-    // Find matching named curve
-    for (final entry in _curves.entries) {
-      if (entry.value == value) {
-        return entry.key;
-      }
-    }
-
-    // For custom curves, return a generic identifier
-    return 'custom_${value.runtimeType}';
+    // Find matching named curve using modern functional approach
+    final namedCurve = _curves.entries
+        .where((entry) => entry.value == value)
+        .firstOrNull;
+    
+    return namedCurve?.key ?? 'custom_${value.runtimeType}';
   }
 
   @override

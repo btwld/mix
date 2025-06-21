@@ -7,13 +7,15 @@ class DurationParser implements Parser<Duration> {
   const DurationParser();
 
   Duration _parseMap(Map<String, Object?> map) {
+    int parseUnit(String key) => (map[key] as num?)?.toInt() ?? 0;
+    
     return Duration(
-      days: (map['days'] as num?)?.toInt() ?? 0,
-      hours: (map['hours'] as num?)?.toInt() ?? 0,
-      minutes: (map['minutes'] as num?)?.toInt() ?? 0,
-      seconds: (map['seconds'] as num?)?.toInt() ?? 0,
-      milliseconds: (map['milliseconds'] as num?)?.toInt() ?? 0,
-      microseconds: (map['microseconds'] as num?)?.toInt() ?? 0,
+      days: parseUnit('days'),
+      hours: parseUnit('hours'),
+      minutes: parseUnit('minutes'),
+      seconds: parseUnit('seconds'),
+      milliseconds: parseUnit('milliseconds'),
+      microseconds: parseUnit('microseconds'),
     );
   }
 

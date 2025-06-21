@@ -40,8 +40,8 @@ class FontWeightParser implements Parser<FontWeight> {
       'bold' || 700 => FontWeight.w700,
       'extraBold' || 800 => FontWeight.w800,
       'black' || 900 => FontWeight.w900,
-      num n => FontWeight.values.firstWhere(
-          (w) => w.value == n.toInt(),
+      num numericValue => FontWeight.values.firstWhere(
+          (weight) => weight.value == numericValue.toInt(),
           orElse: () => FontWeight.normal,
         ),
       _ => null,
