@@ -3,23 +3,10 @@ import 'package:flutter/material.dart';
 import 'parsers.dart';
 
 /// Simplified BoxDecoration parser following KISS principle
-class BoxDecorationParser implements Parser<BoxDecoration> {
+class BoxDecorationParser extends Parser<BoxDecoration> {
   static const instance = BoxDecorationParser();
 
   const BoxDecorationParser();
-
-  /// Safe parsing with error result
-  ParseResult<BoxDecoration> tryDecode(Object? json) {
-    try {
-      final result = decode(json);
-
-      return result != null
-          ? ParseSuccess(result)
-          : ParseError('Invalid BoxDecoration format', json);
-    } catch (e) {
-      return ParseError(e.toString(), json);
-    }
-  }
 
   @override
   Object? encode(BoxDecoration? value) {
@@ -33,7 +20,8 @@ class BoxDecorationParser implements Parser<BoxDecoration> {
     }
 
     if (value.border is Border) {
-      result['border'] = MixParsers.get<Border>()?.encode(value.border as Border);
+      result['border'] =
+          MixParsers.get<Border>()?.encode(value.border as Border);
     }
 
     if (value.borderRadius is BorderRadius) {

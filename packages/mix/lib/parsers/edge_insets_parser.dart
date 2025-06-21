@@ -3,23 +3,10 @@ import 'package:flutter/material.dart';
 import 'base/parser_base.dart';
 
 /// Simple EdgeInsets parser following KISS principle
-class EdgeInsetsParser implements Parser<EdgeInsetsGeometry> {
+class EdgeInsetsParser extends Parser<EdgeInsetsGeometry> {
   static const instance = EdgeInsetsParser();
 
   const EdgeInsetsParser();
-
-  /// Safe parsing with error result
-  ParseResult<EdgeInsetsGeometry> tryDecode(Object? json) {
-    try {
-      final result = decode(json);
-
-      return result != null
-          ? ParseSuccess(result)
-          : ParseError('Invalid EdgeInsets format', json);
-    } catch (e) {
-      return ParseError(e.toString(), json);
-    }
-  }
 
   @override
   Object? encode(EdgeInsetsGeometry? value) {

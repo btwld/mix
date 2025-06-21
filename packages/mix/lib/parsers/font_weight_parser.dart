@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'base/parser_base.dart';
 
 /// Parser for FontWeight following KISS principle
-class FontWeightParser implements Parser<FontWeight> {
+class FontWeightParser extends Parser<FontWeight> {
   static const instance = FontWeightParser();
 
   const FontWeightParser();
@@ -12,18 +12,7 @@ class FontWeightParser implements Parser<FontWeight> {
   Object? encode(FontWeight? value) {
     if (value == null) return null;
 
-    return switch (value) {
-      FontWeight.w100 => 'thin',
-      FontWeight.w200 => 'extraLight',
-      FontWeight.w300 => 'light',
-      FontWeight.w400 => 'normal',
-      FontWeight.w500 => 'medium',
-      FontWeight.w600 => 'semiBold',
-      FontWeight.w700 => 'bold',
-      FontWeight.w800 => 'extraBold',
-      FontWeight.w900 => 'black',
-      _ => value.value,
-    };
+    return {'weight': value.value};
   }
 
   @override
@@ -31,6 +20,13 @@ class FontWeightParser implements Parser<FontWeight> {
     if (json == null) return null;
 
     return switch (json) {
+      // Support map format (primary)
+      Map<String, Object?> map => FontWeight.values.firstWhere(
+          (weight) => weight.value == (map.get('weight') as num?)?.toInt(),
+          orElse: () => FontWeight.normal,
+        ),
+
+      // Legacy string and numeric support for backward compatibility
       'thin' || 100 => FontWeight.w100,
       'extraLight' || 200 => FontWeight.w200,
       'light' || 300 => FontWeight.w300,

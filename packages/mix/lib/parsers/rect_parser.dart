@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'base/parser_base.dart';
 
 /// Parser for Rect following KISS principle
-class RectParser implements Parser<Rect> {
+class RectParser extends Parser<Rect> {
   static const instance = RectParser();
 
   const RectParser();

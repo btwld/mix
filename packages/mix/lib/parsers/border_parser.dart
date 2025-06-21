@@ -3,23 +3,10 @@ import 'package:flutter/material.dart';
 import 'parsers.dart';
 
 /// Parser for Border values
-class BorderParser implements Parser<Border> {
+class BorderParser extends Parser<Border> {
   static const instance = BorderParser();
 
   const BorderParser();
-
-  /// Safe parsing with error result
-  ParseResult<Border> tryDecode(Object? json) {
-    try {
-      final result = decode(json);
-
-      return result != null
-          ? ParseSuccess(result)
-          : ParseError('Invalid Border format', json);
-    } catch (e) {
-      return ParseError(e.toString(), json);
-    }
-  }
 
   @override
   Object? encode(Border? value) {
@@ -72,7 +59,8 @@ class BorderParser implements Parser<Border> {
     // Check for symmetric format
     if (map.containsKey('vertical') && map.containsKey('horizontal')) {
       final vertical = MixParsers.get<BorderSide>()?.decode(map['vertical']);
-      final horizontal = MixParsers.get<BorderSide>()?.decode(map['horizontal']);
+      final horizontal =
+          MixParsers.get<BorderSide>()?.decode(map['horizontal']);
 
       if (vertical == null || horizontal == null) return null;
 
@@ -82,10 +70,12 @@ class BorderParser implements Parser<Border> {
     // Full format
     return Border(
       top: MixParsers.get<BorderSide>()?.decode(map['top']) ?? BorderSide.none,
-      right: MixParsers.get<BorderSide>()?.decode(map['right']) ?? BorderSide.none,
-      bottom:
-          MixParsers.get<BorderSide>()?.decode(map['bottom']) ?? BorderSide.none,
-      left: MixParsers.get<BorderSide>()?.decode(map['left']) ?? BorderSide.none,
+      right:
+          MixParsers.get<BorderSide>()?.decode(map['right']) ?? BorderSide.none,
+      bottom: MixParsers.get<BorderSide>()?.decode(map['bottom']) ??
+          BorderSide.none,
+      left:
+          MixParsers.get<BorderSide>()?.decode(map['left']) ?? BorderSide.none,
     );
   }
 }

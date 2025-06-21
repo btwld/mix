@@ -1,14 +1,14 @@
 import 'base/parser_base.dart';
 
 /// Simple duration parser following KISS principle
-class DurationParser implements Parser<Duration> {
+class DurationParser extends Parser<Duration> {
   static const instance = DurationParser();
 
   const DurationParser();
 
   Duration _parseMap(Map<String, Object?> map) {
     int parseUnit(String key) => (map[key] as num?)?.toInt() ?? 0;
-    
+
     return Duration(
       days: parseUnit('days'),
       hours: parseUnit('hours'),
@@ -17,19 +17,6 @@ class DurationParser implements Parser<Duration> {
       milliseconds: parseUnit('milliseconds'),
       microseconds: parseUnit('microseconds'),
     );
-  }
-
-  /// Safe parsing with error result
-  ParseResult<Duration> tryDecode(Object? json) {
-    try {
-      final result = decode(json);
-
-      return result != null
-          ? ParseSuccess(result)
-          : ParseError('Invalid duration format', json);
-    } catch (e) {
-      return ParseError(e.toString(), json);
-    }
   }
 
   @override

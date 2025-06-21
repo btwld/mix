@@ -3,23 +3,10 @@ import 'package:flutter/material.dart';
 import 'base/parser_base.dart';
 
 /// Parser for Size values
-class SizeParser implements Parser<Size> {
+class SizeParser extends Parser<Size> {
   static const instance = SizeParser();
 
   const SizeParser();
-
-  /// Safe parsing with error result
-  ParseResult<Size> tryDecode(Object? json) {
-    try {
-      final result = decode(json);
-
-      return result != null
-          ? ParseSuccess(result)
-          : ParseError('Invalid Size format', json);
-    } catch (e) {
-      return ParseError(e.toString(), json);
-    }
-  }
 
   @override
   Object? encode(Size? value) {

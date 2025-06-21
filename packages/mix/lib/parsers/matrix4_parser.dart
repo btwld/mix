@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'base/parser_base.dart';
 
 /// Parser for Matrix4 following KISS principle
-class Matrix4Parser implements Parser<Matrix4> {
+class Matrix4Parser extends Parser<Matrix4> {
   static const instance = Matrix4Parser();
 
   const Matrix4Parser();

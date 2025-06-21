@@ -4,7 +4,7 @@ import 'parser_base.dart';
 
 /// Generic parser for all enum types following KISS principle
 /// Reduces code duplication by handling all enum parsing in one place
-abstract class EnumParser<T extends Enum> implements Parser<T> {
+abstract class EnumParser<T extends Enum> extends Parser<T> {
   /// The list of all enum values for type T
   final List<T> values;
 

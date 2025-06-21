@@ -3,23 +3,10 @@ import 'package:flutter/material.dart';
 import 'parsers.dart';
 
 /// Parser for BoxShadow values
-class BoxShadowParser implements Parser<BoxShadow> {
+class BoxShadowParser extends Parser<BoxShadow> {
   static const instance = BoxShadowParser();
 
   const BoxShadowParser();
-
-  /// Safe parsing with error result
-  ParseResult<BoxShadow> tryDecode(Object? json) {
-    try {
-      final result = decode(json);
-
-      return result != null
-          ? ParseSuccess(result)
-          : ParseError('Invalid BoxShadow format', json);
-    } catch (e) {
-      return ParseError(e.toString(), json);
-    }
-  }
 
   @override
   Object? encode(BoxShadow? value) {
@@ -52,8 +39,8 @@ class BoxShadowParser implements Parser<BoxShadow> {
     final map = json;
 
     return BoxShadow(
-      color:
-          MixParsers.get<Color>()?.decode(map['color']) ?? const Color(0xFF000000),
+      color: MixParsers.get<Color>()?.decode(map['color']) ??
+          const Color(0xFF000000),
       offset: MixParsers.get<Offset>()?.decode(map['offset']) ?? Offset.zero,
       blurRadius: (map['blurRadius'] as num?)?.toDouble() ??
           (map['blur'] as num?)?.toDouble() ??

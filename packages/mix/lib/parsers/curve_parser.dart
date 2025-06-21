@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'base/parser_base.dart';
 
 /// Parser for Curve values
-class CurveParser implements Parser<Curve> {
+class CurveParser extends Parser<Curve> {
   static const instance = CurveParser();
 
   // Map of common curves for encoding/decoding
@@ -26,38 +26,28 @@ class CurveParser implements Parser<Curve> {
 
   const CurveParser();
 
-  /// Safe parsing with error result
-  ParseResult<Curve> tryDecode(Object? json) {
-    try {
-      final result = decode(json);
-
-      return result != null
-          ? ParseSuccess(result)
-          : ParseError('Invalid Curve format', json);
-    } catch (e) {
-      return ParseError(e.toString(), json);
-    }
-  }
-
   @override
   Object? encode(Curve? value) {
     if (value == null) return null;
 
     // Find matching named curve using modern functional approach
-    final namedCurve = _curves.entries
-        .where((entry) => entry.value == value)
-        .firstOrNull;
-    
-    return namedCurve?.key ?? 'custom_${value.runtimeType}';
+    final namedCurve =
+        _curves.entries.where((entry) => entry.value == value).firstOrNull;
+
+    return {'type': namedCurve?.key ?? 'custom_${value.runtimeType}'};
   }
 
   @override
   Curve? decode(Object? json) {
     if (json == null) return null;
 
-    if (json is! String) return null;
+    return switch (json) {
+      // Support map format (primary)
+      Map<String, Object?> map => _curves[map.get('type')] ?? Curves.linear,
 
-    // Return named curve or default to linear
-    return _curves[json] ?? Curves.linear;
+      // Legacy string support for backward compatibility
+      String curveName => _curves[curveName] ?? Curves.linear,
+      _ => null,
+    };
   }
 }

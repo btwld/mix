@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'base/parser_base.dart';
 
 /// Parser for AlignmentGeometry (Alignment and AlignmentDirectional)
-class AlignmentParser implements Parser<AlignmentGeometry> {
+class AlignmentParser extends Parser<AlignmentGeometry> {
   static const instance = AlignmentParser();
 
   // Map of named alignments for cleaner lookup
@@ -21,19 +21,6 @@ class AlignmentParser implements Parser<AlignmentGeometry> {
 
   const AlignmentParser();
 
-  /// Safe parsing with error result
-  ParseResult<AlignmentGeometry> tryDecode(Object? json) {
-    try {
-      final result = decode(json);
-
-      return result != null
-          ? ParseSuccess(result)
-          : ParseError('Invalid alignment format', json);
-    } catch (e) {
-      return ParseError(e.toString(), json);
-    }
-  }
-
   @override
   Object? encode(AlignmentGeometry? value) {
     if (value == null) return null;
@@ -43,7 +30,7 @@ class AlignmentParser implements Parser<AlignmentGeometry> {
       final namedAlignment = _namedAlignments.entries
           .where((entry) => entry.value == value)
           .firstOrNull;
-      
+
       if (namedAlignment != null) return namedAlignment.key;
 
       // For custom values, use array format

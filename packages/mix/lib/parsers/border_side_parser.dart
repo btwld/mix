@@ -5,7 +5,7 @@ import 'base/parser_base.dart';
 import 'color_parser.dart';
 
 /// Parser for BorderSide values
-class BorderSideParser implements Parser<BorderSide> {
+class BorderSideParser extends Parser<BorderSide> {
   static const instance = BorderSideParser();
 
   // Reuse existing parsers for consistency
@@ -31,19 +31,6 @@ class BorderSideParser implements Parser<BorderSide> {
       width: (map['width'] as num?)?.toDouble() ?? 1.0,
       style: style,
     );
-  }
-
-  /// Safe parsing with error result
-  ParseResult<BorderSide> tryDecode(Object? json) {
-    try {
-      final result = decode(json);
-
-      return result != null
-          ? ParseSuccess(result)
-          : ParseError('Invalid BorderSide format', json);
-    } catch (e) {
-      return ParseError(e.toString(), json);
-    }
   }
 
   @override

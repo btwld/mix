@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'base/parser_base.dart';
 
 /// Parser for TextScaler following KISS principle
-class TextScalerParser implements Parser<TextScaler> {
+class TextScalerParser extends Parser<TextScaler> {
   static const instance = TextScalerParser();
 
   const TextScalerParser();
@@ -26,7 +26,7 @@ class TextScalerParser implements Parser<TextScaler> {
 
     // Check for common cases first
     if (value == TextScaler.noScaling) {
-      return 'noScaling';
+      return {'type': 'noScaling'};
     }
 
     // For linear scaling, extract the scale factor
@@ -34,7 +34,7 @@ class TextScalerParser implements Parser<TextScaler> {
     // We'll test with different values to determine if it's linear
     final testScale = value.scale(14.0);
     final scaleFactor = testScale / 14.0;
-    
+
     // Return linear scaling representation
     return {'type': 'linear', 'scaleFactor': scaleFactor};
   }
@@ -44,14 +44,12 @@ class TextScalerParser implements Parser<TextScaler> {
     if (json == null) return null;
 
     return switch (json) {
-      // Simple cases
-      'noScaling' => TextScaler.noScaling,
-
-      // Numeric shorthand for linear scaling
-      num factor => TextScaler.linear(factor.toDouble()),
-
-      // Map format
+      // Map format (primary)
       Map<String, Object?> map => _decodeFromMap(map),
+
+      // Legacy support for backward compatibility
+      'noScaling' => TextScaler.noScaling,
+      num factor => TextScaler.linear(factor.toDouble()),
       _ => null,
     };
   }

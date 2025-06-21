@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'base/parser_base.dart';
 
 /// Parser for StrutStyle following KISS principle
-class StrutStyleParser implements Parser<StrutStyle> {
+class StrutStyleParser extends Parser<StrutStyle> {
   static const instance = StrutStyleParser();
 
   const StrutStyleParser();

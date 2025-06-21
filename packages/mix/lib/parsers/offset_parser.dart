@@ -3,23 +3,10 @@ import 'package:flutter/material.dart';
 import 'base/parser_base.dart';
 
 /// Parser for Offset values
-class OffsetParser implements Parser<Offset> {
+class OffsetParser extends Parser<Offset> {
   static const instance = OffsetParser();
 
   const OffsetParser();
-
-  /// Safe parsing with error result
-  ParseResult<Offset> tryDecode(Object? json) {
-    try {
-      final result = decode(json);
-
-      return result != null
-          ? ParseSuccess(result)
-          : ParseError('Invalid Offset format', json);
-    } catch (e) {
-      return ParseError(e.toString(), json);
-    }
-  }
 
   @override
   Object? encode(Offset? value) {

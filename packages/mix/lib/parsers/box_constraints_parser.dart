@@ -3,23 +3,10 @@ import 'package:flutter/material.dart';
 import 'base/parser_base.dart';
 
 /// Parser for BoxConstraints values
-class BoxConstraintsParser implements Parser<BoxConstraints> {
+class BoxConstraintsParser extends Parser<BoxConstraints> {
   static const instance = BoxConstraintsParser();
 
   const BoxConstraintsParser();
-
-  /// Safe parsing with error result
-  ParseResult<BoxConstraints> tryDecode(Object? json) {
-    try {
-      final result = decode(json);
-
-      return result != null
-          ? ParseSuccess(result)
-          : ParseError('Invalid BoxConstraints format', json);
-    } catch (e) {
-      return ParseError(e.toString(), json);
-    }
-  }
 
   @override
   Object? encode(BoxConstraints? value) {
