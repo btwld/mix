@@ -15,7 +15,6 @@ import 'border_radius_parser.dart';
 import 'border_side_parser.dart';
 import 'box_constraints_parser.dart';
 import 'box_decoration_parser.dart';
-import 'box_shadow_parser.dart';
 import 'color_parser.dart';
 import 'curve_parser.dart';
 import 'duration_parser.dart';
@@ -25,6 +24,8 @@ import 'gradient_parser.dart';
 import 'matrix4_parser.dart';
 import 'offset_parser.dart';
 import 'rect_parser.dart';
+import 'shadow/box_shadow_parser.dart';
+import 'shadow/shadow_parser.dart';
 import 'size_parser.dart';
 import 'strut_style_parser.dart';
 import 'text_height_behavior_parser.dart';
@@ -41,7 +42,6 @@ export 'border_radius_parser.dart';
 export 'border_side_parser.dart';
 export 'box_constraints_parser.dart';
 export 'box_decoration_parser.dart';
-export 'box_shadow_parser.dart';
 export 'color_parser.dart';
 export 'curve_parser.dart';
 export 'duration_parser.dart';
@@ -51,6 +51,8 @@ export 'gradient_parser.dart';
 export 'matrix4_parser.dart';
 export 'offset_parser.dart';
 export 'rect_parser.dart';
+export 'shadow/box_shadow_parser.dart';
+export 'shadow/shadow_parser.dart';
 export 'size_parser.dart';
 export 'strut_style_parser.dart';
 export 'text_height_behavior_parser.dart';
@@ -96,6 +98,7 @@ class MixParsers {
     Matrix4: const Matrix4Parser(),
     Offset: const OffsetParser(),
     Rect: const RectParser(),
+    Shadow: const ShadowParser(),
     Size: const SizeParser(),
     StrutStyle: const StrutStyleParser(),
     TextHeightBehavior: const TextHeightBehaviorParser(),
