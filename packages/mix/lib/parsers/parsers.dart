@@ -150,7 +150,8 @@ class MixParsers {
     final valueType = value.runtimeType;
     final parser = _parsers[valueType];
 
-    return parser?.encode(value as dynamic);
+    // Type-safe encoding using the parser's expected type
+    return parser?.encode(value);
   }
 
   /// Decode a value using the appropriate parser

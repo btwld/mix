@@ -57,7 +57,7 @@ final class DefaultTextStyleModifierSpec
   }
 }
 
-final class DefaultTextStyleModifierSpecUtility<T extends Attribute>
+final class DefaultTextStyleModifierSpecUtility<T extends StyleElement>
     extends MixUtility<T, DefaultTextStyleModifierSpecAttribute> {
   const DefaultTextStyleModifierSpecUtility(super.builder);
   T call({

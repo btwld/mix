@@ -18,7 +18,7 @@ void main() {
         required void Function(T, _TestStyleUtility) action}) {
       test(description, () {
         final testStyle = _TestStyleUtility(
-          styles: AttributeMap(
+          initialStyles: AttributeMap(
             [const MockSpecIntAttribute(200)],
           ),
         );
@@ -42,7 +42,7 @@ void main() {
 
     test('should add context-dependent styles correctly', () {
       final testStyle = _TestStyleUtility(
-          styles: AttributeMap([const MockSpecIntAttribute(300)]));
+          initialStyles: AttributeMap([const MockSpecIntAttribute(300)]));
 
       utility.on.context((context) => testStyle);
 
@@ -110,19 +110,19 @@ void main() {
 
 // Test implementation of StyleUtility for testing purposes
 class _TestStyleUtility extends SpecUtility<SpecAttribute, SpecAttribute> {
-  @override
-  AttributeMap<SpecAttribute> styles =
-      const AttributeMap<SpecAttribute>.empty();
+  _TestStyleUtility({
+    AttributeMap<SpecAttribute>? initialStyles,
+  }) : super((v) => v) {
+    if (initialStyles != null) {
+      styles = initialStyles;
+    }
+  }
 
   @override
   MockSpecIntAttribute only() {
     // TODO: implement only
     throw UnimplementedError();
   }
-
-  _TestStyleUtility({
-    this.styles = const AttributeMap<SpecAttribute>.empty(),
-  }) : super((v) => v);
 
   MockSpecIntAttribute value(int v) {
     final attribute = MockSpecIntAttribute(v);
