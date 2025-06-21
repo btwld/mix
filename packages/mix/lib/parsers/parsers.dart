@@ -14,9 +14,11 @@ import 'border_parser.dart';
 import 'border_radius_parser.dart';
 import 'border_side_parser.dart';
 import 'box_constraints_parser.dart';
-import 'box_decoration_parser.dart';
 import 'color_parser.dart';
 import 'curve_parser.dart';
+import 'decoration/box_decoration_parser.dart';
+import 'decoration/decoration_parser.dart';
+import 'decoration/shape_decoration_parser.dart';
 import 'duration_parser.dart';
 import 'edge_insets_parser.dart';
 import 'font_weight_parser.dart';
@@ -41,9 +43,11 @@ export 'border_parser.dart';
 export 'border_radius_parser.dart';
 export 'border_side_parser.dart';
 export 'box_constraints_parser.dart';
-export 'box_decoration_parser.dart';
 export 'color_parser.dart';
 export 'curve_parser.dart';
+export 'decoration/box_decoration_parser.dart';
+export 'decoration/decoration_parser.dart';
+export 'decoration/shape_decoration_parser.dart';
 export 'duration_parser.dart';
 export 'edge_insets_parser.dart';
 export 'font_weight_parser.dart';
@@ -88,6 +92,8 @@ class MixParsers {
     BorderStyle: const BorderStyleParser(),
     BoxConstraints: const BoxConstraintsParser(),
     BoxDecoration: const BoxDecorationParser(),
+    Decoration: const DecorationParser(),
+    ShapeDecoration: const ShapeDecorationParser(),
     BoxShadow: const BoxShadowParser(),
     Color: const ColorParser(),
     Curve: const CurveParser(),
