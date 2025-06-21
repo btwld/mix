@@ -25,8 +25,7 @@ typedef _BaseDecorProperties = ({
 /// This class needs to have the different properties that are not found in the [Modifiers] class.
 /// In order to support merging of [Decoration] values, and reusable of common properties.
 @immutable
-sealed class DecorationDto<T extends Decoration> extends Mixable<T>
-    with Diagnosticable {
+sealed class DecorationDto<T extends Decoration> extends Mixable<T> {
   final ColorDto? color;
   final GradientDto? gradient;
   final DecorationImageDto? image;
