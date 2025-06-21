@@ -7,12 +7,13 @@
   "dart.flutterSdkPath": ".fvm/versions/3.27.0",
   "dart.lineLength": 80,
   "search.exclude": {
-    "**/.fvm/versions": true
+    "**/.fvm": true,
   },
   "files.watcherExclude": {
-    "**/.fvm/versions": true
+    
+    "**/.fvm": true
   },
   "files.exclude": {
-    "**/.fvm/versions": true
+    "**/.fvm": true
   }
 }
