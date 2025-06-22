@@ -147,7 +147,7 @@ class NakedTextField extends StatefulWidget {
     this.contentInsertionConfiguration,
     this.clipBehavior = Clip.hardEdge,
     this.restorationId,
-    this.scribbleEnabled = true,
+    this.stylusHandwritingEnabled = true,
     this.enableIMEPersonalizedLearning = true,
     this.contextMenuBuilder,
     this.canRequestFocus = true,
@@ -340,8 +340,8 @@ class NakedTextField extends StatefulWidget {
   /// Restoration ID for this widget.
   final String? restorationId;
 
-  /// Whether scribble is enabled.
-  final bool scribbleEnabled;
+  /// Whether stylus handwriting is enabled.
+  final bool stylusHandwritingEnabled;
 
   /// Whether to enable IME personalized learning.
   final bool enableIMEPersonalizedLearning;
@@ -538,7 +538,7 @@ class _NakedTextFieldState extends State<NakedTextField>
     }
 
     if (cause == SelectionChangedCause.longPress ||
-        cause == SelectionChangedCause.scribble) {
+        cause == SelectionChangedCause.stylusHandwriting) {
       return true;
     }
 
@@ -780,7 +780,7 @@ class _NakedTextFieldState extends State<NakedTextField>
               autofillClient: this,
               clipBehavior: widget.clipBehavior,
               restorationId: 'editable',
-              scribbleEnabled: widget.scribbleEnabled,
+              stylusHandwritingEnabled: widget.stylusHandwritingEnabled,
               enableIMEPersonalizedLearning:
                   widget.enableIMEPersonalizedLearning,
               contentInsertionConfiguration:

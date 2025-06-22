@@ -89,7 +89,7 @@ class TextSpecWidget extends SpecWidget<TextSpec> {
         overflow: spec?.overflow,
         textScaler: spec?.textScaler ??
             (spec?.textScaleFactor != null
-                // ignore: deprecated_member_use, deprecated_member_use_from_same_package
+                // ignore: deprecated_member_use_from_same_package
                 ? TextScaler.linear(spec!.textScaleFactor!)
                 : null),
         maxLines: spec?.maxLines,
