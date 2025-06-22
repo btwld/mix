@@ -8,7 +8,7 @@ import 'field_metadata.dart';
 /// annotation types (Spec, DTO, etc.).
 abstract class BaseMetadata {
   /// The annotated class element
-  final ClassElement element;
+  final ClassElement element; // ignore: deprecated_member_use
 
   /// The name of the class
   final String name;
@@ -23,7 +23,7 @@ abstract class BaseMetadata {
   final bool isDiagnosticable;
 
   /// The constructor to use for code generation
-  final ConstructorElement constructor;
+  final ConstructorElement constructor; // ignore: deprecated_member_use
 
   /// Whether the class is abstract
   final bool isAbstract;

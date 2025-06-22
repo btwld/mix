@@ -83,7 +83,7 @@ class FieldMetadata {
   });
 
   /// Creates a [FieldMetadata] from a class field
-  factory FieldMetadata.fromField(FieldElement element) {
+  factory FieldMetadata.fromField(FieldElement element) { // ignore: deprecated_member_use
     final annotation = readMixableField(element);
     final utilityAnnotation = readMixableFieldUtility(element);
 
@@ -97,8 +97,8 @@ class FieldMetadata {
       annotation: annotation,
       documentationComment: element.documentationComment,
       hasDeprecated: element.metadata.any((annotation) => 
-          annotation.element?.name == 'Deprecated' || 
-          annotation.element?.name == 'deprecated'),
+          annotation.toSource().contains('Deprecated') || 
+          annotation.toSource().contains('deprecated')),
       nullable: element.type.nullabilitySuffix == NullabilitySuffix.question,
       resolvable: createFieldResolvableMetadata(
         name: element.name,
@@ -114,7 +114,7 @@ class FieldMetadata {
   }
 
   /// Creates a [FieldMetadata] from a property accessor (getter)
-  factory FieldMetadata.fromPropertyAccessor(PropertyAccessorElement element) {
+  factory FieldMetadata.fromPropertyAccessor(PropertyAccessorElement element) { // ignore: deprecated_member_use
     final annotation = readMixableField(element);
     final utilityAnnotation = readMixableFieldUtility(element);
 
@@ -128,8 +128,8 @@ class FieldMetadata {
       annotation: annotation,
       documentationComment: element.documentationComment,
       hasDeprecated: element.metadata.any((annotation) => 
-          annotation.element?.name == 'Deprecated' || 
-          annotation.element?.name == 'deprecated'),
+          annotation.toSource().contains('Deprecated') || 
+          annotation.toSource().contains('deprecated')),
       nullable:
           element.returnType.nullabilitySuffix == NullabilitySuffix.question,
       resolvable: createFieldResolvableMetadata(
@@ -241,7 +241,7 @@ class ParameterMetadata extends FieldMetadata {
   });
 
   /// Creates a [ParameterMetadata] from a constructor parameter
-  factory ParameterMetadata.fromParameter(ParameterElement parameter) {
+  factory ParameterMetadata.fromParameter(ParameterElement parameter) { // ignore: deprecated_member_use
     final existingFieldInfo = _getFieldFromParameter(parameter);
 
     // If we have existing field info, use that as the basis
@@ -307,7 +307,7 @@ class ParameterMetadata extends FieldMetadata {
 }
 
 /// Attempts to get the corresponding field for a constructor parameter
-FieldMetadata? _getFieldFromParameter(ParameterElement parameter) {
+FieldMetadata? _getFieldFromParameter(ParameterElement parameter) { // ignore: deprecated_member_use
   final element = parameter.enclosingElement3;
   if (element is! ConstructorElement) return null;
 
