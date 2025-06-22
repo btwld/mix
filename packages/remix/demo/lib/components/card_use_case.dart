@@ -25,7 +25,7 @@ Widget buildCard(BuildContext context) {
                 StyledText(
                   'Leo Farias',
                   style: Style(
-                    $text.chain
+                    $text
                       ..style.fontSize(14)
                       ..style.fontWeight.bold()
                       ..style.color.black87(),
@@ -37,7 +37,7 @@ Widget buildCard(BuildContext context) {
                 StyledText(
                   'Flutter Engineer',
                   style: Style(
-                    $text.chain
+                    $text
                       ..style.fontSize(12)
                       ..style.color.black54(),
                     $on.dark(

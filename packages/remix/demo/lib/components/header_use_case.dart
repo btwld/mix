@@ -12,7 +12,7 @@ import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 Widget buildCard(BuildContext context) {
   final leading = Box(
     style: Style(
-      $box.chain
+      $box
         ..padding(10)
         ..color.white10()
         ..borderRadius(8)
