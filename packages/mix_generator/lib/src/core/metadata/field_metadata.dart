@@ -277,8 +277,8 @@ class ParameterMetadata extends FieldMetadata {
       annotation: annotation,
       documentationComment: null,
       hasDeprecated: parameter.metadata.any((annotation) => 
-          annotation.element?.name == 'Deprecated' || 
-          annotation.element?.name == 'deprecated'),
+          annotation.toSource().contains('Deprecated') || 
+          annotation.toSource().contains('deprecated')),
       nullable: isNullable,
       utility: createFieldUtilityMetadata(
         name: parameter.name,
@@ -297,7 +297,7 @@ class ParameterMetadata extends FieldMetadata {
   }
 
   /// Extracts parameter metadata from a class constructor
-  static List<ParameterMetadata> extractFromConstructor(ClassElement element) {
+  static List<ParameterMetadata> extractFromConstructor(ClassElement element) { // ignore: deprecated_member_use
     final targetConstructor = findTargetConstructor(element);
 
     return targetConstructor.parameters
@@ -308,13 +308,13 @@ class ParameterMetadata extends FieldMetadata {
 
 /// Attempts to get the corresponding field for a constructor parameter
 FieldMetadata? _getFieldFromParameter(ParameterElement parameter) { // ignore: deprecated_member_use
-  final element = parameter.enclosingElement3;
-  if (element is! ConstructorElement) return null;
+  final element = parameter.enclosingElement3; // ignore: deprecated_member_use
+  if (element is! ConstructorElement) return null; // ignore: deprecated_member_use
 
-  final classElement = element.enclosingElement3 as ClassElement;
+  final classElement = element.enclosingElement3 as ClassElement; // ignore: deprecated_member_use
 
   // Search up the class hierarchy for the field
-  ClassElement? current = classElement;
+  ClassElement? current = classElement; // ignore: deprecated_member_use
   while (current != null) {
     final field = current.fields
         .firstWhereOrNull((field) => field.name == parameter.name);
@@ -324,7 +324,7 @@ FieldMetadata? _getFieldFromParameter(ParameterElement parameter) { // ignore: d
     }
 
     // Move up to the superclass
-    current = current.supertype?.element as ClassElement?;
+    current = current.supertype?.element as ClassElement?; // ignore: deprecated_member_use
   }
 
   return null;
