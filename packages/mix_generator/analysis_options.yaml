@@ -2,3 +2,6 @@ include: ../../lints_with_dcm.yaml
 analyzer:
   errors:
     non_constant_identifier_names: ignore
+    # Ignore analyzer deprecation warnings in code generator package
+    # The generator needs to work with different analyzer versions during transitions
+    deprecated_member_use: ignore
