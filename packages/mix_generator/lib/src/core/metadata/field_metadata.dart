@@ -96,7 +96,9 @@ class FieldMetadata {
       dartType: element.type,
       annotation: annotation,
       documentationComment: element.documentationComment,
-      hasDeprecated: element.hasDeprecated,
+      hasDeprecated: element.metadata.any((annotation) => 
+          annotation.element?.name == 'Deprecated' || 
+          annotation.element?.name == 'deprecated'),
       nullable: element.type.nullabilitySuffix == NullabilitySuffix.question,
       resolvable: createFieldResolvableMetadata(
         name: element.name,
@@ -125,7 +127,9 @@ class FieldMetadata {
       dartType: element.returnType,
       annotation: annotation,
       documentationComment: element.documentationComment,
-      hasDeprecated: element.hasDeprecated,
+      hasDeprecated: element.metadata.any((annotation) => 
+          annotation.element?.name == 'Deprecated' || 
+          annotation.element?.name == 'deprecated'),
       nullable:
           element.returnType.nullabilitySuffix == NullabilitySuffix.question,
       resolvable: createFieldResolvableMetadata(
@@ -272,7 +276,9 @@ class ParameterMetadata extends FieldMetadata {
       dartType: parameter.type,
       annotation: annotation,
       documentationComment: null,
-      hasDeprecated: parameter.hasDeprecated,
+      hasDeprecated: parameter.metadata.any((annotation) => 
+          annotation.element?.name == 'Deprecated' || 
+          annotation.element?.name == 'deprecated'),
       nullable: isNullable,
       utility: createFieldUtilityMetadata(
         name: parameter.name,

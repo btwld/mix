@@ -110,19 +110,17 @@ void main() {
 
 // Test implementation of StyleUtility for testing purposes
 class _TestStyleUtility extends SpecUtility<SpecAttribute, SpecAttribute> {
-  @override
-  AttributeMap<SpecAttribute> styles =
-      const AttributeMap<SpecAttribute>.empty();
+  _TestStyleUtility({
+    AttributeMap<SpecAttribute> styles = const AttributeMap<SpecAttribute>.empty(),
+  }) : super((v) => v) {
+    this.styles = styles;
+  }
 
   @override
   MockSpecIntAttribute only() {
     // TODO: implement only
     throw UnimplementedError();
   }
-
-  _TestStyleUtility({
-    this.styles = const AttributeMap<SpecAttribute>.empty(),
-  }) : super((v) => v);
 
   MockSpecIntAttribute value(int v) {
     final attribute = MockSpecIntAttribute(v);
