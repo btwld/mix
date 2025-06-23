@@ -20,183 +20,7 @@ Packages with other changes:
  - [`mix_annotations` - `v1.7.0-beta.0`](#mix_annotations---v170-beta0)
  - [`mix_generator` - `v1.7.0-beta.0`](#mix_generator---v170-beta0)
  - [`naked` - `v0.1.0-beta.0`](#naked---v010-beta0)
-
----
-
-#### `mix` - `v1.7.0-beta.0`
-
- - **REFACTOR**: bump flutter version to 3.19.0 (#365).
- - **REFACTOR**: Simplify accordion component architecture (#661).
- - **REFACTOR**: Implement BaseStyle utility class and improve styling architecture (#659).
- - **REFACTOR**: Remove SpecConfiguration and SpecStyle from environment (#656).
- - **REFACTOR**: Move widget state handling from MixBuilder to SpecBuilder (#651).
- - **REFACTOR**: Rename WidgetModifiersData to WidgetModifiersConfig (#649).
- - **REFACTOR**: Fix deprecations and modernize codebase (#647).
- - **REFACTOR**: Remove NestedStyleAttribute and migrate to direct Style usage (#644).
- - **REFACTOR**: update outdated API (#583).
- - **REFACTOR**: Deprecate `MixWidgetStateController` (#586).
- - **REFACTOR**: Use WidgetState instead of MixWidgetState (#582).
- - **REFACTOR**: Rename `MixableProperty` to `MixableType` (#574).
- - **REFACTOR**: mix generator clean up and mix semantic changes (#569).
- - **REFACTOR**: Rewrite Fortaleza theme using the new code gen for tokens (#528).
- - **REFACTOR**: Solve dcm lint issues (#519).
- - **REFACTOR**: ShapeBorder merge (#490).
- - **REFACTOR**: Rewrite all components in the new Archtecture (#467).
- - **REFACTOR**(mix_generator): fix lints (#395).
- - **REFACTOR**: use timer instead of future<void> (#374).
- - **FIX**: reset modifiers and directives when using fluentAPI (#482).
- - **FIX**: FlexSpecWidget prioritizes the direction in spec (#414).
- - **FIX**: Add variant condition check to ContextVariantBuilder (#657).
- - **FIX**: Change Mixable to extend EqualityMixin instead of StyleElement (#648).
- - **FIX**: copyWith overriding bug (#622).
- - **FIX**: Gap resolve SpaceToken in flex attribute (#327).
- - **FIX**: Order of modifiers implementation on Box, Image and Text (#529).
- - **FIX**(docs): fix fn level docs for Style::applyVariants (#460).
- - **FIX**: animations of Stack and Flex.
- - **FIX**: order modifier (#389).
- - **FIX**: Code gen linting fixes (#399).
- - **FIX**: add flexible as the first in the order of modifiers (#379).
- - **FIX**: gestures propagation for GestureMixStateWidget (#394).
- - **FIX**: Added remaining params to callable specs and modifiers (#332).
- - **FIX**: Correct handling of individual border sides (#408).
- - **FIX**: Added missing widget state utilities (#411).
- - **FIX**: Exception when there is no children on flex (#345).
- - **FIX**: breakpoint utility merge exception (#421).
- - **FIX**: Pressable disposes controller only if it creates it (#424).
- - **FIX**: mix - Improved merge behavior between ShapeDecoration and BoxDecoration (#316).
- - **FIX**: Shadow list animation (#445).
- - **FIX**: Style when merged with an AnimatedStyle should generate an AnimatedStyle (#472).
- - **FIX**: Update OnBrightnessVariant to use `MediaQuery` instead of `Theme` (#471).
- - **FIX**: HitTestBehavior when there is a Interectable in the tree (#437).
- - **FEAT**: Refactor slider and spinner components with new architecture (#674).
- - **FEAT**: remix-styling-configuration (#483).
- - **FEAT**: Add more directives to Colors (#477).
- - **FEAT**: implement a way to clear inline modifiers (#478).
- - **FEAT**: Fluent API (#475).
- - **FEAT**: Add CustomOutlinedBorder's  (#487).
- - **FEAT**: builder optimization (#629).
- - **FEAT**: Create mouse cursor Decorator (#263).
- - **FEAT**: Create Select component (#448).
- - **FEAT**: transform.translate (#484).
- - **FEAT**: Add parameter onEnd for AnimatedStyle (#458).
- - **FEAT**: `SingleChildScrollView` widget modifier (#427).
- - **FEAT**: add error state to MixWidgetState (#489).
- - **FEAT**: Create a specific utility to Transform.rotate (#434).
- - **FEAT**: unify SpecUtility, Style, and Attributes as compatible values (#643).
- - **FEAT**: TargetPlatform and web variants (#431).
- - **FEAT**: Improve error messages (#491).
- - **FEAT**: Utilities for text height behavior (#495).
- - **FEAT**: Remix improvements and further improvements (#410).
- - **FEAT**: Create StrokeAlignUtility (#496).
- - **FEAT**: implement toast component (#503).
- - **FEAT**: Improve spring curve.
- - **FEAT**: Slider component (#509).
- - **FEAT**: Rewrite FlexBox as a Mix's primitive component (#517).
- - **FEAT**: Add focused style classes for spec utilities (#677).
- - **FEAT**: Code generation for Widget Modifiers (#396).
- - **FEAT**: deprecate styled widgets in favor of new naming conventions (#619).
- - **FEAT**: Ability to pass MixWidgetStateController to SpecBuilder (#391).
- - **FEAT**: Accordion interaction based on open variable (#546).
- - **FEAT**: Implementing new RXButton (#660).
- - **FEAT**: remix - Foundational components (#317).
- - **FEAT**: interactive widget state by default (#384).
- - **FEAT**: MixThemeData can alter default order of modifiers (#380).
- - **FEAT**: Dto utility generation now adds constructor and static methods.
- - **FEAT**: "Naked" - A Behavior-First UI Component Library for Flutter (#579).
- - **FEAT**: ColorSwatchToken and other token improvements (#378).
- - **FEAT**: Implementing duration extension for int  (#634).
- - **FEAT**: modifiers in spec (#333).
- - **FEAT**: add attribute to fontVariantion (#371).
- - **FEAT**: Create MixBuilder (#581).
- - **FEAT**: pressable supports keyboard events (#346).
- - **FEAT**: Add generated style-focused modifiers and specs (#652).
- - **FEAT**: Create code gen for design tokens (#521).
- - **DOCS**: Add section for `TokenResolver` (#537).
- - **DOCS**: improve mix theme data features explanations (#404).
-
-#### `mix_lint` - `v1.7.0-beta.0`
-
- - **REFACTOR**: update outdated API (#583).
- - **FEAT**: Rewrite FlexBox as a Mix's primitive component (#517).
-
-#### `mix_annotations` - `v1.7.0-beta.0`
-
- - **REFACTOR**: Rename `MixableProperty` to `MixableType` (#574).
- - **REFACTOR**: mix generator clean up and mix semantic changes (#569).
- - **FEAT**: Add focused style classes for spec utilities (#677).
- - **FEAT**: Add generated style-focused modifiers and specs (#652).
- - **FEAT**: Create code gen for design tokens (#521).
-
-#### `mix_generator` - `v1.7.0-beta.0`
-
- - **REFACTOR**: Implement BaseStyle utility class and improve styling architecture (#659).
- - **REFACTOR**: Move widget state handling from MixBuilder to SpecBuilder (#651).
- - **REFACTOR**: Rename WidgetModifiersData to WidgetModifiersConfig (#649).
- - **REFACTOR**: Fix deprecations and modernize codebase (#647).
- - **REFACTOR**: update outdated API (#583).
- - **REFACTOR**: Use WidgetState instead of MixWidgetState (#582).
- - **REFACTOR**: Rename `MixableProperty` to `MixableType` (#574).
- - **REFACTOR**: mix generator clean up and mix semantic changes (#569).
- - **REFACTOR**: Rewrite Fortaleza theme using the new code gen for tokens (#528).
- - **FIX**: update animated property handling to use null coalescing (#637).
- - **FIX**: Shadow list animation (#445).
- - **FEAT**: Add focused style classes for spec utilities (#677).
- - **FEAT**: Add generated style-focused modifiers and specs (#652).
- - **FEAT**: unify SpecUtility, Style, and Attributes as compatible values (#643).
- - **FEAT**: builder optimization (#629).
- - **FEAT**: Create code gen for design tokens (#521).
- - **FEAT**: Rewrite FlexBox as a Mix's primitive component (#517).
- - **FEAT**: Fluent API (#475).
- - **FEAT**: Remix improvements and further improvements (#410).
- - **DOCS**: improve mix theme data features explanations (#404).
-
-#### `naked` - `v0.1.0-beta.0`
-
- - **REFACTOR**: Select (#596).
- - **REFACTOR**: Tabs and Tooltip (#595).
- - **REFACTOR**: Naked Slider (#594).
- - **REFACTOR**: radio group (#593).
- - **REFACTOR**: naked menu (#592).
- - **REFACTOR**: accordion (#591).
- - **REFACTOR**: Refactor Checkbox (#590).
- - **REFACTOR**: update outdated API (#583).
- - **FIX**: Change default autofocus to false in Menu and Select (#609).
- - **FEAT**: Refactor radio and checkbox components with new architecture (#672).
- - **FEAT**: Add textStyle prop in NakedTextField  (#608).
- - **FEAT**: Implement Tooltip Lifecycle (#603).
- - **FEAT**: Add test for Hover to RadioButton (#601).
- - **FEAT**: Recreate Button using Naked (#587).
- - **FEAT**: "Naked" - A Behavior-First UI Component Library for Flutter (#579).
- - **DOCS**: organize folders and files.
- - **DOCS**: Improve accordion example.
- - **DOCS**: Remove old example app (#607).
- - **DOCS**: Document naked button (#599).
-
-
-## 2025-06-17
-
-### Changes
-
----
-
-Packages with breaking changes:
-
- - There are no breaking changes in this release.
-
-Packages with other changes:
-
- - [`mix` - `v1.7.0-beta.0`](#mix---v170)
- - [`mix_annotations` - `v0.4.1`](#mix_annotations---v041)
- - [`mix_generator` - `v0.4.1`](#mix_generator---v041)
- - [`mix_lint` - `v0.1.4`](#mix_lint---v014)
- - [`naked` - `v0.0.1-dev.1`](#naked---v001-dev1)
- - [`remix` - `v0.0.4+2`](#remix---v0042)
-
-Packages with dependency updates only:
-
-> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
-
- - `remix` - `v0.0.4+2`
+ - [`remix` - `v0.1.0-beta.0`](#remix---v010-beta0)
 
 ---
 
@@ -221,11 +45,15 @@ Packages with dependency updates only:
  - **FEAT**: Add utilities for animatedData (#660).
  - **FEAT**: Add focused style classes for spec utilities (#677)
 
-#### `mix_annotations` - `v0.4.1`
+#### `mix_lint` - `v1.7.0-beta.0`
 
- - **FEAT**: Add generated style-focused modifiers and specs (#652).
+ - No changes in this release.
 
-#### `mix_generator` - `v0.4.1`
+#### `mix_annotations` - `v1.7.0-beta.0`
+
+- **FEAT**: Add generated style-focused modifiers and specs (#652).
+
+#### `mix_generator` - `v1.7.0-beta.0`
 
  - **REFACTOR**: Rename WidgetModifiersData to WidgetModifiersConfig (#649).
  - **REFACTOR**: Fix deprecations and modernize codebase (#647).
@@ -234,11 +62,7 @@ Packages with dependency updates only:
  - **FEAT**: unify SpecUtility, Style, and Attributes as compatible values (#643).
  - **FEAT**: builder optimization (#629).
 
-#### `mix_lint` - `v0.1.4`
-
- - No changes in this release.
-
-#### `naked` - `v0.0.1-dev.1`
+#### `naked` - `v0.1.0-beta.0`
 
  - **REFACTOR**: Select (#596).
  - **REFACTOR**: Tabs and Tooltip (#595).
@@ -258,6 +82,7 @@ Packages with dependency updates only:
  - **DOCS**: Remove old example app (#607).
  - **DOCS**: Document naked button (#599).
 
+####
 
 ## 2025-03-31
 

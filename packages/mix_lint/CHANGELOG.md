@@ -1,10 +1,5 @@
 ## 1.7.0-beta.0
 
- - **REFACTOR**: update outdated API (#583).
- - **FEAT**: Rewrite FlexBox as a Mix's primitive component (#517).
-
-## 0.1.4
-
  - No changes in this release.
 
 ## 0.1.3
