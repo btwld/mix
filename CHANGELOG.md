@@ -32,7 +32,7 @@ Packages with dependency updates only:
 
 #### `mix` - `v1.7.0-beta.0`
 
- - **REFACTOR**: Implement BaseStyle utility class and improve styling architecture #659
+ - **REFACTOR**: Implement BaseStyle utility class and improve styling architecture (#659)
  - **REFACTOR**: Remove SpecConfiguration and SpecStyle from environment (#656)
  - **REFACTOR**: Move widget state handling from MixBuilder to SpecBuilder (#651).
  - **REFACTOR**: Rename WidgetModifiersData to WidgetModifiersConfig (#649).
