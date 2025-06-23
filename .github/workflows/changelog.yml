@@ -43,6 +43,13 @@ on:
         type: string
         description: set specific version for remix
         default: ""
+      update_naked:
+        type: boolean
+        description: whether to update naked
+        default: true
+      naked:
+        type: string
+        description: set specific version for naked
       
 jobs:
   version:
@@ -105,6 +112,9 @@ jobs:
         if [ "${{ github.event.inputs.update_remix }}" == "false" ]; then
           ignored_packages="$ignored_packages --ignore=remix"
         fi
+        if [ "${{ github.event.inputs.update_naked }}" == "false" ]; then
+          ignored_packages="$ignored_packages --ignore=naked"
+        fi
 
         packages_with_versions=""
 
@@ -122,6 +132,9 @@ jobs:
         fi
         if [ "${{ github.event.inputs.remix }}" != "" ]; then
           packages_with_versions="$packages_with_versions -V remix:${{ github.event.inputs.remix }}"
+        fi
+        if [ "${{ github.event.inputs.naked }}" != "" ]; then
+          packages_with_versions="$packages_with_versions -V naked:${{ github.event.inputs.naked }}"
         fi
 
         melos version $ignored_packages --yes --no-git-tag-version $packages_with_versions

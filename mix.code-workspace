@@ -21,8 +21,8 @@
       "path": "packages/remix"
     },
     {
-      "name": "mix_animate",
-      "path": "packages/mix_animate"
+      "name": "naked",
+      "path": "packages/naked"
     }
   ],
   "settings": {
