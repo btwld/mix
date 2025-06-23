@@ -15,7 +15,7 @@ Packages with breaking changes:
 
 Packages with other changes:
 
- - [`mix` - `v1.7.0`](#mix---v170)
+ - [`mix` - `v1.7.0-beta.0`](#mix---v170)
  - [`mix_annotations` - `v0.4.1`](#mix_annotations---v041)
  - [`mix_generator` - `v0.4.1`](#mix_generator---v041)
  - [`mix_lint` - `v0.1.4`](#mix_lint---v014)
@@ -30,8 +30,9 @@ Packages with dependency updates only:
 
 ---
 
-#### `mix` - `v1.7.0`
+#### `mix` - `v1.7.0-beta.0`
 
+ - **REFACTOR**: Implement BaseStyle utility class and improve styling architecture #659
  - **REFACTOR**: Remove SpecConfiguration and SpecStyle from environment (#656)
  - **REFACTOR**: Move widget state handling from MixBuilder to SpecBuilder (#651).
  - **REFACTOR**: Rename WidgetModifiersData to WidgetModifiersConfig (#649).
@@ -47,6 +48,8 @@ Packages with dependency updates only:
  - **FEAT**: Create MixBuilder (#581).
  - **FEAT**: Add generated style-focused modifiers and specs (#652).
  - **FEAT**: Unify SpecUtility, Style, and Attributes as compatible values (#643).
+ - **FEAT**: Add utilities for animatedData (#660).
+ - **FEAT**: Add focused style classes for spec utilities (#677)
 
 #### `mix_annotations` - `v0.4.1`
 

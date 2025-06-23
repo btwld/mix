@@ -3,37 +3,13 @@ name: Changelog
 on:
   workflow_dispatch:
     inputs:
-      update_mix:
+      update_mix_packages:
         type: boolean
-        description: whether to update mix
+        description: whether to update all mix-related packages
         default: true
-      mix:
+      mix_version:
         type: string
-        description: set specific version for mix
-        default: ""
-      update_mix_lint:
-        type: boolean
-        description: whether to update mix_lint
-        default: true
-      mix_lint:
-        type: string
-        description: set specific version for mix_lint
-        default: ""
-      update_mix_annotations:
-        type: boolean
-        description: whether to update mix_annotations
-        default: true
-      mix_annotations:
-        type: string
-        description: set specific version for mix_annotations
-        default: ""
-      update_mix_generator:
-        type: boolean
-        description: whether to update mix_generator
-        default: true
-      mix_generator:
-        type: string
-        description: set specific version for mix_generator
+        description: set the version for all mix-related packages
         default: ""
       update_remix:
         type: boolean
@@ -50,7 +26,8 @@ on:
       naked:
         type: string
         description: set specific version for naked
-      
+        default: ""
+
 jobs:
   version:
     runs-on: ubuntu-latest
@@ -97,18 +74,10 @@ jobs:
 
         ignored_packages=""
 
-        if [ "${{ github.event.inputs.update_mix }}" == "false" ]; then
-          ignored_packages="$ignored_packages --ignore=mix"
+        if [ "${{ github.event.inputs.update_mix_packages }}" == "false" ]; then
+          ignored_packages="$ignored_packages --ignore=mix,mix_lint,mix_annotations,mix_generator"
         fi
-        if [ "${{ github.event.inputs.update_mix_lint }}" == "false" ]; then
-          ignored_packages="$ignored_packages --ignore=mix_lint"
-        fi
-        if [ "${{ github.event.inputs.update_mix_annotations }}" == "false" ]; then
-          ignored_packages="$ignored_packages --ignore=mix_annotations"
-        fi
-        if [ "${{ github.event.inputs.update_mix_generator }}" == "false" ]; then
-          ignored_packages="$ignored_packages --ignore=mix_generator"
-        fi
+
         if [ "${{ github.event.inputs.update_remix }}" == "false" ]; then
           ignored_packages="$ignored_packages --ignore=remix"
         fi
@@ -118,17 +87,8 @@ jobs:
 
         packages_with_versions=""
 
-        if [ "${{ github.event.inputs.mix }}" != "" ]; then
-          packages_with_versions="$packages_with_versions -V mix:${{ github.event.inputs.mix }}"
-        fi
-        if [ "${{ github.event.inputs.mix_lint }}" != "" ]; then
-          packages_with_versions="$packages_with_versions -V mix_lint:${{ github.event.inputs.mix_lint }}"
-        fi
-        if [ "${{ github.event.inputs.mix_annotations }}" != "" ]; then
-          packages_with_versions="$packages_with_versions -V mix_annotations:${{ github.event.inputs.mix_annotations }}"
-        fi
-        if [ "${{ github.event.inputs.mix_generator }}" != "" ]; then
-          packages_with_versions="$packages_with_versions -V mix_generator:${{ github.event.inputs.mix_generator }}"
+        if [ "${{ github.event.inputs.mix_version }}" != "" ]; then
+          packages_with_versions="$packages_with_versions -V mix:${{ github.event.inputs.mix_version }} mix_lint:${{ github.event.inputs.mix_version }} mix_annotations:${{ github.event.inputs.mix_version }} mix_generator:${{ github.event.inputs.mix_version }}"
         fi
         if [ "${{ github.event.inputs.remix }}" != "" ]; then
           packages_with_versions="$packages_with_versions -V remix:${{ github.event.inputs.remix }}"
