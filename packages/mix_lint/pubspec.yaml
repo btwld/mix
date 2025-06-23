@@ -1,6 +1,6 @@
 name: mix_lint
 description: A linter for the mix package
-version: 0.1.4
+version: 1.7.0-beta.0
 repository: https://github.com/btwld/mix/tree/main/packages/mix_lint
 
 environment:

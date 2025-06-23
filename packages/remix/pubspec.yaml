@@ -13,8 +13,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  mix: ^1.7.0
-  mix_annotations: ^0.4.1
+  mix: ^1.7.0-beta.0
+  mix_annotations: ^1.7.0-beta.0
   naked:
     path: ../naked
   meta: ^1.15.0
@@ -22,7 +22,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mix_generator: ^0.4.1
+  mix_generator: ^1.7.0-beta.0
   build_runner: ^2.4.9
   flutter_lints: ^4.0.0
   dart_code_metrics_presets: ^2.14.0
