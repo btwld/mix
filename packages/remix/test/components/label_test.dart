@@ -18,7 +18,7 @@ void main() {
         icon: icon,
       );
 
-      await pumpRxWidget(tester, widget);
+      await tester.pumpRxWidget(widget);
 
       expect(find.text(label), findsOneWidget);
       expect(find.byIcon(icon), findsOneWidget);
@@ -33,7 +33,7 @@ void main() {
         style: RxLabelStyle(),
       );
 
-      await pumpRxWidget(tester, widget);
+      await tester.pumpRxWidget(widget);
 
       expect(find.text(label), findsOneWidget);
       expect(find.byIcon(icon), findsNothing);
@@ -42,8 +42,7 @@ void main() {
     testWidgets('should create label with icon in different positions',
         (WidgetTester tester) async {
       for (var position in [IconPosition.start, IconPosition.end]) {
-        await pumpRxWidget(
-          tester,
+        await tester.pumpRxWidget(
           RxLabel(
             label,
             icon: icon,

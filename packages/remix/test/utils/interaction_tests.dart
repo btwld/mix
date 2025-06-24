@@ -6,14 +6,16 @@ import 'package:meta/meta.dart';
 import 'package:mix/mix.dart';
 import 'package:remix/src/helpers/mix_controller_mixin.dart';
 
-Future<void> pumpRxWidget(WidgetTester tester, Widget child) async {
-  await tester.pumpWidget(
-    MaterialApp(
-      home: Scaffold(
-        body: child,
+extension WidgetTesterExt on WidgetTester {
+  Future<void> pumpRxWidget(Widget child) async {
+    await pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: child,
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 enum FindPosition {
@@ -59,7 +61,7 @@ void testTapWidget(
   testWidgets(description, (WidgetTester tester) async {
     final valueHolder = ValueHolder<bool>(value: false);
     final widget = child(valueHolder);
-    await pumpRxWidget(tester, widget);
+    await tester.pumpRxWidget(widget);
 
     final gesture = await tester.startGesture(
       tester.getCenter(find.byWidget(widget)),
@@ -84,7 +86,7 @@ void testHoverWidget(
         FocusHighlightStrategy.alwaysTraditional;
 
     final widget = child();
-    await pumpRxWidget(tester, widget);
+    await tester.pumpRxWidget(widget);
 
     final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
     await gesture.addPointer();
@@ -112,7 +114,7 @@ void testFocusWidget(
     final focusNode = FocusNode();
 
     final widget = childBuilder(focusNode);
-    await pumpRxWidget(tester, widget);
+    await tester.pumpRxWidget(widget);
 
     focusNode.requestFocus();
     await tester.pump();
@@ -125,5 +127,39 @@ void testFocusWidget(
     await tester.pump();
 
     expect(state.mixController.has(WidgetState.focused), false);
+  });
+}
+
+@isTest
+void testSelectStateWidget(
+  String description,
+  Widget Function(ValueNotifier<bool> holder) childBuilder, {
+  required bool shouldExpectSelect,
+}) {
+  testWidgets(description, (WidgetTester tester) async {
+    FocusManager.instance.highlightStrategy =
+        FocusHighlightStrategy.alwaysTraditional;
+
+    final holder = ValueNotifier<bool>(false);
+    late Widget widget;
+    await tester.pumpRxWidget(
+      ListenableBuilder(
+        listenable: holder,
+        builder: (context, child) {
+          widget = childBuilder(holder);
+          return widget;
+        },
+      ),
+    );
+
+    await tester.tap(find.byWidget(widget));
+    await tester.pumpAndSettle();
+
+    final state = tester.state(find.byWidget(widget)) as MixControllerMixin;
+
+    await tester.pumpAndSettle();
+
+    expect(state.mixController.has(WidgetState.selected), shouldExpectSelect);
+    expect(holder.value, shouldExpectSelect);
   });
 }

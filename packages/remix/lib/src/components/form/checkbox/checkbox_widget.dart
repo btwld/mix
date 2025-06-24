@@ -33,6 +33,7 @@ class RxCheckbox extends StatefulWidget implements Disableable, Selectable {
     this.style,
     this.variants = const [],
     this.label,
+    this.focusNode,
   });
 
   /// {@macro remix.component.enabled}
@@ -61,6 +62,9 @@ class RxCheckbox extends StatefulWidget implements Disableable, Selectable {
   /// An optional label that will be displayed next to the checkbox.
   final String? label;
 
+  /// {@macro remix.component.focusNode}
+  final FocusNode? focusNode;
+
   @override
   State<RxCheckbox> createState() => _RxCheckboxState();
 }
@@ -75,6 +79,9 @@ class _RxCheckboxState extends State<RxCheckbox>
     return NakedCheckbox(
       value: widget.selected,
       onChanged: (value) => widget.onChanged?.call(value ?? false),
+      onHoverState: (state) {
+        mixController.hovered = state;
+      },
       onPressedState: (state) {
         mixController.pressed = state;
       },
@@ -82,6 +89,7 @@ class _RxCheckboxState extends State<RxCheckbox>
         mixController.focused = state;
       },
       enabled: widget.enabled,
+      focusNode: widget.focusNode,
       child: RemixBuilder(
         builder: (context) {
           final spec = CheckboxSpec.of(context);

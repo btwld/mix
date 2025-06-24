@@ -8,7 +8,11 @@ import '../utils/interaction_tests.dart';
 void main() {
   group('RxButton', () {
     group('Constructor', () {
-      const child = Text('Raw Button');
+      const child = SizedBox(
+        width: 100,
+        height: 100,
+        child: Icon(Icons.star),
+      );
       const label = 'Raw Button';
       const icon = Icons.star;
       const variants = [Variant('warning')];
@@ -20,7 +24,7 @@ void main() {
           );
 
       testWidgets(
-          'ensures RxButton.raw initializes with correct properties and displays child widget',
+          'Should initialize RxButton.raw with correct properties and display child widget',
           (WidgetTester tester) async {
         final widget = RxButton.raw(
           enabled: true,
@@ -34,7 +38,7 @@ void main() {
           child: child,
         );
 
-        await pumpRxWidget(tester, widget);
+        await tester.pumpRxWidget(widget);
 
         expect(widget.enabled, isTrue);
         expect(widget.loading, isFalse);
@@ -45,11 +49,11 @@ void main() {
         expect(widget.focusNode, focusNode);
         expect(widget.spinnerBuilder, spinnerBuilder);
 
-        expect(find.text('Raw Button'), findsOneWidget);
+        expect(find.byWidget(child), findsOneWidget);
       });
 
       testWidgets(
-          'ensures RxButton initializes with correct properties and displays child widget',
+          'Should initialize RxButton with correct properties and display child widget',
           (WidgetTester tester) async {
         final widget = RxButton(
           label: label,
@@ -64,7 +68,7 @@ void main() {
           spinnerBuilder: spinnerBuilder,
         );
 
-        await pumpRxWidget(tester, widget);
+        await tester.pumpRxWidget(widget);
 
         expect(widget.enabled, isTrue);
         expect(widget.loading, isFalse);
@@ -79,7 +83,7 @@ void main() {
       });
 
       testWidgets(
-          'ensures RxButton.icon initializes with correct properties and displays icon',
+          'Should initialize RxButton.icon with correct properties and display icon',
           (WidgetTester tester) async {
         final widget = RxButton.icon(
           icon,
@@ -93,7 +97,7 @@ void main() {
           spinnerBuilder: spinnerBuilder,
         );
 
-        await pumpRxWidget(tester, widget);
+        await tester.pumpRxWidget(widget);
 
         expect(widget.enabled, isTrue);
         expect(widget.loading, isFalse);
@@ -108,11 +112,10 @@ void main() {
       });
     });
 
-    testWidgets('creates button with icon in different positions',
+    testWidgets('Should create button with icon in different positions',
         (WidgetTester tester) async {
       for (var position in [IconPosition.start, IconPosition.end]) {
-        await pumpRxWidget(
-          tester,
+        await tester.pumpRxWidget(
           RxButton(
             label: 'Test Button',
             icon: Icons.arrow_forward,
@@ -139,11 +142,10 @@ void main() {
       }
     });
 
-    testWidgets('creates button with custom spinner',
+    testWidgets('Should create button with custom spinner',
         (WidgetTester tester) async {
       for (var loadingState in [true, false]) {
-        await pumpRxWidget(
-          tester,
+        await tester.pumpRxWidget(
           RxButton(
             label: 'Custom Spinner',
             loading: loadingState,
@@ -165,9 +167,9 @@ void main() {
       }
     });
 
-    testWidgets('applies custom style correctly', (WidgetTester tester) async {
-      await pumpRxWidget(
-        tester,
+    testWidgets('Should apply custom style correctly',
+        (WidgetTester tester) async {
+      await tester.pumpRxWidget(
         RxButton(
           label: 'Styled Button',
           style: RxButtonStyle()
@@ -203,7 +205,7 @@ void main() {
 
     group('Interaction', () {
       testTapWidget(
-          'should be clickable when enabled is true and onPressed is not null',
+          'Should be clickable when enabled is true and onPressed is not null',
           (holder) {
         return RxButton(
           label: 'Test Button',
@@ -211,7 +213,7 @@ void main() {
         );
       }, shouldExpectPress: true);
 
-      testTapWidget('should be unclickable when enabled is false', (value) {
+      testTapWidget('Should be unclickable when enabled is false', (value) {
         return RxButton(
           label: 'Test Button',
           onPressed: () => value.value = true,
@@ -219,21 +221,21 @@ void main() {
         );
       }, shouldExpectPress: false);
 
-      testTapWidget('should be unclickable when onPressed is null', (value) {
+      testTapWidget('Should be unclickable when onPressed is null', (value) {
         return RxButton(
           label: 'Test Button',
           onPressed: null,
         );
       }, shouldExpectPress: false);
 
-      testHoverWidget('should be hoverable when enabled', () {
+      testHoverWidget('Should be hoverable when enabled', () {
         return RxButton(
           label: 'Test Button',
           onPressed: () {},
         );
       }, shouldExpectHover: true);
 
-      testHoverWidget('should not react to hover when disabled', () {
+      testHoverWidget('Should not react to hover when disabled', () {
         return RxButton(
           label: 'Test Button',
           onPressed: () {},
@@ -241,7 +243,7 @@ void main() {
         );
       }, shouldExpectHover: false);
 
-      testFocusWidget('should be focusable when enabled', (focusNode) {
+      testFocusWidget('Should be focusable when enabled', (focusNode) {
         return RxButton(
           label: 'Test Button',
           focusNode: focusNode,
@@ -249,7 +251,7 @@ void main() {
         );
       }, shouldExpectFocus: true);
 
-      testFocusWidget('should not be focusable when disabled', (focusNode) {
+      testFocusWidget('Should not be focusable when disabled', (focusNode) {
         return RxButton(
           label: 'Test Button',
           focusNode: focusNode,

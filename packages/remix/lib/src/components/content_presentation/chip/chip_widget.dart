@@ -31,6 +31,7 @@ class RxChip extends StatefulWidget implements Disableable, Selectable {
     this.iconLeft,
     this.iconRight,
     this.variants = const [],
+    this.focusNode,
     required this.onChanged,
     this.style,
   }) : child = _ChipBody(
@@ -60,6 +61,7 @@ class RxChip extends StatefulWidget implements Disableable, Selectable {
     this.iconLeft,
     this.iconRight,
     this.variants = const [],
+    this.focusNode,
     required this.child,
     required this.onChanged,
     this.style,
@@ -94,6 +96,9 @@ class RxChip extends StatefulWidget implements Disableable, Selectable {
   /// {@macro remix.component.style}
   final RxChipStyle? style;
 
+  /// {@macro remix.component.focusNode}
+  final FocusNode? focusNode;
+
   @override
   State<RxChip> createState() => _RxChipState();
 }
@@ -118,13 +123,10 @@ class _RxChipState extends State<RxChip>
         mixController.focused = state;
       },
       enabled: widget.enabled,
+      focusNode: widget.focusNode,
       child: RemixBuilder(
         builder: (context) {
-          return _ChipBody(
-            iconLeft: widget.iconLeft,
-            iconRight: widget.iconRight,
-            label: widget.label,
-          );
+          return widget.child;
         },
         style: Style(_style).applyVariants(widget.variants),
         controller: mixController,
