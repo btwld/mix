@@ -29,7 +29,7 @@ class RxButton extends StatefulWidget implements Disableable {
     IconPosition iconPosition = IconPosition.start,
     this.enabled = true,
     this.loading = false,
-    this.spinnerWidget,
+    this.spinnerBuilder,
     this.enableHapticFeedback = true,
     required this.onPressed,
     this.focusNode,
@@ -56,7 +56,7 @@ class RxButton extends StatefulWidget implements Disableable {
     super.key,
     this.enabled = true,
     this.loading = false,
-    this.spinnerWidget,
+    this.spinnerBuilder,
     this.enableHapticFeedback = true,
     required this.onPressed,
     this.focusNode,
@@ -83,7 +83,7 @@ class RxButton extends StatefulWidget implements Disableable {
     required this.child,
     this.enabled = true,
     this.loading = false,
-    this.spinnerWidget,
+    this.spinnerBuilder,
     this.enableHapticFeedback = true,
     required this.onPressed,
     this.focusNode,
@@ -101,7 +101,7 @@ class RxButton extends StatefulWidget implements Disableable {
   /// Whether the button is in a loading state.
   ///
   /// When true, the button will display a spinner and become non-interactive.
-  /// The spinner can be customized via [spinnerWidget].
+  /// The spinner can be customized via [spinnerBuilder].
   final bool loading;
 
   /// Callback function called when the button is pressed.
@@ -121,11 +121,11 @@ class RxButton extends StatefulWidget implements Disableable {
   /// RxButton(
   ///   label: 'Submit',
   ///   loading: true,
-  ///   spinnerWidget: CircularProgressIndicator(),
+  ///   spinnerBuilder: (context) => CircularProgressIndicator(),
   ///   onPressed: () {},
   /// )
   /// ```
-  final Widget? spinnerWidget;
+  final WidgetBuilder? spinnerBuilder;
 
   /// The style configuration for the button.
   ///
@@ -149,8 +149,13 @@ class RxButton extends StatefulWidget implements Disableable {
 
 class _RxButtonState extends State<RxButton> with MixControllerMixin {
   /// Builds the loading overlay that shows a spinner while preserving layout.
-  Widget _buildLoadingOverlay(ButtonSpec spec, Widget child) {
-    final Widget spinner = widget.spinnerWidget ?? spec.spinner();
+  Widget _buildLoadingOverlay(
+    ButtonSpec spec,
+    Widget child,
+    BuildContext context,
+  ) {
+    final Widget spinner =
+        widget.spinnerBuilder?.call(context) ?? spec.spinner();
 
     return widget.loading
         ? Stack(
@@ -194,7 +199,13 @@ class _RxButtonState extends State<RxButton> with MixControllerMixin {
               child: IconTheme(
                 data: spec.icon,
                 child: widget.loading
-                    ? _buildLoadingOverlay(spec, widget.child)
+                    ? Builder(builder: (context) {
+                        return _buildLoadingOverlay(
+                          spec,
+                          widget.child,
+                          context,
+                        );
+                      })
                     : widget.child,
               ),
             ),
