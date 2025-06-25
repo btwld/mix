@@ -188,6 +188,7 @@ void main() {
         return RxChip(
           label: 'Test',
           selected: false,
+          focusNode: focusNode,
           onChanged: (newValue) {},
         );
       }, shouldExpectFocus: true);
