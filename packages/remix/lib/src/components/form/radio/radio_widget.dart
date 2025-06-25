@@ -128,7 +128,13 @@ class _RxRadioState<T> extends State<RxRadio<T>>
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    final group = NakedRadioGroupScope.of<T>(context);
+    final group = NakedRadioGroupScope.maybeOf<T>(context);
+    if (group == null) {
+      throw FlutterError(
+        'RxRadio must be used within a RxRadioGroup.\n'
+        'No RxRadioGroup ancestor could be found for a RxRadio',
+      );
+    }
     mixController.selected = widget.value == group.groupValue;
     mixController.disabled = !widget.enabled;
   }
@@ -140,19 +146,13 @@ class _RxRadioState<T> extends State<RxRadio<T>>
     return NakedRadio<T>(
       value: widget.value,
       onHoverState: (state) {
-        setState(() {
-          mixController.hovered = state;
-        });
+        mixController.hovered = state;
       },
       onPressedState: (state) {
-        setState(() {
-          mixController.pressed = state;
-        });
+        mixController.pressed = state;
       },
       onFocusState: (state) {
-        setState(() {
-          mixController.focused = state;
-        });
+        mixController.focused = state;
       },
       enabled: widget.enabled,
       enableHapticFeedback: widget.enableHapticFeedback,

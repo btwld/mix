@@ -135,8 +135,7 @@ class NakedRadioGroupScope<T> extends InheritedWidget {
 
   /// Allows radio buttons to access their parent group.
   static NakedRadioGroupScope<T> of<T>(BuildContext context) {
-    final group =
-        context.dependOnInheritedWidgetOfExactType<NakedRadioGroupScope<T>>();
+    final group = maybeOf<T>(context);
     if (group == null) {
       throw FlutterError(
         'NakedRadioButton must be used within a NakedRadioGroup.\n'
@@ -144,6 +143,12 @@ class NakedRadioGroupScope<T> extends InheritedWidget {
       );
     }
     return group;
+  }
+
+  /// Allows radio buttons to access their parent group without throwing an error.
+  static NakedRadioGroupScope<T>? maybeOf<T>(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<NakedRadioGroupScope<T>>();
   }
 
   @override
