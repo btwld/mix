@@ -68,8 +68,8 @@ void testTapWidget(
     );
 
     final state = tester.state(find.byWidget(widget)) as MixControllerMixin;
-
     expect(state.mixController.has(WidgetState.pressed), shouldExpectPress);
+
     await gesture.up();
     expect(valueHolder.value, shouldExpectPress);
   });
@@ -92,13 +92,17 @@ void testHoverWidget(
     await gesture.addPointer();
     await gesture.moveTo(tester.getCenter(find.byWidget(widget)));
 
-    final state = tester.state(find.byWidget(widget)) as MixControllerMixin;
+    await tester.pumpAndSettle();
+    final state = tester.widget<MixWidgetState>(find.byType(MixWidgetState));
 
-    expect(state.mixController.has(WidgetState.hovered), shouldExpectHover);
+    expect(state.hovered, shouldExpectHover);
 
     await gesture.removePointer();
+    await tester.pumpAndSettle();
 
-    expect(state.mixController.has(WidgetState.hovered), false);
+    final stateAfter =
+        tester.widget<MixWidgetState>(find.byType(MixWidgetState));
+    expect(stateAfter.hovered, false);
   });
 }
 
@@ -117,16 +121,19 @@ void testFocusWidget(
     await tester.pumpRxWidget(widget);
 
     focusNode.requestFocus();
-    await tester.pump();
+    await tester.pumpAndSettle();
 
-    final state = tester.state(find.byWidget(widget)) as MixControllerMixin;
+    final state = tester.widget<MixWidgetState>(find.byType(MixWidgetState));
 
-    expect(state.mixController.has(WidgetState.focused), shouldExpectFocus);
+    expect(state.focused, shouldExpectFocus);
 
     focusNode.unfocus();
-    await tester.pump();
+    await tester.pumpAndSettle();
 
-    expect(state.mixController.has(WidgetState.focused), false);
+    final stateAfter =
+        tester.widget<MixWidgetState>(find.byType(MixWidgetState));
+
+    expect(stateAfter.focused, false);
   });
 }
 
@@ -155,11 +162,9 @@ void testSelectStateWidget(
     await tester.tap(find.byWidget(widget));
     await tester.pumpAndSettle();
 
-    final state = tester.state(find.byWidget(widget)) as MixControllerMixin;
+    final state = tester.widget<MixWidgetState>(find.byType(MixWidgetState));
 
-    await tester.pumpAndSettle();
-
-    expect(state.mixController.has(WidgetState.selected), shouldExpectSelect);
+    expect(state.selected, shouldExpectSelect);
     expect(holder.value, shouldExpectSelect);
   });
 }

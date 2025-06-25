@@ -133,13 +133,9 @@ class MixWidgetState extends InheritedModel<WidgetState> {
   final bool disabled;
   final bool hovered;
   final bool focused;
-
   final bool pressed;
-
   final bool dragged;
-
   final bool selected;
-
   final bool error;
 
   @override

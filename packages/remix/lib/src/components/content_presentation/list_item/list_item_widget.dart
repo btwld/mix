@@ -36,6 +36,7 @@ class RxListItem extends StatelessWidget {
     this.variants = const [],
     this.style,
     this.enabled = true,
+    this.focusNode,
   });
 
   /// The primary text displayed in the menu item.
@@ -84,6 +85,9 @@ class RxListItem extends StatelessWidget {
   /// {@macro remix.component.style}
   final RxListItemStyle? style;
 
+  /// {@macro remix.component.focusNode}
+  final FocusNode? focusNode;
+
   RxListItemStyle get _style =>
       RxListItemStyle._default().merge(style ?? RxListItemStyle());
 
@@ -92,6 +96,7 @@ class RxListItem extends StatelessWidget {
     return Pressable(
       enabled: enabled,
       onPress: onPress,
+      focusNode: focusNode,
       child: SpecBuilder(
         style: Style(_style).applyVariants(variants),
         builder: (context) {
