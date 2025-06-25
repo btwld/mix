@@ -6,7 +6,6 @@ class RxAvatarStyle extends AvatarSpecUtility<AvatarSpecAttribute> {
   factory RxAvatarStyle._default() {
     return RxAvatarStyle()
       ..container.size(50)
-      ..container.alignment.center()
       ..container.shape.circle()
       ..container.clipBehavior.antiAlias()
       ..container.color.grey.shade300()

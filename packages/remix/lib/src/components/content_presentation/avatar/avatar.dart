@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
+import '../../../core/attributes/icon_theme_data.dart';
 import '../../../helpers/utility_extension.dart';
 
 part 'avatar.g.dart';
@@ -11,8 +12,13 @@ part 'avatar_widget.dart';
 @MixableSpec()
 base class AvatarSpec extends Spec<AvatarSpec> with _$AvatarSpec {
   final BoxSpec container;
-  final ImageSpec image;
   final TextStyle textStyle;
+
+  @MixableField(
+    dto: MixableFieldType(type: 'IconThemeDataDto'),
+    utilities: [MixableFieldUtility(type: 'IconThemeDataUtility')],
+  )
+  final IconThemeData icon;
 
   /// {@macro avatar_spec_of}
   static const of = _$AvatarSpec.of;
@@ -22,9 +28,9 @@ base class AvatarSpec extends Spec<AvatarSpec> with _$AvatarSpec {
   const AvatarSpec({
     BoxSpec? container,
     TextStyle? textStyle,
-    ImageSpec? image,
+    IconThemeData? icon,
     super.animated,
   })  : container = container ?? const BoxSpec(),
         textStyle = textStyle ?? const TextStyle(),
-        image = image ?? const ImageSpec();
+        icon = icon ?? const IconThemeData();
 }

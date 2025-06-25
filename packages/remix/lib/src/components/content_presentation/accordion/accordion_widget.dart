@@ -1,5 +1,9 @@
 part of 'accordion.dart';
 
+class RxAccordionController<T> extends NakedAccordionController<T> {
+  RxAccordionController({super.min, super.max});
+}
+
 /// A collapsible accordion component that can contain multiple expandable items.
 ///
 /// The [RxAccordion] is a customizable widget that can be used to create collapsible content sections.
@@ -45,7 +49,7 @@ class RxAccordion<T> extends StatefulWidget {
   final List<T> initialExpandedValues;
 
   /// Optional controller to manage accordion state.
-  final NakedAccordionController<T>? controller;
+  final RxAccordionController<T>? controller;
 
   /// {@macro remix.component.style}
   final RxAccordionStyle? style;
@@ -62,7 +66,7 @@ class RxAccordion<T> extends StatefulWidget {
 
 class _RxAccordionState<T> extends State<RxAccordion<T>> {
   late final NakedAccordionController<T> _controller =
-      widget.controller ?? NakedAccordionController<T>();
+      widget.controller ?? RxAccordionController<T>();
 
   RxAccordionStyle get style => RxAccordionStyle._default().merge(
         widget.style ?? RxAccordionStyle(),

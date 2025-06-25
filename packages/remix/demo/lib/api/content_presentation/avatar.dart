@@ -19,10 +19,23 @@ class MyApp extends StatelessWidget {
             children: [
               RxAvatar(
                 label: 'CA',
+                backgroundImage:
+                    const NetworkImage('https://i.pravatar.cc/150?img=48'),
+              ),
+              RxAvatar(
+                label: 'CA',
+                foregroundImage:
+                    const NetworkImage('https://i.pravatar.cc/150?img=48'),
               ),
               const RxAvatar.raw(
-                image: NetworkImage('https://i.pravatar.cc/150?img=48'),
+                foregroundImage:
+                    NetworkImage('https://i.pravatar.cc/150?img=48'),
                 child: Icon(Icons.person),
+              ),
+              const RxAvatar.raw(
+                backgroundImage:
+                    NetworkImage('https://i.pravatar.cc/150?img=48'),
+                child: Icon(Icons.person, color: Colors.white),
               ),
             ],
           ),
