@@ -67,10 +67,13 @@ void testTapWidget(
       tester.getCenter(find.byWidget(widget)),
     );
 
+    await tester.pumpAndSettle();
+
     final state = tester.state(find.byWidget(widget)) as MixControllerMixin;
     expect(state.mixController.has(WidgetState.pressed), shouldExpectPress);
 
     await gesture.up();
+    await tester.pumpAndSettle();
     expect(valueHolder.value, shouldExpectPress);
   });
 }

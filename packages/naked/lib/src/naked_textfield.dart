@@ -807,15 +807,22 @@ class _NakedTextFieldState extends State<NakedTextField>
               }
               _requestKeyboard();
             },
-      child: MouseRegion(
-        cursor: SystemMouseCursors.text,
-        onEnter: (PointerEnterEvent event) => widget.onHoverState?.call(true),
-        onExit: (PointerExitEvent event) => widget.onHoverState?.call(false),
-        child: _selectionGestureDetectorBuilder.buildGestureDetector(
-          behavior: HitTestBehavior.translucent,
-          child: widget.builder(context, child),
-        ),
-      ),
+      child: widget.enabled
+          ? MouseRegion(
+              cursor: SystemMouseCursors.text,
+              onEnter: (PointerEnterEvent event) =>
+                  widget.onHoverState?.call(true),
+              onExit: (PointerExitEvent event) =>
+                  widget.onHoverState?.call(false),
+              child: _selectionGestureDetectorBuilder.buildGestureDetector(
+                behavior: HitTestBehavior.translucent,
+                child: widget.builder(context, child),
+              ),
+            )
+          : _selectionGestureDetectorBuilder.buildGestureDetector(
+              behavior: HitTestBehavior.translucent,
+              child: widget.builder(context, child),
+            ),
     );
   }
 }
