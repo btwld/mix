@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'menu_item.dart';
+part of 'list_item.dart';
 
 // **************************************************************************
 // MixGenerator
@@ -8,34 +8,34 @@ part of 'menu_item.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-/// A mixin that provides spec functionality for [MenuItemSpec].
-mixin _$MenuItemSpec on Spec<MenuItemSpec> {
-  static MenuItemSpec from(MixContext mix) {
-    return mix.attributeOf<MenuItemSpecAttribute>()?.resolve(mix) ??
-        const MenuItemSpec();
+/// A mixin that provides spec functionality for [ListItemSpec].
+mixin _$ListItemSpec on Spec<ListItemSpec> {
+  static ListItemSpec from(MixContext mix) {
+    return mix.attributeOf<ListItemSpecAttribute>()?.resolve(mix) ??
+        const ListItemSpec();
   }
 
-  /// {@template menu_item_spec_of}
-  /// Retrieves the [MenuItemSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
+  /// {@template list_item_spec_of}
+  /// Retrieves the [ListItemSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
   ///
   /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
-  /// that call this method will rebuild when [MenuItemSpec] changes, not when other specs change.
-  /// If no ancestor [ComputedStyle] is found, this method returns an empty [MenuItemSpec].
+  /// that call this method will rebuild when [ListItemSpec] changes, not when other specs change.
+  /// If no ancestor [ComputedStyle] is found, this method returns an empty [ListItemSpec].
   ///
   /// Example:
   ///
   /// ```dart
-  /// final menuItemSpec = MenuItemSpec.of(context);
+  /// final listItemSpec = ListItemSpec.of(context);
   /// ```
   /// {@endtemplate}
-  static MenuItemSpec of(BuildContext context) {
-    return ComputedStyle.specOf<MenuItemSpec>(context) ?? const MenuItemSpec();
+  static ListItemSpec of(BuildContext context) {
+    return ComputedStyle.specOf<ListItemSpec>(context) ?? const ListItemSpec();
   }
 
-  /// Creates a copy of this [MenuItemSpec] but with the given fields
+  /// Creates a copy of this [ListItemSpec] but with the given fields
   /// replaced with the new values.
   @override
-  MenuItemSpec copyWith({
+  ListItemSpec copyWith({
     FlexBoxSpec? container,
     FlexBoxSpec? titleSubtitleContainer,
     TextSpec? title,
@@ -43,7 +43,7 @@ mixin _$MenuItemSpec on Spec<MenuItemSpec> {
     WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
-    return MenuItemSpec(
+    return ListItemSpec(
       container: container ?? _$this.container,
       titleSubtitleContainer:
           titleSubtitleContainer ?? _$this.titleSubtitleContainer,
@@ -54,29 +54,29 @@ mixin _$MenuItemSpec on Spec<MenuItemSpec> {
     );
   }
 
-  /// Linearly interpolates between this [MenuItemSpec] and another [MenuItemSpec] based on the given parameter [t].
+  /// Linearly interpolates between this [ListItemSpec] and another [ListItemSpec] based on the given parameter [t].
   ///
   /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [MenuItemSpec] is returned. When [t] is 1.0, the [other] [MenuItemSpec] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [MenuItemSpec] is returned.
+  /// When [t] is 0.0, the current [ListItemSpec] is returned. When [t] is 1.0, the [other] [ListItemSpec] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [ListItemSpec] is returned.
   ///
-  /// If [other] is null, this method returns the current [MenuItemSpec] instance.
+  /// If [other] is null, this method returns the current [ListItemSpec] instance.
   ///
-  /// The interpolation is performed on each property of the [MenuItemSpec] using the appropriate
+  /// The interpolation is performed on each property of the [ListItemSpec] using the appropriate
   /// interpolation method:
   /// - [FlexBoxSpec.lerp] for [container] and [titleSubtitleContainer].
   /// - [TextSpec.lerp] for [title] and [subtitle].
   /// For [modifiers] and [animated], the interpolation is performed using a step function.
-  /// If [t] is less than 0.5, the value from the current [MenuItemSpec] is used. Otherwise, the value
-  /// from the [other] [MenuItemSpec] is used.
+  /// If [t] is less than 0.5, the value from the current [ListItemSpec] is used. Otherwise, the value
+  /// from the [other] [ListItemSpec] is used.
   ///
   /// This method is typically used in animations to smoothly transition between
-  /// different [MenuItemSpec] configurations.
+  /// different [ListItemSpec] configurations.
   @override
-  MenuItemSpec lerp(MenuItemSpec? other, double t) {
+  ListItemSpec lerp(ListItemSpec? other, double t) {
     if (other == null) return _$this;
 
-    return MenuItemSpec(
+    return ListItemSpec(
       container: _$this.container.lerp(other.container, t),
       titleSubtitleContainer:
           _$this.titleSubtitleContainer.lerp(other.titleSubtitleContainer, t),
@@ -87,10 +87,10 @@ mixin _$MenuItemSpec on Spec<MenuItemSpec> {
     );
   }
 
-  /// The list of properties that constitute the state of this [MenuItemSpec].
+  /// The list of properties that constitute the state of this [ListItemSpec].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [MenuItemSpec] instances for equality.
+  /// compare two [ListItemSpec] instances for equality.
   @override
   List<Object?> get props => [
         _$this.container,
@@ -101,7 +101,7 @@ mixin _$MenuItemSpec on Spec<MenuItemSpec> {
         _$this.animated,
       ];
 
-  MenuItemSpec get _$this => this as MenuItemSpec;
+  ListItemSpec get _$this => this as ListItemSpec;
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties.add(
@@ -120,21 +120,21 @@ mixin _$MenuItemSpec on Spec<MenuItemSpec> {
   }
 }
 
-/// Represents the attributes of a [MenuItemSpec].
+/// Represents the attributes of a [ListItemSpec].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [MenuItemSpec].
+/// appearance of a [ListItemSpec].
 ///
-/// Use this class to configure the attributes of a [MenuItemSpec] and pass it to
-/// the [MenuItemSpec] constructor.
-class MenuItemSpecAttribute extends SpecAttribute<MenuItemSpec>
+/// Use this class to configure the attributes of a [ListItemSpec] and pass it to
+/// the [ListItemSpec] constructor.
+class ListItemSpecAttribute extends SpecAttribute<ListItemSpec>
     with Diagnosticable {
   final FlexBoxSpecAttribute? container;
   final FlexBoxSpecAttribute? titleSubtitleContainer;
   final TextSpecAttribute? title;
   final TextSpecAttribute? subtitle;
 
-  const MenuItemSpecAttribute({
+  const ListItemSpecAttribute({
     this.container,
     this.titleSubtitleContainer,
     this.title,
@@ -143,17 +143,17 @@ class MenuItemSpecAttribute extends SpecAttribute<MenuItemSpec>
     super.animated,
   });
 
-  /// Resolves to [MenuItemSpec] using the provided [MixContext].
+  /// Resolves to [ListItemSpec] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final menuItemSpec = MenuItemSpecAttribute(...).resolve(mix);
+  /// final listItemSpec = ListItemSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  MenuItemSpec resolve(MixContext mix) {
-    return MenuItemSpec(
+  ListItemSpec resolve(MixContext mix) {
+    return ListItemSpec(
       container: container?.resolve(mix),
       titleSubtitleContainer: titleSubtitleContainer?.resolve(mix),
       title: title?.resolve(mix),
@@ -163,19 +163,19 @@ class MenuItemSpecAttribute extends SpecAttribute<MenuItemSpec>
     );
   }
 
-  /// Merges the properties of this [MenuItemSpecAttribute] with the properties of [other].
+  /// Merges the properties of this [ListItemSpecAttribute] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [MenuItemSpecAttribute] with the properties of [other] taking precedence over
+  /// [ListItemSpecAttribute] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  MenuItemSpecAttribute merge(MenuItemSpecAttribute? other) {
+  ListItemSpecAttribute merge(ListItemSpecAttribute? other) {
     if (other == null) return this;
 
-    return MenuItemSpecAttribute(
+    return ListItemSpecAttribute(
       container: container?.merge(other.container) ?? other.container,
       titleSubtitleContainer:
           titleSubtitleContainer?.merge(other.titleSubtitleContainer) ??
@@ -187,10 +187,10 @@ class MenuItemSpecAttribute extends SpecAttribute<MenuItemSpec>
     );
   }
 
-  /// The list of properties that constitute the state of this [MenuItemSpecAttribute].
+  /// The list of properties that constitute the state of this [ListItemSpecAttribute].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [MenuItemSpecAttribute] instances for equality.
+  /// compare two [ListItemSpecAttribute] instances for equality.
   @override
   List<Object?> get props => [
         container,
@@ -219,32 +219,32 @@ class MenuItemSpecAttribute extends SpecAttribute<MenuItemSpec>
   }
 }
 
-/// Utility class for configuring [MenuItemSpec] properties.
+/// Utility class for configuring [ListItemSpec] properties.
 ///
-/// This class provides methods to set individual properties of a [MenuItemSpec].
-/// Use the methods of this class to configure specific properties of a [MenuItemSpec].
-class MenuItemSpecUtility<T extends SpecAttribute>
-    extends SpecUtility<T, MenuItemSpecAttribute> {
-  /// Utility for defining [MenuItemSpecAttribute.container]
+/// This class provides methods to set individual properties of a [ListItemSpec].
+/// Use the methods of this class to configure specific properties of a [ListItemSpec].
+class ListItemSpecUtility<T extends SpecAttribute>
+    extends SpecUtility<T, ListItemSpecAttribute> {
+  /// Utility for defining [ListItemSpecAttribute.container]
   late final container = FlexBoxSpecUtility((v) => only(container: v));
 
-  /// Utility for defining [MenuItemSpecAttribute.titleSubtitleContainer]
+  /// Utility for defining [ListItemSpecAttribute.titleSubtitleContainer]
   late final titleSubtitleContainer =
       FlexBoxSpecUtility((v) => only(titleSubtitleContainer: v));
 
-  /// Utility for defining [MenuItemSpecAttribute.title]
+  /// Utility for defining [ListItemSpecAttribute.title]
   late final title = TextSpecUtility((v) => only(title: v));
 
-  /// Utility for defining [MenuItemSpecAttribute.subtitle]
+  /// Utility for defining [ListItemSpecAttribute.subtitle]
   late final subtitle = TextSpecUtility((v) => only(subtitle: v));
 
-  /// Utility for defining [MenuItemSpecAttribute.modifiers]
+  /// Utility for defining [ListItemSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  /// Utility for defining [MenuItemSpecAttribute.animated]
+  /// Utility for defining [ListItemSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  MenuItemSpecUtility(
+  ListItemSpecUtility(
     super.builder, {
     @Deprecated(
       'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
@@ -256,12 +256,12 @@ class MenuItemSpecUtility<T extends SpecAttribute>
     'Use "this" instead of "chain" for method chaining. '
     'The chain getter will be removed in a future version.',
   )
-  MenuItemSpecUtility<T> get chain => MenuItemSpecUtility(attributeBuilder);
+  ListItemSpecUtility<T> get chain => ListItemSpecUtility(attributeBuilder);
 
-  static MenuItemSpecUtility<MenuItemSpecAttribute> get self =>
-      MenuItemSpecUtility((v) => v);
+  static ListItemSpecUtility<ListItemSpecAttribute> get self =>
+      ListItemSpecUtility((v) => v);
 
-  /// Returns a new [MenuItemSpecAttribute] with the specified properties.
+  /// Returns a new [ListItemSpecAttribute] with the specified properties.
   @override
   T only({
     FlexBoxSpecAttribute? container,
@@ -271,7 +271,7 @@ class MenuItemSpecUtility<T extends SpecAttribute>
     WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
-    return builder(MenuItemSpecAttribute(
+    return builder(ListItemSpecAttribute(
       container: container,
       titleSubtitleContainer: titleSubtitleContainer,
       title: title,
@@ -282,20 +282,20 @@ class MenuItemSpecUtility<T extends SpecAttribute>
   }
 }
 
-/// A tween that interpolates between two [MenuItemSpec] instances.
+/// A tween that interpolates between two [ListItemSpec] instances.
 ///
 /// This class can be used in animations to smoothly transition between
-/// different [MenuItemSpec] specifications.
-class MenuItemSpecTween extends Tween<MenuItemSpec?> {
-  MenuItemSpecTween({
+/// different [ListItemSpec] specifications.
+class ListItemSpecTween extends Tween<ListItemSpec?> {
+  ListItemSpecTween({
     super.begin,
     super.end,
   });
 
   @override
-  MenuItemSpec lerp(double t) {
+  ListItemSpec lerp(double t) {
     if (begin == null && end == null) {
-      return const MenuItemSpec();
+      return const ListItemSpec();
     }
 
     if (begin == null) {

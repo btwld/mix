@@ -1,10 +1,10 @@
-part of 'menu_item.dart';
+part of 'list_item.dart';
 
-class RxMenuItemStyle extends MenuItemSpecUtility<MenuItemSpecAttribute> {
-  RxMenuItemStyle() : super((v) => v);
+class RxListItemStyle extends ListItemSpecUtility<ListItemSpecAttribute> {
+  RxListItemStyle() : super((v) => v);
 
-  factory RxMenuItemStyle._default() {
-    return RxMenuItemStyle()
+  factory RxListItemStyle._default() {
+    return RxListItemStyle()
       ..titleSubtitleContainer.flex.crossAxisAlignment.start()
       ..titleSubtitleContainer.flex.mainAxisSize.min()
       ..titleSubtitleContainer.wrap.expanded()
@@ -17,7 +17,7 @@ class RxMenuItemStyle extends MenuItemSpecUtility<MenuItemSpecAttribute> {
   }
 
   @override
-  RxMenuItemStyle merge(RxMenuItemStyle other) {
-    return super.merge(other) as RxMenuItemStyle;
+  RxListItemStyle merge(RxListItemStyle other) {
+    return super.merge(other) as RxListItemStyle;
   }
 }

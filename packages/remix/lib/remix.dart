@@ -26,7 +26,7 @@ export 'src/components/content_presentation/avatar/avatar.dart';
 export 'src/components/content_presentation/card/card.dart';
 export 'src/components/content_presentation/chip/chip.dart';
 export 'src/components/content_presentation/label/label.dart';
-export 'src/components/content_presentation/menu_item/menu_item.dart';
+export 'src/components/content_presentation/list_item/list_item.dart';
 export 'src/components/feedback/callout/callout.dart';
 export 'src/components/feedback/dialog/dialog.dart';
 export 'src/components/feedback/progress/progress.dart';

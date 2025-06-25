@@ -1,8 +1,8 @@
-part of 'menu_item.dart';
+part of 'list_item.dart';
 
 /// A menu item component that displays a title, and optionally a subtitle, leading, and trailing widgets.
 ///
-/// The [RxMenuItem] is a customizable widget that can be used to create a list of items with a consistent style.
+/// The [RxListItem] is a customizable widget that can be used to create a list of items with a consistent style.
 /// It supports various configurations such as enabling/disabling the item, applying style variants, and handling
 /// press actions.
 ///
@@ -11,7 +11,7 @@ part of 'menu_item.dart';
 /// ## Example
 ///
 /// ```dart
-/// RxMenuItem(
+/// RxListItem(
 ///   title: 'Settings',
 ///   subtitle: 'Manage your preferences',
 ///   leading: Icon(Icons.settings),
@@ -21,12 +21,12 @@ part of 'menu_item.dart';
 ///   },
 ///   enabled: true,
 ///   variants: [Variant.primary],
-///   style: RxMenuItemStyle(),
+///   style: RxListItemStyle(),
 /// )
 /// ```
 ///
-class RxMenuItem extends StatelessWidget {
-  const RxMenuItem({
+class RxListItem extends StatelessWidget {
+  const RxListItem({
     super.key,
     required this.title,
     this.subtitle,
@@ -54,7 +54,7 @@ class RxMenuItem extends StatelessWidget {
   /// {@macro remix.widget_spec_builder.icon_spec}
   ///
   /// ```dart
-  /// MenuItem(
+  /// RxListItem(
   ///   title: 'Settings',
   ///   leading: Icon(Icons.settings),
   /// );
@@ -68,7 +68,7 @@ class RxMenuItem extends StatelessWidget {
   /// {@macro remix.widget_spec_builder.icon_spec}
   ///
   /// ```dart
-  /// MenuItem(
+  /// RxListItem(
   ///   title: 'Settings',
   ///   leading: Icon(Icons.settings),
   /// );
@@ -82,10 +82,10 @@ class RxMenuItem extends StatelessWidget {
   final List<Variant> variants;
 
   /// {@macro remix.component.style}
-  final RxMenuItemStyle? style;
+  final RxListItemStyle? style;
 
-  RxMenuItemStyle get _style =>
-      RxMenuItemStyle._default().merge(style ?? RxMenuItemStyle());
+  RxListItemStyle get _style =>
+      RxListItemStyle._default().merge(style ?? RxListItemStyle());
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +95,7 @@ class RxMenuItem extends StatelessWidget {
       child: SpecBuilder(
         style: Style(_style).applyVariants(variants),
         builder: (context) {
-          final spec = MenuItemSpec.of(context);
+          final spec = ListItemSpec.of(context);
 
           return spec.container(
             direction: Axis.horizontal,

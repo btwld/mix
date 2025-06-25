@@ -3,24 +3,24 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
-part 'menu_item.g.dart';
-part 'menu_item_style.dart';
-part 'menu_item_widget.dart';
+part 'list_item.g.dart';
+part 'list_item_style.dart';
+part 'list_item_widget.dart';
 
 @MixableSpec()
-base class MenuItemSpec extends Spec<MenuItemSpec>
-    with _$MenuItemSpec, Diagnosticable {
+base class ListItemSpec extends Spec<ListItemSpec>
+    with _$ListItemSpec, Diagnosticable {
   final FlexBoxSpec container;
   final FlexBoxSpec titleSubtitleContainer;
   final TextSpec title;
   final TextSpec subtitle;
 
-  /// {@macro menu_item_spec_of}
-  static const of = _$MenuItemSpec.of;
+  /// {@macro list_item_spec_of}
+  static const of = _$ListItemSpec.of;
 
-  static const from = _$MenuItemSpec.from;
+  static const from = _$ListItemSpec.from;
 
-  const MenuItemSpec({
+  const ListItemSpec({
     FlexBoxSpec? container,
     FlexBoxSpec? titleSubtitleContainer,
     TextSpec? title,

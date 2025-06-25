@@ -49,26 +49,6 @@ mixin _$BadgeSpec on Spec<BadgeSpec> {
     );
   }
 
-  /// Linearly interpolates between this [BadgeSpec] and another [BadgeSpec] based on the given parameter [t].
-  ///
-  /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [BadgeSpec] is returned. When [t] is 1.0, the [other] [BadgeSpec] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [BadgeSpec] is returned.
-  ///
-  /// If [other] is null, this method returns the current [BadgeSpec] instance.
-  ///
-  /// The interpolation is performed on each property of the [BadgeSpec] using the appropriate
-  /// interpolation method:
-  /// - [BoxSpec.lerp] for [container].
-  /// - [IconThemeData.lerp] for [icon].
-  /// - [MixHelpers.lerpTextStyle] for [textStyle].
-  /// For [animated], the interpolation is performed using a step function.
-  /// If [t] is less than 0.5, the value from the current [BadgeSpec] is used. Otherwise, the value
-  /// from the [other] [BadgeSpec] is used.
-  ///
-  /// This method is typically used in animations to smoothly transition between
-  /// different [BadgeSpec] configurations.
-
   /// The list of properties that constitute the state of this [BadgeSpec].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to

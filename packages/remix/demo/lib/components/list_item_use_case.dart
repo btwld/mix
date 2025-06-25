@@ -7,7 +7,7 @@ final _key = GlobalKey();
 
 @widgetbook.UseCase(
   name: 'Menu Item Component',
-  type: RxMenuItem,
+  type: RxListItem,
 )
 Widget buildButtonUseCase(BuildContext context) {
   return KeyedSubtree(
@@ -16,7 +16,7 @@ Widget buildButtonUseCase(BuildContext context) {
       body: Center(
         child: SizedBox(
           width: 350,
-          child: RxMenuItem(
+          child: RxListItem(
             title: context.knobs.string(
               label: 'Title',
               initialValue: 'Menu Item',
