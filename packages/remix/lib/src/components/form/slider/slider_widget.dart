@@ -29,6 +29,7 @@ class RxSlider extends StatefulWidget implements Disableable {
     this.style,
     this.variants = const [],
     this.enabled = true,
+    this.focusNode,
   }) : assert(
           value >= min && value <= max,
           'Slider value must be between min and max values',
@@ -67,6 +68,9 @@ class RxSlider extends StatefulWidget implements Disableable {
   /// Called when the user is done selecting a new value.
   final ValueChanged<double>? onChangeEnd;
 
+  /// The focus node for the slider.
+  final FocusNode? focusNode;
+
   @override
   State<RxSlider> createState() => _RxSliderState();
 }
@@ -91,6 +95,10 @@ class _RxSliderState extends State<RxSlider>
       min: widget.min,
       max: widget.max,
       onChanged: widget.onChanged,
+      onDragStart: () {
+        widget.onChangeStart?.call(widget.value);
+      },
+      onDragEnd: widget.onChangeEnd,
       onHoverState: (state) {
         mixController.hovered = state;
       },
@@ -101,6 +109,7 @@ class _RxSliderState extends State<RxSlider>
         mixController.focused = state;
       },
       enabled: widget.enabled,
+      focusNode: widget.focusNode,
       direction: Axis.horizontal,
       divisions: _divisions,
       child: RemixBuilder(
