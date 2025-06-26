@@ -24,6 +24,7 @@ class RxSwitch extends StatefulWidget implements Disableable, Selectable {
     this.style,
     this.variants = const [],
     this.enableHapticFeedback = true,
+    this.focusNode,
   });
 
   /// Whether the switch is on or off.
@@ -46,6 +47,9 @@ class RxSwitch extends StatefulWidget implements Disableable, Selectable {
   /// {@macro naked.component.enableHapticFeedback}
   final bool enableHapticFeedback;
 
+  /// {@macro remix.component.focusNode}
+  final FocusNode? focusNode;
+
   @override
   State<RxSwitch> createState() => _RxSwitchState();
 }
@@ -60,6 +64,9 @@ class _RxSwitchState extends State<RxSwitch>
     return NakedCheckbox(
       value: widget.selected,
       onChanged: (value) => widget.onChanged(value ?? false),
+      onHoverState: (state) {
+        mixController.hovered = state;
+      },
       onPressedState: (state) {
         mixController.pressed = state;
       },
@@ -68,6 +75,7 @@ class _RxSwitchState extends State<RxSwitch>
       },
       enabled: widget.enabled,
       enableHapticFeedback: true,
+      focusNode: widget.focusNode,
       child: RemixBuilder(
         builder: (context) {
           final spec = SwitchSpec.of(context);
