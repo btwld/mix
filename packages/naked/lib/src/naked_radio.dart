@@ -43,10 +43,10 @@ class NakedRadioGroup<T> extends StatefulWidget {
   });
 
   @override
-  State<NakedRadioGroup<T>> createState() => _NakedRadioGroupState<T>();
+  State<NakedRadioGroup<T>> createState() => NakedRadioGroupState<T>();
 }
 
-class _NakedRadioGroupState<T> extends State<NakedRadioGroup<T>> {
+class NakedRadioGroupState<T> extends State<NakedRadioGroup<T>> {
   // Set of registered radio buttons
   final Set<_NakedRadioState<T>> _radios = {};
 
@@ -122,7 +122,7 @@ class _NakedRadioGroupState<T> extends State<NakedRadioGroup<T>> {
 
 /// Internal InheritedWidget that provides radio group state to child radio buttons.
 class NakedRadioGroupScope<T> extends InheritedWidget {
-  final _NakedRadioGroupState<T> state;
+  final NakedRadioGroupState<T> state;
   final T? groupValue;
 
   /// Creates a radio group scope.
@@ -311,7 +311,7 @@ class _NakedRadioState<T> extends State<NakedRadio<T>> {
   };
 
   bool _getInterative(
-    _NakedRadioGroupState<T> group,
+    NakedRadioGroupState<T> group,
   ) =>
       widget.enabled && group.widget.enabled && group.widget.onChanged != null;
 

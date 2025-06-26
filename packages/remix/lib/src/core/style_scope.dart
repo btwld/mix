@@ -4,13 +4,19 @@ import 'package:mix/mix.dart';
 
 @internal
 class StyleScope<U extends SpecUtility> extends InheritedWidget {
-  const StyleScope({super.key, required super.child, required this.style});
+  const StyleScope({
+    super.key,
+    required super.child,
+    required this.style,
+    this.variants = const [],
+  });
 
-  static U? of<U extends SpecUtility>(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<StyleScope<U>>()?.style;
+  static StyleScope<U>? of<U extends SpecUtility>(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<StyleScope<U>>();
   }
 
-  final U? style;
+  final U style;
+  final List<Variant> variants;
 
   @override
   bool updateShouldNotify(StyleScope<U> oldWidget) {

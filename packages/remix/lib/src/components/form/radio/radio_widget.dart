@@ -42,6 +42,7 @@ class RxRadioGroup<T> extends StatefulWidget {
     required this.child,
     this.enabled = true,
     this.style,
+    this.variants = const [],
   });
 
   final T? value;
@@ -57,6 +58,9 @@ class RxRadioGroup<T> extends StatefulWidget {
 
   /// {@macro remix.component.style}
   final RxRadioStyle? style;
+
+  /// {@macro remix.component.variants}
+  final List<Variant> variants;
 
   @override
   State<RxRadioGroup<T>> createState() => _RxRadioGroupState<T>();
@@ -86,6 +90,7 @@ class _RxRadioGroupState<T> extends State<RxRadioGroup<T>> {
   Widget build(BuildContext context) {
     return StyleScope<RxRadioStyle>(
       style: _style,
+      variants: widget.variants,
       child: NakedRadioGroup<T>(
         groupValue: _value,
         onChanged: (value) {
@@ -141,7 +146,7 @@ class _RxRadioState<T> extends State<RxRadio<T>>
 
   @override
   Widget build(BuildContext context) {
-    final style = StyleScope.of<RxRadioStyle>(context)!;
+    final styleScope = StyleScope.of<RxRadioStyle>(context)!;
 
     return NakedRadio<T>(
       value: widget.value,
@@ -174,7 +179,7 @@ class _RxRadioState<T> extends State<RxRadio<T>>
             ],
           );
         },
-        style: Style(style),
+        style: Style(styleScope.style).applyVariants(styleScope.variants),
         controller: mixController,
       ),
     );

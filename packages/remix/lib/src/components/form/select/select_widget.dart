@@ -136,6 +136,7 @@ class _RxSelectState<T> extends State<RxSelect<T>>
   Widget build(BuildContext context) {
     return StyleScope<RxSelectStyle>(
       style: _style,
+      variants: widget.variants,
       child: MixBuilder(
         style: Style(_style),
         builder: (context) {
@@ -302,7 +303,7 @@ class RxSelectTrigger extends StatefulWidget implements Disableable {
 
 class _RxSelectTriggerState extends State<RxSelectTrigger>
     with MixControllerMixin, DisableableMixin {
-  RxSelectStyle get style {
+  StyleScope<RxSelectStyle> get styleScope {
     final style = StyleScope.of<RxSelectStyle>(context);
     if (style == null) {
       throw Exception(
@@ -348,7 +349,7 @@ class _RxSelectTriggerState extends State<RxSelectTrigger>
                 spec.trigger.container.box(child: widget.child ?? defaultChild),
           );
         },
-        style: Style(style),
+        style: Style(styleScope.style).applyVariants(styleScope.variants),
         controller: mixController,
       ),
     );
@@ -435,7 +436,8 @@ class _RxSelectItemState<T> extends State<RxSelectItem<T>>
     mixController.selected = inherited.isSelected(context, widget.value);
   }
 
-  RxSelectStyle get _style => StyleScope.of<RxSelectStyle>(context)!;
+  StyleScope<RxSelectStyle> get _styleScope =>
+      StyleScope.of<RxSelectStyle>(context)!;
 
   @override
   Widget build(BuildContext context) {
@@ -477,7 +479,7 @@ class _RxSelectItemState<T> extends State<RxSelectItem<T>>
             ),
           );
         },
-        style: Style(_style),
+        style: Style(_styleScope.style).applyVariants(_styleScope.variants),
         controller: mixController,
       ),
     );
