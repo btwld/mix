@@ -367,9 +367,13 @@ class NakedSelectInherited<T> extends InheritedWidget {
   });
 
   /// Gets the nearest NakedSelectInherited ancestor of the given context.
+  static NakedSelectInherited<T>? maybeOf<T>(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<NakedSelectInherited<T>>();
+  }
+
   static NakedSelectInherited<T> of<T>(BuildContext context) {
-    final inherited =
-        context.dependOnInheritedWidgetOfExactType<NakedSelectInherited<T>>();
+    final inherited = maybeOf<T>(context);
     if (inherited == null) {
       throw StateError(
         'NakedSelectInherited<$T> not found in context.\n'
@@ -517,7 +521,7 @@ class _NakedSelectTriggerState extends State<NakedSelectTrigger> {
 /// providing callbacks for hover, press, focus and selection states to enable complete styling control.
 ///
 /// Key features:
-/// - Customizable cursor and interaction states 
+/// - Customizable cursor and interaction states
 /// - Keyboard selection support
 /// - Optional haptic feedback
 /// - Accessibility support with ARIA attributes

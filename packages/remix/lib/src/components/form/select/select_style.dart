@@ -20,12 +20,14 @@ class RxSelectStyle extends SelectSpecUtility<SelectSpecAttribute> {
       ..menuContainer.border.color.grey.shade300()
       ..item.container.flex.mainAxisAlignment.spaceBetween()
       ..item.icon.size(16)
-      ..item.container.padding(4)
+      ..item.textStyle.color.grey.shade700()
+      ..item.container.padding.horizontal(8)
+      ..item.container.padding.vertical(8)
       ..item.container.borderRadius(4)
-      ..item.icon.wrap.opacity(0)
+      ..item.icon.color.grey.withOpacity(0)
       ..on.selected(
         RxSelectStyle()
-          ..item.icon.wrap.opacity(1)
+          ..item.icon.color.grey.withOpacity(1)
           ..item.container.color.grey.shade100(),
       );
   }

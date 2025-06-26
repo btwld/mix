@@ -41,6 +41,7 @@ class RxSelect<T> extends StatefulWidget {
     this.enableTypeAhead = true,
     this.typeAheadDebounceTime = const Duration(milliseconds: 500),
     this.style,
+    this.variants = const [],
   })  : selectedValues = null,
         onSelectedValuesChanged = null;
 
@@ -104,6 +105,9 @@ class RxSelect<T> extends StatefulWidget {
 
   /// {@macro remix.component.style}
   final RxSelectStyle? style;
+
+  /// {@macro remix.component.variants}
+  final List<Variant> variants;
 
   @override
   State<RxSelect<T>> createState() => _RxSelectState<T>();
@@ -239,7 +243,7 @@ class _AnimatedOverlayMenuState extends State<_AnimatedOverlayMenu> {
 }
 
 class RxSelectTrigger extends StatefulWidget implements Disableable {
-  RxSelectTrigger({
+  const RxSelectTrigger({
     super.key,
     this.enabled = true,
     this.semanticLabel,
@@ -247,8 +251,23 @@ class RxSelectTrigger extends StatefulWidget implements Disableable {
     this.enableHapticFeedback = true,
     this.focusNode,
     required this.label,
-    IconData trailingIcon = Icons.keyboard_arrow_down,
-  }) : icon = Icon(trailingIcon);
+    this.trailingIcon = Icons.keyboard_arrow_down,
+  }) : child = null;
+
+  const RxSelectTrigger.raw({
+    super.key,
+    this.enabled = true,
+    this.semanticLabel,
+    this.cursor = SystemMouseCursors.click,
+    this.enableHapticFeedback = true,
+    this.focusNode,
+    required this.child,
+  })  : label = '',
+        trailingIcon = null;
+
+  /// The child widget to display in the trigger.
+  /// This is used when the raw constructor is used.
+  final Widget? child;
 
   /// Whether the trigger is enabled and can be interacted with.
   /// When false, all interaction is disabled.
@@ -275,7 +294,7 @@ class RxSelectTrigger extends StatefulWidget implements Disableable {
   final FocusNode? focusNode;
 
   /// The icon to display on the trigger.
-  final Widget? icon;
+  final IconData? trailingIcon;
 
   @override
   State<RxSelectTrigger> createState() => _RxSelectTriggerState();
@@ -283,10 +302,20 @@ class RxSelectTrigger extends StatefulWidget implements Disableable {
 
 class _RxSelectTriggerState extends State<RxSelectTrigger>
     with MixControllerMixin, DisableableMixin {
+  RxSelectStyle get style {
+    final style = StyleScope.of<RxSelectStyle>(context);
+    if (style == null) {
+      throw Exception(
+        'RxSelectTrigger should be used inside a RxSelect. '
+        'Make sure RxSelect is wrapping RxSelectTrigger.',
+      );
+    }
+
+    return style;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final style = StyleScope.of<RxSelectStyle>(context)!;
-
     return NakedSelectTrigger(
       onHoverState: (value) {
         mixController.hovered = value;
@@ -301,22 +330,26 @@ class _RxSelectTriggerState extends State<RxSelectTrigger>
       cursor: widget.cursor,
       enableHapticFeedback: widget.enableHapticFeedback,
       focusNode: widget.focusNode,
-      child: MixBuilder(
-        style: Style(style),
+      child: RemixBuilder(
         builder: (context) {
           final spec = SelectSpec.of(context);
 
+          final defaultChild = spec.trigger.container.flex(
+            direction: Axis.horizontal,
+            children: [
+              spec.trigger.label(widget.label),
+              if (widget.trailingIcon != null) Icon(widget.trailingIcon!),
+            ],
+          );
+
           return IconTheme(
             data: spec.trigger.icon,
-            child: spec.trigger.container(
-              direction: Axis.horizontal,
-              children: [
-                spec.trigger.label(widget.label),
-                if (widget.icon != null) widget.icon!,
-              ],
-            ),
+            child:
+                spec.trigger.container.box(child: widget.child ?? defaultChild),
           );
         },
+        style: Style(style),
+        controller: mixController,
       ),
     );
   }
@@ -333,7 +366,19 @@ class RxSelectItem<T> extends StatefulWidget implements Disableable {
     this.cursor = SystemMouseCursors.click,
     this.enableHapticFeedback = true,
     this.focusNode,
-  });
+  }) : child = null;
+
+  const RxSelectItem.raw({
+    super.key,
+    required this.value,
+    required this.child,
+    this.enabled = true,
+    this.semanticLabel,
+    this.cursor = SystemMouseCursors.click,
+    this.enableHapticFeedback = true,
+    this.focusNode,
+  })  : label = '',
+        trailingIcon = Icons.check;
 
   /// The value associated with this item.
   /// This value will be passed to the select's onChange callback when selected.
@@ -366,6 +411,9 @@ class RxSelectItem<T> extends StatefulWidget implements Disableable {
   /// If not provided, a new focus node will be created.
   final FocusNode? focusNode;
 
+  /// The icon to display on the item.
+  final Widget? child;
+
   @override
   State<RxSelectItem<T>> createState() => _RxSelectItemState<T>();
 }
@@ -375,10 +423,16 @@ class _RxSelectItemState<T> extends State<RxSelectItem<T>>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    mixController.selected = NakedSelectInherited.of<T>(context).isSelected(
-      context,
-      widget.value,
-    );
+    final inherited = NakedSelectInherited.maybeOf<T>(context);
+
+    if (inherited == null) {
+      throw Exception(
+        'RxSelectItem should be used inside a RxSelect. '
+        'Make sure RxSelect is wrapping RxSelectItem.',
+      );
+    }
+
+    mixController.selected = inherited.isSelected(context, widget.value);
   }
 
   RxSelectStyle get _style => StyleScope.of<RxSelectStyle>(context)!;
@@ -408,12 +462,19 @@ class _RxSelectItemState<T> extends State<RxSelectItem<T>>
         builder: (context) {
           final spec = SelectSpec.of(context);
 
-          return spec.item.container(
+          final defaultChild = spec.item.container.flex(
             direction: Axis.horizontal,
-            children: [
-              spec.item.text(widget.label),
-              spec.item.icon(widget.trailingIcon),
-            ],
+            children: [Text(widget.label), Icon(widget.trailingIcon)],
+          );
+
+          return IconTheme(
+            data: spec.item.icon,
+            child: DefaultTextStyle(
+              style: spec.item.textStyle,
+              child: spec.item.container.box(
+                child: widget.child ?? defaultChild,
+              ),
+            ),
           );
         },
         style: Style(_style),

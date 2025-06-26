@@ -331,50 +331,18 @@ mixin _$SelectMenuItemSpec on Spec<SelectMenuItemSpec> {
   /// replaced with the new values.
   @override
   SelectMenuItemSpec copyWith({
-    IconSpec? icon,
-    TextSpec? text,
+    IconThemeData? icon,
+    TextStyle? textStyle,
     FlexBoxSpec? container,
     WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return SelectMenuItemSpec(
       icon: icon ?? _$this.icon,
-      text: text ?? _$this.text,
+      textStyle: textStyle ?? _$this.textStyle,
       container: container ?? _$this.container,
       modifiers: modifiers ?? _$this.modifiers,
       animated: animated ?? _$this.animated,
-    );
-  }
-
-  /// Linearly interpolates between this [SelectMenuItemSpec] and another [SelectMenuItemSpec] based on the given parameter [t].
-  ///
-  /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [SelectMenuItemSpec] is returned. When [t] is 1.0, the [other] [SelectMenuItemSpec] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [SelectMenuItemSpec] is returned.
-  ///
-  /// If [other] is null, this method returns the current [SelectMenuItemSpec] instance.
-  ///
-  /// The interpolation is performed on each property of the [SelectMenuItemSpec] using the appropriate
-  /// interpolation method:
-  /// - [IconSpec.lerp] for [icon].
-  /// - [TextSpec.lerp] for [text].
-  /// - [FlexBoxSpec.lerp] for [container].
-  /// For [modifiers] and [animated], the interpolation is performed using a step function.
-  /// If [t] is less than 0.5, the value from the current [SelectMenuItemSpec] is used. Otherwise, the value
-  /// from the [other] [SelectMenuItemSpec] is used.
-  ///
-  /// This method is typically used in animations to smoothly transition between
-  /// different [SelectMenuItemSpec] configurations.
-  @override
-  SelectMenuItemSpec lerp(SelectMenuItemSpec? other, double t) {
-    if (other == null) return _$this;
-
-    return SelectMenuItemSpec(
-      icon: _$this.icon.lerp(other.icon, t),
-      text: _$this.text.lerp(other.text, t),
-      container: _$this.container.lerp(other.container, t),
-      modifiers: other.modifiers,
-      animated: _$this.animated ?? other.animated,
     );
   }
 
@@ -385,7 +353,7 @@ mixin _$SelectMenuItemSpec on Spec<SelectMenuItemSpec> {
   @override
   List<Object?> get props => [
         _$this.icon,
-        _$this.text,
+        _$this.textStyle,
         _$this.container,
         _$this.modifiers,
         _$this.animated,
@@ -396,8 +364,8 @@ mixin _$SelectMenuItemSpec on Spec<SelectMenuItemSpec> {
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties
         .add(DiagnosticsProperty('icon', _$this.icon, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('text', _$this.text, defaultValue: null));
+    properties.add(
+        DiagnosticsProperty('textStyle', _$this.textStyle, defaultValue: null));
     properties.add(
         DiagnosticsProperty('container', _$this.container, defaultValue: null));
     properties.add(
@@ -416,13 +384,13 @@ mixin _$SelectMenuItemSpec on Spec<SelectMenuItemSpec> {
 /// the [SelectMenuItemSpec] constructor.
 class SelectMenuItemSpecAttribute extends SpecAttribute<SelectMenuItemSpec>
     with Diagnosticable {
-  final IconSpecAttribute? icon;
-  final TextSpecAttribute? text;
+  final IconThemeDataDto? icon;
+  final TextStyleDto? textStyle;
   final FlexBoxSpecAttribute? container;
 
   const SelectMenuItemSpecAttribute({
     this.icon,
-    this.text,
+    this.textStyle,
     this.container,
     super.modifiers,
     super.animated,
@@ -440,7 +408,7 @@ class SelectMenuItemSpecAttribute extends SpecAttribute<SelectMenuItemSpec>
   SelectMenuItemSpec resolve(MixContext mix) {
     return SelectMenuItemSpec(
       icon: icon?.resolve(mix),
-      text: text?.resolve(mix),
+      textStyle: textStyle?.resolve(mix),
       container: container?.resolve(mix),
       modifiers: modifiers?.resolve(mix),
       animated: animated?.resolve(mix) ?? mix.animation,
@@ -461,7 +429,7 @@ class SelectMenuItemSpecAttribute extends SpecAttribute<SelectMenuItemSpec>
 
     return SelectMenuItemSpecAttribute(
       icon: icon?.merge(other.icon) ?? other.icon,
-      text: text?.merge(other.text) ?? other.text,
+      textStyle: textStyle?.merge(other.textStyle) ?? other.textStyle,
       container: container?.merge(other.container) ?? other.container,
       modifiers: modifiers?.merge(other.modifiers) ?? other.modifiers,
       animated: animated?.merge(other.animated) ?? other.animated,
@@ -475,7 +443,7 @@ class SelectMenuItemSpecAttribute extends SpecAttribute<SelectMenuItemSpec>
   @override
   List<Object?> get props => [
         icon,
-        text,
+        textStyle,
         container,
         modifiers,
         animated,
@@ -485,7 +453,8 @@ class SelectMenuItemSpecAttribute extends SpecAttribute<SelectMenuItemSpec>
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty('icon', icon, defaultValue: null));
-    properties.add(DiagnosticsProperty('text', text, defaultValue: null));
+    properties
+        .add(DiagnosticsProperty('textStyle', textStyle, defaultValue: null));
     properties
         .add(DiagnosticsProperty('container', container, defaultValue: null));
     properties
@@ -502,10 +471,10 @@ class SelectMenuItemSpecAttribute extends SpecAttribute<SelectMenuItemSpec>
 class SelectMenuItemSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, SelectMenuItemSpecAttribute> {
   /// Utility for defining [SelectMenuItemSpecAttribute.icon]
-  late final icon = IconSpecUtility((v) => only(icon: v));
+  late final icon = IconThemeDataUtility((v) => only(icon: v));
 
-  /// Utility for defining [SelectMenuItemSpecAttribute.text]
-  late final text = TextSpecUtility((v) => only(text: v));
+  /// Utility for defining [SelectMenuItemSpecAttribute.textStyle]
+  late final textStyle = TextStyleUtility((v) => only(textStyle: v));
 
   /// Utility for defining [SelectMenuItemSpecAttribute.container]
   late final container = FlexBoxSpecUtility((v) => only(container: v));
@@ -537,15 +506,15 @@ class SelectMenuItemSpecUtility<T extends SpecAttribute>
   /// Returns a new [SelectMenuItemSpecAttribute] with the specified properties.
   @override
   T only({
-    IconSpecAttribute? icon,
-    TextSpecAttribute? text,
+    IconThemeDataDto? icon,
+    TextStyleDto? textStyle,
     FlexBoxSpecAttribute? container,
     WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(SelectMenuItemSpecAttribute(
       icon: icon,
-      text: text,
+      textStyle: textStyle,
       container: container,
       modifiers: modifiers,
       animated: animated,
