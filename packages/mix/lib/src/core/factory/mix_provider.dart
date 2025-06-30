@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import 'mix_data.dart';
+import 'mix_context.dart';
 import 'style_mix.dart';
 
 /// Provides [MixContext] to the widget tree.

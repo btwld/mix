@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../core/attributes_map.dart';
 import '../../core/element.dart';
-import '../../core/factory/mix_data.dart';
+import '../../core/factory/mix_context.dart';
 import '../../core/modifier.dart';
 import '../../modifiers/internal/reset_modifier.dart';
 import 'widget_modifiers_config.dart';
