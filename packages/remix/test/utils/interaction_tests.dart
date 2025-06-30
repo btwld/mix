@@ -96,7 +96,8 @@ void testHoverWidget(
     await gesture.moveTo(tester.getCenter(find.byWidget(widget)));
 
     await tester.pumpAndSettle();
-    final state = tester.widget<MixWidgetState>(find.byType(MixWidgetState));
+    final state =
+        tester.widget<MixWidgetStateModel>(find.byType(MixWidgetStateModel));
 
     expect(state.hovered, shouldExpectHover);
 
@@ -104,7 +105,7 @@ void testHoverWidget(
     await tester.pumpAndSettle();
 
     final stateAfter =
-        tester.widget<MixWidgetState>(find.byType(MixWidgetState));
+        tester.widget<MixWidgetStateModel>(find.byType(MixWidgetStateModel));
     expect(stateAfter.hovered, false);
   });
 }
@@ -126,7 +127,8 @@ void testFocusWidget(
     focusNode.requestFocus();
     await tester.pumpAndSettle();
 
-    final state = tester.widget<MixWidgetState>(find.byType(MixWidgetState));
+    final state =
+        tester.widget<MixWidgetStateModel>(find.byType(MixWidgetStateModel));
 
     expect(state.focused, shouldExpectFocus);
 
@@ -134,7 +136,7 @@ void testFocusWidget(
     await tester.pumpAndSettle();
 
     final stateAfter =
-        tester.widget<MixWidgetState>(find.byType(MixWidgetState));
+        tester.widget<MixWidgetStateModel>(find.byType(MixWidgetStateModel));
 
     expect(stateAfter.focused, false);
   });
@@ -165,7 +167,8 @@ void testSelectStateWidget(
     await tester.tap(find.byWidget(widget));
     await tester.pumpAndSettle();
 
-    final state = tester.widget<MixWidgetState>(find.byType(MixWidgetState));
+    final state =
+        tester.widget<MixWidgetStateModel>(find.byType(MixWidgetStateModel));
 
     expect(state.selected, shouldExpectSelect);
     expect(holder.value, shouldExpectSelect);

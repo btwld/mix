@@ -21,7 +21,7 @@ class RemixBuilder extends StatelessWidget {
     return ListenableBuilder(
       listenable: controller,
       builder: (_, __) {
-        return MixWidgetState.fromSet(
+        return MixWidgetStateModel.fromSet(
           states: controller.value,
           child: MixBuilder(style: Style(style), builder: builder),
         );

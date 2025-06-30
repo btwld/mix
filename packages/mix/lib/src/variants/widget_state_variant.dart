@@ -33,7 +33,8 @@ abstract class _ToggleMixStateVariant extends MixWidgetStateVariant<bool> {
   bool builder(BuildContext context) => when(context);
 
   @override
-  bool when(BuildContext context) => MixWidgetState.hasStateOf(context, _state);
+  bool when(BuildContext context) =>
+      MixWidgetStateModel.hasStateOf(context, _state);
 }
 
 /// Applies styles when widget is hovered over.
@@ -54,7 +55,7 @@ class OnHoverVariant extends MixWidgetStateVariant<PointerPosition?> {
   }
 
   @override
-  bool when(BuildContext context) => MixWidgetState.hasStateOf(
+  bool when(BuildContext context) => MixWidgetStateModel.hasStateOf(
         context,
         WidgetState.hovered,
       );
@@ -74,6 +75,13 @@ class OnLongPressVariant extends ContextVariant {
     'The longPress variant has been removed. Please implement your own context variant for it',
   )
   const OnLongPressVariant();
+
+  ContextVariantBuilder event(Style Function(bool) fn) {
+    return ContextVariantBuilder(
+      (BuildContext context) => fn(when(context)),
+      this,
+    );
+  }
 
   @override
   bool when(BuildContext context) {

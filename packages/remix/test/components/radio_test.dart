@@ -1,9 +1,10 @@
 import 'dart:ui';
 
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 import 'package:remix/remix.dart';
+
 import '../utils/interaction_tests.dart';
 
 void main() {
@@ -217,15 +218,15 @@ void main() {
 
         await tester.pumpAndSettle();
 
-        final state =
-            tester.widget<MixWidgetState>(find.byType(MixWidgetState));
+        final state = tester
+            .widget<MixWidgetStateModel>(find.byType(MixWidgetStateModel));
         expect(state.pressed, expectedPressedDuringTap);
 
         await gesture.up();
         await tester.pumpAndSettle();
 
-        final stateAfter =
-            tester.widget<MixWidgetState>(find.byType(MixWidgetState));
+        final stateAfter = tester
+            .widget<MixWidgetStateModel>(find.byType(MixWidgetStateModel));
         expect(stateAfter.pressed, false);
       }
 
@@ -287,24 +288,26 @@ void main() {
         await tester.pumpAndSettle();
 
         final state1 = tester
-            .widgetList<MixWidgetState>(find.byType(MixWidgetState))
+            .widgetList<MixWidgetStateModel>(find.byType(MixWidgetStateModel))
             .first;
         expect(state1.hovered, expectedHovered);
 
-        final state2 =
-            tester.widgetList<MixWidgetState>(find.byType(MixWidgetState)).last;
+        final state2 = tester
+            .widgetList<MixWidgetStateModel>(find.byType(MixWidgetStateModel))
+            .last;
         expect(state2.hovered, false);
 
         await gesture.removePointer();
         await tester.pumpAndSettle();
 
         final stateAfter1 = tester
-            .widgetList<MixWidgetState>(find.byType(MixWidgetState))
+            .widgetList<MixWidgetStateModel>(find.byType(MixWidgetStateModel))
             .first;
         expect(stateAfter1.hovered, false);
 
-        final stateAfter2 =
-            tester.widgetList<MixWidgetState>(find.byType(MixWidgetState)).last;
+        final stateAfter2 = tester
+            .widgetList<MixWidgetStateModel>(find.byType(MixWidgetStateModel))
+            .last;
         expect(stateAfter2.hovered, false);
       }
 
@@ -364,24 +367,26 @@ void main() {
         await tester.pumpAndSettle();
 
         final state1 = tester
-            .widgetList<MixWidgetState>(find.byType(MixWidgetState))
+            .widgetList<MixWidgetStateModel>(find.byType(MixWidgetStateModel))
             .first;
         expect(state1.focused, expectedFocused);
 
-        final state2 =
-            tester.widgetList<MixWidgetState>(find.byType(MixWidgetState)).last;
+        final state2 = tester
+            .widgetList<MixWidgetStateModel>(find.byType(MixWidgetStateModel))
+            .last;
         expect(state2.focused, false);
 
         focusNode1.unfocus();
         await tester.pumpAndSettle();
 
         final stateAfter1 = tester
-            .widgetList<MixWidgetState>(find.byType(MixWidgetState))
+            .widgetList<MixWidgetStateModel>(find.byType(MixWidgetStateModel))
             .first;
         expect(stateAfter1.focused, false);
 
-        final stateAfter2 =
-            tester.widgetList<MixWidgetState>(find.byType(MixWidgetState)).last;
+        final stateAfter2 = tester
+            .widgetList<MixWidgetStateModel>(find.byType(MixWidgetStateModel))
+            .last;
         expect(stateAfter2.focused, false);
       }
 

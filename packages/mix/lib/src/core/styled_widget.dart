@@ -100,7 +100,7 @@ class SpecBuilder extends StatefulWidget {
   /// Order in which modifiers should be applied.
   ///
   /// Defaults to an empty list, which uses the default modifier order.
-  final List<Type> orderOfModifiers;
+  final List<Type>? orderOfModifiers;
 
   @override
   State<SpecBuilder> createState() => _SpecBuilderState();
@@ -151,10 +151,11 @@ class _SpecBuilderState extends State<SpecBuilder> {
       style: _convertToStyle(widget.style),
       builder: widget.builder,
       inherit: widget.inherit,
-      orderOfModifiers: widget.orderOfModifiers,
+      orderOfModifiers: widget.orderOfModifiers ?? [],
     );
 
-    if (_shouldWrapWithInteractable && MixWidgetState.of(context) == null) {
+    if (_shouldWrapWithInteractable &&
+        MixWidgetStateModel.of(context) == null) {
       return Interactable(controller: widget.controller, child: builder);
     }
 
