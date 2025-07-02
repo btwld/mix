@@ -19,14 +19,6 @@ on:
         type: boolean
         description: publish mix_generator
         default: false
-      remix:
-        type: boolean
-        description: publish remix
-        default: false
-      naked:
-        type: boolean
-        description: publish naked
-        default: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -70,12 +62,6 @@ jobs:
           fi
           if [[ "${{ github.event.inputs.mix }}" == "true" ]]; then
             cd packages/mix && dart pub publish --dry-run && cd ../..
-          fi
-          if [[ "${{ github.event.inputs.remix }}" == "true" ]]; then
-            cd packages/remix && dart pub publish --dry-run && cd ../..
-          fi
-          if [[ "${{ github.event.inputs.naked }}" == "true" ]]; then
-            cd packages/naked && dart pub publish --dry-run && cd ../..
           fi
         shell: bash
 
@@ -124,12 +110,6 @@ jobs:
           fi
           if [[ "${{ github.event.inputs.mix }}" == "true" ]]; then
             matrix+=('{"name": "mix", "path": "packages/mix"}')
-          fi
-          if [[ "${{ github.event.inputs.remix }}" == "true" ]]; then
-            matrix+=('{"name": "remix", "path": "packages/remix"}')
-          fi
-          if [[ "${{ github.event.inputs.naked }}" == "true" ]]; then
-            matrix+=('{"name": "naked", "path": "packages/naked"}')
           fi
           echo "matrix=$(IFS=,; echo "[${matrix[*]}]")" >> $GITHUB_OUTPUT
 
