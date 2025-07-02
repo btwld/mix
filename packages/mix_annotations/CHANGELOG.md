@@ -1,3 +1,14 @@
+## 1.7.0
+
+ - **REFACTOR**: Rename `MixableProperty` to `MixableType` (#574).
+ - **REFACTOR**: mix generator clean up and mix semantic changes (#569).
+ - **REFACTOR**: bump flutter version to 3.19.0 (#365).
+ - **FEAT**: Add focused style classes for spec utilities (#677).
+ - **FEAT**: Add generated style-focused modifiers and specs (#652).
+ - **FEAT**: Create code gen for design tokens (#521).
+ - **FEAT**: Code generation for Widget Modifiers (#396).
+ - **FEAT**: ColorSwatchToken and other token improvements (#378).
+
 ## 1.7.0-beta.0
 
  - **FEAT**: Add generated style-focused modifiers and specs (#652).
