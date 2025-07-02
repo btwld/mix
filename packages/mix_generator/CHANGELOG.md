@@ -1,3 +1,35 @@
+## 1.7.0-beta.1
+
+ - **REFACTOR**: Implement BaseStyle utility class and improve styling architecture (#659).
+ - **REFACTOR**: Move widget state handling from MixBuilder to SpecBuilder (#651).
+ - **REFACTOR**: Rename WidgetModifiersData to WidgetModifiersConfig (#649).
+ - **REFACTOR**: Fix deprecations and modernize codebase (#647).
+ - **REFACTOR**: update outdated API (#583).
+ - **REFACTOR**: Use WidgetState instead of MixWidgetState (#582).
+ - **REFACTOR**: Rename `MixableProperty` to `MixableType` (#574).
+ - **REFACTOR**: mix generator clean up and mix semantic changes (#569).
+ - **REFACTOR**: Rewrite Fortaleza theme using the new code gen for tokens (#528).
+ - **REFACTOR**(mix_generator): fix lints (#395).
+ - **REFACTOR**: bump flutter version to 3.19.0 (#365).
+ - **FIX**: update animated property handling to use null coalescing (#637).
+ - **FIX**: Shadow list animation (#445).
+ - **FIX**: Code gen linting fixes (#399).
+ - **FIX**: nullable merge expressions and updates debug properties #392.
+ - **FIX**: mix_generator - Get correct type override from MixableDto (#315).
+ - **FEAT**: Add focused style classes for spec utilities (#677).
+ - **FEAT**: Add generated style-focused modifiers and specs (#652).
+ - **FEAT**: unify SpecUtility, Style, and Attributes as compatible values (#643).
+ - **FEAT**: builder optimization (#629).
+ - **FEAT**: Create code gen for design tokens (#521).
+ - **FEAT**: Rewrite FlexBox as a Mix's primitive component (#517).
+ - **FEAT**: Fluent API (#475).
+ - **FEAT**: Remix improvements and further improvements (#410).
+ - **FEAT**: Code generation for Widget Modifiers (#396).
+ - **FEAT**: Dto utility generation now adds constructor and static methods.
+ - **FEAT**: ColorSwatchToken and other token improvements (#378).
+ - **FEAT**: modifiers in spec (#333).
+ - **DOCS**: improve mix theme data features explanations (#404).
+
 ## 1.7.0-beta.0
 
  - **REFACTOR**: Rename WidgetModifiersData to WidgetModifiersConfig (#649).
