@@ -13,7 +13,7 @@ void main() {}
 //       const testCode = '''
 //         class TestSpec extends Spec<TestSpec> {
 //           final String name;
-          
+
 //           const TestSpec({required this.name});
 //         }
 //       ''';
@@ -43,10 +43,10 @@ void main() {}
 //       // Define test code with a Mixable class
 //       const testCode = '''
 //         class ValueType {}
-        
+
 //         class TestDto extends Mixable<ValueType> {
 //           final String name;
-          
+
 //           const TestDto({required this.name});
 //         }
 //       ''';
@@ -82,10 +82,10 @@ void main() {}
 //       // Define test code with a Dto class that has a Dto suffix
 //       const testCode = '''
 //         class Color {}
-        
+
 //         class ColorDto extends Dto<Color> {
 //           final int value;
-          
+
 //           const ColorDto({required this.value});
 //         }
 //       ''';
@@ -123,7 +123,7 @@ void main() {}
 //       const testCode = '''
 //         class TestSpec extends Spec<TestSpec> {
 //           final String name;
-          
+
 //           const TestSpec({required this.name});
 //         }
 //       ''';
@@ -149,7 +149,7 @@ void main() {}
 //       const testCode = '''
 //         class TestSpec extends Spec<TestSpec> {
 //           final String name;
-          
+
 //           const TestSpec({required this.name});
 //         }
 //       ''';
@@ -257,7 +257,7 @@ void main() {}
 //       const testCode = '''
 //         class TestClass<T> {
 //           List<T> items;
-          
+
 //           TestClass(this.items);
 //         }
 //       ''';

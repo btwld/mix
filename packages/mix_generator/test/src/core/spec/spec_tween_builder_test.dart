@@ -16,7 +16,7 @@ void main() {}
 //         class TestSpec extends Spec<TestSpec> {
 //           final String name;
 //           final int age;
-          
+
 //           const TestSpec({required this.name, required this.age});
 //         }
 //       ''';
@@ -51,7 +51,7 @@ void main() {}
 //       // Define the expected code pattern
 //       const expectedCode = '''
 // /// A tween that interpolates between two [TestSpec] instances.
-// /// 
+// ///
 // /// This class can be used in animations to smoothly transition between
 // /// different [TestSpec] specifications.
 // class TestSpecTween extends Tween<TestSpec?> {
@@ -64,11 +64,11 @@ void main() {}
 //     if (begin == null && end == null) {
 //       return const TestSpec();
 //     }
-    
+
 //     if (begin == null) {
 //       return end!;
 //     }
-    
+
 //     return begin!.lerp(end!, t);
 //   }
 // }''';
@@ -86,7 +86,7 @@ void main() {}
 //         class NonConstSpec extends Spec<NonConstSpec> {
 //           final String name;
 //           final int age;
-          
+
 //           NonConstSpec({required this.name, required this.age});
 //         }
 //       ''';
@@ -121,7 +121,7 @@ void main() {}
 //       // Define the expected code pattern
 //       const expectedCode = '''
 // /// A tween that interpolates between two [NonConstSpec] instances.
-// /// 
+// ///
 // /// This class can be used in animations to smoothly transition between
 // /// different [NonConstSpec] specifications.
 // class NonConstSpecTween extends Tween<NonConstSpec?> {
@@ -134,11 +134,11 @@ void main() {}
 //     if (begin == null && end == null) {
 //       return NonConstSpec();
 //     }
-    
+
 //     if (begin == null) {
 //       return end!;
 //     }
-    
+
 //     return begin!.lerp(end!, t);
 //   }
 // }''';
@@ -155,9 +155,9 @@ void main() {}
 //       const testCode = '''
 //         class NamedConstructorSpec extends Spec<NamedConstructorSpec> {
 //           final String name;
-          
+
 //           const NamedConstructorSpec.named({required this.name});
-          
+
 //           const NamedConstructorSpec({required this.name});
 //         }
 //       ''';
@@ -193,7 +193,7 @@ void main() {}
 //       // Define the expected code pattern
 //       const expectedCode = '''
 // /// A tween that interpolates between two [NamedConstructorSpec] instances.
-// /// 
+// ///
 // /// This class can be used in animations to smoothly transition between
 // /// different [NamedConstructorSpec] specifications.
 // class NamedConstructorSpecTween extends Tween<NamedConstructorSpec?> {
@@ -206,11 +206,11 @@ void main() {}
 //     if (begin == null && end == null) {
 //       return const NamedConstructorSpec.named();
 //     }
-    
+
 //     if (begin == null) {
 //       return end!;
 //     }
-    
+
 //     return begin!.lerp(end!, t);
 //   }
 // }''';

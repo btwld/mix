@@ -136,7 +136,7 @@ void main() {}
 //     test('type property checks work correctly', () async {
 //       final library = await resolveSimpleTestLibrary('''
 //         import 'dart:async';
-        
+
 //         class TestClass {
 //           String? nullableString;
 //           String nonNullableString;
@@ -145,8 +145,8 @@ void main() {}
 //           Set<double> doubleSet;
 //           Future<String> futureString;
 //           Stream<int> intStream;
-          
-//           TestClass(this.nonNullableString, this.intList, this.stringBoolMap, 
+
+//           TestClass(this.nonNullableString, this.intList, this.stringBoolMap,
 //                    this.doubleSet, this.futureString, this.intStream);
 //         }
 //       ''');
@@ -305,12 +305,12 @@ void main() {}
 //         abstract class Animal {}
 //         class Dog extends Animal {}
 //         class Cat extends Animal {}
-        
+
 //         class AnimalContainer<T extends Animal> {
 //           T animal;
 //           AnimalContainer(this.animal);
 //         }
-        
+
 //         class DogContainer extends AnimalContainer<Dog> {
 //           DogContainer(Dog dog) : super(dog);
 //         }
@@ -347,7 +347,7 @@ void main() {}
 //         class UserDto extends Dto<String> {
 //           final String name;
 //           final int age;
-          
+
 //           UserDto(this.name, this.age);
 //         }
 //       ''');
@@ -380,7 +380,7 @@ void main() {}
 //           final int red;
 //           final int green;
 //           final int blue;
-          
+
 //           ColorSpec(this.red, this.green, this.blue);
 //         }
 //       ''');
@@ -404,7 +404,7 @@ void main() {}
 //       final library = await resolveMixTestLibrary('''
 //         class CustomWidgetModifier extends WidgetModifierSpec {
 //           final String value;
-          
+
 //           CustomWidgetModifier(this.value);
 //         }
 //       ''');
@@ -437,26 +437,26 @@ void main() {}
 //         // Base classes
 //         abstract class Animal {}
 //         class Dog extends Animal {}
-        
+
 //         // User classes with Mix types
 //         @Dto<Dog>()
 //         class DogDto {
 //           final String name;
 //           DogDto(this.name);
 //         }
-        
+
 //         class AnimalSpec<T extends Animal> extends Spec {
 //           final T animal;
 //           AnimalSpec(this.animal);
 //         }
-        
+
 //         class DogSpec extends AnimalSpec<Dog> {
 //           DogSpec(Dog dog) : super(dog);
 //         }
-        
+
 //         class DogModifier extends WidgetModifierSpec {
 //           final DogSpec dogSpec;
-          
+
 //           DogModifier(this.dogSpec);
 //         }
 //       ''');
