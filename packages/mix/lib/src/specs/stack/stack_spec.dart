@@ -55,7 +55,3 @@ final class StackSpec extends Spec<StackSpec> with _$StackSpec, Diagnosticable {
     _debugFillProperties(properties);
   }
 }
-
-class StackStyle extends StackSpecUtility<StackSpecAttribute> {
-  StackStyle() : super((v) => v);
-}
