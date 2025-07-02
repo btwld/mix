@@ -1,14 +1,5 @@
 ## 1.7.0
 
- - **REFACTOR**: update outdated API (#583).
- - **REFACTOR**: bump flutter version to 3.19.0 (#365).
- - **FEAT**: Rewrite FlexBox as a Mix's primitive component (#517).
- - **FEAT**: Improvements for the "extract attributes" assist  (#387).
- - **FEAT**: implement quick fix for mix_attributes_ordering rule (#381).
- - **FEAT**: ColorSwatchToken and other token improvements (#378).
-
-## 1.7.0-beta.0
-
  - No changes in this release.
 
 ## 0.1.3
