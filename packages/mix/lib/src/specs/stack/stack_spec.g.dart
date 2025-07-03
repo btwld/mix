@@ -152,7 +152,7 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
       fit: fit,
       textDirection: textDirection,
       clipBehavior: clipBehavior,
-      animated: animated?.resolve(mix) ?? mix.animation,
+      animated: animated?.resolve(mix),
       modifiers: modifiers?.resolve(mix),
     );
   }

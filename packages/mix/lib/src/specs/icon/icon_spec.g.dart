@@ -203,7 +203,7 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
       textDirection: textDirection,
       applyTextScaling: applyTextScaling,
       fill: fill,
-      animated: animated?.resolve(mix) ?? mix.animation,
+      animated: animated?.resolve(mix),
       modifiers: modifiers?.resolve(mix),
     );
   }

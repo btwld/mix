@@ -12,9 +12,9 @@ void main() {
 
     testWidgets('colors', (tester) async {
       final theme = ThemeData.light();
-      await tester.pumpWithMixTheme(
+      await tester.pumpWithMixScope(
         Container(),
-        theme: MixThemeData.withMaterial().copyWith(),
+        theme: MixScopeData.withMaterial(),
       );
       final context = tester.element(find.byType(Container));
       final colors = const MaterialTokens().colorScheme;
@@ -58,9 +58,9 @@ void main() {
     });
 
     testWidgets('Material 3 textStyles', (tester) async {
-      await tester.pumpWithMixTheme(
+      await tester.pumpWithMixScope(
         Container(),
-        theme: MixThemeData.withMaterial(),
+        theme: MixScopeData.withMaterial(),
       );
       final context = tester.element(find.byType(Container));
 

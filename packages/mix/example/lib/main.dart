@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-const primary = ColorToken('primary');
+const primary = MixableToken<Color>('primary');
 
 void main() {
   runApp(
-    MixTheme(
-      data: MixThemeData(
-        colors: {
+    MixScope(
+      data: MixScopeData(
+        tokens: {
           primary: Colors.blue,
         },
       ),

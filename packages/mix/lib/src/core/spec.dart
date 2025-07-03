@@ -1,11 +1,12 @@
 import 'package:flutter/widgets.dart';
-import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix_annotations/mix_annotations.dart' hide MixableToken;
 
 import '../attributes/animation/animated_config_dto.dart';
 import '../attributes/animation/animation_config.dart';
 import '../attributes/modifiers/widget_modifiers_config.dart';
 import '../attributes/modifiers/widget_modifiers_config_dto.dart';
 import '../internal/compare_mixin.dart';
+import '../theme/tokens/mix_token.dart';
 import 'element.dart';
 import 'factory/mix_context.dart';
 
@@ -41,7 +42,6 @@ abstract class SpecAttribute<Value> extends StyleElement
     implements Mixable<Value> {
   final AnimationConfigDto? animated;
   final WidgetModifiersConfigDto? modifiers;
-
   const SpecAttribute({this.animated, this.modifiers});
 
   @override
@@ -49,4 +49,6 @@ abstract class SpecAttribute<Value> extends StyleElement
 
   @override
   SpecAttribute<Value> merge(covariant SpecAttribute<Value>? other);
+  @override
+  MixableToken<Value>? get token => null;
 }

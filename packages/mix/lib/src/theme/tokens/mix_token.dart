@@ -5,10 +5,9 @@ import 'package:flutter/widgets.dart';
 import '../../internal/iterable_ext.dart';
 
 @immutable
-// ignore: avoid-unused-generics
-class MixToken<T> {
+class MixableToken<T> {
   final String name;
-  const MixToken(this.name);
+  const MixableToken(this.name);
 
   @override
   operator ==(Object other) {
@@ -16,20 +15,20 @@ class MixToken<T> {
 
     if (runtimeType != other.runtimeType) return false;
 
-    return other is MixToken && other.name == name;
+    return other is MixableToken && other.name == name;
   }
 
   @override
-  int get hashCode => Object.hash(name, runtimeType);
+  int get hashCode => Object.hash(name, runtimeType, T);
 }
 
 /// Mixin that provides call() and resolve() methods for MixToken implementations
-mixin MixTokenCallable<T> on MixToken<T> {
+mixin MixTokenCallable<T> on MixableToken<T> {
   T call();
   T resolve(BuildContext context);
 }
 
-mixin TokenRef<T extends MixToken> {
+mixin TokenRef<T extends MixableToken> {
   T get token;
 }
 
@@ -39,7 +38,7 @@ mixin WithTokenResolver<V> {
 
 typedef BuildContextResolver<T> = T Function(BuildContext context);
 
-class StyledTokens<T extends MixToken<V>, V> {
+class StyledTokens<T extends MixableToken<V>, V> {
   final Map<T, V> _map;
 
   const StyledTokens(this._map);

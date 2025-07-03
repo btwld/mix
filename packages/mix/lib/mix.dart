@@ -56,7 +56,7 @@ export 'src/attributes/text_style/text_style_util.dart';
 export 'src/core/attributes_map.dart';
 export 'src/core/computed_style/computed_style.dart';
 export 'src/core/computed_style/computed_style_provider.dart';
-export 'src/core/deprecation_notices.dart';
+export 'src/core/deprecated.dart';
 export 'src/core/directive.dart';
 
 /// CORE
@@ -114,14 +114,8 @@ export 'src/specs/text/text_widget.dart';
 export 'src/theme/material/material_theme.dart';
 export 'src/theme/material/material_tokens.dart';
 export 'src/theme/mix/mix_theme.dart';
-export 'src/theme/tokens/breakpoints_token.dart';
-export 'src/theme/tokens/color_token.dart';
 export 'src/theme/tokens/mix_token.dart';
-export 'src/theme/tokens/radius_token.dart';
-export 'src/theme/tokens/space_token.dart';
-export 'src/theme/tokens/text_style_token.dart';
-export 'src/theme/tokens/token_resolver.dart';
-export 'src/theme/tokens/token_util.dart';
+export 'src/theme/tokens/value_resolver.dart';
 
 /// VARIANTS
 export 'src/variants/context_variant.dart';

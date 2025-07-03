@@ -50,8 +50,8 @@ void main() {
     testWidgets('tokens resolve returns correct FlexSpec', (tester) async {
       const tokenValue = 8.0;
 
-      final theme = MixThemeData(
-        spaces: {
+      final theme = MixScopeData(
+        tokens: {
           token.space.small: tokenValue,
         },
       );
@@ -59,7 +59,7 @@ void main() {
       late MixContext mixData;
 
       await tester.pumpWidget(
-        MixTheme(
+        MixScope(
           data: theme,
           child: MaterialApp(
             home: Scaffold(

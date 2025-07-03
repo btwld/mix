@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../core/element.dart';
 import '../../core/utility.dart';
-import '../../theme/tokens/color_token.dart';
 import '../../theme/tokens/mix_token.dart';
 import 'color_directives.dart';
 import 'color_directives_impl.dart';
@@ -16,7 +15,7 @@ abstract base class BaseColorUtility<T extends StyleElement>
 
   T _buildColor(Color color) => builder(ColorDto(color));
 
-  T token(MixToken<Color> token) => builder(ColorDto.token(token));
+  T token(MixableToken<Color> token) => builder(ColorDto.token(token));
 }
 
 @immutable
@@ -28,7 +27,7 @@ base class FoundationColorUtility<T extends StyleElement, C extends Color>
   T call() => _buildColor(color);
   @override
   T directive(ColorDirective directive) =>
-      builder(ColorDto.raw(value: color, directives: [directive]));
+      builder(ColorDto.internal(value: color, directives: [directive]));
 }
 
 /// A utility class for building [StyleElement] instances from a list of [ColorDto] objects.
@@ -53,7 +52,7 @@ final class ColorUtility<T extends StyleElement> extends BaseColorUtility<T>
     with ColorDirectiveMixin<T>, MaterialColorsMixin<T>, BasicColorsMixin<T> {
   ColorUtility(super.builder);
 
-  T ref(ColorToken ref) => _buildColor(ref());
+  T ref(MixableToken<Color> ref) => builder(ColorDto.token(ref));
 
   T call(Color color) => _buildColor(color);
 }

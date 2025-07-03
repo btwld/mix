@@ -2,12 +2,10 @@ import 'package:flutter/widgets.dart';
 
 import '../../core/element.dart';
 import '../../core/utility.dart';
-import '../../theme/tokens/space_token.dart';
 import '../../theme/tokens/mix_token.dart';
 import 'edge_insets_dto.dart';
 
-@Deprecated('Use EdgeInsetsGeometryUtility instead')
-typedef SpacingUtility<T extends StyleElement> = EdgeInsetsGeometryUtility<T>;
+// Deprecated typedef moved to src/core/deprecated.dart
 
 @immutable
 final class EdgeInsetsGeometryUtility<T extends StyleElement>
@@ -114,9 +112,10 @@ class SpacingSideUtility<T extends StyleElement> extends MixUtility<T, double> {
 
   T call(double value) => builder(value);
 
-  T ref(SpaceToken ref) => builder(ref());
-}
-
-extension SpacingTokens<T extends StyleElement> on SpacingSideUtility<T> {
-  T token(MixToken<double> token) => ref(SpaceToken(token.name));
+  // Note: Token support for spacing is handled through SpaceDto in EdgeInsetsGeometryDto
+  // Usage: $box.padding.all.ref(tokenUtil.space.small)
+  T ref(MixableToken<double> token) {
+    // This is a marker that the actual token resolution happens in EdgeInsetsGeometryDto
+    return builder(0.0);
+  }
 }

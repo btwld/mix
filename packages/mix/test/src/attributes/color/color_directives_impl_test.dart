@@ -109,7 +109,7 @@ void main() {
 
   group('Merges', () {
     test('LightnessColorDirective', () {
-      const colorDto = ColorDto.raw(value: Colors.black, directives: [
+      const colorDto = ColorDto.internal(value: Colors.black, directives: [
         LightnessColorDirective(0.5),
         LightnessColorDirective(0.5),
       ]);
@@ -125,7 +125,7 @@ void main() {
     });
 
     test('SaturationColorDirective', () {
-      const colorDto = ColorDto.raw(value: Colors.red, directives: [
+      const colorDto = ColorDto.internal(value: Colors.red, directives: [
         SaturationColorDirective(0.6),
         SaturationColorDirective(0.6),
       ]);
@@ -144,7 +144,7 @@ void main() {
     });
 
     test('HueColorDirective', () {
-      const colorDto = ColorDto.raw(value: Colors.red, directives: [
+      const colorDto = ColorDto.internal(value: Colors.red, directives: [
         HueColorDirective(180),
         HueColorDirective(180),
       ]);
@@ -160,7 +160,7 @@ void main() {
     });
 
     test('OpacityColorDirective', () {
-      const colorDto = ColorDto.raw(value: Colors.red, directives: [
+      const colorDto = ColorDto.internal(value: Colors.red, directives: [
         OpacityColorDirective(0.5),
         OpacityColorDirective(0.5),
       ]);
@@ -176,7 +176,7 @@ void main() {
     });
 
     test('TintColorDirective', () {
-      const colorDto = ColorDto.raw(value: Color(0xFF800000), directives: [
+      const colorDto = ColorDto.internal(value: Color(0xFF800000), directives: [
         TintColorDirective(10),
         TintColorDirective(10),
       ]);
@@ -192,7 +192,7 @@ void main() {
     });
 
     test('ShadeColorDirective', () {
-      const colorDto = ColorDto.raw(value: Colors.red, directives: [
+      const colorDto = ColorDto.internal(value: Colors.red, directives: [
         ShadeColorDirective(10),
         ShadeColorDirective(10),
       ]);
@@ -208,7 +208,7 @@ void main() {
     });
 
     test('DesaturateColorDirective', () {
-      const colorDto = ColorDto.raw(value: Colors.red, directives: [
+      const colorDto = ColorDto.internal(value: Colors.red, directives: [
         DesaturateColorDirective(10),
         DesaturateColorDirective(10),
       ]);
@@ -224,7 +224,7 @@ void main() {
     });
 
     test('SaturateColorDirective', () {
-      const colorDto = ColorDto.raw(value: Color(0xffcc3333), directives: [
+      const colorDto = ColorDto.internal(value: Color(0xffcc3333), directives: [
         SaturateColorDirective(10),
         SaturateColorDirective(10),
       ]);
@@ -240,7 +240,7 @@ void main() {
     });
 
     test('DarkenColorDirective', () {
-      const colorDto = ColorDto.raw(value: Colors.red, directives: [
+      const colorDto = ColorDto.internal(value: Colors.red, directives: [
         DarkenColorDirective(10),
         DarkenColorDirective(10),
       ]);
@@ -256,7 +256,7 @@ void main() {
     });
 
     test('BrightenColorDirective', () {
-      const colorDto = ColorDto.raw(value: Colors.red, directives: [
+      const colorDto = ColorDto.internal(value: Colors.red, directives: [
         BrightenColorDirective(10),
         BrightenColorDirective(10),
       ]);
@@ -272,7 +272,7 @@ void main() {
     });
 
     test('LightenColorDirective', () {
-      const colorDto = ColorDto.raw(value: Colors.red, directives: [
+      const colorDto = ColorDto.internal(value: Colors.red, directives: [
         LightenColorDirective(10),
         LightenColorDirective(10),
       ]);

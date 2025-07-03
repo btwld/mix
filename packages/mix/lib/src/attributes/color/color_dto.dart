@@ -19,16 +19,21 @@ import 'color_directives_impl.dart';
 @immutable
 class ColorDto extends Mixable<Color> with Diagnosticable {
   final Color? value;
-  final MixToken<Color>? token;
   final List<ColorDirective> directives;
 
-  const ColorDto.raw({this.value, this.token, this.directives = const []});
-  const ColorDto(Color value) : this.raw(value: value);
+  @protected
+  const ColorDto.internal({
+    this.value,
+    super.token,
+    this.directives = const [],
+  });
+  const ColorDto(Color value) : this.internal(value: value);
 
-  factory ColorDto.token(MixToken<Color> token) => ColorDto.raw(token: token);
+  factory ColorDto.token(MixableToken<Color> token) =>
+      ColorDto.internal(token: token);
 
   ColorDto.directive(ColorDirective directive)
-      : this.raw(directives: [directive]);
+      : this.internal(directives: [directive]);
 
   List<ColorDirective> _applyResetIfNeeded(List<ColorDirective> directives) {
     final lastResetIndex =
@@ -43,16 +48,11 @@ class ColorDto extends Mixable<Color> with Diagnosticable {
 
   @override
   Color resolve(MixContext mix) {
-    Color color;
+    // Must call super.resolve() first - returns token value or null
+    final tokenValue = super.resolve(mix);
+    Color color = tokenValue ?? (value ?? defaultColor);
 
-    // Type-safe, direct token resolution using MixToken object
-    if (token != null) {
-      color = mix.tokens.resolveToken<Color>(token!);
-    } else {
-      color = value ?? defaultColor;
-    }
-
-    // Apply directives
+    // Apply directives to the resolved color
     for (final directive in directives) {
       color = directive.modify(color);
     }
@@ -64,7 +64,7 @@ class ColorDto extends Mixable<Color> with Diagnosticable {
   ColorDto merge(ColorDto? other) {
     if (other == null) return this;
 
-    return ColorDto.raw(
+    return ColorDto.internal(
       value: other.value ?? value,
       token: other.token ?? token,
       directives: _applyResetIfNeeded([...directives, ...other.directives]),

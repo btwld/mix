@@ -6,10 +6,10 @@ import '../../../helpers/testing_utils.dart';
 
 // Act as an expert in dart and someone with deep understanding of effective dart documentation guidelines. You have been tasked to create comments in the code that help document it for other developers and users when they look at the code. Your comments should be detailed complete, but still concise.
 void main() {
-  const onXSmall = OnBreakpointTokenVariant(BreakpointToken.xsmall);
-  const onSmall = OnBreakpointTokenVariant(BreakpointToken.small);
-  const onMedium = OnBreakpointTokenVariant(BreakpointToken.medium);
-  const onLarge = OnBreakpointTokenVariant(BreakpointToken.large);
+  final onXSmall = OnBreakpointTokenVariant(BreakpointToken.xsmall);
+  final onSmall = OnBreakpointTokenVariant(BreakpointToken.small);
+  final onMedium = OnBreakpointTokenVariant(BreakpointToken.medium);
+  final onLarge = OnBreakpointTokenVariant(BreakpointToken.large);
 
   group('OnBreakpointToken Utils', () {
     const xSmallScreenWidth = Size(320, 480);

@@ -16,29 +16,26 @@ import '../../theme/tokens/mix_token.dart';
 @immutable
 class RadiusDto extends Mixable<Radius> with Diagnosticable {
   final Radius? value;
-  final MixToken<Radius>? token;
 
-  const RadiusDto.raw({this.value, this.token});
-  const RadiusDto(Radius value) : this.raw(value: value);
+  @protected
+  const RadiusDto.internal({this.value, super.token});
+  const RadiusDto(Radius value) : this.internal(value: value);
 
-  factory RadiusDto.token(MixToken<Radius> token) =>
-      RadiusDto.raw(token: token);
+  factory RadiusDto.token(MixableToken<Radius> token) =>
+      RadiusDto.internal(token: token);
 
   @override
   Radius resolve(MixContext mix) {
-    // Type-safe, direct token resolution using MixToken object
-    if (token != null) {
-      return mix.tokens.resolveToken(token!);
-    }
+    final tokenValue = super.resolve(mix);
 
-    return value ?? Radius.zero;
+    return tokenValue ?? value ?? Radius.zero;
   }
 
   @override
   RadiusDto merge(RadiusDto? other) {
     if (other == null) return this;
 
-    return RadiusDto.raw(
+    return RadiusDto.internal(
       value: other.value ?? value,
       token: other.token ?? token,
     );

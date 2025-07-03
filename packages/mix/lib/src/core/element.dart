@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 
 import '../internal/compare_mixin.dart';
+import '../theme/tokens/mix_token.dart';
 import 'factory/mix_context.dart';
-import 'spec.dart';
 import 'utility.dart';
 
 abstract class StyleElement with EqualityMixin {
@@ -16,19 +16,22 @@ abstract class StyleElement with EqualityMixin {
   StyleElement merge(covariant StyleElement? other);
 }
 
-@Deprecated('Use StyleElement instead')
-typedef Attribute = StyleElement;
-
-@Deprecated('Use StyleAttribute instead')
-typedef StyledAttribute = SpecAttribute;
-
-@Deprecated('Use Mixable instead')
-typedef Dto<Value> = Mixable<Value>;
+// Deprecated typedefs moved to src/core/deprecated.dart
 
 abstract class Mixable<Value> with EqualityMixin {
-  const Mixable();
+  /// Optional token for resolving values from the theme
+  final MixableToken<Value>? token;
 
-  Value resolve(MixContext mix);
+  const Mixable({this.token});
+
+  /// Resolves token value if present, otherwise returns null
+  /// Subclasses MUST call super.resolve() and handle the result
+  @mustCallSuper
+  Value? resolve(MixContext mix) {
+    return token != null ? mix.scope.getToken(token!, mix.context) : null;
+  }
+
+  /// Merges this mixable with another
   Mixable<Value> merge(covariant Mixable<Value>? other);
 }
 
@@ -48,18 +51,3 @@ abstract class DtoUtility<A extends StyleElement, D extends Mixable<Value>,
 
   A as(Value value) => builder(_fromValue(value));
 }
-
-// /// Provides the ability to merge this object with another of the same type.
-// ///
-// /// Defines a single method, [merge], which takes another object of type [T]
-// /// and returns a new object representing the merged result.
-// ///
-// /// Typically used by classes like [MixableDto] or [StyleAttribute] that need to merge
-// /// instances of the same type.
-// mixin MergeableMixin<T> {
-//   /// Merges this object with [other], returning a new object of type [T].
-//   T merge(covariant T? other);
-//   // Used as the key to determine how
-//   // attributes get merged
-//   Object get mergeKey => runtimeType;
-// }

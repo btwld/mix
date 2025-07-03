@@ -5,18 +5,18 @@ import 'package:mix/mix.dart';
 void main() {
   group('Token Integration Tests', () {
     testWidgets('ColorDto with Token<Color> integration', (tester) async {
-      const primaryToken = MixToken<Color>('primary');
-      const secondaryToken = MixToken<Color>('secondary');
+      const primaryToken = MixableToken<Color>('primary');
+      const secondaryToken = MixableToken<Color>('secondary');
 
-      final theme = MixThemeData(
-        colors: {
-          ColorToken(primaryToken.name): Colors.blue,
-          ColorToken(secondaryToken.name): Colors.red,
+      final theme = MixScopeData(
+        tokens: {
+          primaryToken: Colors.blue,
+          secondaryToken: Colors.red,
         },
       );
 
       await tester.pumpWidget(
-        MixTheme(
+        MixScope(
           data: theme,
           child: Builder(
             builder: (context) {
@@ -37,10 +37,10 @@ void main() {
     });
 
     testWidgets('SpaceDto with Token<double> integration', (tester) async {
-      const smallToken = MixToken<double>('small');
-      const largeToken = MixToken<double>('large');
+      const smallToken = MixableToken<double>('small');
+      const largeToken = MixableToken<double>('large');
 
-      final theme = MixThemeData.unified(
+      final theme = MixScopeData(
         tokens: {
           smallToken: 8.0,
           largeToken: 24.0,
@@ -48,7 +48,7 @@ void main() {
       );
 
       await tester.pumpWidget(
-        MixTheme(
+        MixScope(
           data: theme,
           child: Builder(
             builder: (context) {
@@ -70,21 +70,21 @@ void main() {
 
     testWidgets('TextStyleDto with Token<TextStyle> integration',
         (tester) async {
-      const headingToken = MixToken<TextStyle>('heading');
-      const bodyToken = MixToken<TextStyle>('body');
+      const headingToken = MixableToken<TextStyle>('heading');
+      const bodyToken = MixableToken<TextStyle>('body');
 
       const headingStyle = TextStyle(fontSize: 24, fontWeight: FontWeight.bold);
       const bodyStyle = TextStyle(fontSize: 16);
 
-      final theme = MixThemeData(
-        textStyles: {
-          TextStyleToken(headingToken.name): headingStyle,
-          TextStyleToken(bodyToken.name): bodyStyle,
+      final theme = MixScopeData(
+        tokens: {
+          headingToken: headingStyle,
+          bodyToken: bodyStyle,
         },
       );
 
       await tester.pumpWidget(
-        MixTheme(
+        MixScope(
           data: theme,
           child: Builder(
             builder: (context) {
@@ -106,20 +106,18 @@ void main() {
     });
 
     testWidgets('Utility extensions work with tokens', (tester) async {
-      const primaryToken = MixToken<Color>('primary');
-      const spacingToken = MixToken<double>('spacing');
+      const primaryToken = MixableToken<Color>('primary');
+      const spacingToken = MixableToken<double>('spacing');
 
-      final theme = MixThemeData(
-        colors: {
-          ColorToken(primaryToken.name): Colors.purple,
-        },
-        spaces: {
-          SpaceToken(spacingToken.name): 16.0,
+      final theme = MixScopeData(
+        tokens: {
+          primaryToken: Colors.purple,
+          spacingToken: 16.0,
         },
       );
 
       await tester.pumpWidget(
-        MixTheme(
+        MixScope(
           data: theme,
           child: Builder(
             builder: (context) {
@@ -143,18 +141,14 @@ void main() {
       );
     });
 
-    test('Token backwards compatibility with old token types', () {
-      // Old tokens should still work
-      const oldColorToken = ColorToken('primary');
-      const oldSpaceToken = SpaceToken('large');
+    test('Token names are consistent', () {
+      // New tokens
+      const colorToken = MixableToken<Color>('primary');
+      const spaceToken = MixableToken<double>('large');
 
-      // New tokens with same names
-      const newColorToken = MixToken<Color>('primary');
-      const newSpaceToken = MixToken<double>('large');
-
-      // Names should match for theme lookup
-      expect(oldColorToken.name, equals(newColorToken.name));
-      expect(oldSpaceToken.name, equals(newSpaceToken.name));
+      // Names should be predictable
+      expect(colorToken.name, equals('primary'));
+      expect(spaceToken.name, equals('large'));
     });
   });
 }

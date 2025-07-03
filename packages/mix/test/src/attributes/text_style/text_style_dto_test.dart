@@ -110,12 +110,10 @@ void main() {
       expect(attr1, isNot(attr2));
     });
   });
-  test('TextStyleDto.ref creates a TextStyleDto with a TextStyleDataRef', () {
-    const token = TextStyleToken('test_token');
-    final attr = TextStyleDto.ref(token);
-    expect(attr.value.length, 1);
-    expect(attr.value.first, isA<TextStyleDataRef>());
-    expect((attr.value.first as TextStyleDataRef).ref.token, token);
+  test('TextStyleDto.token creates a TextStyleDto with a token', () {
+    const token = MixableToken<TextStyle>('test_token');
+    final attr = TextStyleDto.token(token);
+    expect(attr.token, token);
   });
 
   test('TextStyleExt toDto method converts TextStyle to TextStyleDto correctly',
@@ -132,30 +130,24 @@ void main() {
     expect(attr.value.first.fontWeight, FontWeight.bold);
   });
 
-  test('TextStyleExt toDto method handles TextStyleRef correctly', () {
-    const token = TextStyleToken('test_token');
-    const style = TextStyleRef(token);
-    final attr = style.toDto();
-    expect(attr, isA<TextStyleDto>());
-    expect(attr.value.length, 1);
-    expect(attr.value.first, isA<TextStyleDataRef>());
-    expect((attr.value.first as TextStyleDataRef).ref.token, token);
-  });
-
   testWidgets('TextStyleDto.token resolves using unified resolver system',
       (tester) async {
-    const testToken = MixToken<TextStyle>('test-text-style');
+    const testToken = MixableToken<TextStyle>('test-text-style');
 
-    await tester.pumpWithMixTheme(
-      Container(),
-      theme: MixThemeData.unified(
-        tokens: {
-          testToken: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.blue,
+    await tester.pumpWidget(
+      MaterialApp(
+        home: MixScope(
+          data: MixScopeData(
+            tokens: {
+              testToken: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue,
+              ),
+            },
           ),
-        },
+          child: Container(),
+        ),
       ),
     );
 

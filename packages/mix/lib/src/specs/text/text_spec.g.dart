@@ -234,7 +234,7 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
       textDirection: textDirection,
       softWrap: softWrap,
       directive: directive?.resolve(mix),
-      animated: animated?.resolve(mix) ?? mix.animation,
+      animated: animated?.resolve(mix),
       modifiers: modifiers?.resolve(mix),
     );
   }

@@ -8,8 +8,7 @@ import "package:flutter/material.dart";
 ///
 /// The controller extends [ChangeNotifier], allowing listeners to be notified
 /// when the state of the widget changes.
-@Deprecated('Use WidgetStatesController instead')
-typedef MixWidgetStateController = WidgetStatesController;
+// Deprecated typedef moved to src/core/deprecated.dart
 
 extension MixWidgetStatesExt on WidgetStatesController {
   /// The current set of states for the widget.

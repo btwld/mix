@@ -226,7 +226,7 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
       width: width,
       height: height,
       modifiers: modifiers?.resolve(mix),
-      animated: animated?.resolve(mix) ?? mix.animation,
+      animated: animated?.resolve(mix),
     );
   }
 

@@ -39,8 +39,8 @@ MediaQuery createMediaQuery({
       size: size ?? const Size.square(500),
       platformBrightness: brightness ?? Brightness.light,
     ),
-    child: MixTheme(
-      data: MixThemeData(),
+    child: MixScope(
+      data: MixScopeData(),
       child: MaterialApp(
         home: Scaffold(
           body: Builder(
@@ -55,8 +55,8 @@ MediaQuery createMediaQuery({
 }
 
 Widget createDirectionality(TextDirection direction) {
-  return MixTheme(
-    data: MixThemeData(),
+  return MixScope(
+    data: MixScopeData(),
     child: MaterialApp(
       home: Directionality(
         textDirection: direction,
@@ -72,8 +72,8 @@ Widget createDirectionality(TextDirection direction) {
   );
 }
 
-Widget createWithMixTheme(MixThemeData theme, {Widget? child}) {
-  return MixTheme(
+Widget createWithMixScope(MixScopeData theme, {Widget? child}) {
+  return MixScope(
     data: theme,
     child: MaterialApp(
       home: Scaffold(
@@ -92,7 +92,7 @@ extension WidgetTesterExt on WidgetTester {
     Widget widget, {
     Style style = const Style.empty(),
   }) async {
-    await pumpWithMixTheme(
+    await pumpWithMixScope(
       Builder(
         builder: (BuildContext context) {
           // Populate MixData into the widget tree if needed
@@ -106,12 +106,12 @@ extension WidgetTesterExt on WidgetTester {
     );
   }
 
-  Future<void> pumpWithMixTheme(
+  Future<void> pumpWithMixScope(
     Widget widget, {
-    MixThemeData? theme,
+    MixScopeData? theme,
   }) async {
     await pumpWidget(
-      MaterialApp(home: MixTheme(data: theme ?? MixThemeData(), child: widget)),
+      MaterialApp(home: MixScope(data: theme ?? MixScopeData(), child: widget)),
     );
   }
 
@@ -152,10 +152,10 @@ extension WidgetTesterExt on WidgetTester {
 
   Future<void> pumpStyledWidget(
     StyledWidget widget, {
-    MixThemeData theme = const MixThemeData.empty(),
+    MixScopeData theme = const MixScopeData.empty(),
   }) async {
     await pumpWidget(
-      MaterialApp(home: MixTheme(data: theme, child: widget)),
+      MaterialApp(home: MixScope(data: theme, child: widget)),
     );
   }
 }
@@ -167,12 +167,12 @@ class WrapMixThemeWidget extends StatelessWidget {
   const WrapMixThemeWidget({required this.child, this.theme, super.key});
 
   final Widget child;
-  final MixThemeData? theme;
+  final MixScopeData? theme;
 
   @override
   Widget build(BuildContext context) {
-    return MixTheme(
-      data: theme ?? MixThemeData(),
+    return MixScope(
+      data: theme ?? MixScopeData(),
       child: Directionality(textDirection: TextDirection.ltr, child: child),
     );
   }
@@ -315,7 +315,11 @@ final class UtilityTestDtoAttribute<T extends Mixable<V>, V>
 
   @override
   V resolve(MixContext mix) {
-    return value.resolve(mix);
+    final result = value.resolve(mix);
+    if (result == null) {
+      throw StateError('UtilityTestDtoAttribute resolve returned null');
+    }
+    return result;
   }
 
   @override
@@ -418,23 +422,22 @@ class MixTokensTest {
   final space = const SpaceTokenUtil();
   final radius = const RadiusTokenUtil();
   final color = const ColorTokenUtil();
-  final breakpoint = const BreakpointTokenUtil();
   final textStyle = const TextStyleTokenUtil();
 
   const MixTokensTest();
 }
 
 class RadiusTokenUtil {
-  final small = const RadiusToken('mix.radius.small');
-  final medium = const RadiusToken('mix.radius.medium');
-  final large = const RadiusToken('mix.radius.large');
+  final small = const MixableToken<Radius>('mix.radius.small');
+  final medium = const MixableToken<Radius>('mix.radius.medium');
+  final large = const MixableToken<Radius>('mix.radius.large');
   const RadiusTokenUtil();
 }
 
 class SpaceTokenUtil {
-  final large = const SpaceToken('mix.space.large');
-  final medium = const SpaceToken('mix.space.medium');
-  final small = const SpaceToken('mix.space.small');
+  final large = const MixableToken<double>('mix.space.large');
+  final medium = const MixableToken<double>('mix.space.medium');
+  final small = const MixableToken<double>('mix.space.small');
 
   const SpaceTokenUtil();
 }

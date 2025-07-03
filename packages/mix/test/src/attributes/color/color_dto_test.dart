@@ -25,11 +25,11 @@ void main() {
     testWidgets(
       'ColorDto.resolve should resolve tokens using unified resolver',
       (tester) async {
-        const testToken = MixToken<Color>('test-color');
+        const testToken = MixableToken<Color>('test-color');
 
-        await tester.pumpWithMixTheme(
+        await tester.pumpWithMixScope(
           Container(),
-          theme: MixThemeData.unified(tokens: {testToken: Colors.red}),
+          theme: MixScopeData(tokens: {testToken: Colors.red}),
         );
 
         final buildContext = tester.element(find.byType(Container));
@@ -66,7 +66,7 @@ void main() {
     });
 
     test('ColorDirectiveCleaner', () {
-      var colorDto = const ColorDto.raw(value: Colors.red, directives: [
+      var colorDto = const ColorDto.internal(value: Colors.red, directives: [
         DarkenColorDirective(10),
       ]);
 
@@ -83,7 +83,7 @@ void main() {
       );
 
       colorDto =
-          colorDto.merge(const ColorDto.raw(value: Colors.red, directives: [
+          colorDto.merge(const ColorDto.internal(value: Colors.red, directives: [
         DarkenColorDirective(20),
       ]));
 
@@ -121,16 +121,16 @@ void main() {
 
     // Test equality
     test('ColorDto.equals should return true for equal instances', () {
-      const colorDto1 = ColorDto.raw(
+      const colorDto1 = ColorDto.internal(
         value: Colors.red,
         directives: [OpacityColorDirective(0.5)],
       );
-      const colorDto2 = ColorDto.raw(
+      const colorDto2 = ColorDto.internal(
         value: Colors.red,
         directives: [OpacityColorDirective(0.5)],
       );
 
-      const colorDto3 = ColorDto.raw(
+      const colorDto3 = ColorDto.internal(
         value: Colors.red,
         directives: [DarkenColorDirective(10)],
       );

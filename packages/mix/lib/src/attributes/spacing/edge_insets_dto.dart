@@ -9,16 +9,16 @@ import '../../internal/mix_error.dart';
 
 part 'edge_insets_dto.g.dart';
 
-@Deprecated('Use EdgeInsetsGeometryDto instead')
-typedef SpacingDto = EdgeInsetsGeometryDto<EdgeInsetsGeometry>;
+// Deprecated typedef moved to src/core/deprecated.dart
 
 @immutable
 sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
     extends Mixable<T> {
-  final double? top;
-  final double? bottom;
+  final SpaceDto? top;
+  final SpaceDto? bottom;
 
-  const EdgeInsetsGeometryDto({this.top, this.bottom});
+  @protected
+  const EdgeInsetsGeometryDto.internal({this.top, this.bottom, super.token});
 
   static EdgeInsetsGeometryDto only({
     double? top,
@@ -37,15 +37,20 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
       'Cannot provide both directional and non-directional values',
     );
     if (start != null || end != null) {
-      return EdgeInsetsDirectionalDto(
-        top: top,
-        bottom: bottom,
-        start: start,
-        end: end,
+      return EdgeInsetsDirectionalDto.internal(
+        top: top != null ? SpaceDto(top) : null,
+        bottom: bottom != null ? SpaceDto(bottom) : null,
+        start: start != null ? SpaceDto(start) : null,
+        end: end != null ? SpaceDto(end) : null,
       );
     }
 
-    return EdgeInsetsDto(top: top, bottom: bottom, left: left, right: right);
+    return EdgeInsetsDto.internal(
+      top: top != null ? SpaceDto(top) : null,
+      bottom: bottom != null ? SpaceDto(bottom) : null,
+      left: left != null ? SpaceDto(left) : null,
+      right: right != null ? SpaceDto(right) : null,
+    );
   }
 
   static EdgeInsetsGeometryDto? tryToMerge(
@@ -71,7 +76,7 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
   EdgeInsetsDto _asEdgeInset() {
     if (this is EdgeInsetsDto) return this as EdgeInsetsDto;
 
-    return EdgeInsetsDto(top: top, bottom: bottom);
+    return EdgeInsetsDto.internal(top: top, bottom: bottom);
   }
 
   EdgeInsetsDirectionalDto _asEdgeInsetDirectional() {
@@ -79,33 +84,61 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
       return this as EdgeInsetsDirectionalDto;
     }
 
-    return EdgeInsetsDirectionalDto(top: top, bottom: bottom);
+    return EdgeInsetsDirectionalDto.internal(top: top, bottom: bottom);
   }
 
   @override
   EdgeInsetsGeometryDto<T> merge(covariant EdgeInsetsGeometryDto<T>? other);
 }
 
-@MixableType()
+@MixableType(components: GeneratedPropertyComponents.none)
 final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets>
     with _$EdgeInsetsDto, Diagnosticable {
-  final double? left;
-  final double? right;
+  final SpaceDto? left;
+  final SpaceDto? right;
 
-  const EdgeInsetsDto({super.top, super.bottom, this.left, this.right});
+  @MixableConstructor()
+  @protected
+  const EdgeInsetsDto.internal({super.top, super.bottom, this.left, this.right})
+      : super.internal();
 
-  const EdgeInsetsDto.all(double value)
-      : this(top: value, bottom: value, left: value, right: value);
+  // Unnamed constructor for backward compatibility
+  factory EdgeInsetsDto({
+    double? top,
+    double? bottom,
+    double? left,
+    double? right,
+  }) {
+    return EdgeInsetsDto.internal(
+      top: top != null ? SpaceDto(top) : null,
+      bottom: bottom != null ? SpaceDto(bottom) : null,
+      left: left != null ? SpaceDto(left) : null,
+      right: right != null ? SpaceDto(right) : null,
+    );
+  }
 
-  const EdgeInsetsDto.none() : this.all(0);
+  EdgeInsetsDto.all(double value)
+      : this.internal(
+          top: SpaceDto(value),
+          bottom: SpaceDto(value),
+          left: SpaceDto(value),
+          right: SpaceDto(value),
+        );
+
+  EdgeInsetsDto.none() : this.all(0);
 
   @override
   EdgeInsets resolve(MixContext mix) {
+    final tokenValue = super.resolve(mix);
+    if (tokenValue != null) {
+      return tokenValue;
+    }
+
     return EdgeInsets.only(
-      left: mix.tokens.spaceTokenRef(left ?? 0),
-      top: mix.tokens.spaceTokenRef(top ?? 0),
-      right: mix.tokens.spaceTokenRef(right ?? 0),
-      bottom: mix.tokens.spaceTokenRef(bottom ?? 0),
+      left: left?.resolve(mix) ?? 0,
+      top: top?.resolve(mix) ?? 0,
+      right: right?.resolve(mix) ?? 0,
+      bottom: bottom?.resolve(mix) ?? 0,
     );
   }
 
@@ -120,32 +153,59 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets>
   }
 }
 
-@MixableType()
+@MixableType(components: GeneratedPropertyComponents.none)
 final class EdgeInsetsDirectionalDto
     extends EdgeInsetsGeometryDto<EdgeInsetsDirectional>
     with _$EdgeInsetsDirectionalDto {
-  final double? start;
-  final double? end;
+  final SpaceDto? start;
+  final SpaceDto? end;
 
-  const EdgeInsetsDirectionalDto.all(double value)
-      : this(top: value, bottom: value, start: value, end: value);
+  EdgeInsetsDirectionalDto.all(double value)
+      : this.internal(
+          top: SpaceDto(value),
+          bottom: SpaceDto(value),
+          start: SpaceDto(value),
+          end: SpaceDto(value),
+        );
 
-  const EdgeInsetsDirectionalDto.none() : this.all(0);
+  EdgeInsetsDirectionalDto.none() : this.all(0);
 
-  const EdgeInsetsDirectionalDto({
+  @MixableConstructor()
+  @protected
+  const EdgeInsetsDirectionalDto.internal({
     super.top,
     super.bottom,
     this.start,
     this.end,
-  });
+  }) : super.internal();
+
+  // Unnamed constructor for backward compatibility
+  factory EdgeInsetsDirectionalDto({
+    double? top,
+    double? bottom,
+    double? start,
+    double? end,
+  }) {
+    return EdgeInsetsDirectionalDto.internal(
+      top: top != null ? SpaceDto(top) : null,
+      bottom: bottom != null ? SpaceDto(bottom) : null,
+      start: start != null ? SpaceDto(start) : null,
+      end: end != null ? SpaceDto(end) : null,
+    );
+  }
 
   @override
   EdgeInsetsDirectional resolve(MixContext mix) {
+    final tokenValue = super.resolve(mix);
+    if (tokenValue != null) {
+      return tokenValue;
+    }
+
     return EdgeInsetsDirectional.only(
-      start: mix.tokens.spaceTokenRef(start ?? 0),
-      top: mix.tokens.spaceTokenRef(top ?? 0),
-      end: mix.tokens.spaceTokenRef(end ?? 0),
-      bottom: mix.tokens.spaceTokenRef(bottom ?? 0),
+      start: start?.resolve(mix) ?? 0,
+      top: top?.resolve(mix) ?? 0,
+      end: end?.resolve(mix) ?? 0,
+      bottom: bottom?.resolve(mix) ?? 0,
     );
   }
 }

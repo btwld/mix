@@ -3,46 +3,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
-import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix_annotations/mix_annotations.dart' hide MixableToken;
 
-import '../../internal/constants.dart';
 import '../../internal/diagnostic_properties_builder_ext.dart';
 
 part 'text_style_dto.g.dart';
-
-final class TextStyleDataRef extends TextStyleData {
-  final TextStyleRef ref;
-  const TextStyleDataRef({required this.ref});
-
-  @override
-  TextStyleDataRef merge(covariant TextStyleDataRef? other) {
-    if (other == null) return this;
-    throw FlutterError.fromParts([
-      ErrorSummary('Cannot merge TextStyleDataRef instances'),
-      ErrorDescription(
-        'An attempt was made to merge incompatible TextStyleDataRef objects. '
-        'Attempted to merge: $this with $other',
-      ),
-      ErrorHint('This is likely due to an internal error in the Mix library.'),
-      ErrorHint(
-        'Please open an issue on GitHub: $mixIssuesUrl, '
-        'Explain how you encountered this error, and provide the code that triggered it.',
-      ),
-    ]);
-  }
-
-  @override
-  TextStyle resolve(MixContext mix) => mix.tokens.textStyleRef(ref);
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.addUsingDefault('token', ref.token.name);
-  }
-
-  @override
-  get props => [ref];
-}
 
 // TODO: Look for ways to consolidate TextStyleDto and TextStyleData
 // If we remove TextStyle from tokens, it means we don't need a list of resolvable values
@@ -131,12 +96,11 @@ base class TextStyleData extends Mixable<TextStyle>
 final class TextStyleDto extends Mixable<TextStyle>
     with _$TextStyleDto, Diagnosticable {
   final List<TextStyleData> value;
-  final MixToken<TextStyle>? token;
 
   @MixableConstructor()
-  const TextStyleDto._({this.value = const [], this.token});
+  const TextStyleDto._({this.value = const [], super.token});
 
-  factory TextStyleDto.token(MixToken<TextStyle> token) =>
+  factory TextStyleDto.token(MixableToken<TextStyle> token) =>
       TextStyleDto._(token: token);
 
   factory TextStyleDto({
@@ -189,26 +153,19 @@ final class TextStyleDto extends Mixable<TextStyle>
     ]);
   }
 
-  factory TextStyleDto.ref(TextStyleToken token) {
-    return TextStyleDto._(value: [TextStyleDataRef(ref: token())]);
-  }
-
   /// Resolves this [TextStyleDto] to a [TextStyle].
   ///
   /// If a token is present, resolves it directly using the unified resolver system.
-  /// Otherwise, processes the value list by resolving any token references,
-  /// merging all [TextStyleData] objects, and resolving to a final [TextStyle].
+  /// Otherwise, processes the value list by merging all [TextStyleData] objects and resolving to a final [TextStyle].
   @override
   TextStyle resolve(MixContext mix) {
-    // Type-safe, direct token resolution using MixToken object
-    if (token != null) {
-      return mix.tokens.resolveToken(token!);
+    // Check for token resolution first
+    final tokenResult = super.resolve(mix);
+    if (tokenResult != null) {
+      return tokenResult;
     }
 
-    final result = value
-        .map((e) => e is TextStyleDataRef ? e.resolve(mix)._toData() : e)
-        .reduce((a, b) => a.merge(b))
-        .resolve(mix);
+    final result = value.reduce((a, b) => a.merge(b)).resolve(mix);
 
     return result;
   }
@@ -232,10 +189,6 @@ final class TextStyleDto extends Mixable<TextStyle>
 
 extension TextStyleExt on TextStyle {
   TextStyleDto toDto() {
-    if (this is TextStyleRef) {
-      return TextStyleDto.ref((this as TextStyleRef).token);
-    }
-
     return TextStyleDto._(value: [_toData()]);
   }
 

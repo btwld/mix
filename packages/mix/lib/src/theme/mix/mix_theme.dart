@@ -2,181 +2,147 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../material/material_theme.dart';
-import '../tokens/breakpoints_token.dart';
-import '../tokens/color_token.dart';
 import '../tokens/mix_token.dart';
-import '../tokens/radius_token.dart';
-import '../tokens/space_token.dart';
-import '../tokens/text_style_token.dart';
 import '../tokens/value_resolver.dart';
 
-class MixTheme extends InheritedWidget {
-  const MixTheme({required this.data, super.key, required super.child});
+class MixScope extends InheritedWidget {
+  const MixScope({required this.data, super.key, required super.child});
 
-  static MixThemeData of(BuildContext context) {
-    final themeData =
-        context.dependOnInheritedWidgetOfExactType<MixTheme>()?.data;
+  static MixScopeData of(BuildContext context) {
+    final scopeData =
+        context.dependOnInheritedWidgetOfExactType<MixScope>()?.data;
 
-    assert(themeData != null, 'No MixTheme found in context');
+    assert(scopeData != null, 'No MixScope found in context');
 
-    return themeData!;
+    return scopeData!;
   }
 
-  static MixThemeData? maybeOf(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<MixTheme>()?.data;
+  static MixScopeData? maybeOf(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<MixScope>()?.data;
   }
 
-  final MixThemeData data;
+  final MixScopeData data;
 
   @override
-  bool updateShouldNotify(MixTheme oldWidget) => data != oldWidget.data;
+  bool updateShouldNotify(MixScope oldWidget) => data != oldWidget.data;
 }
 
+// Deprecated typedefs moved to src/core/deprecated.dart
+
 @immutable
-class MixThemeData {
-  /// Legacy token storage for backward compatibility
-  final StyledTokens<RadiusToken, Radius> radii;
-  final StyledTokens<ColorToken, Color> colors;
-  final StyledTokens<TextStyleToken, TextStyle> textStyles;
-  final StyledTokens<BreakpointToken, Breakpoint> breakpoints;
-  final StyledTokens<SpaceToken, double> spaces;
-
-  /// Unified token storage for new MixToken<T> system
-  /// Maps MixToken<T> objects to ValueResolver<T> for type-safe resolution
-  final Map<MixToken, ValueResolver>? tokens;
-
+class MixScopeData {
   final List<Type>? defaultOrderOfModifiers;
+  final Map<MixableToken, ValueResolver>? _tokens;
 
-  const MixThemeData.raw({
-    required this.textStyles,
-    required this.colors,
-    required this.breakpoints,
-    required this.radii,
-    required this.spaces,
-    this.tokens,
-    this.defaultOrderOfModifiers,
-  });
+  const MixScopeData.empty()
+      : _tokens = null,
+        defaultOrderOfModifiers = null;
 
-  const MixThemeData.empty()
-      : this.raw(
-          textStyles: const StyledTokens.empty(),
-          colors: const StyledTokens.empty(),
-          breakpoints: const StyledTokens.empty(),
-          radii: const StyledTokens.empty(),
-          spaces: const StyledTokens.empty(),
-          tokens: null,
-          defaultOrderOfModifiers: null,
-        );
-
-  factory MixThemeData({
-    Map<BreakpointToken, Breakpoint>? breakpoints,
-    Map<ColorToken, Color>? colors,
-    Map<SpaceToken, double>? spaces,
-    Map<TextStyleToken, TextStyle>? textStyles,
-    Map<RadiusToken, Radius>? radii,
-    Map<MixToken, ValueResolver>? tokens,
+  factory MixScopeData({
+    Map<MixableToken, ValueResolver>? tokens,
     List<Type>? defaultOrderOfModifiers,
   }) {
-    return MixThemeData.raw(
-      textStyles: StyledTokens(textStyles ?? const {}),
-      colors: StyledTokens(colors ?? const {}),
-      breakpoints:
-          _breakpointTokenMap.merge(StyledTokens(breakpoints ?? const {})),
-      radii: StyledTokens(radii ?? const {}),
-      spaces: StyledTokens(spaces ?? const {}),
-      tokens: tokens,
+    final resolverTokens = <MixableToken, ValueResolver>{};
+
+    if (tokens != null) {
+      for (final entry in tokens.entries) {
+        resolverTokens[entry.key] = createResolver(entry.value);
+      }
+    }
+
+    return MixScopeData(
+      tokens: resolverTokens.isEmpty ? null : resolverTokens,
       defaultOrderOfModifiers: defaultOrderOfModifiers,
     );
   }
 
-  factory MixThemeData.withMaterial({
-    Map<BreakpointToken, Breakpoint>? breakpoints,
-    Map<ColorToken, Color>? colors,
-    Map<SpaceToken, double>? spaces,
-    Map<TextStyleToken, TextStyle>? textStyles,
-    Map<RadiusToken, Radius>? radii,
-    Map<MixToken, ValueResolver>? tokens,
+  factory MixScopeData.withMaterial({
+    Map<MixableToken, ValueResolver>? tokens,
     List<Type>? defaultOrderOfModifiers,
   }) {
-    return materialMixTheme.merge(
-      MixThemeData(
-        breakpoints: breakpoints,
-        colors: colors,
-        spaces: spaces,
-        textStyles: textStyles,
-        radii: radii,
+    return materialMixScope.merge(
+      MixScopeData(
         tokens: tokens,
         defaultOrderOfModifiers: defaultOrderOfModifiers,
       ),
     );
   }
 
-  /// Factory for unified tokens using automatic resolver creation
-  factory MixThemeData.unified({
-    required Map<MixToken, dynamic> tokens,
+  /// Combine all [themes] into a single [MixScopeData] root.
+  static MixScopeData combine(Iterable<MixScopeData> themes) {
+    if (themes.isEmpty) return const MixScopeData.empty();
+
+    return themes.fold(
+      const MixScopeData.empty(),
+      (previous, theme) => previous.merge(theme),
+    );
+  }
+
+  static MixScopeData static({
+    Map<MixableToken, Object>? tokens,
     List<Type>? defaultOrderOfModifiers,
   }) {
-    final resolverTokens = <MixToken, ValueResolver>{};
-
-    for (final entry in tokens.entries) {
-      resolverTokens[entry.key] = createResolver(entry.value);
+    // Convert tokens to resolvers
+    Map<MixableToken, ValueResolver>? resolverTokens;
+    if (tokens != null) {
+      resolverTokens = {};
+      for (final entry in tokens.entries) {
+        resolverTokens[entry.key] = createResolver(entry.value);
+      }
     }
 
-    return MixThemeData.raw(
-      textStyles: const StyledTokens.empty(),
-      colors: const StyledTokens.empty(),
-      breakpoints: const StyledTokens.empty(),
-      radii: const StyledTokens.empty(),
-      spaces: const StyledTokens.empty(),
+    return MixScopeData(
       tokens: resolverTokens,
       defaultOrderOfModifiers: defaultOrderOfModifiers,
     );
   }
 
-  /// Combine all [themes] into a single [MixThemeData] root.
-  static MixThemeData combine(Iterable<MixThemeData> themes) {
-    if (themes.isEmpty) return const MixThemeData.empty();
+  /// Getter for tokens
+  Map<MixableToken, ValueResolver>? get tokens => _tokens;
 
-    return themes.fold(
-      const MixThemeData.empty(),
-      (previous, theme) => previous.merge(theme),
+  /// Type-safe token resolution with error handling
+  T getToken<T>(MixableToken<T> token, BuildContext context) {
+    final resolver = _tokens?[token];
+    if (resolver == null) {
+      throw StateError('Token "${token.name}" not found in scope');
+    }
+
+    final resolved = resolver(context);
+    if (resolved is T) {
+      return resolved;
+    }
+
+    throw StateError(
+      'Token "${token.name}" resolved to ${resolved.runtimeType}, expected $T',
     );
   }
 
-  MixThemeData copyWith({
-    Map<BreakpointToken, Breakpoint>? breakpoints,
-    Map<ColorToken, Color>? colors,
-    Map<SpaceToken, double>? spaces,
-    Map<TextStyleToken, TextStyle>? textStyles,
-    Map<RadiusToken, Radius>? radii,
-    Map<MixToken, ValueResolver>? tokens,
+  MixScopeData copyWith({
+    Map<MixableToken, dynamic>? tokens,
     List<Type>? defaultOrderOfModifiers,
   }) {
-    return MixThemeData.raw(
-      textStyles:
-          textStyles == null ? this.textStyles : StyledTokens(textStyles),
-      colors: colors == null ? this.colors : StyledTokens(colors),
-      breakpoints:
-          breakpoints == null ? this.breakpoints : StyledTokens(breakpoints),
-      radii: radii == null ? this.radii : StyledTokens(radii),
-      spaces: spaces == null ? this.spaces : StyledTokens(spaces),
-      tokens: tokens ?? this.tokens,
+    // If tokens are provided, convert them to resolvers
+    Map<MixableToken, ValueResolver>? resolverTokens;
+    if (tokens != null) {
+      resolverTokens = {};
+      for (final entry in tokens.entries) {
+        resolverTokens[entry.key] = createResolver(entry.value);
+      }
+    }
+
+    return MixScopeData(
+      tokens: resolverTokens ?? _tokens,
       defaultOrderOfModifiers:
           defaultOrderOfModifiers ?? this.defaultOrderOfModifiers,
     );
   }
 
-  MixThemeData merge(MixThemeData other) {
-    final mergedTokens = tokens != null || other.tokens != null
-        ? <MixToken, ValueResolver>{...?tokens, ...?other.tokens}
+  MixScopeData merge(MixScopeData other) {
+    final mergedTokens = _tokens != null || other._tokens != null
+        ? <MixableToken, ValueResolver>{...?_tokens, ...?other._tokens}
         : null;
 
-    return MixThemeData.raw(
-      textStyles: textStyles.merge(other.textStyles),
-      colors: colors.merge(other.colors),
-      breakpoints: breakpoints.merge(other.breakpoints),
-      radii: radii.merge(other.radii),
-      spaces: spaces.merge(other.spaces),
+    return MixScopeData(
       tokens: mergedTokens,
       defaultOrderOfModifiers:
           other.defaultOrderOfModifiers ?? defaultOrderOfModifiers,
@@ -187,34 +153,13 @@ class MixThemeData {
   operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is MixThemeData &&
-        other.textStyles == textStyles &&
-        other.colors == colors &&
-        other.breakpoints == breakpoints &&
-        other.radii == radii &&
-        other.spaces == spaces &&
-        mapEquals(other.tokens, tokens) &&
+    return other is MixScopeData &&
+        mapEquals(other._tokens, _tokens) &&
         listEquals(other.defaultOrderOfModifiers, defaultOrderOfModifiers);
   }
 
   @override
   int get hashCode {
-    return textStyles.hashCode ^
-        colors.hashCode ^
-        breakpoints.hashCode ^
-        radii.hashCode ^
-        spaces.hashCode ^
-        tokens.hashCode ^
-        defaultOrderOfModifiers.hashCode;
+    return _tokens.hashCode ^ defaultOrderOfModifiers.hashCode;
   }
 }
-
-final _breakpointTokenMap = StyledTokens({
-  BreakpointToken.xsmall: const Breakpoint(maxWidth: 599),
-  BreakpointToken.small: const Breakpoint(minWidth: 600, maxWidth: 1023),
-  BreakpointToken.medium: const Breakpoint(minWidth: 1024, maxWidth: 1439),
-  BreakpointToken.large: const Breakpoint(
-    minWidth: 1440,
-    maxWidth: double.infinity,
-  ),
-});
