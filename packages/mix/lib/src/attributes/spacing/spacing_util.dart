@@ -117,6 +117,6 @@ class SpacingSideUtility<T extends StyleElement> extends MixUtility<T, double> {
   T ref(SpaceToken ref) => builder(ref());
 }
 
-extension SpacingTokens<T extends Attribute> on SpacingSideUtility<T> {
+extension SpacingTokens<T extends StyleElement> on SpacingSideUtility<T> {
   T token(MixToken<double> token) => ref(SpaceToken(token.name));
 }

@@ -33,7 +33,7 @@ void main() {
         );
 
         final buildContext = tester.element(find.byType(Container));
-        final mockMixData = MixData.create(buildContext, Style());
+        final mockMixData = MixContext.create(buildContext, Style());
 
         final colorDto = ColorDto.token(testToken);
         final resolvedValue = colorDto.resolve(mockMixData);

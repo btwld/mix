@@ -2,6 +2,7 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../core/element.dart';
 import '../../core/factory/mix_context.dart';
+import '../../theme/tokens/mix_token.dart';
 
 part 'space_dto.g.dart';
 
@@ -20,12 +21,12 @@ class SpaceDto extends Mixable<double> with _$SpaceDto {
   factory SpaceDto.token(MixToken<double> token) => SpaceDto._(token: token);
 
   @override
-  double resolve(MixData mix) {
+  double resolve(MixContext mix) {
     // Type-safe, direct resolution using MixToken object
     if (token != null) {
-      return mix.tokens.resolveToken<double>(token!);
+      return mix.tokens.resolveToken(token!);
     }
-    
+
     return value ?? 0.0;
   }
 }

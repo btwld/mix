@@ -348,10 +348,10 @@ void main() {
 
     test('Immutable behavior when having multiple flexboxes', () {
       final flexBoxUtil = FlexBoxSpecUtility.self;
-      final flexBox1 = flexBoxUtil.chain
+      final flexBox1 = flexBoxUtil
         ..box.padding(10)
         ..flex.mainAxisAlignment.start();
-      final flexBox2 = flexBoxUtil.chain
+      final flexBox2 = flexBoxUtil
         ..box.padding(20)
         ..flex.mainAxisAlignment.end();
 

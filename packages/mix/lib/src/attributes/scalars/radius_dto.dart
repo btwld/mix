@@ -2,12 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../core/element.dart';
-import '../../core/factory/mix_data.dart';
+import '../../core/factory/mix_context.dart';
 import '../../theme/tokens/mix_token.dart';
 
 /// A Data transfer object that represents a [Radius] value.
 ///
-/// This DTO is used to resolve a [Radius] value from a [MixData] instance.
+/// This DTO is used to resolve a [Radius] value from a [MixContext] instance.
 /// It can hold either a direct radius value or a token reference.
 ///
 /// See also:
@@ -21,13 +21,14 @@ class RadiusDto extends Mixable<Radius> with Diagnosticable {
   const RadiusDto.raw({this.value, this.token});
   const RadiusDto(Radius value) : this.raw(value: value);
 
-  factory RadiusDto.token(MixToken<Radius> token) => RadiusDto.raw(token: token);
+  factory RadiusDto.token(MixToken<Radius> token) =>
+      RadiusDto.raw(token: token);
 
   @override
-  Radius resolve(MixData mix) {
+  Radius resolve(MixContext mix) {
     // Type-safe, direct token resolution using MixToken object
     if (token != null) {
-      return mix.tokens.resolveToken<Radius>(token!);
+      return mix.tokens.resolveToken(token!);
     }
 
     return value ?? Radius.zero;

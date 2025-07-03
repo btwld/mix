@@ -10,11 +10,11 @@ void main() {
       const colorToken = MixToken<Color>('primary');
       const spaceToken = MixToken<double>('large');
       const textToken = MixToken<TextStyle>('heading');
-      
+
       expect(colorToken.name, 'primary');
       expect(spaceToken.name, 'large');
       expect(textToken.name, 'heading');
-      
+
       expect(colorToken.toString(), 'MixToken<Color>(primary)');
       expect(spaceToken.toString(), 'MixToken<double>(large)');
       expect(textToken.toString(), 'MixToken<TextStyle>(heading)');
@@ -25,7 +25,7 @@ void main() {
       const token2 = MixToken<Color>('primary');
       const token3 = MixToken<Color>('secondary');
       const token4 = MixToken<double>('primary'); // Different type
-      
+
       expect(token1, equals(token2));
       expect(token1, isNot(equals(token3)));
       expect(token1, isNot(equals(token4)));
@@ -36,9 +36,9 @@ void main() {
     test('hashCode is consistent', () {
       const token1 = MixToken<Color>('primary');
       const token2 = MixToken<Color>('primary');
-      
+
       expect(token1.hashCode, equals(token2.hashCode));
-      
+
       // Different types should have different hashCodes
       const token3 = MixToken<double>('primary');
       expect(token1.hashCode, isNot(equals(token3.hashCode)));
@@ -47,7 +47,7 @@ void main() {
     test('token is simple data container (no call method)', () {
       const colorToken = MixToken<Color>('primary');
       const spaceToken = MixToken<double>('large');
-      
+
       expect(colorToken.name, 'primary');
       expect(spaceToken.name, 'large');
       expect(colorToken.runtimeType.toString(), 'MixToken<Color>');
@@ -70,21 +70,23 @@ void main() {
       );
 
       final context = tester.element(find.byType(Container));
-      final mixData = MixData.create(context, Style());
+      final mixData = MixContext.create(context, Style());
       final resolved = mixData.tokens.resolveToken<Color>(token);
-      
+
       expect(resolved, equals(Colors.blue));
     });
 
     testWidgets('resolve() throws for undefined tokens', (tester) async {
       const token = MixToken<Color>('undefined');
       final theme = MixThemeData.unified(tokens: const {});
-      
+
       await tester.pumpWidget(createWithMixTheme(theme));
       final context = tester.element(find.byType(Container));
-      
+
       expect(
-        () => MixData.create(context, Style()).tokens.resolveToken<Color>(token),
+        () => MixContext.create(context, Style())
+            .tokens
+            .resolveToken<Color>(token),
         throwsStateError,
       );
     });
@@ -94,11 +96,11 @@ void main() {
       final theme = MixThemeData.unified(
         tokens: {token: 'Hello World'},
       );
-      
+
       await tester.pumpWidget(createWithMixTheme(theme));
       final context = tester.element(find.byType(Container));
-      
-      final mixData = MixData.create(context, Style());
+
+      final mixData = MixContext.create(context, Style());
       final resolved = mixData.tokens.resolveToken<String>(token);
       expect(resolved, equals('Hello World'));
     });

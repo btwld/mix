@@ -160,7 +160,7 @@ void main() {
     );
 
     final buildContext = tester.element(find.byType(Container));
-    final mockMixData = MixData.create(buildContext, Style());
+    final mockMixData = MixContext.create(buildContext, Style());
 
     final textStyleDto = TextStyleDto.token(testToken);
     final resolvedValue = textStyleDto.resolve(mockMixData);
