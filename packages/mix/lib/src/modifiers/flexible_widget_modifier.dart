@@ -6,7 +6,7 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 import '../attributes/enum/enum_util.dart';
 import '../core/element.dart';
-import '../core/factory/mix_data.dart';
+import '../core/factory/mix_context.dart';
 import '../core/modifier.dart';
 import '../core/utility.dart';
 
@@ -36,7 +36,7 @@ final class FlexibleModifierSpec
   }
 }
 
-final class FlexibleModifierSpecUtility<T extends Attribute>
+final class FlexibleModifierSpecUtility<T extends StyleElement>
     extends MixUtility<T, FlexibleModifierSpecAttribute> {
   const FlexibleModifierSpecUtility(super.builder);
   FlexFitUtility<T> get fit => FlexFitUtility((fit) => call(fit: fit));

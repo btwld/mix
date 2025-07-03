@@ -9,7 +9,7 @@ import '../../../helpers/testing_utils.dart';
 void main() {
   group('IconSpec', () {
     test('resolve', () {
-      final mix = MixData.create(
+      final mix = MixContext.create(
         MockBuildContext(),
         Style(
           IconSpecAttribute(
@@ -89,7 +89,7 @@ void main() {
     });
 
     test('IconSpec.of(BuildContext context)', () {
-      final mixData = MixData.create(
+      final mixData = MixContext.create(
         MockBuildContext(),
         Style(IconSpecAttribute(size: 20.0, color: Colors.red.toDto())),
       );
@@ -116,7 +116,7 @@ void main() {
     test('fluent behavior', () {
       final icon = IconSpecUtility.self;
 
-      final util = icon.chain
+      final util = icon
         ..color.red()
         ..size(24)
         ..weight(500)
@@ -128,7 +128,7 @@ void main() {
 
       final attr = util.attributeValue!;
 
-      expect(util, isA<Attribute>());
+      expect(util, isA<StyleElement>());
       expect(attr.color, Colors.red.toDto());
       expect(attr.size, 24);
       expect(attr.weight, 500);
@@ -197,7 +197,7 @@ void main() {
     test('Mutate behavior and not on same utility', () {
       final icon = IconSpecUtility.self;
 
-      final iconValue = icon.chain;
+      final iconValue = icon;
       iconValue
         ..size(24)
         ..color.red()

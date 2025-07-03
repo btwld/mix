@@ -17,10 +17,10 @@ import '../modifiers/transform_widget_modifier.dart';
 import '../modifiers/visibility_widget_modifier.dart';
 import '../specs/image/image_spec.dart';
 import '../variants/widget_state_variant.dart';
-import 'element.dart';
 import 'modifier.dart';
+import 'spec.dart';
 
-extension ImageSpecUtilityDeprecationX<T extends Attribute>
+extension ImageSpecUtilityDeprecationX<T extends SpecAttribute>
     on ImageSpecUtility<T> {
   @Deprecated(
     'To match Flutter naming conventions, use `colorBlendMode` instead.',

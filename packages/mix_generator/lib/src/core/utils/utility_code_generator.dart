@@ -45,14 +45,14 @@ class UtilityCodeGenerator {
         GeneratedUtilityMethods.callMethod,
       )
           ? '''
-  /// Creates an [Attribute] instance with the specified $enumTypeName value.
+  /// Creates a [StyleElement] instance with the specified $enumTypeName value.
   T call($enumTypeName value) => builder(value);
   '''
           : '';
 
       final enumMethods = enumValues.map((value) {
         return '''
-  /// Creates an [Attribute] instance with [$enumTypeName.$value] value.
+  /// Creates a [StyleElement] instance with [$enumTypeName.$value] value.
   T $value() => builder($enumTypeName.$value);
   ''';
       }).join('\n');
@@ -61,7 +61,7 @@ class UtilityCodeGenerator {
 
       return '''
 $comments
-mixin $generatedClassName<T extends Attribute> on MixUtility<T, $enumTypeName> {
+mixin $generatedClassName<T extends StyleElement> on MixUtility<T, $enumTypeName> {
 $callMethod
 $enumMethods
 }
@@ -106,7 +106,7 @@ $enumMethods
       // Generate call method
       final callMethod = shouldGenerateCallMethod
           ? '''
-  /// Creates an [Attribute] instance with the specified $valueName value.
+  /// Creates a [StyleElement] instance with the specified $valueName value.
   T call($valueName value) => builder(value);
   '''
           : '';
@@ -124,7 +124,7 @@ $enumMethods
       // Combine everything into the final mixin
       return '''
 $comments
-mixin $generatedClassName<T extends Attribute> on MixUtility<T, $valueName> {
+mixin $generatedClassName<T extends StyleElement> on MixUtility<T, $valueName> {
 ${fieldStatements.join('\n')}
 ${constructorStatements.join('\n')}
 $callMethod
@@ -195,7 +195,7 @@ $callMethod
       final typeValue = '${fieldElement.name}.$fieldName';
 
       fieldStatements.add('''
-  /// Creates an [Attribute] instance with [$typeValue] value.
+  /// Creates a [StyleElement] instance with [$typeValue] value.
   T $fieldName() => builder($typeValue);''');
     }
 
@@ -242,9 +242,9 @@ $callMethod
 
     return '''
 /// {@template $snakeCase}
-/// A utility class for creating [Attribute] instances from [$typeName] values.
+/// A utility class for creating [StyleElement] instances from [$typeName] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [Attribute] instances
+/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [$typeName] values.
 /// {@endtemplate}''';
   }
@@ -313,7 +313,7 @@ $callMethod
     }
 
     return '''
-/// Creates an [Attribute] instance using the [$type$name] constructor.
+/// Creates a [StyleElement] instance using the [$type$name] constructor.
 $signatureLine
 ''';
   }
@@ -465,7 +465,11 @@ late final $aliasName = $utilityExpression;
   /// Creates a getter to enable chained configuration.
   static String chainGetter(String utilityName) {
     return '''
-  $utilityName<T> get chain => $utilityName(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  $utilityName<T> get chain => $utilityName(attributeBuilder);
 ''';
   }
 

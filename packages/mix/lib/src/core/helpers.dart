@@ -8,7 +8,7 @@ import 'package:flutter/widgets.dart' as w;
 
 import '../internal/deep_collection_equality.dart';
 import 'element.dart';
-import 'factory/mix_data.dart';
+import 'factory/mix_context.dart';
 
 /// Class to provide some helpers without conflicting
 /// name space with other libraries.
@@ -100,7 +100,7 @@ List<T>? _mergeList<T>(List<T>? a, List<T>? b) {
   });
 }
 
-List<V> _resolveList<T extends Mixable<V>, V>(List<T>? a, MixData mix) {
+List<V> _resolveList<T extends Mixable<V>, V>(List<T>? a, MixContext mix) {
   if (a == null) return [];
 
   return a.map((e) => e.resolve(mix)).toList();

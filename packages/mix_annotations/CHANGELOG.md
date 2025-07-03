@@ -1,3 +1,7 @@
+## 1.7.0
+
+ - **FEAT**: Add generated style-focused modifiers and specs (#652).
+
 ## 0.4.0
 
  - **REFACTOR**: Rename `MixableProperty` to `MixableType` (#574).

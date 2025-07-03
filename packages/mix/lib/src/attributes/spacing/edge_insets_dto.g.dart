@@ -50,7 +50,7 @@ mixin _$EdgeInsetsDto on Mixable<EdgeInsets> {
 ///
 /// This class provides methods to set individual properties of a [EdgeInsets].
 /// Use the methods of this class to configure specific properties of a [EdgeInsets].
-class EdgeInsetsUtility<T extends Attribute>
+class EdgeInsetsUtility<T extends StyleElement>
     extends DtoUtility<T, EdgeInsetsDto, EdgeInsets> {
   /// Utility for defining [EdgeInsetsDto.top]
   late final top = DoubleUtility((v) => only(top: v));
@@ -66,10 +66,10 @@ class EdgeInsetsUtility<T extends Attribute>
 
   EdgeInsetsUtility(super.builder) : super(valueToDto: (v) => v.toDto());
 
-  /// Creates an [Attribute] instance using the [EdgeInsetsDto.all] constructor.
+  /// Creates a [StyleElement] instance using the [EdgeInsetsDto.all] constructor.
   T all(double value) => builder(EdgeInsetsDto.all(value));
 
-  /// Creates an [Attribute] instance using the [EdgeInsetsDto.none] constructor.
+  /// Creates a [StyleElement] instance using the [EdgeInsetsDto.none] constructor.
   T none() => builder(const EdgeInsetsDto.none());
 
   /// Returns a new [EdgeInsetsDto] with the specified properties.
@@ -166,7 +166,7 @@ mixin _$EdgeInsetsDirectionalDto on Mixable<EdgeInsetsDirectional> {
 ///
 /// This class provides methods to set individual properties of a [EdgeInsetsDirectional].
 /// Use the methods of this class to configure specific properties of a [EdgeInsetsDirectional].
-class EdgeInsetsDirectionalUtility<T extends Attribute>
+class EdgeInsetsDirectionalUtility<T extends StyleElement>
     extends DtoUtility<T, EdgeInsetsDirectionalDto, EdgeInsetsDirectional> {
   /// Utility for defining [EdgeInsetsDirectionalDto.top]
   late final top = DoubleUtility((v) => only(top: v));
@@ -183,10 +183,10 @@ class EdgeInsetsDirectionalUtility<T extends Attribute>
   EdgeInsetsDirectionalUtility(super.builder)
       : super(valueToDto: (v) => v.toDto());
 
-  /// Creates an [Attribute] instance using the [EdgeInsetsDirectionalDto.all] constructor.
+  /// Creates a [StyleElement] instance using the [EdgeInsetsDirectionalDto.all] constructor.
   T all(double value) => builder(EdgeInsetsDirectionalDto.all(value));
 
-  /// Creates an [Attribute] instance using the [EdgeInsetsDirectionalDto.none] constructor.
+  /// Creates a [StyleElement] instance using the [EdgeInsetsDirectionalDto.none] constructor.
   T none() => builder(const EdgeInsetsDirectionalDto.none());
 
   /// Returns a new [EdgeInsetsDirectionalDto] with the specified properties.

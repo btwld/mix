@@ -1,32 +1,32 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import 'mix_data.dart';
+import 'mix_context.dart';
 import 'style_mix.dart';
 
-/// Provides [MixData] to the widget tree.
+/// Provides [MixContext] to the widget tree.
 class Mix extends InheritedWidget {
-  /// Stores [MixData] and wraps a [child] widget.
+  /// Stores [MixContext] and wraps a [child] widget.
   const Mix({required this.data, required super.child, super.key});
 
-  /// Retrieves the nearest [MixData] from the widget tree. Returns null if not found.
-  static MixData? maybeOf(BuildContext context) {
+  /// Retrieves the nearest [MixContext] from the widget tree. Returns null if not found.
+  static MixContext? maybeOf(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<Mix>()?.data;
   }
 
-  static MixData? maybeOfInherited(BuildContext context) {
+  static MixContext? maybeOfInherited(BuildContext context) {
     return maybeOf(context)?.toInheritable();
   }
 
-  /// Retrieves the nearest [MixData] from the widget tree. Throws if not found.
-  static MixData of(BuildContext context) {
+  /// Retrieves the nearest [MixContext] from the widget tree. Throws if not found.
+  static MixContext of(BuildContext context) {
     final mixData = maybeOf(context);
     assert(mixData != null, 'Mix not found in widget tree.');
 
     return mixData!;
   }
 
-  final MixData? data;
+  final MixContext? data;
 
   @override
   bool updateShouldNotify(Mix oldWidget) => data != oldWidget.data;
@@ -35,7 +35,7 @@ class Mix extends InheritedWidget {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
 
-    properties.add(DiagnosticsProperty<MixData>(
+    properties.add(DiagnosticsProperty<MixContext>(
       'attributes',
       data,
       expandableValue: true,
@@ -44,22 +44,22 @@ class Mix extends InheritedWidget {
 
   /// Builds a [Mix] widget.
   ///
-  /// The [context] and [style] are used to create a [MixData] instance.
-  /// The [builder] is a function that takes the created [MixData] and returns a widget.
+  /// The [context] and [style] are used to create a [MixContext] instance.
+  /// The [builder] is a function that takes the created [MixContext] and returns a widget.
   ///
   /// If [inherit] is set to true (default is false), the method will attempt to find the nearest
-  /// [Mix] widget up the tree from the provided [context] and merge its [MixData] with the newly created one.
+  /// [Mix] widget up the tree from the provided [context] and merge its [MixContext] with the newly created one.
   /// This allows the new [Mix] widget to inherit styles from its ancestors.
   ///
-  /// Returns a [Mix] widget with the given [MixData] and child widget built by the [builder].
+  /// Returns a [Mix] widget with the given [MixContext] and child widget built by the [builder].
   /// If [inherit] is true and a [Mix] widget is found up the tree, the returned [Mix] widget's
-  /// [MixData] will be a merge of the ancestor's and the newly created one.
+  /// [MixContext] will be a merge of the ancestor's and the newly created one.
   static Mix build(
     BuildContext context, {
     required Style style,
-    required Widget Function(MixData mix) builder,
+    required Widget Function(MixContext mix) builder,
   }) {
-    MixData mixData = MixData.create(context, style);
+    MixContext mixData = MixContext.create(context, style);
 
     // Returns a Mix widget with the given data and child.
     // If `inherit` is true, the data from the nearest Mix widget in the widget tree

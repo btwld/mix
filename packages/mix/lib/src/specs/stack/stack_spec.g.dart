@@ -10,7 +10,7 @@ part of 'stack_spec.dart';
 
 /// A mixin that provides spec functionality for [StackSpec].
 mixin _$StackSpec on Spec<StackSpec> {
-  static StackSpec from(MixData mix) {
+  static StackSpec from(MixContext mix) {
     return mix.attributeOf<StackSpecAttribute>()?.resolve(mix) ??
         const StackSpec();
   }
@@ -41,7 +41,7 @@ mixin _$StackSpec on Spec<StackSpec> {
     TextDirection? textDirection,
     Clip? clipBehavior,
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
   }) {
     return StackSpec(
       alignment: alignment ?? _$this.alignment,
@@ -137,16 +137,16 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
     super.modifiers,
   });
 
-  /// Resolves to [StackSpec] using the provided [MixData].
+  /// Resolves to [StackSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final stackSpec = StackSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  StackSpec resolve(MixData mix) {
+  StackSpec resolve(MixContext mix) {
     return StackSpec(
       alignment: alignment,
       fit: fit,
@@ -214,7 +214,7 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [StackSpec].
 /// Use the methods of this class to configure specific properties of a [StackSpec].
-class StackSpecUtility<T extends Attribute>
+class StackSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, StackSpecAttribute> {
   /// Utility for defining [StackSpecAttribute.alignment]
   late final alignment = AlignmentGeometryUtility((v) => only(alignment: v));
@@ -235,10 +235,19 @@ class StackSpecUtility<T extends Attribute>
   /// Utility for defining [StackSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  StackSpecUtility(super.builder, {super.mutable});
+  StackSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  StackSpecUtility<T> get chain =>
-      StackSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  StackSpecUtility<T> get chain => StackSpecUtility(attributeBuilder);
 
   static StackSpecUtility<StackSpecAttribute> get self =>
       StackSpecUtility((v) => v);
@@ -251,7 +260,7 @@ class StackSpecUtility<T extends Attribute>
     TextDirection? textDirection,
     Clip? clipBehavior,
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(StackSpecAttribute(
       alignment: alignment,

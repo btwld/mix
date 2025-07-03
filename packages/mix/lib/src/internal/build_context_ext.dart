@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../core/factory/mix_data.dart';
+import '../core/factory/mix_context.dart';
 import '../core/factory/mix_provider.dart';
 import '../theme/mix/mix_theme.dart';
 
 extension BuildContextExt on BuildContext {
-  MixData? get mix => Mix.maybeOf(this);
+  MixContext? get mix => Mix.maybeOf(this);
 
   /// MEDIA QUERY EXTENSION METHODS
 

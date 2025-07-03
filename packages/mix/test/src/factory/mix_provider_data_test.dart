@@ -10,7 +10,7 @@ void main() {
   group('MixData', () {
     const autoApplyVariant = MockContextVariantCondition(true);
     test('MixData create', () {
-      final mixData = MixData.create(
+      final mixData = MixContext.create(
         MockBuildContext(),
         Style(
           const MockSpecIntAttribute(1),
@@ -22,7 +22,7 @@ void main() {
       );
 
       // Test that the `MixData` object is created with the correct properties.
-      expect(mixData, isInstanceOf<MixData>());
+      expect(mixData, isInstanceOf<MixContext>());
 
       // Add any other additional assertions that are specific to your use case.
       // If you become able to access properties _attributes and _resolver you would assert:
@@ -53,7 +53,7 @@ void main() {
     });
 
     test('MixData merge', () {
-      final mixData = MixData.create(
+      final mixData = MixContext.create(
         MockBuildContext(),
         Style(
           const MockSpecIntAttribute(1),
@@ -64,7 +64,7 @@ void main() {
         ),
       );
 
-      final mixData2 = MixData.create(
+      final mixData2 = MixContext.create(
         MockBuildContext(),
         Style(
           const MockSpecDoubleAttribute(5.0),
@@ -74,7 +74,7 @@ void main() {
 
       final mergedMixData = mixData.merge(mixData2);
 
-      expect(mergedMixData, isInstanceOf<MixData>());
+      expect(mergedMixData, isInstanceOf<MixContext>());
       expect(mergedMixData.attributes.length, 4);
       expect(
         mergedMixData.attributeOf<MockSpecIntAttribute>(),
@@ -119,13 +119,14 @@ void main() {
         $with.aspectRatio(2.0),
       );
 
-      final mixData = MixData.create(MockBuildContext(), style);
+      final mixData = MixContext.create(MockBuildContext(), style);
 
       final modifiers = mixData.modifiers;
 
       expect(modifiers.length, 5);
 
-      final scaleModifiers = mixData.modifiers.whereType<TransformModifierSpec>().toList();
+      final scaleModifiers =
+          mixData.modifiers.whereType<TransformModifierSpec>().toList();
       expect(scaleModifiers, [
         TransformModifierSpec(
           transform: Matrix4.diagonal3Values(2.0, 2.0, 1.0),
@@ -133,23 +134,28 @@ void main() {
         ),
       ]);
 
-      final opacityModifiers = mixData.modifiers.whereType<OpacityModifierSpec>().toList();
+      final opacityModifiers =
+          mixData.modifiers.whereType<OpacityModifierSpec>().toList();
       expect(opacityModifiers, [const OpacityModifierSpec(0.5)]);
 
-      final visibilityModifiers = mixData.modifiers.whereType<VisibilityModifierSpec>().toList();
+      final visibilityModifiers =
+          mixData.modifiers.whereType<VisibilityModifierSpec>().toList();
       expect(visibilityModifiers, [const VisibilityModifierSpec(true)]);
 
-      final clipModifiers = mixData.modifiers.whereType<ClipOvalModifierSpec>().toList();
+      final clipModifiers =
+          mixData.modifiers.whereType<ClipOvalModifierSpec>().toList();
       expect(clipModifiers, [const ClipOvalModifierSpec()]);
 
       final aspectRatioModifiers =
           mixData.modifiers.whereType<AspectRatioModifierSpec>().toList();
       expect(aspectRatioModifiers, [const AspectRatioModifierSpec(2.0)]);
 
-      final customModifiers = mixData.modifiers.whereType<ClipPathModifierSpec>().toList();
+      final customModifiers =
+          mixData.modifiers.whereType<ClipPathModifierSpec>().toList();
       expect(customModifiers, isEmpty);
 
-      final nonExistentModifiers = mixData.modifiers.whereType<ClipRectModifierSpec>().toList();
+      final nonExistentModifiers =
+          mixData.modifiers.whereType<ClipRectModifierSpec>().toList();
       expect(nonExistentModifiers, isEmpty);
     });
 
@@ -165,6 +171,27 @@ void main() {
             applyContextToVisualAttributes(MockBuildContext(), style);
 
         expect(attributeList, style.styles.values);
+      });
+
+      test(
+          'ContextVariantBuilder should apply Style based on when() return value',
+          () {
+        for (var whenReturnValue in [true, false]) {
+          final variant = _MockContextVariant(whenReturnValue: whenReturnValue);
+          final style = Style(const MockIntScalarAttribute(1));
+          final builder = ContextVariantBuilder((_) => style, variant);
+
+          final attributesList = applyContextToVisualAttributes(
+            MockBuildContext(),
+            Style(builder),
+          );
+
+          if (whenReturnValue) {
+            expect(attributesList, equals([const MockIntScalarAttribute(1)]));
+          } else {
+            expect(attributesList, isEmpty);
+          }
+        }
       });
 
       test(
@@ -573,4 +600,12 @@ void _testApplyContextToVisualAttributes({
   ]);
 
   expect(attributeList, expectedStyle.styles.values);
+}
+
+class _MockContextVariant extends ContextVariant {
+  final bool whenReturnValue;
+  const _MockContextVariant({this.whenReturnValue = true});
+
+  @override
+  bool when(BuildContext context) => whenReturnValue;
 }

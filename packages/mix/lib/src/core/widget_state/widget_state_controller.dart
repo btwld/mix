@@ -80,8 +80,8 @@ extension on Set<WidgetState> {
   bool get hasError => contains(WidgetState.error);
 }
 
-class MixWidgetState extends InheritedModel<WidgetState> {
-  MixWidgetState.fromSet({
+class MixWidgetStateModel extends InheritedModel<WidgetState> {
+  MixWidgetStateModel.fromSet({
     super.key,
     required Set<WidgetState> states,
     required super.child,
@@ -93,7 +93,7 @@ class MixWidgetState extends InheritedModel<WidgetState> {
         selected = states.hasSelected,
         error = states.hasError;
 
-  const MixWidgetState({
+  const MixWidgetStateModel({
     super.key,
     required this.disabled,
     required this.hovered,
@@ -105,8 +105,8 @@ class MixWidgetState extends InheritedModel<WidgetState> {
     required super.child,
   });
 
-  static MixWidgetState? of(BuildContext context, [WidgetState? state]) {
-    return InheritedModel.inheritFrom<MixWidgetState>(
+  static MixWidgetStateModel? of(BuildContext context, [WidgetState? state]) {
+    return InheritedModel.inheritFrom<MixWidgetStateModel>(
       context,
       aspect: state,
     );
@@ -133,17 +133,13 @@ class MixWidgetState extends InheritedModel<WidgetState> {
   final bool disabled;
   final bool hovered;
   final bool focused;
-
   final bool pressed;
-
   final bool dragged;
-
   final bool selected;
-
   final bool error;
 
   @override
-  bool updateShouldNotify(MixWidgetState oldWidget) {
+  bool updateShouldNotify(MixWidgetStateModel oldWidget) {
     return oldWidget.disabled != disabled ||
         oldWidget.hovered != hovered ||
         oldWidget.focused != focused ||
@@ -155,7 +151,7 @@ class MixWidgetState extends InheritedModel<WidgetState> {
 
   @override
   bool updateShouldNotifyDependent(
-    MixWidgetState oldWidget,
+    MixWidgetStateModel oldWidget,
     Set<WidgetState> dependencies,
   ) {
     return oldWidget.disabled != disabled && dependencies.hasDisabled ||

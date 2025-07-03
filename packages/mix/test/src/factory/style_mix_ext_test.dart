@@ -97,7 +97,7 @@ void main() {
     expect(containerThree.style, isNot(style));
   });
 
-  testWidgets('Style.row matches StyledRow(style:Style)', (tester) async {
+  testWidgets('Style.row matches HBox(style:Style)', (tester) async {
     final style = Style(
       $box.decoration(border: Border.all(color: Colors.red)),
     );
@@ -106,13 +106,13 @@ void main() {
       MaterialApp(
         home: Column(
           children: [
-            style.row(key: keyOne, children: [const SizedBox()]),
-            StyledRow(
+            style.hbox(key: keyOne, children: [const SizedBox()]),
+            HBox(
               style: style,
               key: keyTwo,
               children: const [SizedBox()],
             ),
-            StyledRow(
+            HBox(
               style: const Style.empty(),
               key: keyThree,
               children: const [SizedBox()],
@@ -122,9 +122,9 @@ void main() {
       ),
     );
 
-    final containerOne = tester.widget<StyledRow>(find.byKey(keyOne));
-    final containerTwo = tester.widget<StyledRow>(find.byKey(keyTwo));
-    final containerThree = tester.widget<StyledRow>(find.byKey(keyThree));
+    final containerOne = tester.widget<HBox>(find.byKey(keyOne));
+    final containerTwo = tester.widget<HBox>(find.byKey(keyTwo));
+    final containerThree = tester.widget<HBox>(find.byKey(keyThree));
 
     expect(containerOne.style, style);
     expect(containerTwo.style, style);
@@ -183,7 +183,7 @@ void main() {
     expect(containerThree.style, isNot(style));
   });
 
-  testWidgets('Style.column matches StyledColumn(style:Style)', (tester) async {
+  testWidgets('Style.column matches VBox(style:Style)', (tester) async {
     final style = Style(
       $box.decoration(border: Border.all(color: Colors.red)),
     );
@@ -192,13 +192,13 @@ void main() {
       MaterialApp(
         home: Column(
           children: [
-            style.column(key: keyOne, children: [const SizedBox()]),
-            StyledColumn(
+            style.vbox(key: keyOne, children: [const SizedBox()]),
+            VBox(
               style: style,
               key: keyTwo,
               children: const [SizedBox()],
             ),
-            StyledColumn(
+            VBox(
               style: const Style.empty(),
               key: keyThree,
               children: const [SizedBox()],
@@ -208,9 +208,9 @@ void main() {
       ),
     );
 
-    final containerOne = tester.widget<StyledColumn>(find.byKey(keyOne));
-    final containerTwo = tester.widget<StyledColumn>(find.byKey(keyTwo));
-    final containerThree = tester.widget<StyledColumn>(find.byKey(keyThree));
+    final containerOne = tester.widget<VBox>(find.byKey(keyOne));
+    final containerTwo = tester.widget<VBox>(find.byKey(keyTwo));
+    final containerThree = tester.widget<VBox>(find.byKey(keyThree));
 
     expect(containerOne.style, style);
     expect(containerTwo.style, style);

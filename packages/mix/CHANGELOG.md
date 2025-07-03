@@ -1,55 +1,23 @@
-## Next Release
+### 1.7.0
 
- - **PERF**: Implemented ComputedStyle with surgical rebuilds via InheritedModel
-   - 70-90% reduction in unnecessary widget rebuilds
-   - O(1) spec lookups with pre-resolved specs
-   - Automatic performance improvements with no API changes required
- - **FEAT**: Added ComputedStyleProvider for fine-grained rebuild control
- - **BREAKING**: Internal API changes for spec resolution (most users unaffected)
-   - Changed from `Mix.of(context)` to `ComputedStyleProvider.specOf<T>(context)` internally
-   - Spec widgets now use `BoxSpec.of(context)` instead of resolving from MixData
-   - Migration: If you have custom spec widgets, update to use the new `of` pattern
- - **DEPRECATED**: Styled widgets in favor of new naming conventions
-   - `StyledRow` → Use `HBox` instead
-   - `StyledColumn` → Use `VBox` instead
-   - `StyledFlex` → Use `FlexBox` instead
-   - `StyledStack` → Use `ZBox` instead
-   - `Style.row()` method → Use `Style.hbox()` instead
-   - `Style.column()` method → Use `Style.vbox()` instead
- - **FIX**: FlexBox children parameter is now optional for better API compatibility
- - **FEAT**: Added deprecation constants and migration examples
- - **DOCS**: Updated example projects to use new widget names
- - **TEST**: Added comprehensive tests for ComputedStyle and surgical rebuilds
- - **DEBUG**: Added `debugSpecs` property to ComputedStyle for easier debugging
-
-### Migration Guide
-
-For most users, no changes are required. The performance improvements are automatic.
-
-If you have custom spec widgets or are accessing specs directly:
-
-**Before:**
-```dart
-class MyCustomWidget extends StatelessWidget {
-  Widget build(BuildContext context) {
-    final mix = Mix.of(context);
-    final spec = mix.attributeOf<MySpecAttribute>()?.resolve(mix);
-    // ...
-  }
-}
-```
-
-**After:**
-```dart
-class MyCustomWidget extends StatelessWidget {
-  Widget build(BuildContext context) {
-    final spec = MySpec.of(context);
-    // ...
-  }
-}
-```
-
-This change enables surgical rebuilds - your widget will only rebuild when MySpec changes.
+ - **REFACTOR**: Implement BaseStyle utility class and improve styling architecture #659
+ - **REFACTOR**: Remove SpecConfiguration and SpecStyle from environment (#656)
+ - **REFACTOR**: Move widget state handling from MixBuilder to SpecBuilder (#651).
+ - **REFACTOR**: Rename WidgetModifiersData to WidgetModifiersConfig (#649).
+ - **REFACTOR**: Fix deprecations and modernize codebase (#647).
+ - **REFACTOR**: Remove NestedStyleAttribute and migrate to direct Style usage (#644).
+ - **REFACTOR**: Deprecate `MixWidgetStateController` (#586).
+ - **REFACTOR**: Use WidgetState instead of MixWidgetState (#582).
+ - **FIX**: Change Mixable to extend EqualityMixin instead of StyleElement (#648).
+ - **FIX**: CopyWith overriding bug (#622).
+ - **FEAT**: builder optimization (#629).
+ - **FEAT**: deprecate styled widgets in favor of new naming conventions (#619).
+ - **FEAT**: Implementing duration extension for int  (#634).
+ - **FEAT**: Create MixBuilder (#581).
+ - **FEAT**: Add generated style-focused modifiers and specs (#652).
+ - **FEAT**: Unify SpecUtility, Style, and Attributes as compatible values (#643).
+ - **FEAT**: Add utilities for animatedData (#660).
+ - **FEAT**: Add focused style classes for spec utilities (#677)
 
 ## 1.6.0
 

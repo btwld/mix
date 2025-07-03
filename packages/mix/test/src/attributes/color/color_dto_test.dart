@@ -75,7 +75,7 @@ void main() {
       expect(
         Colors.red,
         colorDto.resolve(
-          MixData.create(
+          MixContext.create(
             MockBuildContext(),
             Style(),
           ),
@@ -90,7 +90,7 @@ void main() {
       expect(
         Colors.red.darken(20),
         colorDto.resolve(
-          MixData.create(
+          MixContext.create(
             MockBuildContext(),
             Style(),
           ),
@@ -111,7 +111,7 @@ void main() {
       expect(
         Colors.red.saturate(20).darken(20),
         colorDto.resolve(
-          MixData.create(
+          MixContext.create(
             MockBuildContext(),
             Style(),
           ),

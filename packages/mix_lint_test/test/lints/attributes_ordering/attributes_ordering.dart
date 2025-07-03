@@ -103,6 +103,6 @@ Style _style = Style(
   $box.border.width(2),
 );
 
-Attribute test() => Style.asAttribute(
+StyleElement test() => Style.asAttribute(
       $with.scale(1),
     );

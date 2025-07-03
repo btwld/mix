@@ -40,7 +40,9 @@ build/
 coverage/
 
 # MacOs related
+**/Pods/
 **/macos/Flutter/ephemeral
+**/xcuserdata/
 
 # Android related
 **/android/**/gradle-wrapper.jar
@@ -49,7 +51,6 @@ coverage/
 **/android/gradlew
 **/android/gradlew.bat
 **/android/local.properties
-**/android/**/GeneratedPluginRegistrant.java
 
 # iOS/XCode related
 **/ios/**/*.mode1v3
@@ -106,3 +107,6 @@ packages/mix/.cody/ignore
 .orbit
 CLAUDE.md
 .augment/env/setup.sh
+
+# API compatibility reports
+api-compat-*.md

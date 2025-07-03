@@ -30,7 +30,7 @@ class MixableTypeUtilityBuilder implements CodeBuilder {
 /// Use the methods of this class to configure specific properties of a [$resolvedTypeName].
 ''',
       extendsClass: 'DtoUtility<T, $dtoName, $resolvedTypeName>',
-      typeParameters: '<T extends Attribute>',
+      typeParameters: '<T extends StyleElement>',
       constructorCode:
           '$utilityName(super.builder) : super(valueToDto: (v) => v.toDto());',
 

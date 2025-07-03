@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
 import '../core/element.dart';
-import '../core/factory/mix_data.dart';
+import '../core/factory/mix_context.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/utility.dart';
@@ -42,7 +42,7 @@ final class RotatedBoxModifierSpec
   }
 }
 
-final class RotatedBoxModifierSpecUtility<T extends Attribute>
+final class RotatedBoxModifierSpecUtility<T extends StyleElement>
     extends MixUtility<T, RotatedBoxModifierSpecAttribute> {
   const RotatedBoxModifierSpecUtility(super.builder);
   T d90() => call(1);

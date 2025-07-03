@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
 import '../core/element.dart';
-import '../core/factory/mix_data.dart';
+import '../core/factory/mix_context.dart';
 import '../core/modifier.dart';
 import '../core/utility.dart';
 
@@ -47,13 +47,13 @@ final class IntrinsicWidthModifierSpec
   }
 }
 
-final class IntrinsicHeightModifierSpecUtility<T extends Attribute>
+final class IntrinsicHeightModifierSpecUtility<T extends StyleElement>
     extends MixUtility<T, IntrinsicHeightModifierSpecAttribute> {
   const IntrinsicHeightModifierSpecUtility(super.builder);
   T call() => builder(const IntrinsicHeightModifierSpecAttribute());
 }
 
-final class IntrinsicWidthModifierSpecUtility<T extends Attribute>
+final class IntrinsicWidthModifierSpecUtility<T extends StyleElement>
     extends MixUtility<T, IntrinsicWidthModifierSpecAttribute> {
   const IntrinsicWidthModifierSpecUtility(super.builder);
   T call() => builder(const IntrinsicWidthModifierSpecAttribute());

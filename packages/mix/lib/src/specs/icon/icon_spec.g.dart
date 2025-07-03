@@ -10,7 +10,7 @@ part of 'icon_spec.dart';
 
 /// A mixin that provides spec functionality for [IconSpec].
 mixin _$IconSpec on Spec<IconSpec> {
-  static IconSpec from(MixData mix) {
+  static IconSpec from(MixContext mix) {
     return mix.attributeOf<IconSpecAttribute>()?.resolve(mix) ??
         const IconSpec();
   }
@@ -46,7 +46,7 @@ mixin _$IconSpec on Spec<IconSpec> {
     bool? applyTextScaling,
     double? fill,
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
   }) {
     return IconSpec(
       color: color ?? _$this.color,
@@ -183,16 +183,16 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
     super.modifiers,
   });
 
-  /// Resolves to [IconSpec] using the provided [MixData].
+  /// Resolves to [IconSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final iconSpec = IconSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  IconSpec resolve(MixData mix) {
+  IconSpec resolve(MixContext mix) {
     return IconSpec(
       color: color?.resolve(mix),
       size: size,
@@ -280,7 +280,7 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [IconSpec].
 /// Use the methods of this class to configure specific properties of a [IconSpec].
-class IconSpecUtility<T extends Attribute>
+class IconSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, IconSpecAttribute> {
   /// Utility for defining [IconSpecAttribute.color]
   late final color = ColorUtility((v) => only(color: v));
@@ -316,10 +316,19 @@ class IconSpecUtility<T extends Attribute>
   /// Utility for defining [IconSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  IconSpecUtility(super.builder, {super.mutable});
+  IconSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  IconSpecUtility<T> get chain =>
-      IconSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  IconSpecUtility<T> get chain => IconSpecUtility(attributeBuilder);
 
   static IconSpecUtility<IconSpecAttribute> get self =>
       IconSpecUtility((v) => v);
@@ -337,7 +346,7 @@ class IconSpecUtility<T extends Attribute>
     bool? applyTextScaling,
     double? fill,
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(IconSpecAttribute(
       color: color,

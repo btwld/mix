@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 
 import '../../attributes/animated/animated_data.dart';
-import '../factory/mix_data.dart';
+import '../factory/mix_context.dart';
 import '../modifier.dart';
 import '../spec.dart';
 import 'computed_style_provider.dart';
@@ -44,7 +44,7 @@ class ComputedStyle with Diagnosticable {
   /// ```dart
   /// final computedStyle = ComputedStyle.compute(mixData);
   /// ```
-  factory ComputedStyle.compute(MixData mix) {
+  factory ComputedStyle.compute(MixContext mix) {
     final specs = <Type, Spec>{};
     final modifiers = <WidgetModifierSpec>[];
 

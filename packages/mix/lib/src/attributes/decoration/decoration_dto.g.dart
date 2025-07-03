@@ -10,16 +10,16 @@ part of 'decoration_dto.dart';
 
 /// A mixin that provides DTO functionality for [BoxDecorationDto].
 mixin _$BoxDecorationDto on Mixable<BoxDecoration> {
-  /// Resolves to [BoxDecoration] using the provided [MixData].
+  /// Resolves to [BoxDecoration] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final boxDecoration = BoxDecorationDto(...).resolve(mix);
   /// ```
   @override
-  BoxDecoration resolve(MixData mix) {
+  BoxDecoration resolve(MixContext mix) {
     return BoxDecoration(
       border: _$this.border?.resolve(mix),
       borderRadius: _$this.borderRadius?.resolve(mix),
@@ -82,7 +82,7 @@ mixin _$BoxDecorationDto on Mixable<BoxDecoration> {
 ///
 /// This class provides methods to set individual properties of a [BoxDecoration].
 /// Use the methods of this class to configure specific properties of a [BoxDecoration].
-class BoxDecorationUtility<T extends Attribute>
+class BoxDecorationUtility<T extends StyleElement>
     extends DtoUtility<T, BoxDecorationDto, BoxDecoration> {
   /// Utility for defining [BoxDecorationDto.border]
   late final border = BoxBorderUtility((v) => only(border: v));
@@ -199,16 +199,16 @@ extension ListBoxDecorationMixExt on List<BoxDecoration> {
 /// A mixin that provides DTO functionality for [ShapeDecorationDto].
 mixin _$ShapeDecorationDto
     on Mixable<ShapeDecoration>, HasDefaultValue<ShapeDecoration> {
-  /// Resolves to [ShapeDecoration] using the provided [MixData].
+  /// Resolves to [ShapeDecoration] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final shapeDecoration = ShapeDecorationDto(...).resolve(mix);
   /// ```
   @override
-  ShapeDecoration resolve(MixData mix) {
+  ShapeDecoration resolve(MixContext mix) {
     return ShapeDecoration(
       shape: _$this.shape?.resolve(mix) ?? defaultValue.shape,
       color: _$this.color?.resolve(mix) ?? defaultValue.color,
@@ -261,7 +261,7 @@ mixin _$ShapeDecorationDto
 ///
 /// This class provides methods to set individual properties of a [ShapeDecoration].
 /// Use the methods of this class to configure specific properties of a [ShapeDecoration].
-class ShapeDecorationUtility<T extends Attribute>
+class ShapeDecorationUtility<T extends StyleElement>
     extends DtoUtility<T, ShapeDecorationDto, ShapeDecoration> {
   /// Utility for defining [ShapeDecorationDto.shape]
   late final shape = ShapeBorderUtility((v) => only(shape: v));

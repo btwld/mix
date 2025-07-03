@@ -12,7 +12,7 @@ part of 'text_spec.dart';
 
 /// A mixin that provides spec functionality for [TextSpec].
 mixin _$TextSpec on Spec<TextSpec> {
-  static TextSpec from(MixData mix) {
+  static TextSpec from(MixContext mix) {
     return mix.attributeOf<TextSpecAttribute>()?.resolve(mix) ??
         const TextSpec();
   }
@@ -51,7 +51,7 @@ mixin _$TextSpec on Spec<TextSpec> {
     bool? softWrap,
     TextDirective? directive,
     AnimatedData? animated,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
   }) {
     return TextSpec(
       overflow: overflow ?? _$this.overflow,
@@ -211,16 +211,16 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
     super.modifiers,
   });
 
-  /// Resolves to [TextSpec] using the provided [MixData].
+  /// Resolves to [TextSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final textSpec = TextSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  TextSpec resolve(MixData mix) {
+  TextSpec resolve(MixContext mix) {
     return TextSpec(
       overflow: overflow,
       strutStyle: strutStyle?.resolve(mix),
@@ -329,7 +329,7 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [TextSpec].
 /// Use the methods of this class to configure specific properties of a [TextSpec].
-class TextSpecUtility<T extends Attribute>
+class TextSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, TextSpecAttribute> {
   /// Utility for defining [TextSpecAttribute.overflow]
   late final overflow = TextOverflowUtility((v) => only(overflow: v));
@@ -454,10 +454,19 @@ class TextSpecUtility<T extends Attribute>
   /// Utility for defining [TextSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  TextSpecUtility(super.builder, {super.mutable});
+  TextSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  TextSpecUtility<T> get chain =>
-      TextSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  TextSpecUtility<T> get chain => TextSpecUtility(attributeBuilder);
 
   static TextSpecUtility<TextSpecAttribute> get self =>
       TextSpecUtility((v) => v);
@@ -478,7 +487,7 @@ class TextSpecUtility<T extends Attribute>
     bool? softWrap,
     TextDirectiveDto? directive,
     AnimatedDataDto? animated,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(TextSpecAttribute(
       overflow: overflow,

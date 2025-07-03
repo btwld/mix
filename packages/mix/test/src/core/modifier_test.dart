@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/src/core/factory/mix_data.dart';
+import 'package:mix/src/core/factory/mix_context.dart';
 import 'package:mix/src/core/modifier.dart';
 
 import '../../helpers/testing_utils.dart';
@@ -74,7 +74,7 @@ final class _TestModifierAttribute
   const _TestModifierAttribute(this.value);
 
   @override
-  _TestModifierSpec resolve(MixData mix) {
+  _TestModifierSpec resolve(MixContext mix) {
     return _TestModifierSpec(value);
   }
 

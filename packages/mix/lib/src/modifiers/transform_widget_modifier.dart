@@ -7,7 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
 import '../core/element.dart';
-import '../core/factory/mix_data.dart';
+import '../core/factory/mix_context.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/utility.dart';
@@ -39,7 +39,7 @@ final class TransformModifierSpec
   }
 }
 
-final class TransformModifierSpecUtility<T extends Attribute>
+final class TransformModifierSpecUtility<T extends StyleElement>
     extends MixUtility<T, TransformModifierSpecAttribute> {
   late final rotate = TransformRotateModifierSpecUtility(
     (value) => builder(
@@ -84,7 +84,7 @@ final class TransformModifierSpecUtility<T extends Attribute>
       );
 }
 
-final class TransformRotateModifierSpecUtility<T extends Attribute>
+final class TransformRotateModifierSpecUtility<T extends StyleElement>
     extends MixUtility<T, Matrix4> {
   const TransformRotateModifierSpecUtility(super.builder);
   T d90() => call(math.pi / 2);

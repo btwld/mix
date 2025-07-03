@@ -10,7 +10,7 @@ part of 'box_spec.dart';
 
 /// A mixin that provides spec functionality for [BoxSpec].
 mixin _$BoxSpec on Spec<BoxSpec> {
-  static BoxSpec from(MixData mix) {
+  static BoxSpec from(MixContext mix) {
     return mix.attributeOf<BoxSpecAttribute>()?.resolve(mix) ?? const BoxSpec();
   }
 
@@ -46,7 +46,7 @@ mixin _$BoxSpec on Spec<BoxSpec> {
     Clip? clipBehavior,
     double? width,
     double? height,
-    WidgetModifiersData? modifiers,
+    WidgetModifiersConfig? modifiers,
     AnimatedData? animated,
   }) {
     return BoxSpec(
@@ -203,16 +203,16 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
     super.animated,
   });
 
-  /// Resolves to [BoxSpec] using the provided [MixData].
+  /// Resolves to [BoxSpec] using the provided [MixContext].
   ///
-  /// If a property is null in the [MixData], it falls back to the
+  /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
   /// final boxSpec = BoxSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  BoxSpec resolve(MixData mix) {
+  BoxSpec resolve(MixContext mix) {
     return BoxSpec(
       alignment: alignment,
       padding: padding?.resolve(mix),
@@ -314,7 +314,7 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [BoxSpec].
 /// Use the methods of this class to configure specific properties of a [BoxSpec].
-class BoxSpecUtility<T extends Attribute>
+class BoxSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, BoxSpecAttribute> {
   /// Utility for defining [BoxSpecAttribute.alignment]
   late final alignment = AlignmentGeometryUtility((v) => only(alignment: v));
@@ -412,10 +412,19 @@ class BoxSpecUtility<T extends Attribute>
   /// Utility for defining [BoxSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  BoxSpecUtility(super.builder, {super.mutable});
+  BoxSpecUtility(
+    super.builder, {
+    @Deprecated(
+      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
+    )
+    super.mutable,
+  });
 
-  BoxSpecUtility<T> get chain =>
-      BoxSpecUtility(attributeBuilder, mutable: true);
+  @Deprecated(
+    'Use "this" instead of "chain" for method chaining. '
+    'The chain getter will be removed in a future version.',
+  )
+  BoxSpecUtility<T> get chain => BoxSpecUtility(attributeBuilder);
 
   static BoxSpecUtility<BoxSpecAttribute> get self => BoxSpecUtility((v) => v);
 
@@ -433,7 +442,7 @@ class BoxSpecUtility<T extends Attribute>
     Clip? clipBehavior,
     double? width,
     double? height,
-    WidgetModifiersDataDto? modifiers,
+    WidgetModifiersConfigDto? modifiers,
     AnimatedDataDto? animated,
   }) {
     return builder(BoxSpecAttribute(

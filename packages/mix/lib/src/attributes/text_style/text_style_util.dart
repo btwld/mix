@@ -10,7 +10,7 @@ import '../scalars/scalar_util.dart';
 import '../shadow/shadow_dto.dart';
 import 'text_style_dto.dart';
 
-final class TextStyleUtility<T extends Attribute>
+final class TextStyleUtility<T extends StyleElement>
     extends DtoUtility<T, TextStyleDto, TextStyle> {
   late final color = ColorUtility((v) => only(color: v));
 

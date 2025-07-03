@@ -32,7 +32,7 @@ final class TextStyleDataRef extends TextStyleData {
   }
 
   @override
-  TextStyle resolve(MixData mix) => mix.tokens.textStyleRef(ref);
+  TextStyle resolve(MixContext mix) => mix.tokens.textStyleRef(ref);
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {

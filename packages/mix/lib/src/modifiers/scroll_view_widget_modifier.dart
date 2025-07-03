@@ -6,7 +6,7 @@ import '../attributes/enum/enum_util.dart';
 import '../attributes/spacing/edge_insets_dto.dart';
 import '../attributes/spacing/spacing_util.dart';
 import '../core/element.dart';
-import '../core/factory/mix_data.dart';
+import '../core/factory/mix_context.dart';
 import '../core/modifier.dart';
 import '../core/utility.dart';
 
@@ -49,7 +49,7 @@ final class ScrollViewModifierSpec
   }
 }
 
-final class ScrollViewModifierSpecUtility<T extends Attribute>
+final class ScrollViewModifierSpecUtility<T extends StyleElement>
     extends MixUtility<T, ScrollViewModifierSpecAttribute> {
   /// Make the scroll view reverse or not.
   late final reverse = BoolUtility((reverse) => call(reverse: reverse));

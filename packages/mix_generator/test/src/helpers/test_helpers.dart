@@ -197,26 +197,26 @@ class SpecUtility {
 }
 
 /// Mix data container
-class MixData {
-  const MixData();
+class MixContext {
+  const MixContext();
 }
 
-/// Base class for all attributes
-abstract class Attribute {
-  const Attribute();
+/// Base class for all style elements
+abstract class StyleElement {
+  const StyleElement();
   
-  Attribute merge(covariant Attribute other);
+  StyleElement merge(covariant StyleElement other);
   
   List<Object?> get props;
 }
 
 /// Base class for styled attributes
-abstract class StyledAttribute extends Attribute {
+abstract class StyledAttribute extends StyleElement {
   const StyledAttribute();
 }
 
-/// Base utility class for creating attributes
-abstract class MixUtility<T extends Attribute, V> {
+/// Base utility class for creating style elements
+abstract class MixUtility<T extends StyleElement, V> {
   final T Function(V) builder;
   final bool mutable;
   

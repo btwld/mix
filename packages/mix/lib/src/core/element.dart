@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../internal/compare_mixin.dart';
-import 'factory/mix_data.dart';
+import 'factory/mix_context.dart';
 import 'spec.dart';
 import 'utility.dart';
 
@@ -16,10 +16,8 @@ abstract class StyleElement with EqualityMixin {
   StyleElement merge(covariant StyleElement? other);
 }
 
-/// Similar to a StyleElement but can be passed as an attribute of `Style`
-abstract class Attribute extends StyleElement {
-  const Attribute();
-}
+@Deprecated('Use StyleElement instead')
+typedef Attribute = StyleElement;
 
 @Deprecated('Use StyleAttribute instead')
 typedef StyledAttribute = SpecAttribute;
@@ -27,12 +25,10 @@ typedef StyledAttribute = SpecAttribute;
 @Deprecated('Use Mixable instead')
 typedef Dto<Value> = Mixable<Value>;
 
-abstract class Mixable<Value> extends StyleElement {
+abstract class Mixable<Value> with EqualityMixin {
   const Mixable();
 
-  Value resolve(MixData mix);
-
-  @override
+  Value resolve(MixContext mix);
   Mixable<Value> merge(covariant Mixable<Value>? other);
 }
 
@@ -42,8 +38,8 @@ mixin HasDefaultValue<Value> {
   Value get defaultValue;
 }
 
-abstract class DtoUtility<A extends Attribute, D extends Mixable<Value>, Value>
-    extends MixUtility<A, D> {
+abstract class DtoUtility<A extends StyleElement, D extends Mixable<Value>,
+    Value> extends MixUtility<A, D> {
   final D Function(Value) _fromValue;
   const DtoUtility(super.builder, {required D Function(Value) valueToDto})
       : _fromValue = valueToDto;

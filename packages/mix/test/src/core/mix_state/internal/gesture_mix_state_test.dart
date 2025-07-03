@@ -56,7 +56,7 @@ void main() {
       final context = tester.element(find.byKey(key));
 
       expect(
-        MixWidgetState.hasStateOf(context, WidgetState.pressed),
+        MixWidgetStateModel.hasStateOf(context, WidgetState.pressed),
         isTrue,
         reason: 'GesturableState should be pressed immediately after tap',
       );
@@ -97,7 +97,7 @@ void main() {
       await tester.pump();
       final context = tester.element(find.byKey(key));
       expect(
-        MixWidgetState.hasStateOf(context, WidgetState.pressed),
+        MixWidgetStateModel.hasStateOf(context, WidgetState.pressed),
         isTrue,
         reason: 'GesturableState should be pressed immediately after tap',
       );
@@ -106,7 +106,7 @@ void main() {
         const Duration(milliseconds: 50),
       );
       expect(
-        MixWidgetState.hasStateOf(context, WidgetState.pressed),
+        MixWidgetStateModel.hasStateOf(context, WidgetState.pressed),
         isTrue,
         reason: 'GesturableState should still be pressed 50ms after tap',
       );
@@ -115,7 +115,7 @@ void main() {
         const Duration(milliseconds: 100),
       );
       expect(
-        MixWidgetState.hasStateOf(context, WidgetState.pressed),
+        MixWidgetStateModel.hasStateOf(context, WidgetState.pressed),
         isFalse,
         reason:
             'GesturableState should be unpressed after unpressDelay has passed',
@@ -132,7 +132,8 @@ void main() {
 
       await tester.tap(find.byType(GestureMixStateWidget));
       final context = tester.element(find.byKey(key));
-      expect(MixWidgetState.hasStateOf(context, WidgetState.pressed), isFalse);
+      expect(MixWidgetStateModel.hasStateOf(context, WidgetState.pressed),
+          isFalse);
     });
 
     testWidgets('GesturableWidget pan functions test', (

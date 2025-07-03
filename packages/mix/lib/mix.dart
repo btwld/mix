@@ -39,11 +39,9 @@ export 'src/attributes/enum/enum_util.dart';
 export 'src/attributes/gap/gap_util.dart';
 export 'src/attributes/gap/space_dto.dart';
 export 'src/attributes/gradient/gradient_dto.dart';
-export 'src/attributes/modifiers/widget_modifiers_data.dart';
-export 'src/attributes/modifiers/widget_modifiers_data_dto.dart';
+export 'src/attributes/modifiers/widget_modifiers_config.dart';
+export 'src/attributes/modifiers/widget_modifiers_config_dto.dart';
 export 'src/attributes/modifiers/widget_modifiers_util.dart';
-export 'src/attributes/nested_style/nested_style_attribute.dart';
-export 'src/attributes/nested_style/nested_style_util.dart';
 export 'src/attributes/scalars/curves.dart';
 export 'src/attributes/scalars/scalar_util.dart';
 export 'src/attributes/shadow/shadow_dto.dart';
@@ -62,7 +60,7 @@ export 'src/core/directive.dart';
 
 /// CORE
 export 'src/core/element.dart';
-export 'src/core/factory/mix_data.dart';
+export 'src/core/factory/mix_context.dart';
 export 'src/core/factory/mix_provider.dart';
 export 'src/core/factory/style_mix.dart';
 export 'src/core/factory/style_widgets_ext.dart';
@@ -74,6 +72,7 @@ export 'src/core/styled_widget_deprecation.dart';
 export 'src/core/utility.dart';
 export 'src/core/variant.dart';
 export 'src/core/widget_state/widget_state_controller.dart';
+export 'src/helpers/duration.dart';
 
 /// MODIFIERS
 export 'src/modifiers/align_widget_modifier.dart';

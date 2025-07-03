@@ -7,10 +7,10 @@ import '../../theme/tokens/mix_token.dart';
 import 'edge_insets_dto.dart';
 
 @Deprecated('Use EdgeInsetsGeometryUtility instead')
-typedef SpacingUtility<T extends Attribute> = EdgeInsetsGeometryUtility<T>;
+typedef SpacingUtility<T extends StyleElement> = EdgeInsetsGeometryUtility<T>;
 
 @immutable
-final class EdgeInsetsGeometryUtility<T extends Attribute>
+final class EdgeInsetsGeometryUtility<T extends StyleElement>
     extends DtoUtility<T, EdgeInsetsGeometryDto, EdgeInsetsGeometry> {
   late final directional = SpacingDirectionalUtility(builder);
 
@@ -65,7 +65,7 @@ final class EdgeInsetsGeometryUtility<T extends Attribute>
 }
 
 @immutable
-final class SpacingDirectionalUtility<T extends Attribute>
+final class SpacingDirectionalUtility<T extends StyleElement>
     extends DtoUtility<T, EdgeInsetsGeometryDto, EdgeInsetsGeometry> {
   late final all = SpacingSideUtility(
     (v) => only(top: v, bottom: v, start: v, end: v),
@@ -109,7 +109,7 @@ final class SpacingDirectionalUtility<T extends Attribute>
 }
 
 @immutable
-class SpacingSideUtility<T extends Attribute> extends MixUtility<T, double> {
+class SpacingSideUtility<T extends StyleElement> extends MixUtility<T, double> {
   const SpacingSideUtility(super.builder);
 
   T call(double value) => builder(value);

@@ -1,5 +1,4 @@
 import 'package:flutter/animation.dart';
-import 'package:flutter/widgets.dart';
 
 import '../../internal/constants.dart';
 import 'animated_data_dto.dart';
@@ -8,12 +7,12 @@ import 'animated_data_dto.dart';
 ///
 /// Encapsulates animation parameters including duration, curve, and completion
 /// callback for use with animated widgets and style transitions.
-//TODO: Consider chainging this to AnimatedConfig, as it will be more descriptive for the new animation system
+//TODO: Consider chainging this to AnimationConfig, as it will be more descriptive for the new animation system
 class AnimatedData {
   final VoidCallback? _onEnd;
   final Curve? _curve;
   final Duration? _duration;
-  
+
   /// Creates animation data with the specified parameters.
   const AnimatedData({
     required Duration? duration,

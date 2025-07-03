@@ -53,7 +53,7 @@ void main() {
 
       final context = tester.element(find.byType(Container));
 
-      final mixData = MixData.create(context, const Style.empty());
+      final mixData = MixContext.create(context, const Style.empty());
 
       expect(mixData.tokens.colorToken(redcolorToken), Colors.redAccent);
       expect(mixData.tokens.colorToken(greencolorToken), Colors.green);
@@ -84,7 +84,7 @@ void main() {
       );
 
       final context = tester.element(find.byType(Container));
-      final mixData = MixData.create(context, const Style.empty());
+      final mixData = MixContext.create(context, const Style.empty());
 
       expect(mixData.tokens.colorToken(colorToken), Colors.white);
 
@@ -112,7 +112,7 @@ void main() {
       await tester.pumpWidget(createWithMixTheme(theme));
 
       final context = tester.element(find.byType(Container));
-      final mixData = MixData.create(context, const Style.empty());
+      final mixData = MixContext.create(context, const Style.empty());
 
       expect(mixData.tokens.colorToken(colorToken), Colors.transparent);
     });
