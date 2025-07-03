@@ -1,4 +1,4 @@
-## 1.7.0-beta.0
+## 1.7.0
 
  - No changes in this release.
 

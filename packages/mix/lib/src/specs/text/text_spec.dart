@@ -141,7 +141,3 @@ final class TextSpec extends Spec<TextSpec> with _$TextSpec, Diagnosticable {
     _debugFillProperties(properties);
   }
 }
-
-class StyledTextStyle extends TextSpecUtility<TextSpecAttribute> {
-  StyledTextStyle() : super((v) => v);
-}

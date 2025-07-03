@@ -85,7 +85,3 @@ final class FlexSpec extends Spec<FlexSpec> with _$FlexSpec, Diagnosticable {
     _debugFillProperties(properties);
   }
 }
-
-class FlexStyle extends FlexSpecUtility<FlexSpecAttribute> {
-  FlexStyle() : super((v) => v);
-}

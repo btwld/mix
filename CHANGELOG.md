@@ -3,6 +3,64 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-07-02
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`mix` - `v1.7.0`](#mix---v170)
+ - [`mix_lint` - `v1.7.0`](#mix_lint---v170)
+ - [`mix_annotations` - `v1.7.0`](#mix_annotations---v170)
+ - [`mix_generator` - `v1.7.0`](#mix_generator---v170)
+
+---
+
+#### `mix` - `v1.7.0`
+
+ - **REFACTOR**: Implement BaseStyle utility class and improve styling architecture (#659)
+ - **REFACTOR**: Remove SpecConfiguration and SpecStyle from environment (#656)
+ - **REFACTOR**: Move widget state handling from MixBuilder to SpecBuilder (#651).
+ - **REFACTOR**: Rename WidgetModifiersData to WidgetModifiersConfig (#649).
+ - **REFACTOR**: Fix deprecations and modernize codebase (#647).
+ - **REFACTOR**: Remove NestedStyleAttribute and migrate to direct Style usage (#644).
+ - **REFACTOR**: Deprecate `MixWidgetStateController` (#586).
+ - **REFACTOR**: Use WidgetState instead of MixWidgetState (#582).
+ - **FIX**: Change Mixable to extend EqualityMixin instead of StyleElement (#648).
+ - **FIX**: CopyWith overriding bug (#622).
+ - **FEAT**: builder optimization (#629).
+ - **FEAT**: deprecate styled widgets in favor of new naming conventions (#619).
+ - **FEAT**: Implementing duration extension for int  (#634).
+ - **FEAT**: Create MixBuilder (#581).
+ - **FEAT**: Add generated style-focused modifiers and specs (#652).
+ - **FEAT**: Unify SpecUtility, Style, and Attributes as compatible values (#643).
+ - **FEAT**: Add utilities for animatedData (#660).
+ - **FEAT**: Add focused style classes for spec utilities (#677)
+
+#### `mix_lint` - `v1.7.0`
+
+ - No changes in this release.
+
+#### `mix_annotations` - `v1.7.0`
+
+- **FEAT**: Add generated style-focused modifiers and specs (#652).
+
+#### `mix_generator` - `v1.7.0`
+
+ - **REFACTOR**: Rename WidgetModifiersData to WidgetModifiersConfig (#649).
+ - **REFACTOR**: Fix deprecations and modernize codebase (#647).
+ - **FIX**: update animated property handling to use null coalescing (#637).
+ - **FEAT**: Add generated style-focused modifiers and specs (#652).
+ - **FEAT**: unify SpecUtility, Style, and Attributes as compatible values (#643).
+ - **FEAT**: builder optimization (#629).
+
+
 ## 2025-06-23
 
 ### Changes

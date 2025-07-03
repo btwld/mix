@@ -4,7 +4,7 @@
 Mix is a Flutter styling system that separates style semantics from widgets while maintaining an easy-to-understand relationship. It provides a comprehensive set of utilities and components for consistent and expressive styling.
 
 ## Constraints
-mix: 1.7.0-beta.0
+mix: 1.7.0
 
 ## Widgets Categories and Examples
 

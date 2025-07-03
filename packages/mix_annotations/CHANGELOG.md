@@ -1,4 +1,4 @@
-## 1.7.0-beta.0
+## 1.7.0
 
  - **FEAT**: Add generated style-focused modifiers and specs (#652).
 

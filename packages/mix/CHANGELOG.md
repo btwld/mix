@@ -1,4 +1,4 @@
-### 1.7.0-beta.0
+### 1.7.0
 
  - **REFACTOR**: Implement BaseStyle utility class and improve styling architecture #659
  - **REFACTOR**: Remove SpecConfiguration and SpecStyle from environment (#656)

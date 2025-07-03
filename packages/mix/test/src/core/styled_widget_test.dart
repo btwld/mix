@@ -250,7 +250,7 @@ void main() {
       (tester) async {
         tester.pumpWidget(
           SpecBuilder(
-            style: BoxStyle()
+            style: $box
               ..height(100)
               ..width(100),
             builder: (context) {

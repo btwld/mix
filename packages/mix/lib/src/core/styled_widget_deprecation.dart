@@ -9,35 +9,29 @@ const String deprecationMessage = 'will be removed in $deprecationVersion';
 
 /// Deprecation messages for styled widgets
 class StyledWidgetDeprecationMessages {
-  static const String styledRowMessage = 
-    'Use HBox instead. '
-    'StyledRow has been replaced with HBox for better naming consistency. '
-    'This widget $deprecationMessage.';
+  static const String styledRowMessage = 'Use HBox instead. '
+      'StyledRow has been replaced with HBox for better naming consistency. '
+      'This widget $deprecationMessage.';
 
-  static const String styledColumnMessage = 
-    'Use VBox instead. '
-    'StyledColumn has been replaced with VBox for better naming consistency. '
-    'This widget $deprecationMessage.';
+  static const String styledColumnMessage = 'Use VBox instead. '
+      'StyledColumn has been replaced with VBox for better naming consistency. '
+      'This widget $deprecationMessage.';
 
-  static const String styledFlexMessage = 
-    'Use FlexBox instead. '
-    'StyledFlex has been replaced with FlexBox for better naming consistency. '
-    'This widget $deprecationMessage.';
+  static const String styledFlexMessage = 'Use FlexBox instead. '
+      'StyledFlex has been replaced with FlexBox for better naming consistency. '
+      'This widget $deprecationMessage.';
 
-  static const String styledStackMessage = 
-    'Use ZBox instead. '
-    'StyledStack has been replaced with ZBox which combines Box and Stack functionality. '
-    'This widget $deprecationMessage.';
+  static const String styledStackMessage = 'Use ZBox instead. '
+      'StyledStack has been replaced with ZBox which combines Box and Stack functionality. '
+      'This widget $deprecationMessage.';
 
-  static const String rowMethodMessage = 
-    'Use hbox() instead. '
-    'The row() method has been replaced with hbox() for better naming consistency. '
-    'This method $deprecationMessage.';
+  static const String rowMethodMessage = 'Use hbox() instead. '
+      'The row() method has been replaced with hbox() for better naming consistency. '
+      'This method $deprecationMessage.';
 
-  static const String columnMethodMessage = 
-    'Use vbox() instead. '
-    'The column() method has been replaced with vbox() for better naming consistency. '
-    'This method $deprecationMessage.';
+  static const String columnMethodMessage = 'Use vbox() instead. '
+      'The column() method has been replaced with vbox() for better naming consistency. '
+      'This method $deprecationMessage.';
 }
 
 /// Migration examples for deprecated widgets

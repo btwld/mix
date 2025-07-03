@@ -66,7 +66,9 @@ class OnPressVariant extends _ToggleMixStateVariant {
   const OnPressVariant() : super(WidgetState.pressed);
 }
 
-/// Applies styles when the widget is long pressed.
+@Deprecated(
+  'The longPress variant has been removed. Please implement your own context variant for it',
+)
 class OnLongPressVariant extends ContextVariant {
   @override
   final priority = VariantPriority.highest;

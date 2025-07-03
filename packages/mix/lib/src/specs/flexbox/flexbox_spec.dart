@@ -98,7 +98,3 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec>
     _debugFillProperties(properties);
   }
 }
-
-class FlexBoxStyle extends FlexBoxSpecUtility<FlexBoxSpecAttribute> {
-  FlexBoxStyle() : super((v) => v);
-}

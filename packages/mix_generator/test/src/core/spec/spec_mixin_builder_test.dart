@@ -16,7 +16,7 @@ void main() {}
 //         class TestSpec extends Spec {
 //           final String name;
 //           final int age;
-          
+
 //           const TestSpec({required this.name, required this.age});
 //         }
 //       ''';
@@ -105,7 +105,6 @@ void main() {}
 //     return TestSpec(name: t < 0.5 ? _\$this.name : other.name, age: t < 0.5 ? _\$this.age : other.age,);
 //   }
 
-
 //     /// The list of properties that constitute the state of this [TestSpec].
 //   ///
 //   /// This property is used by the [==] operator and the [hashCode] getter to
@@ -132,9 +131,9 @@ void main() {}
 //         class TestWidgetModifierSpec extends WidgetModifierSpec<TestWidgetModifierSpec> {
 //           final Color? color;
 //           final double? opacity;
-          
+
 //           const TestWidgetModifierSpec({this.color, this.opacity, super.animated});
-          
+
 //           @override
 //           TestWidgetModifierSpec copyWith() {
 //             return TestWidgetModifierSpec(
@@ -143,7 +142,7 @@ void main() {}
 //               animated: animated,
 //             );
 //           }
-          
+
 //           @override
 //           TestWidgetModifierSpec lerp(TestWidgetModifierSpec? other, double t) {
 //             return TestWidgetModifierSpec(
@@ -152,7 +151,7 @@ void main() {}
 //               animated: animated,
 //             );
 //           }
-          
+
 //           @override
 //           Widget build(Widget child) {
 //             return child;
@@ -217,7 +216,7 @@ void main() {}
 //       const testCode = '''
 //         class DiagnosticableSpec extends Spec with Diagnosticable {
 //           final String label;
-          
+
 //           const DiagnosticableSpec({required this.label});
 //         }
 //       ''';
@@ -306,7 +305,6 @@ void main() {}
 //     return DiagnosticableSpec(label: t < 0.5 ? _\$this.label : other.label,);
 //   }
 
-
 //     /// The list of properties that constitute the state of this [DiagnosticableSpec].
 //   ///
 //   /// This property is used by the [==] operator and the [hashCode] getter to
@@ -318,7 +316,6 @@ void main() {}
 
 //   DiagnosticableSpec get _\$this => this as DiagnosticableSpec;
 
-    
 //   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
 //     properties.add(DiagnosticsProperty('label', _\$this.label, defaultValue: null));
 //   }
@@ -336,16 +333,16 @@ void main() {}
 //       const testCode = '''
 //         class ExistingMethodsSpec extends Spec {
 //           final String name;
-          
+
 //           const ExistingMethodsSpec({required this.name});
-          
+
 //           @override
 //           ExistingMethodsSpec copyWith({String? name}) {
 //             return ExistingMethodsSpec(
 //               name: name ?? this.name,
 //             );
 //           }
-          
+
 //           @override
 //           List<Object?> get props => [name];
 //         }

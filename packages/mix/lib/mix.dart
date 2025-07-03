@@ -63,7 +63,6 @@ export 'src/core/element.dart';
 export 'src/core/factory/mix_context.dart';
 export 'src/core/factory/mix_provider.dart';
 export 'src/core/factory/style_mix.dart';
-export 'src/core/factory/style_mix_ext.dart';
 export 'src/core/factory/style_widgets_ext.dart';
 export 'src/core/helpers.dart';
 export 'src/core/modifier.dart';

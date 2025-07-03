@@ -220,6 +220,7 @@ class _GestureMixStateWidgetState extends State<GestureMixStateWidget> {
   }
 }
 
+@Deprecated('This class will be removed in the next major version')
 class LongPressInheritedState extends InheritedWidget {
   const LongPressInheritedState({
     super.key,
