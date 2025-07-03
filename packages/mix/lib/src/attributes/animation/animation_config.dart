@@ -1,20 +1,22 @@
 import 'package:flutter/animation.dart';
 
 import '../../internal/constants.dart';
-import 'animated_data_dto.dart';
+import 'animated_config_dto.dart';
+
+@Deprecated('Use AnimationConfig instead. This will be removed in version 2.0')
+typedef AnimatedData = AnimationConfig;
 
 /// Configuration data for animated styles in the Mix framework.
 ///
 /// Encapsulates animation parameters including duration, curve, and completion
 /// callback for use with animated widgets and style transitions.
-//TODO: Consider chainging this to AnimationConfig, as it will be more descriptive for the new animation system
-class AnimatedData {
+class AnimationConfig {
   final VoidCallback? _onEnd;
   final Curve? _curve;
   final Duration? _duration;
 
   /// Creates animation data with the specified parameters.
-  const AnimatedData({
+  const AnimationConfig({
     required Duration? duration,
     required Curve? curve,
     VoidCallback? onEnd,
@@ -23,7 +25,7 @@ class AnimatedData {
         _onEnd = onEnd;
 
   /// Creates animation data with default settings.
-  const AnimatedData.withDefaults()
+  const AnimationConfig.withDefaults()
       : _duration = kDefaultAnimationDuration,
         _curve = Curves.linear,
         _onEnd = null;
@@ -36,16 +38,16 @@ class AnimatedData {
 
   VoidCallback? get onEnd => _onEnd;
 
-  AnimatedDataDto toDto() {
-    return AnimatedDataDto(duration: duration, curve: curve, onEnd: _onEnd);
+  AnimationConfigDto toDto() {
+    return AnimationConfigDto(duration: duration, curve: curve, onEnd: _onEnd);
   }
 
-  AnimatedData copyWith({
+  AnimationConfig copyWith({
     Duration? duration,
     Curve? curve,
     VoidCallback? onEnd,
   }) {
-    return AnimatedData(
+    return AnimationConfig(
       duration: duration ?? this.duration,
       curve: curve ?? this.curve,
       onEnd: onEnd ?? this.onEnd,
@@ -56,7 +58,7 @@ class AnimatedData {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is AnimatedData &&
+    return other is AnimationConfig &&
         other._curve == _curve &&
         other._duration == _duration;
   }

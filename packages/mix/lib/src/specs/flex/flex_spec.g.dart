@@ -45,7 +45,7 @@ mixin _$FlexSpec on Spec<FlexSpec> {
     TextBaseline? textBaseline,
     Clip? clipBehavior,
     double? gap,
-    AnimatedData? animated,
+    AnimationConfig? animated,
     WidgetModifiersConfig? modifiers,
   }) {
     return FlexSpec(
@@ -359,7 +359,7 @@ class FlexSpecUtility<T extends SpecAttribute>
     TextBaseline? textBaseline,
     Clip? clipBehavior,
     SpaceDto? gap,
-    AnimatedDataDto? animated,
+    AnimationConfigDto? animated,
     WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(FlexSpecAttribute(

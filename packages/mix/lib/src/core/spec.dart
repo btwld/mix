@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
-import '../attributes/animated/animated_data.dart';
-import '../attributes/animated/animated_data_dto.dart';
+import '../attributes/animation/animated_config_dto.dart';
+import '../attributes/animation/animation_config.dart';
 import '../attributes/modifiers/widget_modifiers_config.dart';
 import '../attributes/modifiers/widget_modifiers_config_dto.dart';
 import '../internal/compare_mixin.dart';
@@ -11,7 +11,7 @@ import 'factory/mix_context.dart';
 
 @immutable
 abstract class Spec<T extends Spec<T>> with EqualityMixin {
-  final AnimatedData? animated;
+  final AnimationConfig? animated;
 
   @MixableField(
     utilities: [MixableFieldUtility(alias: 'wrap')],
@@ -39,7 +39,7 @@ abstract class Spec<T extends Spec<T>> with EqualityMixin {
 /// The [Self] type represents the concrete implementation of the attribute, while the [Value] type represents the resolvable value.
 abstract class SpecAttribute<Value> extends StyleElement
     implements Mixable<Value> {
-  final AnimatedDataDto? animated;
+  final AnimationConfigDto? animated;
   final WidgetModifiersConfigDto? modifiers;
 
   const SpecAttribute({this.animated, this.modifiers});

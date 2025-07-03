@@ -47,7 +47,7 @@ mixin _$BoxSpec on Spec<BoxSpec> {
     double? width,
     double? height,
     WidgetModifiersConfig? modifiers,
-    AnimatedData? animated,
+    AnimationConfig? animated,
   }) {
     return BoxSpec(
       alignment: alignment ?? _$this.alignment,
@@ -443,7 +443,7 @@ class BoxSpecUtility<T extends SpecAttribute>
     double? width,
     double? height,
     WidgetModifiersConfigDto? modifiers,
-    AnimatedDataDto? animated,
+    AnimationConfigDto? animated,
   }) {
     return builder(BoxSpecAttribute(
       alignment: alignment,

@@ -45,7 +45,7 @@ mixin _$IconSpec on Spec<IconSpec> {
     TextDirection? textDirection,
     bool? applyTextScaling,
     double? fill,
-    AnimatedData? animated,
+    AnimationConfig? animated,
     WidgetModifiersConfig? modifiers,
   }) {
     return IconSpec(
@@ -345,7 +345,7 @@ class IconSpecUtility<T extends SpecAttribute>
     TextDirection? textDirection,
     bool? applyTextScaling,
     double? fill,
-    AnimatedDataDto? animated,
+    AnimationConfigDto? animated,
     WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(IconSpecAttribute(

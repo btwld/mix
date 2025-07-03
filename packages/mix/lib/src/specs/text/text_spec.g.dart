@@ -50,7 +50,7 @@ mixin _$TextSpec on Spec<TextSpec> {
     TextDirection? textDirection,
     bool? softWrap,
     TextDirective? directive,
-    AnimatedData? animated,
+    AnimationConfig? animated,
     WidgetModifiersConfig? modifiers,
   }) {
     return TextSpec(
@@ -486,7 +486,7 @@ class TextSpecUtility<T extends SpecAttribute>
     TextDirection? textDirection,
     bool? softWrap,
     TextDirectiveDto? directive,
-    AnimatedDataDto? animated,
+    AnimationConfigDto? animated,
     WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(TextSpecAttribute(
