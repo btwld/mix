@@ -1,29 +1,53 @@
-import 'package:mix_annotations/mix_annotations.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../core/element.dart';
 import '../../core/factory/mix_context.dart';
-import '../../theme/tokens/mix_token.dart' as tokens;
+import '../../theme/tokens/mix_token.dart';
 
-part 'space_dto.g.dart';
+@immutable
+sealed class SpaceDto extends Mixable<double> with Diagnosticable {
+  // Common constants using private types
+  static const zero = _ValueSpaceDto(0);
 
-// Deprecated typedef moved to src/core/deprecated.dart
+  static const infinity =
+      _ValueSpaceDto(double.infinity); // Private constructor
+  const SpaceDto._();
 
-@MixableType(components: GeneratedPropertyComponents.none)
-class SpaceDto extends Mixable<double> with _$SpaceDto {
-  final double? value;
+  // Public factories only
+  const factory SpaceDto.value(double value) = _ValueSpaceDto;
+  const factory SpaceDto.token(MixableToken<double> token) = _TokenSpaceDto;
 
-  @MixableConstructor()
-  const SpaceDto._({this.value, super.token});
-  const SpaceDto(this.value);
+  @override
+  SpaceDto merge(SpaceDto? other) => other ?? this;
+}
 
-  factory SpaceDto.token(tokens.MixableToken<double> token) =>
-      SpaceDto._(token: token);
+// Private implementations
+@immutable
+class _ValueSpaceDto extends SpaceDto {
+  final double value;
+
+  const _ValueSpaceDto(this.value) : super._();
+
+  @override
+  double resolve(MixContext mix) => value;
+
+  @override
+  List<Object?> get props => [value];
+}
+
+@immutable
+class _TokenSpaceDto extends SpaceDto {
+  final MixableToken<double> token;
+
+  const _TokenSpaceDto(this.token) : super._();
 
   @override
   double resolve(MixContext mix) {
-    // Must call super.resolve() first - returns token value or null
-    final tokenValue = super.resolve(mix);
+    final resolved = mix.scope.getToken(token, mix.context);
 
-    return tokenValue ?? value ?? 0.0;
+    return resolved ?? 0.0;
   }
+
+  @override
+  List<Object?> get props => [token];
 }

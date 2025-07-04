@@ -72,7 +72,7 @@ void main() {
     expect(context.theme, Theme.of(context));
     expect(context.colorScheme, Theme.of(context).colorScheme);
     expect(context.textTheme, Theme.of(context).textTheme);
-    expect(context.mixScope, const MixScopeData.empty());
+    expect(context.mixTheme, const MixScopeData.empty());
     expect(context.isDarkMode, Theme.of(context).brightness == Brightness.dark);
     expect(
       context.isLandscape,

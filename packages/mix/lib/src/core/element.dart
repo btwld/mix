@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 
 import '../internal/compare_mixin.dart';
-import '../theme/tokens/mix_token.dart';
 import 'factory/mix_context.dart';
 import 'utility.dart';
 
@@ -19,17 +18,11 @@ abstract class StyleElement with EqualityMixin {
 // Deprecated typedefs moved to src/core/deprecated.dart
 
 abstract class Mixable<Value> with EqualityMixin {
-  /// Optional token for resolving values from the theme
-  final MixableToken<Value>? token;
-
-  const Mixable({this.token});
+  const Mixable();
 
   /// Resolves token value if present, otherwise returns null
-  /// Subclasses MUST call super.resolve() and handle the result
-  @mustCallSuper
-  Value? resolve(MixContext mix) {
-    return token != null ? mix.scope.getToken(token!, mix.context) : null;
-  }
+
+  Value resolve(MixContext mix);
 
   /// Merges this mixable with another
   Mixable<Value> merge(covariant Mixable<Value>? other);

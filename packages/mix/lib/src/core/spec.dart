@@ -6,7 +6,6 @@ import '../attributes/animation/animation_config.dart';
 import '../attributes/modifiers/widget_modifiers_config.dart';
 import '../attributes/modifiers/widget_modifiers_config_dto.dart';
 import '../internal/compare_mixin.dart';
-import '../theme/tokens/mix_token.dart';
 import 'element.dart';
 import 'factory/mix_context.dart';
 
@@ -49,6 +48,4 @@ abstract class SpecAttribute<Value> extends StyleElement
 
   @override
   SpecAttribute<Value> merge(covariant SpecAttribute<Value>? other);
-  @override
-  MixableToken<Value>? get token => null;
 }

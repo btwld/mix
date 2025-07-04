@@ -9,86 +9,121 @@ import 'color_directives_impl.dart';
 
 /// A Data transfer object that represents a [Color] value.
 ///
-/// This DTO is used to resolve a [Color] value from a [MixContext] instance.
-/// It can hold either a direct color value or a token reference.
-///
-/// See also:
-/// * [Token], which is used to reference theme values.
-/// * [Color], which is the Flutter equivalent class.
-/// {@category DTO}
+/// Create instances using the factory constructors:
+/// - `ColorDto.value()` for direct color values
+/// - `ColorDto.token()` for theme token references
 @immutable
-class ColorDto extends Mixable<Color> with Diagnosticable {
-  final Color? value;
+sealed class ColorDto extends Mixable<Color> with Diagnosticable {
+  /// Directives to apply to the resolved color
   final List<ColorDirective> directives;
 
+  // Private constructor
+  const ColorDto._({this.directives = const []});
+
+  // Public factory constructors
+  const factory ColorDto.value(
+    Color value, {
+    List<ColorDirective> directives,
+  }) = _ValueColorDto;
+
+  const factory ColorDto.token(
+    MixableToken<Color> token, {
+    List<ColorDirective> directives,
+  }) = _TokenColorDto;
+
+  /// Handles reset directive logic when merging directive lists
   @protected
-  const ColorDto.internal({
-    this.value,
-    super.token,
-    this.directives = const [],
-  });
-  const ColorDto(Color value) : this.internal(value: value);
-
-  factory ColorDto.token(MixableToken<Color> token) =>
-      ColorDto.internal(token: token);
-
-  ColorDto.directive(ColorDirective directive)
-      : this.internal(directives: [directive]);
-
-  List<ColorDirective> _applyResetIfNeeded(List<ColorDirective> directives) {
+  static List<ColorDirective> mergeDirectives(
+    List<ColorDirective> current,
+    List<ColorDirective> incoming,
+  ) {
+    final combined = [...current, ...incoming];
     final lastResetIndex =
-        directives.lastIndexWhere((e) => e is ResetColorDirective);
+        combined.lastIndexWhere((e) => e is ResetColorDirective);
 
-    return lastResetIndex == -1
-        ? directives
-        : directives.sublist(lastResetIndex);
+    return lastResetIndex == -1 ? combined : combined.sublist(lastResetIndex);
   }
 
-  Color get defaultColor => const Color(0x00000000);
-
-  @override
-  Color resolve(MixContext mix) {
-    // Must call super.resolve() first - returns token value or null
-    final tokenValue = super.resolve(mix);
-    Color color = tokenValue ?? (value ?? defaultColor);
-
-    // Apply directives to the resolved color
+  /// Applies directives to a color
+  @protected
+  Color applyDirectives(Color color) {
+    Color result = color;
     for (final directive in directives) {
-      color = directive.modify(color);
+      result = directive.modify(result);
     }
 
-    return color;
+    return result;
   }
 
   @override
   ColorDto merge(ColorDto? other) {
     if (other == null) return this;
 
-    return ColorDto.internal(
-      value: other.value ?? value,
-      token: other.token ?? token,
-      directives: _applyResetIfNeeded([...directives, ...other.directives]),
-    );
+    // Merge directives from both
+    final mergedDirectives = mergeDirectives(directives, other.directives);
+
+    // Create new instance based on the other's type (other takes precedence)
+    return switch (other) {
+      _ValueColorDto(:final value) =>
+        ColorDto.value(value, directives: mergedDirectives),
+      _TokenColorDto(:final token) =>
+        ColorDto.token(token, directives: mergedDirectives),
+    };
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-
-    if (token != null) {
-      properties.add(DiagnosticsProperty('token', token?.toString()));
-
-      return;
+    if (directives.isNotEmpty) {
+      properties.add(IterableProperty('directives', directives));
     }
+  }
+}
 
-    final color = value ?? defaultColor;
-    properties.add(ColorProperty('color', color));
+// Private implementation for direct color values
+@immutable
+class _ValueColorDto extends ColorDto {
+  final Color value;
+
+  const _ValueColorDto(this.value, {super.directives}) : super._();
+
+  @override
+  Color resolve(MixContext mix) => applyDirectives(value);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(ColorProperty('color', value));
   }
 
   @override
-  List<Object?> get props => [value, token, directives];
+  List<Object?> get props => [value, directives];
+}
+
+// Private implementation for token references
+@immutable
+class _TokenColorDto extends ColorDto {
+  final MixableToken<Color> token;
+
+  const _TokenColorDto(this.token, {super.directives}) : super._();
+
+  @override
+  Color resolve(MixContext mix) {
+    final resolved = mix.scope.getToken(token, mix.context);
+
+    return applyDirectives(resolved);
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('token', token.name));
+  }
+
+  @override
+  List<Object?> get props => [token, directives];
 }
 
 extension ColorExt on Color {
-  ColorDto toDto() => ColorDto(this);
+  ColorDto toDto() => ColorDto.value(this);
 }

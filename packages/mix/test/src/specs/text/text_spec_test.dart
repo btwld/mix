@@ -16,7 +16,7 @@ void main() {
             textAlign: TextAlign.center,
             textScaler: const TextScaler.linear(1.0),
             maxLines: 2,
-            style: TextStyleDto(color: const ColorDto(Colors.red)),
+            style: TextStyleDto(color: const ColorDto.value(Colors.red)),
             textWidthBasis: TextWidthBasis.longestLine,
             textHeightBehavior: const TextHeightBehaviorDto(
               applyHeightToFirstAscent: true,
@@ -192,7 +192,7 @@ void main() {
             textAlign: TextAlign.center,
             textScaler: const TextScaler.linear(1.0),
             maxLines: 2,
-            style: TextStyleDto(color: const ColorDto(Colors.red)),
+            style: TextStyleDto(color: const ColorDto.value(Colors.red)),
             textWidthBasis: TextWidthBasis.longestLine,
             textHeightBehavior: const TextHeightBehaviorDto(
               applyHeightToFirstAscent: true,

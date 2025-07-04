@@ -3,7 +3,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
-import 'package:mix_annotations/mix_annotations.dart' hide MixableToken;
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../internal/diagnostic_properties_builder_ext.dart';
 
@@ -94,14 +94,17 @@ base class TextStyleData extends Mixable<TextStyle>
   mergeLists: false,
 )
 final class TextStyleDto extends Mixable<TextStyle>
-    with _$TextStyleDto, Diagnosticable {
+    with MixableTokenMixin<TextStyle>, _$TextStyleDto, Diagnosticable {
   final List<TextStyleData> value;
+  @override
+  final MixableToken<TextStyle>? token;
 
   @MixableConstructor()
-  const TextStyleDto._({this.value = const [], super.token});
+  @protected
+  const TextStyleDto.raw({this.value = const [], this.token});
 
   factory TextStyleDto.token(MixableToken<TextStyle> token) =>
-      TextStyleDto._(token: token);
+      TextStyleDto.raw(token: token);
 
   factory TextStyleDto({
     ColorDto? color,
@@ -126,7 +129,7 @@ final class TextStyleDto extends Mixable<TextStyle>
     String? fontFamily,
     List<String>? fontFamilyFallback,
   }) {
-    return TextStyleDto._(value: [
+    return TextStyleDto.raw(value: [
       TextStyleData(
         background: background,
         backgroundColor: backgroundColor,
@@ -189,7 +192,7 @@ final class TextStyleDto extends Mixable<TextStyle>
 
 extension TextStyleExt on TextStyle {
   TextStyleDto toDto() {
-    return TextStyleDto._(value: [_toData()]);
+    return TextStyleDto.raw(value: [_toData()]);
   }
 
   TextStyleData _toData() => TextStyleData(

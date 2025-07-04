@@ -22,7 +22,7 @@ mixin _$EdgeInsetsDto on Mixable<EdgeInsets> {
   EdgeInsetsDto merge(EdgeInsetsDto? other) {
     if (other == null) return _$this;
 
-    return EdgeInsetsDto.internal(
+    return EdgeInsetsDto.raw(
       top: _$this.top?.merge(other.top) ?? other.top,
       bottom: _$this.bottom?.merge(other.bottom) ?? other.bottom,
       left: _$this.left?.merge(other.left) ?? other.left,
@@ -60,7 +60,7 @@ mixin _$EdgeInsetsDirectionalDto on Mixable<EdgeInsetsDirectional> {
   EdgeInsetsDirectionalDto merge(EdgeInsetsDirectionalDto? other) {
     if (other == null) return _$this;
 
-    return EdgeInsetsDirectionalDto.internal(
+    return EdgeInsetsDirectionalDto.raw(
       top: _$this.top?.merge(other.top) ?? other.top,
       bottom: _$this.bottom?.merge(other.bottom) ?? other.bottom,
       start: _$this.start?.merge(other.start) ?? other.start,

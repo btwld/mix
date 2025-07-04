@@ -13,7 +13,7 @@ abstract base class BaseColorUtility<T extends StyleElement>
     extends MixUtility<T, ColorDto> {
   const BaseColorUtility(super.builder);
 
-  T _buildColor(Color color) => builder(ColorDto(color));
+  T _buildColor(Color color) => builder(ColorDto.value(color));
 
   T token(MixableToken<Color> token) => builder(ColorDto.token(token));
 }
@@ -27,7 +27,7 @@ base class FoundationColorUtility<T extends StyleElement, C extends Color>
   T call() => _buildColor(color);
   @override
   T directive(ColorDirective directive) =>
-      builder(ColorDto.internal(value: color, directives: [directive]));
+      builder(ColorDto.value(color, directives: [directive]));
 }
 
 /// A utility class for building [StyleElement] instances from a list of [ColorDto] objects.
@@ -96,8 +96,9 @@ base mixin BasicColorsMixin<T extends StyleElement> on BaseColorUtility<T> {
 }
 
 base mixin ColorDirectiveMixin<T extends StyleElement> on BaseColorUtility<T> {
+  // TODO: Added transparetn as workaround but later should merge hte oclor
   T directive(ColorDirective directive) =>
-      builder(ColorDto.directive(directive));
+      builder(ColorDto.value(Colors.transparent, directives: [directive]));
   T withOpacity(double opacity) => directive(OpacityColorDirective(opacity));
   T withAlpha(int alpha) => directive(AlphaColorDirective(alpha));
   T darken(int percentage) => directive(DarkenColorDirective(percentage));

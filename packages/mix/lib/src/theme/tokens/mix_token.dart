@@ -19,7 +19,7 @@ class MixableToken<T> {
   }
 
   @override
-  int get hashCode => Object.hash(name, runtimeType, T);
+  int get hashCode => name.hashCode;
 }
 
 /// Mixin that provides call() and resolve() methods for MixToken implementations

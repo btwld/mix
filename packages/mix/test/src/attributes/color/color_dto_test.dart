@@ -14,7 +14,7 @@ void main() {
       test(
         'ColorDto.resolve should return the same color as provided for $color',
         () {
-          final colorDto = ColorDto(color);
+          const colorDto = ColorDto.value(Color);
           final resolvedValue = colorDto.resolve(EmptyMixData);
           expect(resolvedValue, color);
         },
@@ -35,7 +35,7 @@ void main() {
         final buildContext = tester.element(find.byType(Container));
         final mockMixData = MixContext.create(buildContext, Style());
 
-        final colorDto = ColorDto.token(testToken);
+        const colorDto = ColorDto.token(testToken);
         final resolvedValue = colorDto.resolve(mockMixData);
 
         expect(resolvedValue, isA<Color>());
@@ -52,21 +52,21 @@ void main() {
 
     // Testing merge method
     test('ColorDto.merge should merge correctly with non-null other', () {
-      const colorDto1 = ColorDto(Colors.red);
-      const colorDto2 = ColorDto(Colors.green);
+      const colorDto1 = ColorDto.value(Colors.red);
+      const colorDto2 = ColorDto.value(Colors.green);
       final merged = colorDto1.merge(colorDto2);
       expect(merged, isA<ColorDto>());
       expect(merged.value, colorDto2.value);
     });
 
     test('ColorDto.merge should return the same instance for null other', () {
-      const colorDto = ColorDto(Colors.red);
+      const colorDto = ColorDto.value(Colors.red);
       final merged = colorDto.merge(null);
       expect(merged, same(colorDto));
     });
 
     test('ColorDirectiveCleaner', () {
-      var colorDto = const ColorDto.internal(value: Colors.red, directives: [
+      var colorDto = const ColorDto.raw(value: Colors.red, directives: [
         DarkenColorDirective(10),
       ]);
 
@@ -83,7 +83,7 @@ void main() {
       );
 
       colorDto =
-          colorDto.merge(const ColorDto.internal(value: Colors.red, directives: [
+          colorDto.merge(const ColorDto.raw(value: Colors.red, directives: [
         DarkenColorDirective(20),
       ]));
 
@@ -121,16 +121,16 @@ void main() {
 
     // Test equality
     test('ColorDto.equals should return true for equal instances', () {
-      const colorDto1 = ColorDto.internal(
+      const colorDto1 = ColorDto.raw(
         value: Colors.red,
         directives: [OpacityColorDirective(0.5)],
       );
-      const colorDto2 = ColorDto.internal(
+      const colorDto2 = ColorDto.raw(
         value: Colors.red,
         directives: [OpacityColorDirective(0.5)],
       );
 
-      const colorDto3 = ColorDto.internal(
+      const colorDto3 = ColorDto.raw(
         value: Colors.red,
         directives: [DarkenColorDirective(10)],
       );

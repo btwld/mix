@@ -6,7 +6,7 @@ import 'space_dto.dart';
 final class GapUtility<T extends StyleElement> extends MixUtility<T, SpaceDto> {
   const GapUtility(super.builder);
 
-  T call(double value) => builder(SpaceDto(value));
+  T call(double value) => builder(SpaceDto.value(value));
 
   T token(MixableToken<double> token) => builder(SpaceDto.token(token));
 

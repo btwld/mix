@@ -47,10 +47,10 @@ void main() {
       final dto2 = EdgeInsetsDto(left: 30, right: 40);
       final merged = EdgeInsetsGeometryDto.tryToMerge(dto1, dto2);
       expect(merged, isA<EdgeInsetsDto>());
-      expect(merged!.top, equals(const SpaceDto(10)));
-      expect(merged.bottom, equals(const SpaceDto(20)));
-      expect((merged as EdgeInsetsDto).left, equals(const SpaceDto(30)));
-      expect((merged).right, equals(const SpaceDto(40)));
+      expect(merged!.top, equals(const SpaceDto.value(10)));
+      expect(merged.bottom, equals(const SpaceDto.value(20)));
+      expect((merged as EdgeInsetsDto).left, equals(const SpaceDto.value(30)));
+      expect((merged).right, equals(const SpaceDto.value(40)));
     });
 
     test('tryToMerge merges dtos of different types', () {
@@ -58,29 +58,29 @@ void main() {
       final dto2 = EdgeInsetsDirectionalDto(start: 30, end: 40);
       final merged = EdgeInsetsGeometryDto.tryToMerge(dto1, dto2);
       expect(merged, isA<EdgeInsetsDirectionalDto>());
-      expect(merged!.top, equals(const SpaceDto(10)));
-      expect(merged.bottom, equals(const SpaceDto(20)));
+      expect(merged!.top, equals(const SpaceDto.value(10)));
+      expect(merged.bottom, equals(const SpaceDto.value(20)));
       expect((merged as EdgeInsetsDirectionalDto).start,
-          equals(const SpaceDto(30)));
-      expect((merged).end, equals(const SpaceDto(40)));
+          equals(const SpaceDto.value(30)));
+      expect((merged).end, equals(const SpaceDto.value(40)));
     });
   });
 
   group('EdgeInsetsDto', () {
     test('all constructor sets all values', () {
       final dto = EdgeInsetsDto.all(10);
-      expect(dto.top, equals(const SpaceDto(10)));
-      expect(dto.bottom, equals(const SpaceDto(10)));
-      expect(dto.left, equals(const SpaceDto(10)));
-      expect(dto.right, equals(const SpaceDto(10)));
+      expect(dto.top, equals(const SpaceDto.value(10)));
+      expect(dto.bottom, equals(const SpaceDto.value(10)));
+      expect(dto.left, equals(const SpaceDto.value(10)));
+      expect(dto.right, equals(const SpaceDto.value(10)));
     });
 
     test('none constructor sets all values to 0', () {
       final dto = EdgeInsetsDto.none();
-      expect(dto.top, equals(const SpaceDto(0)));
-      expect(dto.bottom, equals(const SpaceDto(0)));
-      expect(dto.left, equals(const SpaceDto(0)));
-      expect(dto.right, equals(const SpaceDto(0)));
+      expect(dto.top, equals(const SpaceDto.value(0)));
+      expect(dto.bottom, equals(const SpaceDto.value(0)));
+      expect(dto.left, equals(const SpaceDto.value(0)));
+      expect(dto.right, equals(const SpaceDto.value(0)));
     });
 
     test('resolve returns EdgeInsets with token values', () {
@@ -131,10 +131,10 @@ void main() {
           EdgeInsets.only(top: 10, bottom: 20, left: 30, right: 40);
       final dto = edgeInsets.toDto();
       expect(dto, isA<EdgeInsetsDto>());
-      expect(dto.top, equals(const SpaceDto(10)));
-      expect(dto.bottom, equals(const SpaceDto(20)));
-      expect((dto as EdgeInsetsDto).left, equals(const SpaceDto(30)));
-      expect((dto).right, equals(const SpaceDto(40)));
+      expect(dto.top, equals(const SpaceDto.value(10)));
+      expect(dto.bottom, equals(const SpaceDto.value(20)));
+      expect((dto as EdgeInsetsDto).left, equals(const SpaceDto.value(30)));
+      expect((dto).right, equals(const SpaceDto.value(40)));
     });
 
     test('toDto converts EdgeInsetsDirectional to EdgeInsetsDirectionalDto',
@@ -143,11 +143,11 @@ void main() {
           EdgeInsetsDirectional.only(top: 10, bottom: 20, start: 30, end: 40);
       final dto = edgeInsetsDirectional.toDto();
       expect(dto, isA<EdgeInsetsDirectionalDto>());
-      expect(dto.top, equals(const SpaceDto(10)));
-      expect(dto.bottom, equals(const SpaceDto(20)));
-      expect(
-          (dto as EdgeInsetsDirectionalDto).start, equals(const SpaceDto(30)));
-      expect((dto).end, equals(const SpaceDto(40)));
+      expect(dto.top, equals(const SpaceDto.value(10)));
+      expect(dto.bottom, equals(const SpaceDto.value(20)));
+      expect((dto as EdgeInsetsDirectionalDto).start,
+          equals(const SpaceDto.value(30)));
+      expect((dto).end, equals(const SpaceDto.value(40)));
     });
   });
 }

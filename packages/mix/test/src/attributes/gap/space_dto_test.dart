@@ -7,7 +7,7 @@ import '../../../helpers/testing_utils.dart';
 void main() {
   group('SpaceDto', () {
     test('from value constructor works correctly', () {
-      const dto = SpaceDto(10.0);
+      const dto = SpaceDto.value(10.0);
       final result = dto.resolve(EmptyMixData);
       expect(result, 10.0);
     });
@@ -28,7 +28,7 @@ void main() {
       final buildContext = tester.element(find.byType(Container));
       final mockMixData = MixContext.create(buildContext, Style());
 
-      final spaceDto = SpaceDto.token(testToken);
+      const spaceDto = SpaceDto.token(testToken);
       final resolvedValue = spaceDto.resolve(mockMixData);
 
       expect(resolvedValue, isA<double>());

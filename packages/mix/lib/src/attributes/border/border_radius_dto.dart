@@ -5,8 +5,8 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
-import '../../internal/diagnostic_properties_builder_ext.dart';
 import '../../internal/mix_error.dart';
+import '../scalars/radius_dto.dart';
 
 part 'border_radius_dto.g.dart';
 
@@ -25,50 +25,20 @@ sealed class BorderRadiusGeometryDto<T extends BorderRadiusGeometry>
     extends Mixable<T> with Diagnosticable {
   const BorderRadiusGeometryDto();
 
-  Radius? get topLeft;
-  Radius? get topRight;
-  Radius? get bottomLeft;
-  Radius? get bottomRight;
-  Radius? get topStart;
-  Radius? get topEnd;
-  Radius? get bottomStart;
-  Radius? get bottomEnd;
-  @visibleForTesting
-  Radius getRadiusValue(MixContext mix, Radius? radius) {
-    if (radius == null) return Radius.zero;
-
-    return radius;
-  }
-
   @override
   BorderRadiusGeometryDto<T> merge(covariant BorderRadiusGeometryDto<T>? other);
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-
-    properties.addUsingDefault('topLeft', topLeft);
-    properties.addUsingDefault('topRight', topRight);
-    properties.addUsingDefault('bottomLeft', bottomLeft);
-    properties.addUsingDefault('bottomRight', bottomRight);
-    properties.addUsingDefault('topStart', topStart);
-    properties.addUsingDefault('topEnd', topEnd);
-    properties.addUsingDefault('bottomStart', bottomStart);
-    properties.addUsingDefault('bottomEnd', bottomEnd);
-  }
 }
 
 @MixableType(components: GeneratedPropertyComponents.skipUtility)
 final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius>
     with _$BorderRadiusDto {
-  @override
-  final Radius? topLeft;
-  @override
-  final Radius? topRight;
-  @override
-  final Radius? bottomLeft;
-  @override
-  final Radius? bottomRight;
+  final RadiusDto? topLeft;
+
+  final RadiusDto? topRight;
+
+  final RadiusDto? bottomLeft;
+
+  final RadiusDto? bottomRight;
 
   const BorderRadiusDto({
     this.topLeft,
@@ -80,35 +50,25 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius>
   @override
   BorderRadius resolve(MixContext mix) {
     return BorderRadius.only(
-      topLeft: getRadiusValue(mix, topLeft),
-      topRight: getRadiusValue(mix, topRight),
-      bottomLeft: getRadiusValue(mix, bottomLeft),
-      bottomRight: getRadiusValue(mix, bottomRight),
+      topLeft: topLeft?.resolve(mix) ?? Radius.zero,
+      topRight: topRight?.resolve(mix) ?? Radius.zero,
+      bottomLeft: bottomLeft?.resolve(mix) ?? Radius.zero,
+      bottomRight: bottomRight?.resolve(mix) ?? Radius.zero,
     );
   }
-
-  @override
-  Radius? get topStart => null;
-  @override
-  Radius? get topEnd => null;
-  @override
-  Radius? get bottomStart => null;
-  @override
-  Radius? get bottomEnd => null;
 }
 
 @MixableType(components: GeneratedPropertyComponents.skipUtility)
 final class BorderRadiusDirectionalDto
     extends BorderRadiusGeometryDto<BorderRadiusDirectional>
     with _$BorderRadiusDirectionalDto {
-  @override
-  final Radius? topStart;
-  @override
-  final Radius? topEnd;
-  @override
-  final Radius? bottomStart;
-  @override
-  final Radius? bottomEnd;
+  final RadiusDto? topStart;
+
+  final RadiusDto? topEnd;
+
+  final RadiusDto? bottomStart;
+
+  final RadiusDto? bottomEnd;
 
   const BorderRadiusDirectionalDto({
     this.topStart,
@@ -120,21 +80,12 @@ final class BorderRadiusDirectionalDto
   @override
   BorderRadiusDirectional resolve(MixContext mix) {
     return BorderRadiusDirectional.only(
-      topStart: getRadiusValue(mix, topStart),
-      topEnd: getRadiusValue(mix, topEnd),
-      bottomStart: getRadiusValue(mix, bottomStart),
-      bottomEnd: getRadiusValue(mix, bottomEnd),
+      topStart: topStart?.resolve(mix) ?? Radius.zero,
+      topEnd: topEnd?.resolve(mix) ?? Radius.zero,
+      bottomStart: bottomStart?.resolve(mix) ?? Radius.zero,
+      bottomEnd: bottomEnd?.resolve(mix) ?? Radius.zero,
     );
   }
-
-  @override
-  Radius? get topLeft => null;
-  @override
-  Radius? get topRight => null;
-  @override
-  Radius? get bottomLeft => null;
-  @override
-  Radius? get bottomRight => null;
 }
 
 extension BorderRadiusGeometryMixExt on BorderRadiusGeometry {
@@ -142,24 +93,50 @@ extension BorderRadiusGeometryMixExt on BorderRadiusGeometry {
     final self = this;
     if (self is BorderRadius) {
       return BorderRadiusDto(
-        topLeft: self.topLeft,
-        topRight: self.topRight,
-        bottomLeft: self.bottomLeft,
-        bottomRight: self.bottomRight,
+        topLeft: self.topLeft.toDto(),
+        topRight: self.topRight.toDto(),
+        bottomLeft: self.bottomLeft.toDto(),
+        bottomRight: self.bottomRight.toDto(),
       );
     }
     if (self is BorderRadiusDirectional) {
       return BorderRadiusDirectionalDto(
-        topStart: self.topStart,
-        topEnd: self.topEnd,
-        bottomStart: self.bottomStart,
-        bottomEnd: self.bottomEnd,
+        topStart: self.topStart.toDto(),
+        topEnd: self.topEnd.toDto(),
+        bottomStart: self.bottomStart.toDto(),
+        bottomEnd: self.bottomEnd.toDto(),
       );
     }
 
     throw MixError.unsupportedTypeInDto(
       BorderRadiusGeometry,
       ['BorderRadius', 'BorderRadiusDirectional'],
+    );
+  }
+}
+
+/// Extension methods to convert [BorderRadius] to [BorderRadiusDto].
+extension BorderRadiusMixExt on BorderRadius {
+  /// Converts this [BorderRadius] to a [BorderRadiusDto].
+  BorderRadiusDto toDto() {
+    return BorderRadiusDto(
+      topLeft: topLeft.toDto(),
+      topRight: topRight.toDto(),
+      bottomLeft: bottomLeft.toDto(),
+      bottomRight: bottomRight.toDto(),
+    );
+  }
+}
+
+/// Extension methods to convert [BorderRadiusDirectional] to [BorderRadiusDirectionalDto].
+extension BorderRadiusDirectionalMixExt on BorderRadiusDirectional {
+  /// Converts this [BorderRadiusDirectional] to a [BorderRadiusDirectionalDto].
+  BorderRadiusDirectionalDto toDto() {
+    return BorderRadiusDirectionalDto(
+      topStart: topStart.toDto(),
+      topEnd: topEnd.toDto(),
+      bottomStart: bottomStart.toDto(),
+      bottomEnd: bottomEnd.toDto(),
     );
   }
 }

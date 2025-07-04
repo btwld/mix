@@ -90,9 +90,9 @@ class SpaceDto extends Mixable<double> {
   final double? value;
   final Token<double>? token;
   
-  const SpaceDto({this.value, this.token});
+  const SpaceDto.value({this.value, this.token});
   
-  factory SpaceDto.token(Token<double> token) => SpaceDto(token: token);
+  factory SpaceDto.token(Token<double> token) => SpaceDto.value(token: token);
   
   @override
   double resolve(MixData mix) {
