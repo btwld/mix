@@ -11,7 +11,7 @@ void main() {
     test('Constructor assigns correct properties', () {
       const shadowDto = ShadowDto(
         blurRadius: 10.0,
-        color: ColorDto(Colors.blue),
+        color: ColorDto.value(Colors.blue),
         offset: Offset(10, 10),
       );
 
@@ -51,7 +51,7 @@ void main() {
     test('resolve() returns correct instance', () {
       const shadowDto = ShadowDto(
         blurRadius: 10.0,
-        color: ColorDto(Colors.blue),
+        color: ColorDto.value(Colors.blue),
         offset: Offset(10, 10),
       );
 
@@ -65,14 +65,14 @@ void main() {
     test('merge() returns correct instance', () {
       const shadowDto = ShadowDto(
         blurRadius: 10.0,
-        color: ColorDto(Colors.blue),
+        color: ColorDto.value(Colors.blue),
         offset: Offset(10, 10),
       );
 
       final mergedShadowDto = shadowDto.merge(
         const ShadowDto(
           blurRadius: 20.0,
-          color: ColorDto(Colors.red),
+          color: ColorDto.value(Colors.red),
           offset: Offset(20, 20),
         ),
       );
@@ -86,7 +86,7 @@ void main() {
   group('BoxShadowDto', () {
     test('Constructor assigns correct properties', () {
       const boxShadowDto = BoxShadowDto(
-        color: ColorDto(Colors.blue),
+        color: ColorDto.value(Colors.blue),
         offset: Offset(10, 10),
         blurRadius: 10.0,
         spreadRadius: 5.0,
@@ -132,7 +132,7 @@ void main() {
 
     test('resolve() returns correct instance', () {
       const boxShadowDto = BoxShadowDto(
-        color: ColorDto(Colors.blue),
+        color: ColorDto.value(Colors.blue),
         offset: Offset(10, 10),
         blurRadius: 10.0,
         spreadRadius: 5.0,
@@ -148,7 +148,7 @@ void main() {
 
     test('merge() returns correct instance', () {
       const boxShadowDto = BoxShadowDto(
-        color: ColorDto(Colors.blue),
+        color: ColorDto.value(Colors.blue),
         offset: Offset(10, 10),
         blurRadius: 10.0,
         spreadRadius: 5.0,
@@ -156,7 +156,7 @@ void main() {
 
       final mergedBoxShadowDto = boxShadowDto.merge(
         const BoxShadowDto(
-          color: ColorDto(Colors.red),
+          color: ColorDto.value(Colors.red),
           offset: Offset(20, 20),
           blurRadius: 20.0,
           spreadRadius: 10.0,

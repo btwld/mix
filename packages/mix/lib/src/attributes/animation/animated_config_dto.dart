@@ -3,32 +3,37 @@ import 'package:flutter/animation.dart';
 import '../../core/element.dart';
 import '../../core/factory/mix_context.dart';
 import '../../internal/constants.dart';
-import 'animated_data.dart';
+import 'animation_config.dart';
 
-class AnimatedDataDto extends Mixable<AnimatedData> {
+@Deprecated(
+  'Use AnimationConfigDto instead. This will be removed in version 2.0',
+)
+typedef AnimatedDataDto = AnimationConfigDto;
+
+class AnimationConfigDto extends Mixable<AnimationConfig> {
   final Duration? duration;
   final Curve? curve;
   final VoidCallback? onEnd;
 
-  const AnimatedDataDto({
+  const AnimationConfigDto({
     required this.duration,
     required this.curve,
     this.onEnd,
   });
 
-  const AnimatedDataDto.withDefaults()
+  const AnimationConfigDto.withDefaults()
       : duration = kDefaultAnimationDuration,
         curve = Curves.linear,
         onEnd = null;
 
   @override
-  AnimatedData resolve(MixContext mix) {
-    return AnimatedData(duration: duration, curve: curve, onEnd: onEnd);
+  AnimationConfig resolve(MixContext mix) {
+    return AnimationConfig(duration: duration, curve: curve, onEnd: onEnd);
   }
 
   @override
-  AnimatedDataDto merge(AnimatedDataDto? other) {
-    return AnimatedDataDto(
+  AnimationConfigDto merge(AnimationConfigDto? other) {
+    return AnimationConfigDto(
       duration: other?.duration ?? duration,
       curve: other?.curve ?? curve,
     );

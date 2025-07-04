@@ -654,7 +654,7 @@ void main() {
       const color = Colors.blue;
       final colorDto = color.toDto();
 
-      expect(colorDto, equals(const ColorDto(color)));
+      expect(colorDto, equals(const ColorDto.value(Color)));
     });
   });
 }

@@ -25,9 +25,9 @@ void main() {
       expect(mixData, isInstanceOf<MixContext>());
 
       // Add any other additional assertions that are specific to your use case.
-      // If you become able to access properties _attributes and _resolver you would assert:
+      // If you become able to access properties _attributes and _scope you would assert:
       expect(mixData.attributes, isInstanceOf<AttributeMap>());
-      expect(mixData.tokens, isInstanceOf<MixTokenResolver>());
+      expect(mixData.scope, isInstanceOf<MixScopeData>());
       expect(mixData.attributes.length, 4);
       expect(
         mixData.attributeOf<MockSpecIntAttribute>(),

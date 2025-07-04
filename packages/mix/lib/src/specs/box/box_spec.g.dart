@@ -47,7 +47,7 @@ mixin _$BoxSpec on Spec<BoxSpec> {
     double? width,
     double? height,
     WidgetModifiersConfig? modifiers,
-    AnimatedData? animated,
+    AnimationConfig? animated,
   }) {
     return BoxSpec(
       alignment: alignment ?? _$this.alignment,
@@ -226,7 +226,7 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
       width: width,
       height: height,
       modifiers: modifiers?.resolve(mix),
-      animated: animated?.resolve(mix) ?? mix.animation,
+      animated: animated?.resolve(mix),
     );
   }
 
@@ -443,7 +443,7 @@ class BoxSpecUtility<T extends SpecAttribute>
     double? width,
     double? height,
     WidgetModifiersConfigDto? modifiers,
-    AnimatedDataDto? animated,
+    AnimationConfigDto? animated,
   }) {
     return builder(BoxSpecAttribute(
       alignment: alignment,

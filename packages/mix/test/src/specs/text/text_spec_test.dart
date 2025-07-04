@@ -16,7 +16,7 @@ void main() {
             textAlign: TextAlign.center,
             textScaler: const TextScaler.linear(1.0),
             maxLines: 2,
-            style: TextStyleDto(color: const ColorDto(Colors.red)),
+            style: TextStyleDto(color: const ColorDto.value(Colors.red)),
             textWidthBasis: TextWidthBasis.longestLine,
             textHeightBehavior: const TextHeightBehaviorDto(
               applyHeightToFirstAscent: true,
@@ -192,7 +192,7 @@ void main() {
             textAlign: TextAlign.center,
             textScaler: const TextScaler.linear(1.0),
             maxLines: 2,
-            style: TextStyleDto(color: const ColorDto(Colors.red)),
+            style: TextStyleDto(color: const ColorDto.value(Colors.red)),
             textWidthBasis: TextWidthBasis.longestLine,
             textHeightBehavior: const TextHeightBehaviorDto(
               applyHeightToFirstAscent: true,
@@ -340,8 +340,8 @@ void main() {
 
     test('Immutable behavior when having multiple texts', () {
       final textUtil = TextSpecUtility.self;
-      final text1 = textUtil.chain..maxLines(3);
-      final text2 = textUtil.chain..maxLines(5);
+      final text1 = textUtil..maxLines(3);
+      final text2 = textUtil..maxLines(5);
 
       final attr1 = text1.attributeValue!;
       final attr2 = text2.attributeValue!;

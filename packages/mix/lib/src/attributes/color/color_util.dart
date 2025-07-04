@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/element.dart';
 import '../../core/utility.dart';
-import '../../theme/tokens/color_token.dart';
+import '../../theme/tokens/mix_token.dart';
 import 'color_directives.dart';
 import 'color_directives_impl.dart';
 import 'color_dto.dart';
@@ -13,7 +13,9 @@ abstract base class BaseColorUtility<T extends StyleElement>
     extends MixUtility<T, ColorDto> {
   const BaseColorUtility(super.builder);
 
-  T _buildColor(Color color) => builder(ColorDto(color));
+  T _buildColor(Color color) => builder(ColorDto.value(color));
+
+  T token(MixableToken<Color> token) => builder(ColorDto.token(token));
 }
 
 @immutable
@@ -25,7 +27,7 @@ base class FoundationColorUtility<T extends StyleElement, C extends Color>
   T call() => _buildColor(color);
   @override
   T directive(ColorDirective directive) =>
-      builder(ColorDto.raw(value: color, directives: [directive]));
+      builder(ColorDto.value(color, directives: [directive]));
 }
 
 /// A utility class for building [StyleElement] instances from a list of [ColorDto] objects.
@@ -50,7 +52,7 @@ final class ColorUtility<T extends StyleElement> extends BaseColorUtility<T>
     with ColorDirectiveMixin<T>, MaterialColorsMixin<T>, BasicColorsMixin<T> {
   ColorUtility(super.builder);
 
-  T ref(ColorToken ref) => _buildColor(ref());
+  T ref(MixableToken<Color> ref) => builder(ColorDto.token(ref));
 
   T call(Color color) => _buildColor(color);
 }
@@ -94,8 +96,9 @@ base mixin BasicColorsMixin<T extends StyleElement> on BaseColorUtility<T> {
 }
 
 base mixin ColorDirectiveMixin<T extends StyleElement> on BaseColorUtility<T> {
+  // TODO: Added transparetn as workaround but later should merge hte oclor
   T directive(ColorDirective directive) =>
-      builder(ColorDto.directive(directive));
+      builder(ColorDto.value(Colors.transparent, directives: [directive]));
   T withOpacity(double opacity) => directive(OpacityColorDirective(opacity));
   T withAlpha(int alpha) => directive(AlphaColorDirective(alpha));
   T darken(int percentage) => directive(DarkenColorDirective(percentage));

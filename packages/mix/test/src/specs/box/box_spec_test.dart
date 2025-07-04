@@ -18,7 +18,8 @@ void main() {
             margin: EdgeInsetsGeometryDto.only(top: 10.0, bottom: 12.0),
             constraints:
                 const BoxConstraintsDto(maxWidth: 300.0, minHeight: 200.0),
-            decoration: const BoxDecorationDto(color: ColorDto(Colors.blue)),
+            decoration:
+                const BoxDecorationDto(color: ColorDto.value(Colors.blue)),
             transform: Matrix4.translationValues(10.0, 10.0, 0.0),
             clipBehavior: Clip.antiAlias,
             modifiers: const WidgetModifiersConfigDto([
@@ -298,9 +299,9 @@ void main() {
           right: 10,
         ),
         constraints: const BoxConstraintsDto(maxHeight: 100),
-        decoration: const BoxDecorationDto(color: ColorDto(Colors.blue)),
+        decoration: const BoxDecorationDto(color: ColorDto.value(Colors.blue)),
         foregroundDecoration:
-            const BoxDecorationDto(color: ColorDto(Colors.blue)),
+            const BoxDecorationDto(color: ColorDto.value(Colors.blue)),
         transform: Matrix4.identity(),
         clipBehavior: Clip.antiAlias,
         width: 100,
@@ -323,9 +324,9 @@ void main() {
             right: 20,
           ),
           constraints: const BoxConstraintsDto(maxHeight: 200),
-          decoration: const BoxDecorationDto(color: ColorDto(Colors.red)),
+          decoration: const BoxDecorationDto(color: ColorDto.value(Colors.red)),
           foregroundDecoration:
-              const BoxDecorationDto(color: ColorDto(Colors.amber)),
+              const BoxDecorationDto(color: ColorDto.value(Colors.amber)),
           transform: Matrix4.identity(),
           clipBehavior: Clip.antiAliasWithSaveLayer,
           width: 200,
@@ -345,11 +346,11 @@ void main() {
       );
       expect(
         mergedBoxSpecAttribute.decoration,
-        const BoxDecorationDto(color: ColorDto(Colors.red)),
+        const BoxDecorationDto(color: ColorDto.value(Colors.red)),
       );
       expect(
         mergedBoxSpecAttribute.foregroundDecoration,
-        const BoxDecorationDto(color: ColorDto(Colors.amber)),
+        const BoxDecorationDto(color: ColorDto.value(Colors.amber)),
       );
       expect(mergedBoxSpecAttribute.height, 200);
       expect(
@@ -445,7 +446,7 @@ void main() {
       expect(boxAttribute.padding, const EdgeInsets.all(10.0).toDto());
       expect(
         (boxAttribute.decoration as BoxDecorationDto).color,
-        const ColorDto(
+        const ColorDto.value(
           Colors.red,
         ),
       );

@@ -166,8 +166,8 @@ void main() {
 
     test('Immutable behavior when having multiple icons', () {
       final iconUtil = IconSpecUtility.self;
-      final icon1 = iconUtil.chain..size(24);
-      final icon2 = iconUtil.chain..size(48);
+      final icon1 = iconUtil..size(24);
+      final icon2 = iconUtil..size(48);
 
       final attr1 = icon1.attributeValue!;
       final attr2 = icon2.attributeValue!;

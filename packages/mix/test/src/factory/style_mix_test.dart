@@ -564,7 +564,7 @@ void main() {
 
   group('Style.merge', () {
     test('Style + AnimatedStyle', () {
-      const animatedData = AnimatedData(
+      const animatedData = AnimationConfig(
         curve: Curves.linear,
         duration: Durations.medium1,
       );
@@ -587,7 +587,7 @@ void main() {
     });
 
     test('AnimatedStyle + Style', () {
-      const animatedData = AnimatedData(
+      const animatedData = AnimationConfig(
         curve: Curves.linear,
         duration: Durations.medium1,
       );

@@ -118,7 +118,8 @@ final class RadiusUtility<T extends StyleElement> extends MixUtility<T, Radius>
 
   T call(double radius) => builder(Radius.circular(radius));
 
-  T ref(RadiusToken ref) => builder(ref());
+  // TODO: Update to use MixableToken<Radius> when RadiusDto integration is complete
+  T ref(Radius ref) => builder(ref);
 }
 
 @MixableUtility()
@@ -197,3 +198,5 @@ final class StrokeAlignUtility<T extends StyleElement>
   T inside() => builder(-1);
   T outside() => builder(1);
 }
+
+// Extension removed - token() method is now built into RadiusUtility

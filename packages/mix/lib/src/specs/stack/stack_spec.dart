@@ -2,9 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
-import '../../attributes/animated/animated_data.dart';
-import '../../attributes/animated/animated_data_dto.dart';
-import '../../attributes/animated/animated_util.dart';
+import '../../attributes/animation/animated_config_dto.dart';
+import '../../attributes/animation/animated_util.dart';
+import '../../attributes/animation/animation_config.dart';
 import '../../attributes/enum/enum_util.dart';
 import '../../attributes/modifiers/widget_modifiers_config.dart';
 import '../../attributes/modifiers/widget_modifiers_config_dto.dart';

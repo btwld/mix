@@ -5,37 +5,25 @@ import 'package:mix/mix.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  const primaryColor = ColorToken('primary');
+  const primaryColor = MixableToken<Color>('primary');
   const tokenUtil = MixTokensTest();
-  final theme = MixThemeData(
-    breakpoints: {
-      tokenUtil.breakpoint.small: const Breakpoint(minWidth: 0, maxWidth: 599),
-    },
-    colors: {
+  final theme = MixScopeData(
+    tokens: {
       primaryColor: Colors.blue,
-      $material.colorScheme.error: Colors.redAccent,
-    },
-    spaces: {tokenUtil.space.small: 30},
-    textStyles: {
-      $material.textTheme.bodyLarge: const TextStyle(
-        fontSize: 200,
-        fontWeight: FontWeight.w300,
-      ),
-    },
-    radii: {
+      tokenUtil.space.small: 30.0,
       tokenUtil.radius.small: const Radius.circular(200),
       tokenUtil.radius.large: const Radius.circular(2000),
     },
   );
 
-  group('MixTheme', () {
-    testWidgets('MixTheme.of', (tester) async {
-      await tester.pumpWithMixTheme(Container(), theme: theme);
+  group('MixScope', () {
+    testWidgets('MixScope.of', (tester) async {
+      await tester.pumpWithMixScope(Container(), theme: theme);
 
       final context = tester.element(find.byType(Container));
 
-      expect(MixTheme.of(context), theme);
-      expect(MixTheme.maybeOf(context), theme);
+      expect(MixScope.of(context), theme);
+      expect(MixScope.maybeOf(context), theme);
     });
 
     testWidgets(
@@ -43,7 +31,7 @@ void main() {
       (tester) async {
         const key = Key('box');
 
-        await tester.pumpWithMixTheme(
+        await tester.pumpWithMixScope(
           Box(
             style: Style(
               $box.color.ref(primaryColor),
@@ -67,32 +55,32 @@ void main() {
         expect(
           container.decoration,
           BoxDecoration(
-            color: theme.colors[primaryColor],
+            color: theme.tokens![primaryColor]!(context),
             borderRadius:
-                BorderRadius.all(theme.radii[tokenUtil.radius.small]!),
+                BorderRadius.all(theme.tokens![tokenUtil.radius.small]!(context) as Radius),
           ),
         );
 
         expect(container.padding!.horizontal / 2,
-            theme.spaces[tokenUtil.space.small]);
+            theme.tokens![tokenUtil.space.small]!(context));
 
         final textWidget = tester.widget<Text>(
           find.descendant(of: find.byKey(key), matching: find.byType(Text)),
         );
 
         expect(
-            textWidget.style, theme.textStyles[$material.textTheme.bodyLarge]);
+            textWidget.style, theme.tokens![$material.textTheme.bodyLarge]!(context));
       },
     );
 
     // maybeOf
-    testWidgets('MixTheme.maybeOf', (tester) async {
+    testWidgets('MixScope.maybeOf', (tester) async {
       await tester.pumpMaterialApp(Container());
 
       final context = tester.element(find.byType(Container));
 
-      expect(MixTheme.maybeOf(context), null);
-      expect(() => MixTheme.of(context), throwsAssertionError);
+      expect(MixScope.maybeOf(context), null);
+      expect(() => MixScope.of(context), throwsAssertionError);
     });
   });
 }

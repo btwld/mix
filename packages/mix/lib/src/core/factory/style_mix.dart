@@ -2,7 +2,7 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../../attributes/animated/animated_data.dart';
+import '../../attributes/animation/animation_config.dart';
 import '../../internal/helper_util.dart';
 import '../../specs/spec_util.dart';
 import '../../variants/variant_attribute.dart';
@@ -217,7 +217,7 @@ class Style extends BaseStyle<SpecAttribute> {
     return AnimatedStyle._(
       styles: styles,
       variants: variants,
-      animated: AnimatedData(duration: duration, curve: curve, onEnd: onEnd),
+      animated: AnimationConfig(duration: duration, curve: curve, onEnd: onEnd),
     );
   }
 
@@ -388,7 +388,7 @@ class Style extends BaseStyle<SpecAttribute> {
 }
 
 class AnimatedStyle extends Style {
-  final AnimatedData animated;
+  final AnimationConfig animated;
 
   const AnimatedStyle._({
     required super.styles,
@@ -405,7 +405,7 @@ class AnimatedStyle extends Style {
     return AnimatedStyle._(
       styles: style.styles,
       variants: style.variants,
-      animated: AnimatedData(duration: duration, curve: curve, onEnd: onEnd),
+      animated: AnimationConfig(duration: duration, curve: curve, onEnd: onEnd),
     );
   }
 
@@ -416,7 +416,7 @@ class AnimatedStyle extends Style {
   AnimatedStyle copyWith({
     AttributeMap<SpecAttribute>? styles,
     AttributeMap<VariantAttribute>? variants,
-    AnimatedData? animated,
+    AnimationConfig? animated,
   }) {
     return AnimatedStyle._(
       styles: styles ?? this.styles,

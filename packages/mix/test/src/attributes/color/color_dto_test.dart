@@ -14,34 +14,30 @@ void main() {
       test(
         'ColorDto.resolve should return the same color as provided for $color',
         () {
-          final colorDto = ColorDto(color);
+          const colorDto = ColorDto.value(Color);
           final resolvedValue = colorDto.resolve(EmptyMixData);
           expect(resolvedValue, color);
         },
       );
     }
 
-    // Testing ColorDto.resolve with ColorRef
+    // Testing ColorDto.resolve with unified token system
     testWidgets(
-      'ColorDto.resolve should resolve ColorRef correctly',
+      'ColorDto.resolve should resolve tokens using unified resolver',
       (tester) async {
-        const testColorToken = ColorToken('test');
+        const testToken = MixableToken<Color>('test-color');
 
-        await tester.pumpWithMixTheme(
+        await tester.pumpWithMixScope(
           Container(),
-          theme: MixThemeData(colors: {testColorToken: Colors.red}),
+          theme: MixScopeData.static(tokens: {testToken: Colors.red}),
         );
 
         final buildContext = tester.element(find.byType(Container));
-
         final mockMixData = MixContext.create(buildContext, Style());
 
-        final colorRef = testColorToken();
-        final colorDto = ColorDto(colorRef);
+        const colorDto = ColorDto.token(testToken);
         final resolvedValue = colorDto.resolve(mockMixData);
 
-        expect(colorRef, isA<ColorRef>());
-        expect(colorRef.token, testColorToken);
         expect(resolvedValue, isA<Color>());
         expect(resolvedValue, Colors.red);
       },
@@ -56,15 +52,15 @@ void main() {
 
     // Testing merge method
     test('ColorDto.merge should merge correctly with non-null other', () {
-      const colorDto1 = ColorDto(Colors.red);
-      const colorDto2 = ColorDto(Colors.green);
+      const colorDto1 = ColorDto.value(Colors.red);
+      const colorDto2 = ColorDto.value(Colors.green);
       final merged = colorDto1.merge(colorDto2);
       expect(merged, isA<ColorDto>());
       expect(merged.value, colorDto2.value);
     });
 
     test('ColorDto.merge should return the same instance for null other', () {
-      const colorDto = ColorDto(Colors.red);
+      const colorDto = ColorDto.value(Colors.red);
       final merged = colorDto.merge(null);
       expect(merged, same(colorDto));
     });

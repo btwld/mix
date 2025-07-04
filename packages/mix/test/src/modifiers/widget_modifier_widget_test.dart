@@ -357,9 +357,9 @@ void main() {
       await tester.pumpAndSettle(const Duration(milliseconds: 200));
     });
 
-    testWidgets('override default orderOfModifiers using MixTheme',
+    testWidgets('override default orderOfModifiers using MixScope',
         (tester) async {
-      await tester.pumpWithMixTheme(
+      await tester.pumpWithMixScope(
         Box(
           style: Style(
             $with.scale(2),
@@ -367,7 +367,7 @@ void main() {
             $with.sizedBox.square(100),
           ).animate(),
         ),
-        theme: MixThemeData(
+        theme: MixScopeData.static(
           defaultOrderOfModifiers: const [
             SizedBoxModifierSpec,
             ClipRectModifierSpec,

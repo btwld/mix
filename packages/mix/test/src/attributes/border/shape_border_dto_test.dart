@@ -14,14 +14,14 @@ void main() {
           bottomLeft: Radius.circular(5),
           bottomRight: Radius.circular(10),
         ),
-        side: BorderSideDto(color: ColorDto(Colors.red), width: 1.0),
+        side: BorderSideDto(color: ColorDto.value(Colors.red), width: 1.0),
       );
       final merged = original.merge(
         const RoundedRectangleBorderDto(
           borderRadius: BorderRadiusDto(
             topLeft: Radius.circular(25),
           ),
-          side: BorderSideDto(color: ColorDto(Colors.blue), width: 2.0),
+          side: BorderSideDto(color: ColorDto.value(Colors.blue), width: 2.0),
         ),
       );
 
@@ -30,7 +30,7 @@ void main() {
       expect(merged.borderRadius!.bottomLeft, const Radius.circular(5));
       expect(merged.borderRadius!.bottomRight, const Radius.circular(10));
 
-      expect(merged.side!.color, const ColorDto(Colors.blue));
+      expect(merged.side!.color, const ColorDto.value(Colors.blue));
       expect(merged.side!.width, 2.0);
     });
 
@@ -44,7 +44,7 @@ void main() {
             bottomLeft: Radius.circular(5),
             bottomRight: Radius.circular(10),
           ),
-          side: BorderSideDto(color: ColorDto(Colors.red), width: 1.0),
+          side: BorderSideDto(color: ColorDto.value(Colors.red), width: 1.0),
         );
 
         final roundedRectangleBorder = dto.resolve(EmptyMixData);
@@ -67,24 +67,24 @@ void main() {
   group('CircleBorderDto', () {
     test('merge should combine two CircleBorderDtos correctly', () {
       const original = CircleBorderDto(
-        side: BorderSideDto(color: ColorDto(Colors.red), width: 1.0),
+        side: BorderSideDto(color: ColorDto.value(Colors.red), width: 1.0),
         eccentricity: 0.5,
       );
       final merged = original.merge(
         const CircleBorderDto(
-          side: BorderSideDto(color: ColorDto(Colors.blue), width: 2.0),
+          side: BorderSideDto(color: ColorDto.value(Colors.blue), width: 2.0),
           eccentricity: 0.75,
         ),
       );
 
       expect(merged.eccentricity, 0.75);
-      expect(merged.side!.color, const ColorDto(Colors.blue));
+      expect(merged.side!.color, const ColorDto.value(Colors.blue));
       expect(merged.side!.width, 2.0);
     });
 
     test('resolve should create a CircleBorder with the correct values', () {
       const dto = CircleBorderDto(
-        side: BorderSideDto(color: ColorDto(Colors.red), width: 1.0),
+        side: BorderSideDto(color: ColorDto.value(Colors.red), width: 1.0),
         eccentricity: 0.5,
       );
 
@@ -106,14 +106,14 @@ void main() {
           bottomLeft: Radius.circular(5),
           bottomRight: Radius.circular(10),
         ),
-        side: BorderSideDto(color: ColorDto(Colors.red), width: 1.0),
+        side: BorderSideDto(color: ColorDto.value(Colors.red), width: 1.0),
       );
       final merged = original.merge(
         const BeveledRectangleBorderDto(
           borderRadius: BorderRadiusDto(
             topLeft: Radius.circular(25),
           ),
-          side: BorderSideDto(color: ColorDto(Colors.blue), width: 2.0),
+          side: BorderSideDto(color: ColorDto.value(Colors.blue), width: 2.0),
         ),
       );
 
@@ -122,7 +122,7 @@ void main() {
       expect(merged.borderRadius!.bottomLeft, const Radius.circular(5));
       expect(merged.borderRadius!.bottomRight, const Radius.circular(10));
 
-      expect(merged.side!.color, const ColorDto(Colors.blue));
+      expect(merged.side!.color, const ColorDto.value(Colors.blue));
       expect(merged.side!.width, 2.0);
     });
 
@@ -136,7 +136,7 @@ void main() {
             bottomLeft: Radius.circular(5),
             bottomRight: Radius.circular(10),
           ),
-          side: BorderSideDto(color: ColorDto(Colors.red), width: 1.0),
+          side: BorderSideDto(color: ColorDto.value(Colors.red), width: 1.0),
         );
 
         final beveledRectangleBorder = dto.resolve(EmptyMixData);
@@ -159,21 +159,21 @@ void main() {
   group('StadiumBorderDto', () {
     test('merge should combine two StadiumBorderDtos correctly', () {
       const original = StadiumBorderDto(
-        side: BorderSideDto(color: ColorDto(Colors.red), width: 1.0),
+        side: BorderSideDto(color: ColorDto.value(Colors.red), width: 1.0),
       );
       final merged = original.merge(
         const StadiumBorderDto(
-          side: BorderSideDto(color: ColorDto(Colors.blue), width: 2.0),
+          side: BorderSideDto(color: ColorDto.value(Colors.blue), width: 2.0),
         ),
       );
 
-      expect(merged.side!.color, const ColorDto(Colors.blue));
+      expect(merged.side!.color, const ColorDto.value(Colors.blue));
       expect(merged.side!.width, 2.0);
     });
 
     test('resolve should create a StadiumBorder with the correct values', () {
       const dto = StadiumBorderDto(
-        side: BorderSideDto(color: ColorDto(Colors.red), width: 1.0),
+        side: BorderSideDto(color: ColorDto.value(Colors.red), width: 1.0),
       );
 
       final stadiumBorder = dto.resolve(EmptyMixData);
@@ -195,14 +195,14 @@ void main() {
             bottomLeft: Radius.circular(5),
             bottomRight: Radius.circular(10),
           ),
-          side: BorderSideDto(color: ColorDto(Colors.red), width: 1.0),
+          side: BorderSideDto(color: ColorDto.value(Colors.red), width: 1.0),
         );
         final merged = original.merge(
           const ContinuousRectangleBorderDto(
             borderRadius: BorderRadiusDto(
               topLeft: Radius.circular(25),
             ),
-            side: BorderSideDto(color: ColorDto(Colors.blue), width: 2.0),
+            side: BorderSideDto(color: ColorDto.value(Colors.blue), width: 2.0),
           ),
         );
 
@@ -213,7 +213,7 @@ void main() {
         expect(borderRadius.bottomLeft, const Radius.circular(5));
         expect(borderRadius.bottomRight, const Radius.circular(10));
 
-        expect(merged.side!.color, const ColorDto(Colors.blue));
+        expect(merged.side!.color, const ColorDto.value(Colors.blue));
         expect(merged.side!.width, 2.0);
       },
     );
@@ -228,7 +228,7 @@ void main() {
             bottomLeft: Radius.circular(5),
             bottomRight: Radius.circular(10),
           ),
-          side: BorderSideDto(color: ColorDto(Colors.red), width: 1.0),
+          side: BorderSideDto(color: ColorDto.value(Colors.red), width: 1.0),
         );
 
         final continuousRectangleBorder = dto.resolve(EmptyMixData);
@@ -608,8 +608,8 @@ void main() {
           borderRadius: BorderRadiusDto(topLeft: Radius.circular(10)));
       final dto2 = RoundedRectangleBorderDto(
           side: BorderSideDto(color: Colors.red.toDto()));
-      final expectedResult = RoundedRectangleBorderDto(
-        borderRadius: const BorderRadiusDto(topLeft: Radius.circular(10)),
+      const expectedResult = RoundedRectangleBorderDto(
+        borderRadius: BorderRadiusDto(topLeft: Radius.circular(10)),
         side: BorderSideDto(color: Colors.red.toDto()),
       );
       expect(ShapeBorderDto.tryToMerge(dto1, dto2), equals(expectedResult));
@@ -633,8 +633,8 @@ void main() {
           borderRadius: BorderRadiusDto(topLeft: Radius.circular(10)));
       final dto2 = RoundedRectangleBorderDto(
           side: BorderSideDto(color: Colors.red.toDto()));
-      final expectedResult = RoundedRectangleBorderDto(
-        borderRadius: const BorderRadiusDto(topLeft: Radius.circular(10)),
+      const expectedResult = RoundedRectangleBorderDto(
+        borderRadius: BorderRadiusDto(topLeft: Radius.circular(10)),
         side: BorderSideDto(color: Colors.red.toDto()),
       );
       expect(OutlinedBorderDto.tryToMerge(dto1, dto2), equals(expectedResult));

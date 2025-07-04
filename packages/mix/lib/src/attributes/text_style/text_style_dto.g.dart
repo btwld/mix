@@ -135,8 +135,9 @@ mixin _$TextStyleDto on Mixable<TextStyle> {
   TextStyleDto merge(TextStyleDto? other) {
     if (other == null) return _$this;
 
-    return TextStyleDto._(
+    return TextStyleDto.raw(
       value: [..._$this.value, ...other.value],
+      token: other.token ?? _$this.token,
     );
   }
 
@@ -147,6 +148,7 @@ mixin _$TextStyleDto on Mixable<TextStyle> {
   @override
   List<Object?> get props => [
         _$this.value,
+        _$this.token,
       ];
 
   /// Returns this instance as a [TextStyleDto].

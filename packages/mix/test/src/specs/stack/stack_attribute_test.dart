@@ -66,7 +66,7 @@ void main() {
         fit: StackFit.expand,
         textDirection: TextDirection.ltr,
         clipBehavior: Clip.antiAlias,
-        animated: AnimatedDataDto.withDefaults(),
+        animated: AnimationConfigDto.withDefaults(),
       );
       final props = attribute.props;
 
@@ -75,7 +75,7 @@ void main() {
       expect(props[1], StackFit.expand);
       expect(props[2], TextDirection.ltr);
       expect(props[3], Clip.antiAlias);
-      expect(props[4], const AnimatedDataDto.withDefaults());
+      expect(props[4], const AnimationConfigDto.withDefaults());
     });
   });
 }

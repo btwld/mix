@@ -75,9 +75,9 @@ void main() {
       () {
         const axis = Axis.horizontal;
         const reverse = true;
-        const padding = EdgeInsetsDto.all(8.0);
+        final padding = EdgeInsetsDto.all(8.0);
         const clip = Clip.antiAlias;
-        const physics = AlwaysScrollableScrollPhysics();
+        final physics = AlwaysScrollableScrollPhysics();
 
         final attribute = ScrollViewModifierSpecUtility(MixUtility.selfBuilder)(
           scrollDirection: axis,
@@ -97,9 +97,9 @@ void main() {
 
     test('Spec utility methods sets correct values', () {
       const axis = Axis.horizontal;
-      const padding = EdgeInsetsDto.all(8.0);
+      final padding = EdgeInsetsDto.all(8.0);
       const clip = Clip.antiAlias;
-      const physics = AlwaysScrollableScrollPhysics();
+      final physics = AlwaysScrollableScrollPhysics();
 
       final utility = ScrollViewModifierSpecUtility(MixUtility.selfBuilder);
 

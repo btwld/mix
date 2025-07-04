@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/element.dart';
+import '../scalars/radius_dto.dart';
 import '../scalars/scalar_util.dart';
 import 'border_radius_dto.dart';
 
@@ -174,10 +175,10 @@ final class BorderRadiusUtility<T extends StyleElement>
   }) {
     return builder(
       BorderRadiusDto(
-        topLeft: topLeft,
-        topRight: topRight,
-        bottomLeft: bottomLeft,
-        bottomRight: bottomRight,
+        topLeft: topLeft != null ? RadiusDto.value(topLeft) : null,
+        topRight: topRight != null ? RadiusDto.value(topRight) : null,
+        bottomLeft: bottomLeft != null ? RadiusDto.value(bottomLeft) : null,
+        bottomRight: bottomRight != null ? RadiusDto.value(bottomRight) : null,
       ),
     );
   }
@@ -283,10 +284,10 @@ final class BorderRadiusDirectionalUtility<T extends StyleElement>
 
     return builder(
       BorderRadiusDirectionalDto(
-        topStart: Radius.circular(topStart),
-        topEnd: Radius.circular(topEnd),
-        bottomStart: Radius.circular(bottomStart),
-        bottomEnd: Radius.circular(bottomEnd),
+        topStart: RadiusDto.value(Radius.circular(topStart)),
+        topEnd: RadiusDto.value(Radius.circular(topEnd)),
+        bottomStart: RadiusDto.value(Radius.circular(bottomStart)),
+        bottomEnd: RadiusDto.value(Radius.circular(bottomEnd)),
       ),
     );
   }
@@ -308,10 +309,10 @@ final class BorderRadiusDirectionalUtility<T extends StyleElement>
   }) {
     return builder(
       BorderRadiusDirectionalDto(
-        topStart: topStart,
-        topEnd: topEnd,
-        bottomStart: bottomStart,
-        bottomEnd: bottomEnd,
+        topStart: topStart != null ? RadiusDto.value(topStart) : null,
+        topEnd: topEnd != null ? RadiusDto.value(topEnd) : null,
+        bottomStart: bottomStart != null ? RadiusDto.value(bottomStart) : null,
+        bottomEnd: bottomEnd != null ? RadiusDto.value(bottomEnd) : null,
       ),
     );
   }
