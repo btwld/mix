@@ -137,7 +137,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: MixScope(
-          data: MixScopeData(
+          data: MixScopeData.static(
             tokens: {
               testToken: const TextStyle(
                 fontSize: 24,

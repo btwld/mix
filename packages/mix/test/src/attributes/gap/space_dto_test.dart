@@ -18,7 +18,7 @@ void main() {
 
       await tester.pumpWithMixScope(
         Container(),
-        theme: MixScopeData(
+        theme: MixScopeData.static(
           tokens: {
             testToken: 16.0,
           },

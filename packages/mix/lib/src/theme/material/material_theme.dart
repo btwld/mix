@@ -10,7 +10,7 @@ extension on BuildContext {
   ColorScheme get color => Theme.of(this).colorScheme;
 }
 
-final materialMixScope = MixScopeData(
+final materialMixScope = MixScopeData.static(
   tokens: {
     // Color tokens
     _md.colorScheme.primary: (c) => c.color.primary,

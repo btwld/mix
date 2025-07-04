@@ -9,7 +9,7 @@ const _surface = MixableToken<Color>('surface');
 const _onSurface = MixableToken<Color>('onSurface');
 
 // Light theme
-final _lightTheme = MixScopeData(
+final _lightTheme = MixScopeData.static(
   tokens: {
     _surface: const Color(0xFF000000),
     _onSurface: const Color(0xFFFFFFFF),
@@ -17,7 +17,7 @@ final _lightTheme = MixScopeData(
 );
 
 // Dark theme
-final _darkTheme = MixScopeData(
+final _darkTheme = MixScopeData.static(
   tokens: {
     _surface: const Color(0xFFFFFFFF),
     _onSurface: const Color(0xFF000000),

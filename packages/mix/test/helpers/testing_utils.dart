@@ -40,7 +40,7 @@ MediaQuery createMediaQuery({
       platformBrightness: brightness ?? Brightness.light,
     ),
     child: MixScope(
-      data: MixScopeData(),
+      data: const MixScopeData.empty(),
       child: MaterialApp(
         home: Scaffold(
           body: Builder(
@@ -56,7 +56,7 @@ MediaQuery createMediaQuery({
 
 Widget createDirectionality(TextDirection direction) {
   return MixScope(
-    data: MixScopeData(),
+    data: const MixScopeData.empty(),
     child: MaterialApp(
       home: Directionality(
         textDirection: direction,
@@ -111,7 +111,7 @@ extension WidgetTesterExt on WidgetTester {
     MixScopeData? theme,
   }) async {
     await pumpWidget(
-      MaterialApp(home: MixScope(data: theme ?? MixScopeData(), child: widget)),
+      MaterialApp(home: MixScope(data: theme ?? const MixScopeData.empty(), child: widget)),
     );
   }
 
@@ -172,7 +172,7 @@ class WrapMixThemeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MixScope(
-      data: theme ?? MixScopeData(),
+      data: theme ?? const MixScopeData.empty(),
       child: Directionality(textDirection: TextDirection.ltr, child: child),
     );
   }

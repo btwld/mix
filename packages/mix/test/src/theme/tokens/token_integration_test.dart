@@ -8,7 +8,7 @@ void main() {
       const primaryToken = MixableToken<Color>('primary');
       const secondaryToken = MixableToken<Color>('secondary');
 
-      final theme = MixScopeData(
+      final theme = MixScopeData.static(
         tokens: {
           primaryToken: Colors.blue,
           secondaryToken: Colors.red,
@@ -40,7 +40,7 @@ void main() {
       const smallToken = MixableToken<double>('small');
       const largeToken = MixableToken<double>('large');
 
-      final theme = MixScopeData(
+      final theme = MixScopeData.static(
         tokens: {
           smallToken: 8.0,
           largeToken: 24.0,
@@ -76,7 +76,7 @@ void main() {
       const headingStyle = TextStyle(fontSize: 24, fontWeight: FontWeight.bold);
       const bodyStyle = TextStyle(fontSize: 16);
 
-      final theme = MixScopeData(
+      final theme = MixScopeData.static(
         tokens: {
           headingToken: headingStyle,
           bodyToken: bodyStyle,
@@ -109,7 +109,7 @@ void main() {
       const primaryToken = MixableToken<Color>('primary');
       const spacingToken = MixableToken<double>('spacing');
 
-      final theme = MixScopeData(
+      final theme = MixScopeData.static(
         tokens: {
           primaryToken: Colors.purple,
           spacingToken: 16.0,

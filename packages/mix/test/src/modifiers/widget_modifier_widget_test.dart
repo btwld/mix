@@ -367,7 +367,7 @@ void main() {
             $with.sizedBox.square(100),
           ).animate(),
         ),
-        theme: MixScopeData(
+        theme: MixScopeData.static(
           defaultOrderOfModifiers: const [
             SizedBoxModifierSpec,
             ClipRectModifierSpec,

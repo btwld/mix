@@ -29,7 +29,7 @@ void main() {
 
         await tester.pumpWithMixScope(
           Container(),
-          theme: MixScopeData(tokens: {testToken: Colors.red}),
+          theme: MixScopeData.static(tokens: {testToken: Colors.red}),
         );
 
         final buildContext = tester.element(find.byType(Container));

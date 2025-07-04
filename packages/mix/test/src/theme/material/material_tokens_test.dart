@@ -18,43 +18,44 @@ void main() {
       );
       final context = tester.element(find.byType(Container));
       final colors = const MaterialTokens().colorScheme;
+      final scope = MixScope.of(context);
 
-      expect(colors.primary.resolve(context), theme.colorScheme.primary);
+      expect(scope.getToken(colors.primary, context), theme.colorScheme.primary);
       expect(
-        colors.secondary.resolve(context),
+        scope.getToken(colors.secondary, context),
         theme.colorScheme.secondary,
       );
       expect(
-        colors.tertiary.resolve(context),
+        scope.getToken(colors.tertiary, context),
         theme.colorScheme.tertiary,
       );
-      expect(colors.surface.resolve(context), theme.colorScheme.surface);
+      expect(scope.getToken(colors.surface, context), theme.colorScheme.surface);
       expect(
-        colors.background.resolve(context),
+        scope.getToken(colors.background, context),
         theme.colorScheme.background,
       );
-      expect(colors.error.resolve(context), theme.colorScheme.error);
+      expect(scope.getToken(colors.error, context), theme.colorScheme.error);
       expect(
-        colors.onPrimary.resolve(context),
+        scope.getToken(colors.onPrimary, context),
         theme.colorScheme.onPrimary,
       );
       expect(
-        colors.onSecondary.resolve(context),
+        scope.getToken(colors.onSecondary, context),
         theme.colorScheme.onSecondary,
       );
       expect(
-        colors.onTertiary.resolve(context),
+        scope.getToken(colors.onTertiary, context),
         theme.colorScheme.onTertiary,
       );
       expect(
-        colors.onSurface.resolve(context),
+        scope.getToken(colors.onSurface, context),
         theme.colorScheme.onSurface,
       );
       expect(
-        colors.onBackground.resolve(context),
+        scope.getToken(colors.onBackground, context),
         theme.colorScheme.onBackground,
       );
-      expect(colors.onError.resolve(context), theme.colorScheme.onError);
+      expect(scope.getToken(colors.onError, context), theme.colorScheme.onError);
     });
 
     testWidgets('Material 3 textStyles', (tester) async {
@@ -65,66 +66,67 @@ void main() {
       final context = tester.element(find.byType(Container));
 
       final theme = Theme.of(context);
+      final scope = MixScope.of(context);
 
       final textStyles = const MaterialTokens().textTheme;
       expect(
-        textStyles.displayLarge.resolve(context),
+        scope.getToken(textStyles.displayLarge, context),
         theme.textTheme.displayLarge,
       );
       expect(
-        textStyles.displayMedium.resolve(context),
+        scope.getToken(textStyles.displayMedium, context),
         theme.textTheme.displayMedium,
       );
       expect(
-        textStyles.displaySmall.resolve(context),
+        scope.getToken(textStyles.displaySmall, context),
         theme.textTheme.displaySmall,
       );
       expect(
-        textStyles.headlineLarge.resolve(context),
+        scope.getToken(textStyles.headlineLarge, context),
         theme.textTheme.headlineLarge,
       );
       expect(
-        textStyles.headlineMedium.resolve(context),
+        scope.getToken(textStyles.headlineMedium, context),
         theme.textTheme.headlineMedium,
       );
       expect(
-        textStyles.headlineSmall.resolve(context),
+        scope.getToken(textStyles.headlineSmall, context),
         theme.textTheme.headlineSmall,
       );
       expect(
-        textStyles.titleLarge.resolve(context),
+        scope.getToken(textStyles.titleLarge, context),
         theme.textTheme.titleLarge,
       );
       expect(
-        textStyles.titleMedium.resolve(context),
+        scope.getToken(textStyles.titleMedium, context),
         theme.textTheme.titleMedium,
       );
       expect(
-        textStyles.titleSmall.resolve(context),
+        scope.getToken(textStyles.titleSmall, context),
         theme.textTheme.titleSmall,
       );
       expect(
-        textStyles.bodyLarge.resolve(context),
+        scope.getToken(textStyles.bodyLarge, context),
         theme.textTheme.bodyLarge,
       );
       expect(
-        textStyles.bodyMedium.resolve(context),
+        scope.getToken(textStyles.bodyMedium, context),
         theme.textTheme.bodyMedium,
       );
       expect(
-        textStyles.bodySmall.resolve(context),
+        scope.getToken(textStyles.bodySmall, context),
         theme.textTheme.bodySmall,
       );
       expect(
-        textStyles.labelLarge.resolve(context),
+        scope.getToken(textStyles.labelLarge, context),
         theme.textTheme.labelLarge,
       );
       expect(
-        textStyles.labelMedium.resolve(context),
+        scope.getToken(textStyles.labelMedium, context),
         theme.textTheme.labelMedium,
       );
       expect(
-        textStyles.labelSmall.resolve(context),
+        scope.getToken(textStyles.labelSmall, context),
         theme.textTheme.labelSmall,
       );
     });

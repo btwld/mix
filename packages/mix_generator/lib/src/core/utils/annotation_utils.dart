@@ -191,31 +191,6 @@ MixableUtility readMixableUtility(ClassElement element) {
   return MixableUtility(methods: methodsValue, referenceType: referenceType);
 }
 
-/// Reads the [MixableToken] annotation from a class element
-MixableToken readMixableToken(ClassElement element) {
-  const checker = TypeChecker.fromRuntime(MixableToken);
-  final annotation = checker.firstAnnotationOfExact(element);
-
-  if (annotation == null) {
-    throw InvalidGenerationSourceError(
-      'No MixableToken annotation found on the class',
-      element: element,
-    );
-  }
-
-  final reader = ConstantReader(annotation);
-  final type = reader.read('type').typeValue;
-
-  return MixableToken(
-    type,
-    namespace: reader.read('namespace').isNull
-        ? null
-        : reader.read('namespace').stringValue,
-    utilityExtension: reader.read('utilityExtension').boolValue,
-    contextExtension: reader.read('contextExtension').boolValue,
-  );
-}
-
 /// Checks if a class has the [MixableUtility] annotation
 bool hasMixableUtility(ClassElement element) {
   const checker = TypeChecker.fromRuntime(MixableUtility);

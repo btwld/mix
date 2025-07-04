@@ -56,7 +56,7 @@ void main() {
 
     testWidgets('resolve() works with theme storage', (tester) async {
       const token = MixableToken<Color>('primary');
-      final theme = MixScopeData(
+      final theme = MixScopeData.static(
         tokens: {
           token: Colors.blue,
         },
@@ -71,7 +71,7 @@ void main() {
 
       final context = tester.element(find.byType(Container));
       final mixData = MixContext.create(context, Style());
-      
+
       // Use ColorDto to resolve the token
       final colorDto = ColorDto.token(token);
       final resolved = colorDto.resolve(mixData);
@@ -81,7 +81,7 @@ void main() {
 
     testWidgets('resolve() throws for undefined tokens', (tester) async {
       const token = MixableToken<Color>('undefined');
-      final theme = MixScopeData(tokens: const {});
+      const theme = MixScopeData.empty();
 
       await tester.pumpWidget(createWithMixScope(theme));
       final context = tester.element(find.byType(Container));
@@ -98,7 +98,7 @@ void main() {
 
     testWidgets('resolver works with any type', (tester) async {
       const token = MixableToken<String>('message');
-      final theme = MixScopeData(
+      final theme = MixScopeData.static(
         tokens: {token: 'Hello World'},
       );
 
@@ -106,11 +106,11 @@ void main() {
       final context = tester.element(find.byType(Container));
 
       final mixData = MixContext.create(context, Style());
-      
+
       // Create a custom Mixable to resolve string tokens
-      final stringMixable = _StringMixable(token: token);
+      const stringMixable = _StringMixable(token: token);
       final resolved = stringMixable.resolve(mixData);
-      
+
       expect(resolved, equals('Hello World'));
     });
   });
@@ -119,12 +119,12 @@ void main() {
 // Helper class for testing string token resolution
 class _StringMixable extends Mixable<String> {
   const _StringMixable({required MixableToken<String> super.token});
-  
+
   @override
   _StringMixable merge(_StringMixable? other) {
     return other ?? this;
   }
-  
+
   @override
   List<Object?> get props => [token];
 }

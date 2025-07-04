@@ -50,7 +50,7 @@ void main() {
     testWidgets('tokens resolve returns correct FlexSpec', (tester) async {
       const tokenValue = 8.0;
 
-      final theme = MixScopeData(
+      final theme = MixScopeData.static(
         tokens: {
           token.space.small: tokenValue,
         },
