@@ -1,0 +1,16 @@
+# Lefthook configuration for Dart/Flutter projects
+# Based on: https://dev.to/arthurdenner/git-hooks-in-flutter-projects-with-lefthook-52n
+
+pre-commit:
+  commands:
+    format:
+      glob: "*.dart"
+      run: dart format {staged_files} && git add {staged_files}
+    
+pre-push:
+  parallel: true
+  commands:
+    test:
+      run: dart test
+    analyze:
+      run: dart analyze

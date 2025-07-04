@@ -3,11 +3,5 @@ name: mix
 environment:
   sdk: ">=3.3.0 <4.0.0"
 
-dev_dependencies:
-  husky: ^0.1.7
-  lint_staged: ^0.5.1
 dependencies:
   melos: ^6.3.3
-
-lint_staged:
-  '**/*.dart': dart fix --apply && dart analyze
