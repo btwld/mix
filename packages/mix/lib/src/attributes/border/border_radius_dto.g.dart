@@ -23,12 +23,10 @@ mixin _$BorderRadiusDto on Mixable<BorderRadius> {
     if (other == null) return _$this;
 
     return BorderRadiusDto(
-      topLeft: _$this.topLeft?.merge(other.topLeft) ?? other.topLeft,
-      topRight: _$this.topRight?.merge(other.topRight) ?? other.topRight,
-      bottomLeft:
-          _$this.bottomLeft?.merge(other.bottomLeft) ?? other.bottomLeft,
-      bottomRight:
-          _$this.bottomRight?.merge(other.bottomRight) ?? other.bottomRight,
+      topLeft: other.topLeft ?? _$this.topLeft,
+      topRight: other.topRight ?? _$this.topRight,
+      bottomLeft: other.bottomLeft ?? _$this.bottomLeft,
+      bottomRight: other.bottomRight ?? _$this.bottomRight,
     );
   }
 
@@ -84,11 +82,10 @@ mixin _$BorderRadiusDirectionalDto on Mixable<BorderRadiusDirectional> {
     if (other == null) return _$this;
 
     return BorderRadiusDirectionalDto(
-      topStart: _$this.topStart?.merge(other.topStart) ?? other.topStart,
-      topEnd: _$this.topEnd?.merge(other.topEnd) ?? other.topEnd,
-      bottomStart:
-          _$this.bottomStart?.merge(other.bottomStart) ?? other.bottomStart,
-      bottomEnd: _$this.bottomEnd?.merge(other.bottomEnd) ?? other.bottomEnd,
+      topStart: other.topStart ?? _$this.topStart,
+      topEnd: other.topEnd ?? _$this.topEnd,
+      bottomStart: other.bottomStart ?? _$this.bottomStart,
+      bottomEnd: other.bottomEnd ?? _$this.bottomEnd,
     );
   }
 

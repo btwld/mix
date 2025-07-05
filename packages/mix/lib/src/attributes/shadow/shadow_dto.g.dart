@@ -22,7 +22,7 @@ mixin _$ShadowDto on Mixable<Shadow>, HasDefaultValue<Shadow> {
   Shadow resolve(MixContext mix) {
     return Shadow(
       blurRadius: _$this.blurRadius ?? defaultValue.blurRadius,
-      color: _$this.color?.resolve(mix) ?? defaultValue.color,
+      color: _$this.color ?? defaultValue.color,
       offset: _$this.offset ?? defaultValue.offset,
     );
   }
@@ -41,7 +41,7 @@ mixin _$ShadowDto on Mixable<Shadow>, HasDefaultValue<Shadow> {
 
     return ShadowDto(
       blurRadius: other.blurRadius ?? _$this.blurRadius,
-      color: _$this.color?.merge(other.color) ?? other.color,
+      color: other.color ?? _$this.color,
       offset: other.offset ?? _$this.offset,
     );
   }
@@ -71,7 +71,7 @@ class ShadowUtility<T extends StyleElement>
   late final blurRadius = DoubleUtility((v) => only(blurRadius: v));
 
   /// Utility for defining [ShadowDto.color]
-  late final color = ColorUtility((v) => only(color: v));
+  late final color = GenericUtility<T, Mixable<Color>>((v) => only(color: v));
 
   /// Utility for defining [ShadowDto.offset]
   late final offset = OffsetUtility((v) => only(offset: v));
@@ -82,7 +82,7 @@ class ShadowUtility<T extends StyleElement>
   @override
   T only({
     double? blurRadius,
-    ColorDto? color,
+    Mixable<Color>? color,
     Offset? offset,
   }) {
     return builder(ShadowDto(
@@ -94,12 +94,12 @@ class ShadowUtility<T extends StyleElement>
 
   T call({
     double? blurRadius,
-    Color? color,
+    Mixable<Color>? color,
     Offset? offset,
   }) {
     return only(
       blurRadius: blurRadius,
-      color: color?.toDto(),
+      color: color,
       offset: offset,
     );
   }
@@ -138,7 +138,7 @@ mixin _$BoxShadowDto on Mixable<BoxShadow>, HasDefaultValue<BoxShadow> {
   @override
   BoxShadow resolve(MixContext mix) {
     return BoxShadow(
-      color: _$this.color?.resolve(mix) ?? defaultValue.color,
+      color: _$this.color ?? defaultValue.color,
       offset: _$this.offset ?? defaultValue.offset,
       blurRadius: _$this.blurRadius ?? defaultValue.blurRadius,
       spreadRadius: _$this.spreadRadius ?? defaultValue.spreadRadius,
@@ -158,7 +158,7 @@ mixin _$BoxShadowDto on Mixable<BoxShadow>, HasDefaultValue<BoxShadow> {
     if (other == null) return _$this;
 
     return BoxShadowDto(
-      color: _$this.color?.merge(other.color) ?? other.color,
+      color: other.color ?? _$this.color,
       offset: other.offset ?? _$this.offset,
       blurRadius: other.blurRadius ?? _$this.blurRadius,
       spreadRadius: other.spreadRadius ?? _$this.spreadRadius,
@@ -188,7 +188,7 @@ mixin _$BoxShadowDto on Mixable<BoxShadow>, HasDefaultValue<BoxShadow> {
 class BoxShadowUtility<T extends StyleElement>
     extends DtoUtility<T, BoxShadowDto, BoxShadow> {
   /// Utility for defining [BoxShadowDto.color]
-  late final color = ColorUtility((v) => only(color: v));
+  late final color = GenericUtility<T, Mixable<Color>>((v) => only(color: v));
 
   /// Utility for defining [BoxShadowDto.offset]
   late final offset = OffsetUtility((v) => only(offset: v));
@@ -204,7 +204,7 @@ class BoxShadowUtility<T extends StyleElement>
   /// Returns a new [BoxShadowDto] with the specified properties.
   @override
   T only({
-    ColorDto? color,
+    Mixable<Color>? color,
     Offset? offset,
     double? blurRadius,
     double? spreadRadius,
@@ -218,13 +218,13 @@ class BoxShadowUtility<T extends StyleElement>
   }
 
   T call({
-    Color? color,
+    Mixable<Color>? color,
     Offset? offset,
     double? blurRadius,
     double? spreadRadius,
   }) {
     return only(
-      color: color?.toDto(),
+      color: color,
       offset: offset,
       blurRadius: blurRadius,
       spreadRadius: spreadRadius,

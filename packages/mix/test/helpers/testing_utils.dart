@@ -30,6 +30,18 @@ MixContext MockMixData(Style style) {
 
 final EmptyMixData = MixContext.create(MockBuildContext(), const Style.empty());
 
+MixContext createMixContext({
+  Style? style,
+  Map<MixableToken, dynamic>? tokens,
+}) {
+  // For now, just use the simple create method without tokens
+  // We can enhance this later when we need token support in tests
+  return MixContext.create(
+    MockBuildContext(),
+    style ?? const Style.empty(),
+  );
+}
+
 MediaQuery createMediaQuery({
   Size? size,
   Brightness? brightness,
@@ -111,7 +123,9 @@ extension WidgetTesterExt on WidgetTester {
     MixScopeData? theme,
   }) async {
     await pumpWidget(
-      MaterialApp(home: MixScope(data: theme ?? const MixScopeData.empty(), child: widget)),
+      MaterialApp(
+          home: MixScope(
+              data: theme ?? const MixScopeData.empty(), child: widget)),
     );
   }
 

@@ -175,7 +175,7 @@ mixin _$BorderSideDto on Mixable<BorderSide>, HasDefaultValue<BorderSide> {
   @override
   BorderSide resolve(MixContext mix) {
     return BorderSide(
-      color: _$this.color?.resolve(mix) ?? defaultValue.color,
+      color: _$this.color ?? defaultValue.color,
       strokeAlign: _$this.strokeAlign ?? defaultValue.strokeAlign,
       style: _$this.style ?? defaultValue.style,
       width: _$this.width ?? defaultValue.width,
@@ -195,7 +195,7 @@ mixin _$BorderSideDto on Mixable<BorderSide>, HasDefaultValue<BorderSide> {
     if (other == null) return _$this;
 
     return BorderSideDto(
-      color: _$this.color?.merge(other.color) ?? other.color,
+      color: other.color ?? _$this.color,
       strokeAlign: other.strokeAlign ?? _$this.strokeAlign,
       style: other.style ?? _$this.style,
       width: other.width ?? _$this.width,
@@ -225,7 +225,7 @@ mixin _$BorderSideDto on Mixable<BorderSide>, HasDefaultValue<BorderSide> {
 class BorderSideUtility<T extends StyleElement>
     extends DtoUtility<T, BorderSideDto, BorderSide> {
   /// Utility for defining [BorderSideDto.color]
-  late final color = ColorUtility((v) => only(color: v));
+  late final color = GenericUtility<T, Mixable<Color>>((v) => only(color: v));
 
   /// Utility for defining [BorderSideDto.strokeAlign]
   late final strokeAlign = StrokeAlignUtility((v) => only(strokeAlign: v));
@@ -244,7 +244,7 @@ class BorderSideUtility<T extends StyleElement>
   /// Returns a new [BorderSideDto] with the specified properties.
   @override
   T only({
-    ColorDto? color,
+    Mixable<Color>? color,
     double? strokeAlign,
     BorderStyle? style,
     double? width,
@@ -258,13 +258,13 @@ class BorderSideUtility<T extends StyleElement>
   }
 
   T call({
-    Color? color,
+    Mixable<Color>? color,
     double? strokeAlign,
     BorderStyle? style,
     double? width,
   }) {
     return only(
-      color: color?.toDto(),
+      color: color,
       strokeAlign: strokeAlign,
       style: style,
       width: width,

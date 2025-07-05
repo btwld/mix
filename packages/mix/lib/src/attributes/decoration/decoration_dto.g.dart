@@ -25,7 +25,7 @@ mixin _$BoxDecorationDto on Mixable<BoxDecoration> {
       borderRadius: _$this.borderRadius?.resolve(mix),
       shape: _$this.shape ?? BoxShape.rectangle,
       backgroundBlendMode: _$this.backgroundBlendMode,
-      color: _$this.color?.resolve(mix),
+      color: _$this.color,
       image: _$this.image?.resolve(mix),
       gradient: _$this.gradient?.resolve(mix),
       boxShadow: _$this.boxShadow?.map((e) => e.resolve(mix)).toList(),
@@ -51,7 +51,7 @@ mixin _$BoxDecorationDto on Mixable<BoxDecoration> {
       shape: other.shape ?? _$this.shape,
       backgroundBlendMode:
           other.backgroundBlendMode ?? _$this.backgroundBlendMode,
-      color: _$this.color?.merge(other.color) ?? other.color,
+      color: other.color ?? _$this.color,
       image: _$this.image?.merge(other.image) ?? other.image,
       gradient: GradientDto.tryToMerge(_$this.gradient, other.gradient),
       boxShadow: MixHelpers.mergeList(_$this.boxShadow, other.boxShadow),
@@ -105,7 +105,7 @@ class BoxDecorationUtility<T extends StyleElement>
       BlendModeUtility((v) => only(backgroundBlendMode: v));
 
   /// Utility for defining [BoxDecorationDto.color]
-  late final color = ColorUtility((v) => only(color: v));
+  late final color = GenericUtility<T, Mixable<Color>>((v) => only(color: v));
 
   /// Utility for defining [BoxDecorationDto.image]
   late final image = DecorationImageUtility((v) => only(image: v));
@@ -131,7 +131,7 @@ class BoxDecorationUtility<T extends StyleElement>
     BorderRadiusGeometryDto? borderRadius,
     BoxShape? shape,
     BlendMode? backgroundBlendMode,
-    ColorDto? color,
+    Mixable<Color>? color,
     DecorationImageDto? image,
     GradientDto? gradient,
     List<BoxShadowDto>? boxShadow,
@@ -153,7 +153,7 @@ class BoxDecorationUtility<T extends StyleElement>
     BorderRadiusGeometry? borderRadius,
     BoxShape? shape,
     BlendMode? backgroundBlendMode,
-    Color? color,
+    Mixable<Color>? color,
     DecorationImage? image,
     Gradient? gradient,
     List<BoxShadow>? boxShadow,
@@ -163,7 +163,7 @@ class BoxDecorationUtility<T extends StyleElement>
       borderRadius: borderRadius?.toDto(),
       shape: shape,
       backgroundBlendMode: backgroundBlendMode,
-      color: color?.toDto(),
+      color: color,
       image: image?.toDto(),
       gradient: gradient?.toDto(),
       boxShadow: boxShadow?.map((e) => e.toDto()).toList(),
@@ -211,7 +211,7 @@ mixin _$ShapeDecorationDto
   ShapeDecoration resolve(MixContext mix) {
     return ShapeDecoration(
       shape: _$this.shape?.resolve(mix) ?? defaultValue.shape,
-      color: _$this.color?.resolve(mix) ?? defaultValue.color,
+      color: _$this.color ?? defaultValue.color,
       image: _$this.image?.resolve(mix) ?? defaultValue.image,
       gradient: _$this.gradient?.resolve(mix) ?? defaultValue.gradient,
       shadows: _$this.shadows?.map((e) => e.resolve(mix)).toList() ??
@@ -233,7 +233,7 @@ mixin _$ShapeDecorationDto
 
     return ShapeDecorationDto(
       shape: ShapeBorderDto.tryToMerge(_$this.shape, other.shape),
-      color: _$this.color?.merge(other.color) ?? other.color,
+      color: other.color ?? _$this.color,
       image: _$this.image?.merge(other.image) ?? other.image,
       gradient: GradientDto.tryToMerge(_$this.gradient, other.gradient),
       shadows: MixHelpers.mergeList(_$this.shadows, other.shadows),
@@ -267,7 +267,7 @@ class ShapeDecorationUtility<T extends StyleElement>
   late final shape = ShapeBorderUtility((v) => only(shape: v));
 
   /// Utility for defining [ShapeDecorationDto.color]
-  late final color = ColorUtility((v) => only(color: v));
+  late final color = GenericUtility<T, Mixable<Color>>((v) => only(color: v));
 
   /// Utility for defining [ShapeDecorationDto.image]
   late final image = DecorationImageUtility((v) => only(image: v));
@@ -284,7 +284,7 @@ class ShapeDecorationUtility<T extends StyleElement>
   @override
   T only({
     ShapeBorderDto? shape,
-    ColorDto? color,
+    Mixable<Color>? color,
     DecorationImageDto? image,
     GradientDto? gradient,
     List<BoxShadowDto>? shadows,
@@ -300,14 +300,14 @@ class ShapeDecorationUtility<T extends StyleElement>
 
   T call({
     ShapeBorder? shape,
-    Color? color,
+    Mixable<Color>? color,
     DecorationImage? image,
     Gradient? gradient,
     List<BoxShadow>? shadows,
   }) {
     return only(
       shape: shape?.toDto(),
-      color: color?.toDto(),
+      color: color,
       image: image?.toDto(),
       gradient: gradient?.toDto(),
       shadows: shadows?.map((e) => e.toDto()).toList(),

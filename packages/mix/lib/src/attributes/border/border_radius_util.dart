@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/element.dart';
-import '../scalars/radius_dto.dart';
 import '../scalars/scalar_util.dart';
 import 'border_radius_dto.dart';
 
@@ -175,10 +174,10 @@ final class BorderRadiusUtility<T extends StyleElement>
   }) {
     return builder(
       BorderRadiusDto(
-        topLeft: topLeft != null ? RadiusDto.value(topLeft) : null,
-        topRight: topRight != null ? RadiusDto.value(topRight) : null,
-        bottomLeft: bottomLeft != null ? RadiusDto.value(bottomLeft) : null,
-        bottomRight: bottomRight != null ? RadiusDto.value(bottomRight) : null,
+        topLeft: topLeft != null ? Mixable.value(topLeft) : null,
+        topRight: topRight != null ? Mixable.value(topRight) : null,
+        bottomLeft: bottomLeft != null ? Mixable.value(bottomLeft) : null,
+        bottomRight: bottomRight != null ? Mixable.value(bottomRight) : null,
       ),
     );
   }
@@ -284,10 +283,10 @@ final class BorderRadiusDirectionalUtility<T extends StyleElement>
 
     return builder(
       BorderRadiusDirectionalDto(
-        topStart: RadiusDto.value(Radius.circular(topStart)),
-        topEnd: RadiusDto.value(Radius.circular(topEnd)),
-        bottomStart: RadiusDto.value(Radius.circular(bottomStart)),
-        bottomEnd: RadiusDto.value(Radius.circular(bottomEnd)),
+        topStart: Mixable.value(Radius.circular(topStart)),
+        topEnd: Mixable.value(Radius.circular(topEnd)),
+        bottomStart: Mixable.value(Radius.circular(bottomStart)),
+        bottomEnd: Mixable.value(Radius.circular(bottomEnd)),
       ),
     );
   }
@@ -309,10 +308,10 @@ final class BorderRadiusDirectionalUtility<T extends StyleElement>
   }) {
     return builder(
       BorderRadiusDirectionalDto(
-        topStart: topStart != null ? RadiusDto.value(topStart) : null,
-        topEnd: topEnd != null ? RadiusDto.value(topEnd) : null,
-        bottomStart: bottomStart != null ? RadiusDto.value(bottomStart) : null,
-        bottomEnd: bottomEnd != null ? RadiusDto.value(bottomEnd) : null,
+        topStart: topStart != null ? Mixable.value(topStart) : null,
+        topEnd: topEnd != null ? Mixable.value(topEnd) : null,
+        bottomStart: bottomStart != null ? Mixable.value(bottomStart) : null,
+        bottomEnd: bottomEnd != null ? Mixable.value(bottomEnd) : null,
       ),
     );
   }

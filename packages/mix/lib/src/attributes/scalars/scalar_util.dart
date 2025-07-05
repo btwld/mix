@@ -9,6 +9,8 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 part 'scalar_util.g.dart';
 
+// Note: MixableDirective and private implementations are now in core/element.dart
+
 @MixableUtility(referenceType: Alignment)
 final class AlignmentUtility<T extends StyleElement>
     extends MixUtility<T, AlignmentGeometry> with _$AlignmentUtility {

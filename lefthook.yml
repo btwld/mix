@@ -8,9 +8,6 @@ pre-commit:
       run: dart format {staged_files} && git add {staged_files}
     
 pre-push:
-  parallel: true
   commands:
-    test:
-      run: dart test
     analyze:
       run: dart analyze

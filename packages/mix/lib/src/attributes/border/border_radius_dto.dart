@@ -6,7 +6,6 @@ import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../internal/mix_error.dart';
-import '../scalars/radius_dto.dart';
 
 part 'border_radius_dto.g.dart';
 
