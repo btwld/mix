@@ -259,7 +259,7 @@ class StackSpecUtility<T extends SpecAttribute>
     StackFit? fit,
     TextDirection? textDirection,
     Clip? clipBehavior,
-    AnimatedDataDto? animated,
+    AnimationConfigDto? animated,
     WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(StackSpecAttribute(

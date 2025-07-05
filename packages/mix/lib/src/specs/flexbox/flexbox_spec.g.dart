@@ -310,7 +310,7 @@ class FlexBoxSpecUtility<T extends SpecAttribute>
   /// Returns a new [FlexBoxSpecAttribute] with the specified properties.
   @override
   T only({
-    AnimatedDataDto? animated,
+    AnimationConfigDto? animated,
     WidgetModifiersConfigDto? modifiers,
     BoxSpecAttribute? box,
     FlexSpecAttribute? flex,

@@ -343,7 +343,7 @@ class ImageSpecUtility<T extends SpecAttribute>
     Rect? centerSlice,
     FilterQuality? filterQuality,
     BlendMode? colorBlendMode,
-    AnimatedDataDto? animated,
+    AnimationConfigDto? animated,
     WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(ImageSpecAttribute(

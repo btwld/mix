@@ -345,7 +345,7 @@ class IconSpecUtility<T extends SpecAttribute>
     TextDirection? textDirection,
     bool? applyTextScaling,
     double? fill,
-    AnimatedDataDto? animated,
+    AnimationConfigDto? animated,
     WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(IconSpecAttribute(
