@@ -1,8 +1,7 @@
 #!/usr/bin/env sh
-
 . "$(dirname -- "$0")/_/husky.sh"
 
-# Find the absolute path to the fvm command  
+# Find the absolute path to the fvm command
 FVM_PATH=$(command -v fvm)
 
 # Check if fvm command is found
@@ -14,22 +13,9 @@ else
   exit 1
 fi
 
-# Run lint_staged on staged files
-echo "Running lint_staged..."
+echo "🔧 Formatting and fixing staged Dart files..."
 dart run lint_staged
 
-
-# dart format --line-length 80 --set-exit-if-changed lib test
-# dart analyze --fatal-infos --fatal-warnings lib test
-# dart test
-
-# branch_name=$(git rev-parse --abbrev-ref HEAD)
-
-# if ! [[ $branch_name =~ ^(feat/|fix/|docs/|style/|refactor/|perf/|test/|build/|ci/|chore/|revert/).+ ]]; then
-#   echo "Invalid branch name. Branch names must start with one of the following prefixes followed by a forward slash:"
-#   echo "feat/, fix/, docs/, style/, refactor/, perf/, test/, build/, ci/, chore/, revert/"
-#   echo "Example: feat/new-feature"
-#   exit 1
-# fi
+echo "✅ Pre-commit completed!"
 
 
