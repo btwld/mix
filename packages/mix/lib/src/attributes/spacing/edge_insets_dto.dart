@@ -93,9 +93,9 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
 
 @MixableType(components: GeneratedPropertyComponents.none)
 final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets>
-    with _$EdgeInsetsDto, Diagnosticable {
-  final SpaceDto? left;
-  final SpaceDto? right;
+    with _$EdgeInsetsDto {
+  final double? left;
+  final double? right;
 
   @MixableConstructor()
   @protected

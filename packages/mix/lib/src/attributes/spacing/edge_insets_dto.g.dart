@@ -25,8 +25,8 @@ mixin _$EdgeInsetsDto on Mixable<EdgeInsets> {
     return EdgeInsetsDto.raw(
       top: _$this.top?.merge(other.top) ?? other.top,
       bottom: _$this.bottom?.merge(other.bottom) ?? other.bottom,
-      left: _$this.left?.merge(other.left) ?? other.left,
-      right: _$this.right?.merge(other.right) ?? other.right,
+      left: other.left ?? _$this.left,
+      right: other.right ?? _$this.right,
     );
   }
 

@@ -105,14 +105,20 @@ sealed class TextStyleDto extends Mixable<TextStyle> with Diagnosticable {
   }
 }
 
-final class ValueTextStyleDto extends TextStyleDto {
-  final Mixable<String>? fontFamily;
-  final Mixable<FontWeight>? fontWeight;
-  final Mixable<FontStyle>? fontStyle;
-  final Mixable<double>? fontSize;
-  final Mixable<double>? letterSpacing;
-  final Mixable<double>? wordSpacing;
-  final Mixable<TextBaseline>? textBaseline;
+// TODO: Look for ways to consolidate TextStyleDto and TextStyleData
+// If we remove TextStyle from tokens, it means we don't need a list of resolvable values
+// to be resolved once we have a context. We can merge the values directly, simplifying the code,
+// and this will allow more predictable behavior overall.
+@MixableType(components: GeneratedPropertyComponents.none)
+base class TextStyleData extends Mixable<TextStyle>
+    with _$TextStyleData {
+  final String? fontFamily;
+  final FontWeight? fontWeight;
+  final FontStyle? fontStyle;
+  final double? fontSize;
+  final double? letterSpacing;
+  final double? wordSpacing;
+  final TextBaseline? textBaseline;
   final ColorDto? color;
   final ColorDto? backgroundColor;
   final List<ShadowDto>? shadows;
@@ -305,8 +311,15 @@ final class ValueTextStyleDto extends TextStyleDto {
       ];
 }
 
-final class TokenTextStyleDto extends TextStyleDto {
-  final MixableToken<TextStyle> token;
+@MixableType(
+  components: GeneratedPropertyComponents.none,
+  mergeLists: false,
+)
+final class TextStyleDto extends Mixable<TextStyle>
+    with _$TextStyleDto {
+  final List<TextStyleData> value;
+  @MixableConstructor()
+  const TextStyleDto._({this.value = const []});
 
   const TokenTextStyleDto(this.token) : super._();
 
