@@ -3,7 +3,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../attributes/animated/animated_data.dart';
+import '../../attributes/animated/animation_config.dart';
 import '../../internal/iterable_ext.dart';
 import '../../internal/string_ext.dart';
 import '../../theme/tokens/token_resolver.dart';
@@ -29,7 +29,7 @@ typedef MixData = MixContext;
 /// the style computation process.
 @immutable
 class MixContext with Diagnosticable {
-  final AnimatedData? animation;
+  final AnimationConfig? animation;
 
   // Instance variables for widget attributes, widget modifiers and token resolver.
   final AttributeMap _attributes;
@@ -147,7 +147,7 @@ class MixContext with Diagnosticable {
 
   MixContext copyWith({
     AttributeMap? attributes,
-    AnimatedData? animation,
+    AnimationConfig? animation,
     MixTokenResolver? resolver,
   }) {
     return MixContext._(

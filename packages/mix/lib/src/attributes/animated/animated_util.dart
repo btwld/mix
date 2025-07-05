@@ -3,11 +3,11 @@ import 'package:flutter/widgets.dart';
 import '../../core/element.dart';
 import '../scalars/curves.dart';
 import '../scalars/scalar_util.dart';
-import 'animated_data.dart';
-import 'animated_data_dto.dart';
+import 'animation_config.dart';
+import 'animation_config_dto.dart';
 
 final class AnimatedUtility<T extends StyleElement>
-    extends DtoUtility<T, AnimatedDataDto, AnimatedData> {
+    extends DtoUtility<T, AnimationConfigDto, AnimationConfig> {
   AnimatedUtility(super.builder) : super(valueToDto: (value) => value.toDto());
 
   DurationUtility<T> get duration => DurationUtility((v) => only(duration: v));
@@ -53,6 +53,6 @@ final class AnimatedUtility<T extends StyleElement>
 
   @override
   T only({Duration? duration, Curve? curve}) {
-    return builder(AnimatedDataDto(duration: duration, curve: curve));
+    return builder(AnimationConfigDto(duration: duration, curve: curve));
   }
 }

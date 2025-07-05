@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
-import '../../attributes/animated/animated_data.dart';
-import '../../attributes/animated/animated_data_dto.dart';
+import '../../attributes/animated/animation_config.dart';
+import '../../attributes/animated/animation_config_dto.dart';
 import '../../attributes/animated/animated_util.dart';
 import '../../attributes/color/color_dto.dart';
 import '../../attributes/color/color_util.dart';

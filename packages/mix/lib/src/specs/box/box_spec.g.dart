@@ -443,7 +443,7 @@ class BoxSpecUtility<T extends SpecAttribute>
     double? width,
     double? height,
     WidgetModifiersConfigDto? modifiers,
-    AnimatedDataDto? animated,
+    AnimationConfigDto? animated,
   }) {
     return builder(BoxSpecAttribute(
       alignment: alignment,

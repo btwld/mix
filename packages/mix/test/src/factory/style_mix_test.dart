@@ -564,7 +564,7 @@ void main() {
 
   group('Style.merge', () {
     test('Style + AnimatedStyle', () {
-      const animatedData = AnimatedData(
+      const animationConfig = AnimationConfig(
         curve: Curves.linear,
         duration: Durations.medium1,
       );
@@ -576,26 +576,26 @@ void main() {
 
       final animatedStyle = AnimatedStyle(
         Style(),
-        duration: animatedData.duration,
-        curve: animatedData.curve,
+        duration: animationConfig.duration,
+        curve: animationConfig.curve,
       );
 
       final result = style.merge(animatedStyle);
 
       expect(result, isA<AnimatedStyle>());
-      expect((result as AnimatedStyle).animated, animatedData);
+      expect((result as AnimatedStyle).animated, animationConfig);
     });
 
     test('AnimatedStyle + Style', () {
-      const animatedData = AnimatedData(
+      const animationConfig = AnimationConfig(
         curve: Curves.linear,
         duration: Durations.medium1,
       );
 
       final animatedStyle = AnimatedStyle(
         Style(),
-        duration: animatedData.duration,
-        curve: animatedData.curve,
+        duration: animationConfig.duration,
+        curve: animationConfig.curve,
       );
 
       final style = Style(
@@ -606,7 +606,7 @@ void main() {
       final result = animatedStyle.merge(style);
 
       expect(result, isA<AnimatedStyle>());
-      expect((result as AnimatedStyle).animated, animatedData);
+      expect((result as AnimatedStyle).animated, animationConfig);
     });
   });
 }

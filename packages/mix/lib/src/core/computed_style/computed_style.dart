@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 
-import '../../attributes/animated/animated_data.dart';
+import '../../attributes/animated/animation_config.dart';
 import '../factory/mix_context.dart';
 import '../modifier.dart';
 import '../spec.dart';
@@ -17,12 +17,12 @@ import 'computed_style_provider.dart';
 class ComputedStyle with Diagnosticable {
   final Map<Type, Spec> _specs;
   final List<WidgetModifierSpec> _modifiers;
-  final AnimatedData? _animation;
+  final AnimationConfig? _animation;
 
   const ComputedStyle._({
     required Map<Type, Spec> specs,
     required List<WidgetModifierSpec> modifiers,
-    AnimatedData? animation,
+    AnimationConfig? animation,
   })  : _specs = specs,
         _modifiers = modifiers,
         _animation = animation;
@@ -96,7 +96,7 @@ class ComputedStyle with Diagnosticable {
   List<WidgetModifierSpec> get modifiers => _modifiers;
 
   /// Animation configuration, if any.
-  AnimatedData? get animation => _animation;
+  AnimationConfig? get animation => _animation;
 
   /// Whether this style includes animation data.
   bool get isAnimated => animation != null;

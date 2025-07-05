@@ -359,7 +359,7 @@ class FlexSpecUtility<T extends SpecAttribute>
     TextBaseline? textBaseline,
     Clip? clipBehavior,
     SpaceDto? gap,
-    AnimatedDataDto? animated,
+    AnimationConfigDto? animated,
     WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(FlexSpecAttribute(
