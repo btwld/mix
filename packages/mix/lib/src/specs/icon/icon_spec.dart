@@ -14,7 +14,7 @@ import '../../attributes/modifiers/widget_modifiers_util.dart';
 import '../../attributes/shadow/shadow_dto.dart';
 import '../../attributes/shadow/shadow_util.dart';
 import '../../core/computed_style/computed_style.dart';
-import '../../core/factory/mix_data.dart';
+import '../../core/factory/mix_context.dart';
 import '../../core/factory/style_mix.dart';
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
@@ -89,8 +89,4 @@ final class IconSpec extends Spec<IconSpec> with _$IconSpec, Diagnosticable {
 
 extension IconSpecUtilityExt<T extends SpecAttribute> on IconSpecUtility<T> {
   ShadowUtility get shadow => ShadowUtility((v) => only(shadows: [v]));
-}
-
-class IconStyle extends IconSpecUtility<IconSpecAttribute> {
-  IconStyle() : super((v) => v);
 }

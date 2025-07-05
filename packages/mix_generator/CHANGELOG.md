@@ -1,4 +1,4 @@
-## 0.4.1
+## 1.7.0
 
  - **REFACTOR**: Rename WidgetModifiersData to WidgetModifiersConfig (#649).
  - **REFACTOR**: Fix deprecations and modernize codebase (#647).

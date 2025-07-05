@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../internal/compare_mixin.dart';
-import 'factory/mix_data.dart';
+import 'factory/mix_context.dart';
 import 'spec.dart';
 import 'utility.dart';
 

@@ -6,7 +6,7 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 import '../attributes/spacing/edge_insets_dto.dart';
 import '../attributes/spacing/spacing_util.dart';
-import '../core/factory/mix_data.dart';
+import '../core/factory/mix_context.dart';
 import '../core/factory/style_mix.dart';
 import '../core/modifier.dart';
 import '../core/spec.dart';

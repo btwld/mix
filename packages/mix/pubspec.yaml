@@ -9,7 +9,7 @@ environment:
   flutter: ">=3.27.0"
   
 dependencies:
-  mix_annotations: ^0.4.1
+  mix_annotations: ^1.7.0
   flutter:
     sdk: flutter
   meta: ^1.15.0
@@ -20,7 +20,7 @@ dev_dependencies:
   build_runner: ^2.4.9
   flutter_test:
     sdk: flutter
-  mix_generator: ^0.4.1
+  mix_generator: ^1.7.0
 
 screenshots:
   - description: The Mix logo.

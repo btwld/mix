@@ -6,7 +6,7 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 import '../attributes/enum/enum_util.dart';
 import '../core/element.dart';
-import '../core/factory/mix_data.dart';
+import '../core/factory/mix_context.dart';
 import '../core/modifier.dart';
 import '../core/utility.dart';
 

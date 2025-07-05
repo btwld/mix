@@ -1,5 +1,6 @@
 ### 1.7.0
 
+ - **REFACTOR**: Implement BaseStyle utility class and improve styling architecture #659
  - **REFACTOR**: Remove SpecConfiguration and SpecStyle from environment (#656)
  - **REFACTOR**: Move widget state handling from MixBuilder to SpecBuilder (#651).
  - **REFACTOR**: Rename WidgetModifiersData to WidgetModifiersConfig (#649).
@@ -15,6 +16,8 @@
  - **FEAT**: Create MixBuilder (#581).
  - **FEAT**: Add generated style-focused modifiers and specs (#652).
  - **FEAT**: Unify SpecUtility, Style, and Attributes as compatible values (#643).
+ - **FEAT**: Add utilities for animatedData (#660).
+ - **FEAT**: Add focused style classes for spec utilities (#677)
 
 ## 1.6.0
 

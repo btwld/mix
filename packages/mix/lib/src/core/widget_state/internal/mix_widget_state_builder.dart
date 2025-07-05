@@ -18,7 +18,7 @@ class MixWidgetStateBuilder extends StatelessWidget {
     return ListenableBuilder(
       listenable: controller,
       builder: (context, _) {
-        return MixWidgetState.fromSet(
+        return MixWidgetStateModel.fromSet(
           states: controller.value,
           child: Builder(builder: builder),
         );

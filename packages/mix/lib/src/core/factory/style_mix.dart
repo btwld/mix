@@ -10,7 +10,7 @@ import '../attributes_map.dart';
 import '../element.dart';
 import '../spec.dart';
 import '../variant.dart';
-import 'mix_data.dart';
+import 'mix_context.dart';
 
 sealed class BaseStyle<T extends SpecAttribute> extends StyleElement {
   const BaseStyle();

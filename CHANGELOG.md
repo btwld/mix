@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## 2025-06-17
+## 2025-07-02
 
 ### Changes
 
@@ -16,22 +16,15 @@ Packages with breaking changes:
 Packages with other changes:
 
  - [`mix` - `v1.7.0`](#mix---v170)
- - [`mix_annotations` - `v0.4.1`](#mix_annotations---v041)
- - [`mix_generator` - `v0.4.1`](#mix_generator---v041)
- - [`mix_lint` - `v0.1.4`](#mix_lint---v014)
- - [`naked` - `v0.0.1-dev.1`](#naked---v001-dev1)
- - [`remix` - `v0.0.4+2`](#remix---v0042)
-
-Packages with dependency updates only:
-
-> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
-
- - `remix` - `v0.0.4+2`
+ - [`mix_lint` - `v1.7.0`](#mix_lint---v170)
+ - [`mix_annotations` - `v1.7.0`](#mix_annotations---v170)
+ - [`mix_generator` - `v1.7.0`](#mix_generator---v170)
 
 ---
 
 #### `mix` - `v1.7.0`
 
+ - **REFACTOR**: Implement BaseStyle utility class and improve styling architecture (#659)
  - **REFACTOR**: Remove SpecConfiguration and SpecStyle from environment (#656)
  - **REFACTOR**: Move widget state handling from MixBuilder to SpecBuilder (#651).
  - **REFACTOR**: Rename WidgetModifiersData to WidgetModifiersConfig (#649).
@@ -47,12 +40,18 @@ Packages with dependency updates only:
  - **FEAT**: Create MixBuilder (#581).
  - **FEAT**: Add generated style-focused modifiers and specs (#652).
  - **FEAT**: Unify SpecUtility, Style, and Attributes as compatible values (#643).
+ - **FEAT**: Add utilities for animatedData (#660).
+ - **FEAT**: Add focused style classes for spec utilities (#677)
 
-#### `mix_annotations` - `v0.4.1`
+#### `mix_lint` - `v1.7.0`
 
- - **FEAT**: Add generated style-focused modifiers and specs (#652).
+ - No changes in this release.
 
-#### `mix_generator` - `v0.4.1`
+#### `mix_annotations` - `v1.7.0`
+
+- **FEAT**: Add generated style-focused modifiers and specs (#652).
+
+#### `mix_generator` - `v1.7.0`
 
  - **REFACTOR**: Rename WidgetModifiersData to WidgetModifiersConfig (#649).
  - **REFACTOR**: Fix deprecations and modernize codebase (#647).
@@ -61,11 +60,67 @@ Packages with dependency updates only:
  - **FEAT**: unify SpecUtility, Style, and Attributes as compatible values (#643).
  - **FEAT**: builder optimization (#629).
 
-#### `mix_lint` - `v0.1.4`
+
+## 2025-06-23
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`mix` - `v1.7.0-beta.0`](#mix---v170-beta0)
+ - [`mix_lint` - `v1.7.0-beta.0`](#mix_lint---v170-beta0)
+ - [`mix_annotations` - `v1.7.0-beta.0`](#mix_annotations---v170-beta0)
+ - [`mix_generator` - `v1.7.0-beta.0`](#mix_generator---v170-beta0)
+ - [`naked` - `v0.1.0-beta.0`](#naked---v010-beta0)
+ - [`remix` - `v0.1.0-beta.0`](#remix---v010-beta0)
+
+---
+
+#### `mix` - `v1.7.0-beta.0`
+
+ - **REFACTOR**: Implement BaseStyle utility class and improve styling architecture (#659)
+ - **REFACTOR**: Remove SpecConfiguration and SpecStyle from environment (#656)
+ - **REFACTOR**: Move widget state handling from MixBuilder to SpecBuilder (#651).
+ - **REFACTOR**: Rename WidgetModifiersData to WidgetModifiersConfig (#649).
+ - **REFACTOR**: Fix deprecations and modernize codebase (#647).
+ - **REFACTOR**: Remove NestedStyleAttribute and migrate to direct Style usage (#644).
+ - **REFACTOR**: Deprecate `MixWidgetStateController` (#586).
+ - **REFACTOR**: Use WidgetState instead of MixWidgetState (#582).
+ - **FIX**: Change Mixable to extend EqualityMixin instead of StyleElement (#648).
+ - **FIX**: CopyWith overriding bug (#622).
+ - **FEAT**: builder optimization (#629).
+ - **FEAT**: deprecate styled widgets in favor of new naming conventions (#619).
+ - **FEAT**: Implementing duration extension for int  (#634).
+ - **FEAT**: Create MixBuilder (#581).
+ - **FEAT**: Add generated style-focused modifiers and specs (#652).
+ - **FEAT**: Unify SpecUtility, Style, and Attributes as compatible values (#643).
+ - **FEAT**: Add utilities for animatedData (#660).
+ - **FEAT**: Add focused style classes for spec utilities (#677)
+
+#### `mix_lint` - `v1.7.0-beta.0`
 
  - No changes in this release.
 
-#### `naked` - `v0.0.1-dev.1`
+#### `mix_annotations` - `v1.7.0-beta.0`
+
+- **FEAT**: Add generated style-focused modifiers and specs (#652).
+
+#### `mix_generator` - `v1.7.0-beta.0`
+
+ - **REFACTOR**: Rename WidgetModifiersData to WidgetModifiersConfig (#649).
+ - **REFACTOR**: Fix deprecations and modernize codebase (#647).
+ - **FIX**: update animated property handling to use null coalescing (#637).
+ - **FEAT**: Add generated style-focused modifiers and specs (#652).
+ - **FEAT**: unify SpecUtility, Style, and Attributes as compatible values (#643).
+ - **FEAT**: builder optimization (#629).
+
+#### `naked` - `v0.1.0-beta.0`
 
  - **REFACTOR**: Select (#596).
  - **REFACTOR**: Tabs and Tooltip (#595).
@@ -85,6 +140,54 @@ Packages with dependency updates only:
  - **DOCS**: Remove old example app (#607).
  - **DOCS**: Document naked button (#599).
 
+#### `remix` - `v0.1.0-beta.0`
+
+ - **REFACTOR**: update outdated API (#583).
+ - **REFACTOR**: callout, progress and spinner components (#671).
+ - **REFACTOR**: Rename WidgetModifiersData to WidgetModifiersConfig (#649).
+ - **REFACTOR**: Simplify accordion component architecture (#661).
+ - **REFACTOR**: Implement BaseStyle utility class and improve styling architecture (#659).
+ - **REFACTOR**: Remove SpecConfiguration and SpecStyle from environment (#656).
+ - **REFACTOR**: Fix deprecations and modernize codebase (#647).
+ - **REFACTOR**: Add in code documentation and rename params for each component (#514).
+ - **REFACTOR**: mix generator clean up and mix semantic changes (#569).
+ - **REFACTOR**(remix): improve widgetbook navigation (#524).
+ - **REFACTOR**: Rename `MixableProperty` to `MixableType` (#574).
+ - **REFACTOR**: small fixes on remix (#512).
+ - **REFACTOR**: Deprecate `MixWidgetStateController` (#586).
+ - **REFACTOR**: Rewrite Fortaleza theme using the new code gen for tokens (#528).
+ - **FIX**: Add ToastLayer on RemixApp (#557).
+ - **FIX**: Toast animation trigger (#530).
+ - **FIX**: Textfield helper Text (#531).
+ - **FIX**: update animated property handling to use null coalescing (#637).
+ - **FEAT**: builder optimization (#629).
+ - **FEAT**: deprecate styled widgets in favor of new naming conventions (#619).
+ - **FEAT**: Recreate Button using Naked (#587).
+ - **FEAT**: unify SpecUtility, Style, and Attributes as compatible values (#643).
+ - **FEAT**: recreate components on folder layout (#680).
+ - **FEAT**: Implementing new RXButton (#660).
+ - **FEAT**: Implement RxChip component (#665).
+ - **FEAT**: Implementing RxLabel (#666).
+ - **FEAT**: Support header on scaffold (#554).
+ - **FEAT**: Accordion interaction based on open variable (#546).
+ - **FEAT**: Create dark base theme for Remix (#498).
+ - **FEAT**: Implement RxAvatar component (#668).
+ - **FEAT**: Refactor radio and checkbox components with new architecture (#672).
+ - **FEAT**: Refactor RxSelect component with new architecture (#673).
+ - **FEAT**: Refactor slider and spinner components with new architecture (#674).
+ - **FEAT**: Rewrite FlexBox as a Mix's primitive component (#517).
+ - **FEAT**: Add focused style classes for spec utilities (#677).
+ - **FEAT**: Create Textfield (#511).
+ - **FEAT**: Slider component (#509).
+ - **FEAT**: Menu Item Component (#508).
+ - **FEAT**: Add Dark Theme.
+ - **FEAT**: Improve spring curve.
+ - **FEAT**: Chip component (#504).
+ - **FEAT**: implement toast component (#503).
+ - **FEAT**: Card has child instead of children parameter (#499).
+ - **FEAT**: Implement RxMenuItem component (#667).
+
+####
 
 ## 2025-03-31
 

@@ -16,7 +16,7 @@ void main() {}
 //         class TestSpec extends Spec<TestSpec> {
 //           final String name;
 //           final int age;
-          
+
 //           const TestSpec({required this.name, required this.age});
 //         }
 //       ''';
@@ -71,9 +71,9 @@ void main() {}
 //         class TestWidgetModifierSpec extends WidgetModifierSpec<TestWidgetModifierSpec> {
 //           final Color? color;
 //           final double? opacity;
-          
+
 //           const TestWidgetModifierSpec({this.color, this.opacity, super.animated});
-          
+
 //           @override
 //           TestWidgetModifierSpec copyWith() {
 //             return TestWidgetModifierSpec(
@@ -82,7 +82,7 @@ void main() {}
 //               animated: animated,
 //             );
 //           }
-          
+
 //           @override
 //           TestWidgetModifierSpec lerp(TestWidgetModifierSpec? other, double t) {
 //             return TestWidgetModifierSpec(
@@ -91,7 +91,7 @@ void main() {}
 //               animated: animated,
 //             );
 //           }
-          
+
 //           @override
 //           Widget build(Widget child) {
 //             return child;
@@ -151,7 +151,7 @@ void main() {}
 //       const testCode = '''
 //         class DiagnosticableSpec extends Spec with Diagnosticable {
 //           final String label;
-          
+
 //           const DiagnosticableSpec({required this.label});
 //         }
 //       ''';

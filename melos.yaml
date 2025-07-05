@@ -7,6 +7,8 @@ packages:
   - examples/*
   - packages/*/demo
 
+sdkPath: .fvm/flutter_sdk
+
 command:
   bootstrap:
     environment:
@@ -25,9 +27,7 @@ command:
 categories:
   flutter_projects: 
     - packages/mix
-    - packages/remix
     - packages/mix_lint
-    - packages/naked
     - packages/mix_lint_test
     - packages/annotations
   dart_projects:
@@ -132,7 +132,7 @@ scripts:
     run: melos exec --depends-on="mix_lint" dart pub run custom_lint
 
   exports:
-    run: melos exec --scope="mix" --scope="remix" dart run ../../scripts/exports.dart .
+    run: melos exec --scope="mix" dart run ../../scripts/exports.dart .
     description: Generate exports for the mix package
   
   verify_version_pubspec_changelog:
