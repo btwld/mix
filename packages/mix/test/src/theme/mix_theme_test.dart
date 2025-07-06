@@ -7,7 +7,7 @@ import '../../helpers/testing_utils.dart';
 void main() {
   const primaryColor = MixableToken<Color>('primary');
   const tokenUtil = MixTokensTest();
-  final theme = MixScopeData(
+  final theme = MixScopeData.static(
     tokens: {
       primaryColor: Colors.blue,
       tokenUtil.space.small: 30.0,
@@ -56,20 +56,25 @@ void main() {
           container.decoration,
           BoxDecoration(
             color: theme.tokens![primaryColor]!(context),
-            borderRadius:
-                BorderRadius.all(theme.tokens![tokenUtil.radius.small]!(context) as Radius),
+            borderRadius: BorderRadius.all(
+              theme.tokens![tokenUtil.radius.small]!(context) as Radius,
+            ),
           ),
         );
 
-        expect(container.padding!.horizontal / 2,
-            theme.tokens![tokenUtil.space.small]!(context));
+        expect(
+          container.padding!.horizontal / 2,
+          theme.tokens![tokenUtil.space.small]!(context),
+        );
 
         final textWidget = tester.widget<Text>(
           find.descendant(of: find.byKey(key), matching: find.byType(Text)),
         );
 
         expect(
-            textWidget.style, theme.tokens![$material.textTheme.bodyLarge]!(context));
+          textWidget.style,
+          theme.tokens![$material.textTheme.bodyLarge]!(context),
+        );
       },
     );
 

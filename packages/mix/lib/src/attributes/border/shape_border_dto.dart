@@ -2,9 +2,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
-import 'package:mix_annotations/mix_annotations.dart';
-
-part 'shape_border_dto.g.dart';
 
 @immutable
 sealed class ShapeBorderDto<T extends ShapeBorder> extends Mixable<T> {
@@ -26,7 +23,8 @@ sealed class ShapeBorderDto<T extends ShapeBorder> extends Mixable<T> {
     BorderSideDto? side,
     BorderRadiusGeometryDto? borderRadius,
     BoxShape? boxShape,
-  }) extract(ShapeBorderDto? dto) {
+  })
+  extract(ShapeBorderDto? dto) {
     return dto is OutlinedBorderDto
         ? (
             side: dto.side,
@@ -57,8 +55,10 @@ abstract class OutlinedBorderDto<T extends OutlinedBorder>
     return _exhaustiveMerge(a, b);
   }
 
-  static B _exhaustiveMerge<A extends OutlinedBorderDto,
-      B extends OutlinedBorderDto>(A a, B b) {
+  static B _exhaustiveMerge<
+    A extends OutlinedBorderDto,
+    B extends OutlinedBorderDto
+  >(A a, B b) {
     if (a.runtimeType == b.runtimeType) return a.merge(b) as B;
 
     final adaptedA = b.adapt(a) as B;
@@ -85,11 +85,8 @@ abstract class OutlinedBorderDto<T extends OutlinedBorder>
   OutlinedBorderDto<T> merge(covariant OutlinedBorderDto<T>? other);
 }
 
-@MixableType()
 final class RoundedRectangleBorderDto
-    extends OutlinedBorderDto<RoundedRectangleBorder>
-    with _$RoundedRectangleBorderDto {
-  @MixableField(dto: MixableFieldType(type: BorderRadiusGeometryDto))
+    extends OutlinedBorderDto<RoundedRectangleBorder> {
   final BorderRadiusGeometryDto? borderRadius;
 
   const RoundedRectangleBorderDto({this.borderRadius, super.side});
@@ -106,12 +103,55 @@ final class RoundedRectangleBorderDto
 
   @override
   BorderRadiusGeometryDto? get borderRadiusGetter => borderRadius;
+
+  /// Resolves to [RoundedRectangleBorder] using the provided [MixContext].
+  ///
+  /// If a property is null in the [MixContext], it falls back to the
+  /// default value defined in the `defaultValue` for that property.
+  ///
+  /// ```dart
+  /// final roundedRectangleBorder = RoundedRectangleBorderDto(...).resolve(mix);
+  /// ```
+  @override
+  RoundedRectangleBorder resolve(MixContext mix) {
+    return RoundedRectangleBorder(
+      borderRadius: borderRadius?.resolve(mix) ?? BorderRadius.zero,
+      side: side?.resolve(mix) ?? BorderSide.none,
+    );
+  }
+
+  /// Merges the properties of this [RoundedRectangleBorderDto] with the properties of [other].
+  ///
+  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
+  /// [RoundedRectangleBorderDto] with the properties of [other] taking precedence over
+  /// the corresponding properties of this instance.
+  ///
+  /// Properties from [other] that are null will fall back
+  /// to the values from this instance.
+  @override
+  RoundedRectangleBorderDto merge(RoundedRectangleBorderDto? other) {
+    if (other == null) return this;
+
+    return RoundedRectangleBorderDto(
+      borderRadius:
+          borderRadius?.merge(other.borderRadius) ?? other.borderRadius,
+      side: side?.merge(other.side) ?? other.side,
+    );
+  }
+
+  /// The list of properties that constitute the state of this [RoundedRectangleBorderDto].
+  ///
+  /// This property is used by the [==] operator and the [hashCode] getter to
+  /// compare two [RoundedRectangleBorderDto] instances for equality.
+  @override
+  List<Object?> get props => [
+        borderRadius,
+        side,
+      ];
 }
 
-@MixableType()
 final class BeveledRectangleBorderDto
-    extends OutlinedBorderDto<BeveledRectangleBorder>
-    with _$BeveledRectangleBorderDto {
+    extends OutlinedBorderDto<BeveledRectangleBorder> {
   final BorderRadiusGeometryDto? borderRadius;
 
   const BeveledRectangleBorderDto({this.borderRadius, super.side});
@@ -128,12 +168,55 @@ final class BeveledRectangleBorderDto
 
   @override
   BorderRadiusGeometryDto? get borderRadiusGetter => borderRadius;
+
+  /// Resolves to [BeveledRectangleBorder] using the provided [MixContext].
+  ///
+  /// If a property is null in the [MixContext], it falls back to the
+  /// default value defined in the `defaultValue` for that property.
+  ///
+  /// ```dart
+  /// final beveledRectangleBorder = BeveledRectangleBorderDto(...).resolve(mix);
+  /// ```
+  @override
+  BeveledRectangleBorder resolve(MixContext mix) {
+    return BeveledRectangleBorder(
+      borderRadius: borderRadius?.resolve(mix) ?? BorderRadius.zero,
+      side: side?.resolve(mix) ?? BorderSide.none,
+    );
+  }
+
+  /// Merges the properties of this [BeveledRectangleBorderDto] with the properties of [other].
+  ///
+  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
+  /// [BeveledRectangleBorderDto] with the properties of [other] taking precedence over
+  /// the corresponding properties of this instance.
+  ///
+  /// Properties from [other] that are null will fall back
+  /// to the values from this instance.
+  @override
+  BeveledRectangleBorderDto merge(BeveledRectangleBorderDto? other) {
+    if (other == null) return this;
+
+    return BeveledRectangleBorderDto(
+      borderRadius:
+          borderRadius?.merge(other.borderRadius) ?? other.borderRadius,
+      side: side?.merge(other.side) ?? other.side,
+    );
+  }
+
+  /// The list of properties that constitute the state of this [BeveledRectangleBorderDto].
+  ///
+  /// This property is used by the [==] operator and the [hashCode] getter to
+  /// compare two [BeveledRectangleBorderDto] instances for equality.
+  @override
+  List<Object?> get props => [
+        borderRadius,
+        side,
+      ];
 }
 
-@MixableType()
 final class ContinuousRectangleBorderDto
-    extends OutlinedBorderDto<ContinuousRectangleBorder>
-    with _$ContinuousRectangleBorderDto {
+    extends OutlinedBorderDto<ContinuousRectangleBorder> {
   final BorderRadiusGeometryDto? borderRadius;
 
   const ContinuousRectangleBorderDto({this.borderRadius, super.side});
@@ -152,11 +235,54 @@ final class ContinuousRectangleBorderDto
 
   @override
   BorderRadiusGeometryDto? get borderRadiusGetter => borderRadius;
+
+  /// Resolves to [ContinuousRectangleBorder] using the provided [MixContext].
+  ///
+  /// If a property is null in the [MixContext], it falls back to the
+  /// default value defined in the `defaultValue` for that property.
+  ///
+  /// ```dart
+  /// final continuousRectangleBorder = ContinuousRectangleBorderDto(...).resolve(mix);
+  /// ```
+  @override
+  ContinuousRectangleBorder resolve(MixContext mix) {
+    return ContinuousRectangleBorder(
+      borderRadius: borderRadius?.resolve(mix) ?? BorderRadius.zero,
+      side: side?.resolve(mix) ?? BorderSide.none,
+    );
+  }
+
+  /// Merges the properties of this [ContinuousRectangleBorderDto] with the properties of [other].
+  ///
+  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
+  /// [ContinuousRectangleBorderDto] with the properties of [other] taking precedence over
+  /// the corresponding properties of this instance.
+  ///
+  /// Properties from [other] that are null will fall back
+  /// to the values from this instance.
+  @override
+  ContinuousRectangleBorderDto merge(ContinuousRectangleBorderDto? other) {
+    if (other == null) return this;
+
+    return ContinuousRectangleBorderDto(
+      borderRadius:
+          borderRadius?.merge(other.borderRadius) ?? other.borderRadius,
+      side: side?.merge(other.side) ?? other.side,
+    );
+  }
+
+  /// The list of properties that constitute the state of this [ContinuousRectangleBorderDto].
+  ///
+  /// This property is used by the [==] operator and the [hashCode] getter to
+  /// compare two [ContinuousRectangleBorderDto] instances for equality.
+  @override
+  List<Object?> get props => [
+        borderRadius,
+        side,
+      ];
 }
 
-@MixableType()
-final class CircleBorderDto extends OutlinedBorderDto<CircleBorder>
-    with _$CircleBorderDto {
+final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
   final double? eccentricity;
 
   const CircleBorderDto({super.side, this.eccentricity});
@@ -172,11 +298,53 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder>
 
   @override
   BorderRadiusGeometryDto? get borderRadiusGetter => null;
+
+  /// Resolves to [CircleBorder] using the provided [MixContext].
+  ///
+  /// If a property is null in the [MixContext], it falls back to the
+  /// default value defined in the `defaultValue` for that property.
+  ///
+  /// ```dart
+  /// final circleBorder = CircleBorderDto(...).resolve(mix);
+  /// ```
+  @override
+  CircleBorder resolve(MixContext mix) {
+    return CircleBorder(
+      side: side?.resolve(mix) ?? BorderSide.none,
+      eccentricity: eccentricity ?? 0.0,
+    );
+  }
+
+  /// Merges the properties of this [CircleBorderDto] with the properties of [other].
+  ///
+  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
+  /// [CircleBorderDto] with the properties of [other] taking precedence over
+  /// the corresponding properties of this instance.
+  ///
+  /// Properties from [other] that are null will fall back
+  /// to the values from this instance.
+  @override
+  CircleBorderDto merge(CircleBorderDto? other) {
+    if (other == null) return this;
+
+    return CircleBorderDto(
+      side: side?.merge(other.side) ?? other.side,
+      eccentricity: other.eccentricity ?? eccentricity,
+    );
+  }
+
+  /// The list of properties that constitute the state of this [CircleBorderDto].
+  ///
+  /// This property is used by the [==] operator and the [hashCode] getter to
+  /// compare two [CircleBorderDto] instances for equality.
+  @override
+  List<Object?> get props => [
+        side,
+        eccentricity,
+      ];
 }
 
-@MixableType()
-final class StarBorderDto extends OutlinedBorderDto<StarBorder>
-    with _$StarBorderDto {
+final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
   final double? points;
   final double? innerRadiusRatio;
   final double? pointRounding;
@@ -201,11 +369,68 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder>
 
   @override
   BorderRadiusGeometryDto? get borderRadiusGetter => null;
+
+  /// Resolves to [StarBorder] using the provided [MixContext].
+  ///
+  /// If a property is null in the [MixContext], it falls back to the
+  /// default value defined in the `defaultValue` for that property.
+  ///
+  /// ```dart
+  /// final starBorder = StarBorderDto(...).resolve(mix);
+  /// ```
+  @override
+  StarBorder resolve(MixContext mix) {
+    return StarBorder(
+      side: side?.resolve(mix) ?? BorderSide.none,
+      points: points ?? 5,
+      innerRadiusRatio: innerRadiusRatio ?? 0.4,
+      pointRounding: pointRounding ?? 0,
+      valleyRounding: valleyRounding ?? 0,
+      rotation: rotation ?? 0,
+      squash: squash ?? 0,
+    );
+  }
+
+  /// Merges the properties of this [StarBorderDto] with the properties of [other].
+  ///
+  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
+  /// [StarBorderDto] with the properties of [other] taking precedence over
+  /// the corresponding properties of this instance.
+  ///
+  /// Properties from [other] that are null will fall back
+  /// to the values from this instance.
+  @override
+  StarBorderDto merge(StarBorderDto? other) {
+    if (other == null) return this;
+
+    return StarBorderDto(
+      side: side?.merge(other.side) ?? other.side,
+      points: other.points ?? points,
+      innerRadiusRatio: other.innerRadiusRatio ?? innerRadiusRatio,
+      pointRounding: other.pointRounding ?? pointRounding,
+      valleyRounding: other.valleyRounding ?? valleyRounding,
+      rotation: other.rotation ?? rotation,
+      squash: other.squash ?? squash,
+    );
+  }
+
+  /// The list of properties that constitute the state of this [StarBorderDto].
+  ///
+  /// This property is used by the [==] operator and the [hashCode] getter to
+  /// compare two [StarBorderDto] instances for equality.
+  @override
+  List<Object?> get props => [
+        side,
+        points,
+        innerRadiusRatio,
+        pointRounding,
+        valleyRounding,
+        rotation,
+        squash,
+      ];
 }
 
-@MixableType()
-final class LinearBorderDto extends OutlinedBorderDto<LinearBorder>
-    with _$LinearBorderDto {
+final class LinearBorderDto extends OutlinedBorderDto<LinearBorder> {
   final LinearBorderEdgeDto? start;
   final LinearBorderEdgeDto? end;
   final LinearBorderEdgeDto? top;
@@ -230,20 +455,113 @@ final class LinearBorderDto extends OutlinedBorderDto<LinearBorder>
 
   @override
   BorderRadiusGeometryDto? get borderRadiusGetter => null;
+
+  /// Resolves to [LinearBorder] using the provided [MixContext].
+  ///
+  /// If a property is null in the [MixContext], it falls back to the
+  /// default value defined in the `defaultValue` for that property.
+  ///
+  /// ```dart
+  /// final linearBorder = LinearBorderDto(...).resolve(mix);
+  /// ```
+  @override
+  LinearBorder resolve(MixContext mix) {
+    return LinearBorder(
+      side: side?.resolve(mix) ?? BorderSide.none,
+      start: start?.resolve(mix),
+      end: end?.resolve(mix),
+      top: top?.resolve(mix),
+      bottom: bottom?.resolve(mix),
+    );
+  }
+
+  /// Merges the properties of this [LinearBorderDto] with the properties of [other].
+  ///
+  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
+  /// [LinearBorderDto] with the properties of [other] taking precedence over
+  /// the corresponding properties of this instance.
+  ///
+  /// Properties from [other] that are null will fall back
+  /// to the values from this instance.
+  @override
+  LinearBorderDto merge(LinearBorderDto? other) {
+    if (other == null) return this;
+
+    return LinearBorderDto(
+      side: side?.merge(other.side) ?? other.side,
+      start: start?.merge(other.start) ?? other.start,
+      end: end?.merge(other.end) ?? other.end,
+      top: top?.merge(other.top) ?? other.top,
+      bottom: bottom?.merge(other.bottom) ?? other.bottom,
+    );
+  }
+
+  /// The list of properties that constitute the state of this [LinearBorderDto].
+  ///
+  /// This property is used by the [==] operator and the [hashCode] getter to
+  /// compare two [LinearBorderDto] instances for equality.
+  @override
+  List<Object?> get props => [
+        side,
+        start,
+        end,
+        top,
+        bottom,
+      ];
 }
 
-@MixableType()
-final class LinearBorderEdgeDto extends Mixable<LinearBorderEdge>
-    with _$LinearBorderEdgeDto {
+final class LinearBorderEdgeDto extends Mixable<LinearBorderEdge> {
   final double? size;
   final double? alignment;
 
   const LinearBorderEdgeDto({this.size, this.alignment});
+
+  /// Resolves to [LinearBorderEdge] using the provided [MixContext].
+  ///
+  /// If a property is null in the [MixContext], it falls back to the
+  /// default value defined in the `defaultValue` for that property.
+  ///
+  /// ```dart
+  /// final linearBorderEdge = LinearBorderEdgeDto(...).resolve(mix);
+  /// ```
+  @override
+  LinearBorderEdge resolve(MixContext mix) {
+    return LinearBorderEdge(
+      size: size ?? 1.0,
+      alignment: alignment ?? 0.0,
+    );
+  }
+
+  /// Merges the properties of this [LinearBorderEdgeDto] with the properties of [other].
+  ///
+  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
+  /// [LinearBorderEdgeDto] with the properties of [other] taking precedence over
+  /// the corresponding properties of this instance.
+  ///
+  /// Properties from [other] that are null will fall back
+  /// to the values from this instance.
+  @override
+  LinearBorderEdgeDto merge(LinearBorderEdgeDto? other) {
+    if (other == null) return this;
+
+    return LinearBorderEdgeDto(
+      size: other.size ?? size,
+      alignment: other.alignment ?? alignment,
+    );
+  }
+
+  /// The list of properties that constitute the state of this [LinearBorderEdgeDto].
+  ///
+  /// This property is used by the [==] operator and the [hashCode] getter to
+  /// compare two [LinearBorderEdgeDto] instances for equality.
+  @override
+  List<Object?> get props => [
+        size,
+        alignment,
+      ];
 }
 
-@MixableType()
-final class StadiumBorderDto extends OutlinedBorderDto<StadiumBorder>
-    with _$StadiumBorderDto {
+final class StadiumBorderDto extends OutlinedBorderDto<StadiumBorder> {
   const StadiumBorderDto({super.side});
 
   @override
@@ -257,6 +575,47 @@ final class StadiumBorderDto extends OutlinedBorderDto<StadiumBorder>
 
   @override
   BorderRadiusGeometryDto? get borderRadiusGetter => null;
+
+  /// Resolves to [StadiumBorder] using the provided [MixContext].
+  ///
+  /// If a property is null in the [MixContext], it falls back to the
+  /// default value defined in the `defaultValue` for that property.
+  ///
+  /// ```dart
+  /// final stadiumBorder = StadiumBorderDto(...).resolve(mix);
+  /// ```
+  @override
+  StadiumBorder resolve(MixContext mix) {
+    return StadiumBorder(
+      side: side?.resolve(mix) ?? BorderSide.none,
+    );
+  }
+
+  /// Merges the properties of this [StadiumBorderDto] with the properties of [other].
+  ///
+  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
+  /// [StadiumBorderDto] with the properties of [other] taking precedence over
+  /// the corresponding properties of this instance.
+  ///
+  /// Properties from [other] that are null will fall back
+  /// to the values from this instance.
+  @override
+  StadiumBorderDto merge(StadiumBorderDto? other) {
+    if (other == null) return this;
+
+    return StadiumBorderDto(
+      side: side?.merge(other.side) ?? other.side,
+    );
+  }
+
+  /// The list of properties that constitute the state of this [StadiumBorderDto].
+  ///
+  /// This property is used by the [==] operator and the [hashCode] getter to
+  /// compare two [StadiumBorderDto] instances for equality.
+  @override
+  List<Object?> get props => [
+        side,
+      ];
 }
 
 abstract class MixOutlinedBorder<T extends OutlinedBorderDto>
@@ -332,6 +691,358 @@ extension ShapeBorderExt on ShapeBorder {
   }
 }
 
+/// Utility class for configuring [RoundedRectangleBorder] properties.
+///
+/// This class provides methods to set individual properties of a [RoundedRectangleBorder].
+/// Use the methods of this class to configure specific properties of a [RoundedRectangleBorder].
+class RoundedRectangleBorderUtility<T extends StyleElement>
+    extends DtoUtility<T, RoundedRectangleBorderDto, RoundedRectangleBorder> {
+  /// Utility for defining [RoundedRectangleBorderDto.borderRadius]
+  late final borderRadius =
+      BorderRadiusGeometryUtility((v) => only(borderRadius: v));
+
+  /// Utility for defining [RoundedRectangleBorderDto.side]
+  late final side = BorderSideUtility((v) => only(side: v));
+
+  RoundedRectangleBorderUtility(super.builder)
+      : super(valueToDto: (v) => v.toDto());
+
+  /// Returns a new [RoundedRectangleBorderDto] with the specified properties.
+  @override
+  T only({
+    BorderRadiusGeometryDto? borderRadius,
+    BorderSideDto? side,
+  }) {
+    return builder(RoundedRectangleBorderDto(
+      borderRadius: borderRadius,
+      side: side,
+    ));
+  }
+
+  T call({
+    BorderRadiusGeometry? borderRadius,
+    BorderSide? side,
+  }) {
+    return only(
+      borderRadius: borderRadius?.toDto(),
+      side: side?.toDto(),
+    );
+  }
+}
+
+/// Utility class for configuring [BeveledRectangleBorder] properties.
+///
+/// This class provides methods to set individual properties of a [BeveledRectangleBorder].
+/// Use the methods of this class to configure specific properties of a [BeveledRectangleBorder].
+class BeveledRectangleBorderUtility<T extends StyleElement>
+    extends DtoUtility<T, BeveledRectangleBorderDto, BeveledRectangleBorder> {
+  /// Utility for defining [BeveledRectangleBorderDto.borderRadius]
+  late final borderRadius =
+      BorderRadiusGeometryUtility((v) => only(borderRadius: v));
+
+  /// Utility for defining [BeveledRectangleBorderDto.side]
+  late final side = BorderSideUtility((v) => only(side: v));
+
+  BeveledRectangleBorderUtility(super.builder)
+      : super(valueToDto: (v) => v.toDto());
+
+  /// Returns a new [BeveledRectangleBorderDto] with the specified properties.
+  @override
+  T only({
+    BorderRadiusGeometryDto? borderRadius,
+    BorderSideDto? side,
+  }) {
+    return builder(BeveledRectangleBorderDto(
+      borderRadius: borderRadius,
+      side: side,
+    ));
+  }
+
+  T call({
+    BorderRadiusGeometry? borderRadius,
+    BorderSide? side,
+  }) {
+    return only(
+      borderRadius: borderRadius?.toDto(),
+      side: side?.toDto(),
+    );
+  }
+}
+
+/// Utility class for configuring [ContinuousRectangleBorder] properties.
+///
+/// This class provides methods to set individual properties of a [ContinuousRectangleBorder].
+/// Use the methods of this class to configure specific properties of a [ContinuousRectangleBorder].
+class ContinuousRectangleBorderUtility<T extends StyleElement>
+    extends DtoUtility<T, ContinuousRectangleBorderDto,
+        ContinuousRectangleBorder> {
+  /// Utility for defining [ContinuousRectangleBorderDto.borderRadius]
+  late final borderRadius =
+      BorderRadiusGeometryUtility((v) => only(borderRadius: v));
+
+  /// Utility for defining [ContinuousRectangleBorderDto.side]
+  late final side = BorderSideUtility((v) => only(side: v));
+
+  ContinuousRectangleBorderUtility(super.builder)
+      : super(valueToDto: (v) => v.toDto());
+
+  /// Returns a new [ContinuousRectangleBorderDto] with the specified properties.
+  @override
+  T only({
+    BorderRadiusGeometryDto? borderRadius,
+    BorderSideDto? side,
+  }) {
+    return builder(ContinuousRectangleBorderDto(
+      borderRadius: borderRadius,
+      side: side,
+    ));
+  }
+
+  T call({
+    BorderRadiusGeometry? borderRadius,
+    BorderSide? side,
+  }) {
+    return only(
+      borderRadius: borderRadius?.toDto(),
+      side: side?.toDto(),
+    );
+  }
+}
+
+/// Utility class for configuring [CircleBorder] properties.
+///
+/// This class provides methods to set individual properties of a [CircleBorder].
+/// Use the methods of this class to configure specific properties of a [CircleBorder].
+class CircleBorderUtility<T extends StyleElement>
+    extends DtoUtility<T, CircleBorderDto, CircleBorder> {
+  /// Utility for defining [CircleBorderDto.side]
+  late final side = BorderSideUtility((v) => only(side: v));
+
+  /// Utility for defining [CircleBorderDto.eccentricity]
+  late final eccentricity = DoubleUtility((v) => only(eccentricity: v));
+
+  CircleBorderUtility(super.builder) : super(valueToDto: (v) => v.toDto());
+
+  /// Returns a new [CircleBorderDto] with the specified properties.
+  @override
+  T only({
+    BorderSideDto? side,
+    double? eccentricity,
+  }) {
+    return builder(CircleBorderDto(
+      side: side,
+      eccentricity: eccentricity,
+    ));
+  }
+
+  T call({
+    BorderSide? side,
+    double? eccentricity,
+  }) {
+    return only(
+      side: side?.toDto(),
+      eccentricity: eccentricity,
+    );
+  }
+}
+
+/// Utility class for configuring [StarBorder] properties.
+///
+/// This class provides methods to set individual properties of a [StarBorder].
+/// Use the methods of this class to configure specific properties of a [StarBorder].
+class StarBorderUtility<T extends StyleElement>
+    extends DtoUtility<T, StarBorderDto, StarBorder> {
+  /// Utility for defining [StarBorderDto.side]
+  late final side = BorderSideUtility((v) => only(side: v));
+
+  /// Utility for defining [StarBorderDto.points]
+  late final points = DoubleUtility((v) => only(points: v));
+
+  /// Utility for defining [StarBorderDto.innerRadiusRatio]
+  late final innerRadiusRatio = DoubleUtility((v) => only(innerRadiusRatio: v));
+
+  /// Utility for defining [StarBorderDto.pointRounding]
+  late final pointRounding = DoubleUtility((v) => only(pointRounding: v));
+
+  /// Utility for defining [StarBorderDto.valleyRounding]
+  late final valleyRounding = DoubleUtility((v) => only(valleyRounding: v));
+
+  /// Utility for defining [StarBorderDto.rotation]
+  late final rotation = DoubleUtility((v) => only(rotation: v));
+
+  /// Utility for defining [StarBorderDto.squash]
+  late final squash = DoubleUtility((v) => only(squash: v));
+
+  StarBorderUtility(super.builder) : super(valueToDto: (v) => v.toDto());
+
+  /// Returns a new [StarBorderDto] with the specified properties.
+  @override
+  T only({
+    BorderSideDto? side,
+    double? points,
+    double? innerRadiusRatio,
+    double? pointRounding,
+    double? valleyRounding,
+    double? rotation,
+    double? squash,
+  }) {
+    return builder(StarBorderDto(
+      side: side,
+      points: points,
+      innerRadiusRatio: innerRadiusRatio,
+      pointRounding: pointRounding,
+      valleyRounding: valleyRounding,
+      rotation: rotation,
+      squash: squash,
+    ));
+  }
+
+  T call({
+    BorderSide? side,
+    double? points,
+    double? innerRadiusRatio,
+    double? pointRounding,
+    double? valleyRounding,
+    double? rotation,
+    double? squash,
+  }) {
+    return only(
+      side: side?.toDto(),
+      points: points,
+      innerRadiusRatio: innerRadiusRatio,
+      pointRounding: pointRounding,
+      valleyRounding: valleyRounding,
+      rotation: rotation,
+      squash: squash,
+    );
+  }
+}
+
+/// Utility class for configuring [LinearBorder] properties.
+///
+/// This class provides methods to set individual properties of a [LinearBorder].
+/// Use the methods of this class to configure specific properties of a [LinearBorder].
+class LinearBorderUtility<T extends StyleElement>
+    extends DtoUtility<T, LinearBorderDto, LinearBorder> {
+  /// Utility for defining [LinearBorderDto.side]
+  late final side = BorderSideUtility((v) => only(side: v));
+
+  /// Utility for defining [LinearBorderDto.start]
+  late final start = LinearBorderEdgeUtility((v) => only(start: v));
+
+  /// Utility for defining [LinearBorderDto.end]
+  late final end = LinearBorderEdgeUtility((v) => only(end: v));
+
+  /// Utility for defining [LinearBorderDto.top]
+  late final top = LinearBorderEdgeUtility((v) => only(top: v));
+
+  /// Utility for defining [LinearBorderDto.bottom]
+  late final bottom = LinearBorderEdgeUtility((v) => only(bottom: v));
+
+  LinearBorderUtility(super.builder) : super(valueToDto: (v) => v.toDto());
+
+  /// Returns a new [LinearBorderDto] with the specified properties.
+  @override
+  T only({
+    BorderSideDto? side,
+    LinearBorderEdgeDto? start,
+    LinearBorderEdgeDto? end,
+    LinearBorderEdgeDto? top,
+    LinearBorderEdgeDto? bottom,
+  }) {
+    return builder(LinearBorderDto(
+      side: side,
+      start: start,
+      end: end,
+      top: top,
+      bottom: bottom,
+    ));
+  }
+
+  T call({
+    BorderSide? side,
+    LinearBorderEdge? start,
+    LinearBorderEdge? end,
+    LinearBorderEdge? top,
+    LinearBorderEdge? bottom,
+  }) {
+    return only(
+      side: side?.toDto(),
+      start: start?.toDto(),
+      end: end?.toDto(),
+      top: top?.toDto(),
+      bottom: bottom?.toDto(),
+    );
+  }
+}
+
+/// Utility class for configuring [LinearBorderEdge] properties.
+///
+/// This class provides methods to set individual properties of a [LinearBorderEdge].
+/// Use the methods of this class to configure specific properties of a [LinearBorderEdge].
+class LinearBorderEdgeUtility<T extends StyleElement>
+    extends DtoUtility<T, LinearBorderEdgeDto, LinearBorderEdge> {
+  /// Utility for defining [LinearBorderEdgeDto.size]
+  late final size = DoubleUtility((v) => only(size: v));
+
+  /// Utility for defining [LinearBorderEdgeDto.alignment]
+  late final alignment = DoubleUtility((v) => only(alignment: v));
+
+  LinearBorderEdgeUtility(super.builder) : super(valueToDto: (v) => v.toDto());
+
+  /// Returns a new [LinearBorderEdgeDto] with the specified properties.
+  @override
+  T only({
+    double? size,
+    double? alignment,
+  }) {
+    return builder(LinearBorderEdgeDto(
+      size: size,
+      alignment: alignment,
+    ));
+  }
+
+  T call({
+    double? size,
+    double? alignment,
+  }) {
+    return only(
+      size: size,
+      alignment: alignment,
+    );
+  }
+}
+
+/// Utility class for configuring [StadiumBorder] properties.
+///
+/// This class provides methods to set individual properties of a [StadiumBorder].
+/// Use the methods of this class to configure specific properties of a [StadiumBorder].
+class StadiumBorderUtility<T extends StyleElement>
+    extends DtoUtility<T, StadiumBorderDto, StadiumBorder> {
+  /// Utility for defining [StadiumBorderDto.side]
+  late final side = BorderSideUtility((v) => only(side: v));
+
+  StadiumBorderUtility(super.builder) : super(valueToDto: (v) => v.toDto());
+
+  /// Returns a new [StadiumBorderDto] with the specified properties.
+  @override
+  T only({
+    BorderSideDto? side,
+  }) {
+    return builder(StadiumBorderDto(
+      side: side,
+    ));
+  }
+
+  T call({
+    BorderSide? side,
+  }) {
+    return only(
+      side: side?.toDto(),
+    );
+  }
+}
+
 class ShapeBorderUtility<T extends StyleElement>
     extends MixUtility<T, ShapeBorderDto> {
   late final beveledRectangle = BeveledRectangleBorderUtility(builder);
@@ -351,4 +1062,164 @@ class ShapeBorderUtility<T extends StyleElement>
   late final shapeBuilder = builder;
 
   ShapeBorderUtility(super.builder);
+}
+
+/// Extension methods to convert [RoundedRectangleBorder] to [RoundedRectangleBorderDto].
+extension RoundedRectangleBorderMixExt on RoundedRectangleBorder {
+  /// Converts this [RoundedRectangleBorder] to a [RoundedRectangleBorderDto].
+  RoundedRectangleBorderDto toDto() {
+    return RoundedRectangleBorderDto(
+      borderRadius: borderRadius.toDto(),
+      side: side.toDto(),
+    );
+  }
+}
+
+/// Extension methods to convert List<[RoundedRectangleBorder]> to List<[RoundedRectangleBorderDto]>.
+extension ListRoundedRectangleBorderMixExt on List<RoundedRectangleBorder> {
+  /// Converts this List<[RoundedRectangleBorder]> to a List<[RoundedRectangleBorderDto]>.
+  List<RoundedRectangleBorderDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
+}
+
+/// Extension methods to convert [BeveledRectangleBorder] to [BeveledRectangleBorderDto].
+extension BeveledRectangleBorderMixExt on BeveledRectangleBorder {
+  /// Converts this [BeveledRectangleBorder] to a [BeveledRectangleBorderDto].
+  BeveledRectangleBorderDto toDto() {
+    return BeveledRectangleBorderDto(
+      borderRadius: borderRadius.toDto(),
+      side: side.toDto(),
+    );
+  }
+}
+
+/// Extension methods to convert List<[BeveledRectangleBorder]> to List<[BeveledRectangleBorderDto]>.
+extension ListBeveledRectangleBorderMixExt on List<BeveledRectangleBorder> {
+  /// Converts this List<[BeveledRectangleBorder]> to a List<[BeveledRectangleBorderDto]>.
+  List<BeveledRectangleBorderDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
+}
+
+/// Extension methods to convert [ContinuousRectangleBorder] to [ContinuousRectangleBorderDto].
+extension ContinuousRectangleBorderMixExt on ContinuousRectangleBorder {
+  /// Converts this [ContinuousRectangleBorder] to a [ContinuousRectangleBorderDto].
+  ContinuousRectangleBorderDto toDto() {
+    return ContinuousRectangleBorderDto(
+      borderRadius: borderRadius.toDto(),
+      side: side.toDto(),
+    );
+  }
+}
+
+/// Extension methods to convert List<[ContinuousRectangleBorder]> to List<[ContinuousRectangleBorderDto]>.
+extension ListContinuousRectangleBorderMixExt
+    on List<ContinuousRectangleBorder> {
+  /// Converts this List<[ContinuousRectangleBorder]> to a List<[ContinuousRectangleBorderDto]>.
+  List<ContinuousRectangleBorderDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
+}
+
+/// Extension methods to convert [CircleBorder] to [CircleBorderDto].
+extension CircleBorderMixExt on CircleBorder {
+  /// Converts this [CircleBorder] to a [CircleBorderDto].
+  CircleBorderDto toDto() {
+    return CircleBorderDto(
+      side: side.toDto(),
+      eccentricity: eccentricity,
+    );
+  }
+}
+
+/// Extension methods to convert List<[CircleBorder]> to List<[CircleBorderDto]>.
+extension ListCircleBorderMixExt on List<CircleBorder> {
+  /// Converts this List<[CircleBorder]> to a List<[CircleBorderDto]>.
+  List<CircleBorderDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
+}
+
+/// Extension methods to convert [StarBorder] to [StarBorderDto].
+extension StarBorderMixExt on StarBorder {
+  /// Converts this [StarBorder] to a [StarBorderDto].
+  StarBorderDto toDto() {
+    return StarBorderDto(
+      side: side.toDto(),
+      points: points,
+      innerRadiusRatio: innerRadiusRatio,
+      pointRounding: pointRounding,
+      valleyRounding: valleyRounding,
+      rotation: rotation,
+      squash: squash,
+    );
+  }
+}
+
+/// Extension methods to convert List<[StarBorder]> to List<[StarBorderDto]>.
+extension ListStarBorderMixExt on List<StarBorder> {
+  /// Converts this List<[StarBorder]> to a List<[StarBorderDto]>.
+  List<StarBorderDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
+}
+
+/// Extension methods to convert [LinearBorder] to [LinearBorderDto].
+extension LinearBorderMixExt on LinearBorder {
+  /// Converts this [LinearBorder] to a [LinearBorderDto].
+  LinearBorderDto toDto() {
+    return LinearBorderDto(
+      side: side.toDto(),
+      start: start?.toDto(),
+      end: end?.toDto(),
+      top: top?.toDto(),
+      bottom: bottom?.toDto(),
+    );
+  }
+}
+
+/// Extension methods to convert List<[LinearBorder]> to List<[LinearBorderDto]>.
+extension ListLinearBorderMixExt on List<LinearBorder> {
+  /// Converts this List<[LinearBorder]> to a List<[LinearBorderDto]>.
+  List<LinearBorderDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
+}
+
+/// Extension methods to convert [LinearBorderEdge] to [LinearBorderEdgeDto].
+extension LinearBorderEdgeMixExt on LinearBorderEdge {
+  /// Converts this [LinearBorderEdge] to a [LinearBorderEdgeDto].
+  LinearBorderEdgeDto toDto() {
+    return LinearBorderEdgeDto(
+      size: size,
+      alignment: alignment,
+    );
+  }
+}
+
+/// Extension methods to convert List<[LinearBorderEdge]> to List<[LinearBorderEdgeDto]>.
+extension ListLinearBorderEdgeMixExt on List<LinearBorderEdge> {
+  /// Converts this List<[LinearBorderEdge]> to a List<[LinearBorderEdgeDto]>.
+  List<LinearBorderEdgeDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
+}
+
+/// Extension methods to convert [StadiumBorder] to [StadiumBorderDto].
+extension StadiumBorderMixExt on StadiumBorder {
+  /// Converts this [StadiumBorder] to a [StadiumBorderDto].
+  StadiumBorderDto toDto() {
+    return StadiumBorderDto(
+      side: side.toDto(),
+    );
+  }
+}
+
+/// Extension methods to convert List<[StadiumBorder]> to List<[StadiumBorderDto]>.
+extension ListStadiumBorderMixExt on List<StadiumBorder> {
+  /// Converts this List<[StadiumBorder]> to a List<[StadiumBorderDto]>.
+  List<StadiumBorderDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
 }

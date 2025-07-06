@@ -16,7 +16,7 @@ void main() {
         width: 10.0,
       );
 
-      expect(result.value.top?.color?.value, Colors.red);
+      expect(result.value.top?.color, const Mixable.value(Colors.red));
       expect(result.value.top?.width, 10.0);
       expect(result.value.top?.style, BorderStyle.solid);
       expect(result.value.top?.strokeAlign, 0.5);
@@ -29,7 +29,7 @@ void main() {
       final resultStyle = border.top.style(BorderStyle.solid);
       final resultStrokeAlign = border.top.strokeAlign(0.2);
 
-      expect(resultColor.value.top?.color?.value, Colors.yellow);
+      expect(resultColor.value.top?.color, const Mixable.value(Colors.yellow));
       expect(resultWidth.value.top?.width, 20.0);
       expect(resultStyle.value.top?.style, BorderStyle.solid);
       expect(resultStrokeAlign.value.top?.strokeAlign, 0.2);
@@ -43,7 +43,7 @@ void main() {
         width: 10.0,
       );
 
-      expect(result.value.bottom?.color?.value, Colors.red);
+      expect(result.value.bottom?.color, const Mixable.value(Colors.red));
       expect(result.value.bottom?.width, 10.0);
       expect(result.value.bottom?.style, BorderStyle.solid);
       expect(result.value.bottom?.strokeAlign, 0.5);
@@ -56,7 +56,10 @@ void main() {
       final resultStyle = border.bottom.style(BorderStyle.solid);
       final resultStrokeAlign = border.bottom.strokeAlign(0.2);
 
-      expect(resultColor.value.bottom?.color?.value, Colors.yellow);
+      expect(
+        resultColor.value.bottom?.color,
+        const Mixable.value(Colors.yellow),
+      );
       expect(resultWidth.value.bottom?.width, 20.0);
       expect(resultStyle.value.bottom?.style, BorderStyle.solid);
       expect(resultStrokeAlign.value.bottom?.strokeAlign, 0.2);
@@ -69,7 +72,7 @@ void main() {
         style: BorderStyle.solid,
         width: 10.0,
       );
-      expect(result.value.left?.color?.value, Colors.red);
+      expect(result.value.left?.color, const Mixable.value(Colors.red));
       expect(result.value.left?.width, 10.0);
       expect(result.value.left?.style, BorderStyle.solid);
       expect(result.value.left?.strokeAlign, 0.5);
@@ -82,7 +85,7 @@ void main() {
       final resultStyle = border.left.style(BorderStyle.solid);
       final resultStrokeAlign = border.left.strokeAlign(0.2);
 
-      expect(resultColor.value.left?.color?.value, Colors.yellow);
+      expect(resultColor.value.left?.color, const Mixable.value(Colors.yellow));
       expect(resultWidth.value.left?.width, 20.0);
       expect(resultStyle.value.left?.style, BorderStyle.solid);
       expect(resultStrokeAlign.value.left?.strokeAlign, 0.2);
@@ -95,7 +98,7 @@ void main() {
         style: BorderStyle.solid,
         width: 10.0,
       );
-      expect(result.value.right?.color?.value, Colors.red);
+      expect(result.value.right?.color, const Mixable.value(Colors.red));
       expect(result.value.right?.width, 10.0);
       expect(result.value.right?.style, BorderStyle.solid);
       expect(result.value.right?.strokeAlign, 0.5);
@@ -108,7 +111,10 @@ void main() {
       final resultStyle = border.right.style(BorderStyle.solid);
       final resultStrokeAlign = border.right.strokeAlign(0.2);
 
-      expect(resultColor.value.right?.color?.value, Colors.yellow);
+      expect(
+        resultColor.value.right?.color,
+        const Mixable.value(Colors.yellow),
+      );
       expect(resultWidth.value.right?.width, 20.0);
       expect(resultStyle.value.right?.style, BorderStyle.solid);
       expect(resultStrokeAlign.value.right?.strokeAlign, 0.2);
@@ -121,11 +127,11 @@ void main() {
         style: BorderStyle.solid,
         width: 5.0,
       );
-      expect(result.value.top?.color?.value, Colors.blue);
+      expect(result.value.top?.color, const Mixable.value(Colors.blue));
       expect(result.value.top?.width, 5.0);
       expect(result.value.top?.style, BorderStyle.solid);
       expect(result.value.top?.strokeAlign, 0.3);
-      expect(result.value.bottom?.color?.value, Colors.blue);
+      expect(result.value.bottom?.color, const Mixable.value(Colors.blue));
       expect(result.value.bottom?.width, 5.0);
       expect(result.value.bottom?.style, BorderStyle.solid);
       expect(result.value.bottom?.strokeAlign, 0.3);
@@ -137,12 +143,15 @@ void main() {
       final resultStyle = border.horizontal.style(BorderStyle.solid);
       final resultStrokeAlign = border.horizontal.strokeAlign(0.2);
 
-      expect(resultColor.value.top?.color?.value, Colors.yellow);
+      expect(resultColor.value.top?.color, const Mixable.value(Colors.yellow));
       expect(resultWidth.value.top?.width, 20.0);
       expect(resultStyle.value.top?.style, BorderStyle.solid);
       expect(resultStrokeAlign.value.top?.strokeAlign, 0.2);
 
-      expect(resultColor.value.bottom?.color?.value, Colors.yellow);
+      expect(
+        resultColor.value.bottom?.color,
+        const Mixable.value(Colors.yellow),
+      );
       expect(resultWidth.value.bottom?.width, 20.0);
       expect(resultStyle.value.bottom?.style, BorderStyle.solid);
       expect(resultStrokeAlign.value.bottom?.strokeAlign, 0.2);
@@ -155,11 +164,11 @@ void main() {
         style: BorderStyle.solid,
         width: 7.0,
       );
-      expect(result.value.left?.color?.value, Colors.green);
+      expect(result.value.left?.color, const Mixable.value(Colors.green));
       expect(result.value.left?.width, 7.0);
       expect(result.value.left?.style, BorderStyle.solid);
       expect(result.value.left?.strokeAlign, 0.2);
-      expect(result.value.right?.color?.value, Colors.green);
+      expect(result.value.right?.color, const Mixable.value(Colors.green));
       expect(result.value.right?.width, 7.0);
       expect(result.value.right?.style, BorderStyle.solid);
       expect(result.value.right?.strokeAlign, 0.2);
@@ -171,12 +180,15 @@ void main() {
       final resultStyle = border.vertical.style(BorderStyle.solid);
       final resultStrokeAlign = border.vertical.strokeAlign(0.2);
 
-      expect(resultColor.value.left?.color?.value, Colors.yellow);
+      expect(resultColor.value.left?.color, const Mixable.value(Colors.yellow));
       expect(resultWidth.value.left?.width, 20.0);
       expect(resultStyle.value.left?.style, BorderStyle.solid);
       expect(resultStrokeAlign.value.left?.strokeAlign, 0.2);
 
-      expect(resultColor.value.right?.color?.value, Colors.yellow);
+      expect(
+        resultColor.value.right?.color,
+        const Mixable.value(Colors.yellow),
+      );
       expect(resultWidth.value.right?.width, 20.0);
       expect(resultStyle.value.right?.style, BorderStyle.solid);
       expect(resultStrokeAlign.value.right?.strokeAlign, 0.2);
@@ -189,19 +201,19 @@ void main() {
         style: BorderStyle.solid,
         width: 3.0,
       );
-      expect(result.value.top?.color?.value, Colors.purple);
+      expect(result.value.top?.color, const Mixable.value(Colors.purple));
       expect(result.value.top?.width, 3.0);
       expect(result.value.top?.style, BorderStyle.solid);
       expect(result.value.top?.strokeAlign, 0.1);
-      expect(result.value.bottom?.color?.value, Colors.purple);
+      expect(result.value.bottom?.color, const Mixable.value(Colors.purple));
       expect(result.value.bottom?.width, 3.0);
       expect(result.value.bottom?.style, BorderStyle.solid);
       expect(result.value.bottom?.strokeAlign, 0.1);
-      expect(result.value.left?.color?.value, Colors.purple);
+      expect(result.value.left?.color, const Mixable.value(Colors.purple));
       expect(result.value.left?.width, 3.0);
       expect(result.value.left?.style, BorderStyle.solid);
       expect(result.value.left?.strokeAlign, 0.1);
-      expect(result.value.right?.color?.value, Colors.purple);
+      expect(result.value.right?.color, const Mixable.value(Colors.purple));
       expect(result.value.right?.width, 3.0);
       expect(result.value.right?.style, BorderStyle.solid);
       expect(result.value.right?.strokeAlign, 0.1);
@@ -211,22 +223,28 @@ void main() {
       final resultStyle = border.all.style(BorderStyle.solid);
       final resultStrokeAlign = border.all.strokeAlign(0.2);
 
-      expect(resultColor.value.top?.color?.value, Colors.yellow);
+      expect(resultColor.value.top?.color, const Mixable.value(Colors.yellow));
       expect(resultWidth.value.top?.width, 20.0);
       expect(resultStyle.value.top?.style, BorderStyle.solid);
       expect(resultStrokeAlign.value.top?.strokeAlign, 0.2);
 
-      expect(resultColor.value.bottom?.color?.value, Colors.yellow);
+      expect(
+        resultColor.value.bottom?.color,
+        const Mixable.value(Colors.yellow),
+      );
       expect(resultWidth.value.bottom?.width, 20.0);
       expect(resultStyle.value.bottom?.style, BorderStyle.solid);
       expect(resultStrokeAlign.value.bottom?.strokeAlign, 0.2);
 
-      expect(resultColor.value.left?.color?.value, Colors.yellow);
+      expect(resultColor.value.left?.color, const Mixable.value(Colors.yellow));
       expect(resultWidth.value.left?.width, 20.0);
       expect(resultStyle.value.left?.style, BorderStyle.solid);
       expect(resultStrokeAlign.value.left?.strokeAlign, 0.2);
 
-      expect(resultColor.value.right?.color?.value, Colors.yellow);
+      expect(
+        resultColor.value.right?.color,
+        const Mixable.value(Colors.yellow),
+      );
       expect(resultWidth.value.right?.width, 20.0);
       expect(resultStyle.value.right?.style, BorderStyle.solid);
       expect(resultStrokeAlign.value.right?.strokeAlign, 0.2);
@@ -236,8 +254,9 @@ void main() {
   // BorderDirectionalUtility
 
   group('BorderDirectionalUtility', () {
-    final borderDirectional =
-        BorderDirectionalUtility(UtilityTestAttribute.new);
+    final borderDirectional = BorderDirectionalUtility(
+      UtilityTestAttribute.new,
+    );
 
     test('borderDirectional.top()', () {
       final result = borderDirectional.top(
@@ -247,7 +266,7 @@ void main() {
         width: 10.0,
       );
 
-      expect(result.value.top?.color?.value, Colors.red);
+      expect(result.value.top?.color, const Mixable.value(Colors.red));
       expect(result.value.top?.width, 10.0);
       expect(result.value.top?.style, BorderStyle.solid);
       expect(result.value.top?.strokeAlign, 0.5);
@@ -260,7 +279,7 @@ void main() {
       final resultStyle = borderDirectional.top.style(BorderStyle.solid);
       final resultStrokeAlign = borderDirectional.top.strokeAlign(0.2);
 
-      expect(resultColor.value.top?.color?.value, Colors.yellow);
+      expect(resultColor.value.top?.color, const Mixable.value(Colors.yellow));
       expect(resultWidth.value.top?.width, 20.0);
       expect(resultStyle.value.top?.style, BorderStyle.solid);
       expect(resultStrokeAlign.value.top?.strokeAlign, 0.2);
@@ -274,7 +293,7 @@ void main() {
         width: 10.0,
       );
 
-      expect(result.value.bottom?.color?.value, Colors.red);
+      expect(result.value.bottom?.color, const Mixable.value(Colors.red));
       expect(result.value.bottom?.width, 10.0);
       expect(result.value.bottom?.style, BorderStyle.solid);
       expect(result.value.bottom?.strokeAlign, 0.5);
@@ -287,7 +306,10 @@ void main() {
       final resultStyle = borderDirectional.bottom.style(BorderStyle.solid);
       final resultStrokeAlign = borderDirectional.bottom.strokeAlign(0.2);
 
-      expect(resultColor.value.bottom?.color?.value, Colors.yellow);
+      expect(
+        resultColor.value.bottom?.color,
+        const Mixable.value(Colors.yellow),
+      );
       expect(resultWidth.value.bottom?.width, 20.0);
       expect(resultStyle.value.bottom?.style, BorderStyle.solid);
       expect(resultStrokeAlign.value.bottom?.strokeAlign, 0.2);
@@ -300,7 +322,7 @@ void main() {
         style: BorderStyle.solid,
         width: 10.0,
       );
-      expect(result.value.start?.color?.value, Colors.red);
+      expect(result.value.start?.color, const Mixable.value(Colors.red));
       expect(result.value.start?.width, 10.0);
       expect(result.value.start?.style, BorderStyle.solid);
       expect(result.value.start?.strokeAlign, 0.5);
@@ -313,7 +335,10 @@ void main() {
       final resultStyle = borderDirectional.start.style(BorderStyle.solid);
       final resultStrokeAlign = borderDirectional.start.strokeAlign(0.2);
 
-      expect(resultColor.value.start?.color?.value, Colors.yellow);
+      expect(
+        resultColor.value.start?.color,
+        const Mixable.value(Colors.yellow),
+      );
       expect(resultWidth.value.start?.width, 20.0);
       expect(resultStyle.value.start?.style, BorderStyle.solid);
       expect(resultStrokeAlign.value.start?.strokeAlign, 0.2);
@@ -326,7 +351,7 @@ void main() {
         style: BorderStyle.solid,
         width: 10.0,
       );
-      expect(result.value.end?.color?.value, Colors.red);
+      expect(result.value.end?.color, const Mixable.value(Colors.red));
       expect(result.value.end?.width, 10.0);
       expect(result.value.end?.style, BorderStyle.solid);
       expect(result.value.end?.strokeAlign, 0.5);
@@ -339,7 +364,7 @@ void main() {
       final resultStyle = borderDirectional.end.style(BorderStyle.solid);
       final resultStrokeAlign = borderDirectional.end.strokeAlign(0.2);
 
-      expect(resultColor.value.end?.color?.value, Colors.yellow);
+      expect(resultColor.value.end?.color, const Mixable.value(Colors.yellow));
       expect(resultWidth.value.end?.width, 20.0);
       expect(resultStyle.value.end?.style, BorderStyle.solid);
       expect(resultStrokeAlign.value.end?.strokeAlign, 0.2);
@@ -352,11 +377,11 @@ void main() {
         style: BorderStyle.solid,
         width: 5.0,
       );
-      expect(result.value.top?.color?.value, Colors.blue);
+      expect(result.value.top?.color, const Mixable.value(Colors.blue));
       expect(result.value.top?.width, 5.0);
       expect(result.value.top?.style, BorderStyle.solid);
       expect(result.value.top?.strokeAlign, 0.3);
-      expect(result.value.bottom?.color?.value, Colors.blue);
+      expect(result.value.bottom?.color, const Mixable.value(Colors.blue));
       expect(result.value.bottom?.width, 5.0);
       expect(result.value.bottom?.style, BorderStyle.solid);
       expect(result.value.bottom?.strokeAlign, 0.3);
@@ -368,12 +393,15 @@ void main() {
       final resultStyle = borderDirectional.horizontal.style(BorderStyle.solid);
       final resultStrokeAlign = borderDirectional.horizontal.strokeAlign(0.2);
 
-      expect(resultColor.value.top?.color?.value, Colors.yellow);
+      expect(resultColor.value.top?.color, const Mixable.value(Colors.yellow));
       expect(resultWidth.value.top?.width, 20.0);
       expect(resultStyle.value.top?.style, BorderStyle.solid);
       expect(resultStrokeAlign.value.top?.strokeAlign, 0.2);
 
-      expect(resultColor.value.bottom?.color?.value, Colors.yellow);
+      expect(
+        resultColor.value.bottom?.color,
+        const Mixable.value(Colors.yellow),
+      );
       expect(resultWidth.value.bottom?.width, 20.0);
       expect(resultStyle.value.bottom?.style, BorderStyle.solid);
       expect(resultStrokeAlign.value.bottom?.strokeAlign, 0.2);
@@ -386,11 +414,11 @@ void main() {
         style: BorderStyle.solid,
         width: 7.0,
       );
-      expect(result.value.start?.color?.value, Colors.green);
+      expect(result.value.start?.color, const Mixable.value(Colors.green));
       expect(result.value.start?.width, 7.0);
       expect(result.value.start?.style, BorderStyle.solid);
       expect(result.value.start?.strokeAlign, 0.2);
-      expect(result.value.end?.color?.value, Colors.green);
+      expect(result.value.end?.color, const Mixable.value(Colors.green));
       expect(result.value.end?.width, 7.0);
       expect(result.value.end?.style, BorderStyle.solid);
       expect(result.value.end?.strokeAlign, 0.2);
@@ -402,12 +430,15 @@ void main() {
       final resultStyle = borderDirectional.vertical.style(BorderStyle.solid);
       final resultStrokeAlign = borderDirectional.vertical.strokeAlign(0.2);
 
-      expect(resultColor.value.start?.color?.value, Colors.yellow);
+      expect(
+        resultColor.value.start?.color,
+        const Mixable.value(Colors.yellow),
+      );
       expect(resultWidth.value.start?.width, 20.0);
       expect(resultStyle.value.start?.style, BorderStyle.solid);
       expect(resultStrokeAlign.value.start?.strokeAlign, 0.2);
 
-      expect(resultColor.value.end?.color?.value, Colors.yellow);
+      expect(resultColor.value.end?.color, const Mixable.value(Colors.yellow));
       expect(resultWidth.value.end?.width, 20.0);
       expect(resultStyle.value.end?.style, BorderStyle.solid);
       expect(resultStrokeAlign.value.end?.strokeAlign, 0.2);
@@ -420,19 +451,19 @@ void main() {
         style: BorderStyle.solid,
         width: 3.0,
       );
-      expect(result.value.top?.color?.value, Colors.purple);
+      expect(result.value.top?.color, const Mixable.value(Colors.purple));
       expect(result.value.top?.width, 3.0);
       expect(result.value.top?.style, BorderStyle.solid);
       expect(result.value.top?.strokeAlign, 0.1);
-      expect(result.value.bottom?.color?.value, Colors.purple);
+      expect(result.value.bottom?.color, const Mixable.value(Colors.purple));
       expect(result.value.bottom?.width, 3.0);
       expect(result.value.bottom?.style, BorderStyle.solid);
       expect(result.value.bottom?.strokeAlign, 0.1);
-      expect(result.value.start?.color?.value, Colors.purple);
+      expect(result.value.start?.color, const Mixable.value(Colors.purple));
       expect(result.value.start?.width, 3.0);
       expect(result.value.start?.style, BorderStyle.solid);
       expect(result.value.start?.strokeAlign, 0.1);
-      expect(result.value.end?.color?.value, Colors.purple);
+      expect(result.value.end?.color, const Mixable.value(Colors.purple));
       expect(result.value.end?.width, 3.0);
       expect(result.value.end?.style, BorderStyle.solid);
       expect(result.value.end?.strokeAlign, 0.1);
@@ -442,22 +473,28 @@ void main() {
       final resultStyle = borderDirectional.all.style(BorderStyle.solid);
       final resultStrokeAlign = borderDirectional.all.strokeAlign(0.2);
 
-      expect(resultColor.value.top?.color?.value, Colors.yellow);
+      expect(resultColor.value.top?.color, const Mixable.value(Colors.yellow));
       expect(resultWidth.value.top?.width, 20.0);
       expect(resultStyle.value.top?.style, BorderStyle.solid);
       expect(resultStrokeAlign.value.top?.strokeAlign, 0.2);
 
-      expect(resultColor.value.bottom?.color?.value, Colors.yellow);
+      expect(
+        resultColor.value.bottom?.color,
+        const Mixable.value(Colors.yellow),
+      );
       expect(resultWidth.value.bottom?.width, 20.0);
       expect(resultStyle.value.bottom?.style, BorderStyle.solid);
       expect(resultStrokeAlign.value.bottom?.strokeAlign, 0.2);
 
-      expect(resultColor.value.start?.color?.value, Colors.yellow);
+      expect(
+        resultColor.value.start?.color,
+        const Mixable.value(Colors.yellow),
+      );
       expect(resultWidth.value.start?.width, 20.0);
       expect(resultStyle.value.start?.style, BorderStyle.solid);
       expect(resultStrokeAlign.value.start?.strokeAlign, 0.2);
 
-      expect(resultColor.value.end?.color?.value, Colors.yellow);
+      expect(resultColor.value.end?.color, const Mixable.value(Colors.yellow));
       expect(resultWidth.value.end?.width, 20.0);
       expect(resultStyle.value.end?.style, BorderStyle.solid);
       expect(resultStrokeAlign.value.end?.strokeAlign, 0.2);

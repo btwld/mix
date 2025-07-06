@@ -139,6 +139,50 @@ class BoxShadowDto extends ShadowDtoImpl<BoxShadow>
       ];
 }
 
+/// Utility class for configuring [Shadow] properties.
+///
+/// This class provides methods to set individual properties of a [Shadow].
+/// Use the methods of this class to configure specific properties of a [Shadow].
+class ShadowUtility<T extends StyleElement>
+    extends DtoUtility<T, ShadowDto, Shadow> {
+  /// Utility for defining [ShadowDto.blurRadius]
+  late final blurRadius = DoubleUtility((v) => only(blurRadius: v));
+
+  /// Utility for defining [ShadowDto.color]
+  late final color = ColorUtility((v) => only(color: v));
+
+  /// Utility for defining [ShadowDto.offset]
+  late final offset = OffsetUtility((v) => only(offset: v));
+
+  ShadowUtility(super.builder) : super(valueToDto: (v) => v.toDto());
+
+  /// Returns a new [ShadowDto] with the specified properties.
+  @override
+  T only({
+    double? blurRadius,
+    Mixable<Color>? color,
+    Offset? offset,
+  }) {
+    return builder(ShadowDto(
+      blurRadius: blurRadius,
+      color: color,
+      offset: offset,
+    ));
+  }
+
+  T call({
+    double? blurRadius,
+    Color? color,
+    Offset? offset,
+  }) {
+    return only(
+      blurRadius: blurRadius,
+      color: Mixable.maybeValue(color),
+      offset: offset,
+    );
+  }
+}
+
 /// Extension methods to convert [Shadow] to [ShadowDto].
 extension ShadowMixExt on Shadow {
   /// Converts this [Shadow] to a [ShadowDto].
@@ -156,6 +200,57 @@ extension ListShadowMixExt on List<Shadow> {
   /// Converts this List<[Shadow]> to a List<[ShadowDto]>.
   List<ShadowDto> toDto() {
     return map((e) => e.toDto()).toList();
+  }
+}
+
+/// Utility class for configuring [BoxShadow] properties.
+///
+/// This class provides methods to set individual properties of a [BoxShadow].
+/// Use the methods of this class to configure specific properties of a [BoxShadow].
+class BoxShadowUtility<T extends StyleElement>
+    extends DtoUtility<T, BoxShadowDto, BoxShadow> {
+  /// Utility for defining [BoxShadowDto.color]
+  late final color = ColorUtility((v) => only(color: v));
+
+  /// Utility for defining [BoxShadowDto.offset]
+  late final offset = OffsetUtility((v) => only(offset: v));
+
+  /// Utility for defining [BoxShadowDto.blurRadius]
+  late final blurRadius = DoubleUtility((v) => only(blurRadius: v));
+
+  /// Utility for defining [BoxShadowDto.spreadRadius]
+  late final spreadRadius = DoubleUtility((v) => only(spreadRadius: v));
+
+  BoxShadowUtility(super.builder) : super(valueToDto: (v) => v.toDto());
+
+  /// Returns a new [BoxShadowDto] with the specified properties.
+  @override
+  T only({
+    Mixable<Color>? color,
+    Offset? offset,
+    double? blurRadius,
+    double? spreadRadius,
+  }) {
+    return builder(BoxShadowDto(
+      color: color,
+      offset: offset,
+      blurRadius: blurRadius,
+      spreadRadius: spreadRadius,
+    ));
+  }
+
+  T call({
+    Color? color,
+    Offset? offset,
+    double? blurRadius,
+    double? spreadRadius,
+  }) {
+    return only(
+      color: Mixable.maybeValue(color),
+      offset: offset,
+      blurRadius: blurRadius,
+      spreadRadius: spreadRadius,
+    );
   }
 }
 

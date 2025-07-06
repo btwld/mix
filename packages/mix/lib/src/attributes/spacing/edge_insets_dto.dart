@@ -136,8 +136,8 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
     if (other == null) return this;
 
     return EdgeInsetsDto.raw(
-      top: other.top ?? top,
-      bottom: other.bottom ?? bottom,
+      top: top?.merge(other.top) ?? other.top,
+      bottom: bottom?.merge(other.bottom) ?? other.bottom,
       left: other.left ?? left,
       right: other.right ?? right,
     );
@@ -205,10 +205,10 @@ final class EdgeInsetsDirectionalDto
     if (other == null) return this;
 
     return EdgeInsetsDirectionalDto.raw(
-      top: other.top ?? top,
-      bottom: other.bottom ?? bottom,
-      start: other.start ?? start,
-      end: other.end ?? end,
+      top: top?.merge(other.top) ?? other.top,
+      bottom: bottom?.merge(other.bottom) ?? other.bottom,
+      start: start?.merge(other.start) ?? other.start,
+      end: end?.merge(other.end) ?? other.end,
     );
   }
 

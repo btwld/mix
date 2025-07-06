@@ -118,4 +118,10 @@ class SpacingSideUtility<T extends StyleElement> extends MixUtility<T, double> {
     // This is a marker that the actual token resolution happens in EdgeInsetsGeometryDto
     return builder(0.0);
   }
+
+  /// Creates a token-based spacing value
+  T token(MixableToken<double> token) {
+    // This is a marker that the actual token resolution happens in EdgeInsetsGeometryDto
+    return builder(0.0);
+  }
 }

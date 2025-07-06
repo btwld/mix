@@ -34,7 +34,7 @@ final class BoxBorderUtility<T extends StyleElement>
     double? strokeAlign,
   }) {
     return all(
-      color: color != null ? Mixable.value(color) : null,
+      color: color,
       strokeAlign: strokeAlign,
       style: style,
       width: width,
@@ -93,7 +93,7 @@ final class BorderUtility<T extends StyleElement>
     double? strokeAlign,
   }) {
     return all(
-      color: Mixable.maybeValue(color),
+      color: color,
       strokeAlign: strokeAlign,
       style: style,
       width: width,
@@ -147,7 +147,7 @@ final class BorderDirectionalUtility<T extends StyleElement>
     double? strokeAlign,
   }) {
     return all(
-      color: Mixable.maybeValue(color),
+      color: color,
       strokeAlign: strokeAlign,
       style: style,
       width: width,

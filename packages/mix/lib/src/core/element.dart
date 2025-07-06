@@ -63,6 +63,9 @@ abstract class Mixable<Value> with EqualityMixin {
     return Mixable.value(value);
   }
 
+  /// Gets the underlying value if this is a ValueMixable, otherwise returns null
+  Value? get value => this is _ValueMixable<Value> ? (this as _ValueMixable<Value>).value : null;
+
   /// Resolves token value if present, otherwise returns null
   Value resolve(MixContext mix);
 

@@ -138,7 +138,7 @@ void main() {
       expect(attr.textDirection, TextDirection.ltr);
       expect(attr.textBaseline, TextBaseline.alphabetic);
       expect(attr.clipBehavior, Clip.antiAlias);
-      expect(attr.gap!.value, 10);
+      expect(attr.gap, const SpaceDto.value(10));
     });
   });
 }

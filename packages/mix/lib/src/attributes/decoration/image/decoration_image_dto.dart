@@ -90,6 +90,86 @@ final class DecorationImageDto extends Mixable<DecorationImage>
       ];
 }
 
+/// Utility class for configuring [DecorationImage] properties.
+///
+/// This class provides methods to set individual properties of a [DecorationImage].
+/// Use the methods of this class to configure specific properties of a [DecorationImage].
+class DecorationImageUtility<T extends StyleElement>
+    extends DtoUtility<T, DecorationImageDto, DecorationImage> {
+  /// Utility for defining [DecorationImageDto.image]
+  late final provider = ImageProviderUtility((v) => only(image: v));
+
+  /// Utility for defining [DecorationImageDto.fit]
+  late final fit = BoxFitUtility((v) => only(fit: v));
+
+  /// Utility for defining [DecorationImageDto.alignment]
+  late final alignment = AlignmentGeometryUtility((v) => only(alignment: v));
+
+  /// Utility for defining [DecorationImageDto.centerSlice]
+  late final centerSlice = RectUtility((v) => only(centerSlice: v));
+
+  /// Utility for defining [DecorationImageDto.repeat]
+  late final repeat = ImageRepeatUtility((v) => only(repeat: v));
+
+  /// Utility for defining [DecorationImageDto.filterQuality]
+  late final filterQuality =
+      FilterQualityUtility((v) => only(filterQuality: v));
+
+  /// Utility for defining [DecorationImageDto.invertColors]
+  late final invertColors = BoolUtility((v) => only(invertColors: v));
+
+  /// Utility for defining [DecorationImageDto.isAntiAlias]
+  late final isAntiAlias = BoolUtility((v) => only(isAntiAlias: v));
+
+  DecorationImageUtility(super.builder) : super(valueToDto: (v) => v.toDto());
+
+  /// Returns a new [DecorationImageDto] with the specified properties.
+  @override
+  T only({
+    ImageProvider<Object>? image,
+    BoxFit? fit,
+    AlignmentGeometry? alignment,
+    Rect? centerSlice,
+    ImageRepeat? repeat,
+    FilterQuality? filterQuality,
+    bool? invertColors,
+    bool? isAntiAlias,
+  }) {
+    return builder(DecorationImageDto(
+      image: image,
+      fit: fit,
+      alignment: alignment,
+      centerSlice: centerSlice,
+      repeat: repeat,
+      filterQuality: filterQuality,
+      invertColors: invertColors,
+      isAntiAlias: isAntiAlias,
+    ));
+  }
+
+  T call({
+    ImageProvider<Object>? image,
+    BoxFit? fit,
+    AlignmentGeometry? alignment,
+    Rect? centerSlice,
+    ImageRepeat? repeat,
+    FilterQuality? filterQuality,
+    bool? invertColors,
+    bool? isAntiAlias,
+  }) {
+    return only(
+      image: image,
+      fit: fit,
+      alignment: alignment,
+      centerSlice: centerSlice,
+      repeat: repeat,
+      filterQuality: filterQuality,
+      invertColors: invertColors,
+      isAntiAlias: isAntiAlias,
+    );
+  }
+}
+
 /// Extension methods to convert [DecorationImage] to [DecorationImageDto].
 extension DecorationImageMixExt on DecorationImage {
   /// Converts this [DecorationImage] to a [DecorationImageDto].
