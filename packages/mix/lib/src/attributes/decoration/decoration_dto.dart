@@ -1,12 +1,10 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 // ignore_for_file: prefer_relative_imports,avoid-importing-entrypoint-exports
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
-import '../../internal/diagnostic_properties_builder_ext.dart';
 import '../../internal/mix_error.dart';
 
 part 'decoration_dto.g.dart';
@@ -130,8 +128,9 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration>
 
     final (:boxShadow, :color, :gradient, :image) = other._getBaseDecor();
 
-    final (:borderRadius, :boxShape, :side) =
-        ShapeBorderDto.extract(other.shape);
+    final (:borderRadius, :boxShape, :side) = ShapeBorderDto.extract(
+      other.shape,
+    );
 
     return merge(
       BoxDecorationDto(
@@ -144,30 +143,6 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration>
         boxShadow: boxShadow,
       ),
     );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..defaultDiagnosticsTreeStyle = DiagnosticsTreeStyle.whitespace
-      ..emptyBodyDescription = '<no decorations specified>';
-
-    properties.addUsingDefault('image', image);
-    properties.addUsingDefault('color', color);
-    properties.addUsingDefault('border', border);
-    properties.addUsingDefault('borderRadius', borderRadius);
-    properties.addUsingDefault('gradient', gradient);
-    properties.add(IterableProperty<BoxShadowDto>(
-      'boxShadow',
-      boxShadow,
-      defaultValue: null,
-    ));
-    properties.add(EnumProperty<BoxShape>(
-      'shape',
-      shape,
-      defaultValue: null,
-    ));
   }
 
   @override
@@ -217,7 +192,8 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
   }
 
   @override
-  bool get isMergeable => (shape == null ||
+  bool get isMergeable =>
+      (shape == null ||
       (shape is CircleBorderDto &&
           ((shape as CircleBorderDto).eccentricity == null)) ||
       shape is RoundedRectangleBorderDto);
@@ -266,10 +242,10 @@ extension DecorationMixExt on Decoration {
     if (self is BoxDecoration) return self.toDto();
     if (self is ShapeDecoration) return self.toDto();
 
-    throw MixError.unsupportedTypeInDto(
-      Decoration,
-      ['BoxDecoration', 'ShapeDecoration'],
-    );
+    throw MixError.unsupportedTypeInDto(Decoration, [
+      'BoxDecoration',
+      'ShapeDecoration',
+    ]);
   }
 }
 

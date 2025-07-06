@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/src/attributes/color/color_dto.dart';
-import 'package:mix/src/attributes/shadow/shadow_dto.dart';
+import 'package:mix/mix.dart';
 
 import '../../../helpers/testing_utils.dart';
 
@@ -11,7 +10,7 @@ void main() {
     test('Constructor assigns correct properties', () {
       const shadowDto = ShadowDto(
         blurRadius: 10.0,
-        color: ColorDto.value(Colors.blue),
+        color: Mixable.value(Colors.blue),
         offset: Offset(10, 10),
       );
 
@@ -51,7 +50,7 @@ void main() {
     test('resolve() returns correct instance', () {
       const shadowDto = ShadowDto(
         blurRadius: 10.0,
-        color: ColorDto.value(Colors.blue),
+        color: Mixable.value(Colors.blue),
         offset: Offset(10, 10),
       );
 
@@ -65,14 +64,14 @@ void main() {
     test('merge() returns correct instance', () {
       const shadowDto = ShadowDto(
         blurRadius: 10.0,
-        color: ColorDto.value(Colors.blue),
+        color: Mixable.value(Colors.blue),
         offset: Offset(10, 10),
       );
 
       final mergedShadowDto = shadowDto.merge(
         const ShadowDto(
           blurRadius: 20.0,
-          color: ColorDto.value(Colors.red),
+          color: Mixable.value(Colors.red),
           offset: Offset(20, 20),
         ),
       );
@@ -86,7 +85,7 @@ void main() {
   group('BoxShadowDto', () {
     test('Constructor assigns correct properties', () {
       const boxShadowDto = BoxShadowDto(
-        color: ColorDto.value(Colors.blue),
+        color: Mixable.value(Colors.blue),
         offset: Offset(10, 10),
         blurRadius: 10.0,
         spreadRadius: 5.0,
@@ -132,7 +131,7 @@ void main() {
 
     test('resolve() returns correct instance', () {
       const boxShadowDto = BoxShadowDto(
-        color: ColorDto.value(Colors.blue),
+        color: Mixable.value(Colors.blue),
         offset: Offset(10, 10),
         blurRadius: 10.0,
         spreadRadius: 5.0,
@@ -148,7 +147,7 @@ void main() {
 
     test('merge() returns correct instance', () {
       const boxShadowDto = BoxShadowDto(
-        color: ColorDto.value(Colors.blue),
+        color: Mixable.value(Colors.blue),
         offset: Offset(10, 10),
         blurRadius: 10.0,
         spreadRadius: 5.0,
@@ -156,7 +155,7 @@ void main() {
 
       final mergedBoxShadowDto = boxShadowDto.merge(
         const BoxShadowDto(
-          color: ColorDto.value(Colors.red),
+          color: Mixable.value(Colors.red),
           offset: Offset(20, 20),
           blurRadius: 20.0,
           spreadRadius: 10.0,

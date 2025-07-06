@@ -9,79 +9,104 @@ void main() {
   group('BorderRadiusDto', () {
     test('merge returns merged object correctly', () {
       const attr1 = BorderRadiusDto(
-        topLeft: Radius.circular(5.0),
-        topRight: Radius.circular(10.0),
-        bottomLeft: Radius.circular(15.0),
-        bottomRight: Radius.circular(20.0),
+        topLeft: Mixable.value(Radius.circular(5.0)),
+        topRight: Mixable.value(Radius.circular(10.0)),
+        bottomLeft: Mixable.value(Radius.circular(15.0)),
+        bottomRight: Mixable.value(Radius.circular(20.0)),
       );
 
       const attr2 = BorderRadiusDto(
-        topLeft: Radius.circular(25.0),
-        topRight: Radius.circular(30.0),
-        bottomLeft: Radius.circular(35.0),
-        bottomRight: Radius.circular(40.0),
+        topLeft: Mixable.value(Radius.circular(25.0)),
+        topRight: Mixable.value(Radius.circular(30.0)),
+        bottomLeft: Mixable.value(Radius.circular(35.0)),
+        bottomRight: Mixable.value(Radius.circular(40.0)),
       );
 
       final merged = attr1.merge(attr2);
 
-      expect(merged.topLeft, attr2.topLeft);
-      expect(merged.topRight, attr2.topRight);
-      expect(merged.bottomLeft, attr2.bottomLeft);
-      expect(merged.bottomRight, attr2.bottomRight);
+      expect(
+        merged.topLeft?.resolve(EmptyMixData),
+        attr2.topLeft?.resolve(EmptyMixData),
+      );
+      expect(
+        merged.topRight?.resolve(EmptyMixData),
+        attr2.topRight?.resolve(EmptyMixData),
+      );
+      expect(
+        merged.bottomLeft?.resolve(EmptyMixData),
+        attr2.bottomLeft?.resolve(EmptyMixData),
+      );
+      expect(
+        merged.bottomRight?.resolve(EmptyMixData),
+        attr2.bottomRight?.resolve(EmptyMixData),
+      );
     });
 
     test('merge should combine two BorderRadiusDto correctly', () {
       const borderRadius1 = BorderRadiusDto(
-        topLeft: Radius.circular(30),
-        topRight: Radius.circular(40),
-        bottomLeft: Radius.circular(10),
-        bottomRight: Radius.circular(20),
+        topLeft: Mixable.value(Radius.circular(30)),
+        topRight: Mixable.value(Radius.circular(40)),
+        bottomLeft: Mixable.value(Radius.circular(10)),
+        bottomRight: Mixable.value(Radius.circular(20)),
       );
       const borderRadius2 = BorderRadiusDto(
-        topLeft: Radius.circular(20),
-        bottomRight: Radius.circular(50),
+        topLeft: Mixable.value(Radius.circular(20)),
+        bottomRight: Mixable.value(Radius.circular(50)),
       );
 
       final mergedBorderRadius = borderRadius1.merge(borderRadius2);
 
-      expect(mergedBorderRadius.topLeft, const Radius.circular(20));
-      expect(mergedBorderRadius.topRight, const Radius.circular(40));
-      expect(mergedBorderRadius.bottomLeft, const Radius.circular(10));
-      expect(mergedBorderRadius.bottomRight, const Radius.circular(50));
+      expect(
+        mergedBorderRadius.topLeft?.resolve(EmptyMixData),
+        const Radius.circular(20),
+      );
+      expect(
+        mergedBorderRadius.topRight?.resolve(EmptyMixData),
+        const Radius.circular(40),
+      );
+      expect(
+        mergedBorderRadius.bottomLeft?.resolve(EmptyMixData),
+        const Radius.circular(10),
+      );
+      expect(
+        mergedBorderRadius.bottomRight?.resolve(EmptyMixData),
+        const Radius.circular(50),
+      );
     });
 
     test('resolve should create a BorderRadius with the correct values', () {
       const borderRadius = BorderRadiusDto(
-        topLeft: Radius.circular(10),
-        topRight: Radius.circular(20),
-        bottomLeft: Radius.circular(30),
-        bottomRight: Radius.circular(40),
+        topLeft: Mixable.value(Radius.circular(10)),
+        topRight: Mixable.value(Radius.circular(20)),
+        bottomLeft: Mixable.value(Radius.circular(30)),
+        bottomRight: Mixable.value(Radius.circular(40)),
       );
 
       final resolvedBorderRadius = borderRadius.resolve(EmptyMixData);
 
       expect(
-          resolvedBorderRadius,
-          const BorderRadius.only(
-            topLeft: Radius.circular(10),
-            topRight: Radius.circular(20),
-            bottomLeft: Radius.circular(30),
-            bottomRight: Radius.circular(40),
-          ));
+        resolvedBorderRadius,
+        const BorderRadius.only(
+          topLeft: Radius.circular(10),
+          topRight: Radius.circular(20),
+          bottomLeft: Radius.circular(30),
+          bottomRight: Radius.circular(40),
+        ),
+      );
     });
 
     test('Equality holds when properties are the same', () {
       const attr1 = BorderRadiusDto(
-        topLeft: Radius.circular(5.0),
-        topRight: Radius.circular(10.0),
-        bottomLeft: Radius.circular(15.0),
-        bottomRight: Radius.circular(20.0),
+        topLeft: Mixable.value(Radius.circular(5.0)),
+        topRight: Mixable.value(Radius.circular(10.0)),
+        bottomLeft: Mixable.value(Radius.circular(15.0)),
+        bottomRight: Mixable.value(Radius.circular(20.0)),
       );
       const attr2 = BorderRadiusDto(
-        topLeft: Radius.circular(5.0),
-        topRight: Radius.circular(10.0),
-        bottomLeft: Radius.circular(15.0),
-        bottomRight: Radius.circular(20.0),
+        topLeft: Mixable.value(Radius.circular(5.0)),
+        topRight: Mixable.value(Radius.circular(10.0)),
+        bottomLeft: Mixable.value(Radius.circular(15.0)),
+        bottomRight: Mixable.value(Radius.circular(20.0)),
       );
       expect(attr1, attr2);
       expect(attr1.hashCode, attr2.hashCode);
@@ -89,17 +114,17 @@ void main() {
 
     test('Equality fails when properties are different', () {
       const attr1 = BorderRadiusDto(
-        topLeft: Radius.circular(5.0),
-        topRight: Radius.circular(10.0),
-        bottomLeft: Radius.circular(15.0),
-        bottomRight: Radius.circular(20.0),
+        topLeft: Mixable.value(Radius.circular(5.0)),
+        topRight: Mixable.value(Radius.circular(10.0)),
+        bottomLeft: Mixable.value(Radius.circular(15.0)),
+        bottomRight: Mixable.value(Radius.circular(20.0)),
       );
 
       const attr2 = BorderRadiusDto(
-        topLeft: Radius.circular(5.0),
-        topRight: Radius.circular(10.0),
-        bottomLeft: Radius.circular(15.0),
-        bottomRight: Radius.circular(25.0),
+        topLeft: Mixable.value(Radius.circular(5.0)),
+        topRight: Mixable.value(Radius.circular(10.0)),
+        bottomLeft: Mixable.value(Radius.circular(15.0)),
+        bottomRight: Mixable.value(Radius.circular(25.0)),
       );
       expect(attr1, isNot(attr2));
       expect(attr1.hashCode, isNot(attr2.hashCode));
@@ -109,81 +134,107 @@ void main() {
   group('BorderRadiusDirectionalDto', () {
     test('merge returns merged object correctly', () {
       const attr1 = BorderRadiusDirectionalDto(
-        topStart: Radius.circular(5.0),
-        topEnd: Radius.circular(10.0),
-        bottomStart: Radius.circular(15.0),
-        bottomEnd: Radius.circular(20.0),
+        topStart: Mixable.value(Radius.circular(5.0)),
+        topEnd: Mixable.value(Radius.circular(10.0)),
+        bottomStart: Mixable.value(Radius.circular(15.0)),
+        bottomEnd: Mixable.value(Radius.circular(20.0)),
       );
 
       const attr2 = BorderRadiusDirectionalDto(
-        topStart: Radius.circular(25.0),
-        topEnd: Radius.circular(30.0),
-        bottomStart: Radius.circular(35.0),
-        bottomEnd: Radius.circular(40.0),
+        topStart: Mixable.value(Radius.circular(25.0)),
+        topEnd: Mixable.value(Radius.circular(30.0)),
+        bottomStart: Mixable.value(Radius.circular(35.0)),
+        bottomEnd: Mixable.value(Radius.circular(40.0)),
       );
 
       final merged = attr1.merge(attr2);
 
-      expect(merged.topStart, attr2.topStart);
-      expect(merged.topEnd, attr2.topEnd);
-      expect(merged.bottomStart, attr2.bottomStart);
-      expect(merged.bottomEnd, attr2.bottomEnd);
+      expect(
+        merged.topStart?.resolve(EmptyMixData),
+        attr2.topStart?.resolve(EmptyMixData),
+      );
+      expect(
+        merged.topEnd?.resolve(EmptyMixData),
+        attr2.topEnd?.resolve(EmptyMixData),
+      );
+      expect(
+        merged.bottomStart?.resolve(EmptyMixData),
+        attr2.bottomStart?.resolve(EmptyMixData),
+      );
+      expect(
+        merged.bottomEnd?.resolve(EmptyMixData),
+        attr2.bottomEnd?.resolve(EmptyMixData),
+      );
     });
 
     test('merge should combine two BorderRadiusDirectionalDto correctly', () {
       const borderRadius1 = BorderRadiusDirectionalDto(
-        topStart: Radius.circular(10),
-        topEnd: Radius.circular(10),
-        bottomStart: Radius.circular(10),
-        bottomEnd: Radius.circular(10),
+        topStart: Mixable.value(Radius.circular(10)),
+        topEnd: Mixable.value(Radius.circular(10)),
+        bottomStart: Mixable.value(Radius.circular(10)),
+        bottomEnd: Mixable.value(Radius.circular(10)),
       );
       const borderRadius2 = BorderRadiusDirectionalDto(
-        topStart: Radius.circular(20),
-        bottomEnd: Radius.circular(30),
+        topStart: Mixable.value(Radius.circular(20)),
+        bottomEnd: Mixable.value(Radius.circular(30)),
       );
 
       final mergedBorderRadius = borderRadius1.merge(borderRadius2);
 
-      expect(mergedBorderRadius.topStart, const Radius.circular(20));
-      expect(mergedBorderRadius.topEnd, const Radius.circular(10));
-      expect(mergedBorderRadius.bottomStart, const Radius.circular(10));
-      expect(mergedBorderRadius.bottomEnd, const Radius.circular(30));
+      expect(
+        mergedBorderRadius.topStart?.resolve(EmptyMixData),
+        const Radius.circular(20),
+      );
+      expect(
+        mergedBorderRadius.topEnd?.resolve(EmptyMixData),
+        const Radius.circular(10),
+      );
+      expect(
+        mergedBorderRadius.bottomStart?.resolve(EmptyMixData),
+        const Radius.circular(10),
+      );
+      expect(
+        mergedBorderRadius.bottomEnd?.resolve(EmptyMixData),
+        const Radius.circular(30),
+      );
     });
 
     test(
-        'resolve should create a BorderRadiusDirectional with the correct values',
-        () {
-      const borderRadius = BorderRadiusDirectionalDto(
-        topStart: Radius.circular(10),
-        topEnd: Radius.circular(20),
-        bottomStart: Radius.circular(30),
-        bottomEnd: Radius.circular(40),
-      );
+      'resolve should create a BorderRadiusDirectional with the correct values',
+      () {
+        const borderRadius = BorderRadiusDirectionalDto(
+          topStart: Mixable.value(Radius.circular(10)),
+          topEnd: Mixable.value(Radius.circular(20)),
+          bottomStart: Mixable.value(Radius.circular(30)),
+          bottomEnd: Mixable.value(Radius.circular(40)),
+        );
 
-      final resolvedBorderRadius = borderRadius.resolve(EmptyMixData);
+        final resolvedBorderRadius = borderRadius.resolve(EmptyMixData);
 
-      expect(
+        expect(
           resolvedBorderRadius,
           const BorderRadiusDirectional.only(
             topStart: Radius.circular(10),
             topEnd: Radius.circular(20),
             bottomStart: Radius.circular(30),
             bottomEnd: Radius.circular(40),
-          ));
-    });
+          ),
+        );
+      },
+    );
 
     test('Equality holds when properties are the same', () {
       const attr1 = BorderRadiusDirectionalDto(
-        topStart: Radius.circular(5.0),
-        topEnd: Radius.circular(10.0),
-        bottomStart: Radius.circular(15.0),
-        bottomEnd: Radius.circular(20.0),
+        topStart: Mixable.value(Radius.circular(5.0)),
+        topEnd: Mixable.value(Radius.circular(10.0)),
+        bottomStart: Mixable.value(Radius.circular(15.0)),
+        bottomEnd: Mixable.value(Radius.circular(20.0)),
       );
       const attr2 = BorderRadiusDirectionalDto(
-        topStart: Radius.circular(5.0),
-        topEnd: Radius.circular(10.0),
-        bottomStart: Radius.circular(15.0),
-        bottomEnd: Radius.circular(20.0),
+        topStart: Mixable.value(Radius.circular(5.0)),
+        topEnd: Mixable.value(Radius.circular(10.0)),
+        bottomStart: Mixable.value(Radius.circular(15.0)),
+        bottomEnd: Mixable.value(Radius.circular(20.0)),
       );
       expect(attr1, attr2);
       expect(attr1.hashCode, attr2.hashCode);
@@ -191,17 +242,17 @@ void main() {
 
     test('Equality fails when properties are different', () {
       const attr1 = BorderRadiusDirectionalDto(
-        topStart: Radius.circular(5.0),
-        topEnd: Radius.circular(10.0),
-        bottomStart: Radius.circular(15.0),
-        bottomEnd: Radius.circular(20.0),
+        topStart: Mixable.value(Radius.circular(5.0)),
+        topEnd: Mixable.value(Radius.circular(10.0)),
+        bottomStart: Mixable.value(Radius.circular(15.0)),
+        bottomEnd: Mixable.value(Radius.circular(20.0)),
       );
 
       const attr2 = BorderRadiusDirectionalDto(
-        topStart: Radius.circular(5.0),
-        topEnd: Radius.circular(10.0),
-        bottomStart: Radius.circular(15.0),
-        bottomEnd: Radius.circular(25.0),
+        topStart: Mixable.value(Radius.circular(5.0)),
+        topEnd: Mixable.value(Radius.circular(10.0)),
+        bottomStart: Mixable.value(Radius.circular(15.0)),
+        bottomEnd: Mixable.value(Radius.circular(25.0)),
       );
       expect(attr1, isNot(attr2));
       expect(attr1.hashCode, isNot(attr2.hashCode));
@@ -210,38 +261,39 @@ void main() {
 
   group('BorderSideDto', () {
     test('from constructor sets all values correctly', () {
-      final attr = BorderSideDto(
-        color: Colors.red.toDto(),
+      const attr = BorderSideDto(
+        color: Mixable.value(Colors.red),
         style: BorderStyle.solid,
         width: 1.0,
       );
-      expect(attr.color?.value, Colors.red);
+      expect(attr.color?.resolve(EmptyMixData), Colors.red);
       expect(attr.width, 1.0);
       expect(attr.style, BorderStyle.solid);
     });
     test('resolve returns correct BorderSide', () {
-      final attr = BorderSideDto(
-        color: Colors.red.toDto(),
+      const attr = BorderSideDto(
+        color: Mixable.value(Colors.red),
         style: BorderStyle.solid,
         width: 1.0,
       );
       final borderSide = attr.resolve(EmptyMixData);
       expect(
-          borderSide,
-          const BorderSide(
-            color: Colors.red,
-            width: 1.0,
-            style: BorderStyle.solid,
-          ));
+        borderSide,
+        const BorderSide(
+          color: Colors.red,
+          width: 1.0,
+          style: BorderStyle.solid,
+        ),
+      );
     });
     test('Equality holds when all attributes are the same', () {
-      final attr1 = BorderSideDto(
-        color: Colors.red.toDto(),
+      const attr1 = BorderSideDto(
+        color: Mixable.value(Colors.red),
         style: BorderStyle.solid,
         width: 1.0,
       );
-      final attr2 = BorderSideDto(
-        color: Colors.red.toDto(),
+      const attr2 = BorderSideDto(
+        color: Mixable.value(Colors.red),
         style: BorderStyle.solid,
         width: 1.0,
       );
@@ -249,13 +301,13 @@ void main() {
       expect(attr1.hashCode, attr2.hashCode);
     });
     test('Equality fails when attributes are different', () {
-      final attr1 = BorderSideDto(
-        color: Colors.red.toDto(),
+      const attr1 = BorderSideDto(
+        color: Mixable.value(Colors.red),
         style: BorderStyle.solid,
         width: 1.0,
       );
-      final attr2 = BorderSideDto(
-        color: Colors.blue.toDto(),
+      const attr2 = BorderSideDto(
+        color: Mixable.value(Colors.blue),
         style: BorderStyle.solid,
         width: 1.0,
       );
@@ -272,10 +324,10 @@ void main() {
 
     test('debugFillProperties adds all properties', () {
       const dto = BorderRadiusDto(
-        topLeft: Radius.circular(1),
-        topRight: Radius.circular(2),
-        bottomLeft: Radius.circular(3),
-        bottomRight: Radius.circular(4),
+        topLeft: Mixable.value(Radius.circular(1)),
+        topRight: Mixable.value(Radius.circular(2)),
+        bottomLeft: Mixable.value(Radius.circular(3)),
+        bottomRight: Mixable.value(Radius.circular(4)),
       );
       final properties = DiagnosticPropertiesBuilder();
       dto.debugFillProperties(properties);
@@ -300,10 +352,10 @@ void main() {
 
     test('topLeft, topRight, bottomLeft, and bottomRight are always null', () {
       const dto = BorderRadiusDirectionalDto(
-        topStart: Radius.circular(1),
-        topEnd: Radius.circular(2),
-        bottomStart: Radius.circular(3),
-        bottomEnd: Radius.circular(4),
+        topStart: Mixable.value(Radius.circular(1)),
+        topEnd: Mixable.value(Radius.circular(2)),
+        bottomStart: Mixable.value(Radius.circular(3)),
+        bottomEnd: Mixable.value(Radius.circular(4)),
       );
       expect(dto.topLeft, isNull);
       expect(dto.topRight, isNull);

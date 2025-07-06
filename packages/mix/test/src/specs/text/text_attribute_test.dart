@@ -6,9 +6,9 @@ import '../../../helpers/testing_utils.dart';
 
 void main() {
   group('TextSpecAttribute', () {
-    final textSpecAttribute = TextSpecAttribute(
+    const textSpecAttribute = TextSpecAttribute(
       overflow: TextOverflow.ellipsis,
-      strutStyle: const StrutStyleDto(
+      strutStyle: StrutStyleDto(
         fontFamily: 'Roboto',
         fontSize: 12,
         fontWeight: FontWeight.w500,
@@ -22,7 +22,7 @@ void main() {
         fontFamily: 'Roboto',
       ),
       textWidthBasis: TextWidthBasis.longestLine,
-      textHeightBehavior: const TextHeightBehaviorDto(
+      textHeightBehavior: TextHeightBehaviorDto(
         applyHeightToFirstAscent: true,
         applyHeightToLastDescent: true,
       ),
@@ -40,16 +40,18 @@ void main() {
       expect(textSpecAttribute.style, isA<TextStyleDto>());
       expect(textSpecAttribute.textWidthBasis, TextWidthBasis.longestLine);
       expect(
-          textSpecAttribute.textHeightBehavior, isA<TextHeightBehaviorDto>());
+        textSpecAttribute.textHeightBehavior,
+        isA<TextHeightBehaviorDto>(),
+      );
       expect(textSpecAttribute.textDirection, TextDirection.rtl);
       expect(textSpecAttribute.softWrap, true);
     });
 
     //  merge
     test('merge', () {
-      final other = TextSpecAttribute(
+      const other = TextSpecAttribute(
         overflow: TextOverflow.clip,
-        strutStyle: const StrutStyleDto(
+        strutStyle: StrutStyleDto(
           fontFamily: 'Helvetica',
           fontSize: 14,
           fontWeight: FontWeight.w500,
@@ -63,7 +65,7 @@ void main() {
           fontFamily: 'Helvetica',
         ),
         textWidthBasis: TextWidthBasis.longestLine,
-        textHeightBehavior: const TextHeightBehaviorDto(
+        textHeightBehavior: TextHeightBehaviorDto(
           applyHeightToFirstAscent: false,
           applyHeightToLastDescent: false,
         ),

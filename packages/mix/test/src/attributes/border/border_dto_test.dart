@@ -99,10 +99,10 @@ void main() {
     //  merge
     test('merge() Border', () {
       const borderDto1 = BorderDto(
-        top: BorderSideDto(color: ColorDto.value(Colors.red), width: 1.0),
-        bottom: BorderSideDto(color: ColorDto.value(Colors.red), width: 1.0),
-        left: BorderSideDto(color: ColorDto.value(Colors.red), width: 1.0),
-        right: BorderSideDto(color: ColorDto.value(Colors.red), width: 1.0),
+        top: BorderSideDto(color: Mixable.value(Colors.red), width: 1.0),
+        bottom: BorderSideDto(color: Mixable.value(Colors.red), width: 1.0),
+        left: BorderSideDto(color: Mixable.value(Colors.red), width: 1.0),
+        right: BorderSideDto(color: Mixable.value(Colors.red), width: 1.0),
       );
 
       const borderDto2 = BorderDto(
@@ -115,16 +115,16 @@ void main() {
       final merged = borderDto1.merge(borderDto2);
 
       expect(merged.top?.width, 2.0);
-      expect(merged.top?.color, const ColorDto.value(Colors.red));
+      expect(merged.top?.color, const Mixable.value(Colors.red));
 
       expect(merged.bottom?.width, 2.0);
-      expect(merged.bottom?.color, const ColorDto.value(Colors.red));
+      expect(merged.bottom?.color, const Mixable.value(Colors.red));
 
       expect(merged.left?.width, 2.0);
-      expect(merged.left?.color, const ColorDto.value(Colors.red));
+      expect(merged.left?.color, const Mixable.value(Colors.red));
 
       expect(merged.right?.width, 2.0);
-      expect(merged.right?.color, const ColorDto.value(Colors.red));
+      expect(merged.right?.color, const Mixable.value(Colors.red));
     });
 
     test('merge BorderDto and BorderDirectionalDto', () {
@@ -144,10 +144,7 @@ void main() {
 
       expect(
         mergedBorder?.top,
-        BorderSideDto(
-          color: Colors.green.toDto(),
-          width: 3.0,
-        ),
+        BorderSideDto(color: Colors.green.toDto(), width: 3.0),
       );
       expect(
         mergedBorder?.bottom,
@@ -156,17 +153,11 @@ void main() {
 
       expect(
         mergedBorder?.start,
-        BorderSideDto(
-          color: Colors.red.toDto(),
-          width: 1.0,
-        ),
+        BorderSideDto(color: Colors.red.toDto(), width: 1.0),
       );
       expect(
         mergedBorder?.end,
-        BorderSideDto(
-          color: Colors.blue.toDto(),
-          width: 2.0,
-        ),
+        BorderSideDto(color: Colors.blue.toDto(), width: 2.0),
       );
     });
   });
@@ -175,13 +166,13 @@ void main() {
   group('BorderSideDto', () {
     test('should correctly merge with another BorderSideDto', () {
       const borderSideDto1 = BorderSideDto(
-        color: ColorDto.value(Colors.red),
+        color: Mixable.value(Colors.red),
         style: BorderStyle.solid,
         width: 1.0,
       );
 
       const borderSideDto2 = BorderSideDto(
-        color: ColorDto.value(Colors.blue),
+        color: Mixable.value(Colors.blue),
         style: BorderStyle.solid,
         width: 2.0,
       );
@@ -196,18 +187,17 @@ void main() {
     // copywith
     test('copyWith should correctly copy the BorderSideDto', () {
       const borderSideDto = BorderSideDto(
-        color: ColorDto.value(Colors.red),
+        color: Mixable.value(Colors.red),
         style: BorderStyle.solid,
         width: 1.0,
       );
 
-      final copied = borderSideDto.merge(const BorderSideDto(
-        color: ColorDto.value(Colors.blue),
-        width: 2.0,
-      ));
+      final copied = borderSideDto.merge(
+        const BorderSideDto(color: Mixable.value(Colors.blue), width: 2.0),
+      );
 
       expect(copied.width, 2.0);
-      expect(copied.color, const ColorDto.value(Colors.blue));
+      expect(copied.color, const Mixable.value(Colors.blue));
       expect(copied.style, BorderStyle.solid);
     });
 
@@ -222,7 +212,7 @@ void main() {
       final borderSideDto = borderSide.toDto();
 
       expect(borderSideDto.width, borderSide.width);
-      expect(borderSideDto.color, ColorDto(borderSide.color));
+      expect(borderSideDto.color, Mixable.value(borderSide.color));
       expect(borderSideDto.style, borderSide.style);
     });
 
@@ -231,7 +221,7 @@ void main() {
       'resolve should correctly create a BorderSide from a BorderSideDto',
       () {
         const borderSideDto = BorderSideDto(
-          color: ColorDto.value(Colors.red),
+          color: Mixable.value(Colors.red),
           style: BorderStyle.solid,
           width: 1.0,
         );

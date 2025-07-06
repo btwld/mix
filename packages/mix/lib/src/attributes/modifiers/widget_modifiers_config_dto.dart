@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import '../../core/attributes_map.dart';
 import '../../core/element.dart';
 import '../../core/factory/mix_context.dart';
@@ -22,8 +20,9 @@ class WidgetModifiersConfigDto extends Mixable<WidgetModifiersConfig> {
     if (other == null) return this;
     final thisMap = AttributeMap(value);
 
-    final resetIndex =
-        other.value.lastIndexWhere((e) => e is ResetModifierSpecAttribute);
+    final resetIndex = other.value.lastIndexWhere(
+      (e) => e is ResetModifierSpecAttribute,
+    );
 
     if (resetIndex != -1) {
       return WidgetModifiersConfigDto(other.value.sublist(resetIndex));
@@ -38,14 +37,6 @@ class WidgetModifiersConfigDto extends Mixable<WidgetModifiersConfig> {
   @override
   WidgetModifiersConfig resolve(MixContext mix) {
     return WidgetModifiersConfig(value.map((e) => e.resolve(mix)).toList());
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    for (var attr in value) {
-      properties.add(DiagnosticsProperty(attr.runtimeType.toString(), attr));
-    }
   }
 
   @override

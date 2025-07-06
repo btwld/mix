@@ -12,20 +12,16 @@ void main() {
       final mix = MixContext.create(
         MockBuildContext(),
         Style(
-          IconSpecAttribute(
+          const IconSpecAttribute(
             size: 20.0,
-            color: Colors.red.toDto(),
+            color: Mixable.value(Colors.red),
             applyTextScaling: true,
             fill: 2,
             grade: 2,
             opticalSize: 2,
             shadows: [
-              ShadowDto(
-                color: Colors.black.toDto(),
-              ),
-              ShadowDto(
-                color: Colors.black.toDto(),
-              ),
+              ShadowDto(color: Mixable.value(Colors.black)),
+              ShadowDto(color: Mixable.value(Colors.black)),
             ],
             textDirection: TextDirection.ltr,
             weight: 2,
@@ -41,12 +37,8 @@ void main() {
       expect(spec.grade, 2);
       expect(spec.opticalSize, 2);
       expect(spec.shadows, [
-        const Shadow(
-          color: Colors.black,
-        ),
-        const Shadow(
-          color: Colors.black,
-        ),
+        const Shadow(color: Colors.black),
+        const Shadow(color: Colors.black),
       ]);
       expect(spec.fill, 2);
       expect(spec.textDirection, TextDirection.ltr);
@@ -91,7 +83,9 @@ void main() {
     test('IconSpec.of(BuildContext context)', () {
       final mixData = MixContext.create(
         MockBuildContext(),
-        Style(IconSpecAttribute(size: 20.0, color: Colors.red.toDto())),
+        Style(
+          const IconSpecAttribute(size: 20.0, color: Mixable.value(Colors.red)),
+        ),
       );
 
       final spec = IconSpec.from(mixData);
@@ -129,7 +123,7 @@ void main() {
       final attr = util.attributeValue!;
 
       expect(util, isA<StyleElement>());
-      expect(attr.color, Colors.red.toDto());
+      expect(attr.color, const Mixable.value(Colors.red));
       expect(attr.size, 24);
       expect(attr.weight, 500);
       expect(attr.grade, 200);
@@ -142,7 +136,7 @@ void main() {
 
       final iconAttribute = style.styles.attributeOfType<IconSpecAttribute>();
 
-      expect(iconAttribute?.color, Colors.red.toDto());
+      expect(iconAttribute?.color, const Mixable.value(Colors.red));
       expect(iconAttribute?.size, 24);
       expect(iconAttribute?.weight, 500);
       expect(iconAttribute?.grade, 200);
@@ -207,7 +201,7 @@ void main() {
       final iconAttribute2 = icon.size(48);
 
       expect(iconAttribute.size, 24);
-      expect(iconAttribute.color, Colors.red.toDto());
+      expect(iconAttribute.color, const Mixable.value(Colors.red));
       expect(iconAttribute.weight, 500);
 
       expect(iconAttribute2.size, 48);

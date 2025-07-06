@@ -11,15 +11,15 @@ void main() {
       final mix = MixContext.create(
         MockBuildContext(),
         Style(
-          TextSpecAttribute(
+          const TextSpecAttribute(
             overflow: TextOverflow.ellipsis,
-            strutStyle: const StrutStyleDto(fontSize: 20.0),
+            strutStyle: StrutStyleDto(fontSize: 20.0),
             textAlign: TextAlign.center,
             textScaleFactor: 1.0,
             maxLines: 2,
-            style: TextStyleDto(color: const ColorDto.value(Colors.red)),
+            style: TextStyleDto(color: Mixable.value(Colors.red)),
             textWidthBasis: TextWidthBasis.longestLine,
-            textHeightBehavior: const TextHeightBehaviorDto(
+            textHeightBehavior: TextHeightBehaviorDto(
               applyHeightToFirstAscent: true,
               applyHeightToLastDescent: true,
             ),
@@ -29,7 +29,8 @@ void main() {
         ),
       );
 
-      final spec = mix.attributeOf<TextSpecAttribute>()?.resolve(mix) ??
+      final spec =
+          mix.attributeOf<TextSpecAttribute>()?.resolve(mix) ??
           const TextSpec();
 
       expect(spec.overflow, TextOverflow.ellipsis);
@@ -187,15 +188,15 @@ void main() {
       final mixData = MixContext.create(
         MockBuildContext(),
         Style(
-          TextSpecAttribute(
+          const TextSpecAttribute(
             overflow: TextOverflow.ellipsis,
-            strutStyle: const StrutStyleDto(fontSize: 20.0),
+            strutStyle: StrutStyleDto(fontSize: 20.0),
             textAlign: TextAlign.center,
             textScaleFactor: 1.0,
             maxLines: 2,
-            style: TextStyleDto(color: const ColorDto.value(Colors.red)),
+            style: TextStyleDto(color: Mixable.value(Colors.red)),
             textWidthBasis: TextWidthBasis.longestLine,
-            textHeightBehavior: const TextHeightBehaviorDto(
+            textHeightBehavior: TextHeightBehaviorDto(
               applyHeightToFirstAscent: true,
               applyHeightToLastDescent: true,
             ),

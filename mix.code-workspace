@@ -18,7 +18,7 @@
     }
   ],
   "settings": {
-    "dart.flutterSdkPath": ".fvm/versions/stable",
+    "dart.flutterSdkPath": ".fvm/versions/beta",
     "search.exclude": {
       ".fvm/**": true,
       "website": true

@@ -1,11 +1,8 @@
 // ignore_for_file: prefer_relative_imports,avoid-importing-entrypoint-exports
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
-import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../internal/mix_error.dart';
-
-part 'border_dto.g.dart';
 
 @immutable
 sealed class BoxBorderDto<T extends BoxBorder> extends Mixable<T> {
@@ -54,8 +51,7 @@ sealed class BoxBorderDto<T extends BoxBorder> extends Mixable<T> {
   BoxBorderDto<T> merge(covariant BoxBorderDto<T>? other);
 }
 
-@MixableType(components: GeneratedPropertyComponents.skipUtility)
-final class BorderDto extends BoxBorderDto<Border> with _$BorderDto {
+final class BorderDto extends BoxBorderDto<Border> {
   final BorderSideDto? left;
   final BorderSideDto? right;
 
@@ -83,11 +79,59 @@ final class BorderDto extends BoxBorderDto<Border> with _$BorderDto {
 
   @override
   bool get isUniform => top == bottom && top == left && top == right;
+
+  /// Resolves to [Border] using the provided [MixContext].
+  ///
+  /// If a property is null in the [MixContext], it falls back to the
+  /// default value defined in the `defaultValue` for that property.
+  ///
+  /// ```dart
+  /// final border = BorderDto(...).resolve(mix);
+  /// ```
+  @override
+  Border resolve(MixContext mix) {
+    return Border(
+      top: top?.resolve(mix) ?? BorderSide.none,
+      bottom: bottom?.resolve(mix) ?? BorderSide.none,
+      left: left?.resolve(mix) ?? BorderSide.none,
+      right: right?.resolve(mix) ?? BorderSide.none,
+    );
+  }
+
+  /// Merges the properties of this [BorderDto] with the properties of [other].
+  ///
+  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
+  /// [BorderDto] with the properties of [other] taking precedence over
+  /// the corresponding properties of this instance.
+  ///
+  /// Properties from [other] that are null will fall back
+  /// to the values from this instance.
+  @override
+  BorderDto merge(BorderDto? other) {
+    if (other == null) return this;
+
+    return BorderDto(
+      top: top?.merge(other.top) ?? other.top,
+      bottom: bottom?.merge(other.bottom) ?? other.bottom,
+      left: left?.merge(other.left) ?? other.left,
+      right: right?.merge(other.right) ?? other.right,
+    );
+  }
+
+  /// The list of properties that constitute the state of this [BorderDto].
+  ///
+  /// This property is used by the [==] operator and the [hashCode] getter to
+  /// compare two [BorderDto] instances for equality.
+  @override
+  List<Object?> get props => [
+        top,
+        bottom,
+        left,
+        right,
+      ];
 }
 
-@MixableType(components: GeneratedPropertyComponents.skipUtility)
-final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional>
-    with _$BorderDirectionalDto {
+final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional> {
   final BorderSideDto? start;
   final BorderSideDto? end;
   const BorderDirectionalDto({
@@ -119,16 +163,64 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional>
 
   @override
   bool get isUniform => top == bottom && top == start && top == end;
+
+  /// Resolves to [BorderDirectional] using the provided [MixContext].
+  ///
+  /// If a property is null in the [MixContext], it falls back to the
+  /// default value defined in the `defaultValue` for that property.
+  ///
+  /// ```dart
+  /// final borderDirectional = BorderDirectionalDto(...).resolve(mix);
+  /// ```
+  @override
+  BorderDirectional resolve(MixContext mix) {
+    return BorderDirectional(
+      top: top?.resolve(mix) ?? BorderSide.none,
+      bottom: bottom?.resolve(mix) ?? BorderSide.none,
+      start: start?.resolve(mix) ?? BorderSide.none,
+      end: end?.resolve(mix) ?? BorderSide.none,
+    );
+  }
+
+  /// Merges the properties of this [BorderDirectionalDto] with the properties of [other].
+  ///
+  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
+  /// [BorderDirectionalDto] with the properties of [other] taking precedence over
+  /// the corresponding properties of this instance.
+  ///
+  /// Properties from [other] that are null will fall back
+  /// to the values from this instance.
+  @override
+  BorderDirectionalDto merge(BorderDirectionalDto? other) {
+    if (other == null) return this;
+
+    return BorderDirectionalDto(
+      top: top?.merge(other.top) ?? other.top,
+      bottom: bottom?.merge(other.bottom) ?? other.bottom,
+      start: start?.merge(other.start) ?? other.start,
+      end: end?.merge(other.end) ?? other.end,
+    );
+  }
+
+  /// The list of properties that constitute the state of this [BorderDirectionalDto].
+  ///
+  /// This property is used by the [==] operator and the [hashCode] getter to
+  /// compare two [BorderDirectionalDto] instances for equality.
+  @override
+  List<Object?> get props => [
+        top,
+        bottom,
+        start,
+        end,
+      ];
 }
 
-@MixableType()
 final class BorderSideDto extends Mixable<BorderSide>
-    with HasDefaultValue<BorderSide>, _$BorderSideDto {
-  final ColorDto? color;
+    with HasDefaultValue<BorderSide> {
+  final Mixable<Color>? color;
   final double? width;
 
   final BorderStyle? style;
-  @MixableField(utilities: [MixableFieldUtility(type: StrokeAlignUtility)])
   final double? strokeAlign;
 
   const BorderSideDto({

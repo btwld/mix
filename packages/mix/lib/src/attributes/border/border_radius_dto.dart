@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_relative_imports, avoid-importing-entrypoint-exports
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
@@ -107,35 +106,9 @@ extension BorderRadiusGeometryMixExt on BorderRadiusGeometry {
       );
     }
 
-    throw MixError.unsupportedTypeInDto(
-      BorderRadiusGeometry,
-      ['BorderRadius', 'BorderRadiusDirectional'],
-    );
-  }
-}
-
-/// Extension methods to convert [BorderRadius] to [BorderRadiusDto].
-extension BorderRadiusMixExt on BorderRadius {
-  /// Converts this [BorderRadius] to a [BorderRadiusDto].
-  BorderRadiusDto toDto() {
-    return BorderRadiusDto(
-      topLeft: topLeft.toDto(),
-      topRight: topRight.toDto(),
-      bottomLeft: bottomLeft.toDto(),
-      bottomRight: bottomRight.toDto(),
-    );
-  }
-}
-
-/// Extension methods to convert [BorderRadiusDirectional] to [BorderRadiusDirectionalDto].
-extension BorderRadiusDirectionalMixExt on BorderRadiusDirectional {
-  /// Converts this [BorderRadiusDirectional] to a [BorderRadiusDirectionalDto].
-  BorderRadiusDirectionalDto toDto() {
-    return BorderRadiusDirectionalDto(
-      topStart: topStart.toDto(),
-      topEnd: topEnd.toDto(),
-      bottomStart: bottomStart.toDto(),
-      bottomEnd: bottomEnd.toDto(),
-    );
+    throw MixError.unsupportedTypeInDto(BorderRadiusGeometry, [
+      'BorderRadius',
+      'BorderRadiusDirectional',
+    ]);
   }
 }

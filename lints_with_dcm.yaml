@@ -1,5 +1,9 @@
 include: lints.yaml
 
+analyzer:
+  enable-experiment:
+    - dot-shorthands
+
 dart_code_metrics:
   extends:
     - package:dart_code_metrics_presets/recommended.yaml

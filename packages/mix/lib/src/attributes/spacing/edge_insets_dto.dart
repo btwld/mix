@@ -1,10 +1,8 @@
 // ignore_for_file: prefer_relative_imports, avoid-importing-entrypoint-exports
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
-import '../../internal/diagnostic_properties_builder_ext.dart';
 import '../../internal/mix_error.dart';
 
 part 'edge_insets_dto.g.dart';
@@ -63,8 +61,10 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
     return a.runtimeType == b.runtimeType ? a.merge(b) : _exhaustiveMerge(a, b);
   }
 
-  static B _exhaustiveMerge<A extends EdgeInsetsGeometryDto,
-      B extends EdgeInsetsGeometryDto>(A a, B b) {
+  static B _exhaustiveMerge<
+    A extends EdgeInsetsGeometryDto,
+    B extends EdgeInsetsGeometryDto
+  >(A a, B b) {
     if (a.runtimeType == b.runtimeType) return a.merge(b) as B;
 
     return switch (b) {
@@ -94,13 +94,13 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
 @MixableType(components: GeneratedPropertyComponents.none)
 final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets>
     with _$EdgeInsetsDto {
-  final double? left;
-  final double? right;
+  final SpaceDto? left;
+  final SpaceDto? right;
 
   @MixableConstructor()
   @protected
   const EdgeInsetsDto.raw({super.top, super.bottom, this.left, this.right})
-      : super.raw();
+    : super.raw();
 
   // Unnamed constructor for backward compatibility
   factory EdgeInsetsDto({
@@ -118,12 +118,12 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets>
   }
 
   EdgeInsetsDto.all(double value)
-      : this.raw(
-          top: SpaceDto.value(value),
-          bottom: SpaceDto.value(value),
-          left: SpaceDto.value(value),
-          right: SpaceDto.value(value),
-        );
+    : this.raw(
+        top: SpaceDto.value(value),
+        bottom: SpaceDto.value(value),
+        left: SpaceDto.value(value),
+        right: SpaceDto.value(value),
+      );
 
   EdgeInsetsDto.none() : this.all(0);
 
@@ -136,16 +136,6 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets>
       bottom: bottom?.resolve(mix) ?? 0,
     );
   }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-
-    properties.addUsingDefault('top', top);
-    properties.addUsingDefault('bottom', bottom);
-    properties.addUsingDefault('left', left);
-    properties.addUsingDefault('right', right);
-  }
 }
 
 @MixableType(components: GeneratedPropertyComponents.none)
@@ -156,12 +146,12 @@ final class EdgeInsetsDirectionalDto
   final SpaceDto? end;
 
   EdgeInsetsDirectionalDto.all(double value)
-      : this.raw(
-          top: SpaceDto.value(value),
-          bottom: SpaceDto.value(value),
-          start: SpaceDto.value(value),
-          end: SpaceDto.value(value),
-        );
+    : this.raw(
+        top: SpaceDto.value(value),
+        bottom: SpaceDto.value(value),
+        start: SpaceDto.value(value),
+        end: SpaceDto.value(value),
+      );
 
   EdgeInsetsDirectionalDto.none() : this.all(0);
 
@@ -220,9 +210,9 @@ extension EdgeInsetsGeometryExt on EdgeInsetsGeometry {
       );
     }
 
-    throw MixError.unsupportedTypeInDto(
-      EdgeInsetsGeometry,
-      ['EdgeInsetsDirectional', 'EdgeInsets'],
-    );
+    throw MixError.unsupportedTypeInDto(EdgeInsetsGeometry, [
+      'EdgeInsetsDirectional',
+      'EdgeInsets',
+    ]);
   }
 }

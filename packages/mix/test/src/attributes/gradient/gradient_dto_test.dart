@@ -57,7 +57,7 @@ void main() {
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         tileMode: TileMode.clamp,
-        colors: [ColorDto.value(Colors.red), ColorDto.value(Colors.blue)],
+        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
         stops: [0.0, 1.0],
       );
 
@@ -90,7 +90,7 @@ void main() {
       const gradientDto = LinearGradientDto(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [ColorDto.value(Colors.red), ColorDto.value(Colors.blue)],
+        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
         stops: [0.0, 1.0],
       );
 
@@ -104,13 +104,13 @@ void main() {
       const gradientDto1 = LinearGradientDto(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [ColorDto.value(Colors.red), ColorDto.value(Colors.blue)],
+        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
         stops: [0.0, 1.0],
       );
       const gradientDto2 = LinearGradientDto(
         begin: Alignment.centerLeft,
         end: Alignment.centerRight,
-        colors: [ColorDto.value(Colors.green), ColorDto.value(Colors.yellow)],
+        colors: [Mixable.value(Colors.green), Mixable.value(Colors.yellow)],
         stops: [0.25, 0.75],
       );
 
@@ -127,13 +127,13 @@ void main() {
       const gradientDto1 = LinearGradientDto(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [ColorDto.value(Colors.red), ColorDto.value(Colors.blue)],
+        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
         stops: [0.0, 1.0],
       );
       const gradientDto2 = LinearGradientDto(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [ColorDto.value(Colors.red), ColorDto.value(Colors.blue)],
+        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
         stops: [0.0, 1.0],
       );
 
@@ -144,13 +144,13 @@ void main() {
       const gradientDto1 = LinearGradientDto(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [ColorDto.value(Colors.red), ColorDto.value(Colors.blue)],
+        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
         stops: [0.0, 1.0],
       );
       const gradientDto2 = LinearGradientDto(
         begin: Alignment.centerLeft,
         end: Alignment.centerRight,
-        colors: [ColorDto.value(Colors.green), ColorDto.value(Colors.yellow)],
+        colors: [Mixable.value(Colors.green), Mixable.value(Colors.yellow)],
         stops: [0.25, 0.75],
       );
 
@@ -165,7 +165,7 @@ void main() {
         center: Alignment.center,
         radius: 0.5,
         tileMode: TileMode.clamp,
-        colors: [ColorDto.value(Colors.red), ColorDto.value(Colors.blue)],
+        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
         stops: [0.0, 1.0],
       );
 
@@ -198,7 +198,7 @@ void main() {
       const gradientDto = RadialGradientDto(
         center: Alignment.center,
         radius: 0.5,
-        colors: [ColorDto.value(Colors.red), ColorDto.value(Colors.blue)],
+        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
         stops: [0.0, 1.0],
       );
 
@@ -212,13 +212,13 @@ void main() {
       const gradientDto1 = RadialGradientDto(
         center: Alignment.center,
         radius: 0.5,
-        colors: [ColorDto.value(Colors.red), ColorDto.value(Colors.blue)],
+        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
         stops: [0.0, 1.0],
       );
       const gradientDto2 = RadialGradientDto(
         center: Alignment.centerLeft,
         radius: 0.75,
-        colors: [ColorDto.value(Colors.green), ColorDto.value(Colors.yellow)],
+        colors: [Mixable.value(Colors.green), Mixable.value(Colors.yellow)],
         stops: [0.25, 0.75],
       );
 
@@ -235,13 +235,13 @@ void main() {
       const gradientDto1 = RadialGradientDto(
         center: Alignment.center,
         radius: 0.5,
-        colors: [ColorDto.value(Colors.red), ColorDto.value(Colors.blue)],
+        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
         stops: [0.0, 1.0],
       );
       const gradientDto2 = RadialGradientDto(
         center: Alignment.center,
         radius: 0.5,
-        colors: [ColorDto.value(Colors.red), ColorDto.value(Colors.blue)],
+        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
         stops: [0.0, 1.0],
       );
 
@@ -252,13 +252,13 @@ void main() {
       const gradientDto1 = RadialGradientDto(
         center: Alignment.center,
         radius: 0.5,
-        colors: [ColorDto.value(Colors.red), ColorDto.value(Colors.blue)],
+        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
         stops: [0.0, 1.0],
       );
       const gradientDto2 = RadialGradientDto(
         center: Alignment.centerLeft,
         radius: 0.75,
-        colors: [ColorDto.value(Colors.green), ColorDto.value(Colors.yellow)],
+        colors: [Mixable.value(Colors.green), Mixable.value(Colors.yellow)],
         stops: [0.25, 0.75],
       );
 
@@ -274,7 +274,7 @@ void main() {
         startAngle: 0.0,
         endAngle: 1.0,
         tileMode: TileMode.clamp,
-        colors: [ColorDto.value(Colors.red), ColorDto.value(Colors.blue)],
+        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
         stops: [0.0, 1.0],
       );
       expect(gradientDto.center, Alignment.center);
@@ -310,7 +310,7 @@ void main() {
         center: Alignment.center,
         startAngle: 0.0,
         endAngle: 1.0,
-        colors: [ColorDto.value(Colors.red), ColorDto.value(Colors.blue)],
+        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
         stops: [0.0, 1.0],
       );
 
@@ -325,7 +325,7 @@ void main() {
         center: Alignment.center,
         startAngle: 0.0,
         endAngle: 1.0,
-        colors: [ColorDto.value(Colors.red), ColorDto.value(Colors.blue)],
+        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
         stops: [0.0, 1.0],
       );
 
@@ -333,7 +333,7 @@ void main() {
         center: Alignment.centerLeft,
         startAngle: 0.25,
         endAngle: 0.75,
-        colors: [ColorDto.value(Colors.green), ColorDto.value(Colors.yellow)],
+        colors: [Mixable.value(Colors.green), Mixable.value(Colors.yellow)],
         stops: [0.25, 0.75],
       );
 
@@ -352,7 +352,7 @@ void main() {
         center: Alignment.center,
         startAngle: 0.0,
         endAngle: 1.0,
-        colors: [ColorDto.value(Colors.red), ColorDto.value(Colors.blue)],
+        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
         stops: [0.0, 1.0],
       );
 
@@ -360,7 +360,7 @@ void main() {
         center: Alignment.center,
         startAngle: 0.0,
         endAngle: 1.0,
-        colors: [ColorDto.value(Colors.red), ColorDto.value(Colors.blue)],
+        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
         stops: [0.0, 1.0],
       );
 
@@ -372,7 +372,7 @@ void main() {
         center: Alignment.center,
         startAngle: 0.0,
         endAngle: 1.0,
-        colors: [ColorDto.value(Colors.red), ColorDto.value(Colors.blue)],
+        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
         stops: [0.0, 1.0],
       );
 
@@ -380,7 +380,7 @@ void main() {
         center: Alignment.centerLeft,
         startAngle: 0.25,
         endAngle: 0.75,
-        colors: [ColorDto.value(Colors.green), ColorDto.value(Colors.yellow)],
+        colors: [Mixable.value(Colors.green), Mixable.value(Colors.yellow)],
         stops: [0.25, 0.75],
       );
 

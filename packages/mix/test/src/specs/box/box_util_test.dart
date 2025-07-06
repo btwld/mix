@@ -14,8 +14,12 @@ void main() {
         maxHeight: 100,
       );
 
-      final spacing =
-          EdgeInsetsGeometryDto.only(top: 10, bottom: 10, left: 10, right: 10);
+      final spacing = EdgeInsetsGeometryDto.only(
+        top: 10,
+        bottom: 10,
+        left: 10,
+        right: 10,
+      );
 
       final container = boxUtility.only(
         alignment: Alignment.center,
@@ -57,7 +61,7 @@ void main() {
 
       expect(
         (container.decoration as BoxDecorationDto).color,
-        const ColorDto.value(Colors.blue),
+        const Mixable.value(Colors.blue),
       );
     });
 
@@ -101,13 +105,10 @@ void main() {
         color: Colors.amber,
       );
 
-      expect(container.decoration!.color, const ColorDto.value(Colors.amber));
+      expect(container.decoration!.color, const Mixable.value(Colors.amber));
 
       final decorationDTO = container.decoration as BoxDecorationDto;
-      expect(
-        decorationDTO.borderRadius,
-        BorderRadius.circular(10).toDto(),
-      );
+      expect(decorationDTO.borderRadius, BorderRadius.circular(10).toDto());
     });
 
     test('foregroundDecoration() returns correct instance', () {
@@ -118,7 +119,7 @@ void main() {
 
       expect(
         container.foregroundDecoration!.color,
-        const ColorDto.value(Colors.amber),
+        const Mixable.value(Colors.amber),
         reason: 'The color is not correct',
       );
 

@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 
 import '../../core/element.dart';
 import '../../theme/tokens/mix_token.dart';
-import '../color/color_dto.dart';
 import '../color/color_util.dart';
 import '../enum/enum_util.dart';
 import '../scalars/scalar_util.dart';
@@ -27,8 +26,9 @@ final class TextStyleUtility<T extends StyleElement>
 
   late final shadow = ShadowUtility((v) => only(shadows: [v]));
 
-  late final decorationStyle =
-      TextDecorationStyleUtility((v) => only(decorationStyle: v));
+  late final decorationStyle = TextDecorationStyleUtility(
+    (v) => only(decorationStyle: v),
+  );
 
   late final textBaseline = TextBaselineUtility((v) => only(textBaseline: v));
 
@@ -90,15 +90,15 @@ final class TextStyleUtility<T extends StyleElement>
     double? height,
   }) {
     return only(
-      color: color?.toDto(),
+      color: Mixable.maybeValue(color),
       fontWeight: fontWeight,
       fontStyle: fontStyle,
       decoration: decoration,
       fontSize: fontSize,
       letterSpacing: letterSpacing,
       wordSpacing: wordSpacing,
-      backgroundColor: backgroundColor?.toDto(),
-      decorationColor: decorationColor?.toDto(),
+      backgroundColor: Mixable.maybeValue(backgroundColor),
+      decorationColor: Mixable.maybeValue(decorationColor),
       decorationStyle: decorationStyle,
       textBaseline: textBaseline,
       fontVariations: fontVariations,
@@ -116,15 +116,15 @@ final class TextStyleUtility<T extends StyleElement>
 
   @override
   T only({
-    ColorDto? color,
+    Mixable<Color>? color,
     FontWeight? fontWeight,
     FontStyle? fontStyle,
     TextDecoration? decoration,
     double? fontSize,
     double? letterSpacing,
     double? wordSpacing,
-    ColorDto? backgroundColor,
-    ColorDto? decorationColor,
+    Mixable<Color>? backgroundColor,
+    Mixable<Color>? decorationColor,
     TextDecorationStyle? decorationStyle,
     TextBaseline? textBaseline,
     List<FontVariation>? fontVariations,
@@ -141,24 +141,24 @@ final class TextStyleUtility<T extends StyleElement>
     final textStyle = TextStyleDto(
       color: color,
       backgroundColor: backgroundColor,
-      fontSize: fontSize,
-      fontWeight: fontWeight,
-      fontStyle: fontStyle,
-      letterSpacing: letterSpacing,
-      debugLabel: debugLabel,
-      wordSpacing: wordSpacing,
-      textBaseline: textBaseline,
+      fontSize: Mixable.maybeValue(fontSize),
+      fontWeight: Mixable.maybeValue(fontWeight),
+      fontStyle: Mixable.maybeValue(fontStyle),
+      letterSpacing: Mixable.maybeValue(letterSpacing),
+      debugLabel: Mixable.maybeValue(debugLabel),
+      wordSpacing: .maybeValue(wordSpacing),
+      textBaseline: Mixable.maybeValue(textBaseline),
       shadows: shadows,
       fontFeatures: fontFeatures,
-      decoration: decoration,
+      decoration: Mixable.maybeValue(decoration),
       decorationColor: decorationColor,
-      decorationStyle: decorationStyle,
+      decorationStyle: Mixable.maybeValue(decorationStyle),
       fontVariations: fontVariations,
-      height: height,
+      height: Mixable.maybeValue(height),
       foreground: foreground,
       background: background,
-      decorationThickness: decorationThickness,
-      fontFamily: fontFamily,
+      decorationThickness: Mixable.maybeValue(decorationThickness),
+      fontFamily: Mixable.maybeValue(fontFamily),
       fontFamilyFallback: fontFamilyFallback,
     );
 

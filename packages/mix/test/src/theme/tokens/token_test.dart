@@ -56,24 +56,15 @@ void main() {
 
     testWidgets('resolve() works with theme storage', (tester) async {
       const token = MixableToken<Color>('primary');
-      final theme = MixScopeData.static(
-        tokens: {
-          token: Colors.blue,
-        },
-      );
+      final theme = MixScopeData.static(tokens: {token: Colors.blue});
 
-      await tester.pumpWidget(
-        MixScope(
-          data: theme,
-          child: Container(),
-        ),
-      );
+      await tester.pumpWidget(MixScope(data: theme, child: Container()));
 
       final context = tester.element(find.byType(Container));
       final mixData = MixContext.create(context, Style());
 
-      // Use ColorDto to resolve the token
-      final colorDto = ColorDto.token(token);
+      // Use Mixable<Color> to resolve the token
+      const colorDto = Mixable<Color>.token(token);
       final resolved = colorDto.resolve(mixData);
 
       expect(resolved, equals(Colors.blue));
@@ -86,21 +77,16 @@ void main() {
       await tester.pumpWidget(createWithMixScope(theme));
       final context = tester.element(find.byType(Container));
 
-      expect(
-        () {
-          final mixData = MixContext.create(context, Style());
-          final colorDto = ColorDto.token(token);
-          return colorDto.resolve(mixData);
-        },
-        throwsStateError,
-      );
+      expect(() {
+        final mixData = MixContext.create(context, Style());
+        const colorDto = Mixable<Color>.token(token);
+        return colorDto.resolve(mixData);
+      }, throwsStateError);
     });
 
     testWidgets('resolver works with any type', (tester) async {
       const token = MixableToken<String>('message');
-      final theme = MixScopeData.static(
-        tokens: {token: 'Hello World'},
-      );
+      final theme = MixScopeData.static(tokens: {token: 'Hello World'});
 
       await tester.pumpWidget(createWithMixScope(theme));
       final context = tester.element(find.byType(Container));

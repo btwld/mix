@@ -16,10 +16,13 @@ void main() {
             alignment: Alignment.center,
             padding: EdgeInsetsGeometryDto.only(top: 8, bottom: 16),
             margin: EdgeInsetsGeometryDto.only(top: 10.0, bottom: 12.0),
-            constraints:
-                const BoxConstraintsDto(maxWidth: 300.0, minHeight: 200.0),
-            decoration:
-                const BoxDecorationDto(color: ColorDto.value(Colors.blue)),
+            constraints: const BoxConstraintsDto(
+              maxWidth: 300.0,
+              minHeight: 200.0,
+            ),
+            decoration: const BoxDecorationDto(
+              color: Mixable.value(Colors.blue),
+            ),
             transform: Matrix4.translationValues(10.0, 10.0, 0.0),
             clipBehavior: Clip.antiAlias,
             modifiers: const WidgetModifiersConfigDto([
@@ -73,9 +76,7 @@ void main() {
       final copiedSpec = spec.copyWith(
         width: 250.0,
         height: 150.0,
-        modifiers: const WidgetModifiersConfig([
-          OpacityModifierSpec(1),
-        ]),
+        modifiers: const WidgetModifiersConfig([OpacityModifierSpec(1)]),
       );
 
       expect(copiedSpec.alignment, Alignment.center);
@@ -97,9 +98,7 @@ void main() {
 
       expect(
         copiedSpec.modifiers!.value,
-        const WidgetModifiersConfig(
-          [OpacityModifierSpec(1)],
-        ).value,
+        const WidgetModifiersConfig([OpacityModifierSpec(1)]).value,
       );
       expect(copiedSpec.height, 150.0);
     });
@@ -193,8 +192,10 @@ void main() {
 
       expect(
         lerpedSpec.transform,
-        Matrix4Tween(begin: Matrix4.identity(), end: Matrix4.rotationZ(0.5))
-            .lerp(t),
+        Matrix4Tween(
+          begin: Matrix4.identity(),
+          end: Matrix4.rotationZ(0.5),
+        ).lerp(t),
       );
       expect(lerpedSpec.clipBehavior, t < 0.5 ? Clip.none : Clip.antiAlias);
     });
@@ -291,7 +292,11 @@ void main() {
       final containerSpecAttribute = BoxSpecAttribute(
         alignment: Alignment.center,
         padding: EdgeInsetsGeometryDto.only(
-            top: 20, bottom: 20, left: 20, right: 20),
+          top: 20,
+          bottom: 20,
+          left: 20,
+          right: 20,
+        ),
         margin: EdgeInsetsGeometryDto.only(
           top: 10,
           bottom: 10,
@@ -299,9 +304,10 @@ void main() {
           right: 10,
         ),
         constraints: const BoxConstraintsDto(maxHeight: 100),
-        decoration: const BoxDecorationDto(color: ColorDto.value(Colors.blue)),
-        foregroundDecoration:
-            const BoxDecorationDto(color: ColorDto.value(Colors.blue)),
+        decoration: const BoxDecorationDto(color: Mixable.value(Colors.blue)),
+        foregroundDecoration: const BoxDecorationDto(
+          color: Mixable.value(Colors.blue),
+        ),
         transform: Matrix4.identity(),
         clipBehavior: Clip.antiAlias,
         width: 100,
@@ -316,7 +322,11 @@ void main() {
         BoxSpecAttribute(
           alignment: Alignment.centerLeft,
           padding: EdgeInsetsGeometryDto.only(
-              top: 30, bottom: 30, left: 30, right: 30),
+            top: 30,
+            bottom: 30,
+            left: 30,
+            right: 30,
+          ),
           margin: EdgeInsetsGeometryDto.only(
             top: 20,
             bottom: 20,
@@ -324,9 +334,10 @@ void main() {
             right: 20,
           ),
           constraints: const BoxConstraintsDto(maxHeight: 200),
-          decoration: const BoxDecorationDto(color: ColorDto.value(Colors.red)),
-          foregroundDecoration:
-              const BoxDecorationDto(color: ColorDto.value(Colors.amber)),
+          decoration: const BoxDecorationDto(color: Mixable.value(Colors.red)),
+          foregroundDecoration: const BoxDecorationDto(
+            color: Mixable.value(Colors.amber),
+          ),
           transform: Matrix4.identity(),
           clipBehavior: Clip.antiAliasWithSaveLayer,
           width: 200,
@@ -346,11 +357,11 @@ void main() {
       );
       expect(
         mergedBoxSpecAttribute.decoration,
-        const BoxDecorationDto(color: ColorDto.value(Colors.red)),
+        const BoxDecorationDto(color: Mixable.value(Colors.red)),
       );
       expect(
         mergedBoxSpecAttribute.foregroundDecoration,
-        const BoxDecorationDto(color: ColorDto.value(Colors.amber)),
+        const BoxDecorationDto(color: Mixable.value(Colors.amber)),
       );
       expect(mergedBoxSpecAttribute.height, 200);
       expect(
@@ -363,13 +374,10 @@ void main() {
       );
       expect(mergedBoxSpecAttribute.transform, Matrix4.identity());
       expect(mergedBoxSpecAttribute.width, 200);
-      expect(
-        mergedBoxSpecAttribute.modifiers!.value,
-        [
-          const OpacityModifierSpecAttribute(opacity: 0.5),
-          const SizedBoxModifierSpecAttribute(height: 10, width: 100),
-        ],
-      );
+      expect(mergedBoxSpecAttribute.modifiers!.value, [
+        const OpacityModifierSpecAttribute(opacity: 0.5),
+        const SizedBoxModifierSpecAttribute(height: 10, width: 100),
+      ]);
     });
   });
 
@@ -446,19 +454,14 @@ void main() {
       expect(boxAttribute.padding, const EdgeInsets.all(10.0).toDto());
       expect(
         (boxAttribute.decoration as BoxDecorationDto).color,
-        const ColorDto.value(
-          Colors.red,
-        ),
+        const ColorDto.value(Colors.red),
       );
       expect(boxAttribute.alignment, Alignment.center);
 
       expect(boxAttribute2.padding, const EdgeInsets.all(20.0).toDto());
       expect((boxAttribute2.decoration as BoxDecorationDto?)?.color, isNull);
 
-      expect(
-        boxAttribute2.alignment,
-        isNull,
-      );
+      expect(boxAttribute2.alignment, isNull);
     });
   });
 }

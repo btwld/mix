@@ -6,7 +6,7 @@ import '../../../helpers/testing_utils.dart';
 import 'helpers/expect_color.dart';
 
 final class TestColorAttribute extends SpecAttribute<Color> {
-  final ColorDto? value;
+  final Mixable<Color>? value;
   const TestColorAttribute([this.value]);
 
   @override
@@ -27,11 +27,11 @@ void main() {
   group('ColorUtility directives', () {
     final colorUtility = ColorUtility(TestColorAttribute.new);
     // withOpacity
-    test('withOpacity should return a new ColorDirective', () {
+    test('withOpacity should return a new MixableDirective', () {
       final attribute = colorUtility.withOpacity(0.5);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<OpacityColorDirective>());
+      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
     });
 
     test('withOpacity resolves the correct value', () {
@@ -56,19 +56,16 @@ void main() {
     });
 
     // withAlpha
-    test('withAlpha should return a new ColorDirective', () {
+    test('withAlpha should return a new MixableDirective', () {
       final attribute = colorUtility.withAlpha(100);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<AlphaColorDirective>());
+      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
     });
 
     // withAlpha resolves
     test('withAlpha resolves the correct value', () {
-      final style = Style(
-        colorUtility(Colors.red),
-        colorUtility.withAlpha(50),
-      );
+      final style = Style(colorUtility(Colors.red), colorUtility.withAlpha(50));
 
       final result = MockMixData(style);
       final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
@@ -87,11 +84,11 @@ void main() {
     });
 
     // darken
-    test('darken should return a new ColorDirective', () {
+    test('darken should return a new MixableDirective', () {
       final attribute = colorUtility.darken(10);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<DarkenColorDirective>());
+      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
     });
 
     //  darken resolves
@@ -115,19 +112,16 @@ void main() {
     });
 
     // lighten
-    test('lighten should return a new ColorDirective', () {
+    test('lighten should return a new MixableDirective', () {
       final attribute = colorUtility.lighten(10);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<LightenColorDirective>());
+      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
     });
 
     // lighten resolves
     test('lighten resolves the correct value', () {
-      final style = Style(
-        colorUtility(Colors.red),
-        colorUtility.lighten(10),
-      );
+      final style = Style(colorUtility(Colors.red), colorUtility.lighten(10));
 
       final result = MockMixData(style);
       final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
@@ -146,19 +140,16 @@ void main() {
     });
 
     // saturate
-    test('saturate should return a new ColorDirective', () {
+    test('saturate should return a new MixableDirective', () {
       final attribute = colorUtility.saturate(10);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<SaturateColorDirective>());
+      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
     });
 
     // saturate resolves
     test('saturate resolves the correct value', () {
-      final style = Style(
-        colorUtility(Colors.red),
-        colorUtility.saturate(10),
-      );
+      final style = Style(colorUtility(Colors.red), colorUtility.saturate(10));
 
       final result = MockMixData(style);
       final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
@@ -177,14 +168,11 @@ void main() {
     });
 
     // desaturate
-    test('desaturate should return a new ColorDirective', () {
+    test('desaturate should return a new MixableDirective', () {
       final attribute = colorUtility.desaturate(10);
 
       expect(attribute.value?.directives.length, 1);
-      expect(
-        attribute.value?.directives.first,
-        isA<DesaturateColorDirective>(),
-      );
+      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
     });
 
     // desaturate resolves
@@ -211,11 +199,11 @@ void main() {
     });
 
     // tint
-    test('tint should return a new ColorDirective', () {
+    test('tint should return a new MixableDirective', () {
       final attribute = colorUtility.tint(10);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<TintColorDirective>());
+      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
     });
 
     // tint resolves
@@ -238,11 +226,11 @@ void main() {
     });
 
     // shade
-    test('shade should return a new ColorDirective', () {
+    test('shade should return a new MixableDirective', () {
       final attribute = colorUtility.shade(10);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<ShadeColorDirective>());
+      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
     });
 
     // shade resolves
@@ -266,19 +254,16 @@ void main() {
     });
 
     // brighten
-    test('brighten should return a new ColorDirective', () {
+    test('brighten should return a new MixableDirective', () {
       final attribute = colorUtility.brighten(10);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<BrightenColorDirective>());
+      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
     });
 
     // brighten resolves
     test('brighten resolves the correct value', () {
-      final style = Style(
-        colorUtility(Colors.red),
-        colorUtility.brighten(10),
-      );
+      final style = Style(colorUtility(Colors.red), colorUtility.brighten(10));
 
       final result = MockMixData(style);
       final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
@@ -316,121 +301,118 @@ void main() {
     final colorUtility = ColorUtility(TestColorAttribute.new);
 
     // shade
-    test('shade should return a new ColorDirective', () {
+    test('shade should return a new MixableDirective', () {
       final attribute = colorUtility.red.shade(10);
 
       final resolvedColor = attribute.resolve(EmptyMixData);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<ShadeColorDirective>());
-      expect(attribute.value?.value, Colors.red);
+      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
+      expect(attribute.value?.resolve(EmptyMixData), Colors.red);
 
       expect(resolvedColor, Colors.red.shade(10));
     });
 
     // tint
-    test('tint should return a new ColorDirective', () {
+    test('tint should return a new MixableDirective', () {
       final attribute = colorUtility.red.tint(10);
 
       final resolvedColor = attribute.resolve(EmptyMixData);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<TintColorDirective>());
-      expect(attribute.value?.value, Colors.red);
+      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
+      expect(attribute.value?.resolve(EmptyMixData), Colors.red);
 
       expect(resolvedColor, Colors.red.tint(10));
     });
 
     // lighten
-    test('lighten should return a new ColorDirective', () {
+    test('lighten should return a new MixableDirective', () {
       final attribute = colorUtility.red.lighten(10);
 
       final resolvedColor = attribute.resolve(EmptyMixData);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<LightenColorDirective>());
-      expect(attribute.value?.value, Colors.red);
+      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
+      expect(attribute.value?.resolve(EmptyMixData), Colors.red);
 
       expect(resolvedColor, Colors.red.lighten(10));
     });
 
     // darken
-    test('darken should return a new ColorDirective', () {
+    test('darken should return a new MixableDirective', () {
       final attribute = colorUtility.red.darken(10);
 
       final resolvedColor = attribute.resolve(EmptyMixData);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<DarkenColorDirective>());
-      expect(attribute.value?.value, Colors.red);
+      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
+      expect(attribute.value?.resolve(EmptyMixData), Colors.red);
 
       expect(resolvedColor, Colors.red.darken(10));
     });
 
     // withOpacity
-    test('withOpacity should return a new ColorDirective', () {
+    test('withOpacity should return a new MixableDirective', () {
       final attribute = colorUtility.red.withOpacity(0.5);
 
       final resolvedColor = attribute.resolve(EmptyMixData);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<OpacityColorDirective>());
-      expect(attribute.value?.value, Colors.red);
+      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
+      expect(attribute.value?.resolve(EmptyMixData), Colors.red);
 
       expect(resolvedColor, Colors.red.withValues(alpha: 0.5));
     });
 
     // withAlpha
-    test('withAlpha should return a new ColorDirective', () {
+    test('withAlpha should return a new MixableDirective', () {
       final attribute = colorUtility.red.withAlpha(50);
 
       final resolvedColor = attribute.resolve(EmptyMixData);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<AlphaColorDirective>());
-      expect(attribute.value?.value, Colors.red);
+      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
+      expect(attribute.value?.resolve(EmptyMixData), Colors.red);
 
       expect(resolvedColor, Colors.red.withAlpha(50));
     });
 
     // saturate
-    test('saturate should return a new ColorDirective', () {
+    test('saturate should return a new MixableDirective', () {
       final attribute = colorUtility.red.saturate(10);
 
       final resolvedColor = attribute.resolve(EmptyMixData);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<SaturateColorDirective>());
-      expect(attribute.value?.value, Colors.red);
+      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
+      expect(attribute.value?.resolve(EmptyMixData), Colors.red);
 
       expect(resolvedColor, Colors.red.saturate(10));
     });
 
     // desaturate
-    test('desaturate should return a new ColorDirective', () {
+    test('desaturate should return a new MixableDirective', () {
       final attribute = colorUtility.red.desaturate(10);
 
       final resolvedColor = attribute.resolve(EmptyMixData);
 
       expect(attribute.value?.directives.length, 1);
-      expect(
-        attribute.value?.directives.first,
-        isA<DesaturateColorDirective>(),
-      );
-      expect(attribute.value?.value, Colors.red);
+      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
+      expect(attribute.value?.resolve(EmptyMixData), Colors.red);
 
       expect(resolvedColor, Colors.red.desaturate(10));
     });
 
     // brighten
-    test('brighten should return a new ColorDirective', () {
+    test('brighten should return a new MixableDirective', () {
       final attribute = colorUtility.red.brighten(10);
 
       final resolvedColor = attribute.resolve(EmptyMixData);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<BrightenColorDirective>());
-      expect(attribute.value?.value, Colors.red);
+      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
+      expect(attribute.value?.resolve(EmptyMixData), Colors.red);
 
       expect(resolvedColor, Colors.red.brighten(10));
     });
@@ -463,107 +445,177 @@ void main() {
 
   group('ColorUtility', () {
     // Use the .values to compare against Material colors
-    test('call should return a new TestColorAttribute with the primary color',
-        () {
-      final colorUtil = ColorUtility(TestColorAttribute.new);
+    test(
+      'call should return a new TestColorAttribute with the primary color',
+      () {
+        final colorUtil = ColorUtility(TestColorAttribute.new);
 
-      expect(colorUtil.red().value?.value, Colors.red);
-      expect(colorUtil.pink().value?.value, Colors.pink);
-      expect(colorUtil.purple().value?.value, Colors.purple);
-      expect(colorUtil.deepPurple().value?.value, Colors.deepPurple);
-      expect(colorUtil.indigo().value?.value, Colors.indigo);
-      expect(colorUtil.blue().value?.value, Colors.blue);
-      expect(colorUtil.lightBlue().value?.value, Colors.lightBlue);
-      expect(colorUtil.cyan().value?.value, Colors.cyan);
-      expect(colorUtil.teal().value?.value, Colors.teal);
-      expect(colorUtil.green().value?.value, Colors.green);
-      expect(colorUtil.lightGreen().value?.value, Colors.lightGreen);
-      expect(colorUtil.lime().value?.value, Colors.lime);
-      expect(colorUtil.yellow().value?.value, Colors.yellow);
-      expect(colorUtil.amber().value?.value, Colors.amber);
-      expect(colorUtil.orange().value?.value, Colors.orange);
-      expect(colorUtil.deepOrange().value?.value, Colors.deepOrange);
-      expect(colorUtil.brown().value?.value, Colors.brown);
-      expect(colorUtil.grey().value?.value, Colors.grey);
-      expect(colorUtil.blueGrey().value?.value, Colors.blueGrey);
-      expect(colorUtil.redAccent().value?.value, Colors.redAccent);
-      expect(colorUtil.pinkAccent().value?.value, Colors.pinkAccent);
-      expect(colorUtil.purpleAccent().value?.value, Colors.purpleAccent);
-      expect(
-          colorUtil.deepPurpleAccent().value?.value, Colors.deepPurpleAccent);
-      expect(colorUtil.indigoAccent().value?.value, Colors.indigoAccent);
-      expect(colorUtil.blueAccent().value?.value, Colors.blueAccent);
-      expect(colorUtil.lightBlueAccent().value?.value, Colors.lightBlueAccent);
-      expect(colorUtil.cyanAccent().value?.value, Colors.cyanAccent);
-      expect(colorUtil.tealAccent().value?.value, Colors.tealAccent);
-      expect(colorUtil.greenAccent().value?.value, Colors.greenAccent);
-      expect(
-          colorUtil.lightGreenAccent().value?.value, Colors.lightGreenAccent);
-      expect(colorUtil.limeAccent().value?.value, Colors.limeAccent);
-      expect(colorUtil.yellowAccent().value?.value, Colors.yellowAccent);
-      expect(colorUtil.amberAccent().value?.value, Colors.amberAccent);
-      expect(colorUtil.orangeAccent().value?.value, Colors.orangeAccent);
-      expect(
-          colorUtil.deepOrangeAccent().value?.value, Colors.deepOrangeAccent);
+        expect(colorUtil.red().value?.resolve(EmptyMixData), Colors.red);
+        expect(colorUtil.pink().value?.resolve(EmptyMixData), Colors.pink);
+        expect(colorUtil.purple().value?.resolve(EmptyMixData), Colors.purple);
+        expect(
+          colorUtil.deepPurple().value?.resolve(EmptyMixData),
+          Colors.deepPurple,
+        );
+        expect(colorUtil.indigo().value?.resolve(EmptyMixData), Colors.indigo);
+        expect(colorUtil.blue().value?.resolve(EmptyMixData), Colors.blue);
+        expect(
+          colorUtil.lightBlue().value?.resolve(EmptyMixData),
+          Colors.lightBlue,
+        );
+        expect(colorUtil.cyan().value?.resolve(EmptyMixData), Colors.cyan);
+        expect(colorUtil.teal().value?.resolve(EmptyMixData), Colors.teal);
+        expect(colorUtil.green().value?.resolve(EmptyMixData), Colors.green);
+        expect(
+          colorUtil.lightGreen().value?.resolve(EmptyMixData),
+          Colors.lightGreen,
+        );
+        expect(colorUtil.lime().value?.resolve(EmptyMixData), Colors.lime);
+        expect(colorUtil.yellow().value?.resolve(EmptyMixData), Colors.yellow);
+        expect(colorUtil.amber().value?.resolve(EmptyMixData), Colors.amber);
+        expect(colorUtil.orange().value?.resolve(EmptyMixData), Colors.orange);
+        expect(
+          colorUtil.deepOrange().value?.resolve(EmptyMixData),
+          Colors.deepOrange,
+        );
+        expect(colorUtil.brown().value?.resolve(EmptyMixData), Colors.brown);
+        expect(colorUtil.grey().value?.resolve(EmptyMixData), Colors.grey);
+        expect(
+          colorUtil.blueGrey().value?.resolve(EmptyMixData),
+          Colors.blueGrey,
+        );
+        expect(
+          colorUtil.redAccent().value?.resolve(EmptyMixData),
+          Colors.redAccent,
+        );
+        expect(
+          colorUtil.pinkAccent().value?.resolve(EmptyMixData),
+          Colors.pinkAccent,
+        );
+        expect(
+          colorUtil.purpleAccent().value?.resolve(EmptyMixData),
+          Colors.purpleAccent,
+        );
+        expect(
+          colorUtil.deepPurpleAccent().value?.resolve(EmptyMixData),
+          Colors.deepPurpleAccent,
+        );
+        expect(
+          colorUtil.indigoAccent().value?.resolve(EmptyMixData),
+          Colors.indigoAccent,
+        );
+        expect(
+          colorUtil.blueAccent().value?.resolve(EmptyMixData),
+          Colors.blueAccent,
+        );
+        expect(
+          colorUtil.lightBlueAccent().value?.resolve(EmptyMixData),
+          Colors.lightBlueAccent,
+        );
+        expect(
+          colorUtil.cyanAccent().value?.resolve(EmptyMixData),
+          Colors.cyanAccent,
+        );
+        expect(
+          colorUtil.tealAccent().value?.resolve(EmptyMixData),
+          Colors.tealAccent,
+        );
+        expect(
+          colorUtil.greenAccent().value?.resolve(EmptyMixData),
+          Colors.greenAccent,
+        );
+        expect(
+          colorUtil.lightGreenAccent().value?.resolve(EmptyMixData),
+          Colors.lightGreenAccent,
+        );
+        expect(
+          colorUtil.limeAccent().value?.resolve(EmptyMixData),
+          Colors.limeAccent,
+        );
+        expect(
+          colorUtil.yellowAccent().value?.resolve(EmptyMixData),
+          Colors.yellowAccent,
+        );
+        expect(
+          colorUtil.amberAccent().value?.resolve(EmptyMixData),
+          Colors.amberAccent,
+        );
+        expect(
+          colorUtil.orangeAccent().value?.resolve(EmptyMixData),
+          Colors.orangeAccent,
+        );
+        expect(
+          colorUtil.deepOrangeAccent().value?.resolve(EmptyMixData),
+          Colors.deepOrangeAccent,
+        );
 
-      // Test transparent color
-      expect(colorUtil.transparent.color, Colors.transparent);
+        // Test transparent color
+        expect(colorUtil.transparent.color, Colors.transparent);
 
-      // Test black colors
-      expect(colorUtil.black.color, Colors.black);
-      expect(colorUtil.black87.color, Colors.black87);
-      expect(colorUtil.black54.color, Colors.black54);
-      expect(colorUtil.black45.color, Colors.black45);
-      expect(colorUtil.black38.color, Colors.black38);
-      expect(colorUtil.black26.color, Colors.black26);
-      expect(colorUtil.black12.color, Colors.black12);
+        // Test black colors
+        expect(colorUtil.black.color, Colors.black);
+        expect(colorUtil.black87.color, Colors.black87);
+        expect(colorUtil.black54.color, Colors.black54);
+        expect(colorUtil.black45.color, Colors.black45);
+        expect(colorUtil.black38.color, Colors.black38);
+        expect(colorUtil.black26.color, Colors.black26);
+        expect(colorUtil.black12.color, Colors.black12);
 
-      // Test white colors
-      expect(colorUtil.white.color, Colors.white);
-      expect(colorUtil.white70.color, Colors.white70);
-      expect(colorUtil.white60.color, Colors.white60);
-      expect(colorUtil.white54.color, Colors.white54);
-      expect(colorUtil.white38.color, Colors.white38);
-      expect(colorUtil.white30.color, Colors.white30);
-      expect(colorUtil.white24.color, Colors.white24);
-      expect(colorUtil.white12.color, Colors.white12);
-    });
+        // Test white colors
+        expect(colorUtil.white.color, Colors.white);
+        expect(colorUtil.white70.color, Colors.white70);
+        expect(colorUtil.white60.color, Colors.white60);
+        expect(colorUtil.white54.color, Colors.white54);
+        expect(colorUtil.white38.color, Colors.white38);
+        expect(colorUtil.white30.color, Colors.white30);
+        expect(colorUtil.white24.color, Colors.white24);
+        expect(colorUtil.white12.color, Colors.white12);
+      },
+    );
   });
 
   group('MaterialColorUtility', () {
     // Use the .values to compare against Material colors
-    test('call should return a new TestColorAttribute with the primary color',
-        () {
-      final blueUtil =
-          MaterialColorUtility(TestColorAttribute.new, Colors.blue);
+    test(
+      'call should return a new TestColorAttribute with the primary color',
+      () {
+        final blueUtil = MaterialColorUtility(
+          TestColorAttribute.new,
+          Colors.blue,
+        );
 
-      expect(blueUtil().value?.value, Colors.blue);
-      expect(blueUtil.shade50.color, Colors.blue.shade50);
-      expect(blueUtil.shade100.color, Colors.blue.shade100);
-      expect(blueUtil.shade200.color, Colors.blue.shade200);
-      expect(blueUtil.shade300.color, Colors.blue.shade300);
-      expect(blueUtil.shade400.color, Colors.blue.shade400);
-      expect(blueUtil.shade500.color, Colors.blue.shade500);
-      expect(blueUtil.shade600.color, Colors.blue.shade600);
-      expect(blueUtil.shade700.color, Colors.blue.shade700);
-      expect(blueUtil.shade800.color, Colors.blue.shade800);
-      expect(blueUtil.shade900.color, Colors.blue.shade900);
-    });
+        expect(blueUtil().value?.resolve(EmptyMixData), Colors.blue);
+        expect(blueUtil.shade50.color, Colors.blue.shade50);
+        expect(blueUtil.shade100.color, Colors.blue.shade100);
+        expect(blueUtil.shade200.color, Colors.blue.shade200);
+        expect(blueUtil.shade300.color, Colors.blue.shade300);
+        expect(blueUtil.shade400.color, Colors.blue.shade400);
+        expect(blueUtil.shade500.color, Colors.blue.shade500);
+        expect(blueUtil.shade600.color, Colors.blue.shade600);
+        expect(blueUtil.shade700.color, Colors.blue.shade700);
+        expect(blueUtil.shade800.color, Colors.blue.shade800);
+        expect(blueUtil.shade900.color, Colors.blue.shade900);
+      },
+    );
   });
 
   group('MaterialAccentColorUtility', () {
     // Use the .values to compare against MaterialAccent colors
-    test('call should return a new TestColorAttribute with the primary color',
-        () {
-      final blueUtil =
-          MaterialAccentColorUtility(TestColorAttribute.new, Colors.blueAccent);
+    test(
+      'call should return a new TestColorAttribute with the primary color',
+      () {
+        final blueUtil = MaterialAccentColorUtility(
+          TestColorAttribute.new,
+          Colors.blueAccent,
+        );
 
-      expect(blueUtil().value?.value, Colors.blueAccent);
-      expect(blueUtil.shade100.color, Colors.blueAccent.shade100);
-      expect(blueUtil.shade200.color, Colors.blueAccent.shade200);
-      expect(blueUtil.shade400.color, Colors.blueAccent.shade400);
-      expect(blueUtil.shade700.color, Colors.blueAccent.shade700);
-    });
+        expect(blueUtil().value?.resolve(EmptyMixData), Colors.blueAccent);
+        expect(blueUtil.shade100.color, Colors.blueAccent.shade100);
+        expect(blueUtil.shade200.color, Colors.blueAccent.shade200);
+        expect(blueUtil.shade400.color, Colors.blueAccent.shade400);
+        expect(blueUtil.shade700.color, Colors.blueAccent.shade700);
+      },
+    );
   });
 
   group('ColorExt', () {
@@ -581,19 +633,13 @@ void main() {
     test('mix() should return the correct color with 75%', () {
       final mixedColor = color1.mix(color2, 75);
 
-      expectColor(
-        mixedColor,
-        const Color(0xff5681c4),
-      ); // Colors.purple
+      expectColor(mixedColor, const Color(0xff5681c4)); // Colors.purple
     });
 
     test('mix() should return the correct color with 25%', () {
       final mixedColor = color1.mix(color2, 25);
 
-      expectColor(
-        mixedColor,
-        const Color(0xffbf5865),
-      ); // Colors.purple
+      expectColor(mixedColor, const Color(0xffbf5865)); // Colors.purple
     });
 
     test('lighten() should return the correct color', () {
@@ -654,7 +700,7 @@ void main() {
       const color = Colors.blue;
       final colorDto = color.toDto();
 
-      expect(colorDto, equals(const ColorDto.value(Color)));
+      expect(colorDto, equals(const Mixable.value(color)));
     });
   });
 }

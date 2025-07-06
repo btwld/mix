@@ -5,7 +5,6 @@ import 'package:mix_annotations/mix_annotations.dart';
 import '../../attributes/animation/animated_config_dto.dart';
 import '../../attributes/animation/animated_util.dart';
 import '../../attributes/animation/animation_config.dart';
-import '../../attributes/color/color_dto.dart';
 import '../../attributes/color/color_util.dart';
 import '../../attributes/enum/enum_util.dart';
 import '../../attributes/modifiers/widget_modifiers_config.dart';
@@ -13,6 +12,7 @@ import '../../attributes/modifiers/widget_modifiers_config_dto.dart';
 import '../../attributes/modifiers/widget_modifiers_util.dart';
 import '../../attributes/scalars/scalar_util.dart';
 import '../../core/computed_style/computed_style.dart';
+import '../../core/element.dart';
 import '../../core/factory/mix_context.dart';
 import '../../core/factory/style_mix.dart';
 import '../../core/helpers.dart';
@@ -25,6 +25,10 @@ part 'image_spec.g.dart';
 @MixableSpec()
 final class ImageSpec extends Spec<ImageSpec> with _$ImageSpec, Diagnosticable {
   final double? width, height;
+  @MixableField(
+    dto: MixableFieldType(type: 'Mixable<Color>'),
+    utilities: [MixableFieldUtility(type: 'ColorUtility')],
+  )
   final Color? color;
   final ImageRepeat? repeat;
   final BoxFit? fit;

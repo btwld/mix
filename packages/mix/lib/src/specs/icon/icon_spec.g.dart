@@ -91,12 +91,16 @@ mixin _$IconSpec on Spec<IconSpec> {
       size: MixHelpers.lerpDouble(_$this.size, other.size, t),
       weight: MixHelpers.lerpDouble(_$this.weight, other.weight, t),
       grade: MixHelpers.lerpDouble(_$this.grade, other.grade, t),
-      opticalSize:
-          MixHelpers.lerpDouble(_$this.opticalSize, other.opticalSize, t),
+      opticalSize: MixHelpers.lerpDouble(
+        _$this.opticalSize,
+        other.opticalSize,
+        t,
+      ),
       shadows: MixHelpers.lerpShadowList(_$this.shadows, other.shadows, t),
       textDirection: t < 0.5 ? _$this.textDirection : other.textDirection,
-      applyTextScaling:
-          t < 0.5 ? _$this.applyTextScaling : other.applyTextScaling,
+      applyTextScaling: t < 0.5
+          ? _$this.applyTextScaling
+          : other.applyTextScaling,
       fill: MixHelpers.lerpDouble(_$this.fill, other.fill, t),
       animated: _$this.animated ?? other.animated,
       modifiers: other.modifiers,
@@ -109,45 +113,67 @@ mixin _$IconSpec on Spec<IconSpec> {
   /// compare two [IconSpec] instances for equality.
   @override
   List<Object?> get props => [
-        _$this.color,
-        _$this.size,
-        _$this.weight,
-        _$this.grade,
-        _$this.opticalSize,
-        _$this.shadows,
-        _$this.textDirection,
-        _$this.applyTextScaling,
-        _$this.fill,
-        _$this.animated,
-        _$this.modifiers,
-      ];
+    _$this.color,
+    _$this.size,
+    _$this.weight,
+    _$this.grade,
+    _$this.opticalSize,
+    _$this.shadows,
+    _$this.textDirection,
+    _$this.applyTextScaling,
+    _$this.fill,
+    _$this.animated,
+    _$this.modifiers,
+  ];
 
   IconSpec get _$this => this as IconSpec;
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    properties
-        .add(DiagnosticsProperty('color', _$this.color, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('size', _$this.size, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('weight', _$this.weight, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('grade', _$this.grade, defaultValue: null));
-    properties.add(DiagnosticsProperty('opticalSize', _$this.opticalSize,
-        defaultValue: null));
     properties.add(
-        DiagnosticsProperty('shadows', _$this.shadows, defaultValue: null));
-    properties.add(DiagnosticsProperty('textDirection', _$this.textDirection,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty(
-        'applyTextScaling', _$this.applyTextScaling,
-        defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('fill', _$this.fill, defaultValue: null));
+      DiagnosticsProperty('color', _$this.color, defaultValue: null),
+    );
     properties.add(
-        DiagnosticsProperty('animated', _$this.animated, defaultValue: null));
+      DiagnosticsProperty('size', _$this.size, defaultValue: null),
+    );
     properties.add(
-        DiagnosticsProperty('modifiers', _$this.modifiers, defaultValue: null));
+      DiagnosticsProperty('weight', _$this.weight, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('grade', _$this.grade, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'opticalSize',
+        _$this.opticalSize,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty('shadows', _$this.shadows, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'textDirection',
+        _$this.textDirection,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'applyTextScaling',
+        _$this.applyTextScaling,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty('fill', _$this.fill, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('animated', _$this.animated, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('modifiers', _$this.modifiers, defaultValue: null),
+    );
   }
 }
 
@@ -159,7 +185,7 @@ mixin _$IconSpec on Spec<IconSpec> {
 /// Use this class to configure the attributes of a [IconSpec] and pass it to
 /// the [IconSpec] constructor.
 class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
-  final ColorDto? color;
+  final Mixable<Color>? color;
   final double? size;
   final double? weight;
   final double? grade;
@@ -241,18 +267,18 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
   /// compare two [IconSpecAttribute] instances for equality.
   @override
   List<Object?> get props => [
-        color,
-        size,
-        weight,
-        grade,
-        opticalSize,
-        shadows,
-        textDirection,
-        applyTextScaling,
-        fill,
-        animated,
-        modifiers,
-      ];
+    color,
+    size,
+    weight,
+    grade,
+    opticalSize,
+    shadows,
+    textDirection,
+    applyTextScaling,
+    fill,
+    animated,
+    modifiers,
+  ];
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -262,17 +288,26 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
     properties.add(DiagnosticsProperty('weight', weight, defaultValue: null));
     properties.add(DiagnosticsProperty('grade', grade, defaultValue: null));
     properties.add(
-        DiagnosticsProperty('opticalSize', opticalSize, defaultValue: null));
+      DiagnosticsProperty('opticalSize', opticalSize, defaultValue: null),
+    );
     properties.add(DiagnosticsProperty('shadows', shadows, defaultValue: null));
-    properties.add(DiagnosticsProperty('textDirection', textDirection,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty('applyTextScaling', applyTextScaling,
-        defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('textDirection', textDirection, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'applyTextScaling',
+        applyTextScaling,
+        defaultValue: null,
+      ),
+    );
     properties.add(DiagnosticsProperty('fill', fill, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('animated', animated, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('modifiers', modifiers, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('animated', animated, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
+    );
   }
 }
 
@@ -301,8 +336,9 @@ class IconSpecUtility<T extends SpecAttribute>
   late final shadows = ShadowListUtility((v) => only(shadows: v));
 
   /// Utility for defining [IconSpecAttribute.textDirection]
-  late final textDirection =
-      TextDirectionUtility((v) => only(textDirection: v));
+  late final textDirection = TextDirectionUtility(
+    (v) => only(textDirection: v),
+  );
 
   /// Utility for defining [IconSpecAttribute.applyTextScaling]
   late final applyTextScaling = BoolUtility((v) => only(applyTextScaling: v));
@@ -336,7 +372,7 @@ class IconSpecUtility<T extends SpecAttribute>
   /// Returns a new [IconSpecAttribute] with the specified properties.
   @override
   T only({
-    ColorDto? color,
+    Mixable<Color>? color,
     double? size,
     double? weight,
     double? grade,
@@ -348,19 +384,21 @@ class IconSpecUtility<T extends SpecAttribute>
     AnimationConfigDto? animated,
     WidgetModifiersConfigDto? modifiers,
   }) {
-    return builder(IconSpecAttribute(
-      color: color,
-      size: size,
-      weight: weight,
-      grade: grade,
-      opticalSize: opticalSize,
-      shadows: shadows,
-      textDirection: textDirection,
-      applyTextScaling: applyTextScaling,
-      fill: fill,
-      animated: animated,
-      modifiers: modifiers,
-    ));
+    return builder(
+      IconSpecAttribute(
+        color: color,
+        size: size,
+        weight: weight,
+        grade: grade,
+        opticalSize: opticalSize,
+        shadows: shadows,
+        textDirection: textDirection,
+        applyTextScaling: applyTextScaling,
+        fill: fill,
+        animated: animated,
+        modifiers: modifiers,
+      ),
+    );
   }
 }
 
@@ -369,10 +407,7 @@ class IconSpecUtility<T extends SpecAttribute>
 /// This class can be used in animations to smoothly transition between
 /// different [IconSpec] specifications.
 class IconSpecTween extends Tween<IconSpec?> {
-  IconSpecTween({
-    super.begin,
-    super.end,
-  });
+  IconSpecTween({super.begin, super.end});
 
   @override
   IconSpec lerp(double t) {

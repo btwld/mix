@@ -6,11 +6,7 @@ const primary = MixableToken<Color>('primary');
 void main() {
   runApp(
     MixScope(
-      data: MixScopeData(
-        tokens: {
-          primary: Colors.blue,
-        },
-      ),
+      data: MixScopeData.static(tokens: {primary: Colors.blue}),
       child: const MyApp(),
     ),
   );
@@ -27,10 +23,7 @@ class MyApp extends StatelessWidget {
         child: FlexBox(
           style: style(),
           direction: Axis.horizontal,
-          children: const [
-            StyledIcon(Icons.image),
-            StyledText('Hello World'),
-          ],
+          children: const [StyledIcon(Icons.image), StyledText('Hello World')],
         ),
       ),
     );
@@ -38,14 +31,11 @@ class MyApp extends StatelessWidget {
 }
 
 Style style() => Style(
-      $icon.color.red(),
-      $flexbox
-        ..flex.direction(Axis.horizontal)
-        ..flex.mainAxisSize.min(),
-      $on.breakpoint(const Breakpoint(minWidth: 0, maxWidth: 365))(
-        $flexbox.flex.direction(Axis.vertical),
-      ),
-    ).animate(
-      duration: const Duration(milliseconds: 200),
-      curve: Curves.easeInOut,
-    );
+  $icon.color.red(),
+  $flexbox
+    ..flex.direction(Axis.horizontal)
+    ..flex.mainAxisSize.min(),
+  $on.breakpoint(const Breakpoint(minWidth: 0, maxWidth: 365))(
+    $flexbox.flex.direction(Axis.vertical),
+  ),
+).animate(duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);

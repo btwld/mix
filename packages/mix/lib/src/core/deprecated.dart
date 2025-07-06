@@ -16,6 +16,7 @@
 /// All deprecated items remain available for backward compatibility.
 library;
 
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../attributes/enum/enum_util.dart';
@@ -74,6 +75,14 @@ typedef StyledAttribute = SpecAttribute;
 /// Deprecated: Use Mixable instead
 @Deprecated('Use Mixable instead')
 typedef Dto<Value> = Mixable<Value>;
+
+/// Deprecated: Use Mixable<Color> directly instead
+@Deprecated('Use Mixable<Color> directly instead of ColorDto')
+typedef ColorDto = Mixable<Color>;
+
+/// Deprecated: Use Mixable<Radius> directly instead
+@Deprecated('Use Mixable<Radius> directly instead of RadiusDto')
+typedef RadiusDto = Mixable<Radius>;
 
 // =============================================================================
 // CONTEXT & DATA DEPRECATIONS (v2.0.0)
@@ -150,8 +159,9 @@ typedef WidgetModifier<T extends WidgetModifierSpec<T>> = WidgetModifierSpec<T>;
 /// Deprecated: Use WidgetModifierSpecAttribute instead
 @Deprecated('Use WidgetModifierSpecAttribute instead')
 abstract class WidgetModifierAttribute<
-        Self extends WidgetModifierSpecAttribute<Value>,
-        Value extends WidgetModifierSpec<Value>>
+  Self extends WidgetModifierSpecAttribute<Value>,
+  Value extends WidgetModifierSpec<Value>
+>
     extends WidgetModifierSpecAttribute<Value> {
   const WidgetModifierAttribute();
 }
@@ -230,8 +240,8 @@ typedef FlexibleModifierAttribute = FlexibleModifierSpecAttribute;
 
 /// Deprecated: Use FractionallySizedBoxModifierSpecAttribute instead
 @Deprecated('Use FractionallySizedBoxModifierSpecAttribute instead')
-typedef FractionallySizedBoxModifierAttribute
-    = FractionallySizedBoxModifierSpecAttribute;
+typedef FractionallySizedBoxModifierAttribute =
+    FractionallySizedBoxModifierSpecAttribute;
 
 /// Deprecated: Use IntrinsicHeightModifierSpecAttribute instead
 @Deprecated('Use IntrinsicHeightModifierSpecAttribute instead')
@@ -295,8 +305,8 @@ typedef FlexibleModifierUtility = FlexibleModifierSpecUtility;
 
 /// Deprecated: Use FractionallySizedBoxModifierSpecUtility instead
 @Deprecated('Use FractionallySizedBoxModifierSpecUtility instead')
-typedef FractionallySizedBoxModifierUtility
-    = FractionallySizedBoxModifierSpecUtility;
+typedef FractionallySizedBoxModifierUtility =
+    FractionallySizedBoxModifierSpecUtility;
 
 /// Deprecated: Use SizedBoxModifierSpecUtility instead
 @Deprecated('Use SizedBoxModifierSpecUtility instead')
@@ -309,3 +319,36 @@ typedef PaddingModifierUtility = PaddingModifierSpecUtility;
 /// Deprecated: Use PaddingModifierSpec instead
 @Deprecated('Use PaddingModifierSpec instead')
 typedef PaddingSpec = PaddingModifierSpec;
+
+// =============================================================================
+// DEPRECATED EXTENSIONS
+// =============================================================================
+
+/// Deprecated extension for Color conversion
+extension ColorExt on Color {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  ColorDto toDto() => Mixable.value(this);
+}
+
+/// Deprecated extension for Radius conversion
+extension RadiusExt on Radius {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  RadiusDto toDto() => Mixable.value(this);
+}
+
+/// Deprecated convenience factory functions for RadiusDto
+class RadiusDto$ {
+  @Deprecated('Use Mixable.value(Radius.zero) directly instead')
+  static RadiusDto zero() => const Mixable.value(Radius.zero);
+
+  @Deprecated('Use Mixable.value(Radius.circular(radius)) directly instead')
+  static RadiusDto circular(double radius) =>
+      Mixable.value(Radius.circular(radius));
+
+  @Deprecated('Use Mixable.value(Radius.elliptical(x, y)) directly instead')
+  static RadiusDto elliptical(double x, double y) =>
+      Mixable.value(Radius.elliptical(x, y));
+
+  @Deprecated('Use Mixable.value(value) directly instead')
+  static RadiusDto fromValue(Radius value) => Mixable.value(value);
+}

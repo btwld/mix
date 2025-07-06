@@ -57,6 +57,12 @@ abstract class Mixable<Value> with EqualityMixin {
     List<MixableDirective<Value>> directives,
   }) = _CompositeMixable<Value>;
 
+  static Mixable<T>? maybeValue<T>(T? value) {
+    if (value == null) return null;
+
+    return Mixable.value(value);
+  }
+
   /// Resolves token value if present, otherwise returns null
   Value resolve(MixContext mix);
 
@@ -100,8 +106,10 @@ class _ValueMixable<T> extends Mixable<T> {
     final allDirectives = mergeDirectives(other.directives);
 
     return switch ((this, other)) {
-      (_, _CompositeMixable(:var items)) =>
-        Mixable.composite([...items, this], directives: allDirectives),
+      (_, _CompositeMixable(:var items)) => Mixable.composite([
+        ...items,
+        this,
+      ], directives: allDirectives),
       _ => Mixable.composite([this, other], directives: allDirectives),
     };
   }
@@ -127,8 +135,10 @@ class _TokenMixable<T> extends Mixable<T> {
     final allDirectives = mergeDirectives(other.directives);
 
     return switch ((this, other)) {
-      (_, _CompositeMixable(:var items)) =>
-        Mixable.composite([...items, this], directives: allDirectives),
+      (_, _CompositeMixable(:var items)) => Mixable.composite([
+        ...items,
+        this,
+      ], directives: allDirectives),
       _ => Mixable.composite([this, other], directives: allDirectives),
     };
   }
@@ -177,13 +187,42 @@ mixin HasDefaultValue<Value> {
   Value get defaultValue;
 }
 
-abstract class DtoUtility<A extends StyleElement, D extends Mixable<Value>,
-    Value> extends MixUtility<A, D> {
-  final D Function(Value) _fromValue;
+abstract class DtoUtility<
+  A extends StyleElement,
+  D extends Mixable<Value>,
+  Value
+>
+    extends MixUtility<A, D> {
+  final D Function(Value) fromValue;
   const DtoUtility(super.builder, {required D Function(Value) valueToDto})
-      : _fromValue = valueToDto;
+    : fromValue = valueToDto;
 
   A only();
 
-  A as(Value value) => builder(_fromValue(value));
+  A as(Value value) => builder(fromValue(value));
+}
+
+/// A unified utility base class that works with Mixable<Value>.
+///
+/// This class provides a consistent API for all utilities by working directly
+/// with Mixable<Value> instead of raw values or custom DTOs.
+abstract class NewMixUtility<A extends StyleElement, Value>
+    extends MixUtility<A, Mixable<Value>> {
+  const NewMixUtility(super.builder);
+
+  /// Creates a StyleElement from a raw value by wrapping it in Mixable.value()
+  A call(Value value) => builder(Mixable.value(value));
+
+  /// Creates a StyleElement from a token by wrapping it in Mixable.token()
+  A token(MixableToken<Value> token) => builder(Mixable.token(token));
+
+  /// Creates a StyleElement from a composite of mixables
+  A composite(List<Mixable<Value>> items) => builder(Mixable.composite(items));
+
+  /// For complex utilities with multiple properties - should be overridden
+  /// when the utility needs to support partial construction
+  A only() => throw UnimplementedError(
+    'only() method not implemented for $runtimeType. '
+    'Override this method if the utility supports partial construction.',
+  );
 }

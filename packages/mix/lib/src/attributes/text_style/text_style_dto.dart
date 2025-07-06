@@ -19,7 +19,8 @@ sealed class TextStyleDto extends Mixable<TextStyle> with Diagnosticable {
   const factory TextStyleDto.composite(List<TextStyleDto> items) =
       _CompositeTextStyleDto;
 
-  const factory TextStyleDto({
+  const // Factory constructor delegates to ValueTextStyleDto
+  factory TextStyleDto({
     ColorDto? color,
     ColorDto? backgroundColor,
     Mixable<double>? fontSize,
@@ -45,48 +46,30 @@ sealed class TextStyleDto extends Mixable<TextStyle> with Diagnosticable {
 
   // Convert resolved TextStyle back to DTO
   static ValueTextStyleDto fromValue(TextStyle style) {
+    // Helper to reduce repetition
+
     return ValueTextStyleDto(
       background: style.background,
-      backgroundColor: style.backgroundColor != null
-          ? ColorDto.value(style.backgroundColor!)
-          : null,
-      color: style.color != null ? ColorDto.value(style.color!) : null,
-      debugLabel:
-          style.debugLabel != null ? Mixable.value(style.debugLabel!) : null,
-      decoration:
-          style.decoration != null ? Mixable.value(style.decoration!) : null,
-      decorationColor: style.decorationColor != null
-          ? ColorDto.value(style.decorationColor!)
-          : null,
-      decorationStyle: style.decorationStyle != null
-          ? Mixable.value(style.decorationStyle!)
-          : null,
-      decorationThickness: style.decorationThickness != null
-          ? Mixable.value(style.decorationThickness!)
-          : null,
-      fontFamily:
-          style.fontFamily != null ? Mixable.value(style.fontFamily!) : null,
+      backgroundColor: style.backgroundColor?.toDto(),
+      color: style.color?.toDto(),
+      debugLabel: Mixable.maybeValue(style.debugLabel),
+      decoration: Mixable.maybeValue(style.decoration),
+      decorationColor: style.decorationColor?.toDto(),
+      decorationStyle: Mixable.maybeValue(style.decorationStyle),
+      decorationThickness: Mixable.maybeValue(style.decorationThickness),
+      fontFamily: Mixable.maybeValue(style.fontFamily),
       fontFamilyFallback: style.fontFamilyFallback,
       fontVariations: style.fontVariations,
       fontFeatures: style.fontFeatures,
-      fontSize: style.fontSize != null ? Mixable.value(style.fontSize!) : null,
-      fontStyle:
-          style.fontStyle != null ? Mixable.value(style.fontStyle!) : null,
-      fontWeight:
-          style.fontWeight != null ? Mixable.value(style.fontWeight!) : null,
+      fontSize: Mixable.maybeValue(style.fontSize),
+      fontStyle: Mixable.maybeValue(style.fontStyle),
+      fontWeight: Mixable.maybeValue(style.fontWeight),
       foreground: style.foreground,
-      height: style.height != null ? Mixable.value(style.height!) : null,
-      letterSpacing: style.letterSpacing != null
-          ? Mixable.value(style.letterSpacing!)
-          : null,
-      // Note: shadows, fontFeatures, fontVariations, foreground, background, fontFamilyFallback
-      // are kept as-is since they're not simple scalars
+      height: Mixable.maybeValue(style.height),
+      letterSpacing: Mixable.maybeValue(style.letterSpacing),
       shadows: style.shadows?.map((s) => s.toDto()).toList(),
-      textBaseline: style.textBaseline != null
-          ? Mixable.value(style.textBaseline!)
-          : null,
-      wordSpacing:
-          style.wordSpacing != null ? Mixable.value(style.wordSpacing!) : null,
+      textBaseline: Mixable.maybeValue(style.textBaseline),
+      wordSpacing: Mixable.maybeValue(style.wordSpacing),
     );
   }
 
@@ -97,28 +80,24 @@ sealed class TextStyleDto extends Mixable<TextStyle> with Diagnosticable {
 
     return switch ((this, other)) {
       (ValueTextStyleDto a, ValueTextStyleDto b) => a._mergeWith(b),
-      (_CompositeTextStyleDto(:var items), _) =>
-        TextStyleDto.composite([...items, other]),
+      (_CompositeTextStyleDto(:var items), _) => TextStyleDto.composite([
+        ...items,
+        other,
+      ]),
       (_, _CompositeTextStyleDto()) => other,
       _ => TextStyleDto.composite([this, other]),
     };
   }
 }
 
-// TODO: Look for ways to consolidate TextStyleDto and TextStyleData
-// If we remove TextStyle from tokens, it means we don't need a list of resolvable values
-// to be resolved once we have a context. We can merge the values directly, simplifying the code,
-// and this will allow more predictable behavior overall.
-@MixableType(components: GeneratedPropertyComponents.none)
-base class TextStyleData extends Mixable<TextStyle>
-    with _$TextStyleData {
-  final String? fontFamily;
-  final FontWeight? fontWeight;
-  final FontStyle? fontStyle;
-  final double? fontSize;
-  final double? letterSpacing;
-  final double? wordSpacing;
-  final TextBaseline? textBaseline;
+final class ValueTextStyleDto extends TextStyleDto {
+  final Mixable<String>? fontFamily;
+  final Mixable<FontWeight>? fontWeight;
+  final Mixable<FontStyle>? fontStyle;
+  final Mixable<double>? fontSize;
+  final Mixable<double>? letterSpacing;
+  final Mixable<double>? wordSpacing;
+  final Mixable<TextBaseline>? textBaseline;
   final ColorDto? color;
   final ColorDto? backgroundColor;
   final List<ShadowDto>? shadows;
@@ -159,61 +138,34 @@ base class TextStyleData extends Mixable<TextStyle>
   }) : super._();
 
   factory ValueTextStyleDto.value(TextStyle value) {
-    return ValueTextStyleDto(
-      background: value.background,
-      backgroundColor: value.backgroundColor?.toDto(),
-      color: value.color?.toDto(),
-      debugLabel:
-          value.debugLabel != null ? Mixable.value(value.debugLabel!) : null,
-      decoration:
-          value.decoration != null ? Mixable.value(value.decoration!) : null,
-      decorationColor: value.decorationColor?.toDto(),
-      decorationStyle: value.decorationStyle != null
-          ? Mixable.value(value.decorationStyle!)
-          : null,
-      decorationThickness: value.decorationThickness != null
-          ? Mixable.value(value.decorationThickness!)
-          : null,
-      fontFamily:
-          value.fontFamily != null ? Mixable.value(value.fontFamily!) : null,
-      fontFamilyFallback: value.fontFamilyFallback,
-      fontVariations: value.fontVariations,
-      fontFeatures: value.fontFeatures,
-      fontSize: value.fontSize != null ? Mixable.value(value.fontSize!) : null,
-      fontStyle:
-          value.fontStyle != null ? Mixable.value(value.fontStyle!) : null,
-      fontWeight:
-          value.fontWeight != null ? Mixable.value(value.fontWeight!) : null,
-      foreground: value.foreground,
-      height: value.height != null ? Mixable.value(value.height!) : null,
-      letterSpacing: value.letterSpacing != null
-          ? Mixable.value(value.letterSpacing!)
-          : null,
-      shadows: value.shadows?.map((s) => s.toDto()).toList(),
-      textBaseline: value.textBaseline != null
-          ? Mixable.value(value.textBaseline!)
-          : null,
-      wordSpacing:
-          value.wordSpacing != null ? Mixable.value(value.wordSpacing!) : null,
-    );
+    // Reuse the fromValue logic
+    return TextStyleDto.fromValue(value);
   }
 
   ValueTextStyleDto _mergeWith(ValueTextStyleDto other) {
     return ValueTextStyleDto(
+      // Paint fields - other takes precedence (no merge method)
       background: other.background ?? background,
-      backgroundColor: backgroundColor?.merge(other.backgroundColor) ??
+      // ColorDto fields - use merge
+      backgroundColor:
+          backgroundColor?.merge(other.backgroundColor) ??
           other.backgroundColor,
       color: color?.merge(other.color) ?? other.color,
+      // Mixable fields - use merge
       debugLabel: debugLabel?.merge(other.debugLabel) ?? other.debugLabel,
       decoration: decoration?.merge(other.decoration) ?? other.decoration,
-      decorationColor: decorationColor?.merge(other.decorationColor) ??
+      decorationColor:
+          decorationColor?.merge(other.decorationColor) ??
           other.decorationColor,
-      decorationStyle: decorationStyle?.merge(other.decorationStyle) ??
+
+      decorationStyle:
+          decorationStyle?.merge(other.decorationStyle) ??
           other.decorationStyle,
       decorationThickness:
           decorationThickness?.merge(other.decorationThickness) ??
-              other.decorationThickness,
+          other.decorationThickness,
       fontFamily: fontFamily?.merge(other.fontFamily) ?? other.fontFamily,
+      // List fields - other takes precedence
       fontFamilyFallback: other.fontFamilyFallback ?? fontFamilyFallback,
       fontVariations: other.fontVariations ?? fontVariations,
       fontFeatures: other.fontFeatures ?? fontFeatures,
@@ -221,10 +173,10 @@ base class TextStyleData extends Mixable<TextStyle>
       fontStyle: fontStyle?.merge(other.fontStyle) ?? other.fontStyle,
       fontWeight: fontWeight?.merge(other.fontWeight) ?? other.fontWeight,
       foreground: other.foreground ?? foreground,
+
       height: height?.merge(other.height) ?? other.height,
       letterSpacing:
           letterSpacing?.merge(other.letterSpacing) ?? other.letterSpacing,
-      // Non-scalar fields - other takes precedence
       shadows: other.shadows ?? shadows,
       textBaseline:
           textBaseline?.merge(other.textBaseline) ?? other.textBaseline,
@@ -287,39 +239,32 @@ base class TextStyleData extends Mixable<TextStyle>
 
   @override
   List<Object?> get props => [
-        color,
-        backgroundColor,
-        fontSize,
-        fontWeight,
-        fontStyle,
-        letterSpacing,
-        wordSpacing,
-        textBaseline,
-        decoration,
-        decorationColor,
-        decorationStyle,
-        decorationThickness,
-        fontFamily,
-        height,
-        debugLabel,
-        shadows,
-        fontFeatures,
-        fontVariations,
-        foreground,
-        background,
-        fontFamilyFallback,
-      ];
+    background,
+    backgroundColor,
+    color,
+    debugLabel,
+    decoration,
+    decorationColor,
+    decorationStyle,
+    decorationThickness,
+    fontFamily,
+    fontFamilyFallback,
+    fontFeatures,
+    fontSize,
+    fontStyle,
+    fontVariations,
+    fontWeight,
+    foreground,
+    height,
+    letterSpacing,
+    shadows,
+    textBaseline,
+    wordSpacing,
+  ];
 }
 
-@MixableType(
-  components: GeneratedPropertyComponents.none,
-  mergeLists: false,
-)
-final class TextStyleDto extends Mixable<TextStyle>
-    with _$TextStyleDto {
-  final List<TextStyleData> value;
-  @MixableConstructor()
-  const TextStyleDto._({this.value = const []});
+final class TokenTextStyleDto extends TextStyleDto {
+  final MixableToken<TextStyle> token;
 
   const TokenTextStyleDto(this.token) : super._();
 
@@ -329,7 +274,16 @@ final class TextStyleDto extends Mixable<TextStyle>
   }
 
   @override
-  TextStyleDto merge(TextStyleDto? other) => other ?? this;
+  TextStyleDto merge(TextStyleDto? other) {
+    if (other == null) return this;
+
+    // Create composite when merging with values
+    return switch (other) {
+      ValueTextStyleDto() => TextStyleDto.composite([this, other]),
+      TokenTextStyleDto() => other, // Other token wins
+      _CompositeTextStyleDto() => other, // Composite takes precedence
+    };
+  }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {

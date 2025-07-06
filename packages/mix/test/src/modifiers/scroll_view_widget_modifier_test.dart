@@ -43,9 +43,7 @@ void main() {
       'ScrollViewModifierSpec and SingleChildScrollView default values are equal',
       (tester) async {
         final modifier = ScrollViewModifierSpec();
-        final scrollView = SingleChildScrollView(
-          child: Container(),
-        );
+        final scrollView = SingleChildScrollView(child: Container());
 
         await tester.pumpMaterialApp(modifier.build(Container()));
 
@@ -60,10 +58,14 @@ void main() {
         expect(scrollViewWidget.clipBehavior, scrollView.clipBehavior);
         expect(scrollViewWidget.physics, scrollView.physics);
         expect(
-            scrollViewWidget.dragStartBehavior, scrollView.dragStartBehavior);
+          scrollViewWidget.dragStartBehavior,
+          scrollView.dragStartBehavior,
+        );
         expect(scrollViewWidget.restorationId, scrollView.restorationId);
-        expect(scrollViewWidget.keyboardDismissBehavior,
-            scrollView.keyboardDismissBehavior);
+        expect(
+          scrollViewWidget.keyboardDismissBehavior,
+          scrollView.keyboardDismissBehavior,
+        );
         expect(scrollViewWidget.controller, scrollView.controller);
       },
     );
@@ -77,7 +79,7 @@ void main() {
         const reverse = true;
         final padding = EdgeInsetsDto.all(8.0);
         const clip = Clip.antiAlias;
-        final physics = AlwaysScrollableScrollPhysics();
+        const physics = AlwaysScrollableScrollPhysics();
 
         final attribute = ScrollViewModifierSpecUtility(MixUtility.selfBuilder)(
           scrollDirection: axis,
@@ -99,7 +101,7 @@ void main() {
       const axis = Axis.horizontal;
       final padding = EdgeInsetsDto.all(8.0);
       const clip = Clip.antiAlias;
-      final physics = AlwaysScrollableScrollPhysics();
+      const physics = AlwaysScrollableScrollPhysics();
 
       final utility = ScrollViewModifierSpecUtility(MixUtility.selfBuilder);
 

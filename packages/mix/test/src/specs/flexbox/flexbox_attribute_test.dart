@@ -11,7 +11,11 @@ void main() {
         box: BoxSpecAttribute(
           alignment: Alignment.center,
           padding: EdgeInsetsGeometryDto.only(
-              top: 20, bottom: 20, left: 20, right: 20),
+            top: 20,
+            bottom: 20,
+            left: 20,
+            right: 20,
+          ),
           margin: EdgeInsetsGeometryDto.only(
             top: 10,
             bottom: 10,
@@ -19,8 +23,7 @@ void main() {
             right: 10,
           ),
           constraints: const BoxConstraintsDto(maxHeight: 100),
-          decoration:
-              const BoxDecorationDto(color: ColorDto.value(Colors.blue)),
+          decoration: const BoxDecorationDto(color: Mixable.value(Colors.blue)),
           transform: Matrix4.identity(),
           clipBehavior: Clip.antiAlias,
           width: 100,
@@ -49,7 +52,7 @@ void main() {
       );
       expect(
         flexBoxSpecAttribute.box!.decoration,
-        const BoxDecorationDto(color: ColorDto.value(Colors.blue)),
+        const BoxDecorationDto(color: Mixable.value(Colors.blue)),
       );
 
       expect(flexBoxSpecAttribute.box!.height, 100);
@@ -64,19 +67,26 @@ void main() {
       expect(flexBoxSpecAttribute.box!.transform, Matrix4.identity());
       expect(flexBoxSpecAttribute.box!.width, 100);
       expect(
-          flexBoxSpecAttribute.box!.modifiers,
-          const WidgetModifiersConfigDto([
-            OpacityModifierSpecAttribute(opacity: 0.5),
-            SizedBoxModifierSpecAttribute(height: 10, width: 10),
-          ]));
+        flexBoxSpecAttribute.box!.modifiers,
+        const WidgetModifiersConfigDto([
+          OpacityModifierSpecAttribute(opacity: 0.5),
+          SizedBoxModifierSpecAttribute(height: 10, width: 10),
+        ]),
+      );
 
-      expect(flexBoxSpecAttribute.flex!.mainAxisAlignment,
-          MainAxisAlignment.center);
-      expect(flexBoxSpecAttribute.flex!.crossAxisAlignment,
-          CrossAxisAlignment.center);
+      expect(
+        flexBoxSpecAttribute.flex!.mainAxisAlignment,
+        MainAxisAlignment.center,
+      );
+      expect(
+        flexBoxSpecAttribute.flex!.crossAxisAlignment,
+        CrossAxisAlignment.center,
+      );
       expect(flexBoxSpecAttribute.flex!.mainAxisSize, MainAxisSize.max);
       expect(
-          flexBoxSpecAttribute.flex!.verticalDirection, VerticalDirection.down);
+        flexBoxSpecAttribute.flex!.verticalDirection,
+        VerticalDirection.down,
+      );
       expect(flexBoxSpecAttribute.flex!.textDirection, TextDirection.ltr);
       expect(flexBoxSpecAttribute.flex!.textBaseline, TextBaseline.alphabetic);
     });
@@ -87,7 +97,11 @@ void main() {
         box: BoxSpecAttribute(
           alignment: Alignment.center,
           padding: EdgeInsetsGeometryDto.only(
-              top: 20, bottom: 20, left: 20, right: 20),
+            top: 20,
+            bottom: 20,
+            left: 20,
+            right: 20,
+          ),
           margin: EdgeInsetsGeometryDto.only(
             top: 10,
             bottom: 10,
@@ -95,8 +109,7 @@ void main() {
             right: 10,
           ),
           constraints: const BoxConstraintsDto(maxHeight: 100),
-          decoration:
-              const BoxDecorationDto(color: ColorDto.value(Colors.blue)),
+          decoration: const BoxDecorationDto(color: Mixable.value(Colors.blue)),
           transform: Matrix4.identity(),
           clipBehavior: Clip.antiAlias,
           width: 100,
@@ -126,7 +139,9 @@ void main() {
         const BoxConstraints(maxWidth: double.infinity, maxHeight: 100),
       );
       expect(
-          flexBoxSpec.box.decoration, const BoxDecoration(color: Colors.blue));
+        flexBoxSpec.box.decoration,
+        const BoxDecoration(color: Colors.blue),
+      );
 
       expect(flexBoxSpec.box.height, 100);
       expect(
@@ -158,7 +173,11 @@ void main() {
         box: BoxSpecAttribute(
           alignment: Alignment.center,
           padding: EdgeInsetsGeometryDto.only(
-              top: 20, bottom: 20, left: 20, right: 20),
+            top: 20,
+            bottom: 20,
+            left: 20,
+            right: 20,
+          ),
           margin: EdgeInsetsGeometryDto.only(
             top: 10,
             bottom: 10,
@@ -166,8 +185,7 @@ void main() {
             right: 10,
           ),
           constraints: const BoxConstraintsDto(maxHeight: 100),
-          decoration:
-              const BoxDecorationDto(color: ColorDto.value(Colors.blue)),
+          decoration: const BoxDecorationDto(color: Mixable.value(Colors.blue)),
           transform: Matrix4.identity(),
           clipBehavior: Clip.antiAlias,
           width: 100,
@@ -192,7 +210,11 @@ void main() {
           box: BoxSpecAttribute(
             alignment: Alignment.centerLeft,
             padding: EdgeInsetsGeometryDto.only(
-                top: 30, bottom: 30, left: 30, right: 30),
+              top: 30,
+              bottom: 30,
+              left: 30,
+              right: 30,
+            ),
             margin: EdgeInsetsGeometryDto.only(
               top: 20,
               bottom: 20,
@@ -200,8 +222,9 @@ void main() {
               right: 20,
             ),
             constraints: const BoxConstraintsDto(maxHeight: 200),
-            decoration:
-                const BoxDecorationDto(color: ColorDto.value(Colors.red)),
+            decoration: const BoxDecorationDto(
+              color: Mixable.value(Colors.red),
+            ),
             transform: Matrix4.identity(),
             clipBehavior: Clip.antiAliasWithSaveLayer,
             width: 200,
@@ -222,8 +245,10 @@ void main() {
       );
 
       expect(mergedFlexBoxSpecAttribute.box!.alignment, Alignment.centerLeft);
-      expect(mergedFlexBoxSpecAttribute.box!.clipBehavior,
-          Clip.antiAliasWithSaveLayer);
+      expect(
+        mergedFlexBoxSpecAttribute.box!.clipBehavior,
+        Clip.antiAliasWithSaveLayer,
+      );
 
       expect(
         mergedFlexBoxSpecAttribute.box!.constraints,
@@ -231,7 +256,7 @@ void main() {
       );
       expect(
         mergedFlexBoxSpecAttribute.box!.decoration,
-        const BoxDecorationDto(color: ColorDto.value(Colors.red)),
+        const BoxDecorationDto(color: Mixable.value(Colors.red)),
       );
 
       expect(mergedFlexBoxSpecAttribute.box!.height, 200);
@@ -246,22 +271,31 @@ void main() {
       expect(mergedFlexBoxSpecAttribute.box!.transform, Matrix4.identity());
       expect(mergedFlexBoxSpecAttribute.box!.width, 200);
       expect(
-          mergedFlexBoxSpecAttribute.box!.modifiers,
-          const WidgetModifiersConfigDto([
-            OpacityModifierSpecAttribute(opacity: 0.5),
-            SizedBoxModifierSpecAttribute(height: 10, width: 20),
-          ]));
+        mergedFlexBoxSpecAttribute.box!.modifiers,
+        const WidgetModifiersConfigDto([
+          OpacityModifierSpecAttribute(opacity: 0.5),
+          SizedBoxModifierSpecAttribute(height: 10, width: 20),
+        ]),
+      );
 
-      expect(mergedFlexBoxSpecAttribute.flex!.mainAxisAlignment,
-          MainAxisAlignment.start);
-      expect(mergedFlexBoxSpecAttribute.flex!.crossAxisAlignment,
-          CrossAxisAlignment.start);
+      expect(
+        mergedFlexBoxSpecAttribute.flex!.mainAxisAlignment,
+        MainAxisAlignment.start,
+      );
+      expect(
+        mergedFlexBoxSpecAttribute.flex!.crossAxisAlignment,
+        CrossAxisAlignment.start,
+      );
       expect(mergedFlexBoxSpecAttribute.flex!.mainAxisSize, MainAxisSize.min);
-      expect(mergedFlexBoxSpecAttribute.flex!.verticalDirection,
-          VerticalDirection.up);
+      expect(
+        mergedFlexBoxSpecAttribute.flex!.verticalDirection,
+        VerticalDirection.up,
+      );
       expect(mergedFlexBoxSpecAttribute.flex!.textDirection, TextDirection.rtl);
-      expect(mergedFlexBoxSpecAttribute.flex!.textBaseline,
-          TextBaseline.ideographic);
+      expect(
+        mergedFlexBoxSpecAttribute.flex!.textBaseline,
+        TextBaseline.ideographic,
+      );
     });
 
     // equality
@@ -270,7 +304,11 @@ void main() {
         box: BoxSpecAttribute(
           alignment: Alignment.center,
           padding: EdgeInsetsGeometryDto.only(
-              top: 20, bottom: 20, left: 20, right: 20),
+            top: 20,
+            bottom: 20,
+            left: 20,
+            right: 20,
+          ),
           margin: EdgeInsetsGeometryDto.only(
             top: 10,
             bottom: 10,
@@ -278,8 +316,7 @@ void main() {
             right: 10,
           ),
           constraints: const BoxConstraintsDto(maxHeight: 100),
-          decoration:
-              const BoxDecorationDto(color: ColorDto.value(Colors.blue)),
+          decoration: const BoxDecorationDto(color: Mixable.value(Colors.blue)),
           transform: Matrix4.identity(),
           clipBehavior: Clip.antiAlias,
           width: 100,
@@ -306,7 +343,11 @@ void main() {
             box: BoxSpecAttribute(
               alignment: Alignment.center,
               padding: EdgeInsetsGeometryDto.only(
-                  top: 20, bottom: 20, left: 20, right: 20),
+                top: 20,
+                bottom: 20,
+                left: 20,
+                right: 20,
+              ),
               margin: EdgeInsetsGeometryDto.only(
                 top: 10,
                 bottom: 10,
@@ -314,18 +355,17 @@ void main() {
                 right: 10,
               ),
               constraints: const BoxConstraintsDto(maxHeight: 100),
-              decoration:
-                  const BoxDecorationDto(color: ColorDto.value(Colors.blue)),
+              decoration: const BoxDecorationDto(
+                color: Mixable.value(Colors.blue),
+              ),
               transform: Matrix4.identity(),
               clipBehavior: Clip.antiAlias,
               width: 100,
               height: 100,
-              modifiers: const WidgetModifiersConfigDto(
-                [
-                  OpacityModifierSpecAttribute(opacity: 0.5),
-                  SizedBoxModifierSpecAttribute(height: 10, width: 10),
-                ],
-              ),
+              modifiers: const WidgetModifiersConfigDto([
+                OpacityModifierSpecAttribute(opacity: 0.5),
+                SizedBoxModifierSpecAttribute(height: 10, width: 10),
+              ]),
             ),
             flex: const FlexSpecAttribute(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -346,7 +386,11 @@ void main() {
         box: BoxSpecAttribute(
           alignment: Alignment.center,
           padding: EdgeInsetsGeometryDto.only(
-              top: 20, bottom: 20, left: 20, right: 20),
+            top: 20,
+            bottom: 20,
+            left: 20,
+            right: 20,
+          ),
           margin: EdgeInsetsGeometryDto.only(
             top: 10,
             bottom: 10,
@@ -354,8 +398,7 @@ void main() {
             right: 10,
           ),
           constraints: const BoxConstraintsDto(maxHeight: 100),
-          decoration:
-              const BoxDecorationDto(color: ColorDto.value(Colors.blue)),
+          decoration: const BoxDecorationDto(color: Mixable.value(Colors.blue)),
           transform: Matrix4.identity(),
           clipBehavior: Clip.antiAlias,
           width: 100,
@@ -391,18 +434,17 @@ void main() {
                   right: 20,
                 ),
                 constraints: const BoxConstraintsDto(maxHeight: 200),
-                decoration:
-                    const BoxDecorationDto(color: ColorDto.value(Colors.red)),
+                decoration: const BoxDecorationDto(
+                  color: Mixable.value(Colors.red),
+                ),
                 transform: Matrix4.identity(),
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 width: 200,
                 height: 200,
-                modifiers: const WidgetModifiersConfigDto(
-                  [
-                    OpacityModifierSpecAttribute(opacity: 0.4),
-                    SizedBoxModifierSpecAttribute(height: 20, width: 10),
-                  ],
-                ),
+                modifiers: const WidgetModifiersConfigDto([
+                  OpacityModifierSpecAttribute(opacity: 0.4),
+                  SizedBoxModifierSpecAttribute(height: 20, width: 10),
+                ]),
               ),
               flex: const FlexSpecAttribute(
                 mainAxisAlignment: MainAxisAlignment.start,

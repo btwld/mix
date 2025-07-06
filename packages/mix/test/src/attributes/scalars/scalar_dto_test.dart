@@ -62,18 +62,18 @@ void main() {
 
   group('ColorDto with composite', () {
     test('composite resolution works', () {
-      const dto1 = ColorDto.value(Colors.red);
-      const dto2 = ColorDto.value(Colors.blue);
+      const dto1 = Mixable<Color>.value(Colors.red);
+      const dto2 = Mixable<Color>.value(Colors.blue);
 
-      const composite = ColorDto.composite([dto1, dto2]);
+      const composite = Mixable<Color>.composite([dto1, dto2]);
       expect(composite.resolve(createMixContext()), Colors.blue);
     });
 
     test('composite with directives accumulates directives', () {
-      const dto1 = ColorDto.value(Colors.red, directives: []);
-      const dto2 = ColorDto.value(Colors.blue, directives: []);
+      const dto1 = Mixable<Color>.value(Colors.red);
+      const dto2 = Mixable<Color>.value(Colors.blue);
 
-      const composite = ColorDto.composite([dto1, dto2]);
+      const composite = Mixable<Color>.composite([dto1, dto2]);
       final resolved = composite.resolve(createMixContext());
       expect(resolved, Colors.blue);
     });
@@ -90,7 +90,7 @@ void main() {
 
     test('fromValue works', () {
       const radius = Radius.circular(15);
-      final dto = RadiusDto$.fromValue(radius);
+      const dto = Mixable.value(radius);
       expect(dto.resolve(createMixContext()), radius);
     });
   });
@@ -99,7 +99,7 @@ void main() {
     test('composite resolution works', () {
       const dto1 = TextStyleDto(
         fontSize: Mixable<double>.value(12),
-        color: ColorDto.value(Colors.red),
+        color: Mixable.value(Colors.red),
       );
       const dto2 = TextStyleDto(
         fontSize: Mixable<double>.value(16),

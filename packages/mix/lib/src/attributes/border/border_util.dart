@@ -93,7 +93,7 @@ final class BorderUtility<T extends StyleElement>
     double? strokeAlign,
   }) {
     return all(
-      color: color,
+      color: Mixable.maybeValue(color),
       strokeAlign: strokeAlign,
       style: style,
       width: width,
@@ -115,8 +115,9 @@ final class BorderUtility<T extends StyleElement>
 
 final class BorderDirectionalUtility<T extends StyleElement>
     extends DtoUtility<T, BorderDirectionalDto, BorderDirectional> {
-  late final all =
-      BorderSideUtility((v) => builder(BorderDirectionalDto.all(v)));
+  late final all = BorderSideUtility(
+    (v) => builder(BorderDirectionalDto.all(v)),
+  );
 
   late final bottom = BorderSideUtility((v) => only(bottom: v));
 
@@ -126,14 +127,16 @@ final class BorderDirectionalUtility<T extends StyleElement>
 
   late final end = BorderSideUtility((v) => only(end: v));
 
-  late final vertical =
-      BorderSideUtility((v) => builder(BorderDirectionalDto.vertical(v)));
+  late final vertical = BorderSideUtility(
+    (v) => builder(BorderDirectionalDto.vertical(v)),
+  );
 
-  late final horizontal =
-      BorderSideUtility((v) => builder(BorderDirectionalDto.horizontal(v)));
+  late final horizontal = BorderSideUtility(
+    (v) => builder(BorderDirectionalDto.horizontal(v)),
+  );
 
   BorderDirectionalUtility(super.builder)
-      : super(valueToDto: (value) => value.toDto());
+    : super(valueToDto: (value) => value.toDto());
 
   T none() => builder(const BorderDirectionalDto.none());
 
@@ -144,7 +147,7 @@ final class BorderDirectionalUtility<T extends StyleElement>
     double? strokeAlign,
   }) {
     return all(
-      color: color,
+      color: Mixable.maybeValue(color),
       strokeAlign: strokeAlign,
       style: style,
       width: width,

@@ -4,15 +4,12 @@ import 'package:mix/mix.dart';
 
 void main() {
   group('Token Integration Tests', () {
-    testWidgets('ColorDto with Token<Color> integration', (tester) async {
+    testWidgets('Mixable<Color> with Token<Color> integration', (tester) async {
       const primaryToken = MixableToken<Color>('primary');
       const secondaryToken = MixableToken<Color>('secondary');
 
       final theme = MixScopeData.static(
-        tokens: {
-          primaryToken: Colors.blue,
-          secondaryToken: Colors.red,
-        },
+        tokens: {primaryToken: Colors.blue, secondaryToken: Colors.red},
       );
 
       await tester.pumpWidget(
@@ -20,8 +17,8 @@ void main() {
           data: theme,
           child: Builder(
             builder: (context) {
-              final dto1 = ColorDto.token(primaryToken);
-              final dto2 = ColorDto.token(secondaryToken);
+              const dto1 = Mixable<Color>.token(primaryToken);
+              const dto2 = Mixable<Color>.token(secondaryToken);
 
               final color1 = dto1.resolve(MixContext.create(context, Style()));
               final color2 = dto2.resolve(MixContext.create(context, Style()));
@@ -41,10 +38,7 @@ void main() {
       const largeToken = MixableToken<double>('large');
 
       final theme = MixScopeData.static(
-        tokens: {
-          smallToken: 8.0,
-          largeToken: 24.0,
-        },
+        tokens: {smallToken: 8.0, largeToken: 24.0},
       );
 
       await tester.pumpWidget(
@@ -52,8 +46,8 @@ void main() {
           data: theme,
           child: Builder(
             builder: (context) {
-              final dto1 = SpaceDto.token(smallToken);
-              final dto2 = SpaceDto.token(largeToken);
+              const dto1 = SpaceDto.token(smallToken);
+              const dto2 = SpaceDto.token(largeToken);
 
               final space1 = dto1.resolve(MixContext.create(context, Style()));
               final space2 = dto2.resolve(MixContext.create(context, Style()));
@@ -68,8 +62,9 @@ void main() {
       );
     });
 
-    testWidgets('TextStyleDto with Token<TextStyle> integration',
-        (tester) async {
+    testWidgets('TextStyleDto with Token<TextStyle> integration', (
+      tester,
+    ) async {
       const headingToken = MixableToken<TextStyle>('heading');
       const bodyToken = MixableToken<TextStyle>('body');
 
@@ -77,10 +72,7 @@ void main() {
       const bodyStyle = TextStyle(fontSize: 16);
 
       final theme = MixScopeData.static(
-        tokens: {
-          headingToken: headingStyle,
-          bodyToken: bodyStyle,
-        },
+        tokens: {headingToken: headingStyle, bodyToken: bodyStyle},
       );
 
       await tester.pumpWidget(
@@ -88,8 +80,8 @@ void main() {
           data: theme,
           child: Builder(
             builder: (context) {
-              final dto1 = TextStyleDto.token(headingToken);
-              final dto2 = TextStyleDto.token(bodyToken);
+              const dto1 = TextStyleDto.token(headingToken);
+              const dto2 = TextStyleDto.token(bodyToken);
 
               final style1 = dto1.resolve(MixContext.create(context, Style()));
               final style2 = dto2.resolve(MixContext.create(context, Style()));
@@ -110,10 +102,7 @@ void main() {
       const spacingToken = MixableToken<double>('spacing');
 
       final theme = MixScopeData.static(
-        tokens: {
-          primaryToken: Colors.purple,
-          spacingToken: 16.0,
-        },
+        tokens: {primaryToken: Colors.purple, spacingToken: 16.0},
       );
 
       await tester.pumpWidget(
@@ -127,11 +116,14 @@ void main() {
               );
 
               final mixData = MixContext.create(context, style);
-              final boxSpec =
-                  mixData.attributeOf<BoxSpecAttribute>()?.resolve(mixData);
+              final boxSpec = mixData.attributeOf<BoxSpecAttribute>()?.resolve(
+                mixData,
+              );
 
-              expect((boxSpec?.decoration as BoxDecoration?)?.color,
-                  equals(Colors.purple));
+              expect(
+                (boxSpec?.decoration as BoxDecoration?)?.color,
+                equals(Colors.purple),
+              );
               expect(boxSpec?.padding, equals(const EdgeInsets.all(16.0)));
 
               return Container();
