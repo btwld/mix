@@ -2,7 +2,6 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mix_annotations/mix_annotations.dart';
 
 import '../core/element.dart';
 import '../core/factory/mix_context.dart';
@@ -10,11 +9,8 @@ import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/utility.dart';
 
-part 'align_widget_modifier.g.dart';
-
-@MixableSpec(components: GeneratedSpecComponents.skipUtility)
 final class AlignModifierSpec extends WidgetModifierSpec<AlignModifierSpec>
-    with _$AlignModifierSpec, Diagnosticable {
+    with Diagnosticable {
   final AlignmentGeometry? alignment;
   final double? widthFactor;
   final double? heightFactor;
@@ -26,9 +22,47 @@ final class AlignModifierSpec extends WidgetModifierSpec<AlignModifierSpec>
   });
 
   @override
+  AlignModifierSpec copyWith({
+    AlignmentGeometry? alignment,
+    double? widthFactor,
+    double? heightFactor,
+  }) {
+    return AlignModifierSpec(
+      alignment: alignment ?? this.alignment,
+      widthFactor: widthFactor ?? this.widthFactor,
+      heightFactor: heightFactor ?? this.heightFactor,
+    );
+  }
+
+  @override
+  AlignModifierSpec lerp(AlignModifierSpec? other, double t) {
+    if (other == null) return this;
+
+    return AlignModifierSpec(
+      alignment: AlignmentGeometry.lerp(alignment, other.alignment, t),
+      widthFactor:
+          MixHelpers.lerpDouble(widthFactor, other.widthFactor, t),
+      heightFactor:
+          MixHelpers.lerpDouble(heightFactor, other.heightFactor, t),
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+        alignment,
+        widthFactor,
+        heightFactor,
+      ];
+
+  @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    _debugFillProperties(properties);
+    properties.add(
+        DiagnosticsProperty('alignment', alignment, defaultValue: null));
+    properties.add(DiagnosticsProperty('widthFactor', widthFactor,
+        defaultValue: null));
+    properties.add(DiagnosticsProperty('heightFactor', heightFactor,
+        defaultValue: null));
   }
 
   @override
@@ -57,5 +91,76 @@ final class AlignModifierSpecUtility<T extends StyleElement>
         heightFactor: heightFactor,
       ),
     );
+  }
+}
+
+class AlignModifierSpecAttribute
+    extends WidgetModifierSpecAttribute<AlignModifierSpec> with Diagnosticable {
+  final AlignmentGeometry? alignment;
+  final double? widthFactor;
+  final double? heightFactor;
+
+  const AlignModifierSpecAttribute({
+    this.alignment,
+    this.widthFactor,
+    this.heightFactor,
+  });
+
+  @override
+  AlignModifierSpec resolve(MixContext mix) {
+    return AlignModifierSpec(
+      alignment: alignment,
+      widthFactor: widthFactor,
+      heightFactor: heightFactor,
+    );
+  }
+
+  @override
+  AlignModifierSpecAttribute merge(AlignModifierSpecAttribute? other) {
+    if (other == null) return this;
+
+    return AlignModifierSpecAttribute(
+      alignment: other.alignment ?? alignment,
+      widthFactor: other.widthFactor ?? widthFactor,
+      heightFactor: other.heightFactor ?? heightFactor,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+        alignment,
+        widthFactor,
+        heightFactor,
+      ];
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+        .add(DiagnosticsProperty('alignment', alignment, defaultValue: null));
+    properties.add(
+        DiagnosticsProperty('widthFactor', widthFactor, defaultValue: null));
+    properties.add(
+        DiagnosticsProperty('heightFactor', heightFactor, defaultValue: null));
+  }
+}
+
+class AlignModifierSpecTween extends Tween<AlignModifierSpec?> {
+  AlignModifierSpecTween({
+    super.begin,
+    super.end,
+  });
+
+  @override
+  AlignModifierSpec lerp(double t) {
+    if (begin == null && end == null) {
+      return const AlignModifierSpec();
+    }
+
+    if (begin == null) {
+      return end!;
+    }
+
+    return begin!.lerp(end!, t);
   }
 }

@@ -1,11 +1,8 @@
 // ignore_for_file: prefer_relative_imports, avoid-importing-entrypoint-exports
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
-import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../internal/mix_error.dart';
-
-part 'edge_insets_dto.g.dart';
 
 // Deprecated typedef moved to src/core/deprecated.dart
 
@@ -91,14 +88,11 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
   EdgeInsetsGeometryDto<T> merge(covariant EdgeInsetsGeometryDto<T>? other);
 }
 
-@MixableType(components: GeneratedPropertyComponents.none)
-final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets>
-    with _$EdgeInsetsDto {
+final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
   final SpaceDto? left;
   final SpaceDto? right;
 
-  @MixableConstructor()
-  @protected
+    @protected
   const EdgeInsetsDto.raw({super.top, super.bottom, this.left, this.right})
     : super.raw();
 
@@ -136,12 +130,30 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets>
       bottom: bottom?.resolve(mix) ?? 0,
     );
   }
+
+  @override
+  EdgeInsetsDto merge(EdgeInsetsDto? other) {
+    if (other == null) return this;
+
+    return EdgeInsetsDto.raw(
+      top: other.top ?? top,
+      bottom: other.bottom ?? bottom,
+      left: other.left ?? left,
+      right: other.right ?? right,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+        top,
+        bottom,
+        left,
+        right,
+      ];
 }
 
-@MixableType(components: GeneratedPropertyComponents.none)
 final class EdgeInsetsDirectionalDto
-    extends EdgeInsetsGeometryDto<EdgeInsetsDirectional>
-    with _$EdgeInsetsDirectionalDto {
+    extends EdgeInsetsGeometryDto<EdgeInsetsDirectional> {
   final SpaceDto? start;
   final SpaceDto? end;
 
@@ -155,8 +167,7 @@ final class EdgeInsetsDirectionalDto
 
   EdgeInsetsDirectionalDto.none() : this.all(0);
 
-  @MixableConstructor()
-  @protected
+    @protected
   const EdgeInsetsDirectionalDto.raw({
     super.top,
     super.bottom,
@@ -188,6 +199,26 @@ final class EdgeInsetsDirectionalDto
       bottom: bottom?.resolve(mix) ?? 0,
     );
   }
+
+  @override
+  EdgeInsetsDirectionalDto merge(EdgeInsetsDirectionalDto? other) {
+    if (other == null) return this;
+
+    return EdgeInsetsDirectionalDto.raw(
+      top: other.top ?? top,
+      bottom: other.bottom ?? bottom,
+      start: other.start ?? start,
+      end: other.end ?? end,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+        top,
+        bottom,
+        start,
+        end,
+      ];
 }
 
 extension EdgeInsetsGeometryExt on EdgeInsetsGeometry {

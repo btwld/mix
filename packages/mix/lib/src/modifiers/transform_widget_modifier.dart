@@ -4,7 +4,6 @@ import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mix_annotations/mix_annotations.dart';
 
 import '../core/element.dart';
 import '../core/factory/mix_context.dart';
@@ -12,21 +11,48 @@ import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/utility.dart';
 
-part 'transform_widget_modifier.g.dart';
-
-@MixableSpec(components: GeneratedSpecComponents.skipUtility)
 final class TransformModifierSpec
     extends WidgetModifierSpec<TransformModifierSpec>
-    with _$TransformModifierSpec, Diagnosticable {
+    with Diagnosticable {
   final Matrix4? transform;
   final Alignment? alignment;
 
   const TransformModifierSpec({this.transform, this.alignment});
 
   @override
+  TransformModifierSpec copyWith({
+    Matrix4? transform,
+    Alignment? alignment,
+  }) {
+    return TransformModifierSpec(
+      transform: transform ?? this.transform,
+      alignment: alignment ?? this.alignment,
+    );
+  }
+
+  @override
+  TransformModifierSpec lerp(TransformModifierSpec? other, double t) {
+    if (other == null) return this;
+
+    return TransformModifierSpec(
+      transform: MixHelpers.lerpMatrix4(transform, other.transform, t),
+      alignment: Alignment.lerp(alignment, other.alignment, t),
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+        transform,
+        alignment,
+      ];
+
+  @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    _debugFillProperties(properties);
+    properties.add(
+        DiagnosticsProperty('transform', transform, defaultValue: null));
+    properties.add(
+        DiagnosticsProperty('alignment', alignment, defaultValue: null));
   }
 
   @override
@@ -92,4 +118,69 @@ final class TransformRotateModifierSpecUtility<T extends StyleElement>
   T d270() => call(3 * math.pi / 2);
 
   T call(double value) => builder(Matrix4.rotationZ(value));
+}
+
+class TransformModifierSpecAttribute
+    extends WidgetModifierSpecAttribute<TransformModifierSpec>
+    with Diagnosticable {
+  final Matrix4? transform;
+  final Alignment? alignment;
+
+  const TransformModifierSpecAttribute({
+    this.transform,
+    this.alignment,
+  });
+
+  @override
+  TransformModifierSpec resolve(MixContext mix) {
+    return TransformModifierSpec(
+      transform: transform,
+      alignment: alignment,
+    );
+  }
+
+  @override
+  TransformModifierSpecAttribute merge(TransformModifierSpecAttribute? other) {
+    if (other == null) return this;
+
+    return TransformModifierSpecAttribute(
+      transform: other.transform ?? transform,
+      alignment: other.alignment ?? alignment,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+        transform,
+        alignment,
+      ];
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+        .add(DiagnosticsProperty('transform', transform, defaultValue: null));
+    properties
+        .add(DiagnosticsProperty('alignment', alignment, defaultValue: null));
+  }
+}
+
+class TransformModifierSpecTween extends Tween<TransformModifierSpec?> {
+  TransformModifierSpecTween({
+    super.begin,
+    super.end,
+  });
+
+  @override
+  TransformModifierSpec lerp(double t) {
+    if (begin == null && end == null) {
+      return const TransformModifierSpec();
+    }
+
+    if (begin == null) {
+      return end!;
+    }
+
+    return begin!.lerp(end!, t);
+  }
 }

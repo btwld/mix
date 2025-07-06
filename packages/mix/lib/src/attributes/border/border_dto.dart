@@ -234,6 +234,56 @@ final class BorderSideDto extends Mixable<BorderSide>
 
   @override
   BorderSide get defaultValue => const BorderSide();
+
+  /// Resolves to [BorderSide] using the provided [MixContext].
+  ///
+  /// If a property is null in the [MixContext], it falls back to the
+  /// default value defined in the `defaultValue` for that property.
+  ///
+  /// ```dart
+  /// final borderSide = BorderSideDto(...).resolve(mix);
+  /// ```
+  @override
+  BorderSide resolve(MixContext mix) {
+    return BorderSide(
+      color: color ?? defaultValue.color,
+      strokeAlign: strokeAlign ?? defaultValue.strokeAlign,
+      style: style ?? defaultValue.style,
+      width: width ?? defaultValue.width,
+    );
+  }
+
+  /// Merges the properties of this [BorderSideDto] with the properties of [other].
+  ///
+  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
+  /// [BorderSideDto] with the properties of [other] taking precedence over
+  /// the corresponding properties of this instance.
+  ///
+  /// Properties from [other] that are null will fall back
+  /// to the values from this instance.
+  @override
+  BorderSideDto merge(BorderSideDto? other) {
+    if (other == null) return this;
+
+    return BorderSideDto(
+      color: other.color ?? color,
+      strokeAlign: other.strokeAlign ?? strokeAlign,
+      style: other.style ?? style,
+      width: other.width ?? width,
+    );
+  }
+
+  /// The list of properties that constitute the state of this [BorderSideDto].
+  ///
+  /// This property is used by the [==] operator and the [hashCode] getter to
+  /// compare two [BorderSideDto] instances for equality.
+  @override
+  List<Object?> get props => [
+        color,
+        strokeAlign,
+        style,
+        width,
+      ];
 }
 
 extension BoxBorderExt on BoxBorder {

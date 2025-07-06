@@ -2,13 +2,8 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
-import 'package:mix_annotations/mix_annotations.dart';
 
-part 'text_height_behavior_dto.g.dart';
-
-@MixableType(components: GeneratedPropertyComponents.skipUtility)
-base class TextHeightBehaviorDto extends Mixable<TextHeightBehavior>
-    with _$TextHeightBehaviorDto {
+base class TextHeightBehaviorDto extends Mixable<TextHeightBehavior> {
   final bool? applyHeightToFirstAscent;
   final bool? applyHeightToLastDescent;
   final TextLeadingDistribution? leadingDistribution;
@@ -18,6 +13,57 @@ base class TextHeightBehaviorDto extends Mixable<TextHeightBehavior>
     this.applyHeightToLastDescent,
     this.leadingDistribution,
   });
+
+  /// Resolves to [TextHeightBehavior] using the provided [MixContext].
+  ///
+  /// If a property is null in the [MixContext], it falls back to the
+  /// default value defined in the `defaultValue` for that property.
+  ///
+  /// ```dart
+  /// final textHeightBehavior = TextHeightBehaviorDto(...).resolve(mix);
+  /// ```
+  @override
+  TextHeightBehavior resolve(MixContext mix) {
+    return TextHeightBehavior(
+      applyHeightToFirstAscent: applyHeightToFirstAscent ?? true,
+      applyHeightToLastDescent: applyHeightToLastDescent ?? true,
+      leadingDistribution:
+          leadingDistribution ?? TextLeadingDistribution.proportional,
+    );
+  }
+
+  /// Merges the properties of this [TextHeightBehaviorDto] with the properties of [other].
+  ///
+  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
+  /// [TextHeightBehaviorDto] with the properties of [other] taking precedence over
+  /// the corresponding properties of this instance.
+  ///
+  /// Properties from [other] that are null will fall back
+  /// to the values from this instance.
+  @override
+  TextHeightBehaviorDto merge(TextHeightBehaviorDto? other) {
+    if (other == null) return this;
+
+    return TextHeightBehaviorDto(
+      applyHeightToFirstAscent:
+          other.applyHeightToFirstAscent ?? applyHeightToFirstAscent,
+      applyHeightToLastDescent:
+          other.applyHeightToLastDescent ?? applyHeightToLastDescent,
+      leadingDistribution:
+          other.leadingDistribution ?? leadingDistribution,
+    );
+  }
+
+  /// The list of properties that constitute the state of this [TextHeightBehaviorDto].
+  ///
+  /// This property is used by the [==] operator and the [hashCode] getter to
+  /// compare two [TextHeightBehaviorDto] instances for equality.
+  @override
+  List<Object?> get props => [
+        applyHeightToFirstAscent,
+        applyHeightToLastDescent,
+        leadingDistribution,
+      ];
 }
 
 final class TextHeightBehaviorUtility<T extends StyleElement>
@@ -52,4 +98,24 @@ final class TextHeightBehaviorUtility<T extends StyleElement>
           leadingDistribution: leadingDistribution,
         ),
       );
+}
+
+/// Extension methods to convert [TextHeightBehavior] to [TextHeightBehaviorDto].
+extension TextHeightBehaviorMixExt on TextHeightBehavior {
+  /// Converts this [TextHeightBehavior] to a [TextHeightBehaviorDto].
+  TextHeightBehaviorDto toDto() {
+    return TextHeightBehaviorDto(
+      applyHeightToFirstAscent: applyHeightToFirstAscent,
+      applyHeightToLastDescent: applyHeightToLastDescent,
+      leadingDistribution: leadingDistribution,
+    );
+  }
+}
+
+/// Extension methods to convert List<[TextHeightBehavior]> to List<[TextHeightBehaviorDto]>.
+extension ListTextHeightBehaviorMixExt on List<TextHeightBehavior> {
+  /// Converts this List<[TextHeightBehavior]> to a List<[TextHeightBehaviorDto]>.
+  List<TextHeightBehaviorDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
 }

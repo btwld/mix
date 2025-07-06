@@ -146,7 +146,7 @@ final class TextStyleUtility<T extends StyleElement>
       fontStyle: Mixable.maybeValue(fontStyle),
       letterSpacing: Mixable.maybeValue(letterSpacing),
       debugLabel: Mixable.maybeValue(debugLabel),
-      wordSpacing: .maybeValue(wordSpacing),
+      wordSpacing: Mixable.maybeValue(wordSpacing),
       textBaseline: Mixable.maybeValue(textBaseline),
       shadows: shadows,
       fontFeatures: fontFeatures,
