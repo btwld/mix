@@ -24,6 +24,7 @@ sealed class SpaceDto extends Mixable<double> with Diagnosticable {
 // Private implementations
 @immutable
 class _ValueSpaceDto extends SpaceDto {
+  @override
   final double value;
 
   const _ValueSpaceDto(this.value) : super._();

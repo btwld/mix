@@ -143,9 +143,13 @@ final class BorderRadiusDirectionalDto
 
   /// These getters return null for BorderRadiusDirectional as they don't apply
   /// to directional border radius (which uses topStart/topEnd instead of topLeft/topRight)
+  @override
   Mixable<Radius>? get topLeft => null;
+  @override
   Mixable<Radius>? get topRight => null; 
+  @override
   Mixable<Radius>? get bottomLeft => null;
+  @override
   Mixable<Radius>? get bottomRight => null;
 }
 

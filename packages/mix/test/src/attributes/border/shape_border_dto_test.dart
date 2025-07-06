@@ -677,12 +677,12 @@ void main() {
         const dto1 = RoundedRectangleBorderDto(
           borderRadius: BorderRadiusDto(topLeft: Mixable.value(Radius.circular(10))),
         );
-        final dto2 = RoundedRectangleBorderDto(
-          side: BorderSideDto(color: Colors.red.toDto()),
+        const dto2 = RoundedRectangleBorderDto(
+          side: BorderSideDto(color: Mixable.value(Colors.red)),
         );
         const expectedResult = RoundedRectangleBorderDto(
           borderRadius: BorderRadiusDto(topLeft: Mixable.value(Radius.circular(10))),
-          side: BorderSideDto(color: Colors.red.toDto()),
+          side: BorderSideDto(color: Mixable.value(Colors.red)),
         );
         expect(ShapeBorderDto.tryToMerge(dto1, dto2), equals(expectedResult));
       },
@@ -705,12 +705,12 @@ void main() {
       const dto1 = RoundedRectangleBorderDto(
         borderRadius: BorderRadiusDto(topLeft: Mixable.value(Radius.circular(10))),
       );
-      final dto2 = RoundedRectangleBorderDto(
-        side: BorderSideDto(color: Colors.red.toDto()),
+      const dto2 = RoundedRectangleBorderDto(
+        side: BorderSideDto(color: Mixable.value(Colors.red)),
       );
       const expectedResult = RoundedRectangleBorderDto(
         borderRadius: BorderRadiusDto(topLeft: Mixable.value(Radius.circular(10))),
-        side: BorderSideDto(color: Colors.red.toDto()),
+        side: BorderSideDto(color: Mixable.value(Colors.red)),
       );
       expect(OutlinedBorderDto.tryToMerge(dto1, dto2), equals(expectedResult));
     });

@@ -11,24 +11,24 @@ import 'widget_modifiers_config.dart';
 typedef WidgetModifiersDataDto = WidgetModifiersConfigDto;
 
 class WidgetModifiersConfigDto extends Mixable<WidgetModifiersConfig> {
-  final List<WidgetModifierSpecAttribute> value;
+  final List<WidgetModifierSpecAttribute> modifiers;
 
-  const WidgetModifiersConfigDto(this.value);
+  const WidgetModifiersConfigDto(this.modifiers);
 
   @override
   WidgetModifiersConfigDto merge(WidgetModifiersConfigDto? other) {
     if (other == null) return this;
-    final thisMap = AttributeMap(value);
+    final thisMap = AttributeMap(modifiers);
 
-    final resetIndex = other.value.lastIndexWhere(
+    final resetIndex = other.modifiers.lastIndexWhere(
       (e) => e is ResetModifierSpecAttribute,
     );
 
     if (resetIndex != -1) {
-      return WidgetModifiersConfigDto(other.value.sublist(resetIndex));
+      return WidgetModifiersConfigDto(other.modifiers.sublist(resetIndex));
     }
 
-    final otherMap = AttributeMap(other.value);
+    final otherMap = AttributeMap(other.modifiers);
     final mergedMap = thisMap.merge(otherMap).values;
 
     return WidgetModifiersConfigDto(mergedMap);
@@ -36,9 +36,9 @@ class WidgetModifiersConfigDto extends Mixable<WidgetModifiersConfig> {
 
   @override
   WidgetModifiersConfig resolve(MixContext mix) {
-    return WidgetModifiersConfig(value.map((e) => e.resolve(mix)).toList());
+    return WidgetModifiersConfig(modifiers.map((e) => e.resolve(mix)).toList());
   }
 
   @override
-  List<Object?> get props => [value];
+  List<Object?> get props => [modifiers];
 }

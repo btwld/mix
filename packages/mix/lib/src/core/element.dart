@@ -95,6 +95,7 @@ abstract class Mixable<Value> with EqualityMixin {
 // Private implementations for Mixable<T>
 @immutable
 class _ValueMixable<T> extends Mixable<T> {
+  @override
   final T value;
 
   const _ValueMixable(this.value, {super.directives});
