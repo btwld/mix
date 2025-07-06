@@ -89,8 +89,8 @@ mixin _$FractionallySizedBoxModifierSpec
 class FractionallySizedBoxModifierSpecAttribute
     extends WidgetModifierSpecAttribute<FractionallySizedBoxModifierSpec>
     with Diagnosticable {
-  final double? widthFactor;
-  final double? heightFactor;
+  final SpaceDto? widthFactor;
+  final SpaceDto? heightFactor;
   final AlignmentGeometry? alignment;
 
   const FractionallySizedBoxModifierSpecAttribute({
@@ -110,8 +110,8 @@ class FractionallySizedBoxModifierSpecAttribute
   @override
   FractionallySizedBoxModifierSpec resolve(MixContext mix) {
     return FractionallySizedBoxModifierSpec(
-      widthFactor: widthFactor,
-      heightFactor: heightFactor,
+      widthFactor: widthFactor?.resolve(mix),
+      heightFactor: heightFactor?.resolve(mix),
       alignment: alignment,
     );
   }
@@ -130,8 +130,9 @@ class FractionallySizedBoxModifierSpecAttribute
     if (other == null) return this;
 
     return FractionallySizedBoxModifierSpecAttribute(
-      widthFactor: other.widthFactor ?? widthFactor,
-      heightFactor: other.heightFactor ?? heightFactor,
+      widthFactor: widthFactor?.merge(other.widthFactor) ?? other.widthFactor,
+      heightFactor:
+          heightFactor?.merge(other.heightFactor) ?? other.heightFactor,
       alignment: other.alignment ?? alignment,
     );
   }

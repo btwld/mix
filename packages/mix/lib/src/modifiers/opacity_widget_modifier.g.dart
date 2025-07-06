@@ -71,7 +71,7 @@ mixin _$OpacityModifierSpec on WidgetModifierSpec<OpacityModifierSpec> {
 class OpacityModifierSpecAttribute
     extends WidgetModifierSpecAttribute<OpacityModifierSpec>
     with Diagnosticable {
-  final double? opacity;
+  final SpaceDto? opacity;
 
   const OpacityModifierSpecAttribute({
     this.opacity,
@@ -88,7 +88,7 @@ class OpacityModifierSpecAttribute
   @override
   OpacityModifierSpec resolve(MixContext mix) {
     return OpacityModifierSpec(
-      opacity,
+      opacity?.resolve(mix),
     );
   }
 
@@ -105,7 +105,7 @@ class OpacityModifierSpecAttribute
     if (other == null) return this;
 
     return OpacityModifierSpecAttribute(
-      opacity: other.opacity ?? opacity,
+      opacity: opacity?.merge(other.opacity) ?? other.opacity,
     );
   }
 

@@ -184,7 +184,7 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
   final TextOverflow? overflow;
   final StrutStyleDto? strutStyle;
   final TextAlign? textAlign;
-  final double? textScaleFactor;
+  final SpaceDto? textScaleFactor;
   final TextScaler? textScaler;
   final int? maxLines;
   final TextStyleDto? style;
@@ -225,7 +225,7 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
       overflow: overflow,
       strutStyle: strutStyle?.resolve(mix),
       textAlign: textAlign,
-      textScaleFactor: textScaleFactor,
+      textScaleFactor: textScaleFactor?.resolve(mix),
       textScaler: textScaler,
       maxLines: maxLines,
       style: style?.resolve(mix),
@@ -255,7 +255,8 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
       overflow: other.overflow ?? overflow,
       strutStyle: strutStyle?.merge(other.strutStyle) ?? other.strutStyle,
       textAlign: other.textAlign ?? textAlign,
-      textScaleFactor: other.textScaleFactor ?? textScaleFactor,
+      textScaleFactor: textScaleFactor?.merge(other.textScaleFactor) ??
+          other.textScaleFactor,
       textScaler: other.textScaler ?? textScaler,
       maxLines: other.maxLines ?? maxLines,
       style: style?.merge(other.style) ?? other.style,
@@ -477,7 +478,7 @@ class TextSpecUtility<T extends SpecAttribute>
     TextOverflow? overflow,
     StrutStyleDto? strutStyle,
     TextAlign? textAlign,
-    double? textScaleFactor,
+    SpaceDto? textScaleFactor,
     TextScaler? textScaler,
     int? maxLines,
     TextStyleDto? style,

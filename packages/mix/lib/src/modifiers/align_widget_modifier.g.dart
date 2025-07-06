@@ -86,8 +86,8 @@ mixin _$AlignModifierSpec on WidgetModifierSpec<AlignModifierSpec> {
 class AlignModifierSpecAttribute
     extends WidgetModifierSpecAttribute<AlignModifierSpec> with Diagnosticable {
   final AlignmentGeometry? alignment;
-  final double? widthFactor;
-  final double? heightFactor;
+  final SpaceDto? widthFactor;
+  final SpaceDto? heightFactor;
 
   const AlignModifierSpecAttribute({
     this.alignment,
@@ -107,8 +107,8 @@ class AlignModifierSpecAttribute
   AlignModifierSpec resolve(MixContext mix) {
     return AlignModifierSpec(
       alignment: alignment,
-      widthFactor: widthFactor,
-      heightFactor: heightFactor,
+      widthFactor: widthFactor?.resolve(mix),
+      heightFactor: heightFactor?.resolve(mix),
     );
   }
 
@@ -126,8 +126,9 @@ class AlignModifierSpecAttribute
 
     return AlignModifierSpecAttribute(
       alignment: other.alignment ?? alignment,
-      widthFactor: other.widthFactor ?? widthFactor,
-      heightFactor: other.heightFactor ?? heightFactor,
+      widthFactor: widthFactor?.merge(other.widthFactor) ?? other.widthFactor,
+      heightFactor:
+          heightFactor?.merge(other.heightFactor) ?? other.heightFactor,
     );
   }
 

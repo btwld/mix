@@ -23,11 +23,11 @@ mixin _$StrutStyleDto on Mixable<StrutStyle> {
     return StrutStyle(
       fontFamily: _$this.fontFamily,
       fontFamilyFallback: _$this.fontFamilyFallback,
-      fontSize: _$this.fontSize,
+      fontSize: _$this.fontSize?.resolve(mix),
       fontWeight: _$this.fontWeight,
       fontStyle: _$this.fontStyle,
-      height: _$this.height,
-      leading: _$this.leading,
+      height: _$this.height?.resolve(mix),
+      leading: _$this.leading?.resolve(mix),
       forceStrutHeight: _$this.forceStrutHeight,
     );
   }
@@ -48,11 +48,11 @@ mixin _$StrutStyleDto on Mixable<StrutStyle> {
       fontFamily: other.fontFamily ?? _$this.fontFamily,
       fontFamilyFallback: MixHelpers.mergeList(
           _$this.fontFamilyFallback, other.fontFamilyFallback),
-      fontSize: other.fontSize ?? _$this.fontSize,
+      fontSize: _$this.fontSize?.merge(other.fontSize) ?? other.fontSize,
       fontWeight: other.fontWeight ?? _$this.fontWeight,
       fontStyle: other.fontStyle ?? _$this.fontStyle,
-      height: other.height ?? _$this.height,
-      leading: other.leading ?? _$this.leading,
+      height: _$this.height?.merge(other.height) ?? other.height,
+      leading: _$this.leading?.merge(other.leading) ?? other.leading,
       forceStrutHeight: other.forceStrutHeight ?? _$this.forceStrutHeight,
     );
   }
@@ -115,11 +115,11 @@ class StrutStyleUtility<T extends StyleElement>
   T only({
     String? fontFamily,
     List<String>? fontFamilyFallback,
-    double? fontSize,
+    SpaceDto? fontSize,
     FontWeight? fontWeight,
     FontStyle? fontStyle,
-    double? height,
-    double? leading,
+    SpaceDto? height,
+    SpaceDto? leading,
     bool? forceStrutHeight,
   }) {
     return builder(StrutStyleDto(
@@ -147,11 +147,11 @@ class StrutStyleUtility<T extends StyleElement>
     return only(
       fontFamily: fontFamily,
       fontFamilyFallback: fontFamilyFallback,
-      fontSize: fontSize,
+      fontSize: fontSize?.toDto(),
       fontWeight: fontWeight,
       fontStyle: fontStyle,
-      height: height,
-      leading: leading,
+      height: height?.toDto(),
+      leading: leading?.toDto(),
       forceStrutHeight: forceStrutHeight,
     );
   }
@@ -164,11 +164,11 @@ extension StrutStyleMixExt on StrutStyle {
     return StrutStyleDto(
       fontFamily: fontFamily,
       fontFamilyFallback: fontFamilyFallback,
-      fontSize: fontSize,
+      fontSize: fontSize?.toDto(),
       fontWeight: fontWeight,
       fontStyle: fontStyle,
-      height: height,
-      leading: leading,
+      height: height?.toDto(),
+      leading: leading?.toDto(),
       forceStrutHeight: forceStrutHeight,
     );
   }

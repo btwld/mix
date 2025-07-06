@@ -176,9 +176,9 @@ mixin _$BorderSideDto on Mixable<BorderSide>, HasDefaultValue<BorderSide> {
   BorderSide resolve(MixContext mix) {
     return BorderSide(
       color: _$this.color ?? defaultValue.color,
-      strokeAlign: _$this.strokeAlign ?? defaultValue.strokeAlign,
+      strokeAlign: _$this.strokeAlign?.resolve(mix) ?? defaultValue.strokeAlign,
       style: _$this.style ?? defaultValue.style,
-      width: _$this.width ?? defaultValue.width,
+      width: _$this.width?.resolve(mix) ?? defaultValue.width,
     );
   }
 
@@ -196,9 +196,10 @@ mixin _$BorderSideDto on Mixable<BorderSide>, HasDefaultValue<BorderSide> {
 
     return BorderSideDto(
       color: other.color ?? _$this.color,
-      strokeAlign: other.strokeAlign ?? _$this.strokeAlign,
+      strokeAlign:
+          _$this.strokeAlign?.merge(other.strokeAlign) ?? other.strokeAlign,
       style: other.style ?? _$this.style,
-      width: other.width ?? _$this.width,
+      width: _$this.width?.merge(other.width) ?? other.width,
     );
   }
 
@@ -225,7 +226,7 @@ mixin _$BorderSideDto on Mixable<BorderSide>, HasDefaultValue<BorderSide> {
 class BorderSideUtility<T extends StyleElement>
     extends DtoUtility<T, BorderSideDto, BorderSide> {
   /// Utility for defining [BorderSideDto.color]
-  late final color = GenericUtility<T, Mixable<Color>>((v) => only(color: v));
+  late final color = BaseColorUtility((v) => only(color: v));
 
   /// Utility for defining [BorderSideDto.strokeAlign]
   late final strokeAlign = StrokeAlignUtility((v) => only(strokeAlign: v));
@@ -245,9 +246,9 @@ class BorderSideUtility<T extends StyleElement>
   @override
   T only({
     Mixable<Color>? color,
-    double? strokeAlign,
+    SpaceDto? strokeAlign,
     BorderStyle? style,
-    double? width,
+    SpaceDto? width,
   }) {
     return builder(BorderSideDto(
       color: color,
@@ -265,9 +266,9 @@ class BorderSideUtility<T extends StyleElement>
   }) {
     return only(
       color: color,
-      strokeAlign: strokeAlign,
+      strokeAlign: strokeAlign?.toDto(),
       style: style,
-      width: width,
+      width: width?.toDto(),
     );
   }
 }
@@ -278,9 +279,9 @@ extension BorderSideMixExt on BorderSide {
   BorderSideDto toDto() {
     return BorderSideDto(
       color: color.toDto(),
-      strokeAlign: strokeAlign,
+      strokeAlign: strokeAlign.toDto(),
       style: style,
-      width: width,
+      width: width.toDto(),
     );
   }
 }

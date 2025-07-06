@@ -77,8 +77,8 @@ mixin _$SizedBoxModifierSpec on WidgetModifierSpec<SizedBoxModifierSpec> {
 class SizedBoxModifierSpecAttribute
     extends WidgetModifierSpecAttribute<SizedBoxModifierSpec>
     with Diagnosticable {
-  final double? width;
-  final double? height;
+  final SpaceDto? width;
+  final SpaceDto? height;
 
   const SizedBoxModifierSpecAttribute({
     this.width,
@@ -96,8 +96,8 @@ class SizedBoxModifierSpecAttribute
   @override
   SizedBoxModifierSpec resolve(MixContext mix) {
     return SizedBoxModifierSpec(
-      width: width,
-      height: height,
+      width: width?.resolve(mix),
+      height: height?.resolve(mix),
     );
   }
 
@@ -114,8 +114,8 @@ class SizedBoxModifierSpecAttribute
     if (other == null) return this;
 
     return SizedBoxModifierSpecAttribute(
-      width: other.width ?? width,
-      height: other.height ?? height,
+      width: width?.merge(other.width) ?? other.width,
+      height: height?.merge(other.height) ?? other.height,
     );
   }
 
