@@ -12,43 +12,57 @@ final class TextStyleUtility<T extends StyleElement>
     extends DtoUtility<T, TextStyleDto, TextStyle> {
   late final color = ColorUtility((v) => only(color: v));
 
-  late final fontWeight = FontWeightUtility((v) => only(fontWeight: Mixable.value(v)));
+  late final fontWeight = FontWeightUtility(
+    (v) => only(fontWeight: Mixable.value(v)),
+  );
 
-  late final fontStyle = FontStyleUtility((v) => only(fontStyle: Mixable.value(v)));
+  late final fontStyle = FontStyleUtility(
+    (v) => only(fontStyle: Mixable.value(v)),
+  );
 
-  late final decoration = TextDecorationUtility((v) => only(decoration: Mixable.value(v)));
+  late final decoration = TextDecorationUtility(
+    (v) => only(decoration: Mixable.value(v)),
+  );
 
-  late final fontSize = FontSizeUtility((v) => only(fontSize: Mixable.value(v)));
+  late final fontSize = FontSizeUtility(
+    (v) => only(fontSize: Mixable.value(v)),
+  );
 
   late final backgroundColor = ColorUtility((v) => only(backgroundColor: v));
 
   late final decorationColor = ColorUtility((v) => only(decorationColor: v));
 
-  late final shadow = ShadowUtility((v) => only(shadows: [v]));
+  // Shadow utility needs special handling since it returns ShadowDto not Shadow
+  late final shadow = ShadowUtility((v) => throw UnimplementedError('Shadow utility needs to be redesigned'));
 
   late final decorationStyle = TextDecorationStyleUtility(
     (v) => only(decorationStyle: Mixable.value(v)),
   );
 
-  late final textBaseline = TextBaselineUtility((v) => only(textBaseline: Mixable.value(v)));
+  late final textBaseline = TextBaselineUtility(
+    (v) => only(textBaseline: Mixable.value(v)),
+  );
 
   late final fontFamily = FontFamilyUtility((v) => call(fontFamily: v));
 
   TextStyleUtility(super.builder) : super(valueToDto: (v) => v.toDto());
 
-  T token(MixableToken<TextStyle> token) => builder(TextStyleDto.token(token));
 
-  T height(double v) => only(height: Mixable.value(v));
 
-  T wordSpacing(double v) => only(wordSpacing: Mixable.value(v));
+  T token(MixableToken<TextStyle> token) =>
+      throw UnimplementedError('Token support needs implementation for whole TextStyle');
 
-  T letterSpacing(double v) => only(letterSpacing: Mixable.value(v));
+  T height(double v) => call(height: v);
 
-  T fontVariations(List<FontVariation> v) => only(fontVariations: v.map(Mixable.value).toList());
+  T wordSpacing(double v) => call(wordSpacing: v);
 
-  T fontVariation(FontVariation v) => only(fontVariations: [Mixable.value(v)]);
+  T letterSpacing(double v) => call(letterSpacing: v);
 
-  T shadows(List<Shadow> v) => only(shadows: v.map((e) => e.toDto()).toList());
+  T fontVariations(List<FontVariation> v) => call(fontVariations: v);
+
+  T fontVariation(FontVariation v) => call(fontVariations: [v]);
+
+  T shadows(List<Shadow> v) => call(shadows: v);
 
   T italic() => fontStyle.italic();
 
@@ -89,28 +103,30 @@ final class TextStyleUtility<T extends StyleElement>
     Color? decorationColor,
     double? height,
   }) {
-    return only(
-      color: Mixable.maybeValue(color),
-      fontWeight: Mixable.maybeValue(fontWeight),
-      fontStyle: Mixable.maybeValue(fontStyle),
-      decoration: Mixable.maybeValue(decoration),
-      fontSize: Mixable.maybeValue(fontSize),
-      letterSpacing: Mixable.maybeValue(letterSpacing),
-      wordSpacing: Mixable.maybeValue(wordSpacing),
-      backgroundColor: Mixable.maybeValue(backgroundColor),
-      decorationColor: Mixable.maybeValue(decorationColor),
-      decorationStyle: Mixable.maybeValue(decorationStyle),
-      textBaseline: Mixable.maybeValue(textBaseline),
-      fontVariations: fontVariations?.map(Mixable.value).toList(),
-      shadows: shadows?.map((e) => e.toDto()).toList(),
-      fontFeatures: fontFeatures?.map(Mixable.value).toList(),
-      foreground: foreground,
-      background: background,
-      decorationThickness: Mixable.maybeValue(decorationThickness),
-      fontFamilyFallback: fontFamilyFallback?.map(Mixable.value).toList(),
-      debugLabel: Mixable.maybeValue(debugLabel),
-      height: Mixable.maybeValue(height),
-      fontFamily: Mixable.maybeValue(fontFamily),
+    return builder(
+      TextStyleDto.values(
+        color: color,
+        backgroundColor: backgroundColor,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        fontStyle: fontStyle,
+        letterSpacing: letterSpacing,
+        debugLabel: debugLabel,
+        wordSpacing: wordSpacing,
+        textBaseline: textBaseline,
+        shadows: shadows?.toList(),
+        fontFeatures: fontFeatures?.toList(),
+        decoration: decoration,
+        decorationColor: decorationColor,
+        decorationStyle: decorationStyle,
+        fontVariations: fontVariations?.toList(),
+        height: height,
+        foreground: foreground,
+        background: background,
+        decorationThickness: decorationThickness,
+        fontFamily: fontFamily,
+        fontFamilyFallback: fontFamilyFallback?.toList(),
+      ),
     );
   }
 
@@ -128,40 +144,40 @@ final class TextStyleUtility<T extends StyleElement>
     Mixable<TextDecorationStyle>? decorationStyle,
     Mixable<TextBaseline>? textBaseline,
     List<Mixable<FontVariation>>? fontVariations,
-    List<ShadowDto>? shadows,
+    List<Mixable<Shadow>>? shadows,
     List<Mixable<FontFeature>>? fontFeatures,
-    Paint? foreground,
-    Paint? background,
+    Mixable<Paint>? foreground,
+    Mixable<Paint>? background,
     Mixable<double>? decorationThickness,
     List<Mixable<String>>? fontFamilyFallback,
     Mixable<String>? debugLabel,
     Mixable<double>? height,
     Mixable<String>? fontFamily,
   }) {
-    final textStyle = ValueTextStyleDto(
-      background: background,
-      backgroundColor: backgroundColor,
-      color: color,
-      debugLabel: debugLabel,
-      decoration: decoration,
-      decorationColor: decorationColor,
-      decorationStyle: decorationStyle,
-      decorationThickness: decorationThickness,
-      fontFamily: fontFamily,
-      fontFamilyFallback: fontFamilyFallback,
-      fontVariations: fontVariations,
-      fontFeatures: fontFeatures,
-      fontSize: fontSize,
-      fontStyle: fontStyle,
-      fontWeight: fontWeight,
-      foreground: foreground,
-      height: height,
-      letterSpacing: letterSpacing,
-      shadows: shadows,
-      textBaseline: textBaseline,
-      wordSpacing: wordSpacing,
+    return builder(
+      TextStyleDto(
+        color: .maybeValue(color?.value),
+        backgroundColor: .maybeValue(backgroundColor?.value),
+        fontSize: .maybeValue(fontSize?.value),
+        fontWeight: .maybeValue(fontWeight?.value),
+        fontStyle: .maybeValue(fontStyle?.value),
+        letterSpacing: .maybeValue(letterSpacing?.value),
+        debugLabel: .maybeValue(debugLabel?.value),
+        wordSpacing: .maybeValue(wordSpacing?.value),
+        textBaseline: .maybeValue(textBaseline?.value),
+        shadows: .maybeValue(shadows?.map((e) => e.value).whereType<Shadow>().toList()),
+        fontFeatures: .maybeValue(fontFeatures?.map((e) => e.value).whereType<FontFeature>().toList()),
+        decoration: .maybeValue(decoration?.value),
+        decorationColor: .maybeValue(decorationColor?.value),
+        decorationThickness: .maybeValue(decorationThickness?.value),
+        fontFamily: .maybeValue(fontFamily?.value),
+        fontFamilyFallback: .maybeValue(fontFamilyFallback?.map((e) => e.value).whereType<String>().toList()),
+        fontVariations: .maybeValue(fontVariations?.map((e) => e.value).whereType<FontVariation>().toList()),
+        foreground: .maybeValue(foreground?.value),
+        background: .maybeValue(background?.value),
+        decorationStyle: .maybeValue(decorationStyle?.value),
+        height: .maybeValue(height?.value),
+      ),
     );
-
-    return builder(textStyle);
   }
 }

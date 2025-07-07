@@ -25,12 +25,12 @@ final class ResetModifierSpec extends WidgetModifierSpec<ResetModifierSpec>
   }
 
   @override
-  List<Object?> get props => [];
-
-  @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
   }
+
+  @override
+  List<Object?> get props => [];
 
   @override
   Widget build(Widget child) {
@@ -47,7 +47,8 @@ final class ResetModifierSpecUtility<T extends StyleElement>
 }
 
 class ResetModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<ResetModifierSpec> with Diagnosticable {
+    extends WidgetModifierSpecAttribute<ResetModifierSpec>
+    with Diagnosticable {
   const ResetModifierSpecAttribute();
 
   @override
@@ -63,19 +64,16 @@ class ResetModifierSpecAttribute
   }
 
   @override
-  List<Object?> get props => [];
-
-  @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
   }
+
+  @override
+  List<Object?> get props => [];
 }
 
 class ResetModifierSpecTween extends Tween<ResetModifierSpec?> {
-  ResetModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  ResetModifierSpecTween({super.begin, super.end});
 
   @override
   ResetModifierSpec lerp(double t) {

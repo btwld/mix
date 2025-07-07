@@ -7,7 +7,7 @@ import '../../helpers/testing_utils.dart';
 
 void main() {
   testWidgets('StyledText should apply modifiers only once', (tester) async {
-    await tester.pumpMaterialApp(
+    await tester.pumpStyledWidget(
       StyledText(
         'test',
         style: Style($box.height(100), $box.width(100), $with.align()),
@@ -86,7 +86,7 @@ void main() {
   });
 
   testWidgets('StyledText should apply TextSpec properties', (tester) async {
-    await tester.pumpMaterialApp(
+    await tester.pumpStyledWidget(
       StyledText(
         'Hello, World!',
         style: Style($text.style.color(Colors.red), $text.style.fontSize(24.0)),
@@ -102,7 +102,7 @@ void main() {
   });
 
   testWidgets('StyledText should handle inherit property', (tester) async {
-    await tester.pumpMaterialApp(
+    await tester.pumpStyledWidget(
       StyledText(
         'Hello, World!',
         style: Style($text.style.color(Colors.red)),

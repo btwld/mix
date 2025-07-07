@@ -20,10 +20,7 @@ final class TransformModifierSpec
   const TransformModifierSpec({this.transform, this.alignment});
 
   @override
-  TransformModifierSpec copyWith({
-    Matrix4? transform,
-    Alignment? alignment,
-  }) {
+  TransformModifierSpec copyWith({Matrix4? transform, Alignment? alignment}) {
     return TransformModifierSpec(
       transform: transform ?? this.transform,
       alignment: alignment ?? this.alignment,
@@ -41,19 +38,18 @@ final class TransformModifierSpec
   }
 
   @override
-  List<Object?> get props => [
-        transform,
-        alignment,
-      ];
-
-  @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(
-        DiagnosticsProperty('transform', transform, defaultValue: null));
+      DiagnosticsProperty('transform', transform, defaultValue: null),
+    );
     properties.add(
-        DiagnosticsProperty('alignment', alignment, defaultValue: null));
+      DiagnosticsProperty('alignment', alignment, defaultValue: null),
+    );
   }
+
+  @override
+  List<Object?> get props => [transform, alignment];
 
   @override
   Widget build(Widget child) {
@@ -79,15 +75,11 @@ final class TransformModifierSpecUtility<T extends StyleElement>
   TransformModifierSpecUtility(super.builder);
 
   T _flip(bool x, bool y) => builder(
-        TransformModifierSpecAttribute(
-          transform: Matrix4.diagonal3Values(
-            x ? -1.0 : 1.0,
-            y ? -1.0 : 1.0,
-            1.0,
-          ),
-          alignment: Alignment.center,
-        ),
-      );
+    TransformModifierSpecAttribute(
+      transform: Matrix4.diagonal3Values(x ? -1.0 : 1.0, y ? -1.0 : 1.0, 1.0),
+      alignment: Alignment.center,
+    ),
+  );
 
   T flipX() => _flip(true, false);
   T flipY() => _flip(false, true);
@@ -96,18 +88,18 @@ final class TransformModifierSpecUtility<T extends StyleElement>
       builder(TransformModifierSpecAttribute(transform: value));
 
   T scale(double value) => builder(
-        TransformModifierSpecAttribute(
-          transform: Matrix4.diagonal3Values(value, value, 1.0),
-          alignment: Alignment.center,
-        ),
-      );
+    TransformModifierSpecAttribute(
+      transform: Matrix4.diagonal3Values(value, value, 1.0),
+      alignment: Alignment.center,
+    ),
+  );
 
   T translate(double x, double y) => builder(
-        TransformModifierSpecAttribute(
-          transform: Matrix4.translationValues(x, y, 0.0),
-          alignment: Alignment.center,
-        ),
-      );
+    TransformModifierSpecAttribute(
+      transform: Matrix4.translationValues(x, y, 0.0),
+      alignment: Alignment.center,
+    ),
+  );
 }
 
 final class TransformRotateModifierSpecUtility<T extends StyleElement>
@@ -126,17 +118,11 @@ class TransformModifierSpecAttribute
   final Matrix4? transform;
   final Alignment? alignment;
 
-  const TransformModifierSpecAttribute({
-    this.transform,
-    this.alignment,
-  });
+  const TransformModifierSpecAttribute({this.transform, this.alignment});
 
   @override
   TransformModifierSpec resolve(MixContext mix) {
-    return TransformModifierSpec(
-      transform: transform,
-      alignment: alignment,
-    );
+    return TransformModifierSpec(transform: transform, alignment: alignment);
   }
 
   @override
@@ -150,26 +136,22 @@ class TransformModifierSpecAttribute
   }
 
   @override
-  List<Object?> get props => [
-        transform,
-        alignment,
-      ];
-
-  @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties
-        .add(DiagnosticsProperty('transform', transform, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('alignment', alignment, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('transform', transform, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('alignment', alignment, defaultValue: null),
+    );
   }
+
+  @override
+  List<Object?> get props => [transform, alignment];
 }
 
 class TransformModifierSpecTween extends Tween<TransformModifierSpec?> {
-  TransformModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  TransformModifierSpecTween({super.begin, super.end});
 
   @override
   TransformModifierSpec lerp(double t) {

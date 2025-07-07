@@ -9,8 +9,9 @@ class MixScope extends InheritedWidget {
   const MixScope({required this.data, super.key, required super.child});
 
   static MixScopeData of(BuildContext context) {
-    final scopeData =
-        context.dependOnInheritedWidgetOfExactType<MixScope>()?.data;
+    final scopeData = context
+        .dependOnInheritedWidgetOfExactType<MixScope>()
+        ?.data;
 
     assert(scopeData != null, 'No MixScope found in context');
 
@@ -34,9 +35,12 @@ class MixScopeData {
   final List<Type>? defaultOrderOfModifiers;
   final Map<MixableToken, ValueResolver>? _tokens;
 
-  const MixScopeData.empty()
-      : _tokens = null,
-        defaultOrderOfModifiers = null;
+  const MixScopeData.empty() : _tokens = null, defaultOrderOfModifiers = null;
+
+  const MixScopeData._({
+    required Map<MixableToken, ValueResolver>? tokens,
+    required this.defaultOrderOfModifiers,
+  }) : _tokens = tokens;
 
   factory MixScopeData({
     Map<MixableToken, ValueResolver>? tokens,
@@ -50,7 +54,7 @@ class MixScopeData {
       }
     }
 
-    return MixScopeData(
+    return MixScopeData._(
       tokens: resolverTokens.isEmpty ? null : resolverTokens,
       defaultOrderOfModifiers: defaultOrderOfModifiers,
     );
@@ -91,7 +95,7 @@ class MixScopeData {
       }
     }
 
-    return MixScopeData(
+    return MixScopeData._(
       tokens: resolverTokens,
       defaultOrderOfModifiers: defaultOrderOfModifiers,
     );
@@ -130,7 +134,7 @@ class MixScopeData {
       }
     }
 
-    return MixScopeData(
+    return MixScopeData._(
       tokens: resolverTokens ?? _tokens,
       defaultOrderOfModifiers:
           defaultOrderOfModifiers ?? this.defaultOrderOfModifiers,
@@ -142,7 +146,7 @@ class MixScopeData {
         ? <MixableToken, ValueResolver>{...?_tokens, ...?other._tokens}
         : null;
 
-    return MixScopeData(
+    return MixScopeData._(
       tokens: mergedTokens,
       defaultOrderOfModifiers:
           other.defaultOrderOfModifiers ?? defaultOrderOfModifiers,

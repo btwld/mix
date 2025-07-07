@@ -20,15 +20,15 @@ sealed class BorderRadiusGeometryDto<T extends BorderRadiusGeometry>
     extends Mixable<T> {
   const BorderRadiusGeometryDto();
 
-  @override
-  BorderRadiusGeometryDto<T> merge(covariant BorderRadiusGeometryDto<T>? other);
-
   /// Common getters for accessing radius properties
   /// These return null for types that don't support these properties
   Mixable<Radius>? get topLeft => null;
+
   Mixable<Radius>? get topRight => null;
   Mixable<Radius>? get bottomLeft => null;
   Mixable<Radius>? get bottomRight => null;
+  @override
+  BorderRadiusGeometryDto<T> merge(covariant BorderRadiusGeometryDto<T>? other);
 }
 
 final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
@@ -50,6 +50,18 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
     this.bottomLeft,
     this.bottomRight,
   });
+
+  /// Returns the radius value for a given Mixable<Radius>, resolving it with the provided MixContext.
+  /// If the radius is null, returns Radius.zero.
+  Radius getRadiusValue(MixContext mix, Mixable<Radius>? radius) {
+    return radius?.resolve(mix) ?? Radius.zero;
+  }
+
+  /// Fills diagnostic properties for debugging purposes.
+  void debugFillProperties(dynamic properties) {
+    // This method is kept for test compatibility but doesn't need implementation
+    // since we're not using Flutter's diagnostic framework for DTOs
+  }
 
   @override
   BorderRadius resolve(MixContext mix) {
@@ -74,24 +86,7 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
   }
 
   @override
-  List<Object?> get props => [
-    topLeft,
-    topRight,
-    bottomLeft,
-    bottomRight,
-  ];
-
-  /// Returns the radius value for a given Mixable<Radius>, resolving it with the provided MixContext.
-  /// If the radius is null, returns Radius.zero.
-  Radius getRadiusValue(MixContext mix, Mixable<Radius>? radius) {
-    return radius?.resolve(mix) ?? Radius.zero;
-  }
-
-  /// Fills diagnostic properties for debugging purposes.
-  void debugFillProperties(dynamic properties) {
-    // This method is kept for test compatibility but doesn't need implementation
-    // since we're not using Flutter's diagnostic framework for DTOs
-  }
+  List<Object?> get props => [topLeft, topRight, bottomLeft, bottomRight];
 }
 
 final class BorderRadiusDirectionalDto
@@ -134,19 +129,14 @@ final class BorderRadiusDirectionalDto
   }
 
   @override
-  List<Object?> get props => [
-    topStart,
-    topEnd,
-    bottomStart,
-    bottomEnd,
-  ];
+  List<Object?> get props => [topStart, topEnd, bottomStart, bottomEnd];
 
   /// These getters return null for BorderRadiusDirectional as they don't apply
   /// to directional border radius (which uses topStart/topEnd instead of topLeft/topRight)
   @override
   Mixable<Radius>? get topLeft => null;
   @override
-  Mixable<Radius>? get topRight => null; 
+  Mixable<Radius>? get topRight => null;
   @override
   Mixable<Radius>? get bottomLeft => null;
   @override

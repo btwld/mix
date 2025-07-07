@@ -22,7 +22,7 @@ void main() {
         fontFamily: 'Roboto',
       ),
       textWidthBasis: TextWidthBasis.longestLine,
-      textHeightBehavior: TextHeightBehaviorDto(
+      textHeightBehavior: const TextHeightBehaviorDto(
         applyHeightToFirstAscent: true,
         applyHeightToLastDescent: true,
       ),
@@ -65,7 +65,7 @@ void main() {
           fontFamily: 'Helvetica',
         ),
         textWidthBasis: TextWidthBasis.longestLine,
-        textHeightBehavior: TextHeightBehaviorDto(
+        textHeightBehavior: const TextHeightBehaviorDto(
           applyHeightToFirstAscent: false,
           applyHeightToLastDescent: false,
         ),
@@ -76,9 +76,10 @@ void main() {
       final merged = textSpecAttribute.merge(other);
 
       expect(merged.overflow, TextOverflow.clip);
-      expect(merged.strutStyle!.fontFamily, 'Helvetica');
-      expect(merged.strutStyle!.fontSize, 14);
-      expect(merged.strutStyle!.fontWeight, FontWeight.w500);
+      final resolvedStrutStyle = merged.strutStyle!.resolve(EmptyMixData);
+      expect(resolvedStrutStyle.fontFamily, 'Helvetica');
+      expect(resolvedStrutStyle.fontSize, 14);
+      expect(resolvedStrutStyle.fontWeight, FontWeight.w500);
       expect(merged.textAlign, TextAlign.center);
       expect(merged.textScaleFactor, 1.5);
       expect(merged.maxLines, 2);

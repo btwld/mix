@@ -73,7 +73,9 @@ final class DefaultTextStyleModifierSpec
   /// different [DefaultTextStyleModifierSpec] configurations.
   @override
   DefaultTextStyleModifierSpec lerp(
-      DefaultTextStyleModifierSpec? other, double t) {
+    DefaultTextStyleModifierSpec? other,
+    double t,
+  ) {
     if (other == null) return this;
 
     return DefaultTextStyleModifierSpec(
@@ -83,8 +85,37 @@ final class DefaultTextStyleModifierSpec
       overflow: t < 0.5 ? overflow : other.overflow,
       maxLines: t < 0.5 ? maxLines : other.maxLines,
       textWidthBasis: t < 0.5 ? textWidthBasis : other.textWidthBasis,
-      textHeightBehavior:
-          t < 0.5 ? textHeightBehavior : other.textHeightBehavior,
+      textHeightBehavior: t < 0.5
+          ? textHeightBehavior
+          : other.textHeightBehavior,
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('style', style, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('textAlign', textAlign, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('softWrap', softWrap, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('overflow', overflow, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('maxLines', maxLines, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('textWidthBasis', textWidthBasis, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'textHeightBehavior',
+        textHeightBehavior,
+        defaultValue: null,
+      ),
     );
   }
 
@@ -94,34 +125,14 @@ final class DefaultTextStyleModifierSpec
   /// compare two [DefaultTextStyleModifierSpec] instances for equality.
   @override
   List<Object?> get props => [
-        style,
-        textAlign,
-        softWrap,
-        overflow,
-        maxLines,
-        textWidthBasis,
-        textHeightBehavior,
-      ];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-        .add(DiagnosticsProperty('style', style, defaultValue: null));
-    properties.add(
-        DiagnosticsProperty('textAlign', textAlign, defaultValue: null));
-    properties.add(
-        DiagnosticsProperty('softWrap', softWrap, defaultValue: null));
-    properties.add(
-        DiagnosticsProperty('overflow', overflow, defaultValue: null));
-    properties.add(
-        DiagnosticsProperty('maxLines', maxLines, defaultValue: null));
-    properties.add(DiagnosticsProperty('textWidthBasis', textWidthBasis,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty(
-        'textHeightBehavior', textHeightBehavior,
-        defaultValue: null));
-  }
+    style,
+    textAlign,
+    softWrap,
+    overflow,
+    maxLines,
+    textWidthBasis,
+    textHeightBehavior,
+  ];
 
   @override
   Widget build(Widget child) {
@@ -197,7 +208,8 @@ class DefaultTextStyleModifierSpecAttribute
   /// to the values from this instance.
   @override
   DefaultTextStyleModifierSpecAttribute merge(
-      DefaultTextStyleModifierSpecAttribute? other) {
+    DefaultTextStyleModifierSpecAttribute? other,
+  ) {
     if (other == null) return this;
 
     return DefaultTextStyleModifierSpecAttribute(
@@ -207,8 +219,37 @@ class DefaultTextStyleModifierSpecAttribute
       overflow: other.overflow ?? overflow,
       maxLines: other.maxLines ?? maxLines,
       textWidthBasis: other.textWidthBasis ?? textWidthBasis,
-      textHeightBehavior: textHeightBehavior?.merge(other.textHeightBehavior) ??
+      textHeightBehavior:
+          textHeightBehavior?.merge(other.textHeightBehavior) ??
           other.textHeightBehavior,
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('style', style, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('textAlign', textAlign, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('softWrap', softWrap, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('overflow', overflow, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('maxLines', maxLines, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('textWidthBasis', textWidthBasis, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'textHeightBehavior',
+        textHeightBehavior,
+        defaultValue: null,
+      ),
     );
   }
 
@@ -218,32 +259,14 @@ class DefaultTextStyleModifierSpecAttribute
   /// compare two [DefaultTextStyleModifierSpecAttribute] instances for equality.
   @override
   List<Object?> get props => [
-        style,
-        textAlign,
-        softWrap,
-        overflow,
-        maxLines,
-        textWidthBasis,
-        textHeightBehavior,
-      ];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('style', style, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('textAlign', textAlign, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('softWrap', softWrap, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('overflow', overflow, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('maxLines', maxLines, defaultValue: null));
-    properties.add(DiagnosticsProperty('textWidthBasis', textWidthBasis,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty('textHeightBehavior', textHeightBehavior,
-        defaultValue: null));
-  }
+    style,
+    textAlign,
+    softWrap,
+    overflow,
+    maxLines,
+    textWidthBasis,
+    textHeightBehavior,
+  ];
 }
 
 /// A tween that interpolates between two [DefaultTextStyleModifierSpec] instances.
@@ -252,10 +275,7 @@ class DefaultTextStyleModifierSpecAttribute
 /// different [DefaultTextStyleModifierSpec] specifications.
 class DefaultTextStyleModifierSpecTween
     extends Tween<DefaultTextStyleModifierSpec?> {
-  DefaultTextStyleModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  DefaultTextStyleModifierSpecTween({super.begin, super.end});
 
   @override
   DefaultTextStyleModifierSpec lerp(double t) {

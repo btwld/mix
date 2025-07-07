@@ -14,13 +14,19 @@ import '../box/box_spec.dart';
 import '../flex/flex_spec.dart';
 import 'flexbox_widget.dart';
 
-
-
 //TODO: Find a way to reuse as much code as possible from the FlexSpec and BoxSpec
 final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
   final BoxSpec box;
 
   final FlexSpec flex;
+
+  const FlexBoxSpec({
+    super.animated,
+    super.modifiers,
+    BoxSpec? box,
+    FlexSpec? flex,
+  }) : box = box ?? const BoxSpec(),
+       flex = flex ?? const FlexSpec();
 
   static FlexBoxSpec from(MixContext mix) {
     return mix.attributeOf<FlexBoxSpecAttribute>()?.resolve(mix) ??
@@ -41,16 +47,8 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
   /// ```
   /// {@endtemplate}
   static FlexBoxSpec of(BuildContext context) {
-    return ComputedStyle.specOf<FlexBoxSpec>(context) ?? const FlexBoxSpec();
+    return ComputedStyle.specOf(context) ?? const FlexBoxSpec();
   }
-
-  const FlexBoxSpec({
-    super.animated,
-    super.modifiers,
-    BoxSpec? box,
-    FlexSpec? flex,
-  })  : box = box ?? const BoxSpec(),
-        flex = flex ?? const FlexSpec();
 
   Widget call({List<Widget> children = const [], required Axis direction}) {
     return (isAnimated)
@@ -109,11 +107,24 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
     if (other == null) return this;
 
     return FlexBoxSpec(
-      animated: this.animated ?? other.animated,
+      animated: animated ?? other.animated,
       modifiers: other.modifiers,
-      box: this.box.lerp(other.box, t),
-      flex: this.flex.lerp(other.flex, t),
+      box: box.lerp(other.box, t),
+      flex: flex.lerp(other.flex, t),
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(
+      DiagnosticsProperty('animated', animated, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
+    );
+    properties.add(DiagnosticsProperty('box', box, defaultValue: null));
+    properties.add(DiagnosticsProperty('flex', flex, defaultValue: null));
   }
 
   /// The list of properties that constitute the state of this [FlexBoxSpec].
@@ -121,24 +132,7 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [FlexBoxSpec] instances for equality.
   @override
-  List<Object?> get props => [
-        this.animated,
-        this.modifiers,
-        this.box,
-        this.flex,
-      ];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-        DiagnosticsProperty('animated', this.animated, defaultValue: null));
-    properties.add(
-        DiagnosticsProperty('modifiers', this.modifiers, defaultValue: null));
-    properties.add(DiagnosticsProperty('box', this.box, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('flex', this.flex, defaultValue: null));
-  }
+  List<Object?> get props => [animated, modifiers, box, flex];
 }
 
 /// Represents the attributes of a [FlexBoxSpec].
@@ -198,28 +192,25 @@ class FlexBoxSpecAttribute extends SpecAttribute<FlexBoxSpec>
     );
   }
 
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(
+      DiagnosticsProperty('animated', animated, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
+    );
+    properties.add(DiagnosticsProperty('box', box, defaultValue: null));
+    properties.add(DiagnosticsProperty('flex', flex, defaultValue: null));
+  }
+
   /// The list of properties that constitute the state of this [FlexBoxSpecAttribute].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [FlexBoxSpecAttribute] instances for equality.
   @override
-  List<Object?> get props => [
-        animated,
-        modifiers,
-        box,
-        flex,
-      ];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-        .add(DiagnosticsProperty('animated', animated, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('modifiers', modifiers, defaultValue: null));
-    properties.add(DiagnosticsProperty('box', box, defaultValue: null));
-    properties.add(DiagnosticsProperty('flex', flex, defaultValue: null));
-  }
+  List<Object?> get props => [animated, modifiers, box, flex];
 }
 
 /// Utility class for configuring [FlexBoxSpec] properties.
@@ -352,12 +343,14 @@ class FlexBoxSpecUtility<T extends SpecAttribute>
     BoxSpecAttribute? box,
     FlexSpecAttribute? flex,
   }) {
-    return builder(FlexBoxSpecAttribute(
-      animated: animated,
-      modifiers: modifiers,
-      box: box,
-      flex: flex,
-    ));
+    return builder(
+      FlexBoxSpecAttribute(
+        animated: animated,
+        modifiers: modifiers,
+        box: box,
+        flex: flex,
+      ),
+    );
   }
 }
 
@@ -366,10 +359,7 @@ class FlexBoxSpecUtility<T extends SpecAttribute>
 /// This class can be used in animations to smoothly transition between
 /// different [FlexBoxSpec] specifications.
 class FlexBoxSpecTween extends Tween<FlexBoxSpec?> {
-  FlexBoxSpecTween({
-    super.begin,
-    super.end,
-  });
+  FlexBoxSpecTween({super.begin, super.end});
 
   @override
   FlexBoxSpec lerp(double t) {

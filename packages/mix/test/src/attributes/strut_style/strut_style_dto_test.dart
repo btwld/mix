@@ -8,7 +8,7 @@ import '../../../helpers/testing_utils.dart';
 void main() {
   group('StrutStyleDto', () {
     test('from constructor sets all values correctly', () {
-      const strutStyle = StrutStyleDto(
+      final strutStyle = StrutStyleDto(
         fontFamily: 'Roboto',
         fontSize: 24.0,
         fontWeight: FontWeight.bold,
@@ -18,32 +18,37 @@ void main() {
         forceStrutHeight: true,
       );
 
-      expect(strutStyle.fontFamily, 'Roboto');
-      expect(strutStyle.fontSize, 24.0);
-      expect(strutStyle.height, 2.0);
-      expect(strutStyle.leading, 1.0);
-      expect(strutStyle.fontWeight, FontWeight.bold);
-      expect(strutStyle.fontStyle, FontStyle.italic);
-      expect(strutStyle.forceStrutHeight, true);
+      final resolved = strutStyle.resolve(EmptyMixData);
+      expect(resolved.fontFamily, 'Roboto');
+      expect(resolved.fontSize, 24.0);
+      expect(resolved.height, 2.0);
+      expect(resolved.leading, 1.0);
+      expect(resolved.fontWeight, FontWeight.bold);
+      expect(resolved.fontStyle, FontStyle.italic);
+      expect(resolved.forceStrutHeight, true);
     });
 
     // Test to check if the merge function returns a merged object correctly
     test('merge returns merged object correctly', () {
-      const strutStyle1 = StrutStyleDto(fontFamily: 'Roboto', fontSize: 24.0);
-      const strutStyle2 =
-          StrutStyleDto(fontWeight: FontWeight.bold, height: 2.0, leading: 1.0);
+      final strutStyle1 = StrutStyleDto(fontFamily: 'Roboto', fontSize: 24.0);
+      final strutStyle2 = StrutStyleDto(
+        fontWeight: FontWeight.bold,
+        height: 2.0,
+        leading: 1.0,
+      );
       final merged = strutStyle1.merge(strutStyle2);
+      final resolved = merged.resolve(EmptyMixData);
 
-      expect(merged.fontFamily, 'Roboto');
-      expect(merged.fontSize, 24.0);
-      expect(merged.height, 2.0);
-      expect(merged.leading, 1.0);
-      expect(merged.fontWeight, FontWeight.bold);
+      expect(resolved.fontFamily, 'Roboto');
+      expect(resolved.fontSize, 24.0);
+      expect(resolved.height, 2.0);
+      expect(resolved.leading, 1.0);
+      expect(resolved.fontWeight, FontWeight.bold);
     });
 
     // Test to check if the resolve function returns the correct StrutStyle
     test('resolve returns correct StrutStyle', () {
-      const strutStyle = StrutStyleDto(
+      final strutStyle = StrutStyleDto(
         fontFamily: 'Roboto',
         fontSize: 24.0,
         fontWeight: FontWeight.bold,
@@ -63,16 +68,16 @@ void main() {
 
     // Test to check if two StrutStyleDtos with the same properties are equal
     test('Equality holds when all properties are the same', () {
-      const strutStyle1 = StrutStyleDto(fontFamily: 'Roboto', fontSize: 24.0);
-      const strutStyle2 = StrutStyleDto(fontFamily: 'Roboto', fontSize: 24.0);
+      final strutStyle1 = StrutStyleDto(fontFamily: 'Roboto', fontSize: 24.0);
+      final strutStyle2 = StrutStyleDto(fontFamily: 'Roboto', fontSize: 24.0);
 
       expect(strutStyle1, strutStyle2);
     });
 
     // Test to check if two StrutStyleDtos with different properties are not equal
     test('Equality fails when properties are different', () {
-      const strutStyle1 = StrutStyleDto(fontFamily: 'Roboto', fontSize: 24.0);
-      const strutStyle2 = StrutStyleDto(fontFamily: 'Lato', fontSize: 24.0);
+      final strutStyle1 = StrutStyleDto(fontFamily: 'Roboto', fontSize: 24.0);
+      final strutStyle2 = StrutStyleDto(fontFamily: 'Lato', fontSize: 24.0);
 
       expect(strutStyle1, isNot(strutStyle2));
     });

@@ -14,17 +14,13 @@ final class AspectRatioModifierSpec
   final double aspectRatio;
 
   const AspectRatioModifierSpec([double? aspectRatio])
-      : aspectRatio = aspectRatio ?? 1.0;
+    : aspectRatio = aspectRatio ?? 1.0;
 
   /// Creates a copy of this [AspectRatioModifierSpec] but with the given fields
   /// replaced with the new values.
   @override
-  AspectRatioModifierSpec copyWith({
-    double? aspectRatio,
-  }) {
-    return AspectRatioModifierSpec(
-      aspectRatio ?? this.aspectRatio,
-    );
+  AspectRatioModifierSpec copyWith({double? aspectRatio}) {
+    return AspectRatioModifierSpec(aspectRatio ?? this.aspectRatio);
   }
 
   /// Linearly interpolates between this [AspectRatioModifierSpec] and another [AspectRatioModifierSpec] based on the given parameter [t].
@@ -50,21 +46,20 @@ final class AspectRatioModifierSpec
     );
   }
 
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(
+      DiagnosticsProperty('aspectRatio', aspectRatio, defaultValue: null),
+    );
+  }
+
   /// The list of properties that constitute the state of this [AspectRatioModifierSpec].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [AspectRatioModifierSpec] instances for equality.
   @override
-  List<Object?> get props => [
-        aspectRatio,
-      ];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('aspectRatio', aspectRatio,
-        defaultValue: null));
-  }
+  List<Object?> get props => [aspectRatio];
 
   @override
   Widget build(Widget child) {
@@ -84,9 +79,7 @@ class AspectRatioModifierSpecAttribute
     with Diagnosticable {
   final double? aspectRatio;
 
-  const AspectRatioModifierSpecAttribute({
-    this.aspectRatio,
-  });
+  const AspectRatioModifierSpecAttribute({this.aspectRatio});
 
   /// Resolves to [AspectRatioModifierSpec] using the provided [MixContext].
   ///
@@ -98,9 +91,7 @@ class AspectRatioModifierSpecAttribute
   /// ```
   @override
   AspectRatioModifierSpec resolve(MixContext mix) {
-    return AspectRatioModifierSpec(
-      aspectRatio,
-    );
+    return AspectRatioModifierSpec(aspectRatio);
   }
 
   /// Merges the properties of this [AspectRatioModifierSpecAttribute] with the properties of [other].
@@ -113,11 +104,20 @@ class AspectRatioModifierSpecAttribute
   /// to the values from this instance.
   @override
   AspectRatioModifierSpecAttribute merge(
-      AspectRatioModifierSpecAttribute? other) {
+    AspectRatioModifierSpecAttribute? other,
+  ) {
     if (other == null) return this;
 
     return AspectRatioModifierSpecAttribute(
       aspectRatio: other.aspectRatio ?? aspectRatio,
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(
+      DiagnosticsProperty('aspectRatio', aspectRatio, defaultValue: null),
     );
   }
 
@@ -126,16 +126,7 @@ class AspectRatioModifierSpecAttribute
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [AspectRatioModifierSpecAttribute] instances for equality.
   @override
-  List<Object?> get props => [
-        aspectRatio,
-      ];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-        DiagnosticsProperty('aspectRatio', aspectRatio, defaultValue: null));
-  }
+  List<Object?> get props => [aspectRatio];
 }
 
 /// A tween that interpolates between two [AspectRatioModifierSpec] instances.
@@ -143,10 +134,7 @@ class AspectRatioModifierSpecAttribute
 /// This class can be used in animations to smoothly transition between
 /// different [AspectRatioModifierSpec] specifications.
 class AspectRatioModifierSpecTween extends Tween<AspectRatioModifierSpec?> {
-  AspectRatioModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  AspectRatioModifierSpecTween({super.begin, super.end});
 
   @override
   AspectRatioModifierSpec lerp(double t) {

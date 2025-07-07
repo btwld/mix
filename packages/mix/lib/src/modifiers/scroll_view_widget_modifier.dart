@@ -57,29 +57,31 @@ final class ScrollViewModifierSpec
   }
 
   @override
-  List<Object?> get props => [
-        scrollDirection,
-        reverse,
-        padding,
-        physics,
-        clipBehavior,
-      ];
-
-  @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty(
-        'scrollDirection', scrollDirection,
-        defaultValue: null));
     properties.add(
-        DiagnosticsProperty('reverse', reverse, defaultValue: null));
+      DiagnosticsProperty(
+        'scrollDirection',
+        scrollDirection,
+        defaultValue: null,
+      ),
+    );
+    properties.add(DiagnosticsProperty('reverse', reverse, defaultValue: null));
+    properties.add(DiagnosticsProperty('padding', padding, defaultValue: null));
+    properties.add(DiagnosticsProperty('physics', physics, defaultValue: null));
     properties.add(
-        DiagnosticsProperty('padding', padding, defaultValue: null));
-    properties.add(
-        DiagnosticsProperty('physics', physics, defaultValue: null));
-    properties.add(DiagnosticsProperty('clipBehavior', clipBehavior,
-        defaultValue: null));
+      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
+    );
   }
+
+  @override
+  List<Object?> get props => [
+    scrollDirection,
+    reverse,
+    padding,
+    physics,
+    clipBehavior,
+  ];
 
   @override
   Widget build(Widget child) {
@@ -100,8 +102,9 @@ final class ScrollViewModifierSpecUtility<T extends StyleElement>
   late final reverse = BoolUtility((reverse) => call(reverse: reverse));
 
   /// Set the padding of the scroll view.
-  late final padding =
-      EdgeInsetsGeometryUtility((padding) => call(padding: padding));
+  late final padding = EdgeInsetsGeometryUtility(
+    (padding) => call(padding: padding),
+  );
 
   /// Set the clip behavior of the scroll view.
   late final clipBehavior = ClipUtility((clip) => call(clipBehavior: clip));
@@ -136,16 +139,15 @@ final class ScrollViewModifierSpecUtility<T extends StyleElement>
     EdgeInsetsGeometryDto? padding,
     ScrollPhysics? physics,
     Clip? clipBehavior,
-  }) =>
-      builder(
-        ScrollViewModifierSpecAttribute(
-          scrollDirection: scrollDirection,
-          reverse: reverse,
-          padding: padding,
-          physics: physics,
-          clipBehavior: clipBehavior,
-        ),
-      );
+  }) => builder(
+    ScrollViewModifierSpecAttribute(
+      scrollDirection: scrollDirection,
+      reverse: reverse,
+      padding: padding,
+      physics: physics,
+      clipBehavior: clipBehavior,
+    ),
+  );
 }
 
 class ScrollViewModifierSpecAttribute
@@ -178,7 +180,8 @@ class ScrollViewModifierSpecAttribute
 
   @override
   ScrollViewModifierSpecAttribute merge(
-      ScrollViewModifierSpecAttribute? other) {
+    ScrollViewModifierSpecAttribute? other,
+  ) {
     if (other == null) return this;
 
     return ScrollViewModifierSpecAttribute(
@@ -191,32 +194,35 @@ class ScrollViewModifierSpecAttribute
   }
 
   @override
-  List<Object?> get props => [
-        scrollDirection,
-        reverse,
-        padding,
-        physics,
-        clipBehavior,
-      ];
-
-  @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('scrollDirection', scrollDirection,
-        defaultValue: null));
+    properties.add(
+      DiagnosticsProperty(
+        'scrollDirection',
+        scrollDirection,
+        defaultValue: null,
+      ),
+    );
     properties.add(DiagnosticsProperty('reverse', reverse, defaultValue: null));
     properties.add(DiagnosticsProperty('padding', padding, defaultValue: null));
     properties.add(DiagnosticsProperty('physics', physics, defaultValue: null));
     properties.add(
-        DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null));
+      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
+    );
   }
+
+  @override
+  List<Object?> get props => [
+    scrollDirection,
+    reverse,
+    padding,
+    physics,
+    clipBehavior,
+  ];
 }
 
 class ScrollViewModifierSpecTween extends Tween<ScrollViewModifierSpec?> {
-  ScrollViewModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  ScrollViewModifierSpecTween({super.begin, super.end});
 
   @override
   ScrollViewModifierSpec lerp(double t) {

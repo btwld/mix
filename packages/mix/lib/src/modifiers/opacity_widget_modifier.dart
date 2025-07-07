@@ -21,12 +21,8 @@ final class OpacityModifierSpec extends WidgetModifierSpec<OpacityModifierSpec>
   /// Creates a copy of this [OpacityModifierSpec] but with the given fields
   /// replaced with the new values.
   @override
-  OpacityModifierSpec copyWith({
-    double? opacity,
-  }) {
-    return OpacityModifierSpec(
-      opacity ?? this.opacity,
-    );
+  OpacityModifierSpec copyWith({double? opacity}) {
+    return OpacityModifierSpec(opacity ?? this.opacity);
   }
 
   /// Linearly interpolates between this [OpacityModifierSpec] and another [OpacityModifierSpec] based on the given parameter [t].
@@ -52,21 +48,18 @@ final class OpacityModifierSpec extends WidgetModifierSpec<OpacityModifierSpec>
     );
   }
 
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('opacity', opacity, defaultValue: null));
+  }
+
   /// The list of properties that constitute the state of this [OpacityModifierSpec].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [OpacityModifierSpec] instances for equality.
   @override
-  List<Object?> get props => [
-        opacity,
-      ];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-        DiagnosticsProperty('opacity', opacity, defaultValue: null));
-  }
+  List<Object?> get props => [opacity];
 
   @override
   Widget build(Widget child) {
@@ -86,9 +79,7 @@ class OpacityModifierSpecAttribute
     with Diagnosticable {
   final double? opacity;
 
-  const OpacityModifierSpecAttribute({
-    this.opacity,
-  });
+  const OpacityModifierSpecAttribute({this.opacity});
 
   /// Resolves to [OpacityModifierSpec] using the provided [MixContext].
   ///
@@ -100,9 +91,7 @@ class OpacityModifierSpecAttribute
   /// ```
   @override
   OpacityModifierSpec resolve(MixContext mix) {
-    return OpacityModifierSpec(
-      opacity,
-    );
+    return OpacityModifierSpec(opacity);
   }
 
   /// Merges the properties of this [OpacityModifierSpecAttribute] with the properties of [other].
@@ -117,9 +106,13 @@ class OpacityModifierSpecAttribute
   OpacityModifierSpecAttribute merge(OpacityModifierSpecAttribute? other) {
     if (other == null) return this;
 
-    return OpacityModifierSpecAttribute(
-      opacity: other.opacity ?? opacity,
-    );
+    return OpacityModifierSpecAttribute(opacity: other.opacity ?? opacity);
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('opacity', opacity, defaultValue: null));
   }
 
   /// The list of properties that constitute the state of this [OpacityModifierSpecAttribute].
@@ -127,15 +120,7 @@ class OpacityModifierSpecAttribute
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [OpacityModifierSpecAttribute] instances for equality.
   @override
-  List<Object?> get props => [
-        opacity,
-      ];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('opacity', opacity, defaultValue: null));
-  }
+  List<Object?> get props => [opacity];
 }
 
 /// A tween that interpolates between two [OpacityModifierSpec] instances.
@@ -143,10 +128,7 @@ class OpacityModifierSpecAttribute
 /// This class can be used in animations to smoothly transition between
 /// different [OpacityModifierSpec] specifications.
 class OpacityModifierSpecTween extends Tween<OpacityModifierSpec?> {
-  OpacityModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  OpacityModifierSpecTween({super.begin, super.end});
 
   @override
   OpacityModifierSpec lerp(double t) {

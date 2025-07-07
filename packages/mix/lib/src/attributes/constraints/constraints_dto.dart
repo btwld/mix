@@ -69,22 +69,6 @@ class BoxConstraintsUtility<T extends StyleElement>
 
   BoxConstraintsUtility(super.builder) : super(valueToDto: (v) => v.toDto());
 
-  /// Returns a new [BoxConstraintsDto] with the specified properties.
-  @override
-  T only({
-    double? minWidth,
-    double? maxWidth,
-    double? minHeight,
-    double? maxHeight,
-  }) {
-    return builder(BoxConstraintsDto(
-      minWidth: minWidth,
-      maxWidth: maxWidth,
-      minHeight: minHeight,
-      maxHeight: maxHeight,
-    ));
-  }
-
   T call({
     double? minWidth,
     double? maxWidth,
@@ -96,6 +80,24 @@ class BoxConstraintsUtility<T extends StyleElement>
       maxWidth: maxWidth,
       minHeight: minHeight,
       maxHeight: maxHeight,
+    );
+  }
+
+  /// Returns a new [BoxConstraintsDto] with the specified properties.
+  @override
+  T only({
+    double? minWidth,
+    double? maxWidth,
+    double? minHeight,
+    double? maxHeight,
+  }) {
+    return builder(
+      BoxConstraintsDto(
+        minWidth: minWidth,
+        maxWidth: maxWidth,
+        minHeight: minHeight,
+        maxHeight: maxHeight,
+      ),
     );
   }
 }

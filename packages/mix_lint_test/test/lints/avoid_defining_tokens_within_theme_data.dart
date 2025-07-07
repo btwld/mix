@@ -2,54 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
 // Wrong case
-final wrongTheme = MixThemeData(
-  colors: {
+final wrongTheme = MixScopeData.static(
+  tokens: {
     // expect_lint: mix_avoid_defining_tokens_within_theme_data
-    ColorToken('a'): Colors.black,
-  },
-  breakpoints: {
+    MixableToken<Color>('a'): Colors.black,
     // expect_lint: mix_avoid_defining_tokens_within_theme_data
-    BreakpointToken('a'): Breakpoint(),
-  },
-  radii: {
+    MixableToken<Breakpoint>('a'): Breakpoint(),
     // expect_lint: mix_avoid_defining_tokens_within_theme_data
-    RadiusToken('a'): Radius.circular(10),
-  },
-  spaces: {
+    MixableToken<Radius>('a'): Radius.circular(10),
     // expect_lint: mix_avoid_defining_tokens_within_theme_data
-    SpaceToken('a'): 10,
-  },
-  textStyles: {
+    MixableToken<double>('a'): 10,
     // expect_lint: mix_avoid_defining_tokens_within_theme_data
-    TextStyleToken('a'): TextStyle(
-      color: Colors.black,
-    ),
+    MixableToken<TextStyle>('a'): TextStyle(color: Colors.black),
   },
 );
 
 // Correct case
-final colorToken = ColorToken('a');
-final breakpointToken = BreakpointToken('b');
-final radiusToken = RadiusToken('c');
-final spaceToken = SpaceToken('d');
-final textStyleToken = TextStyleToken('e');
+final colorToken = MixableToken<Color>('a');
+final breakpointToken = MixableToken<Breakpoint>('b');
+final radiusToken = MixableToken<Radius>('c');
+final spaceToken = MixableToken<double>('d');
+final textStyleToken = MixableToken<TextStyle>('e');
 
-final correctTheme = MixThemeData(
-  colors: {
+final correctTheme = MixScopeData.static(
+  tokens: {
     colorToken: Colors.black,
-  },
-  breakpoints: {
     breakpointToken: Breakpoint(),
-  },
-  radii: {
     radiusToken: Radius.circular(10),
-  },
-  spaces: {
     spaceToken: 10,
-  },
-  textStyles: {
-    textStyleToken: TextStyle(
-      color: Colors.black,
-    ),
+    textStyleToken: TextStyle(color: Colors.black),
   },
 );

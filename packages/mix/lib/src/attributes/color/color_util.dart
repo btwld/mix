@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/element.dart';
+import '../../core/utility.dart';
 import '../../theme/tokens/mix_token.dart';
 import 'color_extensions.dart';
 import 'material_colors_util.dart';
@@ -8,7 +9,7 @@ import 'material_colors_util.dart';
 /// Base utility for color operations
 @immutable
 abstract base class BaseColorUtility<T extends StyleElement>
-    extends NewMixUtility<T, Color> {
+    extends MixUtility<T, Color> {
   const BaseColorUtility(super.builder);
 
   T _buildColor(Color color) => builder(Mixable.value(color));

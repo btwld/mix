@@ -233,27 +233,41 @@ abstract class DtoUtility<
   A as(Value value) => builder(fromValue(value));
 }
 
-/// A unified utility base class that works with Mixable<Value>.
-///
-/// This class provides a consistent API for all utilities by working directly
-/// with Mixable<Value> instead of raw values or custom DTOs.
-abstract class NewMixUtility<A extends StyleElement, Value>
-    extends MixUtility<A, Mixable<Value>> {
-  const NewMixUtility(super.builder);
+/// A wrapper around Mixable that provides cleaner merge APIs for DTO properties.
+/// This encapsulates value/token/composite logic and simplifies DTO implementations.
+/// MixableProperty is always nullable - resolve() always returns T?
+@immutable
+class MixableProperty<T extends Object> with EqualityMixin {
+  final Mixable<T>? _mixable;
 
-  /// Creates a StyleElement from a raw value by wrapping it in Mixable.value()
-  A call(Value value) => builder(Mixable.value(value));
+  const MixableProperty([this._mixable]);
 
-  /// Creates a StyleElement from a token by wrapping it in Mixable.token()
-  A token(MixableToken<Value> token) => builder(Mixable.token(token));
+  /// Creates a MixableProperty from a concrete value (can be null)
+  factory MixableProperty.value(T value) =>
+      MixableProperty(Mixable.value(value));
 
-  /// Creates a StyleElement from a composite of mixables
-  A composite(List<Mixable<Value>> items) => builder(Mixable.composite(items));
+  /// Creates a MixableProperty from a token
+  /// Note: We need a nullable token wrapper to handle the type mismatch
+  factory MixableProperty.token(MixableToken<T> token) {
+    return MixableProperty(Mixable.token(token));
+  }
 
-  /// For complex utilities with multiple properties - should be overridden
-  /// when the utility needs to support partial construction
-  A only() => throw UnimplementedError(
-    'only() method not implemented for $runtimeType. '
-    'Override this method if the utility supports partial construction.',
-  );
+  /// Creates a MixableProperty from a nullable value
+  static MixableProperty<T>? maybeValue<T extends Object>(T? value) {
+    return value == null ? null : MixableProperty(Mixable.value(value));
+  }
+
+  /// Gets the underlying value if this wraps a ValueMixable
+  T? get value => _mixable?.value;
+
+  /// Resolves the value using the MixContext - always returns nullable
+  T? resolve(MixContext mix) => _mixable?.resolve(mix);
+
+  /// Merges this property with another, creating a composite
+  MixableProperty<T> merge(MixableProperty<T> other) {
+    return MixableProperty(_mixable?.merge(other._mixable));
+  }
+
+  @override
+  List<Object?> get props => [_mixable];
 }

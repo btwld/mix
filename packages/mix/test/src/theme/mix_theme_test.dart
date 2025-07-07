@@ -58,8 +58,8 @@ void main() {
             color: theme.tokens![primaryColor]!(
               tester.element(find.byKey(key)),
             ),
-            borderRadius: BorderRadius.all(
-              const Radius.circular(200), // Direct value to match the style
+            borderRadius: const BorderRadius.all(
+              Radius.circular(200), // Direct value to match the style
             ),
           ),
         );

@@ -14,17 +14,13 @@ final class PaddingModifierSpec extends WidgetModifierSpec<PaddingModifierSpec>
   final EdgeInsetsGeometry padding;
 
   const PaddingModifierSpec([EdgeInsetsGeometry? padding])
-      : padding = padding ?? EdgeInsets.zero;
+    : padding = padding ?? EdgeInsets.zero;
 
   /// Creates a copy of this [PaddingModifierSpec] but with the given fields
   /// replaced with the new values.
   @override
-  PaddingModifierSpec copyWith({
-    EdgeInsetsGeometry? padding,
-  }) {
-    return PaddingModifierSpec(
-      padding ?? this.padding,
-    );
+  PaddingModifierSpec copyWith({EdgeInsetsGeometry? padding}) {
+    return PaddingModifierSpec(padding ?? this.padding);
   }
 
   /// Linearly interpolates between this [PaddingModifierSpec] and another [PaddingModifierSpec] based on the given parameter [t].
@@ -50,21 +46,18 @@ final class PaddingModifierSpec extends WidgetModifierSpec<PaddingModifierSpec>
     );
   }
 
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('padding', padding, defaultValue: null));
+  }
+
   /// The list of properties that constitute the state of this [PaddingModifierSpec].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [PaddingModifierSpec] instances for equality.
   @override
-  List<Object?> get props => [
-        padding,
-      ];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-        DiagnosticsProperty('padding', padding, defaultValue: null));
-  }
+  List<Object?> get props => [padding];
 
   @override
   Widget build(Widget child) {
@@ -84,9 +77,7 @@ class PaddingModifierSpecAttribute
     with Diagnosticable {
   final EdgeInsetsGeometryDto? padding;
 
-  const PaddingModifierSpecAttribute({
-    this.padding,
-  });
+  const PaddingModifierSpecAttribute({this.padding});
 
   /// Resolves to [PaddingModifierSpec] using the provided [MixContext].
   ///
@@ -98,9 +89,7 @@ class PaddingModifierSpecAttribute
   /// ```
   @override
   PaddingModifierSpec resolve(MixContext mix) {
-    return PaddingModifierSpec(
-      padding?.resolve(mix),
-    );
+    return PaddingModifierSpec(padding?.resolve(mix));
   }
 
   /// Merges the properties of this [PaddingModifierSpecAttribute] with the properties of [other].
@@ -120,20 +109,18 @@ class PaddingModifierSpecAttribute
     );
   }
 
-  /// The list of properties that constitute the state of this [PaddingModifierSpecAttribute].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [PaddingModifierSpecAttribute] instances for equality.
-  @override
-  List<Object?> get props => [
-        padding,
-      ];
-
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty('padding', padding, defaultValue: null));
   }
+
+  /// The list of properties that constitute the state of this [PaddingModifierSpecAttribute].
+  ///
+  /// This property is used by the [==] operator and the [hashCode] getter to
+  /// compare two [PaddingModifierSpecAttribute] instances for equality.
+  @override
+  List<Object?> get props => [padding];
 }
 
 /// Utility class for configuring [PaddingModifierSpec] properties.
@@ -165,12 +152,8 @@ class PaddingModifierSpecUtility<T extends SpecAttribute>
 
   /// Returns a new [PaddingModifierSpecAttribute] with the specified properties.
   @override
-  T only({
-    EdgeInsetsGeometryDto? padding,
-  }) {
-    return builder(PaddingModifierSpecAttribute(
-      padding: padding,
-    ));
+  T only({EdgeInsetsGeometryDto? padding}) {
+    return builder(PaddingModifierSpecAttribute(padding: padding));
   }
 }
 
@@ -179,10 +162,7 @@ class PaddingModifierSpecUtility<T extends SpecAttribute>
 /// This class can be used in animations to smoothly transition between
 /// different [PaddingModifierSpec] specifications.
 class PaddingModifierSpecTween extends Tween<PaddingModifierSpec?> {
-  PaddingModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  PaddingModifierSpecTween({super.begin, super.end});
 
   @override
   PaddingModifierSpec lerp(double t) {

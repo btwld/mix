@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+
 import '../../attributes/animation/animated_config_dto.dart';
 import '../../attributes/animation/animated_util.dart';
 import '../../attributes/animation/animation_config.dart';
@@ -16,7 +17,6 @@ import '../../core/helpers.dart';
 import '../../core/spec.dart';
 import 'flex_widget.dart';
 
-
 final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
   final Axis? direction;
   final MainAxisAlignment? mainAxisAlignment;
@@ -28,6 +28,19 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
   final Clip? clipBehavior;
   final double? gap;
 
+  const FlexSpec({
+    this.crossAxisAlignment,
+    this.mainAxisAlignment,
+    this.mainAxisSize,
+    this.verticalDirection,
+    this.direction,
+    this.textDirection,
+    this.textBaseline,
+    this.clipBehavior,
+    this.gap,
+    super.animated,
+    super.modifiers,
+  });
   static FlexSpec from(MixContext mix) {
     return mix.attributeOf<FlexSpecAttribute>()?.resolve(mix) ??
         const FlexSpec();
@@ -47,22 +60,9 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
   /// ```
   /// {@endtemplate}
   static FlexSpec of(BuildContext context) {
-    return ComputedStyle.specOf<FlexSpec>(context) ?? const FlexSpec();
+    return ComputedStyle.specOf(context) ?? const FlexSpec();
   }
 
-  const FlexSpec({
-    this.crossAxisAlignment,
-    this.mainAxisAlignment,
-    this.mainAxisSize,
-    this.verticalDirection,
-    this.direction,
-    this.textDirection,
-    this.textBaseline,
-    this.clipBehavior,
-    this.gap,
-    super.animated,
-    super.modifiers,
-  });
   Widget call({List<Widget> children = const [], required Axis direction}) {
     return isAnimated
         ? AnimatedFlexSpecWidget(
@@ -72,11 +72,7 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
             duration: animated!.duration,
             children: children,
           )
-        : FlexSpecWidget(
-            spec: this,
-            direction: direction,
-            children: children,
-          );
+        : FlexSpecWidget(spec: this, direction: direction, children: children);
   }
 
   /// Creates a copy of this [FlexSpec] but with the given fields
@@ -132,20 +128,67 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
     if (other == null) return this;
 
     return FlexSpec(
-      crossAxisAlignment:
-          t < 0.5 ? this.crossAxisAlignment : other.crossAxisAlignment,
-      mainAxisAlignment:
-          t < 0.5 ? this.mainAxisAlignment : other.mainAxisAlignment,
-      mainAxisSize: t < 0.5 ? this.mainAxisSize : other.mainAxisSize,
-      verticalDirection:
-          t < 0.5 ? this.verticalDirection : other.verticalDirection,
-      direction: t < 0.5 ? this.direction : other.direction,
-      textDirection: t < 0.5 ? this.textDirection : other.textDirection,
-      textBaseline: t < 0.5 ? this.textBaseline : other.textBaseline,
-      clipBehavior: t < 0.5 ? this.clipBehavior : other.clipBehavior,
-      gap: MixHelpers.lerpDouble(this.gap, other.gap, t),
-      animated: this.animated ?? other.animated,
+      crossAxisAlignment: t < 0.5
+          ? crossAxisAlignment
+          : other.crossAxisAlignment,
+      mainAxisAlignment: t < 0.5 ? mainAxisAlignment : other.mainAxisAlignment,
+      mainAxisSize: t < 0.5 ? mainAxisSize : other.mainAxisSize,
+      verticalDirection: t < 0.5 ? verticalDirection : other.verticalDirection,
+      direction: t < 0.5 ? direction : other.direction,
+      textDirection: t < 0.5 ? textDirection : other.textDirection,
+      textBaseline: t < 0.5 ? textBaseline : other.textBaseline,
+      clipBehavior: t < 0.5 ? clipBehavior : other.clipBehavior,
+      gap: MixHelpers.lerpDouble(gap, other.gap, t),
+      animated: animated ?? other.animated,
       modifiers: other.modifiers,
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(
+      DiagnosticsProperty(
+        'crossAxisAlignment',
+        crossAxisAlignment,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'mainAxisAlignment',
+        mainAxisAlignment,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty('mainAxisSize', mainAxisSize, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'verticalDirection',
+        verticalDirection,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty('direction', direction, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('textDirection', textDirection, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('textBaseline', textBaseline, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
+    );
+    properties.add(DiagnosticsProperty('gap', gap, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('animated', animated, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
     );
   }
 
@@ -155,47 +198,18 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
   /// compare two [FlexSpec] instances for equality.
   @override
   List<Object?> get props => [
-        this.crossAxisAlignment,
-        this.mainAxisAlignment,
-        this.mainAxisSize,
-        this.verticalDirection,
-        this.direction,
-        this.textDirection,
-        this.textBaseline,
-        this.clipBehavior,
-        this.gap,
-        this.animated,
-        this.modifiers,
-      ];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty(
-        'crossAxisAlignment', this.crossAxisAlignment,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty(
-        'mainAxisAlignment', this.mainAxisAlignment,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty('mainAxisSize', this.mainAxisSize,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty(
-        'verticalDirection', this.verticalDirection,
-        defaultValue: null));
-    properties.add(
-        DiagnosticsProperty('direction', this.direction, defaultValue: null));
-    properties.add(DiagnosticsProperty('textDirection', this.textDirection,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty('textBaseline', this.textBaseline,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty('clipBehavior', this.clipBehavior,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty('gap', this.gap, defaultValue: null));
-    properties.add(
-        DiagnosticsProperty('animated', this.animated, defaultValue: null));
-    properties.add(
-        DiagnosticsProperty('modifiers', this.modifiers, defaultValue: null));
-  }
+    crossAxisAlignment,
+    mainAxisAlignment,
+    mainAxisSize,
+    verticalDirection,
+    direction,
+    textDirection,
+    textBaseline,
+    clipBehavior,
+    gap,
+    animated,
+    modifiers,
+  ];
 }
 
 /// Represents the attributes of a [FlexSpec].
@@ -282,50 +296,72 @@ class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
     );
   }
 
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(
+      DiagnosticsProperty(
+        'crossAxisAlignment',
+        crossAxisAlignment,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'mainAxisAlignment',
+        mainAxisAlignment,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty('mainAxisSize', mainAxisSize, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'verticalDirection',
+        verticalDirection,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty('direction', direction, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('textDirection', textDirection, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('textBaseline', textBaseline, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
+    );
+    properties.add(DiagnosticsProperty('gap', gap, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('animated', animated, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
+    );
+  }
+
   /// The list of properties that constitute the state of this [FlexSpecAttribute].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [FlexSpecAttribute] instances for equality.
   @override
   List<Object?> get props => [
-        crossAxisAlignment,
-        mainAxisAlignment,
-        mainAxisSize,
-        verticalDirection,
-        direction,
-        textDirection,
-        textBaseline,
-        clipBehavior,
-        gap,
-        animated,
-        modifiers,
-      ];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('crossAxisAlignment', crossAxisAlignment,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty('mainAxisAlignment', mainAxisAlignment,
-        defaultValue: null));
-    properties.add(
-        DiagnosticsProperty('mainAxisSize', mainAxisSize, defaultValue: null));
-    properties.add(DiagnosticsProperty('verticalDirection', verticalDirection,
-        defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('direction', direction, defaultValue: null));
-    properties.add(DiagnosticsProperty('textDirection', textDirection,
-        defaultValue: null));
-    properties.add(
-        DiagnosticsProperty('textBaseline', textBaseline, defaultValue: null));
-    properties.add(
-        DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null));
-    properties.add(DiagnosticsProperty('gap', gap, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('animated', animated, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('modifiers', modifiers, defaultValue: null));
-  }
+    crossAxisAlignment,
+    mainAxisAlignment,
+    mainAxisSize,
+    verticalDirection,
+    direction,
+    textDirection,
+    textBaseline,
+    clipBehavior,
+    gap,
+    animated,
+    modifiers,
+  ];
 }
 
 /// Utility class for configuring [FlexSpec] properties.
@@ -335,19 +371,22 @@ class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
 class FlexSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, FlexSpecAttribute> {
   /// Utility for defining [FlexSpecAttribute.crossAxisAlignment]
-  late final crossAxisAlignment =
-      CrossAxisAlignmentUtility((v) => only(crossAxisAlignment: v));
+  late final crossAxisAlignment = CrossAxisAlignmentUtility(
+    (v) => only(crossAxisAlignment: v),
+  );
 
   /// Utility for defining [FlexSpecAttribute.mainAxisAlignment]
-  late final mainAxisAlignment =
-      MainAxisAlignmentUtility((v) => only(mainAxisAlignment: v));
+  late final mainAxisAlignment = MainAxisAlignmentUtility(
+    (v) => only(mainAxisAlignment: v),
+  );
 
   /// Utility for defining [FlexSpecAttribute.mainAxisSize]
   late final mainAxisSize = MainAxisSizeUtility((v) => only(mainAxisSize: v));
 
   /// Utility for defining [FlexSpecAttribute.verticalDirection]
-  late final verticalDirection =
-      VerticalDirectionUtility((v) => only(verticalDirection: v));
+  late final verticalDirection = VerticalDirectionUtility(
+    (v) => only(verticalDirection: v),
+  );
 
   /// Utility for defining [FlexSpecAttribute.direction]
   late final direction = AxisUtility((v) => only(direction: v));
@@ -359,8 +398,9 @@ class FlexSpecUtility<T extends SpecAttribute>
   late final column = direction.vertical;
 
   /// Utility for defining [FlexSpecAttribute.textDirection]
-  late final textDirection =
-      TextDirectionUtility((v) => only(textDirection: v));
+  late final textDirection = TextDirectionUtility(
+    (v) => only(textDirection: v),
+  );
 
   /// Utility for defining [FlexSpecAttribute.textBaseline]
   late final textBaseline = TextBaselineUtility((v) => only(textBaseline: v));
@@ -409,19 +449,21 @@ class FlexSpecUtility<T extends SpecAttribute>
     AnimationConfigDto? animated,
     WidgetModifiersConfigDto? modifiers,
   }) {
-    return builder(FlexSpecAttribute(
-      crossAxisAlignment: crossAxisAlignment,
-      mainAxisAlignment: mainAxisAlignment,
-      mainAxisSize: mainAxisSize,
-      verticalDirection: verticalDirection,
-      direction: direction,
-      textDirection: textDirection,
-      textBaseline: textBaseline,
-      clipBehavior: clipBehavior,
-      gap: gap,
-      animated: animated,
-      modifiers: modifiers,
-    ));
+    return builder(
+      FlexSpecAttribute(
+        crossAxisAlignment: crossAxisAlignment,
+        mainAxisAlignment: mainAxisAlignment,
+        mainAxisSize: mainAxisSize,
+        verticalDirection: verticalDirection,
+        direction: direction,
+        textDirection: textDirection,
+        textBaseline: textBaseline,
+        clipBehavior: clipBehavior,
+        gap: gap,
+        animated: animated,
+        modifiers: modifiers,
+      ),
+    );
   }
 }
 
@@ -430,10 +472,7 @@ class FlexSpecUtility<T extends SpecAttribute>
 /// This class can be used in animations to smoothly transition between
 /// different [FlexSpec] specifications.
 class FlexSpecTween extends Tween<FlexSpec?> {
-  FlexSpecTween({
-    super.begin,
-    super.end,
-  });
+  FlexSpecTween({super.begin, super.end});
 
   @override
   FlexSpec lerp(double t) {

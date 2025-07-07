@@ -16,12 +16,8 @@ final class VisibilityModifierSpec
   /// Creates a copy of this [VisibilityModifierSpec] but with the given fields
   /// replaced with the new values.
   @override
-  VisibilityModifierSpec copyWith({
-    bool? visible,
-  }) {
-    return VisibilityModifierSpec(
-      visible ?? this.visible,
-    );
+  VisibilityModifierSpec copyWith({bool? visible}) {
+    return VisibilityModifierSpec(visible ?? this.visible);
   }
 
   /// Linearly interpolates between this [VisibilityModifierSpec] and another [VisibilityModifierSpec] based on the given parameter [t].
@@ -44,9 +40,13 @@ final class VisibilityModifierSpec
   VisibilityModifierSpec lerp(VisibilityModifierSpec? other, double t) {
     if (other == null) return this;
 
-    return VisibilityModifierSpec(
-      t < 0.5 ? visible : other.visible,
-    );
+    return VisibilityModifierSpec(t < 0.5 ? visible : other.visible);
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('visible', visible, defaultValue: null));
   }
 
   /// The list of properties that constitute the state of this [VisibilityModifierSpec].
@@ -54,16 +54,7 @@ final class VisibilityModifierSpec
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [VisibilityModifierSpec] instances for equality.
   @override
-  List<Object?> get props => [
-        visible,
-      ];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-        DiagnosticsProperty('visible', visible, defaultValue: null));
-  }
+  List<Object?> get props => [visible];
 
   @override
   Widget build(Widget child) {
@@ -83,9 +74,7 @@ class VisibilityModifierSpecAttribute
     with Diagnosticable {
   final bool? visible;
 
-  const VisibilityModifierSpecAttribute({
-    this.visible,
-  });
+  const VisibilityModifierSpecAttribute({this.visible});
 
   /// Resolves to [VisibilityModifierSpec] using the provided [MixContext].
   ///
@@ -97,9 +86,7 @@ class VisibilityModifierSpecAttribute
   /// ```
   @override
   VisibilityModifierSpec resolve(MixContext mix) {
-    return VisibilityModifierSpec(
-      visible,
-    );
+    return VisibilityModifierSpec(visible);
   }
 
   /// Merges the properties of this [VisibilityModifierSpecAttribute] with the properties of [other].
@@ -112,12 +99,17 @@ class VisibilityModifierSpecAttribute
   /// to the values from this instance.
   @override
   VisibilityModifierSpecAttribute merge(
-      VisibilityModifierSpecAttribute? other) {
+    VisibilityModifierSpecAttribute? other,
+  ) {
     if (other == null) return this;
 
-    return VisibilityModifierSpecAttribute(
-      visible: other.visible ?? visible,
-    );
+    return VisibilityModifierSpecAttribute(visible: other.visible ?? visible);
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('visible', visible, defaultValue: null));
   }
 
   /// The list of properties that constitute the state of this [VisibilityModifierSpecAttribute].
@@ -125,15 +117,7 @@ class VisibilityModifierSpecAttribute
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [VisibilityModifierSpecAttribute] instances for equality.
   @override
-  List<Object?> get props => [
-        visible,
-      ];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('visible', visible, defaultValue: null));
-  }
+  List<Object?> get props => [visible];
 }
 
 /// A tween that interpolates between two [VisibilityModifierSpec] instances.
@@ -141,10 +125,7 @@ class VisibilityModifierSpecAttribute
 /// This class can be used in animations to smoothly transition between
 /// different [VisibilityModifierSpec] specifications.
 class VisibilityModifierSpecTween extends Tween<VisibilityModifierSpec?> {
-  VisibilityModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  VisibilityModifierSpecTween({super.begin, super.end});
 
   @override
   VisibilityModifierSpec lerp(double t) {

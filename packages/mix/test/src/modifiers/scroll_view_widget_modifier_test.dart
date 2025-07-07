@@ -15,7 +15,7 @@ void main() {
         const clip = Clip.antiAlias;
         const physics = AlwaysScrollableScrollPhysics();
 
-        final modifier = ScrollViewModifierSpec(
+        const modifier = ScrollViewModifierSpec(
           scrollDirection: axis,
           reverse: reverse,
           padding: padding,
@@ -42,7 +42,7 @@ void main() {
     testWidgets(
       'ScrollViewModifierSpec and SingleChildScrollView default values are equal',
       (tester) async {
-        final modifier = ScrollViewModifierSpec();
+        const modifier = ScrollViewModifierSpec();
         final scrollView = SingleChildScrollView(child: Container());
 
         await tester.pumpMaterialApp(modifier.build(Container()));

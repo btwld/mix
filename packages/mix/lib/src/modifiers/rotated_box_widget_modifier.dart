@@ -13,33 +13,21 @@ final class RotatedBoxModifierSpec
     with Diagnosticable {
   final int quarterTurns;
   const RotatedBoxModifierSpec([int? quarterTurns])
-      : quarterTurns = quarterTurns ?? 0;
+    : quarterTurns = quarterTurns ?? 0;
 
   /// Creates a copy of this [RotatedBoxModifierSpec] but with the given fields
   /// replaced with the new values.
   @override
-  RotatedBoxModifierSpec copyWith({
-    int? quarterTurns,
-  }) {
-    return RotatedBoxModifierSpec(
-      quarterTurns ?? this.quarterTurns,
-    );
+  RotatedBoxModifierSpec copyWith({int? quarterTurns}) {
+    return RotatedBoxModifierSpec(quarterTurns ?? this.quarterTurns);
   }
-
-  /// The list of properties that constitute the state of this [RotatedBoxModifierSpec].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [RotatedBoxModifierSpec] instances for equality.
-  @override
-  List<Object?> get props => [
-        quarterTurns,
-      ];
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('quarterTurns', quarterTurns,
-        defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('quarterTurns', quarterTurns, defaultValue: null),
+    );
   }
 
   @override
@@ -50,6 +38,13 @@ final class RotatedBoxModifierSpec
       MixHelpers.lerpInt(quarterTurns, other.quarterTurns, t),
     );
   }
+
+  /// The list of properties that constitute the state of this [RotatedBoxModifierSpec].
+  ///
+  /// This property is used by the [==] operator and the [hashCode] getter to
+  /// compare two [RotatedBoxModifierSpec] instances for equality.
+  @override
+  List<Object?> get props => [quarterTurns];
 
   @override
   Widget build(Widget child) {
@@ -69,9 +64,7 @@ class RotatedBoxModifierSpecAttribute
     with Diagnosticable {
   final int? quarterTurns;
 
-  const RotatedBoxModifierSpecAttribute({
-    this.quarterTurns,
-  });
+  const RotatedBoxModifierSpecAttribute({this.quarterTurns});
 
   /// Resolves to [RotatedBoxModifierSpec] using the provided [MixContext].
   ///
@@ -83,9 +76,7 @@ class RotatedBoxModifierSpecAttribute
   /// ```
   @override
   RotatedBoxModifierSpec resolve(MixContext mix) {
-    return RotatedBoxModifierSpec(
-      quarterTurns,
-    );
+    return RotatedBoxModifierSpec(quarterTurns);
   }
 
   /// Merges the properties of this [RotatedBoxModifierSpecAttribute] with the properties of [other].
@@ -98,11 +89,20 @@ class RotatedBoxModifierSpecAttribute
   /// to the values from this instance.
   @override
   RotatedBoxModifierSpecAttribute merge(
-      RotatedBoxModifierSpecAttribute? other) {
+    RotatedBoxModifierSpecAttribute? other,
+  ) {
     if (other == null) return this;
 
     return RotatedBoxModifierSpecAttribute(
       quarterTurns: other.quarterTurns ?? quarterTurns,
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(
+      DiagnosticsProperty('quarterTurns', quarterTurns, defaultValue: null),
     );
   }
 
@@ -111,16 +111,7 @@ class RotatedBoxModifierSpecAttribute
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [RotatedBoxModifierSpecAttribute] instances for equality.
   @override
-  List<Object?> get props => [
-        quarterTurns,
-      ];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-        DiagnosticsProperty('quarterTurns', quarterTurns, defaultValue: null));
-  }
+  List<Object?> get props => [quarterTurns];
 }
 
 /// A tween that interpolates between two [RotatedBoxModifierSpec] instances.
@@ -128,10 +119,7 @@ class RotatedBoxModifierSpecAttribute
 /// This class can be used in animations to smoothly transition between
 /// different [RotatedBoxModifierSpec] specifications.
 class RotatedBoxModifierSpecTween extends Tween<RotatedBoxModifierSpec?> {
-  RotatedBoxModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  RotatedBoxModifierSpecTween({super.begin, super.end});
 
   @override
   RotatedBoxModifierSpec lerp(double t) {

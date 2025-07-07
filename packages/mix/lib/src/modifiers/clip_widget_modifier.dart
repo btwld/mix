@@ -56,24 +56,21 @@ final class ClipOvalModifierSpec
     );
   }
 
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('clipper', clipper, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
+    );
+  }
+
   /// The list of properties that constitute the state of this [ClipOvalModifierSpec].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [ClipOvalModifierSpec] instances for equality.
   @override
-  List<Object?> get props => [
-        clipper,
-        clipBehavior,
-      ];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-        DiagnosticsProperty('clipper', clipper, defaultValue: null));
-    properties.add(DiagnosticsProperty('clipBehavior', clipBehavior,
-        defaultValue: null));
-  }
+  List<Object?> get props => [clipper, clipBehavior];
 
   @override
   Widget build(Widget child) {
@@ -98,10 +95,7 @@ class ClipOvalModifierSpecAttribute
   final CustomClipper<Rect>? clipper;
   final Clip? clipBehavior;
 
-  const ClipOvalModifierSpecAttribute({
-    this.clipper,
-    this.clipBehavior,
-  });
+  const ClipOvalModifierSpecAttribute({this.clipper, this.clipBehavior});
 
   /// Resolves to [ClipOvalModifierSpec] using the provided [MixContext].
   ///
@@ -113,10 +107,7 @@ class ClipOvalModifierSpecAttribute
   /// ```
   @override
   ClipOvalModifierSpec resolve(MixContext mix) {
-    return ClipOvalModifierSpec(
-      clipper: clipper,
-      clipBehavior: clipBehavior,
-    );
+    return ClipOvalModifierSpec(clipper: clipper, clipBehavior: clipBehavior);
   }
 
   /// Merges the properties of this [ClipOvalModifierSpecAttribute] with the properties of [other].
@@ -137,23 +128,21 @@ class ClipOvalModifierSpecAttribute
     );
   }
 
-  /// The list of properties that constitute the state of this [ClipOvalModifierSpecAttribute].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [ClipOvalModifierSpecAttribute] instances for equality.
-  @override
-  List<Object?> get props => [
-        clipper,
-        clipBehavior,
-      ];
-
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty('clipper', clipper, defaultValue: null));
     properties.add(
-        DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null));
+      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
+    );
   }
+
+  /// The list of properties that constitute the state of this [ClipOvalModifierSpecAttribute].
+  ///
+  /// This property is used by the [==] operator and the [hashCode] getter to
+  /// compare two [ClipOvalModifierSpecAttribute] instances for equality.
+  @override
+  List<Object?> get props => [clipper, clipBehavior];
 }
 
 /// A tween that interpolates between two [ClipOvalModifierSpec] instances.
@@ -161,10 +150,7 @@ class ClipOvalModifierSpecAttribute
 /// This class can be used in animations to smoothly transition between
 /// different [ClipOvalModifierSpec] specifications.
 class ClipOvalModifierSpecTween extends Tween<ClipOvalModifierSpec?> {
-  ClipOvalModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  ClipOvalModifierSpecTween({super.begin, super.end});
 
   @override
   ClipOvalModifierSpec lerp(double t) {
@@ -227,24 +213,21 @@ final class ClipRectModifierSpec
     );
   }
 
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('clipper', clipper, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
+    );
+  }
+
   /// The list of properties that constitute the state of this [ClipRectModifierSpec].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [ClipRectModifierSpec] instances for equality.
   @override
-  List<Object?> get props => [
-        clipper,
-        clipBehavior,
-      ];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-        DiagnosticsProperty('clipper', clipper, defaultValue: null));
-    properties.add(DiagnosticsProperty('clipBehavior', clipBehavior,
-        defaultValue: null));
-  }
+  List<Object?> get props => [clipper, clipBehavior];
 
   @override
   Widget build(Widget child) {
@@ -269,10 +252,7 @@ class ClipRectModifierSpecAttribute
   final CustomClipper<Rect>? clipper;
   final Clip? clipBehavior;
 
-  const ClipRectModifierSpecAttribute({
-    this.clipper,
-    this.clipBehavior,
-  });
+  const ClipRectModifierSpecAttribute({this.clipper, this.clipBehavior});
 
   /// Resolves to [ClipRectModifierSpec] using the provided [MixContext].
   ///
@@ -284,10 +264,7 @@ class ClipRectModifierSpecAttribute
   /// ```
   @override
   ClipRectModifierSpec resolve(MixContext mix) {
-    return ClipRectModifierSpec(
-      clipper: clipper,
-      clipBehavior: clipBehavior,
-    );
+    return ClipRectModifierSpec(clipper: clipper, clipBehavior: clipBehavior);
   }
 
   /// Merges the properties of this [ClipRectModifierSpecAttribute] with the properties of [other].
@@ -308,23 +285,21 @@ class ClipRectModifierSpecAttribute
     );
   }
 
-  /// The list of properties that constitute the state of this [ClipRectModifierSpecAttribute].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [ClipRectModifierSpecAttribute] instances for equality.
-  @override
-  List<Object?> get props => [
-        clipper,
-        clipBehavior,
-      ];
-
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty('clipper', clipper, defaultValue: null));
     properties.add(
-        DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null));
+      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
+    );
   }
+
+  /// The list of properties that constitute the state of this [ClipRectModifierSpecAttribute].
+  ///
+  /// This property is used by the [==] operator and the [hashCode] getter to
+  /// compare two [ClipRectModifierSpecAttribute] instances for equality.
+  @override
+  List<Object?> get props => [clipper, clipBehavior];
 }
 
 /// A tween that interpolates between two [ClipRectModifierSpec] instances.
@@ -332,10 +307,7 @@ class ClipRectModifierSpecAttribute
 /// This class can be used in animations to smoothly transition between
 /// different [ClipRectModifierSpec] specifications.
 class ClipRectModifierSpecTween extends Tween<ClipRectModifierSpec?> {
-  ClipRectModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  ClipRectModifierSpecTween({super.begin, super.end});
 
   @override
   ClipRectModifierSpec lerp(double t) {
@@ -401,10 +373,25 @@ final class ClipRRectModifierSpec
     if (other == null) return this;
 
     return ClipRRectModifierSpec(
-      borderRadius:
-          BorderRadiusGeometry.lerp(borderRadius, other.borderRadius, t),
+      borderRadius: BorderRadiusGeometry.lerp(
+        borderRadius,
+        other.borderRadius,
+        t,
+      ),
       clipper: t < 0.5 ? clipper : other.clipper,
       clipBehavior: t < 0.5 ? clipBehavior : other.clipBehavior,
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(
+      DiagnosticsProperty('borderRadius', borderRadius, defaultValue: null),
+    );
+    properties.add(DiagnosticsProperty('clipper', clipper, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
     );
   }
 
@@ -413,22 +400,7 @@ final class ClipRRectModifierSpec
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [ClipRRectModifierSpec] instances for equality.
   @override
-  List<Object?> get props => [
-        borderRadius,
-        clipper,
-        clipBehavior,
-      ];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('borderRadius', borderRadius,
-        defaultValue: null));
-    properties.add(
-        DiagnosticsProperty('clipper', clipper, defaultValue: null));
-    properties.add(DiagnosticsProperty('clipBehavior', clipBehavior,
-        defaultValue: null));
-  }
+  List<Object?> get props => [borderRadius, clipper, clipBehavior];
 
   @override
   Widget build(Widget child) {
@@ -498,26 +470,24 @@ class ClipRRectModifierSpecAttribute
     );
   }
 
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(
+      DiagnosticsProperty('borderRadius', borderRadius, defaultValue: null),
+    );
+    properties.add(DiagnosticsProperty('clipper', clipper, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
+    );
+  }
+
   /// The list of properties that constitute the state of this [ClipRRectModifierSpecAttribute].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [ClipRRectModifierSpecAttribute] instances for equality.
   @override
-  List<Object?> get props => [
-        borderRadius,
-        clipper,
-        clipBehavior,
-      ];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-        DiagnosticsProperty('borderRadius', borderRadius, defaultValue: null));
-    properties.add(DiagnosticsProperty('clipper', clipper, defaultValue: null));
-    properties.add(
-        DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null));
-  }
+  List<Object?> get props => [borderRadius, clipper, clipBehavior];
 }
 
 /// A tween that interpolates between two [ClipRRectModifierSpec] instances.
@@ -525,10 +495,7 @@ class ClipRRectModifierSpecAttribute
 /// This class can be used in animations to smoothly transition between
 /// different [ClipRRectModifierSpec] specifications.
 class ClipRRectModifierSpecTween extends Tween<ClipRRectModifierSpec?> {
-  ClipRRectModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  ClipRRectModifierSpecTween({super.begin, super.end});
 
   @override
   ClipRRectModifierSpec lerp(double t) {
@@ -591,24 +558,21 @@ final class ClipPathModifierSpec
     );
   }
 
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('clipper', clipper, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
+    );
+  }
+
   /// The list of properties that constitute the state of this [ClipPathModifierSpec].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [ClipPathModifierSpec] instances for equality.
   @override
-  List<Object?> get props => [
-        clipper,
-        clipBehavior,
-      ];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-        DiagnosticsProperty('clipper', clipper, defaultValue: null));
-    properties.add(DiagnosticsProperty('clipBehavior', clipBehavior,
-        defaultValue: null));
-  }
+  List<Object?> get props => [clipper, clipBehavior];
 
   @override
   Widget build(Widget child) {
@@ -633,10 +597,7 @@ class ClipPathModifierSpecAttribute
   final CustomClipper<Path>? clipper;
   final Clip? clipBehavior;
 
-  const ClipPathModifierSpecAttribute({
-    this.clipper,
-    this.clipBehavior,
-  });
+  const ClipPathModifierSpecAttribute({this.clipper, this.clipBehavior});
 
   /// Resolves to [ClipPathModifierSpec] using the provided [MixContext].
   ///
@@ -648,10 +609,7 @@ class ClipPathModifierSpecAttribute
   /// ```
   @override
   ClipPathModifierSpec resolve(MixContext mix) {
-    return ClipPathModifierSpec(
-      clipper: clipper,
-      clipBehavior: clipBehavior,
-    );
+    return ClipPathModifierSpec(clipper: clipper, clipBehavior: clipBehavior);
   }
 
   /// Merges the properties of this [ClipPathModifierSpecAttribute] with the properties of [other].
@@ -672,23 +630,21 @@ class ClipPathModifierSpecAttribute
     );
   }
 
-  /// The list of properties that constitute the state of this [ClipPathModifierSpecAttribute].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [ClipPathModifierSpecAttribute] instances for equality.
-  @override
-  List<Object?> get props => [
-        clipper,
-        clipBehavior,
-      ];
-
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty('clipper', clipper, defaultValue: null));
     properties.add(
-        DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null));
+      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
+    );
   }
+
+  /// The list of properties that constitute the state of this [ClipPathModifierSpecAttribute].
+  ///
+  /// This property is used by the [==] operator and the [hashCode] getter to
+  /// compare two [ClipPathModifierSpecAttribute] instances for equality.
+  @override
+  List<Object?> get props => [clipper, clipBehavior];
 }
 
 /// A tween that interpolates between two [ClipPathModifierSpec] instances.
@@ -696,10 +652,7 @@ class ClipPathModifierSpecAttribute
 /// This class can be used in animations to smoothly transition between
 /// different [ClipPathModifierSpec] specifications.
 class ClipPathModifierSpecTween extends Tween<ClipPathModifierSpec?> {
-  ClipPathModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  ClipPathModifierSpecTween({super.begin, super.end});
 
   @override
   ClipPathModifierSpec lerp(double t) {
@@ -725,9 +678,7 @@ final class ClipTriangleModifierSpec
   /// Creates a copy of this [ClipTriangleModifierSpec] but with the given fields
   /// replaced with the new values.
   @override
-  ClipTriangleModifierSpec copyWith({
-    Clip? clipBehavior,
-  }) {
+  ClipTriangleModifierSpec copyWith({Clip? clipBehavior}) {
     return ClipTriangleModifierSpec(
       clipBehavior: clipBehavior ?? this.clipBehavior,
     );
@@ -758,21 +709,20 @@ final class ClipTriangleModifierSpec
     );
   }
 
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(
+      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
+    );
+  }
+
   /// The list of properties that constitute the state of this [ClipTriangleModifierSpec].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [ClipTriangleModifierSpec] instances for equality.
   @override
-  List<Object?> get props => [
-        clipBehavior,
-      ];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('clipBehavior', clipBehavior,
-        defaultValue: null));
-  }
+  List<Object?> get props => [clipBehavior];
 
   @override
   Widget build(Widget child) {
@@ -796,9 +746,7 @@ class ClipTriangleModifierSpecAttribute
     with Diagnosticable {
   final Clip? clipBehavior;
 
-  const ClipTriangleModifierSpecAttribute({
-    this.clipBehavior,
-  });
+  const ClipTriangleModifierSpecAttribute({this.clipBehavior});
 
   /// Resolves to [ClipTriangleModifierSpec] using the provided [MixContext].
   ///
@@ -810,9 +758,7 @@ class ClipTriangleModifierSpecAttribute
   /// ```
   @override
   ClipTriangleModifierSpec resolve(MixContext mix) {
-    return ClipTriangleModifierSpec(
-      clipBehavior: clipBehavior,
-    );
+    return ClipTriangleModifierSpec(clipBehavior: clipBehavior);
   }
 
   /// Merges the properties of this [ClipTriangleModifierSpecAttribute] with the properties of [other].
@@ -825,11 +771,20 @@ class ClipTriangleModifierSpecAttribute
   /// to the values from this instance.
   @override
   ClipTriangleModifierSpecAttribute merge(
-      ClipTriangleModifierSpecAttribute? other) {
+    ClipTriangleModifierSpecAttribute? other,
+  ) {
     if (other == null) return this;
 
     return ClipTriangleModifierSpecAttribute(
       clipBehavior: other.clipBehavior ?? clipBehavior,
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(
+      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
     );
   }
 
@@ -838,16 +793,7 @@ class ClipTriangleModifierSpecAttribute
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [ClipTriangleModifierSpecAttribute] instances for equality.
   @override
-  List<Object?> get props => [
-        clipBehavior,
-      ];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-        DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null));
-  }
+  List<Object?> get props => [clipBehavior];
 }
 
 /// A tween that interpolates between two [ClipTriangleModifierSpec] instances.
@@ -855,10 +801,7 @@ class ClipTriangleModifierSpecAttribute
 /// This class can be used in animations to smoothly transition between
 /// different [ClipTriangleModifierSpec] specifications.
 class ClipTriangleModifierSpecTween extends Tween<ClipTriangleModifierSpec?> {
-  ClipTriangleModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  ClipTriangleModifierSpecTween({super.begin, super.end});
 
   @override
   ClipTriangleModifierSpec lerp(double t) {

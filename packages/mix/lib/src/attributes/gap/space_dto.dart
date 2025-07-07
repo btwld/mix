@@ -9,8 +9,9 @@ sealed class SpaceDto extends Mixable<double> with Diagnosticable {
   // Common constants using private types
   static const zero = _ValueSpaceDto(0);
 
-  static const infinity =
-      _ValueSpaceDto(double.infinity); // Private constructor
+  static const infinity = _ValueSpaceDto(
+    double.infinity,
+  ); // Private constructor
   const SpaceDto._();
 
   // Public factories only
@@ -44,9 +45,7 @@ class _TokenSpaceDto extends SpaceDto {
 
   @override
   double resolve(MixContext mix) {
-    final resolved = mix.scope.getToken(token, mix.context);
-
-    return resolved ?? 0.0;
+    return mix.scope.getToken(token, mix.context);
   }
 
   @override

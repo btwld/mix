@@ -364,7 +364,7 @@ extension BorderSideMixExt on BorderSide {
   /// Converts this [BorderSide] to a [BorderSideDto].
   BorderSideDto toDto() {
     return BorderSideDto(
-      color: color.toDto(),
+      color: Mixable.maybeValue(color),
       strokeAlign: strokeAlign,
       style: style,
       width: width,

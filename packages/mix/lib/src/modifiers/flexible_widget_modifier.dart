@@ -18,14 +18,8 @@ final class FlexibleModifierSpec
   /// Creates a copy of this [FlexibleModifierSpec] but with the given fields
   /// replaced with the new values.
   @override
-  FlexibleModifierSpec copyWith({
-    int? flex,
-    FlexFit? fit,
-  }) {
-    return FlexibleModifierSpec(
-      flex: flex ?? this.flex,
-      fit: fit ?? this.fit,
-    );
+  FlexibleModifierSpec copyWith({int? flex, FlexFit? fit}) {
+    return FlexibleModifierSpec(flex: flex ?? this.flex, fit: fit ?? this.fit);
   }
 
   /// Linearly interpolates between this [FlexibleModifierSpec] and another [FlexibleModifierSpec] based on the given parameter [t].
@@ -54,31 +48,23 @@ final class FlexibleModifierSpec
     );
   }
 
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('flex', flex, defaultValue: null));
+    properties.add(DiagnosticsProperty('fit', fit, defaultValue: null));
+  }
+
   /// The list of properties that constitute the state of this [FlexibleModifierSpec].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [FlexibleModifierSpec] instances for equality.
   @override
-  List<Object?> get props => [
-        flex,
-        fit,
-      ];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-        .add(DiagnosticsProperty('flex', flex, defaultValue: null));
-    properties.add(DiagnosticsProperty('fit', fit, defaultValue: null));
-  }
+  List<Object?> get props => [flex, fit];
 
   @override
   Widget build(Widget child) {
-    return Flexible(
-      flex: flex ?? 1,
-      fit: fit ?? FlexFit.loose,
-      child: child,
-    );
+    return Flexible(flex: flex ?? 1, fit: fit ?? FlexFit.loose, child: child);
   }
 }
 
@@ -95,10 +81,7 @@ class FlexibleModifierSpecAttribute
   final int? flex;
   final FlexFit? fit;
 
-  const FlexibleModifierSpecAttribute({
-    this.flex,
-    this.fit,
-  });
+  const FlexibleModifierSpecAttribute({this.flex, this.fit});
 
   /// Resolves to [FlexibleModifierSpec] using the provided [MixContext].
   ///
@@ -110,10 +93,7 @@ class FlexibleModifierSpecAttribute
   /// ```
   @override
   FlexibleModifierSpec resolve(MixContext mix) {
-    return FlexibleModifierSpec(
-      flex: flex,
-      fit: fit,
-    );
+    return FlexibleModifierSpec(flex: flex, fit: fit);
   }
 
   /// Merges the properties of this [FlexibleModifierSpecAttribute] with the properties of [other].
@@ -134,22 +114,19 @@ class FlexibleModifierSpecAttribute
     );
   }
 
-  /// The list of properties that constitute the state of this [FlexibleModifierSpecAttribute].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [FlexibleModifierSpecAttribute] instances for equality.
-  @override
-  List<Object?> get props => [
-        flex,
-        fit,
-      ];
-
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty('flex', flex, defaultValue: null));
     properties.add(DiagnosticsProperty('fit', fit, defaultValue: null));
   }
+
+  /// The list of properties that constitute the state of this [FlexibleModifierSpecAttribute].
+  ///
+  /// This property is used by the [==] operator and the [hashCode] getter to
+  /// compare two [FlexibleModifierSpecAttribute] instances for equality.
+  @override
+  List<Object?> get props => [flex, fit];
 }
 
 /// A tween that interpolates between two [FlexibleModifierSpec] instances.
@@ -157,10 +134,7 @@ class FlexibleModifierSpecAttribute
 /// This class can be used in animations to smoothly transition between
 /// different [FlexibleModifierSpec] specifications.
 class FlexibleModifierSpecTween extends Tween<FlexibleModifierSpec?> {
-  FlexibleModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  FlexibleModifierSpecTween({super.begin, super.end});
 
   @override
   FlexibleModifierSpec lerp(double t) {

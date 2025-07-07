@@ -40,30 +40,27 @@ final class AlignModifierSpec extends WidgetModifierSpec<AlignModifierSpec>
 
     return AlignModifierSpec(
       alignment: AlignmentGeometry.lerp(alignment, other.alignment, t),
-      widthFactor:
-          MixHelpers.lerpDouble(widthFactor, other.widthFactor, t),
-      heightFactor:
-          MixHelpers.lerpDouble(heightFactor, other.heightFactor, t),
+      widthFactor: MixHelpers.lerpDouble(widthFactor, other.widthFactor, t),
+      heightFactor: MixHelpers.lerpDouble(heightFactor, other.heightFactor, t),
     );
   }
-
-  @override
-  List<Object?> get props => [
-        alignment,
-        widthFactor,
-        heightFactor,
-      ];
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(
-        DiagnosticsProperty('alignment', alignment, defaultValue: null));
-    properties.add(DiagnosticsProperty('widthFactor', widthFactor,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty('heightFactor', heightFactor,
-        defaultValue: null));
+      DiagnosticsProperty('alignment', alignment, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('widthFactor', widthFactor, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('heightFactor', heightFactor, defaultValue: null),
+    );
   }
+
+  @override
+  List<Object?> get props => [alignment, widthFactor, heightFactor];
 
   @override
   Widget build(Widget child) {
@@ -95,7 +92,8 @@ final class AlignModifierSpecUtility<T extends StyleElement>
 }
 
 class AlignModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<AlignModifierSpec> with Diagnosticable {
+    extends WidgetModifierSpecAttribute<AlignModifierSpec>
+    with Diagnosticable {
   final AlignmentGeometry? alignment;
   final double? widthFactor;
   final double? heightFactor;
@@ -127,29 +125,25 @@ class AlignModifierSpecAttribute
   }
 
   @override
-  List<Object?> get props => [
-        alignment,
-        widthFactor,
-        heightFactor,
-      ];
-
-  @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties
-        .add(DiagnosticsProperty('alignment', alignment, defaultValue: null));
     properties.add(
-        DiagnosticsProperty('widthFactor', widthFactor, defaultValue: null));
+      DiagnosticsProperty('alignment', alignment, defaultValue: null),
+    );
     properties.add(
-        DiagnosticsProperty('heightFactor', heightFactor, defaultValue: null));
+      DiagnosticsProperty('widthFactor', widthFactor, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('heightFactor', heightFactor, defaultValue: null),
+    );
   }
+
+  @override
+  List<Object?> get props => [alignment, widthFactor, heightFactor];
 }
 
 class AlignModifierSpecTween extends Tween<AlignModifierSpec?> {
-  AlignModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  AlignModifierSpecTween({super.begin, super.end});
 
   @override
   AlignModifierSpec lerp(double t) {

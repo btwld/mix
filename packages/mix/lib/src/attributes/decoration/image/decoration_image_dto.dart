@@ -23,9 +23,6 @@ final class DecorationImageDto extends Mixable<DecorationImage>
     this.invertColors,
     this.isAntiAlias,
   });
-  @override
-  DecorationImage get defaultValue =>
-      const DecorationImage(image: AssetImage('NONE'));
 
   /// Resolves to [DecorationImage] using the provided [MixContext].
   ///
@@ -73,21 +70,25 @@ final class DecorationImageDto extends Mixable<DecorationImage>
     );
   }
 
+  @override
+  DecorationImage get defaultValue =>
+      const DecorationImage(image: AssetImage('NONE'));
+
   /// The list of properties that constitute the state of this [DecorationImageDto].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [DecorationImageDto] instances for equality.
   @override
   List<Object?> get props => [
-        image,
-        fit,
-        alignment,
-        centerSlice,
-        repeat,
-        filterQuality,
-        invertColors,
-        isAntiAlias,
-      ];
+    image,
+    fit,
+    alignment,
+    centerSlice,
+    repeat,
+    filterQuality,
+    invertColors,
+    isAntiAlias,
+  ];
 }
 
 /// Utility class for configuring [DecorationImage] properties.
@@ -112,8 +113,9 @@ class DecorationImageUtility<T extends StyleElement>
   late final repeat = ImageRepeatUtility((v) => only(repeat: v));
 
   /// Utility for defining [DecorationImageDto.filterQuality]
-  late final filterQuality =
-      FilterQualityUtility((v) => only(filterQuality: v));
+  late final filterQuality = FilterQualityUtility(
+    (v) => only(filterQuality: v),
+  );
 
   /// Utility for defining [DecorationImageDto.invertColors]
   late final invertColors = BoolUtility((v) => only(invertColors: v));
@@ -122,30 +124,6 @@ class DecorationImageUtility<T extends StyleElement>
   late final isAntiAlias = BoolUtility((v) => only(isAntiAlias: v));
 
   DecorationImageUtility(super.builder) : super(valueToDto: (v) => v.toDto());
-
-  /// Returns a new [DecorationImageDto] with the specified properties.
-  @override
-  T only({
-    ImageProvider<Object>? image,
-    BoxFit? fit,
-    AlignmentGeometry? alignment,
-    Rect? centerSlice,
-    ImageRepeat? repeat,
-    FilterQuality? filterQuality,
-    bool? invertColors,
-    bool? isAntiAlias,
-  }) {
-    return builder(DecorationImageDto(
-      image: image,
-      fit: fit,
-      alignment: alignment,
-      centerSlice: centerSlice,
-      repeat: repeat,
-      filterQuality: filterQuality,
-      invertColors: invertColors,
-      isAntiAlias: isAntiAlias,
-    ));
-  }
 
   T call({
     ImageProvider<Object>? image,
@@ -166,6 +144,32 @@ class DecorationImageUtility<T extends StyleElement>
       filterQuality: filterQuality,
       invertColors: invertColors,
       isAntiAlias: isAntiAlias,
+    );
+  }
+
+  /// Returns a new [DecorationImageDto] with the specified properties.
+  @override
+  T only({
+    ImageProvider<Object>? image,
+    BoxFit? fit,
+    AlignmentGeometry? alignment,
+    Rect? centerSlice,
+    ImageRepeat? repeat,
+    FilterQuality? filterQuality,
+    bool? invertColors,
+    bool? isAntiAlias,
+  }) {
+    return builder(
+      DecorationImageDto(
+        image: image,
+        fit: fit,
+        alignment: alignment,
+        centerSlice: centerSlice,
+        repeat: repeat,
+        filterQuality: filterQuality,
+        invertColors: invertColors,
+        isAntiAlias: isAntiAlias,
+      ),
     );
   }
 }

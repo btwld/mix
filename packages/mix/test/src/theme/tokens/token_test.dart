@@ -104,7 +104,14 @@ void main() {
 
 // Helper class for testing string token resolution
 class _StringMixable extends Mixable<String> {
-  const _StringMixable({required MixableToken<String> super.token});
+  final MixableToken<String> token;
+
+  const _StringMixable({required this.token});
+
+  @override
+  String resolve(MixContext mix) {
+    return mix.scope.getToken(token, mix.context);
+  }
 
   @override
   _StringMixable merge(_StringMixable? other) {

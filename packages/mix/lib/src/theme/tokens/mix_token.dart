@@ -5,7 +5,6 @@ import 'package:flutter/widgets.dart';
 import '../../internal/iterable_ext.dart';
 
 @immutable
-// ignore: avoid-unused-generics
 class MixableToken<T> {
   final String name;
   const MixableToken(this.name);
@@ -20,7 +19,10 @@ class MixableToken<T> {
   }
 
   @override
-  int get hashCode => name.hashCode;
+  String toString() => 'MixableToken<$T>($name)';
+
+  @override
+  int get hashCode => Object.hash(name, T);
 }
 
 /// Mixin that provides call() and resolve() methods for MixToken implementations

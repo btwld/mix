@@ -15,9 +15,7 @@ class MouseCursorDecoratorSpec
   /// Creates a copy of this [MouseCursorDecoratorSpec] but with the given fields
   /// replaced with the new values.
   @override
-  MouseCursorDecoratorSpec copyWith({
-    MouseCursor? mouseCursor,
-  }) {
+  MouseCursorDecoratorSpec copyWith({MouseCursor? mouseCursor}) {
     return MouseCursorDecoratorSpec(
       mouseCursor: mouseCursor ?? this.mouseCursor,
     );
@@ -53,16 +51,11 @@ class MouseCursorDecoratorSpec
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [MouseCursorDecoratorSpec] instances for equality.
   @override
-  List<Object?> get props => [
-        mouseCursor,
-      ];
+  List<Object?> get props => [mouseCursor];
 
   @override
   Widget build(Widget child) {
-    return MouseRegion(
-      cursor: mouseCursor ?? MouseCursor.defer,
-      child: child,
-    );
+    return MouseRegion(cursor: mouseCursor ?? MouseCursor.defer, child: child);
   }
 }
 
@@ -77,9 +70,7 @@ class MouseCursorDecoratorSpecAttribute
     extends WidgetModifierSpecAttribute<MouseCursorDecoratorSpec> {
   final MouseCursor? mouseCursor;
 
-  const MouseCursorDecoratorSpecAttribute({
-    this.mouseCursor,
-  });
+  const MouseCursorDecoratorSpecAttribute({this.mouseCursor});
 
   /// Resolves to [MouseCursorDecoratorSpec] using the provided [MixContext].
   ///
@@ -91,9 +82,7 @@ class MouseCursorDecoratorSpecAttribute
   /// ```
   @override
   MouseCursorDecoratorSpec resolve(MixContext mix) {
-    return MouseCursorDecoratorSpec(
-      mouseCursor: mouseCursor,
-    );
+    return MouseCursorDecoratorSpec(mouseCursor: mouseCursor);
   }
 
   /// Merges the properties of this [MouseCursorDecoratorSpecAttribute] with the properties of [other].
@@ -106,7 +95,8 @@ class MouseCursorDecoratorSpecAttribute
   /// to the values from this instance.
   @override
   MouseCursorDecoratorSpecAttribute merge(
-      MouseCursorDecoratorSpecAttribute? other) {
+    MouseCursorDecoratorSpecAttribute? other,
+  ) {
     if (other == null) return this;
 
     return MouseCursorDecoratorSpecAttribute(
@@ -119,9 +109,7 @@ class MouseCursorDecoratorSpecAttribute
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [MouseCursorDecoratorSpecAttribute] instances for equality.
   @override
-  List<Object?> get props => [
-        mouseCursor,
-      ];
+  List<Object?> get props => [mouseCursor];
 }
 
 /// A tween that interpolates between two [MouseCursorDecoratorSpec] instances.
@@ -129,10 +117,7 @@ class MouseCursorDecoratorSpecAttribute
 /// This class can be used in animations to smoothly transition between
 /// different [MouseCursorDecoratorSpec] specifications.
 class MouseCursorDecoratorSpecTween extends Tween<MouseCursorDecoratorSpec?> {
-  MouseCursorDecoratorSpecTween({
-    super.begin,
-    super.end,
-  });
+  MouseCursorDecoratorSpecTween({super.begin, super.end});
 
   @override
   MouseCursorDecoratorSpec lerp(double t) {

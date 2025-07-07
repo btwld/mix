@@ -41,13 +41,13 @@ class MixContext with Diagnosticable {
     required BuildContext context,
     required AttributeMap attributes,
     required this.animation,
-  })  : _attributes = attributes,
-        _scope = scope,
-        _context = context;
+  }) : _attributes = attributes,
+       _scope = scope,
+       _context = context;
 
   factory MixContext.create(BuildContext context, Style style) {
     final attributeList = applyContextToVisualAttributes(context, style);
-    final scope = MixScope.of(context);
+    final scope = MixScope.maybeOf(context) ?? const MixScopeData.empty();
 
     return MixContext._(
       scope: scope,
@@ -103,7 +103,7 @@ class MixContext with Diagnosticable {
     'final scaleModifiers = ComputedStyle.of(context).modifiers.whereType<TransformModifierSpec>().toList();',
   )
   List<WidgetModifierSpec<dynamic>>
-      modifiersOf<M extends WidgetModifierSpec<dynamic>>() {
+  modifiersOf<M extends WidgetModifierSpec<dynamic>>() {
     return modifiers.whereType<M>().toList();
   }
 

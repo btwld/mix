@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:mix_annotations/mix_annotations.dart' hide MixableToken;
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../attributes/animation/animated_config_dto.dart';
 import '../attributes/animation/animation_config.dart';

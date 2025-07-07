@@ -19,10 +19,7 @@ final class SizedBoxModifierSpec
   /// Creates a copy of this [SizedBoxModifierSpec] but with the given fields
   /// replaced with the new values.
   @override
-  SizedBoxModifierSpec copyWith({
-    double? width,
-    double? height,
-  }) {
+  SizedBoxModifierSpec copyWith({double? width, double? height}) {
     return SizedBoxModifierSpec(
       width: width ?? this.width,
       height: height ?? this.height,
@@ -53,24 +50,19 @@ final class SizedBoxModifierSpec
     );
   }
 
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('width', width, defaultValue: null));
+    properties.add(DiagnosticsProperty('height', height, defaultValue: null));
+  }
+
   /// The list of properties that constitute the state of this [SizedBoxModifierSpec].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [SizedBoxModifierSpec] instances for equality.
   @override
-  List<Object?> get props => [
-        width,
-        height,
-      ];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-        .add(DiagnosticsProperty('width', width, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('height', height, defaultValue: null));
-  }
+  List<Object?> get props => [width, height];
 
   @override
   Widget build(Widget child) {
@@ -91,10 +83,7 @@ class SizedBoxModifierSpecAttribute
   final double? width;
   final double? height;
 
-  const SizedBoxModifierSpecAttribute({
-    this.width,
-    this.height,
-  });
+  const SizedBoxModifierSpecAttribute({this.width, this.height});
 
   /// Resolves to [SizedBoxModifierSpec] using the provided [MixContext].
   ///
@@ -106,10 +95,7 @@ class SizedBoxModifierSpecAttribute
   /// ```
   @override
   SizedBoxModifierSpec resolve(MixContext mix) {
-    return SizedBoxModifierSpec(
-      width: width,
-      height: height,
-    );
+    return SizedBoxModifierSpec(width: width, height: height);
   }
 
   /// Merges the properties of this [SizedBoxModifierSpecAttribute] with the properties of [other].
@@ -130,22 +116,19 @@ class SizedBoxModifierSpecAttribute
     );
   }
 
-  /// The list of properties that constitute the state of this [SizedBoxModifierSpecAttribute].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [SizedBoxModifierSpecAttribute] instances for equality.
-  @override
-  List<Object?> get props => [
-        width,
-        height,
-      ];
-
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty('width', width, defaultValue: null));
     properties.add(DiagnosticsProperty('height', height, defaultValue: null));
   }
+
+  /// The list of properties that constitute the state of this [SizedBoxModifierSpecAttribute].
+  ///
+  /// This property is used by the [==] operator and the [hashCode] getter to
+  /// compare two [SizedBoxModifierSpecAttribute] instances for equality.
+  @override
+  List<Object?> get props => [width, height];
 }
 
 /// A tween that interpolates between two [SizedBoxModifierSpec] instances.
@@ -153,10 +136,7 @@ class SizedBoxModifierSpecAttribute
 /// This class can be used in animations to smoothly transition between
 /// different [SizedBoxModifierSpec] specifications.
 class SizedBoxModifierSpecTween extends Tween<SizedBoxModifierSpec?> {
-  SizedBoxModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  SizedBoxModifierSpecTween({super.begin, super.end});
 
   @override
   SizedBoxModifierSpec lerp(double t) {
@@ -182,8 +162,9 @@ final class SizedBoxModifierSpecUtility<T extends StyleElement>
 
   /// Utility for defining [SizedBoxModifierSpecAttribute.width]
   /// and [SizedBoxModifierSpecAttribute.height]
-  late final square =
-      DoubleUtility((value) => call(width: value, height: value));
+  late final square = DoubleUtility(
+    (value) => call(width: value, height: value),
+  );
 
   SizedBoxModifierSpecUtility(super.builder);
 

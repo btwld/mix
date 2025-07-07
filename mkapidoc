@@ -1,0 +1,3 @@
+#! /bin/sh -v
+rm -rf doc/api
+dart ../dartdoc/bin/dartdoc.dart --pretty-index-json

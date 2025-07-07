@@ -92,7 +92,7 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
   final SpaceDto? left;
   final SpaceDto? right;
 
-    @protected
+  @protected
   const EdgeInsetsDto.raw({super.top, super.bottom, this.left, this.right})
     : super.raw();
 
@@ -144,12 +144,7 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
   }
 
   @override
-  List<Object?> get props => [
-        top,
-        bottom,
-        left,
-        right,
-      ];
+  List<Object?> get props => [top, bottom, left, right];
 }
 
 final class EdgeInsetsDirectionalDto
@@ -167,7 +162,7 @@ final class EdgeInsetsDirectionalDto
 
   EdgeInsetsDirectionalDto.none() : this.all(0);
 
-    @protected
+  @protected
   const EdgeInsetsDirectionalDto.raw({
     super.top,
     super.bottom,
@@ -213,12 +208,7 @@ final class EdgeInsetsDirectionalDto
   }
 
   @override
-  List<Object?> get props => [
-        top,
-        bottom,
-        start,
-        end,
-      ];
+  List<Object?> get props => [top, bottom, start, end];
 }
 
 extension EdgeInsetsGeometryExt on EdgeInsetsGeometry {

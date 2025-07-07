@@ -17,7 +17,6 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import '../attributes/enum/enum_util.dart';
 import '../attributes/gap/space_dto.dart';
@@ -327,7 +326,18 @@ typedef PaddingSpec = PaddingModifierSpec;
 /// Deprecated extension for Color conversion
 extension ColorExt on Color {
   @Deprecated('Use Mixable.value(this) directly instead of toDto()')
-  ColorDto toDto() => Mixable.value(this);
+  ColorDto toDto() => switch (this) {
+    // Preserve MaterialColor type
+    MaterialColor() => Mixable<MaterialColor>.value(this as MaterialColor),
+    // Convert other Color types to Mixable<Color>
+    _ => Mixable.value(this),
+  };
+}
+
+/// Deprecated extension for MaterialColor conversion - preserves MaterialColor type
+extension MaterialColorExt on MaterialColor {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  Mixable<MaterialColor> toDto() => Mixable.value(this);
 }
 
 /// Deprecated extension for Radius conversion

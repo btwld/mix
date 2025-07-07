@@ -73,10 +73,7 @@ void main() {
       expect(customWidgetFinder, findsOneWidget);
 
       expect(
-        find.descendant(
-          of: customWidgetFinder,
-          matching: find.text('child'),
-        ),
+        find.descendant(of: customWidgetFinder, matching: find.text('child')),
         findsOneWidget,
       );
     });
@@ -111,151 +108,143 @@ void main() {
       expect(find.byType(RenderModifiers), findsOneWidget);
     });
 
-    testWidgets(
-      'Renders modifiers in the correct order with many overrides',
-      (tester) async {
-        await tester.pumpMaterialApp(
-          RenderModifiers(
-            modifiers: mixData.modifiers,
-            orderOfModifiers: const [
-              ClipOvalModifierSpecAttribute,
-              AspectRatioModifierSpecAttribute,
-              TransformModifierSpecAttribute,
-              OpacityModifierSpecAttribute,
-              VisibilityModifierSpecAttribute,
-            ],
-            mix: mixData,
-            child: const Text('child'),
-          ),
-        );
+    testWidgets('Renders modifiers in the correct order with many overrides', (
+      tester,
+    ) async {
+      await tester.pumpMaterialApp(
+        RenderModifiers(
+          modifiers: mixData.modifiers,
+          orderOfModifiers: const [
+            ClipOvalModifierSpecAttribute,
+            AspectRatioModifierSpecAttribute,
+            TransformModifierSpecAttribute,
+            OpacityModifierSpecAttribute,
+            VisibilityModifierSpecAttribute,
+          ],
+          mix: mixData,
+          child: const Text('child'),
+        ),
+      );
 
-        expect(find.byType(RenderModifiers), findsOneWidget);
+      expect(find.byType(RenderModifiers), findsOneWidget);
 
-        expect(
-          find.descendant(
-            of: find.byType(RenderModifiers),
-            matching: find.byType(ClipOval),
-          ),
-          findsOneWidget,
-        );
+      expect(
+        find.descendant(
+          of: find.byType(RenderModifiers),
+          matching: find.byType(ClipOval),
+        ),
+        findsOneWidget,
+      );
 
-        expect(
-          find.descendant(
-            of: find.byType(ClipOval),
-            matching: find.byType(AspectRatio),
-          ),
-          findsOneWidget,
-        );
+      expect(
+        find.descendant(
+          of: find.byType(ClipOval),
+          matching: find.byType(AspectRatio),
+        ),
+        findsOneWidget,
+      );
 
-        expect(
-          find.descendant(
-            of: find.byType(AspectRatio),
-            matching: find.byType(Transform),
-          ),
-          findsOneWidget,
-        );
+      expect(
+        find.descendant(
+          of: find.byType(AspectRatio),
+          matching: find.byType(Transform),
+        ),
+        findsOneWidget,
+      );
 
-        expect(
-          find.descendant(
-            of: find.byType(Transform),
-            matching: find.byType(Opacity),
-          ),
-          findsOneWidget,
-        );
+      expect(
+        find.descendant(
+          of: find.byType(Transform),
+          matching: find.byType(Opacity),
+        ),
+        findsOneWidget,
+      );
 
-        expect(
-          find.descendant(
-            of: find.byType(Opacity),
-            matching: find.byType(Padding),
-          ),
-          findsOneWidget,
-        );
+      expect(
+        find.descendant(
+          of: find.byType(Opacity),
+          matching: find.byType(Padding),
+        ),
+        findsOneWidget,
+      );
 
-        expect(
-          find.descendant(
-            of: find.byType(Padding),
-            matching: find.text('child'),
-          ),
-          findsOneWidget,
-        );
-      },
-    );
+      expect(
+        find.descendant(of: find.byType(Padding), matching: find.text('child')),
+        findsOneWidget,
+      );
+    });
 
     //  Allow for only a few overrides
-    testWidgets(
-      'Renders modifiers in the correct order with a few overrides',
-      (tester) async {
-        await tester.pumpMaterialApp(
-          RenderModifiers(
-            mix: mixData,
-            modifiers: mixData.modifiers,
-            orderOfModifiers: const [
-              ClipOvalModifierSpecAttribute,
-              AspectRatioModifierSpecAttribute
-            ],
-            child: const Text('child'),
-          ),
-        );
+    testWidgets('Renders modifiers in the correct order with a few overrides', (
+      tester,
+    ) async {
+      await tester.pumpMaterialApp(
+        RenderModifiers(
+          mix: mixData,
+          modifiers: mixData.modifiers,
+          orderOfModifiers: const [
+            ClipOvalModifierSpecAttribute,
+            AspectRatioModifierSpecAttribute,
+          ],
+          child: const Text('child'),
+        ),
+      );
 
-        expect(find.byType(RenderModifiers), findsOneWidget);
+      expect(find.byType(RenderModifiers), findsOneWidget);
 
-        expect(
-          find.descendant(
-            of: find.byType(RenderModifiers),
-            matching: find.byType(ClipOval),
-          ),
-          findsOneWidget,
-        );
+      expect(
+        find.descendant(
+          of: find.byType(RenderModifiers),
+          matching: find.byType(ClipOval),
+        ),
+        findsOneWidget,
+      );
 
-        expect(
-          find.descendant(
-            of: find.byType(ClipOval),
-            matching: find.byType(AspectRatio),
-          ),
-          findsOneWidget,
-        );
+      expect(
+        find.descendant(
+          of: find.byType(ClipOval),
+          matching: find.byType(AspectRatio),
+        ),
+        findsOneWidget,
+      );
 
-        expect(
-          find.descendant(
-            of: find.byType(AspectRatio),
-            matching: find.byType(Visibility),
-          ),
-          findsOneWidget,
-        );
+      expect(
+        find.descendant(
+          of: find.byType(AspectRatio),
+          matching: find.byType(Visibility),
+        ),
+        findsOneWidget,
+      );
 
-        expect(
-          find.descendant(
-            of: find.byType(Visibility),
-            matching: find.byType(Transform),
-          ),
-          findsOneWidget,
-        );
+      expect(
+        find.descendant(
+          of: find.byType(Visibility),
+          matching: find.byType(Transform),
+        ),
+        findsOneWidget,
+      );
 
-        expect(
-          find.descendant(
-            of: find.byType(Transform),
-            matching: find.byType(Opacity),
-          ),
-          findsOneWidget,
-        );
+      expect(
+        find.descendant(
+          of: find.byType(Transform),
+          matching: find.byType(Opacity),
+        ),
+        findsOneWidget,
+      );
 
-        expect(
-          find.descendant(
-            of: find.byType(Opacity),
-            matching: find.byType(Padding),
-          ),
-          findsOneWidget,
-        );
+      expect(
+        find.descendant(
+          of: find.byType(Opacity),
+          matching: find.byType(Padding),
+        ),
+        findsOneWidget,
+      );
 
-        expect(
-          find.descendant(
-            of: find.byType(Padding),
-            matching: find.text('child'),
-          ),
-          findsOneWidget,
-        );
-      },
-    );
+      expect(
+        find.descendant(of: find.byType(Padding), matching: find.text('child')),
+        findsOneWidget,
+      );
+    });
   });
 
   group('RenderAnimatedModifiers', () {
@@ -320,8 +309,9 @@ void main() {
       expect(tester.widget<SizedBox>(finderSizedBox).width, 0);
     });
 
-    testWidgets('Transition correctly when there is conditional specs',
-        (tester) async {
+    testWidgets('Transition correctly when there is conditional specs', (
+      tester,
+    ) async {
       gestureFinder() => find.byType(GestureDetector);
 
       await tester.pumpWidget(
@@ -357,8 +347,9 @@ void main() {
       await tester.pumpAndSettle(const Duration(milliseconds: 200));
     });
 
-    testWidgets('override default orderOfModifiers using MixScope',
-        (tester) async {
+    testWidgets('override default orderOfModifiers using MixScope', (
+      tester,
+    ) async {
       await tester.pumpWithMixScope(
         Box(
           style: Style(
@@ -401,7 +392,7 @@ void main() {
       (tester) async {
         const key = Key('box');
 
-        await tester.pumpWidget(
+        await tester.pumpStyledWidget(
           Box(
             style: Style(
               $with.scale(2.0),
@@ -413,13 +404,15 @@ void main() {
             child: Box(
               key: key,
               inherit: true,
-              child: Builder(builder: (context) {
-                final inheritedMix = Mix.maybeOf(context)!;
+              child: Builder(
+                builder: (context) {
+                  final inheritedMix = Mix.maybeOf(context)!;
 
-                expect(inheritedMix.attributes.length, 0);
+                  expect(inheritedMix.attributes.length, 0);
 
-                return const SizedBox();
-              }),
+                  return const SizedBox();
+                },
+              ),
             ),
           ),
         );
@@ -433,10 +426,7 @@ void main() {
         );
 
         expect(
-          find.descendant(
-            of: find.byKey(key),
-            matching: find.byType(Opacity),
-          ),
+          find.descendant(of: find.byKey(key), matching: find.byType(Opacity)),
           findsNothing,
         );
 
@@ -471,7 +461,7 @@ void main() {
       (tester) async {
         const key = Key('box');
 
-        await tester.pumpWidget(
+        await tester.pumpStyledWidget(
           Box(
             style: Style($box.color.red(), $box.height(100), $box.width(100)),
             key: key,
@@ -491,9 +481,7 @@ void main() {
 }
 
 class _TestableAnimatedModifiers extends StatefulWidget {
-  const _TestableAnimatedModifiers(
-    this.child,
-  );
+  const _TestableAnimatedModifiers(this.child);
 
   final Widget Function(bool) child;
 
@@ -514,9 +502,6 @@ class _TestableAnimatedModifiersState
 
   @override
   Widget build(BuildContext context) {
-    return Pressable(
-      onPress: _handleToggle,
-      child: widget.child(_isActive),
-    );
+    return Pressable(onPress: _handleToggle, child: widget.child(_isActive));
   }
 }

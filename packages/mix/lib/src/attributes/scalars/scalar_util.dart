@@ -67,7 +67,7 @@ final class AlignmentGeometryUtility<T extends StyleElement>
 final class AlignmentDirectionalUtility<T extends StyleElement>
     extends MixUtility<T, AlignmentDirectional> {
   const AlignmentDirectionalUtility(super.builder);
-  
+
   T only({double? y, double? start}) {
     return builder(AlignmentDirectional(start ?? 0, y ?? 0));
   }
@@ -432,7 +432,8 @@ final class CurveUtility<T extends StyleElement> extends MixUtility<T, Curve> {
   T call(Curve value) => builder(value);
 }
 
-final class OffsetUtility<T extends StyleElement> extends MixUtility<T, Offset> {
+final class OffsetUtility<T extends StyleElement>
+    extends MixUtility<T, Offset> {
   const OffsetUtility(super.builder);
 
   T as(Offset offset) => builder(offset);
@@ -452,7 +453,8 @@ final class OffsetUtility<T extends StyleElement> extends MixUtility<T, Offset> 
   }
 }
 
-final class RadiusUtility<T extends StyleElement> extends MixUtility<T, Radius> {
+final class RadiusUtility<T extends StyleElement>
+    extends MixUtility<T, Radius> {
   const RadiusUtility(super.builder);
 
   T call(double radius) => builder(Radius.circular(radius));
@@ -495,10 +497,14 @@ final class RectUtility<T extends StyleElement> extends MixUtility<T, Rect> {
   }
 
   /// Creates a [StyleElement] instance using the [Rect.fromCenter] constructor.
-  T fromCenter(
-      {required Offset center, required double width, required double height}) {
+  T fromCenter({
+    required Offset center,
+    required double width,
+    required double height,
+  }) {
     return builder(
-        Rect.fromCenter(center: center, width: width, height: height));
+      Rect.fromCenter(center: center, width: width, height: height),
+    );
   }
 
   /// Creates a [StyleElement] instance using the [Rect.fromPoints] constructor.
@@ -643,22 +649,35 @@ class TableBorderUtility<T extends StyleElement>
   const TableBorderUtility(super.builder);
 
   /// Creates a [StyleElement] instance using the [TableBorder.all] constructor.
-  T all(
-      {Color color = const Color(0xFF000000),
-      double width = 1.0,
-      BorderStyle style = BorderStyle.solid,
-      BorderRadius borderRadius = BorderRadius.zero}) {
-    return builder(TableBorder.all(
-        color: color, width: width, style: style, borderRadius: borderRadius));
+  T all({
+    Color color = const Color(0xFF000000),
+    double width = 1.0,
+    BorderStyle style = BorderStyle.solid,
+    BorderRadius borderRadius = BorderRadius.zero,
+  }) {
+    return builder(
+      TableBorder.all(
+        color: color,
+        width: width,
+        style: style,
+        borderRadius: borderRadius,
+      ),
+    );
   }
 
   /// Creates a [StyleElement] instance using the [TableBorder.symmetric] constructor.
-  T symmetric(
-      {BorderSide inside = BorderSide.none,
-      BorderSide outside = BorderSide.none,
-      BorderRadius borderRadius = BorderRadius.zero}) {
-    return builder(TableBorder.symmetric(
-        inside: inside, outside: outside, borderRadius: borderRadius));
+  T symmetric({
+    BorderSide inside = BorderSide.none,
+    BorderSide outside = BorderSide.none,
+    BorderRadius borderRadius = BorderRadius.zero,
+  }) {
+    return builder(
+      TableBorder.symmetric(
+        inside: inside,
+        outside: outside,
+        borderRadius: borderRadius,
+      ),
+    );
   }
 
   /// Creates a [StyleElement] instance with the specified TableBorder value.

@@ -21,55 +21,64 @@ void main() {
 
       expect(strutStyleUtility(), isA<UtilityTestAttribute>());
       expect(strutStyle.value, isA<StrutStyleDto>());
-      expect(strutStyle.value.fontFamily, 'Roboto');
-      expect(strutStyle.value.fontSize, 24.0);
-      expect(strutStyle.value.height, 2.0);
-      expect(strutStyle.value.leading, 1.0);
-      expect(strutStyle.value.fontWeight, FontWeight.bold);
-      expect(strutStyle.value.fontStyle, FontStyle.italic);
-      expect(strutStyle.value.forceStrutHeight, true);
+
+      final resolved = strutStyle.value.resolve(EmptyMixData);
+      expect(resolved.fontFamily, 'Roboto');
+      expect(resolved.fontSize, 24.0);
+      expect(resolved.height, 2.0);
+      expect(resolved.leading, 1.0);
+      expect(resolved.fontWeight, FontWeight.bold);
+      expect(resolved.fontStyle, FontStyle.italic);
+      expect(resolved.forceStrutHeight, true);
     });
 
     test('fontFamily', () {
       final strutStyle = strutStyleUtility.fontFamily('Roboto');
+      final resolved = strutStyle.value.resolve(EmptyMixData);
 
-      expect(strutStyle.value.fontFamily, 'Roboto');
+      expect(resolved.fontFamily, 'Roboto');
     });
 
     test('fontSize', () {
       final strutStyle = strutStyleUtility.fontSize(24.0);
+      final resolved = strutStyle.value.resolve(EmptyMixData);
 
-      expect(strutStyle.value.fontSize, 24.0);
+      expect(resolved.fontSize, 24.0);
     });
 
     test('height', () {
       final strutStyle = strutStyleUtility.height(2.0);
+      final resolved = strutStyle.value.resolve(EmptyMixData);
 
-      expect(strutStyle.value.height, 2.0);
+      expect(resolved.height, 2.0);
     });
 
     test('leading', () {
       final strutStyle = strutStyleUtility.leading(1.0);
+      final resolved = strutStyle.value.resolve(EmptyMixData);
 
-      expect(strutStyle.value.leading, 1.0);
+      expect(resolved.leading, 1.0);
     });
 
     test('fontWeight', () {
       final strutStyle = strutStyleUtility.fontWeight(FontWeight.bold);
+      final resolved = strutStyle.value.resolve(EmptyMixData);
 
-      expect(strutStyle.value.fontWeight, FontWeight.bold);
+      expect(resolved.fontWeight, FontWeight.bold);
     });
 
     test('fontStyle', () {
       final strutStyle = strutStyleUtility.fontStyle(FontStyle.italic);
+      final resolved = strutStyle.value.resolve(EmptyMixData);
 
-      expect(strutStyle.value.fontStyle, FontStyle.italic);
+      expect(resolved.fontStyle, FontStyle.italic);
     });
 
     test('forceStrutHeight', () {
       final strutStyle = strutStyleUtility.forceStrutHeight(true);
+      final resolved = strutStyle.value.resolve(EmptyMixData);
 
-      expect(strutStyle.value.forceStrutHeight, true);
+      expect(resolved.forceStrutHeight, true);
     });
 
     test('as', () {

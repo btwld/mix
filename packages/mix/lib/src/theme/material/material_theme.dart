@@ -1,14 +1,7 @@
-import 'package:flutter/material.dart';
-
 import '../mix/mix_theme.dart';
 import 'material_tokens.dart';
 
 const _md = MaterialTokens();
-
-extension on BuildContext {
-  TextTheme get text => Theme.of(this).textTheme;
-  ColorScheme get color => Theme.of(this).colorScheme;
-}
 
 final materialMixScope = MixScopeData.static(
   tokens: {

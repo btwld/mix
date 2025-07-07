@@ -22,7 +22,7 @@ void main() {
         fontStyle: FontStyle.italic,
         letterSpacing: 1.0,
         wordSpacing: 2.0,
-        fontVariations: [FontVariation('wght', 900)],
+        fontVariations: const [FontVariation('wght', 900)],
         textBaseline: TextBaseline.ideographic,
         decoration: TextDecoration.underline,
         decorationColor: Colors.blue,
@@ -37,7 +37,7 @@ void main() {
         fontStyle: FontStyle.normal,
         letterSpacing: 2.0,
         wordSpacing: 3.0,
-        fontVariations: [FontVariation('wght', 400)],
+        fontVariations: const [FontVariation('wght', 400)],
         textBaseline: TextBaseline.alphabetic,
         decoration: TextDecoration.lineThrough,
         decorationColor: Colors.red,
@@ -68,7 +68,7 @@ void main() {
         fontStyle: FontStyle.italic,
         letterSpacing: 1.0,
         wordSpacing: 2.0,
-        fontVariations: [FontVariation('wght', 900)],
+        fontVariations: const [FontVariation('wght', 900)],
         textBaseline: TextBaseline.ideographic,
         decoration: TextDecoration.underline,
         decorationColor: Colors.blue,
@@ -94,29 +94,29 @@ void main() {
     test('Equality holds when all attributes are the same', () {
       final attr1 = TextStyleDto(
         color: Colors.red,
-        fontVariations: [],
+        fontVariations: const [],
       );
       final attr2 = TextStyleDto(
         color: Colors.red,
-        fontVariations: [],
+        fontVariations: const [],
       );
       expect(attr1, attr2);
     });
     test('Equality fails when attributes are different', () {
       final attr1 = TextStyleDto(
         color: Colors.red,
-        fontVariations: [],
+        fontVariations: const [],
       );
       final attr2 = TextStyleDto(
         color: Colors.blue,
-        fontVariations: [],
+        fontVariations: const [],
       );
       expect(attr1, isNot(attr2));
     });
   });
   test('TextStyleDto.token creates a TextStyleDto with a token', () {
     const token = MixableToken<TextStyle>('test_token');
-    final attr = TextStyleDto.token(token);
+    const attr = TextStyleDto.token(token);
     expect((attr as TokenTextStyleDto).token, token);
   });
 

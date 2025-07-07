@@ -34,10 +34,17 @@ final class IntrinsicHeightModifierSpec
   /// different [IntrinsicHeightModifierSpec] configurations.
   @override
   IntrinsicHeightModifierSpec lerp(
-      IntrinsicHeightModifierSpec? other, double t) {
+    IntrinsicHeightModifierSpec? other,
+    double t,
+  ) {
     if (other == null) return this;
 
     return const IntrinsicHeightModifierSpec();
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
   }
 
   /// The list of properties that constitute the state of this [IntrinsicHeightModifierSpec].
@@ -46,11 +53,6 @@ final class IntrinsicHeightModifierSpec
   /// compare two [IntrinsicHeightModifierSpec] instances for equality.
   @override
   List<Object?> get props => [];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-  }
 
   @override
   Widget build(Widget child) {
@@ -90,17 +92,17 @@ final class IntrinsicWidthModifierSpec
     return const IntrinsicWidthModifierSpec();
   }
 
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+  }
+
   /// The list of properties that constitute the state of this [IntrinsicWidthModifierSpec].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [IntrinsicWidthModifierSpec] instances for equality.
   @override
   List<Object?> get props => [];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-  }
 
   @override
   Widget build(Widget child) {
@@ -144,10 +146,16 @@ class IntrinsicHeightModifierSpecAttribute
   /// to the values from this instance.
   @override
   IntrinsicHeightModifierSpecAttribute merge(
-      IntrinsicHeightModifierSpecAttribute? other) {
+    IntrinsicHeightModifierSpecAttribute? other,
+  ) {
     if (other == null) return this;
 
     return other;
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
   }
 
   /// The list of properties that constitute the state of this [IntrinsicHeightModifierSpecAttribute].
@@ -156,11 +164,6 @@ class IntrinsicHeightModifierSpecAttribute
   /// compare two [IntrinsicHeightModifierSpecAttribute] instances for equality.
   @override
   List<Object?> get props => [];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-  }
 }
 
 /// A tween that interpolates between two [IntrinsicHeightModifierSpec] instances.
@@ -169,10 +172,7 @@ class IntrinsicHeightModifierSpecAttribute
 /// different [IntrinsicHeightModifierSpec] specifications.
 class IntrinsicHeightModifierSpecTween
     extends Tween<IntrinsicHeightModifierSpec?> {
-  IntrinsicHeightModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  IntrinsicHeightModifierSpecTween({super.begin, super.end});
 
   @override
   IntrinsicHeightModifierSpec lerp(double t) {
@@ -224,10 +224,16 @@ class IntrinsicWidthModifierSpecAttribute
   /// to the values from this instance.
   @override
   IntrinsicWidthModifierSpecAttribute merge(
-      IntrinsicWidthModifierSpecAttribute? other) {
+    IntrinsicWidthModifierSpecAttribute? other,
+  ) {
     if (other == null) return this;
 
     return other;
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
   }
 
   /// The list of properties that constitute the state of this [IntrinsicWidthModifierSpecAttribute].
@@ -236,11 +242,6 @@ class IntrinsicWidthModifierSpecAttribute
   /// compare two [IntrinsicWidthModifierSpecAttribute] instances for equality.
   @override
   List<Object?> get props => [];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-  }
 }
 
 /// A tween that interpolates between two [IntrinsicWidthModifierSpec] instances.
@@ -249,10 +250,7 @@ class IntrinsicWidthModifierSpecAttribute
 /// different [IntrinsicWidthModifierSpec] specifications.
 class IntrinsicWidthModifierSpecTween
     extends Tween<IntrinsicWidthModifierSpec?> {
-  IntrinsicWidthModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  IntrinsicWidthModifierSpecTween({super.begin, super.end});
 
   @override
   IntrinsicWidthModifierSpec lerp(double t) {

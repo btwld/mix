@@ -53,15 +53,29 @@ final class FractionallySizedBoxModifierSpec
   /// different [FractionallySizedBoxModifierSpec] configurations.
   @override
   FractionallySizedBoxModifierSpec lerp(
-      FractionallySizedBoxModifierSpec? other, double t) {
+    FractionallySizedBoxModifierSpec? other,
+    double t,
+  ) {
     if (other == null) return this;
 
     return FractionallySizedBoxModifierSpec(
-      widthFactor:
-          MixHelpers.lerpDouble(widthFactor, other.widthFactor, t),
-      heightFactor:
-          MixHelpers.lerpDouble(heightFactor, other.heightFactor, t),
+      widthFactor: MixHelpers.lerpDouble(widthFactor, other.widthFactor, t),
+      heightFactor: MixHelpers.lerpDouble(heightFactor, other.heightFactor, t),
       alignment: AlignmentGeometry.lerp(alignment, other.alignment, t),
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(
+      DiagnosticsProperty('widthFactor', widthFactor, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('heightFactor', heightFactor, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('alignment', alignment, defaultValue: null),
     );
   }
 
@@ -70,22 +84,7 @@ final class FractionallySizedBoxModifierSpec
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [FractionallySizedBoxModifierSpec] instances for equality.
   @override
-  List<Object?> get props => [
-        widthFactor,
-        heightFactor,
-        alignment,
-      ];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('widthFactor', widthFactor,
-        defaultValue: null));
-    properties.add(DiagnosticsProperty('heightFactor', heightFactor,
-        defaultValue: null));
-    properties.add(
-        DiagnosticsProperty('alignment', alignment, defaultValue: null));
-  }
+  List<Object?> get props => [widthFactor, heightFactor, alignment];
 
   @override
   Widget build(Widget child) {
@@ -145,7 +144,8 @@ class FractionallySizedBoxModifierSpecAttribute
   /// to the values from this instance.
   @override
   FractionallySizedBoxModifierSpecAttribute merge(
-      FractionallySizedBoxModifierSpecAttribute? other) {
+    FractionallySizedBoxModifierSpecAttribute? other,
+  ) {
     if (other == null) return this;
 
     return FractionallySizedBoxModifierSpecAttribute(
@@ -155,27 +155,26 @@ class FractionallySizedBoxModifierSpecAttribute
     );
   }
 
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(
+      DiagnosticsProperty('widthFactor', widthFactor, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('heightFactor', heightFactor, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('alignment', alignment, defaultValue: null),
+    );
+  }
+
   /// The list of properties that constitute the state of this [FractionallySizedBoxModifierSpecAttribute].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [FractionallySizedBoxModifierSpecAttribute] instances for equality.
   @override
-  List<Object?> get props => [
-        widthFactor,
-        heightFactor,
-        alignment,
-      ];
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-        DiagnosticsProperty('widthFactor', widthFactor, defaultValue: null));
-    properties.add(
-        DiagnosticsProperty('heightFactor', heightFactor, defaultValue: null));
-    properties
-        .add(DiagnosticsProperty('alignment', alignment, defaultValue: null));
-  }
+  List<Object?> get props => [widthFactor, heightFactor, alignment];
 }
 
 /// A tween that interpolates between two [FractionallySizedBoxModifierSpec] instances.
@@ -184,10 +183,7 @@ class FractionallySizedBoxModifierSpecAttribute
 /// different [FractionallySizedBoxModifierSpec] specifications.
 class FractionallySizedBoxModifierSpecTween
     extends Tween<FractionallySizedBoxModifierSpec?> {
-  FractionallySizedBoxModifierSpecTween({
-    super.begin,
-    super.end,
-  });
+  FractionallySizedBoxModifierSpecTween({super.begin, super.end});
 
   @override
   FractionallySizedBoxModifierSpec lerp(double t) {

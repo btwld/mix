@@ -9,7 +9,7 @@ void main() {
   group('TextSpecAttribute', () {
     final textSpecAttribute = TextSpecAttribute(
       overflow: TextOverflow.ellipsis,
-      strutStyle: const StrutStyleDto(
+      strutStyle: StrutStyleDto(
         fontFamily: 'Roboto',
         fontSize: 12,
         fontWeight: FontWeight.w500,
@@ -52,7 +52,7 @@ void main() {
     test('merge', () {
       final other = TextSpecAttribute(
         overflow: TextOverflow.clip,
-        strutStyle: const StrutStyleDto(
+        strutStyle: StrutStyleDto(
           fontFamily: 'Helvetica',
           fontSize: 14,
           fontWeight: FontWeight.w500,
@@ -77,9 +77,10 @@ void main() {
       final merged = textSpecAttribute.merge(other);
 
       expect(merged.overflow, TextOverflow.clip);
-      expect(merged.strutStyle!.fontFamily, 'Helvetica');
-      expect(merged.strutStyle!.fontSize, 14);
-      expect(merged.strutStyle!.fontWeight, FontWeight.w500);
+      final resolvedStrutStyle = merged.strutStyle!.resolve(EmptyMixData);
+      expect(resolvedStrutStyle.fontFamily, 'Helvetica');
+      expect(resolvedStrutStyle.fontSize, 14);
+      expect(resolvedStrutStyle.fontWeight, FontWeight.w500);
       expect(merged.textAlign, TextAlign.center);
       expect(merged.textScaleFactor, 1.5);
       expect(merged.maxLines, 2);
