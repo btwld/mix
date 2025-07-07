@@ -7,9 +7,9 @@ import '../../helpers/testing_utils.dart';
 
 void main() {
   group('TextSpecAttribute', () {
-    const textSpecAttribute = TextSpecAttribute(
+    final textSpecAttribute = TextSpecAttribute(
       overflow: TextOverflow.ellipsis,
-      strutStyle: StrutStyleDto(
+      strutStyle: const StrutStyleDto(
         fontFamily: 'Roboto',
         fontSize: 12,
         fontWeight: FontWeight.w500,
@@ -23,7 +23,7 @@ void main() {
         fontFamily: 'Roboto',
       ),
       textWidthBasis: TextWidthBasis.longestLine,
-      textHeightBehavior: TextHeightBehaviorDto(
+      textHeightBehavior: const TextHeightBehaviorDto(
         applyHeightToFirstAscent: true,
         applyHeightToLastDescent: true,
       ),
@@ -50,9 +50,9 @@ void main() {
 
     //  merge
     test('merge', () {
-      const other = TextSpecAttribute(
+      final other = TextSpecAttribute(
         overflow: TextOverflow.clip,
-        strutStyle: StrutStyleDto(
+        strutStyle: const StrutStyleDto(
           fontFamily: 'Helvetica',
           fontSize: 14,
           fontWeight: FontWeight.w500,
@@ -66,7 +66,7 @@ void main() {
           fontFamily: 'Helvetica',
         ),
         textWidthBasis: TextWidthBasis.longestLine,
-        textHeightBehavior: TextHeightBehaviorDto(
+        textHeightBehavior: const TextHeightBehaviorDto(
           applyHeightToFirstAscent: false,
           applyHeightToLastDescent: false,
         ),

@@ -11,7 +11,7 @@ abstract base class BaseColorUtility<T extends StyleElement>
     extends NewMixUtility<T, Color> {
   const BaseColorUtility(super.builder);
 
-  T _buildColor(Color color) => call(color);
+  T _buildColor(Color color) => builder(Mixable.value(color));
 }
 
 /// Mixin that provides color directive methods
@@ -104,7 +104,12 @@ final class ColorUtility<T extends StyleElement> extends BaseColorUtility<T>
     with ColorDirectiveMixin<T>, MaterialColorsMixin<T>, BasicColorsMixin<T> {
   ColorUtility(super.builder);
 
-  T ref(MixableToken<Color> ref) => builder(Mixable.token(ref));
+  /// @deprecated Use [token] instead
+  @Deprecated('Use token() instead. Will be removed in a future version.')
+  T ref(MixableToken<Color> ref) => token(ref);
+
+  @override
+  T token(MixableToken<Color> token) => builder(Mixable.token(token));
 
   @override
   T call(Color value) => _buildColor(value);

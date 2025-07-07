@@ -1,21 +1,73 @@
-// ignore_for_file: avoid-importing-entrypoint-exports, avoid-unused-ignores, prefer_relative_imports
+// ignore_for_file: prefer_relative_imports,avoid-importing-entrypoint-exports
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:mix/mix.dart';
 
-import '../../../mix.dart';
+import '../../internal/diagnostic_properties_builder_ext.dart';
 
-final class StrutStyleDto extends Mixable<StrutStyle> {
-  final String? fontFamily;
-  final List<String>? fontFamilyFallback;
+/// A Data transfer object that represents a [StrutStyle] value.
+/// Can be either a direct value or a token reference.
+@immutable
+sealed class StrutStyleDto extends Mixable<StrutStyle> with Diagnosticable {
+  const StrutStyleDto._();
 
-  final double? fontSize;
-  final FontWeight? fontWeight;
-  final FontStyle? fontStyle;
-  final double? height;
-  final double? leading;
-  final bool? forceStrutHeight;
+  factory StrutStyleDto.value(StrutStyle value) = ValueStrutStyleDto.value;
+  const factory StrutStyleDto.token(MixableToken<StrutStyle> token) =
+      TokenStrutStyleDto;
+  const factory StrutStyleDto.composite(List<StrutStyleDto> items) =
+      _CompositeStrutStyleDto;
 
-  const StrutStyleDto({
+  factory StrutStyleDto({
+    String? fontFamily,
+    List<String>? fontFamilyFallback,
+    double? fontSize,
+    FontWeight? fontWeight,
+    FontStyle? fontStyle,
+    double? height,
+    double? leading,
+    bool? forceStrutHeight,
+  }) {
+    return ValueStrutStyleDto(
+      fontFamily: Mixable.maybeValue(fontFamily),
+      fontFamilyFallback: fontFamilyFallback?.map(Mixable.value).toList(),
+      fontSize: Mixable.maybeValue(fontSize),
+      fontWeight: Mixable.maybeValue(fontWeight),
+      fontStyle: Mixable.maybeValue(fontStyle),
+      height: Mixable.maybeValue(height),
+      leading: Mixable.maybeValue(leading),
+      forceStrutHeight: Mixable.maybeValue(forceStrutHeight),
+    );
+  }
+
+  // Merges this StrutStyleDto with another one
+  @override
+  StrutStyleDto merge(StrutStyleDto? other) {
+    if (other == null) return this;
+
+    return switch ((this, other)) {
+      (ValueStrutStyleDto a, ValueStrutStyleDto b) => a._mergeWith(b),
+      (_CompositeStrutStyleDto(:var items), _) => StrutStyleDto.composite([
+        ...items,
+        other,
+      ]),
+      (_, _CompositeStrutStyleDto()) => other,
+      _ => StrutStyleDto.composite([this, other]),
+    };
+  }
+}
+
+final class ValueStrutStyleDto extends StrutStyleDto {
+  final Mixable<String>? fontFamily;
+  final List<Mixable<String>>? fontFamilyFallback;
+  final Mixable<double>? fontSize;
+  final Mixable<FontWeight>? fontWeight;
+  final Mixable<FontStyle>? fontStyle;
+  final Mixable<double>? height;
+  final Mixable<double>? leading;
+  final Mixable<bool>? forceStrutHeight;
+
+  const ValueStrutStyleDto({
     this.fontFamily,
     this.fontFamilyFallback,
     this.fontSize,
@@ -24,61 +76,67 @@ final class StrutStyleDto extends Mixable<StrutStyle> {
     this.height,
     this.leading,
     this.forceStrutHeight,
-  });
+  }) : super._();
 
-  /// Resolves to [StrutStyle] using the provided [MixContext].
-  ///
-  /// If a property is null in the [MixContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
-  ///
-  /// ```dart
-  /// final strutStyle = StrutStyleDto(...).resolve(mix);
-  /// ```
+  factory ValueStrutStyleDto.value(StrutStyle strutStyle) {
+    return ValueStrutStyleDto(
+      fontFamily: Mixable.maybeValue(strutStyle.fontFamily),
+      fontFamilyFallback: strutStyle.fontFamilyFallback
+          ?.map(Mixable.value)
+          .toList(),
+      fontSize: Mixable.maybeValue(strutStyle.fontSize),
+      fontWeight: Mixable.maybeValue(strutStyle.fontWeight),
+      fontStyle: Mixable.maybeValue(strutStyle.fontStyle),
+      height: Mixable.maybeValue(strutStyle.height),
+      leading: Mixable.maybeValue(strutStyle.leading),
+      forceStrutHeight: Mixable.maybeValue(strutStyle.forceStrutHeight),
+    );
+  }
+
+  ValueStrutStyleDto _mergeWith(ValueStrutStyleDto other) {
+    return ValueStrutStyleDto(
+      fontFamily: fontFamily?.merge(other.fontFamily) ?? other.fontFamily,
+      fontFamilyFallback: other.fontFamilyFallback ?? fontFamilyFallback,
+      fontSize: fontSize?.merge(other.fontSize) ?? other.fontSize,
+      fontWeight: fontWeight?.merge(other.fontWeight) ?? other.fontWeight,
+      fontStyle: fontStyle?.merge(other.fontStyle) ?? other.fontStyle,
+      height: height?.merge(other.height) ?? other.height,
+      leading: leading?.merge(other.leading) ?? other.leading,
+      forceStrutHeight:
+          forceStrutHeight?.merge(other.forceStrutHeight) ??
+          other.forceStrutHeight,
+    );
+  }
+
   @override
   StrutStyle resolve(MixContext mix) {
     return StrutStyle(
-      fontFamily: fontFamily,
-      fontFamilyFallback: fontFamilyFallback,
-      fontSize: fontSize,
-      height: height,
-      leading: leading,
-      fontWeight: fontWeight,
-      fontStyle: fontStyle,
-      forceStrutHeight: forceStrutHeight,
+      fontFamily: fontFamily?.resolve(mix),
+      fontFamilyFallback: fontFamilyFallback
+          ?.map((f) => f.resolve(mix))
+          .toList(),
+      fontSize: fontSize?.resolve(mix),
+      height: height?.resolve(mix),
+      leading: leading?.resolve(mix),
+      fontWeight: fontWeight?.resolve(mix),
+      fontStyle: fontStyle?.resolve(mix),
+      forceStrutHeight: forceStrutHeight?.resolve(mix),
     );
   }
 
-  /// Merges the properties of this [StrutStyleDto] with the properties of [other].
-  ///
-  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [StrutStyleDto] with the properties of [other] taking precedence over
-  /// the corresponding properties of this instance.
-  ///
-  /// Properties from [other] that are null will fall back
-  /// to the values from this instance.
   @override
-  StrutStyleDto merge(StrutStyleDto? other) {
-    if (other == null) return this;
-
-    return StrutStyleDto(
-      fontFamily: other.fontFamily ?? fontFamily,
-      fontFamilyFallback: MixHelpers.mergeList(
-        fontFamilyFallback,
-        other.fontFamilyFallback,
-      ),
-      fontSize: other.fontSize ?? fontSize,
-      fontWeight: other.fontWeight ?? fontWeight,
-      fontStyle: other.fontStyle ?? fontStyle,
-      height: other.height ?? height,
-      leading: other.leading ?? leading,
-      forceStrutHeight: other.forceStrutHeight ?? forceStrutHeight,
-    );
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.addUsingDefault('fontFamily', fontFamily);
+    properties.addUsingDefault('fontFamilyFallback', fontFamilyFallback);
+    properties.addUsingDefault('fontSize', fontSize);
+    properties.addUsingDefault('fontWeight', fontWeight);
+    properties.addUsingDefault('fontStyle', fontStyle);
+    properties.addUsingDefault('height', height);
+    properties.addUsingDefault('leading', leading);
+    properties.addUsingDefault('forceStrutHeight', forceStrutHeight);
   }
 
-  /// The list of properties that constitute the state of this [StrutStyleDto].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [StrutStyleDto] instances for equality.
   @override
   List<Object?> get props => [
     fontFamily,
@@ -92,107 +150,61 @@ final class StrutStyleDto extends Mixable<StrutStyle> {
   ];
 }
 
-/// Utility class for configuring [StrutStyle] properties.
-///
-/// This class provides methods to set individual properties of a [StrutStyle].
-/// Use the methods of this class to configure specific properties of a [StrutStyle].
-class StrutStyleUtility<T extends StyleElement>
-    extends DtoUtility<T, StrutStyleDto, StrutStyle> {
-  /// Utility for defining [StrutStyleDto.fontFamily]
-  late final fontFamily = FontFamilyUtility((v) => only(fontFamily: v));
+final class TokenStrutStyleDto extends StrutStyleDto {
+  final MixableToken<StrutStyle> token;
 
-  /// Utility for defining [StrutStyleDto.fontFamilyFallback]
-  late final fontFamilyFallback =
-      ListUtility<T, String>((v) => only(fontFamilyFallback: v));
+  const TokenStrutStyleDto(this.token) : super._();
 
-  /// Utility for defining [StrutStyleDto.fontSize]
-  late final fontSize = FontSizeUtility((v) => only(fontSize: v));
-
-  /// Utility for defining [StrutStyleDto.fontWeight]
-  late final fontWeight = FontWeightUtility((v) => only(fontWeight: v));
-
-  /// Utility for defining [StrutStyleDto.fontStyle]
-  late final fontStyle = FontStyleUtility((v) => only(fontStyle: v));
-
-  /// Utility for defining [StrutStyleDto.height]
-  late final height = DoubleUtility((v) => only(height: v));
-
-  /// Utility for defining [StrutStyleDto.leading]
-  late final leading = DoubleUtility((v) => only(leading: v));
-
-  /// Utility for defining [StrutStyleDto.forceStrutHeight]
-  late final forceStrutHeight = BoolUtility((v) => only(forceStrutHeight: v));
-
-  StrutStyleUtility(super.builder) : super(valueToDto: (v) => v.toDto());
-
-  /// Returns a new [StrutStyleDto] with the specified properties.
   @override
-  T only({
-    String? fontFamily,
-    List<String>? fontFamilyFallback,
-    double? fontSize,
-    FontWeight? fontWeight,
-    FontStyle? fontStyle,
-    double? height,
-    double? leading,
-    bool? forceStrutHeight,
-  }) {
-    return builder(StrutStyleDto(
-      fontFamily: fontFamily,
-      fontFamilyFallback: fontFamilyFallback,
-      fontSize: fontSize,
-      fontWeight: fontWeight,
-      fontStyle: fontStyle,
-      height: height,
-      leading: leading,
-      forceStrutHeight: forceStrutHeight,
-    ));
+  StrutStyle resolve(MixContext mix) {
+    return mix.scope.getToken(token, mix.context);
   }
 
-  T call({
-    String? fontFamily,
-    List<String>? fontFamilyFallback,
-    double? fontSize,
-    FontWeight? fontWeight,
-    FontStyle? fontStyle,
-    double? height,
-    double? leading,
-    bool? forceStrutHeight,
-  }) {
-    return only(
-      fontFamily: fontFamily,
-      fontFamilyFallback: fontFamilyFallback,
-      fontSize: fontSize,
-      fontWeight: fontWeight,
-      fontStyle: fontStyle,
-      height: height,
-      leading: leading,
-      forceStrutHeight: forceStrutHeight,
-    );
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('token', token.name));
   }
+
+  @override
+  List<Object?> get props => [token];
 }
 
-/// Extension methods to convert [StrutStyle] to [StrutStyleDto].
-extension StrutStyleMixExt on StrutStyle {
-  /// Converts this [StrutStyle] to a [StrutStyleDto].
-  StrutStyleDto toDto() {
-    return StrutStyleDto(
-      fontFamily: fontFamily,
-      fontFamilyFallback: fontFamilyFallback,
-      fontSize: fontSize,
-      fontWeight: fontWeight,
-      fontStyle: fontStyle,
-      height: height,
-      leading: leading,
-      forceStrutHeight: forceStrutHeight,
-    );
+@immutable
+class _CompositeStrutStyleDto extends StrutStyleDto {
+  final List<StrutStyleDto> items;
+
+  const _CompositeStrutStyleDto(this.items) : super._();
+
+  @override
+  StrutStyle resolve(MixContext mix) {
+    if (items.isEmpty) return const StrutStyle();
+
+    // Process all items as DTOs
+    ValueStrutStyleDto? mergedDto;
+
+    for (final item in items) {
+      final currentDto = switch (item) {
+        ValueStrutStyleDto() => item,
+        TokenStrutStyleDto() => ValueStrutStyleDto.value(item.resolve(mix)),
+        _CompositeStrutStyleDto() => ValueStrutStyleDto.value(
+          item.resolve(mix),
+        ),
+      };
+
+      // Merge with accumulated result
+      mergedDto = mergedDto?._mergeWith(currentDto) ?? currentDto;
+    }
+
+    // Final resolution
+    return mergedDto?.resolve(mix) ?? const StrutStyle();
   }
+
+  @override
+  List<Object?> get props => [items];
 }
 
-/// Extension methods to convert List<[StrutStyle]> to List<[StrutStyleDto]>.
-extension ListStrutStyleMixExt on List<StrutStyle> {
-  /// Converts this List<[StrutStyle]> to a List<[StrutStyleDto]>.
-  List<StrutStyleDto> toDto() {
-    return map((e) => e.toDto()).toList();
-  }
+// Extension for easy conversion
+extension StrutStyleExt on StrutStyle {
+  StrutStyleDto toDto() => StrutStyleDto.value(this);
 }

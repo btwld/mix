@@ -138,7 +138,7 @@ void main() {
       expect(attr.clipBehavior, Clip.antiAlias);
       expect(attr.gap, const SpaceDto.value(10));
 
-      expect(attr.modifiers?.value.first,
+      expect(attr.modifiers?.modifiers.first,
           const OpacityModifierSpecAttribute(opacity: 0.5));
 
       final style = Style(util);
@@ -155,7 +155,7 @@ void main() {
       expect(flexAttribute?.clipBehavior, Clip.antiAlias);
       expect(flexAttribute?.gap, const SpaceDto.value(10));
 
-      expect(flexAttribute?.modifiers?.value.first,
+      expect(flexAttribute?.modifiers?.modifiers.first,
           const OpacityModifierSpecAttribute(opacity: 0.5));
 
       final mixData = style.of(MockBuildContext());

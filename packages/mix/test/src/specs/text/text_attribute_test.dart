@@ -6,7 +6,7 @@ import '../../../helpers/testing_utils.dart';
 
 void main() {
   group('TextSpecAttribute', () {
-    const textSpecAttribute = TextSpecAttribute(
+    final textSpecAttribute = TextSpecAttribute(
       overflow: TextOverflow.ellipsis,
       strutStyle: StrutStyleDto(
         fontFamily: 'Roboto',
@@ -49,7 +49,7 @@ void main() {
 
     //  merge
     test('merge', () {
-      const other = TextSpecAttribute(
+      final other = TextSpecAttribute(
         overflow: TextOverflow.clip,
         strutStyle: StrutStyleDto(
           fontFamily: 'Helvetica',

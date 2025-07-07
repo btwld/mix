@@ -97,16 +97,10 @@ void main() {
 
   group('TextStyleDto with composite', () {
     test('composite resolution works', () {
-      const dto1 = TextStyleDto(
-        fontSize: Mixable<double>.value(12),
-        color: Mixable.value(Colors.red),
-      );
-      const dto2 = TextStyleDto(
-        fontSize: Mixable<double>.value(16),
-        fontWeight: Mixable<FontWeight>.value(FontWeight.bold),
-      );
+      final dto1 = TextStyleDto(fontSize: 12, color: Colors.red);
+      final dto2 = TextStyleDto(fontSize: 16, fontWeight: FontWeight.bold);
 
-      const composite = TextStyleDto.composite([dto1, dto2]);
+      final composite = TextStyleDto.composite([dto1, dto2]);
       final resolved = composite.resolve(createMixContext());
 
       expect(resolved.fontSize, 16); // Last value wins
@@ -121,7 +115,7 @@ void main() {
         color: Colors.green,
       );
 
-      final dto = TextStyleDto.fromValue(style);
+      final dto = TextStyleDto.value(style);
       final resolved = dto.resolve(createMixContext());
 
       expect(resolved.fontSize, 14);

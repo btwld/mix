@@ -8,7 +8,7 @@ void main() {
   group('ModifiersDataDto', () {
     test('should create an instance with default values', () {
       const dto = WidgetModifiersConfigDto([]);
-      expect(dto.value, isEmpty);
+      expect(dto.modifiers, isEmpty);
     });
 
     test('should create an instance with provided values', () {
@@ -16,15 +16,15 @@ void main() {
       const modifier2 = TestModifierSpecAttribute();
       // ignore: equal_elements_in_set
       const dto = WidgetModifiersConfigDto([modifier1, modifier2]);
-      expect(dto.value, contains(modifier1));
+      expect(dto.modifiers, contains(modifier1));
     });
 
     test('should merge with another instance', () {
       const dto1 = WidgetModifiersConfigDto([TestModifierSpecAttribute()]);
       const dto2 = WidgetModifiersConfigDto([TestModifierSpecAttribute(2)]);
       final merged = dto1.merge(dto2);
-      expect(merged.value, hasLength(1));
-      expect(merged.value.first, const TestModifierSpecAttribute(2));
+      expect(merged.modifiers, hasLength(1));
+      expect(merged.modifiers.first, const TestModifierSpecAttribute(2));
     });
 
     test('should resolve to a ModifiersData instance', () {

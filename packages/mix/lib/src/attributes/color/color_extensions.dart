@@ -55,6 +55,15 @@ extension ColorExtUtilities on Color {
 
     return hsl.withSaturation(saturation).toColor();
   }
+
+  Color greyscale() => desaturate(100);
+
+  Color complement() {
+    final hsl = HSLColor.fromColor(this);
+    final hue = (hsl.hue + 180) % 360;
+
+    return hsl.withHue(hue).toColor();
+  }
 }
 
 double _clamp(double val) => math.min(1.0, math.max(0.0, val));

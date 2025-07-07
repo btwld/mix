@@ -9,6 +9,7 @@ import '../../attributes/modifiers/widget_modifiers_config_dto.dart';
 import '../../attributes/modifiers/widget_modifiers_util.dart';
 import '../../attributes/scalars/scalar_util.dart';
 import '../../attributes/strut_style/strut_style_dto.dart';
+import '../../attributes/strut_style/strut_style_util.dart';
 import '../../attributes/text_height_behavior/text_height_behavior_dto.dart';
 import '../../attributes/text_style/text_style_dto.dart';
 import '../../attributes/text_style/text_style_util.dart';

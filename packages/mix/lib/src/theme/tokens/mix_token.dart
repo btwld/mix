@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import '../../internal/iterable_ext.dart';
 
 @immutable
+// ignore: avoid-unused-generics
 class MixableToken<T> {
   final String name;
   const MixableToken(this.name);

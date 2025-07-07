@@ -12,14 +12,20 @@ class MockBuildContext extends BuildContext {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 
   @override
-  T? dependOnInheritedWidgetOfExactType<T extends InheritedWidget>(
-      {Object? aspect}) {
+  T? dependOnInheritedWidgetOfExactType<T extends InheritedWidget>({
+    Object? aspect,
+  }) {
+    // Provide a minimal MixScope for testing
+    if (T == MixScope) {
+      return const MixScope(data: MixScopeData.empty(), child: SizedBox())
+          as T?;
+    }
     return null;
   }
 
   @override
   InheritedElement?
-      getElementForInheritedWidgetOfExactType<T extends InheritedWidget>() {
+  getElementForInheritedWidgetOfExactType<T extends InheritedWidget>() {
     return null;
   }
 }
@@ -28,7 +34,14 @@ MixContext MockMixData(Style style) {
   return MixContext.create(MockBuildContext(), style);
 }
 
-final EmptyMixData = MixContext.create(MockBuildContext(), const Style.empty());
+// Create a proper MixContext for testing that includes MixScope
+MixContext createEmptyMixData() {
+  // This is a simple implementation that doesn't require widget testing
+  // For tests that need token resolution, use testWidgets with pumpWithMixScope
+  return MixContext.create(MockBuildContext(), const Style.empty());
+}
+
+final EmptyMixData = createEmptyMixData();
 
 MixContext createMixContext({
   Style? style,
@@ -36,16 +49,10 @@ MixContext createMixContext({
 }) {
   // For now, just use the simple create method without tokens
   // We can enhance this later when we need token support in tests
-  return MixContext.create(
-    MockBuildContext(),
-    style ?? const Style.empty(),
-  );
+  return MixContext.create(MockBuildContext(), style ?? const Style.empty());
 }
 
-MediaQuery createMediaQuery({
-  Size? size,
-  Brightness? brightness,
-}) {
+MediaQuery createMediaQuery({Size? size, Brightness? brightness}) {
   return MediaQuery(
     data: MediaQueryData(
       size: size ?? const Size.square(500),
@@ -108,24 +115,20 @@ extension WidgetTesterExt on WidgetTester {
       Builder(
         builder: (BuildContext context) {
           // Populate MixData into the widget tree if needed
-          return Mix.build(
-            context,
-            style: style,
-            builder: (_) => widget,
-          );
+          return Mix.build(context, style: style, builder: (_) => widget);
         },
       ),
     );
   }
 
-  Future<void> pumpWithMixScope(
-    Widget widget, {
-    MixScopeData? theme,
-  }) async {
+  Future<void> pumpWithMixScope(Widget widget, {MixScopeData? theme}) async {
     await pumpWidget(
       MaterialApp(
-          home: MixScope(
-              data: theme ?? const MixScopeData.empty(), child: widget)),
+        home: MixScope(
+          data: theme ?? const MixScopeData.empty(),
+          child: widget,
+        ),
+      ),
     );
   }
 
@@ -169,7 +172,9 @@ extension WidgetTesterExt on WidgetTester {
     MixScopeData theme = const MixScopeData.empty(),
   }) async {
     await pumpWidget(
-      MaterialApp(home: MixScope(data: theme, child: widget)),
+      MaterialApp(
+        home: MixScope(data: theme, child: widget),
+      ),
     );
   }
 }
@@ -204,8 +209,10 @@ class MockContextVariantCondition extends ContextVariant {
   final bool condition;
   @override
   final VariantPriority priority;
-  const MockContextVariantCondition(this.condition,
-      {this.priority = VariantPriority.normal});
+  const MockContextVariantCondition(
+    this.condition, {
+    this.priority = VariantPriority.normal,
+  });
 
   @override
   List<Object?> get props => [condition];
@@ -348,10 +355,7 @@ final class UtilityTestDtoAttribute<T extends Mixable<V>, V>
 final class CustomWidgetModifierSpec
     extends WidgetModifierSpec<CustomWidgetModifierSpec> {
   final bool value;
-  const CustomWidgetModifierSpec(
-    this.value, {
-    super.animated,
-  });
+  const CustomWidgetModifierSpec(this.value, {super.animated});
 
   @override
   CustomWidgetModifierSpec copyWith({bool? value}) {
@@ -363,7 +367,8 @@ final class CustomWidgetModifierSpec
     if (other == null) return this;
 
     return CustomWidgetModifierSpec(
-        MixHelpers.lerpSnap(value, other.value, t) ?? value);
+      MixHelpers.lerpSnap(value, other.value, t) ?? value,
+    );
   }
 
   @override
@@ -418,8 +423,10 @@ class WidgetWithTestableBuild extends StyledWidget {
 }
 
 abstract class TestScalarAttribute<
-    Self extends TestScalarAttribute<Self, Value>,
-    Value> extends SpecAttribute<Value> {
+  Self extends TestScalarAttribute<Self, Value>,
+  Value
+>
+    extends SpecAttribute<Value> {
   final Value value;
   const TestScalarAttribute(this.value);
 

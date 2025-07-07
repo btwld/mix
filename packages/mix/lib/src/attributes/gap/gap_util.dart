@@ -10,5 +10,7 @@ final class GapUtility<T extends StyleElement> extends MixUtility<T, SpaceDto> {
 
   T token(MixableToken<double> token) => builder(SpaceDto.token(token));
 
-  T ref(MixableToken<double> ref) => builder(SpaceDto.token(ref));
+  /// @deprecated Use [token] instead
+  @Deprecated('Use token() instead. Will be removed in a future version.')
+  T ref(MixableToken<double> ref) => token(ref);
 }

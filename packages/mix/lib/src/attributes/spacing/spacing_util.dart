@@ -112,12 +112,9 @@ class SpacingSideUtility<T extends StyleElement> extends MixUtility<T, double> {
 
   T call(double value) => builder(value);
 
-  // Note: Token support for spacing is handled through SpaceDto in EdgeInsetsGeometryDto
-  // Usage: $box.padding.all.ref(tokenUtil.space.small)
-  T ref(MixableToken<double> token) {
-    // This is a marker that the actual token resolution happens in EdgeInsetsGeometryDto
-    return builder(0.0);
-  }
+  /// @deprecated Use [token] instead
+  @Deprecated('Use token() instead. Will be removed in a future version.')
+  T ref(MixableToken<double> token) => this.token(token);
 
   /// Creates a token-based spacing value
   T token(MixableToken<double> token) {

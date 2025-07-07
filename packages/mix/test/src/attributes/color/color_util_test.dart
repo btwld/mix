@@ -696,9 +696,9 @@ void main() {
       expectColor(complementColor, const Color.fromARGB(255, 54, 231, 244));
     });
 
-    test('toDto() should return the correct ColorDto', () {
+    test('Mixable.value() should return the correct Mixable<Color>', () {
       const color = Colors.blue;
-      final colorDto = color.toDto();
+      const colorDto = Mixable.value(color);
 
       expect(colorDto, equals(const Mixable.value(color)));
     });

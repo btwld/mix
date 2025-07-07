@@ -6,26 +6,20 @@ import 'package:mix/mix.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  testWidgets(
-    'StyledText should apply modifiers only once',
-    (tester) async {
-      await tester.pumpMaterialApp(
-        StyledText(
-          'test',
-          style: Style(
-            $box.height(100),
-            $box.width(100),
-            $with.align(),
-          ),
-        ),
-      );
+  testWidgets('StyledText should apply modifiers only once', (tester) async {
+    await tester.pumpMaterialApp(
+      StyledText(
+        'test',
+        style: Style($box.height(100), $box.width(100), $with.align()),
+      ),
+    );
 
-      expect(find.byType(Align), findsOneWidget);
-    },
-  );
+    expect(find.byType(Align), findsOneWidget);
+  });
 
-  testWidgets('TextSpec properties should match Text properties',
-      (WidgetTester tester) async {
+  testWidgets('TextSpec properties should match Text properties', (
+    WidgetTester tester,
+  ) async {
     const textSpec = TextSpec(
       style: TextStyle(fontSize: 20, color: Colors.red),
       strutStyle: StrutStyle(fontSize: 16),
@@ -63,11 +57,7 @@ void main() {
 
     await tester.pumpWidget(
       MaterialApp(
-        home: Scaffold(
-          body: Column(
-            children: [text, mixedText],
-          ),
-        ),
+        home: Scaffold(body: Column(children: [text, mixedText])),
       ),
     );
 
@@ -77,10 +67,9 @@ void main() {
     final mixedTextFinder = find.byKey(mixedTextKey);
     expect(mixedTextFinder, findsOneWidget);
 
-    final mixedTextWidget = tester.widget<Text>(find.descendant(
-      of: mixedTextFinder,
-      matching: find.byType(Text),
-    ));
+    final mixedTextWidget = tester.widget<Text>(
+      find.descendant(of: mixedTextFinder, matching: find.byType(Text)),
+    );
 
     expect(textWidget.data, 'Sample Text');
     expect(mixedTextWidget.data, 'Mixed Text');
@@ -100,10 +89,7 @@ void main() {
     await tester.pumpMaterialApp(
       StyledText(
         'Hello, World!',
-        style: Style(
-          $text.style.color(Colors.red),
-          $text.style.fontSize(24.0),
-        ),
+        style: Style($text.style.color(Colors.red), $text.style.fontSize(24.0)),
       ),
     );
 
@@ -132,7 +118,7 @@ void main() {
   });
 
   testWidgets('StyledText should handle locale property', (tester) async {
-    await tester.pumpMaterialApp(
+    await tester.pumpStyledWidget(
       StyledText(
         'Hello, World!',
         style: Style($text.style.color(Colors.red)),
@@ -147,8 +133,9 @@ void main() {
     expect(text.locale, const Locale('en', 'US'));
   });
 
-  testWidgets('TextSpecWidget should handle semanticsLabel and locale',
-      (tester) async {
+  testWidgets('TextSpecWidget should handle semanticsLabel and locale', (
+    tester,
+  ) async {
     const spec = TextSpec(style: TextStyle(color: Colors.blue));
 
     await tester.pumpMaterialApp(
@@ -171,22 +158,19 @@ void main() {
   testWidgets('TextSpecWidget should apply TextSpec.directive', (tester) async {
     final spec = TextSpec(directive: TextDirective((v) => v.toUpperCase()));
 
-    await tester.pumpMaterialApp(
-      TextSpecWidget(
-        'Hello, World!',
-        spec: spec,
-      ),
-    );
+    await tester.pumpMaterialApp(TextSpecWidget('Hello, World!', spec: spec));
 
     final textFinder = find.text('HELLO, WORLD!');
     expect(textFinder, findsOneWidget);
   });
 
-  testWidgets('AnimatedTextSpecWidget should animate TextSpec properties',
-      (tester) async {
+  testWidgets('AnimatedTextSpecWidget should animate TextSpec properties', (
+    tester,
+  ) async {
     const spec1 = TextSpec(style: TextStyle(color: Colors.red, fontSize: 16.0));
-    const spec2 =
-        TextSpec(style: TextStyle(color: Colors.blue, fontSize: 24.0));
+    const spec2 = TextSpec(
+      style: TextStyle(color: Colors.blue, fontSize: 24.0),
+    );
 
     await tester.pumpMaterialApp(
       const AnimatedTextSpecWidget(
@@ -223,24 +207,27 @@ void main() {
     expect(text.style?.fontSize, 24.0);
   });
 
-  testWidgets('AnimatedTextSpecWidget should handle semanticsLabel and locale',
-      (tester) async {
-    const spec = TextSpec(style: TextStyle(color: Colors.blue));
+  testWidgets(
+    'AnimatedTextSpecWidget should handle semanticsLabel and locale',
+    (tester) async {
+      const spec = TextSpec(style: TextStyle(color: Colors.blue));
 
-    await tester.pumpMaterialApp(
-      const AnimatedTextSpecWidget(
-        'Hello, World!',
-        spec: spec,
-        duration: Duration(milliseconds: 500),
-        semanticsLabel: 'Custom Animated Text',
-        locale: Locale('es', 'ES'),
-      ),
-    );
+      await tester.pumpMaterialApp(
+        const AnimatedTextSpecWidget(
+          'Hello, World!',
+          spec: spec,
+          duration: Duration(milliseconds: 500),
+          semanticsLabel: 'Custom Animated Text',
+          locale: Locale('es', 'ES'),
+        ),
+      );
 
-    expect(find.byType(TextSpecWidget), findsOneWidget);
-    final textSpecWidget =
-        tester.widget<TextSpecWidget>(find.byType(TextSpecWidget));
-    expect(textSpecWidget.semanticsLabel, 'Custom Animated Text');
-    expect(textSpecWidget.locale, const Locale('es', 'ES'));
-  });
+      expect(find.byType(TextSpecWidget), findsOneWidget);
+      final textSpecWidget = tester.widget<TextSpecWidget>(
+        find.byType(TextSpecWidget),
+      );
+      expect(textSpecWidget.semanticsLabel, 'Custom Animated Text');
+      expect(textSpecWidget.locale, const Locale('es', 'ES'));
+    },
+  );
 }

@@ -10,13 +10,13 @@ void main() {
       final mix = MixContext.create(
         MockBuildContext(),
         Style(
-          const TextSpecAttribute(
+          TextSpecAttribute(
             overflow: TextOverflow.ellipsis,
             strutStyle: StrutStyleDto(fontSize: 20.0),
             textAlign: TextAlign.center,
             textScaler: TextScaler.linear(1.0),
             maxLines: 2,
-            style: TextStyleDto(color: Mixable.value(Colors.red)),
+            style: TextStyleDto(color: Colors.red),
             textWidthBasis: TextWidthBasis.longestLine,
             textHeightBehavior: TextHeightBehaviorDto(
               applyHeightToFirstAscent: true,
@@ -187,13 +187,13 @@ void main() {
       final mixData = MixContext.create(
         MockBuildContext(),
         Style(
-          const TextSpecAttribute(
+          TextSpecAttribute(
             overflow: TextOverflow.ellipsis,
             strutStyle: StrutStyleDto(fontSize: 20.0),
             textAlign: TextAlign.center,
             textScaler: TextScaler.linear(1.0),
             maxLines: 2,
-            style: TextStyleDto(color: Mixable.value(Colors.red)),
+            style: TextStyleDto(color: Colors.red),
             textWidthBasis: TextWidthBasis.longestLine,
             textHeightBehavior: TextHeightBehaviorDto(
               applyHeightToFirstAscent: true,
@@ -308,7 +308,7 @@ void main() {
       expect(attr.textAlign, TextAlign.center);
       expect(attr.textScaler, const TextScaler.linear(1.5));
       expect(attr.maxLines, 3);
-      expect(attr.style?.value.first.color, const Mixable.value(Colors.blue));
+      expect(attr.style?.value?.color, const Mixable.value(Colors.blue));
       expect(attr.textWidthBasis, TextWidthBasis.longestLine);
       expect(attr.textDirection, TextDirection.rtl);
       expect(attr.softWrap, false);
@@ -322,7 +322,7 @@ void main() {
       expect(textAttribute?.textScaler, const TextScaler.linear(1.5));
       expect(textAttribute?.maxLines, 3);
       expect(
-        textAttribute?.style?.value.first.color,
+        textAttribute?.style?.value?.color,
         const Mixable.value(Colors.blue),
       );
       expect(textAttribute?.textWidthBasis, TextWidthBasis.longestLine);
@@ -386,7 +386,7 @@ void main() {
 
       expect(textAttribute.maxLines, 3);
       expect(
-        textAttribute.style?.value.first.color,
+        textAttribute.style?.value?.color,
         const Mixable.value(Colors.red),
       );
       expect(textAttribute.textAlign, TextAlign.center);

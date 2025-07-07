@@ -17,13 +17,13 @@ void main() {
 
       final merged = dto1.merge(dto2);
 
-      expect(merged.value.length, 2);
+      expect(merged.modifiers.length, 2);
       expect(
-        merged.value[0].resolve(EmptyMixData),
+        merged.modifiers[0].resolve(EmptyMixData),
         TransformModifierSpec(transform: Matrix4.identity()),
       );
       expect(
-        merged.value[1].resolve(EmptyMixData),
+        merged.modifiers[1].resolve(EmptyMixData),
         const OpacityModifierSpec(0.5),
       );
     });
@@ -43,14 +43,14 @@ void main() {
 
       final merged = dto1.merge(cleaner).merge(dto2);
 
-      expect(merged.value.length, 2);
+      expect(merged.modifiers.length, 2);
 
       expect(
-        merged.value[0].resolve(EmptyMixData),
+        merged.modifiers[0].resolve(EmptyMixData),
         const ResetModifierSpec(),
       );
       expect(
-        merged.value[1].resolve(EmptyMixData),
+        merged.modifiers[1].resolve(EmptyMixData),
         const OpacityModifierSpec(0.5),
       );
     });

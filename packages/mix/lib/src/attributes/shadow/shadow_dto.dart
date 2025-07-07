@@ -15,12 +15,8 @@ sealed class ShadowDtoImpl<T extends Shadow> extends Mixable<T> {
 ///
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a [Shadow]
-class ShadowDto extends ShadowDtoImpl<Shadow>
-    with HasDefaultValue<Shadow> {
+class ShadowDto extends ShadowDtoImpl<Shadow> with HasDefaultValue<Shadow> {
   const ShadowDto({super.blurRadius, super.color, super.offset});
-
-  @override
-  Shadow get defaultValue => const Shadow();
 
   /// Resolves to [Shadow] using the provided [MixContext].
   ///
@@ -33,9 +29,9 @@ class ShadowDto extends ShadowDtoImpl<Shadow>
   @override
   Shadow resolve(MixContext mix) {
     return Shadow(
-      blurRadius: blurRadius ?? defaultValue.blurRadius,
       color: color?.resolve(mix) ?? defaultValue.color,
       offset: offset ?? defaultValue.offset,
+      blurRadius: blurRadius ?? defaultValue.blurRadius,
     );
   }
 
@@ -58,16 +54,15 @@ class ShadowDto extends ShadowDtoImpl<Shadow>
     );
   }
 
+  @override
+  Shadow get defaultValue => const Shadow();
+
   /// The list of properties that constitute the state of this [ShadowDto].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [ShadowDto] instances for equality.
   @override
-  List<Object?> get props => [
-        blurRadius,
-        color,
-        offset,
-      ];
+  List<Object?> get props => [blurRadius, color, offset];
 }
 
 /// Represents a [Mixable] Data transfer object of [BoxShadow]
@@ -84,9 +79,6 @@ class BoxShadowDto extends ShadowDtoImpl<BoxShadow>
     super.blurRadius,
     this.spreadRadius,
   });
-
-  @override
-  BoxShadow get defaultValue => const BoxShadow();
 
   /// Resolves to [BoxShadow] using the provided [MixContext].
   ///
@@ -126,17 +118,15 @@ class BoxShadowDto extends ShadowDtoImpl<BoxShadow>
     );
   }
 
+  @override
+  BoxShadow get defaultValue => const BoxShadow();
+
   /// The list of properties that constitute the state of this [BoxShadowDto].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [BoxShadowDto] instances for equality.
   @override
-  List<Object?> get props => [
-        color,
-        offset,
-        blurRadius,
-        spreadRadius,
-      ];
+  List<Object?> get props => [color, offset, blurRadius, spreadRadius];
 }
 
 /// Utility class for configuring [Shadow] properties.
@@ -156,29 +146,19 @@ class ShadowUtility<T extends StyleElement>
 
   ShadowUtility(super.builder) : super(valueToDto: (v) => v.toDto());
 
-  /// Returns a new [ShadowDto] with the specified properties.
-  @override
-  T only({
-    double? blurRadius,
-    Mixable<Color>? color,
-    Offset? offset,
-  }) {
-    return builder(ShadowDto(
-      blurRadius: blurRadius,
-      color: color,
-      offset: offset,
-    ));
-  }
-
-  T call({
-    double? blurRadius,
-    Color? color,
-    Offset? offset,
-  }) {
+  T call({double? blurRadius, Color? color, Offset? offset}) {
     return only(
       blurRadius: blurRadius,
       color: Mixable.maybeValue(color),
       offset: offset,
+    );
+  }
+
+  /// Returns a new [ShadowDto] with the specified properties.
+  @override
+  T only({double? blurRadius, Mixable<Color>? color, Offset? offset}) {
+    return builder(
+      ShadowDto(blurRadius: blurRadius, color: color, offset: offset),
     );
   }
 }
@@ -223,22 +203,6 @@ class BoxShadowUtility<T extends StyleElement>
 
   BoxShadowUtility(super.builder) : super(valueToDto: (v) => v.toDto());
 
-  /// Returns a new [BoxShadowDto] with the specified properties.
-  @override
-  T only({
-    Mixable<Color>? color,
-    Offset? offset,
-    double? blurRadius,
-    double? spreadRadius,
-  }) {
-    return builder(BoxShadowDto(
-      color: color,
-      offset: offset,
-      blurRadius: blurRadius,
-      spreadRadius: spreadRadius,
-    ));
-  }
-
   T call({
     Color? color,
     Offset? offset,
@@ -250,6 +214,24 @@ class BoxShadowUtility<T extends StyleElement>
       offset: offset,
       blurRadius: blurRadius,
       spreadRadius: spreadRadius,
+    );
+  }
+
+  /// Returns a new [BoxShadowDto] with the specified properties.
+  @override
+  T only({
+    Mixable<Color>? color,
+    Offset? offset,
+    double? blurRadius,
+    double? spreadRadius,
+  }) {
+    return builder(
+      BoxShadowDto(
+        color: color,
+        offset: offset,
+        blurRadius: blurRadius,
+        spreadRadius: spreadRadius,
+      ),
     );
   }
 }

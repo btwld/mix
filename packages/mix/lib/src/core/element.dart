@@ -64,7 +64,9 @@ abstract class Mixable<Value> with EqualityMixin {
   }
 
   /// Gets the underlying value if this is a ValueMixable, otherwise returns null
-  Value? get value => this is _ValueMixable<Value> ? (this as _ValueMixable<Value>).value : null;
+  Value? get value => this is _ValueMixable<Value>
+      ? (this as _ValueMixable<Value>).value
+      : null;
 
   /// Resolves token value if present, otherwise returns null
   Value resolve(MixContext mix);
@@ -183,6 +185,31 @@ class _CompositeMixable<T> extends Mixable<T> {
 
   @override
   List<Object?> get props => [items, directives];
+}
+
+final class MixableList<T extends Mixable<Value>, Value>
+    extends Mixable<List<Value>> {
+  final List<T> _items;
+
+  const MixableList(this._items);
+
+  int get length => _items.length;
+
+  @override
+  List<Value> resolve(MixContext mix) {
+    return _items.map((item) => item.resolve(mix)).toList();
+  }
+
+  // merge
+  @override
+  MixableList<T, Value> merge(MixableList<T, Value>? other) {
+    if (other == null) return this;
+
+    return MixableList([..._items, ...other._items]);
+  }
+
+  @override
+  List<Object?> get props => [_items];
 }
 
 // Define a mixin for properties that have default values

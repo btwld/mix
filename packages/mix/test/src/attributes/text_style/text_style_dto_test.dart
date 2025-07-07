@@ -8,41 +8,41 @@ void main() {
   group('TextStyleDto', () {
     test('from constructor sets all values correctly', () {
       final attr = TextStyleDto(
-        color: Colors.red.toDto(),
+        color: Colors.red,
         fontVariations: const [],
       );
       final result = attr.resolve(EmptyMixData);
       expect(result.color, Colors.red);
     });
     test('merge returns merged object correctly', () {
-      const attr1 = TextStyleDto(
-        color: Mixable.value(Colors.red),
-        fontSize: Mixable.value(24.0),
-        fontWeight: Mixable.value(FontWeight.bold),
-        fontStyle: Mixable.value(FontStyle.italic),
-        letterSpacing: Mixable.value(1.0),
-        wordSpacing: Mixable.value(2.0),
+      final attr1 = TextStyleDto(
+        color: Colors.red,
+        fontSize: 24.0,
+        fontWeight: FontWeight.bold,
+        fontStyle: FontStyle.italic,
+        letterSpacing: 1.0,
+        wordSpacing: 2.0,
         fontVariations: [FontVariation('wght', 900)],
-        textBaseline: Mixable.value(TextBaseline.ideographic),
-        decoration: Mixable.value(TextDecoration.underline),
-        decorationColor: Mixable.value(Colors.blue),
-        decorationStyle: Mixable.value(TextDecorationStyle.dashed),
-        height: Mixable.value(2.0),
+        textBaseline: TextBaseline.ideographic,
+        decoration: TextDecoration.underline,
+        decorationColor: Colors.blue,
+        decorationStyle: TextDecorationStyle.dashed,
+        height: 2.0,
       );
 
-      const attr2 = TextStyleDto(
-        color: Mixable.value(Colors.blue),
-        fontSize: Mixable.value(30.0),
-        fontWeight: Mixable.value(FontWeight.w100),
-        fontStyle: Mixable.value(FontStyle.normal),
-        letterSpacing: Mixable.value(2.0),
-        wordSpacing: Mixable.value(3.0),
+      final attr2 = TextStyleDto(
+        color: Colors.blue,
+        fontSize: 30.0,
+        fontWeight: FontWeight.w100,
+        fontStyle: FontStyle.normal,
+        letterSpacing: 2.0,
+        wordSpacing: 3.0,
         fontVariations: [FontVariation('wght', 400)],
-        textBaseline: Mixable.value(TextBaseline.alphabetic),
-        decoration: Mixable.value(TextDecoration.lineThrough),
-        decorationColor: Mixable.value(Colors.red),
-        decorationStyle: Mixable.value(TextDecorationStyle.dotted),
-        height: Mixable.value(3.0),
+        textBaseline: TextBaseline.alphabetic,
+        decoration: TextDecoration.lineThrough,
+        decorationColor: Colors.red,
+        decorationStyle: TextDecorationStyle.dotted,
+        height: 3.0,
       );
 
       final merged = attr1.merge(attr2).resolve(EmptyMixData);
@@ -61,19 +61,19 @@ void main() {
       expect(merged.textBaseline, TextBaseline.alphabetic);
     });
     test('resolve returns correct TextStyle with specific values', () {
-      const attr = TextStyleDto(
-        color: Mixable.value(Colors.red),
-        fontSize: Mixable.value(24.0),
-        fontWeight: Mixable.value(FontWeight.bold),
-        fontStyle: Mixable.value(FontStyle.italic),
-        letterSpacing: Mixable.value(1.0),
-        wordSpacing: Mixable.value(2.0),
+      final attr = TextStyleDto(
+        color: Colors.red,
+        fontSize: 24.0,
+        fontWeight: FontWeight.bold,
+        fontStyle: FontStyle.italic,
+        letterSpacing: 1.0,
+        wordSpacing: 2.0,
         fontVariations: [FontVariation('wght', 900)],
-        textBaseline: Mixable.value(TextBaseline.ideographic),
-        decoration: Mixable.value(TextDecoration.underline),
-        decorationColor: Mixable.value(Colors.blue),
-        decorationStyle: Mixable.value(TextDecorationStyle.dashed),
-        height: Mixable.value(2.0),
+        textBaseline: TextBaseline.ideographic,
+        decoration: TextDecoration.underline,
+        decorationColor: Colors.blue,
+        decorationStyle: TextDecorationStyle.dashed,
+        height: 2.0,
       );
       final textStyle = attr.resolve(EmptyMixData);
       expect(textStyle.color, Colors.red);
@@ -92,23 +92,23 @@ void main() {
       return const Placeholder();
     });
     test('Equality holds when all attributes are the same', () {
-      const attr1 = TextStyleDto(
-        color: Mixable.value(Colors.red),
+      final attr1 = TextStyleDto(
+        color: Colors.red,
         fontVariations: [],
       );
-      const attr2 = TextStyleDto(
-        color: Mixable.value(Colors.red),
+      final attr2 = TextStyleDto(
+        color: Colors.red,
         fontVariations: [],
       );
       expect(attr1, attr2);
     });
     test('Equality fails when attributes are different', () {
-      const attr1 = TextStyleDto(
-        color: Mixable.value(Colors.red),
+      final attr1 = TextStyleDto(
+        color: Colors.red,
         fontVariations: [],
       );
-      const attr2 = TextStyleDto(
-        color: Mixable.value(Colors.blue),
+      final attr2 = TextStyleDto(
+        color: Colors.blue,
         fontVariations: [],
       );
       expect(attr1, isNot(attr2));
@@ -116,7 +116,7 @@ void main() {
   });
   test('TextStyleDto.token creates a TextStyleDto with a token', () {
     const token = MixableToken<TextStyle>('test_token');
-    const attr = TextStyleDto.token(token);
+    final attr = TextStyleDto.token(token);
     expect((attr as TokenTextStyleDto).token, token);
   });
 
