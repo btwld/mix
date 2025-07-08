@@ -115,7 +115,11 @@ extension WidgetTesterExt on WidgetTester {
       Builder(
         builder: (BuildContext context) {
           // Populate MixData into the widget tree if needed
-          return Mix.build(context, style: style, builder: (_) => widget);
+          return MixProvider.build(
+            context,
+            style: style,
+            builder: (_) => widget,
+          );
         },
       ),
     );
@@ -329,7 +333,7 @@ final class UtilityTestAttribute<T>
   T resolve(MixContext mix) => value;
 }
 
-final class UtilityTestDtoAttribute<T extends Mixable<V>, V>
+final class UtilityTestDtoAttribute<T extends Mix<V>, V>
     extends SpecAttribute<V> {
   final T value;
   const UtilityTestDtoAttribute(this.value);

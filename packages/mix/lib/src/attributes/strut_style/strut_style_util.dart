@@ -9,32 +9,32 @@ import 'strut_style_dto.dart';
 final class StrutStyleUtility<T extends StyleElement>
     extends DtoUtility<T, StrutStyleDto, StrutStyle> {
   late final fontWeight = FontWeightUtility(
-    (v) => only(fontWeight: Mixable.value(v)),
+    (v) => only(fontWeight: Mix.value(v)),
   );
 
-  late final fontStyle = FontStyleUtility(
-    (v) => only(fontStyle: Mixable.value(v)),
-  );
+  late final fontStyle = FontStyleUtility((v) => only(fontStyle: Mix.value(v)));
 
-  late final fontSize = FontSizeUtility(
-    (v) => only(fontSize: Mixable.value(v)),
-  );
+  late final fontSize = FontSizeUtility((v) => only(fontSize: Mix.value(v)));
 
-  late final fontFamily = FontFamilyUtility((v) => only(fontFamily: Mixable.value(v)));
+  late final fontFamily = FontFamilyUtility(
+    (v) => only(fontFamily: Mix.value(v)),
+  );
 
   StrutStyleUtility(super.builder)
     : super(valueToDto: (v) => StrutStyleDto.from(v));
 
-  T token(MixableToken<StrutStyle> token) => 
-      throw UnimplementedError('Token support for StrutStyle needs to be redesigned for the simplified DTO pattern');
+  T token(MixableToken<StrutStyle> token) => throw UnimplementedError(
+    'Token support for StrutStyle needs to be redesigned for the simplified DTO pattern',
+  );
 
-  T height(double v) => only(height: Mixable.value(v));
+  T height(double v) => only(height: Mix.value(v));
 
-  T leading(double v) => only(leading: Mixable.value(v));
+  T leading(double v) => only(leading: Mix.value(v));
 
-  T forceStrutHeight(bool v) => only(forceStrutHeight: Mixable.value(v));
+  T forceStrutHeight(bool v) => only(forceStrutHeight: Mix.value(v));
 
-  T fontFamilyFallback(List<String> v) => only(fontFamilyFallback: v.map(Mixable.value).toList());
+  T fontFamilyFallback(List<String> v) =>
+      only(fontFamilyFallback: v.map(Mix.value).toList());
 
   T call({
     String? fontFamily,
@@ -47,40 +47,40 @@ final class StrutStyleUtility<T extends StyleElement>
     bool? forceStrutHeight,
   }) {
     return only(
-      fontFamily: Mixable.maybeValue(fontFamily),
-      fontFamilyFallback: fontFamilyFallback?.map(Mixable.value).toList(),
-      fontSize: Mixable.maybeValue(fontSize),
-      fontWeight: Mixable.maybeValue(fontWeight),
-      fontStyle: Mixable.maybeValue(fontStyle),
-      height: Mixable.maybeValue(height),
-      leading: Mixable.maybeValue(leading),
-      forceStrutHeight: Mixable.maybeValue(forceStrutHeight),
+      fontFamily: Mix.maybeValue(fontFamily),
+      fontFamilyFallback: fontFamilyFallback?.map(Mix.value).toList(),
+      fontSize: Mix.maybeValue(fontSize),
+      fontWeight: Mix.maybeValue(fontWeight),
+      fontStyle: Mix.maybeValue(fontStyle),
+      height: Mix.maybeValue(height),
+      leading: Mix.maybeValue(leading),
+      forceStrutHeight: Mix.maybeValue(forceStrutHeight),
     );
   }
 
   @override
   T only({
-    Mixable<String>? fontFamily,
-    List<Mixable<String>>? fontFamilyFallback,
-    Mixable<double>? fontSize,
-    Mixable<FontWeight>? fontWeight,
-    Mixable<FontStyle>? fontStyle,
-    Mixable<double>? height,
-    Mixable<double>? leading,
-    Mixable<bool>? forceStrutHeight,
+    Mix<String>? fontFamily,
+    List<Mix<String>>? fontFamilyFallback,
+    Mix<double>? fontSize,
+    Mix<FontWeight>? fontWeight,
+    Mix<FontStyle>? fontStyle,
+    Mix<double>? height,
+    Mix<double>? leading,
+    Mix<bool>? forceStrutHeight,
   }) {
     return builder(
       StrutStyleDto.raw(
-        fontFamily: MixableProperty(fontFamily),
-        fontFamilyFallback: MixableProperty(fontFamilyFallback != null 
-          ? MixableList(fontFamilyFallback) 
-          : null),
-        fontSize: MixableProperty(fontSize),
-        fontWeight: MixableProperty(fontWeight),
-        fontStyle: MixableProperty(fontStyle),
-        height: MixableProperty(height),
-        leading: MixableProperty(leading),
-        forceStrutHeight: MixableProperty(forceStrutHeight),
+        fontFamily: MixProperty(fontFamily),
+        fontFamilyFallback: MixProperty(
+          fontFamilyFallback != null ? MixableList(fontFamilyFallback) : null,
+        ),
+        fontSize: MixProperty(fontSize),
+        fontWeight: MixProperty(fontWeight),
+        fontStyle: MixProperty(fontStyle),
+        height: MixProperty(height),
+        leading: MixProperty(leading),
+        forceStrutHeight: MixProperty(forceStrutHeight),
       ),
     );
   }

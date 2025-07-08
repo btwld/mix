@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 typedef _BaseDecorProperties = ({
-  MixableProperty<Color> color,
+  MixProperty<Color> color,
   GradientDto? gradient,
   List<BoxShadowDto>? boxShadow,
   DecorationImageDto? image,
@@ -18,8 +18,8 @@ typedef _BaseDecorProperties = ({
 /// This class needs to have the different properties that are not found in the [Modifiers] class.
 /// In order to support merging of [Decoration] values, and reusable of common properties.
 @immutable
-sealed class DecorationDto<T extends Decoration> extends Mixable<T> {
-  final MixableProperty<Color> color;
+sealed class DecorationDto<T extends Decoration> extends Mix<T> {
+  final MixProperty<Color> color;
   final GradientDto? gradient;
   final DecorationImageDto? image;
   final List<BoxShadowDto>? boxShadow;
@@ -96,7 +96,7 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
       borderRadius: borderRadius,
       shape: shape,
       backgroundBlendMode: backgroundBlendMode,
-      color: MixableProperty.prop(color),
+      color: MixProperty.prop(color),
       image: image,
       gradient: gradient,
       boxShadow: boxShadow,
@@ -217,7 +217,7 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
   }) {
     return ShapeDecorationDto.raw(
       shape: shape,
-      color: MixableProperty.prop(color),
+      color: MixProperty.prop(color),
       image: image,
       gradient: gradient,
       shadows: shadows,
@@ -414,7 +414,7 @@ class BoxDecorationUtility<T extends StyleElement>
   );
 
   /// Utility for defining [BoxDecorationDto.color]
-  late final color = ColorUtility((v) => only(color: MixableProperty(v)));
+  late final color = ColorUtility((v) => only(color: MixProperty(v)));
 
   /// Utility for defining [BoxDecorationDto.image]
   late final image = DecorationImageUtility((v) => only(image: v));
@@ -450,19 +450,23 @@ class BoxDecorationUtility<T extends StyleElement>
   }) {
     return only(
       border: border != null ? this.border.fromValue(border) : null,
-      borderRadius: borderRadius != null ? this.borderRadius.fromValue(borderRadius) : null,
+      borderRadius: borderRadius != null
+          ? this.borderRadius.fromValue(borderRadius)
+          : null,
       shape: shape,
       backgroundBlendMode: backgroundBlendMode,
-      color: color != null ? MixableProperty(Mixable.value(color)) : null,
+      color: color != null ? MixProperty(Mix.value(color)) : null,
       image: image != null ? this.image.fromValue(image) : null,
-      gradient: gradient != null 
-        ? switch (gradient) {
-            LinearGradient() => this.gradient.linear.fromValue(gradient),
-            RadialGradient() => this.gradient.radial.fromValue(gradient),
-            SweepGradient() => this.gradient.sweep.fromValue(gradient),
-            _ => throw ArgumentError('Unsupported gradient type: ${gradient.runtimeType}'),
-          }
-        : null,
+      gradient: gradient != null
+          ? switch (gradient) {
+              LinearGradient() => this.gradient.linear.fromValue(gradient),
+              RadialGradient() => this.gradient.radial.fromValue(gradient),
+              SweepGradient() => this.gradient.sweep.fromValue(gradient),
+              _ => throw ArgumentError(
+                'Unsupported gradient type: ${gradient.runtimeType}',
+              ),
+            }
+          : null,
       boxShadow: boxShadow?.map((shadow) => BoxShadowDto.from(shadow)).toList(),
     );
   }
@@ -474,7 +478,7 @@ class BoxDecorationUtility<T extends StyleElement>
     BorderRadiusGeometryDto? borderRadius,
     BoxShape? shape,
     BlendMode? backgroundBlendMode,
-    MixableProperty<Color>? color,
+    MixProperty<Color>? color,
     DecorationImageDto? image,
     GradientDto? gradient,
     List<BoxShadowDto>? boxShadow,
@@ -485,7 +489,7 @@ class BoxDecorationUtility<T extends StyleElement>
         borderRadius: borderRadius,
         shape: shape,
         backgroundBlendMode: backgroundBlendMode,
-        color: color ?? const MixableProperty(),
+        color: color ?? const MixProperty(),
         image: image,
         gradient: gradient,
         boxShadow: boxShadow,
@@ -504,7 +508,7 @@ class ShapeDecorationUtility<T extends StyleElement>
   late final shape = ShapeBorderUtility((v) => only(shape: v));
 
   /// Utility for defining [ShapeDecorationDto.color]
-  late final color = ColorUtility((v) => only(color: MixableProperty(v)));
+  late final color = ColorUtility((v) => only(color: MixProperty(v)));
 
   /// Utility for defining [ShapeDecorationDto.image]
   late final image = DecorationImageUtility((v) => only(image: v));
@@ -530,28 +534,37 @@ class ShapeDecorationUtility<T extends StyleElement>
     List<BoxShadow>? shadows,
   }) {
     return only(
-      shape: shape != null 
-        ? switch (shape) {
-            RoundedRectangleBorder() => this.shape.roundedRectangle.fromValue(shape),
-            BeveledRectangleBorder() => this.shape.beveledRectangle.fromValue(shape),
-            ContinuousRectangleBorder() => this.shape.continuousRectangle.fromValue(shape),
-            CircleBorder() => this.shape.circle.fromValue(shape),
-            StadiumBorder() => this.shape.stadium.fromValue(shape),
-            StarBorder() => this.shape.star.fromValue(shape),
-            LinearBorder() => this.shape.linear.fromValue(shape),
-            _ => throw ArgumentError('Unsupported shape border type: ${shape.runtimeType}'),
-          }
-        : null,
-      color: color != null ? MixableProperty(Mixable.value(color)) : null,
+      shape: shape != null
+          ? switch (shape) {
+              RoundedRectangleBorder() => this.shape.roundedRectangle.fromValue(
+                shape,
+              ),
+              BeveledRectangleBorder() => this.shape.beveledRectangle.fromValue(
+                shape,
+              ),
+              ContinuousRectangleBorder() =>
+                this.shape.continuousRectangle.fromValue(shape),
+              CircleBorder() => this.shape.circle.fromValue(shape),
+              StadiumBorder() => this.shape.stadium.fromValue(shape),
+              StarBorder() => this.shape.star.fromValue(shape),
+              LinearBorder() => this.shape.linear.fromValue(shape),
+              _ => throw ArgumentError(
+                'Unsupported shape border type: ${shape.runtimeType}',
+              ),
+            }
+          : null,
+      color: color != null ? MixProperty(Mix.value(color)) : null,
       image: image != null ? this.image.fromValue(image) : null,
-      gradient: gradient != null 
-        ? switch (gradient) {
-            LinearGradient() => this.gradient.linear.fromValue(gradient),
-            RadialGradient() => this.gradient.radial.fromValue(gradient),
-            SweepGradient() => this.gradient.sweep.fromValue(gradient),
-            _ => throw ArgumentError('Unsupported gradient type: ${gradient.runtimeType}'),
-          }
-        : null,
+      gradient: gradient != null
+          ? switch (gradient) {
+              LinearGradient() => this.gradient.linear.fromValue(gradient),
+              RadialGradient() => this.gradient.radial.fromValue(gradient),
+              SweepGradient() => this.gradient.sweep.fromValue(gradient),
+              _ => throw ArgumentError(
+                'Unsupported gradient type: ${gradient.runtimeType}',
+              ),
+            }
+          : null,
       shadows: shadows?.map((shadow) => BoxShadowDto.from(shadow)).toList(),
     );
   }
@@ -560,7 +573,7 @@ class ShapeDecorationUtility<T extends StyleElement>
   @override
   T only({
     ShapeBorderDto? shape,
-    MixableProperty<Color>? color,
+    MixProperty<Color>? color,
     DecorationImageDto? image,
     GradientDto? gradient,
     List<BoxShadowDto>? shadows,
@@ -568,7 +581,7 @@ class ShapeDecorationUtility<T extends StyleElement>
     return builder(
       ShapeDecorationDto.raw(
         shape: shape,
-        color: color ?? const MixableProperty(),
+        color: color ?? const MixProperty(),
         image: image,
         gradient: gradient,
         shadows: shadows,

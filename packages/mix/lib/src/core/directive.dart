@@ -6,7 +6,7 @@ import 'factory/mix_context.dart';
 typedef Modifier<T> = T Function(T value);
 
 @immutable
-class TextDirectiveDto extends Mixable<TextDirective> {
+class TextDirectiveDto extends Mix<TextDirective> {
   final List<Modifier<String>> _modifiers;
   const TextDirectiveDto(this._modifiers);
 

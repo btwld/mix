@@ -10,15 +10,15 @@ import 'widget_modifiers_config.dart';
 )
 typedef WidgetModifiersDataDto = WidgetModifiersConfigDto;
 
-class WidgetModifiersConfigDto extends Mixable<WidgetModifiersConfig> {
+class WidgetModifiersConfigDto extends Mix<WidgetModifiersConfig> {
   final List<WidgetModifierSpecAttribute> modifiers;
 
   const WidgetModifiersConfigDto(this.modifiers);
 
   /// Creates a WidgetModifiersConfigDto from a WidgetModifiersConfig value
-  /// 
+  ///
   /// Note: This method cannot be implemented because WidgetModifiersConfig contains
-  /// resolved WidgetModifierSpec objects, but the DTO requires unresolved 
+  /// resolved WidgetModifierSpec objects, but the DTO requires unresolved
   /// WidgetModifierSpecAttribute objects. This conversion is not possible.
   factory WidgetModifiersConfigDto.from(WidgetModifiersConfig config) {
     throw UnimplementedError(
@@ -30,9 +30,9 @@ class WidgetModifiersConfigDto extends Mixable<WidgetModifiersConfig> {
 
   /// Creates a WidgetModifiersConfigDto from a nullable WidgetModifiersConfig value
   /// Returns null if the value is null, otherwise uses WidgetModifiersConfigDto.from
-  /// 
+  ///
   /// Note: This method cannot be implemented because WidgetModifiersConfig contains
-  /// resolved WidgetModifierSpec objects, but the DTO requires unresolved 
+  /// resolved WidgetModifierSpec objects, but the DTO requires unresolved
   /// WidgetModifierSpecAttribute objects. This conversion is not possible.
   static WidgetModifiersConfigDto? maybeFrom(WidgetModifiersConfig? value) {
     return value != null ? WidgetModifiersConfigDto.from(value) : null;

@@ -39,7 +39,7 @@ import '../../factory/style_mix.dart';
 /// See also:
 ///
 /// * [ComputedStyle], for resolved style specifications
-/// * [Mix], for style inheritance
+/// * [MixProvider], for style inheritance
 class MixBuilder extends StatefulWidget {
   const MixBuilder({
     super.key,
@@ -95,7 +95,7 @@ class _MixBuilderState extends State<MixBuilder> {
 
     // Apply inheritance
     if (widget.inherit) {
-      final inherited = Mix.maybeOfInherited(context);
+      final inherited = MixProvider.maybeOfInherited(context);
       if (inherited != null) {
         mix = inherited.merge(mix);
       }
@@ -104,7 +104,7 @@ class _MixBuilderState extends State<MixBuilder> {
     final computedStyle = ComputedStyle.compute(mix);
 
     // Build core widget tree
-    return Mix(
+    return MixProvider(
       data: mix,
       child: ComputedStyleProvider(
         style: computedStyle,

@@ -8,16 +8,16 @@ import '../../internal/diagnostic_properties_builder_ext.dart';
 
 /// A Data transfer object that represents a [StrutStyle] value.
 @immutable
-class StrutStyleDto extends Mixable<StrutStyle> with Diagnosticable {
+class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
   // Properties use MixableProperty for cleaner merging
-  final MixableProperty<String> fontFamily;
-  final MixableProperty<List<String>> fontFamilyFallback;
-  final MixableProperty<double> fontSize;
-  final MixableProperty<FontWeight> fontWeight;
-  final MixableProperty<FontStyle> fontStyle;
-  final MixableProperty<double> height;
-  final MixableProperty<double> leading;
-  final MixableProperty<bool> forceStrutHeight;
+  final MixProperty<String> fontFamily;
+  final MixProperty<List<String>> fontFamilyFallback;
+  final MixProperty<double> fontSize;
+  final MixProperty<FontWeight> fontWeight;
+  final MixProperty<FontStyle> fontStyle;
+  final MixProperty<double> height;
+  final MixProperty<double> leading;
+  final MixProperty<bool> forceStrutHeight;
 
   // Main constructor accepts real values
   factory StrutStyleDto({
@@ -31,14 +31,14 @@ class StrutStyleDto extends Mixable<StrutStyle> with Diagnosticable {
     bool? forceStrutHeight,
   }) {
     return StrutStyleDto.raw(
-      fontFamily: MixableProperty.prop(fontFamily),
-      fontFamilyFallback: MixableProperty.prop(fontFamilyFallback),
-      fontSize: MixableProperty.prop(fontSize),
-      fontWeight: MixableProperty.prop(fontWeight),
-      fontStyle: MixableProperty.prop(fontStyle),
-      height: MixableProperty.prop(height),
-      leading: MixableProperty.prop(leading),
-      forceStrutHeight: MixableProperty.prop(forceStrutHeight),
+      fontFamily: MixProperty.prop(fontFamily),
+      fontFamilyFallback: MixProperty.prop(fontFamilyFallback),
+      fontSize: MixProperty.prop(fontSize),
+      fontWeight: MixProperty.prop(fontWeight),
+      fontStyle: MixProperty.prop(fontStyle),
+      height: MixProperty.prop(height),
+      leading: MixProperty.prop(leading),
+      forceStrutHeight: MixProperty.prop(forceStrutHeight),
     );
   }
 

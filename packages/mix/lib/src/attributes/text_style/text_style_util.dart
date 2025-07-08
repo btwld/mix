@@ -12,20 +12,16 @@ final class TextStyleUtility<T extends StyleElement>
   late final color = ColorUtility((v) => only(color: v));
 
   late final fontWeight = FontWeightUtility(
-    (v) => only(fontWeight: Mixable.value(v)),
+    (v) => only(fontWeight: Mix.value(v)),
   );
 
-  late final fontStyle = FontStyleUtility(
-    (v) => only(fontStyle: Mixable.value(v)),
-  );
+  late final fontStyle = FontStyleUtility((v) => only(fontStyle: Mix.value(v)));
 
   late final decoration = TextDecorationUtility(
-    (v) => only(decoration: Mixable.value(v)),
+    (v) => only(decoration: Mix.value(v)),
   );
 
-  late final fontSize = FontSizeUtility(
-    (v) => only(fontSize: Mixable.value(v)),
-  );
+  late final fontSize = FontSizeUtility((v) => only(fontSize: Mix.value(v)));
 
   late final backgroundColor = ColorUtility((v) => only(backgroundColor: v));
 
@@ -36,16 +32,19 @@ final class TextStyleUtility<T extends StyleElement>
   // For now, use the shadows() method directly on the utility
 
   late final decorationStyle = TextDecorationStyleUtility(
-    (v) => only(decorationStyle: Mixable.value(v)),
+    (v) => only(decorationStyle: Mix.value(v)),
   );
 
   late final textBaseline = TextBaselineUtility(
-    (v) => only(textBaseline: Mixable.value(v)),
+    (v) => only(textBaseline: Mix.value(v)),
   );
 
-  late final fontFamily = FontFamilyUtility((v) => only(fontFamily: Mixable.value(v)));
+  late final fontFamily = FontFamilyUtility(
+    (v) => only(fontFamily: Mix.value(v)),
+  );
 
-  TextStyleUtility(super.builder) : super(valueToDto: (v) => TextStyleDto.from(v));
+  TextStyleUtility(super.builder)
+    : super(valueToDto: (v) => TextStyleDto.from(v));
 
   T token(MixableToken<TextStyle> token) => throw UnimplementedError(
     'Token support needs implementation for whole TextStyle',
@@ -131,57 +130,57 @@ final class TextStyleUtility<T extends StyleElement>
 
   @override
   T only({
-    Mixable<Color>? color,
-    Mixable<FontWeight>? fontWeight,
-    Mixable<FontStyle>? fontStyle,
-    Mixable<TextDecoration>? decoration,
-    Mixable<double>? fontSize,
-    Mixable<double>? letterSpacing,
-    Mixable<double>? wordSpacing,
-    Mixable<Color>? backgroundColor,
-    Mixable<Color>? decorationColor,
-    Mixable<TextDecorationStyle>? decorationStyle,
-    Mixable<TextBaseline>? textBaseline,
-    List<Mixable<FontVariation>>? fontVariations,
-    List<Mixable<Shadow>>? shadows,
-    List<Mixable<FontFeature>>? fontFeatures,
-    Mixable<Paint>? foreground,
-    Mixable<Paint>? background,
-    Mixable<double>? decorationThickness,
-    List<Mixable<String>>? fontFamilyFallback,
-    Mixable<String>? debugLabel,
-    Mixable<double>? height,
-    Mixable<String>? fontFamily,
+    Mix<Color>? color,
+    Mix<FontWeight>? fontWeight,
+    Mix<FontStyle>? fontStyle,
+    Mix<TextDecoration>? decoration,
+    Mix<double>? fontSize,
+    Mix<double>? letterSpacing,
+    Mix<double>? wordSpacing,
+    Mix<Color>? backgroundColor,
+    Mix<Color>? decorationColor,
+    Mix<TextDecorationStyle>? decorationStyle,
+    Mix<TextBaseline>? textBaseline,
+    List<Mix<FontVariation>>? fontVariations,
+    List<Mix<Shadow>>? shadows,
+    List<Mix<FontFeature>>? fontFeatures,
+    Mix<Paint>? foreground,
+    Mix<Paint>? background,
+    Mix<double>? decorationThickness,
+    List<Mix<String>>? fontFamilyFallback,
+    Mix<String>? debugLabel,
+    Mix<double>? height,
+    Mix<String>? fontFamily,
   }) {
     return builder(
       TextStyleDto.raw(
-        color: MixableProperty(color),
-        backgroundColor: MixableProperty(backgroundColor),
-        fontSize: MixableProperty(fontSize),
-        fontWeight: MixableProperty(fontWeight),
-        fontStyle: MixableProperty(fontStyle),
-        letterSpacing: MixableProperty(letterSpacing),
-        debugLabel: MixableProperty(debugLabel),
-        wordSpacing: MixableProperty(wordSpacing),
-        textBaseline: MixableProperty(textBaseline),
-        decoration: MixableProperty(decoration),
-        decorationColor: MixableProperty(decorationColor),
-        decorationStyle: MixableProperty(decorationStyle),
-        height: MixableProperty(height),
-        decorationThickness: MixableProperty(decorationThickness),
-        fontFamily: MixableProperty(fontFamily),
-        fontFamilyFallback: MixableProperty(
+        color: MixProperty(color),
+        backgroundColor: MixProperty(backgroundColor),
+        fontSize: MixProperty(fontSize),
+        fontWeight: MixProperty(fontWeight),
+        fontStyle: MixProperty(fontStyle),
+        letterSpacing: MixProperty(letterSpacing),
+        debugLabel: MixProperty(debugLabel),
+        wordSpacing: MixProperty(wordSpacing),
+        textBaseline: MixProperty(textBaseline),
+        decoration: MixProperty(decoration),
+        decorationColor: MixProperty(decorationColor),
+        decorationStyle: MixProperty(decorationStyle),
+        height: MixProperty(height),
+        decorationThickness: MixProperty(decorationThickness),
+        fontFamily: MixProperty(fontFamily),
+        fontFamilyFallback: MixProperty(
           fontFamilyFallback != null ? MixableList(fontFamilyFallback) : null,
         ),
-        fontFeatures: MixableProperty(
+        fontFeatures: MixProperty(
           fontFeatures != null ? MixableList(fontFeatures) : null,
         ),
-        fontVariations: MixableProperty(
+        fontVariations: MixProperty(
           fontVariations != null ? MixableList(fontVariations) : null,
         ),
-        foreground: MixableProperty(foreground),
-        background: MixableProperty(background),
-        shadows: MixableProperty(shadows != null ? MixableList(shadows) : null),
+        foreground: MixProperty(foreground),
+        background: MixProperty(background),
+        shadows: MixProperty(shadows != null ? MixableList(shadows) : null),
       ),
     );
   }

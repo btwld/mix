@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
 @immutable
-sealed class BoxBorderDto<T extends BoxBorder> extends Mixable<T> {
+sealed class BoxBorderDto<T extends BoxBorder> extends Mix<T> {
   final BorderSideDto? top;
   final BorderSideDto? bottom;
 
@@ -228,13 +228,13 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional> {
   List<Object?> get props => [top, bottom, start, end];
 }
 
-final class BorderSideDto extends Mixable<BorderSide>
+final class BorderSideDto extends Mix<BorderSide>
     with HasDefaultValue<BorderSide> {
   // Properties use MixableProperty for cleaner merging - always nullable internally
-  final MixableProperty<Color> color;
-  final MixableProperty<double> width;
-  final MixableProperty<BorderStyle> style;
-  final MixableProperty<double> strokeAlign;
+  final MixProperty<Color> color;
+  final MixProperty<double> width;
+  final MixProperty<BorderStyle> style;
+  final MixProperty<double> strokeAlign;
 
   // Main constructor accepts real values
   factory BorderSideDto({
@@ -244,10 +244,10 @@ final class BorderSideDto extends Mixable<BorderSide>
     double? width,
   }) {
     return BorderSideDto.raw(
-      color: MixableProperty.prop(color),
-      width: MixableProperty.prop(width),
-      style: MixableProperty.prop(style),
-      strokeAlign: MixableProperty.prop(strokeAlign),
+      color: MixProperty.prop(color),
+      width: MixProperty.prop(width),
+      style: MixProperty.prop(style),
+      strokeAlign: MixProperty.prop(strokeAlign),
     );
   }
 
@@ -261,10 +261,10 @@ final class BorderSideDto extends Mixable<BorderSide>
 
   const BorderSideDto.none()
     : this.raw(
-        color: const MixableProperty(null),
-        width: const MixableProperty(Mixable.value(0.0)),
-        style: const MixableProperty(Mixable.value(BorderStyle.none)),
-        strokeAlign: const MixableProperty(null),
+        color: const MixProperty(null),
+        width: const MixProperty(Mix.value(0.0)),
+        style: const MixProperty(Mix.value(BorderStyle.none)),
+        strokeAlign: const MixProperty(null),
       );
 
   // Factory from BorderSide
@@ -342,14 +342,14 @@ class BorderSideUtility<T extends StyleElement>
 
   /// Utility for defining [BorderSideDto.strokeAlign]
   late final strokeAlign = StrokeAlignUtility(
-    (v) => only(strokeAlign: Mixable.value(v)),
+    (v) => only(strokeAlign: Mix.value(v)),
   );
 
   /// Utility for defining [BorderSideDto.style]
-  late final style = BorderStyleUtility((v) => only(style: Mixable.value(v)));
+  late final style = BorderStyleUtility((v) => only(style: Mix.value(v)));
 
   /// Utility for defining [BorderSideDto.width]
-  late final width = DoubleUtility((v) => only(width: Mixable.value(v)));
+  late final width = DoubleUtility((v) => only(width: Mix.value(v)));
 
   BorderSideUtility(super.builder)
     : super(
@@ -383,17 +383,17 @@ class BorderSideUtility<T extends StyleElement>
   /// Returns a new [BorderSideDto] with the specified properties.
   @override
   T only({
-    Mixable<Color>? color,
-    Mixable<double>? strokeAlign,
-    Mixable<BorderStyle>? style,
-    Mixable<double>? width,
+    Mix<Color>? color,
+    Mix<double>? strokeAlign,
+    Mix<BorderStyle>? style,
+    Mix<double>? width,
   }) {
     return builder(
       BorderSideDto.raw(
-        color: MixableProperty(color),
-        width: MixableProperty(width),
-        style: MixableProperty(style),
-        strokeAlign: MixableProperty(strokeAlign),
+        color: MixProperty(color),
+        width: MixProperty(width),
+        style: MixProperty(style),
+        strokeAlign: MixProperty(strokeAlign),
       ),
     );
   }

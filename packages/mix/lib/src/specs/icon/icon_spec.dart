@@ -176,7 +176,7 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
 }
 
 class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
-  final Mixable<Color>? color;
+  final Mix<Color>? color;
   final double? size;
   final double? weight;
   final double? grade;
@@ -317,7 +317,7 @@ class IconSpecUtility<T extends SpecAttribute>
 
   @override
   T only({
-    Mixable<Color>? color,
+    Mix<Color>? color,
     double? size,
     double? weight,
     double? grade,

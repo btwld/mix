@@ -88,15 +88,15 @@ typedef StyledAttribute = SpecAttribute;
 
 /// Deprecated: Use Mixable instead
 @Deprecated('Use Mixable instead')
-typedef Dto<Value> = Mixable<Value>;
+typedef Dto<Value> = Mix<Value>;
 
 /// Deprecated: Use Mixable<Color> directly instead
 @Deprecated('Use Mixable<Color> directly instead of ColorDto')
-typedef ColorDto = Mixable<Color>;
+typedef ColorDto = Mix<Color>;
 
 /// Deprecated: Use Mixable<Radius> directly instead
 @Deprecated('Use Mixable<Radius> directly instead of RadiusDto')
-typedef RadiusDto = Mixable<Radius>;
+typedef RadiusDto = Mix<Radius>;
 
 // =============================================================================
 // CONTEXT & DATA DEPRECATIONS (v2.0.0)
@@ -351,39 +351,39 @@ extension ColorExt on Color {
   @Deprecated('Use Mixable.value(this) directly instead of toDto()')
   ColorDto toDto() => switch (this) {
     // Preserve MaterialColor type
-    MaterialColor() => Mixable<MaterialColor>.value(this as MaterialColor),
+    MaterialColor() => Mix<MaterialColor>.value(this as MaterialColor),
     // Convert other Color types to Mixable<Color>
-    _ => Mixable.value(this),
+    _ => Mix.value(this),
   };
 }
 
 /// Deprecated extension for MaterialColor conversion - preserves MaterialColor type
 extension MaterialColorExt on MaterialColor {
   @Deprecated('Use Mixable.value(this) directly instead of toDto()')
-  Mixable<MaterialColor> toDto() => Mixable.value(this);
+  Mix<MaterialColor> toDto() => Mix.value(this);
 }
 
 /// Deprecated extension for Radius conversion
 extension RadiusExt on Radius {
   @Deprecated('Use Mixable.value(this) directly instead of toDto()')
-  RadiusDto toDto() => Mixable.value(this);
+  RadiusDto toDto() => Mix.value(this);
 }
 
 /// Deprecated convenience factory functions for RadiusDto
 class RadiusDto$ {
   @Deprecated('Use Mixable.value(Radius.zero) directly instead')
-  static RadiusDto zero() => const Mixable.value(Radius.zero);
+  static RadiusDto zero() => const Mix.value(Radius.zero);
 
   @Deprecated('Use Mixable.value(Radius.circular(radius)) directly instead')
   static RadiusDto circular(double radius) =>
-      Mixable.value(Radius.circular(radius));
+      Mix.value(Radius.circular(radius));
 
   @Deprecated('Use Mixable.value(Radius.elliptical(x, y)) directly instead')
   static RadiusDto elliptical(double x, double y) =>
-      Mixable.value(Radius.elliptical(x, y));
+      Mix.value(Radius.elliptical(x, y));
 
   @Deprecated('Use Mixable.value(value) directly instead')
-  static RadiusDto fromValue(Radius value) => Mixable.value(value);
+  static RadiusDto fromValue(Radius value) => Mix.value(value);
 }
 
 // =============================================================================

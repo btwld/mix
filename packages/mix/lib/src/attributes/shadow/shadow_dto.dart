@@ -3,11 +3,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-sealed class BaseShadowDto<T extends Shadow> extends Mixable<T> {
+sealed class BaseShadowDto<T extends Shadow> extends Mix<T> {
   // Properties use MixableProperty for cleaner merging
-  final MixableProperty<Color> color;
-  final MixableProperty<Offset> offset;
-  final MixableProperty<double> blurRadius;
+  final MixProperty<Color> color;
+  final MixProperty<Offset> offset;
+  final MixProperty<double> blurRadius;
 
   const BaseShadowDto({
     required this.blurRadius,
@@ -16,7 +16,7 @@ sealed class BaseShadowDto<T extends Shadow> extends Mixable<T> {
   });
 }
 
-/// Represents a [Mixable] Data transfer object of [Shadow]
+/// Represents a [Mix] Data transfer object of [Shadow]
 ///
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a [Shadow]
@@ -24,9 +24,9 @@ class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
   // Main constructor accepts real values
   factory ShadowDto({double? blurRadius, Color? color, Offset? offset}) {
     return ShadowDto.raw(
-      blurRadius: MixableProperty.prop(blurRadius),
-      color: MixableProperty.prop(color),
-      offset: MixableProperty.prop(offset),
+      blurRadius: MixProperty.prop(blurRadius),
+      color: MixProperty.prop(color),
+      offset: MixProperty.prop(offset),
     );
   }
 
@@ -99,13 +99,13 @@ class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
   List<Object?> get props => [blurRadius, color, offset];
 }
 
-/// Represents a [Mixable] Data transfer object of [BoxShadow]
+/// Represents a [Mix] Data transfer object of [BoxShadow]
 ///
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a `[BoxShadow]
 class BoxShadowDto extends BaseShadowDto<BoxShadow>
     with HasDefaultValue<BoxShadow> {
-  final MixableProperty<double> spreadRadius;
+  final MixProperty<double> spreadRadius;
 
   // Main constructor accepts real values
   factory BoxShadowDto({
@@ -115,10 +115,10 @@ class BoxShadowDto extends BaseShadowDto<BoxShadow>
     double? spreadRadius,
   }) {
     return BoxShadowDto.raw(
-      color: MixableProperty.prop(color),
-      offset: MixableProperty.prop(offset),
-      blurRadius: MixableProperty.prop(blurRadius),
-      spreadRadius: MixableProperty.prop(spreadRadius),
+      color: MixProperty.prop(color),
+      offset: MixProperty.prop(offset),
+      blurRadius: MixProperty.prop(blurRadius),
+      spreadRadius: MixProperty.prop(spreadRadius),
     );
   }
 
@@ -194,4 +194,3 @@ class BoxShadowDto extends BaseShadowDto<BoxShadow>
   @override
   List<Object?> get props => [color, offset, blurRadius, spreadRadius];
 }
-

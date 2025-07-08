@@ -3,11 +3,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-base class TextHeightBehaviorDto extends Mixable<TextHeightBehavior> {
+base class TextHeightBehaviorDto extends Mix<TextHeightBehavior> {
   // Properties use MixableProperty for cleaner merging
-  final MixableProperty<bool> applyHeightToFirstAscent;
-  final MixableProperty<bool> applyHeightToLastDescent;
-  final MixableProperty<TextLeadingDistribution> leadingDistribution;
+  final MixProperty<bool> applyHeightToFirstAscent;
+  final MixProperty<bool> applyHeightToLastDescent;
+  final MixProperty<TextLeadingDistribution> leadingDistribution;
 
   // Main constructor accepts real values
   factory TextHeightBehaviorDto({
@@ -16,9 +16,9 @@ base class TextHeightBehaviorDto extends Mixable<TextHeightBehavior> {
     TextLeadingDistribution? leadingDistribution,
   }) {
     return TextHeightBehaviorDto.raw(
-      applyHeightToFirstAscent: MixableProperty.prop(applyHeightToFirstAscent),
-      applyHeightToLastDescent: MixableProperty.prop(applyHeightToLastDescent),
-      leadingDistribution: MixableProperty.prop(leadingDistribution),
+      applyHeightToFirstAscent: MixProperty.prop(applyHeightToFirstAscent),
+      applyHeightToLastDescent: MixProperty.prop(applyHeightToLastDescent),
+      leadingDistribution: MixProperty.prop(leadingDistribution),
     );
   }
 
@@ -58,7 +58,8 @@ base class TextHeightBehaviorDto extends Mixable<TextHeightBehavior> {
       applyHeightToFirstAscent: applyHeightToFirstAscent.resolve(mix) ?? true,
       applyHeightToLastDescent: applyHeightToLastDescent.resolve(mix) ?? true,
       leadingDistribution:
-          leadingDistribution.resolve(mix) ?? TextLeadingDistribution.proportional,
+          leadingDistribution.resolve(mix) ??
+          TextLeadingDistribution.proportional,
     );
   }
 
@@ -75,8 +76,12 @@ base class TextHeightBehaviorDto extends Mixable<TextHeightBehavior> {
     if (other == null) return this;
 
     return TextHeightBehaviorDto.raw(
-      applyHeightToFirstAscent: applyHeightToFirstAscent.merge(other.applyHeightToFirstAscent),
-      applyHeightToLastDescent: applyHeightToLastDescent.merge(other.applyHeightToLastDescent),
+      applyHeightToFirstAscent: applyHeightToFirstAscent.merge(
+        other.applyHeightToFirstAscent,
+      ),
+      applyHeightToLastDescent: applyHeightToLastDescent.merge(
+        other.applyHeightToLastDescent,
+      ),
       leadingDistribution: leadingDistribution.merge(other.leadingDistribution),
     );
   }
@@ -87,27 +92,27 @@ base class TextHeightBehaviorDto extends Mixable<TextHeightBehavior> {
   /// compare two [TextHeightBehaviorDto] instances for equality.
   @override
   List<Object?> get props => [
-        applyHeightToFirstAscent,
-        applyHeightToLastDescent,
-        leadingDistribution,
-      ];
+    applyHeightToFirstAscent,
+    applyHeightToLastDescent,
+    leadingDistribution,
+  ];
 }
 
 final class TextHeightBehaviorUtility<T extends StyleElement>
     extends DtoUtility<T, TextHeightBehaviorDto, TextHeightBehavior> {
   late final heightToFirstAscent = BoolUtility(
-    (v) => only(applyHeightToFirstAscent: Mixable.value(v)),
+    (v) => only(applyHeightToFirstAscent: Mix.value(v)),
   );
   late final heightToLastDescent = BoolUtility(
-    (v) => only(applyHeightToLastDescent: Mixable.value(v)),
+    (v) => only(applyHeightToLastDescent: Mix.value(v)),
   );
 
   late final leadingDistribution = TextLeadingDistributionUtility(
-    (v) => only(leadingDistribution: Mixable.value(v)),
+    (v) => only(leadingDistribution: Mix.value(v)),
   );
 
   TextHeightBehaviorUtility(super.builder)
-      : super(valueToDto: (v) => TextHeightBehaviorDto.from(v));
+    : super(valueToDto: (v) => TextHeightBehaviorDto.from(v));
 
   T call({
     bool? applyHeightToFirstAscent,
@@ -125,16 +130,14 @@ final class TextHeightBehaviorUtility<T extends StyleElement>
 
   @override
   T only({
-    Mixable<bool>? applyHeightToFirstAscent,
-    Mixable<bool>? applyHeightToLastDescent,
-    Mixable<TextLeadingDistribution>? leadingDistribution,
-  }) =>
-      builder(
-        TextHeightBehaviorDto.raw(
-          applyHeightToFirstAscent: MixableProperty(applyHeightToFirstAscent),
-          applyHeightToLastDescent: MixableProperty(applyHeightToLastDescent),
-          leadingDistribution: MixableProperty(leadingDistribution),
-        ),
-      );
+    Mix<bool>? applyHeightToFirstAscent,
+    Mix<bool>? applyHeightToLastDescent,
+    Mix<TextLeadingDistribution>? leadingDistribution,
+  }) => builder(
+    TextHeightBehaviorDto.raw(
+      applyHeightToFirstAscent: MixProperty(applyHeightToFirstAscent),
+      applyHeightToLastDescent: MixProperty(applyHeightToLastDescent),
+      leadingDistribution: MixProperty(leadingDistribution),
+    ),
+  );
 }
-

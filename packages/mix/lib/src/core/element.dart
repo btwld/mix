@@ -7,16 +7,16 @@ import 'utility.dart';
 
 // Generic directive for modifying values
 @immutable
-class MixableDirective<T> {
+class MixDirective<T> {
   final T Function(T) modify;
   final String? debugLabel;
 
-  const MixableDirective(this.modify, {this.debugLabel});
+  const MixDirective(this.modify, {this.debugLabel});
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is MixableDirective<T> &&
+      other is MixDirective<T> &&
           runtimeType == other.runtimeType &&
           debugLabel == other.debugLabel;
 
@@ -37,30 +37,28 @@ abstract class StyleElement with EqualityMixin {
 
 // Deprecated typedefs moved to src/core/deprecated.dart
 
-abstract class Mixable<Value> with EqualityMixin {
-  final List<MixableDirective<Value>> directives;
+abstract class Mix<Value> with EqualityMixin {
+  final List<MixDirective<Value>> directives;
 
-  const Mixable({this.directives = const []});
+  const Mix({this.directives = const []});
 
-  const factory Mixable.value(
-    Value value, {
-    List<MixableDirective<Value>> directives,
-  }) = _ValueMixable<Value>;
+  const factory Mix.value(Value value, {List<MixDirective<Value>> directives}) =
+      _ValueMixable<Value>;
 
-  const factory Mixable.token(
+  const factory Mix.token(
     MixableToken<Value> token, {
-    List<MixableDirective<Value>> directives,
+    List<MixDirective<Value>> directives,
   }) = _TokenMixable<Value>;
 
-  const factory Mixable.composite(
-    List<Mixable<Value>> items, {
-    List<MixableDirective<Value>> directives,
+  const factory Mix.composite(
+    List<Mix<Value>> items, {
+    List<MixDirective<Value>> directives,
   }) = _CompositeMixable<Value>;
 
-  static Mixable<T>? maybeValue<T>(T? value) {
+  static Mix<T>? maybeValue<T>(T? value) {
     if (value == null) return null;
 
-    return Mixable.value(value);
+    return Mix.value(value);
   }
 
   /// Gets the underlying value if this is a ValueMixable, otherwise returns null
@@ -84,30 +82,28 @@ abstract class Mixable<Value> with EqualityMixin {
 
   /// Helper method to merge directives
   @protected
-  List<MixableDirective<Value>> mergeDirectives(
-    List<MixableDirective<Value>> other,
-  ) {
+  List<MixDirective<Value>> mergeDirectives(List<MixDirective<Value>> other) {
     return [...directives, ...other];
   }
 
-  Mixable<Value> merge(covariant Mixable<Value>? other) {
+  Mix<Value> merge(covariant Mix<Value>? other) {
     if (other == null) return this;
 
     final allDirectives = mergeDirectives(other.directives);
 
     return switch ((this, other)) {
-      (_, _CompositeMixable(:var items)) => Mixable.composite([
+      (_, _CompositeMixable(:var items)) => Mix.composite([
         ...items,
         this,
       ], directives: allDirectives),
-      _ => Mixable.composite([this, other], directives: allDirectives),
+      _ => Mix.composite([this, other], directives: allDirectives),
     };
   }
 }
 
 // Private implementations for Mixable<T>
 @immutable
-class _ValueMixable<T> extends Mixable<T> {
+class _ValueMixable<T> extends Mix<T> {
   @override
   final T value;
 
@@ -121,7 +117,7 @@ class _ValueMixable<T> extends Mixable<T> {
 }
 
 @immutable
-class _TokenMixable<T> extends Mixable<T> {
+class _TokenMixable<T> extends Mix<T> {
   final MixableToken<T> token;
 
   const _TokenMixable(this.token, {super.directives});
@@ -135,8 +131,8 @@ class _TokenMixable<T> extends Mixable<T> {
 }
 
 @immutable
-class _CompositeMixable<T> extends Mixable<T> {
-  final List<Mixable<T>> items;
+class _CompositeMixable<T> extends Mix<T> {
+  final List<Mix<T>> items;
 
   const _CompositeMixable(this.items, {super.directives});
 
@@ -156,20 +152,19 @@ class _CompositeMixable<T> extends Mixable<T> {
   }
 
   @override
-  Mixable<T> merge(Mixable<T>? other) {
+  Mix<T> merge(Mix<T>? other) {
     if (other == null) return this;
 
     final allDirectives = mergeDirectives(other.directives);
 
-    return Mixable.composite([...items, other], directives: allDirectives);
+    return Mix.composite([...items, other], directives: allDirectives);
   }
 
   @override
   List<Object?> get props => [items, directives];
 }
 
-final class MixableList<T extends Mixable<Value>, Value>
-    extends Mixable<List<Value>> {
+final class MixableList<T extends Mix<Value>, Value> extends Mix<List<Value>> {
   final List<T> _items;
 
   const MixableList(this._items);
@@ -200,11 +195,7 @@ mixin HasDefaultValue<Value> {
   Value get defaultValue;
 }
 
-abstract class DtoUtility<
-  A extends StyleElement,
-  D extends Mixable<Value>,
-  Value
->
+abstract class DtoUtility<A extends StyleElement, D extends Mix<Value>, Value>
     extends MixUtility<A, D> {
   final D Function(Value) fromValue;
   const DtoUtility(super.builder, {required D Function(Value) valueToDto})
@@ -219,19 +210,18 @@ abstract class DtoUtility<
 /// This encapsulates value/token/composite logic and simplifies DTO implementations.
 /// MixableProperty is always nullable - resolve() always returns T?
 @immutable
-class MixableProperty<T extends Object> with EqualityMixin {
-  final Mixable<T>? _mixable;
+class MixProperty<T extends Object> with EqualityMixin {
+  final Mix<T>? _mixable;
 
-  const MixableProperty([this._mixable]);
+  const MixProperty([this._mixable]);
 
   /// Creates a MixableProperty from a concrete value (can be null)
-  factory MixableProperty.prop(T? value) =>
-      MixableProperty(Mixable.maybeValue(value));
+  factory MixProperty.prop(T? value) => MixProperty(Mix.maybeValue(value));
 
   /// Creates a MixableProperty from a token
   /// Note: We need a nullable token wrapper to handle the type mismatch
-  factory MixableProperty.token(MixableToken<T> token) {
-    return MixableProperty(Mixable.token(token));
+  factory MixProperty.token(MixableToken<T> token) {
+    return MixProperty(Mix.token(token));
   }
 
   /// Creates a MixableProperty from a nullable value
@@ -243,8 +233,8 @@ class MixableProperty<T extends Object> with EqualityMixin {
   T? resolve(MixContext mix) => _mixable?.resolve(mix);
 
   /// Merges this property with another, creating a composite
-  MixableProperty<T> merge(MixableProperty<T> other) {
-    return MixableProperty(_mixable?.merge(other._mixable));
+  MixProperty<T> merge(MixProperty<T> other) {
+    return MixProperty(_mixable?.merge(other._mixable));
   }
 
   @override

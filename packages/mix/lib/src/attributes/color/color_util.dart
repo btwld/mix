@@ -8,79 +8,73 @@ import 'material_colors_util.dart';
 /// Base utility for color operations
 @immutable
 abstract base class BaseColorUtility<T extends StyleElement>
-    extends DtoUtility<T, Mixable<Color>, Color> {
-  const BaseColorUtility(super.builder) : super(valueToDto: Mixable.value);
+    extends DtoUtility<T, Mix<Color>, Color> {
+  const BaseColorUtility(super.builder) : super(valueToDto: Mix.value);
 
-  T _buildColor(Color color) => builder(Mixable.value(color));
+  T _buildColor(Color color) => builder(Mix.value(color));
 }
 
 /// Mixin that provides color directive methods
 base mixin ColorDirectiveMixin<T extends StyleElement> on BaseColorUtility<T> {
   /// Helper method to create a directive-only Mixable
-  T _directive(MixableDirective<Color> directive) {
+  T _directive(MixDirective<Color> directive) {
     // Create a composite with no items, only directives
-    return builder(Mixable.composite([], directives: [directive]));
+    return builder(Mix.composite([], directives: [directive]));
   }
 
   // All directive methods use the same pattern
   T withOpacity(double opacity) => _directive(
-    MixableDirective(
+    MixDirective(
       (color) => color.withValues(alpha: opacity),
       debugLabel: 'opacity($opacity)',
     ),
   );
 
   T withAlpha(int alpha) => _directive(
-    MixableDirective(
+    MixDirective(
       (color) => color.withAlpha(alpha),
       debugLabel: 'alpha($alpha)',
     ),
   );
 
   T darken(int amount) => _directive(
-    MixableDirective(
+    MixDirective(
       (color) => color.darken(amount),
       debugLabel: 'darken($amount)',
     ),
   );
 
   T lighten(int amount) => _directive(
-    MixableDirective(
+    MixDirective(
       (color) => color.lighten(amount),
       debugLabel: 'lighten($amount)',
     ),
   );
 
   T saturate(int amount) => _directive(
-    MixableDirective(
+    MixDirective(
       (color) => color.saturate(amount),
       debugLabel: 'saturate($amount)',
     ),
   );
 
   T desaturate(int amount) => _directive(
-    MixableDirective(
+    MixDirective(
       (color) => color.desaturate(amount),
       debugLabel: 'desaturate($amount)',
     ),
   );
 
   T tint(int amount) => _directive(
-    MixableDirective(
-      (color) => color.tint(amount),
-      debugLabel: 'tint($amount)',
-    ),
+    MixDirective((color) => color.tint(amount), debugLabel: 'tint($amount)'),
   );
 
   T shade(int amount) => _directive(
-    MixableDirective(
-      (color) => color.shade(amount),
-      debugLabel: 'shade($amount)',
-    ),
+    MixDirective((color) => color.shade(amount), debugLabel: 'shade($amount)'),
   );
 
   T brighten(int amount) => _directive(
-    MixableDirective(
+    MixDirective(
       (color) => color.brighten(amount),
       debugLabel: 'brighten($amount)',
     ),
@@ -96,7 +90,7 @@ base class FoundationColorUtility<T extends StyleElement, C extends Color>
   const FoundationColorUtility(super.builder, this.color);
 
   T call([Color? value]) => _buildColor(value ?? color);
-  
+
   @override
   T only() => _buildColor(color);
 }
@@ -110,12 +104,14 @@ final class ColorUtility<T extends StyleElement> extends BaseColorUtility<T>
   @Deprecated('Use token() instead. Will be removed in a future version.')
   T ref(MixableToken<Color> ref) => token(ref);
 
-  T token(MixableToken<Color> token) => builder(Mixable.token(token));
+  T token(MixableToken<Color> token) => builder(Mix.token(token));
 
   T call(Color value) => _buildColor(value);
-  
+
   @override
-  T only() => throw UnsupportedError('ColorUtility requires a color value. Use call() or a predefined color.');
+  T only() => throw UnsupportedError(
+    'ColorUtility requires a color value. Use call() or a predefined color.',
+  );
 }
 
 base mixin BasicColorsMixin<T extends StyleElement> on BaseColorUtility<T> {

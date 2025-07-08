@@ -17,8 +17,8 @@ void main() {
           data: theme,
           child: Builder(
             builder: (context) {
-              const dto1 = Mixable<Color>.token(primaryToken);
-              const dto2 = Mixable<Color>.token(secondaryToken);
+              const dto1 = Mix<Color>.token(primaryToken);
+              const dto2 = Mix<Color>.token(secondaryToken);
 
               final color1 = dto1.resolve(MixContext.create(context, Style()));
               final color2 = dto2.resolve(MixContext.create(context, Style()));
@@ -61,7 +61,6 @@ void main() {
         ),
       );
     });
-
 
     testWidgets('Utility extensions work with tokens', (tester) async {
       const primaryToken = MixableToken<Color>('primary');

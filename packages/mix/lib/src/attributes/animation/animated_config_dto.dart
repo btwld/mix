@@ -10,11 +10,11 @@ import 'animation_config.dart';
 )
 typedef AnimatedDataDto = AnimationConfigDto;
 
-class AnimationConfigDto extends Mixable<AnimationConfig> {
+class AnimationConfigDto extends Mix<AnimationConfig> {
   // Properties use MixableProperty for cleaner merging
-  final MixableProperty<Duration> duration;
-  final MixableProperty<Curve> curve;
-  final MixableProperty<VoidCallback> onEnd;
+  final MixProperty<Duration> duration;
+  final MixProperty<Curve> curve;
+  final MixProperty<VoidCallback> onEnd;
 
   // Main constructor accepts real values
   factory AnimationConfigDto({
@@ -23,9 +23,9 @@ class AnimationConfigDto extends Mixable<AnimationConfig> {
     VoidCallback? onEnd,
   }) {
     return AnimationConfigDto.raw(
-      duration: MixableProperty.prop(duration),
-      curve: MixableProperty.prop(curve),
-      onEnd: MixableProperty.prop(onEnd),
+      duration: MixProperty.prop(duration),
+      curve: MixProperty.prop(curve),
+      onEnd: MixProperty.prop(onEnd),
     );
   }
 

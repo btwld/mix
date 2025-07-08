@@ -194,7 +194,7 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
 class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
   final double? width;
   final double? height;
-  final Mixable<Color>? color;
+  final Mix<Color>? color;
   final ImageRepeat? repeat;
   final BoxFit? fit;
   final AlignmentGeometry? alignment;
@@ -333,7 +333,7 @@ class ImageSpecUtility<T extends SpecAttribute>
   T only({
     double? width,
     double? height,
-    Mixable<Color>? color,
+    Mix<Color>? color,
     ImageRepeat? repeat,
     BoxFit? fit,
     AlignmentGeometry? alignment,

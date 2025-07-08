@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
+import '../../core/animated_spec_widget.dart';
 import '../../core/factory/mix_provider.dart';
 import '../../core/spec_widget.dart';
-import '../../core/animated_spec_widget.dart';
 import '../../core/styled_widget.dart';
 import '../../modifiers/internal/render_widget_modifier.dart';
 import 'box_spec.dart';
@@ -22,7 +22,7 @@ import 'box_spec.dart';
 /// ## Inheriting Styles
 ///
 /// If the [inherit] property is set to `true`, `Box` will merge its defined style with
-/// the style from the nearest [Mix] ancestor in the widget tree. This is
+/// the style from the nearest [MixProvider] ancestor in the widget tree. This is
 /// useful for cascading styles down the widget tree.
 ///
 /// ## Performance Considerations

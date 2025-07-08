@@ -6,7 +6,7 @@ import '../../../helpers/testing_utils.dart';
 import 'helpers/expect_color.dart';
 
 final class TestColorAttribute extends SpecAttribute<Color> {
-  final Mixable<Color>? value;
+  final Mix<Color>? value;
   const TestColorAttribute([this.value]);
 
   @override
@@ -31,7 +31,7 @@ void main() {
       final attribute = colorUtility.withOpacity(0.5);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
+      expect(attribute.value?.directives.first, isA<MixDirective<Color>>());
     });
 
     test('withOpacity resolves the correct value', () {
@@ -60,7 +60,7 @@ void main() {
       final attribute = colorUtility.withAlpha(100);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
+      expect(attribute.value?.directives.first, isA<MixDirective<Color>>());
     });
 
     // withAlpha resolves
@@ -88,7 +88,7 @@ void main() {
       final attribute = colorUtility.darken(10);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
+      expect(attribute.value?.directives.first, isA<MixDirective<Color>>());
     });
 
     //  darken resolves
@@ -116,7 +116,7 @@ void main() {
       final attribute = colorUtility.lighten(10);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
+      expect(attribute.value?.directives.first, isA<MixDirective<Color>>());
     });
 
     // lighten resolves
@@ -144,7 +144,7 @@ void main() {
       final attribute = colorUtility.saturate(10);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
+      expect(attribute.value?.directives.first, isA<MixDirective<Color>>());
     });
 
     // saturate resolves
@@ -172,7 +172,7 @@ void main() {
       final attribute = colorUtility.desaturate(10);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
+      expect(attribute.value?.directives.first, isA<MixDirective<Color>>());
     });
 
     // desaturate resolves
@@ -203,7 +203,7 @@ void main() {
       final attribute = colorUtility.tint(10);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
+      expect(attribute.value?.directives.first, isA<MixDirective<Color>>());
     });
 
     // tint resolves
@@ -230,7 +230,7 @@ void main() {
       final attribute = colorUtility.shade(10);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
+      expect(attribute.value?.directives.first, isA<MixDirective<Color>>());
     });
 
     // shade resolves
@@ -258,7 +258,7 @@ void main() {
       final attribute = colorUtility.brighten(10);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
+      expect(attribute.value?.directives.first, isA<MixDirective<Color>>());
     });
 
     // brighten resolves
@@ -307,7 +307,7 @@ void main() {
       final resolvedColor = attribute.resolve(EmptyMixData);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
+      expect(attribute.value?.directives.first, isA<MixDirective<Color>>());
       expect(attribute.value?.resolve(EmptyMixData), Colors.red);
 
       expect(resolvedColor, Colors.red.shade(10));
@@ -320,7 +320,7 @@ void main() {
       final resolvedColor = attribute.resolve(EmptyMixData);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
+      expect(attribute.value?.directives.first, isA<MixDirective<Color>>());
       expect(attribute.value?.resolve(EmptyMixData), Colors.red);
 
       expect(resolvedColor, Colors.red.tint(10));
@@ -333,7 +333,7 @@ void main() {
       final resolvedColor = attribute.resolve(EmptyMixData);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
+      expect(attribute.value?.directives.first, isA<MixDirective<Color>>());
       expect(attribute.value?.resolve(EmptyMixData), Colors.red);
 
       expect(resolvedColor, Colors.red.lighten(10));
@@ -346,7 +346,7 @@ void main() {
       final resolvedColor = attribute.resolve(EmptyMixData);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
+      expect(attribute.value?.directives.first, isA<MixDirective<Color>>());
       expect(attribute.value?.resolve(EmptyMixData), Colors.red);
 
       expect(resolvedColor, Colors.red.darken(10));
@@ -359,7 +359,7 @@ void main() {
       final resolvedColor = attribute.resolve(EmptyMixData);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
+      expect(attribute.value?.directives.first, isA<MixDirective<Color>>());
       expect(attribute.value?.resolve(EmptyMixData), Colors.red);
 
       expect(resolvedColor, Colors.red.withValues(alpha: 0.5));
@@ -372,7 +372,7 @@ void main() {
       final resolvedColor = attribute.resolve(EmptyMixData);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
+      expect(attribute.value?.directives.first, isA<MixDirective<Color>>());
       expect(attribute.value?.resolve(EmptyMixData), Colors.red);
 
       expect(resolvedColor, Colors.red.withAlpha(50));
@@ -385,7 +385,7 @@ void main() {
       final resolvedColor = attribute.resolve(EmptyMixData);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
+      expect(attribute.value?.directives.first, isA<MixDirective<Color>>());
       expect(attribute.value?.resolve(EmptyMixData), Colors.red);
 
       expect(resolvedColor, Colors.red.saturate(10));
@@ -398,7 +398,7 @@ void main() {
       final resolvedColor = attribute.resolve(EmptyMixData);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
+      expect(attribute.value?.directives.first, isA<MixDirective<Color>>());
       expect(attribute.value?.resolve(EmptyMixData), Colors.red);
 
       expect(resolvedColor, Colors.red.desaturate(10));
@@ -411,7 +411,7 @@ void main() {
       final resolvedColor = attribute.resolve(EmptyMixData);
 
       expect(attribute.value?.directives.length, 1);
-      expect(attribute.value?.directives.first, isA<MixableDirective<Color>>());
+      expect(attribute.value?.directives.first, isA<MixDirective<Color>>());
       expect(attribute.value?.resolve(EmptyMixData), Colors.red);
 
       expect(resolvedColor, Colors.red.brighten(10));
@@ -698,9 +698,9 @@ void main() {
 
     test('Mixable.value() should return the correct Mixable<Color>', () {
       const color = Colors.blue;
-      const colorDto = Mixable.value(color);
+      const colorDto = Mix.value(color);
 
-      expect(colorDto, equals(const Mixable.value(color)));
+      expect(colorDto, equals(const Mix.value(color)));
     });
   });
 }

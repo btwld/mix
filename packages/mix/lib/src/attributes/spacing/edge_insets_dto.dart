@@ -2,12 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-
 // Deprecated typedef moved to src/core/deprecated.dart
 
 @immutable
 sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
-    extends Mixable<T> {
+    extends Mix<T> {
   final SpaceDto? top;
   final SpaceDto? bottom;
 
@@ -52,7 +51,9 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
     return switch (geometry) {
       EdgeInsets() => EdgeInsetsDto.from(geometry),
       EdgeInsetsDirectional() => EdgeInsetsDirectionalDto.from(geometry),
-      _ => throw ArgumentError('Unsupported EdgeInsetsGeometry type: ${geometry.runtimeType}'),
+      _ => throw ArgumentError(
+        'Unsupported EdgeInsetsGeometry type: ${geometry.runtimeType}',
+      ),
     };
   }
 
@@ -256,4 +257,3 @@ final class EdgeInsetsDirectionalDto
   @override
   List<Object?> get props => [top, bottom, start, end];
 }
-

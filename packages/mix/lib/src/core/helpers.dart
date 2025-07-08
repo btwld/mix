@@ -56,11 +56,7 @@ P? _lerpSnap<P>(P? from, P? to, double t) {
 w.TextStyle? _lerpTextStyle(w.TextStyle? a, w.TextStyle? b, double t) {
   return w.TextStyle.lerp(a, b, t)?.copyWith(
     shadows: w.Shadow.lerpList(a?.shadows, b?.shadows, t),
-    fontVariations: lerpFontVariations(
-      a?.fontVariations,
-      b?.fontVariations,
-      t,
-    ),
+    fontVariations: lerpFontVariations(a?.fontVariations, b?.fontVariations, t),
   );
 }
 
@@ -87,7 +83,7 @@ List<T>? _mergeList<T>(List<T>? a, List<T>? b) {
       final currentValue = a[index];
       final otherValue = b[index];
 
-      if (currentValue is Mixable && otherValue is Mixable) {
+      if (currentValue is Mix && otherValue is Mix) {
         return currentValue.merge(otherValue) as T;
       }
 
@@ -100,7 +96,7 @@ List<T>? _mergeList<T>(List<T>? a, List<T>? b) {
   });
 }
 
-List<V> _resolveList<T extends Mixable<V>, V>(List<T>? a, MixContext mix) {
+List<V> _resolveList<T extends Mix<V>, V>(List<T>? a, MixContext mix) {
   if (a == null) return [];
 
   return a.map((e) => e.resolve(mix)).whereType<V>().toList();
@@ -124,8 +120,9 @@ w.StrutStyle? _lerpStrutStyle(w.StrutStyle? a, w.StrutStyle? b, double t) {
     fontFamilyFallback: t < 0.5 ? a.fontFamilyFallback : b.fontFamilyFallback,
     fontSize: MixHelpers.lerpDouble(a.fontSize, b.fontSize, t),
     height: MixHelpers.lerpDouble(a.height, b.height, t),
-    leadingDistribution:
-        t < 0.5 ? a.leadingDistribution : b.leadingDistribution,
+    leadingDistribution: t < 0.5
+        ? a.leadingDistribution
+        : b.leadingDistribution,
     leading: MixHelpers.lerpDouble(a.leading, b.leading, t),
     fontWeight: r.FontWeight.lerp(a.fontWeight, b.fontWeight, t),
     fontStyle: t < 0.5 ? a.fontStyle : b.fontStyle,

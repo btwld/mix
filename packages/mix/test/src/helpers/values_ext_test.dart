@@ -32,7 +32,9 @@ void main() {
       );
 
       final dto = ShapeDecorationDto(
-        gradient: value.gradient != null ? RadialGradientDto.maybeFrom(value.gradient! as RadialGradient) : null,
+        gradient: value.gradient != null
+            ? RadialGradientDto.maybeFrom(value.gradient! as RadialGradient)
+            : null,
         shadows: value.shadows?.map((e) => BoxShadowDto.from(e)).toList(),
         shape: CircleBorderDto(),
       );
@@ -66,10 +68,16 @@ void main() {
 
       final dto = BoxDecorationDto(
         color: value.color,
-        border: value.border != null ? BorderDto.from(value.border! as Border) : null,
-        borderRadius: value.borderRadius != null ? BorderRadiusGeometryDto.from(value.borderRadius!) : null,
+        border: value.border != null
+            ? BorderDto.from(value.border! as Border)
+            : null,
+        borderRadius: value.borderRadius != null
+            ? BorderRadiusGeometryDto.from(value.borderRadius!)
+            : null,
         boxShadow: value.boxShadow?.map((e) => BoxShadowDto.from(e)).toList(),
-        gradient: value.gradient != null ? LinearGradientDto.maybeFrom(value.gradient! as LinearGradient) : null,
+        gradient: value.gradient != null
+            ? LinearGradientDto.maybeFrom(value.gradient! as LinearGradient)
+            : null,
       );
 
       expect(dto, isA<BoxDecorationDto>());
@@ -95,7 +103,7 @@ void main() {
       final dto = BorderSideDto.from(value);
 
       expect(dto, isA<BorderSideDto>());
-      expect(dto.color, const Mixable<Color>.value(Colors.blue));
+      expect(dto.color, const Mix<Color>.value(Colors.blue));
       expect(dto.width, 2.0);
       expect(dto.style, BorderStyle.solid);
 
@@ -128,7 +136,7 @@ void main() {
 
       expect(dto, isA<BoxShadowDto>());
       expect(dto.blurRadius, 10.0);
-      expect(dto.color, const Mixable<Color>.value(Colors.black));
+      expect(dto.color, const Mix<Color>.value(Colors.black));
 
       // Resolves correctly
       expect(dto.resolve(EmptyMixData), value);
@@ -141,7 +149,7 @@ void main() {
 
       expect(dto, isA<BoxShadowDto>());
       expect(dto.blurRadius, 5.0);
-      expect(dto.color, const Mixable<Color>.value(Colors.grey));
+      expect(dto.color, const Mix<Color>.value(Colors.grey));
 
       // Resolves correctly
       expect(dto.resolve(EmptyMixData), value);

@@ -14,7 +14,7 @@ void main() {
         Style(
           IconSpecAttribute(
             size: 20.0,
-            color: const Mixable.value(Colors.red),
+            color: const Mix.value(Colors.red),
             applyTextScaling: true,
             fill: 2,
             grade: 2,
@@ -84,7 +84,7 @@ void main() {
       final mixData = MixContext.create(
         MockBuildContext(),
         Style(
-          const IconSpecAttribute(size: 20.0, color: Mixable.value(Colors.red)),
+          const IconSpecAttribute(size: 20.0, color: Mix.value(Colors.red)),
         ),
       );
 
@@ -123,7 +123,7 @@ void main() {
       final attr = util.attributeValue!;
 
       expect(util, isA<StyleElement>());
-      expect(attr.color, const Mixable.value(Colors.red));
+      expect(attr.color, const Mix.value(Colors.red));
       expect(attr.size, 24);
       expect(attr.weight, 500);
       expect(attr.grade, 200);
@@ -136,7 +136,7 @@ void main() {
 
       final iconAttribute = style.styles.attributeOfType<IconSpecAttribute>();
 
-      expect(iconAttribute?.color, const Mixable.value(Colors.red));
+      expect(iconAttribute?.color, const Mix.value(Colors.red));
       expect(iconAttribute?.size, 24);
       expect(iconAttribute?.weight, 500);
       expect(iconAttribute?.grade, 200);
@@ -201,7 +201,7 @@ void main() {
       final iconAttribute2 = icon.size(48);
 
       expect(iconAttribute.size, 24);
-      expect(iconAttribute.color, const Mixable.value(Colors.red));
+      expect(iconAttribute.color, const Mix.value(Colors.red));
       expect(iconAttribute.weight, 500);
 
       expect(iconAttribute2.size, 48);

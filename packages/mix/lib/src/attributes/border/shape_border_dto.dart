@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 @immutable
-sealed class ShapeBorderDto<T extends ShapeBorder> extends Mixable<T> {
+sealed class ShapeBorderDto<T extends ShapeBorder> extends Mix<T> {
   const ShapeBorderDto();
 
   static ShapeBorderDto? tryToMerge(ShapeBorderDto? a, ShapeBorderDto? b) {
@@ -314,7 +314,7 @@ final class ContinuousRectangleBorderDto
 }
 
 final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
-  final MixableProperty<double> eccentricity;
+  final MixProperty<double> eccentricity;
 
   // Main constructor accepts either BorderSide or BorderSideDto for compatibility
   factory CircleBorderDto({Object? side, double? eccentricity}) {
@@ -327,7 +327,7 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
 
     return CircleBorderDto.raw(
       side: sideDto,
-      eccentricity: MixableProperty.prop(eccentricity),
+      eccentricity: MixProperty.prop(eccentricity),
     );
   }
 
@@ -355,7 +355,7 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
 
     return CircleBorderDto.raw(
       side: other.side,
-      eccentricity: const MixableProperty(null),
+      eccentricity: const MixProperty(null),
     );
   }
 
@@ -405,12 +405,12 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
 }
 
 final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
-  final MixableProperty<double> points;
-  final MixableProperty<double> innerRadiusRatio;
-  final MixableProperty<double> pointRounding;
-  final MixableProperty<double> valleyRounding;
-  final MixableProperty<double> rotation;
-  final MixableProperty<double> squash;
+  final MixProperty<double> points;
+  final MixProperty<double> innerRadiusRatio;
+  final MixProperty<double> pointRounding;
+  final MixProperty<double> valleyRounding;
+  final MixProperty<double> rotation;
+  final MixProperty<double> squash;
 
   // Main constructor accepts real values
   factory StarBorderDto({
@@ -424,12 +424,12 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
   }) {
     return StarBorderDto.raw(
       side: side != null ? BorderSideDto.from(side) : null,
-      points: MixableProperty.prop(points),
-      innerRadiusRatio: MixableProperty.prop(innerRadiusRatio),
-      pointRounding: MixableProperty.prop(pointRounding),
-      valleyRounding: MixableProperty.prop(valleyRounding),
-      rotation: MixableProperty.prop(rotation),
-      squash: MixableProperty.prop(squash),
+      points: MixProperty.prop(points),
+      innerRadiusRatio: MixProperty.prop(innerRadiusRatio),
+      pointRounding: MixProperty.prop(pointRounding),
+      valleyRounding: MixProperty.prop(valleyRounding),
+      rotation: MixProperty.prop(rotation),
+      squash: MixProperty.prop(squash),
     );
   }
 
@@ -466,12 +466,12 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
   StarBorderDto adapt(OutlinedBorderDto other) {
     return StarBorderDto.raw(
       side: other.side,
-      points: const MixableProperty(null),
-      innerRadiusRatio: const MixableProperty(null),
-      pointRounding: const MixableProperty(null),
-      valleyRounding: const MixableProperty(null),
-      rotation: const MixableProperty(null),
-      squash: const MixableProperty(null),
+      points: const MixProperty(null),
+      innerRadiusRatio: const MixProperty(null),
+      pointRounding: const MixProperty(null),
+      valleyRounding: const MixProperty(null),
+      rotation: const MixProperty(null),
+      squash: const MixProperty(null),
     );
   }
 
@@ -628,15 +628,15 @@ final class LinearBorderDto extends OutlinedBorderDto<LinearBorder> {
   List<Object?> get props => [side, start, end, top, bottom];
 }
 
-final class LinearBorderEdgeDto extends Mixable<LinearBorderEdge> {
-  final MixableProperty<double> size;
-  final MixableProperty<double> alignment;
+final class LinearBorderEdgeDto extends Mix<LinearBorderEdge> {
+  final MixProperty<double> size;
+  final MixProperty<double> alignment;
 
   // Main constructor accepts real values
   factory LinearBorderEdgeDto({double? size, double? alignment}) {
     return LinearBorderEdgeDto.raw(
-      size: MixableProperty.prop(size),
-      alignment: MixableProperty.prop(alignment),
+      size: MixProperty.prop(size),
+      alignment: MixProperty.prop(alignment),
     );
   }
 
@@ -879,7 +879,7 @@ class CircleBorderUtility<T extends StyleElement>
 
   /// Utility for defining [CircleBorderDto.eccentricity]
   late final eccentricity = DoubleUtility(
-    (v) => only(eccentricity: Mixable.value(v)),
+    (v) => only(eccentricity: Mix.value(v)),
   );
 
   CircleBorderUtility(super.builder)
@@ -891,12 +891,9 @@ class CircleBorderUtility<T extends StyleElement>
 
   /// Returns a new [CircleBorderDto] with the specified properties.
   @override
-  T only({BorderSideDto? side, Mixable<double>? eccentricity}) {
+  T only({BorderSideDto? side, Mix<double>? eccentricity}) {
     return builder(
-      CircleBorderDto.raw(
-        side: side,
-        eccentricity: MixableProperty(eccentricity),
-      ),
+      CircleBorderDto.raw(side: side, eccentricity: MixProperty(eccentricity)),
     );
   }
 }
@@ -911,28 +908,28 @@ class StarBorderUtility<T extends StyleElement>
   late final side = BorderSideUtility((v) => only(side: v));
 
   /// Utility for defining [StarBorderDto.points]
-  late final points = DoubleUtility((v) => only(points: Mixable.value(v)));
+  late final points = DoubleUtility((v) => only(points: Mix.value(v)));
 
   /// Utility for defining [StarBorderDto.innerRadiusRatio]
   late final innerRadiusRatio = DoubleUtility(
-    (v) => only(innerRadiusRatio: Mixable.value(v)),
+    (v) => only(innerRadiusRatio: Mix.value(v)),
   );
 
   /// Utility for defining [StarBorderDto.pointRounding]
   late final pointRounding = DoubleUtility(
-    (v) => only(pointRounding: Mixable.value(v)),
+    (v) => only(pointRounding: Mix.value(v)),
   );
 
   /// Utility for defining [StarBorderDto.valleyRounding]
   late final valleyRounding = DoubleUtility(
-    (v) => only(valleyRounding: Mixable.value(v)),
+    (v) => only(valleyRounding: Mix.value(v)),
   );
 
   /// Utility for defining [StarBorderDto.rotation]
-  late final rotation = DoubleUtility((v) => only(rotation: Mixable.value(v)));
+  late final rotation = DoubleUtility((v) => only(rotation: Mix.value(v)));
 
   /// Utility for defining [StarBorderDto.squash]
-  late final squash = DoubleUtility((v) => only(squash: Mixable.value(v)));
+  late final squash = DoubleUtility((v) => only(squash: Mix.value(v)));
 
   StarBorderUtility(super.builder)
     : super(valueToDto: (v) => StarBorderDto.from(v));
@@ -963,22 +960,22 @@ class StarBorderUtility<T extends StyleElement>
   @override
   T only({
     BorderSideDto? side,
-    Mixable<double>? points,
-    Mixable<double>? innerRadiusRatio,
-    Mixable<double>? pointRounding,
-    Mixable<double>? valleyRounding,
-    Mixable<double>? rotation,
-    Mixable<double>? squash,
+    Mix<double>? points,
+    Mix<double>? innerRadiusRatio,
+    Mix<double>? pointRounding,
+    Mix<double>? valleyRounding,
+    Mix<double>? rotation,
+    Mix<double>? squash,
   }) {
     return builder(
       StarBorderDto.raw(
         side: side,
-        points: MixableProperty(points),
-        innerRadiusRatio: MixableProperty(innerRadiusRatio),
-        pointRounding: MixableProperty(pointRounding),
-        valleyRounding: MixableProperty(valleyRounding),
-        rotation: MixableProperty(rotation),
-        squash: MixableProperty(squash),
+        points: MixProperty(points),
+        innerRadiusRatio: MixProperty(innerRadiusRatio),
+        pointRounding: MixProperty(pointRounding),
+        valleyRounding: MixProperty(valleyRounding),
+        rotation: MixProperty(rotation),
+        squash: MixProperty(squash),
       ),
     );
   }
@@ -1052,12 +1049,10 @@ class LinearBorderUtility<T extends StyleElement>
 class LinearBorderEdgeUtility<T extends StyleElement>
     extends DtoUtility<T, LinearBorderEdgeDto, LinearBorderEdge> {
   /// Utility for defining [LinearBorderEdgeDto.size]
-  late final size = DoubleUtility((v) => only(size: Mixable.value(v)));
+  late final size = DoubleUtility((v) => only(size: Mix.value(v)));
 
   /// Utility for defining [LinearBorderEdgeDto.alignment]
-  late final alignment = DoubleUtility(
-    (v) => only(alignment: Mixable.value(v)),
-  );
+  late final alignment = DoubleUtility((v) => only(alignment: Mix.value(v)));
 
   LinearBorderEdgeUtility(super.builder)
     : super(valueToDto: (v) => LinearBorderEdgeDto.from(v));
@@ -1068,11 +1063,11 @@ class LinearBorderEdgeUtility<T extends StyleElement>
 
   /// Returns a new [LinearBorderEdgeDto] with the specified properties.
   @override
-  T only({Mixable<double>? size, Mixable<double>? alignment}) {
+  T only({Mix<double>? size, Mix<double>? alignment}) {
     return builder(
       LinearBorderEdgeDto.raw(
-        size: MixableProperty(size),
-        alignment: MixableProperty(alignment),
+        size: MixProperty(size),
+        alignment: MixProperty(alignment),
       ),
     );
   }

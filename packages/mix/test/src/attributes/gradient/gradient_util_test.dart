@@ -73,7 +73,7 @@ void main() {
     // colors
     test('.colors', () {
       final colors = [Colors.red, Colors.blue];
-      final colorsDto = colors.map(Mixable.value).toList();
+      final colorsDto = colors.map(Mix.value).toList();
 
       final attribute = radialUtility(colors: colors);
 
@@ -200,7 +200,7 @@ void main() {
       final resolvedGradient = attribute.resolve(EmptyMixData);
       final dto = attribute.value;
 
-      expect(dto.colors, colors.map(Mixable.value).toList());
+      expect(dto.colors, colors.map(Mix.value).toList());
       expect(dto.stops, stops);
       expect(dto.center, center);
       expect(dto.radius, radius);
@@ -260,7 +260,7 @@ void main() {
     // colors
     test('.colors', () {
       final colors = [Colors.red, Colors.blue];
-      final colorsDto = colors.map(Mixable.value).toList();
+      final colorsDto = colors.map(Mix.value).toList();
 
       final attribute = linearUtility(colors: colors);
 
@@ -359,7 +359,7 @@ void main() {
       final resolvedGradient = attribute.resolve(EmptyMixData);
       final dto = attribute.value;
 
-      expect(dto.colors, colors.map(Mixable.value).toList());
+      expect(dto.colors, colors.map(Mix.value).toList());
       expect(dto.stops, stops);
       expect(dto.begin, begin);
       expect(dto.end, end);
@@ -414,7 +414,7 @@ void main() {
     // colors
     test('.colors', () {
       final colors = [Colors.red, Colors.blue];
-      final colorsDto = colors.map(Mixable.value).toList();
+      final colorsDto = colors.map(Mix.value).toList();
 
       final attribute = sweepUtility(colors: colors);
 
@@ -524,7 +524,7 @@ void main() {
       final resolvedGradient = attribute.resolve(EmptyMixData);
       final dto = attribute.value;
 
-      expect(dto.colors, colors.map(Mixable.value).toList());
+      expect(dto.colors, colors.map(Mix.value).toList());
       expect(dto.stops, stops);
       expect(dto.center, center);
       expect(dto.startAngle, startAngle);

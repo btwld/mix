@@ -5,7 +5,7 @@ import '../../core/factory/mix_context.dart';
 import '../../theme/tokens/mix_token.dart';
 
 @immutable
-sealed class SpaceDto extends Mixable<double> with Diagnosticable {
+sealed class SpaceDto extends Mix<double> with Diagnosticable {
   // Common constants using private types
   static const zero = _ValueSpaceDto(0);
 

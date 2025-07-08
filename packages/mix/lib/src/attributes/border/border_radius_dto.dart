@@ -3,7 +3,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-/// Represents a [Mixable] Data transfer object of [BorderRadiusGeometry]
+/// Represents a [Mix] Data transfer object of [BorderRadiusGeometry]
 ///
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a [BorderRadiusGeometry]
@@ -15,7 +15,7 @@ import 'package:mix/mix.dart';
 /// - [BorderRadiusGeometry], which is the Flutter counterpart of this class.
 @immutable
 sealed class BorderRadiusGeometryDto<T extends BorderRadiusGeometry>
-    extends Mixable<T> {
+    extends Mix<T> {
   const BorderRadiusGeometryDto();
 
   // Factory from BorderRadiusGeometry
@@ -36,12 +36,12 @@ sealed class BorderRadiusGeometryDto<T extends BorderRadiusGeometry>
 
   /// Common getters for accessing radius properties
   /// These return null for types that don't support these properties
-  MixableProperty<Radius>? get topLeft => null;
-  MixableProperty<Radius>? get topRight => null;
+  MixProperty<Radius>? get topLeft => null;
+  MixProperty<Radius>? get topRight => null;
 
-  MixableProperty<Radius>? get bottomLeft => null;
+  MixProperty<Radius>? get bottomLeft => null;
 
-  MixableProperty<Radius>? get bottomRight => null;
+  MixProperty<Radius>? get bottomRight => null;
 
   @override
   BorderRadiusGeometryDto<T> merge(covariant BorderRadiusGeometryDto<T>? other);
@@ -49,16 +49,16 @@ sealed class BorderRadiusGeometryDto<T extends BorderRadiusGeometry>
 
 final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
   @override
-  final MixableProperty<Radius>? topLeft;
+  final MixProperty<Radius>? topLeft;
 
   @override
-  final MixableProperty<Radius>? topRight;
+  final MixProperty<Radius>? topRight;
 
   @override
-  final MixableProperty<Radius>? bottomLeft;
+  final MixProperty<Radius>? bottomLeft;
 
   @override
-  final MixableProperty<Radius>? bottomRight;
+  final MixProperty<Radius>? bottomRight;
 
   // Main constructor accepts real values
   factory BorderRadiusDto({
@@ -68,10 +68,10 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
     Radius? bottomRight,
   }) {
     return BorderRadiusDto.raw(
-      topLeft: MixableProperty.prop(topLeft),
-      topRight: MixableProperty.prop(topRight),
-      bottomLeft: MixableProperty.prop(bottomLeft),
-      bottomRight: MixableProperty.prop(bottomRight),
+      topLeft: MixProperty.prop(topLeft),
+      topRight: MixProperty.prop(topRight),
+      bottomLeft: MixProperty.prop(bottomLeft),
+      bottomRight: MixProperty.prop(bottomRight),
     );
   }
 
@@ -100,7 +100,7 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
 
   /// Returns the radius value for a given Mixable<Radius>, resolving it with the provided MixContext.
   /// If the radius is null, returns Radius.zero.
-  Radius getRadiusValue(MixContext mix, MixableProperty<Radius>? radius) {
+  Radius getRadiusValue(MixContext mix, MixProperty<Radius>? radius) {
     return radius?.resolve(mix) ?? Radius.zero;
   }
 
@@ -140,13 +140,13 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
 
 final class BorderRadiusDirectionalDto
     extends BorderRadiusGeometryDto<BorderRadiusDirectional> {
-  final MixableProperty<Radius>? topStart;
+  final MixProperty<Radius>? topStart;
 
-  final MixableProperty<Radius>? topEnd;
+  final MixProperty<Radius>? topEnd;
 
-  final MixableProperty<Radius>? bottomStart;
+  final MixProperty<Radius>? bottomStart;
 
-  final MixableProperty<Radius>? bottomEnd;
+  final MixProperty<Radius>? bottomEnd;
 
   // Main constructor accepts real values
   factory BorderRadiusDirectionalDto({
@@ -156,10 +156,10 @@ final class BorderRadiusDirectionalDto
     Radius? bottomEnd,
   }) {
     return BorderRadiusDirectionalDto.raw(
-      topStart: MixableProperty.prop(topStart),
-      topEnd: MixableProperty.prop(topEnd),
-      bottomStart: MixableProperty.prop(bottomStart),
-      bottomEnd: MixableProperty.prop(bottomEnd),
+      topStart: MixProperty.prop(topStart),
+      topEnd: MixProperty.prop(topEnd),
+      bottomStart: MixProperty.prop(bottomStart),
+      bottomEnd: MixProperty.prop(bottomEnd),
     );
   }
 
@@ -224,11 +224,11 @@ final class BorderRadiusDirectionalDto
   /// These getters return null for BorderRadiusDirectional as they don't apply
   /// to directional border radius (which uses topStart/topEnd instead of topLeft/topRight)
   @override
-  MixableProperty<Radius>? get topLeft => null;
+  MixProperty<Radius>? get topLeft => null;
   @override
-  MixableProperty<Radius>? get topRight => null;
+  MixProperty<Radius>? get topRight => null;
   @override
-  MixableProperty<Radius>? get bottomLeft => null;
+  MixProperty<Radius>? get bottomLeft => null;
   @override
-  MixableProperty<Radius>? get bottomRight => null;
+  MixProperty<Radius>? get bottomRight => null;
 }

@@ -10,7 +10,7 @@ void main() {
       const attribute = ImageSpecAttribute(
         width: 100,
         height: 200,
-        color: Mixable.value(Colors.red),
+        color: Mix.value(Colors.red),
         repeat: ImageRepeat.repeat,
         fit: BoxFit.cover,
       );
@@ -28,14 +28,14 @@ void main() {
       const attribute1 = ImageSpecAttribute(
         width: 100,
         height: 200,
-        color: Mixable.value(Colors.red),
+        color: Mix.value(Colors.red),
         repeat: ImageRepeat.repeat,
         fit: BoxFit.cover,
       );
       const attribute2 = ImageSpecAttribute(
         width: 150,
         height: 250,
-        color: Mixable.value(Colors.blue),
+        color: Mix.value(Colors.blue),
         repeat: ImageRepeat.noRepeat,
         fit: BoxFit.fill,
       );
@@ -43,7 +43,7 @@ void main() {
 
       expect(mergedAttribute.width, 150);
       expect(mergedAttribute.height, 250);
-      expect(mergedAttribute.color, const Mixable.value(Colors.blue));
+      expect(mergedAttribute.color, const Mix.value(Colors.blue));
       expect(mergedAttribute.repeat, ImageRepeat.noRepeat);
       expect(mergedAttribute.fit, BoxFit.fill);
     });

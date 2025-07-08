@@ -64,7 +64,7 @@ void main() {
       final mixData = MixContext.create(context, Style());
 
       // Use Mixable<Color> to resolve the token
-      const colorDto = Mixable<Color>.token(token);
+      const colorDto = Mix<Color>.token(token);
       final resolved = colorDto.resolve(mixData);
 
       expect(resolved, equals(Colors.blue));
@@ -79,7 +79,7 @@ void main() {
 
       expect(() {
         final mixData = MixContext.create(context, Style());
-        const colorDto = Mixable<Color>.token(token);
+        const colorDto = Mix<Color>.token(token);
         return colorDto.resolve(mixData);
       }, throwsStateError);
     });
@@ -103,7 +103,7 @@ void main() {
 }
 
 // Helper class for testing string token resolution
-class _StringMixable extends Mixable<String> {
+class _StringMixable extends Mix<String> {
   final MixableToken<String> token;
 
   const _StringMixable({required this.token});

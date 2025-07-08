@@ -2,7 +2,7 @@
 import 'package:flutter/rendering.dart';
 import 'package:mix/mix.dart';
 
-sealed class ConstraintsDto<T extends Constraints> extends Mixable<T> {
+sealed class ConstraintsDto<T extends Constraints> extends Mix<T> {
   const ConstraintsDto();
 }
 
@@ -12,10 +12,10 @@ sealed class ConstraintsDto<T extends Constraints> extends Mixable<T> {
 /// merge and combining behavior. It allows to be merged, and resolved to a `[BoxConstraints]
 final class BoxConstraintsDto extends ConstraintsDto<BoxConstraints> {
   // Properties use MixableProperty for cleaner merging
-  final MixableProperty<double> minWidth;
-  final MixableProperty<double> maxWidth;
-  final MixableProperty<double> minHeight;
-  final MixableProperty<double> maxHeight;
+  final MixProperty<double> minWidth;
+  final MixProperty<double> maxWidth;
+  final MixProperty<double> minHeight;
+  final MixProperty<double> maxHeight;
 
   // Main constructor accepts real values
   factory BoxConstraintsDto({
@@ -25,10 +25,10 @@ final class BoxConstraintsDto extends ConstraintsDto<BoxConstraints> {
     double? maxHeight,
   }) {
     return BoxConstraintsDto.raw(
-      minWidth: MixableProperty.prop(minWidth),
-      maxWidth: MixableProperty.prop(maxWidth),
-      minHeight: MixableProperty.prop(minHeight),
-      maxHeight: MixableProperty.prop(maxHeight),
+      minWidth: MixProperty.prop(minWidth),
+      maxWidth: MixProperty.prop(maxWidth),
+      minHeight: MixProperty.prop(minHeight),
+      maxHeight: MixProperty.prop(maxHeight),
     );
   }
 
@@ -89,22 +89,19 @@ final class BoxConstraintsDto extends ConstraintsDto<BoxConstraints> {
 class BoxConstraintsUtility<T extends StyleElement>
     extends DtoUtility<T, BoxConstraintsDto, BoxConstraints> {
   /// Utility for defining [BoxConstraintsDto.minWidth]
-  late final minWidth = DoubleUtility((v) => only(minWidth: Mixable.value(v)));
+  late final minWidth = DoubleUtility((v) => only(minWidth: Mix.value(v)));
 
   /// Utility for defining [BoxConstraintsDto.maxWidth]
-  late final maxWidth = DoubleUtility((v) => only(maxWidth: Mixable.value(v)));
+  late final maxWidth = DoubleUtility((v) => only(maxWidth: Mix.value(v)));
 
   /// Utility for defining [BoxConstraintsDto.minHeight]
-  late final minHeight = DoubleUtility(
-    (v) => only(minHeight: Mixable.value(v)),
-  );
+  late final minHeight = DoubleUtility((v) => only(minHeight: Mix.value(v)));
 
   /// Utility for defining [BoxConstraintsDto.maxHeight]
-  late final maxHeight = DoubleUtility(
-    (v) => only(maxHeight: Mixable.value(v)),
-  );
+  late final maxHeight = DoubleUtility((v) => only(maxHeight: Mix.value(v)));
 
-  BoxConstraintsUtility(super.builder) : super(valueToDto: (v) => BoxConstraintsDto.from(v));
+  BoxConstraintsUtility(super.builder)
+    : super(valueToDto: (v) => BoxConstraintsDto.from(v));
 
   T call({
     double? minWidth,
@@ -125,19 +122,18 @@ class BoxConstraintsUtility<T extends StyleElement>
   /// Returns a new [BoxConstraintsDto] with the specified properties.
   @override
   T only({
-    Mixable<double>? minWidth,
-    Mixable<double>? maxWidth,
-    Mixable<double>? minHeight,
-    Mixable<double>? maxHeight,
+    Mix<double>? minWidth,
+    Mix<double>? maxWidth,
+    Mix<double>? minHeight,
+    Mix<double>? maxHeight,
   }) {
     return builder(
       BoxConstraintsDto.raw(
-        minWidth: MixableProperty(minWidth),
-        maxWidth: MixableProperty(maxWidth),
-        minHeight: MixableProperty(minHeight),
-        maxHeight: MixableProperty(maxHeight),
+        minWidth: MixProperty(minWidth),
+        maxWidth: MixProperty(maxWidth),
+        minHeight: MixProperty(minHeight),
+        maxHeight: MixProperty(maxHeight),
       ),
     );
   }
 }
-
