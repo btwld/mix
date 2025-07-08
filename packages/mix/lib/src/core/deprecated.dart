@@ -17,16 +17,31 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
+import '../attributes/animation/animated_config_dto.dart';
+import '../attributes/animation/animation_config.dart';
+import '../attributes/border/border_dto.dart';
+import '../attributes/border/border_radius_dto.dart';
+import '../attributes/border/shape_border_dto.dart';
+import '../attributes/constraints/constraints_dto.dart';
+import '../attributes/decoration/decoration_dto.dart';
+import '../attributes/decoration/image/decoration_image_dto.dart';
 import '../attributes/enum/enum_util.dart';
 import '../attributes/gap/space_dto.dart';
+import '../attributes/gradient/gradient_dto.dart';
+import '../attributes/shadow/shadow_dto.dart';
 import '../attributes/spacing/edge_insets_dto.dart';
 import '../attributes/spacing/spacing_util.dart';
+import '../attributes/strut_style/strut_style_dto.dart';
+import '../attributes/text_height_behavior/text_height_behavior_dto.dart';
+import '../attributes/text_style/text_style_dto.dart';
 import '../core/element.dart';
 import '../core/factory/mix_context.dart';
 import '../core/modifier.dart';
 import '../core/spec.dart';
 import '../core/widget_state/widget_state_controller.dart';
+import '../internal/mix_error.dart';
 import '../modifiers/align_widget_modifier.dart';
 import '../modifiers/aspect_ratio_widget_modifier.dart';
 import '../modifiers/clip_widget_modifier.dart';
@@ -323,6 +338,14 @@ typedef PaddingSpec = PaddingModifierSpec;
 // DEPRECATED EXTENSIONS
 // =============================================================================
 
+/// Deprecated extension for AnimationConfig conversion
+extension AnimationConfigMixExtDeprecated on AnimationConfig {
+  @Deprecated('Use AnimationConfigDto.from(this) directly instead of toDto()')
+  AnimationConfigDto toDto() {
+    return AnimationConfigDto.from(this);
+  }
+}
+
 /// Deprecated extension for Color conversion
 extension ColorExt on Color {
   @Deprecated('Use Mixable.value(this) directly instead of toDto()')
@@ -361,4 +384,668 @@ class RadiusDto$ {
 
   @Deprecated('Use Mixable.value(value) directly instead')
   static RadiusDto fromValue(Radius value) => Mixable.value(value);
+}
+
+// =============================================================================
+// DEPRECATED EXTENSIONS - toDto() METHODS
+// =============================================================================
+
+/// Deprecated extension for Shadow conversion
+extension ShadowMixExtDeprecated on Shadow {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  ShadowDto toDto() {
+    return ShadowDto(blurRadius: blurRadius, color: color, offset: offset);
+  }
+}
+
+/// Deprecated extension for List<Shadow> conversion
+extension ListShadowMixExtDeprecated on List<Shadow> {
+  @Deprecated('Use List<ShadowDto> directly instead of toDto()')
+  List<ShadowDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
+}
+
+/// Deprecated extension for BoxShadow conversion
+extension BoxShadowMixExtDeprecated on BoxShadow {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  BoxShadowDto toDto() {
+    return BoxShadowDto(
+      color: color,
+      offset: offset,
+      blurRadius: blurRadius,
+      spreadRadius: spreadRadius,
+    );
+  }
+}
+
+/// Deprecated extension for List<BoxShadow> conversion
+extension ListBoxShadowMixExtDeprecated on List<BoxShadow> {
+  @Deprecated('Use List<BoxShadowDto> directly instead of toDto()')
+  List<BoxShadowDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
+}
+
+/// Deprecated extension for Border conversion
+extension BorderMixExtDeprecated on Border {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  BorderDto toDto() {
+    return BorderDto(
+      top: top.toDto(),
+      bottom: bottom.toDto(),
+      left: left.toDto(),
+      right: right.toDto(),
+    );
+  }
+}
+
+/// Deprecated extension for List<Border> conversion
+extension ListBorderMixExtDeprecated on List<Border> {
+  @Deprecated('Use List<BorderDto> directly instead of toDto()')
+  List<BorderDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
+}
+
+/// Deprecated extension for BorderDirectional conversion
+extension BorderDirectionalMixExtDeprecated on BorderDirectional {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  BorderDirectionalDto toDto() {
+    return BorderDirectionalDto(
+      top: top.toDto(),
+      bottom: bottom.toDto(),
+      start: start.toDto(),
+      end: end.toDto(),
+    );
+  }
+}
+
+/// Deprecated extension for List<BorderDirectional> conversion
+extension ListBorderDirectionalMixExtDeprecated on List<BorderDirectional> {
+  @Deprecated('Use List<BorderDirectionalDto> directly instead of toDto()')
+  List<BorderDirectionalDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
+}
+
+/// Deprecated extension for BorderSide conversion
+extension BorderSideMixExtDeprecated on BorderSide {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  BorderSideDto toDto() {
+    return BorderSideDto(
+      color: color,
+      strokeAlign: strokeAlign,
+      style: style,
+      width: width,
+    );
+  }
+}
+
+/// Deprecated extension for List<BorderSide> conversion
+extension ListBorderSideMixExtDeprecated on List<BorderSide> {
+  @Deprecated('Use List<BorderSideDto> directly instead of toDto()')
+  List<BorderSideDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
+}
+
+/// Deprecated extension for BoxBorder conversion
+extension BoxBorderExtDeprecated on BoxBorder {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  BoxBorderDto toDto() {
+    final self = this;
+    if (self is Border) {
+      return BorderDto(
+        top: self.top.toDto(),
+        bottom: self.bottom.toDto(),
+        left: self.left.toDto(),
+        right: self.right.toDto(),
+      );
+    }
+    if (self is BorderDirectional) {
+      return BorderDirectionalDto(
+        top: self.top.toDto(),
+        bottom: self.bottom.toDto(),
+        start: self.start.toDto(),
+        end: self.end.toDto(),
+      );
+    }
+
+    throw MixError.unsupportedTypeInDto(BoxBorder, [
+      'Border',
+      'BorderDirectional',
+    ]);
+  }
+}
+
+/// Deprecated extension for TextStyle conversion
+extension TextStyleExtDeprecated on TextStyle {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  TextStyleDto toDto() => TextStyleDto.from(this);
+}
+
+/// Deprecated extension for BoxConstraints conversion
+extension BoxConstraintsMixExtDeprecated on BoxConstraints {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  BoxConstraintsDto toDto() {
+    return BoxConstraintsDto(
+      minWidth: minWidth,
+      maxWidth: maxWidth,
+      minHeight: minHeight,
+      maxHeight: maxHeight,
+    );
+  }
+}
+
+/// Deprecated extension for List<BoxConstraints> conversion
+extension ListBoxConstraintsMixExtDeprecated on List<BoxConstraints> {
+  @Deprecated('Use List<BoxConstraintsDto> directly instead of toDto()')
+  List<BoxConstraintsDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
+}
+
+/// Deprecated extension for BorderRadiusGeometry conversion
+extension BorderRadiusGeometryMixExtDeprecated on BorderRadiusGeometry {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  BorderRadiusGeometryDto toDto() {
+    final self = this;
+    if (self is BorderRadius) {
+      return BorderRadiusDto(
+        topLeft: self.topLeft,
+        topRight: self.topRight,
+        bottomLeft: self.bottomLeft,
+        bottomRight: self.bottomRight,
+      );
+    }
+    if (self is BorderRadiusDirectional) {
+      return BorderRadiusDirectionalDto(
+        topStart: self.topStart,
+        topEnd: self.topEnd,
+        bottomStart: self.bottomStart,
+        bottomEnd: self.bottomEnd,
+      );
+    }
+
+    throw MixError.unsupportedTypeInDto(BorderRadiusGeometry, [
+      'BorderRadius',
+      'BorderRadiusDirectional',
+    ]);
+  }
+}
+
+/// Deprecated extension for BorderRadius conversion
+extension BorderRadiusMixExtDeprecated on BorderRadius {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  BorderRadiusDto toDto() {
+    return BorderRadiusDto(
+      topLeft: topLeft,
+      topRight: topRight,
+      bottomLeft: bottomLeft,
+      bottomRight: bottomRight,
+    );
+  }
+}
+
+/// Deprecated extension for List<BorderRadius> conversion
+extension ListBorderRadiusMixExtDeprecated on List<BorderRadius> {
+  @Deprecated('Use List<BorderRadiusDto> directly instead of toDto()')
+  List<BorderRadiusDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
+}
+
+/// Deprecated extension for BorderRadiusDirectional conversion
+extension BorderRadiusDirectionalMixExtDeprecated on BorderRadiusDirectional {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  BorderRadiusDirectionalDto toDto() {
+    return BorderRadiusDirectionalDto(
+      topStart: topStart,
+      topEnd: topEnd,
+      bottomStart: bottomStart,
+      bottomEnd: bottomEnd,
+    );
+  }
+}
+
+/// Deprecated extension for List<BorderRadiusDirectional> conversion
+extension ListBorderRadiusDirectionalMixExtDeprecated
+    on List<BorderRadiusDirectional> {
+  @Deprecated(
+    'Use List<BorderRadiusDirectionalDto> directly instead of toDto()',
+  )
+  List<BorderRadiusDirectionalDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
+}
+
+/// Deprecated extension for Decoration conversion
+extension DecorationMixExtDeprecated on Decoration {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  DecorationDto toDto() {
+    final self = this;
+    if (self is BoxDecoration) return self.toDto();
+    if (self is ShapeDecoration) return self.toDto();
+
+    throw MixError.unsupportedTypeInDto(Decoration, [
+      'BoxDecoration',
+      'ShapeDecoration',
+    ]);
+  }
+}
+
+/// Deprecated extension for BoxDecoration conversion
+extension BoxDecorationMixExtDeprecated on BoxDecoration {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  BoxDecorationDto toDto() {
+    return BoxDecorationDto(
+      border: border?.toDto(),
+      borderRadius: borderRadius?.toDto(),
+      shape: shape,
+      backgroundBlendMode: backgroundBlendMode,
+      color: color != null ? Mixable.value(color!) : null,
+      image: image?.toDto(),
+      gradient: gradient?.toDto(),
+      boxShadow: boxShadow?.map((e) => e.toDto()).toList(),
+    );
+  }
+}
+
+/// Deprecated extension for List<BoxDecoration> conversion
+extension ListBoxDecorationMixExtDeprecated on List<BoxDecoration> {
+  @Deprecated('Use List<BoxDecorationDto> directly instead of toDto()')
+  List<BoxDecorationDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
+}
+
+/// Deprecated extension for ShapeDecoration conversion
+extension ShapeDecorationMixExtDeprecated on ShapeDecoration {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  ShapeDecorationDto toDto() {
+    return ShapeDecorationDto(
+      shape: shape.toDto(),
+      color: color != null ? Mixable.value(color!) : null,
+      image: image?.toDto(),
+      gradient: gradient?.toDto(),
+      shadows: shadows?.map((e) => e.toDto()).toList(),
+    );
+  }
+}
+
+/// Deprecated extension for List<ShapeDecoration> conversion
+extension ListShapeDecorationMixExtDeprecated on List<ShapeDecoration> {
+  @Deprecated('Use List<ShapeDecorationDto> directly instead of toDto()')
+  List<ShapeDecorationDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
+}
+
+/// Deprecated extension for EdgeInsetsGeometry conversion
+extension EdgeInsetsGeometryExtDeprecated on EdgeInsetsGeometry {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  EdgeInsetsGeometryDto toDto() {
+    final self = this;
+    if (self is EdgeInsetsDirectional) {
+      return EdgeInsetsDirectionalDto.raw(
+        top: SpaceDto.value(self.top),
+        bottom: SpaceDto.value(self.bottom),
+        start: SpaceDto.value(self.start),
+        end: SpaceDto.value(self.end),
+      );
+    }
+    if (self is EdgeInsets) {
+      return EdgeInsetsDto.raw(
+        top: SpaceDto.value(self.top),
+        bottom: SpaceDto.value(self.bottom),
+        left: SpaceDto.value(self.left),
+        right: SpaceDto.value(self.right),
+      );
+    }
+
+    throw MixError.unsupportedTypeInDto(EdgeInsetsGeometry, [
+      'EdgeInsetsDirectional',
+      'EdgeInsets',
+    ]);
+  }
+}
+
+/// Deprecated extension for DecorationImage conversion
+extension DecorationImageMixExtDeprecated on DecorationImage {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  DecorationImageDto toDto() {
+    return DecorationImageDto(
+      image: image,
+      fit: fit,
+      alignment: alignment,
+      centerSlice: centerSlice,
+      repeat: repeat,
+      filterQuality: filterQuality,
+      invertColors: invertColors,
+      isAntiAlias: isAntiAlias,
+    );
+  }
+}
+
+/// Deprecated extension for List<DecorationImage> conversion
+extension ListDecorationImageMixExtDeprecated on List<DecorationImage> {
+  @Deprecated('Use List<DecorationImageDto> directly instead of toDto()')
+  List<DecorationImageDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
+}
+
+/// Deprecated extension for Gradient conversion
+extension GradientExtDeprecated on Gradient {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  GradientDto toDto() {
+    final self = this;
+    if (self is LinearGradient) return (self).toDto();
+    if (self is RadialGradient) return (self).toDto();
+    if (self is SweepGradient) return (self).toDto();
+
+    throw MixError.unsupportedTypeInDto(Gradient, [
+      'LinearGradient',
+      'RadialGradient',
+      'SweepGradient',
+    ]);
+  }
+}
+
+/// Deprecated extension for LinearGradient conversion
+extension LinearGradientMixExtDeprecated on LinearGradient {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  LinearGradientDto toDto() {
+    return LinearGradientDto(
+      begin: begin,
+      end: end,
+      tileMode: tileMode,
+      transform: transform,
+      colors: colors.map((e) => Mixable.value(e)).toList(),
+      stops: stops,
+    );
+  }
+}
+
+/// Deprecated extension for RadialGradient conversion
+extension RadialGradientMixExtDeprecated on RadialGradient {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  RadialGradientDto toDto() {
+    return RadialGradientDto(
+      center: center,
+      radius: radius,
+      tileMode: tileMode,
+      focal: focal,
+      focalRadius: focalRadius,
+      transform: transform,
+      colors: colors.map((e) => Mixable.value(e)).toList(),
+      stops: stops,
+    );
+  }
+}
+
+/// Deprecated extension for SweepGradient conversion
+extension SweepGradientMixExtDeprecated on SweepGradient {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  SweepGradientDto toDto() {
+    return SweepGradientDto(
+      center: center,
+      startAngle: startAngle,
+      endAngle: endAngle,
+      tileMode: tileMode,
+      transform: transform,
+      colors: colors.map((e) => Mixable.value(e)).toList(),
+      stops: stops,
+    );
+  }
+}
+
+/// Deprecated extension for StrutStyle conversion
+extension StrutStyleExtDeprecated on StrutStyle {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  StrutStyleDto toDto() => StrutStyleDto.value(this);
+}
+
+/// Deprecated extension for TextHeightBehavior conversion
+extension TextHeightBehaviorMixExtDeprecated on TextHeightBehavior {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  TextHeightBehaviorDto toDto() {
+    return TextHeightBehaviorDto(
+      applyHeightToFirstAscent: applyHeightToFirstAscent,
+      applyHeightToLastDescent: applyHeightToLastDescent,
+      leadingDistribution: leadingDistribution,
+    );
+  }
+}
+
+/// Deprecated extension for List<TextHeightBehavior> conversion
+extension ListTextHeightBehaviorMixExtDeprecated on List<TextHeightBehavior> {
+  @Deprecated('Use List<TextHeightBehaviorDto> directly instead of toDto()')
+  List<TextHeightBehaviorDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
+}
+
+/// Deprecated extension for ShapeBorder conversion
+extension ShapeBorderExtDeprecated on ShapeBorder {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  ShapeBorderDto toDto() {
+    final self = this;
+    if (self is BeveledRectangleBorder) {
+      return BeveledRectangleBorderDto(
+        borderRadius: self.borderRadius.toDto(),
+        side: self.side.toDto(),
+      );
+    }
+    if (self is CircleBorder) {
+      return CircleBorderDto(side: self.side, eccentricity: self.eccentricity);
+    }
+    if (self is ContinuousRectangleBorder) {
+      return ContinuousRectangleBorderDto(
+        borderRadius: self.borderRadius.toDto(),
+        side: self.side.toDto(),
+      );
+    }
+    if (self is LinearBorder) {
+      return LinearBorderDto(
+        side: self.side.toDto(),
+        start: self.start?.toDto(),
+        end: self.end?.toDto(),
+        top: self.top?.toDto(),
+        bottom: self.bottom?.toDto(),
+      );
+    }
+    if (self is RoundedRectangleBorder) {
+      return RoundedRectangleBorderDto(
+        borderRadius: self.borderRadius.toDto(),
+        side: self.side.toDto(),
+      );
+    }
+    if (self is StadiumBorder) {
+      return StadiumBorderDto(side: self.side.toDto());
+    }
+    if (self is StarBorder) {
+      return StarBorderDto(
+        side: self.side,
+        points: self.points,
+        innerRadiusRatio: self.innerRadiusRatio,
+        pointRounding: self.pointRounding,
+        valleyRounding: self.valleyRounding,
+        rotation: self.rotation,
+        squash: self.squash,
+      );
+    }
+    if (self is MixOutlinedBorder) return (self).toDto();
+
+    throw FlutterError.fromParts([
+      ErrorSummary('Unsupported ShapeBorder type.'),
+      ErrorDescription(
+        'If you are trying to create a custom ShapeBorder, it must extend MixOutlinedBorder. '
+        'Otherwise, use a built-in Mix shape such as BeveledRectangleBorder, CircleBorder, '
+        'ContinuousRectangleBorder, LinearBorder, RoundedRectangleBorder, StadiumBorder, or StarBorder.',
+      ),
+      ErrorHint(
+        'Custom ShapeBorders that do not extend MixOutlinedBorder will not work with Mix.',
+      ),
+      DiagnosticsProperty<ShapeBorder>('The unsupported ShapeBorder was', this),
+    ]);
+  }
+}
+
+/// Deprecated extension for RoundedRectangleBorder conversion
+extension RoundedRectangleBorderMixExtDeprecated on RoundedRectangleBorder {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  RoundedRectangleBorderDto toDto() {
+    return RoundedRectangleBorderDto(
+      borderRadius: borderRadius.toDto(),
+      side: side.toDto(),
+    );
+  }
+}
+
+/// Deprecated extension for List<RoundedRectangleBorder> conversion
+extension ListRoundedRectangleBorderMixExtDeprecated
+    on List<RoundedRectangleBorder> {
+  @Deprecated('Use List<RoundedRectangleBorderDto> directly instead of toDto()')
+  List<RoundedRectangleBorderDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
+}
+
+/// Deprecated extension for BeveledRectangleBorder conversion
+extension BeveledRectangleBorderMixExtDeprecated on BeveledRectangleBorder {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  BeveledRectangleBorderDto toDto() {
+    return BeveledRectangleBorderDto(
+      borderRadius: borderRadius.toDto(),
+      side: side.toDto(),
+    );
+  }
+}
+
+/// Deprecated extension for List<BeveledRectangleBorder> conversion
+extension ListBeveledRectangleBorderMixExtDeprecated
+    on List<BeveledRectangleBorder> {
+  @Deprecated('Use List<BeveledRectangleBorderDto> directly instead of toDto()')
+  List<BeveledRectangleBorderDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
+}
+
+/// Deprecated extension for ContinuousRectangleBorder conversion
+extension ContinuousRectangleBorderMixExtDeprecated
+    on ContinuousRectangleBorder {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  ContinuousRectangleBorderDto toDto() {
+    return ContinuousRectangleBorderDto(
+      borderRadius: borderRadius.toDto(),
+      side: side.toDto(),
+    );
+  }
+}
+
+/// Deprecated extension for List<ContinuousRectangleBorder> conversion
+extension ListContinuousRectangleBorderMixExtDeprecated
+    on List<ContinuousRectangleBorder> {
+  @Deprecated(
+    'Use List<ContinuousRectangleBorderDto> directly instead of toDto()',
+  )
+  List<ContinuousRectangleBorderDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
+}
+
+/// Deprecated extension for CircleBorder conversion
+extension CircleBorderMixExtDeprecated on CircleBorder {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  CircleBorderDto toDto() {
+    return CircleBorderDto(side: side, eccentricity: eccentricity);
+  }
+}
+
+/// Deprecated extension for List<CircleBorder> conversion
+extension ListCircleBorderMixExtDeprecated on List<CircleBorder> {
+  @Deprecated('Use List<CircleBorderDto> directly instead of toDto()')
+  List<CircleBorderDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
+}
+
+/// Deprecated extension for StarBorder conversion
+extension StarBorderMixExtDeprecated on StarBorder {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  StarBorderDto toDto() {
+    return StarBorderDto(
+      side: side,
+      points: points,
+      innerRadiusRatio: innerRadiusRatio,
+      pointRounding: pointRounding,
+      valleyRounding: valleyRounding,
+      rotation: rotation,
+      squash: squash,
+    );
+  }
+}
+
+/// Deprecated extension for List<StarBorder> conversion
+extension ListStarBorderMixExtDeprecated on List<StarBorder> {
+  @Deprecated('Use List<StarBorderDto> directly instead of toDto()')
+  List<StarBorderDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
+}
+
+/// Deprecated extension for LinearBorder conversion
+extension LinearBorderMixExtDeprecated on LinearBorder {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  LinearBorderDto toDto() {
+    return LinearBorderDto(
+      side: side.toDto(),
+      start: start?.toDto(),
+      end: end?.toDto(),
+      top: top?.toDto(),
+      bottom: bottom?.toDto(),
+    );
+  }
+}
+
+/// Deprecated extension for List<LinearBorder> conversion
+extension ListLinearBorderMixExtDeprecated on List<LinearBorder> {
+  @Deprecated('Use List<LinearBorderDto> directly instead of toDto()')
+  List<LinearBorderDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
+}
+
+/// Deprecated extension for LinearBorderEdge conversion
+extension LinearBorderEdgeMixExtDeprecated on LinearBorderEdge {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  LinearBorderEdgeDto toDto() {
+    return LinearBorderEdgeDto(size: size, alignment: alignment);
+  }
+}
+
+/// Deprecated extension for List<LinearBorderEdge> conversion
+extension ListLinearBorderEdgeMixExtDeprecated on List<LinearBorderEdge> {
+  @Deprecated('Use List<LinearBorderEdgeDto> directly instead of toDto()')
+  List<LinearBorderEdgeDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
+}
+
+/// Deprecated extension for StadiumBorder conversion
+extension StadiumBorderMixExtDeprecated on StadiumBorder {
+  @Deprecated('Use Mixable.value(this) directly instead of toDto()')
+  StadiumBorderDto toDto() {
+    return StadiumBorderDto(side: side.toDto());
+  }
+}
+
+/// Deprecated extension for List<StadiumBorder> conversion
+extension ListStadiumBorderMixExtDeprecated on List<StadiumBorder> {
+  @Deprecated('Use List<StadiumBorderDto> directly instead of toDto()')
+  List<StadiumBorderDto> toDto() {
+    return map((e) => e.toDto()).toList();
+  }
 }

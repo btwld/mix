@@ -5,7 +5,7 @@ import '../../theme/tokens/mix_token.dart';
 import '../color/color_util.dart';
 import '../enum/enum_util.dart';
 import '../scalars/scalar_util.dart';
-import '../shadow/shadow_dto.dart';
+import '../shadow/shadow_util.dart';
 import 'text_style_dto.dart';
 
 final class TextStyleUtility<T extends StyleElement>
@@ -33,7 +33,9 @@ final class TextStyleUtility<T extends StyleElement>
   late final decorationColor = ColorUtility((v) => only(decorationColor: v));
 
   // Shadow utility needs special handling since it returns ShadowDto not Shadow
-  late final shadow = ShadowUtility((v) => throw UnimplementedError('Shadow utility needs to be redesigned'));
+  late final shadow = ShadowUtility(
+    (v) => throw UnimplementedError('Shadow utility needs to be redesigned'),
+  );
 
   late final decorationStyle = TextDecorationStyleUtility(
     (v) => only(decorationStyle: Mixable.value(v)),
@@ -45,12 +47,11 @@ final class TextStyleUtility<T extends StyleElement>
 
   late final fontFamily = FontFamilyUtility((v) => call(fontFamily: v));
 
-  TextStyleUtility(super.builder) : super(valueToDto: (v) => v.toDto());
+  TextStyleUtility(super.builder) : super(valueToDto: (v) => TextStyleDto.from(v));
 
-
-
-  T token(MixableToken<TextStyle> token) =>
-      throw UnimplementedError('Token support needs implementation for whole TextStyle');
+  T token(MixableToken<TextStyle> token) => throw UnimplementedError(
+    'Token support needs implementation for whole TextStyle',
+  );
 
   T height(double v) => call(height: v);
 
@@ -104,7 +105,7 @@ final class TextStyleUtility<T extends StyleElement>
     double? height,
   }) {
     return builder(
-      TextStyleDto.values(
+      TextStyleDto(
         color: color,
         backgroundColor: backgroundColor,
         fontSize: fontSize,
@@ -155,28 +156,34 @@ final class TextStyleUtility<T extends StyleElement>
     Mixable<String>? fontFamily,
   }) {
     return builder(
-      TextStyleDto(
-        color: .maybeValue(color?.value),
-        backgroundColor: .maybeValue(backgroundColor?.value),
-        fontSize: .maybeValue(fontSize?.value),
-        fontWeight: .maybeValue(fontWeight?.value),
-        fontStyle: .maybeValue(fontStyle?.value),
-        letterSpacing: .maybeValue(letterSpacing?.value),
-        debugLabel: .maybeValue(debugLabel?.value),
-        wordSpacing: .maybeValue(wordSpacing?.value),
-        textBaseline: .maybeValue(textBaseline?.value),
-        shadows: .maybeValue(shadows?.map((e) => e.value).whereType<Shadow>().toList()),
-        fontFeatures: .maybeValue(fontFeatures?.map((e) => e.value).whereType<FontFeature>().toList()),
-        decoration: .maybeValue(decoration?.value),
-        decorationColor: .maybeValue(decorationColor?.value),
-        decorationThickness: .maybeValue(decorationThickness?.value),
-        fontFamily: .maybeValue(fontFamily?.value),
-        fontFamilyFallback: .maybeValue(fontFamilyFallback?.map((e) => e.value).whereType<String>().toList()),
-        fontVariations: .maybeValue(fontVariations?.map((e) => e.value).whereType<FontVariation>().toList()),
-        foreground: .maybeValue(foreground?.value),
-        background: .maybeValue(background?.value),
-        decorationStyle: .maybeValue(decorationStyle?.value),
-        height: .maybeValue(height?.value),
+      TextStyleDto.raw(
+        color: MixableProperty(color),
+        backgroundColor: MixableProperty(backgroundColor),
+        fontSize: MixableProperty(fontSize),
+        fontWeight: MixableProperty(fontWeight),
+        fontStyle: MixableProperty(fontStyle),
+        letterSpacing: MixableProperty(letterSpacing),
+        debugLabel: MixableProperty(debugLabel),
+        wordSpacing: MixableProperty(wordSpacing),
+        textBaseline: MixableProperty(textBaseline),
+        decoration: MixableProperty(decoration),
+        decorationColor: MixableProperty(decorationColor),
+        decorationStyle: MixableProperty(decorationStyle),
+        height: MixableProperty(height),
+        decorationThickness: MixableProperty(decorationThickness),
+        fontFamily: MixableProperty(fontFamily),
+        fontFamilyFallback: MixableProperty(
+          fontFamilyFallback != null ? MixableList(fontFamilyFallback) : null,
+        ),
+        fontFeatures: MixableProperty(
+          fontFeatures != null ? MixableList(fontFeatures) : null,
+        ),
+        fontVariations: MixableProperty(
+          fontVariations != null ? MixableList(fontVariations) : null,
+        ),
+        foreground: MixableProperty(foreground),
+        background: MixableProperty(background),
+        shadows: MixableProperty(shadows != null ? MixableList(shadows) : null),
       ),
     );
   }

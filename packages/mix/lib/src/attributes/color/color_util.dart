@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../core/element.dart';
-import '../../core/utility.dart';
 import '../../theme/tokens/mix_token.dart';
 import 'color_extensions.dart';
 import 'material_colors_util.dart';
@@ -9,8 +8,8 @@ import 'material_colors_util.dart';
 /// Base utility for color operations
 @immutable
 abstract base class BaseColorUtility<T extends StyleElement>
-    extends MixUtility<T, Color> {
-  const BaseColorUtility(super.builder);
+    extends DtoUtility<T, Mixable<Color>, Color> {
+  const BaseColorUtility(super.builder) : super(valueToDto: Mixable.value);
 
   T _buildColor(Color color) => builder(Mixable.value(color));
 }
@@ -96,8 +95,10 @@ base class FoundationColorUtility<T extends StyleElement, C extends Color>
   final C color;
   const FoundationColorUtility(super.builder, this.color);
 
-  @override
   T call([Color? value]) => _buildColor(value ?? color);
+  
+  @override
+  T only() => _buildColor(color);
 }
 
 @immutable
@@ -109,11 +110,12 @@ final class ColorUtility<T extends StyleElement> extends BaseColorUtility<T>
   @Deprecated('Use token() instead. Will be removed in a future version.')
   T ref(MixableToken<Color> ref) => token(ref);
 
-  @override
   T token(MixableToken<Color> token) => builder(Mixable.token(token));
 
-  @override
   T call(Color value) => _buildColor(value);
+  
+  @override
+  T only() => throw UnsupportedError('ColorUtility requires a color value. Use call() or a predefined color.');
 }
 
 base mixin BasicColorsMixin<T extends StyleElement> on BaseColorUtility<T> {

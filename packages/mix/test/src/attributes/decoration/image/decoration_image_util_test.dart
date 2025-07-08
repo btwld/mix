@@ -62,14 +62,14 @@ void main() {
       const isAntiAlias = false;
 
       final result = utility.only(
-        image: image,
-        fit: fit,
-        alignment: alignment,
-        centerSlice: centerSlice,
-        repeat: repeat,
-        filterQuality: filterQuality,
-        invertColors: invertColors,
-        isAntiAlias: isAntiAlias,
+        image: const Mixable.value(image),
+        fit: const Mixable.value(fit),
+        alignment: const Mixable.value(alignment),
+        centerSlice: const Mixable.value(centerSlice),
+        repeat: const Mixable.value(repeat),
+        filterQuality: const Mixable.value(filterQuality),
+        invertColors: const Mixable.value(invertColors),
+        isAntiAlias: const Mixable.value(isAntiAlias),
       );
 
       expect(result.dto?.image, equals(image));

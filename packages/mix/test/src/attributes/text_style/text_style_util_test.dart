@@ -143,10 +143,8 @@ void main() {
         offset: Offset(1.0, 1.0),
         blurRadius: 1.0,
       );
-      final attribute = textStyle.shadow(
-        blurRadius: 1.0,
-        color: Colors.black,
-        offset: const Offset(1.0, 1.0),
+      final attribute = textStyle(
+        shadows: [shadow],
       );
 
       final resolved = attribute.value.resolve(EmptyMixData);

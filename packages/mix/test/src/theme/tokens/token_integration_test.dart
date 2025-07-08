@@ -62,40 +62,6 @@ void main() {
       );
     });
 
-    testWidgets('TextStyleDto with Token<TextStyle> integration', (
-      tester,
-    ) async {
-      const headingToken = MixableToken<TextStyle>('heading');
-      const bodyToken = MixableToken<TextStyle>('body');
-
-      const headingStyle = TextStyle(fontSize: 24, fontWeight: FontWeight.bold);
-      const bodyStyle = TextStyle(fontSize: 16);
-
-      final theme = MixScopeData.static(
-        tokens: {headingToken: headingStyle, bodyToken: bodyStyle},
-      );
-
-      await tester.pumpWidget(
-        MixScope(
-          data: theme,
-          child: Builder(
-            builder: (context) {
-              const dto1 = TextStyleDto.token(headingToken);
-              const dto2 = TextStyleDto.token(bodyToken);
-
-              final style1 = dto1.resolve(MixContext.create(context, Style()));
-              final style2 = dto2.resolve(MixContext.create(context, Style()));
-
-              expect(style1.fontSize, equals(24));
-              expect(style1.fontWeight, equals(FontWeight.bold));
-              expect(style2.fontSize, equals(16));
-
-              return Container();
-            },
-          ),
-        ),
-      );
-    });
 
     testWidgets('Utility extensions work with tokens', (tester) async {
       const primaryToken = MixableToken<Color>('primary');

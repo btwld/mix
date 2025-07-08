@@ -8,7 +8,7 @@ import 'animation_config.dart';
 
 final class AnimatedUtility<T extends StyleElement>
     extends DtoUtility<T, AnimationConfigDto, AnimationConfig> {
-  AnimatedUtility(super.builder) : super(valueToDto: (value) => value.toDto());
+  AnimatedUtility(super.builder) : super(valueToDto: (value) => AnimationConfigDto.from(value));
 
   DurationUtility<T> get duration => DurationUtility((v) => only(duration: v));
 

@@ -13,7 +13,7 @@ void main() {
         minHeight: 100,
         maxHeight: 200,
       );
-      final constraintsDto = constraints.toDto();
+      final constraintsDto = BoxConstraintsDto.from(constraints);
 
       expect(constraints.minWidth, 50);
       expect(constraints.maxWidth, 150);
@@ -26,8 +26,8 @@ void main() {
       expect(constraintsDto.maxHeight, 200);
     });
     test('merge returns merged object correctly', () {
-      const constraints1 = BoxConstraintsDto(minWidth: 50, minHeight: 100);
-      const constraints2 = BoxConstraintsDto(minWidth: 60, minHeight: 110);
+      final constraints1 = BoxConstraintsDto(minWidth: 50, minHeight: 100);
+      final constraints2 = BoxConstraintsDto(minWidth: 60, minHeight: 110);
       final merged = constraints1.merge(constraints2);
       expect(merged.minWidth, 60);
       expect(merged.minHeight, 110);
@@ -35,7 +35,7 @@ void main() {
       expect(merged.maxHeight, isNull);
     });
     test('resolve returns correct BoxConstraints with default values', () {
-      const constraints = BoxConstraintsDto();
+      final constraints = BoxConstraintsDto();
       final resolved = constraints.resolve(EmptyMixData);
 
       expect(constraints, isA<BoxConstraintsDto>());
@@ -51,7 +51,7 @@ void main() {
       expect(resolved.maxHeight, double.infinity);
     });
     test('resolve returns correct BoxConstraints with specific values', () {
-      const constraints = BoxConstraintsDto(minWidth: 50, minHeight: 100);
+      final constraints = BoxConstraintsDto(minWidth: 50, minHeight: 100);
       final resolved = constraints.resolve(EmptyMixData);
 
       expect(constraints, isA<BoxConstraintsDto>());
@@ -68,13 +68,13 @@ void main() {
       return const Placeholder();
     });
     test('Equality holds when all properties are the same', () {
-      const constraints1 = BoxConstraintsDto(minWidth: 50, minHeight: 100);
-      const constraints2 = BoxConstraintsDto(minWidth: 50, minHeight: 100);
+      final constraints1 = BoxConstraintsDto(minWidth: 50, minHeight: 100);
+      final constraints2 = BoxConstraintsDto(minWidth: 50, minHeight: 100);
       expect(constraints1, constraints2);
     });
     test('Equality fails when properties are different', () {
-      const constraints1 = BoxConstraintsDto(minWidth: 50, minHeight: 100);
-      const constraints2 = BoxConstraintsDto(minWidth: 60, minHeight: 100);
+      final constraints1 = BoxConstraintsDto(minWidth: 50, minHeight: 100);
+      final constraints2 = BoxConstraintsDto(minWidth: 60, minHeight: 100);
       expect(constraints1, isNot(constraints2));
     });
   });

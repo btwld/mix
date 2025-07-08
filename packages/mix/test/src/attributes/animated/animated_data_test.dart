@@ -8,31 +8,31 @@ import '../../../helpers/testing_utils.dart';
 void main() {
   group('AnimatedDataDto', () {
     test('should create an instance with default values', () {
-      const dto = AnimationConfigDto.withDefaults();
+      final dto = AnimationConfigDto.withDefaults();
       expect(dto.duration, equals(kDefaultAnimationDuration));
       expect(dto.curve, equals(Curves.linear));
     });
 
     test('should create an instance with provided values', () {
-      const dto = AnimationConfigDto(
-          duration: Duration(seconds: 2), curve: Curves.easeIn);
+      final dto = AnimationConfigDto(
+          duration: const Duration(seconds: 2), curve: Curves.easeIn);
       expect(dto.duration, equals(const Duration(seconds: 2)));
       expect(dto.curve, equals(Curves.easeIn));
     });
 
     test('should merge with another instance', () {
-      const dto1 = AnimationConfigDto(
-          duration: Duration(seconds: 2), curve: Curves.easeIn);
-      const dto2 = AnimationConfigDto(
-          duration: Duration(seconds: 3), curve: Curves.easeOut);
+      final dto1 = AnimationConfigDto(
+          duration: const Duration(seconds: 2), curve: Curves.easeIn);
+      final dto2 = AnimationConfigDto(
+          duration: const Duration(seconds: 3), curve: Curves.easeOut);
       final merged = dto1.merge(dto2);
       expect(merged.duration, equals(const Duration(seconds: 3)));
       expect(merged.curve, equals(Curves.easeOut));
     });
 
     test('should resolve to an AnimatedData instance', () {
-      const dto = AnimationConfigDto(
-          duration: Duration(seconds: 2), curve: Curves.easeIn);
+      final dto = AnimationConfigDto(
+          duration: const Duration(seconds: 2), curve: Curves.easeIn);
       final animatedData = dto.resolve(EmptyMixData);
       expect(animatedData.duration, equals(const Duration(seconds: 2)));
       expect(animatedData.curve, equals(Curves.easeIn));
@@ -40,18 +40,18 @@ void main() {
 
     // test equality
     test('should be equal to another instance', () {
-      const dto1 = AnimationConfigDto(
-          duration: Duration(seconds: 2), curve: Curves.easeIn);
-      const dto2 = AnimationConfigDto(
-          duration: Duration(seconds: 2), curve: Curves.easeIn);
+      final dto1 = AnimationConfigDto(
+          duration: const Duration(seconds: 2), curve: Curves.easeIn);
+      final dto2 = AnimationConfigDto(
+          duration: const Duration(seconds: 2), curve: Curves.easeIn);
       expect(dto1, equals(dto2));
     });
 
     test('should not be equal to another instance', () {
-      const dto1 = AnimationConfigDto(
-          duration: Duration(seconds: 2), curve: Curves.easeIn);
-      const dto2 = AnimationConfigDto(
-          duration: Duration(seconds: 3), curve: Curves.easeIn);
+      final dto1 = AnimationConfigDto(
+          duration: const Duration(seconds: 2), curve: Curves.easeIn);
+      final dto2 = AnimationConfigDto(
+          duration: const Duration(seconds: 3), curve: Curves.easeIn);
       expect(dto1, isNot(equals(dto2)));
     });
   });

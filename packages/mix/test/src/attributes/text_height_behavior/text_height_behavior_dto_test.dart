@@ -1,20 +1,20 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/src/attributes/text_height_behavior/text_height_behavior_dto.dart';
+import 'package:mix/mix.dart';
 
 import '../../../helpers/testing_utils.dart';
 
 void main() {
   group('TextHeightBehaviorDto', () {
     test('creates with default values', () {
-      const dto = TextHeightBehaviorDto();
+      final dto = TextHeightBehaviorDto();
       expect(dto.applyHeightToFirstAscent, isNull);
       expect(dto.applyHeightToLastDescent, isNull);
       expect(dto.leadingDistribution, isNull);
     });
 
     test('creates with custom values', () {
-      const dto = TextHeightBehaviorDto(
+      final dto = TextHeightBehaviorDto(
         applyHeightToFirstAscent: true,
         applyHeightToLastDescent: false,
         leadingDistribution: TextLeadingDistribution.even,
@@ -60,9 +60,9 @@ void main() {
 
     test('only sets multiple properties', () {
       final result = utility.only(
-        applyHeightToFirstAscent: true,
-        applyHeightToLastDescent: false,
-        leadingDistribution: TextLeadingDistribution.even,
+        applyHeightToFirstAscent: const Mixable.value(true),
+        applyHeightToLastDescent: const Mixable.value(false),
+        leadingDistribution: const Mixable.value(TextLeadingDistribution.even),
       ) as UtilityTestAttribute<TextHeightBehaviorDto>;
       expect(result.value.applyHeightToFirstAscent, isTrue);
       expect(result.value.applyHeightToLastDescent, isFalse);

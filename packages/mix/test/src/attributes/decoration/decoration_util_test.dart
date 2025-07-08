@@ -20,39 +20,46 @@ void main() {
         shape: refBoxDecoration.shape,
       );
 
-      expect(result.value, equals(refBoxDecoration.toDto()));
+      expect(result.value, equals(BoxDecorationDto(
+        border: refBoxDecoration.border != null ? BorderDto.from(refBoxDecoration.border! as Border) : null,
+        borderRadius: refBoxDecoration.borderRadius != null ? BorderRadiusGeometryDto.from(refBoxDecoration.borderRadius!) : null,
+        boxShadow: refBoxDecoration.boxShadow?.map((e) => BoxShadowDto.from(e)).toList(),
+        color: refBoxDecoration.color != null ? Mixable.value(refBoxDecoration.color!) : null,
+        gradient: refBoxDecoration.gradient != null ? LinearGradientDto.maybeFrom(refBoxDecoration.gradient! as LinearGradient) : null,
+        shape: refBoxDecoration.shape,
+      )));
 
       expect(result.value, isA<BoxDecorationDto>());
       expect(result.value.border, isA<BoxBorderDto>());
       expect(result.value.borderRadius, isA<BorderRadiusGeometryDto>());
       expect(result.value.boxShadow, isA<List<BoxShadowDto>>());
-      expect(result.value.color, isA<ColorDto>());
+      expect(result.value.color, isA<Mixable<Color>>());
       expect(result.value.gradient, isA<GradientDto>());
       expect(result.value.shape, isA<BoxShape>());
 
       expect(
         result.value.border,
-        equals(refBoxDecoration.border!.toDto()),
+        equals(BorderDto.from(refBoxDecoration.border! as Border)),
       );
       expect(
         result.value.borderRadius,
-        equals(refBoxDecoration.borderRadius!.toDto()),
+        equals(BorderRadiusGeometryDto.from(refBoxDecoration.borderRadius!)),
       );
       expect(
         result.value.boxShadow,
-        equals(refBoxDecoration.boxShadow?.map((e) => e.toDto())),
+        equals(refBoxDecoration.boxShadow?.map((e) => BoxShadowDto.from(e)).toList()),
       );
-      expect(result.value.color, equals(refBoxDecoration.color!.toDto()));
+      expect(result.value.color, equals(Mixable.value(refBoxDecoration.color!)));
       expect(
         result.value.gradient,
-        equals(refBoxDecoration.gradient!.toDto()),
+        equals(LinearGradientDto.maybeFrom(refBoxDecoration.gradient! as LinearGradient)),
       );
       expect(result.value.shape, equals(refBoxDecoration.shape));
     });
     test('color setting', () {
       final result = boxDecoration.color(Colors.red);
 
-      expect(result.value.color, equals(Colors.red.toDto()));
+      expect(result.value.color, equals(const Mixable.value(Colors.red)));
     });
 
     test('shape setting', () {
@@ -83,7 +90,7 @@ void main() {
         colors: [Colors.red, Colors.blue],
       );
       final result = boxDecoration.gradient.as(gradient);
-      expect(result.value.gradient, equals(gradient.toDto()));
+      expect(result.value.gradient, equals(LinearGradientDto.maybeFrom(gradient)));
     });
 
     test('boxShadow setting', () {
@@ -102,8 +109,8 @@ void main() {
         offset: const Offset(5.0, 5.0),
         spreadRadius: 2.0,
       );
-      expect(result.value.boxShadow, equals([boxShadow].toDto()));
-      expect(resultSingle.value.boxShadow?.first, equals(boxShadow.toDto()));
+      expect(result.value.boxShadow, equals([BoxShadowDto.from(boxShadow)]));
+      expect(resultSingle.value.boxShadow?.first, equals(BoxShadowDto.from(boxShadow)));
     });
 
     test('elevation setting', () {
@@ -137,14 +144,14 @@ void main() {
         shadows: const [boxShadow],
       );
 
-      expect(result.value.color, equals(Colors.blue.toDto()));
+      expect(result.value.color, equals(const Mixable.value(Colors.blue)));
       expect(
         result.value.gradient,
-        equals(linearGradient.toDto()),
+        equals(LinearGradientDto.maybeFrom(linearGradient)),
       );
       expect(
         result.value.shadows,
-        equals(const [boxShadow].map((e) => e.toDto()).toList()),
+        equals([BoxShadowDto.from(boxShadow)]),
       );
     });
 
@@ -152,7 +159,7 @@ void main() {
     test('color() returns correct instance', () {
       final result = shapeDecoration.color(Colors.blue);
 
-      expect(result.value.color, equals(Colors.blue.toDto()));
+      expect(result.value.color, equals(const Mixable.value(Colors.blue)));
     });
 
     // gradient()
@@ -161,7 +168,7 @@ void main() {
 
       expect(
         result.value.gradient,
-        equals(linearGradient.toDto()),
+        equals(LinearGradientDto.maybeFrom(linearGradient)),
       );
     });
 
@@ -171,7 +178,7 @@ void main() {
 
       expect(
         result.value.shadows,
-        equals(const [boxShadow].map((e) => e.toDto()).toList()),
+        equals([BoxShadowDto.from(boxShadow)]),
       );
     });
 
@@ -179,7 +186,7 @@ void main() {
     test('shape() returns correct instance', () {
       final result = shapeDecoration.shape.circle();
 
-      expect(result.value.shape, equals(const CircleBorderDto()));
+      expect(result.value.shape, equals(CircleBorderDto()));
     });
   });
 }

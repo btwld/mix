@@ -68,7 +68,7 @@ void main() {
                   mixData = MixContext.create(
                     context,
                     Style(
-                      $flex.gap.ref(token.space.small),
+                      $flex.gap.token(token.space.small),
                     ),
                   );
 

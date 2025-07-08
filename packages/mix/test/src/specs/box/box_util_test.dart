@@ -7,7 +7,7 @@ void main() {
   group('BoxUtility', () {
     final boxUtility = BoxSpecUtility(MixUtility.selfBuilder);
     test('call() returns correct instance', () {
-      const constraints = BoxConstraintsDto(
+      final constraints = BoxConstraintsDto(
         minWidth: 50,
         maxWidth: 200,
         minHeight: 40,
@@ -108,7 +108,7 @@ void main() {
       expect(container.decoration!.color, const Mixable.value(Colors.amber));
 
       final decorationDTO = container.decoration as BoxDecorationDto;
-      expect(decorationDTO.borderRadius, BorderRadius.circular(10).toDto());
+      expect(decorationDTO.borderRadius, BorderRadiusDto.from(BorderRadius.circular(10)));
     });
 
     test('foregroundDecoration() returns correct instance', () {
@@ -127,7 +127,7 @@ void main() {
           container.foregroundDecoration as BoxDecorationDto;
       expect(
         foregroundDecorationDTO.borderRadius,
-        BorderRadius.circular(10).toDto(),
+        BorderRadiusDto.from(BorderRadius.circular(10)),
         reason: 'The BorderRadius is not correct',
       );
     });

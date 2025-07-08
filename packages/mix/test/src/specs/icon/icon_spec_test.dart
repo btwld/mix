@@ -12,16 +12,16 @@ void main() {
       final mix = MixContext.create(
         MockBuildContext(),
         Style(
-          const IconSpecAttribute(
+          IconSpecAttribute(
             size: 20.0,
-            color: Mixable.value(Colors.red),
+            color: const Mixable.value(Colors.red),
             applyTextScaling: true,
             fill: 2,
             grade: 2,
             opticalSize: 2,
             shadows: [
-              ShadowDto(color: Mixable.value(Colors.black)),
-              ShadowDto(color: Mixable.value(Colors.black)),
+              ShadowDto(color: Colors.black),
+              ShadowDto(color: Colors.black),
             ],
             textDirection: TextDirection.ltr,
             weight: 2,

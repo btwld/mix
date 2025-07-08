@@ -52,7 +52,7 @@ final class BorderRadiusGeometryUtility<T extends StyleElement>
   late final _bordeRadius = BorderRadiusUtility(builder);
 
   BorderRadiusGeometryUtility(super.builder)
-      : super(valueToDto: (v) => v.toDto());
+    : super(valueToDto: (v) => BorderRadiusGeometryDto.from(v));
 
   T call(double p1, [double? p2, double? p3, double? p4]) {
     return _bordeRadius(p1, p2, p3, p4);
@@ -94,12 +94,14 @@ final class BorderRadiusUtility<T extends StyleElement>
   late final topRight = RadiusUtility((radius) => only(topRight: radius));
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for all corners.
-  late final all = RadiusUtility((radius) => only(
-        topLeft: radius,
-        topRight: radius,
-        bottomLeft: radius,
-        bottomRight: radius,
-      ));
+  late final all = RadiusUtility(
+    (radius) => only(
+      topLeft: radius,
+      topRight: radius,
+      bottomLeft: radius,
+      bottomRight: radius,
+    ),
+  );
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for topLeft and topRight corner.
   late final top = RadiusUtility(
@@ -129,7 +131,8 @@ final class BorderRadiusUtility<T extends StyleElement>
 
   /// Sets a zero [Radius] for all corners.
   late final zero = all.zero;
-  BorderRadiusUtility(super.builder) : super(valueToDto: (v) => v.toDto());
+  BorderRadiusUtility(super.builder)
+    : super(valueToDto: (v) => BorderRadiusDto.from(v));
 
   T call(double p1, [double? p2, double? p3, double? p4]) {
     double topLeft = p1;
@@ -174,10 +177,10 @@ final class BorderRadiusUtility<T extends StyleElement>
   }) {
     return builder(
       BorderRadiusDto(
-        topLeft: topLeft != null ? Mixable.value(topLeft) : null,
-        topRight: topRight != null ? Mixable.value(topRight) : null,
-        bottomLeft: bottomLeft != null ? Mixable.value(bottomLeft) : null,
-        bottomRight: bottomRight != null ? Mixable.value(bottomRight) : null,
+        topLeft: topLeft,
+        topRight: topRight,
+        bottomLeft: bottomLeft,
+        bottomRight: bottomRight,
       ),
     );
   }
@@ -186,16 +189,18 @@ final class BorderRadiusUtility<T extends StyleElement>
 final class BorderRadiusDirectionalUtility<T extends StyleElement>
     extends DtoUtility<T, BorderRadiusDirectionalDto, BorderRadiusDirectional> {
   BorderRadiusDirectionalUtility(super.builder)
-      : super(valueToDto: (value) => value.toDto());
+    : super(valueToDto: (v) => BorderRadiusDirectionalDto.from(v));
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for all corners.
   RadiusUtility<T> get all {
-    return RadiusUtility((radius) => only(
-          topStart: radius,
-          topEnd: radius,
-          bottomStart: radius,
-          bottomEnd: radius,
-        ));
+    return RadiusUtility(
+      (radius) => only(
+        topStart: radius,
+        topEnd: radius,
+        bottomStart: radius,
+        bottomEnd: radius,
+      ),
+    );
   }
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for topStart and topEnd corner.
@@ -219,9 +224,7 @@ final class BorderRadiusDirectionalUtility<T extends StyleElement>
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for topEnd and bottomEnd corner.
   RadiusUtility<T> get end {
-    return RadiusUtility(
-      (radius) => only(topEnd: radius, bottomEnd: radius),
-    );
+    return RadiusUtility((radius) => only(topEnd: radius, bottomEnd: radius));
   }
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for topStart corner.
@@ -283,10 +286,10 @@ final class BorderRadiusDirectionalUtility<T extends StyleElement>
 
     return builder(
       BorderRadiusDirectionalDto(
-        topStart: Mixable.value(Radius.circular(topStart)),
-        topEnd: Mixable.value(Radius.circular(topEnd)),
-        bottomStart: Mixable.value(Radius.circular(bottomStart)),
-        bottomEnd: Mixable.value(Radius.circular(bottomEnd)),
+        topStart: Radius.circular(topStart),
+        topEnd: Radius.circular(topEnd),
+        bottomStart: Radius.circular(bottomStart),
+        bottomEnd: Radius.circular(bottomEnd),
       ),
     );
   }
@@ -308,10 +311,10 @@ final class BorderRadiusDirectionalUtility<T extends StyleElement>
   }) {
     return builder(
       BorderRadiusDirectionalDto(
-        topStart: topStart != null ? Mixable.value(topStart) : null,
-        topEnd: topEnd != null ? Mixable.value(topEnd) : null,
-        bottomStart: bottomStart != null ? Mixable.value(bottomStart) : null,
-        bottomEnd: bottomEnd != null ? Mixable.value(bottomEnd) : null,
+        topStart: topStart,
+        topEnd: topEnd,
+        bottomStart: bottomStart,
+        bottomEnd: bottomEnd,
       ),
     );
   }

@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../../internal/constants.dart';
-import '../../internal/mix_error.dart';
 
 /// Represents a base Data transfer object of [Gradient]
 ///
@@ -14,9 +13,9 @@ import '../../internal/mix_error.dart';
 sealed class GradientDto<T extends Gradient> extends Mixable<T>
     with HasDefaultValue<T> {
   final List<double>? stops;
-  final List<Mixable<Color>>? colors;
+  final MixableProperty<List<Color>> colors;
   final GradientTransform? transform;
-  const GradientDto({this.stops, this.colors, this.transform});
+  const GradientDto({this.stops, required this.colors, this.transform});
 
   static B _exhaustiveMerge<A extends GradientDto, B extends GradientDto>(
     A a,
@@ -72,22 +71,52 @@ final class LinearGradientDto extends GradientDto<LinearGradient> {
   final AlignmentGeometry? end;
   final TileMode? tileMode;
 
-  const LinearGradientDto({
+  factory LinearGradientDto({
+    AlignmentGeometry? begin,
+    AlignmentGeometry? end,
+    TileMode? tileMode,
+    GradientTransform? transform,
+    List<Color>? colors,
+    List<double>? stops,
+  }) {
+    return LinearGradientDto.raw(
+      begin: begin,
+      end: end,
+      tileMode: tileMode,
+      transform: transform,
+      colors: MixableProperty.prop(colors),
+      stops: stops,
+    );
+  }
+
+  const LinearGradientDto.raw({
     this.begin,
     this.end,
     this.tileMode,
     super.transform,
-    super.colors,
+    required super.colors,
     super.stops,
   });
+
+  /// Creates a LinearGradientDto from a nullable LinearGradient value
+  /// Returns null if the value is null
+  static LinearGradientDto? maybeFrom(LinearGradient? value) {
+    return value != null ? LinearGradientDto(
+      begin: value.begin,
+      end: value.end,
+      tileMode: value.tileMode,
+      transform: value.transform,
+      colors: value.colors,
+      stops: value.stops,
+    ) : null;
+  }
 
   @override
   LinearGradient resolve(MixContext mix) {
     return LinearGradient(
       begin: begin ?? defaultValue.begin,
       end: end ?? defaultValue.end,
-      colors:
-          colors?.map((e) => e.resolve(mix)).toList() ?? defaultValue.colors,
+      colors: colors?.map((e) => e.resolve(mix)).toList() ?? defaultValue.colors,
       stops: stops ?? defaultValue.stops,
       tileMode: tileMode ?? defaultValue.tileMode,
       transform: transform ?? defaultValue.transform,
@@ -139,6 +168,21 @@ final class RadialGradientDto extends GradientDto<RadialGradient> {
     super.colors,
     super.stops,
   });
+
+  /// Creates a RadialGradientDto from a nullable RadialGradient value
+  /// Returns null if the value is null
+  static RadialGradientDto? maybeFrom(RadialGradient? value) {
+    return value != null ? RadialGradientDto(
+      center: value.center,
+      radius: value.radius,
+      tileMode: value.tileMode,
+      focal: value.focal,
+      focalRadius: value.focalRadius,
+      transform: value.transform,
+      colors: value.colors.map((c) => Mixable.value(c)).toList(),
+      stops: value.stops,
+    ) : null;
+  }
 
   @override
   RadialGradient resolve(MixContext mix) {
@@ -209,6 +253,20 @@ final class SweepGradientDto extends GradientDto<SweepGradient> {
     super.stops,
   });
 
+  /// Creates a SweepGradientDto from a nullable SweepGradient value
+  /// Returns null if the value is null
+  static SweepGradientDto? maybeFrom(SweepGradient? value) {
+    return value != null ? SweepGradientDto(
+      center: value.center,
+      startAngle: value.startAngle,
+      endAngle: value.endAngle,
+      tileMode: value.tileMode,
+      transform: value.transform,
+      colors: value.colors.map((c) => Mixable.value(c)).toList(),
+      stops: value.stops,
+    ) : null;
+  }
+
   @override
   SweepGradient resolve(MixContext mix) {
     return SweepGradient(
@@ -253,21 +311,6 @@ final class SweepGradientDto extends GradientDto<SweepGradient> {
   ];
 }
 
-extension GradientExt on Gradient {
-  // toDto
-  GradientDto toDto() {
-    final self = this;
-    if (self is LinearGradient) return (self).toDto();
-    if (self is RadialGradient) return (self).toDto();
-    if (self is SweepGradient) return (self).toDto();
-
-    throw MixError.unsupportedTypeInDto(Gradient, [
-      'LinearGradient',
-      'RadialGradient',
-      'SweepGradient',
-    ]);
-  }
-}
 
 /// A utility class for working with gradients.
 ///
@@ -300,7 +343,14 @@ class LinearGradientUtility<T extends StyleElement>
   /// Utility for defining [LinearGradientDto.stops]
   late final stops = ListUtility<T, double>((v) => only(stops: v));
 
-  LinearGradientUtility(super.builder) : super(valueToDto: (v) => v.toDto());
+  LinearGradientUtility(super.builder) : super(valueToDto: (v) => LinearGradientDto(
+    begin: v.begin,
+    end: v.end,
+    tileMode: v.tileMode,
+    transform: v.transform,
+    colors: v.colors.map((c) => Mixable.value(c)).toList(),
+    stops: v.stops,
+  ));
 
   T call({
     AlignmentGeometry? begin,
@@ -373,7 +423,16 @@ class RadialGradientUtility<T extends StyleElement>
   /// Utility for defining [RadialGradientDto.stops]
   late final stops = ListUtility<T, double>((v) => only(stops: v));
 
-  RadialGradientUtility(super.builder) : super(valueToDto: (v) => v.toDto());
+  RadialGradientUtility(super.builder) : super(valueToDto: (v) => RadialGradientDto(
+    center: v.center,
+    radius: v.radius,
+    tileMode: v.tileMode,
+    focal: v.focal,
+    focalRadius: v.focalRadius,
+    transform: v.transform,
+    colors: v.colors.map((c) => Mixable.value(c)).toList(),
+    stops: v.stops,
+  ));
 
   T call({
     AlignmentGeometry? center,
@@ -451,7 +510,15 @@ class SweepGradientUtility<T extends StyleElement>
   /// Utility for defining [SweepGradientDto.stops]
   late final stops = ListUtility<T, double>((v) => only(stops: v));
 
-  SweepGradientUtility(super.builder) : super(valueToDto: (v) => v.toDto());
+  SweepGradientUtility(super.builder) : super(valueToDto: (v) => SweepGradientDto(
+    center: v.center,
+    startAngle: v.startAngle,
+    endAngle: v.endAngle,
+    tileMode: v.tileMode,
+    transform: v.transform,
+    colors: v.colors.map((c) => Mixable.value(c)).toList(),
+    stops: v.stops,
+  ));
 
   T call({
     AlignmentGeometry? center,
@@ -533,50 +600,3 @@ final class GradientUtility<T extends StyleElement>
   }
 }
 
-/// Extension methods to convert [LinearGradient] to [LinearGradientDto].
-extension LinearGradientMixExt on LinearGradient {
-  /// Converts this [LinearGradient] to a [LinearGradientDto].
-  LinearGradientDto toDto() {
-    return LinearGradientDto(
-      begin: begin,
-      end: end,
-      tileMode: tileMode,
-      transform: transform,
-      colors: colors.map((e) => Mixable.value(e)).toList(),
-      stops: stops,
-    );
-  }
-}
-
-/// Extension methods to convert [RadialGradient] to [RadialGradientDto].
-extension RadialGradientMixExt on RadialGradient {
-  /// Converts this [RadialGradient] to a [RadialGradientDto].
-  RadialGradientDto toDto() {
-    return RadialGradientDto(
-      center: center,
-      radius: radius,
-      tileMode: tileMode,
-      focal: focal,
-      focalRadius: focalRadius,
-      transform: transform,
-      colors: colors.map((e) => Mixable.value(e)).toList(),
-      stops: stops,
-    );
-  }
-}
-
-/// Extension methods to convert [SweepGradient] to [SweepGradientDto].
-extension SweepGradientMixExt on SweepGradient {
-  /// Converts this [SweepGradient] to a [SweepGradientDto].
-  SweepGradientDto toDto() {
-    return SweepGradientDto(
-      center: center,
-      startAngle: startAngle,
-      endAngle: endAngle,
-      tileMode: tileMode,
-      transform: transform,
-      colors: colors.map((e) => Mixable.value(e)).toList(),
-      stops: stops,
-    );
-  }
-}

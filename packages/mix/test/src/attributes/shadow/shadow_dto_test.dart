@@ -8,15 +8,15 @@ void main() {
   //  ShadowDto
   group('ShadowDto', () {
     test('Constructor assigns correct properties', () {
-      const shadowDto = ShadowDto(
+      final shadowDto = ShadowDto(
         blurRadius: 10.0,
-        color: Mixable.value(Colors.blue),
-        offset: Offset(10, 10),
+        color: Colors.blue,
+        offset: const Offset(10, 10),
       );
 
-      expect(shadowDto.blurRadius, 10.0);
-      expect(shadowDto.color?.resolve(EmptyMixData), Colors.blue);
-      expect(shadowDto.offset, const Offset(10, 10));
+      expect(shadowDto.blurRadius.resolve(EmptyMixData), 10.0);
+      expect(shadowDto.color.resolve(EmptyMixData), Colors.blue);
+      expect(shadowDto.offset.resolve(EmptyMixData), const Offset(10, 10));
     });
 
     test('from() creates correct instance', () {
@@ -26,11 +26,11 @@ void main() {
         blurRadius: 10.0,
       );
 
-      final shadowDto = shadow.toDto();
+      final shadowDto = ShadowDto.from(shadow);
 
-      expect(shadowDto.blurRadius, 10.0);
-      expect(shadowDto.color?.resolve(EmptyMixData), Colors.blue);
-      expect(shadowDto.offset, const Offset(10, 10));
+      expect(shadowDto.blurRadius.resolve(EmptyMixData), 10.0);
+      expect(shadowDto.color.resolve(EmptyMixData), Colors.blue);
+      expect(shadowDto.offset.resolve(EmptyMixData), const Offset(10, 10));
     });
 
     test('maybeFrom() creates correct instance', () {
@@ -40,18 +40,18 @@ void main() {
         blurRadius: 10.0,
       );
 
-      final shadowDto = shadow.toDto();
+      final shadowDto = ShadowDto.from(shadow);
 
-      expect(shadowDto.blurRadius, 10.0);
-      expect(shadowDto.color?.resolve(EmptyMixData), Colors.blue);
-      expect(shadowDto.offset, const Offset(10, 10));
+      expect(shadowDto.blurRadius.resolve(EmptyMixData), 10.0);
+      expect(shadowDto.color.resolve(EmptyMixData), Colors.blue);
+      expect(shadowDto.offset.resolve(EmptyMixData), const Offset(10, 10));
     });
 
     test('resolve() returns correct instance', () {
-      const shadowDto = ShadowDto(
+      final shadowDto = ShadowDto(
         blurRadius: 10.0,
-        color: Mixable.value(Colors.blue),
-        offset: Offset(10, 10),
+        color: Colors.blue,
+        offset: const Offset(10, 10),
       );
 
       final shadow = shadowDto.resolve(EmptyMixData);
@@ -62,39 +62,39 @@ void main() {
     });
 
     test('merge() returns correct instance', () {
-      const shadowDto = ShadowDto(
+      final shadowDto = ShadowDto(
         blurRadius: 10.0,
-        color: Mixable.value(Colors.blue),
-        offset: Offset(10, 10),
+        color: Colors.blue,
+        offset: const Offset(10, 10),
       );
 
       final mergedShadowDto = shadowDto.merge(
-        const ShadowDto(
+        ShadowDto(
           blurRadius: 20.0,
-          color: Mixable.value(Colors.red),
-          offset: Offset(20, 20),
+          color: Colors.red,
+          offset: const Offset(20, 20),
         ),
       );
 
-      expect(mergedShadowDto.blurRadius, 20.0);
-      expect(mergedShadowDto.color?.resolve(EmptyMixData), Colors.red);
-      expect(mergedShadowDto.offset, const Offset(20, 20));
+      expect(mergedShadowDto.blurRadius.resolve(EmptyMixData), 20.0);
+      expect(mergedShadowDto.color.resolve(EmptyMixData), Colors.red);
+      expect(mergedShadowDto.offset.resolve(EmptyMixData), const Offset(20, 20));
     });
   });
 
   group('BoxShadowDto', () {
     test('Constructor assigns correct properties', () {
-      const boxShadowDto = BoxShadowDto(
-        color: Mixable.value(Colors.blue),
-        offset: Offset(10, 10),
+      final boxShadowDto = BoxShadowDto(
+        color: Colors.blue,
+        offset: const Offset(10, 10),
         blurRadius: 10.0,
         spreadRadius: 5.0,
       );
 
-      expect(boxShadowDto.blurRadius, 10.0);
-      expect(boxShadowDto.color?.resolve(EmptyMixData), Colors.blue);
-      expect(boxShadowDto.offset, const Offset(10, 10));
-      expect(boxShadowDto.spreadRadius, 5.0);
+      expect(boxShadowDto.blurRadius.resolve(EmptyMixData), 10.0);
+      expect(boxShadowDto.color.resolve(EmptyMixData), Colors.blue);
+      expect(boxShadowDto.offset.resolve(EmptyMixData), const Offset(10, 10));
+      expect(boxShadowDto.spreadRadius.resolve(EmptyMixData), 5.0);
     });
 
     test('from() creates correct instance', () {
@@ -105,12 +105,12 @@ void main() {
         spreadRadius: 5.0,
       );
 
-      final boxShadowDto = boxShadow.toDto();
+      final boxShadowDto = BoxShadowDto.from(boxShadow);
 
-      expect(boxShadowDto.blurRadius, 10.0);
-      expect(boxShadowDto.color?.resolve(EmptyMixData), Colors.blue);
-      expect(boxShadowDto.offset, const Offset(10, 10));
-      expect(boxShadowDto.spreadRadius, 5.0);
+      expect(boxShadowDto.blurRadius.resolve(EmptyMixData), 10.0);
+      expect(boxShadowDto.color.resolve(EmptyMixData), Colors.blue);
+      expect(boxShadowDto.offset.resolve(EmptyMixData), const Offset(10, 10));
+      expect(boxShadowDto.spreadRadius.resolve(EmptyMixData), 5.0);
     });
 
     test('maybeFrom() creates correct instance', () {
@@ -121,18 +121,18 @@ void main() {
         spreadRadius: 5.0,
       );
 
-      final boxShadowDto = boxShadow.toDto();
+      final boxShadowDto = BoxShadowDto.from(boxShadow);
 
-      expect(boxShadowDto.blurRadius, 10.0);
-      expect(boxShadowDto.color?.resolve(EmptyMixData), Colors.blue);
-      expect(boxShadowDto.offset, const Offset(10, 10));
-      expect(boxShadowDto.spreadRadius, 5.0);
+      expect(boxShadowDto.blurRadius.resolve(EmptyMixData), 10.0);
+      expect(boxShadowDto.color.resolve(EmptyMixData), Colors.blue);
+      expect(boxShadowDto.offset.resolve(EmptyMixData), const Offset(10, 10));
+      expect(boxShadowDto.spreadRadius.resolve(EmptyMixData), 5.0);
     });
 
     test('resolve() returns correct instance', () {
-      const boxShadowDto = BoxShadowDto(
-        color: Mixable.value(Colors.blue),
-        offset: Offset(10, 10),
+      final boxShadowDto = BoxShadowDto(
+        color: Colors.blue,
+        offset: const Offset(10, 10),
         blurRadius: 10.0,
         spreadRadius: 5.0,
       );
@@ -146,26 +146,26 @@ void main() {
     });
 
     test('merge() returns correct instance', () {
-      const boxShadowDto = BoxShadowDto(
-        color: Mixable.value(Colors.blue),
-        offset: Offset(10, 10),
+      final boxShadowDto = BoxShadowDto(
+        color: Colors.blue,
+        offset: const Offset(10, 10),
         blurRadius: 10.0,
         spreadRadius: 5.0,
       );
 
       final mergedBoxShadowDto = boxShadowDto.merge(
-        const BoxShadowDto(
-          color: Mixable.value(Colors.red),
-          offset: Offset(20, 20),
+        BoxShadowDto(
+          color: Colors.red,
+          offset: const Offset(20, 20),
           blurRadius: 20.0,
           spreadRadius: 10.0,
         ),
       );
 
-      expect(mergedBoxShadowDto.blurRadius, 20.0);
-      expect(mergedBoxShadowDto.color?.resolve(EmptyMixData), Colors.red);
-      expect(mergedBoxShadowDto.offset, const Offset(20, 20));
-      expect(mergedBoxShadowDto.spreadRadius, 10.0);
+      expect(mergedBoxShadowDto.blurRadius.resolve(EmptyMixData), 20.0);
+      expect(mergedBoxShadowDto.color.resolve(EmptyMixData), Colors.red);
+      expect(mergedBoxShadowDto.offset.resolve(EmptyMixData), const Offset(20, 20));
+      expect(mergedBoxShadowDto.spreadRadius.resolve(EmptyMixData), 10.0);
     });
   });
 }

@@ -4,10 +4,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../../internal/mix_error.dart';
-
 typedef _BaseDecorProperties = ({
-  Mixable<Color>? color,
+  MixableProperty<Color> color,
   GradientDto? gradient,
   List<BoxShadowDto>? boxShadow,
   DecorationImageDto? image,
@@ -21,7 +19,7 @@ typedef _BaseDecorProperties = ({
 /// In order to support merging of [Decoration] values, and reusable of common properties.
 @immutable
 sealed class DecorationDto<T extends Decoration> extends Mixable<T> {
-  final Mixable<Color>? color;
+  final MixableProperty<Color> color;
   final GradientDto? gradient;
   final DecorationImageDto? image;
   final List<BoxShadowDto>? boxShadow;
@@ -83,12 +81,34 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
   final BoxShape? shape;
   final BlendMode? backgroundBlendMode;
 
-  const BoxDecorationDto({
+  factory BoxDecorationDto({
+    BoxBorderDto? border,
+    BorderRadiusGeometryDto? borderRadius,
+    BoxShape? shape,
+    BlendMode? backgroundBlendMode,
+    Color? color,
+    DecorationImageDto? image,
+    GradientDto? gradient,
+    List<BoxShadowDto>? boxShadow,
+  }) {
+    return BoxDecorationDto.raw(
+      border: border,
+      borderRadius: borderRadius,
+      shape: shape,
+      backgroundBlendMode: backgroundBlendMode,
+      color: MixableProperty.prop(color),
+      image: image,
+      gradient: gradient,
+      boxShadow: boxShadow,
+    );
+  }
+
+  const BoxDecorationDto.raw({
     this.border,
     this.borderRadius,
     this.shape,
     this.backgroundBlendMode,
-    super.color,
+    required super.color,
     super.image,
     super.gradient,
     super.boxShadow,
@@ -105,7 +125,7 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
     );
 
     return merge(
-      BoxDecorationDto(
+      BoxDecorationDto.raw(
         border: side != null ? BorderDto.all(side) : null,
         borderRadius: borderRadius,
         shape: boxShape,
@@ -128,7 +148,7 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
   @override
   BoxDecoration resolve(MixContext mix) {
     return BoxDecoration(
-      color: color?.resolve(mix),
+      color: color.resolve(mix),
       image: image?.resolve(mix),
       border: border?.resolve(mix),
       borderRadius: borderRadius?.resolve(mix),
@@ -151,13 +171,13 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
   BoxDecorationDto merge(BoxDecorationDto? other) {
     if (other == null) return this;
 
-    return BoxDecorationDto(
+    return BoxDecorationDto.raw(
       border: BoxBorderDto.tryToMerge(border, other.border),
       borderRadius:
           borderRadius?.merge(other.borderRadius) ?? other.borderRadius,
       shape: other.shape ?? shape,
       backgroundBlendMode: other.backgroundBlendMode ?? backgroundBlendMode,
-      color: other.color ?? color,
+      color: color.merge(other.color),
       image: image?.merge(other.image) ?? other.image,
       gradient: GradientDto.tryToMerge(gradient, other.gradient),
       boxShadow: MixHelpers.mergeList(boxShadow, other.boxShadow),
@@ -188,9 +208,25 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
     with HasDefaultValue<ShapeDecoration> {
   final ShapeBorderDto? shape;
 
-  const ShapeDecorationDto({
+  factory ShapeDecorationDto({
+    ShapeBorderDto? shape,
+    Color? color,
+    DecorationImageDto? image,
+    GradientDto? gradient,
+    List<BoxShadowDto>? shadows,
+  }) {
+    return ShapeDecorationDto.raw(
+      shape: shape,
+      color: MixableProperty.prop(color),
+      image: image,
+      gradient: gradient,
+      shadows: shadows,
+    );
+  }
+
+  const ShapeDecorationDto.raw({
     this.shape,
-    super.color,
+    required super.color,
     super.image,
     super.gradient,
     List<BoxShadowDto>? shadows,
@@ -216,7 +252,7 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
     );
 
     return merge(
-      ShapeDecorationDto(
+      ShapeDecorationDto.raw(
         shape: shapeBorder,
         color: color,
         image: image,
@@ -237,7 +273,7 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
   @override
   ShapeDecoration resolve(MixContext mix) {
     return ShapeDecoration(
-      color: color?.resolve(mix) ?? defaultValue.color,
+      color: color.resolve(mix) ?? defaultValue.color,
       image: image?.resolve(mix) ?? defaultValue.image,
       gradient: gradient?.resolve(mix) ?? defaultValue.gradient,
       shadows:
@@ -258,9 +294,9 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
   ShapeDecorationDto merge(ShapeDecorationDto? other) {
     if (other == null) return this;
 
-    return ShapeDecorationDto(
+    return ShapeDecorationDto.raw(
       shape: ShapeBorderDto.tryToMerge(shape, other.shape),
-      color: other.color ?? color,
+      color: color.merge(other.color),
       image: image?.merge(other.image) ?? other.image,
       gradient: GradientDto.tryToMerge(gradient, other.gradient),
       shadows: MixHelpers.mergeList(shadows, other.shadows),
@@ -270,8 +306,7 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
   @override
   bool get isMergeable =>
       (shape == null ||
-      (shape is CircleBorderDto &&
-          ((shape as CircleBorderDto).eccentricity == null)) ||
+      shape is CircleBorderDto ||
       shape is RoundedRectangleBorderDto);
 
   @override
@@ -291,7 +326,7 @@ BoxDecorationDto _toBoxDecorationDto(ShapeDecorationDto dto) {
   final (:boxShadow, :color, :gradient, :image) = dto._getBaseDecor();
   final (:borderRadius, :boxShape, :side) = ShapeBorderDto.extract(dto.shape);
 
-  return BoxDecorationDto(
+  return BoxDecorationDto.raw(
     border: side != null ? BorderDto.all(side) : null,
     borderRadius: borderRadius,
     shape: boxShape,
@@ -310,26 +345,13 @@ ShapeDecorationDto _toShapeDecorationDto(BoxDecorationDto dto) {
     borderRadius: dto.borderRadius,
   );
 
-  return ShapeDecorationDto(
+  return ShapeDecorationDto.raw(
     shape: shapeBorder,
     color: color,
     image: image,
     gradient: gradient,
     shadows: boxShadow,
   );
-}
-
-extension DecorationMixExt on Decoration {
-  DecorationDto toDto() {
-    final self = this;
-    if (self is BoxDecoration) return self.toDto();
-    if (self is ShapeDecoration) return self.toDto();
-
-    throw MixError.unsupportedTypeInDto(Decoration, [
-      'BoxDecoration',
-      'ShapeDecoration',
-    ]);
-  }
 }
 
 ShapeBorderDto? _fromBoxShape({
@@ -392,7 +414,7 @@ class BoxDecorationUtility<T extends StyleElement>
   );
 
   /// Utility for defining [BoxDecorationDto.color]
-  late final color = ColorUtility((v) => only(color: v));
+  late final color = ColorUtility((v) => only(color: MixableProperty(v)));
 
   /// Utility for defining [BoxDecorationDto.image]
   late final image = DecorationImageUtility((v) => only(image: v));
@@ -409,7 +431,12 @@ class BoxDecorationUtility<T extends StyleElement>
   /// Utility for defining [BoxDecorationDto.boxShadow]
   late final elevation = ElevationUtility((v) => only(boxShadow: v));
 
-  BoxDecorationUtility(super.builder) : super(valueToDto: (v) => v.toDto());
+  BoxDecorationUtility(super.builder)
+    : super(
+        valueToDto: (v) => throw UnimplementedError(
+          'BoxDecoration to DTO conversion not implemented yet. Use only() method instead.',
+        ),
+      );
 
   T call({
     BoxBorder? border,
@@ -422,14 +449,21 @@ class BoxDecorationUtility<T extends StyleElement>
     List<BoxShadow>? boxShadow,
   }) {
     return only(
-      border: border?.toDto(),
-      borderRadius: borderRadius?.toDto(),
+      border: border != null ? this.border.fromValue(border) : null,
+      borderRadius: borderRadius != null ? this.borderRadius.fromValue(borderRadius) : null,
       shape: shape,
       backgroundBlendMode: backgroundBlendMode,
-      color: Mixable.maybeValue(color),
-      image: image?.toDto(),
-      gradient: gradient?.toDto(),
-      boxShadow: boxShadow?.map((e) => e.toDto()).toList(),
+      color: color != null ? MixableProperty(Mixable.value(color)) : null,
+      image: image != null ? this.image.fromValue(image) : null,
+      gradient: gradient != null 
+        ? switch (gradient) {
+            LinearGradient() => this.gradient.linear.fromValue(gradient),
+            RadialGradient() => this.gradient.radial.fromValue(gradient),
+            SweepGradient() => this.gradient.sweep.fromValue(gradient),
+            _ => throw ArgumentError('Unsupported gradient type: ${gradient.runtimeType}'),
+          }
+        : null,
+      boxShadow: boxShadow?.map((shadow) => BoxShadowDto.from(shadow)).toList(),
     );
   }
 
@@ -440,18 +474,18 @@ class BoxDecorationUtility<T extends StyleElement>
     BorderRadiusGeometryDto? borderRadius,
     BoxShape? shape,
     BlendMode? backgroundBlendMode,
-    Mixable<Color>? color,
+    MixableProperty<Color>? color,
     DecorationImageDto? image,
     GradientDto? gradient,
     List<BoxShadowDto>? boxShadow,
   }) {
     return builder(
-      BoxDecorationDto(
+      BoxDecorationDto.raw(
         border: border,
         borderRadius: borderRadius,
         shape: shape,
         backgroundBlendMode: backgroundBlendMode,
-        color: color,
+        color: color ?? const MixableProperty(),
         image: image,
         gradient: gradient,
         boxShadow: boxShadow,
@@ -470,7 +504,7 @@ class ShapeDecorationUtility<T extends StyleElement>
   late final shape = ShapeBorderUtility((v) => only(shape: v));
 
   /// Utility for defining [ShapeDecorationDto.color]
-  late final color = ColorUtility((v) => only(color: v));
+  late final color = ColorUtility((v) => only(color: MixableProperty(v)));
 
   /// Utility for defining [ShapeDecorationDto.image]
   late final image = DecorationImageUtility((v) => only(image: v));
@@ -481,7 +515,12 @@ class ShapeDecorationUtility<T extends StyleElement>
   /// Utility for defining [ShapeDecorationDto.shadows]
   late final shadows = BoxShadowListUtility((v) => only(shadows: v));
 
-  ShapeDecorationUtility(super.builder) : super(valueToDto: (v) => v.toDto());
+  ShapeDecorationUtility(super.builder)
+    : super(
+        valueToDto: (v) => throw UnimplementedError(
+          'ShapeDecoration to DTO conversion not implemented yet. Use only() method instead.',
+        ),
+      );
 
   T call({
     ShapeBorder? shape,
@@ -491,11 +530,29 @@ class ShapeDecorationUtility<T extends StyleElement>
     List<BoxShadow>? shadows,
   }) {
     return only(
-      shape: shape?.toDto(),
-      color: Mixable.maybeValue(color),
-      image: image?.toDto(),
-      gradient: gradient?.toDto(),
-      shadows: shadows?.map((e) => e.toDto()).toList(),
+      shape: shape != null 
+        ? switch (shape) {
+            RoundedRectangleBorder() => this.shape.roundedRectangle.fromValue(shape),
+            BeveledRectangleBorder() => this.shape.beveledRectangle.fromValue(shape),
+            ContinuousRectangleBorder() => this.shape.continuousRectangle.fromValue(shape),
+            CircleBorder() => this.shape.circle.fromValue(shape),
+            StadiumBorder() => this.shape.stadium.fromValue(shape),
+            StarBorder() => this.shape.star.fromValue(shape),
+            LinearBorder() => this.shape.linear.fromValue(shape),
+            _ => throw ArgumentError('Unsupported shape border type: ${shape.runtimeType}'),
+          }
+        : null,
+      color: color != null ? MixableProperty(Mixable.value(color)) : null,
+      image: image != null ? this.image.fromValue(image) : null,
+      gradient: gradient != null 
+        ? switch (gradient) {
+            LinearGradient() => this.gradient.linear.fromValue(gradient),
+            RadialGradient() => this.gradient.radial.fromValue(gradient),
+            SweepGradient() => this.gradient.sweep.fromValue(gradient),
+            _ => throw ArgumentError('Unsupported gradient type: ${gradient.runtimeType}'),
+          }
+        : null,
+      shadows: shadows?.map((shadow) => BoxShadowDto.from(shadow)).toList(),
     );
   }
 
@@ -503,66 +560,19 @@ class ShapeDecorationUtility<T extends StyleElement>
   @override
   T only({
     ShapeBorderDto? shape,
-    Mixable<Color>? color,
+    MixableProperty<Color>? color,
     DecorationImageDto? image,
     GradientDto? gradient,
     List<BoxShadowDto>? shadows,
   }) {
     return builder(
-      ShapeDecorationDto(
+      ShapeDecorationDto.raw(
         shape: shape,
-        color: color,
+        color: color ?? const MixableProperty(),
         image: image,
         gradient: gradient,
         shadows: shadows,
       ),
     );
-  }
-}
-
-/// Extension methods to convert [BoxDecoration] to [BoxDecorationDto].
-extension BoxDecorationMixExt on BoxDecoration {
-  /// Converts this [BoxDecoration] to a [BoxDecorationDto].
-  BoxDecorationDto toDto() {
-    return BoxDecorationDto(
-      border: border?.toDto(),
-      borderRadius: borderRadius?.toDto(),
-      shape: shape,
-      backgroundBlendMode: backgroundBlendMode,
-      color: color != null ? Mixable.value(color!) : null,
-      image: image?.toDto(),
-      gradient: gradient?.toDto(),
-      boxShadow: boxShadow?.map((e) => e.toDto()).toList(),
-    );
-  }
-}
-
-/// Extension methods to convert List<[BoxDecoration]> to List<[BoxDecorationDto]>.
-extension ListBoxDecorationMixExt on List<BoxDecoration> {
-  /// Converts this List<[BoxDecoration]> to a List<[BoxDecorationDto]>.
-  List<BoxDecorationDto> toDto() {
-    return map((e) => e.toDto()).toList();
-  }
-}
-
-/// Extension methods to convert [ShapeDecoration] to [ShapeDecorationDto].
-extension ShapeDecorationMixExt on ShapeDecoration {
-  /// Converts this [ShapeDecoration] to a [ShapeDecorationDto].
-  ShapeDecorationDto toDto() {
-    return ShapeDecorationDto(
-      shape: shape.toDto(),
-      color: color != null ? Mixable.value(color!) : null,
-      image: image?.toDto(),
-      gradient: gradient?.toDto(),
-      shadows: shadows?.map((e) => e.toDto()).toList(),
-    );
-  }
-}
-
-/// Extension methods to convert List<[ShapeDecoration]> to List<[ShapeDecorationDto]>.
-extension ListShapeDecorationMixExt on List<ShapeDecoration> {
-  /// Converts this List<[ShapeDecoration]> to a List<[ShapeDecorationDto]>.
-  List<ShapeDecorationDto> toDto() {
-    return map((e) => e.toDto()).toList();
   }
 }

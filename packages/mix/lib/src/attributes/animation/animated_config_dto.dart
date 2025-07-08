@@ -11,31 +11,70 @@ import 'animation_config.dart';
 typedef AnimatedDataDto = AnimationConfigDto;
 
 class AnimationConfigDto extends Mixable<AnimationConfig> {
-  final Duration? duration;
-  final Curve? curve;
-  final VoidCallback? onEnd;
+  // Properties use MixableProperty for cleaner merging
+  final MixableProperty<Duration> duration;
+  final MixableProperty<Curve> curve;
+  final MixableProperty<VoidCallback> onEnd;
 
-  const AnimationConfigDto({
+  // Main constructor accepts real values
+  factory AnimationConfigDto({
+    Duration? duration,
+    Curve? curve,
+    VoidCallback? onEnd,
+  }) {
+    return AnimationConfigDto.raw(
+      duration: MixableProperty.prop(duration),
+      curve: MixableProperty.prop(curve),
+      onEnd: MixableProperty.prop(onEnd),
+    );
+  }
+
+  // Factory that accepts MixableProperty instances
+  const AnimationConfigDto.raw({
     required this.duration,
     required this.curve,
-    this.onEnd,
+    required this.onEnd,
   });
 
-  const AnimationConfigDto.withDefaults()
-      : duration = kDefaultAnimationDuration,
-        curve = Curves.linear,
-        onEnd = null;
+  factory AnimationConfigDto.withDefaults() {
+    return AnimationConfigDto(
+      duration: kDefaultAnimationDuration,
+      curve: Curves.linear,
+      onEnd: null,
+    );
+  }
+
+  // Factory from AnimationConfig
+  factory AnimationConfigDto.from(AnimationConfig config) {
+    return AnimationConfigDto(
+      duration: config.duration,
+      curve: config.curve,
+      onEnd: config.onEnd,
+    );
+  }
+
+  // Nullable factory from AnimationConfig
+  static AnimationConfigDto? maybeFrom(AnimationConfig? config) {
+    return config != null ? AnimationConfigDto.from(config) : null;
+  }
 
   @override
   AnimationConfig resolve(MixContext mix) {
-    return AnimationConfig(duration: duration, curve: curve, onEnd: onEnd);
+    return AnimationConfig(
+      duration: duration.resolve(mix),
+      curve: curve.resolve(mix),
+      onEnd: onEnd.resolve(mix),
+    );
   }
 
   @override
   AnimationConfigDto merge(AnimationConfigDto? other) {
-    return AnimationConfigDto(
-      duration: other?.duration ?? duration,
-      curve: other?.curve ?? curve,
+    if (other == null) return this;
+
+    return AnimationConfigDto.raw(
+      duration: duration.merge(other.duration),
+      curve: curve.merge(other.curve),
+      onEnd: onEnd.merge(other.onEnd),
     );
   }
 

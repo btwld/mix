@@ -71,9 +71,6 @@ abstract class Mixable<Value> with EqualityMixin {
   /// Resolves token value if present, otherwise returns null
   Value resolve(MixContext mix);
 
-  /// Merges this mixable with another
-  Mixable<Value> merge(covariant Mixable<Value>? other);
-
   /// Apply all directives to the resolved value
   @protected
   Value applyDirectives(Value value) {
@@ -92,6 +89,20 @@ abstract class Mixable<Value> with EqualityMixin {
   ) {
     return [...directives, ...other];
   }
+
+  Mixable<Value> merge(covariant Mixable<Value>? other) {
+    if (other == null) return this;
+
+    final allDirectives = mergeDirectives(other.directives);
+
+    return switch ((this, other)) {
+      (_, _CompositeMixable(:var items)) => Mixable.composite([
+        ...items,
+        this,
+      ], directives: allDirectives),
+      _ => Mixable.composite([this, other], directives: allDirectives),
+    };
+  }
 }
 
 // Private implementations for Mixable<T>
@@ -106,21 +117,6 @@ class _ValueMixable<T> extends Mixable<T> {
   T resolve(MixContext mix) => applyDirectives(value);
 
   @override
-  Mixable<T> merge(Mixable<T>? other) {
-    if (other == null) return this;
-
-    final allDirectives = mergeDirectives(other.directives);
-
-    return switch ((this, other)) {
-      (_, _CompositeMixable(:var items)) => Mixable.composite([
-        ...items,
-        this,
-      ], directives: allDirectives),
-      _ => Mixable.composite([this, other], directives: allDirectives),
-    };
-  }
-
-  @override
   List<Object?> get props => [value, directives];
 }
 
@@ -133,21 +129,6 @@ class _TokenMixable<T> extends Mixable<T> {
   @override
   T resolve(MixContext mix) =>
       applyDirectives(mix.scope.getToken(token, mix.context));
-
-  @override
-  Mixable<T> merge(Mixable<T>? other) {
-    if (other == null) return this;
-
-    final allDirectives = mergeDirectives(other.directives);
-
-    return switch ((this, other)) {
-      (_, _CompositeMixable(:var items)) => Mixable.composite([
-        ...items,
-        this,
-      ], directives: allDirectives),
-      _ => Mixable.composite([this, other], directives: allDirectives),
-    };
-  }
 
   @override
   List<Object?> get props => [token, directives];
@@ -213,6 +194,7 @@ final class MixableList<T extends Mixable<Value>, Value>
 }
 
 // Define a mixin for properties that have default values
+// TODO: Rename this to MixableDefaultValueMixin or similar
 mixin HasDefaultValue<Value> {
   @protected
   Value get defaultValue;
@@ -243,8 +225,8 @@ class MixableProperty<T extends Object> with EqualityMixin {
   const MixableProperty([this._mixable]);
 
   /// Creates a MixableProperty from a concrete value (can be null)
-  factory MixableProperty.value(T value) =>
-      MixableProperty(Mixable.value(value));
+  factory MixableProperty.prop(T? value) =>
+      MixableProperty(Mixable.maybeValue(value));
 
   /// Creates a MixableProperty from a token
   /// Note: We need a nullable token wrapper to handle the type mismatch
@@ -253,9 +235,6 @@ class MixableProperty<T extends Object> with EqualityMixin {
   }
 
   /// Creates a MixableProperty from a nullable value
-  static MixableProperty<T>? maybeValue<T extends Object>(T? value) {
-    return value == null ? null : MixableProperty(Mixable.value(value));
-  }
 
   /// Gets the underlying value if this wraps a ValueMixable
   T? get value => _mixable?.value;

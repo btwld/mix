@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+
 import '../../attributes/animation/animated_config_dto.dart';
 import '../../attributes/animation/animated_util.dart';
 import '../../attributes/animation/animation_config.dart';
@@ -35,9 +36,6 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
   final TextDirection? textDirection;
   final bool? softWrap;
 
-  @Deprecated('Use textScaler instead')
-  final double? textScaleFactor;
-
   final TextHeightBehavior? textHeightBehavior;
 
   final TextDirective? directive;
@@ -46,7 +44,6 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     this.overflow,
     this.strutStyle,
     this.textAlign,
-    @Deprecated('Use textScaler instead') this.textScaleFactor,
     this.textScaler,
     this.maxLines,
     this.style,
@@ -114,7 +111,6 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     TextOverflow? overflow,
     StrutStyle? strutStyle,
     TextAlign? textAlign,
-    double? textScaleFactor,
     TextScaler? textScaler,
     int? maxLines,
     TextStyle? style,
@@ -130,7 +126,6 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
       overflow: overflow ?? this.overflow,
       strutStyle: strutStyle ?? this.strutStyle,
       textAlign: textAlign ?? this.textAlign,
-      textScaleFactor: textScaleFactor ?? this.textScaleFactor,
       textScaler: textScaler ?? this.textScaler,
       maxLines: maxLines ?? this.maxLines,
       style: style ?? this.style,
@@ -155,7 +150,6 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
   /// The interpolation is performed on each property of the [TextSpec] using the appropriate
   /// interpolation method:
   /// - [MixHelpers.lerpStrutStyle] for [strutStyle].
-  /// - [MixHelpers.lerpDouble] for [textScaleFactor].
   /// - [MixHelpers.lerpTextStyle] for [style].
   /// For [overflow] and [textAlign] and [textScaler] and [maxLines] and [textWidthBasis] and [textHeightBehavior] and [textDirection] and [softWrap] and [directive] and [animated] and [modifiers], the interpolation is performed using a step function.
   /// If [t] is less than 0.5, the value from the current [TextSpec] is used. Otherwise, the value
@@ -171,11 +165,6 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
       overflow: t < 0.5 ? overflow : other.overflow,
       strutStyle: MixHelpers.lerpStrutStyle(strutStyle, other.strutStyle, t),
       textAlign: t < 0.5 ? textAlign : other.textAlign,
-      textScaleFactor: MixHelpers.lerpDouble(
-        textScaleFactor,
-        other.textScaleFactor,
-        t,
-      ),
       textScaler: t < 0.5 ? textScaler : other.textScaler,
       maxLines: t < 0.5 ? maxLines : other.maxLines,
       style: MixHelpers.lerpTextStyle(style, other.style, t),
@@ -203,13 +192,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     properties.add(
       DiagnosticsProperty('textAlign', textAlign, defaultValue: null),
     );
-    properties.add(
-      DiagnosticsProperty(
-        'textScaleFactor',
-        textScaleFactor,
-        defaultValue: null,
-      ),
-    );
+
     properties.add(
       DiagnosticsProperty('textScaler', textScaler, defaultValue: null),
     );
@@ -253,7 +236,6 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     overflow,
     strutStyle,
     textAlign,
-    textScaleFactor,
     textScaler,
     maxLines,
     style,
@@ -278,7 +260,6 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
   final TextOverflow? overflow;
   final StrutStyleDto? strutStyle;
   final TextAlign? textAlign;
-  final double? textScaleFactor;
   final TextScaler? textScaler;
   final int? maxLines;
   final TextStyleDto? style;
@@ -292,7 +273,6 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
     this.overflow,
     this.strutStyle,
     this.textAlign,
-    this.textScaleFactor,
     this.textScaler,
     this.maxLines,
     this.style,
@@ -319,7 +299,6 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
       overflow: overflow,
       strutStyle: strutStyle?.resolve(mix),
       textAlign: textAlign,
-      textScaleFactor: textScaleFactor,
       textScaler: textScaler,
       maxLines: maxLines,
       style: style?.resolve(mix),
@@ -349,7 +328,6 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
       overflow: other.overflow ?? overflow,
       strutStyle: strutStyle?.merge(other.strutStyle) ?? other.strutStyle,
       textAlign: other.textAlign ?? textAlign,
-      textScaleFactor: other.textScaleFactor ?? textScaleFactor,
       textScaler: other.textScaler ?? textScaler,
       maxLines: other.maxLines ?? maxLines,
       style: style?.merge(other.style) ?? other.style,
@@ -377,13 +355,7 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
     properties.add(
       DiagnosticsProperty('textAlign', textAlign, defaultValue: null),
     );
-    properties.add(
-      DiagnosticsProperty(
-        'textScaleFactor',
-        textScaleFactor,
-        defaultValue: null,
-      ),
-    );
+
     properties.add(
       DiagnosticsProperty('textScaler', textScaler, defaultValue: null),
     );
@@ -427,7 +399,6 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
     overflow,
     strutStyle,
     textAlign,
-    textScaleFactor,
     textScaler,
     maxLines,
     style,
@@ -455,9 +426,6 @@ class TextSpecUtility<T extends SpecAttribute>
 
   /// Utility for defining [TextSpecAttribute.textAlign]
   late final textAlign = TextAlignUtility((v) => only(textAlign: v));
-
-  /// Utility for defining [TextSpecAttribute.textScaleFactor]
-  late final textScaleFactor = DoubleUtility((v) => only(textScaleFactor: v));
 
   /// Utility for defining [TextSpecAttribute.textScaler]
   late final textScaler = TextScalerUtility((v) => only(textScaler: v));
@@ -596,7 +564,6 @@ class TextSpecUtility<T extends SpecAttribute>
     TextOverflow? overflow,
     StrutStyleDto? strutStyle,
     TextAlign? textAlign,
-    double? textScaleFactor,
     TextScaler? textScaler,
     int? maxLines,
     TextStyleDto? style,
@@ -613,7 +580,6 @@ class TextSpecUtility<T extends SpecAttribute>
         overflow: overflow,
         strutStyle: strutStyle,
         textAlign: textAlign,
-        textScaleFactor: textScaleFactor,
         textScaler: textScaler,
         maxLines: maxLines,
         style: style,

@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-import '../../internal/mix_error.dart';
 
 // Deprecated typedef moved to src/core/deprecated.dart
 
@@ -46,6 +45,21 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
       left: left != null ? SpaceDto.value(left) : null,
       right: right != null ? SpaceDto.value(right) : null,
     );
+  }
+
+  // Factory from EdgeInsetsGeometry
+  static EdgeInsetsGeometryDto from(EdgeInsetsGeometry geometry) {
+    return switch (geometry) {
+      EdgeInsets() => EdgeInsetsDto.from(geometry),
+      EdgeInsetsDirectional() => EdgeInsetsDirectionalDto.from(geometry),
+      _ => throw ArgumentError('Unsupported EdgeInsetsGeometry type: ${geometry.runtimeType}'),
+    };
+  }
+
+  /// Creates an EdgeInsetsGeometryDto from a nullable EdgeInsetsGeometry value
+  /// Returns null if the value is null, otherwise uses EdgeInsetsGeometryDto.from
+  static EdgeInsetsGeometryDto? maybeFrom(EdgeInsetsGeometry? value) {
+    return value != null ? EdgeInsetsGeometryDto.from(value) : null;
   }
 
   static EdgeInsetsGeometryDto? tryToMerge(
@@ -121,6 +135,22 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
 
   EdgeInsetsDto.none() : this.all(0);
 
+  // Factory from EdgeInsets
+  factory EdgeInsetsDto.from(EdgeInsets insets) {
+    return EdgeInsetsDto(
+      top: insets.top,
+      bottom: insets.bottom,
+      left: insets.left,
+      right: insets.right,
+    );
+  }
+
+  /// Creates an EdgeInsetsDto from a nullable EdgeInsets value
+  /// Returns null if the value is null, otherwise uses EdgeInsetsDto.from
+  static EdgeInsetsDto? maybeFrom(EdgeInsets? value) {
+    return value != null ? EdgeInsetsDto.from(value) : null;
+  }
+
   @override
   EdgeInsets resolve(MixContext mix) {
     return EdgeInsets.only(
@@ -152,16 +182,6 @@ final class EdgeInsetsDirectionalDto
   final SpaceDto? start;
   final SpaceDto? end;
 
-  EdgeInsetsDirectionalDto.all(double value)
-    : this.raw(
-        top: SpaceDto.value(value),
-        bottom: SpaceDto.value(value),
-        start: SpaceDto.value(value),
-        end: SpaceDto.value(value),
-      );
-
-  EdgeInsetsDirectionalDto.none() : this.all(0);
-
   @protected
   const EdgeInsetsDirectionalDto.raw({
     super.top,
@@ -183,6 +203,32 @@ final class EdgeInsetsDirectionalDto
       start: start != null ? SpaceDto.value(start) : null,
       end: end != null ? SpaceDto.value(end) : null,
     );
+  }
+
+  EdgeInsetsDirectionalDto.all(double value)
+    : this.raw(
+        top: SpaceDto.value(value),
+        bottom: SpaceDto.value(value),
+        start: SpaceDto.value(value),
+        end: SpaceDto.value(value),
+      );
+
+  EdgeInsetsDirectionalDto.none() : this.all(0);
+
+  // Factory from EdgeInsetsDirectional
+  factory EdgeInsetsDirectionalDto.from(EdgeInsetsDirectional insets) {
+    return EdgeInsetsDirectionalDto(
+      top: insets.top,
+      bottom: insets.bottom,
+      start: insets.start,
+      end: insets.end,
+    );
+  }
+
+  /// Creates an EdgeInsetsDirectionalDto from a nullable EdgeInsetsDirectional value
+  /// Returns null if the value is null, otherwise uses EdgeInsetsDirectionalDto.from
+  static EdgeInsetsDirectionalDto? maybeFrom(EdgeInsetsDirectional? value) {
+    return value != null ? EdgeInsetsDirectionalDto.from(value) : null;
   }
 
   @override
@@ -211,29 +257,3 @@ final class EdgeInsetsDirectionalDto
   List<Object?> get props => [top, bottom, start, end];
 }
 
-extension EdgeInsetsGeometryExt on EdgeInsetsGeometry {
-  EdgeInsetsGeometryDto toDto() {
-    final self = this;
-    if (self is EdgeInsetsDirectional) {
-      return EdgeInsetsDirectionalDto.raw(
-        top: SpaceDto.value(self.top),
-        bottom: SpaceDto.value(self.bottom),
-        start: SpaceDto.value(self.start),
-        end: SpaceDto.value(self.end),
-      );
-    }
-    if (self is EdgeInsets) {
-      return EdgeInsetsDto.raw(
-        top: SpaceDto.value(self.top),
-        bottom: SpaceDto.value(self.bottom),
-        left: SpaceDto.value(self.left),
-        right: SpaceDto.value(self.right),
-      );
-    }
-
-    throw MixError.unsupportedTypeInDto(EdgeInsetsGeometry, [
-      'EdgeInsetsDirectional',
-      'EdgeInsets',
-    ]);
-  }
-}

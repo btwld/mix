@@ -2,7 +2,110 @@ import 'package:flutter/material.dart';
 
 import '../../core/element.dart';
 import '../../core/utility.dart';
+import '../color/color_util.dart';
+import '../scalars/scalar_util.dart';
 import 'shadow_dto.dart';
+
+/// Utility class for configuring [Shadow] properties.
+///
+/// This class provides methods to set individual properties of a [Shadow].
+/// Use the methods of this class to configure specific properties of a [Shadow].
+class ShadowUtility<T extends StyleElement>
+    extends DtoUtility<T, ShadowDto, Shadow> {
+  /// Utility for defining [ShadowDto.blurRadius]
+  late final blurRadius = DoubleUtility(
+    (v) => only(blurRadius: Mixable.value(v)),
+  );
+
+  /// Utility for defining [ShadowDto.color]
+  late final color = ColorUtility((v) => only(color: v));
+
+  /// Utility for defining [ShadowDto.offset]
+  late final offset = OffsetUtility((v) => only(offset: Mixable.value(v)));
+
+  ShadowUtility(super.builder) : super(valueToDto: (v) => ShadowDto.from(v));
+
+  T call({double? blurRadius, Color? color, Offset? offset}) {
+    return builder(
+      ShadowDto(blurRadius: blurRadius, color: color, offset: offset),
+    );
+  }
+
+  /// Returns a new [ShadowDto] with the specified properties.
+  @override
+  T only({
+    Mixable<double>? blurRadius,
+    Mixable<Color>? color,
+    Mixable<Offset>? offset,
+  }) {
+    return builder(
+      ShadowDto.raw(
+        blurRadius: MixableProperty(blurRadius),
+        color: MixableProperty(color),
+        offset: MixableProperty(offset),
+      ),
+    );
+  }
+}
+
+/// Utility class for configuring [BoxShadow] properties.
+///
+/// This class provides methods to set individual properties of a [BoxShadow].
+/// Use the methods of this class to configure specific properties of a [BoxShadow].
+class BoxShadowUtility<T extends StyleElement>
+    extends DtoUtility<T, BoxShadowDto, BoxShadow> {
+  /// Utility for defining [BoxShadowDto.color]
+  late final color = ColorUtility((v) => only(color: v));
+
+  /// Utility for defining [BoxShadowDto.offset]
+  late final offset = OffsetUtility((v) => only(offset: Mixable.value(v)));
+
+  /// Utility for defining [BoxShadowDto.blurRadius]
+  late final blurRadius = DoubleUtility(
+    (v) => only(blurRadius: Mixable.value(v)),
+  );
+
+  /// Utility for defining [BoxShadowDto.spreadRadius]
+  late final spreadRadius = DoubleUtility(
+    (v) => only(spreadRadius: Mixable.value(v)),
+  );
+
+  BoxShadowUtility(super.builder) : super(valueToDto: (v) => BoxShadowDto.from(v));
+
+  T call({
+    Color? color,
+    Offset? offset,
+    double? blurRadius,
+    double? spreadRadius,
+  }) {
+    return builder(
+      BoxShadowDto(
+        color: color,
+        offset: offset,
+        blurRadius: blurRadius,
+        spreadRadius: spreadRadius,
+      ),
+    );
+  }
+
+  /// Returns a new [BoxShadowDto] with the specified properties.
+  @override
+  T only({
+    Mixable<Color>? color,
+    Mixable<Offset>? offset,
+    Mixable<double>? blurRadius,
+    Mixable<double>? spreadRadius,
+  }) {
+    return builder(
+      BoxShadowDto.raw(
+        color: MixableProperty(color),
+        offset: MixableProperty(offset),
+        blurRadius: MixableProperty(blurRadius),
+        spreadRadius: MixableProperty(spreadRadius),
+      ),
+    );
+  }
+}
 
 /// A utility class for building [StyleElement] instances from a list of [ShadowDto] objects.
 ///
@@ -17,7 +120,7 @@ final class ShadowListUtility<T extends StyleElement>
   /// This method maps each [BoxShadow] object to a [ShadowDto] object and passes the
   /// resulting list to the [builder] function to create the [StyleElement] instance.
   T call(List<Shadow> shadows) {
-    return builder(shadows.map((e) => e.toDto()).toList());
+    return builder(shadows.map((e) => ShadowDto.from(e)).toList());
   }
 }
 
@@ -36,7 +139,7 @@ final class BoxShadowListUtility<T extends StyleElement>
   /// This method maps each [BoxShadow] object to a [BoxShadowDto] object and passes the
   /// resulting list to the [builder] function to create the [StyleElement] instance.
   T call(List<BoxShadow> shadows) {
-    return builder(shadows.map((e) => e.toDto()).toList());
+    return builder(shadows.map((e) => BoxShadowDto.from(e)).toList());
   }
 }
 
@@ -88,20 +191,18 @@ final class ElevationUtility<T extends StyleElement>
   /// Throws an [AssertionError] if the provided [value] is not a valid elevation value.
   T call(int value) {
     if (!kElevationToShadow.containsKey(value)) {
-      throw FlutterError.fromParts(
-        [
-          ErrorSummary('Invalid elevation value provided.'),
-          ErrorDescription(
-            'The elevation value $value is not a valid predefined elevation.',
-          ),
-          ErrorHint(
-            'Please use one of the predefined elevation values: ${kElevationToShadow.keys.join(", ")}.',
-          ),
-        ],
-      );
+      throw FlutterError.fromParts([
+        ErrorSummary('Invalid elevation value provided.'),
+        ErrorDescription(
+          'The elevation value $value is not a valid predefined elevation.',
+        ),
+        ErrorHint(
+          'Please use one of the predefined elevation values: ${kElevationToShadow.keys.join(", ")}.',
+        ),
+      ]);
     }
 
-    final boxShadows = kElevationToShadow[value]!.map((e) => e.toDto());
+    final boxShadows = kElevationToShadow[value]!.map((e) => BoxShadowDto.from(e));
 
     return builder(boxShadows.toList());
   }

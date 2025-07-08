@@ -95,34 +95,4 @@ void main() {
     });
   });
 
-  group('TextStyleDto with composite', () {
-    test('composite resolution works', () {
-      final dto1 = TextStyleDto(fontSize: 12, color: Colors.red);
-      final dto2 = TextStyleDto(fontSize: 16, fontWeight: FontWeight.bold);
-
-      final composite = TextStyleDto.composite([dto1, dto2]);
-      final resolved = composite.resolve(createMixContext());
-
-      expect(resolved.fontSize, 16); // Last value wins
-      expect(resolved.color, Colors.red); // Preserved from first
-      expect(resolved.fontWeight, FontWeight.bold); // From second
-    });
-
-    test('fromValue works', () {
-      const style = TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-        color: Colors.green,
-      );
-
-      final dto = TextStyleDto.value(style);
-      final resolved = dto.resolve(createMixContext());
-
-      expect(resolved.fontSize, 14);
-      expect(resolved.fontWeight, FontWeight.w500);
-      expect(resolved.color, Colors.green);
-    });
-
-    // TODO: Add token with value override test when token resolution is properly set up
-  });
 }

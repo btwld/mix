@@ -29,15 +29,35 @@ sealed class StrutStyleDto extends Mixable<StrutStyle> with Diagnosticable {
     bool? forceStrutHeight,
   }) {
     return ValueStrutStyleDto(
-      fontFamily: Mixable.maybeValue(fontFamily),
-      fontFamilyFallback: fontFamilyFallback?.map(Mixable.value).toList(),
-      fontSize: Mixable.maybeValue(fontSize),
-      fontWeight: Mixable.maybeValue(fontWeight),
-      fontStyle: Mixable.maybeValue(fontStyle),
-      height: Mixable.maybeValue(height),
-      leading: Mixable.maybeValue(leading),
-      forceStrutHeight: Mixable.maybeValue(forceStrutHeight),
+      fontFamily: fontFamily,
+      fontFamilyFallback: fontFamilyFallback,
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      fontStyle: fontStyle,
+      height: height,
+      leading: leading,
+      forceStrutHeight: forceStrutHeight,
     );
+  }
+
+  // Factory from StrutStyle
+  factory StrutStyleDto.from(StrutStyle style) {
+    return StrutStyleDto(
+      fontFamily: style.fontFamily,
+      fontFamilyFallback: style.fontFamilyFallback,
+      fontSize: style.fontSize,
+      fontWeight: style.fontWeight,
+      fontStyle: style.fontStyle,
+      height: style.height,
+      leading: style.leading,
+      forceStrutHeight: style.forceStrutHeight,
+    );
+  }
+
+  /// Creates a StrutStyleDto from a nullable StrutStyle value
+  /// Returns null if the value is null, otherwise uses StrutStyleDto.from
+  static StrutStyleDto? maybeFrom(StrutStyle? value) {
+    return value != null ? StrutStyleDto.from(value) : null;
   }
 
   // Merges this StrutStyleDto with another one
@@ -58,69 +78,85 @@ sealed class StrutStyleDto extends Mixable<StrutStyle> with Diagnosticable {
 }
 
 final class ValueStrutStyleDto extends StrutStyleDto {
-  final Mixable<String>? fontFamily;
-  final List<Mixable<String>>? fontFamilyFallback;
-  final Mixable<double>? fontSize;
-  final Mixable<FontWeight>? fontWeight;
-  final Mixable<FontStyle>? fontStyle;
-  final Mixable<double>? height;
-  final Mixable<double>? leading;
-  final Mixable<bool>? forceStrutHeight;
+  final MixableProperty<String> fontFamily;
+  final MixableProperty<List<String>> fontFamilyFallback;
+  final MixableProperty<double> fontSize;
+  final MixableProperty<FontWeight> fontWeight;
+  final MixableProperty<FontStyle> fontStyle;
+  final MixableProperty<double> height;
+  final MixableProperty<double> leading;
+  final MixableProperty<bool> forceStrutHeight;
 
-  const ValueStrutStyleDto({
-    this.fontFamily,
-    this.fontFamilyFallback,
-    this.fontSize,
-    this.fontWeight,
-    this.fontStyle,
-    this.height,
-    this.leading,
-    this.forceStrutHeight,
+  factory ValueStrutStyleDto({
+    String? fontFamily,
+    List<String>? fontFamilyFallback,
+    double? fontSize,
+    FontWeight? fontWeight,
+    FontStyle? fontStyle,
+    double? height,
+    double? leading,
+    bool? forceStrutHeight,
+  }) {
+    return ValueStrutStyleDto.raw(
+      fontFamily: MixableProperty.prop(fontFamily),
+      fontFamilyFallback: MixableProperty.prop(fontFamilyFallback),
+      fontSize: MixableProperty.prop(fontSize),
+      fontWeight: MixableProperty.prop(fontWeight),
+      fontStyle: MixableProperty.prop(fontStyle),
+      height: MixableProperty.prop(height),
+      leading: MixableProperty.prop(leading),
+      forceStrutHeight: MixableProperty.prop(forceStrutHeight),
+    );
+  }
+
+  const ValueStrutStyleDto.raw({
+    required this.fontFamily,
+    required this.fontFamilyFallback,
+    required this.fontSize,
+    required this.fontWeight,
+    required this.fontStyle,
+    required this.height,
+    required this.leading,
+    required this.forceStrutHeight,
   }) : super._();
 
   factory ValueStrutStyleDto.value(StrutStyle strutStyle) {
     return ValueStrutStyleDto(
-      fontFamily: Mixable.maybeValue(strutStyle.fontFamily),
-      fontFamilyFallback: strutStyle.fontFamilyFallback
-          ?.map(Mixable.value)
-          .toList(),
-      fontSize: Mixable.maybeValue(strutStyle.fontSize),
-      fontWeight: Mixable.maybeValue(strutStyle.fontWeight),
-      fontStyle: Mixable.maybeValue(strutStyle.fontStyle),
-      height: Mixable.maybeValue(strutStyle.height),
-      leading: Mixable.maybeValue(strutStyle.leading),
-      forceStrutHeight: Mixable.maybeValue(strutStyle.forceStrutHeight),
+      fontFamily: strutStyle.fontFamily,
+      fontFamilyFallback: strutStyle.fontFamilyFallback,
+      fontSize: strutStyle.fontSize,
+      fontWeight: strutStyle.fontWeight,
+      fontStyle: strutStyle.fontStyle,
+      height: strutStyle.height,
+      leading: strutStyle.leading,
+      forceStrutHeight: strutStyle.forceStrutHeight,
     );
   }
 
   ValueStrutStyleDto _mergeWith(ValueStrutStyleDto other) {
-    return ValueStrutStyleDto(
-      fontFamily: fontFamily?.merge(other.fontFamily) ?? other.fontFamily,
-      fontFamilyFallback: other.fontFamilyFallback ?? fontFamilyFallback,
-      fontSize: fontSize?.merge(other.fontSize) ?? other.fontSize,
-      fontWeight: fontWeight?.merge(other.fontWeight) ?? other.fontWeight,
-      fontStyle: fontStyle?.merge(other.fontStyle) ?? other.fontStyle,
-      height: height?.merge(other.height) ?? other.height,
-      leading: leading?.merge(other.leading) ?? other.leading,
-      forceStrutHeight:
-          forceStrutHeight?.merge(other.forceStrutHeight) ??
-          other.forceStrutHeight,
+    return ValueStrutStyleDto.raw(
+      fontFamily: fontFamily.merge(other.fontFamily),
+      fontFamilyFallback: fontFamilyFallback.merge(other.fontFamilyFallback),
+      fontSize: fontSize.merge(other.fontSize),
+      fontWeight: fontWeight.merge(other.fontWeight),
+      fontStyle: fontStyle.merge(other.fontStyle),
+      height: height.merge(other.height),
+      leading: leading.merge(other.leading),
+      forceStrutHeight: forceStrutHeight.merge(other.forceStrutHeight),
     );
   }
 
   @override
   StrutStyle resolve(MixContext mix) {
     return StrutStyle(
-      fontFamily: fontFamily?.resolve(mix),
-      fontFamilyFallback: fontFamilyFallback
-          ?.map((f) => f.resolve(mix))
-          .toList(),
-      fontSize: fontSize?.resolve(mix),
-      height: height?.resolve(mix),
-      leading: leading?.resolve(mix),
-      fontWeight: fontWeight?.resolve(mix),
-      fontStyle: fontStyle?.resolve(mix),
-      forceStrutHeight: forceStrutHeight?.resolve(mix),
+      fontFamily: fontFamily.resolve(mix),
+      fontFamilyFallback: fontFamilyFallback.resolve(mix),
+      fontSize: fontSize.resolve(mix),
+      height: height.resolve(mix),
+      leading: leading.resolve(mix),
+      fontWeight: fontWeight.resolve(mix),
+      fontStyle: fontStyle.resolve(mix),
+      forceStrutHeight: forceStrutHeight.resolve(mix),
     );
   }
 
@@ -205,6 +241,3 @@ class _CompositeStrutStyleDto extends StrutStyleDto {
 }
 
 // Extension for easy conversion
-extension StrutStyleExt on StrutStyle {
-  StrutStyleDto toDto() => StrutStyleDto.value(this);
-}

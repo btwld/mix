@@ -59,8 +59,8 @@ class _ThemedBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Box(
-      style: Style($box.color.ref(_surface)),
-      child: StyledText('test', style: Style($text.color.ref(_onSurface))),
+      style: Style($box.color.token(_surface)),
+      child: StyledText('test', style: Style($text.color.token(_onSurface))),
     );
   }
 }

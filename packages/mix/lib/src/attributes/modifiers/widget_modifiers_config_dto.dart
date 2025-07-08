@@ -15,6 +15,29 @@ class WidgetModifiersConfigDto extends Mixable<WidgetModifiersConfig> {
 
   const WidgetModifiersConfigDto(this.modifiers);
 
+  /// Creates a WidgetModifiersConfigDto from a WidgetModifiersConfig value
+  /// 
+  /// Note: This method cannot be implemented because WidgetModifiersConfig contains
+  /// resolved WidgetModifierSpec objects, but the DTO requires unresolved 
+  /// WidgetModifierSpecAttribute objects. This conversion is not possible.
+  factory WidgetModifiersConfigDto.from(WidgetModifiersConfig config) {
+    throw UnimplementedError(
+      'Cannot create WidgetModifiersConfigDto from WidgetModifiersConfig. '
+      'WidgetModifiersConfig contains resolved WidgetModifierSpec objects, '
+      'but WidgetModifiersConfigDto requires unresolved WidgetModifierSpecAttribute objects.',
+    );
+  }
+
+  /// Creates a WidgetModifiersConfigDto from a nullable WidgetModifiersConfig value
+  /// Returns null if the value is null, otherwise uses WidgetModifiersConfigDto.from
+  /// 
+  /// Note: This method cannot be implemented because WidgetModifiersConfig contains
+  /// resolved WidgetModifierSpec objects, but the DTO requires unresolved 
+  /// WidgetModifierSpecAttribute objects. This conversion is not possible.
+  static WidgetModifiersConfigDto? maybeFrom(WidgetModifiersConfig? value) {
+    return value != null ? WidgetModifiersConfigDto.from(value) : null;
+  }
+
   @override
   WidgetModifiersConfigDto merge(WidgetModifiersConfigDto? other) {
     if (other == null) return this;

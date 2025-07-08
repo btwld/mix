@@ -157,11 +157,11 @@ void main() {
         left: 30,
         right: 40,
       );
-      final dto = edgeInsets.toDto();
+      final dto = EdgeInsetsDto.from(edgeInsets);
       expect(dto, isA<EdgeInsetsDto>());
       expect(dto.top, equals(const SpaceDto.value(10)));
       expect(dto.bottom, equals(const SpaceDto.value(20)));
-      expect((dto as EdgeInsetsDto).left, equals(const SpaceDto.value(30)));
+      expect(dto.left, equals(const SpaceDto.value(30)));
       expect((dto).right, equals(const SpaceDto.value(40)));
     });
 
@@ -174,12 +174,12 @@ void main() {
           start: 30,
           end: 40,
         );
-        final dto = edgeInsetsDirectional.toDto();
+        final dto = EdgeInsetsDirectionalDto.from(edgeInsetsDirectional);
         expect(dto, isA<EdgeInsetsDirectionalDto>());
         expect(dto.top, equals(const SpaceDto.value(10)));
         expect(dto.bottom, equals(const SpaceDto.value(20)));
         expect(
-          (dto as EdgeInsetsDirectionalDto).start,
+          dto.start,
           equals(const SpaceDto.value(30)),
         );
         expect((dto).end, equals(const SpaceDto.value(40)));

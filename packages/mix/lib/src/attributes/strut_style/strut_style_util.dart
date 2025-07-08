@@ -8,17 +8,24 @@ import 'strut_style_dto.dart';
 
 final class StrutStyleUtility<T extends StyleElement>
     extends DtoUtility<T, StrutStyleDto, StrutStyle> {
-  late final fontWeight = FontWeightUtility((v) => only(fontWeight: Mixable.value(v)));
+  late final fontWeight = FontWeightUtility(
+    (v) => only(fontWeight: Mixable.value(v)),
+  );
 
-  late final fontStyle = FontStyleUtility((v) => only(fontStyle: Mixable.value(v)));
+  late final fontStyle = FontStyleUtility(
+    (v) => only(fontStyle: Mixable.value(v)),
+  );
 
-  late final fontSize = FontSizeUtility((v) => only(fontSize: Mixable.value(v)));
+  late final fontSize = FontSizeUtility(
+    (v) => only(fontSize: Mixable.value(v)),
+  );
 
   late final fontFamily = FontFamilyUtility((v) => call(fontFamily: v));
 
-  StrutStyleUtility(super.builder) : super(valueToDto: (v) => v.toDto());
+  StrutStyleUtility(super.builder) : super(valueToDto: (v) => StrutStyleDto.from(v));
 
-  T token(MixableToken<StrutStyle> token) => builder(StrutStyleDto.token(token));
+  T token(MixableToken<StrutStyle> token) =>
+      builder(StrutStyleDto.token(token));
 
   T height(double v) => only(height: Mixable.value(v));
 

@@ -25,7 +25,18 @@ final class BoxBorderUtility<T extends StyleElement>
 
   late final _border = BorderUtility(builder);
 
-  BoxBorderUtility(super.builder) : super(valueToDto: (v) => v.toDto());
+  BoxBorderUtility(super.builder)
+    : super(
+        valueToDto: (v) {
+          return switch (v) {
+            Border() => BorderDto.from(v),
+            BorderDirectional() => BorderDirectionalDto.from(v),
+            _ => throw ArgumentError(
+              'Unsupported BoxBorder type: ${v.runtimeType}',
+            ),
+          };
+        },
+      );
 
   T call({
     Color? color,
@@ -82,7 +93,8 @@ final class BorderUtility<T extends StyleElement>
 
   late final strokeAlign = all.strokeAlign;
 
-  BorderUtility(super.builder) : super(valueToDto: (value) => value.toDto());
+  BorderUtility(super.builder)
+    : super(valueToDto: (value) => BorderDto.from(value));
 
   T none() => builder(const BorderDto.none());
 
@@ -136,7 +148,7 @@ final class BorderDirectionalUtility<T extends StyleElement>
   );
 
   BorderDirectionalUtility(super.builder)
-    : super(valueToDto: (value) => value.toDto());
+    : super(valueToDto: (value) => BorderDirectionalDto.from(value));
 
   T none() => builder(const BorderDirectionalDto.none());
 

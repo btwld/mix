@@ -26,8 +26,8 @@ void main() {
       expect(attr.box!.clipBehavior, Clip.antiAlias);
       expect(attr.box!.constraints!.maxWidth, 200);
       expect(attr.box!.height, 10);
-      expect(attr.box!.margin, const EdgeInsets.all(10).toDto());
-      expect(attr.box!.padding, const EdgeInsets.all(10).toDto());
+      expect(attr.box!.margin, EdgeInsetsDto.from(const EdgeInsets.all(10)));
+      expect(attr.box!.padding, EdgeInsetsDto.from(const EdgeInsets.all(10)));
       expect(attr.box!.transform, Matrix4.identity());
       expect(attr.box!.width, 10);
       expect(attr.flex!.mainAxisAlignment, MainAxisAlignment.center);
@@ -93,7 +93,7 @@ void main() {
       final decoration =
           flexBox.attributeValue!.box!.decoration as BoxDecorationDto;
       expect(decoration.color, const Mixable.value(Colors.amber));
-      expect(decoration.borderRadius, BorderRadius.circular(10).toDto());
+      expect(decoration.borderRadius, BorderRadiusDto.from(BorderRadius.circular(10)));
     });
 
     test('box foregroundDecoration returns correct instance', () {
@@ -112,7 +112,7 @@ void main() {
       );
       expect(
         foregroundDecoration.borderRadius,
-        BorderRadius.circular(10).toDto(),
+        BorderRadiusDto.from(BorderRadius.circular(10)),
         reason: 'The BorderRadius is not correct',
       );
     });

@@ -92,7 +92,7 @@ void main() {
 
       final modifier = clipRRectModifier.value;
 
-      expect(modifier.borderRadius, BorderRadius.circular(10.0).toDto());
+      expect(modifier.borderRadius, BorderRadiusDto.from(BorderRadius.circular(10.0)));
     });
 
     test('clipOval creates ClipOvalModifier correctly', () {

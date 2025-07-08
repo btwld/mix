@@ -61,7 +61,7 @@ void main() {
     });
 
     test('props returns correct list of properties', () {
-      const attribute = StackSpecAttribute(
+      final attribute = StackSpecAttribute(
         alignment: Alignment.center,
         fit: StackFit.expand,
         textDirection: TextDirection.ltr,
@@ -75,7 +75,7 @@ void main() {
       expect(props[1], StackFit.expand);
       expect(props[2], TextDirection.ltr);
       expect(props[3], Clip.antiAlias);
-      expect(props[4], const AnimationConfigDto.withDefaults());
+      expect(props[4], AnimationConfigDto.withDefaults());
     });
   });
 }

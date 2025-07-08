@@ -4,25 +4,69 @@ import 'package:mix/mix.dart';
 
 final class DecorationImageDto extends Mixable<DecorationImage>
     with HasDefaultValue<DecorationImage> {
-  final ImageProvider? image;
-  final BoxFit? fit;
-  final AlignmentGeometry? alignment;
-  final Rect? centerSlice;
-  final ImageRepeat? repeat;
-  final FilterQuality? filterQuality;
-  final bool? invertColors;
-  final bool? isAntiAlias;
+  // Properties use MixableProperty for cleaner merging
+  final MixableProperty<ImageProvider> image;
+  final MixableProperty<BoxFit> fit;
+  final MixableProperty<AlignmentGeometry> alignment;
+  final MixableProperty<Rect> centerSlice;
+  final MixableProperty<ImageRepeat> repeat;
+  final MixableProperty<FilterQuality> filterQuality;
+  final MixableProperty<bool> invertColors;
+  final MixableProperty<bool> isAntiAlias;
 
-  const DecorationImageDto({
-    this.image,
-    this.fit,
-    this.alignment,
-    this.centerSlice,
-    this.repeat,
-    this.filterQuality,
-    this.invertColors,
-    this.isAntiAlias,
+  // Main constructor accepts real values
+  factory DecorationImageDto({
+    ImageProvider? image,
+    BoxFit? fit,
+    AlignmentGeometry? alignment,
+    Rect? centerSlice,
+    ImageRepeat? repeat,
+    FilterQuality? filterQuality,
+    bool? invertColors,
+    bool? isAntiAlias,
+  }) {
+    return DecorationImageDto.raw(
+      image: MixableProperty.prop(image),
+      fit: MixableProperty.prop(fit),
+      alignment: MixableProperty.prop(alignment),
+      centerSlice: MixableProperty.prop(centerSlice),
+      repeat: MixableProperty.prop(repeat),
+      filterQuality: MixableProperty.prop(filterQuality),
+      invertColors: MixableProperty.prop(invertColors),
+      isAntiAlias: MixableProperty.prop(isAntiAlias),
+    );
+  }
+
+  // Factory that accepts MixableProperty instances
+  const DecorationImageDto.raw({
+    required this.image,
+    required this.fit,
+    required this.alignment,
+    required this.centerSlice,
+    required this.repeat,
+    required this.filterQuality,
+    required this.invertColors,
+    required this.isAntiAlias,
   });
+
+  // Factory from DecorationImage
+  factory DecorationImageDto.from(DecorationImage decorationImage) {
+    return DecorationImageDto(
+      image: decorationImage.image,
+      fit: decorationImage.fit,
+      alignment: decorationImage.alignment,
+      centerSlice: decorationImage.centerSlice,
+      repeat: decorationImage.repeat,
+      filterQuality: decorationImage.filterQuality,
+      invertColors: decorationImage.invertColors,
+      isAntiAlias: decorationImage.isAntiAlias,
+    );
+  }
+
+  // Nullable factory from DecorationImage
+  static DecorationImageDto? maybeFrom(DecorationImage? decorationImage) {
+    return decorationImage != null ? DecorationImageDto.from(decorationImage) : null;
+  }
 
   /// Resolves to [DecorationImage] using the provided [MixContext].
   ///
@@ -35,14 +79,14 @@ final class DecorationImageDto extends Mixable<DecorationImage>
   @override
   DecorationImage resolve(MixContext mix) {
     return DecorationImage(
-      image: image ?? defaultValue.image,
-      fit: fit ?? defaultValue.fit,
-      alignment: alignment ?? defaultValue.alignment,
-      centerSlice: centerSlice ?? defaultValue.centerSlice,
-      repeat: repeat ?? defaultValue.repeat,
-      filterQuality: filterQuality ?? defaultValue.filterQuality,
-      invertColors: invertColors ?? defaultValue.invertColors,
-      isAntiAlias: isAntiAlias ?? defaultValue.isAntiAlias,
+      image: image.resolve(mix) ?? defaultValue.image,
+      fit: fit.resolve(mix) ?? defaultValue.fit,
+      alignment: alignment.resolve(mix) ?? defaultValue.alignment,
+      centerSlice: centerSlice.resolve(mix) ?? defaultValue.centerSlice,
+      repeat: repeat.resolve(mix) ?? defaultValue.repeat,
+      filterQuality: filterQuality.resolve(mix) ?? defaultValue.filterQuality,
+      invertColors: invertColors.resolve(mix) ?? defaultValue.invertColors,
+      isAntiAlias: isAntiAlias.resolve(mix) ?? defaultValue.isAntiAlias,
     );
   }
 
@@ -58,15 +102,15 @@ final class DecorationImageDto extends Mixable<DecorationImage>
   DecorationImageDto merge(DecorationImageDto? other) {
     if (other == null) return this;
 
-    return DecorationImageDto(
-      image: other.image ?? image,
-      fit: other.fit ?? fit,
-      alignment: other.alignment ?? alignment,
-      centerSlice: other.centerSlice ?? centerSlice,
-      repeat: other.repeat ?? repeat,
-      filterQuality: other.filterQuality ?? filterQuality,
-      invertColors: other.invertColors ?? invertColors,
-      isAntiAlias: other.isAntiAlias ?? isAntiAlias,
+    return DecorationImageDto.raw(
+      image: image.merge(other.image),
+      fit: fit.merge(other.fit),
+      alignment: alignment.merge(other.alignment),
+      centerSlice: centerSlice.merge(other.centerSlice),
+      repeat: repeat.merge(other.repeat),
+      filterQuality: filterQuality.merge(other.filterQuality),
+      invertColors: invertColors.merge(other.invertColors),
+      isAntiAlias: isAntiAlias.merge(other.isAntiAlias),
     );
   }
 
@@ -98,58 +142,34 @@ final class DecorationImageDto extends Mixable<DecorationImage>
 class DecorationImageUtility<T extends StyleElement>
     extends DtoUtility<T, DecorationImageDto, DecorationImage> {
   /// Utility for defining [DecorationImageDto.image]
-  late final provider = ImageProviderUtility((v) => only(image: v));
+  late final provider = ImageProviderUtility((v) => only(image: Mixable.value(v)));
 
   /// Utility for defining [DecorationImageDto.fit]
-  late final fit = BoxFitUtility((v) => only(fit: v));
+  late final fit = BoxFitUtility((v) => only(fit: Mixable.value(v)));
 
   /// Utility for defining [DecorationImageDto.alignment]
-  late final alignment = AlignmentGeometryUtility((v) => only(alignment: v));
+  late final alignment = AlignmentGeometryUtility((v) => only(alignment: Mixable.value(v)));
 
   /// Utility for defining [DecorationImageDto.centerSlice]
-  late final centerSlice = RectUtility((v) => only(centerSlice: v));
+  late final centerSlice = RectUtility((v) => only(centerSlice: Mixable.value(v)));
 
   /// Utility for defining [DecorationImageDto.repeat]
-  late final repeat = ImageRepeatUtility((v) => only(repeat: v));
+  late final repeat = ImageRepeatUtility((v) => only(repeat: Mixable.value(v)));
 
   /// Utility for defining [DecorationImageDto.filterQuality]
   late final filterQuality = FilterQualityUtility(
-    (v) => only(filterQuality: v),
+    (v) => only(filterQuality: Mixable.value(v)),
   );
 
   /// Utility for defining [DecorationImageDto.invertColors]
-  late final invertColors = BoolUtility((v) => only(invertColors: v));
+  late final invertColors = BoolUtility((v) => only(invertColors: Mixable.value(v)));
 
   /// Utility for defining [DecorationImageDto.isAntiAlias]
-  late final isAntiAlias = BoolUtility((v) => only(isAntiAlias: v));
+  late final isAntiAlias = BoolUtility((v) => only(isAntiAlias: Mixable.value(v)));
 
-  DecorationImageUtility(super.builder) : super(valueToDto: (v) => v.toDto());
+  DecorationImageUtility(super.builder) : super(valueToDto: (v) => DecorationImageDto.from(v));
 
   T call({
-    ImageProvider<Object>? image,
-    BoxFit? fit,
-    AlignmentGeometry? alignment,
-    Rect? centerSlice,
-    ImageRepeat? repeat,
-    FilterQuality? filterQuality,
-    bool? invertColors,
-    bool? isAntiAlias,
-  }) {
-    return only(
-      image: image,
-      fit: fit,
-      alignment: alignment,
-      centerSlice: centerSlice,
-      repeat: repeat,
-      filterQuality: filterQuality,
-      invertColors: invertColors,
-      isAntiAlias: isAntiAlias,
-    );
-  }
-
-  /// Returns a new [DecorationImageDto] with the specified properties.
-  @override
-  T only({
     ImageProvider<Object>? image,
     BoxFit? fit,
     AlignmentGeometry? alignment,
@@ -172,29 +192,31 @@ class DecorationImageUtility<T extends StyleElement>
       ),
     );
   }
-}
 
-/// Extension methods to convert [DecorationImage] to [DecorationImageDto].
-extension DecorationImageMixExt on DecorationImage {
-  /// Converts this [DecorationImage] to a [DecorationImageDto].
-  DecorationImageDto toDto() {
-    return DecorationImageDto(
-      image: image,
-      fit: fit,
-      alignment: alignment,
-      centerSlice: centerSlice,
-      repeat: repeat,
-      filterQuality: filterQuality,
-      invertColors: invertColors,
-      isAntiAlias: isAntiAlias,
+  /// Returns a new [DecorationImageDto] with the specified properties.
+  @override
+  T only({
+    Mixable<ImageProvider>? image,
+    Mixable<BoxFit>? fit,
+    Mixable<AlignmentGeometry>? alignment,
+    Mixable<Rect>? centerSlice,
+    Mixable<ImageRepeat>? repeat,
+    Mixable<FilterQuality>? filterQuality,
+    Mixable<bool>? invertColors,
+    Mixable<bool>? isAntiAlias,
+  }) {
+    return builder(
+      DecorationImageDto.raw(
+        image: MixableProperty(image),
+        fit: MixableProperty(fit),
+        alignment: MixableProperty(alignment),
+        centerSlice: MixableProperty(centerSlice),
+        repeat: MixableProperty(repeat),
+        filterQuality: MixableProperty(filterQuality),
+        invertColors: MixableProperty(invertColors),
+        isAntiAlias: MixableProperty(isAntiAlias),
+      ),
     );
   }
 }
 
-/// Extension methods to convert List<[DecorationImage]> to List<[DecorationImageDto]>.
-extension ListDecorationImageMixExt on List<DecorationImage> {
-  /// Converts this List<[DecorationImage]> to a List<[DecorationImageDto]>.
-  List<DecorationImageDto> toDto() {
-    return map((e) => e.toDto()).toList();
-  }
-}

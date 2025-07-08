@@ -13,14 +13,14 @@ void main() {
     });
 
     test('merge should return a new instance of IconSpecAttribute', () {
-      const shadows = [
-        ShadowDto(color: Mixable.value(Colors.black)),
-        ShadowDto(color: Mixable.value(Colors.black)),
+      final shadows = [
+        ShadowDto(color: Colors.black),
+        ShadowDto(color: Colors.black),
       ];
 
-      const attribute1 = IconSpecAttribute(
+      final attribute1 = IconSpecAttribute(
         size: 24,
-        color: Mixable.value(Colors.black),
+        color: const Mixable.value(Colors.black),
         weight: 24,
         grade: 24,
         opticalSize: 24,
@@ -30,15 +30,15 @@ void main() {
         applyTextScaling: true,
       );
 
-      const attribute2 = IconSpecAttribute(
+      final attribute2 = IconSpecAttribute(
         size: 32,
-        color: Mixable.value(Colors.white),
+        color: const Mixable.value(Colors.white),
         weight: 32,
         grade: 32,
         opticalSize: 32,
         shadows: [
-          ShadowDto(color: Mixable.value(Colors.black)),
-          ShadowDto(color: Mixable.value(Colors.white)),
+          ShadowDto(color: Colors.black),
+          ShadowDto(color: Colors.white),
         ],
         fill: 32,
         textDirection: TextDirection.rtl,
@@ -59,8 +59,8 @@ void main() {
       expect(
         mergedAttribute.shadows,
         equals([
-          const ShadowDto(color: Mixable.value(Colors.black)),
-          const ShadowDto(color: Mixable.value(Colors.white)),
+          ShadowDto(color: Colors.black),
+          ShadowDto(color: Colors.white),
         ]),
       );
     });
@@ -72,14 +72,14 @@ void main() {
       const fill = 2.0;
       const grade = 2.0;
       const opticalSize = 2.0;
-      const shadows = [
-        ShadowDto(color: Mixable.value(Colors.black)),
-        ShadowDto(color: Mixable.value(Colors.black)),
+      final shadows = [
+        ShadowDto(color: Colors.black),
+        ShadowDto(color: Colors.black),
       ];
       const textDirection = TextDirection.ltr;
       const weight = 2.0;
 
-      const attribute = IconSpecAttribute(
+      final attribute = IconSpecAttribute(
         size: size,
         color: color,
         applyTextScaling: applyTextScaling,

@@ -14,7 +14,7 @@ void main() {
         fontWeight: FontWeight.w500,
       ),
       textAlign: TextAlign.center,
-      textScaleFactor: 1.5,
+      textScaler: const TextScaler.linear(1.5),
       maxLines: 2,
       style: TextStyleDto(
         fontSize: 12,
@@ -22,7 +22,7 @@ void main() {
         fontFamily: 'Roboto',
       ),
       textWidthBasis: TextWidthBasis.longestLine,
-      textHeightBehavior: const TextHeightBehaviorDto(
+      textHeightBehavior: TextHeightBehaviorDto(
         applyHeightToFirstAscent: true,
         applyHeightToLastDescent: true,
       ),
@@ -35,7 +35,7 @@ void main() {
       expect(textSpecAttribute.overflow, TextOverflow.ellipsis);
       expect(textSpecAttribute.strutStyle, isA<StrutStyleDto>());
       expect(textSpecAttribute.textAlign, TextAlign.center);
-      expect(textSpecAttribute.textScaleFactor, 1.5);
+      expect(textSpecAttribute.textScaler, const TextScaler.linear(1.5));
       expect(textSpecAttribute.maxLines, 2);
       expect(textSpecAttribute.style, isA<TextStyleDto>());
       expect(textSpecAttribute.textWidthBasis, TextWidthBasis.longestLine);
@@ -57,7 +57,7 @@ void main() {
           fontWeight: FontWeight.w500,
         ),
         textAlign: TextAlign.center,
-        textScaleFactor: 1.5,
+        textScaler: const TextScaler.linear(1.5),
         maxLines: 2,
         style: TextStyleDto(
           fontSize: 16,
@@ -65,7 +65,7 @@ void main() {
           fontFamily: 'Helvetica',
         ),
         textWidthBasis: TextWidthBasis.longestLine,
-        textHeightBehavior: const TextHeightBehaviorDto(
+        textHeightBehavior: TextHeightBehaviorDto(
           applyHeightToFirstAscent: false,
           applyHeightToLastDescent: false,
         ),
@@ -81,7 +81,7 @@ void main() {
       expect(resolvedStrutStyle.fontSize, 14);
       expect(resolvedStrutStyle.fontWeight, FontWeight.w500);
       expect(merged.textAlign, TextAlign.center);
-      expect(merged.textScaleFactor, 1.5);
+      expect(merged.textScaler, const TextScaler.linear(1.5));
       expect(merged.maxLines, 2);
       expect(merged.style!.resolve(EmptyMixData).fontFamily, 'Helvetica');
       expect(merged.style!.resolve(EmptyMixData).fontSize, 16);

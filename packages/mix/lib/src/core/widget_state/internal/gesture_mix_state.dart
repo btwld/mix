@@ -87,18 +87,11 @@ class _GestureMixStateWidgetState extends State<GestureMixStateWidget> {
   int _pressCount = 0;
   Timer? _timer;
   late final WidgetStatesController _controller;
-  bool _longPressed = false;
 
   @override
   void initState() {
     super.initState();
     _controller = widget.controller ?? WidgetStatesController();
-  }
-
-  void _setLongPressed(bool value) {
-    setState(() {
-      _longPressed = value;
-    });
   }
 
   void _onPanUpdate(DragUpdateDetails event) {
@@ -124,27 +117,22 @@ class _GestureMixStateWidgetState extends State<GestureMixStateWidget> {
   }
 
   void _onTapUp(TapUpDetails details) {
-    _setLongPressed(false);
     widget.onTapUp?.call(details);
   }
 
   void _onTapCancel() {
-    _setLongPressed(false);
     widget.onTapCancel?.call();
   }
 
   void _onLongPressStart(LongPressStartDetails details) {
-    _setLongPressed(true);
     widget.onLongPressStart?.call(details);
   }
 
   void _onLongPressEnd(LongPressEndDetails details) {
-    _setLongPressed(false);
     widget.onLongPressEnd?.call(details);
   }
 
   void _onLongPressCancel() {
-    _setLongPressed(false);
     widget.onLongPressCancel?.call();
   }
 
@@ -196,26 +184,22 @@ class _GestureMixStateWidgetState extends State<GestureMixStateWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return LongPressInheritedState(
-      longPressed: _longPressed,
-      child: GestureDetector(
-        onTapUp: widget.onTap != null ? _onTapUp : null,
-        onTap: widget.onTap != null ? _onTap : null,
-        onTapCancel: widget.onTap != null ? _onTapCancel : null,
-        onLongPressCancel:
-            widget.onLongPress != null ? _onLongPressCancel : null,
-        onLongPress: widget.onLongPress != null ? _onLongPress : null,
-        onLongPressStart: widget.onLongPress != null ? _onLongPressStart : null,
-        onLongPressEnd: widget.onLongPress != null ? _onLongPressEnd : null,
-        onPanDown: widget.onPanDown != null ? _onPanDown : null,
-        onPanStart: widget.onPanStart != null ? _onPanStart : null,
-        onPanUpdate: widget.onPanUpdate != null ? _onPanUpdate : null,
-        onPanEnd: widget.onPanEnd != null ? _onPanEnd : null,
-        onPanCancel: widget.onPanCancel != null ? _onPanCancel : null,
-        behavior: widget.hitTestBehavior,
-        excludeFromSemantics: widget.excludeFromSemantics,
-        child: widget.child,
-      ),
+    return GestureDetector(
+      onTapUp: widget.onTap != null ? _onTapUp : null,
+      onTap: widget.onTap != null ? _onTap : null,
+      onTapCancel: widget.onTap != null ? _onTapCancel : null,
+      onLongPressCancel: widget.onLongPress != null ? _onLongPressCancel : null,
+      onLongPress: widget.onLongPress != null ? _onLongPress : null,
+      onLongPressStart: widget.onLongPress != null ? _onLongPressStart : null,
+      onLongPressEnd: widget.onLongPress != null ? _onLongPressEnd : null,
+      onPanDown: widget.onPanDown != null ? _onPanDown : null,
+      onPanStart: widget.onPanStart != null ? _onPanStart : null,
+      onPanUpdate: widget.onPanUpdate != null ? _onPanUpdate : null,
+      onPanEnd: widget.onPanEnd != null ? _onPanEnd : null,
+      onPanCancel: widget.onPanCancel != null ? _onPanCancel : null,
+      behavior: widget.hitTestBehavior,
+      excludeFromSemantics: widget.excludeFromSemantics,
+      child: widget.child,
     );
   }
 }

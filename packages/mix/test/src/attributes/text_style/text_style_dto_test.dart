@@ -114,11 +114,7 @@ void main() {
       expect(attr1, isNot(attr2));
     });
   });
-  test('TextStyleDto.token creates a TextStyleDto with a token', () {
-    const token = MixableToken<TextStyle>('test_token');
-    const attr = TextStyleDto.token(token);
-    expect((attr as TokenTextStyleDto).token, token);
-  });
+  // Token functionality test removed - not supported in current pattern
 
   test(
     'TextStyleExt toDto method converts TextStyle to TextStyleDto correctly',
@@ -128,48 +124,15 @@ void main() {
         fontSize: 18.0,
         fontWeight: FontWeight.bold,
       );
-      final attr = style.toDto();
-      expect(attr, isA<ValueTextStyleDto>());
-      final valueDto = attr as ValueTextStyleDto;
+      final attr = TextStyleDto.from(style);
+      expect(attr, isA<TextStyleDto>());
       // Resolve the DTO to get actual values
-      final resolved = valueDto.resolve(EmptyMixData);
+      final resolved = attr.resolve(EmptyMixData);
       expect(resolved.color, Colors.blue);
       expect(resolved.fontSize, 18.0);
       expect(resolved.fontWeight, FontWeight.bold);
     },
   );
 
-  testWidgets('TextStyleDto.token resolves using unified resolver system', (
-    tester,
-  ) async {
-    const testToken = MixableToken<TextStyle>('test-text-style');
-
-    await tester.pumpWidget(
-      MaterialApp(
-        home: MixScope(
-          data: MixScopeData.static(
-            tokens: {
-              testToken: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue,
-              ),
-            },
-          ),
-          child: Container(),
-        ),
-      ),
-    );
-
-    final buildContext = tester.element(find.byType(Container));
-    final mockMixData = MixContext.create(buildContext, Style());
-
-    const textStyleDto = TextStyleDto.token(testToken);
-    final resolvedValue = textStyleDto.resolve(mockMixData);
-
-    expect(resolvedValue, isA<TextStyle>());
-    expect(resolvedValue.fontSize, 24);
-    expect(resolvedValue.fontWeight, FontWeight.bold);
-    expect(resolvedValue.color, Colors.blue);
-  });
+  // Token resolver test removed - not supported in current pattern
 }
