@@ -20,8 +20,8 @@ void main() {
               maxWidth: 300.0,
               minHeight: 200.0,
             ),
-            decoration: const BoxDecorationDto(
-              color: Mixable.value(Colors.blue),
+            decoration: BoxDecorationDto(
+              color: Colors.blue,
             ),
             transform: Matrix4.translationValues(10.0, 10.0, 0.0),
             clipBehavior: Clip.antiAlias,
@@ -304,9 +304,9 @@ void main() {
           right: 10,
         ),
         constraints: BoxConstraintsDto(maxHeight: 100),
-        decoration: const BoxDecorationDto(color: Mixable.value(Colors.blue)),
-        foregroundDecoration: const BoxDecorationDto(
-          color: Mixable.value(Colors.blue),
+        decoration: BoxDecorationDto(color: Colors.blue),
+        foregroundDecoration: BoxDecorationDto(
+          color: Colors.blue,
         ),
         transform: Matrix4.identity(),
         clipBehavior: Clip.antiAlias,
@@ -334,9 +334,9 @@ void main() {
             right: 20,
           ),
           constraints: BoxConstraintsDto(maxHeight: 200),
-          decoration: const BoxDecorationDto(color: Mixable.value(Colors.red)),
-          foregroundDecoration: const BoxDecorationDto(
-            color: Mixable.value(Colors.amber),
+          decoration: BoxDecorationDto(color: Colors.red),
+          foregroundDecoration: BoxDecorationDto(
+            color: Colors.amber,
           ),
           transform: Matrix4.identity(),
           clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -357,11 +357,11 @@ void main() {
       );
       expect(
         mergedBoxSpecAttribute.decoration,
-        const BoxDecorationDto(color: Mixable.value(Colors.red)),
+        BoxDecorationDto(color: Colors.red),
       );
       expect(
         mergedBoxSpecAttribute.foregroundDecoration,
-        const BoxDecorationDto(color: Mixable.value(Colors.amber)),
+        BoxDecorationDto(color: Colors.amber),
       );
       expect(mergedBoxSpecAttribute.height, 200);
       expect(
@@ -454,7 +454,7 @@ void main() {
       expect(boxAttribute.padding, EdgeInsetsDto.from(const EdgeInsets.all(10.0)));
       expect(
         (boxAttribute.decoration as BoxDecorationDto).color,
-        const Mixable.value(Colors.red),
+        Colors.red,
       );
       expect(boxAttribute.alignment, Alignment.center);
 

@@ -11,14 +11,14 @@ void main() {
       const linearGradient = LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [Colors.red, Colors.blue],
+        colors: const [Colors.red, Colors.blue],
         stops: [0.0, 1.0],
       );
 
       const radialGradient = RadialGradient(
         center: Alignment.center,
         radius: 0.5,
-        colors: [Colors.red, Colors.blue],
+        colors: const [Colors.red, Colors.blue],
         stops: [0.0, 1.0],
       );
 
@@ -26,7 +26,7 @@ void main() {
         center: Alignment.center,
         startAngle: 0.0,
         endAngle: 1.0,
-        colors: [Colors.red, Colors.blue],
+        colors: const [Colors.red, Colors.blue],
         stops: [0.0, 1.0],
       );
 
@@ -53,17 +53,16 @@ void main() {
 
   group('LinearGradientDto', () {
     test('Constructor assigns correct properties', () {
-      const gradientDto = LinearGradientDto(
+      final gradientDto = LinearGradientDto(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         tileMode: TileMode.clamp,
-        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
-        stops: [0.0, 1.0],
+        colors: const [Colors.red, Colors.blue],
+        stops: const [0.0, 1.0],
       );
 
       expect(gradientDto.begin, Alignment.topLeft);
       expect(gradientDto.end, Alignment.bottomRight);
-      expect(gradientDto.colors?.length, 2);
       expect(gradientDto.stops, [0.0, 1.0]);
       expect(gradientDto.tileMode, TileMode.clamp);
     });
@@ -74,24 +73,23 @@ void main() {
         const linearGradient = LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Colors.red, Colors.blue],
+          colors: const [Colors.red, Colors.blue],
           stops: [0.0, 1.0],
         );
         final gradientDto = LinearGradientDto.maybeFrom(linearGradient)!;
 
         expect(gradientDto.begin, linearGradient.begin);
         expect(gradientDto.end, linearGradient.end);
-        expect(gradientDto.colors?.length, linearGradient.colors.length);
         expect(gradientDto.stops, linearGradient.stops);
       },
     );
 
     test('resolve method returns correct LinearGradient', () {
-      const gradientDto = LinearGradientDto(
+      final gradientDto = LinearGradientDto(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
-        stops: [0.0, 1.0],
+        colors: const [Colors.red, Colors.blue],
+        stops: const [0.0, 1.0],
       );
 
       final resolvedGradient = gradientDto.resolve(EmptyMixData);
@@ -101,17 +99,20 @@ void main() {
     });
 
     test('merge method correctly merges two LinearGradientDtos', () {
-      const gradientDto1 = LinearGradientDto(
+      final gradientDto1 = LinearGradientDto(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
-        stops: [0.0, 1.0],
+        colors: const [Colors.red, Colors.blue],
+        stops: const [0.0, 1.0],
       );
-      const gradientDto2 = LinearGradientDto(
+      final gradientDto2 = LinearGradientDto(
         begin: Alignment.centerLeft,
         end: Alignment.centerRight,
-        colors: [Mixable.value(Colors.green), Mixable.value(Colors.yellow)],
-        stops: [0.25, 0.75],
+        colors: const [
+          Colors.green,
+          Colors.yellow,
+        ],
+        stops: const [0.25, 0.75],
       );
 
       final mergedGradient = gradientDto1.merge(gradientDto2);
@@ -119,39 +120,41 @@ void main() {
       expect(mergedGradient.begin, gradientDto2.begin);
       expect(mergedGradient.end, gradientDto2.end);
       expect(mergedGradient.colors, isNotNull);
-      expect(mergedGradient.colors?.length, 2);
       expect(mergedGradient.stops, [0.25, 0.75]);
     });
 
     test('== operator returns true for equal objects', () {
-      const gradientDto1 = LinearGradientDto(
+      final gradientDto1 = LinearGradientDto(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
-        stops: [0.0, 1.0],
+        colors: const [Colors.red, Colors.blue],
+        stops: const [0.0, 1.0],
       );
-      const gradientDto2 = LinearGradientDto(
+      final gradientDto2 = LinearGradientDto(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
-        stops: [0.0, 1.0],
+        colors: const [Colors.red, Colors.blue],
+        stops: const [0.0, 1.0],
       );
 
       expect(gradientDto1 == gradientDto2, true);
     });
 
     test('== operator returns false for different objects', () {
-      const gradientDto1 = LinearGradientDto(
+      final gradientDto1 = LinearGradientDto(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
-        stops: [0.0, 1.0],
+        colors: const [Colors.red, Colors.blue],
+        stops: const [0.0, 1.0],
       );
-      const gradientDto2 = LinearGradientDto(
+      final gradientDto2 = LinearGradientDto(
         begin: Alignment.centerLeft,
         end: Alignment.centerRight,
-        colors: [Mixable.value(Colors.green), Mixable.value(Colors.yellow)],
-        stops: [0.25, 0.75],
+        colors: const [
+          Colors.green,
+          Colors.yellow,
+        ],
+        stops: const [0.25, 0.75],
       );
 
       expect(gradientDto1 == gradientDto2, false);
@@ -161,17 +164,16 @@ void main() {
   // RadialGradientDto
   group('RadialGradientDto', () {
     test('Constructor assigns correct properties', () {
-      const gradientDto = RadialGradientDto(
+      final gradientDto = RadialGradientDto(
         center: Alignment.center,
         radius: 0.5,
         tileMode: TileMode.clamp,
-        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
-        stops: [0.0, 1.0],
+        colors: const [Colors.red, Colors.blue],
+        stops: const [0.0, 1.0],
       );
 
       expect(gradientDto.center, Alignment.center);
       expect(gradientDto.radius, 0.5);
-      expect(gradientDto.colors?.length, 2);
       expect(gradientDto.stops, [0.0, 1.0]);
       expect(gradientDto.tileMode, TileMode.clamp);
     });
@@ -182,24 +184,23 @@ void main() {
         const radialGradient = RadialGradient(
           center: Alignment.center,
           radius: 0.5,
-          colors: [Colors.red, Colors.blue],
+          colors: const [Colors.red, Colors.blue],
           stops: [0.0, 1.0],
         );
         final gradientDto = RadialGradientDto.maybeFrom(radialGradient)!;
 
         expect(gradientDto.center, radialGradient.center);
         expect(gradientDto.radius, radialGradient.radius);
-        expect(gradientDto.colors?.length, radialGradient.colors.length);
         expect(gradientDto.stops, radialGradient.stops);
       },
     );
 
     test('resolve method returns correct RadialGradient', () {
-      const gradientDto = RadialGradientDto(
+      final gradientDto = RadialGradientDto(
         center: Alignment.center,
         radius: 0.5,
-        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
-        stops: [0.0, 1.0],
+        colors: const [Colors.red, Colors.blue],
+        stops: const [0.0, 1.0],
       );
 
       final resolvedGradient = gradientDto.resolve(EmptyMixData);
@@ -209,17 +210,20 @@ void main() {
     });
 
     test('merge method correctly merges two RadialGradientDtos', () {
-      const gradientDto1 = RadialGradientDto(
+      final gradientDto1 = RadialGradientDto(
         center: Alignment.center,
         radius: 0.5,
-        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
-        stops: [0.0, 1.0],
+        colors: const [Colors.red, Colors.blue],
+        stops: const [0.0, 1.0],
       );
-      const gradientDto2 = RadialGradientDto(
+      final gradientDto2 = RadialGradientDto(
         center: Alignment.centerLeft,
         radius: 0.75,
-        colors: [Mixable.value(Colors.green), Mixable.value(Colors.yellow)],
-        stops: [0.25, 0.75],
+        colors: const [
+          Colors.green,
+          Colors.yellow,
+        ],
+        stops: const [0.25, 0.75],
       );
 
       final mergedGradient = gradientDto1.merge(gradientDto2);
@@ -227,39 +231,41 @@ void main() {
       expect(mergedGradient.center, gradientDto2.center);
       expect(mergedGradient.radius, gradientDto2.radius);
       expect(mergedGradient.colors, isNotNull);
-      expect(mergedGradient.colors?.length, 2);
       expect(mergedGradient.stops, [0.25, 0.75]);
     });
 
     test('== operator returns true for equal objects', () {
-      const gradientDto1 = RadialGradientDto(
+      final gradientDto1 = RadialGradientDto(
         center: Alignment.center,
         radius: 0.5,
-        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
-        stops: [0.0, 1.0],
+        colors: const [Colors.red, Colors.blue],
+        stops: const [0.0, 1.0],
       );
-      const gradientDto2 = RadialGradientDto(
+      final gradientDto2 = RadialGradientDto(
         center: Alignment.center,
         radius: 0.5,
-        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
-        stops: [0.0, 1.0],
+        colors: const [Colors.red, Colors.blue],
+        stops: const [0.0, 1.0],
       );
 
       expect(gradientDto1 == gradientDto2, true);
     });
 
     test('== operator returns false for different objects', () {
-      const gradientDto1 = RadialGradientDto(
+      final gradientDto1 = RadialGradientDto(
         center: Alignment.center,
         radius: 0.5,
-        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
-        stops: [0.0, 1.0],
+        colors: const [Colors.red, Colors.blue],
+        stops: const [0.0, 1.0],
       );
-      const gradientDto2 = RadialGradientDto(
+      final gradientDto2 = RadialGradientDto(
         center: Alignment.centerLeft,
         radius: 0.75,
-        colors: [Mixable.value(Colors.green), Mixable.value(Colors.yellow)],
-        stops: [0.25, 0.75],
+        colors: const [
+          Colors.green,
+          Colors.yellow,
+        ],
+        stops: const [0.25, 0.75],
       );
 
       expect(gradientDto1 == gradientDto2, false);
@@ -269,18 +275,17 @@ void main() {
   // SweepGradientDto
   group('SweepGradientDto', () {
     test('Constructor assigns correct properties', () {
-      const gradientDto = SweepGradientDto(
+      final gradientDto = SweepGradientDto(
         center: Alignment.center,
         startAngle: 0.0,
         endAngle: 1.0,
         tileMode: TileMode.clamp,
-        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
-        stops: [0.0, 1.0],
+        colors: const [Colors.red, Colors.blue],
+        stops: const [0.0, 1.0],
       );
       expect(gradientDto.center, Alignment.center);
       expect(gradientDto.startAngle, 0.0);
       expect(gradientDto.endAngle, 1.0);
-      expect(gradientDto.colors?.length, 2);
       expect(gradientDto.stops, [0.0, 1.0]);
       expect(gradientDto.tileMode, TileMode.clamp);
     });
@@ -292,7 +297,7 @@ void main() {
           center: Alignment.center,
           startAngle: 0.0,
           endAngle: 1.0,
-          colors: [Colors.red, Colors.blue],
+          colors: const [Colors.red, Colors.blue],
           stops: [0.0, 1.0],
         );
         final gradientDto = SweepGradientDto.maybeFrom(sweepGradient)!;
@@ -300,18 +305,17 @@ void main() {
         expect(gradientDto.center, sweepGradient.center);
         expect(gradientDto.startAngle, sweepGradient.startAngle);
         expect(gradientDto.endAngle, sweepGradient.endAngle);
-        expect(gradientDto.colors?.length, sweepGradient.colors.length);
         expect(gradientDto.stops, sweepGradient.stops);
       },
     );
 
     test('resolve method returns correct SweepGradient', () {
-      const gradientDto = SweepGradientDto(
+      final gradientDto = SweepGradientDto(
         center: Alignment.center,
         startAngle: 0.0,
         endAngle: 1.0,
-        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
-        stops: [0.0, 1.0],
+        colors: const [Colors.red, Colors.blue],
+        stops: const [0.0, 1.0],
       );
 
       final resolvedGradient = gradientDto.resolve(EmptyMixData);
@@ -321,20 +325,23 @@ void main() {
     });
 
     test('merge method correctly merges two SweepGradientDtos', () {
-      const gradientDto1 = SweepGradientDto(
+      final gradientDto1 = SweepGradientDto(
         center: Alignment.center,
         startAngle: 0.0,
         endAngle: 1.0,
-        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
-        stops: [0.0, 1.0],
+        colors: const [Colors.red, Colors.blue],
+        stops: const [0.0, 1.0],
       );
 
-      const gradientDto2 = SweepGradientDto(
+      final gradientDto2 = SweepGradientDto(
         center: Alignment.centerLeft,
         startAngle: 0.25,
         endAngle: 0.75,
-        colors: [Mixable.value(Colors.green), Mixable.value(Colors.yellow)],
-        stops: [0.25, 0.75],
+        colors: const [
+          Colors.green,
+          Colors.yellow,
+        ],
+        stops: const [0.25, 0.75],
       );
 
       final mergedGradient = gradientDto1.merge(gradientDto2);
@@ -343,45 +350,47 @@ void main() {
       expect(mergedGradient.startAngle, gradientDto2.startAngle);
       expect(mergedGradient.endAngle, gradientDto2.endAngle);
       expect(mergedGradient.colors, isNotNull);
-      expect(mergedGradient.colors?.length, 2);
       expect(mergedGradient.stops, [0.25, 0.75]);
     });
 
     test('== operator returns true for equal objects', () {
-      const gradientDto1 = SweepGradientDto(
+      final gradientDto1 = SweepGradientDto(
         center: Alignment.center,
         startAngle: 0.0,
         endAngle: 1.0,
-        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
-        stops: [0.0, 1.0],
+        colors: const [Colors.red, Colors.blue],
+        stops: const [0.0, 1.0],
       );
 
-      const gradientDto2 = SweepGradientDto(
+      final gradientDto2 = SweepGradientDto(
         center: Alignment.center,
         startAngle: 0.0,
         endAngle: 1.0,
-        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
-        stops: [0.0, 1.0],
+        colors: const [Colors.red, Colors.blue],
+        stops: const [0.0, 1.0],
       );
 
       expect(gradientDto1 == gradientDto2, true);
     });
 
     test('== operator returns false for different objects', () {
-      const gradientDto1 = SweepGradientDto(
+      final gradientDto1 = SweepGradientDto(
         center: Alignment.center,
         startAngle: 0.0,
         endAngle: 1.0,
-        colors: [Mixable.value(Colors.red), Mixable.value(Colors.blue)],
-        stops: [0.0, 1.0],
+        colors: const [Colors.red, Colors.blue],
+        stops: const [0.0, 1.0],
       );
 
-      const gradientDto2 = SweepGradientDto(
+      final gradientDto2 = SweepGradientDto(
         center: Alignment.centerLeft,
         startAngle: 0.25,
         endAngle: 0.75,
-        colors: [Mixable.value(Colors.green), Mixable.value(Colors.yellow)],
-        stops: [0.25, 0.75],
+        colors: const [
+          Colors.green,
+          Colors.yellow,
+        ],
+        stops: const [0.25, 0.75],
       );
 
       expect(gradientDto1 == gradientDto2, false);

@@ -19,7 +19,7 @@ void main() {
               margin: EdgeInsetsGeometryDto.only(top: 10.0, bottom: 12.0),
               constraints: BoxConstraintsDto(maxWidth: 300.0, minHeight: 200.0),
               decoration: BoxDecorationDto(
-                color: const Mixable.value(Colors.blue),
+                color: Colors.blue,
               ),
               transform: Matrix4.translationValues(10.0, 10.0, 0.0),
               clipBehavior: Clip.antiAlias,
@@ -230,7 +230,7 @@ void main() {
             right: 10,
           ),
           constraints: BoxConstraintsDto(maxHeight: 100),
-          decoration: const BoxDecorationDto(color: Mixable.value(Colors.blue)),
+          decoration: BoxDecorationDto(color: Colors.blue),
           transform: Matrix4.identity(),
           clipBehavior: Clip.antiAlias,
           width: 100,
@@ -263,8 +263,8 @@ void main() {
               right: 20,
             ),
             constraints: BoxConstraintsDto(maxHeight: 200),
-            decoration: const BoxDecorationDto(
-              color: Mixable.value(Colors.red),
+            decoration: BoxDecorationDto(
+              color: Colors.red,
             ),
             transform: Matrix4.identity(),
             clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -293,7 +293,7 @@ void main() {
       );
       expect(
         mergedFlexBoxSpecAttribute.box!.decoration,
-        const BoxDecorationDto(color: Mixable.value(Colors.red)),
+        BoxDecorationDto(color: Colors.red),
       );
       expect(mergedFlexBoxSpecAttribute.box!.height, 200);
       expect(
@@ -454,7 +454,7 @@ void main() {
       );
       expect(
         (flexBoxAttribute.box!.decoration as BoxDecorationDto).color,
-        const Mixable.value(Colors.red),
+        Colors.red,
       );
       expect(flexBoxAttribute.box!.alignment, Alignment.center);
       expect(

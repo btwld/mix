@@ -50,6 +50,12 @@ final class BoxConstraintsDto extends ConstraintsDto<BoxConstraints> {
     );
   }
 
+  /// Creates a BoxConstraintsDto from a nullable BoxConstraints value
+  /// Returns null if the value is null, otherwise uses BoxConstraintsDto.from
+  static BoxConstraintsDto? maybeFrom(BoxConstraints? value) {
+    return value != null ? BoxConstraintsDto.from(value) : null;
+  }
+
   @override
   BoxConstraints resolve(MixContext mix) {
     return BoxConstraints(

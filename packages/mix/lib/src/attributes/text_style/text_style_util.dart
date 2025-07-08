@@ -5,7 +5,6 @@ import '../../theme/tokens/mix_token.dart';
 import '../color/color_util.dart';
 import '../enum/enum_util.dart';
 import '../scalars/scalar_util.dart';
-import '../shadow/shadow_util.dart';
 import 'text_style_dto.dart';
 
 final class TextStyleUtility<T extends StyleElement>
@@ -32,10 +31,9 @@ final class TextStyleUtility<T extends StyleElement>
 
   late final decorationColor = ColorUtility((v) => only(decorationColor: v));
 
-  // Shadow utility needs special handling since it returns ShadowDto not Shadow
-  late final shadow = ShadowUtility(
-    (v) => throw UnimplementedError('Shadow utility needs to be redesigned'),
-  );
+  // TODO: Shadow utility integration needs redesign for TextStyle compatibility
+  // The ShadowUtility creates ShadowDto but TextStyle needs List<Shadow>
+  // For now, use the shadows() method directly on the utility
 
   late final decorationStyle = TextDecorationStyleUtility(
     (v) => only(decorationStyle: Mixable.value(v)),
@@ -45,7 +43,7 @@ final class TextStyleUtility<T extends StyleElement>
     (v) => only(textBaseline: Mixable.value(v)),
   );
 
-  late final fontFamily = FontFamilyUtility((v) => call(fontFamily: v));
+  late final fontFamily = FontFamilyUtility((v) => only(fontFamily: Mixable.value(v)));
 
   TextStyleUtility(super.builder) : super(valueToDto: (v) => TextStyleDto.from(v));
 

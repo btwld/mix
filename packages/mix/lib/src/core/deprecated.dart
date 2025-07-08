@@ -644,7 +644,7 @@ extension BoxDecorationMixExtDeprecated on BoxDecoration {
       borderRadius: borderRadius?.toDto(),
       shape: shape,
       backgroundBlendMode: backgroundBlendMode,
-      color: color != null ? Mixable.value(color!) : null,
+      color: color,
       image: image?.toDto(),
       gradient: gradient?.toDto(),
       boxShadow: boxShadow?.map((e) => e.toDto()).toList(),
@@ -666,7 +666,7 @@ extension ShapeDecorationMixExtDeprecated on ShapeDecoration {
   ShapeDecorationDto toDto() {
     return ShapeDecorationDto(
       shape: shape.toDto(),
-      color: color != null ? Mixable.value(color!) : null,
+      color: color,
       image: image?.toDto(),
       gradient: gradient?.toDto(),
       shadows: shadows?.map((e) => e.toDto()).toList(),
@@ -762,7 +762,7 @@ extension LinearGradientMixExtDeprecated on LinearGradient {
       end: end,
       tileMode: tileMode,
       transform: transform,
-      colors: colors.map((e) => Mixable.value(e)).toList(),
+      colors: colors,
       stops: stops,
     );
   }
@@ -779,7 +779,7 @@ extension RadialGradientMixExtDeprecated on RadialGradient {
       focal: focal,
       focalRadius: focalRadius,
       transform: transform,
-      colors: colors.map((e) => Mixable.value(e)).toList(),
+      colors: colors,
       stops: stops,
     );
   }
@@ -795,7 +795,7 @@ extension SweepGradientMixExtDeprecated on SweepGradient {
       endAngle: endAngle,
       tileMode: tileMode,
       transform: transform,
-      colors: colors.map((e) => Mixable.value(e)).toList(),
+      colors: colors,
       stops: stops,
     );
   }
@@ -804,7 +804,7 @@ extension SweepGradientMixExtDeprecated on SweepGradient {
 /// Deprecated extension for StrutStyle conversion
 extension StrutStyleExtDeprecated on StrutStyle {
   @Deprecated('Use Mixable.value(this) directly instead of toDto()')
-  StrutStyleDto toDto() => StrutStyleDto.value(this);
+  StrutStyleDto toDto() => StrutStyleDto.from(this);
 }
 
 /// Deprecated extension for TextHeightBehavior conversion

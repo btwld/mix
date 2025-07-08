@@ -24,7 +24,7 @@ void main() {
         border: refBoxDecoration.border != null ? BorderDto.from(refBoxDecoration.border! as Border) : null,
         borderRadius: refBoxDecoration.borderRadius != null ? BorderRadiusGeometryDto.from(refBoxDecoration.borderRadius!) : null,
         boxShadow: refBoxDecoration.boxShadow?.map((e) => BoxShadowDto.from(e)).toList(),
-        color: refBoxDecoration.color != null ? Mixable.value(refBoxDecoration.color!) : null,
+        color: refBoxDecoration.color,
         gradient: refBoxDecoration.gradient != null ? LinearGradientDto.maybeFrom(refBoxDecoration.gradient! as LinearGradient) : null,
         shape: refBoxDecoration.shape,
       )));

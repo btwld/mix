@@ -22,7 +22,7 @@ void main() {
           right: 10,
         ),
         constraints: BoxConstraintsDto(maxHeight: 100),
-        decoration: const BoxDecorationDto(color: Mixable.value(Colors.blue)),
+        decoration: BoxDecorationDto(color: Colors.blue),
         transform: Matrix4.identity(),
         clipBehavior: Clip.antiAlias,
         width: 100,
@@ -42,7 +42,7 @@ void main() {
       );
       expect(
         containerSpecAttribute.decoration,
-        const BoxDecorationDto(color: Mixable.value(Colors.blue)),
+        BoxDecorationDto(color: Colors.blue),
       );
 
       expect(containerSpecAttribute.height, 100);
@@ -82,7 +82,7 @@ void main() {
           right: 10,
         ),
         constraints: BoxConstraintsDto(maxHeight: 100),
-        decoration: const BoxDecorationDto(color: Mixable.value(Colors.blue)),
+        decoration: BoxDecorationDto(color: Colors.blue),
         transform: Matrix4.identity(),
         clipBehavior: Clip.antiAlias,
         width: 100,
@@ -138,7 +138,7 @@ void main() {
           right: 10,
         ),
         constraints: BoxConstraintsDto(maxHeight: 100),
-        decoration: const BoxDecorationDto(color: Mixable.value(Colors.blue)),
+        decoration: BoxDecorationDto(color: Colors.blue),
         transform: Matrix4.identity(),
         clipBehavior: Clip.antiAlias,
         width: 100,
@@ -165,7 +165,7 @@ void main() {
             right: 20,
           ),
           constraints: BoxConstraintsDto(maxHeight: 200),
-          decoration: const BoxDecorationDto(color: Mixable.value(Colors.red)),
+          decoration: BoxDecorationDto(color: Colors.red),
           transform: Matrix4.identity(),
           clipBehavior: Clip.antiAliasWithSaveLayer,
           width: 200,
@@ -185,7 +185,7 @@ void main() {
       );
       expect(
         mergedBoxSpecAttribute.decoration,
-        const BoxDecorationDto(color: Mixable.value(Colors.red)),
+        BoxDecorationDto(color: Colors.red),
       );
 
       expect(mergedBoxSpecAttribute.height, 200);
@@ -225,7 +225,7 @@ void main() {
           right: 10,
         ),
         constraints: BoxConstraintsDto(maxHeight: 100),
-        decoration: const BoxDecorationDto(color: Mixable.value(Colors.blue)),
+        decoration: BoxDecorationDto(color: Colors.blue),
         transform: Matrix4.identity(),
         clipBehavior: Clip.antiAlias,
         width: 100,
@@ -254,8 +254,8 @@ void main() {
               right: 10,
             ),
             constraints: BoxConstraintsDto(maxHeight: 100),
-            decoration: const BoxDecorationDto(
-              color: Mixable.value(Colors.blue),
+            decoration: BoxDecorationDto(
+              color: Colors.blue,
             ),
             transform: Matrix4.identity(),
             clipBehavior: Clip.antiAlias,
@@ -287,7 +287,7 @@ void main() {
           right: 10,
         ),
         constraints: BoxConstraintsDto(maxHeight: 100),
-        decoration: const BoxDecorationDto(color: Mixable.value(Colors.blue)),
+        decoration: BoxDecorationDto(color: Colors.blue),
         transform: Matrix4.identity(),
         clipBehavior: Clip.antiAlias,
         width: 100,
@@ -313,8 +313,8 @@ void main() {
                 right: 20,
               ),
               constraints: BoxConstraintsDto(maxHeight: 200),
-              decoration: const BoxDecorationDto(
-                color: Mixable.value(Colors.red),
+              decoration: BoxDecorationDto(
+                color: Colors.red,
               ),
               transform: Matrix4.identity(),
               clipBehavior: Clip.antiAliasWithSaveLayer,

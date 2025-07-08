@@ -20,12 +20,13 @@ final class StrutStyleUtility<T extends StyleElement>
     (v) => only(fontSize: Mixable.value(v)),
   );
 
-  late final fontFamily = FontFamilyUtility((v) => call(fontFamily: v));
+  late final fontFamily = FontFamilyUtility((v) => only(fontFamily: Mixable.value(v)));
 
-  StrutStyleUtility(super.builder) : super(valueToDto: (v) => StrutStyleDto.from(v));
+  StrutStyleUtility(super.builder)
+    : super(valueToDto: (v) => StrutStyleDto.from(v));
 
-  T token(MixableToken<StrutStyle> token) =>
-      builder(StrutStyleDto.token(token));
+  T token(MixableToken<StrutStyle> token) => 
+      throw UnimplementedError('Token support for StrutStyle needs to be redesigned for the simplified DTO pattern');
 
   T height(double v) => only(height: Mixable.value(v));
 
@@ -33,7 +34,7 @@ final class StrutStyleUtility<T extends StyleElement>
 
   T forceStrutHeight(bool v) => only(forceStrutHeight: Mixable.value(v));
 
-  T fontFamilyFallback(List<String> v) => call(fontFamilyFallback: v);
+  T fontFamilyFallback(List<String> v) => only(fontFamilyFallback: v.map(Mixable.value).toList());
 
   T call({
     String? fontFamily,
@@ -68,17 +69,19 @@ final class StrutStyleUtility<T extends StyleElement>
     Mixable<double>? leading,
     Mixable<bool>? forceStrutHeight,
   }) {
-    final strutStyle = ValueStrutStyleDto(
-      fontFamily: fontFamily,
-      fontFamilyFallback: fontFamilyFallback,
-      fontSize: fontSize,
-      fontWeight: fontWeight,
-      fontStyle: fontStyle,
-      height: height,
-      leading: leading,
-      forceStrutHeight: forceStrutHeight,
+    return builder(
+      StrutStyleDto.raw(
+        fontFamily: MixableProperty(fontFamily),
+        fontFamilyFallback: MixableProperty(fontFamilyFallback != null 
+          ? MixableList(fontFamilyFallback) 
+          : null),
+        fontSize: MixableProperty(fontSize),
+        fontWeight: MixableProperty(fontWeight),
+        fontStyle: MixableProperty(fontStyle),
+        height: MixableProperty(height),
+        leading: MixableProperty(leading),
+        forceStrutHeight: MixableProperty(forceStrutHeight),
+      ),
     );
-
-    return builder(strutStyle);
   }
 }

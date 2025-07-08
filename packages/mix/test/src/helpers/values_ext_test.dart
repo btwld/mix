@@ -65,7 +65,7 @@ void main() {
       );
 
       final dto = BoxDecorationDto(
-        color: value.color != null ? Mixable.value(value.color!) : null,
+        color: value.color,
         border: value.border != null ? BorderDto.from(value.border! as Border) : null,
         borderRadius: value.borderRadius != null ? BorderRadiusGeometryDto.from(value.borderRadius!) : null,
         boxShadow: value.boxShadow?.map((e) => BoxShadowDto.from(e)).toList(),
