@@ -15,22 +15,22 @@ import 'computed_style_provider.dart';
 /// selective dependency tracking for optimal rebuild performance.
 @immutable
 class ComputedStyle with Diagnosticable {
-  final Map<Type, Spec> _specs;
+  final Map<Type, Spec> specs;
   final List<WidgetModifierSpec> _modifiers;
   final AnimatedData? _animation;
 
-  const ComputedStyle._({
+  const ComputedStyle.raw({
     required Map<Type, Spec> specs,
     required List<WidgetModifierSpec> modifiers,
     AnimatedData? animation,
-  })  : _specs = specs,
+  })  : specs = specs,
         _modifiers = modifiers,
         _animation = animation;
 
   /// Creates an empty computed style with no specs or modifiers.
   /// This is used for cases where no style is applied.
   const ComputedStyle.empty()
-      : _specs = const {},
+      : specs = const {},
         _modifiers = const [],
         _animation = null;
 
@@ -58,7 +58,7 @@ class ComputedStyle with Diagnosticable {
       }
     }
 
-    return ComputedStyle._(
+    return ComputedStyle.raw(
       specs: specs,
       modifiers: modifiers,
       animation: mix.animation,
@@ -103,21 +103,21 @@ class ComputedStyle with Diagnosticable {
 
   /// Debugging view of all resolved specs.
   @visibleForTesting
-  Map<Type, Spec> get debugSpecs => Map.unmodifiable(_specs);
+  Map<Type, Spec> get debugSpecs => Map.unmodifiable(specs);
 
   /// Gets a specific spec by type, or null if not found.
-  T? getSpec<T extends Spec<T>>() => _specs[T] as T?;
+  T? getSpec<T extends Spec<T>>() => specs[T] as T?;
 
   /// Gets a spec by runtime type for internal provider use.
   @internal
-  Spec? specOfType(Type type) => _specs[type];
+  Spec? specOfType(Type type) => specs[type];
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
     return other is ComputedStyle &&
-        mapEquals(_specs, other._specs) &&
+        mapEquals(specs, other.specs) &&
         listEquals(_modifiers, other._modifiers) &&
         _animation == other._animation;
   }
@@ -125,7 +125,7 @@ class ComputedStyle with Diagnosticable {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('specs', _specs));
+    properties.add(DiagnosticsProperty('specs', specs));
     properties.add(DiagnosticsProperty('modifiers', _modifiers));
     properties.add(DiagnosticsProperty('animation', _animation));
   }
@@ -133,7 +133,7 @@ class ComputedStyle with Diagnosticable {
   @override
   int get hashCode => Object.hash(
         Object.hashAllUnordered(
-          _specs.entries.map((e) => Object.hash(e.key, e.value)),
+          specs.entries.map((e) => Object.hash(e.key, e.value)),
         ),
         Object.hashAll(_modifiers),
         _animation,

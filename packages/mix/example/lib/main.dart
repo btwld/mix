@@ -16,21 +16,37 @@ void main() {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool scale = false;
 
   @override
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Center(
-        child: FlexBox(
-          style: style(),
-          direction: Axis.horizontal,
-          children: const [
-            StyledIcon(Icons.image),
-            StyledText('Hello World'),
-          ],
+        child: GestureDetector(
+          onTap: () {
+            setState(() {
+              scale = !scale;
+            });
+          },
+          child: Box(
+            style: Style(
+              $box.color.red(),
+              $box.width(scale ? 100 : 200),
+              $box.height(scale ? 100 : 200),
+            ).animate(
+              duration: const Duration(milliseconds: 4000),
+              curve: Curves.bounceInOut,
+            ),
+          ),
         ),
       ),
     );

@@ -120,20 +120,11 @@ final class BoxSpec extends Spec<BoxSpec> with _$BoxSpec, Diagnosticable {
   });
 
   Widget call({Widget? child, List<Type> orderOfModifiers = const []}) {
-    return isAnimated
-        ? AnimatedBoxSpecWidget(
-            spec: this,
-            duration: animated!.duration,
-            curve: animated!.curve,
-            onEnd: animated?.onEnd,
-            orderOfModifiers: orderOfModifiers,
-            child: child,
-          )
-        : BoxSpecWidget(
-            spec: this,
-            orderOfModifiers: orderOfModifiers,
-            child: child,
-          );
+    return BoxSpecWidget(
+      spec: this,
+      orderOfModifiers: orderOfModifiers,
+      child: child,
+    );
   }
 
   @override

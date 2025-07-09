@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 
 import '../../core/factory/mix_provider.dart';
 import '../../core/spec_widget.dart';
-import '../../core/animated_spec_widget.dart';
 import '../../core/styled_widget.dart';
 import '../../modifiers/internal/render_widget_modifier.dart';
 import 'box_spec.dart';
@@ -100,26 +99,26 @@ class BoxSpecWidget extends SpecWidget<BoxSpec> {
   }
 }
 
-class AnimatedBoxSpecWidget extends ImplicitlyAnimatedSpecWidget<BoxSpec> {
-  const AnimatedBoxSpecWidget({
-    required super.spec,
-    super.key,
-    this.child,
-    required super.duration,
-    super.curve = Curves.linear,
-    super.onEnd,
-    this.orderOfModifiers = const [],
-  });
+// class AnimatedBoxSpecWidget extends ImplicitlyAnimatedSpecWidget<BoxSpec> {
+//   const AnimatedBoxSpecWidget({
+//     required super.spec,
+//     super.key,
+//     this.child,
+//     required super.duration,
+//     super.curve = Curves.linear,
+//     super.onEnd,
+//     this.orderOfModifiers = const [],
+//   });
 
-  final Widget? child;
-  final List<Type> orderOfModifiers;
+//   final Widget? child;
+//   final List<Type> orderOfModifiers;
 
-  @override
-  Widget build(BuildContext context, BoxSpec animatedSpec) {
-    return BoxSpecWidget(
-      spec: animatedSpec,
-      orderOfModifiers: orderOfModifiers,
-      child: child,
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context, BoxSpec animatedSpec) {
+//     return BoxSpecWidget(
+//       spec: animatedSpec,
+//       orderOfModifiers: orderOfModifiers,
+//       child: child,
+//     );
+//   }
+// }

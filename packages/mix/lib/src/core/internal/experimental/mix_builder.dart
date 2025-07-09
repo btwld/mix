@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../../modifiers/internal/render_widget_modifier.dart';
 import '../../computed_style/computed_style.dart';
-import '../../computed_style/computed_style_provider.dart';
+import '../../computed_style/computed_style_animation_manager.dart';
 import '../../factory/mix_context.dart';
 import '../../factory/mix_provider.dart';
 import '../../factory/style_mix.dart';
@@ -106,7 +106,7 @@ class _MixBuilderState extends State<MixBuilder> {
     // Build core widget tree
     return Mix(
       data: mix,
-      child: ComputedStyleProvider(
+      child: ComputedStyleAnimationManager(
         style: computedStyle,
         child: Builder(
           builder: (context) {

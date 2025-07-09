@@ -178,124 +178,124 @@ void main() {
     expect(containerWidget.constraints, boxWidget.constraints);
   });
 
-  testWidgets('AnimatedBoxSpecWidget should animate spec changes',
-      (WidgetTester tester) async {
-    final boxSpec1 = BoxSpec(
-      alignment: Alignment.center,
-      padding: const EdgeInsets.all(16),
-      margin: const EdgeInsets.symmetric(horizontal: 8),
-      constraints: const BoxConstraints(minWidth: 100, maxHeight: 200),
-      decoration: BoxDecoration(
-        color: Colors.blue,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      foregroundDecoration: BoxDecoration(
-        border: Border.all(color: Colors.red, width: 2),
-      ),
-      transform: Matrix4.rotationZ(0.1),
-      transformAlignment: Alignment.topLeft,
-      clipBehavior: Clip.antiAlias,
-      width: null,
-      height: null,
-    );
+  // testWidgets('AnimatedBoxSpecWidget should animate spec changes',
+  //     (WidgetTester tester) async {
+  //   final boxSpec1 = BoxSpec(
+  //     alignment: Alignment.center,
+  //     padding: const EdgeInsets.all(16),
+  //     margin: const EdgeInsets.symmetric(horizontal: 8),
+  //     constraints: const BoxConstraints(minWidth: 100, maxHeight: 200),
+  //     decoration: BoxDecoration(
+  //       color: Colors.blue,
+  //       borderRadius: BorderRadius.circular(10),
+  //     ),
+  //     foregroundDecoration: BoxDecoration(
+  //       border: Border.all(color: Colors.red, width: 2),
+  //     ),
+  //     transform: Matrix4.rotationZ(0.1),
+  //     transformAlignment: Alignment.topLeft,
+  //     clipBehavior: Clip.antiAlias,
+  //     width: null,
+  //     height: null,
+  //   );
 
-    final boxSpec2 = BoxSpec(
-      alignment: Alignment.bottomRight,
-      padding: const EdgeInsets.all(8),
-      margin: const EdgeInsets.symmetric(vertical: 16),
-      constraints: const BoxConstraints(minWidth: 200, maxHeight: 300),
-      decoration: BoxDecoration(
-        color: Colors.green,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      foregroundDecoration: BoxDecoration(
-        border: Border.all(color: Colors.yellow, width: 4),
-      ),
-      transform: Matrix4.rotationZ(0.3),
-      transformAlignment: Alignment.bottomRight,
-      clipBehavior: Clip.hardEdge,
-      width: null,
-      height: null,
-    );
+  //   final boxSpec2 = BoxSpec(
+  //     alignment: Alignment.bottomRight,
+  //     padding: const EdgeInsets.all(8),
+  //     margin: const EdgeInsets.symmetric(vertical: 16),
+  //     constraints: const BoxConstraints(minWidth: 200, maxHeight: 300),
+  //     decoration: BoxDecoration(
+  //       color: Colors.green,
+  //       borderRadius: BorderRadius.circular(20),
+  //     ),
+  //     foregroundDecoration: BoxDecoration(
+  //       border: Border.all(color: Colors.yellow, width: 4),
+  //     ),
+  //     transform: Matrix4.rotationZ(0.3),
+  //     transformAlignment: Alignment.bottomRight,
+  //     clipBehavior: Clip.hardEdge,
+  //     width: null,
+  //     height: null,
+  //   );
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: AnimatedBoxSpecWidget(
-          spec: boxSpec1,
-          duration: const Duration(milliseconds: 500),
-        ),
-      ),
-    );
+  //   await tester.pumpWidget(
+  //     MaterialApp(
+  //       home: AnimatedBoxSpecWidget(
+  //         spec: boxSpec1,
+  //         duration: const Duration(milliseconds: 500),
+  //       ),
+  //     ),
+  //   );
 
-    expect(find.byType(AnimatedBoxSpecWidget), findsOneWidget);
+  //   expect(find.byType(AnimatedBoxSpecWidget), findsOneWidget);
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: AnimatedBoxSpecWidget(
-          spec: boxSpec2,
-          duration: const Duration(milliseconds: 500),
-        ),
-      ),
-    );
+  //   await tester.pumpWidget(
+  //     MaterialApp(
+  //       home: AnimatedBoxSpecWidget(
+  //         spec: boxSpec2,
+  //         duration: const Duration(milliseconds: 500),
+  //       ),
+  //     ),
+  //   );
 
-    await tester.pump(const Duration(milliseconds: 250));
+  //   await tester.pump(const Duration(milliseconds: 250));
 
-    final boxWidget = tester.widget<Container>(find.byType(Container));
-    expect(boxWidget.alignment, isNot(equals(boxSpec1.alignment)));
-    expect(boxWidget.alignment, isNot(equals(boxSpec2.alignment)));
-    expect(boxWidget.padding, isNot(equals(boxSpec1.padding)));
-    expect(boxWidget.padding, isNot(equals(boxSpec2.padding)));
-    expect(boxWidget.margin, isNot(equals(boxSpec1.margin)));
-    expect(boxWidget.margin, isNot(equals(boxSpec2.margin)));
-    expect(boxWidget.constraints, isNot(equals(boxSpec1.constraints)));
-    expect(boxWidget.constraints, isNot(equals(boxSpec2.constraints)));
-    expect(boxWidget.decoration, isNot(equals(boxSpec1.decoration)));
-    expect(boxWidget.decoration, isNot(equals(boxSpec2.decoration)));
-    expect(boxWidget.foregroundDecoration,
-        isNot(equals(boxSpec1.foregroundDecoration)));
-    expect(boxWidget.foregroundDecoration,
-        isNot(equals(boxSpec2.foregroundDecoration)));
-    expect(boxWidget.transform, isNot(equals(boxSpec1.transform)));
-    expect(boxWidget.transform, isNot(equals(boxSpec2.transform)));
-    expect(boxWidget.transformAlignment,
-        isNot(equals(boxSpec1.transformAlignment)));
-    expect(boxWidget.transformAlignment,
-        isNot(equals(boxSpec2.transformAlignment)));
-    expect(boxWidget.clipBehavior, isNot(equals(boxSpec1.clipBehavior)));
-    expect(boxWidget.clipBehavior, equals(boxSpec2.clipBehavior));
+  //   final boxWidget = tester.widget<Container>(find.byType(Container));
+  //   expect(boxWidget.alignment, isNot(equals(boxSpec1.alignment)));
+  //   expect(boxWidget.alignment, isNot(equals(boxSpec2.alignment)));
+  //   expect(boxWidget.padding, isNot(equals(boxSpec1.padding)));
+  //   expect(boxWidget.padding, isNot(equals(boxSpec2.padding)));
+  //   expect(boxWidget.margin, isNot(equals(boxSpec1.margin)));
+  //   expect(boxWidget.margin, isNot(equals(boxSpec2.margin)));
+  //   expect(boxWidget.constraints, isNot(equals(boxSpec1.constraints)));
+  //   expect(boxWidget.constraints, isNot(equals(boxSpec2.constraints)));
+  //   expect(boxWidget.decoration, isNot(equals(boxSpec1.decoration)));
+  //   expect(boxWidget.decoration, isNot(equals(boxSpec2.decoration)));
+  //   expect(boxWidget.foregroundDecoration,
+  //       isNot(equals(boxSpec1.foregroundDecoration)));
+  //   expect(boxWidget.foregroundDecoration,
+  //       isNot(equals(boxSpec2.foregroundDecoration)));
+  //   expect(boxWidget.transform, isNot(equals(boxSpec1.transform)));
+  //   expect(boxWidget.transform, isNot(equals(boxSpec2.transform)));
+  //   expect(boxWidget.transformAlignment,
+  //       isNot(equals(boxSpec1.transformAlignment)));
+  //   expect(boxWidget.transformAlignment,
+  //       isNot(equals(boxSpec2.transformAlignment)));
+  //   expect(boxWidget.clipBehavior, isNot(equals(boxSpec1.clipBehavior)));
+  //   expect(boxWidget.clipBehavior, equals(boxSpec2.clipBehavior));
 
-    await tester.pumpAndSettle();
+  //   await tester.pumpAndSettle();
 
-    final animatedBoxWidget = tester.widget<Container>(find.byType(Container));
-    expect(animatedBoxWidget.alignment, boxSpec2.alignment);
-    expect(animatedBoxWidget.padding, boxSpec2.padding);
-    expect(animatedBoxWidget.margin, boxSpec2.margin);
-    expect(animatedBoxWidget.constraints, boxSpec2.constraints);
-    expect(animatedBoxWidget.decoration, boxSpec2.decoration);
-    expect(
-        animatedBoxWidget.foregroundDecoration, boxSpec2.foregroundDecoration);
-    expect(animatedBoxWidget.transform, boxSpec2.transform);
-    expect(animatedBoxWidget.transformAlignment, boxSpec2.transformAlignment);
-    expect(animatedBoxWidget.clipBehavior, boxSpec2.clipBehavior);
-  });
+  //   final animatedBoxWidget = tester.widget<Container>(find.byType(Container));
+  //   expect(animatedBoxWidget.alignment, boxSpec2.alignment);
+  //   expect(animatedBoxWidget.padding, boxSpec2.padding);
+  //   expect(animatedBoxWidget.margin, boxSpec2.margin);
+  //   expect(animatedBoxWidget.constraints, boxSpec2.constraints);
+  //   expect(animatedBoxWidget.decoration, boxSpec2.decoration);
+  //   expect(
+  //       animatedBoxWidget.foregroundDecoration, boxSpec2.foregroundDecoration);
+  //   expect(animatedBoxWidget.transform, boxSpec2.transform);
+  //   expect(animatedBoxWidget.transformAlignment, boxSpec2.transformAlignment);
+  //   expect(animatedBoxWidget.clipBehavior, boxSpec2.clipBehavior);
+  // });
 
-  testWidgets('AnimatedBoxSpecWidget should apply child widget',
-      (WidgetTester tester) async {
-    const childKey = Key('child');
-    const childWidget = Text('Child', key: childKey);
+  // testWidgets('AnimatedBoxSpecWidget should apply child widget',
+  //     (WidgetTester tester) async {
+  //   const childKey = Key('child');
+  //   const childWidget = Text('Child', key: childKey);
 
-    await tester.pumpWidget(
-      const MaterialApp(
-        home: AnimatedBoxSpecWidget(
-          spec: BoxSpec(),
-          duration: Duration(milliseconds: 500),
-          child: childWidget,
-        ),
-      ),
-    );
+  //   await tester.pumpWidget(
+  //     const MaterialApp(
+  //       home: AnimatedBoxSpecWidget(
+  //         spec: BoxSpec(),
+  //         duration: Duration(milliseconds: 500),
+  //         child: childWidget,
+  //       ),
+  //     ),
+  //   );
 
-    expect(find.byKey(childKey), findsOneWidget);
-  });
+  //   expect(find.byKey(childKey), findsOneWidget);
+  // });
 
   testWidgets(
     'Renders modifiers in the correct order with many overrides',
