@@ -33,16 +33,18 @@ void main() {
     });
 
     test('heightToFirstAscent sets applyHeightToFirstAscent', () {
-      final result = utility.heightToFirstAscent(true)
-          as UtilityTestAttribute<TextHeightBehaviorDto>;
+      final result =
+          utility.heightToFirstAscent(true)
+              as UtilityTestAttribute<TextHeightBehaviorDto>;
       expect(result.value.applyHeightToFirstAscent, isTrue);
       expect(result.value.applyHeightToLastDescent, isNull);
       expect(result.value.leadingDistribution, isNull);
     });
 
     test('heightToLastDescent sets applyHeightToLastDescent', () {
-      final result = utility.heightToLastDescent(false)
-          as UtilityTestAttribute<TextHeightBehaviorDto>;
+      final result =
+          utility.heightToLastDescent(false)
+              as UtilityTestAttribute<TextHeightBehaviorDto>;
       expect(result.value.applyHeightToFirstAscent, isNull);
       expect(result.value.applyHeightToLastDescent, isFalse);
       expect(result.value.leadingDistribution, isNull);
@@ -54,16 +56,22 @@ void main() {
               as UtilityTestAttribute<TextHeightBehaviorDto>;
       expect(result.value.applyHeightToFirstAscent, isNull);
       expect(result.value.applyHeightToLastDescent, isNull);
-      expect(result.value.leadingDistribution,
-          TextLeadingDistribution.proportional);
+      expect(
+        result.value.leadingDistribution,
+        TextLeadingDistribution.proportional,
+      );
     });
 
     test('only sets multiple properties', () {
-      final result = utility.only(
-        applyHeightToFirstAscent: const Mixable.value(true),
-        applyHeightToLastDescent: const Mixable.value(false),
-        leadingDistribution: const Mixable.value(TextLeadingDistribution.even),
-      ) as UtilityTestAttribute<TextHeightBehaviorDto>;
+      final result =
+          utility.only(
+                applyHeightToFirstAscent: const Mix.value(true),
+                applyHeightToLastDescent: const Mix.value(false),
+                leadingDistribution: const Mix.value(
+                  TextLeadingDistribution.even,
+                ),
+              )
+              as UtilityTestAttribute<TextHeightBehaviorDto>;
       expect(result.value.applyHeightToFirstAscent, isTrue);
       expect(result.value.applyHeightToLastDescent, isFalse);
       expect(result.value.leadingDistribution, TextLeadingDistribution.even);

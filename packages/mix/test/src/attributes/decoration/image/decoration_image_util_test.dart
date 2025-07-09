@@ -47,8 +47,9 @@ void main() {
     late DecorationImageUtility<_TestAttribute> utility;
 
     setUp(() {
-      utility =
-          DecorationImageUtility<_TestAttribute>((dto) => _TestAttribute(dto));
+      utility = DecorationImageUtility<_TestAttribute>(
+        (dto) => _TestAttribute(dto),
+      );
     });
 
     test('only method should create TestAttribute with provided values', () {
@@ -62,14 +63,14 @@ void main() {
       const isAntiAlias = false;
 
       final result = utility.only(
-        image: const Mixable.value(image),
-        fit: const Mixable.value(fit),
-        alignment: const Mixable.value(alignment),
-        centerSlice: const Mixable.value(centerSlice),
-        repeat: const Mixable.value(repeat),
-        filterQuality: const Mixable.value(filterQuality),
-        invertColors: const Mixable.value(invertColors),
-        isAntiAlias: const Mixable.value(isAntiAlias),
+        image: const Mix.value(image),
+        fit: const Mix.value(fit),
+        alignment: const Mix.value(alignment),
+        centerSlice: const Mix.value(centerSlice),
+        repeat: const Mix.value(repeat),
+        filterQuality: const Mix.value(filterQuality),
+        invertColors: const Mix.value(invertColors),
+        isAntiAlias: const Mix.value(isAntiAlias),
       );
 
       expect(result.dto?.image, equals(image));
@@ -129,24 +130,27 @@ void main() {
       expect(result.dto?.fit, equals(fit));
     });
 
-    test('alignment method should create TestAttribute with provided alignment',
-        () {
-      const alignment = Alignment.topLeft;
+    test(
+      'alignment method should create TestAttribute with provided alignment',
+      () {
+        const alignment = Alignment.topLeft;
 
-      final result = utility.alignment(alignment);
+        final result = utility.alignment(alignment);
 
-      expect(result.dto?.alignment, equals(alignment));
-    });
+        expect(result.dto?.alignment, equals(alignment));
+      },
+    );
 
     test(
-        'centerSlice method should create TestAttribute with provided centerSlice',
-        () {
-      const centerSlice = Rect.fromLTRB(10, 10, 90, 90);
+      'centerSlice method should create TestAttribute with provided centerSlice',
+      () {
+        const centerSlice = Rect.fromLTRB(10, 10, 90, 90);
 
-      final result = utility.centerSlice(centerSlice);
+        final result = utility.centerSlice(centerSlice);
 
-      expect(result.dto?.centerSlice, equals(centerSlice));
-    });
+        expect(result.dto?.centerSlice, equals(centerSlice));
+      },
+    );
 
     test('repeat method should create TestAttribute with provided repeat', () {
       const repeat = ImageRepeat.repeat;
@@ -157,33 +161,36 @@ void main() {
     });
 
     test(
-        'filterQuality method should create TestAttribute with provided filterQuality',
-        () {
-      const filterQuality = FilterQuality.medium;
+      'filterQuality method should create TestAttribute with provided filterQuality',
+      () {
+        const filterQuality = FilterQuality.medium;
 
-      final result = utility.filterQuality(filterQuality);
+        final result = utility.filterQuality(filterQuality);
 
-      expect(result.dto?.filterQuality, equals(filterQuality));
-    });
-
-    test(
-        'invertColors method should create TestAttribute with provided invertColors',
-        () {
-      const invertColors = false;
-
-      final result = utility.invertColors(invertColors);
-
-      expect(result.dto?.invertColors, equals(invertColors));
-    });
+        expect(result.dto?.filterQuality, equals(filterQuality));
+      },
+    );
 
     test(
-        'isAntiAlias method should create TestAttribute with provided isAntiAlias',
-        () {
-      const isAntiAlias = true;
+      'invertColors method should create TestAttribute with provided invertColors',
+      () {
+        const invertColors = false;
 
-      final result = utility.isAntiAlias(isAntiAlias);
+        final result = utility.invertColors(invertColors);
 
-      expect(result.dto?.isAntiAlias, equals(isAntiAlias));
-    });
+        expect(result.dto?.invertColors, equals(invertColors));
+      },
+    );
+
+    test(
+      'isAntiAlias method should create TestAttribute with provided isAntiAlias',
+      () {
+        const isAntiAlias = true;
+
+        final result = utility.isAntiAlias(isAntiAlias);
+
+        expect(result.dto?.isAntiAlias, equals(isAntiAlias));
+      },
+    );
   });
 }

@@ -11,6 +11,17 @@ abstract class MixUtility<Attr extends StyleElement, Value> {
   static T selfBuilder<T>(T value) => value;
 }
 
+abstract class DtoUtility<A extends StyleElement, D extends Mix<Value>, Value>
+    extends MixUtility<A, D> {
+  final D Function(Value) fromValue;
+  const DtoUtility(super.builder, {required D Function(Value) valueToDto})
+    : fromValue = valueToDto;
+
+  A only();
+
+  A as(Value value) => builder(fromValue(value));
+}
+
 class GenericUtility<Attr extends StyleElement, Value>
     extends MixUtility<Attr, Value> {
   const GenericUtility(super.builder);

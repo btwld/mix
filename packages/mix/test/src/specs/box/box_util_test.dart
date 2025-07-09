@@ -61,7 +61,7 @@ void main() {
 
       expect(
         (container.decoration as BoxDecorationDto).color,
-        const Mixable.value(Colors.blue),
+        const Mix.value(Colors.blue),
       );
     });
 
@@ -105,10 +105,13 @@ void main() {
         color: Colors.amber,
       );
 
-      expect(container.decoration!.color, const Mixable.value(Colors.amber));
+      expect(container.decoration!.color, const Mix.value(Colors.amber));
 
       final decorationDTO = container.decoration as BoxDecorationDto;
-      expect(decorationDTO.borderRadius, BorderRadiusDto.from(BorderRadius.circular(10)));
+      expect(
+        decorationDTO.borderRadius,
+        BorderRadiusDto.from(BorderRadius.circular(10)),
+      );
     });
 
     test('foregroundDecoration() returns correct instance', () {
@@ -119,7 +122,7 @@ void main() {
 
       expect(
         container.foregroundDecoration!.color,
-        const Mixable.value(Colors.amber),
+        const Mix.value(Colors.amber),
         reason: 'The color is not correct',
       );
 

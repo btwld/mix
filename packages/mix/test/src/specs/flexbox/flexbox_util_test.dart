@@ -48,7 +48,7 @@ void main() {
       final flexBox = flexBoxUtility..box.color.blue();
       expect(
         (flexBox.attributeValue!.box!.decoration as BoxDecorationDto).color,
-        const Mixable.value(Colors.blue),
+        const Mix.value(Colors.blue),
       );
     });
 
@@ -92,8 +92,11 @@ void main() {
 
       final decoration =
           flexBox.attributeValue!.box!.decoration as BoxDecorationDto;
-      expect(decoration.color, const Mixable.value(Colors.amber));
-      expect(decoration.borderRadius, BorderRadiusDto.from(BorderRadius.circular(10)));
+      expect(decoration.color, const Mix.value(Colors.amber));
+      expect(
+        decoration.borderRadius,
+        BorderRadiusDto.from(BorderRadius.circular(10)),
+      );
     });
 
     test('box foregroundDecoration returns correct instance', () {
@@ -107,7 +110,7 @@ void main() {
           flexBox.attributeValue!.box!.foregroundDecoration as BoxDecorationDto;
       expect(
         foregroundDecoration.color,
-        const Mixable.value(Colors.amber),
+        const Mix.value(Colors.amber),
         reason: 'The color is not correct',
       );
       expect(

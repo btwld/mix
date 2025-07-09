@@ -135,7 +135,7 @@ void main() {
       expect(util, isA<StyleElement>());
       expect(attr.width, 100);
       expect(attr.height, 200);
-      expect(attr.color, const Mixable.value(Colors.red));
+      expect(attr.color, const Mix.value(Colors.red));
       expect(attr.fit, BoxFit.cover);
 
       final style = Style(util);
@@ -144,7 +144,7 @@ void main() {
 
       expect(imageAttribute?.width, 100);
       expect(imageAttribute?.height, 200);
-      expect(imageAttribute?.color, const Mixable.value(Colors.red));
+      expect(imageAttribute?.color, const Mix.value(Colors.red));
       expect(imageAttribute?.fit, BoxFit.cover);
 
       final mixData = style.of(MockBuildContext());
@@ -201,7 +201,7 @@ void main() {
       final imageAttribute2 = image.width(200);
 
       expect(imageAttribute.width, 100);
-      expect(imageAttribute.color, const Mixable.value(Colors.red));
+      expect(imageAttribute.color, const Mix.value(Colors.red));
       expect(imageAttribute.fit, BoxFit.cover);
 
       expect(imageAttribute2.width, 200);

@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/element.dart';
+import '../../core/utility.dart';
 import '../scalars/curves.dart';
 import '../scalars/scalar_util.dart';
 import 'animated_config_dto.dart';
@@ -8,7 +9,8 @@ import 'animation_config.dart';
 
 final class AnimatedUtility<T extends StyleElement>
     extends DtoUtility<T, AnimationConfigDto, AnimationConfig> {
-  AnimatedUtility(super.builder) : super(valueToDto: (value) => AnimationConfigDto.from(value));
+  AnimatedUtility(super.builder)
+    : super(valueToDto: (value) => AnimationConfigDto.from(value));
 
   DurationUtility<T> get duration => DurationUtility((v) => only(duration: v));
 
@@ -41,15 +43,14 @@ final class AnimatedUtility<T extends StyleElement>
     double dampingRatio = 1.0,
     double mass = 1.0,
     Duration duration = const Duration(milliseconds: 300),
-  }) =>
-      only(
-        duration: duration,
-        curve: SpringCurve(
-          stiffness: stiffness,
-          dampingRatio: dampingRatio,
-          mass: mass,
-        ),
-      );
+  }) => only(
+    duration: duration,
+    curve: SpringCurve(
+      stiffness: stiffness,
+      dampingRatio: dampingRatio,
+      mass: mass,
+    ),
+  );
 
   @override
   T only({Duration? duration, Curve? curve}) {

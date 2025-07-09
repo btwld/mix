@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart' show Color, Radius;
 
 import '../internal/compare_mixin.dart';
 import '../theme/tokens/mix_token.dart';
 import 'factory/mix_context.dart';
-import 'utility.dart';
 
 // Generic directive for modifying values
 @immutable
@@ -43,17 +43,17 @@ abstract class Mix<Value> with EqualityMixin {
   const Mix({this.directives = const []});
 
   const factory Mix.value(Value value, {List<MixDirective<Value>> directives}) =
-      _ValueMixable<Value>;
+      _ValueMix<Value>;
 
   const factory Mix.token(
     MixableToken<Value> token, {
     List<MixDirective<Value>> directives,
-  }) = _TokenMixable<Value>;
+  }) = _TokenMix<Value>;
 
   const factory Mix.composite(
     List<Mix<Value>> items, {
     List<MixDirective<Value>> directives,
-  }) = _CompositeMixable<Value>;
+  }) = _CompositeMix<Value>;
 
   static Mix<T>? maybeValue<T>(T? value) {
     if (value == null) return null;
@@ -62,9 +62,8 @@ abstract class Mix<Value> with EqualityMixin {
   }
 
   /// Gets the underlying value if this is a ValueMixable, otherwise returns null
-  Value? get value => this is _ValueMixable<Value>
-      ? (this as _ValueMixable<Value>).value
-      : null;
+  Value? get value =>
+      this is _ValueMix<Value> ? (this as _ValueMix<Value>).value : null;
 
   /// Resolves token value if present, otherwise returns null
   Value resolve(MixContext mix);
@@ -92,7 +91,7 @@ abstract class Mix<Value> with EqualityMixin {
     final allDirectives = mergeDirectives(other.directives);
 
     return switch ((this, other)) {
-      (_, _CompositeMixable(:var items)) => Mix.composite([
+      (_, _CompositeMix(:var items)) => Mix.composite([
         ...items,
         this,
       ], directives: allDirectives),
@@ -103,11 +102,11 @@ abstract class Mix<Value> with EqualityMixin {
 
 // Private implementations for Mixable<T>
 @immutable
-class _ValueMixable<T> extends Mix<T> {
+class _ValueMix<T> extends Mix<T> {
   @override
   final T value;
 
-  const _ValueMixable(this.value, {super.directives});
+  const _ValueMix(this.value, {super.directives});
 
   @override
   T resolve(MixContext mix) => applyDirectives(value);
@@ -117,10 +116,10 @@ class _ValueMixable<T> extends Mix<T> {
 }
 
 @immutable
-class _TokenMixable<T> extends Mix<T> {
+class _TokenMix<T> extends Mix<T> {
   final MixableToken<T> token;
 
-  const _TokenMixable(this.token, {super.directives});
+  const _TokenMix(this.token, {super.directives});
 
   @override
   T resolve(MixContext mix) =>
@@ -131,10 +130,10 @@ class _TokenMixable<T> extends Mix<T> {
 }
 
 @immutable
-class _CompositeMixable<T> extends Mix<T> {
+class _CompositeMix<T> extends Mix<T> {
   final List<Mix<T>> items;
 
-  const _CompositeMixable(this.items, {super.directives});
+  const _CompositeMix(this.items, {super.directives});
 
   @override
   T resolve(MixContext mix) {
@@ -195,46 +194,79 @@ mixin HasDefaultValue<Value> {
   Value get defaultValue;
 }
 
-abstract class DtoUtility<A extends StyleElement, D extends Mix<Value>, Value>
-    extends MixUtility<A, D> {
-  final D Function(Value) fromValue;
-  const DtoUtility(super.builder, {required D Function(Value) valueToDto})
-    : fromValue = valueToDto;
-
-  A only();
-
-  A as(Value value) => builder(fromValue(value));
+// Specific Mix implementations for common types
+@immutable
+class StringMix extends _ValueMix<String> {
+  const StringMix(super.value, {super.directives});
 }
 
-/// A wrapper around Mixable that provides cleaner merge APIs for DTO properties.
+@immutable
+class DoubleMix extends _ValueMix<double> {
+  const DoubleMix(super.value, {super.directives});
+}
+
+@immutable
+class IntMix extends _ValueMix<int> {
+  const IntMix(super.value, {super.directives});
+}
+
+@immutable
+class BoolMix extends _ValueMix<bool> {
+  const BoolMix(super.value, {super.directives});
+}
+
+@immutable
+class ColorMix extends _ValueMix<Color> {
+  const ColorMix(super.value, {super.directives});
+}
+
+// RadiusMix and EnumMix only support values, not tokens
+@immutable
+class RadiusMix extends _ValueMix<Radius> {
+  const RadiusMix(super.value, {super.directives});
+}
+
+@immutable
+class EnumMix<T extends Enum> extends _ValueMix<T> {
+  const EnumMix(super.value, {super.directives});
+}
+
+/// A wrapper around Mix that provides cleaner merge APIs for DTO properties.
 /// This encapsulates value/token/composite logic and simplifies DTO implementations.
-/// MixableProperty is always nullable - resolve() always returns T?
+/// MixProperty always contains at least one Mix internally.
+/// When used in DTOs and SpecAttributes, the property itself should be nullable (MixProperty<T>?)
 @immutable
 class MixProperty<T extends Object> with EqualityMixin {
-  final Mix<T>? _mixable;
+  final Mix<T> _mixable;
 
-  const MixProperty([this._mixable]);
+  /// Creates a MixProperty with the given Mix.
+  /// If no Mix is provided, creates an empty composite Mix.
+  const MixProperty([Mix<T>? mixable])
+    : _mixable = mixable ?? const Mix.composite([]);
 
-  /// Creates a MixableProperty from a concrete value (can be null)
-  factory MixProperty.prop(T? value) => MixProperty(Mix.maybeValue(value));
+  /// Creates a MixProperty from a concrete value (can be null)
+  factory MixProperty.value(T? value) {
+    return value == null ? const MixProperty() : MixProperty(Mix.value(value));
+  }
 
-  /// Creates a MixableProperty from a token
-  /// Note: We need a nullable token wrapper to handle the type mismatch
+  factory MixProperty.prop(T? value) {
+    return value == null ? const MixProperty() : MixProperty(Mix.value(value));
+  }
+
+  /// Creates a MixProperty from a token
   factory MixProperty.token(MixableToken<T> token) {
     return MixProperty(Mix.token(token));
   }
 
-  /// Creates a MixableProperty from a nullable value
-
-  /// Gets the underlying value if this wraps a ValueMixable
-  T? get value => _mixable?.value;
+  /// Gets the underlying value if this wraps a ValueMix
+  T? get value => _mixable.value;
 
   /// Resolves the value using the MixContext - always returns nullable
-  T? resolve(MixContext mix) => _mixable?.resolve(mix);
+  T? resolve(MixContext mix) => _mixable.resolve(mix);
 
   /// Merges this property with another, creating a composite
   MixProperty<T> merge(MixProperty<T> other) {
-    return MixProperty(_mixable?.merge(other._mixable));
+    return MixProperty(_mixable.merge(other._mixable));
   }
 
   @override

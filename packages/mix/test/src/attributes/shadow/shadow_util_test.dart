@@ -17,7 +17,7 @@ void main() {
       );
 
       expect(shadow.value.blurRadius, 10.0);
-      expect(shadow.value.color, const Mixable.value(Colors.blue));
+      expect(shadow.value.color, const Mix.value(Colors.blue));
       expect(shadow.value.offset, const Offset(10, 10));
     });
 
@@ -25,7 +25,7 @@ void main() {
     test('color() returns correct instance', () {
       final shadow = shadowUtility.color(Colors.blue);
 
-      expect(shadow.value.color, const Mixable.value(Colors.blue));
+      expect(shadow.value.color, const Mix.value(Colors.blue));
     });
 
     // offset()
@@ -49,7 +49,7 @@ void main() {
       );
 
       expect(boxShadow.value.blurRadius, 10.0);
-      expect(boxShadow.value.color, const Mixable.value(Colors.blue));
+      expect(boxShadow.value.color, const Mix.value(Colors.blue));
       expect(boxShadow.value.offset, const Offset(10, 10));
       expect(boxShadow.value.spreadRadius, 10.0);
     });
@@ -58,7 +58,7 @@ void main() {
     test('color() returns correct instance', () {
       final boxShadow = boxShadowUtility.color(Colors.blue);
 
-      expect(boxShadow.value.color, const Mixable.value(Colors.blue));
+      expect(boxShadow.value.color, const Mix.value(Colors.blue));
     });
 
     // offset()
