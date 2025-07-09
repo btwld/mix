@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 
 import '../../../core/factory/mix_context.dart';
 import '../../../core/mix_element.dart';
-import '../../../core/mix_property.dart';
 import '../../../core/utility.dart';
 import '../../enum/enum_util.dart';
 import '../../scalars/scalar_util.dart';
@@ -15,7 +14,9 @@ import 'decoration_image_dto.dart';
 class DecorationImageUtility<T extends StyleElement>
     extends DtoUtility<T, DecorationImageDto, DecorationImage> {
   /// Utility for defining [DecorationImageDto.image]
-  late final provider = ImageProviderUtility((v) => only(image: ImageProviderMix(v)));
+  late final provider = ImageProviderUtility(
+    (v) => only(image: ImageProviderMix(v)),
+  );
 
   /// Utility for defining [DecorationImageDto.fit]
   late final fit = BoxFitUtility((v) => only(fit: EnumMix(v)));
@@ -37,9 +38,7 @@ class DecorationImageUtility<T extends StyleElement>
   );
 
   /// Utility for defining [DecorationImageDto.invertColors]
-  late final invertColors = BoolUtility(
-    (v) => only(invertColors: BoolMix(v)),
-  );
+  late final invertColors = BoolUtility((v) => only(invertColors: BoolMix(v)));
 
   /// Utility for defining [DecorationImageDto.isAntiAlias]
   late final isAntiAlias = BoolUtility((v) => only(isAntiAlias: BoolMix(v)));
@@ -101,17 +100,17 @@ DecorationImageDto _decorationImageToDto(DecorationImage decorationImage) {
   return DecorationImageDto(
     image: ImageProviderMix(decorationImage.image),
     fit: decorationImage.fit != null ? EnumMix(decorationImage.fit!) : null,
-    alignment: decorationImage.alignment != Alignment.center 
-        ? _AlignmentGeometryMix(decorationImage.alignment) 
+    alignment: decorationImage.alignment != Alignment.center
+        ? _AlignmentGeometryMix(decorationImage.alignment)
         : null,
-    centerSlice: decorationImage.centerSlice != null 
-        ? RectMix(decorationImage.centerSlice!) 
+    centerSlice: decorationImage.centerSlice != null
+        ? RectMix(decorationImage.centerSlice!)
         : null,
-    repeat: decorationImage.repeat != ImageRepeat.noRepeat 
-        ? EnumMix(decorationImage.repeat) 
+    repeat: decorationImage.repeat != ImageRepeat.noRepeat
+        ? EnumMix(decorationImage.repeat)
         : null,
-    filterQuality: decorationImage.filterQuality != FilterQuality.low 
-        ? EnumMix(decorationImage.filterQuality) 
+    filterQuality: decorationImage.filterQuality != FilterQuality.low
+        ? EnumMix(decorationImage.filterQuality)
         : null,
     invertColors: decorationImage.invertColors ? const BoolMix(true) : null,
     isAntiAlias: !decorationImage.isAntiAlias ? const BoolMix(false) : null,

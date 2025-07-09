@@ -4,40 +4,6 @@ import '../theme/tokens/mix_token.dart';
 import 'factory/mix_context.dart';
 import 'mix_element.dart';
 
-// Base interface for all mix properties
-@immutable
-abstract class BaseMixProp<T extends Object> {
-  final List<MixDirective<T>>? directives;
-
-  const BaseMixProp({this.directives});
-
-  // Common interface methods
-  T? resolve(MixContext context);
-  BaseMixProp<T> merge(covariant BaseMixProp<T>? other);
-
-  // Helper to merge directive lists
-  List<MixDirective<T>>? mergeDirectives(List<MixDirective<T>>? other) {
-    if (directives == null && other == null) return null;
-    if (directives == null) return other;
-    if (other == null) return directives;
-
-    return [...?directives, ...other];
-  }
-
-  // Protected helper to apply directives
-  @protected
-  T applyDirectives(T value) {
-    if (directives == null) return value;
-
-    var result = value;
-    for (final directive in directives!) {
-      result = directive.modify(result);
-    }
-
-    return result;
-  }
-}
-
 /// Property for simple Mix values and tokens.
 ///
 /// Merge behavior:
@@ -46,32 +12,55 @@ abstract class BaseMixProp<T extends Object> {
 /// - Token + Mix = override (last wins)
 /// - Mix + Token = override (last wins)
 @immutable
-class MixProp<T extends Object> {
+final class MixValue<T> {
   final List<MixDirective<T>> directives;
   final List<MixPropItem<T>> items;
 
-  const MixProp._({this.items = const [], this.directives = const []});
+  const MixValue._({this.items = const [], this.directives = const []});
 
-  factory MixProp(Mix<T>? mix, {List<MixDirective<T>>? directives}) {
-    return MixProp._(
+  factory MixValue({Mix<T>? mix, List<MixDirective<T>>? directives}) {
+    return MixValue._(
+      items: [if (mix != null) MixPropItem(mix)],
+      directives: directives ?? const [],
+    );
+  }
+
+  // Convenience constructor for just a mix value
+  factory MixValue.mix(Mix<T> mix) {
+    return MixValue._(items: [MixPropItem(mix)], directives: const []);
+  }
+
+  factory MixValue.token(MixableToken<T>? token) {
+    return MixValue._(
+      items: [if (token != null) MixPropItem.token(token)],
+      directives: const [],
+    );
+  }
+
+  // directives can be applied to the MixProp
+  factory MixValue.withDirectives(
+    Mix<T>? mix, {
+    List<MixDirective<T>>? directives,
+  }) {
+    return MixValue._(
       items: [if (mix != null) MixPropItem(mix)],
       directives: directives ?? const [],
     );
   }
 
   // Factory constructor for list types: MixProp<List<String>> accepts List<Mix<String>>
-  factory MixProp.fromList(
+  factory MixValue.fromList(
     List<Mix<Object>>? mixes, {
     List<MixDirective<T>>? directives,
   }) {
-    return MixProp._(
+    return MixValue._(
       items: [if (mixes != null) MixPropItem.fromList(mixes)],
       directives: directives ?? const [],
     );
   }
 
   // Empty constructor for default values
-  const MixProp.empty() : this._();
+  const MixValue.empty() : this._();
 
   @visibleForTesting
   List<MixDirective<T>> mergeDirectives(List<MixDirective<T>>? other) {
@@ -99,11 +88,11 @@ class MixProp<T extends Object> {
     return applyDirectives(resolvedValues);
   }
 
-  MixProp<T> merge(MixProp<T>? other) {
+  MixValue<T> merge(MixValue<T>? other) {
     if (other == null) return this;
 
     // For simple MixProp, other always wins (override behavior)
-    return MixProp._(
+    return MixValue._(
       items: [...items, ...other.items],
       directives: mergeDirectives(other.directives),
     );
@@ -112,7 +101,7 @@ class MixProp<T extends Object> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is MixProp<T> &&
+      other is MixValue<T> &&
           runtimeType == other.runtimeType &&
           listEquals(directives, other.directives) &&
           listEquals(items, other.items);
@@ -134,7 +123,7 @@ sealed class MixPropItem<T> {
     return _ListMixItem(mixes);
   }
 
-  const factory MixPropItem.token(MixableToken<Mix<T>> token) = _TokenItem<T>;
+  const factory MixPropItem.token(MixableToken<T> token) = _TokenItem<T>;
 
   T resolve(MixContext mix);
 }
@@ -153,15 +142,13 @@ class _MixItem<T> extends MixPropItem<T> {
 // Private token item
 @immutable
 class _TokenItem<T> extends MixPropItem<T> {
-  final MixableToken<Mix<T>> token;
+  final MixableToken<T> token;
 
   const _TokenItem(this.token) : super._();
 
   @override
   T resolve(MixContext mix) {
-    final mixValue = mix.scope.getToken(token, mix.context);
-
-    return mixValue.resolve(mix);
+    return mix.scope.getToken(token, mix.context);
   }
 }
 

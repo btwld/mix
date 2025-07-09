@@ -12,10 +12,10 @@ sealed class ConstraintsDto<T extends Constraints> extends Mix<T> {
 /// merge and combining behavior. It allows to be merged, and resolved to a `[BoxConstraints]
 final class BoxConstraintsDto extends ConstraintsDto<BoxConstraints> {
   // Properties use MixProp for cleaner merging
-  final MixProp<double> minWidth;
-  final MixProp<double> maxWidth;
-  final MixProp<double> minHeight;
-  final MixProp<double> maxHeight;
+  final MixValue<double> minWidth;
+  final MixValue<double> maxWidth;
+  final MixValue<double> minHeight;
+  final MixValue<double> maxHeight;
 
   // Main constructor accepts Mix values
   factory BoxConstraintsDto({
@@ -25,10 +25,10 @@ final class BoxConstraintsDto extends ConstraintsDto<BoxConstraints> {
     Mix<double>? maxHeight,
   }) {
     return BoxConstraintsDto._(
-      minWidth: MixProp(minWidth),
-      maxWidth: MixProp(maxWidth),
-      minHeight: MixProp(minHeight),
-      maxHeight: MixProp(maxHeight),
+      minWidth: MixValue(minWidth),
+      maxWidth: MixValue(maxWidth),
+      minHeight: MixValue(minHeight),
+      maxHeight: MixValue(maxHeight),
     );
   }
 
@@ -65,4 +65,3 @@ final class BoxConstraintsDto extends ConstraintsDto<BoxConstraints> {
   @override
   List<Object?> get props => [minWidth, maxWidth, minHeight, maxHeight];
 }
-

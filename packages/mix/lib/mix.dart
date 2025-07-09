@@ -65,7 +65,7 @@ export 'src/core/helpers.dart';
 
 /// CORE
 export 'src/core/mix_element.dart';
-export 'src/core/mix_property.dart';
+export 'src/core/mix_value.dart';
 export 'src/core/modifier.dart';
 export 'src/core/spec.dart';
 export 'src/core/styled_widget.dart';

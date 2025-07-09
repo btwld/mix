@@ -4,10 +4,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../../core/mix_property.dart';
-
 typedef _BaseDecorProperties = ({
-  MixProp<Color> color,
+  MixValue<Color> color,
   GradientDto? gradient,
   List<BoxShadowDto>? boxShadow,
   DecorationImageDto? image,
@@ -21,7 +19,7 @@ typedef _BaseDecorProperties = ({
 /// In order to support merging of [Decoration] values, and reusable of common properties.
 @immutable
 sealed class DecorationDto<T extends Decoration> extends Mix<T> {
-  final MixProp<Color> color;
+  final MixValue<Color> color;
   final GradientDto? gradient;
   final DecorationImageDto? image;
   final List<BoxShadowDto>? boxShadow;
@@ -98,7 +96,7 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
       borderRadius: borderRadius,
       shape: shape,
       backgroundBlendMode: backgroundBlendMode,
-      color: MixProp(color),
+      color: MixValue(color),
       image: image,
       gradient: gradient,
       boxShadow: boxShadow,
@@ -219,7 +217,7 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
   }) {
     return ShapeDecorationDto._(
       shape: shape,
-      color: MixProp(color),
+      color: MixValue(color),
       image: image,
       gradient: gradient,
       shadows: shadows,
@@ -377,4 +375,3 @@ ShapeBorderDto? _fromBoxShape({
       return null;
   }
 }
-

@@ -1,9 +1,7 @@
 import 'package:flutter/rendering.dart';
 
 import '../../core/mix_element.dart';
-import '../../core/mix_property.dart';
 import '../../core/utility.dart';
-import '../scalars/scalar_util.dart';
 import 'constraints_dto.dart';
 
 /// Utility class for configuring [BoxConstraints] properties.
@@ -25,12 +23,18 @@ class BoxConstraintsUtility<T extends StyleElement>
   late final maxHeight = DoubleUtility((v) => only(maxHeight: DoubleMix(v)));
 
   BoxConstraintsUtility(super.builder)
-    : super(valueToDto: (v) => BoxConstraintsDto(
+    : super(
+        valueToDto: (v) => BoxConstraintsDto(
           minWidth: v.minWidth != 0.0 ? DoubleMix(v.minWidth) : null,
-          maxWidth: v.maxWidth != double.infinity ? DoubleMix(v.maxWidth) : null,
+          maxWidth: v.maxWidth != double.infinity
+              ? DoubleMix(v.maxWidth)
+              : null,
           minHeight: v.minHeight != 0.0 ? DoubleMix(v.minHeight) : null,
-          maxHeight: v.maxHeight != double.infinity ? DoubleMix(v.maxHeight) : null,
-        ));
+          maxHeight: v.maxHeight != double.infinity
+              ? DoubleMix(v.maxHeight)
+              : null,
+        ),
+      );
 
   T call({
     double? minWidth,

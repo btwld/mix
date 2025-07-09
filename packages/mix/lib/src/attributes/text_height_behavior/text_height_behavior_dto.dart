@@ -5,9 +5,9 @@ import 'package:mix/mix.dart';
 
 base class TextHeightBehaviorDto extends Mix<TextHeightBehavior> {
   // Properties use MixProp for cleaner merging
-  final MixProp<bool> applyHeightToFirstAscent;
-  final MixProp<bool> applyHeightToLastDescent;
-  final MixProp<TextLeadingDistribution> leadingDistribution;
+  final MixValue<bool> applyHeightToFirstAscent;
+  final MixValue<bool> applyHeightToLastDescent;
+  final MixValue<TextLeadingDistribution> leadingDistribution;
 
   // Main constructor accepts Mix values
   factory TextHeightBehaviorDto({
@@ -16,9 +16,9 @@ base class TextHeightBehaviorDto extends Mix<TextHeightBehavior> {
     Mix<TextLeadingDistribution>? leadingDistribution,
   }) {
     return TextHeightBehaviorDto._(
-      applyHeightToFirstAscent: MixProp(applyHeightToFirstAscent),
-      applyHeightToLastDescent: MixProp(applyHeightToLastDescent),
-      leadingDistribution: MixProp(leadingDistribution),
+      applyHeightToFirstAscent: MixValue(applyHeightToFirstAscent),
+      applyHeightToLastDescent: MixValue(applyHeightToLastDescent),
+      leadingDistribution: MixValue(leadingDistribution),
     );
   }
 
@@ -82,4 +82,3 @@ base class TextHeightBehaviorDto extends Mix<TextHeightBehavior> {
     leadingDistribution,
   ];
 }
-

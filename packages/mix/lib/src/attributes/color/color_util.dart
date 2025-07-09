@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/mix_element.dart';
+import '../../core/mix_value.dart';
 import '../../core/utility.dart';
 import '../../theme/tokens/mix_token.dart';
 import 'color_extensions.dart';
@@ -21,6 +22,7 @@ Mix<Color> _colorToMix(Color color) => ColorMix(color);
 /// Mixin that provides color directive methods
 base mixin ColorDirectiveMixin<T extends StyleElement> on BaseColorUtility<T> {
   /// Abstract method that subclasses must implement to handle directives and tokens
+  @override
   T only({
     Mix<Color>? color,
     MixableToken<Color>? token,
@@ -90,7 +92,10 @@ base mixin ColorDirectiveMixin<T extends StyleElement> on BaseColorUtility<T> {
 
   T shade(int amount) => only(
     directives: [
-      MixDirective((color) => color.shade(amount), debugLabel: 'shade($amount)'),
+      MixDirective(
+        (color) => color.shade(amount),
+        debugLabel: 'shade($amount)',
+      ),
     ],
   );
 
@@ -141,7 +146,7 @@ final class ColorUtility<T extends StyleElement> extends BaseColorUtility<T>
   @override
   T only({
     Mix<Color>? color,
-    MixableToken<Color>? token, 
+    MixableToken<Color>? token,
     List<MixDirective<Color>>? directives,
   }) {
     if (color == null && token == null && directives == null) {
@@ -149,10 +154,18 @@ final class ColorUtility<T extends StyleElement> extends BaseColorUtility<T>
         'ColorUtility requires a color value, token, or directives.',
       );
     }
-    // TODO: Handle directives and tokens properly once DTO support is added
+
+    // Create MixProp with the appropriate values
+    final mixProp = MixValue(mix: color, directives: directives);
+
+    // For now, we still need to pass Mix<Color> to builder
+    // TODO: Update once all DTOs accept MixProp
     if (color != null) {
       return builder(color);
     }
+
+    // For directives-only, we need a placeholder approach
+    // This is temporary until utilities can work with MixProp directly
     throw UnsupportedError('Token and directives-only color not yet supported');
   }
 }

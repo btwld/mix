@@ -3,8 +3,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../../core/mix_property.dart';
-
 /// Represents a [Mix] Data transfer object of [BorderRadiusGeometry]
 ///
 /// This is used to allow for resolvable value tokens, and also the correct
@@ -20,14 +18,12 @@ sealed class BorderRadiusGeometryDto<T extends BorderRadiusGeometry>
     extends Mix<T> {
   const BorderRadiusGeometryDto();
 
-
-
   /// Common getters for accessing radius properties
   /// These return null for types that don't support these properties
-  MixProp<Radius> get topLeft => const MixProp.empty();
-  MixProp<Radius> get topRight => const MixProp.empty();
-  MixProp<Radius> get bottomLeft => const MixProp.empty();
-  MixProp<Radius> get bottomRight => const MixProp.empty();
+  MixValue<Radius> get topLeft => const MixValue.empty();
+  MixValue<Radius> get topRight => const MixValue.empty();
+  MixValue<Radius> get bottomLeft => const MixValue.empty();
+  MixValue<Radius> get bottomRight => const MixValue.empty();
 
   @override
   BorderRadiusGeometryDto<T> merge(covariant BorderRadiusGeometryDto<T>? other);
@@ -35,16 +31,16 @@ sealed class BorderRadiusGeometryDto<T extends BorderRadiusGeometry>
 
 final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
   @override
-  final MixProp<Radius> topLeft;
+  final MixValue<Radius> topLeft;
 
   @override
-  final MixProp<Radius> topRight;
+  final MixValue<Radius> topRight;
 
   @override
-  final MixProp<Radius> bottomLeft;
+  final MixValue<Radius> bottomLeft;
 
   @override
-  final MixProp<Radius> bottomRight;
+  final MixValue<Radius> bottomRight;
 
   // Main constructor accepts Mix values
   factory BorderRadiusDto({
@@ -54,10 +50,10 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
     Mix<Radius>? bottomRight,
   }) {
     return BorderRadiusDto._(
-      topLeft: MixProp(topLeft),
-      topRight: MixProp(topRight),
-      bottomLeft: MixProp(bottomLeft),
-      bottomRight: MixProp(bottomRight),
+      topLeft: MixValue(topLeft),
+      topRight: MixValue(topRight),
+      bottomLeft: MixValue(bottomLeft),
+      bottomRight: MixValue(bottomRight),
     );
   }
 
@@ -68,9 +64,6 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
     required this.bottomLeft,
     required this.bottomRight,
   });
-
-
-
 
   @override
   BorderRadius resolve(MixContext mix) {
@@ -100,10 +93,10 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
 
 final class BorderRadiusDirectionalDto
     extends BorderRadiusGeometryDto<BorderRadiusDirectional> {
-  final MixProp<Radius> topStart;
-  final MixProp<Radius> topEnd;
-  final MixProp<Radius> bottomStart;
-  final MixProp<Radius> bottomEnd;
+  final MixValue<Radius> topStart;
+  final MixValue<Radius> topEnd;
+  final MixValue<Radius> bottomStart;
+  final MixValue<Radius> bottomEnd;
 
   // Main constructor accepts Mix values
   factory BorderRadiusDirectionalDto({
@@ -113,10 +106,10 @@ final class BorderRadiusDirectionalDto
     Mix<Radius>? bottomEnd,
   }) {
     return BorderRadiusDirectionalDto._(
-      topStart: MixProp(topStart),
-      topEnd: MixProp(topEnd),
-      bottomStart: MixProp(bottomStart),
-      bottomEnd: MixProp(bottomEnd),
+      topStart: MixValue(topStart),
+      topEnd: MixValue(topEnd),
+      bottomStart: MixValue(bottomStart),
+      bottomEnd: MixValue(bottomEnd),
     );
   }
 
@@ -127,8 +120,6 @@ final class BorderRadiusDirectionalDto
     required this.bottomStart,
     required this.bottomEnd,
   });
-
-
 
   @override
   BorderRadiusDirectional resolve(MixContext mix) {
@@ -158,11 +149,11 @@ final class BorderRadiusDirectionalDto
   /// These getters return empty for BorderRadiusDirectional as they don't apply
   /// to directional border radius (which uses topStart/topEnd instead of topLeft/topRight)
   @override
-  MixProp<Radius> get topLeft => const MixProp.empty();
+  MixValue<Radius> get topLeft => const MixValue.empty();
   @override
-  MixProp<Radius> get topRight => const MixProp.empty();
+  MixValue<Radius> get topRight => const MixValue.empty();
   @override
-  MixProp<Radius> get bottomLeft => const MixProp.empty();
+  MixValue<Radius> get bottomLeft => const MixValue.empty();
   @override
-  MixProp<Radius> get bottomRight => const MixProp.empty();
+  MixValue<Radius> get bottomRight => const MixValue.empty();
 }

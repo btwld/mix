@@ -1,10 +1,8 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/mix_element.dart';
-import '../../core/mix_property.dart';
 import '../../core/utility.dart';
 import '../enum/enum_util.dart';
-import '../scalars/scalar_util.dart';
 import 'text_height_behavior_dto.dart';
 
 final class TextHeightBehaviorUtility<T extends StyleElement>
@@ -29,14 +27,14 @@ final class TextHeightBehaviorUtility<T extends StyleElement>
     TextLeadingDistribution? leadingDistribution,
   }) {
     return only(
-      applyHeightToFirstAscent: applyHeightToFirstAscent != null 
-          ? BoolMix(applyHeightToFirstAscent) 
+      applyHeightToFirstAscent: applyHeightToFirstAscent != null
+          ? BoolMix(applyHeightToFirstAscent)
           : null,
-      applyHeightToLastDescent: applyHeightToLastDescent != null 
-          ? BoolMix(applyHeightToLastDescent) 
+      applyHeightToLastDescent: applyHeightToLastDescent != null
+          ? BoolMix(applyHeightToLastDescent)
           : null,
-      leadingDistribution: leadingDistribution != null 
-          ? EnumMix(leadingDistribution) 
+      leadingDistribution: leadingDistribution != null
+          ? EnumMix(leadingDistribution)
           : null,
     );
   }
@@ -58,13 +56,14 @@ final class TextHeightBehaviorUtility<T extends StyleElement>
 // Helper function
 TextHeightBehaviorDto _textHeightBehaviorToDto(TextHeightBehavior behavior) {
   return TextHeightBehaviorDto(
-    applyHeightToFirstAscent: behavior.applyHeightToFirstAscent 
-        ? const BoolMix(true) 
+    applyHeightToFirstAscent: behavior.applyHeightToFirstAscent
+        ? const BoolMix(true)
         : null,
-    applyHeightToLastDescent: behavior.applyHeightToLastDescent 
-        ? const BoolMix(true) 
+    applyHeightToLastDescent: behavior.applyHeightToLastDescent
+        ? const BoolMix(true)
         : null,
-    leadingDistribution: behavior.leadingDistribution != TextLeadingDistribution.proportional
+    leadingDistribution:
+        behavior.leadingDistribution != TextLeadingDistribution.proportional
         ? EnumMix(behavior.leadingDistribution)
         : null,
   );

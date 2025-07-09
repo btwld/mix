@@ -2,7 +2,7 @@ import 'package:flutter/animation.dart';
 
 import '../../core/factory/mix_context.dart';
 import '../../core/mix_element.dart';
-import '../../core/mix_property.dart';
+import '../../core/mix_value.dart';
 import '../../internal/constants.dart';
 import 'animation_config.dart';
 
@@ -13,9 +13,9 @@ typedef AnimatedDataDto = AnimationConfigDto;
 
 class AnimationConfigDto extends Mix<AnimationConfig> {
   // Properties use MixableProperty for cleaner merging
-  final MixProp<Duration> duration;
-  final MixProp<Curve> curve;
-  final MixProp<VoidCallback> onEnd;
+  final MixValue<Duration> duration;
+  final MixValue<Curve> curve;
+  final MixValue<VoidCallback> onEnd;
 
   // Main constructor accepts Mix values
   factory AnimationConfigDto({
@@ -24,9 +24,9 @@ class AnimationConfigDto extends Mix<AnimationConfig> {
     Mix<VoidCallback>? onEnd,
   }) {
     return AnimationConfigDto._(
-      duration: MixProp(duration),
-      curve: MixProp(curve),
-      onEnd: MixProp(onEnd),
+      duration: MixValue(duration),
+      curve: MixValue(curve),
+      onEnd: MixValue(onEnd),
     );
   }
 

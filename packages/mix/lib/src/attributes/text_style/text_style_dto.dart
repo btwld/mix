@@ -4,135 +4,85 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-import '../../core/mix_property.dart';
 import '../../internal/diagnostic_properties_builder_ext.dart';
 
 /// A Data transfer object that represents a [TextStyle] value.
 @immutable
 class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
   // Properties use MixableProperty for cleaner merging - always nullable internally
-  final MixProp<Color> color;
-  final MixProp<Color> backgroundColor;
-  final MixProp<double> fontSize;
-  final MixProp<FontWeight> fontWeight;
-  final MixProp<FontStyle> fontStyle;
-  final MixProp<double> letterSpacing;
-  final MixProp<String> debugLabel;
-  final MixProp<double> wordSpacing;
-  final MixProp<TextBaseline> textBaseline;
-  final MixProp<TextDecoration> decoration;
-  final MixProp<Color> decorationColor;
-  final MixProp<TextDecorationStyle> decorationStyle;
-  final MixProp<double> height;
-  final MixProp<double> decorationThickness;
-  final MixProp<String> fontFamily;
-  final MixProp<List<String>> fontFamilyFallback;
-  final MixProp<List<FontFeature>> fontFeatures;
-  final MixProp<List<FontVariation>> fontVariations;
+  final MixValue<Color>? color;
+  final MixValue<Color>? backgroundColor;
+  final MixValue<double>? fontSize;
+  final MixValue<FontWeight>? fontWeight;
+  final MixValue<FontStyle>? fontStyle;
+  final MixValue<double>? letterSpacing;
+  final MixValue<String>? debugLabel;
+  final MixValue<double>? wordSpacing;
+  final MixValue<TextBaseline>? textBaseline;
+  final MixValue<TextDecoration>? decoration;
+  final MixValue<Color>? decorationColor;
+  final MixValue<TextDecorationStyle>? decorationStyle;
+  final MixValue<double>? height;
+  final MixValue<double>? decorationThickness;
+  final MixValue<String>? fontFamily;
+  final MixValue<List<String>>? fontFamilyFallback;
+  final MixValue<List<FontFeature>>? fontFeatures;
+  final MixValue<List<FontVariation>>? fontVariations;
 
   // All properties use MixableProperty
-  final MixProp<Paint> foreground;
-  final MixProp<Paint> background;
-  final MixProp<List<Shadow>> shadows;
+  final MixValue<Paint>? foreground;
+  final MixValue<Paint>? background;
+  final MixValue<List<Shadow>>? shadows;
 
-  // Main constructor accepts Mix values
-  factory TextStyleDto({
-    Mix<Color>? color,
-    Mix<Color>? backgroundColor,
-    Mix<double>? fontSize,
-    Mix<FontWeight>? fontWeight,
-    Mix<FontStyle>? fontStyle,
-    Mix<double>? letterSpacing,
-    Mix<String>? debugLabel,
-    Mix<double>? wordSpacing,
-    Mix<TextBaseline>? textBaseline,
-    Mix<List<Shadow>>? shadows,
-    Mix<List<FontFeature>>? fontFeatures,
-    Mix<TextDecoration>? decoration,
-    Mix<Color>? decorationColor,
-    Mix<TextDecorationStyle>? decorationStyle,
-    Mix<List<FontVariation>>? fontVariations,
-    Mix<double>? height,
-    Mix<Paint>? foreground,
-    Mix<Paint>? background,
-    Mix<double>? decorationThickness,
-    Mix<String>? fontFamily,
-    Mix<List<String>>? fontFamilyFallback,
-  }) {
-    return TextStyleDto._(
-      color: MixProp(color),
-      backgroundColor: MixProp(backgroundColor),
-      fontSize: MixProp(fontSize),
-      fontWeight: MixProp(fontWeight),
-      fontStyle: MixProp(fontStyle),
-      letterSpacing: MixProp(letterSpacing),
-      debugLabel: MixProp(debugLabel),
-      wordSpacing: MixProp(wordSpacing),
-      textBaseline: MixProp(textBaseline),
-      decoration: MixProp(decoration),
-      decorationColor: MixProp(decorationColor),
-      decorationStyle: MixProp(decorationStyle),
-      height: MixProp(height),
-      decorationThickness: MixProp(decorationThickness),
-      fontFamily: MixProp(fontFamily),
-      fontFamilyFallback: MixProp(fontFamilyFallback),
-      fontFeatures: MixProp(fontFeatures),
-      fontVariations: MixProp(fontVariations),
-      foreground: MixProp(foreground),
-      background: MixProp(background),
-      shadows: MixProp(shadows),
-    );
-  }
-
-  // Private constructor that accepts MixProp instances
-  const TextStyleDto._({
-    required this.color,
-    required this.backgroundColor,
-    required this.fontSize,
-    required this.fontWeight,
-    required this.fontStyle,
-    required this.letterSpacing,
-    required this.debugLabel,
-    required this.wordSpacing,
-    required this.textBaseline,
-    required this.decoration,
-    required this.decorationColor,
-    required this.decorationStyle,
-    required this.height,
-    required this.decorationThickness,
-    required this.fontFamily,
-    required this.fontFamilyFallback,
-    required this.fontFeatures,
-    required this.fontVariations,
-    required this.foreground,
-    required this.background,
-    required this.shadows,
+  // Main constructor accepts MixProp values directly
+  const TextStyleDto({
+    this.color,
+    this.backgroundColor,
+    this.fontSize,
+    this.fontWeight,
+    this.fontStyle,
+    this.letterSpacing,
+    this.debugLabel,
+    this.wordSpacing,
+    this.textBaseline,
+    this.shadows,
+    this.fontFeatures,
+    this.decoration,
+    this.decorationColor,
+    this.decorationStyle,
+    this.fontVariations,
+    this.height,
+    this.foreground,
+    this.background,
+    this.decorationThickness,
+    this.fontFamily,
+    this.fontFamilyFallback,
   });
 
   @override
   TextStyle resolve(MixContext mix) {
     return TextStyle(
-      color: color.resolve(mix),
-      backgroundColor: backgroundColor.resolve(mix),
-      fontSize: fontSize.resolve(mix),
-      fontWeight: fontWeight.resolve(mix),
-      fontStyle: fontStyle.resolve(mix),
-      letterSpacing: letterSpacing.resolve(mix),
-      wordSpacing: wordSpacing.resolve(mix),
-      textBaseline: textBaseline.resolve(mix),
-      height: height.resolve(mix),
-      foreground: foreground.resolve(mix),
-      background: background.resolve(mix),
-      shadows: shadows.resolve(mix),
-      fontFeatures: fontFeatures.resolve(mix),
-      fontVariations: fontVariations.resolve(mix),
-      decoration: decoration.resolve(mix),
-      decorationColor: decorationColor.resolve(mix),
-      decorationStyle: decorationStyle.resolve(mix),
-      decorationThickness: decorationThickness.resolve(mix),
-      debugLabel: debugLabel.resolve(mix),
-      fontFamily: fontFamily.resolve(mix),
-      fontFamilyFallback: fontFamilyFallback.resolve(mix),
+      color: resolveProp(mix, color),
+      backgroundColor: resolveProp(mix, backgroundColor),
+      fontSize: resolveProp(mix, fontSize),
+      fontWeight: resolveProp(mix, fontWeight),
+      fontStyle: resolveProp(mix, fontStyle),
+      letterSpacing: resolveProp(mix, letterSpacing),
+      wordSpacing: resolveProp(mix, wordSpacing),
+      textBaseline: resolveProp(mix, textBaseline),
+      height: resolveProp(mix, height),
+      foreground: resolveProp(mix, foreground),
+      background: resolveProp(mix, background),
+      shadows: resolveProp(mix, shadows),
+      fontFeatures: resolveProp(mix, fontFeatures),
+      fontVariations: resolveProp(mix, fontVariations),
+      decoration: resolveProp(mix, decoration),
+      decorationColor: resolveProp(mix, decorationColor),
+      decorationStyle: resolveProp(mix, decorationStyle),
+      decorationThickness: resolveProp(mix, decorationThickness),
+      debugLabel: resolveProp(mix, debugLabel),
+      fontFamily: resolveProp(mix, fontFamily),
+      fontFamilyFallback: resolveProp(mix, fontFamilyFallback),
     );
   }
 
@@ -140,28 +90,34 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
   TextStyleDto merge(TextStyleDto? other) {
     if (other is! TextStyleDto) return this;
 
-    return TextStyleDto._(
-      color: color.merge(other.color),
-      backgroundColor: backgroundColor.merge(other.backgroundColor),
-      fontSize: fontSize.merge(other.fontSize),
-      fontWeight: fontWeight.merge(other.fontWeight),
-      fontStyle: fontStyle.merge(other.fontStyle),
-      letterSpacing: letterSpacing.merge(other.letterSpacing),
-      debugLabel: debugLabel.merge(other.debugLabel),
-      wordSpacing: wordSpacing.merge(other.wordSpacing),
-      textBaseline: textBaseline.merge(other.textBaseline),
-      decoration: decoration.merge(other.decoration),
-      decorationColor: decorationColor.merge(other.decorationColor),
-      decorationStyle: decorationStyle.merge(other.decorationStyle),
-      height: height.merge(other.height),
-      decorationThickness: decorationThickness.merge(other.decorationThickness),
-      fontFamily: fontFamily.merge(other.fontFamily),
-      fontFamilyFallback: fontFamilyFallback.merge(other.fontFamilyFallback),
-      fontFeatures: fontFeatures.merge(other.fontFeatures),
-      fontVariations: fontVariations.merge(other.fontVariations),
-      foreground: foreground.merge(other.foreground),
-      background: background.merge(other.background),
-      shadows: shadows.merge(other.shadows),
+    return TextStyleDto(
+      color: mergeProp(color, other.color),
+      backgroundColor: mergeProp(backgroundColor, other.backgroundColor),
+      fontSize: mergeProp(fontSize, other.fontSize),
+      fontWeight: mergeProp(fontWeight, other.fontWeight),
+      fontStyle: mergeProp(fontStyle, other.fontStyle),
+      letterSpacing: mergeProp(letterSpacing, other.letterSpacing),
+      debugLabel: mergeProp(debugLabel, other.debugLabel),
+      wordSpacing: mergeProp(wordSpacing, other.wordSpacing),
+      textBaseline: mergeProp(textBaseline, other.textBaseline),
+      shadows: mergeProp(shadows, other.shadows),
+      fontFeatures: mergeProp(fontFeatures, other.fontFeatures),
+      decoration: mergeProp(decoration, other.decoration),
+      decorationColor: mergeProp(decorationColor, other.decorationColor),
+      decorationStyle: mergeProp(decorationStyle, other.decorationStyle),
+      fontVariations: mergeProp(fontVariations, other.fontVariations),
+      height: mergeProp(height, other.height),
+      foreground: mergeProp(foreground, other.foreground),
+      background: mergeProp(background, other.background),
+      decorationThickness: mergeProp(
+        decorationThickness,
+        other.decorationThickness,
+      ),
+      fontFamily: mergeProp(fontFamily, other.fontFamily),
+      fontFamilyFallback: mergeProp(
+        fontFamilyFallback,
+        other.fontFamilyFallback,
+      ),
     );
   }
 

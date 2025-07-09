@@ -273,11 +273,11 @@ final class ContinuousRectangleBorderDto
 }
 
 final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
-  final MixProp<double> eccentricity;
+  final MixValue<double> eccentricity;
 
   // Main constructor accepts Mix values
   factory CircleBorderDto({BorderSideDto? side, Mix<double>? eccentricity}) {
-    return CircleBorderDto._(side: side, eccentricity: MixProp(eccentricity));
+    return CircleBorderDto._(side: side, eccentricity: MixValue(eccentricity));
   }
 
   // Private constructor that accepts MixProp instances
@@ -291,7 +291,7 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
 
     return CircleBorderDto._(
       side: other.side,
-      eccentricity: const MixProp.empty(),
+      eccentricity: const MixValue.empty(),
     );
   }
 
@@ -341,12 +341,12 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
 }
 
 final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
-  final MixProp<double> points;
-  final MixProp<double> innerRadiusRatio;
-  final MixProp<double> pointRounding;
-  final MixProp<double> valleyRounding;
-  final MixProp<double> rotation;
-  final MixProp<double> squash;
+  final MixValue<double> points;
+  final MixValue<double> innerRadiusRatio;
+  final MixValue<double> pointRounding;
+  final MixValue<double> valleyRounding;
+  final MixValue<double> rotation;
+  final MixValue<double> squash;
 
   // Main constructor accepts Mix values
   factory StarBorderDto({
@@ -360,12 +360,12 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
   }) {
     return StarBorderDto._(
       side: side,
-      points: MixProp(points),
-      innerRadiusRatio: MixProp(innerRadiusRatio),
-      pointRounding: MixProp(pointRounding),
-      valleyRounding: MixProp(valleyRounding),
-      rotation: MixProp(rotation),
-      squash: MixProp(squash),
+      points: MixValue(points),
+      innerRadiusRatio: MixValue(innerRadiusRatio),
+      pointRounding: MixValue(pointRounding),
+      valleyRounding: MixValue(valleyRounding),
+      rotation: MixValue(rotation),
+      squash: MixValue(squash),
     );
   }
 
@@ -384,12 +384,12 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
   StarBorderDto adapt(OutlinedBorderDto other) {
     return StarBorderDto._(
       side: other.side,
-      points: const MixProp.empty(),
-      innerRadiusRatio: const MixProp.empty(),
-      pointRounding: const MixProp.empty(),
-      valleyRounding: const MixProp.empty(),
-      rotation: const MixProp.empty(),
-      squash: const MixProp.empty(),
+      points: const MixValue.empty(),
+      innerRadiusRatio: const MixValue.empty(),
+      pointRounding: const MixValue.empty(),
+      valleyRounding: const MixValue.empty(),
+      rotation: const MixValue.empty(),
+      squash: const MixValue.empty(),
     );
   }
 
@@ -531,14 +531,14 @@ final class LinearBorderDto extends OutlinedBorderDto<LinearBorder> {
 }
 
 final class LinearBorderEdgeDto extends Mix<LinearBorderEdge> {
-  final MixProp<double> size;
-  final MixProp<double> alignment;
+  final MixValue<double> size;
+  final MixValue<double> alignment;
 
   // Main constructor accepts Mix values
   factory LinearBorderEdgeDto({Mix<double>? size, Mix<double>? alignment}) {
     return LinearBorderEdgeDto._(
-      size: MixProp(size),
-      alignment: MixProp(alignment),
+      size: MixValue(size),
+      alignment: MixValue(alignment),
     );
   }
 

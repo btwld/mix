@@ -204,16 +204,16 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional> {
 final class BorderSideDto extends Mix<BorderSide>
     with HasDefaultValue<BorderSide> {
   // Properties use MixProp for cleaner merging - nullable as per user requirement
-  final MixProp<Color> color;
-  final MixProp<double> width;
-  final MixProp<BorderStyle> style;
-  final MixProp<double> strokeAlign;
+  final MixValue<Color> color;
+  final MixValue<double> width;
+  final MixValue<BorderStyle> style;
+  final MixValue<double> strokeAlign;
 
   static const BorderSideDto none = BorderSideDto._(
-    color: MixProp.empty(),
-    width: MixProp.empty(),
-    style: MixProp.empty(),
-    strokeAlign: MixProp.empty(),
+    color: MixValue.empty(),
+    width: MixValue.empty(),
+    style: MixValue.empty(),
+    strokeAlign: MixValue.empty(),
   );
 
   // Main constructor accepts Mix values
@@ -224,10 +224,10 @@ final class BorderSideDto extends Mix<BorderSide>
     Mix<double>? width,
   }) {
     return BorderSideDto._(
-      color: MixProp(color),
-      width: MixProp(width),
-      style: MixProp(style),
-      strokeAlign: MixProp(strokeAlign),
+      color: MixValue(color),
+      width: MixValue(width),
+      style: MixValue(style),
+      strokeAlign: MixValue(strokeAlign),
     );
   }
 

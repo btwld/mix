@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../internal/compare_mixin.dart';
 import 'factory/mix_context.dart';
+import 'mix_value.dart';
 
 // Generic directive for modifying values
 @immutable
@@ -53,6 +54,16 @@ abstract class Mix<T> with EqualityMixin {
 
   /// Merges this mix with another mix, returning a new mix.
   Mix<T> merge(covariant Mix<T>? other);
+
+  @protected
+  V? resolveProp<V>(MixContext context, MixValue<V>? mix) {
+    return mix?.resolve(context);
+  }
+
+  @protected
+  MixValue<V>? mergeProp<V>(MixValue<V>? a, MixValue<V>? b) {
+    return (a?.merge(b) ?? b);
+  }
 }
 
 sealed class ValueMix<T> extends Mix<T> {
@@ -289,6 +300,74 @@ final class EnumMix<T extends Enum> extends ValueMix<T> {
   EnumMix<T> merge(EnumMix<T>? other) {
     return other == null ? this : EnumMix(other.value);
   }
+}
+
+// Specific enum Mix types for better type safety and API clarity
+final class FontStyleMix extends EnumMix<FontStyle> {
+  const FontStyleMix(super.value);
+
+  @override
+  FontStyleMix merge(FontStyleMix? other) {
+    return other == null ? this : FontStyleMix(other.value);
+  }
+}
+
+final class TextDecorationStyleMix extends EnumMix<TextDecorationStyle> {
+  const TextDecorationStyleMix(super.value);
+
+  @override
+  TextDecorationStyleMix merge(TextDecorationStyleMix? other) {
+    return other == null ? this : TextDecorationStyleMix(other.value);
+  }
+}
+
+final class TextBaselineMix extends EnumMix<TextBaseline> {
+  const TextBaselineMix(super.value);
+
+  @override
+  TextBaselineMix merge(TextBaselineMix? other) {
+    return other == null ? this : TextBaselineMix(other.value);
+  }
+}
+
+final class FontVariationMix extends ValueMix<FontVariation> {
+  const FontVariationMix(super.value);
+
+  @override
+  FontVariationMix merge(FontVariationMix? other) {
+    return other == null ? this : FontVariationMix(other.value);
+  }
+}
+
+final class ShadowMix extends ValueMix<Shadow> {
+  const ShadowMix(super.value);
+
+  @override
+  ShadowMix merge(ShadowMix? other) {
+    return other == null ? this : ShadowMix(other.value);
+  }
+}
+
+// Generic ListMix for handling lists of Mix types
+final class ListMix<T> extends Mix<List<T>> {
+  final List<Mix<T>> _mixes;
+
+  const ListMix(this._mixes);
+
+  @override
+  List<T> resolve(MixContext context) {
+    return _mixes.map((mix) => mix.resolve(context)).toList();
+  }
+
+  @override
+  ListMix<T> merge(ListMix<T>? other) {
+    if (other == null) return this;
+
+    return ListMix([..._mixes, ...other._mixes]);
+  }
+
+  @override
+  List<Object?> get props => [_mixes];
 }
 
 // Define a mixin for properties that have default values

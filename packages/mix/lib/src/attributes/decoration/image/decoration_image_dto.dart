@@ -5,14 +5,14 @@ import 'package:mix/mix.dart';
 final class DecorationImageDto extends Mix<DecorationImage>
     with HasDefaultValue<DecorationImage> {
   // Properties use MixProp for cleaner merging
-  final MixProp<ImageProvider> image;
-  final MixProp<BoxFit> fit;
-  final MixProp<AlignmentGeometry> alignment;
-  final MixProp<Rect> centerSlice;
-  final MixProp<ImageRepeat> repeat;
-  final MixProp<FilterQuality> filterQuality;
-  final MixProp<bool> invertColors;
-  final MixProp<bool> isAntiAlias;
+  final MixValue<ImageProvider> image;
+  final MixValue<BoxFit> fit;
+  final MixValue<AlignmentGeometry> alignment;
+  final MixValue<Rect> centerSlice;
+  final MixValue<ImageRepeat> repeat;
+  final MixValue<FilterQuality> filterQuality;
+  final MixValue<bool> invertColors;
+  final MixValue<bool> isAntiAlias;
 
   // Main constructor accepts Mix values
   factory DecorationImageDto({
@@ -26,14 +26,14 @@ final class DecorationImageDto extends Mix<DecorationImage>
     Mix<bool>? isAntiAlias,
   }) {
     return DecorationImageDto._(
-      image: MixProp(image),
-      fit: MixProp(fit),
-      alignment: MixProp(alignment),
-      centerSlice: MixProp(centerSlice),
-      repeat: MixProp(repeat),
-      filterQuality: MixProp(filterQuality),
-      invertColors: MixProp(invertColors),
-      isAntiAlias: MixProp(isAntiAlias),
+      image: MixValue(image),
+      fit: MixValue(fit),
+      alignment: MixValue(alignment),
+      centerSlice: MixValue(centerSlice),
+      repeat: MixValue(repeat),
+      filterQuality: MixValue(filterQuality),
+      invertColors: MixValue(invertColors),
+      isAntiAlias: MixValue(isAntiAlias),
     );
   }
 
@@ -115,4 +115,3 @@ final class DecorationImageDto extends Mix<DecorationImage>
     isAntiAlias,
   ];
 }
-

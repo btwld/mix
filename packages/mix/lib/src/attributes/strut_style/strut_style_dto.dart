@@ -4,21 +4,20 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-import '../../core/mix_property.dart';
 import '../../internal/diagnostic_properties_builder_ext.dart';
 
 /// A Data transfer object that represents a [StrutStyle] value.
 @immutable
 class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
   // Properties use MixableProperty for cleaner merging
-  final MixProp<String> fontFamily;
-  final MixProp<List<String>> fontFamilyFallback;
-  final MixProp<double> fontSize;
-  final MixProp<FontWeight> fontWeight;
-  final MixProp<FontStyle> fontStyle;
-  final MixProp<double> height;
-  final MixProp<double> leading;
-  final MixProp<bool> forceStrutHeight;
+  final MixValue<String> fontFamily;
+  final MixValue<List<String>> fontFamilyFallback;
+  final MixValue<double> fontSize;
+  final MixValue<FontWeight> fontWeight;
+  final MixValue<FontStyle> fontStyle;
+  final MixValue<double> height;
+  final MixValue<double> leading;
+  final MixValue<bool> forceStrutHeight;
 
   // Main constructor accepts Mix values
   factory StrutStyleDto({
@@ -32,14 +31,14 @@ class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
     Mix<bool>? forceStrutHeight,
   }) {
     return StrutStyleDto._(
-      fontFamily: MixProp(fontFamily),
-      fontFamilyFallback: MixProp(fontFamilyFallback),
-      fontSize: MixProp(fontSize),
-      fontWeight: MixProp(fontWeight),
-      fontStyle: MixProp(fontStyle),
-      height: MixProp(height),
-      leading: MixProp(leading),
-      forceStrutHeight: MixProp(forceStrutHeight),
+      fontFamily: MixValue(fontFamily),
+      fontFamilyFallback: MixValue(fontFamilyFallback),
+      fontSize: MixValue(fontSize),
+      fontWeight: MixValue(fontWeight),
+      fontStyle: MixValue(fontStyle),
+      height: MixValue(height),
+      leading: MixValue(leading),
+      forceStrutHeight: MixValue(forceStrutHeight),
     );
   }
 

@@ -3,13 +3,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../../core/mix_property.dart';
-
 sealed class BaseShadowDto<T extends Shadow> extends Mix<T> {
   // Properties use MixableProperty for cleaner merging
-  final MixProp<Color> color;
-  final MixProp<Offset> offset;
-  final MixProp<double> blurRadius;
+  final MixValue<Color> color;
+  final MixValue<Offset> offset;
+  final MixValue<double> blurRadius;
 
   const BaseShadowDto({
     required this.blurRadius,
@@ -30,9 +28,9 @@ class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
     Mix<Offset>? offset,
   }) {
     return ShadowDto._(
-      blurRadius: MixProp(blurRadius),
-      color: MixProp(color),
-      offset: MixProp(offset),
+      blurRadius: MixValue(blurRadius),
+      color: MixValue(color),
+      offset: MixValue(offset),
     );
   }
 
@@ -96,7 +94,7 @@ class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
 /// merge and combining behavior. It allows to be merged, and resolved to a `[BoxShadow]
 class BoxShadowDto extends BaseShadowDto<BoxShadow>
     with HasDefaultValue<BoxShadow> {
-  final MixProp<double> spreadRadius;
+  final MixValue<double> spreadRadius;
 
   // Main constructor accepts Mix<T>? values
   factory BoxShadowDto({
@@ -106,10 +104,10 @@ class BoxShadowDto extends BaseShadowDto<BoxShadow>
     Mix<double>? spreadRadius,
   }) {
     return BoxShadowDto._(
-      color: MixProp(color),
-      offset: MixProp(offset),
-      blurRadius: MixProp(blurRadius),
-      spreadRadius: MixProp(spreadRadius),
+      color: MixValue(color),
+      offset: MixValue(offset),
+      blurRadius: MixValue(blurRadius),
+      spreadRadius: MixValue(spreadRadius),
     );
   }
 
