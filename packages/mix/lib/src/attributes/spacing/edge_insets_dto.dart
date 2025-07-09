@@ -11,7 +11,7 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
   final SpaceDto? bottom;
 
   @protected
-  const EdgeInsetsGeometryDto.raw({this.top, this.bottom});
+  const EdgeInsetsGeometryDto._({this.top, this.bottom});
 
   static EdgeInsetsGeometryDto only({
     double? top,
@@ -30,7 +30,7 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
       'Cannot provide both directional and non-directional values',
     );
     if (start != null || end != null) {
-      return EdgeInsetsDirectionalDto.raw(
+      return EdgeInsetsDirectionalDto._(
         top: top != null ? SpaceDto.value(top) : null,
         bottom: bottom != null ? SpaceDto.value(bottom) : null,
         start: start != null ? SpaceDto.value(start) : null,
@@ -38,7 +38,7 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
       );
     }
 
-    return EdgeInsetsDto.raw(
+    return EdgeInsetsDto._(
       top: top != null ? SpaceDto.value(top) : null,
       bottom: bottom != null ? SpaceDto.value(bottom) : null,
       left: left != null ? SpaceDto.value(left) : null,
@@ -46,22 +46,6 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
     );
   }
 
-  // Factory from EdgeInsetsGeometry
-  static EdgeInsetsGeometryDto from(EdgeInsetsGeometry geometry) {
-    return switch (geometry) {
-      EdgeInsets() => EdgeInsetsDto.from(geometry),
-      EdgeInsetsDirectional() => EdgeInsetsDirectionalDto.from(geometry),
-      _ => throw ArgumentError(
-        'Unsupported EdgeInsetsGeometry type: ${geometry.runtimeType}',
-      ),
-    };
-  }
-
-  /// Creates an EdgeInsetsGeometryDto from a nullable EdgeInsetsGeometry value
-  /// Returns null if the value is null, otherwise uses EdgeInsetsGeometryDto.from
-  static EdgeInsetsGeometryDto? maybeFrom(EdgeInsetsGeometry? value) {
-    return value != null ? EdgeInsetsGeometryDto.from(value) : null;
-  }
 
   static EdgeInsetsGeometryDto? tryToMerge(
     EdgeInsetsGeometryDto? a,
@@ -88,7 +72,7 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
   EdgeInsetsDto _asEdgeInset() {
     if (this is EdgeInsetsDto) return this as EdgeInsetsDto;
 
-    return EdgeInsetsDto.raw(top: top, bottom: bottom);
+    return EdgeInsetsDto._(top: top, bottom: bottom);
   }
 
   EdgeInsetsDirectionalDto _asEdgeInsetDirectional() {
@@ -96,7 +80,7 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
       return this as EdgeInsetsDirectionalDto;
     }
 
-    return EdgeInsetsDirectionalDto.raw(top: top, bottom: bottom);
+    return EdgeInsetsDirectionalDto._(top: top, bottom: bottom);
   }
 
   @override
@@ -108,26 +92,26 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
   final SpaceDto? right;
 
   @protected
-  const EdgeInsetsDto.raw({super.top, super.bottom, this.left, this.right})
-    : super.raw();
+  const EdgeInsetsDto._({super.top, super.bottom, this.left, this.right})
+    : super._();
 
-  // Unnamed constructor for backward compatibility
+  // Main constructor accepts SpaceDto values
   factory EdgeInsetsDto({
-    double? top,
-    double? bottom,
-    double? left,
-    double? right,
+    SpaceDto? top,
+    SpaceDto? bottom,
+    SpaceDto? left,
+    SpaceDto? right,
   }) {
-    return EdgeInsetsDto.raw(
-      top: top != null ? SpaceDto.value(top) : null,
-      bottom: bottom != null ? SpaceDto.value(bottom) : null,
-      left: left != null ? SpaceDto.value(left) : null,
-      right: right != null ? SpaceDto.value(right) : null,
+    return EdgeInsetsDto._(
+      top: top,
+      bottom: bottom,
+      left: left,
+      right: right,
     );
   }
 
   EdgeInsetsDto.all(double value)
-    : this.raw(
+    : this._(
         top: SpaceDto.value(value),
         bottom: SpaceDto.value(value),
         left: SpaceDto.value(value),
@@ -135,22 +119,6 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
       );
 
   EdgeInsetsDto.none() : this.all(0);
-
-  // Factory from EdgeInsets
-  factory EdgeInsetsDto.from(EdgeInsets insets) {
-    return EdgeInsetsDto(
-      top: insets.top,
-      bottom: insets.bottom,
-      left: insets.left,
-      right: insets.right,
-    );
-  }
-
-  /// Creates an EdgeInsetsDto from a nullable EdgeInsets value
-  /// Returns null if the value is null, otherwise uses EdgeInsetsDto.from
-  static EdgeInsetsDto? maybeFrom(EdgeInsets? value) {
-    return value != null ? EdgeInsetsDto.from(value) : null;
-  }
 
   @override
   EdgeInsets resolve(MixContext mix) {
@@ -166,7 +134,7 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
   EdgeInsetsDto merge(EdgeInsetsDto? other) {
     if (other == null) return this;
 
-    return EdgeInsetsDto.raw(
+    return EdgeInsetsDto._(
       top: top?.merge(other.top) ?? other.top,
       bottom: bottom?.merge(other.bottom) ?? other.bottom,
       left: other.left ?? left,
@@ -184,30 +152,30 @@ final class EdgeInsetsDirectionalDto
   final SpaceDto? end;
 
   @protected
-  const EdgeInsetsDirectionalDto.raw({
+  const EdgeInsetsDirectionalDto._({
     super.top,
     super.bottom,
     this.start,
     this.end,
-  }) : super.raw();
+  }) : super._();
 
-  // Unnamed constructor for backward compatibility
+  // Main constructor accepts SpaceDto values
   factory EdgeInsetsDirectionalDto({
-    double? top,
-    double? bottom,
-    double? start,
-    double? end,
+    SpaceDto? top,
+    SpaceDto? bottom,
+    SpaceDto? start,
+    SpaceDto? end,
   }) {
-    return EdgeInsetsDirectionalDto.raw(
-      top: top != null ? SpaceDto.value(top) : null,
-      bottom: bottom != null ? SpaceDto.value(bottom) : null,
-      start: start != null ? SpaceDto.value(start) : null,
-      end: end != null ? SpaceDto.value(end) : null,
+    return EdgeInsetsDirectionalDto._(
+      top: top,
+      bottom: bottom,
+      start: start,
+      end: end,
     );
   }
 
   EdgeInsetsDirectionalDto.all(double value)
-    : this.raw(
+    : this._(
         top: SpaceDto.value(value),
         bottom: SpaceDto.value(value),
         start: SpaceDto.value(value),
@@ -215,22 +183,6 @@ final class EdgeInsetsDirectionalDto
       );
 
   EdgeInsetsDirectionalDto.none() : this.all(0);
-
-  // Factory from EdgeInsetsDirectional
-  factory EdgeInsetsDirectionalDto.from(EdgeInsetsDirectional insets) {
-    return EdgeInsetsDirectionalDto(
-      top: insets.top,
-      bottom: insets.bottom,
-      start: insets.start,
-      end: insets.end,
-    );
-  }
-
-  /// Creates an EdgeInsetsDirectionalDto from a nullable EdgeInsetsDirectional value
-  /// Returns null if the value is null, otherwise uses EdgeInsetsDirectionalDto.from
-  static EdgeInsetsDirectionalDto? maybeFrom(EdgeInsetsDirectional? value) {
-    return value != null ? EdgeInsetsDirectionalDto.from(value) : null;
-  }
 
   @override
   EdgeInsetsDirectional resolve(MixContext mix) {
@@ -246,7 +198,7 @@ final class EdgeInsetsDirectionalDto
   EdgeInsetsDirectionalDto merge(EdgeInsetsDirectionalDto? other) {
     if (other == null) return this;
 
-    return EdgeInsetsDirectionalDto.raw(
+    return EdgeInsetsDirectionalDto._(
       top: top?.merge(other.top) ?? other.top,
       bottom: bottom?.merge(other.bottom) ?? other.bottom,
       start: start?.merge(other.start) ?? other.start,

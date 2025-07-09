@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import 'element.dart';
 import 'factory/mix_context.dart';
+import 'mix_element.dart';
 
 typedef Modifier<T> = T Function(T value);
 

@@ -2,7 +2,7 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../../core/element.dart';
+import '../../core/mix_element.dart';
 import '../../core/utility.dart';
 
 /// {@template vertical_direction_utility}
@@ -310,7 +310,8 @@ final class MainAxisSizeUtility<T extends StyleElement>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [BoxFit] values.
 /// {@endtemplate}
-final class BoxFitUtility<T extends StyleElement> extends MixUtility<T, BoxFit> {
+final class BoxFitUtility<T extends StyleElement>
+    extends MixUtility<T, BoxFit> {
   const BoxFitUtility(super.builder);
 
   /// Creates a [StyleElement] instance with the specified BoxFit value.

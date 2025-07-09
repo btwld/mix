@@ -3,11 +3,13 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
+import '../../core/mix_property.dart';
+
 sealed class BaseShadowDto<T extends Shadow> extends Mix<T> {
   // Properties use MixableProperty for cleaner merging
-  final MixProperty<Color> color;
-  final MixProperty<Offset> offset;
-  final MixProperty<double> blurRadius;
+  final MixProp<Color> color;
+  final MixProp<Offset> offset;
+  final MixProp<double> blurRadius;
 
   const BaseShadowDto({
     required this.blurRadius,
@@ -21,36 +23,25 @@ sealed class BaseShadowDto<T extends Shadow> extends Mix<T> {
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a [Shadow]
 class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
-  // Main constructor accepts real values
-  factory ShadowDto({double? blurRadius, Color? color, Offset? offset}) {
-    return ShadowDto.raw(
-      blurRadius: MixProperty.prop(blurRadius),
-      color: MixProperty.prop(color),
-      offset: MixProperty.prop(offset),
+  // Main constructor accepts Mix<T>? values
+  factory ShadowDto({
+    Mix<double>? blurRadius,
+    Mix<Color>? color,
+    Mix<Offset>? offset,
+  }) {
+    return ShadowDto._(
+      blurRadius: MixProp(blurRadius),
+      color: MixProp(color),
+      offset: MixProp(offset),
     );
   }
 
-  // Factory that accepts MixableProperty instances
-  const ShadowDto.raw({
+  // Private constructor that accepts MixableProperty instances
+  const ShadowDto._({
     required super.blurRadius,
     required super.color,
     required super.offset,
   });
-
-  // Factory from Shadow
-  factory ShadowDto.from(Shadow shadow) {
-    return ShadowDto(
-      blurRadius: shadow.blurRadius,
-      color: shadow.color,
-      offset: shadow.offset,
-    );
-  }
-
-  /// Creates a ShadowDto from a nullable Shadow value
-  /// Returns null if the value is null, otherwise uses ShadowDto.from
-  static ShadowDto? maybeFrom(Shadow? value) {
-    return value != null ? ShadowDto.from(value) : null;
-  }
 
   /// Resolves to [Shadow] using the provided [MixContext].
   ///
@@ -81,7 +72,7 @@ class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
   ShadowDto merge(ShadowDto? other) {
     if (other == null) return this;
 
-    return ShadowDto.raw(
+    return ShadowDto._(
       blurRadius: blurRadius.merge(other.blurRadius),
       color: color.merge(other.color),
       offset: offset.merge(other.offset),
@@ -105,46 +96,30 @@ class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
 /// merge and combining behavior. It allows to be merged, and resolved to a `[BoxShadow]
 class BoxShadowDto extends BaseShadowDto<BoxShadow>
     with HasDefaultValue<BoxShadow> {
-  final MixProperty<double> spreadRadius;
+  final MixProp<double> spreadRadius;
 
-  // Main constructor accepts real values
+  // Main constructor accepts Mix<T>? values
   factory BoxShadowDto({
-    Color? color,
-    Offset? offset,
-    double? blurRadius,
-    double? spreadRadius,
+    Mix<Color>? color,
+    Mix<Offset>? offset,
+    Mix<double>? blurRadius,
+    Mix<double>? spreadRadius,
   }) {
-    return BoxShadowDto.raw(
-      color: MixProperty.prop(color),
-      offset: MixProperty.prop(offset),
-      blurRadius: MixProperty.prop(blurRadius),
-      spreadRadius: MixProperty.prop(spreadRadius),
+    return BoxShadowDto._(
+      color: MixProp(color),
+      offset: MixProp(offset),
+      blurRadius: MixProp(blurRadius),
+      spreadRadius: MixProp(spreadRadius),
     );
   }
 
-  // Factory that accepts MixableProperty instances
-  const BoxShadowDto.raw({
+  // Private constructor that accepts MixableProperty instances
+  const BoxShadowDto._({
     required super.color,
     required super.offset,
     required super.blurRadius,
     required this.spreadRadius,
   });
-
-  // Factory from BoxShadow
-  factory BoxShadowDto.from(BoxShadow shadow) {
-    return BoxShadowDto(
-      color: shadow.color,
-      offset: shadow.offset,
-      blurRadius: shadow.blurRadius,
-      spreadRadius: shadow.spreadRadius,
-    );
-  }
-
-  /// Creates a BoxShadowDto from a nullable BoxShadow value
-  /// Returns null if the value is null, otherwise uses BoxShadowDto.from
-  static BoxShadowDto? maybeFrom(BoxShadow? value) {
-    return value != null ? BoxShadowDto.from(value) : null;
-  }
 
   /// Resolves to [BoxShadow] using the provided [MixContext].
   ///
@@ -176,7 +151,7 @@ class BoxShadowDto extends BaseShadowDto<BoxShadow>
   BoxShadowDto merge(BoxShadowDto? other) {
     if (other == null) return this;
 
-    return BoxShadowDto.raw(
+    return BoxShadowDto._(
       color: color.merge(other.color),
       offset: offset.merge(other.offset),
       blurRadius: blurRadius.merge(other.blurRadius),

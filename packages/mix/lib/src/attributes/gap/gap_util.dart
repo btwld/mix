@@ -1,4 +1,4 @@
-import '../../core/element.dart';
+import '../../core/mix_element.dart';
 import '../../core/utility.dart';
 import '../../theme/tokens/mix_token.dart';
 import 'space_dto.dart';

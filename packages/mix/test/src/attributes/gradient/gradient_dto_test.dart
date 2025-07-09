@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../../helpers/custom_matchers.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
@@ -11,14 +12,14 @@ void main() {
       const linearGradient = LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: const [Colors.red, Colors.blue],
+        colors: [Colors.red, Colors.blue],
         stops: [0.0, 1.0],
       );
 
       const radialGradient = RadialGradient(
         center: Alignment.center,
         radius: 0.5,
-        colors: const [Colors.red, Colors.blue],
+        colors: [Colors.red, Colors.blue],
         stops: [0.0, 1.0],
       );
 
@@ -26,7 +27,7 @@ void main() {
         center: Alignment.center,
         startAngle: 0.0,
         endAngle: 1.0,
-        colors: const [Colors.red, Colors.blue],
+        colors: [Colors.red, Colors.blue],
         stops: [0.0, 1.0],
       );
 
@@ -38,16 +39,10 @@ void main() {
       expect(radialGradientDto, isA<RadialGradientDto>());
       expect(sweepGradientDto, isA<SweepGradientDto>());
 
-      final resolvedLinearGradient = linearGradientDto.resolve(EmptyMixData);
-      final resolvedRadialGradient = radialGradientDto.resolve(EmptyMixData);
-      final resolvedSweepGradient = sweepGradientDto.resolve(EmptyMixData);
-
-      expect(resolvedLinearGradient, isA<LinearGradient>());
-      expect(resolvedLinearGradient, linearGradient);
-      expect(resolvedRadialGradient, isA<RadialGradient>());
-      expect(resolvedRadialGradient, radialGradient);
-      expect(resolvedSweepGradient, isA<SweepGradient>());
-      expect(resolvedSweepGradient, sweepGradient);
+      // MIGRATED: Clean assertions using custom matchers
+      expect(linearGradientDto, resolvesTo(linearGradient));
+      expect(radialGradientDto, resolvesTo(radialGradient));
+      expect(sweepGradientDto, resolvesTo(sweepGradient));
     });
   });
 
@@ -73,7 +68,7 @@ void main() {
         const linearGradient = LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: const [Colors.red, Colors.blue],
+          colors: [Colors.red, Colors.blue],
           stops: [0.0, 1.0],
         );
         final gradientDto = LinearGradientDto.maybeFrom(linearGradient)!;
@@ -108,10 +103,7 @@ void main() {
       final gradientDto2 = LinearGradientDto(
         begin: Alignment.centerLeft,
         end: Alignment.centerRight,
-        colors: const [
-          Colors.green,
-          Colors.yellow,
-        ],
+        colors: const [Colors.green, Colors.yellow],
         stops: const [0.25, 0.75],
       );
 
@@ -150,10 +142,7 @@ void main() {
       final gradientDto2 = LinearGradientDto(
         begin: Alignment.centerLeft,
         end: Alignment.centerRight,
-        colors: const [
-          Colors.green,
-          Colors.yellow,
-        ],
+        colors: const [Colors.green, Colors.yellow],
         stops: const [0.25, 0.75],
       );
 
@@ -184,7 +173,7 @@ void main() {
         const radialGradient = RadialGradient(
           center: Alignment.center,
           radius: 0.5,
-          colors: const [Colors.red, Colors.blue],
+          colors: [Colors.red, Colors.blue],
           stops: [0.0, 1.0],
         );
         final gradientDto = RadialGradientDto.maybeFrom(radialGradient)!;
@@ -219,10 +208,7 @@ void main() {
       final gradientDto2 = RadialGradientDto(
         center: Alignment.centerLeft,
         radius: 0.75,
-        colors: const [
-          Colors.green,
-          Colors.yellow,
-        ],
+        colors: const [Colors.green, Colors.yellow],
         stops: const [0.25, 0.75],
       );
 
@@ -261,10 +247,7 @@ void main() {
       final gradientDto2 = RadialGradientDto(
         center: Alignment.centerLeft,
         radius: 0.75,
-        colors: const [
-          Colors.green,
-          Colors.yellow,
-        ],
+        colors: const [Colors.green, Colors.yellow],
         stops: const [0.25, 0.75],
       );
 
@@ -297,7 +280,7 @@ void main() {
           center: Alignment.center,
           startAngle: 0.0,
           endAngle: 1.0,
-          colors: const [Colors.red, Colors.blue],
+          colors: [Colors.red, Colors.blue],
           stops: [0.0, 1.0],
         );
         final gradientDto = SweepGradientDto.maybeFrom(sweepGradient)!;
@@ -337,10 +320,7 @@ void main() {
         center: Alignment.centerLeft,
         startAngle: 0.25,
         endAngle: 0.75,
-        colors: const [
-          Colors.green,
-          Colors.yellow,
-        ],
+        colors: const [Colors.green, Colors.yellow],
         stops: const [0.25, 0.75],
       );
 
@@ -386,10 +366,7 @@ void main() {
         center: Alignment.centerLeft,
         startAngle: 0.25,
         endAngle: 0.75,
-        colors: const [
-          Colors.green,
-          Colors.yellow,
-        ],
+        colors: const [Colors.green, Colors.yellow],
         stops: const [0.25, 0.75],
       );
 

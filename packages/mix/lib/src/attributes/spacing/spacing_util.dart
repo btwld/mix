@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/element.dart';
+import '../../core/mix_element.dart';
 import '../../core/utility.dart';
 import '../../theme/tokens/mix_token.dart';
 import '../gap/space_dto.dart';
@@ -30,7 +30,7 @@ final class EdgeInsetsGeometryUtility<T extends StyleElement>
   late final right = SpacingSideUtility((v) => onlyDto(right: v));
 
   EdgeInsetsGeometryUtility(super.builder)
-    : super(valueToDto: (value) => EdgeInsetsGeometryDto.from(value));
+    : super(valueToDto: (value) => _edgeInsetsGeometryToDto(value));
 
   T call(double p1, [double? p2, double? p3, double? p4]) {
     return only(
@@ -59,7 +59,7 @@ final class EdgeInsetsGeometryUtility<T extends StyleElement>
     );
     if (start != null || end != null) {
       return builder(
-        EdgeInsetsDirectionalDto.raw(
+        EdgeInsetsDirectionalDto(
           top: top,
           bottom: bottom,
           start: start,
@@ -69,12 +69,7 @@ final class EdgeInsetsGeometryUtility<T extends StyleElement>
     }
 
     return builder(
-      EdgeInsetsDto.raw(
-        top: top,
-        bottom: bottom,
-        left: left,
-        right: right,
-      ),
+      EdgeInsetsDto(top: top, bottom: bottom, left: left, right: right),
     );
   }
 
@@ -120,16 +115,11 @@ final class SpacingDirectionalUtility<T extends StyleElement>
   late final horizontal = SpacingSideUtility((v) => onlyDto(start: v, end: v));
 
   SpacingDirectionalUtility(super.builder)
-    : super(valueToDto: (value) => EdgeInsetsGeometryDto.from(value));
+    : super(valueToDto: (value) => _edgeInsetsGeometryToDto(value));
 
-  T onlyDto({
-    SpaceDto? top,
-    SpaceDto? bottom,
-    SpaceDto? start,
-    SpaceDto? end,
-  }) {
+  T onlyDto({SpaceDto? top, SpaceDto? bottom, SpaceDto? start, SpaceDto? end}) {
     return builder(
-      EdgeInsetsDirectionalDto.raw(
+      EdgeInsetsDirectionalDto(
         top: top,
         bottom: bottom,
         start: start,
@@ -161,7 +151,8 @@ final class SpacingDirectionalUtility<T extends StyleElement>
 }
 
 @immutable
-class SpacingSideUtility<T extends StyleElement> extends MixUtility<T, SpaceDto> {
+class SpacingSideUtility<T extends StyleElement>
+    extends MixUtility<T, SpaceDto> {
   const SpacingSideUtility(super.builder);
 
   T call(double value) => builder(SpaceDto.value(value));
@@ -174,4 +165,25 @@ class SpacingSideUtility<T extends StyleElement> extends MixUtility<T, SpaceDto>
   T token(MixableToken<double> token) {
     return builder(SpaceDto.token(token));
   }
+}
+
+// Helper function
+EdgeInsetsGeometryDto _edgeInsetsGeometryToDto(EdgeInsetsGeometry geometry) {
+  return switch (geometry) {
+    EdgeInsets insets => EdgeInsetsDto(
+      top: insets.top != 0 ? SpaceDto.value(insets.top) : null,
+      bottom: insets.bottom != 0 ? SpaceDto.value(insets.bottom) : null,
+      left: insets.left != 0 ? SpaceDto.value(insets.left) : null,
+      right: insets.right != 0 ? SpaceDto.value(insets.right) : null,
+    ),
+    EdgeInsetsDirectional insets => EdgeInsetsDirectionalDto(
+      top: insets.top != 0 ? SpaceDto.value(insets.top) : null,
+      bottom: insets.bottom != 0 ? SpaceDto.value(insets.bottom) : null,
+      start: insets.start != 0 ? SpaceDto.value(insets.start) : null,
+      end: insets.end != 0 ? SpaceDto.value(insets.end) : null,
+    ),
+    _ => throw ArgumentError(
+      'Unsupported EdgeInsetsGeometry type: ${geometry.runtimeType}',
+    ),
+  };
 }

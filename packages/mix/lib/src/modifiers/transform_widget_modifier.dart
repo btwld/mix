@@ -5,9 +5,9 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../core/element.dart';
 import '../core/factory/mix_context.dart';
 import '../core/helpers.dart';
+import '../core/mix_element.dart';
 import '../core/modifier.dart';
 import '../core/utility.dart';
 

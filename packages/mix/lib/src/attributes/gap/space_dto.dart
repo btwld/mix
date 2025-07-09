@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
-import '../../core/element.dart';
 import '../../core/factory/mix_context.dart';
+import '../../core/mix_element.dart';
 import '../../theme/tokens/mix_token.dart';
 
 @immutable
@@ -18,12 +18,6 @@ sealed class SpaceDto extends Mix<double> with Diagnosticable {
   const factory SpaceDto.value(double value) = _ValueSpaceDto;
   const factory SpaceDto.token(MixableToken<double> token) = _TokenSpaceDto;
 
-  /// Creates a SpaceDto from a nullable double value
-  /// Returns null if the value is null, otherwise returns a SpaceDto.value
-  static SpaceDto? maybeFrom(double? value) {
-    return value != null ? SpaceDto.value(value) : null;
-  }
-
   @override
   SpaceDto merge(SpaceDto? other) => other ?? this;
 }
@@ -31,7 +25,6 @@ sealed class SpaceDto extends Mix<double> with Diagnosticable {
 // Private implementations
 @immutable
 class _ValueSpaceDto extends SpaceDto {
-  @override
   final double value;
 
   const _ValueSpaceDto(this.value) : super._();

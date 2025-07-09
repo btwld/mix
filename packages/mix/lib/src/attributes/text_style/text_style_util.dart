@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/element.dart';
+import '../../core/factory/mix_context.dart';
+import '../../core/mix_element.dart';
 import '../../core/utility.dart';
 import '../../theme/tokens/mix_token.dart';
 import '../color/color_util.dart';
@@ -13,16 +14,16 @@ final class TextStyleUtility<T extends StyleElement>
   late final color = ColorUtility((v) => only(color: v));
 
   late final fontWeight = FontWeightUtility(
-    (v) => only(fontWeight: Mix.value(v)),
+    (v) => only(fontWeight: FontWeightMix(v)),
   );
 
-  late final fontStyle = FontStyleUtility((v) => only(fontStyle: Mix.value(v)));
+  late final fontStyle = FontStyleUtility((v) => only(fontStyle: EnumMix(v)));
 
   late final decoration = TextDecorationUtility(
-    (v) => only(decoration: Mix.value(v)),
+    (v) => only(decoration: TextDecorationMix(v)),
   );
 
-  late final fontSize = FontSizeUtility((v) => only(fontSize: Mix.value(v)));
+  late final fontSize = FontSizeUtility((v) => only(fontSize: DoubleMix(v)));
 
   late final backgroundColor = ColorUtility((v) => only(backgroundColor: v));
 
@@ -33,19 +34,41 @@ final class TextStyleUtility<T extends StyleElement>
   // For now, use the shadows() method directly on the utility
 
   late final decorationStyle = TextDecorationStyleUtility(
-    (v) => only(decorationStyle: Mix.value(v)),
+    (v) => only(decorationStyle: EnumMix(v)),
   );
 
   late final textBaseline = TextBaselineUtility(
-    (v) => only(textBaseline: Mix.value(v)),
+    (v) => only(textBaseline: EnumMix(v)),
   );
 
   late final fontFamily = FontFamilyUtility(
-    (v) => only(fontFamily: Mix.value(v)),
+    (v) => only(fontFamily: StringMix(v)),
   );
 
   TextStyleUtility(super.builder)
-    : super(valueToDto: (v) => TextStyleDto.from(v));
+    : super(valueToDto: (v) => TextStyleDto(
+          color: v.color != null ? ColorMix(v.color!) : null,
+          backgroundColor: v.backgroundColor != null ? ColorMix(v.backgroundColor!) : null,
+          fontSize: v.fontSize != null ? DoubleMix(v.fontSize!) : null,
+          fontWeight: v.fontWeight != null ? FontWeightMix(v.fontWeight!) : null,
+          fontStyle: v.fontStyle != null ? EnumMix(v.fontStyle!) : null,
+          letterSpacing: v.letterSpacing != null ? DoubleMix(v.letterSpacing!) : null,
+          debugLabel: v.debugLabel != null ? StringMix(v.debugLabel!) : null,
+          wordSpacing: v.wordSpacing != null ? DoubleMix(v.wordSpacing!) : null,
+          textBaseline: v.textBaseline != null ? EnumMix(v.textBaseline!) : null,
+          decoration: v.decoration != null ? TextDecorationMix(v.decoration!) : null,
+          decorationColor: v.decorationColor != null ? ColorMix(v.decorationColor!) : null,
+          decorationStyle: v.decorationStyle != null ? EnumMix(v.decorationStyle!) : null,
+          height: v.height != null ? DoubleMix(v.height!) : null,
+          decorationThickness: v.decorationThickness != null ? DoubleMix(v.decorationThickness!) : null,
+          fontFamily: v.fontFamily != null ? StringMix(v.fontFamily!) : null,
+          fontFamilyFallback: v.fontFamilyFallback != null ? _ListMix(v.fontFamilyFallback!) : null,
+          fontFeatures: v.fontFeatures != null ? _ListMix(v.fontFeatures!) : null,
+          fontVariations: v.fontVariations != null ? _ListMix(v.fontVariations!) : null,
+          foreground: v.foreground != null ? PaintMix(v.foreground!) : null,
+          background: v.background != null ? PaintMix(v.background!) : null,
+          shadows: v.shadows != null ? _ListMix(v.shadows!) : null,
+        ));
 
   T token(MixableToken<TextStyle> token) => throw UnimplementedError(
     'Token support needs implementation for whole TextStyle',
@@ -104,27 +127,27 @@ final class TextStyleUtility<T extends StyleElement>
   }) {
     return builder(
       TextStyleDto(
-        color: color,
-        backgroundColor: backgroundColor,
-        fontSize: fontSize,
-        fontWeight: fontWeight,
-        fontStyle: fontStyle,
-        letterSpacing: letterSpacing,
-        debugLabel: debugLabel,
-        wordSpacing: wordSpacing,
-        textBaseline: textBaseline,
-        shadows: shadows?.toList(),
-        fontFeatures: fontFeatures?.toList(),
-        decoration: decoration,
-        decorationColor: decorationColor,
-        decorationStyle: decorationStyle,
-        fontVariations: fontVariations?.toList(),
-        height: height,
-        foreground: foreground,
-        background: background,
-        decorationThickness: decorationThickness,
-        fontFamily: fontFamily,
-        fontFamilyFallback: fontFamilyFallback?.toList(),
+        color: color != null ? ColorMix(color) : null,
+        backgroundColor: backgroundColor != null ? ColorMix(backgroundColor) : null,
+        fontSize: fontSize != null ? DoubleMix(fontSize) : null,
+        fontWeight: fontWeight != null ? FontWeightMix(fontWeight) : null,
+        fontStyle: fontStyle != null ? EnumMix(fontStyle) : null,
+        letterSpacing: letterSpacing != null ? DoubleMix(letterSpacing) : null,
+        debugLabel: debugLabel != null ? StringMix(debugLabel) : null,
+        wordSpacing: wordSpacing != null ? DoubleMix(wordSpacing) : null,
+        textBaseline: textBaseline != null ? EnumMix(textBaseline) : null,
+        shadows: shadows != null ? _ListMix(shadows.toList()) : null,
+        fontFeatures: fontFeatures != null ? _ListMix(fontFeatures.toList()) : null,
+        decoration: decoration != null ? TextDecorationMix(decoration) : null,
+        decorationColor: decorationColor != null ? ColorMix(decorationColor) : null,
+        decorationStyle: decorationStyle != null ? EnumMix(decorationStyle) : null,
+        fontVariations: fontVariations != null ? _ListMix(fontVariations.toList()) : null,
+        height: height != null ? DoubleMix(height) : null,
+        foreground: foreground != null ? PaintMix(foreground) : null,
+        background: background != null ? PaintMix(background) : null,
+        decorationThickness: decorationThickness != null ? DoubleMix(decorationThickness) : null,
+        fontFamily: fontFamily != null ? StringMix(fontFamily) : null,
+        fontFamilyFallback: fontFamilyFallback != null ? _ListMix(fontFamilyFallback.toList()) : null,
       ),
     );
   }
@@ -142,47 +165,61 @@ final class TextStyleUtility<T extends StyleElement>
     Mix<Color>? decorationColor,
     Mix<TextDecorationStyle>? decorationStyle,
     Mix<TextBaseline>? textBaseline,
-    List<Mix<FontVariation>>? fontVariations,
-    List<Mix<Shadow>>? shadows,
-    List<Mix<FontFeature>>? fontFeatures,
+    Mix<List<FontVariation>>? fontVariations,
+    Mix<List<Shadow>>? shadows,
+    Mix<List<FontFeature>>? fontFeatures,
     Mix<Paint>? foreground,
     Mix<Paint>? background,
     Mix<double>? decorationThickness,
-    List<Mix<String>>? fontFamilyFallback,
+    Mix<List<String>>? fontFamilyFallback,
     Mix<String>? debugLabel,
     Mix<double>? height,
     Mix<String>? fontFamily,
   }) {
     return builder(
-      TextStyleDto.raw(
-        color: MixProperty(color),
-        backgroundColor: MixProperty(backgroundColor),
-        fontSize: MixProperty(fontSize),
-        fontWeight: MixProperty(fontWeight),
-        fontStyle: MixProperty(fontStyle),
-        letterSpacing: MixProperty(letterSpacing),
-        debugLabel: MixProperty(debugLabel),
-        wordSpacing: MixProperty(wordSpacing),
-        textBaseline: MixProperty(textBaseline),
-        decoration: MixProperty(decoration),
-        decorationColor: MixProperty(decorationColor),
-        decorationStyle: MixProperty(decorationStyle),
-        height: MixProperty(height),
-        decorationThickness: MixProperty(decorationThickness),
-        fontFamily: MixProperty(fontFamily),
-        fontFamilyFallback: MixProperty(
-          fontFamilyFallback != null ? MixableList(fontFamilyFallback) : null,
-        ),
-        fontFeatures: MixProperty(
-          fontFeatures != null ? MixableList(fontFeatures) : null,
-        ),
-        fontVariations: MixProperty(
-          fontVariations != null ? MixableList(fontVariations) : null,
-        ),
-        foreground: MixProperty(foreground),
-        background: MixProperty(background),
-        shadows: MixProperty(shadows != null ? MixableList(shadows) : null),
+      TextStyleDto(
+        color: color,
+        backgroundColor: backgroundColor,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        fontStyle: fontStyle,
+        letterSpacing: letterSpacing,
+        debugLabel: debugLabel,
+        wordSpacing: wordSpacing,
+        textBaseline: textBaseline,
+        decoration: decoration,
+        decorationColor: decorationColor,
+        decorationStyle: decorationStyle,
+        height: height,
+        decorationThickness: decorationThickness,
+        fontFamily: fontFamily,
+        fontFamilyFallback: fontFamilyFallback,
+        fontFeatures: fontFeatures,
+        fontVariations: fontVariations,
+        foreground: foreground,
+        background: background,
+        shadows: shadows,
       ),
     );
   }
 }
+
+// Generic helper class for lists
+class _ListMix<T> extends Mix<List<T>> {
+  final List<T> _values;
+  const _ListMix(this._values);
+
+  @override
+  List<T> resolve(MixContext mix) {
+    return _values;
+  }
+
+  @override
+  Mix<List<T>> merge(Mix<List<T>>? other) {
+    return other ?? this;
+  }
+
+  @override
+  get props => [_values];
+}
+

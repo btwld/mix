@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import 'element.dart';
+import 'mix_element.dart';
 
 abstract class MixUtility<Attr extends StyleElement, Value> {
   @protected

@@ -3,6 +3,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
+import '../../core/mix_element.dart';
+import '../color/color_util.dart';
+import '../enum/enum_util.dart';
+import '../scalars/scalar_util.dart';
+import 'border_dto.dart';
+
 final class BoxBorderUtility<T extends StyleElement>
     extends DtoUtility<T, BoxBorderDto, BoxBorder> {
   late final directional = BorderDirectionalUtility(builder);
@@ -29,8 +35,18 @@ final class BoxBorderUtility<T extends StyleElement>
     : super(
         valueToDto: (v) {
           return switch (v) {
-            Border() => BorderDto.from(v),
-            BorderDirectional() => BorderDirectionalDto.from(v),
+            Border() => BorderDto(
+              top: _borderSideToDto(v.top),
+              bottom: _borderSideToDto(v.bottom),
+              left: _borderSideToDto(v.left),
+              right: _borderSideToDto(v.right),
+            ),
+            BorderDirectional() => BorderDirectionalDto(
+              top: _borderSideToDto(v.top),
+              bottom: _borderSideToDto(v.bottom),
+              start: _borderSideToDto(v.start),
+              end: _borderSideToDto(v.end),
+            ),
             _ => throw ArgumentError(
               'Unsupported BoxBorder type: ${v.runtimeType}',
             ),
@@ -94,9 +110,14 @@ final class BorderUtility<T extends StyleElement>
   late final strokeAlign = all.strokeAlign;
 
   BorderUtility(super.builder)
-    : super(valueToDto: (value) => BorderDto.from(value));
+    : super(valueToDto: (value) => BorderDto(
+            top: _borderSideToDto(value.top),
+            bottom: _borderSideToDto(value.bottom),
+            left: _borderSideToDto(value.left),
+            right: _borderSideToDto(value.right),
+          ));
 
-  T none() => builder(const BorderDto.none());
+  T none() => builder(BorderDto.none);
 
   T call({
     Color? color,
@@ -148,9 +169,14 @@ final class BorderDirectionalUtility<T extends StyleElement>
   );
 
   BorderDirectionalUtility(super.builder)
-    : super(valueToDto: (value) => BorderDirectionalDto.from(value));
+    : super(valueToDto: (value) => BorderDirectionalDto(
+            top: _borderSideToDto(value.top),
+            bottom: _borderSideToDto(value.bottom),
+            start: _borderSideToDto(value.start),
+            end: _borderSideToDto(value.end),
+          ));
 
-  T none() => builder(const BorderDirectionalDto.none());
+  T none() => builder(BorderDirectionalDto.none);
 
   T call({
     Color? color,
@@ -177,4 +203,85 @@ final class BorderDirectionalUtility<T extends StyleElement>
       BorderDirectionalDto(top: top, bottom: bottom, start: start, end: end),
     );
   }
+}
+
+/// Utility class for configuring [BorderSide] properties.
+///
+/// This class provides methods to set individual properties of a [BorderSide].
+/// Use the methods of this class to configure specific properties of a [BorderSide].
+class BorderSideUtility<T extends StyleElement>
+    extends DtoUtility<T, BorderSideDto, BorderSide> {
+  /// Utility for defining [BorderSideDto.color]
+  late final color = ColorUtility((v) => only(color: v));
+
+  /// Utility for defining [BorderSideDto.strokeAlign]
+  late final strokeAlign = StrokeAlignUtility(
+    (v) => only(strokeAlign: DoubleMix(v)),
+  );
+
+  /// Utility for defining [BorderSideDto.style]
+  late final style = BorderStyleUtility((v) => only(style: EnumMix(v)));
+
+  /// Utility for defining [BorderSideDto.width]
+  late final width = DoubleUtility((v) => only(width: DoubleMix(v)));
+
+  BorderSideUtility(super.builder)
+    : super(
+        valueToDto: (v) => BorderSideDto(
+          color: v.color != const BorderSide().color ? ColorMix(v.color) : null,
+          strokeAlign: v.strokeAlign != const BorderSide().strokeAlign ? DoubleMix(v.strokeAlign) : null,
+          style: v.style != const BorderSide().style ? EnumMix(v.style) : null,
+          width: v.width != const BorderSide().width ? DoubleMix(v.width) : null,
+        ),
+      );
+
+  /// Creates a [StyleElement] instance using the [BorderSideDto.none] constructor.
+  T none() => builder(BorderSideDto.none);
+
+  T call({
+    Color? color,
+    double? strokeAlign,
+    BorderStyle? style,
+    double? width,
+  }) {
+    return builder(
+      BorderSideDto(
+        color: color != null ? ColorMix(color) : null,
+        strokeAlign: strokeAlign != null ? DoubleMix(strokeAlign) : null,
+        style: style != null ? EnumMix(style) : null,
+        width: width != null ? DoubleMix(width) : null,
+      ),
+    );
+  }
+
+  /// Returns a new [BorderSideDto] with the specified properties.
+  @override
+  T only({
+    Mix<Color>? color,
+    Mix<double>? strokeAlign,
+    Mix<BorderStyle>? style,
+    Mix<double>? width,
+  }) {
+    return builder(
+      BorderSideDto(
+        color: color,
+        width: width,
+        style: style,
+        strokeAlign: strokeAlign,
+      ),
+    );
+  }
+}
+
+// Helper function to convert BorderSide to BorderSideDto
+BorderSideDto? _borderSideToDto(BorderSide side) {
+  if (side == BorderSide.none) return null;
+  
+  final defaultSide = const BorderSide();
+  return BorderSideDto(
+    color: side.color != defaultSide.color ? ColorMix(side.color) : null,
+    strokeAlign: side.strokeAlign != defaultSide.strokeAlign ? DoubleMix(side.strokeAlign) : null,
+    style: side.style != defaultSide.style ? EnumMix(side.style) : null,
+    width: side.width != defaultSide.width ? DoubleMix(side.width) : null,
+  );
 }

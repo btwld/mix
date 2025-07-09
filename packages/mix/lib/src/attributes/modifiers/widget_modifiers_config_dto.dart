@@ -1,6 +1,6 @@
 import '../../core/attributes_map.dart';
-import '../../core/element.dart';
 import '../../core/factory/mix_context.dart';
+import '../../core/mix_element.dart';
 import '../../core/modifier.dart';
 import '../../modifiers/internal/reset_modifier.dart';
 import 'widget_modifiers_config.dart';
@@ -15,28 +15,6 @@ class WidgetModifiersConfigDto extends Mix<WidgetModifiersConfig> {
 
   const WidgetModifiersConfigDto(this.modifiers);
 
-  /// Creates a WidgetModifiersConfigDto from a WidgetModifiersConfig value
-  ///
-  /// Note: This method cannot be implemented because WidgetModifiersConfig contains
-  /// resolved WidgetModifierSpec objects, but the DTO requires unresolved
-  /// WidgetModifierSpecAttribute objects. This conversion is not possible.
-  factory WidgetModifiersConfigDto.from(WidgetModifiersConfig config) {
-    throw UnimplementedError(
-      'Cannot create WidgetModifiersConfigDto from WidgetModifiersConfig. '
-      'WidgetModifiersConfig contains resolved WidgetModifierSpec objects, '
-      'but WidgetModifiersConfigDto requires unresolved WidgetModifierSpecAttribute objects.',
-    );
-  }
-
-  /// Creates a WidgetModifiersConfigDto from a nullable WidgetModifiersConfig value
-  /// Returns null if the value is null, otherwise uses WidgetModifiersConfigDto.from
-  ///
-  /// Note: This method cannot be implemented because WidgetModifiersConfig contains
-  /// resolved WidgetModifierSpec objects, but the DTO requires unresolved
-  /// WidgetModifierSpecAttribute objects. This conversion is not possible.
-  static WidgetModifiersConfigDto? maybeFrom(WidgetModifiersConfig? value) {
-    return value != null ? WidgetModifiersConfigDto.from(value) : null;
-  }
 
   @override
   WidgetModifiersConfigDto merge(WidgetModifiersConfigDto? other) {

@@ -6,8 +6,8 @@ import '../attributes/animation/animation_config.dart';
 import '../attributes/modifiers/widget_modifiers_config.dart';
 import '../attributes/modifiers/widget_modifiers_config_dto.dart';
 import '../internal/compare_mixin.dart';
-import 'element.dart';
 import 'factory/mix_context.dart';
+import 'mix_element.dart';
 
 @immutable
 abstract class Spec<T extends Spec<T>> with EqualityMixin {

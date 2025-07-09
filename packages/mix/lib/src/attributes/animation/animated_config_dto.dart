@@ -1,7 +1,8 @@
 import 'package:flutter/animation.dart';
 
-import '../../core/element.dart';
 import '../../core/factory/mix_context.dart';
+import '../../core/mix_element.dart';
+import '../../core/mix_property.dart';
 import '../../internal/constants.dart';
 import 'animation_config.dart';
 
@@ -12,25 +13,25 @@ typedef AnimatedDataDto = AnimationConfigDto;
 
 class AnimationConfigDto extends Mix<AnimationConfig> {
   // Properties use MixableProperty for cleaner merging
-  final MixProperty<Duration> duration;
-  final MixProperty<Curve> curve;
-  final MixProperty<VoidCallback> onEnd;
+  final MixProp<Duration> duration;
+  final MixProp<Curve> curve;
+  final MixProp<VoidCallback> onEnd;
 
-  // Main constructor accepts real values
+  // Main constructor accepts Mix values
   factory AnimationConfigDto({
-    Duration? duration,
-    Curve? curve,
-    VoidCallback? onEnd,
+    Mix<Duration>? duration,
+    Mix<Curve>? curve,
+    Mix<VoidCallback>? onEnd,
   }) {
-    return AnimationConfigDto.raw(
-      duration: MixProperty.prop(duration),
-      curve: MixProperty.prop(curve),
-      onEnd: MixProperty.prop(onEnd),
+    return AnimationConfigDto._(
+      duration: MixProp(duration),
+      curve: MixProp(curve),
+      onEnd: MixProp(onEnd),
     );
   }
 
-  // Factory that accepts MixableProperty instances
-  const AnimationConfigDto.raw({
+  // Private constructor that accepts MixProp instances
+  const AnimationConfigDto._({
     required this.duration,
     required this.curve,
     required this.onEnd,
@@ -38,24 +39,10 @@ class AnimationConfigDto extends Mix<AnimationConfig> {
 
   factory AnimationConfigDto.withDefaults() {
     return AnimationConfigDto(
-      duration: kDefaultAnimationDuration,
-      curve: Curves.linear,
+      duration: const DurationMix(kDefaultAnimationDuration),
+      curve: const CurveMix(Curves.linear),
       onEnd: null,
     );
-  }
-
-  // Factory from AnimationConfig
-  factory AnimationConfigDto.from(AnimationConfig config) {
-    return AnimationConfigDto(
-      duration: config.duration,
-      curve: config.curve,
-      onEnd: config.onEnd,
-    );
-  }
-
-  // Nullable factory from AnimationConfig
-  static AnimationConfigDto? maybeFrom(AnimationConfig? config) {
-    return config != null ? AnimationConfigDto.from(config) : null;
   }
 
   @override
@@ -71,7 +58,7 @@ class AnimationConfigDto extends Mix<AnimationConfig> {
   AnimationConfigDto merge(AnimationConfigDto? other) {
     if (other == null) return this;
 
-    return AnimationConfigDto.raw(
+    return AnimationConfigDto._(
       duration: duration.merge(other.duration),
       curve: curve.merge(other.curve),
       onEnd: onEnd.merge(other.onEnd),

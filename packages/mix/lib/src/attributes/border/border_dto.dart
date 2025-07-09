@@ -53,12 +53,12 @@ final class BorderDto extends BoxBorderDto<Border> {
   final BorderSideDto? left;
   final BorderSideDto? right;
 
+  static const BorderDto none = BorderDto.all(BorderSideDto.none);
+
   const BorderDto({super.top, super.bottom, this.left, this.right});
 
   const BorderDto.all(BorderSideDto side)
     : this(top: side, bottom: side, left: side, right: side);
-
-  const BorderDto.none() : this.all(const BorderSideDto.none());
 
   const BorderDto.symmetric({
     BorderSideDto? vertical,
@@ -74,21 +74,6 @@ final class BorderDto extends BoxBorderDto<Border> {
 
   const BorderDto.horizontal(BorderSideDto side)
     : this.symmetric(horizontal: side);
-
-  // Factory from Border
-  factory BorderDto.from(Border border) {
-    return BorderDto(
-      top: BorderSideDto.from(border.top),
-      bottom: BorderSideDto.from(border.bottom),
-      left: BorderSideDto.from(border.left),
-      right: BorderSideDto.from(border.right),
-    );
-  }
-
-  // Nullable factory from Border
-  static BorderDto? maybeFrom(Border? border) {
-    return border != null ? BorderDto.from(border) : null;
-  }
 
   /// Resolves to [Border] using the provided [MixContext].
   ///
@@ -142,6 +127,10 @@ final class BorderDto extends BoxBorderDto<Border> {
 final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional> {
   final BorderSideDto? start;
   final BorderSideDto? end;
+  static const BorderDirectionalDto none = BorderDirectionalDto.all(
+    BorderSideDto.none,
+  );
+
   const BorderDirectionalDto({super.top, super.bottom, this.start, this.end});
 
   const BorderDirectionalDto.all(BorderSideDto side)
@@ -157,27 +146,11 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional> {
          end: vertical,
        );
 
-  const BorderDirectionalDto.none() : this.all(const BorderSideDto.none());
   const BorderDirectionalDto.vertical(BorderSideDto side)
     : this.symmetric(vertical: side);
 
   const BorderDirectionalDto.horizontal(BorderSideDto side)
     : this.symmetric(horizontal: side);
-
-  // Factory from BorderDirectional
-  factory BorderDirectionalDto.from(BorderDirectional border) {
-    return BorderDirectionalDto(
-      top: BorderSideDto.from(border.top),
-      bottom: BorderSideDto.from(border.bottom),
-      start: BorderSideDto.from(border.start),
-      end: BorderSideDto.from(border.end),
-    );
-  }
-
-  // Nullable factory from BorderDirectional
-  static BorderDirectionalDto? maybeFrom(BorderDirectional? border) {
-    return border != null ? BorderDirectionalDto.from(border) : null;
-  }
 
   /// Resolves to [BorderDirectional] using the provided [MixContext].
   ///
@@ -230,57 +203,41 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional> {
 
 final class BorderSideDto extends Mix<BorderSide>
     with HasDefaultValue<BorderSide> {
-  // Properties use MixProperty for cleaner merging - nullable as per user requirement
-  final MixProperty<Color>? color;
-  final MixProperty<double>? width;
-  final MixProperty<BorderStyle>? style;
-  final MixProperty<double>? strokeAlign;
+  // Properties use MixProp for cleaner merging - nullable as per user requirement
+  final MixProp<Color> color;
+  final MixProp<double> width;
+  final MixProp<BorderStyle> style;
+  final MixProp<double> strokeAlign;
 
-  // Main constructor accepts real values
+  static const BorderSideDto none = BorderSideDto._(
+    color: MixProp.empty(),
+    width: MixProp.empty(),
+    style: MixProp.empty(),
+    strokeAlign: MixProp.empty(),
+  );
+
+  // Main constructor accepts Mix values
   factory BorderSideDto({
-    Color? color,
-    double? strokeAlign,
-    BorderStyle? style,
-    double? width,
+    Mix<Color>? color,
+    Mix<double>? strokeAlign,
+    Mix<BorderStyle>? style,
+    Mix<double>? width,
   }) {
-    return BorderSideDto.raw(
-      color: color != null ? MixProperty.value(color) : null,
-      width: width != null ? MixProperty.value(width) : null,
-      style: style != null ? MixProperty.value(style) : null,
-      strokeAlign: strokeAlign != null ? MixProperty.value(strokeAlign) : null,
+    return BorderSideDto._(
+      color: MixProp(color),
+      width: MixProp(width),
+      style: MixProp(style),
+      strokeAlign: MixProp(strokeAlign),
     );
   }
 
-  // Factory that accepts MixProperty instances
-  const BorderSideDto.raw({
-    this.color,
-    this.width,
-    this.style,
-    this.strokeAlign,
+  // Private constructor that accepts MixProp instances
+  const BorderSideDto._({
+    required this.color,
+    required this.width,
+    required this.style,
+    required this.strokeAlign,
   });
-
-  const BorderSideDto.none()
-    : this.raw(
-        color: null,
-        width: const MixProperty(Mix.value(0.0)),
-        style: const MixProperty(Mix.value(BorderStyle.none)),
-        strokeAlign: null,
-      );
-
-  // Factory from BorderSide
-  factory BorderSideDto.from(BorderSide side) {
-    return BorderSideDto(
-      color: side.color,
-      strokeAlign: side.strokeAlign,
-      style: side.style,
-      width: side.width,
-    );
-  }
-
-  // Nullable factory from BorderSide
-  static BorderSideDto? maybeFrom(BorderSide? side) {
-    return side != null ? BorderSideDto.from(side) : null;
-  }
 
   /// Resolves to [BorderSide] using the provided [MixContext].
   ///
@@ -293,10 +250,10 @@ final class BorderSideDto extends Mix<BorderSide>
   @override
   BorderSide resolve(MixContext mix) {
     return BorderSide(
-      color: color?.resolve(mix) ?? defaultValue.color,
-      width: width?.resolve(mix) ?? defaultValue.width,
-      style: style?.resolve(mix) ?? defaultValue.style,
-      strokeAlign: strokeAlign?.resolve(mix) ?? defaultValue.strokeAlign,
+      color: color.resolve(mix) ?? defaultValue.color,
+      width: width.resolve(mix) ?? defaultValue.width,
+      style: style.resolve(mix) ?? defaultValue.style,
+      strokeAlign: strokeAlign.resolve(mix) ?? defaultValue.strokeAlign,
     );
   }
 
@@ -312,22 +269,12 @@ final class BorderSideDto extends Mix<BorderSide>
   BorderSideDto merge(BorderSideDto? other) {
     if (other == null) return this;
 
-    return BorderSideDto.raw(
-      color: _mergeProperty(color, other.color),
-      width: _mergeProperty(width, other.width),
-      style: _mergeProperty(style, other.style),
-      strokeAlign: _mergeProperty(strokeAlign, other.strokeAlign),
+    return BorderSideDto._(
+      color: color.merge(other.color),
+      width: width.merge(other.width),
+      style: style.merge(other.style),
+      strokeAlign: strokeAlign.merge(other.strokeAlign),
     );
-  }
-
-  // Helper method to merge nullable MixProperty instances
-  static MixProperty<T>? _mergeProperty<T extends Object>(
-    MixProperty<T>? a,
-    MixProperty<T>? b,
-  ) {
-    if (b == null) return a;
-    if (a == null) return b;
-    return a.merge(b);
   }
 
   @override
@@ -339,72 +286,4 @@ final class BorderSideDto extends Mix<BorderSide>
   /// compare two [BorderSideDto] instances for equality.
   @override
   List<Object?> get props => [color, strokeAlign, style, width];
-}
-
-/// Utility class for configuring [BorderSide] properties.
-///
-/// This class provides methods to set individual properties of a [BorderSide].
-/// Use the methods of this class to configure specific properties of a [BorderSide].
-class BorderSideUtility<T extends StyleElement>
-    extends DtoUtility<T, BorderSideDto, BorderSide> {
-  /// Utility for defining [BorderSideDto.color]
-  late final color = ColorUtility((v) => only(color: v));
-
-  /// Utility for defining [BorderSideDto.strokeAlign]
-  late final strokeAlign = StrokeAlignUtility(
-    (v) => only(strokeAlign: Mix.value(v)),
-  );
-
-  /// Utility for defining [BorderSideDto.style]
-  late final style = BorderStyleUtility((v) => only(style: Mix.value(v)));
-
-  /// Utility for defining [BorderSideDto.width]
-  late final width = DoubleUtility((v) => only(width: Mix.value(v)));
-
-  BorderSideUtility(super.builder)
-    : super(
-        valueToDto: (v) => BorderSideDto(
-          color: v.color,
-          strokeAlign: v.strokeAlign,
-          style: v.style,
-          width: v.width,
-        ),
-      );
-
-  /// Creates a [StyleElement] instance using the [BorderSideDto.none] constructor.
-  T none() => builder(const BorderSideDto.none());
-
-  T call({
-    Color? color,
-    double? strokeAlign,
-    BorderStyle? style,
-    double? width,
-  }) {
-    return builder(
-      BorderSideDto(
-        color: color,
-        strokeAlign: strokeAlign,
-        style: style,
-        width: width,
-      ),
-    );
-  }
-
-  /// Returns a new [BorderSideDto] with the specified properties.
-  @override
-  T only({
-    Mix<Color>? color,
-    Mix<double>? strokeAlign,
-    Mix<BorderStyle>? style,
-    Mix<double>? width,
-  }) {
-    return builder(
-      BorderSideDto.raw(
-        color: color != null ? MixProperty(color) : null,
-        width: width != null ? MixProperty(width) : null,
-        style: style != null ? MixProperty(style) : null,
-        strokeAlign: strokeAlign != null ? MixProperty(strokeAlign) : null,
-      ),
-    );
-  }
 }

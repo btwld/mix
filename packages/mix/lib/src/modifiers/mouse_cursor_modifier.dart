@@ -1,8 +1,9 @@
 // ignore_for_file: prefer-named-boolean-parameters
 
 import 'package:flutter/material.dart';
-import '../core/element.dart';
+
 import '../core/factory/mix_context.dart';
+import '../core/mix_element.dart';
 import '../core/modifier.dart';
 import '../core/utility.dart';
 

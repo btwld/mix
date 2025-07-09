@@ -8,6 +8,10 @@ import 'package:mix/mix.dart';
 
 // Note: MixableDirective and private implementations are now in core/element.dart
 
+// =============================================================================
+// SCALAR UTILITIES
+// =============================================================================
+
 final class AlignmentUtility<T extends StyleElement>
     extends MixUtility<T, AlignmentGeometry> {
   const AlignmentUtility(super.builder);

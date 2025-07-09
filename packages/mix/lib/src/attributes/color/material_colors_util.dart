@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../core/element.dart';
+import '../../core/mix_element.dart';
 import 'color_util.dart';
 
 @immutable

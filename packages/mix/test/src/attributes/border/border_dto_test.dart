@@ -114,17 +114,18 @@ void main() {
 
       final merged = borderDto1.merge(borderDto2);
 
-      expect(merged.top?.width.resolve(EmptyMixData), 2.0);
-      expect(merged.top?.color.resolve(EmptyMixData), Colors.red);
+      // MIGRATED: Much cleaner assertions using custom matchers
+      expect(merged.top?.width, resolvesTo(2.0));
+      expect(merged.top?.color, resolvesTo(Colors.red));
 
-      expect(merged.bottom?.width.resolve(EmptyMixData), 2.0);
-      expect(merged.bottom?.color.resolve(EmptyMixData), Colors.red);
+      expect(merged.bottom?.width, resolvesTo(2.0));
+      expect(merged.bottom?.color, resolvesTo(Colors.red));
 
-      expect(merged.left?.width.resolve(EmptyMixData), 2.0);
-      expect(merged.left?.color.resolve(EmptyMixData), Colors.red);
+      expect(merged.left?.width, resolvesTo(2.0));
+      expect(merged.left?.color, resolvesTo(Colors.red));
 
-      expect(merged.right?.width.resolve(EmptyMixData), 2.0);
-      expect(merged.right?.color.resolve(EmptyMixData), Colors.red);
+      expect(merged.right?.width, resolvesTo(2.0));
+      expect(merged.right?.color, resolvesTo(Colors.red));
     });
 
     test('merge BorderDto and BorderDirectionalDto', () {
@@ -142,39 +143,15 @@ void main() {
           BoxBorderDto.tryToMerge(borderDto, borderDirectionalDto)
               as BorderDirectionalDto?;
 
-      expect(
-        mergedBorder?.top?.color.resolve(EmptyMixData),
-        Colors.green,
-      );
-      expect(
-        mergedBorder?.top?.width.resolve(EmptyMixData),
-        3.0,
-      );
-      expect(
-        mergedBorder?.bottom?.color.resolve(EmptyMixData),
-        Colors.yellow,
-      );
-      expect(
-        mergedBorder?.bottom?.width.resolve(EmptyMixData),
-        4.0,
-      );
+      expect(mergedBorder?.top?.color.resolve(EmptyMixData), Colors.green);
+      expect(mergedBorder?.top?.width.resolve(EmptyMixData), 3.0);
+      expect(mergedBorder?.bottom?.color.resolve(EmptyMixData), Colors.yellow);
+      expect(mergedBorder?.bottom?.width.resolve(EmptyMixData), 4.0);
 
-      expect(
-        mergedBorder?.start?.color.resolve(EmptyMixData),
-        Colors.red,
-      );
-      expect(
-        mergedBorder?.start?.width.resolve(EmptyMixData),
-        1.0,
-      );
-      expect(
-        mergedBorder?.end?.color.resolve(EmptyMixData),
-        Colors.blue,
-      );
-      expect(
-        mergedBorder?.end?.width.resolve(EmptyMixData),
-        2.0,
-      );
+      expect(mergedBorder?.start?.color.resolve(EmptyMixData), Colors.red);
+      expect(mergedBorder?.start?.width.resolve(EmptyMixData), 1.0);
+      expect(mergedBorder?.end?.color.resolve(EmptyMixData), Colors.blue);
+      expect(mergedBorder?.end?.width.resolve(EmptyMixData), 2.0);
     });
   });
 
@@ -195,9 +172,10 @@ void main() {
 
       final merged = borderSideDto1.merge(borderSideDto2);
 
-      expect(merged.width.resolve(EmptyMixData), 2.0);
-      expect(merged.color.resolve(EmptyMixData), Colors.blue);
-      expect(merged.style.resolve(EmptyMixData), BorderStyle.solid);
+      // MIGRATED: Clean assertions - much more readable!
+      expect(merged.width, resolvesTo(2.0));
+      expect(merged.color, resolvesTo(Colors.blue));
+      expect(merged.style, resolvesTo(BorderStyle.solid));
     });
 
     // copywith

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../core/element.dart';
+import '../../core/mix_element.dart';
 import '../../core/utility.dart';
 import '../color/color_util.dart';
 import '../scalars/scalar_util.dart';
@@ -13,19 +13,30 @@ import 'shadow_dto.dart';
 class ShadowUtility<T extends StyleElement>
     extends DtoUtility<T, ShadowDto, Shadow> {
   /// Utility for defining [ShadowDto.blurRadius]
-  late final blurRadius = DoubleUtility((v) => only(blurRadius: Mix.value(v)));
+  late final blurRadius = DoubleUtility((v) => only(blurRadius: DoubleMix(v)));
 
   /// Utility for defining [ShadowDto.color]
   late final color = ColorUtility((v) => only(color: v));
 
   /// Utility for defining [ShadowDto.offset]
-  late final offset = OffsetUtility((v) => only(offset: Mix.value(v)));
+  late final offset = OffsetUtility((v) => only(offset: OffsetMix(v)));
 
-  ShadowUtility(super.builder) : super(valueToDto: (v) => ShadowDto.from(v));
+  ShadowUtility(super.builder)
+    : super(
+        valueToDto: (v) => ShadowDto(
+          blurRadius: DoubleMix(v.blurRadius),
+          color: ColorMix(v.color),
+          offset: OffsetMix(v.offset),
+        ),
+      );
 
   T call({double? blurRadius, Color? color, Offset? offset}) {
     return builder(
-      ShadowDto(blurRadius: blurRadius, color: color, offset: offset),
+      ShadowDto(
+        blurRadius: blurRadius != null ? DoubleMix(blurRadius) : null,
+        color: color != null ? ColorMix(color) : null,
+        offset: offset != null ? OffsetMix(offset) : null,
+      ),
     );
   }
 
@@ -33,11 +44,7 @@ class ShadowUtility<T extends StyleElement>
   @override
   T only({Mix<double>? blurRadius, Mix<Color>? color, Mix<Offset>? offset}) {
     return builder(
-      ShadowDto.raw(
-        blurRadius: MixProperty(blurRadius),
-        color: MixProperty(color),
-        offset: MixProperty(offset),
-      ),
+      ShadowDto(blurRadius: blurRadius, color: color, offset: offset),
     );
   }
 }
@@ -52,18 +59,25 @@ class BoxShadowUtility<T extends StyleElement>
   late final color = ColorUtility((v) => only(color: v));
 
   /// Utility for defining [BoxShadowDto.offset]
-  late final offset = OffsetUtility((v) => only(offset: Mix.value(v)));
+  late final offset = OffsetUtility((v) => only(offset: OffsetMix(v)));
 
   /// Utility for defining [BoxShadowDto.blurRadius]
-  late final blurRadius = DoubleUtility((v) => only(blurRadius: Mix.value(v)));
+  late final blurRadius = DoubleUtility((v) => only(blurRadius: DoubleMix(v)));
 
   /// Utility for defining [BoxShadowDto.spreadRadius]
   late final spreadRadius = DoubleUtility(
-    (v) => only(spreadRadius: Mix.value(v)),
+    (v) => only(spreadRadius: DoubleMix(v)),
   );
 
   BoxShadowUtility(super.builder)
-    : super(valueToDto: (v) => BoxShadowDto.from(v));
+    : super(
+        valueToDto: (v) => BoxShadowDto(
+          color: ColorMix(v.color),
+          offset: OffsetMix(v.offset),
+          blurRadius: DoubleMix(v.blurRadius),
+          spreadRadius: DoubleMix(v.spreadRadius),
+        ),
+      );
 
   T call({
     Color? color,
@@ -73,10 +87,10 @@ class BoxShadowUtility<T extends StyleElement>
   }) {
     return builder(
       BoxShadowDto(
-        color: color,
-        offset: offset,
-        blurRadius: blurRadius,
-        spreadRadius: spreadRadius,
+        color: color != null ? ColorMix(color) : null,
+        offset: offset != null ? OffsetMix(offset) : null,
+        blurRadius: blurRadius != null ? DoubleMix(blurRadius) : null,
+        spreadRadius: spreadRadius != null ? DoubleMix(spreadRadius) : null,
       ),
     );
   }
@@ -90,11 +104,11 @@ class BoxShadowUtility<T extends StyleElement>
     Mix<double>? spreadRadius,
   }) {
     return builder(
-      BoxShadowDto.raw(
-        color: MixProperty(color),
-        offset: MixProperty(offset),
-        blurRadius: MixProperty(blurRadius),
-        spreadRadius: MixProperty(spreadRadius),
+      BoxShadowDto(
+        color: color,
+        offset: offset,
+        blurRadius: blurRadius,
+        spreadRadius: spreadRadius,
       ),
     );
   }
@@ -113,7 +127,17 @@ final class ShadowListUtility<T extends StyleElement>
   /// This method maps each [BoxShadow] object to a [ShadowDto] object and passes the
   /// resulting list to the [builder] function to create the [StyleElement] instance.
   T call(List<Shadow> shadows) {
-    return builder(shadows.map((e) => ShadowDto.from(e)).toList());
+    return builder(
+      shadows
+          .map(
+            (e) => ShadowDto(
+              blurRadius: DoubleMix(e.blurRadius),
+              color: ColorMix(e.color),
+              offset: OffsetMix(e.offset),
+            ),
+          )
+          .toList(),
+    );
   }
 }
 
@@ -132,7 +156,18 @@ final class BoxShadowListUtility<T extends StyleElement>
   /// This method maps each [BoxShadow] object to a [BoxShadowDto] object and passes the
   /// resulting list to the [builder] function to create the [StyleElement] instance.
   T call(List<BoxShadow> shadows) {
-    return builder(shadows.map((e) => BoxShadowDto.from(e)).toList());
+    return builder(
+      shadows
+          .map(
+            (e) => BoxShadowDto(
+              color: ColorMix(e.color),
+              offset: OffsetMix(e.offset),
+              blurRadius: DoubleMix(e.blurRadius),
+              spreadRadius: DoubleMix(e.spreadRadius),
+            ),
+          )
+          .toList(),
+    );
   }
 }
 
@@ -196,7 +231,12 @@ final class ElevationUtility<T extends StyleElement>
     }
 
     final boxShadows = kElevationToShadow[value]!.map(
-      (e) => BoxShadowDto.from(e),
+      (e) => BoxShadowDto(
+        color: ColorMix(e.color),
+        offset: OffsetMix(e.offset),
+        blurRadius: DoubleMix(e.blurRadius),
+        spreadRadius: DoubleMix(e.spreadRadius),
+      ),
     );
 
     return builder(boxShadows.toList());
