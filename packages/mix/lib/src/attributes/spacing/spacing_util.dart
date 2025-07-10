@@ -59,7 +59,7 @@ final class EdgeInsetsGeometryUtility<T extends StyleElement>
     );
     if (start != null || end != null) {
       return builder(
-        EdgeInsetsDirectionalDto(
+        EdgeInsetsDirectionalDto._(
           top: top,
           bottom: bottom,
           start: start,
@@ -69,7 +69,7 @@ final class EdgeInsetsGeometryUtility<T extends StyleElement>
     }
 
     return builder(
-      EdgeInsetsDto(top: top, bottom: bottom, left: left, right: right),
+      EdgeInsetsDto._(top: top, bottom: bottom, left: left, right: right),
     );
   }
 
@@ -119,7 +119,7 @@ final class SpacingDirectionalUtility<T extends StyleElement>
 
   T onlyDto({SpaceDto? top, SpaceDto? bottom, SpaceDto? start, SpaceDto? end}) {
     return builder(
-      EdgeInsetsDirectionalDto(
+      EdgeInsetsDirectionalDto._(
         top: top,
         bottom: bottom,
         start: start,

@@ -8,14 +8,14 @@ import 'text_height_behavior_dto.dart';
 final class TextHeightBehaviorUtility<T extends StyleElement>
     extends DtoUtility<T, TextHeightBehaviorDto, TextHeightBehavior> {
   late final heightToFirstAscent = BoolUtility(
-    (v) => only(applyHeightToFirstAscent: BoolMix(v)),
+    (v) => only(applyHeightToFirstAscent: v),
   );
   late final heightToLastDescent = BoolUtility(
-    (v) => only(applyHeightToLastDescent: BoolMix(v)),
+    (v) => only(applyHeightToLastDescent: v),
   );
 
   late final leadingDistribution = TextLeadingDistributionUtility(
-    (v) => only(leadingDistribution: EnumMix(v)),
+    (v) => only(leadingDistribution: v),
   );
 
   TextHeightBehaviorUtility(super.builder)
@@ -27,23 +27,17 @@ final class TextHeightBehaviorUtility<T extends StyleElement>
     TextLeadingDistribution? leadingDistribution,
   }) {
     return only(
-      applyHeightToFirstAscent: applyHeightToFirstAscent != null
-          ? BoolMix(applyHeightToFirstAscent)
-          : null,
-      applyHeightToLastDescent: applyHeightToLastDescent != null
-          ? BoolMix(applyHeightToLastDescent)
-          : null,
-      leadingDistribution: leadingDistribution != null
-          ? EnumMix(leadingDistribution)
-          : null,
+      applyHeightToFirstAscent: applyHeightToFirstAscent,
+      applyHeightToLastDescent: applyHeightToLastDescent,
+      leadingDistribution: leadingDistribution,
     );
   }
 
   @override
   T only({
-    Mix<bool>? applyHeightToFirstAscent,
-    Mix<bool>? applyHeightToLastDescent,
-    Mix<TextLeadingDistribution>? leadingDistribution,
+    bool? applyHeightToFirstAscent,
+    bool? applyHeightToLastDescent,
+    TextLeadingDistribution? leadingDistribution,
   }) => builder(
     TextHeightBehaviorDto(
       applyHeightToFirstAscent: applyHeightToFirstAscent,
@@ -56,15 +50,11 @@ final class TextHeightBehaviorUtility<T extends StyleElement>
 // Helper function
 TextHeightBehaviorDto _textHeightBehaviorToDto(TextHeightBehavior behavior) {
   return TextHeightBehaviorDto(
-    applyHeightToFirstAscent: behavior.applyHeightToFirstAscent
-        ? const BoolMix(true)
-        : null,
-    applyHeightToLastDescent: behavior.applyHeightToLastDescent
-        ? const BoolMix(true)
-        : null,
+    applyHeightToFirstAscent: behavior.applyHeightToFirstAscent ? true : null,
+    applyHeightToLastDescent: behavior.applyHeightToLastDescent ? true : null,
     leadingDistribution:
         behavior.leadingDistribution != TextLeadingDistribution.proportional
-        ? EnumMix(behavior.leadingDistribution)
+        ? behavior.leadingDistribution
         : null,
   );
 }

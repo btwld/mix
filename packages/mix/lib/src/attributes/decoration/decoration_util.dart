@@ -12,7 +12,6 @@ import '../color/color_util.dart';
 import '../enum/enum_util.dart';
 import '../gradient/gradient_dto.dart';
 import '../gradient/gradient_util.dart';
-import '../scalars/scalar_util.dart';
 import '../shadow/shadow_dto.dart';
 import '../shadow/shadow_util.dart';
 import 'decoration_dto.dart';
@@ -98,7 +97,7 @@ class BoxDecorationUtility<T extends StyleElement>
           : null,
       shape: shape,
       backgroundBlendMode: backgroundBlendMode,
-      color: color != null ? ColorMix(color) : null,
+      color: color,
       image: image != null ? this.image.fromValue(image) : null,
       gradient: gradient != null
           ? switch (gradient) {
@@ -110,12 +109,20 @@ class BoxDecorationUtility<T extends StyleElement>
               ),
             }
           : null,
-      boxShadow: boxShadow?.map((shadow) => BoxShadowDto(
-        color: shadow.color != const Color(0xFF000000) ? ColorMix(shadow.color) : null,
-        offset: shadow.offset != Offset.zero ? OffsetMix(shadow.offset) : null,
-        blurRadius: shadow.blurRadius != 0.0 ? DoubleMix(shadow.blurRadius) : null,
-        spreadRadius: shadow.spreadRadius != 0.0 ? DoubleMix(shadow.spreadRadius) : null,
-      )).toList(),
+      boxShadow: boxShadow
+          ?.map(
+            (shadow) => BoxShadowDto(
+              color: shadow.color != const Color(0xFF000000)
+                  ? shadow.color
+                  : null,
+              offset: shadow.offset != Offset.zero ? shadow.offset : null,
+              blurRadius: shadow.blurRadius != 0.0 ? shadow.blurRadius : null,
+              spreadRadius: shadow.spreadRadius != 0.0
+                  ? shadow.spreadRadius
+                  : null,
+            ),
+          )
+          .toList(),
     );
   }
 
@@ -126,7 +133,7 @@ class BoxDecorationUtility<T extends StyleElement>
     BorderRadiusGeometryDto? borderRadius,
     BoxShape? shape,
     BlendMode? backgroundBlendMode,
-    Mix<Color>? color,
+    Color? color,
     DecorationImageDto? image,
     GradientDto? gradient,
     List<BoxShadowDto>? boxShadow,
@@ -187,11 +194,10 @@ class ShapeDecorationUtility<T extends StyleElement>
               RoundedRectangleBorder() => this.shape.roundedRectangle.fromValue(
                 shape,
               ),
-              BeveledRectangleBorder() => this.shape.beveled.fromValue(
+              BeveledRectangleBorder() => this.shape.beveled.fromValue(shape),
+              ContinuousRectangleBorder() => this.shape.continuous.fromValue(
                 shape,
               ),
-              ContinuousRectangleBorder() =>
-                this.shape.continuous.fromValue(shape),
               CircleBorder() => this.shape.circle.fromValue(shape),
               StadiumBorder() => this.shape.stadium.fromValue(shape),
               StarBorder() => this.shape.star.fromValue(shape),
@@ -201,7 +207,7 @@ class ShapeDecorationUtility<T extends StyleElement>
               ),
             }
           : null,
-      color: color != null ? ColorMix(color) : null,
+      color: color,
       image: image != null ? this.image.fromValue(image) : null,
       gradient: gradient != null
           ? switch (gradient) {
@@ -213,12 +219,20 @@ class ShapeDecorationUtility<T extends StyleElement>
               ),
             }
           : null,
-      shadows: shadows?.map((shadow) => BoxShadowDto(
-        color: shadow.color != const Color(0xFF000000) ? ColorMix(shadow.color) : null,
-        offset: shadow.offset != Offset.zero ? OffsetMix(shadow.offset) : null,
-        blurRadius: shadow.blurRadius != 0.0 ? DoubleMix(shadow.blurRadius) : null,
-        spreadRadius: shadow.spreadRadius != 0.0 ? DoubleMix(shadow.spreadRadius) : null,
-      )).toList(),
+      shadows: shadows
+          ?.map(
+            (shadow) => BoxShadowDto(
+              color: shadow.color != const Color(0xFF000000)
+                  ? shadow.color
+                  : null,
+              offset: shadow.offset != Offset.zero ? shadow.offset : null,
+              blurRadius: shadow.blurRadius != 0.0 ? shadow.blurRadius : null,
+              spreadRadius: shadow.spreadRadius != 0.0
+                  ? shadow.spreadRadius
+                  : null,
+            ),
+          )
+          .toList(),
     );
   }
 
@@ -226,7 +240,7 @@ class ShapeDecorationUtility<T extends StyleElement>
   @override
   T only({
     ShapeBorderDto? shape,
-    Mix<Color>? color,
+    Color? color,
     DecorationImageDto? image,
     GradientDto? gradient,
     List<BoxShadowDto>? shadows,

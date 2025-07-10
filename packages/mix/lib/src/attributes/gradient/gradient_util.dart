@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/factory/mix_context.dart';
 import '../../core/mix_element.dart';
 import '../../core/utility.dart';
 import '../../internal/constants.dart';
@@ -15,43 +14,32 @@ import 'gradient_dto.dart';
 class LinearGradientUtility<T extends StyleElement>
     extends DtoUtility<T, LinearGradientDto, LinearGradient> {
   /// Utility for defining [LinearGradientDto.begin]
-  late final begin = AlignmentGeometryUtility(
-    (v) => only(begin: AligmentGeometryMix(v)),
-  );
+  late final begin = AlignmentGeometryUtility((v) => only(begin: v));
 
   /// Utility for defining [LinearGradientDto.end]
-  late final end = AlignmentGeometryUtility(
-    (v) => only(end: AligmentGeometryMix(v)),
-  );
+  late final end = AlignmentGeometryUtility((v) => only(end: v));
 
   /// Utility for defining [LinearGradientDto.tileMode]
-  late final tileMode = TileModeUtility(
-    (v) => only(tileMode: EnumMix(v)),
-  );
+  late final tileMode = TileModeUtility((v) => only(tileMode: v));
 
   /// Utility for defining [LinearGradientDto.transform]
-  late final transform = GradientTransformUtility(
-    (v) => call(transform: v),
-  );
+  late final transform = GradientTransformUtility((v) => call(transform: v));
 
   /// Utility for defining [LinearGradientDto.colors]
-  late final colors = ListUtility<T, Mix<Color>>(
-    (v) => only(colors: _ListColorMix(v)),
-  );
+  late final colors = ListUtility<T, Color>((v) => only(colors: v));
 
   /// Utility for defining [LinearGradientDto.stops]
-  late final stops = ListUtility<T, double>((v) => only(stops: _ListDoubleMix(v)));
+  late final stops = ListUtility<T, double>((v) => only(stops: v));
 
   LinearGradientUtility(super.builder)
     : super(
         valueToDto: (v) => LinearGradientDto(
-          begin: v.begin != null ? AligmentGeometryMix(v.begin!) : null,
-          end: v.end != null ? AligmentGeometryMix(v.end!) : null,
-          tileMode: v.tileMode != null ? EnumMix(v.tileMode!) : null,
-          transform: v.transform != null ? GradientTransformMix(v.transform!) : null,
-          colors: v.colors.isNotEmpty ? 
-            _ListColorMix(v.colors.map((c) => ColorMix(c)).toList()) : null,
-          stops: v.stops != null ? _ListDoubleMix(v.stops!) : null,
+          begin: v.begin,
+          end: v.end,
+          tileMode: v.tileMode,
+          transform: v.transform,
+          colors: v.colors.isNotEmpty ? v.colors : null,
+          stops: v.stops,
         ),
       );
 
@@ -65,13 +53,12 @@ class LinearGradientUtility<T extends StyleElement>
   }) {
     return builder(
       LinearGradientDto(
-        begin: begin != null ? AligmentGeometryMix(begin) : null,
-        end: end != null ? AligmentGeometryMix(end) : null,
-        tileMode: tileMode != null ? EnumMix(tileMode) : null,
-        transform: transform != null ? GradientTransformMix(transform) : null,
-        colors: colors != null ? 
-          _ListColorMix(colors.map((c) => ColorMix(c)).toList()) : null,
-        stops: stops != null ? _ListDoubleMix(stops) : null,
+        begin: begin,
+        end: end,
+        tileMode: tileMode,
+        transform: transform,
+        colors: colors,
+        stops: stops,
       ),
     );
   }
@@ -79,12 +66,12 @@ class LinearGradientUtility<T extends StyleElement>
   /// Returns a new [LinearGradientDto] with the specified properties.
   @override
   T only({
-    Mix<AlignmentGeometry>? begin,
-    Mix<AlignmentGeometry>? end,
-    Mix<TileMode>? tileMode,
-    Mix<GradientTransform>? transform,
-    Mix<List<Color>>? colors,
-    Mix<List<double>>? stops,
+    AlignmentGeometry? begin,
+    AlignmentGeometry? end,
+    TileMode? tileMode,
+    GradientTransform? transform,
+    List<Color>? colors,
+    List<double>? stops,
   }) {
     return builder(
       LinearGradientDto(
@@ -106,55 +93,40 @@ class LinearGradientUtility<T extends StyleElement>
 class RadialGradientUtility<T extends StyleElement>
     extends DtoUtility<T, RadialGradientDto, RadialGradient> {
   /// Utility for defining [RadialGradientDto.center]
-  late final center = AlignmentGeometryUtility(
-    (v) => only(center: AligmentGeometryMix(v)),
-  );
+  late final center = AlignmentGeometryUtility((v) => only(center: v));
 
   /// Utility for defining [RadialGradientDto.radius]
-  late final radius = DoubleUtility(
-    (v) => only(radius: DoubleMix(v)),
-  );
+  late final radius = DoubleUtility((v) => only(radius: v));
 
   /// Utility for defining [RadialGradientDto.tileMode]
-  late final tileMode = TileModeUtility(
-    (v) => only(tileMode: EnumMix(v)),
-  );
+  late final tileMode = TileModeUtility((v) => only(tileMode: v));
 
   /// Utility for defining [RadialGradientDto.focal]
-  late final focal = AlignmentGeometryUtility(
-    (v) => only(focal: AligmentGeometryMix(v)),
-  );
+  late final focal = AlignmentGeometryUtility((v) => only(focal: v));
 
   /// Utility for defining [RadialGradientDto.focalRadius]
-  late final focalRadius = DoubleUtility(
-    (v) => only(focalRadius: DoubleMix(v)),
-  );
+  late final focalRadius = DoubleUtility((v) => only(focalRadius: v));
 
   /// Utility for defining [RadialGradientDto.transform]
-  late final transform = GradientTransformUtility(
-    (v) => call(transform: v),
-  );
+  late final transform = GradientTransformUtility((v) => call(transform: v));
 
   /// Utility for defining [RadialGradientDto.colors]
-  late final colors = ListUtility<T, Mix<Color>>(
-    (v) => only(colors: _ListColorMix(v)),
-  );
+  late final colors = ListUtility<T, Color>((v) => only(colors: v));
 
   /// Utility for defining [RadialGradientDto.stops]
-  late final stops = ListUtility<T, double>((v) => only(stops: _ListDoubleMix(v)));
+  late final stops = ListUtility<T, double>((v) => only(stops: v));
 
   RadialGradientUtility(super.builder)
     : super(
         valueToDto: (v) => RadialGradientDto(
-          center: v.center != null ? AligmentGeometryMix(v.center!) : null,
-          radius: v.radius != null ? DoubleMix(v.radius!) : null,
-          tileMode: v.tileMode != null ? EnumMix(v.tileMode!) : null,
-          focal: v.focal != null ? AligmentGeometryMix(v.focal!) : null,
-          focalRadius: v.focalRadius != null ? DoubleMix(v.focalRadius!) : null,
-          transform: v.transform != null ? GradientTransformMix(v.transform!) : null,
-          colors: v.colors.isNotEmpty ? 
-            _ListColorMix(v.colors.map((c) => ColorMix(c)).toList()) : null,
-          stops: v.stops != null ? _ListDoubleMix(v.stops!) : null,
+          center: v.center,
+          radius: v.radius,
+          tileMode: v.tileMode,
+          focal: v.focal,
+          focalRadius: v.focalRadius,
+          transform: v.transform,
+          colors: v.colors.isNotEmpty ? v.colors : null,
+          stops: v.stops,
         ),
       );
 
@@ -170,15 +142,14 @@ class RadialGradientUtility<T extends StyleElement>
   }) {
     return builder(
       RadialGradientDto(
-        center: center != null ? AligmentGeometryMix(center) : null,
-        radius: radius != null ? DoubleMix(radius) : null,
-        tileMode: tileMode != null ? EnumMix(tileMode) : null,
-        focal: focal != null ? AligmentGeometryMix(focal) : null,
-        focalRadius: focalRadius != null ? DoubleMix(focalRadius) : null,
-        transform: transform != null ? GradientTransformMix(transform) : null,
-        colors: colors != null ? 
-          _ListColorMix(colors.map((c) => ColorMix(c)).toList()) : null,
-        stops: stops != null ? _ListDoubleMix(stops) : null,
+        center: center,
+        radius: radius,
+        tileMode: tileMode,
+        focal: focal,
+        focalRadius: focalRadius,
+        transform: transform,
+        colors: colors,
+        stops: stops,
       ),
     );
   }
@@ -186,14 +157,14 @@ class RadialGradientUtility<T extends StyleElement>
   /// Returns a new [RadialGradientDto] with the specified properties.
   @override
   T only({
-    Mix<AlignmentGeometry>? center,
-    Mix<double>? radius,
-    Mix<TileMode>? tileMode,
-    Mix<AlignmentGeometry>? focal,
-    Mix<double>? focalRadius,
-    Mix<GradientTransform>? transform,
-    Mix<List<Color>>? colors,
-    Mix<List<double>>? stops,
+    AlignmentGeometry? center,
+    double? radius,
+    TileMode? tileMode,
+    AlignmentGeometry? focal,
+    double? focalRadius,
+    GradientTransform? transform,
+    List<Color>? colors,
+    List<double>? stops,
   }) {
     return builder(
       RadialGradientDto(
@@ -217,49 +188,36 @@ class RadialGradientUtility<T extends StyleElement>
 class SweepGradientUtility<T extends StyleElement>
     extends DtoUtility<T, SweepGradientDto, SweepGradient> {
   /// Utility for defining [SweepGradientDto.center]
-  late final center = AlignmentGeometryUtility(
-    (v) => only(center: AligmentGeometryMix(v)),
-  );
+  late final center = AlignmentGeometryUtility((v) => only(center: v));
 
   /// Utility for defining [SweepGradientDto.startAngle]
-  late final startAngle = DoubleUtility(
-    (v) => only(startAngle: DoubleMix(v)),
-  );
+  late final startAngle = DoubleUtility((v) => only(startAngle: v));
 
   /// Utility for defining [SweepGradientDto.endAngle]
-  late final endAngle = DoubleUtility(
-    (v) => only(endAngle: DoubleMix(v)),
-  );
+  late final endAngle = DoubleUtility((v) => only(endAngle: v));
 
   /// Utility for defining [SweepGradientDto.tileMode]
-  late final tileMode = TileModeUtility(
-    (v) => only(tileMode: EnumMix(v)),
-  );
+  late final tileMode = TileModeUtility((v) => only(tileMode: v));
 
   /// Utility for defining [SweepGradientDto.transform]
-  late final transform = GradientTransformUtility(
-    (v) => call(transform: v),
-  );
+  late final transform = GradientTransformUtility((v) => call(transform: v));
 
   /// Utility for defining [SweepGradientDto.colors]
-  late final colors = ListUtility<T, Mix<Color>>(
-    (v) => only(colors: _ListColorMix(v)),
-  );
+  late final colors = ListUtility<T, Color>((v) => only(colors: v));
 
   /// Utility for defining [SweepGradientDto.stops]
-  late final stops = ListUtility<T, double>((v) => only(stops: _ListDoubleMix(v)));
+  late final stops = ListUtility<T, double>((v) => only(stops: v));
 
   SweepGradientUtility(super.builder)
     : super(
         valueToDto: (v) => SweepGradientDto(
-          center: v.center != null ? AligmentGeometryMix(v.center!) : null,
-          startAngle: v.startAngle != null ? DoubleMix(v.startAngle!) : null,
-          endAngle: v.endAngle != null ? DoubleMix(v.endAngle!) : null,
-          tileMode: v.tileMode != null ? EnumMix(v.tileMode!) : null,
-          transform: v.transform != null ? GradientTransformMix(v.transform!) : null,
-          colors: v.colors.isNotEmpty ? 
-            _ListColorMix(v.colors.map((c) => ColorMix(c)).toList()) : null,
-          stops: v.stops != null ? _ListDoubleMix(v.stops!) : null,
+          center: v.center,
+          startAngle: v.startAngle,
+          endAngle: v.endAngle,
+          tileMode: v.tileMode,
+          transform: v.transform,
+          colors: v.colors.isNotEmpty ? v.colors : null,
+          stops: v.stops,
         ),
       );
 
@@ -274,14 +232,13 @@ class SweepGradientUtility<T extends StyleElement>
   }) {
     return builder(
       SweepGradientDto(
-        center: center != null ? AligmentGeometryMix(center) : null,
-        startAngle: startAngle != null ? DoubleMix(startAngle) : null,
-        endAngle: endAngle != null ? DoubleMix(endAngle) : null,
-        tileMode: tileMode != null ? EnumMix(tileMode) : null,
-        transform: transform != null ? GradientTransformMix(transform) : null,
-        colors: colors != null ? 
-          _ListColorMix(colors.map((c) => ColorMix(c)).toList()) : null,
-        stops: stops != null ? _ListDoubleMix(stops) : null,
+        center: center,
+        startAngle: startAngle,
+        endAngle: endAngle,
+        tileMode: tileMode,
+        transform: transform,
+        colors: colors,
+        stops: stops,
       ),
     );
   }
@@ -289,13 +246,13 @@ class SweepGradientUtility<T extends StyleElement>
   /// Returns a new [SweepGradientDto] with the specified properties.
   @override
   T only({
-    Mix<AlignmentGeometry>? center,
-    Mix<double>? startAngle,
-    Mix<double>? endAngle,
-    Mix<TileMode>? tileMode,
-    Mix<GradientTransform>? transform,
-    Mix<List<Color>>? colors,
-    Mix<List<double>>? stops,
+    AlignmentGeometry? center,
+    double? startAngle,
+    double? endAngle,
+    TileMode? tileMode,
+    GradientTransform? transform,
+    List<Color>? colors,
+    List<double>? stops,
   }) {
     return builder(
       SweepGradientDto(
@@ -351,42 +308,4 @@ final class GradientUtility<T extends StyleElement>
       ),
     ]);
   }
-}
-
-// Helper class to create Mix<List<Color>> from List<Mix<Color>>
-class _ListColorMix extends Mix<List<Color>> {
-  final List<Mix<Color>> _colors;
-  const _ListColorMix(this._colors);
-
-  @override
-  List<Color> resolve(MixContext mix) {
-    return _colors.map((c) => c.resolve(mix)).toList();
-  }
-
-  @override
-  Mix<List<Color>> merge(Mix<List<Color>>? other) {
-    return other ?? this;
-  }
-
-  @override
-  get props => [_colors];
-}
-
-// Helper class to create Mix<List<double>> from List<double>
-class _ListDoubleMix extends Mix<List<double>> {
-  final List<double> _values;
-  const _ListDoubleMix(this._values);
-
-  @override
-  List<double> resolve(MixContext mix) {
-    return _values;
-  }
-
-  @override
-  Mix<List<double>> merge(Mix<List<double>>? other) {
-    return other ?? this;
-  }
-
-  @override
-  get props => [_values];
 }

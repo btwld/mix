@@ -390,6 +390,159 @@ class TextStyleUtility<T extends StyleElement>
 }
 ```
 
+## Key Implementation Patterns
+
+### DTO Property Pattern
+
+All DTOs must follow this consistent pattern for properties:
+
+1. **Nullable Prop<T>? Properties**: All properties use nullable `Prop<T>?` types
+2. **Factory Constructor**: Accepts raw values and converts using `Prop.maybeValue()`
+3. **Private Constructor**: Accepts `Prop<T>?` instances directly
+4. **Resolution**: Uses `resolveProp()` helper function
+5. **Merging**: Uses `mergeProp()` helper function
+
+```dart
+// Standard DTO pattern
+class SomeDto extends Mix<SomeType> {
+  // 1. Properties are nullable Prop<T>?
+  final Prop<Color>? color;
+  final Prop<double>? size;
+  
+  // 2. Factory constructor accepts raw values
+  factory SomeDto({
+    Color? color,
+    double? size,
+  }) {
+    return SomeDto._(
+      color: Prop.maybeValue(color),  // Converts nullable values
+      size: Prop.maybeValue(size),
+    );
+  }
+  
+  // 3. Private constructor accepts Prop<T>?
+  const SomeDto._({
+    this.color,
+    this.size,
+  });
+  
+  // 4. Resolution uses resolveProp helper
+  @override
+  SomeType resolve(MixContext mix) {
+    return SomeType(
+      color: resolveProp(mix, color) ?? defaultColor,
+      size: resolveProp(mix, size) ?? defaultSize,
+    );
+  }
+  
+  // 5. Merging uses mergeProp helper
+  @override
+  SomeDto merge(SomeDto? other) {
+    if (other == null) return this;
+    
+    return SomeDto._(
+      color: mergeProp(color, other.color),
+      size: mergeProp(size, other.size),
+    );
+  }
+}
+```
+
+### Helper Functions
+
+The framework provides these essential helper functions:
+
+```dart
+// Resolves a Prop<T>? to its value, handling tokens and context
+T? resolveProp<T>(MixContext context, Prop<T>? prop);
+
+// Merges two Prop<T>? values, with 'other' taking precedence
+Prop<T>? mergeProp<T>(Prop<T>? current, Prop<T>? other);
+
+// For lists of simple Prop<T>
+List<T>? resolvePropList<T>(MixContext context, List<Prop<T>>? props);
+List<Prop<T>>? mergePropList<T>(List<Prop<T>>? current, List<Prop<T>>? other);
+
+// For lists of Mix types (DTOs)
+List<T>? resolveMixPropList<T>(MixContext context, List<MixProp<T, Mix<T>>>? props);
+List<MixProp<T, M>>? mergeMixPropList<T, M extends Mix<T>>(
+  List<MixProp<T, M>>? current, 
+  List<MixProp<T, M>>? other
+);
+```
+
+### Lists in DTOs
+
+DTOs handle lists differently based on the type:
+
+```dart
+class ComplexDto extends Mix<ComplexType> {
+  // For lists of simple types, use List<Prop<T>>?
+  final List<Prop<String>>? tags;
+  final List<Prop<FontFeature>>? fontFeatures;
+  
+  // For lists of Mix types (other DTOs), use List<MixProp<T, DTO>>?
+  final List<MixProp<Shadow, ShadowDto>>? shadows;
+  
+  factory ComplexDto({
+    List<String>? tags,
+    List<FontFeature>? fontFeatures,
+    List<ShadowDto>? shadows,
+  }) {
+    return ComplexDto._(
+      // Simple types use Prop.value
+      tags: tags?.map(Prop.value).toList(),
+      fontFeatures: fontFeatures?.map(Prop.value).toList(),
+      // Mix types use MixProp.value
+      shadows: shadows?.map(MixProp<Shadow, ShadowDto>.value).toList(),
+    );
+  }
+  
+  @override
+  ComplexType resolve(MixContext mix) {
+    return ComplexType(
+      tags: resolvePropList(mix, tags),
+      fontFeatures: resolvePropList(mix, fontFeatures),
+      shadows: resolveMixPropList(mix, shadows),
+    );
+  }
+  
+  @override
+  ComplexDto merge(ComplexDto? other) {
+    if (other == null) return this;
+    
+    return ComplexDto._(
+      tags: mergePropList(tags, other.tags),
+      fontFeatures: mergePropList(fontFeatures, other.fontFeatures),
+      shadows: mergeMixPropList(shadows, other.shadows),
+    );
+  }
+}
+```
+
+### Static Factory Patterns
+
+Static factories should use `Prop.value()` for non-null values:
+
+```dart
+// Named constructors for common patterns
+EdgeInsetsDto.all(double value)
+  : this._(
+      top: Prop.value(value),     // Non-null, use Prop.value
+      bottom: Prop.value(value),
+      left: Prop.value(value),
+      right: Prop.value(value),
+    );
+
+// Static methods for variations
+static BorderRadiusDto circular(double radius) => BorderRadiusDto._(
+  topLeft: Prop.value(Radius.circular(radius)),
+  topRight: Prop.value(Radius.circular(radius)),
+  bottomLeft: Prop.value(Radius.circular(radius)),
+  bottomRight: Prop.value(Radius.circular(radius)),
+);
+```
+
 ## Usage Examples
 
 ### Current API vs New API
@@ -409,7 +562,12 @@ final newBox = BoxSpecUtility()
   .margin(EdgeInsetsDto.symmetric(horizontal: 8))
   .alignment(Alignment.center)
   .color(Colors.red)
-  .border(BorderDto.all(color: Colors.black));
+  .border(BorderDto(
+    // Note: BorderDto.all() needs to be implemented
+    color: Colors.black,
+    width: 1,
+    style: BorderStyle.solid,
+  ));
 ```
 
 ### With Future Dot Notation

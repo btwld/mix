@@ -133,30 +133,26 @@ class CircleBorderUtility<T extends StyleElement>
   late final side = BorderSideUtility((v) => only(side: v));
 
   /// Utility for defining [CircleBorderDto.eccentricity]
-  late final eccentricity = DoubleUtility(
-    (v) => only(eccentricity: DoubleMix(v)),
-  );
+  late final eccentricity = DoubleUtility((v) => only(eccentricity: v));
 
   CircleBorderUtility(super.builder)
     : super(
         valueToDto: (v) => CircleBorderDto(
           side: v.side != BorderSide.none ? _borderSideToDto(v.side) : null,
-          eccentricity: v.eccentricity != 0.0
-              ? DoubleMix(v.eccentricity)
-              : null,
+          eccentricity: v.eccentricity != 0.0 ? v.eccentricity : null,
         ),
       );
 
   T call({BorderSide? side, double? eccentricity}) {
     return only(
       side: side != null ? _borderSideToDto(side) : null,
-      eccentricity: eccentricity != null ? DoubleMix(eccentricity) : null,
+      eccentricity: eccentricity,
     );
   }
 
   /// Returns a new [CircleBorderDto] with the specified properties.
   @override
-  T only({BorderSideDto? side, Mix<double>? eccentricity}) {
+  T only({BorderSideDto? side, double? eccentricity}) {
     return builder(CircleBorderDto(side: side, eccentricity: eccentricity));
   }
 }
@@ -167,45 +163,35 @@ class StarBorderUtility<T extends StyleElement>
   late final side = BorderSideUtility((v) => only(side: v));
 
   /// Utility for defining [StarBorderDto.points]
-  late final points = DoubleUtility((v) => only(points: DoubleMix(v)));
+  late final points = DoubleUtility((v) => only(points: v));
 
   /// Utility for defining [StarBorderDto.innerRadiusRatio]
-  late final innerRadiusRatio = DoubleUtility(
-    (v) => only(innerRadiusRatio: DoubleMix(v)),
-  );
+  late final innerRadiusRatio = DoubleUtility((v) => only(innerRadiusRatio: v));
 
   /// Utility for defining [StarBorderDto.pointRounding]
-  late final pointRounding = DoubleUtility(
-    (v) => only(pointRounding: DoubleMix(v)),
-  );
+  late final pointRounding = DoubleUtility((v) => only(pointRounding: v));
 
   /// Utility for defining [StarBorderDto.valleyRounding]
-  late final valleyRounding = DoubleUtility(
-    (v) => only(valleyRounding: DoubleMix(v)),
-  );
+  late final valleyRounding = DoubleUtility((v) => only(valleyRounding: v));
 
   /// Utility for defining [StarBorderDto.rotation]
-  late final rotation = DoubleUtility((v) => only(rotation: DoubleMix(v)));
+  late final rotation = DoubleUtility((v) => only(rotation: v));
 
   /// Utility for defining [StarBorderDto.squash]
-  late final squash = DoubleUtility((v) => only(squash: DoubleMix(v)));
+  late final squash = DoubleUtility((v) => only(squash: v));
 
   StarBorderUtility(super.builder)
     : super(
         valueToDto: (v) => StarBorderDto(
           side: v.side != BorderSide.none ? _borderSideToDto(v.side) : null,
-          points: v.points != 5 ? DoubleMix(v.points) : null,
+          points: v.points != 5 ? v.points : null,
           innerRadiusRatio: v.innerRadiusRatio != 0.4
-              ? DoubleMix(v.innerRadiusRatio)
+              ? v.innerRadiusRatio
               : null,
-          pointRounding: v.pointRounding != 0
-              ? DoubleMix(v.pointRounding)
-              : null,
-          valleyRounding: v.valleyRounding != 0
-              ? DoubleMix(v.valleyRounding)
-              : null,
-          rotation: v.rotation != 0 ? DoubleMix(v.rotation) : null,
-          squash: v.squash != 0 ? DoubleMix(v.squash) : null,
+          pointRounding: v.pointRounding != 0 ? v.pointRounding : null,
+          valleyRounding: v.valleyRounding != 0 ? v.valleyRounding : null,
+          rotation: v.rotation != 0 ? v.rotation : null,
+          squash: v.squash != 0 ? v.squash : null,
         ),
       );
 
@@ -220,14 +206,12 @@ class StarBorderUtility<T extends StyleElement>
   }) {
     return only(
       side: side != null ? _borderSideToDto(side) : null,
-      points: points != null ? DoubleMix(points) : null,
-      innerRadiusRatio: innerRadiusRatio != null
-          ? DoubleMix(innerRadiusRatio)
-          : null,
-      pointRounding: pointRounding != null ? DoubleMix(pointRounding) : null,
-      valleyRounding: valleyRounding != null ? DoubleMix(valleyRounding) : null,
-      rotation: rotation != null ? DoubleMix(rotation) : null,
-      squash: squash != null ? DoubleMix(squash) : null,
+      points: points,
+      innerRadiusRatio: innerRadiusRatio,
+      pointRounding: pointRounding,
+      valleyRounding: valleyRounding,
+      rotation: rotation,
+      squash: squash,
     );
   }
 
@@ -235,12 +219,12 @@ class StarBorderUtility<T extends StyleElement>
   @override
   T only({
     BorderSideDto? side,
-    Mix<double>? points,
-    Mix<double>? innerRadiusRatio,
-    Mix<double>? pointRounding,
-    Mix<double>? valleyRounding,
-    Mix<double>? rotation,
-    Mix<double>? squash,
+    double? points,
+    double? innerRadiusRatio,
+    double? pointRounding,
+    double? valleyRounding,
+    double? rotation,
+    double? squash,
   }) {
     return builder(
       StarBorderDto(
@@ -324,29 +308,26 @@ class LinearBorderUtility<T extends StyleElement>
 class LinearBorderEdgeUtility<T extends StyleElement>
     extends DtoUtility<T, LinearBorderEdgeDto, LinearBorderEdge> {
   /// Utility for defining [LinearBorderEdgeDto.size]
-  late final size = DoubleUtility((v) => only(size: DoubleMix(v)));
+  late final size = DoubleUtility((v) => only(size: v));
 
   /// Utility for defining [LinearBorderEdgeDto.alignment]
-  late final alignment = DoubleUtility((v) => only(alignment: DoubleMix(v)));
+  late final alignment = DoubleUtility((v) => only(alignment: v));
 
   LinearBorderEdgeUtility(super.builder)
     : super(
         valueToDto: (v) => LinearBorderEdgeDto(
-          size: v.size != 1.0 ? DoubleMix(v.size) : null,
-          alignment: v.alignment != 0.0 ? DoubleMix(v.alignment) : null,
+          size: v.size != 1.0 ? v.size : null,
+          alignment: v.alignment != 0.0 ? v.alignment : null,
         ),
       );
 
   T call({double? size, double? alignment}) {
-    return only(
-      size: size != null ? DoubleMix(size) : null,
-      alignment: alignment != null ? DoubleMix(alignment) : null,
-    );
+    return only(size: size, alignment: alignment);
   }
 
   /// Returns a new [LinearBorderEdgeDto] with the specified properties.
   @override
-  T only({Mix<double>? size, Mix<double>? alignment}) {
+  T only({double? size, double? alignment}) {
     return builder(LinearBorderEdgeDto(size: size, alignment: alignment));
   }
 }
@@ -403,10 +384,12 @@ class ShapeBorderUtility<T extends StyleElement>
   T call(ShapeBorder shape) {
     return builder(_shapeBorderToDto(shape));
   }
-  
+
   @override
   T only() {
-    throw UnsupportedError('ShapeBorderUtility.only is not supported. Use the specific shape utilities instead.');
+    throw UnsupportedError(
+      'ShapeBorderUtility.only is not supported. Use the specific shape utilities instead.',
+    );
   }
 }
 
@@ -416,17 +399,17 @@ BorderRadiusGeometryDto? _borderRadiusToDto(BorderRadiusGeometry borderRadius) {
 
   if (borderRadius is BorderRadius) {
     return BorderRadiusDto(
-      topLeft: RadiusMix(borderRadius.topLeft),
-      topRight: RadiusMix(borderRadius.topRight),
-      bottomLeft: RadiusMix(borderRadius.bottomLeft),
-      bottomRight: RadiusMix(borderRadius.bottomRight),
+      topLeft: borderRadius.topLeft,
+      topRight: borderRadius.topRight,
+      bottomLeft: borderRadius.bottomLeft,
+      bottomRight: borderRadius.bottomRight,
     );
   } else if (borderRadius is BorderRadiusDirectional) {
     return BorderRadiusDirectionalDto(
-      topStart: RadiusMix(borderRadius.topStart),
-      topEnd: RadiusMix(borderRadius.topEnd),
-      bottomStart: RadiusMix(borderRadius.bottomStart),
-      bottomEnd: RadiusMix(borderRadius.bottomEnd),
+      topStart: borderRadius.topStart,
+      topEnd: borderRadius.topEnd,
+      bottomStart: borderRadius.bottomStart,
+      bottomEnd: borderRadius.bottomEnd,
     );
   }
 
@@ -441,19 +424,19 @@ BorderSideDto? _borderSideToDto(BorderSide side) {
   const defaultSide = BorderSide();
 
   return BorderSideDto(
-    color: side.color != defaultSide.color ? ColorMix(side.color) : null,
+    color: side.color != defaultSide.color ? side.color : null,
     strokeAlign: side.strokeAlign != defaultSide.strokeAlign
-        ? DoubleMix(side.strokeAlign)
+        ? side.strokeAlign
         : null,
-    style: side.style != defaultSide.style ? EnumMix(side.style) : null,
-    width: side.width != defaultSide.width ? DoubleMix(side.width) : null,
+    style: side.style != defaultSide.style ? side.style : null,
+    width: side.width != defaultSide.width ? side.width : null,
   );
 }
 
 LinearBorderEdgeDto _linearBorderEdgeToDto(LinearBorderEdge edge) {
   return LinearBorderEdgeDto(
-    size: edge.size != 1.0 ? DoubleMix(edge.size) : null,
-    alignment: edge.alignment != 0.0 ? DoubleMix(edge.alignment) : null,
+    size: edge.size != 1.0 ? edge.size : null,
+    alignment: edge.alignment != 0.0 ? edge.alignment : null,
   );
 }
 
@@ -473,16 +456,16 @@ ShapeBorderDto _shapeBorderToDto(ShapeBorder border) {
     ),
     CircleBorder b => CircleBorderDto(
       side: _borderSideToDto(b.side),
-      eccentricity: b.eccentricity != 0.0 ? DoubleMix(b.eccentricity) : null,
+      eccentricity: b.eccentricity != 0.0 ? b.eccentricity : null,
     ),
     StarBorder b => StarBorderDto(
       side: _borderSideToDto(b.side),
-      points: b.points != 5 ? DoubleMix(b.points) : null,
-      innerRadiusRatio: b.innerRadiusRatio != 0.4 ? DoubleMix(b.innerRadiusRatio) : null,
-      pointRounding: b.pointRounding != 0 ? DoubleMix(b.pointRounding) : null,
-      valleyRounding: b.valleyRounding != 0 ? DoubleMix(b.valleyRounding) : null,
-      rotation: b.rotation != 0 ? DoubleMix(b.rotation) : null,
-      squash: b.squash != 0 ? DoubleMix(b.squash) : null,
+      points: b.points != 5 ? b.points : null,
+      innerRadiusRatio: b.innerRadiusRatio != 0.4 ? b.innerRadiusRatio : null,
+      pointRounding: b.pointRounding != 0 ? b.pointRounding : null,
+      valleyRounding: b.valleyRounding != 0 ? b.valleyRounding : null,
+      rotation: b.rotation != 0 ? b.rotation : null,
+      squash: b.squash != 0 ? b.squash : null,
     ),
     LinearBorder b => LinearBorderDto(
       side: _borderSideToDto(b.side),
@@ -491,9 +474,9 @@ ShapeBorderDto _shapeBorderToDto(ShapeBorder border) {
       top: b.top != null ? _linearBorderEdgeToDto(b.top!) : null,
       bottom: b.bottom != null ? _linearBorderEdgeToDto(b.bottom!) : null,
     ),
-    StadiumBorder b => StadiumBorderDto(
-      side: _borderSideToDto(b.side),
+    StadiumBorder b => StadiumBorderDto(side: _borderSideToDto(b.side)),
+    _ => throw ArgumentError(
+      'Unsupported ShapeBorder type: ${border.runtimeType}',
     ),
-    _ => throw ArgumentError('Unsupported ShapeBorder type: ${border.runtimeType}'),
   };
 }

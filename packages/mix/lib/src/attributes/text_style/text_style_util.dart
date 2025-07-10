@@ -1,130 +1,71 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/mix_element.dart';
-import '../../core/prop.dart';
 import '../../core/utility.dart';
+import '../shadow/shadow_dto.dart';
 import '../../theme/tokens/mix_token.dart';
 import '../color/color_util.dart';
 import '../enum/enum_util.dart';
 import '../scalars/scalar_util.dart';
+import '../shadow/shadow_dto.dart';
 import 'text_style_dto.dart';
 
 final class TextStyleUtility<T extends StyleElement>
     extends DtoUtility<T, TextStyleDto, TextStyle> {
-  late final color = ColorUtility((v) => only(color: v as ColorMix));
+  late final color = ColorUtility((v) => only(color: v));
 
-  late final fontWeight = FontWeightUtility(
-    (v) => only(fontWeight: FontWeightMix(v)),
-  );
+  late final fontWeight = FontWeightUtility((v) => only(fontWeight: v));
 
-  late final fontStyle = FontStyleUtility(
-    (v) => only(fontStyle: FontStyleMix(v)),
-  );
+  late final fontStyle = FontStyleUtility((v) => only(fontStyle: v));
 
-  late final decoration = TextDecorationUtility(
-    (v) => only(decoration: TextDecorationMix(v)),
-  );
+  late final decoration = TextDecorationUtility((v) => only(decoration: v));
 
-  late final fontSize = FontSizeUtility((v) => only(fontSize: DoubleMix(v)));
+  late final fontSize = FontSizeUtility((v) => only(fontSize: v));
 
-  late final backgroundColor = ColorUtility(
-    (v) => only(backgroundColor: v as ColorMix),
-  );
+  late final backgroundColor = ColorUtility((v) => only(backgroundColor: v));
 
-  late final decorationColor = ColorUtility(
-    (v) => only(decorationColor: v as ColorMix),
-  );
+  late final decorationColor = ColorUtility((v) => only(decorationColor: v));
 
   // TODO: Shadow utility integration needs redesign for TextStyle compatibility
   // The ShadowUtility creates ShadowDto but TextStyle needs List<Shadow>
   // For now, use the shadows() method directly on the utility
 
   late final decorationStyle = TextDecorationStyleUtility(
-    (v) => only(decorationStyle: TextDecorationStyleMix(v)),
+    (v) => only(decorationStyle: v),
   );
 
-  late final textBaseline = TextBaselineUtility(
-    (v) => only(textBaseline: TextBaselineMix(v)),
-  );
+  late final textBaseline = TextBaselineUtility((v) => only(textBaseline: v));
 
-  late final fontFamily = FontFamilyUtility(
-    (v) => only(fontFamily: StringMix(v)),
-  );
+  late final fontFamily = FontFamilyUtility((v) => only(fontFamily: v));
 
   TextStyleUtility(super.builder)
     : super(
         valueToDto: (v) => TextStyleDto(
-          color: v.color != null ? Prop.mix(ColorMix(v.color!)) : null,
-          backgroundColor: v.backgroundColor != null
-              ? Prop.mix(ColorMix(v.backgroundColor!))
-              : null,
-          fontSize: v.fontSize != null
-              ? Prop.mix(DoubleMix(v.fontSize!))
-              : null,
-          fontWeight: v.fontWeight != null
-              ? Prop.mix(FontWeightMix(v.fontWeight!))
-              : null,
-          fontStyle: v.fontStyle != null
-              ? Prop.mix(EnumMix(v.fontStyle!))
-              : null,
-          letterSpacing: v.letterSpacing != null
-              ? Prop.mix(DoubleMix(v.letterSpacing!))
-              : null,
-          debugLabel: v.debugLabel != null
-              ? Prop.mix(StringMix(v.debugLabel!))
-              : null,
-          wordSpacing: v.wordSpacing != null
-              ? Prop.mix(DoubleMix(v.wordSpacing!))
-              : null,
-          textBaseline: v.textBaseline != null
-              ? Prop.mix(EnumMix(v.textBaseline!))
-              : null,
-          shadows: v.shadows != null
-              ? Prop.mix(ListMix(v.shadows!.map((s) => ShadowMix(s)).toList()))
-              : null,
-          fontFeatures: v.fontFeatures != null
-              ? Prop.mix(
-                  ListMix(
-                    v.fontFeatures!.map((f) => FontFeatureMix(f)).toList(),
-                  ),
-                )
-              : null,
-          decoration: v.decoration != null
-              ? Prop.mix(TextDecorationMix(v.decoration!))
-              : null,
-          decorationColor: v.decorationColor != null
-              ? Prop.mix(ColorMix(v.decorationColor!))
-              : null,
-          decorationStyle: v.decorationStyle != null
-              ? Prop.mix(EnumMix(v.decorationStyle!))
-              : null,
-          fontVariations: v.fontVariations != null
-              ? Prop.mix(
-                  ListMix(
-                    v.fontVariations!.map((f) => FontVariationMix(f)).toList(),
-                  ),
-                )
-              : null,
-          height: v.height != null ? Prop.mix(DoubleMix(v.height!)) : null,
-          foreground: v.foreground != null
-              ? Prop.mix(PaintMix(v.foreground!))
-              : null,
-          background: v.background != null
-              ? Prop.mix(PaintMix(v.background!))
-              : null,
-          decorationThickness: v.decorationThickness != null
-              ? Prop.mix(DoubleMix(v.decorationThickness!))
-              : null,
-          fontFamily: v.fontFamily != null
-              ? Prop.mix(StringMix(v.fontFamily!))
-              : null,
-          fontFamilyFallback: v.fontFamilyFallback != null
-              ? Prop.mix(
-                  ListMix(
-                    v.fontFamilyFallback!.map((s) => StringMix(s)).toList(),
-                  ),
-                )
-              : null,
+          color: v.color,
+          backgroundColor: v.backgroundColor,
+          fontSize: v.fontSize,
+          fontWeight: v.fontWeight,
+          fontStyle: v.fontStyle,
+          letterSpacing: v.letterSpacing,
+          debugLabel: v.debugLabel,
+          wordSpacing: v.wordSpacing,
+          textBaseline: v.textBaseline,
+          shadows: v.shadows?.map((shadow) => ShadowDto(
+            blurRadius: shadow.blurRadius,
+            color: shadow.color,
+            offset: shadow.offset,
+          )).toList(),
+          fontFeatures: v.fontFeatures,
+          decoration: v.decoration,
+          decorationColor: v.decorationColor,
+          decorationStyle: v.decorationStyle,
+          fontVariations: v.fontVariations,
+          height: v.height,
+          foreground: v.foreground,
+          background: v.background,
+          decorationThickness: v.decorationThickness,
+          fontFamily: v.fontFamily,
+          fontFamilyFallback: v.fontFamilyFallback,
         ),
       );
 
@@ -185,126 +126,86 @@ final class TextStyleUtility<T extends StyleElement>
   }) {
     return builder(
       TextStyleDto(
-        color: color != null ? Prop.mix(ColorMix(color)) : null,
-        backgroundColor: backgroundColor != null
-            ? Prop.mix(ColorMix(backgroundColor))
-            : null,
-        fontSize: fontSize != null ? Prop.mix(DoubleMix(fontSize)) : null,
-        fontWeight: fontWeight != null
-            ? Prop.mix(FontWeightMix(fontWeight))
-            : null,
-        fontStyle: fontStyle != null ? Prop.mix(EnumMix(fontStyle)) : null,
-        letterSpacing: letterSpacing != null
-            ? Prop.mix(DoubleMix(letterSpacing))
-            : null,
-        debugLabel: debugLabel != null ? Prop.mix(StringMix(debugLabel)) : null,
-        wordSpacing: wordSpacing != null
-            ? Prop.mix(DoubleMix(wordSpacing))
-            : null,
-        textBaseline: textBaseline != null
-            ? Prop.mix(EnumMix(textBaseline))
-            : null,
-        shadows: shadows != null
-            ? Prop.mix(ListMix(shadows.map((s) => ShadowMix(s)).toList()))
-            : null,
-        fontFeatures: fontFeatures != null
-            ? Prop.mix(
-                ListMix(fontFeatures.map((f) => FontFeatureMix(f)).toList()),
-              )
-            : null,
-        decoration: decoration != null
-            ? Prop.mix(TextDecorationMix(decoration))
-            : null,
-        decorationColor: decorationColor != null
-            ? Prop.mix(ColorMix(decorationColor))
-            : null,
-        decorationStyle: decorationStyle != null
-            ? Prop.mix(EnumMix(decorationStyle))
-            : null,
-        fontVariations: fontVariations != null
-            ? Prop.mix(
-                ListMix(
-                  fontVariations.map((f) => FontVariationMix(f)).toList(),
-                ),
-              )
-            : null,
-        height: height != null ? Prop.mix(DoubleMix(height)) : null,
-        foreground: foreground != null ? Prop.mix(PaintMix(foreground)) : null,
-        background: background != null ? Prop.mix(PaintMix(background)) : null,
-        decorationThickness: decorationThickness != null
-            ? Prop.mix(DoubleMix(decorationThickness))
-            : null,
-        fontFamily: fontFamily != null ? Prop.mix(StringMix(fontFamily)) : null,
-        fontFamilyFallback: fontFamilyFallback != null
-            ? Prop.mix(
-                ListMix(fontFamilyFallback.map((s) => StringMix(s)).toList()),
-              )
-            : null,
+        color: color,
+        backgroundColor: backgroundColor,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        fontStyle: fontStyle,
+        letterSpacing: letterSpacing,
+        debugLabel: debugLabel,
+        wordSpacing: wordSpacing,
+        textBaseline: textBaseline,
+        shadows: shadows?.map((shadow) => ShadowDto(
+          blurRadius: shadow.blurRadius,
+          color: shadow.color,
+          offset: shadow.offset,
+        )).toList(),
+        fontFeatures: fontFeatures,
+        decoration: decoration,
+        decorationColor: decorationColor,
+        decorationStyle: decorationStyle,
+        fontVariations: fontVariations,
+        height: height,
+        foreground: foreground,
+        background: background,
+        decorationThickness: decorationThickness,
+        fontFamily: fontFamily,
+        fontFamilyFallback: fontFamilyFallback,
       ),
     );
   }
 
   @override
   T only({
-    ColorMix? color,
-    FontWeightMix? fontWeight,
-    FontStyleMix? fontStyle,
-    TextDecorationMix? decoration,
-    DoubleMix? fontSize,
-    DoubleMix? letterSpacing,
-    DoubleMix? wordSpacing,
-    ColorMix? backgroundColor,
-    ColorMix? decorationColor,
-    TextDecorationStyleMix? decorationStyle,
-    TextBaselineMix? textBaseline,
-    List<FontVariationMix>? fontVariations,
-    List<ShadowMix>? shadows,
-    List<FontFeatureMix>? fontFeatures,
-    PaintMix? foreground,
-    PaintMix? background,
-    DoubleMix? decorationThickness,
-    List<StringMix>? fontFamilyFallback,
-    StringMix? debugLabel,
-    DoubleMix? height,
-    StringMix? fontFamily,
+    Color? color,
+    FontWeight? fontWeight,
+    FontStyle? fontStyle,
+    TextDecoration? decoration,
+    double? fontSize,
+    double? letterSpacing,
+    double? wordSpacing,
+    Color? backgroundColor,
+    Color? decorationColor,
+    TextDecorationStyle? decorationStyle,
+    TextBaseline? textBaseline,
+    List<FontVariation>? fontVariations,
+    List<ShadowDto>? shadows,
+    List<FontFeature>? fontFeatures,
+    Paint? foreground,
+    Paint? background,
+    double? decorationThickness,
+    List<String>? fontFamilyFallback,
+    String? debugLabel,
+    double? height,
+    String? fontFamily,
   }) {
     return builder(
       TextStyleDto(
-        color: color != null ? Prop.mix(color) : null,
-        backgroundColor: backgroundColor != null
-            ? Prop.mix(backgroundColor)
-            : null,
-        fontSize: fontSize != null ? Prop.mix(fontSize) : null,
-        fontWeight: fontWeight != null ? Prop.mix(fontWeight) : null,
-        fontStyle: fontStyle != null ? Prop.mix(fontStyle) : null,
-        letterSpacing: letterSpacing != null ? Prop.mix(letterSpacing) : null,
-        debugLabel: debugLabel != null ? Prop.mix(debugLabel) : null,
-        wordSpacing: wordSpacing != null ? Prop.mix(wordSpacing) : null,
-        textBaseline: textBaseline != null ? Prop.mix(textBaseline) : null,
-        shadows: shadows != null ? Prop.mix(ListMix(shadows)) : null,
-        fontFeatures: fontFeatures != null
-            ? Prop.mix(ListMix(fontFeatures))
-            : null,
-        decoration: decoration != null ? Prop.mix(decoration) : null,
-        decorationColor: decorationColor != null
-            ? Prop.mix(decorationColor)
-            : null,
-        decorationStyle: decorationStyle != null
-            ? Prop.mix(decorationStyle)
-            : null,
-        fontVariations: fontVariations != null
-            ? Prop.mix(ListMix(fontVariations))
-            : null,
-        height: height != null ? Prop.mix(height) : null,
-        foreground: foreground != null ? Prop.mix(foreground) : null,
-        background: background != null ? Prop.mix(background) : null,
-        decorationThickness: decorationThickness != null
-            ? Prop.mix(decorationThickness)
-            : null,
-        fontFamily: fontFamily != null ? Prop.mix(fontFamily) : null,
-        fontFamilyFallback: fontFamilyFallback != null
-            ? Prop.mix(ListMix(fontFamilyFallback))
-            : null,
+        color: color,
+        backgroundColor: backgroundColor,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        fontStyle: fontStyle,
+        letterSpacing: letterSpacing,
+        debugLabel: debugLabel,
+        wordSpacing: wordSpacing,
+        textBaseline: textBaseline,
+        shadows: shadows?.map((shadow) => ShadowDto(
+          blurRadius: shadow.blurRadius,
+          color: shadow.color,
+          offset: shadow.offset,
+        )).toList(),
+        fontFeatures: fontFeatures,
+        decoration: decoration,
+        decorationColor: decorationColor,
+        decorationStyle: decorationStyle,
+        fontVariations: fontVariations,
+        height: height,
+        foreground: foreground,
+        background: background,
+        decorationThickness: decorationThickness,
+        fontFamily: fontFamily,
+        fontFamilyFallback: fontFamilyFallback,
       ),
     );
   }

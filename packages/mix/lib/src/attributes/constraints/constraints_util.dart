@@ -11,28 +11,24 @@ import 'constraints_dto.dart';
 class BoxConstraintsUtility<T extends StyleElement>
     extends DtoUtility<T, BoxConstraintsDto, BoxConstraints> {
   /// Utility for defining [BoxConstraintsDto.minWidth]
-  late final minWidth = DoubleUtility((v) => only(minWidth: DoubleMix(v)));
+  late final minWidth = DoubleUtility((v) => only(minWidth: v));
 
   /// Utility for defining [BoxConstraintsDto.maxWidth]
-  late final maxWidth = DoubleUtility((v) => only(maxWidth: DoubleMix(v)));
+  late final maxWidth = DoubleUtility((v) => only(maxWidth: v));
 
   /// Utility for defining [BoxConstraintsDto.minHeight]
-  late final minHeight = DoubleUtility((v) => only(minHeight: DoubleMix(v)));
+  late final minHeight = DoubleUtility((v) => only(minHeight: v));
 
   /// Utility for defining [BoxConstraintsDto.maxHeight]
-  late final maxHeight = DoubleUtility((v) => only(maxHeight: DoubleMix(v)));
+  late final maxHeight = DoubleUtility((v) => only(maxHeight: v));
 
   BoxConstraintsUtility(super.builder)
     : super(
         valueToDto: (v) => BoxConstraintsDto(
-          minWidth: v.minWidth != 0.0 ? DoubleMix(v.minWidth) : null,
-          maxWidth: v.maxWidth != double.infinity
-              ? DoubleMix(v.maxWidth)
-              : null,
-          minHeight: v.minHeight != 0.0 ? DoubleMix(v.minHeight) : null,
-          maxHeight: v.maxHeight != double.infinity
-              ? DoubleMix(v.maxHeight)
-              : null,
+          minWidth: v.minWidth != 0.0 ? v.minWidth : null,
+          maxWidth: v.maxWidth != double.infinity ? v.maxWidth : null,
+          minHeight: v.minHeight != 0.0 ? v.minHeight : null,
+          maxHeight: v.maxHeight != double.infinity ? v.maxHeight : null,
         ),
       );
 
@@ -43,20 +39,20 @@ class BoxConstraintsUtility<T extends StyleElement>
     double? maxHeight,
   }) {
     return only(
-      minWidth: minWidth != null ? DoubleMix(minWidth) : null,
-      maxWidth: maxWidth != null ? DoubleMix(maxWidth) : null,
-      minHeight: minHeight != null ? DoubleMix(minHeight) : null,
-      maxHeight: maxHeight != null ? DoubleMix(maxHeight) : null,
+      minWidth: minWidth,
+      maxWidth: maxWidth,
+      minHeight: minHeight,
+      maxHeight: maxHeight,
     );
   }
 
   /// Returns a new [BoxConstraintsDto] with the specified properties.
   @override
   T only({
-    Mix<double>? minWidth,
-    Mix<double>? maxWidth,
-    Mix<double>? minHeight,
-    Mix<double>? maxHeight,
+    double? minWidth,
+    double? maxWidth,
+    double? minHeight,
+    double? maxHeight,
   }) {
     return builder(
       BoxConstraintsDto(

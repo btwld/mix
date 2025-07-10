@@ -222,9 +222,7 @@ void main() {
               right: 20,
             ),
             constraints: BoxConstraintsDto(maxHeight: 200),
-            decoration: BoxDecorationDto(
-              color: Colors.red,
-            ),
+            decoration: BoxDecorationDto(color: Colors.red),
             transform: Matrix4.identity(),
             clipBehavior: Clip.antiAliasWithSaveLayer,
             width: 200,
@@ -355,14 +353,12 @@ void main() {
                 right: 10,
               ),
               constraints: BoxConstraintsDto(maxHeight: 100),
-              decoration: BoxDecorationDto(
-                color: Colors.blue,
-              ),
+              decoration: BoxDecorationDto(color: Colors.blue),
               transform: Matrix4.identity(),
               clipBehavior: Clip.antiAlias,
               width: 100,
               height: 100,
-              modifiers: const WidgetModifiersConfigDto([
+              modifiers: WidgetModifiersConfigDto(const [
                 OpacityModifierSpecAttribute(opacity: 0.5),
                 SizedBoxModifierSpecAttribute(height: 10, width: 10),
               ]),
@@ -434,14 +430,12 @@ void main() {
                   right: 20,
                 ),
                 constraints: BoxConstraintsDto(maxHeight: 200),
-                decoration: BoxDecorationDto(
-                  color: Colors.red,
-                ),
+                decoration: BoxDecorationDto(color: Colors.red),
                 transform: Matrix4.identity(),
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 width: 200,
                 height: 200,
-                modifiers: const WidgetModifiersConfigDto([
+                modifiers: WidgetModifiersConfigDto(const [
                   OpacityModifierSpecAttribute(opacity: 0.4),
                   SizedBoxModifierSpecAttribute(height: 20, width: 10),
                 ]),

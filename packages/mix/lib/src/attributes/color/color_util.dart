@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../core/mix_element.dart';
-import '../../core/prop.dart';
 import '../../core/utility.dart';
 import '../../theme/tokens/mix_token.dart';
 import 'color_extensions.dart';
@@ -10,21 +9,17 @@ import 'material_colors_util.dart';
 /// Base utility for color operations
 @immutable
 abstract base class BaseColorUtility<T extends StyleElement>
-    extends DtoUtility<T, Mix<Color>, Color> {
-  const BaseColorUtility(super.builder) : super(valueToDto: _colorToMix);
+    extends MixUtility<T, Color> {
+  const BaseColorUtility(super.builder);
 
-  T _buildColor(Color color) => builder(ColorMix(color));
+  T _buildColor(Color color) => builder(color);
 }
-
-// Helper function
-Mix<Color> _colorToMix(Color color) => ColorMix(color);
 
 /// Mixin that provides color directive methods
 base mixin ColorDirectiveMixin<T extends StyleElement> on BaseColorUtility<T> {
   /// Abstract method that subclasses must implement to handle directives and tokens
-  @override
   T only({
-    Mix<Color>? color,
+    Color? color,
     MixableToken<Color>? token,
     List<MixDirective<Color>>? directives,
   });
@@ -33,7 +28,7 @@ base mixin ColorDirectiveMixin<T extends StyleElement> on BaseColorUtility<T> {
   T withOpacity(double opacity) => only(
     directives: [
       MixDirective(
-        (color) => color.withOpacity(opacity),
+        (color) => color.withValues(alpha: opacity),
         debugLabel: 'opacity($opacity)',
       ),
     ],
@@ -121,12 +116,12 @@ base class FoundationColorUtility<T extends StyleElement, C extends Color>
 
   @override
   T only({
-    Mix<Color>? color,
+    Color? color,
     MixableToken<Color>? token,
     List<MixDirective<Color>>? directives,
   }) {
-    // TODO: Handle directives and tokens properly once MixProp support is added
-    return _buildColor(this.color);
+    // For now, just use the provided color or the foundation color
+    return _buildColor(color ?? this.color);
   }
 }
 
@@ -145,7 +140,7 @@ final class ColorUtility<T extends StyleElement> extends BaseColorUtility<T>
 
   @override
   T only({
-    Mix<Color>? color,
+    Color? color,
     MixableToken<Color>? token,
     List<MixDirective<Color>>? directives,
   }) {
@@ -155,17 +150,13 @@ final class ColorUtility<T extends StyleElement> extends BaseColorUtility<T>
       );
     }
 
-    // Create MixProp with the appropriate values
-    final mixProp = Prop(mix: color, directives: directives);
-
-    // For now, we still need to pass Mix<Color> to builder
-    // TODO: Update once all DTOs accept MixProp
+    // For now, we only support direct color values
+    // TODO: Add support for tokens and directives once the infrastructure is ready
     if (color != null) {
       return builder(color);
     }
 
-    // For directives-only, we need a placeholder approach
-    // This is temporary until utilities can work with MixProp directly
+    // Temporary: tokens and directives not yet supported
     throw UnsupportedError('Token and directives-only color not yet supported');
   }
 }
