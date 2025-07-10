@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../internal/compare_mixin.dart';
 import 'factory/mix_context.dart';
-import 'mix_value.dart';
+import 'prop.dart';
 
 // Generic directive for modifying values
 @immutable
@@ -56,17 +56,17 @@ abstract class Mix<T> with EqualityMixin {
   Mix<T> merge(covariant Mix<T>? other);
 
   @protected
-  V? resolveValue<V>(MixContext context, Mixable<V>? mix) {
+  V? resolveValue<V>(MixContext context, Prop<V>? mix) {
     return mix?.resolve(context);
   }
 
   @protected
-  Mixable<V>? mergeValue<V>(Mixable<V>? a, Mixable<V>? b) {
+  Prop<V>? mergeValue<V>(Prop<V>? a, Prop<V>? b) {
     return (a?.merge(b) ?? b);
   }
 
   @protected
-  List<V>? resolveList<V>(MixContext context, List<Mixable<V>>? list) {
+  List<V>? resolveList<V>(MixContext context, List<Prop<V>>? list) {
     if (list == null || list.isEmpty) return null;
 
     final resolved = <V>[];
@@ -79,7 +79,7 @@ abstract class Mix<T> with EqualityMixin {
   }
 
   @protected
-  List<W>? resolveDtoList<X extends MixableDto<V, W>, V extends Mix<W>, W>(
+  List<W>? resolveDtoList<X extends MixProp<V, W>, V extends Mix<W>, W>(
     MixContext context,
     List<X>? list,
   ) {
@@ -87,9 +87,9 @@ abstract class Mix<T> with EqualityMixin {
   }
 
   @protected
-  List<Mixable<V>>? mergeValueList<V>(
-    List<Mixable<V>>? a,
-    List<Mixable<V>>? b, {
+  List<Prop<V>>? mergeValueList<V>(
+    List<Prop<V>>? a,
+    List<Prop<V>>? b, {
     ListMergeStrategy strategy = ListMergeStrategy.append,
   }) {
     if (a == null) return b;
@@ -101,7 +101,7 @@ abstract class Mix<T> with EqualityMixin {
 
       case ListMergeStrategy.replace:
         // Merge in place - b items override a items at same index
-        final result = List<Mixable<V>>.of(a);
+        final result = List<Prop<V>>.of(a);
         for (int i = 0; i < b.length; i++) {
           if (i < result.length) {
             result[i] = result[i].merge(b[i]);
@@ -118,7 +118,7 @@ abstract class Mix<T> with EqualityMixin {
   }
 
   @protected
-  List<X>? mergeDtoList<X extends MixableDto<V, W>, V extends Mix<W>, W>(
+  List<X>? mergeDtoList<X extends MixProp<V, W>, V extends Mix<W>, W>(
     List<X>? a,
     List<X>? b, {
     ListMergeStrategy strategy = ListMergeStrategy.append,

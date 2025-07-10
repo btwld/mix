@@ -6,24 +6,22 @@ import 'mix_element.dart';
 
 /// Simplified MixValue that can hold values, tokens, or values with directives
 @immutable
-abstract class Mixable<T> {
-  const Mixable();
+abstract class Prop<T> {
+  const Prop();
 
   // Factory constructors for different types
-  const factory Mixable.value(T value) = _ValueMix<T>;
-  const factory Mixable.token(MixableToken<T> token) = _TokenMix<T>;
-  const factory Mixable.withDirectives(
-    T value,
-    List<MixDirective<T>> directives,
-  ) = _DirectiveMix<T>;
+  const factory Prop.value(T value) = _ValueMix<T>;
+  const factory Prop.token(MixableToken<T> token) = _TokenMix<T>;
+  const factory Prop.withDirectives(T value, List<MixDirective<T>> directives) =
+      _DirectiveMix<T>;
 
   // Empty constructor for null-like behavior
-  const factory Mixable.empty() = _EmptyMix<T>;
+  const factory Prop.empty() = _EmptyMix<T>;
 
-  static Mixable<T>? maybeValue<T>(T? value) {
+  static Prop<T>? maybeValue<T>(T? value) {
     if (value == null) return null;
 
-    return Mixable.value(value);
+    return Prop.value(value);
   }
 
   /// Whether this mix value has any content
@@ -40,7 +38,7 @@ abstract class Mixable<T> {
   /// - Value + Token = other wins (token takes precedence)
   /// - Directives accumulate (both are applied)
   /// - Empty + Anything = other wins
-  Mixable<T> merge(Mixable<T>? other);
+  Prop<T> merge(Prop<T>? other);
 
   @override
   bool operator ==(Object other);
@@ -51,7 +49,7 @@ abstract class Mixable<T> {
 
 /// Private implementation for direct values
 @immutable
-class _ValueMix<T> extends Mixable<T> {
+class _ValueMix<T> extends Prop<T> {
   final T value;
 
   const _ValueMix(this.value);
@@ -60,12 +58,12 @@ class _ValueMix<T> extends Mixable<T> {
   T resolve(MixContext context) => value;
 
   @override
-  Mixable<T> merge(Mixable<T>? other) {
+  Prop<T> merge(Prop<T>? other) {
     if (other == null || other.isEmpty) return this;
 
     // If other has directives and is value-based, merge them
     if (other is _DirectiveMix<T>) {
-      return Mixable.withDirectives(other.baseValue ?? value, other.directives);
+      return Prop.withDirectives(other.baseValue ?? value, other.directives);
     }
 
     // Otherwise, other wins
@@ -88,7 +86,7 @@ class _ValueMix<T> extends Mixable<T> {
 
 /// Private implementation for tokens
 @immutable
-class _TokenMix<T> extends Mixable<T> {
+class _TokenMix<T> extends Prop<T> {
   final MixableToken<T> token;
 
   const _TokenMix(this.token);
@@ -99,7 +97,7 @@ class _TokenMix<T> extends Mixable<T> {
   }
 
   @override
-  Mixable<T> merge(Mixable<T>? other) {
+  Prop<T> merge(Prop<T>? other) {
     if (other == null || other.isEmpty) return this;
 
     // Other always wins in token scenarios
@@ -122,7 +120,7 @@ class _TokenMix<T> extends Mixable<T> {
 
 /// Private implementation for values with directives
 @immutable
-class _DirectiveMix<T> extends Mixable<T> {
+class _DirectiveMix<T> extends Prop<T> {
   final T? baseValue;
   final List<MixDirective<T>> directives;
 
@@ -142,12 +140,12 @@ class _DirectiveMix<T> extends Mixable<T> {
   }
 
   @override
-  Mixable<T> merge(Mixable<T>? other) {
+  Prop<T> merge(Prop<T>? other) {
     if (other == null || other.isEmpty) return this;
 
     // If other also has directives, combine them
     if (other is _DirectiveMix<T>) {
-      return Mixable.withDirectives(other.baseValue ?? baseValue!, [
+      return Prop.withDirectives(other.baseValue ?? baseValue!, [
         ...directives,
         ...other.directives,
       ]);
@@ -155,7 +153,7 @@ class _DirectiveMix<T> extends Mixable<T> {
 
     // If other is a value, use it as new base with our directives
     if (other is _ValueMix<T>) {
-      return Mixable.withDirectives(other.value, directives);
+      return Prop.withDirectives(other.value, directives);
     }
 
     // For tokens, other wins completely
@@ -179,14 +177,14 @@ class _DirectiveMix<T> extends Mixable<T> {
 
 /// Private implementation for empty/null-like behavior
 @immutable
-class _EmptyMix<T> extends Mixable<T> {
+class _EmptyMix<T> extends Prop<T> {
   const _EmptyMix();
 
   @override
   T? resolve(MixContext context) => null;
 
   @override
-  Mixable<T> merge(Mixable<T>? other) => other ?? this;
+  Prop<T> merge(Prop<T>? other) => other ?? this;
 
   @override
   bool operator ==(Object other) =>
@@ -202,17 +200,17 @@ class _EmptyMix<T> extends Mixable<T> {
 
 /// MixableDto for handling Mix objects (DTOs) with smart merge logic
 @immutable
-sealed class MixableDto<T extends Mix<V>, V> {
-  const MixableDto._();
+sealed class MixProp<T extends Mix<V>, V> {
+  const MixProp._();
 
   // Factory constructors
-  const factory MixableDto.value(T value) = _ValueMixDto<T, V>;
-  const factory MixableDto.token(MixableToken<T> token) = _TokenMixDto<T, V>;
+  const factory MixProp.value(T value) = _ValueMixDto<T, V>;
+  const factory MixProp.token(MixableToken<T> token) = _TokenMixDto<T, V>;
 
-  static MixableDto<T, V>? maybeValue<T extends Mix<V>, V>(T? value) {
+  static MixProp<T, V>? maybeValue<T extends Mix<V>, V>(T? value) {
     if (value == null) return null;
 
-    return MixableDto.value(value);
+    return MixProp.value(value);
   }
 
   /// Smart grouping: merge consecutive values at the end
@@ -253,7 +251,10 @@ sealed class MixableDto<T extends Mix<V>, V> {
         .cast<_ValueItem<T>>()
         .map((e) => e.value)
         .toList();
-    final merged = values.fold<T?>(null, (acc, dto) => (acc?.merge(dto) ?? dto) as T?);
+    final merged = values.fold<T?>(
+      null,
+      (acc, dto) => (acc?.merge(dto) ?? dto) as T?,
+    );
 
     return merged != null ? [...beforeToken, _ValueItem(merged)] : beforeToken;
   }
@@ -277,13 +278,16 @@ sealed class MixableDto<T extends Mix<V>, V> {
     }
 
     // Merge all resolved DTOs
-    return resolved.fold<T?>(null, (acc, dto) => (acc?.merge(dto) ?? dto) as T?);
+    return resolved.fold<T?>(
+      null,
+      (acc, dto) => (acc?.merge(dto) ?? dto) as T?,
+    );
   }
 
   /// Merges this MixableDto with another using smart grouping
   /// Values at the end of the sequence are merged together
   /// Tokens remain separate for later resolution
-  MixableDto<T, V> merge(MixableDto<T, V>? other) {
+  MixProp<T, V> merge(MixProp<T, V>? other) {
     if (other == null || other.isEmpty) return this;
 
     final newItems = [..._items, ...other._items];
@@ -306,7 +310,7 @@ sealed class _MixableItem<T extends Mix> {
 
 /// Private implementation for direct DTO values
 @immutable
-class _ValueMixDto<T extends Mix<V>, V> extends MixableDto<T, V> {
+class _ValueMixDto<T extends Mix<V>, V> extends MixProp<T, V> {
   final T value;
 
   const _ValueMixDto(this.value) : super._();
@@ -327,7 +331,7 @@ class _ValueMixDto<T extends Mix<V>, V> extends MixableDto<T, V> {
 
 /// Private implementation for tokens
 @immutable
-class _TokenMixDto<T extends Mix<V>, V> extends MixableDto<T, V> {
+class _TokenMixDto<T extends Mix<V>, V> extends MixProp<T, V> {
   final MixableToken<T> token;
 
   const _TokenMixDto(this.token) : super._();
@@ -348,7 +352,7 @@ class _TokenMixDto<T extends Mix<V>, V> extends MixableDto<T, V> {
 
 /// Private implementation for aggregated DTOs with smart grouping
 @immutable
-class _AggregatedMixDto<T extends Mix<V>, V> extends MixableDto<T, V> {
+class _AggregatedMixDto<T extends Mix<V>, V> extends MixProp<T, V> {
   final List<_MixableItem<T>> items;
 
   const _AggregatedMixDto(this.items) : super._();

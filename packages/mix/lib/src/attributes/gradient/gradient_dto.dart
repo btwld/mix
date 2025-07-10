@@ -10,9 +10,9 @@ import 'package:mix/mix.dart';
 @immutable
 sealed class GradientDto<T extends Gradient> extends Mix<T>
     with HasDefaultValue<T> {
-  final Mixable<List<double>>? stops;
-  final Mixable<List<Color>>? colors;
-  final Mixable<GradientTransform>? transform;
+  final Prop<List<double>>? stops;
+  final Prop<List<Color>>? colors;
+  final Prop<GradientTransform>? transform;
   const GradientDto({
     required this.stops,
     required this.colors,
@@ -85,9 +85,9 @@ sealed class GradientDto<T extends Gradient> extends Mix<T>
 /// merge and combining behavior. It allows to be merged, and resolved to a `[LinearGradient]
 
 final class LinearGradientDto extends GradientDto<LinearGradient> {
-  final Mixable<AlignmentGeometry>? begin;
-  final Mixable<AlignmentGeometry>? end;
-  final Mixable<TileMode>? tileMode;
+  final Prop<AlignmentGeometry>? begin;
+  final Prop<AlignmentGeometry>? end;
+  final Prop<TileMode>? tileMode;
 
   factory LinearGradientDto({
     AlignmentGeometry? begin,
@@ -98,12 +98,12 @@ final class LinearGradientDto extends GradientDto<LinearGradient> {
     List<double>? stops,
   }) {
     return LinearGradientDto._(
-      begin: Mixable.maybeValue(begin),
-      end: Mixable.maybeValue(end),
-      tileMode: Mixable.maybeValue(tileMode),
-      transform: Mixable.maybeValue(transform),
-      colors: Mixable.maybeValue(colors),
-      stops: Mixable.maybeValue(stops),
+      begin: Prop.maybeValue(begin),
+      end: Prop.maybeValue(end),
+      tileMode: Prop.maybeValue(tileMode),
+      transform: Prop.maybeValue(transform),
+      colors: Prop.maybeValue(colors),
+      stops: Prop.maybeValue(stops),
     );
   }
 
@@ -154,11 +154,11 @@ final class LinearGradientDto extends GradientDto<LinearGradient> {
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a `[RadialGradient]
 final class RadialGradientDto extends GradientDto<RadialGradient> {
-  final Mixable<AlignmentGeometry>? center;
-  final Mixable<double>? radius;
-  final Mixable<TileMode>? tileMode;
-  final Mixable<AlignmentGeometry>? focal;
-  final Mixable<double>? focalRadius;
+  final Prop<AlignmentGeometry>? center;
+  final Prop<double>? radius;
+  final Prop<TileMode>? tileMode;
+  final Prop<AlignmentGeometry>? focal;
+  final Prop<double>? focalRadius;
 
   factory RadialGradientDto({
     AlignmentGeometry? center,
@@ -171,14 +171,14 @@ final class RadialGradientDto extends GradientDto<RadialGradient> {
     List<double>? stops,
   }) {
     return RadialGradientDto._(
-      center: Mixable.maybeValue(center),
-      radius: Mixable.maybeValue(radius),
-      tileMode: Mixable.maybeValue(tileMode),
-      focal: Mixable.maybeValue(focal),
-      focalRadius: Mixable.maybeValue(focalRadius),
-      transform: Mixable.maybeValue(transform),
-      colors: Mixable.maybeValue(colors),
-      stops: Mixable.maybeValue(stops),
+      center: Prop.maybeValue(center),
+      radius: Prop.maybeValue(radius),
+      tileMode: Prop.maybeValue(tileMode),
+      focal: Prop.maybeValue(focal),
+      focalRadius: Prop.maybeValue(focalRadius),
+      transform: Prop.maybeValue(transform),
+      colors: Prop.maybeValue(colors),
+      stops: Prop.maybeValue(stops),
     );
   }
 
@@ -245,10 +245,10 @@ final class RadialGradientDto extends GradientDto<RadialGradient> {
 /// merge and combining behavior. It allows to be merged, and resolved to a `[SweepGradient]
 
 final class SweepGradientDto extends GradientDto<SweepGradient> {
-  final Mixable<AlignmentGeometry>? center;
-  final Mixable<double>? startAngle;
-  final Mixable<double>? endAngle;
-  final Mixable<TileMode>? tileMode;
+  final Prop<AlignmentGeometry>? center;
+  final Prop<double>? startAngle;
+  final Prop<double>? endAngle;
+  final Prop<TileMode>? tileMode;
 
   factory SweepGradientDto({
     AlignmentGeometry? center,
@@ -260,13 +260,13 @@ final class SweepGradientDto extends GradientDto<SweepGradient> {
     List<double>? stops,
   }) {
     return SweepGradientDto._(
-      center: Mixable.maybeValue(center),
-      startAngle: Mixable.maybeValue(startAngle),
-      endAngle: Mixable.maybeValue(endAngle),
-      tileMode: Mixable.maybeValue(tileMode),
-      transform: Mixable.maybeValue(transform),
-      colors: Mixable.maybeValue(colors),
-      stops: Mixable.maybeValue(stops),
+      center: Prop.maybeValue(center),
+      startAngle: Prop.maybeValue(startAngle),
+      endAngle: Prop.maybeValue(endAngle),
+      tileMode: Prop.maybeValue(tileMode),
+      transform: Prop.maybeValue(transform),
+      colors: Prop.maybeValue(colors),
+      stops: Prop.maybeValue(stops),
     );
   }
 

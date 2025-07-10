@@ -204,10 +204,10 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional> {
 final class BorderSideDto extends Mix<BorderSide>
     with HasDefaultValue<BorderSide> {
   // Properties use MixableProperty for cleaner merging
-  final Mixable<Color>? color;
-  final Mixable<double>? width;
-  final Mixable<BorderStyle>? style;
-  final Mixable<double>? strokeAlign;
+  final Prop<Color>? color;
+  final Prop<double>? width;
+  final Prop<BorderStyle>? style;
+  final Prop<double>? strokeAlign;
 
   static const BorderSideDto none = BorderSideDto._(
     color: null,
@@ -224,20 +224,15 @@ final class BorderSideDto extends Mix<BorderSide>
     double? width,
   }) {
     return BorderSideDto._(
-      color: Mixable.maybeValue(color),
-      width: Mixable.maybeValue(width),
-      style: Mixable.maybeValue(style),
-      strokeAlign: Mixable.maybeValue(strokeAlign),
+      color: Prop.maybeValue(color),
+      width: Prop.maybeValue(width),
+      style: Prop.maybeValue(style),
+      strokeAlign: Prop.maybeValue(strokeAlign),
     );
   }
 
   // Private constructor that accepts MixableProperty instances
-  const BorderSideDto._({
-    this.color,
-    this.width,
-    this.style,
-    this.strokeAlign,
-  });
+  const BorderSideDto._({this.color, this.width, this.style, this.strokeAlign});
 
   /// Resolves to [BorderSide] using the provided [MixContext].
   ///

@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 typedef _BaseDecorProperties = ({
-  Mixable<Color> color,
+  Prop<Color>? color,
   GradientDto? gradient,
   List<BoxShadowDto>? boxShadow,
   DecorationImageDto? image,
@@ -19,7 +19,7 @@ typedef _BaseDecorProperties = ({
 /// In order to support merging of [Decoration] values, and reusable of common properties.
 @immutable
 sealed class DecorationDto<T extends Decoration> extends Mix<T> {
-  final Mixable<Color> color;
+  final Prop<Color>? color;
   final GradientDto? gradient;
   final DecorationImageDto? image;
   final List<BoxShadowDto>? boxShadow;
@@ -86,7 +86,7 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
     BorderRadiusGeometryDto? borderRadius,
     BoxShape? shape,
     BlendMode? backgroundBlendMode,
-    Mix<Color>? color,
+    Color? color,
     DecorationImageDto? image,
     GradientDto? gradient,
     List<BoxShadowDto>? boxShadow,
@@ -96,7 +96,7 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
       borderRadius: borderRadius,
       shape: shape,
       backgroundBlendMode: backgroundBlendMode,
-      color: Mixable(color),
+      color: Prop.maybeValue(color),
       image: image,
       gradient: gradient,
       boxShadow: boxShadow,
@@ -148,7 +148,7 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
   @override
   BoxDecoration resolve(MixContext mix) {
     return BoxDecoration(
-      color: color.resolve(mix),
+      color: resolveValue(mix, color),
       image: image?.resolve(mix),
       border: border?.resolve(mix),
       borderRadius: borderRadius?.resolve(mix),
@@ -177,7 +177,7 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
           borderRadius?.merge(other.borderRadius) ?? other.borderRadius,
       shape: other.shape ?? shape,
       backgroundBlendMode: other.backgroundBlendMode ?? backgroundBlendMode,
-      color: color.merge(other.color),
+      color: mergeValue(color, other.color),
       image: image?.merge(other.image) ?? other.image,
       gradient: GradientDto.tryToMerge(gradient, other.gradient),
       boxShadow: MixHelpers.mergeList(boxShadow, other.boxShadow),
@@ -210,14 +210,14 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
 
   factory ShapeDecorationDto({
     ShapeBorderDto? shape,
-    Mix<Color>? color,
+    Color? color,
     DecorationImageDto? image,
     GradientDto? gradient,
     List<BoxShadowDto>? shadows,
   }) {
     return ShapeDecorationDto._(
       shape: shape,
-      color: Mixable(color),
+      color: Prop.maybeValue(color),
       image: image,
       gradient: gradient,
       shadows: shadows,
@@ -273,7 +273,7 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
   @override
   ShapeDecoration resolve(MixContext mix) {
     return ShapeDecoration(
-      color: color.resolve(mix) ?? defaultValue.color,
+      color: resolveValue(mix, color) ?? defaultValue.color,
       image: image?.resolve(mix) ?? defaultValue.image,
       gradient: gradient?.resolve(mix) ?? defaultValue.gradient,
       shadows:
@@ -296,7 +296,7 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
 
     return ShapeDecorationDto._(
       shape: ShapeBorderDto.tryToMerge(shape, other.shape),
-      color: color.merge(other.color),
+      color: mergeValue(color, other.color),
       image: image?.merge(other.image) ?? other.image,
       gradient: GradientDto.tryToMerge(gradient, other.gradient),
       shadows: MixHelpers.mergeList(shadows, other.shadows),

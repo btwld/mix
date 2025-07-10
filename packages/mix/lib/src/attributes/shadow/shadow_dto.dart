@@ -5,9 +5,9 @@ import 'package:mix/mix.dart';
 
 sealed class BaseShadowDto<T extends Shadow> extends Mix<T> {
   // Properties use MixableProperty for cleaner merging
-  final Mixable<Color>? color;
-  final Mixable<Offset>? offset;
-  final Mixable<double>? blurRadius;
+  final Prop<Color>? color;
+  final Prop<Offset>? offset;
+  final Prop<double>? blurRadius;
 
   const BaseShadowDto({
     required this.blurRadius,
@@ -24,9 +24,9 @@ class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
   // Main constructor accepts Mix<T>? values
   factory ShadowDto({double? blurRadius, Color? color, Offset? offset}) {
     return ShadowDto._(
-      blurRadius: Mixable.maybeValue(blurRadius),
-      color: Mixable.maybeValue(color),
-      offset: Mixable.maybeValue(offset),
+      blurRadius: Prop.maybeValue(blurRadius),
+      color: Prop.maybeValue(color),
+      offset: Prop.maybeValue(offset),
     );
   }
 
@@ -86,7 +86,7 @@ class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
 /// merge and combining behavior. It allows to be merged, and resolved to a `[BoxShadow]
 class BoxShadowDto extends BaseShadowDto<BoxShadow>
     with HasDefaultValue<BoxShadow> {
-  final Mixable<double>? spreadRadius;
+  final Prop<double>? spreadRadius;
 
   // Main constructor accepts Mix<T>? values
   factory BoxShadowDto({
@@ -96,10 +96,10 @@ class BoxShadowDto extends BaseShadowDto<BoxShadow>
     double? spreadRadius,
   }) {
     return BoxShadowDto._(
-      color: Mixable.maybeValue(color),
-      offset: Mixable.maybeValue(offset),
-      blurRadius: Mixable.maybeValue(blurRadius),
-      spreadRadius: Mixable.maybeValue(spreadRadius),
+      color: Prop.maybeValue(color),
+      offset: Prop.maybeValue(offset),
+      blurRadius: Prop.maybeValue(blurRadius),
+      spreadRadius: Prop.maybeValue(spreadRadius),
     );
   }
 

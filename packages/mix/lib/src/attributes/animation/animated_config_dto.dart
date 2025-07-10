@@ -2,7 +2,7 @@ import 'package:flutter/animation.dart';
 
 import '../../core/factory/mix_context.dart';
 import '../../core/mix_element.dart';
-import '../../core/mix_value.dart';
+import '../../core/prop.dart';
 import '../../internal/constants.dart';
 import 'animation_config.dart';
 
@@ -13,29 +13,25 @@ typedef AnimatedDataDto = AnimationConfigDto;
 
 class AnimationConfigDto extends Mix<AnimationConfig> {
   // Properties use MixableProperty for cleaner merging
-  final Mixable<Duration> duration;
-  final Mixable<Curve> curve;
-  final Mixable<VoidCallback> onEnd;
+  final Prop<Duration>? duration;
+  final Prop<Curve>? curve;
+  final Prop<VoidCallback>? onEnd;
 
-  // Main constructor accepts Mix values
+  // Main constructor accepts raw values
   factory AnimationConfigDto({
-    Mix<Duration>? duration,
-    Mix<Curve>? curve,
-    Mix<VoidCallback>? onEnd,
+    Duration? duration,
+    Curve? curve,
+    VoidCallback? onEnd,
   }) {
     return AnimationConfigDto._(
-      duration: Mixable(duration),
-      curve: Mixable(curve),
-      onEnd: Mixable(onEnd),
+      duration: Prop.maybeValue(duration),
+      curve: Prop.maybeValue(curve),
+      onEnd: Prop.maybeValue(onEnd),
     );
   }
 
-  // Private constructor that accepts MixProp instances
-  const AnimationConfigDto._({
-    required this.duration,
-    required this.curve,
-    required this.onEnd,
-  });
+  // Private constructor that accepts MixableProperty instances
+  const AnimationConfigDto._({this.duration, this.curve, this.onEnd});
 
   factory AnimationConfigDto.withDefaults() {
     return AnimationConfigDto(
@@ -48,9 +44,9 @@ class AnimationConfigDto extends Mix<AnimationConfig> {
   @override
   AnimationConfig resolve(MixContext mix) {
     return AnimationConfig(
-      duration: duration.resolve(mix),
-      curve: curve.resolve(mix),
-      onEnd: onEnd.resolve(mix),
+      duration: resolveValue(mix, duration),
+      curve: resolveValue(mix, curve),
+      onEnd: resolveValue(mix, onEnd),
     );
   }
 
@@ -59,9 +55,9 @@ class AnimationConfigDto extends Mix<AnimationConfig> {
     if (other == null) return this;
 
     return AnimationConfigDto._(
-      duration: duration.merge(other.duration),
-      curve: curve.merge(other.curve),
-      onEnd: onEnd.merge(other.onEnd),
+      duration: mergeValue(duration, other.duration),
+      curve: mergeValue(curve, other.curve),
+      onEnd: mergeValue(onEnd, other.onEnd),
     );
   }
 

@@ -7,31 +7,31 @@ import 'package:mix/mix.dart';
 @immutable
 class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
   // Simple properties use MixValue directly
-  final Mixable<Color>? color;
-  final Mixable<Color>? backgroundColor;
-  final Mixable<double>? fontSize;
-  final Mixable<FontWeight>? fontWeight;
-  final Mixable<FontStyle>? fontStyle;
-  final Mixable<double>? letterSpacing;
-  final Mixable<String>? debugLabel;
-  final Mixable<double>? wordSpacing;
-  final Mixable<TextBaseline>? textBaseline;
-  final Mixable<TextDecoration>? decoration;
-  final Mixable<Color>? decorationColor;
-  final Mixable<TextDecorationStyle>? decorationStyle;
-  final Mixable<double>? height;
-  final Mixable<double>? decorationThickness;
-  final Mixable<String>? fontFamily;
-  final Mixable<Paint>? foreground;
-  final Mixable<Paint>? background;
+  final Prop<Color>? color;
+  final Prop<Color>? backgroundColor;
+  final Prop<double>? fontSize;
+  final Prop<FontWeight>? fontWeight;
+  final Prop<FontStyle>? fontStyle;
+  final Prop<double>? letterSpacing;
+  final Prop<String>? debugLabel;
+  final Prop<double>? wordSpacing;
+  final Prop<TextBaseline>? textBaseline;
+  final Prop<TextDecoration>? decoration;
+  final Prop<Color>? decorationColor;
+  final Prop<TextDecorationStyle>? decorationStyle;
+  final Prop<double>? height;
+  final Prop<double>? decorationThickness;
+  final Prop<String>? fontFamily;
+  final Prop<Paint>? foreground;
+  final Prop<Paint>? background;
 
   // Lists of MixValues for simple types
-  final List<Mixable<String>>? fontFamilyFallback;
-  final List<Mixable<FontFeature>>? fontFeatures;
-  final List<Mixable<FontVariation>>? fontVariations;
+  final List<Prop<String>>? fontFamilyFallback;
+  final List<Prop<FontFeature>>? fontFeatures;
+  final List<Prop<FontVariation>>? fontVariations;
 
   // Lists of Mix types (DTOs)
-  final List<MixableDto<ShadowDto, Shadow>>? shadows;
+  final List<MixProp<ShadowDto, Shadow>>? shadows;
 
   const TextStyleDto({
     this.color,

@@ -13,10 +13,10 @@ sealed class ConstraintsDto<T extends Constraints> extends Mix<T> {
 final class BoxConstraintsDto extends ConstraintsDto<BoxConstraints>
     with HasDefaultValue<BoxConstraints> {
   // Properties use MixableProperty for cleaner merging
-  final Mixable<double>? minWidth;
-  final Mixable<double>? maxWidth;
-  final Mixable<double>? minHeight;
-  final Mixable<double>? maxHeight;
+  final Prop<double>? minWidth;
+  final Prop<double>? maxWidth;
+  final Prop<double>? minHeight;
+  final Prop<double>? maxHeight;
 
   // Main constructor accepts raw values
   factory BoxConstraintsDto({
@@ -26,10 +26,10 @@ final class BoxConstraintsDto extends ConstraintsDto<BoxConstraints>
     double? maxHeight,
   }) {
     return BoxConstraintsDto._(
-      minWidth: Mixable.maybeValue(minWidth),
-      maxWidth: Mixable.maybeValue(maxWidth),
-      minHeight: Mixable.maybeValue(minHeight),
-      maxHeight: Mixable.maybeValue(maxHeight),
+      minWidth: Prop.maybeValue(minWidth),
+      maxWidth: Prop.maybeValue(maxWidth),
+      minHeight: Prop.maybeValue(minHeight),
+      maxHeight: Prop.maybeValue(maxHeight),
     );
   }
 

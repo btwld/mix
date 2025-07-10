@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/mix_element.dart';
-import '../../core/mix_value.dart';
+import '../../core/prop.dart';
 import '../../core/utility.dart';
 import '../../theme/tokens/mix_token.dart';
 import 'color_extensions.dart';
@@ -156,7 +156,7 @@ final class ColorUtility<T extends StyleElement> extends BaseColorUtility<T>
     }
 
     // Create MixProp with the appropriate values
-    final mixProp = Mixable(mix: color, directives: directives);
+    final mixProp = Prop(mix: color, directives: directives);
 
     // For now, we still need to pass Mix<Color> to builder
     // TODO: Update once all DTOs accept MixProp

@@ -5,14 +5,14 @@ import 'package:mix/mix.dart';
 final class DecorationImageDto extends Mix<DecorationImage>
     with HasDefaultValue<DecorationImage> {
   // Properties use MixProp for cleaner merging
-  final Mixable<ImageProvider> image;
-  final Mixable<BoxFit> fit;
-  final Mixable<AlignmentGeometry> alignment;
-  final Mixable<Rect> centerSlice;
-  final Mixable<ImageRepeat> repeat;
-  final Mixable<FilterQuality> filterQuality;
-  final Mixable<bool> invertColors;
-  final Mixable<bool> isAntiAlias;
+  final Prop<ImageProvider> image;
+  final Prop<BoxFit> fit;
+  final Prop<AlignmentGeometry> alignment;
+  final Prop<Rect> centerSlice;
+  final Prop<ImageRepeat> repeat;
+  final Prop<FilterQuality> filterQuality;
+  final Prop<bool> invertColors;
+  final Prop<bool> isAntiAlias;
 
   // Main constructor accepts Mix values
   factory DecorationImageDto({
@@ -26,14 +26,14 @@ final class DecorationImageDto extends Mix<DecorationImage>
     Mix<bool>? isAntiAlias,
   }) {
     return DecorationImageDto._(
-      image: Mixable(image),
-      fit: Mixable(fit),
-      alignment: Mixable(alignment),
-      centerSlice: Mixable(centerSlice),
-      repeat: Mixable(repeat),
-      filterQuality: Mixable(filterQuality),
-      invertColors: Mixable(invertColors),
-      isAntiAlias: Mixable(isAntiAlias),
+      image: Prop(image),
+      fit: Prop(fit),
+      alignment: Prop(alignment),
+      centerSlice: Prop(centerSlice),
+      repeat: Prop(repeat),
+      filterQuality: Prop(filterQuality),
+      invertColors: Prop(invertColors),
+      isAntiAlias: Prop(isAntiAlias),
     );
   }
 
