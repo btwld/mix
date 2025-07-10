@@ -65,11 +65,9 @@ void main() {
     test('only sets multiple properties', () {
       final result =
           utility.only(
-                applyHeightToFirstAscent: Mix.value(true),
-                applyHeightToLastDescent: Mix.value(false),
-                leadingDistribution: Mix.value(
-                  TextLeadingDistribution.even,
-                ),
+                applyHeightToFirstAscent: true,
+                applyHeightToLastDescent: false,
+                leadingDistribution: TextLeadingDistribution.even,
               )
               as UtilityTestAttribute<TextHeightBehaviorDto>;
       expect(result.value.applyHeightToFirstAscent, isTrue);

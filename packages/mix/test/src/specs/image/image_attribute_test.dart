@@ -10,7 +10,7 @@ void main() {
       final attribute = ImageSpecAttribute(
         width: 100,
         height: 200,
-        color: Mix.value(Colors.red),
+        color: Colors.red,
         repeat: ImageRepeat.repeat,
         fit: BoxFit.cover,
       );
@@ -28,14 +28,14 @@ void main() {
       final attribute1 = ImageSpecAttribute(
         width: 100,
         height: 200,
-        color: Mix.value(Colors.red),
+        color: Colors.red,
         repeat: ImageRepeat.repeat,
         fit: BoxFit.cover,
       );
       final attribute2 = ImageSpecAttribute(
         width: 150,
         height: 250,
-        color: Mix.value(Colors.blue),
+        color: Colors.blue,
         repeat: ImageRepeat.noRepeat,
         fit: BoxFit.fill,
       );

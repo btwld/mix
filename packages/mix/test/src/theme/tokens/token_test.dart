@@ -64,7 +64,7 @@ void main() {
       final mixData = MixContext.create(context, Style());
 
       // Use Mixable<Color> to resolve the token
-      final colorDto = Mix<Color>.token(token);
+      const colorDto = Prop<Color>.token(token);
       final resolved = colorDto.resolve(mixData);
 
       expect(resolved, equals(Colors.blue));
@@ -79,7 +79,7 @@ void main() {
 
       expect(() {
         final mixData = MixContext.create(context, Style());
-        final colorDto = Mix<Color>.token(token);
+        const colorDto = Prop<Color>.token(token);
         return colorDto.resolve(mixData);
       }, throwsStateError);
     });

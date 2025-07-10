@@ -31,9 +31,9 @@ void main() {
         stops: [0.0, 1.0],
       );
 
-      final linearGradientDto = LinearGradientDto.maybeFrom(linearGradient)!;
-      final radialGradientDto = RadialGradientDto.maybeFrom(radialGradient)!;
-      final sweepGradientDto = SweepGradientDto.maybeFrom(sweepGradient)!;
+      final linearGradientDto = LinearGradientDto.maybeValue(linearGradient)!;
+      final radialGradientDto = RadialGradientDto.maybeValue(radialGradient)!;
+      final sweepGradientDto = SweepGradientDto.maybeValue(sweepGradient)!;
 
       expect(linearGradientDto, isA<LinearGradientDto>());
       expect(radialGradientDto, isA<RadialGradientDto>());
@@ -71,7 +71,7 @@ void main() {
           colors: [Colors.red, Colors.blue],
           stops: [0.0, 1.0],
         );
-        final gradientDto = LinearGradientDto.maybeFrom(linearGradient)!;
+        final gradientDto = LinearGradientDto.maybeValue(linearGradient)!;
 
         expect(gradientDto.begin, linearGradient.begin);
         expect(gradientDto.end, linearGradient.end);
@@ -176,7 +176,7 @@ void main() {
           colors: [Colors.red, Colors.blue],
           stops: [0.0, 1.0],
         );
-        final gradientDto = RadialGradientDto.maybeFrom(radialGradient)!;
+        final gradientDto = RadialGradientDto.maybeValue(radialGradient)!;
 
         expect(gradientDto.center, radialGradient.center);
         expect(gradientDto.radius, radialGradient.radius);
@@ -283,7 +283,7 @@ void main() {
           colors: [Colors.red, Colors.blue],
           stops: [0.0, 1.0],
         );
-        final gradientDto = SweepGradientDto.maybeFrom(sweepGradient)!;
+        final gradientDto = SweepGradientDto.maybeValue(sweepGradient)!;
 
         expect(gradientDto.center, sweepGradient.center);
         expect(gradientDto.startAngle, sweepGradient.startAngle);

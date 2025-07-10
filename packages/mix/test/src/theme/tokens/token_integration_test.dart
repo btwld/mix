@@ -17,8 +17,8 @@ void main() {
           data: theme,
           child: Builder(
             builder: (context) {
-              final dto1 = Mix<Color>.token(primaryToken);
-              final dto2 = Mix<Color>.token(secondaryToken);
+              const dto1 = Prop<Color>.token(primaryToken);
+              const dto2 = Prop<Color>.token(secondaryToken);
 
               final color1 = dto1.resolve(MixContext.create(context, Style()));
               final color2 = dto2.resolve(MixContext.create(context, Style()));

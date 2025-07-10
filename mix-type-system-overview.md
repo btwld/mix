@@ -215,7 +215,7 @@ final class BorderSideDto extends Mixable<BorderSide> with HasDefaultValue<Borde
   
   // Factory methods
   const BorderSideDto.none();
-  factory BorderSideDto.from(BorderSide side);
+  factory BorderSideDto.value(BorderSide side);
 }
 
 final class BorderDto extends BoxBorderDto<Border> {

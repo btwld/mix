@@ -29,7 +29,7 @@ void main() {
         invertColors: true,
         isAntiAlias: true,
       );
-      final result = DecorationImageDto.from(decorationImage);
+      final result = DecorationImageDto.value(decorationImage);
       expect(result, isNotNull);
       expect(result.image, equals(imageProvider));
       expect(result.fit, equals(BoxFit.cover));

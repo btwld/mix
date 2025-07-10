@@ -84,7 +84,7 @@ void main() {
       final decoration1 = ShapeDecorationDto(
         shape: CircleBorderDto(),
         gradient: linearGradientDto,
-        shadows: [BoxShadowDto.from(boxShadow)],
+        shadows: [BoxShadowDto.value(boxShadow)],
       );
 
       final resolvedValue = decoration1.resolve(EmptyMixData);
@@ -92,7 +92,7 @@ void main() {
       expect(decoration1.gradient, linearGradientDto);
       expect(decoration1.color, isNull);
       expect(decoration1.shape, CircleBorderDto());
-      expect(decoration1.shadows, [BoxShadowDto.from(boxShadow)]);
+      expect(decoration1.shadows, [BoxShadowDto.value(boxShadow)]);
 
       expect(resolvedValue.gradient, linearGradient);
       expect(resolvedValue.color, isNull);

@@ -12,6 +12,19 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
 
   const EdgeInsetsGeometryDto._({this.top, this.bottom});
 
+  factory EdgeInsetsGeometryDto.value(EdgeInsetsGeometry edgeInsetsGeometry) {
+    return switch (edgeInsetsGeometry) {
+          EdgeInsets() => EdgeInsetsDto.value(edgeInsetsGeometry),
+          EdgeInsetsDirectional() => EdgeInsetsDirectionalDto.value(
+            edgeInsetsGeometry,
+          ),
+          _ => throw ArgumentError(
+            'Unsupported EdgeInsetsGeometry type: ${edgeInsetsGeometry.runtimeType}',
+          ),
+        }
+        as EdgeInsetsGeometryDto<T>;
+  }
+
   static EdgeInsetsGeometryDto only({
     double? top,
     double? bottom,
@@ -139,12 +152,12 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
   /// This is useful for utilities that work with SpaceDto objects.
   ///
   /// ```dart
-  /// final dto = EdgeInsetsDto.fromSpaceDto(
+  /// final dto = EdgeInsetsDto.valueSpaceDto(
   ///   top: SpaceDto.value(8.0),
   ///   left: SpaceDto.token(someToken),
   /// );
   /// ```
-  factory EdgeInsetsDto.fromSpaceDto({
+  factory EdgeInsetsDto.valueSpaceDto({
     SpaceDto? top,
     SpaceDto? bottom,
     SpaceDto? left,
@@ -255,12 +268,12 @@ final class EdgeInsetsDirectionalDto
   /// This is useful for utilities that work with SpaceDto objects.
   ///
   /// ```dart
-  /// final dto = EdgeInsetsDirectionalDto.fromSpaceDto(
+  /// final dto = EdgeInsetsDirectionalDto.valueSpaceDto(
   ///   top: SpaceDto.value(8.0),
   ///   start: SpaceDto.token(someToken),
   /// );
   /// ```
-  factory EdgeInsetsDirectionalDto.fromSpaceDto({
+  factory EdgeInsetsDirectionalDto.valueSpaceDto({
     SpaceDto? top,
     SpaceDto? bottom,
     SpaceDto? start,

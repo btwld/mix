@@ -657,7 +657,27 @@ void main() {
       });
     });
 
-    // ShapeBorderUtility tests removed - utilities not exported in current API
+    // Additional tests for ShapeBorderUtility
+    group('ShapeBorderUtility', () {
+      test('should create utility instances for each shape border type', () {
+        final shapeBorderUtility = ShapeBorderUtility(UtilityTestAttribute.new);
+
+        expect(
+          shapeBorderUtility.roundedRectangle,
+          isA<RoundedRectangleBorderUtility>(),
+        );
+        expect(shapeBorderUtility.circle, isA<CircleBorderUtility>());
+        expect(
+          shapeBorderUtility.beveled,
+          isA<BeveledRectangleBorderUtility>(),
+        );
+        expect(shapeBorderUtility.stadium, isA<StadiumBorderUtility>());
+        expect(
+          shapeBorderUtility.continuous,
+          isA<ContinuousRectangleBorderUtility>(),
+        );
+      });
+    });
   });
 
   group('ShapeBorderDto.tryToMerge', () {

@@ -340,7 +340,7 @@ typedef PaddingSpec = PaddingModifierSpec;
 
 /// Deprecated extension for AnimationConfig conversion
 extension AnimationConfigMixExtDeprecated on AnimationConfig {
-  @Deprecated('Use AnimationConfigDto.from(this) directly instead of toDto()')
+  @Deprecated('Use AnimationConfigDto.value(this) directly instead of toDto()')
   AnimationConfigDto toDto() {
     return AnimationConfigDto.value(this);
   }
@@ -817,7 +817,10 @@ extension DeprecatedShapeBorderExt on ShapeBorder {
       );
     }
     if (self is CircleBorder) {
-      return CircleBorderDto(side: self.side.toDto(), eccentricity: self.eccentricity);
+      return CircleBorderDto(
+        side: self.side.toDto(),
+        eccentricity: self.eccentricity,
+      );
     }
     if (self is ContinuousRectangleBorder) {
       return ContinuousRectangleBorderDto(
