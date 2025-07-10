@@ -45,7 +45,6 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
     );
   }
 
-
   static EdgeInsetsGeometryDto? tryToMerge(
     EdgeInsetsGeometryDto? a,
     EdgeInsetsGeometryDto? b,

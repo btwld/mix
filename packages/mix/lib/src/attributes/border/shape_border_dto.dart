@@ -277,7 +277,10 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
 
   // Main constructor accepts raw values
   factory CircleBorderDto({BorderSideDto? side, double? eccentricity}) {
-    return CircleBorderDto._(side: side, eccentricity: Prop.maybeValue(eccentricity));
+    return CircleBorderDto._(
+      side: side,
+      eccentricity: Prop.maybeValue(eccentricity),
+    );
   }
 
   // Private constructor that accepts MixProp instances
@@ -289,10 +292,7 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
       return other;
     }
 
-    return CircleBorderDto._(
-      side: other.side,
-      eccentricity: null,
-    );
+    return CircleBorderDto._(side: other.side, eccentricity: null);
   }
 
   /// Resolves to [CircleBorder] using the provided [MixContext].
@@ -536,7 +536,10 @@ final class LinearBorderEdgeDto extends Mix<LinearBorderEdge> {
 
   // Main constructor accepts raw values
   factory LinearBorderEdgeDto({double? size, double? alignment}) {
-    return LinearBorderEdgeDto._(size: Prop.maybeValue(size), alignment: Prop.maybeValue(alignment));
+    return LinearBorderEdgeDto._(
+      size: Prop.maybeValue(size),
+      alignment: Prop.maybeValue(alignment),
+    );
   }
 
   // Private constructor that accepts MixProp instances

@@ -13,7 +13,11 @@ typedef WidgetModifiersDataDto = WidgetModifiersConfigDto;
 class WidgetModifiersConfigDto extends Mix<WidgetModifiersConfig> {
   final List<WidgetModifierSpecAttribute> modifiers;
 
-  const WidgetModifiersConfigDto(this.modifiers);
+  const WidgetModifiersConfigDto._(this.modifiers);
+  
+  factory WidgetModifiersConfigDto(List<WidgetModifierSpecAttribute> modifiers) {
+    return WidgetModifiersConfigDto._(modifiers);
+  }
 
 
   @override

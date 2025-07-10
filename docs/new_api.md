@@ -8,54 +8,139 @@ By making utility methods accept DTOs/values directly and leveraging static fact
 
 ### 1. DTOs as Value Builders
 
-DTOs become the primary way to create values with static factories:
+DTOs become the primary way to create values with static factories. All DTOs follow a consistent pattern:
+- Properties are nullable `Prop<T>?` types
+- Factory constructors accept raw values
+- Private constructors accept `Prop<T>?` instances
+- Use `Prop.maybeValue()` for nullable conversions
+- Use `Prop.value()` for non-null conversions
 
 ```dart
 // EdgeInsetsDto with static factories
 class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
-  // Existing constructors...
+  // Properties are nullable Prop<T>?
+  final Prop<double>? top;
+  final Prop<double>? bottom;
+  final Prop<double>? left;
+  final Prop<double>? right;
+  
+  // Factory constructor accepts raw values
+  factory EdgeInsetsDto({
+    double? top,
+    double? bottom,
+    double? left,
+    double? right,
+  }) {
+    return EdgeInsetsDto._(
+      top: Prop.maybeValue(top),
+      bottom: Prop.maybeValue(bottom),
+      left: Prop.maybeValue(left),
+      right: Prop.maybeValue(right),
+    );
+  }
+  
+  // Private constructor accepts Prop<T>? instances
+  const EdgeInsetsDto._({
+    this.top,
+    this.bottom,
+    this.left,
+    this.right,
+  });
   
   // Static factories for common patterns
-  static EdgeInsetsDto all(double value) => EdgeInsetsDto._(
-    top: SpaceDto.value(value),
-    bottom: SpaceDto.value(value),
-    left: SpaceDto.value(value),
-    right: SpaceDto.value(value),
-  );
+  EdgeInsetsDto.all(double value)
+    : this._(
+        top: Prop.value(value),
+        bottom: Prop.value(value),
+        left: Prop.value(value),
+        right: Prop.value(value),
+      );
   
-  static EdgeInsetsDto symmetric({double horizontal = 0, double vertical = 0}) => EdgeInsetsDto._(
-    top: SpaceDto.value(vertical),
-    bottom: SpaceDto.value(vertical),
-    left: SpaceDto.value(horizontal),
-    right: SpaceDto.value(horizontal),
-  );
+  EdgeInsetsDto.symmetric({double horizontal = 0, double vertical = 0})
+    : this._(
+        top: Prop.value(vertical),
+        bottom: Prop.value(vertical),
+        left: Prop.value(horizontal),
+        right: Prop.value(horizontal),
+      );
   
-  static EdgeInsetsDto only({
+  EdgeInsetsDto.only({
     double left = 0,
     double top = 0,
     double right = 0,
     double bottom = 0,
-  }) => EdgeInsetsDto._(
-    top: top > 0 ? SpaceDto.value(top) : null,
-    bottom: bottom > 0 ? SpaceDto.value(bottom) : null,
-    left: left > 0 ? SpaceDto.value(left) : null,
-    right: right > 0 ? SpaceDto.value(right) : null,
-  );
+  }) : this._(
+        top: top > 0 ? Prop.value(top) : null,
+        bottom: bottom > 0 ? Prop.value(bottom) : null,
+        left: left > 0 ? Prop.value(left) : null,
+        right: right > 0 ? Prop.value(right) : null,
+      );
   
-  // Common presets
-  static const EdgeInsetsDto zero = EdgeInsetsDto._();
+  EdgeInsetsDto.none() : this.all(0);
+  
+  // Resolve uses resolveProp helper
+  @override
+  EdgeInsets resolve(MixContext mix) {
+    return EdgeInsets.only(
+      left: resolveProp(mix, left) ?? 0,
+      top: resolveProp(mix, top) ?? 0,
+      right: resolveProp(mix, right) ?? 0,
+      bottom: resolveProp(mix, bottom) ?? 0,
+    );
+  }
+  
+  // Merge uses mergeProp helper
+  @override
+  EdgeInsetsDto merge(EdgeInsetsDto? other) {
+    if (other == null) return this;
+    
+    return EdgeInsetsDto._(
+      top: mergeProp(top, other.top),
+      bottom: mergeProp(bottom, other.bottom),
+      left: mergeProp(left, other.left),
+      right: mergeProp(right, other.right),
+    );
+  }
 }
 
 // BorderRadiusDto with static factories
-class BorderRadiusDto extends Mix<BorderRadius> {
-  static BorderRadiusDto all(double radius) => BorderRadiusDto.circular(radius);
-  static BorderRadiusDto circular(double radius) => BorderRadiusDto.only(
-    topLeft: Radius.circular(radius),
-    topRight: Radius.circular(radius),
-    bottomLeft: Radius.circular(radius),
-    bottomRight: Radius.circular(radius),
+class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
+  final Prop<Radius>? topLeft;
+  final Prop<Radius>? topRight;
+  final Prop<Radius>? bottomLeft;
+  final Prop<Radius>? bottomRight;
+  
+  factory BorderRadiusDto({
+    Radius? topLeft,
+    Radius? topRight,
+    Radius? bottomLeft,
+    Radius? bottomRight,
+  }) {
+    return BorderRadiusDto._(
+      topLeft: Prop.maybeValue(topLeft),
+      topRight: Prop.maybeValue(topRight),
+      bottomLeft: Prop.maybeValue(bottomLeft),
+      bottomRight: Prop.maybeValue(bottomRight),
+    );
+  }
+  
+  const BorderRadiusDto._({
+    this.topLeft,
+    this.topRight,
+    this.bottomLeft,
+    this.bottomRight,
+  });
+  
+  static BorderRadiusDto all(Radius radius) => BorderRadiusDto._(
+    topLeft: Prop.value(radius),
+    topRight: Prop.value(radius),
+    bottomLeft: Prop.value(radius),
+    bottomRight: Prop.value(radius),
   );
-  static const BorderRadiusDto zero = BorderRadiusDto.only();
+  
+  static BorderRadiusDto circular(double radius) => all(Radius.circular(radius));
+  
+  static BorderRadiusDto zero = BorderRadiusDto._();
 }
 ```
 
@@ -208,90 +293,86 @@ class TextStyleUtility<T extends StyleElement>
   TextStyleUtility(
     super.builder, {
     TextStyleDto? dto,
-  }) : dto = dto ?? const TextStyleDto(),
+  }) : dto = dto ?? TextStyleDto.empty(),
        super(valueToDto: _textStyleToDto);
   
   factory TextStyleUtility() => TextStyleUtility((dto) => dto);
   
   // Direct methods accepting values
+  // DTO factory handles conversion internally
   
   TextStyleUtility<T> color(Color value) {
     return TextStyleUtility(
       builder,
-      dto: dto.merge(TextStyleDto(
-        color: MixValue.mix(ColorMix(value))
-      )),
+      dto: dto.merge(TextStyleDto(color: value)),
     );
   }
   
   TextStyleUtility<T> backgroundColor(Color value) {
     return TextStyleUtility(
       builder,
-      dto: dto.merge(TextStyleDto(
-        backgroundColor: MixValue.mix(ColorMix(value))
-      )),
+      dto: dto.merge(TextStyleDto(backgroundColor: value)),
     );
   }
   
   TextStyleUtility<T> fontSize(double value) {
     return TextStyleUtility(
       builder,
-      dto: dto.merge(TextStyleDto(
-        fontSize: MixValue.mix(DoubleMix(value))
-      )),
+      dto: dto.merge(TextStyleDto(fontSize: value)),
     );
   }
   
   TextStyleUtility<T> fontWeight(FontWeight value) {
     return TextStyleUtility(
       builder,
-      dto: dto.merge(TextStyleDto(
-        fontWeight: MixValue.mix(FontWeightMix(value))
-      )),
+      dto: dto.merge(TextStyleDto(fontWeight: value)),
     );
   }
   
   TextStyleUtility<T> fontStyle(FontStyle value) {
     return TextStyleUtility(
       builder,
-      dto: dto.merge(TextStyleDto(
-        fontStyle: MixValue.mix(EnumMix(value))
-      )),
+      dto: dto.merge(TextStyleDto(fontStyle: value)),
     );
   }
   
   TextStyleUtility<T> fontFamily(String value) {
     return TextStyleUtility(
       builder,
-      dto: dto.merge(TextStyleDto(
-        fontFamily: MixValue.mix(StringMix(value))
-      )),
+      dto: dto.merge(TextStyleDto(fontFamily: value)),
     );
   }
   
   TextStyleUtility<T> letterSpacing(double value) {
     return TextStyleUtility(
       builder,
-      dto: dto.merge(TextStyleDto(
-        letterSpacing: MixValue.mix(DoubleMix(value))
-      )),
+      dto: dto.merge(TextStyleDto(letterSpacing: value)),
     );
   }
   
   TextStyleUtility<T> height(double value) {
     return TextStyleUtility(
       builder,
-      dto: dto.merge(TextStyleDto(
-        height: MixValue.mix(DoubleMix(value))
-      )),
+      dto: dto.merge(TextStyleDto(height: value)),
     );
   }
   
   TextStyleUtility<T> decoration(TextDecoration value) {
     return TextStyleUtility(
       builder,
+      dto: dto.merge(TextStyleDto(decoration: value)),
+    );
+  }
+  
+  TextStyleUtility<T> shadows(List<Shadow> values) {
+    return TextStyleUtility(
+      builder,
       dto: dto.merge(TextStyleDto(
-        decoration: MixValue.mix(TextDecorationMix(value))
+        shadows: values.map((s) => ShadowDto(
+          color: s.color,
+          offset: s.offset,
+          blurRadius: s.blurRadius,
+        )).toList(),
       )),
     );
   }
@@ -303,6 +384,9 @@ class TextStyleUtility<T extends StyleElement>
   
   // Build returns the DTO
   T build() => builder(dto);
+  
+  @override
+  TextStyleDto get attributeValue => dto;
 }
 ```
 

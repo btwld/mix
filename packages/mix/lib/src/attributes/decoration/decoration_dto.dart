@@ -177,7 +177,10 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
       borderRadius:
           borderRadius?.merge(other.borderRadius) ?? other.borderRadius,
       shape: mergeProp(shape, other.shape),
-      backgroundBlendMode: mergeProp(backgroundBlendMode, other.backgroundBlendMode),
+      backgroundBlendMode: mergeProp(
+        backgroundBlendMode,
+        other.backgroundBlendMode,
+      ),
       color: mergeProp(color, other.color),
       image: image?.merge(other.image) ?? other.image,
       gradient: GradientDto.tryToMerge(gradient, other.gradient),
@@ -343,7 +346,7 @@ BoxDecorationDto _toBoxDecorationDto(ShapeDecorationDto dto) {
 
 ShapeDecorationDto _toShapeDecorationDto(BoxDecorationDto dto) {
   final (:boxShadow, :color, :gradient, :image) = dto._getBaseDecor();
-  
+
   // For conversion operations, we assume rectangle shape if not resolvable
   // This maintains backward compatibility
   final shapeBorder = _fromBoxShape(
