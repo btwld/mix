@@ -68,10 +68,10 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
   @override
   BorderRadius resolve(MixContext mix) {
     return BorderRadius.only(
-      topLeft: resolveValue(mix, topLeft) ?? Radius.zero,
-      topRight: resolveValue(mix, topRight) ?? Radius.zero,
-      bottomLeft: resolveValue(mix, bottomLeft) ?? Radius.zero,
-      bottomRight: resolveValue(mix, bottomRight) ?? Radius.zero,
+      topLeft: resolveProp(mix, topLeft) ?? Radius.zero,
+      topRight: resolveProp(mix, topRight) ?? Radius.zero,
+      bottomLeft: resolveProp(mix, bottomLeft) ?? Radius.zero,
+      bottomRight: resolveProp(mix, bottomRight) ?? Radius.zero,
     );
   }
 
@@ -80,10 +80,10 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
     if (other == null) return this;
 
     return BorderRadiusDto._(
-      topLeft: mergeValue(topLeft, other.topLeft),
-      topRight: mergeValue(topRight, other.topRight),
-      bottomLeft: mergeValue(bottomLeft, other.bottomLeft),
-      bottomRight: mergeValue(bottomRight, other.bottomRight),
+      topLeft: mergeProp(topLeft, other.topLeft),
+      topRight: mergeProp(topRight, other.topRight),
+      bottomLeft: mergeProp(bottomLeft, other.bottomLeft),
+      bottomRight: mergeProp(bottomRight, other.bottomRight),
     );
   }
 
@@ -124,10 +124,10 @@ final class BorderRadiusDirectionalDto
   @override
   BorderRadiusDirectional resolve(MixContext mix) {
     return BorderRadiusDirectional.only(
-      topStart: resolveValue(mix, topStart) ?? Radius.zero,
-      topEnd: resolveValue(mix, topEnd) ?? Radius.zero,
-      bottomStart: resolveValue(mix, bottomStart) ?? Radius.zero,
-      bottomEnd: resolveValue(mix, bottomEnd) ?? Radius.zero,
+      topStart: resolveProp(mix, topStart) ?? Radius.zero,
+      topEnd: resolveProp(mix, topEnd) ?? Radius.zero,
+      bottomStart: resolveProp(mix, bottomStart) ?? Radius.zero,
+      bottomEnd: resolveProp(mix, bottomEnd) ?? Radius.zero,
     );
   }
 
@@ -136,10 +136,10 @@ final class BorderRadiusDirectionalDto
     if (other == null) return this;
 
     return BorderRadiusDirectionalDto._(
-      topStart: mergeValue(topStart, other.topStart),
-      topEnd: mergeValue(topEnd, other.topEnd),
-      bottomStart: mergeValue(bottomStart, other.bottomStart),
-      bottomEnd: mergeValue(bottomEnd, other.bottomEnd),
+      topStart: mergeProp(topStart, other.topStart),
+      topEnd: mergeProp(topEnd, other.topEnd),
+      bottomStart: mergeProp(bottomStart, other.bottomStart),
+      bottomEnd: mergeProp(bottomEnd, other.bottomEnd),
     );
   }
 

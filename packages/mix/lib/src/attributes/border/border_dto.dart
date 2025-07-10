@@ -245,10 +245,10 @@ final class BorderSideDto extends Mix<BorderSide>
   @override
   BorderSide resolve(MixContext mix) {
     return BorderSide(
-      color: resolveValue(mix, color) ?? defaultValue.color,
-      width: resolveValue(mix, width) ?? defaultValue.width,
-      style: resolveValue(mix, style) ?? defaultValue.style,
-      strokeAlign: resolveValue(mix, strokeAlign) ?? defaultValue.strokeAlign,
+      color: resolveProp(mix, color) ?? defaultValue.color,
+      width: resolveProp(mix, width) ?? defaultValue.width,
+      style: resolveProp(mix, style) ?? defaultValue.style,
+      strokeAlign: resolveProp(mix, strokeAlign) ?? defaultValue.strokeAlign,
     );
   }
 
@@ -265,10 +265,10 @@ final class BorderSideDto extends Mix<BorderSide>
     if (other == null) return this;
 
     return BorderSideDto._(
-      color: mergeValue(color, other.color),
-      width: mergeValue(width, other.width),
-      style: mergeValue(style, other.style),
-      strokeAlign: mergeValue(strokeAlign, other.strokeAlign),
+      color: mergeProp(color, other.color),
+      width: mergeProp(width, other.width),
+      style: mergeProp(style, other.style),
+      strokeAlign: mergeProp(strokeAlign, other.strokeAlign),
     );
   }
 

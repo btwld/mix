@@ -44,9 +44,9 @@ class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
   @override
   Shadow resolve(MixContext mix) {
     return Shadow(
-      color: resolveValue(mix, color) ?? defaultValue.color,
-      offset: resolveValue(mix, offset) ?? defaultValue.offset,
-      blurRadius: resolveValue(mix, blurRadius) ?? defaultValue.blurRadius,
+      color: resolveProp(mix, color) ?? defaultValue.color,
+      offset: resolveProp(mix, offset) ?? defaultValue.offset,
+      blurRadius: resolveProp(mix, blurRadius) ?? defaultValue.blurRadius,
     );
   }
 
@@ -63,9 +63,9 @@ class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
     if (other == null) return this;
 
     return ShadowDto._(
-      blurRadius: mergeValue(blurRadius, other.blurRadius),
-      color: mergeValue(color, other.color),
-      offset: mergeValue(offset, other.offset),
+      blurRadius: mergeProp(blurRadius, other.blurRadius),
+      color: mergeProp(color, other.color),
+      offset: mergeProp(offset, other.offset),
     );
   }
 
@@ -122,11 +122,10 @@ class BoxShadowDto extends BaseShadowDto<BoxShadow>
   @override
   BoxShadow resolve(MixContext mix) {
     return BoxShadow(
-      color: resolveValue(mix, color) ?? defaultValue.color,
-      offset: resolveValue(mix, offset) ?? defaultValue.offset,
-      blurRadius: resolveValue(mix, blurRadius) ?? defaultValue.blurRadius,
-      spreadRadius:
-          resolveValue(mix, spreadRadius) ?? defaultValue.spreadRadius,
+      color: resolveProp(mix, color) ?? defaultValue.color,
+      offset: resolveProp(mix, offset) ?? defaultValue.offset,
+      blurRadius: resolveProp(mix, blurRadius) ?? defaultValue.blurRadius,
+      spreadRadius: resolveProp(mix, spreadRadius) ?? defaultValue.spreadRadius,
     );
   }
 
@@ -143,10 +142,10 @@ class BoxShadowDto extends BaseShadowDto<BoxShadow>
     if (other == null) return this;
 
     return BoxShadowDto._(
-      color: mergeValue(color, other.color),
-      offset: mergeValue(offset, other.offset),
-      blurRadius: mergeValue(blurRadius, other.blurRadius),
-      spreadRadius: mergeValue(spreadRadius, other.spreadRadius),
+      color: mergeProp(color, other.color),
+      offset: mergeProp(offset, other.offset),
+      blurRadius: mergeProp(blurRadius, other.blurRadius),
+      spreadRadius: mergeProp(spreadRadius, other.spreadRadius),
     );
   }
 

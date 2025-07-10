@@ -31,9 +31,9 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
   final List<Prop<FontVariation>>? fontVariations;
 
   // Lists of Mix types (DTOs)
-  final List<MixProp<ShadowDto, Shadow>>? shadows;
+  final List<MixProp<Shadow, ShadowDto>>? shadows;
 
-  const TextStyleDto({
+  const TextStyleDto._({
     this.color,
     this.backgroundColor,
     this.fontSize,
@@ -57,31 +57,74 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
     this.fontFamilyFallback,
   });
 
+  factory TextStyleDto({
+    Color? color,
+    Color? backgroundColor,
+    double? fontSize,
+    FontWeight? fontWeight,
+    FontStyle? fontStyle,
+    double? letterSpacing,
+    String? debugLabel,
+    double? wordSpacing,
+    TextBaseline? textBaseline,
+    List<ShadowDto>? shadows,
+    List<FontFeature>? fontFeatures,
+    TextDecoration? decoration,
+    Color? decorationColor,
+    TextDecorationStyle? decorationStyle,
+    List<FontVariation>? fontVariations,
+    double? height,
+    Paint? foreground,
+    Paint? background,
+    double? decorationThickness,
+    String? fontFamily,
+    List<String>? fontFamilyFallback,
+  }) {
+    return TextStyleDto._(
+      color: Prop.maybeValue(color),
+      backgroundColor: Prop.maybeValue(backgroundColor),
+      fontSize: Prop.maybeValue(fontSize),
+      fontWeight: Prop.maybeValue(fontWeight),
+      fontStyle: Prop.maybeValue(fontStyle),
+      letterSpacing: Prop.maybeValue(letterSpacing),
+      debugLabel: Prop.maybeValue(debugLabel),
+      wordSpacing: Prop.maybeValue(wordSpacing),
+      textBaseline: Prop.maybeValue(textBaseline),
+      shadows: shadows?.map(MixProp<Shadow, ShadowDto>.value).toList(),
+      height: Prop.maybeValue(height),
+      foreground: Prop.maybeValue(foreground),
+      background: Prop.maybeValue(background),
+      decorationThickness: Prop.maybeValue(decorationThickness),
+      fontFamily: Prop.maybeValue(fontFamily),
+      fontFamilyFallback: fontFamilyFallback?.map(Prop.value).toList(),
+    );
+  }
+
   @override
   TextStyle resolve(MixContext context) {
     return TextStyle(
-      color: resolveValue(context, color),
-      backgroundColor: resolveValue(context, backgroundColor),
-      fontSize: resolveValue(context, fontSize),
-      fontWeight: resolveValue(context, fontWeight),
-      fontStyle: resolveValue(context, fontStyle),
-      letterSpacing: resolveValue(context, letterSpacing),
-      wordSpacing: resolveValue(context, wordSpacing),
-      textBaseline: resolveValue(context, textBaseline),
-      height: resolveValue(context, height),
-      foreground: resolveValue(context, foreground),
-      background: resolveValue(context, background),
+      color: resolveProp(context, color),
+      backgroundColor: resolveProp(context, backgroundColor),
+      fontSize: resolveProp(context, fontSize),
+      fontWeight: resolveProp(context, fontWeight),
+      fontStyle: resolveProp(context, fontStyle),
+      letterSpacing: resolveProp(context, letterSpacing),
+      wordSpacing: resolveProp(context, wordSpacing),
+      textBaseline: resolveProp(context, textBaseline),
+      height: resolveProp(context, height),
+      foreground: resolveProp(context, foreground),
+      background: resolveProp(context, background),
       // Resolve lists using helpers
-      shadows: resolveDtoList(context, shadows),
-      fontFeatures: resolveList(context, fontFeatures),
-      fontVariations: resolveList(context, fontVariations),
-      decoration: resolveValue(context, decoration),
-      decorationColor: resolveValue(context, decorationColor),
-      decorationStyle: resolveValue(context, decorationStyle),
-      decorationThickness: resolveValue(context, decorationThickness),
-      debugLabel: resolveValue(context, debugLabel),
-      fontFamily: resolveValue(context, fontFamily),
-      fontFamilyFallback: resolveList(context, fontFamilyFallback),
+      shadows: resolveMixPropList(context, shadows),
+      fontFeatures: resolvePropList(context, fontFeatures),
+      fontVariations: resolvePropList(context, fontVariations),
+      decoration: resolveProp(context, decoration),
+      decorationColor: resolveProp(context, decorationColor),
+      decorationStyle: resolveProp(context, decorationStyle),
+      decorationThickness: resolveProp(context, decorationThickness),
+      debugLabel: resolveProp(context, debugLabel),
+      fontFamily: resolveProp(context, fontFamily),
+      fontFamilyFallback: resolvePropList(context, fontFamilyFallback),
     );
   }
 
@@ -89,32 +132,32 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
   TextStyleDto merge(TextStyleDto? other) {
     if (other == null) return this;
 
-    return TextStyleDto(
-      color: mergeValue(color, other.color),
-      backgroundColor: mergeValue(backgroundColor, other.backgroundColor),
-      fontSize: mergeValue(fontSize, other.fontSize),
-      fontWeight: mergeValue(fontWeight, other.fontWeight),
-      fontStyle: mergeValue(fontStyle, other.fontStyle),
-      letterSpacing: mergeValue(letterSpacing, other.letterSpacing),
-      debugLabel: mergeValue(debugLabel, other.debugLabel),
-      wordSpacing: mergeValue(wordSpacing, other.wordSpacing),
-      textBaseline: mergeValue(textBaseline, other.textBaseline),
+    return TextStyleDto._(
+      color: mergeProp(color, other.color),
+      backgroundColor: mergeProp(backgroundColor, other.backgroundColor),
+      fontSize: mergeProp(fontSize, other.fontSize),
+      fontWeight: mergeProp(fontWeight, other.fontWeight),
+      fontStyle: mergeProp(fontStyle, other.fontStyle),
+      letterSpacing: mergeProp(letterSpacing, other.letterSpacing),
+      debugLabel: mergeProp(debugLabel, other.debugLabel),
+      wordSpacing: mergeProp(wordSpacing, other.wordSpacing),
+      textBaseline: mergeProp(textBaseline, other.textBaseline),
       // Merge lists - default to append strategy
-      shadows: mergeDtoList(shadows, other.shadows),
-      fontFeatures: mergeValueList(fontFeatures, other.fontFeatures),
-      decoration: mergeValue(decoration, other.decoration),
-      decorationColor: mergeValue(decorationColor, other.decorationColor),
-      decorationStyle: mergeValue(decorationStyle, other.decorationStyle),
-      fontVariations: mergeValueList(fontVariations, other.fontVariations),
-      height: mergeValue(height, other.height),
-      foreground: mergeValue(foreground, other.foreground),
-      background: mergeValue(background, other.background),
-      decorationThickness: mergeValue(
+      shadows: mergeMixPropList(shadows, other.shadows),
+      fontFeatures: mergePropList(fontFeatures, other.fontFeatures),
+      decoration: mergeProp(decoration, other.decoration),
+      decorationColor: mergeProp(decorationColor, other.decorationColor),
+      decorationStyle: mergeProp(decorationStyle, other.decorationStyle),
+      fontVariations: mergePropList(fontVariations, other.fontVariations),
+      height: mergeProp(height, other.height),
+      foreground: mergeProp(foreground, other.foreground),
+      background: mergeProp(background, other.background),
+      decorationThickness: mergeProp(
         decorationThickness,
         other.decorationThickness,
       ),
-      fontFamily: mergeValue(fontFamily, other.fontFamily),
-      fontFamilyFallback: mergeValueList(
+      fontFamily: mergeProp(fontFamily, other.fontFamily),
+      fontFamilyFallback: mergePropList(
         fontFamilyFallback,
         other.fontFamilyFallback,
       ),

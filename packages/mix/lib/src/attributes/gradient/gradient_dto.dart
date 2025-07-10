@@ -119,12 +119,12 @@ final class LinearGradientDto extends GradientDto<LinearGradient> {
   @override
   LinearGradient resolve(MixContext mix) {
     return LinearGradient(
-      begin: resolveValue(mix, begin) ?? defaultValue.begin,
-      end: resolveValue(mix, end) ?? defaultValue.end,
-      colors: resolveValue(mix, colors) ?? defaultValue.colors,
-      stops: resolveValue(mix, stops) ?? defaultValue.stops,
-      tileMode: resolveValue(mix, tileMode) ?? defaultValue.tileMode,
-      transform: resolveValue(mix, transform) ?? defaultValue.transform,
+      begin: resolveProp(mix, begin) ?? defaultValue.begin,
+      end: resolveProp(mix, end) ?? defaultValue.end,
+      colors: resolveProp(mix, colors) ?? defaultValue.colors,
+      stops: resolveProp(mix, stops) ?? defaultValue.stops,
+      tileMode: resolveProp(mix, tileMode) ?? defaultValue.tileMode,
+      transform: resolveProp(mix, transform) ?? defaultValue.transform,
     );
   }
 
@@ -133,12 +133,12 @@ final class LinearGradientDto extends GradientDto<LinearGradient> {
     if (other == null) return this;
 
     return LinearGradientDto._(
-      begin: mergeValue(begin, other.begin),
-      end: mergeValue(end, other.end),
-      tileMode: mergeValue(tileMode, other.tileMode),
-      transform: mergeValue(transform, other.transform),
-      colors: mergeValue(colors, other.colors),
-      stops: mergeValue(stops, other.stops),
+      begin: mergeProp(begin, other.begin),
+      end: mergeProp(end, other.end),
+      tileMode: mergeProp(tileMode, other.tileMode),
+      transform: mergeProp(transform, other.transform),
+      colors: mergeProp(colors, other.colors),
+      stops: mergeProp(stops, other.stops),
     );
   }
 
@@ -196,14 +196,14 @@ final class RadialGradientDto extends GradientDto<RadialGradient> {
   @override
   RadialGradient resolve(MixContext mix) {
     return RadialGradient(
-      center: resolveValue(mix, center) ?? defaultValue.center,
-      radius: resolveValue(mix, radius) ?? defaultValue.radius,
-      colors: resolveValue(mix, colors) ?? defaultValue.colors,
-      stops: resolveValue(mix, stops) ?? defaultValue.stops,
-      tileMode: resolveValue(mix, tileMode) ?? defaultValue.tileMode,
-      focal: resolveValue(mix, focal) ?? defaultValue.focal,
-      focalRadius: resolveValue(mix, focalRadius) ?? defaultValue.focalRadius,
-      transform: resolveValue(mix, transform) ?? defaultValue.transform,
+      center: resolveProp(mix, center) ?? defaultValue.center,
+      radius: resolveProp(mix, radius) ?? defaultValue.radius,
+      colors: resolveProp(mix, colors) ?? defaultValue.colors,
+      stops: resolveProp(mix, stops) ?? defaultValue.stops,
+      tileMode: resolveProp(mix, tileMode) ?? defaultValue.tileMode,
+      focal: resolveProp(mix, focal) ?? defaultValue.focal,
+      focalRadius: resolveProp(mix, focalRadius) ?? defaultValue.focalRadius,
+      transform: resolveProp(mix, transform) ?? defaultValue.transform,
     );
   }
 
@@ -212,14 +212,14 @@ final class RadialGradientDto extends GradientDto<RadialGradient> {
     if (other == null) return this;
 
     return RadialGradientDto._(
-      center: mergeValue(center, other.center),
-      radius: mergeValue(radius, other.radius),
-      tileMode: mergeValue(tileMode, other.tileMode),
-      focal: mergeValue(focal, other.focal),
-      focalRadius: mergeValue(focalRadius, other.focalRadius),
-      transform: mergeValue(transform, other.transform),
-      colors: mergeValue(colors, other.colors),
-      stops: mergeValue(stops, other.stops),
+      center: mergeProp(center, other.center),
+      radius: mergeProp(radius, other.radius),
+      tileMode: mergeProp(tileMode, other.tileMode),
+      focal: mergeProp(focal, other.focal),
+      focalRadius: mergeProp(focalRadius, other.focalRadius),
+      transform: mergeProp(transform, other.transform),
+      colors: mergeProp(colors, other.colors),
+      stops: mergeProp(stops, other.stops),
     );
   }
 
@@ -283,13 +283,13 @@ final class SweepGradientDto extends GradientDto<SweepGradient> {
   @override
   SweepGradient resolve(MixContext mix) {
     return SweepGradient(
-      center: resolveValue(mix, center) ?? defaultValue.center,
-      startAngle: resolveValue(mix, startAngle) ?? defaultValue.startAngle,
-      endAngle: resolveValue(mix, endAngle) ?? defaultValue.endAngle,
-      colors: resolveValue(mix, colors) ?? defaultValue.colors,
-      stops: resolveValue(mix, stops) ?? defaultValue.stops,
-      tileMode: resolveValue(mix, tileMode) ?? defaultValue.tileMode,
-      transform: resolveValue(mix, transform) ?? defaultValue.transform,
+      center: resolveProp(mix, center) ?? defaultValue.center,
+      startAngle: resolveProp(mix, startAngle) ?? defaultValue.startAngle,
+      endAngle: resolveProp(mix, endAngle) ?? defaultValue.endAngle,
+      colors: resolveProp(mix, colors) ?? defaultValue.colors,
+      stops: resolveProp(mix, stops) ?? defaultValue.stops,
+      tileMode: resolveProp(mix, tileMode) ?? defaultValue.tileMode,
+      transform: resolveProp(mix, transform) ?? defaultValue.transform,
     );
   }
 
@@ -298,13 +298,13 @@ final class SweepGradientDto extends GradientDto<SweepGradient> {
     if (other == null) return this;
 
     return SweepGradientDto._(
-      center: mergeValue(center, other.center),
-      startAngle: mergeValue(startAngle, other.startAngle),
-      endAngle: mergeValue(endAngle, other.endAngle),
-      tileMode: mergeValue(tileMode, other.tileMode),
-      transform: mergeValue(transform, other.transform),
-      colors: mergeValue(colors, other.colors),
-      stops: mergeValue(stops, other.stops),
+      center: mergeProp(center, other.center),
+      startAngle: mergeProp(startAngle, other.startAngle),
+      endAngle: mergeProp(endAngle, other.endAngle),
+      tileMode: mergeProp(tileMode, other.tileMode),
+      transform: mergeProp(transform, other.transform),
+      colors: mergeProp(colors, other.colors),
+      stops: mergeProp(stops, other.stops),
     );
   }
 

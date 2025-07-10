@@ -1,22 +1,21 @@
 import 'package:flutter/foundation.dart';
 
+import '../internal/compare_mixin.dart';
 import '../theme/tokens/mix_token.dart';
 import 'factory/mix_context.dart';
 import 'mix_element.dart';
 
-/// Simplified MixValue that can hold values, tokens, or values with directives
+/// Simplified Prop that can hold values, tokens, or values with directives
 @immutable
-abstract class Prop<T> {
+sealed class Prop<T> with EqualityMixin {
   const Prop();
 
   // Factory constructors for different types
-  const factory Prop.value(T value) = _ValueMix<T>;
-  const factory Prop.token(MixableToken<T> token) = _TokenMix<T>;
+  const factory Prop.value(T value) = _ValueProp<T>;
+  const factory Prop.token(MixableToken<T> token) = _TokenProp<T>;
   const factory Prop.withDirectives(T value, List<MixDirective<T>> directives) =
-      _DirectiveMix<T>;
-
-  // Empty constructor for null-like behavior
-  const factory Prop.empty() = _EmptyMix<T>;
+      _DirectiveProp<T>;
+  const factory Prop.empty() = _EmptyProp<T>;
 
   static Prop<T>? maybeValue<T>(T? value) {
     if (value == null) return null;
@@ -24,21 +23,47 @@ abstract class Prop<T> {
     return Prop.value(value);
   }
 
-  /// Whether this mix value has any content
+  /// Whether this prop has any content
   bool get isEmpty;
 
   /// Resolves the value using the provided context
   T? resolve(MixContext context);
 
-  /// Merges this MixValue with another
-  ///
+  /// CENTRALIZED MERGE LOGIC
   /// Merge behavior:
-  /// - Value + Value = other wins (override)
-  /// - Token + Token = other wins (override)
-  /// - Value + Token = other wins (token takes precedence)
-  /// - Directives accumulate (both are applied)
   /// - Empty + Anything = other wins
-  Prop<T> merge(Prop<T>? other);
+  /// - Anything + Empty = this wins
+  /// - Token + Anything = other wins (tokens are overridden)
+  /// - Value + Value = other wins (override)
+  /// - Directives accumulate when possible
+  Prop<T> merge(Prop<T>? other) {
+    if (other == null || other.isEmpty) return this;
+    if (isEmpty) return other;
+
+    return switch ((this, other)) {
+      // Directive cases - complex merging
+      (
+        _DirectiveProp(:final baseValue, :final directives),
+        _DirectiveProp(baseValue: final otherBase, directives: final otherDirs),
+      ) =>
+        Prop.withDirectives(otherBase ?? baseValue!, [
+          ...directives,
+          ...otherDirs,
+        ]),
+
+      (_DirectiveProp(:final directives), _ValueProp(:final value)) =>
+        Prop.withDirectives(value, directives),
+
+      (
+        _ValueProp(:final value),
+        _DirectiveProp(:final baseValue, :final directives),
+      ) =>
+        Prop.withDirectives(baseValue ?? value, directives),
+
+      // Token cases and default case - other always wins
+      (_TokenProp(), _) || _ => other,
+    };
+  }
 
   @override
   bool operator ==(Object other);
@@ -49,82 +74,45 @@ abstract class Prop<T> {
 
 /// Private implementation for direct values
 @immutable
-class _ValueMix<T> extends Prop<T> {
+final class _ValueProp<T> extends Prop<T> {
   final T value;
 
-  const _ValueMix(this.value);
+  const _ValueProp(this.value);
 
   @override
   T resolve(MixContext context) => value;
 
   @override
-  Prop<T> merge(Prop<T>? other) {
-    if (other == null || other.isEmpty) return this;
-
-    // If other has directives and is value-based, merge them
-    if (other is _DirectiveMix<T>) {
-      return Prop.withDirectives(other.baseValue ?? value, other.directives);
-    }
-
-    // Otherwise, other wins
-    return other;
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is _ValueMix<T> &&
-          runtimeType == other.runtimeType &&
-          value == other.value;
+  get props => [value];
 
   @override
   bool get isEmpty => false;
-
-  @override
-  int get hashCode => value.hashCode;
 }
 
 /// Private implementation for tokens
 @immutable
-class _TokenMix<T> extends Prop<T> {
+final class _TokenProp<T> extends Prop<T> {
   final MixableToken<T> token;
 
-  const _TokenMix(this.token);
+  const _TokenProp(this.token);
 
   @override
-  T? resolve(MixContext context) {
-    return context.getToken(token);
-  }
+  T? resolve(MixContext context) => context.getToken(token);
 
   @override
-  Prop<T> merge(Prop<T>? other) {
-    if (other == null || other.isEmpty) return this;
-
-    // Other always wins in token scenarios
-    return other;
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is _TokenMix<T> &&
-          runtimeType == other.runtimeType &&
-          token == other.token;
+  List<Object?> get props => [token];
 
   @override
   bool get isEmpty => false;
-
-  @override
-  int get hashCode => token.hashCode;
 }
 
 /// Private implementation for values with directives
 @immutable
-class _DirectiveMix<T> extends Prop<T> {
+final class _DirectiveProp<T> extends Prop<T> {
   final T? baseValue;
   final List<MixDirective<T>> directives;
 
-  const _DirectiveMix(this.baseValue, this.directives);
+  const _DirectiveProp(this.baseValue, this.directives);
 
   @override
   T? resolve(MixContext context) {
@@ -140,115 +128,78 @@ class _DirectiveMix<T> extends Prop<T> {
   }
 
   @override
-  Prop<T> merge(Prop<T>? other) {
-    if (other == null || other.isEmpty) return this;
-
-    // If other also has directives, combine them
-    if (other is _DirectiveMix<T>) {
-      return Prop.withDirectives(other.baseValue ?? baseValue!, [
-        ...directives,
-        ...other.directives,
-      ]);
-    }
-
-    // If other is a value, use it as new base with our directives
-    if (other is _ValueMix<T>) {
-      return Prop.withDirectives(other.value, directives);
-    }
-
-    // For tokens, other wins completely
-    return other;
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is _DirectiveMix<T> &&
-          runtimeType == other.runtimeType &&
-          baseValue == other.baseValue &&
-          listEquals(directives, other.directives);
-
-  @override
   bool get isEmpty => false;
 
   @override
-  int get hashCode => Object.hash(baseValue, Object.hashAll(directives));
+  List<Object?> get props => [baseValue, directives];
 }
 
 /// Private implementation for empty/null-like behavior
 @immutable
-class _EmptyMix<T> extends Prop<T> {
-  const _EmptyMix();
+final class _EmptyProp<T> extends Prop<T> {
+  const _EmptyProp();
 
   @override
   T? resolve(MixContext context) => null;
 
   @override
-  Prop<T> merge(Prop<T>? other) => other ?? this;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is _EmptyMix<T> && runtimeType == other.runtimeType;
+  List<Object?> get props => [];
 
   @override
   bool get isEmpty => true;
-
-  @override
-  int get hashCode => 0;
 }
 
-/// MixableDto for handling Mix objects (DTOs) with smart merge logic
+/// MixProp for handling Mix objects (DTOs) with smart merge logic
 @immutable
-sealed class MixProp<T extends Mix<V>, V> {
+sealed class MixProp<V, T extends Mix<V>> with EqualityMixin {
   const MixProp._();
 
   // Factory constructors
-  const factory MixProp.value(T value) = _ValueMixDto<T, V>;
-  const factory MixProp.token(MixableToken<T> token) = _TokenMixDto<T, V>;
+  const factory MixProp.value(T value) = _ValueMixProp<V, T>;
+  const factory MixProp.token(MixableToken<T> token) = _TokenMixProp<V, T>;
 
-  static MixProp<T, V>? maybeValue<T extends Mix<V>, V>(T? value) {
+  static MixProp<V, T>? maybeValue<V, T extends Mix<V>>(T? value) {
     if (value == null) return null;
 
     return MixProp.value(value);
   }
 
   /// Smart grouping: merge consecutive values at the end
-  List<_MixableItem<T>> _groupItems(List<_MixableItem<T>> items) {
+  List<_MixPropItem<T>> _groupItems(List<_MixPropItem<T>> items) {
     if (items.length <= 1) return items;
 
-    // Find consecutive values at the end
+    // Find last token
     int lastTokenIndex = -1;
     for (int i = items.length - 1; i >= 0; i--) {
-      if (items[i].isToken) {
+      if (items[i] is _TokenPropItem<T>) {
         lastTokenIndex = i;
         break;
       }
     }
 
-    // If no tokens found, or all items after last token are values
+    // If no tokens, merge all values
     if (lastTokenIndex == -1) {
-      // All items are values - merge them all
-      final values = items.cast<_ValueItem<T>>().map((e) => e.value).toList();
+      final values = items
+          .cast<_ValuePropItem<T>>()
+          .map((e) => e.value)
+          .toList();
       final merged = values.fold<T?>(
         null,
         (acc, dto) => (acc?.merge(dto) ?? dto) as T?,
       );
 
-      return merged != null ? [_ValueItem(merged)] : [];
+      return merged != null ? [_ValuePropItem(merged)] : [];
     }
 
     // Keep items up to last token, merge values after
     final beforeToken = items.sublist(0, lastTokenIndex + 1);
     final afterToken = items.sublist(lastTokenIndex + 1);
 
-    if (afterToken.isEmpty) {
-      return beforeToken;
-    }
+    if (afterToken.isEmpty) return beforeToken;
 
     // Merge values after last token
     final values = afterToken
-        .cast<_ValueItem<T>>()
+        .cast<_ValuePropItem<T>>()
         .map((e) => e.value)
         .toList();
     final merged = values.fold<T?>(
@@ -256,165 +207,119 @@ sealed class MixProp<T extends Mix<V>, V> {
       (acc, dto) => (acc?.merge(dto) ?? dto) as T?,
     );
 
-    return merged != null ? [...beforeToken, _ValueItem(merged)] : beforeToken;
+    return merged != null
+        ? [...beforeToken, _ValuePropItem(merged)]
+        : beforeToken;
   }
 
   /// Internal items for aggregated DTOs
-  List<_MixableItem<T>> get _items;
+  List<_MixPropItem<T>> get _items;
 
-  /// Whether this mix dto has any content
+  /// Whether this mix prop has any content
   bool get isEmpty => _items.isEmpty;
 
   /// Resolves the value using the provided context
-  /// 1. Resolves all tokens to their DTO values
-  /// 2. Merges all DTOs together
-  /// 3. Resolves the final merged DTO
-  T? resolve(MixContext context) {
+  V? resolve(MixContext context) {
     final resolved = <T>[];
 
     for (final item in _items) {
-      final value = item.resolveItem(context);
+      final value = item.resolve(context);
       if (value != null) resolved.add(value);
     }
 
-    // Merge all resolved DTOs
-    return resolved.fold<T?>(
+    // Merge all resolved DTOs then resolve to final value
+    final merged = resolved.fold<T?>(
       null,
       (acc, dto) => (acc?.merge(dto) ?? dto) as T?,
     );
+
+    return merged?.resolve(context);
   }
 
-  /// Merges this MixableDto with another using smart grouping
-  /// Values at the end of the sequence are merged together
-  /// Tokens remain separate for later resolution
-  MixProp<T, V> merge(MixProp<T, V>? other) {
+  /// CENTRALIZED MERGE - with smart grouping
+  MixProp<V, T> merge(MixProp<V, T>? other) {
     if (other == null || other.isEmpty) return this;
+    if (isEmpty) return other;
 
     final newItems = [..._items, ...other._items];
-
-    // Apply smart grouping: merge consecutive values at the end
     final groupedItems = _groupItems(newItems);
 
-    return _AggregatedMixDto<T, V>(groupedItems);
+    return _AggregatedMixProp<V, T>(groupedItems);
   }
 }
 
-/// Internal item for MixableDto
+/// Internal item for MixProp - simplified
 @immutable
-sealed class _MixableItem<T extends Mix> {
-  const _MixableItem();
-
-  bool get isToken;
-  T? resolveItem(MixContext context);
+sealed class _MixPropItem<T extends Mix> with EqualityMixin {
+  const _MixPropItem();
+  T? resolve(MixContext context);
 }
 
 /// Private implementation for direct DTO values
 @immutable
-class _ValueMixDto<T extends Mix<V>, V> extends MixProp<T, V> {
+final class _ValueMixProp<V, T extends Mix<V>> extends MixProp<V, T> {
   final T value;
 
-  const _ValueMixDto(this.value) : super._();
+  const _ValueMixProp(this.value) : super._();
 
   @override
-  List<_MixableItem<T>> get _items => [_ValueItem(value)];
+  List<_MixPropItem<T>> get _items => [_ValuePropItem(value)];
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is _ValueMixDto<T, V> &&
-          runtimeType == other.runtimeType &&
-          value == other.value;
-
-  @override
-  int get hashCode => value.hashCode;
+  List<Object?> get props => [value];
 }
 
 /// Private implementation for tokens
 @immutable
-class _TokenMixDto<T extends Mix<V>, V> extends MixProp<T, V> {
+final class _TokenMixProp<V, T extends Mix<V>> extends MixProp<V, T> {
   final MixableToken<T> token;
 
-  const _TokenMixDto(this.token) : super._();
+  const _TokenMixProp(this.token) : super._();
 
   @override
-  List<_MixableItem<T>> get _items => [_TokenItem(token)];
+  List<_MixPropItem<T>> get _items => [_TokenPropItem(token)];
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is _TokenMixDto<T, V> &&
-          runtimeType == other.runtimeType &&
-          token == other.token;
-
-  @override
-  int get hashCode => token.hashCode;
+  List<Object?> get props => [token];
 }
 
-/// Private implementation for aggregated DTOs with smart grouping
+/// Private implementation for aggregated DTOs
 @immutable
-class _AggregatedMixDto<T extends Mix<V>, V> extends MixProp<T, V> {
-  final List<_MixableItem<T>> items;
+final class _AggregatedMixProp<V, T extends Mix<V>> extends MixProp<V, T> {
+  final List<_MixPropItem<T>> items;
 
-  const _AggregatedMixDto(this.items) : super._();
-
-  @override
-  List<_MixableItem<T>> get _items => items;
+  const _AggregatedMixProp(this.items) : super._();
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is _AggregatedMixDto<T, V> &&
-          runtimeType == other.runtimeType &&
-          listEquals(items, other.items);
+  List<_MixPropItem<T>> get _items => items;
 
   @override
-  int get hashCode => Object.hashAll(items);
+  List<Object?> get props => [items];
 }
 
-/// Private implementation for value items
+/// Value item implementation
 @immutable
-class _ValueItem<T extends Mix> extends _MixableItem<T> {
+final class _ValuePropItem<T extends Mix> extends _MixPropItem<T> {
   final T value;
 
-  const _ValueItem(this.value);
+  const _ValuePropItem(this.value);
 
   @override
-  T resolveItem(MixContext context) => value;
-
+  T resolve(MixContext context) => value;
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is _ValueItem<T> &&
-          runtimeType == other.runtimeType &&
-          value == other.value;
-
-  @override
-  bool get isToken => false;
-
-  @override
-  int get hashCode => value.hashCode;
+  List<Object?> get props => [value];
 }
 
-/// Private implementation for token items
+/// Token item implementation
 @immutable
-class _TokenItem<T extends Mix> extends _MixableItem<T> {
+final class _TokenPropItem<T extends Mix> extends _MixPropItem<T> {
   final MixableToken<T> token;
 
-  const _TokenItem(this.token);
+  const _TokenPropItem(this.token);
 
   @override
-  T? resolveItem(MixContext context) => context.getToken(token);
+  T? resolve(MixContext context) => context.getToken(token);
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is _TokenItem<T> &&
-          runtimeType == other.runtimeType &&
-          token == other.token;
-
-  @override
-  bool get isToken => true;
-
-  @override
-  int get hashCode => token.hashCode;
+  List<Object?> get props => [token];
 }

@@ -57,14 +57,14 @@ class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
   @override
   StrutStyle resolve(MixContext mix) {
     return StrutStyle(
-      fontFamily: resolveValue(mix, fontFamily),
-      fontFamilyFallback: resolveValue(mix, fontFamilyFallback),
-      fontSize: resolveValue(mix, fontSize),
-      height: resolveValue(mix, height),
-      leading: resolveValue(mix, leading),
-      fontWeight: resolveValue(mix, fontWeight),
-      fontStyle: resolveValue(mix, fontStyle),
-      forceStrutHeight: resolveValue(mix, forceStrutHeight),
+      fontFamily: resolveProp(mix, fontFamily),
+      fontFamilyFallback: resolveProp(mix, fontFamilyFallback),
+      fontSize: resolveProp(mix, fontSize),
+      height: resolveProp(mix, height),
+      leading: resolveProp(mix, leading),
+      fontWeight: resolveProp(mix, fontWeight),
+      fontStyle: resolveProp(mix, fontStyle),
+      forceStrutHeight: resolveProp(mix, forceStrutHeight),
     );
   }
 
@@ -73,17 +73,17 @@ class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
     if (other == null) return this;
 
     return StrutStyleDto._(
-      fontFamily: mergeValue(fontFamily, other.fontFamily),
-      fontFamilyFallback: mergeValue(
+      fontFamily: mergeProp(fontFamily, other.fontFamily),
+      fontFamilyFallback: mergeProp(
         fontFamilyFallback,
         other.fontFamilyFallback,
       ),
-      fontSize: mergeValue(fontSize, other.fontSize),
-      fontWeight: mergeValue(fontWeight, other.fontWeight),
-      fontStyle: mergeValue(fontStyle, other.fontStyle),
-      height: mergeValue(height, other.height),
-      leading: mergeValue(leading, other.leading),
-      forceStrutHeight: mergeValue(forceStrutHeight, other.forceStrutHeight),
+      fontSize: mergeProp(fontSize, other.fontSize),
+      fontWeight: mergeProp(fontWeight, other.fontWeight),
+      fontStyle: mergeProp(fontStyle, other.fontStyle),
+      height: mergeProp(height, other.height),
+      leading: mergeProp(leading, other.leading),
+      forceStrutHeight: mergeProp(forceStrutHeight, other.forceStrutHeight),
     );
   }
 

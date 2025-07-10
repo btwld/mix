@@ -44,9 +44,9 @@ class AnimationConfigDto extends Mix<AnimationConfig> {
   @override
   AnimationConfig resolve(MixContext mix) {
     return AnimationConfig(
-      duration: resolveValue(mix, duration),
-      curve: resolveValue(mix, curve),
-      onEnd: resolveValue(mix, onEnd),
+      duration: resolveProp(mix, duration),
+      curve: resolveProp(mix, curve),
+      onEnd: resolveProp(mix, onEnd),
     );
   }
 
@@ -55,9 +55,9 @@ class AnimationConfigDto extends Mix<AnimationConfig> {
     if (other == null) return this;
 
     return AnimationConfigDto._(
-      duration: mergeValue(duration, other.duration),
-      curve: mergeValue(curve, other.curve),
-      onEnd: mergeValue(onEnd, other.onEnd),
+      duration: mergeProp(duration, other.duration),
+      curve: mergeProp(curve, other.curve),
+      onEnd: mergeProp(onEnd, other.onEnd),
     );
   }
 

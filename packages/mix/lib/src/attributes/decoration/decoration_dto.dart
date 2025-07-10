@@ -148,7 +148,7 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
   @override
   BoxDecoration resolve(MixContext mix) {
     return BoxDecoration(
-      color: resolveValue(mix, color),
+      color: resolveProp(mix, color),
       image: image?.resolve(mix),
       border: border?.resolve(mix),
       borderRadius: borderRadius?.resolve(mix),
@@ -177,7 +177,7 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
           borderRadius?.merge(other.borderRadius) ?? other.borderRadius,
       shape: other.shape ?? shape,
       backgroundBlendMode: other.backgroundBlendMode ?? backgroundBlendMode,
-      color: mergeValue(color, other.color),
+      color: mergeProp(color, other.color),
       image: image?.merge(other.image) ?? other.image,
       gradient: GradientDto.tryToMerge(gradient, other.gradient),
       boxShadow: MixHelpers.mergeList(boxShadow, other.boxShadow),
@@ -273,7 +273,7 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
   @override
   ShapeDecoration resolve(MixContext mix) {
     return ShapeDecoration(
-      color: resolveValue(mix, color) ?? defaultValue.color,
+      color: resolveProp(mix, color) ?? defaultValue.color,
       image: image?.resolve(mix) ?? defaultValue.image,
       gradient: gradient?.resolve(mix) ?? defaultValue.gradient,
       shadows:
@@ -296,7 +296,7 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
 
     return ShapeDecorationDto._(
       shape: ShapeBorderDto.tryToMerge(shape, other.shape),
-      color: mergeValue(color, other.color),
+      color: mergeProp(color, other.color),
       image: image?.merge(other.image) ?? other.image,
       gradient: GradientDto.tryToMerge(gradient, other.gradient),
       shadows: MixHelpers.mergeList(shadows, other.shadows),

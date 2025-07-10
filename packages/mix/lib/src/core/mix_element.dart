@@ -56,17 +56,17 @@ abstract class Mix<T> with EqualityMixin {
   Mix<T> merge(covariant Mix<T>? other);
 
   @protected
-  V? resolveValue<V>(MixContext context, Prop<V>? mix) {
-    return mix?.resolve(context);
+  V? resolveProp<V>(MixContext context, Prop<V>? prop) {
+    return prop?.resolve(context);
   }
 
   @protected
-  Prop<V>? mergeValue<V>(Prop<V>? a, Prop<V>? b) {
-    return (a?.merge(b) ?? b);
+  Prop<V>? mergeProp<V>(Prop<V>? a, Prop<V>? b) {
+    return a?.merge(b) ?? b;
   }
 
   @protected
-  List<V>? resolveList<V>(MixContext context, List<Prop<V>>? list) {
+  List<V>? resolvePropList<V>(MixContext context, List<Prop<V>>? list) {
     if (list == null || list.isEmpty) return null;
 
     final resolved = <V>[];
@@ -79,15 +79,23 @@ abstract class Mix<T> with EqualityMixin {
   }
 
   @protected
-  List<W>? resolveDtoList<X extends MixProp<V, W>, V extends Mix<W>, W>(
+  List<R>? resolveMixPropList<R, D extends Mix<R>>(
     MixContext context,
-    List<X>? list,
+    List<MixProp<R, D>>? list,
   ) {
-    return list?.map((dto) => dto.resolve(context)).whereType<W>().toList();
+    if (list == null || list.isEmpty) return null;
+
+    final resolved = <R>[];
+    for (final mixProp in list) {
+      final value = mixProp.resolve(context);
+      if (value != null) resolved.add(value);
+    }
+
+    return resolved.isEmpty ? null : resolved;
   }
 
   @protected
-  List<Prop<V>>? mergeValueList<V>(
+  List<Prop<V>>? mergePropList<V>(
     List<Prop<V>>? a,
     List<Prop<V>>? b, {
     ListMergeStrategy strategy = ListMergeStrategy.append,
@@ -118,9 +126,9 @@ abstract class Mix<T> with EqualityMixin {
   }
 
   @protected
-  List<X>? mergeDtoList<X extends MixProp<V, W>, V extends Mix<W>, W>(
-    List<X>? a,
-    List<X>? b, {
+  List<MixProp<R, D>>? mergeMixPropList<R, D extends Mix<R>>(
+    List<MixProp<R, D>>? a,
+    List<MixProp<R, D>>? b, {
     ListMergeStrategy strategy = ListMergeStrategy.append,
   }) {
     if (a == null) return b;
@@ -131,10 +139,10 @@ abstract class Mix<T> with EqualityMixin {
         return [...a, ...b];
 
       case ListMergeStrategy.replace:
-        final result = List<X>.of(a);
+        final result = List<MixProp<R, D>>.of(a);
         for (int i = 0; i < b.length; i++) {
           if (i < result.length) {
-            result[i] = result[i].merge(b[i]) as X;
+            result[i] = result[i].merge(b[i]);
           } else {
             result.add(b[i]);
           }
@@ -161,7 +169,7 @@ enum ListMergeStrategy {
 }
 
 // Define a mixin for properties that have default values
-// TODO: Rename this to MixableDefaultValueMixin or similar
+// TODO: Rename this to DefaultValueMixin or similar
 mixin HasDefaultValue<Value> {
   @protected
   Value get defaultValue;
