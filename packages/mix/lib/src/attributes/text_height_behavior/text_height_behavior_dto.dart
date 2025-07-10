@@ -5,28 +5,28 @@ import 'package:mix/mix.dart';
 
 base class TextHeightBehaviorDto extends Mix<TextHeightBehavior> {
   // Properties use MixProp for cleaner merging
-  final Prop<bool> applyHeightToFirstAscent;
-  final Prop<bool> applyHeightToLastDescent;
-  final Prop<TextLeadingDistribution> leadingDistribution;
+  final Prop<bool>? applyHeightToFirstAscent;
+  final Prop<bool>? applyHeightToLastDescent;
+  final Prop<TextLeadingDistribution>? leadingDistribution;
 
-  // Main constructor accepts Mix values
+  // Main constructor accepts raw values
   factory TextHeightBehaviorDto({
-    Mix<bool>? applyHeightToFirstAscent,
-    Mix<bool>? applyHeightToLastDescent,
-    Mix<TextLeadingDistribution>? leadingDistribution,
+    bool? applyHeightToFirstAscent,
+    bool? applyHeightToLastDescent,
+    TextLeadingDistribution? leadingDistribution,
   }) {
     return TextHeightBehaviorDto._(
-      applyHeightToFirstAscent: Prop(applyHeightToFirstAscent),
-      applyHeightToLastDescent: Prop(applyHeightToLastDescent),
-      leadingDistribution: Prop(leadingDistribution),
+      applyHeightToFirstAscent: Prop.maybeValue(applyHeightToFirstAscent),
+      applyHeightToLastDescent: Prop.maybeValue(applyHeightToLastDescent),
+      leadingDistribution: Prop.maybeValue(leadingDistribution),
     );
   }
 
   // Private constructor that accepts MixProp instances
   const TextHeightBehaviorDto._({
-    required this.applyHeightToFirstAscent,
-    required this.applyHeightToLastDescent,
-    required this.leadingDistribution,
+    this.applyHeightToFirstAscent,
+    this.applyHeightToLastDescent,
+    this.leadingDistribution,
   });
 
   /// Resolves to [TextHeightBehavior] using the provided [MixContext].
@@ -40,11 +40,9 @@ base class TextHeightBehaviorDto extends Mix<TextHeightBehavior> {
   @override
   TextHeightBehavior resolve(MixContext mix) {
     return TextHeightBehavior(
-      applyHeightToFirstAscent: applyHeightToFirstAscent.resolve(mix) ?? true,
-      applyHeightToLastDescent: applyHeightToLastDescent.resolve(mix) ?? true,
-      leadingDistribution:
-          leadingDistribution.resolve(mix) ??
-          TextLeadingDistribution.proportional,
+      applyHeightToFirstAscent: resolveProp(mix, applyHeightToFirstAscent) ?? true,
+      applyHeightToLastDescent: resolveProp(mix, applyHeightToLastDescent) ?? true,
+      leadingDistribution: resolveProp(mix, leadingDistribution) ?? TextLeadingDistribution.proportional,
     );
   }
 
@@ -61,13 +59,9 @@ base class TextHeightBehaviorDto extends Mix<TextHeightBehavior> {
     if (other == null) return this;
 
     return TextHeightBehaviorDto._(
-      applyHeightToFirstAscent: applyHeightToFirstAscent.merge(
-        other.applyHeightToFirstAscent,
-      ),
-      applyHeightToLastDescent: applyHeightToLastDescent.merge(
-        other.applyHeightToLastDescent,
-      ),
-      leadingDistribution: leadingDistribution.merge(other.leadingDistribution),
+      applyHeightToFirstAscent: mergeProp(applyHeightToFirstAscent, other.applyHeightToFirstAscent),
+      applyHeightToLastDescent: mergeProp(applyHeightToLastDescent, other.applyHeightToLastDescent),
+      leadingDistribution: mergeProp(leadingDistribution, other.leadingDistribution),
     );
   }
 

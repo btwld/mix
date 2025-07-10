@@ -35,8 +35,8 @@ class AnimationConfigDto extends Mix<AnimationConfig> {
 
   factory AnimationConfigDto.withDefaults() {
     return AnimationConfigDto(
-      duration: const DurationMix(kDefaultAnimationDuration),
-      curve: const CurveMix(Curves.linear),
+      duration: kDefaultAnimationDuration,
+      curve: Curves.linear,
       onEnd: null,
     );
   }

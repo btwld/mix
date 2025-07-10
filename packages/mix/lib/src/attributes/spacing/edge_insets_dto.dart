@@ -7,10 +7,9 @@ import 'package:mix/mix.dart';
 @immutable
 sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
     extends Mix<T> {
-  final SpaceDto? top;
-  final SpaceDto? bottom;
+  final Prop<double>? top;
+  final Prop<double>? bottom;
 
-  @protected
   const EdgeInsetsGeometryDto._({this.top, this.bottom});
 
   static EdgeInsetsGeometryDto only({
@@ -31,18 +30,18 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
     );
     if (start != null || end != null) {
       return EdgeInsetsDirectionalDto._(
-        top: top != null ? SpaceDto.value(top) : null,
-        bottom: bottom != null ? SpaceDto.value(bottom) : null,
-        start: start != null ? SpaceDto.value(start) : null,
-        end: end != null ? SpaceDto.value(end) : null,
+        top: Prop.maybeValue(top),
+        bottom: Prop.maybeValue(bottom),
+        start: Prop.maybeValue(start),
+        end: Prop.maybeValue(end),
       );
     }
 
     return EdgeInsetsDto._(
-      top: top != null ? SpaceDto.value(top) : null,
-      bottom: bottom != null ? SpaceDto.value(bottom) : null,
-      left: left != null ? SpaceDto.value(left) : null,
-      right: right != null ? SpaceDto.value(right) : null,
+      top: Prop.maybeValue(top),
+      bottom: Prop.maybeValue(bottom),
+      left: Prop.maybeValue(left),
+      right: Prop.maybeValue(right),
     );
   }
 
@@ -88,34 +87,33 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
 }
 
 final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
-  final SpaceDto? left;
-  final SpaceDto? right;
+  final Prop<double>? left;
+  final Prop<double>? right;
 
-  @protected
   const EdgeInsetsDto._({super.top, super.bottom, this.left, this.right})
     : super._();
 
-  // Main constructor accepts SpaceDto values
+  // Main constructor accepts raw double values
   factory EdgeInsetsDto({
-    SpaceDto? top,
-    SpaceDto? bottom,
-    SpaceDto? left,
-    SpaceDto? right,
+    double? top,
+    double? bottom,
+    double? left,
+    double? right,
   }) {
     return EdgeInsetsDto._(
-      top: top,
-      bottom: bottom,
-      left: left,
-      right: right,
+      top: Prop.maybeValue(top),
+      bottom: Prop.maybeValue(bottom),
+      left: Prop.maybeValue(left),
+      right: Prop.maybeValue(right),
     );
   }
 
   EdgeInsetsDto.all(double value)
     : this._(
-        top: SpaceDto.value(value),
-        bottom: SpaceDto.value(value),
-        left: SpaceDto.value(value),
-        right: SpaceDto.value(value),
+        top: Prop.value(value),
+        bottom: Prop.value(value),
+        left: Prop.value(value),
+        right: Prop.value(value),
       );
 
   EdgeInsetsDto.none() : this.all(0);
@@ -123,10 +121,10 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
   @override
   EdgeInsets resolve(MixContext mix) {
     return EdgeInsets.only(
-      left: left?.resolve(mix) ?? 0,
-      top: top?.resolve(mix) ?? 0,
-      right: right?.resolve(mix) ?? 0,
-      bottom: bottom?.resolve(mix) ?? 0,
+      left: resolveProp(mix, left) ?? 0,
+      top: resolveProp(mix, top) ?? 0,
+      right: resolveProp(mix, right) ?? 0,
+      bottom: resolveProp(mix, bottom) ?? 0,
     );
   }
 
@@ -135,10 +133,10 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
     if (other == null) return this;
 
     return EdgeInsetsDto._(
-      top: top?.merge(other.top) ?? other.top,
-      bottom: bottom?.merge(other.bottom) ?? other.bottom,
-      left: other.left ?? left,
-      right: other.right ?? right,
+      top: mergeProp(top, other.top),
+      bottom: mergeProp(bottom, other.bottom),
+      left: mergeProp(left, other.left),
+      right: mergeProp(right, other.right),
     );
   }
 
@@ -148,10 +146,9 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
 
 final class EdgeInsetsDirectionalDto
     extends EdgeInsetsGeometryDto<EdgeInsetsDirectional> {
-  final SpaceDto? start;
-  final SpaceDto? end;
+  final Prop<double>? start;
+  final Prop<double>? end;
 
-  @protected
   const EdgeInsetsDirectionalDto._({
     super.top,
     super.bottom,
@@ -159,27 +156,27 @@ final class EdgeInsetsDirectionalDto
     this.end,
   }) : super._();
 
-  // Main constructor accepts SpaceDto values
+  // Main constructor accepts raw double values
   factory EdgeInsetsDirectionalDto({
-    SpaceDto? top,
-    SpaceDto? bottom,
-    SpaceDto? start,
-    SpaceDto? end,
+    double? top,
+    double? bottom,
+    double? start,
+    double? end,
   }) {
     return EdgeInsetsDirectionalDto._(
-      top: top,
-      bottom: bottom,
-      start: start,
-      end: end,
+      top: Prop.maybeValue(top),
+      bottom: Prop.maybeValue(bottom),
+      start: Prop.maybeValue(start),
+      end: Prop.maybeValue(end),
     );
   }
 
   EdgeInsetsDirectionalDto.all(double value)
     : this._(
-        top: SpaceDto.value(value),
-        bottom: SpaceDto.value(value),
-        start: SpaceDto.value(value),
-        end: SpaceDto.value(value),
+        top: Prop.value(value),
+        bottom: Prop.value(value),
+        start: Prop.value(value),
+        end: Prop.value(value),
       );
 
   EdgeInsetsDirectionalDto.none() : this.all(0);
@@ -187,10 +184,10 @@ final class EdgeInsetsDirectionalDto
   @override
   EdgeInsetsDirectional resolve(MixContext mix) {
     return EdgeInsetsDirectional.only(
-      start: start?.resolve(mix) ?? 0,
-      top: top?.resolve(mix) ?? 0,
-      end: end?.resolve(mix) ?? 0,
-      bottom: bottom?.resolve(mix) ?? 0,
+      start: resolveProp(mix, start) ?? 0,
+      top: resolveProp(mix, top) ?? 0,
+      end: resolveProp(mix, end) ?? 0,
+      bottom: resolveProp(mix, bottom) ?? 0,
     );
   }
 
@@ -199,10 +196,10 @@ final class EdgeInsetsDirectionalDto
     if (other == null) return this;
 
     return EdgeInsetsDirectionalDto._(
-      top: top?.merge(other.top) ?? other.top,
-      bottom: bottom?.merge(other.bottom) ?? other.bottom,
-      start: start?.merge(other.start) ?? other.start,
-      end: end?.merge(other.end) ?? other.end,
+      top: mergeProp(top, other.top),
+      bottom: mergeProp(bottom, other.bottom),
+      start: mergeProp(start, other.start),
+      end: mergeProp(end, other.end),
     );
   }
 

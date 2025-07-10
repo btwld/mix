@@ -7,7 +7,7 @@ sealed class BoxBorderDto<T extends BoxBorder> extends Mix<T> {
   final BorderSideDto? top;
   final BorderSideDto? bottom;
 
-  const BoxBorderDto({this.top, this.bottom});
+  const BoxBorderDto._({this.top, this.bottom});
 
   /// Will try to merge two borders, the type will resolve to type of
   /// `b` if its not null and `a` otherwise.
@@ -33,13 +33,13 @@ sealed class BoxBorderDto<T extends BoxBorder> extends Mix<T> {
   BorderDto _asBorder() {
     if (this is BorderDto) return this as BorderDto;
 
-    return BorderDto(top: top, bottom: bottom);
+    return BorderDto._(top: top, bottom: bottom);
   }
 
   BorderDirectionalDto _asBorderDirectional() {
     if (this is BorderDirectionalDto) return this as BorderDirectionalDto;
 
-    return BorderDirectionalDto(top: top, bottom: bottom);
+    return BorderDirectionalDto._(top: top, bottom: bottom);
   }
 
   bool get isUniform;
@@ -55,15 +55,30 @@ final class BorderDto extends BoxBorderDto<Border> {
 
   static const BorderDto none = BorderDto.all(BorderSideDto.none);
 
-  const BorderDto({super.top, super.bottom, this.left, this.right});
+  const BorderDto._({super.top, super.bottom, this.left, this.right})
+      : super._();
+
+  factory BorderDto({
+    BorderSideDto? top,
+    BorderSideDto? bottom,
+    BorderSideDto? left,
+    BorderSideDto? right,
+  }) {
+    return BorderDto._(
+      top: top,
+      bottom: bottom,
+      left: left,
+      right: right,
+    );
+  }
 
   const BorderDto.all(BorderSideDto side)
-    : this(top: side, bottom: side, left: side, right: side);
+    : this._(top: side, bottom: side, left: side, right: side);
 
   const BorderDto.symmetric({
     BorderSideDto? vertical,
     BorderSideDto? horizontal,
-  }) : this(
+  }) : this._(
          top: horizontal,
          bottom: horizontal,
          left: vertical,
@@ -105,7 +120,7 @@ final class BorderDto extends BoxBorderDto<Border> {
   BorderDto merge(BorderDto? other) {
     if (other == null) return this;
 
-    return BorderDto(
+    return BorderDto._(
       top: top?.merge(other.top) ?? other.top,
       bottom: bottom?.merge(other.bottom) ?? other.bottom,
       left: left?.merge(other.left) ?? other.left,
@@ -131,15 +146,30 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional> {
     BorderSideDto.none,
   );
 
-  const BorderDirectionalDto({super.top, super.bottom, this.start, this.end});
+  const BorderDirectionalDto._({super.top, super.bottom, this.start, this.end})
+      : super._();
+
+  factory BorderDirectionalDto({
+    BorderSideDto? top,
+    BorderSideDto? bottom,
+    BorderSideDto? start,
+    BorderSideDto? end,
+  }) {
+    return BorderDirectionalDto._(
+      top: top,
+      bottom: bottom,
+      start: start,
+      end: end,
+    );
+  }
 
   const BorderDirectionalDto.all(BorderSideDto side)
-    : this(top: side, bottom: side, start: side, end: side);
+    : this._(top: side, bottom: side, start: side, end: side);
 
   const BorderDirectionalDto.symmetric({
     BorderSideDto? vertical,
     BorderSideDto? horizontal,
-  }) : this(
+  }) : this._(
          top: horizontal,
          bottom: horizontal,
          start: vertical,
@@ -182,7 +212,7 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional> {
   BorderDirectionalDto merge(BorderDirectionalDto? other) {
     if (other == null) return this;
 
-    return BorderDirectionalDto(
+    return BorderDirectionalDto._(
       top: top?.merge(other.top) ?? other.top,
       bottom: bottom?.merge(other.bottom) ?? other.bottom,
       start: start?.merge(other.start) ?? other.start,

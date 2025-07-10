@@ -273,15 +273,15 @@ final class ContinuousRectangleBorderDto
 }
 
 final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
-  final Prop<double> eccentricity;
+  final Prop<double>? eccentricity;
 
-  // Main constructor accepts Mix values
-  factory CircleBorderDto({BorderSideDto? side, Mix<double>? eccentricity}) {
-    return CircleBorderDto._(side: side, eccentricity: Prop(eccentricity));
+  // Main constructor accepts raw values
+  factory CircleBorderDto({BorderSideDto? side, double? eccentricity}) {
+    return CircleBorderDto._(side: side, eccentricity: Prop.maybeValue(eccentricity));
   }
 
   // Private constructor that accepts MixProp instances
-  const CircleBorderDto._({required super.side, required this.eccentricity});
+  const CircleBorderDto._({super.side, this.eccentricity});
 
   @override
   CircleBorderDto adapt(OutlinedBorderDto other) {
@@ -291,7 +291,7 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
 
     return CircleBorderDto._(
       side: other.side,
-      eccentricity: const Prop.empty(),
+      eccentricity: null,
     );
   }
 
@@ -307,7 +307,7 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
   CircleBorder resolve(MixContext mix) {
     return CircleBorder(
       side: side?.resolve(mix) ?? BorderSide.none,
-      eccentricity: eccentricity.resolve(mix) ?? 0.0,
+      eccentricity: resolveProp(mix, eccentricity) ?? 0.0,
     );
   }
 
@@ -325,7 +325,7 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
 
     return CircleBorderDto._(
       side: side?.merge(other.side) ?? other.side,
-      eccentricity: eccentricity.merge(other.eccentricity),
+      eccentricity: mergeProp(eccentricity, other.eccentricity),
     );
   }
 
@@ -341,55 +341,55 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
 }
 
 final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
-  final Prop<double> points;
-  final Prop<double> innerRadiusRatio;
-  final Prop<double> pointRounding;
-  final Prop<double> valleyRounding;
-  final Prop<double> rotation;
-  final Prop<double> squash;
+  final Prop<double>? points;
+  final Prop<double>? innerRadiusRatio;
+  final Prop<double>? pointRounding;
+  final Prop<double>? valleyRounding;
+  final Prop<double>? rotation;
+  final Prop<double>? squash;
 
-  // Main constructor accepts Mix values
+  // Main constructor accepts raw values
   factory StarBorderDto({
     BorderSideDto? side,
-    Mix<double>? points,
-    Mix<double>? innerRadiusRatio,
-    Mix<double>? pointRounding,
-    Mix<double>? valleyRounding,
-    Mix<double>? rotation,
-    Mix<double>? squash,
+    double? points,
+    double? innerRadiusRatio,
+    double? pointRounding,
+    double? valleyRounding,
+    double? rotation,
+    double? squash,
   }) {
     return StarBorderDto._(
       side: side,
-      points: Prop(points),
-      innerRadiusRatio: Prop(innerRadiusRatio),
-      pointRounding: Prop(pointRounding),
-      valleyRounding: Prop(valleyRounding),
-      rotation: Prop(rotation),
-      squash: Prop(squash),
+      points: Prop.maybeValue(points),
+      innerRadiusRatio: Prop.maybeValue(innerRadiusRatio),
+      pointRounding: Prop.maybeValue(pointRounding),
+      valleyRounding: Prop.maybeValue(valleyRounding),
+      rotation: Prop.maybeValue(rotation),
+      squash: Prop.maybeValue(squash),
     );
   }
 
   // Private constructor that accepts MixProp instances
   const StarBorderDto._({
-    required super.side,
-    required this.points,
-    required this.innerRadiusRatio,
-    required this.pointRounding,
-    required this.valleyRounding,
-    required this.rotation,
-    required this.squash,
+    super.side,
+    this.points,
+    this.innerRadiusRatio,
+    this.pointRounding,
+    this.valleyRounding,
+    this.rotation,
+    this.squash,
   });
 
   @override
   StarBorderDto adapt(OutlinedBorderDto other) {
     return StarBorderDto._(
       side: other.side,
-      points: const Prop.empty(),
-      innerRadiusRatio: const Prop.empty(),
-      pointRounding: const Prop.empty(),
-      valleyRounding: const Prop.empty(),
-      rotation: const Prop.empty(),
-      squash: const Prop.empty(),
+      points: null,
+      innerRadiusRatio: null,
+      pointRounding: null,
+      valleyRounding: null,
+      rotation: null,
+      squash: null,
     );
   }
 
@@ -405,12 +405,12 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
   StarBorder resolve(MixContext mix) {
     return StarBorder(
       side: side?.resolve(mix) ?? BorderSide.none,
-      points: points.resolve(mix) ?? 5,
-      innerRadiusRatio: innerRadiusRatio.resolve(mix) ?? 0.4,
-      pointRounding: pointRounding.resolve(mix) ?? 0,
-      valleyRounding: valleyRounding.resolve(mix) ?? 0,
-      rotation: rotation.resolve(mix) ?? 0,
-      squash: squash.resolve(mix) ?? 0,
+      points: resolveProp(mix, points) ?? 5,
+      innerRadiusRatio: resolveProp(mix, innerRadiusRatio) ?? 0.4,
+      pointRounding: resolveProp(mix, pointRounding) ?? 0,
+      valleyRounding: resolveProp(mix, valleyRounding) ?? 0,
+      rotation: resolveProp(mix, rotation) ?? 0,
+      squash: resolveProp(mix, squash) ?? 0,
     );
   }
 
@@ -428,12 +428,12 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
 
     return StarBorderDto._(
       side: side?.merge(other.side) ?? other.side,
-      points: points.merge(other.points),
-      innerRadiusRatio: innerRadiusRatio.merge(other.innerRadiusRatio),
-      pointRounding: pointRounding.merge(other.pointRounding),
-      valleyRounding: valleyRounding.merge(other.valleyRounding),
-      rotation: rotation.merge(other.rotation),
-      squash: squash.merge(other.squash),
+      points: mergeProp(points, other.points),
+      innerRadiusRatio: mergeProp(innerRadiusRatio, other.innerRadiusRatio),
+      pointRounding: mergeProp(pointRounding, other.pointRounding),
+      valleyRounding: mergeProp(valleyRounding, other.valleyRounding),
+      rotation: mergeProp(rotation, other.rotation),
+      squash: mergeProp(squash, other.squash),
     );
   }
 
@@ -531,16 +531,16 @@ final class LinearBorderDto extends OutlinedBorderDto<LinearBorder> {
 }
 
 final class LinearBorderEdgeDto extends Mix<LinearBorderEdge> {
-  final Prop<double> size;
-  final Prop<double> alignment;
+  final Prop<double>? size;
+  final Prop<double>? alignment;
 
-  // Main constructor accepts Mix values
-  factory LinearBorderEdgeDto({Mix<double>? size, Mix<double>? alignment}) {
-    return LinearBorderEdgeDto._(size: Prop(size), alignment: Prop(alignment));
+  // Main constructor accepts raw values
+  factory LinearBorderEdgeDto({double? size, double? alignment}) {
+    return LinearBorderEdgeDto._(size: Prop.maybeValue(size), alignment: Prop.maybeValue(alignment));
   }
 
   // Private constructor that accepts MixProp instances
-  const LinearBorderEdgeDto._({required this.size, required this.alignment});
+  const LinearBorderEdgeDto._({this.size, this.alignment});
 
   /// Resolves to [LinearBorderEdge] using the provided [MixContext].
   ///
@@ -553,8 +553,8 @@ final class LinearBorderEdgeDto extends Mix<LinearBorderEdge> {
   @override
   LinearBorderEdge resolve(MixContext mix) {
     return LinearBorderEdge(
-      size: size.resolve(mix) ?? 1.0,
-      alignment: alignment.resolve(mix) ?? 0.0,
+      size: resolveProp(mix, size) ?? 1.0,
+      alignment: resolveProp(mix, alignment) ?? 0.0,
     );
   }
 
@@ -571,8 +571,8 @@ final class LinearBorderEdgeDto extends Mix<LinearBorderEdge> {
     if (other == null) return this;
 
     return LinearBorderEdgeDto._(
-      size: size.merge(other.size),
-      alignment: alignment.merge(other.alignment),
+      size: mergeProp(size, other.size),
+      alignment: mergeProp(alignment, other.alignment),
     );
   }
 

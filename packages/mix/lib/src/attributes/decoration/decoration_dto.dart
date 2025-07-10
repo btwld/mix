@@ -78,8 +78,8 @@ sealed class DecorationDto<T extends Decoration> extends Mix<T> {
 final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
   final BoxBorderDto? border;
   final BorderRadiusGeometryDto? borderRadius;
-  final BoxShape? shape;
-  final BlendMode? backgroundBlendMode;
+  final Prop<BoxShape>? shape;
+  final Prop<BlendMode>? backgroundBlendMode;
 
   factory BoxDecorationDto({
     BoxBorderDto? border,
@@ -94,8 +94,8 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
     return BoxDecorationDto._(
       border: border,
       borderRadius: borderRadius,
-      shape: shape,
-      backgroundBlendMode: backgroundBlendMode,
+      shape: Prop.maybeValue(shape),
+      backgroundBlendMode: Prop.maybeValue(backgroundBlendMode),
       color: Prop.maybeValue(color),
       image: image,
       gradient: gradient,
@@ -128,7 +128,8 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
       BoxDecorationDto._(
         border: side != null ? BorderDto.all(side) : null,
         borderRadius: borderRadius,
-        shape: boxShape,
+        shape: Prop.maybeValue(boxShape),
+        backgroundBlendMode: null,
         color: color,
         image: image,
         gradient: gradient,
@@ -154,8 +155,8 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
       borderRadius: borderRadius?.resolve(mix),
       boxShadow: boxShadow?.map((e) => e.resolve(mix)).toList(),
       gradient: gradient?.resolve(mix),
-      backgroundBlendMode: backgroundBlendMode,
-      shape: shape ?? BoxShape.rectangle,
+      backgroundBlendMode: resolveProp(mix, backgroundBlendMode),
+      shape: resolveProp(mix, shape) ?? BoxShape.rectangle,
     );
   }
 
@@ -175,8 +176,8 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
       border: BoxBorderDto.tryToMerge(border, other.border),
       borderRadius:
           borderRadius?.merge(other.borderRadius) ?? other.borderRadius,
-      shape: other.shape ?? shape,
-      backgroundBlendMode: other.backgroundBlendMode ?? backgroundBlendMode,
+      shape: mergeProp(shape, other.shape),
+      backgroundBlendMode: mergeProp(backgroundBlendMode, other.backgroundBlendMode),
       color: mergeProp(color, other.color),
       image: image?.merge(other.image) ?? other.image,
       gradient: GradientDto.tryToMerge(gradient, other.gradient),
@@ -245,8 +246,10 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
 
     final (:boxShadow, :color, :gradient, :image) = other._getBaseDecor();
 
+    // For mergeable operations, we assume rectangle shape if not resolvable
+    // This maintains backward compatibility
     final shapeBorder = _fromBoxShape(
-      shape: other.shape,
+      shape: BoxShape.rectangle,
       side: other.border?.top,
       borderRadius: other.borderRadius,
     );
@@ -329,7 +332,8 @@ BoxDecorationDto _toBoxDecorationDto(ShapeDecorationDto dto) {
   return BoxDecorationDto._(
     border: side != null ? BorderDto.all(side) : null,
     borderRadius: borderRadius,
-    shape: boxShape,
+    shape: Prop.maybeValue(boxShape),
+    backgroundBlendMode: null,
     color: color,
     image: image,
     gradient: gradient,
@@ -339,8 +343,11 @@ BoxDecorationDto _toBoxDecorationDto(ShapeDecorationDto dto) {
 
 ShapeDecorationDto _toShapeDecorationDto(BoxDecorationDto dto) {
   final (:boxShadow, :color, :gradient, :image) = dto._getBaseDecor();
+  
+  // For conversion operations, we assume rectangle shape if not resolvable
+  // This maintains backward compatibility
   final shapeBorder = _fromBoxShape(
-    shape: dto.shape,
+    shape: BoxShape.rectangle,
     side: dto.border?.top,
     borderRadius: dto.borderRadius,
   );

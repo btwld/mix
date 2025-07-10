@@ -2,51 +2,50 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-final class DecorationImageDto extends Mix<DecorationImage>
-    with HasDefaultValue<DecorationImage> {
+final class DecorationImageDto extends Mix<DecorationImage> {
   // Properties use MixProp for cleaner merging
-  final Prop<ImageProvider> image;
-  final Prop<BoxFit> fit;
-  final Prop<AlignmentGeometry> alignment;
-  final Prop<Rect> centerSlice;
-  final Prop<ImageRepeat> repeat;
-  final Prop<FilterQuality> filterQuality;
-  final Prop<bool> invertColors;
-  final Prop<bool> isAntiAlias;
+  final Prop<ImageProvider>? image;
+  final Prop<BoxFit>? fit;
+  final Prop<AlignmentGeometry>? alignment;
+  final Prop<Rect>? centerSlice;
+  final Prop<ImageRepeat>? repeat;
+  final Prop<FilterQuality>? filterQuality;
+  final Prop<bool>? invertColors;
+  final Prop<bool>? isAntiAlias;
 
-  // Main constructor accepts Mix values
+  // Main constructor accepts raw values
   factory DecorationImageDto({
-    Mix<ImageProvider>? image,
-    Mix<BoxFit>? fit,
-    Mix<AlignmentGeometry>? alignment,
-    Mix<Rect>? centerSlice,
-    Mix<ImageRepeat>? repeat,
-    Mix<FilterQuality>? filterQuality,
-    Mix<bool>? invertColors,
-    Mix<bool>? isAntiAlias,
+    ImageProvider? image,
+    BoxFit? fit,
+    AlignmentGeometry? alignment,
+    Rect? centerSlice,
+    ImageRepeat? repeat,
+    FilterQuality? filterQuality,
+    bool? invertColors,
+    bool? isAntiAlias,
   }) {
     return DecorationImageDto._(
-      image: Prop(image),
-      fit: Prop(fit),
-      alignment: Prop(alignment),
-      centerSlice: Prop(centerSlice),
-      repeat: Prop(repeat),
-      filterQuality: Prop(filterQuality),
-      invertColors: Prop(invertColors),
-      isAntiAlias: Prop(isAntiAlias),
+      image: Prop.maybeValue(image),
+      fit: Prop.maybeValue(fit),
+      alignment: Prop.maybeValue(alignment),
+      centerSlice: Prop.maybeValue(centerSlice),
+      repeat: Prop.maybeValue(repeat),
+      filterQuality: Prop.maybeValue(filterQuality),
+      invertColors: Prop.maybeValue(invertColors),
+      isAntiAlias: Prop.maybeValue(isAntiAlias),
     );
   }
 
   // Private constructor that accepts MixProp instances
   const DecorationImageDto._({
-    required this.image,
-    required this.fit,
-    required this.alignment,
-    required this.centerSlice,
-    required this.repeat,
-    required this.filterQuality,
-    required this.invertColors,
-    required this.isAntiAlias,
+    this.image,
+    this.fit,
+    this.alignment,
+    this.centerSlice,
+    this.repeat,
+    this.filterQuality,
+    this.invertColors,
+    this.isAntiAlias,
   });
 
   /// Resolves to [DecorationImage] using the provided [MixContext].
@@ -59,15 +58,20 @@ final class DecorationImageDto extends Mix<DecorationImage>
   /// ```
   @override
   DecorationImage resolve(MixContext mix) {
+    final resolvedImage = resolveProp(mix, image);
+    if (resolvedImage == null) {
+      throw StateError('DecorationImage requires an image provider');
+    }
+    
     return DecorationImage(
-      image: image.resolve(mix) ?? defaultValue.image,
-      fit: fit.resolve(mix) ?? defaultValue.fit,
-      alignment: alignment.resolve(mix) ?? defaultValue.alignment,
-      centerSlice: centerSlice.resolve(mix) ?? defaultValue.centerSlice,
-      repeat: repeat.resolve(mix) ?? defaultValue.repeat,
-      filterQuality: filterQuality.resolve(mix) ?? defaultValue.filterQuality,
-      invertColors: invertColors.resolve(mix) ?? defaultValue.invertColors,
-      isAntiAlias: isAntiAlias.resolve(mix) ?? defaultValue.isAntiAlias,
+      image: resolvedImage,
+      fit: resolveProp(mix, fit),
+      alignment: resolveProp(mix, alignment) ?? Alignment.center,
+      centerSlice: resolveProp(mix, centerSlice),
+      repeat: resolveProp(mix, repeat) ?? ImageRepeat.noRepeat,
+      filterQuality: resolveProp(mix, filterQuality) ?? FilterQuality.low,
+      invertColors: resolveProp(mix, invertColors) ?? false,
+      isAntiAlias: resolveProp(mix, isAntiAlias) ?? false,
     );
   }
 
@@ -84,20 +88,16 @@ final class DecorationImageDto extends Mix<DecorationImage>
     if (other == null) return this;
 
     return DecorationImageDto._(
-      image: image.merge(other.image),
-      fit: fit.merge(other.fit),
-      alignment: alignment.merge(other.alignment),
-      centerSlice: centerSlice.merge(other.centerSlice),
-      repeat: repeat.merge(other.repeat),
-      filterQuality: filterQuality.merge(other.filterQuality),
-      invertColors: invertColors.merge(other.invertColors),
-      isAntiAlias: isAntiAlias.merge(other.isAntiAlias),
+      image: mergeProp(image, other.image),
+      fit: mergeProp(fit, other.fit),
+      alignment: mergeProp(alignment, other.alignment),
+      centerSlice: mergeProp(centerSlice, other.centerSlice),
+      repeat: mergeProp(repeat, other.repeat),
+      filterQuality: mergeProp(filterQuality, other.filterQuality),
+      invertColors: mergeProp(invertColors, other.invertColors),
+      isAntiAlias: mergeProp(isAntiAlias, other.isAntiAlias),
     );
   }
-
-  @override
-  DecorationImage get defaultValue =>
-      const DecorationImage(image: AssetImage('NONE'));
 
   /// The list of properties that constitute the state of this [DecorationImageDto].
   ///
