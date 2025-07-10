@@ -306,15 +306,15 @@ final class DefaultTextStyleModifierSpecUtility<T extends StyleElement>
   }) {
     return builder(
       DefaultTextStyleModifierSpecAttribute(
-        style: style != null ? TextStyleDto.from(style) : null,
+        style: TextStyleDto.maybeValue(style),
         textAlign: textAlign,
         softWrap: softWrap,
         overflow: overflow,
         maxLines: maxLines,
         textWidthBasis: textWidthBasis,
-        textHeightBehavior: textHeightBehavior != null
-            ? TextHeightBehaviorDto.from(textHeightBehavior)
-            : null,
+        textHeightBehavior: TextHeightBehaviorDto.maybeValue(
+          textHeightBehavior,
+        ),
       ),
     );
   }

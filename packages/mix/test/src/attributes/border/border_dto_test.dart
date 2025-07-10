@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../../helpers/custom_matchers.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
@@ -196,7 +197,7 @@ void main() {
     });
 
     // from
-    // TODO: BorderSideDto.from() constructor doesn't exist
+    // TODO: BorderSideDto.value() constructor doesn't exist
     /*
     test('from should correctly create a BorderSideDto from a BorderSide', () {
       const borderSide = BorderSide(
@@ -205,7 +206,7 @@ void main() {
         style: BorderStyle.solid,
       );
 
-      final borderSideDto = BorderSideDto.from(borderSide);
+      final borderSideDto = BorderSideDto.value(borderSide);
 
       expect(borderSideDto.width?.resolve(EmptyMixData), borderSide.width);
       expect(borderSideDto.color?.resolve(EmptyMixData), borderSide.color);

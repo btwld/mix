@@ -342,7 +342,7 @@ typedef PaddingSpec = PaddingModifierSpec;
 extension AnimationConfigMixExtDeprecated on AnimationConfig {
   @Deprecated('Use AnimationConfigDto.from(this) directly instead of toDto()')
   AnimationConfigDto toDto() {
-    return AnimationConfigDto.from(this);
+    return AnimationConfigDto.value(this);
   }
 }
 
@@ -500,7 +500,7 @@ extension DeprecatedBoxBorderExt on BoxBorder {
 /// Deprecated extension for TextStyle conversion
 extension DeprecatedTextStyleExt on TextStyle {
   @Deprecated('Use Mixable.value(this) directly instead of toDto()')
-  TextStyleDto toDto() => TextStyleDto.from(this);
+  TextStyleDto toDto() => TextStyleDto.value(this);
 }
 
 /// Deprecated extension for BoxConstraints conversion
@@ -666,19 +666,19 @@ extension DeprecatedEdgeInsetsGeometryExt on EdgeInsetsGeometry {
   EdgeInsetsGeometryDto toDto() {
     final self = this;
     if (self is EdgeInsetsDirectional) {
-      return EdgeInsetsDirectionalDto.raw(
-        top: SpaceDto.value(self.top),
-        bottom: SpaceDto.value(self.bottom),
-        start: SpaceDto.value(self.start),
-        end: SpaceDto.value(self.end),
+      return EdgeInsetsDirectionalDto(
+        top: self.top,
+        bottom: self.bottom,
+        start: self.start,
+        end: self.end,
       );
     }
     if (self is EdgeInsets) {
-      return EdgeInsetsDto.raw(
-        top: SpaceDto.value(self.top),
-        bottom: SpaceDto.value(self.bottom),
-        left: SpaceDto.value(self.left),
-        right: SpaceDto.value(self.right),
+      return EdgeInsetsDto(
+        top: self.top,
+        bottom: self.bottom,
+        left: self.left,
+        right: self.right,
       );
     }
 
@@ -782,7 +782,7 @@ extension SweepGradientMixExtDeprecated on SweepGradient {
 /// Deprecated extension for StrutStyle conversion
 extension DeprecatedStrutStyleExt on StrutStyle {
   @Deprecated('Use Mixable.value(this) directly instead of toDto()')
-  StrutStyleDto toDto() => StrutStyleDto.from(this);
+  StrutStyleDto toDto() => StrutStyleDto.value(this);
 }
 
 /// Deprecated extension for TextHeightBehavior conversion
@@ -817,7 +817,7 @@ extension DeprecatedShapeBorderExt on ShapeBorder {
       );
     }
     if (self is CircleBorder) {
-      return CircleBorderDto(side: self.side, eccentricity: self.eccentricity);
+      return CircleBorderDto(side: self.side.toDto(), eccentricity: self.eccentricity);
     }
     if (self is ContinuousRectangleBorder) {
       return ContinuousRectangleBorderDto(
@@ -845,7 +845,7 @@ extension DeprecatedShapeBorderExt on ShapeBorder {
     }
     if (self is StarBorder) {
       return StarBorderDto(
-        side: self.side,
+        side: self.side.toDto(),
         points: self.points,
         innerRadiusRatio: self.innerRadiusRatio,
         pointRounding: self.pointRounding,
@@ -938,7 +938,7 @@ extension ListContinuousRectangleBorderMixExtDeprecated
 extension CircleBorderMixExtDeprecated on CircleBorder {
   @Deprecated('Use Mixable.value(this) directly instead of toDto()')
   CircleBorderDto toDto() {
-    return CircleBorderDto(side: side, eccentricity: eccentricity);
+    return CircleBorderDto(side: side.toDto(), eccentricity: eccentricity);
   }
 }
 
@@ -955,7 +955,7 @@ extension StarBorderMixExtDeprecated on StarBorder {
   @Deprecated('Use Mixable.value(this) directly instead of toDto()')
   StarBorderDto toDto() {
     return StarBorderDto(
-      side: side,
+      side: side.toDto(),
       points: points,
       innerRadiusRatio: innerRadiusRatio,
       pointRounding: pointRounding,

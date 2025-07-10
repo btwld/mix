@@ -26,8 +26,8 @@ void main() {
       expect(attr.box!.clipBehavior, Clip.antiAlias);
       expect(attr.box!.constraints!.maxWidth, 200);
       expect(attr.box!.height, 10);
-      expect(attr.box!.margin, EdgeInsetsDto.from(const EdgeInsets.all(10)));
-      expect(attr.box!.padding, EdgeInsetsDto.from(const EdgeInsets.all(10)));
+      expect(attr.box!.margin, EdgeInsetsDto.value(const EdgeInsets.all(10)));
+      expect(attr.box!.padding, EdgeInsetsDto.value(const EdgeInsets.all(10)));
       expect(attr.box!.transform, Matrix4.identity());
       expect(attr.box!.width, 10);
       expect(attr.flex!.mainAxisAlignment, MainAxisAlignment.center);
@@ -95,7 +95,7 @@ void main() {
       expect(decoration.color, Mix.value(Colors.amber));
       expect(
         decoration.borderRadius,
-        BorderRadiusDto.from(BorderRadius.circular(10)),
+        BorderRadiusDto.value(BorderRadius.circular(10)),
       );
     });
 
@@ -115,7 +115,7 @@ void main() {
       );
       expect(
         foregroundDecoration.borderRadius,
-        BorderRadiusDto.from(BorderRadius.circular(10)),
+        BorderRadiusDto.value(BorderRadius.circular(10)),
         reason: 'The BorderRadius is not correct',
       );
     });

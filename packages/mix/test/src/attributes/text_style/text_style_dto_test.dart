@@ -124,7 +124,7 @@ void main() {
         fontSize: 18.0,
         fontWeight: FontWeight.bold,
       );
-      final attr = TextStyleDto.from(style);
+      final attr = TextStyleDto.value(style);
       expect(attr, isA<TextStyleDto>());
       // Resolve the DTO to get actual values
       final resolved = attr.resolve(EmptyMixData);

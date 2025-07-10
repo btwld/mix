@@ -86,7 +86,7 @@ void main() {
       final attribute = strutStyleUtility.as(strutStyle);
 
       expect(attribute.value, isA<StrutStyleDto>());
-      expect(attribute.value, equals(StrutStyleDto.from(strutStyle)));
+      expect(attribute.value, equals(StrutStyleDto.value(strutStyle)));
       expect(attribute.value.resolve(EmptyMixData), equals(strutStyle));
     });
   });

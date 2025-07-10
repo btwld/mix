@@ -251,19 +251,19 @@ void main() {
         const stadiumBorder = StadiumBorder();
 
         expect(
-          RoundedRectangleBorderDto.from(roundedRectangleBorder),
+          RoundedRectangleBorderDto.value(roundedRectangleBorder),
           isA<RoundedRectangleBorderDto>(),
         );
-        expect(CircleBorderDto.from(circleBorder), isA<CircleBorderDto>());
+        expect(CircleBorderDto.value(circleBorder), isA<CircleBorderDto>());
         expect(
-          BeveledRectangleBorderDto.from(beveledRectangleBorder),
+          BeveledRectangleBorderDto.value(beveledRectangleBorder),
           isA<BeveledRectangleBorderDto>(),
         );
         expect(
-          ContinuousRectangleBorderDto.from(continuousRectangleBorder),
+          ContinuousRectangleBorderDto.value(continuousRectangleBorder),
           isA<ContinuousRectangleBorderDto>(),
         );
-        expect(StadiumBorderDto.from(stadiumBorder), isA<StadiumBorderDto>());
+        expect(StadiumBorderDto.value(stadiumBorder), isA<StadiumBorderDto>());
       },
     );
   });
@@ -280,19 +280,19 @@ void main() {
         const stadiumBorder = StadiumBorder();
 
         expect(
-          RoundedRectangleBorderDto.from(roundedRectangleBorder),
+          RoundedRectangleBorderDto.value(roundedRectangleBorder),
           isA<RoundedRectangleBorderDto>(),
         );
-        expect(CircleBorderDto.from(circleBorder), isA<CircleBorderDto>());
+        expect(CircleBorderDto.value(circleBorder), isA<CircleBorderDto>());
         expect(
-          BeveledRectangleBorderDto.from(beveledRectangleBorder),
+          BeveledRectangleBorderDto.value(beveledRectangleBorder),
           isA<BeveledRectangleBorderDto>(),
         );
         expect(
-          ContinuousRectangleBorderDto.from(continuousRectangleBorder),
+          ContinuousRectangleBorderDto.value(continuousRectangleBorder),
           isA<ContinuousRectangleBorderDto>(),
         );
-        expect(StadiumBorderDto.from(stadiumBorder), isA<StadiumBorderDto>());
+        expect(StadiumBorderDto.value(stadiumBorder), isA<StadiumBorderDto>());
       },
     );
 
@@ -333,25 +333,25 @@ void main() {
           side: const BorderSide(color: Colors.red),
         );
 
-        final roundedRectangleBorderDto = RoundedRectangleBorderDto.from(
+        final roundedRectangleBorderDto = RoundedRectangleBorderDto.value(
           roundedRectangleBorder,
         );
 
         expect(
           roundedRectangleBorderDto.borderRadius,
-          equals(BorderRadiusDto.from(BorderRadius.circular(10))),
+          equals(BorderRadiusDto.value(BorderRadius.circular(10))),
         );
         expect(
           roundedRectangleBorderDto.side,
-          equals(BorderSideDto.from(const BorderSide(color: Colors.red))),
+          equals(BorderSideDto.value(const BorderSide(color: Colors.red))),
         );
       },
     );
 
     test('merge method should handle null values correctly', () {
       final roundedRectangleBorderDto = RoundedRectangleBorderDto(
-        borderRadius: BorderRadiusDto.from(BorderRadius.circular(10)),
-        side: BorderSideDto.from(const BorderSide(color: Colors.red)),
+        borderRadius: BorderRadiusDto.value(BorderRadius.circular(10)),
+        side: BorderSideDto.value(const BorderSide(color: Colors.red)),
       );
 
       final mergedDto = roundedRectangleBorderDto.merge(null);
@@ -370,11 +370,11 @@ void main() {
           eccentricity: 0.8,
         );
 
-        final circleBorderDto = CircleBorderDto.from(circleBorder);
+        final circleBorderDto = CircleBorderDto.value(circleBorder);
 
         expect(
           circleBorderDto.side,
-          equals(BorderSideDto.from(const BorderSide(color: Colors.blue))),
+          equals(BorderSideDto.value(const BorderSide(color: Colors.blue))),
         );
         expect(circleBorderDto.eccentricity, equals(0.8));
       },
@@ -382,7 +382,7 @@ void main() {
 
     test('merge method should handle null values correctly', () {
       final circleBorderDto = CircleBorderDto(
-        side: BorderSideDto.from(const BorderSide(color: Colors.blue)),
+        side: BorderSideDto.value(const BorderSide(color: Colors.blue)),
         eccentricity: 0.8,
       );
 
@@ -402,25 +402,25 @@ void main() {
           side: const BorderSide(color: Colors.green),
         );
 
-        final beveledRectangleBorderDto = BeveledRectangleBorderDto.from(
+        final beveledRectangleBorderDto = BeveledRectangleBorderDto.value(
           beveledRectangleBorder,
         );
 
         expect(
           beveledRectangleBorderDto.borderRadius,
-          equals(BorderRadiusDto.from(BorderRadius.circular(10))),
+          equals(BorderRadiusDto.value(BorderRadius.circular(10))),
         );
         expect(
           beveledRectangleBorderDto.side,
-          equals(BorderSideDto.from(const BorderSide(color: Colors.green))),
+          equals(BorderSideDto.value(const BorderSide(color: Colors.green))),
         );
       },
     );
 
     test('merge method should handle null values correctly', () {
       final beveledRectangleBorderDto = BeveledRectangleBorderDto(
-        borderRadius: BorderRadiusDto.from(BorderRadius.circular(10)),
-        side: BorderSideDto.from(const BorderSide(color: Colors.green)),
+        borderRadius: BorderRadiusDto.value(BorderRadius.circular(10)),
+        side: BorderSideDto.value(const BorderSide(color: Colors.green)),
       );
 
       final mergedDto = beveledRectangleBorderDto.merge(null);
@@ -439,25 +439,25 @@ void main() {
           side: const BorderSide(color: Colors.orange),
         );
 
-        final continuousRectangleBorderDto = ContinuousRectangleBorderDto.from(
+        final continuousRectangleBorderDto = ContinuousRectangleBorderDto.value(
           continuousRectangleBorder,
         );
 
         expect(
           continuousRectangleBorderDto.borderRadius,
-          equals(BorderRadiusDto.from(BorderRadius.circular(10))),
+          equals(BorderRadiusDto.value(BorderRadius.circular(10))),
         );
         expect(
           continuousRectangleBorderDto.side,
-          equals(BorderSideDto.from(const BorderSide(color: Colors.orange))),
+          equals(BorderSideDto.value(const BorderSide(color: Colors.orange))),
         );
       },
     );
 
     test('merge method should handle null values correctly', () {
       final continuousRectangleBorderDto = ContinuousRectangleBorderDto(
-        borderRadius: BorderRadiusDto.from(BorderRadius.circular(10)),
-        side: BorderSideDto.from(const BorderSide(color: Colors.orange)),
+        borderRadius: BorderRadiusDto.value(BorderRadius.circular(10)),
+        side: BorderSideDto.value(const BorderSide(color: Colors.orange)),
       );
 
       final mergedDto = continuousRectangleBorderDto.merge(null);
@@ -475,18 +475,18 @@ void main() {
           side: BorderSide(color: Colors.purple),
         );
 
-        final stadiumBorderDto = StadiumBorderDto.from(stadiumBorder);
+        final stadiumBorderDto = StadiumBorderDto.value(stadiumBorder);
 
         expect(
           stadiumBorderDto.side,
-          equals(BorderSideDto.from(const BorderSide(color: Colors.purple))),
+          equals(BorderSideDto.value(const BorderSide(color: Colors.purple))),
         );
       },
     );
 
     test('merge method should handle null values correctly', () {
       final stadiumBorderDto = StadiumBorderDto(
-        side: BorderSideDto.from(const BorderSide(color: Colors.purple)),
+        side: BorderSideDto.value(const BorderSide(color: Colors.purple)),
       );
 
       final mergedDto = stadiumBorderDto.merge(null);
@@ -508,11 +508,11 @@ void main() {
         squash: 0.4,
       );
 
-      final starBorderDto = StarBorderDto.from(starBorder);
+      final starBorderDto = StarBorderDto.value(starBorder);
 
       expect(
         starBorderDto.side,
-        equals(BorderSideDto.from(const BorderSide(color: Colors.teal))),
+        equals(BorderSideDto.value(const BorderSide(color: Colors.teal))),
       );
       expect(starBorderDto.points, equals(5));
       expect(starBorderDto.innerRadiusRatio, equals(0.5));
@@ -524,7 +524,7 @@ void main() {
 
     test('merge method should handle null values correctly', () {
       final starBorderDto = StarBorderDto(
-        side: const BorderSide(color: Colors.teal),
+        side: BorderSideDto(color: Colors.teal),
         points: 5,
         innerRadiusRatio: 0.5,
         pointRounding: 0.2,
@@ -552,16 +552,16 @@ void main() {
           bottom: LinearBorderEdge(size: 0.4, alignment: 0.4),
         );
 
-        final linearBorderDto = LinearBorderDto.from(linearBorder);
+        final linearBorderDto = LinearBorderDto.value(linearBorder);
 
         expect(
           linearBorderDto.side,
-          equals(BorderSideDto.from(const BorderSide(color: Colors.brown))),
+          equals(BorderSideDto.value(const BorderSide(color: Colors.brown))),
         );
         expect(
           linearBorderDto.start,
           equals(
-            LinearBorderEdgeDto.from(
+            LinearBorderEdgeDto.value(
               const LinearBorderEdge(size: 0.1, alignment: 0.1),
             ),
           ),
@@ -569,7 +569,7 @@ void main() {
         expect(
           linearBorderDto.end,
           equals(
-            LinearBorderEdgeDto.from(
+            LinearBorderEdgeDto.value(
               const LinearBorderEdge(size: 0.2, alignment: 0.2),
             ),
           ),
@@ -577,7 +577,7 @@ void main() {
         expect(
           linearBorderDto.top,
           equals(
-            LinearBorderEdgeDto.from(
+            LinearBorderEdgeDto.value(
               const LinearBorderEdge(size: 0.3, alignment: 0.3),
             ),
           ),
@@ -585,7 +585,7 @@ void main() {
         expect(
           linearBorderDto.bottom,
           equals(
-            LinearBorderEdgeDto.from(
+            LinearBorderEdgeDto.value(
               const LinearBorderEdge(size: 0.4, alignment: 0.4),
             ),
           ),
@@ -595,17 +595,17 @@ void main() {
 
     test('merge method should handle null values correctly', () {
       final linearBorderDto = LinearBorderDto(
-        side: BorderSideDto.from(const BorderSide(color: Colors.brown)),
-        start: LinearBorderEdgeDto.from(
+        side: BorderSideDto.value(const BorderSide(color: Colors.brown)),
+        start: LinearBorderEdgeDto.value(
           const LinearBorderEdge(size: 0.1, alignment: 0.1),
         ),
-        end: LinearBorderEdgeDto.from(
+        end: LinearBorderEdgeDto.value(
           const LinearBorderEdge(size: 0.2, alignment: 0.2),
         ),
-        top: LinearBorderEdgeDto.from(
+        top: LinearBorderEdgeDto.value(
           const LinearBorderEdge(size: 0.3, alignment: 0.3),
         ),
-        bottom: LinearBorderEdgeDto.from(
+        bottom: LinearBorderEdgeDto.value(
           const LinearBorderEdge(size: 0.4, alignment: 0.4),
         ),
       );
@@ -622,7 +622,7 @@ void main() {
         () {
           const linearBorderEdge = LinearBorderEdge(size: 1.0, alignment: 0.1);
 
-          final linearBorderEdgeDto = LinearBorderEdgeDto.from(
+          final linearBorderEdgeDto = LinearBorderEdgeDto.value(
             linearBorderEdge,
           );
 
@@ -657,27 +657,7 @@ void main() {
       });
     });
 
-    // Additional tests for ShapeBorderUtility
-    group('ShapeBorderUtility', () {
-      test('should create utility instances for each shape border type', () {
-        final shapeBorderUtility = ShapeBorderUtility(UtilityTestAttribute.new);
-
-        expect(
-          shapeBorderUtility.roundedRectangle,
-          isA<RoundedRectangleBorderUtility>(),
-        );
-        expect(shapeBorderUtility.circle, isA<CircleBorderUtility>());
-        expect(
-          shapeBorderUtility.beveledRectangle,
-          isA<BeveledRectangleBorderUtility>(),
-        );
-        expect(shapeBorderUtility.stadium, isA<StadiumBorderUtility>());
-        expect(
-          shapeBorderUtility.continuousRectangle,
-          isA<ContinuousRectangleBorderUtility>(),
-        );
-      });
-    });
+    // ShapeBorderUtility tests removed - utilities not exported in current API
   });
 
   group('ShapeBorderDto.tryToMerge', () {

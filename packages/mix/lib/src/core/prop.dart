@@ -156,7 +156,8 @@ sealed class MixProp<V, T extends Mix<V>> with EqualityMixin {
 
   // Factory constructors
   const factory MixProp.value(T value) = _ValueMixProp<V, T>;
-  const factory MixProp.token(MixableToken<V> token) = _TokenMixProp<V, T>;
+  const factory MixProp.token(MixableToken<V> token, T Function(V) toMix) =
+      _TokenMixProp<V, T>;
 
   static MixProp<V, T>? maybeValue<V, T extends Mix<V>>(T? value) {
     if (value == null) return null;
@@ -273,14 +274,15 @@ final class _ValueMixProp<V, T extends Mix<V>> extends MixProp<V, T> {
 @immutable
 final class _TokenMixProp<V, T extends Mix<V>> extends MixProp<V, T> {
   final MixableToken<V> token;
+  final T Function(V) valueToDto;
 
-  const _TokenMixProp(this.token) : super._();
-
-  @override
-  List<_MixPropItem<T, V>> get _items => [_TokenPropItem(token)];
+  const _TokenMixProp(this.token, this.valueToDto) : super._();
 
   @override
-  List<Object?> get props => [token];
+  List<_MixPropItem<T, V>> get _items => [_TokenPropItem(token, valueToDto)];
+
+  @override
+  List<Object?> get props => [token, valueToDto];
 }
 
 /// Private implementation for aggregated DTOs
@@ -314,18 +316,19 @@ final class _ValuePropItem<T extends Mix<V>, V> extends _MixPropItem<T, V> {
 @immutable
 final class _TokenPropItem<T extends Mix<V>, V> extends _MixPropItem<T, V> {
   final MixableToken<V> token;
+  final T Function(V) valueToDto;
 
-  const _TokenPropItem(this.token);
+  const _TokenPropItem(this.token, this.valueToDto);
 
   @override
   T? resolve(MixContext context) {
     final value = context.getToken(token);
     if (value == null) return null;
 
-    // Wrap the resolved token value in a Mix object
-    return Mix.value(value) as T;
+    // Convert the resolved token value to the appropriate DTO type
+    return valueToDto(value);
   }
 
   @override
-  List<Object?> get props => [token];
+  List<Object?> get props => [token, valueToDto];
 }

@@ -18,11 +18,32 @@ sealed class BorderRadiusGeometryDto<T extends BorderRadiusGeometry>
     extends Mix<T> {
   const BorderRadiusGeometryDto();
 
+  factory BorderRadiusGeometryDto.value(BorderRadiusGeometry value) {
+    return switch (value) {
+      BorderRadius() =>
+        BorderRadiusDto.value(value) as BorderRadiusGeometryDto<T>,
+      BorderRadiusDirectional() =>
+        BorderRadiusDirectionalDto.value(value) as BorderRadiusGeometryDto<T>,
+      _ => throw ArgumentError(
+        'Unsupported BorderRadiusGeometry type: ${value.runtimeType}',
+      ),
+    };
+  }
+
+  static BorderRadiusGeometryDto<T>? maybeValue<T extends BorderRadiusGeometry>(
+    T? value,
+  ) {
+    if (value == null) return null;
+
+    return BorderRadiusGeometryDto.value(value);
+  }
+
   /// Common getters for accessing radius properties
   /// These return null for types that don't support these properties
   Prop<Radius>? get topLeft => null;
   Prop<Radius>? get topRight => null;
   Prop<Radius>? get bottomLeft => null;
+
   Prop<Radius>? get bottomRight => null;
 
   @override

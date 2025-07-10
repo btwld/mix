@@ -243,7 +243,7 @@ void main() {
       expect(shapeBorder.value, isA<RoundedRectangleBorderDto>());
       expect(
         (shapeBorder.value as RoundedRectangleBorderDto).borderRadius,
-        BorderRadiusDto.from(BorderRadius.circular(20)),
+        BorderRadiusDto.value(BorderRadius.circular(20)),
       );
     });
 

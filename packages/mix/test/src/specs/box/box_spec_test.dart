@@ -393,7 +393,7 @@ void main() {
 
       expect(util, isA<StyleElement>());
       expect(attr.alignment, Alignment.center);
-      expect(attr.padding, EdgeInsetsDto.from(const EdgeInsets.all(8.0)));
+      expect(attr.padding, EdgeInsetsDto.value(const EdgeInsets.all(8.0)));
       expect(attr.margin, null);
 
       final style = Style(util);
@@ -401,7 +401,7 @@ void main() {
       final boxAttribute = style.styles.attributeOfType<BoxSpecAttribute>();
 
       expect(boxAttribute?.alignment, Alignment.center);
-      expect(boxAttribute?.padding, EdgeInsetsDto.from(const EdgeInsets.all(8.0)));
+      expect(boxAttribute?.padding, EdgeInsetsDto.value(const EdgeInsets.all(8.0)));
       expect(boxAttribute?.margin, null);
 
       final mixData = style.of(MockBuildContext());
@@ -417,8 +417,8 @@ void main() {
       final box1 = BoxSpecUtility.self.padding(10);
       final box2 = BoxSpecUtility.self.padding(20);
 
-      expect(box1.padding, EdgeInsetsDto.from(const EdgeInsets.all(10.0)));
-      expect(box2.padding, EdgeInsetsDto.from(const EdgeInsets.all(20.0)));
+      expect(box1.padding, EdgeInsetsDto.value(const EdgeInsets.all(10.0)));
+      expect(box2.padding, EdgeInsetsDto.value(const EdgeInsets.all(20.0)));
 
       final style1 = Style(box1);
       final style2 = Style(box2);
@@ -426,8 +426,8 @@ void main() {
       final boxAttribute1 = style1.styles.attributeOfType<BoxSpecAttribute>();
       final boxAttribute2 = style2.styles.attributeOfType<BoxSpecAttribute>();
 
-      expect(boxAttribute1?.padding, EdgeInsetsDto.from(const EdgeInsets.all(10.0)));
-      expect(boxAttribute2?.padding, EdgeInsetsDto.from(const EdgeInsets.all(20.0)));
+      expect(boxAttribute1?.padding, EdgeInsetsDto.value(const EdgeInsets.all(10.0)));
+      expect(boxAttribute2?.padding, EdgeInsetsDto.value(const EdgeInsets.all(20.0)));
 
       final mixData1 = style1.of(MockBuildContext());
       final mixData2 = style2.of(MockBuildContext());
@@ -451,14 +451,14 @@ void main() {
       final boxAttribute = boxValue.attributeValue!;
       final boxAttribute2 = box.padding(20);
 
-      expect(boxAttribute.padding, EdgeInsetsDto.from(const EdgeInsets.all(10.0)));
+      expect(boxAttribute.padding, EdgeInsetsDto.value(const EdgeInsets.all(10.0)));
       expect(
         (boxAttribute.decoration as BoxDecorationDto).color,
         Colors.red,
       );
       expect(boxAttribute.alignment, Alignment.center);
 
-      expect(boxAttribute2.padding, EdgeInsetsDto.from(const EdgeInsets.all(20.0)));
+      expect(boxAttribute2.padding, EdgeInsetsDto.value(const EdgeInsets.all(20.0)));
       expect((boxAttribute2.decoration as BoxDecorationDto?)?.color, isNull);
 
       expect(boxAttribute2.alignment, isNull);

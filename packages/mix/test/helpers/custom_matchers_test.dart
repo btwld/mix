@@ -162,3 +162,4 @@ class _ProblematicMix<T> extends Mix<T> {
   List<Object?> get props => [];
 }
 */
+}

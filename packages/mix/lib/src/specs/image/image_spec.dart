@@ -14,7 +14,7 @@ import '../../core/computed_style/computed_style.dart';
 import '../../core/factory/mix_context.dart';
 import '../../core/factory/style_mix.dart';
 import '../../core/helpers.dart';
-import '../../core/mix_element.dart';
+import '../../core/prop.dart';
 import '../../core/spec.dart';
 import '../../core/utility.dart';
 import 'image_widget.dart';
@@ -194,7 +194,7 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
 class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
   final double? width;
   final double? height;
-  final Mix<Color>? color;
+  final Prop<Color>? color;
   final ImageRepeat? repeat;
   final BoxFit? fit;
   final AlignmentGeometry? alignment;
@@ -202,7 +202,7 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
   final FilterQuality? filterQuality;
   final BlendMode? colorBlendMode;
 
-  const ImageSpecAttribute({
+  const ImageSpecAttribute._({
     this.width,
     this.height,
     this.color,
@@ -216,6 +216,35 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
     super.modifiers,
   });
 
+  // Factory constructor accepts raw values
+  factory ImageSpecAttribute({
+    double? width,
+    double? height,
+    Color? color,
+    ImageRepeat? repeat,
+    BoxFit? fit,
+    AlignmentGeometry? alignment,
+    Rect? centerSlice,
+    FilterQuality? filterQuality,
+    BlendMode? colorBlendMode,
+    AnimationConfigDto? animated,
+    WidgetModifiersConfigDto? modifiers,
+  }) {
+    return ImageSpecAttribute._(
+      width: width,
+      height: height,
+      color: Prop.maybeValue(color),
+      repeat: repeat,
+      fit: fit,
+      alignment: alignment,
+      centerSlice: centerSlice,
+      filterQuality: filterQuality,
+      colorBlendMode: colorBlendMode,
+      animated: animated,
+      modifiers: modifiers,
+    );
+  }
+
   /// Constructor that accepts an [ImageSpec] value and extracts its properties.
   ///
   /// This is useful for converting existing [ImageSpec] instances to [ImageSpecAttribute].
@@ -225,10 +254,10 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
   /// final attr = ImageSpecAttribute.value(spec);
   /// ```
   static ImageSpecAttribute value(ImageSpec spec) {
-    return ImageSpecAttribute(
+    return ImageSpecAttribute._(
       width: spec.width,
       height: spec.height,
-      color: spec.color != null ? Mix.value(spec.color!) : null,
+      color: Prop.maybeValue(spec.color),
       repeat: spec.repeat,
       fit: spec.fit,
       alignment: spec.alignment,
@@ -273,7 +302,7 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
   ImageSpecAttribute merge(ImageSpecAttribute? other) {
     if (other == null) return this;
 
-    return ImageSpecAttribute(
+    return ImageSpecAttribute._(
       width: other.width ?? width,
       height: other.height ?? height,
       color: color?.merge(other.color) ?? other.color,
@@ -369,7 +398,7 @@ class ImageSpecUtility<T extends SpecAttribute>
   T only({
     double? width,
     double? height,
-    Mix<Color>? color,
+    Color? color,
     ImageRepeat? repeat,
     BoxFit? fit,
     AlignmentGeometry? alignment,

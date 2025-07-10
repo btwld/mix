@@ -858,7 +858,7 @@ final class ClipRRectModifierSpecUtility<T extends StyleElement>
   }) {
     return builder(
       ClipRRectModifierSpecAttribute(
-        borderRadius: BorderRadiusGeometryDto.maybeFrom(borderRadius),
+        borderRadius: BorderRadiusGeometryDto.maybeValue(borderRadius),
         clipper: clipper,
         clipBehavior: clipBehavior,
       ),

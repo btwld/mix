@@ -315,12 +315,7 @@ void main() {
     });
   });
   group('BorderRadiusGeometryDto', () {
-    test('getRadiusValue returns Radius.zero when radius is null', () {
-      final dto = BorderRadiusDto();
-      final radius = dto.getRadiusValue(EmptyMixData, null);
-      expect(radius, Radius.zero);
-    });
-
+    // getRadiusValue method no longer exists in the new API
     // debugFillProperties test removed as BorderRadiusDto doesn't implement Diagnosticable
   });
 

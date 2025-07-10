@@ -342,7 +342,7 @@ void main() {
 
       expect(util, isA<StyleElement>());
       expect(attr.box!.alignment, Alignment.center);
-      expect(attr.box!.padding, EdgeInsetsDto.from(const EdgeInsets.all(8.0)));
+      expect(attr.box!.padding, EdgeInsetsDto.value(const EdgeInsets.all(8.0)));
       expect(attr.box!.margin, null);
       expect(attr.flex!.mainAxisAlignment, MainAxisAlignment.center);
       expect(attr.flex!.crossAxisAlignment, CrossAxisAlignment.center);
@@ -355,7 +355,7 @@ void main() {
       expect(flexBoxAttribute?.box!.alignment, Alignment.center);
       expect(
         flexBoxAttribute?.box!.padding,
-        EdgeInsetsDto.from(const EdgeInsets.all(8.0)),
+        EdgeInsetsDto.value(const EdgeInsets.all(8.0)),
       );
       expect(flexBoxAttribute?.box!.margin, null);
       expect(
@@ -391,11 +391,11 @@ void main() {
 
       expect(
         attr1.box!.padding,
-        EdgeInsetsDto.from(const EdgeInsets.all(10.0)),
+        EdgeInsetsDto.value(const EdgeInsets.all(10.0)),
       );
       expect(
         attr2.box!.padding,
-        EdgeInsetsDto.from(const EdgeInsets.all(20.0)),
+        EdgeInsetsDto.value(const EdgeInsets.all(20.0)),
       );
       expect(attr1.flex!.mainAxisAlignment, MainAxisAlignment.start);
       expect(attr2.flex!.mainAxisAlignment, MainAxisAlignment.end);
@@ -410,11 +410,11 @@ void main() {
 
       expect(
         flexBoxAttribute1?.box!.padding,
-        EdgeInsetsDto.from(const EdgeInsets.all(10.0)),
+        EdgeInsetsDto.value(const EdgeInsets.all(10.0)),
       );
       expect(
         flexBoxAttribute2?.box!.padding,
-        EdgeInsetsDto.from(const EdgeInsets.all(20.0)),
+        EdgeInsetsDto.value(const EdgeInsets.all(20.0)),
       );
       expect(
         flexBoxAttribute1?.flex!.mainAxisAlignment,
@@ -450,7 +450,7 @@ void main() {
 
       expect(
         flexBoxAttribute.box!.padding,
-        EdgeInsetsDto.from(const EdgeInsets.all(10.0)),
+        EdgeInsetsDto.value(const EdgeInsets.all(10.0)),
       );
       expect(
         (flexBoxAttribute.box!.decoration as BoxDecorationDto).color,
@@ -468,7 +468,7 @@ void main() {
 
       expect(
         flexBoxAttribute2.box!.padding,
-        EdgeInsetsDto.from(const EdgeInsets.all(20.0)),
+        EdgeInsetsDto.value(const EdgeInsets.all(20.0)),
       );
       expect(
         (flexBoxAttribute2.box!.decoration as BoxDecorationDto?)?.color,

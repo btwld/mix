@@ -18,7 +18,7 @@ void main() {
         forceStrutHeight: true,
       );
 
-      final dto = StrutStyleDto.from(value);
+      final dto = StrutStyleDto.value(value);
 
       // Resolves correctly
       expect(dto.resolve(EmptyMixData), value);
@@ -100,7 +100,7 @@ void main() {
         style: BorderStyle.solid,
       );
 
-      final dto = BorderSideDto.from(value);
+      final dto = BorderSideDto.value(value);
 
       expect(dto, isA<BorderSideDto>());
       expect(dto.color, Mix.value(Colors.blue));
@@ -162,7 +162,7 @@ void main() {
         fontWeight: FontWeight.bold,
       );
 
-      final dto = TextStyleDto.from(value);
+      final dto = TextStyleDto.value(value);
 
       expect(dto, isA<TextStyleDto>());
 

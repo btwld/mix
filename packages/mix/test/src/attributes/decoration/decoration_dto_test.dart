@@ -188,10 +188,10 @@ void main() {
       });
 
       test('merge with a BoxDecoration when isMergeable true', () {
-        final firstBorderRadius = BorderRadiusDto.from(
+        final firstBorderRadius = BorderRadiusDto.value(
           const BorderRadius.all(Radius.circular(10)),
         );
-        final secondBorderRadius = BorderRadiusDto.from(
+        final secondBorderRadius = BorderRadiusDto.value(
           const BorderRadius.all(Radius.circular(20)),
         );
         final shapeDeco1 = ShapeDecorationDto(
@@ -249,10 +249,10 @@ void main() {
 
     group('BoxDecorationDto merge tests', () {
       test('Merge two BoxDecorationDto', () {
-        final firstBorderRadius = BorderRadiusDto.from(
+        final firstBorderRadius = BorderRadiusDto.value(
           const BorderRadius.all(Radius.circular(10)),
         );
-        final secondBorderRadius = BorderRadiusDto.from(
+        final secondBorderRadius = BorderRadiusDto.value(
           const BorderRadius.all(Radius.circular(20)),
         );
 
@@ -291,10 +291,10 @@ void main() {
       });
 
       test('Merge ShapeDecorationDto when isMergeable is true', () {
-        final firstBorderRadius = BorderRadiusDto.from(
+        final firstBorderRadius = BorderRadiusDto.value(
           const BorderRadius.all(Radius.circular(10)),
         );
-        final secondBorderRadius = BorderRadiusDto.from(
+        final secondBorderRadius = BorderRadiusDto.value(
           const BorderRadius.all(Radius.circular(20)),
         );
 
