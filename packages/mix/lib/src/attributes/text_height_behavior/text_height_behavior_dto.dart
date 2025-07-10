@@ -22,6 +22,22 @@ base class TextHeightBehaviorDto extends Mix<TextHeightBehavior> {
     );
   }
 
+  /// Constructor that accepts a [TextHeightBehavior] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [TextHeightBehavior] instances to [TextHeightBehaviorDto].
+  ///
+  /// ```dart
+  /// const behavior = TextHeightBehavior(applyHeightToFirstAscent: false);
+  /// final dto = TextHeightBehaviorDto.value(behavior);
+  /// ```
+  factory TextHeightBehaviorDto.value(TextHeightBehavior behavior) {
+    return TextHeightBehaviorDto._(
+      applyHeightToFirstAscent: Prop.value(behavior.applyHeightToFirstAscent),
+      applyHeightToLastDescent: Prop.value(behavior.applyHeightToLastDescent),
+      leadingDistribution: Prop.value(behavior.leadingDistribution),
+    );
+  }
+
   // Private constructor that accepts MixProp instances
   const TextHeightBehaviorDto._({
     this.applyHeightToFirstAscent,

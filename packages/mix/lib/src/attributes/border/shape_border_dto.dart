@@ -90,6 +90,21 @@ final class RoundedRectangleBorderDto
 
   const RoundedRectangleBorderDto({this.borderRadius, super.side});
 
+  /// Constructor that accepts a [RoundedRectangleBorder] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [RoundedRectangleBorder] instances to [RoundedRectangleBorderDto].
+  ///
+  /// ```dart
+  /// const border = RoundedRectangleBorder(borderRadius: BorderRadius.circular(8));
+  /// final dto = RoundedRectangleBorderDto.value(border);
+  /// ```
+  factory RoundedRectangleBorderDto.value(RoundedRectangleBorder border) {
+    return RoundedRectangleBorderDto(
+      borderRadius: border.borderRadius != BorderRadius.zero ? BorderRadiusDto.value(border.borderRadius as BorderRadius) : null,
+      side: border.side != BorderSide.none ? BorderSideDto.value(border.side) : null,
+    );
+  }
+
   @override
   RoundedRectangleBorderDto adapt(OutlinedBorderDto other) {
     if (other is RoundedRectangleBorderDto) return other;
@@ -152,6 +167,21 @@ final class BeveledRectangleBorderDto
 
   const BeveledRectangleBorderDto({this.borderRadius, super.side});
 
+  /// Constructor that accepts a [BeveledRectangleBorder] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [BeveledRectangleBorder] instances to [BeveledRectangleBorderDto].
+  ///
+  /// ```dart
+  /// const border = BeveledRectangleBorder(borderRadius: BorderRadius.circular(8));
+  /// final dto = BeveledRectangleBorderDto.value(border);
+  /// ```
+  factory BeveledRectangleBorderDto.value(BeveledRectangleBorder border) {
+    return BeveledRectangleBorderDto(
+      borderRadius: border.borderRadius != BorderRadius.zero ? BorderRadiusDto.value(border.borderRadius as BorderRadius) : null,
+      side: border.side != BorderSide.none ? BorderSideDto.value(border.side) : null,
+    );
+  }
+
   @override
   BeveledRectangleBorderDto adapt(OutlinedBorderDto other) {
     if (other is BeveledRectangleBorderDto) return other;
@@ -213,6 +243,21 @@ final class ContinuousRectangleBorderDto
   final BorderRadiusGeometryDto? borderRadius;
 
   const ContinuousRectangleBorderDto({this.borderRadius, super.side});
+
+  /// Constructor that accepts a [ContinuousRectangleBorder] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [ContinuousRectangleBorder] instances to [ContinuousRectangleBorderDto].
+  ///
+  /// ```dart
+  /// const border = ContinuousRectangleBorder(borderRadius: BorderRadius.circular(8));
+  /// final dto = ContinuousRectangleBorderDto.value(border);
+  /// ```
+  factory ContinuousRectangleBorderDto.value(ContinuousRectangleBorder border) {
+    return ContinuousRectangleBorderDto(
+      borderRadius: border.borderRadius != BorderRadius.zero ? BorderRadiusDto.value(border.borderRadius as BorderRadius) : null,
+      side: border.side != BorderSide.none ? BorderSideDto.value(border.side) : null,
+    );
+  }
 
   @override
   ContinuousRectangleBorderDto adapt(OutlinedBorderDto other) {

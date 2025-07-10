@@ -103,6 +103,27 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
     );
   }
 
+  /// Constructor that accepts a [BoxDecoration] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [BoxDecoration] instances to [BoxDecorationDto].
+  ///
+  /// ```dart
+  /// const decoration = BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(8));
+  /// final dto = BoxDecorationDto.value(decoration);
+  /// ```
+  factory BoxDecorationDto.value(BoxDecoration decoration) {
+    return BoxDecorationDto._(
+      border: decoration.border != null ? _convertBoxBorder(decoration.border!) : null,
+      borderRadius: decoration.borderRadius != null ? _convertBorderRadius(decoration.borderRadius!) : null,
+      shape: Prop.maybeValue(decoration.shape != BoxShape.rectangle ? decoration.shape : null),
+      backgroundBlendMode: Prop.maybeValue(decoration.backgroundBlendMode),
+      color: Prop.maybeValue(decoration.color),
+      image: decoration.image != null ? DecorationImageDto.value(decoration.image!) : null,
+      gradient: decoration.gradient != null ? _convertGradient(decoration.gradient!) : null,
+      boxShadow: decoration.boxShadow?.map(BoxShadowDto.value).toList(),
+    );
+  }
+
   const BoxDecorationDto._({
     this.border,
     this.borderRadius,
@@ -225,6 +246,24 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
       image: image,
       gradient: gradient,
       shadows: shadows,
+    );
+  }
+
+  /// Constructor that accepts a [ShapeDecoration] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [ShapeDecoration] instances to [ShapeDecorationDto].
+  ///
+  /// ```dart
+  /// const decoration = ShapeDecoration(color: Colors.red, shape: RoundedRectangleBorder());
+  /// final dto = ShapeDecorationDto.value(decoration);
+  /// ```
+  factory ShapeDecorationDto.value(ShapeDecoration decoration) {
+    return ShapeDecorationDto._(
+      shape: decoration.shape != null ? _convertShapeBorder(decoration.shape) : null,
+      color: Prop.maybeValue(decoration.color),
+      image: decoration.image != null ? DecorationImageDto.value(decoration.image!) : null,
+      gradient: decoration.gradient != null ? _convertGradient(decoration.gradient!) : null,
+      shadows: decoration.shadows?.map(BoxShadowDto.value).toList(),
     );
   }
 
@@ -384,4 +423,40 @@ ShapeBorderDto? _fromBoxShape({
 
       return null;
   }
+}
+
+// Helper methods for converting Flutter types to DTOs
+BoxBorderDto? _convertBoxBorder(BoxBorder border) {
+  if (border is Border) {
+    return BorderDto.value(border);
+  } else if (border is BorderDirectional) {
+    return BorderDirectionalDto.value(border);
+  }
+  return null;
+}
+
+BorderRadiusGeometryDto? _convertBorderRadius(BorderRadiusGeometry borderRadius) {
+  if (borderRadius is BorderRadius) {
+    return BorderRadiusDto.value(borderRadius);
+  } else if (borderRadius is BorderRadiusDirectional) {
+    return BorderRadiusDirectionalDto.value(borderRadius);
+  }
+  return null;
+}
+
+GradientDto? _convertGradient(Gradient gradient) {
+  if (gradient is LinearGradient) {
+    return LinearGradientDto.value(gradient);
+  } else if (gradient is RadialGradient) {
+    return RadialGradientDto.value(gradient);
+  } else if (gradient is SweepGradient) {
+    return SweepGradientDto.value(gradient);
+  }
+  return null;
+}
+
+ShapeBorderDto? _convertShapeBorder(ShapeBorder shapeBorder) {
+  // This would need to be implemented based on the available ShapeBorderDto types
+  // For now, return null as a placeholder
+  return null;
 }

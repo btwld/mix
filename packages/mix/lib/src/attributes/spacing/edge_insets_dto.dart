@@ -107,6 +107,23 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
     );
   }
 
+  /// Constructor that accepts an [EdgeInsets] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [EdgeInsets] instances to [EdgeInsetsDto].
+  ///
+  /// ```dart
+  /// const edgeInsets = EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0);
+  /// final dto = EdgeInsetsDto.value(edgeInsets);
+  /// ```
+  factory EdgeInsetsDto.value(EdgeInsets edgeInsets) {
+    return EdgeInsetsDto._(
+      top: Prop.value(edgeInsets.top),
+      bottom: Prop.value(edgeInsets.bottom),
+      left: Prop.value(edgeInsets.left),
+      right: Prop.value(edgeInsets.right),
+    );
+  }
+
   EdgeInsetsDto.all(double value)
     : this._(
         top: Prop.value(value),
@@ -167,6 +184,23 @@ final class EdgeInsetsDirectionalDto
       bottom: Prop.maybeValue(bottom),
       start: Prop.maybeValue(start),
       end: Prop.maybeValue(end),
+    );
+  }
+
+  /// Constructor that accepts an [EdgeInsetsDirectional] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [EdgeInsetsDirectional] instances to [EdgeInsetsDirectionalDto].
+  ///
+  /// ```dart
+  /// const edgeInsets = EdgeInsetsDirectional.symmetric(horizontal: 16.0, vertical: 8.0);
+  /// final dto = EdgeInsetsDirectionalDto.value(edgeInsets);
+  /// ```
+  factory EdgeInsetsDirectionalDto.value(EdgeInsetsDirectional edgeInsets) {
+    return EdgeInsetsDirectionalDto._(
+      top: Prop.value(edgeInsets.top),
+      bottom: Prop.value(edgeInsets.bottom),
+      start: Prop.value(edgeInsets.start),
+      end: Prop.value(edgeInsets.end),
     );
   }
 

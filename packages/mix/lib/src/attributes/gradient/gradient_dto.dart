@@ -107,6 +107,25 @@ final class LinearGradientDto extends GradientDto<LinearGradient> {
     );
   }
 
+  /// Constructor that accepts a [LinearGradient] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [LinearGradient] instances to [LinearGradientDto].
+  ///
+  /// ```dart
+  /// const gradient = LinearGradient(colors: [Colors.red, Colors.blue]);
+  /// final dto = LinearGradientDto.value(gradient);
+  /// ```
+  factory LinearGradientDto.value(LinearGradient gradient) {
+    return LinearGradientDto._(
+      begin: Prop.value(gradient.begin),
+      end: Prop.value(gradient.end),
+      tileMode: Prop.value(gradient.tileMode),
+      transform: Prop.maybeValue(gradient.transform),
+      colors: Prop.value(gradient.colors),
+      stops: Prop.maybeValue(gradient.stops),
+    );
+  }
+
   const LinearGradientDto._({
     required this.begin,
     required this.end,
@@ -179,6 +198,27 @@ final class RadialGradientDto extends GradientDto<RadialGradient> {
       transform: Prop.maybeValue(transform),
       colors: Prop.maybeValue(colors),
       stops: Prop.maybeValue(stops),
+    );
+  }
+
+  /// Constructor that accepts a [RadialGradient] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [RadialGradient] instances to [RadialGradientDto].
+  ///
+  /// ```dart
+  /// const gradient = RadialGradient(colors: [Colors.red, Colors.blue]);
+  /// final dto = RadialGradientDto.value(gradient);
+  /// ```
+  factory RadialGradientDto.value(RadialGradient gradient) {
+    return RadialGradientDto._(
+      center: Prop.value(gradient.center),
+      radius: Prop.value(gradient.radius),
+      tileMode: Prop.value(gradient.tileMode),
+      focal: Prop.maybeValue(gradient.focal),
+      focalRadius: Prop.value(gradient.focalRadius),
+      transform: Prop.maybeValue(gradient.transform),
+      colors: Prop.value(gradient.colors),
+      stops: Prop.maybeValue(gradient.stops),
     );
   }
 
@@ -267,6 +307,26 @@ final class SweepGradientDto extends GradientDto<SweepGradient> {
       transform: Prop.maybeValue(transform),
       colors: Prop.maybeValue(colors),
       stops: Prop.maybeValue(stops),
+    );
+  }
+
+  /// Constructor that accepts a [SweepGradient] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [SweepGradient] instances to [SweepGradientDto].
+  ///
+  /// ```dart
+  /// const gradient = SweepGradient(colors: [Colors.red, Colors.blue]);
+  /// final dto = SweepGradientDto.value(gradient);
+  /// ```
+  factory SweepGradientDto.value(SweepGradient gradient) {
+    return SweepGradientDto._(
+      center: Prop.value(gradient.center),
+      startAngle: Prop.value(gradient.startAngle),
+      endAngle: Prop.value(gradient.endAngle),
+      tileMode: Prop.value(gradient.tileMode),
+      transform: Prop.maybeValue(gradient.transform),
+      colors: Prop.value(gradient.colors),
+      stops: Prop.maybeValue(gradient.stops),
     );
   }
 

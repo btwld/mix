@@ -20,7 +20,7 @@ void main() {
 
       final attribute1 = IconSpecAttribute(
         size: 24,
-        color: const Mix.value(Colors.black),
+        color: Mix.value(Colors.black),
         weight: 24,
         grade: 24,
         opticalSize: 24,
@@ -32,7 +32,7 @@ void main() {
 
       final attribute2 = IconSpecAttribute(
         size: 32,
-        color: const Mix.value(Colors.white),
+        color: Mix.value(Colors.white),
         weight: 32,
         grade: 32,
         opticalSize: 32,
@@ -50,7 +50,7 @@ void main() {
       expect(mergedAttribute.size, equals(32));
       expect(mergedAttribute.weight, equals(32));
 
-      expect(mergedAttribute.color, equals(const Mix.value(Colors.white)));
+      expect(mergedAttribute.color, equals(Mix.value(Colors.white)));
       expect(mergedAttribute.grade, equals(32));
       expect(mergedAttribute.opticalSize, equals(32));
       expect(mergedAttribute.fill, equals(32));
@@ -67,7 +67,7 @@ void main() {
 
     test('props should return a list of size and color', () {
       const size = 24.0;
-      const color = Mix.value(Colors.black);
+      final color = Mix.value(Colors.black);
       const applyTextScaling = true;
       const fill = 2.0;
       const grade = 2.0;

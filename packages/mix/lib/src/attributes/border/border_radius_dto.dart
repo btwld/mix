@@ -57,6 +57,23 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
     );
   }
 
+  /// Constructor that accepts a [BorderRadius] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [BorderRadius] instances to [BorderRadiusDto].
+  ///
+  /// ```dart
+  /// const borderRadius = BorderRadius.circular(12.0);
+  /// final dto = BorderRadiusDto.value(borderRadius);
+  /// ```
+  factory BorderRadiusDto.value(BorderRadius borderRadius) {
+    return BorderRadiusDto._(
+      topLeft: Prop.value(borderRadius.topLeft),
+      topRight: Prop.value(borderRadius.topRight),
+      bottomLeft: Prop.value(borderRadius.bottomLeft),
+      bottomRight: Prop.value(borderRadius.bottomRight),
+    );
+  }
+
   // Private constructor that accepts MixableProperty instances
   const BorderRadiusDto._({
     this.topLeft,
@@ -110,6 +127,23 @@ final class BorderRadiusDirectionalDto
       topEnd: Prop.maybeValue(topEnd),
       bottomStart: Prop.maybeValue(bottomStart),
       bottomEnd: Prop.maybeValue(bottomEnd),
+    );
+  }
+
+  /// Constructor that accepts a [BorderRadiusDirectional] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [BorderRadiusDirectional] instances to [BorderRadiusDirectionalDto].
+  ///
+  /// ```dart
+  /// const borderRadius = BorderRadiusDirectional.circular(12.0);
+  /// final dto = BorderRadiusDirectionalDto.value(borderRadius);
+  /// ```
+  factory BorderRadiusDirectionalDto.value(BorderRadiusDirectional borderRadius) {
+    return BorderRadiusDirectionalDto._(
+      topStart: Prop.value(borderRadius.topStart),
+      topEnd: Prop.value(borderRadius.topEnd),
+      bottomStart: Prop.value(borderRadius.bottomStart),
+      bottomEnd: Prop.value(borderRadius.bottomEnd),
     );
   }
 

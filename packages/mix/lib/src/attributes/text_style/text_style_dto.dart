@@ -96,7 +96,46 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
       background: Prop.maybeValue(background),
       decorationThickness: Prop.maybeValue(decorationThickness),
       fontFamily: Prop.maybeValue(fontFamily),
+      fontFeatures: fontFeatures?.map(Prop.value).toList(),
+      decoration: Prop.maybeValue(decoration),
+      decorationColor: Prop.maybeValue(decorationColor),
+      decorationStyle: Prop.maybeValue(decorationStyle),
+      fontVariations: fontVariations?.map(Prop.value).toList(),
       fontFamilyFallback: fontFamilyFallback?.map(Prop.value).toList(),
+    );
+  }
+
+  /// Constructor that accepts a [TextStyle] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [TextStyle] instances to [TextStyleDto].
+  ///
+  /// ```dart
+  /// const textStyle = TextStyle(color: Colors.blue, fontSize: 16.0);
+  /// final dto = TextStyleDto.value(textStyle);
+  /// ```
+  factory TextStyleDto.value(TextStyle textStyle) {
+    return TextStyleDto._(
+      color: Prop.maybeValue(textStyle.color),
+      backgroundColor: Prop.maybeValue(textStyle.backgroundColor),
+      fontSize: Prop.maybeValue(textStyle.fontSize),
+      fontWeight: Prop.maybeValue(textStyle.fontWeight),
+      fontStyle: Prop.maybeValue(textStyle.fontStyle),
+      letterSpacing: Prop.maybeValue(textStyle.letterSpacing),
+      debugLabel: Prop.maybeValue(textStyle.debugLabel),
+      wordSpacing: Prop.maybeValue(textStyle.wordSpacing),
+      textBaseline: Prop.maybeValue(textStyle.textBaseline),
+      shadows: textStyle.shadows?.map((s) => MixProp<Shadow, ShadowDto>.value(ShadowDto.value(s))).toList(),
+      fontFeatures: textStyle.fontFeatures?.map(Prop.value).toList(),
+      decoration: Prop.maybeValue(textStyle.decoration),
+      decorationColor: Prop.maybeValue(textStyle.decorationColor),
+      decorationStyle: Prop.maybeValue(textStyle.decorationStyle),
+      fontVariations: textStyle.fontVariations?.map(Prop.value).toList(),
+      height: Prop.maybeValue(textStyle.height),
+      foreground: Prop.maybeValue(textStyle.foreground),
+      background: Prop.maybeValue(textStyle.background),
+      decorationThickness: Prop.maybeValue(textStyle.decorationThickness),
+      fontFamily: Prop.maybeValue(textStyle.fontFamily),
+      fontFamilyFallback: textStyle.fontFamilyFallback?.map(Prop.value).toList(),
     );
   }
 

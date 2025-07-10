@@ -7,7 +7,7 @@ import '../../../helpers/testing_utils.dart';
 void main() {
   group('ImageMixAttribute', () {
     test('resolve returns correct ImageSpec', () {
-      const attribute = ImageSpecAttribute(
+      final attribute = ImageSpecAttribute(
         width: 100,
         height: 200,
         color: Mix.value(Colors.red),
@@ -25,14 +25,14 @@ void main() {
     });
 
     test('merge returns correct ImageMixAttribute', () {
-      const attribute1 = ImageSpecAttribute(
+      final attribute1 = ImageSpecAttribute(
         width: 100,
         height: 200,
         color: Mix.value(Colors.red),
         repeat: ImageRepeat.repeat,
         fit: BoxFit.cover,
       );
-      const attribute2 = ImageSpecAttribute(
+      final attribute2 = ImageSpecAttribute(
         width: 150,
         height: 250,
         color: Mix.value(Colors.blue),
@@ -43,7 +43,7 @@ void main() {
 
       expect(mergedAttribute.width, 150);
       expect(mergedAttribute.height, 250);
-      expect(mergedAttribute.color, const Mix.value(Colors.blue));
+      expect(mergedAttribute.color, Mix.value(Colors.blue));
       expect(mergedAttribute.repeat, ImageRepeat.noRepeat);
       expect(mergedAttribute.fit, BoxFit.fill);
     });

@@ -72,6 +72,23 @@ final class BorderDto extends BoxBorderDto<Border> {
     );
   }
 
+  /// Constructor that accepts a [Border] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [Border] instances to [BorderDto].
+  ///
+  /// ```dart
+  /// const border = Border.all(color: Colors.red, width: 2.0);
+  /// final dto = BorderDto.value(border);
+  /// ```
+  factory BorderDto.value(Border border) {
+    return BorderDto._(
+      top: border.top != BorderSide.none ? BorderSideDto.value(border.top) : null,
+      bottom: border.bottom != BorderSide.none ? BorderSideDto.value(border.bottom) : null,
+      left: border.left != BorderSide.none ? BorderSideDto.value(border.left) : null,
+      right: border.right != BorderSide.none ? BorderSideDto.value(border.right) : null,
+    );
+  }
+
   const BorderDto.all(BorderSideDto side)
     : this._(top: side, bottom: side, left: side, right: side);
 
@@ -160,6 +177,23 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional> {
       bottom: bottom,
       start: start,
       end: end,
+    );
+  }
+
+  /// Constructor that accepts a [BorderDirectional] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [BorderDirectional] instances to [BorderDirectionalDto].
+  ///
+  /// ```dart
+  /// const border = BorderDirectional.all(BorderSide(color: Colors.red, width: 2.0));
+  /// final dto = BorderDirectionalDto.value(border);
+  /// ```
+  factory BorderDirectionalDto.value(BorderDirectional border) {
+    return BorderDirectionalDto._(
+      top: border.top != BorderSide.none ? BorderSideDto.value(border.top) : null,
+      bottom: border.bottom != BorderSide.none ? BorderSideDto.value(border.bottom) : null,
+      start: border.start != BorderSide.none ? BorderSideDto.value(border.start) : null,
+      end: border.end != BorderSide.none ? BorderSideDto.value(border.end) : null,
     );
   }
 
@@ -258,6 +292,23 @@ final class BorderSideDto extends Mix<BorderSide>
       width: Prop.maybeValue(width),
       style: Prop.maybeValue(style),
       strokeAlign: Prop.maybeValue(strokeAlign),
+    );
+  }
+
+  /// Constructor that accepts a [BorderSide] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [BorderSide] instances to [BorderSideDto].
+  ///
+  /// ```dart
+  /// const borderSide = BorderSide(color: Colors.blue, width: 3.0);
+  /// final dto = BorderSideDto.value(borderSide);
+  /// ```
+  factory BorderSideDto.value(BorderSide borderSide) {
+    return BorderSideDto._(
+      color: Prop.value(borderSide.color),
+      width: Prop.value(borderSide.width),
+      style: Prop.value(borderSide.style),
+      strokeAlign: Prop.value(borderSide.strokeAlign),
     );
   }
 

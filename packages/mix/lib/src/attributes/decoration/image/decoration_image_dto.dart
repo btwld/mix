@@ -36,6 +36,27 @@ final class DecorationImageDto extends Mix<DecorationImage> {
     );
   }
 
+  /// Constructor that accepts a [DecorationImage] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [DecorationImage] instances to [DecorationImageDto].
+  ///
+  /// ```dart
+  /// const decorationImage = DecorationImage(image: AssetImage('assets/image.png'));
+  /// final dto = DecorationImageDto.value(decorationImage);
+  /// ```
+  factory DecorationImageDto.value(DecorationImage decorationImage) {
+    return DecorationImageDto._(
+      image: Prop.value(decorationImage.image),
+      fit: Prop.maybeValue(decorationImage.fit),
+      alignment: Prop.value(decorationImage.alignment),
+      centerSlice: Prop.maybeValue(decorationImage.centerSlice),
+      repeat: Prop.value(decorationImage.repeat),
+      filterQuality: Prop.value(decorationImage.filterQuality),
+      invertColors: Prop.value(decorationImage.invertColors),
+      isAntiAlias: Prop.value(decorationImage.isAntiAlias),
+    );
+  }
+
   // Private constructor that accepts MixProp instances
   const DecorationImageDto._({
     this.image,

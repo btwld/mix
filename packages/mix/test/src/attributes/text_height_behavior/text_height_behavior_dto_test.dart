@@ -65,9 +65,9 @@ void main() {
     test('only sets multiple properties', () {
       final result =
           utility.only(
-                applyHeightToFirstAscent: const Mix.value(true),
-                applyHeightToLastDescent: const Mix.value(false),
-                leadingDistribution: const Mix.value(
+                applyHeightToFirstAscent: Mix.value(true),
+                applyHeightToLastDescent: Mix.value(false),
+                leadingDistribution: Mix.value(
                   TextLeadingDistribution.even,
                 ),
               )

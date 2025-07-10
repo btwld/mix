@@ -30,6 +30,22 @@ class AnimationConfigDto extends Mix<AnimationConfig> {
     );
   }
 
+  /// Constructor that accepts an [AnimationConfig] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [AnimationConfig] instances to [AnimationConfigDto].
+  ///
+  /// ```dart
+  /// const config = AnimationConfig(duration: Duration(milliseconds: 300));
+  /// final dto = AnimationConfigDto.value(config);
+  /// ```
+  factory AnimationConfigDto.value(AnimationConfig config) {
+    return AnimationConfigDto._(
+      duration: Prop.maybeValue(config.duration),
+      curve: Prop.maybeValue(config.curve),
+      onEnd: Prop.maybeValue(config.onEnd),
+    );
+  }
+
   // Private constructor that accepts MixableProperty instances
   const AnimationConfigDto._({this.duration, this.curve, this.onEnd});
 

@@ -103,7 +103,7 @@ void main() {
       final dto = BorderSideDto.from(value);
 
       expect(dto, isA<BorderSideDto>());
-      expect(dto.color, const Mix<Color>.value(Colors.blue));
+      expect(dto.color, Mix.value(Colors.blue));
       expect(dto.width, 2.0);
       expect(dto.style, BorderStyle.solid);
 
@@ -136,7 +136,7 @@ void main() {
 
       expect(dto, isA<BoxShadowDto>());
       expect(dto.blurRadius, 10.0);
-      expect(dto.color, const Mix<Color>.value(Colors.black));
+      expect(dto.color, Mix.value(Colors.black));
 
       // Resolves correctly
       expect(dto.resolve(EmptyMixData), value);
@@ -149,7 +149,7 @@ void main() {
 
       expect(dto, isA<BoxShadowDto>());
       expect(dto.blurRadius, 5.0);
-      expect(dto.color, const Mix<Color>.value(Colors.grey));
+      expect(dto.color, Mix.value(Colors.grey));
 
       // Resolves correctly
       expect(dto.resolve(EmptyMixData), value);

@@ -25,9 +25,9 @@ void main() {
             ),
             transform: Matrix4.translationValues(10.0, 10.0, 0.0),
             clipBehavior: Clip.antiAlias,
-            modifiers: const WidgetModifiersConfigDto([
-              OpacityModifierSpecAttribute(opacity: 1),
-              SizedBoxModifierSpecAttribute(height: 10, width: 10),
+            modifiers: WidgetModifiersConfigDto([
+              const OpacityModifierSpecAttribute(opacity: 1),
+              const SizedBoxModifierSpecAttribute(height: 10, width: 10),
             ]),
             width: 300,
             height: 200,
@@ -312,9 +312,9 @@ void main() {
         clipBehavior: Clip.antiAlias,
         width: 100,
         height: 100,
-        modifiers: const WidgetModifiersConfigDto([
-          OpacityModifierSpecAttribute(opacity: 0.5),
-          SizedBoxModifierSpecAttribute(height: 10, width: 10),
+        modifiers: WidgetModifiersConfigDto([
+          const OpacityModifierSpecAttribute(opacity: 0.5),
+          const SizedBoxModifierSpecAttribute(height: 10, width: 10),
         ]),
       );
 
@@ -342,8 +342,8 @@ void main() {
           clipBehavior: Clip.antiAliasWithSaveLayer,
           width: 200,
           height: 200,
-          modifiers: const WidgetModifiersConfigDto([
-            SizedBoxModifierSpecAttribute(width: 100),
+          modifiers: WidgetModifiersConfigDto([
+            const SizedBoxModifierSpecAttribute(width: 100),
           ]),
         ),
       );

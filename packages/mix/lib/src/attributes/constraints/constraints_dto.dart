@@ -33,6 +33,23 @@ final class BoxConstraintsDto extends ConstraintsDto<BoxConstraints>
     );
   }
 
+  /// Constructor that accepts a [BoxConstraints] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [BoxConstraints] instances to [BoxConstraintsDto].
+  ///
+  /// ```dart
+  /// const constraints = BoxConstraints(maxWidth: 300, maxHeight: 200);
+  /// final dto = BoxConstraintsDto.value(constraints);
+  /// ```
+  factory BoxConstraintsDto.value(BoxConstraints constraints) {
+    return BoxConstraintsDto._(
+      minWidth: Prop.value(constraints.minWidth),
+      maxWidth: Prop.value(constraints.maxWidth),
+      minHeight: Prop.value(constraints.minHeight),
+      maxHeight: Prop.value(constraints.maxHeight),
+    );
+  }
+
   // Private constructor that accepts MixableProperty instances
   const BoxConstraintsDto._({
     this.minWidth,

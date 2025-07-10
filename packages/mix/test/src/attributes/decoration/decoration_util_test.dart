@@ -80,7 +80,7 @@ void main() {
     test('color setting', () {
       final result = boxDecoration.color(Colors.red);
 
-      expect(result.value.color, equals(const Mix.value(Colors.red)));
+      expect(result.value.color, equals(Mix.value(Colors.red)));
     });
 
     test('shape setting', () {
@@ -172,7 +172,7 @@ void main() {
         shadows: const [boxShadow],
       );
 
-      expect(result.value.color, equals(const Mix.value(Colors.blue)));
+      expect(result.value.color, equals(Mix.value(Colors.blue)));
       expect(
         result.value.gradient,
         equals(LinearGradientDto.maybeFrom(linearGradient)),
@@ -184,7 +184,7 @@ void main() {
     test('color() returns correct instance', () {
       final result = shapeDecoration.color(Colors.blue);
 
-      expect(result.value.color, equals(const Mix.value(Colors.blue)));
+      expect(result.value.color, equals(Mix.value(Colors.blue)));
     });
 
     // gradient()

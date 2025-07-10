@@ -30,6 +30,22 @@ class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
     );
   }
 
+  /// Constructor that accepts a [Shadow] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [Shadow] instances to [ShadowDto].
+  ///
+  /// ```dart
+  /// const shadow = Shadow(color: Colors.black, blurRadius: 5.0);
+  /// final dto = ShadowDto.value(shadow);
+  /// ```
+  factory ShadowDto.value(Shadow shadow) {
+    return ShadowDto._(
+      blurRadius: Prop.value(shadow.blurRadius),
+      color: Prop.value(shadow.color),
+      offset: Prop.value(shadow.offset),
+    );
+  }
+
   // Private constructor that accepts MixableProperty instances
   const ShadowDto._({super.blurRadius, super.color, super.offset});
 
@@ -100,6 +116,23 @@ class BoxShadowDto extends BaseShadowDto<BoxShadow>
       offset: Prop.maybeValue(offset),
       blurRadius: Prop.maybeValue(blurRadius),
       spreadRadius: Prop.maybeValue(spreadRadius),
+    );
+  }
+
+  /// Constructor that accepts a [BoxShadow] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [BoxShadow] instances to [BoxShadowDto].
+  ///
+  /// ```dart
+  /// const boxShadow = BoxShadow(color: Colors.grey, blurRadius: 10.0);
+  /// final dto = BoxShadowDto.value(boxShadow);
+  /// ```
+  factory BoxShadowDto.value(BoxShadow boxShadow) {
+    return BoxShadowDto._(
+      color: Prop.value(boxShadow.color),
+      offset: Prop.value(boxShadow.offset),
+      blurRadius: Prop.value(boxShadow.blurRadius),
+      spreadRadius: Prop.value(boxShadow.spreadRadius),
     );
   }
 

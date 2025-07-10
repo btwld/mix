@@ -11,7 +11,7 @@ void main() {
       final dto1 = WidgetModifiersConfigDto([
         TransformModifierSpecAttribute(transform: Matrix4.identity()),
       ]);
-      const dto2 = WidgetModifiersConfigDto([
+      final dto2 = WidgetModifiersConfigDto(const [
         OpacityModifierSpecAttribute(opacity: 0.5),
       ]);
 
@@ -33,11 +33,11 @@ void main() {
         TransformModifierSpecAttribute(transform: Matrix4.identity()),
       ]);
 
-      const cleaner = WidgetModifiersConfigDto([
+      final cleaner = WidgetModifiersConfigDto(const [
         ResetModifierSpecAttribute(),
       ]);
 
-      const dto2 = WidgetModifiersConfigDto([
+      final dto2 = WidgetModifiersConfigDto(const [
         OpacityModifierSpecAttribute(opacity: 0.5),
       ]);
 

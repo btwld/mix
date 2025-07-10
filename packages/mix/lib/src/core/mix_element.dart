@@ -154,6 +154,26 @@ abstract class Mix<T> with EqualityMixin {
         return b;
     }
   }
+
+  /// Creates a Mix that wraps the given value
+  static Mix<T> value<T>(T value) => _MixableValue(value);
+}
+
+/// Simple Mix implementation that wraps a value
+@immutable
+final class _MixableValue<T> extends Mix<T> {
+  final T _value;
+
+  const _MixableValue(this._value);
+
+  @override
+  T resolve(MixContext mix) => _value;
+
+  @override
+  Mix<T> merge(covariant Mix<T>? other) => other ?? this;
+
+  @override
+  List<Object?> get props => [_value];
 }
 
 /// Merge strategy for lists

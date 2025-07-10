@@ -698,9 +698,9 @@ void main() {
 
     test('Mixable.value() should return the correct Mixable<Color>', () {
       const color = Colors.blue;
-      const colorDto = Mix.value(color);
+      final colorDto = Mix.value(color);
 
-      expect(colorDto, equals(const Mix.value(color)));
+      expect(colorDto, equals(Mix.value(color)));
     });
   });
 }

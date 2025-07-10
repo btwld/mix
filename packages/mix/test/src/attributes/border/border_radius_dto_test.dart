@@ -265,9 +265,9 @@ void main() {
         style: BorderStyle.solid,
         width: 1.0,
       );
-      expect(attr.color.resolve(EmptyMixData), Colors.red);
-      expect(attr.width.resolve(EmptyMixData), 1.0);
-      expect(attr.style.resolve(EmptyMixData), BorderStyle.solid);
+      expect(attr.color?.resolve(EmptyMixData), Colors.red);
+      expect(attr.width?.resolve(EmptyMixData), 1.0);
+      expect(attr.style?.resolve(EmptyMixData), BorderStyle.solid);
     });
     test('resolve returns correct BorderSide', () {
       final attr = BorderSideDto(

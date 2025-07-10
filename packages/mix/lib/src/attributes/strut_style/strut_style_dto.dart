@@ -42,6 +42,27 @@ class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
     );
   }
 
+  /// Constructor that accepts a [StrutStyle] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [StrutStyle] instances to [StrutStyleDto].
+  ///
+  /// ```dart
+  /// const strutStyle = StrutStyle(fontSize: 16.0, fontWeight: FontWeight.bold);
+  /// final dto = StrutStyleDto.value(strutStyle);
+  /// ```
+  factory StrutStyleDto.value(StrutStyle strutStyle) {
+    return StrutStyleDto._(
+      fontFamily: Prop.maybeValue(strutStyle.fontFamily),
+      fontFamilyFallback: Prop.maybeValue(strutStyle.fontFamilyFallback),
+      fontSize: Prop.maybeValue(strutStyle.fontSize),
+      fontWeight: Prop.maybeValue(strutStyle.fontWeight),
+      fontStyle: Prop.maybeValue(strutStyle.fontStyle),
+      height: Prop.maybeValue(strutStyle.height),
+      leading: Prop.maybeValue(strutStyle.leading),
+      forceStrutHeight: Prop.maybeValue(strutStyle.forceStrutHeight),
+    );
+  }
+
   // Private constructor that accepts MixableProperty instances
   const StrutStyleDto._({
     this.fontFamily,

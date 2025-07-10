@@ -61,7 +61,7 @@ void main() {
 
       expect(
         (container.decoration as BoxDecorationDto).color,
-        const Mix.value(Colors.blue),
+        Mix.value(Colors.blue),
       );
     });
 
@@ -105,7 +105,7 @@ void main() {
         color: Colors.amber,
       );
 
-      expect(container.decoration!.color, const Mix.value(Colors.amber));
+      expect(container.decoration!.color, Mix.value(Colors.amber));
 
       final decorationDTO = container.decoration as BoxDecorationDto;
       expect(
@@ -122,7 +122,7 @@ void main() {
 
       expect(
         container.foregroundDecoration!.color,
-        const Mix.value(Colors.amber),
+        Mix.value(Colors.amber),
         reason: 'The color is not correct',
       );
 
