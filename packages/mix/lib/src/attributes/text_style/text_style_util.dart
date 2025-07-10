@@ -2,11 +2,11 @@ import 'package:flutter/widgets.dart';
 
 import '../../core/mix_element.dart';
 import '../../core/utility.dart';
-import '../shadow/shadow_dto.dart';
 import '../../theme/tokens/mix_token.dart';
 import '../color/color_util.dart';
 import '../enum/enum_util.dart';
 import '../scalars/scalar_util.dart';
+import '../shadow/shadow_dto.dart';
 import 'text_style_dto.dart';
 
 final class TextStyleUtility<T extends StyleElement>
@@ -24,10 +24,6 @@ final class TextStyleUtility<T extends StyleElement>
   late final backgroundColor = ColorUtility((v) => only(backgroundColor: v));
 
   late final decorationColor = ColorUtility((v) => only(decorationColor: v));
-
-  // TODO: Shadow utility integration needs redesign for TextStyle compatibility
-  // The ShadowUtility creates ShadowDto but TextStyle needs List<Shadow>
-  // For now, use the shadows() method directly on the utility
 
   late final decorationStyle = TextDecorationStyleUtility(
     (v) => only(decorationStyle: v),
@@ -49,11 +45,15 @@ final class TextStyleUtility<T extends StyleElement>
           debugLabel: v.debugLabel,
           wordSpacing: v.wordSpacing,
           textBaseline: v.textBaseline,
-          shadows: v.shadows?.map((shadow) => ShadowDto(
-            blurRadius: shadow.blurRadius,
-            color: shadow.color,
-            offset: shadow.offset,
-          )).toList(),
+          shadows: v.shadows
+              ?.map(
+                (shadow) => ShadowDto(
+                  blurRadius: shadow.blurRadius,
+                  color: shadow.color,
+                  offset: shadow.offset,
+                ),
+              )
+              .toList(),
           fontFeatures: v.fontFeatures,
           decoration: v.decoration,
           decorationColor: v.decorationColor,
@@ -134,11 +134,15 @@ final class TextStyleUtility<T extends StyleElement>
         debugLabel: debugLabel,
         wordSpacing: wordSpacing,
         textBaseline: textBaseline,
-        shadows: shadows?.map((shadow) => ShadowDto(
-          blurRadius: shadow.blurRadius,
-          color: shadow.color,
-          offset: shadow.offset,
-        )).toList(),
+        shadows: shadows
+            ?.map(
+              (shadow) => ShadowDto(
+                blurRadius: shadow.blurRadius,
+                color: shadow.color,
+                offset: shadow.offset,
+              ),
+            )
+            .toList(),
         fontFeatures: fontFeatures,
         decoration: decoration,
         decorationColor: decorationColor,
@@ -189,11 +193,7 @@ final class TextStyleUtility<T extends StyleElement>
         debugLabel: debugLabel,
         wordSpacing: wordSpacing,
         textBaseline: textBaseline,
-        shadows: shadows?.map((shadow) => ShadowDto(
-          blurRadius: shadow.blurRadius,
-          color: shadow.color,
-          offset: shadow.offset,
-        )).toList(),
+        shadows: shadows,
         fontFeatures: fontFeatures,
         decoration: decoration,
         decorationColor: decorationColor,

@@ -7,8 +7,8 @@ import 'package:mix/mix.dart';
 @immutable
 sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
     extends Mix<T> {
-  final Prop<double>? top;
-  final Prop<double>? bottom;
+  final MixProp<double, SpaceDto>? top;
+  final MixProp<double, SpaceDto>? bottom;
 
   const EdgeInsetsGeometryDto._({this.top, this.bottom});
 
@@ -30,18 +30,18 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
     );
     if (start != null || end != null) {
       return EdgeInsetsDirectionalDto._(
-        top: Prop.maybeValue(top),
-        bottom: Prop.maybeValue(bottom),
-        start: Prop.maybeValue(start),
-        end: Prop.maybeValue(end),
+        top: MixProp.maybeValue(SpaceDto.maybeValue(top)),
+        bottom: MixProp.maybeValue(SpaceDto.maybeValue(bottom)),
+        start: MixProp.maybeValue(SpaceDto.maybeValue(start)),
+        end: MixProp.maybeValue(SpaceDto.maybeValue(end)),
       );
     }
 
     return EdgeInsetsDto._(
-      top: Prop.maybeValue(top),
-      bottom: Prop.maybeValue(bottom),
-      left: Prop.maybeValue(left),
-      right: Prop.maybeValue(right),
+      top: MixProp.maybeValue(SpaceDto.maybeValue(top)),
+      bottom: MixProp.maybeValue(SpaceDto.maybeValue(bottom)),
+      left: MixProp.maybeValue(SpaceDto.maybeValue(left)),
+      right: MixProp.maybeValue(SpaceDto.maybeValue(right)),
     );
   }
 
@@ -86,8 +86,8 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
 }
 
 final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
-  final Prop<double>? left;
-  final Prop<double>? right;
+  final MixProp<double, SpaceDto>? left;
+  final MixProp<double, SpaceDto>? right;
 
   const EdgeInsetsDto._({super.top, super.bottom, this.left, this.right})
     : super._();
@@ -100,10 +100,10 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
     double? right,
   }) {
     return EdgeInsetsDto._(
-      top: Prop.maybeValue(top),
-      bottom: Prop.maybeValue(bottom),
-      left: Prop.maybeValue(left),
-      right: Prop.maybeValue(right),
+      top: MixProp.maybeValue(SpaceDto.maybeValue(top)),
+      bottom: MixProp.maybeValue(SpaceDto.maybeValue(bottom)),
+      left: MixProp.maybeValue(SpaceDto.maybeValue(left)),
+      right: MixProp.maybeValue(SpaceDto.maybeValue(right)),
     );
   }
 
@@ -117,22 +117,46 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
   /// ```
   factory EdgeInsetsDto.value(EdgeInsets edgeInsets) {
     return EdgeInsetsDto._(
-      top: Prop.value(edgeInsets.top),
-      bottom: Prop.value(edgeInsets.bottom),
-      left: Prop.value(edgeInsets.left),
-      right: Prop.value(edgeInsets.right),
+      top: MixProp.value(SpaceDto.value(edgeInsets.top)),
+      bottom: MixProp.value(SpaceDto.value(edgeInsets.bottom)),
+      left: MixProp.value(SpaceDto.value(edgeInsets.left)),
+      right: MixProp.value(SpaceDto.value(edgeInsets.right)),
     );
   }
 
   EdgeInsetsDto.all(double value)
     : this._(
-        top: Prop.value(value),
-        bottom: Prop.value(value),
-        left: Prop.value(value),
-        right: Prop.value(value),
+        top: MixProp.value(SpaceDto.value(value)),
+        bottom: MixProp.value(SpaceDto.value(value)),
+        left: MixProp.value(SpaceDto.value(value)),
+        right: MixProp.value(SpaceDto.value(value)),
       );
 
   EdgeInsetsDto.none() : this.all(0);
+
+  /// Factory constructor that accepts SpaceDto parameters.
+  ///
+  /// This is useful for utilities that work with SpaceDto objects.
+  ///
+  /// ```dart
+  /// final dto = EdgeInsetsDto.fromSpaceDto(
+  ///   top: SpaceDto.value(8.0),
+  ///   left: SpaceDto.token(someToken),
+  /// );
+  /// ```
+  factory EdgeInsetsDto.fromSpaceDto({
+    SpaceDto? top,
+    SpaceDto? bottom,
+    SpaceDto? left,
+    SpaceDto? right,
+  }) {
+    return EdgeInsetsDto._(
+      top: MixProp.maybeValue(top),
+      bottom: MixProp.maybeValue(bottom),
+      left: MixProp.maybeValue(left),
+      right: MixProp.maybeValue(right),
+    );
+  }
 
   /// Constructor that accepts a nullable [EdgeInsets] value and extracts its properties.
   ///
@@ -149,10 +173,10 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
   @override
   EdgeInsets resolve(MixContext mix) {
     return EdgeInsets.only(
-      left: resolveProp(mix, left) ?? 0,
-      top: resolveProp(mix, top) ?? 0,
-      right: resolveProp(mix, right) ?? 0,
-      bottom: resolveProp(mix, bottom) ?? 0,
+      left: left?.resolve(mix) ?? 0,
+      top: top?.resolve(mix) ?? 0,
+      right: right?.resolve(mix) ?? 0,
+      bottom: bottom?.resolve(mix) ?? 0,
     );
   }
 
@@ -161,10 +185,10 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
     if (other == null) return this;
 
     return EdgeInsetsDto._(
-      top: mergeProp(top, other.top),
-      bottom: mergeProp(bottom, other.bottom),
-      left: mergeProp(left, other.left),
-      right: mergeProp(right, other.right),
+      top: top?.merge(other.top) ?? other.top,
+      bottom: bottom?.merge(other.bottom) ?? other.bottom,
+      left: left?.merge(other.left) ?? other.left,
+      right: right?.merge(other.right) ?? other.right,
     );
   }
 
@@ -174,8 +198,8 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
 
 final class EdgeInsetsDirectionalDto
     extends EdgeInsetsGeometryDto<EdgeInsetsDirectional> {
-  final Prop<double>? start;
-  final Prop<double>? end;
+  final MixProp<double, SpaceDto>? start;
+  final MixProp<double, SpaceDto>? end;
 
   const EdgeInsetsDirectionalDto._({
     super.top,
@@ -192,10 +216,10 @@ final class EdgeInsetsDirectionalDto
     double? end,
   }) {
     return EdgeInsetsDirectionalDto._(
-      top: Prop.maybeValue(top),
-      bottom: Prop.maybeValue(bottom),
-      start: Prop.maybeValue(start),
-      end: Prop.maybeValue(end),
+      top: MixProp.maybeValue(SpaceDto.maybeValue(top)),
+      bottom: MixProp.maybeValue(SpaceDto.maybeValue(bottom)),
+      start: MixProp.maybeValue(SpaceDto.maybeValue(start)),
+      end: MixProp.maybeValue(SpaceDto.maybeValue(end)),
     );
   }
 
@@ -209,22 +233,46 @@ final class EdgeInsetsDirectionalDto
   /// ```
   factory EdgeInsetsDirectionalDto.value(EdgeInsetsDirectional edgeInsets) {
     return EdgeInsetsDirectionalDto._(
-      top: Prop.value(edgeInsets.top),
-      bottom: Prop.value(edgeInsets.bottom),
-      start: Prop.value(edgeInsets.start),
-      end: Prop.value(edgeInsets.end),
+      top: MixProp.value(SpaceDto.value(edgeInsets.top)),
+      bottom: MixProp.value(SpaceDto.value(edgeInsets.bottom)),
+      start: MixProp.value(SpaceDto.value(edgeInsets.start)),
+      end: MixProp.value(SpaceDto.value(edgeInsets.end)),
     );
   }
 
   EdgeInsetsDirectionalDto.all(double value)
     : this._(
-        top: Prop.value(value),
-        bottom: Prop.value(value),
-        start: Prop.value(value),
-        end: Prop.value(value),
+        top: MixProp.value(SpaceDto.value(value)),
+        bottom: MixProp.value(SpaceDto.value(value)),
+        start: MixProp.value(SpaceDto.value(value)),
+        end: MixProp.value(SpaceDto.value(value)),
       );
 
   EdgeInsetsDirectionalDto.none() : this.all(0);
+
+  /// Factory constructor that accepts SpaceDto parameters.
+  ///
+  /// This is useful for utilities that work with SpaceDto objects.
+  ///
+  /// ```dart
+  /// final dto = EdgeInsetsDirectionalDto.fromSpaceDto(
+  ///   top: SpaceDto.value(8.0),
+  ///   start: SpaceDto.token(someToken),
+  /// );
+  /// ```
+  factory EdgeInsetsDirectionalDto.fromSpaceDto({
+    SpaceDto? top,
+    SpaceDto? bottom,
+    SpaceDto? start,
+    SpaceDto? end,
+  }) {
+    return EdgeInsetsDirectionalDto._(
+      top: MixProp.maybeValue(top),
+      bottom: MixProp.maybeValue(bottom),
+      start: MixProp.maybeValue(start),
+      end: MixProp.maybeValue(end),
+    );
+  }
 
   /// Constructor that accepts a nullable [EdgeInsetsDirectional] value and extracts its properties.
   ///
@@ -245,10 +293,10 @@ final class EdgeInsetsDirectionalDto
   @override
   EdgeInsetsDirectional resolve(MixContext mix) {
     return EdgeInsetsDirectional.only(
-      start: resolveProp(mix, start) ?? 0,
-      top: resolveProp(mix, top) ?? 0,
-      end: resolveProp(mix, end) ?? 0,
-      bottom: resolveProp(mix, bottom) ?? 0,
+      start: start?.resolve(mix) ?? 0,
+      top: top?.resolve(mix) ?? 0,
+      end: end?.resolve(mix) ?? 0,
+      bottom: bottom?.resolve(mix) ?? 0,
     );
   }
 
@@ -257,10 +305,10 @@ final class EdgeInsetsDirectionalDto
     if (other == null) return this;
 
     return EdgeInsetsDirectionalDto._(
-      top: mergeProp(top, other.top),
-      bottom: mergeProp(bottom, other.bottom),
-      start: mergeProp(start, other.start),
-      end: mergeProp(end, other.end),
+      top: top?.merge(other.top) ?? other.top,
+      bottom: bottom?.merge(other.bottom) ?? other.bottom,
+      start: start?.merge(other.start) ?? other.start,
+      end: end?.merge(other.end) ?? other.end,
     );
   }
 

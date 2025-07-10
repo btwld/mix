@@ -318,7 +318,13 @@ final class _TokenPropItem<T extends Mix<V>, V> extends _MixPropItem<T, V> {
   const _TokenPropItem(this.token);
 
   @override
-  V resolve(MixContext context) => context.getToken(token);
+  T? resolve(MixContext context) {
+    final value = context.getToken(token);
+    if (value == null) return null;
+
+    // Wrap the resolved token value in a Mix object
+    return Mix.value(value) as T;
+  }
 
   @override
   List<Object?> get props => [token];
