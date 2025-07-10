@@ -203,40 +203,40 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional> {
 
 final class BorderSideDto extends Mix<BorderSide>
     with HasDefaultValue<BorderSide> {
-  // Properties use MixProp for cleaner merging - nullable as per user requirement
-  final MixValue<Color> color;
-  final MixValue<double> width;
-  final MixValue<BorderStyle> style;
-  final MixValue<double> strokeAlign;
+  // Properties use MixableProperty for cleaner merging
+  final Mixable<Color>? color;
+  final Mixable<double>? width;
+  final Mixable<BorderStyle>? style;
+  final Mixable<double>? strokeAlign;
 
   static const BorderSideDto none = BorderSideDto._(
-    color: MixValue.empty(),
-    width: MixValue.empty(),
-    style: MixValue.empty(),
-    strokeAlign: MixValue.empty(),
+    color: null,
+    width: null,
+    style: null,
+    strokeAlign: null,
   );
 
-  // Main constructor accepts Mix values
+  // Main constructor accepts raw values
   factory BorderSideDto({
-    Mix<Color>? color,
-    Mix<double>? strokeAlign,
-    Mix<BorderStyle>? style,
-    Mix<double>? width,
+    Color? color,
+    double? strokeAlign,
+    BorderStyle? style,
+    double? width,
   }) {
     return BorderSideDto._(
-      color: MixValue(color),
-      width: MixValue(width),
-      style: MixValue(style),
-      strokeAlign: MixValue(strokeAlign),
+      color: Mixable.maybeValue(color),
+      width: Mixable.maybeValue(width),
+      style: Mixable.maybeValue(style),
+      strokeAlign: Mixable.maybeValue(strokeAlign),
     );
   }
 
-  // Private constructor that accepts MixProp instances
+  // Private constructor that accepts MixableProperty instances
   const BorderSideDto._({
-    required this.color,
-    required this.width,
-    required this.style,
-    required this.strokeAlign,
+    this.color,
+    this.width,
+    this.style,
+    this.strokeAlign,
   });
 
   /// Resolves to [BorderSide] using the provided [MixContext].
@@ -250,10 +250,10 @@ final class BorderSideDto extends Mix<BorderSide>
   @override
   BorderSide resolve(MixContext mix) {
     return BorderSide(
-      color: color.resolve(mix) ?? defaultValue.color,
-      width: width.resolve(mix) ?? defaultValue.width,
-      style: style.resolve(mix) ?? defaultValue.style,
-      strokeAlign: strokeAlign.resolve(mix) ?? defaultValue.strokeAlign,
+      color: resolveValue(mix, color) ?? defaultValue.color,
+      width: resolveValue(mix, width) ?? defaultValue.width,
+      style: resolveValue(mix, style) ?? defaultValue.style,
+      strokeAlign: resolveValue(mix, strokeAlign) ?? defaultValue.strokeAlign,
     );
   }
 
@@ -270,10 +270,10 @@ final class BorderSideDto extends Mix<BorderSide>
     if (other == null) return this;
 
     return BorderSideDto._(
-      color: color.merge(other.color),
-      width: width.merge(other.width),
-      style: style.merge(other.style),
-      strokeAlign: strokeAlign.merge(other.strokeAlign),
+      color: mergeValue(color, other.color),
+      width: mergeValue(width, other.width),
+      style: mergeValue(style, other.style),
+      strokeAlign: mergeValue(strokeAlign, other.strokeAlign),
     );
   }
 

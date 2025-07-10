@@ -20,10 +20,10 @@ sealed class BorderRadiusGeometryDto<T extends BorderRadiusGeometry>
 
   /// Common getters for accessing radius properties
   /// These return null for types that don't support these properties
-  MixValue<Radius> get topLeft => const MixValue.empty();
-  MixValue<Radius> get topRight => const MixValue.empty();
-  MixValue<Radius> get bottomLeft => const MixValue.empty();
-  MixValue<Radius> get bottomRight => const MixValue.empty();
+  Mixable<Radius> get topLeft => const Mixable.empty();
+  Mixable<Radius> get topRight => const Mixable.empty();
+  Mixable<Radius> get bottomLeft => const Mixable.empty();
+  Mixable<Radius> get bottomRight => const Mixable.empty();
 
   @override
   BorderRadiusGeometryDto<T> merge(covariant BorderRadiusGeometryDto<T>? other);
@@ -31,16 +31,16 @@ sealed class BorderRadiusGeometryDto<T extends BorderRadiusGeometry>
 
 final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
   @override
-  final MixValue<Radius> topLeft;
+  final Mixable<Radius> topLeft;
 
   @override
-  final MixValue<Radius> topRight;
+  final Mixable<Radius> topRight;
 
   @override
-  final MixValue<Radius> bottomLeft;
+  final Mixable<Radius> bottomLeft;
 
   @override
-  final MixValue<Radius> bottomRight;
+  final Mixable<Radius> bottomRight;
 
   // Main constructor accepts Mix values
   factory BorderRadiusDto({
@@ -50,10 +50,10 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
     Mix<Radius>? bottomRight,
   }) {
     return BorderRadiusDto._(
-      topLeft: MixValue(topLeft),
-      topRight: MixValue(topRight),
-      bottomLeft: MixValue(bottomLeft),
-      bottomRight: MixValue(bottomRight),
+      topLeft: Mixable(topLeft),
+      topRight: Mixable(topRight),
+      bottomLeft: Mixable(bottomLeft),
+      bottomRight: Mixable(bottomRight),
     );
   }
 
@@ -93,10 +93,10 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
 
 final class BorderRadiusDirectionalDto
     extends BorderRadiusGeometryDto<BorderRadiusDirectional> {
-  final MixValue<Radius> topStart;
-  final MixValue<Radius> topEnd;
-  final MixValue<Radius> bottomStart;
-  final MixValue<Radius> bottomEnd;
+  final Mixable<Radius> topStart;
+  final Mixable<Radius> topEnd;
+  final Mixable<Radius> bottomStart;
+  final Mixable<Radius> bottomEnd;
 
   // Main constructor accepts Mix values
   factory BorderRadiusDirectionalDto({
@@ -106,10 +106,10 @@ final class BorderRadiusDirectionalDto
     Mix<Radius>? bottomEnd,
   }) {
     return BorderRadiusDirectionalDto._(
-      topStart: MixValue(topStart),
-      topEnd: MixValue(topEnd),
-      bottomStart: MixValue(bottomStart),
-      bottomEnd: MixValue(bottomEnd),
+      topStart: Mixable(topStart),
+      topEnd: Mixable(topEnd),
+      bottomStart: Mixable(bottomStart),
+      bottomEnd: Mixable(bottomEnd),
     );
   }
 
@@ -149,11 +149,11 @@ final class BorderRadiusDirectionalDto
   /// These getters return empty for BorderRadiusDirectional as they don't apply
   /// to directional border radius (which uses topStart/topEnd instead of topLeft/topRight)
   @override
-  MixValue<Radius> get topLeft => const MixValue.empty();
+  Mixable<Radius> get topLeft => const Mixable.empty();
   @override
-  MixValue<Radius> get topRight => const MixValue.empty();
+  Mixable<Radius> get topRight => const Mixable.empty();
   @override
-  MixValue<Radius> get bottomLeft => const MixValue.empty();
+  Mixable<Radius> get bottomLeft => const Mixable.empty();
   @override
-  MixValue<Radius> get bottomRight => const MixValue.empty();
+  Mixable<Radius> get bottomRight => const Mixable.empty();
 }

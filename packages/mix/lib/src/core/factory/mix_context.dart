@@ -7,6 +7,7 @@ import '../../attributes/animation/animation_config.dart';
 import '../../internal/iterable_ext.dart';
 import '../../internal/string_ext.dart';
 import '../../theme/mix/mix_theme.dart';
+import '../../theme/tokens/mix_token.dart';
 import '../../variants/context_variant.dart';
 import '../../variants/variant_attribute.dart';
 import '../attributes_map.dart';
@@ -91,6 +92,10 @@ class MixContext with Diagnosticable {
     if (attributes.isEmpty) return null;
 
     return _mergeAttributes(attributes) ?? attributes.last;
+  }
+
+  T getToken<T>(MixableToken<T> token) {
+    return _scope.getToken(token, _context);
   }
 
   @Deprecated(

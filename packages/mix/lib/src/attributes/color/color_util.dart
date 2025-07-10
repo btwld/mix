@@ -156,7 +156,7 @@ final class ColorUtility<T extends StyleElement> extends BaseColorUtility<T>
     }
 
     // Create MixProp with the appropriate values
-    final mixProp = MixValue(mix: color, directives: directives);
+    final mixProp = Mixable(mix: color, directives: directives);
 
     // For now, we still need to pass Mix<Color> to builder
     // TODO: Update once all DTOs accept MixProp

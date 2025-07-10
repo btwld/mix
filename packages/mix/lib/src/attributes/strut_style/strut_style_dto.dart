@@ -10,14 +10,14 @@ import '../../internal/diagnostic_properties_builder_ext.dart';
 @immutable
 class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
   // Properties use MixableProperty for cleaner merging
-  final MixValue<String> fontFamily;
-  final MixValue<List<String>> fontFamilyFallback;
-  final MixValue<double> fontSize;
-  final MixValue<FontWeight> fontWeight;
-  final MixValue<FontStyle> fontStyle;
-  final MixValue<double> height;
-  final MixValue<double> leading;
-  final MixValue<bool> forceStrutHeight;
+  final Mixable<String> fontFamily;
+  final Mixable<List<String>> fontFamilyFallback;
+  final Mixable<double> fontSize;
+  final Mixable<FontWeight> fontWeight;
+  final Mixable<FontStyle> fontStyle;
+  final Mixable<double> height;
+  final Mixable<double> leading;
+  final Mixable<bool> forceStrutHeight;
 
   // Main constructor accepts Mix values
   factory StrutStyleDto({
@@ -31,14 +31,14 @@ class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
     Mix<bool>? forceStrutHeight,
   }) {
     return StrutStyleDto._(
-      fontFamily: MixValue(fontFamily),
-      fontFamilyFallback: MixValue(fontFamilyFallback),
-      fontSize: MixValue(fontSize),
-      fontWeight: MixValue(fontWeight),
-      fontStyle: MixValue(fontStyle),
-      height: MixValue(height),
-      leading: MixValue(leading),
-      forceStrutHeight: MixValue(forceStrutHeight),
+      fontFamily: Mixable(fontFamily),
+      fontFamilyFallback: Mixable(fontFamilyFallback),
+      fontSize: Mixable(fontSize),
+      fontWeight: Mixable(fontWeight),
+      fontStyle: Mixable(fontStyle),
+      height: Mixable(height),
+      leading: Mixable(leading),
+      forceStrutHeight: Mixable(forceStrutHeight),
     );
   }
 

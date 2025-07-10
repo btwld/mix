@@ -54,74 +54,74 @@ final class TextStyleUtility<T extends StyleElement>
   TextStyleUtility(super.builder)
     : super(
         valueToDto: (v) => TextStyleDto(
-          color: v.color != null ? MixValue.mix(ColorMix(v.color!)) : null,
+          color: v.color != null ? Mixable.mix(ColorMix(v.color!)) : null,
           backgroundColor: v.backgroundColor != null
-              ? MixValue.mix(ColorMix(v.backgroundColor!))
+              ? Mixable.mix(ColorMix(v.backgroundColor!))
               : null,
           fontSize: v.fontSize != null
-              ? MixValue.mix(DoubleMix(v.fontSize!))
+              ? Mixable.mix(DoubleMix(v.fontSize!))
               : null,
           fontWeight: v.fontWeight != null
-              ? MixValue.mix(FontWeightMix(v.fontWeight!))
+              ? Mixable.mix(FontWeightMix(v.fontWeight!))
               : null,
           fontStyle: v.fontStyle != null
-              ? MixValue.mix(EnumMix(v.fontStyle!))
+              ? Mixable.mix(EnumMix(v.fontStyle!))
               : null,
           letterSpacing: v.letterSpacing != null
-              ? MixValue.mix(DoubleMix(v.letterSpacing!))
+              ? Mixable.mix(DoubleMix(v.letterSpacing!))
               : null,
           debugLabel: v.debugLabel != null
-              ? MixValue.mix(StringMix(v.debugLabel!))
+              ? Mixable.mix(StringMix(v.debugLabel!))
               : null,
           wordSpacing: v.wordSpacing != null
-              ? MixValue.mix(DoubleMix(v.wordSpacing!))
+              ? Mixable.mix(DoubleMix(v.wordSpacing!))
               : null,
           textBaseline: v.textBaseline != null
-              ? MixValue.mix(EnumMix(v.textBaseline!))
+              ? Mixable.mix(EnumMix(v.textBaseline!))
               : null,
           shadows: v.shadows != null
-              ? MixValue.mix(
+              ? Mixable.mix(
                   ListMix(v.shadows!.map((s) => ShadowMix(s)).toList()),
                 )
               : null,
           fontFeatures: v.fontFeatures != null
-              ? MixValue.mix(
+              ? Mixable.mix(
                   ListMix(
                     v.fontFeatures!.map((f) => FontFeatureMix(f)).toList(),
                   ),
                 )
               : null,
           decoration: v.decoration != null
-              ? MixValue.mix(TextDecorationMix(v.decoration!))
+              ? Mixable.mix(TextDecorationMix(v.decoration!))
               : null,
           decorationColor: v.decorationColor != null
-              ? MixValue.mix(ColorMix(v.decorationColor!))
+              ? Mixable.mix(ColorMix(v.decorationColor!))
               : null,
           decorationStyle: v.decorationStyle != null
-              ? MixValue.mix(EnumMix(v.decorationStyle!))
+              ? Mixable.mix(EnumMix(v.decorationStyle!))
               : null,
           fontVariations: v.fontVariations != null
-              ? MixValue.mix(
+              ? Mixable.mix(
                   ListMix(
                     v.fontVariations!.map((f) => FontVariationMix(f)).toList(),
                   ),
                 )
               : null,
-          height: v.height != null ? MixValue.mix(DoubleMix(v.height!)) : null,
+          height: v.height != null ? Mixable.mix(DoubleMix(v.height!)) : null,
           foreground: v.foreground != null
-              ? MixValue.mix(PaintMix(v.foreground!))
+              ? Mixable.mix(PaintMix(v.foreground!))
               : null,
           background: v.background != null
-              ? MixValue.mix(PaintMix(v.background!))
+              ? Mixable.mix(PaintMix(v.background!))
               : null,
           decorationThickness: v.decorationThickness != null
-              ? MixValue.mix(DoubleMix(v.decorationThickness!))
+              ? Mixable.mix(DoubleMix(v.decorationThickness!))
               : null,
           fontFamily: v.fontFamily != null
-              ? MixValue.mix(StringMix(v.fontFamily!))
+              ? Mixable.mix(StringMix(v.fontFamily!))
               : null,
           fontFamilyFallback: v.fontFamilyFallback != null
-              ? MixValue.mix(
+              ? Mixable.mix(
                   ListMix(
                     v.fontFamilyFallback!.map((s) => StringMix(s)).toList(),
                   ),
@@ -187,66 +187,66 @@ final class TextStyleUtility<T extends StyleElement>
   }) {
     return builder(
       TextStyleDto(
-        color: color != null ? MixValue.mix(ColorMix(color)) : null,
+        color: color != null ? Mixable.mix(ColorMix(color)) : null,
         backgroundColor: backgroundColor != null
-            ? MixValue.mix(ColorMix(backgroundColor))
+            ? Mixable.mix(ColorMix(backgroundColor))
             : null,
-        fontSize: fontSize != null ? MixValue.mix(DoubleMix(fontSize)) : null,
+        fontSize: fontSize != null ? Mixable.mix(DoubleMix(fontSize)) : null,
         fontWeight: fontWeight != null
-            ? MixValue.mix(FontWeightMix(fontWeight))
+            ? Mixable.mix(FontWeightMix(fontWeight))
             : null,
-        fontStyle: fontStyle != null ? MixValue.mix(EnumMix(fontStyle)) : null,
+        fontStyle: fontStyle != null ? Mixable.mix(EnumMix(fontStyle)) : null,
         letterSpacing: letterSpacing != null
-            ? MixValue.mix(DoubleMix(letterSpacing))
+            ? Mixable.mix(DoubleMix(letterSpacing))
             : null,
         debugLabel: debugLabel != null
-            ? MixValue.mix(StringMix(debugLabel))
+            ? Mixable.mix(StringMix(debugLabel))
             : null,
         wordSpacing: wordSpacing != null
-            ? MixValue.mix(DoubleMix(wordSpacing))
+            ? Mixable.mix(DoubleMix(wordSpacing))
             : null,
         textBaseline: textBaseline != null
-            ? MixValue.mix(EnumMix(textBaseline))
+            ? Mixable.mix(EnumMix(textBaseline))
             : null,
         shadows: shadows != null
-            ? MixValue.mix(ListMix(shadows.map((s) => ShadowMix(s)).toList()))
+            ? Mixable.mix(ListMix(shadows.map((s) => ShadowMix(s)).toList()))
             : null,
         fontFeatures: fontFeatures != null
-            ? MixValue.mix(
+            ? Mixable.mix(
                 ListMix(fontFeatures.map((f) => FontFeatureMix(f)).toList()),
               )
             : null,
         decoration: decoration != null
-            ? MixValue.mix(TextDecorationMix(decoration))
+            ? Mixable.mix(TextDecorationMix(decoration))
             : null,
         decorationColor: decorationColor != null
-            ? MixValue.mix(ColorMix(decorationColor))
+            ? Mixable.mix(ColorMix(decorationColor))
             : null,
         decorationStyle: decorationStyle != null
-            ? MixValue.mix(EnumMix(decorationStyle))
+            ? Mixable.mix(EnumMix(decorationStyle))
             : null,
         fontVariations: fontVariations != null
-            ? MixValue.mix(
+            ? Mixable.mix(
                 ListMix(
                   fontVariations.map((f) => FontVariationMix(f)).toList(),
                 ),
               )
             : null,
-        height: height != null ? MixValue.mix(DoubleMix(height)) : null,
+        height: height != null ? Mixable.mix(DoubleMix(height)) : null,
         foreground: foreground != null
-            ? MixValue.mix(PaintMix(foreground))
+            ? Mixable.mix(PaintMix(foreground))
             : null,
         background: background != null
-            ? MixValue.mix(PaintMix(background))
+            ? Mixable.mix(PaintMix(background))
             : null,
         decorationThickness: decorationThickness != null
-            ? MixValue.mix(DoubleMix(decorationThickness))
+            ? Mixable.mix(DoubleMix(decorationThickness))
             : null,
         fontFamily: fontFamily != null
-            ? MixValue.mix(StringMix(fontFamily))
+            ? Mixable.mix(StringMix(fontFamily))
             : null,
         fontFamilyFallback: fontFamilyFallback != null
-            ? MixValue.mix(
+            ? Mixable.mix(
                 ListMix(fontFamilyFallback.map((s) => StringMix(s)).toList()),
               )
             : null,
@@ -280,42 +280,42 @@ final class TextStyleUtility<T extends StyleElement>
   }) {
     return builder(
       TextStyleDto(
-        color: color != null ? MixValue.mix(color) : null,
+        color: color != null ? Mixable.mix(color) : null,
         backgroundColor: backgroundColor != null
-            ? MixValue.mix(backgroundColor)
+            ? Mixable.mix(backgroundColor)
             : null,
-        fontSize: fontSize != null ? MixValue.mix(fontSize) : null,
-        fontWeight: fontWeight != null ? MixValue.mix(fontWeight) : null,
-        fontStyle: fontStyle != null ? MixValue.mix(fontStyle) : null,
+        fontSize: fontSize != null ? Mixable.mix(fontSize) : null,
+        fontWeight: fontWeight != null ? Mixable.mix(fontWeight) : null,
+        fontStyle: fontStyle != null ? Mixable.mix(fontStyle) : null,
         letterSpacing: letterSpacing != null
-            ? MixValue.mix(letterSpacing)
+            ? Mixable.mix(letterSpacing)
             : null,
-        debugLabel: debugLabel != null ? MixValue.mix(debugLabel) : null,
-        wordSpacing: wordSpacing != null ? MixValue.mix(wordSpacing) : null,
-        textBaseline: textBaseline != null ? MixValue.mix(textBaseline) : null,
-        shadows: shadows != null ? MixValue.mix(ListMix(shadows)) : null,
+        debugLabel: debugLabel != null ? Mixable.mix(debugLabel) : null,
+        wordSpacing: wordSpacing != null ? Mixable.mix(wordSpacing) : null,
+        textBaseline: textBaseline != null ? Mixable.mix(textBaseline) : null,
+        shadows: shadows != null ? Mixable.mix(ListMix(shadows)) : null,
         fontFeatures: fontFeatures != null
-            ? MixValue.mix(ListMix(fontFeatures))
+            ? Mixable.mix(ListMix(fontFeatures))
             : null,
-        decoration: decoration != null ? MixValue.mix(decoration) : null,
+        decoration: decoration != null ? Mixable.mix(decoration) : null,
         decorationColor: decorationColor != null
-            ? MixValue.mix(decorationColor)
+            ? Mixable.mix(decorationColor)
             : null,
         decorationStyle: decorationStyle != null
-            ? MixValue.mix(decorationStyle)
+            ? Mixable.mix(decorationStyle)
             : null,
         fontVariations: fontVariations != null
-            ? MixValue.mix(ListMix(fontVariations))
+            ? Mixable.mix(ListMix(fontVariations))
             : null,
-        height: height != null ? MixValue.mix(height) : null,
-        foreground: foreground != null ? MixValue.mix(foreground) : null,
-        background: background != null ? MixValue.mix(background) : null,
+        height: height != null ? Mixable.mix(height) : null,
+        foreground: foreground != null ? Mixable.mix(foreground) : null,
+        background: background != null ? Mixable.mix(background) : null,
         decorationThickness: decorationThickness != null
-            ? MixValue.mix(decorationThickness)
+            ? Mixable.mix(decorationThickness)
             : null,
-        fontFamily: fontFamily != null ? MixValue.mix(fontFamily) : null,
+        fontFamily: fontFamily != null ? Mixable.mix(fontFamily) : null,
         fontFamilyFallback: fontFamilyFallback != null
-            ? MixValue.mix(ListMix(fontFamilyFallback))
+            ? Mixable.mix(ListMix(fontFamilyFallback))
             : null,
       ),
     );

@@ -10,9 +10,9 @@ import 'package:mix/mix.dart';
 @immutable
 sealed class GradientDto<T extends Gradient> extends Mix<T>
     with HasDefaultValue<T> {
-  final MixValue<List<double>> stops;
-  final MixValue<List<Color>> colors;
-  final MixValue<GradientTransform> transform;
+  final Mixable<List<double>>? stops;
+  final Mixable<List<Color>>? colors;
+  final Mixable<GradientTransform>? transform;
   const GradientDto({
     required this.stops,
     required this.colors,
@@ -41,9 +41,9 @@ sealed class GradientDto<T extends Gradient> extends Mix<T>
 
   LinearGradientDto asLinearGradient() {
     return LinearGradientDto._(
-      begin: const MixValue.empty(),
-      end: const MixValue.empty(),
-      tileMode: const MixValue.empty(),
+      begin: null,
+      end: null,
+      tileMode: null,
       transform: transform,
       colors: colors,
       stops: stops,
@@ -52,11 +52,11 @@ sealed class GradientDto<T extends Gradient> extends Mix<T>
 
   RadialGradientDto asRadialGradient() {
     return RadialGradientDto._(
-      center: const MixValue.empty(),
-      radius: const MixValue.empty(),
-      tileMode: const MixValue.empty(),
-      focal: const MixValue.empty(),
-      focalRadius: const MixValue.empty(),
+      center: null,
+      radius: null,
+      tileMode: null,
+      focal: null,
+      focalRadius: null,
       transform: transform,
       colors: colors,
       stops: stops,
@@ -65,10 +65,10 @@ sealed class GradientDto<T extends Gradient> extends Mix<T>
 
   SweepGradientDto asSweepGradient() {
     return SweepGradientDto._(
-      center: const MixValue.empty(),
-      startAngle: const MixValue.empty(),
-      endAngle: const MixValue.empty(),
-      tileMode: const MixValue.empty(),
+      center: null,
+      startAngle: null,
+      endAngle: null,
+      tileMode: null,
       transform: transform,
       colors: colors,
       stops: stops,
@@ -85,25 +85,25 @@ sealed class GradientDto<T extends Gradient> extends Mix<T>
 /// merge and combining behavior. It allows to be merged, and resolved to a `[LinearGradient]
 
 final class LinearGradientDto extends GradientDto<LinearGradient> {
-  final MixValue<AlignmentGeometry> begin;
-  final MixValue<AlignmentGeometry> end;
-  final MixValue<TileMode> tileMode;
+  final Mixable<AlignmentGeometry>? begin;
+  final Mixable<AlignmentGeometry>? end;
+  final Mixable<TileMode>? tileMode;
 
   factory LinearGradientDto({
-    Mix<AlignmentGeometry>? begin,
-    Mix<AlignmentGeometry>? end,
-    Mix<TileMode>? tileMode,
-    Mix<GradientTransform>? transform,
-    Mix<List<Color>>? colors,
-    Mix<List<double>>? stops,
+    AlignmentGeometry? begin,
+    AlignmentGeometry? end,
+    TileMode? tileMode,
+    GradientTransform? transform,
+    List<Color>? colors,
+    List<double>? stops,
   }) {
     return LinearGradientDto._(
-      begin: MixValue(begin),
-      end: MixValue(end),
-      tileMode: MixValue(tileMode),
-      transform: MixValue(transform),
-      colors: MixValue(colors),
-      stops: MixValue(stops),
+      begin: Mixable.maybeValue(begin),
+      end: Mixable.maybeValue(end),
+      tileMode: Mixable.maybeValue(tileMode),
+      transform: Mixable.maybeValue(transform),
+      colors: Mixable.maybeValue(colors),
+      stops: Mixable.maybeValue(stops),
     );
   }
 
@@ -119,12 +119,12 @@ final class LinearGradientDto extends GradientDto<LinearGradient> {
   @override
   LinearGradient resolve(MixContext mix) {
     return LinearGradient(
-      begin: begin.resolve(mix) ?? defaultValue.begin,
-      end: end.resolve(mix) ?? defaultValue.end,
-      colors: colors.resolve(mix) ?? defaultValue.colors,
-      stops: stops.resolve(mix) ?? defaultValue.stops,
-      tileMode: tileMode.resolve(mix) ?? defaultValue.tileMode,
-      transform: transform.resolve(mix) ?? defaultValue.transform,
+      begin: resolveValue(mix, begin) ?? defaultValue.begin,
+      end: resolveValue(mix, end) ?? defaultValue.end,
+      colors: resolveValue(mix, colors) ?? defaultValue.colors,
+      stops: resolveValue(mix, stops) ?? defaultValue.stops,
+      tileMode: resolveValue(mix, tileMode) ?? defaultValue.tileMode,
+      transform: resolveValue(mix, transform) ?? defaultValue.transform,
     );
   }
 
@@ -133,12 +133,12 @@ final class LinearGradientDto extends GradientDto<LinearGradient> {
     if (other == null) return this;
 
     return LinearGradientDto._(
-      begin: begin.merge(other.begin),
-      end: end.merge(other.end),
-      tileMode: tileMode.merge(other.tileMode),
-      transform: transform.merge(other.transform),
-      colors: colors.merge(other.colors),
-      stops: stops.merge(other.stops),
+      begin: mergeValue(begin, other.begin),
+      end: mergeValue(end, other.end),
+      tileMode: mergeValue(tileMode, other.tileMode),
+      transform: mergeValue(transform, other.transform),
+      colors: mergeValue(colors, other.colors),
+      stops: mergeValue(stops, other.stops),
     );
   }
 
@@ -154,31 +154,31 @@ final class LinearGradientDto extends GradientDto<LinearGradient> {
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a `[RadialGradient]
 final class RadialGradientDto extends GradientDto<RadialGradient> {
-  final MixValue<AlignmentGeometry> center;
-  final MixValue<double> radius;
-  final MixValue<TileMode> tileMode;
-  final MixValue<AlignmentGeometry> focal;
-  final MixValue<double> focalRadius;
+  final Mixable<AlignmentGeometry>? center;
+  final Mixable<double>? radius;
+  final Mixable<TileMode>? tileMode;
+  final Mixable<AlignmentGeometry>? focal;
+  final Mixable<double>? focalRadius;
 
   factory RadialGradientDto({
-    Mix<AlignmentGeometry>? center,
-    Mix<double>? radius,
-    Mix<TileMode>? tileMode,
-    Mix<AlignmentGeometry>? focal,
-    Mix<double>? focalRadius,
-    Mix<GradientTransform>? transform,
-    Mix<List<Color>>? colors,
-    Mix<List<double>>? stops,
+    AlignmentGeometry? center,
+    double? radius,
+    TileMode? tileMode,
+    AlignmentGeometry? focal,
+    double? focalRadius,
+    GradientTransform? transform,
+    List<Color>? colors,
+    List<double>? stops,
   }) {
     return RadialGradientDto._(
-      center: MixValue(center),
-      radius: MixValue(radius),
-      tileMode: MixValue(tileMode),
-      focal: MixValue(focal),
-      focalRadius: MixValue(focalRadius),
-      transform: MixValue(transform),
-      colors: MixValue(colors),
-      stops: MixValue(stops),
+      center: Mixable.maybeValue(center),
+      radius: Mixable.maybeValue(radius),
+      tileMode: Mixable.maybeValue(tileMode),
+      focal: Mixable.maybeValue(focal),
+      focalRadius: Mixable.maybeValue(focalRadius),
+      transform: Mixable.maybeValue(transform),
+      colors: Mixable.maybeValue(colors),
+      stops: Mixable.maybeValue(stops),
     );
   }
 
@@ -196,14 +196,14 @@ final class RadialGradientDto extends GradientDto<RadialGradient> {
   @override
   RadialGradient resolve(MixContext mix) {
     return RadialGradient(
-      center: center.resolve(mix) ?? defaultValue.center,
-      radius: radius.resolve(mix) ?? defaultValue.radius,
-      colors: colors.resolve(mix) ?? defaultValue.colors,
-      stops: stops.resolve(mix) ?? defaultValue.stops,
-      tileMode: tileMode.resolve(mix) ?? defaultValue.tileMode,
-      focal: focal.resolve(mix) ?? defaultValue.focal,
-      focalRadius: focalRadius.resolve(mix) ?? defaultValue.focalRadius,
-      transform: transform.resolve(mix) ?? defaultValue.transform,
+      center: resolveValue(mix, center) ?? defaultValue.center,
+      radius: resolveValue(mix, radius) ?? defaultValue.radius,
+      colors: resolveValue(mix, colors) ?? defaultValue.colors,
+      stops: resolveValue(mix, stops) ?? defaultValue.stops,
+      tileMode: resolveValue(mix, tileMode) ?? defaultValue.tileMode,
+      focal: resolveValue(mix, focal) ?? defaultValue.focal,
+      focalRadius: resolveValue(mix, focalRadius) ?? defaultValue.focalRadius,
+      transform: resolveValue(mix, transform) ?? defaultValue.transform,
     );
   }
 
@@ -212,14 +212,14 @@ final class RadialGradientDto extends GradientDto<RadialGradient> {
     if (other == null) return this;
 
     return RadialGradientDto._(
-      center: center.merge(other.center),
-      radius: radius.merge(other.radius),
-      tileMode: tileMode.merge(other.tileMode),
-      focal: focal.merge(other.focal),
-      focalRadius: focalRadius.merge(other.focalRadius),
-      transform: transform.merge(other.transform),
-      colors: colors.merge(other.colors),
-      stops: stops.merge(other.stops),
+      center: mergeValue(center, other.center),
+      radius: mergeValue(radius, other.radius),
+      tileMode: mergeValue(tileMode, other.tileMode),
+      focal: mergeValue(focal, other.focal),
+      focalRadius: mergeValue(focalRadius, other.focalRadius),
+      transform: mergeValue(transform, other.transform),
+      colors: mergeValue(colors, other.colors),
+      stops: mergeValue(stops, other.stops),
     );
   }
 
@@ -245,28 +245,28 @@ final class RadialGradientDto extends GradientDto<RadialGradient> {
 /// merge and combining behavior. It allows to be merged, and resolved to a `[SweepGradient]
 
 final class SweepGradientDto extends GradientDto<SweepGradient> {
-  final MixValue<AlignmentGeometry> center;
-  final MixValue<double> startAngle;
-  final MixValue<double> endAngle;
-  final MixValue<TileMode> tileMode;
+  final Mixable<AlignmentGeometry>? center;
+  final Mixable<double>? startAngle;
+  final Mixable<double>? endAngle;
+  final Mixable<TileMode>? tileMode;
 
   factory SweepGradientDto({
-    Mix<AlignmentGeometry>? center,
-    Mix<double>? startAngle,
-    Mix<double>? endAngle,
-    Mix<TileMode>? tileMode,
-    Mix<GradientTransform>? transform,
-    Mix<List<Color>>? colors,
-    Mix<List<double>>? stops,
+    AlignmentGeometry? center,
+    double? startAngle,
+    double? endAngle,
+    TileMode? tileMode,
+    GradientTransform? transform,
+    List<Color>? colors,
+    List<double>? stops,
   }) {
     return SweepGradientDto._(
-      center: MixValue(center),
-      startAngle: MixValue(startAngle),
-      endAngle: MixValue(endAngle),
-      tileMode: MixValue(tileMode),
-      transform: MixValue(transform),
-      colors: MixValue(colors),
-      stops: MixValue(stops),
+      center: Mixable.maybeValue(center),
+      startAngle: Mixable.maybeValue(startAngle),
+      endAngle: Mixable.maybeValue(endAngle),
+      tileMode: Mixable.maybeValue(tileMode),
+      transform: Mixable.maybeValue(transform),
+      colors: Mixable.maybeValue(colors),
+      stops: Mixable.maybeValue(stops),
     );
   }
 
@@ -283,13 +283,13 @@ final class SweepGradientDto extends GradientDto<SweepGradient> {
   @override
   SweepGradient resolve(MixContext mix) {
     return SweepGradient(
-      center: center.resolve(mix) ?? defaultValue.center,
-      startAngle: startAngle.resolve(mix) ?? defaultValue.startAngle,
-      endAngle: endAngle.resolve(mix) ?? defaultValue.endAngle,
-      colors: colors.resolve(mix) ?? defaultValue.colors,
-      stops: stops.resolve(mix) ?? defaultValue.stops,
-      tileMode: tileMode.resolve(mix) ?? defaultValue.tileMode,
-      transform: transform.resolve(mix) ?? defaultValue.transform,
+      center: resolveValue(mix, center) ?? defaultValue.center,
+      startAngle: resolveValue(mix, startAngle) ?? defaultValue.startAngle,
+      endAngle: resolveValue(mix, endAngle) ?? defaultValue.endAngle,
+      colors: resolveValue(mix, colors) ?? defaultValue.colors,
+      stops: resolveValue(mix, stops) ?? defaultValue.stops,
+      tileMode: resolveValue(mix, tileMode) ?? defaultValue.tileMode,
+      transform: resolveValue(mix, transform) ?? defaultValue.transform,
     );
   }
 
@@ -298,13 +298,13 @@ final class SweepGradientDto extends GradientDto<SweepGradient> {
     if (other == null) return this;
 
     return SweepGradientDto._(
-      center: center.merge(other.center),
-      startAngle: startAngle.merge(other.startAngle),
-      endAngle: endAngle.merge(other.endAngle),
-      tileMode: tileMode.merge(other.tileMode),
-      transform: transform.merge(other.transform),
-      colors: colors.merge(other.colors),
-      stops: stops.merge(other.stops),
+      center: mergeValue(center, other.center),
+      startAngle: mergeValue(startAngle, other.startAngle),
+      endAngle: mergeValue(endAngle, other.endAngle),
+      tileMode: mergeValue(tileMode, other.tileMode),
+      transform: mergeValue(transform, other.transform),
+      colors: mergeValue(colors, other.colors),
+      stops: mergeValue(stops, other.stops),
     );
   }
 

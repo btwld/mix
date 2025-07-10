@@ -5,9 +5,9 @@ import 'package:mix/mix.dart';
 
 sealed class BaseShadowDto<T extends Shadow> extends Mix<T> {
   // Properties use MixableProperty for cleaner merging
-  final MixValue<Color> color;
-  final MixValue<Offset> offset;
-  final MixValue<double> blurRadius;
+  final Mixable<Color>? color;
+  final Mixable<Offset>? offset;
+  final Mixable<double>? blurRadius;
 
   const BaseShadowDto({
     required this.blurRadius,
@@ -22,24 +22,16 @@ sealed class BaseShadowDto<T extends Shadow> extends Mix<T> {
 /// merge and combining behavior. It allows to be merged, and resolved to a [Shadow]
 class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
   // Main constructor accepts Mix<T>? values
-  factory ShadowDto({
-    Mix<double>? blurRadius,
-    Mix<Color>? color,
-    Mix<Offset>? offset,
-  }) {
+  factory ShadowDto({double? blurRadius, Color? color, Offset? offset}) {
     return ShadowDto._(
-      blurRadius: MixValue(blurRadius),
-      color: MixValue(color),
-      offset: MixValue(offset),
+      blurRadius: Mixable.maybeValue(blurRadius),
+      color: Mixable.maybeValue(color),
+      offset: Mixable.maybeValue(offset),
     );
   }
 
   // Private constructor that accepts MixableProperty instances
-  const ShadowDto._({
-    required super.blurRadius,
-    required super.color,
-    required super.offset,
-  });
+  const ShadowDto._({super.blurRadius, super.color, super.offset});
 
   /// Resolves to [Shadow] using the provided [MixContext].
   ///
@@ -52,9 +44,9 @@ class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
   @override
   Shadow resolve(MixContext mix) {
     return Shadow(
-      color: color.resolve(mix) ?? defaultValue.color,
-      offset: offset.resolve(mix) ?? defaultValue.offset,
-      blurRadius: blurRadius.resolve(mix) ?? defaultValue.blurRadius,
+      color: resolveValue(mix, color) ?? defaultValue.color,
+      offset: resolveValue(mix, offset) ?? defaultValue.offset,
+      blurRadius: resolveValue(mix, blurRadius) ?? defaultValue.blurRadius,
     );
   }
 
@@ -71,9 +63,9 @@ class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
     if (other == null) return this;
 
     return ShadowDto._(
-      blurRadius: blurRadius.merge(other.blurRadius),
-      color: color.merge(other.color),
-      offset: offset.merge(other.offset),
+      blurRadius: mergeValue(blurRadius, other.blurRadius),
+      color: mergeValue(color, other.color),
+      offset: mergeValue(offset, other.offset),
     );
   }
 
@@ -94,29 +86,29 @@ class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
 /// merge and combining behavior. It allows to be merged, and resolved to a `[BoxShadow]
 class BoxShadowDto extends BaseShadowDto<BoxShadow>
     with HasDefaultValue<BoxShadow> {
-  final MixValue<double> spreadRadius;
+  final Mixable<double>? spreadRadius;
 
   // Main constructor accepts Mix<T>? values
   factory BoxShadowDto({
-    Mix<Color>? color,
-    Mix<Offset>? offset,
-    Mix<double>? blurRadius,
-    Mix<double>? spreadRadius,
+    Color? color,
+    Offset? offset,
+    double? blurRadius,
+    double? spreadRadius,
   }) {
     return BoxShadowDto._(
-      color: MixValue(color),
-      offset: MixValue(offset),
-      blurRadius: MixValue(blurRadius),
-      spreadRadius: MixValue(spreadRadius),
+      color: Mixable.maybeValue(color),
+      offset: Mixable.maybeValue(offset),
+      blurRadius: Mixable.maybeValue(blurRadius),
+      spreadRadius: Mixable.maybeValue(spreadRadius),
     );
   }
 
   // Private constructor that accepts MixableProperty instances
   const BoxShadowDto._({
-    required super.color,
-    required super.offset,
-    required super.blurRadius,
-    required this.spreadRadius,
+    super.color,
+    super.offset,
+    super.blurRadius,
+    this.spreadRadius,
   });
 
   /// Resolves to [BoxShadow] using the provided [MixContext].
@@ -130,10 +122,11 @@ class BoxShadowDto extends BaseShadowDto<BoxShadow>
   @override
   BoxShadow resolve(MixContext mix) {
     return BoxShadow(
-      color: color.resolve(mix) ?? defaultValue.color,
-      offset: offset.resolve(mix) ?? defaultValue.offset,
-      blurRadius: blurRadius.resolve(mix) ?? defaultValue.blurRadius,
-      spreadRadius: spreadRadius.resolve(mix) ?? defaultValue.spreadRadius,
+      color: resolveValue(mix, color) ?? defaultValue.color,
+      offset: resolveValue(mix, offset) ?? defaultValue.offset,
+      blurRadius: resolveValue(mix, blurRadius) ?? defaultValue.blurRadius,
+      spreadRadius:
+          resolveValue(mix, spreadRadius) ?? defaultValue.spreadRadius,
     );
   }
 
@@ -150,10 +143,10 @@ class BoxShadowDto extends BaseShadowDto<BoxShadow>
     if (other == null) return this;
 
     return BoxShadowDto._(
-      color: color.merge(other.color),
-      offset: offset.merge(other.offset),
-      blurRadius: blurRadius.merge(other.blurRadius),
-      spreadRadius: spreadRadius.merge(other.spreadRadius),
+      color: mergeValue(color, other.color),
+      offset: mergeValue(offset, other.offset),
+      blurRadius: mergeValue(blurRadius, other.blurRadius),
+      spreadRadius: mergeValue(spreadRadius, other.spreadRadius),
     );
   }
 

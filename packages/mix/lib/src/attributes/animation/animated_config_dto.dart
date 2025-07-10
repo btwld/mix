@@ -13,9 +13,9 @@ typedef AnimatedDataDto = AnimationConfigDto;
 
 class AnimationConfigDto extends Mix<AnimationConfig> {
   // Properties use MixableProperty for cleaner merging
-  final MixValue<Duration> duration;
-  final MixValue<Curve> curve;
-  final MixValue<VoidCallback> onEnd;
+  final Mixable<Duration> duration;
+  final Mixable<Curve> curve;
+  final Mixable<VoidCallback> onEnd;
 
   // Main constructor accepts Mix values
   factory AnimationConfigDto({
@@ -24,9 +24,9 @@ class AnimationConfigDto extends Mix<AnimationConfig> {
     Mix<VoidCallback>? onEnd,
   }) {
     return AnimationConfigDto._(
-      duration: MixValue(duration),
-      curve: MixValue(curve),
-      onEnd: MixValue(onEnd),
+      duration: Mixable(duration),
+      curve: Mixable(curve),
+      onEnd: Mixable(onEnd),
     );
   }
 
