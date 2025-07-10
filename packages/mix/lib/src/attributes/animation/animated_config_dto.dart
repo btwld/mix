@@ -57,6 +57,18 @@ class AnimationConfigDto extends Mix<AnimationConfig> {
     );
   }
 
+  /// Constructor that accepts a nullable [AnimationConfig] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [AnimationConfigDto.value].
+  ///
+  /// ```dart
+  /// const AnimationConfig? config = AnimationConfig(duration: Duration(milliseconds: 300));
+  /// final dto = AnimationConfigDto.maybeValue(config); // Returns AnimationConfigDto or null
+  /// ```
+  static AnimationConfigDto? maybeValue(AnimationConfig? config) {
+    return config != null ? AnimationConfigDto.value(config) : null;
+  }
+
   @override
   AnimationConfig resolve(MixContext mix) {
     return AnimationConfig(

@@ -18,6 +18,18 @@ sealed class SpaceDto extends Mix<double> with Diagnosticable {
   const factory SpaceDto.value(double value) = _ValueSpaceDto;
   const factory SpaceDto.token(MixableToken<double> token) = _TokenSpaceDto;
 
+  /// Constructor that accepts a nullable [double] value and creates a [SpaceDto].
+  ///
+  /// Returns null if the input is null, otherwise uses [SpaceDto.value].
+  ///
+  /// ```dart
+  /// const double? gap = 16.0;
+  /// final dto = SpaceDto.maybeValue(gap); // Returns SpaceDto or null
+  /// ```
+  static SpaceDto? maybeValue(double? value) {
+    return value != null ? SpaceDto.value(value) : null;
+  }
+
   @override
   SpaceDto merge(SpaceDto? other) => other ?? this;
 }

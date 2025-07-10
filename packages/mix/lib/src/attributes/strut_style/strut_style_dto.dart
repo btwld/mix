@@ -75,6 +75,18 @@ class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
     this.forceStrutHeight,
   });
 
+  /// Constructor that accepts a nullable [StrutStyle] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [StrutStyleDto.value].
+  ///
+  /// ```dart
+  /// const StrutStyle? strutStyle = StrutStyle(fontSize: 16.0, fontWeight: FontWeight.bold);
+  /// final dto = StrutStyleDto.maybeValue(strutStyle); // Returns StrutStyleDto or null
+  /// ```
+  static StrutStyleDto? maybeValue(StrutStyle? strutStyle) {
+    return strutStyle != null ? StrutStyleDto.value(strutStyle) : null;
+  }
+
   @override
   StrutStyle resolve(MixContext mix) {
     return StrutStyle(

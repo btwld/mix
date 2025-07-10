@@ -135,6 +135,18 @@ final class LinearGradientDto extends GradientDto<LinearGradient> {
     required super.stops,
   });
 
+  /// Constructor that accepts a nullable [LinearGradient] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [LinearGradientDto.value].
+  ///
+  /// ```dart
+  /// const LinearGradient? gradient = LinearGradient(colors: [Colors.red, Colors.blue]);
+  /// final dto = LinearGradientDto.maybeValue(gradient); // Returns LinearGradientDto or null
+  /// ```
+  static LinearGradientDto? maybeValue(LinearGradient? gradient) {
+    return gradient != null ? LinearGradientDto.value(gradient) : null;
+  }
+
   @override
   LinearGradient resolve(MixContext mix) {
     return LinearGradient(
@@ -232,6 +244,18 @@ final class RadialGradientDto extends GradientDto<RadialGradient> {
     required super.colors,
     required super.stops,
   });
+
+  /// Constructor that accepts a nullable [RadialGradient] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [RadialGradientDto.value].
+  ///
+  /// ```dart
+  /// const RadialGradient? gradient = RadialGradient(colors: [Colors.red, Colors.blue]);
+  /// final dto = RadialGradientDto.maybeValue(gradient); // Returns RadialGradientDto or null
+  /// ```
+  static RadialGradientDto? maybeValue(RadialGradient? gradient) {
+    return gradient != null ? RadialGradientDto.value(gradient) : null;
+  }
 
   @override
   RadialGradient resolve(MixContext mix) {
@@ -339,6 +363,18 @@ final class SweepGradientDto extends GradientDto<SweepGradient> {
     required super.colors,
     required super.stops,
   });
+
+  /// Constructor that accepts a nullable [SweepGradient] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [SweepGradientDto.value].
+  ///
+  /// ```dart
+  /// const SweepGradient? gradient = SweepGradient(colors: [Colors.red, Colors.blue]);
+  /// final dto = SweepGradientDto.maybeValue(gradient); // Returns SweepGradientDto or null
+  /// ```
+  static SweepGradientDto? maybeValue(SweepGradient? gradient) {
+    return gradient != null ? SweepGradientDto.value(gradient) : null;
+  }
 
   @override
   SweepGradient resolve(MixContext mix) {

@@ -216,6 +216,42 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
     super.modifiers,
   });
 
+  /// Constructor that accepts an [ImageSpec] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [ImageSpec] instances to [ImageSpecAttribute].
+  ///
+  /// ```dart
+  /// const spec = ImageSpec(width: 100, height: 100, fit: BoxFit.cover);
+  /// final attr = ImageSpecAttribute.value(spec);
+  /// ```
+  static ImageSpecAttribute value(ImageSpec spec) {
+    return ImageSpecAttribute(
+      width: spec.width,
+      height: spec.height,
+      color: spec.color != null ? Mix.value(spec.color!) : null,
+      repeat: spec.repeat,
+      fit: spec.fit,
+      alignment: spec.alignment,
+      centerSlice: spec.centerSlice,
+      filterQuality: spec.filterQuality,
+      colorBlendMode: spec.colorBlendMode,
+      animated: AnimationConfigDto.maybeValue(spec.animated),
+      modifiers: WidgetModifiersConfigDto.maybeValue(spec.modifiers),
+    );
+  }
+
+  /// Constructor that accepts a nullable [ImageSpec] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [ImageSpecAttribute.value].
+  ///
+  /// ```dart
+  /// const ImageSpec? spec = ImageSpec(width: 100, height: 100, fit: BoxFit.cover);
+  /// final attr = ImageSpecAttribute.maybeValue(spec); // Returns ImageSpecAttribute or null
+  /// ```
+  static ImageSpecAttribute? maybeValue(ImageSpec? spec) {
+    return spec != null ? ImageSpecAttribute.value(spec) : null;
+  }
+
   @override
   ImageSpec resolve(MixContext mix) {
     return ImageSpec(

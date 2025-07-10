@@ -134,6 +134,18 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
 
   EdgeInsetsDto.none() : this.all(0);
 
+  /// Constructor that accepts a nullable [EdgeInsets] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [EdgeInsetsDto.value].
+  ///
+  /// ```dart
+  /// const EdgeInsets? edgeInsets = EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0);
+  /// final dto = EdgeInsetsDto.maybeValue(edgeInsets); // Returns EdgeInsetsDto or null
+  /// ```
+  static EdgeInsetsDto? maybeValue(EdgeInsets? edgeInsets) {
+    return edgeInsets != null ? EdgeInsetsDto.value(edgeInsets) : null;
+  }
+
   @override
   EdgeInsets resolve(MixContext mix) {
     return EdgeInsets.only(
@@ -213,6 +225,22 @@ final class EdgeInsetsDirectionalDto
       );
 
   EdgeInsetsDirectionalDto.none() : this.all(0);
+
+  /// Constructor that accepts a nullable [EdgeInsetsDirectional] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [EdgeInsetsDirectionalDto.value].
+  ///
+  /// ```dart
+  /// const EdgeInsetsDirectional? edgeInsets = EdgeInsetsDirectional.symmetric(horizontal: 16.0, vertical: 8.0);
+  /// final dto = EdgeInsetsDirectionalDto.maybeValue(edgeInsets); // Returns EdgeInsetsDirectionalDto or null
+  /// ```
+  static EdgeInsetsDirectionalDto? maybeValue(
+    EdgeInsetsDirectional? edgeInsets,
+  ) {
+    return edgeInsets != null
+        ? EdgeInsetsDirectionalDto.value(edgeInsets)
+        : null;
+  }
 
   @override
   EdgeInsetsDirectional resolve(MixContext mix) {

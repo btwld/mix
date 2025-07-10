@@ -5,7 +5,9 @@ import '../../attributes/animation/animated_config_dto.dart';
 import '../../attributes/animation/animated_util.dart';
 import '../../attributes/animation/animation_config.dart';
 import '../../attributes/constraints/constraints_dto.dart';
+import '../../attributes/constraints/constraints_util.dart';
 import '../../attributes/decoration/decoration_dto.dart';
+import '../../attributes/decoration/decoration_util.dart';
 import '../../attributes/enum/enum_util.dart';
 import '../../attributes/modifiers/widget_modifiers_config.dart';
 import '../../attributes/modifiers/widget_modifiers_config_dto.dart';
@@ -301,6 +303,44 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
     super.modifiers,
     super.animated,
   });
+
+  /// Constructor that accepts a [BoxSpec] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [BoxSpec] instances to [BoxSpecAttribute].
+  ///
+  /// ```dart
+  /// const spec = BoxSpec(alignment: Alignment.center, padding: EdgeInsets.all(8));
+  /// final attr = BoxSpecAttribute.value(spec);
+  /// ```
+  static BoxSpecAttribute value(BoxSpec spec) {
+    return BoxSpecAttribute(
+      alignment: spec.alignment,
+      padding: _convertEdgeInsetsGeometry(spec.padding),
+      margin: _convertEdgeInsetsGeometry(spec.margin),
+      constraints: BoxConstraintsDto.maybeValue(spec.constraints),
+      decoration: _convertDecoration(spec.decoration),
+      foregroundDecoration: _convertDecoration(spec.foregroundDecoration),
+      transform: spec.transform,
+      transformAlignment: spec.transformAlignment,
+      clipBehavior: spec.clipBehavior,
+      width: spec.width,
+      height: spec.height,
+      modifiers: WidgetModifiersConfigDto.maybeValue(spec.modifiers),
+      animated: AnimationConfigDto.maybeValue(spec.animated),
+    );
+  }
+
+  /// Constructor that accepts a nullable [BoxSpec] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [BoxSpecAttribute.value].
+  ///
+  /// ```dart
+  /// const BoxSpec? spec = BoxSpec(alignment: Alignment.center, padding: EdgeInsets.all(8));
+  /// final attr = BoxSpecAttribute.maybeValue(spec); // Returns BoxSpecAttribute or null
+  /// ```
+  static BoxSpecAttribute? maybeValue(BoxSpec? spec) {
+    return spec != null ? BoxSpecAttribute.value(spec) : null;
+  }
 
   /// Resolves to [BoxSpec] using the provided [MixContext].
   ///
@@ -604,4 +644,25 @@ class BoxSpecTween extends Tween<BoxSpec?> {
 
     return begin!.lerp(end!, t);
   }
+}
+
+// Helper methods for converting Flutter types to DTOs
+EdgeInsetsGeometryDto? _convertEdgeInsetsGeometry(EdgeInsetsGeometry? edgeInsets) {
+  if (edgeInsets == null) return null;
+  if (edgeInsets is EdgeInsets) {
+    return EdgeInsetsDto.value(edgeInsets);
+  } else if (edgeInsets is EdgeInsetsDirectional) {
+    return EdgeInsetsDirectionalDto.value(edgeInsets);
+  }
+  return null;
+}
+
+DecorationDto? _convertDecoration(Decoration? decoration) {
+  if (decoration == null) return null;
+  if (decoration is BoxDecoration) {
+    return BoxDecorationDto.value(decoration);
+  } else if (decoration is ShapeDecoration) {
+    return ShapeDecorationDto.value(decoration);
+  }
+  return null;
 }

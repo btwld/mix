@@ -49,6 +49,18 @@ class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
   // Private constructor that accepts MixableProperty instances
   const ShadowDto._({super.blurRadius, super.color, super.offset});
 
+  /// Constructor that accepts a nullable [Shadow] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [ShadowDto.value].
+  ///
+  /// ```dart
+  /// const Shadow? shadow = Shadow(color: Colors.black, blurRadius: 5.0);
+  /// final dto = ShadowDto.maybeValue(shadow); // Returns ShadowDto or null
+  /// ```
+  static ShadowDto? maybeValue(Shadow? shadow) {
+    return shadow != null ? ShadowDto.value(shadow) : null;
+  }
+
   /// Resolves to [Shadow] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the
@@ -143,6 +155,18 @@ class BoxShadowDto extends BaseShadowDto<BoxShadow>
     super.blurRadius,
     this.spreadRadius,
   });
+
+  /// Constructor that accepts a nullable [BoxShadow] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [BoxShadowDto.value].
+  ///
+  /// ```dart
+  /// const BoxShadow? boxShadow = BoxShadow(color: Colors.grey, blurRadius: 10.0);
+  /// final dto = BoxShadowDto.maybeValue(boxShadow); // Returns BoxShadowDto or null
+  /// ```
+  static BoxShadowDto? maybeValue(BoxShadow? boxShadow) {
+    return boxShadow != null ? BoxShadowDto.value(boxShadow) : null;
+  }
 
   /// Resolves to [BoxShadow] using the provided [MixContext].
   ///

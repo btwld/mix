@@ -100,9 +100,23 @@ final class RoundedRectangleBorderDto
   /// ```
   factory RoundedRectangleBorderDto.value(RoundedRectangleBorder border) {
     return RoundedRectangleBorderDto(
-      borderRadius: border.borderRadius != BorderRadius.zero ? BorderRadiusDto.value(border.borderRadius as BorderRadius) : null,
-      side: border.side != BorderSide.none ? BorderSideDto.value(border.side) : null,
+      borderRadius: border.borderRadius != BorderRadius.zero
+          ? BorderRadiusDto.value(border.borderRadius as BorderRadius)
+          : null,
+      side: BorderSideDto.maybeValue(border.side),
     );
+  }
+
+  /// Constructor that accepts a nullable [RoundedRectangleBorder] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [RoundedRectangleBorderDto.value].
+  ///
+  /// ```dart
+  /// const RoundedRectangleBorder? border = RoundedRectangleBorder(borderRadius: BorderRadius.circular(8));
+  /// final dto = RoundedRectangleBorderDto.maybeValue(border); // Returns RoundedRectangleBorderDto or null
+  /// ```
+  static RoundedRectangleBorderDto? maybeValue(RoundedRectangleBorder? border) {
+    return border != null ? RoundedRectangleBorderDto.value(border) : null;
   }
 
   @override
@@ -177,9 +191,23 @@ final class BeveledRectangleBorderDto
   /// ```
   factory BeveledRectangleBorderDto.value(BeveledRectangleBorder border) {
     return BeveledRectangleBorderDto(
-      borderRadius: border.borderRadius != BorderRadius.zero ? BorderRadiusDto.value(border.borderRadius as BorderRadius) : null,
-      side: border.side != BorderSide.none ? BorderSideDto.value(border.side) : null,
+      borderRadius: border.borderRadius != BorderRadius.zero
+          ? BorderRadiusDto.value(border.borderRadius as BorderRadius)
+          : null,
+      side: BorderSideDto.maybeValue(border.side),
     );
+  }
+
+  /// Constructor that accepts a nullable [BeveledRectangleBorder] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [BeveledRectangleBorderDto.value].
+  ///
+  /// ```dart
+  /// const BeveledRectangleBorder? border = BeveledRectangleBorder(borderRadius: BorderRadius.circular(8));
+  /// final dto = BeveledRectangleBorderDto.maybeValue(border); // Returns BeveledRectangleBorderDto or null
+  /// ```
+  static BeveledRectangleBorderDto? maybeValue(BeveledRectangleBorder? border) {
+    return border != null ? BeveledRectangleBorderDto.value(border) : null;
   }
 
   @override
@@ -254,9 +282,25 @@ final class ContinuousRectangleBorderDto
   /// ```
   factory ContinuousRectangleBorderDto.value(ContinuousRectangleBorder border) {
     return ContinuousRectangleBorderDto(
-      borderRadius: border.borderRadius != BorderRadius.zero ? BorderRadiusDto.value(border.borderRadius as BorderRadius) : null,
-      side: border.side != BorderSide.none ? BorderSideDto.value(border.side) : null,
+      borderRadius: border.borderRadius != BorderRadius.zero
+          ? BorderRadiusDto.value(border.borderRadius as BorderRadius)
+          : null,
+      side: BorderSideDto.maybeValue(border.side),
     );
+  }
+
+  /// Constructor that accepts a nullable [ContinuousRectangleBorder] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [ContinuousRectangleBorderDto.value].
+  ///
+  /// ```dart
+  /// const ContinuousRectangleBorder? border = ContinuousRectangleBorder(borderRadius: BorderRadius.circular(8));
+  /// final dto = ContinuousRectangleBorderDto.maybeValue(border); // Returns ContinuousRectangleBorderDto or null
+  /// ```
+  static ContinuousRectangleBorderDto? maybeValue(
+    ContinuousRectangleBorder? border,
+  ) {
+    return border != null ? ContinuousRectangleBorderDto.value(border) : null;
   }
 
   @override
@@ -330,6 +374,33 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
 
   // Private constructor that accepts MixProp instances
   const CircleBorderDto._({super.side, this.eccentricity});
+
+  /// Constructor that accepts a [CircleBorder] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [CircleBorder] instances to [CircleBorderDto].
+  ///
+  /// ```dart
+  /// const border = CircleBorder(side: BorderSide(color: Colors.red));
+  /// final dto = CircleBorderDto.value(border);
+  /// ```
+  factory CircleBorderDto.value(CircleBorder border) {
+    return CircleBorderDto._(
+      side: BorderSideDto.maybeValue(border.side),
+      eccentricity: Prop.value(border.eccentricity),
+    );
+  }
+
+  /// Constructor that accepts a nullable [CircleBorder] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [CircleBorderDto.value].
+  ///
+  /// ```dart
+  /// const CircleBorder? border = CircleBorder(side: BorderSide(color: Colors.red));
+  /// final dto = CircleBorderDto.maybeValue(border); // Returns CircleBorderDto or null
+  /// ```
+  static CircleBorderDto? maybeValue(CircleBorder? border) {
+    return border != null ? CircleBorderDto.value(border) : null;
+  }
 
   @override
   CircleBorderDto adapt(OutlinedBorderDto other) {
@@ -414,6 +485,26 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
     );
   }
 
+  /// Constructor that accepts a [StarBorder] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [StarBorder] instances to [StarBorderDto].
+  ///
+  /// ```dart
+  /// const border = StarBorder(points: 6);
+  /// final dto = StarBorderDto.value(border);
+  /// ```
+  factory StarBorderDto.value(StarBorder border) {
+    return StarBorderDto._(
+      side: BorderSideDto.maybeValue(border.side),
+      points: Prop.value(border.points),
+      innerRadiusRatio: Prop.value(border.innerRadiusRatio),
+      pointRounding: Prop.value(border.pointRounding),
+      valleyRounding: Prop.value(border.valleyRounding),
+      rotation: Prop.value(border.rotation),
+      squash: Prop.value(border.squash),
+    );
+  }
+
   // Private constructor that accepts MixProp instances
   const StarBorderDto._({
     super.side,
@@ -424,6 +515,18 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
     this.rotation,
     this.squash,
   });
+
+  /// Constructor that accepts a nullable [StarBorder] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [StarBorderDto.value].
+  ///
+  /// ```dart
+  /// const StarBorder? border = StarBorder(points: 6);
+  /// final dto = StarBorderDto.maybeValue(border); // Returns StarBorderDto or null
+  /// ```
+  static StarBorderDto? maybeValue(StarBorder? border) {
+    return border != null ? StarBorderDto.value(border) : null;
+  }
 
   @override
   StarBorderDto adapt(OutlinedBorderDto other) {
@@ -515,6 +618,36 @@ final class LinearBorderDto extends OutlinedBorderDto<LinearBorder> {
     this.bottom,
   });
 
+  /// Constructor that accepts a [LinearBorder] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [LinearBorder] instances to [LinearBorderDto].
+  ///
+  /// ```dart
+  /// const border = LinearBorder(side: BorderSide(color: Colors.blue));
+  /// final dto = LinearBorderDto.value(border);
+  /// ```
+  factory LinearBorderDto.value(LinearBorder border) {
+    return LinearBorderDto(
+      side: BorderSideDto.maybeValue(border.side),
+      start: LinearBorderEdgeDto.maybeValue(border.start),
+      end: LinearBorderEdgeDto.maybeValue(border.end),
+      top: LinearBorderEdgeDto.maybeValue(border.top),
+      bottom: LinearBorderEdgeDto.maybeValue(border.bottom),
+    );
+  }
+
+  /// Constructor that accepts a nullable [LinearBorder] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [LinearBorderDto.value].
+  ///
+  /// ```dart
+  /// const LinearBorder? border = LinearBorder(side: BorderSide(color: Colors.blue));
+  /// final dto = LinearBorderDto.maybeValue(border); // Returns LinearBorderDto or null
+  /// ```
+  static LinearBorderDto? maybeValue(LinearBorder? border) {
+    return border != null ? LinearBorderDto.value(border) : null;
+  }
+
   @override
   LinearBorderDto adapt(OutlinedBorderDto other) {
     if (other is LinearBorderDto) {
@@ -587,8 +720,35 @@ final class LinearBorderEdgeDto extends Mix<LinearBorderEdge> {
     );
   }
 
+  /// Constructor that accepts a [LinearBorderEdge] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [LinearBorderEdge] instances to [LinearBorderEdgeDto].
+  ///
+  /// ```dart
+  /// const edge = LinearBorderEdge(size: 2.0, alignment: 0.5);
+  /// final dto = LinearBorderEdgeDto.value(edge);
+  /// ```
+  factory LinearBorderEdgeDto.value(LinearBorderEdge edge) {
+    return LinearBorderEdgeDto._(
+      size: Prop.value(edge.size),
+      alignment: Prop.value(edge.alignment),
+    );
+  }
+
   // Private constructor that accepts MixProp instances
   const LinearBorderEdgeDto._({this.size, this.alignment});
+
+  /// Constructor that accepts a nullable [LinearBorderEdge] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [LinearBorderEdgeDto.value].
+  ///
+  /// ```dart
+  /// const LinearBorderEdge? edge = LinearBorderEdge(size: 2.0, alignment: 0.5);
+  /// final dto = LinearBorderEdgeDto.maybeValue(edge); // Returns LinearBorderEdgeDto or null
+  /// ```
+  static LinearBorderEdgeDto? maybeValue(LinearBorderEdge? edge) {
+    return edge != null ? LinearBorderEdgeDto.value(edge) : null;
+  }
 
   /// Resolves to [LinearBorderEdge] using the provided [MixContext].
   ///
@@ -634,6 +794,30 @@ final class LinearBorderEdgeDto extends Mix<LinearBorderEdge> {
 
 final class StadiumBorderDto extends OutlinedBorderDto<StadiumBorder> {
   const StadiumBorderDto({super.side});
+
+  /// Constructor that accepts a [StadiumBorder] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [StadiumBorder] instances to [StadiumBorderDto].
+  ///
+  /// ```dart
+  /// const border = StadiumBorder(side: BorderSide(color: Colors.green));
+  /// final dto = StadiumBorderDto.value(border);
+  /// ```
+  factory StadiumBorderDto.value(StadiumBorder border) {
+    return StadiumBorderDto(side: BorderSideDto.maybeValue(border.side));
+  }
+
+  /// Constructor that accepts a nullable [StadiumBorder] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [StadiumBorderDto.value].
+  ///
+  /// ```dart
+  /// const StadiumBorder? border = StadiumBorder(side: BorderSide(color: Colors.green));
+  /// final dto = StadiumBorderDto.maybeValue(border); // Returns StadiumBorderDto or null
+  /// ```
+  static StadiumBorderDto? maybeValue(StadiumBorder? border) {
+    return border != null ? StadiumBorderDto.value(border) : null;
+  }
 
   @override
   StadiumBorderDto adapt(OutlinedBorderDto other) {

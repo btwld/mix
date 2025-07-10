@@ -82,6 +82,18 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
     this.bottomRight,
   });
 
+  /// Constructor that accepts a nullable [BorderRadius] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [BorderRadiusDto.value].
+  ///
+  /// ```dart
+  /// const BorderRadius? borderRadius = BorderRadius.circular(12.0);
+  /// final dto = BorderRadiusDto.maybeValue(borderRadius); // Returns BorderRadiusDto or null
+  /// ```
+  static BorderRadiusDto? maybeValue(BorderRadius? borderRadius) {
+    return borderRadius != null ? BorderRadiusDto.value(borderRadius) : null;
+  }
+
   @override
   BorderRadius resolve(MixContext mix) {
     return BorderRadius.only(
@@ -138,7 +150,9 @@ final class BorderRadiusDirectionalDto
   /// const borderRadius = BorderRadiusDirectional.circular(12.0);
   /// final dto = BorderRadiusDirectionalDto.value(borderRadius);
   /// ```
-  factory BorderRadiusDirectionalDto.value(BorderRadiusDirectional borderRadius) {
+  factory BorderRadiusDirectionalDto.value(
+    BorderRadiusDirectional borderRadius,
+  ) {
     return BorderRadiusDirectionalDto._(
       topStart: Prop.value(borderRadius.topStart),
       topEnd: Prop.value(borderRadius.topEnd),
@@ -154,6 +168,22 @@ final class BorderRadiusDirectionalDto
     this.bottomStart,
     this.bottomEnd,
   });
+
+  /// Constructor that accepts a nullable [BorderRadiusDirectional] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [BorderRadiusDirectionalDto.value].
+  ///
+  /// ```dart
+  /// const BorderRadiusDirectional? borderRadius = BorderRadiusDirectional.circular(12.0);
+  /// final dto = BorderRadiusDirectionalDto.maybeValue(borderRadius); // Returns BorderRadiusDirectionalDto or null
+  /// ```
+  static BorderRadiusDirectionalDto? maybeValue(
+    BorderRadiusDirectional? borderRadius,
+  ) {
+    return borderRadius != null
+        ? BorderRadiusDirectionalDto.value(borderRadius)
+        : null;
+  }
 
   @override
   BorderRadiusDirectional resolve(MixContext mix) {

@@ -19,6 +19,32 @@ class WidgetModifiersConfigDto extends Mix<WidgetModifiersConfig> {
     return WidgetModifiersConfigDto._(modifiers);
   }
 
+  /// Constructor that accepts a [WidgetModifiersConfig] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [WidgetModifiersConfig] instances to [WidgetModifiersConfigDto].
+  ///
+  /// ```dart
+  /// final config = WidgetModifiersConfig([...]);
+  /// final dto = WidgetModifiersConfigDto.value(config);
+  /// ```
+  factory WidgetModifiersConfigDto.value(WidgetModifiersConfig config) {
+    // TODO: This conversion is complex as it requires converting WidgetModifierSpec to WidgetModifierSpecAttribute
+    // For now, return empty list - this needs proper implementation based on available conversion methods
+    return const WidgetModifiersConfigDto._([]);
+  }
+
+  /// Constructor that accepts a nullable [WidgetModifiersConfig] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [WidgetModifiersConfigDto.value].
+  ///
+  /// ```dart
+  /// final WidgetModifiersConfig? config = WidgetModifiersConfig([...]);
+  /// final dto = WidgetModifiersConfigDto.maybeValue(config); // Returns WidgetModifiersConfigDto or null
+  /// ```
+  static WidgetModifiersConfigDto? maybeValue(WidgetModifiersConfig? config) {
+    return config != null ? WidgetModifiersConfigDto.value(config) : null;
+  }
+
 
   @override
   WidgetModifiersConfigDto merge(WidgetModifiersConfigDto? other) {

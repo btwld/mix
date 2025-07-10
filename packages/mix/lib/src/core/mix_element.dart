@@ -23,7 +23,105 @@ class MixDirective<T> {
   int get hashCode => debugLabel.hashCode;
 }
 
-abstract class StyleElement with EqualityMixin {
+// Mixin that provides Mix helper methods to StyleElement classes
+mixin MixHelperMixin {
+  @protected
+  V? resolveProp<V>(MixContext context, Prop<V>? prop) {
+    return prop?.resolve(context);
+  }
+
+  @protected
+  Prop<V>? mergeProp<V>(Prop<V>? a, Prop<V>? b) {
+    return a?.merge(b) ?? b;
+  }
+
+  @protected
+  List<V>? resolvePropList<V>(MixContext context, List<Prop<V>>? list) {
+    if (list == null || list.isEmpty) return null;
+
+    final resolved = <V>[];
+    for (final item in list) {
+      final value = item.resolve(context);
+      if (value != null) resolved.add(value);
+    }
+
+    return resolved.isEmpty ? null : resolved;
+  }
+
+  @protected
+  List<R>? resolveMixPropList<R, D extends Mix<R>>(
+    MixContext context,
+    List<MixProp<R, D>>? list,
+  ) {
+    if (list == null || list.isEmpty) return null;
+
+    final resolved = <R>[];
+    for (final mixProp in list) {
+      final value = mixProp.resolve(context);
+      if (value != null) resolved.add(value);
+    }
+
+    return resolved.isEmpty ? null : resolved;
+  }
+
+  @protected
+  List<Prop<V>>? mergePropList<V>(
+    List<Prop<V>>? a,
+    List<Prop<V>>? b, {
+    ListMergeStrategy strategy = ListMergeStrategy.append,
+  }) {
+    if (a == null) return b;
+    if (b == null) return a;
+
+    switch (strategy) {
+      case ListMergeStrategy.append:
+        return [...a, ...b];
+      case ListMergeStrategy.replace:
+        final result = List<Prop<V>>.of(a);
+        for (int i = 0; i < b.length; i++) {
+          if (i < result.length) {
+            result[i] = result[i].merge(b[i]);
+          } else {
+            result.add(b[i]);
+          }
+        }
+
+        return result;
+      case ListMergeStrategy.override:
+        return b;
+    }
+  }
+
+  @protected
+  List<MixProp<R, D>>? mergeMixPropList<R, D extends Mix<R>>(
+    List<MixProp<R, D>>? a,
+    List<MixProp<R, D>>? b, {
+    ListMergeStrategy strategy = ListMergeStrategy.append,
+  }) {
+    if (a == null) return b;
+    if (b == null) return a;
+
+    switch (strategy) {
+      case ListMergeStrategy.append:
+        return [...a, ...b];
+      case ListMergeStrategy.replace:
+        final result = List<MixProp<R, D>>.of(a);
+        for (int i = 0; i < b.length; i++) {
+          if (i < result.length) {
+            result[i] = result[i].merge(b[i]);
+          } else {
+            result.add(b[i]);
+          }
+        }
+
+        return result;
+      case ListMergeStrategy.override:
+        return b;
+    }
+  }
+}
+
+abstract class StyleElement with EqualityMixin, MixHelperMixin {
   const StyleElement();
 
   // Used as the key to determine how
@@ -34,20 +132,13 @@ abstract class StyleElement with EqualityMixin {
   StyleElement merge(covariant StyleElement? other);
 }
 
-mixin MergeableMixin<Self> {
-  /// Merges this object with [other], returning a new object of type [Self].
-  Self merge(covariant Self? other);
-}
-
-mixin ResolvableMixin<T> {
-  /// Resolves to the concrete value using the provided context.
-  T resolve(MixContext mix);
-}
-
 /// Simple value Mix - holds a direct value
 @immutable
 abstract class Mix<T> with EqualityMixin {
   const Mix();
+
+  /// Creates a Mix that wraps the given value
+  static Mix<T> value<T>(T value) => _MixableValue(value);
 
   /// Resolves to the concrete value using the provided context
   T resolve(MixContext mix);
@@ -154,9 +245,6 @@ abstract class Mix<T> with EqualityMixin {
         return b;
     }
   }
-
-  /// Creates a Mix that wraps the given value
-  static Mix<T> value<T>(T value) => _MixableValue(value);
 }
 
 /// Simple Mix implementation that wraps a value

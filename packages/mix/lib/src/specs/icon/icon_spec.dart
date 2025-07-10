@@ -15,7 +15,7 @@ import '../../core/computed_style/computed_style.dart';
 import '../../core/factory/mix_context.dart';
 import '../../core/factory/style_mix.dart';
 import '../../core/helpers.dart';
-import '../../core/mix_element.dart';
+import '../../core/prop.dart';
 import '../../core/spec.dart';
 import '../../core/utility.dart';
 import 'icon_widget.dart';
@@ -28,8 +28,6 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
   final double? opticalSize;
   final TextDirection? textDirection;
   final bool? applyTextScaling;
-
-  // TODO: add shadow utility
   final List<Shadow>? shadows;
   final double? fill;
 
@@ -176,17 +174,49 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
 }
 
 class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
-  final Mix<Color>? color;
-  final double? size;
-  final double? weight;
-  final double? grade;
-  final double? opticalSize;
-  final List<ShadowDto>? shadows;
+  final Prop<Color>? color;
+  final Prop<double>? size;
+  final Prop<double>? weight;
+  final Prop<double>? grade;
+  final Prop<double>? opticalSize;
+  final List<MixProp<Shadow, ShadowDto>>? shadows;
   final TextDirection? textDirection;
   final bool? applyTextScaling;
-  final double? fill;
+  final Prop<double>? fill;
 
-  const IconSpecAttribute({
+  // Factory constructor accepts raw values
+  factory IconSpecAttribute({
+    Color? color,
+    double? size,
+    double? weight,
+    double? grade,
+    double? opticalSize,
+    List<ShadowDto>? shadows,
+    TextDirection? textDirection,
+    bool? applyTextScaling,
+    double? fill,
+    AnimationConfigDto? animated,
+    WidgetModifiersConfigDto? modifiers,
+  }) {
+    return IconSpecAttribute._(
+      color: Prop.maybeValue(color),
+      size: Prop.maybeValue(size),
+      weight: Prop.maybeValue(weight),
+      grade: Prop.maybeValue(grade),
+      opticalSize: Prop.maybeValue(opticalSize),
+      shadows: shadows
+          ?.map((shadow) => MixProp<Shadow, ShadowDto>.value(shadow))
+          .toList(),
+      textDirection: textDirection,
+      applyTextScaling: applyTextScaling,
+      fill: Prop.maybeValue(fill),
+      animated: animated,
+      modifiers: modifiers,
+    );
+  }
+
+  // Private constructor accepts Prop instances
+  const IconSpecAttribute._({
     this.color,
     this.size,
     this.weight,
@@ -200,18 +230,52 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
     super.modifiers,
   });
 
+  // Static factory to create from resolved Spec
+  static IconSpecAttribute value(IconSpec spec) {
+    return IconSpecAttribute._(
+      color: Prop.maybeValue(spec.color),
+      size: Prop.maybeValue(spec.size),
+      weight: Prop.maybeValue(spec.weight),
+      grade: Prop.maybeValue(spec.grade),
+      opticalSize: Prop.maybeValue(spec.opticalSize),
+      shadows: spec.shadows
+          ?.map(
+            (shadow) =>
+                MixProp<Shadow, ShadowDto>.value(ShadowDto.value(shadow)),
+          )
+          .toList(),
+      textDirection: spec.textDirection,
+      applyTextScaling: spec.applyTextScaling,
+      fill: Prop.maybeValue(spec.fill),
+      animated: AnimationConfigDto.maybeValue(spec.animated),
+      modifiers: WidgetModifiersConfigDto.maybeValue(spec.modifiers),
+    );
+  }
+
+  /// Constructor that accepts a nullable [IconSpec] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [IconSpecAttribute.value].
+  ///
+  /// ```dart
+  /// const IconSpec? spec = IconSpec(color: Colors.blue, size: 24.0);
+  /// final attr = IconSpecAttribute.maybeValue(spec); // Returns IconSpecAttribute or null
+  /// ```
+  static IconSpecAttribute? maybeValue(IconSpec? spec) {
+    return spec != null ? IconSpecAttribute.value(spec) : null;
+  }
+
   @override
   IconSpec resolve(MixContext mix) {
     return IconSpec(
-      color: color?.resolve(mix),
-      size: size,
-      weight: weight,
-      grade: grade,
-      opticalSize: opticalSize,
-      shadows: shadows?.map((e) => e.resolve(mix)).toList(),
+      color: resolveProp(mix, color),
+      size: resolveProp(mix, size),
+      weight: resolveProp(mix, weight),
+      grade: resolveProp(mix, grade),
+      opticalSize: resolveProp(mix, opticalSize),
+      shadows: resolveMixPropList(mix, shadows),
       textDirection: textDirection,
       applyTextScaling: applyTextScaling,
-      fill: fill,
+      fill: resolveProp(mix, fill),
       animated: animated?.resolve(mix),
       modifiers: modifiers?.resolve(mix),
     );
@@ -221,16 +285,16 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
   IconSpecAttribute merge(IconSpecAttribute? other) {
     if (other == null) return this;
 
-    return IconSpecAttribute(
-      color: color?.merge(other.color) ?? other.color,
-      size: other.size ?? size,
-      weight: other.weight ?? weight,
-      grade: other.grade ?? grade,
-      opticalSize: other.opticalSize ?? opticalSize,
-      shadows: MixHelpers.mergeList(shadows, other.shadows),
+    return IconSpecAttribute._(
+      color: mergeProp(color, other.color),
+      size: mergeProp(size, other.size),
+      weight: mergeProp(weight, other.weight),
+      grade: mergeProp(grade, other.grade),
+      opticalSize: mergeProp(opticalSize, other.opticalSize),
+      shadows: mergeMixPropList(shadows, other.shadows),
       textDirection: other.textDirection ?? textDirection,
       applyTextScaling: other.applyTextScaling ?? applyTextScaling,
-      fill: other.fill ?? fill,
+      fill: mergeProp(fill, other.fill),
       animated: animated?.merge(other.animated) ?? other.animated,
       modifiers: modifiers?.merge(other.modifiers) ?? other.modifiers,
     );
@@ -317,7 +381,7 @@ class IconSpecUtility<T extends SpecAttribute>
 
   @override
   T only({
-    Mix<Color>? color,
+    Color? color,
     double? size,
     double? weight,
     double? grade,

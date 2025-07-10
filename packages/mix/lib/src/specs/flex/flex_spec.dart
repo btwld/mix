@@ -244,6 +244,42 @@ class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
     super.modifiers,
   });
 
+  /// Constructor that accepts a [FlexSpec] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [FlexSpec] instances to [FlexSpecAttribute].
+  ///
+  /// ```dart
+  /// const spec = FlexSpec(direction: Axis.horizontal, mainAxisAlignment: MainAxisAlignment.center);
+  /// final attr = FlexSpecAttribute.value(spec);
+  /// ```
+  static FlexSpecAttribute value(FlexSpec spec) {
+    return FlexSpecAttribute(
+      crossAxisAlignment: spec.crossAxisAlignment,
+      mainAxisAlignment: spec.mainAxisAlignment,
+      mainAxisSize: spec.mainAxisSize,
+      verticalDirection: spec.verticalDirection,
+      direction: spec.direction,
+      textDirection: spec.textDirection,
+      textBaseline: spec.textBaseline,
+      clipBehavior: spec.clipBehavior,
+      gap: SpaceDto.maybeValue(spec.gap),
+      animated: AnimationConfigDto.maybeValue(spec.animated),
+      modifiers: WidgetModifiersConfigDto.maybeValue(spec.modifiers),
+    );
+  }
+
+  /// Constructor that accepts a nullable [FlexSpec] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [FlexSpecAttribute.value].
+  ///
+  /// ```dart
+  /// const FlexSpec? spec = FlexSpec(direction: Axis.horizontal, mainAxisAlignment: MainAxisAlignment.center);
+  /// final attr = FlexSpecAttribute.maybeValue(spec); // Returns FlexSpecAttribute or null
+  /// ```
+  static FlexSpecAttribute? maybeValue(FlexSpec? spec) {
+    return spec != null ? FlexSpecAttribute.value(spec) : null;
+  }
+
   /// Resolves to [FlexSpec] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the

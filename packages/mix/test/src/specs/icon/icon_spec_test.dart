@@ -14,7 +14,7 @@ void main() {
         Style(
           IconSpecAttribute(
             size: 20.0,
-            color: Mix.value(Colors.red),
+            color: Colors.red,
             applyTextScaling: true,
             fill: 2,
             grade: 2,
@@ -84,7 +84,7 @@ void main() {
       final mixData = MixContext.create(
         MockBuildContext(),
         Style(
-          IconSpecAttribute(size: 20.0, color: Mix.value(Colors.red)),
+          IconSpecAttribute(size: 20.0, color: Colors.red),
         ),
       );
 

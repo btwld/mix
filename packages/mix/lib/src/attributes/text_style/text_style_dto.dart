@@ -91,16 +91,16 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
       wordSpacing: Prop.maybeValue(wordSpacing),
       textBaseline: Prop.maybeValue(textBaseline),
       shadows: shadows?.map(MixProp<Shadow, ShadowDto>.value).toList(),
-      height: Prop.maybeValue(height),
-      foreground: Prop.maybeValue(foreground),
-      background: Prop.maybeValue(background),
-      decorationThickness: Prop.maybeValue(decorationThickness),
-      fontFamily: Prop.maybeValue(fontFamily),
       fontFeatures: fontFeatures?.map(Prop.value).toList(),
       decoration: Prop.maybeValue(decoration),
       decorationColor: Prop.maybeValue(decorationColor),
       decorationStyle: Prop.maybeValue(decorationStyle),
       fontVariations: fontVariations?.map(Prop.value).toList(),
+      height: Prop.maybeValue(height),
+      foreground: Prop.maybeValue(foreground),
+      background: Prop.maybeValue(background),
+      decorationThickness: Prop.maybeValue(decorationThickness),
+      fontFamily: Prop.maybeValue(fontFamily),
       fontFamilyFallback: fontFamilyFallback?.map(Prop.value).toList(),
     );
   }
@@ -124,7 +124,9 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
       debugLabel: Prop.maybeValue(textStyle.debugLabel),
       wordSpacing: Prop.maybeValue(textStyle.wordSpacing),
       textBaseline: Prop.maybeValue(textStyle.textBaseline),
-      shadows: textStyle.shadows?.map((s) => MixProp<Shadow, ShadowDto>.value(ShadowDto.value(s))).toList(),
+      shadows: textStyle.shadows
+          ?.map((s) => MixProp<Shadow, ShadowDto>.value(ShadowDto.value(s)))
+          .toList(),
       fontFeatures: textStyle.fontFeatures?.map(Prop.value).toList(),
       decoration: Prop.maybeValue(textStyle.decoration),
       decorationColor: Prop.maybeValue(textStyle.decorationColor),
@@ -135,8 +137,22 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
       background: Prop.maybeValue(textStyle.background),
       decorationThickness: Prop.maybeValue(textStyle.decorationThickness),
       fontFamily: Prop.maybeValue(textStyle.fontFamily),
-      fontFamilyFallback: textStyle.fontFamilyFallback?.map(Prop.value).toList(),
+      fontFamilyFallback: textStyle.fontFamilyFallback
+          ?.map(Prop.value)
+          .toList(),
     );
+  }
+
+  /// Constructor that accepts a nullable [TextStyle] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [TextStyleDto.value].
+  ///
+  /// ```dart
+  /// const TextStyle? textStyle = TextStyle(color: Colors.blue, fontSize: 16.0);
+  /// final dto = TextStyleDto.maybeValue(textStyle); // Returns TextStyleDto or null
+  /// ```
+  static TextStyleDto? maybeValue(TextStyle? textStyle) {
+    return textStyle != null ? TextStyleDto.value(textStyle) : null;
   }
 
   @override

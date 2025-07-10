@@ -58,6 +58,18 @@ final class BoxConstraintsDto extends ConstraintsDto<BoxConstraints>
     this.maxHeight,
   });
 
+  /// Constructor that accepts a nullable [BoxConstraints] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [BoxConstraintsDto.value].
+  ///
+  /// ```dart
+  /// const BoxConstraints? constraints = BoxConstraints(maxWidth: 300, maxHeight: 200);
+  /// final dto = BoxConstraintsDto.maybeValue(constraints); // Returns BoxConstraintsDto or null
+  /// ```
+  static BoxConstraintsDto? maybeValue(BoxConstraints? constraints) {
+    return constraints != null ? BoxConstraintsDto.value(constraints) : null;
+  }
+
   /// Resolves to [BoxConstraints] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the

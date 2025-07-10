@@ -45,6 +45,18 @@ base class TextHeightBehaviorDto extends Mix<TextHeightBehavior> {
     this.leadingDistribution,
   });
 
+  /// Constructor that accepts a nullable [TextHeightBehavior] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [TextHeightBehaviorDto.value].
+  ///
+  /// ```dart
+  /// const TextHeightBehavior? behavior = TextHeightBehavior(applyHeightToFirstAscent: false);
+  /// final dto = TextHeightBehaviorDto.maybeValue(behavior); // Returns TextHeightBehaviorDto or null
+  /// ```
+  static TextHeightBehaviorDto? maybeValue(TextHeightBehavior? behavior) {
+    return behavior != null ? TextHeightBehaviorDto.value(behavior) : null;
+  }
+
   /// Resolves to [TextHeightBehavior] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the

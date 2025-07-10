@@ -59,7 +59,7 @@ final class EdgeInsetsGeometryUtility<T extends StyleElement>
     );
     if (start != null || end != null) {
       return builder(
-        EdgeInsetsDirectionalDto._(
+        EdgeInsetsDirectionalDto.fromSpaceDto(
           top: top,
           bottom: bottom,
           start: start,
@@ -69,7 +69,12 @@ final class EdgeInsetsGeometryUtility<T extends StyleElement>
     }
 
     return builder(
-      EdgeInsetsDto._(top: top, bottom: bottom, left: left, right: right),
+      EdgeInsetsDto.fromSpaceDto(
+        top: top,
+        bottom: bottom,
+        left: left,
+        right: right,
+      ),
     );
   }
 
@@ -119,7 +124,7 @@ final class SpacingDirectionalUtility<T extends StyleElement>
 
   T onlyDto({SpaceDto? top, SpaceDto? bottom, SpaceDto? start, SpaceDto? end}) {
     return builder(
-      EdgeInsetsDirectionalDto._(
+      EdgeInsetsDirectionalDto.fromSpaceDto(
         top: top,
         bottom: bottom,
         start: start,
@@ -171,16 +176,16 @@ class SpacingSideUtility<T extends StyleElement>
 EdgeInsetsGeometryDto _edgeInsetsGeometryToDto(EdgeInsetsGeometry geometry) {
   return switch (geometry) {
     EdgeInsets insets => EdgeInsetsDto(
-      top: insets.top != 0 ? SpaceDto.value(insets.top) : null,
-      bottom: insets.bottom != 0 ? SpaceDto.value(insets.bottom) : null,
-      left: insets.left != 0 ? SpaceDto.value(insets.left) : null,
-      right: insets.right != 0 ? SpaceDto.value(insets.right) : null,
+      top: insets.top != 0 ? insets.top : null,
+      bottom: insets.bottom != 0 ? insets.bottom : null,
+      left: insets.left != 0 ? insets.left : null,
+      right: insets.right != 0 ? insets.right : null,
     ),
     EdgeInsetsDirectional insets => EdgeInsetsDirectionalDto(
-      top: insets.top != 0 ? SpaceDto.value(insets.top) : null,
-      bottom: insets.bottom != 0 ? SpaceDto.value(insets.bottom) : null,
-      start: insets.start != 0 ? SpaceDto.value(insets.start) : null,
-      end: insets.end != 0 ? SpaceDto.value(insets.end) : null,
+      top: insets.top != 0 ? insets.top : null,
+      bottom: insets.bottom != 0 ? insets.bottom : null,
+      start: insets.start != 0 ? insets.start : null,
+      end: insets.end != 0 ? insets.end : null,
     ),
     _ => throw ArgumentError(
       'Unsupported EdgeInsetsGeometry type: ${geometry.runtimeType}',

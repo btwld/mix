@@ -158,6 +158,37 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
     super.modifiers,
   });
 
+  /// Constructor that accepts a [StackSpec] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [StackSpec] instances to [StackSpecAttribute].
+  ///
+  /// ```dart
+  /// const spec = StackSpec(alignment: AlignmentDirectional.topStart, fit: StackFit.loose);
+  /// final attr = StackSpecAttribute.value(spec);
+  /// ```
+  static StackSpecAttribute value(StackSpec spec) {
+    return StackSpecAttribute(
+      alignment: spec.alignment,
+      fit: spec.fit,
+      textDirection: spec.textDirection,
+      clipBehavior: spec.clipBehavior,
+      animated: AnimationConfigDto.maybeValue(spec.animated),
+      modifiers: WidgetModifiersConfigDto.maybeValue(spec.modifiers),
+    );
+  }
+
+  /// Constructor that accepts a nullable [StackSpec] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [StackSpecAttribute.value].
+  ///
+  /// ```dart
+  /// const StackSpec? spec = StackSpec(alignment: AlignmentDirectional.topStart, fit: StackFit.loose);
+  /// final attr = StackSpecAttribute.maybeValue(spec); // Returns StackSpecAttribute or null
+  /// ```
+  static StackSpecAttribute? maybeValue(StackSpec? spec) {
+    return spec != null ? StackSpecAttribute.value(spec) : null;
+  }
+
   /// Resolves to [StackSpec] using the provided [MixContext].
   @override
   StackSpec resolve(MixContext mix) {

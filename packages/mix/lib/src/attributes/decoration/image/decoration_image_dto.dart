@@ -69,6 +69,20 @@ final class DecorationImageDto extends Mix<DecorationImage> {
     this.isAntiAlias,
   });
 
+  /// Constructor that accepts a nullable [DecorationImage] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [DecorationImageDto.value].
+  ///
+  /// ```dart
+  /// const DecorationImage? decorationImage = DecorationImage(image: AssetImage('assets/image.png'));
+  /// final dto = DecorationImageDto.maybeValue(decorationImage); // Returns DecorationImageDto or null
+  /// ```
+  static DecorationImageDto? maybeValue(DecorationImage? decorationImage) {
+    return decorationImage != null
+        ? DecorationImageDto.value(decorationImage)
+        : null;
+  }
+
   /// Resolves to [DecorationImage] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the
@@ -83,7 +97,7 @@ final class DecorationImageDto extends Mix<DecorationImage> {
     if (resolvedImage == null) {
       throw StateError('DecorationImage requires an image provider');
     }
-    
+
     return DecorationImage(
       image: resolvedImage,
       fit: resolveProp(mix, fit),

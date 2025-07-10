@@ -56,7 +56,7 @@ final class BorderDto extends BoxBorderDto<Border> {
   static const BorderDto none = BorderDto.all(BorderSideDto.none);
 
   const BorderDto._({super.top, super.bottom, this.left, this.right})
-      : super._();
+    : super._();
 
   factory BorderDto({
     BorderSideDto? top,
@@ -64,12 +64,7 @@ final class BorderDto extends BoxBorderDto<Border> {
     BorderSideDto? left,
     BorderSideDto? right,
   }) {
-    return BorderDto._(
-      top: top,
-      bottom: bottom,
-      left: left,
-      right: right,
-    );
+    return BorderDto._(top: top, bottom: bottom, left: left, right: right);
   }
 
   /// Constructor that accepts a [Border] value and extracts its properties.
@@ -82,10 +77,10 @@ final class BorderDto extends BoxBorderDto<Border> {
   /// ```
   factory BorderDto.value(Border border) {
     return BorderDto._(
-      top: border.top != BorderSide.none ? BorderSideDto.value(border.top) : null,
-      bottom: border.bottom != BorderSide.none ? BorderSideDto.value(border.bottom) : null,
-      left: border.left != BorderSide.none ? BorderSideDto.value(border.left) : null,
-      right: border.right != BorderSide.none ? BorderSideDto.value(border.right) : null,
+      top: BorderSideDto.maybeValue(border.top),
+      bottom: BorderSideDto.maybeValue(border.bottom),
+      left: BorderSideDto.maybeValue(border.left),
+      right: BorderSideDto.maybeValue(border.right),
     );
   }
 
@@ -106,6 +101,18 @@ final class BorderDto extends BoxBorderDto<Border> {
 
   const BorderDto.horizontal(BorderSideDto side)
     : this.symmetric(horizontal: side);
+
+  /// Constructor that accepts a nullable [Border] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [BorderDto.value].
+  ///
+  /// ```dart
+  /// const Border? border = Border.all(color: Colors.red, width: 2.0);
+  /// final dto = BorderDto.maybeValue(border); // Returns BorderDto or null
+  /// ```
+  static BorderDto? maybeValue(Border? border) {
+    return border != null ? BorderDto.value(border) : null;
+  }
 
   /// Resolves to [Border] using the provided [MixContext].
   ///
@@ -164,7 +171,7 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional> {
   );
 
   const BorderDirectionalDto._({super.top, super.bottom, this.start, this.end})
-      : super._();
+    : super._();
 
   factory BorderDirectionalDto({
     BorderSideDto? top,
@@ -190,10 +197,10 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional> {
   /// ```
   factory BorderDirectionalDto.value(BorderDirectional border) {
     return BorderDirectionalDto._(
-      top: border.top != BorderSide.none ? BorderSideDto.value(border.top) : null,
-      bottom: border.bottom != BorderSide.none ? BorderSideDto.value(border.bottom) : null,
-      start: border.start != BorderSide.none ? BorderSideDto.value(border.start) : null,
-      end: border.end != BorderSide.none ? BorderSideDto.value(border.end) : null,
+      top: BorderSideDto.maybeValue(border.top),
+      bottom: BorderSideDto.maybeValue(border.bottom),
+      start: BorderSideDto.maybeValue(border.start),
+      end: BorderSideDto.maybeValue(border.end),
     );
   }
 
@@ -215,6 +222,18 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional> {
 
   const BorderDirectionalDto.horizontal(BorderSideDto side)
     : this.symmetric(horizontal: side);
+
+  /// Constructor that accepts a nullable [BorderDirectional] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [BorderDirectionalDto.value].
+  ///
+  /// ```dart
+  /// const BorderDirectional? border = BorderDirectional.all(BorderSide(color: Colors.red, width: 2.0));
+  /// final dto = BorderDirectionalDto.maybeValue(border); // Returns BorderDirectionalDto or null
+  /// ```
+  static BorderDirectionalDto? maybeValue(BorderDirectional? border) {
+    return border != null ? BorderDirectionalDto.value(border) : null;
+  }
 
   /// Resolves to [BorderDirectional] using the provided [MixContext].
   ///
@@ -314,6 +333,20 @@ final class BorderSideDto extends Mix<BorderSide>
 
   // Private constructor that accepts MixableProperty instances
   const BorderSideDto._({this.color, this.width, this.style, this.strokeAlign});
+
+  /// Constructor that accepts a nullable [BorderSide] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [BorderSideDto.value].
+  ///
+  /// ```dart
+  /// const BorderSide? borderSide = BorderSide(color: Colors.blue, width: 3.0);
+  /// final dto = BorderSideDto.maybeValue(borderSide); // Returns BorderSideDto or null
+  /// ```
+  static BorderSideDto? maybeValue(BorderSide? borderSide) {
+    return borderSide != null && borderSide != BorderSide.none
+        ? BorderSideDto.value(borderSide)
+        : null;
+  }
 
   /// Resolves to [BorderSide] using the provided [MixContext].
   ///

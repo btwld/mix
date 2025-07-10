@@ -12,6 +12,7 @@ import '../../attributes/scalars/scalar_util.dart';
 import '../../attributes/strut_style/strut_style_dto.dart';
 import '../../attributes/strut_style/strut_style_util.dart';
 import '../../attributes/text_height_behavior/text_height_behavior_dto.dart';
+import '../../attributes/text_height_behavior/text_height_behavior_util.dart';
 import '../../attributes/text_style/text_style_dto.dart';
 import '../../attributes/text_style/text_style_util.dart';
 import '../../core/computed_style/computed_style.dart';
@@ -284,6 +285,44 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
     super.animated,
     super.modifiers,
   });
+
+  /// Constructor that accepts a [TextSpec] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [TextSpec] instances to [TextSpecAttribute].
+  ///
+  /// ```dart
+  /// const spec = TextSpec(overflow: TextOverflow.ellipsis, maxLines: 2);
+  /// final attr = TextSpecAttribute.value(spec);
+  /// ```
+  static TextSpecAttribute value(TextSpec spec) {
+    return TextSpecAttribute(
+      overflow: spec.overflow,
+      strutStyle: StrutStyleDto.maybeValue(spec.strutStyle),
+      textAlign: spec.textAlign,
+      textScaler: spec.textScaler,
+      maxLines: spec.maxLines,
+      style: TextStyleDto.maybeValue(spec.style),
+      textWidthBasis: spec.textWidthBasis,
+      textHeightBehavior: TextHeightBehaviorDto.maybeValue(spec.textHeightBehavior),
+      textDirection: spec.textDirection,
+      softWrap: spec.softWrap,
+      directive: TextDirectiveDto.maybeValue(spec.directive),
+      animated: AnimationConfigDto.maybeValue(spec.animated),
+      modifiers: WidgetModifiersConfigDto.maybeValue(spec.modifiers),
+    );
+  }
+
+  /// Constructor that accepts a nullable [TextSpec] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [TextSpecAttribute.value].
+  ///
+  /// ```dart
+  /// const TextSpec? spec = TextSpec(overflow: TextOverflow.ellipsis, maxLines: 2);
+  /// final attr = TextSpecAttribute.maybeValue(spec); // Returns TextSpecAttribute or null
+  /// ```
+  static TextSpecAttribute? maybeValue(TextSpec? spec) {
+    return spec != null ? TextSpecAttribute.value(spec) : null;
+  }
 
   /// Resolves to [TextSpec] using the provided [MixContext].
   ///

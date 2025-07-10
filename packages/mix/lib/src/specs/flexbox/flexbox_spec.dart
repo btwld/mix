@@ -154,6 +154,35 @@ class FlexBoxSpecAttribute extends SpecAttribute<FlexBoxSpec>
     this.flex,
   });
 
+  /// Constructor that accepts a [FlexBoxSpec] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [FlexBoxSpec] instances to [FlexBoxSpecAttribute].
+  ///
+  /// ```dart
+  /// const spec = FlexBoxSpec(box: BoxSpec(...), flex: FlexSpec(...));
+  /// final attr = FlexBoxSpecAttribute.value(spec);
+  /// ```
+  static FlexBoxSpecAttribute value(FlexBoxSpec spec) {
+    return FlexBoxSpecAttribute(
+      animated: AnimationConfigDto.maybeValue(spec.animated),
+      modifiers: WidgetModifiersConfigDto.maybeValue(spec.modifiers),
+      box: BoxSpecAttribute.maybeValue(spec.box),
+      flex: FlexSpecAttribute.maybeValue(spec.flex),
+    );
+  }
+
+  /// Constructor that accepts a nullable [FlexBoxSpec] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [FlexBoxSpecAttribute.value].
+  ///
+  /// ```dart
+  /// const FlexBoxSpec? spec = FlexBoxSpec(box: BoxSpec(...), flex: FlexSpec(...));
+  /// final attr = FlexBoxSpecAttribute.maybeValue(spec); // Returns FlexBoxSpecAttribute or null
+  /// ```
+  static FlexBoxSpecAttribute? maybeValue(FlexBoxSpec? spec) {
+    return spec != null ? FlexBoxSpecAttribute.value(spec) : null;
+  }
+
   /// Resolves to [FlexBoxSpec] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the
