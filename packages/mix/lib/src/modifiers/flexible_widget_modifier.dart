@@ -93,7 +93,7 @@ class FlexibleModifierSpecAttribute
   /// final flexibleModifierSpec = FlexibleModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  FlexibleModifierSpec resolve(MixContext mix) {
+  FlexibleModifierSpec resolve(MixContext context) {
     return FlexibleModifierSpec(flex: flex, fit: fit);
   }
 

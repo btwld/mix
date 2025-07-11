@@ -52,7 +52,7 @@ class ResetModifierSpecAttribute
   const ResetModifierSpecAttribute();
 
   @override
-  ResetModifierSpec resolve(MixContext mix) {
+  ResetModifierSpec resolve(MixContext context) {
     return const ResetModifierSpec();
   }
 

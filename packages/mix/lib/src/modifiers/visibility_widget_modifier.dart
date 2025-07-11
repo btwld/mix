@@ -86,7 +86,7 @@ class VisibilityModifierSpecAttribute
   /// final visibilityModifierSpec = VisibilityModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  VisibilityModifierSpec resolve(MixContext mix) {
+  VisibilityModifierSpec resolve(MixContext context) {
     return VisibilityModifierSpec(visible);
   }
 

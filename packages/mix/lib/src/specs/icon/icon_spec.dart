@@ -265,19 +265,19 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
   }
 
   @override
-  IconSpec resolve(MixContext mix) {
+  IconSpec resolve(MixContext context) {
     return IconSpec(
-      color: resolveProp(mix, color),
-      size: resolveProp(mix, size),
-      weight: resolveProp(mix, weight),
-      grade: resolveProp(mix, grade),
-      opticalSize: resolveProp(mix, opticalSize),
-      shadows: resolveMixPropList(mix, shadows),
+      color: resolveProp(context, color),
+      size: resolveProp(context, size),
+      weight: resolveProp(context, weight),
+      grade: resolveProp(context, grade),
+      opticalSize: resolveProp(context, opticalSize),
+      shadows: resolveMixPropList(context, shadows),
       textDirection: textDirection,
       applyTextScaling: applyTextScaling,
-      fill: resolveProp(mix, fill),
-      animated: animated?.resolve(mix),
-      modifiers: modifiers?.resolve(mix),
+      fill: resolveProp(context, fill),
+      animated: animated?.resolve(context),
+      modifiers: modifiers?.resolve(context),
     );
   }
 

@@ -88,8 +88,8 @@ class PaddingModifierSpecAttribute
   /// final paddingModifierSpec = PaddingModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  PaddingModifierSpec resolve(MixContext mix) {
-    return PaddingModifierSpec(padding?.resolve(mix));
+  PaddingModifierSpec resolve(MixContext context) {
+    return PaddingModifierSpec(padding?.resolve(context));
   }
 
   /// Merges the properties of this [PaddingModifierSpecAttribute] with the properties of [other].

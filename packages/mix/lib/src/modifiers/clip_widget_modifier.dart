@@ -106,7 +106,7 @@ class ClipOvalModifierSpecAttribute
   /// final clipOvalModifierSpec = ClipOvalModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  ClipOvalModifierSpec resolve(MixContext mix) {
+  ClipOvalModifierSpec resolve(MixContext context) {
     return ClipOvalModifierSpec(clipper: clipper, clipBehavior: clipBehavior);
   }
 
@@ -263,7 +263,7 @@ class ClipRectModifierSpecAttribute
   /// final clipRectModifierSpec = ClipRectModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  ClipRectModifierSpec resolve(MixContext mix) {
+  ClipRectModifierSpec resolve(MixContext context) {
     return ClipRectModifierSpec(clipper: clipper, clipBehavior: clipBehavior);
   }
 
@@ -442,9 +442,9 @@ class ClipRRectModifierSpecAttribute
   /// final clipRRectModifierSpec = ClipRRectModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  ClipRRectModifierSpec resolve(MixContext mix) {
+  ClipRRectModifierSpec resolve(MixContext context) {
     return ClipRRectModifierSpec(
-      borderRadius: borderRadius?.resolve(mix),
+      borderRadius: borderRadius?.resolve(context),
       clipper: clipper,
       clipBehavior: clipBehavior,
     );
@@ -608,7 +608,7 @@ class ClipPathModifierSpecAttribute
   /// final clipPathModifierSpec = ClipPathModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  ClipPathModifierSpec resolve(MixContext mix) {
+  ClipPathModifierSpec resolve(MixContext context) {
     return ClipPathModifierSpec(clipper: clipper, clipBehavior: clipBehavior);
   }
 
@@ -757,7 +757,7 @@ class ClipTriangleModifierSpecAttribute
   /// final clipTriangleModifierSpec = ClipTriangleModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  ClipTriangleModifierSpec resolve(MixContext mix) {
+  ClipTriangleModifierSpec resolve(MixContext context) {
     return ClipTriangleModifierSpec(clipBehavior: clipBehavior);
   }
 

@@ -25,13 +25,15 @@ Matcher resolvesTo<T>(T expectedValue, {MixContext? context}) {
   return _ResolvesToMatcher<T>(expectedValue, context ?? EmptyMixData);
 }
 
-/// Check if two Mix objects are equivalent when resolved
+/// Check if two resolvable objects are equivalent when resolved
 ///
 /// Usage:
 /// ```dart
 /// expect(mix1, equivalentTo(mix2));
+/// expect(prop1, equivalentTo(prop2));
+/// expect(attr1, equivalentTo(attr2));
 /// ```
-Matcher equivalentTo<T>(Mix<T> other, {MixContext? context}) {
+Matcher equivalentTo<T>(dynamic other, {MixContext? context}) {
   return _EquivalentToMatcher<T>(other, context ?? EmptyMixData);
 }
 
@@ -47,24 +49,8 @@ class _ResolvesToMatcher<T> extends Matcher {
 
   @override
   bool matches(dynamic item, Map matchState) {
-    // Accept Mix<T>, MixProp, and Prop<T>
-    if (item is Mix<T>) {
-      try {
-        final resolved = item.resolve(context);
-        return resolved == expectedValue;
-      } catch (e) {
-        matchState['error'] = 'Failed to resolve: $e';
-        return false;
-      }
-    } else if (item is MixProp) {
-      try {
-        final resolved = item.resolve(context);
-        return resolved == expectedValue;
-      } catch (e) {
-        matchState['error'] = 'Failed to resolve: $e';
-        return false;
-      }
-    } else if (item is Prop) {
+    // Accept any ResolvableMixin implementation
+    if (item is ResolvableMixin) {
       try {
         final resolved = item.resolve(context);
         return resolved == expectedValue;
@@ -73,7 +59,8 @@ class _ResolvesToMatcher<T> extends Matcher {
         return false;
       }
     } else {
-      matchState['error'] = 'Expected Mix<$T>, MixProp, or Prop, got ${item.runtimeType}';
+      matchState['error'] =
+          'Expected ResolvableMixin implementation, got ${item.runtimeType}';
       return false;
     }
   }
@@ -94,21 +81,7 @@ class _ResolvesToMatcher<T> extends Matcher {
       return mismatchDescription.add(matchState['error']);
     }
 
-    if (item is Mix<T>) {
-      final resolved = item.resolve(context);
-      return mismatchDescription
-          .add('resolved to ')
-          .addDescriptionOf(resolved)
-          .add(' instead of ')
-          .addDescriptionOf(expectedValue);
-    } else if (item is MixProp) {
-      final resolved = item.resolve(context);
-      return mismatchDescription
-          .add('resolved to ')
-          .addDescriptionOf(resolved)
-          .add(' instead of ')
-          .addDescriptionOf(expectedValue);
-    } else if (item is Prop) {
+    if (item is ResolvableMixin) {
       final resolved = item.resolve(context);
       return mismatchDescription
           .add('resolved to ')
@@ -121,17 +94,18 @@ class _ResolvesToMatcher<T> extends Matcher {
   }
 }
 
-// Simple implementation that checks if two Mix objects resolve to the same value
+// Simple implementation that checks if two resolvable objects resolve to the same value
 class _EquivalentToMatcher<T> extends Matcher {
-  final Mix<T> other;
+  final ResolvableMixin other;
   final MixContext context;
 
   const _EquivalentToMatcher(this.other, this.context);
 
   @override
   bool matches(dynamic item, Map matchState) {
-    if (item is! Mix<T>) {
-      matchState['error'] = 'Expected Mix<$T>, got ${item.runtimeType}';
+    if (item is! ResolvableMixin) {
+      matchState['error'] =
+          'Expected ResolvableMixin implementation, got ${item.runtimeType}';
       return false;
     }
 
@@ -161,7 +135,7 @@ class _EquivalentToMatcher<T> extends Matcher {
       return mismatchDescription.add(matchState['error']);
     }
 
-    if (item is Mix<T>) {
+    if (item is ResolvableMixin) {
       final itemResolved = item.resolve(context);
       final otherResolved = other.resolve(context);
       return mismatchDescription

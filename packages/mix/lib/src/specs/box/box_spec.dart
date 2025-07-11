@@ -351,21 +351,21 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
   /// final boxSpec = BoxSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  BoxSpec resolve(MixContext mix) {
+  BoxSpec resolve(MixContext context) {
     return BoxSpec(
       alignment: alignment,
-      padding: padding?.resolve(mix),
-      margin: margin?.resolve(mix),
-      constraints: constraints?.resolve(mix),
-      decoration: decoration?.resolve(mix),
-      foregroundDecoration: foregroundDecoration?.resolve(mix),
+      padding: padding?.resolve(context),
+      margin: margin?.resolve(context),
+      constraints: constraints?.resolve(context),
+      decoration: decoration?.resolve(context),
+      foregroundDecoration: foregroundDecoration?.resolve(context),
       transform: transform,
       transformAlignment: transformAlignment,
       clipBehavior: clipBehavior,
       width: width,
       height: height,
-      modifiers: modifiers?.resolve(mix),
-      animated: animated?.resolve(mix),
+      modifiers: modifiers?.resolve(context),
+      animated: animated?.resolve(context),
     );
   }
 

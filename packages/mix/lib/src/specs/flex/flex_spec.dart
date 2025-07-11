@@ -289,7 +289,7 @@ class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
   /// final flexSpec = FlexSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  FlexSpec resolve(MixContext mix) {
+  FlexSpec resolve(MixContext context) {
     return FlexSpec(
       crossAxisAlignment: crossAxisAlignment,
       mainAxisAlignment: mainAxisAlignment,
@@ -299,9 +299,9 @@ class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
       textDirection: textDirection,
       textBaseline: textBaseline,
       clipBehavior: clipBehavior,
-      gap: gap?.resolve(mix),
-      animated: animated?.resolve(mix),
-      modifiers: modifiers?.resolve(mix),
+      gap: gap?.resolve(context),
+      animated: animated?.resolve(context),
+      modifiers: modifiers?.resolve(context),
     );
   }
 

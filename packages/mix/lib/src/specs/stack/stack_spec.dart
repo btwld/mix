@@ -191,14 +191,14 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
 
   /// Resolves to [StackSpec] using the provided [MixContext].
   @override
-  StackSpec resolve(MixContext mix) {
+  StackSpec resolve(MixContext context) {
     return StackSpec(
       alignment: alignment,
       fit: fit,
       textDirection: textDirection,
       clipBehavior: clipBehavior,
-      animated: animated?.resolve(mix),
-      modifiers: modifiers?.resolve(mix),
+      animated: animated?.resolve(context),
+      modifiers: modifiers?.resolve(context),
     );
   }
 

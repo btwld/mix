@@ -11,7 +11,7 @@ void main() {
       image: imageProvider,
       fit: BoxFit.cover,
       alignment: Alignment.topLeft,
-      centerSlice: const Rect.fromLTRB(10, 20, 30, 40),
+      centerSlice: Rect.fromLTRB(10, 20, 30, 40),
       repeat: ImageRepeat.repeat,
       filterQuality: FilterQuality.high,
       invertColors: true,
@@ -34,9 +34,15 @@ void main() {
       expect(result.image, equals(Prop.value(imageProvider)));
       expect(result.fit, equals(const Prop.value(BoxFit.cover)));
       expect(result.alignment, equals(const Prop.value(Alignment.topLeft)));
-      expect(result.centerSlice, equals(const Prop.value(Rect.fromLTRB(10, 20, 30, 40))));
+      expect(
+        result.centerSlice,
+        equals(const Prop.value(Rect.fromLTRB(10, 20, 30, 40))),
+      );
       expect(result.repeat, equals(const Prop.value(ImageRepeat.repeat)));
-      expect(result.filterQuality, equals(const Prop.value(FilterQuality.high)));
+      expect(
+        result.filterQuality,
+        equals(const Prop.value(FilterQuality.high)),
+      );
       expect(result.invertColors, equals(const Prop.value(true)));
       expect(result.isAntiAlias, equals(const Prop.value(true)));
     });
@@ -70,7 +76,7 @@ void main() {
 
     test('resolve with default values', () {
       final dto = DecorationImageDto(image: imageProvider);
-      
+
       const expectedImage = DecorationImage(
         image: imageProvider,
         alignment: Alignment.center,
@@ -79,7 +85,7 @@ void main() {
         invertColors: false,
         isAntiAlias: false,
       );
-      
+
       expect(dto, resolvesTo(expectedImage));
     });
 
@@ -94,7 +100,7 @@ void main() {
         invertColors: true,
         isAntiAlias: true,
       );
-      
+
       const expectedImage = DecorationImage(
         image: imageProvider,
         fit: BoxFit.scaleDown,
@@ -105,7 +111,7 @@ void main() {
         invertColors: true,
         isAntiAlias: true,
       );
-      
+
       expect(dto, resolvesTo(expectedImage));
     });
 

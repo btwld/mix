@@ -127,7 +127,7 @@ class FractionallySizedBoxModifierSpecAttribute
   /// final fractionallySizedBoxModifierSpec = FractionallySizedBoxModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  FractionallySizedBoxModifierSpec resolve(MixContext mix) {
+  FractionallySizedBoxModifierSpec resolve(MixContext context) {
     return FractionallySizedBoxModifierSpec(
       widthFactor: widthFactor,
       heightFactor: heightFactor,

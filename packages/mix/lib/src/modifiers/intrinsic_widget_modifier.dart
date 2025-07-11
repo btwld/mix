@@ -132,7 +132,7 @@ class IntrinsicHeightModifierSpecAttribute
   /// final intrinsicHeightModifierSpec = IntrinsicHeightModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  IntrinsicHeightModifierSpec resolve(MixContext mix) {
+  IntrinsicHeightModifierSpec resolve(MixContext context) {
     // ignore: prefer_const_constructors
     return IntrinsicHeightModifierSpec();
   }
@@ -210,7 +210,7 @@ class IntrinsicWidthModifierSpecAttribute
   /// final intrinsicWidthModifierSpec = IntrinsicWidthModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  IntrinsicWidthModifierSpec resolve(MixContext mix) {
+  IntrinsicWidthModifierSpec resolve(MixContext context) {
     // ignore: prefer_const_constructors
     return IntrinsicWidthModifierSpec();
   }

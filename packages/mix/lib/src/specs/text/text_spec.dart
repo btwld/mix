@@ -333,21 +333,21 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
   /// final textSpec = TextSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  TextSpec resolve(MixContext mix) {
+  TextSpec resolve(MixContext context) {
     return TextSpec(
       overflow: overflow,
-      strutStyle: strutStyle?.resolve(mix),
+      strutStyle: strutStyle?.resolve(context),
       textAlign: textAlign,
       textScaler: textScaler,
       maxLines: maxLines,
-      style: style?.resolve(mix),
+      style: style?.resolve(context),
       textWidthBasis: textWidthBasis,
-      textHeightBehavior: textHeightBehavior?.resolve(mix),
+      textHeightBehavior: textHeightBehavior?.resolve(context),
       textDirection: textDirection,
       softWrap: softWrap,
-      directive: directive?.resolve(mix),
-      animated: animated?.resolve(mix),
-      modifiers: modifiers?.resolve(mix),
+      directive: directive?.resolve(context),
+      animated: animated?.resolve(context),
+      modifiers: modifiers?.resolve(context),
     );
   }
 

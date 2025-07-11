@@ -11,10 +11,9 @@ void main() {
   group('BorderRadiusUtility', () {
     test('zero returns zero radius for all corners', () {
       final result = borderRadius.zero();
-      expect(result.value.topLeft, Radius.zero);
-      expect(result.value.topRight, Radius.zero);
-      expect(result.value.bottomLeft, Radius.zero);
-      expect(result.value.bottomRight, Radius.zero);
+      expect(result.value, resolvesTo(
+        BorderRadius.all(Radius.zero),
+      ));
     });
 
     test('only sets specific radii for each corner', () {
@@ -24,18 +23,21 @@ void main() {
         bottomLeft: const Radius.circular(30),
         bottomRight: const Radius.circular(40),
       );
-      expect(result.value.topLeft, const Radius.circular(10));
-      expect(result.value.topRight, const Radius.circular(20));
-      expect(result.value.bottomLeft, const Radius.circular(30));
-      expect(result.value.bottomRight, const Radius.circular(40));
+      expect(result.value, resolvesTo(
+        const BorderRadius.only(
+          topLeft: Radius.circular(10),
+          topRight: Radius.circular(20),
+          bottomLeft: Radius.circular(30),
+          bottomRight: Radius.circular(40),
+        ),
+      ));
     });
 
     test('all sets the same radius for all corners', () {
       final result = borderRadius.all.circular(10);
-      expect(result.value.topLeft, const Radius.circular(10));
-      expect(result.value.topRight, const Radius.circular(10));
-      expect(result.value.bottomLeft, const Radius.circular(10));
-      expect(result.value.bottomRight, const Radius.circular(10));
+      expect(result.value, resolvesTo(
+        const BorderRadius.all(Radius.circular(10)),
+      ));
     });
 
     test('vertical sets top and bottom radii', () {
@@ -82,18 +84,29 @@ void main() {
 
     test('topLeft sets radius for top-left corner only', () {
       final result = borderRadius.topLeft.circular(10);
-      expect(result.value.topLeft, const Radius.circular(10));
+      // Test individual properties are set correctly
+      expect(result.value.topLeft, resolvesTo(const Radius.circular(10)));
       expect(result.value.topRight, isNull);
       expect(result.value.bottomLeft, isNull);
       expect(result.value.bottomRight, isNull);
+      
+      // Also test the whole resolved value
+      expect(result.value, resolvesTo(
+        const BorderRadius.only(topLeft: Radius.circular(10)),
+      ));
     });
 
     test('topRight sets radius for top-right corner only', () {
       final result = borderRadius.topRight.circular(10);
       expect(result.value.topLeft, isNull);
-      expect(result.value.topRight, const Radius.circular(10));
+      expect(result.value.topRight, resolvesTo(const Radius.circular(10)));
       expect(result.value.bottomLeft, isNull);
       expect(result.value.bottomRight, isNull);
+      
+      // Also test the whole resolved value
+      expect(result.value, resolvesTo(
+        const BorderRadius.only(topRight: Radius.circular(10)),
+      ));
     });
 
     test('bottomLeft sets radius for bottom-left corner only', () {

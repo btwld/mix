@@ -168,11 +168,11 @@ class ScrollViewModifierSpecAttribute
   });
 
   @override
-  ScrollViewModifierSpec resolve(MixContext mix) {
+  ScrollViewModifierSpec resolve(MixContext context) {
     return ScrollViewModifierSpec(
       scrollDirection: scrollDirection,
       reverse: reverse,
-      padding: padding?.resolve(mix),
+      padding: padding?.resolve(context),
       physics: physics,
       clipBehavior: clipBehavior,
     );

@@ -95,7 +95,7 @@ class SizedBoxModifierSpecAttribute
   /// final sizedBoxModifierSpec = SizedBoxModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  SizedBoxModifierSpec resolve(MixContext mix) {
+  SizedBoxModifierSpec resolve(MixContext context) {
     return SizedBoxModifierSpec(width: width, height: height);
   }
 

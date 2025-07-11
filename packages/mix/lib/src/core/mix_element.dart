@@ -23,6 +23,12 @@ class MixDirective<T> {
   int get hashCode => debugLabel.hashCode;
 }
 
+/// Mixin for classes that can resolve to a value using MixContext
+mixin ResolvableMixin<T> {
+  /// Resolves this instance to a value using the provided context
+  T resolve(MixContext context);
+}
+
 // Mixin that provides Mix helper methods to StyleElement classes
 mixin MixHelperMixin {
   @protected
@@ -134,13 +140,14 @@ abstract class StyleElement with EqualityMixin, MixHelperMixin {
 
 /// Simple value Mix - holds a direct value
 @immutable
-abstract class Mix<T> with EqualityMixin, MixHelperMixin {
+abstract class Mix<T> with EqualityMixin, MixHelperMixin, ResolvableMixin<T> {
   const Mix();
 
   /// Creates a Mix that wraps the given value
   static Mix<T> value<T>(T value) => _MixableValue(value);
 
   /// Resolves to the concrete value using the provided context
+  @override
   T resolve(MixContext mix);
 
   /// Merges this mix with another mix, returning a new mix.

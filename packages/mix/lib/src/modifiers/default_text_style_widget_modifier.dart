@@ -187,15 +187,15 @@ class DefaultTextStyleModifierSpecAttribute
   /// final defaultTextStyleModifierSpec = DefaultTextStyleModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  DefaultTextStyleModifierSpec resolve(MixContext mix) {
+  DefaultTextStyleModifierSpec resolve(MixContext context) {
     return DefaultTextStyleModifierSpec(
-      style: style?.resolve(mix),
+      style: style?.resolve(context),
       textAlign: textAlign,
       softWrap: softWrap,
       overflow: overflow,
       maxLines: maxLines,
       textWidthBasis: textWidthBasis,
-      textHeightBehavior: textHeightBehavior?.resolve(mix),
+      textHeightBehavior: textHeightBehavior?.resolve(context),
     );
   }
 

@@ -282,19 +282,19 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
   }
 
   @override
-  ImageSpec resolve(MixContext mix) {
+  ImageSpec resolve(MixContext context) {
     return ImageSpec(
       width: width,
       height: height,
-      color: color?.resolve(mix),
+      color: color?.resolve(context),
       repeat: repeat,
       fit: fit,
       alignment: alignment,
       centerSlice: centerSlice,
       filterQuality: filterQuality,
       colorBlendMode: colorBlendMode,
-      animated: animated?.resolve(mix),
-      modifiers: modifiers?.resolve(mix),
+      animated: animated?.resolve(context),
+      modifiers: modifiers?.resolve(context),
     );
   }
 

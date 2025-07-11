@@ -37,13 +37,14 @@ abstract class Spec<T extends Spec<T>> with EqualityMixin {
 ///
 /// This class extends the [StyleElement] class and provides a generic type [Self] and [Value].
 /// The [Self] type represents the concrete implementation of the attribute, while the [Value] type represents the resolvable value.
-abstract class SpecAttribute<Value> extends StyleElement {
+abstract class SpecAttribute<Value> extends StyleElement with ResolvableMixin<Value> {
   final AnimationConfigDto? animated;
   final WidgetModifiersConfigDto? modifiers;
   const SpecAttribute({this.animated, this.modifiers});
 
   /// Resolves this attribute to its concrete value using the provided [MixContext].
-  Value resolve(MixContext mix);
+  @override
+  Value resolve(MixContext context);
 
   /// Merges this attribute with another attribute of the same type.
   @override

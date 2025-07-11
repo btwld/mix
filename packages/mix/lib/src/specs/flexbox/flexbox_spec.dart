@@ -192,12 +192,12 @@ class FlexBoxSpecAttribute extends SpecAttribute<FlexBoxSpec>
   /// final flexBoxSpec = FlexBoxSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  FlexBoxSpec resolve(MixContext mix) {
+  FlexBoxSpec resolve(MixContext context) {
     return FlexBoxSpec(
-      animated: animated?.resolve(mix),
-      modifiers: modifiers?.resolve(mix),
-      box: box?.resolve(mix),
-      flex: flex?.resolve(mix),
+      animated: animated?.resolve(context),
+      modifiers: modifiers?.resolve(context),
+      box: box?.resolve(context),
+      flex: flex?.resolve(context),
     );
   }
 

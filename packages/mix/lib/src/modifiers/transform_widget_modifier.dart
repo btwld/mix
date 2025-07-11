@@ -121,7 +121,7 @@ class TransformModifierSpecAttribute
   const TransformModifierSpecAttribute({this.transform, this.alignment});
 
   @override
-  TransformModifierSpec resolve(MixContext mix) {
+  TransformModifierSpec resolve(MixContext context) {
     return TransformModifierSpec(transform: transform, alignment: alignment);
   }
 
