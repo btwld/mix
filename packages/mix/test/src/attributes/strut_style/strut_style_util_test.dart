@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../../helpers/attribute_generator.dart';
+import '../../../helpers/custom_matchers.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
@@ -34,51 +35,44 @@ void main() {
 
     test('fontFamily', () {
       final strutStyle = strutStyleUtility.fontFamily('Roboto');
-      final resolved = strutStyle.value.resolve(EmptyMixData);
-
-      expect(resolved.fontFamily, 'Roboto');
+      
+      expect(strutStyle.value, resolvesTo(const StrutStyle(fontFamily: 'Roboto')));
     });
 
     test('fontSize', () {
       final strutStyle = strutStyleUtility.fontSize(24.0);
-      final resolved = strutStyle.value.resolve(EmptyMixData);
-
-      expect(resolved.fontSize, 24.0);
+      
+      expect(strutStyle.value, resolvesTo(const StrutStyle(fontSize: 24.0)));
     });
 
     test('height', () {
       final strutStyle = strutStyleUtility.height(2.0);
-      final resolved = strutStyle.value.resolve(EmptyMixData);
-
-      expect(resolved.height, 2.0);
+      
+      expect(strutStyle.value, resolvesTo(const StrutStyle(height: 2.0)));
     });
 
     test('leading', () {
       final strutStyle = strutStyleUtility.leading(1.0);
-      final resolved = strutStyle.value.resolve(EmptyMixData);
-
-      expect(resolved.leading, 1.0);
+      
+      expect(strutStyle.value, resolvesTo(const StrutStyle(leading: 1.0)));
     });
 
     test('fontWeight', () {
       final strutStyle = strutStyleUtility.fontWeight(FontWeight.bold);
-      final resolved = strutStyle.value.resolve(EmptyMixData);
-
-      expect(resolved.fontWeight, FontWeight.bold);
+      
+      expect(strutStyle.value, resolvesTo(const StrutStyle(fontWeight: FontWeight.bold)));
     });
 
     test('fontStyle', () {
       final strutStyle = strutStyleUtility.fontStyle(FontStyle.italic);
-      final resolved = strutStyle.value.resolve(EmptyMixData);
-
-      expect(resolved.fontStyle, FontStyle.italic);
+      
+      expect(strutStyle.value, resolvesTo(const StrutStyle(fontStyle: FontStyle.italic)));
     });
 
     test('forceStrutHeight', () {
       final strutStyle = strutStyleUtility.forceStrutHeight(true);
-      final resolved = strutStyle.value.resolve(EmptyMixData);
-
-      expect(resolved.forceStrutHeight, true);
+      
+      expect(strutStyle.value, resolvesTo(const StrutStyle(forceStrutHeight: true)));
     });
 
     test('as', () {
@@ -87,7 +81,7 @@ void main() {
 
       expect(attribute.value, isA<StrutStyleDto>());
       expect(attribute.value, equals(StrutStyleDto.value(strutStyle)));
-      expect(attribute.value.resolve(EmptyMixData), equals(strutStyle));
+      expect(attribute.value, resolvesTo(strutStyle));
     });
   });
 }

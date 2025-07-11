@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/src/modifiers/visibility_widget_modifier.dart';
 
+import '../../helpers/custom_matchers.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
@@ -62,8 +63,7 @@ void main() {
 
     test('resolve', () {
       const modifier = VisibilityModifierSpecAttribute(visible: true);
-      final result = modifier.resolve(EmptyMixData);
-      expect(result, isA<VisibilityModifierSpec>());
+      expect(modifier, resolvesTo(const VisibilityModifierSpec(true)));
     });
 
     // equality

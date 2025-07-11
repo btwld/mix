@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../../helpers/custom_matchers.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
@@ -65,9 +66,8 @@ void main() {
 
       // Use Mixable<Color> to resolve the token
       const colorDto = Prop<Color>.token(token);
-      final resolved = colorDto.resolve(mixData);
 
-      expect(resolved, equals(Colors.blue));
+      expect(colorDto, resolvesTo(Colors.blue, context: mixData));
     });
 
     testWidgets('resolve() throws for undefined tokens', (tester) async {
@@ -95,9 +95,8 @@ void main() {
 
       // Create a custom Mixable to resolve string tokens
       const stringMixable = _StringMixable(token: token);
-      final resolved = stringMixable.resolve(mixData);
 
-      expect(resolved, equals('Hello World'));
+      expect(stringMixable, resolvesTo('Hello World', context: mixData));
     });
   });
 }

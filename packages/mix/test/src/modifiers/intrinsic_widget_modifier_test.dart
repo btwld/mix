@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../helpers/custom_matchers.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
@@ -52,8 +53,7 @@ void main() {
 
     test('resolve', () {
       const modifier = IntrinsicHeightModifierSpecAttribute();
-      final result = modifier.resolve(EmptyMixData);
-      expect(result, isA<IntrinsicHeightModifierSpec>());
+      expect(modifier, resolvesTo(const IntrinsicHeightModifierSpec()));
     });
 
     // equality
@@ -111,8 +111,7 @@ void main() {
 
     test('resolve', () {
       const modifier = IntrinsicWidthModifierSpecAttribute();
-      final result = modifier.resolve(EmptyMixData);
-      expect(result, isA<IntrinsicWidthModifierSpec>());
+      expect(modifier, resolvesTo(const IntrinsicWidthModifierSpec()));
     });
 
     // equality

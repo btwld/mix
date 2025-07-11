@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 import 'package:mix/src/internal/constants.dart';
 
-import '../../../helpers/testing_utils.dart';
+import '../../../helpers/custom_matchers.dart';
 
 void main() {
   group('AnimatedDataDto', () {
@@ -33,9 +33,13 @@ void main() {
     test('should resolve to an AnimatedData instance', () {
       final dto = AnimationConfigDto(
           duration: const Duration(seconds: 2), curve: Curves.easeIn);
-      final animatedData = dto.resolve(EmptyMixData);
-      expect(animatedData.duration, equals(const Duration(seconds: 2)));
-      expect(animatedData.curve, equals(Curves.easeIn));
+      
+      const expectedConfig = AnimationConfig(
+          duration: Duration(seconds: 2), 
+          curve: Curves.easeIn
+      );
+      
+      expect(dto, resolvesTo(expectedConfig));
     });
 
     // test equality

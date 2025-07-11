@@ -28,45 +28,40 @@ void main() {
     group('UppercaseDirective', () {
       test('modify returns correct value', () {
         final attribute = textDirective.uppercase();
-        final modified =
-            attribute.directive?.resolve(EmptyMixData).apply('hello');
-        expect(modified, 'HELLO');
+        final directive = attribute.directive!;
+        expect(directive.resolve(EmptyMixData).apply('hello'), 'HELLO');
       });
     });
 
     group('CapitalizeDirective', () {
       test('modify returns correct value', () {
         final attribute = $text.capitalize();
-        final modified =
-            attribute.directive?.resolve(EmptyMixData).apply('hello');
-        expect(modified, 'Hello');
+        final directive = attribute.directive!;
+        expect(directive.resolve(EmptyMixData).apply('hello'), 'Hello');
       });
     });
 
     group('LowercaseDirective', () {
       test('modify returns correct value', () {
         final attribute = $text.lowercase();
-        final modified =
-            attribute.directive?.resolve(EmptyMixData).apply('HELLO');
-        expect(modified, 'hello');
+        final directive = attribute.directive!;
+        expect(directive.resolve(EmptyMixData).apply('HELLO'), 'hello');
       });
     });
 
     group('SentenceCaseDirective', () {
       test('modify returns correct value', () {
         final attribute = $text.sentenceCase();
-        final modified =
-            attribute.directive?.resolve(EmptyMixData).apply('hello');
-        expect(modified, 'Hello');
+        final directive = attribute.directive!;
+        expect(directive.resolve(EmptyMixData).apply('hello'), 'Hello');
       });
     });
 
     group('TitleCaseDirective', () {
       test('modify returns correct value', () {
         final attribute = $text.titleCase();
-        final modified =
-            attribute.directive?.resolve(EmptyMixData).apply('hello');
-        expect(modified, 'Hello');
+        final directive = attribute.directive!;
+        expect(directive.resolve(EmptyMixData).apply('hello'), 'Hello');
       });
     });
 

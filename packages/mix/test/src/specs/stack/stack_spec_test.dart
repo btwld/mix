@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../../helpers/custom_matchers.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
@@ -14,12 +15,17 @@ void main() {
         clipBehavior: Clip.antiAlias,
       );
 
-      final mixture = attribute.resolve(EmptyMixData);
-
-      expect(mixture.alignment, Alignment.center);
-      expect(mixture.fit, StackFit.expand);
-      expect(mixture.textDirection, TextDirection.ltr);
-      expect(mixture.clipBehavior, Clip.antiAlias);
+      expect(
+        attribute,
+        resolvesTo(
+          const StackSpec(
+            alignment: Alignment.center,
+            fit: StackFit.expand,
+            textDirection: TextDirection.ltr,
+            clipBehavior: Clip.antiAlias,
+          ),
+        ),
+      );
     });
 
     test('copyWith', () {

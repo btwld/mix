@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/src/core/factory/mix_context.dart';
 import 'package:mix/src/core/modifier.dart';
 
-import '../../helpers/testing_utils.dart';
+import '../../helpers/custom_matchers.dart';
 
 void main() {
   group('ModifierSpec', () {
@@ -34,8 +34,7 @@ void main() {
     test('resolve should return a ModifierSpec', () {
       const attribute = _TestModifierAttribute(2);
 
-      expect(attribute.resolve(EmptyMixData), isA<_TestModifierSpec>());
-      expect(attribute.resolve(EmptyMixData).value, 2);
+      expect(attribute, resolvesTo(const _TestModifierSpec(2)));
     });
   });
 }

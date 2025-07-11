@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../../helpers/attribute_generator.dart';
+import '../../../helpers/custom_matchers.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
@@ -91,16 +92,16 @@ void main() {
     test('border setting', () {
       final result = boxDecoration.border.all(color: Colors.red, width: 2.0);
       expect(
-        result.value.border?.resolve(EmptyMixData),
-        equals(Border.all(color: Colors.red, width: 2.0)),
+        result.value.border,
+        resolvesTo(Border.all(color: Colors.red, width: 2.0)),
       );
     });
 
     test('borderRadius setting', () {
       final result = boxDecoration.borderRadius(10.0);
       expect(
-        result.value.borderRadius?.resolve(EmptyMixData),
-        equals(BorderRadius.circular(10.0)),
+        result.value.borderRadius,
+        resolvesTo(BorderRadius.circular(10.0)),
       );
     });
 

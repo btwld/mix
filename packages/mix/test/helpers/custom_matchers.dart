@@ -47,16 +47,33 @@ class _ResolvesToMatcher<T> extends Matcher {
 
   @override
   bool matches(dynamic item, Map matchState) {
-    if (item is! Mix<T>) {
-      matchState['error'] = 'Expected Mix<$T>, got ${item.runtimeType}';
-      return false;
-    }
-
-    try {
-      final resolved = item.resolve(context);
-      return resolved == expectedValue;
-    } catch (e) {
-      matchState['error'] = 'Failed to resolve: $e';
+    // Accept Mix<T>, MixProp, and Prop<T>
+    if (item is Mix<T>) {
+      try {
+        final resolved = item.resolve(context);
+        return resolved == expectedValue;
+      } catch (e) {
+        matchState['error'] = 'Failed to resolve: $e';
+        return false;
+      }
+    } else if (item is MixProp) {
+      try {
+        final resolved = item.resolve(context);
+        return resolved == expectedValue;
+      } catch (e) {
+        matchState['error'] = 'Failed to resolve: $e';
+        return false;
+      }
+    } else if (item is Prop) {
+      try {
+        final resolved = item.resolve(context);
+        return resolved == expectedValue;
+      } catch (e) {
+        matchState['error'] = 'Failed to resolve: $e';
+        return false;
+      }
+    } else {
+      matchState['error'] = 'Expected Mix<$T>, MixProp, or Prop, got ${item.runtimeType}';
       return false;
     }
   }
@@ -78,6 +95,20 @@ class _ResolvesToMatcher<T> extends Matcher {
     }
 
     if (item is Mix<T>) {
+      final resolved = item.resolve(context);
+      return mismatchDescription
+          .add('resolved to ')
+          .addDescriptionOf(resolved)
+          .add(' instead of ')
+          .addDescriptionOf(expectedValue);
+    } else if (item is MixProp) {
+      final resolved = item.resolve(context);
+      return mismatchDescription
+          .add('resolved to ')
+          .addDescriptionOf(resolved)
+          .add(' instead of ')
+          .addDescriptionOf(expectedValue);
+    } else if (item is Prop) {
       final resolved = item.resolve(context);
       return mismatchDescription
           .add('resolved to ')

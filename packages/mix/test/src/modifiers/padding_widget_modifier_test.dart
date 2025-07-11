@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../helpers/testing_utils.dart';
+import '../../helpers/custom_matchers.dart';
 
 void main() {
   group('PaddingSpec', () {
@@ -113,11 +113,10 @@ void main() {
     test('resolve returns correct PaddingSpec', () {
       final padding = EdgeInsetsDto.all(10.0);
       final attribute = PaddingModifierSpecAttribute(padding: padding);
-      final mixData = EmptyMixData;
 
-      final result = attribute.resolve(mixData);
-
-      expect(result.padding, equals(const EdgeInsets.all(10.0)));
+      expect(attribute, resolvesTo(
+        const PaddingModifierSpec(EdgeInsets.all(10.0)),
+      ));
     });
 
     test('props returns list with padding', () {

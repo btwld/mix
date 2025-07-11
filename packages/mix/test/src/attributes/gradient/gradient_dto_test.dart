@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../../helpers/custom_matchers.dart';
-import '../../../helpers/testing_utils.dart';
 
 void main() {
   // GradientDto
@@ -87,10 +86,14 @@ void main() {
         stops: const [0.0, 1.0],
       );
 
-      final resolvedGradient = gradientDto.resolve(EmptyMixData);
+      const expectedGradient = LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Colors.red, Colors.blue],
+        stops: [0.0, 1.0],
+      );
 
-      expect(resolvedGradient, isA<LinearGradient>());
-      expect(resolvedGradient.colors.length, 2);
+      expect(gradientDto, resolvesTo(expectedGradient));
     });
 
     test('merge method correctly merges two LinearGradientDtos', () {
@@ -192,10 +195,14 @@ void main() {
         stops: const [0.0, 1.0],
       );
 
-      final resolvedGradient = gradientDto.resolve(EmptyMixData);
+      const expectedGradient = RadialGradient(
+        center: Alignment.center,
+        radius: 0.5,
+        colors: [Colors.red, Colors.blue],
+        stops: [0.0, 1.0],
+      );
 
-      expect(resolvedGradient, isA<RadialGradient>());
-      expect(resolvedGradient.colors.length, 2);
+      expect(gradientDto, resolvesTo(expectedGradient));
     });
 
     test('merge method correctly merges two RadialGradientDtos', () {
@@ -301,10 +308,15 @@ void main() {
         stops: const [0.0, 1.0],
       );
 
-      final resolvedGradient = gradientDto.resolve(EmptyMixData);
+      const expectedGradient = SweepGradient(
+        center: Alignment.center,
+        startAngle: 0.0,
+        endAngle: 1.0,
+        colors: [Colors.red, Colors.blue],
+        stops: [0.0, 1.0],
+      );
 
-      expect(resolvedGradient, isA<SweepGradient>());
-      expect(resolvedGradient.colors.length, 2);
+      expect(gradientDto, resolvesTo(expectedGradient));
     });
 
     test('merge method correctly merges two SweepGradientDtos', () {

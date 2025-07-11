@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../../helpers/testing_utils.dart';
+import '../../../helpers/custom_matchers.dart';
 
 void main() {
   group('FlexBoxSpecAttribute', () {
@@ -129,42 +129,34 @@ void main() {
         ),
       );
 
-      final flexBoxSpec = flexBoxSpecAttribute.resolve(EmptyMixData);
-
-      expect(flexBoxSpec.box.alignment, Alignment.center);
-      expect(flexBoxSpec.box.clipBehavior, Clip.antiAlias);
-
       expect(
-        flexBoxSpec.box.constraints,
-        const BoxConstraints(maxWidth: double.infinity, maxHeight: 100),
+        flexBoxSpecAttribute,
+        resolvesTo(FlexBoxSpec(
+          box: BoxSpec(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.only(left: 20, top: 20, right: 20, bottom: 20),
+            margin: const EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 10),
+            constraints: const BoxConstraints(maxWidth: double.infinity, maxHeight: 100),
+            decoration: const BoxDecoration(color: Colors.blue),
+            transform: Matrix4.identity(),
+            clipBehavior: Clip.antiAlias,
+            width: 100,
+            height: 100,
+            modifiers: const WidgetModifiersConfig([
+              OpacityModifierSpec(0.5),
+              SizedBoxModifierSpec(height: 10, width: 10),
+            ]),
+          ),
+          flex: const FlexSpec(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            verticalDirection: VerticalDirection.down,
+            textDirection: TextDirection.ltr,
+            textBaseline: TextBaseline.alphabetic,
+          ),
+        )),
       );
-      expect(
-        flexBoxSpec.box.decoration,
-        const BoxDecoration(color: Colors.blue),
-      );
-
-      expect(flexBoxSpec.box.height, 100);
-      expect(
-        flexBoxSpec.box.margin,
-        const EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 10),
-      );
-      expect(
-        flexBoxSpec.box.padding,
-        const EdgeInsets.only(left: 20, top: 20, right: 20, bottom: 20),
-      );
-      expect(flexBoxSpec.box.transform, Matrix4.identity());
-      expect(flexBoxSpec.box.width, 100);
-      expect(flexBoxSpec.box.modifiers!.value, [
-        const OpacityModifierSpec(0.5),
-        const SizedBoxModifierSpec(height: 10, width: 10),
-      ]);
-
-      expect(flexBoxSpec.flex.mainAxisAlignment, MainAxisAlignment.center);
-      expect(flexBoxSpec.flex.crossAxisAlignment, CrossAxisAlignment.center);
-      expect(flexBoxSpec.flex.mainAxisSize, MainAxisSize.max);
-      expect(flexBoxSpec.flex.verticalDirection, VerticalDirection.down);
-      expect(flexBoxSpec.flex.textDirection, TextDirection.ltr);
-      expect(flexBoxSpec.flex.textBaseline, TextBaseline.alphabetic);
     });
 
     // merge()

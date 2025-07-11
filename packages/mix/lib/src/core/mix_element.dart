@@ -134,7 +134,7 @@ abstract class StyleElement with EqualityMixin, MixHelperMixin {
 
 /// Simple value Mix - holds a direct value
 @immutable
-abstract class Mix<T> with EqualityMixin {
+abstract class Mix<T> with EqualityMixin, MixHelperMixin {
   const Mix();
 
   /// Creates a Mix that wraps the given value
@@ -145,106 +145,6 @@ abstract class Mix<T> with EqualityMixin {
 
   /// Merges this mix with another mix, returning a new mix.
   Mix<T> merge(covariant Mix<T>? other);
-
-  @protected
-  V? resolveProp<V>(MixContext context, Prop<V>? prop) {
-    return prop?.resolve(context);
-  }
-
-  @protected
-  Prop<V>? mergeProp<V>(Prop<V>? a, Prop<V>? b) {
-    return a?.merge(b) ?? b;
-  }
-
-  @protected
-  List<V>? resolvePropList<V>(MixContext context, List<Prop<V>>? list) {
-    if (list == null || list.isEmpty) return null;
-
-    final resolved = <V>[];
-    for (final item in list) {
-      final value = item.resolve(context);
-      if (value != null) resolved.add(value);
-    }
-
-    return resolved.isEmpty ? null : resolved;
-  }
-
-  @protected
-  List<R>? resolveMixPropList<R, D extends Mix<R>>(
-    MixContext context,
-    List<MixProp<R, D>>? list,
-  ) {
-    if (list == null || list.isEmpty) return null;
-
-    final resolved = <R>[];
-    for (final mixProp in list) {
-      final value = mixProp.resolve(context);
-      if (value != null) resolved.add(value);
-    }
-
-    return resolved.isEmpty ? null : resolved;
-  }
-
-  @protected
-  List<Prop<V>>? mergePropList<V>(
-    List<Prop<V>>? a,
-    List<Prop<V>>? b, {
-    ListMergeStrategy strategy = ListMergeStrategy.append,
-  }) {
-    if (a == null) return b;
-    if (b == null) return a;
-
-    switch (strategy) {
-      case ListMergeStrategy.append:
-        return [...a, ...b];
-
-      case ListMergeStrategy.replace:
-        // Merge in place - b items override a items at same index
-        final result = List<Prop<V>>.of(a);
-        for (int i = 0; i < b.length; i++) {
-          if (i < result.length) {
-            result[i] = result[i].merge(b[i]);
-          } else {
-            result.add(b[i]);
-          }
-        }
-
-        return result;
-
-      case ListMergeStrategy.override:
-        return b;
-    }
-  }
-
-  @protected
-  List<MixProp<R, D>>? mergeMixPropList<R, D extends Mix<R>>(
-    List<MixProp<R, D>>? a,
-    List<MixProp<R, D>>? b, {
-    ListMergeStrategy strategy = ListMergeStrategy.append,
-  }) {
-    if (a == null) return b;
-    if (b == null) return a;
-
-    switch (strategy) {
-      case ListMergeStrategy.append:
-        return [...a, ...b];
-
-      case ListMergeStrategy.replace:
-        final result = List<MixProp<R, D>>.of(a);
-        for (int i = 0; i < b.length; i++) {
-          if (i < result.length) {
-            result[i] = result[i].merge(b[i]);
-          } else {
-            result.add(b[i]);
-          }
-        }
-
-        return result;
-
-      case ListMergeStrategy.override:
-        return b;
-    }
-  }
 }
 
 /// Simple Mix implementation that wraps a value

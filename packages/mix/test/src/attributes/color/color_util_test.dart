@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../../helpers/custom_matchers.dart';
 import '../../../helpers/testing_utils.dart';
 import 'helpers/expect_color.dart';
 
@@ -458,104 +459,41 @@ void main() {
       () {
         final colorUtil = ColorUtility(TestColorAttribute.fromColor);
 
-        expect(colorUtil.red().resolve(EmptyMixData), Colors.red);
-        expect(colorUtil.pink().resolve(EmptyMixData), Colors.pink);
-        expect(colorUtil.purple().resolve(EmptyMixData), Colors.purple);
-        expect(
-          colorUtil.deepPurple().resolve(EmptyMixData),
-          Colors.deepPurple,
-        );
-        expect(colorUtil.indigo().resolve(EmptyMixData), Colors.indigo);
-        expect(colorUtil.blue().resolve(EmptyMixData), Colors.blue);
-        expect(
-          colorUtil.lightBlue().resolve(EmptyMixData),
-          Colors.lightBlue,
-        );
-        expect(colorUtil.cyan().resolve(EmptyMixData), Colors.cyan);
-        expect(colorUtil.teal().resolve(EmptyMixData), Colors.teal);
-        expect(colorUtil.green().resolve(EmptyMixData), Colors.green);
-        expect(
-          colorUtil.lightGreen().resolve(EmptyMixData),
-          Colors.lightGreen,
-        );
-        expect(colorUtil.lime().resolve(EmptyMixData), Colors.lime);
-        expect(colorUtil.yellow().resolve(EmptyMixData), Colors.yellow);
-        expect(colorUtil.amber().resolve(EmptyMixData), Colors.amber);
-        expect(colorUtil.orange().resolve(EmptyMixData), Colors.orange);
-        expect(
-          colorUtil.deepOrange().resolve(EmptyMixData),
-          Colors.deepOrange,
-        );
-        expect(colorUtil.brown().resolve(EmptyMixData), Colors.brown);
-        expect(colorUtil.grey().resolve(EmptyMixData), Colors.grey);
-        expect(
-          colorUtil.blueGrey().resolve(EmptyMixData),
-          Colors.blueGrey,
-        );
-        expect(
-          colorUtil.redAccent().resolve(EmptyMixData),
-          Colors.redAccent,
-        );
-        expect(
-          colorUtil.pinkAccent().resolve(EmptyMixData),
-          Colors.pinkAccent,
-        );
-        expect(
-          colorUtil.purpleAccent().resolve(EmptyMixData),
-          Colors.purpleAccent,
-        );
-        expect(
-          colorUtil.deepPurpleAccent().resolve(EmptyMixData),
-          Colors.deepPurpleAccent,
-        );
-        expect(
-          colorUtil.indigoAccent().resolve(EmptyMixData),
-          Colors.indigoAccent,
-        );
-        expect(
-          colorUtil.blueAccent().resolve(EmptyMixData),
-          Colors.blueAccent,
-        );
-        expect(
-          colorUtil.lightBlueAccent().resolve(EmptyMixData),
-          Colors.lightBlueAccent,
-        );
-        expect(
-          colorUtil.cyanAccent().resolve(EmptyMixData),
-          Colors.cyanAccent,
-        );
-        expect(
-          colorUtil.tealAccent().resolve(EmptyMixData),
-          Colors.tealAccent,
-        );
-        expect(
-          colorUtil.greenAccent().resolve(EmptyMixData),
-          Colors.greenAccent,
-        );
-        expect(
-          colorUtil.lightGreenAccent().resolve(EmptyMixData),
-          Colors.lightGreenAccent,
-        );
-        expect(
-          colorUtil.limeAccent().resolve(EmptyMixData),
-          Colors.limeAccent,
-        );
-        expect(
-          colorUtil.yellowAccent().resolve(EmptyMixData),
-          Colors.yellowAccent,
-        );
-        expect(
-          colorUtil.amberAccent().resolve(EmptyMixData),
-          Colors.amberAccent,
-        );
-        expect(
-          colorUtil.orangeAccent().resolve(EmptyMixData),
-          Colors.orangeAccent,
-        );
-        expect(
-          colorUtil.deepOrangeAccent().resolve(EmptyMixData),
-          Colors.deepOrangeAccent,
-        );
+        expect(colorUtil.red(), resolvesTo(Colors.red));
+        expect(colorUtil.pink(), resolvesTo(Colors.pink));
+        expect(colorUtil.purple(), resolvesTo(Colors.purple));
+        expect(colorUtil.deepPurple(), resolvesTo(Colors.deepPurple));
+        expect(colorUtil.indigo(), resolvesTo(Colors.indigo));
+        expect(colorUtil.blue(), resolvesTo(Colors.blue));
+        expect(colorUtil.lightBlue(), resolvesTo(Colors.lightBlue));
+        expect(colorUtil.cyan(), resolvesTo(Colors.cyan));
+        expect(colorUtil.teal(), resolvesTo(Colors.teal));
+        expect(colorUtil.green(), resolvesTo(Colors.green));
+        expect(colorUtil.lightGreen(), resolvesTo(Colors.lightGreen));
+        expect(colorUtil.lime(), resolvesTo(Colors.lime));
+        expect(colorUtil.yellow(), resolvesTo(Colors.yellow));
+        expect(colorUtil.amber(), resolvesTo(Colors.amber));
+        expect(colorUtil.orange(), resolvesTo(Colors.orange));
+        expect(colorUtil.deepOrange(), resolvesTo(Colors.deepOrange));
+        expect(colorUtil.brown(), resolvesTo(Colors.brown));
+        expect(colorUtil.grey(), resolvesTo(Colors.grey));
+        expect(colorUtil.blueGrey(), resolvesTo(Colors.blueGrey));
+        expect(colorUtil.redAccent(), resolvesTo(Colors.redAccent));
+        expect(colorUtil.pinkAccent(), resolvesTo(Colors.pinkAccent));
+        expect(colorUtil.purpleAccent(), resolvesTo(Colors.purpleAccent));
+        expect(colorUtil.deepPurpleAccent(), resolvesTo(Colors.deepPurpleAccent));
+        expect(colorUtil.indigoAccent(), resolvesTo(Colors.indigoAccent));
+        expect(colorUtil.blueAccent(), resolvesTo(Colors.blueAccent));
+        expect(colorUtil.lightBlueAccent(), resolvesTo(Colors.lightBlueAccent));
+        expect(colorUtil.cyanAccent(), resolvesTo(Colors.cyanAccent));
+        expect(colorUtil.tealAccent(), resolvesTo(Colors.tealAccent));
+        expect(colorUtil.greenAccent(), resolvesTo(Colors.greenAccent));
+        expect(colorUtil.lightGreenAccent(), resolvesTo(Colors.lightGreenAccent));
+        expect(colorUtil.limeAccent(), resolvesTo(Colors.limeAccent));
+        expect(colorUtil.yellowAccent(), resolvesTo(Colors.yellowAccent));
+        expect(colorUtil.amberAccent(), resolvesTo(Colors.amberAccent));
+        expect(colorUtil.orangeAccent(), resolvesTo(Colors.orangeAccent));
+        expect(colorUtil.deepOrangeAccent(), resolvesTo(Colors.deepOrangeAccent));
 
         // Test transparent color
         expect(colorUtil.transparent.color, Colors.transparent);
@@ -592,7 +530,7 @@ void main() {
           Colors.blue,
         );
 
-        expect(blueUtil().resolve(EmptyMixData), Colors.blue);
+        expect(blueUtil(), resolvesTo(Colors.blue));
         expect(blueUtil.shade50.color, Colors.blue.shade50);
         expect(blueUtil.shade100.color, Colors.blue.shade100);
         expect(blueUtil.shade200.color, Colors.blue.shade200);
@@ -617,7 +555,7 @@ void main() {
           Colors.blueAccent,
         );
 
-        expect(blueUtil().resolve(EmptyMixData), Colors.blueAccent);
+        expect(blueUtil(), resolvesTo(Colors.blueAccent));
         expect(blueUtil.shade100.color, Colors.blueAccent.shade100);
         expect(blueUtil.shade200.color, Colors.blueAccent.shade200);
         expect(blueUtil.shade400.color, Colors.blueAccent.shade400);

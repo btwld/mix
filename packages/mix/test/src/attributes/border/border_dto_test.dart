@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../../helpers/custom_matchers.dart';
-import '../../../helpers/testing_utils.dart';
 
 void main() {
   group('BoxBorderDto', () {
@@ -59,12 +58,17 @@ void main() {
         right: BorderSideDto(width: 20.0),
       );
 
-      final resolvedBorder = borderDto.resolve(EmptyMixData);
-
-      expect(resolvedBorder.top, const BorderSide(width: 5.0));
-      expect(resolvedBorder.bottom, const BorderSide(width: 10.0));
-      expect(resolvedBorder.left, const BorderSide(width: 15.0));
-      expect(resolvedBorder.right, const BorderSide(width: 20.0));
+      expect(
+        borderDto,
+        resolvesTo(
+          const Border(
+            top: BorderSide(width: 5.0),
+            bottom: BorderSide(width: 10.0),
+            left: BorderSide(width: 15.0),
+            right: BorderSide(width: 20.0),
+          ),
+        ),
+      );
     });
 
     test('resolve() Border with default value', () {
@@ -73,12 +77,17 @@ void main() {
         left: BorderSideDto(width: 15.0),
       );
 
-      final resolvedBorder = borderDto.resolve(EmptyMixData);
-
-      expect(resolvedBorder.top, const BorderSide(width: 5.0));
-      expect(resolvedBorder.bottom, BorderSide.none);
-      expect(resolvedBorder.left, const BorderSide(width: 15.0));
-      expect(resolvedBorder.right, BorderSide.none);
+      expect(
+        borderDto,
+        resolvesTo(
+          const Border(
+            top: BorderSide(width: 5.0),
+            bottom: BorderSide.none,
+            left: BorderSide(width: 15.0),
+            right: BorderSide.none,
+          ),
+        ),
+      );
     });
 
     test('resolve() BorderDirectional', () {
@@ -89,12 +98,17 @@ void main() {
         end: BorderSideDto(width: 20.0),
       );
 
-      final resolvedBorder = borderDto.resolve(EmptyMixData);
-
-      expect(resolvedBorder.top, const BorderSide(width: 5.0));
-      expect(resolvedBorder.bottom, const BorderSide(width: 10.0));
-      expect(resolvedBorder.start, const BorderSide(width: 15.0));
-      expect(resolvedBorder.end, const BorderSide(width: 20.0));
+      expect(
+        borderDto,
+        resolvesTo(
+          const BorderDirectional(
+            top: BorderSide(width: 5.0),
+            bottom: BorderSide(width: 10.0),
+            start: BorderSide(width: 15.0),
+            end: BorderSide(width: 20.0),
+          ),
+        ),
+      );
     });
 
     //  merge
@@ -221,11 +235,16 @@ void main() {
           width: 1.0,
         );
 
-        final resolved = borderSideDto.resolve(EmptyMixData);
-
-        expect(resolved.width, 1.0);
-        expect(resolved.color, Colors.red);
-        expect(resolved.style, BorderStyle.solid);
+        expect(
+          borderSideDto,
+          resolvesTo(
+            const BorderSide(
+              color: Colors.red,
+              width: 1.0,
+              style: BorderStyle.solid,
+            ),
+          ),
+        );
       },
     );
   });

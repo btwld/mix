@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../../helpers/custom_matchers.dart';
+
 void main() {
   group('Token Integration Tests', () {
     testWidgets('Mixable<Color> with Token<Color> integration', (tester) async {
@@ -20,11 +22,9 @@ void main() {
               const dto1 = Prop<Color>.token(primaryToken);
               const dto2 = Prop<Color>.token(secondaryToken);
 
-              final color1 = dto1.resolve(MixContext.create(context, Style()));
-              final color2 = dto2.resolve(MixContext.create(context, Style()));
-
-              expect(color1, equals(Colors.blue));
-              expect(color2, equals(Colors.red));
+              final mixContext = MixContext.create(context, Style());
+              expect(dto1, resolvesTo(Colors.blue, context: mixContext));
+              expect(dto2, resolvesTo(Colors.red, context: mixContext));
 
               return Container();
             },
@@ -49,11 +49,9 @@ void main() {
               const dto1 = SpaceDto.token(smallToken);
               const dto2 = SpaceDto.token(largeToken);
 
-              final space1 = dto1.resolve(MixContext.create(context, Style()));
-              final space2 = dto2.resolve(MixContext.create(context, Style()));
-
-              expect(space1, equals(8.0));
-              expect(space2, equals(24.0));
+              final mixContext = MixContext.create(context, Style());
+              expect(dto1, resolvesTo(8.0, context: mixContext));
+              expect(dto2, resolvesTo(24.0, context: mixContext));
 
               return Container();
             },

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../../helpers/testing_utils.dart';
+import '../../../helpers/custom_matchers.dart';
 
 void main() {
   group('ModifiersDataDto', () {
@@ -30,9 +30,10 @@ void main() {
     test('should resolve to a ModifiersData instance', () {
       const modifier = TestModifierSpecAttribute();
       final dto = WidgetModifiersConfigDto(const [modifier]);
-      final modifiersData = dto.resolve(EmptyMixData);
-      expect(modifiersData.value.length, 1);
-      expect(modifiersData.value.first, const TestModifierSpec());
+      
+      expect(dto, resolvesTo(
+        const WidgetModifiersConfig([TestModifierSpec()]),
+      ));
     });
 
     // test equality

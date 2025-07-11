@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../../helpers/custom_matchers.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
@@ -12,7 +13,7 @@ void main() {
       final attribute = utility.as(gradient);
 
       expect(attribute.value, isA<RadialGradientDto>());
-      expect(attribute.resolve(EmptyMixData), isA<RadialGradient>());
+      expect(attribute, resolvesTo(gradient));
     });
 
     test('GradientUtility.from for LinearGradient', () {
@@ -20,7 +21,7 @@ void main() {
       final attribute = utility.as(gradient);
 
       expect(attribute.value, isA<LinearGradientDto>());
-      expect(attribute.resolve(EmptyMixData), isA<LinearGradient>());
+      expect(attribute, resolvesTo(gradient));
     });
 
     test('GradientUtility.from for SweepGradient', () {
@@ -28,7 +29,7 @@ void main() {
       final attribute = utility.as(gradient);
 
       expect(attribute.value, isA<SweepGradientDto>());
-      expect(attribute.resolve(EmptyMixData), isA<SweepGradient>());
+      expect(attribute, resolvesTo(gradient));
     });
   });
 
@@ -39,9 +40,7 @@ void main() {
       const gradient = RadialGradient(colors: []);
       final attribute = radialUtility.as(gradient);
 
-      final resolvedGradient = attribute.resolve(EmptyMixData);
-
-      expect(resolvedGradient, isA<RadialGradient>());
+      expect(attribute, resolvesTo(gradient));
       expect(attribute.value, isA<RadialGradientDto>());
     });
 

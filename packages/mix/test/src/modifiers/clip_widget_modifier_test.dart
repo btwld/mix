@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../helpers/custom_matchers.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
@@ -77,10 +78,8 @@ void main() {
     test('resolve', () {
       const modifier = ClipPathModifierSpecAttribute(
           clipper: clipper, clipBehavior: clipBehavior);
-      final result = modifier.resolve(EmptyMixData);
-      expect(result, isA<ClipPathModifierSpec>());
-      expect(result.clipper, clipper);
-      expect(result.clipBehavior, clipBehavior);
+      expect(modifier, resolvesTo(const ClipPathModifierSpec(
+          clipper: clipper, clipBehavior: clipBehavior)));
     });
   });
 
@@ -176,11 +175,11 @@ void main() {
         clipper: clipper,
         clipBehavior: clipBehavior,
       );
-      final result = modifier.resolve(EmptyMixData);
-      expect(result, isA<ClipRRectModifierSpec>());
-      expect(result.borderRadius, borderRadius);
-      expect(result.clipBehavior, clipBehavior);
-      expect(result.clipper, clipper);
+      expect(modifier, resolvesTo(ClipRRectModifierSpec(
+        borderRadius: borderRadius,
+        clipBehavior: clipBehavior,
+        clipper: clipper,
+      )));
     });
   });
 
@@ -268,10 +267,10 @@ void main() {
         clipper: clipper,
         clipBehavior: clipBehavior,
       );
-      final result = modifier.resolve(EmptyMixData);
-      expect(result, isA<ClipOvalModifierSpec>());
-      expect(result.clipper, clipper);
-      expect(result.clipBehavior, clipBehavior);
+      expect(modifier, resolvesTo(const ClipOvalModifierSpec(
+        clipper: clipper,
+        clipBehavior: clipBehavior,
+      )));
     });
   });
 
@@ -359,10 +358,10 @@ void main() {
         clipper: clipper,
         clipBehavior: clipBehavior,
       );
-      final result = modifier.resolve(EmptyMixData);
-      expect(result, isA<ClipRectModifierSpec>());
-      expect(result.clipper, clipper);
-      expect(result.clipBehavior, clipBehavior);
+      expect(modifier, resolvesTo(const ClipRectModifierSpec(
+        clipper: clipper,
+        clipBehavior: clipBehavior,
+      )));
     });
   });
 
@@ -430,9 +429,9 @@ void main() {
     test('resolve', () {
       const modifier =
           ClipTriangleModifierSpecAttribute(clipBehavior: clipBehavior);
-      final result = modifier.resolve(EmptyMixData);
-      expect(result, isA<ClipTriangleModifierSpec>());
-      expect(result.clipBehavior, clipBehavior);
+      expect(modifier, resolvesTo(const ClipTriangleModifierSpec(
+        clipBehavior: clipBehavior,
+      )));
     });
   });
 }

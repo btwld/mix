@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../../helpers/testing_utils.dart';
+import '../../../helpers/custom_matchers.dart';
 
 void main() {
   group('IconSpecAttribute', () {
     test('resolve should return an instance of IconSpec', () {
       final attribute = IconSpecAttribute();
-      final resolvedSpec = attribute.resolve(EmptyMixData);
-      expect(resolvedSpec, isA<IconSpec>());
+      expect(attribute, resolvesTo(const IconSpec()));
     });
 
     test('merge should return a new instance of IconSpecAttribute', () {

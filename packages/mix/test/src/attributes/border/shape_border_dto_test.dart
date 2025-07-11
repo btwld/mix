@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../../helpers/custom_matchers.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
@@ -45,18 +46,20 @@ void main() {
           side: BorderSideDto(color: Colors.red, width: 1.0),
         );
 
-        final roundedRectangleBorder = dto.resolve(EmptyMixData);
-
-        final borderRadius =
-            roundedRectangleBorder.borderRadius as BorderRadius;
-
-        expect(borderRadius.topLeft, const Radius.circular(15));
-        expect(borderRadius.topRight, const Radius.circular(20));
-        expect(borderRadius.bottomLeft, const Radius.circular(5));
-        expect(borderRadius.bottomRight, const Radius.circular(10));
-
-        expect(roundedRectangleBorder.side.color, Colors.red);
-        expect(roundedRectangleBorder.side.width, 1.0);
+        expect(
+          dto,
+          resolvesTo(
+            const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15),
+                topRight: Radius.circular(20),
+                bottomLeft: Radius.circular(5),
+                bottomRight: Radius.circular(10),
+              ),
+              side: BorderSide(color: Colors.red, width: 1.0),
+            ),
+          ),
+        );
       },
     );
   });
@@ -86,11 +89,15 @@ void main() {
         eccentricity: 0.5,
       );
 
-      final circleBorder = dto.resolve(EmptyMixData);
-
-      expect(circleBorder.eccentricity, 0.5);
-      expect(circleBorder.side.color, Colors.red);
-      expect(circleBorder.side.width, 1.0);
+      expect(
+        dto,
+        resolvesTo(
+          const CircleBorder(
+            side: BorderSide(color: Colors.red, width: 1.0),
+            eccentricity: 0.5,
+          ),
+        ),
+      );
     });
   });
 
@@ -135,18 +142,20 @@ void main() {
           side: BorderSideDto(color: Colors.red, width: 1.0),
         );
 
-        final beveledRectangleBorder = dto.resolve(EmptyMixData);
-
-        final borderRadius =
-            beveledRectangleBorder.borderRadius as BorderRadius;
-
-        expect(borderRadius.topLeft, const Radius.circular(15));
-        expect(borderRadius.topRight, const Radius.circular(20));
-        expect(borderRadius.bottomLeft, const Radius.circular(5));
-        expect(borderRadius.bottomRight, const Radius.circular(10));
-
-        expect(beveledRectangleBorder.side.color, Colors.red);
-        expect(beveledRectangleBorder.side.width, 1.0);
+        expect(
+          dto,
+          resolvesTo(
+            const BeveledRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15),
+                topRight: Radius.circular(20),
+                bottomLeft: Radius.circular(5),
+                bottomRight: Radius.circular(10),
+              ),
+              side: BorderSide(color: Colors.red, width: 1.0),
+            ),
+          ),
+        );
       },
     );
   });
@@ -170,10 +179,12 @@ void main() {
         side: BorderSideDto(color: Colors.red, width: 1.0),
       );
 
-      final stadiumBorder = dto.resolve(EmptyMixData);
-
-      expect(stadiumBorder.side.color, Colors.red);
-      expect(stadiumBorder.side.width, 1.0);
+      expect(
+        dto,
+        resolvesTo(
+          const StadiumBorder(side: BorderSide(color: Colors.red, width: 1.0)),
+        ),
+      );
     });
   });
 
@@ -223,18 +234,20 @@ void main() {
           side: BorderSideDto(color: Colors.red, width: 1.0),
         );
 
-        final continuousRectangleBorder = dto.resolve(EmptyMixData);
-
-        final borderRadius =
-            continuousRectangleBorder.borderRadius as BorderRadius;
-
-        expect(borderRadius.topLeft, const Radius.circular(15));
-        expect(borderRadius.topRight, const Radius.circular(20));
-        expect(borderRadius.bottomLeft, const Radius.circular(5));
-        expect(borderRadius.bottomRight, const Radius.circular(10));
-
-        expect(continuousRectangleBorder.side.color, Colors.red);
-        expect(continuousRectangleBorder.side.width, 1.0);
+        expect(
+          dto,
+          resolvesTo(
+            const ContinuousRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15),
+                topRight: Radius.circular(20),
+                bottomLeft: Radius.circular(5),
+                bottomRight: Radius.circular(10),
+              ),
+              side: BorderSide(color: Colors.red, width: 1.0),
+            ),
+          ),
+        );
       },
     );
   });
@@ -306,19 +319,19 @@ void main() {
         const stadiumBorderDto = StadiumBorderDto();
 
         expect(
-          roundedRectangleBorderDto.resolve(EmptyMixData),
-          isA<RoundedRectangleBorder>(),
+          roundedRectangleBorderDto,
+          resolvesTo(isA<RoundedRectangleBorder>()),
         );
-        expect(circleBorderDto.resolve(EmptyMixData), isA<CircleBorder>());
+        expect(circleBorderDto, resolvesTo(isA<CircleBorder>()));
         expect(
-          beveledRectangleBorderDto.resolve(EmptyMixData),
-          isA<BeveledRectangleBorder>(),
+          beveledRectangleBorderDto,
+          resolvesTo(isA<BeveledRectangleBorder>()),
         );
         expect(
-          continuousRectangleBorderDto.resolve(EmptyMixData),
-          isA<ContinuousRectangleBorder>(),
+          continuousRectangleBorderDto,
+          resolvesTo(isA<ContinuousRectangleBorder>()),
         );
-        expect(stadiumBorderDto.resolve(EmptyMixData), isA<StadiumBorder>());
+        expect(stadiumBorderDto, resolvesTo(isA<StadiumBorder>()));
       },
     );
   });

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../../helpers/testing_utils.dart';
+import '../../../helpers/custom_matchers.dart';
 
 void main() {
   group('BoxSpecAttribute', () {
@@ -93,32 +93,24 @@ void main() {
         ]),
       );
 
-      final containerSpec = containerSpecAttribute.resolve(EmptyMixData);
-
-      expect(containerSpec.alignment, Alignment.center);
-      expect(containerSpec.clipBehavior, Clip.antiAlias);
-
       expect(
-        containerSpec.constraints,
-        const BoxConstraints(maxWidth: double.infinity, maxHeight: 100),
+        containerSpecAttribute,
+        resolvesTo(BoxSpec(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.only(left: 20, top: 20, right: 20, bottom: 20),
+          margin: const EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 10),
+          constraints: const BoxConstraints(maxWidth: double.infinity, maxHeight: 100),
+          decoration: const BoxDecoration(color: Colors.blue),
+          transform: Matrix4.identity(),
+          clipBehavior: Clip.antiAlias,
+          width: 100,
+          height: 100,
+          modifiers: const WidgetModifiersConfig([
+            OpacityModifierSpec(0.5),
+            SizedBoxModifierSpec(height: 10, width: 10),
+          ]),
+        )),
       );
-      expect(containerSpec.decoration, const BoxDecoration(color: Colors.blue));
-
-      expect(containerSpec.height, 100);
-      expect(
-        containerSpec.margin,
-        const EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 10),
-      );
-      expect(
-        containerSpec.padding,
-        const EdgeInsets.only(left: 20, top: 20, right: 20, bottom: 20),
-      );
-      expect(containerSpec.transform, Matrix4.identity());
-      expect(containerSpec.width, 100);
-      expect(containerSpec.modifiers!.value, [
-        const OpacityModifierSpec(0.5),
-        const SizedBoxModifierSpec(height: 10, width: 10),
-      ]);
     });
 
     // merge()

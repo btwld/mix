@@ -2,22 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../../helpers/testing_utils.dart';
+import '../../../helpers/custom_matchers.dart';
 
 void main() {
   group('StackMixAttribute', () {
     test(
       'of returns default attribute when mix does not have StackMixAttribute',
       () {
-        final mix = MixContext.create(MockBuildContext(), Style());
         const attribute = StackSpecAttribute();
 
-        final resolved = attribute.resolve(mix);
-
-        expect(resolved.alignment, null);
-        expect(resolved.fit, null);
-        expect(resolved.textDirection, null);
-        expect(resolved.clipBehavior, null);
+        expect(
+          attribute,
+          resolvesTo(const StackSpec()),
+        );
       },
     );
 
@@ -28,13 +25,16 @@ void main() {
         textDirection: TextDirection.ltr,
         clipBehavior: Clip.antiAlias,
       );
-      final mix = MixContext.create(MockBuildContext(), Style(attribute));
-      final spec = attribute.resolve(mix);
 
-      expect(spec.alignment, Alignment.center);
-      expect(spec.fit, StackFit.expand);
-      expect(spec.textDirection, TextDirection.ltr);
-      expect(spec.clipBehavior, Clip.antiAlias);
+      expect(
+        attribute,
+        resolvesTo(const StackSpec(
+          alignment: Alignment.center,
+          fit: StackFit.expand,
+          textDirection: TextDirection.ltr,
+          clipBehavior: Clip.antiAlias,
+        )),
+      );
     });
 
     test('merge returns correct StackMixAttribute', () {
@@ -52,12 +52,15 @@ void main() {
       );
       final mergedAttribute = attribute1.merge(attribute2);
 
-      final resolved = mergedAttribute.resolve(EmptyMixData);
-
-      expect(resolved.alignment, Alignment.topLeft);
-      expect(resolved.fit, StackFit.loose);
-      expect(resolved.textDirection, TextDirection.rtl);
-      expect(resolved.clipBehavior, Clip.hardEdge);
+      expect(
+        mergedAttribute,
+        resolvesTo(const StackSpec(
+          alignment: Alignment.topLeft,
+          fit: StackFit.loose,
+          textDirection: TextDirection.rtl,
+          clipBehavior: Clip.hardEdge,
+        )),
+      );
     });
 
     test('props returns correct list of properties', () {

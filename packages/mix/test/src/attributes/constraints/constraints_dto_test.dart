@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/src/attributes/constraints/constraints_dto.dart';
 
-import '../../../helpers/testing_utils.dart';
+import '../../../helpers/custom_matchers.dart';
 
 void main() {
   group('BoxConstraintsDto', () {
@@ -36,36 +36,44 @@ void main() {
     });
     test('resolve returns correct BoxConstraints with default values', () {
       final constraints = BoxConstraintsDto();
-      final resolved = constraints.resolve(EmptyMixData);
 
       expect(constraints, isA<BoxConstraintsDto>());
-      expect(resolved, isA<BoxConstraints>());
-
       expect(constraints.minWidth, isNull);
       expect(constraints.maxWidth, isNull);
       expect(constraints.minHeight, isNull);
       expect(constraints.maxHeight, isNull);
-      expect(resolved.minWidth, 0);
-      expect(resolved.maxWidth, double.infinity);
-      expect(resolved.minHeight, 0);
-      expect(resolved.maxHeight, double.infinity);
+      
+      expect(
+        constraints,
+        resolvesTo(
+          const BoxConstraints(
+            minWidth: 0,
+            maxWidth: double.infinity,
+            minHeight: 0,
+            maxHeight: double.infinity,
+          ),
+        ),
+      );
     });
     test('resolve returns correct BoxConstraints with specific values', () {
       final constraints = BoxConstraintsDto(minWidth: 50, minHeight: 100);
-      final resolved = constraints.resolve(EmptyMixData);
 
       expect(constraints, isA<BoxConstraintsDto>());
       expect(constraints.minWidth, 50);
       expect(constraints.maxWidth, isNull);
       expect(constraints.minHeight, 100);
 
-      expect(resolved, isA<BoxConstraints>());
-      expect(resolved.minWidth, 50);
-      expect(resolved.maxWidth, double.infinity);
-      expect(resolved.minHeight, 100);
-      expect(resolved.maxHeight, double.infinity);
-
-      return const Placeholder();
+      expect(
+        constraints,
+        resolvesTo(
+          const BoxConstraints(
+            minWidth: 50,
+            maxWidth: double.infinity,
+            minHeight: 100,
+            maxHeight: double.infinity,
+          ),
+        ),
+      );
     });
     test('Equality holds when all properties are the same', () {
       final constraints1 = BoxConstraintsDto(minWidth: 50, minHeight: 100);

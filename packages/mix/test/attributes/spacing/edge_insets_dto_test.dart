@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../helpers/custom_matchers.dart';
-import '../../helpers/testing_utils.dart';
 
 void main() {
   group('EdgeInsetsGeometryDto', () {
@@ -100,13 +99,17 @@ void main() {
 
     test('resolve returns EdgeInsets with token values', () {
       final dto = EdgeInsetsDto(top: 10, bottom: 20, left: 30, right: 40);
-      final mix = EmptyMixData;
-      final resolved = dto.resolve(mix);
-      expect(resolved, isA<EdgeInsets>());
-      expect(resolved.top, equals(10));
-      expect(resolved.bottom, equals(20));
-      expect(resolved.left, equals(30));
-      expect(resolved.right, equals(40));
+      expect(
+        dto,
+        resolvesTo(
+          const EdgeInsets.only(
+            top: 10,
+            bottom: 20,
+            left: 30,
+            right: 40,
+          ),
+        ),
+      );
     });
   });
 
@@ -134,13 +137,17 @@ void main() {
         start: 30,
         end: 40,
       );
-      final mix = EmptyMixData;
-      final resolved = dto.resolve(mix);
-      expect(resolved, isA<EdgeInsetsDirectional>());
-      expect(resolved.top, equals(10));
-      expect(resolved.bottom, equals(20));
-      expect(resolved.start, equals(30));
-      expect(resolved.end, equals(40));
+      expect(
+        dto,
+        resolvesTo(
+          const EdgeInsetsDirectional.only(
+            top: 10,
+            bottom: 20,
+            start: 30,
+            end: 40,
+          ),
+        ),
+      );
     });
   });
 

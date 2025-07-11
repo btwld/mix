@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../../../helpers/testing_utils.dart';
+import '../../../../helpers/custom_matchers.dart';
 
 void main() {
   group('DecorationImageDto', () {
@@ -70,14 +70,17 @@ void main() {
 
     test('resolve with default values', () {
       final dto = DecorationImageDto(image: imageProvider);
-      final result = dto.resolve(EmptyMixData);
-
-      expect(result.image, equals(imageProvider));
-      expect(result.alignment, equals(Alignment.center));
-      expect(result.repeat, equals(ImageRepeat.noRepeat));
-      expect(result.filterQuality, equals(FilterQuality.low));
-      expect(result.invertColors, equals(false));
-      expect(result.isAntiAlias, equals(false));
+      
+      const expectedImage = DecorationImage(
+        image: imageProvider,
+        alignment: Alignment.center,
+        repeat: ImageRepeat.noRepeat,
+        filterQuality: FilterQuality.low,
+        invertColors: false,
+        isAntiAlias: false,
+      );
+      
+      expect(dto, resolvesTo(expectedImage));
     });
 
     test('resolve with custom values', () {
@@ -91,16 +94,19 @@ void main() {
         invertColors: true,
         isAntiAlias: true,
       );
-      final result = dto.resolve(EmptyMixData);
-
-      expect(result.image, equals(imageProvider));
-      expect(result.fit, equals(BoxFit.scaleDown));
-      expect(result.alignment, equals(Alignment.bottomCenter));
-      expect(result.centerSlice, equals(const Rect.fromLTRB(5, 10, 15, 20)));
-      expect(result.repeat, equals(ImageRepeat.repeatY));
-      expect(result.filterQuality, equals(FilterQuality.medium));
-      expect(result.invertColors, equals(true));
-      expect(result.isAntiAlias, equals(true));
+      
+      const expectedImage = DecorationImage(
+        image: imageProvider,
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.bottomCenter,
+        centerSlice: Rect.fromLTRB(5, 10, 15, 20),
+        repeat: ImageRepeat.repeatY,
+        filterQuality: FilterQuality.medium,
+        invertColors: true,
+        isAntiAlias: true,
+      );
+      
+      expect(dto, resolvesTo(expectedImage));
     });
 
     test('equality', () {

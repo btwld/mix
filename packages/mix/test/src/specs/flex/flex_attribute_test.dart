@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../../helpers/custom_matchers.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
@@ -33,18 +34,21 @@ void main() {
         clipBehavior: Clip.antiAlias,
         gap: SpaceDto.value(10.0),
       );
-      final mixData = MixContext.create(MockBuildContext(), Style(attribute));
-      final resolvedSpec = attribute.resolve(mixData);
-
-      expect(resolvedSpec.crossAxisAlignment, CrossAxisAlignment.start);
-      expect(resolvedSpec.mainAxisAlignment, MainAxisAlignment.center);
-      expect(resolvedSpec.mainAxisSize, MainAxisSize.max);
-      expect(resolvedSpec.verticalDirection, VerticalDirection.up);
-      expect(resolvedSpec.direction, Axis.horizontal);
-      expect(resolvedSpec.textDirection, TextDirection.rtl);
-      expect(resolvedSpec.textBaseline, TextBaseline.alphabetic);
-      expect(resolvedSpec.clipBehavior, Clip.antiAlias);
-      expect(resolvedSpec.gap, 10.0);
+      
+      expect(
+        attribute,
+        resolvesTo(const FlexSpec(
+          direction: Axis.horizontal,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          verticalDirection: VerticalDirection.up,
+          textDirection: TextDirection.rtl,
+          textBaseline: TextBaseline.alphabetic,
+          clipBehavior: Clip.antiAlias,
+          gap: 10.0,
+        )),
+      );
     });
 
     testWidgets('tokens resolve returns correct FlexSpec', (tester) async {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../helpers/custom_matchers.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
@@ -21,7 +22,7 @@ void main() {
       final dto = StrutStyleDto.value(value);
 
       // Resolves correctly
-      expect(dto.resolve(EmptyMixData), value);
+      expect(dto, resolvesTo(value));
     });
 
     test('ShapeDecoration', () {
@@ -40,7 +41,7 @@ void main() {
       );
 
       expect(dto, isA<ShapeDecorationDto>());
-      expect(dto.resolve(EmptyMixData), value);
+      expect(dto, resolvesTo(value));
     });
 
     test('BoxConstraints toAttribute', () {
@@ -54,7 +55,7 @@ void main() {
       final dto = BoxConstraintsDto.value(value);
 
       expect(dto, isA<BoxConstraintsDto>());
-      expect(dto.resolve(EmptyMixData), value);
+      expect(dto, resolvesTo(value));
     });
 
     test('BoxDecoration toAttribute', () {
@@ -81,7 +82,7 @@ void main() {
       );
 
       expect(dto, isA<BoxDecorationDto>());
-      expect(dto.resolve(EmptyMixData), value);
+      expect(dto, resolvesTo(value));
     });
 
     test('BorderRadiusGeometry', () {
@@ -90,7 +91,7 @@ void main() {
       final dto = BorderRadiusGeometryDto.value(value);
 
       expect(dto, isA<BorderRadiusGeometryDto>());
-      expect(dto.resolve(EmptyMixData), value);
+      expect(dto, resolvesTo(value));
     });
 
     test('BorderSide', () {
@@ -108,7 +109,7 @@ void main() {
       expect(dto.style, BorderStyle.solid);
 
       // Resolves correctly
-      expect(dto.resolve(EmptyMixData), value);
+      expect(dto, resolvesTo(value));
     });
 
     test('BoxBorder', () {
@@ -139,7 +140,7 @@ void main() {
       expect(dto.color, Mix.value(Colors.black));
 
       // Resolves correctly
-      expect(dto.resolve(EmptyMixData), value);
+      expect(dto, resolvesTo(value));
     });
 
     test('BoxShadow', () {
@@ -152,7 +153,7 @@ void main() {
       expect(dto.color, Mix.value(Colors.grey));
 
       // Resolves correctly
-      expect(dto.resolve(EmptyMixData), value);
+      expect(dto, resolvesTo(value));
     });
 
     test('TextStyle ', () {
@@ -179,24 +180,24 @@ void main() {
     final dto = EdgeInsetsGeometryDto.value(value);
 
     expect(dto, isA<EdgeInsetsGeometryDto>());
-    expect(dto.resolve(EmptyMixData), value);
+    expect(dto, resolvesTo(value));
   });
 
   test('Gradient toDto', () {
     const linearGradient = LinearGradient(colors: [Colors.red, Colors.blue]);
     final linearGradientDto = LinearGradientDto.maybeValue(linearGradient)!;
     expect(linearGradientDto, isA<LinearGradientDto>());
-    expect(linearGradientDto.resolve(EmptyMixData), linearGradient);
+    expect(linearGradientDto, resolvesTo(linearGradient));
 
     const radialGradient = RadialGradient(colors: [Colors.red, Colors.blue]);
     final radialGradientDto = RadialGradientDto.maybeValue(radialGradient)!;
     expect(radialGradientDto, isA<RadialGradientDto>());
-    expect(radialGradientDto.resolve(EmptyMixData), radialGradient);
+    expect(radialGradientDto, resolvesTo(radialGradient));
 
     const sweepGradient = SweepGradient(colors: [Colors.red, Colors.blue]);
     final sweepGradientDto = SweepGradientDto.maybeValue(sweepGradient)!;
     expect(sweepGradientDto, isA<SweepGradientDto>());
-    expect(sweepGradientDto.resolve(EmptyMixData), sweepGradient);
+    expect(sweepGradientDto, resolvesTo(sweepGradient));
   });
 
   test('Matrix4 merge', () {
@@ -219,7 +220,9 @@ void main() {
 
     expect(dtos, isA<List<ShadowDto>>());
     expect(dtos.length, equals(shadows.length));
-    expect(dtos.map((e) => e.resolve(EmptyMixData)), equals(shadows));
+    for (int i = 0; i < dtos.length; i++) {
+      expect(dtos[i], resolvesTo(shadows[i]));
+    }
   });
 
   test('List<BoxShadow> toDto', () {
@@ -232,7 +235,9 @@ void main() {
 
     expect(dtos, isA<List<BoxShadowDto>>());
     expect(dtos.length, equals(boxShadows.length));
-    expect(dtos.map((e) => e.resolve(EmptyMixData)), equals(boxShadows));
+    for (int i = 0; i < dtos.length; i++) {
+      expect(dtos[i], resolvesTo(boxShadows[i]));
+    }
   });
 
   test('double toRadius', () {
@@ -248,6 +253,6 @@ void main() {
     final dto = BorderRadiusGeometryDto.value(value);
 
     expect(dto, isA<BorderRadiusGeometryDto>());
-    expect(dto.resolve(EmptyMixData), value);
+    expect(dto, resolvesTo(value));
   });
 }

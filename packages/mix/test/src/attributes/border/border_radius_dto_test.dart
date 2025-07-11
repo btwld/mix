@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../../helpers/custom_matchers.dart';
-import '../../../helpers/testing_utils.dart';
 
 void main() {
   group('BorderRadiusDto', () {
@@ -58,15 +57,15 @@ void main() {
         bottomRight: const Radius.circular(40),
       );
 
-      final resolvedBorderRadius = borderRadius.resolve(EmptyMixData);
-
       expect(
-        resolvedBorderRadius,
-        const BorderRadius.only(
-          topLeft: Radius.circular(10),
-          topRight: Radius.circular(20),
-          bottomLeft: Radius.circular(30),
-          bottomRight: Radius.circular(40),
+        borderRadius,
+        resolvesTo(
+          const BorderRadius.only(
+            topLeft: Radius.circular(10),
+            topRight: Radius.circular(20),
+            bottomLeft: Radius.circular(30),
+            bottomRight: Radius.circular(40),
+          ),
         ),
       );
     });
@@ -161,15 +160,15 @@ void main() {
           bottomEnd: const Radius.circular(40),
         );
 
-        final resolvedBorderRadius = borderRadius.resolve(EmptyMixData);
-
         expect(
-          resolvedBorderRadius,
-          const BorderRadiusDirectional.only(
-            topStart: Radius.circular(10),
-            topEnd: Radius.circular(20),
-            bottomStart: Radius.circular(30),
-            bottomEnd: Radius.circular(40),
+          borderRadius,
+          resolvesTo(
+            const BorderRadiusDirectional.only(
+              topStart: Radius.circular(10),
+              topEnd: Radius.circular(20),
+              bottomStart: Radius.circular(30),
+              bottomEnd: Radius.circular(40),
+            ),
           ),
         );
       },
@@ -228,13 +227,15 @@ void main() {
         style: BorderStyle.solid,
         width: 1.0,
       );
-      final borderSide = attr.resolve(EmptyMixData);
+      
       expect(
-        borderSide,
-        const BorderSide(
-          color: Colors.red,
-          width: 1.0,
-          style: BorderStyle.solid,
+        attr,
+        resolvesTo(
+          const BorderSide(
+            color: Colors.red,
+            width: 1.0,
+            style: BorderStyle.solid,
+          ),
         ),
       );
     });
@@ -275,8 +276,7 @@ void main() {
   group('BorderRadiusDirectionalDto', () {
     test('resolve returns BorderRadiusDirectional with null values', () {
       final dto = BorderRadiusDirectionalDto();
-      final resolved = dto.resolve(EmptyMixData);
-      expect(resolved, BorderRadiusDirectional.zero);
+      expect(dto, resolvesTo(BorderRadiusDirectional.zero));
     });
 
     test('topLeft, topRight, bottomLeft, and bottomRight are always null', () {

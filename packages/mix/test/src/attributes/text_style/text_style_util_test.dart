@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../../helpers/custom_matchers.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
@@ -76,65 +77,56 @@ void main() {
 
     test('color() creates TextStyleDto correctly', () {
       final attribute = textStyle(color: Colors.red);
-      final resolvedValue = attribute.value.resolve(EmptyMixData);
-
-      expect(resolvedValue.color, Colors.red);
+      
+      expect(attribute.value, resolvesTo(const TextStyle(color: Colors.red)));
     });
 
     test('backgroundColor() creates TextStyleDto correctly', () {
       final attribute = textStyle(backgroundColor: Colors.blue);
-      final resolvedValue = attribute.value.resolve(EmptyMixData);
-
-      expect(resolvedValue.backgroundColor, Colors.blue);
+      
+      expect(attribute.value, resolvesTo(const TextStyle(backgroundColor: Colors.blue)));
     });
 
     test('fontFamily() creates TextStyleDto correctly', () {
       final attribute = textStyle(fontFamily: 'Roboto');
-      final resolvedValue = attribute.value.resolve(EmptyMixData);
-
-      expect(resolvedValue.fontFamily, 'Roboto');
+      
+      expect(attribute.value, resolvesTo(const TextStyle(fontFamily: 'Roboto')));
     });
 
     test('fontSize() creates TextStyleDto correctly', () {
       final attribute = textStyle(fontSize: 16.0);
-      final resolvedValue = attribute.value.resolve(EmptyMixData);
-
-      expect(resolvedValue.fontSize, 16.0);
+      
+      expect(attribute.value, resolvesTo(const TextStyle(fontSize: 16.0)));
     });
 
     test('fontWeight() creates TextStyleDto correctly', () {
       final attribute = textStyle.fontWeight.bold();
-      final resolvedValue = attribute.value.resolve(EmptyMixData);
-
-      expect(resolvedValue.fontWeight, FontWeight.bold);
+      
+      expect(attribute.value, resolvesTo(const TextStyle(fontWeight: FontWeight.bold)));
     });
 
     test('fontStyle() creates TextStyleDto correctly', () {
       final attribute = textStyle.fontStyle.italic();
-      final resolvedValue = attribute.value.resolve(EmptyMixData);
-
-      expect(resolvedValue.fontStyle, FontStyle.italic);
+      
+      expect(attribute.value, resolvesTo(const TextStyle(fontStyle: FontStyle.italic)));
     });
 
     test('letterSpacing() creates TextStyleDto correctly', () {
       final attribute = textStyle(letterSpacing: 1.0);
-      final resolvedValue = attribute.value.resolve(EmptyMixData);
-
-      expect(resolvedValue.letterSpacing, 1.0);
+      
+      expect(attribute.value, resolvesTo(const TextStyle(letterSpacing: 1.0)));
     });
 
     test('wordSpacing() creates TextStyleDto correctly', () {
       final attribute = textStyle(wordSpacing: 2.0);
-      final resolvedValue = attribute.value.resolve(EmptyMixData);
-
-      expect(resolvedValue.wordSpacing, 2.0);
+      
+      expect(attribute.value, resolvesTo(const TextStyle(wordSpacing: 2.0)));
     });
 
     test('textBaseline() creates TextStyleDto correctly', () {
       final attribute = textStyle.textBaseline.ideographic();
-      final resolvedValue = attribute.value.resolve(EmptyMixData);
-
-      expect(resolvedValue.textBaseline, TextBaseline.ideographic);
+      
+      expect(attribute.value, resolvesTo(const TextStyle(textBaseline: TextBaseline.ideographic)));
     });
 
     test('shadows() creates TextStyleDto correctly', () {
@@ -172,25 +164,20 @@ void main() {
 
     test('decoration() creates TextStyleDto correctly', () {
       final attribute = textStyle.decoration.underline();
-
-      final resolvedValue = attribute.value.resolve(EmptyMixData);
-
-      expect(resolvedValue.decoration, TextDecoration.underline);
+      
+      expect(attribute.value, resolvesTo(const TextStyle(decoration: TextDecoration.underline)));
     });
 
     test('decorationColor() creates TextStyleDto correctly', () {
       final attribute = textStyle(decorationColor: Colors.green);
-      final resolvedValue = attribute.value.resolve(EmptyMixData);
-
-      expect(resolvedValue.decorationColor, Colors.green);
+      
+      expect(attribute.value, resolvesTo(const TextStyle(decorationColor: Colors.green)));
     });
 
     test('decorationStyle() creates TextStyleDto correctly', () {
       final attribute = textStyle.decorationStyle.dashed();
-
-      final resolvedValue = attribute.value.resolve(EmptyMixData);
-
-      expect(resolvedValue.decorationStyle, TextDecorationStyle.dashed);
+      
+      expect(attribute.value, resolvesTo(const TextStyle(decorationStyle: TextDecorationStyle.dashed)));
     });
 
     test('foreground() creates TextStyleDto correctly', () {
