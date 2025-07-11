@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../../helpers/custom_matchers.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
@@ -23,22 +24,10 @@ void main() {
 
       final merged = attr1.merge(attr2);
 
-      expect(
-        merged.topLeft?.resolve(EmptyMixData),
-        attr2.topLeft?.resolve(EmptyMixData),
-      );
-      expect(
-        merged.topRight?.resolve(EmptyMixData),
-        attr2.topRight?.resolve(EmptyMixData),
-      );
-      expect(
-        merged.bottomLeft?.resolve(EmptyMixData),
-        attr2.bottomLeft?.resolve(EmptyMixData),
-      );
-      expect(
-        merged.bottomRight?.resolve(EmptyMixData),
-        attr2.bottomRight?.resolve(EmptyMixData),
-      );
+      expect(merged.topLeft, resolvesTo(const Radius.circular(25.0)));
+      expect(merged.topRight, resolvesTo(const Radius.circular(30.0)));
+      expect(merged.bottomLeft, resolvesTo(const Radius.circular(35.0)));
+      expect(merged.bottomRight, resolvesTo(const Radius.circular(40.0)));
     });
 
     test('merge should combine two BorderRadiusDto correctly', () {
@@ -55,22 +44,10 @@ void main() {
 
       final mergedBorderRadius = borderRadius1.merge(borderRadius2);
 
-      expect(
-        mergedBorderRadius.topLeft?.resolve(EmptyMixData),
-        const Radius.circular(20),
-      );
-      expect(
-        mergedBorderRadius.topRight?.resolve(EmptyMixData),
-        const Radius.circular(40),
-      );
-      expect(
-        mergedBorderRadius.bottomLeft?.resolve(EmptyMixData),
-        const Radius.circular(10),
-      );
-      expect(
-        mergedBorderRadius.bottomRight?.resolve(EmptyMixData),
-        const Radius.circular(50),
-      );
+      expect(mergedBorderRadius.topLeft, resolvesTo(const Radius.circular(20)));
+      expect(mergedBorderRadius.topRight, resolvesTo(const Radius.circular(40)));
+      expect(mergedBorderRadius.bottomLeft, resolvesTo(const Radius.circular(10)));
+      expect(mergedBorderRadius.bottomRight, resolvesTo(const Radius.circular(50)));
     });
 
     test('resolve should create a BorderRadius with the correct values', () {
@@ -148,22 +125,10 @@ void main() {
 
       final merged = attr1.merge(attr2);
 
-      expect(
-        merged.topStart?.resolve(EmptyMixData),
-        attr2.topStart?.resolve(EmptyMixData),
-      );
-      expect(
-        merged.topEnd?.resolve(EmptyMixData),
-        attr2.topEnd?.resolve(EmptyMixData),
-      );
-      expect(
-        merged.bottomStart?.resolve(EmptyMixData),
-        attr2.bottomStart?.resolve(EmptyMixData),
-      );
-      expect(
-        merged.bottomEnd?.resolve(EmptyMixData),
-        attr2.bottomEnd?.resolve(EmptyMixData),
-      );
+      expect(merged.topStart, resolvesTo(const Radius.circular(25.0)));
+      expect(merged.topEnd, resolvesTo(const Radius.circular(30.0)));
+      expect(merged.bottomStart, resolvesTo(const Radius.circular(35.0)));
+      expect(merged.bottomEnd, resolvesTo(const Radius.circular(40.0)));
     });
 
     test('merge should combine two BorderRadiusDirectionalDto correctly', () {
@@ -180,22 +145,10 @@ void main() {
 
       final mergedBorderRadius = borderRadius1.merge(borderRadius2);
 
-      expect(
-        mergedBorderRadius.topStart?.resolve(EmptyMixData),
-        const Radius.circular(20),
-      );
-      expect(
-        mergedBorderRadius.topEnd?.resolve(EmptyMixData),
-        const Radius.circular(10),
-      );
-      expect(
-        mergedBorderRadius.bottomStart?.resolve(EmptyMixData),
-        const Radius.circular(10),
-      );
-      expect(
-        mergedBorderRadius.bottomEnd?.resolve(EmptyMixData),
-        const Radius.circular(30),
-      );
+      expect(mergedBorderRadius.topStart, resolvesTo(const Radius.circular(20)));
+      expect(mergedBorderRadius.topEnd, resolvesTo(const Radius.circular(10)));
+      expect(mergedBorderRadius.bottomStart, resolvesTo(const Radius.circular(10)));
+      expect(mergedBorderRadius.bottomEnd, resolvesTo(const Radius.circular(30)));
     });
 
     test(
@@ -265,9 +218,9 @@ void main() {
         style: BorderStyle.solid,
         width: 1.0,
       );
-      expect(attr.color?.resolve(EmptyMixData), Colors.red);
-      expect(attr.width?.resolve(EmptyMixData), 1.0);
-      expect(attr.style?.resolve(EmptyMixData), BorderStyle.solid);
+      expect(attr.color, resolvesTo(Colors.red));
+      expect(attr.width, resolvesTo(1.0));
+      expect(attr.style, resolvesTo(BorderStyle.solid));
     });
     test('resolve returns correct BorderSide', () {
       final attr = BorderSideDto(

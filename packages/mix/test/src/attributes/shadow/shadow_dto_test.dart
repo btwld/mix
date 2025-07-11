@@ -9,9 +9,9 @@ void main() {
   group('ShadowDto', () {
     test('Constructor assigns correct properties', () {
       final shadowDto = ShadowDto(
-        blurRadius: const DoubleMix(10.0),
-        color: const ColorMix(Colors.blue),
-        offset: const OffsetMix(Offset(10, 10)),
+        blurRadius: 10.0,
+        color: Colors.blue,
+        offset: const Offset(10, 10),
       );
 
       // MIGRATED: Clean assertions using custom matchers
@@ -22,9 +22,9 @@ void main() {
 
     test('resolve() returns correct instance', () {
       final shadowDto = ShadowDto(
-        blurRadius: const DoubleMix(10.0),
-        color: const ColorMix(Colors.blue),
-        offset: const OffsetMix(Offset(10, 10)),
+        blurRadius: 10.0,
+        color: Colors.blue,
+        offset: const Offset(10, 10),
       );
 
       // MIGRATED: Clean assertion using custom matcher
@@ -38,16 +38,16 @@ void main() {
 
     test('merge() returns correct instance', () {
       final shadowDto = ShadowDto(
-        blurRadius: const DoubleMix(10.0),
-        color: const ColorMix(Colors.blue),
-        offset: const OffsetMix(Offset(10, 10)),
+        blurRadius: 10.0,
+        color: Colors.blue,
+        offset: const Offset(10, 10),
       );
 
       final mergedShadowDto = shadowDto.merge(
         ShadowDto(
-          blurRadius: const DoubleMix(20.0),
-          color: const ColorMix(Colors.red),
-          offset: const OffsetMix(Offset(20, 20)),
+          blurRadius: 20.0,
+          color: Colors.red,
+          offset: const Offset(20, 20),
         ),
       );
 
@@ -61,10 +61,10 @@ void main() {
   group('BoxShadowDto', () {
     test('Constructor assigns correct properties', () {
       final boxShadowDto = BoxShadowDto(
-        color: const ColorMix(Colors.blue),
-        offset: const OffsetMix(Offset(10, 10)),
-        blurRadius: const DoubleMix(10.0),
-        spreadRadius: const DoubleMix(5.0),
+        color: Colors.blue,
+        offset: const Offset(10, 10),
+        blurRadius: 10.0,
+        spreadRadius: 5.0,
       );
 
       // MIGRATED: Clean assertions using custom matchers
@@ -76,10 +76,10 @@ void main() {
 
     test('resolve() returns correct instance', () {
       final boxShadowDto = BoxShadowDto(
-        color: const ColorMix(Colors.blue),
-        offset: const OffsetMix(Offset(10, 10)),
-        blurRadius: const DoubleMix(10.0),
-        spreadRadius: const DoubleMix(5.0),
+        color: Colors.blue,
+        offset: const Offset(10, 10),
+        blurRadius: 10.0,
+        spreadRadius: 5.0,
       );
 
       // MIGRATED: Clean assertion using custom matcher
@@ -94,18 +94,18 @@ void main() {
 
     test('merge() returns correct instance', () {
       final boxShadowDto = BoxShadowDto(
-        color: const ColorMix(Colors.blue),
-        offset: const OffsetMix(Offset(10, 10)),
-        blurRadius: const DoubleMix(10.0),
-        spreadRadius: const DoubleMix(5.0),
+        color: Colors.blue,
+        offset: const Offset(10, 10),
+        blurRadius: 10.0,
+        spreadRadius: 5.0,
       );
 
       final mergedBoxShadowDto = boxShadowDto.merge(
         BoxShadowDto(
-          color: const ColorMix(Colors.red),
-          offset: const OffsetMix(Offset(20, 20)),
-          blurRadius: const DoubleMix(20.0),
-          spreadRadius: const DoubleMix(10.0),
+          color: Colors.red,
+          offset: const Offset(20, 20),
+          blurRadius: 20.0,
+          spreadRadius: 10.0,
         ),
       );
 

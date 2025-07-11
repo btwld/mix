@@ -63,24 +63,24 @@ void main() {
       const isAntiAlias = false;
 
       final result = utility.only(
-        image: Mix.value(image),
-        fit: Mix.value(fit),
-        alignment: Mix.value(alignment),
-        centerSlice: Mix.value(centerSlice),
-        repeat: Mix.value(repeat),
-        filterQuality: Mix.value(filterQuality),
-        invertColors: Mix.value(invertColors),
-        isAntiAlias: Mix.value(isAntiAlias),
+        image: image,
+        fit: fit,
+        alignment: alignment,
+        centerSlice: centerSlice,
+        repeat: repeat,
+        filterQuality: filterQuality,
+        invertColors: invertColors,
+        isAntiAlias: isAntiAlias,
       );
 
-      expect(result.dto?.image, equals(image));
-      expect(result.dto?.fit, equals(fit));
-      expect(result.dto?.alignment, equals(alignment));
-      expect(result.dto?.centerSlice, equals(centerSlice));
-      expect(result.dto?.repeat, equals(repeat));
-      expect(result.dto?.filterQuality, equals(filterQuality));
-      expect(result.dto?.invertColors, equals(invertColors));
-      expect(result.dto?.isAntiAlias, equals(isAntiAlias));
+      expect(result.dto?.image, equals(Prop.value(image)));
+      expect(result.dto?.fit, equals(Prop.value(fit)));
+      expect(result.dto?.alignment, equals(Prop.value(alignment)));
+      expect(result.dto?.centerSlice, equals(Prop.value(centerSlice)));
+      expect(result.dto?.repeat, equals(Prop.value(repeat)));
+      expect(result.dto?.filterQuality, equals(Prop.value(filterQuality)));
+      expect(result.dto?.invertColors, equals(Prop.value(invertColors)));
+      expect(result.dto?.isAntiAlias, equals(Prop.value(isAntiAlias)));
     });
 
     test('call method should create TestAttribute with provided values', () {
@@ -104,14 +104,14 @@ void main() {
         isAntiAlias: isAntiAlias,
       );
 
-      expect(result.dto?.image, equals(image));
-      expect(result.dto?.fit, equals(fit));
-      expect(result.dto?.alignment, equals(alignment));
-      expect(result.dto?.centerSlice, equals(centerSlice));
-      expect(result.dto?.repeat, equals(repeat));
-      expect(result.dto?.filterQuality, equals(filterQuality));
-      expect(result.dto?.invertColors, equals(invertColors));
-      expect(result.dto?.isAntiAlias, equals(isAntiAlias));
+      expect(result.dto?.image, equals(Prop.value(image)));
+      expect(result.dto?.fit, equals(Prop.value(fit)));
+      expect(result.dto?.alignment, equals(Prop.value(alignment)));
+      expect(result.dto?.centerSlice, equals(Prop.value(centerSlice)));
+      expect(result.dto?.repeat, equals(Prop.value(repeat)));
+      expect(result.dto?.filterQuality, equals(Prop.value(filterQuality)));
+      expect(result.dto?.invertColors, equals(Prop.value(invertColors)));
+      expect(result.dto?.isAntiAlias, equals(Prop.value(isAntiAlias)));
     });
 
     test('provider method should create TestAttribute with provided image', () {
@@ -119,7 +119,7 @@ void main() {
 
       final result = utility.provider(image);
 
-      expect(result.dto?.image, equals(image));
+      expect(result.dto?.image, equals(Prop.value(image)));
     });
 
     test('fit method should create TestAttribute with provided fit', () {
@@ -127,7 +127,7 @@ void main() {
 
       final result = utility.fit(fit);
 
-      expect(result.dto?.fit, equals(fit));
+      expect(result.dto?.fit, equals(Prop.value(fit)));
     });
 
     test(
@@ -137,7 +137,7 @@ void main() {
 
         final result = utility.alignment(alignment);
 
-        expect(result.dto?.alignment, equals(alignment));
+        expect(result.dto?.alignment, equals(Prop.value(alignment)));
       },
     );
 
@@ -148,7 +148,7 @@ void main() {
 
         final result = utility.centerSlice(centerSlice);
 
-        expect(result.dto?.centerSlice, equals(centerSlice));
+        expect(result.dto?.centerSlice, equals(Prop.value(centerSlice)));
       },
     );
 
@@ -157,7 +157,7 @@ void main() {
 
       final result = utility.repeat();
 
-      expect(result.dto?.repeat, equals(repeat));
+      expect(result.dto?.repeat, equals(Prop.value(repeat)));
     });
 
     test(
@@ -167,7 +167,7 @@ void main() {
 
         final result = utility.filterQuality(filterQuality);
 
-        expect(result.dto?.filterQuality, equals(filterQuality));
+        expect(result.dto?.filterQuality, equals(Prop.value(filterQuality)));
       },
     );
 
@@ -178,7 +178,7 @@ void main() {
 
         final result = utility.invertColors(invertColors);
 
-        expect(result.dto?.invertColors, equals(invertColors));
+        expect(result.dto?.invertColors, equals(Prop.value(invertColors)));
       },
     );
 
@@ -189,7 +189,7 @@ void main() {
 
         final result = utility.isAntiAlias(isAntiAlias);
 
-        expect(result.dto?.isAntiAlias, equals(isAntiAlias));
+        expect(result.dto?.isAntiAlias, equals(Prop.value(isAntiAlias)));
       },
     );
   });

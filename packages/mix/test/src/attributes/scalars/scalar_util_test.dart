@@ -248,7 +248,7 @@ void main() {
     });
 
     test('beveled() returns correct instance', () {
-      final shapeBorder = utility.beveledRectangle();
+      final shapeBorder = utility.beveled();
 
       expect(shapeBorder.value, isA<BeveledRectangleBorderDto>());
     });

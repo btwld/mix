@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/src/attributes/decoration/image/decoration_image_dto.dart';
+import 'package:mix/mix.dart';
 
 import '../../../../helpers/testing_utils.dart';
 
@@ -31,14 +31,14 @@ void main() {
       );
       final result = DecorationImageDto.value(decorationImage);
       expect(result, isNotNull);
-      expect(result.image, equals(imageProvider));
-      expect(result.fit, equals(BoxFit.cover));
-      expect(result.alignment, equals(Alignment.topLeft));
-      expect(result.centerSlice, equals(const Rect.fromLTRB(10, 20, 30, 40)));
-      expect(result.repeat, equals(ImageRepeat.repeat));
-      expect(result.filterQuality, equals(FilterQuality.high));
-      expect(result.invertColors, equals(true));
-      expect(result.isAntiAlias, equals(true));
+      expect(result.image, equals(Prop.value(imageProvider)));
+      expect(result.fit, equals(const Prop.value(BoxFit.cover)));
+      expect(result.alignment, equals(const Prop.value(Alignment.topLeft)));
+      expect(result.centerSlice, equals(const Prop.value(Rect.fromLTRB(10, 20, 30, 40))));
+      expect(result.repeat, equals(const Prop.value(ImageRepeat.repeat)));
+      expect(result.filterQuality, equals(const Prop.value(FilterQuality.high)));
+      expect(result.invertColors, equals(const Prop.value(true)));
+      expect(result.isAntiAlias, equals(const Prop.value(true)));
     });
 
     test('merge', () {
@@ -55,17 +55,17 @@ void main() {
 
       final mergedDto = dto.merge(otherDto);
 
-      expect(mergedDto.image, equals(imageProvider));
-      expect(mergedDto.fit, equals(BoxFit.fill));
-      expect(mergedDto.alignment, equals(Alignment.bottomRight));
+      expect(mergedDto.image, equals(Prop.value(imageProvider)));
+      expect(mergedDto.fit, equals(Prop.value(BoxFit.fill)));
+      expect(mergedDto.alignment, equals(Prop.value(Alignment.bottomRight)));
       expect(
         mergedDto.centerSlice,
-        equals(const Rect.fromLTRB(50, 60, 70, 80)),
+        equals(Prop.value(const Rect.fromLTRB(50, 60, 70, 80))),
       );
-      expect(mergedDto.repeat, equals(ImageRepeat.repeatX));
-      expect(mergedDto.filterQuality, equals(FilterQuality.low));
-      expect(mergedDto.invertColors, equals(false));
-      expect(mergedDto.isAntiAlias, equals(false));
+      expect(mergedDto.repeat, equals(Prop.value(ImageRepeat.repeatX)));
+      expect(mergedDto.filterQuality, equals(Prop.value(FilterQuality.low)));
+      expect(mergedDto.invertColors, equals(Prop.value(false)));
+      expect(mergedDto.isAntiAlias, equals(Prop.value(false)));
     });
 
     test('resolve with default values', () {
@@ -73,11 +73,11 @@ void main() {
       final result = dto.resolve(EmptyMixData);
 
       expect(result.image, equals(imageProvider));
-      expect(result.alignment, equals(dto.defaultValue.alignment));
-      expect(result.repeat, equals(dto.defaultValue.repeat));
-      expect(result.filterQuality, equals(dto.defaultValue.filterQuality));
-      expect(result.invertColors, equals(dto.defaultValue.invertColors));
-      expect(result.isAntiAlias, equals(dto.defaultValue.isAntiAlias));
+      expect(result.alignment, equals(Alignment.center));
+      expect(result.repeat, equals(ImageRepeat.noRepeat));
+      expect(result.filterQuality, equals(FilterQuality.low));
+      expect(result.invertColors, equals(false));
+      expect(result.isAntiAlias, equals(false));
     });
 
     test('resolve with custom values', () {

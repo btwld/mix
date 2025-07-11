@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../../helpers/attribute_generator.dart';
-import '../../../helpers/testing_utils.dart';
+import '../../../helpers/custom_matchers.dart';
 
 void main() {
   const linearGradient = LinearGradient(colors: Colors.accents);
@@ -35,21 +35,17 @@ void main() {
     });
     test('resolve returns correct BoxDecoration with default values', () {
       final attr = BoxDecorationDto();
-      final decoration = attr.resolve(EmptyMixData);
-      expect(decoration, const BoxDecoration());
-
-      return const Placeholder();
+      expect(attr, resolvesTo(const BoxDecoration()));
     });
     test('resolve returns correct BoxDecoration with specific values', () {
       final attr = BoxDecorationDto(
         color: Colors.red,
         gradient: linearGradientDto,
       );
-      final decoration = attr.resolve(EmptyMixData);
-      expect(decoration.color, Colors.red);
-      expect(decoration.gradient, linearGradient);
-
-      return const Placeholder();
+      expect(attr, resolvesTo(const BoxDecoration(
+        color: Colors.red,
+        gradient: linearGradient,
+      )));
     });
     test('Equality holds when all properties are the same', () {
       final decoration1 = BoxDecorationDto(color: Colors.red);
@@ -75,8 +71,7 @@ void main() {
       const shapeDecoration = ShapeDecoration(shape: CircleBorder());
       final attr = ShapeDecorationDto(shape: CircleBorderDto());
 
-      final decoration = attr.resolve(EmptyMixData);
-      expect(decoration, shapeDecoration);
+      expect(attr, resolvesTo(shapeDecoration));
     });
     test('resolve returns correct ShapeDecoration with specific values', () {
       final boxShadow = RandomGenerator.boxShadow();
@@ -87,17 +82,16 @@ void main() {
         shadows: [BoxShadowDto.value(boxShadow)],
       );
 
-      final resolvedValue = decoration1.resolve(EmptyMixData);
+      expect(decoration1, resolvesTo(ShapeDecoration(
+        shape: const CircleBorder(),
+        gradient: linearGradient,
+        shadows: [boxShadow],
+      )));
 
       expect(decoration1.gradient, linearGradientDto);
       expect(decoration1.color, isNull);
       expect(decoration1.shape, CircleBorderDto());
       expect(decoration1.shadows, [BoxShadowDto.value(boxShadow)]);
-
-      expect(resolvedValue.gradient, linearGradient);
-      expect(resolvedValue.color, isNull);
-      expect(resolvedValue.shape, const CircleBorder());
-      expect(resolvedValue.shadows, [boxShadow]);
     });
     test('Equality holds when all properties are the same', () {
       final decoration1 = ShapeDecorationDto(color: Colors.red);

@@ -91,10 +91,7 @@ void main() {
       expect(copiedSpec.clipBehavior, Clip.antiAlias);
       expect(copiedSpec.width, 250.0);
 
-      expect(
-        copiedSpec.modifiers!.value,
-        const WidgetModifiersConfig([OpacityModifierSpec(1)]).value,
-      );
+      expect(copiedSpec.modifiers!.value, [const OpacityModifierSpec(1)]);
       expect(copiedSpec.height, 150.0);
     });
 
@@ -365,7 +362,7 @@ void main() {
       );
       expect(mergedBoxSpecAttribute.transform, Matrix4.identity());
       expect(mergedBoxSpecAttribute.width, 200);
-      expect(mergedBoxSpecAttribute.modifiers!.value, [
+      expect(mergedBoxSpecAttribute.modifiers!.modifiers, [
         const OpacityModifierSpecAttribute(opacity: 0.5),
         const SizedBoxModifierSpecAttribute(height: 10, width: 100),
       ]);

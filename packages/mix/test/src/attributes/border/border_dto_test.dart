@@ -144,15 +144,15 @@ void main() {
           BoxBorderDto.tryToMerge(borderDto, borderDirectionalDto)
               as BorderDirectionalDto?;
 
-      expect(mergedBorder?.top?.color?.resolve(EmptyMixData), Colors.green);
-      expect(mergedBorder?.top?.width?.resolve(EmptyMixData), 3.0);
-      expect(mergedBorder?.bottom?.color?.resolve(EmptyMixData), Colors.yellow);
-      expect(mergedBorder?.bottom?.width?.resolve(EmptyMixData), 4.0);
+      expect(mergedBorder?.top?.color, resolvesTo(Colors.green));
+      expect(mergedBorder?.top?.width, resolvesTo(3.0));
+      expect(mergedBorder?.bottom?.color, resolvesTo(Colors.yellow));
+      expect(mergedBorder?.bottom?.width, resolvesTo(4.0));
 
-      expect(mergedBorder?.start?.color?.resolve(EmptyMixData), Colors.red);
-      expect(mergedBorder?.start?.width?.resolve(EmptyMixData), 1.0);
-      expect(mergedBorder?.end?.color?.resolve(EmptyMixData), Colors.blue);
-      expect(mergedBorder?.end?.width?.resolve(EmptyMixData), 2.0);
+      expect(mergedBorder?.start?.color, resolvesTo(Colors.red));
+      expect(mergedBorder?.start?.width, resolvesTo(1.0));
+      expect(mergedBorder?.end?.color, resolvesTo(Colors.blue));
+      expect(mergedBorder?.end?.width, resolvesTo(2.0));
     });
   });
 
@@ -191,14 +191,12 @@ void main() {
         BorderSideDto(color: Colors.blue, width: 2.0),
       );
 
-      expect(copied.width?.resolve(EmptyMixData), 2.0);
-      expect(copied.color?.resolve(EmptyMixData), Colors.blue);
-      expect(copied.style?.resolve(EmptyMixData), BorderStyle.solid);
+      expect(copied.width, resolvesTo(2.0));
+      expect(copied.color, resolvesTo(Colors.blue));
+      expect(copied.style, resolvesTo(BorderStyle.solid));
     });
 
     // from
-    // TODO: BorderSideDto.value() constructor doesn't exist
-    /*
     test('from should correctly create a BorderSideDto from a BorderSide', () {
       const borderSide = BorderSide(
         color: Colors.red,
@@ -208,11 +206,10 @@ void main() {
 
       final borderSideDto = BorderSideDto.value(borderSide);
 
-      expect(borderSideDto.width?.resolve(EmptyMixData), borderSide.width);
-      expect(borderSideDto.color?.resolve(EmptyMixData), borderSide.color);
-      expect(borderSideDto.style?.resolve(EmptyMixData), borderSide.style);
+      expect(borderSideDto.width, resolvesTo(borderSide.width));
+      expect(borderSideDto.color, resolvesTo(borderSide.color));
+      expect(borderSideDto.style, resolvesTo(borderSide.style));
     });
-    */
 
     // resolve
     test(

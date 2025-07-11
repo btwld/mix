@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../../helpers/custom_matchers.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
   group('SpaceDto', () {
     test('from value constructor works correctly', () {
       const dto = SpaceDto.value(10.0);
-      final result = dto.resolve(EmptyMixData);
-      expect(result, 10.0);
+      expect(dto, resolvesTo(10.0));
     });
 
     testWidgets('SpaceDto.token resolves using unified resolver system',

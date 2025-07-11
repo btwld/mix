@@ -8,7 +8,7 @@ void main() {
   group('Mixable<T>', () {
     group('Mixable<String>', () {
       test('value constructor works', () {
-        final dto = StringMix('test');
+        final dto = Mix.value('test');
         // MIGRATED: Clean assertion using custom matcher
         expect(dto, resolvesTo('test'));
       });
@@ -16,8 +16,8 @@ void main() {
       // TODO: Add token tests when token resolution is properly set up
 
       test('merge creates composite', () {
-        final dto1 = StringMix('first');
-        final dto2 = StringMix('second');
+        final dto1 = Mix.value('first');
+        final dto2 = Mix.value('second');
 
         final merged = dto1.merge(dto2);
         // MIGRATED: Clean assertions - last value wins in merge
@@ -28,7 +28,7 @@ void main() {
 
     group('Mixable<double>', () {
       test('value constructor works', () {
-        final dto = DoubleMix(42.5);
+        final dto = Mix.value(42.5);
         // MIGRATED: Clean assertion
         expect(dto, resolvesTo(42.5));
       });
@@ -36,8 +36,8 @@ void main() {
       // TODO: Add token tests when token resolution is properly set up
 
       test('merge works correctly', () {
-        final dto1 = DoubleMix(10.0);
-        final dto2 = DoubleMix(20.0);
+        final dto1 = Mix.value(10.0);
+        final dto2 = Mix.value(20.0);
 
         final merged = dto1.merge(dto2);
         // MIGRATED: Clean assertion - last value wins
@@ -48,7 +48,7 @@ void main() {
 
     group('Mixable<FontWeight>', () {
       test('value constructor works', () {
-        final dto = FontWeightMix(FontWeight.bold);
+        final dto = Mix.value(FontWeight.bold);
         // MIGRATED: Clean assertion
         expect(dto, resolvesTo(FontWeight.bold));
       });
@@ -59,8 +59,8 @@ void main() {
 
   group('ColorDto with composite', () {
     test('merge resolution works', () {
-      final dto1 = ColorMix(Colors.red);
-      final dto2 = ColorMix(Colors.blue);
+      final dto1 = Mix.value(Colors.red);
+      final dto2 = Mix.value(Colors.blue);
 
       final merged = dto1.merge(dto2);
       // MIGRATED: Clean assertion - last value wins
@@ -68,8 +68,8 @@ void main() {
     });
 
     test('merge behavior is consistent', () {
-      final dto1 = ColorMix(Colors.red);
-      final dto2 = ColorMix(Colors.blue);
+      final dto1 = Mix.value(Colors.red);
+      final dto2 = Mix.value(Colors.blue);
 
       final merged = dto1.merge(dto2);
       // MIGRATED: Clean assertions
@@ -80,8 +80,8 @@ void main() {
 
   group('RadiusDto with composite', () {
     test('merge resolution works', () {
-      final dto1 = RadiusMix(const Radius.circular(5));
-      final dto2 = RadiusMix(const Radius.circular(10));
+      final dto1 = Mix.value(const Radius.circular(5));
+      final dto2 = Mix.value(const Radius.circular(10));
 
       final merged = dto1.merge(dto2);
       // MIGRATED: Clean assertion - last value wins
@@ -90,7 +90,7 @@ void main() {
 
     test('fromValue works', () {
       const radius = Radius.circular(15);
-      final dto = RadiusMix(radius);
+      final dto = Mix.value(radius);
       // MIGRATED: Clean assertion
       expect(dto, resolvesTo(radius));
     });
