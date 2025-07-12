@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -163,8 +161,8 @@ void main() {
           t,
         ),
       );
-      expect(lerpedSpec.box.width, lerpDouble(300, 400, t));
-      expect(lerpedSpec.box.height, lerpDouble(200, 300, t));
+      expect(lerpedSpec.box.width, MixHelpers.lerpDouble(300, 400, t));
+      expect(lerpedSpec.box.height, MixHelpers.lerpDouble(200, 300, t));
 
       expect(lerpedSpec.flex.mainAxisAlignment, MainAxisAlignment.end);
       expect(lerpedSpec.flex.crossAxisAlignment, CrossAxisAlignment.end);

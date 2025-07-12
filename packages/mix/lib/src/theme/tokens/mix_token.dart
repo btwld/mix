@@ -64,7 +64,7 @@ class StyledTokens<T extends MixableToken<V>, V> {
   }
 
   StyledTokens<T, V> merge(StyledTokens<T, V> other) {
-    final newMap = Map<T, V>.from(_map);
+    final newMap = Map<T, V>.of(_map);
 
     newMap.addAll(other._map);
 

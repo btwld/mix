@@ -29,7 +29,8 @@ void main() {
       test('modify returns correct value', () {
         final attribute = textDirective.uppercase();
         final directive = attribute.directive!;
-        expect(directive.resolve(EmptyMixData).apply('hello'), 'HELLO');
+        final resolved = directive.resolve(EmptyMixData);
+        expect(resolved.apply('hello'), 'HELLO');
       });
     });
 
@@ -37,7 +38,8 @@ void main() {
       test('modify returns correct value', () {
         final attribute = $text.capitalize();
         final directive = attribute.directive!;
-        expect(directive.resolve(EmptyMixData).apply('hello'), 'Hello');
+        final resolved = directive.resolve(EmptyMixData);
+        expect(resolved.apply('hello'), 'Hello');
       });
     });
 
@@ -45,7 +47,8 @@ void main() {
       test('modify returns correct value', () {
         final attribute = $text.lowercase();
         final directive = attribute.directive!;
-        expect(directive.resolve(EmptyMixData).apply('HELLO'), 'hello');
+        final resolved = directive.resolve(EmptyMixData);
+        expect(resolved.apply('HELLO'), 'hello');
       });
     });
 
@@ -53,7 +56,8 @@ void main() {
       test('modify returns correct value', () {
         final attribute = $text.sentenceCase();
         final directive = attribute.directive!;
-        expect(directive.resolve(EmptyMixData).apply('hello'), 'Hello');
+        final resolved = directive.resolve(EmptyMixData);
+        expect(resolved.apply('hello'), 'Hello');
       });
     });
 
@@ -61,7 +65,8 @@ void main() {
       test('modify returns correct value', () {
         final attribute = $text.titleCase();
         final directive = attribute.directive!;
-        expect(directive.resolve(EmptyMixData).apply('hello'), 'Hello');
+        final resolved = directive.resolve(EmptyMixData);
+        expect(resolved.apply('hello'), 'Hello');
       });
     });
 

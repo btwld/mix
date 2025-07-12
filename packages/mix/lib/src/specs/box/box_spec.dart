@@ -647,13 +647,16 @@ class BoxSpecTween extends Tween<BoxSpec?> {
 }
 
 // Helper methods for converting Flutter types to DTOs
-EdgeInsetsGeometryDto? _convertEdgeInsetsGeometry(EdgeInsetsGeometry? edgeInsets) {
+EdgeInsetsGeometryDto? _convertEdgeInsetsGeometry(
+  EdgeInsetsGeometry? edgeInsets,
+) {
   if (edgeInsets == null) return null;
   if (edgeInsets is EdgeInsets) {
     return EdgeInsetsDto.value(edgeInsets);
   } else if (edgeInsets is EdgeInsetsDirectional) {
     return EdgeInsetsDirectionalDto.value(edgeInsets);
   }
+
   return null;
 }
 
@@ -664,5 +667,6 @@ DecorationDto? _convertDecoration(Decoration? decoration) {
   } else if (decoration is ShapeDecoration) {
     return ShapeDecorationDto.value(decoration);
   }
+
   return null;
 }

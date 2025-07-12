@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -179,8 +177,8 @@ void main() {
         ).lerp(t),
       );
 
-      expect(lerpedSpec.width, lerpDouble(300, 400, t));
-      expect(lerpedSpec.height, lerpDouble(200, 300, t));
+      expect(lerpedSpec.width, MixHelpers.lerpDouble(300, 400, t));
+      expect(lerpedSpec.height, MixHelpers.lerpDouble(200, 300, t));
 
       expect(
         lerpedSpec.transform,

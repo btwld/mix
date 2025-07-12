@@ -23,14 +23,15 @@ void main() {
       expect(strutStyleUtility(), isA<UtilityTestAttribute>());
       expect(strutStyle.value, isA<StrutStyleDto>());
 
-      final resolved = strutStyle.value.resolve(EmptyMixData);
-      expect(resolved.fontFamily, 'Roboto');
-      expect(resolved.fontSize, 24.0);
-      expect(resolved.height, 2.0);
-      expect(resolved.leading, 1.0);
-      expect(resolved.fontWeight, FontWeight.bold);
-      expect(resolved.fontStyle, FontStyle.italic);
-      expect(resolved.forceStrutHeight, true);
+      expect(strutStyle.value, resolvesTo(const StrutStyle(
+        fontFamily: 'Roboto',
+        fontSize: 24.0,
+        height: 2.0,
+        leading: 1.0,
+        fontWeight: FontWeight.bold,
+        fontStyle: FontStyle.italic,
+        forceStrutHeight: true,
+      )));
     });
 
     test('fontFamily', () {

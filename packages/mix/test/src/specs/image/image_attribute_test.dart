@@ -48,7 +48,7 @@ void main() {
 
       expect(mergedAttribute.width, 150);
       expect(mergedAttribute.height, 250);
-      expect(mergedAttribute.color, Mix.value(Colors.blue));
+      expect(mergedAttribute.color, Prop.value(Colors.blue));
       expect(mergedAttribute.repeat, ImageRepeat.noRepeat);
       expect(mergedAttribute.fit, BoxFit.fill);
     });

@@ -66,33 +66,29 @@ void main() {
       );
 
       expect(attribute.value, isA<RadialGradientDto>());
-      expect(attribute.resolve(EmptyMixData), isA<RadialGradient>());
+      expect(attribute, resolvesTo(isA<RadialGradient>()));
     });
 
     // colors
     test('.colors', () {
       final colors = [Colors.red, Colors.blue];
-      final colorsDto = colors.map(Mix.value).toList();
+      final colorsDto = colors.map(Prop.value).toList();
 
       final attribute = radialUtility(colors: colors);
-
-      final resolvedGradient = attribute.resolve(EmptyMixData);
       final dto = attribute.value;
 
       expect(dto.colors, colorsDto);
-      expect(resolvedGradient.colors, colors);
+      expect(attribute, resolvesTo(RadialGradient(colors: colors)));
     });
 
     // stops
     test('.stops', () {
       final stops = [0.0, 0.5];
       final attribute = radialUtility(stops: stops);
-
-      final resolvedGradient = attribute.resolve(EmptyMixData);
       final dto = attribute.value;
 
       expect(dto.stops, resolvesTo(stops));
-      expect(resolvedGradient.stops, stops);
+      expect(attribute, resolvesTo(RadialGradient(colors: [], stops: stops)));
     });
 
     // center
@@ -100,25 +96,21 @@ void main() {
       const center = Alignment.center;
       final attribute = radialUtility(center: center);
       final attributeFn = radialUtility.center.center();
-
-      final resolvedGradient = attribute.resolve(EmptyMixData);
       final dto = attribute.value;
 
       expect(attribute, attributeFn);
       expect(dto.center, resolvesTo(center));
-      expect(resolvedGradient.center, center);
+      expect(attribute, resolvesTo(RadialGradient(colors: [], center: center)));
     });
 
     // radius
     test('.radius', () {
       const radius = 20.0;
       final attribute = radialUtility(radius: radius);
-
-      final resolvedGradient = attribute.resolve(EmptyMixData);
       final dto = attribute.value;
 
       expect(dto.radius, resolvesTo(radius));
-      expect(resolvedGradient.radius, radius);
+      expect(attribute, resolvesTo(RadialGradient(colors: [], radius: radius)));
     });
 
     // focal
@@ -126,25 +118,21 @@ void main() {
       const focal = Alignment.center;
       final attribute = radialUtility.focal(focal);
       final attributeFn = radialUtility.focal.center();
-
-      final resolvedGradient = attribute.resolve(EmptyMixData);
       final dto = attribute.value;
 
       expect(attribute, attributeFn);
       expect(dto.focal, resolvesTo(focal));
-      expect(resolvedGradient.focal, focal);
+      expect(attribute, resolvesTo(RadialGradient(colors: [], focal: focal)));
     });
 
     // focalRadius
     test('.focalRadius', () {
       const focalRadius = 10.0;
       final attribute = radialUtility(focalRadius: focalRadius);
-
-      final resolvedGradient = attribute.resolve(EmptyMixData);
       final dto = attribute.value;
 
       expect(dto.focalRadius, resolvesTo(focalRadius));
-      expect(resolvedGradient.focalRadius, focalRadius);
+      expect(attribute, resolvesTo(RadialGradient(colors: [], focalRadius: focalRadius)));
     });
 
     // tileMode
@@ -199,7 +187,7 @@ void main() {
       final resolvedGradient = attribute.resolve(EmptyMixData);
       final dto = attribute.value;
 
-      expect(dto.colors, resolvesTo(colors.map(Mix.value).toList()));
+      expect(dto.colors, resolvesTo(colors.map(Prop.value).toList()));
       expect(dto.stops, resolvesTo(stops));
       expect(dto.center, resolvesTo(center));
       expect(dto.radius, resolvesTo(radius));
@@ -253,13 +241,13 @@ void main() {
       );
 
       expect(attribute.value, isA<LinearGradientDto>());
-      expect(attribute.resolve(EmptyMixData), isA<LinearGradient>());
+      expect(attribute, resolvesTo(isA<LinearGradient>()));
     });
 
     // colors
     test('.colors', () {
       final colors = [Colors.red, Colors.blue];
-      final colorsDto = colors.map(Mix.value).toList();
+      final colorsDto = colors.map(Prop.value).toList();
 
       final attribute = linearUtility(colors: colors);
 
@@ -358,7 +346,7 @@ void main() {
       final resolvedGradient = attribute.resolve(EmptyMixData);
       final dto = attribute.value;
 
-      expect(dto.colors, resolvesTo(colors.map(Mix.value).toList()));
+      expect(dto.colors, resolvesTo(colors.map(Prop.value).toList()));
       expect(dto.stops, resolvesTo(stops));
       expect(dto.begin, resolvesTo(begin));
       expect(dto.end, resolvesTo(end));
@@ -384,7 +372,7 @@ void main() {
       final attribute = sweepUtility.as(gradient);
 
       expect(attribute.value, isA<SweepGradientDto>());
-      expect(attribute.resolve(EmptyMixData), isA<SweepGradient>());
+      expect(attribute, resolvesTo(isA<SweepGradient>()));
     });
 
     test('.call', () {
@@ -407,13 +395,13 @@ void main() {
       );
 
       expect(attribute.value, isA<SweepGradientDto>());
-      expect(attribute.resolve(EmptyMixData), isA<SweepGradient>());
+      expect(attribute, resolvesTo(isA<SweepGradient>()));
     });
 
     // colors
     test('.colors', () {
       final colors = [Colors.red, Colors.blue];
-      final colorsDto = colors.map(Mix.value).toList();
+      final colorsDto = colors.map(Prop.value).toList();
 
       final attribute = sweepUtility(colors: colors);
 
@@ -523,7 +511,7 @@ void main() {
       final resolvedGradient = attribute.resolve(EmptyMixData);
       final dto = attribute.value;
 
-      expect(dto.colors, resolvesTo(colors.map(Mix.value).toList()));
+      expect(dto.colors, resolvesTo(colors.map(Prop.value).toList()));
       expect(dto.stops, resolvesTo(stops));
       expect(dto.center, resolvesTo(center));
       expect(dto.startAngle, resolvesTo(startAngle));

@@ -104,7 +104,7 @@ void main() {
       final dto = BorderSideDto.value(value);
 
       expect(dto, isA<BorderSideDto>());
-      expect(dto.color, Mix.value(Colors.blue));
+      expect(dto.color, resolvesTo(Colors.blue));
       expect(dto.width, resolvesTo(2.0));
       expect(dto.style, resolvesTo(BorderStyle.solid));
 
@@ -137,7 +137,7 @@ void main() {
 
       expect(dto, isA<BoxShadowDto>());
       expect(dto.blurRadius, resolvesTo(10.0));
-      expect(dto.color, Mix.value(Colors.black));
+      expect(dto.color, resolvesTo(Colors.black));
 
       // Resolves correctly
       expect(dto, resolvesTo(value));
@@ -150,7 +150,7 @@ void main() {
 
       expect(dto, isA<BoxShadowDto>());
       expect(dto.blurRadius, resolvesTo(5.0));
-      expect(dto.color, Mix.value(Colors.grey));
+      expect(dto.color, resolvesTo(Colors.grey));
 
       // Resolves correctly
       expect(dto, resolvesTo(value));
@@ -167,11 +167,7 @@ void main() {
 
       expect(dto, isA<TextStyleDto>());
 
-      // Resolve and compare individual properties to avoid Flutter beta bug
-      final resolved = dto.resolve(EmptyMixData);
-      expect(resolved.color, value.color);
-      expect(resolved.fontSize, value.fontSize);
-      expect(resolved.fontWeight, value.fontWeight);
+      expect(dto, resolvesTo(value));
     });
   });
 

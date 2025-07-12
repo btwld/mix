@@ -44,33 +44,34 @@ void main() {
         foreground: yellowPaint,
       );
 
-      final resolvedValue = attr.value.resolve(EmptyMixData);
+      // Test the complete style using resolvesTo matcher
+      expect(attr.value, resolvesTo(const TextStyle(
+        fontWeight: FontWeight.bold,
+        fontStyle: FontStyle.italic,
+        fontSize: 16.0,
+        letterSpacing: 1.0,
+        wordSpacing: 2.0,
+        textBaseline: TextBaseline.ideographic,
+        shadows: [
+          Shadow(
+            color: Colors.black,
+            offset: Offset(1.0, 1.0),
+            blurRadius: 1.0,
+          ),
+        ],
+        color: Colors.red,
+        backgroundColor: Colors.blue,
+        fontFeatures: [FontFeature.alternative(4)],
+        decoration: TextDecoration.underline,
+        decorationColor: Colors.green,
+        decorationStyle: TextDecorationStyle.dashed,
+        fontVariations: [FontVariation('wght', 900)],
+        debugLabel: 'debugLabel',
+        height: 2.0,
+      )));
+      
+      // Test paint attributes separately since they can't be compared in const
       final resolvedWithPaint = attrWithPaint.value.resolve(EmptyMixData);
-
-      expect(resolvedValue.fontWeight, FontWeight.bold);
-      expect(resolvedValue.fontStyle, FontStyle.italic);
-      expect(resolvedValue.fontSize, 16.0);
-      expect(resolvedValue.letterSpacing, 1.0);
-      expect(resolvedValue.wordSpacing, 2.0);
-      expect(resolvedValue.textBaseline, TextBaseline.ideographic);
-      expect(resolvedValue.shadows?.length, 1);
-      expect(resolvedValue.shadows?.first.blurRadius, 1.0);
-      expect(resolvedValue.shadows?.first.color, Colors.black);
-      expect(resolvedValue.shadows?.first.offset, const Offset(1.0, 1.0));
-      expect(resolvedValue.color, Colors.red);
-      expect(resolvedValue.backgroundColor, Colors.blue);
-      expect(resolvedValue.fontFeatures?.length, 1);
-      expect(
-        resolvedValue.fontFeatures?.first,
-        const FontFeature.alternative(4),
-      );
-      expect(resolvedValue.decoration, TextDecoration.underline);
-      expect(resolvedValue.decorationColor, Colors.green);
-      expect(resolvedValue.decorationStyle, TextDecorationStyle.dashed);
-      expect(resolvedValue.fontVariations, [const FontVariation('wght', 900)]);
-
-      expect(resolvedValue.debugLabel, 'debugLabel');
-      expect(resolvedValue.height, 2.0);
       expect(resolvedWithPaint.foreground, yellowPaint);
       expect(resolvedWithPaint.background, purplePaint);
     });
@@ -139,13 +140,9 @@ void main() {
         shadows: [shadow],
       );
 
-      final resolved = attribute.value.resolve(EmptyMixData);
-
-      expect(resolved.shadows?.length, 1);
-      expect(resolved.shadows?.first.blurRadius, 1.0);
-      expect(resolved.shadows?.first.color, Colors.black);
-      expect(resolved.shadows?.first.offset, const Offset(1.0, 1.0));
-      expect(resolved.shadows?.first, shadow);
+      expect(attribute.value, resolvesTo(const TextStyle(
+        shadows: [shadow],
+      )));
     });
 
     test('fontFeatures() creates TextStyleDto correctly', () {
@@ -153,13 +150,9 @@ void main() {
         const FontFeature.alternative(4),
       ]);
 
-      final resolvedValue = attribute.value.resolve(EmptyMixData);
-
-      expect(resolvedValue.fontFeatures?.length, 1);
-      expect(
-        resolvedValue.fontFeatures?.first,
-        const FontFeature.alternative(4),
-      );
+      expect(attribute.value, resolvesTo(const TextStyle(
+        fontFeatures: [FontFeature.alternative(4)],
+      )));
     });
 
     test('decoration() creates TextStyleDto correctly', () {
@@ -205,9 +198,9 @@ void main() {
         ],
       );
 
-      final resolvedValue = attribute.value.resolve(EmptyMixData);
-
-      expect(resolvedValue.fontVariations, [const FontVariation('wght', 900)]);
+      expect(attribute.value, resolvesTo(const TextStyle(
+        fontVariations: [FontVariation('wght', 900)],
+      )));
     });
   });
 }

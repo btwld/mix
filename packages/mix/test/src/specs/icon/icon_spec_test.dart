@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -63,7 +61,7 @@ void main() {
       final lerpedSpec = spec1.lerp(spec2, t);
 
       expect(lerpedSpec.color, Color.lerp(Colors.red, Colors.blue, t));
-      expect(lerpedSpec.size, lerpDouble(20.0, 30.0, t));
+      expect(lerpedSpec.size, MixHelpers.lerpDouble(20.0, 30.0, t));
     });
 
     test('IconSpec.empty() constructor', () {
@@ -102,7 +100,7 @@ void main() {
 
       final lerpedSpec = tween.lerp(0.5);
       expect(lerpedSpec.color, Color.lerp(Colors.red, Colors.blue, 0.5));
-      expect(lerpedSpec.size, lerpDouble(20.0, 30.0, 0.5));
+      expect(lerpedSpec.size, MixHelpers.lerpDouble(20.0, 30.0, 0.5));
     });
   });
 
@@ -123,7 +121,7 @@ void main() {
       final attr = util.attributeValue!;
 
       expect(util, isA<StyleElement>());
-      expect(attr.color, Mix.value(Colors.red));
+      expect(attr.color, Prop.value(Colors.red));
       expect(attr.size, 24);
       expect(attr.weight, 500);
       expect(attr.grade, 200);
@@ -136,7 +134,7 @@ void main() {
 
       final iconAttribute = style.styles.attributeOfType<IconSpecAttribute>();
 
-      expect(iconAttribute?.color, Mix.value(Colors.red));
+      expect(iconAttribute?.color, Prop.value(Colors.red));
       expect(iconAttribute?.size, 24);
       expect(iconAttribute?.weight, 500);
       expect(iconAttribute?.grade, 200);
@@ -201,7 +199,7 @@ void main() {
       final iconAttribute2 = icon.size(48);
 
       expect(iconAttribute.size, 24);
-      expect(iconAttribute.color, Mix.value(Colors.red));
+      expect(iconAttribute.color, Prop.value(Colors.red));
       expect(iconAttribute.weight, 500);
 
       expect(iconAttribute2.size, 48);

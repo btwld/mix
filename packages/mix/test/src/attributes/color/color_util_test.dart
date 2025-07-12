@@ -642,11 +642,11 @@ void main() {
       expectColor(complementColor, const Color.fromARGB(255, 54, 231, 244));
     });
 
-    test('Mixable.value() should return the correct Mixable<Color>', () {
+    test('Prop.value() should return the correct Prop<Color>', () {
       const color = Colors.blue;
-      final colorDto = Mix.value(color);
+      final colorProp = Prop.value(color);
 
-      expect(colorDto, equals(Mix.value(color)));
+      expect(colorProp, equivalentTo(Prop.value(color)));
     });
   });
 }

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+
+import '../../../helpers/custom_matchers.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../../helpers/attribute_generator.dart';
-import '../../../helpers/custom_matchers.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
@@ -67,7 +68,7 @@ void main() {
           refBoxDecoration.boxShadow?.map((e) => BoxShadowDto.value(e)).toList(),
         ),
       );
-      expect(result.value.color, equals(Mix.value(refBoxDecoration.color!)));
+      expect(result.value.color, resolvesTo(refBoxDecoration.color!));
       expect(
         result.value.gradient,
         equals(
@@ -81,7 +82,7 @@ void main() {
     test('color setting', () {
       final result = boxDecoration.color(Colors.red);
 
-      expect(result.value.color, equals(Mix.value(Colors.red)));
+      expect(result.value.color, resolvesTo(Colors.red));
     });
 
     test('shape setting', () {
@@ -143,10 +144,7 @@ void main() {
 
     test('elevation setting', () {
       final result = boxDecoration.elevation(9);
-      final boxShadows = result.value.boxShadow?.map(
-        (e) => e.resolve(EmptyMixData),
-      );
-      expect(boxShadows, equals(kElevationToShadow[9]!));
+      expect(result.value.boxShadow, resolvesTo(kElevationToShadow[9]!));
     });
   });
 
@@ -173,7 +171,7 @@ void main() {
         shadows: const [boxShadow],
       );
 
-      expect(result.value.color, equals(Mix.value(Colors.blue)));
+      expect(result.value.color, resolvesTo(Colors.blue));
       expect(
         result.value.gradient,
         equals(LinearGradientDto.maybeValue(linearGradient)),
@@ -185,7 +183,7 @@ void main() {
     test('color() returns correct instance', () {
       final result = shapeDecoration.color(Colors.blue);
 
-      expect(result.value.color, equals(Mix.value(Colors.blue)));
+      expect(result.value.color, resolvesTo(Colors.blue));
     });
 
     // gradient()

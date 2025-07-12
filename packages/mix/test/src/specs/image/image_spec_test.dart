@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -43,8 +41,8 @@ void main() {
       );
       final lerpSpec = spec1.lerp(spec2, 0.5);
 
-      expect(lerpSpec.width, lerpDouble(100, 150, 0.5));
-      expect(lerpSpec.height, lerpDouble(200, 250, 0.5));
+      expect(lerpSpec.width, MixHelpers.lerpDouble(100, 150, 0.5));
+      expect(lerpSpec.height, MixHelpers.lerpDouble(200, 250, 0.5));
       expect(lerpSpec.color, Color.lerp(Colors.red, Colors.blue, 0.5));
       expect(lerpSpec.repeat, ImageRepeat.noRepeat);
       expect(lerpSpec.fit, BoxFit.fill);
@@ -135,7 +133,7 @@ void main() {
       expect(util, isA<StyleElement>());
       expect(attr.width, 100);
       expect(attr.height, 200);
-      expect(attr.color, Mix.value(Colors.red));
+      expect(attr.color, Prop.value(Colors.red));
       expect(attr.fit, BoxFit.cover);
 
       final style = Style(util);
@@ -144,7 +142,7 @@ void main() {
 
       expect(imageAttribute?.width, 100);
       expect(imageAttribute?.height, 200);
-      expect(imageAttribute?.color, Mix.value(Colors.red));
+      expect(imageAttribute?.color, Prop.value(Colors.red));
       expect(imageAttribute?.fit, BoxFit.cover);
 
       final mixData = style.of(MockBuildContext());
@@ -201,7 +199,7 @@ void main() {
       final imageAttribute2 = image.width(200);
 
       expect(imageAttribute.width, 100);
-      expect(imageAttribute.color, Mix.value(Colors.red));
+      expect(imageAttribute.color, Prop.value(Colors.red));
       expect(imageAttribute.fit, BoxFit.cover);
 
       expect(imageAttribute2.width, 200);

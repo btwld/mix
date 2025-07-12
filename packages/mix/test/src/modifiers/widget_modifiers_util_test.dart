@@ -46,9 +46,8 @@ void main() {
 
     test('default flexible creates FlexibleModifierUtility correctly', () {
       final flexibleModifier = flexible();
-      final widget = flexibleModifier.value
-          .resolve(EmptyMixData)
-          .build(const Empty()) as Flexible;
+      final resolved = flexibleModifier.value.resolve(EmptyMixData);
+      final widget = resolved.build(const Empty()) as Flexible;
 
       expect(flexibleModifier.value.fit, null);
       expect(widget, isA<Flexible>());
@@ -98,44 +97,34 @@ void main() {
     test('clipOval creates ClipOvalModifier correctly', () {
       final clipOvalModifier = clipOval();
 
-      expect(
-        clipOvalModifier.value.resolve(EmptyMixData).build(const Empty()),
-        isA<ClipOval>(),
-      );
+      final resolved = clipOvalModifier.value.resolve(EmptyMixData);
+      expect(resolved.build(const Empty()), isA<ClipOval>());
     });
     test('clipPath creates ClipPathModifier correctly', () {
       final clipPathModifier = clipPath();
 
-      expect(
-        clipPathModifier.value.resolve(EmptyMixData).build(const Empty()),
-        isA<ClipPath>(),
-      );
+      final resolved = clipPathModifier.value.resolve(EmptyMixData);
+      expect(resolved.build(const Empty()), isA<ClipPath>());
     });
 
     // clipTriangle
     test('clipTriangle creates ClipTriangleModifier correctly', () {
       final clipTriangleModifier = clipTriangle();
 
-      expect(
-        clipTriangleModifier.value.resolve(EmptyMixData).build(const Empty()),
-        isA<ClipPath>(),
-      );
+      final resolved = clipTriangleModifier.value.resolve(EmptyMixData);
+      expect(resolved.build(const Empty()), isA<ClipPath>());
     });
 
     test('intrinsicHeight creates IntrinsicHeightModifier correctly', () {
-      final widget = intrinsicHeight()
-          .value
-          .resolve(EmptyMixData)
-          .build(const Empty()) as IntrinsicHeight;
+      final resolved = intrinsicHeight().value.resolve(EmptyMixData);
+      final widget = resolved.build(const Empty()) as IntrinsicHeight;
 
       expect(widget, isA<IntrinsicHeight>());
     });
 
     test('intrinsicWidth creates IntrinsicWidthModifier correctly', () {
-      final widget = intrinsicWidth()
-          .value
-          .resolve(EmptyMixData)
-          .build(const Empty()) as IntrinsicWidth;
+      final resolved = intrinsicWidth().value.resolve(EmptyMixData);
+      final widget = resolved.build(const Empty()) as IntrinsicWidth;
 
       expect(widget, isA<IntrinsicWidth>());
     });
@@ -143,10 +132,8 @@ void main() {
     test('clipRect creates ClipRectModifier correctly', () {
       final clipRectModifier = clipRect();
 
-      expect(
-        clipRectModifier.value.resolve(EmptyMixData).build(const Empty()),
-        isA<ClipRect>(),
-      );
+      final resolved = clipRectModifier.value.resolve(EmptyMixData);
+      expect(resolved.build(const Empty()), isA<ClipRect>());
     });
 
     test('visibility creates VisibilityModifier correctly', () {
@@ -162,9 +149,8 @@ void main() {
     test('sizedBox creates SizedBoxModifier correctly', () {
       final sizedBoxModifier = sizedBox(height: 100, width: 100);
 
-      final widget = sizedBoxModifier.value
-          .resolve(EmptyMixData)
-          .build(const Empty()) as SizedBox;
+      final resolved = sizedBoxModifier.value.resolve(EmptyMixData);
+      final widget = resolved.build(const Empty()) as SizedBox;
 
       expect(widget.width, 100);
       expect(widget.height, 100);
@@ -178,9 +164,8 @@ void main() {
           widthFactor: 0.5,
         );
 
-        final widget = fractionallySizedBoxModifier.value
-            .resolve(EmptyMixData)
-            .build(const Empty()) as FractionallySizedBox;
+        final resolved = fractionallySizedBoxModifier.value.resolve(EmptyMixData);
+        final widget = resolved.build(const Empty()) as FractionallySizedBox;
 
         expect(widget.widthFactor, 0.5);
         expect(widget.heightFactor, 0.5);
@@ -191,9 +176,8 @@ void main() {
     test('align creates AlignModifier correctly', () {
       final alignModifier = align(alignment: Alignment.center);
 
-      final widget = alignModifier.value
-          .resolve(EmptyMixData)
-          .build(const Empty()) as Align;
+      final resolved = alignModifier.value.resolve(EmptyMixData);
+      final widget = resolved.build(const Empty()) as Align;
 
       expect(widget.alignment, Alignment.center);
     });

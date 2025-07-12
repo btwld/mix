@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -113,7 +111,7 @@ void main() {
       expect(lerpedSpec.textDirection, TextDirection.rtl);
       expect(lerpedSpec.textBaseline, TextBaseline.ideographic);
       expect(lerpedSpec.clipBehavior, Clip.antiAlias);
-      expect(lerpedSpec.gap, lerpDouble(spec1.gap, spec2.gap, t));
+      expect(lerpedSpec.gap, MixHelpers.lerpDouble(spec1.gap, spec2.gap, t));
 
       expect(lerpedSpec, isNot(spec1));
     });

@@ -43,10 +43,10 @@ void main() {
 
       final merged = borderDto1.merge(borderDto2);
 
-      expect(merged.top, borderDto2.top);
-      expect(merged.bottom, borderDto2.bottom);
-      expect(merged.left, borderDto2.left);
-      expect(merged.right, borderDto2.right);
+      expect(merged.top?.width, resolvesTo(2.0));
+      expect(merged.bottom?.width, resolvesTo(2.0));
+      expect(merged.left?.width, resolvesTo(2.0));
+      expect(merged.right?.width, resolvesTo(2.0));
     });
 
     // resolve

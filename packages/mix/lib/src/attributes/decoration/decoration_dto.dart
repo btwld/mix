@@ -491,6 +491,7 @@ GradientDto? _convertGradient(Gradient? gradient) {
 
 ShapeBorderDto? _convertShapeBorder(ShapeBorder? shapeBorder) {
   if (shapeBorder == null) return null;
+
   // This would need to be implemented based on the available ShapeBorderDto types
   // For now, return null as a placeholder
   return null;

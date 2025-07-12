@@ -9,9 +9,9 @@ void main() {
   group('Custom Matchers', () {
     group('resolvesTo', () {
       test('works with simple Mix values', () {
-        final colorMix = Mix.value(Colors.red);
-        final doubleMix = Mix.value(42.0);
-        final stringMix = Mix.value('test');
+        final colorMix = Prop.value(Colors.red);
+        final doubleMix = Prop.value(42.0);
+        final stringMix = Prop.value('test');
 
         // Clean, readable assertions
         expect(colorMix, resolvesTo(Colors.red));
@@ -35,7 +35,7 @@ void main() {
       });
 
       test('provides clear error messages on mismatch', () {
-        final colorMix = Mix.value(Colors.red);
+        final colorMix = Prop.value(Colors.red);
         
         expect(
           () => expect(colorMix, resolvesTo(Colors.blue)),
@@ -59,15 +59,15 @@ void main() {
 
     group('equivalentTo', () {
       test('works with equivalent Mix values', () {
-        final mix1 = Mix.value(Colors.red);
-        final mix2 = Mix.value(Colors.red);
+        final mix1 = Prop.value(Colors.red);
+        final mix2 = Prop.value(Colors.red);
         
-        expect(mix1, equivalentTo(mix2));
+        expect(mix1, mix2);
       });
 
       test('fails with different Mix values', () {
-        final mix1 = Mix.value(Colors.red);
-        final mix2 = Mix.value(Colors.blue);
+        final mix1 = Prop.value(Colors.red);
+        final mix2 = Prop.value(Colors.blue);
         
         expect(
           () => expect(mix1, equivalentTo(mix2)),
@@ -79,14 +79,14 @@ void main() {
         final prop1 = Prop.value('test');
         final prop2 = Prop.value('test');
         
-        expect(prop1, equivalentTo(prop2));
+        expect(prop1, prop2);
       });
 
       test('works with custom attributes', () {
         final attr1 = MockStringScalarAttribute('value');
         final attr2 = MockStringScalarAttribute('value');
         
-        expect(attr1, equivalentTo(attr2));
+        expect(attr1, attr2);
       });
     });
 
@@ -141,14 +141,14 @@ void main() {
       });
 
       test('Merge testing becomes more readable', () {
-        final mix1 = Mix.value('first');
-        final mix2 = Mix.value('second');
+        final mix1 = Prop.value('first');
+        final mix2 = Prop.value('second');
         
         final merged = mix1.merge(mix2);
         
         // Clean assertion for merged result
         expect(merged, resolvesTo('second'));
-        expect(merged, equivalentTo(mix2));
+        expect(merged, mix2);
       });
     });
 

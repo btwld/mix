@@ -1,7 +1,6 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mix/mix.dart';
 import 'package:mix/src/core/factory/mix_context.dart';
 import 'package:mix/src/core/modifier.dart';
 
@@ -63,7 +62,7 @@ final class _TestModifierSpec extends WidgetModifierSpec<_TestModifierSpec> {
   _TestModifierSpec lerp(_TestModifierSpec? other, double t) {
     if (other == null) return this;
 
-    return _TestModifierSpec(lerpDouble(value, other.value, t)!);
+    return _TestModifierSpec(MixHelpers.lerpDouble(value, other.value, t)!);
   }
 }
 

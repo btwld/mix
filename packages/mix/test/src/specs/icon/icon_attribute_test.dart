@@ -46,13 +46,12 @@ void main() {
 
       final mergedAttribute = attribute1.merge(attribute2);
       expect(mergedAttribute, isA<IconSpecAttribute>());
-      expect(mergedAttribute.size, equals(Prop.value(32)));
-      expect(mergedAttribute.weight, equals(Prop.value(32)));
-
-      expect(mergedAttribute.color, equals(Prop.value(Colors.white)));
-      expect(mergedAttribute.grade, equals(Prop.value(32)));
-      expect(mergedAttribute.opticalSize, equals(Prop.value(32)));
-      expect(mergedAttribute.fill, equals(Prop.value(32)));
+      expect(mergedAttribute.size, resolvesTo(32));
+      expect(mergedAttribute.weight, resolvesTo(32));
+      expect(mergedAttribute.color, resolvesTo(Colors.white));
+      expect(mergedAttribute.grade, resolvesTo(32));
+      expect(mergedAttribute.opticalSize, resolvesTo(32));
+      expect(mergedAttribute.fill, resolvesTo(32));
       expect(mergedAttribute.textDirection, equals(TextDirection.rtl));
       expect(mergedAttribute.applyTextScaling, equals(true));
       expect(
@@ -90,18 +89,18 @@ void main() {
         weight: weight,
       );
 
-      expect(attribute.size, equals(Prop.value(size)));
-      expect(attribute.color, equals(Prop.value(color)));
+      expect(attribute.size, resolvesTo(size));
+      expect(attribute.color, resolvesTo(color));
       expect(attribute.applyTextScaling, equals(applyTextScaling));
-      expect(attribute.fill, equals(Prop.value(fill)));
-      expect(attribute.grade, equals(Prop.value(grade)));
-      expect(attribute.opticalSize, equals(Prop.value(opticalSize)));
+      expect(attribute.fill, resolvesTo(fill));
+      expect(attribute.grade, resolvesTo(grade));
+      expect(attribute.opticalSize, resolvesTo(opticalSize));
       expect(attribute.shadows, equals([
         MixProp<Shadow, ShadowDto>.value(ShadowDto(color: Colors.black)),
         MixProp<Shadow, ShadowDto>.value(ShadowDto(color: Colors.black)),
       ]));
       expect(attribute.textDirection, equals(textDirection));
-      expect(attribute.weight, equals(Prop.value(weight)));
+      expect(attribute.weight, resolvesTo(weight));
     });
   });
 }

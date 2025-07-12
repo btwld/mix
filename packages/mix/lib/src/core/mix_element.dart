@@ -143,32 +143,12 @@ abstract class StyleElement with EqualityMixin, MixHelperMixin {
 abstract class Mix<T> with EqualityMixin, MixHelperMixin, ResolvableMixin<T> {
   const Mix();
 
-  /// Creates a Mix that wraps the given value
-  static Mix<T> value<T>(T value) => _MixableValue(value);
+  /// Merges this mix with another mix, returning a new mix.
+  Mix<T> merge(covariant Mix<T>? other);
 
   /// Resolves to the concrete value using the provided context
   @override
   T resolve(MixContext mix);
-
-  /// Merges this mix with another mix, returning a new mix.
-  Mix<T> merge(covariant Mix<T>? other);
-}
-
-/// Simple Mix implementation that wraps a value
-@immutable
-final class _MixableValue<T> extends Mix<T> {
-  final T _value;
-
-  const _MixableValue(this._value);
-
-  @override
-  T resolve(MixContext mix) => _value;
-
-  @override
-  Mix<T> merge(covariant Mix<T>? other) => other ?? this;
-
-  @override
-  List<Object?> get props => [_value];
 }
 
 /// Merge strategy for lists

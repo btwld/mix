@@ -349,19 +349,19 @@ extension AnimationConfigMixExtDeprecated on AnimationConfig {
 /// Deprecated extension for Color conversion
 extension DeprecatedColorExt on Color {
   @Deprecated('Use Mixable.value(this) directly instead of toDto()')
-  ColorDto toDto() => Mix.value(this);
+  ColorDto toDto() => throw UnsupportedError('ColorDto is deprecated. Use Prop<Color> instead.');
 }
 
 /// Deprecated extension for MaterialColor conversion - preserves MaterialColor type
 extension DeprecatedMaterialColorExt on MaterialColor {
   @Deprecated('Use Mixable.value(this) directly instead of toDto()')
-  Mix<MaterialColor> toDto() => Mix.value(this);
+  Mix<MaterialColor> toDto() => throw UnsupportedError('Mix<MaterialColor> is deprecated. Use Prop<MaterialColor> instead.');
 }
 
 /// Deprecated extension for Radius conversion
 extension DeprecatedRadiusExt on Radius {
   @Deprecated('Use Mixable.value(this) directly instead of toDto()')
-  RadiusDto toDto() => Mix.value(this);
+  RadiusDto toDto() => throw UnsupportedError('RadiusDto is deprecated. Use Prop<Radius> instead.');
 }
 
 // =============================================================================

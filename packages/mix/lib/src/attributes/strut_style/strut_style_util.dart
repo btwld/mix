@@ -9,17 +9,13 @@ import 'strut_style_dto.dart';
 
 final class StrutStyleUtility<T extends StyleElement>
     extends DtoUtility<T, StrutStyleDto, StrutStyle> {
-  late final fontWeight = FontWeightUtility(
-    (v) => only(fontWeight: v),
-  );
+  late final fontWeight = FontWeightUtility((v) => only(fontWeight: v));
 
   late final fontStyle = FontStyleUtility((v) => only(fontStyle: v));
 
   late final fontSize = FontSizeUtility((v) => only(fontSize: v));
 
-  late final fontFamily = FontFamilyUtility(
-    (v) => only(fontFamily: v),
-  );
+  late final fontFamily = FontFamilyUtility((v) => only(fontFamily: v));
 
   StrutStyleUtility(super.builder)
     : super(
@@ -45,8 +41,7 @@ final class StrutStyleUtility<T extends StyleElement>
 
   T forceStrutHeight(bool v) => only(forceStrutHeight: v);
 
-  T fontFamilyFallback(List<String> v) =>
-      only(fontFamilyFallback: v);
+  T fontFamilyFallback(List<String> v) => only(fontFamilyFallback: v);
 
   T call({
     String? fontFamily,
@@ -95,4 +90,3 @@ final class StrutStyleUtility<T extends StyleElement>
     );
   }
 }
-

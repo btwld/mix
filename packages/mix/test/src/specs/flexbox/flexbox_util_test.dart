@@ -48,7 +48,7 @@ void main() {
       final flexBox = flexBoxUtility..box.color.blue();
       expect(
         (flexBox.attributeValue!.box!.decoration as BoxDecorationDto).color,
-        Mix.value(Colors.blue),
+        Prop.value(Colors.blue),
       );
     });
 
@@ -92,7 +92,7 @@ void main() {
 
       final decoration =
           flexBox.attributeValue!.box!.decoration as BoxDecorationDto;
-      expect(decoration.color, Mix.value(Colors.amber));
+      expect(decoration.color, Prop.value(Colors.amber));
       expect(
         decoration.borderRadius,
         BorderRadiusDto.value(BorderRadius.circular(10)),
@@ -110,7 +110,7 @@ void main() {
           flexBox.attributeValue!.box!.foregroundDecoration as BoxDecorationDto;
       expect(
         foregroundDecoration.color,
-        Mix.value(Colors.amber),
+        Prop.value(Colors.amber),
         reason: 'The color is not correct',
       );
       expect(
