@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../../helpers/custom_matchers.dart';
+import '../../../helpers/testing_utils.dart';
 
 void main() {
   group('Mixable<T>', () {
@@ -13,7 +14,10 @@ void main() {
         expect(dto, resolvesTo('test'));
       });
 
-      // TODO: Add token tests when token resolution is properly set up
+      // Token API has been removed in current version
+      // test('token constructor works', () {
+      //   // Token functionality removed from API
+      // });
 
       test('merge creates composite', () {
         final dto1 = Mix.value('first');
@@ -33,7 +37,15 @@ void main() {
         expect(dto, resolvesTo(42.5));
       });
 
-      // TODO: Add token tests when token resolution is properly set up
+      // Token API has been removed in current version
+      // test('token constructor works', () {
+      //   // Token functionality removed from API
+      // });
+
+      // Token API has been removed in current version
+      // test('token constructor works', () {
+      //   // Token functionality removed from API
+      // });
 
       test('merge works correctly', () {
         final dto1 = Mix.value(10.0);

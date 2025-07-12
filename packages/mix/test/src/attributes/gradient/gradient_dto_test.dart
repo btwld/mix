@@ -55,10 +55,10 @@ void main() {
         stops: const [0.0, 1.0],
       );
 
-      expect(gradientDto.begin, Alignment.topLeft);
-      expect(gradientDto.end, Alignment.bottomRight);
-      expect(gradientDto.stops, [0.0, 1.0]);
-      expect(gradientDto.tileMode, TileMode.clamp);
+      expect(gradientDto.begin, resolvesTo(Alignment.topLeft));
+      expect(gradientDto.end, resolvesTo(Alignment.bottomRight));
+      expect(gradientDto.stops, resolvesTo([0.0, 1.0]));
+      expect(gradientDto.tileMode, resolvesTo(TileMode.clamp));
     });
 
     test(
@@ -72,9 +72,9 @@ void main() {
         );
         final gradientDto = LinearGradientDto.maybeValue(linearGradient)!;
 
-        expect(gradientDto.begin, linearGradient.begin);
-        expect(gradientDto.end, linearGradient.end);
-        expect(gradientDto.stops, linearGradient.stops);
+        expect(gradientDto.begin, resolvesTo(linearGradient.begin));
+        expect(gradientDto.end, resolvesTo(linearGradient.end));
+        expect(gradientDto.stops, resolvesTo(linearGradient.stops));
       },
     );
 
@@ -112,10 +112,10 @@ void main() {
 
       final mergedGradient = gradientDto1.merge(gradientDto2);
 
-      expect(mergedGradient.begin, gradientDto2.begin);
-      expect(mergedGradient.end, gradientDto2.end);
+      expect(mergedGradient.begin, resolvesTo(Alignment.centerLeft));
+      expect(mergedGradient.end, resolvesTo(Alignment.centerRight));
       expect(mergedGradient.colors, isNotNull);
-      expect(mergedGradient.stops, [0.25, 0.75]);
+      expect(mergedGradient.stops, resolvesTo([0.25, 0.75]));
     });
 
     test('== operator returns true for equal objects', () {
@@ -164,10 +164,10 @@ void main() {
         stops: const [0.0, 1.0],
       );
 
-      expect(gradientDto.center, Alignment.center);
-      expect(gradientDto.radius, 0.5);
-      expect(gradientDto.stops, [0.0, 1.0]);
-      expect(gradientDto.tileMode, TileMode.clamp);
+      expect(gradientDto.center, resolvesTo(Alignment.center));
+      expect(gradientDto.radius, resolvesTo(0.5));
+      expect(gradientDto.stops, resolvesTo([0.0, 1.0]));
+      expect(gradientDto.tileMode, resolvesTo(TileMode.clamp));
     });
 
     test(
@@ -181,9 +181,9 @@ void main() {
         );
         final gradientDto = RadialGradientDto.maybeValue(radialGradient)!;
 
-        expect(gradientDto.center, radialGradient.center);
-        expect(gradientDto.radius, radialGradient.radius);
-        expect(gradientDto.stops, radialGradient.stops);
+        expect(gradientDto.center, resolvesTo(radialGradient.center));
+        expect(gradientDto.radius, resolvesTo(radialGradient.radius));
+        expect(gradientDto.stops, resolvesTo(radialGradient.stops));
       },
     );
 
@@ -221,10 +221,10 @@ void main() {
 
       final mergedGradient = gradientDto1.merge(gradientDto2);
 
-      expect(mergedGradient.center, gradientDto2.center);
-      expect(mergedGradient.radius, gradientDto2.radius);
+      expect(mergedGradient.center, resolvesTo(Alignment.centerLeft));
+      expect(mergedGradient.radius, resolvesTo(0.75));
       expect(mergedGradient.colors, isNotNull);
-      expect(mergedGradient.stops, [0.25, 0.75]);
+      expect(mergedGradient.stops, resolvesTo([0.25, 0.75]));
     });
 
     test('== operator returns true for equal objects', () {
@@ -273,11 +273,11 @@ void main() {
         colors: const [Colors.red, Colors.blue],
         stops: const [0.0, 1.0],
       );
-      expect(gradientDto.center, Alignment.center);
-      expect(gradientDto.startAngle, 0.0);
-      expect(gradientDto.endAngle, 1.0);
-      expect(gradientDto.stops, [0.0, 1.0]);
-      expect(gradientDto.tileMode, TileMode.clamp);
+      expect(gradientDto.center, resolvesTo(Alignment.center));
+      expect(gradientDto.startAngle, resolvesTo(0.0));
+      expect(gradientDto.endAngle, resolvesTo(1.0));
+      expect(gradientDto.stops, resolvesTo([0.0, 1.0]));
+      expect(gradientDto.tileMode, resolvesTo(TileMode.clamp));
     });
 
     test(
@@ -292,10 +292,10 @@ void main() {
         );
         final gradientDto = SweepGradientDto.maybeValue(sweepGradient)!;
 
-        expect(gradientDto.center, sweepGradient.center);
-        expect(gradientDto.startAngle, sweepGradient.startAngle);
-        expect(gradientDto.endAngle, sweepGradient.endAngle);
-        expect(gradientDto.stops, sweepGradient.stops);
+        expect(gradientDto.center, resolvesTo(sweepGradient.center));
+        expect(gradientDto.startAngle, resolvesTo(sweepGradient.startAngle));
+        expect(gradientDto.endAngle, resolvesTo(sweepGradient.endAngle));
+        expect(gradientDto.stops, resolvesTo(sweepGradient.stops));
       },
     );
 
@@ -338,11 +338,11 @@ void main() {
 
       final mergedGradient = gradientDto1.merge(gradientDto2);
 
-      expect(mergedGradient.center, gradientDto2.center);
-      expect(mergedGradient.startAngle, gradientDto2.startAngle);
-      expect(mergedGradient.endAngle, gradientDto2.endAngle);
+      expect(mergedGradient.center, resolvesTo(Alignment.centerLeft));
+      expect(mergedGradient.startAngle, resolvesTo(0.25));
+      expect(mergedGradient.endAngle, resolvesTo(0.75));
       expect(mergedGradient.colors, isNotNull);
-      expect(mergedGradient.stops, [0.25, 0.75]);
+      expect(mergedGradient.stops, resolvesTo([0.25, 0.75]));
     });
 
     test('== operator returns true for equal objects', () {

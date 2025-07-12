@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../../helpers/custom_matchers.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
@@ -19,9 +20,9 @@ void main() {
         applyHeightToLastDescent: false,
         leadingDistribution: TextLeadingDistribution.even,
       );
-      expect(dto.applyHeightToFirstAscent, isTrue);
-      expect(dto.applyHeightToLastDescent, isFalse);
-      expect(dto.leadingDistribution, TextLeadingDistribution.even);
+      expect(dto.applyHeightToFirstAscent, resolvesTo(true));
+      expect(dto.applyHeightToLastDescent, resolvesTo(false));
+      expect(dto.leadingDistribution, resolvesTo(TextLeadingDistribution.even));
     });
   });
 
@@ -36,7 +37,7 @@ void main() {
       final result =
           utility.heightToFirstAscent(true)
               as UtilityTestAttribute<TextHeightBehaviorDto>;
-      expect(result.value.applyHeightToFirstAscent, isTrue);
+      expect(result.value.applyHeightToFirstAscent, resolvesTo(true));
       expect(result.value.applyHeightToLastDescent, isNull);
       expect(result.value.leadingDistribution, isNull);
     });
@@ -46,7 +47,7 @@ void main() {
           utility.heightToLastDescent(false)
               as UtilityTestAttribute<TextHeightBehaviorDto>;
       expect(result.value.applyHeightToFirstAscent, isNull);
-      expect(result.value.applyHeightToLastDescent, isFalse);
+      expect(result.value.applyHeightToLastDescent, resolvesTo(false));
       expect(result.value.leadingDistribution, isNull);
     });
 
@@ -58,7 +59,7 @@ void main() {
       expect(result.value.applyHeightToLastDescent, isNull);
       expect(
         result.value.leadingDistribution,
-        TextLeadingDistribution.proportional,
+        resolvesTo(TextLeadingDistribution.proportional),
       );
     });
 
@@ -70,9 +71,9 @@ void main() {
                 leadingDistribution: TextLeadingDistribution.even,
               )
               as UtilityTestAttribute<TextHeightBehaviorDto>;
-      expect(result.value.applyHeightToFirstAscent, isTrue);
-      expect(result.value.applyHeightToLastDescent, isFalse);
-      expect(result.value.leadingDistribution, TextLeadingDistribution.even);
+      expect(result.value.applyHeightToFirstAscent, resolvesTo(true));
+      expect(result.value.applyHeightToLastDescent, resolvesTo(false));
+      expect(result.value.leadingDistribution, resolvesTo(TextLeadingDistribution.even));
     });
   });
 }

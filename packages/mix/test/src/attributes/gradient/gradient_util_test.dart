@@ -91,7 +91,7 @@ void main() {
       final resolvedGradient = attribute.resolve(EmptyMixData);
       final dto = attribute.value;
 
-      expect(dto.stops, stops);
+      expect(dto.stops, resolvesTo(stops));
       expect(resolvedGradient.stops, stops);
     });
 
@@ -105,7 +105,7 @@ void main() {
       final dto = attribute.value;
 
       expect(attribute, attributeFn);
-      expect(dto.center, center);
+      expect(dto.center, resolvesTo(center));
       expect(resolvedGradient.center, center);
     });
 
@@ -117,7 +117,7 @@ void main() {
       final resolvedGradient = attribute.resolve(EmptyMixData);
       final dto = attribute.value;
 
-      expect(dto.radius, radius);
+      expect(dto.radius, resolvesTo(radius));
       expect(resolvedGradient.radius, radius);
     });
 
@@ -131,7 +131,7 @@ void main() {
       final dto = attribute.value;
 
       expect(attribute, attributeFn);
-      expect(dto.focal, focal);
+      expect(dto.focal, resolvesTo(focal));
       expect(resolvedGradient.focal, focal);
     });
 
@@ -143,7 +143,7 @@ void main() {
       final resolvedGradient = attribute.resolve(EmptyMixData);
       final dto = attribute.value;
 
-      expect(dto.focalRadius, focalRadius);
+      expect(dto.focalRadius, resolvesTo(focalRadius));
       expect(resolvedGradient.focalRadius, focalRadius);
     });
 
@@ -158,7 +158,7 @@ void main() {
       final dto = attribute.value;
 
       expect(attribute, attributeFn);
-      expect(dto.tileMode, tileMode);
+      expect(dto.tileMode, resolvesTo(tileMode));
       expect(resolvedGradient.tileMode, tileMode);
     });
 
@@ -170,7 +170,7 @@ void main() {
       final resolvedGradient = attribute.resolve(EmptyMixData);
       final dto = attribute.value;
 
-      expect(dto.transform, transform);
+      expect(dto.transform, resolvesTo(transform));
       expect(resolvedGradient.transform, transform);
     });
 
@@ -199,14 +199,14 @@ void main() {
       final resolvedGradient = attribute.resolve(EmptyMixData);
       final dto = attribute.value;
 
-      expect(dto.colors, colors.map(Mix.value).toList());
-      expect(dto.stops, stops);
-      expect(dto.center, center);
-      expect(dto.radius, radius);
-      expect(dto.focal, focal);
-      expect(dto.focalRadius, focalRadius);
-      expect(dto.tileMode, tileMode);
-      expect(dto.transform, transform);
+      expect(dto.colors, resolvesTo(colors.map(Mix.value).toList()));
+      expect(dto.stops, resolvesTo(stops));
+      expect(dto.center, resolvesTo(center));
+      expect(dto.radius, resolvesTo(radius));
+      expect(dto.focal, resolvesTo(focal));
+      expect(dto.focalRadius, resolvesTo(focalRadius));
+      expect(dto.tileMode, resolvesTo(tileMode));
+      expect(dto.transform, resolvesTo(transform));
 
       expect(resolvedGradient, isA<RadialGradient>());
       expect(resolvedGradient.colors, colors);
@@ -278,7 +278,7 @@ void main() {
       final resolvedGradient = attribute.resolve(EmptyMixData);
       final dto = attribute.value;
 
-      expect(dto.stops, stops);
+      expect(dto.stops, resolvesTo(stops));
       expect(resolvedGradient.stops, stops);
     });
 
@@ -292,7 +292,7 @@ void main() {
       final dto = attribute.value;
 
       expect(attribute, attributeFn);
-      expect(dto.begin, begin);
+      expect(dto.begin, resolvesTo(begin));
       expect(resolvedGradient.begin, begin);
     });
 
@@ -307,7 +307,7 @@ void main() {
       final dto = attribute.value;
 
       expect(attribute, attributeFn);
-      expect(dto.end, end);
+      expect(dto.end, resolvesTo(end));
       expect(resolvedGradient.end, end);
     });
 
@@ -321,7 +321,7 @@ void main() {
       final dto = attribute.value;
 
       expect(attribute, attributeFn);
-      expect(dto.tileMode, tileMode);
+      expect(dto.tileMode, resolvesTo(tileMode));
       expect(resolvedGradient.tileMode, tileMode);
     });
 
@@ -333,7 +333,7 @@ void main() {
       final resolvedGradient = attribute.resolve(EmptyMixData);
       final dto = attribute.value;
 
-      expect(dto.transform, transform);
+      expect(dto.transform, resolvesTo(transform));
       expect(resolvedGradient.transform, transform);
     });
 
@@ -358,12 +358,12 @@ void main() {
       final resolvedGradient = attribute.resolve(EmptyMixData);
       final dto = attribute.value;
 
-      expect(dto.colors, colors.map(Mix.value).toList());
-      expect(dto.stops, stops);
-      expect(dto.begin, begin);
-      expect(dto.end, end);
-      expect(dto.tileMode, tileMode);
-      expect(dto.transform, transform);
+      expect(dto.colors, resolvesTo(colors.map(Mix.value).toList()));
+      expect(dto.stops, resolvesTo(stops));
+      expect(dto.begin, resolvesTo(begin));
+      expect(dto.end, resolvesTo(end));
+      expect(dto.tileMode, resolvesTo(tileMode));
+      expect(dto.transform, resolvesTo(transform));
 
       expect(resolvedGradient, isA<LinearGradient>());
       expect(resolvedGradient.colors, colors);
@@ -432,7 +432,7 @@ void main() {
       final resolvedGradient = attribute.resolve(EmptyMixData);
       final dto = attribute.value;
 
-      expect(dto.stops, stops);
+      expect(dto.stops, resolvesTo(stops));
       expect(resolvedGradient.stops, stops);
     });
 
@@ -446,7 +446,7 @@ void main() {
       final dto = attribute.value;
 
       expect(attribute, attributeFn);
-      expect(dto.center, center);
+      expect(dto.center, resolvesTo(center));
       expect(resolvedGradient.center, center);
     });
 
@@ -458,7 +458,7 @@ void main() {
       final resolvedGradient = attribute.resolve(EmptyMixData);
       final dto = attribute.value;
 
-      expect(dto.startAngle, startAngle);
+      expect(dto.startAngle, resolvesTo(startAngle));
       expect(resolvedGradient.startAngle, startAngle);
     });
 
@@ -470,7 +470,7 @@ void main() {
       final resolvedGradient = attribute.resolve(EmptyMixData);
       final dto = attribute.value;
 
-      expect(dto.endAngle, endAngle);
+      expect(dto.endAngle, resolvesTo(endAngle));
       expect(resolvedGradient.endAngle, endAngle);
     });
 
@@ -484,7 +484,7 @@ void main() {
       final dto = attribute.value;
 
       expect(attribute, attributeFn);
-      expect(dto.tileMode, tileMode);
+      expect(dto.tileMode, resolvesTo(tileMode));
       expect(resolvedGradient.tileMode, tileMode);
     });
 
@@ -496,7 +496,7 @@ void main() {
       final resolvedGradient = attribute.resolve(EmptyMixData);
       final dto = attribute.value;
 
-      expect(dto.transform, transform);
+      expect(dto.transform, resolvesTo(transform));
       expect(resolvedGradient.transform, transform);
     });
 
@@ -523,13 +523,13 @@ void main() {
       final resolvedGradient = attribute.resolve(EmptyMixData);
       final dto = attribute.value;
 
-      expect(dto.colors, colors.map(Mix.value).toList());
-      expect(dto.stops, stops);
-      expect(dto.center, center);
-      expect(dto.startAngle, startAngle);
-      expect(dto.endAngle, endAngle);
-      expect(dto.tileMode, tileMode);
-      expect(dto.transform, transform);
+      expect(dto.colors, resolvesTo(colors.map(Mix.value).toList()));
+      expect(dto.stops, resolvesTo(stops));
+      expect(dto.center, resolvesTo(center));
+      expect(dto.startAngle, resolvesTo(startAngle));
+      expect(dto.endAngle, resolvesTo(endAngle));
+      expect(dto.tileMode, resolvesTo(tileMode));
+      expect(dto.transform, resolvesTo(transform));
 
       expect(resolvedGradient, isA<SweepGradient>());
       expect(resolvedGradient.colors, colors);

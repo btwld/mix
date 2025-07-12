@@ -20,17 +20,17 @@ void main() {
       expect(constraints.minHeight, 100);
       expect(constraints.maxHeight, 200);
 
-      expect(constraintsDto.minWidth, 50);
-      expect(constraintsDto.maxWidth, 150);
-      expect(constraintsDto.minHeight, 100);
-      expect(constraintsDto.maxHeight, 200);
+      expect(constraintsDto.minWidth, resolvesTo(50));
+      expect(constraintsDto.maxWidth, resolvesTo(150));
+      expect(constraintsDto.minHeight, resolvesTo(100));
+      expect(constraintsDto.maxHeight, resolvesTo(200));
     });
     test('merge returns merged object correctly', () {
       final constraints1 = BoxConstraintsDto(minWidth: 50, minHeight: 100);
       final constraints2 = BoxConstraintsDto(minWidth: 60, minHeight: 110);
       final merged = constraints1.merge(constraints2);
-      expect(merged.minWidth, 60);
-      expect(merged.minHeight, 110);
+      expect(merged.minWidth, resolvesTo(60));
+      expect(merged.minHeight, resolvesTo(110));
       expect(merged.maxWidth, isNull);
       expect(merged.maxHeight, isNull);
     });
@@ -59,9 +59,9 @@ void main() {
       final constraints = BoxConstraintsDto(minWidth: 50, minHeight: 100);
 
       expect(constraints, isA<BoxConstraintsDto>());
-      expect(constraints.minWidth, 50);
+      expect(constraints.minWidth, resolvesTo(50));
       expect(constraints.maxWidth, isNull);
-      expect(constraints.minHeight, 100);
+      expect(constraints.minHeight, resolvesTo(100));
 
       expect(
         constraints,

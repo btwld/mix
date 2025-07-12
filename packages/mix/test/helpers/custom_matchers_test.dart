@@ -1,55 +1,73 @@
-// TODO: This test file uses an outdated API (Mix.value and Mix.composite constructors don't exist)
-// Needs to be rewritten to use the current Mix API
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mix/mix.dart';
 
-
+import 'custom_matchers.dart';
+import 'testing_utils.dart';
 
 void main() {
-  // Commenting out tests due to outdated API usage
-  /*
   group('Custom Matchers', () {
     group('resolvesTo', () {
       test('works with simple Mix values', () {
-        final colorMix = Mix<Color>.value(Colors.red);
-        final doubleMix = Mix<double>.value(42.0);
-        final stringMix = Mix<String>.value('test');
+        final colorMix = Mix.value(Colors.red);
+        final doubleMix = Mix.value(42.0);
+        final stringMix = Mix.value('test');
 
-        // Before: expect(colorMix.resolve(EmptyMixData), Colors.red);
-        // After: Much cleaner!
+        // Clean, readable assertions
         expect(colorMix, resolvesTo(Colors.red));
         expect(doubleMix, resolvesTo(42.0));
         expect(stringMix, resolvesTo('test'));
       });
 
-      test('works with composite Mix values', () {
-        final mix1 = Mix<String>.value('first');
-        final mix2 = Mix<String>.value('second');
-        final composite = Mix<String>.composite([mix1, mix2]);
+      test('works with Prop values', () {
+        final colorProp = Prop.value(Colors.blue);
+        final doubleProp = Prop.value(3.14);
+        final stringProp = Prop.value('hello');
 
-        // Last value wins in composite
-        expect(composite, resolvesTo('second'));
+        expect(colorProp, resolvesTo(Colors.blue));
+        expect(doubleProp, resolvesTo(3.14));
+        expect(stringProp, resolvesTo('hello'));
       });
 
-      test('provides clear error messages', () {
-        final colorMix = Mix<Color>.value(Colors.red);
+      test('works with SpecAttribute implementations', () {
+        final mockAttr = MockDoubleScalarAttribute(42.0);
+        expect(mockAttr, resolvesTo(42.0));
+      });
+
+      test('provides clear error messages on mismatch', () {
+        final colorMix = Mix.value(Colors.red);
         
         expect(
           () => expect(colorMix, resolvesTo(Colors.blue)),
-          throwsA(isA<TestFailure>()),
+          throwsA(isA<TestFailure>().having(
+            (e) => e.toString(),
+            'message',
+            allOf(
+              contains('Expected: resolves to <MaterialColor(primary value: Color(0xff2196f3))>'),
+              contains('Actual: <Mix<Color>>'),
+              contains('Which: resolved to <MaterialColor(primary value: Color(0xfff44336))>'),
+            ),
+          )),
         );
+      });
+
+      test('handles null values correctly', () {
+        final nullableProp = Prop<Color?>.value(null);
+        expect(nullableProp, resolvesTo(null));
       });
     });
 
     group('equivalentTo', () {
       test('works with equivalent Mix values', () {
-        final mix1 = Mix<Color>.value(Colors.red);
-        final mix2 = Mix<Color>.value(Colors.red);
+        final mix1 = Mix.value(Colors.red);
+        final mix2 = Mix.value(Colors.red);
         
         expect(mix1, equivalentTo(mix2));
       });
 
       test('fails with different Mix values', () {
-        final mix1 = Mix<Color>.value(Colors.red);
-        final mix2 = Mix<Color>.value(Colors.blue);
+        final mix1 = Mix.value(Colors.red);
+        final mix2 = Mix.value(Colors.blue);
         
         expect(
           () => expect(mix1, equivalentTo(mix2)),
@@ -57,13 +75,18 @@ void main() {
         );
       });
 
-      test('works with composite Mix values', () {
-        final base1 = Mix<String>.value('test');
-        final base2 = Mix<String>.value('test');
-        final composite1 = Mix<String>.composite([base1]);
-        final composite2 = Mix<String>.composite([base2]);
+      test('works with Prop values', () {
+        final prop1 = Prop.value('test');
+        final prop2 = Prop.value('test');
         
-        expect(composite1, equivalentTo(composite2));
+        expect(prop1, equivalentTo(prop2));
+      });
+
+      test('works with custom attributes', () {
+        final attr1 = MockStringScalarAttribute('value');
+        final attr2 = MockStringScalarAttribute('value');
+        
+        expect(attr1, equivalentTo(attr2));
       });
     });
 
@@ -75,12 +98,7 @@ void main() {
           style: BorderStyle.solid,
         );
 
-        // Before: Multiple verbose assertions
-        // expect(borderSide.color.resolve(EmptyMixData), Colors.red);
-        // expect(borderSide.width.resolve(EmptyMixData), 2.0);
-        // expect(borderSide.style.resolve(EmptyMixData), BorderStyle.solid);
-
-        // After: Clean, readable assertions
+        // Clean, readable assertions instead of manual .resolve() calls
         expect(borderSide.color, resolvesTo(Colors.red));
         expect(borderSide.width, resolvesTo(2.0));
         expect(borderSide.style, resolvesTo(BorderStyle.solid));
@@ -101,9 +119,30 @@ void main() {
         expect(boxShadow.spreadRadius, resolvesTo(5.0));
       });
 
+      test('DTO resolution testing', () {
+        final borderRadius = BorderRadiusDto(
+          topLeft: const Radius.circular(10),
+          topRight: const Radius.circular(20),
+        );
+
+        // Test individual properties
+        expect(borderRadius.topLeft, resolvesTo(const Radius.circular(10)));
+        expect(borderRadius.topRight, resolvesTo(const Radius.circular(20)));
+        expect(borderRadius.bottomLeft, isNull);
+        expect(borderRadius.bottomRight, isNull);
+
+        // Test whole DTO resolution
+        expect(borderRadius, resolvesTo(
+          const BorderRadius.only(
+            topLeft: Radius.circular(10),
+            topRight: Radius.circular(20),
+          ),
+        ));
+      });
+
       test('Merge testing becomes more readable', () {
-        final mix1 = Mix<String>.value('first');
-        final mix2 = Mix<String>.value('second');
+        final mix1 = Mix.value('first');
+        final mix2 = Mix.value('second');
         
         final merged = mix1.merge(mix2);
         
@@ -119,9 +158,9 @@ void main() {
           () => expect('not a mix', resolvesTo('anything')),
           throwsA(
             isA<TestFailure>().having(
-              (e) => e.message,
+              (e) => e.toString(),
               'message',
-              contains('Expected Mix<String>, got String'),
+              contains('Expected ResolvableMixin or SpecAttribute implementation'),
             ),
           ),
         );
@@ -135,7 +174,7 @@ void main() {
           () => expect(problematicMix, resolvesTo('anything')),
           throwsA(
             isA<TestFailure>().having(
-              (e) => e.message,
+              (e) => e.toString(),
               'message',
               contains('Failed to resolve'),
             ),
@@ -147,19 +186,15 @@ void main() {
 }
 
 // Helper class for testing error handling
-class _ProblematicMix<T> extends Mix<T> {
+class _ProblematicMix<T> with ResolvableMixin<T> {
   @override
   T resolve(MixContext mix) {
     throw Exception('Intentional test error');
   }
 
-  @override
-  Mix<T> merge(covariant Mix<T>? other) {
+  ResolvableMixin<T> merge(covariant ResolvableMixin<T>? other) {
     return this;
   }
 
-  @override
   List<Object?> get props => [];
-}
-*/
 }
