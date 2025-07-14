@@ -182,16 +182,16 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
   /// final boxDecoration = BoxDecorationDto(...).resolve(mix);
   /// ```
   @override
-  BoxDecoration resolve(MixContext mix) {
+  BoxDecoration resolve(MixContext context) {
     return BoxDecoration(
-      color: resolveProp(mix, color),
-      image: image?.resolve(mix),
-      border: border?.resolve(mix),
-      borderRadius: borderRadius?.resolve(mix),
-      boxShadow: boxShadow?.map((e) => e.resolve(mix)).toList(),
-      gradient: gradient?.resolve(mix),
-      backgroundBlendMode: resolveProp(mix, backgroundBlendMode),
-      shape: resolveProp(mix, shape) ?? BoxShape.rectangle,
+      color: resolveProp(context, color),
+      image: image?.resolve(context),
+      border: border?.resolve(context),
+      borderRadius: borderRadius?.resolve(context),
+      boxShadow: boxShadow?.map((e) => e.resolve(context)).toList(),
+      gradient: gradient?.resolve(context),
+      backgroundBlendMode: resolveProp(context, backgroundBlendMode),
+      shape: resolveProp(context, shape) ?? BoxShape.rectangle,
     );
   }
 
@@ -342,14 +342,14 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
   /// final shapeDecoration = ShapeDecorationDto(...).resolve(mix);
   /// ```
   @override
-  ShapeDecoration resolve(MixContext mix) {
+  ShapeDecoration resolve(MixContext context) {
     return ShapeDecoration(
-      color: resolveProp(mix, color) ?? defaultValue.color,
-      image: image?.resolve(mix) ?? defaultValue.image,
-      gradient: gradient?.resolve(mix) ?? defaultValue.gradient,
+      color: resolveProp(context, color) ?? defaultValue.color,
+      image: image?.resolve(context) ?? defaultValue.image,
+      gradient: gradient?.resolve(context) ?? defaultValue.gradient,
       shadows:
-          shadows?.map((e) => e.resolve(mix)).toList() ?? defaultValue.shadows,
-      shape: shape?.resolve(mix) ?? defaultValue.shape,
+          shadows?.map((e) => e.resolve(context)).toList() ?? defaultValue.shadows,
+      shape: shape?.resolve(context) ?? defaultValue.shape,
     );
   }
 

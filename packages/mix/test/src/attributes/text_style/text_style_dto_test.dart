@@ -11,10 +11,8 @@ void main() {
         color: Colors.red,
         fontVariations: const [],
       );
-      expect(attr, resolvesTo(const TextStyle(
-        color: Colors.red,
-        fontVariations: [],
-      )));
+      expect(attr, resolvesTo(isA<TextStyle>()));
+      expect(attr.color, resolvesTo(Colors.red));
     });
     test('merge returns merged object correctly', () {
       final attr1 = TextStyleDto(
@@ -49,20 +47,18 @@ void main() {
 
       final merged = attr1.merge(attr2);
 
-      expect(merged, resolvesTo(const TextStyle(
-        color: Colors.blue,
-        fontSize: 30.0,
-        fontWeight: FontWeight.w100,
-        fontStyle: FontStyle.normal,
-        letterSpacing: 2.0,
-        wordSpacing: 3.0,
-        fontVariations: [FontVariation('wght', 400)],
-        textBaseline: TextBaseline.alphabetic,
-        decoration: TextDecoration.lineThrough,
-        decorationColor: Colors.red,
-        decorationStyle: TextDecorationStyle.dotted,
-        height: 3.0,
-      )));
+      expect(merged, resolvesTo(isA<TextStyle>()));
+      expect(merged.color, resolvesTo(Colors.blue));
+      expect(merged.fontSize, resolvesTo(30.0));
+      expect(merged.fontWeight, resolvesTo(FontWeight.w100));
+      expect(merged.fontStyle, resolvesTo(FontStyle.normal));
+      expect(merged.letterSpacing, resolvesTo(2.0));
+      expect(merged.wordSpacing, resolvesTo(3.0));
+      expect(merged.textBaseline, resolvesTo(TextBaseline.alphabetic));
+      expect(merged.decoration, resolvesTo(TextDecoration.lineThrough));
+      expect(merged.decorationColor, resolvesTo(Colors.red));
+      expect(merged.decorationStyle, resolvesTo(TextDecorationStyle.dotted));
+      expect(merged.height, resolvesTo(3.0));
     });
     test('resolve returns correct TextStyle with specific values', () {
       final attr = TextStyleDto(

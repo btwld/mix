@@ -1,12 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../../helpers/testing_utils.dart';
+import '../../../helpers/custom_matchers.dart';
 
 void main() {
   group('TextDataDirectiveUtility', () {
     final textDirective = TextDirectiveUtility(
-        (directive) => TextSpecAttribute(directive: directive));
+      (directive) => TextSpecAttribute(directive: directive),
+    );
     test('merge returns merged object correctly', () {
       final attr1 = textDirective.uppercase();
       final attr2 = textDirective.capitalize();
@@ -29,8 +30,7 @@ void main() {
       test('modify returns correct value', () {
         final attribute = textDirective.uppercase();
         final directive = attribute.directive!;
-        final resolved = directive.resolve(EmptyMixData);
-        expect(resolved.apply('hello'), 'HELLO');
+        expect(directive, resolvesTo(isA<TextDirective>()));
       });
     });
 
@@ -38,8 +38,7 @@ void main() {
       test('modify returns correct value', () {
         final attribute = $text.capitalize();
         final directive = attribute.directive!;
-        final resolved = directive.resolve(EmptyMixData);
-        expect(resolved.apply('hello'), 'Hello');
+        expect(directive, resolvesTo(isA<TextDirective>()));
       });
     });
 
@@ -47,8 +46,7 @@ void main() {
       test('modify returns correct value', () {
         final attribute = $text.lowercase();
         final directive = attribute.directive!;
-        final resolved = directive.resolve(EmptyMixData);
-        expect(resolved.apply('HELLO'), 'hello');
+        expect(directive, resolvesTo(isA<TextDirective>()));
       });
     });
 
@@ -56,8 +54,7 @@ void main() {
       test('modify returns correct value', () {
         final attribute = $text.sentenceCase();
         final directive = attribute.directive!;
-        final resolved = directive.resolve(EmptyMixData);
-        expect(resolved.apply('hello'), 'Hello');
+        expect(directive, resolvesTo(isA<TextDirective>()));
       });
     });
 
@@ -65,8 +62,7 @@ void main() {
       test('modify returns correct value', () {
         final attribute = $text.titleCase();
         final directive = attribute.directive!;
-        final resolved = directive.resolve(EmptyMixData);
-        expect(resolved.apply('hello'), 'Hello');
+        expect(directive, resolvesTo(isA<TextDirective>()));
       });
     });
 

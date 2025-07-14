@@ -37,7 +37,7 @@ class TextDirectiveDto extends Mix<TextDirective> {
   @visibleForTesting
   int get length => _modifiers.length;
   @override
-  TextDirective resolve(MixContext mix) {
+  TextDirective resolve(MixContext context) {
     return TextDirective((String content) {
       return _modifiers.fold(
         content,

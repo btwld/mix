@@ -95,10 +95,13 @@ void main() {
       expect(attribute.fill, resolvesTo(fill));
       expect(attribute.grade, resolvesTo(grade));
       expect(attribute.opticalSize, resolvesTo(opticalSize));
-      expect(attribute.shadows, equals([
-        MixProp<Shadow, ShadowDto>.value(ShadowDto(color: Colors.black)),
-        MixProp<Shadow, ShadowDto>.value(ShadowDto(color: Colors.black)),
-      ]));
+      expect(
+        attribute.shadows,
+        equals([
+          MixProp<Shadow, ShadowDto>.value(ShadowDto(color: Colors.black)),
+          MixProp<Shadow, ShadowDto>.value(ShadowDto(color: Colors.black)),
+        ]),
+      );
       expect(attribute.textDirection, equals(textDirection));
       expect(attribute.weight, resolvesTo(weight));
     });

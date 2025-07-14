@@ -2,6 +2,8 @@ name: mix
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
+  flutter: ">=3.32.6 <4.0.0"
+
 
 dependencies:
   melos: ^6.3.3

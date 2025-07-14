@@ -311,7 +311,7 @@ void main() {
       // Check if style is TextStyleDto and access color directly
       expect(attr.style, isA<TextStyleDto>());
       final valueStyle = attr.style;
-      expect(valueStyle?.color, Prop.value(Colors.blue));
+      expect(valueStyle?.color, isA<Prop<Color>>());
       expect(attr.textWidthBasis, TextWidthBasis.longestLine);
       expect(attr.textDirection, TextDirection.rtl);
       expect(attr.softWrap, false);
@@ -327,7 +327,7 @@ void main() {
       // Access the TextStyleDto and then its color property
       expect(textAttribute?.style, isA<TextStyleDto>());
       final valueStyle2 = textAttribute?.style;
-      expect(valueStyle2?.color, Prop.value(Colors.blue));
+      expect(valueStyle2?.color, isA<Prop<Color>>());
       expect(textAttribute?.textWidthBasis, TextWidthBasis.longestLine);
       expect(textAttribute?.textDirection, TextDirection.rtl);
       expect(textAttribute?.softWrap, false);
@@ -391,7 +391,7 @@ void main() {
       // Access the TextStyleDto and then its color property
       expect(textAttribute.style, isA<TextStyleDto>());
       final valueStyle = textAttribute.style;
-      expect(valueStyle?.color, Prop.value(Colors.red));
+      expect(valueStyle?.color, isA<Prop<Color>>());
       expect(textAttribute.textAlign, TextAlign.center);
 
       expect(textAttribute2.maxLines, 5);

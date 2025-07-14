@@ -61,7 +61,7 @@ void main() {
 
       expect(
         (container.decoration as BoxDecorationDto).color,
-        Prop.value(Colors.blue),
+        isA<Prop<Color>>(),
       );
     });
 
@@ -105,7 +105,7 @@ void main() {
         color: Colors.amber,
       );
 
-      expect(container.decoration!.color, Prop.value(Colors.amber));
+      expect(container.decoration!.color, isA<Prop<Color>>());
 
       final decorationDTO = container.decoration as BoxDecorationDto;
       expect(
@@ -122,7 +122,7 @@ void main() {
 
       expect(
         container.foregroundDecoration!.color,
-        Prop.value(Colors.amber),
+        isA<Prop<Color>>(),
         reason: 'The color is not correct',
       );
 

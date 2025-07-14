@@ -61,6 +61,7 @@ void main() {
         ],
         color: Colors.red,
         backgroundColor: Colors.blue,
+        fontFamily: 'Roboto',
         fontFeatures: [FontFeature.alternative(4)],
         decoration: TextDecoration.underline,
         decorationColor: Colors.green,
@@ -177,18 +178,14 @@ void main() {
       final yellowPaint = Paint()..color = Colors.yellow;
       final attribute = textStyle.foreground(yellowPaint);
 
-      final resolvedValue = attribute.value.resolve(EmptyMixData);
-
-      expect(resolvedValue.foreground, yellowPaint);
+      expect(attribute.value.foreground, resolvesTo(yellowPaint));
     });
 
     test('background() creates TextStyleDto correctly', () {
       final purplePaint = Paint()..color = Colors.purple;
       final attribute = textStyle.background(purplePaint);
 
-      final resolvedValue = attribute.value.resolve(EmptyMixData);
-
-      expect(resolvedValue.background, purplePaint);
+      expect(attribute.value.background, resolvesTo(purplePaint));
     });
 
     test('fontVariations() creates TextStyleDto correctly', () {

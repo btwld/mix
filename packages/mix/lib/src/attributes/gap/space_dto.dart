@@ -42,7 +42,7 @@ class _ValueSpaceDto extends SpaceDto {
   const _ValueSpaceDto(this.value) : super._();
 
   @override
-  double resolve(MixContext mix) => value;
+  double resolve(MixContext context) => value;
 
   @override
   List<Object?> get props => [value];
@@ -55,8 +55,8 @@ class _TokenSpaceDto extends SpaceDto {
   const _TokenSpaceDto(this.token) : super._();
 
   @override
-  double resolve(MixContext mix) {
-    return mix.scope.getToken(token, mix.context);
+  double resolve(MixContext context) {
+    return context.scope.getToken(token, context.context);
   }
 
   @override

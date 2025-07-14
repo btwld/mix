@@ -25,18 +25,6 @@ Matcher resolvesTo<T>(T expectedValue, {MixContext? context}) {
   return _ResolvesToMatcher<T>(expectedValue, context ?? EmptyMixData);
 }
 
-/// Check if two resolvable objects are equivalent when resolved
-///
-/// Usage:
-/// ```dart
-/// expect(mix1, equivalentTo(mix2));
-/// expect(prop1, equivalentTo(prop2));
-/// expect(attr1, equivalentTo(attr2));
-/// ```
-Matcher equivalentTo<T>(dynamic other, {MixContext? context}) {
-  return _EquivalentToMatcher<T>(other, context ?? EmptyMixData);
-}
-
 // =============================================================================
 // IMPLEMENTATION - Just the essentials
 // =============================================================================
@@ -53,6 +41,10 @@ class _ResolvesToMatcher<T> extends Matcher {
     if (item is ResolvableMixin) {
       try {
         final resolved = item.resolve(context);
+        // If expectedValue is a Matcher, apply it to the resolved value
+        if (expectedValue is Matcher) {
+          return (expectedValue as Matcher).matches(resolved, matchState);
+        }
         return resolved == expectedValue;
       } catch (e) {
         matchState['error'] = 'Failed to resolve: $e';
@@ -94,57 +86,3 @@ class _ResolvesToMatcher<T> extends Matcher {
   }
 }
 
-// Simple implementation that checks if two resolvable objects resolve to the same value
-class _EquivalentToMatcher<T> extends Matcher {
-  final ResolvableMixin other;
-  final MixContext context;
-
-  const _EquivalentToMatcher(this.other, this.context);
-
-  @override
-  bool matches(dynamic item, Map matchState) {
-    if (item is! ResolvableMixin) {
-      matchState['error'] =
-          'Expected ResolvableMixin implementation, got ${item.runtimeType}';
-      return false;
-    }
-
-    try {
-      final itemResolved = item.resolve(context);
-      final otherResolved = other.resolve(context);
-      return itemResolved == otherResolved;
-    } catch (e) {
-      matchState['error'] = 'Failed to resolve: $e';
-      return false;
-    }
-  }
-
-  @override
-  Description describe(Description description) {
-    return description.add('is equivalent to ').addDescriptionOf(other);
-  }
-
-  @override
-  Description describeMismatch(
-    dynamic item,
-    Description mismatchDescription,
-    Map matchState,
-    bool verbose,
-  ) {
-    if (matchState.containsKey('error')) {
-      return mismatchDescription.add(matchState['error']);
-    }
-
-    if (item is ResolvableMixin) {
-      final itemResolved = item.resolve(context);
-      final otherResolved = other.resolve(context);
-      return mismatchDescription
-          .add('resolved to ')
-          .addDescriptionOf(itemResolved)
-          .add(' instead of ')
-          .addDescriptionOf(otherResolved);
-    }
-
-    return mismatchDescription.add('was ').addDescriptionOf(item);
-  }
-}

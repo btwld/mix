@@ -70,11 +70,11 @@ class AnimationConfigDto extends Mix<AnimationConfig> {
   }
 
   @override
-  AnimationConfig resolve(MixContext mix) {
+  AnimationConfig resolve(MixContext context) {
     return AnimationConfig(
-      duration: resolveProp(mix, duration),
-      curve: resolveProp(mix, curve),
-      onEnd: resolveProp(mix, onEnd),
+      duration: resolveProp(context, duration),
+      curve: resolveProp(context, curve),
+      onEnd: resolveProp(context, onEnd),
     );
   }
 

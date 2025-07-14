@@ -148,7 +148,7 @@ abstract class Mix<T> with EqualityMixin, MixHelperMixin, ResolvableMixin<T> {
 
   /// Resolves to the concrete value using the provided context
   @override
-  T resolve(MixContext mix);
+  T resolve(MixContext context);
 }
 
 /// Merge strategy for lists

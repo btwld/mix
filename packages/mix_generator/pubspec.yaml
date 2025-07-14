@@ -5,8 +5,8 @@ homepage: https://github.com/btwld/mix
 repository: https://github.com/btwld/mix/tree/main/packages/mix_generator
 
 environment:
-  sdk: ">=3.9.0-196.1.beta <4.0.0"
-
+  sdk: ">=3.8.1 <4.0.0"
+  
 dependencies:
   mix_annotations: ^1.7.0
   build: ^2.4.1

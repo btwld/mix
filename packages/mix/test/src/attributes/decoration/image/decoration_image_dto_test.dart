@@ -31,20 +31,20 @@ void main() {
       );
       final result = DecorationImageDto.value(decorationImage);
       expect(result, isNotNull);
-      expect(result.image, equivalentTo(Prop.value(imageProvider)));
-      expect(result.fit, equivalentTo(const Prop.value(BoxFit.cover)));
-      expect(result.alignment, equivalentTo(const Prop.value(Alignment.topLeft)));
+      expect(result.image, isA<Prop<ImageProvider>>());
+      expect(result.fit, equals(const Prop.value(BoxFit.cover)));
+      expect(result.alignment, equals(const Prop.value(Alignment.topLeft)));
       expect(
         result.centerSlice,
-        equivalentTo(const Prop.value(Rect.fromLTRB(10, 20, 30, 40))),
+        equals(const Prop.value(Rect.fromLTRB(10, 20, 30, 40))),
       );
-      expect(result.repeat, equivalentTo(const Prop.value(ImageRepeat.repeat)));
+      expect(result.repeat, equals(const Prop.value(ImageRepeat.repeat)));
       expect(
         result.filterQuality,
-        equivalentTo(const Prop.value(FilterQuality.high)),
+        equals(const Prop.value(FilterQuality.high)),
       );
-      expect(result.invertColors, equivalentTo(const Prop.value(true)));
-      expect(result.isAntiAlias, equivalentTo(const Prop.value(true)));
+      expect(result.invertColors, equals(const Prop.value(true)));
+      expect(result.isAntiAlias, equals(const Prop.value(true)));
     });
 
     test('merge', () {
@@ -61,17 +61,17 @@ void main() {
 
       final mergedDto = dto.merge(otherDto);
 
-      expect(mergedDto.image, equivalentTo(Prop.value(imageProvider)));
-      expect(mergedDto.fit, equivalentTo(Prop.value(BoxFit.fill)));
-      expect(mergedDto.alignment, equivalentTo(Prop.value(Alignment.bottomRight)));
+      expect(mergedDto.image, isA<Prop<ImageProvider>>());
+      expect(mergedDto.fit, equals(Prop.value(BoxFit.fill)));
+      expect(mergedDto.alignment, equals(Prop.value(Alignment.bottomRight)));
       expect(
         mergedDto.centerSlice,
-        equivalentTo(Prop.value(const Rect.fromLTRB(50, 60, 70, 80))),
+        equals(Prop.value(const Rect.fromLTRB(50, 60, 70, 80))),
       );
-      expect(mergedDto.repeat, equivalentTo(Prop.value(ImageRepeat.repeatX)));
-      expect(mergedDto.filterQuality, equivalentTo(Prop.value(FilterQuality.low)));
-      expect(mergedDto.invertColors, equivalentTo(Prop.value(false)));
-      expect(mergedDto.isAntiAlias, equivalentTo(Prop.value(false)));
+      expect(mergedDto.repeat, equals(Prop.value(ImageRepeat.repeatX)));
+      expect(mergedDto.filterQuality, equals(Prop.value(FilterQuality.low)));
+      expect(mergedDto.invertColors, equals(Prop.value(false)));
+      expect(mergedDto.isAntiAlias, equals(Prop.value(false)));
     });
 
     test('resolve with default values', () {

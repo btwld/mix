@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-import 'package:mix/src/core/factory/mix_context.dart';
-import 'package:mix/src/core/modifier.dart';
 
 import '../../helpers/custom_matchers.dart';
 
@@ -13,20 +11,21 @@ void main() {
     });
 
     test(
-        'lerpValue should return the result of lerp when begin and end are not null',
-        () {
-      const begin = _TestModifierSpec(1, animated: null);
-      const end = _TestModifierSpec(2);
-      expect(
-        WidgetModifierSpec.lerpValue(begin, end, 0.5),
-        isA<_TestModifierSpec>(),
-      );
-      expect(
-        (WidgetModifierSpec.lerpValue(begin, end, 0.5) as _TestModifierSpec?)
-            ?.value,
-        1.5,
-      );
-    });
+      'lerpValue should return the result of lerp when begin and end are not null',
+      () {
+        const begin = _TestModifierSpec(1, animated: null);
+        const end = _TestModifierSpec(2);
+        expect(
+          WidgetModifierSpec.lerpValue(begin, end, 0.5),
+          isA<_TestModifierSpec>(),
+        );
+        expect(
+          (WidgetModifierSpec.lerpValue(begin, end, 0.5) as _TestModifierSpec?)
+              ?.value,
+          1.5,
+        );
+      },
+    );
   });
 
   group('ModifierAttribute', () {
@@ -40,10 +39,7 @@ void main() {
 
 final class _TestModifierSpec extends WidgetModifierSpec<_TestModifierSpec> {
   final double value;
-  const _TestModifierSpec(
-    this.value, {
-    super.animated,
-  });
+  const _TestModifierSpec(this.value, {super.animated});
 
   @override
   Widget build(Widget child) {

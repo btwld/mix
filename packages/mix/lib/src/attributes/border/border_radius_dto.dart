@@ -116,12 +116,12 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
   }
 
   @override
-  BorderRadius resolve(MixContext mix) {
+  BorderRadius resolve(MixContext context) {
     return BorderRadius.only(
-      topLeft: resolveProp(mix, topLeft) ?? Radius.zero,
-      topRight: resolveProp(mix, topRight) ?? Radius.zero,
-      bottomLeft: resolveProp(mix, bottomLeft) ?? Radius.zero,
-      bottomRight: resolveProp(mix, bottomRight) ?? Radius.zero,
+      topLeft: resolveProp(context, topLeft) ?? Radius.zero,
+      topRight: resolveProp(context, topRight) ?? Radius.zero,
+      bottomLeft: resolveProp(context, bottomLeft) ?? Radius.zero,
+      bottomRight: resolveProp(context, bottomRight) ?? Radius.zero,
     );
   }
 
@@ -207,12 +207,12 @@ final class BorderRadiusDirectionalDto
   }
 
   @override
-  BorderRadiusDirectional resolve(MixContext mix) {
+  BorderRadiusDirectional resolve(MixContext context) {
     return BorderRadiusDirectional.only(
-      topStart: resolveProp(mix, topStart) ?? Radius.zero,
-      topEnd: resolveProp(mix, topEnd) ?? Radius.zero,
-      bottomStart: resolveProp(mix, bottomStart) ?? Radius.zero,
-      bottomEnd: resolveProp(mix, bottomEnd) ?? Radius.zero,
+      topStart: resolveProp(context, topStart) ?? Radius.zero,
+      topEnd: resolveProp(context, topEnd) ?? Radius.zero,
+      bottomStart: resolveProp(context, bottomStart) ?? Radius.zero,
+      bottomEnd: resolveProp(context, bottomEnd) ?? Radius.zero,
     );
   }
 

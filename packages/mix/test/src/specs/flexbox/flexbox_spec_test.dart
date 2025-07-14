@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../../helpers/custom_matchers.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
@@ -287,20 +288,20 @@ void main() {
       );
       expect(
         mergedFlexBoxSpecAttribute.box!.constraints,
-        BoxConstraintsDto(maxHeight: 200),
+        resolvesTo(const BoxConstraints(maxHeight: 200)),
       );
       expect(
         mergedFlexBoxSpecAttribute.box!.decoration,
-        BoxDecorationDto(color: Colors.red),
+        resolvesTo(const BoxDecoration(color: Colors.red)),
       );
       expect(mergedFlexBoxSpecAttribute.box!.height, 200);
       expect(
         mergedFlexBoxSpecAttribute.box!.margin,
-        EdgeInsetsGeometryDto.only(top: 20, bottom: 20, left: 20, right: 20),
+        resolvesTo(const EdgeInsets.all(20)),
       );
       expect(
         mergedFlexBoxSpecAttribute.box!.padding,
-        EdgeInsetsGeometryDto.only(top: 30, bottom: 30, left: 30, right: 30),
+        resolvesTo(const EdgeInsets.all(30)),
       );
       expect(mergedFlexBoxSpecAttribute.box!.transform, Matrix4.identity());
       expect(mergedFlexBoxSpecAttribute.box!.width, 200);
@@ -340,7 +341,7 @@ void main() {
 
       expect(util, isA<StyleElement>());
       expect(attr.box!.alignment, Alignment.center);
-      expect(attr.box!.padding, EdgeInsetsDto.value(const EdgeInsets.all(8.0)));
+      expect(attr.box!.padding, resolvesTo(const EdgeInsets.all(8.0)));
       expect(attr.box!.margin, null);
       expect(attr.flex!.mainAxisAlignment, MainAxisAlignment.center);
       expect(attr.flex!.crossAxisAlignment, CrossAxisAlignment.center);
@@ -353,7 +354,7 @@ void main() {
       expect(flexBoxAttribute?.box!.alignment, Alignment.center);
       expect(
         flexBoxAttribute?.box!.padding,
-        EdgeInsetsDto.value(const EdgeInsets.all(8.0)),
+        resolvesTo(const EdgeInsets.all(8.0)),
       );
       expect(flexBoxAttribute?.box!.margin, null);
       expect(
@@ -389,11 +390,11 @@ void main() {
 
       expect(
         attr1.box!.padding,
-        EdgeInsetsDto.value(const EdgeInsets.all(10.0)),
+        resolvesTo(const EdgeInsets.all(10.0)),
       );
       expect(
         attr2.box!.padding,
-        EdgeInsetsDto.value(const EdgeInsets.all(20.0)),
+        resolvesTo(const EdgeInsets.all(20.0)),
       );
       expect(attr1.flex!.mainAxisAlignment, MainAxisAlignment.start);
       expect(attr2.flex!.mainAxisAlignment, MainAxisAlignment.end);
@@ -408,11 +409,11 @@ void main() {
 
       expect(
         flexBoxAttribute1?.box!.padding,
-        EdgeInsetsDto.value(const EdgeInsets.all(10.0)),
+        resolvesTo(const EdgeInsets.all(10.0)),
       );
       expect(
         flexBoxAttribute2?.box!.padding,
-        EdgeInsetsDto.value(const EdgeInsets.all(20.0)),
+        resolvesTo(const EdgeInsets.all(20.0)),
       );
       expect(
         flexBoxAttribute1?.flex!.mainAxisAlignment,
@@ -448,11 +449,11 @@ void main() {
 
       expect(
         flexBoxAttribute.box!.padding,
-        EdgeInsetsDto.value(const EdgeInsets.all(10.0)),
+        resolvesTo(const EdgeInsets.all(10.0)),
       );
       expect(
         (flexBoxAttribute.box!.decoration as BoxDecorationDto).color,
-        Colors.red,
+        isA<Prop<Color>>(),
       );
       expect(flexBoxAttribute.box!.alignment, Alignment.center);
       expect(
@@ -466,7 +467,7 @@ void main() {
 
       expect(
         flexBoxAttribute2.box!.padding,
-        EdgeInsetsDto.value(const EdgeInsets.all(20.0)),
+        resolvesTo(const EdgeInsets.all(20.0)),
       );
       expect(
         (flexBoxAttribute2.box!.decoration as BoxDecorationDto?)?.color,

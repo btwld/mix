@@ -184,12 +184,12 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
   }
 
   @override
-  EdgeInsets resolve(MixContext mix) {
+  EdgeInsets resolve(MixContext context) {
     return EdgeInsets.only(
-      left: left?.resolve(mix) ?? 0,
-      top: top?.resolve(mix) ?? 0,
-      right: right?.resolve(mix) ?? 0,
-      bottom: bottom?.resolve(mix) ?? 0,
+      left: left?.resolve(context) ?? 0,
+      top: top?.resolve(context) ?? 0,
+      right: right?.resolve(context) ?? 0,
+      bottom: bottom?.resolve(context) ?? 0,
     );
   }
 
@@ -304,12 +304,12 @@ final class EdgeInsetsDirectionalDto
   }
 
   @override
-  EdgeInsetsDirectional resolve(MixContext mix) {
+  EdgeInsetsDirectional resolve(MixContext context) {
     return EdgeInsetsDirectional.only(
-      start: start?.resolve(mix) ?? 0,
-      top: top?.resolve(mix) ?? 0,
-      end: end?.resolve(mix) ?? 0,
-      bottom: bottom?.resolve(mix) ?? 0,
+      start: start?.resolve(context) ?? 0,
+      top: top?.resolve(context) ?? 0,
+      end: end?.resolve(context) ?? 0,
+      bottom: bottom?.resolve(context) ?? 0,
     );
   }
 

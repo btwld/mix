@@ -79,12 +79,12 @@ final class BoxConstraintsDto extends ConstraintsDto<BoxConstraints>
   /// final constraints = BoxConstraintsDto(...).resolve(mix);
   /// ```
   @override
-  BoxConstraints resolve(MixContext mix) {
+  BoxConstraints resolve(MixContext context) {
     return BoxConstraints(
-      minWidth: resolveProp(mix, minWidth) ?? defaultValue.minWidth,
-      maxWidth: resolveProp(mix, maxWidth) ?? defaultValue.maxWidth,
-      minHeight: resolveProp(mix, minHeight) ?? defaultValue.minHeight,
-      maxHeight: resolveProp(mix, maxHeight) ?? defaultValue.maxHeight,
+      minWidth: resolveProp(context, minWidth) ?? defaultValue.minWidth,
+      maxWidth: resolveProp(context, maxWidth) ?? defaultValue.maxWidth,
+      minHeight: resolveProp(context, minHeight) ?? defaultValue.minHeight,
+      maxHeight: resolveProp(context, maxHeight) ?? defaultValue.maxHeight,
     );
   }
 

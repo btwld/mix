@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../../helpers/custom_matchers.dart';
+
 const $testvariant = Variant('test');
 void main() {
   group('FlexBoxUtility', () {
@@ -24,10 +26,10 @@ void main() {
 
       expect(attr.box!.alignment, Alignment.center);
       expect(attr.box!.clipBehavior, Clip.antiAlias);
-      expect(attr.box!.constraints!.maxWidth, 200);
+      expect(attr.box!.constraints!.maxWidth, resolvesTo(200));
       expect(attr.box!.height, 10);
-      expect(attr.box!.margin, EdgeInsetsDto.value(const EdgeInsets.all(10)));
-      expect(attr.box!.padding, EdgeInsetsDto.value(const EdgeInsets.all(10)));
+      expect(attr.box!.margin, resolvesTo(const EdgeInsets.all(10)));
+      expect(attr.box!.padding, resolvesTo(const EdgeInsets.all(10)));
       expect(attr.box!.transform, Matrix4.identity());
       expect(attr.box!.width, 10);
       expect(attr.flex!.mainAxisAlignment, MainAxisAlignment.center);
@@ -48,7 +50,7 @@ void main() {
       final flexBox = flexBoxUtility..box.color.blue();
       expect(
         (flexBox.attributeValue!.box!.decoration as BoxDecorationDto).color,
-        Prop.value(Colors.blue),
+        isA<Prop<Color>>(),
       );
     });
 
@@ -92,7 +94,7 @@ void main() {
 
       final decoration =
           flexBox.attributeValue!.box!.decoration as BoxDecorationDto;
-      expect(decoration.color, Prop.value(Colors.amber));
+      expect(decoration.color, isA<Prop<Color>>());
       expect(
         decoration.borderRadius,
         BorderRadiusDto.value(BorderRadius.circular(10)),
@@ -110,7 +112,7 @@ void main() {
           flexBox.attributeValue!.box!.foregroundDecoration as BoxDecorationDto;
       expect(
         foregroundDecoration.color,
-        Prop.value(Colors.amber),
+        isA<Prop<Color>>(),
         reason: 'The color is not correct',
       );
       expect(

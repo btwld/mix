@@ -70,11 +70,11 @@ class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
   /// final shadow = ShadowDto(...).resolve(mix);
   /// ```
   @override
-  Shadow resolve(MixContext mix) {
+  Shadow resolve(MixContext context) {
     return Shadow(
-      color: resolveProp(mix, color) ?? defaultValue.color,
-      offset: resolveProp(mix, offset) ?? defaultValue.offset,
-      blurRadius: resolveProp(mix, blurRadius) ?? defaultValue.blurRadius,
+      color: resolveProp(context, color) ?? defaultValue.color,
+      offset: resolveProp(context, offset) ?? defaultValue.offset,
+      blurRadius: resolveProp(context, blurRadius) ?? defaultValue.blurRadius,
     );
   }
 
@@ -177,12 +177,12 @@ class BoxShadowDto extends BaseShadowDto<BoxShadow>
   /// final boxShadow = BoxShadowDto(...).resolve(mix);
   /// ```
   @override
-  BoxShadow resolve(MixContext mix) {
+  BoxShadow resolve(MixContext context) {
     return BoxShadow(
-      color: resolveProp(mix, color) ?? defaultValue.color,
-      offset: resolveProp(mix, offset) ?? defaultValue.offset,
-      blurRadius: resolveProp(mix, blurRadius) ?? defaultValue.blurRadius,
-      spreadRadius: resolveProp(mix, spreadRadius) ?? defaultValue.spreadRadius,
+      color: resolveProp(context, color) ?? defaultValue.color,
+      offset: resolveProp(context, offset) ?? defaultValue.offset,
+      blurRadius: resolveProp(context, blurRadius) ?? defaultValue.blurRadius,
+      spreadRadius: resolveProp(context, spreadRadius) ?? defaultValue.spreadRadius,
     );
   }
 

@@ -9,15 +9,15 @@ void main() {
   group('AnimatedDataDto', () {
     test('should create an instance with default values', () {
       final dto = AnimationConfigDto.withDefaults();
-      expect(dto.duration, equals(kDefaultAnimationDuration));
-      expect(dto.curve, equals(Curves.linear));
+      expect(dto.duration, resolvesTo(kDefaultAnimationDuration));
+      expect(dto.curve, resolvesTo(Curves.linear));
     });
 
     test('should create an instance with provided values', () {
       final dto = AnimationConfigDto(
           duration: const Duration(seconds: 2), curve: Curves.easeIn);
-      expect(dto.duration, equals(const Duration(seconds: 2)));
-      expect(dto.curve, equals(Curves.easeIn));
+      expect(dto.duration, resolvesTo(const Duration(seconds: 2)));
+      expect(dto.curve, resolvesTo(Curves.easeIn));
     });
 
     test('should merge with another instance', () {
@@ -26,8 +26,8 @@ void main() {
       final dto2 = AnimationConfigDto(
           duration: const Duration(seconds: 3), curve: Curves.easeOut);
       final merged = dto1.merge(dto2);
-      expect(merged.duration, equals(const Duration(seconds: 3)));
-      expect(merged.curve, equals(Curves.easeOut));
+      expect(merged.duration, resolvesTo(const Duration(seconds: 3)));
+      expect(merged.curve, resolvesTo(Curves.easeOut));
     });
 
     test('should resolve to an AnimatedData instance', () {
@@ -84,8 +84,8 @@ void main() {
       const animatedData =
           AnimationConfig(duration: Duration(seconds: 2), curve: Curves.easeIn);
       final dto = animatedData.toDto();
-      expect(dto.duration, equals(const Duration(seconds: 2)));
-      expect(dto.curve, equals(Curves.easeIn));
+      expect(dto.duration, resolvesTo(const Duration(seconds: 2)));
+      expect(dto.curve, resolvesTo(Curves.easeIn));
     });
 
     // equality

@@ -24,10 +24,22 @@ void main() {
         ),
       );
 
-      expect(merged.borderRadius!.topLeft, resolvesTo(const Radius.circular(25)));
-      expect(merged.borderRadius!.topRight, resolvesTo(const Radius.circular(20)));
-      expect(merged.borderRadius!.bottomLeft, resolvesTo(const Radius.circular(5)));
-      expect(merged.borderRadius!.bottomRight, resolvesTo(const Radius.circular(10)));
+      expect(
+        merged.borderRadius!.topLeft,
+        resolvesTo(const Radius.circular(25)),
+      );
+      expect(
+        merged.borderRadius!.topRight,
+        resolvesTo(const Radius.circular(20)),
+      );
+      expect(
+        merged.borderRadius!.bottomLeft,
+        resolvesTo(const Radius.circular(5)),
+      );
+      expect(
+        merged.borderRadius!.bottomRight,
+        resolvesTo(const Radius.circular(10)),
+      );
 
       expect(merged.side!.color, resolvesTo(Colors.blue));
       expect(merged.side!.width, resolvesTo(2.0));
@@ -78,7 +90,7 @@ void main() {
         ),
       );
 
-      expect(merged.eccentricity, 0.75);
+      expect(merged.eccentricity, resolvesTo(0.75));
       expect(merged.side!.color, resolvesTo(Colors.blue));
       expect(merged.side!.width, resolvesTo(2.0));
     });
@@ -120,10 +132,22 @@ void main() {
         ),
       );
 
-      expect(merged.borderRadius!.topLeft, resolvesTo(const Radius.circular(25)));
-      expect(merged.borderRadius!.topRight, resolvesTo(const Radius.circular(20)));
-      expect(merged.borderRadius!.bottomLeft, resolvesTo(const Radius.circular(5)));
-      expect(merged.borderRadius!.bottomRight, resolvesTo(const Radius.circular(10)));
+      expect(
+        merged.borderRadius!.topLeft,
+        resolvesTo(const Radius.circular(25)),
+      );
+      expect(
+        merged.borderRadius!.topRight,
+        resolvesTo(const Radius.circular(20)),
+      );
+      expect(
+        merged.borderRadius!.bottomLeft,
+        resolvesTo(const Radius.circular(5)),
+      );
+      expect(
+        merged.borderRadius!.bottomRight,
+        resolvesTo(const Radius.circular(10)),
+      );
 
       expect(merged.side!.color, resolvesTo(Colors.blue));
       expect(merged.side!.width, resolvesTo(2.0));
@@ -389,7 +413,7 @@ void main() {
           circleBorderDto.side,
           equals(BorderSideDto.value(const BorderSide(color: Colors.blue))),
         );
-        expect(circleBorderDto.eccentricity, equals(0.8));
+        expect(circleBorderDto.eccentricity, resolvesTo(0.8));
       },
     );
 
@@ -527,12 +551,12 @@ void main() {
         starBorderDto.side,
         equals(BorderSideDto.value(const BorderSide(color: Colors.teal))),
       );
-      expect(starBorderDto.points, equals(5));
-      expect(starBorderDto.innerRadiusRatio, equals(0.5));
-      expect(starBorderDto.pointRounding, equals(0.2));
-      expect(starBorderDto.valleyRounding, equals(0.1));
-      expect(starBorderDto.rotation, equals(0.3));
-      expect(starBorderDto.squash, equals(0.4));
+      expect(starBorderDto.points, resolvesTo(5.0));
+      expect(starBorderDto.innerRadiusRatio, resolvesTo(0.5));
+      expect(starBorderDto.pointRounding, resolvesTo(0.2));
+      expect(starBorderDto.valleyRounding, resolvesTo(0.1));
+      expect(starBorderDto.rotation, resolvesTo(0.3));
+      expect(starBorderDto.squash, resolvesTo(0.4));
     });
 
     test('merge method should handle null values correctly', () {
@@ -639,8 +663,8 @@ void main() {
             linearBorderEdge,
           );
 
-          expect(linearBorderEdgeDto.size, equals(1.0));
-          expect(linearBorderEdgeDto.alignment, equals(0.1));
+          expect(linearBorderEdgeDto.size, resolvesTo(1.0));
+          expect(linearBorderEdgeDto.alignment, resolvesTo(0.1));
         },
       );
 

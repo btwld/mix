@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../../helpers/custom_matchers.dart';
+import '../../../helpers/testing_utils.dart';
 
 void main() {
   group('TextSpecAttribute', () {
@@ -104,32 +105,23 @@ void main() {
 
     // resolve
     test('resolve', () {
-      expect(
-        textSpecAttribute,
-        resolvesTo(TextSpec(
-          overflow: TextOverflow.ellipsis,
-          strutStyle: const StrutStyle(
-            fontFamily: 'Roboto',
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
-          ),
-          textAlign: TextAlign.center,
-          textScaler: null,
-          maxLines: 2,
-          style: const TextStyle(
-            fontFamily: 'Roboto',
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
-          ),
-          textWidthBasis: TextWidthBasis.longestLine,
-          textHeightBehavior: const TextHeightBehavior(
-            applyHeightToFirstAscent: true,
-            applyHeightToLastDescent: true,
-          ),
-          textDirection: TextDirection.rtl,
-          softWrap: true,
-        )),
-      );
+      final resolved = textSpecAttribute.resolve(EmptyMixData);
+      expect(resolved, isA<TextSpec>());
+      expect(resolved.overflow, TextOverflow.ellipsis);
+      expect(resolved.strutStyle?.fontFamily, 'Roboto');
+      expect(resolved.strutStyle?.fontSize, 12);
+      expect(resolved.strutStyle?.fontWeight, FontWeight.w500);
+      expect(resolved.textAlign, TextAlign.center);
+      expect(resolved.textScaler, const TextScaler.linear(1.5));
+      expect(resolved.maxLines, 2);
+      expect(resolved.style?.fontFamily, 'Roboto');
+      expect(resolved.style?.fontSize, 12);
+      expect(resolved.style?.fontWeight, FontWeight.w500);
+      expect(resolved.textWidthBasis, TextWidthBasis.longestLine);
+      expect(resolved.textHeightBehavior?.applyHeightToFirstAscent, true);
+      expect(resolved.textHeightBehavior?.applyHeightToLastDescent, true);
+      expect(resolved.textDirection, TextDirection.rtl);
+      expect(resolved.softWrap, true);
     });
   });
 }

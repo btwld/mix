@@ -92,21 +92,21 @@ final class DecorationImageDto extends Mix<DecorationImage> {
   /// final decorationImage = DecorationImageDto(...).resolve(mix);
   /// ```
   @override
-  DecorationImage resolve(MixContext mix) {
-    final resolvedImage = resolveProp(mix, image);
+  DecorationImage resolve(MixContext context) {
+    final resolvedImage = resolveProp(context, image);
     if (resolvedImage == null) {
       throw StateError('DecorationImage requires an image provider');
     }
 
     return DecorationImage(
       image: resolvedImage,
-      fit: resolveProp(mix, fit),
-      alignment: resolveProp(mix, alignment) ?? Alignment.center,
-      centerSlice: resolveProp(mix, centerSlice),
-      repeat: resolveProp(mix, repeat) ?? ImageRepeat.noRepeat,
-      filterQuality: resolveProp(mix, filterQuality) ?? FilterQuality.low,
-      invertColors: resolveProp(mix, invertColors) ?? false,
-      isAntiAlias: resolveProp(mix, isAntiAlias) ?? false,
+      fit: resolveProp(context, fit),
+      alignment: resolveProp(context, alignment) ?? Alignment.center,
+      centerSlice: resolveProp(context, centerSlice),
+      repeat: resolveProp(context, repeat) ?? ImageRepeat.noRepeat,
+      filterQuality: resolveProp(context, filterQuality) ?? FilterQuality.low,
+      invertColors: resolveProp(context, invertColors) ?? false,
+      isAntiAlias: resolveProp(context, isAntiAlias) ?? false,
     );
   }
 

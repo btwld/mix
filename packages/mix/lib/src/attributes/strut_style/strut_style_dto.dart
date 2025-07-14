@@ -88,16 +88,16 @@ class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
   }
 
   @override
-  StrutStyle resolve(MixContext mix) {
+  StrutStyle resolve(MixContext context) {
     return StrutStyle(
-      fontFamily: resolveProp(mix, fontFamily),
-      fontFamilyFallback: resolveProp(mix, fontFamilyFallback),
-      fontSize: resolveProp(mix, fontSize),
-      height: resolveProp(mix, height),
-      leading: resolveProp(mix, leading),
-      fontWeight: resolveProp(mix, fontWeight),
-      fontStyle: resolveProp(mix, fontStyle),
-      forceStrutHeight: resolveProp(mix, forceStrutHeight),
+      fontFamily: resolveProp(context, fontFamily),
+      fontFamilyFallback: resolveProp(context, fontFamilyFallback),
+      fontSize: resolveProp(context, fontSize),
+      height: resolveProp(context, height),
+      leading: resolveProp(context, leading),
+      fontWeight: resolveProp(context, fontWeight),
+      fontStyle: resolveProp(context, fontStyle),
+      forceStrutHeight: resolveProp(context, forceStrutHeight),
     );
   }
 

@@ -66,8 +66,8 @@ class WidgetModifiersConfigDto extends Mix<WidgetModifiersConfig> {
   }
 
   @override
-  WidgetModifiersConfig resolve(MixContext mix) {
-    return WidgetModifiersConfig(modifiers.map((e) => e.resolve(mix)).toList());
+  WidgetModifiersConfig resolve(MixContext context) {
+    return WidgetModifiersConfig(modifiers.map((e) => e.resolve(context)).toList());
   }
 
   @override

@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../../helpers/custom_matchers.dart';
+import '../../../helpers/testing_utils.dart';
 
 void main() {
   group('FlexBoxSpecAttribute', () {
@@ -48,7 +49,7 @@ void main() {
 
       expect(
         flexBoxSpecAttribute.box!.constraints,
-        BoxConstraintsDto(maxHeight: 100),
+        resolvesTo(const BoxConstraints(maxHeight: 100)),
       );
       expect(
         flexBoxSpecAttribute.box!.decoration,
@@ -129,34 +130,22 @@ void main() {
         ),
       );
 
-      expect(
-        flexBoxSpecAttribute,
-        resolvesTo(FlexBoxSpec(
-          box: BoxSpec(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.only(left: 20, top: 20, right: 20, bottom: 20),
-            margin: const EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 10),
-            constraints: const BoxConstraints(maxWidth: double.infinity, maxHeight: 100),
-            decoration: const BoxDecoration(color: Colors.blue),
-            transform: Matrix4.identity(),
-            clipBehavior: Clip.antiAlias,
-            width: 100,
-            height: 100,
-            modifiers: const WidgetModifiersConfig([
-              OpacityModifierSpec(0.5),
-              SizedBoxModifierSpec(height: 10, width: 10),
-            ]),
-          ),
-          flex: const FlexSpec(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
-            verticalDirection: VerticalDirection.down,
-            textDirection: TextDirection.ltr,
-            textBaseline: TextBaseline.alphabetic,
-          ),
-        )),
-      );
+      final resolved = flexBoxSpecAttribute.resolve(EmptyMixData);
+      expect(resolved, isA<FlexBoxSpec>());
+      expect(resolved.box.alignment, Alignment.center);
+      expect(resolved.box.padding, const EdgeInsets.all(20));
+      expect(resolved.box.margin, const EdgeInsets.all(10));
+      expect(resolved.box.constraints, const BoxConstraints(maxHeight: 100));
+      expect(resolved.box.decoration, const BoxDecoration(color: Colors.blue));
+      expect(resolved.box.clipBehavior, Clip.antiAlias);
+      expect(resolved.box.width, 100);
+      expect(resolved.box.height, 100);
+      expect(resolved.flex.mainAxisAlignment, MainAxisAlignment.center);
+      expect(resolved.flex.crossAxisAlignment, CrossAxisAlignment.center);
+      expect(resolved.flex.mainAxisSize, MainAxisSize.max);
+      expect(resolved.flex.verticalDirection, VerticalDirection.down);
+      expect(resolved.flex.textDirection, TextDirection.ltr);
+      expect(resolved.flex.textBaseline, TextBaseline.alphabetic);
     });
 
     // merge()
@@ -242,21 +231,21 @@ void main() {
 
       expect(
         mergedFlexBoxSpecAttribute.box!.constraints,
-        BoxConstraintsDto(maxHeight: 200),
+        resolvesTo(const BoxConstraints(maxHeight: 200)),
       );
       expect(
         mergedFlexBoxSpecAttribute.box!.decoration,
-        BoxDecorationDto(color: Colors.red),
+        resolvesTo(const BoxDecoration(color: Colors.red)),
       );
 
       expect(mergedFlexBoxSpecAttribute.box!.height, 200);
       expect(
         mergedFlexBoxSpecAttribute.box!.margin,
-        EdgeInsetsGeometryDto.only(top: 20, bottom: 20, left: 20, right: 20),
+        resolvesTo(const EdgeInsets.all(20)),
       );
       expect(
         mergedFlexBoxSpecAttribute.box!.padding,
-        EdgeInsetsGeometryDto.only(top: 30, bottom: 30, left: 30, right: 30),
+        resolvesTo(const EdgeInsets.all(30)),
       );
       expect(mergedFlexBoxSpecAttribute.box!.transform, Matrix4.identity());
       expect(mergedFlexBoxSpecAttribute.box!.width, 200);

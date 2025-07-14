@@ -25,7 +25,7 @@ void main() {
         final merged = prop1.merge(prop2);
         // MIGRATED: Clean assertions - last value wins in merge
         expect(merged, resolvesTo('second'));
-        expect(merged, equivalentTo(prop2));
+        expect(prop2, resolvesTo('second'));
       });
     });
 
@@ -53,7 +53,7 @@ void main() {
         final merged = prop1.merge(prop2);
         // MIGRATED: Clean assertion - last value wins
         expect(merged, resolvesTo(20.0));
-        expect(merged, equivalentTo(prop2));
+        expect(prop2, resolvesTo(20.0));
       });
     });
 
@@ -85,7 +85,7 @@ void main() {
       final merged = prop1.merge(prop2);
       // MIGRATED: Clean assertions
       expect(merged, resolvesTo(Colors.blue));
-      expect(merged, equivalentTo(prop2));
+      expect(prop2, resolvesTo(Colors.blue));
     });
   });
 

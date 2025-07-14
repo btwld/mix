@@ -123,12 +123,12 @@ final class BorderDto extends BoxBorderDto<Border> {
   /// final border = BorderDto(...).resolve(mix);
   /// ```
   @override
-  Border resolve(MixContext mix) {
+  Border resolve(MixContext context) {
     return Border(
-      top: top?.resolve(mix) ?? BorderSide.none,
-      right: right?.resolve(mix) ?? BorderSide.none,
-      bottom: bottom?.resolve(mix) ?? BorderSide.none,
-      left: left?.resolve(mix) ?? BorderSide.none,
+      top: top?.resolve(context) ?? BorderSide.none,
+      right: right?.resolve(context) ?? BorderSide.none,
+      bottom: bottom?.resolve(context) ?? BorderSide.none,
+      left: left?.resolve(context) ?? BorderSide.none,
     );
   }
 
@@ -244,12 +244,12 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional> {
   /// final borderDirectional = BorderDirectionalDto(...).resolve(mix);
   /// ```
   @override
-  BorderDirectional resolve(MixContext mix) {
+  BorderDirectional resolve(MixContext context) {
     return BorderDirectional(
-      top: top?.resolve(mix) ?? BorderSide.none,
-      start: start?.resolve(mix) ?? BorderSide.none,
-      end: end?.resolve(mix) ?? BorderSide.none,
-      bottom: bottom?.resolve(mix) ?? BorderSide.none,
+      top: top?.resolve(context) ?? BorderSide.none,
+      start: start?.resolve(context) ?? BorderSide.none,
+      end: end?.resolve(context) ?? BorderSide.none,
+      bottom: bottom?.resolve(context) ?? BorderSide.none,
     );
   }
 
@@ -357,12 +357,12 @@ final class BorderSideDto extends Mix<BorderSide>
   /// final borderSide = BorderSideDto(...).resolve(mix);
   /// ```
   @override
-  BorderSide resolve(MixContext mix) {
+  BorderSide resolve(MixContext context) {
     return BorderSide(
-      color: resolveProp(mix, color) ?? defaultValue.color,
-      width: resolveProp(mix, width) ?? defaultValue.width,
-      style: resolveProp(mix, style) ?? defaultValue.style,
-      strokeAlign: resolveProp(mix, strokeAlign) ?? defaultValue.strokeAlign,
+      color: resolveProp(context, color) ?? defaultValue.color,
+      width: resolveProp(context, width) ?? defaultValue.width,
+      style: resolveProp(context, style) ?? defaultValue.style,
+      strokeAlign: resolveProp(context, strokeAlign) ?? defaultValue.strokeAlign,
     );
   }
 

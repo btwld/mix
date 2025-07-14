@@ -4,80 +4,53 @@ import '../../../helpers/custom_matchers.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../../helpers/attribute_generator.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
   group('BoxDecorationUtility', () {
     final boxDecoration = BoxDecorationUtility(UtilityTestAttribute.new);
     test('call', () {
-      final refBoxDecoration = RandomGenerator.boxDecoration();
-
-      final result = boxDecoration(
-        border: refBoxDecoration.border,
-        borderRadius: refBoxDecoration.borderRadius,
-        boxShadow: refBoxDecoration.boxShadow,
-        color: refBoxDecoration.color,
-        gradient: refBoxDecoration.gradient,
-        shape: refBoxDecoration.shape,
+      final testBorder = Border.all(color: Colors.red, width: 2.0);
+      final testBorderRadius = BorderRadius.circular(8.0);
+      const testBoxShadow = [
+        BoxShadow(
+          color: Colors.black26,
+          offset: Offset(0, 2),
+          blurRadius: 4.0,
+        ),
+      ];
+      const testGradient = LinearGradient(
+        colors: [Colors.blue, Colors.green],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
       );
 
-      expect(
-        result.value,
-        equals(
-          BoxDecorationDto(
-            border: refBoxDecoration.border != null
-                ? BorderDto.value(refBoxDecoration.border! as Border)
-                : null,
-            borderRadius: refBoxDecoration.borderRadius != null
-                ? BorderRadiusGeometryDto.value(refBoxDecoration.borderRadius!)
-                : null,
-            boxShadow: refBoxDecoration.boxShadow
-                ?.map((e) => BoxShadowDto.value(e))
-                .toList(),
-            color: refBoxDecoration.color,
-            gradient: refBoxDecoration.gradient != null
-                ? LinearGradientDto.maybeValue(
-                    refBoxDecoration.gradient! as LinearGradient,
-                  )
-                : null,
-            shape: refBoxDecoration.shape,
-          ),
-        ),
+      final result = boxDecoration(
+        border: testBorder,
+        borderRadius: testBorderRadius,
+        boxShadow: testBoxShadow,
+        color: Colors.white,
+        gradient: testGradient,
+        shape: BoxShape.rectangle,
       );
 
       expect(result.value, isA<BoxDecorationDto>());
       expect(result.value.border, isA<BoxBorderDto>());
       expect(result.value.borderRadius, isA<BorderRadiusGeometryDto>());
       expect(result.value.boxShadow, isA<List<BoxShadowDto>>());
-      expect(result.value.color, isA<Mix<Color>>());
+      expect(result.value.color, resolvesTo(Colors.white));
       expect(result.value.gradient, isA<GradientDto>());
-      expect(result.value.shape, isA<BoxShape>());
+      expect(result.value.shape, equals(BoxShape.rectangle));
 
-      expect(
-        result.value.border,
-        equals(BorderDto.value(refBoxDecoration.border! as Border)),
-      );
-      expect(
-        result.value.borderRadius,
-        equals(BorderRadiusGeometryDto.value(refBoxDecoration.borderRadius!)),
-      );
-      expect(
-        result.value.boxShadow,
-        equals(
-          refBoxDecoration.boxShadow?.map((e) => BoxShadowDto.value(e)).toList(),
-        ),
-      );
-      expect(result.value.color, resolvesTo(refBoxDecoration.color!));
-      expect(
-        result.value.gradient,
-        equals(
-          LinearGradientDto.maybeValue(
-            refBoxDecoration.gradient! as LinearGradient,
-          ),
-        ),
-      );
-      expect(result.value.shape, equals(refBoxDecoration.shape));
+      // Test that the values can be resolved correctly
+      final resolved = result.value.resolve(EmptyMixData);
+      expect(resolved.color, Colors.white);
+      expect(resolved.shape, BoxShape.rectangle);
+      expect(resolved.border, isA<Border>());
+      expect(resolved.borderRadius, isA<BorderRadius>());
+      expect(resolved.boxShadow, isA<List<BoxShadow>>());
+      expect(resolved.boxShadow?.length, 1);
+      expect(resolved.gradient, isA<LinearGradient>());
     });
     test('color setting', () {
       final result = boxDecoration.color(Colors.red);
@@ -144,7 +117,7 @@ void main() {
 
     test('elevation setting', () {
       final result = boxDecoration.elevation(9);
-      expect(result.value.boxShadow, resolvesTo(kElevationToShadow[9]!));
+      expect(result.value.boxShadow, equals(kElevationToShadow[9]!));
     });
   });
 
@@ -176,7 +149,18 @@ void main() {
         result.value.gradient,
         equals(LinearGradientDto.maybeValue(linearGradient)),
       );
-      expect(result.value.shadows, equals([BoxShadowDto.value(boxShadow)]));
+      expect(result.value.shadows, isA<List<BoxShadowDto>>());
+      expect(result.value.shadows?.length, 1);
+      
+      // Test that it resolves correctly
+      final resolved = result.value.resolve(EmptyMixData);
+      expect(resolved.color, Colors.blue);
+      expect(resolved.gradient, isA<LinearGradient>());
+      expect(resolved.shadows, isA<List<BoxShadow>>());
+      expect(resolved.shadows?.length, 1);
+      expect(resolved.shadows?.first.color, Colors.black);
+      expect(resolved.shadows?.first.offset, const Offset(5.0, 5.0));
+      expect(resolved.shadows?.first.blurRadius, 10.0);
     });
 
     // color()

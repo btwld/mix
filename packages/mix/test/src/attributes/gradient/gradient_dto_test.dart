@@ -57,7 +57,7 @@ void main() {
 
       expect(gradientDto.begin, resolvesTo(Alignment.topLeft));
       expect(gradientDto.end, resolvesTo(Alignment.bottomRight));
-      expect(gradientDto.stops, resolvesTo([0.0, 1.0]));
+      expect(gradientDto.stops, resolvesTo(equals([0.0, 1.0])));
       expect(gradientDto.tileMode, resolvesTo(TileMode.clamp));
     });
 
@@ -115,7 +115,7 @@ void main() {
       expect(mergedGradient.begin, resolvesTo(Alignment.centerLeft));
       expect(mergedGradient.end, resolvesTo(Alignment.centerRight));
       expect(mergedGradient.colors, isNotNull);
-      expect(mergedGradient.stops, resolvesTo([0.25, 0.75]));
+      expect(mergedGradient.stops, resolvesTo(equals([0.25, 0.75])));
     });
 
     test('== operator returns true for equal objects', () {
@@ -166,7 +166,7 @@ void main() {
 
       expect(gradientDto.center, resolvesTo(Alignment.center));
       expect(gradientDto.radius, resolvesTo(0.5));
-      expect(gradientDto.stops, resolvesTo([0.0, 1.0]));
+      expect(gradientDto.stops, resolvesTo(equals([0.0, 1.0])));
       expect(gradientDto.tileMode, resolvesTo(TileMode.clamp));
     });
 
@@ -224,7 +224,7 @@ void main() {
       expect(mergedGradient.center, resolvesTo(Alignment.centerLeft));
       expect(mergedGradient.radius, resolvesTo(0.75));
       expect(mergedGradient.colors, isNotNull);
-      expect(mergedGradient.stops, resolvesTo([0.25, 0.75]));
+      expect(mergedGradient.stops, resolvesTo(equals([0.25, 0.75])));
     });
 
     test('== operator returns true for equal objects', () {
@@ -276,7 +276,7 @@ void main() {
       expect(gradientDto.center, resolvesTo(Alignment.center));
       expect(gradientDto.startAngle, resolvesTo(0.0));
       expect(gradientDto.endAngle, resolvesTo(1.0));
-      expect(gradientDto.stops, resolvesTo([0.0, 1.0]));
+      expect(gradientDto.stops, resolvesTo(equals([0.0, 1.0])));
       expect(gradientDto.tileMode, resolvesTo(TileMode.clamp));
     });
 
@@ -342,7 +342,7 @@ void main() {
       expect(mergedGradient.startAngle, resolvesTo(0.25));
       expect(mergedGradient.endAngle, resolvesTo(0.75));
       expect(mergedGradient.colors, isNotNull);
-      expect(mergedGradient.stops, resolvesTo([0.25, 0.75]));
+      expect(mergedGradient.stops, resolvesTo(equals([0.25, 0.75])));
     });
 
     test('== operator returns true for equal objects', () {

@@ -173,21 +173,21 @@ void main() {
 
       expect(
         mergedBoxSpecAttribute.constraints,
-        BoxConstraintsDto(maxHeight: 200),
+        resolvesTo(const BoxConstraints(maxHeight: 200)),
       );
       expect(
         mergedBoxSpecAttribute.decoration,
-        BoxDecorationDto(color: Colors.red),
+        resolvesTo(const BoxDecoration(color: Colors.red)),
       );
 
       expect(mergedBoxSpecAttribute.height, 200);
       expect(
         mergedBoxSpecAttribute.margin,
-        EdgeInsetsGeometryDto.only(top: 20, bottom: 20, left: 20, right: 20),
+        resolvesTo(const EdgeInsets.all(20)),
       );
       expect(
         mergedBoxSpecAttribute.padding,
-        EdgeInsetsGeometryDto.only(top: 30, bottom: 30, left: 30, right: 30),
+        resolvesTo(const EdgeInsets.all(30)),
       );
       expect(mergedBoxSpecAttribute.transform, Matrix4.identity());
       expect(mergedBoxSpecAttribute.width, 200);

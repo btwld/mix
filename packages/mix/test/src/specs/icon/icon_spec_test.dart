@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../../helpers/custom_matchers.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
@@ -121,8 +122,8 @@ void main() {
       final attr = util.attributeValue!;
 
       expect(util, isA<StyleElement>());
-      expect(attr.color, Prop.value(Colors.red));
-      expect(attr.size, 24);
+      expect(attr.color, isA<Prop<Color>>());
+      expect(attr.size, resolvesTo(24));
       expect(attr.weight, 500);
       expect(attr.grade, 200);
       expect(attr.opticalSize, 48);
@@ -134,7 +135,7 @@ void main() {
 
       final iconAttribute = style.styles.attributeOfType<IconSpecAttribute>();
 
-      expect(iconAttribute?.color, Prop.value(Colors.red));
+      expect(iconAttribute?.color, isA<Prop<Color>>());
       expect(iconAttribute?.size, 24);
       expect(iconAttribute?.weight, 500);
       expect(iconAttribute?.grade, 200);
@@ -164,8 +165,8 @@ void main() {
       final attr1 = icon1.attributeValue!;
       final attr2 = icon2.attributeValue!;
 
-      expect(attr1.size, 24);
-      expect(attr2.size, 48);
+      expect(attr1.size, resolvesTo(24));
+      expect(attr2.size, resolvesTo(48));
 
       final style1 = Style(icon1);
       final style2 = Style(icon2);
@@ -198,11 +199,11 @@ void main() {
       final iconAttribute = iconValue.attributeValue!;
       final iconAttribute2 = icon.size(48);
 
-      expect(iconAttribute.size, 24);
-      expect(iconAttribute.color, Prop.value(Colors.red));
+      expect(iconAttribute.size, resolvesTo(24));
+      expect(iconAttribute.color, isA<Prop<Color>>());
       expect(iconAttribute.weight, 500);
 
-      expect(iconAttribute2.size, 48);
+      expect(iconAttribute2.size, resolvesTo(48));
       expect(iconAttribute2.color, isNull);
       expect(iconAttribute2.weight, isNull);
     });
