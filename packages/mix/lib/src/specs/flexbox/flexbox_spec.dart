@@ -347,13 +347,7 @@ class FlexBoxSpecUtility<T extends SpecAttribute>
   /// Utility for defining [FlexBoxSpecAttribute.flex]
   late final flex = FlexSpecUtility((v) => only(flex: v));
 
-  FlexBoxSpecUtility(
-    super.attributeBuilder, {
-    @Deprecated(
-      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
-    )
-    bool? mutable,
-  });
+  FlexBoxSpecUtility(super.attributeBuilder);
 
   @Deprecated(
     'Use "this" instead of "chain" for method chaining. '

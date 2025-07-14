@@ -198,7 +198,7 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
     AnimationConfigDto? animated,
     WidgetModifiersConfigDto? modifiers,
   }) {
-    return IconSpecAttribute._(
+    return IconSpecAttribute.props(
       color: Prop.maybeValue(color),
       size: Prop.maybeValue(size),
       weight: Prop.maybeValue(weight),
@@ -215,8 +215,8 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
     );
   }
 
-  // Private constructor accepts Prop instances
-  const IconSpecAttribute._({
+  /// Constructor that accepts Prop values directly
+  const IconSpecAttribute.props({
     this.color,
     this.size,
     this.weight,
@@ -232,7 +232,7 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
 
   // Static factory to create from resolved Spec
   static IconSpecAttribute value(IconSpec spec) {
-    return IconSpecAttribute._(
+    return IconSpecAttribute.props(
       color: Prop.maybeValue(spec.color),
       size: Prop.maybeValue(spec.size),
       weight: Prop.maybeValue(spec.weight),
@@ -285,7 +285,7 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
   IconSpecAttribute merge(IconSpecAttribute? other) {
     if (other == null) return this;
 
-    return IconSpecAttribute._(
+    return IconSpecAttribute.props(
       color: mergeProp(color, other.color),
       size: mergeProp(size, other.size),
       weight: mergeProp(weight, other.weight),
@@ -348,7 +348,7 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
 
 class IconSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, IconSpecAttribute> {
-  late final color = ColorUtility((v) => only(color: v));
+  late final color = ColorUtility((prop) => builder(IconSpecAttribute.props(color: prop)));
   late final size = DoubleUtility((v) => only(size: v));
   late final weight = DoubleUtility((v) => only(weight: v));
   late final grade = DoubleUtility((v) => only(grade: v));
@@ -362,13 +362,7 @@ class IconSpecUtility<T extends SpecAttribute>
   late final animated = AnimatedUtility((v) => only(animated: v));
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  IconSpecUtility(
-    super.builder, {
-    @Deprecated(
-      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
-    )
-    super.mutable,
-  });
+  IconSpecUtility(super.builder);
 
   @Deprecated(
     'Use "this" instead of "chain" for method chaining. '

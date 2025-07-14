@@ -24,7 +24,7 @@ final class DecorationImageDto extends Mix<DecorationImage> {
     bool? invertColors,
     bool? isAntiAlias,
   }) {
-    return DecorationImageDto._(
+    return DecorationImageDto.props(
       image: Prop.maybeValue(image),
       fit: Prop.maybeValue(fit),
       alignment: Prop.maybeValue(alignment),
@@ -45,7 +45,7 @@ final class DecorationImageDto extends Mix<DecorationImage> {
   /// final dto = DecorationImageDto.value(decorationImage);
   /// ```
   factory DecorationImageDto.value(DecorationImage decorationImage) {
-    return DecorationImageDto._(
+    return DecorationImageDto.props(
       image: Prop.value(decorationImage.image),
       fit: Prop.maybeValue(decorationImage.fit),
       alignment: Prop.value(decorationImage.alignment),
@@ -58,7 +58,7 @@ final class DecorationImageDto extends Mix<DecorationImage> {
   }
 
   // Private constructor that accepts MixProp instances
-  const DecorationImageDto._({
+  const DecorationImageDto.props({
     this.image,
     this.fit,
     this.alignment,
@@ -122,7 +122,7 @@ final class DecorationImageDto extends Mix<DecorationImage> {
   DecorationImageDto merge(DecorationImageDto? other) {
     if (other == null) return this;
 
-    return DecorationImageDto._(
+    return DecorationImageDto.props(
       image: mergeProp(image, other.image),
       fit: mergeProp(fit, other.fit),
       alignment: mergeProp(alignment, other.alignment),

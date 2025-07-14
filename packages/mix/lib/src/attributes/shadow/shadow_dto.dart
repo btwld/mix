@@ -23,7 +23,7 @@ sealed class BaseShadowDto<T extends Shadow> extends Mix<T> {
 class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
   // Main constructor accepts Mix<T>? values
   factory ShadowDto({double? blurRadius, Color? color, Offset? offset}) {
-    return ShadowDto._(
+    return ShadowDto.props(
       blurRadius: Prop.maybeValue(blurRadius),
       color: Prop.maybeValue(color),
       offset: Prop.maybeValue(offset),
@@ -39,15 +39,15 @@ class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
   /// final dto = ShadowDto.value(shadow);
   /// ```
   factory ShadowDto.value(Shadow shadow) {
-    return ShadowDto._(
+    return ShadowDto.props(
       blurRadius: Prop.value(shadow.blurRadius),
       color: Prop.value(shadow.color),
       offset: Prop.value(shadow.offset),
     );
   }
 
-  // Private constructor that accepts MixableProperty instances
-  const ShadowDto._({super.blurRadius, super.color, super.offset});
+  /// Constructor that accepts Prop values directly
+  const ShadowDto.props({super.blurRadius, super.color, super.offset});
 
   /// Constructor that accepts a nullable [Shadow] value and extracts its properties.
   ///
@@ -90,7 +90,7 @@ class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
   ShadowDto merge(ShadowDto? other) {
     if (other == null) return this;
 
-    return ShadowDto._(
+    return ShadowDto.props(
       blurRadius: mergeProp(blurRadius, other.blurRadius),
       color: mergeProp(color, other.color),
       offset: mergeProp(offset, other.offset),
@@ -123,7 +123,7 @@ class BoxShadowDto extends BaseShadowDto<BoxShadow>
     double? blurRadius,
     double? spreadRadius,
   }) {
-    return BoxShadowDto._(
+    return BoxShadowDto.props(
       color: Prop.maybeValue(color),
       offset: Prop.maybeValue(offset),
       blurRadius: Prop.maybeValue(blurRadius),
@@ -140,7 +140,7 @@ class BoxShadowDto extends BaseShadowDto<BoxShadow>
   /// final dto = BoxShadowDto.value(boxShadow);
   /// ```
   factory BoxShadowDto.value(BoxShadow boxShadow) {
-    return BoxShadowDto._(
+    return BoxShadowDto.props(
       color: Prop.value(boxShadow.color),
       offset: Prop.value(boxShadow.offset),
       blurRadius: Prop.value(boxShadow.blurRadius),
@@ -149,7 +149,7 @@ class BoxShadowDto extends BaseShadowDto<BoxShadow>
   }
 
   // Private constructor that accepts MixableProperty instances
-  const BoxShadowDto._({
+  const BoxShadowDto.props({
     super.color,
     super.offset,
     super.blurRadius,
@@ -198,7 +198,7 @@ class BoxShadowDto extends BaseShadowDto<BoxShadow>
   BoxShadowDto merge(BoxShadowDto? other) {
     if (other == null) return this;
 
-    return BoxShadowDto._(
+    return BoxShadowDto.props(
       color: mergeProp(color, other.color),
       offset: mergeProp(offset, other.offset),
       blurRadius: mergeProp(blurRadius, other.blurRadius),

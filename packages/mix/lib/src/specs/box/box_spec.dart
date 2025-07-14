@@ -572,13 +572,7 @@ class BoxSpecUtility<T extends SpecAttribute>
   /// Utility for defining [BoxSpecAttribute.animated]
   late final animated = AnimatedUtility((v) => only(animated: v));
 
-  BoxSpecUtility(
-    super.builder, {
-    @Deprecated(
-      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
-    )
-    super.mutable,
-  });
+  BoxSpecUtility(super.builder);
 
   @Deprecated(
     'Use "this" instead of "chain" for method chaining. '

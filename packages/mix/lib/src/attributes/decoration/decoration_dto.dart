@@ -6,9 +6,9 @@ import 'package:mix/mix.dart';
 
 typedef _BaseDecorProperties = ({
   Prop<Color>? color,
-  GradientDto? gradient,
-  List<BoxShadowDto>? boxShadow,
-  DecorationImageDto? image,
+  MixProp<Gradient, GradientDto>? gradient,
+  List<MixProp<BoxShadow, BoxShadowDto>>? boxShadow,
+  MixProp<DecorationImage, DecorationImageDto>? image,
 });
 
 /// A Data transfer object that represents a [Decoration] value.
@@ -20,9 +20,9 @@ typedef _BaseDecorProperties = ({
 @immutable
 sealed class DecorationDto<T extends Decoration> extends Mix<T> {
   final Prop<Color>? color;
-  final GradientDto? gradient;
-  final DecorationImageDto? image;
-  final List<BoxShadowDto>? boxShadow;
+  final MixProp<Gradient, GradientDto>? gradient;
+  final MixProp<DecorationImage, DecorationImageDto>? image;
+  final List<MixProp<BoxShadow, BoxShadowDto>>? boxShadow;
 
   const DecorationDto({
     required this.color,
@@ -91,15 +91,17 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
     GradientDto? gradient,
     List<BoxShadowDto>? boxShadow,
   }) {
-    return BoxDecorationDto._(
+    return BoxDecorationDto.props(
       border: border,
       borderRadius: borderRadius,
       shape: Prop.maybeValue(shape),
       backgroundBlendMode: Prop.maybeValue(backgroundBlendMode),
       color: Prop.maybeValue(color),
-      image: image,
-      gradient: gradient,
-      boxShadow: boxShadow,
+      image: image != null ? MixProp.value(image) : null,
+      gradient: gradient != null ? MixProp.value(gradient) : null,
+      boxShadow: boxShadow
+          ?.map(MixProp<BoxShadow, BoxShadowDto>.value)
+          .toList(),
     );
   }
 
@@ -112,7 +114,7 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
   /// final dto = BoxDecorationDto.value(decoration);
   /// ```
   factory BoxDecorationDto.value(BoxDecoration decoration) {
-    return BoxDecorationDto._(
+    return BoxDecorationDto.props(
       border: _convertBoxBorder(decoration.border),
       borderRadius: _convertBorderRadius(decoration.borderRadius),
       shape: Prop.maybeValue(
@@ -120,13 +122,23 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
       ),
       backgroundBlendMode: Prop.maybeValue(decoration.backgroundBlendMode),
       color: Prop.maybeValue(decoration.color),
-      image: DecorationImageDto.maybeValue(decoration.image),
-      gradient: _convertGradient(decoration.gradient),
-      boxShadow: decoration.boxShadow?.map(BoxShadowDto.value).toList(),
+      image: decoration.image != null
+          ? MixProp.value(DecorationImageDto.value(decoration.image!))
+          : null,
+      gradient: decoration.gradient != null
+          ? MixProp.value(_convertGradient(decoration.gradient)!)
+          : null,
+      boxShadow: decoration.boxShadow
+          ?.map(
+            (shadow) => MixProp<BoxShadow, BoxShadowDto>.value(
+              BoxShadowDto.value(shadow),
+            ),
+          )
+          .toList(),
     );
   }
 
-  const BoxDecorationDto._({
+  const BoxDecorationDto.props({
     this.border,
     this.borderRadius,
     this.shape,
@@ -160,7 +172,7 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
     );
 
     return merge(
-      BoxDecorationDto._(
+      BoxDecorationDto.props(
         border: side != null ? BorderDto.all(side) : null,
         borderRadius: borderRadius,
         shape: Prop.maybeValue(boxShape),
@@ -207,7 +219,7 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
   BoxDecorationDto merge(BoxDecorationDto? other) {
     if (other == null) return this;
 
-    return BoxDecorationDto._(
+    return BoxDecorationDto.props(
       border: BoxBorderDto.tryToMerge(border, other.border),
       borderRadius:
           borderRadius?.merge(other.borderRadius) ?? other.borderRadius,
@@ -218,7 +230,7 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
       ),
       color: mergeProp(color, other.color),
       image: image?.merge(other.image) ?? other.image,
-      gradient: GradientDto.tryToMerge(gradient, other.gradient),
+      gradient: gradient?.merge(other.gradient) ?? other.gradient,
       boxShadow: MixHelpers.mergeList(boxShadow, other.boxShadow),
     );
   }
@@ -254,14 +266,23 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
     GradientDto? gradient,
     List<BoxShadowDto>? shadows,
   }) {
-    return ShapeDecorationDto._(
+    return ShapeDecorationDto.props(
       shape: shape,
       color: Prop.maybeValue(color),
-      image: image,
-      gradient: gradient,
-      shadows: shadows,
+      image: image != null ? MixProp.value(image) : null,
+      gradient: gradient != null ? MixProp.value(gradient) : null,
+      shadows: shadows?.map(MixProp<BoxShadow, BoxShadowDto>.value).toList(),
     );
   }
+
+  /// Constructor that accepts Prop values directly
+  const ShapeDecorationDto.props({
+    this.shape,
+    required super.color,
+    super.image,
+    super.gradient,
+    List<MixProp<BoxShadow, BoxShadowDto>>? shadows,
+  }) : super(boxShadow: shadows);
 
   /// Constructor that accepts a [ShapeDecoration] value and extracts its properties.
   ///
@@ -272,22 +293,24 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
   /// final dto = ShapeDecorationDto.value(decoration);
   /// ```
   factory ShapeDecorationDto.value(ShapeDecoration decoration) {
-    return ShapeDecorationDto._(
+    return ShapeDecorationDto.props(
       shape: _convertShapeBorder(decoration.shape),
       color: Prop.maybeValue(decoration.color),
-      image: DecorationImageDto.maybeValue(decoration.image),
-      gradient: _convertGradient(decoration.gradient),
-      shadows: decoration.shadows?.map(BoxShadowDto.value).toList(),
+      image: decoration.image != null
+          ? MixProp.value(DecorationImageDto.value(decoration.image!))
+          : null,
+      gradient: decoration.gradient != null
+          ? MixProp.value(_convertGradient(decoration.gradient)!)
+          : null,
+      shadows: decoration.shadows
+          ?.map(
+            (shadow) => MixProp<BoxShadow, BoxShadowDto>.value(
+              BoxShadowDto.value(shadow),
+            ),
+          )
+          .toList(),
     );
   }
-
-  const ShapeDecorationDto._({
-    this.shape,
-    required super.color,
-    super.image,
-    super.gradient,
-    List<BoxShadowDto>? shadows,
-  }) : super(boxShadow: shadows);
 
   /// Constructor that accepts a nullable [ShapeDecoration] value and extracts its properties.
   ///
@@ -301,7 +324,7 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
     return decoration != null ? ShapeDecorationDto.value(decoration) : null;
   }
 
-  List<BoxShadowDto>? get shadows => boxShadow;
+  List<MixProp<BoxShadow, BoxShadowDto>>? get shadows => boxShadow;
 
   @override
   ShapeDecorationDto mergeableDecor(BoxDecorationDto? other) {
@@ -323,7 +346,7 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
     );
 
     return merge(
-      ShapeDecorationDto._(
+      ShapeDecorationDto.props(
         shape: shapeBorder,
         color: color,
         image: image,
@@ -348,7 +371,8 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
       image: image?.resolve(context) ?? defaultValue.image,
       gradient: gradient?.resolve(context) ?? defaultValue.gradient,
       shadows:
-          shadows?.map((e) => e.resolve(context)).toList() ?? defaultValue.shadows,
+          shadows?.map((e) => e.resolve(context)).toList() ??
+          defaultValue.shadows,
       shape: shape?.resolve(context) ?? defaultValue.shape,
     );
   }
@@ -365,11 +389,11 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
   ShapeDecorationDto merge(ShapeDecorationDto? other) {
     if (other == null) return this;
 
-    return ShapeDecorationDto._(
+    return ShapeDecorationDto.props(
       shape: ShapeBorderDto.tryToMerge(shape, other.shape),
       color: mergeProp(color, other.color),
       image: image?.merge(other.image) ?? other.image,
-      gradient: GradientDto.tryToMerge(gradient, other.gradient),
+      gradient: gradient?.merge(other.gradient) ?? other.gradient,
       shadows: MixHelpers.mergeList(shadows, other.shadows),
     );
   }
@@ -397,7 +421,7 @@ BoxDecorationDto _toBoxDecorationDto(ShapeDecorationDto dto) {
   final (:boxShadow, :color, :gradient, :image) = dto._getBaseDecor();
   final (:borderRadius, :boxShape, :side) = ShapeBorderDto.extract(dto.shape);
 
-  return BoxDecorationDto._(
+  return BoxDecorationDto.props(
     border: side != null ? BorderDto.all(side) : null,
     borderRadius: borderRadius,
     shape: Prop.maybeValue(boxShape),
@@ -420,7 +444,7 @@ ShapeDecorationDto _toShapeDecorationDto(BoxDecorationDto dto) {
     borderRadius: dto.borderRadius,
   );
 
-  return ShapeDecorationDto._(
+  return ShapeDecorationDto.props(
     shape: shapeBorder,
     color: color,
     image: image,

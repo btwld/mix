@@ -366,14 +366,14 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
 
   // Main constructor accepts raw values
   factory CircleBorderDto({BorderSideDto? side, double? eccentricity}) {
-    return CircleBorderDto._(
+    return CircleBorderDto.props(
       side: side,
       eccentricity: Prop.maybeValue(eccentricity),
     );
   }
 
   // Private constructor that accepts MixProp instances
-  const CircleBorderDto._({super.side, this.eccentricity});
+  const CircleBorderDto.props({super.side, this.eccentricity});
 
   /// Constructor that accepts a [CircleBorder] value and extracts its properties.
   ///
@@ -384,7 +384,7 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
   /// final dto = CircleBorderDto.value(border);
   /// ```
   factory CircleBorderDto.value(CircleBorder border) {
-    return CircleBorderDto._(
+    return CircleBorderDto.props(
       side: BorderSideDto.maybeValue(border.side),
       eccentricity: Prop.value(border.eccentricity),
     );
@@ -408,7 +408,7 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
       return other;
     }
 
-    return CircleBorderDto._(side: other.side, eccentricity: null);
+    return CircleBorderDto.props(side: other.side, eccentricity: null);
   }
 
   /// Resolves to [CircleBorder] using the provided [MixContext].
@@ -439,7 +439,7 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
   CircleBorderDto merge(CircleBorderDto? other) {
     if (other == null) return this;
 
-    return CircleBorderDto._(
+    return CircleBorderDto.props(
       side: side?.merge(other.side) ?? other.side,
       eccentricity: mergeProp(eccentricity, other.eccentricity),
     );
@@ -474,7 +474,7 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
     double? rotation,
     double? squash,
   }) {
-    return StarBorderDto._(
+    return StarBorderDto.props(
       side: side,
       points: Prop.maybeValue(points),
       innerRadiusRatio: Prop.maybeValue(innerRadiusRatio),
@@ -494,7 +494,7 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
   /// final dto = StarBorderDto.value(border);
   /// ```
   factory StarBorderDto.value(StarBorder border) {
-    return StarBorderDto._(
+    return StarBorderDto.props(
       side: BorderSideDto.maybeValue(border.side),
       points: Prop.value(border.points),
       innerRadiusRatio: Prop.value(border.innerRadiusRatio),
@@ -506,7 +506,7 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
   }
 
   // Private constructor that accepts MixProp instances
-  const StarBorderDto._({
+  const StarBorderDto.props({
     super.side,
     this.points,
     this.innerRadiusRatio,
@@ -530,7 +530,7 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
 
   @override
   StarBorderDto adapt(OutlinedBorderDto other) {
-    return StarBorderDto._(
+    return StarBorderDto.props(
       side: other.side,
       points: null,
       innerRadiusRatio: null,
@@ -574,7 +574,7 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
   StarBorderDto merge(StarBorderDto? other) {
     if (other == null) return this;
 
-    return StarBorderDto._(
+    return StarBorderDto.props(
       side: side?.merge(other.side) ?? other.side,
       points: mergeProp(points, other.points),
       innerRadiusRatio: mergeProp(innerRadiusRatio, other.innerRadiusRatio),
@@ -714,7 +714,7 @@ final class LinearBorderEdgeDto extends Mix<LinearBorderEdge> {
 
   // Main constructor accepts raw values
   factory LinearBorderEdgeDto({double? size, double? alignment}) {
-    return LinearBorderEdgeDto._(
+    return LinearBorderEdgeDto.props(
       size: Prop.maybeValue(size),
       alignment: Prop.maybeValue(alignment),
     );
@@ -729,14 +729,14 @@ final class LinearBorderEdgeDto extends Mix<LinearBorderEdge> {
   /// final dto = LinearBorderEdgeDto.value(edge);
   /// ```
   factory LinearBorderEdgeDto.value(LinearBorderEdge edge) {
-    return LinearBorderEdgeDto._(
+    return LinearBorderEdgeDto.props(
       size: Prop.value(edge.size),
       alignment: Prop.value(edge.alignment),
     );
   }
 
   // Private constructor that accepts MixProp instances
-  const LinearBorderEdgeDto._({this.size, this.alignment});
+  const LinearBorderEdgeDto.props({this.size, this.alignment});
 
   /// Constructor that accepts a nullable [LinearBorderEdge] value and extracts its properties.
   ///
@@ -778,7 +778,7 @@ final class LinearBorderEdgeDto extends Mix<LinearBorderEdge> {
   LinearBorderEdgeDto merge(LinearBorderEdgeDto? other) {
     if (other == null) return this;
 
-    return LinearBorderEdgeDto._(
+    return LinearBorderEdgeDto.props(
       size: mergeProp(size, other.size),
       alignment: mergeProp(alignment, other.alignment),
     );

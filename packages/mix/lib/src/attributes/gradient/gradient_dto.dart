@@ -40,7 +40,7 @@ sealed class GradientDto<T extends Gradient> extends Mix<T>
   }
 
   LinearGradientDto asLinearGradient() {
-    return LinearGradientDto._(
+    return LinearGradientDto.props(
       begin: null,
       end: null,
       tileMode: null,
@@ -51,7 +51,7 @@ sealed class GradientDto<T extends Gradient> extends Mix<T>
   }
 
   RadialGradientDto asRadialGradient() {
-    return RadialGradientDto._(
+    return RadialGradientDto.props(
       center: null,
       radius: null,
       tileMode: null,
@@ -64,7 +64,7 @@ sealed class GradientDto<T extends Gradient> extends Mix<T>
   }
 
   SweepGradientDto asSweepGradient() {
-    return SweepGradientDto._(
+    return SweepGradientDto.props(
       center: null,
       startAngle: null,
       endAngle: null,
@@ -97,7 +97,7 @@ final class LinearGradientDto extends GradientDto<LinearGradient> {
     List<Color>? colors,
     List<double>? stops,
   }) {
-    return LinearGradientDto._(
+    return LinearGradientDto.props(
       begin: Prop.maybeValue(begin),
       end: Prop.maybeValue(end),
       tileMode: Prop.maybeValue(tileMode),
@@ -116,7 +116,7 @@ final class LinearGradientDto extends GradientDto<LinearGradient> {
   /// final dto = LinearGradientDto.value(gradient);
   /// ```
   factory LinearGradientDto.value(LinearGradient gradient) {
-    return LinearGradientDto._(
+    return LinearGradientDto.props(
       begin: Prop.value(gradient.begin),
       end: Prop.value(gradient.end),
       tileMode: Prop.value(gradient.tileMode),
@@ -126,7 +126,7 @@ final class LinearGradientDto extends GradientDto<LinearGradient> {
     );
   }
 
-  const LinearGradientDto._({
+  const LinearGradientDto.props({
     required this.begin,
     required this.end,
     required this.tileMode,
@@ -163,7 +163,7 @@ final class LinearGradientDto extends GradientDto<LinearGradient> {
   LinearGradientDto merge(LinearGradientDto? other) {
     if (other == null) return this;
 
-    return LinearGradientDto._(
+    return LinearGradientDto.props(
       begin: mergeProp(begin, other.begin),
       end: mergeProp(end, other.end),
       tileMode: mergeProp(tileMode, other.tileMode),
@@ -201,7 +201,7 @@ final class RadialGradientDto extends GradientDto<RadialGradient> {
     List<Color>? colors,
     List<double>? stops,
   }) {
-    return RadialGradientDto._(
+    return RadialGradientDto.props(
       center: Prop.maybeValue(center),
       radius: Prop.maybeValue(radius),
       tileMode: Prop.maybeValue(tileMode),
@@ -222,7 +222,7 @@ final class RadialGradientDto extends GradientDto<RadialGradient> {
   /// final dto = RadialGradientDto.value(gradient);
   /// ```
   factory RadialGradientDto.value(RadialGradient gradient) {
-    return RadialGradientDto._(
+    return RadialGradientDto.props(
       center: Prop.value(gradient.center),
       radius: Prop.value(gradient.radius),
       tileMode: Prop.value(gradient.tileMode),
@@ -234,7 +234,7 @@ final class RadialGradientDto extends GradientDto<RadialGradient> {
     );
   }
 
-  const RadialGradientDto._({
+  const RadialGradientDto.props({
     required this.center,
     required this.radius,
     required this.tileMode,
@@ -275,7 +275,7 @@ final class RadialGradientDto extends GradientDto<RadialGradient> {
   RadialGradientDto merge(RadialGradientDto? other) {
     if (other == null) return this;
 
-    return RadialGradientDto._(
+    return RadialGradientDto.props(
       center: mergeProp(center, other.center),
       radius: mergeProp(radius, other.radius),
       tileMode: mergeProp(tileMode, other.tileMode),
@@ -323,7 +323,7 @@ final class SweepGradientDto extends GradientDto<SweepGradient> {
     List<Color>? colors,
     List<double>? stops,
   }) {
-    return SweepGradientDto._(
+    return SweepGradientDto.props(
       center: Prop.maybeValue(center),
       startAngle: Prop.maybeValue(startAngle),
       endAngle: Prop.maybeValue(endAngle),
@@ -343,7 +343,7 @@ final class SweepGradientDto extends GradientDto<SweepGradient> {
   /// final dto = SweepGradientDto.value(gradient);
   /// ```
   factory SweepGradientDto.value(SweepGradient gradient) {
-    return SweepGradientDto._(
+    return SweepGradientDto.props(
       center: Prop.value(gradient.center),
       startAngle: Prop.value(gradient.startAngle),
       endAngle: Prop.value(gradient.endAngle),
@@ -354,7 +354,7 @@ final class SweepGradientDto extends GradientDto<SweepGradient> {
     );
   }
 
-  const SweepGradientDto._({
+  const SweepGradientDto.props({
     required this.center,
     required this.startAngle,
     required this.endAngle,
@@ -393,7 +393,7 @@ final class SweepGradientDto extends GradientDto<SweepGradient> {
   SweepGradientDto merge(SweepGradientDto? other) {
     if (other == null) return this;
 
-    return SweepGradientDto._(
+    return SweepGradientDto.props(
       center: mergeProp(center, other.center),
       startAngle: mergeProp(startAngle, other.startAngle),
       endAngle: mergeProp(endAngle, other.endAngle),

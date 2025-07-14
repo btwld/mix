@@ -448,13 +448,7 @@ abstract class SpecUtility<T extends SpecAttribute, V> extends BaseStyle<T> {
   @override
   AttributeMap<VariantAttribute> variants = const AttributeMap.empty();
 
-  SpecUtility(
-    this.attributeBuilder, {
-    @Deprecated(
-      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
-    )
-    bool? mutable,
-  });
+  SpecUtility(this.attributeBuilder);
 
   static T selfBuilder<T>(T value) => value;
   T? get attributeValue => styles.attributeOfType();

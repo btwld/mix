@@ -12,7 +12,7 @@ sealed class SpaceDto extends Mix<double> with Diagnosticable {
   static const infinity = _ValueSpaceDto(
     double.infinity,
   ); // Private constructor
-  const SpaceDto._();
+  const SpaceDto();
 
   // Public factories only
   const factory SpaceDto.value(double value) = _ValueSpaceDto;
@@ -39,7 +39,7 @@ sealed class SpaceDto extends Mix<double> with Diagnosticable {
 class _ValueSpaceDto extends SpaceDto {
   final double value;
 
-  const _ValueSpaceDto(this.value) : super._();
+  const _ValueSpaceDto(this.value);
 
   @override
   double resolve(MixContext context) => value;
@@ -52,7 +52,7 @@ class _ValueSpaceDto extends SpaceDto {
 class _TokenSpaceDto extends SpaceDto {
   final MixableToken<double> token;
 
-  const _TokenSpaceDto(this.token) : super._();
+  const _TokenSpaceDto(this.token);
 
   @override
   double resolve(MixContext context) {

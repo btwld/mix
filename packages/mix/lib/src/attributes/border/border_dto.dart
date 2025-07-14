@@ -7,7 +7,7 @@ sealed class BoxBorderDto<T extends BoxBorder> extends Mix<T> {
   final BorderSideDto? top;
   final BorderSideDto? bottom;
 
-  const BoxBorderDto._({this.top, this.bottom});
+  const BoxBorderDto({this.top, this.bottom});
 
   /// Will try to merge two borders, the type will resolve to type of
   /// `b` if its not null and `a` otherwise.
@@ -33,13 +33,13 @@ sealed class BoxBorderDto<T extends BoxBorder> extends Mix<T> {
   BorderDto _asBorder() {
     if (this is BorderDto) return this as BorderDto;
 
-    return BorderDto._(top: top, bottom: bottom);
+    return BorderDto.props(top: top, bottom: bottom);
   }
 
   BorderDirectionalDto _asBorderDirectional() {
     if (this is BorderDirectionalDto) return this as BorderDirectionalDto;
 
-    return BorderDirectionalDto._(top: top, bottom: bottom);
+    return BorderDirectionalDto.props(top: top, bottom: bottom);
   }
 
   bool get isUniform;
@@ -55,8 +55,7 @@ final class BorderDto extends BoxBorderDto<Border> {
 
   static const BorderDto none = BorderDto.all(BorderSideDto.none);
 
-  const BorderDto._({super.top, super.bottom, this.left, this.right})
-    : super._();
+  const BorderDto.props({super.top, super.bottom, this.left, this.right});
 
   factory BorderDto({
     BorderSideDto? top,
@@ -64,7 +63,7 @@ final class BorderDto extends BoxBorderDto<Border> {
     BorderSideDto? left,
     BorderSideDto? right,
   }) {
-    return BorderDto._(top: top, bottom: bottom, left: left, right: right);
+    return BorderDto.props(top: top, bottom: bottom, left: left, right: right);
   }
 
   /// Constructor that accepts a [Border] value and extracts its properties.
@@ -76,7 +75,7 @@ final class BorderDto extends BoxBorderDto<Border> {
   /// final dto = BorderDto.value(border);
   /// ```
   factory BorderDto.value(Border border) {
-    return BorderDto._(
+    return BorderDto.props(
       top: BorderSideDto.maybeValue(border.top),
       bottom: BorderSideDto.maybeValue(border.bottom),
       left: BorderSideDto.maybeValue(border.left),
@@ -85,12 +84,12 @@ final class BorderDto extends BoxBorderDto<Border> {
   }
 
   const BorderDto.all(BorderSideDto side)
-    : this._(top: side, bottom: side, left: side, right: side);
+    : this.props(top: side, bottom: side, left: side, right: side);
 
   const BorderDto.symmetric({
     BorderSideDto? vertical,
     BorderSideDto? horizontal,
-  }) : this._(
+  }) : this.props(
          top: horizontal,
          bottom: horizontal,
          left: vertical,
@@ -144,7 +143,7 @@ final class BorderDto extends BoxBorderDto<Border> {
   BorderDto merge(BorderDto? other) {
     if (other == null) return this;
 
-    return BorderDto._(
+    return BorderDto.props(
       top: top?.merge(other.top) ?? other.top,
       bottom: bottom?.merge(other.bottom) ?? other.bottom,
       left: left?.merge(other.left) ?? other.left,
@@ -170,8 +169,12 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional> {
     BorderSideDto.none,
   );
 
-  const BorderDirectionalDto._({super.top, super.bottom, this.start, this.end})
-    : super._();
+  const BorderDirectionalDto.props({
+    super.top,
+    super.bottom,
+    this.start,
+    this.end,
+  });
 
   factory BorderDirectionalDto({
     BorderSideDto? top,
@@ -179,7 +182,7 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional> {
     BorderSideDto? start,
     BorderSideDto? end,
   }) {
-    return BorderDirectionalDto._(
+    return BorderDirectionalDto.props(
       top: top,
       bottom: bottom,
       start: start,
@@ -196,7 +199,7 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional> {
   /// final dto = BorderDirectionalDto.value(border);
   /// ```
   factory BorderDirectionalDto.value(BorderDirectional border) {
-    return BorderDirectionalDto._(
+    return BorderDirectionalDto.props(
       top: BorderSideDto.maybeValue(border.top),
       bottom: BorderSideDto.maybeValue(border.bottom),
       start: BorderSideDto.maybeValue(border.start),
@@ -205,12 +208,12 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional> {
   }
 
   const BorderDirectionalDto.all(BorderSideDto side)
-    : this._(top: side, bottom: side, start: side, end: side);
+    : this.props(top: side, bottom: side, start: side, end: side);
 
   const BorderDirectionalDto.symmetric({
     BorderSideDto? vertical,
     BorderSideDto? horizontal,
-  }) : this._(
+  }) : this.props(
          top: horizontal,
          bottom: horizontal,
          start: vertical,
@@ -265,7 +268,7 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional> {
   BorderDirectionalDto merge(BorderDirectionalDto? other) {
     if (other == null) return this;
 
-    return BorderDirectionalDto._(
+    return BorderDirectionalDto.props(
       top: top?.merge(other.top) ?? other.top,
       bottom: bottom?.merge(other.bottom) ?? other.bottom,
       start: start?.merge(other.start) ?? other.start,
@@ -292,7 +295,7 @@ final class BorderSideDto extends Mix<BorderSide>
   final Prop<BorderStyle>? style;
   final Prop<double>? strokeAlign;
 
-  static const BorderSideDto none = BorderSideDto._(
+  static const BorderSideDto none = BorderSideDto.props(
     color: null,
     width: null,
     style: null,
@@ -306,7 +309,7 @@ final class BorderSideDto extends Mix<BorderSide>
     BorderStyle? style,
     double? width,
   }) {
-    return BorderSideDto._(
+    return BorderSideDto.props(
       color: Prop.maybeValue(color),
       width: Prop.maybeValue(width),
       style: Prop.maybeValue(style),
@@ -323,7 +326,7 @@ final class BorderSideDto extends Mix<BorderSide>
   /// final dto = BorderSideDto.value(borderSide);
   /// ```
   factory BorderSideDto.value(BorderSide borderSide) {
-    return BorderSideDto._(
+    return BorderSideDto.props(
       color: Prop.value(borderSide.color),
       width: Prop.value(borderSide.width),
       style: Prop.value(borderSide.style),
@@ -331,8 +334,13 @@ final class BorderSideDto extends Mix<BorderSide>
     );
   }
 
-  // Private constructor that accepts MixableProperty instances
-  const BorderSideDto._({this.color, this.width, this.style, this.strokeAlign});
+  /// Constructor that accepts Prop values directly
+  const BorderSideDto.props({
+    this.color,
+    this.width,
+    this.style,
+    this.strokeAlign,
+  });
 
   /// Constructor that accepts a nullable [BorderSide] value and extracts its properties.
   ///
@@ -362,7 +370,8 @@ final class BorderSideDto extends Mix<BorderSide>
       color: resolveProp(context, color) ?? defaultValue.color,
       width: resolveProp(context, width) ?? defaultValue.width,
       style: resolveProp(context, style) ?? defaultValue.style,
-      strokeAlign: resolveProp(context, strokeAlign) ?? defaultValue.strokeAlign,
+      strokeAlign:
+          resolveProp(context, strokeAlign) ?? defaultValue.strokeAlign,
     );
   }
 
@@ -378,7 +387,7 @@ final class BorderSideDto extends Mix<BorderSide>
   BorderSideDto merge(BorderSideDto? other) {
     if (other == null) return this;
 
-    return BorderSideDto._(
+    return BorderSideDto.props(
       color: mergeProp(color, other.color),
       width: mergeProp(width, other.width),
       style: mergeProp(style, other.style),

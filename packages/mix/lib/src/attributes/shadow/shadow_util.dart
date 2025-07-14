@@ -16,7 +16,7 @@ class ShadowUtility<T extends StyleElement>
   late final blurRadius = DoubleUtility((v) => only(blurRadius: v));
 
   /// Utility for defining [ShadowDto.color]
-  late final color = ColorUtility((v) => only(color: v));
+  late final color = ColorUtility((prop) => builder(ShadowDto.props(color: prop)));
 
   /// Utility for defining [ShadowDto.offset]
   late final offset = OffsetUtility((v) => only(offset: v));
@@ -52,7 +52,7 @@ class ShadowUtility<T extends StyleElement>
 class BoxShadowUtility<T extends StyleElement>
     extends DtoUtility<T, BoxShadowDto, BoxShadow> {
   /// Utility for defining [BoxShadowDto.color]
-  late final color = ColorUtility((v) => only(color: v));
+  late final color = ColorUtility((prop) => builder(BoxShadowDto.props(color: prop)));
 
   /// Utility for defining [BoxShadowDto.offset]
   late final offset = OffsetUtility((v) => only(offset: v));

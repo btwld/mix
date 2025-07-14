@@ -30,7 +30,7 @@ void main() {
 
       final merged = decoration1.merge(decoration2);
       expect(merged.color, resolvesTo(Colors.red));
-      expect(merged.gradient, linearGradientDto);
+      expect(merged.gradient?.value, linearGradientDto);
     });
     test('resolve returns correct BoxDecoration with default values', () {
       final attr = BoxDecorationDto();
@@ -66,7 +66,7 @@ void main() {
       final decoration2 = ShapeDecorationDto(gradient: linearGradientDto);
       final merged = decoration1.merge(decoration2);
       expect(merged.color, resolvesTo(Colors.red));
-      expect(merged.gradient, linearGradientDto);
+      expect(merged.gradient?.value, linearGradientDto);
     });
     test('resolve returns correct ShapeDecoration with default values', () {
       const shapeDecoration = ShapeDecoration(shape: CircleBorder());
@@ -94,10 +94,10 @@ void main() {
         ),
       );
 
-      expect(decoration1.gradient, linearGradientDto);
+      expect(decoration1.gradient?.value, linearGradientDto);
       expect(decoration1.color, isNull);
       expect(decoration1.shape, CircleBorderDto());
-      expect(decoration1.shadows, [BoxShadowDto.value(boxShadow)]);
+      expect(decoration1.shadows?.map((s) => s.value).toList(), [BoxShadowDto.value(boxShadow)]);
     });
     test('Equality holds when all properties are the same', () {
       final decoration1 = ShapeDecorationDto(color: Colors.red);
@@ -137,12 +137,12 @@ void main() {
       expect(merged.color, resolvesTo(Colors.blue));
       expect(
         merged.gradient,
-        resolvesTo(otherLinearGradientDto.resolve(EmptyMixData)),
+        resolvesTo(const LinearGradient(colors: [Colors.yellow, Colors.green])),
       );
       expect(merged.boxShadow, hasLength(1));
       expect(
-        merged.boxShadow![0],
-        resolvesTo(otherBoxShadowDto.resolve(EmptyMixData)),
+        merged.boxShadow![0].value,
+        otherBoxShadowDto,
       );
     });
 
@@ -167,12 +167,12 @@ void main() {
       expect(merged.color, resolvesTo(Colors.blue));
       expect(
         merged.gradient,
-        resolvesTo(otherLinearGradientDto.resolve(EmptyMixData)),
+        resolvesTo(const LinearGradient(colors: [Colors.yellow, Colors.green])),
       );
       expect(merged.shadows, hasLength(1));
       expect(
-        merged.shadows![0],
-        resolvesTo(otherBoxShadowDto.resolve(EmptyMixData)),
+        merged.shadows![0].value,
+        otherBoxShadowDto,
       );
     });
 
@@ -195,7 +195,7 @@ void main() {
 
         expect(merged, isA<ShapeDecorationDto>());
         expect(merged.color, resolvesTo(Colors.blue));
-        expect(merged.gradient, shapeDeco2.gradient);
+        expect(merged.gradient?.value, shapeDeco2.gradient?.value);
         expect(merged.shape, shapeDeco1.shape);
         expect(merged.shadows, shapeDeco1.shadows);
         expect(merged.image, shapeDeco1.image);
@@ -229,23 +229,20 @@ void main() {
         expect(boxDeco1.isMergeable, true);
         expect(merged, isA<ShapeDecorationDto>());
         expect(merged.color, resolvesTo(Colors.red));
+        expect(merged.shape, isA<RoundedRectangleBorderDto>());
         expect(
-          merged.shape,
-          resolvesTo(
-            RoundedRectangleBorderDto(
-              borderRadius: secondBorderRadius,
-            ).resolve(EmptyMixData),
-          ),
+          (merged.shape as RoundedRectangleBorderDto).borderRadius,
+          resolvesTo(const BorderRadius.all(Radius.circular(20))),
         );
         expect(merged.shadows, hasLength(1));
         expect(
           merged.shadows![0],
-          resolvesTo(boxDeco1.boxShadow![0].resolve(EmptyMixData)),
+          boxDeco1.boxShadow![0],
         );
-        expect(merged.image?.fit, resolvesTo(BoxFit.contain));
+        expect(merged.image?.value?.fit, resolvesTo(BoxFit.contain));
         expect(
           shapeBorder.borderRadius,
-          resolvesTo(secondBorderRadius.resolve(EmptyMixData)),
+          resolvesTo(const BorderRadius.all(Radius.circular(20))),
         );
       });
 
@@ -268,7 +265,7 @@ void main() {
         expect(merged, isA<BoxDecorationDto>());
         expect(merged?.color, resolvesTo(Colors.red));
         expect(merged?.boxShadow, shapeDeco1.boxShadow);
-        expect(merged?.image?.fit, resolvesTo(BoxFit.fill));
+        expect(merged?.image?.value?.fit, resolvesTo(BoxFit.fill));
       });
     });
 
@@ -306,14 +303,14 @@ void main() {
 
         expect(merged, isA<BoxDecorationDto>());
         expect(merged.color, resolvesTo(Colors.blue));
-        expect(merged.gradient, boxDeco2.gradient);
+        expect(merged.gradient?.value, boxDeco2.gradient?.value);
         expect(merged.boxShadow, boxDeco1.boxShadow);
         expect(merged.border, BorderDto(top: borderSide, bottom: borderSide));
         expect(
           merged.borderRadius,
-          resolvesTo(secondBorderRadius.resolve(EmptyMixData)),
+          resolvesTo(const BorderRadius.all(Radius.circular(20))),
         );
-        expect(merged.image?.fit, resolvesTo(BoxFit.cover));
+        expect(merged.image?.value?.fit, resolvesTo(BoxFit.cover));
 
         expect(merged.backgroundBlendMode, resolvesTo(BlendMode.colorBurn));
       });
@@ -352,12 +349,12 @@ void main() {
         expect(merged.boxShadow, hasLength(1));
         expect(
           merged.boxShadow![0],
-          resolvesTo(shapeDeco1.shadows![0].resolve(EmptyMixData)),
+          shapeDeco1.shadows![0],
         );
-        expect(merged.image?.fit, resolvesTo(BoxFit.contain));
+        expect(merged.image?.value?.fit, resolvesTo(BoxFit.contain));
         expect(
           merged.borderRadius,
-          resolvesTo(secondBorderRadius.resolve(EmptyMixData)),
+          resolvesTo(const BorderRadius.all(Radius.circular(20))),
         );
       });
     });

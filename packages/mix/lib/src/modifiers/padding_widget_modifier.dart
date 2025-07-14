@@ -132,13 +132,7 @@ class PaddingModifierSpecUtility<T extends SpecAttribute>
   /// Utility for defining [PaddingModifierSpecAttribute.padding]
   late final padding = EdgeInsetsGeometryUtility((v) => only(padding: v));
 
-  PaddingModifierSpecUtility(
-    super.builder, {
-    @Deprecated(
-      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
-    )
-    super.mutable,
-  });
+  PaddingModifierSpecUtility(super.builder);
 
   @Deprecated(
     'Use "this" instead of "chain" for method chaining. '

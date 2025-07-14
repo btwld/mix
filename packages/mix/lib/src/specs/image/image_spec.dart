@@ -202,7 +202,8 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
   final FilterQuality? filterQuality;
   final BlendMode? colorBlendMode;
 
-  const ImageSpecAttribute._({
+  /// Constructor that accepts Prop values directly
+  const ImageSpecAttribute.props({
     this.width,
     this.height,
     this.color,
@@ -230,7 +231,7 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
     AnimationConfigDto? animated,
     WidgetModifiersConfigDto? modifiers,
   }) {
-    return ImageSpecAttribute._(
+    return ImageSpecAttribute.props(
       width: width,
       height: height,
       color: Prop.maybeValue(color),
@@ -254,7 +255,7 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
   /// final attr = ImageSpecAttribute.value(spec);
   /// ```
   static ImageSpecAttribute value(ImageSpec spec) {
-    return ImageSpecAttribute._(
+    return ImageSpecAttribute.props(
       width: spec.width,
       height: spec.height,
       color: Prop.maybeValue(spec.color),
@@ -302,7 +303,7 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
   ImageSpecAttribute merge(ImageSpecAttribute? other) {
     if (other == null) return this;
 
-    return ImageSpecAttribute._(
+    return ImageSpecAttribute.props(
       width: other.width ?? width,
       height: other.height ?? height,
       color: color?.merge(other.color) ?? other.color,
@@ -365,7 +366,7 @@ class ImageSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, ImageSpecAttribute> {
   late final width = DoubleUtility((v) => only(width: v));
   late final height = DoubleUtility((v) => only(height: v));
-  late final color = ColorUtility((v) => only(color: v));
+  late final color = ColorUtility((prop) => builder(ImageSpecAttribute.props(color: prop)));
   late final repeat = ImageRepeatUtility((v) => only(repeat: v));
   late final fit = BoxFitUtility((v) => only(fit: v));
   late final alignment = AlignmentGeometryUtility((v) => only(alignment: v));
@@ -377,13 +378,7 @@ class ImageSpecUtility<T extends SpecAttribute>
   late final animated = AnimatedUtility((v) => only(animated: v));
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  ImageSpecUtility(
-    super.builder, {
-    @Deprecated(
-      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
-    )
-    super.mutable,
-  });
+  ImageSpecUtility(super.builder);
 
   @Deprecated(
     'Use "this" instead of "chain" for method chaining. '

@@ -13,10 +13,10 @@ typedef WidgetModifiersDataDto = WidgetModifiersConfigDto;
 class WidgetModifiersConfigDto extends Mix<WidgetModifiersConfig> {
   final List<WidgetModifierSpecAttribute> modifiers;
 
-  const WidgetModifiersConfigDto._(this.modifiers);
+  const WidgetModifiersConfigDto.props(this.modifiers);
   
   factory WidgetModifiersConfigDto(List<WidgetModifierSpecAttribute> modifiers) {
-    return WidgetModifiersConfigDto._(modifiers);
+    return WidgetModifiersConfigDto.props(modifiers);
   }
 
   /// Constructor that accepts a [WidgetModifiersConfig] value and extracts its properties.
@@ -30,7 +30,7 @@ class WidgetModifiersConfigDto extends Mix<WidgetModifiersConfig> {
   factory WidgetModifiersConfigDto.value(WidgetModifiersConfig config) {
     // TODO: This conversion is complex as it requires converting WidgetModifierSpec to WidgetModifierSpecAttribute
     // For now, return empty list - this needs proper implementation based on available conversion methods
-    return const WidgetModifiersConfigDto._([]);
+    return const WidgetModifiersConfigDto.props([]);
   }
 
   /// Constructor that accepts a nullable [WidgetModifiersConfig] value and extracts its properties.

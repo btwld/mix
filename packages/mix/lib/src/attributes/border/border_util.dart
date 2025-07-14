@@ -210,7 +210,7 @@ final class BorderDirectionalUtility<T extends StyleElement>
 class BorderSideUtility<T extends StyleElement>
     extends DtoUtility<T, BorderSideDto, BorderSide> {
   /// Utility for defining [BorderSideDto.color]
-  late final color = ColorUtility((v) => only(color: v));
+  late final color = ColorUtility((prop) => builder(BorderSideDto.props(color: prop)));
 
   /// Utility for defining [BorderSideDto.strokeAlign]
   late final strokeAlign = StrokeAlignUtility((v) => only(strokeAlign: v));
@@ -269,6 +269,7 @@ class BorderSideUtility<T extends StyleElement>
       ),
     );
   }
+
 }
 
 // Helper function to convert BorderSide to BorderSideDto

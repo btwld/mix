@@ -524,7 +524,7 @@ void main() {
           Colors.blue,
         );
 
-        expect(blueUtil(), resolvesTo(Colors.blue));
+        expect(blueUtil, resolvesTo(Colors.blue));
         expect(blueUtil.shade50.color, Colors.blue.shade50);
         expect(blueUtil.shade100.color, Colors.blue.shade100);
         expect(blueUtil.shade200.color, Colors.blue.shade200);
@@ -549,7 +549,7 @@ void main() {
           Colors.blueAccent,
         );
 
-        expect(blueUtil(), resolvesTo(Colors.blueAccent));
+        expect(blueUtil, resolvesTo(Colors.blueAccent));
         expect(blueUtil.shade100.color, Colors.blueAccent.shade100);
         expect(blueUtil.shade200.color, Colors.blueAccent.shade200);
         expect(blueUtil.shade400.color, Colors.blueAccent.shade400);

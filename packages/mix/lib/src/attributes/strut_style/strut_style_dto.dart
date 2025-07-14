@@ -30,7 +30,7 @@ class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
     double? leading,
     bool? forceStrutHeight,
   }) {
-    return StrutStyleDto._(
+    return StrutStyleDto.props(
       fontFamily: Prop.maybeValue(fontFamily),
       fontFamilyFallback: Prop.maybeValue(fontFamilyFallback),
       fontSize: Prop.maybeValue(fontSize),
@@ -51,7 +51,7 @@ class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
   /// final dto = StrutStyleDto.value(strutStyle);
   /// ```
   factory StrutStyleDto.value(StrutStyle strutStyle) {
-    return StrutStyleDto._(
+    return StrutStyleDto.props(
       fontFamily: Prop.maybeValue(strutStyle.fontFamily),
       fontFamilyFallback: Prop.maybeValue(strutStyle.fontFamilyFallback),
       fontSize: Prop.maybeValue(strutStyle.fontSize),
@@ -64,7 +64,7 @@ class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
   }
 
   // Private constructor that accepts MixableProperty instances
-  const StrutStyleDto._({
+  const StrutStyleDto.props({
     this.fontFamily,
     this.fontFamilyFallback,
     this.fontSize,
@@ -105,7 +105,7 @@ class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
   StrutStyleDto merge(StrutStyleDto? other) {
     if (other == null) return this;
 
-    return StrutStyleDto._(
+    return StrutStyleDto.props(
       fontFamily: mergeProp(fontFamily, other.fontFamily),
       fontFamilyFallback: mergeProp(
         fontFamilyFallback,

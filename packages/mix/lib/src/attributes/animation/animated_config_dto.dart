@@ -23,7 +23,7 @@ class AnimationConfigDto extends Mix<AnimationConfig> {
     Curve? curve,
     VoidCallback? onEnd,
   }) {
-    return AnimationConfigDto._(
+    return AnimationConfigDto.props(
       duration: Prop.maybeValue(duration),
       curve: Prop.maybeValue(curve),
       onEnd: Prop.maybeValue(onEnd),
@@ -39,15 +39,15 @@ class AnimationConfigDto extends Mix<AnimationConfig> {
   /// final dto = AnimationConfigDto.value(config);
   /// ```
   factory AnimationConfigDto.value(AnimationConfig config) {
-    return AnimationConfigDto._(
+    return AnimationConfigDto.props(
       duration: Prop.maybeValue(config.duration),
       curve: Prop.maybeValue(config.curve),
       onEnd: Prop.maybeValue(config.onEnd),
     );
   }
 
-  // Private constructor that accepts MixableProperty instances
-  const AnimationConfigDto._({this.duration, this.curve, this.onEnd});
+  // Props constructor that accepts Prop instances
+  const AnimationConfigDto.props({this.duration, this.curve, this.onEnd});
 
   factory AnimationConfigDto.withDefaults() {
     return AnimationConfigDto(
@@ -82,7 +82,7 @@ class AnimationConfigDto extends Mix<AnimationConfig> {
   AnimationConfigDto merge(AnimationConfigDto? other) {
     if (other == null) return this;
 
-    return AnimationConfigDto._(
+    return AnimationConfigDto.props(
       duration: mergeProp(duration, other.duration),
       curve: mergeProp(curve, other.curve),
       onEnd: mergeProp(onEnd, other.onEnd),

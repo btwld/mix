@@ -33,29 +33,6 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
   // Lists of Mix types (DTOs)
   final List<MixProp<Shadow, ShadowDto>>? shadows;
 
-  const TextStyleDto._({
-    this.color,
-    this.backgroundColor,
-    this.fontSize,
-    this.fontWeight,
-    this.fontStyle,
-    this.letterSpacing,
-    this.debugLabel,
-    this.wordSpacing,
-    this.textBaseline,
-    this.shadows,
-    this.fontFeatures,
-    this.decoration,
-    this.decorationColor,
-    this.decorationStyle,
-    this.fontVariations,
-    this.height,
-    this.foreground,
-    this.background,
-    this.decorationThickness,
-    this.fontFamily,
-    this.fontFamilyFallback,
-  });
 
   factory TextStyleDto({
     Color? color,
@@ -80,7 +57,7 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
     String? fontFamily,
     List<String>? fontFamilyFallback,
   }) {
-    return TextStyleDto._(
+    return TextStyleDto.props(
       color: Prop.maybeValue(color),
       backgroundColor: Prop.maybeValue(backgroundColor),
       fontSize: Prop.maybeValue(fontSize),
@@ -105,6 +82,31 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
     );
   }
 
+  /// Constructor that accepts Prop values directly
+  const TextStyleDto.props({
+    this.color,
+    this.backgroundColor,
+    this.fontSize,
+    this.fontWeight,
+    this.fontStyle,
+    this.letterSpacing,
+    this.debugLabel,
+    this.wordSpacing,
+    this.textBaseline,
+    this.shadows,
+    this.fontFeatures,
+    this.decoration,
+    this.decorationColor,
+    this.decorationStyle,
+    this.fontVariations,
+    this.height,
+    this.foreground,
+    this.background,
+    this.decorationThickness,
+    this.fontFamily,
+    this.fontFamilyFallback,
+  });
+
   /// Constructor that accepts a [TextStyle] value and extracts its properties.
   ///
   /// This is useful for converting existing [TextStyle] instances to [TextStyleDto].
@@ -114,7 +116,7 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
   /// final dto = TextStyleDto.value(textStyle);
   /// ```
   factory TextStyleDto.value(TextStyle textStyle) {
-    return TextStyleDto._(
+    return TextStyleDto.props(
       color: Prop.maybeValue(textStyle.color),
       backgroundColor: Prop.maybeValue(textStyle.backgroundColor),
       fontSize: Prop.maybeValue(textStyle.fontSize),
@@ -187,7 +189,7 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
   TextStyleDto merge(TextStyleDto? other) {
     if (other == null) return this;
 
-    return TextStyleDto._(
+    return TextStyleDto.props(
       color: mergeProp(color, other.color),
       backgroundColor: mergeProp(backgroundColor, other.backgroundColor),
       fontSize: mergeProp(fontSize, other.fontSize),

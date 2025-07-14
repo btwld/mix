@@ -11,7 +11,7 @@ import 'text_style_dto.dart';
 
 final class TextStyleUtility<T extends StyleElement>
     extends DtoUtility<T, TextStyleDto, TextStyle> {
-  late final color = ColorUtility((v) => only(color: v));
+  late final color = ColorUtility((prop) => builder(TextStyleDto.props(color: prop)));
 
   late final fontWeight = FontWeightUtility((v) => only(fontWeight: v));
 
@@ -21,9 +21,9 @@ final class TextStyleUtility<T extends StyleElement>
 
   late final fontSize = FontSizeUtility((v) => only(fontSize: v));
 
-  late final backgroundColor = ColorUtility((v) => only(backgroundColor: v));
+  late final backgroundColor = ColorUtility((prop) => builder(TextStyleDto.props(backgroundColor: prop)));
 
-  late final decorationColor = ColorUtility((v) => only(decorationColor: v));
+  late final decorationColor = ColorUtility((prop) => builder(TextStyleDto.props(decorationColor: prop)));
 
   late final decorationStyle = TextDecorationStyleUtility(
     (v) => only(decorationStyle: v),

@@ -70,7 +70,7 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
     Radius? bottomLeft,
     Radius? bottomRight,
   }) {
-    return BorderRadiusDto._(
+    return BorderRadiusDto.props(
       topLeft: Prop.maybeValue(topLeft),
       topRight: Prop.maybeValue(topRight),
       bottomLeft: Prop.maybeValue(bottomLeft),
@@ -87,7 +87,7 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
   /// final dto = BorderRadiusDto.value(borderRadius);
   /// ```
   factory BorderRadiusDto.value(BorderRadius borderRadius) {
-    return BorderRadiusDto._(
+    return BorderRadiusDto.props(
       topLeft: Prop.value(borderRadius.topLeft),
       topRight: Prop.value(borderRadius.topRight),
       bottomLeft: Prop.value(borderRadius.bottomLeft),
@@ -96,7 +96,7 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
   }
 
   // Private constructor that accepts MixableProperty instances
-  const BorderRadiusDto._({
+  const BorderRadiusDto.props({
     this.topLeft,
     this.topRight,
     this.bottomLeft,
@@ -129,7 +129,7 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
   BorderRadiusDto merge(BorderRadiusDto? other) {
     if (other == null) return this;
 
-    return BorderRadiusDto._(
+    return BorderRadiusDto.props(
       topLeft: mergeProp(topLeft, other.topLeft),
       topRight: mergeProp(topRight, other.topRight),
       bottomLeft: mergeProp(bottomLeft, other.bottomLeft),
@@ -155,7 +155,7 @@ final class BorderRadiusDirectionalDto
     Radius? bottomStart,
     Radius? bottomEnd,
   }) {
-    return BorderRadiusDirectionalDto._(
+    return BorderRadiusDirectionalDto.props(
       topStart: Prop.maybeValue(topStart),
       topEnd: Prop.maybeValue(topEnd),
       bottomStart: Prop.maybeValue(bottomStart),
@@ -174,7 +174,7 @@ final class BorderRadiusDirectionalDto
   factory BorderRadiusDirectionalDto.value(
     BorderRadiusDirectional borderRadius,
   ) {
-    return BorderRadiusDirectionalDto._(
+    return BorderRadiusDirectionalDto.props(
       topStart: Prop.value(borderRadius.topStart),
       topEnd: Prop.value(borderRadius.topEnd),
       bottomStart: Prop.value(borderRadius.bottomStart),
@@ -183,7 +183,7 @@ final class BorderRadiusDirectionalDto
   }
 
   // Private constructor that accepts MixableProperty instances
-  const BorderRadiusDirectionalDto._({
+  const BorderRadiusDirectionalDto.props({
     this.topStart,
     this.topEnd,
     this.bottomStart,
@@ -220,7 +220,7 @@ final class BorderRadiusDirectionalDto
   BorderRadiusDirectionalDto merge(BorderRadiusDirectionalDto? other) {
     if (other == null) return this;
 
-    return BorderRadiusDirectionalDto._(
+    return BorderRadiusDirectionalDto.props(
       topStart: mergeProp(topStart, other.topStart),
       topEnd: mergeProp(topEnd, other.topEnd),
       bottomStart: mergeProp(bottomStart, other.bottomStart),
