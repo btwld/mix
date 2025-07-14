@@ -6,6 +6,41 @@ import 'package:mix/mix.dart';
 sealed class ShapeBorderDto<T extends ShapeBorder> extends Mix<T> {
   const ShapeBorderDto();
 
+  /// Constructor that accepts a [ShapeBorder] value and converts it to the appropriate DTO.
+  ///
+  /// This is useful for converting existing [ShapeBorder] instances to [ShapeBorderDto].
+  ///
+  /// ```dart
+  /// const border = RoundedRectangleBorder(borderRadius: BorderRadius.circular(8));
+  /// final dto = ShapeBorderDto.value(border);
+  /// ```
+  static ShapeBorderDto value(ShapeBorder border) {
+    return switch (border) {
+      RoundedRectangleBorder b => RoundedRectangleBorderDto.value(b),
+      BeveledRectangleBorder b => BeveledRectangleBorderDto.value(b),
+      ContinuousRectangleBorder b => ContinuousRectangleBorderDto.value(b),
+      CircleBorder b => CircleBorderDto.value(b),
+      StarBorder b => StarBorderDto.value(b),
+      LinearBorder b => LinearBorderDto.value(b),
+      StadiumBorder b => StadiumBorderDto.value(b),
+      _ => throw ArgumentError(
+        'Unsupported ShapeBorder type: ${border.runtimeType}',
+      ),
+    };
+  }
+
+  /// Constructor that accepts a nullable [ShapeBorder] value and converts it to the appropriate DTO.
+  ///
+  /// Returns null if the input is null, otherwise uses [ShapeBorderDto.value].
+  ///
+  /// ```dart
+  /// const ShapeBorder? border = RoundedRectangleBorder(borderRadius: BorderRadius.circular(8));
+  /// final dto = ShapeBorderDto.maybeValue(border); // Returns ShapeBorderDto or null
+  /// ```
+  static ShapeBorderDto? maybeValue(ShapeBorder? border) {
+    return border != null ? ShapeBorderDto.value(border) : null;
+  }
+
   static ShapeBorderDto? tryToMerge(ShapeBorderDto? a, ShapeBorderDto? b) {
     if (b == null) return a;
     if (a == null) return b;
@@ -19,8 +54,8 @@ sealed class ShapeBorderDto<T extends ShapeBorder> extends Mix<T> {
   }
 
   static ({
-    BorderSideDto? side,
-    BorderRadiusGeometryDto? borderRadius,
+    MixProp<BorderSide, BorderSideDto>? side,
+    MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>? borderRadius,
     BoxShape? boxShape,
   })
   extract(ShapeBorderDto? dto) {
@@ -40,7 +75,7 @@ sealed class ShapeBorderDto<T extends ShapeBorder> extends Mix<T> {
 @immutable
 abstract class OutlinedBorderDto<T extends OutlinedBorder>
     extends ShapeBorderDto<T> {
-  final BorderSideDto? side;
+  final MixProp<BorderSide, BorderSideDto>? side;
 
   const OutlinedBorderDto({this.side});
 
@@ -76,7 +111,8 @@ abstract class OutlinedBorderDto<T extends OutlinedBorder>
   }
 
   @protected
-  BorderRadiusGeometryDto? get borderRadiusGetter;
+  MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>?
+  get borderRadiusGetter;
 
   OutlinedBorderDto<T> adapt(OutlinedBorderDto other);
 
@@ -86,9 +122,19 @@ abstract class OutlinedBorderDto<T extends OutlinedBorder>
 
 final class RoundedRectangleBorderDto
     extends OutlinedBorderDto<RoundedRectangleBorder> {
-  final BorderRadiusGeometryDto? borderRadius;
+  final MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>? borderRadius;
 
-  const RoundedRectangleBorderDto({this.borderRadius, super.side});
+  factory RoundedRectangleBorderDto({
+    BorderRadiusGeometryDto? borderRadius,
+    BorderSideDto? side,
+  }) {
+    return RoundedRectangleBorderDto.props(
+      borderRadius: MixProp.maybeValue(borderRadius),
+      side: MixProp.maybeValue(side),
+    );
+  }
+
+  const RoundedRectangleBorderDto.props({this.borderRadius, super.side});
 
   /// Constructor that accepts a [RoundedRectangleBorder] value and extracts its properties.
   ///
@@ -123,7 +169,7 @@ final class RoundedRectangleBorderDto
   RoundedRectangleBorderDto adapt(OutlinedBorderDto other) {
     if (other is RoundedRectangleBorderDto) return other;
 
-    return RoundedRectangleBorderDto(
+    return RoundedRectangleBorderDto.props(
       borderRadius: other.borderRadiusGetter,
       side: other.side,
     );
@@ -140,8 +186,8 @@ final class RoundedRectangleBorderDto
   @override
   RoundedRectangleBorder resolve(MixContext context) {
     return RoundedRectangleBorder(
-      side: side?.resolve(context) ?? BorderSide.none,
-      borderRadius: borderRadius?.resolve(context) ?? BorderRadius.zero,
+      side: resolveMixProp(context, side) ?? BorderSide.none,
+      borderRadius: resolveMixProp(context, borderRadius) ?? BorderRadius.zero,
     );
   }
 
@@ -157,15 +203,15 @@ final class RoundedRectangleBorderDto
   RoundedRectangleBorderDto merge(RoundedRectangleBorderDto? other) {
     if (other == null) return this;
 
-    return RoundedRectangleBorderDto(
-      borderRadius:
-          borderRadius?.merge(other.borderRadius) ?? other.borderRadius,
-      side: side?.merge(other.side) ?? other.side,
+    return RoundedRectangleBorderDto.props(
+      borderRadius: mergeMixProp(borderRadius, other.borderRadius),
+      side: mergeMixProp(side, other.side),
     );
   }
 
   @override
-  BorderRadiusGeometryDto? get borderRadiusGetter => borderRadius;
+  MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>?
+  get borderRadiusGetter => borderRadius;
 
   /// The list of properties that constitute the state of this [RoundedRectangleBorderDto].
   ///
@@ -177,9 +223,19 @@ final class RoundedRectangleBorderDto
 
 final class BeveledRectangleBorderDto
     extends OutlinedBorderDto<BeveledRectangleBorder> {
-  final BorderRadiusGeometryDto? borderRadius;
+  final MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>? borderRadius;
 
-  const BeveledRectangleBorderDto({this.borderRadius, super.side});
+  factory BeveledRectangleBorderDto({
+    BorderRadiusGeometryDto? borderRadius,
+    BorderSideDto? side,
+  }) {
+    return BeveledRectangleBorderDto.props(
+      borderRadius: MixProp.maybeValue(borderRadius),
+      side: MixProp.maybeValue(side),
+    );
+  }
+
+  const BeveledRectangleBorderDto.props({this.borderRadius, super.side});
 
   /// Constructor that accepts a [BeveledRectangleBorder] value and extracts its properties.
   ///
@@ -214,7 +270,7 @@ final class BeveledRectangleBorderDto
   BeveledRectangleBorderDto adapt(OutlinedBorderDto other) {
     if (other is BeveledRectangleBorderDto) return other;
 
-    return BeveledRectangleBorderDto(
+    return BeveledRectangleBorderDto.props(
       borderRadius: other.borderRadiusGetter,
       side: other.side,
     );
@@ -231,8 +287,8 @@ final class BeveledRectangleBorderDto
   @override
   BeveledRectangleBorder resolve(MixContext context) {
     return BeveledRectangleBorder(
-      side: side?.resolve(context) ?? BorderSide.none,
-      borderRadius: borderRadius?.resolve(context) ?? BorderRadius.zero,
+      side: resolveMixProp(context, side) ?? BorderSide.none,
+      borderRadius: resolveMixProp(context, borderRadius) ?? BorderRadius.zero,
     );
   }
 
@@ -248,15 +304,15 @@ final class BeveledRectangleBorderDto
   BeveledRectangleBorderDto merge(BeveledRectangleBorderDto? other) {
     if (other == null) return this;
 
-    return BeveledRectangleBorderDto(
-      borderRadius:
-          borderRadius?.merge(other.borderRadius) ?? other.borderRadius,
-      side: side?.merge(other.side) ?? other.side,
+    return BeveledRectangleBorderDto.props(
+      borderRadius: mergeMixProp(borderRadius, other.borderRadius),
+      side: mergeMixProp(side, other.side),
     );
   }
 
   @override
-  BorderRadiusGeometryDto? get borderRadiusGetter => borderRadius;
+  MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>?
+  get borderRadiusGetter => borderRadius;
 
   /// The list of properties that constitute the state of this [BeveledRectangleBorderDto].
   ///
@@ -268,9 +324,19 @@ final class BeveledRectangleBorderDto
 
 final class ContinuousRectangleBorderDto
     extends OutlinedBorderDto<ContinuousRectangleBorder> {
-  final BorderRadiusGeometryDto? borderRadius;
+  final MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>? borderRadius;
 
-  const ContinuousRectangleBorderDto({this.borderRadius, super.side});
+  factory ContinuousRectangleBorderDto({
+    BorderRadiusGeometryDto? borderRadius,
+    BorderSideDto? side,
+  }) {
+    return ContinuousRectangleBorderDto.props(
+      borderRadius: MixProp.maybeValue(borderRadius),
+      side: MixProp.maybeValue(side),
+    );
+  }
+
+  const ContinuousRectangleBorderDto.props({this.borderRadius, super.side});
 
   /// Constructor that accepts a [ContinuousRectangleBorder] value and extracts its properties.
   ///
@@ -309,7 +375,7 @@ final class ContinuousRectangleBorderDto
       return other;
     }
 
-    return ContinuousRectangleBorderDto(
+    return ContinuousRectangleBorderDto.props(
       borderRadius: other.borderRadiusGetter,
       side: other.side,
     );
@@ -326,8 +392,8 @@ final class ContinuousRectangleBorderDto
   @override
   ContinuousRectangleBorder resolve(MixContext context) {
     return ContinuousRectangleBorder(
-      side: side?.resolve(context) ?? BorderSide.none,
-      borderRadius: borderRadius?.resolve(context) ?? BorderRadius.zero,
+      side: resolveMixProp(context, side) ?? BorderSide.none,
+      borderRadius: resolveMixProp(context, borderRadius) ?? BorderRadius.zero,
     );
   }
 
@@ -343,15 +409,15 @@ final class ContinuousRectangleBorderDto
   ContinuousRectangleBorderDto merge(ContinuousRectangleBorderDto? other) {
     if (other == null) return this;
 
-    return ContinuousRectangleBorderDto(
-      borderRadius:
-          borderRadius?.merge(other.borderRadius) ?? other.borderRadius,
-      side: side?.merge(other.side) ?? other.side,
+    return ContinuousRectangleBorderDto.props(
+      borderRadius: mergeMixProp(borderRadius, other.borderRadius),
+      side: mergeMixProp(side, other.side),
     );
   }
 
   @override
-  BorderRadiusGeometryDto? get borderRadiusGetter => borderRadius;
+  MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>?
+  get borderRadiusGetter => borderRadius;
 
   /// The list of properties that constitute the state of this [ContinuousRectangleBorderDto].
   ///
@@ -367,7 +433,7 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
   // Main constructor accepts raw values
   factory CircleBorderDto({BorderSideDto? side, double? eccentricity}) {
     return CircleBorderDto.props(
-      side: side,
+      side: side != null ? MixProp.value(side) : null,
       eccentricity: Prop.maybeValue(eccentricity),
     );
   }
@@ -384,9 +450,9 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
   /// final dto = CircleBorderDto.value(border);
   /// ```
   factory CircleBorderDto.value(CircleBorder border) {
-    return CircleBorderDto.props(
+    return CircleBorderDto(
       side: BorderSideDto.maybeValue(border.side),
-      eccentricity: Prop.value(border.eccentricity),
+      eccentricity: border.eccentricity,
     );
   }
 
@@ -422,7 +488,7 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
   @override
   CircleBorder resolve(MixContext context) {
     return CircleBorder(
-      side: side?.resolve(context) ?? BorderSide.none,
+      side: resolveMixProp(context, side) ?? BorderSide.none,
       eccentricity: resolveProp(context, eccentricity) ?? 0.0,
     );
   }
@@ -440,13 +506,14 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
     if (other == null) return this;
 
     return CircleBorderDto.props(
-      side: side?.merge(other.side) ?? other.side,
+      side: mergeMixProp(side, other.side),
       eccentricity: mergeProp(eccentricity, other.eccentricity),
     );
   }
 
   @override
-  BorderRadiusGeometryDto? get borderRadiusGetter => null;
+  MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>?
+  get borderRadiusGetter => null;
 
   /// The list of properties that constitute the state of this [CircleBorderDto].
   ///
@@ -475,7 +542,7 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
     double? squash,
   }) {
     return StarBorderDto.props(
-      side: side,
+      side: side != null ? MixProp.value(side) : null,
       points: Prop.maybeValue(points),
       innerRadiusRatio: Prop.maybeValue(innerRadiusRatio),
       pointRounding: Prop.maybeValue(pointRounding),
@@ -494,14 +561,14 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
   /// final dto = StarBorderDto.value(border);
   /// ```
   factory StarBorderDto.value(StarBorder border) {
-    return StarBorderDto.props(
+    return StarBorderDto(
       side: BorderSideDto.maybeValue(border.side),
-      points: Prop.value(border.points),
-      innerRadiusRatio: Prop.value(border.innerRadiusRatio),
-      pointRounding: Prop.value(border.pointRounding),
-      valleyRounding: Prop.value(border.valleyRounding),
-      rotation: Prop.value(border.rotation),
-      squash: Prop.value(border.squash),
+      points: border.points,
+      innerRadiusRatio: border.innerRadiusRatio,
+      pointRounding: border.pointRounding,
+      valleyRounding: border.valleyRounding,
+      rotation: border.rotation,
+      squash: border.squash,
     );
   }
 
@@ -552,7 +619,7 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
   @override
   StarBorder resolve(MixContext context) {
     return StarBorder(
-      side: side?.resolve(context) ?? BorderSide.none,
+      side: resolveMixProp(context, side) ?? BorderSide.none,
       points: resolveProp(context, points) ?? 5,
       innerRadiusRatio: resolveProp(context, innerRadiusRatio) ?? 0.4,
       pointRounding: resolveProp(context, pointRounding) ?? 0,
@@ -575,7 +642,7 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
     if (other == null) return this;
 
     return StarBorderDto.props(
-      side: side?.merge(other.side) ?? other.side,
+      side: mergeMixProp(side, other.side),
       points: mergeProp(points, other.points),
       innerRadiusRatio: mergeProp(innerRadiusRatio, other.innerRadiusRatio),
       pointRounding: mergeProp(pointRounding, other.pointRounding),
@@ -586,7 +653,8 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
   }
 
   @override
-  BorderRadiusGeometryDto? get borderRadiusGetter => null;
+  MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>?
+  get borderRadiusGetter => null;
 
   /// The list of properties that constitute the state of this [StarBorderDto].
   ///
@@ -605,12 +673,28 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
 }
 
 final class LinearBorderDto extends OutlinedBorderDto<LinearBorder> {
-  final LinearBorderEdgeDto? start;
-  final LinearBorderEdgeDto? end;
-  final LinearBorderEdgeDto? top;
-  final LinearBorderEdgeDto? bottom;
+  final MixProp<LinearBorderEdge, LinearBorderEdgeDto>? start;
+  final MixProp<LinearBorderEdge, LinearBorderEdgeDto>? end;
+  final MixProp<LinearBorderEdge, LinearBorderEdgeDto>? top;
+  final MixProp<LinearBorderEdge, LinearBorderEdgeDto>? bottom;
 
-  const LinearBorderDto({
+  factory LinearBorderDto({
+    BorderSideDto? side,
+    LinearBorderEdgeDto? start,
+    LinearBorderEdgeDto? end,
+    LinearBorderEdgeDto? top,
+    LinearBorderEdgeDto? bottom,
+  }) {
+    return LinearBorderDto.props(
+      side: MixProp.maybeValue(side),
+      start: MixProp.maybeValue(start),
+      end: MixProp.maybeValue(end),
+      top: MixProp.maybeValue(top),
+      bottom: MixProp.maybeValue(bottom),
+    );
+  }
+
+  const LinearBorderDto.props({
     super.side,
     this.start,
     this.end,
@@ -654,7 +738,7 @@ final class LinearBorderDto extends OutlinedBorderDto<LinearBorder> {
       return other;
     }
 
-    return LinearBorderDto(side: other.side);
+    return LinearBorderDto.props(side: other.side);
   }
 
   /// Resolves to [LinearBorder] using the provided [MixContext].
@@ -668,11 +752,11 @@ final class LinearBorderDto extends OutlinedBorderDto<LinearBorder> {
   @override
   LinearBorder resolve(MixContext context) {
     return LinearBorder(
-      side: side?.resolve(context) ?? BorderSide.none,
-      start: start?.resolve(context),
-      end: end?.resolve(context),
-      top: top?.resolve(context),
-      bottom: bottom?.resolve(context),
+      side: resolveMixProp(context, side) ?? BorderSide.none,
+      start: resolveMixProp(context, start),
+      end: resolveMixProp(context, end),
+      top: resolveMixProp(context, top),
+      bottom: resolveMixProp(context, bottom),
     );
   }
 
@@ -688,17 +772,18 @@ final class LinearBorderDto extends OutlinedBorderDto<LinearBorder> {
   LinearBorderDto merge(LinearBorderDto? other) {
     if (other == null) return this;
 
-    return LinearBorderDto(
-      side: side?.merge(other.side) ?? other.side,
-      start: start?.merge(other.start) ?? other.start,
-      end: end?.merge(other.end) ?? other.end,
-      top: top?.merge(other.top) ?? other.top,
-      bottom: bottom?.merge(other.bottom) ?? other.bottom,
+    return LinearBorderDto.props(
+      side: mergeMixProp(side, other.side),
+      start: mergeMixProp(start, other.start),
+      end: mergeMixProp(end, other.end),
+      top: mergeMixProp(top, other.top),
+      bottom: mergeMixProp(bottom, other.bottom),
     );
   }
 
   @override
-  BorderRadiusGeometryDto? get borderRadiusGetter => null;
+  MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>?
+  get borderRadiusGetter => null;
 
   /// The list of properties that constitute the state of this [LinearBorderDto].
   ///
@@ -793,7 +878,11 @@ final class LinearBorderEdgeDto extends Mix<LinearBorderEdge> {
 }
 
 final class StadiumBorderDto extends OutlinedBorderDto<StadiumBorder> {
-  const StadiumBorderDto({super.side});
+  factory StadiumBorderDto({BorderSideDto? side}) {
+    return StadiumBorderDto.props(side: MixProp.maybeValue(side));
+  }
+
+  const StadiumBorderDto.props({super.side});
 
   /// Constructor that accepts a [StadiumBorder] value and extracts its properties.
   ///
@@ -825,7 +914,7 @@ final class StadiumBorderDto extends OutlinedBorderDto<StadiumBorder> {
       return other;
     }
 
-    return StadiumBorderDto(side: other.side);
+    return StadiumBorderDto.props(side: other.side);
   }
 
   /// Resolves to [StadiumBorder] using the provided [MixContext].
@@ -838,7 +927,9 @@ final class StadiumBorderDto extends OutlinedBorderDto<StadiumBorder> {
   /// ```
   @override
   StadiumBorder resolve(MixContext context) {
-    return StadiumBorder(side: side?.resolve(context) ?? BorderSide.none);
+    return StadiumBorder(
+      side: resolveMixProp(context, side) ?? BorderSide.none,
+    );
   }
 
   /// Merges the properties of this [StadiumBorderDto] with the properties of [other].
@@ -853,11 +944,12 @@ final class StadiumBorderDto extends OutlinedBorderDto<StadiumBorder> {
   StadiumBorderDto merge(StadiumBorderDto? other) {
     if (other == null) return this;
 
-    return StadiumBorderDto(side: side?.merge(other.side) ?? other.side);
+    return StadiumBorderDto.props(side: mergeMixProp(side, other.side));
   }
 
   @override
-  BorderRadiusGeometryDto? get borderRadiusGetter => null;
+  MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>?
+  get borderRadiusGetter => null;
 
   /// The list of properties that constitute the state of this [StadiumBorderDto].
   ///

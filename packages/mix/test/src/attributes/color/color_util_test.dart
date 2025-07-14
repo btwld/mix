@@ -33,276 +33,399 @@ final class TestColorAttribute extends SpecAttribute<Color>
 void main() {
   group('ColorUtility directives', () {
     // Use a builder that creates TestColorAttribute with Prop<Color>
-    final colorUtility = ColorUtility<TestColorAttribute>((prop) => TestColorAttribute(prop));
+    final colorUtility = ColorUtility<TestColorAttribute>(
+      (prop) => TestColorAttribute(prop),
+    );
     // withOpacity
-    test('withOpacity should return a new MixableDirective', skip: 'Color directives not yet fully implemented', () {
-      final attribute = colorUtility.withOpacity(0.5);
+    test(
+      'withOpacity should return a new MixableDirective',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final attribute = colorUtility.withOpacity(0.5);
 
-      expect(attribute.color, isA<Prop<Color>>());
-      // TODO: Test directives when ColorUtility properly supports them
-    });
+        expect(attribute.color, isA<Prop<Color>>());
+        // TODO: Test directives when ColorUtility properly supports them
+      },
+    );
 
-    test('withOpacity resolves the correct value', skip: 'Color directives not yet fully implemented', () {
-      final style = Style(
-        colorUtility(Colors.red),
-        colorUtility.withOpacity(0.5),
-      );
+    test(
+      'withOpacity resolves the correct value',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final style = Style(
+          colorUtility(Colors.red),
+          colorUtility.withOpacity(0.5),
+        );
 
-      final result = MockMixData(style);
-      final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
+        final result = MockMixData(style);
+        final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
 
-      expect(value, Colors.red.withValues(alpha: 0.5));
-    });
+        expect(value, Colors.red.withValues(alpha: 0.5));
+      },
+    );
 
-    test('withOpacity equality is correct', skip: 'Color directives not yet fully implemented', () {
-      final attribute1 = colorUtility.withOpacity(0.5);
-      final attribute2 = colorUtility.withOpacity(0.5);
-      final attribute3 = colorUtility.withOpacity(0.6);
+    test(
+      'withOpacity equality is correct',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final attribute1 = colorUtility.withOpacity(0.5);
+        final attribute2 = colorUtility.withOpacity(0.5);
+        final attribute3 = colorUtility.withOpacity(0.6);
 
-      expect(attribute1, attribute2);
-      expect(attribute1, isNot(attribute3));
-    });
+        expect(attribute1, attribute2);
+        expect(attribute1, isNot(attribute3));
+      },
+    );
 
     // withAlpha
-    test('withAlpha should return a new MixableDirective', skip: 'Color directives not yet fully implemented', () {
-      final attribute = colorUtility.withAlpha(100);
+    test(
+      'withAlpha should return a new MixableDirective',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final attribute = colorUtility.withAlpha(100);
 
-      expect(attribute.color, isA<Prop<Color>>());
-      // TODO: Test directives when ColorUtility properly supports them
-    });
+        expect(attribute.color, isA<Prop<Color>>());
+        // TODO: Test directives when ColorUtility properly supports them
+      },
+    );
 
     // withAlpha resolves
-    test('withAlpha resolves the correct value', skip: 'Color directives not yet fully implemented', () {
-      final style = Style(colorUtility(Colors.red), colorUtility.withAlpha(50));
+    test(
+      'withAlpha resolves the correct value',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final style = Style(
+          colorUtility(Colors.red),
+          colorUtility.withAlpha(50),
+        );
 
-      final result = MockMixData(style);
-      final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
+        final result = MockMixData(style);
+        final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
 
-      expect(value, Colors.red.withAlpha(50));
-    });
+        expect(value, Colors.red.withAlpha(50));
+      },
+    );
 
     // withAlpha equality is correct
-    test('withAlpha equality is correct', skip: 'Color directives not yet fully implemented', () {
-      final attribute1 = colorUtility.withAlpha(100);
-      final attribute2 = colorUtility.withAlpha(100);
-      final attribute3 = colorUtility.withAlpha(200);
+    test(
+      'withAlpha equality is correct',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final attribute1 = colorUtility.withAlpha(100);
+        final attribute2 = colorUtility.withAlpha(100);
+        final attribute3 = colorUtility.withAlpha(200);
 
-      expect(attribute1, attribute2);
-      expect(attribute1, isNot(attribute3));
-    });
+        expect(attribute1, attribute2);
+        expect(attribute1, isNot(attribute3));
+      },
+    );
 
     // darken
-    test('darken should return a new MixableDirective', skip: 'Color directives not yet fully implemented', () {
-      final attribute = colorUtility.darken(10);
+    test(
+      'darken should return a new MixableDirective',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final attribute = colorUtility.darken(10);
 
-      expect(attribute.color, isA<Prop<Color>>());
-      // TODO: Test directives when ColorUtility properly supports them
-    });
+        expect(attribute.color, isA<Prop<Color>>());
+        // TODO: Test directives when ColorUtility properly supports them
+      },
+    );
 
     //  darken resolves
-    test('darken resolves the correct value', skip: 'Color directives not yet fully implemented', () {
-      final style = Style(colorUtility(Colors.red), colorUtility.darken(10));
+    test(
+      'darken resolves the correct value',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final style = Style(colorUtility(Colors.red), colorUtility.darken(10));
 
-      final result = MockMixData(style);
-      final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
+        final result = MockMixData(style);
+        final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
 
-      expect(value, Colors.red.darken(10));
-    });
+        expect(value, Colors.red.darken(10));
+      },
+    );
 
     // darken equality
-    test('darken equality is correct', skip: 'Color directives not yet fully implemented', () {
-      final attribute1 = colorUtility.darken(10);
-      final attribute2 = colorUtility.darken(10);
-      final attribute3 = colorUtility.darken(20);
+    test(
+      'darken equality is correct',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final attribute1 = colorUtility.darken(10);
+        final attribute2 = colorUtility.darken(10);
+        final attribute3 = colorUtility.darken(20);
 
-      expect(attribute1, attribute2);
-      expect(attribute1, isNot(attribute3));
-    });
+        expect(attribute1, attribute2);
+        expect(attribute1, isNot(attribute3));
+      },
+    );
 
     // lighten
-    test('lighten should return a new MixableDirective', skip: 'Color directives not yet fully implemented', () {
-      final attribute = colorUtility.lighten(10);
+    test(
+      'lighten should return a new MixableDirective',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final attribute = colorUtility.lighten(10);
 
-      expect(attribute.color, isA<Prop<Color>>());
-      // TODO: Test directives when ColorUtility properly supports them
-    });
+        expect(attribute.color, isA<Prop<Color>>());
+        // TODO: Test directives when ColorUtility properly supports them
+      },
+    );
 
     // lighten resolves
-    test('lighten resolves the correct value', skip: 'Color directives not yet fully implemented', () {
-      final style = Style(colorUtility(Colors.red), colorUtility.lighten(10));
+    test(
+      'lighten resolves the correct value',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final style = Style(colorUtility(Colors.red), colorUtility.lighten(10));
 
-      final result = MockMixData(style);
-      final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
+        final result = MockMixData(style);
+        final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
 
-      expect(value, Colors.red.lighten(10));
-    });
+        expect(value, Colors.red.lighten(10));
+      },
+    );
 
     // lighten equality
-    test('lighten equality is correct', skip: 'Color directives not yet fully implemented', () {
-      final attribute1 = colorUtility.lighten(10);
-      final attribute2 = colorUtility.lighten(10);
-      final attribute3 = colorUtility.lighten(20);
+    test(
+      'lighten equality is correct',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final attribute1 = colorUtility.lighten(10);
+        final attribute2 = colorUtility.lighten(10);
+        final attribute3 = colorUtility.lighten(20);
 
-      expect(attribute1, attribute2);
-      expect(attribute1, isNot(attribute3));
-    });
+        expect(attribute1, attribute2);
+        expect(attribute1, isNot(attribute3));
+      },
+    );
 
     // saturate
-    test('saturate should return a new MixableDirective', skip: 'Color directives not yet fully implemented', () {
-      final attribute = colorUtility.saturate(10);
+    test(
+      'saturate should return a new MixableDirective',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final attribute = colorUtility.saturate(10);
 
-      expect(attribute.color, isA<Prop<Color>>());
-      // TODO: Test directives when ColorUtility properly supports them
-    });
+        expect(attribute.color, isA<Prop<Color>>());
+        // TODO: Test directives when ColorUtility properly supports them
+      },
+    );
 
     // saturate resolves
-    test('saturate resolves the correct value', skip: 'Color directives not yet fully implemented', () {
-      final style = Style(colorUtility(Colors.red), colorUtility.saturate(10));
+    test(
+      'saturate resolves the correct value',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final style = Style(
+          colorUtility(Colors.red),
+          colorUtility.saturate(10),
+        );
 
-      final result = MockMixData(style);
-      final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
+        final result = MockMixData(style);
+        final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
 
-      expect(value, Colors.red.saturate(10));
-    });
+        expect(value, Colors.red.saturate(10));
+      },
+    );
 
     // saturate equality
-    test('saturate equality is correct', skip: 'Color directives not yet fully implemented', () {
-      final attribute1 = colorUtility.saturate(10);
-      final attribute2 = colorUtility.saturate(10);
-      final attribute3 = colorUtility.saturate(20);
+    test(
+      'saturate equality is correct',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final attribute1 = colorUtility.saturate(10);
+        final attribute2 = colorUtility.saturate(10);
+        final attribute3 = colorUtility.saturate(20);
 
-      expect(attribute1, attribute2);
-      expect(attribute1, isNot(attribute3));
-    });
+        expect(attribute1, attribute2);
+        expect(attribute1, isNot(attribute3));
+      },
+    );
 
     // desaturate
-    test('desaturate should return a new MixableDirective', skip: 'Color directives not yet fully implemented', () {
-      final attribute = colorUtility.desaturate(10);
+    test(
+      'desaturate should return a new MixableDirective',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final attribute = colorUtility.desaturate(10);
 
-      expect(attribute.color, isA<Prop<Color>>());
-      // TODO: Test directives when ColorUtility properly supports them
-    });
+        expect(attribute.color, isA<Prop<Color>>());
+        // TODO: Test directives when ColorUtility properly supports them
+      },
+    );
 
     // desaturate resolves
-    test('desaturate resolves the correct value', skip: 'Color directives not yet fully implemented', () {
-      final style = Style(
-        colorUtility(Colors.red),
-        colorUtility.desaturate(10),
-      );
+    test(
+      'desaturate resolves the correct value',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final style = Style(
+          colorUtility(Colors.red),
+          colorUtility.desaturate(10),
+        );
 
-      final result = MockMixData(style);
-      final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
+        final result = MockMixData(style);
+        final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
 
-      expect(value, Colors.red.desaturate(10));
-    });
+        expect(value, Colors.red.desaturate(10));
+      },
+    );
 
     // desaturate equality
-    test('desaturate equality is correct', skip: 'Color directives not yet fully implemented', () {
-      final attribute1 = colorUtility.desaturate(10);
-      final attribute2 = colorUtility.desaturate(10);
-      final attribute3 = colorUtility.desaturate(20);
+    test(
+      'desaturate equality is correct',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final attribute1 = colorUtility.desaturate(10);
+        final attribute2 = colorUtility.desaturate(10);
+        final attribute3 = colorUtility.desaturate(20);
 
-      expect(attribute1, attribute2);
-      expect(attribute1, isNot(attribute3));
-    });
+        expect(attribute1, attribute2);
+        expect(attribute1, isNot(attribute3));
+      },
+    );
 
     // tint
-    test('tint should return a new MixableDirective', skip: 'Color directives not yet fully implemented', () {
-      final attribute = colorUtility.tint(10);
+    test(
+      'tint should return a new MixableDirective',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final attribute = colorUtility.tint(10);
 
-      expect(attribute.color, isA<Prop<Color>>());
-      // TODO: Test directives when ColorUtility properly supports them
-    });
+        expect(attribute.color, isA<Prop<Color>>());
+        // TODO: Test directives when ColorUtility properly supports them
+      },
+    );
 
     // tint resolves
-    test('tint resolves the correct value', skip: 'Color directives not yet fully implemented', () {
-      final style = Style(colorUtility(Colors.red), colorUtility.tint(10));
+    test(
+      'tint resolves the correct value',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final style = Style(colorUtility(Colors.red), colorUtility.tint(10));
 
-      final result = MockMixData(style);
-      final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
-      expect(value, Colors.red.tint(10));
-    });
+        final result = MockMixData(style);
+        final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
+        expect(value, Colors.red.tint(10));
+      },
+    );
 
     //tint equality
-    test('tint equality is correct', skip: 'Color directives not yet fully implemented', () {
-      final attribute1 = colorUtility.tint(10);
-      final attribute2 = colorUtility.tint(10);
-      final attribute3 = colorUtility.tint(20);
+    test(
+      'tint equality is correct',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final attribute1 = colorUtility.tint(10);
+        final attribute2 = colorUtility.tint(10);
+        final attribute3 = colorUtility.tint(20);
 
-      expect(attribute1, attribute2);
-      expect(attribute1, isNot(attribute3));
-    });
+        expect(attribute1, attribute2);
+        expect(attribute1, isNot(attribute3));
+      },
+    );
 
     // shade
-    test('shade should return a new MixableDirective', skip: 'Color directives not yet fully implemented', () {
-      final attribute = colorUtility.shade(10);
+    test(
+      'shade should return a new MixableDirective',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final attribute = colorUtility.shade(10);
 
-      expect(attribute.color, isA<Prop<Color>>());
-      // TODO: Test directives when ColorUtility properly supports them
-    });
+        expect(attribute.color, isA<Prop<Color>>());
+        // TODO: Test directives when ColorUtility properly supports them
+      },
+    );
 
     // shade resolves
-    test('shade resolves the correct value', skip: 'Color directives not yet fully implemented', () {
-      final style = Style(colorUtility(Colors.red), colorUtility.shade(10));
+    test(
+      'shade resolves the correct value',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final style = Style(colorUtility(Colors.red), colorUtility.shade(10));
 
-      final result = MockMixData(style);
-      final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
+        final result = MockMixData(style);
+        final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
 
-      expect(value, Colors.red.shade(10));
-    });
+        expect(value, Colors.red.shade(10));
+      },
+    );
 
     // shade equality
-    test('shade equality is correct', skip: 'Color directives not yet fully implemented', () {
-      final attribute1 = colorUtility.shade(10);
-      final attribute2 = colorUtility.shade(10);
-      final attribute3 = colorUtility.shade(20);
+    test(
+      'shade equality is correct',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final attribute1 = colorUtility.shade(10);
+        final attribute2 = colorUtility.shade(10);
+        final attribute3 = colorUtility.shade(20);
 
-      expect(attribute1, attribute2);
-      expect(attribute1, isNot(attribute3));
-    });
+        expect(attribute1, attribute2);
+        expect(attribute1, isNot(attribute3));
+      },
+    );
 
     // brighten
-    test('brighten should return a new MixableDirective', skip: 'Color directives not yet fully implemented', () {
-      final attribute = colorUtility.brighten(10);
+    test(
+      'brighten should return a new MixableDirective',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final attribute = colorUtility.brighten(10);
 
-      expect(attribute.color, isA<Prop<Color>>());
-      // TODO: Test directives when ColorUtility properly supports them
-    });
+        expect(attribute.color, isA<Prop<Color>>());
+        // TODO: Test directives when ColorUtility properly supports them
+      },
+    );
 
     // brighten resolves
-    test('brighten resolves the correct value', skip: 'Color directives not yet fully implemented', () {
-      final style = Style(colorUtility(Colors.red), colorUtility.brighten(10));
+    test(
+      'brighten resolves the correct value',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final style = Style(
+          colorUtility(Colors.red),
+          colorUtility.brighten(10),
+        );
 
-      final result = MockMixData(style);
-      final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
+        final result = MockMixData(style);
+        final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
 
-      expect(value, Colors.red.brighten(10));
-    });
+        expect(value, Colors.red.brighten(10));
+      },
+    );
 
     // brighten equality
-    test('brighten equality is correct', skip: 'Color directives not yet fully implemented', () {
-      final attribute1 = colorUtility.brighten(10);
-      final attribute2 = colorUtility.brighten(10);
-      final attribute3 = colorUtility.brighten(20);
+    test(
+      'brighten equality is correct',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final attribute1 = colorUtility.brighten(10);
+        final attribute2 = colorUtility.brighten(10);
+        final attribute3 = colorUtility.brighten(20);
 
-      expect(attribute1, attribute2);
-      expect(attribute1, isNot(attribute3));
-    });
+        expect(attribute1, attribute2);
+        expect(attribute1, isNot(attribute3));
+      },
+    );
 
     // lighten and darken and opacity
-    test('lighten and darken and opacity resolves the correct value', skip: 'Color directives not yet fully implemented', () {
-      final style = Style(
-        colorUtility(Colors.red),
-        colorUtility.lighten(10),
-        colorUtility.darken(10),
-        colorUtility.withOpacity(0.5),
-      );
+    test(
+      'lighten and darken and opacity resolves the correct value',
+      skip: 'Color directives not yet fully implemented',
+      () {
+        final style = Style(
+          colorUtility(Colors.red),
+          colorUtility.lighten(10),
+          colorUtility.darken(10),
+          colorUtility.withOpacity(0.5),
+        );
 
-      final result = MockMixData(style);
-      final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
+        final result = MockMixData(style);
+        final value = result.attributeOf<TestColorAttribute>()?.resolve(result);
 
-      expect(value, Colors.red.lighten(10).darken(10).withValues(alpha: 0.5));
-    });
+        expect(value, Colors.red.lighten(10).darken(10).withValues(alpha: 0.5));
+      },
+    );
   });
 
   // Skipping MaterialColorUtility directive tests - directives functionality not implemented yet
@@ -442,7 +565,9 @@ void main() {
     test(
       'call should return a new TestColorAttribute with the primary color',
       () {
-        final colorUtil = ColorUtility<TestColorAttribute>((prop) => TestColorAttribute(prop));
+        final colorUtil = ColorUtility<TestColorAttribute>(
+          (prop) => TestColorAttribute(prop),
+        );
 
         expect(colorUtil.red(), resolvesTo(Colors.red));
         expect(colorUtil.pink(), resolvesTo(Colors.pink));
@@ -524,7 +649,7 @@ void main() {
           Colors.blue,
         );
 
-        expect(blueUtil, resolvesTo(Colors.blue));
+        expect(blueUtil(Colors.blue), resolvesTo(Colors.blue));
         expect(blueUtil.shade50.color, Colors.blue.shade50);
         expect(blueUtil.shade100.color, Colors.blue.shade100);
         expect(blueUtil.shade200.color, Colors.blue.shade200);
@@ -549,7 +674,7 @@ void main() {
           Colors.blueAccent,
         );
 
-        expect(blueUtil, resolvesTo(Colors.blueAccent));
+        expect(blueUtil(Colors.blueAccent), resolvesTo(Colors.blueAccent));
         expect(blueUtil.shade100.color, Colors.blueAccent.shade100);
         expect(blueUtil.shade200.color, Colors.blueAccent.shade200);
         expect(blueUtil.shade400.color, Colors.blueAccent.shade400);

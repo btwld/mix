@@ -29,18 +29,8 @@ final class BoxBorderUtility<T extends StyleElement>
     : super(
         valueToDto: (v) {
           return switch (v) {
-            Border() => BorderDto(
-              top: _borderSideToDto(v.top),
-              bottom: _borderSideToDto(v.bottom),
-              left: _borderSideToDto(v.left),
-              right: _borderSideToDto(v.right),
-            ),
-            BorderDirectional() => BorderDirectionalDto(
-              top: _borderSideToDto(v.top),
-              bottom: _borderSideToDto(v.bottom),
-              start: _borderSideToDto(v.start),
-              end: _borderSideToDto(v.end),
-            ),
+            Border() => BorderDto.value(v),
+            BorderDirectional() => BorderDirectionalDto.value(v),
             _ => throw ArgumentError(
               'Unsupported BoxBorder type: ${v.runtimeType}',
             ),
@@ -103,15 +93,7 @@ final class BorderUtility<T extends StyleElement>
 
   late final strokeAlign = all.strokeAlign;
 
-  BorderUtility(super.builder)
-    : super(
-        valueToDto: (value) => BorderDto(
-          top: _borderSideToDto(value.top),
-          bottom: _borderSideToDto(value.bottom),
-          left: _borderSideToDto(value.left),
-          right: _borderSideToDto(value.right),
-        ),
-      );
+  BorderUtility(super.builder) : super(valueToDto: BorderDto.value);
 
   T none() => builder(BorderDto.none);
 
@@ -165,14 +147,7 @@ final class BorderDirectionalUtility<T extends StyleElement>
   );
 
   BorderDirectionalUtility(super.builder)
-    : super(
-        valueToDto: (value) => BorderDirectionalDto(
-          top: _borderSideToDto(value.top),
-          bottom: _borderSideToDto(value.bottom),
-          start: _borderSideToDto(value.start),
-          end: _borderSideToDto(value.end),
-        ),
-      );
+    : super(valueToDto: BorderDirectionalDto.value);
 
   T none() => builder(BorderDirectionalDto.none);
 
@@ -210,7 +185,9 @@ final class BorderDirectionalUtility<T extends StyleElement>
 class BorderSideUtility<T extends StyleElement>
     extends DtoUtility<T, BorderSideDto, BorderSide> {
   /// Utility for defining [BorderSideDto.color]
-  late final color = ColorUtility((prop) => builder(BorderSideDto.props(color: prop)));
+  late final color = ColorUtility(
+    (prop) => builder(BorderSideDto.props(color: prop)),
+  );
 
   /// Utility for defining [BorderSideDto.strokeAlign]
   late final strokeAlign = StrokeAlignUtility((v) => only(strokeAlign: v));
@@ -221,17 +198,7 @@ class BorderSideUtility<T extends StyleElement>
   /// Utility for defining [BorderSideDto.width]
   late final width = DoubleUtility((v) => only(width: v));
 
-  BorderSideUtility(super.builder)
-    : super(
-        valueToDto: (v) => BorderSideDto(
-          color: v.color != const BorderSide().color ? v.color : null,
-          strokeAlign: v.strokeAlign != const BorderSide().strokeAlign
-              ? v.strokeAlign
-              : null,
-          style: v.style != const BorderSide().style ? v.style : null,
-          width: v.width != const BorderSide().width ? v.width : null,
-        ),
-      );
+  BorderSideUtility(super.builder) : super(valueToDto: BorderSideDto.value);
 
   /// Creates a [StyleElement] instance using the [BorderSideDto.none] constructor.
   T none() => builder(BorderSideDto.none);
@@ -269,21 +236,4 @@ class BorderSideUtility<T extends StyleElement>
       ),
     );
   }
-
-}
-
-// Helper function to convert BorderSide to BorderSideDto
-BorderSideDto? _borderSideToDto(BorderSide side) {
-  if (side == BorderSide.none) return null;
-
-  const defaultSide = BorderSide();
-
-  return BorderSideDto(
-    color: side.color != defaultSide.color ? side.color : null,
-    strokeAlign: side.strokeAlign != defaultSide.strokeAlign
-        ? side.strokeAlign
-        : null,
-    style: side.style != defaultSide.style ? side.style : null,
-    width: side.width != defaultSide.width ? side.width : null,
-  );
 }

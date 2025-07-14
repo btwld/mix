@@ -2,10 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-@immutable
 sealed class BoxBorderDto<T extends BoxBorder> extends Mix<T> {
-  final BorderSideDto? top;
-  final BorderSideDto? bottom;
+  final MixProp<BorderSide, BorderSideDto>? top;
+  final MixProp<BorderSide, BorderSideDto>? bottom;
 
   const BoxBorderDto({this.top, this.bottom});
 
@@ -49,13 +48,12 @@ sealed class BoxBorderDto<T extends BoxBorder> extends Mix<T> {
   BoxBorderDto<T> merge(covariant BoxBorderDto<T>? other);
 }
 
-final class BorderDto extends BoxBorderDto<Border> {
-  final BorderSideDto? left;
-  final BorderSideDto? right;
+final class BorderDto extends BoxBorderDto<Border>
+    with HasDefaultValue<Border> {
+  final MixProp<BorderSide, BorderSideDto>? left;
+  final MixProp<BorderSide, BorderSideDto>? right;
 
-  static const BorderDto none = BorderDto.all(BorderSideDto.none);
-
-  const BorderDto.props({super.top, super.bottom, this.left, this.right});
+  static BorderDto none = BorderDto.all(BorderSideDto.none);
 
   factory BorderDto({
     BorderSideDto? top,
@@ -63,8 +61,16 @@ final class BorderDto extends BoxBorderDto<Border> {
     BorderSideDto? left,
     BorderSideDto? right,
   }) {
-    return BorderDto.props(top: top, bottom: bottom, left: left, right: right);
+    return BorderDto.props(
+      top: MixProp.maybeValue(top),
+      bottom: MixProp.maybeValue(bottom),
+      left: MixProp.maybeValue(left),
+      right: MixProp.maybeValue(right),
+    );
   }
+
+  // Private constructor that accepts Prop instances
+  const BorderDto.props({super.top, super.bottom, this.left, this.right});
 
   /// Constructor that accepts a [Border] value and extracts its properties.
   ///
@@ -75,7 +81,7 @@ final class BorderDto extends BoxBorderDto<Border> {
   /// final dto = BorderDto.value(border);
   /// ```
   factory BorderDto.value(Border border) {
-    return BorderDto.props(
+    return BorderDto(
       top: BorderSideDto.maybeValue(border.top),
       bottom: BorderSideDto.maybeValue(border.bottom),
       left: BorderSideDto.maybeValue(border.left),
@@ -83,23 +89,34 @@ final class BorderDto extends BoxBorderDto<Border> {
     );
   }
 
-  const BorderDto.all(BorderSideDto side)
-    : this.props(top: side, bottom: side, left: side, right: side);
+  factory BorderDto.all(BorderSideDto side) {
+    return BorderDto.props(
+      top: MixProp.value(side),
+      bottom: MixProp.value(side),
+      left: MixProp.value(side),
+      right: MixProp.value(side),
+    );
+  }
 
-  const BorderDto.symmetric({
+  factory BorderDto.symmetric({
     BorderSideDto? vertical,
     BorderSideDto? horizontal,
-  }) : this.props(
-         top: horizontal,
-         bottom: horizontal,
-         left: vertical,
-         right: vertical,
-       );
+  }) {
+    return BorderDto.props(
+      top: MixProp.maybeValue(horizontal),
+      bottom: MixProp.maybeValue(horizontal),
+      left: MixProp.maybeValue(vertical),
+      right: MixProp.maybeValue(vertical),
+    );
+  }
 
-  const BorderDto.vertical(BorderSideDto side) : this.symmetric(vertical: side);
+  factory BorderDto.vertical(BorderSideDto side) {
+    return BorderDto.symmetric(vertical: side);
+  }
 
-  const BorderDto.horizontal(BorderSideDto side)
-    : this.symmetric(horizontal: side);
+  factory BorderDto.horizontal(BorderSideDto side) {
+    return BorderDto.symmetric(horizontal: side);
+  }
 
   /// Constructor that accepts a nullable [Border] value and extracts its properties.
   ///
@@ -124,10 +141,10 @@ final class BorderDto extends BoxBorderDto<Border> {
   @override
   Border resolve(MixContext context) {
     return Border(
-      top: top?.resolve(context) ?? BorderSide.none,
-      right: right?.resolve(context) ?? BorderSide.none,
-      bottom: bottom?.resolve(context) ?? BorderSide.none,
-      left: left?.resolve(context) ?? BorderSide.none,
+      top: resolveMixProp(context, top) ?? BorderSide.none,
+      right: resolveMixProp(context, right) ?? BorderSide.none,
+      bottom: resolveMixProp(context, bottom) ?? BorderSide.none,
+      left: resolveMixProp(context, left) ?? BorderSide.none,
     );
   }
 
@@ -144,10 +161,10 @@ final class BorderDto extends BoxBorderDto<Border> {
     if (other == null) return this;
 
     return BorderDto.props(
-      top: top?.merge(other.top) ?? other.top,
-      bottom: bottom?.merge(other.bottom) ?? other.bottom,
-      left: left?.merge(other.left) ?? other.left,
-      right: right?.merge(other.right) ?? other.right,
+      top: mergeMixProp(top, other.top),
+      bottom: mergeMixProp(bottom, other.bottom),
+      left: mergeMixProp(left, other.left),
+      right: mergeMixProp(right, other.right),
     );
   }
 
@@ -160,22 +177,20 @@ final class BorderDto extends BoxBorderDto<Border> {
   /// compare two [BorderDto] instances for equality.
   @override
   List<Object?> get props => [top, bottom, left, right];
+
+  @override
+  Border get defaultValue => const Border();
 }
 
-final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional> {
-  final BorderSideDto? start;
-  final BorderSideDto? end;
-  static const BorderDirectionalDto none = BorderDirectionalDto.all(
+final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional>
+    with HasDefaultValue<BorderDirectional> {
+  final MixProp<BorderSide, BorderSideDto>? start;
+  final MixProp<BorderSide, BorderSideDto>? end;
+  static final BorderDirectionalDto none = BorderDirectionalDto.all(
     BorderSideDto.none,
   );
 
-  const BorderDirectionalDto.props({
-    super.top,
-    super.bottom,
-    this.start,
-    this.end,
-  });
-
+  // Main constructor accepts DTOs
   factory BorderDirectionalDto({
     BorderSideDto? top,
     BorderSideDto? bottom,
@@ -183,12 +198,20 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional> {
     BorderSideDto? end,
   }) {
     return BorderDirectionalDto.props(
-      top: top,
-      bottom: bottom,
-      start: start,
-      end: end,
+      top: MixProp.maybeValue(top),
+      bottom: MixProp.maybeValue(bottom),
+      start: MixProp.maybeValue(start),
+      end: MixProp.maybeValue(end),
     );
   }
+
+  // Private constructor that accepts Prop instances
+  const BorderDirectionalDto.props({
+    super.top,
+    super.bottom,
+    this.start,
+    this.end,
+  });
 
   /// Constructor that accepts a [BorderDirectional] value and extracts its properties.
   ///
@@ -200,31 +223,41 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional> {
   /// ```
   factory BorderDirectionalDto.value(BorderDirectional border) {
     return BorderDirectionalDto.props(
-      top: BorderSideDto.maybeValue(border.top),
-      bottom: BorderSideDto.maybeValue(border.bottom),
-      start: BorderSideDto.maybeValue(border.start),
-      end: BorderSideDto.maybeValue(border.end),
+      top: MixProp.value(BorderSideDto.value(border.top)),
+      bottom: MixProp.value(BorderSideDto.value(border.bottom)),
+      start: MixProp.value(BorderSideDto.value(border.start)),
+      end: MixProp.value(BorderSideDto.value(border.end)),
     );
   }
 
-  const BorderDirectionalDto.all(BorderSideDto side)
-    : this.props(top: side, bottom: side, start: side, end: side);
+  factory BorderDirectionalDto.all(BorderSideDto side) {
+    return BorderDirectionalDto.props(
+      top: MixProp.value(side),
+      bottom: MixProp.value(side),
+      start: MixProp.value(side),
+      end: MixProp.value(side),
+    );
+  }
 
-  const BorderDirectionalDto.symmetric({
+  factory BorderDirectionalDto.symmetric({
     BorderSideDto? vertical,
     BorderSideDto? horizontal,
-  }) : this.props(
-         top: horizontal,
-         bottom: horizontal,
-         start: vertical,
-         end: vertical,
-       );
+  }) {
+    return BorderDirectionalDto.props(
+      top: MixProp.maybeValue(horizontal),
+      bottom: MixProp.maybeValue(horizontal),
+      start: MixProp.maybeValue(vertical),
+      end: MixProp.maybeValue(vertical),
+    );
+  }
 
-  const BorderDirectionalDto.vertical(BorderSideDto side)
-    : this.symmetric(vertical: side);
+  factory BorderDirectionalDto.vertical(BorderSideDto side) {
+    return BorderDirectionalDto.symmetric(vertical: side);
+  }
 
-  const BorderDirectionalDto.horizontal(BorderSideDto side)
-    : this.symmetric(horizontal: side);
+  factory BorderDirectionalDto.horizontal(BorderSideDto side) {
+    return BorderDirectionalDto.symmetric(horizontal: side);
+  }
 
   /// Constructor that accepts a nullable [BorderDirectional] value and extracts its properties.
   ///
@@ -249,10 +282,10 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional> {
   @override
   BorderDirectional resolve(MixContext context) {
     return BorderDirectional(
-      top: top?.resolve(context) ?? BorderSide.none,
-      start: start?.resolve(context) ?? BorderSide.none,
-      end: end?.resolve(context) ?? BorderSide.none,
-      bottom: bottom?.resolve(context) ?? BorderSide.none,
+      top: resolveMixProp(context, top) ?? defaultValue.top,
+      start: resolveMixProp(context, start) ?? defaultValue.start,
+      end: resolveMixProp(context, end) ?? defaultValue.end,
+      bottom: resolveMixProp(context, bottom) ?? defaultValue.bottom,
     );
   }
 
@@ -269,10 +302,10 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional> {
     if (other == null) return this;
 
     return BorderDirectionalDto.props(
-      top: top?.merge(other.top) ?? other.top,
-      bottom: bottom?.merge(other.bottom) ?? other.bottom,
-      start: start?.merge(other.start) ?? other.start,
-      end: end?.merge(other.end) ?? other.end,
+      top: mergeMixProp(top, other.top),
+      bottom: mergeMixProp(bottom, other.bottom),
+      start: mergeMixProp(start, other.start),
+      end: mergeMixProp(end, other.end),
     );
   }
 
@@ -283,6 +316,9 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional> {
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [BorderDirectionalDto] instances for equality.
+  @override
+  BorderDirectional get defaultValue => const BorderDirectional();
+
   @override
   List<Object?> get props => [top, bottom, start, end];
 }
@@ -295,12 +331,7 @@ final class BorderSideDto extends Mix<BorderSide>
   final Prop<BorderStyle>? style;
   final Prop<double>? strokeAlign;
 
-  static const BorderSideDto none = BorderSideDto.props(
-    color: null,
-    width: null,
-    style: null,
-    strokeAlign: null,
-  );
+  static final BorderSideDto none = BorderSideDto();
 
   // Main constructor accepts raw values
   factory BorderSideDto({

@@ -23,21 +23,12 @@ class RoundedRectangleBorderUtility<T extends StyleElement>
   late final side = BorderSideUtility((v) => only(side: v));
 
   RoundedRectangleBorderUtility(super.builder)
-    : super(
-        valueToDto: (v) => RoundedRectangleBorderDto(
-          borderRadius: v.borderRadius != BorderRadius.zero
-              ? _borderRadiusToDto(v.borderRadius)
-              : null,
-          side: v.side != BorderSide.none ? _borderSideToDto(v.side) : null,
-        ),
-      );
+    : super(valueToDto: RoundedRectangleBorderDto.value);
 
   T call({BorderRadiusGeometry? borderRadius, BorderSide? side}) {
     return only(
-      borderRadius: borderRadius != null
-          ? _borderRadiusToDto(borderRadius)
-          : null,
-      side: side != null ? _borderSideToDto(side) : null,
+      borderRadius: BorderRadiusGeometryDto.maybeValue(borderRadius),
+      side: BorderSideDto.maybeValue(side),
     );
   }
 
@@ -61,21 +52,12 @@ class BeveledRectangleBorderUtility<T extends StyleElement>
   late final side = BorderSideUtility((v) => only(side: v));
 
   BeveledRectangleBorderUtility(super.builder)
-    : super(
-        valueToDto: (v) => BeveledRectangleBorderDto(
-          borderRadius: v.borderRadius != BorderRadius.zero
-              ? _borderRadiusToDto(v.borderRadius)
-              : null,
-          side: v.side != BorderSide.none ? _borderSideToDto(v.side) : null,
-        ),
-      );
+    : super(valueToDto: BeveledRectangleBorderDto.value);
 
   T call({BorderRadiusGeometry? borderRadius, BorderSide? side}) {
     return only(
-      borderRadius: borderRadius != null
-          ? _borderRadiusToDto(borderRadius)
-          : null,
-      side: side != null ? _borderSideToDto(side) : null,
+      borderRadius: BorderRadiusGeometryDto.maybeValue(borderRadius),
+      side: BorderSideDto.maybeValue(side),
     );
   }
 
@@ -100,21 +82,12 @@ class ContinuousRectangleBorderUtility<T extends StyleElement>
   late final side = BorderSideUtility((v) => only(side: v));
 
   ContinuousRectangleBorderUtility(super.builder)
-    : super(
-        valueToDto: (v) => ContinuousRectangleBorderDto(
-          borderRadius: v.borderRadius != BorderRadius.zero
-              ? _borderRadiusToDto(v.borderRadius)
-              : null,
-          side: v.side != BorderSide.none ? _borderSideToDto(v.side) : null,
-        ),
-      );
+    : super(valueToDto: ContinuousRectangleBorderDto.value);
 
   T call({BorderRadiusGeometry? borderRadius, BorderSide? side}) {
     return only(
-      borderRadius: borderRadius != null
-          ? _borderRadiusToDto(borderRadius)
-          : null,
-      side: side != null ? _borderSideToDto(side) : null,
+      borderRadius: BorderRadiusGeometryDto.maybeValue(borderRadius),
+      side: BorderSideDto.maybeValue(side),
     );
   }
 
@@ -135,17 +108,11 @@ class CircleBorderUtility<T extends StyleElement>
   /// Utility for defining [CircleBorderDto.eccentricity]
   late final eccentricity = DoubleUtility((v) => only(eccentricity: v));
 
-  CircleBorderUtility(super.builder)
-    : super(
-        valueToDto: (v) => CircleBorderDto(
-          side: v.side != BorderSide.none ? _borderSideToDto(v.side) : null,
-          eccentricity: v.eccentricity != 0.0 ? v.eccentricity : null,
-        ),
-      );
+  CircleBorderUtility(super.builder) : super(valueToDto: CircleBorderDto.value);
 
   T call({BorderSide? side, double? eccentricity}) {
     return only(
-      side: side != null ? _borderSideToDto(side) : null,
+      side: BorderSideDto.maybeValue(side),
       eccentricity: eccentricity,
     );
   }
@@ -180,20 +147,7 @@ class StarBorderUtility<T extends StyleElement>
   /// Utility for defining [StarBorderDto.squash]
   late final squash = DoubleUtility((v) => only(squash: v));
 
-  StarBorderUtility(super.builder)
-    : super(
-        valueToDto: (v) => StarBorderDto(
-          side: v.side != BorderSide.none ? _borderSideToDto(v.side) : null,
-          points: v.points != 5 ? v.points : null,
-          innerRadiusRatio: v.innerRadiusRatio != 0.4
-              ? v.innerRadiusRatio
-              : null,
-          pointRounding: v.pointRounding != 0 ? v.pointRounding : null,
-          valleyRounding: v.valleyRounding != 0 ? v.valleyRounding : null,
-          rotation: v.rotation != 0 ? v.rotation : null,
-          squash: v.squash != 0 ? v.squash : null,
-        ),
-      );
+  StarBorderUtility(super.builder) : super(valueToDto: StarBorderDto.value);
 
   T call({
     BorderSide? side,
@@ -205,7 +159,7 @@ class StarBorderUtility<T extends StyleElement>
     double? squash,
   }) {
     return only(
-      side: side != null ? _borderSideToDto(side) : null,
+      side: BorderSideDto.maybeValue(side),
       points: points,
       innerRadiusRatio: innerRadiusRatio,
       pointRounding: pointRounding,
@@ -257,16 +211,7 @@ class LinearBorderUtility<T extends StyleElement>
   /// Utility for defining [LinearBorderDto.bottom]
   late final bottom = LinearBorderEdgeUtility((v) => only(bottom: v));
 
-  LinearBorderUtility(super.builder)
-    : super(
-        valueToDto: (v) => LinearBorderDto(
-          side: v.side != BorderSide.none ? _borderSideToDto(v.side) : null,
-          start: v.start != null ? _linearBorderEdgeToDto(v.start!) : null,
-          end: v.end != null ? _linearBorderEdgeToDto(v.end!) : null,
-          top: v.top != null ? _linearBorderEdgeToDto(v.top!) : null,
-          bottom: v.bottom != null ? _linearBorderEdgeToDto(v.bottom!) : null,
-        ),
-      );
+  LinearBorderUtility(super.builder) : super(valueToDto: LinearBorderDto.value);
 
   T call({
     BorderSide? side,
@@ -276,11 +221,11 @@ class LinearBorderUtility<T extends StyleElement>
     LinearBorderEdge? bottom,
   }) {
     return only(
-      side: side != null ? _borderSideToDto(side) : null,
-      start: start != null ? _linearBorderEdgeToDto(start) : null,
-      end: end != null ? _linearBorderEdgeToDto(end) : null,
-      top: top != null ? _linearBorderEdgeToDto(top) : null,
-      bottom: bottom != null ? _linearBorderEdgeToDto(bottom) : null,
+      side: BorderSideDto.maybeValue(side),
+      start: LinearBorderEdgeDto.maybeValue(start),
+      end: LinearBorderEdgeDto.maybeValue(end),
+      top: LinearBorderEdgeDto.maybeValue(top),
+      bottom: LinearBorderEdgeDto.maybeValue(bottom),
     );
   }
 
@@ -314,12 +259,7 @@ class LinearBorderEdgeUtility<T extends StyleElement>
   late final alignment = DoubleUtility((v) => only(alignment: v));
 
   LinearBorderEdgeUtility(super.builder)
-    : super(
-        valueToDto: (v) => LinearBorderEdgeDto(
-          size: v.size != 1.0 ? v.size : null,
-          alignment: v.alignment != 0.0 ? v.alignment : null,
-        ),
-      );
+    : super(valueToDto: LinearBorderEdgeDto.value);
 
   T call({double? size, double? alignment}) {
     return only(size: size, alignment: alignment);
@@ -338,14 +278,10 @@ class StadiumBorderUtility<T extends StyleElement>
   late final side = BorderSideUtility((v) => only(side: v));
 
   StadiumBorderUtility(super.builder)
-    : super(
-        valueToDto: (v) => StadiumBorderDto(
-          side: v.side != BorderSide.none ? _borderSideToDto(v.side) : null,
-        ),
-      );
+    : super(valueToDto: StadiumBorderDto.value);
 
   T call({BorderSide? side}) {
-    return only(side: side != null ? _borderSideToDto(side) : null);
+    return only(side: BorderSideDto.maybeValue(side));
   }
 
   /// Returns a new [StadiumBorderDto] with the specified properties.
@@ -378,11 +314,10 @@ class ShapeBorderUtility<T extends StyleElement>
   /// Utility for defining StadiumBorder
   late final stadium = StadiumBorderUtility(builder);
 
-  ShapeBorderUtility(super.builder)
-    : super(valueToDto: (v) => _shapeBorderToDto(v));
+  ShapeBorderUtility(super.builder) : super(valueToDto: ShapeBorderDto.value);
 
   T call(ShapeBorder shape) {
-    return builder(_shapeBorderToDto(shape));
+    return builder(ShapeBorderDto.value(shape));
   }
 
   @override
@@ -391,92 +326,4 @@ class ShapeBorderUtility<T extends StyleElement>
       'ShapeBorderUtility.only is not supported. Use the specific shape utilities instead.',
     );
   }
-}
-
-// Helper functions
-BorderRadiusGeometryDto? _borderRadiusToDto(BorderRadiusGeometry borderRadius) {
-  if (borderRadius == BorderRadius.zero) return null;
-
-  if (borderRadius is BorderRadius) {
-    return BorderRadiusDto(
-      topLeft: borderRadius.topLeft,
-      topRight: borderRadius.topRight,
-      bottomLeft: borderRadius.bottomLeft,
-      bottomRight: borderRadius.bottomRight,
-    );
-  } else if (borderRadius is BorderRadiusDirectional) {
-    return BorderRadiusDirectionalDto(
-      topStart: borderRadius.topStart,
-      topEnd: borderRadius.topEnd,
-      bottomStart: borderRadius.bottomStart,
-      bottomEnd: borderRadius.bottomEnd,
-    );
-  }
-
-  throw ArgumentError(
-    'Unsupported BorderRadiusGeometry type: ${borderRadius.runtimeType}',
-  );
-}
-
-BorderSideDto? _borderSideToDto(BorderSide side) {
-  if (side == BorderSide.none) return null;
-
-  const defaultSide = BorderSide();
-
-  return BorderSideDto(
-    color: side.color != defaultSide.color ? side.color : null,
-    strokeAlign: side.strokeAlign != defaultSide.strokeAlign
-        ? side.strokeAlign
-        : null,
-    style: side.style != defaultSide.style ? side.style : null,
-    width: side.width != defaultSide.width ? side.width : null,
-  );
-}
-
-LinearBorderEdgeDto _linearBorderEdgeToDto(LinearBorderEdge edge) {
-  return LinearBorderEdgeDto(
-    size: edge.size != 1.0 ? edge.size : null,
-    alignment: edge.alignment != 0.0 ? edge.alignment : null,
-  );
-}
-
-ShapeBorderDto _shapeBorderToDto(ShapeBorder border) {
-  return switch (border) {
-    RoundedRectangleBorder b => RoundedRectangleBorderDto(
-      borderRadius: _borderRadiusToDto(b.borderRadius),
-      side: _borderSideToDto(b.side),
-    ),
-    BeveledRectangleBorder b => BeveledRectangleBorderDto(
-      borderRadius: _borderRadiusToDto(b.borderRadius),
-      side: _borderSideToDto(b.side),
-    ),
-    ContinuousRectangleBorder b => ContinuousRectangleBorderDto(
-      borderRadius: _borderRadiusToDto(b.borderRadius),
-      side: _borderSideToDto(b.side),
-    ),
-    CircleBorder b => CircleBorderDto(
-      side: _borderSideToDto(b.side),
-      eccentricity: b.eccentricity != 0.0 ? b.eccentricity : null,
-    ),
-    StarBorder b => StarBorderDto(
-      side: _borderSideToDto(b.side),
-      points: b.points != 5 ? b.points : null,
-      innerRadiusRatio: b.innerRadiusRatio != 0.4 ? b.innerRadiusRatio : null,
-      pointRounding: b.pointRounding != 0 ? b.pointRounding : null,
-      valleyRounding: b.valleyRounding != 0 ? b.valleyRounding : null,
-      rotation: b.rotation != 0 ? b.rotation : null,
-      squash: b.squash != 0 ? b.squash : null,
-    ),
-    LinearBorder b => LinearBorderDto(
-      side: _borderSideToDto(b.side),
-      start: b.start != null ? _linearBorderEdgeToDto(b.start!) : null,
-      end: b.end != null ? _linearBorderEdgeToDto(b.end!) : null,
-      top: b.top != null ? _linearBorderEdgeToDto(b.top!) : null,
-      bottom: b.bottom != null ? _linearBorderEdgeToDto(b.bottom!) : null,
-    ),
-    StadiumBorder b => StadiumBorderDto(side: _borderSideToDto(b.side)),
-    _ => throw ArgumentError(
-      'Unsupported ShapeBorder type: ${border.runtimeType}',
-    ),
-  };
 }

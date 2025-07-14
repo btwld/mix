@@ -70,6 +70,27 @@ mixin MixHelperMixin {
     return resolved.isEmpty ? null : resolved;
   }
 
+  // mergeMixProp merges two V extend Mix
+  @protected
+  MixProp<V, D>? mergeMixProp<V, D extends Mix<V>>(
+    MixProp<V, D>? a,
+    MixProp<V, D>? b,
+  ) {
+    if (a == null) return b;
+    if (b == null) return a;
+
+    return a.merge(b);
+  }
+
+  // resolve mix prop to value
+  @protected
+  V? resolveMixProp<V, D extends Mix<V>>(
+    MixContext context,
+    MixProp<V, D>? prop,
+  ) {
+    return prop?.resolve(context);
+  }
+
   @protected
   List<Prop<V>>? mergePropList<V>(
     List<Prop<V>>? a,
