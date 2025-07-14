@@ -19,10 +19,12 @@ void main() {
             decoration: BoxDecorationDto(color: Colors.blue),
             transform: Matrix4.translationValues(10.0, 10.0, 0.0),
             clipBehavior: Clip.antiAlias,
-            modifiers: WidgetModifiersConfigDto(const [
-              OpacityModifierSpecAttribute(opacity: 1),
-              SizedBoxModifierSpecAttribute(height: 10, width: 10),
-            ]),
+            modifiers: WidgetModifiersConfigDto(
+              modifiers: const [
+                OpacityModifierSpecAttribute(opacity: 1),
+                SizedBoxModifierSpecAttribute(height: 10, width: 10),
+              ],
+            ),
             width: 300,
             height: 200,
           ),
@@ -301,10 +303,12 @@ void main() {
         clipBehavior: Clip.antiAlias,
         width: 100,
         height: 100,
-        modifiers: WidgetModifiersConfigDto(const [
-          OpacityModifierSpecAttribute(opacity: 0.5),
-          SizedBoxModifierSpecAttribute(height: 10, width: 10),
-        ]),
+        modifiers: WidgetModifiersConfigDto(
+          modifiers: const [
+            OpacityModifierSpecAttribute(opacity: 0.5),
+            SizedBoxModifierSpecAttribute(height: 10, width: 10),
+          ],
+        ),
       );
 
       final mergedBoxSpecAttribute = containerSpecAttribute.merge(
@@ -329,9 +333,9 @@ void main() {
           clipBehavior: Clip.antiAliasWithSaveLayer,
           width: 200,
           height: 200,
-          modifiers: WidgetModifiersConfigDto(const [
-            SizedBoxModifierSpecAttribute(width: 100),
-          ]),
+          modifiers: WidgetModifiersConfigDto(
+            modifiers: const [SizedBoxModifierSpecAttribute(width: 100)],
+          ),
         ),
       );
 
@@ -447,17 +451,14 @@ void main() {
       final boxAttribute = boxValue.attributeValue!;
       final boxAttribute2 = box.padding(20);
 
+      expect(boxAttribute.padding, resolvesTo(const EdgeInsets.all(10.0)));
       expect(
-        boxAttribute.padding,
-        resolvesTo(const EdgeInsets.all(10.0)),
+        (boxAttribute.decoration as BoxDecorationDto).color,
+        isA<Prop<Color>>(),
       );
-      expect((boxAttribute.decoration as BoxDecorationDto).color, isA<Prop<Color>>());
       expect(boxAttribute.alignment, Alignment.center);
 
-      expect(
-        boxAttribute2.padding,
-        resolvesTo(const EdgeInsets.all(20.0)),
-      );
+      expect(boxAttribute2.padding, resolvesTo(const EdgeInsets.all(20.0)));
       expect((boxAttribute2.decoration as BoxDecorationDto?)?.color, isNull);
 
       expect(boxAttribute2.alignment, isNull);

@@ -11,12 +11,12 @@ import 'widget_modifiers_config.dart';
 typedef WidgetModifiersDataDto = WidgetModifiersConfigDto;
 
 class WidgetModifiersConfigDto extends Mix<WidgetModifiersConfig> {
-  final List<WidgetModifierSpecAttribute> modifiers;
+  final List<WidgetModifierSpecAttribute>? modifiers;
 
-  const WidgetModifiersConfigDto.props(this.modifiers);
+  const WidgetModifiersConfigDto.props({this.modifiers});
   
-  factory WidgetModifiersConfigDto(List<WidgetModifierSpecAttribute> modifiers) {
-    return WidgetModifiersConfigDto.props(modifiers);
+  factory WidgetModifiersConfigDto({List<WidgetModifierSpecAttribute>? modifiers}) {
+    return WidgetModifiersConfigDto.props(modifiers: modifiers);
   }
 
   /// Constructor that accepts a [WidgetModifiersConfig] value and extracts its properties.
@@ -30,7 +30,7 @@ class WidgetModifiersConfigDto extends Mix<WidgetModifiersConfig> {
   factory WidgetModifiersConfigDto.value(WidgetModifiersConfig config) {
     // TODO: This conversion is complex as it requires converting WidgetModifierSpec to WidgetModifierSpecAttribute
     // For now, return empty list - this needs proper implementation based on available conversion methods
-    return const WidgetModifiersConfigDto.props([]);
+    return const WidgetModifiersConfigDto.props();
   }
 
   /// Constructor that accepts a nullable [WidgetModifiersConfig] value and extracts its properties.
@@ -49,25 +49,31 @@ class WidgetModifiersConfigDto extends Mix<WidgetModifiersConfig> {
   @override
   WidgetModifiersConfigDto merge(WidgetModifiersConfigDto? other) {
     if (other == null) return this;
-    final thisMap = AttributeMap(modifiers);
+    
+    final thisModifiers = modifiers ?? <WidgetModifierSpecAttribute>[];
+    final otherModifiers = other.modifiers ?? <WidgetModifierSpecAttribute>[];
+    
+    final thisMap = AttributeMap(thisModifiers);
 
-    final resetIndex = other.modifiers.lastIndexWhere(
+    final resetIndex = otherModifiers.lastIndexWhere(
       (e) => e is ResetModifierSpecAttribute,
     );
 
     if (resetIndex != -1) {
-      return WidgetModifiersConfigDto(other.modifiers.sublist(resetIndex));
+      return WidgetModifiersConfigDto(modifiers: otherModifiers.sublist(resetIndex));
     }
 
-    final otherMap = AttributeMap(other.modifiers);
+    final otherMap = AttributeMap(otherModifiers);
     final mergedMap = thisMap.merge(otherMap).values;
 
-    return WidgetModifiersConfigDto(mergedMap);
+    return WidgetModifiersConfigDto(modifiers: mergedMap);
   }
 
   @override
   WidgetModifiersConfig resolve(MixContext context) {
-    return WidgetModifiersConfig(modifiers.map((e) => e.resolve(context)).toList());
+    final resolvedModifiers = modifiers?.map((e) => e.resolve(context)).toList() ?? <WidgetModifierSpec>[];
+    
+    return WidgetModifiersConfig(resolvedModifiers);
   }
 
   @override

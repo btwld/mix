@@ -25,24 +25,24 @@ void main() {
       );
 
       expect(
-        merged.borderRadius!.topLeft,
+        merged.borderRadius!.value?.topLeft,
         resolvesTo(const Radius.circular(25)),
       );
       expect(
-        merged.borderRadius!.topRight,
+        merged.borderRadius!.value?.topRight,
         resolvesTo(const Radius.circular(20)),
       );
       expect(
-        merged.borderRadius!.bottomLeft,
+        merged.borderRadius!.value?.bottomLeft,
         resolvesTo(const Radius.circular(5)),
       );
       expect(
-        merged.borderRadius!.bottomRight,
+        merged.borderRadius!.value?.bottomRight,
         resolvesTo(const Radius.circular(10)),
       );
 
-      expect(merged.side!.color, resolvesTo(Colors.blue));
-      expect(merged.side!.width, resolvesTo(2.0));
+      expect(merged.side!.value?.color, resolvesTo(Colors.blue));
+      expect(merged.side!.value?.width, resolvesTo(2.0));
     });
 
     test(
@@ -91,8 +91,8 @@ void main() {
       );
 
       expect(merged.eccentricity, resolvesTo(0.75));
-      expect(merged.side!.color, resolvesTo(Colors.blue));
-      expect(merged.side!.width, resolvesTo(2.0));
+      expect(merged.side!.value?.color, resolvesTo(Colors.blue));
+      expect(merged.side!.value?.width, resolvesTo(2.0));
     });
 
     test('resolve should create a CircleBorder with the correct values', () {
@@ -133,24 +133,24 @@ void main() {
       );
 
       expect(
-        merged.borderRadius!.topLeft,
+        merged.borderRadius!.value?.topLeft,
         resolvesTo(const Radius.circular(25)),
       );
       expect(
-        merged.borderRadius!.topRight,
+        merged.borderRadius!.value?.topRight,
         resolvesTo(const Radius.circular(20)),
       );
       expect(
-        merged.borderRadius!.bottomLeft,
+        merged.borderRadius!.value?.bottomLeft,
         resolvesTo(const Radius.circular(5)),
       );
       expect(
-        merged.borderRadius!.bottomRight,
+        merged.borderRadius!.value?.bottomRight,
         resolvesTo(const Radius.circular(10)),
       );
 
-      expect(merged.side!.color, resolvesTo(Colors.blue));
-      expect(merged.side!.width, resolvesTo(2.0));
+      expect(merged.side!.value?.color, resolvesTo(Colors.blue));
+      expect(merged.side!.value?.width, resolvesTo(2.0));
     });
 
     test(
@@ -194,8 +194,8 @@ void main() {
         StadiumBorderDto(side: BorderSideDto(color: Colors.blue, width: 2.0)),
       );
 
-      expect(merged.side!.color, resolvesTo(Colors.blue));
-      expect(merged.side!.width, resolvesTo(2.0));
+      expect(merged.side!.value?.color, resolvesTo(Colors.blue));
+      expect(merged.side!.value?.width, resolvesTo(2.0));
     });
 
     test('resolve should create a StadiumBorder with the correct values', () {
@@ -233,15 +233,13 @@ void main() {
           ),
         );
 
-        final borderRadius = merged.borderRadius as BorderRadiusDto;
+        expect(merged.borderRadius!.value?.topLeft, resolvesTo(const Radius.circular(25)));
+        expect(merged.borderRadius!.value?.topRight, resolvesTo(const Radius.circular(20)));
+        expect(merged.borderRadius!.value?.bottomLeft, resolvesTo(const Radius.circular(5)));
+        expect(merged.borderRadius!.value?.bottomRight, resolvesTo(const Radius.circular(10)));
 
-        expect(borderRadius.topLeft, resolvesTo(const Radius.circular(25)));
-        expect(borderRadius.topRight, resolvesTo(const Radius.circular(20)));
-        expect(borderRadius.bottomLeft, resolvesTo(const Radius.circular(5)));
-        expect(borderRadius.bottomRight, resolvesTo(const Radius.circular(10)));
-
-        expect(merged.side!.color, resolvesTo(Colors.blue));
-        expect(merged.side!.width, resolvesTo(2.0));
+        expect(merged.side!.value?.color, resolvesTo(Colors.blue));
+        expect(merged.side!.value?.width, resolvesTo(2.0));
       },
     );
 
@@ -336,11 +334,11 @@ void main() {
     test(
       'resolve method should create the correct OutlinedBorder instance',
       () {
-        const roundedRectangleBorderDto = RoundedRectangleBorderDto();
+        final roundedRectangleBorderDto = RoundedRectangleBorderDto();
         final circleBorderDto = CircleBorderDto();
-        const beveledRectangleBorderDto = BeveledRectangleBorderDto();
-        const continuousRectangleBorderDto = ContinuousRectangleBorderDto();
-        const stadiumBorderDto = StadiumBorderDto();
+        final beveledRectangleBorderDto = BeveledRectangleBorderDto();
+        final continuousRectangleBorderDto = ContinuousRectangleBorderDto();
+        final stadiumBorderDto = StadiumBorderDto();
 
         expect(
           roundedRectangleBorderDto,
@@ -375,11 +373,11 @@ void main() {
         );
 
         expect(
-          roundedRectangleBorderDto.borderRadius,
+          roundedRectangleBorderDto.borderRadius!.value,
           equals(BorderRadiusDto.value(BorderRadius.circular(10))),
         );
         expect(
-          roundedRectangleBorderDto.side,
+          roundedRectangleBorderDto.side!.value,
           equals(BorderSideDto.value(const BorderSide(color: Colors.red))),
         );
       },
@@ -410,7 +408,7 @@ void main() {
         final circleBorderDto = CircleBorderDto.value(circleBorder);
 
         expect(
-          circleBorderDto.side,
+          circleBorderDto.side!.value,
           equals(BorderSideDto.value(const BorderSide(color: Colors.blue))),
         );
         expect(circleBorderDto.eccentricity, resolvesTo(0.8));
@@ -444,11 +442,11 @@ void main() {
         );
 
         expect(
-          beveledRectangleBorderDto.borderRadius,
+          beveledRectangleBorderDto.borderRadius!.value,
           equals(BorderRadiusDto.value(BorderRadius.circular(10))),
         );
         expect(
-          beveledRectangleBorderDto.side,
+          beveledRectangleBorderDto.side!.value,
           equals(BorderSideDto.value(const BorderSide(color: Colors.green))),
         );
       },
@@ -481,11 +479,11 @@ void main() {
         );
 
         expect(
-          continuousRectangleBorderDto.borderRadius,
+          continuousRectangleBorderDto.borderRadius!.value,
           equals(BorderRadiusDto.value(BorderRadius.circular(10))),
         );
         expect(
-          continuousRectangleBorderDto.side,
+          continuousRectangleBorderDto.side!.value,
           equals(BorderSideDto.value(const BorderSide(color: Colors.orange))),
         );
       },
@@ -515,7 +513,7 @@ void main() {
         final stadiumBorderDto = StadiumBorderDto.value(stadiumBorder);
 
         expect(
-          stadiumBorderDto.side,
+          stadiumBorderDto.side!.value,
           equals(BorderSideDto.value(const BorderSide(color: Colors.purple))),
         );
       },
@@ -548,7 +546,7 @@ void main() {
       final starBorderDto = StarBorderDto.value(starBorder);
 
       expect(
-        starBorderDto.side,
+        starBorderDto.side!.value,
         equals(BorderSideDto.value(const BorderSide(color: Colors.teal))),
       );
       expect(starBorderDto.points, resolvesTo(5.0));
@@ -592,11 +590,11 @@ void main() {
         final linearBorderDto = LinearBorderDto.value(linearBorder);
 
         expect(
-          linearBorderDto.side,
+          linearBorderDto.side!.value,
           equals(BorderSideDto.value(const BorderSide(color: Colors.brown))),
         );
         expect(
-          linearBorderDto.start,
+          linearBorderDto.start!.value,
           equals(
             LinearBorderEdgeDto.value(
               const LinearBorderEdge(size: 0.1, alignment: 0.1),
@@ -604,7 +602,7 @@ void main() {
           ),
         );
         expect(
-          linearBorderDto.end,
+          linearBorderDto.end!.value,
           equals(
             LinearBorderEdgeDto.value(
               const LinearBorderEdge(size: 0.2, alignment: 0.2),
@@ -612,7 +610,7 @@ void main() {
           ),
         );
         expect(
-          linearBorderDto.top,
+          linearBorderDto.top!.value,
           equals(
             LinearBorderEdgeDto.value(
               const LinearBorderEdge(size: 0.3, alignment: 0.3),
@@ -620,7 +618,7 @@ void main() {
           ),
         );
         expect(
-          linearBorderDto.bottom,
+          linearBorderDto.bottom!.value,
           equals(
             LinearBorderEdgeDto.value(
               const LinearBorderEdge(size: 0.4, alignment: 0.4),
@@ -724,7 +722,7 @@ void main() {
     });
 
     test('should return the non-null input when one input is null', () {
-      const dto = RoundedRectangleBorderDto();
+      final dto = RoundedRectangleBorderDto();
       expect(ShapeBorderDto.tryToMerge(dto, null), equals(dto));
       expect(ShapeBorderDto.tryToMerge(null, dto), equals(dto));
     });
@@ -763,7 +761,7 @@ void main() {
     });
 
     test('should return the non-null input when one input is null', () {
-      const dto = RoundedRectangleBorderDto();
+      final dto = RoundedRectangleBorderDto();
       expect(OutlinedBorderDto.tryToMerge(dto, null), equals(dto));
       expect(OutlinedBorderDto.tryToMerge(null, dto), equals(dto));
     });
@@ -801,7 +799,7 @@ void main() {
     test(
       'adapt method should create a new instance from other OutlinedBorderDto',
       () {
-        const dtoA = RoundedRectangleBorderDto();
+        final dtoA = RoundedRectangleBorderDto();
         final dtoB = CircleBorderDto(side: BorderSideDto(width: 3.0));
         final result = dtoA.adapt(dtoB);
         expect(result, isA<RoundedRectangleBorderDto>());
@@ -830,7 +828,7 @@ void main() {
     test(
       'adapt method should create a new instance from other OutlinedBorderDto',
       () {
-        const dtoA = BeveledRectangleBorderDto();
+        final dtoA = BeveledRectangleBorderDto();
         final dtoB = StadiumBorderDto(side: BorderSideDto(width: 2.5));
         final result = dtoA.adapt(dtoB);
         expect(result, isA<BeveledRectangleBorderDto>());
@@ -859,7 +857,7 @@ void main() {
     test(
       'adapt method should create a new instance from other OutlinedBorderDto',
       () {
-        const dtoA = ContinuousRectangleBorderDto();
+        final dtoA = ContinuousRectangleBorderDto();
         final dtoB = RoundedRectangleBorderDto(
           side: BorderSideDto(width: 1.8),
           borderRadius: BorderRadiusDto(topLeft: const Radius.circular(10)),
@@ -942,7 +940,7 @@ void main() {
     test(
       'adapt method should create a new instance from other OutlinedBorderDto',
       () {
-        const dtoA = LinearBorderDto();
+        final dtoA = LinearBorderDto();
         final dtoB = StadiumBorderDto(side: BorderSideDto(width: 2.1));
         final result = dtoA.adapt(dtoB);
         expect(result, isA<LinearBorderDto>());
@@ -968,7 +966,7 @@ void main() {
     test(
       'adapt method should create a new instance from other OutlinedBorderDto',
       () {
-        const dtoA = StadiumBorderDto();
+        final dtoA = StadiumBorderDto();
         final dtoB = CircleBorderDto(side: BorderSideDto(width: 2.3));
         final result = dtoA.adapt(dtoB);
         expect(result, isA<StadiumBorderDto>());

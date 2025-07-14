@@ -43,10 +43,10 @@ void main() {
 
       final merged = borderDto1.merge(borderDto2);
 
-      expect(merged.top?.width, resolvesTo(2.0));
-      expect(merged.bottom?.width, resolvesTo(2.0));
-      expect(merged.left?.width, resolvesTo(2.0));
-      expect(merged.right?.width, resolvesTo(2.0));
+      expect(merged.top?.value?.width, resolvesTo(2.0));
+      expect(merged.bottom?.value?.width, resolvesTo(2.0));
+      expect(merged.left?.value?.width, resolvesTo(2.0));
+      expect(merged.right?.value?.width, resolvesTo(2.0));
     });
 
     // resolve
@@ -130,17 +130,17 @@ void main() {
       final merged = borderDto1.merge(borderDto2);
 
       // MIGRATED: Much cleaner assertions using custom matchers
-      expect(merged.top?.width, resolvesTo(2.0));
-      expect(merged.top?.color, resolvesTo(Colors.red));
+      expect(merged.top?.value?.width, resolvesTo(2.0));
+      expect(merged.top?.value?.color, resolvesTo(Colors.red));
 
-      expect(merged.bottom?.width, resolvesTo(2.0));
-      expect(merged.bottom?.color, resolvesTo(Colors.red));
+      expect(merged.bottom?.value?.width, resolvesTo(2.0));
+      expect(merged.bottom?.value?.color, resolvesTo(Colors.red));
 
-      expect(merged.left?.width, resolvesTo(2.0));
-      expect(merged.left?.color, resolvesTo(Colors.red));
+      expect(merged.left?.value?.width, resolvesTo(2.0));
+      expect(merged.left?.value?.color, resolvesTo(Colors.red));
 
-      expect(merged.right?.width, resolvesTo(2.0));
-      expect(merged.right?.color, resolvesTo(Colors.red));
+      expect(merged.right?.value?.width, resolvesTo(2.0));
+      expect(merged.right?.value?.color, resolvesTo(Colors.red));
     });
 
     test('merge BorderDto and BorderDirectionalDto', () {
@@ -158,15 +158,15 @@ void main() {
           BoxBorderDto.tryToMerge(borderDto, borderDirectionalDto)
               as BorderDirectionalDto?;
 
-      expect(mergedBorder?.top?.color, resolvesTo(Colors.green));
-      expect(mergedBorder?.top?.width, resolvesTo(3.0));
-      expect(mergedBorder?.bottom?.color, resolvesTo(Colors.yellow));
-      expect(mergedBorder?.bottom?.width, resolvesTo(4.0));
+      expect(mergedBorder?.top?.value?.color, resolvesTo(Colors.green));
+      expect(mergedBorder?.top?.value?.width, resolvesTo(3.0));
+      expect(mergedBorder?.bottom?.value?.color, resolvesTo(Colors.yellow));
+      expect(mergedBorder?.bottom?.value?.width, resolvesTo(4.0));
 
-      expect(mergedBorder?.start?.color, resolvesTo(Colors.red));
-      expect(mergedBorder?.start?.width, resolvesTo(1.0));
-      expect(mergedBorder?.end?.color, resolvesTo(Colors.blue));
-      expect(mergedBorder?.end?.width, resolvesTo(2.0));
+      expect(mergedBorder?.start?.value?.color, resolvesTo(Colors.red));
+      expect(mergedBorder?.start?.value?.width, resolvesTo(1.0));
+      expect(mergedBorder?.end?.value?.color, resolvesTo(Colors.blue));
+      expect(mergedBorder?.end?.value?.width, resolvesTo(2.0));
     });
   });
 

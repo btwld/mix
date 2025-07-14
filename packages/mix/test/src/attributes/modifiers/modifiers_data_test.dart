@@ -7,7 +7,7 @@ import '../../../helpers/custom_matchers.dart';
 void main() {
   group('ModifiersDataDto', () {
     test('should create an instance with default values', () {
-      final dto = WidgetModifiersConfigDto(const []);
+      final dto = WidgetModifiersConfigDto(modifiers: const []);
       expect(dto.modifiers, isEmpty);
     });
 
@@ -15,37 +15,52 @@ void main() {
       const modifier1 = TestModifierSpecAttribute();
       const modifier2 = TestModifierSpecAttribute();
       // ignore: equal_elements_in_set
-      final dto = WidgetModifiersConfigDto(const [modifier1, modifier2]);
+      final dto = WidgetModifiersConfigDto(
+        modifiers: const [modifier1, modifier2],
+      );
       expect(dto.modifiers, contains(modifier1));
     });
 
     test('should merge with another instance', () {
-      final dto1 = WidgetModifiersConfigDto(const [TestModifierSpecAttribute()]);
-      final dto2 = WidgetModifiersConfigDto(const [TestModifierSpecAttribute(2)]);
+      final dto1 = WidgetModifiersConfigDto(
+        modifiers: const [TestModifierSpecAttribute()],
+      );
+      final dto2 = WidgetModifiersConfigDto(
+        modifiers: const [TestModifierSpecAttribute(2)],
+      );
       final merged = dto1.merge(dto2);
       expect(merged.modifiers, hasLength(1));
-      expect(merged.modifiers.first, const TestModifierSpecAttribute(2));
+      expect(merged.modifiers!.first, const TestModifierSpecAttribute(2));
     });
 
     test('should resolve to a ModifiersData instance', () {
       const modifier = TestModifierSpecAttribute();
-      final dto = WidgetModifiersConfigDto(const [modifier]);
-      
-      expect(dto, resolvesTo(
-        const WidgetModifiersConfig([TestModifierSpec()]),
-      ));
+      final dto = WidgetModifiersConfigDto(modifiers: const [modifier]);
+
+      expect(
+        dto,
+        resolvesTo(const WidgetModifiersConfig([TestModifierSpec()])),
+      );
     });
 
     // test equality
     test('should be equal to another instance', () {
-      final dto1 = WidgetModifiersConfigDto(const [TestModifierSpecAttribute()]);
-      final dto2 = WidgetModifiersConfigDto(const [TestModifierSpecAttribute()]);
+      final dto1 = WidgetModifiersConfigDto(
+        modifiers: const [TestModifierSpecAttribute()],
+      );
+      final dto2 = WidgetModifiersConfigDto(
+        modifiers: const [TestModifierSpecAttribute()],
+      );
       expect(dto1, equals(dto2));
     });
 
     test('should not be equal to another instance', () {
-      final dto1 = WidgetModifiersConfigDto(const [TestModifierSpecAttribute()]);
-      final dto2 = WidgetModifiersConfigDto(const [TestModifierSpecAttribute(2)]);
+      final dto1 = WidgetModifiersConfigDto(
+        modifiers: const [TestModifierSpecAttribute()],
+      );
+      final dto2 = WidgetModifiersConfigDto(
+        modifiers: const [TestModifierSpecAttribute(2)],
+      );
       expect(dto1, isNot(equals(dto2)));
     });
   });
@@ -107,7 +122,8 @@ final class TestModifierSpecAttribute
 
   @override
   SpecAttribute<TestModifierSpec> merge(
-      covariant SpecAttribute<TestModifierSpec>? other) {
+    covariant SpecAttribute<TestModifierSpec>? other,
+  ) {
     return other ?? this;
   }
 

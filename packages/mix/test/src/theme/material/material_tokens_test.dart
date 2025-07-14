@@ -7,9 +7,8 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-  // Create a test that checks if all the values of these tokens match the ThemeData from the MaterialApp
+  // Create a test that checks if all th`e values of these tokens match the ThemeData from the MaterialApp
   group('Material tokens', () {
-
     testWidgets('colors', (tester) async {
       final theme = ThemeData.light();
       await tester.pumpWithMixScope(
@@ -20,7 +19,10 @@ void main() {
       final colors = const MaterialTokens().colorScheme;
       final scope = MixScope.of(context);
 
-      expect(scope.getToken(colors.primary, context), theme.colorScheme.primary);
+      expect(
+        scope.getToken(colors.primary, context),
+        theme.colorScheme.primary,
+      );
       expect(
         scope.getToken(colors.secondary, context),
         theme.colorScheme.secondary,
@@ -29,7 +31,10 @@ void main() {
         scope.getToken(colors.tertiary, context),
         theme.colorScheme.tertiary,
       );
-      expect(scope.getToken(colors.surface, context), theme.colorScheme.surface);
+      expect(
+        scope.getToken(colors.surface, context),
+        theme.colorScheme.surface,
+      );
       expect(
         scope.getToken(colors.background, context),
         theme.colorScheme.background,
@@ -55,11 +60,18 @@ void main() {
         scope.getToken(colors.onBackground, context),
         theme.colorScheme.onBackground,
       );
-      expect(scope.getToken(colors.onError, context), theme.colorScheme.onError);
+      expect(
+        scope.getToken(colors.onError, context),
+        theme.colorScheme.onError,
+      );
     });
 
-    test('Material 3 textStyles', () {
-      // Skip: Token integration needs architectural review - tokens resolve to functions instead of TextStyle
-    }, skip: 'Token integration needs architectural review');
+    test(
+      'Material 3 textStyles',
+      () {
+        // Skip: Token integration needs architectural review - tokens resolve to functions instead of TextStyle
+      },
+      skip: 'Token integration needs architectural review',
+    );
   });
 }

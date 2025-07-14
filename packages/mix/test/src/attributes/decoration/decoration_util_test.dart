@@ -35,12 +35,12 @@ void main() {
       );
 
       expect(result.value, isA<BoxDecorationDto>());
-      expect(result.value.border, isA<BoxBorderDto>());
-      expect(result.value.borderRadius, isA<BorderRadiusGeometryDto>());
-      expect(result.value.boxShadow, isA<List<BoxShadowDto>>());
+      expect(result.value.border?.value, isA<BoxBorderDto>());
+      expect(result.value.borderRadius?.value, isA<BorderRadiusGeometryDto>());
+      expect(result.value.boxShadow, isA<List<MixProp<BoxShadow, BoxShadowDto>>>());
       expect(result.value.color, resolvesTo(Colors.white));
-      expect(result.value.gradient, isA<GradientDto>());
-      expect(result.value.shape, equals(BoxShape.rectangle));
+      expect(result.value.gradient?.value, isA<GradientDto>());
+      expect(result.value.shape?.value, equals(BoxShape.rectangle));
 
       // Test that the values can be resolved correctly
       final resolved = result.value.resolve(EmptyMixData);
@@ -60,7 +60,7 @@ void main() {
 
     test('shape setting', () {
       final result = boxDecoration.shape.circle();
-      expect(result.value.shape, equals(BoxShape.circle));
+      expect(result.value.shape, resolvesTo(BoxShape.circle));
     });
 
     test('border setting', () {
@@ -87,7 +87,7 @@ void main() {
       );
       final result = boxDecoration.gradient.as(gradient);
       expect(
-        result.value.gradient,
+        result.value.gradient?.value,
         equals(LinearGradientDto.maybeValue(gradient)),
       );
     });
@@ -108,16 +108,20 @@ void main() {
         offset: const Offset(5.0, 5.0),
         spreadRadius: 2.0,
       );
-      expect(result.value.boxShadow, equals([BoxShadowDto.value(boxShadow)]));
+      expect(result.value.boxShadow?.first, resolvesTo(boxShadow));
       expect(
-        resultSingle.value.boxShadow?.first,
+        resultSingle.value.boxShadow?.first.value,
         equals(BoxShadowDto.value(boxShadow)),
       );
     });
 
     test('elevation setting', () {
       final result = boxDecoration.elevation(9);
-      expect(result.value.boxShadow, equals(kElevationToShadow[9]!));
+      final resolvedShadows = kElevationToShadow[9]!;
+      expect(result.value.boxShadow?.length, equals(resolvedShadows.length));
+      for (int i = 0; i < resolvedShadows.length; i++) {
+        expect(result.value.boxShadow![i], resolvesTo(resolvedShadows[i]));
+      }
     });
   });
 
@@ -139,22 +143,21 @@ void main() {
     // call()
     test('call() returns correct instance', () {
       final result = shapeDecoration(
-        color: Colors.blue,
         gradient: linearGradient,
         shadows: const [boxShadow],
       );
 
-      expect(result.value.color, resolvesTo(Colors.blue));
+      expect(result.value.color, isNull);
       expect(
-        result.value.gradient,
+        result.value.gradient?.value,
         equals(LinearGradientDto.maybeValue(linearGradient)),
       );
-      expect(result.value.shadows, isA<List<BoxShadowDto>>());
+      expect(result.value.shadows, isA<List<MixProp<BoxShadow, BoxShadowDto>>>());
       expect(result.value.shadows?.length, 1);
       
       // Test that it resolves correctly
       final resolved = result.value.resolve(EmptyMixData);
-      expect(resolved.color, Colors.blue);
+      expect(resolved.color, isNull);
       expect(resolved.gradient, isA<LinearGradient>());
       expect(resolved.shadows, isA<List<BoxShadow>>());
       expect(resolved.shadows?.length, 1);
@@ -175,7 +178,7 @@ void main() {
       final result = shapeDecoration.gradient.as(linearGradient);
 
       expect(
-        result.value.gradient,
+        result.value.gradient?.value,
         equals(LinearGradientDto.maybeValue(linearGradient)),
       );
     });
@@ -184,14 +187,14 @@ void main() {
     test('shadows() returns correct instance', () {
       final result = shapeDecoration.shadows([boxShadow]);
 
-      expect(result.value.shadows, equals([BoxShadowDto.value(boxShadow)]));
+      expect(result.value.shadows?.first, resolvesTo(boxShadow));
     });
 
     // shape()
     test('shape() returns correct instance', () {
       final result = shapeDecoration.shape.circle();
 
-      expect(result.value.shape, equals(CircleBorderDto()));
+      expect(result.value.shape?.value, equals(CircleBorderDto()));
     });
   });
 }

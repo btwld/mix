@@ -305,10 +305,10 @@ final class EdgeInsetsDirectionalDto
   @override
   EdgeInsetsDirectional resolve(MixContext context) {
     return EdgeInsetsDirectional.only(
-      start: start?.resolve(context) ?? 0,
-      top: top?.resolve(context) ?? 0,
-      end: end?.resolve(context) ?? 0,
-      bottom: bottom?.resolve(context) ?? 0,
+      start: resolveMixProp(context, start) ?? 0,
+      top: resolveMixProp(context, top) ?? 0,
+      end: resolveMixProp(context, end) ?? 0,
+      bottom: resolveMixProp(context, bottom) ?? 0,
     );
   }
 
@@ -317,10 +317,10 @@ final class EdgeInsetsDirectionalDto
     if (other == null) return this;
 
     return EdgeInsetsDirectionalDto.props(
-      top: top?.merge(other.top) ?? other.top,
-      bottom: bottom?.merge(other.bottom) ?? other.bottom,
-      start: start?.merge(other.start) ?? other.start,
-      end: end?.merge(other.end) ?? other.end,
+      top: mergeMixProp(top, other.top),
+      bottom: mergeMixProp(bottom, other.bottom),
+      start: mergeMixProp(start, other.start),
+      end: mergeMixProp(end, other.end),
     );
   }
 

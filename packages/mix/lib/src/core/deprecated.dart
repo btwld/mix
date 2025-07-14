@@ -30,6 +30,7 @@ import '../attributes/decoration/image/decoration_image_dto.dart';
 import '../attributes/enum/enum_util.dart';
 import '../attributes/gap/space_dto.dart';
 import '../attributes/gradient/gradient_dto.dart';
+import '../attributes/modifiers/widget_modifiers_config.dart';
 import '../attributes/shadow/shadow_dto.dart';
 import '../attributes/spacing/edge_insets_dto.dart';
 import '../attributes/spacing/spacing_util.dart';
@@ -349,19 +350,25 @@ extension AnimationConfigMixExtDeprecated on AnimationConfig {
 /// Deprecated extension for Color conversion
 extension DeprecatedColorExt on Color {
   @Deprecated('Use Mixable.value(this) directly instead of toDto()')
-  ColorDto toDto() => throw UnsupportedError('ColorDto is deprecated. Use Prop<Color> instead.');
+  ColorDto toDto() => throw UnsupportedError(
+    'ColorDto is deprecated. Use Prop<Color> instead.',
+  );
 }
 
 /// Deprecated extension for MaterialColor conversion - preserves MaterialColor type
 extension DeprecatedMaterialColorExt on MaterialColor {
   @Deprecated('Use Mixable.value(this) directly instead of toDto()')
-  Mix<MaterialColor> toDto() => throw UnsupportedError('Mix<MaterialColor> is deprecated. Use Prop<MaterialColor> instead.');
+  Mix<MaterialColor> toDto() => throw UnsupportedError(
+    'Mix<MaterialColor> is deprecated. Use Prop<MaterialColor> instead.',
+  );
 }
 
 /// Deprecated extension for Radius conversion
 extension DeprecatedRadiusExt on Radius {
   @Deprecated('Use Mixable.value(this) directly instead of toDto()')
-  RadiusDto toDto() => throw UnsupportedError('RadiusDto is deprecated. Use Prop<Radius> instead.');
+  RadiusDto toDto() => throw UnsupportedError(
+    'RadiusDto is deprecated. Use Prop<Radius> instead.',
+  );
 }
 
 // =============================================================================
@@ -1030,3 +1037,8 @@ extension ListStadiumBorderMixExtDeprecated on List<StadiumBorder> {
     return map((e) => e.toDto()).toList();
   }
 }
+
+@Deprecated(
+  'Use WidgetModifiersConfig instead. This will be removed in version 2.0',
+)
+typedef WidgetModifiersData = WidgetModifiersConfig;

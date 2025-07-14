@@ -97,8 +97,8 @@ void main() {
         )),
       );
       expect(merged.textWidthBasis, TextWidthBasis.longestLine);
-      expect(merged.textHeightBehavior!.applyHeightToFirstAscent, false);
-      expect(merged.textHeightBehavior!.applyHeightToLastDescent, false);
+      expect(merged.textHeightBehavior!.applyHeightToFirstAscent, resolvesTo(false));
+      expect(merged.textHeightBehavior!.applyHeightToLastDescent, resolvesTo(false));
       expect(merged.textDirection, TextDirection.ltr);
       expect(merged.softWrap, false);
     });

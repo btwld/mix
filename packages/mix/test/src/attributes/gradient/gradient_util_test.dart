@@ -72,12 +72,11 @@ void main() {
     // colors
     test('.colors', () {
       final colors = [Colors.red, Colors.blue];
-      final colorsDto = colors.map(Prop.value).toList();
 
       final attribute = radialUtility(colors: colors);
       final dto = attribute.value;
 
-      expect(dto.colors, colorsDto);
+      expect(dto.colors, resolvesTo(colors));
       expect(attribute, resolvesTo(RadialGradient(colors: colors)));
     });
 
@@ -202,7 +201,7 @@ void main() {
       final resolvedGradient = attribute.resolve(EmptyMixData);
       final dto = attribute.value;
 
-      expect(dto.colors, resolvesTo(colors.map(Prop.value).toList()));
+      expect(dto.colors, resolvesTo(colors));
       expect(dto.stops, resolvesTo(stops));
       expect(dto.center, resolvesTo(center));
       expect(dto.radius, resolvesTo(radius));
@@ -262,7 +261,6 @@ void main() {
     // colors
     test('.colors', () {
       final colors = [Colors.red, Colors.blue];
-      final colorsDto = colors.map(Prop.value).toList();
 
       final attribute = linearUtility(colors: colors);
 
@@ -336,7 +334,6 @@ void main() {
     // resolve
     test('.resolve', () {
       final colors = [Colors.red, Colors.blue];
-      final colorsDto = colors.map(Prop.value).toList();
       final stops = [0.0, 0.5];
       const begin = Alignment.centerLeft;
       const end = Alignment.centerRight;
@@ -413,7 +410,6 @@ void main() {
     // colors
     test('.colors', () {
       final colors = [Colors.red, Colors.blue];
-      final colorsDto = colors.map(Prop.value).toList();
 
       final attribute = sweepUtility(colors: colors);
 
@@ -500,7 +496,6 @@ void main() {
     // resolve
     test('.resolve', () {
       final colors = [Colors.red, Colors.blue];
-      final colorsDto = colors.map(Prop.value).toList();
       final stops = [0.0, 0.5];
       const center = Alignment.center;
       const startAngle = 0.0;

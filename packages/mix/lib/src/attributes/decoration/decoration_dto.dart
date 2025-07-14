@@ -31,6 +31,36 @@ sealed class DecorationDto<T extends Decoration> extends Mix<T> {
     required this.image,
   });
 
+  /// Constructor that accepts a [Decoration] value and converts it to the appropriate DTO.
+  ///
+  /// This is useful for converting existing [Decoration] instances to [DecorationDto].
+  ///
+  /// ```dart
+  /// const decoration = BoxDecoration(color: Colors.blue);
+  /// final dto = DecorationDto.value(decoration);
+  /// ```
+  static DecorationDto value(Decoration decoration) {
+    return switch (decoration) {
+      BoxDecoration d => BoxDecorationDto.value(d),
+      ShapeDecoration d => ShapeDecorationDto.value(d),
+      _ => throw ArgumentError(
+        'Unsupported Decoration type: ${decoration.runtimeType}',
+      ),
+    };
+  }
+
+  /// Constructor that accepts a nullable [Decoration] value and converts it to the appropriate DTO.
+  ///
+  /// Returns null if the input is null, otherwise uses [DecorationDto.value].
+  ///
+  /// ```dart
+  /// const Decoration? decoration = BoxDecoration(color: Colors.blue);
+  /// final dto = DecorationDto.maybeValue(decoration); // Returns DecorationDto or null
+  /// ```
+  static DecorationDto? maybeValue(Decoration? decoration) {
+    return decoration != null ? DecorationDto.value(decoration) : null;
+  }
+
   static DecorationDto? tryToMerge(DecorationDto? a, DecorationDto? b) {
     if (b == null) return a;
     if (a == null) return b;

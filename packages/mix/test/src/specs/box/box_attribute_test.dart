@@ -27,10 +27,12 @@ void main() {
         clipBehavior: Clip.antiAlias,
         width: 100,
         height: 100,
-        modifiers: WidgetModifiersConfigDto(const [
-          OpacityModifierSpecAttribute(opacity: 0.5),
-          SizedBoxModifierSpecAttribute(height: 10, width: 10),
-        ]),
+        modifiers: WidgetModifiersConfigDto(
+          modifiers: const [
+            OpacityModifierSpecAttribute(opacity: 0.5),
+            SizedBoxModifierSpecAttribute(height: 10, width: 10),
+          ],
+        ),
       );
 
       expect(containerSpecAttribute.alignment, Alignment.center);
@@ -58,10 +60,12 @@ void main() {
       expect(containerSpecAttribute.width, 100);
       expect(
         containerSpecAttribute.modifiers,
-        WidgetModifiersConfigDto(const [
-          OpacityModifierSpecAttribute(opacity: 0.5),
-          SizedBoxModifierSpecAttribute(height: 10, width: 10),
-        ]),
+        WidgetModifiersConfigDto(
+          modifiers: const [
+            OpacityModifierSpecAttribute(opacity: 0.5),
+            SizedBoxModifierSpecAttribute(height: 10, width: 10),
+          ],
+        ),
       );
     });
 
@@ -87,29 +91,46 @@ void main() {
         clipBehavior: Clip.antiAlias,
         width: 100,
         height: 100,
-        modifiers: WidgetModifiersConfigDto(const [
-          OpacityModifierSpecAttribute(opacity: 0.5),
-          SizedBoxModifierSpecAttribute(height: 10, width: 10),
-        ]),
+        modifiers: WidgetModifiersConfigDto(
+          modifiers: const [
+            OpacityModifierSpecAttribute(opacity: 0.5),
+            SizedBoxModifierSpecAttribute(height: 10, width: 10),
+          ],
+        ),
       );
 
       expect(
         containerSpecAttribute,
-        resolvesTo(BoxSpec(
-          alignment: Alignment.center,
-          padding: const EdgeInsets.only(left: 20, top: 20, right: 20, bottom: 20),
-          margin: const EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 10),
-          constraints: const BoxConstraints(maxWidth: double.infinity, maxHeight: 100),
-          decoration: const BoxDecoration(color: Colors.blue),
-          transform: Matrix4.identity(),
-          clipBehavior: Clip.antiAlias,
-          width: 100,
-          height: 100,
-          modifiers: const WidgetModifiersConfig([
-            OpacityModifierSpec(0.5),
-            SizedBoxModifierSpec(height: 10, width: 10),
-          ]),
-        )),
+        resolvesTo(
+          BoxSpec(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.only(
+              left: 20,
+              top: 20,
+              right: 20,
+              bottom: 20,
+            ),
+            margin: const EdgeInsets.only(
+              left: 10,
+              top: 10,
+              right: 10,
+              bottom: 10,
+            ),
+            constraints: const BoxConstraints(
+              maxWidth: double.infinity,
+              maxHeight: 100,
+            ),
+            decoration: const BoxDecoration(color: Colors.blue),
+            transform: Matrix4.identity(),
+            clipBehavior: Clip.antiAlias,
+            width: 100,
+            height: 100,
+            modifiers: const WidgetModifiersConfig([
+              OpacityModifierSpec(0.5),
+              SizedBoxModifierSpec(height: 10, width: 10),
+            ]),
+          ),
+        ),
       );
     });
 
@@ -135,10 +156,12 @@ void main() {
         clipBehavior: Clip.antiAlias,
         width: 100,
         height: 100,
-        modifiers: WidgetModifiersConfigDto(const [
-          OpacityModifierSpecAttribute(opacity: 0.5),
-          SizedBoxModifierSpecAttribute(height: 10, width: 10),
-        ]),
+        modifiers: WidgetModifiersConfigDto(
+          modifiers: const [
+            OpacityModifierSpecAttribute(opacity: 0.5),
+            SizedBoxModifierSpecAttribute(height: 10, width: 10),
+          ],
+        ),
       );
 
       final mergedBoxSpecAttribute = containerSpecAttribute.merge(
@@ -162,9 +185,9 @@ void main() {
           clipBehavior: Clip.antiAliasWithSaveLayer,
           width: 200,
           height: 200,
-          modifiers: WidgetModifiersConfigDto(const [
-            SizedBoxModifierSpecAttribute(width: 20),
-          ]),
+          modifiers: WidgetModifiersConfigDto(
+            modifiers: const [SizedBoxModifierSpecAttribute(width: 20)],
+          ),
         ),
       );
 
@@ -193,10 +216,12 @@ void main() {
       expect(mergedBoxSpecAttribute.width, 200);
       expect(
         mergedBoxSpecAttribute.modifiers,
-        WidgetModifiersConfigDto(const [
-          OpacityModifierSpecAttribute(opacity: 0.5),
-          SizedBoxModifierSpecAttribute(height: 10, width: 20),
-        ]),
+        WidgetModifiersConfigDto(
+          modifiers: const [
+            OpacityModifierSpecAttribute(opacity: 0.5),
+            SizedBoxModifierSpecAttribute(height: 10, width: 20),
+          ],
+        ),
       );
     });
 
@@ -222,10 +247,12 @@ void main() {
         clipBehavior: Clip.antiAlias,
         width: 100,
         height: 100,
-        modifiers: WidgetModifiersConfigDto(const [
-          OpacityModifierSpecAttribute(opacity: 0.5),
-          SizedBoxModifierSpecAttribute(height: 10, width: 10),
-        ]),
+        modifiers: WidgetModifiersConfigDto(
+          modifiers: const [
+            OpacityModifierSpecAttribute(opacity: 0.5),
+            SizedBoxModifierSpecAttribute(height: 10, width: 10),
+          ],
+        ),
       );
 
       expect(
@@ -246,17 +273,17 @@ void main() {
               right: 10,
             ),
             constraints: BoxConstraintsDto(maxHeight: 100),
-            decoration: BoxDecorationDto(
-              color: Colors.blue,
-            ),
+            decoration: BoxDecorationDto(color: Colors.blue),
             transform: Matrix4.identity(),
             clipBehavior: Clip.antiAlias,
             width: 100,
             height: 100,
-            modifiers: WidgetModifiersConfigDto(const [
-              OpacityModifierSpecAttribute(opacity: 0.5),
-              SizedBoxModifierSpecAttribute(height: 10, width: 10),
-            ]),
+            modifiers: WidgetModifiersConfigDto(
+              modifiers: const [
+                OpacityModifierSpecAttribute(opacity: 0.5),
+                SizedBoxModifierSpecAttribute(height: 10, width: 10),
+              ],
+            ),
           ),
         ),
       );
@@ -305,17 +332,17 @@ void main() {
                 right: 20,
               ),
               constraints: BoxConstraintsDto(maxHeight: 200),
-              decoration: BoxDecorationDto(
-                color: Colors.red,
-              ),
+              decoration: BoxDecorationDto(color: Colors.red),
               transform: Matrix4.identity(),
               clipBehavior: Clip.antiAliasWithSaveLayer,
               width: 200,
               height: 200,
-              modifiers: WidgetModifiersConfigDto(const [
-                OpacityModifierSpecAttribute(opacity: 0.4),
-                SizedBoxModifierSpecAttribute(height: 20, width: 10),
-              ]),
+              modifiers: WidgetModifiersConfigDto(
+                modifiers: const [
+                  OpacityModifierSpecAttribute(opacity: 0.4),
+                  SizedBoxModifierSpecAttribute(height: 20, width: 10),
+                ],
+              ),
             ),
           ),
         ),
