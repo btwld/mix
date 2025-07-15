@@ -127,8 +127,8 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
       shape: Prop.maybeValue(shape),
       backgroundBlendMode: Prop.maybeValue(backgroundBlendMode),
       color: Prop.maybeValue(color),
-      image: image != null ? MixProp.value(image) : null,
-      gradient: gradient != null ? MixProp.value(gradient) : null,
+      image: MixProp.maybeValue(image),
+      gradient: MixProp.maybeValue(gradient),
       boxShadow: boxShadow
           ?.map(MixProp<BoxShadow, BoxShadowDto>.value)
           .toList(),
@@ -144,29 +144,15 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
   /// final dto = BoxDecorationDto.value(decoration);
   /// ```
   factory BoxDecorationDto.value(BoxDecoration decoration) {
-    return BoxDecorationDto.props(
-      border: MixProp.maybeValue(_convertBoxBorder(decoration.border)),
-      borderRadius: MixProp.maybeValue(
-        _convertBorderRadius(decoration.borderRadius),
-      ),
-      shape: Prop.maybeValue(
-        decoration.shape != BoxShape.rectangle ? decoration.shape : null,
-      ),
-      backgroundBlendMode: Prop.maybeValue(decoration.backgroundBlendMode),
-      color: Prop.maybeValue(decoration.color),
-      image: decoration.image != null
-          ? MixProp.value(DecorationImageDto.value(decoration.image!))
-          : null,
-      gradient: decoration.gradient != null
-          ? MixProp.value(_convertGradient(decoration.gradient)!)
-          : null,
-      boxShadow: decoration.boxShadow
-          ?.map(
-            (shadow) => MixProp<BoxShadow, BoxShadowDto>.value(
-              BoxShadowDto.value(shadow),
-            ),
-          )
-          .toList(),
+    return BoxDecorationDto(
+      border: BoxBorderDto.maybeValue(decoration.border),
+      borderRadius: BorderRadiusGeometryDto.maybeValue(decoration.borderRadius),
+      shape: decoration.shape,
+      backgroundBlendMode: decoration.backgroundBlendMode,
+      color: decoration.color,
+      image: DecorationImageDto.maybeValue(decoration.image),
+      gradient: GradientDto.maybeValue(decoration.gradient),
+      boxShadow: decoration.boxShadow?.map(BoxShadowDto.value).toList(),
     );
   }
 
@@ -234,7 +220,7 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
       image: resolveMixProp(context, image),
       border: resolveMixProp(context, border),
       borderRadius: resolveMixProp(context, borderRadius),
-      boxShadow: boxShadow?.map((e) => e.resolve(context)).toList(),
+      boxShadow: resolveMixPropList(context, boxShadow),
       gradient: resolveMixProp(context, gradient),
       backgroundBlendMode: resolveProp(context, backgroundBlendMode),
       shape: resolveProp(context, shape) ?? BoxShape.rectangle,
@@ -264,7 +250,7 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
       color: mergeProp(color, other.color),
       image: mergeMixProp(image, other.image),
       gradient: mergeMixProp(gradient, other.gradient),
-      boxShadow: MixHelpers.mergeList(boxShadow, other.boxShadow),
+      boxShadow: mergeMixPropList(boxShadow, other.boxShadow),
     );
   }
 
@@ -326,24 +312,13 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
   /// final dto = ShapeDecorationDto.value(decoration);
   /// ```
   factory ShapeDecorationDto.value(ShapeDecoration decoration) {
-    return ShapeDecorationDto.props(
-      shape: _convertShapeBorder(decoration.shape) != null
-          ? MixProp.value(_convertShapeBorder(decoration.shape)!)
-          : null,
-      color: Prop.maybeValue(decoration.color),
-      image: decoration.image != null
-          ? MixProp.value(DecorationImageDto.value(decoration.image!))
-          : null,
-      gradient: decoration.gradient != null
-          ? MixProp.value(_convertGradient(decoration.gradient)!)
-          : null,
-      shadows: decoration.shadows
-          ?.map(
-            (shadow) => MixProp<BoxShadow, BoxShadowDto>.value(
-              BoxShadowDto.value(shadow),
-            ),
-          )
-          .toList(),
+    return ShapeDecorationDto(
+      shape: ShapeBorderDto.maybeValue(decoration.shape),
+
+      color: decoration.color,
+      image: DecorationImageDto.maybeValue(decoration.image!),
+      gradient: GradientDto.maybeValue(decoration.gradient!),
+      shadows: decoration.shadows?.map(BoxShadowDto.value).toList(),
     );
   }
 
@@ -385,7 +360,7 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
 
     return merge(
       ShapeDecorationDto.props(
-        shape: shapeBorder != null ? MixProp.value(shapeBorder) : null,
+        shape: MixProp.maybeValue(shapeBorder),
         color: color,
         image: image,
         gradient: gradient,
@@ -432,15 +407,15 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
       color: mergeProp(color, other.color),
       image: mergeMixProp(image, other.image),
       gradient: mergeMixProp(gradient, other.gradient),
-      shadows: MixHelpers.mergeList(shadows, other.shadows),
+      shadows: mergeMixPropList(shadows, other.shadows),
     );
   }
 
   @override
   bool get isMergeable =>
       (shape == null ||
-      shape is CircleBorderDto ||
-      shape is RoundedRectangleBorderDto);
+      shape?.value is CircleBorderDto ||
+      shape?.value is RoundedRectangleBorderDto);
 
   @override
   ShapeDecoration get defaultValue =>
@@ -521,50 +496,4 @@ ShapeBorderDto? _fromBoxShape({
 
       return null;
   }
-}
-
-// Helper methods for converting Flutter types to DTOs
-BoxBorderDto? _convertBoxBorder(BoxBorder? border) {
-  if (border == null) return null;
-  if (border is Border) {
-    return BorderDto.value(border);
-  } else if (border is BorderDirectional) {
-    return BorderDirectionalDto.value(border);
-  }
-
-  return null;
-}
-
-BorderRadiusGeometryDto? _convertBorderRadius(
-  BorderRadiusGeometry? borderRadius,
-) {
-  if (borderRadius == null) return null;
-  if (borderRadius is BorderRadius) {
-    return BorderRadiusDto.value(borderRadius);
-  } else if (borderRadius is BorderRadiusDirectional) {
-    return BorderRadiusDirectionalDto.value(borderRadius);
-  }
-
-  return null;
-}
-
-GradientDto? _convertGradient(Gradient? gradient) {
-  if (gradient == null) return null;
-  if (gradient is LinearGradient) {
-    return LinearGradientDto.value(gradient);
-  } else if (gradient is RadialGradient) {
-    return RadialGradientDto.value(gradient);
-  } else if (gradient is SweepGradient) {
-    return SweepGradientDto.value(gradient);
-  }
-
-  return null;
-}
-
-ShapeBorderDto? _convertShapeBorder(ShapeBorder? shapeBorder) {
-  if (shapeBorder == null) return null;
-
-  // This would need to be implemented based on the available ShapeBorderDto types
-  // For now, return null as a placeholder
-  return null;
 }

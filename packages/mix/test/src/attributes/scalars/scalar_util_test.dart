@@ -243,7 +243,9 @@ void main() {
       expect(shapeBorder.value, isA<RoundedRectangleBorderDto>());
       expect(
         (shapeBorder.value as RoundedRectangleBorderDto).borderRadius,
-        BorderRadiusDto.value(BorderRadius.circular(20)),
+        MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>.value(
+          BorderRadiusDto.value(BorderRadius.circular(20)),
+        ),
       );
     });
 

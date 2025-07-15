@@ -814,10 +814,7 @@ final class LinearBorderEdgeDto extends Mix<LinearBorderEdge> {
   /// final dto = LinearBorderEdgeDto.value(edge);
   /// ```
   factory LinearBorderEdgeDto.value(LinearBorderEdge edge) {
-    return LinearBorderEdgeDto.props(
-      size: Prop.value(edge.size),
-      alignment: Prop.value(edge.alignment),
-    );
+    return LinearBorderEdgeDto(size: edge.size, alignment: edge.alignment);
   }
 
   // Private constructor that accepts MixProp instances

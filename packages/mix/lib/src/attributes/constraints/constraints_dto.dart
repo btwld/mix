@@ -42,11 +42,11 @@ final class BoxConstraintsDto extends ConstraintsDto<BoxConstraints>
   /// final dto = BoxConstraintsDto.value(constraints);
   /// ```
   factory BoxConstraintsDto.value(BoxConstraints constraints) {
-    return BoxConstraintsDto.props(
-      minWidth: Prop.value(constraints.minWidth),
-      maxWidth: Prop.value(constraints.maxWidth),
-      minHeight: Prop.value(constraints.minHeight),
-      maxHeight: Prop.value(constraints.maxHeight),
+    return BoxConstraintsDto(
+      minWidth: constraints.minWidth,
+      maxWidth: constraints.maxWidth,
+      minHeight: constraints.minHeight,
+      maxHeight: constraints.maxHeight,
     );
   }
 

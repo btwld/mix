@@ -194,7 +194,7 @@ class FlexBoxSpecAttribute extends SpecAttribute<FlexBoxSpec>
   @override
   FlexBoxSpec resolve(MixContext context) {
     return FlexBoxSpec(
-      animated: animated?.resolve(context),
+      animated: animated?.resolve(context) ?? context.animation,
       modifiers: modifiers?.resolve(context),
       box: box?.resolve(context),
       flex: flex?.resolve(context),

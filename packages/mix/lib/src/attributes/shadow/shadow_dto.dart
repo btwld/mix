@@ -39,10 +39,10 @@ class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
   /// final dto = ShadowDto.value(shadow);
   /// ```
   factory ShadowDto.value(Shadow shadow) {
-    return ShadowDto.props(
-      blurRadius: Prop.value(shadow.blurRadius),
-      color: Prop.value(shadow.color),
-      offset: Prop.value(shadow.offset),
+    return ShadowDto(
+      blurRadius: shadow.blurRadius,
+      color: shadow.color,
+      offset: shadow.offset,
     );
   }
 
@@ -140,11 +140,11 @@ class BoxShadowDto extends BaseShadowDto<BoxShadow>
   /// final dto = BoxShadowDto.value(boxShadow);
   /// ```
   factory BoxShadowDto.value(BoxShadow boxShadow) {
-    return BoxShadowDto.props(
-      color: Prop.value(boxShadow.color),
-      offset: Prop.value(boxShadow.offset),
-      blurRadius: Prop.value(boxShadow.blurRadius),
-      spreadRadius: Prop.value(boxShadow.spreadRadius),
+    return BoxShadowDto(
+      color: boxShadow.color,
+      offset: boxShadow.offset,
+      blurRadius: boxShadow.blurRadius,
+      spreadRadius: boxShadow.spreadRadius,
     );
   }
 

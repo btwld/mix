@@ -294,7 +294,7 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
       centerSlice: centerSlice,
       filterQuality: filterQuality,
       colorBlendMode: colorBlendMode,
-      animated: animated?.resolve(context),
+      animated: animated?.resolve(context) ?? context.animation,
       modifiers: modifiers?.resolve(context),
     );
   }

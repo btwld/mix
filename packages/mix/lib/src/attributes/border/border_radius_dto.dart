@@ -87,11 +87,11 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
   /// final dto = BorderRadiusDto.value(borderRadius);
   /// ```
   factory BorderRadiusDto.value(BorderRadius borderRadius) {
-    return BorderRadiusDto.props(
-      topLeft: Prop.value(borderRadius.topLeft),
-      topRight: Prop.value(borderRadius.topRight),
-      bottomLeft: Prop.value(borderRadius.bottomLeft),
-      bottomRight: Prop.value(borderRadius.bottomRight),
+    return BorderRadiusDto(
+      topLeft: borderRadius.topLeft,
+      topRight: borderRadius.topRight,
+      bottomLeft: borderRadius.bottomLeft,
+      bottomRight: borderRadius.bottomRight,
     );
   }
 
@@ -174,11 +174,11 @@ final class BorderRadiusDirectionalDto
   factory BorderRadiusDirectionalDto.value(
     BorderRadiusDirectional borderRadius,
   ) {
-    return BorderRadiusDirectionalDto.props(
-      topStart: Prop.value(borderRadius.topStart),
-      topEnd: Prop.value(borderRadius.topEnd),
-      bottomStart: Prop.value(borderRadius.bottomStart),
-      bottomEnd: Prop.value(borderRadius.bottomEnd),
+    return BorderRadiusDirectionalDto(
+      topStart: borderRadius.topStart,
+      topEnd: borderRadius.topEnd,
+      bottomStart: borderRadius.bottomStart,
+      bottomEnd: borderRadius.bottomEnd,
     );
   }
 

@@ -116,9 +116,8 @@ void main() {
     });
 
     test('Immutable behavior when having multiple stacks', () {
-      final stackUtil = StackSpecUtility.self;
-      final stack1 = stackUtil..alignment.topLeft();
-      final stack2 = stackUtil..alignment.bottomRight();
+      final stack1 = StackSpecUtility.self..alignment.topLeft();
+      final stack2 = StackSpecUtility.self..alignment.bottomRight();
 
       final attr1 = stack1.attributeValue!;
       final attr2 = stack2.attributeValue!;

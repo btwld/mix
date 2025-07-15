@@ -119,8 +119,7 @@ final class IntrinsicWidthModifierSpec
 /// Use this class to configure the attributes of a [IntrinsicHeightModifierSpec] and pass it to
 /// the [IntrinsicHeightModifierSpec] constructor.
 class IntrinsicHeightModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<IntrinsicHeightModifierSpec>
-    with Diagnosticable {
+    extends WidgetModifierSpecAttribute<IntrinsicHeightModifierSpec> {
   const IntrinsicHeightModifierSpecAttribute();
 
   /// Resolves to [IntrinsicHeightModifierSpec] using the provided [MixContext].
@@ -197,8 +196,7 @@ class IntrinsicHeightModifierSpecTween
 /// Use this class to configure the attributes of a [IntrinsicWidthModifierSpec] and pass it to
 /// the [IntrinsicWidthModifierSpec] constructor.
 class IntrinsicWidthModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<IntrinsicWidthModifierSpec>
-    with Diagnosticable {
+    extends WidgetModifierSpecAttribute<IntrinsicWidthModifierSpec> {
   const IntrinsicWidthModifierSpecAttribute();
 
   /// Resolves to [IntrinsicWidthModifierSpec] using the provided [MixContext].

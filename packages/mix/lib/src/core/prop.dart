@@ -10,21 +10,18 @@ import 'mix_element.dart';
 class Prop<T> with EqualityMixin, ResolvableMixin<T?> {
   final T? _value;
   final MixableToken<T>? _token;
-  final List<MixDirective<T>> _directives;
+  final List<MixDirective<T>>? _directives;
 
   const Prop._internal(this._value, this._token, this._directives);
 
   /// Creates a prop with a direct value
-  const Prop.value(T value)
-    : _value = value,
-      _token = null,
-      _directives = const [];
+  const Prop.value(T value) : _value = value, _token = null, _directives = null;
 
   /// Creates a prop with a token
   const Prop.token(MixableToken<T> token)
     : _value = null,
       _token = token,
-      _directives = const [];
+      _directives = null;
 
   /// Creates a prop with directives only
   const Prop.directives(List<MixDirective<T>> directives)
@@ -42,9 +39,6 @@ class Prop<T> with EqualityMixin, ResolvableMixin<T?> {
 
   MixableToken<T>? get token => _token;
 
-  /// Whether this prop has any content
-  bool get isEmpty => _value == null && _token == null && _directives.isEmpty;
-
   /// Whether this prop has a value
   bool get hasValue => _value != null;
 
@@ -52,7 +46,7 @@ class Prop<T> with EqualityMixin, ResolvableMixin<T?> {
   bool get hasToken => _token != null;
 
   /// Get the directives
-  List<MixDirective<T>> get directives => _directives;
+  List<MixDirective<T>>? get directives => _directives;
 
   /// CENTRALIZED MERGE LOGIC
   /// Merge behavior:
@@ -61,10 +55,14 @@ class Prop<T> with EqualityMixin, ResolvableMixin<T?> {
   /// - Other's value/token wins when present, directives always accumulate
   /// - If other has only directives, this value/token wins, directives accumulate
   Prop<T> merge(Prop<T>? other) {
-    if (other == null || other.isEmpty) return this;
-    if (isEmpty) return other;
+    if (other == null) return this;
 
-    final mergedDirectives = [..._directives, ...other._directives];
+    final mergedDirectives = switch ((_directives, other._directives)) {
+      (null, null) => null,
+      (final a?, null) => a, // Only this has directives
+      (null, final b?) => b, // Only other has directives
+      (final a?, final b?) => [...a, ...b], // Both have directives
+    };
 
     // Other's base value/token wins when present, but directives accumulate
     if (other._value != null) {
@@ -92,7 +90,7 @@ class Prop<T> with EqualityMixin, ResolvableMixin<T?> {
     // Apply directives to resolved value
     if (result != null) {
       T current = result;
-      for (final directive in _directives) {
+      for (final directive in _directives ?? []) {
         current = directive.apply(current);
       }
       result = current;
@@ -130,9 +128,6 @@ class MixProp<V, T extends Mix<V>> with EqualityMixin, ResolvableMixin<V> {
     return MixProp.value(value);
   }
 
-  /// Whether this mix prop has any content
-  bool get isEmpty => _value == null && _token == null;
-
   /// Whether this prop has a value
   bool get hasValue => _value != null;
 
@@ -148,9 +143,7 @@ class MixProp<V, T extends Mix<V>> with EqualityMixin, ResolvableMixin<V> {
   /// CENTRALIZED MERGE LOGIC
   /// Other's value/token wins, merge DTOs if both have values
   MixProp<V, T> merge(MixProp<V, T>? other) {
-    if (other == null || other.isEmpty) return this;
-    if (isEmpty) return other;
-
+    if (other == null) return this;
     // If both have values, merge the DTOs
     if (other._value != null && _value != null) {
       final merged = _value.merge(other._value) as T;

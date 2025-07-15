@@ -26,7 +26,7 @@ void main() {
 
       expect(attr.box!.alignment, Alignment.center);
       expect(attr.box!.clipBehavior, Clip.antiAlias);
-      expect(attr.box!.constraints!.maxWidth, resolvesTo(200));
+      expect(attr.box!.constraints!.value!.maxWidth, resolvesTo(200));
       expect(attr.box!.height, 10);
       expect(attr.box!.margin, resolvesTo(const EdgeInsets.all(10)));
       expect(attr.box!.padding, resolvesTo(const EdgeInsets.all(10)));
@@ -96,7 +96,7 @@ void main() {
           flexBox.attributeValue!.box!.decoration as BoxDecorationDto;
       expect(decoration.color, isA<Prop<Color>>());
       expect(
-        decoration.borderRadius,
+        decoration.borderRadius?.value,
         BorderRadiusDto.value(BorderRadius.circular(10)),
       );
     });
@@ -116,7 +116,7 @@ void main() {
         reason: 'The color is not correct',
       );
       expect(
-        foregroundDecoration.borderRadius,
+        foregroundDecoration.borderRadius?.value,
         BorderRadiusDto.value(BorderRadius.circular(10)),
         reason: 'The BorderRadius is not correct',
       );

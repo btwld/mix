@@ -73,8 +73,7 @@ final class PaddingModifierSpec extends WidgetModifierSpec<PaddingModifierSpec>
 /// Use this class to configure the attributes of a [PaddingModifierSpec] and pass it to
 /// the [PaddingModifierSpec] constructor.
 class PaddingModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<PaddingModifierSpec>
-    with Diagnosticable {
+    extends WidgetModifierSpecAttribute<PaddingModifierSpec> {
   final EdgeInsetsGeometryDto? padding;
 
   const PaddingModifierSpecAttribute({this.padding});

@@ -31,10 +31,10 @@ base class TextHeightBehaviorDto extends Mix<TextHeightBehavior> {
   /// final dto = TextHeightBehaviorDto.value(behavior);
   /// ```
   factory TextHeightBehaviorDto.value(TextHeightBehavior behavior) {
-    return TextHeightBehaviorDto.props(
-      applyHeightToFirstAscent: Prop.value(behavior.applyHeightToFirstAscent),
-      applyHeightToLastDescent: Prop.value(behavior.applyHeightToLastDescent),
-      leadingDistribution: Prop.value(behavior.leadingDistribution),
+    return TextHeightBehaviorDto(
+      applyHeightToFirstAscent: behavior.applyHeightToFirstAscent,
+      applyHeightToLastDescent: behavior.applyHeightToLastDescent,
+      leadingDistribution: behavior.leadingDistribution,
     );
   }
 

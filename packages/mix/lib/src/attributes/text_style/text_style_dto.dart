@@ -116,32 +116,28 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
   /// final dto = TextStyleDto.value(textStyle);
   /// ```
   factory TextStyleDto.value(TextStyle textStyle) {
-    return TextStyleDto.props(
-      color: Prop.maybeValue(textStyle.color),
-      backgroundColor: Prop.maybeValue(textStyle.backgroundColor),
-      fontSize: Prop.maybeValue(textStyle.fontSize),
-      fontWeight: Prop.maybeValue(textStyle.fontWeight),
-      fontStyle: Prop.maybeValue(textStyle.fontStyle),
-      letterSpacing: Prop.maybeValue(textStyle.letterSpacing),
-      debugLabel: Prop.maybeValue(textStyle.debugLabel),
-      wordSpacing: Prop.maybeValue(textStyle.wordSpacing),
-      textBaseline: Prop.maybeValue(textStyle.textBaseline),
-      shadows: textStyle.shadows
-          ?.map((s) => MixProp<Shadow, ShadowDto>.value(ShadowDto.value(s)))
-          .toList(),
-      fontFeatures: textStyle.fontFeatures?.map(Prop.value).toList(),
-      decoration: Prop.maybeValue(textStyle.decoration),
-      decorationColor: Prop.maybeValue(textStyle.decorationColor),
-      decorationStyle: Prop.maybeValue(textStyle.decorationStyle),
-      fontVariations: textStyle.fontVariations?.map(Prop.value).toList(),
-      height: Prop.maybeValue(textStyle.height),
-      foreground: Prop.maybeValue(textStyle.foreground),
-      background: Prop.maybeValue(textStyle.background),
-      decorationThickness: Prop.maybeValue(textStyle.decorationThickness),
-      fontFamily: Prop.maybeValue(textStyle.fontFamily),
-      fontFamilyFallback: textStyle.fontFamilyFallback
-          ?.map(Prop.value)
-          .toList(),
+    return TextStyleDto(
+      color: textStyle.color,
+      backgroundColor: textStyle.backgroundColor,
+      fontSize: textStyle.fontSize,
+      fontWeight: textStyle.fontWeight,
+      fontStyle: textStyle.fontStyle,
+      letterSpacing: textStyle.letterSpacing,
+      debugLabel: textStyle.debugLabel,
+      wordSpacing: textStyle.wordSpacing,
+      textBaseline: textStyle.textBaseline,
+      shadows: textStyle.shadows?.map(ShadowDto.value).toList(),
+      fontFeatures: textStyle.fontFeatures,
+      decoration: textStyle.decoration,
+      decorationColor: textStyle.decorationColor,
+      decorationStyle: textStyle.decorationStyle,
+      fontVariations: textStyle.fontVariations,
+      height: textStyle.height,
+      foreground: textStyle.foreground,
+      background: textStyle.background,
+      decorationThickness: textStyle.decorationThickness,
+      fontFamily: textStyle.fontFamily,
+      fontFamilyFallback: textStyle.fontFamilyFallback,
     );
   }
 

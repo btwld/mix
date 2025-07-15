@@ -15,6 +15,7 @@ import '../../core/computed_style/computed_style.dart';
 import '../../core/factory/mix_context.dart';
 import '../../core/factory/style_mix.dart';
 import '../../core/helpers.dart';
+import '../../core/mix_element.dart';
 import '../../core/prop.dart';
 import '../../core/spec.dart';
 import '../../core/utility.dart';
@@ -291,7 +292,7 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
       weight: mergeProp(weight, other.weight),
       grade: mergeProp(grade, other.grade),
       opticalSize: mergeProp(opticalSize, other.opticalSize),
-      shadows: mergeMixPropList(shadows, other.shadows),
+      shadows: mergeMixPropList(shadows, other.shadows, strategy: ListMergeStrategy.override),
       textDirection: other.textDirection ?? textDirection,
       applyTextScaling: other.applyTextScaling ?? applyTextScaling,
       fill: mergeProp(fill, other.fill),

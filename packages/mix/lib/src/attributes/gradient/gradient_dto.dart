@@ -32,6 +32,21 @@ sealed class GradientDto<T extends Gradient> extends Mix<T>
     };
   }
 
+  static GradientDto<T> value<T extends Gradient>(T value) {
+    return switch (value) {
+      (LinearGradient v) => LinearGradientDto.value(v) as GradientDto<T>,
+      (RadialGradient v) => RadialGradientDto.value(v) as GradientDto<T>,
+      (SweepGradient v) => SweepGradientDto.value(v) as GradientDto<T>,
+      _ => throw ArgumentError(
+        'Unsupported Gradient type: ${value.runtimeType}',
+      ),
+    };
+  }
+
+  static GradientDto<T>? maybeValue<T extends Gradient>(T? value) {
+    return value != null ? GradientDto.value(value) : null;
+  }
+
   static GradientDto? tryToMerge(GradientDto? a, GradientDto? b) {
     if (b == null) return a;
     if (a == null) return b;
@@ -39,6 +54,7 @@ sealed class GradientDto<T extends Gradient> extends Mix<T>
     return a.runtimeType == b.runtimeType ? a.merge(b) : _exhaustiveMerge(a, b);
   }
 
+  @protected
   LinearGradientDto asLinearGradient() {
     return LinearGradientDto.props(
       begin: null,
@@ -50,6 +66,7 @@ sealed class GradientDto<T extends Gradient> extends Mix<T>
     );
   }
 
+  @protected
   RadialGradientDto asRadialGradient() {
     return RadialGradientDto.props(
       center: null,
@@ -63,6 +80,7 @@ sealed class GradientDto<T extends Gradient> extends Mix<T>
     );
   }
 
+  @protected
   SweepGradientDto asSweepGradient() {
     return SweepGradientDto.props(
       center: null,
@@ -116,13 +134,13 @@ final class LinearGradientDto extends GradientDto<LinearGradient> {
   /// final dto = LinearGradientDto.value(gradient);
   /// ```
   factory LinearGradientDto.value(LinearGradient gradient) {
-    return LinearGradientDto.props(
-      begin: Prop.value(gradient.begin),
-      end: Prop.value(gradient.end),
-      tileMode: Prop.value(gradient.tileMode),
-      transform: Prop.maybeValue(gradient.transform),
-      colors: Prop.value(gradient.colors),
-      stops: Prop.maybeValue(gradient.stops),
+    return LinearGradientDto(
+      begin: gradient.begin,
+      end: gradient.end,
+      tileMode: gradient.tileMode,
+      transform: gradient.transform,
+      colors: gradient.colors,
+      stops: gradient.stops,
     );
   }
 
@@ -222,15 +240,15 @@ final class RadialGradientDto extends GradientDto<RadialGradient> {
   /// final dto = RadialGradientDto.value(gradient);
   /// ```
   factory RadialGradientDto.value(RadialGradient gradient) {
-    return RadialGradientDto.props(
-      center: Prop.value(gradient.center),
-      radius: Prop.value(gradient.radius),
-      tileMode: Prop.value(gradient.tileMode),
-      focal: Prop.maybeValue(gradient.focal),
-      focalRadius: Prop.value(gradient.focalRadius),
-      transform: Prop.maybeValue(gradient.transform),
-      colors: Prop.value(gradient.colors),
-      stops: Prop.maybeValue(gradient.stops),
+    return RadialGradientDto(
+      center: gradient.center,
+      radius: gradient.radius,
+      tileMode: gradient.tileMode,
+      focal: gradient.focal,
+      focalRadius: gradient.focalRadius,
+      transform: gradient.transform,
+      colors: gradient.colors,
+      stops: gradient.stops,
     );
   }
 
@@ -266,7 +284,8 @@ final class RadialGradientDto extends GradientDto<RadialGradient> {
       stops: resolveProp(context, stops) ?? defaultValue.stops,
       tileMode: resolveProp(context, tileMode) ?? defaultValue.tileMode,
       focal: resolveProp(context, focal) ?? defaultValue.focal,
-      focalRadius: resolveProp(context, focalRadius) ?? defaultValue.focalRadius,
+      focalRadius:
+          resolveProp(context, focalRadius) ?? defaultValue.focalRadius,
       transform: resolveProp(context, transform) ?? defaultValue.transform,
     );
   }
@@ -343,14 +362,14 @@ final class SweepGradientDto extends GradientDto<SweepGradient> {
   /// final dto = SweepGradientDto.value(gradient);
   /// ```
   factory SweepGradientDto.value(SweepGradient gradient) {
-    return SweepGradientDto.props(
-      center: Prop.value(gradient.center),
-      startAngle: Prop.value(gradient.startAngle),
-      endAngle: Prop.value(gradient.endAngle),
-      tileMode: Prop.value(gradient.tileMode),
-      transform: Prop.maybeValue(gradient.transform),
-      colors: Prop.value(gradient.colors),
-      stops: Prop.maybeValue(gradient.stops),
+    return SweepGradientDto(
+      center: gradient.center,
+      startAngle: gradient.startAngle,
+      endAngle: gradient.endAngle,
+      tileMode: gradient.tileMode,
+      transform: gradient.transform,
+      colors: gradient.colors,
+      stops: gradient.stops,
     );
   }
 

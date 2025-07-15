@@ -19,6 +19,7 @@ import '../../core/computed_style/computed_style.dart';
 import '../../core/factory/mix_context.dart';
 import '../../core/factory/style_mix.dart';
 import '../../core/helpers.dart';
+import '../../core/prop.dart';
 import '../../core/spec.dart';
 import '../../core/utility.dart';
 import 'box_widget.dart';
@@ -276,19 +277,51 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
 /// Use this class to configure the attributes of a [BoxSpec] and pass it to
 /// the [BoxSpec] constructor.
 class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
-  final AlignmentGeometry? alignment;
-  final EdgeInsetsGeometryDto? padding;
-  final EdgeInsetsGeometryDto? margin;
-  final BoxConstraintsDto? constraints;
-  final DecorationDto? decoration;
-  final DecorationDto? foregroundDecoration;
-  final Matrix4? transform;
-  final AlignmentGeometry? transformAlignment;
-  final Clip? clipBehavior;
-  final double? width;
-  final double? height;
+  final Prop<AlignmentGeometry>? alignment;
+  final MixProp<EdgeInsetsGeometry, EdgeInsetsGeometryDto>? padding;
+  final MixProp<EdgeInsetsGeometry, EdgeInsetsGeometryDto>? margin;
+  final MixProp<BoxConstraints, BoxConstraintsDto>? constraints;
+  final MixProp<Decoration, DecorationDto>? decoration;
+  final MixProp<Decoration, DecorationDto>? foregroundDecoration;
+  final Prop<Matrix4>? transform;
+  final Prop<AlignmentGeometry>? transformAlignment;
+  final Prop<Clip>? clipBehavior;
+  final Prop<double>? width;
+  final Prop<double>? height;
 
-  const BoxSpecAttribute({
+  factory BoxSpecAttribute({
+    AlignmentGeometry? alignment,
+    EdgeInsetsGeometryDto? padding,
+    EdgeInsetsGeometryDto? margin,
+    BoxConstraintsDto? constraints,
+    DecorationDto? decoration,
+    DecorationDto? foregroundDecoration,
+    Matrix4? transform,
+    AlignmentGeometry? transformAlignment,
+    Clip? clipBehavior,
+    double? width,
+    double? height,
+    WidgetModifiersConfigDto? modifiers,
+    AnimationConfigDto? animated,
+  }) {
+    return BoxSpecAttribute.props(
+      alignment: Prop.maybeValue(alignment),
+      padding: MixProp.maybeValue(padding),
+      margin: MixProp.maybeValue(margin),
+      constraints: MixProp.maybeValue(constraints),
+      decoration: MixProp.maybeValue(decoration),
+      foregroundDecoration: MixProp.maybeValue(foregroundDecoration),
+      transform: Prop.maybeValue(transform),
+      transformAlignment: Prop.maybeValue(transformAlignment),
+      clipBehavior: Prop.maybeValue(clipBehavior),
+      width: Prop.maybeValue(width),
+      height: Prop.maybeValue(height),
+      modifiers: modifiers,
+      animated: animated,
+    );
+  }
+
+  const BoxSpecAttribute.props({
     this.alignment,
     this.padding,
     this.margin,
@@ -315,11 +348,11 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
   static BoxSpecAttribute value(BoxSpec spec) {
     return BoxSpecAttribute(
       alignment: spec.alignment,
-      padding: _convertEdgeInsetsGeometry(spec.padding),
-      margin: _convertEdgeInsetsGeometry(spec.margin),
+      padding: EdgeInsetsGeometryDto.maybeValue(spec.padding),
+      margin: EdgeInsetsGeometryDto.maybeValue(spec.margin),
       constraints: BoxConstraintsDto.maybeValue(spec.constraints),
-      decoration: _convertDecoration(spec.decoration),
-      foregroundDecoration: _convertDecoration(spec.foregroundDecoration),
+      decoration: DecorationDto.maybeValue(spec.decoration),
+      foregroundDecoration: DecorationDto.maybeValue(spec.foregroundDecoration),
       transform: spec.transform,
       transformAlignment: spec.transformAlignment,
       clipBehavior: spec.clipBehavior,
@@ -353,19 +386,19 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
   @override
   BoxSpec resolve(MixContext context) {
     return BoxSpec(
-      alignment: alignment,
-      padding: padding?.resolve(context),
-      margin: margin?.resolve(context),
-      constraints: constraints?.resolve(context),
-      decoration: decoration?.resolve(context),
-      foregroundDecoration: foregroundDecoration?.resolve(context),
-      transform: transform,
-      transformAlignment: transformAlignment,
-      clipBehavior: clipBehavior,
-      width: width,
-      height: height,
+      alignment: resolveProp(context, alignment),
+      padding: resolveMixProp(context, padding),
+      margin: resolveMixProp(context, margin),
+      constraints: resolveMixProp(context, constraints),
+      decoration: resolveMixProp(context, decoration),
+      foregroundDecoration: resolveMixProp(context, foregroundDecoration),
+      transform: resolveProp(context, transform),
+      transformAlignment: resolveProp(context, transformAlignment),
+      clipBehavior: resolveProp(context, clipBehavior),
+      width: resolveProp(context, width),
+      height: resolveProp(context, height),
       modifiers: modifiers?.resolve(context),
-      animated: animated?.resolve(context),
+      animated: animated?.resolve(context) ?? context.animation,
     );
   }
 
@@ -381,21 +414,24 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
   BoxSpecAttribute merge(BoxSpecAttribute? other) {
     if (other == null) return this;
 
-    return BoxSpecAttribute(
-      alignment: other.alignment ?? alignment,
-      padding: EdgeInsetsGeometryDto.tryToMerge(padding, other.padding),
-      margin: EdgeInsetsGeometryDto.tryToMerge(margin, other.margin),
-      constraints: constraints?.merge(other.constraints) ?? other.constraints,
-      decoration: DecorationDto.tryToMerge(decoration, other.decoration),
-      foregroundDecoration: DecorationDto.tryToMerge(
+    return BoxSpecAttribute.props(
+      alignment: mergeProp(alignment, other.alignment),
+      padding: mergeMixProp(padding, other.padding),
+      margin: mergeMixProp(margin, other.margin),
+      constraints: mergeMixProp(constraints, other.constraints),
+      decoration: mergeMixProp(decoration, other.decoration),
+      foregroundDecoration: mergeMixProp(
         foregroundDecoration,
         other.foregroundDecoration,
       ),
-      transform: other.transform ?? transform,
-      transformAlignment: other.transformAlignment ?? transformAlignment,
-      clipBehavior: other.clipBehavior ?? clipBehavior,
-      width: other.width ?? width,
-      height: other.height ?? height,
+      transform: mergeProp(transform, other.transform),
+      transformAlignment: mergeProp(
+        transformAlignment,
+        other.transformAlignment,
+      ),
+      clipBehavior: mergeProp(clipBehavior, other.clipBehavior),
+      width: mergeProp(width, other.width),
+      height: mergeProp(height, other.height),
       modifiers: modifiers?.merge(other.modifiers) ?? other.modifiers,
       animated: animated?.merge(other.animated) ?? other.animated,
     );
@@ -638,29 +674,4 @@ class BoxSpecTween extends Tween<BoxSpec?> {
 
     return begin!.lerp(end!, t);
   }
-}
-
-// Helper methods for converting Flutter types to DTOs
-EdgeInsetsGeometryDto? _convertEdgeInsetsGeometry(
-  EdgeInsetsGeometry? edgeInsets,
-) {
-  if (edgeInsets == null) return null;
-  if (edgeInsets is EdgeInsets) {
-    return EdgeInsetsDto.value(edgeInsets);
-  } else if (edgeInsets is EdgeInsetsDirectional) {
-    return EdgeInsetsDirectionalDto.value(edgeInsets);
-  }
-
-  return null;
-}
-
-DecorationDto? _convertDecoration(Decoration? decoration) {
-  if (decoration == null) return null;
-  if (decoration is BoxDecoration) {
-    return BoxDecorationDto.value(decoration);
-  } else if (decoration is ShapeDecoration) {
-    return ShapeDecorationDto.value(decoration);
-  }
-
-  return null;
 }

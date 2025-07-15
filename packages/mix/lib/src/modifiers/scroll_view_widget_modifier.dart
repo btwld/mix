@@ -151,8 +151,7 @@ final class ScrollViewModifierSpecUtility<T extends StyleElement>
 }
 
 class ScrollViewModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<ScrollViewModifierSpec>
-    with Diagnosticable {
+    extends WidgetModifierSpecAttribute<ScrollViewModifierSpec> {
   final Axis? scrollDirection;
   final bool? reverse;
   final EdgeInsetsGeometryDto? padding;

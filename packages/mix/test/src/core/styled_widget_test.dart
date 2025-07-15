@@ -23,7 +23,7 @@ void main() {
                 inherit: inherit,
                 builder: (context) {
                   final mix = MixProvider.of(context);
-                  inheritedValue = mix.attributeOf<BoxSpecAttribute>()?.height;
+                  inheritedValue = mix.attributeOf<BoxSpecAttribute>()?.height?.value;
 
                   return const SizedBox();
                 },

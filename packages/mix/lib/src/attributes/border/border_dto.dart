@@ -29,12 +29,31 @@ sealed class BoxBorderDto<T extends BoxBorder> extends Mix<T> {
     };
   }
 
+  static BoxBorderDto<T> value<T extends BoxBorder>(T border) {
+    return switch (border) {
+      Border() => BorderDto.value(border) as BoxBorderDto<T>,
+      BorderDirectional() =>
+        BorderDirectionalDto.value(border) as BoxBorderDto<T>,
+      _ => throw ArgumentError(
+        'Unsupported BoxBorder type: ${border.runtimeType}',
+      ),
+    };
+  }
+
+  static BoxBorderDto<T>? maybeValue<T extends BoxBorder>(T? border) {
+    if (border == null) return null;
+
+    return value(border);
+  }
+
+  @protected
   BorderDto _asBorder() {
     if (this is BorderDto) return this as BorderDto;
 
     return BorderDto.props(top: top, bottom: bottom);
   }
 
+  @protected
   BorderDirectionalDto _asBorderDirectional() {
     if (this is BorderDirectionalDto) return this as BorderDirectionalDto;
 
@@ -222,11 +241,11 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional>
   /// final dto = BorderDirectionalDto.value(border);
   /// ```
   factory BorderDirectionalDto.value(BorderDirectional border) {
-    return BorderDirectionalDto.props(
-      top: MixProp.value(BorderSideDto.value(border.top)),
-      bottom: MixProp.value(BorderSideDto.value(border.bottom)),
-      start: MixProp.value(BorderSideDto.value(border.start)),
-      end: MixProp.value(BorderSideDto.value(border.end)),
+    return BorderDirectionalDto(
+      top: BorderSideDto.maybeValue(border.top),
+      bottom: BorderSideDto.maybeValue(border.bottom),
+      start: BorderSideDto.maybeValue(border.start),
+      end: BorderSideDto.maybeValue(border.end),
     );
   }
 
@@ -357,11 +376,11 @@ final class BorderSideDto extends Mix<BorderSide>
   /// final dto = BorderSideDto.value(borderSide);
   /// ```
   factory BorderSideDto.value(BorderSide borderSide) {
-    return BorderSideDto.props(
-      color: Prop.value(borderSide.color),
-      width: Prop.value(borderSide.width),
-      style: Prop.value(borderSide.style),
-      strokeAlign: Prop.value(borderSide.strokeAlign),
+    return BorderSideDto(
+      color: borderSide.color,
+      strokeAlign: borderSide.strokeAlign,
+      style: borderSide.style,
+      width: borderSide.width,
     );
   }
 

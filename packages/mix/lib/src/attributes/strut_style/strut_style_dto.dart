@@ -51,15 +51,15 @@ class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
   /// final dto = StrutStyleDto.value(strutStyle);
   /// ```
   factory StrutStyleDto.value(StrutStyle strutStyle) {
-    return StrutStyleDto.props(
-      fontFamily: Prop.maybeValue(strutStyle.fontFamily),
-      fontFamilyFallback: Prop.maybeValue(strutStyle.fontFamilyFallback),
-      fontSize: Prop.maybeValue(strutStyle.fontSize),
-      fontWeight: Prop.maybeValue(strutStyle.fontWeight),
-      fontStyle: Prop.maybeValue(strutStyle.fontStyle),
-      height: Prop.maybeValue(strutStyle.height),
-      leading: Prop.maybeValue(strutStyle.leading),
-      forceStrutHeight: Prop.maybeValue(strutStyle.forceStrutHeight),
+    return StrutStyleDto(
+      fontFamily: strutStyle.fontFamily,
+      fontFamilyFallback: strutStyle.fontFamilyFallback,
+      fontSize: strutStyle.fontSize,
+      fontWeight: strutStyle.fontWeight,
+      fontStyle: strutStyle.fontStyle,
+      height: strutStyle.height,
+      leading: strutStyle.leading,
+      forceStrutHeight: strutStyle.forceStrutHeight,
     );
   }
 

@@ -45,15 +45,15 @@ final class DecorationImageDto extends Mix<DecorationImage> {
   /// final dto = DecorationImageDto.value(decorationImage);
   /// ```
   factory DecorationImageDto.value(DecorationImage decorationImage) {
-    return DecorationImageDto.props(
-      image: Prop.value(decorationImage.image),
-      fit: Prop.maybeValue(decorationImage.fit),
-      alignment: Prop.value(decorationImage.alignment),
-      centerSlice: Prop.maybeValue(decorationImage.centerSlice),
-      repeat: Prop.value(decorationImage.repeat),
-      filterQuality: Prop.value(decorationImage.filterQuality),
-      invertColors: Prop.value(decorationImage.invertColors),
-      isAntiAlias: Prop.value(decorationImage.isAntiAlias),
+    return DecorationImageDto(
+      image: decorationImage.image,
+      fit: decorationImage.fit,
+      alignment: decorationImage.alignment,
+      centerSlice: decorationImage.centerSlice,
+      repeat: decorationImage.repeat,
+      filterQuality: decorationImage.filterQuality,
+      invertColors: decorationImage.invertColors,
+      isAntiAlias: decorationImage.isAntiAlias,
     );
   }
 

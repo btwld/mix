@@ -39,10 +39,10 @@ class AnimationConfigDto extends Mix<AnimationConfig> {
   /// final dto = AnimationConfigDto.value(config);
   /// ```
   factory AnimationConfigDto.value(AnimationConfig config) {
-    return AnimationConfigDto.props(
-      duration: Prop.maybeValue(config.duration),
-      curve: Prop.maybeValue(config.curve),
-      onEnd: Prop.maybeValue(config.onEnd),
+    return AnimationConfigDto(
+      duration: config.duration,
+      curve: config.curve,
+      onEnd: config.onEnd,
     );
   }
 

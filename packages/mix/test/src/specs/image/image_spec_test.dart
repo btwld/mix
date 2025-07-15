@@ -155,9 +155,8 @@ void main() {
     });
 
     test('Immutable behavior when having multiple images', () {
-      final imageUtil = ImageSpecUtility.self;
-      final image1 = imageUtil..width(100);
-      final image2 = imageUtil..width(200);
+      final image1 = ImageSpecUtility.self..width(100);
+      final image2 = ImageSpecUtility.self..width(200);
 
       final attr1 = image1.attributeValue!;
       final attr2 = image2.attributeValue!;

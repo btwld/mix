@@ -213,9 +213,8 @@ void main() {
     });
 
     test('Immutable behavior when having multiple flexes', () {
-      final flexUtil = FlexSpecUtility.self;
-      final flex1 = flexUtil..gap(10);
-      final flex2 = flexUtil..gap(20);
+      final flex1 = FlexSpecUtility((v) => v)..gap(10);
+      final flex2 = FlexSpecUtility((v) => v)..gap(20);
 
       final attr1 = flex1.attributeValue!;
       final attr2 = flex2.attributeValue!;

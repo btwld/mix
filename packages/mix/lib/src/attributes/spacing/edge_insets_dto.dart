@@ -14,15 +14,23 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
 
   factory EdgeInsetsGeometryDto.value(EdgeInsetsGeometry edgeInsetsGeometry) {
     return switch (edgeInsetsGeometry) {
-          EdgeInsets() => EdgeInsetsDto.value(edgeInsetsGeometry),
-          EdgeInsetsDirectional() => EdgeInsetsDirectionalDto.value(
-            edgeInsetsGeometry,
-          ),
-          _ => throw ArgumentError(
-            'Unsupported EdgeInsetsGeometry type: ${edgeInsetsGeometry.runtimeType}',
-          ),
-        }
-        as EdgeInsetsGeometryDto<T>;
+      EdgeInsets() =>
+        EdgeInsetsDto.value(edgeInsetsGeometry) as EdgeInsetsGeometryDto<T>,
+      EdgeInsetsDirectional() =>
+        EdgeInsetsDirectionalDto.value(edgeInsetsGeometry)
+            as EdgeInsetsGeometryDto<T>,
+      _ => throw ArgumentError(
+        'Unsupported EdgeInsetsGeometry type: ${edgeInsetsGeometry.runtimeType}',
+      ),
+    };
+  }
+
+  static EdgeInsetsGeometryDto<T>? maybeValue<T extends EdgeInsetsGeometry>(
+    EdgeInsetsGeometry? edgeInsetsGeometry,
+  ) {
+    return edgeInsetsGeometry == null
+        ? null
+        : EdgeInsetsGeometryDto.value(edgeInsetsGeometry);
   }
 
   static EdgeInsetsGeometryDto only({
@@ -128,11 +136,11 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
   /// final dto = EdgeInsetsDto.value(edgeInsets);
   /// ```
   factory EdgeInsetsDto.value(EdgeInsets edgeInsets) {
-    return EdgeInsetsDto.props(
-      top: MixProp.value(SpaceDto.value(edgeInsets.top)),
-      bottom: MixProp.value(SpaceDto.value(edgeInsets.bottom)),
-      left: MixProp.value(SpaceDto.value(edgeInsets.left)),
-      right: MixProp.value(SpaceDto.value(edgeInsets.right)),
+    return EdgeInsetsDto(
+      top: edgeInsets.top,
+      bottom: edgeInsets.bottom,
+      left: edgeInsets.left,
+      right: edgeInsets.right,
     );
   }
 
@@ -244,11 +252,11 @@ final class EdgeInsetsDirectionalDto
   /// final dto = EdgeInsetsDirectionalDto.value(edgeInsets);
   /// ```
   factory EdgeInsetsDirectionalDto.value(EdgeInsetsDirectional edgeInsets) {
-    return EdgeInsetsDirectionalDto.props(
-      top: MixProp.value(SpaceDto.value(edgeInsets.top)),
-      bottom: MixProp.value(SpaceDto.value(edgeInsets.bottom)),
-      start: MixProp.value(SpaceDto.value(edgeInsets.start)),
-      end: MixProp.value(SpaceDto.value(edgeInsets.end)),
+    return EdgeInsetsDirectionalDto(
+      top: edgeInsets.top,
+      bottom: edgeInsets.bottom,
+      start: edgeInsets.start,
+      end: edgeInsets.end,
     );
   }
 

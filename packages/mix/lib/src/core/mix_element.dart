@@ -95,7 +95,7 @@ mixin MixHelperMixin {
   List<Prop<V>>? mergePropList<V>(
     List<Prop<V>>? a,
     List<Prop<V>>? b, {
-    ListMergeStrategy strategy = ListMergeStrategy.append,
+    ListMergeStrategy strategy = ListMergeStrategy.replace,
   }) {
     if (a == null) return b;
     if (b == null) return a;
@@ -123,7 +123,7 @@ mixin MixHelperMixin {
   List<MixProp<R, D>>? mergeMixPropList<R, D extends Mix<R>>(
     List<MixProp<R, D>>? a,
     List<MixProp<R, D>>? b, {
-    ListMergeStrategy strategy = ListMergeStrategy.append,
+    ListMergeStrategy strategy = ListMergeStrategy.replace,
   }) {
     if (a == null) return b;
     if (b == null) return a;

@@ -135,7 +135,7 @@ void main() {
       final merged = boxDeco1.merge(boxDeco2);
 
       expect(merged, isA<BoxDecorationDto>());
-      expect(merged.color, resolvesTo(Colors.blue));
+      expect(merged.color?.value, Colors.blue);
       expect(
         merged.gradient,
         resolvesTo(const LinearGradient(colors: [Colors.yellow, Colors.green])),
@@ -297,7 +297,10 @@ void main() {
         expect(merged.color, resolvesTo(Colors.blue));
         expect(merged.gradient?.value, boxDeco2.gradient?.value);
         expect(merged.boxShadow, boxDeco1.boxShadow);
-        expect(merged.border?.value, BorderDto(top: borderSide, bottom: borderSide));
+        expect(
+          merged.border?.value,
+          BorderDto(top: borderSide, bottom: borderSide),
+        );
         expect(
           merged.borderRadius,
           resolvesTo(const BorderRadius.all(Radius.circular(20))),
@@ -330,12 +333,14 @@ void main() {
           image: DecorationImageDto(fit: BoxFit.contain),
         );
 
-        final mergedDecoration =
-            DecorationDto.tryToMerge(boxDeco1, shapeDeco1)!;
+        final mergedDecoration = DecorationDto.tryToMerge(
+          boxDeco1,
+          shapeDeco1,
+        )!;
 
         expect(shapeDeco1.isMergeable, false);
         expect(mergedDecoration, isA<ShapeDecorationDto>());
-        
+
         final merged = mergedDecoration as ShapeDecorationDto;
         expect(merged.color, resolvesTo(Colors.red));
         expect(merged.shape?.value, isA<RoundedRectangleBorderDto>());

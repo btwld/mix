@@ -113,8 +113,7 @@ final class TransformRotateModifierSpecUtility<T extends StyleElement>
 }
 
 class TransformModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<TransformModifierSpec>
-    with Diagnosticable {
+    extends WidgetModifierSpecAttribute<TransformModifierSpec> {
   final Matrix4? transform;
   final Alignment? alignment;
 

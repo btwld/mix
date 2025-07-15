@@ -124,25 +124,25 @@ void main() {
       expect(util, isA<StyleElement>());
       expect(attr.color, isA<Prop<Color>>());
       expect(attr.size, resolvesTo(24));
-      expect(attr.weight, 500);
-      expect(attr.grade, 200);
-      expect(attr.opticalSize, 48);
+      expect(attr.weight, resolvesTo(500));
+      expect(attr.grade, resolvesTo(200));
+      expect(attr.opticalSize, resolvesTo(48));
       expect(attr.textDirection, TextDirection.rtl);
       expect(attr.applyTextScaling, true);
-      expect(attr.fill, 0.5);
+      expect(attr.fill, resolvesTo(0.5));
 
       final style = Style(util);
 
       final iconAttribute = style.styles.attributeOfType<IconSpecAttribute>();
 
       expect(iconAttribute?.color, isA<Prop<Color>>());
-      expect(iconAttribute?.size, 24);
-      expect(iconAttribute?.weight, 500);
-      expect(iconAttribute?.grade, 200);
-      expect(iconAttribute?.opticalSize, 48);
+      expect(iconAttribute?.size, resolvesTo(24));
+      expect(iconAttribute?.weight, resolvesTo(500));
+      expect(iconAttribute?.grade, resolvesTo(200));
+      expect(iconAttribute?.opticalSize, resolvesTo(48));
       expect(iconAttribute?.textDirection, TextDirection.rtl);
       expect(iconAttribute?.applyTextScaling, true);
-      expect(iconAttribute?.fill, 0.5);
+      expect(iconAttribute?.fill, resolvesTo(0.5));
 
       final mixData = style.of(MockBuildContext());
       final iconSpec = IconSpec.from(mixData);
@@ -158,9 +158,8 @@ void main() {
     });
 
     test('Immutable behavior when having multiple icons', () {
-      final iconUtil = IconSpecUtility.self;
-      final icon1 = iconUtil..size(24);
-      final icon2 = iconUtil..size(48);
+      final icon1 = IconSpecUtility.self..size(24);
+      final icon2 = IconSpecUtility.self..size(48);
 
       final attr1 = icon1.attributeValue!;
       final attr2 = icon2.attributeValue!;
@@ -174,8 +173,8 @@ void main() {
       final iconAttribute1 = style1.styles.attributeOfType<IconSpecAttribute>();
       final iconAttribute2 = style2.styles.attributeOfType<IconSpecAttribute>();
 
-      expect(iconAttribute1?.size, 24);
-      expect(iconAttribute2?.size, 48);
+      expect(iconAttribute1?.size, resolvesTo(24));
+      expect(iconAttribute2?.size, resolvesTo(48));
 
       final mixData1 = style1.of(MockBuildContext());
       final mixData2 = style2.of(MockBuildContext());
@@ -201,7 +200,7 @@ void main() {
 
       expect(iconAttribute.size, resolvesTo(24));
       expect(iconAttribute.color, isA<Prop<Color>>());
-      expect(iconAttribute.weight, 500);
+      expect(iconAttribute.weight, resolvesTo(500));
 
       expect(iconAttribute2.size, resolvesTo(48));
       expect(iconAttribute2.color, isNull);

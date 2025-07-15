@@ -101,6 +101,18 @@ class MixScopeData {
     );
   }
 
+  /// Creates a MixScopeData with pre-defined resolvers.
+  /// Unlike the regular constructor, this doesn't wrap the resolvers again.
+  static MixScopeData fromResolvers({
+    Map<MixableToken, ValueResolver>? tokens,
+    List<Type>? defaultOrderOfModifiers,
+  }) {
+    return MixScopeData._(
+      tokens: tokens,
+      defaultOrderOfModifiers: defaultOrderOfModifiers,
+    );
+  }
+
   /// Getter for tokens
   Map<MixableToken, ValueResolver>? get tokens => _tokens;
 
