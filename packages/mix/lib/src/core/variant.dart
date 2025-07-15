@@ -3,8 +3,8 @@ import 'package:flutter/widgets.dart';
 import '../internal/compare_mixin.dart';
 import '../variants/context_variant.dart';
 import '../variants/variant_attribute.dart';
-import 'element.dart';
 import 'factory/style_mix.dart';
+import 'mix_element.dart';
 
 enum VariantPriority {
   low(0),
@@ -214,8 +214,10 @@ class MultiVariant extends IVariant {
 
   @override
   VariantPriority get priority {
-    final priorities =
-        variants.whereType<ContextVariant>().map((e) => e.priority).toList();
+    final priorities = variants
+        .whereType<ContextVariant>()
+        .map((e) => e.priority)
+        .toList();
 
     // Return normal priority if no priorities are found
     if (priorities.isEmpty) {

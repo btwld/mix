@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/src/attributes/decoration/image/decoration_image_dto.dart';
+import 'package:mix/mix.dart';
 
-import '../../../../helpers/testing_utils.dart';
+import '../../../../helpers/custom_matchers.dart';
 
 void main() {
   group('DecorationImageDto', () {
     const imageProvider = AssetImage('assets/images/test.png');
-    const dto = DecorationImageDto(
+    final dto = DecorationImageDto(
       image: imageProvider,
       fit: BoxFit.cover,
       alignment: Alignment.topLeft,
@@ -29,24 +29,30 @@ void main() {
         invertColors: true,
         isAntiAlias: true,
       );
-      final result = decorationImage.toDto();
+      final result = DecorationImageDto.value(decorationImage);
       expect(result, isNotNull);
-      expect(result.image, equals(imageProvider));
-      expect(result.fit, equals(BoxFit.cover));
-      expect(result.alignment, equals(Alignment.topLeft));
-      expect(result.centerSlice, equals(const Rect.fromLTRB(10, 20, 30, 40)));
-      expect(result.repeat, equals(ImageRepeat.repeat));
-      expect(result.filterQuality, equals(FilterQuality.high));
-      expect(result.invertColors, equals(true));
-      expect(result.isAntiAlias, equals(true));
+      expect(result.image, isA<Prop<ImageProvider>>());
+      expect(result.fit, equals(Prop.value(BoxFit.cover)));
+      expect(
+        result.alignment,
+        equals(Prop<AlignmentGeometry>.value(Alignment.topLeft)),
+      );
+      expect(
+        result.centerSlice,
+        equals(Prop.value(Rect.fromLTRB(10, 20, 30, 40))),
+      );
+      expect(result.repeat, equals(Prop.value(ImageRepeat.repeat)));
+      expect(result.filterQuality, equals(Prop.value(FilterQuality.high)));
+      expect(result.invertColors, equals(Prop.value(true)));
+      expect(result.isAntiAlias, equals(Prop.value(true)));
     });
 
     test('merge', () {
-      const otherDto = DecorationImageDto(
+      final otherDto = DecorationImageDto(
         image: imageProvider,
         fit: BoxFit.fill,
         alignment: Alignment.bottomRight,
-        centerSlice: Rect.fromLTRB(50, 60, 70, 80),
+        centerSlice: const Rect.fromLTRB(50, 60, 70, 80),
         repeat: ImageRepeat.repeatX,
         filterQuality: FilterQuality.low,
         invertColors: false,
@@ -55,33 +61,47 @@ void main() {
 
       final mergedDto = dto.merge(otherDto);
 
-      expect(mergedDto.image, equals(imageProvider));
-      expect(mergedDto.fit, equals(BoxFit.fill));
-      expect(mergedDto.alignment, equals(Alignment.bottomRight));
+      expect(mergedDto.image, isA<Prop<ImageProvider>>());
+      expect(mergedDto.fit, resolvesTo(BoxFit.fill));
+      expect(mergedDto.alignment, resolvesTo(Alignment.bottomRight));
       expect(
         mergedDto.centerSlice,
-        equals(const Rect.fromLTRB(50, 60, 70, 80)),
+        resolvesTo(const Rect.fromLTRB(50, 60, 70, 80)),
       );
-      expect(mergedDto.repeat, equals(ImageRepeat.repeatX));
-      expect(mergedDto.filterQuality, equals(FilterQuality.low));
-      expect(mergedDto.invertColors, equals(false));
-      expect(mergedDto.isAntiAlias, equals(false));
+      expect(mergedDto.repeat, resolvesTo(ImageRepeat.repeatX));
+      expect(mergedDto.filterQuality, resolvesTo(FilterQuality.low));
+      expect(mergedDto.invertColors, resolvesTo(false));
+      expect(mergedDto.isAntiAlias, resolvesTo(false));
     });
 
     test('resolve with default values', () {
-      const dto = DecorationImageDto(image: imageProvider);
-      final result = dto.resolve(EmptyMixData);
+      final dto = DecorationImageDto(image: imageProvider);
 
-      expect(result.image, equals(imageProvider));
-      expect(result.alignment, equals(dto.defaultValue.alignment));
-      expect(result.repeat, equals(dto.defaultValue.repeat));
-      expect(result.filterQuality, equals(dto.defaultValue.filterQuality));
-      expect(result.invertColors, equals(dto.defaultValue.invertColors));
-      expect(result.isAntiAlias, equals(dto.defaultValue.isAntiAlias));
+      const expectedImage = DecorationImage(
+        image: imageProvider,
+        alignment: Alignment.center,
+        repeat: ImageRepeat.noRepeat,
+        filterQuality: FilterQuality.low,
+        invertColors: false,
+        isAntiAlias: false,
+      );
+
+      expect(dto, resolvesTo(expectedImage));
     });
 
     test('resolve with custom values', () {
-      const dto = DecorationImageDto(
+      final dto = DecorationImageDto(
+        image: imageProvider,
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.bottomCenter,
+        centerSlice: const Rect.fromLTRB(5, 10, 15, 20),
+        repeat: ImageRepeat.repeatY,
+        filterQuality: FilterQuality.medium,
+        invertColors: true,
+        isAntiAlias: true,
+      );
+
+      const expectedImage = DecorationImage(
         image: imageProvider,
         fit: BoxFit.scaleDown,
         alignment: Alignment.bottomCenter,
@@ -91,35 +111,27 @@ void main() {
         invertColors: true,
         isAntiAlias: true,
       );
-      final result = dto.resolve(EmptyMixData);
 
-      expect(result.image, equals(imageProvider));
-      expect(result.fit, equals(BoxFit.scaleDown));
-      expect(result.alignment, equals(Alignment.bottomCenter));
-      expect(result.centerSlice, equals(const Rect.fromLTRB(5, 10, 15, 20)));
-      expect(result.repeat, equals(ImageRepeat.repeatY));
-      expect(result.filterQuality, equals(FilterQuality.medium));
-      expect(result.invertColors, equals(true));
-      expect(result.isAntiAlias, equals(true));
+      expect(dto, resolvesTo(expectedImage));
     });
 
     test('equality', () {
-      const dto1 = DecorationImageDto(
+      final dto1 = DecorationImageDto(
         image: imageProvider,
         fit: BoxFit.scaleDown,
         alignment: Alignment.bottomCenter,
-        centerSlice: Rect.fromLTRB(5, 10, 15, 20),
+        centerSlice: const Rect.fromLTRB(5, 10, 15, 20),
         repeat: ImageRepeat.repeatY,
         filterQuality: FilterQuality.medium,
         invertColors: true,
         isAntiAlias: true,
       );
 
-      const dto2 = DecorationImageDto(
+      final dto2 = DecorationImageDto(
         image: imageProvider,
         fit: BoxFit.scaleDown,
         alignment: Alignment.bottomCenter,
-        centerSlice: Rect.fromLTRB(5, 10, 15, 20),
+        centerSlice: const Rect.fromLTRB(5, 10, 15, 20),
         repeat: ImageRepeat.repeatY,
         filterQuality: FilterQuality.medium,
         invertColors: true,
@@ -128,11 +140,11 @@ void main() {
 
       expect(dto1, equals(dto2));
 
-      const dto3 = DecorationImageDto(
+      final dto3 = DecorationImageDto(
         image: imageProvider,
         fit: BoxFit.scaleDown,
         alignment: Alignment.bottomCenter,
-        centerSlice: Rect.fromLTRB(5, 10, 15, 20),
+        centerSlice: const Rect.fromLTRB(5, 10, 15, 20),
         repeat: ImageRepeat.repeatY,
         filterQuality: FilterQuality.medium,
         invertColors: true,

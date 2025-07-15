@@ -1,9 +1,8 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../../helpers/custom_matchers.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
@@ -14,18 +13,14 @@ void main() {
         Style(
           IconSpecAttribute(
             size: 20.0,
-            color: Colors.red.toDto(),
+            color: Colors.red,
             applyTextScaling: true,
             fill: 2,
             grade: 2,
             opticalSize: 2,
             shadows: [
-              ShadowDto(
-                color: Colors.black.toDto(),
-              ),
-              ShadowDto(
-                color: Colors.black.toDto(),
-              ),
+              ShadowDto(color: Colors.black),
+              ShadowDto(color: Colors.black),
             ],
             textDirection: TextDirection.ltr,
             weight: 2,
@@ -41,12 +36,8 @@ void main() {
       expect(spec.grade, 2);
       expect(spec.opticalSize, 2);
       expect(spec.shadows, [
-        const Shadow(
-          color: Colors.black,
-        ),
-        const Shadow(
-          color: Colors.black,
-        ),
+        const Shadow(color: Colors.black),
+        const Shadow(color: Colors.black),
       ]);
       expect(spec.fill, 2);
       expect(spec.textDirection, TextDirection.ltr);
@@ -71,7 +62,7 @@ void main() {
       final lerpedSpec = spec1.lerp(spec2, t);
 
       expect(lerpedSpec.color, Color.lerp(Colors.red, Colors.blue, t));
-      expect(lerpedSpec.size, lerpDouble(20.0, 30.0, t));
+      expect(lerpedSpec.size, MixHelpers.lerpDouble(20.0, 30.0, t));
     });
 
     test('IconSpec.empty() constructor', () {
@@ -91,7 +82,9 @@ void main() {
     test('IconSpec.of(BuildContext context)', () {
       final mixData = MixContext.create(
         MockBuildContext(),
-        Style(IconSpecAttribute(size: 20.0, color: Colors.red.toDto())),
+        Style(
+          IconSpecAttribute(size: 20.0, color: Colors.red),
+        ),
       );
 
       final spec = IconSpec.from(mixData);
@@ -108,7 +101,7 @@ void main() {
 
       final lerpedSpec = tween.lerp(0.5);
       expect(lerpedSpec.color, Color.lerp(Colors.red, Colors.blue, 0.5));
-      expect(lerpedSpec.size, lerpDouble(20.0, 30.0, 0.5));
+      expect(lerpedSpec.size, MixHelpers.lerpDouble(20.0, 30.0, 0.5));
     });
   });
 
@@ -129,27 +122,27 @@ void main() {
       final attr = util.attributeValue!;
 
       expect(util, isA<StyleElement>());
-      expect(attr.color, Colors.red.toDto());
-      expect(attr.size, 24);
-      expect(attr.weight, 500);
-      expect(attr.grade, 200);
-      expect(attr.opticalSize, 48);
+      expect(attr.color, isA<Prop<Color>>());
+      expect(attr.size, resolvesTo(24));
+      expect(attr.weight, resolvesTo(500));
+      expect(attr.grade, resolvesTo(200));
+      expect(attr.opticalSize, resolvesTo(48));
       expect(attr.textDirection, TextDirection.rtl);
       expect(attr.applyTextScaling, true);
-      expect(attr.fill, 0.5);
+      expect(attr.fill, resolvesTo(0.5));
 
       final style = Style(util);
 
       final iconAttribute = style.styles.attributeOfType<IconSpecAttribute>();
 
-      expect(iconAttribute?.color, Colors.red.toDto());
-      expect(iconAttribute?.size, 24);
-      expect(iconAttribute?.weight, 500);
-      expect(iconAttribute?.grade, 200);
-      expect(iconAttribute?.opticalSize, 48);
+      expect(iconAttribute?.color, isA<Prop<Color>>());
+      expect(iconAttribute?.size, resolvesTo(24));
+      expect(iconAttribute?.weight, resolvesTo(500));
+      expect(iconAttribute?.grade, resolvesTo(200));
+      expect(iconAttribute?.opticalSize, resolvesTo(48));
       expect(iconAttribute?.textDirection, TextDirection.rtl);
       expect(iconAttribute?.applyTextScaling, true);
-      expect(iconAttribute?.fill, 0.5);
+      expect(iconAttribute?.fill, resolvesTo(0.5));
 
       final mixData = style.of(MockBuildContext());
       final iconSpec = IconSpec.from(mixData);
@@ -165,15 +158,14 @@ void main() {
     });
 
     test('Immutable behavior when having multiple icons', () {
-      final iconUtil = IconSpecUtility.self;
-      final icon1 = iconUtil.chain..size(24);
-      final icon2 = iconUtil.chain..size(48);
+      final icon1 = IconSpecUtility.self..size(24);
+      final icon2 = IconSpecUtility.self..size(48);
 
       final attr1 = icon1.attributeValue!;
       final attr2 = icon2.attributeValue!;
 
-      expect(attr1.size, 24);
-      expect(attr2.size, 48);
+      expect(attr1.size, resolvesTo(24));
+      expect(attr2.size, resolvesTo(48));
 
       final style1 = Style(icon1);
       final style2 = Style(icon2);
@@ -181,8 +173,8 @@ void main() {
       final iconAttribute1 = style1.styles.attributeOfType<IconSpecAttribute>();
       final iconAttribute2 = style2.styles.attributeOfType<IconSpecAttribute>();
 
-      expect(iconAttribute1?.size, 24);
-      expect(iconAttribute2?.size, 48);
+      expect(iconAttribute1?.size, resolvesTo(24));
+      expect(iconAttribute2?.size, resolvesTo(48));
 
       final mixData1 = style1.of(MockBuildContext());
       final mixData2 = style2.of(MockBuildContext());
@@ -206,11 +198,11 @@ void main() {
       final iconAttribute = iconValue.attributeValue!;
       final iconAttribute2 = icon.size(48);
 
-      expect(iconAttribute.size, 24);
-      expect(iconAttribute.color, Colors.red.toDto());
-      expect(iconAttribute.weight, 500);
+      expect(iconAttribute.size, resolvesTo(24));
+      expect(iconAttribute.color, isA<Prop<Color>>());
+      expect(iconAttribute.weight, resolvesTo(500));
 
-      expect(iconAttribute2.size, 48);
+      expect(iconAttribute2.size, resolvesTo(48));
       expect(iconAttribute2.color, isNull);
       expect(iconAttribute2.weight, isNull);
     });

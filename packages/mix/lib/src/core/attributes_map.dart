@@ -3,7 +3,7 @@
 import 'dart:collection';
 
 import '../internal/deep_collection_equality.dart';
-import 'element.dart';
+import 'mix_element.dart';
 import 'spec.dart';
 
 // @nodoc

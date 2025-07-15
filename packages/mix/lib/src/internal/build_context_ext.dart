@@ -5,7 +5,7 @@ import '../core/factory/mix_provider.dart';
 import '../theme/mix/mix_theme.dart';
 
 extension BuildContextExt on BuildContext {
-  MixContext? get mix => Mix.maybeOf(this);
+  MixContext? get mix => MixProvider.maybeOf(this);
 
   /// MEDIA QUERY EXTENSION METHODS
 
@@ -33,7 +33,7 @@ extension BuildContextExt on BuildContext {
   TextTheme get textTheme => theme.textTheme;
 
   /// Mix Theme Data.
-  MixThemeData get mixTheme => MixTheme.of(this);
+  MixScopeData get mixTheme => MixScope.of(this);
 
   /// Check if brightness is Brightness.dark.
   bool get isDarkMode => brightness == Brightness.dark;

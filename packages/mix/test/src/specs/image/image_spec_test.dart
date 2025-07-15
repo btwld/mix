@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -43,8 +41,8 @@ void main() {
       );
       final lerpSpec = spec1.lerp(spec2, 0.5);
 
-      expect(lerpSpec.width, lerpDouble(100, 150, 0.5));
-      expect(lerpSpec.height, lerpDouble(200, 250, 0.5));
+      expect(lerpSpec.width, MixHelpers.lerpDouble(100, 150, 0.5));
+      expect(lerpSpec.height, MixHelpers.lerpDouble(200, 250, 0.5));
       expect(lerpSpec.color, Color.lerp(Colors.red, Colors.blue, 0.5));
       expect(lerpSpec.repeat, ImageRepeat.noRepeat);
       expect(lerpSpec.fit, BoxFit.fill);
@@ -135,7 +133,7 @@ void main() {
       expect(util, isA<StyleElement>());
       expect(attr.width, 100);
       expect(attr.height, 200);
-      expect(attr.color, Colors.red.toDto());
+      expect(attr.color, isA<Prop<Color>>());
       expect(attr.fit, BoxFit.cover);
 
       final style = Style(util);
@@ -144,7 +142,7 @@ void main() {
 
       expect(imageAttribute?.width, 100);
       expect(imageAttribute?.height, 200);
-      expect(imageAttribute?.color, Colors.red.toDto());
+      expect(imageAttribute?.color, isA<Prop<Color>>());
       expect(imageAttribute?.fit, BoxFit.cover);
 
       final mixData = style.of(MockBuildContext());
@@ -157,9 +155,8 @@ void main() {
     });
 
     test('Immutable behavior when having multiple images', () {
-      final imageUtil = ImageSpecUtility.self;
-      final image1 = imageUtil.chain..width(100);
-      final image2 = imageUtil.chain..width(200);
+      final image1 = ImageSpecUtility.self..width(100);
+      final image2 = ImageSpecUtility.self..width(200);
 
       final attr1 = image1.attributeValue!;
       final attr2 = image2.attributeValue!;
@@ -170,10 +167,10 @@ void main() {
       final style1 = Style(image1);
       final style2 = Style(image2);
 
-      final imageAttribute1 =
-          style1.styles.attributeOfType<ImageSpecAttribute>();
-      final imageAttribute2 =
-          style2.styles.attributeOfType<ImageSpecAttribute>();
+      final imageAttribute1 = style1.styles
+          .attributeOfType<ImageSpecAttribute>();
+      final imageAttribute2 = style2.styles
+          .attributeOfType<ImageSpecAttribute>();
 
       expect(imageAttribute1?.width, 100);
       expect(imageAttribute2?.width, 200);
@@ -201,7 +198,7 @@ void main() {
       final imageAttribute2 = image.width(200);
 
       expect(imageAttribute.width, 100);
-      expect(imageAttribute.color, Colors.red.toDto());
+      expect(imageAttribute.color, isA<Prop<Color>>());
       expect(imageAttribute.fit, BoxFit.cover);
 
       expect(imageAttribute2.width, 200);

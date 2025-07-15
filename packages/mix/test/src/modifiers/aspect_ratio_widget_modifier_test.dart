@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../helpers/custom_matchers.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
@@ -62,8 +63,7 @@ void main() {
 
     test('resolve', () {
       const modifier = AspectRatioModifierSpecAttribute(aspectRatio: 1.0);
-      final result = modifier.resolve(EmptyMixData);
-      expect(result, isA<AspectRatioModifierSpec>());
+      expect(modifier, resolvesTo(const AspectRatioModifierSpec(1.0)));
     });
 
     test('equality', () {

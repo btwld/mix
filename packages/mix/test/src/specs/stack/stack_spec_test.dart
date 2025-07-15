@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../../helpers/custom_matchers.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
@@ -14,12 +15,17 @@ void main() {
         clipBehavior: Clip.antiAlias,
       );
 
-      final mixture = attribute.resolve(EmptyMixData);
-
-      expect(mixture.alignment, Alignment.center);
-      expect(mixture.fit, StackFit.expand);
-      expect(mixture.textDirection, TextDirection.ltr);
-      expect(mixture.clipBehavior, Clip.antiAlias);
+      expect(
+        attribute,
+        resolvesTo(
+          const StackSpec(
+            alignment: Alignment.center,
+            fit: StackFit.expand,
+            textDirection: TextDirection.ltr,
+            clipBehavior: Clip.antiAlias,
+          ),
+        ),
+      );
     });
 
     test('copyWith', () {
@@ -110,9 +116,8 @@ void main() {
     });
 
     test('Immutable behavior when having multiple stacks', () {
-      final stackUtil = StackSpecUtility.self;
-      final stack1 = stackUtil.chain..alignment.topLeft();
-      final stack2 = stackUtil.chain..alignment.bottomRight();
+      final stack1 = StackSpecUtility.self..alignment.topLeft();
+      final stack2 = StackSpecUtility.self..alignment.bottomRight();
 
       final attr1 = stack1.attributeValue!;
       final attr2 = stack2.attributeValue!;

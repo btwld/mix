@@ -7,29 +7,21 @@ import '../../helpers/testing_utils.dart';
 void main() {
   group('Mix', () {
     testWidgets('toInheritable()', (tester) async {
-      final style = Style(
-        $icon.color.black(),
-        $with.scale(2),
-      );
+      final style = Style($icon.color.black(), $with.scale(2));
 
-      final mixData = MixContext.create(
-        MockBuildContext(),
-        style,
-      );
+      final mixData = MixContext.create(MockBuildContext(), style);
 
       final expectedMixData = MixContext.create(
         MockBuildContext(),
-        Style(
-          $icon.color.black(),
-        ),
+        Style($icon.color.black()),
       );
 
       tester.pumpWidget(
-        Mix(
+        MixProvider(
           data: mixData,
           child: Builder(
             builder: (context) {
-              final inheritedMixData = Mix.of(context).toInheritable();
+              final inheritedMixData = MixProvider.of(context).toInheritable();
               expect(inheritedMixData, expectedMixData);
               return Container();
             },

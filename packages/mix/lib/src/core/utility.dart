@@ -1,14 +1,22 @@
-import 'package:flutter/widgets.dart';
-
-import 'element.dart';
+import 'mix_element.dart';
 
 abstract class MixUtility<Attr extends StyleElement, Value> {
-  @protected
   final Attr Function(Value) builder;
 
   const MixUtility(this.builder);
 
   static T selfBuilder<T>(T value) => value;
+}
+
+abstract class DtoUtility<A extends StyleElement, D extends Mix<Value>, Value>
+    extends MixUtility<A, D> {
+  final D Function(Value) fromValue;
+  const DtoUtility(super.builder, {required D Function(Value) valueToDto})
+    : fromValue = valueToDto;
+
+  A only();
+
+  A as(Value value) => builder(fromValue(value));
 }
 
 class GenericUtility<Attr extends StyleElement, Value>

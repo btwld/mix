@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../../helpers/custom_matchers.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
@@ -31,27 +32,30 @@ void main() {
         textDirection: TextDirection.rtl,
         textBaseline: TextBaseline.alphabetic,
         clipBehavior: Clip.antiAlias,
-        gap: SpaceDto(10.0),
+        gap: SpaceDto.value(10.0),
       );
-      final mixData = MixContext.create(MockBuildContext(), Style(attribute));
-      final resolvedSpec = attribute.resolve(mixData);
-
-      expect(resolvedSpec.crossAxisAlignment, CrossAxisAlignment.start);
-      expect(resolvedSpec.mainAxisAlignment, MainAxisAlignment.center);
-      expect(resolvedSpec.mainAxisSize, MainAxisSize.max);
-      expect(resolvedSpec.verticalDirection, VerticalDirection.up);
-      expect(resolvedSpec.direction, Axis.horizontal);
-      expect(resolvedSpec.textDirection, TextDirection.rtl);
-      expect(resolvedSpec.textBaseline, TextBaseline.alphabetic);
-      expect(resolvedSpec.clipBehavior, Clip.antiAlias);
-      expect(resolvedSpec.gap, 10.0);
+      
+      expect(
+        attribute,
+        resolvesTo(const FlexSpec(
+          direction: Axis.horizontal,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          verticalDirection: VerticalDirection.up,
+          textDirection: TextDirection.rtl,
+          textBaseline: TextBaseline.alphabetic,
+          clipBehavior: Clip.antiAlias,
+          gap: 10.0,
+        )),
+      );
     });
 
     testWidgets('tokens resolve returns correct FlexSpec', (tester) async {
       const tokenValue = 8.0;
 
-      final theme = MixThemeData(
-        spaces: {
+      final theme = MixScopeData.static(
+        tokens: {
           token.space.small: tokenValue,
         },
       );
@@ -59,7 +63,7 @@ void main() {
       late MixContext mixData;
 
       await tester.pumpWidget(
-        MixTheme(
+        MixScope(
           data: theme,
           child: MaterialApp(
             home: Scaffold(
@@ -68,7 +72,7 @@ void main() {
                   mixData = MixContext.create(
                     context,
                     Style(
-                      $flex.gap.ref(token.space.small),
+                      $flex.gap.token(token.space.small),
                     ),
                   );
 
@@ -96,7 +100,7 @@ void main() {
         textDirection: TextDirection.rtl,
         textBaseline: TextBaseline.alphabetic,
         clipBehavior: Clip.antiAlias,
-        gap: SpaceDto(10.0),
+        gap: SpaceDto.value(10.0),
       );
       const attribute2 = FlexSpecAttribute(
         direction: Axis.vertical,
@@ -107,7 +111,7 @@ void main() {
         textDirection: TextDirection.ltr,
         textBaseline: TextBaseline.ideographic,
         clipBehavior: Clip.hardEdge,
-        gap: SpaceDto(20.0),
+        gap: SpaceDto.value(20.0),
       );
       final mergedAttribute = attribute1.merge(attribute2);
 
@@ -119,7 +123,7 @@ void main() {
       expect(mergedAttribute.textDirection, TextDirection.ltr);
       expect(mergedAttribute.textBaseline, TextBaseline.ideographic);
       expect(mergedAttribute.clipBehavior, Clip.hardEdge);
-      expect(mergedAttribute.gap, const SpaceDto(20.0));
+      expect(mergedAttribute.gap, const SpaceDto.value(20.0));
     });
   });
 }

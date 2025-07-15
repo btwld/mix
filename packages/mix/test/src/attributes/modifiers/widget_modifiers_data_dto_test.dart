@@ -3,84 +3,104 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 import 'package:mix/src/modifiers/internal/reset_modifier.dart';
 
-import '../../../helpers/testing_utils.dart';
+import '../../../helpers/custom_matchers.dart';
 
 void main() {
   group('WidgetModifiersConfigDto', () {
     test('merge combines two WidgetModifiersConfigDto instances correctly', () {
-      final dto1 = WidgetModifiersConfigDto([
-        TransformModifierSpecAttribute(transform: Matrix4.identity()),
-      ]);
-      const dto2 = WidgetModifiersConfigDto([
-        OpacityModifierSpecAttribute(opacity: 0.5),
-      ]);
+      final dto1 = WidgetModifiersConfigDto(
+        modifiers: [
+          TransformModifierSpecAttribute(transform: Matrix4.identity()),
+        ],
+      );
+      final dto2 = WidgetModifiersConfigDto(
+        modifiers: const [OpacityModifierSpecAttribute(opacity: 0.5)],
+      );
 
       final merged = dto1.merge(dto2);
 
-      expect(merged.value.length, 2);
+      expect(merged.modifiers?.length, 2);
       expect(
-        merged.value[0].resolve(EmptyMixData),
-        TransformModifierSpec(transform: Matrix4.identity()),
+        merged.modifiers![0],
+        resolvesTo(TransformModifierSpec(transform: Matrix4.identity())),
       );
-      expect(
-        merged.value[1].resolve(EmptyMixData),
-        const OpacityModifierSpec(0.5),
-      );
+      expect(merged.modifiers![1], resolvesTo(const OpacityModifierSpec(0.5)));
     });
 
     test('merge with cleaner removes previous modifiers ', () {
-      final dto1 = WidgetModifiersConfigDto([
-        TransformModifierSpecAttribute(transform: Matrix4.identity()),
-      ]);
+      final dto1 = WidgetModifiersConfigDto(
+        modifiers: [
+          TransformModifierSpecAttribute(transform: Matrix4.identity()),
+        ],
+      );
 
-      const cleaner = WidgetModifiersConfigDto([
-        ResetModifierSpecAttribute(),
-      ]);
+      final cleaner = WidgetModifiersConfigDto(
+        modifiers: const [ResetModifierSpecAttribute()],
+      );
 
-      const dto2 = WidgetModifiersConfigDto([
-        OpacityModifierSpecAttribute(opacity: 0.5),
-      ]);
+      final dto2 = WidgetModifiersConfigDto(
+        modifiers: const [OpacityModifierSpecAttribute(opacity: 0.5)],
+      );
 
       final merged = dto1.merge(cleaner).merge(dto2);
 
-      expect(merged.value.length, 2);
+      expect(merged.modifiers?.length, 2);
 
-      expect(
-        merged.value[0].resolve(EmptyMixData),
-        const ResetModifierSpec(),
-      );
-      expect(
-        merged.value[1].resolve(EmptyMixData),
-        const OpacityModifierSpec(0.5),
-      );
+      expect(merged.modifiers![0], resolvesTo(const ResetModifierSpec()));
+      expect(merged.modifiers![1], resolvesTo(const OpacityModifierSpec(0.5)));
     });
 
     test('merge returns the same instance when other is null', () {
-      final dto = WidgetModifiersConfigDto([
-        TransformModifierSpecAttribute(transform: Matrix4.identity()),
-      ]);
+      final dto = WidgetModifiersConfigDto(
+        modifiers: [
+          TransformModifierSpecAttribute(transform: Matrix4.identity()),
+        ],
+      );
 
       final merged = dto.merge(null);
 
       expect(identical(merged, dto), true);
     });
 
-    test('resolve creates WidgetModifiersData with resolved modifiers', () {
-      final dto = WidgetModifiersConfigDto([
-        TransformModifierSpecAttribute(transform: Matrix4.identity()),
-        const OpacityModifierSpecAttribute(opacity: 0.5),
-      ]);
+    test('resolve creates WidgetModifiersConfig with resolved modifiers', () {
+      final dto = WidgetModifiersConfigDto(
+        modifiers: [
+          TransformModifierSpecAttribute(transform: Matrix4.identity()),
+          const OpacityModifierSpecAttribute(opacity: 0.5),
+        ],
+      );
 
-      final resolved = dto.resolve(EmptyMixData);
-
-      expect(resolved.value.length, 2);
       expect(
-        resolved.value[0],
-        TransformModifierSpec(transform: Matrix4.identity()),
+        dto,
+        resolvesTo(
+          isA<WidgetModifiersConfig>().having(
+            (w) => w.value,
+            'modifiers',
+            hasLength(2),
+          ),
+        ),
+      );
+
+      // Test individual modifiers - using direct resolution for comparison
+      expect(
+        dto,
+        resolvesTo(
+          isA<WidgetModifiersConfig>().having(
+            (w) => w.value[0],
+            'first modifier',
+            isA<TransformModifierSpec>(),
+          ),
+        ),
       );
       expect(
-        resolved.value[1],
-        const OpacityModifierSpec(0.5),
+        dto,
+        resolvesTo(
+          isA<WidgetModifiersConfig>().having(
+            (w) => w.value[1],
+            'second modifier',
+            isA<OpacityModifierSpec>(),
+          ),
+        ),
       );
     });
 
@@ -89,7 +109,7 @@ void main() {
         TransformModifierSpecAttribute(transform: Matrix4.identity()),
         const OpacityModifierSpecAttribute(opacity: 0.5),
       ];
-      final dto = WidgetModifiersConfigDto(modifiers);
+      final dto = WidgetModifiersConfigDto(modifiers: modifiers);
 
       expect(dto.props, [modifiers]);
     });

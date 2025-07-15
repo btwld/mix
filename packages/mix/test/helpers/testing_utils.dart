@@ -12,14 +12,20 @@ class MockBuildContext extends BuildContext {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 
   @override
-  T? dependOnInheritedWidgetOfExactType<T extends InheritedWidget>(
-      {Object? aspect}) {
+  T? dependOnInheritedWidgetOfExactType<T extends InheritedWidget>({
+    Object? aspect,
+  }) {
+    // Provide a minimal MixScope for testing
+    if (T == MixScope) {
+      return const MixScope(data: MixScopeData.empty(), child: SizedBox())
+          as T?;
+    }
     return null;
   }
 
   @override
   InheritedElement?
-      getElementForInheritedWidgetOfExactType<T extends InheritedWidget>() {
+  getElementForInheritedWidgetOfExactType<T extends InheritedWidget>() {
     return null;
   }
 }
@@ -28,19 +34,32 @@ MixContext MockMixData(Style style) {
   return MixContext.create(MockBuildContext(), style);
 }
 
-final EmptyMixData = MixContext.create(MockBuildContext(), const Style.empty());
+// Create a proper MixContext for testing that includes MixScope
+MixContext createEmptyMixData() {
+  // This is a simple implementation that doesn't require widget testing
+  // For tests that need token resolution, use testWidgets with pumpWithMixScope
+  return MixContext.create(MockBuildContext(), const Style.empty());
+}
 
-MediaQuery createMediaQuery({
-  Size? size,
-  Brightness? brightness,
+final EmptyMixData = createEmptyMixData();
+
+MixContext createMixContext({
+  Style? style,
+  Map<MixableToken, dynamic>? tokens,
 }) {
+  // For now, just use the simple create method without tokens
+  // We can enhance this later when we need token support in tests
+  return MixContext.create(MockBuildContext(), style ?? const Style.empty());
+}
+
+MediaQuery createMediaQuery({Size? size, Brightness? brightness}) {
   return MediaQuery(
     data: MediaQueryData(
       size: size ?? const Size.square(500),
       platformBrightness: brightness ?? Brightness.light,
     ),
-    child: MixTheme(
-      data: MixThemeData(),
+    child: MixScope(
+      data: const MixScopeData.empty(),
       child: MaterialApp(
         home: Scaffold(
           body: Builder(
@@ -55,8 +74,8 @@ MediaQuery createMediaQuery({
 }
 
 Widget createDirectionality(TextDirection direction) {
-  return MixTheme(
-    data: MixThemeData(),
+  return MixScope(
+    data: const MixScopeData.empty(),
     child: MaterialApp(
       home: Directionality(
         textDirection: direction,
@@ -72,8 +91,8 @@ Widget createDirectionality(TextDirection direction) {
   );
 }
 
-Widget createWithMixTheme(MixThemeData theme, {Widget? child}) {
-  return MixTheme(
+Widget createWithMixScope(MixScopeData theme, {Widget? child}) {
+  return MixScope(
     data: theme,
     child: MaterialApp(
       home: Scaffold(
@@ -92,11 +111,11 @@ extension WidgetTesterExt on WidgetTester {
     Widget widget, {
     Style style = const Style.empty(),
   }) async {
-    await pumpWithMixTheme(
+    await pumpWithMixScope(
       Builder(
         builder: (BuildContext context) {
           // Populate MixData into the widget tree if needed
-          return Mix.build(
+          return MixProvider.build(
             context,
             style: style,
             builder: (_) => widget,
@@ -106,12 +125,14 @@ extension WidgetTesterExt on WidgetTester {
     );
   }
 
-  Future<void> pumpWithMixTheme(
-    Widget widget, {
-    MixThemeData? theme,
-  }) async {
+  Future<void> pumpWithMixScope(Widget widget, {MixScopeData? theme}) async {
     await pumpWidget(
-      MaterialApp(home: MixTheme(data: theme ?? MixThemeData(), child: widget)),
+      MaterialApp(
+        home: MixScope(
+          data: theme ?? const MixScopeData.empty(),
+          child: widget,
+        ),
+      ),
     );
   }
 
@@ -152,10 +173,12 @@ extension WidgetTesterExt on WidgetTester {
 
   Future<void> pumpStyledWidget(
     StyledWidget widget, {
-    MixThemeData theme = const MixThemeData.empty(),
+    MixScopeData theme = const MixScopeData.empty(),
   }) async {
     await pumpWidget(
-      MaterialApp(home: MixTheme(data: theme, child: widget)),
+      MaterialApp(
+        home: MixScope(data: theme, child: widget),
+      ),
     );
   }
 }
@@ -167,12 +190,12 @@ class WrapMixThemeWidget extends StatelessWidget {
   const WrapMixThemeWidget({required this.child, this.theme, super.key});
 
   final Widget child;
-  final MixThemeData? theme;
+  final MixScopeData? theme;
 
   @override
   Widget build(BuildContext context) {
-    return MixTheme(
-      data: theme ?? MixThemeData(),
+    return MixScope(
+      data: theme ?? const MixScopeData.empty(),
       child: Directionality(textDirection: TextDirection.ltr, child: child),
     );
   }
@@ -190,8 +213,10 @@ class MockContextVariantCondition extends ContextVariant {
   final bool condition;
   @override
   final VariantPriority priority;
-  const MockContextVariantCondition(this.condition,
-      {this.priority = VariantPriority.normal});
+  const MockContextVariantCondition(
+    this.condition, {
+    this.priority = VariantPriority.normal,
+  });
 
   @override
   List<Object?> get props => [condition];
@@ -308,14 +333,18 @@ final class UtilityTestAttribute<T>
   T resolve(MixContext mix) => value;
 }
 
-final class UtilityTestDtoAttribute<T extends Mixable<V>, V>
+final class UtilityTestDtoAttribute<T extends Mix<V>, V>
     extends SpecAttribute<V> {
   final T value;
   const UtilityTestDtoAttribute(this.value);
 
   @override
   V resolve(MixContext mix) {
-    return value.resolve(mix);
+    final result = value.resolve(mix);
+    if (result == null) {
+      throw StateError('UtilityTestDtoAttribute resolve returned null');
+    }
+    return result;
   }
 
   @override
@@ -330,10 +359,7 @@ final class UtilityTestDtoAttribute<T extends Mixable<V>, V>
 final class CustomWidgetModifierSpec
     extends WidgetModifierSpec<CustomWidgetModifierSpec> {
   final bool value;
-  const CustomWidgetModifierSpec(
-    this.value, {
-    super.animated,
-  });
+  const CustomWidgetModifierSpec(this.value, {super.animated});
 
   @override
   CustomWidgetModifierSpec copyWith({bool? value}) {
@@ -345,7 +371,8 @@ final class CustomWidgetModifierSpec
     if (other == null) return this;
 
     return CustomWidgetModifierSpec(
-        MixHelpers.lerpSnap(value, other.value, t) ?? value);
+      MixHelpers.lerpSnap(value, other.value, t) ?? value,
+    );
   }
 
   @override
@@ -400,8 +427,10 @@ class WidgetWithTestableBuild extends StyledWidget {
 }
 
 abstract class TestScalarAttribute<
-    Self extends TestScalarAttribute<Self, Value>,
-    Value> extends SpecAttribute<Value> {
+  Self extends TestScalarAttribute<Self, Value>,
+  Value
+>
+    extends SpecAttribute<Value> {
   final Value value;
   const TestScalarAttribute(this.value);
 
@@ -418,23 +447,22 @@ class MixTokensTest {
   final space = const SpaceTokenUtil();
   final radius = const RadiusTokenUtil();
   final color = const ColorTokenUtil();
-  final breakpoint = const BreakpointTokenUtil();
   final textStyle = const TextStyleTokenUtil();
 
   const MixTokensTest();
 }
 
 class RadiusTokenUtil {
-  final small = const RadiusToken('mix.radius.small');
-  final medium = const RadiusToken('mix.radius.medium');
-  final large = const RadiusToken('mix.radius.large');
+  final small = const MixableToken<Radius>('mix.radius.small');
+  final medium = const MixableToken<Radius>('mix.radius.medium');
+  final large = const MixableToken<Radius>('mix.radius.large');
   const RadiusTokenUtil();
 }
 
 class SpaceTokenUtil {
-  final large = const SpaceToken('mix.space.large');
-  final medium = const SpaceToken('mix.space.medium');
-  final small = const SpaceToken('mix.space.small');
+  final large = const MixableToken<double>('mix.space.large');
+  final medium = const MixableToken<double>('mix.space.medium');
+  final small = const MixableToken<double>('mix.space.small');
 
   const SpaceTokenUtil();
 }

@@ -1,142 +1,42 @@
 // ignore_for_file: prefer_relative_imports,avoid-importing-entrypoint-exports
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
-import 'package:mix_annotations/mix_annotations.dart';
 
-import '../../internal/constants.dart';
-import '../../internal/diagnostic_properties_builder_ext.dart';
+@immutable
+class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
+  // Simple properties use MixValue directly
+  final Prop<Color>? color;
+  final Prop<Color>? backgroundColor;
+  final Prop<double>? fontSize;
+  final Prop<FontWeight>? fontWeight;
+  final Prop<FontStyle>? fontStyle;
+  final Prop<double>? letterSpacing;
+  final Prop<String>? debugLabel;
+  final Prop<double>? wordSpacing;
+  final Prop<TextBaseline>? textBaseline;
+  final Prop<TextDecoration>? decoration;
+  final Prop<Color>? decorationColor;
+  final Prop<TextDecorationStyle>? decorationStyle;
+  final Prop<double>? height;
+  final Prop<double>? decorationThickness;
+  final Prop<String>? fontFamily;
+  final Prop<Paint>? foreground;
+  final Prop<Paint>? background;
 
-part 'text_style_dto.g.dart';
+  // Lists of MixValues for simple types
+  final List<Prop<String>>? fontFamilyFallback;
+  final List<Prop<FontFeature>>? fontFeatures;
+  final List<Prop<FontVariation>>? fontVariations;
 
-final class TextStyleDataRef extends TextStyleData {
-  final TextStyleRef ref;
-  const TextStyleDataRef({required this.ref});
+  // Lists of Mix types (DTOs)
+  final List<MixProp<Shadow, ShadowDto>>? shadows;
 
-  @override
-  TextStyleDataRef merge(covariant TextStyleDataRef? other) {
-    if (other == null) return this;
-    throw FlutterError.fromParts([
-      ErrorSummary('Cannot merge TextStyleDataRef instances'),
-      ErrorDescription(
-        'An attempt was made to merge incompatible TextStyleDataRef objects. '
-        'Attempted to merge: $this with $other',
-      ),
-      ErrorHint('This is likely due to an internal error in the Mix library.'),
-      ErrorHint(
-        'Please open an issue on GitHub: $mixIssuesUrl, '
-        'Explain how you encountered this error, and provide the code that triggered it.',
-      ),
-    ]);
-  }
-
-  @override
-  TextStyle resolve(MixContext mix) => mix.tokens.textStyleRef(ref);
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.addUsingDefault('token', ref.token.name);
-  }
-
-  @override
-  get props => [ref];
-}
-
-// TODO: Look for ways to consolidate TextStyleDto and TextStyleData
-// If we remove TextStyle from tokens, it means we don't need a list of resolvable values
-// to be resolved once we have a context. We can merge the values directly, simplifying the code,
-// and this will allow more predictable behavior overall.
-@MixableType(components: GeneratedPropertyComponents.none)
-base class TextStyleData extends Mixable<TextStyle>
-    with _$TextStyleData {
-  final String? fontFamily;
-  final FontWeight? fontWeight;
-  final FontStyle? fontStyle;
-  final double? fontSize;
-  final double? letterSpacing;
-  final double? wordSpacing;
-  final TextBaseline? textBaseline;
-  final ColorDto? color;
-  final ColorDto? backgroundColor;
-  final List<ShadowDto>? shadows;
-  final List<FontFeature>? fontFeatures;
-  final List<FontVariation>? fontVariations;
-  final TextDecoration? decoration;
-  final ColorDto? decorationColor;
-  final TextDecorationStyle? decorationStyle;
-  final String? debugLabel;
-  final double? height;
-  final Paint? foreground;
-  final Paint? background;
-  final double? decorationThickness;
-  final List<String>? fontFamilyFallback;
-
-  const TextStyleData({
-    this.background,
-    this.backgroundColor,
-    this.color,
-    this.debugLabel,
-    this.decoration,
-    this.decorationColor,
-    this.decorationStyle,
-    this.decorationThickness,
-    this.fontFamily,
-    this.fontFamilyFallback,
-    this.fontVariations,
-    this.fontFeatures,
-    this.fontSize,
-    this.fontStyle,
-    this.fontWeight,
-    this.foreground,
-    this.height,
-    this.letterSpacing,
-    this.shadows,
-    this.textBaseline,
-    this.wordSpacing,
-  });
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.addUsingDefault('background', background);
-    properties.addUsingDefault('backgroundColor', backgroundColor);
-    properties.addUsingDefault('color', color);
-    properties.addUsingDefault('debugLabel', debugLabel);
-    properties.addUsingDefault('decoration', decoration);
-    properties.addUsingDefault('decorationColor', decorationColor);
-    properties.addUsingDefault('decorationStyle', decorationStyle);
-    properties.addUsingDefault('decorationThickness', decorationThickness);
-    properties.addUsingDefault('fontFamily', fontFamily);
-    properties.addUsingDefault('fontFamilyFallback', fontFamilyFallback);
-    properties.addUsingDefault('fontVariations', fontVariations);
-    properties.addUsingDefault('fontFeatures', fontFeatures);
-    properties.addUsingDefault('fontSize', fontSize);
-    properties.addUsingDefault('fontStyle', fontStyle);
-    properties.addUsingDefault('fontWeight', fontWeight);
-    properties.addUsingDefault('foreground', foreground);
-    properties.addUsingDefault('height', height);
-    properties.addUsingDefault('letterSpacing', letterSpacing);
-    properties.addUsingDefault('shadows', shadows);
-    properties.addUsingDefault('textBaseline', textBaseline);
-    properties.addUsingDefault('wordSpacing', wordSpacing);
-  }
-}
-
-@MixableType(
-  components: GeneratedPropertyComponents.none,
-  mergeLists: false,
-)
-final class TextStyleDto extends Mixable<TextStyle>
-    with _$TextStyleDto {
-  final List<TextStyleData> value;
-  @MixableConstructor()
-  const TextStyleDto._({this.value = const []});
 
   factory TextStyleDto({
-    ColorDto? color,
-    ColorDto? backgroundColor,
+    Color? color,
+    Color? backgroundColor,
     double? fontSize,
     FontWeight? fontWeight,
     FontStyle? fontStyle,
@@ -147,7 +47,7 @@ final class TextStyleDto extends Mixable<TextStyle>
     List<ShadowDto>? shadows,
     List<FontFeature>? fontFeatures,
     TextDecoration? decoration,
-    ColorDto? decorationColor,
+    Color? decorationColor,
     TextDecorationStyle? decorationStyle,
     List<FontVariation>? fontVariations,
     double? height,
@@ -157,100 +57,270 @@ final class TextStyleDto extends Mixable<TextStyle>
     String? fontFamily,
     List<String>? fontFamilyFallback,
   }) {
-    return TextStyleDto._(value: [
-      TextStyleData(
-        background: background,
-        backgroundColor: backgroundColor,
-        color: color,
-        debugLabel: debugLabel,
-        decoration: decoration,
-        decorationColor: decorationColor,
-        decorationStyle: decorationStyle,
-        decorationThickness: decorationThickness,
-        fontFamily: fontFamily,
-        fontFamilyFallback: fontFamilyFallback,
-        fontVariations: fontVariations,
-        fontFeatures: fontFeatures,
-        fontSize: fontSize,
-        fontStyle: fontStyle,
-        fontWeight: fontWeight,
-        foreground: foreground,
-        height: height,
-        letterSpacing: letterSpacing,
-        shadows: shadows,
-        textBaseline: textBaseline,
-        wordSpacing: wordSpacing,
-      ),
-    ]);
+    return TextStyleDto.props(
+      color: Prop.maybeValue(color),
+      backgroundColor: Prop.maybeValue(backgroundColor),
+      fontSize: Prop.maybeValue(fontSize),
+      fontWeight: Prop.maybeValue(fontWeight),
+      fontStyle: Prop.maybeValue(fontStyle),
+      letterSpacing: Prop.maybeValue(letterSpacing),
+      debugLabel: Prop.maybeValue(debugLabel),
+      wordSpacing: Prop.maybeValue(wordSpacing),
+      textBaseline: Prop.maybeValue(textBaseline),
+      shadows: shadows?.map(MixProp<Shadow, ShadowDto>.value).toList(),
+      fontFeatures: fontFeatures?.map(Prop.value).toList(),
+      decoration: Prop.maybeValue(decoration),
+      decorationColor: Prop.maybeValue(decorationColor),
+      decorationStyle: Prop.maybeValue(decorationStyle),
+      fontVariations: fontVariations?.map(Prop.value).toList(),
+      height: Prop.maybeValue(height),
+      foreground: Prop.maybeValue(foreground),
+      background: Prop.maybeValue(background),
+      decorationThickness: Prop.maybeValue(decorationThickness),
+      fontFamily: Prop.maybeValue(fontFamily),
+      fontFamilyFallback: fontFamilyFallback?.map(Prop.value).toList(),
+    );
   }
 
-  factory TextStyleDto.ref(TextStyleToken token) {
-    return TextStyleDto._(value: [TextStyleDataRef(ref: token())]);
+  /// Constructor that accepts Prop values directly
+  const TextStyleDto.props({
+    this.color,
+    this.backgroundColor,
+    this.fontSize,
+    this.fontWeight,
+    this.fontStyle,
+    this.letterSpacing,
+    this.debugLabel,
+    this.wordSpacing,
+    this.textBaseline,
+    this.shadows,
+    this.fontFeatures,
+    this.decoration,
+    this.decorationColor,
+    this.decorationStyle,
+    this.fontVariations,
+    this.height,
+    this.foreground,
+    this.background,
+    this.decorationThickness,
+    this.fontFamily,
+    this.fontFamilyFallback,
+  });
+
+  /// Constructor that accepts a [TextStyle] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [TextStyle] instances to [TextStyleDto].
+  ///
+  /// ```dart
+  /// const textStyle = TextStyle(color: Colors.blue, fontSize: 16.0);
+  /// final dto = TextStyleDto.value(textStyle);
+  /// ```
+  factory TextStyleDto.value(TextStyle textStyle) {
+    return TextStyleDto(
+      color: textStyle.color,
+      backgroundColor: textStyle.backgroundColor,
+      fontSize: textStyle.fontSize,
+      fontWeight: textStyle.fontWeight,
+      fontStyle: textStyle.fontStyle,
+      letterSpacing: textStyle.letterSpacing,
+      debugLabel: textStyle.debugLabel,
+      wordSpacing: textStyle.wordSpacing,
+      textBaseline: textStyle.textBaseline,
+      shadows: textStyle.shadows?.map(ShadowDto.value).toList(),
+      fontFeatures: textStyle.fontFeatures,
+      decoration: textStyle.decoration,
+      decorationColor: textStyle.decorationColor,
+      decorationStyle: textStyle.decorationStyle,
+      fontVariations: textStyle.fontVariations,
+      height: textStyle.height,
+      foreground: textStyle.foreground,
+      background: textStyle.background,
+      decorationThickness: textStyle.decorationThickness,
+      fontFamily: textStyle.fontFamily,
+      fontFamilyFallback: textStyle.fontFamilyFallback,
+    );
   }
 
-  /// This method resolves the [TextStyleDto] to a TextStyle.
-  /// It maps over the values list and checks if each TextStyleDto is a token reference.
-  /// If it is, it resolves the token reference and converts it to a [TextStyleData].
-  /// If it's not a token reference, it leaves the [TextStyleData] as is.
-  /// Then it reduces the list of [TextStyleData] objects to a single [TextStyleData] by merging them.
-  /// Finally, it resolves the resulting [TextStyleData] to a TextStyle.
+  /// Constructor that accepts a nullable [TextStyle] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [TextStyleDto.value].
+  ///
+  /// ```dart
+  /// const TextStyle? textStyle = TextStyle(color: Colors.blue, fontSize: 16.0);
+  /// final dto = TextStyleDto.maybeValue(textStyle); // Returns TextStyleDto or null
+  /// ```
+  static TextStyleDto? maybeValue(TextStyle? textStyle) {
+    return textStyle != null ? TextStyleDto.value(textStyle) : null;
+  }
+
   @override
-  TextStyle resolve(MixContext mix) {
-    final result = value
-        .map((e) => e is TextStyleDataRef ? e.resolve(mix)._toData() : e)
-        .reduce((a, b) => a.merge(b))
-        .resolve(mix);
+  TextStyle resolve(MixContext context) {
+    return TextStyle(
+      color: resolveProp(context, color),
+      backgroundColor: resolveProp(context, backgroundColor),
+      fontSize: resolveProp(context, fontSize),
+      fontWeight: resolveProp(context, fontWeight),
+      fontStyle: resolveProp(context, fontStyle),
+      letterSpacing: resolveProp(context, letterSpacing),
+      wordSpacing: resolveProp(context, wordSpacing),
+      textBaseline: resolveProp(context, textBaseline),
+      height: resolveProp(context, height),
+      foreground: resolveProp(context, foreground),
+      background: resolveProp(context, background),
+      // Resolve lists using helpers
+      shadows: resolveMixPropList(context, shadows),
+      fontFeatures: resolvePropList(context, fontFeatures),
+      fontVariations: resolvePropList(context, fontVariations),
+      decoration: resolveProp(context, decoration),
+      decorationColor: resolveProp(context, decorationColor),
+      decorationStyle: resolveProp(context, decorationStyle),
+      decorationThickness: resolveProp(context, decorationThickness),
+      debugLabel: resolveProp(context, debugLabel),
+      fontFamily: resolveProp(context, fontFamily),
+      fontFamilyFallback: resolvePropList(context, fontFamilyFallback),
+    );
+  }
 
-    return result;
+  @override
+  TextStyleDto merge(TextStyleDto? other) {
+    if (other == null) return this;
+
+    return TextStyleDto.props(
+      color: mergeProp(color, other.color),
+      backgroundColor: mergeProp(backgroundColor, other.backgroundColor),
+      fontSize: mergeProp(fontSize, other.fontSize),
+      fontWeight: mergeProp(fontWeight, other.fontWeight),
+      fontStyle: mergeProp(fontStyle, other.fontStyle),
+      letterSpacing: mergeProp(letterSpacing, other.letterSpacing),
+      debugLabel: mergeProp(debugLabel, other.debugLabel),
+      wordSpacing: mergeProp(wordSpacing, other.wordSpacing),
+      textBaseline: mergeProp(textBaseline, other.textBaseline),
+      // Merge lists - default to append strategy
+      shadows: mergeMixPropList(shadows, other.shadows),
+      fontFeatures: mergePropList(fontFeatures, other.fontFeatures),
+      decoration: mergeProp(decoration, other.decoration),
+      decorationColor: mergeProp(decorationColor, other.decorationColor),
+      decorationStyle: mergeProp(decorationStyle, other.decorationStyle),
+      fontVariations: mergePropList(fontVariations, other.fontVariations),
+      height: mergeProp(height, other.height),
+      foreground: mergeProp(foreground, other.foreground),
+      background: mergeProp(background, other.background),
+      decorationThickness: mergeProp(
+        decorationThickness,
+        other.decorationThickness,
+      ),
+      fontFamily: mergeProp(fontFamily, other.fontFamily),
+      fontFamilyFallback: mergePropList(
+        fontFamilyFallback,
+        other.fontFamilyFallback,
+      ),
+    );
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-
-    for (var e in value) {
-      properties.add(
-        DiagnosticsProperty(
-          e.toStringShort(),
-          e,
-          expandableValue: true,
-          style: DiagnosticsTreeStyle.whitespace,
-        ),
-      );
-    }
+    properties.add(DiagnosticsProperty('color', color, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty(
+        'backgroundColor',
+        backgroundColor,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty('fontSize', fontSize, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('fontWeight', fontWeight, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('fontStyle', fontStyle, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('letterSpacing', letterSpacing, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('wordSpacing', wordSpacing, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('textBaseline', textBaseline, defaultValue: null),
+    );
+    properties.add(DiagnosticsProperty('height', height, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('decoration', decoration, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'decorationColor',
+        decorationColor,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'decorationStyle',
+        decorationStyle,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'decorationThickness',
+        decorationThickness,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty('fontFamily', fontFamily, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'fontFamilyFallback',
+        fontFamilyFallback,
+        defaultValue: null,
+      ),
+    );
+    properties.add(DiagnosticsProperty('shadows', shadows, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('fontFeatures', fontFeatures, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('fontVariations', fontVariations, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('foreground', foreground, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('background', background, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('debugLabel', debugLabel, defaultValue: null),
+    );
   }
-}
 
-extension TextStyleExt on TextStyle {
-  TextStyleDto toDto() {
-    if (this is TextStyleRef) {
-      return TextStyleDto.ref((this as TextStyleRef).token);
-    }
-
-    return TextStyleDto._(value: [_toData()]);
-  }
-
-  TextStyleData _toData() => TextStyleData(
-        background: background,
-        backgroundColor: backgroundColor?.toDto(),
-        color: color?.toDto(),
-        debugLabel: debugLabel,
-        decoration: decoration,
-        decorationColor: decorationColor?.toDto(),
-        decorationStyle: decorationStyle,
-        decorationThickness: decorationThickness,
-        fontFamily: fontFamily,
-        fontFamilyFallback: fontFamilyFallback,
-        fontVariations: fontVariations,
-        fontFeatures: fontFeatures,
-        fontSize: fontSize,
-        fontStyle: fontStyle,
-        fontWeight: fontWeight,
-        foreground: foreground,
-        height: height,
-        letterSpacing: letterSpacing,
-        shadows: shadows?.map((e) => e.toDto()).toList(),
-        textBaseline: textBaseline,
-        wordSpacing: wordSpacing,
-      );
+  @override
+  List<Object?> get props => [
+    color,
+    backgroundColor,
+    fontSize,
+    fontWeight,
+    fontStyle,
+    letterSpacing,
+    debugLabel,
+    wordSpacing,
+    textBaseline,
+    shadows,
+    fontFeatures,
+    decoration,
+    decorationColor,
+    decorationStyle,
+    fontVariations,
+    height,
+    foreground,
+    background,
+    decorationThickness,
+    fontFamily,
+    fontFamilyFallback,
+  ];
 }

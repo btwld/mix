@@ -25,7 +25,18 @@ final class BoxBorderUtility<T extends StyleElement>
 
   late final _border = BorderUtility(builder);
 
-  BoxBorderUtility(super.builder) : super(valueToDto: (v) => v.toDto());
+  BoxBorderUtility(super.builder)
+    : super(
+        valueToDto: (v) {
+          return switch (v) {
+            Border() => BorderDto.value(v),
+            BorderDirectional() => BorderDirectionalDto.value(v),
+            _ => throw ArgumentError(
+              'Unsupported BoxBorder type: ${v.runtimeType}',
+            ),
+          };
+        },
+      );
 
   T call({
     Color? color,
@@ -82,9 +93,9 @@ final class BorderUtility<T extends StyleElement>
 
   late final strokeAlign = all.strokeAlign;
 
-  BorderUtility(super.builder) : super(valueToDto: (value) => value.toDto());
+  BorderUtility(super.builder) : super(valueToDto: BorderDto.value);
 
-  T none() => builder(const BorderDto.none());
+  T none() => builder(BorderDto.none);
 
   T call({
     Color? color,
@@ -115,8 +126,9 @@ final class BorderUtility<T extends StyleElement>
 
 final class BorderDirectionalUtility<T extends StyleElement>
     extends DtoUtility<T, BorderDirectionalDto, BorderDirectional> {
-  late final all =
-      BorderSideUtility((v) => builder(BorderDirectionalDto.all(v)));
+  late final all = BorderSideUtility(
+    (v) => builder(BorderDirectionalDto.all(v)),
+  );
 
   late final bottom = BorderSideUtility((v) => only(bottom: v));
 
@@ -126,16 +138,18 @@ final class BorderDirectionalUtility<T extends StyleElement>
 
   late final end = BorderSideUtility((v) => only(end: v));
 
-  late final vertical =
-      BorderSideUtility((v) => builder(BorderDirectionalDto.vertical(v)));
+  late final vertical = BorderSideUtility(
+    (v) => builder(BorderDirectionalDto.vertical(v)),
+  );
 
-  late final horizontal =
-      BorderSideUtility((v) => builder(BorderDirectionalDto.horizontal(v)));
+  late final horizontal = BorderSideUtility(
+    (v) => builder(BorderDirectionalDto.horizontal(v)),
+  );
 
   BorderDirectionalUtility(super.builder)
-      : super(valueToDto: (value) => value.toDto());
+    : super(valueToDto: BorderDirectionalDto.value);
 
-  T none() => builder(const BorderDirectionalDto.none());
+  T none() => builder(BorderDirectionalDto.none);
 
   T call({
     Color? color,
@@ -160,6 +174,66 @@ final class BorderDirectionalUtility<T extends StyleElement>
   }) {
     return builder(
       BorderDirectionalDto(top: top, bottom: bottom, start: start, end: end),
+    );
+  }
+}
+
+/// Utility class for configuring [BorderSide] properties.
+///
+/// This class provides methods to set individual properties of a [BorderSide].
+/// Use the methods of this class to configure specific properties of a [BorderSide].
+class BorderSideUtility<T extends StyleElement>
+    extends DtoUtility<T, BorderSideDto, BorderSide> {
+  /// Utility for defining [BorderSideDto.color]
+  late final color = ColorUtility(
+    (prop) => builder(BorderSideDto.props(color: prop)),
+  );
+
+  /// Utility for defining [BorderSideDto.strokeAlign]
+  late final strokeAlign = StrokeAlignUtility((v) => only(strokeAlign: v));
+
+  /// Utility for defining [BorderSideDto.style]
+  late final style = BorderStyleUtility((v) => only(style: v));
+
+  /// Utility for defining [BorderSideDto.width]
+  late final width = DoubleUtility((v) => only(width: v));
+
+  BorderSideUtility(super.builder) : super(valueToDto: BorderSideDto.value);
+
+  /// Creates a [StyleElement] instance using the [BorderSideDto.none] constructor.
+  T none() => builder(BorderSideDto.none);
+
+  T call({
+    Color? color,
+    double? strokeAlign,
+    BorderStyle? style,
+    double? width,
+  }) {
+    return builder(
+      BorderSideDto(
+        color: color,
+        strokeAlign: strokeAlign,
+        style: style,
+        width: width,
+      ),
+    );
+  }
+
+  /// Returns a new [BorderSideDto] with the specified properties.
+  @override
+  T only({
+    Color? color,
+    double? strokeAlign,
+    BorderStyle? style,
+    double? width,
+  }) {
+    return builder(
+      BorderSideDto(
+        color: color,
+        strokeAlign: strokeAlign,
+        style: style,
+        width: width,
+      ),
     );
   }
 }

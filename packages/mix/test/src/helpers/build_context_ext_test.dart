@@ -30,7 +30,7 @@ import 'package:mix/src/internal/build_context_ext.dart';
 //   TextTheme get textTheme => theme.textTheme;
 
 //   /// Mix Theme Data.
-//   MixThemeData get mixTheme => MixTheme.of(this);
+//   MixScopeData get mixScope => MixScope.of(this);
 
 //   /// Check if brightness is Brightness.dark.
 //   bool get isDarkMode => brightness == Brightness.dark;
@@ -49,8 +49,8 @@ void main() {
     final theme = ThemeData.light(useMaterial3: true);
     await tester.pumpWidget(
       MaterialApp(
-        home: MixTheme(
-          data: const MixThemeData.empty(),
+        home: MixScope(
+          data: const MixScopeData.empty(),
           child: Builder(
             builder: (context) {
               return Container();
@@ -72,7 +72,7 @@ void main() {
     expect(context.theme, Theme.of(context));
     expect(context.colorScheme, Theme.of(context).colorScheme);
     expect(context.textTheme, Theme.of(context).textTheme);
-    expect(context.mixTheme, const MixThemeData.empty());
+    expect(context.mixTheme, const MixScopeData.empty());
     expect(context.isDarkMode, Theme.of(context).brightness == Brightness.dark);
     expect(
       context.isLandscape,

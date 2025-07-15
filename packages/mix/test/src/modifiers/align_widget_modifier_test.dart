@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../helpers/custom_matchers.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
@@ -15,8 +16,9 @@ void main() {
 
     test('resolve', () {
       const modifier = AlignModifierSpecAttribute();
-      final result = modifier.resolve(EmptyMixData);
-      expect(result, isA<AlignModifierSpec>());
+      const expectedSpec = AlignModifierSpec();
+      
+      expect(modifier, resolvesTo(expectedSpec));
     });
 
     // equality

@@ -3,13 +3,12 @@ import "package:flutter/material.dart";
 /// A controller that manages the state of a widget.
 ///
 /// [MixWidgetStateController] tracks various states of a widget, such as
-/// [disabled], [hovered], [focused], [pressed], [dragged], [selected].
+/// [has(WidgetState.disabled)], [has(WidgetState.hovered)], [has(WidgetState.focused)], [has(WidgetState.pressed)], [has(WidgetState.dragged)], [has(WidgetState.selected)].
 /// These states are stored in a [Set] called [value].
 ///
 /// The controller extends [ChangeNotifier], allowing listeners to be notified
 /// when the state of the widget changes.
-@Deprecated('Use WidgetStatesController instead')
-typedef MixWidgetStateController = WidgetStatesController;
+// Deprecated typedef moved to src/core/deprecated.dart
 
 extension MixWidgetStatesExt on WidgetStatesController {
   /// The current set of states for the widget.
@@ -85,13 +84,13 @@ class MixWidgetStateModel extends InheritedModel<WidgetState> {
     super.key,
     required Set<WidgetState> states,
     required super.child,
-  })  : disabled = states.hasDisabled,
-        hovered = states.hasHovered,
-        focused = states.hasFocused,
-        pressed = states.hasPressed,
-        dragged = states.hasDragged,
-        selected = states.hasSelected,
-        error = states.hasError;
+  }) : disabled = states.hasDisabled,
+       hovered = states.hasHovered,
+       focused = states.hasFocused,
+       pressed = states.hasPressed,
+       dragged = states.hasDragged,
+       selected = states.hasSelected,
+       error = states.hasError;
 
   const MixWidgetStateModel({
     super.key,

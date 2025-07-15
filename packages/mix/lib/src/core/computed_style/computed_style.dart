@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 
-import '../../attributes/animated/animation_config.dart';
+import '../../attributes/animation/animation_config.dart';
 import '../factory/mix_context.dart';
 import '../modifier.dart';
 import '../spec.dart';

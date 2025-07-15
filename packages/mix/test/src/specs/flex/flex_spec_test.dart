@@ -1,9 +1,8 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../../helpers/custom_matchers.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
@@ -21,7 +20,7 @@ void main() {
             textDirection: TextDirection.ltr,
             textBaseline: TextBaseline.alphabetic,
             clipBehavior: Clip.antiAlias,
-            gap: SpaceDto(10),
+            gap: SpaceDto.value(10),
           ),
         ),
       );
@@ -113,7 +112,7 @@ void main() {
       expect(lerpedSpec.textDirection, TextDirection.rtl);
       expect(lerpedSpec.textBaseline, TextBaseline.ideographic);
       expect(lerpedSpec.clipBehavior, Clip.antiAlias);
-      expect(lerpedSpec.gap, lerpDouble(spec1.gap, spec2.gap, t));
+      expect(lerpedSpec.gap, MixHelpers.lerpDouble(spec1.gap, spec2.gap, t));
 
       expect(lerpedSpec, isNot(spec1));
     });
@@ -186,7 +185,7 @@ void main() {
       expect(attr.textDirection, TextDirection.ltr);
       expect(attr.textBaseline, TextBaseline.alphabetic);
       expect(attr.clipBehavior, Clip.antiAlias);
-      expect(attr.gap, const SpaceDto(10));
+      expect(attr.gap, resolvesTo(10));
 
       final style = Style(util);
       final flexAttribute = style.styles.attributeOfType<FlexSpecAttribute>();
@@ -198,7 +197,7 @@ void main() {
       expect(flexAttribute?.textDirection, TextDirection.ltr);
       expect(flexAttribute?.textBaseline, TextBaseline.alphabetic);
       expect(flexAttribute?.clipBehavior, Clip.antiAlias);
-      expect(flexAttribute?.gap, const SpaceDto(10));
+      expect(flexAttribute?.gap, resolvesTo(10));
 
       final mixData = style.of(MockBuildContext());
       final flexSpec = FlexSpec.from(mixData);
@@ -214,15 +213,14 @@ void main() {
     });
 
     test('Immutable behavior when having multiple flexes', () {
-      final flexUtil = FlexSpecUtility.self;
-      final flex1 = flexUtil.chain..gap(10);
-      final flex2 = flexUtil.chain..gap(20);
+      final flex1 = FlexSpecUtility((v) => v)..gap(10);
+      final flex2 = FlexSpecUtility((v) => v)..gap(20);
 
       final attr1 = flex1.attributeValue!;
       final attr2 = flex2.attributeValue!;
 
-      expect(attr1.gap, const SpaceDto(10));
-      expect(attr2.gap, const SpaceDto(20));
+      expect(attr1.gap, resolvesTo(10));
+      expect(attr2.gap, resolvesTo(20));
 
       final attr3 = attr1.merge(attr2);
 
@@ -234,9 +232,9 @@ void main() {
       final flexAttribute2 = style2.styles.attributeOfType<FlexSpecAttribute>();
       final flexAttribute3 = style3.styles.attributeOfType<FlexSpecAttribute>();
 
-      expect(flexAttribute1?.gap, const SpaceDto(10));
-      expect(flexAttribute2?.gap, const SpaceDto(20));
-      expect(flexAttribute3?.gap, const SpaceDto(20));
+      expect(flexAttribute1?.gap, resolvesTo(10));
+      expect(flexAttribute2?.gap, resolvesTo(20));
+      expect(flexAttribute3?.gap, resolvesTo(20));
 
       final mixData1 = style1.of(MockBuildContext());
       final mixData2 = style2.of(MockBuildContext());
@@ -263,11 +261,11 @@ void main() {
       final flexAttribute = flexValue.attributeValue!;
       final flexAttribute2 = flex.gap(20);
 
-      expect(flexAttribute.gap, const SpaceDto(10));
+      expect(flexAttribute.gap, resolvesTo(10));
       expect(flexAttribute.direction, Axis.horizontal);
       expect(flexAttribute.mainAxisAlignment, MainAxisAlignment.center);
 
-      expect(flexAttribute2.gap, const SpaceDto(20));
+      expect(flexAttribute2.gap, resolvesTo(20));
       expect(flexAttribute2.direction, isNull);
       expect(flexAttribute2.mainAxisAlignment, isNull);
     });

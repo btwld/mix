@@ -12,13 +12,13 @@ sdkPath: .fvm/flutter_sdk
 command:
   bootstrap:
     environment:
-      sdk: ">=3.6.0 <4.0.0"
-      flutter: ">=3.27.0"
+      sdk: ">=3.8.1 <4.0.0"
+      flutter: ">= 3.32.6 <4.0.0"
     dependencies:
       meta: ^1.15.0
     dev_dependencies:
       flutter_lints: ^4.0.0
-      dart_code_metrics_presets: ^2.14.0
+      dart_code_metrics_presets: ^2.22.0
       build_runner: ^2.4.9
   publish:
     hooks:

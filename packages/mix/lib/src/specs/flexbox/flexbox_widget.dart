@@ -51,10 +51,11 @@ class FlexBox extends StyledWidget {
       style: style,
       orderOfModifiers: orderOfModifiers,
       builder: (context) {
-        final mixData = Mix.of(context);
+        final mixData = MixProvider.of(context);
 
-        final spec =
-            mixData.attributeOf<FlexBoxSpecAttribute>()?.resolve(mixData);
+        final spec = mixData.attributeOf<FlexBoxSpecAttribute>()?.resolve(
+          mixData,
+        );
 
         final boxSpec = spec?.box ?? BoxSpec.of(context);
         final flexSpec = spec?.flex ?? FlexSpec.of(context);

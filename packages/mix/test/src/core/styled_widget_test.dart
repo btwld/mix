@@ -11,29 +11,30 @@ import '../../helpers/testing_utils.dart';
 void main() {
   group('SpecBuilder', () {
     testWidgets(
-        r'should access parent style attributes if inherit is true, otherwise should not',
-        (tester) async {
-      for (var inherit in [true, false]) {
-        double? inheritedValue;
+      r'should access parent style attributes if inherit is true, otherwise should not',
+      (tester) async {
+        for (var inherit in [true, false]) {
+          double? inheritedValue;
 
-        await tester.pumpWidget(
-          Box(
-            style: Style($box.height(100)),
-            child: SpecBuilder(
-              inherit: inherit,
-              builder: (context) {
-                final mix = Mix.of(context);
-                inheritedValue = mix.attributeOf<BoxSpecAttribute>()?.height;
+          await tester.pumpWidget(
+            Box(
+              style: Style($box.height(100)),
+              child: SpecBuilder(
+                inherit: inherit,
+                builder: (context) {
+                  final mix = MixProvider.of(context);
+                  inheritedValue = mix.attributeOf<BoxSpecAttribute>()?.height?.value;
 
-                return const SizedBox();
-              },
+                  return const SizedBox();
+                },
+              ),
             ),
-          ),
-        );
+          );
 
-        expect(inheritedValue, inherit ? 100 : null);
-      }
-    });
+          expect(inheritedValue, inherit ? 100 : null);
+        }
+      },
+    );
 
     testWidgets(
       'should have no attributes in MixData when a parent SpecBuilder has no Style',
@@ -41,7 +42,7 @@ void main() {
         tester.pumpWidget(
           SpecBuilder(
             builder: (context) {
-              final mix = Mix.of(context);
+              final mix = MixProvider.of(context);
               expect(mix.attributes.length, isZero);
               return const SizedBox();
             },
@@ -66,7 +67,7 @@ void main() {
             inherit: true,
             style: style,
             builder: (context) {
-              final mix = Mix.of(context);
+              final mix = MixProvider.of(context);
               expect(mixData, mix);
               return const SizedBox();
             },
@@ -96,12 +97,8 @@ void main() {
         await tester.pumpWidget(
           SpecBuilder(
             style: Style(
-              $box.color(
-                Colors.red,
-              ),
-              $on.press(
-                $box.color(Colors.blue),
-              ),
+              $box.color(Colors.red),
+              $on.press($box.color(Colors.blue)),
             ),
             builder: (context) => const SizedBox(),
           ),
@@ -121,12 +118,8 @@ void main() {
             key: key,
             child: SpecBuilder(
               style: Style(
-                $box.color(
-                  Colors.red,
-                ),
-                $on.press(
-                  $box.color(Colors.blue),
-                ),
+                $box.color(Colors.red),
+                $on.press($box.color(Colors.blue)),
               ),
               builder: (context) => const SizedBox(),
             ),
@@ -169,8 +162,9 @@ void main() {
         final boxFinder = find.byType(Box);
 
         // Simulate a hover event
-        final gesture =
-            await tester.createGesture(kind: PointerDeviceKind.mouse);
+        final gesture = await tester.createGesture(
+          kind: PointerDeviceKind.mouse,
+        );
         await gesture.addPointer(location: tester.getCenter(boxFinder));
         await tester.pumpAndSettle();
 
@@ -254,21 +248,13 @@ void main() {
               ..height(100)
               ..width(100),
             builder: (context) {
-              final mix = Mix.of(context);
+              final mix = MixProvider.of(context);
               expect(mix.attributes.length, 1);
               expect(
                 mix.attributes.values.first,
                 isA<BoxSpecAttribute>()
-                    .having(
-                      (attribute) => attribute.height,
-                      'height',
-                      100,
-                    )
-                    .having(
-                      (attribute) => attribute.width,
-                      'width',
-                      100,
-                    ),
+                    .having((attribute) => attribute.height?.value, 'height', 100)
+                    .having((attribute) => attribute.width?.value, 'width', 100),
               );
               return const SizedBox();
             },

@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/element.dart';
-import '../../theme/tokens/text_style_token.dart';
-import '../color/color_dto.dart';
+import '../../core/mix_element.dart';
+import '../../core/utility.dart';
+import '../../theme/tokens/mix_token.dart';
 import '../color/color_util.dart';
 import '../enum/enum_util.dart';
 import '../scalars/scalar_util.dart';
@@ -11,7 +11,7 @@ import 'text_style_dto.dart';
 
 final class TextStyleUtility<T extends StyleElement>
     extends DtoUtility<T, TextStyleDto, TextStyle> {
-  late final color = ColorUtility((v) => only(color: v));
+  late final color = ColorUtility((prop) => builder(TextStyleDto.props(color: prop)));
 
   late final fontWeight = FontWeightUtility((v) => only(fontWeight: v));
 
@@ -21,32 +21,68 @@ final class TextStyleUtility<T extends StyleElement>
 
   late final fontSize = FontSizeUtility((v) => only(fontSize: v));
 
-  late final backgroundColor = ColorUtility((v) => only(backgroundColor: v));
+  late final backgroundColor = ColorUtility((prop) => builder(TextStyleDto.props(backgroundColor: prop)));
 
-  late final decorationColor = ColorUtility((v) => only(decorationColor: v));
+  late final decorationColor = ColorUtility((prop) => builder(TextStyleDto.props(decorationColor: prop)));
 
-  late final shadow = ShadowUtility((v) => only(shadows: [v]));
-
-  late final decorationStyle =
-      TextDecorationStyleUtility((v) => only(decorationStyle: v));
+  late final decorationStyle = TextDecorationStyleUtility(
+    (v) => only(decorationStyle: v),
+  );
 
   late final textBaseline = TextBaselineUtility((v) => only(textBaseline: v));
 
-  late final fontFamily = FontFamilyUtility((v) => call(fontFamily: v));
+  late final fontFamily = FontFamilyUtility((v) => only(fontFamily: v));
 
-  TextStyleUtility(super.builder) : super(valueToDto: (v) => v.toDto());
+  TextStyleUtility(super.builder)
+    : super(
+        valueToDto: (v) => TextStyleDto(
+          color: v.color,
+          backgroundColor: v.backgroundColor,
+          fontSize: v.fontSize,
+          fontWeight: v.fontWeight,
+          fontStyle: v.fontStyle,
+          letterSpacing: v.letterSpacing,
+          debugLabel: v.debugLabel,
+          wordSpacing: v.wordSpacing,
+          textBaseline: v.textBaseline,
+          shadows: v.shadows
+              ?.map(
+                (shadow) => ShadowDto(
+                  blurRadius: shadow.blurRadius,
+                  color: shadow.color,
+                  offset: shadow.offset,
+                ),
+              )
+              .toList(),
+          fontFeatures: v.fontFeatures,
+          decoration: v.decoration,
+          decorationColor: v.decorationColor,
+          decorationStyle: v.decorationStyle,
+          fontVariations: v.fontVariations,
+          height: v.height,
+          foreground: v.foreground,
+          background: v.background,
+          decorationThickness: v.decorationThickness,
+          fontFamily: v.fontFamily,
+          fontFamilyFallback: v.fontFamilyFallback,
+        ),
+      );
 
-  T height(double v) => only(height: v);
+  T token(MixableToken<TextStyle> token) => throw UnimplementedError(
+    'Token support needs implementation for whole TextStyle',
+  );
 
-  T wordSpacing(double v) => only(wordSpacing: v);
+  T height(double v) => call(height: v);
 
-  T letterSpacing(double v) => only(letterSpacing: v);
+  T wordSpacing(double v) => call(wordSpacing: v);
 
-  T fontVariations(List<FontVariation> v) => only(fontVariations: v);
+  T letterSpacing(double v) => call(letterSpacing: v);
 
-  T fontVariation(FontVariation v) => only(fontVariations: [v]);
+  T fontVariations(List<FontVariation> v) => call(fontVariations: v);
 
-  T shadows(List<Shadow> v) => only(shadows: v.map((e) => e.toDto()).toList());
+  T fontVariation(FontVariation v) => call(fontVariations: [v]);
+
+  T shadows(List<Shadow> v) => call(shadows: v);
 
   T italic() => fontStyle.italic();
 
@@ -63,8 +99,6 @@ final class TextStyleUtility<T extends StyleElement>
   T decorationThickness(double v) => call(decorationThickness: v);
 
   T fontFamilyFallback(List<String> v) => call(fontFamilyFallback: v);
-
-  T ref(TextStyleToken token) => builder(TextStyleDto.ref(token));
 
   T call({
     String? fontFamily,
@@ -89,42 +123,52 @@ final class TextStyleUtility<T extends StyleElement>
     Color? decorationColor,
     double? height,
   }) {
-    return only(
-      color: color?.toDto(),
-      fontWeight: fontWeight,
-      fontStyle: fontStyle,
-      decoration: decoration,
-      fontSize: fontSize,
-      letterSpacing: letterSpacing,
-      wordSpacing: wordSpacing,
-      backgroundColor: backgroundColor?.toDto(),
-      decorationColor: decorationColor?.toDto(),
-      decorationStyle: decorationStyle,
-      textBaseline: textBaseline,
-      fontVariations: fontVariations,
-      shadows: shadows?.map((e) => e.toDto()).toList(),
-      fontFeatures: fontFeatures,
-      foreground: foreground,
-      background: background,
-      decorationThickness: decorationThickness,
-      fontFamilyFallback: fontFamilyFallback,
-      debugLabel: debugLabel,
-      height: height,
-      fontFamily: fontFamily,
+    return builder(
+      TextStyleDto(
+        color: color,
+        backgroundColor: backgroundColor,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        fontStyle: fontStyle,
+        letterSpacing: letterSpacing,
+        debugLabel: debugLabel,
+        wordSpacing: wordSpacing,
+        textBaseline: textBaseline,
+        shadows: shadows
+            ?.map(
+              (shadow) => ShadowDto(
+                blurRadius: shadow.blurRadius,
+                color: shadow.color,
+                offset: shadow.offset,
+              ),
+            )
+            .toList(),
+        fontFeatures: fontFeatures,
+        decoration: decoration,
+        decorationColor: decorationColor,
+        decorationStyle: decorationStyle,
+        fontVariations: fontVariations,
+        height: height,
+        foreground: foreground,
+        background: background,
+        decorationThickness: decorationThickness,
+        fontFamily: fontFamily,
+        fontFamilyFallback: fontFamilyFallback,
+      ),
     );
   }
 
   @override
   T only({
-    ColorDto? color,
+    Color? color,
     FontWeight? fontWeight,
     FontStyle? fontStyle,
     TextDecoration? decoration,
     double? fontSize,
     double? letterSpacing,
     double? wordSpacing,
-    ColorDto? backgroundColor,
-    ColorDto? decorationColor,
+    Color? backgroundColor,
+    Color? decorationColor,
     TextDecorationStyle? decorationStyle,
     TextBaseline? textBaseline,
     List<FontVariation>? fontVariations,
@@ -138,30 +182,30 @@ final class TextStyleUtility<T extends StyleElement>
     double? height,
     String? fontFamily,
   }) {
-    final textStyle = TextStyleDto(
-      color: color,
-      backgroundColor: backgroundColor,
-      fontSize: fontSize,
-      fontWeight: fontWeight,
-      fontStyle: fontStyle,
-      letterSpacing: letterSpacing,
-      debugLabel: debugLabel,
-      wordSpacing: wordSpacing,
-      textBaseline: textBaseline,
-      shadows: shadows,
-      fontFeatures: fontFeatures,
-      decoration: decoration,
-      decorationColor: decorationColor,
-      decorationStyle: decorationStyle,
-      fontVariations: fontVariations,
-      height: height,
-      foreground: foreground,
-      background: background,
-      decorationThickness: decorationThickness,
-      fontFamily: fontFamily,
-      fontFamilyFallback: fontFamilyFallback,
+    return builder(
+      TextStyleDto(
+        color: color,
+        backgroundColor: backgroundColor,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        fontStyle: fontStyle,
+        letterSpacing: letterSpacing,
+        debugLabel: debugLabel,
+        wordSpacing: wordSpacing,
+        textBaseline: textBaseline,
+        shadows: shadows,
+        fontFeatures: fontFeatures,
+        decoration: decoration,
+        decorationColor: decorationColor,
+        decorationStyle: decorationStyle,
+        fontVariations: fontVariations,
+        height: height,
+        foreground: foreground,
+        background: background,
+        decorationThickness: decorationThickness,
+        fontFamily: fontFamily,
+        fontFamilyFallback: fontFamilyFallback,
+      ),
     );
-
-    return builder(textStyle);
   }
 }

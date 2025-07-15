@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../helpers/custom_matchers.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
@@ -99,8 +100,12 @@ void main() {
         widthFactor: 0.5,
         heightFactor: 0.5,
       );
-      final result = modifier.resolve(EmptyMixData);
-      expect(result, isA<FractionallySizedBoxModifierSpec>());
+      expect(modifier, resolvesTo(
+        const FractionallySizedBoxModifierSpec(
+          widthFactor: 0.5,
+          heightFactor: 0.5,
+        ),
+      ));
     });
 
     test('equality', () {

@@ -243,12 +243,14 @@ void main() {
       expect(shapeBorder.value, isA<RoundedRectangleBorderDto>());
       expect(
         (shapeBorder.value as RoundedRectangleBorderDto).borderRadius,
-        BorderRadius.circular(20).toDto(),
+        MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>.value(
+          BorderRadiusDto.value(BorderRadius.circular(20)),
+        ),
       );
     });
 
     test('beveled() returns correct instance', () {
-      final shapeBorder = utility.beveledRectangle();
+      final shapeBorder = utility.beveled();
 
       expect(shapeBorder.value, isA<BeveledRectangleBorderDto>());
     });

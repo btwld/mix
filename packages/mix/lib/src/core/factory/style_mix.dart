@@ -2,12 +2,12 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../../attributes/animated/animation_config.dart';
+import '../../attributes/animation/animation_config.dart';
 import '../../internal/helper_util.dart';
 import '../../specs/spec_util.dart';
 import '../../variants/variant_attribute.dart';
 import '../attributes_map.dart';
-import '../element.dart';
+import '../mix_element.dart';
 import '../spec.dart';
 import '../variant.dart';
 import 'mix_context.dart';
@@ -41,8 +41,8 @@ class Style extends BaseStyle<SpecAttribute> {
   ///
   /// This can be used as a default or initial value where a `Style` is required.
   const Style.empty()
-      : styles = const AttributeMap.empty(),
-        variants = const AttributeMap.empty();
+    : styles = const AttributeMap.empty(),
+      variants = const AttributeMap.empty();
 
   const Style._({required this.styles, required this.variants});
 
@@ -169,9 +169,8 @@ class Style extends BaseStyle<SpecAttribute> {
     'The "asAttribute" method is deprecated and will be removed in a v2.0. '
     'Please use the Style instance directly.',
   )
-  static get asAttribute => const SpreadFunctionParams<StyleElement, Style>(
-        Style.create,
-      );
+  static get asAttribute =>
+      const SpreadFunctionParams<StyleElement, Style>(Style.create);
 
   bool get isAnimated => this is AnimatedStyle;
 
@@ -296,8 +295,9 @@ class Style extends BaseStyle<SpecAttribute> {
     }
 
     /// Create a Style from the matched variants.
-    final styleToApply =
-        Style.combine(matchedVariants.map((e) => e.value).toList());
+    final styleToApply = Style.combine(
+      matchedVariants.map((e) => e.value).toList(),
+    );
 
     /// Merge the new Style created with the existing Style, excluding the matched variants.
     final mergedStyle = updatedStyle.merge(styleToApply);
@@ -448,13 +448,7 @@ abstract class SpecUtility<T extends SpecAttribute, V> extends BaseStyle<T> {
   @override
   AttributeMap<VariantAttribute> variants = const AttributeMap.empty();
 
-  SpecUtility(
-    this.attributeBuilder, {
-    @Deprecated(
-      'mutable parameter is no longer used. All SpecUtilities are now mutable by default.',
-    )
-    bool? mutable,
-  });
+  SpecUtility(this.attributeBuilder);
 
   static T selfBuilder<T>(T value) => value;
   T? get attributeValue => styles.attributeOfType();

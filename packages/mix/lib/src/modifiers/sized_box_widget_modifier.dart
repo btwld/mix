@@ -2,34 +2,153 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mix_annotations/mix_annotations.dart';
 
-import '../core/element.dart';
 import '../core/factory/mix_context.dart';
 import '../core/helpers.dart';
+import '../core/mix_element.dart';
 import '../core/modifier.dart';
 import '../core/utility.dart';
 
-part 'sized_box_widget_modifier.g.dart';
-
-@MixableSpec(components: GeneratedSpecComponents.skipUtility)
 final class SizedBoxModifierSpec
     extends WidgetModifierSpec<SizedBoxModifierSpec>
-    with _$SizedBoxModifierSpec, Diagnosticable {
+    with Diagnosticable {
   final double? width;
   final double? height;
 
   const SizedBoxModifierSpec({this.width, this.height});
 
+  /// Creates a copy of this [SizedBoxModifierSpec] but with the given fields
+  /// replaced with the new values.
+  @override
+  SizedBoxModifierSpec copyWith({double? width, double? height}) {
+    return SizedBoxModifierSpec(
+      width: width ?? this.width,
+      height: height ?? this.height,
+    );
+  }
+
+  /// Linearly interpolates between this [SizedBoxModifierSpec] and another [SizedBoxModifierSpec] based on the given parameter [t].
+  ///
+  /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
+  /// When [t] is 0.0, the current [SizedBoxModifierSpec] is returned. When [t] is 1.0, the [other] [SizedBoxModifierSpec] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [SizedBoxModifierSpec] is returned.
+  ///
+  /// If [other] is null, this method returns the current [SizedBoxModifierSpec] instance.
+  ///
+  /// The interpolation is performed on each property of the [SizedBoxModifierSpec] using the appropriate
+  /// interpolation method:
+  /// - [MixHelpers.lerpDouble] for [width] and [height].
+
+  /// This method is typically used in animations to smoothly transition between
+  /// different [SizedBoxModifierSpec] configurations.
+  @override
+  SizedBoxModifierSpec lerp(SizedBoxModifierSpec? other, double t) {
+    if (other == null) return this;
+
+    return SizedBoxModifierSpec(
+      width: MixHelpers.lerpDouble(width, other.width, t),
+      height: MixHelpers.lerpDouble(height, other.height, t),
+    );
+  }
+
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    _debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('width', width, defaultValue: null));
+    properties.add(DiagnosticsProperty('height', height, defaultValue: null));
   }
+
+  /// The list of properties that constitute the state of this [SizedBoxModifierSpec].
+  ///
+  /// This property is used by the [==] operator and the [hashCode] getter to
+  /// compare two [SizedBoxModifierSpec] instances for equality.
+  @override
+  List<Object?> get props => [width, height];
 
   @override
   Widget build(Widget child) {
     return SizedBox(width: width, height: height, child: child);
+  }
+}
+
+/// Represents the attributes of a [SizedBoxModifierSpec].
+///
+/// This class encapsulates properties defining the layout and
+/// appearance of a [SizedBoxModifierSpec].
+///
+/// Use this class to configure the attributes of a [SizedBoxModifierSpec] and pass it to
+/// the [SizedBoxModifierSpec] constructor.
+class SizedBoxModifierSpecAttribute
+    extends WidgetModifierSpecAttribute<SizedBoxModifierSpec> {
+  final double? width;
+  final double? height;
+
+  const SizedBoxModifierSpecAttribute({this.width, this.height});
+
+  /// Resolves to [SizedBoxModifierSpec] using the provided [MixContext].
+  ///
+  /// If a property is null in the [MixContext], it falls back to the
+  /// default value defined in the `defaultValue` for that property.
+  ///
+  /// ```dart
+  /// final sizedBoxModifierSpec = SizedBoxModifierSpecAttribute(...).resolve(mix);
+  /// ```
+  @override
+  SizedBoxModifierSpec resolve(MixContext context) {
+    return SizedBoxModifierSpec(width: width, height: height);
+  }
+
+  /// Merges the properties of this [SizedBoxModifierSpecAttribute] with the properties of [other].
+  ///
+  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
+  /// [SizedBoxModifierSpecAttribute] with the properties of [other] taking precedence over
+  /// the corresponding properties of this instance.
+  ///
+  /// Properties from [other] that are null will fall back
+  /// to the values from this instance.
+  @override
+  SizedBoxModifierSpecAttribute merge(SizedBoxModifierSpecAttribute? other) {
+    if (other == null) return this;
+
+    return SizedBoxModifierSpecAttribute(
+      width: other.width ?? width,
+      height: other.height ?? height,
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('width', width, defaultValue: null));
+    properties.add(DiagnosticsProperty('height', height, defaultValue: null));
+  }
+
+  /// The list of properties that constitute the state of this [SizedBoxModifierSpecAttribute].
+  ///
+  /// This property is used by the [==] operator and the [hashCode] getter to
+  /// compare two [SizedBoxModifierSpecAttribute] instances for equality.
+  @override
+  List<Object?> get props => [width, height];
+}
+
+/// A tween that interpolates between two [SizedBoxModifierSpec] instances.
+///
+/// This class can be used in animations to smoothly transition between
+/// different [SizedBoxModifierSpec] specifications.
+class SizedBoxModifierSpecTween extends Tween<SizedBoxModifierSpec?> {
+  SizedBoxModifierSpecTween({super.begin, super.end});
+
+  @override
+  SizedBoxModifierSpec lerp(double t) {
+    if (begin == null && end == null) {
+      return const SizedBoxModifierSpec();
+    }
+
+    if (begin == null) {
+      return end!;
+    }
+
+    return begin!.lerp(end!, t);
   }
 }
 
@@ -43,8 +162,9 @@ final class SizedBoxModifierSpecUtility<T extends StyleElement>
 
   /// Utility for defining [SizedBoxModifierSpecAttribute.width]
   /// and [SizedBoxModifierSpecAttribute.height]
-  late final square =
-      DoubleUtility((value) => call(width: value, height: value));
+  late final square = DoubleUtility(
+    (value) => call(width: value, height: value),
+  );
 
   SizedBoxModifierSpecUtility(super.builder);
 

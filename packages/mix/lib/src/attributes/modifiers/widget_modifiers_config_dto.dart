@@ -1,8 +1,6 @@
-import 'package:flutter/foundation.dart';
-
 import '../../core/attributes_map.dart';
-import '../../core/element.dart';
 import '../../core/factory/mix_context.dart';
+import '../../core/mix_element.dart';
 import '../../core/modifier.dart';
 import '../../modifiers/internal/reset_modifier.dart';
 import 'widget_modifiers_config.dart';
@@ -12,42 +10,72 @@ import 'widget_modifiers_config.dart';
 )
 typedef WidgetModifiersDataDto = WidgetModifiersConfigDto;
 
-class WidgetModifiersConfigDto extends Mixable<WidgetModifiersConfig> {
-  final List<WidgetModifierSpecAttribute> value;
+class WidgetModifiersConfigDto extends Mix<WidgetModifiersConfig> {
+  final List<WidgetModifierSpecAttribute>? modifiers;
 
-  const WidgetModifiersConfigDto(this.value);
+  const WidgetModifiersConfigDto.props({this.modifiers});
+  
+  factory WidgetModifiersConfigDto({List<WidgetModifierSpecAttribute>? modifiers}) {
+    return WidgetModifiersConfigDto.props(modifiers: modifiers);
+  }
+
+  /// Constructor that accepts a [WidgetModifiersConfig] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [WidgetModifiersConfig] instances to [WidgetModifiersConfigDto].
+  ///
+  /// ```dart
+  /// final config = WidgetModifiersConfig([...]);
+  /// final dto = WidgetModifiersConfigDto.value(config);
+  /// ```
+  factory WidgetModifiersConfigDto.value(WidgetModifiersConfig config) {
+    // TODO: This conversion is complex as it requires converting WidgetModifierSpec to WidgetModifierSpecAttribute
+    // For now, return empty list - this needs proper implementation based on available conversion methods
+    return const WidgetModifiersConfigDto.props();
+  }
+
+  /// Constructor that accepts a nullable [WidgetModifiersConfig] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [WidgetModifiersConfigDto.value].
+  ///
+  /// ```dart
+  /// final WidgetModifiersConfig? config = WidgetModifiersConfig([...]);
+  /// final dto = WidgetModifiersConfigDto.maybeValue(config); // Returns WidgetModifiersConfigDto or null
+  /// ```
+  static WidgetModifiersConfigDto? maybeValue(WidgetModifiersConfig? config) {
+    return config != null ? WidgetModifiersConfigDto.value(config) : null;
+  }
+
 
   @override
   WidgetModifiersConfigDto merge(WidgetModifiersConfigDto? other) {
     if (other == null) return this;
-    final thisMap = AttributeMap(value);
+    
+    final thisModifiers = modifiers ?? <WidgetModifierSpecAttribute>[];
+    final otherModifiers = other.modifiers ?? <WidgetModifierSpecAttribute>[];
+    
+    final thisMap = AttributeMap(thisModifiers);
 
-    final resetIndex =
-        other.value.lastIndexWhere((e) => e is ResetModifierSpecAttribute);
+    final resetIndex = otherModifiers.lastIndexWhere(
+      (e) => e is ResetModifierSpecAttribute,
+    );
 
     if (resetIndex != -1) {
-      return WidgetModifiersConfigDto(other.value.sublist(resetIndex));
+      return WidgetModifiersConfigDto(modifiers: otherModifiers.sublist(resetIndex));
     }
 
-    final otherMap = AttributeMap(other.value);
+    final otherMap = AttributeMap(otherModifiers);
     final mergedMap = thisMap.merge(otherMap).values;
 
-    return WidgetModifiersConfigDto(mergedMap);
+    return WidgetModifiersConfigDto(modifiers: mergedMap);
   }
 
   @override
-  WidgetModifiersConfig resolve(MixContext mix) {
-    return WidgetModifiersConfig(value.map((e) => e.resolve(mix)).toList());
+  WidgetModifiersConfig resolve(MixContext context) {
+    final resolvedModifiers = modifiers?.map((e) => e.resolve(context)).toList() ?? <WidgetModifierSpec>[];
+    
+    return WidgetModifiersConfig(resolvedModifiers);
   }
 
   @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    for (var attr in value) {
-      properties.add(DiagnosticsProperty(attr.runtimeType.toString(), attr));
-    }
-  }
-
-  @override
-  List<Object?> get props => [value];
+  List<Object?> get props => [modifiers];
 }

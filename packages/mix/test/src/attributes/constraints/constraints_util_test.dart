@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../../helpers/custom_matchers.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
@@ -15,15 +16,15 @@ void main() {
       );
 
       expect(result.value, isA<BoxConstraintsDto>());
-      expect(result.value.minWidth, 50.0);
-      expect(result.value.maxWidth, 150.0);
-      expect(result.value.minHeight, 100.0);
-      expect(result.value.maxHeight, 200.0);
+      expect(result.value.minWidth, resolvesTo(50.0));
+      expect(result.value.maxWidth, resolvesTo(150.0));
+      expect(result.value.minHeight, resolvesTo(100.0));
+      expect(result.value.maxHeight, resolvesTo(200.0));
     });
 
     test('minWidth()', () {
       final result = boxConstraints.minWidth(50.0);
-      expect(result.value.minWidth, 50.0);
+      expect(result.value.minWidth, resolvesTo(50.0));
       expect(result.value.maxWidth, isNull);
       expect(result.value.minHeight, isNull);
       expect(result.value.maxHeight, isNull);
@@ -32,7 +33,7 @@ void main() {
     test('maxWidth()', () {
       final result = boxConstraints.maxWidth(150.0);
       expect(result.value.minWidth, isNull);
-      expect(result.value.maxWidth, 150.0);
+      expect(result.value.maxWidth, resolvesTo(150.0));
       expect(result.value.minHeight, isNull);
       expect(result.value.maxHeight, isNull);
     });
@@ -41,7 +42,7 @@ void main() {
       final result = boxConstraints.minHeight(100.0);
       expect(result.value.minWidth, isNull);
       expect(result.value.maxWidth, isNull);
-      expect(result.value.minHeight, 100.0);
+      expect(result.value.minHeight, resolvesTo(100.0));
       expect(result.value.maxHeight, isNull);
     });
 
@@ -50,7 +51,7 @@ void main() {
       expect(result.value.minWidth, isNull);
       expect(result.value.maxWidth, isNull);
       expect(result.value.minHeight, isNull);
-      expect(result.value.maxHeight, 200.0);
+      expect(result.value.maxHeight, resolvesTo(200.0));
     });
   });
 }

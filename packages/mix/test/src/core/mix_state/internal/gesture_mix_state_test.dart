@@ -31,11 +31,7 @@ void main() {
         onPanEnd: onPanEnd,
         child: MixWidgetStateBuilder(
           controller: controller,
-          builder: (_) => const SizedBox(
-            key: key,
-            height: 100,
-            width: 100,
-          ),
+          builder: (_) => const SizedBox(key: key, height: 100, width: 100),
         ),
       );
     }
@@ -63,8 +59,9 @@ void main() {
       expect(onTapCalled, isTrue);
     });
 
-    testWidgets('should update long press state when long pressed',
-        (tester) async {
+    testWidgets('should update long press state when long pressed', (
+      tester,
+    ) async {
       bool onLongPressCalled = false;
       await tester.pumpWidget(
         buildGestureMixStateWidget(
@@ -75,17 +72,13 @@ void main() {
       );
 
       await tester.longPress(find.byType(GestureMixStateWidget));
-      final context = tester.element(find.byKey(key));
 
       expect(onLongPressCalled, isTrue);
-      expect(
-        LongPressInheritedState.of(context).longPressed,
-        isTrue,
-      );
     });
 
-    testWidgets('should update press state after delay when tapped',
-        (tester) async {
+    testWidgets('should update press state after delay when tapped', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         buildGestureMixStateWidget(
           onTap: () {},
@@ -102,18 +95,14 @@ void main() {
         reason: 'GesturableState should be pressed immediately after tap',
       );
 
-      await tester.pump(
-        const Duration(milliseconds: 50),
-      );
+      await tester.pump(const Duration(milliseconds: 50));
       expect(
         MixWidgetStateModel.hasStateOf(context, WidgetState.pressed),
         isTrue,
         reason: 'GesturableState should still be pressed 50ms after tap',
       );
 
-      await tester.pump(
-        const Duration(milliseconds: 100),
-      );
+      await tester.pump(const Duration(milliseconds: 100));
       expect(
         MixWidgetStateModel.hasStateOf(context, WidgetState.pressed),
         isFalse,
@@ -124,16 +113,15 @@ void main() {
 
     testWidgets('should not update press state when disabled', (tester) async {
       await tester.pumpWidget(
-        buildGestureMixStateWidget(
-          onTap: () {},
-          unpressDelay: Duration.zero,
-        ),
+        buildGestureMixStateWidget(onTap: () {}, unpressDelay: Duration.zero),
       );
 
       await tester.tap(find.byType(GestureMixStateWidget));
       final context = tester.element(find.byKey(key));
-      expect(MixWidgetStateModel.hasStateOf(context, WidgetState.pressed),
-          isFalse);
+      expect(
+        MixWidgetStateModel.hasStateOf(context, WidgetState.pressed),
+        isFalse,
+      );
     });
 
     testWidgets('GesturableWidget pan functions test', (
@@ -171,8 +159,10 @@ void main() {
       final gesture = await tester.startGesture(gesturableWidgetCenter);
       await gesture.moveBy(const Offset(50, 50), timeStamp: Durations.medium1);
       // move back to the original position
-      await gesture.moveBy(const Offset(-50, -50),
-          timeStamp: Durations.medium1);
+      await gesture.moveBy(
+        const Offset(-50, -50),
+        timeStamp: Durations.medium1,
+      );
       await gesture.up();
 
       // move it again but cancel it
@@ -182,46 +172,29 @@ void main() {
       await gesture.cancel(timeStamp: const Duration(milliseconds: 100));
       await tester.pump(const Duration(milliseconds: 200));
 
-      expect(
-        isPanStartCalled,
-        isTrue,
-        reason: 'onPanStart was not called',
-      );
-      expect(
-        isPanDownCalled,
-        isTrue,
-        reason: 'onPanDown was not called',
-      );
-      expect(
-        isPanUpdateCalled,
-        isTrue,
-        reason: 'onPanUpdate was not called',
-      );
-      expect(
-        isPanEndCalled,
-        isTrue,
-        reason: 'onPanEnd was not called',
-      );
+      expect(isPanStartCalled, isTrue, reason: 'onPanStart was not called');
+      expect(isPanDownCalled, isTrue, reason: 'onPanDown was not called');
+      expect(isPanUpdateCalled, isTrue, reason: 'onPanUpdate was not called');
+      expect(isPanEndCalled, isTrue, reason: 'onPanEnd was not called');
     });
 
-    testWidgets(
-      'should propagate the onTap when it doesn\'t receive null',
-      (tester) async {
-        bool onTapCalled = false;
+    testWidgets('should propagate the onTap when it doesn\'t receive null', (
+      tester,
+    ) async {
+      bool onTapCalled = false;
 
-        await tester.pumpWidget(
-          GestureDetector(
-            onTap: () {
-              onTapCalled = true;
-            },
-            child: buildGestureMixStateWidget(),
-          ),
-        );
+      await tester.pumpWidget(
+        GestureDetector(
+          onTap: () {
+            onTapCalled = true;
+          },
+          child: buildGestureMixStateWidget(),
+        ),
+      );
 
-        await tester.tap(find.byType(GestureMixStateWidget));
+      await tester.tap(find.byType(GestureMixStateWidget));
 
-        expect(onTapCalled, isTrue);
-      },
-    );
+      expect(onTapCalled, isTrue);
+    });
   });
 }

@@ -1,12 +1,16 @@
-import '../../core/element.dart';
+import '../../core/mix_element.dart';
 import '../../core/utility.dart';
-import '../../theme/tokens/space_token.dart';
+import '../../theme/tokens/mix_token.dart';
 import 'space_dto.dart';
 
 final class GapUtility<T extends StyleElement> extends MixUtility<T, SpaceDto> {
   const GapUtility(super.builder);
 
-  T call(double value) => builder(SpaceDto(value));
+  T call(double value) => builder(SpaceDto.value(value));
 
-  T ref(SpaceToken ref) => builder(SpaceDto(ref()));
+  T token(MixableToken<double> token) => builder(SpaceDto.token(token));
+
+  /// @deprecated Use [token] instead
+  @Deprecated('Use token() instead. Will be removed in a future version.')
+  T ref(MixableToken<double> ref) => token(ref);
 }
