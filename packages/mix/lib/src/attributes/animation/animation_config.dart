@@ -1,7 +1,6 @@
 import 'package:flutter/animation.dart';
 
 import '../../internal/constants.dart';
-import 'animated_config_dto.dart';
 
 @Deprecated('Use AnimationConfig instead. This will be removed in version 2.0')
 typedef AnimatedData = AnimationConfig;
@@ -38,9 +37,6 @@ class AnimationConfig {
 
   VoidCallback? get onEnd => _onEnd;
 
-  AnimationConfigDto toDto() {
-    return AnimationConfigDto(duration: duration, curve: curve, onEnd: _onEnd);
-  }
 
   AnimationConfig copyWith({
     Duration? duration,

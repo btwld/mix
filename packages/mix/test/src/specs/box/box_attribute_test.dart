@@ -35,29 +35,29 @@ void main() {
         ),
       );
 
-      expect(containerSpecAttribute.alignment, Alignment.center);
-      expect(containerSpecAttribute.clipBehavior, Clip.antiAlias);
+      expect(containerSpecAttribute.alignment, resolvesTo(Alignment.center));
+      expect(containerSpecAttribute.clipBehavior, resolvesTo(Clip.antiAlias));
 
       expect(
-        containerSpecAttribute.constraints,
+        containerSpecAttribute.constraints?.value,
         BoxConstraintsDto(maxHeight: 100),
       );
       expect(
-        containerSpecAttribute.decoration,
+        containerSpecAttribute.decoration?.value,
         BoxDecorationDto(color: Colors.blue),
       );
 
-      expect(containerSpecAttribute.height, 100);
+      expect(containerSpecAttribute.height, resolvesTo(100));
       expect(
-        containerSpecAttribute.margin,
+        containerSpecAttribute.margin?.value,
         EdgeInsetsGeometryDto.only(top: 10, bottom: 10, left: 10, right: 10),
       );
       expect(
-        containerSpecAttribute.padding,
+        containerSpecAttribute.padding?.value,
         EdgeInsetsGeometryDto.only(top: 20, bottom: 20, left: 20, right: 20),
       );
-      expect(containerSpecAttribute.transform, Matrix4.identity());
-      expect(containerSpecAttribute.width, 100);
+      expect(containerSpecAttribute.transform, resolvesTo(Matrix4.identity()));
+      expect(containerSpecAttribute.width, resolvesTo(100));
       expect(
         containerSpecAttribute.modifiers,
         WidgetModifiersConfigDto(
@@ -191,8 +191,8 @@ void main() {
         ),
       );
 
-      expect(mergedBoxSpecAttribute.alignment, Alignment.centerLeft);
-      expect(mergedBoxSpecAttribute.clipBehavior, Clip.antiAliasWithSaveLayer);
+      expect(mergedBoxSpecAttribute.alignment, resolvesTo(Alignment.centerLeft));
+      expect(mergedBoxSpecAttribute.clipBehavior, resolvesTo(Clip.antiAliasWithSaveLayer));
 
       expect(
         mergedBoxSpecAttribute.constraints,
@@ -203,7 +203,7 @@ void main() {
         resolvesTo(const BoxDecoration(color: Colors.red)),
       );
 
-      expect(mergedBoxSpecAttribute.height, 200);
+      expect(mergedBoxSpecAttribute.height, resolvesTo(200));
       expect(
         mergedBoxSpecAttribute.margin,
         resolvesTo(const EdgeInsets.all(20)),
@@ -212,8 +212,8 @@ void main() {
         mergedBoxSpecAttribute.padding,
         resolvesTo(const EdgeInsets.all(30)),
       );
-      expect(mergedBoxSpecAttribute.transform, Matrix4.identity());
-      expect(mergedBoxSpecAttribute.width, 200);
+      expect(mergedBoxSpecAttribute.transform, resolvesTo(Matrix4.identity()));
+      expect(mergedBoxSpecAttribute.width, resolvesTo(200));
       expect(
         mergedBoxSpecAttribute.modifiers,
         WidgetModifiersConfigDto(

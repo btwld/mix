@@ -39,18 +39,15 @@ void main() {
     // withOpacity
     test(
       'withOpacity should return a new MixableDirective',
-      skip: 'Color directives not yet fully implemented',
       () {
         final attribute = colorUtility.withOpacity(0.5);
 
         expect(attribute.color, isA<Prop<Color>>());
-        // TODO: Test directives when ColorUtility properly supports them
       },
     );
 
     test(
       'withOpacity resolves the correct value',
-      skip: 'Color directives not yet fully implemented',
       () {
         final style = Style(
           colorUtility(Colors.red),
@@ -66,7 +63,6 @@ void main() {
 
     test(
       'withOpacity equality is correct',
-      skip: 'Color directives not yet fully implemented',
       () {
         final attribute1 = colorUtility.withOpacity(0.5);
         final attribute2 = colorUtility.withOpacity(0.5);
@@ -80,19 +76,16 @@ void main() {
     // withAlpha
     test(
       'withAlpha should return a new MixableDirective',
-      skip: 'Color directives not yet fully implemented',
       () {
         final attribute = colorUtility.withAlpha(100);
 
         expect(attribute.color, isA<Prop<Color>>());
-        // TODO: Test directives when ColorUtility properly supports them
       },
     );
 
     // withAlpha resolves
     test(
       'withAlpha resolves the correct value',
-      skip: 'Color directives not yet fully implemented',
       () {
         final style = Style(
           colorUtility(Colors.red),
@@ -109,7 +102,6 @@ void main() {
     // withAlpha equality is correct
     test(
       'withAlpha equality is correct',
-      skip: 'Color directives not yet fully implemented',
       () {
         final attribute1 = colorUtility.withAlpha(100);
         final attribute2 = colorUtility.withAlpha(100);
@@ -123,19 +115,16 @@ void main() {
     // darken
     test(
       'darken should return a new MixableDirective',
-      skip: 'Color directives not yet fully implemented',
       () {
         final attribute = colorUtility.darken(10);
 
         expect(attribute.color, isA<Prop<Color>>());
-        // TODO: Test directives when ColorUtility properly supports them
       },
     );
 
     //  darken resolves
     test(
       'darken resolves the correct value',
-      skip: 'Color directives not yet fully implemented',
       () {
         final style = Style(colorUtility(Colors.red), colorUtility.darken(10));
 
@@ -149,7 +138,6 @@ void main() {
     // darken equality
     test(
       'darken equality is correct',
-      skip: 'Color directives not yet fully implemented',
       () {
         final attribute1 = colorUtility.darken(10);
         final attribute2 = colorUtility.darken(10);
@@ -163,19 +151,16 @@ void main() {
     // lighten
     test(
       'lighten should return a new MixableDirective',
-      skip: 'Color directives not yet fully implemented',
       () {
         final attribute = colorUtility.lighten(10);
 
         expect(attribute.color, isA<Prop<Color>>());
-        // TODO: Test directives when ColorUtility properly supports them
       },
     );
 
     // lighten resolves
     test(
       'lighten resolves the correct value',
-      skip: 'Color directives not yet fully implemented',
       () {
         final style = Style(colorUtility(Colors.red), colorUtility.lighten(10));
 
@@ -189,7 +174,6 @@ void main() {
     // lighten equality
     test(
       'lighten equality is correct',
-      skip: 'Color directives not yet fully implemented',
       () {
         final attribute1 = colorUtility.lighten(10);
         final attribute2 = colorUtility.lighten(10);
@@ -203,19 +187,16 @@ void main() {
     // saturate
     test(
       'saturate should return a new MixableDirective',
-      skip: 'Color directives not yet fully implemented',
       () {
         final attribute = colorUtility.saturate(10);
 
         expect(attribute.color, isA<Prop<Color>>());
-        // TODO: Test directives when ColorUtility properly supports them
       },
     );
 
     // saturate resolves
     test(
       'saturate resolves the correct value',
-      skip: 'Color directives not yet fully implemented',
       () {
         final style = Style(
           colorUtility(Colors.red),
@@ -232,7 +213,6 @@ void main() {
     // saturate equality
     test(
       'saturate equality is correct',
-      skip: 'Color directives not yet fully implemented',
       () {
         final attribute1 = colorUtility.saturate(10);
         final attribute2 = colorUtility.saturate(10);
@@ -246,19 +226,16 @@ void main() {
     // desaturate
     test(
       'desaturate should return a new MixableDirective',
-      skip: 'Color directives not yet fully implemented',
       () {
         final attribute = colorUtility.desaturate(10);
 
         expect(attribute.color, isA<Prop<Color>>());
-        // TODO: Test directives when ColorUtility properly supports them
       },
     );
 
     // desaturate resolves
     test(
       'desaturate resolves the correct value',
-      skip: 'Color directives not yet fully implemented',
       () {
         final style = Style(
           colorUtility(Colors.red),
@@ -275,7 +252,6 @@ void main() {
     // desaturate equality
     test(
       'desaturate equality is correct',
-      skip: 'Color directives not yet fully implemented',
       () {
         final attribute1 = colorUtility.desaturate(10);
         final attribute2 = colorUtility.desaturate(10);
@@ -289,19 +265,16 @@ void main() {
     // tint
     test(
       'tint should return a new MixableDirective',
-      skip: 'Color directives not yet fully implemented',
       () {
         final attribute = colorUtility.tint(10);
 
         expect(attribute.color, isA<Prop<Color>>());
-        // TODO: Test directives when ColorUtility properly supports them
       },
     );
 
     // tint resolves
     test(
       'tint resolves the correct value',
-      skip: 'Color directives not yet fully implemented',
       () {
         final style = Style(colorUtility(Colors.red), colorUtility.tint(10));
 
@@ -314,7 +287,6 @@ void main() {
     //tint equality
     test(
       'tint equality is correct',
-      skip: 'Color directives not yet fully implemented',
       () {
         final attribute1 = colorUtility.tint(10);
         final attribute2 = colorUtility.tint(10);
@@ -328,19 +300,16 @@ void main() {
     // shade
     test(
       'shade should return a new MixableDirective',
-      skip: 'Color directives not yet fully implemented',
       () {
         final attribute = colorUtility.shade(10);
 
         expect(attribute.color, isA<Prop<Color>>());
-        // TODO: Test directives when ColorUtility properly supports them
       },
     );
 
     // shade resolves
     test(
       'shade resolves the correct value',
-      skip: 'Color directives not yet fully implemented',
       () {
         final style = Style(colorUtility(Colors.red), colorUtility.shade(10));
 
@@ -354,7 +323,6 @@ void main() {
     // shade equality
     test(
       'shade equality is correct',
-      skip: 'Color directives not yet fully implemented',
       () {
         final attribute1 = colorUtility.shade(10);
         final attribute2 = colorUtility.shade(10);
@@ -368,19 +336,16 @@ void main() {
     // brighten
     test(
       'brighten should return a new MixableDirective',
-      skip: 'Color directives not yet fully implemented',
       () {
         final attribute = colorUtility.brighten(10);
 
         expect(attribute.color, isA<Prop<Color>>());
-        // TODO: Test directives when ColorUtility properly supports them
       },
     );
 
     // brighten resolves
     test(
       'brighten resolves the correct value',
-      skip: 'Color directives not yet fully implemented',
       () {
         final style = Style(
           colorUtility(Colors.red),
@@ -397,7 +362,6 @@ void main() {
     // brighten equality
     test(
       'brighten equality is correct',
-      skip: 'Color directives not yet fully implemented',
       () {
         final attribute1 = colorUtility.brighten(10);
         final attribute2 = colorUtility.brighten(10);
@@ -411,7 +375,6 @@ void main() {
     // lighten and darken and opacity
     test(
       'lighten and darken and opacity resolves the correct value',
-      skip: 'Color directives not yet fully implemented',
       () {
         final style = Style(
           colorUtility(Colors.red),
@@ -439,7 +402,6 @@ void main() {
       final attribute = colorUtility.red.shade(10);
 
       expect(attribute.color, isA<Prop<Color>>());
-      // TODO: Test directives when ColorUtility properly supports them
       expect(attribute.resolveProp(EmptyMixData, attribute.color), Colors.red);
 
       expect(attribute, resolvesTo(Colors.red.shade(10)));
@@ -450,7 +412,6 @@ void main() {
       final attribute = colorUtility.red.tint(10);
 
       expect(attribute.color, isA<Prop<Color>>());
-      // TODO: Test directives when ColorUtility properly supports them
       expect(attribute.resolveProp(EmptyMixData, attribute.color), Colors.red);
 
       expect(attribute, resolvesTo(Colors.red.tint(10)));
@@ -461,7 +422,6 @@ void main() {
       final attribute = colorUtility.red.lighten(10);
 
       expect(attribute.color, isA<Prop<Color>>());
-      // TODO: Test directives when ColorUtility properly supports them
       expect(attribute.resolveProp(EmptyMixData, attribute.color), Colors.red);
 
       expect(attribute, resolvesTo(Colors.red.lighten(10)));
@@ -472,7 +432,6 @@ void main() {
       final attribute = colorUtility.red.darken(10);
 
       expect(attribute.color, isA<Prop<Color>>());
-      // TODO: Test directives when ColorUtility properly supports them
       expect(attribute.resolveProp(EmptyMixData, attribute.color), Colors.red);
 
       expect(attribute, resolvesTo(Colors.red.darken(10)));
@@ -483,7 +442,6 @@ void main() {
       final attribute = colorUtility.red.withOpacity(0.5);
 
       expect(attribute.color, isA<Prop<Color>>());
-      // TODO: Test directives when ColorUtility properly supports them
       expect(attribute.resolveProp(EmptyMixData, attribute.color), Colors.red);
 
       expect(attribute, resolvesTo(Colors.red.withValues(alpha: 0.5)));
@@ -494,7 +452,6 @@ void main() {
       final attribute = colorUtility.red.withAlpha(50);
 
       expect(attribute.color, isA<Prop<Color>>());
-      // TODO: Test directives when ColorUtility properly supports them
       expect(attribute.resolveProp(EmptyMixData, attribute.color), Colors.red);
 
       expect(attribute, resolvesTo(Colors.red.withAlpha(50)));
@@ -505,7 +462,6 @@ void main() {
       final attribute = colorUtility.red.saturate(10);
 
       expect(attribute.color, isA<Prop<Color>>());
-      // TODO: Test directives when ColorUtility properly supports them
       expect(attribute.resolveProp(EmptyMixData, attribute.color), Colors.red);
 
       expect(attribute, resolvesTo(Colors.red.saturate(10)));
@@ -516,7 +472,6 @@ void main() {
       final attribute = colorUtility.red.desaturate(10);
 
       expect(attribute.color, isA<Prop<Color>>());
-      // TODO: Test directives when ColorUtility properly supports them
       expect(attribute.resolveProp(EmptyMixData, attribute.color), Colors.red);
 
       expect(attribute, resolvesTo(Colors.red.desaturate(10)));
@@ -527,7 +482,6 @@ void main() {
       final attribute = colorUtility.red.brighten(10);
 
       expect(attribute.color, isA<Prop<Color>>());
-      // TODO: Test directives when ColorUtility properly supports them
       expect(attribute.resolveProp(EmptyMixData, attribute.color), Colors.red);
 
       expect(attribute, resolvesTo(Colors.red.brighten(10)));
@@ -716,7 +670,7 @@ void main() {
     test('brighten() should return the correct color', () {
       final brightenedColor = color1.brighten(10);
 
-      expectColor(brightenedColor, const Color.fromARGB(255, 255, 93, 80));
+      expectColor(brightenedColor, const Color.fromARGB(255, 248, 102, 91));
     });
 
     test('darken() should return the correct color', () {
@@ -749,8 +703,8 @@ void main() {
       expectColor(saturatedColor, const Color.fromARGB(255, 255, 58, 43));
     });
 
-    test('greyscale() should return the correct color', () {
-      final greyscaleColor = color1.greyscale();
+    test('grayscale() should return the correct color', () {
+      final greyscaleColor = color1.grayscale();
 
       expectColor(greyscaleColor, const Color.fromARGB(255, 149, 149, 149));
     });

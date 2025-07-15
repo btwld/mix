@@ -343,7 +343,7 @@ typedef PaddingSpec = PaddingModifierSpec;
 extension AnimationConfigMixExtDeprecated on AnimationConfig {
   @Deprecated('Use AnimationConfigDto.value(this) directly instead of toDto()')
   AnimationConfigDto toDto() {
-    return AnimationConfigDto.value(this);
+    return AnimationConfigDto(duration: duration, curve: curve, onEnd: onEnd);
   }
 }
 

@@ -37,10 +37,6 @@ bool _equals(List? list1, List? list2) {
     else if (unit1 is Iterable || unit1 is Map) {
       if (!_equality.equals(unit1, unit2)) return false;
     }
-    // If the runtime types of the elements are not equal, the lists are not equal.
-    else if (unit1?.runtimeType != unit2?.runtimeType) {
-      return false;
-    }
     // If the elements are not equal, the lists are not equal.
     else if (unit1 != unit2) {
       return false;
@@ -65,8 +61,8 @@ int _combine(int hash, dynamic object) {
     object.keys
         .sorted((dynamic a, dynamic b) => a.hashCode - b.hashCode)
         .forEach((key) {
-      hash = hash ^ _combine(hash, [key, object[key]]);
-    });
+          hash = hash ^ _combine(hash, [key, object[key]]);
+        });
 
     return hash;
   }
@@ -158,7 +154,8 @@ mixin EqualityMixin {
 
       final differences = compareObjects(unit1, unit2);
       if (differences.isNotEmpty) {
-        final propName = unit1?.runtimeType.toString() ??
+        final propName =
+            unit1?.runtimeType.toString() ??
             unit2?.runtimeType.toString() ??
             'N/A';
         diff[propName] = differences.toString();
@@ -191,8 +188,10 @@ Map<String, String?> compareObjects(Object? obj1, Object? obj2) {
     if (!_equality.equals(obj1, obj2)) {
       // compare each item in the iterable and add it
       for (int i = 0; i < obj1.length; i++) {
-        final value =
-            compareObjects(obj1.elementAtOrNull(i), obj2.elementAtOrNull(i));
+        final value = compareObjects(
+          obj1.elementAtOrNull(i),
+          obj2.elementAtOrNull(i),
+        );
         if (value.isNotEmpty) {
           differences.addAll(value);
         }

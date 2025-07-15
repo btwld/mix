@@ -338,14 +338,14 @@ void main() {
           shapeDeco1,
         )!;
 
-        expect(shapeDeco1.isMergeable, false);
-        expect(mergedDecoration, isA<ShapeDecorationDto>());
+        expect(shapeDeco1.isMergeable, true);
+        expect(mergedDecoration, isA<BoxDecorationDto>());
 
-        final merged = mergedDecoration as ShapeDecorationDto;
+        final merged = mergedDecoration as BoxDecorationDto;
         expect(merged.color, resolvesTo(Colors.red));
-        expect(merged.shape?.value, isA<RoundedRectangleBorderDto>());
-        expect(merged.shadows, hasLength(1));
-        expect(merged.shadows![0], shapeDeco1.shadows![0]);
+        expect(merged.borderRadius, resolvesTo(const BorderRadius.all(Radius.circular(20))));
+        expect(merged.boxShadow, hasLength(1));
+        expect(merged.boxShadow![0], shapeDeco1.shadows![0]);
         expect(merged.image?.value?.fit, resolvesTo(BoxFit.contain));
       });
     });

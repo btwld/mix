@@ -36,7 +36,6 @@ class Prop<T> with EqualityMixin, ResolvableMixin<T?> {
   }
 
   T? get value => _value;
-
   MixableToken<T>? get token => _token;
 
   /// Whether this prop has a value
@@ -74,6 +73,23 @@ class Prop<T> with EqualityMixin, ResolvableMixin<T?> {
 
     // Other has only directives, keep this value/token, accumulate directives
     return Prop._internal(_value, _token, mergedDirectives);
+  }
+
+  @override
+  String toString() {
+    final buffer = StringBuffer('Prop<${T.toString()}>(');
+    if (_value != null) {
+      buffer.write('value: $_value');
+    } else if (_token != null) {
+      buffer.write('token: $_token');
+    }
+    if (_directives != null && _directives.isNotEmpty) {
+      if (buffer.length > 5) buffer.write(', ');
+      buffer.write('directives: $_directives');
+    }
+    buffer.write(')');
+
+    return buffer.toString();
   }
 
   /// Resolves the value using the provided context
@@ -196,6 +212,19 @@ class MixProp<V, T extends Mix<V>> with EqualityMixin, ResolvableMixin<V> {
     }
 
     return result;
+  }
+
+  @override
+  String toString() {
+    final buffer = StringBuffer('MixProp<${V.toString()}, ${T.toString()}>(');
+    if (_value != null) {
+      buffer.write('$_value');
+    } else if (_token != null) {
+      buffer.write('token: $_token');
+    }
+    buffer.write(')');
+    
+    return buffer.toString();
   }
 
   @override

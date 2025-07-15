@@ -4,69 +4,30 @@ import '../../core/mix_element.dart';
 import '../../core/prop.dart';
 import '../../core/prop_utility.dart';
 import '../../theme/tokens/mix_token.dart';
-import 'color_extensions.dart';
+import 'color_directive.dart';
 import 'material_colors_util.dart';
 
 /// Mixin that provides color directive methods
 base mixin ColorDirectiveMixin<T extends StyleElement>
     on PropUtility<T, Color> {
   // All directive methods use the directive() method from PropUtility
-  T withOpacity(double opacity) => directive(
-    MixDirective(
-      (color) => color.withValues(alpha: opacity),
-      debugLabel: 'opacity($opacity)',
-    ),
-  );
+  T withOpacity(double opacity) => directive(OpacityDirective(opacity));
 
-  T withAlpha(int alpha) => directive(
-    MixDirective(
-      (color) => color.withAlpha(alpha),
-      debugLabel: 'alpha($alpha)',
-    ),
-  );
+  T withAlpha(int alpha) => directive(AlphaDirective(alpha));
 
-  T darken(int amount) => directive(
-    MixDirective(
-      (color) => color.darken(amount),
-      debugLabel: 'darken($amount)',
-    ),
-  );
+  T darken(int amount) => directive(DarkenDirective(amount));
 
-  T lighten(int amount) => directive(
-    MixDirective(
-      (color) => color.lighten(amount),
-      debugLabel: 'lighten($amount)',
-    ),
-  );
+  T lighten(int amount) => directive(LightenDirective(amount));
 
-  T saturate(int amount) => directive(
-    MixDirective(
-      (color) => color.saturate(amount),
-      debugLabel: 'saturate($amount)',
-    ),
-  );
+  T saturate(int amount) => directive(SaturateDirective(amount));
 
-  T desaturate(int amount) => directive(
-    MixDirective(
-      (color) => color.desaturate(amount),
-      debugLabel: 'desaturate($amount)',
-    ),
-  );
+  T desaturate(int amount) => directive(DesaturateDirective(amount));
 
-  T tint(int amount) => directive(
-    MixDirective((color) => color.tint(amount), debugLabel: 'tint($amount)'),
-  );
+  T tint(int amount) => directive(TintDirective(amount));
 
-  T shade(int amount) => directive(
-    MixDirective((color) => color.shade(amount), debugLabel: 'shade($amount)'),
-  );
+  T shade(int amount) => directive(ShadeDirective(amount));
 
-  T brighten(int amount) => directive(
-    MixDirective(
-      (color) => color.brighten(amount),
-      debugLabel: 'brighten($amount)',
-    ),
-  );
+  T brighten(int amount) => directive(BrightenDirective(amount));
 }
 
 /// Utility for predefined colors (e.g., Colors.red)
@@ -85,49 +46,35 @@ base class FoundationColorUtility<T extends StyleElement>
 final class CallableColorUtility<T extends StyleElement> {
   final T Function(Prop<Color>) builder;
   final Color color;
-  
+
   const CallableColorUtility(this.builder, this.color);
-  
+
   /// Call operator to make this utility callable as a function
   /// Usage: colorUtil.black() returns T that resolves to Colors.black
   T call() => builder(Prop.value(color));
-  
+
   /// Directive methods for color transformations
-  T withOpacity(double opacity) => builder(
-    Prop.directives([
-      MixDirective(
-        (color) => color.withValues(alpha: opacity),
-        debugLabel: 'opacity($opacity)',
-      ),
-    ]),
-  );
+  T withOpacity(double opacity) =>
+      builder(Prop.directives([OpacityDirective(opacity)]));
 
-  T withAlpha(int alpha) => builder(
-    Prop.directives([
-      MixDirective(
-        (color) => color.withAlpha(alpha),
-        debugLabel: 'alpha($alpha)',
-      ),
-    ]),
-  );
+  T withAlpha(int alpha) => builder(Prop.directives([AlphaDirective(alpha)]));
 
-  T darken(int amount) => builder(
-    Prop.directives([
-      MixDirective(
-        (color) => color.darken(amount),
-        debugLabel: 'darken($amount)',
-      ),
-    ]),
-  );
+  T darken(int amount) => builder(Prop.directives([DarkenDirective(amount)]));
 
-  T lighten(int amount) => builder(
-    Prop.directives([
-      MixDirective(
-        (color) => color.lighten(amount),
-        debugLabel: 'lighten($amount)',
-      ),
-    ]),
-  );
+  T lighten(int amount) => builder(Prop.directives([LightenDirective(amount)]));
+
+  T saturate(int amount) =>
+      builder(Prop.directives([SaturateDirective(amount)]));
+
+  T desaturate(int amount) =>
+      builder(Prop.directives([DesaturateDirective(amount)]));
+
+  T tint(int amount) => builder(Prop.directives([TintDirective(amount)]));
+
+  T shade(int amount) => builder(Prop.directives([ShadeDirective(amount)]));
+
+  T brighten(int amount) =>
+      builder(Prop.directives([BrightenDirective(amount)]));
 }
 
 /// Simplified ColorUtility using the PropUtility pattern

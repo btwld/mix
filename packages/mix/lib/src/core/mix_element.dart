@@ -6,21 +6,14 @@ import 'prop.dart';
 
 // Generic directive for modifying values
 @immutable
-class MixDirective<T> {
-  final T Function(T) apply;
-  final String? debugLabel;
+abstract class MixDirective<T> {
+  const MixDirective();
 
-  const MixDirective(this.apply, {this.debugLabel});
+  /// Debug label for the directive
+  String? get debugLabel;
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is MixDirective<T> &&
-          runtimeType == other.runtimeType &&
-          debugLabel == other.debugLabel;
-
-  @override
-  int get hashCode => debugLabel.hashCode;
+  /// Applies the transformation to the given value
+  T apply(T value);
 }
 
 /// Mixin for classes that can resolve to a value using MixContext

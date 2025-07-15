@@ -5,9 +5,15 @@ import 'package:mix/mix.dart';
 // Mock MixDirective for testing
 class MockMixDirective<T> extends MixDirective<T> {
   final String name;
+  final T Function(T) transformer;
 
-  const MockMixDirective(this.name, T Function(T) transformer)
-    : super(transformer, debugLabel: name);
+  const MockMixDirective(this.name, this.transformer);
+
+  @override
+  String? get debugLabel => name;
+
+  @override
+  T apply(T value) => transformer(value);
 
   @override
   bool operator ==(Object other) =>
@@ -137,7 +143,7 @@ void main() {
         final prop2 = Prop.directives([directive2]);
         final merged = prop1.merge(prop2);
 
-        // Create expected prop with same directives
+        // Create expected prop with same directives - use List<MixDirective<Color>> to match merge result
         final expected = Prop.directives([directive1, directive2]);
 
         expect(merged, equals(expected));
@@ -191,10 +197,10 @@ void main() {
 
       test('empty directive lists are equal regardless of creation method', () {
         final prop1 = Prop.value(Colors.red);
-        final prop2 = Prop.directives(const <MixDirective<Color>>[]);
+        final prop2 = Prop.directives(const []);
 
         // Both should have empty directive lists
-        expect(prop1.directives, isEmpty);
+        expect(prop1.directives, isNull);
         expect(prop2.directives, isEmpty);
 
         // But they're not equal because one has a value and the other doesn't

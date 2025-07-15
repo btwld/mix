@@ -253,8 +253,8 @@ void main() {
               expect(
                 mix.attributes.values.first,
                 isA<BoxSpecAttribute>()
-                    .having((attribute) => attribute.height, 'height', 100)
-                    .having((attribute) => attribute.width, 'width', 100),
+                    .having((attribute) => attribute.height?.value, 'height', 100)
+                    .having((attribute) => attribute.width?.value, 'width', 100),
               );
               return const SizedBox();
             },

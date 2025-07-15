@@ -46,29 +46,29 @@ void main() {
         ),
       );
 
-      expect(flexBoxSpecAttribute.box!.alignment, Alignment.center);
-      expect(flexBoxSpecAttribute.box!.clipBehavior, Clip.antiAlias);
+      expect(flexBoxSpecAttribute.box!.alignment, resolvesTo(Alignment.center));
+      expect(flexBoxSpecAttribute.box!.clipBehavior, resolvesTo(Clip.antiAlias));
 
       expect(
         flexBoxSpecAttribute.box!.constraints,
         resolvesTo(const BoxConstraints(maxHeight: 100)),
       );
       expect(
-        flexBoxSpecAttribute.box!.decoration,
+        flexBoxSpecAttribute.box!.decoration?.value,
         BoxDecorationDto(color: Colors.blue),
       );
 
-      expect(flexBoxSpecAttribute.box!.height, 100);
+      expect(flexBoxSpecAttribute.box!.height, resolvesTo(100));
       expect(
-        flexBoxSpecAttribute.box!.margin,
+        flexBoxSpecAttribute.box!.margin?.value,
         EdgeInsetsGeometryDto.only(top: 10, bottom: 10, left: 10, right: 10),
       );
       expect(
-        flexBoxSpecAttribute.box!.padding,
+        flexBoxSpecAttribute.box!.padding?.value,
         EdgeInsetsGeometryDto.only(top: 20, bottom: 20, left: 20, right: 20),
       );
-      expect(flexBoxSpecAttribute.box!.transform, Matrix4.identity());
-      expect(flexBoxSpecAttribute.box!.width, 100);
+      expect(flexBoxSpecAttribute.box!.transform, resolvesTo(Matrix4.identity()));
+      expect(flexBoxSpecAttribute.box!.width, resolvesTo(100));
       expect(
         flexBoxSpecAttribute.box!.modifiers,
         WidgetModifiersConfigDto(
@@ -231,10 +231,10 @@ void main() {
         ),
       );
 
-      expect(mergedFlexBoxSpecAttribute.box!.alignment, Alignment.centerLeft);
+      expect(mergedFlexBoxSpecAttribute.box!.alignment, resolvesTo(Alignment.centerLeft));
       expect(
         mergedFlexBoxSpecAttribute.box!.clipBehavior,
-        Clip.antiAliasWithSaveLayer,
+        resolvesTo(Clip.antiAliasWithSaveLayer),
       );
 
       expect(
@@ -246,7 +246,7 @@ void main() {
         resolvesTo(const BoxDecoration(color: Colors.red)),
       );
 
-      expect(mergedFlexBoxSpecAttribute.box!.height, 200);
+      expect(mergedFlexBoxSpecAttribute.box!.height, resolvesTo(200));
       expect(
         mergedFlexBoxSpecAttribute.box!.margin,
         resolvesTo(const EdgeInsets.all(20)),
@@ -255,8 +255,8 @@ void main() {
         mergedFlexBoxSpecAttribute.box!.padding,
         resolvesTo(const EdgeInsets.all(30)),
       );
-      expect(mergedFlexBoxSpecAttribute.box!.transform, Matrix4.identity());
-      expect(mergedFlexBoxSpecAttribute.box!.width, 200);
+      expect(mergedFlexBoxSpecAttribute.box!.transform, resolvesTo(Matrix4.identity()));
+      expect(mergedFlexBoxSpecAttribute.box!.width, resolvesTo(200));
       expect(
         mergedFlexBoxSpecAttribute.box!.modifiers,
         WidgetModifiersConfigDto(
