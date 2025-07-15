@@ -337,7 +337,3 @@ List<UtilityProperty> createUtilityProperties({
   return result;
 }
 
-/// Check if a list is of a specific element type
-// bool _isListOfType<T>(List<dynamic> list) {
-//   return list.every((element) => element is T);
-// }

@@ -56,7 +56,9 @@ class BoxDecorationUtility<T extends StyleElement>
   );
 
   /// Utility for defining [BoxDecorationDto.color]
-  late final color = ColorUtility((prop) => builder(BoxDecorationDto.props(color: prop)));
+  late final color = ColorUtility(
+    (prop) => builder(BoxDecorationDto.props(color: prop)),
+  );
 
   /// Utility for defining [BoxDecorationDto.image]
   late final image = DecorationImageUtility((v) => only(image: v));
@@ -163,7 +165,9 @@ class ShapeDecorationUtility<T extends StyleElement>
   late final shape = ShapeBorderUtility((v) => only(shape: v));
 
   /// Utility for defining [ShapeDecorationDto.color]
-  late final color = ColorUtility((prop) => builder(ShapeDecorationDto.props(color: prop)));
+  late final color = ColorUtility(
+    (prop) => builder(ShapeDecorationDto.props(color: prop)),
+  );
 
   /// Utility for defining [ShapeDecorationDto.image]
   late final image = DecorationImageUtility((v) => only(image: v));

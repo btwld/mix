@@ -86,16 +86,3 @@ extension ColorExtensions on Color {
 /// Clamps a value between 0.0 and 1.0.
 double _clamp(double val) => math.min(1.0, math.max(0.0, val));
 
-// Example Innovation: Sealed class for type-safe adjustments.
-// sealed class ColorAdjustment {
-//   const ColorAdjustment();
-//   Color apply(Color color);
-// }
-//
-// class Lighten extends ColorAdjustment {
-//   final int amount;
-//   const Lighten(this.amount);
-//   @override
-//   Color apply(Color color) => color.lighten(amount);
-// }
-// // Usage: switch (adjustment) { case Lighten(:final amount): ... }s
