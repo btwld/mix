@@ -1,0 +1,34 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Find the absolute path to the fvm command  
+FVM_PATH=$(command -v fvm)
+
+# Check if fvm command is found
+if [ -n "$FVM_PATH" ]; then
+  # Add the directory containing the fvm command to PATH
+  export PATH="$(dirname "$FVM_PATH"):$PATH"
+else
+  echo "FVM not found. Please make sure it is installed and accessible."
+  exit 1
+fi
+
+echo "🔍 Running analysis checks..."
+
+# Run dart analyze on the main packages
+if ! dart analyze --fatal-errors packages/mix; then
+  echo "❌ Analysis failed on mix package - push blocked"
+  exit 1
+fi
+
+if ! dart analyze --fatal-errors packages/mix_generator; then
+  echo "❌ Analysis failed on mix_generator package - push blocked"
+  exit 1
+fi
+
+if ! dart analyze --fatal-errors packages/mix_annotations; then
+  echo "❌ Analysis failed on mix_annotations package - push blocked"
+  exit 1
+fi
+
+echo "✅ All checks passed!"
