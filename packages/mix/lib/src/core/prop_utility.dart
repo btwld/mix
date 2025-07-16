@@ -19,18 +19,18 @@ abstract class PropUtility<Return extends StyleElement, Value> {
   const PropUtility(this.builder);
 
   /// Direct value
-  Return call(Value value) => builder(Prop.value(value));
+  Return call(Value value) => builder(Prop.fromValue(value));
 
   /// Token support
-  Return token(MixToken<Value> token) => builder(Prop.token(token));
+  Return token(MixToken<Value> token) => builder(Prop.fromToken(token));
 
   /// Single directive support
   Return directive(MixDirective<Value> directive) =>
-      builder(Prop.directives([directive]));
+      builder(Prop.fromDirectives([directive]));
 
   /// Multiple directives support
   Return directives(List<MixDirective<Value>> directives) =>
-      builder(Prop.directives(directives));
+      builder(Prop.fromDirectives(directives));
 }
 
 /// Base utility for complex value properties that use MixProp<V, D>

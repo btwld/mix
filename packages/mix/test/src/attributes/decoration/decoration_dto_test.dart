@@ -68,9 +68,9 @@ void main() {
 
       test('props constructor with Prop values', () {
         const dto = BoxDecorationDto.props(
-          color: Prop.value(Colors.green),
-          shape: Prop.value(BoxShape.circle),
-          backgroundBlendMode: Prop.value(BlendMode.multiply),
+          color: Prop.fromValue(Colors.green),
+          shape: Prop.fromValue(BoxShape.circle),
+          backgroundBlendMode: Prop.fromValue(BlendMode.multiply),
         );
 
         expect(dto.color, resolvesTo(Colors.green));
@@ -313,7 +313,7 @@ void main() {
       test('props constructor with Prop values', () {
         final dto = ShapeDecorationDto.props(
           shape: MixProp.fromValue(CircleBorderDto()),
-          color: Prop.value(Colors.cyan),
+          color: Prop.fromValue(Colors.cyan),
         );
 
         expect(dto.shape?.mixValue, isA<CircleBorderDto>());

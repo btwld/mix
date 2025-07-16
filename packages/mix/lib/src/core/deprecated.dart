@@ -104,6 +104,9 @@ typedef RadiusDto = Mix<Radius>;
 @Deprecated('Use MixContext instead. This will be removed in version 2.0')
 typedef MixData = MixContext;
 
+@Deprecated('Use AnimationConfig instead. This will be removed in version 2.0')
+typedef AnimatedData = AnimationConfig;
+
 // =============================================================================
 // WIDGET STATE DEPRECATIONS
 // =============================================================================

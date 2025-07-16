@@ -18,19 +18,16 @@ abstract class EdgeInsetsGeometryProp<
   static EdgeInsetsProp all(double value) => EdgeInsetsProp.all(value);
 
   /// Creates insets from Flutter value - delegates to specific implementations
-  static EdgeInsetsGeometryProp fromValue<T extends EdgeInsetsGeometry>(
-    T value,
-  ) {
-    return switch (T) {
-          const (EdgeInsets) => EdgeInsetsProp.fromValue(value as EdgeInsets),
-          const (EdgeInsetsDirectional) => EdgeInsetsDirectionalProp.fromValue(
-            value as EdgeInsetsDirectional,
-          ),
-          _ => throw ArgumentError(
-            'Unsupported type for EdgeInsetsGeometryProp: $T',
-          ),
-        }
-        as EdgeInsetsGeometryProp<T, EdgeInsetsGeometryDto<T>>;
+  static EdgeInsetsGeometryProp value<T extends EdgeInsetsGeometry>(T value) {
+    return switch (value) {
+      EdgeInsets edgeInsets => EdgeInsetsProp.value(edgeInsets),
+      EdgeInsetsDirectional directional => EdgeInsetsDirectionalProp.value(
+        directional,
+      ),
+      _ => throw ArgumentError(
+        'Unsupported EdgeInsetsGeometry type: ${value.runtimeType}',
+      ),
+    };
   }
 
   /// Creates insets with specific sides - delegates to EdgeInsetsProp
@@ -58,26 +55,24 @@ abstract class EdgeInsetsGeometryProp<
     EdgeInsetsDirectionalProp prop,
   ) => prop;
 
-  /// Zero insets - delegates to EdgeInsetsProp
-  static EdgeInsetsProp zero() => all(0.0);
-
   /// Creates token-based prop - delegates to specific implementations
   static EdgeInsetsGeometryProp token<T extends EdgeInsetsGeometry>(
     MixToken<T> token,
   ) {
-    return switch (T) {
-          const (EdgeInsets) => EdgeInsetsProp.token(
-            token as MixToken<EdgeInsets>,
-          ),
-          const (EdgeInsetsDirectional) => EdgeInsetsDirectionalProp.token(
-            token as MixToken<EdgeInsetsDirectional>,
-          ),
-          _ => throw ArgumentError(
-            'Unsupported token type for EdgeInsetsGeometryProp: $T',
-          ),
-        }
-        as EdgeInsetsGeometryProp<T, EdgeInsetsGeometryDto<T>>;
+    return switch (token) {
+      MixToken<EdgeInsets> edgeInsetsToken => EdgeInsetsProp.token(
+        edgeInsetsToken,
+      ),
+      MixToken<EdgeInsetsDirectional> directionalToken =>
+        EdgeInsetsDirectionalProp.token(directionalToken),
+      _ => throw ArgumentError(
+        'Unsupported token type for EdgeInsetsGeometryProp: ${token.runtimeType}',
+      ),
+    };
   }
+
+  /// Zero insets - delegates to EdgeInsetsProp
+  static EdgeInsetsProp get zero => all(0.0);
 }
 
 @immutable
@@ -87,7 +82,7 @@ final class EdgeInsetsProp
   const EdgeInsetsProp._token(super.token, super.valueToDto) : super._token();
 
   /// Creates from Flutter EdgeInsets value
-  static EdgeInsetsProp fromValue(EdgeInsets value) =>
+  static EdgeInsetsProp value(EdgeInsets value) =>
       EdgeInsetsProp._(EdgeInsetsDto.value(value));
 
   /// Creates from token
@@ -130,7 +125,7 @@ final class EdgeInsetsProp
   );
 
   /// Zero insets
-  static EdgeInsetsProp zero() => EdgeInsetsProp._(EdgeInsetsDto.none());
+  static EdgeInsetsProp get zero => EdgeInsetsProp._(EdgeInsetsDto.none());
 }
 
 @immutable
@@ -145,7 +140,7 @@ final class EdgeInsetsDirectionalProp
     : super._token();
 
   /// Creates from Flutter EdgeInsetsDirectional value
-  static EdgeInsetsDirectionalProp fromValue(EdgeInsetsDirectional value) =>
+  static EdgeInsetsDirectionalProp value(EdgeInsetsDirectional value) =>
       EdgeInsetsDirectionalProp._(EdgeInsetsDirectionalDto.value(value));
 
   /// Creates from token

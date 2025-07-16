@@ -15,9 +15,9 @@ void main() {
         colors: [Colors.red, Colors.blue],
         stops: [0.0, 1.0],
       );
-      
+
       final dto = GradientDto.value(gradient);
-      
+
       expect(dto, isA<LinearGradientDto>());
       expect(dto, resolvesTo(gradient));
     });
@@ -29,9 +29,9 @@ void main() {
         colors: [Colors.red, Colors.blue],
         stops: [0.0, 1.0],
       );
-      
+
       final dto = GradientDto.value(gradient);
-      
+
       expect(dto, isA<RadialGradientDto>());
       expect(dto, resolvesTo(gradient));
     });
@@ -44,9 +44,9 @@ void main() {
         colors: [Colors.red, Colors.blue],
         stops: [0.0, 1.0],
       );
-      
+
       final dto = GradientDto.value(gradient);
-      
+
       expect(dto, isA<SweepGradientDto>());
       expect(dto, resolvesTo(gradient));
     });
@@ -59,7 +59,7 @@ void main() {
     test('maybeValue factory with non-null gradient', () {
       const gradient = LinearGradient(colors: [Colors.red, Colors.blue]);
       final dto = GradientDto.maybeValue(gradient);
-      
+
       expect(dto, isNotNull);
       expect(dto, isA<LinearGradientDto>());
     });
@@ -70,9 +70,9 @@ void main() {
     test('tryToMerge with same types', () {
       final dto1 = LinearGradientDto(colors: const [Colors.red]);
       final dto2 = LinearGradientDto(colors: const [Colors.blue]);
-      
+
       final merged = GradientDto.tryToMerge(dto1, dto2) as LinearGradientDto?;
-      
+
       expect(merged, isNotNull);
       expect(merged!.colors?.value, [Colors.blue]);
     });
@@ -88,9 +88,10 @@ void main() {
         radius: 0.8,
         colors: const [Colors.blue, Colors.yellow],
       );
-      
-      final merged = GradientDto.tryToMerge(linear, radial) as RadialGradientDto?;
-      
+
+      final merged =
+          GradientDto.tryToMerge(linear, radial) as RadialGradientDto?;
+
       expect(merged, isNotNull);
       expect(merged!.colors?.value, [Colors.blue, Colors.yellow]);
       expect(merged.center, resolvesTo(Alignment.center));
@@ -99,7 +100,7 @@ void main() {
 
     test('tryToMerge with null values', () {
       final dto = LinearGradientDto(colors: const [Colors.red]);
-      
+
       expect(GradientDto.tryToMerge(dto, null), same(dto));
       expect(GradientDto.tryToMerge(null, dto), same(dto));
       expect(GradientDto.tryToMerge(null, null), isNull);
@@ -109,33 +110,36 @@ void main() {
   group('LinearGradientDto', () {
     // Constructor Tests
     group('Constructor Tests', () {
-      test('main constructor creates LinearGradientDto with all properties', () {
-        const transform = GradientRotation(1.5);
-        final dto = LinearGradientDto(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          tileMode: TileMode.clamp,
-          transform: transform,
-          colors: const [Colors.red, Colors.blue],
-          stops: const [0.0, 1.0],
-        );
+      test(
+        'main constructor creates LinearGradientDto with all properties',
+        () {
+          const transform = GradientRotation(1.5);
+          final dto = LinearGradientDto(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            tileMode: TileMode.clamp,
+            transform: transform,
+            colors: const [Colors.red, Colors.blue],
+            stops: const [0.0, 1.0],
+          );
 
-        expect(dto.begin, resolvesTo(Alignment.topLeft));
-        expect(dto.end, resolvesTo(Alignment.bottomRight));
-        expect(dto.tileMode, resolvesTo(TileMode.clamp));
-        expect(dto.transform, resolvesTo(transform));
-        expect(dto.colors?.value, [Colors.red, Colors.blue]);
-        expect(dto.stops?.value, [0.0, 1.0]);
-      });
+          expect(dto.begin, resolvesTo(Alignment.topLeft));
+          expect(dto.end, resolvesTo(Alignment.bottomRight));
+          expect(dto.tileMode, resolvesTo(TileMode.clamp));
+          expect(dto.transform, resolvesTo(transform));
+          expect(dto.colors?.value, [Colors.red, Colors.blue]);
+          expect(dto.stops?.value, [0.0, 1.0]);
+        },
+      );
 
       test('props constructor with Prop values', () {
         const dto = LinearGradientDto.props(
-          begin: Prop.value(Alignment.topCenter),
-          end: Prop.value(Alignment.bottomCenter),
-          tileMode: Prop.value(TileMode.mirror),
+          begin: Prop.fromValue(Alignment.topCenter),
+          end: Prop.fromValue(Alignment.bottomCenter),
+          tileMode: Prop.fromValue(TileMode.mirror),
           transform: null,
-          colors: Prop.value([Colors.green, Colors.yellow]),
-          stops: Prop.value([0.25, 0.75]),
+          colors: Prop.fromValue([Colors.green, Colors.yellow]),
+          stops: Prop.fromValue([0.25, 0.75]),
         );
 
         expect(dto.begin, resolvesTo(Alignment.topCenter));
@@ -166,11 +170,9 @@ void main() {
     // Factory Tests
     group('Factory Tests', () {
       test('maybeValue returns LinearGradientDto for non-null gradient', () {
-        const gradient = LinearGradient(
-          colors: [Colors.red, Colors.blue],
-        );
+        const gradient = LinearGradient(colors: [Colors.red, Colors.blue]);
         final dto = LinearGradientDto.maybeValue(gradient);
-        
+
         expect(dto, isNotNull);
         expect(dto?.colors?.value, gradient.colors);
       });
@@ -215,13 +217,13 @@ void main() {
           end: null,
           tileMode: null,
           transform: null,
-          colors: Prop.value([Colors.purple]),
+          colors: Prop.fromValue([Colors.purple]),
           stops: null,
         );
-        
+
         final context = createEmptyMixData();
         final resolved = dto.resolve(context);
-        
+
         expect(resolved.begin, Alignment.centerLeft);
         expect(resolved.end, Alignment.centerRight);
         expect(resolved.tileMode, TileMode.clamp);
@@ -229,7 +231,6 @@ void main() {
         expect(resolved.colors, [Colors.purple]);
         expect(resolved.stops, isNull);
       });
-
     });
 
     // Merge Tests
@@ -237,7 +238,7 @@ void main() {
       test('merge with another LinearGradientDto - all properties', () {
         const transform1 = GradientRotation(1.0);
         const transform2 = GradientRotation(2.0);
-        
+
         final dto1 = LinearGradientDto(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -337,34 +338,28 @@ void main() {
     // Edge Cases
     group('Edge Cases', () {
       test('handles empty colors list', () {
-        final dto = LinearGradientDto(
-          colors: const [],
-        );
-        
+        final dto = LinearGradientDto(colors: const []);
+
         final context = createEmptyMixData();
         final resolved = dto.resolve(context);
-        
+
         expect(resolved.colors, isEmpty);
       });
 
       test('handles single color', () {
-        final dto = LinearGradientDto(
-          colors: const [Colors.red],
-        );
-        
-        expect(dto, resolvesTo(const LinearGradient(
-          colors: [Colors.red],
-        )));
+        final dto = LinearGradientDto(colors: const [Colors.red]);
+
+        expect(dto, resolvesTo(const LinearGradient(colors: [Colors.red])));
       });
 
       test('handles many colors without stops', () {
         final dto = LinearGradientDto(
           colors: const [Colors.red, Colors.green, Colors.blue, Colors.yellow],
         );
-        
+
         final context = createEmptyMixData();
         final resolved = dto.resolve(context);
-        
+
         expect(resolved.colors.length, 4);
         expect(resolved.stops, isNull);
       });
@@ -374,10 +369,10 @@ void main() {
           colors: const [Colors.red, Colors.blue],
           stops: const [0.0, 0.5, 1.0], // 3 stops for 2 colors
         );
-        
+
         final context = createEmptyMixData();
         final resolved = dto.resolve(context);
-        
+
         expect(resolved.colors, [Colors.red, Colors.blue]);
         expect(resolved.stops, [0.0, 0.5, 1.0]);
       });
@@ -387,39 +382,42 @@ void main() {
   group('RadialGradientDto', () {
     // Constructor Tests
     group('Constructor Tests', () {
-      test('main constructor creates RadialGradientDto with all properties', () {
-        const transform = GradientRotation(1.5);
-        final dto = RadialGradientDto(
-          center: Alignment.center,
-          radius: 0.5,
-          focal: Alignment.bottomRight,
-          focalRadius: 0.2,
-          tileMode: TileMode.clamp,
-          transform: transform,
-          colors: const [Colors.red, Colors.blue],
-          stops: const [0.0, 1.0],
-        );
+      test(
+        'main constructor creates RadialGradientDto with all properties',
+        () {
+          const transform = GradientRotation(1.5);
+          final dto = RadialGradientDto(
+            center: Alignment.center,
+            radius: 0.5,
+            focal: Alignment.bottomRight,
+            focalRadius: 0.2,
+            tileMode: TileMode.clamp,
+            transform: transform,
+            colors: const [Colors.red, Colors.blue],
+            stops: const [0.0, 1.0],
+          );
 
-        expect(dto.center, resolvesTo(Alignment.center));
-        expect(dto.radius, resolvesTo(0.5));
-        expect(dto.focal, resolvesTo(Alignment.bottomRight));
-        expect(dto.focalRadius, resolvesTo(0.2));
-        expect(dto.tileMode, resolvesTo(TileMode.clamp));
-        expect(dto.transform, resolvesTo(transform));
-        expect(dto.colors?.value, [Colors.red, Colors.blue]);
-        expect(dto.stops?.value, [0.0, 1.0]);
-      });
+          expect(dto.center, resolvesTo(Alignment.center));
+          expect(dto.radius, resolvesTo(0.5));
+          expect(dto.focal, resolvesTo(Alignment.bottomRight));
+          expect(dto.focalRadius, resolvesTo(0.2));
+          expect(dto.tileMode, resolvesTo(TileMode.clamp));
+          expect(dto.transform, resolvesTo(transform));
+          expect(dto.colors?.value, [Colors.red, Colors.blue]);
+          expect(dto.stops?.value, [0.0, 1.0]);
+        },
+      );
 
       test('props constructor with Prop values', () {
         const dto = RadialGradientDto.props(
-          center: Prop.value(Alignment.topCenter),
-          radius: Prop.value(0.8),
+          center: Prop.fromValue(Alignment.topCenter),
+          radius: Prop.fromValue(0.8),
           focal: null,
           focalRadius: null,
-          tileMode: Prop.value(TileMode.mirror),
+          tileMode: Prop.fromValue(TileMode.mirror),
           transform: null,
-          colors: Prop.value([Colors.green, Colors.yellow]),
-          stops: Prop.value([0.25, 0.75]),
+          colors: Prop.fromValue([Colors.green, Colors.yellow]),
+          stops: Prop.fromValue([0.25, 0.75]),
         );
 
         expect(dto.center, resolvesTo(Alignment.topCenter));
@@ -454,11 +452,9 @@ void main() {
     // Factory Tests
     group('Factory Tests', () {
       test('maybeValue returns RadialGradientDto for non-null gradient', () {
-        const gradient = RadialGradient(
-          colors: [Colors.red, Colors.blue],
-        );
+        const gradient = RadialGradient(colors: [Colors.red, Colors.blue]);
         final dto = RadialGradientDto.maybeValue(gradient);
-        
+
         expect(dto, isNotNull);
         expect(dto?.colors?.value, gradient.colors);
       });
@@ -509,13 +505,13 @@ void main() {
           focalRadius: null,
           tileMode: null,
           transform: null,
-          colors: Prop.value([Colors.purple]),
+          colors: Prop.fromValue([Colors.purple]),
           stops: null,
         );
-        
+
         final context = createEmptyMixData();
         final resolved = dto.resolve(context);
-        
+
         expect(resolved.center, Alignment.center);
         expect(resolved.radius, 0.5);
         expect(resolved.focal, isNull);
@@ -532,7 +528,7 @@ void main() {
       test('merge with another RadialGradientDto - all properties', () {
         const transform1 = GradientRotation(1.0);
         const transform2 = GradientRotation(2.0);
-        
+
         final dto1 = RadialGradientDto(
           center: Alignment.center,
           radius: 0.5,
@@ -655,7 +651,7 @@ void main() {
           radius: 1.0,
           colors: const [Colors.red, Colors.blue],
         );
-        
+
         expect(dto1.radius, resolvesTo(0.0));
         expect(dto2.radius, resolvesTo(1.0));
       });
@@ -666,10 +662,10 @@ void main() {
           focalRadius: 0.5,
           colors: const [Colors.red, Colors.blue],
         );
-        
+
         final context = createEmptyMixData();
         final resolved = dto.resolve(context);
-        
+
         expect(resolved.focal, Alignment.topRight);
         expect(resolved.focalRadius, 0.5);
       });
@@ -679,10 +675,10 @@ void main() {
           focal: Alignment.bottomLeft,
           colors: const [Colors.red, Colors.blue],
         );
-        
+
         final context = createEmptyMixData();
         final resolved = dto.resolve(context);
-        
+
         expect(resolved.focal, Alignment.bottomLeft);
         expect(resolved.focalRadius, 0.0);
       });
@@ -715,13 +711,13 @@ void main() {
 
       test('props constructor with Prop values', () {
         const dto = SweepGradientDto.props(
-          center: Prop.value(Alignment.topCenter),
-          startAngle: Prop.value(1.57), // π/2
-          endAngle: Prop.value(4.71), // 3π/2
-          tileMode: Prop.value(TileMode.mirror),
+          center: Prop.fromValue(Alignment.topCenter),
+          startAngle: Prop.fromValue(1.57), // π/2
+          endAngle: Prop.fromValue(4.71), // 3π/2
+          tileMode: Prop.fromValue(TileMode.mirror),
           transform: null,
-          colors: Prop.value([Colors.green, Colors.yellow]),
-          stops: Prop.value([0.25, 0.75]),
+          colors: Prop.fromValue([Colors.green, Colors.yellow]),
+          stops: Prop.fromValue([0.25, 0.75]),
         );
 
         expect(dto.center, resolvesTo(Alignment.topCenter));
@@ -755,11 +751,9 @@ void main() {
     // Factory Tests
     group('Factory Tests', () {
       test('maybeValue returns SweepGradientDto for non-null gradient', () {
-        const gradient = SweepGradient(
-          colors: [Colors.red, Colors.blue],
-        );
+        const gradient = SweepGradient(colors: [Colors.red, Colors.blue]);
         final dto = SweepGradientDto.maybeValue(gradient);
-        
+
         expect(dto, isNotNull);
         expect(dto?.colors?.value, gradient.colors);
       });
@@ -807,13 +801,13 @@ void main() {
           endAngle: null,
           tileMode: null,
           transform: null,
-          colors: Prop.value([Colors.purple]),
+          colors: Prop.fromValue([Colors.purple]),
           stops: null,
         );
-        
+
         final context = createEmptyMixData();
         final resolved = dto.resolve(context);
-        
+
         expect(resolved.center, Alignment.center);
         expect(resolved.startAngle, 0.0);
         expect(resolved.endAngle, 6.283185307179586); // 2π
@@ -829,7 +823,7 @@ void main() {
       test('merge with another SweepGradientDto - all properties', () {
         const transform1 = GradientRotation(1.0);
         const transform2 = GradientRotation(2.0);
-        
+
         final dto1 = SweepGradientDto(
           center: Alignment.center,
           startAngle: 0.0,
@@ -945,7 +939,7 @@ void main() {
           endAngle: 7.28, // > 2π
           colors: const [Colors.red, Colors.blue],
         );
-        
+
         expect(dto.startAngle, resolvesTo(-1.0));
         expect(dto.endAngle, resolvesTo(7.28));
       });
@@ -956,10 +950,10 @@ void main() {
           endAngle: 3.14,
           colors: const [Colors.red, Colors.blue],
         );
-        
+
         final context = createEmptyMixData();
         final resolved = dto.resolve(context);
-        
+
         expect(resolved.startAngle, 3.14);
         expect(resolved.endAngle, 3.14);
       });
@@ -969,10 +963,10 @@ void main() {
           colors: const [Colors.red, Colors.green, Colors.blue, Colors.red],
           stops: const [0.0, 0.33, 0.67, 1.0],
         );
-        
+
         final context = createEmptyMixData();
         final resolved = dto.resolve(context);
-        
+
         expect(resolved.colors.first, resolved.colors.last);
         expect(resolved.stops?.first, 0.0);
         expect(resolved.stops?.last, 1.0);
@@ -988,17 +982,20 @@ void main() {
         end: Alignment.bottomRight,
         colors: const [Colors.purple, Colors.orange],
       );
-      
+
       final decorationDto = BoxDecorationDto(
         gradient: gradientDto,
         borderRadius: BorderRadiusDto.value(BorderRadius.circular(12)),
       );
-      
+
       final context = createEmptyMixData();
       final resolved = decorationDto.resolve(context);
-      
+
       expect(resolved.gradient, isA<LinearGradient>());
-      expect((resolved.gradient as LinearGradient).colors, [Colors.purple, Colors.orange]);
+      expect((resolved.gradient as LinearGradient).colors, [
+        Colors.purple,
+        Colors.orange,
+      ]);
     });
 
     test('complex gradient merging scenario', () {
@@ -1006,19 +1003,19 @@ void main() {
         colors: const [Colors.red, Colors.blue],
         stops: const [0.0, 1.0],
       );
-      
+
       final overrideGradient = LinearGradientDto(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         tileMode: TileMode.mirror,
       );
-      
+
       final finalGradient = LinearGradientDto(
         transform: const GradientRotation(1.57),
       );
-      
+
       final merged = baseGradient.merge(overrideGradient).merge(finalGradient);
-      
+
       expect(merged.colors?.value, [Colors.red, Colors.blue]);
       expect(merged.stops?.value, [0.0, 1.0]);
       expect(merged.begin, resolvesTo(Alignment.topCenter));
@@ -1026,6 +1023,5 @@ void main() {
       expect(merged.tileMode, resolvesTo(TileMode.mirror));
       expect(merged.transform, resolvesTo(const GradientRotation(1.57)));
     });
-
   });
 }

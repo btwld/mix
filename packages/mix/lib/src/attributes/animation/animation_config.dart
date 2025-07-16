@@ -2,9 +2,6 @@ import 'package:flutter/animation.dart';
 
 import '../../internal/constants.dart';
 
-@Deprecated('Use AnimationConfig instead. This will be removed in version 2.0')
-typedef AnimatedData = AnimationConfig;
-
 /// Configuration data for animated styles in the Mix framework.
 ///
 /// Encapsulates animation parameters including duration, curve, and completion
@@ -19,15 +16,15 @@ class AnimationConfig {
     required Duration? duration,
     required Curve? curve,
     VoidCallback? onEnd,
-  })  : _curve = curve,
-        _duration = duration,
-        _onEnd = onEnd;
+  }) : _curve = curve,
+       _duration = duration,
+       _onEnd = onEnd;
 
   /// Creates animation data with default settings.
   const AnimationConfig.withDefaults()
-      : _duration = kDefaultAnimationDuration,
-        _curve = Curves.linear,
-        _onEnd = null;
+    : _duration = kDefaultAnimationDuration,
+      _curve = Curves.linear,
+      _onEnd = null;
 
   /// Duration of the animation, defaults to [kDefaultAnimationDuration] if not specified.
   Duration get duration => _duration ?? kDefaultAnimationDuration;
@@ -36,7 +33,6 @@ class AnimationConfig {
   Curve get curve => _curve ?? Curves.linear;
 
   VoidCallback? get onEnd => _onEnd;
-
 
   AnimationConfig copyWith({
     Duration? duration,

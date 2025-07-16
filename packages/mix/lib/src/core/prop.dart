@@ -15,16 +15,19 @@ class Prop<T> with EqualityMixin, ResolvableMixin<T?> {
   const Prop._internal(this._value, this._token, this._directives);
 
   /// Creates a prop with a direct value
-  const Prop.value(T value) : _value = value, _token = null, _directives = null;
+  const Prop.fromValue(T value)
+    : _value = value,
+      _token = null,
+      _directives = null;
 
   /// Creates a prop with a token
-  const Prop.token(MixToken<T> token)
+  const Prop.fromToken(MixToken<T> token)
     : _value = null,
       _token = token,
       _directives = null;
 
   /// Creates a prop with directives only
-  const Prop.directives(List<MixDirective<T>> directives)
+  const Prop.fromDirectives(List<MixDirective<T>> directives)
     : _value = null,
       _token = null,
       _directives = directives;
@@ -32,7 +35,7 @@ class Prop<T> with EqualityMixin, ResolvableMixin<T?> {
   static Prop<T>? maybeValue<T>(T? value) {
     if (value == null) return null;
 
-    return Prop.value(value);
+    return Prop.fromValue(value);
   }
 
   T? get value => _value;

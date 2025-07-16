@@ -67,17 +67,17 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
       wordSpacing: Prop.maybeValue(wordSpacing),
       textBaseline: Prop.maybeValue(textBaseline),
       shadows: shadows?.map(MixProp<Shadow, ShadowDto>.fromValue).toList(),
-      fontFeatures: fontFeatures?.map(Prop.value).toList(),
+      fontFeatures: fontFeatures?.map(Prop.fromValue).toList(),
       decoration: Prop.maybeValue(decoration),
       decorationColor: Prop.maybeValue(decorationColor),
       decorationStyle: Prop.maybeValue(decorationStyle),
-      fontVariations: fontVariations?.map(Prop.value).toList(),
+      fontVariations: fontVariations?.map(Prop.fromValue).toList(),
       height: Prop.maybeValue(height),
       foreground: Prop.maybeValue(foreground),
       background: Prop.maybeValue(background),
       decorationThickness: Prop.maybeValue(decorationThickness),
       fontFamily: Prop.maybeValue(fontFamily),
-      fontFamilyFallback: fontFamilyFallback?.map(Prop.value).toList(),
+      fontFamilyFallback: fontFamilyFallback?.map(Prop.fromValue).toList(),
     );
   }
 

@@ -32,19 +32,19 @@ void main() {
       final result = DecorationImageDto.value(decorationImage);
       expect(result, isNotNull);
       expect(result.image, isA<Prop<ImageProvider>>());
-      expect(result.fit, equals(Prop.value(BoxFit.cover)));
+      expect(result.fit, equals(Prop.fromValue(BoxFit.cover)));
       expect(
         result.alignment,
-        equals(Prop<AlignmentGeometry>.value(Alignment.topLeft)),
+        equals(Prop<AlignmentGeometry>.fromValue(Alignment.topLeft)),
       );
       expect(
         result.centerSlice,
-        equals(Prop.value(Rect.fromLTRB(10, 20, 30, 40))),
+        equals(Prop.fromValue(Rect.fromLTRB(10, 20, 30, 40))),
       );
-      expect(result.repeat, equals(Prop.value(ImageRepeat.repeat)));
-      expect(result.filterQuality, equals(Prop.value(FilterQuality.high)));
-      expect(result.invertColors, equals(Prop.value(true)));
-      expect(result.isAntiAlias, equals(Prop.value(true)));
+      expect(result.repeat, equals(Prop.fromValue(ImageRepeat.repeat)));
+      expect(result.filterQuality, equals(Prop.fromValue(FilterQuality.high)));
+      expect(result.invertColors, equals(Prop.fromValue(true)));
+      expect(result.isAntiAlias, equals(Prop.fromValue(true)));
     });
 
     test('merge', () {

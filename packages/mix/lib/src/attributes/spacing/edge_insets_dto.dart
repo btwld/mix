@@ -12,21 +12,20 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
 
   const EdgeInsetsGeometryDto({this.top, this.bottom});
 
-  factory EdgeInsetsGeometryDto.value(EdgeInsetsGeometry edgeInsetsGeometry) {
-    return switch (edgeInsetsGeometry) {
-      EdgeInsets() =>
-        EdgeInsetsDto.value(edgeInsetsGeometry) as EdgeInsetsGeometryDto<T>,
-      EdgeInsetsDirectional() =>
-        EdgeInsetsDirectionalDto.value(edgeInsetsGeometry)
-            as EdgeInsetsGeometryDto<T>,
-      _ => throw ArgumentError(
-        'Unsupported EdgeInsetsGeometry type: ${edgeInsetsGeometry.runtimeType}',
-      ),
-    };
+  static EdgeInsetsGeometryDto<V> value<V extends EdgeInsetsGeometry>(V value) {
+    return switch (value) {
+          (EdgeInsets edgeInsets) => EdgeInsetsDto.value(edgeInsets),
+          (EdgeInsetsDirectional edgeInsetsDirectional) =>
+            EdgeInsetsDirectionalDto.value(edgeInsetsDirectional),
+          _ => throw ArgumentError(
+            'Unsupported EdgeInsetsGeometry type: ${value.runtimeType}',
+          ),
+        }
+        as EdgeInsetsGeometryDto<V>;
   }
 
   static EdgeInsetsGeometryDto<T>? maybeValue<T extends EdgeInsetsGeometry>(
-    EdgeInsetsGeometry? edgeInsetsGeometry,
+    T? edgeInsetsGeometry,
   ) {
     return edgeInsetsGeometry == null
         ? null

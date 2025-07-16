@@ -33,14 +33,14 @@ void main() {
 
       test('props constructor with Prop values', () {
         const dto = StrutStyleDto.props(
-          fontFamily: Prop.value('Inter'),
-          fontFamilyFallback: Prop.value(['Verdana', 'Georgia']),
-          fontSize: Prop.value(18.0),
-          fontWeight: Prop.value(FontWeight.w600),
-          fontStyle: Prop.value(FontStyle.normal),
-          height: Prop.value(1.5),
-          leading: Prop.value(0.5),
-          forceStrutHeight: Prop.value(false),
+          fontFamily: Prop.fromValue('Inter'),
+          fontFamilyFallback: Prop.fromValue(['Verdana', 'Georgia']),
+          fontSize: Prop.fromValue(18.0),
+          fontWeight: Prop.fromValue(FontWeight.w600),
+          fontStyle: Prop.fromValue(FontStyle.normal),
+          height: Prop.fromValue(1.5),
+          leading: Prop.fromValue(0.5),
+          forceStrutHeight: Prop.fromValue(false),
         );
 
         expect(dto.fontFamily, resolvesTo('Inter'));
@@ -85,7 +85,7 @@ void main() {
           fontWeight: FontWeight.bold,
         );
         final dto = StrutStyleDto.maybeValue(strutStyle);
-        
+
         expect(dto, isNotNull);
         expect(dto?.fontSize, resolvesTo(strutStyle.fontSize));
         expect(dto?.fontWeight, resolvesTo(strutStyle.fontWeight));
@@ -130,10 +130,10 @@ void main() {
 
       test('resolves with default values for null properties', () {
         const dto = StrutStyleDto.props();
-        
+
         final context = createEmptyMixData();
         final resolved = dto.resolve(context);
-        
+
         expect(resolved.fontFamily, isNull);
         expect(resolved.fontFamilyFallback, isNull);
         expect(resolved.fontSize, isNull);
@@ -150,10 +150,10 @@ void main() {
           fontWeight: FontWeight.w500,
           forceStrutHeight: true,
         );
-        
+
         final context = createEmptyMixData();
         final resolved = dto.resolve(context);
-        
+
         expect(resolved.fontSize, 20.0);
         expect(resolved.fontWeight, FontWeight.w500);
         expect(resolved.forceStrutHeight, true);
@@ -220,10 +220,7 @@ void main() {
       });
 
       test('merge with null returns original', () {
-        final dto = StrutStyleDto(
-          fontFamily: 'Roboto',
-          fontSize: 24.0,
-        );
+        final dto = StrutStyleDto(fontFamily: 'Roboto', fontSize: 24.0);
 
         final merged = dto.merge(null);
         expect(merged, same(dto));
@@ -263,14 +260,8 @@ void main() {
       });
 
       test('not equal StrutStyleDtos', () {
-        final dto1 = StrutStyleDto(
-          fontFamily: 'Roboto',
-          fontSize: 24.0,
-        );
-        final dto2 = StrutStyleDto(
-          fontFamily: 'Lato',
-          fontSize: 24.0,
-        );
+        final dto1 = StrutStyleDto(fontFamily: 'Roboto', fontSize: 24.0);
+        final dto2 = StrutStyleDto(fontFamily: 'Lato', fontSize: 24.0);
 
         expect(dto1, isNot(equals(dto2)));
       });
@@ -291,23 +282,17 @@ void main() {
     // Edge Cases
     group('Edge Cases', () {
       test('handles empty fontFamilyFallback list', () {
-        final dto = StrutStyleDto(
-          fontFamilyFallback: const [],
-        );
-        
+        final dto = StrutStyleDto(fontFamilyFallback: const []);
+
         final context = createEmptyMixData();
         final resolved = dto.resolve(context);
-        
+
         expect(resolved.fontFamilyFallback, isEmpty);
       });
 
       test('handles zero and negative values', () {
-        final dto = StrutStyleDto(
-          fontSize: 0.0,
-          height: -1.0,
-          leading: -0.5,
-        );
-        
+        final dto = StrutStyleDto(fontSize: 0.0, height: -1.0, leading: -0.5);
+
         expect(dto.fontSize, resolvesTo(0.0));
         expect(dto.height, resolvesTo(-1.0));
         expect(dto.leading, resolvesTo(-0.5));
@@ -316,16 +301,14 @@ void main() {
       test('handles extreme font weights', () {
         final dto1 = StrutStyleDto(fontWeight: FontWeight.w100);
         final dto2 = StrutStyleDto(fontWeight: FontWeight.w900);
-        
+
         expect(dto1.fontWeight, resolvesTo(FontWeight.w100));
         expect(dto2.fontWeight, resolvesTo(FontWeight.w900));
       });
 
       test('handles very large fontSize', () {
-        final dto = StrutStyleDto(
-          fontSize: 1000.0,
-        );
-        
+        final dto = StrutStyleDto(fontSize: 1000.0);
+
         expect(dto.fontSize, resolvesTo(1000.0));
       });
 
@@ -333,10 +316,10 @@ void main() {
         final dto = StrutStyleDto(
           fontFamilyFallback: const ['Arial', 'Helvetica'],
         );
-        
+
         final context = createEmptyMixData();
         final resolved = dto.resolve(context);
-        
+
         expect(resolved.fontFamily, isNull);
         expect(resolved.fontFamilyFallback, ['Arial', 'Helvetica']);
       });
@@ -345,7 +328,7 @@ void main() {
         final dto1 = StrutStyleDto(forceStrutHeight: true);
         final dto2 = StrutStyleDto(forceStrutHeight: false);
         final dto3 = StrutStyleDto(); // null
-        
+
         expect(dto1.forceStrutHeight, resolvesTo(true));
         expect(dto2.forceStrutHeight, resolvesTo(false));
         expect(dto3.forceStrutHeight, isNull);
@@ -364,7 +347,7 @@ void main() {
 
         final context = createEmptyMixData();
         final resolved = dto.resolve(context);
-        
+
         expect(resolved.fontFamily, 'Roboto');
         expect(resolved.fontSize, 16.0);
         expect(resolved.height, 1.5);

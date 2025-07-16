@@ -31,10 +31,10 @@ void main() {
 
       test('props factory assigns properties correctly', () {
         final dto = BorderRadiusDto.props(
-          topLeft: Prop.value(const Radius.circular(10.0)),
-          topRight: Prop.value(const Radius.circular(20.0)),
-          bottomLeft: Prop.value(const Radius.circular(30.0)),
-          bottomRight: Prop.value(const Radius.circular(40.0)),
+          topLeft: Prop.fromValue(const Radius.circular(10.0)),
+          topRight: Prop.fromValue(const Radius.circular(20.0)),
+          bottomLeft: Prop.fromValue(const Radius.circular(30.0)),
+          bottomRight: Prop.fromValue(const Radius.circular(40.0)),
         );
 
         expect(
@@ -205,8 +205,8 @@ void main() {
       testWidgets('resolves tokens from context', (tester) async {
         const radiusToken = MixToken<Radius>('test-radius');
         final dto = BorderRadiusDto.props(
-          topLeft: Prop.token(radiusToken),
-          topRight: Prop.value(const Radius.circular(20.0)),
+          topLeft: Prop.fromToken(radiusToken),
+          topRight: Prop.fromValue(const Radius.circular(20.0)),
         );
 
         await tester.pumpWithMixScope(
@@ -230,7 +230,7 @@ void main() {
 
       test('handles missing tokens gracefully', () {
         const token = MixToken<Radius>('undefined');
-        final dto = BorderRadiusDto.props(topLeft: Prop.token(token));
+        final dto = BorderRadiusDto.props(topLeft: Prop.fromToken(token));
 
         expect(() => dto.resolve(EmptyMixData), throwsStateError);
       });
@@ -262,10 +262,10 @@ void main() {
 
       test('props factory assigns properties correctly', () {
         final dto = BorderRadiusDirectionalDto.props(
-          topStart: Prop.value(const Radius.circular(10.0)),
-          topEnd: Prop.value(const Radius.circular(20.0)),
-          bottomStart: Prop.value(const Radius.circular(30.0)),
-          bottomEnd: Prop.value(const Radius.circular(40.0)),
+          topStart: Prop.fromValue(const Radius.circular(10.0)),
+          topEnd: Prop.fromValue(const Radius.circular(20.0)),
+          bottomStart: Prop.fromValue(const Radius.circular(30.0)),
+          bottomEnd: Prop.fromValue(const Radius.circular(40.0)),
         );
 
         expect(
@@ -444,8 +444,8 @@ void main() {
       testWidgets('resolves tokens from context', (tester) async {
         const radiusToken = MixToken<Radius>('test-radius');
         final dto = BorderRadiusDirectionalDto.props(
-          topStart: Prop.token(radiusToken),
-          topEnd: Prop.value(const Radius.circular(20.0)),
+          topStart: Prop.fromToken(radiusToken),
+          topEnd: Prop.fromValue(const Radius.circular(20.0)),
         );
 
         await tester.pumpWithMixScope(
@@ -470,7 +470,7 @@ void main() {
       test('handles missing tokens gracefully', () {
         const token = MixToken<Radius>('undefined');
         final dto = BorderRadiusDirectionalDto.props(
-          topStart: Prop.token(token),
+          topStart: Prop.fromToken(token),
         );
 
         expect(() => dto.resolve(EmptyMixData), throwsStateError);

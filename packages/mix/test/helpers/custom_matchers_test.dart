@@ -9,9 +9,9 @@ void main() {
   group('Custom Matchers', () {
     group('resolvesTo', () {
       test('works with simple Mix values', () {
-        final colorMix = Prop.value(Colors.red);
-        final doubleMix = Prop.value(42.0);
-        final stringMix = Prop.value('test');
+        final colorMix = Prop.fromValue(Colors.red);
+        final doubleMix = Prop.fromValue(42.0);
+        final stringMix = Prop.fromValue('test');
 
         // Clean, readable assertions
         expect(colorMix, resolvesTo(Colors.red));
@@ -20,9 +20,9 @@ void main() {
       });
 
       test('works with Prop values', () {
-        final colorProp = Prop.value(Colors.blue);
-        final doubleProp = Prop.value(3.14);
-        final stringProp = Prop.value('hello');
+        final colorProp = Prop.fromValue(Colors.blue);
+        final doubleProp = Prop.fromValue(3.14);
+        final stringProp = Prop.fromValue('hello');
 
         expect(colorProp, resolvesTo(Colors.blue));
         expect(doubleProp, resolvesTo(3.14));
@@ -35,7 +35,7 @@ void main() {
       });
 
       test('provides clear error messages on mismatch', () {
-        final colorMix = Prop.value(Colors.red);
+        final colorMix = Prop.fromValue(Colors.red);
 
         expect(
           () => expect(colorMix, resolvesTo(Colors.blue)),
@@ -54,29 +54,29 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        final nullableProp = Prop<Color?>.value(null);
+        final nullableProp = Prop<Color?>.fromValue(null);
         expect(nullableProp, resolvesTo(null));
       });
     });
 
     group('equivalentTo', () {
       test('works with equivalent Mix values', () {
-        final mix1 = Prop.value(Colors.red);
-        final mix2 = Prop.value(Colors.red);
+        final mix1 = Prop.fromValue(Colors.red);
+        final mix2 = Prop.fromValue(Colors.red);
 
         expect(mix1, mix2);
       });
 
       test('fails with different Mix values', () {
-        final mix1 = Prop.value(Colors.red);
-        final mix2 = Prop.value(Colors.blue);
+        final mix1 = Prop.fromValue(Colors.red);
+        final mix2 = Prop.fromValue(Colors.blue);
 
         expect(() => expect(mix1, equals(mix2)), throwsA(isA<TestFailure>()));
       });
 
       test('works with Prop values', () {
-        final prop1 = Prop.value('test');
-        final prop2 = Prop.value('test');
+        final prop1 = Prop.fromValue('test');
+        final prop2 = Prop.fromValue('test');
 
         expect(prop1, prop2);
       });
@@ -143,8 +143,8 @@ void main() {
       });
 
       test('Merge testing becomes more readable', () {
-        final mix1 = Prop.value('first');
-        final mix2 = Prop.value('second');
+        final mix1 = Prop.fromValue('first');
+        final mix2 = Prop.fromValue('second');
 
         final merged = mix1.merge(mix2);
 

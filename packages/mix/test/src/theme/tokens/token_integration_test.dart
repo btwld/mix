@@ -19,8 +19,8 @@ void main() {
           data: theme,
           child: Builder(
             builder: (context) {
-              final dto1 = Prop<Color>.token(primaryToken);
-              final dto2 = Prop<Color>.token(secondaryToken);
+              final dto1 = Prop.fromToken(primaryToken);
+              final dto2 = Prop.fromToken(secondaryToken);
 
               final mixContext = MixContext.create(context, Style());
               expect(dto1, resolvesTo(Colors.blue, context: mixContext));

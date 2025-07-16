@@ -42,10 +42,10 @@ void main() {
 
       test('props constructor with Prop values', () {
         const dto = BorderSideDto.props(
-          color: Prop.value(Colors.green),
-          width: Prop.value(4.0),
-          style: Prop.value(BorderStyle.none),
-          strokeAlign: Prop.value(BorderSide.strokeAlignOutside),
+          color: Prop.fromValue(Colors.green),
+          width: Prop.fromValue(4.0),
+          style: Prop.fromValue(BorderStyle.none),
+          strokeAlign: Prop.fromValue(BorderSide.strokeAlignOutside),
         );
 
         expect(dto.color, resolvesTo(Colors.green));

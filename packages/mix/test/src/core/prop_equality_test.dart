@@ -33,22 +33,22 @@ void main() {
   group('Prop equality behavior', () {
     group('Basic equality', () {
       test('identical Props are equal', () {
-        final prop1 = Prop.value(Colors.red);
-        final prop2 = Prop.value(Colors.red);
+        final prop1 = Prop.fromValue(Colors.red);
+        final prop2 = Prop.fromValue(Colors.red);
 
         expect(prop1, equals(prop2));
       });
 
       test('different Props are not equal', () {
-        final prop1 = Prop.value(Colors.red);
-        final prop2 = Prop.value(Colors.blue);
+        final prop1 = Prop.fromValue(Colors.red);
+        final prop2 = Prop.fromValue(Colors.blue);
 
         expect(prop1, isNot(equals(prop2)));
       });
 
       test('Props with different types are not equal', () {
-        final prop1 = Prop.value(42);
-        final prop2 = Prop.value("42");
+        final prop1 = Prop.fromValue(42);
+        final prop2 = Prop.fromValue("42");
 
         expect(prop1, isNot(equals(prop2)));
       });
@@ -56,22 +56,22 @@ void main() {
 
     group('Merge equality behavior', () {
       test('merged Prop with identical values equals original', () {
-        final prop1 = Prop.value(Colors.red);
-        final prop2 = Prop.value(Colors.blue);
+        final prop1 = Prop.fromValue(Colors.red);
+        final prop2 = Prop.fromValue(Colors.blue);
         final merged = prop1.merge(prop2);
 
         // The merged prop should have the same value as prop2 (other wins)
         expect(merged.value, prop2.value);
 
         // But importantly, the merged prop should be equal to a new prop with the same value
-        final expected = Prop.value(Colors.blue);
+        final expected = Prop.fromValue(Colors.blue);
 
         expect(merged, expected);
       });
 
       test('merged Prop with empty directives equals original', () {
-        final prop1 = Prop.value(Colors.red);
-        final prop2 = Prop.value(Colors.blue);
+        final prop1 = Prop.fromValue(Colors.red);
+        final prop2 = Prop.fromValue(Colors.blue);
         final merged = prop1.merge(prop2);
 
         // All should have empty directives
@@ -80,13 +80,13 @@ void main() {
         expect(merged.directives, isNull);
 
         // The merged prop should equal a new prop with the same value
-        final expected = Prop.value(Colors.blue);
+        final expected = Prop.fromValue(Colors.blue);
         expect(merged, equals(expected));
       });
 
       test('merged Prop preserves directive list type consistency', () {
-        final prop1 = Prop.value(Colors.red);
-        final prop2 = Prop.value(Colors.blue);
+        final prop1 = Prop.fromValue(Colors.red);
+        final prop2 = Prop.fromValue(Colors.blue);
         final merged = prop1.merge(prop2);
 
         // Check that directive lists have consistent types
@@ -106,8 +106,8 @@ void main() {
         final directive1 = MockMixDirective<Color>('brighten', (c) => c);
         final directive2 = MockMixDirective<Color>('brighten', (c) => c);
 
-        final prop1 = Prop.directives([directive1]);
-        final prop2 = Prop.directives([directive2]);
+        final prop1 = Prop.fromDirectives([directive1]);
+        final prop2 = Prop.fromDirectives([directive2]);
 
         expect(prop1, equals(prop2));
       });
@@ -116,8 +116,8 @@ void main() {
         final directive1 = MockMixDirective<Color>('brighten', (c) => c);
         final directive2 = MockMixDirective<Color>('darken', (c) => c);
 
-        final prop1 = Prop.directives([directive1]);
-        final prop2 = Prop.directives([directive2]);
+        final prop1 = Prop.fromDirectives([directive1]);
+        final prop2 = Prop.fromDirectives([directive2]);
 
         expect(prop1, isNot(equals(prop2)));
       });
@@ -126,8 +126,8 @@ void main() {
         final directive1 = MockMixDirective<Color>('brighten', (c) => c);
         final directive2 = MockMixDirective<Color>('darken', (c) => c);
 
-        final prop1 = Prop.directives([directive1]);
-        final prop2 = Prop.directives([directive2]);
+        final prop1 = Prop.fromDirectives([directive1]);
+        final prop2 = Prop.fromDirectives([directive2]);
         final merged = prop1.merge(prop2);
 
         expect(merged.directives, hasLength(2));
@@ -139,12 +139,12 @@ void main() {
         final directive1 = MockMixDirective<Color>('brighten', (c) => c);
         final directive2 = MockMixDirective<Color>('darken', (c) => c);
 
-        final prop1 = Prop.directives([directive1]);
-        final prop2 = Prop.directives([directive2]);
+        final prop1 = Prop.fromDirectives([directive1]);
+        final prop2 = Prop.fromDirectives([directive2]);
         final merged = prop1.merge(prop2);
 
         // Create expected prop with same directives - use List<MixDirective<Color>> to match merge result
-        final expected = Prop.directives([directive1, directive2]);
+        final expected = Prop.fromDirectives([directive1, directive2]);
 
         expect(merged, equals(expected));
       });
@@ -189,15 +189,15 @@ void main() {
 
     group('Edge cases', () {
       test('Props with null values are equal', () {
-        final prop1 = Prop<Color?>.value(null);
-        final prop2 = Prop<Color?>.value(null);
+        final prop1 = Prop<Color?>.fromValue(null);
+        final prop2 = Prop<Color?>.fromValue(null);
 
         expect(prop1, equals(prop2));
       });
 
       test('empty directive lists are equal regardless of creation method', () {
-        final prop1 = Prop.value(Colors.red);
-        final prop2 = Prop.directives(const []);
+        final prop1 = Prop.fromValue(Colors.red);
+        final prop2 = Prop.fromDirectives(const []);
 
         // Both should have empty directive lists
         expect(prop1.directives, isNull);
