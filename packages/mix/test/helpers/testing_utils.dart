@@ -356,7 +356,7 @@ final class UtilityTestDtoAttribute<T extends Mix<V>, V>
 final class CustomWidgetModifierSpec
     extends WidgetModifierSpec<CustomWidgetModifierSpec> {
   final bool value;
-  const CustomWidgetModifierSpec(this.value, {super.animated});
+  const CustomWidgetModifierSpec(this.value);
 
   @override
   CustomWidgetModifierSpec copyWith({bool? value}) {

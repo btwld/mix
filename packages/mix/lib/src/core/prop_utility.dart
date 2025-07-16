@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../attributes/animation/animation_config.dart';
 import '../theme/tokens/mix_token.dart';
 import 'mix_element.dart';
 import 'prop.dart';
@@ -31,6 +32,10 @@ abstract class PropUtility<Return extends StyleElement, Value> {
   /// Multiple directives support
   Return directives(List<MixDirective<Value>> directives) =>
       builder(Prop.fromDirectives(directives));
+
+  /// Animation support
+  Return animate(AnimationConfig animation) =>
+      builder(Prop.fromAnimation(animation));
 }
 
 /// Base utility for complex value properties that use MixProp<V, D>
@@ -58,4 +63,16 @@ abstract class MixPropUtility<S extends StyleElement, V, M extends Mix<V>> {
 
   /// Token support with conversion
   S token(MixToken<V> token) => builder(MixProp.fromToken(token, convertToMix));
+
+  /// Single directive support
+  S directive(MixDirective<M> directive) =>
+      builder(MixProp.fromDirectives([directive]));
+
+  /// Multiple directives support
+  S directives(List<MixDirective<M>> directives) =>
+      builder(MixProp.fromDirectives(directives));
+
+  /// Animation support
+  S animate(AnimationConfig animation) =>
+      builder(MixProp.fromAnimation(animation));
 }

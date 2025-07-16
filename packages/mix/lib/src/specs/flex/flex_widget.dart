@@ -54,7 +54,12 @@ class StyledFlex extends StyledWidget {
     return withMix(context, (context) {
       final spec = FlexSpec.of(context);
 
-      return spec(direction: direction, children: children);
+      return FlexSpecWidget(
+        spec: spec,
+        direction: direction,
+        orderOfModifiers: orderOfModifiers,
+        children: children,
+      );
     });
   }
 }
@@ -190,12 +195,8 @@ class StyledRow extends StyledFlex {
   'VBox(style: myStyle, children: [...])',
 )
 class StyledColumn extends StyledFlex {
-  const StyledColumn({
-    super.style,
-    super.key,
-    super.inherit,
-    super.children,
-  }) : super(direction: Axis.vertical);
+  const StyledColumn({super.style, super.key, super.inherit, super.children})
+    : super(direction: Axis.vertical);
 }
 
 final _defaultFlex = Flex(direction: Axis.horizontal, children: const []);

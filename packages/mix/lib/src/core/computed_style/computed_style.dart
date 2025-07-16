@@ -23,16 +23,16 @@ class ComputedStyle with Diagnosticable {
     required Map<Type, Spec> specs,
     required List<WidgetModifierSpec> modifiers,
     AnimationConfig? animation,
-  })  : _specs = specs,
-        _modifiers = modifiers,
-        _animation = animation;
+  }) : _specs = specs,
+       _modifiers = modifiers,
+       _animation = animation;
 
   /// Creates an empty computed style with no specs or modifiers.
   /// This is used for cases where no style is applied.
   const ComputedStyle.empty()
-      : _specs = const {},
-        _modifiers = const [],
-        _animation = null;
+    : _specs = const {},
+      _modifiers = const [],
+      _animation = null;
 
   /// Creates a [ComputedStyle] by resolving all styling attributes.
   ///
@@ -86,8 +86,10 @@ class ComputedStyle with Diagnosticable {
   /// Returns the computed style, throwing if no provider exists.
   static ComputedStyle of(BuildContext context) {
     final computedStyle = maybeOf(context);
-    assert(computedStyle != null,
-        'ComputedStyleProvider not found in widget tree.');
+    assert(
+      computedStyle != null,
+      'ComputedStyleProvider not found in widget tree.',
+    );
 
     return computedStyle!;
   }
@@ -132,10 +134,10 @@ class ComputedStyle with Diagnosticable {
 
   @override
   int get hashCode => Object.hash(
-        Object.hashAllUnordered(
-          _specs.entries.map((e) => Object.hash(e.key, e.value)),
-        ),
-        Object.hashAll(_modifiers),
-        _animation,
-      );
+    Object.hashAllUnordered(
+      _specs.entries.map((e) => Object.hash(e.key, e.value)),
+    ),
+    Object.hashAll(_modifiers),
+    _animation,
+  );
 }

@@ -106,7 +106,7 @@ class CircleBorderUtility<T extends StyleElement>
   late final side = BorderSideUtility((v) => only(side: v));
 
   /// Utility for defining [CircleBorderDto.eccentricity]
-  late final eccentricity = DoubleUtility((v) => only(eccentricity: v));
+  late final eccentricity = DoubleUtility((prop) => builder(CircleBorderDto.props(eccentricity: prop)));
 
   CircleBorderUtility(super.builder) : super(valueToDto: CircleBorderDto.value);
 
@@ -130,22 +130,22 @@ class StarBorderUtility<T extends StyleElement>
   late final side = BorderSideUtility((v) => only(side: v));
 
   /// Utility for defining [StarBorderDto.points]
-  late final points = DoubleUtility((v) => only(points: v));
+  late final points = DoubleUtility((prop) => builder(StarBorderDto.props(points: prop)));
 
   /// Utility for defining [StarBorderDto.innerRadiusRatio]
-  late final innerRadiusRatio = DoubleUtility((v) => only(innerRadiusRatio: v));
+  late final innerRadiusRatio = DoubleUtility((prop) => builder(StarBorderDto.props(innerRadiusRatio: prop)));
 
   /// Utility for defining [StarBorderDto.pointRounding]
-  late final pointRounding = DoubleUtility((v) => only(pointRounding: v));
+  late final pointRounding = DoubleUtility((prop) => builder(StarBorderDto.props(pointRounding: prop)));
 
   /// Utility for defining [StarBorderDto.valleyRounding]
-  late final valleyRounding = DoubleUtility((v) => only(valleyRounding: v));
+  late final valleyRounding = DoubleUtility((prop) => builder(StarBorderDto.props(valleyRounding: prop)));
 
   /// Utility for defining [StarBorderDto.rotation]
-  late final rotation = DoubleUtility((v) => only(rotation: v));
+  late final rotation = DoubleUtility((prop) => builder(StarBorderDto.props(rotation: prop)));
 
   /// Utility for defining [StarBorderDto.squash]
-  late final squash = DoubleUtility((v) => only(squash: v));
+  late final squash = DoubleUtility((prop) => builder(StarBorderDto.props(squash: prop)));
 
   StarBorderUtility(super.builder) : super(valueToDto: StarBorderDto.value);
 
@@ -253,10 +253,10 @@ class LinearBorderUtility<T extends StyleElement>
 class LinearBorderEdgeUtility<T extends StyleElement>
     extends DtoUtility<T, LinearBorderEdgeDto, LinearBorderEdge> {
   /// Utility for defining [LinearBorderEdgeDto.size]
-  late final size = DoubleUtility((v) => only(size: v));
+  late final size = DoubleUtility((prop) => builder(LinearBorderEdgeDto.props(size: prop)));
 
   /// Utility for defining [LinearBorderEdgeDto.alignment]
-  late final alignment = DoubleUtility((v) => only(alignment: v));
+  late final alignment = DoubleUtility((prop) => builder(LinearBorderEdgeDto.props(alignment: prop)));
 
   LinearBorderEdgeUtility(super.builder)
     : super(valueToDto: LinearBorderEdgeDto.value);

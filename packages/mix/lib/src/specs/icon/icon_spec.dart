@@ -1,9 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../attributes/animation/animated_config_dto.dart';
-import '../../attributes/animation/animated_util.dart';
-import '../../attributes/animation/animation_config.dart';
 import '../../attributes/color/color_util.dart';
 import '../../attributes/enum/enum_util.dart';
 import '../../attributes/modifiers/widget_modifiers_config.dart';
@@ -19,7 +16,6 @@ import '../../core/mix_element.dart';
 import '../../core/prop.dart';
 import '../../core/spec.dart';
 import '../../core/utility.dart';
-import 'icon_widget.dart';
 
 final class IconSpec extends Spec<IconSpec> with Diagnosticable {
   final Color? color;
@@ -42,7 +38,6 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
     this.textDirection,
     this.applyTextScaling,
     this.fill,
-    super.animated,
     super.modifiers,
   });
 
@@ -55,30 +50,6 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
     return ComputedStyle.specOf(context) ?? const IconSpec();
   }
 
-  Widget call(
-    IconData? icon, {
-    String? semanticLabel,
-    List<Type> orderOfModifiers = const [],
-    TextDirection? textDirection,
-  }) {
-    return isAnimated
-        ? AnimatedIconSpecWidget(
-            icon,
-            spec: this,
-            semanticLabel: semanticLabel,
-            textDirection: textDirection,
-            curve: animated!.curve,
-            duration: animated!.duration,
-            orderOfModifiers: orderOfModifiers,
-          )
-        : IconSpecWidget(
-            icon,
-            spec: this,
-            semanticLabel: semanticLabel,
-            textDirection: textDirection,
-            orderOfModifiers: orderOfModifiers,
-          );
-  }
 
   @override
   IconSpec copyWith({
@@ -91,7 +62,6 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
     TextDirection? textDirection,
     bool? applyTextScaling,
     double? fill,
-    AnimationConfig? animated,
     WidgetModifiersConfig? modifiers,
   }) {
     return IconSpec(
@@ -104,7 +74,6 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
       textDirection: textDirection ?? this.textDirection,
       applyTextScaling: applyTextScaling ?? this.applyTextScaling,
       fill: fill ?? this.fill,
-      animated: animated ?? this.animated,
       modifiers: modifiers ?? this.modifiers,
     );
   }
@@ -123,7 +92,6 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
       textDirection: t < 0.5 ? textDirection : other.textDirection,
       applyTextScaling: t < 0.5 ? applyTextScaling : other.applyTextScaling,
       fill: MixHelpers.lerpDouble(fill, other.fill, t),
-      animated: animated ?? other.animated,
       modifiers: other.modifiers,
     );
   }
@@ -151,9 +119,6 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
     );
     properties.add(DiagnosticsProperty('fill', fill, defaultValue: null));
     properties.add(
-      DiagnosticsProperty('animated', animated, defaultValue: null),
-    );
-    properties.add(
       DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
     );
   }
@@ -169,7 +134,6 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
     textDirection,
     applyTextScaling,
     fill,
-    animated,
     modifiers,
   ];
 }
@@ -196,7 +160,6 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
     TextDirection? textDirection,
     bool? applyTextScaling,
     double? fill,
-    AnimationConfigDto? animated,
     WidgetModifiersConfigDto? modifiers,
   }) {
     return IconSpecAttribute.props(
@@ -211,7 +174,6 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
       textDirection: textDirection,
       applyTextScaling: applyTextScaling,
       fill: Prop.maybeValue(fill),
-      animated: animated,
       modifiers: modifiers,
     );
   }
@@ -227,7 +189,6 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
     this.textDirection,
     this.applyTextScaling,
     this.fill,
-    super.animated,
     super.modifiers,
   });
 
@@ -248,7 +209,6 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
       textDirection: spec.textDirection,
       applyTextScaling: spec.applyTextScaling,
       fill: Prop.maybeValue(spec.fill),
-      animated: AnimationConfigDto.maybeValue(spec.animated),
       modifiers: WidgetModifiersConfigDto.maybeValue(spec.modifiers),
     );
   }
@@ -277,7 +237,6 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
       textDirection: textDirection,
       applyTextScaling: applyTextScaling,
       fill: resolveProp(context, fill),
-      animated: animated?.resolve(context),
       modifiers: modifiers?.resolve(context),
     );
   }
@@ -300,7 +259,6 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
       textDirection: other.textDirection ?? textDirection,
       applyTextScaling: other.applyTextScaling ?? applyTextScaling,
       fill: mergeProp(fill, other.fill),
-      animated: animated?.merge(other.animated) ?? other.animated,
       modifiers: modifiers?.merge(other.modifiers) ?? other.modifiers,
     );
   }
@@ -328,9 +286,6 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
     );
     properties.add(DiagnosticsProperty('fill', fill, defaultValue: null));
     properties.add(
-      DiagnosticsProperty('animated', animated, defaultValue: null),
-    );
-    properties.add(
       DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
     );
   }
@@ -346,7 +301,6 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
     textDirection,
     applyTextScaling,
     fill,
-    animated,
     modifiers,
   ];
 }
@@ -356,17 +310,28 @@ class IconSpecUtility<T extends SpecAttribute>
   late final color = ColorUtility(
     (prop) => builder(IconSpecAttribute.props(color: prop)),
   );
-  late final size = DoubleUtility((v) => only(size: v));
-  late final weight = DoubleUtility((v) => only(weight: v));
-  late final grade = DoubleUtility((v) => only(grade: v));
-  late final opticalSize = DoubleUtility((v) => only(opticalSize: v));
+  late final size = DoubleUtility(
+    (prop) => builder(IconSpecAttribute.props(size: prop)),
+  );
+  late final weight = DoubleUtility(
+    (prop) => builder(IconSpecAttribute.props(weight: prop)),
+  );
+  late final grade = DoubleUtility(
+    (prop) => builder(IconSpecAttribute.props(grade: prop)),
+  );
+  late final opticalSize = DoubleUtility(
+    (prop) => builder(IconSpecAttribute.props(opticalSize: prop)),
+  );
   late final shadows = ShadowListUtility((v) => only(shadows: v));
   late final textDirection = TextDirectionUtility(
     (v) => only(textDirection: v),
   );
-  late final applyTextScaling = BoolUtility((v) => only(applyTextScaling: v));
-  late final fill = DoubleUtility((v) => only(fill: v));
-  late final animated = AnimatedUtility((v) => only(animated: v));
+  late final applyTextScaling = BoolUtility(
+    (prop) => builder(IconSpecAttribute.props(applyTextScaling: prop.value)),
+  );
+  late final fill = DoubleUtility(
+    (prop) => builder(IconSpecAttribute.props(fill: prop)),
+  );
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
   IconSpecUtility(super.builder);
@@ -391,7 +356,6 @@ class IconSpecUtility<T extends SpecAttribute>
     TextDirection? textDirection,
     bool? applyTextScaling,
     double? fill,
-    AnimationConfigDto? animated,
     WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(
@@ -405,7 +369,6 @@ class IconSpecUtility<T extends SpecAttribute>
         textDirection: textDirection,
         applyTextScaling: applyTextScaling,
         fill: fill,
-        animated: animated,
         modifiers: modifiers,
       ),
     );

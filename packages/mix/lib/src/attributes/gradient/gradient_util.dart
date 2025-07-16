@@ -31,17 +31,7 @@ class LinearGradientUtility<T extends StyleElement>
   /// Utility for defining [LinearGradientDto.stops]
   late final stops = ListUtility<T, double>((v) => only(stops: v));
 
-  LinearGradientUtility(super.builder)
-    : super(
-        valueToDto: (v) => LinearGradientDto(
-          begin: v.begin,
-          end: v.end,
-          tileMode: v.tileMode,
-          transform: v.transform,
-          colors: v.colors.isNotEmpty ? v.colors : null,
-          stops: v.stops,
-        ),
-      );
+  LinearGradientUtility(super.builder) : super(valueToDto: LinearGradientDto.value);
 
   T call({
     AlignmentGeometry? begin,
@@ -96,7 +86,7 @@ class RadialGradientUtility<T extends StyleElement>
   late final center = AlignmentGeometryUtility((v) => only(center: v));
 
   /// Utility for defining [RadialGradientDto.radius]
-  late final radius = DoubleUtility((v) => only(radius: v));
+  late final radius = DoubleUtility((prop) => only(radius: prop.value));
 
   /// Utility for defining [RadialGradientDto.tileMode]
   late final tileMode = TileModeUtility((v) => only(tileMode: v));
@@ -105,7 +95,7 @@ class RadialGradientUtility<T extends StyleElement>
   late final focal = AlignmentGeometryUtility((v) => only(focal: v));
 
   /// Utility for defining [RadialGradientDto.focalRadius]
-  late final focalRadius = DoubleUtility((v) => only(focalRadius: v));
+  late final focalRadius = DoubleUtility((prop) => only(focalRadius: prop.value));
 
   /// Utility for defining [RadialGradientDto.transform]
   late final transform = GradientTransformUtility((v) => call(transform: v));
@@ -116,19 +106,7 @@ class RadialGradientUtility<T extends StyleElement>
   /// Utility for defining [RadialGradientDto.stops]
   late final stops = ListUtility<T, double>((v) => only(stops: v));
 
-  RadialGradientUtility(super.builder)
-    : super(
-        valueToDto: (v) => RadialGradientDto(
-          center: v.center,
-          radius: v.radius,
-          tileMode: v.tileMode,
-          focal: v.focal,
-          focalRadius: v.focalRadius,
-          transform: v.transform,
-          colors: v.colors.isNotEmpty ? v.colors : null,
-          stops: v.stops,
-        ),
-      );
+  RadialGradientUtility(super.builder) : super(valueToDto: RadialGradientDto.value);
 
   T call({
     AlignmentGeometry? center,
@@ -191,10 +169,10 @@ class SweepGradientUtility<T extends StyleElement>
   late final center = AlignmentGeometryUtility((v) => only(center: v));
 
   /// Utility for defining [SweepGradientDto.startAngle]
-  late final startAngle = DoubleUtility((v) => only(startAngle: v));
+  late final startAngle = DoubleUtility((prop) => only(startAngle: prop.value));
 
   /// Utility for defining [SweepGradientDto.endAngle]
-  late final endAngle = DoubleUtility((v) => only(endAngle: v));
+  late final endAngle = DoubleUtility((prop) => only(endAngle: prop.value));
 
   /// Utility for defining [SweepGradientDto.tileMode]
   late final tileMode = TileModeUtility((v) => only(tileMode: v));
@@ -208,18 +186,7 @@ class SweepGradientUtility<T extends StyleElement>
   /// Utility for defining [SweepGradientDto.stops]
   late final stops = ListUtility<T, double>((v) => only(stops: v));
 
-  SweepGradientUtility(super.builder)
-    : super(
-        valueToDto: (v) => SweepGradientDto(
-          center: v.center,
-          startAngle: v.startAngle,
-          endAngle: v.endAngle,
-          tileMode: v.tileMode,
-          transform: v.transform,
-          colors: v.colors.isNotEmpty ? v.colors : null,
-          stops: v.stops,
-        ),
-      );
+  SweepGradientUtility(super.builder) : super(valueToDto: SweepGradientDto.value);
 
   T call({
     AlignmentGeometry? center,

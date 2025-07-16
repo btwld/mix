@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
+import '../../core/prop_utility.dart';
 
 // Note: MixableDirective and private implementations are now in core/element.dart
 
@@ -220,74 +221,70 @@ final class DurationUtility<T extends StyleElement>
   T call(Duration value) => builder(value);
 }
 
-final class FontSizeUtility<T extends StyleElement> extends SizingUtility<T> {
+final class FontSizeUtility<T extends StyleElement> extends PropUtility<T, double> {
   const FontSizeUtility(super.builder);
 }
 
 final class FontWeightUtility<T extends StyleElement>
-    extends MixUtility<T, FontWeight> {
+    extends PropUtility<T, FontWeight> {
   const FontWeightUtility(super.builder);
 
   /// Creates a [StyleElement] instance with [FontWeight.w100] value.
-  T w100() => builder(FontWeight.w100);
+  T w100() => builder(Prop.fromValue(FontWeight.w100));
 
   /// Creates a [StyleElement] instance with [FontWeight.w200] value.
-  T w200() => builder(FontWeight.w200);
+  T w200() => builder(Prop.fromValue(FontWeight.w200));
 
   /// Creates a [StyleElement] instance with [FontWeight.w300] value.
-  T w300() => builder(FontWeight.w300);
+  T w300() => builder(Prop.fromValue(FontWeight.w300));
 
   /// Creates a [StyleElement] instance with [FontWeight.w400] value.
-  T w400() => builder(FontWeight.w400);
+  T w400() => builder(Prop.fromValue(FontWeight.w400));
 
   /// Creates a [StyleElement] instance with [FontWeight.w500] value.
-  T w500() => builder(FontWeight.w500);
+  T w500() => builder(Prop.fromValue(FontWeight.w500));
 
   /// Creates a [StyleElement] instance with [FontWeight.w600] value.
-  T w600() => builder(FontWeight.w600);
+  T w600() => builder(Prop.fromValue(FontWeight.w600));
 
   /// Creates a [StyleElement] instance with [FontWeight.w700] value.
-  T w700() => builder(FontWeight.w700);
+  T w700() => builder(Prop.fromValue(FontWeight.w700));
 
   /// Creates a [StyleElement] instance with [FontWeight.w800] value.
-  T w800() => builder(FontWeight.w800);
+  T w800() => builder(Prop.fromValue(FontWeight.w800));
 
   /// Creates a [StyleElement] instance with [FontWeight.w900] value.
-  T w900() => builder(FontWeight.w900);
+  T w900() => builder(Prop.fromValue(FontWeight.w900));
 
   /// Creates a [StyleElement] instance with [FontWeight.normal] value.
-  T normal() => builder(FontWeight.normal);
+  T normal() => builder(Prop.fromValue(FontWeight.normal));
 
   /// Creates a [StyleElement] instance with [FontWeight.bold] value.
-  T bold() => builder(FontWeight.bold);
+  T bold() => builder(Prop.fromValue(FontWeight.bold));
 
-  /// Creates a [StyleElement] instance with the specified FontWeight value.
-  T call(FontWeight value) => builder(value);
 }
 
 final class TextDecorationUtility<T extends StyleElement>
-    extends MixUtility<T, TextDecoration> {
+    extends PropUtility<T, TextDecoration> {
   const TextDecorationUtility(super.builder);
 
   /// Creates a [StyleElement] instance with [TextDecoration.none] value.
-  T none() => builder(TextDecoration.none);
+  T none() => builder(Prop.fromValue(TextDecoration.none));
 
   /// Creates a [StyleElement] instance with [TextDecoration.underline] value.
-  T underline() => builder(TextDecoration.underline);
+  T underline() => builder(Prop.fromValue(TextDecoration.underline));
 
   /// Creates a [StyleElement] instance with [TextDecoration.overline] value.
-  T overline() => builder(TextDecoration.overline);
+  T overline() => builder(Prop.fromValue(TextDecoration.overline));
 
   /// Creates a [StyleElement] instance with [TextDecoration.lineThrough] value.
-  T lineThrough() => builder(TextDecoration.lineThrough);
+  T lineThrough() => builder(Prop.fromValue(TextDecoration.lineThrough));
 
   /// Creates a [StyleElement] instance using the [TextDecoration.combine] constructor.
   T combine(List<TextDecoration> decorations) {
-    return builder(TextDecoration.combine(decorations));
+    return builder(Prop.fromValue(TextDecoration.combine(decorations)));
   }
 
-  /// Creates a [StyleElement] instance with the specified TextDecoration value.
-  T call(TextDecoration value) => builder(value);
 }
 
 final class CurveUtility<T extends StyleElement> extends MixUtility<T, Curve> {
@@ -519,12 +516,12 @@ final class RectUtility<T extends StyleElement> extends MixUtility<T, Rect> {
 }
 
 final class PaintUtility<T extends StyleElement>
-    extends ScalarUtility<T, Paint> {
+    extends PropUtility<T, Paint> {
   const PaintUtility(super.builder);
 }
 
 final class LocaleUtility<T extends StyleElement>
-    extends ScalarUtility<T, Locale> {
+    extends PropUtility<T, Locale> {
   const LocaleUtility(super.builder);
 }
 
@@ -641,11 +638,8 @@ final class TextScalerUtility<T extends StyleElement>
 }
 
 final class TableColumnWidthUtility<T extends StyleElement>
-    extends MixUtility<T, TableColumnWidth> {
+    extends PropUtility<T, TableColumnWidth> {
   const TableColumnWidthUtility(super.builder);
-
-  /// Creates a [StyleElement] instance with the specified TableColumnWidth value.
-  T call(TableColumnWidth value) => builder(value);
 }
 
 class TableBorderUtility<T extends StyleElement>
@@ -689,12 +683,12 @@ class TableBorderUtility<T extends StyleElement>
 }
 
 final class StrokeAlignUtility<T extends StyleElement>
-    extends ScalarUtility<T, double> {
+    extends PropUtility<T, double> {
   const StrokeAlignUtility(super.builder);
 
-  T center() => builder(0);
-  T inside() => builder(-1);
-  T outside() => builder(1);
+  T center() => builder(Prop.fromValue(0));
+  T inside() => builder(Prop.fromValue(-1));
+  T outside() => builder(Prop.fromValue(1));
 }
 
 // Extension removed - token() method is now built into RadiusUtility

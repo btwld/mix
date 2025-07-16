@@ -8,7 +8,9 @@ import '../../core/spec_widget.dart';
 import '../../core/styled_widget.dart';
 import '../../modifiers/internal/render_widget_modifier.dart';
 import '../box/box_spec.dart';
+import '../box/box_widget.dart';
 import '../flex/flex_spec.dart';
+import '../flex/flex_widget.dart';
 import 'flexbox_spec.dart';
 
 /// A styled flex container widget combining box and flex capabilities.
@@ -61,13 +63,17 @@ class FlexBox extends StyledWidget {
         final flexSpec = spec?.flex ?? FlexSpec.of(context);
 
         final newSpec = FlexBoxSpec(
-          animated: spec?.animated,
           modifiers: spec?.modifiers,
           box: boxSpec,
           flex: flexSpec,
         );
 
-        return newSpec(direction: direction, children: children);
+        return FlexBoxSpecWidget(
+          spec: newSpec,
+          direction: direction,
+          orderOfModifiers: orderOfModifiers,
+          children: children,
+        );
       },
     );
   }
@@ -96,9 +102,14 @@ class FlexBoxSpecWidget extends SpecWidget<FlexBoxSpec> {
     return RenderSpecModifiers(
       spec: spec,
       orderOfModifiers: orderOfModifiers,
-      child: spec.box(
+      child: BoxSpecWidget(
+        spec: spec.box,
         orderOfModifiers: orderOfModifiers,
-        child: spec.flex(direction: direction, children: children),
+        child: FlexSpecWidget(
+          spec: spec.flex,
+          direction: direction,
+          children: children,
+        ),
       ),
     );
   }

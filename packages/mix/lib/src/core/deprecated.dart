@@ -19,8 +19,6 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-import '../attributes/animation/animated_config_dto.dart';
-import '../attributes/animation/animation_config.dart';
 import '../attributes/border/border_dto.dart';
 import '../attributes/border/border_radius_dto.dart';
 import '../attributes/border/shape_border_dto.dart';
@@ -104,8 +102,6 @@ typedef RadiusDto = Mix<Radius>;
 @Deprecated('Use MixContext instead. This will be removed in version 2.0')
 typedef MixData = MixContext;
 
-@Deprecated('Use AnimationConfig instead. This will be removed in version 2.0')
-typedef AnimatedData = AnimationConfig;
 
 // =============================================================================
 // WIDGET STATE DEPRECATIONS
@@ -334,18 +330,6 @@ typedef PaddingModifierUtility = PaddingModifierSpecUtility;
 /// Deprecated: Use PaddingModifierSpec instead
 @Deprecated('Use PaddingModifierSpec instead')
 typedef PaddingSpec = PaddingModifierSpec;
-
-// =============================================================================
-// DEPRECATED EXTENSIONS
-// =============================================================================
-
-/// Deprecated extension for AnimationConfig conversion
-extension AnimationConfigMixExtDeprecated on AnimationConfig {
-  @Deprecated('Use AnimationConfigDto.value(this) directly instead of toDto()')
-  AnimationConfigDto toDto() {
-    return AnimationConfigDto(duration: duration, curve: curve, onEnd: onEnd);
-  }
-}
 
 /// Deprecated extension for Color conversion
 extension DeprecatedColorExt on Color {

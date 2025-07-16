@@ -1,9 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../attributes/animation/animated_config_dto.dart';
-import '../../attributes/animation/animated_util.dart';
-import '../../attributes/animation/animation_config.dart';
 import '../../attributes/color/color_util.dart';
 import '../../attributes/enum/enum_util.dart';
 import '../../attributes/modifiers/widget_modifiers_config.dart';
@@ -17,7 +14,6 @@ import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/spec.dart';
 import '../../core/utility.dart';
-import 'image_widget.dart';
 
 final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
   final double? width, height;
@@ -40,7 +36,6 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
     this.centerSlice,
     this.filterQuality,
     this.colorBlendMode,
-    super.animated,
     super.modifiers,
   });
 
@@ -53,51 +48,6 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
     return ComputedStyle.specOf(context) ?? const ImageSpec();
   }
 
-  Widget call({
-    required ImageProvider<Object> image,
-    ImageFrameBuilder? frameBuilder,
-    ImageLoadingBuilder? loadingBuilder,
-    ImageErrorWidgetBuilder? errorBuilder,
-    String? semanticLabel,
-    bool excludeFromSemantics = false,
-    bool gaplessPlayback = false,
-    bool isAntiAlias = false,
-    bool matchTextDirection = false,
-    Animation<double>? opacity,
-    List<Type> orderOfModifiers = const [],
-  }) {
-    return isAnimated
-        ? AnimatedImageSpecWidget(
-            spec: this,
-            image: image,
-            frameBuilder: frameBuilder,
-            loadingBuilder: loadingBuilder,
-            errorBuilder: errorBuilder,
-            semanticLabel: semanticLabel,
-            excludeFromSemantics: excludeFromSemantics,
-            duration: animated!.duration,
-            curve: animated!.curve,
-            gaplessPlayback: gaplessPlayback,
-            isAntiAlias: isAntiAlias,
-            matchTextDirection: matchTextDirection,
-            orderOfModifiers: orderOfModifiers,
-            opacity: opacity,
-          )
-        : ImageSpecWidget(
-            spec: this,
-            orderOfModifiers: orderOfModifiers,
-            image: image,
-            frameBuilder: frameBuilder,
-            loadingBuilder: loadingBuilder,
-            errorBuilder: errorBuilder,
-            semanticLabel: semanticLabel,
-            excludeFromSemantics: excludeFromSemantics,
-            gaplessPlayback: gaplessPlayback,
-            isAntiAlias: isAntiAlias,
-            opacity: opacity,
-            matchTextDirection: matchTextDirection,
-          );
-  }
 
   @override
   ImageSpec copyWith({
@@ -110,7 +60,6 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
     Rect? centerSlice,
     FilterQuality? filterQuality,
     BlendMode? colorBlendMode,
-    AnimationConfig? animated,
     WidgetModifiersConfig? modifiers,
   }) {
     return ImageSpec(
@@ -123,7 +72,6 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
       centerSlice: centerSlice ?? this.centerSlice,
       filterQuality: filterQuality ?? this.filterQuality,
       colorBlendMode: colorBlendMode ?? this.colorBlendMode,
-      animated: animated ?? this.animated,
       modifiers: modifiers ?? this.modifiers,
     );
   }
@@ -142,7 +90,6 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
       centerSlice: Rect.lerp(centerSlice, other.centerSlice, t),
       filterQuality: t < 0.5 ? filterQuality : other.filterQuality,
       colorBlendMode: t < 0.5 ? colorBlendMode : other.colorBlendMode,
-      animated: animated ?? other.animated,
       modifiers: other.modifiers,
     );
   }
@@ -168,9 +115,6 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
       DiagnosticsProperty('colorBlendMode', colorBlendMode, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('animated', animated, defaultValue: null),
-    );
-    properties.add(
       DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
     );
   }
@@ -186,14 +130,13 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
     centerSlice,
     filterQuality,
     colorBlendMode,
-    animated,
     modifiers,
   ];
 }
 
 class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
-  final double? width;
-  final double? height;
+  final Prop<double>? width;
+  final Prop<double>? height;
   final Prop<Color>? color;
   final ImageRepeat? repeat;
   final BoxFit? fit;
@@ -213,7 +156,6 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
     this.centerSlice,
     this.filterQuality,
     this.colorBlendMode,
-    super.animated,
     super.modifiers,
   });
 
@@ -228,12 +170,11 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
     Rect? centerSlice,
     FilterQuality? filterQuality,
     BlendMode? colorBlendMode,
-    AnimationConfigDto? animated,
     WidgetModifiersConfigDto? modifiers,
   }) {
     return ImageSpecAttribute.props(
-      width: width,
-      height: height,
+      width: Prop.maybeValue(width),
+      height: Prop.maybeValue(height),
       color: Prop.maybeValue(color),
       repeat: repeat,
       fit: fit,
@@ -241,7 +182,6 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
       centerSlice: centerSlice,
       filterQuality: filterQuality,
       colorBlendMode: colorBlendMode,
-      animated: animated,
       modifiers: modifiers,
     );
   }
@@ -256,8 +196,8 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
   /// ```
   static ImageSpecAttribute value(ImageSpec spec) {
     return ImageSpecAttribute.props(
-      width: spec.width,
-      height: spec.height,
+      width: Prop.maybeValue(spec.width),
+      height: Prop.maybeValue(spec.height),
       color: Prop.maybeValue(spec.color),
       repeat: spec.repeat,
       fit: spec.fit,
@@ -265,7 +205,6 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
       centerSlice: spec.centerSlice,
       filterQuality: spec.filterQuality,
       colorBlendMode: spec.colorBlendMode,
-      animated: AnimationConfigDto.maybeValue(spec.animated),
       modifiers: WidgetModifiersConfigDto.maybeValue(spec.modifiers),
     );
   }
@@ -285,8 +224,8 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
   @override
   ImageSpec resolve(MixContext context) {
     return ImageSpec(
-      width: width,
-      height: height,
+      width: width?.resolve(context),
+      height: height?.resolve(context),
       color: color?.resolve(context),
       repeat: repeat,
       fit: fit,
@@ -294,7 +233,6 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
       centerSlice: centerSlice,
       filterQuality: filterQuality,
       colorBlendMode: colorBlendMode,
-      animated: animated?.resolve(context) ?? context.animation,
       modifiers: modifiers?.resolve(context),
     );
   }
@@ -304,8 +242,8 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
     if (other == null) return this;
 
     return ImageSpecAttribute.props(
-      width: other.width ?? width,
-      height: other.height ?? height,
+      width: width?.merge(other.width) ?? other.width,
+      height: height?.merge(other.height) ?? other.height,
       color: color?.merge(other.color) ?? other.color,
       repeat: other.repeat ?? repeat,
       fit: other.fit ?? fit,
@@ -313,7 +251,6 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
       centerSlice: other.centerSlice ?? centerSlice,
       filterQuality: other.filterQuality ?? filterQuality,
       colorBlendMode: other.colorBlendMode ?? colorBlendMode,
-      animated: animated?.merge(other.animated) ?? other.animated,
       modifiers: modifiers?.merge(other.modifiers) ?? other.modifiers,
     );
   }
@@ -339,9 +276,6 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
       DiagnosticsProperty('colorBlendMode', colorBlendMode, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('animated', animated, defaultValue: null),
-    );
-    properties.add(
       DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
     );
   }
@@ -357,16 +291,17 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
     centerSlice,
     filterQuality,
     colorBlendMode,
-    animated,
     modifiers,
   ];
 }
 
 class ImageSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, ImageSpecAttribute> {
-  late final width = DoubleUtility((v) => only(width: v));
-  late final height = DoubleUtility((v) => only(height: v));
-  late final color = ColorUtility((prop) => builder(ImageSpecAttribute.props(color: prop)));
+  late final width = DoubleUtility((prop) => builder(ImageSpecAttribute.props(width: prop)));
+  late final height = DoubleUtility((prop) => builder(ImageSpecAttribute.props(height: prop)));
+  late final color = ColorUtility(
+    (prop) => builder(ImageSpecAttribute.props(color: prop)),
+  );
   late final repeat = ImageRepeatUtility((v) => only(repeat: v));
   late final fit = BoxFitUtility((v) => only(fit: v));
   late final alignment = AlignmentGeometryUtility((v) => only(alignment: v));
@@ -375,7 +310,6 @@ class ImageSpecUtility<T extends SpecAttribute>
     (v) => only(filterQuality: v),
   );
   late final colorBlendMode = BlendModeUtility((v) => only(colorBlendMode: v));
-  late final animated = AnimatedUtility((v) => only(animated: v));
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
   ImageSpecUtility(super.builder);
@@ -400,7 +334,6 @@ class ImageSpecUtility<T extends SpecAttribute>
     Rect? centerSlice,
     FilterQuality? filterQuality,
     BlendMode? colorBlendMode,
-    AnimationConfigDto? animated,
     WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(
@@ -414,7 +347,6 @@ class ImageSpecUtility<T extends SpecAttribute>
         centerSlice: centerSlice,
         filterQuality: filterQuality,
         colorBlendMode: colorBlendMode,
-        animated: animated,
         modifiers: modifiers,
       ),
     );

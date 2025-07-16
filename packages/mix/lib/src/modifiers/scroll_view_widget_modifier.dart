@@ -99,7 +99,7 @@ final class ScrollViewModifierSpec
 final class ScrollViewModifierSpecUtility<T extends StyleElement>
     extends MixUtility<T, ScrollViewModifierSpecAttribute> {
   /// Make the scroll view reverse or not.
-  late final reverse = BoolUtility((reverse) => call(reverse: reverse));
+  late final reverse = BoolUtility((prop) => call(reverse: prop.value));
 
   /// Set the padding of the scroll view.
   late final padding = EdgeInsetsGeometryUtility(

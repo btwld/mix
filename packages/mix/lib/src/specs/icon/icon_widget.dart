@@ -33,11 +33,12 @@ class StyledIcon extends StyledWidget {
       builder: (context) {
         final spec = IconSpec.of(context);
 
-        return spec(
+        return IconSpecWidget(
           icon,
+          spec: spec,
           semanticLabel: semanticLabel,
-          orderOfModifiers: orderOfModifiers,
           textDirection: textDirection,
+          orderOfModifiers: orderOfModifiers,
         );
       },
     );

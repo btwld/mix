@@ -69,16 +69,14 @@ void main() {
         fit: StackFit.expand,
         textDirection: TextDirection.ltr,
         clipBehavior: Clip.antiAlias,
-        animated: AnimationConfigDto.withDefaults(),
       );
       final props = attribute.props;
 
-      expect(props.length, 6);
+      expect(props.length, 5);
       expect(props[0], Alignment.center);
       expect(props[1], StackFit.expand);
       expect(props[2], TextDirection.ltr);
       expect(props[3], Clip.antiAlias);
-      expect(props[4], AnimationConfigDto.withDefaults());
     });
   });
 }

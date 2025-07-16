@@ -115,22 +115,12 @@ class _MixBuilderState extends State<MixBuilder> {
             // Apply modifiers
             final modifiers = computedStyle.modifiers;
             if (modifiers.isNotEmpty) {
-              child = computedStyle.isAnimated
-                  ? RenderAnimatedModifiers(
-                      modifiers: modifiers,
-                      duration: computedStyle.animation!.duration,
-                      mix: mix,
-                      orderOfModifiers: widget.orderOfModifiers,
-                      curve: computedStyle.animation!.curve,
-                      onEnd: computedStyle.animation!.onEnd,
-                      child: child,
-                    )
-                  : RenderModifiers(
-                      modifiers: modifiers,
-                      mix: mix,
-                      orderOfModifiers: widget.orderOfModifiers,
-                      child: child,
-                    );
+              child = RenderModifiers(
+                modifiers: modifiers,
+                mix: mix,
+                orderOfModifiers: widget.orderOfModifiers,
+                child: child,
+              );
             }
 
             return child;

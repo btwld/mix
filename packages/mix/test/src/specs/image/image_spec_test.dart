@@ -98,7 +98,6 @@ void main() {
         centerSlice: Rect.zero,
         filterQuality: FilterQuality.low,
         colorBlendMode: BlendMode.srcOver,
-        animated: AnimationConfig.withDefaults(),
       );
 
       T getValueOf<T>(T field) => (spec.props[spec.props.indexOf(field)]) as T;
@@ -113,8 +112,8 @@ void main() {
       expect(getValueOf(spec.filterQuality), FilterQuality.low);
       expect(getValueOf(spec.colorBlendMode), BlendMode.srcOver);
       expect(getValueOf(spec.modifiers), null);
-      expect(getValueOf(spec.animated), const AnimationConfig.withDefaults());
-      expect(spec.props.length, 11);
+
+      expect(spec.props.length, 10);
     });
   });
 

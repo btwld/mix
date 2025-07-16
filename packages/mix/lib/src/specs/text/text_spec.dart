@@ -1,9 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../attributes/animation/animated_config_dto.dart';
-import '../../attributes/animation/animated_util.dart';
-import '../../attributes/animation/animation_config.dart';
 import '../../attributes/enum/enum_util.dart';
 import '../../attributes/modifiers/widget_modifiers_config.dart';
 import '../../attributes/modifiers/widget_modifiers_config_dto.dart';
@@ -20,10 +17,10 @@ import '../../core/directive.dart';
 import '../../core/factory/mix_context.dart';
 import '../../core/factory/style_mix.dart';
 import '../../core/helpers.dart';
+import '../../core/prop.dart';
 import '../../core/spec.dart';
 import '../../core/utility.dart';
 import 'text_directives_util.dart';
-import 'text_widget.dart';
 
 final class TextSpec extends Spec<TextSpec> with Diagnosticable {
   final TextOverflow? overflow;
@@ -53,7 +50,6 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     this.textDirection,
     this.softWrap,
     this.directive,
-    super.animated,
     super.modifiers,
   });
 
@@ -79,31 +75,6 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     return ComputedStyle.specOf(context) ?? const TextSpec();
   }
 
-  Widget call(
-    String text, {
-    @Deprecated('Use semanticsLabel instead') String? semanticLabel,
-    String? semanticsLabel,
-    Locale? locale,
-    List<Type> orderOfModifiers = const [],
-  }) {
-    return isAnimated
-        ? AnimatedTextSpecWidget(
-            text,
-            spec: this,
-            semanticsLabel: semanticsLabel ?? semanticLabel,
-            locale: locale,
-            orderOfModifiers: orderOfModifiers,
-            duration: animated!.duration,
-            curve: animated!.curve,
-          )
-        : TextSpecWidget(
-            text,
-            spec: this,
-            semanticsLabel: semanticsLabel ?? semanticLabel,
-            locale: locale,
-            orderOfModifiers: orderOfModifiers,
-          );
-  }
 
   /// Creates a copy of this [TextSpec] but with the given fields
   /// replaced with the new values.
@@ -120,7 +91,6 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     TextDirection? textDirection,
     bool? softWrap,
     TextDirective? directive,
-    AnimationConfig? animated,
     WidgetModifiersConfig? modifiers,
   }) {
     return TextSpec(
@@ -135,7 +105,6 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
       textDirection: textDirection ?? this.textDirection,
       softWrap: softWrap ?? this.softWrap,
       directive: directive ?? this.directive,
-      animated: animated ?? this.animated,
       modifiers: modifiers ?? this.modifiers,
     );
   }
@@ -176,7 +145,6 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
       textDirection: t < 0.5 ? textDirection : other.textDirection,
       softWrap: t < 0.5 ? softWrap : other.softWrap,
       directive: t < 0.5 ? directive : other.directive,
-      animated: animated ?? other.animated,
       modifiers: other.modifiers,
     );
   }
@@ -221,9 +189,6 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
       DiagnosticsProperty('directive', directive, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('animated', animated, defaultValue: null),
-    );
-    properties.add(
       DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
     );
   }
@@ -245,7 +210,6 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     textDirection,
     softWrap,
     directive,
-    animated,
     modifiers,
   ];
 }
@@ -262,15 +226,32 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
   final StrutStyleDto? strutStyle;
   final TextAlign? textAlign;
   final TextScaler? textScaler;
-  final int? maxLines;
+  final Prop<int>? maxLines;
   final TextStyleDto? style;
   final TextWidthBasis? textWidthBasis;
   final TextHeightBehaviorDto? textHeightBehavior;
   final TextDirection? textDirection;
-  final bool? softWrap;
+  final Prop<bool>? softWrap;
   final TextDirectiveDto? directive;
 
-  const TextSpecAttribute({
+  TextSpecAttribute({
+    this.overflow,
+    this.strutStyle,
+    this.textAlign,
+    this.textScaler,
+    int? maxLines,
+    this.style,
+    this.textWidthBasis,
+    this.textHeightBehavior,
+    this.textDirection,
+    bool? softWrap,
+    this.directive,
+    super.modifiers,
+  }) : maxLines = maxLines != null ? Prop.fromValue(maxLines) : null,
+       softWrap = softWrap != null ? Prop.fromValue(softWrap) : null;
+
+  /// Constructor that accepts Prop values directly
+  const TextSpecAttribute.props({
     this.overflow,
     this.strutStyle,
     this.textAlign,
@@ -282,7 +263,6 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
     this.textDirection,
     this.softWrap,
     this.directive,
-    super.animated,
     super.modifiers,
   });
 
@@ -295,19 +275,18 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
   /// final attr = TextSpecAttribute.value(spec);
   /// ```
   static TextSpecAttribute value(TextSpec spec) {
-    return TextSpecAttribute(
+    return TextSpecAttribute.props(
       overflow: spec.overflow,
       strutStyle: StrutStyleDto.maybeValue(spec.strutStyle),
       textAlign: spec.textAlign,
       textScaler: spec.textScaler,
-      maxLines: spec.maxLines,
+      maxLines: Prop.maybeValue(spec.maxLines),
       style: TextStyleDto.maybeValue(spec.style),
       textWidthBasis: spec.textWidthBasis,
       textHeightBehavior: TextHeightBehaviorDto.maybeValue(spec.textHeightBehavior),
       textDirection: spec.textDirection,
-      softWrap: spec.softWrap,
+      softWrap: Prop.maybeValue(spec.softWrap),
       directive: TextDirectiveDto.maybeValue(spec.directive),
-      animated: AnimationConfigDto.maybeValue(spec.animated),
       modifiers: WidgetModifiersConfigDto.maybeValue(spec.modifiers),
     );
   }
@@ -339,14 +318,13 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
       strutStyle: strutStyle?.resolve(context),
       textAlign: textAlign,
       textScaler: textScaler,
-      maxLines: maxLines,
+      maxLines: maxLines?.resolve(context),
       style: style?.resolve(context),
       textWidthBasis: textWidthBasis,
       textHeightBehavior: textHeightBehavior?.resolve(context),
       textDirection: textDirection,
-      softWrap: softWrap,
+      softWrap: softWrap?.resolve(context),
       directive: directive?.resolve(context),
-      animated: animated?.resolve(context),
       modifiers: modifiers?.resolve(context),
     );
   }
@@ -363,21 +341,20 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
   TextSpecAttribute merge(TextSpecAttribute? other) {
     if (other == null) return this;
 
-    return TextSpecAttribute(
+    return TextSpecAttribute.props(
       overflow: other.overflow ?? overflow,
       strutStyle: strutStyle?.merge(other.strutStyle) ?? other.strutStyle,
       textAlign: other.textAlign ?? textAlign,
       textScaler: other.textScaler ?? textScaler,
-      maxLines: other.maxLines ?? maxLines,
+      maxLines: maxLines?.merge(other.maxLines) ?? other.maxLines,
       style: style?.merge(other.style) ?? other.style,
       textWidthBasis: other.textWidthBasis ?? textWidthBasis,
       textHeightBehavior:
           textHeightBehavior?.merge(other.textHeightBehavior) ??
           other.textHeightBehavior,
       textDirection: other.textDirection ?? textDirection,
-      softWrap: other.softWrap ?? softWrap,
+      softWrap: softWrap?.merge(other.softWrap) ?? other.softWrap,
       directive: directive?.merge(other.directive) ?? other.directive,
-      animated: animated?.merge(other.animated) ?? other.animated,
       modifiers: modifiers?.merge(other.modifiers) ?? other.modifiers,
     );
   }
@@ -422,9 +399,6 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
       DiagnosticsProperty('directive', directive, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('animated', animated, defaultValue: null),
-    );
-    properties.add(
       DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
     );
   }
@@ -446,7 +420,6 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
     textDirection,
     softWrap,
     directive,
-    animated,
     modifiers,
   ];
 }
@@ -470,7 +443,7 @@ class TextSpecUtility<T extends SpecAttribute>
   late final textScaler = TextScalerUtility((v) => only(textScaler: v));
 
   /// Utility for defining [TextSpecAttribute.maxLines]
-  late final maxLines = IntUtility((v) => only(maxLines: v));
+  late final maxLines = IntUtility((prop) => builder(TextSpecAttribute.props(maxLines: prop)));
 
   /// Utility for defining [TextSpecAttribute.style]
   late final style = TextStyleUtility((v) => only(style: v));
@@ -554,7 +527,7 @@ class TextSpecUtility<T extends SpecAttribute>
   );
 
   /// Utility for defining [TextSpecAttribute.softWrap]
-  late final softWrap = BoolUtility((v) => only(softWrap: v));
+  late final softWrap = BoolUtility((prop) => builder(TextSpecAttribute.props(softWrap: prop)));
 
   /// Utility for defining [TextSpecAttribute.directive]
   late final directive = TextDirectiveUtility((v) => only(directive: v));
@@ -574,8 +547,6 @@ class TextSpecUtility<T extends SpecAttribute>
   /// Utility for defining [TextSpecAttribute.directive.sentenceCase]
   late final sentenceCase = directive.sentenceCase;
 
-  /// Utility for defining [TextSpecAttribute.animated]
-  late final animated = AnimatedUtility((v) => only(animated: v));
 
   /// Utility for defining [TextSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
@@ -605,7 +576,6 @@ class TextSpecUtility<T extends SpecAttribute>
     TextDirection? textDirection,
     bool? softWrap,
     TextDirectiveDto? directive,
-    AnimationConfigDto? animated,
     WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(
@@ -621,7 +591,6 @@ class TextSpecUtility<T extends SpecAttribute>
         textDirection: textDirection,
         softWrap: softWrap,
         directive: directive,
-        animated: animated,
         modifiers: modifiers,
       ),
     );

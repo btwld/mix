@@ -154,7 +154,7 @@ final class FlexibleModifierSpecUtility<T extends StyleElement>
     extends MixUtility<T, FlexibleModifierSpecAttribute> {
   const FlexibleModifierSpecUtility(super.builder);
   FlexFitUtility<T> get fit => FlexFitUtility((fit) => call(fit: fit));
-  IntUtility<T> get flex => IntUtility((flex) => call(flex: flex));
+  IntUtility<T> get flex => IntUtility((prop) => call(flex: prop.value));
   T tight({int? flex}) =>
       builder(FlexibleModifierSpecAttribute(flex: flex, fit: FlexFit.tight));
   T loose({int? flex}) =>

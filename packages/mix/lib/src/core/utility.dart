@@ -1,4 +1,5 @@
 import 'mix_element.dart';
+import 'prop_utility.dart';
 
 abstract class MixUtility<Attr extends StyleElement, Value> {
   final Attr Function(Value) builder;
@@ -26,13 +27,6 @@ class GenericUtility<Attr extends StyleElement, Value>
   Attr call(Value value) => builder(value);
 }
 
-abstract class ScalarUtility<Return extends StyleElement, V>
-    extends MixUtility<Return, V> {
-  const ScalarUtility(super.builder);
-
-  Return call(V value) => builder(value);
-}
-
 base class ListUtility<T extends StyleElement, V>
     extends MixUtility<T, List<V>> {
   const ListUtility(super.builder);
@@ -41,58 +35,54 @@ base class ListUtility<T extends StyleElement, V>
 }
 
 final class StringUtility<T extends StyleElement>
-    extends ScalarUtility<T, String> {
+    extends PropUtility<T, String> {
   const StringUtility(super.builder);
 }
 
 /// A utility class for creating [StyleElement] instances from [double] values.
 ///
-/// This class extends [ScalarUtility] and provides methods to create [StyleElement] instances
+/// This class extends [PropUtility] and provides methods to create [StyleElement] instances
 /// from predefined [double] values or custom [double] values.
 final class DoubleUtility<T extends StyleElement>
-    extends ScalarUtility<T, double> {
+    extends PropUtility<T, double> {
   const DoubleUtility(super.builder);
 
   /// Creates an [StyleElement] instance with a value of 0.
-  T zero() => builder(0);
+  T zero() => call(0);
 
   /// Creates an [StyleElement] instance with a value of [double.infinity].
-  T infinity() => builder(double.infinity);
+  T infinity() => call(double.infinity);
 }
 
 /// A utility class for creating [StyleElement] instances from [int] values.
 ///
-/// This class extends [ScalarUtility] and provides methods to create [StyleElement] instances
+/// This class extends [PropUtility] and provides methods to create [StyleElement] instances
 /// from predefined [int] values or custom [int] values.
-final class IntUtility<T extends StyleElement> extends ScalarUtility<T, int> {
+final class IntUtility<T extends StyleElement> extends PropUtility<T, int> {
   const IntUtility(super.builder);
 
   /// Creates an [StyleElement] instance with a value of 0.
-  T zero() => builder(0);
-
-  /// Creates an [StyleElement] instance from a custom [int] value.
-  @override
-  T call(int value) => builder(value);
+  T zero() => call(0);
 }
 
 /// A utility class for creating [StyleElement] instances from [bool] values.
 ///
-/// This class extends [ScalarUtility] and provides methods to create [StyleElement] instances
+/// This class extends [PropUtility] and provides methods to create [StyleElement] instances
 /// from predefined [bool] values or custom [bool] values.
-final class BoolUtility<T extends StyleElement> extends ScalarUtility<T, bool> {
+final class BoolUtility<T extends StyleElement> extends PropUtility<T, bool> {
   const BoolUtility(super.builder);
 
   /// Creates an [StyleElement] instance with a value of `true`.
-  T on() => builder(true);
+  T on() => call(true);
 
   /// Creates an [StyleElement] instance with a value of `false`.
-  T off() => builder(false);
+  T off() => call(false);
 }
 
 /// An abstract utility class for creating [StyleElement] instances from [double] values representing sizes.
 ///
-/// This class extends [DoubleUtility] and serves as a base for more specific sizing utilities.
+/// This class extends [PropUtility] and serves as a base for more specific sizing utilities.
 abstract base class SizingUtility<T extends StyleElement>
-    extends ScalarUtility<T, double> {
+    extends PropUtility<T, double> {
   const SizingUtility(super.builder);
 }

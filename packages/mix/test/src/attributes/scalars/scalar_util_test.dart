@@ -446,49 +446,49 @@ void main() {
   group('FontWeightUtility Tests', () {
     const utility = FontWeightUtility(UtilityTestAttribute.new);
     test('Properties are initialized correctly', () {
-      expect(utility.bold().value, isA<FontWeight>());
-      expect(utility.normal().value, isA<FontWeight>());
-      expect(utility.bold().value, FontWeight.bold);
-      expect(utility.normal().value, FontWeight.normal);
-      expect(utility.w100().value, isA<FontWeight>());
-      expect(utility.w200().value, isA<FontWeight>());
-      expect(utility.w300().value, isA<FontWeight>());
-      expect(utility.w400().value, isA<FontWeight>());
-      expect(utility.w500().value, isA<FontWeight>());
-      expect(utility.w600().value, isA<FontWeight>());
-      expect(utility.w700().value, isA<FontWeight>());
-      expect(utility.w800().value, isA<FontWeight>());
-      expect(utility.w900().value, isA<FontWeight>());
-      expect(utility.w100().value, FontWeight.w100);
-      expect(utility.w200().value, FontWeight.w200);
-      expect(utility.w300().value, FontWeight.w300);
-      expect(utility.w400().value, FontWeight.w400);
-      expect(utility.w500().value, FontWeight.w500);
-      expect(utility.w600().value, FontWeight.w600);
-      expect(utility.w700().value, FontWeight.w700);
-      expect(utility.w800().value, FontWeight.w800);
-      expect(utility.w900().value, FontWeight.w900);
+      expect(utility.bold().value, isA<Prop<FontWeight>>());
+      expect(utility.normal().value, isA<Prop<FontWeight>>());
+      expect(utility.bold().value.value, FontWeight.bold);
+      expect(utility.normal().value.value, FontWeight.normal);
+      expect(utility.w100().value, isA<Prop<FontWeight>>());
+      expect(utility.w200().value, isA<Prop<FontWeight>>());
+      expect(utility.w300().value, isA<Prop<FontWeight>>());
+      expect(utility.w400().value, isA<Prop<FontWeight>>());
+      expect(utility.w500().value, isA<Prop<FontWeight>>());
+      expect(utility.w600().value, isA<Prop<FontWeight>>());
+      expect(utility.w700().value, isA<Prop<FontWeight>>());
+      expect(utility.w800().value, isA<Prop<FontWeight>>());
+      expect(utility.w900().value, isA<Prop<FontWeight>>());
+      expect(utility.w100().value.value, FontWeight.w100);
+      expect(utility.w200().value.value, FontWeight.w200);
+      expect(utility.w300().value.value, FontWeight.w300);
+      expect(utility.w400().value.value, FontWeight.w400);
+      expect(utility.w500().value.value, FontWeight.w500);
+      expect(utility.w600().value.value, FontWeight.w600);
+      expect(utility.w700().value.value, FontWeight.w700);
+      expect(utility.w800().value.value, FontWeight.w800);
+      expect(utility.w900().value.value, FontWeight.w900);
     });
   });
 
   group('TextDecorationUtility Tests', () {
     const utility = TextDecorationUtility(UtilityTestAttribute.new);
     test('Properties are initialized correctly', () {
-      expect(utility.none().value, isA<TextDecoration>());
-      expect(utility.underline().value, isA<TextDecoration>());
-      expect(utility.overline().value, isA<TextDecoration>());
-      expect(utility.lineThrough().value, isA<TextDecoration>());
-      expect(utility.none().value, TextDecoration.none);
-      expect(utility.underline().value, TextDecoration.underline);
-      expect(utility.overline().value, TextDecoration.overline);
-      expect(utility.lineThrough().value, TextDecoration.lineThrough);
+      expect(utility.none().value, isA<Prop<TextDecoration>>());
+      expect(utility.underline().value, isA<Prop<TextDecoration>>());
+      expect(utility.overline().value, isA<Prop<TextDecoration>>());
+      expect(utility.lineThrough().value, isA<Prop<TextDecoration>>());
+      expect(utility.none().value.value, TextDecoration.none);
+      expect(utility.underline().value.value, TextDecoration.underline);
+      expect(utility.overline().value.value, TextDecoration.overline);
+      expect(utility.lineThrough().value.value, TextDecoration.lineThrough);
 
       expect(
         utility.combine([TextDecoration.underline]).value,
-        isA<TextDecoration>(),
+        isA<Prop<TextDecoration>>(),
       );
 
-      expect(utility(TextDecoration.underline).value, isA<TextDecoration>());
+      expect(utility(TextDecoration.underline).value, isA<Prop<TextDecoration>>());
     });
   });
 
@@ -936,7 +936,8 @@ void main() {
     const utility = PaintUtility(UtilityTestAttribute.new);
     test('PaintUtility returns correct instance', () {
       final paint = utility(Paint());
-      expect(paint.value, isA<Paint>());
+      expect(paint.value, isA<Prop<Paint>>());
+      expect(paint.value.value, isA<Paint>());
     });
   });
 
@@ -944,16 +945,18 @@ void main() {
     const utility = LocaleUtility(UtilityTestAttribute.new);
     test('LocaleUtility returns correct instance', () {
       final locale = utility(const Locale('en', 'US'));
-      expect(locale.value, isA<Locale>());
-      expect(locale.value.languageCode, 'en');
-      expect(locale.value.countryCode, 'US');
+      expect(locale.value, isA<Prop<Locale>>());
+      expect(locale.value.value, isA<Locale>());
+      expect(locale.value.value!.languageCode, 'en');
+      expect(locale.value.value!.countryCode, 'US');
     });
 
     test('LocaleUtility handles locale without country code', () {
       final locale = utility(const Locale('fr'));
-      expect(locale.value, isA<Locale>());
-      expect(locale.value.languageCode, 'fr');
-      expect(locale.value.countryCode, null);
+      expect(locale.value, isA<Prop<Locale>>());
+      expect(locale.value.value, isA<Locale>());
+      expect(locale.value.value!.languageCode, 'fr');
+      expect(locale.value.value!.countryCode, null);
     });
   });
 

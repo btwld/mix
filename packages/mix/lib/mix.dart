@@ -18,9 +18,6 @@
 
 library mix;
 
-export 'src/attributes/animation/animated_config_dto.dart';
-export 'src/attributes/animation/animated_util.dart';
-
 /// ATTRIBUTES
 export 'src/attributes/animation/animation_config.dart';
 export 'src/attributes/border/border_dto.dart';

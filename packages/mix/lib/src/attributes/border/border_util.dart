@@ -190,13 +190,15 @@ class BorderSideUtility<T extends StyleElement>
   );
 
   /// Utility for defining [BorderSideDto.strokeAlign]
-  late final strokeAlign = StrokeAlignUtility((v) => only(strokeAlign: v));
+  late final strokeAlign = StrokeAlignUtility(
+    (prop) => builder(BorderSideDto.props(strokeAlign: prop)),
+  );
 
   /// Utility for defining [BorderSideDto.style]
   late final style = BorderStyleUtility((v) => only(style: v));
 
   /// Utility for defining [BorderSideDto.width]
-  late final width = DoubleUtility((v) => only(width: v));
+  late final width = DoubleUtility((prop) => builder(BorderSideDto.props(width: prop)));
 
   BorderSideUtility(super.builder) : super(valueToDto: BorderSideDto.value);
 

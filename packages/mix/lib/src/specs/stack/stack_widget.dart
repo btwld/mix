@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/spec_widget.dart';
 import '../../core/animated_spec_widget.dart';
+import '../../core/spec_widget.dart';
 import '../../core/styled_widget.dart';
 import '../../modifiers/internal/render_widget_modifier.dart';
 import '../box/box_spec.dart';
@@ -39,7 +39,11 @@ class StyledStack extends StyledWidget {
     return withMix(context, (context) {
       final spec = StackSpec.of(context);
 
-      return spec(children: children);
+      return StackSpecWidget(
+        spec: spec,
+        orderOfModifiers: const [],
+        children: children,
+      );
     });
   }
 }
@@ -130,7 +134,15 @@ class ZBox extends StyledWidget {
         final boxSpec = BoxSpec.of(context);
         final stackSpec = StackSpec.of(context);
 
-        return boxSpec(child: stackSpec(children: children));
+        return BoxSpecWidget(
+          spec: boxSpec,
+          orderOfModifiers: [...orderOfModifiers],
+          child: StackSpecWidget(
+            spec: stackSpec,
+            orderOfModifiers: const [],
+            children: children,
+          ),
+        );
       },
     );
   }

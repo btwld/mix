@@ -44,10 +44,9 @@ void main() {
       });
 
       test('compute() merges multiple attributes of same type', () {
-        final computedStyle = _computeStyle(Style(
-          $box.color(Colors.blue),
-          $box.padding(16),
-        ));
+        final computedStyle = _computeStyle(
+          Style($box.color(Colors.blue), $box.padding(16)),
+        );
 
         final spec = computedStyle.getSpec<BoxSpec>();
         expect(spec, isNotNull);
@@ -56,11 +55,13 @@ void main() {
       });
 
       test('compute() resolves multiple spec types', () {
-        final computedStyle = _computeStyle(Style(
-          $box.color(Colors.red),
-          $text.style.fontSize(14),
-          $icon.size(24),
-        ));
+        final computedStyle = _computeStyle(
+          Style(
+            $box.color(Colors.red),
+            $text.style.fontSize(14),
+            $icon.size(24),
+          ),
+        );
 
         expect(computedStyle.getSpec<BoxSpec>(), isNotNull);
         expect(computedStyle.getSpec<TextSpec>(), isNotNull);
@@ -68,11 +69,9 @@ void main() {
       });
 
       test('compute() separates modifiers from specs', () {
-        final computedStyle = _computeStyle(Style(
-          $box.color(Colors.blue),
-          $with.scale(2.0),
-          $with.opacity(0.5),
-        ));
+        final computedStyle = _computeStyle(
+          Style($box.color(Colors.blue), $with.scale(2.0), $with.opacity(0.5)),
+        );
 
         expect(computedStyle.getSpec<BoxSpec>(), isNotNull);
         expect(computedStyle.modifiers.length, 2);
@@ -86,21 +85,19 @@ void main() {
           ),
         );
 
+        final animation = computedStyle.animation as ImplicitAnimationConfig;
+
         expect(computedStyle.isAnimated, isTrue);
-        expect(
-          computedStyle.animation?.duration,
-          const Duration(milliseconds: 300),
-        );
-        expect(computedStyle.animation?.curve, Curves.easeIn);
+        expect(animation.duration, const Duration(milliseconds: 300));
+        expect(animation.curve, Curves.easeIn);
       });
     });
 
     group('Spec Access', () {
       test('getSpec() returns correct spec type', () {
-        final computedStyle = _computeStyle(Style(
-          $box.color(Colors.blue),
-          $text.style.fontSize(16),
-        ));
+        final computedStyle = _computeStyle(
+          Style($box.color(Colors.blue), $text.style.fontSize(16)),
+        );
 
         expect(computedStyle.getSpec<BoxSpec>(), isA<BoxSpec>());
         expect(computedStyle.getSpec<TextSpec>(), isA<TextSpec>());
@@ -115,10 +112,9 @@ void main() {
       });
 
       test('debugSpecs provides unmodifiable map', () {
-        final computedStyle = _computeStyle(Style(
-          $box.color(Colors.red),
-          $text.style.fontSize(14),
-        ));
+        final computedStyle = _computeStyle(
+          Style($box.color(Colors.red), $text.style.fontSize(14)),
+        );
 
         final debugSpecs = computedStyle.debugSpecs;
         expect(debugSpecs.length, 2);
@@ -146,14 +142,13 @@ void main() {
       test('different content creates different ComputedStyles', () {
         final computedStyle1 = _computeStyle(Style($box.color(Colors.red)));
         final computedStyle2 = _computeStyle(Style($box.color(Colors.blue)));
-        final computedStyle3 = _computeStyle(Style(
-          $box.color(Colors.red),
-          $with.scale(2.0),
-        ));
+        final computedStyle3 = _computeStyle(
+          Style($box.color(Colors.red), $with.scale(2.0)),
+        );
         final computedStyle4 = _computeStyle(
-          Style($box.color(Colors.red)).animate(
-            duration: const Duration(seconds: 1),
-          ),
+          Style(
+            $box.color(Colors.red),
+          ).animate(duration: const Duration(seconds: 1)),
         );
 
         expect(computedStyle1, isNot(equals(computedStyle2)));
@@ -173,8 +168,9 @@ void main() {
       });
 
       test('handles style with only modifiers', () {
-        final computedStyle =
-            _computeStyle(Style($with.scale(2.0), $with.opacity(0.5)));
+        final computedStyle = _computeStyle(
+          Style($with.scale(2.0), $with.opacity(0.5)),
+        );
 
         expect(computedStyle.debugSpecs, isEmpty);
         expect(computedStyle.modifiers.length, 2);
@@ -186,10 +182,12 @@ void main() {
           Style().animate(duration: const Duration(seconds: 1)),
         );
 
+        final animation = computedStyle.animation as ImplicitAnimationConfig;
+
         expect(computedStyle.debugSpecs, isEmpty);
         expect(computedStyle.modifiers, isEmpty);
         expect(computedStyle.isAnimated, isTrue);
-        expect(computedStyle.animation?.duration, const Duration(seconds: 1));
+        expect(animation.duration, const Duration(seconds: 1));
       });
     });
   });

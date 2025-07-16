@@ -9,27 +9,19 @@ import 'strut_style_dto.dart';
 
 final class StrutStyleUtility<T extends StyleElement>
     extends DtoUtility<T, StrutStyleDto, StrutStyle> {
-  late final fontWeight = FontWeightUtility((v) => only(fontWeight: v));
+  late final fontWeight = FontWeightUtility(
+    (prop) => builder(StrutStyleDto.props(fontWeight: prop)),
+  );
 
   late final fontStyle = FontStyleUtility((v) => only(fontStyle: v));
 
-  late final fontSize = FontSizeUtility((v) => only(fontSize: v));
+  late final fontSize = FontSizeUtility(
+    (prop) => builder(StrutStyleDto.props(fontSize: prop)),
+  );
 
   late final fontFamily = FontFamilyUtility((v) => only(fontFamily: v));
 
-  StrutStyleUtility(super.builder)
-    : super(
-        valueToDto: (v) => StrutStyleDto(
-          fontFamily: v.fontFamily,
-          fontFamilyFallback: v.fontFamilyFallback,
-          fontSize: v.fontSize,
-          fontWeight: v.fontWeight,
-          fontStyle: v.fontStyle,
-          height: v.height,
-          leading: v.leading,
-          forceStrutHeight: v.forceStrutHeight,
-        ),
-      );
+  StrutStyleUtility(super.builder) : super(valueToDto: StrutStyleDto.value);
 
   T token(MixToken<StrutStyle> token) => throw UnimplementedError(
     'Token support for StrutStyle needs to be redesigned for the simplified DTO pattern',

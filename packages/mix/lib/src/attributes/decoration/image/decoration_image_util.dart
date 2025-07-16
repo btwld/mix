@@ -33,13 +33,12 @@ class DecorationImageUtility<T extends StyleElement>
   );
 
   /// Utility for defining [DecorationImageDto.invertColors]
-  late final invertColors = BoolUtility((v) => only(invertColors: v));
+  late final invertColors = BoolUtility((prop) => builder(DecorationImageDto.props(invertColors: prop)));
 
   /// Utility for defining [DecorationImageDto.isAntiAlias]
-  late final isAntiAlias = BoolUtility((v) => only(isAntiAlias: v));
+  late final isAntiAlias = BoolUtility((prop) => builder(DecorationImageDto.props(isAntiAlias: prop)));
 
-  DecorationImageUtility(super.builder)
-    : super(valueToDto: (v) => _decorationImageToDto(v));
+  DecorationImageUtility(super.builder) : super(valueToDto: DecorationImageDto.value);
 
   T call({
     ImageProvider<Object>? image,

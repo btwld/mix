@@ -13,7 +13,7 @@ import 'shadow_dto.dart';
 class ShadowUtility<T extends StyleElement>
     extends DtoUtility<T, ShadowDto, Shadow> {
   /// Utility for defining [ShadowDto.blurRadius]
-  late final blurRadius = DoubleUtility((v) => only(blurRadius: v));
+  late final blurRadius = DoubleUtility((prop) => only(blurRadius: prop.value));
 
   /// Utility for defining [ShadowDto.color]
   late final color = ColorUtility((prop) => builder(ShadowDto.props(color: prop)));
@@ -21,14 +21,7 @@ class ShadowUtility<T extends StyleElement>
   /// Utility for defining [ShadowDto.offset]
   late final offset = OffsetUtility((v) => only(offset: v));
 
-  ShadowUtility(super.builder)
-    : super(
-        valueToDto: (v) => ShadowDto(
-          blurRadius: v.blurRadius,
-          color: v.color,
-          offset: v.offset,
-        ),
-      );
+  ShadowUtility(super.builder) : super(valueToDto: ShadowDto.value);
 
   T call({double? blurRadius, Color? color, Offset? offset}) {
     return builder(
@@ -58,20 +51,12 @@ class BoxShadowUtility<T extends StyleElement>
   late final offset = OffsetUtility((v) => only(offset: v));
 
   /// Utility for defining [BoxShadowDto.blurRadius]
-  late final blurRadius = DoubleUtility((v) => only(blurRadius: v));
+  late final blurRadius = DoubleUtility((prop) => only(blurRadius: prop.value));
 
   /// Utility for defining [BoxShadowDto.spreadRadius]
-  late final spreadRadius = DoubleUtility((v) => only(spreadRadius: v));
+  late final spreadRadius = DoubleUtility((prop) => only(spreadRadius: prop.value));
 
-  BoxShadowUtility(super.builder)
-    : super(
-        valueToDto: (v) => BoxShadowDto(
-          color: v.color,
-          offset: v.offset,
-          blurRadius: v.blurRadius,
-          spreadRadius: v.spreadRadius,
-        ),
-      );
+  BoxShadowUtility(super.builder) : super(valueToDto: BoxShadowDto.value);
 
   T call({
     Color? color,

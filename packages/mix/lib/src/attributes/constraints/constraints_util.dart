@@ -11,27 +11,27 @@ import 'constraints_dto.dart';
 class BoxConstraintsUtility<T extends StyleElement>
     extends DtoUtility<T, BoxConstraintsDto, BoxConstraints> {
   /// Utility for defining [BoxConstraintsDto.minWidth]
-  late final minWidth = DoubleUtility((v) => only(minWidth: v));
+  late final minWidth = DoubleUtility(
+    (prop) => builder(BoxConstraintsDto.props(minWidth: prop)),
+  );
 
   /// Utility for defining [BoxConstraintsDto.maxWidth]
-  late final maxWidth = DoubleUtility((v) => only(maxWidth: v));
+  late final maxWidth = DoubleUtility(
+    (prop) => builder(BoxConstraintsDto.props(maxWidth: prop)),
+  );
 
   /// Utility for defining [BoxConstraintsDto.minHeight]
-  late final minHeight = DoubleUtility((v) => only(minHeight: v));
+  late final minHeight = DoubleUtility(
+    (prop) => builder(BoxConstraintsDto.props(minHeight: prop)),
+  );
 
   /// Utility for defining [BoxConstraintsDto.maxHeight]
-  late final maxHeight = DoubleUtility((v) => only(maxHeight: v));
+  late final maxHeight = DoubleUtility(
+    (prop) => builder(BoxConstraintsDto.props(maxHeight: prop)),
+  );
 
   BoxConstraintsUtility(super.builder)
-    : super(
-        valueToDto: (v) => BoxConstraintsDto(
-          minWidth: v.minWidth != 0.0 ? v.minWidth : null,
-          maxWidth: v.maxWidth != double.infinity ? v.maxWidth : null,
-          minHeight: v.minHeight != 0.0 ? v.minHeight : null,
-          maxHeight: v.maxHeight != double.infinity ? v.maxHeight : null,
-        ),
-      );
-
+    : super(valueToDto: BoxConstraintsDto.value);
   T call({
     double? minWidth,
     double? maxWidth,

@@ -46,8 +46,10 @@ void main() {
       );
       final mergedAttribute = attribute1.merge(attribute2);
 
-      expect(mergedAttribute.width, 150);
-      expect(mergedAttribute.height, 250);
+      expect(mergedAttribute.width, isA<Prop<double>>());
+      expect(mergedAttribute.width!.value, 150);
+      expect(mergedAttribute.height, isA<Prop<double>>());
+      expect(mergedAttribute.height!.value, 250);
       expect(mergedAttribute.color, isA<Prop<Color>>());
       expect(mergedAttribute.repeat, ImageRepeat.noRepeat);
       expect(mergedAttribute.fit, BoxFit.fill);

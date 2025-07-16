@@ -155,15 +155,15 @@ class SizedBoxModifierSpecTween extends Tween<SizedBoxModifierSpec?> {
 final class SizedBoxModifierSpecUtility<T extends StyleElement>
     extends MixUtility<T, SizedBoxModifierSpecAttribute> {
   /// Utility for defining [SizedBoxModifierSpecAttribute.height]
-  late final height = DoubleUtility((value) => call(height: value));
+  late final height = DoubleUtility((prop) => call(height: prop.value));
 
   /// Utility for defining [SizedBoxModifierSpecAttribute.width]
-  late final width = DoubleUtility((value) => call(width: value));
+  late final width = DoubleUtility((prop) => call(width: prop.value));
 
   /// Utility for defining [SizedBoxModifierSpecAttribute.width]
   /// and [SizedBoxModifierSpecAttribute.height]
   late final square = DoubleUtility(
-    (value) => call(width: value, height: value),
+    (prop) => call(width: prop.value, height: prop.value),
   );
 
   SizedBoxModifierSpecUtility(super.builder);

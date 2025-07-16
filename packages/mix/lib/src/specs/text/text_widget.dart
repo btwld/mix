@@ -51,7 +51,13 @@ class StyledText extends StyledWidget {
       builder: (context) {
         final spec = TextSpec.of(context);
 
-        return spec(text, semanticsLabel: semanticsLabel, locale: locale);
+        return TextSpecWidget(
+          text,
+          spec: spec,
+          semanticsLabel: semanticsLabel,
+          locale: locale,
+          orderOfModifiers: orderOfModifiers,
+        );
       },
     );
   }

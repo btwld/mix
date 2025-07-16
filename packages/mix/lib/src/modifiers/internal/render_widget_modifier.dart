@@ -272,20 +272,11 @@ class RenderSpecModifiers extends StatelessWidget {
   Widget build(BuildContext context) {
     final modifiers = spec.modifiers?.value ?? [];
 
-    return spec.isAnimated
-        ? RenderAnimatedModifiers(
-            modifiers: modifiers,
-            duration: spec.animated!.duration,
-            orderOfModifiers: orderOfModifiers,
-            curve: spec.animated!.curve,
-            onEnd: spec.animated!.onEnd,
-            child: child,
-          )
-        : RenderModifiers(
-            modifiers: modifiers,
-            orderOfModifiers: orderOfModifiers,
-            child: child,
-          );
+    return RenderModifiers(
+      modifiers: modifiers,
+      orderOfModifiers: orderOfModifiers,
+      child: child,
+    );
   }
 }
 

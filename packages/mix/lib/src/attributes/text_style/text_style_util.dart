@@ -15,13 +15,19 @@ final class TextStyleUtility<T extends StyleElement>
     (prop) => builder(TextStyleDto.props(color: prop)),
   );
 
-  late final fontWeight = FontWeightUtility((v) => only(fontWeight: v));
+  late final fontWeight = FontWeightUtility(
+    (prop) => builder(TextStyleDto.props(fontWeight: prop)),
+  );
 
   late final fontStyle = FontStyleUtility((v) => only(fontStyle: v));
 
-  late final decoration = TextDecorationUtility((v) => only(decoration: v));
+  late final decoration = TextDecorationUtility(
+    (prop) => builder(TextStyleDto.props(decoration: prop)),
+  );
 
-  late final fontSize = FontSizeUtility((v) => only(fontSize: v));
+  late final fontSize = FontSizeUtility(
+    (prop) => builder(TextStyleDto.props(fontSize: prop)),
+  );
 
   late final backgroundColor = ColorUtility(
     (prop) => builder(TextStyleDto.props(backgroundColor: prop)),
@@ -39,40 +45,7 @@ final class TextStyleUtility<T extends StyleElement>
 
   late final fontFamily = FontFamilyUtility((v) => only(fontFamily: v));
 
-  TextStyleUtility(super.builder)
-    : super(
-        valueToDto: (v) => TextStyleDto(
-          color: v.color,
-          backgroundColor: v.backgroundColor,
-          fontSize: v.fontSize,
-          fontWeight: v.fontWeight,
-          fontStyle: v.fontStyle,
-          letterSpacing: v.letterSpacing,
-          debugLabel: v.debugLabel,
-          wordSpacing: v.wordSpacing,
-          textBaseline: v.textBaseline,
-          shadows: v.shadows
-              ?.map(
-                (shadow) => ShadowDto(
-                  blurRadius: shadow.blurRadius,
-                  color: shadow.color,
-                  offset: shadow.offset,
-                ),
-              )
-              .toList(),
-          fontFeatures: v.fontFeatures,
-          decoration: v.decoration,
-          decorationColor: v.decorationColor,
-          decorationStyle: v.decorationStyle,
-          fontVariations: v.fontVariations,
-          height: v.height,
-          foreground: v.foreground,
-          background: v.background,
-          decorationThickness: v.decorationThickness,
-          fontFamily: v.fontFamily,
-          fontFamilyFallback: v.fontFamilyFallback,
-        ),
-      );
+  TextStyleUtility(super.builder) : super(valueToDto: TextStyleDto.value);
 
   T token(MixToken<TextStyle> token) => throw UnimplementedError(
     'Token support needs implementation for whole TextStyle',

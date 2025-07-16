@@ -8,15 +8,10 @@ import '../../specs/spec_util.dart';
 import '../../variants/variant_attribute.dart';
 import '../attributes_map.dart';
 import '../mix_element.dart';
+import '../modifier.dart';
 import '../spec.dart';
 import '../variant.dart';
 import 'mix_context.dart';
-
-sealed class BaseStyle<T extends SpecAttribute> extends StyleElement {
-  const BaseStyle();
-  AttributeMap<T> get styles;
-  AttributeMap<VariantAttribute> get variants;
-}
 
 /// A utility class for managing a collection of styling attributes and variants.
 ///
@@ -30,21 +25,18 @@ sealed class BaseStyle<T extends SpecAttribute> extends StyleElement {
 /// final style = Style(attribute1, attribute2, attribute3);
 /// final updatedStyle = style.variant(myVariant);
 /// ```
-class Style extends BaseStyle<SpecAttribute> {
-  @override
-  final AttributeMap<SpecAttribute> styles;
+abstract class Style<T extends SpecAttribute> {
+  final T attribute; // Underlying attribute
+  final Map<Variant, Style<T>> variants; // Variant behavior
+  final AnimationConfig? animation; // Animation behavior
+  final List<WidgetModifierSpecAttribute>? modifiers; // Modifier behavior
 
-  @override
-  final AttributeMap<VariantAttribute> variants;
-
-  /// A constant, empty mix for use with const constructor widgets.
-  ///
-  /// This can be used as a default or initial value where a `Style` is required.
-  const Style.empty()
-    : styles = const AttributeMap.empty(),
-      variants = const AttributeMap.empty();
-
-  const Style._({required this.styles, required this.variants});
+  const Style.raw({
+    required this.attribute,
+    this.variants = const {},
+    this.animation,
+    this.modifiers,
+  });
 
   /// Creates a new `Style` instance from a [BaseStyle].
   ///
@@ -120,9 +112,6 @@ class Style extends BaseStyle<SpecAttribute> {
         case VariantAttribute():
           applyVariants.add(element);
 
-        case BaseStyle():
-          styleList.addAll(element.styles.values);
-          applyVariants.addAll(element.variants.values);
         default:
           // For other StyleElement types (like Mixable/DTOs), we don't support them yet
           throw FlutterError.fromParts([
@@ -141,7 +130,7 @@ class Style extends BaseStyle<SpecAttribute> {
       }
     }
 
-    return Style._(
+    return ScopedStyle(
       styles: AttributeMap(styleList),
       variants: AttributeMap(applyVariants),
     );
@@ -216,7 +205,11 @@ class Style extends BaseStyle<SpecAttribute> {
     return AnimatedStyle._(
       styles: styles,
       variants: variants,
-      animated: AnimationConfig(duration: duration, curve: curve, onEnd: onEnd),
+      animated: AnimationConfig.implicit(
+        duration: duration,
+        curve: curve,
+        onEnd: onEnd,
+      ),
     );
   }
 
@@ -405,7 +398,11 @@ class AnimatedStyle extends Style {
     return AnimatedStyle._(
       styles: style.styles,
       variants: style.variants,
-      animated: AnimationConfig(duration: duration, curve: curve, onEnd: onEnd),
+      animated: AnimationConfig.implicit(
+        duration: duration,
+        curve: curve,
+        onEnd: onEnd,
+      ),
     );
   }
 
@@ -437,7 +434,7 @@ class AnimatedStyle extends Style {
   }
 }
 
-abstract class SpecUtility<T extends SpecAttribute, V> extends BaseStyle<T> {
+abstract class SpecUtility<T extends SpecAttribute, V> {
   @protected
   @visibleForTesting
   final T Function(V) attributeBuilder;
@@ -473,4 +470,78 @@ abstract class SpecUtility<T extends SpecAttribute, V> extends BaseStyle<T> {
 
   @override
   get props => [attributeValue];
+}
+
+/// Result of Style.resolve() containing fully resolved styling data
+/// Generic type parameter T as requested
+class ResolvedStyle<T extends SpecAttribute> {
+  final T spec; // Resolved spec
+  final AnimationConfig? animation; // Animation config
+  final List<WidgetModifierSpec>? modifiers; // Modifiers config
+
+  const ResolvedStyle({required this.spec, this.animation, this.modifiers});
+}
+
+/// Concrete Style implementation that can hold any SpecAttribute
+/// This maintains backwards compatibility with existing Mix code
+class ScopedStyle extends Style<ScopeSpecAttribute> {
+  const ScopedStyle({
+    required super.attribute,
+    super.variants = const {},
+    super.animation,
+    super.modifiers,
+  }) : super.raw();
+}
+
+/// Container SpecAttribute that can hold different types of SpecAttributes
+/// This enables backwards compatibility by allowing mixed attribute types
+class ScopeSpecAttribute extends SpecAttribute<Map<Type, Spec>> {
+  final Map<Type, SpecAttribute> attributes;
+
+  const ScopeSpecAttribute({this.attributes = const {}});
+
+  const ScopeSpecAttribute.empty() : this();
+
+  /// Get attribute of specific type
+  T? attributeOf<T extends SpecAttribute>() {
+    return attributes[T] as T?;
+  }
+
+  @override
+  ScopeSpecAttribute merge(ScopeSpecAttribute? other) {
+    if (other == null) return this;
+
+    final mergedAttributes = <Type, SpecAttribute>{};
+
+    // Add all attributes from this
+    mergedAttributes.addAll(attributes);
+
+    // Merge or add attributes from other
+    for (final entry in other.attributes.entries) {
+      final existingAttr = mergedAttributes[entry.key];
+      if (existingAttr != null) {
+        // Merge attributes of the same type
+        mergedAttributes[entry.key] = existingAttr.merge(entry.value);
+      } else {
+        // Add new attribute type
+        mergedAttributes[entry.key] = entry.value;
+      }
+    }
+
+    return ScopeSpecAttribute(attributes: mergedAttributes);
+  }
+
+  @override
+  Map<Type, Spec> resolve(MixContext context) {
+    // Resolve each attribute individually
+    final resolved = <Type, Spec>{};
+    for (final entry in attributes.entries) {
+      resolved[entry.key] = entry.value.resolve(context);
+    }
+
+    return resolved;
+  }
+
+  @override
+  List<Object?> get props => [attributes];
 }

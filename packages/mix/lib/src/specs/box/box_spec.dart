@@ -1,9 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../attributes/animation/animated_config_dto.dart';
-import '../../attributes/animation/animated_util.dart';
-import '../../attributes/animation/animation_config.dart';
 import '../../attributes/constraints/constraints_dto.dart';
 import '../../attributes/constraints/constraints_util.dart';
 import '../../attributes/decoration/decoration_dto.dart';
@@ -22,7 +19,6 @@ import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/spec.dart';
 import '../../core/utility.dart';
-import 'box_widget.dart';
 
 final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
   /// Aligns the child within the box.
@@ -72,7 +68,6 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
     this.width,
     this.height,
     super.modifiers,
-    super.animated,
   });
 
   static BoxSpec from(MixContext mix) {
@@ -133,26 +128,6 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
     properties.add(
       DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
     );
-    properties.add(
-      DiagnosticsProperty('animated', animated, defaultValue: null),
-    );
-  }
-
-  Widget call({Widget? child, List<Type> orderOfModifiers = const []}) {
-    return isAnimated
-        ? AnimatedBoxSpecWidget(
-            spec: this,
-            duration: animated!.duration,
-            curve: animated!.curve,
-            onEnd: animated?.onEnd,
-            orderOfModifiers: orderOfModifiers,
-            child: child,
-          )
-        : BoxSpecWidget(
-            spec: this,
-            orderOfModifiers: orderOfModifiers,
-            child: child,
-          );
   }
 
   /// Creates a copy of this [BoxSpec] but with the given fields
@@ -171,7 +146,6 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
     double? width,
     double? height,
     WidgetModifiersConfig? modifiers,
-    AnimationConfig? animated,
   }) {
     return BoxSpec(
       alignment: alignment ?? this.alignment,
@@ -186,7 +160,6 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
       width: width ?? this.width,
       height: height ?? this.height,
       modifiers: modifiers ?? this.modifiers,
-      animated: animated ?? this.animated,
     );
   }
 
@@ -237,7 +210,6 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
       width: MixHelpers.lerpDouble(width, other.width, t),
       height: MixHelpers.lerpDouble(height, other.height, t),
       modifiers: other.modifiers,
-      animated: animated ?? other.animated,
     );
   }
 
@@ -265,7 +237,6 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
     width,
     height,
     modifiers,
-    animated,
   ];
 }
 
@@ -302,7 +273,6 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
     double? width,
     double? height,
     WidgetModifiersConfigDto? modifiers,
-    AnimationConfigDto? animated,
   }) {
     return BoxSpecAttribute.props(
       alignment: Prop.maybeValue(alignment),
@@ -317,7 +287,6 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
       width: Prop.maybeValue(width),
       height: Prop.maybeValue(height),
       modifiers: modifiers,
-      animated: animated,
     );
   }
 
@@ -334,7 +303,6 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
     this.width,
     this.height,
     super.modifiers,
-    super.animated,
   });
 
   /// Constructor that accepts a [BoxSpec] value and extracts its properties.
@@ -359,7 +327,6 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
       width: spec.width,
       height: spec.height,
       modifiers: WidgetModifiersConfigDto.maybeValue(spec.modifiers),
-      animated: AnimationConfigDto.maybeValue(spec.animated),
     );
   }
 
@@ -398,7 +365,6 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
       width: resolveProp(context, width),
       height: resolveProp(context, height),
       modifiers: modifiers?.resolve(context),
-      animated: animated?.resolve(context) ?? context.animation,
     );
   }
 
@@ -433,7 +399,6 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
       width: mergeProp(width, other.width),
       height: mergeProp(height, other.height),
       modifiers: modifiers?.merge(other.modifiers) ?? other.modifiers,
-      animated: animated?.merge(other.animated) ?? other.animated,
     );
   }
 
@@ -476,9 +441,6 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
     properties.add(
       DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
     );
-    properties.add(
-      DiagnosticsProperty('animated', animated, defaultValue: null),
-    );
   }
 
   /// The list of properties that constitute the state of this [BoxSpecAttribute].
@@ -499,7 +461,6 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
     width,
     height,
     modifiers,
-    animated,
   ];
 }
 
@@ -597,16 +558,19 @@ class BoxSpecUtility<T extends SpecAttribute>
   late final clipBehavior = ClipUtility((v) => only(clipBehavior: v));
 
   /// Utility for defining [BoxSpecAttribute.width]
-  late final width = DoubleUtility((v) => only(width: v));
+  late final width = DoubleUtility(
+    (prop) => builder(BoxSpecAttribute.props(width: prop)),
+  );
 
   /// Utility for defining [BoxSpecAttribute.height]
-  late final height = DoubleUtility((v) => only(height: v));
+  late final height = DoubleUtility(
+    (prop) => builder(BoxSpecAttribute.props(height: prop)),
+  );
 
   /// Utility for defining [BoxSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
-  /// Utility for defining [BoxSpecAttribute.animated]
-  late final animated = AnimatedUtility((v) => only(animated: v));
+  // TODO: add animated back into it
 
   BoxSpecUtility(super.builder);
 
@@ -633,7 +597,6 @@ class BoxSpecUtility<T extends SpecAttribute>
     double? width,
     double? height,
     WidgetModifiersConfigDto? modifiers,
-    AnimationConfigDto? animated,
   }) {
     return builder(
       BoxSpecAttribute(
@@ -649,7 +612,6 @@ class BoxSpecUtility<T extends SpecAttribute>
         width: width,
         height: height,
         modifiers: modifiers,
-        animated: animated,
       ),
     );
   }

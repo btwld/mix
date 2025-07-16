@@ -44,12 +44,7 @@ void main() {
     });
 
     test('Initialization with many typse of attributes', () {
-      final mix = Style(
-        attribute1,
-        attribute2,
-        variantAttr1(),
-        variantAttr2(),
-      );
+      final mix = Style(attribute1, attribute2, variantAttr1(), variantAttr2());
       expect(mix.styles.length, 2);
       expect(mix.styles.isEmpty, false);
       expect(mix.variants.length, 2);
@@ -263,8 +258,12 @@ void main() {
       required ContextVariant third,
       required String expectedValue,
     }) {
-      final whichItemIsHigh = [variantLow, variantNormal, variantHigh]
-              .indexWhere((e) => e.priority == VariantPriority.high) -
+      final whichItemIsHigh =
+          [
+            variantLow,
+            variantNormal,
+            variantHigh,
+          ].indexWhere((e) => e.priority == VariantPriority.high) -
           1;
       final reason = '$whichItemIsHigh should return $expectedValue';
       final style = applyContextToVisualAttributes(
@@ -272,15 +271,9 @@ void main() {
         Style(
           attr1,
           attr2,
-          first(
-            const MockStringScalarAttribute('first'),
-          ),
-          second(
-            const MockStringScalarAttribute('second'),
-          ),
-          third(
-            const MockStringScalarAttribute('third'),
-          ),
+          first(const MockStringScalarAttribute('first')),
+          second(const MockStringScalarAttribute('second')),
+          third(const MockStringScalarAttribute('third')),
         ),
       );
 
@@ -512,51 +505,39 @@ void main() {
 
   group('AnimatedStyle applyVariants', () {
     test(
-        'when a variant is applied an AnimatedStyle continues an AnimatedStyle',
-        () {
-      final style = AnimatedStyle(
-        Style(
-          attribute1,
-          attribute2,
-        ),
-        curve: Curves.easeInOut,
-        duration: const Duration(milliseconds: 200),
-      );
+      'when a variant is applied an AnimatedStyle continues an AnimatedStyle',
+      () {
+        final style = AnimatedStyle(
+          Style(attribute1, attribute2),
+          curve: Curves.easeInOut,
+          duration: const Duration(milliseconds: 200),
+        );
 
-      expect(style.isAnimated, true);
+        expect(style.isAnimated, true);
 
-      final updatedStyle = style.applyVariants([variantAttr1]);
+        final updatedStyle = style.applyVariants([variantAttr1]);
 
-      expect(updatedStyle.isAnimated, true);
-    });
+        expect(updatedStyle.isAnimated, true);
+      },
+    );
   });
 
   group('Nested Style', () {
     test(
-        'merging a nested empty style should not alter the parent style attributes',
-        () {
-      final sut = Style(
-        attribute1,
-        Style(null),
-      );
+      'merging a nested empty style should not alter the parent style attributes',
+      () {
+        final sut = Style(attribute1, Style(null));
 
-      final expectedStyle = Style(
-        attribute1,
-      );
+        final expectedStyle = Style(attribute1);
 
-      expect(sut, expectedStyle);
-    });
+        expect(sut, expectedStyle);
+      },
+    );
 
     test('should merge with the attributes in parent style', () {
-      final sut = Style(
-        attribute1,
-        Style(attribute2),
-      );
+      final sut = Style(attribute1, Style(attribute2));
 
-      final expectedStyle = Style(
-        attribute1,
-        attribute2,
-      );
+      final expectedStyle = Style(attribute1, attribute2);
 
       expect(sut, expectedStyle);
     });
@@ -564,15 +545,12 @@ void main() {
 
   group('Style.merge', () {
     test('Style + AnimatedStyle', () {
-      const animatedData = AnimationConfig(
+      final animatedData = AnimationConfig.implicit(
         curve: Curves.linear,
         duration: Durations.medium1,
       );
 
-      final style = Style(
-        attribute1,
-        Style(attribute2),
-      );
+      final style = Style(attribute1, Style(attribute2));
 
       final animatedStyle = AnimatedStyle(
         Style(),
@@ -587,7 +565,7 @@ void main() {
     });
 
     test('AnimatedStyle + Style', () {
-      const animatedData = AnimationConfig(
+      final animatedData = AnimationConfig.implicit(
         curve: Curves.linear,
         duration: Durations.medium1,
       );
@@ -598,10 +576,7 @@ void main() {
         curve: animatedData.curve,
       );
 
-      final style = Style(
-        attribute1,
-        Style(attribute2),
-      );
+      final style = Style(attribute1, Style(attribute2));
 
       final result = animatedStyle.merge(style);
 

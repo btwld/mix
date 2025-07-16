@@ -60,7 +60,11 @@ class Box extends StyledWidget {
       builder: (context) {
         final spec = BoxSpec.of(context);
 
-        return spec(child: child);
+        return BoxSpecWidget(
+          spec: spec,
+          orderOfModifiers: orderOfModifiers,
+          child: child,
+        );
       },
     );
   }

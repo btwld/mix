@@ -45,7 +45,9 @@ class StyledImage extends StyledWidget {
       builder: (context) {
         final spec = ImageSpec.of(context);
 
-        return spec(
+        return ImageSpecWidget(
+          spec: spec,
+          orderOfModifiers: orderOfModifiers,
           image: image,
           frameBuilder: frameBuilder,
           loadingBuilder: loadingBuilder,
@@ -54,9 +56,8 @@ class StyledImage extends StyledWidget {
           excludeFromSemantics: excludeFromSemantics,
           gaplessPlayback: gaplessPlayback,
           isAntiAlias: isAntiAlias,
-          matchTextDirection: matchTextDirection,
           opacity: opacity,
-          orderOfModifiers: orderOfModifiers,
+          matchTextDirection: matchTextDirection,
         );
       },
     );

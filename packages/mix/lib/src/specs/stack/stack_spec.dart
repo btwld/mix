@@ -1,9 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../attributes/animation/animated_config_dto.dart';
-import '../../attributes/animation/animated_util.dart';
-import '../../attributes/animation/animation_config.dart';
 import '../../attributes/enum/enum_util.dart';
 import '../../attributes/modifiers/widget_modifiers_config.dart';
 import '../../attributes/modifiers/widget_modifiers_config_dto.dart';
@@ -13,7 +10,6 @@ import '../../core/computed_style/computed_style.dart';
 import '../../core/factory/mix_context.dart';
 import '../../core/factory/style_mix.dart';
 import '../../core/spec.dart';
-import 'stack_widget.dart';
 
 final class StackSpec extends Spec<StackSpec> with Diagnosticable {
   final AlignmentGeometry? alignment;
@@ -26,7 +22,6 @@ final class StackSpec extends Spec<StackSpec> with Diagnosticable {
     this.fit,
     this.textDirection,
     this.clipBehavior,
-    super.animated,
     super.modifiers,
   });
 
@@ -64,23 +59,10 @@ final class StackSpec extends Spec<StackSpec> with Diagnosticable {
       DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('animated', animated, defaultValue: null),
-    );
-    properties.add(
       DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
     );
   }
 
-  Widget call({List<Widget> children = const []}) {
-    return isAnimated
-        ? AnimatedStackSpecWidget(
-            spec: this,
-            curve: animated!.curve,
-            duration: animated!.duration,
-            children: children,
-          )
-        : StackSpecWidget(spec: this, children: children);
-  }
 
   /// Creates a copy of this [StackSpec] but with the given fields
   /// replaced with the new values.
@@ -90,7 +72,6 @@ final class StackSpec extends Spec<StackSpec> with Diagnosticable {
     StackFit? fit,
     TextDirection? textDirection,
     Clip? clipBehavior,
-    AnimationConfig? animated,
     WidgetModifiersConfig? modifiers,
   }) {
     return StackSpec(
@@ -98,7 +79,6 @@ final class StackSpec extends Spec<StackSpec> with Diagnosticable {
       fit: fit ?? this.fit,
       textDirection: textDirection ?? this.textDirection,
       clipBehavior: clipBehavior ?? this.clipBehavior,
-      animated: animated ?? this.animated,
       modifiers: modifiers ?? this.modifiers,
     );
   }
@@ -113,7 +93,6 @@ final class StackSpec extends Spec<StackSpec> with Diagnosticable {
       fit: t < 0.5 ? fit : other.fit,
       textDirection: t < 0.5 ? textDirection : other.textDirection,
       clipBehavior: t < 0.5 ? clipBehavior : other.clipBehavior,
-      animated: animated ?? other.animated,
       modifiers: other.modifiers,
     );
   }
@@ -131,7 +110,6 @@ final class StackSpec extends Spec<StackSpec> with Diagnosticable {
     fit,
     textDirection,
     clipBehavior,
-    animated,
     modifiers,
   ];
 }
@@ -154,7 +132,6 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
     this.fit,
     this.textDirection,
     this.clipBehavior,
-    super.animated,
     super.modifiers,
   });
 
@@ -172,7 +149,6 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
       fit: spec.fit,
       textDirection: spec.textDirection,
       clipBehavior: spec.clipBehavior,
-      animated: AnimationConfigDto.maybeValue(spec.animated),
       modifiers: WidgetModifiersConfigDto.maybeValue(spec.modifiers),
     );
   }
@@ -197,7 +173,6 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
       fit: fit,
       textDirection: textDirection,
       clipBehavior: clipBehavior,
-      animated: animated?.resolve(context),
       modifiers: modifiers?.resolve(context),
     );
   }
@@ -212,7 +187,6 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
       fit: other.fit ?? fit,
       textDirection: other.textDirection ?? textDirection,
       clipBehavior: other.clipBehavior ?? clipBehavior,
-      animated: animated?.merge(other.animated) ?? other.animated,
       modifiers: modifiers?.merge(other.modifiers) ?? other.modifiers,
     );
   }
@@ -231,9 +205,6 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
       DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('animated', animated, defaultValue: null),
-    );
-    properties.add(
       DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
     );
   }
@@ -245,7 +216,6 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
     fit,
     textDirection,
     clipBehavior,
-    animated,
     modifiers,
   ];
 }
@@ -271,7 +241,6 @@ class StackSpecUtility<T extends SpecAttribute>
   late final clipBehavior = ClipUtility((v) => only(clipBehavior: v));
 
   /// Utility for defining [StackSpecAttribute.animated]
-  late final animated = AnimatedUtility((v) => only(animated: v));
 
   /// Utility for defining [StackSpecAttribute.modifiers]
   late final wrap = SpecModifierUtility((v) => only(modifiers: v));
@@ -294,7 +263,6 @@ class StackSpecUtility<T extends SpecAttribute>
     StackFit? fit,
     TextDirection? textDirection,
     Clip? clipBehavior,
-    AnimationConfigDto? animated,
     WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(
@@ -303,7 +271,6 @@ class StackSpecUtility<T extends SpecAttribute>
         fit: fit,
         textDirection: textDirection,
         clipBehavior: clipBehavior,
-        animated: animated,
         modifiers: modifiers,
       ),
     );
