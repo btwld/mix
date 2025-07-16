@@ -130,7 +130,7 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
       image: MixProp.maybeValue(image),
       gradient: MixProp.maybeValue(gradient),
       boxShadow: boxShadow
-          ?.map(MixProp<BoxShadow, BoxShadowDto>.value)
+          ?.map(MixProp<BoxShadow, BoxShadowDto>.fromValue)
           .toList(),
     );
   }
@@ -186,13 +186,13 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
     final (:boxShadow, :color, :gradient, :image) = other._getBaseDecor();
 
     final (:borderRadius, :boxShape, :side) = ShapeBorderDto.extract(
-      other.shape?.value,
+      other.shape?.mixValue,
     );
 
     return merge(
       BoxDecorationDto.props(
-        border: side?.value != null
-            ? MixProp.value(BorderDto.all(side!.value!))
+        border: side?.mixValue != null
+            ? MixProp.fromValue(BorderDto.all(side!.mixValue!))
             : null,
         borderRadius: borderRadius,
         shape: Prop.maybeValue(boxShape),
@@ -288,9 +288,11 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
     return ShapeDecorationDto.props(
       shape: MixProp.maybeValue(shape),
       color: Prop.maybeValue(color),
-      image: image != null ? MixProp.value(image) : null,
-      gradient: gradient != null ? MixProp.value(gradient) : null,
-      shadows: shadows?.map(MixProp<BoxShadow, BoxShadowDto>.value).toList(),
+      image: image != null ? MixProp.fromValue(image) : null,
+      gradient: gradient != null ? MixProp.fromValue(gradient) : null,
+      shadows: shadows
+          ?.map(MixProp<BoxShadow, BoxShadowDto>.fromValue)
+          .toList(),
     );
   }
 
@@ -341,7 +343,7 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
     if (other == null) return this;
 
     assert(
-      other.border == null || (other.border?.value?.isUniform ?? true),
+      other.border == null || (other.border?.mixValue?.isUniform ?? true),
       'Border to use with ShapeDecoration must be uniform.',
     );
 
@@ -349,12 +351,12 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
 
     // For mergeable operations, we assume rectangle shape if not resolvable
     // This maintains backward compatibility
-    final topSide = other.border?.value is BorderDto
-        ? (other.border!.value! as BorderDto).top?.value
+    final topSide = other.border?.mixValue is BorderDto
+        ? (other.border!.mixValue! as BorderDto).top?.mixValue
         : null;
     final shapeBorder = _fromBoxShape(
       shape: BoxShape.rectangle,
-      side: topSide != null ? MixProp.value(topSide) : null,
+      side: topSide != null ? MixProp.fromValue(topSide) : null,
       borderRadius: other.borderRadius,
     );
 
@@ -414,8 +416,8 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
   @override
   bool get isMergeable =>
       (shape == null ||
-      shape?.value is CircleBorderDto ||
-      shape?.value is RoundedRectangleBorderDto);
+      shape?.mixValue is CircleBorderDto ||
+      shape?.mixValue is RoundedRectangleBorderDto);
 
   @override
   ShapeDecoration get defaultValue =>
@@ -433,12 +435,12 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
 BoxDecorationDto _toBoxDecorationDto(ShapeDecorationDto dto) {
   final (:boxShadow, :color, :gradient, :image) = dto._getBaseDecor();
   final (:borderRadius, :boxShape, :side) = ShapeBorderDto.extract(
-    dto.shape?.value,
+    dto.shape?.mixValue,
   );
 
   return BoxDecorationDto.props(
-    border: side?.value != null
-        ? MixProp.value(BorderDto.all(side!.value!))
+    border: side?.mixValue != null
+        ? MixProp.fromValue(BorderDto.all(side!.mixValue!))
         : null,
     borderRadius: borderRadius,
     shape: Prop.maybeValue(boxShape),
@@ -455,17 +457,17 @@ ShapeDecorationDto _toShapeDecorationDto(BoxDecorationDto dto) {
 
   // For conversion operations, we assume rectangle shape if not resolvable
   // This maintains backward compatibility
-  final topSide = dto.border?.value is BorderDto
-      ? (dto.border!.value! as BorderDto).top?.value
+  final topSide = dto.border?.mixValue is BorderDto
+      ? (dto.border!.mixValue! as BorderDto).top?.mixValue
       : null;
   final shapeBorder = _fromBoxShape(
     shape: BoxShape.rectangle,
-    side: topSide != null ? MixProp.value(topSide) : null,
+    side: topSide != null ? MixProp.fromValue(topSide) : null,
     borderRadius: dto.borderRadius,
   );
 
   return ShapeDecorationDto.props(
-    shape: shapeBorder != null ? MixProp.value(shapeBorder) : null,
+    shape: shapeBorder != null ? MixProp.fromValue(shapeBorder) : null,
     color: color,
     image: image,
     gradient: gradient,
@@ -480,17 +482,17 @@ ShapeBorderDto? _fromBoxShape({
 }) {
   switch (shape) {
     case BoxShape.circle:
-      return CircleBorderDto(side: side?.value);
+      return CircleBorderDto(side: side?.mixValue);
     case BoxShape.rectangle:
       return RoundedRectangleBorderDto(
-        borderRadius: borderRadius?.value,
-        side: side?.value,
+        borderRadius: borderRadius?.mixValue,
+        side: side?.mixValue,
       );
     default:
-      if (side?.value != null || borderRadius?.value != null) {
+      if (side?.mixValue != null || borderRadius?.mixValue != null) {
         return RoundedRectangleBorderDto(
-          borderRadius: borderRadius?.value,
-          side: side?.value,
+          borderRadius: borderRadius?.mixValue,
+          side: side?.mixValue,
         );
       }
 

@@ -85,7 +85,7 @@ final class ColorUtility<T extends StyleElement> extends PropUtility<T, Color>
 
   /// @deprecated Use [token] instead
   @Deprecated('Use token() instead. Will be removed in a future version.')
-  T ref(MixableToken<Color> ref) => token(ref);
+  T ref(MixToken<Color> ref) => token(ref);
 }
 
 base mixin BasicColorsMixin<T extends StyleElement> on PropUtility<T, Color> {

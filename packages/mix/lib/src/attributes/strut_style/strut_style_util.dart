@@ -31,7 +31,7 @@ final class StrutStyleUtility<T extends StyleElement>
         ),
       );
 
-  T token(MixableToken<StrutStyle> token) => throw UnimplementedError(
+  T token(MixToken<StrutStyle> token) => throw UnimplementedError(
     'Token support for StrutStyle needs to be redesigned for the simplified DTO pattern',
   );
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-const primary = MixableToken<Color>('primary');
+const primary = MixToken<Color>('primary');
 
 void main() {
   runApp(

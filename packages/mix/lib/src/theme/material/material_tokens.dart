@@ -12,29 +12,29 @@ class MaterialTokens {
 
 @immutable
 class _MaterialColorTokens {
-  final primary = const MixableToken<Color>('md.color.primary');
+  final primary = const MixToken<Color>('md.color.primary');
 
-  final secondary = const MixableToken<Color>('md.color.secondary');
+  final secondary = const MixToken<Color>('md.color.secondary');
 
-  final tertiary = const MixableToken<Color>('md.color.tertiary');
+  final tertiary = const MixToken<Color>('md.color.tertiary');
 
-  final surface = const MixableToken<Color>('md.color.surface');
+  final surface = const MixToken<Color>('md.color.surface');
 
-  final background = const MixableToken<Color>('md.color.background');
+  final background = const MixToken<Color>('md.color.background');
 
-  final error = const MixableToken<Color>('md.color.error');
+  final error = const MixToken<Color>('md.color.error');
 
-  final onPrimary = const MixableToken<Color>('md.color.on.primary');
+  final onPrimary = const MixToken<Color>('md.color.on.primary');
 
-  final onSecondary = const MixableToken<Color>('md.color.on.secondary');
+  final onSecondary = const MixToken<Color>('md.color.on.secondary');
 
-  final onTertiary = const MixableToken<Color>('md.color.on.tertiary');
+  final onTertiary = const MixToken<Color>('md.color.on.tertiary');
 
-  final onSurface = const MixableToken<Color>('md.color.on.surface');
+  final onSurface = const MixToken<Color>('md.color.on.surface');
 
-  final onBackground = const MixableToken<Color>('md.color.on.background');
+  final onBackground = const MixToken<Color>('md.color.on.background');
 
-  final onError = const MixableToken<Color>('md.color.on.error');
+  final onError = const MixToken<Color>('md.color.on.error');
 
   const _MaterialColorTokens();
 }
@@ -43,53 +43,48 @@ class _MaterialColorTokens {
 // Material 3 TextTheme Tokens.
 class _MaterialTextStyles {
   //  Material 3 text styles
-  final displayLarge =
-      const MixableToken<TextStyle>('md3.text.theme.display.large');
-  final displayMedium = const MixableToken<TextStyle>(
+  final displayLarge = const MixToken<TextStyle>(
+    'md3.text.theme.display.large',
+  );
+  final displayMedium = const MixToken<TextStyle>(
     'md3.text.theme.display.medium',
   );
-  final displaySmall =
-      const MixableToken<TextStyle>('md3.text.theme.display.small');
-  final headlineLarge = const MixableToken<TextStyle>(
+  final displaySmall = const MixToken<TextStyle>(
+    'md3.text.theme.display.small',
+  );
+  final headlineLarge = const MixToken<TextStyle>(
     'md3.text.theme.headline.large',
   );
-  final headlineMedium = const MixableToken<TextStyle>(
+  final headlineMedium = const MixToken<TextStyle>(
     'md3.text.theme.headline.medium',
   );
-  final headlineSmall = const MixableToken<TextStyle>(
+  final headlineSmall = const MixToken<TextStyle>(
     'md3.text.theme.headline.small',
   );
 
-  final titleLarge =
-      const MixableToken<TextStyle>('md3.text.theme.title.large');
-  final titleMedium =
-      const MixableToken<TextStyle>('md3.text.theme.title.medium');
-  final titleSmall =
-      const MixableToken<TextStyle>('md3.text.theme.title.small');
-  final bodyLarge = const MixableToken<TextStyle>('md3.text.theme.body.large');
-  final bodyMedium =
-      const MixableToken<TextStyle>('md3.text.theme.body.medium');
-  final bodySmall = const MixableToken<TextStyle>('md3.text.theme.body.small');
-  final labelLarge =
-      const MixableToken<TextStyle>('md3.text.theme.label.large');
-  final labelMedium =
-      const MixableToken<TextStyle>('md3.text.theme.label.medium');
-  final labelSmall =
-      const MixableToken<TextStyle>('md3.text.theme.label.small');
+  final titleLarge = const MixToken<TextStyle>('md3.text.theme.title.large');
+  final titleMedium = const MixToken<TextStyle>('md3.text.theme.title.medium');
+  final titleSmall = const MixToken<TextStyle>('md3.text.theme.title.small');
+  final bodyLarge = const MixToken<TextStyle>('md3.text.theme.body.large');
+  final bodyMedium = const MixToken<TextStyle>('md3.text.theme.body.medium');
+  final bodySmall = const MixToken<TextStyle>('md3.text.theme.body.small');
+  final labelLarge = const MixToken<TextStyle>('md3.text.theme.label.large');
+  final labelMedium = const MixToken<TextStyle>('md3.text.theme.label.medium');
+  final labelSmall = const MixToken<TextStyle>('md3.text.theme.label.small');
   // Material 2 text styles
-  final headline1 = const MixableToken<TextStyle>('md2.text.theme.headline1');
-  final headline2 = const MixableToken<TextStyle>('md2.text.theme.headline2');
-  final headline3 = const MixableToken<TextStyle>('md2.text.theme.headline3');
-  final headline4 = const MixableToken<TextStyle>('md2.text.theme.headline4');
-  final headline5 = const MixableToken<TextStyle>('md2.text.theme.headline5');
-  final headline6 = const MixableToken<TextStyle>('md2.text.theme.headline6');
-  final subtitle1 = const MixableToken<TextStyle>('md2.text.theme.subtitle1');
-  final subtitle2 = const MixableToken<TextStyle>('md2.text.theme.subtitle2');
-  final bodyText1 = const MixableToken<TextStyle>('md2.text.theme.bodyText1');
-  final bodyText2 = const MixableToken<TextStyle>('md2.text.theme.bodyText2');
-  final caption = const MixableToken<TextStyle>('md2.text.theme.caption');
-  final button = const MixableToken<TextStyle>('md2.text.theme.button');
-  final overline = const MixableToken<TextStyle>('md2.text.theme.overline');
+  final headline1 = const MixToken<TextStyle>('md2.text.theme.headline1');
+  final headline2 = const MixToken<TextStyle>('md2.text.theme.headline2');
+  final headline3 = const MixToken<TextStyle>('md2.text.theme.headline3');
+  final headline4 = const MixToken<TextStyle>('md2.text.theme.headline4');
+  final headline5 = const MixToken<TextStyle>('md2.text.theme.headline5');
+  final headline6 = const MixToken<TextStyle>('md2.text.theme.headline6');
+  final subtitle1 = const MixToken<TextStyle>('md2.text.theme.subtitle1');
+  final subtitle2 = const MixToken<TextStyle>('md2.text.theme.subtitle2');
+  final bodyText1 = const MixToken<TextStyle>('md2.text.theme.bodyText1');
+  final bodyText2 = const MixToken<TextStyle>('md2.text.theme.bodyText2');
+  final caption = const MixToken<TextStyle>('md2.text.theme.caption');
+  final button = const MixToken<TextStyle>('md2.text.theme.button');
+  final overline = const MixToken<TextStyle>('md2.text.theme.overline');
 
   const _MaterialTextStyles();
 }

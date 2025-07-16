@@ -33,7 +33,7 @@ class Breakpoint {
 }
 
 /// Token for breakpoints
-typedef BreakpointToken = MixableToken<Breakpoint>;
+typedef BreakpointToken = MixToken<Breakpoint>;
 
 /// Standard breakpoint tokens
 class BreakpointTokens {

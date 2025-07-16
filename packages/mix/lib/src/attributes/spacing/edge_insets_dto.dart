@@ -146,10 +146,10 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
 
   EdgeInsetsDto.all(double value)
     : this.props(
-        top: MixProp.value(SpaceDto.value(value)),
-        bottom: MixProp.value(SpaceDto.value(value)),
-        left: MixProp.value(SpaceDto.value(value)),
-        right: MixProp.value(SpaceDto.value(value)),
+        top: MixProp.fromValue(SpaceDto.value(value)),
+        bottom: MixProp.fromValue(SpaceDto.value(value)),
+        left: MixProp.fromValue(SpaceDto.value(value)),
+        right: MixProp.fromValue(SpaceDto.value(value)),
       );
 
   EdgeInsetsDto.none() : this.all(0);
@@ -262,10 +262,10 @@ final class EdgeInsetsDirectionalDto
 
   EdgeInsetsDirectionalDto.all(double value)
     : this.props(
-        top: MixProp.value(SpaceDto.value(value)),
-        bottom: MixProp.value(SpaceDto.value(value)),
-        start: MixProp.value(SpaceDto.value(value)),
-        end: MixProp.value(SpaceDto.value(value)),
+        top: MixProp.fromValue(SpaceDto.value(value)),
+        bottom: MixProp.fromValue(SpaceDto.value(value)),
+        start: MixProp.fromValue(SpaceDto.value(value)),
+        end: MixProp.fromValue(SpaceDto.value(value)),
       );
 
   EdgeInsetsDirectionalDto.none() : this.all(0);

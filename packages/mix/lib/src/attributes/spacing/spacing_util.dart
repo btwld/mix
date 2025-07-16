@@ -164,10 +164,10 @@ class SpacingSideUtility<T extends StyleElement>
 
   /// @deprecated Use [token] instead
   @Deprecated('Use token() instead. Will be removed in a future version.')
-  T ref(MixableToken<double> token) => this.token(token);
+  T ref(MixToken<double> token) => this.token(token);
 
   /// Creates a token-based spacing value
-  T token(MixableToken<double> token) {
+  T token(MixToken<double> token) {
     return builder(SpaceDto.token(token));
   }
 }

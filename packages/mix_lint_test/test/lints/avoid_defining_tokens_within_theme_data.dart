@@ -5,24 +5,24 @@ import 'package:mix/mix.dart';
 final wrongTheme = MixScopeData.static(
   tokens: {
     // expect_lint: mix_avoid_defining_tokens_within_theme_data
-    MixableToken<Color>('a'): Colors.black,
+    MixToken<Color>('a'): Colors.black,
     // expect_lint: mix_avoid_defining_tokens_within_theme_data
-    MixableToken<Breakpoint>('a'): Breakpoint(),
+    MixToken<Breakpoint>('a'): Breakpoint(),
     // expect_lint: mix_avoid_defining_tokens_within_theme_data
-    MixableToken<Radius>('a'): Radius.circular(10),
+    MixToken<Radius>('a'): Radius.circular(10),
     // expect_lint: mix_avoid_defining_tokens_within_theme_data
-    MixableToken<double>('a'): 10,
+    MixToken<double>('a'): 10,
     // expect_lint: mix_avoid_defining_tokens_within_theme_data
-    MixableToken<TextStyle>('a'): TextStyle(color: Colors.black),
+    MixToken<TextStyle>('a'): TextStyle(color: Colors.black),
   },
 );
 
 // Correct case
-final colorToken = MixableToken<Color>('a');
-final breakpointToken = MixableToken<Breakpoint>('b');
-final radiusToken = MixableToken<Radius>('c');
-final spaceToken = MixableToken<double>('d');
-final textStyleToken = MixableToken<TextStyle>('e');
+final colorToken = MixToken<Color>('a');
+final breakpointToken = MixToken<Breakpoint>('b');
+final radiusToken = MixToken<Radius>('c');
+final spaceToken = MixToken<double>('d');
+final textStyleToken = MixToken<TextStyle>('e');
 
 final correctTheme = MixScopeData.static(
   tokens: {

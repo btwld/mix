@@ -16,7 +16,7 @@ sealed class SpaceDto extends Mix<double> with Diagnosticable {
 
   // Public factories only
   const factory SpaceDto.value(double value) = _ValueSpaceDto;
-  const factory SpaceDto.token(MixableToken<double> token) = _TokenSpaceDto;
+  const factory SpaceDto.token(MixToken<double> token) = _TokenSpaceDto;
 
   /// Constructor that accepts a nullable [double] value and creates a [SpaceDto].
   ///
@@ -50,7 +50,7 @@ class _ValueSpaceDto extends SpaceDto {
 
 @immutable
 class _TokenSpaceDto extends SpaceDto {
-  final MixableToken<double> token;
+  final MixToken<double> token;
 
   const _TokenSpaceDto(this.token);
 

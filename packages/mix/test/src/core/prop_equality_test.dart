@@ -155,8 +155,8 @@ void main() {
         final shadow1 = BoxShadowDto(color: Colors.red, blurRadius: 5.0);
         final shadow2 = BoxShadowDto(color: Colors.red, blurRadius: 5.0);
 
-        final prop1 = MixProp.value(shadow1);
-        final prop2 = MixProp.value(shadow2);
+        final prop1 = MixProp.fromValue(shadow1);
+        final prop2 = MixProp.fromValue(shadow2);
 
         expect(prop1, equals(prop2));
       });
@@ -165,8 +165,8 @@ void main() {
         final shadow1 = BoxShadowDto(color: Colors.red, blurRadius: 5.0);
         final shadow2 = BoxShadowDto(color: Colors.blue, blurRadius: 5.0);
 
-        final prop1 = MixProp.value(shadow1);
-        final prop2 = MixProp.value(shadow2);
+        final prop1 = MixProp.fromValue(shadow1);
+        final prop2 = MixProp.fromValue(shadow2);
 
         expect(prop1, isNot(equals(prop2)));
       });
@@ -175,13 +175,13 @@ void main() {
         final shadow1 = BoxShadowDto(color: Colors.red, blurRadius: 5.0);
         final shadow2 = BoxShadowDto(color: Colors.blue, blurRadius: 10.0);
 
-        final prop1 = MixProp.value(shadow1);
-        final prop2 = MixProp.value(shadow2);
+        final prop1 = MixProp.fromValue(shadow1);
+        final prop2 = MixProp.fromValue(shadow2);
         final merged = prop1.merge(prop2);
 
         // The merged prop should have the merged shadow
         final expectedShadow = shadow1.merge(shadow2);
-        final expected = MixProp.value(expectedShadow);
+        final expected = MixProp.fromValue(expectedShadow);
 
         expect(merged, equals(expected));
       });

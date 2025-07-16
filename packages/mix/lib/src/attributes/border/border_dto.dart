@@ -110,10 +110,10 @@ final class BorderDto extends BoxBorderDto<Border>
 
   factory BorderDto.all(BorderSideDto side) {
     return BorderDto.props(
-      top: MixProp.value(side),
-      bottom: MixProp.value(side),
-      left: MixProp.value(side),
-      right: MixProp.value(side),
+      top: MixProp.fromValue(side),
+      bottom: MixProp.fromValue(side),
+      left: MixProp.fromValue(side),
+      right: MixProp.fromValue(side),
     );
   }
 
@@ -251,10 +251,10 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional>
 
   factory BorderDirectionalDto.all(BorderSideDto side) {
     return BorderDirectionalDto.props(
-      top: MixProp.value(side),
-      bottom: MixProp.value(side),
-      start: MixProp.value(side),
-      end: MixProp.value(side),
+      top: MixProp.fromValue(side),
+      bottom: MixProp.fromValue(side),
+      start: MixProp.fromValue(side),
+      end: MixProp.fromValue(side),
     );
   }
 

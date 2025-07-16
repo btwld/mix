@@ -9,7 +9,7 @@ import 'mix_element.dart';
 @immutable
 class Prop<T> with EqualityMixin, ResolvableMixin<T?> {
   final T? _value;
-  final MixableToken<T>? _token;
+  final MixToken<T>? _token;
   final List<MixDirective<T>>? _directives;
 
   const Prop._internal(this._value, this._token, this._directives);
@@ -18,7 +18,7 @@ class Prop<T> with EqualityMixin, ResolvableMixin<T?> {
   const Prop.value(T value) : _value = value, _token = null, _directives = null;
 
   /// Creates a prop with a token
-  const Prop.token(MixableToken<T> token)
+  const Prop.token(MixToken<T> token)
     : _value = null,
       _token = token,
       _directives = null;
@@ -36,7 +36,7 @@ class Prop<T> with EqualityMixin, ResolvableMixin<T?> {
   }
 
   T? get value => _value;
-  MixableToken<T>? get token => _token;
+  MixToken<T>? get token => _token;
 
   /// Whether this prop has a value
   bool get hasValue => _value != null;
@@ -123,17 +123,17 @@ class Prop<T> with EqualityMixin, ResolvableMixin<T?> {
 @immutable
 class MixProp<V, T extends Mix<V>> with EqualityMixin, ResolvableMixin<V> {
   final T? _value;
-  final MixableToken<V>? _token;
+  final MixToken<V>? _token;
   final T Function(V)? _valueToDto;
 
   /// Creates a MixProp with a direct value
-  const MixProp.value(T value)
+  const MixProp.fromValue(T value)
     : _value = value,
       _token = null,
       _valueToDto = null;
 
   /// Creates a MixProp with a token
-  const MixProp.token(MixableToken<V> token, T Function(V) valueToDto)
+  const MixProp.fromToken(MixToken<V> token, T Function(V) valueToDto)
     : _value = null,
       _token = token,
       _valueToDto = valueToDto;
@@ -141,7 +141,7 @@ class MixProp<V, T extends Mix<V>> with EqualityMixin, ResolvableMixin<V> {
   static MixProp<V, T>? maybeValue<V, T extends Mix<V>>(T? value) {
     if (value == null) return null;
 
-    return MixProp.value(value);
+    return MixProp.fromValue(value);
   }
 
   /// Whether this prop has a value
@@ -151,10 +151,10 @@ class MixProp<V, T extends Mix<V>> with EqualityMixin, ResolvableMixin<V> {
   bool get hasToken => _token != null;
 
   /// Get the value directly (null if token-based)
-  T? get value => _value;
+  T? get mixValue => _value;
 
   /// Get the token directly (null if value-based)
-  MixableToken<V>? get token => _token;
+  MixToken<V>? get mixToken => _token;
 
   /// CENTRALIZED MERGE LOGIC
   /// Other's value/token wins, merge DTOs if both have values
@@ -164,14 +164,14 @@ class MixProp<V, T extends Mix<V>> with EqualityMixin, ResolvableMixin<V> {
     if (other._value != null && _value != null) {
       final merged = _value.merge(other._value) as T;
 
-      return MixProp.value(merged);
+      return MixProp.fromValue(merged);
     }
 
     // Other's value/token wins
     if (other._value != null) {
-      return MixProp.value(other._value);
+      return MixProp.fromValue(other._value);
     } else if (other._token != null) {
-      return MixProp.token(other._token, other._valueToDto!);
+      return MixProp.fromToken(other._token, other._valueToDto!);
     }
 
     return this;
@@ -223,7 +223,7 @@ class MixProp<V, T extends Mix<V>> with EqualityMixin, ResolvableMixin<V> {
       buffer.write('token: $_token');
     }
     buffer.write(')');
-    
+
     return buffer.toString();
   }
 

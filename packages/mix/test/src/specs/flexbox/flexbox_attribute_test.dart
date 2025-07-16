@@ -47,27 +47,33 @@ void main() {
       );
 
       expect(flexBoxSpecAttribute.box!.alignment, resolvesTo(Alignment.center));
-      expect(flexBoxSpecAttribute.box!.clipBehavior, resolvesTo(Clip.antiAlias));
+      expect(
+        flexBoxSpecAttribute.box!.clipBehavior,
+        resolvesTo(Clip.antiAlias),
+      );
 
       expect(
         flexBoxSpecAttribute.box!.constraints,
         resolvesTo(const BoxConstraints(maxHeight: 100)),
       );
       expect(
-        flexBoxSpecAttribute.box!.decoration?.value,
+        flexBoxSpecAttribute.box!.decoration?.mixValue,
         BoxDecorationDto(color: Colors.blue),
       );
 
       expect(flexBoxSpecAttribute.box!.height, resolvesTo(100));
       expect(
-        flexBoxSpecAttribute.box!.margin?.value,
+        flexBoxSpecAttribute.box!.margin?.mixValue,
         EdgeInsetsGeometryDto.only(top: 10, bottom: 10, left: 10, right: 10),
       );
       expect(
-        flexBoxSpecAttribute.box!.padding?.value,
+        flexBoxSpecAttribute.box!.padding?.mixValue,
         EdgeInsetsGeometryDto.only(top: 20, bottom: 20, left: 20, right: 20),
       );
-      expect(flexBoxSpecAttribute.box!.transform, resolvesTo(Matrix4.identity()));
+      expect(
+        flexBoxSpecAttribute.box!.transform,
+        resolvesTo(Matrix4.identity()),
+      );
       expect(flexBoxSpecAttribute.box!.width, resolvesTo(100));
       expect(
         flexBoxSpecAttribute.box!.modifiers,
@@ -231,7 +237,10 @@ void main() {
         ),
       );
 
-      expect(mergedFlexBoxSpecAttribute.box!.alignment, resolvesTo(Alignment.centerLeft));
+      expect(
+        mergedFlexBoxSpecAttribute.box!.alignment,
+        resolvesTo(Alignment.centerLeft),
+      );
       expect(
         mergedFlexBoxSpecAttribute.box!.clipBehavior,
         resolvesTo(Clip.antiAliasWithSaveLayer),
@@ -255,7 +264,10 @@ void main() {
         mergedFlexBoxSpecAttribute.box!.padding,
         resolvesTo(const EdgeInsets.all(30)),
       );
-      expect(mergedFlexBoxSpecAttribute.box!.transform, resolvesTo(Matrix4.identity()));
+      expect(
+        mergedFlexBoxSpecAttribute.box!.transform,
+        resolvesTo(Matrix4.identity()),
+      );
       expect(mergedFlexBoxSpecAttribute.box!.width, resolvesTo(200));
       expect(
         mergedFlexBoxSpecAttribute.box!.modifiers,

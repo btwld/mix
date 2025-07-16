@@ -339,8 +339,14 @@ void main() {
         ),
       );
 
-      expect(mergedBoxSpecAttribute.alignment, resolvesTo(Alignment.centerLeft));
-      expect(mergedBoxSpecAttribute.clipBehavior, resolvesTo(Clip.antiAliasWithSaveLayer));
+      expect(
+        mergedBoxSpecAttribute.alignment,
+        resolvesTo(Alignment.centerLeft),
+      );
+      expect(
+        mergedBoxSpecAttribute.clipBehavior,
+        resolvesTo(Clip.antiAliasWithSaveLayer),
+      );
 
       expect(
         mergedBoxSpecAttribute.constraints,
@@ -384,7 +390,10 @@ void main() {
 
       expect(util, isA<StyleElement>());
       expect(attr.alignment, resolvesTo(Alignment.center));
-      expect(attr.padding?.value, EdgeInsetsDto.value(const EdgeInsets.all(8.0)));
+      expect(
+        attr.padding?.mixValue,
+        EdgeInsetsDto.value(const EdgeInsets.all(8.0)),
+      );
       expect(attr.margin, null);
 
       final style = Style(util);
@@ -393,7 +402,7 @@ void main() {
 
       expect(boxAttribute?.alignment, resolvesTo(Alignment.center));
       expect(
-        boxAttribute?.padding?.value,
+        boxAttribute?.padding?.mixValue,
         EdgeInsetsDto.value(const EdgeInsets.all(8.0)),
       );
       expect(boxAttribute?.margin, null);
@@ -411,8 +420,14 @@ void main() {
       final box1 = BoxSpecUtility.self.padding(10);
       final box2 = BoxSpecUtility.self.padding(20);
 
-      expect(box1.padding?.value, EdgeInsetsDto.value(const EdgeInsets.all(10.0)));
-      expect(box2.padding?.value, EdgeInsetsDto.value(const EdgeInsets.all(20.0)));
+      expect(
+        box1.padding?.mixValue,
+        EdgeInsetsDto.value(const EdgeInsets.all(10.0)),
+      );
+      expect(
+        box2.padding?.mixValue,
+        EdgeInsetsDto.value(const EdgeInsets.all(20.0)),
+      );
 
       final style1 = Style(box1);
       final style2 = Style(box2);
@@ -421,11 +436,11 @@ void main() {
       final boxAttribute2 = style2.styles.attributeOfType<BoxSpecAttribute>();
 
       expect(
-        boxAttribute1?.padding?.value,
+        boxAttribute1?.padding?.mixValue,
         EdgeInsetsDto.value(const EdgeInsets.all(10.0)),
       );
       expect(
-        boxAttribute2?.padding?.value,
+        boxAttribute2?.padding?.mixValue,
         EdgeInsetsDto.value(const EdgeInsets.all(20.0)),
       );
 
@@ -453,13 +468,16 @@ void main() {
 
       expect(boxAttribute.padding, resolvesTo(const EdgeInsets.all(10.0)));
       expect(
-        (boxAttribute.decoration?.value as BoxDecorationDto).color,
+        (boxAttribute.decoration?.mixValue as BoxDecorationDto).color,
         isA<Prop<Color>>(),
       );
       expect(boxAttribute.alignment, resolvesTo(Alignment.center));
 
       expect(boxAttribute2.padding, resolvesTo(const EdgeInsets.all(20.0)));
-      expect((boxAttribute2.decoration?.value as BoxDecorationDto?)?.color, isNull);
+      expect(
+        (boxAttribute2.decoration?.mixValue as BoxDecorationDto?)?.color,
+        isNull,
+      );
 
       expect(boxAttribute2.alignment, isNull);
     });

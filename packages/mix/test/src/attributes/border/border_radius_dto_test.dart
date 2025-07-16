@@ -16,12 +16,17 @@ void main() {
           bottomRight: const Radius.circular(40.0),
         );
 
-        expect(dto, resolvesTo(const BorderRadius.only(
-          topLeft: Radius.circular(10.0),
-          topRight: Radius.circular(20.0),
-          bottomLeft: Radius.circular(30.0),
-          bottomRight: Radius.circular(40.0),
-        )));
+        expect(
+          dto,
+          resolvesTo(
+            const BorderRadius.only(
+              topLeft: Radius.circular(10.0),
+              topRight: Radius.circular(20.0),
+              bottomLeft: Radius.circular(30.0),
+              bottomRight: Radius.circular(40.0),
+            ),
+          ),
+        );
       });
 
       test('props factory assigns properties correctly', () {
@@ -32,12 +37,17 @@ void main() {
           bottomRight: Prop.value(const Radius.circular(40.0)),
         );
 
-        expect(dto, resolvesTo(const BorderRadius.only(
-          topLeft: Radius.circular(10.0),
-          topRight: Radius.circular(20.0),
-          bottomLeft: Radius.circular(30.0),
-          bottomRight: Radius.circular(40.0),
-        )));
+        expect(
+          dto,
+          resolvesTo(
+            const BorderRadius.only(
+              topLeft: Radius.circular(10.0),
+              topRight: Radius.circular(20.0),
+              bottomLeft: Radius.circular(30.0),
+              bottomRight: Radius.circular(40.0),
+            ),
+          ),
+        );
       });
 
       test('.value factory creates from Flutter type', () {
@@ -55,7 +65,9 @@ void main() {
       test('.maybeValue handles null correctly', () {
         expect(BorderRadiusDto.maybeValue(null), isNull);
         expect(
-          BorderRadiusDto.maybeValue(const BorderRadius.all(Radius.circular(10.0))),
+          BorderRadiusDto.maybeValue(
+            const BorderRadius.all(Radius.circular(10.0)),
+          ),
           isNotNull,
         );
       });
@@ -70,23 +82,35 @@ void main() {
           bottomRight: const Radius.circular(40.0),
         );
 
-        expect(dto, resolvesTo(const BorderRadius.only(
-          topLeft: Radius.circular(10.0),
-          topRight: Radius.circular(20.0),
-          bottomLeft: Radius.circular(30.0),
-          bottomRight: Radius.circular(40.0),
-        )));
+        expect(
+          dto,
+          resolvesTo(
+            const BorderRadius.only(
+              topLeft: Radius.circular(10.0),
+              topRight: Radius.circular(20.0),
+              bottomLeft: Radius.circular(30.0),
+              bottomRight: Radius.circular(40.0),
+            ),
+          ),
+        );
       });
 
       test('uses default values for null properties', () {
-        final dto = BorderRadiusDto(topLeft: const Radius.circular(10.0)); // other properties are null
+        final dto = BorderRadiusDto(
+          topLeft: const Radius.circular(10.0),
+        ); // other properties are null
 
-        expect(dto, resolvesTo(const BorderRadius.only(
-          topLeft: Radius.circular(10.0),
-          topRight: Radius.zero,
-          bottomLeft: Radius.zero,
-          bottomRight: Radius.zero,
-        )));
+        expect(
+          dto,
+          resolvesTo(
+            const BorderRadius.only(
+              topLeft: Radius.circular(10.0),
+              topRight: Radius.zero,
+              bottomLeft: Radius.zero,
+              bottomRight: Radius.zero,
+            ),
+          ),
+        );
       });
 
       test('handles all-null DTO', () {
@@ -111,12 +135,17 @@ void main() {
 
         final merged = base.merge(override);
 
-        expect(merged, resolvesTo(const BorderRadius.only(
-          topLeft: Radius.circular(5.0),    // From override
-          topRight: Radius.circular(20.0),  // Preserved from base
-          bottomLeft: Radius.circular(15.0), // From override
-          bottomRight: Radius.circular(40.0), // Preserved from base
-        )));
+        expect(
+          merged,
+          resolvesTo(
+            const BorderRadius.only(
+              topLeft: Radius.circular(5.0), // From override
+              topRight: Radius.circular(20.0), // Preserved from base
+              bottomLeft: Radius.circular(15.0), // From override
+              bottomRight: Radius.circular(40.0), // Preserved from base
+            ),
+          ),
+        );
       });
 
       test('returns self when merging with null', () {
@@ -135,12 +164,17 @@ void main() {
 
         final merged = base.merge(override);
 
-        expect(merged, resolvesTo(const BorderRadius.only(
-          topLeft: Radius.circular(5.0),    // Overridden
-          topRight: Radius.circular(20.0),  // Preserved
-          bottomLeft: Radius.circular(30.0), // Preserved
-          bottomRight: Radius.circular(40.0), // Preserved
-        )));
+        expect(
+          merged,
+          resolvesTo(
+            const BorderRadius.only(
+              topLeft: Radius.circular(5.0), // Overridden
+              topRight: Radius.circular(20.0), // Preserved
+              bottomLeft: Radius.circular(30.0), // Preserved
+              bottomRight: Radius.circular(40.0), // Preserved
+            ),
+          ),
+        );
       });
     });
 
@@ -169,7 +203,7 @@ void main() {
 
     group('token resolution', () {
       testWidgets('resolves tokens from context', (tester) async {
-        const radiusToken = MixableToken<Radius>('test-radius');
+        const radiusToken = MixToken<Radius>('test-radius');
         final dto = BorderRadiusDto.props(
           topLeft: Prop.token(radiusToken),
           topRight: Prop.value(const Radius.circular(20.0)),
@@ -177,7 +211,9 @@ void main() {
 
         await tester.pumpWithMixScope(
           Container(),
-          theme: MixScopeData.static(tokens: {radiusToken: const Radius.circular(10.0)}),
+          theme: MixScopeData.static(
+            tokens: {radiusToken: const Radius.circular(10.0)},
+          ),
         );
 
         final context = tester.element(find.byType(Container));
@@ -193,15 +229,10 @@ void main() {
       });
 
       test('handles missing tokens gracefully', () {
-        const token = MixableToken<Radius>('undefined');
-        final dto = BorderRadiusDto.props(
-          topLeft: Prop.token(token),
-        );
+        const token = MixToken<Radius>('undefined');
+        final dto = BorderRadiusDto.props(topLeft: Prop.token(token));
 
-        expect(
-          () => dto.resolve(EmptyMixData),
-          throwsStateError,
-        );
+        expect(() => dto.resolve(EmptyMixData), throwsStateError);
       });
     });
   });
@@ -216,12 +247,17 @@ void main() {
           bottomEnd: const Radius.circular(40.0),
         );
 
-        expect(dto, resolvesTo(const BorderRadiusDirectional.only(
-          topStart: Radius.circular(10.0),
-          topEnd: Radius.circular(20.0),
-          bottomStart: Radius.circular(30.0),
-          bottomEnd: Radius.circular(40.0),
-        )));
+        expect(
+          dto,
+          resolvesTo(
+            const BorderRadiusDirectional.only(
+              topStart: Radius.circular(10.0),
+              topEnd: Radius.circular(20.0),
+              bottomStart: Radius.circular(30.0),
+              bottomEnd: Radius.circular(40.0),
+            ),
+          ),
+        );
       });
 
       test('props factory assigns properties correctly', () {
@@ -232,12 +268,17 @@ void main() {
           bottomEnd: Prop.value(const Radius.circular(40.0)),
         );
 
-        expect(dto, resolvesTo(const BorderRadiusDirectional.only(
-          topStart: Radius.circular(10.0),
-          topEnd: Radius.circular(20.0),
-          bottomStart: Radius.circular(30.0),
-          bottomEnd: Radius.circular(40.0),
-        )));
+        expect(
+          dto,
+          resolvesTo(
+            const BorderRadiusDirectional.only(
+              topStart: Radius.circular(10.0),
+              topEnd: Radius.circular(20.0),
+              bottomStart: Radius.circular(30.0),
+              bottomEnd: Radius.circular(40.0),
+            ),
+          ),
+        );
       });
 
       test('.value factory creates from Flutter type', () {
@@ -255,7 +296,9 @@ void main() {
       test('.maybeValue handles null correctly', () {
         expect(BorderRadiusDirectionalDto.maybeValue(null), isNull);
         expect(
-          BorderRadiusDirectionalDto.maybeValue(const BorderRadiusDirectional.all(Radius.circular(10.0))),
+          BorderRadiusDirectionalDto.maybeValue(
+            const BorderRadiusDirectional.all(Radius.circular(10.0)),
+          ),
           isNotNull,
         );
       });
@@ -270,23 +313,35 @@ void main() {
           bottomEnd: const Radius.circular(40.0),
         );
 
-        expect(dto, resolvesTo(const BorderRadiusDirectional.only(
-          topStart: Radius.circular(10.0),
-          topEnd: Radius.circular(20.0),
-          bottomStart: Radius.circular(30.0),
-          bottomEnd: Radius.circular(40.0),
-        )));
+        expect(
+          dto,
+          resolvesTo(
+            const BorderRadiusDirectional.only(
+              topStart: Radius.circular(10.0),
+              topEnd: Radius.circular(20.0),
+              bottomStart: Radius.circular(30.0),
+              bottomEnd: Radius.circular(40.0),
+            ),
+          ),
+        );
       });
 
       test('uses default values for null properties', () {
-        final dto = BorderRadiusDirectionalDto(topStart: const Radius.circular(10.0)); // other properties are null
+        final dto = BorderRadiusDirectionalDto(
+          topStart: const Radius.circular(10.0),
+        ); // other properties are null
 
-        expect(dto, resolvesTo(const BorderRadiusDirectional.only(
-          topStart: Radius.circular(10.0),
-          topEnd: Radius.zero,
-          bottomStart: Radius.zero,
-          bottomEnd: Radius.zero,
-        )));
+        expect(
+          dto,
+          resolvesTo(
+            const BorderRadiusDirectional.only(
+              topStart: Radius.circular(10.0),
+              topEnd: Radius.zero,
+              bottomStart: Radius.zero,
+              bottomEnd: Radius.zero,
+            ),
+          ),
+        );
       });
 
       test('handles all-null DTO', () {
@@ -311,16 +366,23 @@ void main() {
 
         final merged = base.merge(override);
 
-        expect(merged, resolvesTo(const BorderRadiusDirectional.only(
-          topStart: Radius.circular(5.0),    // From override
-          topEnd: Radius.circular(20.0),     // Preserved from base
-          bottomStart: Radius.circular(15.0), // From override
-          bottomEnd: Radius.circular(40.0),   // Preserved from base
-        )));
+        expect(
+          merged,
+          resolvesTo(
+            const BorderRadiusDirectional.only(
+              topStart: Radius.circular(5.0), // From override
+              topEnd: Radius.circular(20.0), // Preserved from base
+              bottomStart: Radius.circular(15.0), // From override
+              bottomEnd: Radius.circular(40.0), // Preserved from base
+            ),
+          ),
+        );
       });
 
       test('returns self when merging with null', () {
-        final dto = BorderRadiusDirectionalDto(topStart: const Radius.circular(10.0));
+        final dto = BorderRadiusDirectionalDto(
+          topStart: const Radius.circular(10.0),
+        );
         expect(dto.merge(null), same(dto));
       });
 
@@ -331,16 +393,23 @@ void main() {
           bottomStart: const Radius.circular(30.0),
           bottomEnd: const Radius.circular(40.0),
         );
-        final override = BorderRadiusDirectionalDto(topStart: const Radius.circular(5.0));
+        final override = BorderRadiusDirectionalDto(
+          topStart: const Radius.circular(5.0),
+        );
 
         final merged = base.merge(override);
 
-        expect(merged, resolvesTo(const BorderRadiusDirectional.only(
-          topStart: Radius.circular(5.0),    // Overridden
-          topEnd: Radius.circular(20.0),     // Preserved
-          bottomStart: Radius.circular(30.0), // Preserved
-          bottomEnd: Radius.circular(40.0),   // Preserved
-        )));
+        expect(
+          merged,
+          resolvesTo(
+            const BorderRadiusDirectional.only(
+              topStart: Radius.circular(5.0), // Overridden
+              topEnd: Radius.circular(20.0), // Preserved
+              bottomStart: Radius.circular(30.0), // Preserved
+              bottomEnd: Radius.circular(40.0), // Preserved
+            ),
+          ),
+        );
       });
     });
 
@@ -360,8 +429,12 @@ void main() {
       });
 
       test('not equals with different values', () {
-        final dto1 = BorderRadiusDirectionalDto(topStart: const Radius.circular(10.0));
-        final dto2 = BorderRadiusDirectionalDto(topStart: const Radius.circular(20.0));
+        final dto1 = BorderRadiusDirectionalDto(
+          topStart: const Radius.circular(10.0),
+        );
+        final dto2 = BorderRadiusDirectionalDto(
+          topStart: const Radius.circular(20.0),
+        );
 
         expect(dto1, isNot(equals(dto2)));
       });
@@ -369,7 +442,7 @@ void main() {
 
     group('token resolution', () {
       testWidgets('resolves tokens from context', (tester) async {
-        const radiusToken = MixableToken<Radius>('test-radius');
+        const radiusToken = MixToken<Radius>('test-radius');
         final dto = BorderRadiusDirectionalDto.props(
           topStart: Prop.token(radiusToken),
           topEnd: Prop.value(const Radius.circular(20.0)),
@@ -377,7 +450,9 @@ void main() {
 
         await tester.pumpWithMixScope(
           Container(),
-          theme: MixScopeData.static(tokens: {radiusToken: const Radius.circular(10.0)}),
+          theme: MixScopeData.static(
+            tokens: {radiusToken: const Radius.circular(10.0)},
+          ),
         );
 
         final context = tester.element(find.byType(Container));
@@ -393,31 +468,31 @@ void main() {
       });
 
       test('handles missing tokens gracefully', () {
-        const token = MixableToken<Radius>('undefined');
+        const token = MixToken<Radius>('undefined');
         final dto = BorderRadiusDirectionalDto.props(
           topStart: Prop.token(token),
         );
 
-        expect(
-          () => dto.resolve(EmptyMixData),
-          throwsStateError,
-        );
+        expect(() => dto.resolve(EmptyMixData), throwsStateError);
       });
     });
 
     group('directional property behavior', () {
-      test('topLeft, topRight, bottomLeft, and bottomRight are always null', () {
-        final dto = BorderRadiusDirectionalDto(
-          topStart: const Radius.circular(1),
-          topEnd: const Radius.circular(2),
-          bottomStart: const Radius.circular(3),
-          bottomEnd: const Radius.circular(4),
-        );
-        expect(dto.topLeft, isNull);
-        expect(dto.topRight, isNull);
-        expect(dto.bottomLeft, isNull);
-        expect(dto.bottomRight, isNull);
-      });
+      test(
+        'topLeft, topRight, bottomLeft, and bottomRight are always null',
+        () {
+          final dto = BorderRadiusDirectionalDto(
+            topStart: const Radius.circular(1),
+            topEnd: const Radius.circular(2),
+            bottomStart: const Radius.circular(3),
+            bottomEnd: const Radius.circular(4),
+          );
+          expect(dto.topLeft, isNull);
+          expect(dto.topRight, isNull);
+          expect(dto.bottomLeft, isNull);
+          expect(dto.bottomRight, isNull);
+        },
+      );
     });
   });
 
@@ -439,7 +514,9 @@ void main() {
       test('.maybeValue handles null correctly', () {
         expect(BorderRadiusGeometryDto.maybeValue(null), isNull);
         expect(
-          BorderRadiusGeometryDto.maybeValue(const BorderRadius.all(Radius.circular(10.0))),
+          BorderRadiusGeometryDto.maybeValue(
+            const BorderRadius.all(Radius.circular(10.0)),
+          ),
           isNotNull,
         );
       });
@@ -458,15 +535,23 @@ void main() {
           bottomStart: const Radius.circular(15.0),
         );
 
-        final merged = BorderRadiusGeometryDto.tryToMerge(borderRadius, directional);
+        final merged = BorderRadiusGeometryDto.tryToMerge(
+          borderRadius,
+          directional,
+        );
 
         expect(merged, isA<BorderRadiusDirectionalDto>());
-        expect(merged, resolvesTo(const BorderRadiusDirectional.only(
-          topStart: Radius.circular(5.0),   // From directional (overrides)
-          topEnd: Radius.circular(20.0),    // From borderRadius.topRight
-          bottomStart: Radius.circular(15.0), // From directional
-          bottomEnd: Radius.circular(40.0),  // From borderRadius.bottomRight
-        )));
+        expect(
+          merged,
+          resolvesTo(
+            const BorderRadiusDirectional.only(
+              topStart: Radius.circular(5.0), // From directional (overrides)
+              topEnd: Radius.circular(20.0), // From borderRadius.topRight
+              bottomStart: Radius.circular(15.0), // From directional
+              bottomEnd: Radius.circular(40.0), // From borderRadius.bottomRight
+            ),
+          ),
+        );
       });
 
       test('BorderRadiusDirectionalDto merges with BorderRadiusDto', () {
@@ -481,15 +566,23 @@ void main() {
           bottomLeft: const Radius.circular(15.0),
         );
 
-        final merged = BorderRadiusGeometryDto.tryToMerge(directional, borderRadius);
+        final merged = BorderRadiusGeometryDto.tryToMerge(
+          directional,
+          borderRadius,
+        );
 
         expect(merged, isA<BorderRadiusDto>());
-        expect(merged, resolvesTo(const BorderRadius.only(
-          topLeft: Radius.circular(5.0),     // From borderRadius (overrides)
-          topRight: Radius.circular(20.0),   // From directional.topEnd
-          bottomLeft: Radius.circular(15.0), // From borderRadius
-          bottomRight: Radius.circular(40.0), // From directional.bottomEnd
-        )));
+        expect(
+          merged,
+          resolvesTo(
+            const BorderRadius.only(
+              topLeft: Radius.circular(5.0), // From borderRadius (overrides)
+              topRight: Radius.circular(20.0), // From directional.topEnd
+              bottomLeft: Radius.circular(15.0), // From borderRadius
+              bottomRight: Radius.circular(40.0), // From directional.bottomEnd
+            ),
+          ),
+        );
       });
 
       test('same type merging works normally', () {
@@ -505,12 +598,17 @@ void main() {
         final merged = BorderRadiusGeometryDto.tryToMerge(dto1, dto2);
 
         expect(merged, isA<BorderRadiusDto>());
-        expect(merged, resolvesTo(const BorderRadius.only(
-          topLeft: Radius.circular(5.0),     // From dto2
-          topRight: Radius.circular(20.0),   // From dto1 (preserved)
-          bottomLeft: Radius.circular(30.0), // From dto2
-          bottomRight: Radius.zero,          // Default
-        )));
+        expect(
+          merged,
+          resolvesTo(
+            const BorderRadius.only(
+              topLeft: Radius.circular(5.0), // From dto2
+              topRight: Radius.circular(20.0), // From dto1 (preserved)
+              bottomLeft: Radius.circular(30.0), // From dto2
+              bottomRight: Radius.zero, // Default
+            ),
+          ),
+        );
       });
 
       test('returns second when first is null', () {
@@ -553,7 +651,7 @@ void main() {
         style: BorderStyle.solid,
         width: 1.0,
       );
-      
+
       expect(
         attr,
         resolvesTo(

@@ -33,7 +33,6 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
   // Lists of Mix types (DTOs)
   final List<MixProp<Shadow, ShadowDto>>? shadows;
 
-
   factory TextStyleDto({
     Color? color,
     Color? backgroundColor,
@@ -67,7 +66,7 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
       debugLabel: Prop.maybeValue(debugLabel),
       wordSpacing: Prop.maybeValue(wordSpacing),
       textBaseline: Prop.maybeValue(textBaseline),
-      shadows: shadows?.map(MixProp<Shadow, ShadowDto>.value).toList(),
+      shadows: shadows?.map(MixProp<Shadow, ShadowDto>.fromValue).toList(),
       fontFeatures: fontFeatures?.map(Prop.value).toList(),
       decoration: Prop.maybeValue(decoration),
       decorationColor: Prop.maybeValue(decorationColor),

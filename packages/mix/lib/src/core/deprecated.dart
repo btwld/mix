@@ -80,9 +80,6 @@ typedef MixThemeData = MixScopeData;
 @Deprecated('Use StyleElement instead')
 typedef Attribute = StyleElement;
 
-@Deprecated('Use MixToken instead')
-typedef MixToken = MixableToken;
-
 /// Deprecated: Use StyleAttribute instead
 @Deprecated('Use StyleAttribute instead')
 typedef StyledAttribute = SpecAttribute;

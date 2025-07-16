@@ -57,8 +57,8 @@ void main() {
       expect(
         mergedAttribute.shadows,
         equals([
-          MixProp<Shadow, ShadowDto>.value(ShadowDto(color: Colors.black)),
-          MixProp<Shadow, ShadowDto>.value(ShadowDto(color: Colors.white)),
+          MixProp<Shadow, ShadowDto>.fromValue(ShadowDto(color: Colors.black)),
+          MixProp<Shadow, ShadowDto>.fromValue(ShadowDto(color: Colors.white)),
         ]),
       );
     });
@@ -98,8 +98,8 @@ void main() {
       expect(
         attribute.shadows,
         equals([
-          MixProp<Shadow, ShadowDto>.value(ShadowDto(color: Colors.black)),
-          MixProp<Shadow, ShadowDto>.value(ShadowDto(color: Colors.black)),
+          MixProp<Shadow, ShadowDto>.fromValue(ShadowDto(color: Colors.black)),
+          MixProp<Shadow, ShadowDto>.fromValue(ShadowDto(color: Colors.black)),
         ]),
       );
       expect(attribute.textDirection, equals(textDirection));

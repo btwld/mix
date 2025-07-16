@@ -11,7 +11,9 @@ import 'text_style_dto.dart';
 
 final class TextStyleUtility<T extends StyleElement>
     extends DtoUtility<T, TextStyleDto, TextStyle> {
-  late final color = ColorUtility((prop) => builder(TextStyleDto.props(color: prop)));
+  late final color = ColorUtility(
+    (prop) => builder(TextStyleDto.props(color: prop)),
+  );
 
   late final fontWeight = FontWeightUtility((v) => only(fontWeight: v));
 
@@ -21,9 +23,13 @@ final class TextStyleUtility<T extends StyleElement>
 
   late final fontSize = FontSizeUtility((v) => only(fontSize: v));
 
-  late final backgroundColor = ColorUtility((prop) => builder(TextStyleDto.props(backgroundColor: prop)));
+  late final backgroundColor = ColorUtility(
+    (prop) => builder(TextStyleDto.props(backgroundColor: prop)),
+  );
 
-  late final decorationColor = ColorUtility((prop) => builder(TextStyleDto.props(decorationColor: prop)));
+  late final decorationColor = ColorUtility(
+    (prop) => builder(TextStyleDto.props(decorationColor: prop)),
+  );
 
   late final decorationStyle = TextDecorationStyleUtility(
     (v) => only(decorationStyle: v),
@@ -68,7 +74,7 @@ final class TextStyleUtility<T extends StyleElement>
         ),
       );
 
-  T token(MixableToken<TextStyle> token) => throw UnimplementedError(
+  T token(MixToken<TextStyle> token) => throw UnimplementedError(
     'Token support needs implementation for whole TextStyle',
   );
 

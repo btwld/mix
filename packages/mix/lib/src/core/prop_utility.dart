@@ -22,7 +22,7 @@ abstract class PropUtility<Return extends StyleElement, Value> {
   Return call(Value value) => builder(Prop.value(value));
 
   /// Token support
-  Return token(MixableToken<Value> token) => builder(Prop.token(token));
+  Return token(MixToken<Value> token) => builder(Prop.token(token));
 
   /// Single directive support
   Return directive(MixDirective<Value> directive) =>
@@ -51,11 +51,11 @@ abstract class MixPropUtility<S extends StyleElement, V, M extends Mix<V>> {
   const MixPropUtility(this.builder, {required this.convertToMix});
 
   /// Direct DTO value
-  S call(M dto) => builder(MixProp.value(dto));
+  S call(M dto) => builder(MixProp.fromValue(dto));
 
   /// Flutter value with auto-conversion to DTO
   S value(V value) => call(convertToMix(value));
 
   /// Token support with conversion
-  S token(MixableToken<V> token) => builder(MixProp.token(token, convertToMix));
+  S token(MixToken<V> token) => builder(MixProp.fromToken(token, convertToMix));
 }

@@ -5,7 +5,7 @@ import 'package:mix/mix.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  const primaryColor = MixableToken<Color>('primary');
+  const primaryColor = MixToken<Color>('primary');
   const tokenUtil = MixTokensTest();
   final theme = MixScopeData.static(
     tokens: {
@@ -35,7 +35,9 @@ void main() {
           Box(
             style: Style(
               $box.color.token(primaryColor),
-              $box.borderRadius.all.circular(200), // Using direct value instead of token for now
+              $box.borderRadius.all.circular(
+                200,
+              ), // Using direct value instead of token for now
               $box.padding.horizontal.token(tokenUtil.space.small),
               // $text.style.ref($material.textTheme.bodyLarge), // Commented out - ref method doesn't exist
             ),

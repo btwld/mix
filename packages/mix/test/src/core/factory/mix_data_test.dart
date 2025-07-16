@@ -5,8 +5,8 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 // Define theme color tokens
-const _surface = MixableToken<Color>('surface');
-const _onSurface = MixableToken<Color>('onSurface');
+const _surface = MixToken<Color>('surface');
+const _onSurface = MixToken<Color>('onSurface');
 
 // Light theme
 final _lightTheme = MixScopeData.static(

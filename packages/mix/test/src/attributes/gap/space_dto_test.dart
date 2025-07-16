@@ -15,7 +15,7 @@ void main() {
       });
 
       test('token constructor creates SpaceDto with token', () {
-        const token = MixableToken<double>('test.space');
+        const token = MixToken<double>('test.space');
         const dto = SpaceDto.token(token);
         expect(dto, isA<SpaceDto>());
       });
@@ -70,15 +70,11 @@ void main() {
       });
 
       testWidgets('token SpaceDto resolves correctly', (tester) async {
-        const testToken = MixableToken<double>('spacing.large');
+        const testToken = MixToken<double>('spacing.large');
 
         await tester.pumpWithMixScope(
           Container(),
-          theme: MixScopeData.static(
-            tokens: {
-              testToken: 32.0,
-            },
-          ),
+          theme: MixScopeData.static(tokens: {testToken: 32.0}),
         );
 
         final buildContext = tester.element(find.byType(Container));
@@ -105,42 +101,42 @@ void main() {
         const dto1 = SpaceDto.value(10.0);
         const dto2 = SpaceDto.value(20.0);
         final merged = dto1.merge(dto2);
-        
+
         expect(merged, resolvesTo(20.0));
       });
 
       test('value merges with token - token wins', () {
         const dto1 = SpaceDto.value(10.0);
-        const token = MixableToken<double>('spacing.medium');
+        const token = MixToken<double>('spacing.medium');
         const dto2 = SpaceDto.token(token);
         final merged = dto1.merge(dto2);
-        
+
         expect(merged, same(dto2));
       });
 
       test('token merges with value - value wins', () {
-        const token = MixableToken<double>('spacing.small');
+        const token = MixToken<double>('spacing.small');
         const dto1 = SpaceDto.token(token);
         const dto2 = SpaceDto.value(30.0);
         final merged = dto1.merge(dto2);
-        
+
         expect(merged, resolvesTo(30.0));
       });
 
       test('token merges with token - second token wins', () {
-        const token1 = MixableToken<double>('spacing.small');
-        const token2 = MixableToken<double>('spacing.large');
+        const token1 = MixToken<double>('spacing.small');
+        const token2 = MixToken<double>('spacing.large');
         const dto1 = SpaceDto.token(token1);
         const dto2 = SpaceDto.token(token2);
         final merged = dto1.merge(dto2);
-        
+
         expect(merged, same(dto2));
       });
 
       test('merge with null returns original', () {
         const dto = SpaceDto.value(15.0);
         final merged = dto.merge(null);
-        
+
         expect(merged, same(dto));
       });
 
@@ -148,7 +144,7 @@ void main() {
         const dto1 = SpaceDto.value(10.0);
         const dto2 = SpaceDto.zero;
         final merged = dto1.merge(dto2);
-        
+
         expect(merged, resolvesTo(0.0));
       });
 
@@ -156,7 +152,7 @@ void main() {
         const dto1 = SpaceDto.value(10.0);
         const dto2 = SpaceDto.infinity;
         final merged = dto1.merge(dto2);
-        
+
         expect(merged, resolvesTo(double.infinity));
       });
     });
@@ -167,50 +163,50 @@ void main() {
         const dto1 = SpaceDto.value(10.0);
         const dto2 = SpaceDto.value(10.0);
         const dto3 = SpaceDto.value(20.0);
-        
+
         expect(dto1, equals(dto2));
         expect(dto1, isNot(equals(dto3)));
       });
 
       test('token SpaceDto equality', () {
-        const token1 = MixableToken<double>('spacing.medium');
-        const token2 = MixableToken<double>('spacing.medium');
-        const token3 = MixableToken<double>('spacing.large');
+        const token1 = MixToken<double>('spacing.medium');
+        const token2 = MixToken<double>('spacing.medium');
+        const token3 = MixToken<double>('spacing.large');
         const dto1 = SpaceDto.token(token1);
         const dto2 = SpaceDto.token(token2);
         const dto3 = SpaceDto.token(token3);
-        
+
         expect(dto1, equals(dto2));
         expect(dto1, isNot(equals(dto3)));
       });
 
       test('value and token SpaceDto inequality', () {
         const dto1 = SpaceDto.value(16.0);
-        const token = MixableToken<double>('spacing.medium');
+        const token = MixToken<double>('spacing.medium');
         const dto2 = SpaceDto.token(token);
-        
+
         expect(dto1, isNot(equals(dto2)));
       });
 
       test('hashCode consistency for value DTOs', () {
         const dto1 = SpaceDto.value(10.0);
         const dto2 = SpaceDto.value(10.0);
-        
+
         expect(dto1.hashCode, equals(dto2.hashCode));
       });
 
       test('hashCode consistency for token DTOs', () {
-        const token = MixableToken<double>('spacing.medium');
+        const token = MixToken<double>('spacing.medium');
         const dto1 = SpaceDto.token(token);
         const dto2 = SpaceDto.token(token);
-        
+
         expect(dto1.hashCode, equals(dto2.hashCode));
       });
 
       test('zero equality with value(0.0)', () {
         const dto1 = SpaceDto.zero;
         const dto2 = SpaceDto.value(0.0);
-        
+
         expect(dto1, equals(dto2));
         expect(dto1.hashCode, equals(dto2.hashCode));
       });
@@ -218,7 +214,7 @@ void main() {
       test('infinity equality with value(double.infinity)', () {
         const dto1 = SpaceDto.infinity;
         const dto2 = SpaceDto.value(double.infinity);
-        
+
         expect(dto1, equals(dto2));
         expect(dto1.hashCode, equals(dto2.hashCode));
       });
@@ -259,30 +255,26 @@ void main() {
         const dto = SpaceDto.value(16.0);
         final context = createEmptyMixData();
         final resolved = dto.resolve(context);
-        
+
         expect(resolved, 16.0);
         // This value would be used by Gap widget
       });
 
       testWidgets('SpaceDto with theme token integration', (tester) async {
-        const smallToken = MixableToken<double>('spacing.small');
-        const mediumToken = MixableToken<double>('spacing.medium');
-        const largeToken = MixableToken<double>('spacing.large');
+        const smallToken = MixToken<double>('spacing.small');
+        const mediumToken = MixToken<double>('spacing.medium');
+        const largeToken = MixToken<double>('spacing.large');
 
         await tester.pumpWithMixScope(
           Container(),
           theme: MixScopeData.static(
-            tokens: {
-              smallToken: 8.0,
-              mediumToken: 16.0,
-              largeToken: 24.0,
-            },
+            tokens: {smallToken: 8.0, mediumToken: 16.0, largeToken: 24.0},
           ),
         );
 
         final buildContext = tester.element(find.byType(Container));
         final mixContext = MixContext.create(buildContext, Style());
-        
+
         expect(SpaceDto.token(smallToken).resolve(mixContext), 8.0);
         expect(SpaceDto.token(mediumToken).resolve(mixContext), 16.0);
         expect(SpaceDto.token(largeToken).resolve(mixContext), 24.0);
@@ -292,7 +284,7 @@ void main() {
         const dto1 = SpaceDto.value(10.0);
         const dto2 = SpaceDto.value(20.0);
         const dto3 = SpaceDto.value(30.0);
-        
+
         final merged = dto1.merge(dto2).merge(dto3);
         expect(merged, resolvesTo(30.0));
       });
@@ -300,7 +292,7 @@ void main() {
       test('SpaceDto with null chain merging', () {
         const dto = SpaceDto.value(10.0);
         final merged = dto.merge(null).merge(null);
-        
+
         expect(merged, same(dto));
         expect(merged, resolvesTo(10.0));
       });

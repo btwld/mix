@@ -215,8 +215,8 @@ void main() {
 
     group('token resolution', () {
       testWidgets('resolves tokens from context', (tester) async {
-        const minToken = MixableToken<double>('constraints.min');
-        const maxToken = MixableToken<double>('constraints.max');
+        const minToken = MixToken<double>('constraints.min');
+        const maxToken = MixToken<double>('constraints.max');
 
         final dto = BoxConstraintsDto.props(
           minWidth: Prop.token(minToken),
@@ -245,7 +245,7 @@ void main() {
       });
 
       test('handles missing tokens gracefully', () {
-        const token = MixableToken<double>('undefined.size');
+        const token = MixToken<double>('undefined.size');
         final dto = BoxConstraintsDto.props(minWidth: Prop.token(token));
 
         // The resolve should throw when token is not found
@@ -253,7 +253,7 @@ void main() {
       });
 
       testWidgets('mixes tokens and values', (tester) async {
-        const sizeToken = MixableToken<double>('size.large');
+        const sizeToken = MixToken<double>('size.large');
 
         final dto = BoxConstraintsDto.props(
           minWidth: Prop.value(10),
@@ -297,7 +297,7 @@ void main() {
       test('merge maintains property types', () {
         final dto1 = BoxConstraintsDto.props(
           minWidth: Prop.value(50),
-          maxWidth: Prop.token(const MixableToken<double>('size')),
+          maxWidth: Prop.token(const MixToken<double>('size')),
         );
         final dto2 = BoxConstraintsDto(minWidth: 60);
 

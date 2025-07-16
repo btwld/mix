@@ -94,7 +94,7 @@ class MixContext with Diagnosticable {
     return _mergeAttributes(attributes) ?? attributes.last;
   }
 
-  T getToken<T>(MixableToken<T> token) {
+  T getToken<T>(MixToken<T> token) {
     return _scope.getToken(token, _context);
   }
 

@@ -16,28 +16,38 @@ void main() {
           right: 40.0,
         );
 
-        expect(dto, resolvesTo(const EdgeInsets.only(
-          top: 10.0,
-          bottom: 20.0,
-          left: 30.0,
-          right: 40.0,
-        )));
+        expect(
+          dto,
+          resolvesTo(
+            const EdgeInsets.only(
+              top: 10.0,
+              bottom: 20.0,
+              left: 30.0,
+              right: 40.0,
+            ),
+          ),
+        );
       });
 
       test('props factory assigns properties correctly', () {
         final dto = EdgeInsetsDto.props(
-          top: MixProp.value(SpaceDto.value(10.0)),
-          bottom: MixProp.value(SpaceDto.value(20.0)),
-          left: MixProp.value(SpaceDto.value(30.0)),
-          right: MixProp.value(SpaceDto.value(40.0)),
+          top: MixProp.fromValue(SpaceDto.value(10.0)),
+          bottom: MixProp.fromValue(SpaceDto.value(20.0)),
+          left: MixProp.fromValue(SpaceDto.value(30.0)),
+          right: MixProp.fromValue(SpaceDto.value(40.0)),
         );
 
-        expect(dto, resolvesTo(const EdgeInsets.only(
-          top: 10.0,
-          bottom: 20.0,
-          left: 30.0,
-          right: 40.0,
-        )));
+        expect(
+          dto,
+          resolvesTo(
+            const EdgeInsets.only(
+              top: 10.0,
+              bottom: 20.0,
+              left: 30.0,
+              right: 40.0,
+            ),
+          ),
+        );
       });
 
       test('.value factory creates from Flutter type', () {
@@ -54,10 +64,7 @@ void main() {
 
       test('.maybeValue handles null correctly', () {
         expect(EdgeInsetsDto.maybeValue(null), isNull);
-        expect(
-          EdgeInsetsDto.maybeValue(const EdgeInsets.all(10.0)),
-          isNotNull,
-        );
+        expect(EdgeInsetsDto.maybeValue(const EdgeInsets.all(10.0)), isNotNull);
       });
 
       test('.all creates uniform EdgeInsets', () {
@@ -78,10 +85,7 @@ void main() {
           left: SpaceDto.value(20.0),
         );
 
-        expect(dto, resolvesTo(const EdgeInsets.only(
-          top: 10.0,
-          left: 20.0,
-        )));
+        expect(dto, resolvesTo(const EdgeInsets.only(top: 10.0, left: 20.0)));
       });
     });
 
@@ -94,12 +98,17 @@ void main() {
           right: 40.0,
         );
 
-        expect(dto, resolvesTo(const EdgeInsets.only(
-          top: 10.0,
-          bottom: 20.0,
-          left: 30.0,
-          right: 40.0,
-        )));
+        expect(
+          dto,
+          resolvesTo(
+            const EdgeInsets.only(
+              top: 10.0,
+              bottom: 20.0,
+              left: 30.0,
+              right: 40.0,
+            ),
+          ),
+        );
       });
 
       test('uses default values for null properties', () {
@@ -130,12 +139,17 @@ void main() {
 
         final merged = base.merge(override);
 
-        expect(merged, resolvesTo(const EdgeInsets.only(
-          top: 5.0,        // From override
-          bottom: 20.0,    // Preserved from base
-          left: 15.0,      // From override
-          right: 40.0,     // Preserved from base
-        )));
+        expect(
+          merged,
+          resolvesTo(
+            const EdgeInsets.only(
+              top: 5.0, // From override
+              bottom: 20.0, // Preserved from base
+              left: 15.0, // From override
+              right: 40.0, // Preserved from base
+            ),
+          ),
+        );
       });
 
       test('returns self when merging with null', () {
@@ -154,12 +168,17 @@ void main() {
 
         final merged = base.merge(override);
 
-        expect(merged, resolvesTo(const EdgeInsets.only(
-          top: 5.0,        // Overridden
-          bottom: 20.0,    // Preserved
-          left: 30.0,      // Preserved
-          right: 40.0,     // Preserved
-        )));
+        expect(
+          merged,
+          resolvesTo(
+            const EdgeInsets.only(
+              top: 5.0, // Overridden
+              bottom: 20.0, // Preserved
+              left: 30.0, // Preserved
+              right: 40.0, // Preserved
+            ),
+          ),
+        );
       });
     });
 
@@ -182,7 +201,7 @@ void main() {
 
     group('token resolution', () {
       testWidgets('resolves tokens from context', (tester) async {
-        const spaceToken = MixableToken<double>('test-space');
+        const spaceToken = MixToken<double>('test-space');
         final dto = EdgeInsetsDto.valueSpaceDto(
           top: SpaceDto.token(spaceToken),
           left: SpaceDto.value(20.0),
@@ -203,15 +222,10 @@ void main() {
       });
 
       test('handles missing tokens gracefully', () {
-        const token = MixableToken<double>('undefined');
-        final dto = EdgeInsetsDto.valueSpaceDto(
-          top: SpaceDto.token(token),
-        );
+        const token = MixToken<double>('undefined');
+        final dto = EdgeInsetsDto.valueSpaceDto(top: SpaceDto.token(token));
 
-        expect(
-          () => dto.resolve(EmptyMixData),
-          throwsStateError,
-        );
+        expect(() => dto.resolve(EmptyMixData), throwsStateError);
       });
     });
   });
@@ -226,28 +240,38 @@ void main() {
           end: 40.0,
         );
 
-        expect(dto, resolvesTo(const EdgeInsetsDirectional.only(
-          top: 10.0,
-          bottom: 20.0,
-          start: 30.0,
-          end: 40.0,
-        )));
+        expect(
+          dto,
+          resolvesTo(
+            const EdgeInsetsDirectional.only(
+              top: 10.0,
+              bottom: 20.0,
+              start: 30.0,
+              end: 40.0,
+            ),
+          ),
+        );
       });
 
       test('props factory assigns properties correctly', () {
         final dto = EdgeInsetsDirectionalDto.props(
-          top: MixProp.value(SpaceDto.value(10.0)),
-          bottom: MixProp.value(SpaceDto.value(20.0)),
-          start: MixProp.value(SpaceDto.value(30.0)),
-          end: MixProp.value(SpaceDto.value(40.0)),
+          top: MixProp.fromValue(SpaceDto.value(10.0)),
+          bottom: MixProp.fromValue(SpaceDto.value(20.0)),
+          start: MixProp.fromValue(SpaceDto.value(30.0)),
+          end: MixProp.fromValue(SpaceDto.value(40.0)),
         );
 
-        expect(dto, resolvesTo(const EdgeInsetsDirectional.only(
-          top: 10.0,
-          bottom: 20.0,
-          start: 30.0,
-          end: 40.0,
-        )));
+        expect(
+          dto,
+          resolvesTo(
+            const EdgeInsetsDirectional.only(
+              top: 10.0,
+              bottom: 20.0,
+              start: 30.0,
+              end: 40.0,
+            ),
+          ),
+        );
       });
 
       test('.value factory creates from Flutter type', () {
@@ -265,7 +289,9 @@ void main() {
       test('.maybeValue handles null correctly', () {
         expect(EdgeInsetsDirectionalDto.maybeValue(null), isNull);
         expect(
-          EdgeInsetsDirectionalDto.maybeValue(const EdgeInsetsDirectional.all(10.0)),
+          EdgeInsetsDirectionalDto.maybeValue(
+            const EdgeInsetsDirectional.all(10.0),
+          ),
           isNotNull,
         );
       });
@@ -288,10 +314,10 @@ void main() {
           start: SpaceDto.value(20.0),
         );
 
-        expect(dto, resolvesTo(const EdgeInsetsDirectional.only(
-          top: 10.0,
-          start: 20.0,
-        )));
+        expect(
+          dto,
+          resolvesTo(const EdgeInsetsDirectional.only(top: 10.0, start: 20.0)),
+        );
       });
     });
 
@@ -304,16 +330,23 @@ void main() {
           end: 40.0,
         );
 
-        expect(dto, resolvesTo(const EdgeInsetsDirectional.only(
-          top: 10.0,
-          bottom: 20.0,
-          start: 30.0,
-          end: 40.0,
-        )));
+        expect(
+          dto,
+          resolvesTo(
+            const EdgeInsetsDirectional.only(
+              top: 10.0,
+              bottom: 20.0,
+              start: 30.0,
+              end: 40.0,
+            ),
+          ),
+        );
       });
 
       test('uses default values for null properties', () {
-        final dto = EdgeInsetsDirectionalDto(top: 10.0); // other properties are null
+        final dto = EdgeInsetsDirectionalDto(
+          top: 10.0,
+        ); // other properties are null
 
         expect(dto, resolvesTo(const EdgeInsetsDirectional.only(top: 10.0)));
       });
@@ -340,12 +373,17 @@ void main() {
 
         final merged = base.merge(override);
 
-        expect(merged, resolvesTo(const EdgeInsetsDirectional.only(
-          top: 5.0,        // From override
-          bottom: 20.0,    // Preserved from base
-          start: 15.0,     // From override
-          end: 40.0,       // Preserved from base
-        )));
+        expect(
+          merged,
+          resolvesTo(
+            const EdgeInsetsDirectional.only(
+              top: 5.0, // From override
+              bottom: 20.0, // Preserved from base
+              start: 15.0, // From override
+              end: 40.0, // Preserved from base
+            ),
+          ),
+        );
       });
 
       test('returns self when merging with null', () {
@@ -364,12 +402,17 @@ void main() {
 
         final merged = base.merge(override);
 
-        expect(merged, resolvesTo(const EdgeInsetsDirectional.only(
-          top: 5.0,        // Overridden
-          bottom: 20.0,    // Preserved
-          start: 30.0,     // Preserved
-          end: 40.0,       // Preserved
-        )));
+        expect(
+          merged,
+          resolvesTo(
+            const EdgeInsetsDirectional.only(
+              top: 5.0, // Overridden
+              bottom: 20.0, // Preserved
+              start: 30.0, // Preserved
+              end: 40.0, // Preserved
+            ),
+          ),
+        );
       });
     });
 
@@ -392,7 +435,7 @@ void main() {
 
     group('token resolution', () {
       testWidgets('resolves tokens from context', (tester) async {
-        const spaceToken = MixableToken<double>('test-space');
+        const spaceToken = MixToken<double>('test-space');
         final dto = EdgeInsetsDirectionalDto.valueSpaceDto(
           top: SpaceDto.token(spaceToken),
           start: SpaceDto.value(20.0),
@@ -413,15 +456,12 @@ void main() {
       });
 
       test('handles missing tokens gracefully', () {
-        const token = MixableToken<double>('undefined');
+        const token = MixToken<double>('undefined');
         final dto = EdgeInsetsDirectionalDto.valueSpaceDto(
           top: SpaceDto.token(token),
         );
 
-        expect(
-          () => dto.resolve(EmptyMixData),
-          throwsStateError,
-        );
+        expect(() => dto.resolve(EmptyMixData), throwsStateError);
       });
     });
   });
@@ -457,11 +497,10 @@ void main() {
         );
 
         expect(dto, isA<EdgeInsetsDto>());
-        expect(dto, resolvesTo(const EdgeInsets.only(
-          top: 10.0,
-          left: 20.0,
-          right: 30.0,
-        )));
+        expect(
+          dto,
+          resolvesTo(const EdgeInsets.only(top: 10.0, left: 20.0, right: 30.0)),
+        );
       });
 
       test('.only creates EdgeInsetsDirectionalDto for start/end', () {
@@ -472,11 +511,12 @@ void main() {
         );
 
         expect(dto, isA<EdgeInsetsDirectionalDto>());
-        expect(dto, resolvesTo(const EdgeInsetsDirectional.only(
-          top: 10.0,
-          start: 20.0,
-          end: 30.0,
-        )));
+        expect(
+          dto,
+          resolvesTo(
+            const EdgeInsetsDirectional.only(top: 10.0, start: 20.0, end: 30.0),
+          ),
+        );
       });
 
       test('.only throws assertion error for mixed directional', () {
@@ -498,20 +538,25 @@ void main() {
           left: 30.0,
           right: 40.0,
         );
-        final directional = EdgeInsetsDirectionalDto(
-          top: 5.0,
-          start: 15.0,
+        final directional = EdgeInsetsDirectionalDto(top: 5.0, start: 15.0);
+
+        final merged = EdgeInsetsGeometryDto.tryToMerge(
+          edgeInsets,
+          directional,
         );
 
-        final merged = EdgeInsetsGeometryDto.tryToMerge(edgeInsets, directional);
-
         expect(merged, isA<EdgeInsetsDirectionalDto>());
-        expect(merged, resolvesTo(const EdgeInsetsDirectional.only(
-          top: 5.0,        // From directional (overrides)
-          bottom: 20.0,    // From edgeInsets (preserved)
-          start: 15.0,     // From directional
-          end: 0.0,        // Default (edgeInsets.right not converted)
-        )));
+        expect(
+          merged,
+          resolvesTo(
+            const EdgeInsetsDirectional.only(
+              top: 5.0, // From directional (overrides)
+              bottom: 20.0, // From edgeInsets (preserved)
+              start: 15.0, // From directional
+              end: 0.0, // Default (edgeInsets.right not converted)
+            ),
+          ),
+        );
       });
 
       test('EdgeInsetsDirectionalDto merges with EdgeInsetsDto', () {
@@ -521,20 +566,25 @@ void main() {
           start: 30.0,
           end: 40.0,
         );
-        final edgeInsets = EdgeInsetsDto(
-          top: 5.0,
-          left: 15.0,
+        final edgeInsets = EdgeInsetsDto(top: 5.0, left: 15.0);
+
+        final merged = EdgeInsetsGeometryDto.tryToMerge(
+          directional,
+          edgeInsets,
         );
 
-        final merged = EdgeInsetsGeometryDto.tryToMerge(directional, edgeInsets);
-
         expect(merged, isA<EdgeInsetsDto>());
-        expect(merged, resolvesTo(const EdgeInsets.only(
-          top: 5.0,        // From edgeInsets (overrides)
-          bottom: 20.0,    // From directional (preserved)
-          left: 15.0,      // From edgeInsets
-          right: 0.0,      // Default (directional.end not converted)
-        )));
+        expect(
+          merged,
+          resolvesTo(
+            const EdgeInsets.only(
+              top: 5.0, // From edgeInsets (overrides)
+              bottom: 20.0, // From directional (preserved)
+              left: 15.0, // From edgeInsets
+              right: 0.0, // Default (directional.end not converted)
+            ),
+          ),
+        );
       });
 
       test('same type merging works normally', () {
@@ -544,11 +594,16 @@ void main() {
         final merged = EdgeInsetsGeometryDto.tryToMerge(dto1, dto2);
 
         expect(merged, isA<EdgeInsetsDto>());
-        expect(merged, resolvesTo(const EdgeInsets.only(
-          top: 5.0,        // From dto2
-          left: 20.0,      // From dto1 (preserved)
-          right: 30.0,     // From dto2
-        )));
+        expect(
+          merged,
+          resolvesTo(
+            const EdgeInsets.only(
+              top: 5.0, // From dto2
+              left: 20.0, // From dto1 (preserved)
+              right: 30.0, // From dto2
+            ),
+          ),
+        );
       });
 
       test('returns second when first is null', () {
@@ -585,7 +640,9 @@ void main() {
 
       expect(
         spacingDto,
-        resolvesTo(const EdgeInsets.only(left: 30, top: 10, right: 40, bottom: 20)),
+        resolvesTo(
+          const EdgeInsets.only(left: 30, top: 10, right: 40, bottom: 20),
+        ),
       );
     });
 

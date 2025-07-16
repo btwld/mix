@@ -433,7 +433,7 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
   // Main constructor accepts raw values
   factory CircleBorderDto({BorderSideDto? side, double? eccentricity}) {
     return CircleBorderDto.props(
-      side: side != null ? MixProp.value(side) : null,
+      side: side != null ? MixProp.fromValue(side) : null,
       eccentricity: Prop.maybeValue(eccentricity),
     );
   }
@@ -542,7 +542,7 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
     double? squash,
   }) {
     return StarBorderDto.props(
-      side: side != null ? MixProp.value(side) : null,
+      side: side != null ? MixProp.fromValue(side) : null,
       points: Prop.maybeValue(points),
       innerRadiusRatio: Prop.maybeValue(innerRadiusRatio),
       pointRounding: Prop.maybeValue(pointRounding),

@@ -8,9 +8,9 @@ import '../../../helpers/testing_utils.dart';
 void main() {
   group('MixToken<T>', () {
     test('creates token with correct name and type', () {
-      const colorToken = MixableToken<Color>('primary');
-      const spaceToken = MixableToken<double>('large');
-      const textToken = MixableToken<TextStyle>('heading');
+      const colorToken = MixToken<Color>('primary');
+      const spaceToken = MixToken<double>('large');
+      const textToken = MixToken<TextStyle>('heading');
 
       expect(colorToken.name, 'primary');
       expect(spaceToken.name, 'large');
@@ -22,10 +22,10 @@ void main() {
     });
 
     test('equality works correctly', () {
-      const token1 = MixableToken<Color>('primary');
-      const token2 = MixableToken<Color>('primary');
-      const token3 = MixableToken<Color>('secondary');
-      const token4 = MixableToken<double>('primary'); // Different type
+      const token1 = MixToken<Color>('primary');
+      const token2 = MixToken<Color>('primary');
+      const token3 = MixToken<Color>('secondary');
+      const token4 = MixToken<double>('primary'); // Different type
 
       expect(token1, equals(token2));
       expect(token1, isNot(equals(token3)));
@@ -35,28 +35,28 @@ void main() {
     });
 
     test('hashCode is consistent', () {
-      const token1 = MixableToken<Color>('primary');
-      const token2 = MixableToken<Color>('primary');
+      const token1 = MixToken<Color>('primary');
+      const token2 = MixToken<Color>('primary');
 
       expect(token1.hashCode, equals(token2.hashCode));
 
       // Different types should have different hashCodes
-      const token3 = MixableToken<double>('primary');
+      const token3 = MixToken<double>('primary');
       expect(token1.hashCode, isNot(equals(token3.hashCode)));
     });
 
     test('token is simple data container (no call method)', () {
-      const colorToken = MixableToken<Color>('primary');
-      const spaceToken = MixableToken<double>('large');
+      const colorToken = MixToken<Color>('primary');
+      const spaceToken = MixToken<double>('large');
 
       expect(colorToken.name, 'primary');
       expect(spaceToken.name, 'large');
-      expect(colorToken.runtimeType.toString(), 'MixableToken<Color>');
-      expect(spaceToken.runtimeType.toString(), 'MixableToken<double>');
+      expect(colorToken.runtimeType.toString(), 'MixToken<Color>');
+      expect(spaceToken.runtimeType.toString(), 'MixToken<double>');
     });
 
     testWidgets('resolve() works with theme storage', (tester) async {
-      const token = MixableToken<Color>('primary');
+      const token = MixToken<Color>('primary');
       final theme = MixScopeData.static(tokens: {token: Colors.blue});
 
       await tester.pumpWidget(MixScope(data: theme, child: Container()));
@@ -71,7 +71,7 @@ void main() {
     });
 
     testWidgets('resolve() throws for undefined tokens', (tester) async {
-      const token = MixableToken<Color>('undefined');
+      const token = MixToken<Color>('undefined');
       const theme = MixScopeData.empty();
 
       await tester.pumpWidget(createWithMixScope(theme));
@@ -85,7 +85,7 @@ void main() {
     });
 
     testWidgets('resolver works with any type', (tester) async {
-      const token = MixableToken<String>('message');
+      const token = MixToken<String>('message');
       final theme = MixScopeData.static(tokens: {token: 'Hello World'});
 
       await tester.pumpWidget(createWithMixScope(theme));
@@ -103,7 +103,7 @@ void main() {
 
 // Helper class for testing string token resolution
 class _StringMixable extends Mix<String> {
-  final MixableToken<String> token;
+  final MixToken<String> token;
 
   const _StringMixable({required this.token});
 

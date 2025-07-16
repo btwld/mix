@@ -206,7 +206,7 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
       grade: Prop.maybeValue(grade),
       opticalSize: Prop.maybeValue(opticalSize),
       shadows: shadows
-          ?.map((shadow) => MixProp<Shadow, ShadowDto>.value(shadow))
+          ?.map((shadow) => MixProp<Shadow, ShadowDto>.fromValue(shadow))
           .toList(),
       textDirection: textDirection,
       applyTextScaling: applyTextScaling,
@@ -242,7 +242,7 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
       shadows: spec.shadows
           ?.map(
             (shadow) =>
-                MixProp<Shadow, ShadowDto>.value(ShadowDto.value(shadow)),
+                MixProp<Shadow, ShadowDto>.fromValue(ShadowDto.value(shadow)),
           )
           .toList(),
       textDirection: spec.textDirection,
@@ -292,7 +292,11 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
       weight: mergeProp(weight, other.weight),
       grade: mergeProp(grade, other.grade),
       opticalSize: mergeProp(opticalSize, other.opticalSize),
-      shadows: mergeMixPropList(shadows, other.shadows, strategy: ListMergeStrategy.override),
+      shadows: mergeMixPropList(
+        shadows,
+        other.shadows,
+        strategy: ListMergeStrategy.override,
+      ),
       textDirection: other.textDirection ?? textDirection,
       applyTextScaling: other.applyTextScaling ?? applyTextScaling,
       fill: mergeProp(fill, other.fill),
@@ -349,7 +353,9 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
 
 class IconSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, IconSpecAttribute> {
-  late final color = ColorUtility((prop) => builder(IconSpecAttribute.props(color: prop)));
+  late final color = ColorUtility(
+    (prop) => builder(IconSpecAttribute.props(color: prop)),
+  );
   late final size = DoubleUtility((v) => only(size: v));
   late final weight = DoubleUtility((v) => only(weight: v));
   late final grade = DoubleUtility((v) => only(grade: v));

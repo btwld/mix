@@ -243,7 +243,7 @@ void main() {
       expect(shapeBorder.value, isA<RoundedRectangleBorderDto>());
       expect(
         (shapeBorder.value as RoundedRectangleBorderDto).borderRadius,
-        MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>.value(
+        MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>.fromValue(
           BorderRadiusDto.value(BorderRadius.circular(20)),
         ),
       );
@@ -349,22 +349,13 @@ void main() {
     //fromList
     test('fromList', () {
       final list = <double>[1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
-      expect(
-        utility.fromList(list).value,
-        isA<Matrix4>(),
-      );
-      expect(
-        utility.fromList(list).value,
-        Matrix4.fromList(list),
-      );
+      expect(utility.fromList(list).value, isA<Matrix4>());
+      expect(utility.fromList(list).value, Matrix4.fromList(list));
     });
 
     // diagonal3Values
     test('diagonal3Values', () {
-      expect(
-        utility.diagonal3Values(1, 2, 3).value,
-        isA<Matrix4>(),
-      );
+      expect(utility.diagonal3Values(1, 2, 3).value, isA<Matrix4>());
       expect(
         utility.diagonal3Values(1, 2, 3).value,
         Matrix4.diagonal3Values(1, 2, 3),
@@ -373,47 +364,26 @@ void main() {
 
     // skewX
     test('skewX', () {
-      expect(
-        utility.skewX(20).value,
-        isA<Matrix4>(),
-      );
-      expect(
-        utility.skewX(20).value,
-        Matrix4.skewX(20),
-      );
+      expect(utility.skewX(20).value, isA<Matrix4>());
+      expect(utility.skewX(20).value, Matrix4.skewX(20));
     });
 
     // skewY
     test('skewY', () {
-      expect(
-        utility.skewY(20).value,
-        isA<Matrix4>(),
-      );
-      expect(
-        utility.skewY(20).value,
-        Matrix4.skewY(20),
-      );
+      expect(utility.skewY(20).value, isA<Matrix4>());
+      expect(utility.skewY(20).value, Matrix4.skewY(20));
     });
 
     // skew
     test('skew', () {
-      expect(
-        utility.skew(20, 20).value,
-        isA<Matrix4>(),
-      );
-      expect(
-        utility.skew(20, 20).value,
-        Matrix4.skew(20, 20),
-      );
+      expect(utility.skew(20, 20).value, isA<Matrix4>());
+      expect(utility.skew(20, 20).value, Matrix4.skew(20, 20));
     });
     test('fromBuffer', () {
       final list = List.generate(130, (index) => index * 1.0);
       final float32List = Float32List.fromList(list);
 
-      expect(
-        utility.fromBuffer(float32List.buffer, 0).value,
-        isA<Matrix4>(),
-      );
+      expect(utility.fromBuffer(float32List.buffer, 0).value, isA<Matrix4>());
 
       expect(
         utility.fromBuffer(float32List.buffer, 0).value,
@@ -513,8 +483,10 @@ void main() {
       expect(utility.overline().value, TextDecoration.overline);
       expect(utility.lineThrough().value, TextDecoration.lineThrough);
 
-      expect(utility.combine([TextDecoration.underline]).value,
-          isA<TextDecoration>());
+      expect(
+        utility.combine([TextDecoration.underline]).value,
+        isA<TextDecoration>(),
+      );
 
       expect(utility(TextDecoration.underline).value, isA<TextDecoration>());
     });
@@ -563,8 +535,10 @@ void main() {
       final imageProvider = utility.network('https://example.com/image.png');
 
       expect(imageProvider.value, isA<NetworkImage>());
-      expect((imageProvider.value as NetworkImage).url,
-          'https://example.com/image.png');
+      expect(
+        (imageProvider.value as NetworkImage).url,
+        'https://example.com/image.png',
+      );
     });
 
     test('file() returns correct instance', () {
@@ -595,9 +569,7 @@ void main() {
     const utility = TextScalerUtility(UtilityTestAttribute.new);
 
     test('call() returns correct instance', () {
-      final textScaler = utility(
-        const TextScaler.linear(2),
-      );
+      final textScaler = utility(const TextScaler.linear(2));
 
       final linearTextScaler = utility.linear(3);
 
@@ -651,9 +623,7 @@ void main() {
     const utility = FontFeatureUtility(UtilityTestAttribute.new);
 
     test('call() returns correct instance', () {
-      final fontFeature = utility(
-        const FontFeature('liga', 1),
-      );
+      final fontFeature = utility(const FontFeature('liga', 1));
 
       expect(fontFeature.value, isA<FontFeature>());
       expect(fontFeature.value.feature, 'liga');
@@ -753,10 +723,14 @@ void main() {
 
       expect(fontFeature.value, isA<FontFeature>());
       expect(fontFeature.value, const FontFeature.localeAware());
-      expect(fontFeatureEnabled.value,
-          const FontFeature.localeAware(enable: true));
-      expect(fontFeatureDisabled.value,
-          const FontFeature.localeAware(enable: false));
+      expect(
+        fontFeatureEnabled.value,
+        const FontFeature.localeAware(enable: true),
+      );
+      expect(
+        fontFeatureDisabled.value,
+        const FontFeature.localeAware(enable: false),
+      );
     });
 
     test('notationalForms() returns correct instance', () {
@@ -837,8 +811,10 @@ void main() {
       final alignmentDirectional = utility.only(y: 5, start: 10);
 
       expect(alignmentDirectional.value, isA<AlignmentDirectional>());
-      expect(alignmentDirectional.value,
-          equals(const AlignmentDirectional(10, 5)));
+      expect(
+        alignmentDirectional.value,
+        equals(const AlignmentDirectional(10, 5)),
+      );
     });
 
     test('only() returns correct instance with only y value', () {
@@ -846,15 +822,19 @@ void main() {
 
       expect(alignmentDirectional.value, isA<AlignmentDirectional>());
       expect(
-          alignmentDirectional.value, equals(const AlignmentDirectional(0, 5)));
+        alignmentDirectional.value,
+        equals(const AlignmentDirectional(0, 5)),
+      );
     });
 
     test('only() returns correct instance with only start value', () {
       final alignmentDirectional = utility.only(start: 10);
 
       expect(alignmentDirectional.value, isA<AlignmentDirectional>());
-      expect(alignmentDirectional.value,
-          equals(const AlignmentDirectional(10, 0)));
+      expect(
+        alignmentDirectional.value,
+        equals(const AlignmentDirectional(10, 0)),
+      );
     });
 
     test('only() returns correct instance with no values', () {
@@ -876,7 +856,9 @@ void main() {
 
       expect(alignmentDirectional.value, isA<AlignmentDirectional>());
       expect(
-          alignmentDirectional.value, equals(AlignmentDirectional.topCenter));
+        alignmentDirectional.value,
+        equals(AlignmentDirectional.topCenter),
+      );
     });
 
     test('topEnd() returns correct instance', () {
@@ -891,7 +873,9 @@ void main() {
 
       expect(alignmentDirectional.value, isA<AlignmentDirectional>());
       expect(
-          alignmentDirectional.value, equals(AlignmentDirectional.centerStart));
+        alignmentDirectional.value,
+        equals(AlignmentDirectional.centerStart),
+      );
     });
 
     test('center() returns correct instance', () {
@@ -906,7 +890,9 @@ void main() {
 
       expect(alignmentDirectional.value, isA<AlignmentDirectional>());
       expect(
-          alignmentDirectional.value, equals(AlignmentDirectional.centerEnd));
+        alignmentDirectional.value,
+        equals(AlignmentDirectional.centerEnd),
+      );
     });
 
     test('bottomStart() returns correct instance', () {
@@ -914,15 +900,19 @@ void main() {
 
       expect(alignmentDirectional.value, isA<AlignmentDirectional>());
       expect(
-          alignmentDirectional.value, equals(AlignmentDirectional.bottomStart));
+        alignmentDirectional.value,
+        equals(AlignmentDirectional.bottomStart),
+      );
     });
 
     test('bottomCenter() returns correct instance', () {
       final alignmentDirectional = utility.bottomCenter();
 
       expect(alignmentDirectional.value, isA<AlignmentDirectional>());
-      expect(alignmentDirectional.value,
-          equals(AlignmentDirectional.bottomCenter));
+      expect(
+        alignmentDirectional.value,
+        equals(AlignmentDirectional.bottomCenter),
+      );
     });
 
     test('bottomEnd() returns correct instance', () {
@@ -930,7 +920,9 @@ void main() {
 
       expect(alignmentDirectional.value, isA<AlignmentDirectional>());
       expect(
-          alignmentDirectional.value, equals(AlignmentDirectional.bottomEnd));
+        alignmentDirectional.value,
+        equals(AlignmentDirectional.bottomEnd),
+      );
     });
 
     test('call() returns correct instance', () {
@@ -1008,45 +1000,43 @@ void main() {
     test('Properties are initialized correctly', () {
       expect(utility.zero().value, isA<Rect>());
       expect(utility.fromLTRB(10, 20, 30, 40).value, isA<Rect>());
-      expect(utility.fromCircle(center: const Offset(10, 20), radius: 30).value,
-          isA<Rect>());
       expect(
-          utility
-              .fromCenter(center: const Offset(10, 20), width: 30, height: 40)
-              .value,
-          isA<Rect>());
+        utility.fromCircle(center: const Offset(10, 20), radius: 30).value,
+        isA<Rect>(),
+      );
+      expect(
+        utility
+            .fromCenter(center: const Offset(10, 20), width: 30, height: 40)
+            .value,
+        isA<Rect>(),
+      );
       expect(utility.fromLTWH(10, 20, 30, 40).value, isA<Rect>());
-      expect(utility.fromCircle(center: const Offset(10, 20), radius: 30).value,
-          Rect.fromCircle(center: const Offset(10, 20), radius: 30));
+      expect(
+        utility.fromCircle(center: const Offset(10, 20), radius: 30).value,
+        Rect.fromCircle(center: const Offset(10, 20), radius: 30),
+      );
       expect(
         utility
             .fromCenter(center: const Offset(10, 20), width: 30, height: 40)
             .value,
         Rect.fromCenter(center: const Offset(10, 20), width: 30, height: 40),
       );
-      expect(utility.fromLTRB(10, 20, 30, 40).value,
-          const Rect.fromLTRB(10, 20, 30, 40));
-      expect(utility.fromLTWH(10, 20, 30, 40).value,
-          const Rect.fromLTWH(10, 20, 30, 40));
+      expect(
+        utility.fromLTRB(10, 20, 30, 40).value,
+        const Rect.fromLTRB(10, 20, 30, 40),
+      );
+      expect(
+        utility.fromLTWH(10, 20, 30, 40).value,
+        const Rect.fromLTWH(10, 20, 30, 40),
+      );
       // fromPoints
       expect(
-        utility
-            .fromPoints(
-              const Offset(10, 20),
-              const Offset(30, 40),
-            )
-            .value,
-        Rect.fromPoints(
-          const Offset(10, 20),
-          const Offset(30, 40),
-        ),
+        utility.fromPoints(const Offset(10, 20), const Offset(30, 40)).value,
+        Rect.fromPoints(const Offset(10, 20), const Offset(30, 40)),
       );
 
       // largest
-      expect(
-        utility.largest().value,
-        Rect.largest,
-      );
+      expect(utility.largest().value, Rect.largest);
     });
   });
 
@@ -1055,7 +1045,9 @@ void main() {
     test('Properties are initialized correctly', () {
       expect(utility('Roboto').value, 'Roboto');
       expect(
-          utility.fromCharCodes([82, 111, 98, 111, 116, 111]).value, 'Roboto');
+        utility.fromCharCodes([82, 111, 98, 111, 116, 111]).value,
+        'Roboto',
+      );
       expect(utility.fromCharCode(82).value, 'R');
       expect(utility.fromEnvironment('name').value, '');
       expect(utility('Roboto').value, 'Roboto');

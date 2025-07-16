@@ -34,15 +34,15 @@ void main() {
           boxShadow: [shadowDto],
         );
 
-        expect(dto.border?.value, equals(borderDto));
-        expect(dto.borderRadius?.value, equals(borderRadiusDto));
+        expect(dto.border?.mixValue, equals(borderDto));
+        expect(dto.borderRadius?.mixValue, equals(borderRadiusDto));
         expect(dto.shape, resolvesTo(BoxShape.rectangle));
         expect(dto.backgroundBlendMode, resolvesTo(BlendMode.srcOver));
         expect(dto.color, resolvesTo(Colors.red));
-        expect(dto.image?.value, equals(imageDto));
-        expect(dto.gradient?.value, equals(gradientDto));
+        expect(dto.image?.mixValue, equals(imageDto));
+        expect(dto.gradient?.mixValue, equals(gradientDto));
         expect(dto.boxShadow?.length, 1);
-        expect(dto.boxShadow?[0].value, equals(shadowDto));
+        expect(dto.boxShadow?[0].mixValue, equals(shadowDto));
       });
 
       test('value constructor from BoxDecoration', () {
@@ -63,7 +63,7 @@ void main() {
         expect(dto.color, resolvesTo(Colors.blue));
         expect(dto.borderRadius, resolvesTo(decoration.borderRadius));
         expect(dto.boxShadow?.length, 1);
-        expect(dto.boxShadow?[0].value?.color, resolvesTo(Colors.grey));
+        expect(dto.boxShadow?[0].mixValue?.color, resolvesTo(Colors.grey));
       });
 
       test('props constructor with Prop values', () {
@@ -151,8 +151,8 @@ void main() {
         final merged = dto1.merge(dto2);
 
         expect(merged.color, resolvesTo(Colors.blue));
-        expect(merged.gradient?.value, isA<LinearGradientDto>());
-        expect(merged.border?.value, equals(dto1.border?.value));
+        expect(merged.gradient?.mixValue, isA<LinearGradientDto>());
+        expect(merged.border?.mixValue, equals(dto1.border?.mixValue));
         expect(
           merged.borderRadius,
           resolvesTo(BorderRadius.all(Radius.circular(8))),
@@ -177,7 +177,7 @@ void main() {
         final merged = dto1.merge(dto2);
 
         expect(merged.color, resolvesTo(Colors.red));
-        expect(merged.gradient?.value, isA<LinearGradientDto>());
+        expect(merged.gradient?.mixValue, isA<LinearGradientDto>());
         expect(merged.shape, resolvesTo(BoxShape.circle));
         expect(
           merged.borderRadius,
@@ -204,7 +204,7 @@ void main() {
 
         final merged = dto1.merge(dto2);
         expect(merged.boxShadow?.length, 1);
-        expect(merged.boxShadow?[0].value?.color, resolvesTo(Colors.grey));
+        expect(merged.boxShadow?[0].mixValue?.color, resolvesTo(Colors.grey));
       });
     });
 
@@ -278,12 +278,12 @@ void main() {
             shadows: [shadowDto],
           );
 
-          expect(dto.shape?.value, equals(shapeDto));
+          expect(dto.shape?.mixValue, equals(shapeDto));
           expect(dto.color, resolvesTo(Colors.green));
-          expect(dto.image?.value, equals(imageDto));
-          expect(dto.gradient?.value, equals(gradientDto));
+          expect(dto.image?.mixValue, equals(imageDto));
+          expect(dto.gradient?.mixValue, equals(gradientDto));
           expect(dto.shadows?.length, 1);
-          expect(dto.shadows?[0].value, equals(shadowDto));
+          expect(dto.shadows?[0].mixValue, equals(shadowDto));
         },
       );
 
@@ -305,18 +305,18 @@ void main() {
         final dto = ShapeDecorationDto.value(decoration);
 
         expect(dto.color, resolvesTo(Colors.purple));
-        expect(dto.shape?.value, isA<RoundedRectangleBorderDto>());
+        expect(dto.shape?.mixValue, isA<RoundedRectangleBorderDto>());
         expect(dto.shadows?.length, 1);
-        expect(dto.shadows?[0].value?.color, resolvesTo(Colors.black26));
+        expect(dto.shadows?[0].mixValue?.color, resolvesTo(Colors.black26));
       });
 
       test('props constructor with Prop values', () {
         final dto = ShapeDecorationDto.props(
-          shape: MixProp.value(CircleBorderDto()),
+          shape: MixProp.fromValue(CircleBorderDto()),
           color: Prop.value(Colors.cyan),
         );
 
-        expect(dto.shape?.value, isA<CircleBorderDto>());
+        expect(dto.shape?.mixValue, isA<CircleBorderDto>());
         expect(dto.color, resolvesTo(Colors.cyan));
       });
     });
@@ -334,7 +334,7 @@ void main() {
 
           expect(dto, isNotNull);
           expect(dto?.color, resolvesTo(Colors.red));
-          expect(dto?.shape?.value, isA<CircleBorderDto>());
+          expect(dto?.shape?.mixValue, isA<CircleBorderDto>());
         },
       );
 
@@ -416,10 +416,10 @@ void main() {
 
         final merged = dto1.merge(dto2);
 
-        expect(merged.shape?.value, isA<CircleBorderDto>());
+        expect(merged.shape?.mixValue, isA<CircleBorderDto>());
         expect(merged.color, resolvesTo(Colors.red));
-        expect(merged.gradient?.value, isA<LinearGradientDto>());
-        expect(merged.image?.value?.fit, resolvesTo(BoxFit.fill));
+        expect(merged.gradient?.mixValue, isA<LinearGradientDto>());
+        expect(merged.image?.mixValue?.fit, resolvesTo(BoxFit.fill));
       });
 
       test('merge with null returns original', () {
@@ -470,7 +470,7 @@ void main() {
 
         expect(dto.shadows, equals(dto.boxShadow));
         expect(dto.shadows?.length, 1);
-        expect(dto.shadows?[0].value, equals(shadow));
+        expect(dto.shadows?[0].mixValue, equals(shadow));
       });
     });
 
@@ -563,7 +563,7 @@ void main() {
 
         expect(merged, isNotNull);
         expect(merged!.color, resolvesTo(Colors.red));
-        expect(merged.gradient?.value, isA<LinearGradientDto>());
+        expect(merged.gradient?.mixValue, isA<LinearGradientDto>());
         expect(merged.shape, resolvesTo(BoxShape.rectangle));
         expect(
           merged.borderRadius,
@@ -611,9 +611,9 @@ void main() {
         expect(boxDeco.isMergeable, isTrue);
         expect(merged, isNotNull);
         expect(merged!.color, resolvesTo(Colors.blue));
-        expect(merged.shape?.value, isA<RoundedRectangleBorderDto>());
+        expect(merged.shape?.mixValue, isA<RoundedRectangleBorderDto>());
         expect(
-          (merged.shape?.value as RoundedRectangleBorderDto).borderRadius,
+          (merged.shape?.mixValue as RoundedRectangleBorderDto).borderRadius,
           resolvesTo(BorderRadius.all(Radius.circular(20))),
         );
       });
@@ -660,7 +660,7 @@ void main() {
         expect(shapeDeco.isMergeable, isTrue);
         expect(merged, isNotNull);
         expect(merged!.color, resolvesTo(Colors.red));
-        expect(merged.gradient?.value, isA<LinearGradientDto>());
+        expect(merged.gradient?.mixValue, isA<LinearGradientDto>());
         expect(
           merged.borderRadius,
           resolvesTo(BorderRadius.all(Radius.circular(20))),
@@ -708,7 +708,7 @@ void main() {
         );
         final dto = BoxDecorationDto(border: border);
 
-        expect(dto.border?.value?.isUniform, isTrue);
+        expect(dto.border?.mixValue?.isUniform, isTrue);
       });
 
       test('ShapeDecorationDto value constructor with null image/gradient', () {
@@ -722,7 +722,7 @@ void main() {
         final dto = ShapeDecorationDto.maybeValue(decoration);
         expect(dto, isNotNull);
         expect(dto?.color, resolvesTo(Colors.red));
-        expect(dto?.shape?.value, isA<CircleBorderDto>());
+        expect(dto?.shape?.mixValue, isA<CircleBorderDto>());
       });
 
       test('BoxDecorationDto mergeableDecor preserves border uniformity', () {
@@ -735,8 +735,8 @@ void main() {
 
         final merged = boxDeco.mergeableDecor(shapeDeco);
 
-        expect(merged.border?.value, isA<BorderDto>());
-        expect((merged.border?.value as BorderDto).isUniform, isTrue);
+        expect(merged.border?.mixValue, isA<BorderDto>());
+        expect((merged.border?.mixValue as BorderDto).isUniform, isTrue);
       });
     });
   });

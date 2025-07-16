@@ -43,10 +43,7 @@ MixContext createEmptyMixData() {
 
 final EmptyMixData = createEmptyMixData();
 
-MixContext createMixContext({
-  Style? style,
-  Map<MixableToken, dynamic>? tokens,
-}) {
+MixContext createMixContext({Style? style, Map<MixToken, dynamic>? tokens}) {
   // For now, just use the simple create method without tokens
   // We can enhance this later when we need token support in tests
   return MixContext.create(MockBuildContext(), style ?? const Style.empty());
@@ -453,16 +450,16 @@ class MixTokensTest {
 }
 
 class RadiusTokenUtil {
-  final small = const MixableToken<Radius>('mix.radius.small');
-  final medium = const MixableToken<Radius>('mix.radius.medium');
-  final large = const MixableToken<Radius>('mix.radius.large');
+  final small = const MixToken<Radius>('mix.radius.small');
+  final medium = const MixToken<Radius>('mix.radius.medium');
+  final large = const MixToken<Radius>('mix.radius.large');
   const RadiusTokenUtil();
 }
 
 class SpaceTokenUtil {
-  final large = const MixableToken<double>('mix.space.large');
-  final medium = const MixableToken<double>('mix.space.medium');
-  final small = const MixableToken<double>('mix.space.small');
+  final large = const MixToken<double>('mix.space.large');
+  final medium = const MixToken<double>('mix.space.medium');
+  final small = const MixToken<double>('mix.space.small');
 
   const SpaceTokenUtil();
 }

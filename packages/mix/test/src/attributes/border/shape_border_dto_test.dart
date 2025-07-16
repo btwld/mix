@@ -25,24 +25,24 @@ void main() {
       );
 
       expect(
-        merged.borderRadius!.value?.topLeft,
+        merged.borderRadius!.mixValue?.topLeft,
         resolvesTo(const Radius.circular(25)),
       );
       expect(
-        merged.borderRadius!.value?.topRight,
+        merged.borderRadius!.mixValue?.topRight,
         resolvesTo(const Radius.circular(20)),
       );
       expect(
-        merged.borderRadius!.value?.bottomLeft,
+        merged.borderRadius!.mixValue?.bottomLeft,
         resolvesTo(const Radius.circular(5)),
       );
       expect(
-        merged.borderRadius!.value?.bottomRight,
+        merged.borderRadius!.mixValue?.bottomRight,
         resolvesTo(const Radius.circular(10)),
       );
 
-      expect(merged.side!.value?.color, resolvesTo(Colors.blue));
-      expect(merged.side!.value?.width, resolvesTo(2.0));
+      expect(merged.side!.mixValue?.color, resolvesTo(Colors.blue));
+      expect(merged.side!.mixValue?.width, resolvesTo(2.0));
     });
 
     test(
@@ -91,8 +91,8 @@ void main() {
       );
 
       expect(merged.eccentricity, resolvesTo(0.75));
-      expect(merged.side!.value?.color, resolvesTo(Colors.blue));
-      expect(merged.side!.value?.width, resolvesTo(2.0));
+      expect(merged.side!.mixValue?.color, resolvesTo(Colors.blue));
+      expect(merged.side!.mixValue?.width, resolvesTo(2.0));
     });
 
     test('resolve should create a CircleBorder with the correct values', () {
@@ -133,24 +133,24 @@ void main() {
       );
 
       expect(
-        merged.borderRadius!.value?.topLeft,
+        merged.borderRadius!.mixValue?.topLeft,
         resolvesTo(const Radius.circular(25)),
       );
       expect(
-        merged.borderRadius!.value?.topRight,
+        merged.borderRadius!.mixValue?.topRight,
         resolvesTo(const Radius.circular(20)),
       );
       expect(
-        merged.borderRadius!.value?.bottomLeft,
+        merged.borderRadius!.mixValue?.bottomLeft,
         resolvesTo(const Radius.circular(5)),
       );
       expect(
-        merged.borderRadius!.value?.bottomRight,
+        merged.borderRadius!.mixValue?.bottomRight,
         resolvesTo(const Radius.circular(10)),
       );
 
-      expect(merged.side!.value?.color, resolvesTo(Colors.blue));
-      expect(merged.side!.value?.width, resolvesTo(2.0));
+      expect(merged.side!.mixValue?.color, resolvesTo(Colors.blue));
+      expect(merged.side!.mixValue?.width, resolvesTo(2.0));
     });
 
     test(
@@ -194,8 +194,8 @@ void main() {
         StadiumBorderDto(side: BorderSideDto(color: Colors.blue, width: 2.0)),
       );
 
-      expect(merged.side!.value?.color, resolvesTo(Colors.blue));
-      expect(merged.side!.value?.width, resolvesTo(2.0));
+      expect(merged.side!.mixValue?.color, resolvesTo(Colors.blue));
+      expect(merged.side!.mixValue?.width, resolvesTo(2.0));
     });
 
     test('resolve should create a StadiumBorder with the correct values', () {
@@ -233,13 +233,25 @@ void main() {
           ),
         );
 
-        expect(merged.borderRadius!.value?.topLeft, resolvesTo(const Radius.circular(25)));
-        expect(merged.borderRadius!.value?.topRight, resolvesTo(const Radius.circular(20)));
-        expect(merged.borderRadius!.value?.bottomLeft, resolvesTo(const Radius.circular(5)));
-        expect(merged.borderRadius!.value?.bottomRight, resolvesTo(const Radius.circular(10)));
+        expect(
+          merged.borderRadius!.mixValue?.topLeft,
+          resolvesTo(const Radius.circular(25)),
+        );
+        expect(
+          merged.borderRadius!.mixValue?.topRight,
+          resolvesTo(const Radius.circular(20)),
+        );
+        expect(
+          merged.borderRadius!.mixValue?.bottomLeft,
+          resolvesTo(const Radius.circular(5)),
+        );
+        expect(
+          merged.borderRadius!.mixValue?.bottomRight,
+          resolvesTo(const Radius.circular(10)),
+        );
 
-        expect(merged.side!.value?.color, resolvesTo(Colors.blue));
-        expect(merged.side!.value?.width, resolvesTo(2.0));
+        expect(merged.side!.mixValue?.color, resolvesTo(Colors.blue));
+        expect(merged.side!.mixValue?.width, resolvesTo(2.0));
       },
     );
 
@@ -373,11 +385,11 @@ void main() {
         );
 
         expect(
-          roundedRectangleBorderDto.borderRadius!.value,
+          roundedRectangleBorderDto.borderRadius!.mixValue,
           equals(BorderRadiusDto.value(BorderRadius.circular(10))),
         );
         expect(
-          roundedRectangleBorderDto.side!.value,
+          roundedRectangleBorderDto.side!.mixValue,
           equals(BorderSideDto.value(const BorderSide(color: Colors.red))),
         );
       },
@@ -408,7 +420,7 @@ void main() {
         final circleBorderDto = CircleBorderDto.value(circleBorder);
 
         expect(
-          circleBorderDto.side!.value,
+          circleBorderDto.side!.mixValue,
           equals(BorderSideDto.value(const BorderSide(color: Colors.blue))),
         );
         expect(circleBorderDto.eccentricity, resolvesTo(0.8));
@@ -442,11 +454,11 @@ void main() {
         );
 
         expect(
-          beveledRectangleBorderDto.borderRadius!.value,
+          beveledRectangleBorderDto.borderRadius!.mixValue,
           equals(BorderRadiusDto.value(BorderRadius.circular(10))),
         );
         expect(
-          beveledRectangleBorderDto.side!.value,
+          beveledRectangleBorderDto.side!.mixValue,
           equals(BorderSideDto.value(const BorderSide(color: Colors.green))),
         );
       },
@@ -479,11 +491,11 @@ void main() {
         );
 
         expect(
-          continuousRectangleBorderDto.borderRadius!.value,
+          continuousRectangleBorderDto.borderRadius!.mixValue,
           equals(BorderRadiusDto.value(BorderRadius.circular(10))),
         );
         expect(
-          continuousRectangleBorderDto.side!.value,
+          continuousRectangleBorderDto.side!.mixValue,
           equals(BorderSideDto.value(const BorderSide(color: Colors.orange))),
         );
       },
@@ -513,7 +525,7 @@ void main() {
         final stadiumBorderDto = StadiumBorderDto.value(stadiumBorder);
 
         expect(
-          stadiumBorderDto.side!.value,
+          stadiumBorderDto.side!.mixValue,
           equals(BorderSideDto.value(const BorderSide(color: Colors.purple))),
         );
       },
@@ -546,7 +558,7 @@ void main() {
       final starBorderDto = StarBorderDto.value(starBorder);
 
       expect(
-        starBorderDto.side!.value,
+        starBorderDto.side!.mixValue,
         equals(BorderSideDto.value(const BorderSide(color: Colors.teal))),
       );
       expect(starBorderDto.points, resolvesTo(5.0));
@@ -590,11 +602,11 @@ void main() {
         final linearBorderDto = LinearBorderDto.value(linearBorder);
 
         expect(
-          linearBorderDto.side!.value,
+          linearBorderDto.side!.mixValue,
           equals(BorderSideDto.value(const BorderSide(color: Colors.brown))),
         );
         expect(
-          linearBorderDto.start!.value,
+          linearBorderDto.start!.mixValue,
           equals(
             LinearBorderEdgeDto.value(
               const LinearBorderEdge(size: 0.1, alignment: 0.1),
@@ -602,7 +614,7 @@ void main() {
           ),
         );
         expect(
-          linearBorderDto.end!.value,
+          linearBorderDto.end!.mixValue,
           equals(
             LinearBorderEdgeDto.value(
               const LinearBorderEdge(size: 0.2, alignment: 0.2),
@@ -610,7 +622,7 @@ void main() {
           ),
         );
         expect(
-          linearBorderDto.top!.value,
+          linearBorderDto.top!.mixValue,
           equals(
             LinearBorderEdgeDto.value(
               const LinearBorderEdge(size: 0.3, alignment: 0.3),
@@ -618,7 +630,7 @@ void main() {
           ),
         );
         expect(
-          linearBorderDto.bottom!.value,
+          linearBorderDto.bottom!.mixValue,
           equals(
             LinearBorderEdgeDto.value(
               const LinearBorderEdge(size: 0.4, alignment: 0.4),

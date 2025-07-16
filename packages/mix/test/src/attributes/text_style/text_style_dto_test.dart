@@ -50,7 +50,7 @@ void main() {
         expect(dto.wordSpacing, resolvesTo(2.0));
         expect(dto.textBaseline, resolvesTo(TextBaseline.alphabetic));
         expect(dto.shadows?.length, 1);
-        expect(dto.shadows?[0].value, equals(shadowDto));
+        expect(dto.shadows?[0].mixValue, equals(shadowDto));
         expect(dto.fontFeatures?.length, 1);
         expect(dto.decoration, resolvesTo(TextDecoration.underline));
         expect(dto.decorationColor, resolvesTo(Colors.blue));
@@ -73,11 +73,7 @@ void main() {
           decoration: TextDecoration.lineThrough,
           decorationColor: Colors.red,
           shadows: [
-            Shadow(
-              color: Colors.grey,
-              offset: Offset(1, 1),
-              blurRadius: 2.0,
-            ),
+            Shadow(color: Colors.grey, offset: Offset(1, 1), blurRadius: 2.0),
           ],
         );
 
@@ -90,7 +86,7 @@ void main() {
         expect(dto.decoration, resolvesTo(TextDecoration.lineThrough));
         expect(dto.decorationColor, resolvesTo(Colors.red));
         expect(dto.shadows?.length, 1);
-        expect(dto.shadows?[0].value?.color, resolvesTo(Colors.grey));
+        expect(dto.shadows?[0].mixValue?.color, resolvesTo(Colors.grey));
       });
 
       test('props constructor with Prop values', () {
@@ -111,7 +107,7 @@ void main() {
       test('maybeValue returns TextStyleDto for non-null TextStyle', () {
         const textStyle = TextStyle(color: Colors.red, fontSize: 14.0);
         final dto = TextStyleDto.maybeValue(textStyle);
-        
+
         expect(dto, isNotNull);
         expect(dto?.color, resolvesTo(Colors.red));
         expect(dto?.fontSize, resolvesTo(14.0));
@@ -166,7 +162,7 @@ void main() {
         const dto = TextStyleDto.props();
         final context = createEmptyMixData();
         final resolved = dto.resolve(context);
-        
+
         expect(resolved.color, isNull);
         expect(resolved.fontSize, isNull);
         expect(resolved.fontWeight, isNull);
@@ -190,7 +186,7 @@ void main() {
 
         final context = createEmptyMixData();
         final resolved = dto.resolve(context);
-        
+
         expect(resolved.shadows?.length, 2);
         expect(resolved.shadows?[0].color, Colors.black);
         expect(resolved.shadows?[1].color, Colors.grey);
@@ -211,7 +207,7 @@ void main() {
 
         final context = createEmptyMixData();
         final resolved = dto.resolve(context);
-        
+
         expect(resolved.foreground?.color, const Color(0xFFFF0000));
         expect(resolved.foreground?.strokeWidth, 2.0);
         expect(resolved.background?.color, const Color(0xFF0000FF));
@@ -251,7 +247,7 @@ void main() {
         expect(merged.letterSpacing, resolvesTo(1.0));
         expect(merged.wordSpacing, resolvesTo(2.0));
         expect(merged.shadows?.length, 1);
-        expect(merged.shadows?[0].value?.color, resolvesTo(Colors.grey));
+        expect(merged.shadows?[0].mixValue?.color, resolvesTo(Colors.grey));
         expect(merged.fontFeatures?.length, 1);
         expect(merged.fontVariations?.length, 1);
       });
@@ -279,10 +275,7 @@ void main() {
       });
 
       test('merge with null returns original', () {
-        final dto = TextStyleDto(
-          color: Colors.green,
-          fontSize: 18.0,
-        );
+        final dto = TextStyleDto(color: Colors.green, fontSize: 18.0);
 
         final merged = dto.merge(null);
         expect(merged, same(dto));
@@ -351,32 +344,22 @@ void main() {
       });
 
       test('not equal TextStyleDtos', () {
-        final dto1 = TextStyleDto(
-          color: Colors.red,
-          fontSize: 16.0,
-        );
-        final dto2 = TextStyleDto(
-          color: Colors.blue,
-          fontSize: 16.0,
-        );
+        final dto1 = TextStyleDto(color: Colors.red, fontSize: 16.0);
+        final dto2 = TextStyleDto(color: Colors.blue, fontSize: 16.0);
 
         expect(dto1, isNot(equals(dto2)));
       });
 
       test('equality with lists', () {
         final dto1 = TextStyleDto(
-          shadows: [
-            ShadowDto(color: Colors.black, blurRadius: 2.0),
-          ],
+          shadows: [ShadowDto(color: Colors.black, blurRadius: 2.0)],
           fontFeatures: const [FontFeature.enable('liga')],
           fontVariations: const [FontVariation('wght', 400)],
           fontFamilyFallback: const ['Arial', 'Helvetica'],
         );
 
         final dto2 = TextStyleDto(
-          shadows: [
-            ShadowDto(color: Colors.black, blurRadius: 2.0),
-          ],
+          shadows: [ShadowDto(color: Colors.black, blurRadius: 2.0)],
           fontFeatures: const [FontFeature.enable('liga')],
           fontVariations: const [FontVariation('wght', 400)],
           fontFamilyFallback: const ['Arial', 'Helvetica'],
@@ -399,7 +382,7 @@ void main() {
 
         final context = createEmptyMixData();
         final resolved = dto.resolve(context);
-        
+
         expect(resolved.shadows, isNull);
         expect(resolved.fontFeatures, isNull);
         expect(resolved.fontVariations, isNull);
@@ -408,35 +391,30 @@ void main() {
 
       test('handles foreground paint without color', () {
         final foregroundPaint = Paint()..color = const Color(0xFF00FF00);
-        
-        final dto = TextStyleDto(
-          foreground: foregroundPaint,
-        );
+
+        final dto = TextStyleDto(foreground: foregroundPaint);
 
         final context = createEmptyMixData();
         final resolved = dto.resolve(context);
-        
+
         // Only foreground is set
         expect(resolved.color, isNull);
         expect(resolved.foreground?.color, const Color(0xFF00FF00));
       });
 
       test('handles null debugLabel', () {
-        final dto = TextStyleDto(
-          color: Colors.red,
-          debugLabel: null,
-        );
+        final dto = TextStyleDto(color: Colors.red, debugLabel: null);
 
         final context = createEmptyMixData();
         final resolved = dto.resolve(context);
-        
+
         expect(resolved.debugLabel, isNull);
       });
 
       test('handles extreme font weights', () {
         final dto1 = TextStyleDto(fontWeight: FontWeight.w100);
         final dto2 = TextStyleDto(fontWeight: FontWeight.w900);
-        
+
         expect(dto1.fontWeight, resolvesTo(FontWeight.w100));
         expect(dto2.fontWeight, resolvesTo(FontWeight.w900));
       });
@@ -459,7 +437,7 @@ void main() {
 
         final context = createEmptyMixData();
         final resolved = dto.resolve(context);
-        
+
         expect(resolved.color, Colors.black);
         expect(resolved.fontSize, 14.0);
         expect(resolved.fontWeight, FontWeight.normal);
@@ -479,9 +457,7 @@ void main() {
           fontWeight: FontWeight.bold,
         );
 
-        final primaryStyle = TextStyleDto(
-          color: Colors.blue,
-        );
+        final primaryStyle = TextStyleDto(color: Colors.blue);
 
         final merged = baseStyle.merge(headingStyle).merge(primaryStyle);
 

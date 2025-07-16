@@ -39,21 +39,21 @@ void main() {
       expect(containerSpecAttribute.clipBehavior, resolvesTo(Clip.antiAlias));
 
       expect(
-        containerSpecAttribute.constraints?.value,
+        containerSpecAttribute.constraints?.mixValue,
         BoxConstraintsDto(maxHeight: 100),
       );
       expect(
-        containerSpecAttribute.decoration?.value,
+        containerSpecAttribute.decoration?.mixValue,
         BoxDecorationDto(color: Colors.blue),
       );
 
       expect(containerSpecAttribute.height, resolvesTo(100));
       expect(
-        containerSpecAttribute.margin?.value,
+        containerSpecAttribute.margin?.mixValue,
         EdgeInsetsGeometryDto.only(top: 10, bottom: 10, left: 10, right: 10),
       );
       expect(
-        containerSpecAttribute.padding?.value,
+        containerSpecAttribute.padding?.mixValue,
         EdgeInsetsGeometryDto.only(top: 20, bottom: 20, left: 20, right: 20),
       );
       expect(containerSpecAttribute.transform, resolvesTo(Matrix4.identity()));
@@ -191,8 +191,14 @@ void main() {
         ),
       );
 
-      expect(mergedBoxSpecAttribute.alignment, resolvesTo(Alignment.centerLeft));
-      expect(mergedBoxSpecAttribute.clipBehavior, resolvesTo(Clip.antiAliasWithSaveLayer));
+      expect(
+        mergedBoxSpecAttribute.alignment,
+        resolvesTo(Alignment.centerLeft),
+      );
+      expect(
+        mergedBoxSpecAttribute.clipBehavior,
+        resolvesTo(Clip.antiAliasWithSaveLayer),
+      );
 
       expect(
         mergedBoxSpecAttribute.constraints,

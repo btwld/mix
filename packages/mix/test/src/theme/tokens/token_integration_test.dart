@@ -7,8 +7,8 @@ import '../../../helpers/custom_matchers.dart';
 void main() {
   group('Token Integration Tests', () {
     testWidgets('Mixable<Color> with Token<Color> integration', (tester) async {
-      const primaryToken = MixableToken<Color>('primary');
-      const secondaryToken = MixableToken<Color>('secondary');
+      const primaryToken = MixToken<Color>('primary');
+      const secondaryToken = MixToken<Color>('secondary');
 
       final theme = MixScopeData.static(
         tokens: {primaryToken: Colors.blue, secondaryToken: Colors.red},
@@ -34,8 +34,8 @@ void main() {
     });
 
     testWidgets('SpaceDto with Token<double> integration', (tester) async {
-      const smallToken = MixableToken<double>('small');
-      const largeToken = MixableToken<double>('large');
+      const smallToken = MixToken<double>('small');
+      const largeToken = MixToken<double>('large');
 
       final theme = MixScopeData.static(
         tokens: {smallToken: 8.0, largeToken: 24.0},
@@ -61,8 +61,8 @@ void main() {
     });
 
     testWidgets('Utility extensions work with tokens', (tester) async {
-      const primaryToken = MixableToken<Color>('primary');
-      const spacingToken = MixableToken<double>('spacing');
+      const primaryToken = MixToken<Color>('primary');
+      const spacingToken = MixToken<double>('spacing');
 
       final theme = MixScopeData.static(
         tokens: {primaryToken: Colors.purple, spacingToken: 16.0},
@@ -98,8 +98,8 @@ void main() {
 
     test('Token names are consistent', () {
       // New tokens
-      const colorToken = MixableToken<Color>('primary');
-      const spaceToken = MixableToken<double>('large');
+      const colorToken = MixToken<Color>('primary');
+      const spaceToken = MixToken<double>('large');
 
       // Names should be predictable
       expect(colorToken.name, equals('primary'));

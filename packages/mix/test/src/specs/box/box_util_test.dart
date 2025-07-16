@@ -37,11 +37,11 @@ void main() {
       expect(container.alignment, resolvesTo(Alignment.center));
       expect(container.clipBehavior, resolvesTo(Clip.antiAlias));
 
-      expect(container.constraints?.value, constraints);
+      expect(container.constraints?.mixValue, constraints);
 
       expect(container.height, resolvesTo(10));
-      expect(container.margin?.value, spacing);
-      expect(container.padding?.value, spacing);
+      expect(container.margin?.mixValue, spacing);
+      expect(container.padding?.mixValue, spacing);
       expect(container.transform, resolvesTo(Matrix4.identity()));
       expect(container.width, resolvesTo(10));
     });
@@ -62,7 +62,7 @@ void main() {
       final container = boxUtility.color(Colors.blue);
 
       expect(
-        (container.decoration?.value as BoxDecorationDto).color,
+        (container.decoration?.mixValue as BoxDecorationDto).color,
         isA<Prop<Color>>(),
       );
     });
@@ -107,11 +107,14 @@ void main() {
         color: Colors.amber,
       );
 
-      expect((container.decoration!.value as BoxDecorationDto).color, isA<Prop<Color>>());
-
-      final decorationDTO = container.decoration?.value as BoxDecorationDto;
       expect(
-        decorationDTO.borderRadius?.value,
+        (container.decoration!.mixValue as BoxDecorationDto).color,
+        isA<Prop<Color>>(),
+      );
+
+      final decorationDTO = container.decoration?.mixValue as BoxDecorationDto;
+      expect(
+        decorationDTO.borderRadius?.mixValue,
         BorderRadiusDto.value(BorderRadius.circular(10)),
       );
     });
@@ -123,15 +126,15 @@ void main() {
       );
 
       expect(
-        (container.foregroundDecoration!.value as BoxDecorationDto).color,
+        (container.foregroundDecoration!.mixValue as BoxDecorationDto).color,
         isA<Prop<Color>>(),
         reason: 'The color is not correct',
       );
 
       final foregroundDecorationDTO =
-          container.foregroundDecoration?.value as BoxDecorationDto;
+          container.foregroundDecoration?.mixValue as BoxDecorationDto;
       expect(
-        foregroundDecorationDTO.borderRadius?.value,
+        foregroundDecorationDTO.borderRadius?.mixValue,
         BorderRadiusDto.value(BorderRadius.circular(10)),
         reason: 'The BorderRadius is not correct',
       );
