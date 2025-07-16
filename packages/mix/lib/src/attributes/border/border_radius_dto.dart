@@ -38,6 +38,60 @@ sealed class BorderRadiusGeometryDto<T extends BorderRadiusGeometry>
     return BorderRadiusGeometryDto.value(value);
   }
 
+  /// Will try to merge two border radius geometries, the type will resolve to type of
+  /// `b` if its not null and `a` otherwise.
+  static BorderRadiusGeometryDto? tryToMerge(
+    BorderRadiusGeometryDto? a,
+    BorderRadiusGeometryDto? b,
+  ) {
+    if (b == null) return a;
+    if (a == null) return b;
+
+    return a.runtimeType == b.runtimeType ? a.merge(b) : _exhaustiveMerge(a, b);
+  }
+
+  static B _exhaustiveMerge<
+    A extends BorderRadiusGeometryDto,
+    B extends BorderRadiusGeometryDto
+  >(A a, B b) {
+    if (a.runtimeType == b.runtimeType) return a.merge(b) as B;
+
+    return switch (b) {
+      (BorderRadiusDto g) => a._asBorderRadius().merge(g) as B,
+      (BorderRadiusDirectionalDto g) => a._asBorderRadiusDirectional().merge(g) as B,
+    };
+  }
+
+  @protected
+  BorderRadiusDto _asBorderRadius() {
+    if (this is BorderRadiusDto) return this as BorderRadiusDto;
+
+    // For BorderRadiusDirectionalDto converting to BorderRadiusDto
+    // topStart -> topLeft, topEnd -> topRight, bottomStart -> bottomLeft, bottomEnd -> bottomRight
+    final directional = this as BorderRadiusDirectionalDto;
+
+    return BorderRadiusDto.props(
+      topLeft: directional.topStart,
+      topRight: directional.topEnd,
+      bottomLeft: directional.bottomStart,
+      bottomRight: directional.bottomEnd,
+    );
+  }
+
+  @protected
+  BorderRadiusDirectionalDto _asBorderRadiusDirectional() {
+    if (this is BorderRadiusDirectionalDto) return this as BorderRadiusDirectionalDto;
+
+    // For BorderRadiusDto converting to BorderRadiusDirectionalDto
+    // topLeft -> topStart, topRight -> topEnd, bottomLeft -> bottomStart, bottomRight -> bottomEnd
+    return BorderRadiusDirectionalDto.props(
+      topStart: topLeft,
+      topEnd: topRight,
+      bottomStart: bottomLeft,
+      bottomEnd: bottomRight,
+    );
+  }
+
   /// Common getters for accessing radius properties
   /// These return null for types that don't support these properties
   Prop<Radius>? get topLeft => null;

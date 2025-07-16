@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../theme/tokens/mix_token.dart';
 import 'mix_element.dart';
 import 'prop.dart';
-import 'utility.dart';
 
 /// Base utility for simple value properties that use Prop<T>
 ///
@@ -14,9 +13,10 @@ import 'utility.dart';
 ///
 /// Used for simple types like Color, double, FontWeight, etc.
 @immutable
-class PropUtility<Return extends StyleElement, Value>
-    extends MixUtility<Return, Prop<Value>> {
-  const PropUtility(super.builder);
+abstract class PropUtility<Return extends StyleElement, Value> {
+  @protected
+  final Return Function(Prop<Value>) builder;
+  const PropUtility(this.builder);
 
   /// Direct value
   Return call(Value value) => builder(Prop.value(value));
@@ -31,13 +31,6 @@ class PropUtility<Return extends StyleElement, Value>
   /// Multiple directives support
   Return directives(List<MixDirective<Value>> directives) =>
       builder(Prop.directives(directives));
-
-  /// Chaining support for adding directives
-  PropUtility<Return, Value> withDirective(MixDirective<Value> directive) {
-    return PropUtility(
-      (prop) => builder(prop.merge(Prop.directives([directive]))),
-    );
-  }
 }
 
 /// Base utility for complex value properties that use MixProp<V, D>
@@ -49,19 +42,20 @@ class PropUtility<Return extends StyleElement, Value>
 ///
 /// Used for complex types that need DTOs like EdgeInsets, TextStyle, etc.
 @immutable
-class MixPropUtility<Return extends StyleElement, V, D extends Mix<V>>
-    extends MixUtility<Return, MixProp<V, D>> {
-  final D Function(V) _valueToDto;
+abstract class MixPropUtility<S extends StyleElement, V, M extends Mix<V>> {
+  @protected
+  final M Function(V) convertToMix;
+  @protected
+  final S Function(MixProp<V, M> prop) builder;
 
-  const MixPropUtility(super.builder, this._valueToDto);
+  const MixPropUtility(this.builder, {required this.convertToMix});
 
   /// Direct DTO value
-  Return call(D dto) => builder(MixProp.value(dto));
+  S call(M dto) => builder(MixProp.value(dto));
 
   /// Flutter value with auto-conversion to DTO
-  Return value(V value) => call(_valueToDto(value));
+  S value(V value) => call(convertToMix(value));
 
   /// Token support with conversion
-  Return token(MixableToken<V> token) =>
-      builder(MixProp.token(token, _valueToDto));
+  S token(MixableToken<V> token) => builder(MixProp.token(token, convertToMix));
 }

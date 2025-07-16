@@ -316,8 +316,8 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
       shape: ShapeBorderDto.maybeValue(decoration.shape),
 
       color: decoration.color,
-      image: DecorationImageDto.maybeValue(decoration.image!),
-      gradient: GradientDto.maybeValue(decoration.gradient!),
+      image: DecorationImageDto.maybeValue(decoration.image),
+      gradient: GradientDto.maybeValue(decoration.gradient),
       shadows: decoration.shadows?.map(BoxShadowDto.value).toList(),
     );
   }
