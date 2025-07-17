@@ -298,7 +298,7 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
   /// final textSpec = TextSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  TextSpec resolve(MixContext context) {
+  TextSpec resolve(BuildContext context) {
     return TextSpec(
       overflow: overflow,
       strutStyle: strutStyle?.resolve(context),
@@ -532,7 +532,6 @@ class TextSpecUtility<T extends SpecAttribute>
   late final sentenceCase = directive.sentenceCase;
 
   TextSpecUtility(super.attributeBuilder);
-
 
   static TextSpecUtility<TextSpecAttribute> get self =>
       TextSpecUtility((v) => v);

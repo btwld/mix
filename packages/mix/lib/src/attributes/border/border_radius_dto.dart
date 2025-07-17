@@ -58,7 +58,8 @@ sealed class BorderRadiusGeometryDto<T extends BorderRadiusGeometry>
 
     return switch (b) {
       (BorderRadiusDto g) => a._asBorderRadius().merge(g) as B,
-      (BorderRadiusDirectionalDto g) => a._asBorderRadiusDirectional().merge(g) as B,
+      (BorderRadiusDirectionalDto g) =>
+        a._asBorderRadiusDirectional().merge(g) as B,
     };
   }
 
@@ -80,7 +81,8 @@ sealed class BorderRadiusGeometryDto<T extends BorderRadiusGeometry>
 
   @protected
   BorderRadiusDirectionalDto _asBorderRadiusDirectional() {
-    if (this is BorderRadiusDirectionalDto) return this as BorderRadiusDirectionalDto;
+    if (this is BorderRadiusDirectionalDto)
+      return this as BorderRadiusDirectionalDto;
 
     // For BorderRadiusDto converting to BorderRadiusDirectionalDto
     // topLeft -> topStart, topRight -> topEnd, bottomLeft -> bottomStart, bottomRight -> bottomEnd
@@ -170,7 +172,7 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
   }
 
   @override
-  BorderRadius resolve(MixContext context) {
+  BorderRadius resolve(BuildContext context) {
     return BorderRadius.only(
       topLeft: resolveProp(context, topLeft) ?? Radius.zero,
       topRight: resolveProp(context, topRight) ?? Radius.zero,
@@ -261,7 +263,7 @@ final class BorderRadiusDirectionalDto
   }
 
   @override
-  BorderRadiusDirectional resolve(MixContext context) {
+  BorderRadiusDirectional resolve(BuildContext context) {
     return BorderRadiusDirectional.only(
       topStart: resolveProp(context, topStart) ?? Radius.zero,
       topEnd: resolveProp(context, topEnd) ?? Radius.zero,

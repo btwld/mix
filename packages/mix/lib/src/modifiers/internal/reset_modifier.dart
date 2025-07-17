@@ -3,7 +3,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../core/factory/mix_context.dart';
 import '../../core/modifier.dart';
 import '../../core/spec.dart';
 import '../../core/utility.dart';
@@ -51,7 +50,7 @@ class ResetModifierSpecAttribute
   const ResetModifierSpecAttribute();
 
   @override
-  ResetModifierSpec resolve(MixContext context) {
+  ResetModifierSpec resolve(BuildContext context) {
     return const ResetModifierSpec();
   }
 

@@ -50,7 +50,7 @@ abstract class WidgetModifierSpecAttribute<
   /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   @override
-  Value resolve(MixContext context);
+  Value resolve(BuildContext context);
 }
 
 abstract class WidgetModifierUtility<

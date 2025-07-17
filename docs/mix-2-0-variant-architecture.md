@@ -524,7 +524,7 @@ class BoxSpecAttribute extends SpecMix<BoxSpec> {
   }
   
   @override
-  BoxSpec resolve(MixContext context) {
+  BoxSpec resolve(BuildContext context) {
     return BoxSpec(
       alignment: resolveProp(context, alignment),
       padding: resolveProp(context, padding),

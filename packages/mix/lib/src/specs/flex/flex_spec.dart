@@ -261,7 +261,7 @@ class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
   /// final flexSpec = FlexSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  FlexSpec resolve(MixContext context) {
+  FlexSpec resolve(BuildContext context) {
     return FlexSpec(
       crossAxisAlignment: crossAxisAlignment,
       mainAxisAlignment: mainAxisAlignment,
@@ -408,7 +408,6 @@ class FlexSpecUtility<T extends SpecAttribute>
   late final gap = GapUtility((v) => only(gap: v));
 
   FlexSpecUtility(super.attributeBuilder);
-
 
   static FlexSpecUtility<FlexSpecAttribute> get self =>
       FlexSpecUtility((v) => v);

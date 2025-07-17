@@ -158,7 +158,7 @@ final class BorderDto extends BoxBorderDto<Border>
   /// final border = BorderDto(...).resolve(mix);
   /// ```
   @override
-  Border resolve(MixContext context) {
+  Border resolve(BuildContext context) {
     return Border(
       top: resolveMixProp(context, top) ?? BorderSide.none,
       right: resolveMixProp(context, right) ?? BorderSide.none,
@@ -299,7 +299,7 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional>
   /// final borderDirectional = BorderDirectionalDto(...).resolve(mix);
   /// ```
   @override
-  BorderDirectional resolve(MixContext context) {
+  BorderDirectional resolve(BuildContext context) {
     return BorderDirectional(
       top: resolveMixProp(context, top) ?? defaultValue.top,
       start: resolveMixProp(context, start) ?? defaultValue.start,
@@ -415,7 +415,7 @@ final class BorderSideDto extends Mix<BorderSide>
   /// final borderSide = BorderSideDto(...).resolve(mix);
   /// ```
   @override
-  BorderSide resolve(MixContext context) {
+  BorderSide resolve(BuildContext context) {
     return BorderSide(
       color: resolveProp(context, color) ?? defaultValue.color,
       width: resolveProp(context, width) ?? defaultValue.width,

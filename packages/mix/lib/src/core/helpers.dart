@@ -7,7 +7,6 @@ import 'package:flutter/rendering.dart' as r;
 import 'package:flutter/widgets.dart' as w;
 
 import '../internal/deep_collection_equality.dart';
-import 'factory/mix_context.dart';
 import 'mix_element.dart';
 
 /// Class to provide some helpers without conflicting
@@ -96,7 +95,7 @@ List<T>? _mergeList<T>(List<T>? a, List<T>? b) {
   });
 }
 
-List<V> _resolveList<T extends Mix<V>, V>(List<T>? a, MixContext mix) {
+List<V> _resolveList<T extends Mix<V>, V>(List<T>? a, BuildContext mix) {
   if (a == null) return [];
 
   return a.map((e) => e.resolve(mix)).whereType<V>().toList();

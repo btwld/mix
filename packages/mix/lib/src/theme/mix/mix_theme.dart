@@ -18,6 +18,12 @@ class MixScope extends InheritedWidget {
     return scopeData!;
   }
 
+  static T tokenOf<T>(MixToken<T> token, BuildContext context) {
+    final scope = MixScope.of(context);
+
+    return scope.getToken(token, context);
+  }
+
   static MixScopeData? maybeOf(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<MixScope>()?.data;
   }

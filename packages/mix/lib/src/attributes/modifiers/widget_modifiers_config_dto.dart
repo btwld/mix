@@ -1,5 +1,6 @@
+import 'package:flutter/widgets.dart';
+
 import '../../core/attributes_map.dart';
-import '../../core/factory/mix_context.dart';
 import '../../core/mix_element.dart';
 import '../../core/modifier.dart';
 import '../../modifiers/internal/reset_modifier.dart';
@@ -14,8 +15,10 @@ class WidgetModifiersConfigDto extends Mix<WidgetModifiersConfig> {
   final List<WidgetModifierSpecAttribute>? modifiers;
 
   const WidgetModifiersConfigDto.props({this.modifiers});
-  
-  factory WidgetModifiersConfigDto({List<WidgetModifierSpecAttribute>? modifiers}) {
+
+  factory WidgetModifiersConfigDto({
+    List<WidgetModifierSpecAttribute>? modifiers,
+  }) {
     return WidgetModifiersConfigDto.props(modifiers: modifiers);
   }
 
@@ -45,14 +48,13 @@ class WidgetModifiersConfigDto extends Mix<WidgetModifiersConfig> {
     return config != null ? WidgetModifiersConfigDto.value(config) : null;
   }
 
-
   @override
   WidgetModifiersConfigDto merge(WidgetModifiersConfigDto? other) {
     if (other == null) return this;
-    
+
     final thisModifiers = modifiers ?? <WidgetModifierSpecAttribute>[];
     final otherModifiers = other.modifiers ?? <WidgetModifierSpecAttribute>[];
-    
+
     final thisMap = AttributeMap(thisModifiers);
 
     final resetIndex = otherModifiers.lastIndexWhere(
@@ -60,7 +62,9 @@ class WidgetModifiersConfigDto extends Mix<WidgetModifiersConfig> {
     );
 
     if (resetIndex != -1) {
-      return WidgetModifiersConfigDto(modifiers: otherModifiers.sublist(resetIndex));
+      return WidgetModifiersConfigDto(
+        modifiers: otherModifiers.sublist(resetIndex),
+      );
     }
 
     final otherMap = AttributeMap(otherModifiers);
@@ -70,9 +74,11 @@ class WidgetModifiersConfigDto extends Mix<WidgetModifiersConfig> {
   }
 
   @override
-  WidgetModifiersConfig resolve(MixContext context) {
-    final resolvedModifiers = modifiers?.map((e) => e.resolve(context)).toList() ?? <WidgetModifierSpec>[];
-    
+  WidgetModifiersConfig resolve(BuildContext context) {
+    final resolvedModifiers =
+        modifiers?.map((e) => e.resolve(context)).toList() ??
+        <WidgetModifierSpec>[];
+
     return WidgetModifiersConfig(resolvedModifiers);
   }
 

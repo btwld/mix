@@ -90,7 +90,7 @@ class OpacityModifierSpecAttribute
   /// final opacityModifierSpec = OpacityModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  OpacityModifierSpec resolve(MixContext context) {
+  OpacityModifierSpec resolve(BuildContext context) {
     return OpacityModifierSpec(opacity);
   }
 

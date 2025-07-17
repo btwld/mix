@@ -2,11 +2,9 @@ import 'package:flutter/foundation.dart';
 
 import '../core/mix_element.dart';
 import '../core/variant.dart';
-import '../internal/compare_mixin.dart';
 
 @immutable
-class VariantAttribute<S extends StyleElement> extends StyleElement
-    with EqualityMixin {
+class VariantAttribute<S extends StyleElement> extends StyleElement {
   final Variant variant;
   final S _style;
   const VariantAttribute(this.variant, S style) : _style = style;

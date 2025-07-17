@@ -147,7 +147,7 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
 
   /// Resolves to [StackSpec] using the provided [MixContext].
   @override
-  StackSpec resolve(MixContext context) {
+  StackSpec resolve(BuildContext context) {
     return StackSpec(
       alignment: alignment,
       fit: fit,
@@ -212,7 +212,6 @@ class StackSpecUtility<T extends SpecAttribute>
   /// Utility for defining [StackSpecAttribute.animated]
 
   StackSpecUtility(super.attributeBuilder);
-
 
   static StackSpecUtility<StackSpecAttribute> get self =>
       StackSpecUtility((v) => v);

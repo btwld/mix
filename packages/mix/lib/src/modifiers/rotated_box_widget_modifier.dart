@@ -75,7 +75,7 @@ class RotatedBoxModifierSpecAttribute
   /// final rotatedBoxModifierSpec = RotatedBoxModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  RotatedBoxModifierSpec resolve(MixContext context) {
+  RotatedBoxModifierSpec resolve(BuildContext context) {
     return RotatedBoxModifierSpec(quarterTurns);
   }
 

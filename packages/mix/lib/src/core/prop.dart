@@ -1,9 +1,9 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 
 import '../attributes/animation/animation_config.dart';
 import '../internal/compare_mixin.dart';
+import '../theme/mix/mix_theme.dart';
 import '../theme/tokens/mix_token.dart';
-import 'factory/mix_context.dart';
 import 'mix_element.dart';
 
 /// Simplified Prop that can hold values or tokens with optional directives
@@ -128,13 +128,13 @@ class Prop<T> with EqualityMixin, ResolvableMixin<T> {
   /// Resolves the value using the provided context
   /// Throws FlutterError if unable to resolve
   @override
-  T resolve(MixContext context) {
+  T resolve(BuildContext context) {
     T? result;
 
     if (_value != null) {
       result = _value;
     } else if (_token != null) {
-      result = context.getToken(_token);
+      result = MixScope.tokenOf(_token, context);
     }
 
     if (result == null) {
@@ -284,13 +284,13 @@ class MixProp<V, T extends Mix<V>> with EqualityMixin, ResolvableMixin<V> {
   /// Resolves the value using the provided context
   /// Throws FlutterError if unable to resolve
   @override
-  V resolve(MixContext context) {
+  V resolve(BuildContext context) {
     T? dto;
 
     if (_value != null) {
       dto = _value;
     } else if (_token != null) {
-      final tokenValue = context.getToken(_token);
+      final tokenValue = MixScope.tokenOf(_token, context);
       if (tokenValue != null) {
         dto = _mixConverter!(tokenValue);
       }

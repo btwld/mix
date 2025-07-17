@@ -90,7 +90,7 @@ class AspectRatioModifierSpecAttribute
   /// final aspectRatioModifierSpec = AspectRatioModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  AspectRatioModifierSpec resolve(MixContext context) {
+  AspectRatioModifierSpec resolve(BuildContext context) {
     return AspectRatioModifierSpec(aspectRatio);
   }
 

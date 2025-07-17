@@ -153,7 +153,7 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
   }
 
   @override
-  TextStyle resolve(MixContext context) {
+  TextStyle resolve(BuildContext context) {
     return TextStyle(
       color: resolveProp(context, color),
       backgroundColor: resolveProp(context, backgroundColor),

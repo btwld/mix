@@ -190,7 +190,7 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
   }
 
   @override
-  EdgeInsets resolve(MixContext context) {
+  EdgeInsets resolve(BuildContext context) {
     return EdgeInsets.only(
       left: resolveMixProp(context, left) ?? 0,
       top: resolveMixProp(context, top) ?? 0,
@@ -310,7 +310,7 @@ final class EdgeInsetsDirectionalDto
   }
 
   @override
-  EdgeInsetsDirectional resolve(MixContext context) {
+  EdgeInsetsDirectional resolve(BuildContext context) {
     return EdgeInsetsDirectional.only(
       start: resolveMixProp(context, start) ?? 0,
       top: resolveMixProp(context, top) ?? 0,

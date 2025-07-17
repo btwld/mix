@@ -7,11 +7,11 @@ import '../../attributes/animation/animation_config.dart';
 import '../../internal/string_ext.dart';
 import '../../theme/mix/mix_theme.dart';
 import '../../theme/tokens/mix_token.dart';
-import '../variant.dart';
 import '../../variants/variant_attribute.dart';
 import '../attributes_map.dart';
 import '../modifier.dart';
 import '../spec.dart';
+import '../variant.dart';
 import 'style_mix.dart';
 
 // Deprecated typedef moved to src/core/deprecated.dart
@@ -209,6 +209,7 @@ List<SpecAttribute> applyContextToVisualAttributes(
     ..sort((a, b) {
       final aPriority = a.variant is WidgetStateVariant ? 1 : 0;
       final bPriority = b.variant is WidgetStateVariant ? 1 : 0;
+
       return aPriority.compareTo(bPriority);
     });
 

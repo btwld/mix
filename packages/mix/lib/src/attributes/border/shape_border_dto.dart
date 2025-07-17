@@ -184,7 +184,7 @@ final class RoundedRectangleBorderDto
   /// final roundedRectangleBorder = RoundedRectangleBorderDto(...).resolve(mix);
   /// ```
   @override
-  RoundedRectangleBorder resolve(MixContext context) {
+  RoundedRectangleBorder resolve(BuildContext context) {
     return RoundedRectangleBorder(
       side: resolveMixProp(context, side) ?? BorderSide.none,
       borderRadius: resolveMixProp(context, borderRadius) ?? BorderRadius.zero,
@@ -285,7 +285,7 @@ final class BeveledRectangleBorderDto
   /// final beveledRectangleBorder = BeveledRectangleBorderDto(...).resolve(mix);
   /// ```
   @override
-  BeveledRectangleBorder resolve(MixContext context) {
+  BeveledRectangleBorder resolve(BuildContext context) {
     return BeveledRectangleBorder(
       side: resolveMixProp(context, side) ?? BorderSide.none,
       borderRadius: resolveMixProp(context, borderRadius) ?? BorderRadius.zero,
@@ -390,7 +390,7 @@ final class ContinuousRectangleBorderDto
   /// final continuousRectangleBorder = ContinuousRectangleBorderDto(...).resolve(mix);
   /// ```
   @override
-  ContinuousRectangleBorder resolve(MixContext context) {
+  ContinuousRectangleBorder resolve(BuildContext context) {
     return ContinuousRectangleBorder(
       side: resolveMixProp(context, side) ?? BorderSide.none,
       borderRadius: resolveMixProp(context, borderRadius) ?? BorderRadius.zero,
@@ -486,7 +486,7 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
   /// final circleBorder = CircleBorderDto(...).resolve(mix);
   /// ```
   @override
-  CircleBorder resolve(MixContext context) {
+  CircleBorder resolve(BuildContext context) {
     return CircleBorder(
       side: resolveMixProp(context, side) ?? BorderSide.none,
       eccentricity: resolveProp(context, eccentricity) ?? 0.0,
@@ -617,7 +617,7 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
   /// final starBorder = StarBorderDto(...).resolve(mix);
   /// ```
   @override
-  StarBorder resolve(MixContext context) {
+  StarBorder resolve(BuildContext context) {
     return StarBorder(
       side: resolveMixProp(context, side) ?? BorderSide.none,
       points: resolveProp(context, points) ?? 5,
@@ -750,7 +750,7 @@ final class LinearBorderDto extends OutlinedBorderDto<LinearBorder> {
   /// final linearBorder = LinearBorderDto(...).resolve(mix);
   /// ```
   @override
-  LinearBorder resolve(MixContext context) {
+  LinearBorder resolve(BuildContext context) {
     return LinearBorder(
       side: resolveMixProp(context, side) ?? BorderSide.none,
       start: resolveMixProp(context, start),
@@ -841,7 +841,7 @@ final class LinearBorderEdgeDto extends Mix<LinearBorderEdge> {
   /// final linearBorderEdge = LinearBorderEdgeDto(...).resolve(mix);
   /// ```
   @override
-  LinearBorderEdge resolve(MixContext context) {
+  LinearBorderEdge resolve(BuildContext context) {
     return LinearBorderEdge(
       size: resolveProp(context, size) ?? 1.0,
       alignment: resolveProp(context, alignment) ?? 0.0,
@@ -923,7 +923,7 @@ final class StadiumBorderDto extends OutlinedBorderDto<StadiumBorder> {
   /// final stadiumBorder = StadiumBorderDto(...).resolve(mix);
   /// ```
   @override
-  StadiumBorder resolve(MixContext context) {
+  StadiumBorder resolve(BuildContext context) {
     return StadiumBorder(
       side: resolveMixProp(context, side) ?? BorderSide.none,
     );

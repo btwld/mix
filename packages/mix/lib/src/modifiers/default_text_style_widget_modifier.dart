@@ -186,7 +186,7 @@ class DefaultTextStyleModifierSpecAttribute
   /// final defaultTextStyleModifierSpec = DefaultTextStyleModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  DefaultTextStyleModifierSpec resolve(MixContext context) {
+  DefaultTextStyleModifierSpec resolve(BuildContext context) {
     return DefaultTextStyleModifierSpec(
       style: style?.resolve(context),
       textAlign: textAlign,

@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 
-import '../../core/factory/mix_context.dart';
 import '../../core/mix_element.dart';
+import '../../theme/mix/mix_theme.dart';
 import '../../theme/tokens/mix_token.dart';
 
 @immutable
@@ -42,7 +43,7 @@ class _ValueSpaceDto extends SpaceDto {
   const _ValueSpaceDto(this.value);
 
   @override
-  double resolve(MixContext context) => value;
+  double resolve(BuildContext context) => value;
 
   @override
   List<Object?> get props => [value];
@@ -55,8 +56,8 @@ class _TokenSpaceDto extends SpaceDto {
   const _TokenSpaceDto(this.token);
 
   @override
-  double resolve(MixContext context) {
-    return context.scope.getToken(token, context.context);
+  double resolve(BuildContext context) {
+    return MixScope.tokenOf(token, context);
   }
 
   @override

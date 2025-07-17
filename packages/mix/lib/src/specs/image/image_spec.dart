@@ -205,7 +205,7 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
   }
 
   @override
-  ImageSpec resolve(MixContext context) {
+  ImageSpec resolve(BuildContext context) {
     return ImageSpec(
       width: width?.resolve(context),
       height: height?.resolve(context),
@@ -293,7 +293,6 @@ class ImageSpecUtility<T extends SpecAttribute>
   late final colorBlendMode = BlendModeUtility((v) => only(colorBlendMode: v));
 
   ImageSpecUtility(super.builder);
-
 
   static ImageSpecUtility<ImageSpecAttribute> get self =>
       ImageSpecUtility((v) => v);

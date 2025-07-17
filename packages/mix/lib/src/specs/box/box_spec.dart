@@ -335,7 +335,7 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
   /// final boxSpec = BoxSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  BoxSpec resolve(MixContext context) {
+  BoxSpec resolve(BuildContext context) {
     return BoxSpec(
       alignment: resolveProp(context, alignment),
       padding: resolveMixProp(context, padding),
@@ -549,7 +549,6 @@ class BoxSpecUtility<T extends SpecAttribute>
   //TODO: add wrap
 
   BoxSpecUtility(super.builder);
-
 
   static BoxSpecUtility<BoxSpecAttribute> get self => BoxSpecUtility((v) => v);
 

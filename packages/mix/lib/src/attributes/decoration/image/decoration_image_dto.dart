@@ -92,7 +92,7 @@ final class DecorationImageDto extends Mix<DecorationImage> {
   /// final decorationImage = DecorationImageDto(...).resolve(mix);
   /// ```
   @override
-  DecorationImage resolve(MixContext context) {
+  DecorationImage resolve(BuildContext context) {
     final resolvedImage = resolveProp(context, image);
     if (resolvedImage == null) {
       throw StateError('DecorationImage requires an image provider');

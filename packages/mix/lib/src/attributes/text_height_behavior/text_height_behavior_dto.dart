@@ -66,7 +66,7 @@ base class TextHeightBehaviorDto extends Mix<TextHeightBehavior> {
   /// final textHeightBehavior = TextHeightBehaviorDto(...).resolve(mix);
   /// ```
   @override
-  TextHeightBehavior resolve(MixContext context) {
+  TextHeightBehavior resolve(BuildContext context) {
     return TextHeightBehavior(
       applyHeightToFirstAscent:
           resolveProp(context, applyHeightToFirstAscent) ?? true,

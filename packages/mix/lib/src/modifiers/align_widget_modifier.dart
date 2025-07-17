@@ -100,7 +100,7 @@ class AlignModifierSpecAttribute
   });
 
   @override
-  AlignModifierSpec resolve(MixContext context) {
+  AlignModifierSpec resolve(BuildContext context) {
     return AlignModifierSpec(
       alignment: alignment,
       widthFactor: widthFactor,

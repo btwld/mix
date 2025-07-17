@@ -166,7 +166,7 @@ final class LinearGradientDto extends GradientDto<LinearGradient> {
   }
 
   @override
-  LinearGradient resolve(MixContext context) {
+  LinearGradient resolve(BuildContext context) {
     return LinearGradient(
       begin: resolveProp(context, begin) ?? defaultValue.begin,
       end: resolveProp(context, end) ?? defaultValue.end,
@@ -276,7 +276,7 @@ final class RadialGradientDto extends GradientDto<RadialGradient> {
   }
 
   @override
-  RadialGradient resolve(MixContext context) {
+  RadialGradient resolve(BuildContext context) {
     return RadialGradient(
       center: resolveProp(context, center) ?? defaultValue.center,
       radius: resolveProp(context, radius) ?? defaultValue.radius,
@@ -396,7 +396,7 @@ final class SweepGradientDto extends GradientDto<SweepGradient> {
   }
 
   @override
-  SweepGradient resolve(MixContext context) {
+  SweepGradient resolve(BuildContext context) {
     return SweepGradient(
       center: resolveProp(context, center) ?? defaultValue.center,
       startAngle: resolveProp(context, startAngle) ?? defaultValue.startAngle,

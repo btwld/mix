@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 
 import '../internal/compare_mixin.dart';
-import 'factory/mix_context.dart';
 import 'mix_element.dart';
 
 @immutable
@@ -28,9 +27,9 @@ abstract class Spec<T extends Spec<T>> with EqualityMixin {
 abstract class SpecAttribute<Value> extends Mix<Value> implements StyleElement {
   const SpecAttribute();
 
-  /// Resolves this attribute to its concrete value using the provided [MixContext].
+  /// Resolves this attribute to its concrete value using the provided [BuildContext].
   @override
-  Value resolve(MixContext context);
+  Value resolve(BuildContext context);
 
   /// Merges this attribute with another attribute of the same type.
   @override

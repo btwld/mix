@@ -138,7 +138,7 @@ class FlexBoxSpecAttribute extends SpecAttribute<FlexBoxSpec>
   /// final flexBoxSpec = FlexBoxSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  FlexBoxSpec resolve(MixContext context) {
+  FlexBoxSpec resolve(BuildContext context) {
     return FlexBoxSpec(
       box: box?.resolve(context),
       flex: flex?.resolve(context),
@@ -278,7 +278,6 @@ class FlexBoxSpecUtility<T extends SpecAttribute>
   late final flex = FlexSpecUtility((v) => only(flex: v));
 
   FlexBoxSpecUtility(super.attributeBuilder);
-
 
   static FlexBoxSpecUtility<FlexBoxSpecAttribute> get self =>
       FlexBoxSpecUtility((v) => v);

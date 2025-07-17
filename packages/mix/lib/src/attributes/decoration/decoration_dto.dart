@@ -214,7 +214,7 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
   /// final boxDecoration = BoxDecorationDto(...).resolve(mix);
   /// ```
   @override
-  BoxDecoration resolve(MixContext context) {
+  BoxDecoration resolve(BuildContext context) {
     return BoxDecoration(
       color: resolveProp(context, color),
       image: resolveMixProp(context, image),
@@ -380,7 +380,7 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
   /// final shapeDecoration = ShapeDecorationDto(...).resolve(mix);
   /// ```
   @override
-  ShapeDecoration resolve(MixContext context) {
+  ShapeDecoration resolve(BuildContext context) {
     return ShapeDecoration(
       color: resolveProp(context, color) ?? defaultValue.color,
       image: resolveMixProp(context, image) ?? defaultValue.image,

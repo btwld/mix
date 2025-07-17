@@ -209,7 +209,7 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
   }
 
   @override
-  IconSpec resolve(MixContext context) {
+  IconSpec resolve(BuildContext context) {
     return IconSpec(
       color: resolveProp(context, color),
       size: resolveProp(context, size),
@@ -311,7 +311,6 @@ class IconSpecUtility<T extends SpecAttribute>
   );
 
   IconSpecUtility(super.builder);
-
 
   static IconSpecUtility<IconSpecAttribute> get self =>
       IconSpecUtility((v) => v);

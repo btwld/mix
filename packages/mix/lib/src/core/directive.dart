@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 
-import 'factory/mix_context.dart';
 import 'mix_element.dart';
 
 typedef Modifier<T> = T Function(T value);
@@ -37,7 +36,7 @@ class TextDirectiveDto extends Mix<TextDirective> {
   @visibleForTesting
   int get length => _modifiers.length;
   @override
-  TextDirective resolve(MixContext context) {
+  TextDirective resolve(BuildContext context) {
     return TextDirective((String content) {
       return _modifiers.fold(
         content,

@@ -82,7 +82,7 @@ class MouseCursorDecoratorSpecAttribute
   /// final mouseCursorDecoratorSpec = MouseCursorDecoratorSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  MouseCursorDecoratorSpec resolve(MixContext context) {
+  MouseCursorDecoratorSpec resolve(BuildContext context) {
     return MouseCursorDecoratorSpec(mouseCursor: mouseCursor);
   }
 

@@ -5,7 +5,6 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../core/factory/mix_context.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/spec.dart';
@@ -120,7 +119,7 @@ class TransformModifierSpecAttribute
   const TransformModifierSpecAttribute({this.transform, this.alignment});
 
   @override
-  TransformModifierSpec resolve(MixContext context) {
+  TransformModifierSpec resolve(BuildContext context) {
     return TransformModifierSpec(transform: transform, alignment: alignment);
   }
 
