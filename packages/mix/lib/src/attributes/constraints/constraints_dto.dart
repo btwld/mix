@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_relative_imports,avoid-importing-entrypoint-exports
 import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 sealed class ConstraintsDto<T extends Constraints> extends Mix<T> {

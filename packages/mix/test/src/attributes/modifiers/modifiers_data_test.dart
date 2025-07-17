@@ -128,7 +128,7 @@ final class TestModifierSpecAttribute
   }
 
   @override
-  TestModifierSpec resolve(MixContext mix) {
+  TestModifierSpec resolve(BuildContext mix) {
     return const TestModifierSpec();
   }
 }

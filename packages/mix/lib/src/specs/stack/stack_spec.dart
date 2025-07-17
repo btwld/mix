@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 import '../../attributes/enum/enum_util.dart';
 import '../../attributes/scalars/scalar_util.dart';
 import '../../core/computed_style/computed_style.dart';
-import '../../core/factory/mix_context.dart';
 import '../../core/spec.dart';
 
 final class StackSpec extends Spec<StackSpec> with Diagnosticable {
@@ -20,8 +19,8 @@ final class StackSpec extends Spec<StackSpec> with Diagnosticable {
     this.clipBehavior,
   });
 
-  static StackSpec from(MixContext mix) {
-    return mix.attributeOf<StackSpecAttribute>()?.resolve(mix) ??
+  static StackSpec from(BuildContext context) {
+    return ComputedStyle.specOf<StackSpec>(context) ??
         const StackSpec();
   }
 

@@ -10,7 +10,6 @@ import '../../attributes/scalars/scalar_util.dart';
 import '../../attributes/spacing/edge_insets_dto.dart';
 import '../../attributes/spacing/spacing_util.dart';
 import '../../core/computed_style/computed_style.dart';
-import '../../core/factory/mix_context.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/spec.dart';
@@ -65,8 +64,8 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
     this.height,
   });
 
-  static BoxSpec from(MixContext mix) {
-    return mix.attributeOf<BoxSpecAttribute>()?.resolve(mix) ?? const BoxSpec();
+  static BoxSpec from(BuildContext context) {
+    return ComputedStyle.specOf<BoxSpec>(context) ?? const BoxSpec();
   }
 
   /// {@template box_spec_of}

@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 
 import '../../attributes/animation/animation_config.dart';
-import '../factory/mix_context.dart';
 import '../mix_element.dart';
 import '../modifier.dart';
 import '../spec.dart';
@@ -45,16 +44,16 @@ class ComputedStyle with Diagnosticable {
   /// ```dart
   /// final computedStyle = ComputedStyle.compute(mixData);
   /// ```
-  factory ComputedStyle.compute(MixContext mix) {
+  factory ComputedStyle.compute(BuildContext context, Iterable<SpecAttribute> attributes, {AnimationConfig? animation}) {
     final specs = <Type, ResolvedStyleElement>{};
     final modifiers = <WidgetModifierSpec>[];
 
     // Separate modifiers from regular specs for different processing
-    for (final attribute in mix.whereType<SpecAttribute>()) {
+    for (final attribute in attributes) {
       if (attribute is WidgetModifierSpecAttribute) {
-        modifiers.add(attribute.resolve(mix) as WidgetModifierSpec);
+        modifiers.add(attribute.resolve(context) as WidgetModifierSpec);
       } else {
-        final resolved = attribute.resolve(mix);
+        final resolved = attribute.resolve(context);
         specs[resolved.runtimeType] = resolved;
       }
     }
@@ -62,7 +61,7 @@ class ComputedStyle with Diagnosticable {
     return ComputedStyle._(
       specs: specs,
       modifiers: modifiers,
-      animation: mix.animation,
+      animation: animation,
     );
   }
 
@@ -113,7 +112,7 @@ class ComputedStyle with Diagnosticable {
 
   /// Gets a spec by runtime type for internal provider use.
   @internal
-  Spec? specOfType(Type type) => _specs[type];
+  ResolvedStyleElement? specOfType(Type type) => _specs[type];
 
   @override
   bool operator ==(Object other) {

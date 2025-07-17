@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import 'factory/mix_context.dart';
 import 'spec.dart';
 import 'utility.dart';
 
@@ -46,8 +45,8 @@ abstract class WidgetModifierSpecAttribute<
     with Diagnosticable {
   const WidgetModifierSpecAttribute();
 
-  /// Resolves the attribute to a [WidgetModifierSpec] using the provided [MixContext].
-  /// If a property is null in the [MixContext], it falls back to the
+  /// Resolves the attribute to a [WidgetModifierSpec] using the provided [BuildContext].
+  /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   @override
   Value resolve(BuildContext context);

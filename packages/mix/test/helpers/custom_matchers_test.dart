@@ -191,7 +191,7 @@ void main() {
 // Helper class for testing error handling
 class _ProblematicMix<T> with ResolvableMixin<T> {
   @override
-  T resolve(MixContext mix) {
+  T resolve(BuildContext mix) {
     throw Exception('Intentional test error');
   }
 

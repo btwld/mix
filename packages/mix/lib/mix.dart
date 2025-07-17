@@ -60,8 +60,6 @@ export 'src/core/computed_style/computed_style.dart';
 export 'src/core/computed_style/computed_style_provider.dart';
 export 'src/core/deprecated.dart';
 export 'src/core/directive.dart';
-export 'src/core/factory/mix_context.dart';
-export 'src/core/factory/mix_provider.dart';
 export 'src/core/factory/style_mix.dart';
 export 'src/core/factory/style_widgets_ext.dart';
 export 'src/core/helpers.dart';

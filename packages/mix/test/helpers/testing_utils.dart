@@ -203,7 +203,7 @@ final class MockDoubleScalarAttribute
   const MockDoubleScalarAttribute(super.value);
 
   @override
-  double resolve(MixContext mix) => value;
+  double resolve(BuildContext mix) => value;
 }
 
 base class MockContextVariantCondition extends ContextVariant {
@@ -216,17 +216,15 @@ final class MockIntScalarAttribute
   const MockIntScalarAttribute(super.value);
 
   @override
-  int resolve(MixContext mix) => value;
+  int resolve(BuildContext mix) => value;
 }
 
 base class MockContextVariant extends ContextVariant {
-  MockContextVariant()
-    : super('mock_variant', (context) => true);
+  MockContextVariant() : super('mock_variant', (context) => true);
 }
 
 base class MockHighPriorityContextVariant extends WidgetStateVariant {
-  MockHighPriorityContextVariant()
-    : super(WidgetState.focused);
+  MockHighPriorityContextVariant() : super(WidgetState.focused);
 }
 
 final class MockBooleanScalarAttribute
@@ -234,7 +232,7 @@ final class MockBooleanScalarAttribute
   const MockBooleanScalarAttribute(super.value);
 
   @override
-  bool resolve(MixContext mix) => value;
+  bool resolve(BuildContext mix) => value;
 }
 
 abstract class _MockSpecAttribute<T> extends SpecAttribute<T> {
@@ -242,7 +240,7 @@ abstract class _MockSpecAttribute<T> extends SpecAttribute<T> {
   const _MockSpecAttribute(this._value);
 
   @override
-  T resolve(MixContext mix) => _value;
+  T resolve(BuildContext mix) => _value;
 
   @override
   _MockSpecAttribute<T> merge(_MockSpecAttribute<T>? other);
@@ -292,7 +290,7 @@ final class MockStringScalarAttribute
   const MockStringScalarAttribute(super.value);
 
   @override
-  String resolve(MixContext mix) => value;
+  String resolve(BuildContext mix) => value;
 }
 
 final class MockInvalidAttribute extends StyleElement {
@@ -316,7 +314,7 @@ final class UtilityTestAttribute<T>
   const UtilityTestAttribute(super.value);
 
   @override
-  T resolve(MixContext mix) => value;
+  T resolve(BuildContext mix) => value;
 }
 
 final class UtilityTestDtoAttribute<T extends Mix<V>, V>
@@ -325,7 +323,7 @@ final class UtilityTestDtoAttribute<T extends Mix<V>, V>
   const UtilityTestDtoAttribute(this.value);
 
   @override
-  V resolve(MixContext mix) {
+  V resolve(BuildContext mix) {
     final result = value.resolve(mix);
     if (result == null) {
       throw StateError('UtilityTestDtoAttribute resolve returned null');
@@ -376,7 +374,7 @@ final class CustomModifierAttribute
   const CustomModifierAttribute([this.value = true]);
 
   @override
-  CustomWidgetModifierSpec resolve(MixContext mix) {
+  CustomWidgetModifierSpec resolve(BuildContext mix) {
     return CustomWidgetModifierSpec(value ?? true);
   }
 

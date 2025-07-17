@@ -5,7 +5,6 @@ import '../../attributes/enum/enum_util.dart';
 import '../../attributes/gap/gap_util.dart';
 import '../../attributes/gap/space_dto.dart';
 import '../../core/computed_style/computed_style.dart';
-import '../../core/factory/mix_context.dart';
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
 
@@ -31,8 +30,8 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
     this.clipBehavior,
     this.gap,
   });
-  static FlexSpec from(MixContext mix) {
-    return mix.attributeOf<FlexSpecAttribute>()?.resolve(mix) ??
+  static FlexSpec from(BuildContext context) {
+    return ComputedStyle.specOf<FlexSpec>(context) ??
         const FlexSpec();
   }
 

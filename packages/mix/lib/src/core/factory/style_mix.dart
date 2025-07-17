@@ -11,7 +11,6 @@ import '../attributes_map.dart';
 import '../mix_element.dart';
 import '../spec.dart';
 import '../variant.dart';
-import 'mix_context.dart';
 
 /// A utility class for managing a collection of styling attributes and variants.
 ///
@@ -199,7 +198,7 @@ final class Style extends StyleElement with EqualityMixin {
     return merge(Style.create(elements));
   }
 
-  MixContext of(BuildContext context) => MixContext.create(context, this);
+  // MixContext.create method removed - use ComputedStyle.compute instead
 
   /// Returns a `AnimatedStyle` from this `Style` with the provided [duration] and [curve].
   AnimatedStyle animate({

@@ -5,7 +5,6 @@ import '../../attributes/color/color_util.dart';
 import '../../attributes/enum/enum_util.dart';
 import '../../attributes/scalars/scalar_util.dart';
 import '../../core/computed_style/computed_style.dart';
-import '../../core/factory/mix_context.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/spec.dart';
@@ -34,8 +33,8 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
     this.colorBlendMode,
   });
 
-  static ImageSpec from(MixContext mix) {
-    return mix.attributeOf<ImageSpecAttribute>()?.resolve(mix) ??
+  static ImageSpec from(BuildContext context) {
+    return ComputedStyle.specOf<ImageSpec>(context) ??
         const ImageSpec();
   }
 

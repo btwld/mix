@@ -6,7 +6,6 @@ import '../../attributes/enum/enum_util.dart';
 import '../../attributes/shadow/shadow_dto.dart';
 import '../../attributes/shadow/shadow_util.dart';
 import '../../core/computed_style/computed_style.dart';
-import '../../core/factory/mix_context.dart';
 import '../../core/helpers.dart';
 import '../../core/mix_element.dart';
 import '../../core/prop.dart';
@@ -36,8 +35,8 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
     this.fill,
   });
 
-  static IconSpec from(MixContext mix) {
-    return mix.attributeOf<IconSpecAttribute>()?.resolve(mix) ??
+  static IconSpec from(BuildContext context) {
+    return ComputedStyle.specOf<IconSpec>(context) ??
         const IconSpec();
   }
 

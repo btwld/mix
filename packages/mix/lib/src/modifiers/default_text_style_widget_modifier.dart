@@ -5,7 +5,6 @@ import 'package:flutter/widgets.dart';
 
 import '../attributes/text_height_behavior/text_height_behavior_dto.dart';
 import '../attributes/text_style/text_style_dto.dart';
-import '../core/factory/mix_context.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/spec.dart';

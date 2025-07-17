@@ -22,7 +22,7 @@ final class TestColorAttribute extends SpecAttribute<Color>
   }
 
   @override
-  Color resolve(MixContext mix) {
+  Color resolve(BuildContext mix) {
     return resolveProp(mix, color) ?? Colors.transparent;
   }
 

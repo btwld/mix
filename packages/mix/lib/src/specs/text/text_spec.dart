@@ -11,7 +11,6 @@ import '../../attributes/text_style/text_style_dto.dart';
 import '../../attributes/text_style/text_style_util.dart';
 import '../../core/computed_style/computed_style.dart';
 import '../../core/directive.dart';
-import '../../core/factory/mix_context.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/spec.dart';
@@ -48,8 +47,8 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     this.directive,
   });
 
-  static TextSpec from(MixContext mix) {
-    return mix.attributeOf<TextSpecAttribute>()?.resolve(mix) ??
+  static TextSpec from(BuildContext context) {
+    return ComputedStyle.specOf<TextSpec>(context) ??
         const TextSpec();
   }
 

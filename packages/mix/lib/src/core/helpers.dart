@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart' as w;
 
 import '../internal/deep_collection_equality.dart';
 import 'mix_element.dart';
+import 'prop.dart';
 
 /// Class to provide some helpers without conflicting
 /// name space with other libraries.
@@ -26,6 +27,14 @@ class MixHelpers {
   static const mergeList = _mergeList;
 
   static const resolveList = _resolveList;
+
+  static const mergePropList = _mergePropList;
+
+  static const resolvePropList = _resolvePropList;
+
+  static const mergeMixPropList = _mergeMixPropList;
+
+  static const resolveMixPropList = _resolveMixPropList;
 
   static const lerpStrutStyle = _lerpStrutStyle;
 
@@ -66,33 +75,44 @@ int _lerpInt(int? a, int? b, double t) {
   return (a + (b - a) * t).round();
 }
 
-List<T>? _mergeList<T>(List<T>? a, List<T>? b) {
+List<T>? _mergeList<T>(
+  List<T>? a,
+  List<T>? b, {
+  ListMergeStrategy strategy = ListMergeStrategy.replace,
+}) {
   if (b == null) return a;
   if (a == null) return b;
 
   if (a.isEmpty) return b;
   if (b.isEmpty) return a;
 
-  final listLength = a.length;
-  final otherLength = b.length;
-  final maxLength = math.max(listLength, otherLength);
+  switch (strategy) {
+    case ListMergeStrategy.append:
+      return [...a, ...b];
+    case ListMergeStrategy.replace:
+      final listLength = a.length;
+      final otherLength = b.length;
+      final maxLength = math.max(listLength, otherLength);
 
-  return List.generate(maxLength, (int index) {
-    if (index < listLength && index < otherLength) {
-      final currentValue = a[index];
-      final otherValue = b[index];
+      return List.generate(maxLength, (int index) {
+        if (index < listLength && index < otherLength) {
+          final currentValue = a[index];
+          final otherValue = b[index];
 
-      if (currentValue is Mix && otherValue is Mix) {
-        return currentValue.merge(otherValue) as T;
-      }
+          if (currentValue is Mix && otherValue is Mix) {
+            return currentValue.merge(otherValue) as T;
+          }
 
-      return otherValue ?? currentValue;
-    } else if (index < listLength) {
-      return a[index];
-    }
+          return otherValue ?? currentValue;
+        } else if (index < listLength) {
+          return a[index];
+        }
 
-    return b[index];
-  });
+        return b[index];
+      });
+    case ListMergeStrategy.override:
+      return b;
+  }
 }
 
 List<V> _resolveList<T extends Mix<V>, V>(List<T>? a, BuildContext mix) {
@@ -128,4 +148,85 @@ w.StrutStyle? _lerpStrutStyle(w.StrutStyle? a, w.StrutStyle? b, double t) {
     forceStrutHeight: t < 0.5 ? a.forceStrutHeight : b.forceStrutHeight,
     debugLabel: a.debugLabel ?? b.debugLabel,
   );
+}
+
+List<Prop<V>>? _mergePropList<V>(
+  List<Prop<V>>? a,
+  List<Prop<V>>? b, {
+  ListMergeStrategy strategy = ListMergeStrategy.replace,
+}) {
+  if (a == null) return b;
+  if (b == null) return a;
+
+  switch (strategy) {
+    case ListMergeStrategy.append:
+      return [...a, ...b];
+    case ListMergeStrategy.replace:
+      final result = List<Prop<V>>.of(a);
+      for (int i = 0; i < b.length; i++) {
+        if (i < result.length) {
+          result[i] = result[i].merge(b[i]);
+        } else {
+          result.add(b[i]);
+        }
+      }
+
+      return result;
+    case ListMergeStrategy.override:
+      return b;
+  }
+}
+
+List<V>? _resolvePropList<V>(BuildContext context, List<Prop<V>>? list) {
+  if (list == null || list.isEmpty) return null;
+
+  final resolved = <V>[];
+  for (final item in list) {
+    final value = item.resolve(context);
+    if (value != null) resolved.add(value);
+  }
+
+  return resolved.isEmpty ? null : resolved;
+}
+
+List<MixProp<R, D>>? _mergeMixPropList<R, D extends Mix<R>>(
+  List<MixProp<R, D>>? a,
+  List<MixProp<R, D>>? b, {
+  ListMergeStrategy strategy = ListMergeStrategy.replace,
+}) {
+  if (a == null) return b;
+  if (b == null) return a;
+
+  switch (strategy) {
+    case ListMergeStrategy.append:
+      return [...a, ...b];
+    case ListMergeStrategy.replace:
+      final result = List<MixProp<R, D>>.of(a);
+      for (int i = 0; i < b.length; i++) {
+        if (i < result.length) {
+          result[i] = result[i].merge(b[i]);
+        } else {
+          result.add(b[i]);
+        }
+      }
+
+      return result;
+    case ListMergeStrategy.override:
+      return b;
+  }
+}
+
+List<R>? _resolveMixPropList<R, D extends Mix<R>>(
+  BuildContext context,
+  List<MixProp<R, D>>? list,
+) {
+  if (list == null || list.isEmpty) return null;
+
+  final resolved = <R>[];
+  for (final mixProp in list) {
+    final value = mixProp.resolve(context);
+    if (value != null) resolved.add(value);
+  }
+
+  return resolved.isEmpty ? null : resolved;
 }

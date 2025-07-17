@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import '../attributes/animation/animation_config.dart';
 import '../internal/compare_mixin.dart';
 import '../variants/variant_attribute.dart';
+import 'helpers.dart';
 import 'modifier.dart';
 import 'prop.dart';
 import 'spec.dart';
@@ -20,9 +21,15 @@ abstract class MixDirective<T> {
   T apply(T value);
 }
 
-/// Mixin for classes that can resolve to a value using MixContext
 mixin ResolvableMixin<T> {
-  /// Resolves this instance to a value using the provided context
+  /// Resolves the current instance to a [T] using the provided [MixContext].
+  ///
+  /// If a property is null in the [MixContext], it falls back to the
+  /// default value defined in the `defaultValue` for that property.
+  ///
+  /// ```dart
+  /// final resolved = instance.resolve(mix);
+  /// ```
   T resolve(BuildContext context);
 }
 
@@ -40,15 +47,7 @@ mixin MixHelperMixin {
 
   @protected
   List<V>? resolvePropList<V>(BuildContext context, List<Prop<V>>? list) {
-    if (list == null || list.isEmpty) return null;
-
-    final resolved = <V>[];
-    for (final item in list) {
-      final value = item.resolve(context);
-      if (value != null) resolved.add(value);
-    }
-
-    return resolved.isEmpty ? null : resolved;
+    return MixHelpers.resolvePropList(context, list);
   }
 
   @protected
@@ -56,15 +55,7 @@ mixin MixHelperMixin {
     BuildContext context,
     List<MixProp<R, D>>? list,
   ) {
-    if (list == null || list.isEmpty) return null;
-
-    final resolved = <R>[];
-    for (final mixProp in list) {
-      final value = mixProp.resolve(context);
-      if (value != null) resolved.add(value);
-    }
-
-    return resolved.isEmpty ? null : resolved;
+    return MixHelpers.resolveMixPropList(context, list);
   }
 
   // mergeMixProp merges two V extend Mix
@@ -94,26 +85,7 @@ mixin MixHelperMixin {
     List<Prop<V>>? b, {
     ListMergeStrategy strategy = ListMergeStrategy.replace,
   }) {
-    if (a == null) return b;
-    if (b == null) return a;
-
-    switch (strategy) {
-      case ListMergeStrategy.append:
-        return [...a, ...b];
-      case ListMergeStrategy.replace:
-        final result = List<Prop<V>>.of(a);
-        for (int i = 0; i < b.length; i++) {
-          if (i < result.length) {
-            result[i] = result[i].merge(b[i]);
-          } else {
-            result.add(b[i]);
-          }
-        }
-
-        return result;
-      case ListMergeStrategy.override:
-        return b;
-    }
+    return MixHelpers.mergePropList(a, b, strategy: strategy);
   }
 
   @protected
@@ -122,53 +94,88 @@ mixin MixHelperMixin {
     List<MixProp<R, D>>? b, {
     ListMergeStrategy strategy = ListMergeStrategy.replace,
   }) {
-    if (a == null) return b;
-    if (b == null) return a;
-
-    switch (strategy) {
-      case ListMergeStrategy.append:
-        return [...a, ...b];
-      case ListMergeStrategy.replace:
-        final result = List<MixProp<R, D>>.of(a);
-        for (int i = 0; i < b.length; i++) {
-          if (i < result.length) {
-            result[i] = result[i].merge(b[i]);
-          } else {
-            result.add(b[i]);
-          }
-        }
-
-        return result;
-      case ListMergeStrategy.override:
-        return b;
-    }
+    return MixHelpers.mergeMixPropList(a, b, strategy: strategy);
   }
 }
 
-abstract class StyleElement {
-  const StyleElement();
-
-  /// Unique key used for merging elements of the same type
-  Object get mergeKey => runtimeType;
-
-  StyleElement merge(covariant StyleElement? other);
-}
-
-abstract class SpecStyle<V, T extends SpecAttribute<V>> extends StyleElement {
-  final T attribute;
-  final List<VariantAttribute<T>> variants;
+abstract class StyleElement<V> with EqualityMixin, MixHelperMixin {
+  // Instance fields
+  final List<VariantAttribute<V>> variants;
   final AnimationConfig? animation;
   final List<WidgetModifierSpecAttribute>? modifiers;
 
-  const SpecStyle({
-    required this.attribute,
+  const StyleElement({
     this.variants = const [],
     this.animation,
     this.modifiers,
   });
 
-  /// Get matching context variants sorted by priority
-  List<SpecStyle<V, T>> _getMatchingContextVariants(BuildContext context) {
+  // Abstract getters and methods
+  SpecAttribute<V> get attribute;
+
+  /// Unique key used for merging elements of the same type
+  Object get mergeKey => runtimeType;
+
+  @protected
+  List<VariantAttribute<V>> mergeVariantLists(
+    List<VariantAttribute<V>>? current,
+    List<VariantAttribute<V>>? other,
+  ) {
+    if (current == null && other == null) return [];
+    if (current == null) return List<VariantAttribute<V>>.of(other!);
+    if (other == null) return List<VariantAttribute<V>>.of(current);
+
+    final Map<Object, VariantAttribute<V>> merged = {};
+
+    // Add current variants
+    for (final variant in current) {
+      merged[variant.mergeKey] = variant;
+    }
+
+    // Merge or add other variants
+    for (final variant in other) {
+      final key = variant.mergeKey;
+      final existing = merged[key];
+      merged[key] = existing != null ? existing.merge(variant) : variant;
+    }
+
+    return merged.values.toList();
+  }
+
+  @protected
+  List<WidgetModifierSpecAttribute>? mergeModifierLists(
+    List<WidgetModifierSpecAttribute>? current,
+    List<WidgetModifierSpecAttribute>? other,
+  ) {
+    if (current == null && other == null) return null;
+    if (current == null) return List.of(other!);
+    if (other == null) return List.of(current);
+
+    final Map<Object, WidgetModifierSpecAttribute> merged = {};
+
+    // Add current modifiers
+    for (final modifier in current) {
+      merged[modifier.mergeKey] = modifier;
+    }
+
+    // Merge or add other modifiers
+    for (final modifier in other) {
+      final key = modifier.mergeKey;
+      final existing = merged[key];
+      merged[key] = existing != null
+          ? existing.merge(modifier) as WidgetModifierSpecAttribute
+          : modifier;
+    }
+
+    return merged.values.toList();
+  }
+
+  /// Each subclass implements its own merge logic
+  StyleElement<V> merge(covariant StyleElement<V>? other);
+
+  /// REUSABLE HELPER: Get context variants that match current context
+  @protected
+  List<StyleElement<V>> getMatchingContextVariants(BuildContext context) {
     final contextVariants = variants
         .where(
           (variantAttr) => switch (variantAttr.variant) {
@@ -179,6 +186,7 @@ abstract class SpecStyle<V, T extends SpecAttribute<V>> extends StyleElement {
         )
         .toList();
 
+    // Sort by priority: WidgetStateVariant gets applied last
     contextVariants.sort(
       (a, b) => Comparable.compare(
         a.variant is WidgetStateVariant ? 1 : 0,
@@ -186,53 +194,12 @@ abstract class SpecStyle<V, T extends SpecAttribute<V>> extends StyleElement {
       ),
     );
 
-    return contextVariants
-        .map((variantAttr) => variantAttr.value as SpecStyle<V, T>)
-        .toList();
+    return contextVariants.map((variantAttr) => variantAttr.value).toList();
   }
 
-  /// Protected helper to merge SpecStyle data - for use by concrete implementations
-  @protected
-  ({
-    T attribute,
-    List<VariantAttribute<T>> variants,
-    AnimationConfig? animation,
-    List<WidgetModifierSpecAttribute>? modifiers,
-  })
-  mergeData(SpecStyle<V, T>? other) {
-    if (other == null) {
-      return (
-        attribute: attribute,
-        variants: variants,
-        animation: animation,
-        modifiers: modifiers,
-      );
-    }
-
-    return (
-      attribute: attribute.merge(other.attribute) as T,
-      variants: mergeStyleElementsByKey(variants, other.variants),
-      animation: other.animation ?? animation,
-      modifiers: other.modifiers == null
-          ? modifiers
-          : modifiers == null
-          ? other.modifiers
-          : mergeStyleElementsByKey(modifiers, other.modifiers),
-    );
-  }
-
-  @protected
-  /// Abstract factory method for creating new instances
-  SpecStyle<V, T> createStyle({
-    required T attribute,
-    AnimationConfig? animation,
-    List<WidgetModifierSpecAttribute>? modifiers,
-    Map<Variant, SpecStyle<V, T>> variants,
-  });
-
-  /// Resolve style by applying context variants and resolving to final specs
+  /// REUSABLE LOGIC: Resolve with context variants
   ResolvedStyleElement<V> resolve(BuildContext context) {
-    final resolvedStyle = _getMatchingContextVariants(
+    final resolvedStyle = getMatchingContextVariants(
       context,
     ).fold(this, (current, variant) => current.merge(variant));
 
@@ -246,8 +213,8 @@ abstract class SpecStyle<V, T extends SpecAttribute<V>> extends StyleElement {
     );
   }
 
-  /// Apply named variants by merging matching variant styles
-  SpecStyle<V, T> withNamedVariants(Set<NamedVariant> appliedVariants) {
+  /// REUSABLE LOGIC: Apply named variants
+  StyleElement<V> withNamedVariants(Set<NamedVariant> appliedVariants) {
     if (appliedVariants.isEmpty) return this;
 
     return appliedVariants.fold(this, (current, variant) {
@@ -255,17 +222,9 @@ abstract class SpecStyle<V, T extends SpecAttribute<V>> extends StyleElement {
           .where((v) => v.variant == variant)
           .firstOrNull;
 
-      return variantAttr != null
-          ? current.merge(variantAttr.value as SpecStyle<V, T>)
-          : current;
+      return variantAttr != null ? current.merge(variantAttr.value) : current;
     });
   }
-
-  @override
-  SpecStyle<V, T> merge(covariant SpecStyle<V, T>? other);
-
-  @override
-  Object get mergeKey => runtimeType;
 }
 
 /// Result of Style.resolve() containing fully resolved styling data
@@ -284,14 +243,14 @@ class ResolvedStyleElement<V> {
 
 /// Simple value Mix - holds a direct value
 @immutable
-abstract class Mix<T> with EqualityMixin, MixHelperMixin, ResolvableMixin<T> {
+abstract class Mix<T> with EqualityMixin, MixHelperMixin {
   const Mix();
 
   /// Merges this mix with another mix, returning a new mix.
   Mix<T> merge(covariant Mix<T>? other);
 
   /// Resolves to the concrete value using the provided context
-  @override
+
   T resolve(BuildContext context);
 }
 
@@ -312,32 +271,4 @@ enum ListMergeStrategy {
 mixin HasDefaultValue<Value> {
   @protected
   Value get defaultValue;
-}
-
-List<T> mergeStyleElementsByKey<T extends StyleElement>(
-  List<T>? current,
-  List<T>? other,
-) {
-  if (current == null && other == null) return [];
-  if (current == null) return List<T>.of(other!);
-  if (other == null) return List<T>.of(current);
-
-  final Map<Object, T> merged = {};
-
-  // Add current elements
-  for (final element in current) {
-    merged[element.mergeKey] = element;
-  }
-
-  // Merge or add other elements
-  for (final element in other) {
-    final existing = merged[element.mergeKey];
-    if (existing != null) {
-      merged[element.mergeKey] = existing.merge(element) as T;
-    } else {
-      merged[element.mergeKey] = element;
-    }
-  }
-
-  return merged.values.toList();
 }

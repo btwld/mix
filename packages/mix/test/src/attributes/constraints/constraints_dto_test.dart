@@ -231,10 +231,9 @@ void main() {
         );
 
         final context = tester.element(find.byType(Container));
-        final mixContext = MixContext.create(context, const Style.empty());
 
         expect(
-          dto.resolve(mixContext),
+          dto.resolve(context),
           const BoxConstraints(
             minWidth: 50,
             maxWidth: 150,
@@ -268,10 +267,9 @@ void main() {
         );
 
         final context = tester.element(find.byType(Container));
-        final mixContext = MixContext.create(context, const Style.empty());
 
         expect(
-          dto.resolve(mixContext),
+          dto.resolve(context),
           const BoxConstraints(
             minWidth: 10,
             maxWidth: 100,

@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../core/computed_style/computed_style.dart';
-import '../../core/factory/mix_context.dart';
 import '../../core/spec.dart';
 import '../box/box_spec.dart';
 import '../flex/flex_spec.dart';
@@ -17,8 +16,8 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
     : box = box ?? const BoxSpec(),
       flex = flex ?? const FlexSpec();
 
-  static FlexBoxSpec from(MixContext mix) {
-    return mix.attributeOf<FlexBoxSpecAttribute>()?.resolve(mix) ??
+  static FlexBoxSpec from(BuildContext context) {
+    return ComputedStyle.specOf<FlexBoxSpec>(context) ??
         const FlexBoxSpec();
   }
 

@@ -24,7 +24,7 @@ abstract class Spec<T extends Spec<T>> with EqualityMixin {
 ///
 /// SpecAttributes are pure data classes - they contain only attribute-specific fields
 /// without cross-cutting concerns like animation or modifiers.
-abstract class SpecAttribute<Value> extends Mix<Value> implements StyleElement {
+abstract class SpecAttribute<Value> extends Mix<Value> {
   const SpecAttribute();
 
   /// Resolves this attribute to its concrete value using the provided [BuildContext].
@@ -36,11 +36,10 @@ abstract class SpecAttribute<Value> extends Mix<Value> implements StyleElement {
   SpecAttribute<Value> merge(covariant SpecAttribute<Value>? other);
 
   /// Default implementation uses runtimeType as the merge key
-  @override
   Object get mergeKey => runtimeType;
 }
 
-abstract class SpecUtility<T extends SpecAttribute, V> extends StyleElement {
+abstract class SpecUtility<T extends SpecAttribute, V> {
   @protected
   @visibleForTesting
   final T Function(V) attributeBuilder;
@@ -63,7 +62,6 @@ abstract class SpecUtility<T extends SpecAttribute, V> extends StyleElement {
 
   T only();
 
-  @override
   SpecUtility<T, V> merge(covariant SpecUtility<T, V> other) {
     if (other._attributeValue != null) {
       _attributeValue =
@@ -74,9 +72,7 @@ abstract class SpecUtility<T extends SpecAttribute, V> extends StyleElement {
     return this;
   }
 
-  @override
   Object get mergeKey => runtimeType;
 
-  @override
   List<Object?> get props => [attributeValue];
 }

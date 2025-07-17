@@ -3,8 +3,6 @@ import 'package:flutter/widgets.dart';
 import '../../../modifiers/internal/render_widget_modifier.dart';
 import '../../computed_style/computed_style.dart';
 import '../../computed_style/computed_style_provider.dart';
-import '../../factory/mix_context.dart';
-import '../../factory/mix_provider.dart';
 import '../../factory/style_mix.dart';
 
 /// Builds widgets with Mix styling and intelligent caching.
@@ -16,7 +14,7 @@ import '../../factory/style_mix.dart';
 ///
 /// - Caches [ComputedStyle] when [style] hasn't changed
 /// - Uses [InheritedModel] for selective rebuilds based on spec changes
-/// - Creates fresh [MixContext] to ensure context values stay current
+/// - Creates fresh computed styles to ensure context values stay current
 ///
 /// ## Example
 ///
@@ -39,7 +37,6 @@ import '../../factory/style_mix.dart';
 /// See also:
 ///
 /// * [ComputedStyle], for resolved style specifications
-/// * [MixProvider], for style inheritance
 class MixBuilder extends StatefulWidget {
   const MixBuilder({
     super.key,
@@ -91,41 +88,27 @@ class _MixBuilderState extends State<MixBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    var mix = MixContext.create(context, _cachedStyle);
+    final computedStyle = ComputedStyle.compute(context, _cachedStyle.values);
 
-    // Apply inheritance
-    if (widget.inherit) {
-      final inherited = MixProvider.maybeOfInherited(context);
-      if (inherited != null) {
-        mix = inherited.merge(mix);
-      }
-    }
+    return ComputedStyleProvider(
+      style: computedStyle,
+      child: Builder(
+        builder: (context) {
+          Widget child = Builder(builder: widget.builder);
 
-    final computedStyle = ComputedStyle.compute(mix);
+          // Apply modifiers
+          final modifiers = computedStyle.modifiers;
+          if (modifiers.isNotEmpty) {
+            child = RenderModifiers(
+              modifiers: modifiers,
+              context: context,
+              orderOfModifiers: widget.orderOfModifiers,
+              child: child,
+            );
+          }
 
-    // Build core widget tree
-    return MixProvider(
-      data: mix,
-      child: ComputedStyleProvider(
-        style: computedStyle,
-        child: Builder(
-          builder: (context) {
-            Widget child = Builder(builder: widget.builder);
-
-            // Apply modifiers
-            final modifiers = computedStyle.modifiers;
-            if (modifiers.isNotEmpty) {
-              child = RenderModifiers(
-                modifiers: modifiers,
-                mix: mix,
-                orderOfModifiers: widget.orderOfModifiers,
-                child: child,
-              );
-            }
-
-            return child;
-          },
-        ),
+          return child;
+        },
       ),
     );
   }

@@ -108,7 +108,7 @@ class _StringMixable extends Mix<String> {
   const _StringMixable({required this.token});
 
   @override
-  String resolve(MixContext mix) {
+  String resolve(BuildContext mix) {
     return mix.scope.getToken(token, mix.context);
   }
 

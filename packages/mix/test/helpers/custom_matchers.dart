@@ -1,4 +1,5 @@
 // ignore_for_file: prefer_relative_imports
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
@@ -20,8 +21,8 @@ import 'testing_utils.dart';
 /// ```dart
 /// expect(colorMix, resolvesTo(Colors.red));
 /// expect(borderSide.width, resolvesTo(2.0));
-/// ```
-Matcher resolvesTo<T>(T expectedValue, {MixContext? context}) {
+/// ````
+Matcher resolvesTo<T>(T expectedValue, {BuildContext? context}) {
   return _ResolvesToMatcher<T>(expectedValue, context ?? EmptyMixData);
 }
 
@@ -31,7 +32,7 @@ Matcher resolvesTo<T>(T expectedValue, {MixContext? context}) {
 
 class _ResolvesToMatcher<T> extends Matcher {
   final T expectedValue;
-  final MixContext context;
+  final BuildContext context;
 
   const _ResolvesToMatcher(this.expectedValue, this.context);
 
@@ -85,4 +86,3 @@ class _ResolvesToMatcher<T> extends Matcher {
     return mismatchDescription.add('was ').addDescriptionOf(item);
   }
 }
-

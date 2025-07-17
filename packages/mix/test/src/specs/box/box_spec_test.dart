@@ -20,12 +20,12 @@ void main() {
         height: 200,
       );
 
-      final mix = MixContext.create(
-        MockBuildContext(),
-        Style(boxAttribute),
-      );
+      // final mix = MixContext.create(
+      //   MockBuildContext(),
+      //   Style(boxAttribute),
+      // );
 
-      final spec = mix.attributeOf<BoxSpecAttribute>()!.resolve(mix);
+      final spec = boxAttribute.resolve(MockBuildContext());
 
       expect(spec.alignment, Alignment.center);
       expect(spec.padding, const EdgeInsets.only(top: 8.0, bottom: 16.0));
@@ -55,10 +55,7 @@ void main() {
         height: 200,
       );
 
-      final copiedSpec = spec.copyWith(
-        width: 250.0,
-        height: 150.0,
-      );
+      final copiedSpec = spec.copyWith(width: 250.0, height: 150.0);
 
       expect(copiedSpec.alignment, Alignment.center);
       expect(copiedSpec.padding, const EdgeInsets.all(16.0));
