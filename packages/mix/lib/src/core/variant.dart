@@ -1,8 +1,17 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../core/widget_state/widget_state_controller.dart';
-import '../internal/compare_mixin.dart';
 import '../internal/deep_collection_equality.dart';
+
+/// Priority levels for variant application
+enum VariantPriority {
+  normal(0),
+  high(1);
+
+  const VariantPriority(this.value);
+  final int value;
+}
 
 /// Sealed base class for all variant types in the Mix framework.
 ///
@@ -10,7 +19,7 @@ import '../internal/deep_collection_equality.dart';
 /// - Manual application (NamedVariant)
 /// - Automatic context conditions (ContextVariant)
 @immutable
-sealed class Variant with EqualityMixin {
+sealed class Variant {
   const Variant();
 
   String get key;
@@ -29,7 +38,7 @@ sealed class Variant with EqualityMixin {
 ///
 /// Examples: primary, outlined, large
 @immutable
-final class NamedVariant extends Variant {
+class NamedVariant extends Variant {
   final String name;
 
   const NamedVariant(this.name);
@@ -43,209 +52,79 @@ final class NamedVariant extends Variant {
 
   @override
   int get hashCode => name.hashCode;
-
-  @override
-  List<Object?> get props => [name];
 }
 
 /// Base for variants that automatically apply based on context conditions.
 /// These variants check their conditions during widget build.
 @immutable
-abstract base class ContextVariant extends Variant {
-  const ContextVariant();
-
-  /// Check if this variant should be active for the given context
-  bool when(BuildContext context);
-}
-
-/// Interactive state variants (HIGH PRIORITY).
-/// These override environmental variants when both are active.
-///
-/// Examples: hover, press, focus, disabled
-@immutable
-final class WidgetStateVariant extends ContextVariant {
-  final WidgetState state;
-
-  const WidgetStateVariant(this.state);
-
+class ContextVariant extends Variant {
+  final bool Function(BuildContext) shouldApply;
+  final VariantPriority priority;
   @override
-  bool when(BuildContext context) {
-    return MixWidgetStateModel.hasStateOf(context, state);
-  }
+  final String key;
+  const ContextVariant(
+    this.key,
+    this.shouldApply, {
+    this.priority = VariantPriority.normal,
+  });
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is WidgetStateVariant && other.state == state;
-
-  @override
-  String get key => state.name;
-
-  @override
-  int get hashCode => state.hashCode;
-
-  @override
-  List<Object?> get props => [state];
-}
-
-/// Environmental variants (NORMAL PRIORITY).
-/// Environmental conditions that can be overridden by interactive states.
-///
-/// Uses MediaQuery for all context-based conditions with factory constructors
-/// that match the MediaQuery API 1:1 for consistency and discoverability.
-@immutable
-final class MediaQueryVariant extends ContextVariant {
-  final bool Function(BuildContext) _condition;
-  final String _name;
-
-  const MediaQueryVariant._(this._name, this._condition);
-
-  /// Size-based conditions using MediaQuery.sizeOf(context)
-  factory MediaQueryVariant.size(bool Function(Size) condition, String name) {
-    return MediaQueryVariant._(
-      name,
-      (context) => condition(MediaQuery.sizeOf(context)),
+  static ContextVariant widgetState(WidgetState state) {
+    return ContextVariant(
+      'widget_state_${state.name}',
+      (context) => MixWidgetStateModel.hasStateOf(context, state),
     );
   }
 
-  /// Orientation using MediaQuery.orientationOf(context)
-  factory MediaQueryVariant.orientation(Orientation orientation) {
-    return MediaQueryVariant._(
-      'orientation_${orientation.name}',
+  static ContextVariant orientation(Orientation orientation) {
+    return ContextVariant(
+      'media_query_orientation_${orientation.name}',
       (context) => MediaQuery.orientationOf(context) == orientation,
     );
   }
 
-  /// Platform brightness using MediaQuery.platformBrightnessOf(context)
-  factory MediaQueryVariant.platformBrightness(Brightness brightness) {
-    return MediaQueryVariant._(
-      'brightness_${brightness.name}',
+  static ContextVariant platformBrightness(Brightness brightness) {
+    return ContextVariant(
+      'media_query_platform_brightness_${brightness.name}',
       (context) => MediaQuery.platformBrightnessOf(context) == brightness,
     );
   }
 
-  /// Device pixel ratio using MediaQuery.devicePixelRatioOf(context)
-  factory MediaQueryVariant.devicePixelRatio(
-    bool Function(double) condition,
-    String name,
-  ) {
-    return MediaQueryVariant._(
-      name,
-      (context) => condition(MediaQuery.devicePixelRatioOf(context)),
+  static ContextVariant size(String name, bool Function(Size) condition) {
+    return ContextVariant(
+      'media_query_size_$name',
+      (context) => condition(MediaQuery.sizeOf(context)),
     );
   }
 
-  /// Text scaler using MediaQuery.textScalerOf(context)
-  factory MediaQueryVariant.textScaler(
-    bool Function(TextScaler) condition,
-    String name,
-  ) {
-    return MediaQueryVariant._(
-      name,
-      (context) => condition(MediaQuery.textScalerOf(context)),
+  // Directionality
+  static ContextVariant direction(TextDirection direction) {
+    return ContextVariant(
+      'directionality_${direction.name}',
+      (context) => Directionality.of(context) == direction,
     );
   }
 
-  /// Padding using MediaQuery.paddingOf(context)
-  factory MediaQueryVariant.padding(
-    bool Function(EdgeInsets) condition,
-    String name,
-  ) {
-    return MediaQueryVariant._(
-      name,
-      (context) => condition(MediaQuery.paddingOf(context)),
+  // Platform
+  static ContextVariant platform(TargetPlatform platform) {
+    return ContextVariant(
+      'platform_${platform.name}',
+      (context) => Theme.of(context).platform == platform,
     );
   }
 
-  /// View insets using MediaQuery.viewInsetsOf(context)
-  factory MediaQueryVariant.viewInsets(
-    bool Function(EdgeInsets) condition,
-    String name,
-  ) {
-    return MediaQueryVariant._(
-      name,
-      (context) => condition(MediaQuery.viewInsetsOf(context)),
-    );
+  // Web
+  static ContextVariant web() {
+    return ContextVariant('web', (context) => kIsWeb);
   }
 
-  /// Accessibility - always use 24 hour format
-  factory MediaQueryVariant.alwaysUse24HourFormat(bool value) {
-    return MediaQueryVariant._(
-      'always_use_24_hour_format_$value',
-      (context) => MediaQuery.alwaysUse24HourFormatOf(context) == value,
-    );
+  /// Check if this variant should be active for the given context
+  bool when(BuildContext context) {
+    return shouldApply(context);
   }
-
-  /// Accessibility - accessible navigation
-  factory MediaQueryVariant.accessibleNavigation(bool value) {
-    return MediaQueryVariant._(
-      'accessible_navigation_$value',
-      (context) => MediaQuery.accessibleNavigationOf(context) == value,
-    );
-  }
-
-  /// Accessibility - invert colors
-  factory MediaQueryVariant.invertColors(bool value) {
-    return MediaQueryVariant._(
-      'invert_colors_$value',
-      (context) => MediaQuery.invertColorsOf(context) == value,
-    );
-  }
-
-  /// Accessibility - high contrast
-  factory MediaQueryVariant.highContrast(bool value) {
-    return MediaQueryVariant._(
-      'high_contrast_$value',
-      (context) => MediaQuery.highContrastOf(context) == value,
-    );
-  }
-
-  /// Accessibility - disable animations
-  factory MediaQueryVariant.disableAnimations(bool value) {
-    return MediaQueryVariant._(
-      'disable_animations_$value',
-      (context) => MediaQuery.disableAnimationsOf(context) == value,
-    );
-  }
-
-  /// Accessibility - bold text
-  factory MediaQueryVariant.boldText(bool value) {
-    return MediaQueryVariant._(
-      'bold_text_$value',
-      (context) => MediaQuery.boldTextOf(context) == value,
-    );
-  }
-
-  /// Custom condition for any MediaQuery-based logic
-  factory MediaQueryVariant.custom(
-    bool Function(BuildContext) condition,
-    String name,
-  ) {
-    return MediaQueryVariant._(name, condition);
-  }
-
-  String get name => _name;
-
-  @override
-  bool when(BuildContext context) => _condition(context);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is MediaQueryVariant && other._name == _name;
-
-  @override
-  String get key => _name;
-
-  @override
-  int get hashCode => _name.hashCode;
-
-  @override
-  List<Object?> get props => [_name];
 }
 
-/// Operator for combining variants with AND/OR logic
-enum MultiVariantOperator { and, or }
+/// Operator for combining variants with AND/OR/NOT logic
+enum MultiVariantOperator { and, or, not }
 
 /// Variant that combines multiple variants with AND/OR logic.
 /// Supports complex conditional styling based on multiple conditions.
@@ -254,7 +133,8 @@ final class MultiVariant extends ContextVariant {
   final List<Variant> variants;
   final MultiVariantOperator operatorType;
 
-  const MultiVariant._(this.variants, {required this.operatorType});
+  MultiVariant._(this.variants, {required this.operatorType})
+    : super('', (context) => false);
 
   factory MultiVariant(
     Iterable<Variant> variants, {
@@ -288,6 +168,12 @@ final class MultiVariant extends ContextVariant {
     return MultiVariant(variants, type: MultiVariantOperator.or);
   }
 
+  factory MultiVariant.not(Variant variant) {
+    return MultiVariant._([variant], operatorType: MultiVariantOperator.not);
+  }
+
+  List<Object?> get props => [variants, operatorType];
+
   @override
   bool when(BuildContext context) {
     final conditions = variants.map((variant) {
@@ -299,9 +185,14 @@ final class MultiVariant extends ContextVariant {
       return false;
     }).toList();
 
-    return operatorType == MultiVariantOperator.or
-        ? conditions.contains(true)
-        : conditions.every((e) => e);
+    switch (operatorType) {
+      case MultiVariantOperator.or:
+        return conditions.contains(true);
+      case MultiVariantOperator.and:
+        return conditions.every((e) => e);
+      case MultiVariantOperator.not:
+        return !conditions.first;
+    }
   }
 
   @override
@@ -312,51 +203,80 @@ final class MultiVariant extends ContextVariant {
           const DeepCollectionEquality().equals(other.variants, variants);
 
   @override
+  VariantPriority get priority {
+    // If any variant has high priority, the multi-variant gets high priority
+    for (final variant in variants) {
+      if (variant is ContextVariant &&
+          variant.priority == VariantPriority.high) {
+        return VariantPriority.high;
+      }
+    }
+
+    return VariantPriority.normal;
+  }
+
+  @override
   String get key => 'MultiVariant(${variants.map((v) => v.key).join(', ')})';
 
   @override
   int get hashCode =>
       Object.hash(operatorType, const DeepCollectionEquality().hash(variants));
-
-  @override
-  List<Object?> get props => [variants, operatorType];
 }
 
 // Predefined widget state variants
-const hover = WidgetStateVariant(WidgetState.hovered);
-const press = WidgetStateVariant(WidgetState.pressed);
-const focus = WidgetStateVariant(WidgetState.focused);
-const disabled = WidgetStateVariant(WidgetState.disabled);
-const selected = WidgetStateVariant(WidgetState.selected);
-const dragged = WidgetStateVariant(WidgetState.dragged);
-const error = WidgetStateVariant(WidgetState.error);
+final hover = ContextVariant.widgetState(WidgetState.hovered);
+final press = ContextVariant.widgetState(WidgetState.pressed);
+final focus = ContextVariant.widgetState(WidgetState.focused);
+final disabled = ContextVariant.widgetState(WidgetState.disabled);
+final selected = ContextVariant.widgetState(WidgetState.selected);
+final dragged = ContextVariant.widgetState(WidgetState.dragged);
+final error = ContextVariant.widgetState(WidgetState.error);
 
 // Predefined MediaQuery variants
 // Brightness variants
-final dark = MediaQueryVariant.platformBrightness(Brightness.dark);
-final light = MediaQueryVariant.platformBrightness(Brightness.light);
+final dark = ContextVariant.platformBrightness(Brightness.dark);
+final light = ContextVariant.platformBrightness(Brightness.light);
 
 // Orientation variants
-final portrait = MediaQueryVariant.orientation(Orientation.portrait);
-final landscape = MediaQueryVariant.orientation(Orientation.landscape);
+final portrait = ContextVariant.orientation(Orientation.portrait);
+final landscape = ContextVariant.orientation(Orientation.landscape);
 
 // Size-based responsive variants
-final mobile = MediaQueryVariant.size((size) => size.width <= 767, 'mobile');
-final tablet = MediaQueryVariant.size(
-  (size) => size.width > 767 && size.width <= 1279,
+final mobile = ContextVariant.size('mobile', (size) => size.width <= 767);
+final tablet = ContextVariant.size(
   'tablet',
+  (size) => size.width > 767 && size.width <= 1279,
 );
-final desktop = MediaQueryVariant.size((size) => size.width > 1279, 'desktop');
+final desktop = ContextVariant.size('desktop', (size) => size.width > 1279);
 
-// Common accessibility variants
-final highContrast = MediaQueryVariant.highContrast(true);
-final boldText = MediaQueryVariant.boldText(true);
-final disableAnimations = MediaQueryVariant.disableAnimations(true);
+// Directionality variants
+final ltr = ContextVariant.direction(TextDirection.ltr);
+final rtl = ContextVariant.direction(TextDirection.rtl);
+
+// Platform variants
+final ios = ContextVariant.platform(TargetPlatform.iOS);
+final android = ContextVariant.platform(TargetPlatform.android);
+final macos = ContextVariant.platform(TargetPlatform.macOS);
+final windows = ContextVariant.platform(TargetPlatform.windows);
+final linux = ContextVariant.platform(TargetPlatform.linux);
+final fuchsia = ContextVariant.platform(TargetPlatform.fuchsia);
+final web = ContextVariant.web();
+
+// Breakpoint variants (using common responsive breakpoints)
+final xsmall = ContextVariant.size('xsmall', (size) => size.width <= 480);
+final small = ContextVariant.size('small', (size) => size.width <= 768);
+final medium = ContextVariant.size('medium', (size) => size.width <= 1024);
+final large = ContextVariant.size('large', (size) => size.width <= 1280);
+final xlarge = ContextVariant.size('xlarge', (size) => size.width > 1280);
+
+// Utility variants using NOT logic
+final enabled = not(disabled);
+final unselected = not(selected);
 
 // Common named variants
 const primary = NamedVariant('primary');
 const secondary = NamedVariant('secondary');
 const outlined = NamedVariant('outlined');
-const large = NamedVariant('large');
-const medium = NamedVariant('medium');
-const small = NamedVariant('small');
+
+// NOT operator for creating inverse variants
+MultiVariant not(Variant variant) => MultiVariant.not(variant);

@@ -8,27 +8,21 @@ import '../../../helpers/testing_utils.dart';
 void main() {
   group('BoxSpec', () {
     test('resolve', () {
+      final boxAttribute = BoxSpecAttribute(
+        alignment: Alignment.center,
+        padding: EdgeInsetsGeometryDto.only(top: 8, bottom: 16),
+        margin: EdgeInsetsGeometryDto.only(top: 10.0, bottom: 12.0),
+        constraints: BoxConstraintsDto(maxWidth: 300.0, minHeight: 200.0),
+        decoration: BoxDecorationDto(color: Colors.blue),
+        transform: Matrix4.translationValues(10.0, 10.0, 0.0),
+        clipBehavior: Clip.antiAlias,
+        width: 300,
+        height: 200,
+      );
+
       final mix = MixContext.create(
         MockBuildContext(),
-        Style(
-          BoxSpecAttribute(
-            alignment: Alignment.center,
-            padding: EdgeInsetsGeometryDto.only(top: 8, bottom: 16),
-            margin: EdgeInsetsGeometryDto.only(top: 10.0, bottom: 12.0),
-            constraints: BoxConstraintsDto(maxWidth: 300.0, minHeight: 200.0),
-            decoration: BoxDecorationDto(color: Colors.blue),
-            transform: Matrix4.translationValues(10.0, 10.0, 0.0),
-            clipBehavior: Clip.antiAlias,
-            modifiers: WidgetModifiersConfigDto(
-              modifiers: const [
-                OpacityModifierSpecAttribute(opacity: 1),
-                SizedBoxModifierSpecAttribute(height: 10, width: 10),
-              ],
-            ),
-            width: 300,
-            height: 200,
-          ),
-        ),
+        Style(boxAttribute),
       );
 
       final spec = mix.attributeOf<BoxSpecAttribute>()!.resolve(mix);
@@ -43,10 +37,6 @@ void main() {
       expect(spec.decoration, const BoxDecoration(color: Colors.blue));
 
       expect(spec.transform, Matrix4.translationValues(10.0, 10.0, 0.0));
-      expect(spec.modifiers!.value, [
-        const OpacityModifierSpec(1),
-        const SizedBoxModifierSpec(height: 10, width: 10),
-      ]);
       expect(spec.clipBehavior, Clip.antiAlias);
     });
 
@@ -63,16 +53,11 @@ void main() {
         transformAlignment: Alignment.center,
         width: 300,
         height: 200,
-        modifiers: const WidgetModifiersConfig([
-          OpacityModifierSpec(0.5),
-          SizedBoxModifierSpec(height: 10, width: 10),
-        ]),
       );
 
       final copiedSpec = spec.copyWith(
         width: 250.0,
         height: 150.0,
-        modifiers: const WidgetModifiersConfig([OpacityModifierSpec(1)]),
       );
 
       expect(copiedSpec.alignment, Alignment.center);
@@ -92,7 +77,6 @@ void main() {
       expect(copiedSpec.clipBehavior, Clip.antiAlias);
       expect(copiedSpec.width, 250.0);
 
-      expect(copiedSpec.modifiers!.value, [const OpacityModifierSpec(1)]);
       expect(copiedSpec.height, 150.0);
     });
 
@@ -109,10 +93,6 @@ void main() {
         clipBehavior: Clip.none,
         width: 300,
         height: 200,
-        modifiers: const WidgetModifiersConfig([
-          OpacityModifierSpec(0.5),
-          SizedBoxModifierSpec(height: 10, width: 10),
-        ]),
       );
 
       final spec2 = BoxSpec(
@@ -127,10 +107,6 @@ void main() {
         transformAlignment: Alignment.center,
         width: 400,
         height: 300,
-        modifiers: const WidgetModifiersConfig([
-          OpacityModifierSpec(1),
-          SizedBoxModifierSpec(height: 100, width: 100),
-        ]),
       );
 
       const t = 0.5;
@@ -193,52 +169,6 @@ void main() {
       expect(lerpedSpec.clipBehavior, t < 0.5 ? Clip.none : Clip.antiAlias);
     });
 
-    test('lerp modifiers', () {
-      const spec1 = BoxSpec(
-        modifiers: WidgetModifiersConfig([
-          OpacityModifierSpec(0.5),
-          SizedBoxModifierSpec(height: 10, width: 10),
-        ]),
-      );
-
-      const spec2 = BoxSpec(
-        modifiers: WidgetModifiersConfig([
-          OpacityModifierSpec(1),
-          SizedBoxModifierSpec(height: 100, width: 100),
-        ]),
-      );
-
-      final lerpedSpecStart = spec1.lerp(spec2, 0.0);
-
-      expect(
-        lerpedSpecStart.modifiers,
-        const WidgetModifiersConfig([
-          OpacityModifierSpec(1),
-          SizedBoxModifierSpec(height: 100, width: 100),
-        ]),
-      );
-
-      final lerpedSpecMid = spec1.lerp(spec2, 0.5);
-
-      expect(
-        lerpedSpecMid.modifiers,
-        const WidgetModifiersConfig([
-          OpacityModifierSpec(1),
-          SizedBoxModifierSpec(height: 100, width: 100),
-        ]),
-      );
-
-      final lerpedSpecEnd = spec1.lerp(spec2, 0.5);
-
-      expect(
-        lerpedSpecEnd.modifiers,
-        const WidgetModifiersConfig([
-          OpacityModifierSpec(1),
-          SizedBoxModifierSpec(height: 100, width: 100),
-        ]),
-      );
-    });
-
     // equality
     test('equality', () {
       final spec1 = BoxSpec(
@@ -253,10 +183,6 @@ void main() {
         clipBehavior: Clip.none,
         width: 300,
         height: 200,
-        modifiers: const WidgetModifiersConfig([
-          OpacityModifierSpec(0.5),
-          SizedBoxModifierSpec(height: 10, width: 10),
-        ]),
       );
 
       final spec2 = BoxSpec(
@@ -271,10 +197,6 @@ void main() {
         clipBehavior: Clip.none,
         width: 300,
         height: 200,
-        modifiers: const WidgetModifiersConfig([
-          OpacityModifierSpec(0.5),
-          SizedBoxModifierSpec(height: 10, width: 10),
-        ]),
       );
 
       expect(spec1, spec2);
@@ -303,12 +225,6 @@ void main() {
         clipBehavior: Clip.antiAlias,
         width: 100,
         height: 100,
-        modifiers: WidgetModifiersConfigDto(
-          modifiers: const [
-            OpacityModifierSpecAttribute(opacity: 0.5),
-            SizedBoxModifierSpecAttribute(height: 10, width: 10),
-          ],
-        ),
       );
 
       final mergedBoxSpecAttribute = containerSpecAttribute.merge(
@@ -333,9 +249,6 @@ void main() {
           clipBehavior: Clip.antiAliasWithSaveLayer,
           width: 200,
           height: 200,
-          modifiers: WidgetModifiersConfigDto(
-            modifiers: const [SizedBoxModifierSpecAttribute(width: 100)],
-          ),
         ),
       );
 
@@ -371,10 +284,6 @@ void main() {
       );
       expect(mergedBoxSpecAttribute.transform, resolvesTo(Matrix4.identity()));
       expect(mergedBoxSpecAttribute.width, resolvesTo(200));
-      expect(mergedBoxSpecAttribute.modifiers!.modifiers, [
-        const OpacityModifierSpecAttribute(opacity: 0.5),
-        const SizedBoxModifierSpecAttribute(height: 10, width: 100),
-      ]);
     });
   });
 

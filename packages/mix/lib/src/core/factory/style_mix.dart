@@ -382,7 +382,7 @@ final class Style with EqualityMixin {
   List<Object?> get props => [styles, variants];
 }
 
-class AnimatedStyle extends Style {
+final class AnimatedStyle extends Style {
   final AnimationConfig animated;
 
   const AnimatedStyle._({

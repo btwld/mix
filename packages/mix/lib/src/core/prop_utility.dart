@@ -15,7 +15,7 @@ import 'spec.dart';
 ///
 /// Used for simple types like Color, double, FontWeight, etc.
 @immutable
-abstract class PropUtility<Return extends SpecMix, Value> {
+abstract class PropUtility<Return extends SpecAttribute, Value> {
   @protected
   final Return Function(Prop<Value>) builder;
   const PropUtility(this.builder);
@@ -48,32 +48,32 @@ abstract class PropUtility<Return extends SpecMix, Value> {
 ///
 /// Used for complex types that need DTOs like EdgeInsets, TextStyle, etc.
 @immutable
-abstract class MixPropUtility<S extends SpecMix, V, M extends Mix<V>> {
+abstract class MixPropUtility<S extends SpecAttribute, M extends Mix<V>, V> {
   @protected
   final M Function(V) convertToMix;
-  @protected
-  final S Function(MixProp<V, M> prop) builder;
 
-  const MixPropUtility(this.builder, {required this.convertToMix});
+  const MixPropUtility({required this.convertToMix});
 
   /// Direct DTO value
-  S call(M dto) => builder(MixProp.fromValue(dto));
+  S call(M dto) => build(MixProp.fromValue(dto));
 
   /// Flutter value with auto-conversion to DTO
   S value(V value) => call(convertToMix(value));
 
   /// Token support with conversion
-  S token(MixToken<V> token) => builder(MixProp.fromToken(token, convertToMix));
+  S token(MixToken<V> token) => build(MixProp.fromToken(token, convertToMix));
 
   /// Single directive support
   S directive(MixDirective<M> directive) =>
-      builder(MixProp.fromDirectives([directive]));
+      build(MixProp.fromDirectives([directive]));
 
   /// Multiple directives support
   S directives(List<MixDirective<M>> directives) =>
-      builder(MixProp.fromDirectives(directives));
+      build(MixProp.fromDirectives(directives));
 
   /// Animation support
   S animate(AnimationConfig animation) =>
-      builder(MixProp.fromAnimation(animation));
+      build(MixProp.fromAnimation(animation));
+
+  S build(MixProp<V, M> prop);
 }

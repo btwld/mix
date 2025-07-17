@@ -6,7 +6,7 @@ import '../../core/spec.dart';
 import 'color_util.dart';
 
 @immutable
-final class MaterialColorUtility<T extends SpecMix>
+final class MaterialColorUtility<T extends SpecAttribute>
     extends FoundationColorUtility<T> {
   // Shade utilities
   late final shade50 = FoundationColorUtility(builder, materialColor.shade50);
@@ -27,7 +27,8 @@ final class MaterialColorUtility<T extends SpecMix>
   MaterialColor get materialColor => color as MaterialColor;
 }
 
-base mixin MaterialColorsMixin<T extends SpecMix> on PropUtility<T, Color> {
+base mixin MaterialColorsMixin<T extends SpecAttribute>
+    on PropUtility<T, Color> {
   T red() => builder(Prop.fromValue(Colors.red));
   T pink() => builder(Prop.fromValue(Colors.pink));
   T purple() => builder(Prop.fromValue(Colors.purple));
@@ -66,7 +67,7 @@ base mixin MaterialColorsMixin<T extends SpecMix> on PropUtility<T, Color> {
 }
 
 @immutable
-final class MaterialAccentColorUtility<T extends SpecMix>
+final class MaterialAccentColorUtility<T extends SpecAttribute>
     extends FoundationColorUtility<T> {
   // Shade utilities
   late final shade100 = FoundationColorUtility(

@@ -141,7 +141,7 @@ class VisibilityModifierSpecTween extends Tween<VisibilityModifierSpec?> {
   }
 }
 
-final class VisibilityModifierSpecUtility<T extends SpecMix>
+final class VisibilityModifierSpecUtility<T extends SpecAttribute>
     extends MixUtility<T, VisibilityModifierSpecAttribute> {
   const VisibilityModifierSpecUtility(super.builder);
   T on() => call(true);

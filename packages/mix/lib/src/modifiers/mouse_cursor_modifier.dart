@@ -134,7 +134,7 @@ class MouseCursorDecoratorSpecTween extends Tween<MouseCursorDecoratorSpec?> {
   }
 }
 
-class MouseCursorModifierSpecUtility<T extends SpecMix>
+class MouseCursorModifierSpecUtility<T extends SpecAttribute>
     extends MixUtility<T, MouseCursorDecoratorSpecAttribute> {
   const MouseCursorModifierSpecUtility(super.builder);
   T call(MouseCursor? mouseCursor) {

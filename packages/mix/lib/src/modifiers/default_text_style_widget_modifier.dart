@@ -291,7 +291,7 @@ class DefaultTextStyleModifierSpecTween
   }
 }
 
-final class DefaultTextStyleModifierSpecUtility<T extends SpecMix>
+final class DefaultTextStyleModifierSpecUtility<T extends SpecAttribute>
     extends MixUtility<T, DefaultTextStyleModifierSpecAttribute> {
   const DefaultTextStyleModifierSpecUtility(super.builder);
   T call({

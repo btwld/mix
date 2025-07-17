@@ -38,7 +38,7 @@ final class ResetModifierSpec extends WidgetModifierSpec<ResetModifierSpec>
   }
 }
 
-final class ResetModifierSpecUtility<T extends SpecMix>
+final class ResetModifierSpecUtility<T extends SpecAttribute>
     extends MixUtility<T, ResetModifierSpecAttribute> {
   const ResetModifierSpecUtility(super.builder);
   T call() {

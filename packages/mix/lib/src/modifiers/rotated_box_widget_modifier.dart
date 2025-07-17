@@ -135,7 +135,7 @@ class RotatedBoxModifierSpecTween extends Tween<RotatedBoxModifierSpec?> {
   }
 }
 
-final class RotatedBoxModifierSpecUtility<T extends SpecMix>
+final class RotatedBoxModifierSpecUtility<T extends SpecAttribute>
     extends MixUtility<T, RotatedBoxModifierSpecAttribute> {
   const RotatedBoxModifierSpecUtility(super.builder);
   T d90() => call(1);

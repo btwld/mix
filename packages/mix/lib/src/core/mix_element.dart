@@ -145,75 +145,114 @@ mixin MixHelperMixin {
   }
 }
 
-abstract class StyleElement<V, T extends SpecMix<V>>
-    with EqualityMixin, MixHelperMixin {
-  final T attribute; // Underlying attribute
-  final Map<Variant, StyleElement<V, T>> variants; // Variant behavior
-  final AnimationConfig? animation; // Animation behavior
-  final List<WidgetModifierSpecAttribute>? modifiers; // Modifier behavior
+abstract class StyleElement {
+  const StyleElement();
 
-  const StyleElement({
+  /// Unique key used for merging elements of the same type
+  Object get mergeKey;
+
+  StyleElement merge(covariant StyleElement? other);
+}
+
+abstract class SpecStyle<V, T extends SpecAttribute<V>> extends StyleElement {
+  final T attribute;
+  final Map<Variant, SpecStyle<V, T>> variants;
+  final AnimationConfig? animation;
+  final List<WidgetModifierSpecAttribute>? modifiers;
+
+  const SpecStyle({
     required this.attribute,
     this.variants = const {},
     this.animation,
     this.modifiers,
   });
 
-  /// Returns the merge key for this StyleElement, used by AttributeMap for merging
-  Object get mergeKey => T;
+  @override
+  Object get mergeKey => runtimeType;
 
-  /// Merges this object with [other], returning a new object of type [T].
-  StyleElement<V, T> merge(covariant StyleElement<V, T>? other);
-
-  ResolvedStyleElement<V> resolve(MixContext context) {
-    final resolvedSpec = attribute.resolve(context);
-    final resolvedAnimation = animation;
-    final resolvedModifiers = modifiers
-        ?.map((m) => m.resolve(context))
+  /// Get matching context variants sorted by priority
+  List<SpecStyle<V, T>> _getMatchingContextVariants(MixContext context) {
+    final contextVariants = variants.entries
+        .where(
+          (entry) =>
+              entry.key is ContextVariant &&
+              (entry.key as ContextVariant).when(context.context),
+        )
         .toList();
 
+    // Sort by priority: normal (0) first, then high (1)
+    contextVariants.sort((a, b) {
+      final aPriority = a.key is WidgetStateVariant ? 1 : 0;
+      final bPriority = b.key is WidgetStateVariant ? 1 : 0;
+
+      return aPriority.compareTo(bPriority);
+    });
+
+    return contextVariants.map((entry) => entry.value).toList();
+  }
+
+  /// Merge modifiers helper
+  List<WidgetModifierSpecAttribute>? _mergeModifiers(
+    List<WidgetModifierSpecAttribute>? current,
+    List<WidgetModifierSpecAttribute>? other,
+  ) {
+    if (other == null) return current;
+    if (current == null) return other;
+
+    return [...current, ...other];
+  }
+
+  @protected
+  /// Abstract factory method for creating new instances
+  SpecStyle<V, T> createStyle({
+    required T attribute,
+    AnimationConfig? animation,
+    List<WidgetModifierSpecAttribute>? modifiers,
+    Map<Variant, SpecStyle<V, T>> variants,
+  });
+
+  /// Generic resolve method that applies context variants recursively
+  ResolvedStyleElement<V> resolve(MixContext context) {
+    SpecStyle<V, T> currentStyle = this;
+
+    // Get matching context variants sorted by priority
+    final styleVariants = _getMatchingContextVariants(context);
+
+    // Apply each matching context variant
+    for (final style in styleVariants) {
+      currentStyle = currentStyle.merge(style);
+    }
+
     return ResolvedStyleElement(
-      spec: resolvedSpec,
-      animation: resolvedAnimation,
-      modifiers: resolvedModifiers as List<WidgetModifierSpec>?,
+      spec: currentStyle.attribute.resolve(context),
+      animation: currentStyle.animation,
+      modifiers:
+          currentStyle.modifiers?.map((e) => e.resolve(context)).toList()
+              as List<WidgetModifierSpec>?,
     );
+  }
+
+  /// Generic withNamedVariants method - reusable across all SpecStyle types
+  SpecStyle<V, T> withNamedVariants(Set<NamedVariant> appliedVariants) {
+    if (appliedVariants.isEmpty) return this;
+
+    // Start with current style
+    SpecStyle<V, T> result = this;
+
+    // Apply each matching named variant by merging the entire style
+    for (final variant in appliedVariants) {
+      final variantStyle = variants[variant];
+      if (variantStyle != null) {
+        // Merge the entire variant style, not individual properties
+        result = result.merge(variantStyle);
+      }
+    }
+
+    return result;
   }
 
   @override
-  get props => [attribute, variants, animation, modifiers];
-}
-
-abstract class SpecStyle<V, T extends SpecMix<V>>
-    with EqualityMixin, MixHelperMixin {
-  final T attribute; // Underlying attribute
-  final Map<Variant, SpecStyle<V, T>> variants; // Variant behavior
-  final AnimationConfig? animation; // Animation behavior
-  final List<WidgetModifierSpecAttribute>? modifiers; // Modifier behavior
-
-  const SpecStyle(
-    this.attribute, {
-    this.variants = const {},
-    this.animation,
-    this.modifiers,
-  });
-
-  /// Merges this object with [other], returning a new object of type [T].
-  StyleElement merge(covariant StyleElement? other);
-
-  ResolvedStyleElement<V> resolve(MixContext context) {
-    final resolvedSpec = attribute.resolve(context);
-    final resolvedAnimation = animation;
-    (context);
-    final resolvedModifiers = modifiers
-        ?.map((m) => m.resolve(context))
-        .toList();
-
-    return ResolvedStyleElement(
-      spec: resolvedSpec,
-      animation: resolvedAnimation,
-      modifiers: resolvedModifiers as List<WidgetModifierSpec>?,
-    );
-  }
+  SpecStyle<V, T> merge(covariant SpecStyle<V, T>? other);
 }
 
 /// Result of Style.resolve() containing fully resolved styling data

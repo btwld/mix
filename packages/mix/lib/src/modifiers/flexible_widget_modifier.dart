@@ -150,7 +150,7 @@ class FlexibleModifierSpecTween extends Tween<FlexibleModifierSpec?> {
   }
 }
 
-final class FlexibleModifierSpecUtility<T extends SpecMix>
+final class FlexibleModifierSpecUtility<T extends SpecAttribute>
     extends MixUtility<T, FlexibleModifierSpecAttribute> {
   const FlexibleModifierSpecUtility(super.builder);
   FlexFitUtility<T> get fit => FlexFitUtility((fit) => call(fit: fit));

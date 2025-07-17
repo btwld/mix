@@ -11,7 +11,7 @@ import 'computed_style_provider.dart';
 
 /// Resolved styling specifications optimized for widget consumption.
 ///
-/// Represents the computed result of a [Style] with all [SpecMix]s
+/// Represents the computed result of a [Style] with all [SpecAttribute]s
 /// resolved into concrete [Spec] objects. Provides O(1) spec lookup and
 /// selective dependency tracking for optimal rebuild performance.
 @immutable
@@ -37,7 +37,7 @@ class ComputedStyle with Diagnosticable {
 
   /// Creates a [ComputedStyle] by resolving all styling attributes.
   ///
-  /// Resolves [SpecMix]s from [mix] into concrete [Spec] objects
+  /// Resolves [SpecAttribute]s from [mix] into concrete [Spec] objects
   /// for efficient widget access. The computation is performed once when the
   /// style changes, with results cached for performance.
   ///
@@ -50,7 +50,7 @@ class ComputedStyle with Diagnosticable {
     final modifiers = <WidgetModifierSpec>[];
 
     // Separate modifiers from regular specs for different processing
-    for (final attribute in mix.whereType<SpecMix>()) {
+    for (final attribute in mix.whereType<SpecAttribute>()) {
       if (attribute is WidgetModifierSpecAttribute) {
         modifiers.add(attribute.resolve(mix) as WidgetModifierSpec);
       } else {

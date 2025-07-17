@@ -152,7 +152,7 @@ class SizedBoxModifierSpecTween extends Tween<SizedBoxModifierSpec?> {
   }
 }
 
-final class SizedBoxModifierSpecUtility<T extends SpecMix>
+final class SizedBoxModifierSpecUtility<T extends SpecAttribute>
     extends MixUtility<T, SizedBoxModifierSpecAttribute> {
   /// Utility for defining [SizedBoxModifierSpecAttribute.height]
   late final height = DoubleUtility((prop) => call(height: prop.value));

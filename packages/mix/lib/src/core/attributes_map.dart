@@ -51,7 +51,7 @@ class AttributeMap<T extends StyleElement> {
 
   bool containsValue(T attribute) => _map?.containsValue(attribute) ?? false;
 
-  Attr? attributeOfType<Attr extends SpecMix>() => _map?[Attr] as Attr?;
+  Attr? attributeOfType<Attr extends SpecAttribute>() => _map?[Attr] as Attr?;
 
   Iterable<Attr> whereType<Attr extends T>() => _map?.values.whereType() ?? [];
 

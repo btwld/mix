@@ -11,7 +11,7 @@ import 'shadow_dto.dart';
 ///
 /// This class provides methods to set individual properties of a [Shadow].
 /// Use the methods of this class to configure specific properties of a [Shadow].
-class ShadowUtility<T extends SpecMix>
+class ShadowUtility<T extends SpecAttribute>
     extends DtoUtility<T, ShadowDto, Shadow> {
   /// Utility for defining [ShadowDto.blurRadius]
   late final blurRadius = DoubleUtility((prop) => only(blurRadius: prop.value));
@@ -45,7 +45,7 @@ class ShadowUtility<T extends SpecMix>
 ///
 /// This class provides methods to set individual properties of a [BoxShadow].
 /// Use the methods of this class to configure specific properties of a [BoxShadow].
-class BoxShadowUtility<T extends SpecMix>
+class BoxShadowUtility<T extends SpecAttribute>
     extends DtoUtility<T, BoxShadowDto, BoxShadow> {
   /// Utility for defining [BoxShadowDto.color]
   late final color = ColorUtility(
@@ -104,7 +104,7 @@ class BoxShadowUtility<T extends SpecMix>
 ///
 /// This class extends [MixUtility] and provides a convenient way to create [StyleElement]
 /// instances by transforming a list of [BoxShadow] objects into a list of [ShadowDto] objects.
-final class ShadowListUtility<T extends SpecMix>
+final class ShadowListUtility<T extends SpecAttribute>
     extends MixUtility<T, List<ShadowDto>> {
   const ShadowListUtility(super.builder);
 
@@ -131,7 +131,7 @@ final class ShadowListUtility<T extends SpecMix>
 ///
 /// This class extends [MixUtility] and provides a convenient way to create [StyleElement]
 /// instances by transforming a list of [BoxShadow] objects into a list of [BoxShadowDto] objects.
-final class BoxShadowListUtility<T extends SpecMix>
+final class BoxShadowListUtility<T extends SpecAttribute>
     extends MixUtility<T, List<BoxShadowDto>> {
   late final add = BoxShadowUtility((v) => builder([v]));
 
@@ -162,7 +162,7 @@ final class BoxShadowListUtility<T extends SpecMix>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// based on predefined elevation values, which are mapped to corresponding lists of
 /// [BoxShadowDto] objects using the [kElevationToShadow] map.
-final class ElevationUtility<T extends SpecMix>
+final class ElevationUtility<T extends SpecAttribute>
     extends MixUtility<T, List<BoxShadowDto>> {
   /// Creates an [T] instance with an elevation of 1.
   late final e1 = one;

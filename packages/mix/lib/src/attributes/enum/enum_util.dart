@@ -12,7 +12,7 @@ import '../../core/utility.dart';
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [VerticalDirection] values.
 /// {@endtemplate}
-final class VerticalDirectionUtility<T extends SpecMix>
+final class VerticalDirectionUtility<T extends SpecAttribute>
     extends MixUtility<T, VerticalDirection> {
   const VerticalDirectionUtility(super.builder);
 
@@ -32,7 +32,7 @@ final class VerticalDirectionUtility<T extends SpecMix>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [BorderStyle] values.
 /// {@endtemplate}
-final class BorderStyleUtility<T extends SpecMix>
+final class BorderStyleUtility<T extends SpecAttribute>
     extends MixUtility<T, BorderStyle> {
   const BorderStyleUtility(super.builder);
 
@@ -52,7 +52,7 @@ final class BorderStyleUtility<T extends SpecMix>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [Clip] values.
 /// {@endtemplate}
-final class ClipUtility<T extends SpecMix> extends MixUtility<T, Clip> {
+final class ClipUtility<T extends SpecAttribute> extends MixUtility<T, Clip> {
   const ClipUtility(super.builder);
 
   /// Creates a [StyleElement] instance with the specified Clip value.
@@ -77,7 +77,7 @@ final class ClipUtility<T extends SpecMix> extends MixUtility<T, Clip> {
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [Axis] values.
 /// {@endtemplate}
-final class AxisUtility<T extends SpecMix> extends MixUtility<T, Axis> {
+final class AxisUtility<T extends SpecAttribute> extends MixUtility<T, Axis> {
   const AxisUtility(super.builder);
 
   /// Creates a [StyleElement] instance with the specified Axis value.
@@ -96,7 +96,8 @@ final class AxisUtility<T extends SpecMix> extends MixUtility<T, Axis> {
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [FlexFit] values.
 /// {@endtemplate}
-final class FlexFitUtility<T extends SpecMix> extends MixUtility<T, FlexFit> {
+final class FlexFitUtility<T extends SpecAttribute>
+    extends MixUtility<T, FlexFit> {
   const FlexFitUtility(super.builder);
 
   /// Creates a [StyleElement] instance with the specified FlexFit value.
@@ -115,7 +116,8 @@ final class FlexFitUtility<T extends SpecMix> extends MixUtility<T, FlexFit> {
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [StackFit] values.
 /// {@endtemplate}
-final class StackFitUtility<T extends SpecMix> extends MixUtility<T, StackFit> {
+final class StackFitUtility<T extends SpecAttribute>
+    extends MixUtility<T, StackFit> {
   const StackFitUtility(super.builder);
 
   /// Creates a [StyleElement] instance with the specified StackFit value.
@@ -137,7 +139,7 @@ final class StackFitUtility<T extends SpecMix> extends MixUtility<T, StackFit> {
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [ImageRepeat] values.
 /// {@endtemplate}
-final class ImageRepeatUtility<T extends SpecMix>
+final class ImageRepeatUtility<T extends SpecAttribute>
     extends MixUtility<T, ImageRepeat> {
   const ImageRepeatUtility(super.builder);
 
@@ -162,7 +164,7 @@ final class ImageRepeatUtility<T extends SpecMix>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextDirection] values.
 /// {@endtemplate}
-final class TextDirectionUtility<T extends SpecMix>
+final class TextDirectionUtility<T extends SpecAttribute>
     extends MixUtility<T, TextDirection> {
   const TextDirectionUtility(super.builder);
 
@@ -182,7 +184,7 @@ final class TextDirectionUtility<T extends SpecMix>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextLeadingDistribution] values.
 /// {@endtemplate}
-final class TextLeadingDistributionUtility<T extends SpecMix>
+final class TextLeadingDistributionUtility<T extends SpecAttribute>
     extends MixUtility<T, TextLeadingDistribution> {
   const TextLeadingDistributionUtility(super.builder);
 
@@ -202,7 +204,8 @@ final class TextLeadingDistributionUtility<T extends SpecMix>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TileMode] values.
 /// {@endtemplate}
-final class TileModeUtility<T extends SpecMix> extends MixUtility<T, TileMode> {
+final class TileModeUtility<T extends SpecAttribute>
+    extends MixUtility<T, TileMode> {
   const TileModeUtility(super.builder);
 
   /// Creates a [StyleElement] instance with the specified TileMode value.
@@ -227,7 +230,7 @@ final class TileModeUtility<T extends SpecMix> extends MixUtility<T, TileMode> {
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [MainAxisAlignment] values.
 /// {@endtemplate}
-final class MainAxisAlignmentUtility<T extends SpecMix>
+final class MainAxisAlignmentUtility<T extends SpecAttribute>
     extends MixUtility<T, MainAxisAlignment> {
   const MainAxisAlignmentUtility(super.builder);
 
@@ -259,7 +262,7 @@ final class MainAxisAlignmentUtility<T extends SpecMix>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [CrossAxisAlignment] values.
 /// {@endtemplate}
-final class CrossAxisAlignmentUtility<T extends SpecMix>
+final class CrossAxisAlignmentUtility<T extends SpecAttribute>
     extends MixUtility<T, CrossAxisAlignment> {
   const CrossAxisAlignmentUtility(super.builder);
 
@@ -288,7 +291,7 @@ final class CrossAxisAlignmentUtility<T extends SpecMix>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [MainAxisSize] values.
 /// {@endtemplate}
-final class MainAxisSizeUtility<T extends SpecMix>
+final class MainAxisSizeUtility<T extends SpecAttribute>
     extends MixUtility<T, MainAxisSize> {
   const MainAxisSizeUtility(super.builder);
 
@@ -308,7 +311,8 @@ final class MainAxisSizeUtility<T extends SpecMix>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [BoxFit] values.
 /// {@endtemplate}
-final class BoxFitUtility<T extends SpecMix> extends MixUtility<T, BoxFit> {
+final class BoxFitUtility<T extends SpecAttribute>
+    extends MixUtility<T, BoxFit> {
   const BoxFitUtility(super.builder);
 
   /// Creates a [StyleElement] instance with the specified BoxFit value.
@@ -342,7 +346,7 @@ final class BoxFitUtility<T extends SpecMix> extends MixUtility<T, BoxFit> {
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [BlendMode] values.
 /// {@endtemplate}
-final class BlendModeUtility<T extends SpecMix>
+final class BlendModeUtility<T extends SpecAttribute>
     extends MixUtility<T, BlendMode> {
   const BlendModeUtility(super.builder);
 
@@ -443,7 +447,8 @@ final class BlendModeUtility<T extends SpecMix>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [BoxShape] values.
 /// {@endtemplate}
-final class BoxShapeUtility<T extends SpecMix> extends MixUtility<T, BoxShape> {
+final class BoxShapeUtility<T extends SpecAttribute>
+    extends MixUtility<T, BoxShape> {
   const BoxShapeUtility(super.builder);
 
   /// Creates a [StyleElement] instance with the specified BoxShape value.
@@ -462,7 +467,7 @@ final class BoxShapeUtility<T extends SpecMix> extends MixUtility<T, BoxShape> {
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [FontStyle] values.
 /// {@endtemplate}
-final class FontStyleUtility<T extends SpecMix>
+final class FontStyleUtility<T extends SpecAttribute>
     extends MixUtility<T, FontStyle> {
   const FontStyleUtility(super.builder);
 
@@ -482,7 +487,7 @@ final class FontStyleUtility<T extends SpecMix>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextDecorationStyle] values.
 /// {@endtemplate}
-final class TextDecorationStyleUtility<T extends SpecMix>
+final class TextDecorationStyleUtility<T extends SpecAttribute>
     extends MixUtility<T, TextDecorationStyle> {
   const TextDecorationStyleUtility(super.builder);
 
@@ -511,7 +516,7 @@ final class TextDecorationStyleUtility<T extends SpecMix>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextBaseline] values.
 /// {@endtemplate}
-final class TextBaselineUtility<T extends SpecMix>
+final class TextBaselineUtility<T extends SpecAttribute>
     extends MixUtility<T, TextBaseline> {
   const TextBaselineUtility(super.builder);
 
@@ -531,7 +536,7 @@ final class TextBaselineUtility<T extends SpecMix>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextOverflow] values.
 /// {@endtemplate}
-final class TextOverflowUtility<T extends SpecMix>
+final class TextOverflowUtility<T extends SpecAttribute>
     extends MixUtility<T, TextOverflow> {
   const TextOverflowUtility(super.builder);
 
@@ -557,7 +562,7 @@ final class TextOverflowUtility<T extends SpecMix>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextWidthBasis] values.
 /// {@endtemplate}
-final class TextWidthBasisUtility<T extends SpecMix>
+final class TextWidthBasisUtility<T extends SpecAttribute>
     extends MixUtility<T, TextWidthBasis> {
   const TextWidthBasisUtility(super.builder);
 
@@ -577,7 +582,7 @@ final class TextWidthBasisUtility<T extends SpecMix>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextAlign] values.
 /// {@endtemplate}
-final class TextAlignUtility<T extends SpecMix>
+final class TextAlignUtility<T extends SpecAttribute>
     extends MixUtility<T, TextAlign> {
   const TextAlignUtility(super.builder);
 
@@ -609,7 +614,7 @@ final class TextAlignUtility<T extends SpecMix>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [FilterQuality] values.
 /// {@endtemplate}
-final class FilterQualityUtility<T extends SpecMix>
+final class FilterQualityUtility<T extends SpecAttribute>
     extends MixUtility<T, FilterQuality> {
   const FilterQualityUtility(super.builder);
 
@@ -635,7 +640,7 @@ final class FilterQualityUtility<T extends SpecMix>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [WrapAlignment] values.
 /// {@endtemplate}
-final class WrapAlignmentUtility<T extends SpecMix>
+final class WrapAlignmentUtility<T extends SpecAttribute>
     extends MixUtility<T, WrapAlignment> {
   const WrapAlignmentUtility(super.builder);
 
@@ -667,7 +672,7 @@ final class WrapAlignmentUtility<T extends SpecMix>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TableCellVerticalAlignment] values.
 /// {@endtemplate}
-class TableCellVerticalAlignmentUtility<T extends SpecMix>
+class TableCellVerticalAlignmentUtility<T extends SpecAttribute>
     extends MixUtility<T, TableCellVerticalAlignment> {
   const TableCellVerticalAlignmentUtility(super.builder);
 

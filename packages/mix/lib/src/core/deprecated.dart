@@ -82,7 +82,7 @@ typedef Attribute = StyleElement;
 
 /// Deprecated: Use StyleAttribute instead
 @Deprecated('Use StyleAttribute instead')
-typedef StyledAttribute = SpecMix;
+typedef StyledAttribute = SpecAttribute;
 
 /// Deprecated: Use Mixable instead
 @Deprecated('Use Mixable instead')
@@ -171,7 +171,7 @@ typedef SpacingSideDto = SpaceDto;
 
 /// Deprecated: Use EdgeInsetsGeometryUtility instead
 @Deprecated('Use EdgeInsetsGeometryUtility instead')
-typedef SpacingUtility<T extends SpecMix> = EdgeInsetsGeometryUtility<T>;
+typedef SpacingUtility<T extends SpecAttribute> = EdgeInsetsGeometryUtility<T>;
 
 /// Deprecated: Use EdgeInsetsGeometryDto instead
 @Deprecated('Use EdgeInsetsGeometryDto instead')
@@ -182,7 +182,7 @@ typedef SpacingDto = EdgeInsetsGeometryDto<EdgeInsetsGeometry>;
 // =============================================================================
 
 /// Deprecated extension for ImageSpec utility
-extension ImageSpecUtilityDeprecationX<T extends SpecMix>
+extension ImageSpecUtilityDeprecationX<T extends SpecAttribute>
     on ImageSpecUtility<T> {
   @Deprecated(
     'To match Flutter naming conventions, use `colorBlendMode` instead.',

@@ -144,7 +144,7 @@ class OpacityModifierSpecTween extends Tween<OpacityModifierSpec?> {
   }
 }
 
-final class OpacityModifierSpecUtility<T extends SpecMix>
+final class OpacityModifierSpecUtility<T extends SpecAttribute>
     extends MixUtility<T, OpacityModifierSpecAttribute> {
   const OpacityModifierSpecUtility(super.builder);
   T call(double value) => builder(OpacityModifierSpecAttribute(opacity: value));

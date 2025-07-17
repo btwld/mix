@@ -46,7 +46,7 @@ void main() {
     });
 
     test('contains returns correct value', () {
-      final mixableMap = AttributeMap<SpecMix>([attr1]);
+      final mixableMap = AttributeMap<SpecAttribute>([attr1]);
       expect(mixableMap.containsType(attr1), isTrue);
       expect(mixableMap.containsType(attr2), isFalse);
     });
@@ -77,8 +77,8 @@ void main() {
       const attr1 = MockIntScalarAttribute(2);
       const attr2 = MockBooleanScalarAttribute(true);
 
-      final mixableMap1 = AttributeMap<SpecMix>([attr1]);
-      final mixableMap2 = AttributeMap<SpecMix>([attr2]);
+      final mixableMap1 = AttributeMap<SpecAttribute>([attr1]);
+      final mixableMap2 = AttributeMap<SpecAttribute>([attr2]);
       final mergedMap = mixableMap1.merge(mixableMap2);
       expect(mergedMap.values, containsAll([attr1, attr2]));
     });

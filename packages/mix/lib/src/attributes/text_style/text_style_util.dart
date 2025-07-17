@@ -9,7 +9,7 @@ import '../scalars/scalar_util.dart';
 import '../shadow/shadow_dto.dart';
 import 'text_style_dto.dart';
 
-final class TextStyleUtility<T extends SpecMix>
+final class TextStyleUtility<T extends SpecAttribute>
     extends DtoUtility<T, TextStyleDto, TextStyle> {
   late final color = ColorUtility(
     (prop) => builder(TextStyleDto.props(color: prop)),

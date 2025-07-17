@@ -206,23 +206,9 @@ final class MockDoubleScalarAttribute
   double resolve(MixContext mix) => value;
 }
 
-class MockContextVariantCondition extends ContextVariant {
-  final bool condition;
-  @override
-  final VariantPriority priority;
-  const MockContextVariantCondition(
-    this.condition, {
-    this.priority = VariantPriority.normal,
-  });
-
-  @override
-  List<Object?> get props => [condition];
-
-  @override
-  Object get mergeKey => '$runtimeType.${priority.name}';
-
-  @override
-  bool when(BuildContext context) => condition;
+base class MockContextVariantCondition extends ContextVariant {
+  MockContextVariantCondition(bool condition)
+    : super('mock_condition', (context) => condition);
 }
 
 final class MockIntScalarAttribute
@@ -233,13 +219,14 @@ final class MockIntScalarAttribute
   int resolve(MixContext mix) => value;
 }
 
-class MockContextVariant extends ContextVariant {
-  @override
-  final VariantPriority priority;
-  const MockContextVariant([this.priority = VariantPriority.normal]);
+base class MockContextVariant extends ContextVariant {
+  MockContextVariant()
+    : super('mock_variant', (context) => true);
+}
 
-  @override
-  bool when(BuildContext context) => true;
+base class MockHighPriorityContextVariant extends ContextVariant {
+  MockHighPriorityContextVariant()
+    : super('mock_high_priority', (context) => true, priority: VariantPriority.high);
 }
 
 final class MockBooleanScalarAttribute
@@ -250,7 +237,7 @@ final class MockBooleanScalarAttribute
   bool resolve(MixContext mix) => value;
 }
 
-abstract class _MockSpecAttribute<T> extends SpecMix<T> {
+abstract class _MockSpecAttribute<T> extends SpecAttribute<T> {
   final T _value;
   const _MockSpecAttribute(this._value);
 
@@ -312,15 +299,17 @@ final class MockInvalidAttribute extends StyleElement {
   const MockInvalidAttribute();
 
   @override
+  Object get mergeKey => runtimeType;
+
+  @override
   MockInvalidAttribute merge(MockInvalidAttribute? other) {
     return const MockInvalidAttribute();
   }
 
-  @override
-  get props => [];
+  List<Object?> get props => [];
 }
 
-const mockVariant = Variant('mock-variant');
+const mockVariant = NamedVariant('mock-variant');
 
 final class UtilityTestAttribute<T>
     extends TestScalarAttribute<UtilityTestAttribute<T>, T> {
@@ -330,7 +319,8 @@ final class UtilityTestAttribute<T>
   T resolve(MixContext mix) => value;
 }
 
-final class UtilityTestDtoAttribute<T extends Mix<V>, V> extends SpecMix<V> {
+final class UtilityTestDtoAttribute<T extends Mix<V>, V>
+    extends SpecAttribute<V> {
   final T value;
   const UtilityTestDtoAttribute(this.value);
 
@@ -426,7 +416,7 @@ abstract class TestScalarAttribute<
   Self extends TestScalarAttribute<Self, Value>,
   Value
 >
-    extends SpecMix<Value> {
+    extends SpecAttribute<Value> {
   final Value value;
   const TestScalarAttribute(this.value);
 

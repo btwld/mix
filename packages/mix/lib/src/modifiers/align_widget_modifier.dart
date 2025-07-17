@@ -69,7 +69,7 @@ final class AlignModifierSpec extends WidgetModifierSpec<AlignModifierSpec>
   }
 }
 
-final class AlignModifierSpecUtility<T extends SpecMix>
+final class AlignModifierSpecUtility<T extends SpecAttribute>
     extends MixUtility<T, AlignModifierSpecAttribute> {
   const AlignModifierSpecUtility(super.builder);
   T call({

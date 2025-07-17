@@ -12,7 +12,7 @@ import 'shape_border_dto.dart';
 ///
 /// This class provides methods to set individual properties of a [RoundedRectangleBorder].
 /// Use the methods of this class to configure specific properties of a [RoundedRectangleBorder].
-class RoundedRectangleBorderUtility<T extends SpecMix>
+class RoundedRectangleBorderUtility<T extends SpecAttribute>
     extends DtoUtility<T, RoundedRectangleBorderDto, RoundedRectangleBorder> {
   /// Utility for defining [RoundedRectangleBorderDto.borderRadius]
   late final borderRadius = BorderRadiusGeometryUtility(
@@ -41,7 +41,7 @@ class RoundedRectangleBorderUtility<T extends SpecMix>
   }
 }
 
-class BeveledRectangleBorderUtility<T extends SpecMix>
+class BeveledRectangleBorderUtility<T extends SpecAttribute>
     extends DtoUtility<T, BeveledRectangleBorderDto, BeveledRectangleBorder> {
   /// Utility for defining [BeveledRectangleBorderDto.borderRadius]
   late final borderRadius = BorderRadiusGeometryUtility(
@@ -70,7 +70,7 @@ class BeveledRectangleBorderUtility<T extends SpecMix>
   }
 }
 
-class ContinuousRectangleBorderUtility<T extends SpecMix>
+class ContinuousRectangleBorderUtility<T extends SpecAttribute>
     extends
         DtoUtility<T, ContinuousRectangleBorderDto, ContinuousRectangleBorder> {
   /// Utility for defining [ContinuousRectangleBorderDto.borderRadius]
@@ -100,7 +100,7 @@ class ContinuousRectangleBorderUtility<T extends SpecMix>
   }
 }
 
-class CircleBorderUtility<T extends SpecMix>
+class CircleBorderUtility<T extends SpecAttribute>
     extends DtoUtility<T, CircleBorderDto, CircleBorder> {
   /// Utility for defining [CircleBorderDto.side]
   late final side = BorderSideUtility((v) => only(side: v));
@@ -126,7 +126,7 @@ class CircleBorderUtility<T extends SpecMix>
   }
 }
 
-class StarBorderUtility<T extends SpecMix>
+class StarBorderUtility<T extends SpecAttribute>
     extends DtoUtility<T, StarBorderDto, StarBorder> {
   /// Utility for defining [StarBorderDto.side]
   late final side = BorderSideUtility((v) => only(side: v));
@@ -208,7 +208,7 @@ class StarBorderUtility<T extends SpecMix>
   }
 }
 
-class LinearBorderUtility<T extends SpecMix>
+class LinearBorderUtility<T extends SpecAttribute>
     extends DtoUtility<T, LinearBorderDto, LinearBorder> {
   /// Utility for defining [LinearBorderDto.side]
   late final side = BorderSideUtility((v) => only(side: v));
@@ -264,7 +264,7 @@ class LinearBorderUtility<T extends SpecMix>
   }
 }
 
-class LinearBorderEdgeUtility<T extends SpecMix>
+class LinearBorderEdgeUtility<T extends SpecAttribute>
     extends DtoUtility<T, LinearBorderEdgeDto, LinearBorderEdge> {
   /// Utility for defining [LinearBorderEdgeDto.size]
   late final size = DoubleUtility(
@@ -290,7 +290,7 @@ class LinearBorderEdgeUtility<T extends SpecMix>
   }
 }
 
-class StadiumBorderUtility<T extends SpecMix>
+class StadiumBorderUtility<T extends SpecAttribute>
     extends DtoUtility<T, StadiumBorderDto, StadiumBorder> {
   /// Utility for defining [StadiumBorderDto.side]
   late final side = BorderSideUtility((v) => only(side: v));
@@ -309,7 +309,7 @@ class StadiumBorderUtility<T extends SpecMix>
   }
 }
 
-class ShapeBorderUtility<T extends SpecMix>
+class ShapeBorderUtility<T extends SpecAttribute>
     extends DtoUtility<T, ShapeBorderDto, ShapeBorder> {
   /// Utility for defining RoundedRectangleBorder
   late final roundedRectangle = RoundedRectangleBorderUtility(builder);

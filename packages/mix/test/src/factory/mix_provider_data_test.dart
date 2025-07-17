@@ -426,7 +426,7 @@ void main() {
           }) {
             _testApplyContextToVisualAttributes(
               condition: MultiVariant.or([
-                const Variant('1'),
+                const NamedVariant('1'),
                 MockContextVariantCondition(v1),
               ]),
               isExpectedToApply: equalsTo,
@@ -444,7 +444,7 @@ void main() {
           }) {
             _testApplyContextToVisualAttributes(
               condition: MultiVariant.or([
-                const Variant('1'),
+                const NamedVariant('1'),
                 MockContextVariantCondition(v1),
               ]),
               isExpectedToApply: equalsTo,
@@ -462,7 +462,7 @@ void main() {
           }) {
             _testApplyContextToVisualAttributes(
               condition: MultiVariant.and([
-                const Variant('1'),
+                const NamedVariant('1'),
                 MockContextVariantCondition(v1),
               ]),
               isExpectedToApply: equalsTo,
@@ -482,9 +482,9 @@ void main() {
           }) {
             _testApplyContextToVisualAttributes(
               condition: MultiVariant.and([
-                const Variant('1'),
+                const NamedVariant('1'),
                 MultiVariant.and([
-                  const Variant('2'),
+                  const NamedVariant('2'),
                   MockContextVariantCondition(v1),
                 ]),
               ]),
@@ -508,7 +508,7 @@ void main() {
               condition: MultiVariant.and([
                 MockContextVariantCondition(v1),
                 MultiVariant.and([
-                  const Variant('1'),
+                  const NamedVariant('1'),
                   MockContextVariantCondition(v2),
                 ]),
               ]),
@@ -534,7 +534,7 @@ void main() {
               condition: MultiVariant.and([
                 MockContextVariantCondition(v1),
                 MultiVariant.or([
-                  const Variant('1'),
+                  const NamedVariant('1'),
                   MockContextVariantCondition(v2),
                 ]),
               ]),
@@ -560,7 +560,7 @@ void main() {
               condition: MultiVariant.or([
                 MockContextVariantCondition(v1),
                 MultiVariant.or([
-                  const Variant('1'),
+                  const NamedVariant('1'),
                   MockContextVariantCondition(v2),
                 ]),
               ]),
@@ -602,9 +602,15 @@ void _testApplyContextToVisualAttributes({
   expect(attributeList, expectedStyle.styles.values);
 }
 
-class _MockContextVariant extends ContextVariant {
+base class _MockContextVariant extends ContextVariant {
   final bool whenReturnValue;
   const _MockContextVariant({this.whenReturnValue = true});
+
+  @override
+  List<Object?> get props => [whenReturnValue];
+
+  @override
+  String get key => 'MockContextVariant';
 
   @override
   bool when(BuildContext context) => whenReturnValue;

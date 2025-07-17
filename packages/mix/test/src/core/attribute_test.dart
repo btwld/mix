@@ -56,7 +56,7 @@ void main() {
 
       final mergeKey = builder.mergeKey;
 
-      expect(mergeKey, equals('ContextVariantBuilder.${variant.mergeKey}'));
+      expect(mergeKey, equals('ContextVariantBuilder.${variant.key}'));
     });
 
     test('props should return a list containing the variant', () {
@@ -84,27 +84,27 @@ void main() {
   });
 }
 
-class _MockContextVariant extends ContextVariant {
+base class _MockContextVariant extends ContextVariant {
   const _MockContextVariant();
 
   @override
-  final priority = VariantPriority.normal;
+  List<Object?> get props => [];
 
   @override
-  Object get mergeKey => 'MockContextVariant';
+  String get key => 'MockContextVariant';
 
   @override
   bool when(BuildContext context) => true;
 }
 
-class _MockContextVariant2 extends ContextVariant {
+base class _MockContextVariant2 extends ContextVariant {
   const _MockContextVariant2();
 
   @override
-  final priority = VariantPriority.normal;
+  List<Object?> get props => [];
 
   @override
-  Object get mergeKey => 'MockContextVariant2';
+  String get key => 'MockContextVariant2';
 
   @override
   bool when(BuildContext context) => true;

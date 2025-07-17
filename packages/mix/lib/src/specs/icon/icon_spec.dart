@@ -125,7 +125,7 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
   ];
 }
 
-class IconSpecAttribute extends SpecMix<IconSpec> with Diagnosticable {
+class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
   final Prop<Color>? color;
   final Prop<double>? size;
   final Prop<double>? weight;
@@ -282,8 +282,8 @@ class IconSpecAttribute extends SpecMix<IconSpec> with Diagnosticable {
   ];
 }
 
-class IconSpecUtility<T extends SpecMix>
-    extends SpecStyle<T, IconSpecAttribute> {
+class IconSpecUtility<T extends SpecAttribute>
+    extends SpecUtility<T, IconSpecAttribute> {
   late final color = ColorUtility(
     (prop) => builder(IconSpecAttribute.props(color: prop)),
   );
@@ -349,7 +349,7 @@ class IconSpecUtility<T extends SpecMix>
   }
 }
 
-extension IconSpecUtilityExt<T extends SpecMix> on IconSpecUtility<T> {
+extension IconSpecUtilityExt<T extends SpecAttribute> on IconSpecUtility<T> {
   ShadowUtility get shadow => ShadowUtility((v) => only(shadows: [v]));
 }
 

@@ -5,7 +5,7 @@ import '../../core/utility.dart';
 import '../enum/enum_util.dart';
 import 'text_height_behavior_dto.dart';
 
-final class TextHeightBehaviorUtility<T extends SpecMix>
+final class TextHeightBehaviorUtility<T extends SpecAttribute>
     extends DtoUtility<T, TextHeightBehaviorDto, TextHeightBehavior> {
   late final heightToFirstAscent = BoolUtility(
     (prop) => only(applyHeightToFirstAscent: prop.value),

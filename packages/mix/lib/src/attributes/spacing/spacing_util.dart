@@ -9,7 +9,7 @@ import 'edge_insets_dto.dart';
 // Deprecated typedef moved to src/core/deprecated.dart
 
 @immutable
-final class EdgeInsetsGeometryUtility<T extends SpecMix>
+final class EdgeInsetsGeometryUtility<T extends SpecAttribute>
     extends DtoUtility<T, EdgeInsetsGeometryDto, EdgeInsetsGeometry> {
   late final directional = SpacingDirectionalUtility(builder);
 
@@ -101,7 +101,7 @@ final class EdgeInsetsGeometryUtility<T extends SpecMix>
 }
 
 @immutable
-final class SpacingDirectionalUtility<T extends SpecMix>
+final class SpacingDirectionalUtility<T extends SpecAttribute>
     extends DtoUtility<T, EdgeInsetsGeometryDto, EdgeInsetsGeometry> {
   late final all = SpacingSideUtility(
     (v) => onlyDto(top: v, bottom: v, start: v, end: v),
@@ -156,7 +156,8 @@ final class SpacingDirectionalUtility<T extends SpecMix>
 }
 
 @immutable
-class SpacingSideUtility<T extends SpecMix> extends MixUtility<T, SpaceDto> {
+class SpacingSideUtility<T extends SpecAttribute>
+    extends MixUtility<T, SpaceDto> {
   const SpacingSideUtility(super.builder);
 
   T call(double value) => builder(SpaceDto.value(value));

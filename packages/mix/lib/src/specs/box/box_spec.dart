@@ -235,7 +235,7 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
 ///
 /// Use this class to configure the attributes of a [BoxSpec] and pass it to
 /// the [BoxSpec] constructor.
-class BoxSpecAttribute extends SpecMix<BoxSpec> with Diagnosticable {
+class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
   final Prop<AlignmentGeometry>? alignment;
   final MixProp<EdgeInsetsGeometry, EdgeInsetsGeometryDto>? padding;
   final MixProp<EdgeInsetsGeometry, EdgeInsetsGeometryDto>? margin;
@@ -446,7 +446,8 @@ class BoxSpecAttribute extends SpecMix<BoxSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [BoxSpec].
 /// Use the methods of this class to configure specific properties of a [BoxSpec].
-class BoxSpecUtility<T extends SpecMix> extends SpecStyle<T, BoxSpecAttribute> {
+class BoxSpecUtility<T extends SpecAttribute>
+    extends SpecUtility<T, BoxSpecAttribute> {
   /// Utility for defining [BoxSpecAttribute.alignment]
   late final alignment = AlignmentGeometryUtility((v) => only(alignment: v));
 

@@ -150,7 +150,7 @@ class AspectRatioModifierSpecTween extends Tween<AspectRatioModifierSpec?> {
   }
 }
 
-final class AspectRatioModifierSpecUtility<T extends SpecMix>
+final class AspectRatioModifierSpecUtility<T extends SpecAttribute>
     extends MixUtility<T, AspectRatioModifierSpecAttribute> {
   const AspectRatioModifierSpecUtility(super.builder);
   T call(double value) {

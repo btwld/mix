@@ -13,7 +13,7 @@ DTOs become the primary way to create values with static factories. All DTOs fol
 - Factory constructors accept raw values
 - Private constructors accept `Prop<T>?` instances
 - Use `Prop.maybeValue()` for nullable conversions
-- Use `Prop.value()` for non-null conversions
+- Use `Prop.fromValue()` for non-null conversions
 
 ```dart
 // EdgeInsetsDto with static factories
@@ -50,18 +50,18 @@ class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
   // Static factories for common patterns
   EdgeInsetsDto.all(double value)
     : this._(
-        top: Prop.value(value),
-        bottom: Prop.value(value),
-        left: Prop.value(value),
-        right: Prop.value(value),
+        top: Prop.fromValue(value),
+        bottom: Prop.fromValue(value),
+        left: Prop.fromValue(value),
+        right: Prop.fromValue(value),
       );
   
   EdgeInsetsDto.symmetric({double horizontal = 0, double vertical = 0})
     : this._(
-        top: Prop.value(vertical),
-        bottom: Prop.value(vertical),
-        left: Prop.value(horizontal),
-        right: Prop.value(horizontal),
+        top: Prop.fromValue(vertical),
+        bottom: Prop.fromValue(vertical),
+        left: Prop.fromValue(horizontal),
+        right: Prop.fromValue(horizontal),
       );
   
   EdgeInsetsDto.only({
@@ -70,10 +70,10 @@ class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
     double right = 0,
     double bottom = 0,
   }) : this._(
-        top: top > 0 ? Prop.value(top) : null,
-        bottom: bottom > 0 ? Prop.value(bottom) : null,
-        left: left > 0 ? Prop.value(left) : null,
-        right: right > 0 ? Prop.value(right) : null,
+        top: top > 0 ? Prop.fromValue(top) : null,
+        bottom: bottom > 0 ? Prop.fromValue(bottom) : null,
+        left: left > 0 ? Prop.fromValue(left) : null,
+        right: right > 0 ? Prop.fromValue(right) : null,
       );
   
   EdgeInsetsDto.none() : this.all(0);
@@ -132,10 +132,10 @@ class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
   });
   
   static BorderRadiusDto all(Radius radius) => BorderRadiusDto._(
-    topLeft: Prop.value(radius),
-    topRight: Prop.value(radius),
-    bottomLeft: Prop.value(radius),
-    bottomRight: Prop.value(radius),
+    topLeft: Prop.fromValue(radius),
+    topRight: Prop.fromValue(radius),
+    bottomLeft: Prop.fromValue(radius),
+    bottomRight: Prop.fromValue(radius),
   );
   
   static BorderRadiusDto circular(double radius) => all(Radius.circular(radius));
@@ -522,24 +522,24 @@ class ComplexDto extends Mix<ComplexType> {
 
 ### Static Factory Patterns
 
-Static factories should use `Prop.value()` for non-null values:
+Static factories should use `Prop.fromValue()` for non-null values:
 
 ```dart
 // Named constructors for common patterns
 EdgeInsetsDto.all(double value)
   : this._(
-      top: Prop.value(value),     // Non-null, use Prop.value
-      bottom: Prop.value(value),
-      left: Prop.value(value),
-      right: Prop.value(value),
+      top: Prop.fromValue(value),     // Non-null, use Prop.value
+      bottom: Prop.fromValue(value),
+      left: Prop.fromValue(value),
+      right: Prop.fromValue(value),
     );
 
 // Static methods for variations
 static BorderRadiusDto circular(double radius) => BorderRadiusDto._(
-  topLeft: Prop.value(Radius.circular(radius)),
-  topRight: Prop.value(Radius.circular(radius)),
-  bottomLeft: Prop.value(Radius.circular(radius)),
-  bottomRight: Prop.value(Radius.circular(radius)),
+  topLeft: Prop.fromValue(Radius.circular(radius)),
+  topRight: Prop.fromValue(Radius.circular(radius)),
+  bottomLeft: Prop.fromValue(Radius.circular(radius)),
+  bottomRight: Prop.fromValue(Radius.circular(radius)),
 );
 ```
 
@@ -570,23 +570,29 @@ final newBox = BoxSpecUtility()
   ));
 ```
 
-### With Future Dot Notation
+### With Future Dot Notation  
 
 ```dart
 // When dot notation is available
-final box = BoxSpecUtility()
-  .padding(.all(16))                    // EdgeInsetsDto.all(16)
-  .margin(.symmetric(horizontal: 8))    // EdgeInsetsDto.symmetric(horizontal: 8)
+final box = $box
+  .padding(
+    .all(16),
+    .left(15), 
+    .right(15)
+  )                    // EdgeInsetsDto.all(16) EdgeInsetsDto.left(15), (right)
+  .margin(.horizontal(8), .vertical(4))    // EdgeInsetsDto.symmetric(horizontal: 8)
   .alignment(.center)                   // Alignment.center
-  .color(.red)                          // Colors.red
+  .color(.token(primaryColor), .linear(200.ms))                        // Colors.red
   .borderRadius(.circular(8));          // BorderRadiusDto.circular(8)
 ```
+
+
 
 ### Complex Examples
 
 ```dart
 // Card with shadow
-final card = BoxSpecUtility()
+final card = BoxStyle()
   .color(Colors.white)
   .padding(EdgeInsetsDto.all(16))
   .margin(EdgeInsetsDto.symmetric(vertical: 8))

@@ -42,7 +42,7 @@ abstract class WidgetModifierSpec<Self extends WidgetModifierSpec<Self>>
 abstract class WidgetModifierSpecAttribute<
   Value extends WidgetModifierSpec<Value>
 >
-    extends SpecMix<Value>
+    extends SpecAttribute<Value>
     with Diagnosticable {
   const WidgetModifierSpecAttribute();
 
@@ -54,7 +54,7 @@ abstract class WidgetModifierSpecAttribute<
 }
 
 abstract class WidgetModifierUtility<
-  T extends SpecMix,
+  T extends SpecAttribute,
   D extends WidgetModifierSpecAttribute<Value>,
   Value extends WidgetModifierSpec<Value>
 >
