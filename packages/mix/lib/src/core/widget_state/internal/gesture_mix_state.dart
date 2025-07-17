@@ -204,29 +204,3 @@ class _GestureMixStateWidgetState extends State<GestureMixStateWidget> {
   }
 }
 
-@Deprecated('This class will be removed in the next major version')
-class LongPressInheritedState extends InheritedWidget {
-  const LongPressInheritedState({
-    super.key,
-    required super.child,
-    required this.longPressed,
-  });
-
-  static LongPressInheritedState? maybeOf(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType();
-  }
-
-  static LongPressInheritedState of(BuildContext context) {
-    final LongPressInheritedState? result = maybeOf(context);
-    assert(result != null, 'No LongPressVariantController found in context');
-
-    return result!;
-  }
-
-  final bool longPressed;
-
-  @override
-  bool updateShouldNotify(LongPressInheritedState oldWidget) {
-    return oldWidget.longPressed != longPressed;
-  }
-}

@@ -2,13 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../attributes/enum/enum_util.dart';
-import '../../attributes/modifiers/widget_modifiers_config.dart';
-import '../../attributes/modifiers/widget_modifiers_config_dto.dart';
-import '../../attributes/modifiers/widget_modifiers_util.dart';
 import '../../attributes/scalars/scalar_util.dart';
 import '../../core/computed_style/computed_style.dart';
 import '../../core/factory/mix_context.dart';
-import '../../core/factory/style_mix.dart';
 import '../../core/spec.dart';
 
 final class StackSpec extends Spec<StackSpec> with Diagnosticable {
@@ -22,7 +18,6 @@ final class StackSpec extends Spec<StackSpec> with Diagnosticable {
     this.fit,
     this.textDirection,
     this.clipBehavior,
-    super.modifiers,
   });
 
   static StackSpec from(MixContext mix) {
@@ -58,11 +53,7 @@ final class StackSpec extends Spec<StackSpec> with Diagnosticable {
     properties.add(
       DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
     );
-    properties.add(
-      DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
-    );
   }
-
 
   /// Creates a copy of this [StackSpec] but with the given fields
   /// replaced with the new values.
@@ -72,14 +63,12 @@ final class StackSpec extends Spec<StackSpec> with Diagnosticable {
     StackFit? fit,
     TextDirection? textDirection,
     Clip? clipBehavior,
-    WidgetModifiersConfig? modifiers,
   }) {
     return StackSpec(
       alignment: alignment ?? this.alignment,
       fit: fit ?? this.fit,
       textDirection: textDirection ?? this.textDirection,
       clipBehavior: clipBehavior ?? this.clipBehavior,
-      modifiers: modifiers ?? this.modifiers,
     );
   }
 
@@ -93,7 +82,6 @@ final class StackSpec extends Spec<StackSpec> with Diagnosticable {
       fit: t < 0.5 ? fit : other.fit,
       textDirection: t < 0.5 ? textDirection : other.textDirection,
       clipBehavior: t < 0.5 ? clipBehavior : other.clipBehavior,
-      modifiers: other.modifiers,
     );
   }
 
@@ -105,13 +93,7 @@ final class StackSpec extends Spec<StackSpec> with Diagnosticable {
 
   /// The list of properties that constitute the state of this [StackSpec].
   @override
-  List<Object?> get props => [
-    alignment,
-    fit,
-    textDirection,
-    clipBehavior,
-    modifiers,
-  ];
+  List<Object?> get props => [alignment, fit, textDirection, clipBehavior];
 }
 
 /// Represents the attributes of a [StackSpec].
@@ -132,7 +114,6 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
     this.fit,
     this.textDirection,
     this.clipBehavior,
-    super.modifiers,
   });
 
   /// Constructor that accepts a [StackSpec] value and extracts its properties.
@@ -149,7 +130,6 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
       fit: spec.fit,
       textDirection: spec.textDirection,
       clipBehavior: spec.clipBehavior,
-      modifiers: WidgetModifiersConfigDto.maybeValue(spec.modifiers),
     );
   }
 
@@ -173,7 +153,6 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
       fit: fit,
       textDirection: textDirection,
       clipBehavior: clipBehavior,
-      modifiers: modifiers?.resolve(context),
     );
   }
 
@@ -187,7 +166,6 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
       fit: other.fit ?? fit,
       textDirection: other.textDirection ?? textDirection,
       clipBehavior: other.clipBehavior ?? clipBehavior,
-      modifiers: modifiers?.merge(other.modifiers) ?? other.modifiers,
     );
   }
 
@@ -204,20 +182,11 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
     properties.add(
       DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
     );
-    properties.add(
-      DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
-    );
   }
 
   /// The list of properties that constitute the state of this [StackSpecAttribute].
   @override
-  List<Object?> get props => [
-    alignment,
-    fit,
-    textDirection,
-    clipBehavior,
-    modifiers,
-  ];
+  List<Object?> get props => [alignment, fit, textDirection, clipBehavior];
 }
 
 /// Utility class for configuring [StackSpec] properties.
@@ -242,9 +211,6 @@ class StackSpecUtility<T extends SpecAttribute>
 
   /// Utility for defining [StackSpecAttribute.animated]
 
-  /// Utility for defining [StackSpecAttribute.modifiers]
-  late final wrap = SpecModifierUtility((v) => only(modifiers: v));
-
   StackSpecUtility(super.attributeBuilder);
 
   @Deprecated(
@@ -263,7 +229,6 @@ class StackSpecUtility<T extends SpecAttribute>
     StackFit? fit,
     TextDirection? textDirection,
     Clip? clipBehavior,
-    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(
       StackSpecAttribute(
@@ -271,7 +236,6 @@ class StackSpecUtility<T extends SpecAttribute>
         fit: fit,
         textDirection: textDirection,
         clipBehavior: clipBehavior,
-        modifiers: modifiers,
       ),
     );
   }

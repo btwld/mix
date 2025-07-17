@@ -122,14 +122,10 @@ export 'src/theme/tokens/value_resolver.dart';
 
 /// VARIANTS
 export 'src/variants/context_variant.dart';
-export 'src/variants/context_variant_util/on_breakpoint_util.dart';
-export 'src/variants/context_variant_util/on_brightness_util.dart';
 export 'src/variants/context_variant_util/on_directionality_util.dart';
 export 'src/variants/context_variant_util/on_not_util.dart';
-export 'src/variants/context_variant_util/on_orientation_util.dart';
 export 'src/variants/context_variant_util/on_platform_util.dart';
 export 'src/variants/context_variant_util/on_util.dart';
-export 'src/variants/variant_attribute.dart';
 export 'src/variants/widget_state_variant.dart';
 
 /// WIDGETS

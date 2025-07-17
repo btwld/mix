@@ -1,11 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import '../../attributes/modifiers/widget_modifiers_config.dart';
-import '../../attributes/modifiers/widget_modifiers_config_dto.dart';
-import '../../attributes/modifiers/widget_modifiers_util.dart';
+
 import '../../core/computed_style/computed_style.dart';
 import '../../core/factory/mix_context.dart';
-import '../../core/factory/style_mix.dart';
 import '../../core/spec.dart';
 import '../box/box_spec.dart';
 import '../flex/flex_spec.dart';
@@ -16,12 +13,9 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
 
   final FlexSpec flex;
 
-  const FlexBoxSpec({
-    super.modifiers,
-    BoxSpec? box,
-    FlexSpec? flex,
-  }) : box = box ?? const BoxSpec(),
-       flex = flex ?? const FlexSpec();
+  const FlexBoxSpec({BoxSpec? box, FlexSpec? flex})
+    : box = box ?? const BoxSpec(),
+      flex = flex ?? const FlexSpec();
 
   static FlexBoxSpec from(MixContext mix) {
     return mix.attributeOf<FlexBoxSpecAttribute>()?.resolve(mix) ??
@@ -45,20 +39,11 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
     return ComputedStyle.specOf(context) ?? const FlexBoxSpec();
   }
 
-
   /// Creates a copy of this [FlexBoxSpec] but with the given fields
   /// replaced with the new values.
   @override
-  FlexBoxSpec copyWith({
-    WidgetModifiersConfig? modifiers,
-    BoxSpec? box,
-    FlexSpec? flex,
-  }) {
-    return FlexBoxSpec(
-      modifiers: modifiers ?? this.modifiers,
-      box: box ?? this.box,
-      flex: flex ?? this.flex,
-    );
+  FlexBoxSpec copyWith({BoxSpec? box, FlexSpec? flex}) {
+    return FlexBoxSpec(box: box ?? this.box, flex: flex ?? this.flex);
   }
 
   /// Linearly interpolates between this [FlexBoxSpec] and another [FlexBoxSpec] based on the given parameter [t].
@@ -73,7 +58,6 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
   /// interpolation method:
   /// - [BoxSpec.lerp] for [box].
   /// - [FlexSpec.lerp] for [flex].
-  /// For [modifiers], the interpolation is performed using a step function.
   /// If [t] is less than 0.5, the value from the current [FlexBoxSpec] is used. Otherwise, the value
   /// from the [other] [FlexBoxSpec] is used.
   ///
@@ -84,7 +68,6 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
     if (other == null) return this;
 
     return FlexBoxSpec(
-      modifiers: other.modifiers,
       box: box.lerp(other.box, t),
       flex: flex.lerp(other.flex, t),
     );
@@ -93,9 +76,6 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(
-      DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
-    );
     properties.add(DiagnosticsProperty('box', box, defaultValue: null));
     properties.add(DiagnosticsProperty('flex', flex, defaultValue: null));
   }
@@ -105,7 +85,7 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [FlexBoxSpec] instances for equality.
   @override
-  List<Object?> get props => [modifiers, box, flex];
+  List<Object?> get props => [box, flex];
 }
 
 /// Represents the attributes of a [FlexBoxSpec].
@@ -120,11 +100,7 @@ class FlexBoxSpecAttribute extends SpecAttribute<FlexBoxSpec>
   final BoxSpecAttribute? box;
   final FlexSpecAttribute? flex;
 
-  const FlexBoxSpecAttribute({
-    super.modifiers,
-    this.box,
-    this.flex,
-  });
+  const FlexBoxSpecAttribute({this.box, this.flex});
 
   /// Constructor that accepts a [FlexBoxSpec] value and extracts its properties.
   ///
@@ -136,7 +112,6 @@ class FlexBoxSpecAttribute extends SpecAttribute<FlexBoxSpec>
   /// ```
   static FlexBoxSpecAttribute value(FlexBoxSpec spec) {
     return FlexBoxSpecAttribute(
-      modifiers: WidgetModifiersConfigDto.maybeValue(spec.modifiers),
       box: BoxSpecAttribute.maybeValue(spec.box),
       flex: FlexSpecAttribute.maybeValue(spec.flex),
     );
@@ -165,7 +140,6 @@ class FlexBoxSpecAttribute extends SpecAttribute<FlexBoxSpec>
   @override
   FlexBoxSpec resolve(MixContext context) {
     return FlexBoxSpec(
-      modifiers: modifiers?.resolve(context),
       box: box?.resolve(context),
       flex: flex?.resolve(context),
     );
@@ -184,7 +158,6 @@ class FlexBoxSpecAttribute extends SpecAttribute<FlexBoxSpec>
     if (other == null) return this;
 
     return FlexBoxSpecAttribute(
-      modifiers: modifiers?.merge(other.modifiers) ?? other.modifiers,
       box: box?.merge(other.box) ?? other.box,
       flex: flex?.merge(other.flex) ?? other.flex,
     );
@@ -193,9 +166,6 @@ class FlexBoxSpecAttribute extends SpecAttribute<FlexBoxSpec>
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(
-      DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
-    );
     properties.add(DiagnosticsProperty('box', box, defaultValue: null));
     properties.add(DiagnosticsProperty('flex', flex, defaultValue: null));
   }
@@ -205,7 +175,7 @@ class FlexBoxSpecAttribute extends SpecAttribute<FlexBoxSpec>
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [FlexBoxSpecAttribute] instances for equality.
   @override
-  List<Object?> get props => [modifiers, box, flex];
+  List<Object?> get props => [box, flex];
 }
 
 /// Utility class for configuring [FlexBoxSpec] properties.
@@ -214,9 +184,6 @@ class FlexBoxSpecAttribute extends SpecAttribute<FlexBoxSpec>
 /// Use the methods of this class to configure specific properties of a [FlexBoxSpec].
 class FlexBoxSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, FlexBoxSpecAttribute> {
-  /// Utility for defining [FlexBoxSpecAttribute.modifiers]
-  late final wrap = SpecModifierUtility((v) => only(modifiers: v));
-
   /// Utility for defining [FlexBoxSpecAttribute.box]
   late final box = BoxSpecUtility((v) => only(box: v));
 
@@ -323,18 +290,8 @@ class FlexBoxSpecUtility<T extends SpecAttribute>
 
   /// Returns a new [FlexBoxSpecAttribute] with the specified properties.
   @override
-  T only({
-    WidgetModifiersConfigDto? modifiers,
-    BoxSpecAttribute? box,
-    FlexSpecAttribute? flex,
-  }) {
-    return builder(
-      FlexBoxSpecAttribute(
-        modifiers: modifiers,
-        box: box,
-        flex: flex,
-      ),
-    );
+  T only({BoxSpecAttribute? box, FlexSpecAttribute? flex}) {
+    return builder(FlexBoxSpecAttribute(box: box, flex: flex));
   }
 }
 

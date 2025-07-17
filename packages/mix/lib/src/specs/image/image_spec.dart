@@ -3,13 +3,9 @@ import 'package:flutter/widgets.dart';
 
 import '../../attributes/color/color_util.dart';
 import '../../attributes/enum/enum_util.dart';
-import '../../attributes/modifiers/widget_modifiers_config.dart';
-import '../../attributes/modifiers/widget_modifiers_config_dto.dart';
-import '../../attributes/modifiers/widget_modifiers_util.dart';
 import '../../attributes/scalars/scalar_util.dart';
 import '../../core/computed_style/computed_style.dart';
 import '../../core/factory/mix_context.dart';
-import '../../core/factory/style_mix.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/spec.dart';
@@ -36,7 +32,6 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
     this.centerSlice,
     this.filterQuality,
     this.colorBlendMode,
-    super.modifiers,
   });
 
   static ImageSpec from(MixContext mix) {
@@ -47,7 +42,6 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
   static ImageSpec of(BuildContext context) {
     return ComputedStyle.specOf(context) ?? const ImageSpec();
   }
-
 
   @override
   ImageSpec copyWith({
@@ -60,7 +54,6 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
     Rect? centerSlice,
     FilterQuality? filterQuality,
     BlendMode? colorBlendMode,
-    WidgetModifiersConfig? modifiers,
   }) {
     return ImageSpec(
       width: width ?? this.width,
@@ -72,7 +65,6 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
       centerSlice: centerSlice ?? this.centerSlice,
       filterQuality: filterQuality ?? this.filterQuality,
       colorBlendMode: colorBlendMode ?? this.colorBlendMode,
-      modifiers: modifiers ?? this.modifiers,
     );
   }
 
@@ -90,7 +82,6 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
       centerSlice: Rect.lerp(centerSlice, other.centerSlice, t),
       filterQuality: t < 0.5 ? filterQuality : other.filterQuality,
       colorBlendMode: t < 0.5 ? colorBlendMode : other.colorBlendMode,
-      modifiers: other.modifiers,
     );
   }
 
@@ -114,9 +105,6 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
     properties.add(
       DiagnosticsProperty('colorBlendMode', colorBlendMode, defaultValue: null),
     );
-    properties.add(
-      DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
-    );
   }
 
   @override
@@ -130,7 +118,6 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
     centerSlice,
     filterQuality,
     colorBlendMode,
-    modifiers,
   ];
 }
 
@@ -156,7 +143,6 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
     this.centerSlice,
     this.filterQuality,
     this.colorBlendMode,
-    super.modifiers,
   });
 
   // Factory constructor accepts raw values
@@ -170,7 +156,6 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
     Rect? centerSlice,
     FilterQuality? filterQuality,
     BlendMode? colorBlendMode,
-    WidgetModifiersConfigDto? modifiers,
   }) {
     return ImageSpecAttribute.props(
       width: Prop.maybeValue(width),
@@ -182,7 +167,6 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
       centerSlice: centerSlice,
       filterQuality: filterQuality,
       colorBlendMode: colorBlendMode,
-      modifiers: modifiers,
     );
   }
 
@@ -205,7 +189,6 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
       centerSlice: spec.centerSlice,
       filterQuality: spec.filterQuality,
       colorBlendMode: spec.colorBlendMode,
-      modifiers: WidgetModifiersConfigDto.maybeValue(spec.modifiers),
     );
   }
 
@@ -233,7 +216,6 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
       centerSlice: centerSlice,
       filterQuality: filterQuality,
       colorBlendMode: colorBlendMode,
-      modifiers: modifiers?.resolve(context),
     );
   }
 
@@ -251,7 +233,6 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
       centerSlice: other.centerSlice ?? centerSlice,
       filterQuality: other.filterQuality ?? filterQuality,
       colorBlendMode: other.colorBlendMode ?? colorBlendMode,
-      modifiers: modifiers?.merge(other.modifiers) ?? other.modifiers,
     );
   }
 
@@ -275,9 +256,6 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
     properties.add(
       DiagnosticsProperty('colorBlendMode', colorBlendMode, defaultValue: null),
     );
-    properties.add(
-      DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
-    );
   }
 
   @override
@@ -291,14 +269,17 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
     centerSlice,
     filterQuality,
     colorBlendMode,
-    modifiers,
   ];
 }
 
 class ImageSpecUtility<T extends SpecAttribute>
     extends SpecUtility<T, ImageSpecAttribute> {
-  late final width = DoubleUtility((prop) => builder(ImageSpecAttribute.props(width: prop)));
-  late final height = DoubleUtility((prop) => builder(ImageSpecAttribute.props(height: prop)));
+  late final width = DoubleUtility(
+    (prop) => builder(ImageSpecAttribute.props(width: prop)),
+  );
+  late final height = DoubleUtility(
+    (prop) => builder(ImageSpecAttribute.props(height: prop)),
+  );
   late final color = ColorUtility(
     (prop) => builder(ImageSpecAttribute.props(color: prop)),
   );
@@ -310,7 +291,6 @@ class ImageSpecUtility<T extends SpecAttribute>
     (v) => only(filterQuality: v),
   );
   late final colorBlendMode = BlendModeUtility((v) => only(colorBlendMode: v));
-  late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
   ImageSpecUtility(super.builder);
 
@@ -334,7 +314,6 @@ class ImageSpecUtility<T extends SpecAttribute>
     Rect? centerSlice,
     FilterQuality? filterQuality,
     BlendMode? colorBlendMode,
-    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(
       ImageSpecAttribute(
@@ -347,7 +326,6 @@ class ImageSpecUtility<T extends SpecAttribute>
         centerSlice: centerSlice,
         filterQuality: filterQuality,
         colorBlendMode: colorBlendMode,
-        modifiers: modifiers,
       ),
     );
   }

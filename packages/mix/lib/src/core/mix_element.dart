@@ -1,8 +1,12 @@
 import 'package:flutter/widgets.dart';
 
+import '../attributes/animation/animation_config.dart';
 import '../internal/compare_mixin.dart';
 import 'factory/mix_context.dart';
+import 'modifier.dart';
 import 'prop.dart';
+import 'spec.dart';
+import 'variant.dart';
 
 // Generic directive for modifying values
 @immutable
@@ -141,8 +145,19 @@ mixin MixHelperMixin {
   }
 }
 
-abstract class StyleElement with EqualityMixin, MixHelperMixin {
-  const StyleElement();
+abstract class StyleElement<V, T extends SpecAttribute<V>>
+    with EqualityMixin, MixHelperMixin {
+  final T attribute; // Underlying attribute
+  final Map<Variant, StyleElement<V, T>> variants; // Variant behavior
+  final AnimationConfig? animation; // Animation behavior
+  final List<WidgetModifierSpecAttribute>? modifiers; // Modifier behavior
+
+  const StyleElement(
+    this.attribute, {
+    this.variants = const {},
+    this.animation,
+    this.modifiers,
+  });
 
   // Used as the key to determine how
   // attributes get merged
@@ -150,6 +165,35 @@ abstract class StyleElement with EqualityMixin, MixHelperMixin {
 
   /// Merges this object with [other], returning a new object of type [T].
   StyleElement merge(covariant StyleElement? other);
+
+  ResolvedStyleElement<V> resolve(MixContext context) {
+    final resolvedSpec = attribute.resolve(context);
+    final resolvedAnimation = animation;
+    (context);
+    final resolvedModifiers = modifiers
+        ?.map((m) => m.resolve(context))
+        .toList();
+
+    return ResolvedStyleElement(
+      spec: resolvedSpec,
+      animation: resolvedAnimation,
+      modifiers: resolvedModifiers as List<WidgetModifierSpec>?,
+    );
+  }
+}
+
+/// Result of Style.resolve() containing fully resolved styling data
+/// Generic type parameter T for the resolved SpecAttribute
+class ResolvedStyleElement<V> {
+  final V spec; // Resolved spec
+  final AnimationConfig? animation; // Animation config
+  final List<WidgetModifierSpec>? modifiers; // Modifiers config
+
+  const ResolvedStyleElement({
+    required this.spec,
+    this.animation,
+    this.modifiers,
+  });
 }
 
 /// Simple value Mix - holds a direct value

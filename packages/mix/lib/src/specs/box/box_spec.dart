@@ -6,15 +6,11 @@ import '../../attributes/constraints/constraints_util.dart';
 import '../../attributes/decoration/decoration_dto.dart';
 import '../../attributes/decoration/decoration_util.dart';
 import '../../attributes/enum/enum_util.dart';
-import '../../attributes/modifiers/widget_modifiers_config.dart';
-import '../../attributes/modifiers/widget_modifiers_config_dto.dart';
-import '../../attributes/modifiers/widget_modifiers_util.dart';
 import '../../attributes/scalars/scalar_util.dart';
 import '../../attributes/spacing/edge_insets_dto.dart';
 import '../../attributes/spacing/spacing_util.dart';
 import '../../core/computed_style/computed_style.dart';
 import '../../core/factory/mix_context.dart';
-import '../../core/factory/style_mix.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/spec.dart';
@@ -67,7 +63,6 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
     this.clipBehavior,
     this.width,
     this.height,
-    super.modifiers,
   });
 
   static BoxSpec from(MixContext mix) {
@@ -125,9 +120,6 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
     );
     properties.add(DiagnosticsProperty('width', width, defaultValue: null));
     properties.add(DiagnosticsProperty('height', height, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
-    );
   }
 
   /// Creates a copy of this [BoxSpec] but with the given fields
@@ -145,7 +137,6 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
     Clip? clipBehavior,
     double? width,
     double? height,
-    WidgetModifiersConfig? modifiers,
   }) {
     return BoxSpec(
       alignment: alignment ?? this.alignment,
@@ -159,7 +150,6 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
       clipBehavior: clipBehavior ?? this.clipBehavior,
       width: width ?? this.width,
       height: height ?? this.height,
-      modifiers: modifiers ?? this.modifiers,
     );
   }
 
@@ -179,7 +169,7 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
   /// - [Decoration.lerp] for [decoration] and [foregroundDecoration].
   /// - [MixHelpers.lerpMatrix4] for [transform].
   /// - [MixHelpers.lerpDouble] for [width] and [height].
-  /// For [clipBehavior] and [modifiers] and [animated], the interpolation is performed using a step function.
+  /// For [clipBehavior], the interpolation is performed using a step function.
   /// If [t] is less than 0.5, the value from the current [BoxSpec] is used. Otherwise, the value
   /// from the [other] [BoxSpec] is used.
   ///
@@ -209,7 +199,6 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
       clipBehavior: t < 0.5 ? clipBehavior : other.clipBehavior,
       width: MixHelpers.lerpDouble(width, other.width, t),
       height: MixHelpers.lerpDouble(height, other.height, t),
-      modifiers: other.modifiers,
     );
   }
 
@@ -236,7 +225,6 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
     clipBehavior,
     width,
     height,
-    modifiers,
   ];
 }
 
@@ -272,7 +260,6 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
     Clip? clipBehavior,
     double? width,
     double? height,
-    WidgetModifiersConfigDto? modifiers,
   }) {
     return BoxSpecAttribute.props(
       alignment: Prop.maybeValue(alignment),
@@ -286,7 +273,6 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
       clipBehavior: Prop.maybeValue(clipBehavior),
       width: Prop.maybeValue(width),
       height: Prop.maybeValue(height),
-      modifiers: modifiers,
     );
   }
 
@@ -302,7 +288,6 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
     this.clipBehavior,
     this.width,
     this.height,
-    super.modifiers,
   });
 
   /// Constructor that accepts a [BoxSpec] value and extracts its properties.
@@ -326,7 +311,6 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
       clipBehavior: spec.clipBehavior,
       width: spec.width,
       height: spec.height,
-      modifiers: WidgetModifiersConfigDto.maybeValue(spec.modifiers),
     );
   }
 
@@ -364,7 +348,6 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
       clipBehavior: resolveProp(context, clipBehavior),
       width: resolveProp(context, width),
       height: resolveProp(context, height),
-      modifiers: modifiers?.resolve(context),
     );
   }
 
@@ -398,7 +381,6 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
       clipBehavior: mergeProp(clipBehavior, other.clipBehavior),
       width: mergeProp(width, other.width),
       height: mergeProp(height, other.height),
-      modifiers: modifiers?.merge(other.modifiers) ?? other.modifiers,
     );
   }
 
@@ -438,9 +420,6 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
     );
     properties.add(DiagnosticsProperty('width', width, defaultValue: null));
     properties.add(DiagnosticsProperty('height', height, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
-    );
   }
 
   /// The list of properties that constitute the state of this [BoxSpecAttribute].
@@ -460,7 +439,6 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
     clipBehavior,
     width,
     height,
-    modifiers,
   ];
 }
 
@@ -567,10 +545,8 @@ class BoxSpecUtility<T extends SpecAttribute>
     (prop) => builder(BoxSpecAttribute.props(height: prop)),
   );
 
-  /// Utility for defining [BoxSpecAttribute.modifiers]
-  late final wrap = SpecModifierUtility((v) => only(modifiers: v));
-
   // TODO: add animated back into it
+  //TODO: add wrap
 
   BoxSpecUtility(super.builder);
 
@@ -596,7 +572,6 @@ class BoxSpecUtility<T extends SpecAttribute>
     Clip? clipBehavior,
     double? width,
     double? height,
-    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(
       BoxSpecAttribute(
@@ -611,7 +586,6 @@ class BoxSpecUtility<T extends SpecAttribute>
         clipBehavior: clipBehavior,
         width: width,
         height: height,
-        modifiers: modifiers,
       ),
     );
   }

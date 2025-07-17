@@ -15,14 +15,14 @@ import 'widget_state/widget_state_controller.dart';
 abstract class StyledWidget extends StatelessWidget {
   /// Creates a styled widget.
   const StyledWidget({
-    BaseStyle? style,
+    Style? style,
     super.key,
     this.inherit = false,
     required this.orderOfModifiers,
   }) : style = style ?? const Style.empty();
 
   /// The style to apply to this widget.
-  final BaseStyle style;
+  final Style style;
 
   /// Whether to inherit style from the nearest [StyledWidget] ancestor.
   final bool inherit;
@@ -92,7 +92,7 @@ class SpecBuilder extends StatefulWidget {
   final WidgetStatesController? controller;
 
   /// Style to apply to the widget.
-  final BaseStyle style;
+  final Style style;
 
   /// Whether to inherit style from parent widgets.
   final bool inherit;
@@ -111,8 +111,9 @@ class _SpecBuilderState extends State<SpecBuilder> {
 
   /// Checks if the style contains widget state variants that require
   /// interactive state management.
-  bool get _hasWidgetStateVariant => widget.style.variants.values
-      .any((attr) => attr.variant is MixWidgetStateVariant);
+  bool get _hasWidgetStateVariant => widget.style.variants.keys.any(
+    (variant) => variant is MixWidgetStateVariant,
+  );
 
   /// Determines if we should wrap with Interactable widget.
   bool get _shouldWrapWithInteractable =>
@@ -124,16 +125,8 @@ class _SpecBuilderState extends State<SpecBuilder> {
     _controller = widget.controller ?? WidgetStatesController();
   }
 
-  Style _convertToStyle(BaseStyle style) {
-    if (style is AnimatedStyle) {
-      return style;
-    }
-
-    if (style is Style) {
-      return style;
-    }
-
-    return Style(style);
+  Style _convertToStyle(Style style) {
+    return style;
   }
 
   @override

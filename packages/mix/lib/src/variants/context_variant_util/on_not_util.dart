@@ -1,13 +1,12 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/variant.dart';
-import '../context_variant.dart';
 
 /// A variant of [ContextVariant] that negates the result of another [ContextVariant].
 ///
 /// This class determines whether the specified [variant] evaluates to `false`
 /// within the given [BuildContext].
-class OnNotVariant extends ContextVariant {
+base class OnNotVariant extends ContextVariant {
   /// The [ContextVariant] to negate.
   final ContextVariant variant;
 
@@ -23,19 +22,9 @@ class OnNotVariant extends ContextVariant {
   @override
   bool when(BuildContext context) => !variant.when(context);
 
-  /// Priority of this variant.
-  ///
-  /// The priority of a [OnNotVariant] is determined by the priority of the
-  /// [variant] it negates.
-  @override
-  VariantPriority get priority => variant.priority;
-
   /// The properties used for equality comparison.
   ///
-  /// Returns a list containing the [key] and [variant].
+  /// Returns a list containing the [variant].
   @override
   List<Object?> get props => [variant];
-
-  @override
-  Object get mergeKey => '$runtimeType.${variant.mergeKey}';
 }

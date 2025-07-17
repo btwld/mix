@@ -62,11 +62,7 @@ class FlexBox extends StyledWidget {
         final boxSpec = spec?.box ?? BoxSpec.of(context);
         final flexSpec = spec?.flex ?? FlexSpec.of(context);
 
-        final newSpec = FlexBoxSpec(
-          modifiers: spec?.modifiers,
-          box: boxSpec,
-          flex: flexSpec,
-        );
+        final newSpec = FlexBoxSpec(box: boxSpec, flex: flexSpec);
 
         return FlexBoxSpecWidget(
           spec: newSpec,

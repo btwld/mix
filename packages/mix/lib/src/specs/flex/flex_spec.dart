@@ -4,12 +4,8 @@ import 'package:flutter/widgets.dart';
 import '../../attributes/enum/enum_util.dart';
 import '../../attributes/gap/gap_util.dart';
 import '../../attributes/gap/space_dto.dart';
-import '../../attributes/modifiers/widget_modifiers_config.dart';
-import '../../attributes/modifiers/widget_modifiers_config_dto.dart';
-import '../../attributes/modifiers/widget_modifiers_util.dart';
 import '../../core/computed_style/computed_style.dart';
 import '../../core/factory/mix_context.dart';
-import '../../core/factory/style_mix.dart';
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
 
@@ -34,7 +30,6 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
     this.textBaseline,
     this.clipBehavior,
     this.gap,
-    super.modifiers,
   });
   static FlexSpec from(MixContext mix) {
     return mix.attributeOf<FlexSpecAttribute>()?.resolve(mix) ??
@@ -58,7 +53,6 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
     return ComputedStyle.specOf(context) ?? const FlexSpec();
   }
 
-
   /// Creates a copy of this [FlexSpec] but with the given fields
   /// replaced with the new values.
   @override
@@ -72,7 +66,6 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
     TextBaseline? textBaseline,
     Clip? clipBehavior,
     double? gap,
-    WidgetModifiersConfig? modifiers,
   }) {
     return FlexSpec(
       crossAxisAlignment: crossAxisAlignment ?? this.crossAxisAlignment,
@@ -84,7 +77,6 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
       textBaseline: textBaseline ?? this.textBaseline,
       clipBehavior: clipBehavior ?? this.clipBehavior,
       gap: gap ?? this.gap,
-      modifiers: modifiers ?? this.modifiers,
     );
   }
 
@@ -99,7 +91,7 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
   /// The interpolation is performed on each property of the [FlexSpec] using the appropriate
   /// interpolation method:
   /// - [MixHelpers.lerpDouble] for [gap].
-  /// For [crossAxisAlignment] and [mainAxisAlignment] and [mainAxisSize] and [verticalDirection] and [direction] and [textDirection] and [textBaseline] and [clipBehavior] and [modifiers], the interpolation is performed using a step function.
+  /// For [crossAxisAlignment] and [mainAxisAlignment] and [mainAxisSize] and [verticalDirection] and [direction] and [textDirection] and [textBaseline] and [clipBehavior], the interpolation is performed using a step function.
   /// If [t] is less than 0.5, the value from the current [FlexSpec] is used. Otherwise, the value
   /// from the [other] [FlexSpec] is used.
   ///
@@ -121,7 +113,6 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
       textBaseline: t < 0.5 ? textBaseline : other.textBaseline,
       clipBehavior: t < 0.5 ? clipBehavior : other.clipBehavior,
       gap: MixHelpers.lerpDouble(gap, other.gap, t),
-      modifiers: other.modifiers,
     );
   }
 
@@ -165,9 +156,6 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
       DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
     );
     properties.add(DiagnosticsProperty('gap', gap, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
-    );
   }
 
   /// The list of properties that constitute the state of this [FlexSpec].
@@ -185,7 +173,6 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
     textBaseline,
     clipBehavior,
     gap,
-    modifiers,
   ];
 }
 
@@ -217,7 +204,6 @@ class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
     this.textBaseline,
     this.clipBehavior,
     this.gap,
-    super.modifiers,
   });
 
   const FlexSpecAttribute.props({
@@ -230,7 +216,6 @@ class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
     this.textBaseline,
     this.clipBehavior,
     this.gap,
-    super.modifiers,
   });
 
   /// Constructor that accepts a [FlexSpec] value and extracts its properties.
@@ -252,7 +237,6 @@ class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
       textBaseline: spec.textBaseline,
       clipBehavior: spec.clipBehavior,
       gap: SpaceDto.maybeValue(spec.gap),
-      modifiers: WidgetModifiersConfigDto.maybeValue(spec.modifiers),
     );
   }
 
@@ -288,7 +272,6 @@ class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
       textBaseline: textBaseline,
       clipBehavior: clipBehavior,
       gap: gap?.resolve(context),
-      modifiers: modifiers?.resolve(context),
     );
   }
 
@@ -314,7 +297,6 @@ class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
       textBaseline: other.textBaseline ?? textBaseline,
       clipBehavior: other.clipBehavior ?? clipBehavior,
       gap: gap?.merge(other.gap) ?? other.gap,
-      modifiers: modifiers?.merge(other.modifiers) ?? other.modifiers,
     );
   }
 
@@ -358,9 +340,6 @@ class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
       DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
     );
     properties.add(DiagnosticsProperty('gap', gap, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
-    );
   }
 
   /// The list of properties that constitute the state of this [FlexSpecAttribute].
@@ -378,7 +357,6 @@ class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
     textBaseline,
     clipBehavior,
     gap,
-    modifiers,
   ];
 }
 
@@ -429,10 +407,6 @@ class FlexSpecUtility<T extends SpecAttribute>
   /// Utility for defining [FlexSpecAttribute.gap]
   late final gap = GapUtility((v) => only(gap: v));
 
-
-  /// Utility for defining [FlexSpecAttribute.modifiers]
-  late final wrap = SpecModifierUtility((v) => only(modifiers: v));
-
   FlexSpecUtility(super.attributeBuilder);
 
   @Deprecated(
@@ -456,7 +430,6 @@ class FlexSpecUtility<T extends SpecAttribute>
     TextBaseline? textBaseline,
     Clip? clipBehavior,
     SpaceDto? gap,
-    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(
       FlexSpecAttribute(
@@ -469,7 +442,6 @@ class FlexSpecUtility<T extends SpecAttribute>
         textBaseline: textBaseline,
         clipBehavior: clipBehavior,
         gap: gap,
-        modifiers: modifiers,
       ),
     );
   }

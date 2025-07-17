@@ -1,12 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../widget_state_variant.dart';
-import 'on_breakpoint_util.dart';
-import 'on_brightness_util.dart';
+import '../../core/variant.dart';
+import '../../core/deprecated.dart';
 import 'on_directionality_util.dart';
 import 'on_not_util.dart';
-import 'on_orientation_util.dart';
 import 'on_platform_util.dart';
 
 class OnContextVariantUtility {
@@ -19,7 +17,7 @@ class OnContextVariantUtility {
   final windows = const OnPlatformVariant(TargetPlatform.windows);
   final web = const OnWebVariant();
 
-  // Breakpoint variants
+  // Breakpoint variants (deprecated - use MediaQueryVariant.size() instead)
   final small = const OnBreakpointTokenVariant(BreakpointTokens.small);
   final xsmall = const OnBreakpointTokenVariant(BreakpointTokens.xsmall);
   final medium = const OnBreakpointTokenVariant(BreakpointTokens.medium);
@@ -27,32 +25,30 @@ class OnContextVariantUtility {
   final breakpoint = OnBreakPointVariant.new;
   final breakpointToken = OnBreakpointTokenVariant.new;
 
-  // Brightness variants
-  final light = const OnBrightnessVariant(Brightness.light);
-  final dark = const OnBrightnessVariant(Brightness.dark);
+  // Brightness variants - now use MediaQueryVariant
+  final light = MediaQueryVariant.platformBrightness(Brightness.light);
+  final dark = MediaQueryVariant.platformBrightness(Brightness.dark);
 
   // Directionality variants
   final ltr = const OnDirectionalityVariant(TextDirection.ltr);
   final rtl = const OnDirectionalityVariant(TextDirection.rtl);
 
-  // Orientation variants
-  final landscape = const OnOrientationVariant(Orientation.landscape);
-  final portrait = const OnOrientationVariant(Orientation.portrait);
+  // Orientation variants - now use MediaQueryVariant
+  final landscape = MediaQueryVariant.orientation(Orientation.landscape);
+  final portrait = MediaQueryVariant.orientation(Orientation.portrait);
 
   // Widget state variants
-  final press = const OnPressVariant();
-  final hover = const OnHoverVariant();
-  final focus = const OnFocusedVariant();
-  final enabled = const OnNotVariant(OnDisabledVariant());
-  final disabled = const OnDisabledVariant();
-  @Deprecated(
-    'The longPress variant has been removed. Please implement your own context variant for it',
-  )
-  final longPress = const OnLongPressVariant();
-  final selected = const OnSelectedVariant();
-  final unselected = const OnNotVariant(OnSelectedVariant());
-  final dragged = const OnDraggedVariant();
-  final error = const OnErrorVariant();
+  final press = const WidgetStateVariant(WidgetState.pressed);
+  final hover = const WidgetStateVariant(WidgetState.hovered);
+  final focus = const WidgetStateVariant(WidgetState.focused);
+  final enabled = const OnNotVariant(WidgetStateVariant(WidgetState.disabled));
+  final disabled = const WidgetStateVariant(WidgetState.disabled);
+  final selected = const WidgetStateVariant(WidgetState.selected);
+  final unselected = const OnNotVariant(
+    WidgetStateVariant(WidgetState.selected),
+  );
+  final dragged = const WidgetStateVariant(WidgetState.dragged);
+  final error = const WidgetStateVariant(WidgetState.error);
 
   /// Creates an [OnNotVariant] with the specified [variant].
   ///

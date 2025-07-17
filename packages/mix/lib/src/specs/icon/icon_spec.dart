@@ -3,14 +3,10 @@ import 'package:flutter/widgets.dart';
 
 import '../../attributes/color/color_util.dart';
 import '../../attributes/enum/enum_util.dart';
-import '../../attributes/modifiers/widget_modifiers_config.dart';
-import '../../attributes/modifiers/widget_modifiers_config_dto.dart';
-import '../../attributes/modifiers/widget_modifiers_util.dart';
 import '../../attributes/shadow/shadow_dto.dart';
 import '../../attributes/shadow/shadow_util.dart';
 import '../../core/computed_style/computed_style.dart';
 import '../../core/factory/mix_context.dart';
-import '../../core/factory/style_mix.dart';
 import '../../core/helpers.dart';
 import '../../core/mix_element.dart';
 import '../../core/prop.dart';
@@ -38,7 +34,6 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
     this.textDirection,
     this.applyTextScaling,
     this.fill,
-    super.modifiers,
   });
 
   static IconSpec from(MixContext mix) {
@@ -49,7 +44,6 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
   static IconSpec of(BuildContext context) {
     return ComputedStyle.specOf(context) ?? const IconSpec();
   }
-
 
   @override
   IconSpec copyWith({
@@ -62,7 +56,6 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
     TextDirection? textDirection,
     bool? applyTextScaling,
     double? fill,
-    WidgetModifiersConfig? modifiers,
   }) {
     return IconSpec(
       color: color ?? this.color,
@@ -74,7 +67,6 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
       textDirection: textDirection ?? this.textDirection,
       applyTextScaling: applyTextScaling ?? this.applyTextScaling,
       fill: fill ?? this.fill,
-      modifiers: modifiers ?? this.modifiers,
     );
   }
 
@@ -92,7 +84,6 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
       textDirection: t < 0.5 ? textDirection : other.textDirection,
       applyTextScaling: t < 0.5 ? applyTextScaling : other.applyTextScaling,
       fill: MixHelpers.lerpDouble(fill, other.fill, t),
-      modifiers: other.modifiers,
     );
   }
 
@@ -118,9 +109,6 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
       ),
     );
     properties.add(DiagnosticsProperty('fill', fill, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
-    );
   }
 
   @override
@@ -134,7 +122,6 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
     textDirection,
     applyTextScaling,
     fill,
-    modifiers,
   ];
 }
 
@@ -160,7 +147,6 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
     TextDirection? textDirection,
     bool? applyTextScaling,
     double? fill,
-    WidgetModifiersConfigDto? modifiers,
   }) {
     return IconSpecAttribute.props(
       color: Prop.maybeValue(color),
@@ -174,7 +160,6 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
       textDirection: textDirection,
       applyTextScaling: applyTextScaling,
       fill: Prop.maybeValue(fill),
-      modifiers: modifiers,
     );
   }
 
@@ -189,7 +174,6 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
     this.textDirection,
     this.applyTextScaling,
     this.fill,
-    super.modifiers,
   });
 
   // Static factory to create from resolved Spec
@@ -209,7 +193,6 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
       textDirection: spec.textDirection,
       applyTextScaling: spec.applyTextScaling,
       fill: Prop.maybeValue(spec.fill),
-      modifiers: WidgetModifiersConfigDto.maybeValue(spec.modifiers),
     );
   }
 
@@ -237,7 +220,6 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
       textDirection: textDirection,
       applyTextScaling: applyTextScaling,
       fill: resolveProp(context, fill),
-      modifiers: modifiers?.resolve(context),
     );
   }
 
@@ -259,7 +241,6 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
       textDirection: other.textDirection ?? textDirection,
       applyTextScaling: other.applyTextScaling ?? applyTextScaling,
       fill: mergeProp(fill, other.fill),
-      modifiers: modifiers?.merge(other.modifiers) ?? other.modifiers,
     );
   }
 
@@ -285,9 +266,6 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
       ),
     );
     properties.add(DiagnosticsProperty('fill', fill, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
-    );
   }
 
   @override
@@ -301,7 +279,6 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
     textDirection,
     applyTextScaling,
     fill,
-    modifiers,
   ];
 }
 
@@ -332,7 +309,6 @@ class IconSpecUtility<T extends SpecAttribute>
   late final fill = DoubleUtility(
     (prop) => builder(IconSpecAttribute.props(fill: prop)),
   );
-  late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
   IconSpecUtility(super.builder);
 
@@ -356,7 +332,6 @@ class IconSpecUtility<T extends SpecAttribute>
     TextDirection? textDirection,
     bool? applyTextScaling,
     double? fill,
-    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(
       IconSpecAttribute(
@@ -369,7 +344,6 @@ class IconSpecUtility<T extends SpecAttribute>
         textDirection: textDirection,
         applyTextScaling: applyTextScaling,
         fill: fill,
-        modifiers: modifiers,
       ),
     );
   }

@@ -2,9 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../attributes/enum/enum_util.dart';
-import '../../attributes/modifiers/widget_modifiers_config.dart';
-import '../../attributes/modifiers/widget_modifiers_config_dto.dart';
-import '../../attributes/modifiers/widget_modifiers_util.dart';
 import '../../attributes/scalars/scalar_util.dart';
 import '../../attributes/strut_style/strut_style_dto.dart';
 import '../../attributes/strut_style/strut_style_util.dart';
@@ -15,7 +12,6 @@ import '../../attributes/text_style/text_style_util.dart';
 import '../../core/computed_style/computed_style.dart';
 import '../../core/directive.dart';
 import '../../core/factory/mix_context.dart';
-import '../../core/factory/style_mix.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/spec.dart';
@@ -50,7 +46,6 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     this.textDirection,
     this.softWrap,
     this.directive,
-    super.modifiers,
   });
 
   static TextSpec from(MixContext mix) {
@@ -75,7 +70,6 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     return ComputedStyle.specOf(context) ?? const TextSpec();
   }
 
-
   /// Creates a copy of this [TextSpec] but with the given fields
   /// replaced with the new values.
   @override
@@ -91,7 +85,6 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     TextDirection? textDirection,
     bool? softWrap,
     TextDirective? directive,
-    WidgetModifiersConfig? modifiers,
   }) {
     return TextSpec(
       overflow: overflow ?? this.overflow,
@@ -105,7 +98,6 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
       textDirection: textDirection ?? this.textDirection,
       softWrap: softWrap ?? this.softWrap,
       directive: directive ?? this.directive,
-      modifiers: modifiers ?? this.modifiers,
     );
   }
 
@@ -121,7 +113,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
   /// interpolation method:
   /// - [MixHelpers.lerpStrutStyle] for [strutStyle].
   /// - [MixHelpers.lerpTextStyle] for [style].
-  /// For [overflow] and [textAlign] and [textScaler] and [maxLines] and [textWidthBasis] and [textHeightBehavior] and [textDirection] and [softWrap] and [directive] and [animated] and [modifiers], the interpolation is performed using a step function.
+  /// For [overflow] and [textAlign] and [textScaler] and [maxLines] and [textWidthBasis] and [textHeightBehavior] and [textDirection] and [softWrap] and [directive], the interpolation is performed using a step function.
   /// If [t] is less than 0.5, the value from the current [TextSpec] is used. Otherwise, the value
   /// from the [other] [TextSpec] is used.
   ///
@@ -145,7 +137,6 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
       textDirection: t < 0.5 ? textDirection : other.textDirection,
       softWrap: t < 0.5 ? softWrap : other.softWrap,
       directive: t < 0.5 ? directive : other.directive,
-      modifiers: other.modifiers,
     );
   }
 
@@ -188,9 +179,6 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     properties.add(
       DiagnosticsProperty('directive', directive, defaultValue: null),
     );
-    properties.add(
-      DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
-    );
   }
 
   /// The list of properties that constitute the state of this [TextSpec].
@@ -210,7 +198,6 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     textDirection,
     softWrap,
     directive,
-    modifiers,
   ];
 }
 
@@ -246,7 +233,6 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
     this.textDirection,
     bool? softWrap,
     this.directive,
-    super.modifiers,
   }) : maxLines = maxLines != null ? Prop.fromValue(maxLines) : null,
        softWrap = softWrap != null ? Prop.fromValue(softWrap) : null;
 
@@ -263,7 +249,6 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
     this.textDirection,
     this.softWrap,
     this.directive,
-    super.modifiers,
   });
 
   /// Constructor that accepts a [TextSpec] value and extracts its properties.
@@ -283,11 +268,12 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
       maxLines: Prop.maybeValue(spec.maxLines),
       style: TextStyleDto.maybeValue(spec.style),
       textWidthBasis: spec.textWidthBasis,
-      textHeightBehavior: TextHeightBehaviorDto.maybeValue(spec.textHeightBehavior),
+      textHeightBehavior: TextHeightBehaviorDto.maybeValue(
+        spec.textHeightBehavior,
+      ),
       textDirection: spec.textDirection,
       softWrap: Prop.maybeValue(spec.softWrap),
       directive: TextDirectiveDto.maybeValue(spec.directive),
-      modifiers: WidgetModifiersConfigDto.maybeValue(spec.modifiers),
     );
   }
 
@@ -325,7 +311,6 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
       textDirection: textDirection,
       softWrap: softWrap?.resolve(context),
       directive: directive?.resolve(context),
-      modifiers: modifiers?.resolve(context),
     );
   }
 
@@ -355,7 +340,6 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
       textDirection: other.textDirection ?? textDirection,
       softWrap: softWrap?.merge(other.softWrap) ?? other.softWrap,
       directive: directive?.merge(other.directive) ?? other.directive,
-      modifiers: modifiers?.merge(other.modifiers) ?? other.modifiers,
     );
   }
 
@@ -398,9 +382,6 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
     properties.add(
       DiagnosticsProperty('directive', directive, defaultValue: null),
     );
-    properties.add(
-      DiagnosticsProperty('modifiers', modifiers, defaultValue: null),
-    );
   }
 
   /// The list of properties that constitute the state of this [TextSpecAttribute].
@@ -420,7 +401,6 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
     textDirection,
     softWrap,
     directive,
-    modifiers,
   ];
 }
 
@@ -443,7 +423,9 @@ class TextSpecUtility<T extends SpecAttribute>
   late final textScaler = TextScalerUtility((v) => only(textScaler: v));
 
   /// Utility for defining [TextSpecAttribute.maxLines]
-  late final maxLines = IntUtility((prop) => builder(TextSpecAttribute.props(maxLines: prop)));
+  late final maxLines = IntUtility(
+    (prop) => builder(TextSpecAttribute.props(maxLines: prop)),
+  );
 
   /// Utility for defining [TextSpecAttribute.style]
   late final style = TextStyleUtility((v) => only(style: v));
@@ -527,7 +509,9 @@ class TextSpecUtility<T extends SpecAttribute>
   );
 
   /// Utility for defining [TextSpecAttribute.softWrap]
-  late final softWrap = BoolUtility((prop) => builder(TextSpecAttribute.props(softWrap: prop)));
+  late final softWrap = BoolUtility(
+    (prop) => builder(TextSpecAttribute.props(softWrap: prop)),
+  );
 
   /// Utility for defining [TextSpecAttribute.directive]
   late final directive = TextDirectiveUtility((v) => only(directive: v));
@@ -546,10 +530,6 @@ class TextSpecUtility<T extends SpecAttribute>
 
   /// Utility for defining [TextSpecAttribute.directive.sentenceCase]
   late final sentenceCase = directive.sentenceCase;
-
-
-  /// Utility for defining [TextSpecAttribute.modifiers]
-  late final wrap = SpecModifierUtility((v) => only(modifiers: v));
 
   TextSpecUtility(super.attributeBuilder);
 
@@ -576,7 +556,6 @@ class TextSpecUtility<T extends SpecAttribute>
     TextDirection? textDirection,
     bool? softWrap,
     TextDirectiveDto? directive,
-    WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(
       TextSpecAttribute(
@@ -591,7 +570,6 @@ class TextSpecUtility<T extends SpecAttribute>
         textDirection: textDirection,
         softWrap: softWrap,
         directive: directive,
-        modifiers: modifiers,
       ),
     );
   }

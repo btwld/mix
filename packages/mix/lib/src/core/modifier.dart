@@ -12,7 +12,7 @@ import 'utility.dart';
 /// while maintaining style inheritance and animation support.
 abstract class WidgetModifierSpec<Self extends WidgetModifierSpec<Self>>
     extends Spec<Self> {
-  const WidgetModifierSpec() : super(modifiers: null);
+  const WidgetModifierSpec();
 
   /// Linearly interpolates between two modifier specs.
   ///

@@ -1,104 +1,41 @@
 import 'package:flutter/widgets.dart';
 
 import '../core/factory/style_mix.dart';
-import '../core/mix_element.dart';
 import '../core/variant.dart';
-import 'variant_attribute.dart';
+import '../internal/compare_mixin.dart';
 
+/// Builder for event-driven context variant styling.
+///
+/// Unlike regular variants that have boolean states, ContextVariantBuilder
+/// allows for dynamic styling based on rich event data (e.g., pointer position).
+///
+/// This is kept separate from the main variant system for clear separation of
+/// concerns: regular variants for conditions, builder for dynamic styling.
 @immutable
-abstract class ContextVariant extends IVariant {
-  const ContextVariant();
+final class ContextVariantBuilder<T> with EqualityMixin {
+  final ContextVariant variant;
+  final ScopedStyle Function(BuildContext context, T value) fn;
 
-  VariantAttribute call([
-    StyleElement? p1,
-    StyleElement? p2,
-    StyleElement? p3,
-    StyleElement? p4,
-    StyleElement? p5,
-    StyleElement? p6,
-    StyleElement? p7,
-    StyleElement? p8,
-    StyleElement? p9,
-    StyleElement? p10,
-    StyleElement? p11,
-    StyleElement? p12,
-    StyleElement? p13,
-    StyleElement? p14,
-    StyleElement? p15,
-    StyleElement? p16,
-    StyleElement? p17,
-    StyleElement? p18,
-    StyleElement? p19,
-    StyleElement? p20,
-  ]) {
-    final params = [
-      p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, //
-      p11, p12, p13, p14, p15, p16, p17, p18, p19, p20,
-    ].whereType<StyleElement>();
+  const ContextVariantBuilder(this.variant, this.fn);
 
-    return VariantAttribute(this, Style.create(params));
-  }
-
-  @override
-  VariantPriority get priority => VariantPriority.normal;
-
-  @override
-  Object get mergeKey => '$runtimeType';
-
-  @override
-  get props => [priority];
-}
-
-@immutable
-abstract class MediaQueryContextVariant extends ContextVariant {
-  @override
-  final priority = VariantPriority.normal;
-
-  const MediaQueryContextVariant();
-}
-
-@immutable
-final class ContextVariantBuilder extends VariantAttribute<ContextVariant> {
-  final Style Function(BuildContext context) fn;
-
-  const ContextVariantBuilder(this.fn, ContextVariant variant)
-    : super(variant, const Style.empty());
-
-  Style Function(BuildContext context) mergeFn(
-    Style Function(BuildContext context) other,
+  ScopedStyle Function(BuildContext context, T value) mergeFn(
+    ScopedStyle Function(BuildContext context, T value) other,
   ) {
-    return (BuildContext context) => fn(context).merge(other(context));
+    return (BuildContext context, T value) =>
+        fn(context, value).merge(other(context, value)) as ScopedStyle;
   }
 
-  @override
-  ContextVariantBuilder merge(ContextVariantBuilder? other) {
+  ContextVariantBuilder<T> merge(ContextVariantBuilder<T>? other) {
     if (other == null) return this;
     if (other.variant != variant) {
       throw ArgumentError.value(other, 'variant is not the same');
     }
 
-    return ContextVariantBuilder(mergeFn(other.fn), variant);
+    return ContextVariantBuilder(variant, mergeFn(other.fn));
   }
 
   @override
-  @protected
-  Style get value => throw FlutterError.fromParts([
-    ErrorSummary(
-      'Attempted to access value of ContextVariantBuilder directly.',
-    ),
-    ErrorDescription(
-      'This is a ContextVariantBuilder and requires a BuildContext to resolve.',
-    ),
-    ErrorHint(
-      'Use the build(context) method instead of accessing value directly.',
-    ),
-  ]);
+  List<Object?> get props => [variant, fn];
 
-  @override
-  Object get mergeKey => '$runtimeType.${variant.mergeKey}';
-
-  @override
-  get props => [variant];
-
-  Style build(BuildContext context) => fn(context);
+  ScopedStyle build(BuildContext context, T value) => fn(context, value);
 }

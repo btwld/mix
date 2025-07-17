@@ -1,16 +1,12 @@
 import 'package:flutter/widgets.dart';
 
-import '../attributes/modifiers/widget_modifiers_config.dart';
-import '../attributes/modifiers/widget_modifiers_config_dto.dart';
 import '../internal/compare_mixin.dart';
 import 'factory/mix_context.dart';
 import 'mix_element.dart';
 
 @immutable
 abstract class Spec<T extends Spec<T>> with EqualityMixin {
-  final WidgetModifiersConfig? modifiers;
-
-  const Spec({this.modifiers});
+  const Spec();
 
   Type get type => T;
 
@@ -24,11 +20,13 @@ abstract class Spec<T extends Spec<T>> with EqualityMixin {
 
 /// An abstract class representing a resolvable attribute.
 ///
-/// This class extends the [StyleElement] class and provides a generic type [Self] and [Value].
-/// The [Self] type represents the concrete implementation of the attribute, while the [Value] type represents the resolvable value.
-abstract class SpecAttribute<Value> extends StyleElement implements Mix<Value> {
-  final WidgetModifiersConfigDto? modifiers;
-  const SpecAttribute({this.modifiers});
+/// This class extends the [Mix] class and provides a generic type [Value].
+/// The [Value] type represents the resolvable value.
+///
+/// SpecAttributes are pure data classes - they contain only attribute-specific fields
+/// without cross-cutting concerns like animation or modifiers.
+abstract class SpecAttribute<Value> extends Mix<Value> {
+  const SpecAttribute();
 
   /// Resolves this attribute to its concrete value using the provided [MixContext].
   @override
@@ -37,4 +35,46 @@ abstract class SpecAttribute<Value> extends StyleElement implements Mix<Value> {
   /// Merges this attribute with another attribute of the same type.
   @override
   SpecAttribute<Value> merge(covariant SpecAttribute<Value>? other);
+}
+
+/// Base class for creating spec utilities that generate SpecAttributes.
+///
+/// This class provides a fluent API for building SpecAttributes with a specific
+/// value type. It handles the creation and merging of attributes internally.
+abstract class SpecUtility<T extends SpecAttribute, V> extends StyleElement {
+  @protected
+  @visibleForTesting
+  final T Function(V) attributeBuilder;
+
+  T? _attributeValue;
+
+  SpecUtility(this.attributeBuilder);
+
+  static T selfBuilder<T>(T value) => value;
+
+  T? get attributeValue => _attributeValue;
+
+  T builder(V v) {
+    final attribute = attributeBuilder(v);
+    // Accumulate state in attributeValue
+    _attributeValue = _attributeValue?.merge(attribute) as T? ?? attribute;
+
+    return attribute;
+  }
+
+  T only();
+
+  @override
+  SpecUtility<T, V> merge(covariant SpecUtility<T, V> other) {
+    if (other._attributeValue != null) {
+      _attributeValue =
+          _attributeValue?.merge(other._attributeValue) as T? ??
+          other._attributeValue;
+    }
+
+    return this;
+  }
+
+  @override
+  List<Object?> get props => [attributeValue];
 }
