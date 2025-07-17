@@ -3,11 +3,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../core/factory/mix_context.dart';
-import '../core/helpers.dart';
-import '../core/mix_element.dart';
-import '../core/modifier.dart';
-import '../core/utility.dart';
+import '../../mix.dart';
 
 final class AlignModifierSpec extends WidgetModifierSpec<AlignModifierSpec>
     with Diagnosticable {
@@ -73,7 +69,7 @@ final class AlignModifierSpec extends WidgetModifierSpec<AlignModifierSpec>
   }
 }
 
-final class AlignModifierSpecUtility<T extends StyleElement>
+final class AlignModifierSpecUtility<T extends SpecMix>
     extends MixUtility<T, AlignModifierSpecAttribute> {
   const AlignModifierSpecUtility(super.builder);
   T call({

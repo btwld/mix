@@ -5,8 +5,8 @@ import 'package:flutter/widgets.dart';
 
 import '../attributes/border/border_radius_dto.dart';
 import '../core/factory/mix_context.dart';
-import '../core/mix_element.dart';
 import '../core/modifier.dart';
+import '../core/spec.dart';
 import '../core/utility.dart';
 
 final class ClipOvalModifierSpec
@@ -829,7 +829,7 @@ class TriangleClipper extends CustomClipper<Path> {
   bool shouldReclip(TriangleClipper oldClipper) => false;
 }
 
-final class ClipPathModifierSpecUtility<T extends StyleElement>
+final class ClipPathModifierSpecUtility<T extends SpecMix>
     extends MixUtility<T, ClipPathModifierSpecAttribute> {
   const ClipPathModifierSpecUtility(super.builder);
 
@@ -843,7 +843,7 @@ final class ClipPathModifierSpecUtility<T extends StyleElement>
   }
 }
 
-final class ClipRRectModifierSpecUtility<T extends StyleElement>
+final class ClipRRectModifierSpecUtility<T extends SpecMix>
     extends MixUtility<T, ClipRRectModifierSpecAttribute> {
   const ClipRRectModifierSpecUtility(super.builder);
   T call({
@@ -861,7 +861,7 @@ final class ClipRRectModifierSpecUtility<T extends StyleElement>
   }
 }
 
-final class ClipOvalModifierSpecUtility<T extends StyleElement>
+final class ClipOvalModifierSpecUtility<T extends SpecMix>
     extends MixUtility<T, ClipOvalModifierSpecAttribute> {
   const ClipOvalModifierSpecUtility(super.builder);
   T call({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
@@ -874,7 +874,7 @@ final class ClipOvalModifierSpecUtility<T extends StyleElement>
   }
 }
 
-final class ClipRectModifierSpecUtility<T extends StyleElement>
+final class ClipRectModifierSpecUtility<T extends SpecMix>
     extends MixUtility<T, ClipRectModifierSpecAttribute> {
   const ClipRectModifierSpecUtility(super.builder);
   T call({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
@@ -887,7 +887,7 @@ final class ClipRectModifierSpecUtility<T extends StyleElement>
   }
 }
 
-final class ClipTriangleModifierSpecUtility<T extends StyleElement>
+final class ClipTriangleModifierSpecUtility<T extends SpecMix>
     extends MixUtility<T, ClipTriangleModifierSpecAttribute> {
   const ClipTriangleModifierSpecUtility(super.builder);
   T call({Clip? clipBehavior}) {

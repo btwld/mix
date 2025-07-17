@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 
-import '../../core/mix_element.dart';
 import '../../core/prop.dart';
 import '../../core/prop_utility.dart';
+import '../../core/spec.dart';
 import '../../theme/tokens/mix_token.dart';
 import 'color_directive.dart';
 import 'material_colors_util.dart';
 
 /// Mixin that provides color directive methods
-base mixin ColorDirectiveMixin<T extends StyleElement>
-    on PropUtility<T, Color> {
+base mixin ColorDirectiveMixin<T extends SpecMix> on PropUtility<T, Color> {
   // All directive methods use the directive() method from PropUtility
   T withOpacity(double opacity) => directive(OpacityDirective(opacity));
 
@@ -32,7 +31,7 @@ base mixin ColorDirectiveMixin<T extends StyleElement>
 
 /// Utility for predefined colors (e.g., Colors.red)
 @immutable
-base class FoundationColorUtility<T extends StyleElement>
+base class FoundationColorUtility<T extends SpecMix>
     extends PropUtility<T, Color>
     with ColorDirectiveMixin<T> {
   final Color color;
@@ -43,7 +42,7 @@ base class FoundationColorUtility<T extends StyleElement>
 /// This utility can be called as a function to return a StyleElement,
 /// or accessed as a property to get the Color value.
 @immutable
-final class CallableColorUtility<T extends StyleElement> {
+final class CallableColorUtility<T extends SpecMix> {
   final T Function(Prop<Color>) builder;
   final Color color;
 
@@ -82,7 +81,7 @@ final class CallableColorUtility<T extends StyleElement> {
 
 /// Simplified ColorUtility using the PropUtility pattern
 @immutable
-final class ColorUtility<T extends StyleElement> extends PropUtility<T, Color>
+final class ColorUtility<T extends SpecMix> extends PropUtility<T, Color>
     with ColorDirectiveMixin<T>, MaterialColorsMixin<T>, BasicColorsMixin<T> {
   ColorUtility(super.builder);
 
@@ -91,7 +90,7 @@ final class ColorUtility<T extends StyleElement> extends PropUtility<T, Color>
   T ref(MixToken<Color> ref) => token(ref);
 }
 
-base mixin BasicColorsMixin<T extends StyleElement> on PropUtility<T, Color> {
+base mixin BasicColorsMixin<T extends SpecMix> on PropUtility<T, Color> {
   late final transparent = CallableColorUtility(builder, Colors.transparent);
 
   late final black = CallableColorUtility(builder, Colors.black);

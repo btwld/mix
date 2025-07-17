@@ -9,8 +9,8 @@ void main() {
   const attribute2 = MockIntScalarAttribute(2);
   const attribute3 = MockBooleanScalarAttribute(true);
   const attribute4 = MockStringScalarAttribute('string1');
-  const variantAttr1 = Variant('mock1');
-  const variantAttr2 = Variant('mock2');
+  const variantAttr1 = NamedVariant('mock1');
+  const variantAttr2 = NamedVariant('mock2');
   group('Style()', () {
     test('Initialization with All Null Attributes', () {
       final mix = Style(null, null, null, null);
@@ -54,7 +54,7 @@ void main() {
 
   group('Style.create([]) ', () {
     test('Initialization with Empty Array', () {
-      final mix = Style.create([]);
+      final mix = Style.create(const []);
       expect(mix.styles.isEmpty, true);
       expect(mix.variants.isEmpty, true);
     });
@@ -434,8 +434,8 @@ void main() {
     const stringAttr2 = MockStringScalarAttribute('string2');
     const stringAttr3 = MockStringScalarAttribute('string3');
 
-    const outlinedVariant = Variant('outlined');
-    const smallVariant = Variant('small');
+    const outlinedVariant = NamedVariant('outlined');
+    const smallVariant = NamedVariant('small');
 
     test('Picks specified Variants and ignores others', () {
       final style = Style(

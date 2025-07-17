@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../../core/mix_element.dart';
+import '../../../core/spec.dart';
 import '../../../core/utility.dart';
 import '../../enum/enum_util.dart';
 import '../../scalars/scalar_util.dart';
@@ -10,7 +10,7 @@ import 'decoration_image_dto.dart';
 ///
 /// This class provides methods to set individual properties of a [DecorationImage].
 /// Use the methods of this class to configure specific properties of a [DecorationImage].
-class DecorationImageUtility<T extends StyleElement>
+class DecorationImageUtility<T extends SpecMix>
     extends DtoUtility<T, DecorationImageDto, DecorationImage> {
   /// Utility for defining [DecorationImageDto.image]
   late final provider = ImageProviderUtility((v) => only(image: v));
@@ -33,12 +33,17 @@ class DecorationImageUtility<T extends StyleElement>
   );
 
   /// Utility for defining [DecorationImageDto.invertColors]
-  late final invertColors = BoolUtility((prop) => builder(DecorationImageDto.props(invertColors: prop)));
+  late final invertColors = BoolUtility(
+    (prop) => builder(DecorationImageDto.props(invertColors: prop)),
+  );
 
   /// Utility for defining [DecorationImageDto.isAntiAlias]
-  late final isAntiAlias = BoolUtility((prop) => builder(DecorationImageDto.props(isAntiAlias: prop)));
+  late final isAntiAlias = BoolUtility(
+    (prop) => builder(DecorationImageDto.props(isAntiAlias: prop)),
+  );
 
-  DecorationImageUtility(super.builder) : super(valueToDto: DecorationImageDto.value);
+  DecorationImageUtility(super.builder)
+    : super(valueToDto: DecorationImageDto.value);
 
   T call({
     ImageProvider<Object>? image,

@@ -1,9 +1,9 @@
-import '../../core/mix_element.dart';
+import '../../core/spec.dart';
 import '../../core/utility.dart';
 import '../../theme/tokens/mix_token.dart';
 import 'space_dto.dart';
 
-final class GapUtility<T extends StyleElement> extends MixUtility<T, SpaceDto> {
+final class GapUtility<T extends SpecMix> extends MixUtility<T, SpaceDto> {
   const GapUtility(super.builder);
 
   T call(double value) => builder(SpaceDto.value(value));

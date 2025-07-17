@@ -1,11 +1,11 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/mix_element.dart';
+import '../../core/spec.dart';
 import '../../core/utility.dart';
 import '../enum/enum_util.dart';
 import 'text_height_behavior_dto.dart';
 
-final class TextHeightBehaviorUtility<T extends StyleElement>
+final class TextHeightBehaviorUtility<T extends SpecMix>
     extends DtoUtility<T, TextHeightBehaviorDto, TextHeightBehavior> {
   late final heightToFirstAscent = BoolUtility(
     (prop) => only(applyHeightToFirstAscent: prop.value),
@@ -18,7 +18,8 @@ final class TextHeightBehaviorUtility<T extends StyleElement>
     (v) => only(leadingDistribution: v),
   );
 
-  TextHeightBehaviorUtility(super.builder) : super(valueToDto: TextHeightBehaviorDto.value);
+  TextHeightBehaviorUtility(super.builder)
+    : super(valueToDto: TextHeightBehaviorDto.value);
 
   T call({
     bool? applyHeightToFirstAscent,

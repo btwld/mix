@@ -1,7 +1,8 @@
 import 'mix_element.dart';
 import 'prop_utility.dart';
+import 'spec.dart';
 
-abstract class MixUtility<Attr extends StyleElement, Value> {
+abstract class MixUtility<Attr extends SpecMix, Value> {
   final Attr Function(Value) builder;
 
   const MixUtility(this.builder);
@@ -9,7 +10,7 @@ abstract class MixUtility<Attr extends StyleElement, Value> {
   static T selfBuilder<T>(T value) => value;
 }
 
-abstract class DtoUtility<A extends StyleElement, D extends Mix<Value>, Value>
+abstract class DtoUtility<A extends SpecMix, D extends Mix<Value>, Value>
     extends MixUtility<A, D> {
   final D Function(Value) fromValue;
   const DtoUtility(super.builder, {required D Function(Value) valueToDto})
@@ -20,69 +21,66 @@ abstract class DtoUtility<A extends StyleElement, D extends Mix<Value>, Value>
   A as(Value value) => builder(fromValue(value));
 }
 
-class GenericUtility<Attr extends StyleElement, Value>
+class GenericUtility<Attr extends SpecMix, Value>
     extends MixUtility<Attr, Value> {
   const GenericUtility(super.builder);
 
   Attr call(Value value) => builder(value);
 }
 
-base class ListUtility<T extends StyleElement, V>
-    extends MixUtility<T, List<V>> {
+base class ListUtility<T extends SpecMix, V> extends MixUtility<T, List<V>> {
   const ListUtility(super.builder);
 
   T call(List<V> values) => builder(values);
 }
 
-final class StringUtility<T extends StyleElement>
-    extends PropUtility<T, String> {
+final class StringUtility<T extends SpecMix> extends PropUtility<T, String> {
   const StringUtility(super.builder);
 }
 
-/// A utility class for creating [StyleElement] instances from [double] values.
+/// A utility class for creating [SpecMix] instances from [double] values.
 ///
-/// This class extends [PropUtility] and provides methods to create [StyleElement] instances
+/// This class extends [PropUtility] and provides methods to create [SpecMix] instances
 /// from predefined [double] values or custom [double] values.
-final class DoubleUtility<T extends StyleElement>
-    extends PropUtility<T, double> {
+final class DoubleUtility<T extends SpecMix> extends PropUtility<T, double> {
   const DoubleUtility(super.builder);
 
-  /// Creates an [StyleElement] instance with a value of 0.
+  /// Creates an [SpecMix] instance with a value of 0.
   T zero() => call(0);
 
-  /// Creates an [StyleElement] instance with a value of [double.infinity].
+  /// Creates an [SpecMix] instance with a value of [double.infinity].
   T infinity() => call(double.infinity);
 }
 
-/// A utility class for creating [StyleElement] instances from [int] values.
+/// A utility class for creating [SpecMix] instances from [int] values.
 ///
-/// This class extends [PropUtility] and provides methods to create [StyleElement] instances
+/// This class extends [PropUtility] and provides methods to create [SpecMix] instances
 /// from predefined [int] values or custom [int] values.
-final class IntUtility<T extends StyleElement> extends PropUtility<T, int> {
+final class IntUtility<T extends SpecMix> extends PropUtility<T, int> {
   const IntUtility(super.builder);
 
-  /// Creates an [StyleElement] instance with a value of 0.
+  /// Creates an [SpecMix] instance with a value of 0.
   T zero() => call(0);
 }
 
-/// A utility class for creating [StyleElement] instances from [bool] values.
+/// A utility class for creating [SpecMix] instances from [bool] values.
 ///
-/// This class extends [PropUtility] and provides methods to create [StyleElement] instances
+/// This class extends [PropUtility] and provides methods to create [SpecMix] instances
 /// from predefined [bool] values or custom [bool] values.
-final class BoolUtility<T extends StyleElement> extends PropUtility<T, bool> {
+final class BoolUtility<T extends SpecMix> extends PropUtility<T, bool> {
   const BoolUtility(super.builder);
 
-  /// Creates an [StyleElement] instance with a value of `true`.
+  /// Creates an [SpecMix] instance with a value of `true`.
   T on() => call(true);
 
-  /// Creates an [StyleElement] instance with a value of `false`.
+  /// Creates an [SpecMix] instance with a value of `false`.
   T off() => call(false);
 }
 
-/// An abstract utility class for creating [StyleElement] instances from [double] values representing sizes.
+/// An abstract utility class for creating [SpecMix] instances from [double] values representing sizes.
 ///
 /// This class extends [PropUtility] and serves as a base for more specific sizing utilities.
-abstract base class SizingUtility<T extends StyleElement>
+abstract base class SizingUtility<T extends SpecMix>
     extends PropUtility<T, double> {
   const SizingUtility(super.builder);
 }

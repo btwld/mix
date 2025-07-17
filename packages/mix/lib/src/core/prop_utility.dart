@@ -4,6 +4,7 @@ import '../attributes/animation/animation_config.dart';
 import '../theme/tokens/mix_token.dart';
 import 'mix_element.dart';
 import 'prop.dart';
+import 'spec.dart';
 
 /// Base utility for simple value properties that use Prop<T>
 ///
@@ -14,7 +15,7 @@ import 'prop.dart';
 ///
 /// Used for simple types like Color, double, FontWeight, etc.
 @immutable
-abstract class PropUtility<Return extends StyleElement, Value> {
+abstract class PropUtility<Return extends SpecMix, Value> {
   @protected
   final Return Function(Prop<Value>) builder;
   const PropUtility(this.builder);
@@ -47,7 +48,7 @@ abstract class PropUtility<Return extends StyleElement, Value> {
 ///
 /// Used for complex types that need DTOs like EdgeInsets, TextStyle, etc.
 @immutable
-abstract class MixPropUtility<S extends StyleElement, V, M extends Mix<V>> {
+abstract class MixPropUtility<S extends SpecMix, V, M extends Mix<V>> {
   @protected
   final M Function(V) convertToMix;
   @protected

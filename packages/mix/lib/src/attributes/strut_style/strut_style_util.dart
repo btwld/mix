@@ -1,13 +1,13 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/mix_element.dart';
+import '../../core/spec.dart';
 import '../../core/utility.dart';
 import '../../theme/tokens/mix_token.dart';
 import '../enum/enum_util.dart';
 import '../scalars/scalar_util.dart';
 import 'strut_style_dto.dart';
 
-final class StrutStyleUtility<T extends StyleElement>
+final class StrutStyleUtility<T extends SpecMix>
     extends DtoUtility<T, StrutStyleDto, StrutStyle> {
   late final fontWeight = FontWeightUtility(
     (prop) => builder(StrutStyleDto.props(fontWeight: prop)),

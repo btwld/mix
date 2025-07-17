@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/mix_element.dart';
+import '../../core/spec.dart';
 import '../../core/utility.dart';
 import '../border/border_dto.dart';
 import '../border/border_radius_dto.dart';
@@ -18,7 +18,7 @@ import 'decoration_dto.dart';
 import 'image/decoration_image_dto.dart';
 import 'image/decoration_image_util.dart';
 
-class DecorationUtility<T extends StyleElement>
+class DecorationUtility<T extends SpecMix>
     extends MixUtility<T, DecorationDto> {
   const DecorationUtility(super.builder);
 
@@ -31,7 +31,7 @@ class DecorationUtility<T extends StyleElement>
 ///
 /// This class provides methods to set individual properties of a [BoxDecoration].
 /// Use the methods of this class to configure specific properties of a [BoxDecoration].
-class BoxDecorationUtility<T extends StyleElement>
+class BoxDecorationUtility<T extends SpecMix>
     extends DtoUtility<T, BoxDecorationDto, BoxDecoration> {
   /// Utility for defining [BoxDecorationDto.border]
   late final border = BoxBorderUtility((v) => only(border: v));
@@ -159,7 +159,7 @@ class BoxDecorationUtility<T extends StyleElement>
 ///
 /// This class provides methods to set individual properties of a [ShapeDecoration].
 /// Use the methods of this class to configure specific properties of a [ShapeDecoration].
-class ShapeDecorationUtility<T extends StyleElement>
+class ShapeDecorationUtility<T extends SpecMix>
     extends DtoUtility<T, ShapeDecorationDto, ShapeDecoration> {
   /// Utility for defining [ShapeDecorationDto.shape]
   late final shape = ShapeBorderUtility((v) => only(shape: v));

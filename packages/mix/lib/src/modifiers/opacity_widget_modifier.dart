@@ -5,8 +5,8 @@ import 'package:flutter/widgets.dart';
 
 import '../core/factory/mix_context.dart';
 import '../core/helpers.dart';
-import '../core/mix_element.dart';
 import '../core/modifier.dart';
+import '../core/spec.dart';
 import '../core/utility.dart';
 
 /// A modifier that wraps a widget with the [Opacity] widget.
@@ -144,7 +144,7 @@ class OpacityModifierSpecTween extends Tween<OpacityModifierSpec?> {
   }
 }
 
-final class OpacityModifierSpecUtility<T extends StyleElement>
+final class OpacityModifierSpecUtility<T extends SpecMix>
     extends MixUtility<T, OpacityModifierSpecAttribute> {
   const OpacityModifierSpecUtility(super.builder);
   T call(double value) => builder(OpacityModifierSpecAttribute(opacity: value));

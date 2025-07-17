@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/mix_element.dart';
+import '../../core/spec.dart';
 import '../../core/utility.dart';
 import '../color/color_util.dart';
 import '../scalars/scalar_util.dart';
@@ -10,13 +11,15 @@ import 'shadow_dto.dart';
 ///
 /// This class provides methods to set individual properties of a [Shadow].
 /// Use the methods of this class to configure specific properties of a [Shadow].
-class ShadowUtility<T extends StyleElement>
+class ShadowUtility<T extends SpecMix>
     extends DtoUtility<T, ShadowDto, Shadow> {
   /// Utility for defining [ShadowDto.blurRadius]
   late final blurRadius = DoubleUtility((prop) => only(blurRadius: prop.value));
 
   /// Utility for defining [ShadowDto.color]
-  late final color = ColorUtility((prop) => builder(ShadowDto.props(color: prop)));
+  late final color = ColorUtility(
+    (prop) => builder(ShadowDto.props(color: prop)),
+  );
 
   /// Utility for defining [ShadowDto.offset]
   late final offset = OffsetUtility((v) => only(offset: v));
@@ -42,10 +45,12 @@ class ShadowUtility<T extends StyleElement>
 ///
 /// This class provides methods to set individual properties of a [BoxShadow].
 /// Use the methods of this class to configure specific properties of a [BoxShadow].
-class BoxShadowUtility<T extends StyleElement>
+class BoxShadowUtility<T extends SpecMix>
     extends DtoUtility<T, BoxShadowDto, BoxShadow> {
   /// Utility for defining [BoxShadowDto.color]
-  late final color = ColorUtility((prop) => builder(BoxShadowDto.props(color: prop)));
+  late final color = ColorUtility(
+    (prop) => builder(BoxShadowDto.props(color: prop)),
+  );
 
   /// Utility for defining [BoxShadowDto.offset]
   late final offset = OffsetUtility((v) => only(offset: v));
@@ -54,7 +59,9 @@ class BoxShadowUtility<T extends StyleElement>
   late final blurRadius = DoubleUtility((prop) => only(blurRadius: prop.value));
 
   /// Utility for defining [BoxShadowDto.spreadRadius]
-  late final spreadRadius = DoubleUtility((prop) => only(spreadRadius: prop.value));
+  late final spreadRadius = DoubleUtility(
+    (prop) => only(spreadRadius: prop.value),
+  );
 
   BoxShadowUtility(super.builder) : super(valueToDto: BoxShadowDto.value);
 
@@ -97,7 +104,7 @@ class BoxShadowUtility<T extends StyleElement>
 ///
 /// This class extends [MixUtility] and provides a convenient way to create [StyleElement]
 /// instances by transforming a list of [BoxShadow] objects into a list of [ShadowDto] objects.
-final class ShadowListUtility<T extends StyleElement>
+final class ShadowListUtility<T extends SpecMix>
     extends MixUtility<T, List<ShadowDto>> {
   const ShadowListUtility(super.builder);
 
@@ -124,7 +131,7 @@ final class ShadowListUtility<T extends StyleElement>
 ///
 /// This class extends [MixUtility] and provides a convenient way to create [StyleElement]
 /// instances by transforming a list of [BoxShadow] objects into a list of [BoxShadowDto] objects.
-final class BoxShadowListUtility<T extends StyleElement>
+final class BoxShadowListUtility<T extends SpecMix>
     extends MixUtility<T, List<BoxShadowDto>> {
   late final add = BoxShadowUtility((v) => builder([v]));
 
@@ -155,7 +162,7 @@ final class BoxShadowListUtility<T extends StyleElement>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// based on predefined elevation values, which are mapped to corresponding lists of
 /// [BoxShadowDto] objects using the [kElevationToShadow] map.
-final class ElevationUtility<T extends StyleElement>
+final class ElevationUtility<T extends SpecMix>
     extends MixUtility<T, List<BoxShadowDto>> {
   /// Creates an [T] instance with an elevation of 1.
   late final e1 = one;

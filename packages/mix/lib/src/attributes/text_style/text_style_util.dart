@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/mix_element.dart';
+import '../../core/spec.dart';
 import '../../core/utility.dart';
 import '../../theme/tokens/mix_token.dart';
 import '../color/color_util.dart';
@@ -9,7 +9,7 @@ import '../scalars/scalar_util.dart';
 import '../shadow/shadow_dto.dart';
 import 'text_style_dto.dart';
 
-final class TextStyleUtility<T extends StyleElement>
+final class TextStyleUtility<T extends SpecMix>
     extends DtoUtility<T, TextStyleDto, TextStyle> {
   late final color = ColorUtility(
     (prop) => builder(TextStyleDto.props(color: prop)),

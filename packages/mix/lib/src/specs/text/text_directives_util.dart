@@ -1,9 +1,9 @@
 import '../../core/directive.dart';
-import '../../core/mix_element.dart';
+import '../../core/spec.dart';
 import '../../core/utility.dart';
 import '../../internal/string_ext.dart';
 
-final class TextDirectiveUtility<T extends StyleElement>
+final class TextDirectiveUtility<T extends SpecMix>
     extends MixUtility<T, TextDirectiveDto> {
   const TextDirectiveUtility(super.builder);
   T _wrap(Modifier<String> modifier) => builder(TextDirectiveDto([modifier]));

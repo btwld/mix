@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/factory/mix_context.dart';
-import '../core/mix_element.dart';
 import '../core/modifier.dart';
+import '../core/spec.dart';
 import '../core/utility.dart';
 
 final class VisibilityModifierSpec
@@ -141,7 +141,7 @@ class VisibilityModifierSpecTween extends Tween<VisibilityModifierSpec?> {
   }
 }
 
-final class VisibilityModifierSpecUtility<T extends StyleElement>
+final class VisibilityModifierSpecUtility<T extends SpecMix>
     extends MixUtility<T, VisibilityModifierSpecAttribute> {
   const VisibilityModifierSpecUtility(super.builder);
   T on() => call(true);

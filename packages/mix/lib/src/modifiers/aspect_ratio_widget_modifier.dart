@@ -5,8 +5,8 @@ import 'package:flutter/widgets.dart';
 
 import '../core/factory/mix_context.dart';
 import '../core/helpers.dart';
-import '../core/mix_element.dart';
 import '../core/modifier.dart';
+import '../core/spec.dart';
 import '../core/utility.dart';
 
 final class AspectRatioModifierSpec
@@ -150,7 +150,7 @@ class AspectRatioModifierSpecTween extends Tween<AspectRatioModifierSpec?> {
   }
 }
 
-final class AspectRatioModifierSpecUtility<T extends StyleElement>
+final class AspectRatioModifierSpecUtility<T extends SpecMix>
     extends MixUtility<T, AspectRatioModifierSpecAttribute> {
   const AspectRatioModifierSpecUtility(super.builder);
   T call(double value) {

@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/factory/mix_context.dart';
-import '../core/mix_element.dart';
 import '../core/modifier.dart';
+import '../core/spec.dart';
 import '../core/utility.dart';
 
 final class IntrinsicHeightModifierSpec
@@ -265,13 +265,13 @@ class IntrinsicWidthModifierSpecTween
   }
 }
 
-final class IntrinsicHeightModifierSpecUtility<T extends StyleElement>
+final class IntrinsicHeightModifierSpecUtility<T extends SpecMix>
     extends MixUtility<T, IntrinsicHeightModifierSpecAttribute> {
   const IntrinsicHeightModifierSpecUtility(super.builder);
   T call() => builder(const IntrinsicHeightModifierSpecAttribute());
 }
 
-final class IntrinsicWidthModifierSpecUtility<T extends StyleElement>
+final class IntrinsicWidthModifierSpecUtility<T extends SpecMix>
     extends MixUtility<T, IntrinsicWidthModifierSpecAttribute> {
   const IntrinsicWidthModifierSpecUtility(super.builder);
   T call() => builder(const IntrinsicWidthModifierSpecAttribute());

@@ -13,6 +13,8 @@ import '../internal/deep_collection_equality.dart';
 sealed class Variant with EqualityMixin {
   const Variant();
 
+  String get key;
+
   /// Operator for creating AND multi-variants
   MultiVariant operator &(covariant Variant variant) =>
       MultiVariant.and([this, variant]);
@@ -35,6 +37,9 @@ final class NamedVariant extends Variant {
   @override
   bool operator ==(Object other) =>
       identical(this, other) || other is NamedVariant && other.name == name;
+
+  @override
+  String get key => name;
 
   @override
   int get hashCode => name.hashCode;
@@ -74,6 +79,9 @@ final class WidgetStateVariant extends ContextVariant {
       other is WidgetStateVariant && other.state == state;
 
   @override
+  String get key => state.name;
+
+  @override
   int get hashCode => state.hashCode;
 
   @override
@@ -90,29 +98,29 @@ final class MediaQueryVariant extends ContextVariant {
   final bool Function(BuildContext) _condition;
   final String _name;
 
-  const MediaQueryVariant._(this._condition, this._name);
+  const MediaQueryVariant._(this._name, this._condition);
 
   /// Size-based conditions using MediaQuery.sizeOf(context)
   factory MediaQueryVariant.size(bool Function(Size) condition, String name) {
     return MediaQueryVariant._(
-      (context) => condition(MediaQuery.sizeOf(context)),
       name,
+      (context) => condition(MediaQuery.sizeOf(context)),
     );
   }
 
   /// Orientation using MediaQuery.orientationOf(context)
   factory MediaQueryVariant.orientation(Orientation orientation) {
     return MediaQueryVariant._(
-      (context) => MediaQuery.orientationOf(context) == orientation,
       'orientation_${orientation.name}',
+      (context) => MediaQuery.orientationOf(context) == orientation,
     );
   }
 
   /// Platform brightness using MediaQuery.platformBrightnessOf(context)
   factory MediaQueryVariant.platformBrightness(Brightness brightness) {
     return MediaQueryVariant._(
-      (context) => MediaQuery.platformBrightnessOf(context) == brightness,
       'brightness_${brightness.name}',
+      (context) => MediaQuery.platformBrightnessOf(context) == brightness,
     );
   }
 
@@ -122,8 +130,8 @@ final class MediaQueryVariant extends ContextVariant {
     String name,
   ) {
     return MediaQueryVariant._(
-      (context) => condition(MediaQuery.devicePixelRatioOf(context)),
       name,
+      (context) => condition(MediaQuery.devicePixelRatioOf(context)),
     );
   }
 
@@ -133,8 +141,8 @@ final class MediaQueryVariant extends ContextVariant {
     String name,
   ) {
     return MediaQueryVariant._(
-      (context) => condition(MediaQuery.textScalerOf(context)),
       name,
+      (context) => condition(MediaQuery.textScalerOf(context)),
     );
   }
 
@@ -144,8 +152,8 @@ final class MediaQueryVariant extends ContextVariant {
     String name,
   ) {
     return MediaQueryVariant._(
-      (context) => condition(MediaQuery.paddingOf(context)),
       name,
+      (context) => condition(MediaQuery.paddingOf(context)),
     );
   }
 
@@ -155,56 +163,56 @@ final class MediaQueryVariant extends ContextVariant {
     String name,
   ) {
     return MediaQueryVariant._(
-      (context) => condition(MediaQuery.viewInsetsOf(context)),
       name,
+      (context) => condition(MediaQuery.viewInsetsOf(context)),
     );
   }
 
   /// Accessibility - always use 24 hour format
   factory MediaQueryVariant.alwaysUse24HourFormat(bool value) {
     return MediaQueryVariant._(
-      (context) => MediaQuery.alwaysUse24HourFormatOf(context) == value,
       'always_use_24_hour_format_$value',
+      (context) => MediaQuery.alwaysUse24HourFormatOf(context) == value,
     );
   }
 
   /// Accessibility - accessible navigation
   factory MediaQueryVariant.accessibleNavigation(bool value) {
     return MediaQueryVariant._(
-      (context) => MediaQuery.accessibleNavigationOf(context) == value,
       'accessible_navigation_$value',
+      (context) => MediaQuery.accessibleNavigationOf(context) == value,
     );
   }
 
   /// Accessibility - invert colors
   factory MediaQueryVariant.invertColors(bool value) {
     return MediaQueryVariant._(
-      (context) => MediaQuery.invertColorsOf(context) == value,
       'invert_colors_$value',
+      (context) => MediaQuery.invertColorsOf(context) == value,
     );
   }
 
   /// Accessibility - high contrast
   factory MediaQueryVariant.highContrast(bool value) {
     return MediaQueryVariant._(
-      (context) => MediaQuery.highContrastOf(context) == value,
       'high_contrast_$value',
+      (context) => MediaQuery.highContrastOf(context) == value,
     );
   }
 
   /// Accessibility - disable animations
   factory MediaQueryVariant.disableAnimations(bool value) {
     return MediaQueryVariant._(
-      (context) => MediaQuery.disableAnimationsOf(context) == value,
       'disable_animations_$value',
+      (context) => MediaQuery.disableAnimationsOf(context) == value,
     );
   }
 
   /// Accessibility - bold text
   factory MediaQueryVariant.boldText(bool value) {
     return MediaQueryVariant._(
-      (context) => MediaQuery.boldTextOf(context) == value,
       'bold_text_$value',
+      (context) => MediaQuery.boldTextOf(context) == value,
     );
   }
 
@@ -213,8 +221,10 @@ final class MediaQueryVariant extends ContextVariant {
     bool Function(BuildContext) condition,
     String name,
   ) {
-    return MediaQueryVariant._(condition, name);
+    return MediaQueryVariant._(name, condition);
   }
+
+  String get name => _name;
 
   @override
   bool when(BuildContext context) => _condition(context);
@@ -223,6 +233,9 @@ final class MediaQueryVariant extends ContextVariant {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is MediaQueryVariant && other._name == _name;
+
+  @override
+  String get key => _name;
 
   @override
   int get hashCode => _name.hashCode;
@@ -297,6 +310,9 @@ final class MultiVariant extends ContextVariant {
       other is MultiVariant &&
           other.operatorType == operatorType &&
           const DeepCollectionEquality().equals(other.variants, variants);
+
+  @override
+  String get key => 'MultiVariant(${variants.map((v) => v.key).join(', ')})';
 
   @override
   int get hashCode =>

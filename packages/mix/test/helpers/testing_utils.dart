@@ -250,7 +250,7 @@ final class MockBooleanScalarAttribute
   bool resolve(MixContext mix) => value;
 }
 
-abstract class _MockSpecAttribute<T> extends SpecAttribute<T> {
+abstract class _MockSpecAttribute<T> extends SpecMix<T> {
   final T _value;
   const _MockSpecAttribute(this._value);
 
@@ -330,8 +330,7 @@ final class UtilityTestAttribute<T>
   T resolve(MixContext mix) => value;
 }
 
-final class UtilityTestDtoAttribute<T extends Mix<V>, V>
-    extends SpecAttribute<V> {
+final class UtilityTestDtoAttribute<T extends Mix<V>, V> extends SpecMix<V> {
   final T value;
   const UtilityTestDtoAttribute(this.value);
 
@@ -427,7 +426,7 @@ abstract class TestScalarAttribute<
   Self extends TestScalarAttribute<Self, Value>,
   Value
 >
-    extends SpecAttribute<Value> {
+    extends SpecMix<Value> {
   final Value value;
   const TestScalarAttribute(this.value);
 

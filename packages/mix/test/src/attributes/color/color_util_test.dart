@@ -6,8 +6,7 @@ import '../../../helpers/custom_matchers.dart';
 import '../../../helpers/testing_utils.dart';
 import 'helpers/expect_color.dart';
 
-final class TestColorAttribute extends SpecAttribute<Color>
-    with MixHelperMixin {
+final class TestColorAttribute extends SpecMix<Color> with MixHelperMixin {
   final Prop<Color>? color;
   const TestColorAttribute([this.color]);
 

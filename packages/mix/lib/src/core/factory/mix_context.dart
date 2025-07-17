@@ -22,7 +22,7 @@ import 'style_mix.dart';
 // being a simple data container. The "Context" naming would also enable more fluid
 // refresh and update patterns, making the relationship with BuildContext clearer.
 
-/// Context for resolving [SpecAttribute]s into concrete values.
+/// Context for resolving [SpecMix]s into concrete values.
 ///
 /// Encapsulates the build context, token resolver, and attribute collection
 /// needed for style resolution. Acts as the contextual environment during
@@ -87,7 +87,7 @@ class MixContext with Diagnosticable {
   }
 
   /// Returns the resolved attribute of type [A], or null if not found.
-  A? attributeOf<A extends SpecAttribute>() {
+  A? attributeOf<A extends SpecMix>() {
     final attributes = _attributes.whereType<A>();
     if (attributes.isEmpty) return null;
 
@@ -112,7 +112,7 @@ class MixContext with Diagnosticable {
     return modifiers.whereType<M>().toList();
   }
 
-  Iterable<A> whereType<A extends SpecAttribute>() {
+  Iterable<A> whereType<A extends SpecMix>() {
     return _attributes.whereType();
   }
 
@@ -139,7 +139,7 @@ class MixContext with Diagnosticable {
     'final boxSpec = ComputedStyle.specOf<BoxSpec>(context);\n'
     'final color = boxSpec?.decoration?.color; // Access resolved values from specs',
   )
-  Value? resolvableOf<Value, A extends SpecAttribute<Value>>() {
+  Value? resolvableOf<Value, A extends SpecMix<Value>>() {
     final attribute = _attributes.attributeOfType<A>();
 
     return attribute?.resolve(this);
@@ -198,10 +198,7 @@ class MixContext with Diagnosticable {
 }
 
 @visibleForTesting
-List<SpecAttribute> applyContextToVisualAttributes(
-  BuildContext context,
-  Style mix,
-) {
+List<SpecMix> applyContextToVisualAttributes(BuildContext context, Style mix) {
   if (mix.variants.isEmpty) {
     return mix.styles.values;
   }
@@ -234,7 +231,7 @@ Style _applyVariants(
       : style;
 }
 
-M? _mergeAttributes<M extends SpecAttribute>(Iterable<M> mergeables) {
+M? _mergeAttributes<M extends SpecMix>(Iterable<M> mergeables) {
   if (mergeables.isEmpty) return null;
 
   return mergeables.reduce((a, b) {

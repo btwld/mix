@@ -3,7 +3,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-final class BoxBorderUtility<T extends StyleElement>
+final class BoxBorderUtility<T extends SpecMix>
     extends DtoUtility<T, BoxBorderDto, BoxBorder> {
   late final directional = BorderDirectionalUtility(builder);
   late final all = _border.all;
@@ -65,7 +65,7 @@ final class BoxBorderUtility<T extends StyleElement>
   }
 }
 
-final class BorderUtility<T extends StyleElement>
+final class BorderUtility<T extends SpecMix>
     extends DtoUtility<T, BorderDto, Border> {
   late final all = BorderSideUtility((v) => builder(BorderDto.all(v)));
 
@@ -124,7 +124,7 @@ final class BorderUtility<T extends StyleElement>
   }
 }
 
-final class BorderDirectionalUtility<T extends StyleElement>
+final class BorderDirectionalUtility<T extends SpecMix>
     extends DtoUtility<T, BorderDirectionalDto, BorderDirectional> {
   late final all = BorderSideUtility(
     (v) => builder(BorderDirectionalDto.all(v)),
@@ -182,7 +182,7 @@ final class BorderDirectionalUtility<T extends StyleElement>
 ///
 /// This class provides methods to set individual properties of a [BorderSide].
 /// Use the methods of this class to configure specific properties of a [BorderSide].
-class BorderSideUtility<T extends StyleElement>
+class BorderSideUtility<T extends SpecMix>
     extends DtoUtility<T, BorderSideDto, BorderSide> {
   /// Utility for defining [BorderSideDto.color]
   late final color = ColorUtility(
@@ -198,11 +198,13 @@ class BorderSideUtility<T extends StyleElement>
   late final style = BorderStyleUtility((v) => only(style: v));
 
   /// Utility for defining [BorderSideDto.width]
-  late final width = DoubleUtility((prop) => builder(BorderSideDto.props(width: prop)));
+  late final width = DoubleUtility(
+    (prop) => builder(BorderSideDto.props(width: prop)),
+  );
 
   BorderSideUtility(super.builder) : super(valueToDto: BorderSideDto.value);
 
-  /// Creates a [StyleElement] instance using the [BorderSideDto.none] constructor.
+  /// Creates a [SpecMix] instance using the [BorderSideDto.none] constructor.
   T none() => builder(BorderSideDto.none);
 
   T call({

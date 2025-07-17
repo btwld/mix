@@ -14,15 +14,15 @@ import '../internal/compare_mixin.dart';
 @immutable
 final class ContextVariantBuilder<T> with EqualityMixin {
   final ContextVariant variant;
-  final ScopedStyle Function(BuildContext context, T value) fn;
+  final Style Function(BuildContext context, T value) fn;
 
   const ContextVariantBuilder(this.variant, this.fn);
 
-  ScopedStyle Function(BuildContext context, T value) mergeFn(
-    ScopedStyle Function(BuildContext context, T value) other,
+  Style Function(BuildContext context, T value) mergeFn(
+    Style Function(BuildContext context, T value) other,
   ) {
     return (BuildContext context, T value) =>
-        fn(context, value).merge(other(context, value)) as ScopedStyle;
+        fn(context, value).merge(other(context, value));
   }
 
   ContextVariantBuilder<T> merge(ContextVariantBuilder<T>? other) {
@@ -37,5 +37,5 @@ final class ContextVariantBuilder<T> with EqualityMixin {
   @override
   List<Object?> get props => [variant, fn];
 
-  ScopedStyle build(BuildContext context, T value) => fn(context, value);
+  Style build(BuildContext context, T value) => fn(context, value);
 }

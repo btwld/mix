@@ -95,8 +95,7 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
 ///
 /// Use this class to configure the attributes of a [FlexBoxSpec] and pass it to
 /// the [FlexBoxSpec] constructor.
-class FlexBoxSpecAttribute extends SpecAttribute<FlexBoxSpec>
-    with Diagnosticable {
+class FlexBoxSpecAttribute extends SpecMix<FlexBoxSpec> with Diagnosticable {
   final BoxSpecAttribute? box;
   final FlexSpecAttribute? flex;
 
@@ -182,8 +181,8 @@ class FlexBoxSpecAttribute extends SpecAttribute<FlexBoxSpec>
 ///
 /// This class provides methods to set individual properties of a [FlexBoxSpec].
 /// Use the methods of this class to configure specific properties of a [FlexBoxSpec].
-class FlexBoxSpecUtility<T extends SpecAttribute>
-    extends SpecUtility<T, FlexBoxSpecAttribute> {
+class FlexBoxSpecUtility<T extends SpecMix>
+    extends SpecStyle<T, FlexBoxSpecAttribute> {
   /// Utility for defining [FlexBoxSpecAttribute.box]
   late final box = BoxSpecUtility((v) => only(box: v));
 

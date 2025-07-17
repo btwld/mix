@@ -7,8 +7,8 @@ import '../attributes/text_height_behavior/text_height_behavior_dto.dart';
 import '../attributes/text_style/text_style_dto.dart';
 import '../core/factory/mix_context.dart';
 import '../core/helpers.dart';
-import '../core/mix_element.dart';
 import '../core/modifier.dart';
+import '../core/spec.dart';
 import '../core/utility.dart';
 
 final class DefaultTextStyleModifierSpec
@@ -291,7 +291,7 @@ class DefaultTextStyleModifierSpecTween
   }
 }
 
-final class DefaultTextStyleModifierSpecUtility<T extends StyleElement>
+final class DefaultTextStyleModifierSpecUtility<T extends SpecMix>
     extends MixUtility<T, DefaultTextStyleModifierSpecAttribute> {
   const DefaultTextStyleModifierSpecUtility(super.builder);
   T call({

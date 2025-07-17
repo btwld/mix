@@ -121,7 +121,7 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
   ];
 }
 
-class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
+class ImageSpecAttribute extends SpecMix<ImageSpec> with Diagnosticable {
   final Prop<double>? width;
   final Prop<double>? height;
   final Prop<Color>? color;
@@ -272,8 +272,8 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
   ];
 }
 
-class ImageSpecUtility<T extends SpecAttribute>
-    extends SpecUtility<T, ImageSpecAttribute> {
+class ImageSpecUtility<T extends SpecMix>
+    extends SpecStyle<T, ImageSpecAttribute> {
   late final width = DoubleUtility(
     (prop) => builder(ImageSpecAttribute.props(width: prop)),
   );

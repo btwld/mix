@@ -183,7 +183,7 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
 ///
 /// Use this class to configure the attributes of a [FlexSpec] and pass it to
 /// the [FlexSpec] constructor.
-class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
+class FlexSpecAttribute extends SpecMix<FlexSpec> with Diagnosticable {
   final CrossAxisAlignment? crossAxisAlignment;
   final MainAxisAlignment? mainAxisAlignment;
   final MainAxisSize? mainAxisSize;
@@ -364,8 +364,8 @@ class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [FlexSpec].
 /// Use the methods of this class to configure specific properties of a [FlexSpec].
-class FlexSpecUtility<T extends SpecAttribute>
-    extends SpecUtility<T, FlexSpecAttribute> {
+class FlexSpecUtility<T extends SpecMix>
+    extends SpecStyle<T, FlexSpecAttribute> {
   /// Utility for defining [FlexSpecAttribute.crossAxisAlignment]
   late final crossAxisAlignment = CrossAxisAlignmentUtility(
     (v) => only(crossAxisAlignment: v),

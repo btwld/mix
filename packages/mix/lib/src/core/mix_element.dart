@@ -145,23 +145,57 @@ mixin MixHelperMixin {
   }
 }
 
-abstract class StyleElement<V, T extends SpecAttribute<V>>
+abstract class StyleElement<V, T extends SpecMix<V>>
     with EqualityMixin, MixHelperMixin {
   final T attribute; // Underlying attribute
   final Map<Variant, StyleElement<V, T>> variants; // Variant behavior
   final AnimationConfig? animation; // Animation behavior
   final List<WidgetModifierSpecAttribute>? modifiers; // Modifier behavior
 
-  const StyleElement(
-    this.attribute, {
+  const StyleElement({
+    required this.attribute,
     this.variants = const {},
     this.animation,
     this.modifiers,
   });
 
-  // Used as the key to determine how
-  // attributes get merged
-  Object get mergeKey => runtimeType;
+  /// Returns the merge key for this StyleElement, used by AttributeMap for merging
+  Object get mergeKey => T;
+
+  /// Merges this object with [other], returning a new object of type [T].
+  StyleElement<V, T> merge(covariant StyleElement<V, T>? other);
+
+  ResolvedStyleElement<V> resolve(MixContext context) {
+    final resolvedSpec = attribute.resolve(context);
+    final resolvedAnimation = animation;
+    final resolvedModifiers = modifiers
+        ?.map((m) => m.resolve(context))
+        .toList();
+
+    return ResolvedStyleElement(
+      spec: resolvedSpec,
+      animation: resolvedAnimation,
+      modifiers: resolvedModifiers as List<WidgetModifierSpec>?,
+    );
+  }
+
+  @override
+  get props => [attribute, variants, animation, modifiers];
+}
+
+abstract class SpecStyle<V, T extends SpecMix<V>>
+    with EqualityMixin, MixHelperMixin {
+  final T attribute; // Underlying attribute
+  final Map<Variant, SpecStyle<V, T>> variants; // Variant behavior
+  final AnimationConfig? animation; // Animation behavior
+  final List<WidgetModifierSpecAttribute>? modifiers; // Modifier behavior
+
+  const SpecStyle(
+    this.attribute, {
+    this.variants = const {},
+    this.animation,
+    this.modifiers,
+  });
 
   /// Merges this object with [other], returning a new object of type [T].
   StyleElement merge(covariant StyleElement? other);

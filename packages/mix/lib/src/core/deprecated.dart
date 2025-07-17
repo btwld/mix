@@ -82,7 +82,7 @@ typedef Attribute = StyleElement;
 
 /// Deprecated: Use StyleAttribute instead
 @Deprecated('Use StyleAttribute instead')
-typedef StyledAttribute = SpecAttribute;
+typedef StyledAttribute = SpecMix;
 
 /// Deprecated: Use Mixable instead
 @Deprecated('Use Mixable instead')
@@ -119,68 +119,6 @@ typedef WidgetContextVariant = MixWidgetStateVariant;
 /// Deprecated: Use OnFocusedVariant instead
 @Deprecated('Use OnFocusedVariant instead')
 typedef OnFocusVariant = OnFocusedVariant;
-
-// =============================================================================
-// MEDIAQUERY VARIANT DEPRECATIONS (v2.0.0)
-// =============================================================================
-
-/// Deprecated: Use MediaQueryVariant.platformBrightness() instead
-@Deprecated(
-  'Use MediaQueryVariant.platformBrightness() instead - import from mix.dart',
-)
-final class OnBrightnessVariant extends ContextVariant {
-  /// The [Brightness] associated with this variant.
-  final Brightness brightness;
-
-  /// Creates a new [OnBrightnessVariant] with the given [brightness].
-  const OnBrightnessVariant(this.brightness);
-
-  /// Determines whether the current [Brightness] matches the specified [brightness].
-  @override
-  bool when(BuildContext context) {
-    return MediaQuery.platformBrightnessOf(context) == brightness;
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is OnBrightnessVariant && other.brightness == brightness;
-
-  @override
-  int get hashCode => brightness.hashCode;
-
-  @override
-  List<Object?> get props => [brightness];
-}
-
-/// Deprecated: Use MediaQueryVariant.orientation() instead
-@Deprecated(
-  'Use MediaQueryVariant.orientation() instead - import from mix.dart',
-)
-final class OnOrientationVariant extends ContextVariant {
-  /// The [Orientation] associated with this variant.
-  final Orientation orientation;
-
-  /// Creates a new [OnOrientationVariant] with the given [orientation].
-  const OnOrientationVariant(this.orientation);
-
-  /// Determines whether the current [Orientation] matches the specified [orientation].
-  @override
-  bool when(BuildContext context) {
-    return MediaQuery.orientationOf(context) == orientation;
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is OnOrientationVariant && other.orientation == orientation;
-
-  @override
-  int get hashCode => orientation.hashCode;
-
-  @override
-  List<Object?> get props => [orientation];
-}
 
 /// Simple breakpoint class for responsive design
 @immutable
@@ -221,66 +159,6 @@ class BreakpointTokens {
   static const large = BreakpointToken('breakpoint.large');
 }
 
-/// Deprecated: Use MediaQueryVariant.size() instead
-@Deprecated('Use MediaQueryVariant.size() instead - import from mix.dart')
-final class OnBreakPointVariant extends ContextVariant {
-  /// The breakpoint used to determine the context variant.
-  final Breakpoint breakpoint;
-
-  /// Creates a new [OnBreakPointVariant] with the specified [breakpoint].
-  const OnBreakPointVariant(this.breakpoint);
-
-  /// Determines whether the given [BuildContext] matches this variant's [breakpoint].
-  @override
-  bool when(BuildContext context) {
-    return breakpoint.matches(context.screenSize);
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is OnBreakPointVariant && other.breakpoint == breakpoint;
-
-  @override
-  int get hashCode => breakpoint.hashCode;
-
-  @override
-  List<Object?> get props => [breakpoint];
-}
-
-/// Deprecated: Use MediaQueryVariant.size() with token resolution instead
-@Deprecated(
-  'Use MediaQueryVariant.size() with token resolution instead - import from mix.dart',
-)
-final class OnBreakpointTokenVariant extends ContextVariant {
-  /// The [BreakpointToken] associated with this variant.
-  final BreakpointToken token;
-
-  /// Creates a new [OnBreakpointTokenVariant] with the given [token].
-  const OnBreakpointTokenVariant(this.token);
-
-  /// Determines whether the selected breakpoint matches the current screen size.
-  @override
-  bool when(BuildContext context) {
-    final size = context.screenSize;
-    final scope = context.mixTheme;
-    final selectedbreakpoint = scope.getToken(token, context);
-
-    return selectedbreakpoint.matches(size);
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is OnBreakpointTokenVariant && other.token == token;
-
-  @override
-  int get hashCode => token.hashCode;
-
-  @override
-  List<Object?> get props => [token];
-}
-
 // =============================================================================
 // SPACING & LAYOUT DEPRECATIONS
 // =============================================================================
@@ -293,7 +171,7 @@ typedef SpacingSideDto = SpaceDto;
 
 /// Deprecated: Use EdgeInsetsGeometryUtility instead
 @Deprecated('Use EdgeInsetsGeometryUtility instead')
-typedef SpacingUtility<T extends SpecAttribute> = EdgeInsetsGeometryUtility<T>;
+typedef SpacingUtility<T extends SpecMix> = EdgeInsetsGeometryUtility<T>;
 
 /// Deprecated: Use EdgeInsetsGeometryDto instead
 @Deprecated('Use EdgeInsetsGeometryDto instead')
@@ -304,31 +182,12 @@ typedef SpacingDto = EdgeInsetsGeometryDto<EdgeInsetsGeometry>;
 // =============================================================================
 
 /// Deprecated extension for ImageSpec utility
-extension ImageSpecUtilityDeprecationX<T extends SpecAttribute>
+extension ImageSpecUtilityDeprecationX<T extends SpecMix>
     on ImageSpecUtility<T> {
   @Deprecated(
     'To match Flutter naming conventions, use `colorBlendMode` instead.',
   )
   BlendModeUtility<T> get blendMode => colorBlendMode;
-}
-
-// =============================================================================
-// MODIFIER DEPRECATIONS (from deprecation_notices.dart)
-// =============================================================================
-
-/// Deprecated: Use OnNotVariant(WidgetStateVariant(WidgetState.disabled)) instead
-@Deprecated(
-  'Use OnNotVariant(WidgetStateVariant(WidgetState.disabled)) instead',
-)
-base class OnEnabledVariant extends ContextVariant {
-  const OnEnabledVariant();
-
-  @override
-  bool when(BuildContext context) =>
-      !MixWidgetStateModel.hasStateOf(context, WidgetState.disabled);
-
-  @override
-  List<Object?> get props => [];
 }
 
 /// Deprecated: Use WidgetModifierSpec instead

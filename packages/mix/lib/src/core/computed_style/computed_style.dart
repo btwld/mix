@@ -4,23 +4,24 @@ import 'package:meta/meta.dart';
 
 import '../../attributes/animation/animation_config.dart';
 import '../factory/mix_context.dart';
+import '../mix_element.dart';
 import '../modifier.dart';
 import '../spec.dart';
 import 'computed_style_provider.dart';
 
 /// Resolved styling specifications optimized for widget consumption.
 ///
-/// Represents the computed result of a [Style] with all [SpecAttribute]s
+/// Represents the computed result of a [Style] with all [SpecMix]s
 /// resolved into concrete [Spec] objects. Provides O(1) spec lookup and
 /// selective dependency tracking for optimal rebuild performance.
 @immutable
 class ComputedStyle with Diagnosticable {
-  final Map<Type, Spec> _specs;
+  final Map<Type, ResolvedStyleElement> _specs;
   final List<WidgetModifierSpec> _modifiers;
   final AnimationConfig? _animation;
 
   const ComputedStyle._({
-    required Map<Type, Spec> specs,
+    required Map<Type, ResolvedStyleElement> specs,
     required List<WidgetModifierSpec> modifiers,
     AnimationConfig? animation,
   }) : _specs = specs,
@@ -36,7 +37,7 @@ class ComputedStyle with Diagnosticable {
 
   /// Creates a [ComputedStyle] by resolving all styling attributes.
   ///
-  /// Resolves [SpecAttribute]s from [mix] into concrete [Spec] objects
+  /// Resolves [SpecMix]s from [mix] into concrete [Spec] objects
   /// for efficient widget access. The computation is performed once when the
   /// style changes, with results cached for performance.
   ///
@@ -45,11 +46,11 @@ class ComputedStyle with Diagnosticable {
   /// final computedStyle = ComputedStyle.compute(mixData);
   /// ```
   factory ComputedStyle.compute(MixContext mix) {
-    final specs = <Type, Spec>{};
+    final specs = <Type, ResolvedStyleElement>{};
     final modifiers = <WidgetModifierSpec>[];
 
     // Separate modifiers from regular specs for different processing
-    for (final attribute in mix.whereType<SpecAttribute>()) {
+    for (final attribute in mix.whereType<SpecMix>()) {
       if (attribute is WidgetModifierSpecAttribute) {
         modifiers.add(attribute.resolve(mix) as WidgetModifierSpec);
       } else {

@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/mix_element.dart';
+import '../../core/spec.dart';
 import '../../core/utility.dart';
 import '../../internal/constants.dart';
 import '../enum/enum_util.dart';
@@ -11,7 +11,7 @@ import 'gradient_dto.dart';
 ///
 /// This class provides methods to set individual properties of a [LinearGradient].
 /// Use the methods of this class to configure specific properties of a [LinearGradient].
-class LinearGradientUtility<T extends StyleElement>
+class LinearGradientUtility<T extends SpecMix>
     extends DtoUtility<T, LinearGradientDto, LinearGradient> {
   /// Utility for defining [LinearGradientDto.begin]
   late final begin = AlignmentGeometryUtility((v) => only(begin: v));
@@ -31,7 +31,8 @@ class LinearGradientUtility<T extends StyleElement>
   /// Utility for defining [LinearGradientDto.stops]
   late final stops = ListUtility<T, double>((v) => only(stops: v));
 
-  LinearGradientUtility(super.builder) : super(valueToDto: LinearGradientDto.value);
+  LinearGradientUtility(super.builder)
+    : super(valueToDto: LinearGradientDto.value);
 
   T call({
     AlignmentGeometry? begin,
@@ -80,7 +81,7 @@ class LinearGradientUtility<T extends StyleElement>
 ///
 /// This class provides methods to set individual properties of a [RadialGradient].
 /// Use the methods of this class to configure specific properties of a [RadialGradient].
-class RadialGradientUtility<T extends StyleElement>
+class RadialGradientUtility<T extends SpecMix>
     extends DtoUtility<T, RadialGradientDto, RadialGradient> {
   /// Utility for defining [RadialGradientDto.center]
   late final center = AlignmentGeometryUtility((v) => only(center: v));
@@ -95,7 +96,9 @@ class RadialGradientUtility<T extends StyleElement>
   late final focal = AlignmentGeometryUtility((v) => only(focal: v));
 
   /// Utility for defining [RadialGradientDto.focalRadius]
-  late final focalRadius = DoubleUtility((prop) => only(focalRadius: prop.value));
+  late final focalRadius = DoubleUtility(
+    (prop) => only(focalRadius: prop.value),
+  );
 
   /// Utility for defining [RadialGradientDto.transform]
   late final transform = GradientTransformUtility((v) => call(transform: v));
@@ -106,7 +109,8 @@ class RadialGradientUtility<T extends StyleElement>
   /// Utility for defining [RadialGradientDto.stops]
   late final stops = ListUtility<T, double>((v) => only(stops: v));
 
-  RadialGradientUtility(super.builder) : super(valueToDto: RadialGradientDto.value);
+  RadialGradientUtility(super.builder)
+    : super(valueToDto: RadialGradientDto.value);
 
   T call({
     AlignmentGeometry? center,
@@ -163,7 +167,7 @@ class RadialGradientUtility<T extends StyleElement>
 ///
 /// This class provides methods to set individual properties of a [SweepGradient].
 /// Use the methods of this class to configure specific properties of a [SweepGradient].
-class SweepGradientUtility<T extends StyleElement>
+class SweepGradientUtility<T extends SpecMix>
     extends DtoUtility<T, SweepGradientDto, SweepGradient> {
   /// Utility for defining [SweepGradientDto.center]
   late final center = AlignmentGeometryUtility((v) => only(center: v));
@@ -186,7 +190,8 @@ class SweepGradientUtility<T extends StyleElement>
   /// Utility for defining [SweepGradientDto.stops]
   late final stops = ListUtility<T, double>((v) => only(stops: v));
 
-  SweepGradientUtility(super.builder) : super(valueToDto: SweepGradientDto.value);
+  SweepGradientUtility(super.builder)
+    : super(valueToDto: SweepGradientDto.value);
 
   T call({
     AlignmentGeometry? center,
@@ -242,7 +247,7 @@ class SweepGradientUtility<T extends StyleElement>
 /// It also provides a method for converting a generic [Gradient] object to a specific type [T].
 ///
 /// Accepts a [builder] function that takes a [GradientDto] and returns an object of type [T].
-final class GradientUtility<T extends StyleElement>
+final class GradientUtility<T extends SpecMix>
     extends MixUtility<T, GradientDto> {
   late final radial = RadialGradientUtility(builder);
   late final linear = LinearGradientUtility(builder);

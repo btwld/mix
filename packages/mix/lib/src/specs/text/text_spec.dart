@@ -208,7 +208,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
 ///
 /// Use this class to configure the attributes of a [TextSpec] and pass it to
 /// the [TextSpec] constructor.
-class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
+class TextSpecAttribute extends SpecMix<TextSpec> with Diagnosticable {
   final TextOverflow? overflow;
   final StrutStyleDto? strutStyle;
   final TextAlign? textAlign;
@@ -408,8 +408,8 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [TextSpec].
 /// Use the methods of this class to configure specific properties of a [TextSpec].
-class TextSpecUtility<T extends SpecAttribute>
-    extends SpecUtility<T, TextSpecAttribute> {
+class TextSpecUtility<T extends SpecMix>
+    extends SpecStyle<T, TextSpecAttribute> {
   /// Utility for defining [TextSpecAttribute.overflow]
   late final overflow = TextOverflowUtility((v) => only(overflow: v));
 

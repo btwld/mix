@@ -9,7 +9,6 @@ import '../../specs/spec_util.dart';
 import '../../variants/variant_attribute.dart';
 import '../attributes_map.dart';
 import '../mix_element.dart';
-import '../modifier.dart';
 import '../spec.dart';
 import '../variant.dart';
 import 'mix_context.dart';
@@ -29,7 +28,7 @@ import 'mix_context.dart';
 @immutable
 final class Style with EqualityMixin {
   /// Contains the visual attributes of the style
-  final AttributeMap<SpecAttribute> styles;
+  final AttributeMap<SpecMix> styles;
 
   /// Contains the variant attributes of the style
   final AttributeMap<VariantAttribute> variants;
@@ -109,11 +108,11 @@ final class Style with EqualityMixin {
   /// ```
   factory Style.create(Iterable<StyleElement> elements) {
     final applyVariants = <VariantAttribute>[];
-    final styleList = <SpecAttribute>[];
+    final styleList = <SpecMix>[];
 
     for (final element in elements) {
       switch (element) {
-        case SpecAttribute():
+        case SpecMix():
           styleList.add(element);
         case VariantAttribute():
           applyVariants.add(element);
@@ -223,7 +222,7 @@ final class Style with EqualityMixin {
   ///
   /// If [styles] or [variants] is null, the corresponding attribute map of this mix is used.
   Style copyWith({
-    AttributeMap<SpecAttribute>? styles,
+    AttributeMap<SpecMix>? styles,
     AttributeMap<VariantAttribute>? variants,
   }) {
     return Style._(
@@ -336,10 +335,7 @@ final class Style with EqualityMixin {
   /// Note:
   /// The attributes `attr1` and `attr2` from the initial `Style` are ignored, and only the attributes within the specified variants are picked and applied to the new `Style`.
   @visibleForTesting
-  Style pickVariants(
-    List<IVariant> pickedVariants, {
-    bool isRecursive = false,
-  }) {
+  Style pickVariants(List<Variant> pickedVariants, {bool isRecursive = false}) {
     final matchedVariants = <VariantAttribute>[];
 
     // Return an empty Style if the list of picked variants is empty
@@ -417,7 +413,7 @@ class AnimatedStyle extends Style {
   /// If [styles] or [variants] is null, the corresponding attribute map of this mix is used.
   @override
   AnimatedStyle copyWith({
-    AttributeMap<SpecAttribute>? styles,
+    AttributeMap<SpecMix>? styles,
     AttributeMap<VariantAttribute>? variants,
     AnimationConfig? animated,
   }) {

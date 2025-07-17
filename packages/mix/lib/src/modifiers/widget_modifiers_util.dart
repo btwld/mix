@@ -17,7 +17,7 @@ import 'sized_box_widget_modifier.dart';
 import 'transform_widget_modifier.dart';
 import 'visibility_widget_modifier.dart';
 
-abstract class ModifierUtility<T extends SpecAttribute, Value>
+abstract class ModifierUtility<T extends SpecMix, Value>
     extends MixUtility<T, Value> {
   late final intrinsicWidth = IntrinsicWidthModifierSpecUtility(only);
   late final intrinsicHeight = IntrinsicHeightModifierSpecUtility(only);
@@ -39,8 +39,9 @@ abstract class ModifierUtility<T extends SpecAttribute, Value>
 
   late final scale = transform.scale;
   late final align = AlignModifierSpecUtility(only);
-  late final fractionallySizedBox =
-      FractionallySizedBoxModifierSpecUtility(only);
+  late final fractionallySizedBox = FractionallySizedBoxModifierSpecUtility(
+    only,
+  );
   late final sizedBox = SizedBoxModifierSpecUtility(only);
   late final cursor = MouseCursorModifierSpecUtility(only);
   late final padding = PaddingModifierSpecUtility(only).padding;
@@ -53,7 +54,7 @@ abstract class ModifierUtility<T extends SpecAttribute, Value>
   T only(WidgetModifierSpecAttribute attribute);
 }
 
-class WithModifierUtility<T extends SpecAttribute>
+class WithModifierUtility<T extends SpecMix>
     extends ModifierUtility<T, WidgetModifierSpecAttribute> {
   static final self = WithModifierUtility(MixUtility.selfBuilder);
 

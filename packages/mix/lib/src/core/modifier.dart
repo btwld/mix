@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import 'factory/mix_context.dart';
-import 'mix_element.dart';
 import 'spec.dart';
 import 'utility.dart';
 
@@ -43,7 +42,7 @@ abstract class WidgetModifierSpec<Self extends WidgetModifierSpec<Self>>
 abstract class WidgetModifierSpecAttribute<
   Value extends WidgetModifierSpec<Value>
 >
-    extends SpecAttribute<Value>
+    extends SpecMix<Value>
     with Diagnosticable {
   const WidgetModifierSpecAttribute();
 
@@ -55,7 +54,7 @@ abstract class WidgetModifierSpecAttribute<
 }
 
 abstract class WidgetModifierUtility<
-  T extends StyleElement,
+  T extends SpecMix,
   D extends WidgetModifierSpecAttribute<Value>,
   Value extends WidgetModifierSpec<Value>
 >

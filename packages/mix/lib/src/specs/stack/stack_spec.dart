@@ -103,7 +103,7 @@ final class StackSpec extends Spec<StackSpec> with Diagnosticable {
 ///
 /// Use this class to configure the attributes of a [StackSpec] and pass it to
 /// the [StackSpec] constructor.
-class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
+class StackSpecAttribute extends SpecMix<StackSpec> with Diagnosticable {
   final AlignmentGeometry? alignment;
   final StackFit? fit;
   final TextDirection? textDirection;
@@ -193,8 +193,8 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [StackSpec].
 /// Use the methods of this class to configure specific properties of a [StackSpec].
-class StackSpecUtility<T extends SpecAttribute>
-    extends SpecUtility<T, StackSpecAttribute> {
+class StackSpecUtility<T extends SpecMix>
+    extends SpecStyle<T, StackSpecAttribute> {
   /// Utility for defining [StackSpecAttribute.alignment]
   late final alignment = AlignmentGeometryUtility((v) => only(alignment: v));
 

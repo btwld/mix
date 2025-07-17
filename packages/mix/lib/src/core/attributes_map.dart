@@ -31,7 +31,7 @@ class AttributeMap<T extends StyleElement> {
         map[type] = attribute;
       } else {
         // If there is a saved attribute, merge it with the new one
-        map[type] = savedAttribute.merge(attribute) as Attr;
+        map[type] = savedAttribute.merge(attribute);
       }
     }
 
@@ -51,7 +51,7 @@ class AttributeMap<T extends StyleElement> {
 
   bool containsValue(T attribute) => _map?.containsValue(attribute) ?? false;
 
-  Attr? attributeOfType<Attr extends SpecAttribute>() => _map?[Attr] as Attr?;
+  Attr? attributeOfType<Attr extends SpecMix>() => _map?[Attr] as Attr?;
 
   Iterable<Attr> whereType<Attr extends T>() => _map?.values.whereType() ?? [];
 

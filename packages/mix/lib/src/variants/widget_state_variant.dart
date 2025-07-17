@@ -10,7 +10,7 @@ import 'context_variant.dart';
 abstract base class MixWidgetStateVariant<Value> extends ContextVariant {
   const MixWidgetStateVariant();
 
-  ContextVariantBuilder<Value> event(ScopedStyle Function(Value) fn) {
+  ContextVariantBuilder<Value> event(Style Function(Value) fn) {
     return ContextVariantBuilder<Value>(
       this,
       (BuildContext context, Value value) => fn(value),
@@ -63,7 +63,6 @@ base class OnHoverVariant extends MixWidgetStateVariant<PointerPosition?> {
 base class OnPressVariant extends _ToggleMixStateVariant {
   const OnPressVariant() : super(WidgetState.pressed);
 }
-
 
 /// Applies styles when the widget is disabled.
 base class OnDisabledVariant extends _ToggleMixStateVariant {

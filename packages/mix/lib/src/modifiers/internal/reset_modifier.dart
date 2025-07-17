@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../core/factory/mix_context.dart';
-import '../../core/mix_element.dart';
 import '../../core/modifier.dart';
+import '../../core/spec.dart';
 import '../../core/utility.dart';
 
 final class ResetModifierSpec extends WidgetModifierSpec<ResetModifierSpec>
@@ -38,7 +38,7 @@ final class ResetModifierSpec extends WidgetModifierSpec<ResetModifierSpec>
   }
 }
 
-final class ResetModifierSpecUtility<T extends StyleElement>
+final class ResetModifierSpecUtility<T extends SpecMix>
     extends MixUtility<T, ResetModifierSpecAttribute> {
   const ResetModifierSpecUtility(super.builder);
   T call() {
