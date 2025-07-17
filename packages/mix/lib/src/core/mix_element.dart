@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../attributes/animation/animation_config.dart';
 import '../internal/compare_mixin.dart';
+import '../variants/variant_attribute.dart';
 import 'factory/mix_context.dart';
 import 'modifier.dart';
 import 'prop.dart';
@@ -149,49 +150,46 @@ abstract class StyleElement {
   const StyleElement();
 
   /// Unique key used for merging elements of the same type
-  Object get mergeKey;
+  Object get mergeKey => runtimeType;
 
   StyleElement merge(covariant StyleElement? other);
 }
 
 abstract class SpecStyle<V, T extends SpecAttribute<V>> extends StyleElement {
   final T attribute;
-  final Map<Variant, SpecStyle<V, T>> variants;
+  final List<VariantAttribute<T>> variants;
   final AnimationConfig? animation;
   final List<WidgetModifierSpecAttribute>? modifiers;
 
   const SpecStyle({
     required this.attribute,
-    this.variants = const {},
+    this.variants = const [],
     this.animation,
     this.modifiers,
   });
 
-  @override
-  Object get mergeKey => runtimeType;
-
   /// Get matching context variants sorted by priority
   List<SpecStyle<V, T>> _getMatchingContextVariants(MixContext context) {
-    final contextVariants = variants.entries
+    final contextVariants = variants
         .where(
-          (entry) =>
-              entry.key is ContextVariant &&
-              (entry.key as ContextVariant).when(context.context),
+          (variantAttr) =>
+              variantAttr.variant is ContextVariant &&
+              (variantAttr.variant as ContextVariant).when(context.context),
         )
         .toList();
 
-    // Sort by priority: normal (0) first, then high (1)
+    // Sort by priority: normal (0) first, then WidgetStateVariant (1)
     contextVariants.sort((a, b) {
-      final aPriority = a.key is WidgetStateVariant ? 1 : 0;
-      final bPriority = b.key is WidgetStateVariant ? 1 : 0;
+      final aPriority = a.variant is WidgetStateVariant ? 1 : 0;
+      final bPriority = b.variant is WidgetStateVariant ? 1 : 0;
 
       return aPriority.compareTo(bPriority);
     });
 
-    return contextVariants.map((entry) => entry.value).toList();
+    return contextVariants.map((variantAttr) => variantAttr.value as SpecStyle<V, T>).toList();
   }
 
-  /// Merge modifiers helper
+  /// Merge modifiers helper using merge-by-key logic
   List<WidgetModifierSpecAttribute>? _mergeModifiers(
     List<WidgetModifierSpecAttribute>? current,
     List<WidgetModifierSpecAttribute>? other,
@@ -199,7 +197,20 @@ abstract class SpecStyle<V, T extends SpecAttribute<V>> extends StyleElement {
     if (other == null) return current;
     if (current == null) return other;
 
-    return [...current, ...other];
+    final merged = mergeStyleElementsByKey(current, other);
+    
+    return merged.isEmpty ? null : merged;
+  }
+
+  /// Merge variants helper using merge-by-key logic
+  List<VariantAttribute<T>> _mergeVariants(
+    List<VariantAttribute<T>>? current,
+    List<VariantAttribute<T>>? other,
+  ) {
+    if (other == null) return current ?? [];
+    if (current == null) return other;
+
+    return mergeStyleElementsByKey(current, other);
   }
 
   @protected
@@ -241,10 +252,10 @@ abstract class SpecStyle<V, T extends SpecAttribute<V>> extends StyleElement {
 
     // Apply each matching named variant by merging the entire style
     for (final variant in appliedVariants) {
-      final variantStyle = variants[variant];
-      if (variantStyle != null) {
+      final variantAttr = variants.where((v) => v.variant == variant).firstOrNull;
+      if (variantAttr != null) {
         // Merge the entire variant style, not individual properties
-        result = result.merge(variantStyle);
+        result = result.merge(variantAttr.value as SpecStyle<V, T>);
       }
     }
 
@@ -253,6 +264,9 @@ abstract class SpecStyle<V, T extends SpecAttribute<V>> extends StyleElement {
 
   @override
   SpecStyle<V, T> merge(covariant SpecStyle<V, T>? other);
+  
+  @override
+  Object get mergeKey => runtimeType;
 }
 
 /// Result of Style.resolve() containing fully resolved styling data
@@ -299,4 +313,32 @@ enum ListMergeStrategy {
 mixin HasDefaultValue<Value> {
   @protected
   Value get defaultValue;
+}
+
+List<T> mergeStyleElementsByKey<T extends StyleElement>(
+  List<T>? current,
+  List<T>? other,
+) {
+  if (current == null && other == null) return [];
+  if (current == null) return List<T>.of(other!);
+  if (other == null) return List<T>.of(current);
+
+  final Map<Object, T> merged = {};
+
+  // Add current elements
+  for (final element in current) {
+    merged[element.mergeKey] = element;
+  }
+
+  // Merge or add other elements
+  for (final element in other) {
+    final existing = merged[element.mergeKey];
+    if (existing != null) {
+      merged[element.mergeKey] = existing.merge(element) as T;
+    } else {
+      merged[element.mergeKey] = element;
+    }
+  }
+
+  return merged.values.toList();
 }

@@ -1,6 +1,6 @@
 import 'package:mix/mix.dart';
 
-final a = Variant('a');
+final a = NamedVariant('a');
 final attribute = $box.alignment.center;
 
 // Wrong case

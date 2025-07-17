@@ -31,7 +31,7 @@ class AttributeMap<T extends StyleElement> {
         map[type] = attribute;
       } else {
         // If there is a saved attribute, merge it with the new one
-        map[type] = savedAttribute.merge(attribute);
+        map[type] = savedAttribute.merge(attribute) as Attr;
       }
     }
 

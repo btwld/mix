@@ -294,11 +294,6 @@ class ImageSpecUtility<T extends SpecAttribute>
 
   ImageSpecUtility(super.builder);
 
-  @Deprecated(
-    'Use "this" instead of "chain" for method chaining. '
-    'The chain getter will be removed in a future version.',
-  )
-  ImageSpecUtility<T> get chain => ImageSpecUtility(attributeBuilder);
 
   static ImageSpecUtility<ImageSpecAttribute> get self =>
       ImageSpecUtility((v) => v);

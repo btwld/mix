@@ -224,9 +224,9 @@ base class MockContextVariant extends ContextVariant {
     : super('mock_variant', (context) => true);
 }
 
-base class MockHighPriorityContextVariant extends ContextVariant {
+base class MockHighPriorityContextVariant extends WidgetStateVariant {
   MockHighPriorityContextVariant()
-    : super('mock_high_priority', (context) => true, priority: VariantPriority.high);
+    : super(WidgetState.focused);
 }
 
 final class MockBooleanScalarAttribute

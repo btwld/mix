@@ -111,9 +111,7 @@ void main() {
       expect(getValueOf(spec.centerSlice), Rect.zero);
       expect(getValueOf(spec.filterQuality), FilterQuality.low);
       expect(getValueOf(spec.colorBlendMode), BlendMode.srcOver);
-      expect(getValueOf(spec.modifiers), null);
-
-      expect(spec.props.length, 10);
+      expect(spec.props.length, 9);
     });
   });
 

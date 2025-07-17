@@ -1,10 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import '../variants/widget_state_variant.dart';
-import '../widgets/pressable_widget.dart';
-import 'factory/style_mix.dart';
+import '../../mix.dart';
 import 'internal/experimental/mix_builder.dart';
-import 'widget_state/widget_state_controller.dart';
 
 /// Base class for widgets that apply [Style] definitions.
 ///
@@ -92,7 +89,7 @@ class SpecBuilder extends StatefulWidget {
   final WidgetStatesController? controller;
 
   /// Style to apply to the widget.
-  final Style style;
+  final StyleElement style;
 
   /// Whether to inherit style from parent widgets.
   final bool inherit;
@@ -111,10 +108,10 @@ class _SpecBuilderState extends State<SpecBuilder> {
 
   /// Checks if the style contains widget state variants that require
   /// interactive state management.
-  bool get _hasWidgetStateVariant => widget.style.variants.keys.any(
-    (variant) => variant is MixWidgetStateVariant,
-  );
-
+  bool get _hasWidgetStateVariant => widget.style.variants.values.any(
+    (variantAttribute) =>
+        variantAttribute.variant is WidgetStateVariant
+        
   /// Determines if we should wrap with Interactable widget.
   bool get _shouldWrapWithInteractable =>
       _hasWidgetStateVariant || widget.controller != null;

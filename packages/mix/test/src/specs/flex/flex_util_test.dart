@@ -123,7 +123,7 @@ void main() {
         ..textBaseline.alphabetic()
         ..clipBehavior.antiAlias()
         ..gap(10)
-        ..wrap.opacity(0.5);
+;
 
       final attr = util.attributeValue!;
 
@@ -138,10 +138,6 @@ void main() {
       expect(attr.clipBehavior, Clip.antiAlias);
       expect(attr.gap, const SpaceDto.value(10));
 
-      expect(
-        attr.modifiers?.modifiers?.first,
-        const OpacityModifierSpecAttribute(opacity: 0.5),
-      );
 
       final style = Style(util);
 
@@ -157,10 +153,6 @@ void main() {
       expect(flexAttribute?.clipBehavior, Clip.antiAlias);
       expect(flexAttribute?.gap, const SpaceDto.value(10));
 
-      expect(
-        flexAttribute?.modifiers?.modifiers?.first,
-        const OpacityModifierSpecAttribute(opacity: 0.5),
-      );
 
       final mixData = style.of(MockBuildContext());
       final flexSpec = FlexSpec.from(mixData);
@@ -175,7 +167,6 @@ void main() {
       expect(flexSpec.clipBehavior, Clip.antiAlias);
       expect(flexSpec.gap, 10);
 
-      expect(flexSpec.modifiers?.value.first, const OpacityModifierSpec(0.5));
     });
 
     test('Immutable behavior when having multiple flex', () {

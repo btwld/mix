@@ -213,11 +213,6 @@ class StackSpecUtility<T extends SpecAttribute>
 
   StackSpecUtility(super.attributeBuilder);
 
-  @Deprecated(
-    'Use "this" instead of "chain" for method chaining. '
-    'The chain getter will be removed in a future version.',
-  )
-  StackSpecUtility<T> get chain => StackSpecUtility(attributeBuilder);
 
   static StackSpecUtility<StackSpecAttribute> get self =>
       StackSpecUtility((v) => v);

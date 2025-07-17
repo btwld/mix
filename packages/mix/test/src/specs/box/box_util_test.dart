@@ -4,7 +4,7 @@ import 'package:mix/mix.dart';
 
 import '../../../helpers/custom_matchers.dart';
 
-const $testvariant = Variant('test');
+const $testvariant = NamedVariant('test');
 void main() {
   group('BoxUtility', () {
     final boxUtility = BoxSpecUtility(MixUtility.selfBuilder);

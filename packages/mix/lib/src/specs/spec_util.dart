@@ -1,6 +1,6 @@
 import '../core/modifier.dart';
 import '../modifiers/widget_modifiers_util.dart';
-import '../variants/context_variant_util/on_util.dart';
+import '../variants/variant_util.dart';
 import 'box/box_spec.dart';
 import 'flex/flex_spec.dart';
 import 'flexbox/flexbox_spec.dart';

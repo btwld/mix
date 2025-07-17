@@ -4,11 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../attributes/animation/animation_config.dart';
-import '../../internal/iterable_ext.dart';
 import '../../internal/string_ext.dart';
 import '../../theme/mix/mix_theme.dart';
 import '../../theme/tokens/mix_token.dart';
-import '../../variants/context_variant.dart';
+import '../variant.dart';
 import '../../variants/variant_attribute.dart';
 import '../attributes_map.dart';
 import '../modifier.dart';
@@ -206,9 +205,12 @@ List<SpecAttribute> applyContextToVisualAttributes(
     return mix.styles.values;
   }
 
-  final prioritizedVariants = mix.variants.values.sorted(
-    (a, b) => a.priority.value.compareTo(b.priority.value),
-  );
+  final prioritizedVariants = mix.variants.values.toList()
+    ..sort((a, b) {
+      final aPriority = a.variant is WidgetStateVariant ? 1 : 0;
+      final bPriority = b.variant is WidgetStateVariant ? 1 : 0;
+      return aPriority.compareTo(bPriority);
+    });
 
   Style style = Style.create(mix.styles.values);
 
@@ -224,14 +226,12 @@ Style _applyVariants(
   Style style,
   VariantAttribute variantAttribute,
 ) {
-  if (variantAttribute is ContextVariantBuilder &&
-      variantAttribute.variant.when(context)) {
-    return style.merge(variantAttribute.build(context));
+  if (variantAttribute.variant is ContextVariant &&
+      (variantAttribute.variant as ContextVariant).when(context)) {
+    return style.merge(Style.create([variantAttribute.value]));
   }
 
-  return variantAttribute.variant.when(context)
-      ? style.merge(variantAttribute.value)
-      : style;
+  return style;
 }
 
 M? _mergeAttributes<M extends SpecAttribute>(Iterable<M> mergeables) {

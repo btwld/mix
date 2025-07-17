@@ -409,11 +409,6 @@ class FlexSpecUtility<T extends SpecAttribute>
 
   FlexSpecUtility(super.attributeBuilder);
 
-  @Deprecated(
-    'Use "this" instead of "chain" for method chaining. '
-    'The chain getter will be removed in a future version.',
-  )
-  FlexSpecUtility<T> get chain => FlexSpecUtility(attributeBuilder);
 
   static FlexSpecUtility<FlexSpecAttribute> get self =>
       FlexSpecUtility((v) => v);

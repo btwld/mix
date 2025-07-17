@@ -26,9 +26,9 @@ import 'mix_context.dart';
 /// final updatedStyle = style.variant(myVariant);
 /// ```
 @immutable
-final class Style with EqualityMixin {
+final class Style extends StyleElement with EqualityMixin {
   /// Contains the visual attributes of the style
-  final AttributeMap<SpecMix> styles;
+  final AttributeMap<SpecAttribute> styles;
 
   /// Contains the variant attributes of the style
   final AttributeMap<VariantAttribute> variants;
@@ -108,11 +108,11 @@ final class Style with EqualityMixin {
   /// ```
   factory Style.create(Iterable<StyleElement> elements) {
     final applyVariants = <VariantAttribute>[];
-    final styleList = <SpecMix>[];
+    final styleList = <SpecAttribute>[];
 
     for (final element in elements) {
       switch (element) {
-        case SpecMix():
+        case SpecAttribute():
           styleList.add(element);
         case VariantAttribute():
           applyVariants.add(element);
@@ -222,7 +222,7 @@ final class Style with EqualityMixin {
   ///
   /// If [styles] or [variants] is null, the corresponding attribute map of this mix is used.
   Style copyWith({
-    AttributeMap<SpecMix>? styles,
+    AttributeMap<SpecAttribute>? styles,
     AttributeMap<VariantAttribute>? variants,
   }) {
     return Style._(
@@ -238,8 +238,8 @@ final class Style with EqualityMixin {
   ///
   /// Example:
   /// ```dart
-  /// final outlinedVariant = Variant('outlined');
-  /// final smallVariant = Variant('small');
+  /// final outlinedVariant = NamedVariant('outlined');
+  /// final smallVariant = NamedVariant('small');
   /// final style = Style(
   ///   attr1,
   ///   attr2,
@@ -293,7 +293,7 @@ final class Style with EqualityMixin {
     }
 
     /// Create a Style from the matched variants.
-    final styleToApply = Style.combine(
+    final styleToApply = Style.create(
       matchedVariants.map((e) => e.value).toList(),
     );
 
@@ -319,8 +319,8 @@ final class Style with EqualityMixin {
   ///
   /// Example:
   /// ```dart
-  /// final outlinedVariant = Variant('outlined');
-  /// final smallVariant = Variant('small');
+  /// final outlinedVariant = NamedVariant('outlined');
+  /// final smallVariant = NamedVariant('small');
   /// final style = Style(attr1, attr2, outlinedVariant(buttonAttr1, buttonAttr2), smallVariant(buttonAttr3));
   /// final pickedMix = style.pickVariants([outlinedVariant, smallVariant]);
   /// ```
@@ -349,7 +349,9 @@ final class Style with EqualityMixin {
       return isRecursive ? this : const Style.empty();
     }
 
-    final pickedStyle = Style.combine(matchedVariants.map((e) => e.value));
+    final pickedStyle = Style.create(
+      matchedVariants.map((e) => e.value).toList(),
+    );
 
     return pickedStyle.pickVariants(pickedVariants, isRecursive: true);
   }
@@ -377,6 +379,9 @@ final class Style with EqualityMixin {
 
     return copyWith(styles: mergedStyles, variants: mergedVariants);
   }
+
+  @override
+  Object get mergeKey => runtimeType;
 
   @override
   List<Object?> get props => [styles, variants];
@@ -413,7 +418,7 @@ final class AnimatedStyle extends Style {
   /// If [styles] or [variants] is null, the corresponding attribute map of this mix is used.
   @override
   AnimatedStyle copyWith({
-    AttributeMap<SpecMix>? styles,
+    AttributeMap<SpecAttribute>? styles,
     AttributeMap<VariantAttribute>? variants,
     AnimationConfig? animated,
   }) {

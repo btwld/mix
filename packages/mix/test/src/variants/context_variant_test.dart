@@ -1,147 +1,118 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-import 'package:mix/src/variants/variant_attribute.dart';
 
 import '../../helpers/testing_utils.dart';
 
 void main() {
   group('ContextVariant', () {
-    test(
-      'call method should return a VariantAttribute with provided attributes',
-      () {
-        const variant = _MockContextVariant();
-        const attribute1 = MockDoubleScalarAttribute(1.0);
-        const attribute2 = MockIntScalarAttribute(2);
+    test('constructor creates variant with correct properties', () {
+      final variant = ContextVariant(
+        'test_key',
+        (context) => true,
+      );
 
-        final result = variant(attribute1, attribute2);
-
-        expect(result, isA<VariantAttribute>());
-        expect(result.variant, equals(variant));
-        expect(result.value.styles.length, equals(2));
-        expect(result.value.styles.containsType(attribute1), isTrue);
-        expect(result.value.styles.containsType(attribute2), isTrue);
-      },
-    );
-
-    test('call method should ignore null attributes', () {
-      const variant = _MockContextVariant();
-      const attribute1 = MockDoubleScalarAttribute(1.0);
-
-      final result = variant(attribute1, null);
-
-      expect(result.value.styles.length, equals(1));
-      expect(result.value.styles.containsType(attribute1), isTrue);
+      expect(variant.key, 'test_key');
+      expect(variant.when(MockBuildContext()), true);
     });
 
-    test('priority should return VariantPriority.normal by default', () {
-      const variant = _MockContextVariant();
+    group('widgetState factory', () {
+      test('creates widget state variant with correct key', () {
+        final variant = ContextVariant.widgetState(WidgetState.hovered);
 
-      expect(variant.priority, equals(VariantPriority.normal));
+        expect(variant.key, 'widget_state_hovered');
+      });
+
+      test('creates different variants for different states', () {
+        final hovered = ContextVariant.widgetState(WidgetState.hovered);
+        final pressed = ContextVariant.widgetState(WidgetState.pressed);
+
+        expect(hovered.key, 'widget_state_hovered');
+        expect(pressed.key, 'widget_state_pressed');
+        expect(hovered.key != pressed.key, true);
+      });
     });
 
-    test('mergeKey should return the runtime type as a string', () {
-      const variant = _MockContextVariant();
+    group('orientation factory', () {
+      test('creates orientation variant with correct key', () {
+        final variant = ContextVariant.orientation(Orientation.portrait);
 
-      expect(variant.mergeKey, equals('_MockContextVariant'));
+        expect(variant.key, 'media_query_orientation_portrait');
+      });
     });
 
-    test('props should return a list containing the priority', () {
-      const variant = _MockContextVariant();
+    group('platformBrightness factory', () {
+      test('creates brightness variant with correct key', () {
+        final variant = ContextVariant.platformBrightness(Brightness.dark);
 
-      expect(variant.props, equals([VariantPriority.normal]));
+        expect(variant.key, 'media_query_platform_brightness_dark');
+      });
+    });
+
+    group('size factory', () {
+      test('creates size variant with correct key', () {
+        final variant = ContextVariant.size('mobile', (size) => size.width < 768);
+
+        expect(variant.key, 'media_query_size_mobile');
+      });
+    });
+
+    group('direction factory', () {
+      test('creates direction variant with correct key', () {
+        final variant = ContextVariant.direction(TextDirection.ltr);
+
+        expect(variant.key, 'directionality_ltr');
+      });
+    });
+
+    test('when method calls shouldApply function', () {
+      bool called = false;
+      final variant = ContextVariant('test', (context) {
+        called = true;
+        return true;
+      });
+
+      final result = variant.when(MockBuildContext());
+
+      expect(called, true);
+      expect(result, true);
     });
   });
 
-  group('WidgetContextVariant', () {
-    test('priority should return VariantPriority.highest', () {
-      const variant = _MockWidgetContextVariant<int>(5);
-
-      expect(variant.priority, equals(VariantPriority.highest));
+  group('Predefined variants', () {
+    test('widget state variants are defined', () {
+      expect(hover.key, 'widget_state_hovered');
+      expect(press.key, 'widget_state_pressed');
+      expect(focus.key, 'widget_state_focused');
+      expect(disabled.key, 'widget_state_disabled');
+      expect(selected.key, 'widget_state_selected');
+      expect(dragged.key, 'widget_state_dragged');
+      expect(error.key, 'widget_state_error');
     });
 
-    test('event method should return a ContextVariantBuilder', () {
-      const variant = _MockWidgetContextVariant<int>(4);
-      final style = Style();
+    test('brightness variants are defined', () {
+      expect(dark.key, 'media_query_platform_brightness_dark');
+      expect(light.key, 'media_query_platform_brightness_light');
+    });
 
-      final result = variant.event((_) => style);
+    test('orientation variants are defined', () {
+      expect(portrait.key, 'media_query_orientation_portrait');
+      expect(landscape.key, 'media_query_orientation_landscape');
+    });
 
-      expect(result, isA<ContextVariantBuilder>());
-      expect(result.variant, equals(variant));
-      expect(result.fn(MockBuildContext()), equals(style));
+    test('size variants are defined', () {
+      expect(mobile.key, 'media_query_size_mobile');
+      expect(tablet.key, 'media_query_size_tablet');
+      expect(desktop.key, 'media_query_size_desktop');
+    });
+
+    test('named variants are defined', () {
+      expect(primary.key, 'primary');
+      expect(secondary.key, 'secondary');
+      expect(outlined.key, 'outlined');
+      expect(large.key, 'large');
+      expect(medium.key, 'medium');
+      expect(small.key, 'small');
     });
   });
-
-  group('MediaQueryContextVariant', () {
-    test('priority should return VariantPriority.normal', () {
-      const variant = MockMediaQueryContextVariant();
-
-      expect(variant.priority, equals(VariantPriority.normal));
-    });
-  });
-
-  group('ContextVariantBuilder', () {
-    test(
-      'merge method should return a new ContextVariantBuilder with merged functions',
-      () {
-        const variant = _MockContextVariant();
-        final style1 = Style();
-        final style2 = Style();
-        final builder1 = ContextVariantBuilder((_) => style1, variant);
-        final builder2 = ContextVariantBuilder((_) => style2, variant);
-
-        final result = builder1.merge(builder2);
-
-        expect(result, isA<ContextVariantBuilder>());
-        expect(result.variant, equals(variant));
-        expect(result.fn(MockBuildContext()), equals(style1.merge(style2)));
-      },
-    );
-
-    test('props should return a list containing the variant', () {
-      const variant = _MockContextVariant();
-      final builder = ContextVariantBuilder((_) => Style(), variant);
-
-      expect(builder.props, equals([variant]));
-    });
-
-    test(
-      'build method should return a Style with the result of the function',
-      () {
-        const variant = _MockContextVariant();
-        final style = Style();
-        final builder = ContextVariantBuilder((_) => style, variant);
-
-        final result = builder.build(MockBuildContext());
-
-        expect(result, isA<Style>());
-        expect(result, equals(style));
-      },
-    );
-  });
-}
-
-class _MockContextVariant extends ContextVariant {
-  const _MockContextVariant();
-
-  @override
-  bool when(BuildContext context) => true;
-}
-
-class _MockWidgetContextVariant<T> extends MixWidgetStateVariant<T> {
-  final T value;
-  const _MockWidgetContextVariant(this.value);
-
-  @override
-  bool when(BuildContext context) => true;
-
-  @override
-  T builder(BuildContext context) => value;
-}
-
-class MockMediaQueryContextVariant extends MediaQueryContextVariant {
-  const MockMediaQueryContextVariant();
-
-  @override
-  bool when(BuildContext context) => true;
 }

@@ -312,11 +312,6 @@ class IconSpecUtility<T extends SpecAttribute>
 
   IconSpecUtility(super.builder);
 
-  @Deprecated(
-    'Use "this" instead of "chain" for method chaining. '
-    'The chain getter will be removed in a future version.',
-  )
-  IconSpecUtility<T> get chain => IconSpecUtility(attributeBuilder);
 
   static IconSpecUtility<IconSpecAttribute> get self =>
       IconSpecUtility((v) => v);

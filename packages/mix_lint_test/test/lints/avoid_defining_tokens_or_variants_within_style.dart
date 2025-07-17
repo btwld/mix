@@ -30,8 +30,8 @@ final wrong_case_token = Style(
 );
 
 // Correct case
-final a = Variant('a');
-final b = Variant('b');
+final a = NamedVariant('a');
+final b = NamedVariant('b');
 
 final correct_case_variant = Style(a(b()));
 

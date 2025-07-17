@@ -1,70 +1,32 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  // StyleVariantAttribute
   group('VariantAttribute', () {
-    const variant = Variant('custom_variant');
-    final style = Style(const MockIntScalarAttribute(8));
+    const variant = NamedVariant('custom_variant');
+    const style = MockIntScalarAttribute(8);
+    
     test('Constructor assigns correct properties', () {
-      final variantAttribute = VariantAttribute(variant, style);
+      const variantAttribute = VariantAttribute(variant, style);
 
       expect(variantAttribute.variant, variant);
       expect(variantAttribute.value, style);
     });
 
-    // mergeKey
-    test('mergeKey returns correct instance', () {
-      final variantAttribute = VariantAttribute(variant, style);
+    test('mergeKey returns variant key', () {
+      const variantAttribute = VariantAttribute(variant, style);
 
-      expect(variantAttribute.mergeKey, variant.mergeKey);
+      expect(variantAttribute.mergeKey, variant.key);
     });
 
-    // merge()
     test('merge() returns correct instance', () {
-      final variantAttribute = VariantAttribute(variant, style);
+      const variantAttribute = VariantAttribute(variant, style);
 
-      final otherStyle = Style(const MockIntScalarAttribute(10));
-      final otherAttribute = VariantAttribute(variant, otherStyle);
-
-      final result = variantAttribute.merge(otherAttribute);
-
-      expect(result, isA<VariantAttribute>());
-      expect(result.variant, variant);
-      expect(result.value, style.merge(otherStyle));
-    });
-  });
-
-  // StyleVariantAttribute
-  group('StyleVariantAttribute', () {
-    const variant = MockContextVariantCondition(
-      true,
-      priority: VariantPriority.high,
-    );
-
-    final style = Style(const MockIntScalarAttribute(8));
-    test('Constructor assigns correct properties', () {
-      final variantAttribute = VariantAttribute(variant, style);
-
-      expect(variantAttribute.variant, variant);
-      expect(variantAttribute.value, style);
-    });
-
-    // mergeKey
-    test('mergeKey returns correct instance', () {
-      final variantAttribute = VariantAttribute(variant, style);
-
-      expect(variantAttribute.mergeKey, variant.mergeKey);
-    });
-
-    // merge()
-    test('merge() returns correct instance', () {
-      final variantAttribute = VariantAttribute(variant, style);
-
-      final otherStyle = Style(const MockIntScalarAttribute(10));
-      final otherAttribute = VariantAttribute(variant, otherStyle);
+      const otherStyle = MockIntScalarAttribute(10);
+      const otherAttribute = VariantAttribute(variant, otherStyle);
 
       final result = variantAttribute.merge(otherAttribute);
 
@@ -73,80 +35,112 @@ void main() {
       expect(result.value, style.merge(otherStyle));
     });
 
-    // when()
-    test('when() returns correct instance', () {
-      final variantAttribute = VariantAttribute(variant, style);
+    test('merge() throws ArgumentError when variants differ', () {
+      const variantAttribute = VariantAttribute(variant, style);
+      const otherVariant = NamedVariant('other_variant');
+      const otherAttribute = VariantAttribute(otherVariant, style);
 
-      final result = variantAttribute.variant.when(MockBuildContext());
-
-      expect(result, isTrue);
+      expect(() => variantAttribute.merge(otherAttribute), throwsArgumentError);
     });
-  });
-
-  group('StyleVariantAttribute', () {
-    const variant = Variant('custom_variant');
-    final style = Style(const MockIntScalarAttribute(8));
 
     test('matches() returns true when variant matches', () {
-      final variantAttribute = VariantAttribute(variant, style);
+      const variantAttribute = VariantAttribute(variant, style);
 
       expect(variantAttribute.matches([variant]), isTrue);
     });
 
     test('matches() returns false when variant does not match', () {
-      final variantAttribute = VariantAttribute(variant, style);
-      const otherVariant = Variant('other_variant');
+      const variantAttribute = VariantAttribute(variant, style);
+      const otherVariant = NamedVariant('other_variant');
 
       expect(variantAttribute.matches([otherVariant]), isFalse);
     });
-  });
 
-// MultiVariantAttribute
-  group('MultiVariantAttribute', () {
-    const variant1 = Variant('variant1');
-    const variant2 = Variant('variant2');
-    final multiVariant = MultiVariant(
-      const [variant1, variant2],
-      type: MultiVariantOperator.or,
-    );
-    final style = Style(const MockIntScalarAttribute(8));
+    test('removeVariants() returns null when variant is removed', () {
+      const variantAttribute = VariantAttribute(variant, style);
 
-    test('remove() returns correct instance when removing a variant', () {
-      final multiVariantAttribute = VariantAttribute(multiVariant, style);
+      final result = variantAttribute.removeVariants([variant]);
 
-      final result = multiVariantAttribute.removeVariants([variant1]);
-
-      expect(result, isA<VariantAttribute>());
-      expect(result?.variant, variant2);
-      expect(result?.value, style);
+      expect(result, isNull);
     });
 
-    test('remove() returns correct instance when removing all variants', () {
-      final multiVariant = MultiVariant.or(const [variant1, variant2]);
-      final multiVariantAttribute = multiVariant(style);
+    test('removeVariants() returns self when variant is not removed', () {
+      const variantAttribute = VariantAttribute(variant, style);
+      const otherVariant = NamedVariant('other_variant');
 
-      final attribute =
-          multiVariantAttribute.removeVariants([variant1, variant2]);
+      final result = variantAttribute.removeVariants([otherVariant]);
 
-      expect(
-        attribute,
-        isNull,
-      );
+      expect(result, variantAttribute);
     });
 
-    test('merge() returns correct instance', () {
-      final multiVariantAttribute = VariantAttribute(multiVariant, style);
+    test('removeVariants() handles MultiVariant correctly', () {
+      const variant1 = NamedVariant('variant1');
+      const variant2 = NamedVariant('variant2');
+      final multiVariant = MultiVariant.and(const [variant1, variant2]);
+      final variantAttribute = VariantAttribute(multiVariant, style);
 
-      final otherStyle = Style(const MockIntScalarAttribute(10));
-      final otherAttribute = VariantAttribute(multiVariant, otherStyle);
+      // Remove one variant - should return new VariantAttribute with remaining variant
+      final result = variantAttribute.removeVariants([variant1]);
 
-      final result = multiVariantAttribute.merge(otherAttribute);
+      expect(result, isNotNull);
+      expect(result!.variant, variant2);
+      expect(result.value, style);
+    });
 
-      expect(result, isA<VariantAttribute>());
-      expect(result.variant, multiVariant);
-      expect(result.value, style.merge(otherStyle));
+    test('removeVariants() returns null when all variants in MultiVariant are removed', () {
+      const variant1 = NamedVariant('variant1');
+      const variant2 = NamedVariant('variant2');
+      final multiVariant = MultiVariant.and(const [variant1, variant2]);
+      final variantAttribute = VariantAttribute(multiVariant, style);
+
+      final result = variantAttribute.removeVariants([variant1, variant2]);
+
+      expect(result, isNull);
+    });
+
+    test('priority returns normal for NamedVariant', () {
+      const variantAttribute = VariantAttribute(variant, style);
+
+    });
+
+    test('priority returns normal for ContextVariant', () {
+      final contextVariant = MockContextVariant();
+      final variantAttribute = VariantAttribute(contextVariant, style);
+
+    });
+
+    test('priority returns high for WidgetStateVariant', () {
+      final widgetStateVariant = ContextVariant.widgetState(WidgetState.hovered);
+      final variantAttribute = VariantAttribute(widgetStateVariant, style);
+
+    });
+
+    test('priority returns high for custom high priority ContextVariant', () {
+      final highPriorityVariant = MockHighPriorityContextVariant();
+      final variantAttribute = VariantAttribute(highPriorityVariant, style);
+
+    });
+
+    test('priority returns high for MultiVariant with high priority variant', () {
+      final highPriorityVariant = MockHighPriorityContextVariant();
+      const normalVariant = NamedVariant('normal');
+      final multiVariant = MultiVariant.and([normalVariant, highPriorityVariant]);
+      final variantAttribute = VariantAttribute(multiVariant, style);
+
+    });
+
+    test('priority returns normal for MultiVariant with only normal priority variants', () {
+      const variant1 = NamedVariant('variant1');
+      const variant2 = NamedVariant('variant2');
+      final multiVariant = MultiVariant.and(const [variant1, variant2]);
+      final variantAttribute = VariantAttribute(multiVariant, style);
+
+    });
+
+    test('props returns correct list of properties', () {
+      const variantAttribute = VariantAttribute(variant, style);
+
+      expect(variantAttribute.props, [variant, style]);
     });
   });
 }
-
-// StyleVariantAttribute

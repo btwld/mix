@@ -279,11 +279,6 @@ class FlexBoxSpecUtility<T extends SpecAttribute>
 
   FlexBoxSpecUtility(super.attributeBuilder);
 
-  @Deprecated(
-    'Use "this" instead of "chain" for method chaining. '
-    'The chain getter will be removed in a future version.',
-  )
-  FlexBoxSpecUtility<T> get chain => FlexBoxSpecUtility(attributeBuilder);
 
   static FlexBoxSpecUtility<FlexBoxSpecAttribute> get self =>
       FlexBoxSpecUtility((v) => v);

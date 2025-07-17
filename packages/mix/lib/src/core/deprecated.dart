@@ -56,9 +56,8 @@ import '../modifiers/visibility_widget_modifier.dart';
 import '../specs/image/image_spec.dart';
 import '../theme/mix/mix_theme.dart';
 import '../theme/tokens/mix_token.dart';
-import '../variants/widget_state_variant.dart';
-import 'mix_element.dart';
 import 'variant.dart';
+import 'mix_element.dart';
 
 // =============================================================================
 // THEME & SCOPE DEPRECATIONS (v3.0.0)
@@ -112,13 +111,13 @@ typedef MixData = MixContext;
 @Deprecated('Use WidgetStatesController instead')
 typedef MixWidgetStateController = WidgetStatesController;
 
-/// Deprecated: Use MixWidgetStateVariant instead
-@Deprecated('Use MixWidgetStateVariant instead')
-typedef WidgetContextVariant = MixWidgetStateVariant;
+/// Deprecated: Use ContextVariant.widgetState instead
+@Deprecated('Use ContextVariant.widgetState instead')
+typedef WidgetContextVariant = ContextVariant;
 
-/// Deprecated: Use OnFocusedVariant instead
-@Deprecated('Use OnFocusedVariant instead')
-typedef OnFocusVariant = OnFocusedVariant;
+/// Deprecated: Use focus variant instead
+@Deprecated('Use focus variant instead')
+typedef OnFocusVariant = ContextVariant;
 
 /// Simple breakpoint class for responsive design
 @immutable

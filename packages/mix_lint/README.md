@@ -92,7 +92,7 @@ Style(
 #### Do
 
 ```dart
-final example = Variant('example');
+final example = NamedVariant('example');
 
 Style(
     example(
@@ -146,7 +146,7 @@ Avoid creating empty variants directly inside `Style`. Empty variants are essent
 #### Don't
 
 ```dart
-final a = Variant('a');
+final a = NamedVariant('a');
 
 final wrong_case = Style(
   a(),
@@ -170,7 +170,7 @@ final correct_case = Style(
 #### Don't
 
 ```dart
-final variantTest = Variant('test');
+final variantTest = NamedVariant('test');
 
 Style (
     $box.color.red(),
@@ -186,7 +186,7 @@ Style (
 #### Do
 
 ```dart
-final variantTest = Variant('test');
+final variantTest = NamedVariant('test');
 
 Style (
     $box.color.red(),

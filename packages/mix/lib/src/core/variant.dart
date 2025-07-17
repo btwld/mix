@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../core/widget_state/widget_state_controller.dart';
 import '../internal/deep_collection_equality.dart';
+import 'deprecated.dart';
+import 'mix_element.dart';
 
 /// Priority levels for variant application
 enum VariantPriority {
@@ -59,20 +61,13 @@ class NamedVariant extends Variant {
 @immutable
 class ContextVariant extends Variant {
   final bool Function(BuildContext) shouldApply;
-  final VariantPriority priority;
+
   @override
   final String key;
-  const ContextVariant(
-    this.key,
-    this.shouldApply, {
-    this.priority = VariantPriority.normal,
-  });
+  const ContextVariant(this.key, this.shouldApply);
 
-  static ContextVariant widgetState(WidgetState state) {
-    return ContextVariant(
-      'widget_state_${state.name}',
-      (context) => MixWidgetStateModel.hasStateOf(context, state),
-    );
+  static WidgetStateVariant widgetState(WidgetState state) {
+    return WidgetStateVariant(state);
   }
 
   static ContextVariant orientation(Orientation orientation) {
@@ -121,6 +116,48 @@ class ContextVariant extends Variant {
   bool when(BuildContext context) {
     return shouldApply(context);
   }
+}
+
+class WidgetStateVariant extends ContextVariant {
+  final WidgetState state;
+
+  WidgetStateVariant(this.state)
+    : super(
+        'widget_state_${state.name}',
+        (context) => MixWidgetStateModel.hasStateOf(context, state),
+      );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is WidgetStateVariant && other.state == state;
+
+  @override
+  int get hashCode => state.hashCode;
+}
+
+/// Variant that dynamically builds a Style based on build context.
+/// This variant type allows for complex styling that depends on runtime context.
+@immutable
+class ContextVariantBuilder<S extends StyleElement> extends Variant {
+  /// Function that builds a Style based on the given BuildContext
+  final S Function(BuildContext) fn;
+
+  const ContextVariantBuilder(this.fn);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ContextVariantBuilder && other.fn == fn;
+
+  @override
+  int get hashCode => fn.hashCode;
+
+  @override
+  String get key => fn.hashCode.toString();
+
+  /// Build a Style from the given BuildContext
+  S build(BuildContext context) => fn(context);
 }
 
 /// Operator for combining variants with AND/OR/NOT logic
@@ -203,19 +240,6 @@ final class MultiVariant extends ContextVariant {
           const DeepCollectionEquality().equals(other.variants, variants);
 
   @override
-  VariantPriority get priority {
-    // If any variant has high priority, the multi-variant gets high priority
-    for (final variant in variants) {
-      if (variant is ContextVariant &&
-          variant.priority == VariantPriority.high) {
-        return VariantPriority.high;
-      }
-    }
-
-    return VariantPriority.normal;
-  }
-
-  @override
   String get key => 'MultiVariant(${variants.map((v) => v.key).join(', ')})';
 
   @override
@@ -268,6 +292,14 @@ final small = ContextVariant.size('small', (size) => size.width <= 768);
 final medium = ContextVariant.size('medium', (size) => size.width <= 1024);
 final large = ContextVariant.size('large', (size) => size.width <= 1280);
 final xlarge = ContextVariant.size('xlarge', (size) => size.width > 1280);
+
+// Predefined breakpoint helper function
+ContextVariant breakpointVariant(Breakpoint breakpoint) {
+  return ContextVariant.size(
+    'breakpoint_${breakpoint.minWidth}_${breakpoint.maxWidth}',
+    (size) => breakpoint.matches(size),
+  );
+}
 
 // Utility variants using NOT logic
 final enabled = not(disabled);

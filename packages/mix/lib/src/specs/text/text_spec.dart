@@ -533,11 +533,6 @@ class TextSpecUtility<T extends SpecAttribute>
 
   TextSpecUtility(super.attributeBuilder);
 
-  @Deprecated(
-    'Use "this" instead of "chain" for method chaining. '
-    'The chain getter will be removed in a future version.',
-  )
-  TextSpecUtility<T> get chain => TextSpecUtility(attributeBuilder);
 
   static TextSpecUtility<TextSpecAttribute> get self =>
       TextSpecUtility((v) => v);
