@@ -8,31 +8,31 @@ import '../../core/utility.dart';
 import '../box/box_spec.dart';
 import 'stack_spec.dart';
 
-final class StackBoxSpec extends Spec<StackBoxSpec> with Diagnosticable {
+final class ZBoxSpec extends Spec<ZBoxSpec> with Diagnosticable {
   final BoxSpec box;
   final StackSpec stack;
 
-  const StackBoxSpec({BoxSpec? box, StackSpec? stack})
-      : box = box ?? const BoxSpec(),
-        stack = stack ?? const StackSpec();
+  const ZBoxSpec({BoxSpec? box, StackSpec? stack})
+    : box = box ?? const BoxSpec(),
+      stack = stack ?? const StackSpec();
 
-  static StackBoxSpec from(BuildContext context) {
-    return maybeOf(context) ?? const StackBoxSpec();
+  static ZBoxSpec from(BuildContext context) {
+    return maybeOf(context) ?? const ZBoxSpec();
   }
 
-  /// Retrieves the [StackBoxSpec] from the nearest [ResolvedStyleProvider] ancestor.
+  /// Retrieves the [ZBoxSpec] from the nearest [ResolvedStyleProvider] ancestor.
   ///
   /// Returns null if no ancestor [ResolvedStyleProvider] is found.
-  static StackBoxSpec? maybeOf(BuildContext context) {
-    return ResolvedStyleProvider.of<StackBoxSpec>(context)?.spec;
+  static ZBoxSpec? maybeOf(BuildContext context) {
+    return ResolvedStyleProvider.of<ZBoxSpec>(context)?.spec;
   }
 
   /// {@template stack_box_spec_of}
-  /// Retrieves the [StackBoxSpec] from the nearest [ResolvedStyleProvider] ancestor in the widget tree.
+  /// Retrieves the [ZBoxSpec] from the nearest [ResolvedStyleProvider] ancestor in the widget tree.
   ///
   /// This method uses [ResolvedStyleProvider.of] for surgical rebuilds - only widgets
-  /// that call this method will rebuild when [StackBoxSpec] changes, not when other specs change.
-  /// If no ancestor [ResolvedStyleProvider] is found, this method returns an empty [StackBoxSpec].
+  /// that call this method will rebuild when [ZBoxSpec] changes, not when other specs change.
+  /// If no ancestor [ResolvedStyleProvider] is found, this method returns an empty [ZBoxSpec].
   ///
   /// Example:
   ///
@@ -40,37 +40,37 @@ final class StackBoxSpec extends Spec<StackBoxSpec> with Diagnosticable {
   /// final stackBoxSpec = StackBoxSpec.of(context);
   /// ```
   /// {@endtemplate}
-  static StackBoxSpec of(BuildContext context) {
-    return maybeOf(context) ?? const StackBoxSpec();
+  static ZBoxSpec of(BuildContext context) {
+    return maybeOf(context) ?? const ZBoxSpec();
   }
 
-  /// Creates a copy of this [StackBoxSpec] but with the given fields
+  /// Creates a copy of this [ZBoxSpec] but with the given fields
   /// replaced with the new values.
   @override
-  StackBoxSpec copyWith({BoxSpec? box, StackSpec? stack}) {
-    return StackBoxSpec(box: box ?? this.box, stack: stack ?? this.stack);
+  ZBoxSpec copyWith({BoxSpec? box, StackSpec? stack}) {
+    return ZBoxSpec(box: box ?? this.box, stack: stack ?? this.stack);
   }
 
-  /// Linearly interpolates between this [StackBoxSpec] and another [StackBoxSpec] based on the given parameter [t].
+  /// Linearly interpolates between this [ZBoxSpec] and another [ZBoxSpec] based on the given parameter [t].
   ///
   /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [StackBoxSpec] is returned. When [t] is 1.0, the [other] [StackBoxSpec] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [StackBoxSpec] is returned.
+  /// When [t] is 0.0, the current [ZBoxSpec] is returned. When [t] is 1.0, the [other] [ZBoxSpec] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [ZBoxSpec] is returned.
   ///
-  /// If [other] is null, this method returns the current [StackBoxSpec] instance.
+  /// If [other] is null, this method returns the current [ZBoxSpec] instance.
   ///
-  /// The interpolation is performed on each property of the [StackBoxSpec] using the appropriate
+  /// The interpolation is performed on each property of the [ZBoxSpec] using the appropriate
   /// interpolation method:
   /// - [BoxSpec.lerp] for [box].
   /// - [StackSpec.lerp] for [stack].
   ///
   /// This method is typically used in animations to smoothly transition between
-  /// different [StackBoxSpec] configurations.
+  /// different [ZBoxSpec] configurations.
   @override
-  StackBoxSpec lerp(StackBoxSpec? other, double t) {
+  ZBoxSpec lerp(ZBoxSpec? other, double t) {
     if (other == null) return this;
 
-    return StackBoxSpec(
+    return ZBoxSpec(
       box: box.lerp(other.box, t),
       stack: stack.lerp(other.stack, t),
     );
@@ -83,44 +83,44 @@ final class StackBoxSpec extends Spec<StackBoxSpec> with Diagnosticable {
     properties.add(DiagnosticsProperty('stack', stack, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [StackBoxSpec].
+  /// The list of properties that constitute the state of this [ZBoxSpec].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [StackBoxSpec] instances for equality.
+  /// compare two [ZBoxSpec] instances for equality.
   @override
   List<Object?> get props => [box, stack];
 }
 
-/// Represents the attributes of a [StackBoxSpec].
+/// Represents the attributes of a [ZBoxSpec].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [StackBoxSpec].
+/// appearance of a [ZBoxSpec].
 ///
-/// Use this class to configure the attributes of a [StackBoxSpec] and pass it to
-/// the [StackBoxSpec] constructor.
-class StackBoxSpecAttribute extends SpecAttribute<StackBoxSpec>
+/// Use this class to configure the attributes of a [ZBoxSpec] and pass it to
+/// the [ZBoxSpec] constructor.
+class StackBoxSpecAttribute extends SpecAttribute<ZBoxSpec>
     with Diagnosticable {
   final BoxSpecAttribute? box;
   final StackSpecAttribute? stack;
 
   const StackBoxSpecAttribute({this.box, this.stack});
 
-  /// Constructor that accepts a [StackBoxSpec] value and extracts its properties.
+  /// Constructor that accepts a [ZBoxSpec] value and extracts its properties.
   ///
-  /// This is useful for converting existing [StackBoxSpec] instances to [StackBoxSpecAttribute].
+  /// This is useful for converting existing [ZBoxSpec] instances to [StackBoxSpecAttribute].
   ///
   /// ```dart
   /// const spec = StackBoxSpec(box: BoxSpec(...), stack: StackSpec(...));
   /// final attr = StackBoxSpecAttribute.value(spec);
   /// ```
-  static StackBoxSpecAttribute value(StackBoxSpec spec) {
+  static StackBoxSpecAttribute value(ZBoxSpec spec) {
     return StackBoxSpecAttribute(
       box: BoxSpecAttribute.maybeValue(spec.box),
       stack: StackSpecAttribute.maybeValue(spec.stack),
     );
   }
 
-  /// Constructor that accepts a nullable [StackBoxSpec] value and extracts its properties.
+  /// Constructor that accepts a nullable [ZBoxSpec] value and extracts its properties.
   ///
   /// Returns null if the input is null, otherwise uses [StackBoxSpecAttribute.value].
   ///
@@ -128,11 +128,11 @@ class StackBoxSpecAttribute extends SpecAttribute<StackBoxSpec>
   /// const StackBoxSpec? spec = StackBoxSpec(box: BoxSpec(...), stack: StackSpec(...));
   /// final attr = StackBoxSpecAttribute.maybeValue(spec); // Returns StackBoxSpecAttribute or null
   /// ```
-  static StackBoxSpecAttribute? maybeValue(StackBoxSpec? spec) {
+  static StackBoxSpecAttribute? maybeValue(ZBoxSpec? spec) {
     return spec != null ? StackBoxSpecAttribute.value(spec) : null;
   }
 
-  /// Resolves to [StackBoxSpec] using the provided [BuildContext].
+  /// Resolves to [ZBoxSpec] using the provided [BuildContext].
   ///
   /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
@@ -141,11 +141,8 @@ class StackBoxSpecAttribute extends SpecAttribute<StackBoxSpec>
   /// final stackBoxSpec = StackBoxSpecAttribute(...).resolve(context);
   /// ```
   @override
-  StackBoxSpec resolve(BuildContext context) {
-    return StackBoxSpec(
-      box: box?.resolve(context),
-      stack: stack?.resolve(context),
-    );
+  ZBoxSpec resolve(BuildContext context) {
+    return ZBoxSpec(box: box?.resolve(context), stack: stack?.resolve(context));
   }
 
   /// Merges the properties of this [StackBoxSpecAttribute] with the properties of [other].
@@ -181,10 +178,10 @@ class StackBoxSpecAttribute extends SpecAttribute<StackBoxSpec>
   List<Object?> get props => [box, stack];
 }
 
-/// Utility class for configuring [StackBoxSpec] properties.
+/// Utility class for configuring [ZBoxSpec] properties.
 ///
-/// This class provides methods to set individual properties of a [StackBoxSpec].
-/// Use the methods of this class to configure specific properties of a [StackBoxSpec].
+/// This class provides methods to set individual properties of a [ZBoxSpec].
+/// Use the methods of this class to configure specific properties of a [ZBoxSpec].
 class StackBoxSpecUtility<T extends Attribute>
     extends SpecUtility<T, StackBoxSpecAttribute> {
   /// Utility for defining [StackBoxSpecAttribute.box]
@@ -292,17 +289,17 @@ class StackBoxSpecUtility<T extends Attribute>
   }
 }
 
-/// A tween that interpolates between two [StackBoxSpec] instances.
+/// A tween that interpolates between two [ZBoxSpec] instances.
 ///
 /// This class can be used in animations to smoothly transition between
-/// different [StackBoxSpec] specifications.
-class StackBoxSpecTween extends Tween<StackBoxSpec?> {
+/// different [ZBoxSpec] specifications.
+class StackBoxSpecTween extends Tween<ZBoxSpec?> {
   StackBoxSpecTween({super.begin, super.end});
 
   @override
-  StackBoxSpec lerp(double t) {
+  ZBoxSpec lerp(double t) {
     if (begin == null && end == null) {
-      return const StackBoxSpec();
+      return const ZBoxSpec();
     }
 
     if (begin == null) {

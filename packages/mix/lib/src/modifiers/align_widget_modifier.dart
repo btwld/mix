@@ -88,7 +88,7 @@ final class AlignModifierSpecUtility<T extends Attribute>
 }
 
 class AlignModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<AlignModifierSpec>
+    extends ModifierSpecAttribute<AlignModifierSpec>
     with Diagnosticable {
   final AlignmentGeometry? alignment;
   final double? widthFactor;

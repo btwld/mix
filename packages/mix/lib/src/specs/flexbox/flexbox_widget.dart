@@ -2,7 +2,6 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../../core/factory/style_mix.dart';
 import '../../core/styled_widget.dart';
 import '../box/box_spec.dart';
 import '../flex/flex_spec.dart';
@@ -40,28 +39,11 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
   final Axis direction;
 
   @override
-  Widget build(BuildContext context, ResolvedStyle<FlexBoxSpec> resolved) {
-    final spec = resolved.spec;
+  Widget build(BuildContext context, FlexBoxSpec spec) {
     final boxSpec = spec.box;
     final flexSpec = spec.flex;
 
-    // Create the Flex widget
-    Widget flex = Flex(
-      direction: flexSpec.direction ?? direction,
-      mainAxisAlignment: flexSpec.mainAxisAlignment ?? MainAxisAlignment.start,
-      mainAxisSize: flexSpec.mainAxisSize ?? MainAxisSize.max,
-      crossAxisAlignment:
-          flexSpec.crossAxisAlignment ?? CrossAxisAlignment.center,
-      textDirection: flexSpec.textDirection,
-      verticalDirection: flexSpec.verticalDirection ?? VerticalDirection.down,
-      textBaseline: flexSpec.textBaseline,
-      clipBehavior: flexSpec.clipBehavior ?? Clip.none,
-      spacing: flexSpec.gap ?? 0.0,
-      children: children,
-    );
-
-    // Wrap with Container if box spec exists
-    flex = Container(
+    return Container(
       alignment: boxSpec.alignment,
       padding: boxSpec.padding,
       decoration: boxSpec.decoration,
@@ -73,10 +55,21 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
       transform: boxSpec.transform,
       transformAlignment: boxSpec.transformAlignment,
       clipBehavior: boxSpec.clipBehavior ?? Clip.none,
-      child: flex,
+      child: Flex(
+        direction: flexSpec.direction ?? direction,
+        mainAxisAlignment:
+            flexSpec.mainAxisAlignment ?? MainAxisAlignment.start,
+        mainAxisSize: flexSpec.mainAxisSize ?? MainAxisSize.max,
+        crossAxisAlignment:
+            flexSpec.crossAxisAlignment ?? CrossAxisAlignment.center,
+        textDirection: flexSpec.textDirection,
+        verticalDirection: flexSpec.verticalDirection ?? VerticalDirection.down,
+        textBaseline: flexSpec.textBaseline,
+        clipBehavior: flexSpec.clipBehavior ?? Clip.none,
+        spacing: flexSpec.gap ?? 0.0,
+        children: children,
+      ),
     );
-
-    return flex;
   }
 }
 

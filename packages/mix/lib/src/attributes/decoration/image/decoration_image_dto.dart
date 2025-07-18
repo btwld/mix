@@ -2,7 +2,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-final class DecorationImageDto extends Mix<DecorationImage> {
+import '../../../internal/compare_mixin.dart';
+
+final class DecorationImageDto extends Mix<DecorationImage> with EqualityMixin {
   // Properties use MixProp for cleaner merging
   final Prop<ImageProvider>? image;
   final Prop<BoxFit>? fit;
@@ -93,20 +95,20 @@ final class DecorationImageDto extends Mix<DecorationImage> {
   /// ```
   @override
   DecorationImage resolve(BuildContext context) {
-    final resolvedImage = resolveProp(context, image);
+    final resolvedImage = MixHelpers.resolve(context, image);
     if (resolvedImage == null) {
       throw StateError('DecorationImage requires an image provider');
     }
 
     return DecorationImage(
       image: resolvedImage,
-      fit: resolveProp(context, fit),
-      alignment: resolveProp(context, alignment) ?? Alignment.center,
-      centerSlice: resolveProp(context, centerSlice),
-      repeat: resolveProp(context, repeat) ?? ImageRepeat.noRepeat,
-      filterQuality: resolveProp(context, filterQuality) ?? FilterQuality.low,
-      invertColors: resolveProp(context, invertColors) ?? false,
-      isAntiAlias: resolveProp(context, isAntiAlias) ?? false,
+      fit: MixHelpers.resolve(context, fit),
+      alignment: MixHelpers.resolve(context, alignment) ?? Alignment.center,
+      centerSlice: MixHelpers.resolve(context, centerSlice),
+      repeat: MixHelpers.resolve(context, repeat) ?? ImageRepeat.noRepeat,
+      filterQuality: MixHelpers.resolve(context, filterQuality) ?? FilterQuality.low,
+      invertColors: MixHelpers.resolve(context, invertColors) ?? false,
+      isAntiAlias: MixHelpers.resolve(context, isAntiAlias) ?? false,
     );
   }
 
@@ -123,14 +125,14 @@ final class DecorationImageDto extends Mix<DecorationImage> {
     if (other == null) return this;
 
     return DecorationImageDto.props(
-      image: mergeProp(image, other.image),
-      fit: mergeProp(fit, other.fit),
-      alignment: mergeProp(alignment, other.alignment),
-      centerSlice: mergeProp(centerSlice, other.centerSlice),
-      repeat: mergeProp(repeat, other.repeat),
-      filterQuality: mergeProp(filterQuality, other.filterQuality),
-      invertColors: mergeProp(invertColors, other.invertColors),
-      isAntiAlias: mergeProp(isAntiAlias, other.isAntiAlias),
+      image: MixHelpers.merge(image, other.image),
+      fit: MixHelpers.merge(fit, other.fit),
+      alignment: MixHelpers.merge(alignment, other.alignment),
+      centerSlice: MixHelpers.merge(centerSlice, other.centerSlice),
+      repeat: MixHelpers.merge(repeat, other.repeat),
+      filterQuality: MixHelpers.merge(filterQuality, other.filterQuality),
+      invertColors: MixHelpers.merge(invertColors, other.invertColors),
+      isAntiAlias: MixHelpers.merge(isAntiAlias, other.isAntiAlias),
     );
   }
 

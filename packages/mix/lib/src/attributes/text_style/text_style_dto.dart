@@ -4,8 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
+import '../../internal/compare_mixin.dart';
+
 @immutable
-class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
+class TextStyleDto extends Mix<TextStyle> with EqualityMixin, Diagnosticable {
   // Simple properties use MixValue directly
   final Prop<Color>? color;
   final Prop<Color>? backgroundColor;
@@ -155,28 +157,28 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
   @override
   TextStyle resolve(BuildContext context) {
     return TextStyle(
-      color: resolveProp(context, color),
-      backgroundColor: resolveProp(context, backgroundColor),
-      fontSize: resolveProp(context, fontSize),
-      fontWeight: resolveProp(context, fontWeight),
-      fontStyle: resolveProp(context, fontStyle),
-      letterSpacing: resolveProp(context, letterSpacing),
-      wordSpacing: resolveProp(context, wordSpacing),
-      textBaseline: resolveProp(context, textBaseline),
-      height: resolveProp(context, height),
-      foreground: resolveProp(context, foreground),
-      background: resolveProp(context, background),
+      color: MixHelpers.resolve(context, color),
+      backgroundColor: MixHelpers.resolve(context, backgroundColor),
+      fontSize: MixHelpers.resolve(context, fontSize),
+      fontWeight: MixHelpers.resolve(context, fontWeight),
+      fontStyle: MixHelpers.resolve(context, fontStyle),
+      letterSpacing: MixHelpers.resolve(context, letterSpacing),
+      wordSpacing: MixHelpers.resolve(context, wordSpacing),
+      textBaseline: MixHelpers.resolve(context, textBaseline),
+      height: MixHelpers.resolve(context, height),
+      foreground: MixHelpers.resolve(context, foreground),
+      background: MixHelpers.resolve(context, background),
       // Resolve lists using helpers
-      shadows: resolveMixPropList(context, shadows),
-      fontFeatures: resolvePropList(context, fontFeatures),
-      fontVariations: resolvePropList(context, fontVariations),
-      decoration: resolveProp(context, decoration),
-      decorationColor: resolveProp(context, decorationColor),
-      decorationStyle: resolveProp(context, decorationStyle),
-      decorationThickness: resolveProp(context, decorationThickness),
-      debugLabel: resolveProp(context, debugLabel),
-      fontFamily: resolveProp(context, fontFamily),
-      fontFamilyFallback: resolvePropList(context, fontFamilyFallback),
+      shadows: MixHelpers.resolveList(context, shadows),
+      fontFeatures: MixHelpers.resolveList(context, fontFeatures),
+      fontVariations: MixHelpers.resolveList(context, fontVariations),
+      decoration: MixHelpers.resolve(context, decoration),
+      decorationColor: MixHelpers.resolve(context, decorationColor),
+      decorationStyle: MixHelpers.resolve(context, decorationStyle),
+      decorationThickness: MixHelpers.resolve(context, decorationThickness),
+      debugLabel: MixHelpers.resolve(context, debugLabel),
+      fontFamily: MixHelpers.resolve(context, fontFamily),
+      fontFamilyFallback: MixHelpers.resolveList(context, fontFamilyFallback),
     );
   }
 
@@ -185,31 +187,34 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
     if (other == null) return this;
 
     return TextStyleDto.props(
-      color: mergeProp(color, other.color),
-      backgroundColor: mergeProp(backgroundColor, other.backgroundColor),
-      fontSize: mergeProp(fontSize, other.fontSize),
-      fontWeight: mergeProp(fontWeight, other.fontWeight),
-      fontStyle: mergeProp(fontStyle, other.fontStyle),
-      letterSpacing: mergeProp(letterSpacing, other.letterSpacing),
-      debugLabel: mergeProp(debugLabel, other.debugLabel),
-      wordSpacing: mergeProp(wordSpacing, other.wordSpacing),
-      textBaseline: mergeProp(textBaseline, other.textBaseline),
+      color: MixHelpers.merge(color, other.color),
+      backgroundColor: MixHelpers.merge(backgroundColor, other.backgroundColor),
+      fontSize: MixHelpers.merge(fontSize, other.fontSize),
+      fontWeight: MixHelpers.merge(fontWeight, other.fontWeight),
+      fontStyle: MixHelpers.merge(fontStyle, other.fontStyle),
+      letterSpacing: MixHelpers.merge(letterSpacing, other.letterSpacing),
+      debugLabel: MixHelpers.merge(debugLabel, other.debugLabel),
+      wordSpacing: MixHelpers.merge(wordSpacing, other.wordSpacing),
+      textBaseline: MixHelpers.merge(textBaseline, other.textBaseline),
       // Merge lists - default to append strategy
-      shadows: mergeMixPropList(shadows, other.shadows),
-      fontFeatures: mergePropList(fontFeatures, other.fontFeatures),
-      decoration: mergeProp(decoration, other.decoration),
-      decorationColor: mergeProp(decorationColor, other.decorationColor),
-      decorationStyle: mergeProp(decorationStyle, other.decorationStyle),
-      fontVariations: mergePropList(fontVariations, other.fontVariations),
-      height: mergeProp(height, other.height),
-      foreground: mergeProp(foreground, other.foreground),
-      background: mergeProp(background, other.background),
-      decorationThickness: mergeProp(
+      shadows: MixHelpers.mergeList(shadows, other.shadows),
+      fontFeatures: MixHelpers.mergeList(fontFeatures, other.fontFeatures),
+      decoration: MixHelpers.merge(decoration, other.decoration),
+      decorationColor: MixHelpers.merge(decorationColor, other.decorationColor),
+      decorationStyle: MixHelpers.merge(decorationStyle, other.decorationStyle),
+      fontVariations: MixHelpers.mergeList(
+        fontVariations,
+        other.fontVariations,
+      ),
+      height: MixHelpers.merge(height, other.height),
+      foreground: MixHelpers.merge(foreground, other.foreground),
+      background: MixHelpers.merge(background, other.background),
+      decorationThickness: MixHelpers.merge(
         decorationThickness,
         other.decorationThickness,
       ),
-      fontFamily: mergeProp(fontFamily, other.fontFamily),
-      fontFamilyFallback: mergePropList(
+      fontFamily: MixHelpers.merge(fontFamily, other.fontFamily),
+      fontFamilyFallback: MixHelpers.mergeList(
         fontFamilyFallback,
         other.fontFamilyFallback,
       ),

@@ -4,6 +4,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
+import '../../internal/compare_mixin.dart';
+
 typedef _BaseDecorProperties = ({
   Prop<Color>? color,
   MixProp<Gradient, GradientDto>? gradient,
@@ -18,7 +20,8 @@ typedef _BaseDecorProperties = ({
 /// This class needs to have the different properties that are not found in the [Modifiers] class.
 /// In order to support merging of [Decoration] values, and reusable of common properties.
 @immutable
-sealed class DecorationDto<T extends Decoration> extends Mix<T> {
+sealed class DecorationDto<T extends Decoration> extends Mix<T>
+    with EqualityMixin {
   final Prop<Color>? color;
   final MixProp<Gradient, GradientDto>? gradient;
   final MixProp<DecorationImage, DecorationImageDto>? image;
@@ -105,7 +108,8 @@ sealed class DecorationDto<T extends Decoration> extends Mix<T> {
 ///
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a `[BoxDecoration]
-final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
+final class BoxDecorationDto extends DecorationDto<BoxDecoration>
+    with EqualityMixin {
   final MixProp<BoxBorder, BoxBorderDto>? border;
   final MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>? borderRadius;
   final Prop<BoxShape>? shape;
@@ -216,14 +220,14 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
   @override
   BoxDecoration resolve(BuildContext context) {
     return BoxDecoration(
-      color: resolveProp(context, color),
-      image: resolveMixProp(context, image),
-      border: resolveMixProp(context, border),
-      borderRadius: resolveMixProp(context, borderRadius),
-      boxShadow: resolveMixPropList(context, boxShadow),
-      gradient: resolveMixProp(context, gradient),
-      backgroundBlendMode: resolveProp(context, backgroundBlendMode),
-      shape: resolveProp(context, shape) ?? BoxShape.rectangle,
+      color: MixHelpers.resolve(context, color),
+      image: MixHelpers.resolve(context, image),
+      border: MixHelpers.resolve(context, border),
+      borderRadius: MixHelpers.resolve(context, borderRadius),
+      boxShadow: MixHelpers.resolveList(context, boxShadow),
+      gradient: MixHelpers.resolve(context, gradient),
+      backgroundBlendMode: MixHelpers.resolve(context, backgroundBlendMode),
+      shape: MixHelpers.resolve(context, shape) ?? BoxShape.rectangle,
     );
   }
 
@@ -240,17 +244,17 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
     if (other == null) return this;
 
     return BoxDecorationDto.props(
-      border: mergeMixProp(border, other.border),
-      borderRadius: mergeMixProp(borderRadius, other.borderRadius),
-      shape: mergeProp(shape, other.shape),
-      backgroundBlendMode: mergeProp(
+      border: MixHelpers.merge(border, other.border),
+      borderRadius: MixHelpers.merge(borderRadius, other.borderRadius),
+      shape: MixHelpers.merge(shape, other.shape),
+      backgroundBlendMode: MixHelpers.merge(
         backgroundBlendMode,
         other.backgroundBlendMode,
       ),
-      color: mergeProp(color, other.color),
-      image: mergeMixProp(image, other.image),
-      gradient: mergeMixProp(gradient, other.gradient),
-      boxShadow: mergeMixPropList(boxShadow, other.boxShadow),
+      color: MixHelpers.merge(color, other.color),
+      image: MixHelpers.merge(image, other.image),
+      gradient: MixHelpers.merge(gradient, other.gradient),
+      boxShadow: MixHelpers.mergeList(boxShadow, other.boxShadow),
     );
   }
 
@@ -275,7 +279,7 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
 }
 
 final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
-    with HasDefaultValue<ShapeDecoration> {
+    with HasDefaultValue<ShapeDecoration>, EqualityMixin {
   final MixProp<ShapeBorder, ShapeBorderDto>? shape;
 
   factory ShapeDecorationDto({
@@ -382,13 +386,13 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
   @override
   ShapeDecoration resolve(BuildContext context) {
     return ShapeDecoration(
-      color: resolveProp(context, color) ?? defaultValue.color,
-      image: resolveMixProp(context, image) ?? defaultValue.image,
-      gradient: resolveMixProp(context, gradient) ?? defaultValue.gradient,
+      color: MixHelpers.resolve(context, color) ?? defaultValue.color,
+      image: MixHelpers.resolve(context, image) ?? defaultValue.image,
+      gradient: MixHelpers.resolve(context, gradient) ?? defaultValue.gradient,
       shadows:
           shadows?.map((e) => e.resolve(context)).toList() ??
           defaultValue.shadows,
-      shape: resolveMixProp(context, shape) ?? defaultValue.shape,
+      shape: MixHelpers.resolve(context, shape) ?? defaultValue.shape,
     );
   }
 
@@ -405,11 +409,11 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
     if (other == null) return this;
 
     return ShapeDecorationDto.props(
-      shape: mergeMixProp(shape, other.shape),
-      color: mergeProp(color, other.color),
-      image: mergeMixProp(image, other.image),
-      gradient: mergeMixProp(gradient, other.gradient),
-      shadows: mergeMixPropList(shadows, other.shadows),
+      shape: MixHelpers.merge(shape, other.shape),
+      color: MixHelpers.merge(color, other.color),
+      image: MixHelpers.merge(image, other.image),
+      gradient: MixHelpers.merge(gradient, other.gradient),
+      shadows: MixHelpers.mergeList(shadows, other.shadows),
     );
   }
 

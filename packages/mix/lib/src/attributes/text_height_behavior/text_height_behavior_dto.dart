@@ -3,7 +3,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-base class TextHeightBehaviorDto extends Mix<TextHeightBehavior> {
+import '../../internal/compare_mixin.dart';
+
+class TextHeightBehaviorDto extends Mix<TextHeightBehavior> with EqualityMixin {
   // Properties use MixProp for cleaner merging
   final Prop<bool>? applyHeightToFirstAscent;
   final Prop<bool>? applyHeightToLastDescent;
@@ -69,11 +71,11 @@ base class TextHeightBehaviorDto extends Mix<TextHeightBehavior> {
   TextHeightBehavior resolve(BuildContext context) {
     return TextHeightBehavior(
       applyHeightToFirstAscent:
-          resolveProp(context, applyHeightToFirstAscent) ?? true,
+          MixHelpers.resolve(context, applyHeightToFirstAscent) ?? true,
       applyHeightToLastDescent:
-          resolveProp(context, applyHeightToLastDescent) ?? true,
+          MixHelpers.resolve(context, applyHeightToLastDescent) ?? true,
       leadingDistribution:
-          resolveProp(context, leadingDistribution) ??
+          MixHelpers.resolve(context, leadingDistribution) ??
           TextLeadingDistribution.proportional,
     );
   }
@@ -91,15 +93,15 @@ base class TextHeightBehaviorDto extends Mix<TextHeightBehavior> {
     if (other == null) return this;
 
     return TextHeightBehaviorDto.props(
-      applyHeightToFirstAscent: mergeProp(
+      applyHeightToFirstAscent: MixHelpers.merge(
         applyHeightToFirstAscent,
         other.applyHeightToFirstAscent,
       ),
-      applyHeightToLastDescent: mergeProp(
+      applyHeightToLastDescent: MixHelpers.merge(
         applyHeightToLastDescent,
         other.applyHeightToLastDescent,
       ),
-      leadingDistribution: mergeProp(
+      leadingDistribution: MixHelpers.merge(
         leadingDistribution,
         other.leadingDistribution,
       ),

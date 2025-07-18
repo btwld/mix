@@ -77,7 +77,7 @@ final class SizedBoxModifierSpec extends ModifierSpec<SizedBoxModifierSpec>
 /// Use this class to configure the attributes of a [SizedBoxModifierSpec] and pass it to
 /// the [SizedBoxModifierSpec] constructor.
 class SizedBoxModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<SizedBoxModifierSpec>
+    extends ModifierSpecAttribute<SizedBoxModifierSpec>
     with Diagnosticable {
   final double? width;
   final double? height;

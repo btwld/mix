@@ -32,8 +32,7 @@ class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
   final Style<S> style;
 
   /// Function that builds the widget with the resolved style.
-  final Widget Function(BuildContext context, ResolvedStyle<S> resolved)
-  builder;
+  final Widget Function(BuildContext context, S resolved) builder;
 
   /// Whether to inherit style from parent widgets.
   final bool inherit;
@@ -78,7 +77,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
   }
 
   Widget _buildCore(BuildContext context, ResolvedStyle<S> resolved) {
-    Widget child = widget.builder(context, resolved);
+    Widget child = widget.builder(context, resolved.spec);
 
     return _applyModifiers(child, resolved.modifiers);
   }

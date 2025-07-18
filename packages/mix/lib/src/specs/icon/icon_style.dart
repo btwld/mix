@@ -16,6 +16,7 @@ class IconStyle extends Style<IconSpec> {
   const IconStyle() : attribute = const IconSpecAttribute.props();
 
   /// Creates an IconStyle with the given attribute
+  @override
   IconStyle withAttribute(IconSpecAttribute attribute) {
     return IconStyle._(
       attribute: attribute,

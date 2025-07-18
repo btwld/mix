@@ -134,12 +134,12 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
   final Prop<double>? width;
   final Prop<double>? height;
   final Prop<Color>? color;
-  final ImageRepeat? repeat;
-  final BoxFit? fit;
-  final AlignmentGeometry? alignment;
-  final Rect? centerSlice;
-  final FilterQuality? filterQuality;
-  final BlendMode? colorBlendMode;
+  final Prop<ImageRepeat>? repeat;
+  final Prop<BoxFit>? fit;
+  final Prop<AlignmentGeometry>? alignment;
+  final Prop<Rect>? centerSlice;
+  final Prop<FilterQuality>? filterQuality;
+  final Prop<BlendMode>? colorBlendMode;
 
   /// Constructor that accepts Prop values directly
   const ImageSpecAttribute.props({
@@ -170,12 +170,12 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
       width: Prop.maybeValue(width),
       height: Prop.maybeValue(height),
       color: Prop.maybeValue(color),
-      repeat: repeat,
-      fit: fit,
-      alignment: alignment,
-      centerSlice: centerSlice,
-      filterQuality: filterQuality,
-      colorBlendMode: colorBlendMode,
+      repeat: Prop.maybeValue(repeat),
+      fit: Prop.maybeValue(fit),
+      alignment: Prop.maybeValue(alignment),
+      centerSlice: Prop.maybeValue(centerSlice),
+      filterQuality: Prop.maybeValue(filterQuality),
+      colorBlendMode: Prop.maybeValue(colorBlendMode),
     );
   }
 
@@ -192,12 +192,12 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
       width: Prop.maybeValue(spec.width),
       height: Prop.maybeValue(spec.height),
       color: Prop.maybeValue(spec.color),
-      repeat: spec.repeat,
-      fit: spec.fit,
-      alignment: spec.alignment,
-      centerSlice: spec.centerSlice,
-      filterQuality: spec.filterQuality,
-      colorBlendMode: spec.colorBlendMode,
+      repeat: Prop.maybeValue(spec.repeat),
+      fit: Prop.maybeValue(spec.fit),
+      alignment: Prop.maybeValue(spec.alignment),
+      centerSlice: Prop.maybeValue(spec.centerSlice),
+      filterQuality: Prop.maybeValue(spec.filterQuality),
+      colorBlendMode: Prop.maybeValue(spec.colorBlendMode),
     );
   }
 
@@ -216,15 +216,15 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
   @override
   ImageSpec resolve(BuildContext context) {
     return ImageSpec(
-      width: width?.resolve(context),
-      height: height?.resolve(context),
-      color: color?.resolve(context),
-      repeat: repeat,
-      fit: fit,
-      alignment: alignment,
-      centerSlice: centerSlice,
-      filterQuality: filterQuality,
-      colorBlendMode: colorBlendMode,
+      width: MixHelpers.resolve(context, width),
+      height: MixHelpers.resolve(context, height),
+      color: MixHelpers.resolve(context, color),
+      repeat: MixHelpers.resolve(context, repeat),
+      fit: MixHelpers.resolve(context, fit),
+      alignment: MixHelpers.resolve(context, alignment),
+      centerSlice: MixHelpers.resolve(context, centerSlice),
+      filterQuality: MixHelpers.resolve(context, filterQuality),
+      colorBlendMode: MixHelpers.resolve(context, colorBlendMode),
     );
   }
 
@@ -233,15 +233,15 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
     if (other == null) return this;
 
     return ImageSpecAttribute.props(
-      width: width?.merge(other.width) ?? other.width,
-      height: height?.merge(other.height) ?? other.height,
-      color: color?.merge(other.color) ?? other.color,
-      repeat: other.repeat ?? repeat,
-      fit: other.fit ?? fit,
-      alignment: other.alignment ?? alignment,
-      centerSlice: other.centerSlice ?? centerSlice,
-      filterQuality: other.filterQuality ?? filterQuality,
-      colorBlendMode: other.colorBlendMode ?? colorBlendMode,
+      width: MixHelpers.merge(width, other.width),
+      height: MixHelpers.merge(height, other.height),
+      color: MixHelpers.merge(color, other.color),
+      repeat: MixHelpers.merge(repeat, other.repeat),
+      fit: MixHelpers.merge(fit, other.fit),
+      alignment: MixHelpers.merge(alignment, other.alignment),
+      centerSlice: MixHelpers.merge(centerSlice, other.centerSlice),
+      filterQuality: MixHelpers.merge(filterQuality, other.filterQuality),
+      colorBlendMode: MixHelpers.merge(colorBlendMode, other.colorBlendMode),
     );
   }
 

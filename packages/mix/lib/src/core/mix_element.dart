@@ -1,8 +1,5 @@
 import 'package:flutter/widgets.dart';
 
-import '../internal/compare_mixin.dart';
-import 'helpers.dart';
-
 // Generic directive for modifying values
 @immutable
 abstract class MixDirective<T> {
@@ -15,16 +12,8 @@ abstract class MixDirective<T> {
   T apply(T value);
 }
 
-mixin Resolvable<T> {
-  /// Resolves the current instance to a [T] using the provided [MixContext].
-  ///
-  /// If a property is null in the [MixContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
-  ///
-  /// ```dart
-  /// final resolved = instance.resolve(mix);
-  /// ```
-  T resolve(BuildContext context);
+mixin Resolvable<V> {
+  V resolve(BuildContext context);
 }
 
 mixin Mergeable {
@@ -35,16 +24,13 @@ mixin Mergeable {
   Mergeable merge(covariant Mergeable? other);
 }
 
-/// Simple value Mix - holds a direct value
-@immutable
-abstract class Mix<T> with EqualityMixin, MixHelperMixin {
-  const Mix();
-
-  /// Resolves to the concrete value using the provided context
-  T resolve(BuildContext context);
-
-  /// Merges this mix with another mix, returning a new mix.
-  Mix<T> merge(covariant Mix<T>? other);
+mixin Mixable<T> implements Mergeable, Resolvable<T> {
+  /// Merges this instance with another instance of the same type.
+  ///
+  /// If [other] is null, returns this instance unchanged.
+  /// Otherwise, returns a new instance with properties from [other] taking precedence.
+  @override
+  Mixable<T> merge(covariant Mixable<T>? other);
 }
 
 /// Merge strategy for lists
@@ -57,6 +43,13 @@ enum ListMergeStrategy {
 
   /// Override entire list
   override,
+}
+
+abstract class Mix<T> with Mixable<T> {
+  const Mix();
+
+  @override
+  Mix<T> merge(covariant Mix<T>? other);
 }
 
 // Define a mixin for properties that have default values

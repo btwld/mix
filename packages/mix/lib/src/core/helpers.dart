@@ -8,7 +8,6 @@ import 'package:flutter/widgets.dart' as w;
 
 import '../internal/deep_collection_equality.dart';
 import 'mix_element.dart';
-import 'prop.dart';
 
 /// Class to provide some helpers without conflicting
 /// name space with other libraries.
@@ -28,14 +27,6 @@ class MixHelpers {
 
   static const resolveList = _resolveList;
 
-  static const mergePropList = _mergePropList;
-
-  static const resolvePropList = _resolvePropList;
-
-  static const mergeMixPropList = _mergeMixPropList;
-
-  static const resolveMixPropList = _resolveMixPropList;
-
   static const lerpStrutStyle = _lerpStrutStyle;
 
   static const lerpMatrix4 = _lerpMatrix4;
@@ -49,6 +40,19 @@ class MixHelpers {
   static const lerpShadowList = ui.Shadow.lerpList;
 
   const MixHelpers._();
+  static V? resolve<T extends Resolvable<V>, V>(
+    BuildContext context,
+    T? resolvable,
+  ) {
+    if (resolvable == null) return null;
+
+    return resolvable.resolve(context);
+  }
+
+  static V? merge<V extends Mergeable>(V? a, V? b) {
+    return (a?.merge(b) ?? b) as V?;
+  }
+
   static bool get isWeb => isWebOverride ?? kIsWeb;
   static TargetPlatform get targetPlatform =>
       targetPlatformOverride ?? defaultTargetPlatform;
@@ -99,7 +103,7 @@ List<T>? _mergeList<T>(
           final currentValue = a[index];
           final otherValue = b[index];
 
-          if (currentValue is Mix && otherValue is Mix) {
+          if (currentValue is Mergeable && otherValue is Mergeable) {
             return currentValue.merge(otherValue) as T;
           }
 
@@ -115,7 +119,7 @@ List<T>? _mergeList<T>(
   }
 }
 
-List<V> _resolveList<T extends Mix<V>, V>(List<T>? a, BuildContext mix) {
+List<V> _resolveList<T extends Resolvable<V>, V>(BuildContext mix, List<T>? a) {
   if (a == null) return [];
 
   return a.map((e) => e.resolve(mix)).whereType<V>().toList();
@@ -148,150 +152,4 @@ w.StrutStyle? _lerpStrutStyle(w.StrutStyle? a, w.StrutStyle? b, double t) {
     forceStrutHeight: t < 0.5 ? a.forceStrutHeight : b.forceStrutHeight,
     debugLabel: a.debugLabel ?? b.debugLabel,
   );
-}
-
-List<Prop<V>>? _mergePropList<V>(
-  List<Prop<V>>? a,
-  List<Prop<V>>? b, {
-  ListMergeStrategy strategy = ListMergeStrategy.replace,
-}) {
-  if (a == null) return b;
-  if (b == null) return a;
-
-  switch (strategy) {
-    case ListMergeStrategy.append:
-      return [...a, ...b];
-    case ListMergeStrategy.replace:
-      final result = List<Prop<V>>.of(a);
-      for (int i = 0; i < b.length; i++) {
-        if (i < result.length) {
-          result[i] = result[i].merge(b[i]);
-        } else {
-          result.add(b[i]);
-        }
-      }
-
-      return result;
-    case ListMergeStrategy.override:
-      return b;
-  }
-}
-
-List<V>? _resolvePropList<V>(BuildContext context, List<Prop<V>>? list) {
-  if (list == null || list.isEmpty) return null;
-
-  final resolved = <V>[];
-  for (final item in list) {
-    final value = item.resolve(context);
-    if (value != null) resolved.add(value);
-  }
-
-  return resolved.isEmpty ? null : resolved;
-}
-
-List<MixProp<R, D>>? _mergeMixPropList<R, D extends Mix<R>>(
-  List<MixProp<R, D>>? a,
-  List<MixProp<R, D>>? b, {
-  ListMergeStrategy strategy = ListMergeStrategy.replace,
-}) {
-  if (a == null) return b;
-  if (b == null) return a;
-
-  switch (strategy) {
-    case ListMergeStrategy.append:
-      return [...a, ...b];
-    case ListMergeStrategy.replace:
-      final result = List<MixProp<R, D>>.of(a);
-      for (int i = 0; i < b.length; i++) {
-        if (i < result.length) {
-          result[i] = result[i].merge(b[i]);
-        } else {
-          result.add(b[i]);
-        }
-      }
-
-      return result;
-    case ListMergeStrategy.override:
-      return b;
-  }
-}
-
-List<R>? _resolveMixPropList<R, D extends Mix<R>>(
-  BuildContext context,
-  List<MixProp<R, D>>? list,
-) {
-  if (list == null || list.isEmpty) return null;
-
-  final resolved = <R>[];
-  for (final mixProp in list) {
-    final value = mixProp.resolve(context);
-    if (value != null) resolved.add(value);
-  }
-
-  return resolved.isEmpty ? null : resolved;
-}
-
-// Mixin that provides Mix helper methods to StyleElement classes
-mixin MixHelperMixin {
-  @protected
-  V? resolveProp<V>(BuildContext context, Prop<V>? prop) {
-    return prop?.resolve(context);
-  }
-
-  @protected
-  Prop<V>? mergeProp<V>(Prop<V>? a, Prop<V>? b) {
-    return a?.merge(b) ?? b;
-  }
-
-  @protected
-  List<V>? resolvePropList<V>(BuildContext context, List<Prop<V>>? list) {
-    return MixHelpers.resolvePropList(context, list);
-  }
-
-  @protected
-  List<R>? resolveMixPropList<R, D extends Mix<R>>(
-    BuildContext context,
-    List<MixProp<R, D>>? list,
-  ) {
-    return MixHelpers.resolveMixPropList(context, list);
-  }
-
-  // mergeMixProp merges two V extend Mix
-  @protected
-  MixProp<V, D>? mergeMixProp<V, D extends Mix<V>>(
-    MixProp<V, D>? a,
-    MixProp<V, D>? b,
-  ) {
-    if (a == null) return b;
-    if (b == null) return a;
-
-    return a.merge(b);
-  }
-
-  // resolve mix prop to value
-  @protected
-  V? resolveMixProp<V, D extends Mix<V>>(
-    BuildContext context,
-    MixProp<V, D>? prop,
-  ) {
-    return prop?.resolve(context);
-  }
-
-  @protected
-  List<Prop<V>>? mergePropList<V>(
-    List<Prop<V>>? a,
-    List<Prop<V>>? b, {
-    ListMergeStrategy strategy = ListMergeStrategy.replace,
-  }) {
-    return MixHelpers.mergePropList(a, b, strategy: strategy);
-  }
-
-  @protected
-  List<MixProp<R, D>>? mergeMixPropList<R, D extends Mix<R>>(
-    List<MixProp<R, D>>? a,
-    List<MixProp<R, D>>? b, {
-    ListMergeStrategy strategy = ListMergeStrategy.replace,
-  }) {
-    return MixHelpers.mergeMixPropList(a, b, strategy: strategy);
-  }
 }

@@ -105,7 +105,7 @@ final class FractionallySizedBoxModifierSpec
 /// Use this class to configure the attributes of a [FractionallySizedBoxModifierSpec] and pass it to
 /// the [FractionallySizedBoxModifierSpec] constructor.
 class FractionallySizedBoxModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<FractionallySizedBoxModifierSpec>
+    extends ModifierSpecAttribute<FractionallySizedBoxModifierSpec>
     with Diagnosticable {
   final double? widthFactor;
   final double? heightFactor;

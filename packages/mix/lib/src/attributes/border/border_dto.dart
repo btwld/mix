@@ -2,7 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-sealed class BoxBorderDto<T extends BoxBorder> extends Mix<T> {
+import '../../internal/compare_mixin.dart';
+
+sealed class BoxBorderDto<T extends BoxBorder> extends Mix<T> with EqualityMixin {
   final MixProp<BorderSide, BorderSideDto>? top;
   final MixProp<BorderSide, BorderSideDto>? bottom;
 
@@ -68,7 +70,7 @@ sealed class BoxBorderDto<T extends BoxBorder> extends Mix<T> {
 }
 
 final class BorderDto extends BoxBorderDto<Border>
-    with HasDefaultValue<Border> {
+    with HasDefaultValue<Border>, EqualityMixin {
   final MixProp<BorderSide, BorderSideDto>? left;
   final MixProp<BorderSide, BorderSideDto>? right;
 
@@ -160,10 +162,10 @@ final class BorderDto extends BoxBorderDto<Border>
   @override
   Border resolve(BuildContext context) {
     return Border(
-      top: resolveMixProp(context, top) ?? BorderSide.none,
-      right: resolveMixProp(context, right) ?? BorderSide.none,
-      bottom: resolveMixProp(context, bottom) ?? BorderSide.none,
-      left: resolveMixProp(context, left) ?? BorderSide.none,
+      top: MixHelpers.resolve(context, top) ?? BorderSide.none,
+      right: MixHelpers.resolve(context, right) ?? BorderSide.none,
+      bottom: MixHelpers.resolve(context, bottom) ?? BorderSide.none,
+      left: MixHelpers.resolve(context, left) ?? BorderSide.none,
     );
   }
 
@@ -180,10 +182,10 @@ final class BorderDto extends BoxBorderDto<Border>
     if (other == null) return this;
 
     return BorderDto.props(
-      top: mergeMixProp(top, other.top),
-      bottom: mergeMixProp(bottom, other.bottom),
-      left: mergeMixProp(left, other.left),
-      right: mergeMixProp(right, other.right),
+      top: MixHelpers.merge(top, other.top),
+      bottom: MixHelpers.merge(bottom, other.bottom),
+      left: MixHelpers.merge(left, other.left),
+      right: MixHelpers.merge(right, other.right),
     );
   }
 
@@ -202,7 +204,7 @@ final class BorderDto extends BoxBorderDto<Border>
 }
 
 final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional>
-    with HasDefaultValue<BorderDirectional> {
+    with HasDefaultValue<BorderDirectional>, EqualityMixin {
   final MixProp<BorderSide, BorderSideDto>? start;
   final MixProp<BorderSide, BorderSideDto>? end;
   static final BorderDirectionalDto none = BorderDirectionalDto.all(
@@ -301,10 +303,10 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional>
   @override
   BorderDirectional resolve(BuildContext context) {
     return BorderDirectional(
-      top: resolveMixProp(context, top) ?? defaultValue.top,
-      start: resolveMixProp(context, start) ?? defaultValue.start,
-      end: resolveMixProp(context, end) ?? defaultValue.end,
-      bottom: resolveMixProp(context, bottom) ?? defaultValue.bottom,
+      top: MixHelpers.resolve(context, top) ?? defaultValue.top,
+      start: MixHelpers.resolve(context, start) ?? defaultValue.start,
+      end: MixHelpers.resolve(context, end) ?? defaultValue.end,
+      bottom: MixHelpers.resolve(context, bottom) ?? defaultValue.bottom,
     );
   }
 
@@ -321,10 +323,10 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional>
     if (other == null) return this;
 
     return BorderDirectionalDto.props(
-      top: mergeMixProp(top, other.top),
-      bottom: mergeMixProp(bottom, other.bottom),
-      start: mergeMixProp(start, other.start),
-      end: mergeMixProp(end, other.end),
+      top: MixHelpers.merge(top, other.top),
+      bottom: MixHelpers.merge(bottom, other.bottom),
+      start: MixHelpers.merge(start, other.start),
+      end: MixHelpers.merge(end, other.end),
     );
   }
 
@@ -343,7 +345,7 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional>
 }
 
 final class BorderSideDto extends Mix<BorderSide>
-    with HasDefaultValue<BorderSide> {
+    with HasDefaultValue<BorderSide>, EqualityMixin {
   // Properties use MixableProperty for cleaner merging
   final Prop<Color>? color;
   final Prop<double>? width;
@@ -417,11 +419,11 @@ final class BorderSideDto extends Mix<BorderSide>
   @override
   BorderSide resolve(BuildContext context) {
     return BorderSide(
-      color: resolveProp(context, color) ?? defaultValue.color,
-      width: resolveProp(context, width) ?? defaultValue.width,
-      style: resolveProp(context, style) ?? defaultValue.style,
+      color: MixHelpers.resolve(context, color) ?? defaultValue.color,
+      width: MixHelpers.resolve(context, width) ?? defaultValue.width,
+      style: MixHelpers.resolve(context, style) ?? defaultValue.style,
       strokeAlign:
-          resolveProp(context, strokeAlign) ?? defaultValue.strokeAlign,
+          MixHelpers.resolve(context, strokeAlign) ?? defaultValue.strokeAlign,
     );
   }
 
@@ -438,10 +440,10 @@ final class BorderSideDto extends Mix<BorderSide>
     if (other == null) return this;
 
     return BorderSideDto.props(
-      color: mergeProp(color, other.color),
-      width: mergeProp(width, other.width),
-      style: mergeProp(style, other.style),
-      strokeAlign: mergeProp(strokeAlign, other.strokeAlign),
+      color: MixHelpers.merge(color, other.color),
+      width: MixHelpers.merge(width, other.width),
+      style: MixHelpers.merge(style, other.style),
+      strokeAlign: MixHelpers.merge(strokeAlign, other.strokeAlign),
     );
   }
 

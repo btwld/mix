@@ -48,7 +48,7 @@ abstract class PropUtility<Return extends Attribute, Value> {
 ///
 /// Used for complex types that need DTOs like EdgeInsets, TextStyle, etc.
 @immutable
-abstract class MixPropUtility<S extends Attribute, M extends Mix<V>, V> {
+abstract class MixPropUtility<S extends Attribute, M extends Mixable<V>, V> {
   @protected
   final M Function(V) convertToMix;
 

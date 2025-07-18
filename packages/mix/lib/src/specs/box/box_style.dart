@@ -17,6 +17,16 @@ class BoxStyle extends Style<BoxSpec> {
   });
 
   @override
+  BoxStyle withAttribute(BoxSpecAttribute attribute) {
+    return BoxStyle._(
+      attribute: attribute,
+      variants: variants,
+      animation: animation,
+      modifiers: modifiers,
+    );
+  }
+
+  @override
   BoxStyle merge(BoxStyle? other) {
     return BoxStyle._(
       attribute: attribute.merge(other?.attribute),

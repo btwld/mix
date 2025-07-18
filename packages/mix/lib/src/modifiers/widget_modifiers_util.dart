@@ -50,17 +50,17 @@ abstract class ModifierUtility<T extends Attribute, Value>
 
   ModifierUtility(super.builder);
 
-  T only(WidgetModifierSpecAttribute attribute);
+  T only(ModifierSpecAttribute attribute);
 }
 
 class WithModifierUtility<T extends Attribute>
-    extends ModifierUtility<T, WidgetModifierSpecAttribute> {
+    extends ModifierUtility<T, ModifierSpecAttribute> {
   static final self = WithModifierUtility(MixUtility.selfBuilder);
 
   WithModifierUtility(super.builder);
 
   @override
-  T only(WidgetModifierSpecAttribute attribute) {
+  T only(ModifierSpecAttribute attribute) {
     return builder(attribute);
   }
 }

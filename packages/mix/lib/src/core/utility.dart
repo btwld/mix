@@ -12,7 +12,7 @@ abstract class MixUtility<Attr extends Attribute, Value> {
   static T selfBuilder<T>(T value) => value;
 }
 
-abstract class DtoUtility<A extends Attribute, D extends Mix<Value>, Value>
+abstract class DtoUtility<A extends Attribute, D extends Mixable<Value>, Value>
     extends MixUtility<A, D> {
   final D Function(Value) fromValue;
   const DtoUtility(super.builder, {required D Function(Value) valueToDto})

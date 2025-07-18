@@ -32,7 +32,7 @@ abstract class StyleWidget<S extends Spec<S>> extends StatefulWidget {
   @override
   State<StyleWidget<S>> createState() => _StyleWidgetState<S>();
 
-  Widget build(BuildContext context, ResolvedStyle<S> style);
+  Widget build(BuildContext context, S spec);
 }
 
 class _StyleWidgetState<S extends Spec<S>> extends State<StyleWidget<S>> {

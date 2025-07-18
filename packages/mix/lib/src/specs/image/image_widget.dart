@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/factory/style_mix.dart';
 import '../../core/styled_widget.dart';
 import 'image_spec.dart';
 import 'image_style.dart';
@@ -35,9 +34,7 @@ class StyledImage extends StyleWidget<ImageSpec> {
   final Animation<double>? opacity;
 
   @override
-  Widget build(BuildContext context, ResolvedStyle<ImageSpec> resolved) {
-    final spec = resolved.spec;
-
+  Widget build(BuildContext context, ImageSpec spec) {
     return Image(
       image: image,
       frameBuilder: frameBuilder,

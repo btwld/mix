@@ -111,7 +111,7 @@ final class TransformRotateModifierSpecUtility<T extends Attribute>
 }
 
 class TransformModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<TransformModifierSpec>
+    extends ModifierSpecAttribute<TransformModifierSpec>
     with Diagnosticable {
   final Matrix4? transform;
   final Alignment? alignment;

@@ -149,7 +149,7 @@ final class ScrollViewModifierSpecUtility<T extends Attribute>
 }
 
 class ScrollViewModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<ScrollViewModifierSpec>
+    extends ModifierSpecAttribute<ScrollViewModifierSpec>
     with Diagnosticable {
   final Axis? scrollDirection;
   final bool? reverse;

@@ -19,7 +19,7 @@ IconSpecUtility<IconSpecAttribute> get $icon => _mixUtility.icon;
 TextSpecUtility<TextSpecAttribute> get $text => _mixUtility.text;
 StackSpecUtility<StackSpecAttribute> get $stack => _mixUtility.stack;
 OnContextVariantUtility get $on => _mixUtility.on;
-WithModifierUtility<WidgetModifierSpecAttribute> get $with => _mixUtility.mod;
+WithModifierUtility<ModifierSpecAttribute> get $with => _mixUtility.mod;
 
 class MixUtilities {
   const MixUtilities();
@@ -32,6 +32,6 @@ class MixUtilities {
   TextSpecUtility<TextSpecAttribute> get text => TextSpecUtility.self;
   StackSpecUtility<StackSpecAttribute> get stack => StackSpecUtility.self;
   OnContextVariantUtility get on => OnContextVariantUtility.self;
-  WithModifierUtility<WidgetModifierSpecAttribute> get mod =>
+  WithModifierUtility<ModifierSpecAttribute> get mod =>
       WithModifierUtility.self;
 }

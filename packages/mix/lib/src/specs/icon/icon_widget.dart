@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../core/factory/style_mix.dart';
 import '../../core/styled_widget.dart';
 import 'icon_spec.dart';
 import 'icon_style.dart';
@@ -23,9 +22,7 @@ class StyledIcon extends StyleWidget<IconSpec> {
   final TextDirection? textDirection;
 
   @override
-  Widget build(BuildContext context, ResolvedStyle<IconSpec> resolved) {
-    final spec = resolved.spec;
-
+  Widget build(BuildContext context, IconSpec spec) {
     return Icon(
       icon,
       size: spec.size,

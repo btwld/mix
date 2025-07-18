@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 
 import '../internal/compare_mixin.dart';
 import 'factory/style_mix.dart';
-import 'helpers.dart';
 import 'mix_element.dart';
 import 'modifier.dart';
 import 'spec.dart';
@@ -18,7 +17,7 @@ sealed class Attribute with Mergeable, EqualityMixin {
 }
 
 abstract class SpecAttribute<S extends Spec<S>> extends Attribute
-    with Resolvable<S>, MixHelperMixin {
+    implements Mixable<S> {
   const SpecAttribute();
 
   /// Resolves this attribute to its concrete value using the provided [BuildContext].
@@ -34,15 +33,13 @@ abstract class SpecAttribute<S extends Spec<S>> extends Attribute
   Type get mergeKey => S;
 }
 
-abstract class WidgetModifierSpecAttribute<S extends ModifierSpec<S>>
+abstract class ModifierSpecAttribute<S extends ModifierSpec<S>>
     extends Attribute
-    with Resolvable<S>, MixHelperMixin {
-  const WidgetModifierSpecAttribute();
+    with Resolvable<S> {
+  const ModifierSpecAttribute();
 
   @override
-  WidgetModifierSpecAttribute<S> merge(
-    covariant WidgetModifierSpecAttribute<S>? other,
-  );
+  ModifierSpecAttribute<S> merge(covariant ModifierSpecAttribute<S>? other);
 
   @override
   S resolve(BuildContext context);

@@ -2,11 +2,13 @@
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
+import '../../internal/compare_mixin.dart';
+
 // Deprecated typedef moved to src/core/deprecated.dart
 
 @immutable
-sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
-    extends Mix<T> {
+sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry> extends Mix<T>
+    with EqualityMixin {
   final MixProp<double, SpaceDto>? top;
   final MixProp<double, SpaceDto>? bottom;
 
@@ -105,7 +107,8 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
   EdgeInsetsGeometryDto<T> merge(covariant EdgeInsetsGeometryDto<T>? other);
 }
 
-final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
+final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets>
+    with EqualityMixin {
   final MixProp<double, SpaceDto>? left;
   final MixProp<double, SpaceDto>? right;
 
@@ -192,10 +195,10 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
   @override
   EdgeInsets resolve(BuildContext context) {
     return EdgeInsets.only(
-      left: resolveMixProp(context, left) ?? 0,
-      top: resolveMixProp(context, top) ?? 0,
-      right: resolveMixProp(context, right) ?? 0,
-      bottom: resolveMixProp(context, bottom) ?? 0,
+      left: MixHelpers.resolve(context, left) ?? 0,
+      top: MixHelpers.resolve(context, top) ?? 0,
+      right: MixHelpers.resolve(context, right) ?? 0,
+      bottom: MixHelpers.resolve(context, bottom) ?? 0,
     );
   }
 
@@ -204,10 +207,10 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
     if (other == null) return this;
 
     return EdgeInsetsDto.props(
-      top: mergeMixProp(top, other.top),
-      bottom: mergeMixProp(bottom, other.bottom),
-      left: mergeMixProp(left, other.left),
-      right: mergeMixProp(right, other.right),
+      top: MixHelpers.merge(top, other.top),
+      bottom: MixHelpers.merge(bottom, other.bottom),
+      left: MixHelpers.merge(left, other.left),
+      right: MixHelpers.merge(right, other.right),
     );
   }
 
@@ -216,7 +219,8 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
 }
 
 final class EdgeInsetsDirectionalDto
-    extends EdgeInsetsGeometryDto<EdgeInsetsDirectional> {
+    extends EdgeInsetsGeometryDto<EdgeInsetsDirectional>
+    with EqualityMixin {
   final MixProp<double, SpaceDto>? start;
   final MixProp<double, SpaceDto>? end;
 
@@ -312,10 +316,10 @@ final class EdgeInsetsDirectionalDto
   @override
   EdgeInsetsDirectional resolve(BuildContext context) {
     return EdgeInsetsDirectional.only(
-      start: resolveMixProp(context, start) ?? 0,
-      top: resolveMixProp(context, top) ?? 0,
-      end: resolveMixProp(context, end) ?? 0,
-      bottom: resolveMixProp(context, bottom) ?? 0,
+      start: MixHelpers.resolve(context, start) ?? 0,
+      top: MixHelpers.resolve(context, top) ?? 0,
+      end: MixHelpers.resolve(context, end) ?? 0,
+      bottom: MixHelpers.resolve(context, bottom) ?? 0,
     );
   }
 
@@ -324,10 +328,10 @@ final class EdgeInsetsDirectionalDto
     if (other == null) return this;
 
     return EdgeInsetsDirectionalDto.props(
-      top: mergeMixProp(top, other.top),
-      bottom: mergeMixProp(bottom, other.bottom),
-      start: mergeMixProp(start, other.start),
-      end: mergeMixProp(end, other.end),
+      top: MixHelpers.merge(top, other.top),
+      bottom: MixHelpers.merge(bottom, other.bottom),
+      start: MixHelpers.merge(start, other.start),
+      end: MixHelpers.merge(end, other.end),
     );
   }
 

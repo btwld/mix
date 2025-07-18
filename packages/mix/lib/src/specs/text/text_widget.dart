@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../core/factory/style_mix.dart';
 import '../../core/styled_widget.dart';
 import 'text_spec.dart';
 import 'text_style.dart';
@@ -42,9 +41,7 @@ class StyledText extends StyleWidget<TextSpec> {
   final Locale? locale;
 
   @override
-  Widget build(BuildContext context, ResolvedStyle<TextSpec> resolved) {
-    final spec = resolved.spec;
-
+  Widget build(BuildContext context, TextSpec spec) {
     return Text(
       spec.directive?.apply(text) ?? text,
       style: spec.style,

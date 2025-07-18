@@ -3,13 +3,15 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
+import '../../internal/compare_mixin.dart';
+
 /// Represents a base Data transfer object of [Gradient]
 ///
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a `[Gradient]
 @immutable
 sealed class GradientDto<T extends Gradient> extends Mix<T>
-    with HasDefaultValue<T> {
+    with HasDefaultValue<T>, EqualityMixin {
   final Prop<List<double>>? stops;
   final Prop<List<Color>>? colors;
   final Prop<GradientTransform>? transform;
@@ -102,7 +104,7 @@ sealed class GradientDto<T extends Gradient> extends Mix<T>
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a `[LinearGradient]
 
-final class LinearGradientDto extends GradientDto<LinearGradient> {
+final class LinearGradientDto extends GradientDto<LinearGradient> with EqualityMixin {
   final Prop<AlignmentGeometry>? begin;
   final Prop<AlignmentGeometry>? end;
   final Prop<TileMode>? tileMode;
@@ -168,12 +170,12 @@ final class LinearGradientDto extends GradientDto<LinearGradient> {
   @override
   LinearGradient resolve(BuildContext context) {
     return LinearGradient(
-      begin: resolveProp(context, begin) ?? defaultValue.begin,
-      end: resolveProp(context, end) ?? defaultValue.end,
-      colors: resolveProp(context, colors) ?? defaultValue.colors,
-      stops: resolveProp(context, stops) ?? defaultValue.stops,
-      tileMode: resolveProp(context, tileMode) ?? defaultValue.tileMode,
-      transform: resolveProp(context, transform) ?? defaultValue.transform,
+      begin: MixHelpers.resolve(context, begin) ?? defaultValue.begin,
+      end: MixHelpers.resolve(context, end) ?? defaultValue.end,
+      colors: MixHelpers.resolve(context, colors) ?? defaultValue.colors,
+      stops: MixHelpers.resolve(context, stops) ?? defaultValue.stops,
+      tileMode: MixHelpers.resolve(context, tileMode) ?? defaultValue.tileMode,
+      transform: MixHelpers.resolve(context, transform) ?? defaultValue.transform,
     );
   }
 
@@ -182,12 +184,12 @@ final class LinearGradientDto extends GradientDto<LinearGradient> {
     if (other == null) return this;
 
     return LinearGradientDto.props(
-      begin: mergeProp(begin, other.begin),
-      end: mergeProp(end, other.end),
-      tileMode: mergeProp(tileMode, other.tileMode),
-      transform: mergeProp(transform, other.transform),
-      colors: mergeProp(colors, other.colors),
-      stops: mergeProp(stops, other.stops),
+      begin: MixHelpers.merge(begin, other.begin),
+      end: MixHelpers.merge(end, other.end),
+      tileMode: MixHelpers.merge(tileMode, other.tileMode),
+      transform: MixHelpers.merge(transform, other.transform),
+      colors: MixHelpers.merge(colors, other.colors),
+      stops: MixHelpers.merge(stops, other.stops),
     );
   }
 
@@ -202,7 +204,7 @@ final class LinearGradientDto extends GradientDto<LinearGradient> {
 ///
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a `[RadialGradient]
-final class RadialGradientDto extends GradientDto<RadialGradient> {
+final class RadialGradientDto extends GradientDto<RadialGradient> with EqualityMixin {
   final Prop<AlignmentGeometry>? center;
   final Prop<double>? radius;
   final Prop<TileMode>? tileMode;
@@ -278,15 +280,15 @@ final class RadialGradientDto extends GradientDto<RadialGradient> {
   @override
   RadialGradient resolve(BuildContext context) {
     return RadialGradient(
-      center: resolveProp(context, center) ?? defaultValue.center,
-      radius: resolveProp(context, radius) ?? defaultValue.radius,
-      colors: resolveProp(context, colors) ?? defaultValue.colors,
-      stops: resolveProp(context, stops) ?? defaultValue.stops,
-      tileMode: resolveProp(context, tileMode) ?? defaultValue.tileMode,
-      focal: resolveProp(context, focal) ?? defaultValue.focal,
+      center: MixHelpers.resolve(context, center) ?? defaultValue.center,
+      radius: MixHelpers.resolve(context, radius) ?? defaultValue.radius,
+      colors: MixHelpers.resolve(context, colors) ?? defaultValue.colors,
+      stops: MixHelpers.resolve(context, stops) ?? defaultValue.stops,
+      tileMode: MixHelpers.resolve(context, tileMode) ?? defaultValue.tileMode,
+      focal: MixHelpers.resolve(context, focal) ?? defaultValue.focal,
       focalRadius:
-          resolveProp(context, focalRadius) ?? defaultValue.focalRadius,
-      transform: resolveProp(context, transform) ?? defaultValue.transform,
+          MixHelpers.resolve(context, focalRadius) ?? defaultValue.focalRadius,
+      transform: MixHelpers.resolve(context, transform) ?? defaultValue.transform,
     );
   }
 
@@ -295,14 +297,14 @@ final class RadialGradientDto extends GradientDto<RadialGradient> {
     if (other == null) return this;
 
     return RadialGradientDto.props(
-      center: mergeProp(center, other.center),
-      radius: mergeProp(radius, other.radius),
-      tileMode: mergeProp(tileMode, other.tileMode),
-      focal: mergeProp(focal, other.focal),
-      focalRadius: mergeProp(focalRadius, other.focalRadius),
-      transform: mergeProp(transform, other.transform),
-      colors: mergeProp(colors, other.colors),
-      stops: mergeProp(stops, other.stops),
+      center: MixHelpers.merge(center, other.center),
+      radius: MixHelpers.merge(radius, other.radius),
+      tileMode: MixHelpers.merge(tileMode, other.tileMode),
+      focal: MixHelpers.merge(focal, other.focal),
+      focalRadius: MixHelpers.merge(focalRadius, other.focalRadius),
+      transform: MixHelpers.merge(transform, other.transform),
+      colors: MixHelpers.merge(colors, other.colors),
+      stops: MixHelpers.merge(stops, other.stops),
     );
   }
 
@@ -327,7 +329,7 @@ final class RadialGradientDto extends GradientDto<RadialGradient> {
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a `[SweepGradient]
 
-final class SweepGradientDto extends GradientDto<SweepGradient> {
+final class SweepGradientDto extends GradientDto<SweepGradient> with EqualityMixin {
   final Prop<AlignmentGeometry>? center;
   final Prop<double>? startAngle;
   final Prop<double>? endAngle;
@@ -398,13 +400,13 @@ final class SweepGradientDto extends GradientDto<SweepGradient> {
   @override
   SweepGradient resolve(BuildContext context) {
     return SweepGradient(
-      center: resolveProp(context, center) ?? defaultValue.center,
-      startAngle: resolveProp(context, startAngle) ?? defaultValue.startAngle,
-      endAngle: resolveProp(context, endAngle) ?? defaultValue.endAngle,
-      colors: resolveProp(context, colors) ?? defaultValue.colors,
-      stops: resolveProp(context, stops) ?? defaultValue.stops,
-      tileMode: resolveProp(context, tileMode) ?? defaultValue.tileMode,
-      transform: resolveProp(context, transform) ?? defaultValue.transform,
+      center: MixHelpers.resolve(context, center) ?? defaultValue.center,
+      startAngle: MixHelpers.resolve(context, startAngle) ?? defaultValue.startAngle,
+      endAngle: MixHelpers.resolve(context, endAngle) ?? defaultValue.endAngle,
+      colors: MixHelpers.resolve(context, colors) ?? defaultValue.colors,
+      stops: MixHelpers.resolve(context, stops) ?? defaultValue.stops,
+      tileMode: MixHelpers.resolve(context, tileMode) ?? defaultValue.tileMode,
+      transform: MixHelpers.resolve(context, transform) ?? defaultValue.transform,
     );
   }
 
@@ -413,13 +415,13 @@ final class SweepGradientDto extends GradientDto<SweepGradient> {
     if (other == null) return this;
 
     return SweepGradientDto.props(
-      center: mergeProp(center, other.center),
-      startAngle: mergeProp(startAngle, other.startAngle),
-      endAngle: mergeProp(endAngle, other.endAngle),
-      tileMode: mergeProp(tileMode, other.tileMode),
-      transform: mergeProp(transform, other.transform),
-      colors: mergeProp(colors, other.colors),
-      stops: mergeProp(stops, other.stops),
+      center: MixHelpers.merge(center, other.center),
+      startAngle: MixHelpers.merge(startAngle, other.startAngle),
+      endAngle: MixHelpers.merge(endAngle, other.endAngle),
+      tileMode: MixHelpers.merge(tileMode, other.tileMode),
+      transform: MixHelpers.merge(transform, other.transform),
+      colors: MixHelpers.merge(colors, other.colors),
+      stops: MixHelpers.merge(stops, other.stops),
     );
   }
 

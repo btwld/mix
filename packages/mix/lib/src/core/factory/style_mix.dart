@@ -13,7 +13,7 @@ abstract class Style<S extends Spec<S>> with EqualityMixin {
   // Instance fields
   final List<VariantAttribute<S>> variants;
   final AnimationConfig? animation;
-  final List<WidgetModifierSpecAttribute>? modifiers;
+  final List<ModifierSpecAttribute>? modifiers;
 
   const Style({this.variants = const [], this.animation, this.modifiers});
 
@@ -50,15 +50,15 @@ abstract class Style<S extends Spec<S>> with EqualityMixin {
   }
 
   @protected
-  List<WidgetModifierSpecAttribute>? mergeModifierLists(
-    List<WidgetModifierSpecAttribute>? current,
-    List<WidgetModifierSpecAttribute>? other,
+  List<ModifierSpecAttribute>? mergeModifierLists(
+    List<ModifierSpecAttribute>? current,
+    List<ModifierSpecAttribute>? other,
   ) {
     if (current == null && other == null) return null;
     if (current == null) return List.of(other!);
     if (other == null) return List.of(current);
 
-    final Map<Object, WidgetModifierSpecAttribute> merged = {};
+    final Map<Object, ModifierSpecAttribute> merged = {};
 
     // Add current modifiers
     for (final modifier in current) {
@@ -118,7 +118,7 @@ abstract class Style<S extends Spec<S>> with EqualityMixin {
     );
   }
 
-  Style<S> withAttribute(SpecAttribute<S> attribute);
+  Style<S> withAttribute(covariant SpecAttribute<S> attribute);
 
   /// REUSABLE LOGIC: Apply named variants
   Style<S> applyVariants(Set<NamedVariant> appliedVariants) {

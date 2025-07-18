@@ -66,7 +66,7 @@ class MouseCursorDecoratorSpec extends ModifierSpec<MouseCursorDecoratorSpec> {
 /// Use this class to configure the attributes of a [MouseCursorDecoratorSpec] and pass it to
 /// the [MouseCursorDecoratorSpec] constructor.
 class MouseCursorDecoratorSpecAttribute
-    extends WidgetModifierSpecAttribute<MouseCursorDecoratorSpec> {
+    extends ModifierSpecAttribute<MouseCursorDecoratorSpec> {
   final MouseCursor? mouseCursor;
 
   const MouseCursorDecoratorSpecAttribute({this.mouseCursor});

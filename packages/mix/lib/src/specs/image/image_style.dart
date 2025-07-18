@@ -16,6 +16,7 @@ class ImageStyle extends Style<ImageSpec> {
   const ImageStyle() : attribute = const ImageSpecAttribute.props();
 
   /// Creates an ImageStyle with the given attribute
+  @override
   ImageStyle withAttribute(ImageSpecAttribute attribute) {
     return ImageStyle._(
       attribute: attribute,

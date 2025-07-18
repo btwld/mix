@@ -1,11 +1,11 @@
 import '../../core/factory/style_mix.dart';
 import 'stack_box_spec.dart';
 
-class StackBoxStyle extends Style<StackBoxSpec> {
+class ZBoxStyle extends Style<ZBoxSpec> {
   @override
   final StackBoxSpecAttribute attribute;
 
-  const StackBoxStyle._({
+  const ZBoxStyle._({
     required this.attribute,
     super.variants,
     super.animation,
@@ -13,11 +13,12 @@ class StackBoxStyle extends Style<StackBoxSpec> {
   });
 
   /// Creates an empty StackBoxStyle
-  const StackBoxStyle() : attribute = const StackBoxSpecAttribute();
+  const ZBoxStyle() : attribute = const StackBoxSpecAttribute();
 
   /// Creates a StackBoxStyle with the given attribute
-  StackBoxStyle withAttribute(StackBoxSpecAttribute attribute) {
-    return StackBoxStyle._(
+  @override
+  ZBoxStyle withAttribute(StackBoxSpecAttribute attribute) {
+    return ZBoxStyle._(
       attribute: attribute,
       variants: variants,
       animation: animation,
@@ -26,8 +27,8 @@ class StackBoxStyle extends Style<StackBoxSpec> {
   }
 
   @override
-  StackBoxStyle merge(StackBoxStyle? other) {
-    return StackBoxStyle._(
+  ZBoxStyle merge(ZBoxStyle? other) {
+    return ZBoxStyle._(
       attribute: attribute.merge(other?.attribute),
       variants: mergeVariantLists(variants, other?.variants),
       animation: other?.animation ?? animation,

@@ -182,10 +182,10 @@ typedef WidgetModifier<T extends ModifierSpec<T>> = ModifierSpec<T>;
 /// Deprecated: Use WidgetModifierSpecAttribute instead
 @Deprecated('Use WidgetModifierSpecAttribute instead')
 abstract class WidgetModifierAttribute<
-  Self extends WidgetModifierSpecAttribute<Value>,
+  Self extends ModifierSpecAttribute<Value>,
   Value extends ModifierSpec<Value>
 >
-    extends WidgetModifierSpecAttribute<Value> {
+    extends ModifierSpecAttribute<Value> {
   const WidgetModifierAttribute();
 }
 

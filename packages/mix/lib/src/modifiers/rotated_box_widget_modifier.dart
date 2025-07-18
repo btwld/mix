@@ -59,7 +59,7 @@ final class RotatedBoxModifierSpec extends ModifierSpec<RotatedBoxModifierSpec>
 /// Use this class to configure the attributes of a [RotatedBoxModifierSpec] and pass it to
 /// the [RotatedBoxModifierSpec] constructor.
 class RotatedBoxModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<RotatedBoxModifierSpec>
+    extends ModifierSpecAttribute<RotatedBoxModifierSpec>
     with Diagnosticable {
   final int? quarterTurns;
 

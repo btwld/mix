@@ -75,7 +75,7 @@ final class FlexibleModifierSpec extends ModifierSpec<FlexibleModifierSpec>
 /// Use this class to configure the attributes of a [FlexibleModifierSpec] and pass it to
 /// the [FlexibleModifierSpec] constructor.
 class FlexibleModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<FlexibleModifierSpec>
+    extends ModifierSpecAttribute<FlexibleModifierSpec>
     with Diagnosticable {
   final int? flex;
   final FlexFit? fit;

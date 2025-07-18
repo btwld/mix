@@ -336,17 +336,17 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
   @override
   BoxSpec resolve(BuildContext context) {
     return BoxSpec(
-      alignment: resolveProp(context, alignment),
-      padding: resolveMixProp(context, padding),
-      margin: resolveMixProp(context, margin),
-      constraints: resolveMixProp(context, constraints),
-      decoration: resolveMixProp(context, decoration),
-      foregroundDecoration: resolveMixProp(context, foregroundDecoration),
-      transform: resolveProp(context, transform),
-      transformAlignment: resolveProp(context, transformAlignment),
-      clipBehavior: resolveProp(context, clipBehavior),
-      width: resolveProp(context, width),
-      height: resolveProp(context, height),
+      alignment: MixHelpers.resolve(context, alignment),
+      padding: MixHelpers.resolve(context, padding),
+      margin: MixHelpers.resolve(context, margin),
+      constraints: MixHelpers.resolve(context, constraints),
+      decoration: MixHelpers.resolve(context, decoration),
+      foregroundDecoration: MixHelpers.resolve(context, foregroundDecoration),
+      transform: MixHelpers.resolve(context, transform),
+      transformAlignment: MixHelpers.resolve(context, transformAlignment),
+      clipBehavior: MixHelpers.resolve(context, clipBehavior),
+      width: MixHelpers.resolve(context, width),
+      height: MixHelpers.resolve(context, height),
     );
   }
 
@@ -363,23 +363,23 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
     if (other == null) return this;
 
     return BoxSpecAttribute.props(
-      alignment: mergeProp(alignment, other.alignment),
-      padding: mergeMixProp(padding, other.padding),
-      margin: mergeMixProp(margin, other.margin),
-      constraints: mergeMixProp(constraints, other.constraints),
-      decoration: mergeMixProp(decoration, other.decoration),
-      foregroundDecoration: mergeMixProp(
+      alignment: MixHelpers.merge(alignment, other.alignment),
+      padding: MixHelpers.merge(padding, other.padding),
+      margin: MixHelpers.merge(margin, other.margin),
+      constraints: MixHelpers.merge(constraints, other.constraints),
+      decoration: MixHelpers.merge(decoration, other.decoration),
+      foregroundDecoration: MixHelpers.merge(
         foregroundDecoration,
         other.foregroundDecoration,
       ),
-      transform: mergeProp(transform, other.transform),
-      transformAlignment: mergeProp(
+      transform: MixHelpers.merge(transform, other.transform),
+      transformAlignment: MixHelpers.merge(
         transformAlignment,
         other.transformAlignment,
       ),
-      clipBehavior: mergeProp(clipBehavior, other.clipBehavior),
-      width: mergeProp(width, other.width),
-      height: mergeProp(height, other.height),
+      clipBehavior: MixHelpers.merge(clipBehavior, other.clipBehavior),
+      width: MixHelpers.merge(width, other.width),
+      height: MixHelpers.merge(height, other.height),
     );
   }
 

@@ -88,7 +88,7 @@ void main() {
       test('resolves with default values for null properties', () {
         const dto = ShadowDto.props();
 
-        final context = createEmptyMixData();
+        final context = MockBuildContext();
         final resolved = dto.resolve(context);
 
         expect(resolved.blurRadius, 0.0);
@@ -99,7 +99,7 @@ void main() {
       test('resolves with partial properties', () {
         final dto = ShadowDto(color: Colors.red);
 
-        final context = createEmptyMixData();
+        final context = MockBuildContext();
         final resolved = dto.resolve(context);
 
         expect(resolved.color, Colors.red);
@@ -313,7 +313,7 @@ void main() {
       test('resolves with default values for null properties', () {
         const dto = BoxShadowDto.props();
 
-        final context = createEmptyMixData();
+        final context = MockBuildContext();
         final resolved = dto.resolve(context);
 
         expect(resolved.color, const Color(0xFF000000));
@@ -325,7 +325,7 @@ void main() {
       test('resolves with partial properties', () {
         final dto = BoxShadowDto(color: Colors.red, spreadRadius: 3.0);
 
-        final context = createEmptyMixData();
+        final context = MockBuildContext();
         final resolved = dto.resolve(context);
 
         expect(resolved.color, Colors.red);
@@ -445,7 +445,7 @@ void main() {
         // This is just to document expected behavior
         final dto = BoxShadowDto(color: Colors.black, blurRadius: 10.0);
 
-        final context = createEmptyMixData();
+        final context = MockBuildContext();
         final resolved = dto.resolve(context);
 
         // BoxShadow defaults to non-inset (normal shadow)
@@ -465,7 +465,7 @@ void main() {
           spreadRadius: 5.0,
         );
 
-        final context = createEmptyMixData();
+        final context = MockBuildContext();
         final resolved = dto.resolve(context);
 
         expect(
@@ -500,7 +500,7 @@ void main() {
       expect(boxShadows.length, 1);
 
       // They resolve to different types
-      final context = createEmptyMixData();
+      final context = MockBuildContext();
       expect(shadows[0].resolve(context), isA<Shadow>());
       expect(boxShadows[0].resolve(context), isA<BoxShadow>());
     });
@@ -518,7 +518,7 @@ void main() {
         boxShadow: [shadow],
       );
 
-      final context = createEmptyMixData();
+      final context = MockBuildContext();
       final resolved = decoration.resolve(context);
 
       expect(resolved.boxShadow?.length, 1);

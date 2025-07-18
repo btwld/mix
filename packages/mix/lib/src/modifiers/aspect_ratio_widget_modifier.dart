@@ -75,7 +75,7 @@ final class AspectRatioModifierSpec
 /// Use this class to configure the attributes of a [AspectRatioModifierSpec] and pass it to
 /// the [AspectRatioModifierSpec] constructor.
 class AspectRatioModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<AspectRatioModifierSpec>
+    extends ModifierSpecAttribute<AspectRatioModifierSpec>
     with Diagnosticable {
   final double? aspectRatio;
 

@@ -6,10 +6,9 @@ import '../../attributes/enum/enum_util.dart';
 import '../../attributes/shadow/shadow_dto.dart';
 import '../../attributes/shadow/shadow_util.dart';
 import '../../core/attribute.dart';
-import '../../core/resolved_style_provider.dart';
 import '../../core/helpers.dart';
-import '../../core/mix_element.dart';
 import '../../core/prop.dart';
+import '../../core/resolved_style_provider.dart';
 import '../../core/spec.dart';
 import '../../core/utility.dart';
 
@@ -141,8 +140,8 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
   final Prop<double>? grade;
   final Prop<double>? opticalSize;
   final List<MixProp<Shadow, ShadowDto>>? shadows;
-  final TextDirection? textDirection;
-  final bool? applyTextScaling;
+  final Prop<TextDirection>? textDirection;
+  final Prop<bool>? applyTextScaling;
   final Prop<double>? fill;
 
   // Factory constructor accepts raw values
@@ -166,8 +165,8 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
       shadows: shadows
           ?.map((shadow) => MixProp<Shadow, ShadowDto>.fromValue(shadow))
           .toList(),
-      textDirection: textDirection,
-      applyTextScaling: applyTextScaling,
+      textDirection: Prop.maybeValue(textDirection),
+      applyTextScaling: Prop.maybeValue(applyTextScaling),
       fill: Prop.maybeValue(fill),
     );
   }
@@ -199,8 +198,8 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
                 MixProp<Shadow, ShadowDto>.fromValue(ShadowDto.value(shadow)),
           )
           .toList(),
-      textDirection: spec.textDirection,
-      applyTextScaling: spec.applyTextScaling,
+      textDirection: Prop.maybeValue(spec.textDirection),
+      applyTextScaling: Prop.maybeValue(spec.applyTextScaling),
       fill: Prop.maybeValue(spec.fill),
     );
   }
@@ -220,15 +219,15 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
   @override
   IconSpec resolve(BuildContext context) {
     return IconSpec(
-      color: resolveProp(context, color),
-      size: resolveProp(context, size),
-      weight: resolveProp(context, weight),
-      grade: resolveProp(context, grade),
-      opticalSize: resolveProp(context, opticalSize),
-      shadows: resolveMixPropList(context, shadows),
-      textDirection: textDirection,
-      applyTextScaling: applyTextScaling,
-      fill: resolveProp(context, fill),
+      color: MixHelpers.resolve(context, color),
+      size: MixHelpers.resolve(context, size),
+      weight: MixHelpers.resolve(context, weight),
+      grade: MixHelpers.resolve(context, grade),
+      opticalSize: MixHelpers.resolve(context, opticalSize),
+      shadows: MixHelpers.resolveList(context, shadows),
+      textDirection: MixHelpers.resolve(context, textDirection),
+      applyTextScaling: MixHelpers.resolve(context, applyTextScaling),
+      fill: MixHelpers.resolve(context, fill),
     );
   }
 
@@ -237,19 +236,18 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
     if (other == null) return this;
 
     return IconSpecAttribute.props(
-      color: mergeProp(color, other.color),
-      size: mergeProp(size, other.size),
-      weight: mergeProp(weight, other.weight),
-      grade: mergeProp(grade, other.grade),
-      opticalSize: mergeProp(opticalSize, other.opticalSize),
-      shadows: mergeMixPropList(
-        shadows,
-        other.shadows,
-        strategy: ListMergeStrategy.override,
+      color: MixHelpers.merge(color, other.color),
+      size: MixHelpers.merge(size, other.size),
+      weight: MixHelpers.merge(weight, other.weight),
+      grade: MixHelpers.merge(grade, other.grade),
+      opticalSize: MixHelpers.merge(opticalSize, other.opticalSize),
+      shadows: MixHelpers.mergeList(shadows, other.shadows),
+      textDirection: MixHelpers.merge(textDirection, other.textDirection),
+      applyTextScaling: MixHelpers.merge(
+        applyTextScaling,
+        other.applyTextScaling,
       ),
-      textDirection: other.textDirection ?? textDirection,
-      applyTextScaling: other.applyTextScaling ?? applyTextScaling,
-      fill: mergeProp(fill, other.fill),
+      fill: MixHelpers.merge(fill, other.fill),
     );
   }
 
@@ -313,7 +311,7 @@ class IconSpecUtility<T extends Attribute>
     (v) => only(textDirection: v),
   );
   late final applyTextScaling = BoolUtility(
-    (prop) => builder(IconSpecAttribute.props(applyTextScaling: prop.value)),
+    (prop) => builder(IconSpecAttribute.props(applyTextScaling: prop)),
   );
   late final fill = DoubleUtility(
     (prop) => builder(IconSpecAttribute.props(fill: prop)),

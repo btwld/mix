@@ -40,7 +40,7 @@ abstract class ModifierSpec<Self extends ModifierSpec<Self>>
 
 abstract class WidgetModifierUtility<
   T extends ModifierSpec<T>,
-  D extends WidgetModifierSpecAttribute<Value>,
+  D extends ModifierSpecAttribute<Value>,
   Value extends ModifierSpec<Value>
 >
     extends MixUtility<D, T> {

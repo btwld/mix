@@ -2,11 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../core/mix_element.dart';
+import '../../internal/compare_mixin.dart';
 import '../../theme/mix/mix_theme.dart';
 import '../../theme/tokens/mix_token.dart';
 
 @immutable
-sealed class SpaceDto extends Mix<double> with Diagnosticable {
+sealed class SpaceDto extends Mix<double> with EqualityMixin, Diagnosticable {
   // Common constants using private types
   static const zero = _ValueSpaceDto(0);
 

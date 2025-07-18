@@ -215,32 +215,45 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
 /// Use this class to configure the attributes of a [TextSpec] and pass it to
 /// the [TextSpec] constructor.
 class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
-  final TextOverflow? overflow;
-  final StrutStyleDto? strutStyle;
-  final TextAlign? textAlign;
-  final TextScaler? textScaler;
+  final Prop<TextOverflow>? overflow;
+  final MixProp<StrutStyle, StrutStyleDto>? strutStyle;
+  final Prop<TextAlign>? textAlign;
+  final Prop<TextScaler>? textScaler;
   final Prop<int>? maxLines;
-  final TextStyleDto? style;
-  final TextWidthBasis? textWidthBasis;
-  final TextHeightBehaviorDto? textHeightBehavior;
-  final TextDirection? textDirection;
+  final MixProp<TextStyle, TextStyleDto>? style;
+  final Prop<TextWidthBasis>? textWidthBasis;
+  final MixProp<TextHeightBehavior, TextHeightBehaviorDto>? textHeightBehavior;
+  final Prop<TextDirection>? textDirection;
   final Prop<bool>? softWrap;
-  final TextDirectiveDto? directive;
+  final MixProp<TextDirective, TextDirectiveDto>? directive;
 
-  TextSpecAttribute({
-    this.overflow,
-    this.strutStyle,
-    this.textAlign,
-    this.textScaler,
+  factory TextSpecAttribute({
+    TextOverflow? overflow,
+    StrutStyleDto? strutStyle,
+    TextAlign? textAlign,
+    TextScaler? textScaler,
     int? maxLines,
-    this.style,
-    this.textWidthBasis,
-    this.textHeightBehavior,
-    this.textDirection,
+    TextStyleDto? style,
+    TextWidthBasis? textWidthBasis,
+    TextHeightBehaviorDto? textHeightBehavior,
+    TextDirection? textDirection,
     bool? softWrap,
-    this.directive,
-  }) : maxLines = maxLines != null ? Prop.fromValue(maxLines) : null,
-       softWrap = softWrap != null ? Prop.fromValue(softWrap) : null;
+    TextDirectiveDto? directive,
+  }) {
+    return TextSpecAttribute.props(
+      overflow: Prop.maybeValue(overflow),
+      strutStyle: MixProp.maybeValue(strutStyle),
+      textAlign: Prop.maybeValue(textAlign),
+      textScaler: Prop.maybeValue(textScaler),
+      maxLines: Prop.maybeValue(maxLines),
+      style: MixProp.maybeValue(style),
+      textWidthBasis: Prop.maybeValue(textWidthBasis),
+      textHeightBehavior: MixProp.maybeValue(textHeightBehavior),
+      textDirection: Prop.maybeValue(textDirection),
+      softWrap: Prop.maybeValue(softWrap),
+      directive: MixProp.maybeValue(directive),
+    );
+  }
 
   /// Constructor that accepts Prop values directly
   const TextSpecAttribute.props({
@@ -266,19 +279,19 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
   /// final attr = TextSpecAttribute.value(spec);
   /// ```
   static TextSpecAttribute value(TextSpec spec) {
-    return TextSpecAttribute.props(
+    return TextSpecAttribute(
       overflow: spec.overflow,
       strutStyle: StrutStyleDto.maybeValue(spec.strutStyle),
       textAlign: spec.textAlign,
       textScaler: spec.textScaler,
-      maxLines: Prop.maybeValue(spec.maxLines),
+      maxLines: spec.maxLines,
       style: TextStyleDto.maybeValue(spec.style),
       textWidthBasis: spec.textWidthBasis,
       textHeightBehavior: TextHeightBehaviorDto.maybeValue(
         spec.textHeightBehavior,
       ),
       textDirection: spec.textDirection,
-      softWrap: Prop.maybeValue(spec.softWrap),
+      softWrap: spec.softWrap,
       directive: TextDirectiveDto.maybeValue(spec.directive),
     );
   }
@@ -306,17 +319,17 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
   @override
   TextSpec resolve(BuildContext context) {
     return TextSpec(
-      overflow: overflow,
-      strutStyle: strutStyle?.resolve(context),
-      textAlign: textAlign,
-      textScaler: textScaler,
-      maxLines: maxLines?.resolve(context),
-      style: style?.resolve(context),
-      textWidthBasis: textWidthBasis,
-      textHeightBehavior: textHeightBehavior?.resolve(context),
-      textDirection: textDirection,
-      softWrap: softWrap?.resolve(context),
-      directive: directive?.resolve(context),
+      overflow: MixHelpers.resolve(context, overflow),
+      strutStyle: MixHelpers.resolve(context, strutStyle),
+      textAlign: MixHelpers.resolve(context, textAlign),
+      textScaler: MixHelpers.resolve(context, textScaler),
+      maxLines: MixHelpers.resolve(context, maxLines),
+      style: MixHelpers.resolve(context, style),
+      textWidthBasis: MixHelpers.resolve(context, textWidthBasis),
+      textHeightBehavior: MixHelpers.resolve(context, textHeightBehavior),
+      textDirection: MixHelpers.resolve(context, textDirection),
+      softWrap: MixHelpers.resolve(context, softWrap),
+      directive: MixHelpers.resolve(context, directive),
     );
   }
 
@@ -333,19 +346,20 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
     if (other == null) return this;
 
     return TextSpecAttribute.props(
-      overflow: other.overflow ?? overflow,
-      strutStyle: strutStyle?.merge(other.strutStyle) ?? other.strutStyle,
-      textAlign: other.textAlign ?? textAlign,
-      textScaler: other.textScaler ?? textScaler,
-      maxLines: maxLines?.merge(other.maxLines) ?? other.maxLines,
-      style: style?.merge(other.style) ?? other.style,
-      textWidthBasis: other.textWidthBasis ?? textWidthBasis,
-      textHeightBehavior:
-          textHeightBehavior?.merge(other.textHeightBehavior) ??
-          other.textHeightBehavior,
-      textDirection: other.textDirection ?? textDirection,
-      softWrap: softWrap?.merge(other.softWrap) ?? other.softWrap,
-      directive: directive?.merge(other.directive) ?? other.directive,
+      overflow: MixHelpers.merge(overflow, other.overflow),
+      strutStyle: MixHelpers.merge(strutStyle, other.strutStyle),
+      textAlign: MixHelpers.merge(textAlign, other.textAlign),
+      textScaler: MixHelpers.merge(textScaler, other.textScaler),
+      maxLines: MixHelpers.merge(maxLines, other.maxLines),
+      style: MixHelpers.merge(style, other.style),
+      textWidthBasis: MixHelpers.merge(textWidthBasis, other.textWidthBasis),
+      textHeightBehavior: MixHelpers.merge(
+        textHeightBehavior,
+        other.textHeightBehavior,
+      ),
+      textDirection: MixHelpers.merge(textDirection, other.textDirection),
+      softWrap: MixHelpers.merge(softWrap, other.softWrap),
+      directive: MixHelpers.merge(directive, other.directive),
     );
   }
 

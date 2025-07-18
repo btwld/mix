@@ -4,6 +4,8 @@ import 'package:flutter/widgets.dart';
 import '../../attributes/enum/enum_util.dart';
 import '../../attributes/scalars/scalar_util.dart';
 import '../../core/attribute.dart';
+import '../../core/helpers.dart';
+import '../../core/prop.dart';
 import '../../core/resolved_style_provider.dart';
 import '../../core/spec.dart';
 import '../../core/utility.dart';
@@ -111,12 +113,27 @@ final class StackSpec extends Spec<StackSpec> with Diagnosticable {
 /// Use this class to configure the attributes of a [StackSpec] and pass it to
 /// the [StackSpec] constructor.
 class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
-  final AlignmentGeometry? alignment;
-  final StackFit? fit;
-  final TextDirection? textDirection;
-  final Clip? clipBehavior;
+  final Prop<AlignmentGeometry>? alignment;
+  final Prop<StackFit>? fit;
+  final Prop<TextDirection>? textDirection;
+  final Prop<Clip>? clipBehavior;
 
-  const StackSpecAttribute({
+  factory StackSpecAttribute({
+    AlignmentGeometry? alignment,
+    StackFit? fit,
+    TextDirection? textDirection,
+    Clip? clipBehavior,
+  }) {
+    return StackSpecAttribute.props(
+      alignment: Prop.maybeValue(alignment),
+      fit: Prop.maybeValue(fit),
+      textDirection: Prop.maybeValue(textDirection),
+      clipBehavior: Prop.maybeValue(clipBehavior),
+    );
+  }
+
+  /// Constructor that accepts Prop values directly
+  const StackSpecAttribute.props({
     this.alignment,
     this.fit,
     this.textDirection,
@@ -156,10 +173,10 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
   @override
   StackSpec resolve(BuildContext context) {
     return StackSpec(
-      alignment: alignment,
-      fit: fit,
-      textDirection: textDirection,
-      clipBehavior: clipBehavior,
+      alignment: MixHelpers.resolve(context, alignment),
+      fit: MixHelpers.resolve(context, fit),
+      textDirection: MixHelpers.resolve(context, textDirection),
+      clipBehavior: MixHelpers.resolve(context, clipBehavior),
     );
   }
 
@@ -168,11 +185,11 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
   StackSpecAttribute merge(StackSpecAttribute? other) {
     if (other == null) return this;
 
-    return StackSpecAttribute(
-      alignment: other.alignment ?? alignment,
-      fit: other.fit ?? fit,
-      textDirection: other.textDirection ?? textDirection,
-      clipBehavior: other.clipBehavior ?? clipBehavior,
+    return StackSpecAttribute.props(
+      alignment: MixHelpers.merge(alignment, other.alignment),
+      fit: MixHelpers.merge(fit, other.fit),
+      textDirection: MixHelpers.merge(textDirection, other.textDirection),
+      clipBehavior: MixHelpers.merge(clipBehavior, other.clipBehavior),
     );
   }
 

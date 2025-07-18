@@ -17,9 +17,9 @@ import 'stack_box_style.dart';
 ///     Inherits from [StyleWidget].
 ///   - [key]: The key for the widget. Inherits from [StyleWidget].
 ///   - [style]: The [Style] to be applied. Inherits from [StyleWidget].
-class ZBox extends StyleWidget<StackBoxSpec> {
+class ZBox extends StyleWidget<ZBoxSpec> {
   const ZBox({
-    super.style = const StackBoxStyle(),
+    super.style = const ZBoxStyle(),
     this.children = const <Widget>[],
 
     super.key,
@@ -29,8 +29,7 @@ class ZBox extends StyleWidget<StackBoxSpec> {
   final List<Widget> children;
 
   @override
-  Widget build(BuildContext context, ResolvedStyle<StackBoxSpec> resolved) {
-    final spec = resolved.spec;
+  Widget build(BuildContext context, ZBoxSpec spec) {
     final boxSpec = spec.box;
     final stackSpec = spec.stack;
 

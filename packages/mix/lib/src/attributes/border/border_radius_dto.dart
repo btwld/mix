@@ -3,6 +3,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
+import '../../internal/compare_mixin.dart';
+
 /// Represents a [Mix] Data transfer object of [BorderRadiusGeometry]
 ///
 /// This is used to allow for resolvable value tokens, and also the correct
@@ -15,7 +17,7 @@ import 'package:mix/mix.dart';
 /// - [BorderRadiusGeometry], which is the Flutter counterpart of this class.
 @immutable
 sealed class BorderRadiusGeometryDto<T extends BorderRadiusGeometry>
-    extends Mix<T> {
+    extends Mix<T> with EqualityMixin {
   const BorderRadiusGeometryDto();
 
   factory BorderRadiusGeometryDto.value(BorderRadiusGeometry value) {
@@ -81,8 +83,9 @@ sealed class BorderRadiusGeometryDto<T extends BorderRadiusGeometry>
 
   @protected
   BorderRadiusDirectionalDto _asBorderRadiusDirectional() {
-    if (this is BorderRadiusDirectionalDto)
+    if (this is BorderRadiusDirectionalDto) {
       return this as BorderRadiusDirectionalDto;
+    }
 
     // For BorderRadiusDto converting to BorderRadiusDirectionalDto
     // topLeft -> topStart, topRight -> topEnd, bottomLeft -> bottomStart, bottomRight -> bottomEnd
@@ -106,7 +109,7 @@ sealed class BorderRadiusGeometryDto<T extends BorderRadiusGeometry>
   BorderRadiusGeometryDto<T> merge(covariant BorderRadiusGeometryDto<T>? other);
 }
 
-final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
+final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> with EqualityMixin {
   @override
   final Prop<Radius>? topLeft;
 
@@ -174,10 +177,10 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
   @override
   BorderRadius resolve(BuildContext context) {
     return BorderRadius.only(
-      topLeft: resolveProp(context, topLeft) ?? Radius.zero,
-      topRight: resolveProp(context, topRight) ?? Radius.zero,
-      bottomLeft: resolveProp(context, bottomLeft) ?? Radius.zero,
-      bottomRight: resolveProp(context, bottomRight) ?? Radius.zero,
+      topLeft: MixHelpers.resolve(context, topLeft) ?? Radius.zero,
+      topRight: MixHelpers.resolve(context, topRight) ?? Radius.zero,
+      bottomLeft: MixHelpers.resolve(context, bottomLeft) ?? Radius.zero,
+      bottomRight: MixHelpers.resolve(context, bottomRight) ?? Radius.zero,
     );
   }
 
@@ -186,10 +189,10 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
     if (other == null) return this;
 
     return BorderRadiusDto.props(
-      topLeft: mergeProp(topLeft, other.topLeft),
-      topRight: mergeProp(topRight, other.topRight),
-      bottomLeft: mergeProp(bottomLeft, other.bottomLeft),
-      bottomRight: mergeProp(bottomRight, other.bottomRight),
+      topLeft: MixHelpers.merge(topLeft, other.topLeft),
+      topRight: MixHelpers.merge(topRight, other.topRight),
+      bottomLeft: MixHelpers.merge(bottomLeft, other.bottomLeft),
+      bottomRight: MixHelpers.merge(bottomRight, other.bottomRight),
     );
   }
 
@@ -198,7 +201,7 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
 }
 
 final class BorderRadiusDirectionalDto
-    extends BorderRadiusGeometryDto<BorderRadiusDirectional> {
+    extends BorderRadiusGeometryDto<BorderRadiusDirectional> with EqualityMixin {
   final Prop<Radius>? topStart;
   final Prop<Radius>? topEnd;
   final Prop<Radius>? bottomStart;
@@ -265,10 +268,10 @@ final class BorderRadiusDirectionalDto
   @override
   BorderRadiusDirectional resolve(BuildContext context) {
     return BorderRadiusDirectional.only(
-      topStart: resolveProp(context, topStart) ?? Radius.zero,
-      topEnd: resolveProp(context, topEnd) ?? Radius.zero,
-      bottomStart: resolveProp(context, bottomStart) ?? Radius.zero,
-      bottomEnd: resolveProp(context, bottomEnd) ?? Radius.zero,
+      topStart: MixHelpers.resolve(context, topStart) ?? Radius.zero,
+      topEnd: MixHelpers.resolve(context, topEnd) ?? Radius.zero,
+      bottomStart: MixHelpers.resolve(context, bottomStart) ?? Radius.zero,
+      bottomEnd: MixHelpers.resolve(context, bottomEnd) ?? Radius.zero,
     );
   }
 
@@ -277,10 +280,10 @@ final class BorderRadiusDirectionalDto
     if (other == null) return this;
 
     return BorderRadiusDirectionalDto.props(
-      topStart: mergeProp(topStart, other.topStart),
-      topEnd: mergeProp(topEnd, other.topEnd),
-      bottomStart: mergeProp(bottomStart, other.bottomStart),
-      bottomEnd: mergeProp(bottomEnd, other.bottomEnd),
+      topStart: MixHelpers.merge(topStart, other.topStart),
+      topEnd: MixHelpers.merge(topEnd, other.topEnd),
+      bottomStart: MixHelpers.merge(bottomStart, other.bottomStart),
+      bottomEnd: MixHelpers.merge(bottomEnd, other.bottomEnd),
     );
   }
 

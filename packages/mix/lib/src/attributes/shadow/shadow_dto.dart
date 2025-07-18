@@ -3,7 +3,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-sealed class BaseShadowDto<T extends Shadow> extends Mix<T> {
+import '../../internal/compare_mixin.dart';
+
+sealed class BaseShadowDto<T extends Shadow> extends Mix<T> with EqualityMixin {
   // Properties use MixableProperty for cleaner merging
   final Prop<Color>? color;
   final Prop<Offset>? offset;
@@ -72,9 +74,10 @@ class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
   @override
   Shadow resolve(BuildContext context) {
     return Shadow(
-      color: resolveProp(context, color) ?? defaultValue.color,
-      offset: resolveProp(context, offset) ?? defaultValue.offset,
-      blurRadius: resolveProp(context, blurRadius) ?? defaultValue.blurRadius,
+      color: MixHelpers.resolve(context, color) ?? defaultValue.color,
+      offset: MixHelpers.resolve(context, offset) ?? defaultValue.offset,
+      blurRadius:
+          MixHelpers.resolve(context, blurRadius) ?? defaultValue.blurRadius,
     );
   }
 
@@ -91,9 +94,9 @@ class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
     if (other == null) return this;
 
     return ShadowDto.props(
-      blurRadius: mergeProp(blurRadius, other.blurRadius),
-      color: mergeProp(color, other.color),
-      offset: mergeProp(offset, other.offset),
+      blurRadius: MixHelpers.merge(blurRadius, other.blurRadius),
+      color: MixHelpers.merge(color, other.color),
+      offset: MixHelpers.merge(offset, other.offset),
     );
   }
 
@@ -179,11 +182,13 @@ class BoxShadowDto extends BaseShadowDto<BoxShadow>
   @override
   BoxShadow resolve(BuildContext context) {
     return BoxShadow(
-      color: resolveProp(context, color) ?? defaultValue.color,
-      offset: resolveProp(context, offset) ?? defaultValue.offset,
-      blurRadius: resolveProp(context, blurRadius) ?? defaultValue.blurRadius,
+      color: MixHelpers.resolve(context, color) ?? defaultValue.color,
+      offset: MixHelpers.resolve(context, offset) ?? defaultValue.offset,
+      blurRadius:
+          MixHelpers.resolve(context, blurRadius) ?? defaultValue.blurRadius,
       spreadRadius:
-          resolveProp(context, spreadRadius) ?? defaultValue.spreadRadius,
+          MixHelpers.resolve(context, spreadRadius) ??
+          defaultValue.spreadRadius,
     );
   }
 
@@ -200,10 +205,10 @@ class BoxShadowDto extends BaseShadowDto<BoxShadow>
     if (other == null) return this;
 
     return BoxShadowDto.props(
-      color: mergeProp(color, other.color),
-      offset: mergeProp(offset, other.offset),
-      blurRadius: mergeProp(blurRadius, other.blurRadius),
-      spreadRadius: mergeProp(spreadRadius, other.spreadRadius),
+      color: MixHelpers.merge(color, other.color),
+      offset: MixHelpers.merge(offset, other.offset),
+      blurRadius: MixHelpers.merge(blurRadius, other.blurRadius),
+      spreadRadius: MixHelpers.merge(spreadRadius, other.spreadRadius),
     );
   }
 

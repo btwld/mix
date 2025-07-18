@@ -4,11 +4,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
+import '../../internal/compare_mixin.dart';
 import '../../internal/diagnostic_properties_builder_ext.dart';
 
 /// A Data transfer object that represents a [StrutStyle] value.
 @immutable
-class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
+class StrutStyleDto extends Mix<StrutStyle> with EqualityMixin, Diagnosticable {
   // Properties use MixableProperty for cleaner merging
   final Prop<String>? fontFamily;
   final Prop<List<String>>? fontFamilyFallback;
@@ -90,14 +91,14 @@ class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
   @override
   StrutStyle resolve(BuildContext context) {
     return StrutStyle(
-      fontFamily: resolveProp(context, fontFamily),
-      fontFamilyFallback: resolveProp(context, fontFamilyFallback),
-      fontSize: resolveProp(context, fontSize),
-      height: resolveProp(context, height),
-      leading: resolveProp(context, leading),
-      fontWeight: resolveProp(context, fontWeight),
-      fontStyle: resolveProp(context, fontStyle),
-      forceStrutHeight: resolveProp(context, forceStrutHeight),
+      fontFamily: MixHelpers.resolve(context, fontFamily),
+      fontFamilyFallback: MixHelpers.resolve(context, fontFamilyFallback),
+      fontSize: MixHelpers.resolve(context, fontSize),
+      height: MixHelpers.resolve(context, height),
+      leading: MixHelpers.resolve(context, leading),
+      fontWeight: MixHelpers.resolve(context, fontWeight),
+      fontStyle: MixHelpers.resolve(context, fontStyle),
+      forceStrutHeight: MixHelpers.resolve(context, forceStrutHeight),
     );
   }
 
@@ -106,17 +107,20 @@ class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
     if (other == null) return this;
 
     return StrutStyleDto.props(
-      fontFamily: mergeProp(fontFamily, other.fontFamily),
-      fontFamilyFallback: mergeProp(
+      fontFamily: MixHelpers.merge(fontFamily, other.fontFamily),
+      fontFamilyFallback: MixHelpers.merge(
         fontFamilyFallback,
         other.fontFamilyFallback,
       ),
-      fontSize: mergeProp(fontSize, other.fontSize),
-      fontWeight: mergeProp(fontWeight, other.fontWeight),
-      fontStyle: mergeProp(fontStyle, other.fontStyle),
-      height: mergeProp(height, other.height),
-      leading: mergeProp(leading, other.leading),
-      forceStrutHeight: mergeProp(forceStrutHeight, other.forceStrutHeight),
+      fontSize: MixHelpers.merge(fontSize, other.fontSize),
+      fontWeight: MixHelpers.merge(fontWeight, other.fontWeight),
+      fontStyle: MixHelpers.merge(fontStyle, other.fontStyle),
+      height: MixHelpers.merge(height, other.height),
+      leading: MixHelpers.merge(leading, other.leading),
+      forceStrutHeight: MixHelpers.merge(
+        forceStrutHeight,
+        other.forceStrutHeight,
+      ),
     );
   }
 

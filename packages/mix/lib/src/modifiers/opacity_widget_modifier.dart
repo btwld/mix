@@ -75,7 +75,7 @@ final class OpacityModifierSpec extends ModifierSpec<OpacityModifierSpec>
 /// Use this class to configure the attributes of a [OpacityModifierSpec] and pass it to
 /// the [OpacityModifierSpec] constructor.
 class OpacityModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<OpacityModifierSpec>
+    extends ModifierSpecAttribute<OpacityModifierSpec>
     with Diagnosticable {
   final double? opacity;
 

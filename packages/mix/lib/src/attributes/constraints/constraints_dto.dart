@@ -3,8 +3,17 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-sealed class ConstraintsDto<T extends Constraints> extends Mix<T> {
+import '../../internal/compare_mixin.dart';
+
+sealed class ConstraintsDto<T extends Constraints> extends Mix<T>
+    with EqualityMixin {
   const ConstraintsDto();
+
+  @override
+  T resolve(BuildContext context);
+
+  @override
+  ConstraintsDto<T> merge(covariant ConstraintsDto<T>? other);
 }
 
 /// Represents a Data transfer object of [BoxConstraints]
@@ -82,10 +91,12 @@ final class BoxConstraintsDto extends ConstraintsDto<BoxConstraints>
   @override
   BoxConstraints resolve(BuildContext context) {
     return BoxConstraints(
-      minWidth: resolveProp(context, minWidth) ?? defaultValue.minWidth,
-      maxWidth: resolveProp(context, maxWidth) ?? defaultValue.maxWidth,
-      minHeight: resolveProp(context, minHeight) ?? defaultValue.minHeight,
-      maxHeight: resolveProp(context, maxHeight) ?? defaultValue.maxHeight,
+      minWidth: MixHelpers.resolve(context, minWidth) ?? defaultValue.minWidth,
+      maxWidth: MixHelpers.resolve(context, maxWidth) ?? defaultValue.maxWidth,
+      minHeight:
+          MixHelpers.resolve(context, minHeight) ?? defaultValue.minHeight,
+      maxHeight:
+          MixHelpers.resolve(context, maxHeight) ?? defaultValue.maxHeight,
     );
   }
 
@@ -102,10 +113,10 @@ final class BoxConstraintsDto extends ConstraintsDto<BoxConstraints>
     if (other == null) return this;
 
     return BoxConstraintsDto.props(
-      minWidth: mergeProp(minWidth, other.minWidth),
-      maxWidth: mergeProp(maxWidth, other.maxWidth),
-      minHeight: mergeProp(minHeight, other.minHeight),
-      maxHeight: mergeProp(maxHeight, other.maxHeight),
+      minWidth: MixHelpers.merge(minWidth, other.minWidth),
+      maxWidth: MixHelpers.merge(maxWidth, other.maxWidth),
+      minHeight: MixHelpers.merge(minHeight, other.minHeight),
+      maxHeight: MixHelpers.merge(maxHeight, other.maxHeight),
     );
   }
 
