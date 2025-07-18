@@ -9,7 +9,7 @@ import '../core/modifier.dart';
 import '../core/utility.dart';
 
 final class AspectRatioModifierSpec
-    extends WidgetModifierSpec<AspectRatioModifierSpec>
+    extends ModifierSpec<AspectRatioModifierSpec>
     with Diagnosticable {
   final double aspectRatio;
 

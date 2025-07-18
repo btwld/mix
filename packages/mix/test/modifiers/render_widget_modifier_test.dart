@@ -12,7 +12,7 @@ void main() {
         AlignModifierSpec,
         OpacityModifierSpec,
       ];
-      final modifiers = <WidgetModifierSpec>[
+      final modifiers = <ModifierSpec>[
         const OpacityModifierSpec(1),
         const AlignModifierSpec(alignment: Alignment.center),
         TransformModifierSpec(transform: Matrix4.rotationX(3)),
@@ -32,7 +32,7 @@ void main() {
         OpacityModifierSpec,
         VisibilityModifierSpec,
       ];
-      const modifiers = <WidgetModifierSpec>[
+      const modifiers = <ModifierSpec>[
         VisibilityModifierSpec(true),
         OpacityModifierSpec(1),
         TransformModifierSpec(),
@@ -75,7 +75,7 @@ void main() {
     });
 
     test('should include default order specs', () {
-      final modifiers = <WidgetModifierSpec>[
+      final modifiers = <ModifierSpec>[
         TransformModifierSpec(transform: Matrix4.rotationX(3)),
         const OpacityModifierSpec(1),
         const AlignModifierSpec(alignment: Alignment.center),
@@ -83,13 +83,16 @@ void main() {
 
       final result = orderModifiers([], modifiers);
 
-      expect(result.map((e) => e.type),
-          [AlignModifierSpec, TransformModifierSpec, OpacityModifierSpec]);
+      expect(result.map((e) => e.type), [
+        AlignModifierSpec,
+        TransformModifierSpec,
+        OpacityModifierSpec,
+      ]);
     });
 
     test('should handle empty modifiers', () {
       final orderOfModifiers = [TransformModifierSpec];
-      final modifiers = <WidgetModifierSpec>[];
+      final modifiers = <ModifierSpec>[];
 
       final result = orderModifiers(orderOfModifiers, modifiers);
 

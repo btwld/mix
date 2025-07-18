@@ -91,7 +91,7 @@ void main() {
 
       final attr = util.attributeValue!;
 
-      expect(util, isA<StyleElement>());
+      expect(util, isA<Style>());
       expect(attr.alignment, Alignment.topLeft);
       expect(attr.fit, StackFit.expand);
       expect(attr.textDirection, TextDirection.rtl);
@@ -128,10 +128,10 @@ void main() {
       final style1 = Style(stack1);
       final style2 = Style(stack2);
 
-      final stackAttribute1 =
-          style1.styles.attributeOfType<StackSpecAttribute>();
-      final stackAttribute2 =
-          style2.styles.attributeOfType<StackSpecAttribute>();
+      final stackAttribute1 = style1.styles
+          .attributeOfType<StackSpecAttribute>();
+      final stackAttribute2 = style2.styles
+          .attributeOfType<StackSpecAttribute>();
 
       expect(stackAttribute1?.alignment, Alignment.topLeft);
       expect(stackAttribute2?.alignment, Alignment.bottomRight);

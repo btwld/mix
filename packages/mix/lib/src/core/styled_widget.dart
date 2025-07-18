@@ -4,7 +4,7 @@ import 'factory/style_mix.dart';
 import 'spec.dart';
 import 'style_builder.dart';
 
-/// Base class for widgets that apply [StyleElement] definitions.
+/// Base class for widgets that apply [Style] definitions.
 ///
 /// Provides automatic style inheritance from parent [StyleWidget]s and handles
 /// style application through the Mix framework. Extend this class to
@@ -21,7 +21,7 @@ abstract class StyleWidget<S extends Spec<S>> extends StatefulWidget {
   });
 
   /// The style to apply to this widget.
-  final StyleElement<S> style;
+  final Style<S> style;
 
   /// The order in which modifiers should be applied.
   final List<Type>? orderOfModifiers;

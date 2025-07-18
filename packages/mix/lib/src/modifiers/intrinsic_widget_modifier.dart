@@ -8,7 +8,7 @@ import '../core/modifier.dart';
 import '../core/utility.dart';
 
 final class IntrinsicHeightModifierSpec
-    extends WidgetModifierSpec<IntrinsicHeightModifierSpec>
+    extends ModifierSpec<IntrinsicHeightModifierSpec>
     with Diagnosticable {
   const IntrinsicHeightModifierSpec();
 
@@ -61,7 +61,7 @@ final class IntrinsicHeightModifierSpec
 }
 
 final class IntrinsicWidthModifierSpec
-    extends WidgetModifierSpec<IntrinsicWidthModifierSpec>
+    extends ModifierSpec<IntrinsicWidthModifierSpec>
     with Diagnosticable {
   const IntrinsicWidthModifierSpec();
 

@@ -294,7 +294,7 @@ void main() {
 
       final attr = util.attributeValue!;
 
-      expect(util, isA<StyleElement>());
+      expect(util, isA<Style>());
       expect(attr.alignment, resolvesTo(Alignment.center));
       expect(
         attr.padding?.mixValue,

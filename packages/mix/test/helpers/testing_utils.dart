@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
+
 export 'package:mix/src/internal/values_ext.dart';
 
 /// Mock BuildContext for testing
@@ -56,23 +57,20 @@ extension WidgetTesterExtension on WidgetTester {
     bool hovered = false,
     bool pressed = false,
   }) async {
-    await pumpWithMixScope(
-      Interactable(
-        child: widget,
-      ),
-    );
+    await pumpWithMixScope(Interactable(child: widget));
   }
 }
 
 /// Custom matchers for testing
 class CustomMatchers {
   /// Matcher for resolved styles
-  static Matcher resolvesTo<T>(Matcher matcher) => _ResolvesToMatcher<T>(matcher);
+  static Matcher resolvesTo<T>(Matcher matcher) =>
+      _ResolvesToMatcher<T>(matcher);
 }
 
 class _ResolvesToMatcher<T> extends CustomMatcher {
   _ResolvesToMatcher(Matcher matcher)
-      : super('resolves to', 'resolved value', matcher);
+    : super('resolves to', 'resolved value', matcher);
 
   @override
   Object? featureValueOf(dynamic actual) {
@@ -86,29 +84,16 @@ class _ResolvesToMatcher<T> extends CustomMatcher {
 /// Test utilities for creating common test data
 class TestData {
   static final mockContext = MockBuildContext();
-  
+
   /// Create a simple BoxSpec for testing
-  static BoxSpec createBoxSpec({
-    Color? color,
-    double? width,
-    double? height,
-  }) {
-    return BoxSpec(
-      width: width,
-      height: height,
-    );
+  static BoxSpec createBoxSpec({Color? color, double? width, double? height}) {
+    return BoxSpec(width: width, height: height);
   }
 
   /// Create a simple TextSpec for testing
-  static TextSpec createTextSpec({
-    Color? color,
-    double? fontSize,
-  }) {
+  static TextSpec createTextSpec({Color? color, double? fontSize}) {
     return TextSpec(
-      style: TextStyle(
-        color: color,
-        fontSize: fontSize,
-      ),
+      style: TextStyle(color: color, fontSize: fontSize),
     );
   }
 }
@@ -119,6 +104,6 @@ T resolveMix<T>(Mix<T> mix) {
 }
 
 /// Helper function for testing style resolution
-ResolvedStyle<S> resolveStyle<S extends Spec<S>>(StyleElement<S> style) {
+ResolvedStyle<S> resolveStyle<S extends Spec<S>>(Style<S> style) {
   return style.resolve(MockBuildContext());
 }

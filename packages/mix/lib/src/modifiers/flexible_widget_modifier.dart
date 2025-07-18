@@ -8,8 +8,7 @@ import '../core/attribute.dart';
 import '../core/modifier.dart';
 import '../core/utility.dart';
 
-final class FlexibleModifierSpec
-    extends WidgetModifierSpec<FlexibleModifierSpec>
+final class FlexibleModifierSpec extends ModifierSpec<FlexibleModifierSpec>
     with Diagnosticable {
   final int? flex;
   final FlexFit? fit;

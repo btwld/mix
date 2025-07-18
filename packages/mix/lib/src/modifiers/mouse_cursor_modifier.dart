@@ -6,8 +6,7 @@ import '../core/attribute.dart';
 import '../core/modifier.dart';
 import '../core/utility.dart';
 
-class MouseCursorDecoratorSpec
-    extends WidgetModifierSpec<MouseCursorDecoratorSpec> {
+class MouseCursorDecoratorSpec extends ModifierSpec<MouseCursorDecoratorSpec> {
   final MouseCursor? mouseCursor;
 
   const MouseCursorDecoratorSpec({this.mouseCursor});

@@ -11,7 +11,7 @@ import '../core/utility.dart';
 /// A modifier that wraps a widget with the [Opacity] widget.
 ///
 /// The [Opacity] widget is used to make a widget partially transparent.
-final class OpacityModifierSpec extends WidgetModifierSpec<OpacityModifierSpec>
+final class OpacityModifierSpec extends ModifierSpec<OpacityModifierSpec>
     with Diagnosticable {
   /// The [opacity] argument must not be null and
   /// must be between 0.0 and 1.0 (inclusive).

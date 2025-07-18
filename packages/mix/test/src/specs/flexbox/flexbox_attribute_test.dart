@@ -29,12 +29,6 @@ void main() {
           clipBehavior: Clip.antiAlias,
           width: 100,
           height: 100,
-          modifiers: WidgetModifiersConfigDto(
-            modifiers: const [
-              OpacityModifierSpecAttribute(opacity: 0.5),
-              SizedBoxModifierSpecAttribute(height: 10, width: 10),
-            ],
-          ),
         ),
         flex: FlexSpecAttribute(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -75,15 +69,6 @@ void main() {
         resolvesTo(Matrix4.identity()),
       );
       expect(flexBoxSpecAttribute.box!.width, resolvesTo(100));
-      expect(
-        flexBoxSpecAttribute.box!.modifiers,
-        WidgetModifiersConfigDto(
-          modifiers: const [
-            OpacityModifierSpecAttribute(opacity: 0.5),
-            SizedBoxModifierSpecAttribute(height: 10, width: 10),
-          ],
-        ),
-      );
 
       expect(
         flexBoxSpecAttribute.flex!.mainAxisAlignment,
@@ -125,12 +110,6 @@ void main() {
           clipBehavior: Clip.antiAlias,
           width: 100,
           height: 100,
-          modifiers: WidgetModifiersConfigDto(
-            modifiers: const [
-              OpacityModifierSpecAttribute(opacity: 0.5),
-              SizedBoxModifierSpecAttribute(height: 10, width: 10),
-            ],
-          ),
         ),
         flex: FlexSpecAttribute(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -183,12 +162,6 @@ void main() {
           clipBehavior: Clip.antiAlias,
           width: 100,
           height: 100,
-          modifiers: WidgetModifiersConfigDto(
-            modifiers: const [
-              OpacityModifierSpecAttribute(opacity: 0.5),
-              SizedBoxModifierSpecAttribute(height: 10, width: 10),
-            ],
-          ),
         ),
         flex: FlexSpecAttribute(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -222,9 +195,6 @@ void main() {
             clipBehavior: Clip.antiAliasWithSaveLayer,
             width: 200,
             height: 200,
-            modifiers: WidgetModifiersConfigDto(
-              modifiers: const [SizedBoxModifierSpecAttribute(width: 20)],
-            ),
           ),
           flex: FlexSpecAttribute(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -269,15 +239,6 @@ void main() {
         resolvesTo(Matrix4.identity()),
       );
       expect(mergedFlexBoxSpecAttribute.box!.width, resolvesTo(200));
-      expect(
-        mergedFlexBoxSpecAttribute.box!.modifiers,
-        WidgetModifiersConfigDto(
-          modifiers: const [
-            OpacityModifierSpecAttribute(opacity: 0.5),
-            SizedBoxModifierSpecAttribute(height: 10, width: 20),
-          ],
-        ),
-      );
 
       expect(
         mergedFlexBoxSpecAttribute.flex!.mainAxisAlignment,
@@ -322,12 +283,6 @@ void main() {
           clipBehavior: Clip.antiAlias,
           width: 100,
           height: 100,
-          modifiers: WidgetModifiersConfigDto(
-            modifiers: const [
-              OpacityModifierSpecAttribute(opacity: 0.5),
-              SizedBoxModifierSpecAttribute(height: 10, width: 10),
-            ],
-          ),
         ),
         flex: FlexSpecAttribute(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -442,12 +397,6 @@ void main() {
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 width: 200,
                 height: 200,
-                modifiers: WidgetModifiersConfigDto(
-                  modifiers: const [
-                    OpacityModifierSpecAttribute(opacity: 0.4),
-                    SizedBoxModifierSpecAttribute(height: 20, width: 10),
-                  ],
-                ),
               ),
               flex: FlexSpecAttribute(
                 mainAxisAlignment: MainAxisAlignment.start,

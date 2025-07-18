@@ -27,12 +27,6 @@ void main() {
         clipBehavior: Clip.antiAlias,
         width: 100,
         height: 100,
-        modifiers: WidgetModifiersConfigDto(
-          modifiers: const [
-            OpacityModifierSpecAttribute(opacity: 0.5),
-            SizedBoxModifierSpecAttribute(height: 10, width: 10),
-          ],
-        ),
       );
 
       expect(containerSpecAttribute.alignment, resolvesTo(Alignment.center));
@@ -58,15 +52,6 @@ void main() {
       );
       expect(containerSpecAttribute.transform, resolvesTo(Matrix4.identity()));
       expect(containerSpecAttribute.width, resolvesTo(100));
-      expect(
-        containerSpecAttribute.modifiers,
-        WidgetModifiersConfigDto(
-          modifiers: const [
-            OpacityModifierSpecAttribute(opacity: 0.5),
-            SizedBoxModifierSpecAttribute(height: 10, width: 10),
-          ],
-        ),
-      );
     });
 
     // resolve()
@@ -91,12 +76,6 @@ void main() {
         clipBehavior: Clip.antiAlias,
         width: 100,
         height: 100,
-        modifiers: WidgetModifiersConfigDto(
-          modifiers: const [
-            OpacityModifierSpecAttribute(opacity: 0.5),
-            SizedBoxModifierSpecAttribute(height: 10, width: 10),
-          ],
-        ),
       );
 
       expect(
@@ -125,10 +104,6 @@ void main() {
             clipBehavior: Clip.antiAlias,
             width: 100,
             height: 100,
-            modifiers: const WidgetModifiersConfig([
-              OpacityModifierSpec(0.5),
-              SizedBoxModifierSpec(height: 10, width: 10),
-            ]),
           ),
         ),
       );
@@ -156,12 +131,6 @@ void main() {
         clipBehavior: Clip.antiAlias,
         width: 100,
         height: 100,
-        modifiers: WidgetModifiersConfigDto(
-          modifiers: const [
-            OpacityModifierSpecAttribute(opacity: 0.5),
-            SizedBoxModifierSpecAttribute(height: 10, width: 10),
-          ],
-        ),
       );
 
       final mergedBoxSpecAttribute = containerSpecAttribute.merge(
@@ -185,9 +154,6 @@ void main() {
           clipBehavior: Clip.antiAliasWithSaveLayer,
           width: 200,
           height: 200,
-          modifiers: WidgetModifiersConfigDto(
-            modifiers: const [SizedBoxModifierSpecAttribute(width: 20)],
-          ),
         ),
       );
 
@@ -220,15 +186,6 @@ void main() {
       );
       expect(mergedBoxSpecAttribute.transform, resolvesTo(Matrix4.identity()));
       expect(mergedBoxSpecAttribute.width, resolvesTo(200));
-      expect(
-        mergedBoxSpecAttribute.modifiers,
-        WidgetModifiersConfigDto(
-          modifiers: const [
-            OpacityModifierSpecAttribute(opacity: 0.5),
-            SizedBoxModifierSpecAttribute(height: 10, width: 20),
-          ],
-        ),
-      );
     });
 
     // equality
@@ -253,12 +210,6 @@ void main() {
         clipBehavior: Clip.antiAlias,
         width: 100,
         height: 100,
-        modifiers: WidgetModifiersConfigDto(
-          modifiers: const [
-            OpacityModifierSpecAttribute(opacity: 0.5),
-            SizedBoxModifierSpecAttribute(height: 10, width: 10),
-          ],
-        ),
       );
 
       expect(
@@ -284,12 +235,6 @@ void main() {
             clipBehavior: Clip.antiAlias,
             width: 100,
             height: 100,
-            modifiers: WidgetModifiersConfigDto(
-              modifiers: const [
-                OpacityModifierSpecAttribute(opacity: 0.5),
-                SizedBoxModifierSpecAttribute(height: 10, width: 10),
-              ],
-            ),
           ),
         ),
       );
@@ -343,12 +288,6 @@ void main() {
               clipBehavior: Clip.antiAliasWithSaveLayer,
               width: 200,
               height: 200,
-              modifiers: WidgetModifiersConfigDto(
-                modifiers: const [
-                  OpacityModifierSpecAttribute(opacity: 0.4),
-                  SizedBoxModifierSpecAttribute(height: 20, width: 10),
-                ],
-              ),
             ),
           ),
         ),

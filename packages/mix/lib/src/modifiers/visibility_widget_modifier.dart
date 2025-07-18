@@ -7,8 +7,7 @@ import '../core/attribute.dart';
 import '../core/modifier.dart';
 import '../core/utility.dart';
 
-final class VisibilityModifierSpec
-    extends WidgetModifierSpec<VisibilityModifierSpec>
+final class VisibilityModifierSpec extends ModifierSpec<VisibilityModifierSpec>
     with Diagnosticable {
   final bool visible;
   const VisibilityModifierSpec([bool? visible]) : visible = visible ?? true;

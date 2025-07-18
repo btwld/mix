@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../mix.dart';
 
-final class AlignModifierSpec extends WidgetModifierSpec<AlignModifierSpec>
+final class AlignModifierSpec extends ModifierSpec<AlignModifierSpec>
     with Diagnosticable {
   final AlignmentGeometry? alignment;
   final double? widthFactor;

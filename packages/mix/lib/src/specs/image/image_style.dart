@@ -1,7 +1,7 @@
 import '../../core/factory/style_mix.dart';
 import 'image_spec.dart';
 
-class ImageStyle extends StyleElement<ImageSpec> {
+class ImageStyle extends Style<ImageSpec> {
   @override
   final ImageSpecAttribute attribute;
 

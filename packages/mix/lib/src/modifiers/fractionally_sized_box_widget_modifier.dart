@@ -9,7 +9,7 @@ import '../core/modifier.dart';
 import '../core/utility.dart';
 
 final class FractionallySizedBoxModifierSpec
-    extends WidgetModifierSpec<FractionallySizedBoxModifierSpec>
+    extends ModifierSpec<FractionallySizedBoxModifierSpec>
     with Diagnosticable {
   final double? widthFactor;
   final double? heightFactor;

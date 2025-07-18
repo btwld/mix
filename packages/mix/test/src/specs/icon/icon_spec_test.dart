@@ -82,9 +82,7 @@ void main() {
     test('IconSpec.of(BuildContext context)', () {
       final mixData = MixContext.create(
         MockBuildContext(),
-        Style(
-          IconSpecAttribute(size: 20.0, color: Colors.red),
-        ),
+        Style(IconSpecAttribute(size: 20.0, color: Colors.red)),
       );
 
       final spec = IconSpec.from(mixData);
@@ -121,7 +119,7 @@ void main() {
 
       final attr = util.attributeValue!;
 
-      expect(util, isA<StyleElement>());
+      expect(util, isA<Style>());
       expect(attr.color, isA<Prop<Color>>());
       expect(attr.size, resolvesTo(24));
       expect(attr.weight, resolvesTo(500));

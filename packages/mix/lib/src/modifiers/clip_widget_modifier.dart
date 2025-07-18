@@ -8,8 +8,7 @@ import '../core/attribute.dart';
 import '../core/modifier.dart';
 import '../core/utility.dart';
 
-final class ClipOvalModifierSpec
-    extends WidgetModifierSpec<ClipOvalModifierSpec>
+final class ClipOvalModifierSpec extends ModifierSpec<ClipOvalModifierSpec>
     with Diagnosticable {
   final CustomClipper<Rect>? clipper;
   final Clip? clipBehavior;
@@ -165,8 +164,7 @@ class ClipOvalModifierSpecTween extends Tween<ClipOvalModifierSpec?> {
   }
 }
 
-final class ClipRectModifierSpec
-    extends WidgetModifierSpec<ClipRectModifierSpec>
+final class ClipRectModifierSpec extends ModifierSpec<ClipRectModifierSpec>
     with Diagnosticable {
   final CustomClipper<Rect>? clipper;
   final Clip? clipBehavior;
@@ -322,8 +320,7 @@ class ClipRectModifierSpecTween extends Tween<ClipRectModifierSpec?> {
   }
 }
 
-final class ClipRRectModifierSpec
-    extends WidgetModifierSpec<ClipRRectModifierSpec>
+final class ClipRRectModifierSpec extends ModifierSpec<ClipRRectModifierSpec>
     with Diagnosticable {
   final BorderRadiusGeometry? borderRadius;
   final CustomClipper<RRect>? clipper;
@@ -510,8 +507,7 @@ class ClipRRectModifierSpecTween extends Tween<ClipRRectModifierSpec?> {
   }
 }
 
-final class ClipPathModifierSpec
-    extends WidgetModifierSpec<ClipPathModifierSpec>
+final class ClipPathModifierSpec extends ModifierSpec<ClipPathModifierSpec>
     with Diagnosticable {
   final CustomClipper<Path>? clipper;
   final Clip? clipBehavior;
@@ -668,7 +664,7 @@ class ClipPathModifierSpecTween extends Tween<ClipPathModifierSpec?> {
 }
 
 final class ClipTriangleModifierSpec
-    extends WidgetModifierSpec<ClipTriangleModifierSpec>
+    extends ModifierSpec<ClipTriangleModifierSpec>
     with Diagnosticable {
   final Clip? clipBehavior;
 

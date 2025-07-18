@@ -73,4 +73,4 @@ final inOrder_2 = Style(
 
 Style _style = Style($box.border.width(2));
 
-StyleElement test() => Style($with.scale(1));
+Style test() => Style($with.scale(1));

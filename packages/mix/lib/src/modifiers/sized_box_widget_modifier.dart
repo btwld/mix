@@ -8,8 +8,7 @@ import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/utility.dart';
 
-final class SizedBoxModifierSpec
-    extends WidgetModifierSpec<SizedBoxModifierSpec>
+final class SizedBoxModifierSpec extends ModifierSpec<SizedBoxModifierSpec>
     with Diagnosticable {
   final double? width;
   final double? height;

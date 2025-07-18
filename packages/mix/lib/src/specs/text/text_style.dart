@@ -1,7 +1,7 @@
 import '../../core/factory/style_mix.dart';
 import 'text_spec.dart';
 
-class TextStyling extends StyleElement<TextSpec> {
+class TextStyling extends Style<TextSpec> {
   @override
   final TextSpecAttribute attribute;
 

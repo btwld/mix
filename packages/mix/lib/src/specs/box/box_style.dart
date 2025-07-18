@@ -1,7 +1,7 @@
 import '../../core/factory/style_mix.dart';
 import 'box_spec.dart';
 
-class BoxStyle extends StyleElement<BoxSpec> {
+class BoxStyle extends Style<BoxSpec> {
   @override
   final BoxSpecAttribute attribute;
 

@@ -10,8 +10,7 @@ import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/utility.dart';
 
-final class TransformModifierSpec
-    extends WidgetModifierSpec<TransformModifierSpec>
+final class TransformModifierSpec extends ModifierSpec<TransformModifierSpec>
     with Diagnosticable {
   final Matrix4? transform;
   final Alignment? alignment;

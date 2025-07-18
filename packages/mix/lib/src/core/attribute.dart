@@ -34,7 +34,7 @@ abstract class SpecAttribute<S extends Spec<S>> extends Attribute
   Type get mergeKey => S;
 }
 
-abstract class WidgetModifierSpecAttribute<S extends WidgetModifierSpec<S>>
+abstract class WidgetModifierSpecAttribute<S extends ModifierSpec<S>>
     extends Attribute
     with Resolvable<S>, MixHelperMixin {
   const WidgetModifierSpecAttribute();
@@ -51,11 +51,11 @@ abstract class WidgetModifierSpecAttribute<S extends WidgetModifierSpec<S>>
 /// Variant wrapper for conditional styling
 final class VariantAttribute<S extends Spec<S>> extends Attribute {
   final Variant variant;
-  final StyleElement<S> _style;
+  final Style<S> _style;
 
-  const VariantAttribute(this.variant, StyleElement<S> style) : _style = style;
+  const VariantAttribute(this.variant, Style<S> style) : _style = style;
 
-  StyleElement<S> get value => _style;
+  Style<S> get value => _style;
 
   bool matches(Iterable<Variant> otherVariants) =>
       otherVariants.contains(variant);

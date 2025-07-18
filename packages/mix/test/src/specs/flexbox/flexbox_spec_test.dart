@@ -341,7 +341,7 @@ void main() {
 
       final attr = util.attributeValue!;
 
-      expect(util, isA<StyleElement>());
+      expect(util, isA<Style>());
       expect(attr.box!.alignment, resolvesTo(Alignment.center));
       expect(attr.box!.padding, resolvesTo(const EdgeInsets.all(8.0)));
       expect(attr.box!.margin, null);

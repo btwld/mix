@@ -122,12 +122,11 @@ void main() {
         ..textDirection.ltr()
         ..textBaseline.alphabetic()
         ..clipBehavior.antiAlias()
-        ..gap(10)
-;
+        ..gap(10);
 
       final attr = util.attributeValue!;
 
-      expect(util, isA<StyleElement>());
+      expect(util, isA<Style>());
       expect(attr.crossAxisAlignment, CrossAxisAlignment.center);
       expect(attr.mainAxisAlignment, MainAxisAlignment.spaceBetween);
       expect(attr.mainAxisSize, MainAxisSize.min);
@@ -137,7 +136,6 @@ void main() {
       expect(attr.textBaseline, TextBaseline.alphabetic);
       expect(attr.clipBehavior, Clip.antiAlias);
       expect(attr.gap, const SpaceDto.value(10));
-
 
       final style = Style(util);
 
@@ -153,7 +151,6 @@ void main() {
       expect(flexAttribute?.clipBehavior, Clip.antiAlias);
       expect(flexAttribute?.gap, const SpaceDto.value(10));
 
-
       final mixData = style.of(MockBuildContext());
       final flexSpec = FlexSpec.from(mixData);
 
@@ -166,7 +163,6 @@ void main() {
       expect(flexSpec.textBaseline, TextBaseline.alphabetic);
       expect(flexSpec.clipBehavior, Clip.antiAlias);
       expect(flexSpec.gap, 10);
-
     });
 
     test('Immutable behavior when having multiple flex', () {

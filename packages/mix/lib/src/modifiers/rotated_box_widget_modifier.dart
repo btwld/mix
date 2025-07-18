@@ -8,8 +8,7 @@ import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/utility.dart';
 
-final class RotatedBoxModifierSpec
-    extends WidgetModifierSpec<RotatedBoxModifierSpec>
+final class RotatedBoxModifierSpec extends ModifierSpec<RotatedBoxModifierSpec>
     with Diagnosticable {
   final int quarterTurns;
   const RotatedBoxModifierSpec([int? quarterTurns])

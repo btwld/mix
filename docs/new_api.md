@@ -80,7 +80,7 @@ class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
   
   // Resolve uses resolveProp helper
   @override
-  EdgeInsets resolve(MixContext mix) {
+  EdgeInsets resolve(BuildContext mix) {
     return EdgeInsets.only(
       left: resolveProp(mix, left) ?? 0,
       top: resolveProp(mix, top) ?? 0,
@@ -149,7 +149,7 @@ class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
 Utilities become simple builders that accept values/DTOs directly:
 
 ```dart
-class BoxSpecUtility<T extends SpecAttribute> 
+class BoxSpecUtility<T extends Attribute> 
     extends SpecUtility<T, BoxSpecAttribute> {
   
   // Immutable attribute that accumulates changes
@@ -428,7 +428,7 @@ class SomeDto extends Mix<SomeType> {
   
   // 4. Resolution uses resolveProp helper
   @override
-  SomeType resolve(MixContext mix) {
+  SomeType resolve(BuildContext mix) {
     return SomeType(
       color: resolveProp(mix, color) ?? defaultColor,
       size: resolveProp(mix, size) ?? defaultSize,
@@ -499,7 +499,7 @@ class ComplexDto extends Mix<ComplexType> {
   }
   
   @override
-  ComplexType resolve(MixContext mix) {
+  ComplexType resolve(BuildContext mix) {
     return ComplexType(
       tags: resolvePropList(mix, tags),
       fontFeatures: resolvePropList(mix, fontFeatures),

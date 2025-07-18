@@ -177,13 +177,13 @@ extension ImageSpecUtilityDeprecationX<T extends Attribute>
 
 /// Deprecated: Use WidgetModifierSpec instead
 @Deprecated('Use WidgetModifierSpec instead')
-typedef WidgetModifier<T extends WidgetModifierSpec<T>> = WidgetModifierSpec<T>;
+typedef WidgetModifier<T extends ModifierSpec<T>> = ModifierSpec<T>;
 
 /// Deprecated: Use WidgetModifierSpecAttribute instead
 @Deprecated('Use WidgetModifierSpecAttribute instead')
 abstract class WidgetModifierAttribute<
   Self extends WidgetModifierSpecAttribute<Value>,
-  Value extends WidgetModifierSpec<Value>
+  Value extends ModifierSpec<Value>
 >
     extends WidgetModifierSpecAttribute<Value> {
   const WidgetModifierAttribute();

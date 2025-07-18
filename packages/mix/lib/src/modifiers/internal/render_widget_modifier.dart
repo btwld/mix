@@ -1,6 +1,5 @@
 // ignore_for_file: avoid-dynamic
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/modifier.dart';
@@ -93,7 +92,7 @@ class RenderModifiers extends StatelessWidget {
 
   final Widget child;
   final List<Type> orderOfModifiers;
-  final List<WidgetModifierSpec<dynamic>> modifiers;
+  final List<ModifierSpec<dynamic>> modifiers;
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +107,7 @@ class _RenderModifiers extends StatelessWidget {
   const _RenderModifiers({required this.child, required this.modifiers});
 
   final Widget child;
-  final Iterable<WidgetModifierSpec<dynamic>> modifiers;
+  final Iterable<ModifierSpec<dynamic>> modifiers;
 
   @override
   Widget build(BuildContext context) {
@@ -122,145 +121,23 @@ class _RenderModifiers extends StatelessWidget {
   }
 }
 
-class RenderAnimatedModifiers extends StatelessWidget {
-  const RenderAnimatedModifiers({
-    super.key,
-    required this.modifiers,
-    required this.child,
-    required this.duration,
-    required this.orderOfModifiers,
-    this.curve = Curves.linear,
-    this.onEnd,
-  });
-
-  final Widget child;
-  final List<Type> orderOfModifiers;
-  final List<WidgetModifierSpec<dynamic>> modifiers;
-  final Duration duration;
-  final Curve curve;
-  final VoidCallback? onEnd;
-
-  @override
-  Widget build(BuildContext context) {
-    return _RenderAnimatedModifiers(
-      modifiers: combineModifiers(
-        modifiers,
-        orderOfModifiers,
-      ).reversed.toList(),
-      duration: duration,
-      curve: curve,
-      onEnd: onEnd,
-      child: child,
-    );
-  }
-}
-
-class _RenderAnimatedModifiers extends ImplicitlyAnimatedWidget {
-  const _RenderAnimatedModifiers({
-    //TODO Should be required in the next version
-    this.modifiers = const [],
-    required this.child,
-    required super.duration,
-    super.curve = Curves.linear,
-    super.onEnd,
-  });
-
-  final Widget child;
-  final List<WidgetModifierSpec<dynamic>> modifiers;
-
-  @override
-  _RenderAnimatedModifiersState createState() =>
-      _RenderAnimatedModifiersState();
-}
-
-class _RenderAnimatedModifiersState
-    extends AnimatedWidgetBaseState<_RenderAnimatedModifiers> {
-  final Map<Type, ModifierSpecTween> _specs = {};
-
-  Iterable<Type> _typeOfModifiers = [];
-
-  @override
-  void initState() {
-    super.initState();
-    updateTypeOfAppliedModifiers();
-  }
-
-  @override
-  void didUpdateWidget(covariant _RenderAnimatedModifiers oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (!listEquals(oldWidget.modifiers, widget.modifiers)) {
-      updateTypeOfAppliedModifiers();
-      cleanUpSpecs();
-    }
-  }
-
-  updateTypeOfAppliedModifiers() {
-    _typeOfModifiers = widget.modifiers.map((e) => e.runtimeType);
-  }
-
-  Map<Type, ModifierSpecTween> cleanUpSpecs() {
-    final difference = _specs.keys
-        .toSet()
-        .difference(widget.modifiers.map((e) => e.runtimeType).toSet());
-
-    if (difference.isNotEmpty) {
-      for (var e in difference) {
-        _specs.remove(e);
-      }
-    }
-
-    return _specs;
-  }
-
-  @override
-  void forEachTween(TweenVisitor<dynamic> visitor) {
-    updateModifiersSpecs(visitor);
-  }
-
-  void updateModifiersSpecs(TweenVisitor<dynamic> visitor) {
-    for (final spec in widget.modifiers) {
-      final specType = spec.runtimeType;
-      final previousSpec = _specs[specType];
-      _specs[specType] = visitor(
-        previousSpec,
-        spec,
-        (dynamic value) =>
-            ModifierSpecTween(begin: value as WidgetModifierSpec),
-      ) as ModifierSpecTween;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var current = widget.child;
-
-    for (final modifier in _typeOfModifiers) {
-      final evaluatedSpec = _specs[modifier]!.evaluate(animation);
-      current = evaluatedSpec.build(current);
-    }
-
-    return current;
-  }
-}
-
 // RenderSpecModifiers has been removed - use RenderModifiers directly
 
-class ModifierSpecTween extends Tween<WidgetModifierSpec> {
+class ModifierSpecTween extends Tween<ModifierSpec> {
   /// Creates an [EdgeInsetsGeometry] tween.
   ///
   /// The [begin] and [end] properties may be null; the null value
-  /// is treated as an [WidgetModifierSpec]
+  /// is treated as an [ModifierSpec]
   ModifierSpecTween({super.begin, super.end});
 
   /// Returns the value this variable has at the given animation clock value.
   @override
-  WidgetModifierSpec lerp(double t) =>
-      WidgetModifierSpec.lerpValue(begin, end, t)!;
+  ModifierSpec lerp(double t) => ModifierSpec.lerpValue(begin, end, t)!;
 }
 
 @visibleForTesting
-List<WidgetModifierSpec<dynamic>> combineModifiers(
-  List<WidgetModifierSpec<dynamic>> modifiers,
+List<ModifierSpec<dynamic>> combineModifiers(
+  List<ModifierSpec<dynamic>> modifiers,
   List<Type> orderOfModifiers, {
   List<Type>? defaultOrder,
 }) {
@@ -272,9 +149,9 @@ List<WidgetModifierSpec<dynamic>> combineModifiers(
 }
 
 @visibleForTesting
-List<WidgetModifierSpec<dynamic>> orderModifiers(
+List<ModifierSpec<dynamic>> orderModifiers(
   List<Type> orderOfModifiers,
-  List<WidgetModifierSpec<dynamic>> modifiers, {
+  List<ModifierSpec<dynamic>> modifiers, {
   List<Type>? defaultOrder,
 }) {
   final listOfModifiers = ({
@@ -286,14 +163,14 @@ List<WidgetModifierSpec<dynamic>> orderModifiers(
     ...modifiers.map((e) => e.type),
   }).toList();
 
-  final specs = <WidgetModifierSpec<dynamic>>[];
+  final specs = <ModifierSpec<dynamic>>[];
 
   for (final modifierType in listOfModifiers) {
     // Resolve the modifier and add it to the list of specs.
     final modifier = modifiers.where((e) => e.type == modifierType).firstOrNull;
     if (modifier == null) continue;
     // ignore: avoid-unnecessary-type-casts
-    specs.add(modifier as WidgetModifierSpec<WidgetModifierSpec<dynamic>>);
+    specs.add(modifier as ModifierSpec<ModifierSpec<dynamic>>);
   }
 
   return specs;

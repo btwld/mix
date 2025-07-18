@@ -1,7 +1,7 @@
 import '../../core/factory/style_mix.dart';
 import 'flexbox_spec.dart';
 
-class FlexBoxStyle extends StyleElement<FlexBoxSpec> {
+class FlexBoxStyle extends Style<FlexBoxSpec> {
   @override
   final FlexBoxSpecAttribute attribute;
 

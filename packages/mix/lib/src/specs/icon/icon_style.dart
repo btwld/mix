@@ -1,7 +1,7 @@
 import '../../core/factory/style_mix.dart';
 import 'icon_spec.dart';
 
-class IconStyle extends StyleElement<IconSpec> {
+class IconStyle extends Style<IconSpec> {
   @override
   final IconSpecAttribute attribute;
 

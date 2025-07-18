@@ -9,7 +9,7 @@ import '../core/attribute.dart';
 import '../core/modifier.dart';
 import '../core/utility.dart';
 
-final class PaddingModifierSpec extends WidgetModifierSpec<PaddingModifierSpec>
+final class PaddingModifierSpec extends ModifierSpec<PaddingModifierSpec>
     with Diagnosticable {
   final EdgeInsetsGeometry padding;
 

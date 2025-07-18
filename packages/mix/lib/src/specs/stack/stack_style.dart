@@ -1,7 +1,7 @@
 import '../../core/factory/style_mix.dart';
 import 'stack_spec.dart';
 
-class StackStyle extends StyleElement<StackSpec> {
+class StackStyle extends Style<StackSpec> {
   @override
   final StackSpecAttribute attribute;
 

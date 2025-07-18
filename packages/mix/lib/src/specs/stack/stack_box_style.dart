@@ -1,7 +1,7 @@
 import '../../core/factory/style_mix.dart';
 import 'stack_box_spec.dart';
 
-class StackBoxStyle extends StyleElement<StackBoxSpec> {
+class StackBoxStyle extends Style<StackBoxSpec> {
   @override
   final StackBoxSpecAttribute attribute;
 

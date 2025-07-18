@@ -21,11 +21,17 @@ class MyApp extends StatelessWidget {
       textDirection: TextDirection.ltr,
       child: Center(
         child: FlexBox(
-          style: style() as StyleElement<FlexBoxSpec>,
+          style: style() as Style<FlexBoxSpec>,
           direction: Axis.horizontal,
           children: [
-            StyledIcon(Icons.image, style: Style($icon.color.red()) as StyleElement<IconSpec>),
-            StyledText('Hello World', style: Style($text.style.color.blue()) as StyleElement<TextSpec>),
+            StyledIcon(
+              Icons.image,
+              style: Style($icon.color.red()) as Style<IconSpec>,
+            ),
+            StyledText(
+              'Hello World',
+              style: Style($text.style.color.blue()) as Style<TextSpec>,
+            ),
           ],
         ),
       ),

@@ -8,8 +8,7 @@ import '../core/attribute.dart';
 import '../core/modifier.dart';
 import '../core/utility.dart';
 
-final class ScrollViewModifierSpec
-    extends WidgetModifierSpec<ScrollViewModifierSpec>
+final class ScrollViewModifierSpec extends ModifierSpec<ScrollViewModifierSpec>
     with Diagnosticable {
   final Axis? scrollDirection;
   final bool? reverse;

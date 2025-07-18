@@ -11,7 +11,7 @@ import '../core/modifier.dart';
 import '../core/utility.dart';
 
 final class DefaultTextStyleModifierSpec
-    extends WidgetModifierSpec<DefaultTextStyleModifierSpec>
+    extends ModifierSpec<DefaultTextStyleModifierSpec>
     with Diagnosticable {
   final TextStyle? style;
   final TextAlign? textAlign;

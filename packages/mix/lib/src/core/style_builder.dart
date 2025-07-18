@@ -15,7 +15,7 @@ import 'widget_state/widget_state_controller.dart';
 
 /// Builds widgets with Mix styling.
 ///
-/// StyleBuilder handles the resolution of [StyleElement] into [ResolvedStyle]
+/// StyleBuilder handles the resolution of [Style] into [ResolvedStyle]
 /// and provides it to the builder function. It also manages style inheritance,
 /// variant application, and modifier rendering.
 class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
@@ -29,7 +29,7 @@ class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
   });
 
   /// The style element to resolve and apply.
-  final StyleElement<S> style;
+  final Style<S> style;
 
   /// Function that builds the widget with the resolved style.
   final Widget Function(BuildContext context, ResolvedStyle<S> resolved)
@@ -52,7 +52,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
   late final WidgetStatesController _controller;
 
   // Cache for optimization
-  StyleElement<S>? _cachedFinalStyle;
+  Style<S>? _cachedFinalStyle;
   ResolvedStyle<S>? _cachedResolvedStyle;
   bool? _cachedNeedsInteractivity;
 
@@ -62,7 +62,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
     _controller = widget.controller ?? WidgetStatesController();
   }
 
-  StyleElement<S> _prepareFinalStyle(BuildContext context) {
+  Style<S> _prepareFinalStyle(BuildContext context) {
     // Handle inheritance
     final inheritedStyle = widget.inherit ? _getInheritedStyle(context) : null;
     final effectiveStyle = inheritedStyle != null
@@ -73,7 +73,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
     final namedVariants = NamedVariantScope.maybeOf(context);
 
     return namedVariants.isNotEmpty
-        ? effectiveStyle.withNamedVariants(namedVariants)
+        ? effectiveStyle.applyVariants(namedVariants)
         : effectiveStyle;
   }
 
@@ -83,7 +83,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
     return _applyModifiers(child, resolved.modifiers);
   }
 
-  Widget _applyModifiers(Widget child, List<WidgetModifierSpec>? modifiers) {
+  Widget _applyModifiers(Widget child, List<ModifierSpec>? modifiers) {
     if (modifiers == null || modifiers.isEmpty) return child;
 
     return RenderModifiers(
@@ -96,7 +96,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
   Widget _wrapWithAnimationIfNeeded(
     Widget child,
     AnimationConfig? animationConfig,
-    StyleElement<S> style,
+    Style<S> style,
   ) {
     if (animationConfig == null) return child;
 
@@ -125,7 +125,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
     return child;
   }
 
-  Widget _wrapWithStyleProviderIfNeeded(Widget child, StyleElement<S> style) {
+  Widget _wrapWithStyleProviderIfNeeded(Widget child, Style<S> style) {
     if (widget.inherit) {
       return StyleProvider<S>(style: style, child: child);
     }
@@ -133,7 +133,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
     return child;
   }
 
-  StyleElement<S>? _getInheritedStyle(BuildContext context) {
+  Style<S>? _getInheritedStyle(BuildContext context) {
     // Try to get inherited style of the same type
     return StyleProvider.maybeOf(context);
   }
