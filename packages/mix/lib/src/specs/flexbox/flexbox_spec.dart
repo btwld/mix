@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../core/attribute.dart';
-import '../../core/computed_style/computed_style.dart';
+import '../../core/resolved_style_provider.dart';
 import '../../core/spec.dart';
 import '../../core/utility.dart';
 import '../box/box_spec.dart';
@@ -19,15 +19,22 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
       flex = flex ?? const FlexSpec();
 
   static FlexBoxSpec from(BuildContext context) {
-    return ComputedStyle.specOf(context) ?? const FlexBoxSpec();
+    return maybeOf(context) ?? const FlexBoxSpec();
+  }
+
+  /// Retrieves the [FlexBoxSpec] from the nearest [ResolvedStyleProvider] ancestor.
+  ///
+  /// Returns null if no ancestor [ResolvedStyleProvider] is found.
+  static FlexBoxSpec? maybeOf(BuildContext context) {
+    return ResolvedStyleProvider.of<FlexBoxSpec>(context)?.spec;
   }
 
   /// {@template flex_box_spec_of}
-  /// Retrieves the [FlexBoxSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
+  /// Retrieves the [FlexBoxSpec] from the nearest [ResolvedStyleProvider] ancestor in the widget tree.
   ///
-  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// This method uses [ResolvedStyleProvider.of] for surgical rebuilds - only widgets
   /// that call this method will rebuild when [FlexBoxSpec] changes, not when other specs change.
-  /// If no ancestor [ComputedStyle] is found, this method returns an empty [FlexBoxSpec].
+  /// If no ancestor [ResolvedStyleProvider] is found, this method returns an empty [FlexBoxSpec].
   ///
   /// Example:
   ///
@@ -36,7 +43,7 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
   /// ```
   /// {@endtemplate}
   static FlexBoxSpec of(BuildContext context) {
-    return ComputedStyle.specOf(context) ?? const FlexBoxSpec();
+    return maybeOf(context) ?? const FlexBoxSpec();
   }
 
   /// Creates a copy of this [FlexBoxSpec] but with the given fields

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../core/attribute.dart';
 import '../../core/prop.dart';
 import '../../core/prop_utility.dart';
-import '../../core/spec.dart';
 import '../../theme/tokens/mix_token.dart';
 import 'color_directive.dart';
 import 'material_colors_util.dart';

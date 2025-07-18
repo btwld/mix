@@ -22,6 +22,11 @@ class MultiSpec extends Spec<MultiSpec> {
   MultiSpec(List<Spec> specs)
     : _specs = {for (var spec in specs) spec.type: spec};
 
+  /// Gets a spec of the specified type from this MultiSpec.
+  S? getSpec<S extends Spec<S>>() {
+    return _specs[S] as S?;
+  }
+
   @override
   MultiSpec copyWith({List<Spec>? specs}) {
     if (specs == null) return this;

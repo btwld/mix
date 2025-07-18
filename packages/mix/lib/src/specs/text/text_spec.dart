@@ -10,10 +10,10 @@ import '../../attributes/text_height_behavior/text_height_behavior_util.dart';
 import '../../attributes/text_style/text_style_dto.dart';
 import '../../attributes/text_style/text_style_util.dart';
 import '../../core/attribute.dart';
-import '../../core/computed_style/computed_style.dart';
 import '../../core/directive.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
+import '../../core/resolved_style_provider.dart';
 import '../../core/spec.dart';
 import '../../core/utility.dart';
 import 'text_directives_util.dart';
@@ -49,15 +49,22 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
   });
 
   static TextSpec from(BuildContext context) {
-    return ComputedStyle.specOf<TextSpec>(context) ?? const TextSpec();
+    return maybeOf(context) ?? const TextSpec();
+  }
+
+  /// Retrieves the [TextSpec] from the nearest [ResolvedStyleProvider] ancestor.
+  ///
+  /// Returns null if no ancestor [ResolvedStyleProvider] is found.
+  static TextSpec? maybeOf(BuildContext context) {
+    return ResolvedStyleProvider.of<TextSpec>(context)?.spec;
   }
 
   /// {@template text_spec_of}
-  /// Retrieves the [TextSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
+  /// Retrieves the [TextSpec] from the nearest [ResolvedStyleProvider] ancestor in the widget tree.
   ///
-  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// This method uses [ResolvedStyleProvider.of] for surgical rebuilds - only widgets
   /// that call this method will rebuild when [TextSpec] changes, not when other specs change.
-  /// If no ancestor [ComputedStyle] is found, this method returns an empty [TextSpec].
+  /// If no ancestor [ResolvedStyleProvider] is found, this method returns an empty [TextSpec].
   ///
   /// Example:
   ///
@@ -66,7 +73,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
   /// ```
   /// {@endtemplate}
   static TextSpec of(BuildContext context) {
-    return ComputedStyle.specOf(context) ?? const TextSpec();
+    return maybeOf(context) ?? const TextSpec();
   }
 
   /// Creates a copy of this [TextSpec] but with the given fields

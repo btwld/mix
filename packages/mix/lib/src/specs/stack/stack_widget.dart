@@ -1,104 +1,9 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/animated_spec_widget.dart';
-import '../../core/spec_widget.dart';
+import '../../core/factory/style_mix.dart';
 import '../../core/styled_widget.dart';
-import '../../modifiers/internal/render_widget_modifier.dart';
-import '../box/box_spec.dart';
-import '../box/box_widget.dart';
-import 'stack_spec.dart';
-
-/// A styled stack widget for layering widgets with Mix styling.
-///
-/// Applies styling to arrange [children] in a stack layout. Use [ZBox] instead
-/// for new development as this widget combines Box and Stack functionality.
-@Deprecated(
-  'Use ZBox instead. '
-  'StyledStack has been replaced with ZBox which combines Box and Stack functionality. '
-  'This widget will be removed in v2.0.0.\n\n'
-  'Migration example:\n'
-  '// Before\n'
-  'StyledStack(style: myStyle, children: [...])\n'
-  '// After\n'
-  'ZBox(style: myStyle, children: [...])',
-)
-class StyledStack extends StyledWidget {
-  const StyledStack({
-    this.children = const <Widget>[],
-    super.inherit,
-    super.key,
-    super.style,
-    super.orderOfModifiers = const [],
-  });
-
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
-    // The withMix method applies the current styling context and creates a StackSpecWidget.
-    return withMix(context, (context) {
-      final spec = StackSpec.of(context);
-
-      return StackSpecWidget(
-        spec: spec,
-        orderOfModifiers: const [],
-        children: children,
-      );
-    });
-  }
-}
-
-class StackSpecWidget extends SpecWidget<StackSpec> {
-  const StackSpecWidget({
-    super.spec,
-    this.children,
-    this.orderOfModifiers = const [],
-    super.key,
-  });
-
-  final List<Widget>? children;
-  final List<Type> orderOfModifiers;
-
-  @override
-  Widget build(BuildContext context) {
-    // The Stack widget is used here, applying the resolved styles from StackSpec.
-    return RenderSpecModifiers(
-      spec: spec ?? const StackSpec(),
-      orderOfModifiers: orderOfModifiers,
-      child: Stack(
-        alignment: spec?.alignment ?? _defaultStack.alignment,
-        textDirection: spec?.textDirection,
-        fit: spec?.fit ?? _defaultStack.fit,
-        clipBehavior: spec?.clipBehavior ?? _defaultStack.clipBehavior,
-        children: children ?? const [],
-      ),
-    );
-  }
-}
-
-class AnimatedStackSpecWidget extends ImplicitlyAnimatedSpecWidget<StackSpec> {
-  const AnimatedStackSpecWidget({
-    super.key,
-    required super.spec,
-    required this.children,
-    this.orderOfModifiers = const [],
-    super.curve,
-    required super.duration,
-    super.onEnd,
-  });
-
-  final List<Widget> children;
-  final List<Type> orderOfModifiers;
-
-  @override
-  Widget build(BuildContext context, StackSpec animatedSpec) {
-    return StackSpecWidget(
-      spec: animatedSpec,
-      orderOfModifiers: orderOfModifiers,
-      children: children,
-    );
-  }
-}
+import 'stack_box_spec.dart';
+import 'stack_box_style.dart';
 
 /// [ZBox] - A styled widget that combines the functionalities of [Box] and Stack.
 ///
@@ -109,48 +14,49 @@ class AnimatedStackSpecWidget extends ImplicitlyAnimatedSpecWidget<StackSpec> {
 /// Parameters:
 ///   - [children]: The list of widgets to stack and style.
 ///   - [inherit]: Determines whether the [ZBox] should inherit styles from its ancestors.
-///     Inherits from [StyledWidget].
-///   - [key]: The key for the widget. Inherits from [StyledWidget].
-///   - [style]: The [Style] to be applied. Inherits from [StyledWidget].
-class ZBox extends StyledWidget {
+///     Inherits from [StyleWidget].
+///   - [key]: The key for the widget. Inherits from [StyleWidget].
+///   - [style]: The [Style] to be applied. Inherits from [StyleWidget].
+class ZBox extends StyleWidget<StackBoxSpec> {
   const ZBox({
+    super.style = const StackBoxStyle(),
     this.children = const <Widget>[],
-    super.inherit,
+
     super.key,
-    super.style,
     super.orderOfModifiers = const [],
   });
 
   final List<Widget> children;
 
   @override
-  Widget build(BuildContext context) {
-    // Use SpecBuilder to apply the styling context to both the box and the stack.
-    return SpecBuilder(
-      inherit: inherit,
-      style: style,
-      orderOfModifiers: orderOfModifiers,
-      builder: (context) {
-        final boxSpec = BoxSpec.of(context);
-        final stackSpec = StackSpec.of(context);
+  Widget build(BuildContext context, ResolvedStyle<StackBoxSpec> resolved) {
+    final spec = resolved.spec;
+    final boxSpec = spec.box;
+    final stackSpec = spec.stack;
 
-        return BoxSpecWidget(
-          spec: boxSpec,
-          orderOfModifiers: [...orderOfModifiers],
-          child: StackSpecWidget(
-            spec: stackSpec,
-            orderOfModifiers: const [],
-            children: children,
-          ),
-        );
-      },
+    // Build the stack
+    Widget stack = Stack(
+      alignment: stackSpec.alignment ?? AlignmentDirectional.topStart,
+      textDirection: stackSpec.textDirection,
+      fit: stackSpec.fit ?? StackFit.loose,
+      clipBehavior: stackSpec.clipBehavior ?? Clip.hardEdge,
+      children: children,
+    );
+
+    // Wrap with Container for box styling
+    return Container(
+      alignment: boxSpec.alignment,
+      padding: boxSpec.padding,
+      decoration: boxSpec.decoration,
+      foregroundDecoration: boxSpec.foregroundDecoration,
+      width: boxSpec.width,
+      height: boxSpec.height,
+      constraints: boxSpec.constraints,
+      margin: boxSpec.margin,
+      transform: boxSpec.transform,
+      transformAlignment: boxSpec.transformAlignment,
+      clipBehavior: boxSpec.clipBehavior ?? Clip.none,
+      child: stack,
     );
   }
 }
-
-// Default Stack used as a fallback
-// for styling properties in StackSpecWidget.
-
-// TODO: This is a temporary solution to avoid errors with more recent versions of Flutter.
-// ignore: prefer_const_constructors
-final _defaultStack = Stack();

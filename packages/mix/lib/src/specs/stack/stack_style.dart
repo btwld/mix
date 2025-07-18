@@ -1,15 +1,19 @@
 import '../../core/factory/style_mix.dart';
-import 'box_spec.dart';
+import 'stack_spec.dart';
 
-class BoxStyle extends StyleElement<BoxSpec> {
+class StackStyle extends StyleElement<StackSpec> {
   @override
-  final BoxSpecAttribute attribute;
+  final StackSpecAttribute attribute;
 
-  const BoxStyle()
-    : attribute = const BoxSpecAttribute.props(),
-      super(variants: const [], animation: null, modifiers: const []);
+  const StackStyle._({
+    required this.attribute,
+    super.variants,
+    super.animation,
+    super.modifiers,
+  });
 
-  const BoxStyle._({
+  /// Creates a StackStyle with the given attribute for testing and overrides
+  const StackStyle.override({
     required this.attribute,
     super.variants,
     super.animation,
@@ -17,8 +21,8 @@ class BoxStyle extends StyleElement<BoxSpec> {
   });
 
   @override
-  BoxStyle merge(BoxStyle? other) {
-    return BoxStyle._(
+  StackStyle merge(StackStyle? other) {
+    return StackStyle._(
       attribute: attribute.merge(other?.attribute),
       variants: mergeVariantLists(variants, other?.variants),
       animation: other?.animation ?? animation,

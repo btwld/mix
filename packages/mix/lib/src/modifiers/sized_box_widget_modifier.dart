@@ -6,7 +6,6 @@ import 'package:flutter/widgets.dart';
 import '../core/attribute.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
-import '../core/spec.dart';
 import '../core/utility.dart';
 
 final class SizedBoxModifierSpec
@@ -79,7 +78,8 @@ final class SizedBoxModifierSpec
 /// Use this class to configure the attributes of a [SizedBoxModifierSpec] and pass it to
 /// the [SizedBoxModifierSpec] constructor.
 class SizedBoxModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<SizedBoxModifierSpec> {
+    extends WidgetModifierSpecAttribute<SizedBoxModifierSpec>
+    with Diagnosticable {
   final double? width;
   final double? height;
 

@@ -70,7 +70,8 @@ final class VisibilityModifierSpec
 /// Use this class to configure the attributes of a [VisibilityModifierSpec] and pass it to
 /// the [VisibilityModifierSpec] constructor.
 class VisibilityModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<VisibilityModifierSpec> {
+    extends WidgetModifierSpecAttribute<VisibilityModifierSpec>
+    with Diagnosticable {
   final bool? visible;
 
   const VisibilityModifierSpecAttribute({this.visible});

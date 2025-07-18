@@ -46,7 +46,8 @@ final class ResetModifierSpecUtility<T extends Attribute>
 }
 
 class ResetModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<ResetModifierSpec> {
+    extends WidgetModifierSpecAttribute<ResetModifierSpec>
+    with Diagnosticable {
   const ResetModifierSpecAttribute();
 
   @override

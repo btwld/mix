@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../core/attribute.dart';
-import '../../core/mix_element.dart';
-import '../../core/spec.dart';
 import '../../core/utility.dart';
 import '../color/color_util.dart';
 import '../scalars/scalar_util.dart';

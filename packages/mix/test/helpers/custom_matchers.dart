@@ -23,7 +23,7 @@ import 'testing_utils.dart';
 /// expect(borderSide.width, resolvesTo(2.0));
 /// ````
 Matcher resolvesTo<T>(T expectedValue, {BuildContext? context}) {
-  return _ResolvesToMatcher<T>(expectedValue, context ?? EmptyMixData);
+  return _ResolvesToMatcher<T>(expectedValue, context ?? TestData.mockContext);
 }
 
 // =============================================================================

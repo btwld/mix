@@ -3,7 +3,6 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/attribute.dart';
-import '../../core/mix_element.dart';
 import '../../core/utility.dart';
 
 /// {@template vertical_direction_utility}

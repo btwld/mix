@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import '../../attributes/enum/enum_util.dart';
 import '../../attributes/scalars/scalar_util.dart';
 import '../../core/attribute.dart';
-import '../../core/computed_style/computed_style.dart';
+import '../../core/resolved_style_provider.dart';
 import '../../core/spec.dart';
 import '../../core/utility.dart';
 
@@ -22,15 +22,22 @@ final class StackSpec extends Spec<StackSpec> with Diagnosticable {
   });
 
   static StackSpec from(BuildContext context) {
-    return ComputedStyle.specOf(context) ?? const StackSpec();
+    return maybeOf(context) ?? const StackSpec();
+  }
+
+  /// Retrieves the [StackSpec] from the nearest [ResolvedStyleProvider] ancestor.
+  ///
+  /// Returns null if no ancestor [ResolvedStyleProvider] is found.
+  static StackSpec? maybeOf(BuildContext context) {
+    return ResolvedStyleProvider.of<StackSpec>(context)?.spec;
   }
 
   /// {@template stack_spec_of}
-  /// Retrieves the [StackSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
+  /// Retrieves the [StackSpec] from the nearest [ResolvedStyleProvider] ancestor in the widget tree.
   ///
-  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
+  /// This method uses [ResolvedStyleProvider.of] for surgical rebuilds - only widgets
   /// that call this method will rebuild when [StackSpec] changes, not when other specs change.
-  /// If no ancestor [ComputedStyle] is found, this method returns an empty [StackSpec].
+  /// If no ancestor [ResolvedStyleProvider] is found, this method returns an empty [StackSpec].
   ///
   /// Example:
   ///
@@ -39,7 +46,7 @@ final class StackSpec extends Spec<StackSpec> with Diagnosticable {
   /// ```
   /// {@endtemplate}
   static StackSpec of(BuildContext context) {
-    return ComputedStyle.specOf(context) ?? const StackSpec();
+    return maybeOf(context) ?? const StackSpec();
   }
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {

@@ -1,7 +1,6 @@
 import 'package:flutter/rendering.dart';
 
 import '../../core/attribute.dart';
-import '../../core/spec.dart';
 import '../../core/utility.dart';
 import 'constraints_dto.dart';
 

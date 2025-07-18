@@ -1,4 +1,4 @@
-import '../core/modifier.dart';
+import '../core/attribute.dart';
 import '../modifiers/widget_modifiers_util.dart';
 import '../variants/variant_util.dart';
 import 'box/box_spec.dart';

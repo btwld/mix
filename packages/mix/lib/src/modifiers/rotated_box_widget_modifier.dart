@@ -6,7 +6,6 @@ import 'package:flutter/widgets.dart';
 import '../core/attribute.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
-import '../core/spec.dart';
 import '../core/utility.dart';
 
 final class RotatedBoxModifierSpec
@@ -61,7 +60,8 @@ final class RotatedBoxModifierSpec
 /// Use this class to configure the attributes of a [RotatedBoxModifierSpec] and pass it to
 /// the [RotatedBoxModifierSpec] constructor.
 class RotatedBoxModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<RotatedBoxModifierSpec> {
+    extends WidgetModifierSpecAttribute<RotatedBoxModifierSpec>
+    with Diagnosticable {
   final int? quarterTurns;
 
   const RotatedBoxModifierSpecAttribute({this.quarterTurns});

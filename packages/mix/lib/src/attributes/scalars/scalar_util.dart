@@ -6,7 +6,6 @@ import 'dart:typed_data';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../../core/attribute.dart';
 import '../../core/prop_utility.dart';
 
 // Note: MixableDirective and private implementations are now in core/element.dart

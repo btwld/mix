@@ -7,12 +7,16 @@ import '../core/widget_state/internal/mix_widget_state_builder.dart';
 import '../core/widget_state/internal/mouse_region_mix_state.dart';
 import '../core/widget_state/widget_state_controller.dart';
 import '../internal/constants.dart';
+import '../specs/box/box_spec.dart';
+import '../specs/box/box_style.dart';
 import '../specs/box/box_widget.dart';
 
+// It expects Style? but Box requires StyleElement<BoxSpec>
+// Need to redesign how Style interacts with typed widgets
 class PressableBox extends StatelessWidget {
   const PressableBox({
     super.key,
-    this.style,
+    this.style = const BoxStyle(),
     this.onLongPress,
     this.focusNode,
     required this.child,
@@ -42,7 +46,7 @@ class PressableBox extends StatelessWidget {
   /// If this callback and [onPress] are null, then `PressableBox` will be disabled automatically.
   final VoidCallback? onLongPress;
 
-  final Style? style;
+  final StyleElement<BoxSpec> style;
   final Widget child;
   final bool enabled;
   final FocusNode? focusNode;
@@ -188,8 +192,9 @@ class PressableWidgetState extends State<Pressable> {
   /// Additional actions can be provided externally to extend functionality.
   Map<Type, Action<Intent>> get actions {
     return {
-      ActivateIntent:
-          CallbackAction<Intent>(onInvoke: (_) => widget.onPress?.call()),
+      ActivateIntent: CallbackAction<Intent>(
+        onInvoke: (_) => widget.onPress?.call(),
+      ),
       ...?widget.actions,
     };
   }

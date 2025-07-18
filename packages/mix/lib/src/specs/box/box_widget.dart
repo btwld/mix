@@ -1,22 +1,21 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/animated_spec_widget.dart';
-import '../../core/spec_widget.dart';
+import '../../core/factory/style_mix.dart';
 import '../../core/styled_widget.dart';
-import '../../modifiers/internal/render_widget_modifier.dart';
 import 'box_spec.dart';
+import 'box_style.dart';
 
 /// A [Container] equivalent widget for applying styles using Mix.
 ///
-/// `Box` is a concrete implementation of [StyledWidget] that applies custom styles
+/// `Box` is a concrete implementation of [StyleWidget] that applies custom styles
 /// to a single child widget using the styling capabilities inherited from
-/// [StyledWidget]. It wraps the child in a `BoxSpecWidget`, which is responsible for
+/// [StyleWidget]. It wraps the child in a `BoxSpecWidget`, which is responsible for
 /// rendering the styled output.
 ///
 /// The primary purpose of `Box` is to provide a flexible and reusable way to style
 /// widgets without the need to repeatedly define common style properties. It leverages
 /// the [Style] object to define the appearance and allows inheriting styles from
-/// ancestor [StyledWidget]s in the widget tree.
+/// ancestor [StyleWidget]s in the widget tree.
 ///
 /// ## Inheriting Styles
 ///
@@ -35,93 +34,32 @@ import 'box_spec.dart';
 /// * [Style], which defines the visual properties to be applied.
 /// * [BoxSpecWidget], which is used internally by `Box` to render the styled widget.
 /// * [Container], which is the Flutter equivalent widget.
-class Box extends StyledWidget {
+class Box extends StyleWidget<BoxSpec> {
   const Box({
-    super.style,
+    super.style = const BoxStyle(),
     super.key,
-    super.inherit,
+
     this.child,
-    super.orderOfModifiers = const [],
+    super.orderOfModifiers,
   });
 
   /// The child widget that will receive the styles.
   final Widget? child;
 
   @override
-  Widget build(BuildContext context) {
-    // Apply styling from StyledWidget to a BoxSpecWidget.
-    // This method uses `SpecBuilder` to get the `MixData` and then applies it to `BoxSpecWidget`,
-    // effectively styling the [child].
-    return SpecBuilder(
-      inherit: inherit,
-      style: style,
-      orderOfModifiers: orderOfModifiers,
-      builder: (context) {
-        final spec = BoxSpec.of(context);
-
-        return BoxSpecWidget(
-          spec: spec,
-          orderOfModifiers: orderOfModifiers,
-          child: child,
-        );
-      },
-    );
-  }
-}
-
-class BoxSpecWidget extends SpecWidget<BoxSpec> {
-  const BoxSpecWidget({
-    super.spec,
-    super.key,
-    this.child,
-    this.orderOfModifiers = const [],
-  });
-
-  final Widget? child;
-  final List<Type> orderOfModifiers;
-
-  @override
-  Widget build(BuildContext context) {
-    return RenderSpecModifiers(
-      spec: spec ?? const BoxSpec(),
-      orderOfModifiers: orderOfModifiers,
-      child: Container(
-        alignment: spec?.alignment,
-        padding: spec?.padding,
-        decoration: spec?.decoration,
-        foregroundDecoration: spec?.foregroundDecoration,
-        width: spec?.width,
-        height: spec?.height,
-        constraints: spec?.constraints,
-        margin: spec?.margin,
-        transform: spec?.transform,
-        transformAlignment: spec?.transformAlignment,
-        clipBehavior: spec?.clipBehavior ?? Clip.none,
-        child: child,
-      ),
-    );
-  }
-}
-
-class AnimatedBoxSpecWidget extends ImplicitlyAnimatedSpecWidget<BoxSpec> {
-  const AnimatedBoxSpecWidget({
-    required super.spec,
-    super.key,
-    this.child,
-    required super.duration,
-    super.curve = Curves.linear,
-    super.onEnd,
-    this.orderOfModifiers = const [],
-  });
-
-  final Widget? child;
-  final List<Type> orderOfModifiers;
-
-  @override
-  Widget build(BuildContext context, BoxSpec animatedSpec) {
-    return BoxSpecWidget(
-      spec: animatedSpec,
-      orderOfModifiers: orderOfModifiers,
+  Widget build(BuildContext context, ResolvedStyle<BoxSpec> resolved) {
+    return Container(
+      alignment: resolved.spec.alignment,
+      padding: resolved.spec.padding,
+      decoration: resolved.spec.decoration,
+      foregroundDecoration: resolved.spec.foregroundDecoration,
+      width: resolved.spec.width,
+      height: resolved.spec.height,
+      constraints: resolved.spec.constraints,
+      margin: resolved.spec.margin,
+      transform: resolved.spec.transform,
+      transformAlignment: resolved.spec.transformAlignment,
+      clipBehavior: resolved.spec.clipBehavior ?? Clip.none,
       child: child,
     );
   }

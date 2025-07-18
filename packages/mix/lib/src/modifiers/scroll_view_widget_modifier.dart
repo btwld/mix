@@ -6,7 +6,6 @@ import '../attributes/spacing/edge_insets_dto.dart';
 import '../attributes/spacing/spacing_util.dart';
 import '../core/attribute.dart';
 import '../core/modifier.dart';
-import '../core/spec.dart';
 import '../core/utility.dart';
 
 final class ScrollViewModifierSpec
@@ -151,7 +150,8 @@ final class ScrollViewModifierSpecUtility<T extends Attribute>
 }
 
 class ScrollViewModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<ScrollViewModifierSpec> {
+    extends WidgetModifierSpecAttribute<ScrollViewModifierSpec>
+    with Diagnosticable {
   final Axis? scrollDirection;
   final bool? reverse;
   final EdgeInsetsGeometryDto? padding;

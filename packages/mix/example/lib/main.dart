@@ -21,9 +21,12 @@ class MyApp extends StatelessWidget {
       textDirection: TextDirection.ltr,
       child: Center(
         child: FlexBox(
-          style: style(),
+          style: style() as StyleElement<FlexBoxSpec>,
           direction: Axis.horizontal,
-          children: const [StyledIcon(Icons.image), StyledText('Hello World')],
+          children: [
+            StyledIcon(Icons.image, style: Style($icon.color.red()) as StyleElement<IconSpec>),
+            StyledText('Hello World', style: Style($text.style.color.blue()) as StyleElement<TextSpec>),
+          ],
         ),
       ),
     );
@@ -32,10 +35,9 @@ class MyApp extends StatelessWidget {
 
 Style style() => Style(
   $icon.color.red(),
-  $flexbox
-    ..flex.direction(Axis.horizontal)
-    ..flex.mainAxisSize.min(),
+  $flexbox.flex.direction(Axis.horizontal),
+  $flexbox.flex.mainAxisSize.min(),
   $on.breakpoint(const Breakpoint(minWidth: 0, maxWidth: 365))(
     $flexbox.flex.direction(Axis.vertical),
   ),
-).animate(duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
+);

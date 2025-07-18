@@ -28,7 +28,6 @@ import '../attributes/decoration/image/decoration_image_dto.dart';
 import '../attributes/enum/enum_util.dart';
 import '../attributes/gap/space_dto.dart';
 import '../attributes/gradient/gradient_dto.dart';
-import '../attributes/modifiers/widget_modifiers_config.dart';
 import '../attributes/shadow/shadow_dto.dart';
 import '../attributes/spacing/edge_insets_dto.dart';
 import '../attributes/spacing/spacing_util.dart';
@@ -57,6 +56,7 @@ import '../theme/mix/mix_theme.dart';
 import '../theme/tokens/mix_token.dart';
 import 'attribute.dart';
 import 'mix_element.dart';
+import 'styled_widget.dart';
 import 'variant.dart';
 
 // =============================================================================
@@ -1034,7 +1034,5 @@ extension ListStadiumBorderMixExtDeprecated on List<StadiumBorder> {
   }
 }
 
-@Deprecated(
-  'Use WidgetModifiersConfig instead. This will be removed in version 2.0',
-)
-typedef WidgetModifiersData = WidgetModifiersConfig;
+@Deprecated('Use StyleWidget instead. This will be removed in version 2.0')
+typedef StyledWidget<S extends Spec<S>> = StyleWidget<S>;

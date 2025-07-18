@@ -138,12 +138,29 @@ abstract class StyleElement<S extends Spec<S>> with EqualityMixin {
 
 /// Result of Style.resolve() containing fully resolved styling data
 /// Generic type parameter T for the resolved SpecAttribute
-class ResolvedStyle<V> {
+class ResolvedStyle<V extends Spec<V>> {
   final V spec; // Resolved spec
   final AnimationConfig? animation; // Animation config
   final List<WidgetModifierSpec>? modifiers; // Modifiers config
 
   const ResolvedStyle({required this.spec, this.animation, this.modifiers});
+
+  /// Linearly interpolate between two ResolvedStyles
+  ResolvedStyle<V> lerp(ResolvedStyle<V>? other, double t) {
+    if (other == null || t == 0.0) return this;
+    if (t == 1.0) return other;
+
+    // Lerp the spec if it's a Spec type
+    final lerpedSpec = (spec as Spec<V>).lerp(other.spec, t);
+
+    // For modifiers and animation, use the target (end) values
+    // We can't meaningfully interpolate these
+    return ResolvedStyle(
+      spec: lerpedSpec,
+      animation: other.animation ?? animation,
+      modifiers: t < 0.5 ? modifiers : other.modifiers,
+    );
+  }
 }
 
 /// A style class that handles multiple specs through MultiSpec and MultiSpecAttribute

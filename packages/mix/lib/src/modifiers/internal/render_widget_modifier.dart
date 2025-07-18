@@ -3,10 +3,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../../core/factory/mix_context.dart';
 import '../../core/modifier.dart';
-import '../../core/spec.dart';
-import '../../theme/mix/mix_theme.dart';
 import '../align_widget_modifier.dart';
 import '../aspect_ratio_widget_modifier.dart';
 import '../clip_widget_modifier.dart';
@@ -89,23 +86,19 @@ const _defaultOrder = [
 class RenderModifiers extends StatelessWidget {
   const RenderModifiers({
     required this.child,
-    this.modifiers = const [],
-    this.mix,
+    required this.modifiers,
     required this.orderOfModifiers,
     super.key,
   });
 
   final Widget child;
-
-  /// TODO: remove this parameter in the future
-  final MixContext? mix;
   final List<Type> orderOfModifiers;
   final List<WidgetModifierSpec<dynamic>> modifiers;
 
   @override
   Widget build(BuildContext context) {
     return _RenderModifiers(
-      modifiers: combineModifiers(mix, modifiers, orderOfModifiers).reversed,
+      modifiers: combineModifiers(modifiers, orderOfModifiers).reversed,
       child: child,
     );
   }
@@ -132,19 +125,15 @@ class _RenderModifiers extends StatelessWidget {
 class RenderAnimatedModifiers extends StatelessWidget {
   const RenderAnimatedModifiers({
     super.key,
-    this.modifiers = const [],
+    required this.modifiers,
     required this.child,
     required this.duration,
-
-    /// TODO: Remove this parameter in the future
-    this.mix,
     required this.orderOfModifiers,
     this.curve = Curves.linear,
     this.onEnd,
   });
 
   final Widget child;
-  final MixContext? mix;
   final List<Type> orderOfModifiers;
   final List<WidgetModifierSpec<dynamic>> modifiers;
   final Duration duration;
@@ -155,10 +144,8 @@ class RenderAnimatedModifiers extends StatelessWidget {
   Widget build(BuildContext context) {
     return _RenderAnimatedModifiers(
       modifiers: combineModifiers(
-        mix,
         modifiers,
         orderOfModifiers,
-        defaultOrder: MixScope.maybeOf(context)?.defaultOrderOfModifiers,
       ).reversed.toList(),
       duration: duration,
       curve: curve,
@@ -256,29 +243,7 @@ class _RenderAnimatedModifiersState
   }
 }
 
-class RenderSpecModifiers extends StatelessWidget {
-  const RenderSpecModifiers({
-    required this.orderOfModifiers,
-    required this.child,
-    required this.spec,
-    super.key,
-  });
-
-  final Widget child;
-  final List<Type> orderOfModifiers;
-  final Spec spec;
-
-  @override
-  Widget build(BuildContext context) {
-    final modifiers = spec.modifiers?.value ?? [];
-
-    return RenderModifiers(
-      modifiers: modifiers,
-      orderOfModifiers: orderOfModifiers,
-      child: child,
-    );
-  }
-}
+// RenderSpecModifiers has been removed - use RenderModifiers directly
 
 class ModifierSpecTween extends Tween<WidgetModifierSpec> {
   /// Creates an [EdgeInsetsGeometry] tween.
@@ -293,45 +258,15 @@ class ModifierSpecTween extends Tween<WidgetModifierSpec> {
       WidgetModifierSpec.lerpValue(begin, end, t)!;
 }
 
-List<Type> _normalizeOrderedTypes(MixContext? mix, List<Type>? orderedTypes) {
-  orderedTypes ??= [];
-  if (mix == null) return orderedTypes;
-
-  final modifierAttributes = mix.whereType<WidgetModifierSpecAttribute>();
-
-  final specs = [...orderedTypes];
-
-  for (int i = 0; i < orderedTypes.length; i++) {
-    final type = orderedTypes[i];
-    // Resolve the modifier and replace the attribute type with the spec type.
-    final modifier =
-        modifierAttributes.where((e) => e.runtimeType == type).firstOrNull;
-    if (modifier != null) {
-      specs[i] = modifier.resolve(mix).runtimeType;
-    }
-  }
-
-  return specs;
-}
-
 @visibleForTesting
 List<WidgetModifierSpec<dynamic>> combineModifiers(
-  MixContext? mix,
   List<WidgetModifierSpec<dynamic>> modifiers,
   List<Type> orderOfModifiers, {
   List<Type>? defaultOrder,
 }) {
-  final normalizedModifiers = _normalizeOrderedTypes(mix, orderOfModifiers);
-
-  final mergedModifiers = [...modifiers];
-
-  if (mix != null) {
-    mergedModifiers.addAll(mix.modifiers);
-  }
-
   return orderModifiers(
-    normalizedModifiers,
-    mergedModifiers,
+    orderOfModifiers,
+    modifiers,
     defaultOrder: defaultOrder,
   );
 }

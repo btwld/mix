@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../core/attribute.dart';
 import '../core/deprecated.dart';
 import '../core/factory/style_mix.dart';
+import '../core/spec.dart';
 import '../core/variant.dart';
 
 /// Utility class for creating variant attributes with context-based variants
@@ -243,22 +244,27 @@ class OnContextVariantUtility {
 class VariantAttributeBuilder {
   final Variant _variant;
   const VariantAttributeBuilder(this._variant);
-  VariantAttribute call([
-    StyleElement? p1,
-    StyleElement? p2,
-    StyleElement? p3,
-    StyleElement? p4,
-    StyleElement? p5,
-    StyleElement? p6,
-    StyleElement? p7,
-    StyleElement? p8,
+  VariantAttribute<MultiSpec> call([
+    Attribute? p1,
+    Attribute? p2,
+    Attribute? p3,
+    Attribute? p4,
+    Attribute? p5,
+    Attribute? p6,
+    Attribute? p7,
+    Attribute? p8,
   ]) {
-    return VariantAttribute(
-      _variant,
-      [p1, p2, p3, p4, p5, p6, p7, p8]
-          .whereType<StyleElement>()
-          .toList()
-          .reduce((value, element) => value.merge(element)),
-    );
+    final attributes = [
+      p1,
+      p2,
+      p3,
+      p4,
+      p5,
+      p6,
+      p7,
+      p8,
+    ].whereType<Attribute>().toList();
+
+    return VariantAttribute<MultiSpec>(_variant, Style.create(attributes));
   }
 }

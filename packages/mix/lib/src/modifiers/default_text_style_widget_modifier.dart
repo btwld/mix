@@ -157,7 +157,8 @@ final class DefaultTextStyleModifierSpec
 /// Use this class to configure the attributes of a [DefaultTextStyleModifierSpec] and pass it to
 /// the [DefaultTextStyleModifierSpec] constructor.
 class DefaultTextStyleModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<DefaultTextStyleModifierSpec> {
+    extends WidgetModifierSpecAttribute<DefaultTextStyleModifierSpec>
+    with Diagnosticable {
   final TextStyleDto? style;
   final TextAlign? textAlign;
   final bool? softWrap;

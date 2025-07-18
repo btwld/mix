@@ -6,7 +6,7 @@ import '../../attributes/enum/enum_util.dart';
 import '../../attributes/shadow/shadow_dto.dart';
 import '../../attributes/shadow/shadow_util.dart';
 import '../../core/attribute.dart';
-import '../../core/computed_style/computed_style.dart';
+import '../../core/resolved_style_provider.dart';
 import '../../core/helpers.dart';
 import '../../core/mix_element.dart';
 import '../../core/prop.dart';
@@ -37,11 +37,21 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
   });
 
   static IconSpec from(BuildContext context) {
-    return ComputedStyle.specOf(context) ?? const IconSpec();
+    return maybeOf(context) ?? const IconSpec();
   }
 
+  /// Retrieves the [IconSpec] from the nearest [ResolvedStyleProvider] ancestor.
+  ///
+  /// Returns null if no ancestor [ResolvedStyleProvider] is found.
+  static IconSpec? maybeOf(BuildContext context) {
+    return ResolvedStyleProvider.of<IconSpec>(context)?.spec;
+  }
+
+  /// Retrieves the [IconSpec] from the nearest [ResolvedStyleProvider] ancestor in the widget tree.
+  ///
+  /// If no ancestor [ResolvedStyleProvider] is found, this method returns an empty [IconSpec].
   static IconSpec of(BuildContext context) {
-    return ComputedStyle.specOf(context) ?? const IconSpec();
+    return maybeOf(context) ?? const IconSpec();
   }
 
   @override

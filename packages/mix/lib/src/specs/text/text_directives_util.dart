@@ -1,6 +1,5 @@
 import '../../core/attribute.dart';
 import '../../core/directive.dart';
-import '../../core/spec.dart';
 import '../../core/utility.dart';
 import '../../internal/string_ext.dart';
 

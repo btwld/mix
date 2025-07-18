@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 
-import '../../core/animated_spec_widget.dart';
-import '../../core/spec_widget.dart';
+import '../../core/factory/style_mix.dart';
 import '../../core/styled_widget.dart';
-import '../../modifiers/internal/render_widget_modifier.dart';
 import 'text_spec.dart';
+import 'text_style.dart';
 
 /// A styled text widget for displaying text with Mix styling.
 ///
 /// Applies [TextSpec] styling to display text with custom appearance.
-/// Supports style inheritance from ancestor [StyledWidget]s.
+/// Supports style inheritance from ancestor [StyleWidget]s.
 ///
 /// Example:
 /// ```dart
@@ -21,16 +20,16 @@ import 'text_spec.dart';
 ///   ),
 /// )
 /// ```
-class StyledText extends StyledWidget {
+class StyledText extends StyleWidget<TextSpec> {
   /// Creates a styled text widget.
   const StyledText(
     this.text, {
     this.semanticsLabel,
-    super.style,
+    super.style = const TextStyling(),
     super.key,
-    super.inherit = true,
+
     this.locale,
-    super.orderOfModifiers = const [],
+    super.orderOfModifiers,
   });
 
   /// Text content to display.
@@ -43,92 +42,23 @@ class StyledText extends StyledWidget {
   final Locale? locale;
 
   @override
-  Widget build(BuildContext context) {
-    return SpecBuilder(
-      inherit: inherit,
-      style: style,
-      orderOfModifiers: orderOfModifiers,
-      builder: (context) {
-        final spec = TextSpec.of(context);
+  Widget build(BuildContext context, ResolvedStyle<TextSpec> resolved) {
+    final spec = resolved.spec;
 
-        return TextSpecWidget(
-          text,
-          spec: spec,
-          semanticsLabel: semanticsLabel,
-          locale: locale,
-          orderOfModifiers: orderOfModifiers,
-        );
-      },
-    );
-  }
-}
-
-class TextSpecWidget extends SpecWidget<TextSpec> {
-  const TextSpecWidget(
-    this.text, {
-    super.spec,
-    this.semanticsLabel,
-    this.locale,
-    this.orderOfModifiers = const [],
-    super.key,
-  });
-
-  final String text;
-  final String? semanticsLabel;
-  final Locale? locale;
-  final List<Type> orderOfModifiers;
-
-  @override
-  Widget build(BuildContext context) {
-    // The Text widget is used here, applying the resolved styles and properties from TextSpec.
-    return RenderSpecModifiers(
-      spec: spec ?? const TextSpec(),
-      orderOfModifiers: orderOfModifiers,
-      child: Text(
-        spec?.directive?.apply(text) ?? text,
-        style: spec?.style,
-        strutStyle: spec?.strutStyle,
-        textAlign: spec?.textAlign,
-        textDirection: spec?.textDirection,
-        locale: locale,
-        softWrap: spec?.softWrap,
-        overflow: spec?.overflow,
-        textScaler: spec?.textScaler,
-        maxLines: spec?.maxLines,
-        semanticsLabel: semanticsLabel,
-        textWidthBasis: spec?.textWidthBasis,
-        textHeightBehavior: spec?.textHeightBehavior,
-      ),
-    );
-  }
-}
-
-class AnimatedTextSpecWidget extends ImplicitlyAnimatedSpecWidget<TextSpec> {
-  const AnimatedTextSpecWidget(
-    this.text, {
-    required super.spec,
-    this.semanticsLabel,
-    this.locale,
-    this.orderOfModifiers = const [],
-    super.key,
-    required super.duration,
-    super.curve = Curves.linear,
-    super.onEnd,
-  });
-
-  final String text;
-  final String? semanticsLabel;
-  final Locale? locale;
-  final List<Type> orderOfModifiers;
-
-  @override
-  Widget build(BuildContext context, TextSpec animatedSpec) {
-    return TextSpecWidget(
-      text,
-      spec: animatedSpec,
-      semanticsLabel: semanticsLabel,
+    return Text(
+      spec.directive?.apply(text) ?? text,
+      style: spec.style,
+      strutStyle: spec.strutStyle,
+      textAlign: spec.textAlign,
+      textDirection: spec.textDirection,
       locale: locale,
-      orderOfModifiers: orderOfModifiers,
+      softWrap: spec.softWrap,
+      overflow: spec.overflow,
+      textScaler: spec.textScaler,
+      maxLines: spec.maxLines,
+      semanticsLabel: semanticsLabel,
+      textWidthBasis: spec.textWidthBasis,
+      textHeightBehavior: spec.textHeightBehavior,
     );
   }
 }

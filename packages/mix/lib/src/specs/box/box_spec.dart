@@ -10,9 +10,9 @@ import '../../attributes/scalars/scalar_util.dart';
 import '../../attributes/spacing/edge_insets_dto.dart';
 import '../../attributes/spacing/spacing_util.dart';
 import '../../core/attribute.dart';
-import '../../core/computed_style/computed_style.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
+import '../../core/resolved_style_provider.dart';
 import '../../core/spec.dart';
 import '../../core/utility.dart';
 
@@ -65,16 +65,15 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
     this.height,
   });
 
-  static BoxSpec from(BuildContext context) {
-    return ComputedStyle.specOf<BoxSpec>(context) ?? const BoxSpec();
+  static BoxSpec? maybeOf(BuildContext context) {
+    return ResolvedStyleProvider.of<BoxSpec>(context)?.spec;
   }
 
   /// {@template box_spec_of}
-  /// Retrieves the [BoxSpec] from the nearest [ComputedStyle] ancestor in the widget tree.
+  /// Retrieves the [BoxSpec] from the nearest [ResolvedStyleProvider] ancestor in the widget tree.
   ///
-  /// This method uses [ComputedStyle.specOf] for surgical rebuilds - only widgets
-  /// that call this method will rebuild when [BoxSpec] changes, not when other specs change.
-  /// If no ancestor [ComputedStyle] is found, this method returns an empty [BoxSpec].
+  /// This method provides the resolved BoxSpec from the style system.
+  /// If no ancestor [ResolvedStyleProvider] is found, this method returns an empty [BoxSpec].
   ///
   /// Example:
   ///
@@ -83,7 +82,7 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
   /// ```
   /// {@endtemplate}
   static BoxSpec of(BuildContext context) {
-    return ComputedStyle.specOf(context) ?? const BoxSpec();
+    return maybeOf(context) ?? const BoxSpec();
   }
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {

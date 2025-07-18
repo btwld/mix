@@ -89,7 +89,8 @@ final class ClipOvalModifierSpec
 /// Use this class to configure the attributes of a [ClipOvalModifierSpec] and pass it to
 /// the [ClipOvalModifierSpec] constructor.
 class ClipOvalModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<ClipOvalModifierSpec> {
+    extends WidgetModifierSpecAttribute<ClipOvalModifierSpec>
+    with Diagnosticable {
   final CustomClipper<Rect>? clipper;
   final Clip? clipBehavior;
 
@@ -245,7 +246,8 @@ final class ClipRectModifierSpec
 /// Use this class to configure the attributes of a [ClipRectModifierSpec] and pass it to
 /// the [ClipRectModifierSpec] constructor.
 class ClipRectModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<ClipRectModifierSpec> {
+    extends WidgetModifierSpecAttribute<ClipRectModifierSpec>
+    with Diagnosticable {
   final CustomClipper<Rect>? clipper;
   final Clip? clipBehavior;
 
@@ -418,7 +420,8 @@ final class ClipRRectModifierSpec
 /// Use this class to configure the attributes of a [ClipRRectModifierSpec] and pass it to
 /// the [ClipRRectModifierSpec] constructor.
 class ClipRRectModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<ClipRRectModifierSpec> {
+    extends WidgetModifierSpecAttribute<ClipRRectModifierSpec>
+    with Diagnosticable {
   final BorderRadiusGeometryDto? borderRadius;
   final CustomClipper<RRect>? clipper;
   final Clip? clipBehavior;
@@ -588,7 +591,8 @@ final class ClipPathModifierSpec
 /// Use this class to configure the attributes of a [ClipPathModifierSpec] and pass it to
 /// the [ClipPathModifierSpec] constructor.
 class ClipPathModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<ClipPathModifierSpec> {
+    extends WidgetModifierSpecAttribute<ClipPathModifierSpec>
+    with Diagnosticable {
   final CustomClipper<Path>? clipper;
   final Clip? clipBehavior;
 
@@ -737,7 +741,8 @@ final class ClipTriangleModifierSpec
 /// Use this class to configure the attributes of a [ClipTriangleModifierSpec] and pass it to
 /// the [ClipTriangleModifierSpec] constructor.
 class ClipTriangleModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<ClipTriangleModifierSpec> {
+    extends WidgetModifierSpecAttribute<ClipTriangleModifierSpec>
+    with Diagnosticable {
   final Clip? clipBehavior;
 
   const ClipTriangleModifierSpecAttribute({this.clipBehavior});

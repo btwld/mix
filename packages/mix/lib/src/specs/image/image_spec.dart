@@ -5,9 +5,9 @@ import '../../attributes/color/color_util.dart';
 import '../../attributes/enum/enum_util.dart';
 import '../../attributes/scalars/scalar_util.dart';
 import '../../core/attribute.dart';
-import '../../core/computed_style/computed_style.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
+import '../../core/resolved_style_provider.dart';
 import '../../core/spec.dart';
 import '../../core/utility.dart';
 
@@ -35,11 +35,21 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
   });
 
   static ImageSpec from(BuildContext context) {
-    return ComputedStyle.specOf<ImageSpec>(context) ?? const ImageSpec();
+    return maybeOf(context) ?? const ImageSpec();
   }
 
+  /// Retrieves the [ImageSpec] from the nearest [ResolvedStyleProvider] ancestor.
+  ///
+  /// Returns null if no ancestor [ResolvedStyleProvider] is found.
+  static ImageSpec? maybeOf(BuildContext context) {
+    return ResolvedStyleProvider.of<ImageSpec>(context)?.spec;
+  }
+
+  /// Retrieves the [ImageSpec] from the nearest [ResolvedStyleProvider] ancestor in the widget tree.
+  ///
+  /// If no ancestor [ResolvedStyleProvider] is found, this method returns an empty [ImageSpec].
   static ImageSpec of(BuildContext context) {
-    return ComputedStyle.specOf(context) ?? const ImageSpec();
+    return maybeOf(context) ?? const ImageSpec();
   }
 
   @override
