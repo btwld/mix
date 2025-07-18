@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import '../../core/attribute.dart';
 import '../../core/attributes_map.dart';
 import '../../core/mix_element.dart';
 import '../../core/modifier.dart';

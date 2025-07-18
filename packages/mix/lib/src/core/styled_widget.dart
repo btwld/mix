@@ -1,7 +1,10 @@
 import 'package:flutter/widgets.dart';
 
-import '../../mix.dart';
+import '../widgets/pressable_widget.dart';
+import 'factory/style_mix.dart';
 import 'internal/experimental/mix_builder.dart';
+import 'variant.dart';
+import 'widget_state/widget_state_controller.dart';
 
 /// Base class for widgets that apply [Style] definitions.
 ///
@@ -12,14 +15,14 @@ import 'internal/experimental/mix_builder.dart';
 abstract class StyledWidget extends StatelessWidget {
   /// Creates a styled widget.
   const StyledWidget({
-    Style? style,
+    StyleElement? style,
     super.key,
     this.inherit = false,
     required this.orderOfModifiers,
   }) : style = style ?? const Style.empty();
 
   /// The style to apply to this widget.
-  final Style style;
+  final StyleElement style;
 
   /// Whether to inherit style from the nearest [StyledWidget] ancestor.
   final bool inherit;
@@ -108,10 +111,10 @@ class _SpecBuilderState extends State<SpecBuilder> {
 
   /// Checks if the style contains widget state variants that require
   /// interactive state management.
-  bool get _hasWidgetStateVariant => widget.style.variants.values.any(
-    (variantAttribute) =>
-        variantAttribute.variant is WidgetStateVariant
-        
+  bool get _hasWidgetStateVariant => widget.style.variants.any(
+    (variantAttribute) => variantAttribute.variant is WidgetStateVariant,
+  );
+
   /// Determines if we should wrap with Interactable widget.
   bool get _shouldWrapWithInteractable =>
       _hasWidgetStateVariant || widget.controller != null;
@@ -120,10 +123,6 @@ class _SpecBuilderState extends State<SpecBuilder> {
   void initState() {
     super.initState();
     _controller = widget.controller ?? WidgetStatesController();
-  }
-
-  Style _convertToStyle(Style style) {
-    return style;
   }
 
   @override
@@ -138,7 +137,7 @@ class _SpecBuilderState extends State<SpecBuilder> {
   @override
   Widget build(BuildContext context) {
     final builder = MixBuilder(
-      style: _convertToStyle(widget.style),
+      style: widget.style,
       builder: widget.builder,
       inherit: widget.inherit,
       orderOfModifiers: widget.orderOfModifiers ?? [],

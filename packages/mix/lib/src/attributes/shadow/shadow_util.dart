@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/attribute.dart';
 import '../../core/mix_element.dart';
 import '../../core/spec.dart';
 import '../../core/utility.dart';
@@ -11,7 +12,7 @@ import 'shadow_dto.dart';
 ///
 /// This class provides methods to set individual properties of a [Shadow].
 /// Use the methods of this class to configure specific properties of a [Shadow].
-class ShadowUtility<T extends SpecAttribute>
+class ShadowUtility<T extends Attribute>
     extends DtoUtility<T, ShadowDto, Shadow> {
   /// Utility for defining [ShadowDto.blurRadius]
   late final blurRadius = DoubleUtility((prop) => only(blurRadius: prop.value));
@@ -45,7 +46,7 @@ class ShadowUtility<T extends SpecAttribute>
 ///
 /// This class provides methods to set individual properties of a [BoxShadow].
 /// Use the methods of this class to configure specific properties of a [BoxShadow].
-class BoxShadowUtility<T extends SpecAttribute>
+class BoxShadowUtility<T extends Attribute>
     extends DtoUtility<T, BoxShadowDto, BoxShadow> {
   /// Utility for defining [BoxShadowDto.color]
   late final color = ColorUtility(
@@ -104,7 +105,7 @@ class BoxShadowUtility<T extends SpecAttribute>
 ///
 /// This class extends [MixUtility] and provides a convenient way to create [StyleElement]
 /// instances by transforming a list of [BoxShadow] objects into a list of [ShadowDto] objects.
-final class ShadowListUtility<T extends SpecAttribute>
+final class ShadowListUtility<T extends Attribute>
     extends MixUtility<T, List<ShadowDto>> {
   const ShadowListUtility(super.builder);
 
@@ -131,7 +132,7 @@ final class ShadowListUtility<T extends SpecAttribute>
 ///
 /// This class extends [MixUtility] and provides a convenient way to create [StyleElement]
 /// instances by transforming a list of [BoxShadow] objects into a list of [BoxShadowDto] objects.
-final class BoxShadowListUtility<T extends SpecAttribute>
+final class BoxShadowListUtility<T extends Attribute>
     extends MixUtility<T, List<BoxShadowDto>> {
   late final add = BoxShadowUtility((v) => builder([v]));
 
@@ -162,7 +163,7 @@ final class BoxShadowListUtility<T extends SpecAttribute>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// based on predefined elevation values, which are mapped to corresponding lists of
 /// [BoxShadowDto] objects using the [kElevationToShadow] map.
-final class ElevationUtility<T extends SpecAttribute>
+final class ElevationUtility<T extends Attribute>
     extends MixUtility<T, List<BoxShadowDto>> {
   /// Creates an [T] instance with an elevation of 1.
   late final e1 = one;

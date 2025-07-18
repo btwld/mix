@@ -3,7 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 
 import '../../attributes/animation/animation_config.dart';
-import '../mix_element.dart';
+import '../attribute.dart';
+import '../factory/style_mix.dart';
 import '../modifier.dart';
 import '../spec.dart';
 import 'computed_style_provider.dart';
@@ -15,12 +16,12 @@ import 'computed_style_provider.dart';
 /// selective dependency tracking for optimal rebuild performance.
 @immutable
 class ComputedStyle with Diagnosticable {
-  final Map<Type, ResolvedStyleElement> _specs;
+  final Map<Type, ResolvedStyle> _specs;
   final List<WidgetModifierSpec> _modifiers;
   final AnimationConfig? _animation;
 
   const ComputedStyle._({
-    required Map<Type, ResolvedStyleElement> specs,
+    required Map<Type, ResolvedStyle> specs,
     required List<WidgetModifierSpec> modifiers,
     AnimationConfig? animation,
   }) : _specs = specs,
@@ -44,8 +45,12 @@ class ComputedStyle with Diagnosticable {
   /// ```dart
   /// final computedStyle = ComputedStyle.compute(mixData);
   /// ```
-  factory ComputedStyle.compute(BuildContext context, Iterable<SpecAttribute> attributes, {AnimationConfig? animation}) {
-    final specs = <Type, ResolvedStyleElement>{};
+  factory ComputedStyle.compute(
+    BuildContext context,
+    Iterable<SpecAttribute> attributes, {
+    AnimationConfig? animation,
+  }) {
+    final specs = <Type, ResolvedStyle>{};
     final modifiers = <WidgetModifierSpec>[];
 
     // Separate modifiers from regular specs for different processing
@@ -54,7 +59,12 @@ class ComputedStyle with Diagnosticable {
         modifiers.add(attribute.resolve(context) as WidgetModifierSpec);
       } else {
         final resolved = attribute.resolve(context);
-        specs[resolved.runtimeType] = resolved;
+        final resolvedStyle = ResolvedStyle(
+          spec: resolved,
+          animation: null,
+          modifiers: null,
+        );
+        specs[resolved.runtimeType] = resolvedStyle;
       }
     }
 
@@ -112,7 +122,7 @@ class ComputedStyle with Diagnosticable {
 
   /// Gets a spec by runtime type for internal provider use.
   @internal
-  ResolvedStyleElement? specOfType(Type type) => _specs[type];
+  ResolvedStyle? specOfType(Type type) => _specs[type];
 
   @override
   bool operator ==(Object other) {

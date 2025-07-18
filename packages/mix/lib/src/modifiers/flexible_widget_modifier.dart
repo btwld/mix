@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../attributes/enum/enum_util.dart';
+import '../core/attribute.dart';
 import '../core/modifier.dart';
-import '../core/spec.dart';
 import '../core/utility.dart';
 
 final class FlexibleModifierSpec
@@ -149,7 +149,7 @@ class FlexibleModifierSpecTween extends Tween<FlexibleModifierSpec?> {
   }
 }
 
-final class FlexibleModifierSpecUtility<T extends SpecAttribute>
+final class FlexibleModifierSpecUtility<T extends Attribute>
     extends MixUtility<T, FlexibleModifierSpecAttribute> {
   const FlexibleModifierSpecUtility(super.builder);
   FlexFitUtility<T> get fit => FlexFitUtility((fit) => call(fit: fit));

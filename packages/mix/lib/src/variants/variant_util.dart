@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../core/attribute.dart';
 import '../core/deprecated.dart';
-import '../core/mix_element.dart';
+import '../core/factory/style_mix.dart';
 import '../core/variant.dart';
-import 'variant_attribute.dart';
 
 /// Utility class for creating variant attributes with context-based variants
 @immutable
@@ -177,58 +177,66 @@ class OnContextVariantUtility {
 
   /// Creates a variant attribute for a breakpoint based on screen size
   VariantAttributeBuilder breakpoint(Breakpoint breakpoint) {
-    return VariantAttributeBuilder(ContextVariant.size(
-      'breakpoint_${breakpoint.minWidth}_${breakpoint.maxWidth}',
-      (size) => breakpoint.matches(size),
-    ));
+    return VariantAttributeBuilder(
+      ContextVariant.size(
+        'breakpoint_${breakpoint.minWidth}_${breakpoint.maxWidth}',
+        (size) => breakpoint.matches(size),
+      ),
+    );
   }
 
   /// Creates a variant attribute for a minimum width breakpoint
   VariantAttributeBuilder minWidth(double width) {
-    return VariantAttributeBuilder(ContextVariant.size(
-      'min_width_$width',
-      (size) => size.width >= width,
-    ));
+    return VariantAttributeBuilder(
+      ContextVariant.size('min_width_$width', (size) => size.width >= width),
+    );
   }
 
   /// Creates a variant attribute for a maximum width breakpoint
   VariantAttributeBuilder maxWidth(double width) {
-    return VariantAttributeBuilder(ContextVariant.size(
-      'max_width_$width',
-      (size) => size.width <= width,
-    ));
+    return VariantAttributeBuilder(
+      ContextVariant.size('max_width_$width', (size) => size.width <= width),
+    );
   }
 
   /// Creates a variant attribute for a width range breakpoint
   VariantAttributeBuilder widthRange(double minWidth, double maxWidth) {
-    return VariantAttributeBuilder(ContextVariant.size(
-      'width_range_${minWidth}_$maxWidth',
-      (size) => size.width >= minWidth && size.width <= maxWidth,
-    ));
+    return VariantAttributeBuilder(
+      ContextVariant.size(
+        'width_range_${minWidth}_$maxWidth',
+        (size) => size.width >= minWidth && size.width <= maxWidth,
+      ),
+    );
   }
 
   /// Creates a variant attribute for a minimum height breakpoint
   VariantAttributeBuilder minHeight(double height) {
-    return VariantAttributeBuilder(ContextVariant.size(
-      'min_height_$height',
-      (size) => size.height >= height,
-    ));
+    return VariantAttributeBuilder(
+      ContextVariant.size(
+        'min_height_$height',
+        (size) => size.height >= height,
+      ),
+    );
   }
 
   /// Creates a variant attribute for a maximum height breakpoint
   VariantAttributeBuilder maxHeight(double height) {
-    return VariantAttributeBuilder(ContextVariant.size(
-      'max_height_$height',
-      (size) => size.height <= height,
-    ));
+    return VariantAttributeBuilder(
+      ContextVariant.size(
+        'max_height_$height',
+        (size) => size.height <= height,
+      ),
+    );
   }
 
   /// Creates a variant attribute for a height range breakpoint
   VariantAttributeBuilder heightRange(double minHeight, double maxHeight) {
-    return VariantAttributeBuilder(ContextVariant.size(
-      'height_range_${minHeight}_$maxHeight',
-      (size) => size.height >= minHeight && size.height <= maxHeight,
-    ));
+    return VariantAttributeBuilder(
+      ContextVariant.size(
+        'height_range_${minHeight}_$maxHeight',
+        (size) => size.height >= minHeight && size.height <= maxHeight,
+      ),
+    );
   }
 }
 

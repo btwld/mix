@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../attributes/border/border_radius_dto.dart';
+import '../core/attribute.dart';
 import '../core/modifier.dart';
-import '../core/spec.dart';
 import '../core/utility.dart';
 
 final class ClipOvalModifierSpec
@@ -828,7 +828,7 @@ class TriangleClipper extends CustomClipper<Path> {
   bool shouldReclip(TriangleClipper oldClipper) => false;
 }
 
-final class ClipPathModifierSpecUtility<T extends SpecAttribute>
+final class ClipPathModifierSpecUtility<T extends Attribute>
     extends MixUtility<T, ClipPathModifierSpecAttribute> {
   const ClipPathModifierSpecUtility(super.builder);
 
@@ -842,7 +842,7 @@ final class ClipPathModifierSpecUtility<T extends SpecAttribute>
   }
 }
 
-final class ClipRRectModifierSpecUtility<T extends SpecAttribute>
+final class ClipRRectModifierSpecUtility<T extends Attribute>
     extends MixUtility<T, ClipRRectModifierSpecAttribute> {
   const ClipRRectModifierSpecUtility(super.builder);
   T call({
@@ -860,7 +860,7 @@ final class ClipRRectModifierSpecUtility<T extends SpecAttribute>
   }
 }
 
-final class ClipOvalModifierSpecUtility<T extends SpecAttribute>
+final class ClipOvalModifierSpecUtility<T extends Attribute>
     extends MixUtility<T, ClipOvalModifierSpecAttribute> {
   const ClipOvalModifierSpecUtility(super.builder);
   T call({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
@@ -873,7 +873,7 @@ final class ClipOvalModifierSpecUtility<T extends SpecAttribute>
   }
 }
 
-final class ClipRectModifierSpecUtility<T extends SpecAttribute>
+final class ClipRectModifierSpecUtility<T extends Attribute>
     extends MixUtility<T, ClipRectModifierSpecAttribute> {
   const ClipRectModifierSpecUtility(super.builder);
   T call({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
@@ -886,7 +886,7 @@ final class ClipRectModifierSpecUtility<T extends SpecAttribute>
   }
 }
 
-final class ClipTriangleModifierSpecUtility<T extends SpecAttribute>
+final class ClipTriangleModifierSpecUtility<T extends Attribute>
     extends MixUtility<T, ClipTriangleModifierSpecAttribute> {
   const ClipTriangleModifierSpecUtility(super.builder);
   T call({Clip? clipBehavior}) {

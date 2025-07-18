@@ -6,6 +6,7 @@ import 'dart:typed_data';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
+import '../../core/attribute.dart';
 import '../../core/prop_utility.dart';
 
 // Note: MixableDirective and private implementations are now in core/element.dart
@@ -14,7 +15,7 @@ import '../../core/prop_utility.dart';
 // SCALAR UTILITIES
 // =============================================================================
 
-final class AlignmentUtility<T extends SpecAttribute>
+final class AlignmentUtility<T extends Attribute>
     extends MixUtility<T, AlignmentGeometry> {
   const AlignmentUtility(super.builder);
 
@@ -64,13 +65,13 @@ final class AlignmentUtility<T extends SpecAttribute>
   T call(AlignmentGeometry value) => builder(value);
 }
 
-final class AlignmentGeometryUtility<T extends SpecAttribute>
+final class AlignmentGeometryUtility<T extends Attribute>
     extends AlignmentUtility<T> {
   late final directional = AlignmentDirectionalUtility(builder);
   AlignmentGeometryUtility(super.builder);
 }
 
-final class AlignmentDirectionalUtility<T extends SpecAttribute>
+final class AlignmentDirectionalUtility<T extends Attribute>
     extends MixUtility<T, AlignmentDirectional> {
   const AlignmentDirectionalUtility(super.builder);
 
@@ -109,7 +110,7 @@ final class AlignmentDirectionalUtility<T extends SpecAttribute>
   T call(AlignmentDirectional value) => builder(value);
 }
 
-final class FontFeatureUtility<T extends SpecAttribute>
+final class FontFeatureUtility<T extends Attribute>
     extends MixUtility<T, FontFeature> {
   const FontFeatureUtility(super.builder);
 
@@ -201,7 +202,7 @@ final class FontFeatureUtility<T extends SpecAttribute>
   T call(FontFeature value) => builder(value);
 }
 
-final class DurationUtility<T extends SpecAttribute>
+final class DurationUtility<T extends Attribute>
     extends MixUtility<T, Duration> {
   const DurationUtility(super.builder);
 
@@ -222,12 +223,12 @@ final class DurationUtility<T extends SpecAttribute>
   T call(Duration value) => builder(value);
 }
 
-final class FontSizeUtility<T extends SpecAttribute>
+final class FontSizeUtility<T extends Attribute>
     extends PropUtility<T, double> {
   const FontSizeUtility(super.builder);
 }
 
-final class FontWeightUtility<T extends SpecAttribute>
+final class FontWeightUtility<T extends Attribute>
     extends PropUtility<T, FontWeight> {
   const FontWeightUtility(super.builder);
 
@@ -265,7 +266,7 @@ final class FontWeightUtility<T extends SpecAttribute>
   T bold() => builder(Prop.fromValue(FontWeight.bold));
 }
 
-final class TextDecorationUtility<T extends SpecAttribute>
+final class TextDecorationUtility<T extends Attribute>
     extends PropUtility<T, TextDecoration> {
   const TextDecorationUtility(super.builder);
 
@@ -287,7 +288,7 @@ final class TextDecorationUtility<T extends SpecAttribute>
   }
 }
 
-final class CurveUtility<T extends SpecAttribute> extends MixUtility<T, Curve> {
+final class CurveUtility<T extends Attribute> extends MixUtility<T, Curve> {
   const CurveUtility(super.builder);
 
   T as(Curve curve) => builder(curve);
@@ -433,8 +434,7 @@ final class CurveUtility<T extends SpecAttribute> extends MixUtility<T, Curve> {
   T call(Curve value) => builder(value);
 }
 
-final class OffsetUtility<T extends SpecAttribute>
-    extends MixUtility<T, Offset> {
+final class OffsetUtility<T extends Attribute> extends MixUtility<T, Offset> {
   const OffsetUtility(super.builder);
 
   T as(Offset offset) => builder(offset);
@@ -454,8 +454,7 @@ final class OffsetUtility<T extends SpecAttribute>
   }
 }
 
-final class RadiusUtility<T extends SpecAttribute>
-    extends MixUtility<T, Radius> {
+final class RadiusUtility<T extends Attribute> extends MixUtility<T, Radius> {
   const RadiusUtility(super.builder);
 
   T call(double radius) => builder(Radius.circular(radius));
@@ -473,7 +472,7 @@ final class RadiusUtility<T extends SpecAttribute>
   T elliptical(double x, double y) => builder(Radius.elliptical(x, y));
 }
 
-final class RectUtility<T extends SpecAttribute> extends MixUtility<T, Rect> {
+final class RectUtility<T extends Attribute> extends MixUtility<T, Rect> {
   const RectUtility(super.builder);
 
   /// Creates a [StyleElement] instance with [Rect.zero] value.
@@ -515,17 +514,15 @@ final class RectUtility<T extends SpecAttribute> extends MixUtility<T, Rect> {
   T call(Rect value) => builder(value);
 }
 
-final class PaintUtility<T extends SpecAttribute>
-    extends PropUtility<T, Paint> {
+final class PaintUtility<T extends Attribute> extends PropUtility<T, Paint> {
   const PaintUtility(super.builder);
 }
 
-final class LocaleUtility<T extends SpecAttribute>
-    extends PropUtility<T, Locale> {
+final class LocaleUtility<T extends Attribute> extends PropUtility<T, Locale> {
   const LocaleUtility(super.builder);
 }
 
-final class ImageProviderUtility<T extends SpecAttribute>
+final class ImageProviderUtility<T extends Attribute>
     extends MixUtility<T, ImageProvider> {
   const ImageProviderUtility(super.builder);
 
@@ -540,7 +537,7 @@ final class ImageProviderUtility<T extends SpecAttribute>
   T call(ImageProvider value) => builder(value);
 }
 
-final class GradientTransformUtility<T extends SpecAttribute>
+final class GradientTransformUtility<T extends Attribute>
     extends MixUtility<T, GradientTransform> {
   const GradientTransformUtility(super.builder);
 
@@ -551,8 +548,7 @@ final class GradientTransformUtility<T extends SpecAttribute>
   T call(GradientTransform value) => builder(value);
 }
 
-final class Matrix4Utility<T extends SpecAttribute>
-    extends MixUtility<T, Matrix4> {
+final class Matrix4Utility<T extends Attribute> extends MixUtility<T, Matrix4> {
   const Matrix4Utility(super.builder);
 
   /// Creates a [StyleElement] instance using the [Matrix4.fromList] constructor.
@@ -601,7 +597,7 @@ final class Matrix4Utility<T extends SpecAttribute>
   T call(Matrix4 value) => builder(value);
 }
 
-final class FontFamilyUtility<T extends SpecAttribute>
+final class FontFamilyUtility<T extends Attribute>
     extends MixUtility<T, String> {
   const FontFamilyUtility(super.builder);
 
@@ -622,7 +618,7 @@ final class FontFamilyUtility<T extends SpecAttribute>
   T call(String value) => builder(value);
 }
 
-final class TextScalerUtility<T extends SpecAttribute>
+final class TextScalerUtility<T extends Attribute>
     extends MixUtility<T, TextScaler> {
   const TextScalerUtility(super.builder);
 
@@ -637,12 +633,12 @@ final class TextScalerUtility<T extends SpecAttribute>
   T call(TextScaler value) => builder(value);
 }
 
-final class TableColumnWidthUtility<T extends SpecAttribute>
+final class TableColumnWidthUtility<T extends Attribute>
     extends PropUtility<T, TableColumnWidth> {
   const TableColumnWidthUtility(super.builder);
 }
 
-class TableBorderUtility<T extends SpecAttribute>
+class TableBorderUtility<T extends Attribute>
     extends MixUtility<T, TableBorder> {
   const TableBorderUtility(super.builder);
 
@@ -682,7 +678,7 @@ class TableBorderUtility<T extends SpecAttribute>
   T call(TableBorder value) => builder(value);
 }
 
-final class StrokeAlignUtility<T extends SpecAttribute>
+final class StrokeAlignUtility<T extends Attribute>
     extends PropUtility<T, double> {
   const StrokeAlignUtility(super.builder);
 

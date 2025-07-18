@@ -3,7 +3,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-final class BoxBorderUtility<T extends SpecAttribute>
+final class BoxBorderUtility<T extends Attribute>
     extends DtoUtility<T, BoxBorderDto, BoxBorder> {
   late final directional = BorderDirectionalUtility(builder);
   late final all = _border.all;
@@ -65,7 +65,7 @@ final class BoxBorderUtility<T extends SpecAttribute>
   }
 }
 
-final class BorderUtility<T extends SpecAttribute>
+final class BorderUtility<T extends Attribute>
     extends DtoUtility<T, BorderDto, Border> {
   late final all = BorderSideUtility((v) => builder(BorderDto.all(v)));
 
@@ -124,7 +124,7 @@ final class BorderUtility<T extends SpecAttribute>
   }
 }
 
-final class BorderDirectionalUtility<T extends SpecAttribute>
+final class BorderDirectionalUtility<T extends Attribute>
     extends DtoUtility<T, BorderDirectionalDto, BorderDirectional> {
   late final all = BorderSideUtility(
     (v) => builder(BorderDirectionalDto.all(v)),
@@ -182,7 +182,7 @@ final class BorderDirectionalUtility<T extends SpecAttribute>
 ///
 /// This class provides methods to set individual properties of a [BorderSide].
 /// Use the methods of this class to configure specific properties of a [BorderSide].
-class BorderSideUtility<T extends SpecAttribute>
+class BorderSideUtility<T extends Attribute>
     extends DtoUtility<T, BorderSideDto, BorderSide> {
   /// Utility for defining [BorderSideDto.color]
   late final color = ColorUtility(
@@ -204,7 +204,7 @@ class BorderSideUtility<T extends SpecAttribute>
 
   BorderSideUtility(super.builder) : super(valueToDto: BorderSideDto.value);
 
-  /// Creates a [SpecAttribute] instance using the [BorderSideDto.none] constructor.
+  /// Creates a [Attribute] instance using the [BorderSideDto.none] constructor.
   T none() => builder(BorderSideDto.none);
 
   T call({

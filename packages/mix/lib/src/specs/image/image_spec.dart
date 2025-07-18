@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import '../../attributes/color/color_util.dart';
 import '../../attributes/enum/enum_util.dart';
 import '../../attributes/scalars/scalar_util.dart';
+import '../../core/attribute.dart';
 import '../../core/computed_style/computed_style.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
@@ -34,8 +35,7 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
   });
 
   static ImageSpec from(BuildContext context) {
-    return ComputedStyle.specOf<ImageSpec>(context) ??
-        const ImageSpec();
+    return ComputedStyle.specOf<ImageSpec>(context) ?? const ImageSpec();
   }
 
   static ImageSpec of(BuildContext context) {
@@ -271,7 +271,7 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
   ];
 }
 
-class ImageSpecUtility<T extends SpecAttribute>
+class ImageSpecUtility<T extends Attribute>
     extends SpecUtility<T, ImageSpecAttribute> {
   late final width = DoubleUtility(
     (prop) => builder(ImageSpecAttribute.props(width: prop)),

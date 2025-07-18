@@ -3,11 +3,10 @@
 import 'dart:collection';
 
 import '../internal/deep_collection_equality.dart';
-import 'mix_element.dart';
-import 'spec.dart';
+import 'attribute.dart';
 
 // @nodoc
-class AttributeMap<T extends StyleElement> {
+class AttributeMap<T extends Attribute> {
   final LinkedHashMap<Object, T>? _map;
 
   const AttributeMap._(this._map);
@@ -18,7 +17,7 @@ class AttributeMap<T extends StyleElement> {
     return AttributeMap._(_mergeMap(attributes));
   }
 
-  static LinkedHashMap<Object, Attr> _mergeMap<Attr extends StyleElement>(
+  static LinkedHashMap<Object, Attr> _mergeMap<Attr extends Attribute>(
     Iterable<Attr> attributes,
   ) {
     final map = LinkedHashMap<Object, Attr>();
@@ -51,7 +50,7 @@ class AttributeMap<T extends StyleElement> {
 
   bool containsValue(T attribute) => _map?.containsValue(attribute) ?? false;
 
-  Attr? attributeOfType<Attr extends SpecAttribute>() => _map?[Attr] as Attr?;
+  Attr? attributeOfType<Attr extends Attribute>() => _map?[Attr] as Attr?;
 
   Iterable<Attr> whereType<Attr extends T>() => _map?.values.whereType() ?? [];
 

@@ -47,7 +47,7 @@ class MixBuilder extends StatefulWidget {
   });
 
   /// The style to apply.
-  final Style style;
+  final StyleElement style;
 
   /// Whether to merge with inherited styles.
   ///
@@ -70,7 +70,7 @@ class MixBuilder extends StatefulWidget {
 }
 
 class _MixBuilderState extends State<MixBuilder> {
-  late Style _cachedStyle;
+  late StyleElement _cachedStyle;
 
   @override
   void initState() {
@@ -100,8 +100,8 @@ class _MixBuilderState extends State<MixBuilder> {
           final modifiers = computedStyle.modifiers;
           if (modifiers.isNotEmpty) {
             child = RenderModifiers(
-              modifiers: modifiers,
               context: context,
+              modifiers: modifiers,
               orderOfModifiers: widget.orderOfModifiers,
               child: child,
             );

@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../../core/spec.dart';
+import '../../../core/attribute.dart';
 import '../../../core/utility.dart';
 import '../../enum/enum_util.dart';
 import '../../scalars/scalar_util.dart';
@@ -10,7 +10,7 @@ import 'decoration_image_dto.dart';
 ///
 /// This class provides methods to set individual properties of a [DecorationImage].
 /// Use the methods of this class to configure specific properties of a [DecorationImage].
-class DecorationImageUtility<T extends SpecAttribute>
+class DecorationImageUtility<T extends Attribute>
     extends DtoUtility<T, DecorationImageDto, DecorationImage> {
   /// Utility for defining [DecorationImageDto.image]
   late final provider = ImageProviderUtility((v) => only(image: v));

@@ -9,6 +9,7 @@ import '../../attributes/text_height_behavior/text_height_behavior_dto.dart';
 import '../../attributes/text_height_behavior/text_height_behavior_util.dart';
 import '../../attributes/text_style/text_style_dto.dart';
 import '../../attributes/text_style/text_style_util.dart';
+import '../../core/attribute.dart';
 import '../../core/computed_style/computed_style.dart';
 import '../../core/directive.dart';
 import '../../core/helpers.dart';
@@ -48,8 +49,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
   });
 
   static TextSpec from(BuildContext context) {
-    return ComputedStyle.specOf<TextSpec>(context) ??
-        const TextSpec();
+    return ComputedStyle.specOf<TextSpec>(context) ?? const TextSpec();
   }
 
   /// {@template text_spec_of}
@@ -407,7 +407,7 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [TextSpec].
 /// Use the methods of this class to configure specific properties of a [TextSpec].
-class TextSpecUtility<T extends SpecAttribute>
+class TextSpecUtility<T extends Attribute>
     extends SpecUtility<T, TextSpecAttribute> {
   /// Utility for defining [TextSpecAttribute.overflow]
   late final overflow = TextOverflowUtility((v) => only(overflow: v));

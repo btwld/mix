@@ -230,3 +230,68 @@ List<R>? _resolveMixPropList<R, D extends Mix<R>>(
 
   return resolved.isEmpty ? null : resolved;
 }
+
+// Mixin that provides Mix helper methods to StyleElement classes
+mixin MixHelperMixin {
+  @protected
+  V? resolveProp<V>(BuildContext context, Prop<V>? prop) {
+    return prop?.resolve(context);
+  }
+
+  @protected
+  Prop<V>? mergeProp<V>(Prop<V>? a, Prop<V>? b) {
+    return a?.merge(b) ?? b;
+  }
+
+  @protected
+  List<V>? resolvePropList<V>(BuildContext context, List<Prop<V>>? list) {
+    return MixHelpers.resolvePropList(context, list);
+  }
+
+  @protected
+  List<R>? resolveMixPropList<R, D extends Mix<R>>(
+    BuildContext context,
+    List<MixProp<R, D>>? list,
+  ) {
+    return MixHelpers.resolveMixPropList(context, list);
+  }
+
+  // mergeMixProp merges two V extend Mix
+  @protected
+  MixProp<V, D>? mergeMixProp<V, D extends Mix<V>>(
+    MixProp<V, D>? a,
+    MixProp<V, D>? b,
+  ) {
+    if (a == null) return b;
+    if (b == null) return a;
+
+    return a.merge(b);
+  }
+
+  // resolve mix prop to value
+  @protected
+  V? resolveMixProp<V, D extends Mix<V>>(
+    BuildContext context,
+    MixProp<V, D>? prop,
+  ) {
+    return prop?.resolve(context);
+  }
+
+  @protected
+  List<Prop<V>>? mergePropList<V>(
+    List<Prop<V>>? a,
+    List<Prop<V>>? b, {
+    ListMergeStrategy strategy = ListMergeStrategy.replace,
+  }) {
+    return MixHelpers.mergePropList(a, b, strategy: strategy);
+  }
+
+  @protected
+  List<MixProp<R, D>>? mergeMixPropList<R, D extends Mix<R>>(
+    List<MixProp<R, D>>? a,
+    List<MixProp<R, D>>? b, {
+    ListMergeStrategy strategy = ListMergeStrategy.replace,
+  }) {
+    return MixHelpers.mergeMixPropList(a, b, strategy: strategy);
+  }
+}

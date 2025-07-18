@@ -163,7 +163,7 @@ void main() {
             isA<TestFailure>().having(
               (e) => e.toString(),
               'message',
-              contains('Expected ResolvableMixin implementation, got String'),
+              contains('Expected Resolvable implementation, got String'),
             ),
           ),
         );
@@ -189,13 +189,13 @@ void main() {
 }
 
 // Helper class for testing error handling
-class _ProblematicMix<T> with ResolvableMixin<T> {
+class _ProblematicMix<T> with Resolvable<T> {
   @override
   T resolve(BuildContext mix) {
     throw Exception('Intentional test error');
   }
 
-  ResolvableMixin<T> merge(covariant ResolvableMixin<T>? other) {
+  Resolvable<T> merge(covariant Resolvable<T>? other) {
     return this;
   }
 

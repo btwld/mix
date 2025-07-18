@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 
+import '../core/attribute.dart';
 import '../core/modifier.dart';
-import '../core/spec.dart';
 import '../core/utility.dart';
 
 class MouseCursorDecoratorSpec
@@ -133,7 +133,7 @@ class MouseCursorDecoratorSpecTween extends Tween<MouseCursorDecoratorSpec?> {
   }
 }
 
-class MouseCursorModifierSpecUtility<T extends SpecAttribute>
+class MouseCursorModifierSpecUtility<T extends Attribute>
     extends MixUtility<T, MouseCursorDecoratorSpecAttribute> {
   const MouseCursorModifierSpecUtility(super.builder);
   T call(MouseCursor? mouseCursor) {

@@ -1,5 +1,6 @@
 import 'package:flutter/rendering.dart';
 
+import '../../core/attribute.dart';
 import '../../core/spec.dart';
 import '../../core/utility.dart';
 import 'constraints_dto.dart';
@@ -8,7 +9,7 @@ import 'constraints_dto.dart';
 ///
 /// This class provides methods to set individual properties of a [BoxConstraints].
 /// Use the methods of this class to configure specific properties of a [BoxConstraints].
-class BoxConstraintsUtility<T extends SpecAttribute>
+class BoxConstraintsUtility<T extends Attribute>
     extends DtoUtility<T, BoxConstraintsDto, BoxConstraints> {
   /// Utility for defining [BoxConstraintsDto.minWidth]
   late final minWidth = DoubleUtility(

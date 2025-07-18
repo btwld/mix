@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/spec.dart';
+import '../../core/attribute.dart';
 import '../../core/utility.dart';
 import '../../internal/constants.dart';
 import '../enum/enum_util.dart';
@@ -11,7 +11,7 @@ import 'gradient_dto.dart';
 ///
 /// This class provides methods to set individual properties of a [LinearGradient].
 /// Use the methods of this class to configure specific properties of a [LinearGradient].
-class LinearGradientUtility<T extends SpecAttribute>
+class LinearGradientUtility<T extends Attribute>
     extends DtoUtility<T, LinearGradientDto, LinearGradient> {
   /// Utility for defining [LinearGradientDto.begin]
   late final begin = AlignmentGeometryUtility((v) => only(begin: v));
@@ -81,7 +81,7 @@ class LinearGradientUtility<T extends SpecAttribute>
 ///
 /// This class provides methods to set individual properties of a [RadialGradient].
 /// Use the methods of this class to configure specific properties of a [RadialGradient].
-class RadialGradientUtility<T extends SpecAttribute>
+class RadialGradientUtility<T extends Attribute>
     extends DtoUtility<T, RadialGradientDto, RadialGradient> {
   /// Utility for defining [RadialGradientDto.center]
   late final center = AlignmentGeometryUtility((v) => only(center: v));
@@ -167,7 +167,7 @@ class RadialGradientUtility<T extends SpecAttribute>
 ///
 /// This class provides methods to set individual properties of a [SweepGradient].
 /// Use the methods of this class to configure specific properties of a [SweepGradient].
-class SweepGradientUtility<T extends SpecAttribute>
+class SweepGradientUtility<T extends Attribute>
     extends DtoUtility<T, SweepGradientDto, SweepGradient> {
   /// Utility for defining [SweepGradientDto.center]
   late final center = AlignmentGeometryUtility((v) => only(center: v));
@@ -247,7 +247,7 @@ class SweepGradientUtility<T extends SpecAttribute>
 /// It also provides a method for converting a generic [Gradient] object to a specific type [T].
 ///
 /// Accepts a [builder] function that takes a [GradientDto] and returns an object of type [T].
-final class GradientUtility<T extends SpecAttribute>
+final class GradientUtility<T extends Attribute>
     extends MixUtility<T, GradientDto> {
   late final radial = RadialGradientUtility(builder);
   late final linear = LinearGradientUtility(builder);

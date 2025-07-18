@@ -1,8 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../core/attribute.dart';
 import '../../core/computed_style/computed_style.dart';
 import '../../core/spec.dart';
+import '../../core/utility.dart';
 import '../box/box_spec.dart';
 import '../flex/flex_spec.dart';
 
@@ -17,8 +19,7 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
       flex = flex ?? const FlexSpec();
 
   static FlexBoxSpec from(BuildContext context) {
-    return ComputedStyle.specOf<FlexBoxSpec>(context) ??
-        const FlexBoxSpec();
+    return ComputedStyle.specOf(context) ?? const FlexBoxSpec();
   }
 
   /// {@template flex_box_spec_of}
@@ -181,7 +182,7 @@ class FlexBoxSpecAttribute extends SpecAttribute<FlexBoxSpec>
 ///
 /// This class provides methods to set individual properties of a [FlexBoxSpec].
 /// Use the methods of this class to configure specific properties of a [FlexBoxSpec].
-class FlexBoxSpecUtility<T extends SpecAttribute>
+class FlexBoxSpecUtility<T extends Attribute>
     extends SpecUtility<T, FlexBoxSpecAttribute> {
   /// Utility for defining [FlexBoxSpecAttribute.box]
   late final box = BoxSpecUtility((v) => only(box: v));

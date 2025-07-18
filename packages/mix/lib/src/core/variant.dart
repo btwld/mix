@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../core/widget_state/widget_state_controller.dart';
 import '../internal/deep_collection_equality.dart';
 import 'deprecated.dart';
-import 'mix_element.dart';
+import 'factory/style_mix.dart';
 
 /// Priority levels for variant application
 enum VariantPriority {
@@ -139,7 +139,7 @@ class WidgetStateVariant extends ContextVariant {
 /// Variant that dynamically builds a Style based on build context.
 /// This variant type allows for complex styling that depends on runtime context.
 @immutable
-class ContextVariantBuilder<S extends StyleElement> extends Variant {
+class ContextVariantBuilder<S extends StyleElement<Object?>> extends Variant {
   /// Function that builds a Style based on the given BuildContext
   final S Function(BuildContext) fn;
 

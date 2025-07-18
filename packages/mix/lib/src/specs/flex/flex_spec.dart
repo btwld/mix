@@ -4,9 +4,11 @@ import 'package:flutter/widgets.dart';
 import '../../attributes/enum/enum_util.dart';
 import '../../attributes/gap/gap_util.dart';
 import '../../attributes/gap/space_dto.dart';
+import '../../core/attribute.dart';
 import '../../core/computed_style/computed_style.dart';
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
+import '../../core/utility.dart';
 
 final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
   final Axis? direction;
@@ -31,8 +33,7 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
     this.gap,
   });
   static FlexSpec from(BuildContext context) {
-    return ComputedStyle.specOf<FlexSpec>(context) ??
-        const FlexSpec();
+    return ComputedStyle.specOf(context) ?? const FlexSpec();
   }
 
   /// {@template flex_spec_of}
@@ -363,7 +364,7 @@ class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [FlexSpec].
 /// Use the methods of this class to configure specific properties of a [FlexSpec].
-class FlexSpecUtility<T extends SpecAttribute>
+class FlexSpecUtility<T extends Attribute>
     extends SpecUtility<T, FlexSpecAttribute> {
   /// Utility for defining [FlexSpecAttribute.crossAxisAlignment]
   late final crossAxisAlignment = CrossAxisAlignmentUtility(

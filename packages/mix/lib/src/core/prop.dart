@@ -8,7 +8,7 @@ import 'mix_element.dart';
 
 /// Simplified Prop that can hold values or tokens with optional directives
 @immutable
-class Prop<T> with EqualityMixin, ResolvableMixin<T> {
+class Prop<T> with EqualityMixin, Resolvable<T> {
   final T? _value;
   final MixToken<T>? _token;
   final List<MixDirective<T>>? _directives;
@@ -164,7 +164,7 @@ class Prop<T> with EqualityMixin, ResolvableMixin<T> {
 
 /// MixProp for handling Mix objects (DTOs) with simplified logic
 @immutable
-class MixProp<V, T extends Mix<V>> with EqualityMixin, ResolvableMixin<V> {
+class MixProp<V, T extends Mix<V>> with EqualityMixin, Resolvable<V> {
   final T? _value;
   final MixToken<V>? _token;
   final T Function(V)? _mixConverter;

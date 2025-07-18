@@ -9,6 +9,7 @@ import '../../attributes/enum/enum_util.dart';
 import '../../attributes/scalars/scalar_util.dart';
 import '../../attributes/spacing/edge_insets_dto.dart';
 import '../../attributes/spacing/spacing_util.dart';
+import '../../core/attribute.dart';
 import '../../core/computed_style/computed_style.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
@@ -445,7 +446,7 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [BoxSpec].
 /// Use the methods of this class to configure specific properties of a [BoxSpec].
-class BoxSpecUtility<T extends SpecAttribute>
+class BoxSpecUtility<T extends Attribute>
     extends SpecUtility<T, BoxSpecAttribute> {
   /// Utility for defining [BoxSpecAttribute.alignment]
   late final alignment = AlignmentGeometryUtility((v) => only(alignment: v));

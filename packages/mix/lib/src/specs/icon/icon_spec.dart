@@ -5,6 +5,7 @@ import '../../attributes/color/color_util.dart';
 import '../../attributes/enum/enum_util.dart';
 import '../../attributes/shadow/shadow_dto.dart';
 import '../../attributes/shadow/shadow_util.dart';
+import '../../core/attribute.dart';
 import '../../core/computed_style/computed_style.dart';
 import '../../core/helpers.dart';
 import '../../core/mix_element.dart';
@@ -36,8 +37,7 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
   });
 
   static IconSpec from(BuildContext context) {
-    return ComputedStyle.specOf<IconSpec>(context) ??
-        const IconSpec();
+    return ComputedStyle.specOf(context) ?? const IconSpec();
   }
 
   static IconSpec of(BuildContext context) {
@@ -281,7 +281,7 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
   ];
 }
 
-class IconSpecUtility<T extends SpecAttribute>
+class IconSpecUtility<T extends Attribute>
     extends SpecUtility<T, IconSpecAttribute> {
   late final color = ColorUtility(
     (prop) => builder(IconSpecAttribute.props(color: prop)),
@@ -342,7 +342,7 @@ class IconSpecUtility<T extends SpecAttribute>
   }
 }
 
-extension IconSpecUtilityExt<T extends SpecAttribute> on IconSpecUtility<T> {
+extension IconSpecUtilityExt<T extends Attribute> on IconSpecUtility<T> {
   ShadowUtility get shadow => ShadowUtility((v) => only(shadows: [v]));
 }
 

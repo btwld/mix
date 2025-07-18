@@ -38,8 +38,8 @@ class _ResolvesToMatcher<T> extends Matcher {
 
   @override
   bool matches(dynamic item, Map matchState) {
-    // Accept any ResolvableMixin implementation
-    if (item is ResolvableMixin) {
+    // Accept any Resolvable implementation
+    if (item is Resolvable) {
       try {
         final resolved = item.resolve(context);
         // If expectedValue is a Matcher, apply it to the resolved value
@@ -53,7 +53,7 @@ class _ResolvesToMatcher<T> extends Matcher {
       }
     } else {
       matchState['error'] =
-          'Expected ResolvableMixin implementation, got ${item.runtimeType}';
+          'Expected Resolvable implementation, got ${item.runtimeType}';
       return false;
     }
   }
@@ -74,7 +74,7 @@ class _ResolvesToMatcher<T> extends Matcher {
       return mismatchDescription.add(matchState['error']);
     }
 
-    if (item is ResolvableMixin) {
+    if (item is Resolvable) {
       final resolved = item.resolve(context);
       return mismatchDescription
           .add('resolved to ')

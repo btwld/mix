@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../attributes/animation/animation_config.dart';
 import '../theme/tokens/mix_token.dart';
+import 'attribute.dart';
 import 'mix_element.dart';
 import 'prop.dart';
-import 'spec.dart';
 
 /// Base utility for simple value properties that use Prop<T>
 ///
@@ -15,7 +15,7 @@ import 'spec.dart';
 ///
 /// Used for simple types like Color, double, FontWeight, etc.
 @immutable
-abstract class PropUtility<Return extends SpecAttribute, Value> {
+abstract class PropUtility<Return extends Attribute, Value> {
   @protected
   final Return Function(Prop<Value>) builder;
   const PropUtility(this.builder);
@@ -48,7 +48,7 @@ abstract class PropUtility<Return extends SpecAttribute, Value> {
 ///
 /// Used for complex types that need DTOs like EdgeInsets, TextStyle, etc.
 @immutable
-abstract class MixPropUtility<S extends SpecAttribute, M extends Mix<V>, V> {
+abstract class MixPropUtility<S extends Attribute, M extends Mix<V>, V> {
   @protected
   final M Function(V) convertToMix;
 

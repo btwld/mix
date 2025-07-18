@@ -3,9 +3,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import '../core/attribute.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
-import '../core/spec.dart';
 import '../core/utility.dart';
 
 final class FractionallySizedBoxModifierSpec
@@ -198,7 +198,7 @@ class FractionallySizedBoxModifierSpecTween
   }
 }
 
-final class FractionallySizedBoxModifierSpecUtility<T extends SpecAttribute>
+final class FractionallySizedBoxModifierSpecUtility<T extends Attribute>
     extends MixUtility<T, FractionallySizedBoxModifierSpecAttribute> {
   const FractionallySizedBoxModifierSpecUtility(super.builder);
 

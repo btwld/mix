@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/spec.dart';
+import '../../core/attribute.dart';
 import '../../core/utility.dart';
 import '../scalars/scalar_util.dart';
 import 'border_radius_dto.dart';
@@ -9,7 +9,7 @@ import 'border_radius_dto.dart';
 ///
 /// Extends the [BorderRadiusUtility] class to provide additional utility methods for creating and manipulating [BorderRadiusGeometry] attributes.
 /// adds a [directional] property that returns a [BorderRadiusDirectionalUtility] instance.
-final class BorderRadiusGeometryUtility<T extends SpecAttribute>
+final class BorderRadiusGeometryUtility<T extends Attribute>
     extends DtoUtility<T, BorderRadiusGeometryDto, BorderRadiusGeometry> {
   /// Returns a directional utility for creating and manipulating attributes with [BorderRadiusDirectional]
   late final directional = BorderRadiusDirectionalUtility(builder);
@@ -100,7 +100,7 @@ final class BorderRadiusGeometryUtility<T extends SpecAttribute>
 ///
 /// Allows setting of radius for a border. This class provides a convenient way to configure and apply border radius to [T]
 /// Accepts a builder function that returns [T] and takes a [BorderRadiusDto] as a parameter.
-final class BorderRadiusUtility<T extends SpecAttribute>
+final class BorderRadiusUtility<T extends Attribute>
     extends DtoUtility<T, BorderRadiusDto, BorderRadius> {
   /// Returns a [RadiusUtility] to manipulate [Radius] for bottomLeft corner.
   late final bottomLeft = RadiusUtility((radius) => only(bottomLeft: radius));
@@ -214,7 +214,7 @@ final class BorderRadiusUtility<T extends SpecAttribute>
   }
 }
 
-final class BorderRadiusDirectionalUtility<T extends SpecAttribute>
+final class BorderRadiusDirectionalUtility<T extends Attribute>
     extends DtoUtility<T, BorderRadiusDirectionalDto, BorderRadiusDirectional> {
   BorderRadiusDirectionalUtility(super.builder)
     : super(

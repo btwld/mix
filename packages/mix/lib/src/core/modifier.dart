@@ -1,6 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import 'attribute.dart';
 import 'spec.dart';
 import 'utility.dart';
 
@@ -38,25 +38,11 @@ abstract class WidgetModifierSpec<Self extends WidgetModifierSpec<Self>>
   Widget build(Widget child);
 }
 
-abstract class WidgetModifierSpecAttribute<
-  Value extends WidgetModifierSpec<Value>
->
-    extends SpecAttribute<Value>
-    with Diagnosticable {
-  const WidgetModifierSpecAttribute();
-
-  /// Resolves the attribute to a [WidgetModifierSpec] using the provided [BuildContext].
-  /// If a property is null in the [BuildContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
-  @override
-  Value resolve(BuildContext context);
-}
-
 abstract class WidgetModifierUtility<
-  T extends SpecAttribute,
+  T extends WidgetModifierSpec<T>,
   D extends WidgetModifierSpecAttribute<Value>,
   Value extends WidgetModifierSpec<Value>
 >
-    extends MixUtility<T, D> {
+    extends MixUtility<D, T> {
   const WidgetModifierUtility(super.builder);
 }

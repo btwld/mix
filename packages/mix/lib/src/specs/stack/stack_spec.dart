@@ -3,8 +3,10 @@ import 'package:flutter/widgets.dart';
 
 import '../../attributes/enum/enum_util.dart';
 import '../../attributes/scalars/scalar_util.dart';
+import '../../core/attribute.dart';
 import '../../core/computed_style/computed_style.dart';
 import '../../core/spec.dart';
+import '../../core/utility.dart';
 
 final class StackSpec extends Spec<StackSpec> with Diagnosticable {
   final AlignmentGeometry? alignment;
@@ -20,8 +22,7 @@ final class StackSpec extends Spec<StackSpec> with Diagnosticable {
   });
 
   static StackSpec from(BuildContext context) {
-    return ComputedStyle.specOf<StackSpec>(context) ??
-        const StackSpec();
+    return ComputedStyle.specOf(context) ?? const StackSpec();
   }
 
   /// {@template stack_spec_of}
@@ -192,7 +193,7 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [StackSpec].
 /// Use the methods of this class to configure specific properties of a [StackSpec].
-class StackSpecUtility<T extends SpecAttribute>
+class StackSpecUtility<T extends Attribute>
     extends SpecUtility<T, StackSpecAttribute> {
   /// Utility for defining [StackSpecAttribute.alignment]
   late final alignment = AlignmentGeometryUtility((v) => only(alignment: v));

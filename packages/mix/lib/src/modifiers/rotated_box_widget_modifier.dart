@@ -3,6 +3,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import '../core/attribute.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/spec.dart';
@@ -134,7 +135,7 @@ class RotatedBoxModifierSpecTween extends Tween<RotatedBoxModifierSpec?> {
   }
 }
 
-final class RotatedBoxModifierSpecUtility<T extends SpecAttribute>
+final class RotatedBoxModifierSpecUtility<T extends Attribute>
     extends MixUtility<T, RotatedBoxModifierSpecAttribute> {
   const RotatedBoxModifierSpecUtility(super.builder);
   T d90() => call(1);

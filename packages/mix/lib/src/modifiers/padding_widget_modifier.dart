@@ -5,8 +5,9 @@ import 'package:flutter/widgets.dart';
 
 import '../attributes/spacing/edge_insets_dto.dart';
 import '../attributes/spacing/spacing_util.dart';
+import '../core/attribute.dart';
 import '../core/modifier.dart';
-import '../core/spec.dart';
+import '../core/utility.dart';
 
 final class PaddingModifierSpec extends WidgetModifierSpec<PaddingModifierSpec>
     with Diagnosticable {
@@ -125,7 +126,7 @@ class PaddingModifierSpecAttribute
 ///
 /// This class provides methods to set individual properties of a [PaddingModifierSpec].
 /// Use the methods of this class to configure specific properties of a [PaddingModifierSpec].
-class PaddingModifierSpecUtility<T extends SpecAttribute>
+class PaddingModifierSpecUtility<T extends Attribute>
     extends SpecUtility<T, PaddingModifierSpecAttribute> {
   /// Utility for defining [PaddingModifierSpecAttribute.padding]
   late final padding = EdgeInsetsGeometryUtility((v) => only(padding: v));

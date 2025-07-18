@@ -1,4 +1,4 @@
-import '../../core/mix_element.dart';
+import '../../core/factory/style_mix.dart';
 import 'box_spec.dart';
 
 class BoxStyle extends StyleElement<BoxSpec> {
@@ -17,7 +17,7 @@ class BoxStyle extends StyleElement<BoxSpec> {
     return BoxStyle._(
       attribute: attribute.merge(other?.attribute),
       variants: mergeVariantLists(variants, other?.variants),
-      animation: animation ?? other?.animation,
+      animation: other?.animation ?? animation,
       modifiers: mergeModifierLists(modifiers, other?.modifiers),
     );
   }

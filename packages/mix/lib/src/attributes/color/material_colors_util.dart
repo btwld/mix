@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../../core/attribute.dart';
 import '../../core/prop.dart';
 import '../../core/prop_utility.dart';
 import '../../core/spec.dart';
 import 'color_util.dart';
 
 @immutable
-final class MaterialColorUtility<T extends SpecAttribute>
+final class MaterialColorUtility<T extends Attribute>
     extends FoundationColorUtility<T> {
   // Shade utilities
   late final shade50 = FoundationColorUtility(builder, materialColor.shade50);
@@ -27,7 +28,7 @@ final class MaterialColorUtility<T extends SpecAttribute>
   MaterialColor get materialColor => color as MaterialColor;
 }
 
-base mixin MaterialColorsMixin<T extends SpecAttribute>
+base mixin MaterialColorsMixin<T extends Attribute>
     on PropUtility<T, Color> {
   T red() => builder(Prop.fromValue(Colors.red));
   T pink() => builder(Prop.fromValue(Colors.pink));
@@ -67,7 +68,7 @@ base mixin MaterialColorsMixin<T extends SpecAttribute>
 }
 
 @immutable
-final class MaterialAccentColorUtility<T extends SpecAttribute>
+final class MaterialAccentColorUtility<T extends Attribute>
     extends FoundationColorUtility<T> {
   // Shade utilities
   late final shade100 = FoundationColorUtility(

@@ -5,9 +5,9 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import '../core/attribute.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
-import '../core/spec.dart';
 import '../core/utility.dart';
 
 final class TransformModifierSpec
@@ -60,7 +60,7 @@ final class TransformModifierSpec
   }
 }
 
-final class TransformModifierSpecUtility<T extends SpecAttribute>
+final class TransformModifierSpecUtility<T extends Attribute>
     extends MixUtility<T, TransformModifierSpecAttribute> {
   late final rotate = TransformRotateModifierSpecUtility(
     (value) => builder(
@@ -101,7 +101,7 @@ final class TransformModifierSpecUtility<T extends SpecAttribute>
   );
 }
 
-final class TransformRotateModifierSpecUtility<T extends SpecAttribute>
+final class TransformRotateModifierSpecUtility<T extends Attribute>
     extends MixUtility<T, Matrix4> {
   const TransformRotateModifierSpecUtility(super.builder);
   T d90() => call(math.pi / 2);

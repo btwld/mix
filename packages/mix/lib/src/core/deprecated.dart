@@ -55,8 +55,9 @@ import '../modifiers/visibility_widget_modifier.dart';
 import '../specs/image/image_spec.dart';
 import '../theme/mix/mix_theme.dart';
 import '../theme/tokens/mix_token.dart';
-import 'variant.dart';
+import 'attribute.dart';
 import 'mix_element.dart';
+import 'variant.dart';
 
 // =============================================================================
 // THEME & SCOPE DEPRECATIONS (v3.0.0)
@@ -69,18 +70,6 @@ typedef MixTheme = MixScope;
 /// Deprecated: Use MixScopeData instead. Will be removed in v3.0.0
 @Deprecated('Use MixScopeData instead. Will be removed in v3.0.0')
 typedef MixThemeData = MixScopeData;
-
-// =============================================================================
-// CORE ELEMENT DEPRECATIONS (v2.0.0)
-// =============================================================================
-
-/// Deprecated: Use StyleElement instead
-@Deprecated('Use StyleElement instead')
-typedef Attribute = StyleElement;
-
-/// Deprecated: Use StyleAttribute instead
-@Deprecated('Use StyleAttribute instead')
-typedef StyledAttribute = SpecAttribute;
 
 /// Deprecated: Use Mixable instead
 @Deprecated('Use Mixable instead')
@@ -167,7 +156,7 @@ typedef SpacingSideDto = SpaceDto;
 
 /// Deprecated: Use EdgeInsetsGeometryUtility instead
 @Deprecated('Use EdgeInsetsGeometryUtility instead')
-typedef SpacingUtility<T extends SpecAttribute> = EdgeInsetsGeometryUtility<T>;
+typedef SpacingUtility<T extends Attribute> = EdgeInsetsGeometryUtility<T>;
 
 /// Deprecated: Use EdgeInsetsGeometryDto instead
 @Deprecated('Use EdgeInsetsGeometryDto instead')
@@ -178,7 +167,7 @@ typedef SpacingDto = EdgeInsetsGeometryDto<EdgeInsetsGeometry>;
 // =============================================================================
 
 /// Deprecated extension for ImageSpec utility
-extension ImageSpecUtilityDeprecationX<T extends SpecAttribute>
+extension ImageSpecUtilityDeprecationX<T extends Attribute>
     on ImageSpecUtility<T> {
   @Deprecated(
     'To match Flutter naming conventions, use `colorBlendMode` instead.',
