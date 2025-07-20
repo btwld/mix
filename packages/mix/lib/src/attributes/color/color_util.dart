@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../core/attribute.dart';
 import '../../core/prop.dart';
-import '../../core/prop_utility.dart';
+import '../../core/utility.dart';
 import '../../theme/tokens/mix_token.dart';
 import 'color_directive.dart';
 import 'material_colors_util.dart';
@@ -82,7 +81,7 @@ final class CallableColorUtility<T extends Attribute> {
 
 /// Simplified ColorUtility using the PropUtility pattern
 @immutable
-final class ColorUtility<T extends Attribute> extends PropUtility<T, Color>
+final class ColorUtility<T extends SpecUtility<Object?>> extends PropUtility<T, Color>
     with ColorDirectiveMixin<T>, MaterialColorsMixin<T>, BasicColorsMixin<T> {
   ColorUtility(super.builder);
 

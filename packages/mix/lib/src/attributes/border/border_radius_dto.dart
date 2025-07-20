@@ -71,7 +71,7 @@ sealed class BorderRadiusGeometryDto<T extends BorderRadiusGeometry>
     // topStart -> topLeft, topEnd -> topRight, bottomStart -> bottomLeft, bottomEnd -> bottomRight
     final directional = this as BorderRadiusDirectionalDto;
 
-    return BorderRadiusDto.props(
+    return BorderRadiusDto(
       topLeft: directional.topStart,
       topRight: directional.topEnd,
       bottomLeft: directional.bottomStart,
@@ -87,7 +87,7 @@ sealed class BorderRadiusGeometryDto<T extends BorderRadiusGeometry>
 
     // For BorderRadiusDto converting to BorderRadiusDirectionalDto
     // topLeft -> topStart, topRight -> topEnd, bottomLeft -> bottomStart, bottomRight -> bottomEnd
-    return BorderRadiusDirectionalDto.props(
+    return BorderRadiusDirectionalDto(
       topStart: topLeft,
       topEnd: topRight,
       bottomStart: bottomLeft,
@@ -121,19 +121,17 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
   final Prop<Radius>? bottomRight;
 
   // Main constructor accepts raw values
-  factory BorderRadiusDto({
+  BorderRadiusDto.only({
     Radius? topLeft,
     Radius? topRight,
     Radius? bottomLeft,
     Radius? bottomRight,
-  }) {
-    return BorderRadiusDto.props(
-      topLeft: Prop.maybe(topLeft),
-      topRight: Prop.maybe(topRight),
-      bottomLeft: Prop.maybe(bottomLeft),
-      bottomRight: Prop.maybe(bottomRight),
-    );
-  }
+  }) : this(
+         topLeft: Prop.maybe(topLeft),
+         topRight: Prop.maybe(topRight),
+         bottomLeft: Prop.maybe(bottomLeft),
+         bottomRight: Prop.maybe(bottomRight),
+       );
 
   /// Constructor that accepts a [BorderRadius] value and extracts its properties.
   ///
@@ -143,17 +141,16 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
   /// const borderRadius = BorderRadius.circular(12.0);
   /// final dto = BorderRadiusDto.value(borderRadius);
   /// ```
-  factory BorderRadiusDto.value(BorderRadius borderRadius) {
-    return BorderRadiusDto(
-      topLeft: borderRadius.topLeft,
-      topRight: borderRadius.topRight,
-      bottomLeft: borderRadius.bottomLeft,
-      bottomRight: borderRadius.bottomRight,
-    );
-  }
+  BorderRadiusDto.value(BorderRadius borderRadius)
+    : this.only(
+        topLeft: borderRadius.topLeft,
+        topRight: borderRadius.topRight,
+        bottomLeft: borderRadius.bottomLeft,
+        bottomRight: borderRadius.bottomRight,
+      );
 
   // Private constructor that accepts MixableProperty instances
-  const BorderRadiusDto.props({
+  const BorderRadiusDto({
     this.topLeft,
     this.topRight,
     this.bottomLeft,
@@ -186,7 +183,7 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
   BorderRadiusDto merge(BorderRadiusDto? other) {
     if (other == null) return this;
 
-    return BorderRadiusDto.props(
+    return BorderRadiusDto(
       topLeft: MixHelpers.merge(topLeft, other.topLeft),
       topRight: MixHelpers.merge(topRight, other.topRight),
       bottomLeft: MixHelpers.merge(bottomLeft, other.bottomLeft),
@@ -222,19 +219,17 @@ final class BorderRadiusDirectionalDto
   final Prop<Radius>? bottomEnd;
 
   // Main constructor accepts raw values
-  factory BorderRadiusDirectionalDto({
+  BorderRadiusDirectionalDto.only({
     Radius? topStart,
     Radius? topEnd,
     Radius? bottomStart,
     Radius? bottomEnd,
-  }) {
-    return BorderRadiusDirectionalDto.props(
-      topStart: Prop.maybe(topStart),
-      topEnd: Prop.maybe(topEnd),
-      bottomStart: Prop.maybe(bottomStart),
-      bottomEnd: Prop.maybe(bottomEnd),
-    );
-  }
+  }) : this(
+         topStart: Prop.maybe(topStart),
+         topEnd: Prop.maybe(topEnd),
+         bottomStart: Prop.maybe(bottomStart),
+         bottomEnd: Prop.maybe(bottomEnd),
+       );
 
   /// Constructor that accepts a [BorderRadiusDirectional] value and extracts its properties.
   ///
@@ -244,19 +239,16 @@ final class BorderRadiusDirectionalDto
   /// const borderRadius = BorderRadiusDirectional.circular(12.0);
   /// final dto = BorderRadiusDirectionalDto.value(borderRadius);
   /// ```
-  factory BorderRadiusDirectionalDto.value(
-    BorderRadiusDirectional borderRadius,
-  ) {
-    return BorderRadiusDirectionalDto(
-      topStart: borderRadius.topStart,
-      topEnd: borderRadius.topEnd,
-      bottomStart: borderRadius.bottomStart,
-      bottomEnd: borderRadius.bottomEnd,
-    );
-  }
+  BorderRadiusDirectionalDto.value(BorderRadiusDirectional borderRadius)
+    : this.only(
+        topStart: borderRadius.topStart,
+        topEnd: borderRadius.topEnd,
+        bottomStart: borderRadius.bottomStart,
+        bottomEnd: borderRadius.bottomEnd,
+      );
 
   // Private constructor that accepts MixableProperty instances
-  const BorderRadiusDirectionalDto.props({
+  const BorderRadiusDirectionalDto({
     this.topStart,
     this.topEnd,
     this.bottomStart,
@@ -293,7 +285,7 @@ final class BorderRadiusDirectionalDto
   BorderRadiusDirectionalDto merge(BorderRadiusDirectionalDto? other) {
     if (other == null) return this;
 
-    return BorderRadiusDirectionalDto.props(
+    return BorderRadiusDirectionalDto(
       topStart: MixHelpers.merge(topStart, other.topStart),
       topEnd: MixHelpers.merge(topEnd, other.topEnd),
       bottomStart: MixHelpers.merge(bottomStart, other.bottomStart),

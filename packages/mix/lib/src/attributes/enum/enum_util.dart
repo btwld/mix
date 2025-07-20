@@ -45,23 +45,20 @@ final class BorderStyleUtility<T extends SpecUtility<Object?>>
 /// from predefined [Clip] values.
 /// {@endtemplate}
 final class ClipUtility<T extends SpecUtility<Object?>>
-    extends MixUtility<T, Clip> {
+    extends PropUtility<T, Clip> {
   const ClipUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with the specified Clip value.
-  T call(Clip value) => builder(value);
-
   /// Creates a [StyleElement] instance with [Clip.none] value.
-  T none() => builder(Clip.none);
+  T none() => call(Clip.none);
 
   /// Creates a [StyleElement] instance with [Clip.hardEdge] value.
-  T hardEdge() => builder(Clip.hardEdge);
+  T hardEdge() => call(Clip.hardEdge);
 
   /// Creates a [StyleElement] instance with [Clip.antiAlias] value.
-  T antiAlias() => builder(Clip.antiAlias);
+  T antiAlias() => call(Clip.antiAlias);
 
   /// Creates a [StyleElement] instance with [Clip.antiAliasWithSaveLayer] value.
-  T antiAliasWithSaveLayer() => builder(Clip.antiAliasWithSaveLayer);
+  T antiAliasWithSaveLayer() => call(Clip.antiAliasWithSaveLayer);
 }
 
 /// {@template axis_utility}
@@ -71,17 +68,14 @@ final class ClipUtility<T extends SpecUtility<Object?>>
 /// from predefined [Axis] values.
 /// {@endtemplate}
 final class AxisUtility<T extends SpecUtility<Object?>>
-    extends MixUtility<T, Axis> {
+    extends PropUtility<T, Axis> {
   const AxisUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with the specified Axis value.
-  T call(Axis value) => builder(value);
-
   /// Creates a [StyleElement] instance with [Axis.horizontal] value.
-  T horizontal() => builder(Axis.horizontal);
+  T horizontal() => call(Axis.horizontal);
 
   /// Creates a [StyleElement] instance with [Axis.vertical] value.
-  T vertical() => builder(Axis.vertical);
+  T vertical() => call(Axis.vertical);
 }
 
 /// {@template flex_fit_utility}
@@ -91,17 +85,14 @@ final class AxisUtility<T extends SpecUtility<Object?>>
 /// from predefined [FlexFit] values.
 /// {@endtemplate}
 final class FlexFitUtility<T extends SpecUtility<Object?>>
-    extends MixUtility<T, FlexFit> {
+    extends PropUtility<T, FlexFit> {
   const FlexFitUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with the specified FlexFit value.
-  T call(FlexFit value) => builder(value);
-
   /// Creates a [StyleElement] instance with [FlexFit.tight] value.
-  T tight() => builder(FlexFit.tight);
+  T tight() => call(FlexFit.tight);
 
   /// Creates a [StyleElement] instance with [FlexFit.loose] value.
-  T loose() => builder(FlexFit.loose);
+  T loose() => call(FlexFit.loose);
 }
 
 /// {@template stack_fit_utility}
@@ -111,20 +102,17 @@ final class FlexFitUtility<T extends SpecUtility<Object?>>
 /// from predefined [StackFit] values.
 /// {@endtemplate}
 final class StackFitUtility<T extends SpecUtility<Object?>>
-    extends MixUtility<T, StackFit> {
+    extends PropUtility<T, StackFit> {
   const StackFitUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with the specified StackFit value.
-  T call(StackFit value) => builder(value);
-
   /// Creates a [StyleElement] instance with [StackFit.loose] value.
-  T loose() => builder(StackFit.loose);
+  T loose() => call(StackFit.loose);
 
   /// Creates a [StyleElement] instance with [StackFit.expand] value.
-  T expand() => builder(StackFit.expand);
+  T expand() => call(StackFit.expand);
 
   /// Creates a [StyleElement] instance with [StackFit.passthrough] value.
-  T passthrough() => builder(StackFit.passthrough);
+  T passthrough() => call(StackFit.passthrough);
 }
 
 /// {@template image_repeat_utility}
@@ -134,22 +122,20 @@ final class StackFitUtility<T extends SpecUtility<Object?>>
 /// from predefined [ImageRepeat] values.
 /// {@endtemplate}
 final class ImageRepeatUtility<T extends SpecUtility<Object?>>
-    extends MixUtility<T, ImageRepeat> {
+    extends PropUtility<T, ImageRepeat> {
   const ImageRepeatUtility(super.builder);
 
-  T call([ImageRepeat value = ImageRepeat.repeat]) => builder(value);
-
   /// Creates a [StyleElement] instance with [ImageRepeat.repeat] value.
-  T repeat() => builder(ImageRepeat.repeat);
+  T repeat() => call(ImageRepeat.repeat);
 
   /// Creates a [StyleElement] instance with [ImageRepeat.repeatX] value.
-  T repeatX() => builder(ImageRepeat.repeatX);
+  T repeatX() => call(ImageRepeat.repeatX);
 
   /// Creates a [StyleElement] instance with [ImageRepeat.repeatY] value.
-  T repeatY() => builder(ImageRepeat.repeatY);
+  T repeatY() => call(ImageRepeat.repeatY);
 
   /// Creates a [StyleElement] instance with [ImageRepeat.noRepeat] value.
-  T noRepeat() => builder(ImageRepeat.noRepeat);
+  T noRepeat() => call(ImageRepeat.noRepeat);
 }
 
 /// {@template text_direction_utility}
@@ -159,17 +145,14 @@ final class ImageRepeatUtility<T extends SpecUtility<Object?>>
 /// from predefined [TextDirection] values.
 /// {@endtemplate}
 final class TextDirectionUtility<T extends SpecUtility<Object?>>
-    extends MixUtility<T, TextDirection> {
+    extends PropUtility<T, TextDirection> {
   const TextDirectionUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with the specified TextDirection value.
-  T call(TextDirection value) => builder(value);
-
   /// Creates a [StyleElement] instance with [TextDirection.rtl] value.
-  T rtl() => builder(TextDirection.rtl);
+  T rtl() => call(TextDirection.rtl);
 
   /// Creates a [StyleElement] instance with [TextDirection.ltr] value.
-  T ltr() => builder(TextDirection.ltr);
+  T ltr() => call(TextDirection.ltr);
 }
 
 /// {@template text_leading_distribution_utility}
@@ -179,17 +162,14 @@ final class TextDirectionUtility<T extends SpecUtility<Object?>>
 /// from predefined [TextLeadingDistribution] values.
 /// {@endtemplate}
 final class TextLeadingDistributionUtility<T extends SpecUtility<Object?>>
-    extends MixUtility<T, TextLeadingDistribution> {
+    extends PropUtility<T, TextLeadingDistribution> {
   const TextLeadingDistributionUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with the specified TextLeadingDistribution value.
-  T call(TextLeadingDistribution value) => builder(value);
-
   /// Creates a [StyleElement] instance with [TextLeadingDistribution.proportional] value.
-  T proportional() => builder(TextLeadingDistribution.proportional);
+  T proportional() => call(TextLeadingDistribution.proportional);
 
   /// Creates a [StyleElement] instance with [TextLeadingDistribution.even] value.
-  T even() => builder(TextLeadingDistribution.even);
+  T even() => call(TextLeadingDistribution.even);
 }
 
 /// {@template tile_mode_utility}
@@ -199,23 +179,20 @@ final class TextLeadingDistributionUtility<T extends SpecUtility<Object?>>
 /// from predefined [TileMode] values.
 /// {@endtemplate}
 final class TileModeUtility<T extends SpecUtility<Object?>>
-    extends MixUtility<T, TileMode> {
+    extends PropUtility<T, TileMode> {
   const TileModeUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with the specified TileMode value.
-  T call(TileMode value) => builder(value);
-
   /// Creates a [StyleElement] instance with [TileMode.clamp] value.
-  T clamp() => builder(TileMode.clamp);
+  T clamp() => call(TileMode.clamp);
 
   /// Creates a [StyleElement] instance with [TileMode.repeated] value.
-  T repeated() => builder(TileMode.repeated);
+  T repeated() => call(TileMode.repeated);
 
   /// Creates a [StyleElement] instance with [TileMode.mirror] value.
-  T mirror() => builder(TileMode.mirror);
+  T mirror() => call(TileMode.mirror);
 
   /// Creates a [StyleElement] instance with [TileMode.decal] value.
-  T decal() => builder(TileMode.decal);
+  T decal() => call(TileMode.decal);
 }
 
 /// {@template main_axis_alignment_utility}
@@ -225,29 +202,26 @@ final class TileModeUtility<T extends SpecUtility<Object?>>
 /// from predefined [MainAxisAlignment] values.
 /// {@endtemplate}
 final class MainAxisAlignmentUtility<T extends SpecUtility<Object?>>
-    extends MixUtility<T, MainAxisAlignment> {
+    extends PropUtility<T, MainAxisAlignment> {
   const MainAxisAlignmentUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with the specified MainAxisAlignment value.
-  T call(MainAxisAlignment value) => builder(value);
-
   /// Creates a [StyleElement] instance with [MainAxisAlignment.start] value.
-  T start() => builder(MainAxisAlignment.start);
+  T start() => call(MainAxisAlignment.start);
 
   /// Creates a [StyleElement] instance with [MainAxisAlignment.end] value.
-  T end() => builder(MainAxisAlignment.end);
+  T end() => call(MainAxisAlignment.end);
 
   /// Creates a [StyleElement] instance with [MainAxisAlignment.center] value.
-  T center() => builder(MainAxisAlignment.center);
+  T center() => call(MainAxisAlignment.center);
 
   /// Creates a [StyleElement] instance with [MainAxisAlignment.spaceBetween] value.
-  T spaceBetween() => builder(MainAxisAlignment.spaceBetween);
+  T spaceBetween() => call(MainAxisAlignment.spaceBetween);
 
   /// Creates a [StyleElement] instance with [MainAxisAlignment.spaceAround] value.
-  T spaceAround() => builder(MainAxisAlignment.spaceAround);
+  T spaceAround() => call(MainAxisAlignment.spaceAround);
 
   /// Creates a [StyleElement] instance with [MainAxisAlignment.spaceEvenly] value.
-  T spaceEvenly() => builder(MainAxisAlignment.spaceEvenly);
+  T spaceEvenly() => call(MainAxisAlignment.spaceEvenly);
 }
 
 /// {@template cross_axis_alignment_utility}
@@ -257,26 +231,23 @@ final class MainAxisAlignmentUtility<T extends SpecUtility<Object?>>
 /// from predefined [CrossAxisAlignment] values.
 /// {@endtemplate}
 final class CrossAxisAlignmentUtility<T extends SpecUtility<Object?>>
-    extends MixUtility<T, CrossAxisAlignment> {
+    extends PropUtility<T, CrossAxisAlignment> {
   const CrossAxisAlignmentUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with the specified CrossAxisAlignment value.
-  T call(CrossAxisAlignment value) => builder(value);
-
   /// Creates a [StyleElement] instance with [CrossAxisAlignment.start] value.
-  T start() => builder(CrossAxisAlignment.start);
+  T start() => call(CrossAxisAlignment.start);
 
   /// Creates a [StyleElement] instance with [CrossAxisAlignment.end] value.
-  T end() => builder(CrossAxisAlignment.end);
+  T end() => call(CrossAxisAlignment.end);
 
   /// Creates a [StyleElement] instance with [CrossAxisAlignment.center] value.
-  T center() => builder(CrossAxisAlignment.center);
+  T center() => call(CrossAxisAlignment.center);
 
   /// Creates a [StyleElement] instance with [CrossAxisAlignment.stretch] value.
-  T stretch() => builder(CrossAxisAlignment.stretch);
+  T stretch() => call(CrossAxisAlignment.stretch);
 
   /// Creates a [StyleElement] instance with [CrossAxisAlignment.baseline] value.
-  T baseline() => builder(CrossAxisAlignment.baseline);
+  T baseline() => call(CrossAxisAlignment.baseline);
 }
 
 /// {@template main_axis_size_utility}
@@ -286,17 +257,14 @@ final class CrossAxisAlignmentUtility<T extends SpecUtility<Object?>>
 /// from predefined [MainAxisSize] values.
 /// {@endtemplate}
 final class MainAxisSizeUtility<T extends SpecUtility<Object?>>
-    extends MixUtility<T, MainAxisSize> {
+    extends PropUtility<T, MainAxisSize> {
   const MainAxisSizeUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with the specified MainAxisSize value.
-  T call(MainAxisSize value) => builder(value);
-
   /// Creates a [StyleElement] instance with [MainAxisSize.min] value.
-  T min() => builder(MainAxisSize.min);
+  T min() => call(MainAxisSize.min);
 
   /// Creates a [StyleElement] instance with [MainAxisSize.max] value.
-  T max() => builder(MainAxisSize.max);
+  T max() => call(MainAxisSize.max);
 }
 
 /// {@template box_fit_utility}
@@ -306,32 +274,29 @@ final class MainAxisSizeUtility<T extends SpecUtility<Object?>>
 /// from predefined [BoxFit] values.
 /// {@endtemplate}
 final class BoxFitUtility<T extends SpecUtility<Object?>>
-    extends MixUtility<T, BoxFit> {
+    extends PropUtility<T, BoxFit> {
   const BoxFitUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with the specified BoxFit value.
-  T call(BoxFit value) => builder(value);
-
   /// Creates a [StyleElement] instance with [BoxFit.fill] value.
-  T fill() => builder(BoxFit.fill);
+  T fill() => call(BoxFit.fill);
 
   /// Creates a [StyleElement] instance with [BoxFit.contain] value.
-  T contain() => builder(BoxFit.contain);
+  T contain() => call(BoxFit.contain);
 
   /// Creates a [StyleElement] instance with [BoxFit.cover] value.
-  T cover() => builder(BoxFit.cover);
+  T cover() => call(BoxFit.cover);
 
   /// Creates a [StyleElement] instance with [BoxFit.fitWidth] value.
-  T fitWidth() => builder(BoxFit.fitWidth);
+  T fitWidth() => call(BoxFit.fitWidth);
 
   /// Creates a [StyleElement] instance with [BoxFit.fitHeight] value.
-  T fitHeight() => builder(BoxFit.fitHeight);
+  T fitHeight() => call(BoxFit.fitHeight);
 
   /// Creates a [StyleElement] instance with [BoxFit.none] value.
-  T none() => builder(BoxFit.none);
+  T none() => call(BoxFit.none);
 
   /// Creates a [StyleElement] instance with [BoxFit.scaleDown] value.
-  T scaleDown() => builder(BoxFit.scaleDown);
+  T scaleDown() => call(BoxFit.scaleDown);
 }
 
 /// {@template blend_mode_utility}
@@ -341,98 +306,95 @@ final class BoxFitUtility<T extends SpecUtility<Object?>>
 /// from predefined [BlendMode] values.
 /// {@endtemplate}
 final class BlendModeUtility<T extends SpecUtility<Object?>>
-    extends MixUtility<T, BlendMode> {
+    extends PropUtility<T, BlendMode> {
   const BlendModeUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with the specified BlendMode value.
-  T call(BlendMode value) => builder(value);
-
   /// Creates a [StyleElement] instance with [BlendMode.clear] value.
-  T clear() => builder(BlendMode.clear);
+  T clear() => call(BlendMode.clear);
 
   /// Creates a [StyleElement] instance with [BlendMode.src] value.
-  T src() => builder(BlendMode.src);
+  T src() => call(BlendMode.src);
 
   /// Creates a [StyleElement] instance with [BlendMode.dst] value.
-  T dst() => builder(BlendMode.dst);
+  T dst() => call(BlendMode.dst);
 
   /// Creates a [StyleElement] instance with [BlendMode.srcOver] value.
-  T srcOver() => builder(BlendMode.srcOver);
+  T srcOver() => call(BlendMode.srcOver);
 
   /// Creates a [StyleElement] instance with [BlendMode.dstOver] value.
-  T dstOver() => builder(BlendMode.dstOver);
+  T dstOver() => call(BlendMode.dstOver);
 
   /// Creates a [StyleElement] instance with [BlendMode.srcIn] value.
-  T srcIn() => builder(BlendMode.srcIn);
+  T srcIn() => call(BlendMode.srcIn);
 
   /// Creates a [StyleElement] instance with [BlendMode.dstIn] value.
-  T dstIn() => builder(BlendMode.dstIn);
+  T dstIn() => call(BlendMode.dstIn);
 
   /// Creates a [StyleElement] instance with [BlendMode.srcOut] value.
-  T srcOut() => builder(BlendMode.srcOut);
+  T srcOut() => call(BlendMode.srcOut);
 
   /// Creates a [StyleElement] instance with [BlendMode.dstOut] value.
-  T dstOut() => builder(BlendMode.dstOut);
+  T dstOut() => call(BlendMode.dstOut);
 
   /// Creates a [StyleElement] instance with [BlendMode.srcATop] value.
-  T srcATop() => builder(BlendMode.srcATop);
+  T srcATop() => call(BlendMode.srcATop);
 
   /// Creates a [StyleElement] instance with [BlendMode.dstATop] value.
-  T dstATop() => builder(BlendMode.dstATop);
+  T dstATop() => call(BlendMode.dstATop);
 
   /// Creates a [StyleElement] instance with [BlendMode.xor] value.
-  T xor() => builder(BlendMode.xor);
+  T xor() => call(BlendMode.xor);
 
   /// Creates a [StyleElement] instance with [BlendMode.plus] value.
-  T plus() => builder(BlendMode.plus);
+  T plus() => call(BlendMode.plus);
 
   /// Creates a [StyleElement] instance with [BlendMode.modulate] value.
-  T modulate() => builder(BlendMode.modulate);
+  T modulate() => call(BlendMode.modulate);
 
   /// Creates a [StyleElement] instance with [BlendMode.screen] value.
-  T screen() => builder(BlendMode.screen);
+  T screen() => call(BlendMode.screen);
 
   /// Creates a [StyleElement] instance with [BlendMode.overlay] value.
-  T overlay() => builder(BlendMode.overlay);
+  T overlay() => call(BlendMode.overlay);
 
   /// Creates a [StyleElement] instance with [BlendMode.darken] value.
-  T darken() => builder(BlendMode.darken);
+  T darken() => call(BlendMode.darken);
 
   /// Creates a [StyleElement] instance with [BlendMode.lighten] value.
-  T lighten() => builder(BlendMode.lighten);
+  T lighten() => call(BlendMode.lighten);
 
   /// Creates a [StyleElement] instance with [BlendMode.colorDodge] value.
-  T colorDodge() => builder(BlendMode.colorDodge);
+  T colorDodge() => call(BlendMode.colorDodge);
 
   /// Creates a [StyleElement] instance with [BlendMode.colorBurn] value.
-  T colorBurn() => builder(BlendMode.colorBurn);
+  T colorBurn() => call(BlendMode.colorBurn);
 
   /// Creates a [StyleElement] instance with [BlendMode.hardLight] value.
-  T hardLight() => builder(BlendMode.hardLight);
+  T hardLight() => call(BlendMode.hardLight);
 
   /// Creates a [StyleElement] instance with [BlendMode.softLight] value.
-  T softLight() => builder(BlendMode.softLight);
+  T softLight() => call(BlendMode.softLight);
 
   /// Creates a [StyleElement] instance with [BlendMode.difference] value.
-  T difference() => builder(BlendMode.difference);
+  T difference() => call(BlendMode.difference);
 
   /// Creates a [StyleElement] instance with [BlendMode.exclusion] value.
-  T exclusion() => builder(BlendMode.exclusion);
+  T exclusion() => call(BlendMode.exclusion);
 
   /// Creates a [StyleElement] instance with [BlendMode.multiply] value.
-  T multiply() => builder(BlendMode.multiply);
+  T multiply() => call(BlendMode.multiply);
 
   /// Creates a [StyleElement] instance with [BlendMode.hue] value.
-  T hue() => builder(BlendMode.hue);
+  T hue() => call(BlendMode.hue);
 
   /// Creates a [StyleElement] instance with [BlendMode.saturation] value.
-  T saturation() => builder(BlendMode.saturation);
+  T saturation() => call(BlendMode.saturation);
 
   /// Creates a [StyleElement] instance with [BlendMode.color] value.
-  T color() => builder(BlendMode.color);
+  T color() => call(BlendMode.color);
 
   /// Creates a [StyleElement] instance with [BlendMode.luminosity] value.
-  T luminosity() => builder(BlendMode.luminosity);
+  T luminosity() => call(BlendMode.luminosity);
 }
 
 /// {@template box_shape_utility}
@@ -442,17 +404,14 @@ final class BlendModeUtility<T extends SpecUtility<Object?>>
 /// from predefined [BoxShape] values.
 /// {@endtemplate}
 final class BoxShapeUtility<T extends SpecUtility<Object?>>
-    extends MixUtility<T, BoxShape> {
+    extends PropUtility<T, BoxShape> {
   const BoxShapeUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with the specified BoxShape value.
-  T call(BoxShape value) => builder(value);
-
   /// Creates a [StyleElement] instance with [BoxShape.rectangle] value.
-  T rectangle() => builder(BoxShape.rectangle);
+  T rectangle() => call(BoxShape.rectangle);
 
   /// Creates a [StyleElement] instance with [BoxShape.circle] value.
-  T circle() => builder(BoxShape.circle);
+  T circle() => call(BoxShape.circle);
 }
 
 /// {@template font_style_utility}
@@ -462,17 +421,14 @@ final class BoxShapeUtility<T extends SpecUtility<Object?>>
 /// from predefined [FontStyle] values.
 /// {@endtemplate}
 final class FontStyleUtility<T extends SpecUtility<Object?>>
-    extends MixUtility<T, FontStyle> {
+    extends PropUtility<T, FontStyle> {
   const FontStyleUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with the specified FontStyle value.
-  T call(FontStyle value) => builder(value);
-
   /// Creates a [StyleElement] instance with [FontStyle.normal] value.
-  T normal() => builder(FontStyle.normal);
+  T normal() => call(FontStyle.normal);
 
   /// Creates a [StyleElement] instance with [FontStyle.italic] value.
-  T italic() => builder(FontStyle.italic);
+  T italic() => call(FontStyle.italic);
 }
 
 /// {@template text_decoration_style_utility}
@@ -482,26 +438,23 @@ final class FontStyleUtility<T extends SpecUtility<Object?>>
 /// from predefined [TextDecorationStyle] values.
 /// {@endtemplate}
 final class TextDecorationStyleUtility<T extends SpecUtility<Object?>>
-    extends MixUtility<T, TextDecorationStyle> {
+    extends PropUtility<T, TextDecorationStyle> {
   const TextDecorationStyleUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with the specified TextDecorationStyle value.
-  T call(TextDecorationStyle value) => builder(value);
-
   /// Creates a [StyleElement] instance with [TextDecorationStyle.solid] value.
-  T solid() => builder(TextDecorationStyle.solid);
+  T solid() => call(TextDecorationStyle.solid);
 
   /// Creates a [StyleElement] instance with [TextDecorationStyle.double] value.
-  T double() => builder(TextDecorationStyle.double);
+  T double() => call(TextDecorationStyle.double);
 
   /// Creates a [StyleElement] instance with [TextDecorationStyle.dotted] value.
-  T dotted() => builder(TextDecorationStyle.dotted);
+  T dotted() => call(TextDecorationStyle.dotted);
 
   /// Creates a [StyleElement] instance with [TextDecorationStyle.dashed] value.
-  T dashed() => builder(TextDecorationStyle.dashed);
+  T dashed() => call(TextDecorationStyle.dashed);
 
   /// Creates a [StyleElement] instance with [TextDecorationStyle.wavy] value.
-  T wavy() => builder(TextDecorationStyle.wavy);
+  T wavy() => call(TextDecorationStyle.wavy);
 }
 
 /// {@template text_baseline_utility}
@@ -511,17 +464,14 @@ final class TextDecorationStyleUtility<T extends SpecUtility<Object?>>
 /// from predefined [TextBaseline] values.
 /// {@endtemplate}
 final class TextBaselineUtility<T extends SpecUtility<Object?>>
-    extends MixUtility<T, TextBaseline> {
+    extends PropUtility<T, TextBaseline> {
   const TextBaselineUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with the specified TextBaseline value.
-  T call(TextBaseline value) => builder(value);
-
   /// Creates a [StyleElement] instance with [TextBaseline.alphabetic] value.
-  T alphabetic() => builder(TextBaseline.alphabetic);
+  T alphabetic() => call(TextBaseline.alphabetic);
 
   /// Creates a [StyleElement] instance with [TextBaseline.ideographic] value.
-  T ideographic() => builder(TextBaseline.ideographic);
+  T ideographic() => call(TextBaseline.ideographic);
 }
 
 /// {@template text_overflow_utility}
@@ -531,23 +481,20 @@ final class TextBaselineUtility<T extends SpecUtility<Object?>>
 /// from predefined [TextOverflow] values.
 /// {@endtemplate}
 final class TextOverflowUtility<T extends SpecUtility<Object?>>
-    extends MixUtility<T, TextOverflow> {
+    extends PropUtility<T, TextOverflow> {
   const TextOverflowUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with the specified TextOverflow value.
-  T call(TextOverflow value) => builder(value);
-
   /// Creates a [StyleElement] instance with [TextOverflow.clip] value.
-  T clip() => builder(TextOverflow.clip);
+  T clip() => call(TextOverflow.clip);
 
   /// Creates a [StyleElement] instance with [TextOverflow.fade] value.
-  T fade() => builder(TextOverflow.fade);
+  T fade() => call(TextOverflow.fade);
 
   /// Creates a [StyleElement] instance with [TextOverflow.ellipsis] value.
-  T ellipsis() => builder(TextOverflow.ellipsis);
+  T ellipsis() => call(TextOverflow.ellipsis);
 
   /// Creates a [StyleElement] instance with [TextOverflow.visible] value.
-  T visible() => builder(TextOverflow.visible);
+  T visible() => call(TextOverflow.visible);
 }
 
 /// {@template text_width_basis_utility}
@@ -557,17 +504,14 @@ final class TextOverflowUtility<T extends SpecUtility<Object?>>
 /// from predefined [TextWidthBasis] values.
 /// {@endtemplate}
 final class TextWidthBasisUtility<T extends SpecUtility<Object?>>
-    extends MixUtility<T, TextWidthBasis> {
+    extends PropUtility<T, TextWidthBasis> {
   const TextWidthBasisUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with the specified TextWidthBasis value.
-  T call(TextWidthBasis value) => builder(value);
-
   /// Creates a [StyleElement] instance with [TextWidthBasis.parent] value.
-  T parent() => builder(TextWidthBasis.parent);
+  T parent() => call(TextWidthBasis.parent);
 
   /// Creates a [StyleElement] instance with [TextWidthBasis.longestLine] value.
-  T longestLine() => builder(TextWidthBasis.longestLine);
+  T longestLine() => call(TextWidthBasis.longestLine);
 }
 
 /// {@template text_align_utility}
@@ -577,29 +521,26 @@ final class TextWidthBasisUtility<T extends SpecUtility<Object?>>
 /// from predefined [TextAlign] values.
 /// {@endtemplate}
 final class TextAlignUtility<T extends SpecUtility<Object?>>
-    extends MixUtility<T, TextAlign> {
+    extends PropUtility<T, TextAlign> {
   const TextAlignUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with the specified TextAlign value.
-  T call(TextAlign value) => builder(value);
-
   /// Creates a [StyleElement] instance with [TextAlign.left] value.
-  T left() => builder(TextAlign.left);
+  T left() => call(TextAlign.left);
 
   /// Creates a [StyleElement] instance with [TextAlign.right] value.
-  T right() => builder(TextAlign.right);
+  T right() => call(TextAlign.right);
 
   /// Creates a [StyleElement] instance with [TextAlign.center] value.
-  T center() => builder(TextAlign.center);
+  T center() => call(TextAlign.center);
 
   /// Creates a [StyleElement] instance with [TextAlign.justify] value.
-  T justify() => builder(TextAlign.justify);
+  T justify() => call(TextAlign.justify);
 
   /// Creates a [StyleElement] instance with [TextAlign.start] value.
-  T start() => builder(TextAlign.start);
+  T start() => call(TextAlign.start);
 
   /// Creates a [StyleElement] instance with [TextAlign.end] value.
-  T end() => builder(TextAlign.end);
+  T end() => call(TextAlign.end);
 }
 
 /// {@template filter_quality_utility}
@@ -609,23 +550,20 @@ final class TextAlignUtility<T extends SpecUtility<Object?>>
 /// from predefined [FilterQuality] values.
 /// {@endtemplate}
 final class FilterQualityUtility<T extends SpecUtility<Object?>>
-    extends MixUtility<T, FilterQuality> {
+    extends PropUtility<T, FilterQuality> {
   const FilterQualityUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with the specified FilterQuality value.
-  T call(FilterQuality value) => builder(value);
-
   /// Creates a [StyleElement] instance with [FilterQuality.none] value.
-  T none() => builder(FilterQuality.none);
+  T none() => call(FilterQuality.none);
 
   /// Creates a [StyleElement] instance with [FilterQuality.low] value.
-  T low() => builder(FilterQuality.low);
+  T low() => call(FilterQuality.low);
 
   /// Creates a [StyleElement] instance with [FilterQuality.medium] value.
-  T medium() => builder(FilterQuality.medium);
+  T medium() => call(FilterQuality.medium);
 
   /// Creates a [StyleElement] instance with [FilterQuality.high] value.
-  T high() => builder(FilterQuality.high);
+  T high() => call(FilterQuality.high);
 }
 
 /// {@template wrap_alignment_utility}
@@ -635,29 +573,26 @@ final class FilterQualityUtility<T extends SpecUtility<Object?>>
 /// from predefined [WrapAlignment] values.
 /// {@endtemplate}
 final class WrapAlignmentUtility<T extends SpecUtility<Object?>>
-    extends MixUtility<T, WrapAlignment> {
+    extends PropUtility<T, WrapAlignment> {
   const WrapAlignmentUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with the specified WrapAlignment value.
-  T call(WrapAlignment value) => builder(value);
-
   /// Creates a [StyleElement] instance with [WrapAlignment.start] value.
-  T start() => builder(WrapAlignment.start);
+  T start() => call(WrapAlignment.start);
 
   /// Creates a [StyleElement] instance with [WrapAlignment.end] value.
-  T end() => builder(WrapAlignment.end);
+  T end() => call(WrapAlignment.end);
 
   /// Creates a [StyleElement] instance with [WrapAlignment.center] value.
-  T center() => builder(WrapAlignment.center);
+  T center() => call(WrapAlignment.center);
 
   /// Creates a [StyleElement] instance with [WrapAlignment.spaceBetween] value.
-  T spaceBetween() => builder(WrapAlignment.spaceBetween);
+  T spaceBetween() => call(WrapAlignment.spaceBetween);
 
   /// Creates a [StyleElement] instance with [WrapAlignment.spaceAround] value.
-  T spaceAround() => builder(WrapAlignment.spaceAround);
+  T spaceAround() => call(WrapAlignment.spaceAround);
 
   /// Creates a [StyleElement] instance with [WrapAlignment.spaceEvenly] value.
-  T spaceEvenly() => builder(WrapAlignment.spaceEvenly);
+  T spaceEvenly() => call(WrapAlignment.spaceEvenly);
 }
 
 /// {@template table_cell_vertical_alignment_utility}
@@ -667,27 +602,24 @@ final class WrapAlignmentUtility<T extends SpecUtility<Object?>>
 /// from predefined [TableCellVerticalAlignment] values.
 /// {@endtemplate}
 class TableCellVerticalAlignmentUtility<T extends SpecUtility<Object?>>
-    extends MixUtility<T, TableCellVerticalAlignment> {
+    extends PropUtility<T, TableCellVerticalAlignment> {
   const TableCellVerticalAlignmentUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with the specified TableCellVerticalAlignment value.
-  T call(TableCellVerticalAlignment value) => builder(value);
-
   /// Creates a [StyleElement] instance with [TableCellVerticalAlignment.top] value.
-  T top() => builder(TableCellVerticalAlignment.top);
+  T top() => call(TableCellVerticalAlignment.top);
 
   /// Creates a [StyleElement] instance with [TableCellVerticalAlignment.middle] value.
-  T middle() => builder(TableCellVerticalAlignment.middle);
+  T middle() => call(TableCellVerticalAlignment.middle);
 
   /// Creates a [StyleElement] instance with [TableCellVerticalAlignment.bottom] value.
-  T bottom() => builder(TableCellVerticalAlignment.bottom);
+  T bottom() => call(TableCellVerticalAlignment.bottom);
 
   /// Creates a [StyleElement] instance with [TableCellVerticalAlignment.baseline] value.
-  T baseline() => builder(TableCellVerticalAlignment.baseline);
+  T baseline() => call(TableCellVerticalAlignment.baseline);
 
   /// Creates a [StyleElement] instance with [TableCellVerticalAlignment.fill] value.
-  T fill() => builder(TableCellVerticalAlignment.fill);
+  T fill() => call(TableCellVerticalAlignment.fill);
 
   /// Creates a [StyleElement] instance with [TableCellVerticalAlignment.intrinsicHeight] value.
-  T intrinsicHeight() => builder(TableCellVerticalAlignment.intrinsicHeight);
+  T intrinsicHeight() => call(TableCellVerticalAlignment.intrinsicHeight);
 }

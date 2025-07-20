@@ -187,9 +187,6 @@ final class FontFeatureUtility<T extends SpecUtility<Object?>>
   /// Creates a [Style] instance using the [FontFeature.slashedZero] constructor.
   T slashedZero() => call(const FontFeature.slashedZero());
 
-  /// Creates a [Style] instance with the specified FontFeature value.
-  @override
-  T call(FontFeature value) => call(value);
 }
 
 final class DurationUtility<T extends SpecUtility<Object?>>
@@ -645,10 +642,8 @@ final class StrokeAlignUtility<T extends SpecUtility<Object?>>
 }
 
 class ListUtility<T extends SpecUtility<Object?>, V>
-    extends MixUtility<T, List<V>> {
+    extends PropUtility<T, List<V>> {
   const ListUtility(super.builder);
-
-  T call(List<V> values) => builder(values);
 }
 
 final class StringUtility<T extends SpecUtility<Object?>>

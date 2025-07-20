@@ -3,9 +3,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-final class BoxBorderUtility<T extends Attribute>
-    extends DtoUtility<T, BoxBorderDto, BoxBorder> {
-  late final directional = BorderDirectionalUtility(builder);
+final class BoxBorderUtility<T extends SpecUtility<Object?>>
+    extends MixPropUtility<T, BoxBorder> {
+  late final directional = BorderDirectionalUtility<T>(builder);
   late final all = _border.all;
   late final bottom = _border.bottom;
   late final top = _border.top;
@@ -23,7 +23,7 @@ final class BoxBorderUtility<T extends Attribute>
 
   late final none = _border.none;
 
-  late final _border = BorderUtility(builder);
+  late final _border = BorderUtility<T>(builder);
 
   BoxBorderUtility(super.builder)
     : super(
@@ -38,51 +38,41 @@ final class BoxBorderUtility<T extends Attribute>
         },
       );
 
-  T call({
-    Color? color,
-    double? width,
-    BorderStyle? style,
-    double? strokeAlign,
-  }) {
-    return all(
-      color: color,
-      strokeAlign: strokeAlign,
-      style: style,
-      width: width,
-    );
+  @override
+  T call(BoxBorderDto value) {
+    return builder(MixProp(value));
   }
 
-  @override
   T only({
     BorderSideDto? top,
     BorderSideDto? bottom,
     BorderSideDto? left,
     BorderSideDto? right,
   }) {
-    return builder(
-      BorderDto(top: top, bottom: bottom, left: left, right: right),
+    return call(
+      BorderDto.only(top: top, bottom: bottom, left: left, right: right),
     );
   }
 }
 
-final class BorderUtility<T extends Attribute>
-    extends DtoUtility<T, BorderDto, Border> {
-  late final all = BorderSideUtility((v) => builder(BorderDto.all(v)));
+final class BorderUtility<T extends SpecUtility<Object?>>
+    extends MixPropUtility<T, Border> {
+  late final all = BorderSideUtility<T>((v) => call(BorderDto.all(v)));
 
-  late final bottom = BorderSideUtility((v) => only(bottom: v));
+  late final bottom = BorderSideUtility<T>((v) => only(bottom: v));
 
-  late final top = BorderSideUtility((v) => only(top: v));
+  late final top = BorderSideUtility<T>((v) => only(top: v));
 
-  late final left = BorderSideUtility((v) => only(left: v));
+  late final left = BorderSideUtility<T>((v) => only(left: v));
 
-  late final right = BorderSideUtility((v) => only(right: v));
+  late final right = BorderSideUtility<T>((v) => only(right: v));
 
-  late final vertical = BorderSideUtility(
-    (v) => builder(BorderDto.vertical(v)),
+  late final vertical = BorderSideUtility<T>(
+    (v) => call(BorderDto.vertical(v)),
   );
 
-  late final horizontal = BorderSideUtility(
-    (v) => builder(BorderDto.horizontal(v)),
+  late final horizontal = BorderSideUtility<T>(
+    (v) => call(BorderDto.horizontal(v)),
   );
 
   late final color = all.color;
@@ -95,85 +85,65 @@ final class BorderUtility<T extends Attribute>
 
   BorderUtility(super.builder) : super(valueToDto: BorderDto.value);
 
-  T none() => builder(BorderDto.none);
-
-  T call({
-    Color? color,
-    double? width,
-    BorderStyle? style,
-    double? strokeAlign,
-  }) {
-    return all(
-      color: color,
-      strokeAlign: strokeAlign,
-      style: style,
-      width: width,
-    );
-  }
+  T none() => call(BorderDto.none);
 
   @override
+  T call(BorderDto value) {
+    return builder(MixProp(value));
+  }
+
   T only({
     BorderSideDto? top,
     BorderSideDto? bottom,
     BorderSideDto? left,
     BorderSideDto? right,
   }) {
-    return builder(
-      BorderDto(top: top, bottom: bottom, left: left, right: right),
+    return call(
+      BorderDto.only(top: top, bottom: bottom, left: left, right: right),
     );
   }
 }
 
-final class BorderDirectionalUtility<T extends Attribute>
-    extends DtoUtility<T, BorderDirectionalDto, BorderDirectional> {
-  late final all = BorderSideUtility(
-    (v) => builder(BorderDirectionalDto.all(v)),
+final class BorderDirectionalUtility<T extends SpecUtility<Object?>>
+    extends MixPropUtility<T, BorderDirectional> {
+  late final all = BorderSideUtility<T>(
+    (v) => call(BorderDirectionalDto.all(v)),
   );
 
-  late final bottom = BorderSideUtility((v) => only(bottom: v));
+  late final bottom = BorderSideUtility<T>((v) => only(bottom: v));
 
-  late final top = BorderSideUtility((v) => only(top: v));
+  late final top = BorderSideUtility<T>((v) => only(top: v));
 
-  late final start = BorderSideUtility((v) => only(start: v));
+  late final start = BorderSideUtility<T>((v) => only(start: v));
 
-  late final end = BorderSideUtility((v) => only(end: v));
+  late final end = BorderSideUtility<T>((v) => only(end: v));
 
-  late final vertical = BorderSideUtility(
-    (v) => builder(BorderDirectionalDto.vertical(v)),
+  late final vertical = BorderSideUtility<T>(
+    (v) => call(BorderDirectionalDto.vertical(v)),
   );
 
-  late final horizontal = BorderSideUtility(
-    (v) => builder(BorderDirectionalDto.horizontal(v)),
+  late final horizontal = BorderSideUtility<T>(
+    (v) => call(BorderDirectionalDto.horizontal(v)),
   );
 
   BorderDirectionalUtility(super.builder)
     : super(valueToDto: BorderDirectionalDto.value);
 
-  T none() => builder(BorderDirectionalDto.none);
-
-  T call({
-    Color? color,
-    double? width,
-    BorderStyle? style,
-    double? strokeAlign,
-  }) {
-    return all(
-      color: color,
-      strokeAlign: strokeAlign,
-      style: style,
-      width: width,
-    );
-  }
+  T none() => call(BorderDirectionalDto.none);
 
   @override
+  T call(BorderDirectionalDto value) {
+    return builder(MixProp(value));
+  }
+
   T only({
     BorderSideDto? top,
     BorderSideDto? bottom,
     BorderSideDto? start,
     BorderSideDto? end,
   }) {
-    return builder(
-      BorderDirectionalDto(top: top, bottom: bottom, start: start, end: end),
+    return call(
+      BorderDirectionalDto.only(top: top, bottom: bottom, start: start, end: end),
     );
   }
 }
@@ -182,56 +152,44 @@ final class BorderDirectionalUtility<T extends Attribute>
 ///
 /// This class provides methods to set individual properties of a [BorderSide].
 /// Use the methods of this class to configure specific properties of a [BorderSide].
-class BorderSideUtility<T extends Attribute>
-    extends DtoUtility<T, BorderSideDto, BorderSide> {
+class BorderSideUtility<T extends SpecUtility<Object?>>
+    extends MixPropUtility<T, BorderSide> {
   /// Utility for defining [BorderSideDto.color]
-  late final color = ColorUtility(
-    (prop) => builder(BorderSideDto.props(color: prop)),
+  late final color = ColorUtility<T>(
+    (prop) => call(BorderSideDto.props(color: prop)),
   );
 
   /// Utility for defining [BorderSideDto.strokeAlign]
-  late final strokeAlign = StrokeAlignUtility(
-    (prop) => builder(BorderSideDto.props(strokeAlign: prop)),
+  late final strokeAlign = StrokeAlignUtility<T>(
+    (prop) => call(BorderSideDto.props(strokeAlign: prop)),
   );
 
   /// Utility for defining [BorderSideDto.style]
-  late final style = BorderStyleUtility((v) => only(style: v));
+  late final style = BorderStyleUtility<T>((v) => only(style: v));
 
   /// Utility for defining [BorderSideDto.width]
-  late final width = DoubleUtility(
-    (prop) => builder(BorderSideDto.props(width: prop)),
+  late final width = DoubleUtility<T>(
+    (prop) => call(BorderSideDto.props(width: prop)),
   );
 
   BorderSideUtility(super.builder) : super(valueToDto: BorderSideDto.value);
 
   /// Creates a [Attribute] instance using the [BorderSideDto.none] constructor.
-  T none() => builder(BorderSideDto.none);
+  T none() => call(BorderSideDto.none);
 
-  T call({
-    Color? color,
-    double? strokeAlign,
-    BorderStyle? style,
-    double? width,
-  }) {
-    return builder(
-      BorderSideDto(
-        color: color,
-        strokeAlign: strokeAlign,
-        style: style,
-        width: width,
-      ),
-    );
+  @override
+  T call(BorderSideDto value) {
+    return builder(MixProp(value));
   }
 
   /// Returns a new [BorderSideDto] with the specified properties.
-  @override
   T only({
     Color? color,
     double? strokeAlign,
     BorderStyle? style,
     double? width,
   }) {
-    return builder(
+    return call(
       BorderSideDto(
         color: color,
         strokeAlign: strokeAlign,
