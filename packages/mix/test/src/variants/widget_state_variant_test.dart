@@ -16,11 +16,7 @@ void main() {
     const attribute2 = MockStringScalarAttribute('attribute2');
     const attribute3 = MockIntScalarAttribute(3);
     testWidgets('press state', (tester) async {
-      await tester.pumpWithPressable(
-        Container(),
-        pressed: true,
-        focused: true,
-      );
+      await tester.pumpWithPressable(Container(), pressed: true, focused: true);
 
       final context = tester.element(find.byType(Container));
 
@@ -33,11 +29,7 @@ void main() {
     });
 
     testWidgets('hover state', (tester) async {
-      await tester.pumpWithPressable(
-        Container(),
-        hovered: true,
-        focused: true,
-      );
+      await tester.pumpWithPressable(Container(), hovered: true, focused: true);
 
       final context = tester.element(find.byType(Container));
 
@@ -59,10 +51,7 @@ void main() {
 
       final onDisabledAttr = onDisabled(attribute1, attribute2, attribute3);
 
-      expect(
-        onDisabledAttr.value,
-        Style(attribute1, attribute2, attribute3),
-      );
+      expect(onDisabledAttr.value, Style(attribute1, attribute2, attribute3));
 
       expect(onDisabledAttr.variant.when(context), true);
     });
@@ -86,11 +75,7 @@ void main() {
 
     // onFocus
     testWidgets('focus state', (tester) async {
-      await tester.pumpWithPressable(
-        Container(),
-        pressed: true,
-        focused: true,
-      );
+      await tester.pumpWithPressable(Container(), pressed: true, focused: true);
 
       final context = tester.element(find.byType(Container));
 

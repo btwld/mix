@@ -90,10 +90,10 @@ void main() {
       });
 
       test('props constructor with Prop values', () {
-        const dto = TextStyleDto.props(
-          color: Prop.fromValue(Colors.green),
-          fontSize: Prop.fromValue(20.0),
-          fontWeight: Prop.fromValue(FontWeight.w300),
+        final dto = TextStyleDto.props(
+          color: Prop(Colors.green),
+          fontSize: Prop(20.0),
+          fontWeight: Prop(FontWeight.w300),
         );
 
         expect(dto.color, resolvesTo(Colors.green));

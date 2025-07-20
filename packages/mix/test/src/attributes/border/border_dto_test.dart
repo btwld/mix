@@ -41,11 +41,11 @@ void main() {
       });
 
       test('props constructor with Prop values', () {
-        const dto = BorderSideDto.props(
-          color: Prop.fromValue(Colors.green),
-          width: Prop.fromValue(4.0),
-          style: Prop.fromValue(BorderStyle.none),
-          strokeAlign: Prop.fromValue(BorderSide.strokeAlignOutside),
+        final dto = BorderSideDto.props(
+          color: Prop(Colors.green),
+          width: Prop(4.0),
+          style: Prop(BorderStyle.none),
+          strokeAlign: Prop(BorderSide.strokeAlignOutside),
         );
 
         expect(dto.color, resolvesTo(Colors.green));
@@ -56,9 +56,8 @@ void main() {
 
       test('none constant creates BorderSideDto with default values', () {
         final dto = BorderSideDto.none;
-        final context = createEmptyMixData();
 
-        final resolved = dto.resolve(context);
+        final resolved = dto.resolve(MockBuildContext());
         expect(resolved, const BorderSide());
       });
     });
@@ -110,9 +109,8 @@ void main() {
 
       test('resolves with default values for null properties', () {
         const dto = BorderSideDto.props();
-        final context = createEmptyMixData();
 
-        final resolved = dto.resolve(context);
+        final resolved = dto.resolve(MockBuildContext());
         expect(resolved.color, const BorderSide().color);
         expect(resolved.width, const BorderSide().width);
         expect(resolved.style, const BorderSide().style);
@@ -207,20 +205,22 @@ void main() {
           right: BorderSideDto(width: 4.0),
         );
 
-        expect(dto.top?.mixValue?.width, resolvesTo(1.0));
-        expect(dto.bottom?.mixValue?.width, resolvesTo(2.0));
-        expect(dto.left?.mixValue?.width, resolvesTo(3.0));
-        expect(dto.right?.mixValue?.width, resolvesTo(4.0));
+        final resolved = dto.resolve(MockBuildContext());
+        expect(resolved.top.width, 1.0);
+        expect(resolved.bottom.width, 2.0);
+        expect(resolved.left.width, 3.0);
+        expect(resolved.right.width, 4.0);
       });
 
       test('all constructor creates uniform BorderDto', () {
         final side = BorderSideDto(color: Colors.red, width: 2.0);
         final dto = BorderDto.all(side);
 
-        expect(dto.top?.mixValue, equals(side));
-        expect(dto.bottom?.mixValue, equals(side));
-        expect(dto.left?.mixValue, equals(side));
-        expect(dto.right?.mixValue, equals(side));
+        const expectedSide = BorderSide(color: Colors.red, width: 2.0);
+        expect(dto.top, resolvesTo(expectedSide));
+        expect(dto.bottom, resolvesTo(expectedSide));
+        expect(dto.left, resolvesTo(expectedSide));
+        expect(dto.right, resolvesTo(expectedSide));
         expect(dto.isUniform, isTrue);
       });
 
@@ -233,18 +233,21 @@ void main() {
           horizontal: horizontal,
         );
 
-        expect(dto.left?.mixValue, equals(vertical));
-        expect(dto.right?.mixValue, equals(vertical));
-        expect(dto.top?.mixValue, equals(horizontal));
-        expect(dto.bottom?.mixValue, equals(horizontal));
+        const expectedVertical = BorderSide(color: Colors.red);
+        const expectedHorizontal = BorderSide(color: Colors.blue);
+        expect(dto.left, resolvesTo(expectedVertical));
+        expect(dto.right, resolvesTo(expectedVertical));
+        expect(dto.top, resolvesTo(expectedHorizontal));
+        expect(dto.bottom, resolvesTo(expectedHorizontal));
       });
 
       test('vertical constructor', () {
         final side = BorderSideDto(width: 2.0);
         final dto = BorderDto.vertical(side);
 
-        expect(dto.left?.mixValue, equals(side));
-        expect(dto.right?.mixValue, equals(side));
+        const expectedSide = BorderSide(width: 2.0);
+        expect(dto.left, resolvesTo(expectedSide));
+        expect(dto.right, resolvesTo(expectedSide));
         expect(dto.top, isNull);
         expect(dto.bottom, isNull);
       });
@@ -253,8 +256,9 @@ void main() {
         final side = BorderSideDto(width: 3.0);
         final dto = BorderDto.horizontal(side);
 
-        expect(dto.top?.mixValue, equals(side));
-        expect(dto.bottom?.mixValue, equals(side));
+        const expectedSide = BorderSide(width: 3.0);
+        expect(dto.top, resolvesTo(expectedSide));
+        expect(dto.bottom, resolvesTo(expectedSide));
         expect(dto.left, isNull);
         expect(dto.right, isNull);
       });
@@ -269,22 +273,18 @@ void main() {
 
         final dto = BorderDto.value(border);
 
-        expect(dto.top?.mixValue?.color, resolvesTo(Colors.red));
-        expect(dto.top?.mixValue?.width, resolvesTo(1.0));
-        expect(dto.bottom?.mixValue?.color, resolvesTo(Colors.blue));
-        expect(dto.bottom?.mixValue?.width, resolvesTo(2.0));
-        expect(dto.left?.mixValue?.color, resolvesTo(Colors.green));
-        expect(dto.left?.mixValue?.width, resolvesTo(3.0));
-        expect(dto.right?.mixValue?.color, resolvesTo(Colors.yellow));
-        expect(dto.right?.mixValue?.width, resolvesTo(4.0));
+        expect(dto.top, resolvesTo(const BorderSide(color: Colors.red, width: 1.0)));
+        expect(dto.bottom, resolvesTo(const BorderSide(color: Colors.blue, width: 2.0)));
+        expect(dto.left, resolvesTo(const BorderSide(color: Colors.green, width: 3.0)));
+        expect(dto.right, resolvesTo(const BorderSide(color: Colors.yellow, width: 4.0)));
       });
 
       test('none constant', () {
         final none = BorderDto.none;
-        expect(none.top?.mixValue, equals(BorderSideDto.none));
-        expect(none.bottom?.mixValue, equals(BorderSideDto.none));
-        expect(none.left?.mixValue, equals(BorderSideDto.none));
-        expect(none.right?.mixValue, equals(BorderSideDto.none));
+        expect(none.top, resolvesTo(BorderSide.none));
+        expect(none.bottom, resolvesTo(BorderSide.none));
+        expect(none.left, resolvesTo(BorderSide.none));
+        expect(none.right, resolvesTo(BorderSide.none));
       });
     });
 
@@ -295,7 +295,7 @@ void main() {
         final dto = BorderDto.maybeValue(border);
 
         expect(dto, isNotNull);
-        expect(dto?.top?.mixValue?.color, resolvesTo(Colors.red));
+        expect(dto?.top, resolvesTo(const BorderSide(color: Colors.red, width: 2.0)));
       });
 
       test('maybeValue returns null for null Border', () {
@@ -366,14 +366,10 @@ void main() {
 
         final merged = dto1.merge(dto2);
 
-        expect(merged.top?.mixValue?.width, resolvesTo(2.0));
-        expect(merged.top?.mixValue?.color, resolvesTo(Colors.red));
-        expect(merged.bottom?.mixValue?.width, resolvesTo(2.0));
-        expect(merged.bottom?.mixValue?.color, resolvesTo(Colors.red));
-        expect(merged.left?.mixValue?.width, resolvesTo(2.0));
-        expect(merged.left?.mixValue?.color, resolvesTo(Colors.red));
-        expect(merged.right?.mixValue?.width, resolvesTo(2.0));
-        expect(merged.right?.mixValue?.color, resolvesTo(Colors.red));
+        expect(merged.top, resolvesTo(const BorderSide(color: Colors.red, width: 2.0)));
+        expect(merged.bottom, resolvesTo(const BorderSide(color: Colors.red, width: 2.0)));
+        expect(merged.left, resolvesTo(const BorderSide(color: Colors.red, width: 2.0)));
+        expect(merged.right, resolvesTo(const BorderSide(color: Colors.red, width: 2.0)));
       });
 
       test('merge with null returns original', () {
@@ -448,20 +444,21 @@ void main() {
           end: BorderSideDto(width: 4.0),
         );
 
-        expect(dto.top?.mixValue?.width, resolvesTo(1.0));
-        expect(dto.bottom?.mixValue?.width, resolvesTo(2.0));
-        expect(dto.start?.mixValue?.width, resolvesTo(3.0));
-        expect(dto.end?.mixValue?.width, resolvesTo(4.0));
+        expect(dto.top, resolvesTo(const BorderSide(width: 1.0)));
+        expect(dto.bottom, resolvesTo(const BorderSide(width: 2.0)));
+        expect(dto.start, resolvesTo(const BorderSide(width: 3.0)));
+        expect(dto.end, resolvesTo(const BorderSide(width: 4.0)));
       });
 
       test('all constructor creates uniform BorderDirectionalDto', () {
         final side = BorderSideDto(color: Colors.red, width: 2.0);
         final dto = BorderDirectionalDto.all(side);
 
-        expect(dto.top?.mixValue, equals(side));
-        expect(dto.bottom?.mixValue, equals(side));
-        expect(dto.start?.mixValue, equals(side));
-        expect(dto.end?.mixValue, equals(side));
+        const expectedSide = BorderSide(color: Colors.red, width: 2.0);
+        expect(dto.top, resolvesTo(expectedSide));
+        expect(dto.bottom, resolvesTo(expectedSide));
+        expect(dto.start, resolvesTo(expectedSide));
+        expect(dto.end, resolvesTo(expectedSide));
         expect(dto.isUniform, isTrue);
       });
 
@@ -474,10 +471,12 @@ void main() {
           horizontal: horizontal,
         );
 
-        expect(dto.start?.mixValue, equals(vertical));
-        expect(dto.end?.mixValue, equals(vertical));
-        expect(dto.top?.mixValue, equals(horizontal));
-        expect(dto.bottom?.mixValue, equals(horizontal));
+        const expectedVertical = BorderSide(color: Colors.red);
+        const expectedHorizontal = BorderSide(color: Colors.blue);
+        expect(dto.start, resolvesTo(expectedVertical));
+        expect(dto.end, resolvesTo(expectedVertical));
+        expect(dto.top, resolvesTo(expectedHorizontal));
+        expect(dto.bottom, resolvesTo(expectedHorizontal));
       });
 
       test('value constructor from BorderDirectional', () {
@@ -490,18 +489,18 @@ void main() {
 
         final dto = BorderDirectionalDto.value(border);
 
-        expect(dto.top?.mixValue?.color, resolvesTo(Colors.red));
-        expect(dto.bottom?.mixValue?.color, resolvesTo(Colors.blue));
-        expect(dto.start?.mixValue?.color, resolvesTo(Colors.green));
-        expect(dto.end?.mixValue?.color, resolvesTo(Colors.yellow));
+        expect(dto.top, resolvesTo(const BorderSide(color: Colors.red, width: 1.0)));
+        expect(dto.bottom, resolvesTo(const BorderSide(color: Colors.blue, width: 2.0)));
+        expect(dto.start, resolvesTo(const BorderSide(color: Colors.green, width: 3.0)));
+        expect(dto.end, resolvesTo(const BorderSide(color: Colors.yellow, width: 4.0)));
       });
 
       test('none constant', () {
         final none = BorderDirectionalDto.none;
-        expect(none.top?.mixValue, equals(BorderSideDto.none));
-        expect(none.bottom?.mixValue, equals(BorderSideDto.none));
-        expect(none.start?.mixValue, equals(BorderSideDto.none));
-        expect(none.end?.mixValue, equals(BorderSideDto.none));
+        expect(none.top, resolvesTo(BorderSide.none));
+        expect(none.bottom, resolvesTo(BorderSide.none));
+        expect(none.start, resolvesTo(BorderSide.none));
+        expect(none.end, resolvesTo(BorderSide.none));
       });
     });
 
@@ -517,7 +516,7 @@ void main() {
         final dto = BorderDirectionalDto.maybeValue(border);
 
         expect(dto, isNotNull);
-        expect(dto?.top?.mixValue?.color, resolvesTo(Colors.red));
+        expect(dto?.top, resolvesTo(const BorderSide(color: Colors.red, width: 2.0)));
       });
 
       test('maybeValue returns null for null', () {
@@ -565,10 +564,9 @@ void main() {
 
         final merged = dto1.merge(dto2);
 
-        expect(merged.top?.mixValue?.color, resolvesTo(Colors.red));
-        expect(merged.top?.mixValue?.width, resolvesTo(2.0));
-        expect(merged.start?.mixValue?.width, resolvesTo(1.0));
-        expect(merged.end?.mixValue?.color, resolvesTo(Colors.blue));
+        expect(merged.top, resolvesTo(const BorderSide(color: Colors.red, width: 2.0)));
+        expect(merged.start, resolvesTo(const BorderSide(width: 1.0)));
+        expect(merged.end, resolvesTo(const BorderSide(color: Colors.blue)));
       });
     });
 
@@ -605,14 +603,10 @@ void main() {
           BoxBorderDto.tryToMerge(borderDto, borderDirectionalDto)
               as BorderDirectionalDto?;
 
-      expect(merged?.top?.mixValue?.color, resolvesTo(Colors.green));
-      expect(merged?.top?.mixValue?.width, resolvesTo(3.0));
-      expect(merged?.bottom?.mixValue?.color, resolvesTo(Colors.yellow));
-      expect(merged?.bottom?.mixValue?.width, resolvesTo(4.0));
-      expect(merged?.start?.mixValue?.color, resolvesTo(Colors.red));
-      expect(merged?.start?.mixValue?.width, resolvesTo(1.0));
-      expect(merged?.end?.mixValue?.color, resolvesTo(Colors.blue));
-      expect(merged?.end?.mixValue?.width, resolvesTo(2.0));
+      expect(merged?.top, resolvesTo(const BorderSide(color: Colors.green, width: 3.0)));
+      expect(merged?.bottom, resolvesTo(const BorderSide(color: Colors.yellow, width: 4.0)));
+      expect(merged?.start, resolvesTo(const BorderSide(color: Colors.red, width: 1.0)));
+      expect(merged?.end, resolvesTo(const BorderSide(color: Colors.blue, width: 2.0)));
     });
 
     test('tryToMerge with BorderDirectionalDto and BorderDto', () {
@@ -630,9 +624,8 @@ void main() {
           BoxBorderDto.tryToMerge(borderDirectionalDto, borderDto)
               as BorderDto?;
 
-      expect(merged?.top?.mixValue?.color, resolvesTo(Colors.green));
-      expect(merged?.top?.mixValue?.width, resolvesTo(3.0));
-      expect(merged?.left?.mixValue?.color, resolvesTo(Colors.red));
+      expect(merged?.top, resolvesTo(const BorderSide(color: Colors.green, width: 3.0)));
+      expect(merged?.left, resolvesTo(const BorderSide(color: Colors.red)));
     });
 
     test('tryToMerge with null values', () {
@@ -648,7 +641,7 @@ void main() {
       final dto = BoxBorderDto.value(border);
 
       expect(dto, isA<BorderDto>());
-      expect((dto as BorderDto).top?.mixValue?.color, resolvesTo(Colors.red));
+      expect((dto as BorderDto).top, resolvesTo(const BorderSide(color: Colors.red)));
     });
 
     test('value factory with BorderDirectional', () {
@@ -662,8 +655,8 @@ void main() {
 
       expect(dto, isA<BorderDirectionalDto>());
       expect(
-        (dto as BorderDirectionalDto).top?.mixValue?.color,
-        resolvesTo(Colors.blue),
+        (dto as BorderDirectionalDto).top,
+        resolvesTo(const BorderSide(color: Colors.blue)),
       );
     });
 

@@ -8,10 +8,10 @@ import 'text_height_behavior_dto.dart';
 final class TextHeightBehaviorUtility<T extends Attribute>
     extends DtoUtility<T, TextHeightBehaviorDto, TextHeightBehavior> {
   late final heightToFirstAscent = BoolUtility(
-    (prop) => only(applyHeightToFirstAscent: prop.value),
+    (prop) => only(applyHeightToFirstAscent: prop.getValue()),
   );
   late final heightToLastDescent = BoolUtility(
-    (prop) => only(applyHeightToLastDescent: prop.value),
+    (prop) => only(applyHeightToLastDescent: prop.getValue()),
   );
 
   late final leadingDistribution = TextLeadingDistributionUtility(

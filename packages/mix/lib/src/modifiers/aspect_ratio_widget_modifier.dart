@@ -129,26 +129,6 @@ class AspectRatioModifierSpecAttribute
   List<Object?> get props => [aspectRatio];
 }
 
-/// A tween that interpolates between two [AspectRatioModifierSpec] instances.
-///
-/// This class can be used in animations to smoothly transition between
-/// different [AspectRatioModifierSpec] specifications.
-class AspectRatioModifierSpecTween extends Tween<AspectRatioModifierSpec?> {
-  AspectRatioModifierSpecTween({super.begin, super.end});
-
-  @override
-  AspectRatioModifierSpec lerp(double t) {
-    if (begin == null && end == null) {
-      return const AspectRatioModifierSpec();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
-  }
-}
 
 final class AspectRatioModifierSpecUtility<T extends Attribute>
     extends MixUtility<T, AspectRatioModifierSpecAttribute> {

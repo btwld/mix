@@ -28,36 +28,44 @@ void main() {
     });
 
     test(
-        'merge should return a new ContextVariantBuilder with merged functions',
-        () {
-      const variant = _MockContextVariant();
-      fn1(BuildContext context) => Style(const MockIntScalarAttribute(1));
-      fn2(BuildContext context) => Style(const MockDoubleScalarAttribute(2.0));
-      final builder1 = ContextVariantBuilder(fn1, variant);
-      final builder2 = ContextVariantBuilder(fn2, variant);
+      'merge should return a new ContextVariantBuilder with merged functions',
+      () {
+        const variant = _MockContextVariant();
+        fn1(BuildContext context) => Style(const MockIntScalarAttribute(1));
+        fn2(BuildContext context) =>
+            Style(const MockDoubleScalarAttribute(2.0));
+        final builder1 = ContextVariantBuilder(fn1, variant);
+        final builder2 = ContextVariantBuilder(fn2, variant);
 
-      final mergedBuilder = builder1.merge(builder2);
+        final mergedBuilder = builder1.merge(builder2);
 
-      expect(mergedBuilder, isNot(same(builder1)));
-      expect(mergedBuilder, isNot(same(builder2)));
-      expect(mergedBuilder.variant, equals(variant));
-      expect(
+        expect(mergedBuilder, isNot(same(builder1)));
+        expect(mergedBuilder, isNot(same(builder2)));
+        expect(mergedBuilder.variant, equals(variant));
+        expect(
           mergedBuilder.fn(MockBuildContext()),
-          equals(Style(const MockIntScalarAttribute(1),
-              const MockDoubleScalarAttribute(2.0))));
-    });
+          equals(
+            Style(
+              const MockIntScalarAttribute(1),
+              const MockDoubleScalarAttribute(2.0),
+            ),
+          ),
+        );
+      },
+    );
 
     test(
-        'mergeKey should return a string containing runtimeType and variant mergeKey',
-        () {
-      const variant = _MockContextVariant();
-      fn(BuildContext context) => Style();
-      final builder = ContextVariantBuilder(fn, variant);
+      'mergeKey should return a string containing runtimeType and variant mergeKey',
+      () {
+        const variant = _MockContextVariant();
+        fn(BuildContext context) => Style();
+        final builder = ContextVariantBuilder(fn, variant);
 
-      final mergeKey = builder.mergeKey;
+        final mergeKey = builder.mergeKey;
 
-      expect(mergeKey, equals('ContextVariantBuilder.${variant.key}'));
-    });
+        expect(mergeKey, equals('ContextVariantBuilder.${variant.key}'));
+      },
+    );
 
     test('props should return a list containing the variant', () {
       const variant = _MockContextVariant();

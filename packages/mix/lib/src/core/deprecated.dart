@@ -19,6 +19,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+import '../attributes/animation/animation_config.dart';
 import '../attributes/border/border_dto.dart';
 import '../attributes/border/border_radius_dto.dart';
 import '../attributes/border/shape_border_dto.dart';
@@ -56,6 +57,7 @@ import '../theme/mix/mix_theme.dart';
 import '../theme/tokens/mix_token.dart';
 import 'attribute.dart';
 import 'mix_element.dart';
+import 'prop.dart';
 import 'styled_widget.dart';
 import 'variant.dart';
 
@@ -860,7 +862,6 @@ extension DeprecatedShapeBorderExt on ShapeBorder {
         squash: self.squash,
       );
     }
-    if (self is MixOutlinedBorder) return (self).toDto();
 
     throw FlutterError.fromParts([
       ErrorSummary('Unsupported ShapeBorder type.'),

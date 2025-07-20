@@ -151,23 +151,3 @@ class PaddingModifierSpecUtility<T extends Attribute>
   }
 }
 
-/// A tween that interpolates between two [PaddingModifierSpec] instances.
-///
-/// This class can be used in animations to smoothly transition between
-/// different [PaddingModifierSpec] specifications.
-class PaddingModifierSpecTween extends Tween<PaddingModifierSpec?> {
-  PaddingModifierSpecTween({super.begin, super.end});
-
-  @override
-  PaddingModifierSpec lerp(double t) {
-    if (begin == null && end == null) {
-      return const PaddingModifierSpec();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
-  }
-}

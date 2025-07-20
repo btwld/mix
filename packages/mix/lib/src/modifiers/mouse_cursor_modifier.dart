@@ -111,26 +111,6 @@ class MouseCursorDecoratorSpecAttribute
   List<Object?> get props => [mouseCursor];
 }
 
-/// A tween that interpolates between two [MouseCursorDecoratorSpec] instances.
-///
-/// This class can be used in animations to smoothly transition between
-/// different [MouseCursorDecoratorSpec] specifications.
-class MouseCursorDecoratorSpecTween extends Tween<MouseCursorDecoratorSpec?> {
-  MouseCursorDecoratorSpecTween({super.begin, super.end});
-
-  @override
-  MouseCursorDecoratorSpec lerp(double t) {
-    if (begin == null && end == null) {
-      return const MouseCursorDecoratorSpec();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
-  }
-}
 
 class MouseCursorModifierSpecUtility<T extends Attribute>
     extends MixUtility<T, MouseCursorDecoratorSpecAttribute> {

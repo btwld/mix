@@ -1,10 +1,10 @@
 // ignore_for_file: prefer_relative_imports,avoid-importing-entrypoint-exports
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../../../internal/compare_mixin.dart';
-
-final class DecorationImageDto extends Mix<DecorationImage> with EqualityMixin {
+final class DecorationImageDto extends Mix<DecorationImage>
+    with Diagnosticable {
   // Properties use MixProp for cleaner merging
   final Prop<ImageProvider>? image;
   final Prop<BoxFit>? fit;
@@ -27,14 +27,14 @@ final class DecorationImageDto extends Mix<DecorationImage> with EqualityMixin {
     bool? isAntiAlias,
   }) {
     return DecorationImageDto.props(
-      image: Prop.maybeValue(image),
-      fit: Prop.maybeValue(fit),
-      alignment: Prop.maybeValue(alignment),
-      centerSlice: Prop.maybeValue(centerSlice),
-      repeat: Prop.maybeValue(repeat),
-      filterQuality: Prop.maybeValue(filterQuality),
-      invertColors: Prop.maybeValue(invertColors),
-      isAntiAlias: Prop.maybeValue(isAntiAlias),
+      image: Prop.maybe(image),
+      fit: Prop.maybe(fit),
+      alignment: Prop.maybe(alignment),
+      centerSlice: Prop.maybe(centerSlice),
+      repeat: Prop.maybe(repeat),
+      filterQuality: Prop.maybe(filterQuality),
+      invertColors: Prop.maybe(invertColors),
+      isAntiAlias: Prop.maybe(isAntiAlias),
     );
   }
 
@@ -106,7 +106,8 @@ final class DecorationImageDto extends Mix<DecorationImage> with EqualityMixin {
       alignment: MixHelpers.resolve(context, alignment) ?? Alignment.center,
       centerSlice: MixHelpers.resolve(context, centerSlice),
       repeat: MixHelpers.resolve(context, repeat) ?? ImageRepeat.noRepeat,
-      filterQuality: MixHelpers.resolve(context, filterQuality) ?? FilterQuality.low,
+      filterQuality:
+          MixHelpers.resolve(context, filterQuality) ?? FilterQuality.low,
       invertColors: MixHelpers.resolve(context, invertColors) ?? false,
       isAntiAlias: MixHelpers.resolve(context, isAntiAlias) ?? false,
     );
@@ -136,19 +137,30 @@ final class DecorationImageDto extends Mix<DecorationImage> with EqualityMixin {
     );
   }
 
-  /// The list of properties that constitute the state of this [DecorationImageDto].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [DecorationImageDto] instances for equality.
   @override
-  List<Object?> get props => [
-    image,
-    fit,
-    alignment,
-    centerSlice,
-    repeat,
-    filterQuality,
-    invertColors,
-    isAntiAlias,
-  ];
+  operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+
+    return other is DecorationImageDto &&
+        image == other.image &&
+        fit == other.fit &&
+        alignment == other.alignment &&
+        centerSlice == other.centerSlice &&
+        repeat == other.repeat &&
+        filterQuality == other.filterQuality &&
+        invertColors == other.invertColors &&
+        isAntiAlias == other.isAntiAlias;
+  }
+
+  @override
+  int get hashCode =>
+      image.hashCode ^
+      fit.hashCode ^
+      alignment.hashCode ^
+      centerSlice.hashCode ^
+      repeat.hashCode ^
+      filterQuality.hashCode ^
+      invertColors.hashCode ^
+      isAntiAlias.hashCode;
 }

@@ -339,7 +339,7 @@ void main() {
         ..flex.mainAxisAlignment.center()
         ..flex.crossAxisAlignment.center();
 
-      final attr = util.attributeValue!;
+      final attr = util.attribute!;
 
       expect(util, isA<Style>());
       expect(attr.box!.alignment, resolvesTo(Alignment.center));
@@ -386,8 +386,8 @@ void main() {
         ..box.padding(20)
         ..flex.mainAxisAlignment.end();
 
-      final attr1 = flexBox1.attributeValue!;
-      final attr2 = flexBox2.attributeValue!;
+      final attr1 = flexBox1.attribute!;
+      final attr2 = flexBox2.attribute!;
 
       expect(attr1.box!.padding, resolvesTo(const EdgeInsets.all(10.0)));
       expect(attr2.box!.padding, resolvesTo(const EdgeInsets.all(20.0)));
@@ -439,7 +439,7 @@ void main() {
         ..flex.mainAxisAlignment.center()
         ..flex.crossAxisAlignment.center();
 
-      final flexBoxAttribute = flexBoxValue.attributeValue!;
+      final flexBoxAttribute = flexBoxValue.attribute!;
       final flexBoxAttribute2 = flexBox.box.padding(20);
 
       expect(

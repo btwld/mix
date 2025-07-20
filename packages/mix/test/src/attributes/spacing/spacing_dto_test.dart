@@ -31,10 +31,10 @@ void main() {
 
       test('props factory assigns properties correctly', () {
         final dto = EdgeInsetsDto.props(
-          top: MixProp.fromValue(SpaceDto.value(10.0)),
-          bottom: MixProp.fromValue(SpaceDto.value(20.0)),
-          left: MixProp.fromValue(SpaceDto.value(30.0)),
-          right: MixProp.fromValue(SpaceDto.value(40.0)),
+          top: MixProp(SpaceDto.value(10.0)),
+          bottom: MixProp(SpaceDto.value(20.0)),
+          left: MixProp(SpaceDto.value(30.0)),
+          right: MixProp(SpaceDto.value(40.0)),
         );
 
         expect(
@@ -212,12 +212,9 @@ void main() {
           theme: MixScopeData.static(tokens: {spaceToken: 10.0}),
         );
 
-        final context = tester.element(find.byType(Container));
-        final mixContext = MixContext.create(context, const Style.empty());
-
         expect(
-          dto.resolve(mixContext),
-          const EdgeInsets.only(top: 10.0, left: 20.0),
+          dto,
+          resolvesTo(const EdgeInsets.only(top: 10.0, left: 20.0)),
         );
       });
 
@@ -225,7 +222,7 @@ void main() {
         const token = MixToken<double>('undefined');
         final dto = EdgeInsetsDto.valueSpaceDto(top: SpaceDto.token(token));
 
-        expect(() => dto.resolve(EmptyMixData), throwsStateError);
+        expect(() => dto.resolve(MockBuildContext()), throwsStateError);
       });
     });
   });
@@ -255,10 +252,10 @@ void main() {
 
       test('props factory assigns properties correctly', () {
         final dto = EdgeInsetsDirectionalDto.props(
-          top: MixProp.fromValue(SpaceDto.value(10.0)),
-          bottom: MixProp.fromValue(SpaceDto.value(20.0)),
-          start: MixProp.fromValue(SpaceDto.value(30.0)),
-          end: MixProp.fromValue(SpaceDto.value(40.0)),
+          top: MixProp(SpaceDto.value(10.0)),
+          bottom: MixProp(SpaceDto.value(20.0)),
+          start: MixProp(SpaceDto.value(30.0)),
+          end: MixProp(SpaceDto.value(40.0)),
         );
 
         expect(
@@ -446,12 +443,9 @@ void main() {
           theme: MixScopeData.static(tokens: {spaceToken: 10.0}),
         );
 
-        final context = tester.element(find.byType(Container));
-        final mixContext = MixContext.create(context, const Style.empty());
-
         expect(
-          dto.resolve(mixContext),
-          const EdgeInsetsDirectional.only(top: 10.0, start: 20.0),
+          dto,
+          resolvesTo(const EdgeInsetsDirectional.only(top: 10.0, start: 20.0)),
         );
       });
 
@@ -461,7 +455,7 @@ void main() {
           top: SpaceDto.token(token),
         );
 
-        expect(() => dto.resolve(EmptyMixData), throwsStateError);
+        expect(() => dto.resolve(MockBuildContext()), throwsStateError);
       });
     });
   });

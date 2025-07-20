@@ -125,10 +125,10 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
     Clip? clipBehavior,
   }) {
     return StackSpecAttribute.props(
-      alignment: Prop.maybeValue(alignment),
-      fit: Prop.maybeValue(fit),
-      textDirection: Prop.maybeValue(textDirection),
-      clipBehavior: Prop.maybeValue(clipBehavior),
+      alignment: Prop.maybe(alignment),
+      fit: Prop.maybe(fit),
+      textDirection: Prop.maybe(textDirection),
+      clipBehavior: Prop.maybe(clipBehavior),
     );
   }
 
@@ -259,23 +259,3 @@ class StackSpecUtility<T extends Attribute>
   }
 }
 
-/// A tween that interpolates between two [StackSpec] instances.
-///
-/// This class can be used in animations to smoothly transition between
-/// different [StackSpec] specifications.
-class StackSpecTween extends Tween<StackSpec?> {
-  StackSpecTween({super.begin, super.end});
-
-  @override
-  StackSpec lerp(double t) {
-    if (begin == null && end == null) {
-      return const StackSpec();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
-  }
-}

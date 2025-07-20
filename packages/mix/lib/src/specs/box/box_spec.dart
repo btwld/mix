@@ -1,12 +1,17 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../attributes/border/border_dto.dart';
+import '../../attributes/border/border_radius_dto.dart';
 import '../../attributes/constraints/constraints_dto.dart';
 import '../../attributes/constraints/constraints_util.dart';
 import '../../attributes/decoration/decoration_dto.dart';
 import '../../attributes/decoration/decoration_util.dart';
 import '../../attributes/enum/enum_util.dart';
+import '../../attributes/gradient/gradient_dto.dart';
 import '../../attributes/scalars/scalar_util.dart';
+import '../../attributes/shadow/shadow_dto.dart';
 import '../../attributes/spacing/edge_insets_dto.dart';
 import '../../attributes/spacing/spacing_util.dart';
 import '../../core/attribute.dart';
@@ -236,18 +241,35 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
 /// the [BoxSpec] constructor.
 class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
   final Prop<AlignmentGeometry>? alignment;
-  final MixProp<EdgeInsetsGeometry, EdgeInsetsGeometryDto>? padding;
-  final MixProp<EdgeInsetsGeometry, EdgeInsetsGeometryDto>? margin;
-  final MixProp<BoxConstraints, BoxConstraintsDto>? constraints;
-  final MixProp<Decoration, DecorationDto>? decoration;
-  final MixProp<Decoration, DecorationDto>? foregroundDecoration;
+  final MixProp<EdgeInsetsGeometry>? padding;
+  final MixProp<EdgeInsetsGeometry>? margin;
+  final MixProp<BoxConstraints>? constraints;
+  final MixProp<Decoration>? decoration;
+  final MixProp<Decoration>? foregroundDecoration;
   final Prop<Matrix4>? transform;
   final Prop<AlignmentGeometry>? transformAlignment;
   final Prop<Clip>? clipBehavior;
   final Prop<double>? width;
   final Prop<double>? height;
 
-  factory BoxSpecAttribute({
+  const BoxSpecAttribute({
+    this.alignment,
+    this.padding,
+    this.margin,
+    this.constraints,
+    this.decoration,
+    this.foregroundDecoration,
+    this.transform,
+    this.transformAlignment,
+    this.clipBehavior,
+    this.width,
+    this.height,
+    super.animation,
+    super.modifiers,
+    super.variants,
+  });
+
+  factory BoxSpecAttribute.only({
     AlignmentGeometry? alignment,
     EdgeInsetsGeometryDto? padding,
     EdgeInsetsGeometryDto? margin,
@@ -260,34 +282,162 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
     double? width,
     double? height,
   }) {
-    return BoxSpecAttribute.props(
-      alignment: Prop.maybeValue(alignment),
-      padding: MixProp.maybeValue(padding),
-      margin: MixProp.maybeValue(margin),
-      constraints: MixProp.maybeValue(constraints),
-      decoration: MixProp.maybeValue(decoration),
-      foregroundDecoration: MixProp.maybeValue(foregroundDecoration),
-      transform: Prop.maybeValue(transform),
-      transformAlignment: Prop.maybeValue(transformAlignment),
-      clipBehavior: Prop.maybeValue(clipBehavior),
-      width: Prop.maybeValue(width),
-      height: Prop.maybeValue(height),
+    return BoxSpecAttribute(
+      alignment: Prop.maybe(alignment),
+      padding: MixProp.maybe(padding),
+      margin: MixProp.maybe(margin),
+      constraints: MixProp.maybe(constraints),
+      decoration: MixProp.maybe(decoration),
+      foregroundDecoration: MixProp.maybe(foregroundDecoration),
+      transform: Prop.maybe(transform),
+      transformAlignment: Prop.maybe(transformAlignment),
+      clipBehavior: Prop.maybe(clipBehavior),
+      width: Prop.maybe(width),
+      height: Prop.maybe(height),
     );
   }
 
-  const BoxSpecAttribute.props({
-    this.alignment,
-    this.padding,
-    this.margin,
-    this.constraints,
-    this.decoration,
-    this.foregroundDecoration,
-    this.transform,
-    this.transformAlignment,
-    this.clipBehavior,
-    this.width,
-    this.height,
-  });
+  factory BoxSpecAttribute.padding(EdgeInsetsGeometryDto value) {
+    return BoxSpecAttribute.only(padding: value);
+  }
+
+  factory BoxSpecAttribute.margin(EdgeInsetsGeometryDto value) {
+    return BoxSpecAttribute.only(margin: value);
+  }
+
+  factory BoxSpecAttribute.constraints(BoxConstraintsDto value) {
+    return BoxSpecAttribute.only(constraints: value);
+  }
+
+  factory BoxSpecAttribute.decoration(DecorationDto value) {
+    return BoxSpecAttribute.only(decoration: value);
+  }
+
+  factory BoxSpecAttribute.foregroundDecoration(DecorationDto value) {
+    return BoxSpecAttribute.only(foregroundDecoration: value);
+  }
+
+  factory BoxSpecAttribute.transform(Matrix4 value) {
+    return BoxSpecAttribute.only(transform: value);
+  }
+
+  factory BoxSpecAttribute.transformAlignment(AlignmentGeometry value) {
+    return BoxSpecAttribute.only(transformAlignment: value);
+  }
+
+  factory BoxSpecAttribute.clipBehavior(Clip value) {
+    return BoxSpecAttribute.only(clipBehavior: value);
+  }
+
+  factory BoxSpecAttribute.width(double value) {
+    return BoxSpecAttribute.only(width: value);
+  }
+
+  factory BoxSpecAttribute.height(double value) {
+    return BoxSpecAttribute.only(height: value);
+  }
+
+  factory BoxSpecAttribute.alignment(AlignmentGeometry value) {
+    return BoxSpecAttribute.only(alignment: value);
+  }
+
+  factory BoxSpecAttribute.minWidth(double value) {
+    return BoxSpecAttribute.only(
+      constraints: BoxConstraintsDto(minWidth: value),
+    );
+  }
+
+  factory BoxSpecAttribute.maxWidth(double value) {
+    return BoxSpecAttribute.only(
+      constraints: BoxConstraintsDto(maxWidth: value),
+    );
+  }
+
+  factory BoxSpecAttribute.minHeight(double value) {
+    return BoxSpecAttribute.only(
+      constraints: BoxConstraintsDto(minHeight: value),
+    );
+  }
+
+  factory BoxSpecAttribute.maxHeight(double value) {
+    return BoxSpecAttribute.only(
+      constraints: BoxConstraintsDto(maxHeight: value),
+    );
+  }
+
+  // Border
+  factory BoxSpecAttribute.border(BoxBorderDto value) {
+    return BoxSpecAttribute.only(decoration: BoxDecorationDto(border: value));
+  }
+
+  factory BoxSpecAttribute.borderDirectional(BorderDirectionalDto value) {
+    return BoxSpecAttribute.only(decoration: BoxDecorationDto(border: value));
+  }
+
+  factory BoxSpecAttribute.borderRadius(BorderRadiusGeometryDto value) {
+    return BoxSpecAttribute.only(
+      decoration: BoxDecorationDto(borderRadius: value),
+    );
+  }
+
+  factory BoxSpecAttribute.borderRadiusDirectional(
+    BorderRadiusDirectionalDto value,
+  ) {
+    return BoxSpecAttribute.only(
+      decoration: BoxDecorationDto(borderRadius: value),
+    );
+  }
+
+  factory BoxSpecAttribute.color(Color value) {
+    return BoxSpecAttribute.only(decoration: BoxDecorationDto(color: value));
+  }
+
+  factory BoxSpecAttribute.gradient(GradientDto value) {
+    return BoxSpecAttribute.only(decoration: BoxDecorationDto(gradient: value));
+  }
+
+  factory BoxSpecAttribute.linearGradient(LinearGradientDto value) {
+    return BoxSpecAttribute.only(decoration: BoxDecorationDto(gradient: value));
+  }
+
+  // radial
+  factory BoxSpecAttribute.radialGradient(RadialGradientDto value) {
+    return BoxSpecAttribute.only(decoration: BoxDecorationDto(gradient: value));
+  }
+
+  factory BoxSpecAttribute.sweepGradient(SweepGradientDto value) {
+    return BoxSpecAttribute.only(decoration: BoxDecorationDto(gradient: value));
+  }
+
+  factory BoxSpecAttribute.shadows(List<BoxShadowDto> value) {
+    return BoxSpecAttribute.only(
+      decoration: BoxDecorationDto(boxShadow: value),
+    );
+  }
+
+  factory BoxSpecAttribute.shadow(BoxShadowDto value) {
+    return BoxSpecAttribute.only(
+      decoration: BoxDecorationDto(boxShadow: [value]),
+    );
+  }
+
+  factory BoxSpecAttribute.elevation(ElevationShadow value) {
+    return BoxSpecAttribute.only(
+      decoration: BoxDecorationDto(
+        boxShadow: BoxShadowDto.fromElevation(value),
+      ),
+    );
+  }
+
+  factory BoxSpecAttribute.shapeDecoration(ShapeDecorationDto value) {
+    return BoxSpecAttribute.only(decoration: value);
+  }
+
+  factory BoxSpecAttribute.shape(BoxShape value) {
+    return BoxSpecAttribute.only(decoration: BoxDecorationDto(shape: value));
+  }
+
+  // Foreground
 
   /// Constructor that accepts a [BoxSpec] value and extracts its properties.
   ///
@@ -298,7 +448,7 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
   /// final attr = BoxSpecAttribute.value(spec);
   /// ```
   static BoxSpecAttribute value(BoxSpec spec) {
-    return BoxSpecAttribute(
+    return BoxSpecAttribute.only(
       alignment: spec.alignment,
       padding: EdgeInsetsGeometryDto.maybeValue(spec.padding),
       margin: EdgeInsetsGeometryDto.maybeValue(spec.margin),
@@ -334,7 +484,7 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
   /// final boxSpec = BoxSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  BoxSpec resolve(BuildContext context) {
+  BoxSpec resolveSpec(BuildContext context) {
     return BoxSpec(
       alignment: MixHelpers.resolve(context, alignment),
       padding: MixHelpers.resolve(context, padding),
@@ -362,7 +512,7 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
   BoxSpecAttribute merge(BoxSpecAttribute? other) {
     if (other == null) return this;
 
-    return BoxSpecAttribute.props(
+    return BoxSpecAttribute(
       alignment: MixHelpers.merge(alignment, other.alignment),
       padding: MixHelpers.merge(padding, other.padding),
       margin: MixHelpers.merge(margin, other.margin),
@@ -445,19 +595,29 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
 ///
 /// This class provides methods to set individual properties of a [BoxSpec].
 /// Use the methods of this class to configure specific properties of a [BoxSpec].
-class BoxSpecUtility<T extends Attribute>
-    extends SpecUtility<T, BoxSpecAttribute> {
+class BoxSpecUtility extends SpecUtility<BoxSpec> {
+  @override
+  final BoxSpecAttribute attribute;
+
   /// Utility for defining [BoxSpecAttribute.alignment]
-  late final alignment = AlignmentGeometryUtility((v) => only(alignment: v));
+  late final alignment = AlignmentGeometryUtility(
+    (v) => build(BoxSpecAttribute(alignment: v)),
+  );
 
   /// Utility for defining [BoxSpecAttribute.padding]
-  late final padding = EdgeInsetsGeometryUtility((v) => only(padding: v));
+  late final padding = EdgeInsetsGeometryUtility(
+    (v) => build(BoxSpecAttribute(padding: v)),
+  );
 
   /// Utility for defining [BoxSpecAttribute.margin]
-  late final margin = EdgeInsetsGeometryUtility((v) => only(margin: v));
+  late final margin = EdgeInsetsGeometryUtility(
+    (v) => build(BoxSpecAttribute(margin: v)),
+  );
 
   /// Utility for defining [BoxSpecAttribute.constraints]
-  late final constraints = BoxConstraintsUtility((v) => only(constraints: v));
+  late final constraints = BoxConstraintsUtility(
+    (v) => build(BoxSpecAttribute(constraints: v)),
+  );
 
   /// Utility for defining [BoxSpecAttribute.constraints.minWidth]
   late final minWidth = constraints.minWidth;
@@ -472,7 +632,9 @@ class BoxSpecUtility<T extends Attribute>
   late final maxHeight = constraints.maxHeight;
 
   /// Utility for defining [BoxSpecAttribute.decoration]
-  late final decoration = BoxDecorationUtility((v) => only(decoration: v));
+  late final decoration = BoxDecorationUtility(
+    (v) => build(BoxSpecAttribute(decoration: v)),
+  );
 
   /// Utility for defining [BoxSpecAttribute.decoration.color]
   late final color = decoration.color;
@@ -512,7 +674,7 @@ class BoxSpecUtility<T extends Attribute>
 
   /// Utility for defining [BoxSpecAttribute.decoration]
   late final shapeDecoration = ShapeDecorationUtility(
-    (v) => only(decoration: v),
+    (v) => build(decoration: v),
   );
 
   /// Utility for defining [BoxSpecAttribute.shapeDecoration.shape]
@@ -528,7 +690,7 @@ class BoxSpecUtility<T extends Attribute>
 
   /// Utility for defining [BoxSpecAttribute.transformAlignment]
   late final transformAlignment = AlignmentGeometryUtility(
-    (v) => only(transformAlignment: v),
+    (v) => props(transformAlignment: v),
   );
 
   /// Utility for defining [BoxSpecAttribute.clipBehavior]
@@ -547,60 +709,10 @@ class BoxSpecUtility<T extends Attribute>
   // TODO: add animated back into it
   //TODO: add wrap
 
-  BoxSpecUtility(super.builder);
-
-  static BoxSpecUtility<BoxSpecAttribute> get self => BoxSpecUtility((v) => v);
-
-  /// Returns a new [BoxSpecAttribute] with the specified properties.
-  @override
-  T only({
-    AlignmentGeometry? alignment,
-    EdgeInsetsGeometryDto? padding,
-    EdgeInsetsGeometryDto? margin,
-    BoxConstraintsDto? constraints,
-    DecorationDto? decoration,
-    DecorationDto? foregroundDecoration,
-    Matrix4? transform,
-    AlignmentGeometry? transformAlignment,
-    Clip? clipBehavior,
-    double? width,
-    double? height,
-  }) {
-    return builder(
-      BoxSpecAttribute(
-        alignment: alignment,
-        padding: padding,
-        margin: margin,
-        constraints: constraints,
-        decoration: decoration,
-        foregroundDecoration: foregroundDecoration,
-        transform: transform,
-        transformAlignment: transformAlignment,
-        clipBehavior: clipBehavior,
-        width: width,
-        height: height,
-      ),
-    );
-  }
-}
-
-/// A tween that interpolates between two [BoxSpec] instances.
-///
-/// This class can be used in animations to smoothly transition between
-/// different [BoxSpec] specifications.
-class BoxSpecTween extends Tween<BoxSpec?> {
-  BoxSpecTween({super.begin, super.end});
+  BoxSpecUtility({this.attribute = const BoxSpecAttribute()});
 
   @override
-  BoxSpec lerp(double t) {
-    if (begin == null && end == null) {
-      return const BoxSpec();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
+  BoxSpecUtility build(BoxSpecAttribute attribute) {
+    return BoxSpecUtility(attribute: this.attribute.merge(attribute));
   }
 }

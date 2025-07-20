@@ -87,7 +87,7 @@ class RadialGradientUtility<T extends Attribute>
   late final center = AlignmentGeometryUtility((v) => only(center: v));
 
   /// Utility for defining [RadialGradientDto.radius]
-  late final radius = DoubleUtility((prop) => only(radius: prop.value));
+  late final radius = DoubleUtility((prop) => only(radius: prop.getValue()));
 
   /// Utility for defining [RadialGradientDto.tileMode]
   late final tileMode = TileModeUtility((v) => only(tileMode: v));
@@ -97,7 +97,7 @@ class RadialGradientUtility<T extends Attribute>
 
   /// Utility for defining [RadialGradientDto.focalRadius]
   late final focalRadius = DoubleUtility(
-    (prop) => only(focalRadius: prop.value),
+    (prop) => only(focalRadius: prop.getValue()),
   );
 
   /// Utility for defining [RadialGradientDto.transform]
@@ -173,10 +173,14 @@ class SweepGradientUtility<T extends Attribute>
   late final center = AlignmentGeometryUtility((v) => only(center: v));
 
   /// Utility for defining [SweepGradientDto.startAngle]
-  late final startAngle = DoubleUtility((prop) => only(startAngle: prop.value));
+  late final startAngle = DoubleUtility(
+    (prop) => only(startAngle: prop.getValue()),
+  );
 
   /// Utility for defining [SweepGradientDto.endAngle]
-  late final endAngle = DoubleUtility((prop) => only(endAngle: prop.value));
+  late final endAngle = DoubleUtility(
+    (prop) => only(endAngle: prop.getValue()),
+  );
 
   /// Utility for defining [SweepGradientDto.tileMode]
   late final tileMode = TileModeUtility((v) => only(tileMode: v));

@@ -216,16 +216,16 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
 /// the [TextSpec] constructor.
 class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
   final Prop<TextOverflow>? overflow;
-  final MixProp<StrutStyle, StrutStyleDto>? strutStyle;
+  final MixProp<StrutStyle>? strutStyle;
   final Prop<TextAlign>? textAlign;
   final Prop<TextScaler>? textScaler;
   final Prop<int>? maxLines;
-  final MixProp<TextStyle, TextStyleDto>? style;
+  final MixProp<TextStyle>? style;
   final Prop<TextWidthBasis>? textWidthBasis;
-  final MixProp<TextHeightBehavior, TextHeightBehaviorDto>? textHeightBehavior;
+  final MixProp<TextHeightBehavior>? textHeightBehavior;
   final Prop<TextDirection>? textDirection;
   final Prop<bool>? softWrap;
-  final MixProp<TextDirective, TextDirectiveDto>? directive;
+  final MixProp<TextDirective>? directive;
 
   factory TextSpecAttribute({
     TextOverflow? overflow,
@@ -241,17 +241,17 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
     TextDirectiveDto? directive,
   }) {
     return TextSpecAttribute.props(
-      overflow: Prop.maybeValue(overflow),
-      strutStyle: MixProp.maybeValue(strutStyle),
-      textAlign: Prop.maybeValue(textAlign),
-      textScaler: Prop.maybeValue(textScaler),
-      maxLines: Prop.maybeValue(maxLines),
-      style: MixProp.maybeValue(style),
-      textWidthBasis: Prop.maybeValue(textWidthBasis),
-      textHeightBehavior: MixProp.maybeValue(textHeightBehavior),
-      textDirection: Prop.maybeValue(textDirection),
-      softWrap: Prop.maybeValue(softWrap),
-      directive: MixProp.maybeValue(directive),
+      overflow: Prop.maybe(overflow),
+      strutStyle: MixProp.maybe(strutStyle),
+      textAlign: Prop.maybe(textAlign),
+      textScaler: Prop.maybe(textScaler),
+      maxLines: Prop.maybe(maxLines),
+      style: MixProp.maybe(style),
+      textWidthBasis: Prop.maybe(textWidthBasis),
+      textHeightBehavior: MixProp.maybe(textHeightBehavior),
+      textDirection: Prop.maybe(textDirection),
+      softWrap: Prop.maybe(softWrap),
+      directive: MixProp.maybe(directive),
     );
   }
 
@@ -589,23 +589,3 @@ class TextSpecUtility<T extends Attribute>
   }
 }
 
-/// A tween that interpolates between two [TextSpec] instances.
-///
-/// This class can be used in animations to smoothly transition between
-/// different [TextSpec] specifications.
-class TextSpecTween extends Tween<TextSpec?> {
-  TextSpecTween({super.begin, super.end});
-
-  @override
-  TextSpec lerp(double t) {
-    if (begin == null && end == null) {
-      return const TextSpec();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
-  }
-}

@@ -2,19 +2,17 @@
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-import '../../internal/compare_mixin.dart';
-
 // Deprecated typedef moved to src/core/deprecated.dart
 
 @immutable
-sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry> extends Mix<T>
-    with EqualityMixin {
-  final MixProp<double, SpaceDto>? top;
-  final MixProp<double, SpaceDto>? bottom;
+sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
+    extends Mix<T> {
+  final Prop<double>? top;
+  final Prop<double>? bottom;
 
   const EdgeInsetsGeometryDto({this.top, this.bottom});
 
-  static EdgeInsetsGeometryDto<V> value<V extends EdgeInsetsGeometry>(V value) {
+  factory EdgeInsetsGeometryDto.value(T value) {
     return switch (value) {
           (EdgeInsets edgeInsets) => EdgeInsetsDto.value(edgeInsets),
           (EdgeInsetsDirectional edgeInsetsDirectional) =>
@@ -23,7 +21,7 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry> extends Mix<T>
             'Unsupported EdgeInsetsGeometry type: ${value.runtimeType}',
           ),
         }
-        as EdgeInsetsGeometryDto<V>;
+        as EdgeInsetsGeometryDto<T>;
   }
 
   static EdgeInsetsGeometryDto<T>? maybeValue<T extends EdgeInsetsGeometry>(
@@ -51,19 +49,19 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry> extends Mix<T>
       'Cannot provide both directional and non-directional values',
     );
     if (start != null || end != null) {
-      return EdgeInsetsDirectionalDto.props(
-        top: MixProp.maybeValue(SpaceDto.maybeValue(top)),
-        bottom: MixProp.maybeValue(SpaceDto.maybeValue(bottom)),
-        start: MixProp.maybeValue(SpaceDto.maybeValue(start)),
-        end: MixProp.maybeValue(SpaceDto.maybeValue(end)),
+      return EdgeInsetsDirectionalDto(
+        top: Prop.maybe(top),
+        bottom: Prop.maybe(bottom),
+        start: Prop.maybe(start),
+        end: Prop.maybe(end),
       );
     }
 
-    return EdgeInsetsDto.props(
-      top: MixProp.maybeValue(SpaceDto.maybeValue(top)),
-      bottom: MixProp.maybeValue(SpaceDto.maybeValue(bottom)),
-      left: MixProp.maybeValue(SpaceDto.maybeValue(left)),
-      right: MixProp.maybeValue(SpaceDto.maybeValue(right)),
+    return EdgeInsetsDto(
+      top: Prop.maybe(top),
+      bottom: Prop.maybe(bottom),
+      left: Prop.maybe(left),
+      right: Prop.maybe(right),
     );
   }
 
@@ -92,7 +90,7 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry> extends Mix<T>
   EdgeInsetsDto _asEdgeInset() {
     if (this is EdgeInsetsDto) return this as EdgeInsetsDto;
 
-    return EdgeInsetsDto.props(top: top, bottom: bottom);
+    return EdgeInsetsDto(top: top, bottom: bottom);
   }
 
   EdgeInsetsDirectionalDto _asEdgeInsetDirectional() {
@@ -100,34 +98,27 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry> extends Mix<T>
       return this as EdgeInsetsDirectionalDto;
     }
 
-    return EdgeInsetsDirectionalDto.props(top: top, bottom: bottom);
+    return EdgeInsetsDirectionalDto(top: top, bottom: bottom);
   }
 
   @override
   EdgeInsetsGeometryDto<T> merge(covariant EdgeInsetsGeometryDto<T>? other);
 }
 
-final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets>
-    with EqualityMixin {
-  final MixProp<double, SpaceDto>? left;
-  final MixProp<double, SpaceDto>? right;
+final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
+  final Prop<double>? left;
+  final Prop<double>? right;
 
-  const EdgeInsetsDto.props({super.top, super.bottom, this.left, this.right});
+  const EdgeInsetsDto({super.top, super.bottom, this.left, this.right});
 
   // Main constructor accepts raw double values
-  factory EdgeInsetsDto({
-    double? top,
-    double? bottom,
-    double? left,
-    double? right,
-  }) {
-    return EdgeInsetsDto.props(
-      top: MixProp.maybeValue(SpaceDto.maybeValue(top)),
-      bottom: MixProp.maybeValue(SpaceDto.maybeValue(bottom)),
-      left: MixProp.maybeValue(SpaceDto.maybeValue(left)),
-      right: MixProp.maybeValue(SpaceDto.maybeValue(right)),
-    );
-  }
+  EdgeInsetsDto.only({double? top, double? bottom, double? left, double? right})
+    : this(
+        top: Prop.maybe(top),
+        bottom: Prop.maybe(bottom),
+        left: Prop.maybe(left),
+        right: Prop.maybe(right),
+      );
 
   /// Constructor that accepts an [EdgeInsets] value and extracts its properties.
   ///
@@ -137,48 +128,18 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets>
   /// const edgeInsets = EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0);
   /// final dto = EdgeInsetsDto.value(edgeInsets);
   /// ```
-  factory EdgeInsetsDto.value(EdgeInsets edgeInsets) {
-    return EdgeInsetsDto(
-      top: edgeInsets.top,
-      bottom: edgeInsets.bottom,
-      left: edgeInsets.left,
-      right: edgeInsets.right,
-    );
-  }
-
-  EdgeInsetsDto.all(double value)
-    : this.props(
-        top: MixProp.fromValue(SpaceDto.value(value)),
-        bottom: MixProp.fromValue(SpaceDto.value(value)),
-        left: MixProp.fromValue(SpaceDto.value(value)),
-        right: MixProp.fromValue(SpaceDto.value(value)),
+  EdgeInsetsDto.value(EdgeInsets edgeInsets)
+    : this.only(
+        top: edgeInsets.top,
+        bottom: edgeInsets.bottom,
+        left: edgeInsets.left,
+        right: edgeInsets.right,
       );
 
-  EdgeInsetsDto.none() : this.all(0);
+  EdgeInsetsDto.all(double value)
+    : this.only(top: value, bottom: value, left: value, right: value);
 
-  /// Factory constructor that accepts SpaceDto parameters.
-  ///
-  /// This is useful for utilities that work with SpaceDto objects.
-  ///
-  /// ```dart
-  /// final dto = EdgeInsetsDto.valueSpaceDto(
-  ///   top: SpaceDto.value(8.0),
-  ///   left: SpaceDto.token(someToken),
-  /// );
-  /// ```
-  factory EdgeInsetsDto.valueSpaceDto({
-    SpaceDto? top,
-    SpaceDto? bottom,
-    SpaceDto? left,
-    SpaceDto? right,
-  }) {
-    return EdgeInsetsDto.props(
-      top: MixProp.maybeValue(top),
-      bottom: MixProp.maybeValue(bottom),
-      left: MixProp.maybeValue(left),
-      right: MixProp.maybeValue(right),
-    );
-  }
+  EdgeInsetsDto.none() : this.all(0);
 
   /// Constructor that accepts a nullable [EdgeInsets] value and extracts its properties.
   ///
@@ -188,7 +149,7 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets>
   /// const EdgeInsets? edgeInsets = EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0);
   /// final dto = EdgeInsetsDto.maybeValue(edgeInsets); // Returns EdgeInsetsDto or null
   /// ```
-  static EdgeInsetsDto? maybeValue(EdgeInsets? edgeInsets) {
+  EdgeInsetsDto? maybeValue(EdgeInsets? edgeInsets) {
     return edgeInsets != null ? EdgeInsetsDto.value(edgeInsets) : null;
   }
 
@@ -206,7 +167,7 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets>
   EdgeInsetsDto merge(EdgeInsetsDto? other) {
     if (other == null) return this;
 
-    return EdgeInsetsDto.props(
+    return EdgeInsetsDto(
       top: MixHelpers.merge(top, other.top),
       bottom: MixHelpers.merge(bottom, other.bottom),
       left: MixHelpers.merge(left, other.left),
@@ -215,16 +176,28 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets>
   }
 
   @override
-  List<Object?> get props => [top, bottom, left, right];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is EdgeInsetsDto &&
+        other.top == top &&
+        other.bottom == bottom &&
+        other.left == left &&
+        other.right == right;
+  }
+
+  @override
+  int get hashCode {
+    return top.hashCode ^ bottom.hashCode ^ left.hashCode ^ right.hashCode;
+  }
 }
 
 final class EdgeInsetsDirectionalDto
-    extends EdgeInsetsGeometryDto<EdgeInsetsDirectional>
-    with EqualityMixin {
-  final MixProp<double, SpaceDto>? start;
-  final MixProp<double, SpaceDto>? end;
+    extends EdgeInsetsGeometryDto<EdgeInsetsDirectional> {
+  final Prop<double>? start;
+  final Prop<double>? end;
 
-  const EdgeInsetsDirectionalDto.props({
+  const EdgeInsetsDirectionalDto({
     super.top,
     super.bottom,
     this.start,
@@ -232,19 +205,17 @@ final class EdgeInsetsDirectionalDto
   });
 
   // Main constructor accepts raw double values
-  factory EdgeInsetsDirectionalDto({
+  EdgeInsetsDirectionalDto.only({
     double? top,
     double? bottom,
     double? start,
     double? end,
-  }) {
-    return EdgeInsetsDirectionalDto.props(
-      top: MixProp.maybeValue(SpaceDto.maybeValue(top)),
-      bottom: MixProp.maybeValue(SpaceDto.maybeValue(bottom)),
-      start: MixProp.maybeValue(SpaceDto.maybeValue(start)),
-      end: MixProp.maybeValue(SpaceDto.maybeValue(end)),
-    );
-  }
+  }) : this(
+         top: Prop.maybe(top),
+         bottom: Prop.maybe(bottom),
+         start: Prop.maybe(start),
+         end: Prop.maybe(end),
+       );
 
   /// Constructor that accepts an [EdgeInsetsDirectional] value and extracts its properties.
   ///
@@ -255,7 +226,7 @@ final class EdgeInsetsDirectionalDto
   /// final dto = EdgeInsetsDirectionalDto.value(edgeInsets);
   /// ```
   factory EdgeInsetsDirectionalDto.value(EdgeInsetsDirectional edgeInsets) {
-    return EdgeInsetsDirectionalDto(
+    return EdgeInsetsDirectionalDto.only(
       top: edgeInsets.top,
       bottom: edgeInsets.bottom,
       start: edgeInsets.start,
@@ -264,38 +235,9 @@ final class EdgeInsetsDirectionalDto
   }
 
   EdgeInsetsDirectionalDto.all(double value)
-    : this.props(
-        top: MixProp.fromValue(SpaceDto.value(value)),
-        bottom: MixProp.fromValue(SpaceDto.value(value)),
-        start: MixProp.fromValue(SpaceDto.value(value)),
-        end: MixProp.fromValue(SpaceDto.value(value)),
-      );
+    : this.only(top: value, bottom: value, start: value, end: value);
 
   EdgeInsetsDirectionalDto.none() : this.all(0);
-
-  /// Factory constructor that accepts SpaceDto parameters.
-  ///
-  /// This is useful for utilities that work with SpaceDto objects.
-  ///
-  /// ```dart
-  /// final dto = EdgeInsetsDirectionalDto.valueSpaceDto(
-  ///   top: SpaceDto.value(8.0),
-  ///   start: SpaceDto.token(someToken),
-  /// );
-  /// ```
-  factory EdgeInsetsDirectionalDto.valueSpaceDto({
-    SpaceDto? top,
-    SpaceDto? bottom,
-    SpaceDto? start,
-    SpaceDto? end,
-  }) {
-    return EdgeInsetsDirectionalDto.props(
-      top: MixProp.maybeValue(top),
-      bottom: MixProp.maybeValue(bottom),
-      start: MixProp.maybeValue(start),
-      end: MixProp.maybeValue(end),
-    );
-  }
 
   /// Constructor that accepts a nullable [EdgeInsetsDirectional] value and extracts its properties.
   ///
@@ -327,7 +269,7 @@ final class EdgeInsetsDirectionalDto
   EdgeInsetsDirectionalDto merge(EdgeInsetsDirectionalDto? other) {
     if (other == null) return this;
 
-    return EdgeInsetsDirectionalDto.props(
+    return EdgeInsetsDirectionalDto(
       top: MixHelpers.merge(top, other.top),
       bottom: MixHelpers.merge(bottom, other.bottom),
       start: MixHelpers.merge(start, other.start),
@@ -336,5 +278,18 @@ final class EdgeInsetsDirectionalDto
   }
 
   @override
-  List<Object?> get props => [top, bottom, start, end];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is EdgeInsetsDirectionalDto &&
+        other.top == top &&
+        other.bottom == bottom &&
+        other.start == start &&
+        other.end == end;
+  }
+
+  @override
+  int get hashCode {
+    return top.hashCode ^ bottom.hashCode ^ start.hashCode ^ end.hashCode;
+  }
 }

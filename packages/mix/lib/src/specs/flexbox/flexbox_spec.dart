@@ -296,23 +296,3 @@ class FlexBoxSpecUtility<T extends Attribute>
   }
 }
 
-/// A tween that interpolates between two [FlexBoxSpec] instances.
-///
-/// This class can be used in animations to smoothly transition between
-/// different [FlexBoxSpec] specifications.
-class FlexBoxSpecTween extends Tween<FlexBoxSpec?> {
-  FlexBoxSpecTween({super.begin, super.end});
-
-  @override
-  FlexBoxSpec lerp(double t) {
-    if (begin == null && end == null) {
-      return const FlexBoxSpec();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
-  }
-}

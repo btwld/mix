@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import '../attributes/animation/animation_config.dart';
 import '../internal/compare_mixin.dart';
 import 'factory/style_mix.dart';
 import 'mix_element.dart';
@@ -17,16 +18,131 @@ sealed class Attribute with Mergeable, EqualityMixin {
 }
 
 abstract class SpecAttribute<S extends Spec<S>> extends Attribute
-    implements Mixable<S> {
-  const SpecAttribute();
+    with Resolvable<ResolvedStyle<S>> {
+  final List<VariantAttribute<S>>? variants;
+  final List<ModifierSpecAttribute>? modifiers;
+  final AnimationConfig? animation;
+  const SpecAttribute({this.variants, this.modifiers, this.animation});
+
+  @visibleForTesting
+  List<ModifierSpecAttribute>? mergeModifierLists(
+    List<ModifierSpecAttribute>? current,
+    List<ModifierSpecAttribute>? other,
+  ) {
+    if (current == null && other == null) return null;
+    if (current == null) return List.of(other!);
+    if (other == null) return List.of(current);
+
+    final Map<Object, ModifierSpecAttribute> merged = {};
+
+    // Add current modifiers
+    for (final modifier in current) {
+      merged[modifier.mergeKey] = modifier;
+    }
+
+    // Merge or add other modifiers
+    for (final modifier in other) {
+      final key = modifier.mergeKey;
+      final existing = merged[key];
+      merged[key] = existing != null ? existing.merge(modifier) : modifier;
+    }
+
+    return merged.values.toList();
+  }
+
+  @visibleForTesting
+  SpecAttribute<S> getAllStyleVariants(
+    BuildContext context, {
+    Set<NamedVariant>? namedVariants,
+  }) {
+    final contextVariants = variants
+        ?.where(
+          (variantAttr) => switch (variantAttr.variant) {
+            (ContextVariant contextVariant) => contextVariant.when(context),
+            (NamedVariant namedVariant) =>
+              namedVariants?.contains(namedVariant) ?? false,
+            (ContextVariantBuilder _) => true,
+          },
+        )
+        .toList();
+
+    // Sort by priority: WidgetStateVariant gets applied last
+    contextVariants?.sort(
+      (a, b) => Comparable.compare(
+        a.variant is WidgetStateVariant ? 1 : 0,
+        b.variant is WidgetStateVariant ? 1 : 0,
+      ),
+    );
+
+    final variantStyles =
+        contextVariants?.map((variantAttr) => variantAttr.value).toList() ?? [];
+
+    SpecAttribute<S> styleData = this;
+
+    for (final style in variantStyles) {
+      styleData = styleData.merge(style);
+    }
+
+    return styleData;
+  }
+
+  @visibleForTesting
+  List<VariantAttribute<S>> mergeVariantLists(
+    List<VariantAttribute<S>>? current,
+    List<VariantAttribute<S>>? other,
+  ) {
+    if (current == null && other == null) return [];
+    if (current == null) return List<VariantAttribute<S>>.of(other!);
+    if (other == null) return List<VariantAttribute<S>>.of(current);
+
+    final Map<Object, VariantAttribute<S>> merged = {};
+
+    // Add current variants
+    for (final variant in current) {
+      merged[variant.mergeKey] = variant;
+    }
+
+    // Merge or add other variants
+    for (final variant in other) {
+      final key = variant.mergeKey;
+      final existing = merged[key];
+      merged[key] = existing != null ? existing.merge(variant) : variant;
+    }
+
+    return merged.values.toList();
+  }
 
   /// Resolves this attribute to its concrete value using the provided [BuildContext].
-  @override
-  S resolve(BuildContext context);
+
+  S resolveSpec(BuildContext context);
 
   /// Merges this attribute with another attribute of the same type.
   @override
   SpecAttribute<S> merge(covariant SpecAttribute<S>? other);
+
+  @override
+  ResolvedStyle<S> resolve(
+    BuildContext context, {
+    Set<NamedVariant> namedVariants = const {},
+  }) {
+    final styleData = getAllStyleVariants(
+      context,
+      namedVariants: namedVariants,
+    );
+
+    final resolvedSpec = resolveSpec(context);
+    final resolvedAnimation = styleData.animation;
+    final resolvedModifiers = styleData.modifiers
+        ?.map((modifier) => modifier.resolve(context))
+        .whereType<ModifierSpec>()
+        .toList();
+
+    return ResolvedStyle(
+      spec: resolvedSpec,
+      animation: resolvedAnimation,
+      modifiers: resolvedModifiers,
+    );
+  }
 
   /// Default implementation uses runtimeType as the merge key
   @override
@@ -48,11 +164,11 @@ abstract class ModifierSpecAttribute<S extends ModifierSpec<S>>
 /// Variant wrapper for conditional styling
 final class VariantAttribute<S extends Spec<S>> extends Attribute {
   final Variant variant;
-  final Style<S> _style;
+  final SpecAttribute<S> _style;
 
-  const VariantAttribute(this.variant, Style<S> style) : _style = style;
+  const VariantAttribute(this.variant, SpecAttribute<S> style) : _style = style;
 
-  Style<S> get value => _style;
+  SpecAttribute<S> get value => _style;
 
   bool matches(Iterable<Variant> otherVariants) =>
       otherVariants.contains(variant);
@@ -118,9 +234,9 @@ class MultiSpecAttribute extends SpecAttribute<MultiSpec> {
   const MultiSpecAttribute.empty() : _attributes = const {};
 
   @override
-  MultiSpec resolve(BuildContext context) {
+  MultiSpec resolveSpec(BuildContext context) {
     final resolvedSpecs = _attributes.values
-        .map((attr) => attr.resolve(context))
+        .map((attr) => attr.resolveSpec(context))
         .cast<Spec>()
         .toList();
 

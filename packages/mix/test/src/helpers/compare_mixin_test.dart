@@ -19,12 +19,8 @@ void main() {
   });
 
   test('getDiff', () {
-    final firstStyle = Style(
-      $box.color.blue(),
-    );
-    final secondStyle = Style(
-      $box.color.red(),
-    );
+    final firstStyle = Style($box.color.blue());
+    final secondStyle = Style($box.color.red());
 
     final diff = firstStyle.getDiff(secondStyle);
 

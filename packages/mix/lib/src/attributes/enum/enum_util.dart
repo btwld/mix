@@ -2,7 +2,6 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../../core/attribute.dart';
 import '../../core/utility.dart';
 
 /// {@template vertical_direction_utility}
@@ -11,18 +10,15 @@ import '../../core/utility.dart';
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [VerticalDirection] values.
 /// {@endtemplate}
-final class VerticalDirectionUtility<T extends Attribute>
-    extends MixUtility<T, VerticalDirection> {
+final class VerticalDirectionUtility<T extends SpecUtility<Object?>>
+    extends PropUtility<T, VerticalDirection> {
   const VerticalDirectionUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with the specified VerticalDirection value.
-  T call(VerticalDirection value) => builder(value);
-
   /// Creates a [StyleElement] instance with [VerticalDirection.up] value.
-  T up() => builder(VerticalDirection.up);
+  T up() => call(VerticalDirection.up);
 
   /// Creates a [StyleElement] instance with [VerticalDirection.down] value.
-  T down() => builder(VerticalDirection.down);
+  T down() => call(VerticalDirection.down);
 }
 
 /// {@template border_style_utility}
@@ -31,18 +27,15 @@ final class VerticalDirectionUtility<T extends Attribute>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [BorderStyle] values.
 /// {@endtemplate}
-final class BorderStyleUtility<T extends Attribute>
-    extends MixUtility<T, BorderStyle> {
+final class BorderStyleUtility<T extends SpecUtility<Object?>>
+    extends PropUtility<T, BorderStyle> {
   const BorderStyleUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with the specified BorderStyle value.
-  T call(BorderStyle value) => builder(value);
-
   /// Creates a [StyleElement] instance with [BorderStyle.none] value.
-  T none() => builder(BorderStyle.none);
+  T none() => call(BorderStyle.none);
 
   /// Creates a [StyleElement] instance with [BorderStyle.solid] value.
-  T solid() => builder(BorderStyle.solid);
+  T solid() => call(BorderStyle.solid);
 }
 
 /// {@template clip_utility}
@@ -51,7 +44,8 @@ final class BorderStyleUtility<T extends Attribute>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [Clip] values.
 /// {@endtemplate}
-final class ClipUtility<T extends Attribute> extends MixUtility<T, Clip> {
+final class ClipUtility<T extends SpecUtility<Object?>>
+    extends MixUtility<T, Clip> {
   const ClipUtility(super.builder);
 
   /// Creates a [StyleElement] instance with the specified Clip value.
@@ -76,7 +70,8 @@ final class ClipUtility<T extends Attribute> extends MixUtility<T, Clip> {
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [Axis] values.
 /// {@endtemplate}
-final class AxisUtility<T extends Attribute> extends MixUtility<T, Axis> {
+final class AxisUtility<T extends SpecUtility<Object?>>
+    extends MixUtility<T, Axis> {
   const AxisUtility(super.builder);
 
   /// Creates a [StyleElement] instance with the specified Axis value.
@@ -95,7 +90,8 @@ final class AxisUtility<T extends Attribute> extends MixUtility<T, Axis> {
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [FlexFit] values.
 /// {@endtemplate}
-final class FlexFitUtility<T extends Attribute> extends MixUtility<T, FlexFit> {
+final class FlexFitUtility<T extends SpecUtility<Object?>>
+    extends MixUtility<T, FlexFit> {
   const FlexFitUtility(super.builder);
 
   /// Creates a [StyleElement] instance with the specified FlexFit value.
@@ -114,7 +110,7 @@ final class FlexFitUtility<T extends Attribute> extends MixUtility<T, FlexFit> {
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [StackFit] values.
 /// {@endtemplate}
-final class StackFitUtility<T extends Attribute>
+final class StackFitUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, StackFit> {
   const StackFitUtility(super.builder);
 
@@ -137,7 +133,7 @@ final class StackFitUtility<T extends Attribute>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [ImageRepeat] values.
 /// {@endtemplate}
-final class ImageRepeatUtility<T extends Attribute>
+final class ImageRepeatUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, ImageRepeat> {
   const ImageRepeatUtility(super.builder);
 
@@ -162,7 +158,7 @@ final class ImageRepeatUtility<T extends Attribute>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextDirection] values.
 /// {@endtemplate}
-final class TextDirectionUtility<T extends Attribute>
+final class TextDirectionUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, TextDirection> {
   const TextDirectionUtility(super.builder);
 
@@ -182,7 +178,7 @@ final class TextDirectionUtility<T extends Attribute>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextLeadingDistribution] values.
 /// {@endtemplate}
-final class TextLeadingDistributionUtility<T extends Attribute>
+final class TextLeadingDistributionUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, TextLeadingDistribution> {
   const TextLeadingDistributionUtility(super.builder);
 
@@ -202,7 +198,7 @@ final class TextLeadingDistributionUtility<T extends Attribute>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TileMode] values.
 /// {@endtemplate}
-final class TileModeUtility<T extends Attribute>
+final class TileModeUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, TileMode> {
   const TileModeUtility(super.builder);
 
@@ -228,7 +224,7 @@ final class TileModeUtility<T extends Attribute>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [MainAxisAlignment] values.
 /// {@endtemplate}
-final class MainAxisAlignmentUtility<T extends Attribute>
+final class MainAxisAlignmentUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, MainAxisAlignment> {
   const MainAxisAlignmentUtility(super.builder);
 
@@ -260,7 +256,7 @@ final class MainAxisAlignmentUtility<T extends Attribute>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [CrossAxisAlignment] values.
 /// {@endtemplate}
-final class CrossAxisAlignmentUtility<T extends Attribute>
+final class CrossAxisAlignmentUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, CrossAxisAlignment> {
   const CrossAxisAlignmentUtility(super.builder);
 
@@ -289,7 +285,7 @@ final class CrossAxisAlignmentUtility<T extends Attribute>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [MainAxisSize] values.
 /// {@endtemplate}
-final class MainAxisSizeUtility<T extends Attribute>
+final class MainAxisSizeUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, MainAxisSize> {
   const MainAxisSizeUtility(super.builder);
 
@@ -309,7 +305,8 @@ final class MainAxisSizeUtility<T extends Attribute>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [BoxFit] values.
 /// {@endtemplate}
-final class BoxFitUtility<T extends Attribute> extends MixUtility<T, BoxFit> {
+final class BoxFitUtility<T extends SpecUtility<Object?>>
+    extends MixUtility<T, BoxFit> {
   const BoxFitUtility(super.builder);
 
   /// Creates a [StyleElement] instance with the specified BoxFit value.
@@ -343,7 +340,7 @@ final class BoxFitUtility<T extends Attribute> extends MixUtility<T, BoxFit> {
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [BlendMode] values.
 /// {@endtemplate}
-final class BlendModeUtility<T extends Attribute>
+final class BlendModeUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, BlendMode> {
   const BlendModeUtility(super.builder);
 
@@ -444,7 +441,7 @@ final class BlendModeUtility<T extends Attribute>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [BoxShape] values.
 /// {@endtemplate}
-final class BoxShapeUtility<T extends Attribute>
+final class BoxShapeUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, BoxShape> {
   const BoxShapeUtility(super.builder);
 
@@ -464,7 +461,7 @@ final class BoxShapeUtility<T extends Attribute>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [FontStyle] values.
 /// {@endtemplate}
-final class FontStyleUtility<T extends Attribute>
+final class FontStyleUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, FontStyle> {
   const FontStyleUtility(super.builder);
 
@@ -484,7 +481,7 @@ final class FontStyleUtility<T extends Attribute>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextDecorationStyle] values.
 /// {@endtemplate}
-final class TextDecorationStyleUtility<T extends Attribute>
+final class TextDecorationStyleUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, TextDecorationStyle> {
   const TextDecorationStyleUtility(super.builder);
 
@@ -513,7 +510,7 @@ final class TextDecorationStyleUtility<T extends Attribute>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextBaseline] values.
 /// {@endtemplate}
-final class TextBaselineUtility<T extends Attribute>
+final class TextBaselineUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, TextBaseline> {
   const TextBaselineUtility(super.builder);
 
@@ -533,7 +530,7 @@ final class TextBaselineUtility<T extends Attribute>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextOverflow] values.
 /// {@endtemplate}
-final class TextOverflowUtility<T extends Attribute>
+final class TextOverflowUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, TextOverflow> {
   const TextOverflowUtility(super.builder);
 
@@ -559,7 +556,7 @@ final class TextOverflowUtility<T extends Attribute>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextWidthBasis] values.
 /// {@endtemplate}
-final class TextWidthBasisUtility<T extends Attribute>
+final class TextWidthBasisUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, TextWidthBasis> {
   const TextWidthBasisUtility(super.builder);
 
@@ -579,7 +576,7 @@ final class TextWidthBasisUtility<T extends Attribute>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextAlign] values.
 /// {@endtemplate}
-final class TextAlignUtility<T extends Attribute>
+final class TextAlignUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, TextAlign> {
   const TextAlignUtility(super.builder);
 
@@ -611,7 +608,7 @@ final class TextAlignUtility<T extends Attribute>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [FilterQuality] values.
 /// {@endtemplate}
-final class FilterQualityUtility<T extends Attribute>
+final class FilterQualityUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, FilterQuality> {
   const FilterQualityUtility(super.builder);
 
@@ -637,7 +634,7 @@ final class FilterQualityUtility<T extends Attribute>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [WrapAlignment] values.
 /// {@endtemplate}
-final class WrapAlignmentUtility<T extends Attribute>
+final class WrapAlignmentUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, WrapAlignment> {
   const WrapAlignmentUtility(super.builder);
 
@@ -669,7 +666,7 @@ final class WrapAlignmentUtility<T extends Attribute>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TableCellVerticalAlignment] values.
 /// {@endtemplate}
-class TableCellVerticalAlignmentUtility<T extends Attribute>
+class TableCellVerticalAlignmentUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, TableCellVerticalAlignment> {
   const TableCellVerticalAlignmentUtility(super.builder);
 

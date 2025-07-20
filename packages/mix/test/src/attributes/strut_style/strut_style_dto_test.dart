@@ -33,14 +33,14 @@ void main() {
 
       test('props constructor with Prop values', () {
         const dto = StrutStyleDto.props(
-          fontFamily: Prop.fromValue('Inter'),
-          fontFamilyFallback: Prop.fromValue(['Verdana', 'Georgia']),
-          fontSize: Prop.fromValue(18.0),
-          fontWeight: Prop.fromValue(FontWeight.w600),
-          fontStyle: Prop.fromValue(FontStyle.normal),
-          height: Prop.fromValue(1.5),
-          leading: Prop.fromValue(0.5),
-          forceStrutHeight: Prop.fromValue(false),
+          fontFamily: Prop('Inter'),
+          fontFamilyFallback: Prop(['Verdana', 'Georgia']),
+          fontSize: Prop(18.0),
+          fontWeight: Prop(FontWeight.w600),
+          fontStyle: Prop(FontStyle.normal),
+          height: Prop(1.5),
+          leading: Prop(0.5),
+          forceStrutHeight: Prop(false),
         );
 
         expect(dto.fontFamily, resolvesTo('Inter'));

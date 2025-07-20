@@ -175,7 +175,7 @@ void main() {
         ..clipBehavior.antiAlias()
         ..gap(10);
 
-      final attr = util.attributeValue!;
+      final attr = util.attribute!;
       expect(util, isA<Style>());
       expect(attr.direction, Axis.horizontal);
       expect(attr.mainAxisAlignment, MainAxisAlignment.center);
@@ -216,8 +216,8 @@ void main() {
       final flex1 = FlexSpecUtility((v) => v)..gap(10);
       final flex2 = FlexSpecUtility((v) => v)..gap(20);
 
-      final attr1 = flex1.attributeValue!;
-      final attr2 = flex2.attributeValue!;
+      final attr1 = flex1.attribute!;
+      final attr2 = flex2.attribute!;
 
       expect(attr1.gap, resolvesTo(10));
       expect(attr2.gap, resolvesTo(20));
@@ -258,7 +258,7 @@ void main() {
         ..direction.horizontal()
         ..mainAxisAlignment.center();
 
-      final flexAttribute = flexValue.attributeValue!;
+      final flexAttribute = flexValue.attribute!;
       final flexAttribute2 = flex.gap(20);
 
       expect(flexAttribute.gap, resolvesTo(10));

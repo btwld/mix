@@ -289,23 +289,3 @@ class StackBoxSpecUtility<T extends Attribute>
   }
 }
 
-/// A tween that interpolates between two [ZBoxSpec] instances.
-///
-/// This class can be used in animations to smoothly transition between
-/// different [ZBoxSpec] specifications.
-class StackBoxSpecTween extends Tween<ZBoxSpec?> {
-  StackBoxSpecTween({super.begin, super.end});
-
-  @override
-  ZBoxSpec lerp(double t) {
-    if (begin == null && end == null) {
-      return const ZBoxSpec();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
-  }
-}

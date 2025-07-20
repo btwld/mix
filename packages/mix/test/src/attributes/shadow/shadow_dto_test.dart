@@ -23,9 +23,9 @@ void main() {
 
       test('props constructor with Prop values', () {
         const dto = ShadowDto.props(
-          blurRadius: Prop.fromValue(5.0),
-          color: Prop.fromValue(Colors.red),
-          offset: Prop.fromValue(Offset(5, 5)),
+          blurRadius: Prop(5.0),
+          color: Prop(Colors.red),
+          offset: Prop(Offset(5, 5)),
         );
 
         expect(dto.blurRadius, resolvesTo(5.0));
@@ -237,10 +237,10 @@ void main() {
 
       test('props constructor with Prop values', () {
         const dto = BoxShadowDto.props(
-          color: Prop.fromValue(Colors.red),
-          offset: Prop.fromValue(Offset(5, 5)),
-          blurRadius: Prop.fromValue(8.0),
-          spreadRadius: Prop.fromValue(3.0),
+          color: Prop(Colors.red),
+          offset: Prop(Offset(5, 5)),
+          blurRadius: Prop(8.0),
+          spreadRadius: Prop(3.0),
         );
 
         expect(dto.color, resolvesTo(Colors.red));

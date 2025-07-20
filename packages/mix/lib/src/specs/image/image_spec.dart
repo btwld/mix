@@ -167,15 +167,15 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
     BlendMode? colorBlendMode,
   }) {
     return ImageSpecAttribute.props(
-      width: Prop.maybeValue(width),
-      height: Prop.maybeValue(height),
-      color: Prop.maybeValue(color),
-      repeat: Prop.maybeValue(repeat),
-      fit: Prop.maybeValue(fit),
-      alignment: Prop.maybeValue(alignment),
-      centerSlice: Prop.maybeValue(centerSlice),
-      filterQuality: Prop.maybeValue(filterQuality),
-      colorBlendMode: Prop.maybeValue(colorBlendMode),
+      width: Prop.maybe(width),
+      height: Prop.maybe(height),
+      color: Prop.maybe(color),
+      repeat: Prop.maybe(repeat),
+      fit: Prop.maybe(fit),
+      alignment: Prop.maybe(alignment),
+      centerSlice: Prop.maybe(centerSlice),
+      filterQuality: Prop.maybe(filterQuality),
+      colorBlendMode: Prop.maybe(colorBlendMode),
     );
   }
 
@@ -189,15 +189,15 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
   /// ```
   static ImageSpecAttribute value(ImageSpec spec) {
     return ImageSpecAttribute.props(
-      width: Prop.maybeValue(spec.width),
-      height: Prop.maybeValue(spec.height),
-      color: Prop.maybeValue(spec.color),
-      repeat: Prop.maybeValue(spec.repeat),
-      fit: Prop.maybeValue(spec.fit),
-      alignment: Prop.maybeValue(spec.alignment),
-      centerSlice: Prop.maybeValue(spec.centerSlice),
-      filterQuality: Prop.maybeValue(spec.filterQuality),
-      colorBlendMode: Prop.maybeValue(spec.colorBlendMode),
+      width: Prop.maybe(spec.width),
+      height: Prop.maybe(spec.height),
+      color: Prop.maybe(spec.color),
+      repeat: Prop.maybe(spec.repeat),
+      fit: Prop.maybe(spec.fit),
+      alignment: Prop.maybe(spec.alignment),
+      centerSlice: Prop.maybe(spec.centerSlice),
+      filterQuality: Prop.maybe(spec.filterQuality),
+      colorBlendMode: Prop.maybe(spec.colorBlendMode),
     );
   }
 
@@ -334,23 +334,3 @@ class ImageSpecUtility<T extends Attribute>
   }
 }
 
-/// A tween that interpolates between two [ImageSpec] instances.
-///
-/// This class can be used in animations to smoothly transition between
-/// different [ImageSpec] specifications.
-class ImageSpecTween extends Tween<ImageSpec?> {
-  ImageSpecTween({super.begin, super.end});
-
-  @override
-  ImageSpec lerp(double t) {
-    if (begin == null && end == null) {
-      return const ImageSpec();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
-  }
-}

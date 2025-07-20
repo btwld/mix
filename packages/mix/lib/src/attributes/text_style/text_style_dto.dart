@@ -4,10 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-import '../../internal/compare_mixin.dart';
-
 @immutable
-class TextStyleDto extends Mix<TextStyle> with EqualityMixin, Diagnosticable {
+class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
   // Simple properties use MixValue directly
   final Prop<Color>? color;
   final Prop<Color>? backgroundColor;
@@ -33,7 +31,7 @@ class TextStyleDto extends Mix<TextStyle> with EqualityMixin, Diagnosticable {
   final List<Prop<FontVariation>>? fontVariations;
 
   // Lists of Mix types (DTOs)
-  final List<MixProp<Shadow, ShadowDto>>? shadows;
+  final List<MixProp<Shadow>>? shadows;
 
   factory TextStyleDto({
     Color? color,
@@ -59,27 +57,27 @@ class TextStyleDto extends Mix<TextStyle> with EqualityMixin, Diagnosticable {
     List<String>? fontFamilyFallback,
   }) {
     return TextStyleDto.props(
-      color: Prop.maybeValue(color),
-      backgroundColor: Prop.maybeValue(backgroundColor),
-      fontSize: Prop.maybeValue(fontSize),
-      fontWeight: Prop.maybeValue(fontWeight),
-      fontStyle: Prop.maybeValue(fontStyle),
-      letterSpacing: Prop.maybeValue(letterSpacing),
-      debugLabel: Prop.maybeValue(debugLabel),
-      wordSpacing: Prop.maybeValue(wordSpacing),
-      textBaseline: Prop.maybeValue(textBaseline),
-      shadows: shadows?.map(MixProp<Shadow, ShadowDto>.fromValue).toList(),
-      fontFeatures: fontFeatures?.map(Prop.fromValue).toList(),
-      decoration: Prop.maybeValue(decoration),
-      decorationColor: Prop.maybeValue(decorationColor),
-      decorationStyle: Prop.maybeValue(decorationStyle),
-      fontVariations: fontVariations?.map(Prop.fromValue).toList(),
-      height: Prop.maybeValue(height),
-      foreground: Prop.maybeValue(foreground),
-      background: Prop.maybeValue(background),
-      decorationThickness: Prop.maybeValue(decorationThickness),
-      fontFamily: Prop.maybeValue(fontFamily),
-      fontFamilyFallback: fontFamilyFallback?.map(Prop.fromValue).toList(),
+      color: Prop.maybe(color),
+      backgroundColor: Prop.maybe(backgroundColor),
+      fontSize: Prop.maybe(fontSize),
+      fontWeight: Prop.maybe(fontWeight),
+      fontStyle: Prop.maybe(fontStyle),
+      letterSpacing: Prop.maybe(letterSpacing),
+      debugLabel: Prop.maybe(debugLabel),
+      wordSpacing: Prop.maybe(wordSpacing),
+      textBaseline: Prop.maybe(textBaseline),
+      shadows: shadows?.map(MixProp<Shadow>.new).toList(),
+      fontFeatures: fontFeatures?.map(Prop.new).toList(),
+      decoration: Prop.maybe(decoration),
+      decorationColor: Prop.maybe(decorationColor),
+      decorationStyle: Prop.maybe(decorationStyle),
+      fontVariations: fontVariations?.map(Prop.new).toList(),
+      height: Prop.maybe(height),
+      foreground: Prop.maybe(foreground),
+      background: Prop.maybe(background),
+      decorationThickness: Prop.maybe(decorationThickness),
+      fontFamily: Prop.maybe(fontFamily),
+      fontFamilyFallback: fontFamilyFallback?.map(Prop.new).toList(),
     );
   }
 
@@ -304,27 +302,55 @@ class TextStyleDto extends Mix<TextStyle> with EqualityMixin, Diagnosticable {
   }
 
   @override
-  List<Object?> get props => [
-    color,
-    backgroundColor,
-    fontSize,
-    fontWeight,
-    fontStyle,
-    letterSpacing,
-    debugLabel,
-    wordSpacing,
-    textBaseline,
-    shadows,
-    fontFeatures,
-    decoration,
-    decorationColor,
-    decorationStyle,
-    fontVariations,
-    height,
-    foreground,
-    background,
-    decorationThickness,
-    fontFamily,
-    fontFamilyFallback,
-  ];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is TextStyleDto &&
+        other.color == color &&
+        other.backgroundColor == backgroundColor &&
+        other.fontSize == fontSize &&
+        other.fontWeight == fontWeight &&
+        other.fontStyle == fontStyle &&
+        other.letterSpacing == letterSpacing &&
+        other.debugLabel == debugLabel &&
+        other.wordSpacing == wordSpacing &&
+        other.textBaseline == textBaseline &&
+        other.decoration == decoration &&
+        other.decorationColor == decorationColor &&
+        other.decorationStyle == decorationStyle &&
+        other.height == height &&
+        other.decorationThickness == decorationThickness &&
+        other.fontFamily == fontFamily &&
+        other.foreground == foreground &&
+        other.background == background &&
+        listEquals(other.fontFamilyFallback, fontFamilyFallback) &&
+        listEquals(other.fontFeatures, fontFeatures) &&
+        listEquals(other.fontVariations, fontVariations) &&
+        listEquals(other.shadows, shadows);
+  }
+
+  @override
+  int get hashCode {
+    return color.hashCode ^
+        backgroundColor.hashCode ^
+        fontSize.hashCode ^
+        fontWeight.hashCode ^
+        fontStyle.hashCode ^
+        letterSpacing.hashCode ^
+        debugLabel.hashCode ^
+        wordSpacing.hashCode ^
+        textBaseline.hashCode ^
+        decoration.hashCode ^
+        decorationColor.hashCode ^
+        decorationStyle.hashCode ^
+        height.hashCode ^
+        decorationThickness.hashCode ^
+        fontFamily.hashCode ^
+        foreground.hashCode ^
+        background.hashCode ^
+        fontFamilyFallback.hashCode ^
+        fontFeatures.hashCode ^
+        fontVariations.hashCode ^
+        shadows.hashCode;
+  }
 }

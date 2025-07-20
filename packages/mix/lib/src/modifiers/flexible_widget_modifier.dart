@@ -128,32 +128,12 @@ class FlexibleModifierSpecAttribute
   List<Object?> get props => [flex, fit];
 }
 
-/// A tween that interpolates between two [FlexibleModifierSpec] instances.
-///
-/// This class can be used in animations to smoothly transition between
-/// different [FlexibleModifierSpec] specifications.
-class FlexibleModifierSpecTween extends Tween<FlexibleModifierSpec?> {
-  FlexibleModifierSpecTween({super.begin, super.end});
-
-  @override
-  FlexibleModifierSpec lerp(double t) {
-    if (begin == null && end == null) {
-      return const FlexibleModifierSpec();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
-  }
-}
 
 final class FlexibleModifierSpecUtility<T extends Attribute>
     extends MixUtility<T, FlexibleModifierSpecAttribute> {
   const FlexibleModifierSpecUtility(super.builder);
   FlexFitUtility<T> get fit => FlexFitUtility((fit) => call(fit: fit));
-  IntUtility<T> get flex => IntUtility((prop) => call(flex: prop.value));
+  IntUtility<T> get flex => IntUtility((prop) => call(flex: prop.getValue()));
   T tight({int? flex}) =>
       builder(FlexibleModifierSpecAttribute(flex: flex, fit: FlexFit.tight));
   T loose({int? flex}) =>

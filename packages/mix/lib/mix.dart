@@ -105,7 +105,6 @@ export 'src/specs/image/image_spec.dart';
 export 'src/specs/image/image_widget.dart';
 export 'src/specs/spec_util.dart';
 export 'src/specs/stack/stack_box_spec.dart';
-export 'src/specs/stack/stack_box_style.dart';
 export 'src/specs/stack/stack_spec.dart';
 export 'src/specs/stack/stack_widget.dart';
 export 'src/specs/text/text_directives_util.dart';

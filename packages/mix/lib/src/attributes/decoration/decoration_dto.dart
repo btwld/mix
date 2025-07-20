@@ -1,31 +1,19 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 // ignore_for_file: prefer_relative_imports,avoid-importing-entrypoint-exports
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
-
-import '../../internal/compare_mixin.dart';
-
-typedef _BaseDecorProperties = ({
-  Prop<Color>? color,
-  MixProp<Gradient, GradientDto>? gradient,
-  List<MixProp<BoxShadow, BoxShadowDto>>? boxShadow,
-  MixProp<DecorationImage, DecorationImageDto>? image,
-});
 
 /// A Data transfer object that represents a [Decoration] value.
 ///
 /// This DTO is used to resolve a [Decoration] value from a [MixContext] instance.
-///
-/// This class needs to have the different properties that are not found in the [Modifiers] class.
-/// In order to support merging of [Decoration] values, and reusable of common properties.
 @immutable
-sealed class DecorationDto<T extends Decoration> extends Mix<T>
-    with EqualityMixin {
+sealed class DecorationDto<T extends Decoration> extends Mix<T> {
   final Prop<Color>? color;
-  final MixProp<Gradient, GradientDto>? gradient;
-  final MixProp<DecorationImage, DecorationImageDto>? image;
-  final List<MixProp<BoxShadow, BoxShadowDto>>? boxShadow;
+  final MixProp<Gradient>? gradient;
+  final MixProp<DecorationImage>? image;
+  final List<MixProp<BoxShadow>>? boxShadow;
 
   const DecorationDto({
     required this.color,
@@ -35,13 +23,6 @@ sealed class DecorationDto<T extends Decoration> extends Mix<T>
   });
 
   /// Constructor that accepts a [Decoration] value and converts it to the appropriate DTO.
-  ///
-  /// This is useful for converting existing [Decoration] instances to [DecorationDto].
-  ///
-  /// ```dart
-  /// const decoration = BoxDecoration(color: Colors.blue);
-  /// final dto = DecorationDto.value(decoration);
-  /// ```
   static DecorationDto value(Decoration decoration) {
     return switch (decoration) {
       BoxDecoration d => BoxDecorationDto.value(d),
@@ -53,65 +34,37 @@ sealed class DecorationDto<T extends Decoration> extends Mix<T>
   }
 
   /// Constructor that accepts a nullable [Decoration] value and converts it to the appropriate DTO.
-  ///
-  /// Returns null if the input is null, otherwise uses [DecorationDto.value].
-  ///
-  /// ```dart
-  /// const Decoration? decoration = BoxDecoration(color: Colors.blue);
-  /// final dto = DecorationDto.maybeValue(decoration); // Returns DecorationDto or null
-  /// ```
   static DecorationDto? maybeValue(Decoration? decoration) {
     return decoration != null ? DecorationDto.value(decoration) : null;
   }
 
-  static DecorationDto? tryToMerge(DecorationDto? a, DecorationDto? b) {
-    if (b == null) return a;
-    if (a == null) return b;
+  /// Merges with another decoration of the same type.
+  /// This method is implemented by subclasses to handle type-specific merging.
+  @protected
+  DecorationDto<T> mergeDecoration(covariant DecorationDto<T> other);
 
-    if (a.runtimeType == b.runtimeType) {
-      return a.merge(b);
-    }
-
-    if (b.isMergeable) {
-      return a.mergeableDecor(b);
-    }
-
-    if (b is BoxDecorationDto) {
-      return _toBoxDecorationDto(a as ShapeDecorationDto).merge(b);
-    }
-
-    if (b is ShapeDecorationDto) {
-      return _toShapeDecorationDto(a as BoxDecorationDto).merge(b);
-    }
-
-    throw UnimplementedError('Merging of $a and $b is not supported.');
-  }
-
-  _BaseDecorProperties _getBaseDecor() {
-    return (
-      color: color,
-      gradient: gradient,
-      boxShadow: boxShadow,
-      image: image,
-    );
-  }
-
-  bool get isMergeable;
-
-  DecorationDto? mergeableDecor(covariant DecorationDto? other);
-
+  /// Merges two DecorationDto instances.
+  ///
+  /// If both are the same type, delegates to [mergeDecoration].
+  /// If different types, returns [other] (override behavior).
+  /// If [other] is null, returns this instance.
   @override
-  DecorationDto<T> merge(covariant DecorationDto<T>? other);
+  DecorationDto<T> merge(DecorationDto<T>? other) {
+    if (other == null) return this;
+
+    return switch ((this, other)) {
+          (BoxDecorationDto a, BoxDecorationDto b) => a.mergeDecoration(b),
+          (ShapeDecorationDto a, ShapeDecorationDto b) => a.mergeDecoration(b),
+          _ => other, // Different types: override with other
+        }
+        as DecorationDto<T>;
+  }
 }
 
 /// Represents a Data transfer object of [BoxDecoration]
-///
-/// This is used to allow for resolvable value tokens, and also the correct
-/// merge and combining behavior. It allows to be merged, and resolved to a `[BoxDecoration]
-final class BoxDecorationDto extends DecorationDto<BoxDecoration>
-    with EqualityMixin {
-  final MixProp<BoxBorder, BoxBorderDto>? border;
-  final MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>? borderRadius;
+final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
+  final MixProp<BoxBorder>? border;
+  final MixProp<BorderRadiusGeometry>? borderRadius;
   final Prop<BoxShape>? shape;
   final Prop<BlendMode>? backgroundBlendMode;
 
@@ -126,27 +79,18 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration>
     List<BoxShadowDto>? boxShadow,
   }) {
     return BoxDecorationDto.props(
-      border: MixProp.maybeValue(border),
-      borderRadius: MixProp.maybeValue(borderRadius),
-      shape: Prop.maybeValue(shape),
-      backgroundBlendMode: Prop.maybeValue(backgroundBlendMode),
-      color: Prop.maybeValue(color),
-      image: MixProp.maybeValue(image),
-      gradient: MixProp.maybeValue(gradient),
-      boxShadow: boxShadow
-          ?.map(MixProp<BoxShadow, BoxShadowDto>.fromValue)
-          .toList(),
+      border: MixProp.maybe(border),
+      borderRadius: MixProp.maybe(borderRadius),
+      shape: Prop.maybe(shape),
+      backgroundBlendMode: Prop.maybe(backgroundBlendMode),
+      color: Prop.maybe(color),
+      image: MixProp.maybe(image),
+      gradient: MixProp.maybe(gradient),
+      boxShadow: boxShadow?.map(MixProp<BoxShadow>.new).toList(),
     );
   }
 
   /// Constructor that accepts a [BoxDecoration] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [BoxDecoration] instances to [BoxDecorationDto].
-  ///
-  /// ```dart
-  /// const decoration = BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(8));
-  /// final dto = BoxDecorationDto.value(decoration);
-  /// ```
   factory BoxDecorationDto.value(BoxDecoration decoration) {
     return BoxDecorationDto(
       border: BoxBorderDto.maybeValue(decoration.border),
@@ -172,51 +116,11 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration>
   });
 
   /// Constructor that accepts a nullable [BoxDecoration] value and extracts its properties.
-  ///
-  /// Returns null if the input is null, otherwise uses [BoxDecorationDto.value].
-  ///
-  /// ```dart
-  /// const BoxDecoration? decoration = BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(8));
-  /// final dto = BoxDecorationDto.maybeValue(decoration); // Returns BoxDecorationDto or null
-  /// ```
   static BoxDecorationDto? maybeValue(BoxDecoration? decoration) {
     return decoration != null ? BoxDecorationDto.value(decoration) : null;
   }
 
-  @override
-  BoxDecorationDto mergeableDecor(ShapeDecorationDto? other) {
-    if (other == null) return this;
-
-    final (:boxShadow, :color, :gradient, :image) = other._getBaseDecor();
-
-    final (:borderRadius, :boxShape, :side) = ShapeBorderDto.extract(
-      other.shape?.mixValue,
-    );
-
-    return merge(
-      BoxDecorationDto.props(
-        border: side?.mixValue != null
-            ? MixProp.fromValue(BorderDto.all(side!.mixValue!))
-            : null,
-        borderRadius: borderRadius,
-        shape: Prop.maybeValue(boxShape),
-        backgroundBlendMode: null,
-        color: color,
-        image: image,
-        gradient: gradient,
-        boxShadow: boxShadow,
-      ),
-    );
-  }
-
-  /// Resolves to [BoxDecoration] using the provided [MixContext].
-  ///
-  /// If a property is null in the [MixContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
-  ///
-  /// ```dart
-  /// final boxDecoration = BoxDecorationDto(...).resolve(mix);
-  /// ```
+  /// Resolves to [BoxDecoration] using the provided [BuildContext].
   @override
   BoxDecoration resolve(BuildContext context) {
     return BoxDecoration(
@@ -232,17 +136,8 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration>
   }
 
   /// Merges the properties of this [BoxDecorationDto] with the properties of [other].
-  ///
-  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [BoxDecorationDto] with the properties of [other] taking precedence over
-  /// the corresponding properties of this instance.
-  ///
-  /// Properties from [other] that are null will fall back
-  /// to the values from this instance.
   @override
-  BoxDecorationDto merge(BoxDecorationDto? other) {
-    if (other == null) return this;
-
+  BoxDecorationDto mergeDecoration(BoxDecorationDto other) {
     return BoxDecorationDto.props(
       border: MixHelpers.merge(border, other.border),
       borderRadius: MixHelpers.merge(borderRadius, other.borderRadius),
@@ -259,28 +154,36 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration>
   }
 
   @override
-  bool get isMergeable => backgroundBlendMode == null;
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
 
-  /// The list of properties that constitute the state of this [BoxDecorationDto].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [BoxDecorationDto] instances for equality.
+    return other is BoxDecorationDto &&
+        other.border == border &&
+        other.borderRadius == borderRadius &&
+        other.shape == shape &&
+        other.backgroundBlendMode == backgroundBlendMode &&
+        other.color == color &&
+        other.image == image &&
+        other.gradient == gradient &&
+        listEquals(other.boxShadow, boxShadow);
+  }
+
   @override
-  List<Object?> get props => [
-    border,
-    borderRadius,
-    shape,
-    backgroundBlendMode,
-    color,
-    image,
-    gradient,
-    boxShadow,
-  ];
+  int get hashCode {
+    return border.hashCode ^
+        borderRadius.hashCode ^
+        shape.hashCode ^
+        backgroundBlendMode.hashCode ^
+        color.hashCode ^
+        image.hashCode ^
+        gradient.hashCode ^
+        boxShadow.hashCode;
+  }
 }
 
 final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
-    with HasDefaultValue<ShapeDecoration>, EqualityMixin {
-  final MixProp<ShapeBorder, ShapeBorderDto>? shape;
+    with HasDefaultValue<ShapeDecoration> {
+  final MixProp<ShapeBorder>? shape;
 
   factory ShapeDecorationDto({
     ShapeBorderDto? shape,
@@ -290,13 +193,11 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
     List<BoxShadowDto>? shadows,
   }) {
     return ShapeDecorationDto.props(
-      shape: MixProp.maybeValue(shape),
-      color: Prop.maybeValue(color),
-      image: image != null ? MixProp.fromValue(image) : null,
-      gradient: gradient != null ? MixProp.fromValue(gradient) : null,
-      shadows: shadows
-          ?.map(MixProp<BoxShadow, BoxShadowDto>.fromValue)
-          .toList(),
+      shape: MixProp.maybe(shape),
+      color: Prop.maybe(color),
+      image: image != null ? MixProp(image) : null,
+      gradient: gradient != null ? MixProp(gradient) : null,
+      shadows: shadows?.map(MixProp<BoxShadow>.new).toList(),
     );
   }
 
@@ -306,21 +207,13 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
     required super.color,
     super.image,
     super.gradient,
-    List<MixProp<BoxShadow, BoxShadowDto>>? shadows,
+    List<MixProp<BoxShadow>>? shadows,
   }) : super(boxShadow: shadows);
 
   /// Constructor that accepts a [ShapeDecoration] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [ShapeDecoration] instances to [ShapeDecorationDto].
-  ///
-  /// ```dart
-  /// const decoration = ShapeDecoration(color: Colors.red, shape: RoundedRectangleBorder());
-  /// final dto = ShapeDecorationDto.value(decoration);
-  /// ```
   factory ShapeDecorationDto.value(ShapeDecoration decoration) {
     return ShapeDecorationDto(
       shape: ShapeBorderDto.maybeValue(decoration.shape),
-
       color: decoration.color,
       image: DecorationImageDto.maybeValue(decoration.image),
       gradient: GradientDto.maybeValue(decoration.gradient),
@@ -329,60 +222,13 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
   }
 
   /// Constructor that accepts a nullable [ShapeDecoration] value and extracts its properties.
-  ///
-  /// Returns null if the input is null, otherwise uses [ShapeDecorationDto.value].
-  ///
-  /// ```dart
-  /// const ShapeDecoration? decoration = ShapeDecoration(color: Colors.red, shape: RoundedRectangleBorder());
-  /// final dto = ShapeDecorationDto.maybeValue(decoration); // Returns ShapeDecorationDto or null
-  /// ```
   static ShapeDecorationDto? maybeValue(ShapeDecoration? decoration) {
     return decoration != null ? ShapeDecorationDto.value(decoration) : null;
   }
 
-  List<MixProp<BoxShadow, BoxShadowDto>>? get shadows => boxShadow;
+  List<MixProp<BoxShadow>>? get shadows => boxShadow;
 
-  @override
-  ShapeDecorationDto mergeableDecor(BoxDecorationDto? other) {
-    if (other == null) return this;
-
-    assert(
-      other.border == null || (other.border?.mixValue?.isUniform ?? true),
-      'Border to use with ShapeDecoration must be uniform.',
-    );
-
-    final (:boxShadow, :color, :gradient, :image) = other._getBaseDecor();
-
-    // For mergeable operations, we assume rectangle shape if not resolvable
-    // This maintains backward compatibility
-    final topSide = other.border?.mixValue is BorderDto
-        ? (other.border!.mixValue! as BorderDto).top?.mixValue
-        : null;
-    final shapeBorder = _fromBoxShape(
-      shape: BoxShape.rectangle,
-      side: topSide != null ? MixProp.fromValue(topSide) : null,
-      borderRadius: other.borderRadius,
-    );
-
-    return merge(
-      ShapeDecorationDto.props(
-        shape: MixProp.maybeValue(shapeBorder),
-        color: color,
-        image: image,
-        gradient: gradient,
-        shadows: boxShadow,
-      ),
-    );
-  }
-
-  /// Resolves to [ShapeDecoration] using the provided [MixContext].
-  ///
-  /// If a property is null in the [MixContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
-  ///
-  /// ```dart
-  /// final shapeDecoration = ShapeDecorationDto(...).resolve(mix);
-  /// ```
+  /// Resolves to [ShapeDecoration] using the provided [BuildContext].
   @override
   ShapeDecoration resolve(BuildContext context) {
     return ShapeDecoration(
@@ -397,17 +243,8 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
   }
 
   /// Merges the properties of this [ShapeDecorationDto] with the properties of [other].
-  ///
-  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [ShapeDecorationDto] with the properties of [other] taking precedence over
-  /// the corresponding properties of this instance.
-  ///
-  /// Properties from [other] that are null will fall back
-  /// to the values from this instance.
   @override
-  ShapeDecorationDto merge(ShapeDecorationDto? other) {
-    if (other == null) return this;
-
+  ShapeDecorationDto mergeDecoration(ShapeDecorationDto other) {
     return ShapeDecorationDto.props(
       shape: MixHelpers.merge(shape, other.shape),
       color: MixHelpers.merge(color, other.color),
@@ -418,88 +255,27 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
   }
 
   @override
-  bool get isMergeable =>
-      (shape == null ||
-      shape?.mixValue is CircleBorderDto ||
-      shape?.mixValue is RoundedRectangleBorderDto);
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ShapeDecorationDto &&
+        other.shape == shape &&
+        other.color == color &&
+        other.image == image &&
+        other.gradient == gradient &&
+        listEquals(other.shadows, shadows);
+  }
 
   @override
   ShapeDecoration get defaultValue =>
       const ShapeDecoration(shape: RoundedRectangleBorder());
 
-  /// The list of properties that constitute the state of this [ShapeDecorationDto].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [ShapeDecorationDto] instances for equality.
   @override
-  List<Object?> get props => [shape, color, image, gradient, shadows];
-}
-
-/// Converts a [ShapeDecorationDto] to a [BoxDecorationDto].
-BoxDecorationDto _toBoxDecorationDto(ShapeDecorationDto dto) {
-  final (:boxShadow, :color, :gradient, :image) = dto._getBaseDecor();
-  final (:borderRadius, :boxShape, :side) = ShapeBorderDto.extract(
-    dto.shape?.mixValue,
-  );
-
-  return BoxDecorationDto.props(
-    border: side?.mixValue != null
-        ? MixProp.fromValue(BorderDto.all(side!.mixValue!))
-        : null,
-    borderRadius: borderRadius,
-    shape: Prop.maybeValue(boxShape),
-    backgroundBlendMode: null,
-    color: color,
-    image: image,
-    gradient: gradient,
-    boxShadow: boxShadow,
-  );
-}
-
-ShapeDecorationDto _toShapeDecorationDto(BoxDecorationDto dto) {
-  final (:boxShadow, :color, :gradient, :image) = dto._getBaseDecor();
-
-  // For conversion operations, we assume rectangle shape if not resolvable
-  // This maintains backward compatibility
-  final topSide = dto.border?.mixValue is BorderDto
-      ? (dto.border!.mixValue! as BorderDto).top?.mixValue
-      : null;
-  final shapeBorder = _fromBoxShape(
-    shape: BoxShape.rectangle,
-    side: topSide != null ? MixProp.fromValue(topSide) : null,
-    borderRadius: dto.borderRadius,
-  );
-
-  return ShapeDecorationDto.props(
-    shape: shapeBorder != null ? MixProp.fromValue(shapeBorder) : null,
-    color: color,
-    image: image,
-    gradient: gradient,
-    shadows: boxShadow,
-  );
-}
-
-ShapeBorderDto? _fromBoxShape({
-  required BoxShape? shape,
-  required MixProp<BorderSide, BorderSideDto>? side,
-  required MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>? borderRadius,
-}) {
-  switch (shape) {
-    case BoxShape.circle:
-      return CircleBorderDto(side: side?.mixValue);
-    case BoxShape.rectangle:
-      return RoundedRectangleBorderDto(
-        borderRadius: borderRadius?.mixValue,
-        side: side?.mixValue,
-      );
-    default:
-      if (side?.mixValue != null || borderRadius?.mixValue != null) {
-        return RoundedRectangleBorderDto(
-          borderRadius: borderRadius?.mixValue,
-          side: side?.mixValue,
-        );
-      }
-
-      return null;
+  int get hashCode {
+    return shape.hashCode ^
+        color.hashCode ^
+        image.hashCode ^
+        gradient.hashCode ^
+        shadows.hashCode;
   }
 }

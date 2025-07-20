@@ -34,20 +34,22 @@ void main() {
         clipBehavior: Clip.antiAlias,
         gap: SpaceDto.value(10.0),
       );
-      
+
       expect(
         attribute,
-        resolvesTo(const FlexSpec(
-          direction: Axis.horizontal,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          verticalDirection: VerticalDirection.up,
-          textDirection: TextDirection.rtl,
-          textBaseline: TextBaseline.alphabetic,
-          clipBehavior: Clip.antiAlias,
-          gap: 10.0,
-        )),
+        resolvesTo(
+          const FlexSpec(
+            direction: Axis.horizontal,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            verticalDirection: VerticalDirection.up,
+            textDirection: TextDirection.rtl,
+            textBaseline: TextBaseline.alphabetic,
+            clipBehavior: Clip.antiAlias,
+            gap: 10.0,
+          ),
+        ),
       );
     });
 
@@ -55,9 +57,7 @@ void main() {
       const tokenValue = 8.0;
 
       final theme = MixScopeData.static(
-        tokens: {
-          token.space.small: tokenValue,
-        },
+        tokens: {token.space.small: tokenValue},
       );
 
       late MixContext mixData;
@@ -71,9 +71,7 @@ void main() {
                 builder: (BuildContext context) {
                   mixData = MixContext.create(
                     context,
-                    Style(
-                      $flex.gap.token(token.space.small),
-                    ),
+                    Style($flex.gap.token(token.space.small)),
                   );
 
                   return Container();

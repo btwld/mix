@@ -123,26 +123,6 @@ class OpacityModifierSpecAttribute
   List<Object?> get props => [opacity];
 }
 
-/// A tween that interpolates between two [OpacityModifierSpec] instances.
-///
-/// This class can be used in animations to smoothly transition between
-/// different [OpacityModifierSpec] specifications.
-class OpacityModifierSpecTween extends Tween<OpacityModifierSpec?> {
-  OpacityModifierSpecTween({super.begin, super.end});
-
-  @override
-  OpacityModifierSpec lerp(double t) {
-    if (begin == null && end == null) {
-      return const OpacityModifierSpec();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
-  }
-}
 
 final class OpacityModifierSpecUtility<T extends Attribute>
     extends MixUtility<T, OpacityModifierSpecAttribute> {

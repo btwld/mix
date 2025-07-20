@@ -97,7 +97,7 @@ final class ScrollViewModifierSpec extends ModifierSpec<ScrollViewModifierSpec>
 final class ScrollViewModifierSpecUtility<T extends Attribute>
     extends MixUtility<T, ScrollViewModifierSpecAttribute> {
   /// Make the scroll view reverse or not.
-  late final reverse = BoolUtility((prop) => call(reverse: prop.value));
+  late final reverse = BoolUtility((prop) => call(reverse: prop.getValue()));
 
   /// Set the padding of the scroll view.
   late final padding = EdgeInsetsGeometryUtility(
@@ -219,19 +219,3 @@ class ScrollViewModifierSpecAttribute
   ];
 }
 
-class ScrollViewModifierSpecTween extends Tween<ScrollViewModifierSpec?> {
-  ScrollViewModifierSpecTween({super.begin, super.end});
-
-  @override
-  ScrollViewModifierSpec lerp(double t) {
-    if (begin == null && end == null) {
-      return const ScrollViewModifierSpec();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
-  }
-}

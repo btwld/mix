@@ -4,15 +4,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-import '../../internal/compare_mixin.dart';
 import '../../internal/diagnostic_properties_builder_ext.dart';
 
 /// A Data transfer object that represents a [StrutStyle] value.
 @immutable
-class StrutStyleDto extends Mix<StrutStyle> with EqualityMixin, Diagnosticable {
+class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
   // Properties use MixableProperty for cleaner merging
   final Prop<String>? fontFamily;
-  final Prop<List<String>>? fontFamilyFallback;
+  final List<Prop<String>>? fontFamilyFallback;
   final Prop<double>? fontSize;
   final Prop<FontWeight>? fontWeight;
   final Prop<FontStyle>? fontStyle;
@@ -32,14 +31,14 @@ class StrutStyleDto extends Mix<StrutStyle> with EqualityMixin, Diagnosticable {
     bool? forceStrutHeight,
   }) {
     return StrutStyleDto.props(
-      fontFamily: Prop.maybeValue(fontFamily),
-      fontFamilyFallback: Prop.maybeValue(fontFamilyFallback),
-      fontSize: Prop.maybeValue(fontSize),
-      fontWeight: Prop.maybeValue(fontWeight),
-      fontStyle: Prop.maybeValue(fontStyle),
-      height: Prop.maybeValue(height),
-      leading: Prop.maybeValue(leading),
-      forceStrutHeight: Prop.maybeValue(forceStrutHeight),
+      fontFamily: Prop.maybe(fontFamily),
+      fontFamilyFallback: fontFamilyFallback?.map(Prop.new).toList(),
+      fontSize: Prop.maybe(fontSize),
+      fontWeight: Prop.maybe(fontWeight),
+      fontStyle: Prop.maybe(fontStyle),
+      height: Prop.maybe(height),
+      leading: Prop.maybe(leading),
+      forceStrutHeight: Prop.maybe(forceStrutHeight),
     );
   }
 
@@ -92,7 +91,7 @@ class StrutStyleDto extends Mix<StrutStyle> with EqualityMixin, Diagnosticable {
   StrutStyle resolve(BuildContext context) {
     return StrutStyle(
       fontFamily: MixHelpers.resolve(context, fontFamily),
-      fontFamilyFallback: MixHelpers.resolve(context, fontFamilyFallback),
+      fontFamilyFallback: MixHelpers.resolveList(context, fontFamilyFallback),
       fontSize: MixHelpers.resolve(context, fontSize),
       height: MixHelpers.resolve(context, height),
       leading: MixHelpers.resolve(context, leading),
@@ -108,7 +107,7 @@ class StrutStyleDto extends Mix<StrutStyle> with EqualityMixin, Diagnosticable {
 
     return StrutStyleDto.props(
       fontFamily: MixHelpers.merge(fontFamily, other.fontFamily),
-      fontFamilyFallback: MixHelpers.merge(
+      fontFamilyFallback: MixHelpers.mergeList(
         fontFamilyFallback,
         other.fontFamilyFallback,
       ),
@@ -138,14 +137,29 @@ class StrutStyleDto extends Mix<StrutStyle> with EqualityMixin, Diagnosticable {
   }
 
   @override
-  List<Object?> get props => [
-    fontFamily,
-    fontFamilyFallback,
-    fontSize,
-    fontWeight,
-    fontStyle,
-    height,
-    leading,
-    forceStrutHeight,
-  ];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is StrutStyleDto &&
+        other.fontFamily == fontFamily &&
+        listEquals(other.fontFamilyFallback, fontFamilyFallback) &&
+        other.fontSize == fontSize &&
+        other.fontWeight == fontWeight &&
+        other.fontStyle == fontStyle &&
+        other.height == height &&
+        other.leading == leading &&
+        other.forceStrutHeight == forceStrutHeight;
+  }
+
+  @override
+  int get hashCode {
+    return fontFamily.hashCode ^
+        fontFamilyFallback.hashCode ^
+        fontSize.hashCode ^
+        fontWeight.hashCode ^
+        fontStyle.hashCode ^
+        height.hashCode ^
+        leading.hashCode ^
+        forceStrutHeight.hashCode;
+  }
 }

@@ -54,10 +54,10 @@ void main() {
 
       test('.props constructor accepts Prop instances', () {
         final dto = BoxConstraintsDto.props(
-          minWidth: Prop.fromValue(50),
-          maxWidth: Prop.fromValue(150),
-          minHeight: Prop.fromValue(100),
-          maxHeight: Prop.fromValue(200),
+          minWidth: Prop(50),
+          maxWidth: Prop(150),
+          minHeight: Prop(100),
+          maxHeight: Prop(200),
         );
 
         expect(
@@ -219,10 +219,10 @@ void main() {
         const maxToken = MixToken<double>('constraints.max');
 
         final dto = BoxConstraintsDto.props(
-          minWidth: Prop.fromToken(minToken),
-          maxWidth: Prop.fromToken(maxToken),
-          minHeight: Prop.fromValue(100),
-          maxHeight: Prop.fromValue(200),
+          minWidth: Prop.token(minToken),
+          maxWidth: Prop.token(maxToken),
+          minHeight: Prop(100),
+          maxHeight: Prop(200),
         );
 
         await tester.pumpWithMixScope(
@@ -245,7 +245,7 @@ void main() {
 
       test('handles missing tokens gracefully', () {
         const token = MixToken<double>('undefined.size');
-        final dto = BoxConstraintsDto.props(minWidth: Prop.fromToken(token));
+        final dto = BoxConstraintsDto.props(minWidth: Prop.token(token));
 
         // The resolve should throw when token is not found
         expect(() => dto.resolve(EmptyMixData), throwsA(isA<StateError>()));
@@ -255,10 +255,10 @@ void main() {
         const sizeToken = MixToken<double>('size.large');
 
         final dto = BoxConstraintsDto.props(
-          minWidth: Prop.fromValue(10),
-          maxWidth: Prop.fromToken(sizeToken),
-          minHeight: Prop.fromValue(20),
-          maxHeight: Prop.fromToken(sizeToken),
+          minWidth: Prop(10),
+          maxWidth: Prop.token(sizeToken),
+          minHeight: Prop(20),
+          maxHeight: Prop.token(sizeToken),
         );
 
         await tester.pumpWithMixScope(
@@ -294,8 +294,8 @@ void main() {
 
       test('merge maintains property types', () {
         final dto1 = BoxConstraintsDto.props(
-          minWidth: Prop.fromValue(50),
-          maxWidth: Prop.fromToken(const MixToken<double>('size')),
+          minWidth: Prop(50),
+          maxWidth: Prop.token(const MixToken<double>('size')),
         );
         final dto2 = BoxConstraintsDto(minWidth: 60);
 

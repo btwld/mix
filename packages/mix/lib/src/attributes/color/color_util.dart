@@ -51,33 +51,33 @@ final class CallableColorUtility<T extends Attribute> {
 
   /// Call operator to make this utility callable as a function
   /// Usage: colorUtil.black() returns T that resolves to Colors.black
-  T call() => builder(Prop.fromValue(color));
+  T call() => builder(Prop(color));
 
   /// Directive methods for color transformations
   T withOpacity(double opacity) =>
-      builder(Prop.fromDirectives([OpacityDirective(opacity)]));
+      builder(Prop.directives([OpacityDirective(opacity)]));
 
   T withAlpha(int alpha) =>
-      builder(Prop.fromDirectives([AlphaDirective(alpha)]));
+      builder(Prop.directives([AlphaDirective(alpha)]));
 
   T darken(int amount) =>
-      builder(Prop.fromDirectives([DarkenDirective(amount)]));
+      builder(Prop.directives([DarkenDirective(amount)]));
 
   T lighten(int amount) =>
-      builder(Prop.fromDirectives([LightenDirective(amount)]));
+      builder(Prop.directives([LightenDirective(amount)]));
 
   T saturate(int amount) =>
-      builder(Prop.fromDirectives([SaturateDirective(amount)]));
+      builder(Prop.directives([SaturateDirective(amount)]));
 
   T desaturate(int amount) =>
-      builder(Prop.fromDirectives([DesaturateDirective(amount)]));
+      builder(Prop.directives([DesaturateDirective(amount)]));
 
-  T tint(int amount) => builder(Prop.fromDirectives([TintDirective(amount)]));
+  T tint(int amount) => builder(Prop.directives([TintDirective(amount)]));
 
-  T shade(int amount) => builder(Prop.fromDirectives([ShadeDirective(amount)]));
+  T shade(int amount) => builder(Prop.directives([ShadeDirective(amount)]));
 
   T brighten(int amount) =>
-      builder(Prop.fromDirectives([BrightenDirective(amount)]));
+      builder(Prop.directives([BrightenDirective(amount)]));
 }
 
 /// Simplified ColorUtility using the PropUtility pattern

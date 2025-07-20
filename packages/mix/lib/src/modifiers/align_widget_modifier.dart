@@ -138,19 +138,3 @@ class AlignModifierSpecAttribute
   List<Object?> get props => [alignment, widthFactor, heightFactor];
 }
 
-class AlignModifierSpecTween extends Tween<AlignModifierSpec?> {
-  AlignModifierSpecTween({super.begin, super.end});
-
-  @override
-  AlignModifierSpec lerp(double t) {
-    if (begin == null && end == null) {
-      return const AlignModifierSpec();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
-  }
-}

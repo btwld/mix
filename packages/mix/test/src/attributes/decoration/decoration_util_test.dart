@@ -37,7 +37,7 @@ void main() {
       );
       expect(
         result.value.boxShadow,
-        isA<List<MixProp<BoxShadow, BoxShadowDto>>>(),
+        isA<List<MixProp<BoxShadow>>>(),
       );
       expect(result.value.color, resolvesTo(Colors.white));
       expect(result.value.gradient?.mixValue, isA<GradientDto>());
@@ -155,7 +155,7 @@ void main() {
       );
       expect(
         result.value.shadows,
-        isA<List<MixProp<BoxShadow, BoxShadowDto>>>(),
+        isA<List<MixProp<BoxShadow>>>(),
       );
       expect(result.value.shadows?.length, 1);
 

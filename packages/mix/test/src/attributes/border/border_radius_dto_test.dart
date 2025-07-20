@@ -31,10 +31,10 @@ void main() {
 
       test('props factory assigns properties correctly', () {
         final dto = BorderRadiusDto.props(
-          topLeft: Prop.fromValue(const Radius.circular(10.0)),
-          topRight: Prop.fromValue(const Radius.circular(20.0)),
-          bottomLeft: Prop.fromValue(const Radius.circular(30.0)),
-          bottomRight: Prop.fromValue(const Radius.circular(40.0)),
+          topLeft: Prop(const Radius.circular(10.0)),
+          topRight: Prop(const Radius.circular(20.0)),
+          bottomLeft: Prop(const Radius.circular(30.0)),
+          bottomRight: Prop(const Radius.circular(40.0)),
         );
 
         expect(
@@ -205,8 +205,8 @@ void main() {
       testWidgets('resolves tokens from context', (tester) async {
         const radiusToken = MixToken<Radius>('test-radius');
         final dto = BorderRadiusDto.props(
-          topLeft: Prop.fromToken(radiusToken),
-          topRight: Prop.fromValue(const Radius.circular(20.0)),
+          topLeft: Prop.token(radiusToken),
+          topRight: Prop(const Radius.circular(20.0)),
         );
 
         await tester.pumpWithMixScope(
@@ -216,23 +216,20 @@ void main() {
           ),
         );
 
-        final context = tester.element(find.byType(Container));
-        final mixContext = MixContext.create(context, const Style.empty());
-
         expect(
-          dto.resolve(mixContext),
-          const BorderRadius.only(
+          dto,
+          resolvesTo(const BorderRadius.only(
             topLeft: Radius.circular(10.0),
             topRight: Radius.circular(20.0),
-          ),
+          )),
         );
       });
 
       test('handles missing tokens gracefully', () {
         const token = MixToken<Radius>('undefined');
-        final dto = BorderRadiusDto.props(topLeft: Prop.fromToken(token));
+        final dto = BorderRadiusDto.props(topLeft: Prop.token(token));
 
-        expect(() => dto.resolve(EmptyMixData), throwsStateError);
+        expect(() => dto.resolve(MockBuildContext()), throwsStateError);
       });
     });
   });
@@ -262,10 +259,10 @@ void main() {
 
       test('props factory assigns properties correctly', () {
         final dto = BorderRadiusDirectionalDto.props(
-          topStart: Prop.fromValue(const Radius.circular(10.0)),
-          topEnd: Prop.fromValue(const Radius.circular(20.0)),
-          bottomStart: Prop.fromValue(const Radius.circular(30.0)),
-          bottomEnd: Prop.fromValue(const Radius.circular(40.0)),
+          topStart: Prop(const Radius.circular(10.0)),
+          topEnd: Prop(const Radius.circular(20.0)),
+          bottomStart: Prop(const Radius.circular(30.0)),
+          bottomEnd: Prop(const Radius.circular(40.0)),
         );
 
         expect(
@@ -444,8 +441,8 @@ void main() {
       testWidgets('resolves tokens from context', (tester) async {
         const radiusToken = MixToken<Radius>('test-radius');
         final dto = BorderRadiusDirectionalDto.props(
-          topStart: Prop.fromToken(radiusToken),
-          topEnd: Prop.fromValue(const Radius.circular(20.0)),
+          topStart: Prop.token(radiusToken),
+          topEnd: Prop(const Radius.circular(20.0)),
         );
 
         await tester.pumpWithMixScope(
@@ -455,11 +452,8 @@ void main() {
           ),
         );
 
-        final context = tester.element(find.byType(Container));
-        final mixContext = MixContext.create(context, const Style.empty());
-
         expect(
-          dto.resolve(mixContext),
+          dto,
           const BorderRadiusDirectional.only(
             topStart: Radius.circular(10.0),
             topEnd: Radius.circular(20.0),
@@ -470,10 +464,10 @@ void main() {
       test('handles missing tokens gracefully', () {
         const token = MixToken<Radius>('undefined');
         final dto = BorderRadiusDirectionalDto.props(
-          topStart: Prop.fromToken(token),
+          topStart: Prop.token(token),
         );
 
-        expect(() => dto.resolve(EmptyMixData), throwsStateError);
+        expect(() => dto.resolve(MockBuildContext()), throwsStateError);
       });
     });
 

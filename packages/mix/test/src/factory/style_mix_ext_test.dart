@@ -6,43 +6,38 @@ void main() {
   final keyOne = UniqueKey();
   final keyTwo = UniqueKey();
   final keyThree = UniqueKey();
-  testWidgets(
-    'Style.container matches StyledContainer(style:Style)',
-    (tester) async {
-      final style = Style(
-        $box.decoration(border: Border.all(color: Colors.red)),
-      );
+  testWidgets('Style.container matches StyledContainer(style:Style)', (
+    tester,
+  ) async {
+    final style = Style($box.decoration(border: Border.all(color: Colors.red)));
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Column(
-            children: [
-              style.container(key: keyOne, child: const SizedBox()),
-              Box(style: style, key: keyTwo, child: const SizedBox()),
-              Box(
-                style: const Style.empty(),
-                key: keyThree,
-                child: const SizedBox(),
-              ),
-            ],
-          ),
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Column(
+          children: [
+            style.container(key: keyOne, child: const SizedBox()),
+            Box(style: style, key: keyTwo, child: const SizedBox()),
+            Box(
+              style: const Style.empty(),
+              key: keyThree,
+              child: const SizedBox(),
+            ),
+          ],
         ),
-      );
+      ),
+    );
 
-      final containerOne = tester.widget<Box>(find.byKey(keyOne));
-      final containerTwo = tester.widget<Box>(find.byKey(keyTwo));
-      final containerThree = tester.widget<Box>(find.byKey(keyThree));
+    final containerOne = tester.widget<Box>(find.byKey(keyOne));
+    final containerTwo = tester.widget<Box>(find.byKey(keyTwo));
+    final containerThree = tester.widget<Box>(find.byKey(keyThree));
 
-      expect(containerOne.style, style);
-      expect(containerTwo.style, style);
-      expect(containerThree.style, isNot(style));
-    },
-  );
+    expect(containerOne.style, style);
+    expect(containerTwo.style, style);
+    expect(containerThree.style, isNot(style));
+  });
 
   testWidgets('Style.box matches StyledContainer(style:Style)', (tester) async {
-    final style = Style(
-      $box.decoration(border: Border.all(color: Colors.red)),
-    );
+    final style = Style($box.decoration(border: Border.all(color: Colors.red)));
 
     await tester.pumpWidget(
       MaterialApp(
@@ -98,20 +93,14 @@ void main() {
   });
 
   testWidgets('Style.row matches HBox(style:Style)', (tester) async {
-    final style = Style(
-      $box.decoration(border: Border.all(color: Colors.red)),
-    );
+    final style = Style($box.decoration(border: Border.all(color: Colors.red)));
 
     await tester.pumpWidget(
       MaterialApp(
         home: Column(
           children: [
             style.hbox(key: keyOne, children: [const SizedBox()]),
-            HBox(
-              style: style,
-              key: keyTwo,
-              children: const [SizedBox()],
-            ),
+            HBox(style: style, key: keyTwo, children: const [SizedBox()]),
             HBox(
               style: const Style.empty(),
               key: keyThree,
@@ -184,20 +173,14 @@ void main() {
   });
 
   testWidgets('Style.column matches VBox(style:Style)', (tester) async {
-    final style = Style(
-      $box.decoration(border: Border.all(color: Colors.red)),
-    );
+    final style = Style($box.decoration(border: Border.all(color: Colors.red)));
 
     await tester.pumpWidget(
       MaterialApp(
         home: Column(
           children: [
             style.vbox(key: keyOne, children: [const SizedBox()]),
-            VBox(
-              style: style,
-              key: keyTwo,
-              children: const [SizedBox()],
-            ),
+            VBox(style: style, key: keyTwo, children: const [SizedBox()]),
             VBox(
               style: const Style.empty(),
               key: keyThree,

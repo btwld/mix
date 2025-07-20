@@ -2,32 +2,26 @@
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-import '../../internal/compare_mixin.dart';
-
-sealed class BoxBorderDto<T extends BoxBorder> extends Mix<T> with EqualityMixin {
-  final MixProp<BorderSide, BorderSideDto>? top;
-  final MixProp<BorderSide, BorderSideDto>? bottom;
+sealed class BoxBorderDto<T extends BoxBorder> extends Mix<T> {
+  final MixProp<BorderSide>? top;
+  final MixProp<BorderSide>? bottom;
 
   const BoxBorderDto({this.top, this.bottom});
 
-  /// Will try to merge two borders, the type will resolve to type of
-  /// `b` if its not null and `a` otherwise.
+  /// Merges two BoxBorderDto instances.
+  ///
+  /// If both are the same type, delegates to type-specific merge.
+  /// If different types, converts to the type of [b] and merges.
+  /// If [b] is null, returns [a]. If [a] is null, returns [b].
   static BoxBorderDto? tryToMerge(BoxBorderDto? a, BoxBorderDto? b) {
     if (b == null) return a;
     if (a == null) return b;
 
-    return a.runtimeType == b.runtimeType ? a.merge(b) : _exhaustiveMerge(a, b);
-  }
-
-  static B _exhaustiveMerge<A extends BoxBorderDto, B extends BoxBorderDto>(
-    A a,
-    B b,
-  ) {
-    if (a.runtimeType == b.runtimeType) return a.merge(b) as B;
-
-    return switch (b) {
-      (BorderDto g) => a._asBorder().merge(g) as B,
-      (BorderDirectionalDto g) => a._asBorderDirectional().merge(g) as B,
+    return switch ((a, b)) {
+      (BorderDto first, BorderDto second) => first.merge(second),
+      (BorderDirectionalDto first, BorderDirectionalDto second) => first.merge(second),
+      (BorderDto first, BorderDirectionalDto second) => first._asBorderDirectional().merge(second),
+      (BorderDirectionalDto first, BorderDto second) => first._asBorder().merge(second),
     };
   }
 
@@ -52,14 +46,28 @@ sealed class BoxBorderDto<T extends BoxBorder> extends Mix<T> with EqualityMixin
   BorderDto _asBorder() {
     if (this is BorderDto) return this as BorderDto;
 
-    return BorderDto.props(top: top, bottom: bottom);
+    // Convert BorderDirectionalDto to BorderDto
+    final directional = this as BorderDirectionalDto;
+    return BorderDto.props(
+      top: top,
+      bottom: bottom,
+      left: directional.start,    // start maps to left
+      right: directional.end,     // end maps to right
+    );
   }
 
   @protected
   BorderDirectionalDto _asBorderDirectional() {
     if (this is BorderDirectionalDto) return this as BorderDirectionalDto;
 
-    return BorderDirectionalDto.props(top: top, bottom: bottom);
+    // Convert BorderDto to BorderDirectionalDto  
+    final border = this as BorderDto;
+    return BorderDirectionalDto.props(
+      top: top,
+      bottom: bottom,
+      start: border.left,         // left maps to start
+      end: border.right,          // right maps to end
+    );
   }
 
   bool get isUniform;
@@ -70,9 +78,9 @@ sealed class BoxBorderDto<T extends BoxBorder> extends Mix<T> with EqualityMixin
 }
 
 final class BorderDto extends BoxBorderDto<Border>
-    with HasDefaultValue<Border>, EqualityMixin {
-  final MixProp<BorderSide, BorderSideDto>? left;
-  final MixProp<BorderSide, BorderSideDto>? right;
+    with HasDefaultValue<Border> {
+  final MixProp<BorderSide>? left;
+  final MixProp<BorderSide>? right;
 
   static BorderDto none = BorderDto.all(BorderSideDto.none);
 
@@ -83,10 +91,10 @@ final class BorderDto extends BoxBorderDto<Border>
     BorderSideDto? right,
   }) {
     return BorderDto.props(
-      top: MixProp.maybeValue(top),
-      bottom: MixProp.maybeValue(bottom),
-      left: MixProp.maybeValue(left),
-      right: MixProp.maybeValue(right),
+      top: MixProp.maybe(top),
+      bottom: MixProp.maybe(bottom),
+      left: MixProp.maybe(left),
+      right: MixProp.maybe(right),
     );
   }
 
@@ -112,10 +120,10 @@ final class BorderDto extends BoxBorderDto<Border>
 
   factory BorderDto.all(BorderSideDto side) {
     return BorderDto.props(
-      top: MixProp.fromValue(side),
-      bottom: MixProp.fromValue(side),
-      left: MixProp.fromValue(side),
-      right: MixProp.fromValue(side),
+      top: MixProp(side),
+      bottom: MixProp(side),
+      left: MixProp(side),
+      right: MixProp(side),
     );
   }
 
@@ -124,10 +132,10 @@ final class BorderDto extends BoxBorderDto<Border>
     BorderSideDto? horizontal,
   }) {
     return BorderDto.props(
-      top: MixProp.maybeValue(horizontal),
-      bottom: MixProp.maybeValue(horizontal),
-      left: MixProp.maybeValue(vertical),
-      right: MixProp.maybeValue(vertical),
+      top: MixProp.maybe(horizontal),
+      bottom: MixProp.maybe(horizontal),
+      left: MixProp.maybe(vertical),
+      right: MixProp.maybe(vertical),
     );
   }
 
@@ -190,23 +198,31 @@ final class BorderDto extends BoxBorderDto<Border>
   }
 
   @override
+  operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is BorderDto &&
+        other.top == top &&
+        other.bottom == bottom &&
+        other.left == left &&
+        other.right == right;
+  }
+
+  @override
   bool get isUniform => top == bottom && top == left && top == right;
 
-  /// The list of properties that constitute the state of this [BorderDto].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [BorderDto] instances for equality.
   @override
-  List<Object?> get props => [top, bottom, left, right];
+  int get hashCode =>
+      top.hashCode ^ bottom.hashCode ^ left.hashCode ^ right.hashCode;
 
   @override
   Border get defaultValue => const Border();
 }
 
 final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional>
-    with HasDefaultValue<BorderDirectional>, EqualityMixin {
-  final MixProp<BorderSide, BorderSideDto>? start;
-  final MixProp<BorderSide, BorderSideDto>? end;
+    with HasDefaultValue<BorderDirectional> {
+  final MixProp<BorderSide>? start;
+  final MixProp<BorderSide>? end;
   static final BorderDirectionalDto none = BorderDirectionalDto.all(
     BorderSideDto.none,
   );
@@ -219,10 +235,10 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional>
     BorderSideDto? end,
   }) {
     return BorderDirectionalDto.props(
-      top: MixProp.maybeValue(top),
-      bottom: MixProp.maybeValue(bottom),
-      start: MixProp.maybeValue(start),
-      end: MixProp.maybeValue(end),
+      top: MixProp.maybe(top),
+      bottom: MixProp.maybe(bottom),
+      start: MixProp.maybe(start),
+      end: MixProp.maybe(end),
     );
   }
 
@@ -253,10 +269,10 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional>
 
   factory BorderDirectionalDto.all(BorderSideDto side) {
     return BorderDirectionalDto.props(
-      top: MixProp.fromValue(side),
-      bottom: MixProp.fromValue(side),
-      start: MixProp.fromValue(side),
-      end: MixProp.fromValue(side),
+      top: MixProp(side),
+      bottom: MixProp(side),
+      start: MixProp(side),
+      end: MixProp(side),
     );
   }
 
@@ -265,10 +281,10 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional>
     BorderSideDto? horizontal,
   }) {
     return BorderDirectionalDto.props(
-      top: MixProp.maybeValue(horizontal),
-      bottom: MixProp.maybeValue(horizontal),
-      start: MixProp.maybeValue(vertical),
-      end: MixProp.maybeValue(vertical),
+      top: MixProp.maybe(horizontal),
+      bottom: MixProp.maybe(horizontal),
+      start: MixProp.maybe(vertical),
+      end: MixProp.maybe(vertical),
     );
   }
 
@@ -341,11 +357,27 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional>
   BorderDirectional get defaultValue => const BorderDirectional();
 
   @override
-  List<Object?> get props => [top, bottom, start, end];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is BorderDirectionalDto &&
+        other.top == top &&
+        other.bottom == bottom &&
+        other.start == start &&
+        other.end == end;
+  }
+
+  @override
+  int get hashCode {
+    return top.hashCode ^
+        bottom.hashCode ^
+        start.hashCode ^
+        end.hashCode;
+  }
 }
 
 final class BorderSideDto extends Mix<BorderSide>
-    with HasDefaultValue<BorderSide>, EqualityMixin {
+    with HasDefaultValue<BorderSide> {
   // Properties use MixableProperty for cleaner merging
   final Prop<Color>? color;
   final Prop<double>? width;
@@ -362,10 +394,10 @@ final class BorderSideDto extends Mix<BorderSide>
     double? width,
   }) {
     return BorderSideDto.props(
-      color: Prop.maybeValue(color),
-      width: Prop.maybeValue(width),
-      style: Prop.maybeValue(style),
-      strokeAlign: Prop.maybeValue(strokeAlign),
+      color: Prop.maybe(color),
+      width: Prop.maybe(width),
+      style: Prop.maybe(style),
+      strokeAlign: Prop.maybe(strokeAlign),
     );
   }
 
@@ -448,12 +480,20 @@ final class BorderSideDto extends Mix<BorderSide>
   }
 
   @override
+  operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is BorderSideDto &&
+        other.color == color &&
+        other.width == width &&
+        other.style == style &&
+        other.strokeAlign == strokeAlign;
+  }
+
+  @override
   BorderSide get defaultValue => const BorderSide();
 
-  /// The list of properties that constitute the state of this [BorderSideDto].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [BorderSideDto] instances for equality.
   @override
-  List<Object?> get props => [color, strokeAlign, style, width];
+  int get hashCode =>
+      color.hashCode ^ width.hashCode ^ style.hashCode ^ strokeAlign.hashCode;
 }

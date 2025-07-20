@@ -116,19 +116,10 @@ void main() {
       expect(level2Attribute.values, containsAll([attr1, attr2, attr3]));
       expect(level3Attribute.values, containsAll([attr1, attr2, attr3]));
 
-      expect(
-        level1Attribute.values.whereType<Style>(),
-        isEmpty,
-      );
+      expect(level1Attribute.values.whereType<Style>(), isEmpty);
 
-      expect(
-        level2Attribute.values.whereType<Style>(),
-        isEmpty,
-      );
-      expect(
-        level3Attribute.values.whereType<Style>(),
-        isEmpty,
-      );
+      expect(level2Attribute.values.whereType<Style>(), isEmpty);
+      expect(level3Attribute.values.whereType<Style>(), isEmpty);
 
       expect(level1Attribute.values.length, 3);
       expect(level2Attribute.values.length, 3);

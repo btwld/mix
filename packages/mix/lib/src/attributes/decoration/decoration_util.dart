@@ -18,7 +18,7 @@ import 'decoration_dto.dart';
 import 'image/decoration_image_dto.dart';
 import 'image/decoration_image_util.dart';
 
-class DecorationUtility<T extends Attribute>
+class DecorationUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, DecorationDto> {
   const DecorationUtility(super.builder);
 
@@ -31,8 +31,9 @@ class DecorationUtility<T extends Attribute>
 ///
 /// This class provides methods to set individual properties of a [BoxDecoration].
 /// Use the methods of this class to configure specific properties of a [BoxDecoration].
-class BoxDecorationUtility<T extends Attribute>
-    extends DtoUtility<T, BoxDecorationDto, BoxDecoration> {
+@immutable
+final class BoxDecorationUtility<T extends SpecUtility<Object?>>
+    extends MixPropUtility<T, BoxDecoration> {
   /// Utility for defining [BoxDecorationDto.border]
   late final border = BoxBorderUtility((v) => only(border: v));
 
@@ -76,60 +77,8 @@ class BoxDecorationUtility<T extends Attribute>
   late final elevation = ElevationUtility((v) => only(boxShadow: v));
 
   BoxDecorationUtility(super.builder)
-    : super(
-        valueToDto: (v) => throw UnimplementedError(
-          'BoxDecoration to DTO conversion not implemented yet. Use only() method instead.',
-        ),
-      );
+    : super(valueToDto: BoxDecorationDto.value);
 
-  T call({
-    BoxBorder? border,
-    BorderRadiusGeometry? borderRadius,
-    BoxShape? shape,
-    BlendMode? backgroundBlendMode,
-    Color? color,
-    DecorationImage? image,
-    Gradient? gradient,
-    List<BoxShadow>? boxShadow,
-  }) {
-    return only(
-      border: border != null ? this.border.fromValue(border) : null,
-      borderRadius: borderRadius != null
-          ? this.borderRadius.fromValue(borderRadius)
-          : null,
-      shape: shape,
-      backgroundBlendMode: backgroundBlendMode,
-      color: color,
-      image: image != null ? this.image.fromValue(image) : null,
-      gradient: gradient != null
-          ? switch (gradient) {
-              LinearGradient() => this.gradient.linear.fromValue(gradient),
-              RadialGradient() => this.gradient.radial.fromValue(gradient),
-              SweepGradient() => this.gradient.sweep.fromValue(gradient),
-              _ => throw ArgumentError(
-                'Unsupported gradient type: ${gradient.runtimeType}',
-              ),
-            }
-          : null,
-      boxShadow: boxShadow
-          ?.map(
-            (shadow) => BoxShadowDto(
-              color: shadow.color != const Color(0xFF000000)
-                  ? shadow.color
-                  : null,
-              offset: shadow.offset != Offset.zero ? shadow.offset : null,
-              blurRadius: shadow.blurRadius != 0.0 ? shadow.blurRadius : null,
-              spreadRadius: shadow.spreadRadius != 0.0
-                  ? shadow.spreadRadius
-                  : null,
-            ),
-          )
-          .toList(),
-    );
-  }
-
-  /// Returns a new [BoxDecorationDto] with the specified properties.
-  @override
   T only({
     BoxBorderDto? border,
     BorderRadiusGeometryDto? borderRadius,
@@ -140,7 +89,7 @@ class BoxDecorationUtility<T extends Attribute>
     GradientDto? gradient,
     List<BoxShadowDto>? boxShadow,
   }) {
-    return builder(
+    return call(
       BoxDecorationDto(
         border: border,
         borderRadius: borderRadius,
@@ -153,14 +102,20 @@ class BoxDecorationUtility<T extends Attribute>
       ),
     );
   }
+
+  @override
+  T call(BoxDecorationDto value) {
+    return builder(MixProp(value));
+  }
 }
 
 /// Utility class for configuring [ShapeDecoration] properties.
 ///
 /// This class provides methods to set individual properties of a [ShapeDecoration].
 /// Use the methods of this class to configure specific properties of a [ShapeDecoration].
-class ShapeDecorationUtility<T extends Attribute>
-    extends DtoUtility<T, ShapeDecorationDto, ShapeDecoration> {
+@immutable
+final class ShapeDecorationUtility<T extends Attribute>
+    extends MixPropUtility<T, ShapeDecoration> {
   /// Utility for defining [ShapeDecorationDto.shape]
   late final shape = ShapeBorderUtility((v) => only(shape: v));
 
@@ -179,69 +134,8 @@ class ShapeDecorationUtility<T extends Attribute>
   late final shadows = BoxShadowListUtility((v) => only(shadows: v));
 
   ShapeDecorationUtility(super.builder)
-    : super(
-        valueToDto: (v) => throw UnimplementedError(
-          'ShapeDecoration to DTO conversion not implemented yet. Use only() method instead.',
-        ),
-      );
+    : super(valueToDto: ShapeDecorationDto.value);
 
-  T call({
-    ShapeBorder? shape,
-    Color? color,
-    DecorationImage? image,
-    Gradient? gradient,
-    List<BoxShadow>? shadows,
-  }) {
-    return only(
-      shape: shape != null
-          ? switch (shape) {
-              RoundedRectangleBorder() => this.shape.roundedRectangle.fromValue(
-                shape,
-              ),
-              BeveledRectangleBorder() => this.shape.beveled.fromValue(shape),
-              ContinuousRectangleBorder() => this.shape.continuous.fromValue(
-                shape,
-              ),
-              CircleBorder() => this.shape.circle.fromValue(shape),
-              StadiumBorder() => this.shape.stadium.fromValue(shape),
-              StarBorder() => this.shape.star.fromValue(shape),
-              LinearBorder() => this.shape.linear.fromValue(shape),
-              _ => throw ArgumentError(
-                'Unsupported shape border type: ${shape.runtimeType}',
-              ),
-            }
-          : null,
-      color: color,
-      image: image != null ? this.image.fromValue(image) : null,
-      gradient: gradient != null
-          ? switch (gradient) {
-              LinearGradient() => this.gradient.linear.fromValue(gradient),
-              RadialGradient() => this.gradient.radial.fromValue(gradient),
-              SweepGradient() => this.gradient.sweep.fromValue(gradient),
-              _ => throw ArgumentError(
-                'Unsupported gradient type: ${gradient.runtimeType}',
-              ),
-            }
-          : null,
-      shadows: shadows
-          ?.map(
-            (shadow) => BoxShadowDto(
-              color: shadow.color != const Color(0xFF000000)
-                  ? shadow.color
-                  : null,
-              offset: shadow.offset != Offset.zero ? shadow.offset : null,
-              blurRadius: shadow.blurRadius != 0.0 ? shadow.blurRadius : null,
-              spreadRadius: shadow.spreadRadius != 0.0
-                  ? shadow.spreadRadius
-                  : null,
-            ),
-          )
-          .toList(),
-    );
-  }
-
-  /// Returns a new [ShapeDecorationDto] with the specified properties.
-  @override
   T only({
     ShapeBorderDto? shape,
     Color? color,
@@ -249,7 +143,7 @@ class ShapeDecorationUtility<T extends Attribute>
     GradientDto? gradient,
     List<BoxShadowDto>? shadows,
   }) {
-    return builder(
+    return call(
       ShapeDecorationDto(
         shape: shape,
         color: color,
@@ -258,5 +152,10 @@ class ShapeDecorationUtility<T extends Attribute>
         shadows: shadows,
       ),
     );
+  }
+
+  @override
+  T call(ShapeDecorationDto value) {
+    return builder(MixProp(value));
   }
 }

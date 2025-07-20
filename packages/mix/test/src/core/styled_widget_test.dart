@@ -23,7 +23,10 @@ void main() {
                 inherit: inherit,
                 builder: (context) {
                   final mix = MixProvider.of(context);
-                  inheritedValue = mix.attributeOf<BoxSpecAttribute>()?.height?.value;
+                  inheritedValue = mix
+                      .attributeOf<BoxSpecAttribute>()
+                      ?.height
+                      ?.value;
 
                   return const SizedBox();
                 },
@@ -253,8 +256,16 @@ void main() {
               expect(
                 mix.attributes.values.first,
                 isA<BoxSpecAttribute>()
-                    .having((attribute) => attribute.height?.value, 'height', 100)
-                    .having((attribute) => attribute.width?.value, 'width', 100),
+                    .having(
+                      (attribute) => attribute.height?.value,
+                      'height',
+                      100,
+                    )
+                    .having(
+                      (attribute) => attribute.width?.value,
+                      'width',
+                      100,
+                    ),
               );
               return const SizedBox();
             },

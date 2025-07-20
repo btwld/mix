@@ -2,12 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../core/mix_element.dart';
-import '../../internal/compare_mixin.dart';
 import '../../theme/mix/mix_theme.dart';
 import '../../theme/tokens/mix_token.dart';
 
 @immutable
-sealed class SpaceDto extends Mix<double> with EqualityMixin, Diagnosticable {
+sealed class SpaceDto extends Mix<double> with Diagnosticable {
   // Common constants using private types
   static const zero = _ValueSpaceDto(0);
 
@@ -47,7 +46,14 @@ class _ValueSpaceDto extends SpaceDto {
   double resolve(BuildContext context) => value;
 
   @override
-  List<Object?> get props => [value];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is _ValueSpaceDto && other.value == value;
+  }
+
+  @override
+  int get hashCode => value.hashCode;
 }
 
 @immutable
@@ -62,5 +68,12 @@ class _TokenSpaceDto extends SpaceDto {
   }
 
   @override
-  List<Object?> get props => [token];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is _TokenSpaceDto && other.token == token;
+  }
+
+  @override
+  int get hashCode => token.hashCode;
 }

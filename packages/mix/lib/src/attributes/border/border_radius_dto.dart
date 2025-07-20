@@ -3,8 +3,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../../internal/compare_mixin.dart';
-
 /// Represents a [Mix] Data transfer object of [BorderRadiusGeometry]
 ///
 /// This is used to allow for resolvable value tokens, and also the correct
@@ -17,7 +15,7 @@ import '../../internal/compare_mixin.dart';
 /// - [BorderRadiusGeometry], which is the Flutter counterpart of this class.
 @immutable
 sealed class BorderRadiusGeometryDto<T extends BorderRadiusGeometry>
-    extends Mix<T> with EqualityMixin {
+    extends Mix<T> {
   const BorderRadiusGeometryDto();
 
   factory BorderRadiusGeometryDto.value(BorderRadiusGeometry value) {
@@ -109,7 +107,7 @@ sealed class BorderRadiusGeometryDto<T extends BorderRadiusGeometry>
   BorderRadiusGeometryDto<T> merge(covariant BorderRadiusGeometryDto<T>? other);
 }
 
-final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> with EqualityMixin {
+final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
   @override
   final Prop<Radius>? topLeft;
 
@@ -130,10 +128,10 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> with E
     Radius? bottomRight,
   }) {
     return BorderRadiusDto.props(
-      topLeft: Prop.maybeValue(topLeft),
-      topRight: Prop.maybeValue(topRight),
-      bottomLeft: Prop.maybeValue(bottomLeft),
-      bottomRight: Prop.maybeValue(bottomRight),
+      topLeft: Prop.maybe(topLeft),
+      topRight: Prop.maybe(topRight),
+      bottomLeft: Prop.maybe(bottomLeft),
+      bottomRight: Prop.maybe(bottomRight),
     );
   }
 
@@ -197,11 +195,27 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> with E
   }
 
   @override
-  List<Object?> get props => [topLeft, topRight, bottomLeft, bottomRight];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is BorderRadiusDto &&
+        other.topLeft == topLeft &&
+        other.topRight == topRight &&
+        other.bottomLeft == bottomLeft &&
+        other.bottomRight == bottomRight;
+  }
+
+  @override
+  int get hashCode {
+    return topLeft.hashCode ^
+        topRight.hashCode ^
+        bottomLeft.hashCode ^
+        bottomRight.hashCode;
+  }
 }
 
 final class BorderRadiusDirectionalDto
-    extends BorderRadiusGeometryDto<BorderRadiusDirectional> with EqualityMixin {
+    extends BorderRadiusGeometryDto<BorderRadiusDirectional> {
   final Prop<Radius>? topStart;
   final Prop<Radius>? topEnd;
   final Prop<Radius>? bottomStart;
@@ -215,10 +229,10 @@ final class BorderRadiusDirectionalDto
     Radius? bottomEnd,
   }) {
     return BorderRadiusDirectionalDto.props(
-      topStart: Prop.maybeValue(topStart),
-      topEnd: Prop.maybeValue(topEnd),
-      bottomStart: Prop.maybeValue(bottomStart),
-      bottomEnd: Prop.maybeValue(bottomEnd),
+      topStart: Prop.maybe(topStart),
+      topEnd: Prop.maybe(topEnd),
+      bottomStart: Prop.maybe(bottomStart),
+      bottomEnd: Prop.maybe(bottomEnd),
     );
   }
 
@@ -288,7 +302,23 @@ final class BorderRadiusDirectionalDto
   }
 
   @override
-  List<Object?> get props => [topStart, topEnd, bottomStart, bottomEnd];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is BorderRadiusDirectionalDto &&
+        other.topStart == topStart &&
+        other.topEnd == topEnd &&
+        other.bottomStart == bottomStart &&
+        other.bottomEnd == bottomEnd;
+  }
+
+  @override
+  int get hashCode {
+    return topStart.hashCode ^
+        topEnd.hashCode ^
+        bottomStart.hashCode ^
+        bottomEnd.hashCode;
+  }
 
   /// These getters return null for BorderRadiusDirectional as they don't apply
   /// to directional border radius (which uses topStart/topEnd instead of topLeft/topRight)

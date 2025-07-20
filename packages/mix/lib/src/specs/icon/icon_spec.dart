@@ -139,7 +139,7 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
   final Prop<double>? weight;
   final Prop<double>? grade;
   final Prop<double>? opticalSize;
-  final List<MixProp<Shadow, ShadowDto>>? shadows;
+  final List<MixProp<Shadow>>? shadows;
   final Prop<TextDirection>? textDirection;
   final Prop<bool>? applyTextScaling;
   final Prop<double>? fill;
@@ -157,17 +157,17 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
     double? fill,
   }) {
     return IconSpecAttribute.props(
-      color: Prop.maybeValue(color),
-      size: Prop.maybeValue(size),
-      weight: Prop.maybeValue(weight),
-      grade: Prop.maybeValue(grade),
-      opticalSize: Prop.maybeValue(opticalSize),
+      color: Prop.maybe(color),
+      size: Prop.maybe(size),
+      weight: Prop.maybe(weight),
+      grade: Prop.maybe(grade),
+      opticalSize: Prop.maybe(opticalSize),
       shadows: shadows
-          ?.map((shadow) => MixProp<Shadow, ShadowDto>.fromValue(shadow))
+          ?.map((shadow) => MixProp<Shadow>(shadow))
           .toList(),
-      textDirection: Prop.maybeValue(textDirection),
-      applyTextScaling: Prop.maybeValue(applyTextScaling),
-      fill: Prop.maybeValue(fill),
+      textDirection: Prop.maybe(textDirection),
+      applyTextScaling: Prop.maybe(applyTextScaling),
+      fill: Prop.maybe(fill),
     );
   }
 
@@ -187,20 +187,20 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
   // Static factory to create from resolved Spec
   static IconSpecAttribute value(IconSpec spec) {
     return IconSpecAttribute.props(
-      color: Prop.maybeValue(spec.color),
-      size: Prop.maybeValue(spec.size),
-      weight: Prop.maybeValue(spec.weight),
-      grade: Prop.maybeValue(spec.grade),
-      opticalSize: Prop.maybeValue(spec.opticalSize),
+      color: Prop.maybe(spec.color),
+      size: Prop.maybe(spec.size),
+      weight: Prop.maybe(spec.weight),
+      grade: Prop.maybe(spec.grade),
+      opticalSize: Prop.maybe(spec.opticalSize),
       shadows: spec.shadows
           ?.map(
             (shadow) =>
-                MixProp<Shadow, ShadowDto>.fromValue(ShadowDto.value(shadow)),
+                MixProp<Shadow>(ShadowDto.value(shadow)),
           )
           .toList(),
-      textDirection: Prop.maybeValue(spec.textDirection),
-      applyTextScaling: Prop.maybeValue(spec.applyTextScaling),
-      fill: Prop.maybeValue(spec.fill),
+      textDirection: Prop.maybe(spec.textDirection),
+      applyTextScaling: Prop.maybe(spec.applyTextScaling),
+      fill: Prop.maybe(spec.fill),
     );
   }
 
@@ -354,23 +354,3 @@ extension IconSpecUtilityExt<T extends Attribute> on IconSpecUtility<T> {
   ShadowUtility get shadow => ShadowUtility((v) => only(shadows: [v]));
 }
 
-/// A tween that interpolates between two [IconSpec] instances.
-///
-/// This class can be used in animations to smoothly transition between
-/// different [IconSpec] specifications.
-class IconSpecTween extends Tween<IconSpec?> {
-  IconSpecTween({super.begin, super.end});
-
-  @override
-  IconSpec lerp(double t) {
-    if (begin == null && end == null) {
-      return const IconSpec();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
-  }
-}

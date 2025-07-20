@@ -143,26 +143,6 @@ class ClipOvalModifierSpecAttribute
   List<Object?> get props => [clipper, clipBehavior];
 }
 
-/// A tween that interpolates between two [ClipOvalModifierSpec] instances.
-///
-/// This class can be used in animations to smoothly transition between
-/// different [ClipOvalModifierSpec] specifications.
-class ClipOvalModifierSpecTween extends Tween<ClipOvalModifierSpec?> {
-  ClipOvalModifierSpecTween({super.begin, super.end});
-
-  @override
-  ClipOvalModifierSpec lerp(double t) {
-    if (begin == null && end == null) {
-      return const ClipOvalModifierSpec();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
-  }
-}
 
 final class ClipRectModifierSpec extends ModifierSpec<ClipRectModifierSpec>
     with Diagnosticable {
@@ -299,26 +279,6 @@ class ClipRectModifierSpecAttribute
   List<Object?> get props => [clipper, clipBehavior];
 }
 
-/// A tween that interpolates between two [ClipRectModifierSpec] instances.
-///
-/// This class can be used in animations to smoothly transition between
-/// different [ClipRectModifierSpec] specifications.
-class ClipRectModifierSpecTween extends Tween<ClipRectModifierSpec?> {
-  ClipRectModifierSpecTween({super.begin, super.end});
-
-  @override
-  ClipRectModifierSpec lerp(double t) {
-    if (begin == null && end == null) {
-      return const ClipRectModifierSpec();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
-  }
-}
 
 final class ClipRRectModifierSpec extends ModifierSpec<ClipRRectModifierSpec>
     with Diagnosticable {
@@ -486,26 +446,6 @@ class ClipRRectModifierSpecAttribute
   List<Object?> get props => [borderRadius, clipper, clipBehavior];
 }
 
-/// A tween that interpolates between two [ClipRRectModifierSpec] instances.
-///
-/// This class can be used in animations to smoothly transition between
-/// different [ClipRRectModifierSpec] specifications.
-class ClipRRectModifierSpecTween extends Tween<ClipRRectModifierSpec?> {
-  ClipRRectModifierSpecTween({super.begin, super.end});
-
-  @override
-  ClipRRectModifierSpec lerp(double t) {
-    if (begin == null && end == null) {
-      return const ClipRRectModifierSpec();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
-  }
-}
 
 final class ClipPathModifierSpec extends ModifierSpec<ClipPathModifierSpec>
     with Diagnosticable {
@@ -642,26 +582,6 @@ class ClipPathModifierSpecAttribute
   List<Object?> get props => [clipper, clipBehavior];
 }
 
-/// A tween that interpolates between two [ClipPathModifierSpec] instances.
-///
-/// This class can be used in animations to smoothly transition between
-/// different [ClipPathModifierSpec] specifications.
-class ClipPathModifierSpecTween extends Tween<ClipPathModifierSpec?> {
-  ClipPathModifierSpecTween({super.begin, super.end});
-
-  @override
-  ClipPathModifierSpec lerp(double t) {
-    if (begin == null && end == null) {
-      return const ClipPathModifierSpec();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
-  }
-}
 
 final class ClipTriangleModifierSpec
     extends ModifierSpec<ClipTriangleModifierSpec>
@@ -791,26 +711,6 @@ class ClipTriangleModifierSpecAttribute
   List<Object?> get props => [clipBehavior];
 }
 
-/// A tween that interpolates between two [ClipTriangleModifierSpec] instances.
-///
-/// This class can be used in animations to smoothly transition between
-/// different [ClipTriangleModifierSpec] specifications.
-class ClipTriangleModifierSpecTween extends Tween<ClipTriangleModifierSpec?> {
-  ClipTriangleModifierSpecTween({super.begin, super.end});
-
-  @override
-  ClipTriangleModifierSpec lerp(double t) {
-    if (begin == null && end == null) {
-      return const ClipTriangleModifierSpec();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
-  }
-}
 
 class TriangleClipper extends CustomClipper<Path> {
   const TriangleClipper();

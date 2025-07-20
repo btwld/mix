@@ -40,11 +40,9 @@ void main() {
 
       test('props constructor with Prop values', () {
         const dto = TextHeightBehaviorDto.props(
-          applyHeightToFirstAscent: Prop.fromValue(false),
-          applyHeightToLastDescent: Prop.fromValue(true),
-          leadingDistribution: Prop.fromValue(
-            TextLeadingDistribution.proportional,
-          ),
+          applyHeightToFirstAscent: Prop(false),
+          applyHeightToLastDescent: Prop(true),
+          leadingDistribution: Prop(TextLeadingDistribution.proportional),
         );
 
         expect(dto.applyHeightToFirstAscent, resolvesTo(false));

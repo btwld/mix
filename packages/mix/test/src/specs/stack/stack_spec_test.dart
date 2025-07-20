@@ -89,7 +89,7 @@ void main() {
         ..textDirection.rtl()
         ..clipBehavior.antiAlias();
 
-      final attr = util.attributeValue!;
+      final attr = util.attribute!;
 
       expect(util, isA<Style>());
       expect(attr.alignment, Alignment.topLeft);
@@ -119,8 +119,8 @@ void main() {
       final stack1 = StackSpecUtility.self..alignment.topLeft();
       final stack2 = StackSpecUtility.self..alignment.bottomRight();
 
-      final attr1 = stack1.attributeValue!;
-      final attr2 = stack2.attributeValue!;
+      final attr1 = stack1.attribute!;
+      final attr2 = stack2.attribute!;
 
       expect(attr1.alignment, Alignment.topLeft);
       expect(attr2.alignment, Alignment.bottomRight);
@@ -155,7 +155,7 @@ void main() {
         ..fit.expand()
         ..textDirection.rtl();
 
-      final stackAttribute = stackValue.attributeValue!;
+      final stackAttribute = stackValue.attribute!;
       final stackAttribute2 = stack.alignment.bottomRight();
 
       expect(stackAttribute.alignment, Alignment.topLeft);

@@ -2,20 +2,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../../internal/compare_mixin.dart';
-
+/// A Data transfer object that represents a [ShapeBorder] value.
 @immutable
-sealed class ShapeBorderDto<T extends ShapeBorder> extends Mix<T> with EqualityMixin {
+sealed class ShapeBorderDto<T extends ShapeBorder> extends Mix<T> {
   const ShapeBorderDto();
 
   /// Constructor that accepts a [ShapeBorder] value and converts it to the appropriate DTO.
-  ///
-  /// This is useful for converting existing [ShapeBorder] instances to [ShapeBorderDto].
-  ///
-  /// ```dart
-  /// const border = RoundedRectangleBorder(borderRadius: BorderRadius.circular(8));
-  /// final dto = ShapeBorderDto.value(border);
-  /// ```
   static ShapeBorderDto value(ShapeBorder border) {
     return switch (border) {
       RoundedRectangleBorder b => RoundedRectangleBorderDto.value(b),
@@ -32,179 +24,89 @@ sealed class ShapeBorderDto<T extends ShapeBorder> extends Mix<T> with EqualityM
   }
 
   /// Constructor that accepts a nullable [ShapeBorder] value and converts it to the appropriate DTO.
-  ///
-  /// Returns null if the input is null, otherwise uses [ShapeBorderDto.value].
-  ///
-  /// ```dart
-  /// const ShapeBorder? border = RoundedRectangleBorder(borderRadius: BorderRadius.circular(8));
-  /// final dto = ShapeBorderDto.maybeValue(border); // Returns ShapeBorderDto or null
-  /// ```
   static ShapeBorderDto? maybeValue(ShapeBorder? border) {
     return border != null ? ShapeBorderDto.value(border) : null;
   }
 
-  static ShapeBorderDto? tryToMerge(ShapeBorderDto? a, ShapeBorderDto? b) {
-    if (b == null) return a;
-    if (a == null) return b;
+  /// Merges with another shape border of the same type.
+  /// This method is implemented by subclasses to handle type-specific merging.
+  @protected
+  ShapeBorderDto<T> mergeShapeBorder(covariant ShapeBorderDto<T> other);
 
-    if (b is! OutlinedBorderDto || a is! OutlinedBorderDto) {
-      // Not merge anything besides OutlinedBorderDto
-      return b;
-    }
-
-    return OutlinedBorderDto.tryToMerge(a, b);
-  }
-
-  static ({
-    MixProp<BorderSide, BorderSideDto>? side,
-    MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>? borderRadius,
-    BoxShape? boxShape,
-  })
-  extract(ShapeBorderDto? dto) {
-    return dto is OutlinedBorderDto
-        ? (
-            side: dto.side,
-            borderRadius: dto.borderRadiusGetter,
-            boxShape: dto._toBoxShape(),
-          )
-        : (side: null, borderRadius: null, boxShape: null);
-  }
-
+  /// Merges two ShapeBorderDto instances.
+  ///
+  /// If both are the same type, delegates to [mergeShapeBorder].
+  /// If different types, returns [other] (override behavior).
+  /// If [other] is null, returns this instance.
   @override
-  ShapeBorderDto<T> merge(covariant ShapeBorderDto<T>? other);
+  ShapeBorderDto<T> merge(covariant ShapeBorderDto<T>? other) {
+    if (other == null) return this;
+
+    // Use pattern matching for type-safe merging
+    return switch ((this, other)) {
+          (RoundedRectangleBorderDto a, RoundedRectangleBorderDto b) =>
+            a.mergeShapeBorder(b),
+          (BeveledRectangleBorderDto a, BeveledRectangleBorderDto b) =>
+            a.mergeShapeBorder(b),
+          (ContinuousRectangleBorderDto a, ContinuousRectangleBorderDto b) =>
+            a.mergeShapeBorder(b),
+          (CircleBorderDto a, CircleBorderDto b) => a.mergeShapeBorder(b),
+          (StarBorderDto a, StarBorderDto b) => a.mergeShapeBorder(b),
+          (LinearBorderDto a, LinearBorderDto b) => a.mergeShapeBorder(b),
+          (StadiumBorderDto a, StadiumBorderDto b) => a.mergeShapeBorder(b),
+          _ => other, // Different types: override with other
+        }
+        as ShapeBorderDto<T>;
+  }
 }
 
+/// Base class for borders that extend OutlinedBorder and have a side property.
 @immutable
 abstract class OutlinedBorderDto<T extends OutlinedBorder>
-    extends ShapeBorderDto<T> with EqualityMixin {
-  final MixProp<BorderSide, BorderSideDto>? side;
+    extends ShapeBorderDto<T> {
+  final MixProp<BorderSide>? side;
 
   const OutlinedBorderDto({this.side});
-
-  static OutlinedBorderDto? tryToMerge(
-    OutlinedBorderDto? a,
-    OutlinedBorderDto? b,
-  ) {
-    if (b == null) return a;
-    if (a == null) return b;
-
-    return _exhaustiveMerge(a, b);
-  }
-
-  static B _exhaustiveMerge<
-    A extends OutlinedBorderDto,
-    B extends OutlinedBorderDto
-  >(A a, B b) {
-    if (a.runtimeType == b.runtimeType) return a.merge(b) as B;
-
-    final adaptedA = b.adapt(a) as B;
-
-    return adaptedA.merge(b) as B;
-  }
-
-  BoxShape? _toBoxShape() {
-    if (this is CircleBorderDto) {
-      return BoxShape.circle;
-    } else if (this is RoundedRectangleBorderDto) {
-      return BoxShape.rectangle;
-    }
-
-    return null;
-  }
-
-  @protected
-  MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>?
-  get borderRadiusGetter;
-
-  OutlinedBorderDto<T> adapt(OutlinedBorderDto other);
-
-  @override
-  OutlinedBorderDto<T> merge(covariant OutlinedBorderDto<T>? other);
 }
 
 final class RoundedRectangleBorderDto
-    extends OutlinedBorderDto<RoundedRectangleBorder> with EqualityMixin {
-  final MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>? borderRadius;
+    extends OutlinedBorderDto<RoundedRectangleBorder> {
+  final MixProp<BorderRadiusGeometry>? borderRadius;
 
   factory RoundedRectangleBorderDto({
     BorderRadiusGeometryDto? borderRadius,
     BorderSideDto? side,
   }) {
     return RoundedRectangleBorderDto.props(
-      borderRadius: MixProp.maybeValue(borderRadius),
-      side: MixProp.maybeValue(side),
+      borderRadius: MixProp.maybe(borderRadius),
+      side: MixProp.maybe(side),
     );
   }
 
   const RoundedRectangleBorderDto.props({this.borderRadius, super.side});
 
-  /// Constructor that accepts a [RoundedRectangleBorder] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [RoundedRectangleBorder] instances to [RoundedRectangleBorderDto].
-  ///
-  /// ```dart
-  /// const border = RoundedRectangleBorder(borderRadius: BorderRadius.circular(8));
-  /// final dto = RoundedRectangleBorderDto.value(border);
-  /// ```
   factory RoundedRectangleBorderDto.value(RoundedRectangleBorder border) {
     return RoundedRectangleBorderDto(
-      borderRadius: border.borderRadius != BorderRadius.zero
-          ? BorderRadiusDto.value(border.borderRadius as BorderRadius)
-          : null,
+      borderRadius: BorderRadiusGeometryDto.value(border.borderRadius),
       side: BorderSideDto.maybeValue(border.side),
     );
   }
 
-  /// Constructor that accepts a nullable [RoundedRectangleBorder] value and extracts its properties.
-  ///
-  /// Returns null if the input is null, otherwise uses [RoundedRectangleBorderDto.value].
-  ///
-  /// ```dart
-  /// const RoundedRectangleBorder? border = RoundedRectangleBorder(borderRadius: BorderRadius.circular(8));
-  /// final dto = RoundedRectangleBorderDto.maybeValue(border); // Returns RoundedRectangleBorderDto or null
-  /// ```
   static RoundedRectangleBorderDto? maybeValue(RoundedRectangleBorder? border) {
     return border != null ? RoundedRectangleBorderDto.value(border) : null;
   }
 
   @override
-  RoundedRectangleBorderDto adapt(OutlinedBorderDto other) {
-    if (other is RoundedRectangleBorderDto) return other;
-
-    return RoundedRectangleBorderDto.props(
-      borderRadius: other.borderRadiusGetter,
-      side: other.side,
-    );
-  }
-
-  /// Resolves to [RoundedRectangleBorder] using the provided [MixContext].
-  ///
-  /// If a property is null in the [MixContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
-  ///
-  /// ```dart
-  /// final roundedRectangleBorder = RoundedRectangleBorderDto(...).resolve(mix);
-  /// ```
-  @override
   RoundedRectangleBorder resolve(BuildContext context) {
     return RoundedRectangleBorder(
       side: MixHelpers.resolve(context, side) ?? BorderSide.none,
-      borderRadius: MixHelpers.resolve(context, borderRadius) ?? BorderRadius.zero,
+      borderRadius:
+          MixHelpers.resolve(context, borderRadius) ?? BorderRadius.zero,
     );
   }
 
-  /// Merges the properties of this [RoundedRectangleBorderDto] with the properties of [other].
-  ///
-  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [RoundedRectangleBorderDto] with the properties of [other] taking precedence over
-  /// the corresponding properties of this instance.
-  ///
-  /// Properties from [other] that are null will fall back
-  /// to the values from this instance.
   @override
-  RoundedRectangleBorderDto merge(RoundedRectangleBorderDto? other) {
-    if (other == null) return this;
-
+  RoundedRectangleBorderDto mergeShapeBorder(RoundedRectangleBorderDto other) {
     return RoundedRectangleBorderDto.props(
       borderRadius: MixHelpers.merge(borderRadius, other.borderRadius),
       side: MixHelpers.merge(side, other.side),
@@ -212,100 +114,57 @@ final class RoundedRectangleBorderDto
   }
 
   @override
-  MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>?
-  get borderRadiusGetter => borderRadius;
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
 
-  /// The list of properties that constitute the state of this [RoundedRectangleBorderDto].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [RoundedRectangleBorderDto] instances for equality.
+    return other is RoundedRectangleBorderDto &&
+        other.borderRadius == borderRadius &&
+        other.side == side;
+  }
+
   @override
-  List<Object?> get props => [borderRadius, side];
+  int get hashCode => borderRadius.hashCode ^ side.hashCode;
 }
 
 final class BeveledRectangleBorderDto
-    extends OutlinedBorderDto<BeveledRectangleBorder> with EqualityMixin {
-  final MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>? borderRadius;
+    extends OutlinedBorderDto<BeveledRectangleBorder> {
+  final MixProp<BorderRadiusGeometry>? borderRadius;
 
   factory BeveledRectangleBorderDto({
     BorderRadiusGeometryDto? borderRadius,
     BorderSideDto? side,
   }) {
     return BeveledRectangleBorderDto.props(
-      borderRadius: MixProp.maybeValue(borderRadius),
-      side: MixProp.maybeValue(side),
+      borderRadius: MixProp.maybe(borderRadius),
+      side: MixProp.maybe(side),
     );
   }
 
   const BeveledRectangleBorderDto.props({this.borderRadius, super.side});
 
-  /// Constructor that accepts a [BeveledRectangleBorder] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [BeveledRectangleBorder] instances to [BeveledRectangleBorderDto].
-  ///
-  /// ```dart
-  /// const border = BeveledRectangleBorder(borderRadius: BorderRadius.circular(8));
-  /// final dto = BeveledRectangleBorderDto.value(border);
-  /// ```
   factory BeveledRectangleBorderDto.value(BeveledRectangleBorder border) {
     return BeveledRectangleBorderDto(
-      borderRadius: border.borderRadius != BorderRadius.zero
-          ? BorderRadiusDto.value(border.borderRadius as BorderRadius)
-          : null,
+      borderRadius: BorderRadiusGeometryDto.value(border.borderRadius),
+
       side: BorderSideDto.maybeValue(border.side),
     );
   }
 
-  /// Constructor that accepts a nullable [BeveledRectangleBorder] value and extracts its properties.
-  ///
-  /// Returns null if the input is null, otherwise uses [BeveledRectangleBorderDto.value].
-  ///
-  /// ```dart
-  /// const BeveledRectangleBorder? border = BeveledRectangleBorder(borderRadius: BorderRadius.circular(8));
-  /// final dto = BeveledRectangleBorderDto.maybeValue(border); // Returns BeveledRectangleBorderDto or null
-  /// ```
   static BeveledRectangleBorderDto? maybeValue(BeveledRectangleBorder? border) {
     return border != null ? BeveledRectangleBorderDto.value(border) : null;
   }
 
   @override
-  BeveledRectangleBorderDto adapt(OutlinedBorderDto other) {
-    if (other is BeveledRectangleBorderDto) return other;
-
-    return BeveledRectangleBorderDto.props(
-      borderRadius: other.borderRadiusGetter,
-      side: other.side,
-    );
-  }
-
-  /// Resolves to [BeveledRectangleBorder] using the provided [MixContext].
-  ///
-  /// If a property is null in the [MixContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
-  ///
-  /// ```dart
-  /// final beveledRectangleBorder = BeveledRectangleBorderDto(...).resolve(mix);
-  /// ```
-  @override
   BeveledRectangleBorder resolve(BuildContext context) {
     return BeveledRectangleBorder(
       side: MixHelpers.resolve(context, side) ?? BorderSide.none,
-      borderRadius: MixHelpers.resolve(context, borderRadius) ?? BorderRadius.zero,
+      borderRadius:
+          MixHelpers.resolve(context, borderRadius) ?? BorderRadius.zero,
     );
   }
 
-  /// Merges the properties of this [BeveledRectangleBorderDto] with the properties of [other].
-  ///
-  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [BeveledRectangleBorderDto] with the properties of [other] taking precedence over
-  /// the corresponding properties of this instance.
-  ///
-  /// Properties from [other] that are null will fall back
-  /// to the values from this instance.
   @override
-  BeveledRectangleBorderDto merge(BeveledRectangleBorderDto? other) {
-    if (other == null) return this;
-
+  BeveledRectangleBorderDto mergeShapeBorder(BeveledRectangleBorderDto other) {
     return BeveledRectangleBorderDto.props(
       borderRadius: MixHelpers.merge(borderRadius, other.borderRadius),
       side: MixHelpers.merge(side, other.side),
@@ -313,58 +172,41 @@ final class BeveledRectangleBorderDto
   }
 
   @override
-  MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>?
-  get borderRadiusGetter => borderRadius;
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
 
-  /// The list of properties that constitute the state of this [BeveledRectangleBorderDto].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [BeveledRectangleBorderDto] instances for equality.
+    return other is BeveledRectangleBorderDto &&
+        other.borderRadius == borderRadius &&
+        other.side == side;
+  }
+
   @override
-  List<Object?> get props => [borderRadius, side];
+  int get hashCode => borderRadius.hashCode ^ side.hashCode;
 }
 
 final class ContinuousRectangleBorderDto
-    extends OutlinedBorderDto<ContinuousRectangleBorder> with EqualityMixin {
-  final MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>? borderRadius;
+    extends OutlinedBorderDto<ContinuousRectangleBorder> {
+  final MixProp<BorderRadiusGeometry>? borderRadius;
 
   factory ContinuousRectangleBorderDto({
     BorderRadiusGeometryDto? borderRadius,
     BorderSideDto? side,
   }) {
     return ContinuousRectangleBorderDto.props(
-      borderRadius: MixProp.maybeValue(borderRadius),
-      side: MixProp.maybeValue(side),
+      borderRadius: MixProp.maybe(borderRadius),
+      side: MixProp.maybe(side),
     );
   }
 
   const ContinuousRectangleBorderDto.props({this.borderRadius, super.side});
 
-  /// Constructor that accepts a [ContinuousRectangleBorder] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [ContinuousRectangleBorder] instances to [ContinuousRectangleBorderDto].
-  ///
-  /// ```dart
-  /// const border = ContinuousRectangleBorder(borderRadius: BorderRadius.circular(8));
-  /// final dto = ContinuousRectangleBorderDto.value(border);
-  /// ```
   factory ContinuousRectangleBorderDto.value(ContinuousRectangleBorder border) {
     return ContinuousRectangleBorderDto(
-      borderRadius: border.borderRadius != BorderRadius.zero
-          ? BorderRadiusDto.value(border.borderRadius as BorderRadius)
-          : null,
+      borderRadius: BorderRadiusGeometryDto.value(border.borderRadius),
       side: BorderSideDto.maybeValue(border.side),
     );
   }
 
-  /// Constructor that accepts a nullable [ContinuousRectangleBorder] value and extracts its properties.
-  ///
-  /// Returns null if the input is null, otherwise uses [ContinuousRectangleBorderDto.value].
-  ///
-  /// ```dart
-  /// const ContinuousRectangleBorder? border = ContinuousRectangleBorder(borderRadius: BorderRadius.circular(8));
-  /// final dto = ContinuousRectangleBorderDto.maybeValue(border); // Returns ContinuousRectangleBorderDto or null
-  /// ```
   static ContinuousRectangleBorderDto? maybeValue(
     ContinuousRectangleBorder? border,
   ) {
@@ -372,45 +214,18 @@ final class ContinuousRectangleBorderDto
   }
 
   @override
-  ContinuousRectangleBorderDto adapt(OutlinedBorderDto other) {
-    if (other is ContinuousRectangleBorderDto) {
-      return other;
-    }
-
-    return ContinuousRectangleBorderDto.props(
-      borderRadius: other.borderRadiusGetter,
-      side: other.side,
-    );
-  }
-
-  /// Resolves to [ContinuousRectangleBorder] using the provided [MixContext].
-  ///
-  /// If a property is null in the [MixContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
-  ///
-  /// ```dart
-  /// final continuousRectangleBorder = ContinuousRectangleBorderDto(...).resolve(mix);
-  /// ```
-  @override
   ContinuousRectangleBorder resolve(BuildContext context) {
     return ContinuousRectangleBorder(
       side: MixHelpers.resolve(context, side) ?? BorderSide.none,
-      borderRadius: MixHelpers.resolve(context, borderRadius) ?? BorderRadius.zero,
+      borderRadius:
+          MixHelpers.resolve(context, borderRadius) ?? BorderRadius.zero,
     );
   }
 
-  /// Merges the properties of this [ContinuousRectangleBorderDto] with the properties of [other].
-  ///
-  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [ContinuousRectangleBorderDto] with the properties of [other] taking precedence over
-  /// the corresponding properties of this instance.
-  ///
-  /// Properties from [other] that are null will fall back
-  /// to the values from this instance.
   @override
-  ContinuousRectangleBorderDto merge(ContinuousRectangleBorderDto? other) {
-    if (other == null) return this;
-
+  ContinuousRectangleBorderDto mergeShapeBorder(
+    ContinuousRectangleBorderDto other,
+  ) {
     return ContinuousRectangleBorderDto.props(
       borderRadius: MixHelpers.merge(borderRadius, other.borderRadius),
       side: MixHelpers.merge(side, other.side),
@@ -418,39 +233,30 @@ final class ContinuousRectangleBorderDto
   }
 
   @override
-  MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>?
-  get borderRadiusGetter => borderRadius;
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
 
-  /// The list of properties that constitute the state of this [ContinuousRectangleBorderDto].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [ContinuousRectangleBorderDto] instances for equality.
+    return other is ContinuousRectangleBorderDto &&
+        other.borderRadius == borderRadius &&
+        other.side == side;
+  }
+
   @override
-  List<Object?> get props => [borderRadius, side];
+  int get hashCode => borderRadius.hashCode ^ side.hashCode;
 }
 
-final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> with EqualityMixin {
+final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
   final Prop<double>? eccentricity;
 
-  // Main constructor accepts raw values
   factory CircleBorderDto({BorderSideDto? side, double? eccentricity}) {
     return CircleBorderDto.props(
-      side: side != null ? MixProp.fromValue(side) : null,
-      eccentricity: Prop.maybeValue(eccentricity),
+      side: side != null ? MixProp(side) : null,
+      eccentricity: Prop.maybe(eccentricity),
     );
   }
 
-  // Private constructor that accepts MixProp instances
   const CircleBorderDto.props({super.side, this.eccentricity});
 
-  /// Constructor that accepts a [CircleBorder] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [CircleBorder] instances to [CircleBorderDto].
-  ///
-  /// ```dart
-  /// const border = CircleBorder(side: BorderSide(color: Colors.red));
-  /// final dto = CircleBorderDto.value(border);
-  /// ```
   factory CircleBorderDto.value(CircleBorder border) {
     return CircleBorderDto(
       side: BorderSideDto.maybeValue(border.side),
@@ -458,35 +264,10 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> with Equalit
     );
   }
 
-  /// Constructor that accepts a nullable [CircleBorder] value and extracts its properties.
-  ///
-  /// Returns null if the input is null, otherwise uses [CircleBorderDto.value].
-  ///
-  /// ```dart
-  /// const CircleBorder? border = CircleBorder(side: BorderSide(color: Colors.red));
-  /// final dto = CircleBorderDto.maybeValue(border); // Returns CircleBorderDto or null
-  /// ```
   static CircleBorderDto? maybeValue(CircleBorder? border) {
     return border != null ? CircleBorderDto.value(border) : null;
   }
 
-  @override
-  CircleBorderDto adapt(OutlinedBorderDto other) {
-    if (other is CircleBorderDto) {
-      return other;
-    }
-
-    return CircleBorderDto.props(side: other.side, eccentricity: null);
-  }
-
-  /// Resolves to [CircleBorder] using the provided [MixContext].
-  ///
-  /// If a property is null in the [MixContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
-  ///
-  /// ```dart
-  /// final circleBorder = CircleBorderDto(...).resolve(mix);
-  /// ```
   @override
   CircleBorder resolve(BuildContext context) {
     return CircleBorder(
@@ -495,18 +276,8 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> with Equalit
     );
   }
 
-  /// Merges the properties of this [CircleBorderDto] with the properties of [other].
-  ///
-  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [CircleBorderDto] with the properties of [other] taking precedence over
-  /// the corresponding properties of this instance.
-  ///
-  /// Properties from [other] that are null will fall back
-  /// to the values from this instance.
   @override
-  CircleBorderDto merge(CircleBorderDto? other) {
-    if (other == null) return this;
-
+  CircleBorderDto mergeShapeBorder(CircleBorderDto other) {
     return CircleBorderDto.props(
       side: MixHelpers.merge(side, other.side),
       eccentricity: MixHelpers.merge(eccentricity, other.eccentricity),
@@ -514,18 +285,19 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> with Equalit
   }
 
   @override
-  MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>?
-  get borderRadiusGetter => null;
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
 
-  /// The list of properties that constitute the state of this [CircleBorderDto].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [CircleBorderDto] instances for equality.
+    return other is CircleBorderDto &&
+        other.side == side &&
+        other.eccentricity == eccentricity;
+  }
+
   @override
-  List<Object?> get props => [side, eccentricity];
+  int get hashCode => side.hashCode ^ eccentricity.hashCode;
 }
 
-final class StarBorderDto extends OutlinedBorderDto<StarBorder> with EqualityMixin {
+final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
   final Prop<double>? points;
   final Prop<double>? innerRadiusRatio;
   final Prop<double>? pointRounding;
@@ -533,7 +305,6 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> with EqualityMix
   final Prop<double>? rotation;
   final Prop<double>? squash;
 
-  // Main constructor accepts raw values
   factory StarBorderDto({
     BorderSideDto? side,
     double? points,
@@ -544,24 +315,16 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> with EqualityMix
     double? squash,
   }) {
     return StarBorderDto.props(
-      side: side != null ? MixProp.fromValue(side) : null,
-      points: Prop.maybeValue(points),
-      innerRadiusRatio: Prop.maybeValue(innerRadiusRatio),
-      pointRounding: Prop.maybeValue(pointRounding),
-      valleyRounding: Prop.maybeValue(valleyRounding),
-      rotation: Prop.maybeValue(rotation),
-      squash: Prop.maybeValue(squash),
+      side: side != null ? MixProp(side) : null,
+      points: Prop.maybe(points),
+      innerRadiusRatio: Prop.maybe(innerRadiusRatio),
+      pointRounding: Prop.maybe(pointRounding),
+      valleyRounding: Prop.maybe(valleyRounding),
+      rotation: Prop.maybe(rotation),
+      squash: Prop.maybe(squash),
     );
   }
 
-  /// Constructor that accepts a [StarBorder] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [StarBorder] instances to [StarBorderDto].
-  ///
-  /// ```dart
-  /// const border = StarBorder(points: 6);
-  /// final dto = StarBorderDto.value(border);
-  /// ```
   factory StarBorderDto.value(StarBorder border) {
     return StarBorderDto(
       side: BorderSideDto.maybeValue(border.side),
@@ -574,7 +337,6 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> with EqualityMix
     );
   }
 
-  // Private constructor that accepts MixProp instances
   const StarBorderDto.props({
     super.side,
     this.points,
@@ -585,39 +347,10 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> with EqualityMix
     this.squash,
   });
 
-  /// Constructor that accepts a nullable [StarBorder] value and extracts its properties.
-  ///
-  /// Returns null if the input is null, otherwise uses [StarBorderDto.value].
-  ///
-  /// ```dart
-  /// const StarBorder? border = StarBorder(points: 6);
-  /// final dto = StarBorderDto.maybeValue(border); // Returns StarBorderDto or null
-  /// ```
   static StarBorderDto? maybeValue(StarBorder? border) {
     return border != null ? StarBorderDto.value(border) : null;
   }
 
-  @override
-  StarBorderDto adapt(OutlinedBorderDto other) {
-    return StarBorderDto.props(
-      side: other.side,
-      points: null,
-      innerRadiusRatio: null,
-      pointRounding: null,
-      valleyRounding: null,
-      rotation: null,
-      squash: null,
-    );
-  }
-
-  /// Resolves to [StarBorder] using the provided [MixContext].
-  ///
-  /// If a property is null in the [MixContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
-  ///
-  /// ```dart
-  /// final starBorder = StarBorderDto(...).resolve(mix);
-  /// ```
   @override
   StarBorder resolve(BuildContext context) {
     return StarBorder(
@@ -631,22 +364,15 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> with EqualityMix
     );
   }
 
-  /// Merges the properties of this [StarBorderDto] with the properties of [other].
-  ///
-  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [StarBorderDto] with the properties of [other] taking precedence over
-  /// the corresponding properties of this instance.
-  ///
-  /// Properties from [other] that are null will fall back
-  /// to the values from this instance.
   @override
-  StarBorderDto merge(StarBorderDto? other) {
-    if (other == null) return this;
-
+  StarBorderDto mergeShapeBorder(StarBorderDto other) {
     return StarBorderDto.props(
       side: MixHelpers.merge(side, other.side),
       points: MixHelpers.merge(points, other.points),
-      innerRadiusRatio: MixHelpers.merge(innerRadiusRatio, other.innerRadiusRatio),
+      innerRadiusRatio: MixHelpers.merge(
+        innerRadiusRatio,
+        other.innerRadiusRatio,
+      ),
       pointRounding: MixHelpers.merge(pointRounding, other.pointRounding),
       valleyRounding: MixHelpers.merge(valleyRounding, other.valleyRounding),
       rotation: MixHelpers.merge(rotation, other.rotation),
@@ -655,30 +381,36 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> with EqualityMix
   }
 
   @override
-  MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>?
-  get borderRadiusGetter => null;
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
 
-  /// The list of properties that constitute the state of this [StarBorderDto].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [StarBorderDto] instances for equality.
+    return other is StarBorderDto &&
+        other.side == side &&
+        other.points == points &&
+        other.innerRadiusRatio == innerRadiusRatio &&
+        other.pointRounding == pointRounding &&
+        other.valleyRounding == valleyRounding &&
+        other.rotation == rotation &&
+        other.squash == squash;
+  }
+
   @override
-  List<Object?> get props => [
-    side,
-    points,
-    innerRadiusRatio,
-    pointRounding,
-    valleyRounding,
-    rotation,
-    squash,
-  ];
+  int get hashCode {
+    return side.hashCode ^
+        points.hashCode ^
+        innerRadiusRatio.hashCode ^
+        pointRounding.hashCode ^
+        valleyRounding.hashCode ^
+        rotation.hashCode ^
+        squash.hashCode;
+  }
 }
 
-final class LinearBorderDto extends OutlinedBorderDto<LinearBorder> with EqualityMixin {
-  final MixProp<LinearBorderEdge, LinearBorderEdgeDto>? start;
-  final MixProp<LinearBorderEdge, LinearBorderEdgeDto>? end;
-  final MixProp<LinearBorderEdge, LinearBorderEdgeDto>? top;
-  final MixProp<LinearBorderEdge, LinearBorderEdgeDto>? bottom;
+final class LinearBorderDto extends OutlinedBorderDto<LinearBorder> {
+  final MixProp<LinearBorderEdge>? start;
+  final MixProp<LinearBorderEdge>? end;
+  final MixProp<LinearBorderEdge>? top;
+  final MixProp<LinearBorderEdge>? bottom;
 
   factory LinearBorderDto({
     BorderSideDto? side,
@@ -688,11 +420,11 @@ final class LinearBorderDto extends OutlinedBorderDto<LinearBorder> with Equalit
     LinearBorderEdgeDto? bottom,
   }) {
     return LinearBorderDto.props(
-      side: MixProp.maybeValue(side),
-      start: MixProp.maybeValue(start),
-      end: MixProp.maybeValue(end),
-      top: MixProp.maybeValue(top),
-      bottom: MixProp.maybeValue(bottom),
+      side: MixProp.maybe(side),
+      start: MixProp.maybe(start),
+      end: MixProp.maybe(end),
+      top: MixProp.maybe(top),
+      bottom: MixProp.maybe(bottom),
     );
   }
 
@@ -704,14 +436,6 @@ final class LinearBorderDto extends OutlinedBorderDto<LinearBorder> with Equalit
     this.bottom,
   });
 
-  /// Constructor that accepts a [LinearBorder] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [LinearBorder] instances to [LinearBorderDto].
-  ///
-  /// ```dart
-  /// const border = LinearBorder(side: BorderSide(color: Colors.blue));
-  /// final dto = LinearBorderDto.value(border);
-  /// ```
   factory LinearBorderDto.value(LinearBorder border) {
     return LinearBorderDto(
       side: BorderSideDto.maybeValue(border.side),
@@ -722,35 +446,10 @@ final class LinearBorderDto extends OutlinedBorderDto<LinearBorder> with Equalit
     );
   }
 
-  /// Constructor that accepts a nullable [LinearBorder] value and extracts its properties.
-  ///
-  /// Returns null if the input is null, otherwise uses [LinearBorderDto.value].
-  ///
-  /// ```dart
-  /// const LinearBorder? border = LinearBorder(side: BorderSide(color: Colors.blue));
-  /// final dto = LinearBorderDto.maybeValue(border); // Returns LinearBorderDto or null
-  /// ```
   static LinearBorderDto? maybeValue(LinearBorder? border) {
     return border != null ? LinearBorderDto.value(border) : null;
   }
 
-  @override
-  LinearBorderDto adapt(OutlinedBorderDto other) {
-    if (other is LinearBorderDto) {
-      return other;
-    }
-
-    return LinearBorderDto.props(side: other.side);
-  }
-
-  /// Resolves to [LinearBorder] using the provided [MixContext].
-  ///
-  /// If a property is null in the [MixContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
-  ///
-  /// ```dart
-  /// final linearBorder = LinearBorderDto(...).resolve(mix);
-  /// ```
   @override
   LinearBorder resolve(BuildContext context) {
     return LinearBorder(
@@ -762,18 +461,8 @@ final class LinearBorderDto extends OutlinedBorderDto<LinearBorder> with Equalit
     );
   }
 
-  /// Merges the properties of this [LinearBorderDto] with the properties of [other].
-  ///
-  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [LinearBorderDto] with the properties of [other] taking precedence over
-  /// the corresponding properties of this instance.
-  ///
-  /// Properties from [other] that are null will fall back
-  /// to the values from this instance.
   @override
-  LinearBorderDto merge(LinearBorderDto? other) {
-    if (other == null) return this;
-
+  LinearBorderDto mergeShapeBorder(LinearBorderDto other) {
     return LinearBorderDto.props(
       side: MixHelpers.merge(side, other.side),
       start: MixHelpers.merge(start, other.start),
@@ -784,64 +473,48 @@ final class LinearBorderDto extends OutlinedBorderDto<LinearBorder> with Equalit
   }
 
   @override
-  MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>?
-  get borderRadiusGetter => null;
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
 
-  /// The list of properties that constitute the state of this [LinearBorderDto].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [LinearBorderDto] instances for equality.
+    return other is LinearBorderDto &&
+        other.side == side &&
+        other.start == start &&
+        other.end == end &&
+        other.top == top &&
+        other.bottom == bottom;
+  }
+
   @override
-  List<Object?> get props => [side, start, end, top, bottom];
+  int get hashCode {
+    return side.hashCode ^
+        start.hashCode ^
+        end.hashCode ^
+        top.hashCode ^
+        bottom.hashCode;
+  }
 }
 
-final class LinearBorderEdgeDto extends Mix<LinearBorderEdge> with EqualityMixin {
+final class LinearBorderEdgeDto extends Mix<LinearBorderEdge> {
   final Prop<double>? size;
   final Prop<double>? alignment;
 
-  // Main constructor accepts raw values
   factory LinearBorderEdgeDto({double? size, double? alignment}) {
     return LinearBorderEdgeDto.props(
-      size: Prop.maybeValue(size),
-      alignment: Prop.maybeValue(alignment),
+      size: Prop.maybe(size),
+      alignment: Prop.maybe(alignment),
     );
   }
 
-  /// Constructor that accepts a [LinearBorderEdge] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [LinearBorderEdge] instances to [LinearBorderEdgeDto].
-  ///
-  /// ```dart
-  /// const edge = LinearBorderEdge(size: 2.0, alignment: 0.5);
-  /// final dto = LinearBorderEdgeDto.value(edge);
-  /// ```
   factory LinearBorderEdgeDto.value(LinearBorderEdge edge) {
     return LinearBorderEdgeDto(size: edge.size, alignment: edge.alignment);
   }
 
-  // Private constructor that accepts MixProp instances
   const LinearBorderEdgeDto.props({this.size, this.alignment});
 
-  /// Constructor that accepts a nullable [LinearBorderEdge] value and extracts its properties.
-  ///
-  /// Returns null if the input is null, otherwise uses [LinearBorderEdgeDto.value].
-  ///
-  /// ```dart
-  /// const LinearBorderEdge? edge = LinearBorderEdge(size: 2.0, alignment: 0.5);
-  /// final dto = LinearBorderEdgeDto.maybeValue(edge); // Returns LinearBorderEdgeDto or null
-  /// ```
   static LinearBorderEdgeDto? maybeValue(LinearBorderEdge? edge) {
     return edge != null ? LinearBorderEdgeDto.value(edge) : null;
   }
 
-  /// Resolves to [LinearBorderEdge] using the provided [MixContext].
-  ///
-  /// If a property is null in the [MixContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
-  ///
-  /// ```dart
-  /// final linearBorderEdge = LinearBorderEdgeDto(...).resolve(mix);
-  /// ```
   @override
   LinearBorderEdge resolve(BuildContext context) {
     return LinearBorderEdge(
@@ -850,14 +523,6 @@ final class LinearBorderEdgeDto extends Mix<LinearBorderEdge> with EqualityMixin
     );
   }
 
-  /// Merges the properties of this [LinearBorderEdgeDto] with the properties of [other].
-  ///
-  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [LinearBorderEdgeDto] with the properties of [other] taking precedence over
-  /// the corresponding properties of this instance.
-  ///
-  /// Properties from [other] that are null will fall back
-  /// to the values from this instance.
   @override
   LinearBorderEdgeDto merge(LinearBorderEdgeDto? other) {
     if (other == null) return this;
@@ -868,62 +533,34 @@ final class LinearBorderEdgeDto extends Mix<LinearBorderEdge> with EqualityMixin
     );
   }
 
-  /// The list of properties that constitute the state of this [LinearBorderEdgeDto].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [LinearBorderEdgeDto] instances for equality.
   @override
-  List<Object?> get props => [size, alignment];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is LinearBorderEdgeDto &&
+        other.size == size &&
+        other.alignment == alignment;
+  }
+
+  @override
+  int get hashCode => size.hashCode ^ alignment.hashCode;
 }
 
-final class StadiumBorderDto extends OutlinedBorderDto<StadiumBorder> with EqualityMixin {
+final class StadiumBorderDto extends OutlinedBorderDto<StadiumBorder> {
   factory StadiumBorderDto({BorderSideDto? side}) {
-    return StadiumBorderDto.props(side: MixProp.maybeValue(side));
+    return StadiumBorderDto.props(side: MixProp.maybe(side));
   }
 
   const StadiumBorderDto.props({super.side});
 
-  /// Constructor that accepts a [StadiumBorder] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [StadiumBorder] instances to [StadiumBorderDto].
-  ///
-  /// ```dart
-  /// const border = StadiumBorder(side: BorderSide(color: Colors.green));
-  /// final dto = StadiumBorderDto.value(border);
-  /// ```
   factory StadiumBorderDto.value(StadiumBorder border) {
     return StadiumBorderDto(side: BorderSideDto.maybeValue(border.side));
   }
 
-  /// Constructor that accepts a nullable [StadiumBorder] value and extracts its properties.
-  ///
-  /// Returns null if the input is null, otherwise uses [StadiumBorderDto.value].
-  ///
-  /// ```dart
-  /// const StadiumBorder? border = StadiumBorder(side: BorderSide(color: Colors.green));
-  /// final dto = StadiumBorderDto.maybeValue(border); // Returns StadiumBorderDto or null
-  /// ```
   static StadiumBorderDto? maybeValue(StadiumBorder? border) {
     return border != null ? StadiumBorderDto.value(border) : null;
   }
 
-  @override
-  StadiumBorderDto adapt(OutlinedBorderDto other) {
-    if (other is StadiumBorderDto) {
-      return other;
-    }
-
-    return StadiumBorderDto.props(side: other.side);
-  }
-
-  /// Resolves to [StadiumBorder] using the provided [MixContext].
-  ///
-  /// If a property is null in the [MixContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
-  ///
-  /// ```dart
-  /// final stadiumBorder = StadiumBorderDto(...).resolve(mix);
-  /// ```
   @override
   StadiumBorder resolve(BuildContext context) {
     return StadiumBorder(
@@ -931,35 +568,18 @@ final class StadiumBorderDto extends OutlinedBorderDto<StadiumBorder> with Equal
     );
   }
 
-  /// Merges the properties of this [StadiumBorderDto] with the properties of [other].
-  ///
-  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [StadiumBorderDto] with the properties of [other] taking precedence over
-  /// the corresponding properties of this instance.
-  ///
-  /// Properties from [other] that are null will fall back
-  /// to the values from this instance.
   @override
-  StadiumBorderDto merge(StadiumBorderDto? other) {
-    if (other == null) return this;
-
+  StadiumBorderDto mergeShapeBorder(StadiumBorderDto other) {
     return StadiumBorderDto.props(side: MixHelpers.merge(side, other.side));
   }
 
   @override
-  MixProp<BorderRadiusGeometry, BorderRadiusGeometryDto>?
-  get borderRadiusGetter => null;
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
 
-  /// The list of properties that constitute the state of this [StadiumBorderDto].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [StadiumBorderDto] instances for equality.
+    return other is StadiumBorderDto && other.side == side;
+  }
+
   @override
-  List<Object?> get props => [side];
-}
-
-abstract class MixOutlinedBorder<T extends OutlinedBorderDto>
-    extends OutlinedBorder {
-  const MixOutlinedBorder({super.side = BorderSide.none});
-  T toDto();
+  int get hashCode => side.hashCode;
 }

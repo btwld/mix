@@ -119,26 +119,6 @@ class VisibilityModifierSpecAttribute
   List<Object?> get props => [visible];
 }
 
-/// A tween that interpolates between two [VisibilityModifierSpec] instances.
-///
-/// This class can be used in animations to smoothly transition between
-/// different [VisibilityModifierSpec] specifications.
-class VisibilityModifierSpecTween extends Tween<VisibilityModifierSpec?> {
-  VisibilityModifierSpecTween({super.begin, super.end});
-
-  @override
-  VisibilityModifierSpec lerp(double t) {
-    if (begin == null && end == null) {
-      return const VisibilityModifierSpec();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
-  }
-}
 
 final class VisibilityModifierSpecUtility<T extends Attribute>
     extends MixUtility<T, VisibilityModifierSpecAttribute> {

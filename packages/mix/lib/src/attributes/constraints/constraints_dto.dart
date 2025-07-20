@@ -3,10 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../../internal/compare_mixin.dart';
-
-sealed class ConstraintsDto<T extends Constraints> extends Mix<T>
-    with EqualityMixin {
+sealed class ConstraintsDto<T extends Constraints> extends Mix<T> {
   const ConstraintsDto();
 
   @override
@@ -36,10 +33,10 @@ final class BoxConstraintsDto extends ConstraintsDto<BoxConstraints>
     double? maxHeight,
   }) {
     return BoxConstraintsDto.props(
-      minWidth: Prop.maybeValue(minWidth),
-      maxWidth: Prop.maybeValue(maxWidth),
-      minHeight: Prop.maybeValue(minHeight),
-      maxHeight: Prop.maybeValue(maxHeight),
+      minWidth: Prop.maybe(minWidth),
+      maxWidth: Prop.maybe(maxWidth),
+      minHeight: Prop.maybe(minHeight),
+      maxHeight: Prop.maybe(maxHeight),
     );
   }
 
@@ -121,12 +118,24 @@ final class BoxConstraintsDto extends ConstraintsDto<BoxConstraints>
   }
 
   @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is BoxConstraintsDto &&
+        other.minWidth == minWidth &&
+        other.maxWidth == maxWidth &&
+        other.minHeight == minHeight &&
+        other.maxHeight == maxHeight;
+  }
+
+  @override
   BoxConstraints get defaultValue => const BoxConstraints();
 
-  /// The list of properties that constitute the state of this [BoxConstraintsDto].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [BoxConstraintsDto] instances for equality.
   @override
-  List<Object?> get props => [minWidth, maxWidth, minHeight, maxHeight];
+  int get hashCode {
+    return minWidth.hashCode ^
+        maxWidth.hashCode ^
+        minHeight.hashCode ^
+        maxHeight.hashCode;
+  }
 }

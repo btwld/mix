@@ -113,26 +113,6 @@ class RotatedBoxModifierSpecAttribute
   List<Object?> get props => [quarterTurns];
 }
 
-/// A tween that interpolates between two [RotatedBoxModifierSpec] instances.
-///
-/// This class can be used in animations to smoothly transition between
-/// different [RotatedBoxModifierSpec] specifications.
-class RotatedBoxModifierSpecTween extends Tween<RotatedBoxModifierSpec?> {
-  RotatedBoxModifierSpecTween({super.begin, super.end});
-
-  @override
-  RotatedBoxModifierSpec lerp(double t) {
-    if (begin == null && end == null) {
-      return const RotatedBoxModifierSpec();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
-  }
-}
 
 final class RotatedBoxModifierSpecUtility<T extends Attribute>
     extends MixUtility<T, RotatedBoxModifierSpecAttribute> {

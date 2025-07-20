@@ -181,7 +181,7 @@ final style = Style(
 final spacing = SpaceDto.token(largeSpace);
 
 // Prop<T> with tokens
-final colorProp = Prop.fromToken(primaryColor);
+final colorProp = Prop.token(primaryColor);
 ```
 
 ## Material Design Tokens

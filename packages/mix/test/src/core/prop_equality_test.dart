@@ -33,22 +33,22 @@ void main() {
   group('Prop equality behavior', () {
     group('Basic equality', () {
       test('identical Props are equal', () {
-        final prop1 = Prop.fromValue(Colors.red);
-        final prop2 = Prop.fromValue(Colors.red);
+        final prop1 = Prop(Colors.red);
+        final prop2 = Prop(Colors.red);
 
         expect(prop1, equals(prop2));
       });
 
       test('different Props are not equal', () {
-        final prop1 = Prop.fromValue(Colors.red);
-        final prop2 = Prop.fromValue(Colors.blue);
+        final prop1 = Prop(Colors.red);
+        final prop2 = Prop(Colors.blue);
 
         expect(prop1, isNot(equals(prop2)));
       });
 
       test('Props with different types are not equal', () {
-        final prop1 = Prop.fromValue(42);
-        final prop2 = Prop.fromValue("42");
+        final prop1 = Prop(42);
+        final prop2 = Prop("42");
 
         expect(prop1, isNot(equals(prop2)));
       });
@@ -56,22 +56,22 @@ void main() {
 
     group('Merge equality behavior', () {
       test('merged Prop with identical values equals original', () {
-        final prop1 = Prop.fromValue(Colors.red);
-        final prop2 = Prop.fromValue(Colors.blue);
+        final prop1 = Prop(Colors.red);
+        final prop2 = Prop(Colors.blue);
         final merged = prop1.merge(prop2);
 
         // The merged prop should have the same value as prop2 (other wins)
         expect(merged.value, prop2.value);
 
         // But importantly, the merged prop should be equal to a new prop with the same value
-        final expected = Prop.fromValue(Colors.blue);
+        final expected = Prop(Colors.blue);
 
         expect(merged, expected);
       });
 
       test('merged Prop with empty directives equals original', () {
-        final prop1 = Prop.fromValue(Colors.red);
-        final prop2 = Prop.fromValue(Colors.blue);
+        final prop1 = Prop(Colors.red);
+        final prop2 = Prop(Colors.blue);
         final merged = prop1.merge(prop2);
 
         // All should have empty directives
@@ -80,13 +80,13 @@ void main() {
         expect(merged.directives, isNull);
 
         // The merged prop should equal a new prop with the same value
-        final expected = Prop.fromValue(Colors.blue);
+        final expected = Prop(Colors.blue);
         expect(merged, equals(expected));
       });
 
       test('merged Prop preserves directive list type consistency', () {
-        final prop1 = Prop.fromValue(Colors.red);
-        final prop2 = Prop.fromValue(Colors.blue);
+        final prop1 = Prop(Colors.red);
+        final prop2 = Prop(Colors.blue);
         final merged = prop1.merge(prop2);
 
         // Check that directive lists have consistent types
@@ -155,8 +155,8 @@ void main() {
         final shadow1 = BoxShadowDto(color: Colors.red, blurRadius: 5.0);
         final shadow2 = BoxShadowDto(color: Colors.red, blurRadius: 5.0);
 
-        final prop1 = MixProp.fromValue(shadow1);
-        final prop2 = MixProp.fromValue(shadow2);
+        final prop1 = MixProp(shadow1);
+        final prop2 = MixProp(shadow2);
 
         expect(prop1, equals(prop2));
       });
@@ -165,8 +165,8 @@ void main() {
         final shadow1 = BoxShadowDto(color: Colors.red, blurRadius: 5.0);
         final shadow2 = BoxShadowDto(color: Colors.blue, blurRadius: 5.0);
 
-        final prop1 = MixProp.fromValue(shadow1);
-        final prop2 = MixProp.fromValue(shadow2);
+        final prop1 = MixProp(shadow1);
+        final prop2 = MixProp(shadow2);
 
         expect(prop1, isNot(equals(prop2)));
       });
@@ -175,13 +175,13 @@ void main() {
         final shadow1 = BoxShadowDto(color: Colors.red, blurRadius: 5.0);
         final shadow2 = BoxShadowDto(color: Colors.blue, blurRadius: 10.0);
 
-        final prop1 = MixProp.fromValue(shadow1);
-        final prop2 = MixProp.fromValue(shadow2);
+        final prop1 = MixProp(shadow1);
+        final prop2 = MixProp(shadow2);
         final merged = prop1.merge(prop2);
 
         // The merged prop should have the merged shadow
         final expectedShadow = shadow1.merge(shadow2);
-        final expected = MixProp.fromValue(expectedShadow);
+        final expected = MixProp(expectedShadow);
 
         expect(merged, equals(expected));
       });
@@ -196,7 +196,7 @@ void main() {
       });
 
       test('empty directive lists are equal regardless of creation method', () {
-        final prop1 = Prop.fromValue(Colors.red);
+        final prop1 = Prop(Colors.red);
         final prop2 = Prop.fromDirectives(const []);
 
         // Both should have empty directive lists

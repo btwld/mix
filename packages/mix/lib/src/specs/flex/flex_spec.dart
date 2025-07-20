@@ -149,7 +149,7 @@ final class FlexSpecAttribute extends SpecAttribute<FlexSpec>
   final Prop<TextDirection>? textDirection;
   final Prop<TextBaseline>? textBaseline;
   final Prop<Clip>? clipBehavior;
-  final MixProp<double, SpaceDto>? gap;
+  final Prop<double>? gap;
 
   /// Creates a [FlexSpecAttribute] with the provided properties.
   factory FlexSpecAttribute({
@@ -161,18 +161,18 @@ final class FlexSpecAttribute extends SpecAttribute<FlexSpec>
     TextDirection? textDirection,
     TextBaseline? textBaseline,
     Clip? clipBehavior,
-    SpaceDto? gap,
+    double? gap,
   }) {
     return FlexSpecAttribute.props(
-      direction: Prop.maybeValue(direction),
-      mainAxisAlignment: Prop.maybeValue(mainAxisAlignment),
-      crossAxisAlignment: Prop.maybeValue(crossAxisAlignment),
-      mainAxisSize: Prop.maybeValue(mainAxisSize),
-      verticalDirection: Prop.maybeValue(verticalDirection),
-      textDirection: Prop.maybeValue(textDirection),
-      textBaseline: Prop.maybeValue(textBaseline),
-      clipBehavior: Prop.maybeValue(clipBehavior),
-      gap: MixProp.maybeValue(gap),
+      direction: Prop.maybe(direction),
+      mainAxisAlignment: Prop.maybe(mainAxisAlignment),
+      crossAxisAlignment: Prop.maybe(crossAxisAlignment),
+      mainAxisSize: Prop.maybe(mainAxisSize),
+      verticalDirection: Prop.maybe(verticalDirection),
+      textDirection: Prop.maybe(textDirection),
+      textBaseline: Prop.maybe(textBaseline),
+      clipBehavior: Prop.maybe(clipBehavior),
+      gap: Prop.maybe(gap),
     );
   }
 
@@ -200,7 +200,7 @@ final class FlexSpecAttribute extends SpecAttribute<FlexSpec>
       textDirection: spec.textDirection,
       textBaseline: spec.textBaseline,
       clipBehavior: spec.clipBehavior,
-      gap: spec.gap != null ? SpaceDto.value(spec.gap!) : null,
+      gap: spec.gap,
     );
   }
 
@@ -236,7 +236,7 @@ final class FlexSpecAttribute extends SpecAttribute<FlexSpec>
   }
 
   @override
-  FlexSpec resolve(BuildContext context) {
+  FlexSpec resolveSpec(BuildContext context) {
     return FlexSpec(
       direction: MixHelpers.resolve(context, direction),
       mainAxisAlignment: MixHelpers.resolve(context, mainAxisAlignment),
@@ -283,6 +283,7 @@ final class FlexSpecAttribute extends SpecAttribute<FlexSpec>
 /// Utility class for building [FlexSpecAttribute] instances.
 final class FlexSpecUtility<T extends Attribute>
     extends SpecUtility<T, FlexSpecAttribute> {
+  const
   /// Creates a [FlexSpecUtility] with the provided builder.
   FlexSpecUtility(super.builder);
 

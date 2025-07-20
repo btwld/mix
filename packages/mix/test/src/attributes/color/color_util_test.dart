@@ -11,8 +11,7 @@ final class TestColorAttribute extends SpecAttribute<Color> with HelpersMixin {
   const TestColorAttribute([this.color]);
 
   // Constructor that takes a Color and creates TestColorAttribute
-  TestColorAttribute.fromColor(Color colorValue)
-    : color = Prop.fromValue(colorValue);
+  TestColorAttribute.fromColor(Color colorValue) : color = Prop(colorValue);
 
   @override
   TestColorAttribute merge(TestColorAttribute? other) {
@@ -621,11 +620,11 @@ void main() {
       expectColor(complementColor, const Color.fromARGB(255, 54, 231, 244));
     });
 
-    test('Prop.fromValue() should return the correct Prop<Color>', () {
+    test('Prop() should return the correct Prop<Color>', () {
       const color = Colors.blue;
-      final colorProp = Prop.fromValue(color);
+      final colorProp = Prop(color);
 
-      expect(colorProp, equals(Prop.fromValue(color)));
+      expect(colorProp, equals(Prop(color)));
     });
   });
 }

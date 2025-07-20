@@ -1,7 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../attributes/animation/animation_config.dart';
-import '../internal/compare_mixin.dart';
 import '../theme/mix/mix_theme.dart';
 import '../theme/tokens/mix_token.dart';
 import 'mix_element.dart';
@@ -112,7 +112,7 @@ class _MixTokenSource<V> extends _MixSource<V> {
 
 /// Base sealed class for all properties
 @immutable
-sealed class PropBase<T> with EqualityMixin, Resolvable<T> {
+sealed class PropBase<T> with Resolvable<T>, Mergeable {
   final List<MixDirective<T>>? directives;
   final AnimationConfig? animation;
 
@@ -130,6 +130,11 @@ sealed class PropBase<T> with EqualityMixin, Resolvable<T> {
       (final a?, final b?) => [...a, ...b],
     };
   }
+
+  /// Returns the value type for this property
+  /// For Prop<T>, this returns T
+  /// For MixProp<V>, this returns V (the resolved type)
+  Type get valueType => T;
 }
 
 /// Regular Prop for non-Mix values
@@ -192,6 +197,7 @@ class Prop<T> extends PropBase<T> {
       : throw StateError('Prop does not have a token source');
 
   /// Merges this Prop with another
+  @override
   Prop<T> merge(Prop<T>? other) {
     if (other == null) return this;
 
@@ -253,7 +259,18 @@ class Prop<T> extends PropBase<T> {
   }
 
   @override
-  List<Object?> get props => [source, directives, animation];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is Prop<T> &&
+        other.source == source &&
+        listEquals(other.directives, directives) &&
+        other.animation == animation;
+  }
+
+  @override
+  int get hashCode =>
+      source.hashCode ^ directives.hashCode ^ animation.hashCode;
 }
 
 /// Specialized Prop for Mix types
@@ -297,6 +314,7 @@ class MixProp<V> extends PropBase<V> {
       : throw StateError('MixProp does not have a source');
 
   /// Merges this MixProp with another
+  @override
   MixProp<V> merge(MixProp<V>? other) {
     if (other == null) return this;
 
@@ -361,5 +379,16 @@ class MixProp<V> extends PropBase<V> {
   }
 
   @override
-  List<Object?> get props => [source, directives, animation];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MixProp<V> &&
+        other.source == source &&
+        listEquals(other.directives, directives) &&
+        other.animation == animation;
+  }
+
+  @override
+  int get hashCode =>
+      source.hashCode ^ directives.hashCode ^ animation.hashCode;
 }

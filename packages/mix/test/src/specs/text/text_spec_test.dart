@@ -301,7 +301,7 @@ void main() {
         ..textDirection.rtl()
         ..softWrap(false);
 
-      final attr = util.attributeValue!;
+      final attr = util.attribute!;
 
       expect(util, isA<Style>());
       expect(attr.overflow, TextOverflow.ellipsis);
@@ -349,8 +349,8 @@ void main() {
       final text1 = TextSpecUtility((v) => v)..maxLines(3);
       final text2 = TextSpecUtility((v) => v)..maxLines(5);
 
-      final attr1 = text1.attributeValue!;
-      final attr2 = text2.attributeValue!;
+      final attr1 = text1.attribute!;
+      final attr2 = text2.attribute!;
 
       expect(attr1.maxLines, 3);
       expect(attr2.maxLines, 5);
@@ -383,7 +383,7 @@ void main() {
         ..style.color.red()
         ..textAlign.center();
 
-      final textAttribute = textValue.attributeValue!;
+      final textAttribute = textValue.attribute!;
       final textAttribute2 = text.maxLines(5);
 
       expect(textAttribute.maxLines, 3);

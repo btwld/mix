@@ -8,7 +8,7 @@ void main() {
   group('Mixable<T>', () {
     group('Prop<String>', () {
       test('value constructor works', () {
-        final prop = Prop.fromValue('test');
+        final prop = Prop('test');
         // MIGRATED: Clean assertion using custom matcher
         expect(prop, resolvesTo('test'));
       });
@@ -19,8 +19,8 @@ void main() {
       // });
 
       test('merge creates composite', () {
-        final prop1 = Prop.fromValue('first');
-        final prop2 = Prop.fromValue('second');
+        final prop1 = Prop('first');
+        final prop2 = Prop('second');
 
         final merged = prop1.merge(prop2);
         // MIGRATED: Clean assertions - last value wins in merge
@@ -31,7 +31,7 @@ void main() {
 
     group('Prop<double>', () {
       test('value constructor works', () {
-        final prop = Prop.fromValue(42.5);
+        final prop = Prop(42.5);
         // MIGRATED: Clean assertion
         expect(prop, resolvesTo(42.5));
       });
@@ -47,8 +47,8 @@ void main() {
       // });
 
       test('merge works correctly', () {
-        final prop1 = Prop.fromValue(10.0);
-        final prop2 = Prop.fromValue(20.0);
+        final prop1 = Prop(10.0);
+        final prop2 = Prop(20.0);
 
         final merged = prop1.merge(prop2);
         // MIGRATED: Clean assertion - last value wins
@@ -59,7 +59,7 @@ void main() {
 
     group('Mixable<FontWeight>', () {
       test('value constructor works', () {
-        final prop = Prop.fromValue(FontWeight.bold);
+        final prop = Prop(FontWeight.bold);
         // MIGRATED: Clean assertion
         expect(prop, resolvesTo(FontWeight.bold));
       });
@@ -70,8 +70,8 @@ void main() {
 
   group('ColorDto with composite', () {
     test('merge resolution works', () {
-      final prop1 = Prop.fromValue(Colors.red);
-      final prop2 = Prop.fromValue(Colors.blue);
+      final prop1 = Prop(Colors.red);
+      final prop2 = Prop(Colors.blue);
 
       final merged = prop1.merge(prop2);
       // MIGRATED: Clean assertion - last value wins
@@ -79,8 +79,8 @@ void main() {
     });
 
     test('merge behavior is consistent', () {
-      final prop1 = Prop.fromValue(Colors.red);
-      final prop2 = Prop.fromValue(Colors.blue);
+      final prop1 = Prop(Colors.red);
+      final prop2 = Prop(Colors.blue);
 
       final merged = prop1.merge(prop2);
       // MIGRATED: Clean assertions
@@ -91,8 +91,8 @@ void main() {
 
   group('RadiusDto with composite', () {
     test('merge resolution works', () {
-      final prop1 = Prop.fromValue(const Radius.circular(5));
-      final prop2 = Prop.fromValue(const Radius.circular(10));
+      final prop1 = Prop(const Radius.circular(5));
+      final prop2 = Prop(const Radius.circular(10));
 
       final merged = prop1.merge(prop2);
       // MIGRATED: Clean assertion - last value wins
@@ -101,7 +101,7 @@ void main() {
 
     test('fromValue works', () {
       const radius = Radius.circular(15);
-      final prop = Prop.fromValue(radius);
+      final prop = Prop(radius);
       // MIGRATED: Clean assertion
       expect(prop, resolvesTo(radius));
     });

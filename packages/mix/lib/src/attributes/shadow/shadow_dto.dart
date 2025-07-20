@@ -1,11 +1,9 @@
 // ignore_for_file: prefer_relative_imports, avoid-importing-entrypoint-exports
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-import '../../internal/compare_mixin.dart';
-
-sealed class BaseShadowDto<T extends Shadow> extends Mix<T> with EqualityMixin {
+sealed class BaseShadowDto<T extends Shadow> extends Mix<T> {
   // Properties use MixableProperty for cleaner merging
   final Prop<Color>? color;
   final Prop<Offset>? offset;
@@ -26,9 +24,9 @@ class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
   // Main constructor accepts Mix<T>? values
   factory ShadowDto({double? blurRadius, Color? color, Offset? offset}) {
     return ShadowDto.props(
-      blurRadius: Prop.maybeValue(blurRadius),
-      color: Prop.maybeValue(color),
-      offset: Prop.maybeValue(offset),
+      blurRadius: Prop.maybe(blurRadius),
+      color: Prop.maybe(color),
+      offset: Prop.maybe(offset),
     );
   }
 
@@ -101,14 +99,22 @@ class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
   }
 
   @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ShadowDto &&
+        other.blurRadius == blurRadius &&
+        other.color == color &&
+        other.offset == offset;
+  }
+
+  @override
   Shadow get defaultValue => const Shadow();
 
-  /// The list of properties that constitute the state of this [ShadowDto].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [ShadowDto] instances for equality.
   @override
-  List<Object?> get props => [blurRadius, color, offset];
+  int get hashCode {
+    return blurRadius.hashCode ^ color.hashCode ^ offset.hashCode;
+  }
 }
 
 /// Represents a [Mix] Data transfer object of [BoxShadow]
@@ -127,10 +133,10 @@ class BoxShadowDto extends BaseShadowDto<BoxShadow>
     double? spreadRadius,
   }) {
     return BoxShadowDto.props(
-      color: Prop.maybeValue(color),
-      offset: Prop.maybeValue(offset),
-      blurRadius: Prop.maybeValue(blurRadius),
-      spreadRadius: Prop.maybeValue(spreadRadius),
+      color: Prop.maybe(color),
+      offset: Prop.maybe(offset),
+      blurRadius: Prop.maybe(blurRadius),
+      spreadRadius: Prop.maybe(spreadRadius),
     );
   }
 
@@ -169,6 +175,12 @@ class BoxShadowDto extends BaseShadowDto<BoxShadow>
   /// ```
   static BoxShadowDto? maybeValue(BoxShadow? boxShadow) {
     return boxShadow != null ? BoxShadowDto.value(boxShadow) : null;
+  }
+
+  static List<BoxShadowDto> fromElevation(ElevationShadow value) {
+    return kElevationToShadow[value.elevation]!
+        .map(BoxShadowDto.value)
+        .toList();
   }
 
   /// Resolves to [BoxShadow] using the provided [MixContext].
@@ -213,12 +225,42 @@ class BoxShadowDto extends BaseShadowDto<BoxShadow>
   }
 
   @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is BoxShadowDto &&
+        other.color == color &&
+        other.offset == offset &&
+        other.blurRadius == blurRadius &&
+        other.spreadRadius == spreadRadius;
+  }
+
+  @override
   BoxShadow get defaultValue => const BoxShadow();
 
-  /// The list of properties that constitute the state of this [BoxShadowDto].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [BoxShadowDto] instances for equality.
   @override
-  List<Object?> get props => [color, offset, blurRadius, spreadRadius];
+  int get hashCode {
+    return color.hashCode ^
+        offset.hashCode ^
+        blurRadius.hashCode ^
+        spreadRadius.hashCode;
+  }
+}
+
+// ElevationBoxShadowDto is a convenience class for creating BoxShadowDto from elevation values.
+enum ElevationShadow {
+  one(1),
+  two(2),
+  three(3),
+  four(4),
+  six(6),
+  eight(8),
+  nine(9),
+  twelve(12),
+  sixteen(16),
+  twentyFour(24);
+
+  final int elevation;
+
+  const ElevationShadow(this.elevation);
 }

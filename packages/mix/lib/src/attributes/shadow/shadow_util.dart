@@ -13,7 +13,9 @@ import 'shadow_dto.dart';
 class ShadowUtility<T extends Attribute>
     extends DtoUtility<T, ShadowDto, Shadow> {
   /// Utility for defining [ShadowDto.blurRadius]
-  late final blurRadius = DoubleUtility((prop) => only(blurRadius: prop.value));
+  late final blurRadius = DoubleUtility(
+    (prop) => only(blurRadius: prop.getValue()),
+  );
 
   /// Utility for defining [ShadowDto.color]
   late final color = ColorUtility(
@@ -55,11 +57,13 @@ class BoxShadowUtility<T extends Attribute>
   late final offset = OffsetUtility((v) => only(offset: v));
 
   /// Utility for defining [BoxShadowDto.blurRadius]
-  late final blurRadius = DoubleUtility((prop) => only(blurRadius: prop.value));
+  late final blurRadius = DoubleUtility(
+    (prop) => only(blurRadius: prop.getValue()),
+  );
 
   /// Utility for defining [BoxShadowDto.spreadRadius]
   late final spreadRadius = DoubleUtility(
-    (prop) => only(spreadRadius: prop.value),
+    (prop) => only(spreadRadius: prop.getValue()),
   );
 
   BoxShadowUtility(super.builder) : super(valueToDto: BoxShadowDto.value);

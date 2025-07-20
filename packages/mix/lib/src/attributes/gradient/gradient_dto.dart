@@ -1,9 +1,8 @@
 // ignore_for_file: prefer_relative_imports,avoid-importing-entrypoint-exports
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
-
-import '../../internal/compare_mixin.dart';
 
 /// Represents a base Data transfer object of [Gradient]
 ///
@@ -11,9 +10,9 @@ import '../../internal/compare_mixin.dart';
 /// merge and combining behavior. It allows to be merged, and resolved to a `[Gradient]
 @immutable
 sealed class GradientDto<T extends Gradient> extends Mix<T>
-    with HasDefaultValue<T>, EqualityMixin {
-  final Prop<List<double>>? stops;
-  final Prop<List<Color>>? colors;
+    with HasDefaultValue<T> {
+  final List<Prop<double>>? stops;
+  final List<Prop<Color>>? colors;
   final Prop<GradientTransform>? transform;
   const GradientDto({
     required this.stops,
@@ -104,7 +103,7 @@ sealed class GradientDto<T extends Gradient> extends Mix<T>
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a `[LinearGradient]
 
-final class LinearGradientDto extends GradientDto<LinearGradient> with EqualityMixin {
+final class LinearGradientDto extends GradientDto<LinearGradient> {
   final Prop<AlignmentGeometry>? begin;
   final Prop<AlignmentGeometry>? end;
   final Prop<TileMode>? tileMode;
@@ -118,12 +117,12 @@ final class LinearGradientDto extends GradientDto<LinearGradient> with EqualityM
     List<double>? stops,
   }) {
     return LinearGradientDto.props(
-      begin: Prop.maybeValue(begin),
-      end: Prop.maybeValue(end),
-      tileMode: Prop.maybeValue(tileMode),
-      transform: Prop.maybeValue(transform),
-      colors: Prop.maybeValue(colors),
-      stops: Prop.maybeValue(stops),
+      begin: Prop.maybe(begin),
+      end: Prop.maybe(end),
+      tileMode: Prop.maybe(tileMode),
+      transform: Prop.maybe(transform),
+      colors: colors?.map(Prop.new).toList(),
+      stops: stops?.map(Prop.new).toList(),
     );
   }
 
@@ -172,10 +171,11 @@ final class LinearGradientDto extends GradientDto<LinearGradient> with EqualityM
     return LinearGradient(
       begin: MixHelpers.resolve(context, begin) ?? defaultValue.begin,
       end: MixHelpers.resolve(context, end) ?? defaultValue.end,
-      colors: MixHelpers.resolve(context, colors) ?? defaultValue.colors,
-      stops: MixHelpers.resolve(context, stops) ?? defaultValue.stops,
+      colors: MixHelpers.resolveList(context, colors) ?? defaultValue.colors,
+      stops: MixHelpers.resolveList(context, stops) ?? defaultValue.stops,
       tileMode: MixHelpers.resolve(context, tileMode) ?? defaultValue.tileMode,
-      transform: MixHelpers.resolve(context, transform) ?? defaultValue.transform,
+      transform:
+          MixHelpers.resolve(context, transform) ?? defaultValue.transform,
     );
   }
 
@@ -188,23 +188,43 @@ final class LinearGradientDto extends GradientDto<LinearGradient> with EqualityM
       end: MixHelpers.merge(end, other.end),
       tileMode: MixHelpers.merge(tileMode, other.tileMode),
       transform: MixHelpers.merge(transform, other.transform),
-      colors: MixHelpers.merge(colors, other.colors),
-      stops: MixHelpers.merge(stops, other.stops),
+      colors: MixHelpers.mergeList(colors, other.colors),
+      stops: MixHelpers.mergeList(stops, other.stops),
     );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is LinearGradientDto &&
+        other.begin == begin &&
+        other.end == end &&
+        other.tileMode == tileMode &&
+        other.transform == transform &&
+        listEquals(other.colors, colors) &&
+        listEquals(other.stops, stops);
   }
 
   @override
   LinearGradient get defaultValue => const LinearGradient(colors: []);
 
   @override
-  List<Object?> get props => [begin, end, tileMode, transform, colors, stops];
+  int get hashCode {
+    return begin.hashCode ^
+        end.hashCode ^
+        tileMode.hashCode ^
+        transform.hashCode ^
+        colors.hashCode ^
+        stops.hashCode;
+  }
 }
 
 /// Represents a Data transfer object of [RadialGradient]
 ///
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a `[RadialGradient]
-final class RadialGradientDto extends GradientDto<RadialGradient> with EqualityMixin {
+final class RadialGradientDto extends GradientDto<RadialGradient> {
   final Prop<AlignmentGeometry>? center;
   final Prop<double>? radius;
   final Prop<TileMode>? tileMode;
@@ -222,14 +242,14 @@ final class RadialGradientDto extends GradientDto<RadialGradient> with EqualityM
     List<double>? stops,
   }) {
     return RadialGradientDto.props(
-      center: Prop.maybeValue(center),
-      radius: Prop.maybeValue(radius),
-      tileMode: Prop.maybeValue(tileMode),
-      focal: Prop.maybeValue(focal),
-      focalRadius: Prop.maybeValue(focalRadius),
-      transform: Prop.maybeValue(transform),
-      colors: Prop.maybeValue(colors),
-      stops: Prop.maybeValue(stops),
+      center: Prop.maybe(center),
+      radius: Prop.maybe(radius),
+      tileMode: Prop.maybe(tileMode),
+      focal: Prop.maybe(focal),
+      focalRadius: Prop.maybe(focalRadius),
+      transform: Prop.maybe(transform),
+      colors: colors?.map(Prop.new).toList(),
+      stops: stops?.map(Prop.new).toList(),
     );
   }
 
@@ -282,13 +302,14 @@ final class RadialGradientDto extends GradientDto<RadialGradient> with EqualityM
     return RadialGradient(
       center: MixHelpers.resolve(context, center) ?? defaultValue.center,
       radius: MixHelpers.resolve(context, radius) ?? defaultValue.radius,
-      colors: MixHelpers.resolve(context, colors) ?? defaultValue.colors,
-      stops: MixHelpers.resolve(context, stops) ?? defaultValue.stops,
+      colors: MixHelpers.resolveList(context, colors) ?? defaultValue.colors,
+      stops: MixHelpers.resolveList(context, stops) ?? defaultValue.stops,
       tileMode: MixHelpers.resolve(context, tileMode) ?? defaultValue.tileMode,
       focal: MixHelpers.resolve(context, focal) ?? defaultValue.focal,
       focalRadius:
           MixHelpers.resolve(context, focalRadius) ?? defaultValue.focalRadius,
-      transform: MixHelpers.resolve(context, transform) ?? defaultValue.transform,
+      transform:
+          MixHelpers.resolve(context, transform) ?? defaultValue.transform,
     );
   }
 
@@ -303,25 +324,40 @@ final class RadialGradientDto extends GradientDto<RadialGradient> with EqualityM
       focal: MixHelpers.merge(focal, other.focal),
       focalRadius: MixHelpers.merge(focalRadius, other.focalRadius),
       transform: MixHelpers.merge(transform, other.transform),
-      colors: MixHelpers.merge(colors, other.colors),
-      stops: MixHelpers.merge(stops, other.stops),
+      colors: MixHelpers.mergeList(colors, other.colors),
+      stops: MixHelpers.mergeList(stops, other.stops),
     );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is RadialGradientDto &&
+        other.center == center &&
+        other.radius == radius &&
+        other.tileMode == tileMode &&
+        other.focal == focal &&
+        other.focalRadius == focalRadius &&
+        other.transform == transform &&
+        listEquals(other.colors, colors) &&
+        listEquals(other.stops, stops);
   }
 
   @override
   RadialGradient get defaultValue => const RadialGradient(colors: []);
 
   @override
-  List<Object?> get props => [
-    center,
-    radius,
-    tileMode,
-    focal,
-    focalRadius,
-    transform,
-    colors,
-    stops,
-  ];
+  int get hashCode {
+    return center.hashCode ^
+        radius.hashCode ^
+        tileMode.hashCode ^
+        focal.hashCode ^
+        focalRadius.hashCode ^
+        transform.hashCode ^
+        colors.hashCode ^
+        stops.hashCode;
+  }
 }
 
 /// Represents a Data transfer object of [SweepGradient]
@@ -329,7 +365,7 @@ final class RadialGradientDto extends GradientDto<RadialGradient> with EqualityM
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a `[SweepGradient]
 
-final class SweepGradientDto extends GradientDto<SweepGradient> with EqualityMixin {
+final class SweepGradientDto extends GradientDto<SweepGradient> {
   final Prop<AlignmentGeometry>? center;
   final Prop<double>? startAngle;
   final Prop<double>? endAngle;
@@ -345,13 +381,13 @@ final class SweepGradientDto extends GradientDto<SweepGradient> with EqualityMix
     List<double>? stops,
   }) {
     return SweepGradientDto.props(
-      center: Prop.maybeValue(center),
-      startAngle: Prop.maybeValue(startAngle),
-      endAngle: Prop.maybeValue(endAngle),
-      tileMode: Prop.maybeValue(tileMode),
-      transform: Prop.maybeValue(transform),
-      colors: Prop.maybeValue(colors),
-      stops: Prop.maybeValue(stops),
+      center: Prop.maybe(center),
+      startAngle: Prop.maybe(startAngle),
+      endAngle: Prop.maybe(endAngle),
+      tileMode: Prop.maybe(tileMode),
+      transform: Prop.maybe(transform),
+      colors: colors?.map(Prop.new).toList(),
+      stops: stops?.map(Prop.new).toList(),
     );
   }
 
@@ -401,12 +437,14 @@ final class SweepGradientDto extends GradientDto<SweepGradient> with EqualityMix
   SweepGradient resolve(BuildContext context) {
     return SweepGradient(
       center: MixHelpers.resolve(context, center) ?? defaultValue.center,
-      startAngle: MixHelpers.resolve(context, startAngle) ?? defaultValue.startAngle,
+      startAngle:
+          MixHelpers.resolve(context, startAngle) ?? defaultValue.startAngle,
       endAngle: MixHelpers.resolve(context, endAngle) ?? defaultValue.endAngle,
-      colors: MixHelpers.resolve(context, colors) ?? defaultValue.colors,
-      stops: MixHelpers.resolve(context, stops) ?? defaultValue.stops,
+      colors: MixHelpers.resolveList(context, colors) ?? defaultValue.colors,
+      stops: MixHelpers.resolveList(context, stops) ?? defaultValue.stops,
       tileMode: MixHelpers.resolve(context, tileMode) ?? defaultValue.tileMode,
-      transform: MixHelpers.resolve(context, transform) ?? defaultValue.transform,
+      transform:
+          MixHelpers.resolve(context, transform) ?? defaultValue.transform,
     );
   }
 
@@ -420,22 +458,36 @@ final class SweepGradientDto extends GradientDto<SweepGradient> with EqualityMix
       endAngle: MixHelpers.merge(endAngle, other.endAngle),
       tileMode: MixHelpers.merge(tileMode, other.tileMode),
       transform: MixHelpers.merge(transform, other.transform),
-      colors: MixHelpers.merge(colors, other.colors),
-      stops: MixHelpers.merge(stops, other.stops),
+      colors: MixHelpers.mergeList(colors, other.colors),
+      stops: MixHelpers.mergeList(stops, other.stops),
     );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is SweepGradientDto &&
+        other.center == center &&
+        other.startAngle == startAngle &&
+        other.endAngle == endAngle &&
+        other.tileMode == tileMode &&
+        other.transform == transform &&
+        listEquals(other.colors, colors) &&
+        listEquals(other.stops, stops);
   }
 
   @override
   SweepGradient get defaultValue => const SweepGradient(colors: []);
 
   @override
-  List<Object?> get props => [
-    center,
-    startAngle,
-    endAngle,
-    tileMode,
-    transform,
-    colors,
-    stops,
-  ];
+  int get hashCode {
+    return center.hashCode ^
+        startAngle.hashCode ^
+        endAngle.hashCode ^
+        tileMode.hashCode ^
+        transform.hashCode ^
+        colors.hashCode ^
+        stops.hashCode;
+  }
 }

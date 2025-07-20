@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../../../helpers/custom_matchers.dart';
+import '../../../../helpers/testing_utils.dart';
 
 void main() {
   group('DecorationImageDto', () {
@@ -32,19 +33,16 @@ void main() {
       final result = DecorationImageDto.value(decorationImage);
       expect(result, isNotNull);
       expect(result.image, isA<Prop<ImageProvider>>());
-      expect(result.fit, equals(Prop.fromValue(BoxFit.cover)));
+      expect(result.fit, equals(Prop(BoxFit.cover)));
       expect(
         result.alignment,
         equals(Prop<AlignmentGeometry>.fromValue(Alignment.topLeft)),
       );
-      expect(
-        result.centerSlice,
-        equals(Prop.fromValue(Rect.fromLTRB(10, 20, 30, 40))),
-      );
-      expect(result.repeat, equals(Prop.fromValue(ImageRepeat.repeat)));
-      expect(result.filterQuality, equals(Prop.fromValue(FilterQuality.high)));
-      expect(result.invertColors, equals(Prop.fromValue(true)));
-      expect(result.isAntiAlias, equals(Prop.fromValue(true)));
+      expect(result.centerSlice, equals(Prop(Rect.fromLTRB(10, 20, 30, 40))));
+      expect(result.repeat, equals(Prop(ImageRepeat.repeat)));
+      expect(result.filterQuality, equals(Prop(FilterQuality.high)));
+      expect(result.invertColors, equals(Prop(true)));
+      expect(result.isAntiAlias, equals(Prop(true)));
     });
 
     test('merge', () {

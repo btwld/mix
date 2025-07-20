@@ -148,19 +148,3 @@ class TransformModifierSpecAttribute
   List<Object?> get props => [transform, alignment];
 }
 
-class TransformModifierSpecTween extends Tween<TransformModifierSpec?> {
-  TransformModifierSpecTween({super.begin, super.end});
-
-  @override
-  TransformModifierSpec lerp(double t) {
-    if (begin == null && end == null) {
-      return const TransformModifierSpec();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
-  }
-}

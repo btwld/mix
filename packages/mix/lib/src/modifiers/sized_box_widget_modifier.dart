@@ -130,39 +130,19 @@ class SizedBoxModifierSpecAttribute
   List<Object?> get props => [width, height];
 }
 
-/// A tween that interpolates between two [SizedBoxModifierSpec] instances.
-///
-/// This class can be used in animations to smoothly transition between
-/// different [SizedBoxModifierSpec] specifications.
-class SizedBoxModifierSpecTween extends Tween<SizedBoxModifierSpec?> {
-  SizedBoxModifierSpecTween({super.begin, super.end});
-
-  @override
-  SizedBoxModifierSpec lerp(double t) {
-    if (begin == null && end == null) {
-      return const SizedBoxModifierSpec();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
-  }
-}
 
 final class SizedBoxModifierSpecUtility<T extends Attribute>
     extends MixUtility<T, SizedBoxModifierSpecAttribute> {
   /// Utility for defining [SizedBoxModifierSpecAttribute.height]
-  late final height = DoubleUtility((prop) => call(height: prop.value));
+  late final height = DoubleUtility((prop) => call(height: prop.getValue()));
 
   /// Utility for defining [SizedBoxModifierSpecAttribute.width]
-  late final width = DoubleUtility((prop) => call(width: prop.value));
+  late final width = DoubleUtility((prop) => call(width: prop.getValue()));
 
   /// Utility for defining [SizedBoxModifierSpecAttribute.width]
   /// and [SizedBoxModifierSpecAttribute.height]
   late final square = DoubleUtility(
-    (prop) => call(width: prop.value, height: prop.value),
+    (prop) => call(width: prop.getValue(), height: prop.getValue()),
   );
 
   SizedBoxModifierSpecUtility(super.builder);

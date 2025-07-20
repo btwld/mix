@@ -10,11 +10,9 @@ void main() {
       const scale = 1.5;
       final modifier = $with.transform.scale(scale);
 
-      final spec = modifier.resolve(
-        MockMixData(
-          Style(modifier),
-        ),
-      ) as TransformModifierSpec;
+      final spec =
+          modifier.resolve(MockMixData(Style(modifier)))
+              as TransformModifierSpec;
 
       expect(spec.transform, Matrix4.diagonal3Values(scale, scale, 1));
     });
@@ -26,11 +24,7 @@ void main() {
 
         final modifier = $with.transform.scale(scale);
 
-        final spec = modifier.resolve(
-          MockMixData(
-            Style(modifier),
-          ),
-        );
+        final spec = modifier.resolve(MockMixData(Style(modifier)));
 
         await tester.pumpMaterialApp(spec.build(Container()));
 

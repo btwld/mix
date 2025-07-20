@@ -3,9 +3,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../../internal/compare_mixin.dart';
-
-class TextHeightBehaviorDto extends Mix<TextHeightBehavior> with EqualityMixin {
+// Properties use MixProp for cleaner merging
+class TextHeightBehaviorDto extends Mix<TextHeightBehavior> {
   // Properties use MixProp for cleaner merging
   final Prop<bool>? applyHeightToFirstAscent;
   final Prop<bool>? applyHeightToLastDescent;
@@ -18,9 +17,9 @@ class TextHeightBehaviorDto extends Mix<TextHeightBehavior> with EqualityMixin {
     TextLeadingDistribution? leadingDistribution,
   }) {
     return TextHeightBehaviorDto.props(
-      applyHeightToFirstAscent: Prop.maybeValue(applyHeightToFirstAscent),
-      applyHeightToLastDescent: Prop.maybeValue(applyHeightToLastDescent),
-      leadingDistribution: Prop.maybeValue(leadingDistribution),
+      applyHeightToFirstAscent: Prop.maybe(applyHeightToFirstAscent),
+      applyHeightToLastDescent: Prop.maybe(applyHeightToLastDescent),
+      leadingDistribution: Prop.maybe(leadingDistribution),
     );
   }
 
@@ -108,14 +107,19 @@ class TextHeightBehaviorDto extends Mix<TextHeightBehavior> with EqualityMixin {
     );
   }
 
-  /// The list of properties that constitute the state of this [TextHeightBehaviorDto].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [TextHeightBehaviorDto] instances for equality.
   @override
-  List<Object?> get props => [
-    applyHeightToFirstAscent,
-    applyHeightToLastDescent,
-    leadingDistribution,
-  ];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is TextHeightBehaviorDto &&
+        other.applyHeightToFirstAscent == applyHeightToFirstAscent &&
+        other.applyHeightToLastDescent == applyHeightToLastDescent &&
+        other.leadingDistribution == leadingDistribution;
+  }
+
+  @override
+  int get hashCode =>
+      applyHeightToFirstAscent.hashCode ^
+      applyHeightToLastDescent.hashCode ^
+      leadingDistribution.hashCode;
 }
