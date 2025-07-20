@@ -1,7 +1,10 @@
 // ignore_for_file: prefer_relative_imports, avoid-importing-entrypoint-exports
 
 import 'package:flutter/material.dart';
-import 'package:mix/mix.dart';
+
+import '../../core/helpers.dart';
+import '../../core/mix_element.dart';
+import '../../core/prop.dart';
 
 sealed class BaseShadowDto<T extends Shadow> extends Mix<T> {
   // Properties use MixableProperty for cleaner merging
@@ -21,14 +24,14 @@ sealed class BaseShadowDto<T extends Shadow> extends Mix<T> {
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a [Shadow]
 class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
-  // Main constructor accepts Mix<T>? values
-  factory ShadowDto({double? blurRadius, Color? color, Offset? offset}) {
-    return ShadowDto.props(
-      blurRadius: Prop.maybe(blurRadius),
-      color: Prop.maybe(color),
-      offset: Prop.maybe(offset),
-    );
-  }
+  ShadowDto.only({double? blurRadius, Color? color, Offset? offset})
+    : this(
+        blurRadius: Prop.maybe(blurRadius),
+        color: Prop.maybe(color),
+        offset: Prop.maybe(offset),
+      );
+
+  const ShadowDto({super.blurRadius, super.color, super.offset});
 
   /// Constructor that accepts a [Shadow] value and extracts its properties.
   ///
@@ -38,16 +41,12 @@ class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
   /// const shadow = Shadow(color: Colors.black, blurRadius: 5.0);
   /// final dto = ShadowDto.value(shadow);
   /// ```
-  factory ShadowDto.value(Shadow shadow) {
-    return ShadowDto(
-      blurRadius: shadow.blurRadius,
-      color: shadow.color,
-      offset: shadow.offset,
-    );
-  }
-
-  /// Constructor that accepts Prop values directly
-  const ShadowDto.props({super.blurRadius, super.color, super.offset});
+  ShadowDto.value(Shadow shadow)
+    : this.only(
+        blurRadius: shadow.blurRadius,
+        color: shadow.color,
+        offset: shadow.offset,
+      );
 
   /// Constructor that accepts a nullable [Shadow] value and extracts its properties.
   ///
@@ -91,7 +90,7 @@ class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
   ShadowDto merge(ShadowDto? other) {
     if (other == null) return this;
 
-    return ShadowDto.props(
+    return ShadowDto(
       blurRadius: MixHelpers.merge(blurRadius, other.blurRadius),
       color: MixHelpers.merge(color, other.color),
       offset: MixHelpers.merge(offset, other.offset),
@@ -125,20 +124,24 @@ class BoxShadowDto extends BaseShadowDto<BoxShadow>
     with HasDefaultValue<BoxShadow> {
   final Prop<double>? spreadRadius;
 
-  // Main constructor accepts Mix<T>? values
-  factory BoxShadowDto({
+  BoxShadowDto.only({
     Color? color,
     Offset? offset,
     double? blurRadius,
     double? spreadRadius,
-  }) {
-    return BoxShadowDto.props(
-      color: Prop.maybe(color),
-      offset: Prop.maybe(offset),
-      blurRadius: Prop.maybe(blurRadius),
-      spreadRadius: Prop.maybe(spreadRadius),
-    );
-  }
+  }) : this(
+         color: Prop.maybe(color),
+         offset: Prop.maybe(offset),
+         blurRadius: Prop.maybe(blurRadius),
+         spreadRadius: Prop.maybe(spreadRadius),
+       );
+
+  const BoxShadowDto({
+    super.color,
+    super.offset,
+    super.blurRadius,
+    this.spreadRadius,
+  });
 
   /// Constructor that accepts a [BoxShadow] value and extracts its properties.
   ///
@@ -148,22 +151,13 @@ class BoxShadowDto extends BaseShadowDto<BoxShadow>
   /// const boxShadow = BoxShadow(color: Colors.grey, blurRadius: 10.0);
   /// final dto = BoxShadowDto.value(boxShadow);
   /// ```
-  factory BoxShadowDto.value(BoxShadow boxShadow) {
-    return BoxShadowDto(
-      color: boxShadow.color,
-      offset: boxShadow.offset,
-      blurRadius: boxShadow.blurRadius,
-      spreadRadius: boxShadow.spreadRadius,
-    );
-  }
-
-  // Private constructor that accepts MixableProperty instances
-  const BoxShadowDto.props({
-    super.color,
-    super.offset,
-    super.blurRadius,
-    this.spreadRadius,
-  });
+  BoxShadowDto.value(BoxShadow boxShadow)
+    : this.only(
+        color: boxShadow.color,
+        offset: boxShadow.offset,
+        blurRadius: boxShadow.blurRadius,
+        spreadRadius: boxShadow.spreadRadius,
+      );
 
   /// Constructor that accepts a nullable [BoxShadow] value and extracts its properties.
   ///
@@ -216,7 +210,7 @@ class BoxShadowDto extends BaseShadowDto<BoxShadow>
   BoxShadowDto merge(BoxShadowDto? other) {
     if (other == null) return this;
 
-    return BoxShadowDto.props(
+    return BoxShadowDto(
       color: MixHelpers.merge(color, other.color),
       offset: MixHelpers.merge(offset, other.offset),
       blurRadius: MixHelpers.merge(blurRadius, other.blurRadius),

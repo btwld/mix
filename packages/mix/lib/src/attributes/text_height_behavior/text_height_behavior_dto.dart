@@ -10,18 +10,15 @@ class TextHeightBehaviorDto extends Mix<TextHeightBehavior> {
   final Prop<bool>? applyHeightToLastDescent;
   final Prop<TextLeadingDistribution>? leadingDistribution;
 
-  // Main constructor accepts raw values
-  factory TextHeightBehaviorDto({
+  TextHeightBehaviorDto.only({
     bool? applyHeightToFirstAscent,
     bool? applyHeightToLastDescent,
     TextLeadingDistribution? leadingDistribution,
-  }) {
-    return TextHeightBehaviorDto.props(
-      applyHeightToFirstAscent: Prop.maybe(applyHeightToFirstAscent),
-      applyHeightToLastDescent: Prop.maybe(applyHeightToLastDescent),
-      leadingDistribution: Prop.maybe(leadingDistribution),
-    );
-  }
+  }) : this(
+         applyHeightToFirstAscent: Prop.maybe(applyHeightToFirstAscent),
+         applyHeightToLastDescent: Prop.maybe(applyHeightToLastDescent),
+         leadingDistribution: Prop.maybe(leadingDistribution),
+       );
 
   /// Constructor that accepts a [TextHeightBehavior] value and extracts its properties.
   ///
@@ -31,16 +28,14 @@ class TextHeightBehaviorDto extends Mix<TextHeightBehavior> {
   /// const behavior = TextHeightBehavior(applyHeightToFirstAscent: false);
   /// final dto = TextHeightBehaviorDto.value(behavior);
   /// ```
-  factory TextHeightBehaviorDto.value(TextHeightBehavior behavior) {
-    return TextHeightBehaviorDto(
-      applyHeightToFirstAscent: behavior.applyHeightToFirstAscent,
-      applyHeightToLastDescent: behavior.applyHeightToLastDescent,
-      leadingDistribution: behavior.leadingDistribution,
-    );
-  }
+  TextHeightBehaviorDto.value(TextHeightBehavior behavior)
+    : this.only(
+        applyHeightToFirstAscent: behavior.applyHeightToFirstAscent,
+        applyHeightToLastDescent: behavior.applyHeightToLastDescent,
+        leadingDistribution: behavior.leadingDistribution,
+      );
 
-  // Private constructor that accepts MixProp instances
-  const TextHeightBehaviorDto.props({
+  const TextHeightBehaviorDto({
     this.applyHeightToFirstAscent,
     this.applyHeightToLastDescent,
     this.leadingDistribution,
@@ -91,7 +86,7 @@ class TextHeightBehaviorDto extends Mix<TextHeightBehavior> {
   TextHeightBehaviorDto merge(TextHeightBehaviorDto? other) {
     if (other == null) return this;
 
-    return TextHeightBehaviorDto.props(
+    return TextHeightBehaviorDto(
       applyHeightToFirstAscent: MixHelpers.merge(
         applyHeightToFirstAscent,
         other.applyHeightToFirstAscent,

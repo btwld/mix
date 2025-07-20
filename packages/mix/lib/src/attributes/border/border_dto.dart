@@ -114,14 +114,13 @@ final class BorderDto extends BoxBorderDto<Border>
   /// const border = Border.all(color: Colors.red, width: 2.0);
   /// final dto = BorderDto.value(border);
   /// ```
-  factory BorderDto.value(Border border) {
-    return BorderDto.only(
-      top: BorderSideDto.maybeValue(border.top),
-      bottom: BorderSideDto.maybeValue(border.bottom),
-      left: BorderSideDto.maybeValue(border.left),
-      right: BorderSideDto.maybeValue(border.right),
-    );
-  }
+  BorderDto.value(Border border)
+    : this.only(
+        top: BorderSideDto.maybeValue(border.top),
+        bottom: BorderSideDto.maybeValue(border.bottom),
+        left: BorderSideDto.maybeValue(border.left),
+        right: BorderSideDto.maybeValue(border.right),
+      );
 
   BorderDto.all(BorderSideDto side)
     : this.only(top: side, bottom: side, left: side, right: side);
@@ -359,20 +358,18 @@ final class BorderSideDto extends Mix<BorderSide>
 
   static final BorderSideDto none = BorderSideDto();
 
-  // Main constructor accepts raw values
-  factory BorderSideDto({
+  // Named constructor for raw values
+  BorderSideDto.only({
     Color? color,
     double? strokeAlign,
     BorderStyle? style,
     double? width,
-  }) {
-    return BorderSideDto.props(
-      color: Prop.maybe(color),
-      width: Prop.maybe(width),
-      style: Prop.maybe(style),
-      strokeAlign: Prop.maybe(strokeAlign),
-    );
-  }
+  }) : this(
+         color: Prop.maybe(color),
+         width: Prop.maybe(width),
+         style: Prop.maybe(style),
+         strokeAlign: Prop.maybe(strokeAlign),
+       );
 
   /// Constructor that accepts a [BorderSide] value and extracts its properties.
   ///
@@ -382,22 +379,16 @@ final class BorderSideDto extends Mix<BorderSide>
   /// const borderSide = BorderSide(color: Colors.blue, width: 3.0);
   /// final dto = BorderSideDto.value(borderSide);
   /// ```
-  factory BorderSideDto.value(BorderSide borderSide) {
-    return BorderSideDto(
-      color: borderSide.color,
-      strokeAlign: borderSide.strokeAlign,
-      style: borderSide.style,
-      width: borderSide.width,
-    );
-  }
+  BorderSideDto.value(BorderSide borderSide)
+    : this.only(
+        color: borderSide.color,
+        strokeAlign: borderSide.strokeAlign,
+        style: borderSide.style,
+        width: borderSide.width,
+      );
 
-  /// Constructor that accepts Prop values directly
-  const BorderSideDto.props({
-    this.color,
-    this.width,
-    this.style,
-    this.strokeAlign,
-  });
+  /// Main constructor with clean delegation
+  const BorderSideDto({this.color, this.width, this.style, this.strokeAlign});
 
   /// Constructor that accepts a nullable [BorderSide] value and extracts its properties.
   ///
@@ -444,7 +435,7 @@ final class BorderSideDto extends Mix<BorderSide>
   BorderSideDto merge(BorderSideDto? other) {
     if (other == null) return this;
 
-    return BorderSideDto.props(
+    return BorderSideDto(
       color: MixHelpers.merge(color, other.color),
       width: MixHelpers.merge(width, other.width),
       style: MixHelpers.merge(style, other.style),

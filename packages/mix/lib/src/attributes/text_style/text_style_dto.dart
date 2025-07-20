@@ -33,7 +33,7 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
   // Lists of Mix types (DTOs)
   final List<MixProp<Shadow>>? shadows;
 
-  factory TextStyleDto({
+  TextStyleDto.only({
     Color? color,
     Color? backgroundColor,
     double? fontSize,
@@ -55,34 +55,31 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
     double? decorationThickness,
     String? fontFamily,
     List<String>? fontFamilyFallback,
-  }) {
-    return TextStyleDto.props(
-      color: Prop.maybe(color),
-      backgroundColor: Prop.maybe(backgroundColor),
-      fontSize: Prop.maybe(fontSize),
-      fontWeight: Prop.maybe(fontWeight),
-      fontStyle: Prop.maybe(fontStyle),
-      letterSpacing: Prop.maybe(letterSpacing),
-      debugLabel: Prop.maybe(debugLabel),
-      wordSpacing: Prop.maybe(wordSpacing),
-      textBaseline: Prop.maybe(textBaseline),
-      shadows: shadows?.map(MixProp<Shadow>.new).toList(),
-      fontFeatures: fontFeatures?.map(Prop.new).toList(),
-      decoration: Prop.maybe(decoration),
-      decorationColor: Prop.maybe(decorationColor),
-      decorationStyle: Prop.maybe(decorationStyle),
-      fontVariations: fontVariations?.map(Prop.new).toList(),
-      height: Prop.maybe(height),
-      foreground: Prop.maybe(foreground),
-      background: Prop.maybe(background),
-      decorationThickness: Prop.maybe(decorationThickness),
-      fontFamily: Prop.maybe(fontFamily),
-      fontFamilyFallback: fontFamilyFallback?.map(Prop.new).toList(),
-    );
-  }
+  }) : this(
+         color: Prop.maybe(color),
+         backgroundColor: Prop.maybe(backgroundColor),
+         fontSize: Prop.maybe(fontSize),
+         fontWeight: Prop.maybe(fontWeight),
+         fontStyle: Prop.maybe(fontStyle),
+         letterSpacing: Prop.maybe(letterSpacing),
+         debugLabel: Prop.maybe(debugLabel),
+         wordSpacing: Prop.maybe(wordSpacing),
+         textBaseline: Prop.maybe(textBaseline),
+         shadows: shadows?.map(MixProp<Shadow>.new).toList(),
+         fontFeatures: fontFeatures?.map(Prop.new).toList(),
+         decoration: Prop.maybe(decoration),
+         decorationColor: Prop.maybe(decorationColor),
+         decorationStyle: Prop.maybe(decorationStyle),
+         fontVariations: fontVariations?.map(Prop.new).toList(),
+         height: Prop.maybe(height),
+         foreground: Prop.maybe(foreground),
+         background: Prop.maybe(background),
+         decorationThickness: Prop.maybe(decorationThickness),
+         fontFamily: Prop.maybe(fontFamily),
+         fontFamilyFallback: fontFamilyFallback?.map(Prop.new).toList(),
+       );
 
-  /// Constructor that accepts Prop values directly
-  const TextStyleDto.props({
+  const TextStyleDto({
     this.color,
     this.backgroundColor,
     this.fontSize,
@@ -114,31 +111,30 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
   /// const textStyle = TextStyle(color: Colors.blue, fontSize: 16.0);
   /// final dto = TextStyleDto.value(textStyle);
   /// ```
-  factory TextStyleDto.value(TextStyle textStyle) {
-    return TextStyleDto(
-      color: textStyle.color,
-      backgroundColor: textStyle.backgroundColor,
-      fontSize: textStyle.fontSize,
-      fontWeight: textStyle.fontWeight,
-      fontStyle: textStyle.fontStyle,
-      letterSpacing: textStyle.letterSpacing,
-      debugLabel: textStyle.debugLabel,
-      wordSpacing: textStyle.wordSpacing,
-      textBaseline: textStyle.textBaseline,
-      shadows: textStyle.shadows?.map(ShadowDto.value).toList(),
-      fontFeatures: textStyle.fontFeatures,
-      decoration: textStyle.decoration,
-      decorationColor: textStyle.decorationColor,
-      decorationStyle: textStyle.decorationStyle,
-      fontVariations: textStyle.fontVariations,
-      height: textStyle.height,
-      foreground: textStyle.foreground,
-      background: textStyle.background,
-      decorationThickness: textStyle.decorationThickness,
-      fontFamily: textStyle.fontFamily,
-      fontFamilyFallback: textStyle.fontFamilyFallback,
-    );
-  }
+  TextStyleDto.value(TextStyle textStyle)
+    : this.only(
+        color: textStyle.color,
+        backgroundColor: textStyle.backgroundColor,
+        fontSize: textStyle.fontSize,
+        fontWeight: textStyle.fontWeight,
+        fontStyle: textStyle.fontStyle,
+        letterSpacing: textStyle.letterSpacing,
+        debugLabel: textStyle.debugLabel,
+        wordSpacing: textStyle.wordSpacing,
+        textBaseline: textStyle.textBaseline,
+        shadows: textStyle.shadows?.map(ShadowDto.value).toList(),
+        fontFeatures: textStyle.fontFeatures,
+        decoration: textStyle.decoration,
+        decorationColor: textStyle.decorationColor,
+        decorationStyle: textStyle.decorationStyle,
+        fontVariations: textStyle.fontVariations,
+        height: textStyle.height,
+        foreground: textStyle.foreground,
+        background: textStyle.background,
+        decorationThickness: textStyle.decorationThickness,
+        fontFamily: textStyle.fontFamily,
+        fontFamilyFallback: textStyle.fontFamilyFallback,
+      );
 
   /// Constructor that accepts a nullable [TextStyle] value and extracts its properties.
   ///
@@ -184,7 +180,7 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
   TextStyleDto merge(TextStyleDto? other) {
     if (other == null) return this;
 
-    return TextStyleDto.props(
+    return TextStyleDto(
       color: MixHelpers.merge(color, other.color),
       backgroundColor: MixHelpers.merge(backgroundColor, other.backgroundColor),
       fontSize: MixHelpers.merge(fontSize, other.fontSize),

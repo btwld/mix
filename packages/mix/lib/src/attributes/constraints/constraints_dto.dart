@@ -25,20 +25,24 @@ final class BoxConstraintsDto extends ConstraintsDto<BoxConstraints>
   final Prop<double>? minHeight;
   final Prop<double>? maxHeight;
 
-  // Main constructor accepts raw values
-  factory BoxConstraintsDto({
+  BoxConstraintsDto.only({
     double? minWidth,
     double? maxWidth,
     double? minHeight,
     double? maxHeight,
-  }) {
-    return BoxConstraintsDto.props(
-      minWidth: Prop.maybe(minWidth),
-      maxWidth: Prop.maybe(maxWidth),
-      minHeight: Prop.maybe(minHeight),
-      maxHeight: Prop.maybe(maxHeight),
-    );
-  }
+  }) : this(
+         minWidth: Prop.maybe(minWidth),
+         maxWidth: Prop.maybe(maxWidth),
+         minHeight: Prop.maybe(minHeight),
+         maxHeight: Prop.maybe(maxHeight),
+       );
+
+  const BoxConstraintsDto({
+    this.minWidth,
+    this.maxWidth,
+    this.minHeight,
+    this.maxHeight,
+  });
 
   /// Constructor that accepts a [BoxConstraints] value and extracts its properties.
   ///
@@ -48,22 +52,13 @@ final class BoxConstraintsDto extends ConstraintsDto<BoxConstraints>
   /// const constraints = BoxConstraints(maxWidth: 300, maxHeight: 200);
   /// final dto = BoxConstraintsDto.value(constraints);
   /// ```
-  factory BoxConstraintsDto.value(BoxConstraints constraints) {
-    return BoxConstraintsDto(
-      minWidth: constraints.minWidth,
-      maxWidth: constraints.maxWidth,
-      minHeight: constraints.minHeight,
-      maxHeight: constraints.maxHeight,
-    );
-  }
-
-  // Private constructor that accepts MixableProperty instances
-  const BoxConstraintsDto.props({
-    this.minWidth,
-    this.maxWidth,
-    this.minHeight,
-    this.maxHeight,
-  });
+  BoxConstraintsDto.value(BoxConstraints constraints)
+    : this.only(
+        minWidth: constraints.minWidth,
+        maxWidth: constraints.maxWidth,
+        minHeight: constraints.minHeight,
+        maxHeight: constraints.maxHeight,
+      );
 
   /// Constructor that accepts a nullable [BoxConstraints] value and extracts its properties.
   ///
@@ -109,7 +104,7 @@ final class BoxConstraintsDto extends ConstraintsDto<BoxConstraints>
   BoxConstraintsDto merge(BoxConstraintsDto? other) {
     if (other == null) return this;
 
-    return BoxConstraintsDto.props(
+    return BoxConstraintsDto(
       minWidth: MixHelpers.merge(minWidth, other.minWidth),
       maxWidth: MixHelpers.merge(maxWidth, other.maxWidth),
       minHeight: MixHelpers.merge(minHeight, other.minHeight),

@@ -19,8 +19,7 @@ class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
   final Prop<double>? leading;
   final Prop<bool>? forceStrutHeight;
 
-  // Main constructor accepts raw values
-  factory StrutStyleDto({
+  StrutStyleDto.only({
     String? fontFamily,
     List<String>? fontFamilyFallback,
     double? fontSize,
@@ -29,42 +28,18 @@ class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
     double? height,
     double? leading,
     bool? forceStrutHeight,
-  }) {
-    return StrutStyleDto.props(
-      fontFamily: Prop.maybe(fontFamily),
-      fontFamilyFallback: fontFamilyFallback?.map(Prop.new).toList(),
-      fontSize: Prop.maybe(fontSize),
-      fontWeight: Prop.maybe(fontWeight),
-      fontStyle: Prop.maybe(fontStyle),
-      height: Prop.maybe(height),
-      leading: Prop.maybe(leading),
-      forceStrutHeight: Prop.maybe(forceStrutHeight),
-    );
-  }
+  }) : this(
+         fontFamily: Prop.maybe(fontFamily),
+         fontFamilyFallback: fontFamilyFallback?.map(Prop.new).toList(),
+         fontSize: Prop.maybe(fontSize),
+         fontWeight: Prop.maybe(fontWeight),
+         fontStyle: Prop.maybe(fontStyle),
+         height: Prop.maybe(height),
+         leading: Prop.maybe(leading),
+         forceStrutHeight: Prop.maybe(forceStrutHeight),
+       );
 
-  /// Constructor that accepts a [StrutStyle] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [StrutStyle] instances to [StrutStyleDto].
-  ///
-  /// ```dart
-  /// const strutStyle = StrutStyle(fontSize: 16.0, fontWeight: FontWeight.bold);
-  /// final dto = StrutStyleDto.value(strutStyle);
-  /// ```
-  factory StrutStyleDto.value(StrutStyle strutStyle) {
-    return StrutStyleDto(
-      fontFamily: strutStyle.fontFamily,
-      fontFamilyFallback: strutStyle.fontFamilyFallback,
-      fontSize: strutStyle.fontSize,
-      fontWeight: strutStyle.fontWeight,
-      fontStyle: strutStyle.fontStyle,
-      height: strutStyle.height,
-      leading: strutStyle.leading,
-      forceStrutHeight: strutStyle.forceStrutHeight,
-    );
-  }
-
-  // Private constructor that accepts MixableProperty instances
-  const StrutStyleDto.props({
+  const StrutStyleDto({
     this.fontFamily,
     this.fontFamilyFallback,
     this.fontSize,
@@ -74,6 +49,26 @@ class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
     this.leading,
     this.forceStrutHeight,
   });
+
+  /// Constructor that accepts a [StrutStyle] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [StrutStyle] instances to [StrutStyleDto].
+  ///
+  /// ```dart
+  /// const strutStyle = StrutStyle(fontSize: 16.0, fontWeight: FontWeight.bold);
+  /// final dto = StrutStyleDto.value(strutStyle);
+  /// ```
+  StrutStyleDto.value(StrutStyle strutStyle)
+    : this.only(
+        fontFamily: strutStyle.fontFamily,
+        fontFamilyFallback: strutStyle.fontFamilyFallback,
+        fontSize: strutStyle.fontSize,
+        fontWeight: strutStyle.fontWeight,
+        fontStyle: strutStyle.fontStyle,
+        height: strutStyle.height,
+        leading: strutStyle.leading,
+        forceStrutHeight: strutStyle.forceStrutHeight,
+      );
 
   /// Constructor that accepts a nullable [StrutStyle] value and extracts its properties.
   ///
@@ -105,7 +100,7 @@ class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
   StrutStyleDto merge(StrutStyleDto? other) {
     if (other == null) return this;
 
-    return StrutStyleDto.props(
+    return StrutStyleDto(
       fontFamily: MixHelpers.merge(fontFamily, other.fontFamily),
       fontFamilyFallback: MixHelpers.mergeList(
         fontFamilyFallback,

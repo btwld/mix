@@ -15,8 +15,7 @@ final class DecorationImageDto extends Mix<DecorationImage>
   final Prop<bool>? invertColors;
   final Prop<bool>? isAntiAlias;
 
-  // Main constructor accepts raw values
-  factory DecorationImageDto({
+  DecorationImageDto.only({
     ImageProvider? image,
     BoxFit? fit,
     AlignmentGeometry? alignment,
@@ -25,42 +24,18 @@ final class DecorationImageDto extends Mix<DecorationImage>
     FilterQuality? filterQuality,
     bool? invertColors,
     bool? isAntiAlias,
-  }) {
-    return DecorationImageDto.props(
-      image: Prop.maybe(image),
-      fit: Prop.maybe(fit),
-      alignment: Prop.maybe(alignment),
-      centerSlice: Prop.maybe(centerSlice),
-      repeat: Prop.maybe(repeat),
-      filterQuality: Prop.maybe(filterQuality),
-      invertColors: Prop.maybe(invertColors),
-      isAntiAlias: Prop.maybe(isAntiAlias),
-    );
-  }
+  }) : this(
+         image: Prop.maybe(image),
+         fit: Prop.maybe(fit),
+         alignment: Prop.maybe(alignment),
+         centerSlice: Prop.maybe(centerSlice),
+         repeat: Prop.maybe(repeat),
+         filterQuality: Prop.maybe(filterQuality),
+         invertColors: Prop.maybe(invertColors),
+         isAntiAlias: Prop.maybe(isAntiAlias),
+       );
 
-  /// Constructor that accepts a [DecorationImage] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [DecorationImage] instances to [DecorationImageDto].
-  ///
-  /// ```dart
-  /// const decorationImage = DecorationImage(image: AssetImage('assets/image.png'));
-  /// final dto = DecorationImageDto.value(decorationImage);
-  /// ```
-  factory DecorationImageDto.value(DecorationImage decorationImage) {
-    return DecorationImageDto(
-      image: decorationImage.image,
-      fit: decorationImage.fit,
-      alignment: decorationImage.alignment,
-      centerSlice: decorationImage.centerSlice,
-      repeat: decorationImage.repeat,
-      filterQuality: decorationImage.filterQuality,
-      invertColors: decorationImage.invertColors,
-      isAntiAlias: decorationImage.isAntiAlias,
-    );
-  }
-
-  // Private constructor that accepts MixProp instances
-  const DecorationImageDto.props({
+  const DecorationImageDto({
     this.image,
     this.fit,
     this.alignment,
@@ -70,6 +45,26 @@ final class DecorationImageDto extends Mix<DecorationImage>
     this.invertColors,
     this.isAntiAlias,
   });
+
+  /// Constructor that accepts a [DecorationImage] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [DecorationImage] instances to [DecorationImageDto].
+  ///
+  /// ```dart
+  /// const decorationImage = DecorationImage(image: AssetImage('assets/image.png'));
+  /// final dto = DecorationImageDto.value(decorationImage);
+  /// ```
+  DecorationImageDto.value(DecorationImage decorationImage)
+    : this.only(
+        image: decorationImage.image,
+        fit: decorationImage.fit,
+        alignment: decorationImage.alignment,
+        centerSlice: decorationImage.centerSlice,
+        repeat: decorationImage.repeat,
+        filterQuality: decorationImage.filterQuality,
+        invertColors: decorationImage.invertColors,
+        isAntiAlias: decorationImage.isAntiAlias,
+      );
 
   /// Constructor that accepts a nullable [DecorationImage] value and extracts its properties.
   ///
@@ -125,7 +120,7 @@ final class DecorationImageDto extends Mix<DecorationImage>
   DecorationImageDto merge(DecorationImageDto? other) {
     if (other == null) return this;
 
-    return DecorationImageDto.props(
+    return DecorationImageDto(
       image: MixHelpers.merge(image, other.image),
       fit: MixHelpers.merge(fit, other.fit),
       alignment: MixHelpers.merge(alignment, other.alignment),

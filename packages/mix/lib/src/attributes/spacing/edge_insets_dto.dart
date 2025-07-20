@@ -111,7 +111,6 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
 
   const EdgeInsetsDto({super.top, super.bottom, this.left, this.right});
 
-  // Main constructor accepts raw double values
   EdgeInsetsDto.only({double? top, double? bottom, double? left, double? right})
     : this(
         top: Prop.maybe(top),
@@ -149,7 +148,7 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
   /// const EdgeInsets? edgeInsets = EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0);
   /// final dto = EdgeInsetsDto.maybeValue(edgeInsets); // Returns EdgeInsetsDto or null
   /// ```
-  EdgeInsetsDto? maybeValue(EdgeInsets? edgeInsets) {
+  static EdgeInsetsDto? maybeValue(EdgeInsets? edgeInsets) {
     return edgeInsets != null ? EdgeInsetsDto.value(edgeInsets) : null;
   }
 
@@ -204,7 +203,6 @@ final class EdgeInsetsDirectionalDto
     this.end,
   });
 
-  // Main constructor accepts raw double values
   EdgeInsetsDirectionalDto.only({
     double? top,
     double? bottom,

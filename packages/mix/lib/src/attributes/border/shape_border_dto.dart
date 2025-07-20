@@ -136,13 +136,11 @@ final class BeveledRectangleBorderDto
 
   const BeveledRectangleBorderDto({this.borderRadius, super.side});
 
-  factory BeveledRectangleBorderDto.value(BeveledRectangleBorder border) {
-    return BeveledRectangleBorderDto.only(
-      borderRadius: BorderRadiusGeometryDto.value(border.borderRadius),
-
-      side: BorderSideDto.maybeValue(border.side),
-    );
-  }
+  BeveledRectangleBorderDto.value(BeveledRectangleBorder border)
+    : this.only(
+        borderRadius: BorderRadiusGeometryDto.value(border.borderRadius),
+        side: BorderSideDto.maybeValue(border.side),
+      );
 
   static BeveledRectangleBorderDto? maybeValue(BeveledRectangleBorder? border) {
     return border != null ? BeveledRectangleBorderDto.value(border) : null;
@@ -192,12 +190,11 @@ final class ContinuousRectangleBorderDto
 
   const ContinuousRectangleBorderDto({this.borderRadius, super.side});
 
-  factory ContinuousRectangleBorderDto.value(ContinuousRectangleBorder border) {
-    return ContinuousRectangleBorderDto.only(
-      borderRadius: BorderRadiusGeometryDto.value(border.borderRadius),
-      side: BorderSideDto.maybeValue(border.side),
-    );
-  }
+  ContinuousRectangleBorderDto.value(ContinuousRectangleBorder border)
+    : this.only(
+        borderRadius: BorderRadiusGeometryDto.value(border.borderRadius),
+        side: BorderSideDto.maybeValue(border.side),
+      );
 
   static ContinuousRectangleBorderDto? maybeValue(
     ContinuousRectangleBorder? border,
@@ -245,12 +242,11 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
 
   const CircleBorderDto({super.side, this.eccentricity});
 
-  factory CircleBorderDto.value(CircleBorder border) {
-    return CircleBorderDto.only(
-      side: BorderSideDto.maybeValue(border.side),
-      eccentricity: border.eccentricity,
-    );
-  }
+  CircleBorderDto.value(CircleBorder border)
+    : this.only(
+        side: BorderSideDto.maybeValue(border.side),
+        eccentricity: border.eccentricity,
+      );
 
   static CircleBorderDto? maybeValue(CircleBorder? border) {
     return border != null ? CircleBorderDto.value(border) : null;
@@ -311,17 +307,16 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
          squash: Prop.maybe(squash),
        );
 
-  factory StarBorderDto.value(StarBorder border) {
-    return StarBorderDto.only(
-      side: BorderSideDto.maybeValue(border.side),
-      points: border.points,
-      innerRadiusRatio: border.innerRadiusRatio,
-      pointRounding: border.pointRounding,
-      valleyRounding: border.valleyRounding,
-      rotation: border.rotation,
-      squash: border.squash,
-    );
-  }
+  StarBorderDto.value(StarBorder border)
+    : this.only(
+        side: BorderSideDto.maybeValue(border.side),
+        points: border.points,
+        innerRadiusRatio: border.innerRadiusRatio,
+        pointRounding: border.pointRounding,
+        valleyRounding: border.valleyRounding,
+        rotation: border.rotation,
+        squash: border.squash,
+      );
 
   const StarBorderDto({
     super.side,
@@ -419,15 +414,14 @@ final class LinearBorderDto extends OutlinedBorderDto<LinearBorder> {
     this.bottom,
   });
 
-  factory LinearBorderDto.value(LinearBorder border) {
-    return LinearBorderDto.only(
-      side: BorderSideDto.maybeValue(border.side),
-      start: LinearBorderEdgeDto.maybeValue(border.start),
-      end: LinearBorderEdgeDto.maybeValue(border.end),
-      top: LinearBorderEdgeDto.maybeValue(border.top),
-      bottom: LinearBorderEdgeDto.maybeValue(border.bottom),
-    );
-  }
+  LinearBorderDto.value(LinearBorder border)
+    : this.only(
+        side: BorderSideDto.maybeValue(border.side),
+        start: LinearBorderEdgeDto.maybeValue(border.start),
+        end: LinearBorderEdgeDto.maybeValue(border.end),
+        top: LinearBorderEdgeDto.maybeValue(border.top),
+        bottom: LinearBorderEdgeDto.maybeValue(border.bottom),
+      );
 
   static LinearBorderDto? maybeValue(LinearBorder? border) {
     return border != null ? LinearBorderDto.value(border) : null;

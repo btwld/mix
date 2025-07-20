@@ -57,7 +57,7 @@ sealed class GradientDto<T extends Gradient> extends Mix<T>
 
   @protected
   LinearGradientDto asLinearGradient() {
-    return LinearGradientDto.props(
+    return LinearGradientDto(
       begin: null,
       end: null,
       tileMode: null,
@@ -69,7 +69,7 @@ sealed class GradientDto<T extends Gradient> extends Mix<T>
 
   @protected
   RadialGradientDto asRadialGradient() {
-    return RadialGradientDto.props(
+    return RadialGradientDto(
       center: null,
       radius: null,
       tileMode: null,
@@ -83,7 +83,7 @@ sealed class GradientDto<T extends Gradient> extends Mix<T>
 
   @protected
   SweepGradientDto asSweepGradient() {
-    return SweepGradientDto.props(
+    return SweepGradientDto(
       center: null,
       startAngle: null,
       endAngle: null,
@@ -108,23 +108,30 @@ final class LinearGradientDto extends GradientDto<LinearGradient> {
   final Prop<AlignmentGeometry>? end;
   final Prop<TileMode>? tileMode;
 
-  factory LinearGradientDto({
+  LinearGradientDto.only({
     AlignmentGeometry? begin,
     AlignmentGeometry? end,
     TileMode? tileMode,
     GradientTransform? transform,
     List<Color>? colors,
     List<double>? stops,
-  }) {
-    return LinearGradientDto.props(
-      begin: Prop.maybe(begin),
-      end: Prop.maybe(end),
-      tileMode: Prop.maybe(tileMode),
-      transform: Prop.maybe(transform),
-      colors: colors?.map(Prop.new).toList(),
-      stops: stops?.map(Prop.new).toList(),
-    );
-  }
+  }) : this(
+         begin: Prop.maybe(begin),
+         end: Prop.maybe(end),
+         tileMode: Prop.maybe(tileMode),
+         transform: Prop.maybe(transform),
+         colors: colors?.map(Prop.new).toList(),
+         stops: stops?.map(Prop.new).toList(),
+       );
+
+  const LinearGradientDto({
+    required this.begin,
+    required this.end,
+    required this.tileMode,
+    required super.transform,
+    required super.colors,
+    required super.stops,
+  });
 
   /// Constructor that accepts a [LinearGradient] value and extracts its properties.
   ///
@@ -134,25 +141,15 @@ final class LinearGradientDto extends GradientDto<LinearGradient> {
   /// const gradient = LinearGradient(colors: [Colors.red, Colors.blue]);
   /// final dto = LinearGradientDto.value(gradient);
   /// ```
-  factory LinearGradientDto.value(LinearGradient gradient) {
-    return LinearGradientDto(
-      begin: gradient.begin,
-      end: gradient.end,
-      tileMode: gradient.tileMode,
-      transform: gradient.transform,
-      colors: gradient.colors,
-      stops: gradient.stops,
-    );
-  }
-
-  const LinearGradientDto.props({
-    required this.begin,
-    required this.end,
-    required this.tileMode,
-    required super.transform,
-    required super.colors,
-    required super.stops,
-  });
+  LinearGradientDto.value(LinearGradient gradient)
+    : this.only(
+        begin: gradient.begin,
+        end: gradient.end,
+        tileMode: gradient.tileMode,
+        transform: gradient.transform,
+        colors: gradient.colors,
+        stops: gradient.stops,
+      );
 
   /// Constructor that accepts a nullable [LinearGradient] value and extracts its properties.
   ///
@@ -183,7 +180,7 @@ final class LinearGradientDto extends GradientDto<LinearGradient> {
   LinearGradientDto merge(LinearGradientDto? other) {
     if (other == null) return this;
 
-    return LinearGradientDto.props(
+    return LinearGradientDto(
       begin: MixHelpers.merge(begin, other.begin),
       end: MixHelpers.merge(end, other.end),
       tileMode: MixHelpers.merge(tileMode, other.tileMode),
@@ -231,7 +228,7 @@ final class RadialGradientDto extends GradientDto<RadialGradient> {
   final Prop<AlignmentGeometry>? focal;
   final Prop<double>? focalRadius;
 
-  factory RadialGradientDto({
+  RadialGradientDto.only({
     AlignmentGeometry? center,
     double? radius,
     TileMode? tileMode,
@@ -240,41 +237,18 @@ final class RadialGradientDto extends GradientDto<RadialGradient> {
     GradientTransform? transform,
     List<Color>? colors,
     List<double>? stops,
-  }) {
-    return RadialGradientDto.props(
-      center: Prop.maybe(center),
-      radius: Prop.maybe(radius),
-      tileMode: Prop.maybe(tileMode),
-      focal: Prop.maybe(focal),
-      focalRadius: Prop.maybe(focalRadius),
-      transform: Prop.maybe(transform),
-      colors: colors?.map(Prop.new).toList(),
-      stops: stops?.map(Prop.new).toList(),
-    );
-  }
+  }) : this(
+         center: Prop.maybe(center),
+         radius: Prop.maybe(radius),
+         tileMode: Prop.maybe(tileMode),
+         focal: Prop.maybe(focal),
+         focalRadius: Prop.maybe(focalRadius),
+         transform: Prop.maybe(transform),
+         colors: colors?.map(Prop.new).toList(),
+         stops: stops?.map(Prop.new).toList(),
+       );
 
-  /// Constructor that accepts a [RadialGradient] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [RadialGradient] instances to [RadialGradientDto].
-  ///
-  /// ```dart
-  /// const gradient = RadialGradient(colors: [Colors.red, Colors.blue]);
-  /// final dto = RadialGradientDto.value(gradient);
-  /// ```
-  factory RadialGradientDto.value(RadialGradient gradient) {
-    return RadialGradientDto(
-      center: gradient.center,
-      radius: gradient.radius,
-      tileMode: gradient.tileMode,
-      focal: gradient.focal,
-      focalRadius: gradient.focalRadius,
-      transform: gradient.transform,
-      colors: gradient.colors,
-      stops: gradient.stops,
-    );
-  }
-
-  const RadialGradientDto.props({
+  const RadialGradientDto({
     required this.center,
     required this.radius,
     required this.tileMode,
@@ -284,6 +258,26 @@ final class RadialGradientDto extends GradientDto<RadialGradient> {
     required super.colors,
     required super.stops,
   });
+
+  /// Constructor that accepts a [RadialGradient] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [RadialGradient] instances to [RadialGradientDto].
+  ///
+  /// ```dart
+  /// const gradient = RadialGradient(colors: [Colors.red, Colors.blue]);
+  /// final dto = RadialGradientDto.value(gradient);
+  /// ```
+  RadialGradientDto.value(RadialGradient gradient)
+    : this.only(
+        center: gradient.center,
+        radius: gradient.radius,
+        tileMode: gradient.tileMode,
+        focal: gradient.focal,
+        focalRadius: gradient.focalRadius,
+        transform: gradient.transform,
+        colors: gradient.colors,
+        stops: gradient.stops,
+      );
 
   /// Constructor that accepts a nullable [RadialGradient] value and extracts its properties.
   ///
@@ -317,7 +311,7 @@ final class RadialGradientDto extends GradientDto<RadialGradient> {
   RadialGradientDto merge(RadialGradientDto? other) {
     if (other == null) return this;
 
-    return RadialGradientDto.props(
+    return RadialGradientDto(
       center: MixHelpers.merge(center, other.center),
       radius: MixHelpers.merge(radius, other.radius),
       tileMode: MixHelpers.merge(tileMode, other.tileMode),
@@ -371,7 +365,7 @@ final class SweepGradientDto extends GradientDto<SweepGradient> {
   final Prop<double>? endAngle;
   final Prop<TileMode>? tileMode;
 
-  factory SweepGradientDto({
+  SweepGradientDto.only({
     AlignmentGeometry? center,
     double? startAngle,
     double? endAngle,
@@ -379,17 +373,25 @@ final class SweepGradientDto extends GradientDto<SweepGradient> {
     GradientTransform? transform,
     List<Color>? colors,
     List<double>? stops,
-  }) {
-    return SweepGradientDto.props(
-      center: Prop.maybe(center),
-      startAngle: Prop.maybe(startAngle),
-      endAngle: Prop.maybe(endAngle),
-      tileMode: Prop.maybe(tileMode),
-      transform: Prop.maybe(transform),
-      colors: colors?.map(Prop.new).toList(),
-      stops: stops?.map(Prop.new).toList(),
-    );
-  }
+  }) : this(
+         center: Prop.maybe(center),
+         startAngle: Prop.maybe(startAngle),
+         endAngle: Prop.maybe(endAngle),
+         tileMode: Prop.maybe(tileMode),
+         transform: Prop.maybe(transform),
+         colors: colors?.map(Prop.new).toList(),
+         stops: stops?.map(Prop.new).toList(),
+       );
+
+  const SweepGradientDto({
+    required this.center,
+    required this.startAngle,
+    required this.endAngle,
+    required this.tileMode,
+    required super.transform,
+    required super.colors,
+    required super.stops,
+  });
 
   /// Constructor that accepts a [SweepGradient] value and extracts its properties.
   ///
@@ -399,27 +401,16 @@ final class SweepGradientDto extends GradientDto<SweepGradient> {
   /// const gradient = SweepGradient(colors: [Colors.red, Colors.blue]);
   /// final dto = SweepGradientDto.value(gradient);
   /// ```
-  factory SweepGradientDto.value(SweepGradient gradient) {
-    return SweepGradientDto(
-      center: gradient.center,
-      startAngle: gradient.startAngle,
-      endAngle: gradient.endAngle,
-      tileMode: gradient.tileMode,
-      transform: gradient.transform,
-      colors: gradient.colors,
-      stops: gradient.stops,
-    );
-  }
-
-  const SweepGradientDto.props({
-    required this.center,
-    required this.startAngle,
-    required this.endAngle,
-    required this.tileMode,
-    required super.transform,
-    required super.colors,
-    required super.stops,
-  });
+  SweepGradientDto.value(SweepGradient gradient)
+    : this.only(
+        center: gradient.center,
+        startAngle: gradient.startAngle,
+        endAngle: gradient.endAngle,
+        tileMode: gradient.tileMode,
+        transform: gradient.transform,
+        colors: gradient.colors,
+        stops: gradient.stops,
+      );
 
   /// Constructor that accepts a nullable [SweepGradient] value and extracts its properties.
   ///
@@ -452,7 +443,7 @@ final class SweepGradientDto extends GradientDto<SweepGradient> {
   SweepGradientDto merge(SweepGradientDto? other) {
     if (other == null) return this;
 
-    return SweepGradientDto.props(
+    return SweepGradientDto(
       center: MixHelpers.merge(center, other.center),
       startAngle: MixHelpers.merge(startAngle, other.startAngle),
       endAngle: MixHelpers.merge(endAngle, other.endAngle),

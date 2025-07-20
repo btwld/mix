@@ -120,7 +120,6 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
   @override
   final Prop<Radius>? bottomRight;
 
-  // Main constructor accepts raw values
   BorderRadiusDto.only({
     Radius? topLeft,
     Radius? topRight,
@@ -149,7 +148,6 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
         bottomRight: borderRadius.bottomRight,
       );
 
-  // Private constructor that accepts MixableProperty instances
   const BorderRadiusDto({
     this.topLeft,
     this.topRight,
@@ -218,7 +216,6 @@ final class BorderRadiusDirectionalDto
   final Prop<Radius>? bottomStart;
   final Prop<Radius>? bottomEnd;
 
-  // Main constructor accepts raw values
   BorderRadiusDirectionalDto.only({
     Radius? topStart,
     Radius? topEnd,
@@ -247,7 +244,6 @@ final class BorderRadiusDirectionalDto
         bottomEnd: borderRadius.bottomEnd,
       );
 
-  // Private constructor that accepts MixableProperty instances
   const BorderRadiusDirectionalDto({
     this.topStart,
     this.topEnd,
