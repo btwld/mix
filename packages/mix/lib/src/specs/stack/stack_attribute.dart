@@ -1,0 +1,139 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+
+import '../../attributes/scalar_util.dart';
+import '../../core/animation_config.dart';
+import '../../core/attribute.dart';
+import '../../core/helpers.dart';
+import '../../core/prop.dart';
+import 'stack_spec.dart';
+
+/// Represents the attributes of a [StackSpec].
+///
+/// This class encapsulates properties defining the layout and
+/// appearance of a [StackSpec].
+///
+/// Use this class to configure the attributes of a [StackSpec] and pass it to
+/// the [StackSpec] constructor.
+class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
+  final Prop<AlignmentGeometry>? $alignment;
+  final Prop<StackFit>? $fit;
+  final Prop<TextDirection>? $textDirection;
+  final Prop<Clip>? $clipBehavior;
+
+  final alignment = AlignmentGeometryUtility(
+    (prop) => StackSpecAttribute(alignment: prop),
+  );
+
+  final fit = StackFitUtility((prop) => StackSpecAttribute(fit: prop));
+
+  final textDirection = TextDirectionUtility(
+    (prop) => StackSpecAttribute(textDirection: prop),
+  );
+
+  final clipBehavior = ClipUtility(
+    (prop) => StackSpecAttribute(clipBehavior: prop),
+  );
+
+  StackSpecAttribute({
+    Prop<AlignmentGeometry>? alignment,
+    Prop<StackFit>? fit,
+    Prop<TextDirection>? textDirection,
+    Prop<Clip>? clipBehavior,
+    super.animation,
+    super.modifiers,
+    super.variants,
+  }) : $alignment = alignment,
+       $fit = fit,
+       $textDirection = textDirection,
+       $clipBehavior = clipBehavior;
+
+  StackSpecAttribute.only({
+    AlignmentGeometry? alignment,
+    StackFit? fit,
+    TextDirection? textDirection,
+    Clip? clipBehavior,
+    AnimationConfig? animation,
+    List<ModifierAttribute>? modifiers,
+    List<VariantAttribute<StackSpec>>? variants,
+  }) : this(
+         alignment: Prop.maybe(alignment),
+         fit: Prop.maybe(fit),
+         textDirection: Prop.maybe(textDirection),
+         clipBehavior: Prop.maybe(clipBehavior),
+         animation: animation,
+         modifiers: modifiers,
+         variants: variants,
+       );
+
+  /// Constructor that accepts a [StackSpec] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [StackSpec] instances to [StackSpecAttribute].
+  ///
+  /// ```dart
+  /// const spec = StackSpec(alignment: AlignmentDirectional.topStart, fit: StackFit.loose);
+  /// final attr = StackSpecAttribute.value(spec);
+  /// ```
+  StackSpecAttribute.value(StackSpec spec)
+    : this.only(
+        alignment: spec.alignment,
+        fit: spec.fit,
+        textDirection: spec.textDirection,
+        clipBehavior: spec.clipBehavior,
+      );
+
+  /// Constructor that accepts a nullable [StackSpec] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [StackSpecAttribute.value].
+  ///
+  /// ```dart
+  /// const StackSpec? spec = StackSpec(alignment: AlignmentDirectional.topStart, fit: StackFit.loose);
+  /// final attr = StackSpecAttribute.maybeValue(spec); // Returns StackSpecAttribute or null
+  /// ```
+  static StackSpecAttribute? maybeValue(StackSpec? spec) {
+    return spec != null ? StackSpecAttribute.value(spec) : null;
+  }
+
+  /// Resolves to [StackSpec] using the provided [MixContext].
+  @override
+  StackSpec resolveSpec(BuildContext context) {
+    return StackSpec(
+      alignment: MixHelpers.resolve(context, $alignment),
+      fit: MixHelpers.resolve(context, $fit),
+      textDirection: MixHelpers.resolve(context, $textDirection),
+      clipBehavior: MixHelpers.resolve(context, $clipBehavior),
+    );
+  }
+
+  /// Merges the properties of this [StackSpecAttribute] with the properties of [other].
+  @override
+  StackSpecAttribute merge(StackSpecAttribute? other) {
+    if (other == null) return this;
+
+    return StackSpecAttribute(
+      alignment: MixHelpers.merge($alignment, other.$alignment),
+      fit: MixHelpers.merge($fit, other.$fit),
+      textDirection: MixHelpers.merge($textDirection, other.$textDirection),
+      clipBehavior: MixHelpers.merge($clipBehavior, other.$clipBehavior),
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(
+      DiagnosticsProperty('alignment', $alignment, defaultValue: null),
+    );
+    properties.add(DiagnosticsProperty('fit', $fit, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('textDirection', $textDirection, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('clipBehavior', $clipBehavior, defaultValue: null),
+    );
+  }
+
+  /// The list of properties that constitute the state of this [StackSpecAttribute].
+  @override
+  List<Object?> get props => [$alignment, $fit, $textDirection, $clipBehavior];
+}

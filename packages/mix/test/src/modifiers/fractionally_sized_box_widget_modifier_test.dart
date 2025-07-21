@@ -78,14 +78,14 @@ void main() {
     );
   });
 
-  // FractionallySizedBoxModifierSpecAttribute
-  group('FractionallySizedBoxModifierSpecAttribute', () {
+  // FractionallySizedBoxModifierAttribute
+  group('FractionallySizedBoxModifierAttribute', () {
     test('merge', () {
-      const modifier = FractionallySizedBoxModifierSpecAttribute(
+      const modifier = FractionallySizedBoxModifierAttribute(
         widthFactor: 0.5,
         heightFactor: 0.5,
       );
-      const other = FractionallySizedBoxModifierSpecAttribute(
+      const other = FractionallySizedBoxModifierAttribute(
         widthFactor: 0.5,
         heightFactor: 0.5,
       );
@@ -94,7 +94,7 @@ void main() {
     });
 
     test('resolve', () {
-      const modifier = FractionallySizedBoxModifierSpecAttribute(
+      const modifier = FractionallySizedBoxModifierAttribute(
         widthFactor: 0.5,
         heightFactor: 0.5,
       );
@@ -110,11 +110,11 @@ void main() {
     });
 
     test('equality', () {
-      const modifier = FractionallySizedBoxModifierSpecAttribute(
+      const modifier = FractionallySizedBoxModifierAttribute(
         widthFactor: 0.5,
         heightFactor: 0.5,
       );
-      const other = FractionallySizedBoxModifierSpecAttribute(
+      const other = FractionallySizedBoxModifierAttribute(
         widthFactor: 0.5,
         heightFactor: 0.5,
       );
@@ -122,11 +122,11 @@ void main() {
     });
 
     test('inequality', () {
-      const modifier = FractionallySizedBoxModifierSpecAttribute(
+      const modifier = FractionallySizedBoxModifierAttribute(
         widthFactor: 0.5,
         heightFactor: 0.5,
       );
-      const other = FractionallySizedBoxModifierSpecAttribute(
+      const other = FractionallySizedBoxModifierAttribute(
         widthFactor: 0.5,
         heightFactor: 0.6,
       );

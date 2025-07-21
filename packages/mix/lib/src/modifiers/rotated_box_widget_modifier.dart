@@ -49,11 +49,11 @@ final class RotatedBoxModifierSpec extends Modifier<RotatedBoxModifierSpec> {
 ///
 /// Use this class to configure the attributes of a [RotatedBoxModifierSpec] and pass it to
 /// the [RotatedBoxModifierSpec] constructor.
-class RotatedBoxModifierSpecAttribute
+class RotatedBoxModifierAttribute
     extends ModifierAttribute<RotatedBoxModifierSpec> {
   final Prop<int>? quarterTurns;
 
-  const RotatedBoxModifierSpecAttribute({this.quarterTurns});
+  const RotatedBoxModifierAttribute({this.quarterTurns});
 
   /// Resolves to [RotatedBoxModifierSpec] using the provided [MixContext].
   ///
@@ -61,28 +61,26 @@ class RotatedBoxModifierSpecAttribute
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final rotatedBoxModifierSpec = RotatedBoxModifierSpecAttribute(...).resolve(mix);
+  /// final rotatedBoxModifierSpec = RotatedBoxModifierAttribute(...).resolve(mix);
   /// ```
   @override
   RotatedBoxModifierSpec resolve(BuildContext context) {
     return RotatedBoxModifierSpec(MixHelpers.resolve(context, quarterTurns));
   }
 
-  /// Merges the properties of this [RotatedBoxModifierSpecAttribute] with the properties of [other].
+  /// Merges the properties of this [RotatedBoxModifierAttribute] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [RotatedBoxModifierSpecAttribute] with the properties of [other] taking precedence over
+  /// [RotatedBoxModifierAttribute] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  RotatedBoxModifierSpecAttribute merge(
-    RotatedBoxModifierSpecAttribute? other,
-  ) {
+  RotatedBoxModifierAttribute merge(RotatedBoxModifierAttribute? other) {
     if (other == null) return this;
 
-    return RotatedBoxModifierSpecAttribute(
+    return RotatedBoxModifierAttribute(
       quarterTurns: MixHelpers.merge(quarterTurns, other.quarterTurns),
     );
   }
@@ -91,13 +89,13 @@ class RotatedBoxModifierSpecAttribute
   List<Object?> get props => [quarterTurns];
 }
 
-final class RotatedBoxModifierSpecUtility<T extends SpecAttribute<Object?>>
-    extends MixUtility<T, RotatedBoxModifierSpecAttribute> {
-  const RotatedBoxModifierSpecUtility(super.builder);
+final class RotatedBoxModifierUtility<T extends SpecAttribute<Object?>>
+    extends MixUtility<T, RotatedBoxModifierAttribute> {
+  const RotatedBoxModifierUtility(super.builder);
   T d90() => call(1);
   T d180() => call(2);
   T d270() => call(3);
 
   T call(int value) =>
-      builder(RotatedBoxModifierSpecAttribute(quarterTurns: Prop(value)));
+      builder(RotatedBoxModifierAttribute(quarterTurns: Prop(value)));
 }

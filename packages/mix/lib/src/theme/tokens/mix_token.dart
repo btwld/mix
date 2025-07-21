@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../internal/iterable_ext.dart';
+import '../../core/extensions.dart';
 
 @immutable
 class MixToken<T> {

@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../attributes/color/color_util.dart';
-import '../../attributes/enum_util.dart';
 import '../../attributes/scalar_util.dart';
 import '../../core/attribute.dart';
 import '../../core/helpers.dart';

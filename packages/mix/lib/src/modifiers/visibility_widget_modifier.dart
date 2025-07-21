@@ -70,12 +70,11 @@ final class VisibilityModifier extends Modifier<VisibilityModifier>
 ///
 /// Use this class to configure the attributes of a [VisibilityModifier] and pass it to
 /// the [VisibilityModifier] constructor.
-class VisibilityModifierSpecAttribute
-    extends ModifierAttribute<VisibilityModifier>
+class VisibilityModifierAttribute extends ModifierAttribute<VisibilityModifier>
     with Diagnosticable {
   final Prop<bool>? visible;
 
-  const VisibilityModifierSpecAttribute({this.visible});
+  const VisibilityModifierAttribute({this.visible});
 
   /// Resolves to [VisibilityModifier] using the provided [MixContext].
   ///
@@ -83,28 +82,26 @@ class VisibilityModifierSpecAttribute
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final visibilityModifierSpec = VisibilityModifierSpecAttribute(...).resolve(mix);
+  /// final visibilityModifierSpec = VisibilityModifierAttribute(...).resolve(mix);
   /// ```
   @override
   VisibilityModifier resolve(BuildContext context) {
     return VisibilityModifier(visible?.resolve(context));
   }
 
-  /// Merges the properties of this [VisibilityModifierSpecAttribute] with the properties of [other].
+  /// Merges the properties of this [VisibilityModifierAttribute] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [VisibilityModifierSpecAttribute] with the properties of [other] taking precedence over
+  /// [VisibilityModifierAttribute] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  VisibilityModifierSpecAttribute merge(
-    VisibilityModifierSpecAttribute? other,
-  ) {
+  VisibilityModifierAttribute merge(VisibilityModifierAttribute? other) {
     if (other == null) return this;
 
-    return VisibilityModifierSpecAttribute(
+    return VisibilityModifierAttribute(
       visible: visible?.merge(other.visible) ?? other.visible,
     );
   }
@@ -115,23 +112,23 @@ class VisibilityModifierSpecAttribute
     properties.add(DiagnosticsProperty('visible', visible, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [VisibilityModifierSpecAttribute].
+  /// The list of properties that constitute the state of this [VisibilityModifierAttribute].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [VisibilityModifierSpecAttribute] instances for equality.
+  /// compare two [VisibilityModifierAttribute] instances for equality.
   @override
   List<Object?> get props => [visible];
 }
 
-final class VisibilityModifierSpecUtility<T extends SpecAttribute<Object?>>
-    extends MixUtility<T, VisibilityModifierSpecAttribute> {
-  const VisibilityModifierSpecUtility(super.builder);
+final class VisibilityModifierUtility<T extends SpecAttribute<Object?>>
+    extends MixUtility<T, VisibilityModifierAttribute> {
+  const VisibilityModifierUtility(super.builder);
   T on() => call(true);
   T off() => call(false);
 
   T call(bool value) =>
-      builder(VisibilityModifierSpecAttribute(visible: Prop(value)));
+      builder(VisibilityModifierAttribute(visible: Prop(value)));
 
   T token(MixToken<bool> token) =>
-      builder(VisibilityModifierSpecAttribute(visible: Prop.token(token)));
+      builder(VisibilityModifierAttribute(visible: Prop.token(token)));
 }

@@ -72,11 +72,11 @@ final class PaddingModifier extends Modifier<PaddingModifier>
 ///
 /// Use this class to configure the attributes of a [PaddingModifier] and pass it to
 /// the [PaddingModifier] constructor.
-class PaddingModifierSpecAttribute extends ModifierAttribute<PaddingModifier>
+class PaddingModifierAttribute extends ModifierAttribute<PaddingModifier>
     with Diagnosticable {
   final MixProp<EdgeInsetsGeometry>? padding;
 
-  const PaddingModifierSpecAttribute({this.padding});
+  const PaddingModifierAttribute({this.padding});
 
   /// Resolves to [PaddingModifier] using the provided [MixContext].
   ///
@@ -84,26 +84,26 @@ class PaddingModifierSpecAttribute extends ModifierAttribute<PaddingModifier>
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final paddingModifierSpec = PaddingModifierSpecAttribute(...).resolve(mix);
+  /// final paddingModifierSpec = PaddingModifierAttribute(...).resolve(mix);
   /// ```
   @override
   PaddingModifier resolve(BuildContext context) {
     return PaddingModifier(MixHelpers.resolve(context, padding));
   }
 
-  /// Merges the properties of this [PaddingModifierSpecAttribute] with the properties of [other].
+  /// Merges the properties of this [PaddingModifierAttribute] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [PaddingModifierSpecAttribute] with the properties of [other] taking precedence over
+  /// [PaddingModifierAttribute] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  PaddingModifierSpecAttribute merge(PaddingModifierSpecAttribute? other) {
+  PaddingModifierAttribute merge(PaddingModifierAttribute? other) {
     if (other == null) return this;
 
-    return PaddingModifierSpecAttribute(
+    return PaddingModifierAttribute(
       padding: MixHelpers.merge(padding, other.padding),
     );
   }
@@ -114,10 +114,10 @@ class PaddingModifierSpecAttribute extends ModifierAttribute<PaddingModifier>
     properties.add(DiagnosticsProperty('padding', padding, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [PaddingModifierSpecAttribute].
+  /// The list of properties that constitute the state of this [PaddingModifierAttribute].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [PaddingModifierSpecAttribute] instances for equality.
+  /// compare two [PaddingModifierAttribute] instances for equality.
   @override
   List<Object?> get props => [padding];
 }
@@ -126,19 +126,17 @@ class PaddingModifierSpecAttribute extends ModifierAttribute<PaddingModifier>
 ///
 /// This class provides methods to set individual properties of a [PaddingModifier].
 /// Use the methods of this class to configure specific properties of a [PaddingModifier].
-class PaddingModifierSpecUtility<T extends SpecAttribute<Object?>>
-    extends MixUtility<T, PaddingModifierSpecAttribute> {
-  /// Utility for defining [PaddingModifierSpecAttribute.padding]
+class PaddingModifierUtility<T extends SpecAttribute<Object?>>
+    extends MixUtility<T, PaddingModifierAttribute> {
+  /// Utility for defining [PaddingModifierAttribute.padding]
   late final padding = EdgeInsetsGeometryUtility(
-    (v) => builder(PaddingModifierSpecAttribute(padding: v)),
+    (v) => builder(PaddingModifierAttribute(padding: v)),
   );
 
-  PaddingModifierSpecUtility(super.builder);
+  PaddingModifierUtility(super.builder);
 
-  /// Returns a new [PaddingModifierSpecAttribute] with the specified properties.
+  /// Returns a new [PaddingModifierAttribute] with the specified properties.
   T call({EdgeInsetsGeometryDto? padding}) {
-    return builder(
-      PaddingModifierSpecAttribute(padding: MixProp.maybe(padding)),
-    );
+    return builder(PaddingModifierAttribute(padding: MixProp.maybe(padding)));
   }
 }

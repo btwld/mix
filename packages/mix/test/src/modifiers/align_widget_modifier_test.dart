@@ -5,16 +5,16 @@ import 'package:mix/mix.dart';
 import '../../helpers/custom_matchers.dart';
 
 void main() {
-  group('AlignModifierSpecAttribute', () {
+  group('AlignModifierAttribute', () {
     test('merge', () {
-      const modifier = AlignModifierSpecAttribute();
-      const other = AlignModifierSpecAttribute();
+      const modifier = AlignModifierAttribute();
+      const other = AlignModifierAttribute();
       final result = modifier.merge(other);
       expect(result, modifier);
     });
 
     test('resolve', () {
-      const modifier = AlignModifierSpecAttribute();
+      const modifier = AlignModifierAttribute();
       const expectedSpec = AlignModifier();
 
       expect(modifier, resolvesTo(expectedSpec));
@@ -22,12 +22,12 @@ void main() {
 
     // equality
     test('equality', () {
-      const modifier = AlignModifierSpecAttribute(
+      const modifier = AlignModifierAttribute(
         alignment: Alignment.center,
         widthFactor: 0.5,
         heightFactor: 0.5,
       );
-      const other = AlignModifierSpecAttribute(
+      const other = AlignModifierAttribute(
         alignment: Alignment.center,
         widthFactor: 0.5,
         heightFactor: 0.5,
@@ -36,12 +36,12 @@ void main() {
     });
 
     test('inequality', () {
-      const modifier = AlignModifierSpecAttribute(
+      const modifier = AlignModifierAttribute(
         alignment: Alignment.topCenter,
         widthFactor: 0.5,
         heightFactor: 0.5,
       );
-      const other = AlignModifierSpecAttribute(
+      const other = AlignModifierAttribute(
         alignment: Alignment.center,
         widthFactor: 0.5,
         heightFactor: 0.5,

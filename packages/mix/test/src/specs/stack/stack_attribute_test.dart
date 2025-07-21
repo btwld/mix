@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
+import 'package:mix/src/specs/stack/stack_attribute.dart';
 
 import '../../../helpers/custom_matchers.dart';
 
@@ -11,15 +12,12 @@ void main() {
       () {
         const attribute = StackSpecAttribute();
 
-        expect(
-          attribute,
-          resolvesTo(const StackSpec()),
-        );
+        expect(attribute, resolvesTo(const StackSpec()));
       },
     );
 
     test('resolve returns correct StackSpec', () {
-      const attribute = StackSpecAttribute(
+      final attribute = StackSpecAttribute.only(
         alignment: Alignment.center,
         fit: StackFit.expand,
         textDirection: TextDirection.ltr,
@@ -28,12 +26,14 @@ void main() {
 
       expect(
         attribute,
-        resolvesTo(const StackSpec(
-          alignment: Alignment.center,
-          fit: StackFit.expand,
-          textDirection: TextDirection.ltr,
-          clipBehavior: Clip.antiAlias,
-        )),
+        resolvesTo(
+          const StackSpec(
+            alignment: Alignment.center,
+            fit: StackFit.expand,
+            textDirection: TextDirection.ltr,
+            clipBehavior: Clip.antiAlias,
+          ),
+        ),
       );
     });
 
@@ -54,12 +54,14 @@ void main() {
 
       expect(
         mergedAttribute,
-        resolvesTo(const StackSpec(
-          alignment: Alignment.topLeft,
-          fit: StackFit.loose,
-          textDirection: TextDirection.rtl,
-          clipBehavior: Clip.hardEdge,
-        )),
+        resolvesTo(
+          const StackSpec(
+            alignment: Alignment.topLeft,
+            fit: StackFit.loose,
+            textDirection: TextDirection.rtl,
+            clipBehavior: Clip.hardEdge,
+          ),
+        ),
       );
     });
 

@@ -1,4 +1,4 @@
-import '../../internal/build_context_ext.dart';
+import '../../core/extensions.dart';
 import '../mix/mix_theme.dart';
 import 'material_tokens.dart';
 

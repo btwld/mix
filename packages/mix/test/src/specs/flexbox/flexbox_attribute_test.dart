@@ -320,8 +320,8 @@ void main() {
               height: 100,
               modifiers: WidgetModifiersConfigDto(
                 modifiers: const [
-                  OpacityModifierSpecAttribute(opacity: 0.5),
-                  SizedBoxModifierSpecAttribute(height: 10, width: 10),
+                  OpacityModifierAttribute(opacity: 0.5),
+                  SizedBoxModifierAttribute(height: 10, width: 10),
                 ],
               ),
             ),

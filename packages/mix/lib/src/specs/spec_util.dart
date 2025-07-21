@@ -1,7 +1,7 @@
 // import '../modifiers/widget_modifiers_util.dart';
 import '../variants/variant_util.dart';
 import 'box/box_spec.dart';
-import 'flex/flex_spec.dart';
+import 'flex/flex_attribute.dart';
 import 'flexbox/flexbox_spec.dart';
 import 'icon/icon_spec.dart';
 import 'image/image_spec.dart';
@@ -18,18 +18,18 @@ IconSpecUtility get $icon => _mixUtility.icon;
 TextSpecUtility get $text => _mixUtility.text;
 StackSpecUtility get $stack => _mixUtility.stack;
 OnContextVariantUtility get $on => _mixUtility.on;
-// WithModifierUtility<ModifierSpecAttribute> get $with => _mixUtility.mod;
+// WithModifierUtility<ModifierAttribute> get $with => _mixUtility.mod;
 
 class MixUtilities {
   const MixUtilities();
-  BoxSpecUtility get box => BoxSpecUtility.self;
-  FlexSpecUtility get flex => FlexSpecUtility.self;
+  BoxSpecUtility get box => BoxSpecAttribute();
+  FlexSpecUtility get flex => FlexSpecAttribute();
   FlexBoxSpecUtility get flexbox => FlexBoxSpecUtility.self;
   ImageSpecUtility get image => ImageSpecUtility.self;
   IconSpecUtility get icon => IconSpecUtility.self;
   TextSpecUtility get text => TextSpecUtility.self;
   StackSpecUtility get stack => StackSpecUtility.self;
   OnContextVariantUtility get on => OnContextVariantUtility.self;
-  // WithModifierUtility<ModifierSpecAttribute> get mod =>
+  // WithModifierUtility<ModifierAttribute> get mod =>
   //     WithModifierUtility.self;
 }

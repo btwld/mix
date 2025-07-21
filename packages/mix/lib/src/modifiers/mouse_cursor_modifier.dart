@@ -113,9 +113,9 @@ class MouseCursorDecoratorSpecAttribute
   List<Object?> get props => [mouseCursor];
 }
 
-class MouseCursorModifierSpecUtility<T extends SpecAttribute<Object?>>
+class MouseCursorModifierUtility<T extends SpecAttribute<Object?>>
     extends MixUtility<T, MouseCursorDecoratorSpecAttribute> {
-  const MouseCursorModifierSpecUtility(super.builder);
+  const MouseCursorModifierUtility(super.builder);
   T call(MouseCursor? mouseCursor) {
     return builder(
       MouseCursorDecoratorSpecAttribute(mouseCursor: Prop.maybe(mouseCursor)),

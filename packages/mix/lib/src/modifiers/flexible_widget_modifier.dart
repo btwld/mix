@@ -75,12 +75,12 @@ final class FlexibleModifier extends Modifier<FlexibleModifier>
 ///
 /// Use this class to configure the attributes of a [FlexibleModifier] and pass it to
 /// the [FlexibleModifier] constructor.
-class FlexibleModifierSpecAttribute extends ModifierAttribute<FlexibleModifier>
+class FlexibleModifierAttribute extends ModifierAttribute<FlexibleModifier>
     with Diagnosticable {
   final Prop<int>? flex;
   final Prop<FlexFit>? fit;
 
-  const FlexibleModifierSpecAttribute({this.flex, this.fit});
+  const FlexibleModifierAttribute({this.flex, this.fit});
 
   /// Resolves to [FlexibleModifier] using the provided [MixContext].
   ///
@@ -88,7 +88,7 @@ class FlexibleModifierSpecAttribute extends ModifierAttribute<FlexibleModifier>
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final flexibleModifierSpec = FlexibleModifierSpecAttribute(...).resolve(mix);
+  /// final flexibleModifierSpec = FlexibleModifierAttribute(...).resolve(mix);
   /// ```
   @override
   FlexibleModifier resolve(BuildContext context) {
@@ -98,19 +98,19 @@ class FlexibleModifierSpecAttribute extends ModifierAttribute<FlexibleModifier>
     );
   }
 
-  /// Merges the properties of this [FlexibleModifierSpecAttribute] with the properties of [other].
+  /// Merges the properties of this [FlexibleModifierAttribute] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [FlexibleModifierSpecAttribute] with the properties of [other] taking precedence over
+  /// [FlexibleModifierAttribute] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  FlexibleModifierSpecAttribute merge(FlexibleModifierSpecAttribute? other) {
+  FlexibleModifierAttribute merge(FlexibleModifierAttribute? other) {
     if (other == null) return this;
 
-    return FlexibleModifierSpecAttribute(
+    return FlexibleModifierAttribute(
       flex: flex?.merge(other.flex) ?? other.flex,
       fit: fit?.merge(other.fit) ?? other.fit,
     );
@@ -123,34 +123,34 @@ class FlexibleModifierSpecAttribute extends ModifierAttribute<FlexibleModifier>
     properties.add(DiagnosticsProperty('fit', fit, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [FlexibleModifierSpecAttribute].
+  /// The list of properties that constitute the state of this [FlexibleModifierAttribute].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [FlexibleModifierSpecAttribute] instances for equality.
+  /// compare two [FlexibleModifierAttribute] instances for equality.
   @override
   List<Object?> get props => [flex, fit];
 }
 
-final class FlexibleModifierSpecUtility<T extends SpecAttribute<Object?>>
-    extends MixUtility<T, FlexibleModifierSpecAttribute> {
+final class FlexibleModifierUtility<T extends SpecAttribute<Object?>>
+    extends MixUtility<T, FlexibleModifierAttribute> {
   // TODO: Add flex and fit utilities when IntUtility and FlexFitUtility are available
   // late final flex = IntUtility(
-  //   (prop) => builder(FlexibleModifierSpecAttribute(flex: prop)),
+  //   (prop) => builder(FlexibleModifierAttribute(flex: prop)),
   // );
   // late final fit = FlexFitUtility(
-  //   (prop) => builder(FlexibleModifierSpecAttribute(fit: prop)),
+  //   (prop) => builder(FlexibleModifierAttribute(fit: prop)),
   // );
 
-  const FlexibleModifierSpecUtility(super.builder);
+  const FlexibleModifierUtility(super.builder);
   T tight({int? flex}) => builder(
-    FlexibleModifierSpecAttribute(
+    FlexibleModifierAttribute(
       flex: flex != null ? Prop(flex) : null,
       fit: Prop(FlexFit.tight),
     ),
   );
 
   T loose({int? flex}) => builder(
-    FlexibleModifierSpecAttribute(
+    FlexibleModifierAttribute(
       flex: flex != null ? Prop(flex) : null,
       fit: Prop(FlexFit.loose),
     ),
@@ -160,7 +160,7 @@ final class FlexibleModifierSpecUtility<T extends SpecAttribute<Object?>>
 
   T call({int? flex, FlexFit? fit}) {
     return builder(
-      FlexibleModifierSpecAttribute(
+      FlexibleModifierAttribute(
         flex: flex != null ? Prop(flex) : null,
         fit: fit != null ? Prop(fit) : null,
       ),
@@ -168,10 +168,10 @@ final class FlexibleModifierSpecUtility<T extends SpecAttribute<Object?>>
   }
 
   T flexToken(MixToken<int> token) {
-    return builder(FlexibleModifierSpecAttribute(flex: Prop.token(token)));
+    return builder(FlexibleModifierAttribute(flex: Prop.token(token)));
   }
 
   T fitToken(MixToken<FlexFit> token) {
-    return builder(FlexibleModifierSpecAttribute(fit: Prop.token(token)));
+    return builder(FlexibleModifierAttribute(fit: Prop.token(token)));
   }
 }

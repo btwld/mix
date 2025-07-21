@@ -48,30 +48,30 @@ void main() {
     });
   });
 
-  group('OpacityModifierSpecAttribute', () {
+  group('OpacityModifierAttribute', () {
     test('merge', () {
-      const modifier = OpacityModifierSpecAttribute(opacity: 0.5);
-      const other = OpacityModifierSpecAttribute(opacity: 0.5);
+      const modifier = OpacityModifierAttribute(opacity: 0.5);
+      const other = OpacityModifierAttribute(opacity: 0.5);
       final result = modifier.merge(other);
       expect(result, modifier);
     });
 
     test('resolve', () {
-      const modifier = OpacityModifierSpecAttribute(opacity: 0.5);
+      const modifier = OpacityModifierAttribute(opacity: 0.5);
       const expectedSpec = OpacityModifier(0.5);
 
       expect(modifier, resolvesTo(expectedSpec));
     });
 
     test('equality', () {
-      const modifier = OpacityModifierSpecAttribute(opacity: 0.5);
-      const other = OpacityModifierSpecAttribute(opacity: 0.5);
+      const modifier = OpacityModifierAttribute(opacity: 0.5);
+      const other = OpacityModifierAttribute(opacity: 0.5);
       expect(modifier, other);
     });
 
     test('inequality', () {
-      const modifier = OpacityModifierSpecAttribute(opacity: 0.5);
-      const other = OpacityModifierSpecAttribute(opacity: 0.8);
+      const modifier = OpacityModifierAttribute(opacity: 0.5);
+      const other = OpacityModifierAttribute(opacity: 0.8);
       expect(modifier == other, false);
     });
   });

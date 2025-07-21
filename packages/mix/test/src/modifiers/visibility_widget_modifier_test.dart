@@ -8,7 +8,7 @@ void main() {
   group('VisibilityModifierSpec Tests', () {
     test('Constructor assigns visible correctly', () {
       const visible = true;
-      const modifier = VisibilityModifierSpecAttribute(visible: visible);
+      const modifier = VisibilityModifierAttribute(visible: visible);
 
       expect(modifier.visible, visible);
     });
@@ -53,29 +53,29 @@ void main() {
     );
   });
 
-  group('VisibilityModifierSpecAttribute', () {
+  group('VisibilityModifierAttribute', () {
     test('merge', () {
-      const modifier = VisibilityModifierSpecAttribute(visible: true);
-      const other = VisibilityModifierSpecAttribute(visible: true);
+      const modifier = VisibilityModifierAttribute(visible: true);
+      const other = VisibilityModifierAttribute(visible: true);
       final result = modifier.merge(other);
       expect(result, modifier);
     });
 
     test('resolve', () {
-      const modifier = VisibilityModifierSpecAttribute(visible: true);
+      const modifier = VisibilityModifierAttribute(visible: true);
       expect(modifier, resolvesTo(const VisibilityModifier(true)));
     });
 
     // equality
     test('equality', () {
-      const modifier = VisibilityModifierSpecAttribute(visible: true);
-      const other = VisibilityModifierSpecAttribute(visible: true);
+      const modifier = VisibilityModifierAttribute(visible: true);
+      const other = VisibilityModifierAttribute(visible: true);
       expect(modifier, other);
     });
 
     test('inequality', () {
-      const modifier = VisibilityModifierSpecAttribute(visible: true);
-      const other = VisibilityModifierSpecAttribute(visible: false);
+      const modifier = VisibilityModifierAttribute(visible: true);
+      const other = VisibilityModifierAttribute(visible: false);
       expect(modifier, isNot(equals(other)));
     });
   });

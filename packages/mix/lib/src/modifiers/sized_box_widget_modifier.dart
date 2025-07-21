@@ -78,12 +78,12 @@ final class SizedBoxModifier extends Modifier<SizedBoxModifier>
 ///
 /// Use this class to configure the attributes of a [SizedBoxModifier] and pass it to
 /// the [SizedBoxModifier] constructor.
-class SizedBoxModifierSpecAttribute extends ModifierAttribute<SizedBoxModifier>
+class SizedBoxModifierAttribute extends ModifierAttribute<SizedBoxModifier>
     with Diagnosticable {
   final Prop<double>? width;
   final Prop<double>? height;
 
-  const SizedBoxModifierSpecAttribute({this.width, this.height});
+  const SizedBoxModifierAttribute({this.width, this.height});
 
   /// Resolves to [SizedBoxModifier] using the provided [MixContext].
   ///
@@ -91,7 +91,7 @@ class SizedBoxModifierSpecAttribute extends ModifierAttribute<SizedBoxModifier>
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final sizedBoxModifierSpec = SizedBoxModifierSpecAttribute(...).resolve(mix);
+  /// final sizedBoxModifierSpec = SizedBoxModifierAttribute(...).resolve(mix);
   /// ```
   @override
   SizedBoxModifier resolve(BuildContext context) {
@@ -101,19 +101,19 @@ class SizedBoxModifierSpecAttribute extends ModifierAttribute<SizedBoxModifier>
     );
   }
 
-  /// Merges the properties of this [SizedBoxModifierSpecAttribute] with the properties of [other].
+  /// Merges the properties of this [SizedBoxModifierAttribute] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [SizedBoxModifierSpecAttribute] with the properties of [other] taking precedence over
+  /// [SizedBoxModifierAttribute] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  SizedBoxModifierSpecAttribute merge(SizedBoxModifierSpecAttribute? other) {
+  SizedBoxModifierAttribute merge(SizedBoxModifierAttribute? other) {
     if (other == null) return this;
 
-    return SizedBoxModifierSpecAttribute(
+    return SizedBoxModifierAttribute(
       width: width?.merge(other.width) ?? other.width,
       height: height?.merge(other.height) ?? other.height,
     );
@@ -126,32 +126,32 @@ class SizedBoxModifierSpecAttribute extends ModifierAttribute<SizedBoxModifier>
     properties.add(DiagnosticsProperty('height', height, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [SizedBoxModifierSpecAttribute].
+  /// The list of properties that constitute the state of this [SizedBoxModifierAttribute].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [SizedBoxModifierSpecAttribute] instances for equality.
+  /// compare two [SizedBoxModifierAttribute] instances for equality.
   @override
   List<Object?> get props => [width, height];
 }
 
-final class SizedBoxModifierSpecUtility<T extends SpecAttribute<Object?>>
-    extends MixUtility<T, SizedBoxModifierSpecAttribute> {
+final class SizedBoxModifierUtility<T extends SpecAttribute<Object?>>
+    extends MixUtility<T, SizedBoxModifierAttribute> {
   // TODO: Add width, height and square utilities when DoubleUtility is available
   // late final width = DoubleUtility(
-  //   (prop) => builder(SizedBoxModifierSpecAttribute(width: prop)),
+  //   (prop) => builder(SizedBoxModifierAttribute(width: prop)),
   // );
   // late final height = DoubleUtility(
-  //   (prop) => builder(SizedBoxModifierSpecAttribute(height: prop)),
+  //   (prop) => builder(SizedBoxModifierAttribute(height: prop)),
   // );
   // late final square = DoubleUtility(
-  //   (prop) => builder(SizedBoxModifierSpecAttribute(width: prop, height: prop)),
+  //   (prop) => builder(SizedBoxModifierAttribute(width: prop, height: prop)),
   // );
 
-  const SizedBoxModifierSpecUtility(super.builder);
+  const SizedBoxModifierUtility(super.builder);
 
   T call({double? width, double? height}) {
     return builder(
-      SizedBoxModifierSpecAttribute(
+      SizedBoxModifierAttribute(
         width: width != null ? Prop(width) : null,
         height: height != null ? Prop(height) : null,
       ),
@@ -159,11 +159,11 @@ final class SizedBoxModifierSpecUtility<T extends SpecAttribute<Object?>>
   }
 
   T widthToken(MixToken<double> token) =>
-      builder(SizedBoxModifierSpecAttribute(width: Prop.token(token)));
+      builder(SizedBoxModifierAttribute(width: Prop.token(token)));
   T heightToken(MixToken<double> token) =>
-      builder(SizedBoxModifierSpecAttribute(height: Prop.token(token)));
+      builder(SizedBoxModifierAttribute(height: Prop.token(token)));
 
-  /// Utility for defining [SizedBoxModifierSpecAttribute.width] and [SizedBoxModifierSpecAttribute.height]
+  /// Utility for defining [SizedBoxModifierAttribute.width] and [SizedBoxModifierAttribute.height]
   /// from [Size]
   T as(Size size) => call(width: size.width, height: size.height);
 }

@@ -153,7 +153,7 @@ final class DefaultTextStyleModifier extends Modifier<DefaultTextStyleModifier>
 ///
 /// Use this class to configure the attributes of a [DefaultTextStyleModifier] and pass it to
 /// the [DefaultTextStyleModifier] constructor.
-class DefaultTextStyleModifierSpecAttribute
+class DefaultTextStyleModifierAttribute
     extends ModifierAttribute<DefaultTextStyleModifier> {
   final MixProp<TextStyle>? style;
   final Prop<TextAlign>? textAlign;
@@ -163,7 +163,7 @@ class DefaultTextStyleModifierSpecAttribute
   final Prop<TextWidthBasis>? textWidthBasis;
   final MixProp<TextHeightBehavior>? textHeightBehavior;
 
-  const DefaultTextStyleModifierSpecAttribute({
+  const DefaultTextStyleModifierAttribute({
     this.style,
     this.textAlign,
     this.softWrap,
@@ -179,7 +179,7 @@ class DefaultTextStyleModifierSpecAttribute
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final defaultTextStyleModifierSpec = DefaultTextStyleModifierSpecAttribute(...).resolve(mix);
+  /// final defaultTextStyleModifierSpec = DefaultTextStyleModifierAttribute(...).resolve(mix);
   /// ```
   @override
   DefaultTextStyleModifier resolve(BuildContext context) {
@@ -194,21 +194,21 @@ class DefaultTextStyleModifierSpecAttribute
     );
   }
 
-  /// Merges the properties of this [DefaultTextStyleModifierSpecAttribute] with the properties of [other].
+  /// Merges the properties of this [DefaultTextStyleModifierAttribute] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [DefaultTextStyleModifierSpecAttribute] with the properties of [other] taking precedence over
+  /// [DefaultTextStyleModifierAttribute] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  DefaultTextStyleModifierSpecAttribute merge(
-    DefaultTextStyleModifierSpecAttribute? other,
+  DefaultTextStyleModifierAttribute merge(
+    DefaultTextStyleModifierAttribute? other,
   ) {
     if (other == null) return this;
 
-    return DefaultTextStyleModifierSpecAttribute(
+    return DefaultTextStyleModifierAttribute(
       style: MixHelpers.merge(style, other.style),
       textAlign: MixHelpers.merge(textAlign, other.textAlign),
       softWrap: MixHelpers.merge(softWrap, other.softWrap),
@@ -256,11 +256,9 @@ class DefaultTextStyleModifierSpecTween
   }
 }
 
-final class DefaultTextStyleModifierSpecUtility<
-  T extends SpecAttribute<Object?>
->
-    extends MixUtility<T, DefaultTextStyleModifierSpecAttribute> {
-  const DefaultTextStyleModifierSpecUtility(super.builder);
+final class DefaultTextStyleModifierUtility<T extends SpecAttribute<Object?>>
+    extends MixUtility<T, DefaultTextStyleModifierAttribute> {
+  const DefaultTextStyleModifierUtility(super.builder);
   T call({
     TextStyle? style,
     TextAlign? textAlign,
@@ -271,7 +269,7 @@ final class DefaultTextStyleModifierSpecUtility<
     TextHeightBehavior? textHeightBehavior,
   }) {
     return builder(
-      DefaultTextStyleModifierSpecAttribute(
+      DefaultTextStyleModifierAttribute(
         style: MixProp.maybe(style != null ? TextStyleDto.value(style) : null),
         textAlign: Prop.maybe(textAlign),
         softWrap: Prop.maybe(softWrap),

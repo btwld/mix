@@ -75,12 +75,12 @@ final class AspectRatioModifier extends Modifier<AspectRatioModifier>
 ///
 /// Use this class to configure the attributes of a [AspectRatioModifier] and pass it to
 /// the [AspectRatioModifier] constructor.
-class AspectRatioModifierSpecAttribute
+class AspectRatioModifierAttribute
     extends ModifierAttribute<AspectRatioModifier>
     with Diagnosticable {
   final Prop<double>? aspectRatio;
 
-  const AspectRatioModifierSpecAttribute({this.aspectRatio});
+  const AspectRatioModifierAttribute({this.aspectRatio});
 
   /// Resolves to [AspectRatioModifier] using the provided [MixContext].
   ///
@@ -88,28 +88,26 @@ class AspectRatioModifierSpecAttribute
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final aspectRatioModifierSpec = AspectRatioModifierSpecAttribute(...).resolve(mix);
+  /// final aspectRatioModifierSpec = AspectRatioModifierAttribute(...).resolve(mix);
   /// ```
   @override
   AspectRatioModifier resolve(BuildContext context) {
     return AspectRatioModifier(aspectRatio?.resolve(context));
   }
 
-  /// Merges the properties of this [AspectRatioModifierSpecAttribute] with the properties of [other].
+  /// Merges the properties of this [AspectRatioModifierAttribute] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [AspectRatioModifierSpecAttribute] with the properties of [other] taking precedence over
+  /// [AspectRatioModifierAttribute] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  AspectRatioModifierSpecAttribute merge(
-    AspectRatioModifierSpecAttribute? other,
-  ) {
+  AspectRatioModifierAttribute merge(AspectRatioModifierAttribute? other) {
     if (other == null) return this;
 
-    return AspectRatioModifierSpecAttribute(
+    return AspectRatioModifierAttribute(
       aspectRatio: aspectRatio?.merge(other.aspectRatio) ?? other.aspectRatio,
     );
   }
@@ -122,25 +120,25 @@ class AspectRatioModifierSpecAttribute
     );
   }
 
-  /// The list of properties that constitute the state of this [AspectRatioModifierSpecAttribute].
+  /// The list of properties that constitute the state of this [AspectRatioModifierAttribute].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [AspectRatioModifierSpecAttribute] instances for equality.
+  /// compare two [AspectRatioModifierAttribute] instances for equality.
   @override
   List<Object?> get props => [aspectRatio];
 }
 
-final class AspectRatioModifierSpecUtility<T extends SpecAttribute<Object?>>
-    extends MixUtility<T, AspectRatioModifierSpecAttribute> {
-  const AspectRatioModifierSpecUtility(super.builder);
+final class AspectRatioModifierUtility<T extends SpecAttribute<Object?>>
+    extends MixUtility<T, AspectRatioModifierAttribute> {
+  const AspectRatioModifierUtility(super.builder);
 
   T call(double value) {
-    return builder(AspectRatioModifierSpecAttribute(aspectRatio: Prop(value)));
+    return builder(AspectRatioModifierAttribute(aspectRatio: Prop(value)));
   }
 
   T token(MixToken<double> token) {
     return builder(
-      AspectRatioModifierSpecAttribute(aspectRatio: Prop.token(token)),
+      AspectRatioModifierAttribute(aspectRatio: Prop.token(token)),
     );
   }
 }

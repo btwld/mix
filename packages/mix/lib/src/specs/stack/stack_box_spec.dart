@@ -5,7 +5,9 @@ import '../../core/attribute.dart';
 import '../../core/resolved_style_provider.dart';
 import '../../core/spec.dart';
 import '../../core/utility.dart';
+import '../box/box_attribute.dart';
 import '../box/box_spec.dart';
+import 'stack_attribute.dart';
 import 'stack_spec.dart';
 
 final class ZBoxSpec extends Spec<ZBoxSpec> with Diagnosticable {
@@ -288,4 +290,3 @@ class StackBoxSpecUtility<T extends Attribute>
     return builder(StackBoxSpecAttribute(box: box, stack: stack));
   }
 }
-

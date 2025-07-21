@@ -115,11 +115,11 @@ void main() {
         RenderModifiers(
           modifiers: mixData.modifiers,
           orderOfModifiers: const [
-            ClipOvalModifierSpecAttribute,
-            AspectRatioModifierSpecAttribute,
-            TransformModifierSpecAttribute,
-            OpacityModifierSpecAttribute,
-            VisibilityModifierSpecAttribute,
+            ClipOvalModifierAttribute,
+            AspectRatioModifierAttribute,
+            TransformModifierAttribute,
+            OpacityModifierAttribute,
+            VisibilityModifierAttribute,
           ],
           mix: mixData,
           child: const Text('child'),
@@ -183,8 +183,8 @@ void main() {
           mix: mixData,
           modifiers: mixData.modifiers,
           orderOfModifiers: const [
-            ClipOvalModifierSpecAttribute,
-            AspectRatioModifierSpecAttribute,
+            ClipOvalModifierAttribute,
+            AspectRatioModifierAttribute,
           ],
           child: const Text('child'),
         ),

@@ -7,12 +7,12 @@ testOverrideModifiersOrder(
   required Widget Function(Style, List<Type>) widgetBuilder,
 }) async {
   final style = Style(
-    const VisibilityModifierSpecAttribute(visible: true),
-    const OpacityModifierSpecAttribute(opacity: 1),
-    const TransformModifierSpecAttribute(),
-    const AspectRatioModifierSpecAttribute(aspectRatio: 2),
-    const ClipOvalModifierSpecAttribute(),
-    PaddingModifierSpecAttribute(padding: EdgeInsetsDirectionalDto(top: 10)),
+    const VisibilityModifierAttribute(visible: true),
+    const OpacityModifierAttribute(opacity: 1),
+    const TransformModifierAttribute(),
+    const AspectRatioModifierAttribute(aspectRatio: 2),
+    const ClipOvalModifierAttribute(),
+    PaddingModifierAttribute(padding: EdgeInsetsDirectionalDto(top: 10)),
   );
   const orderOfModifiersOnlySpecs = [
     ClipOvalModifier,
@@ -33,10 +33,10 @@ testOverrideModifiersOrder(
   // SPECS + ATTRIBUTES
   const orderOfModifiersSpecsAndAttributes = [
     ClipOvalModifier,
-    AspectRatioModifierSpecAttribute,
-    TransformModifierSpecAttribute,
+    AspectRatioModifierAttribute,
+    TransformModifierAttribute,
     OpacityModifier,
-    VisibilityModifierSpecAttribute,
+    VisibilityModifierAttribute,
   ];
   await verifyDescendants(
     widgetBuilder(style, orderOfModifiersSpecsAndAttributes),
@@ -47,11 +47,11 @@ testOverrideModifiersOrder(
 
   // JUST ATTRIBUTES
   const orderOfModifiersOnlyAttributes = [
-    ClipOvalModifierSpecAttribute,
-    AspectRatioModifierSpecAttribute,
-    TransformModifierSpecAttribute,
-    OpacityModifierSpecAttribute,
-    VisibilityModifierSpecAttribute,
+    ClipOvalModifierAttribute,
+    AspectRatioModifierAttribute,
+    TransformModifierAttribute,
+    OpacityModifierAttribute,
+    VisibilityModifierAttribute,
   ];
 
   await verifyDescendants(

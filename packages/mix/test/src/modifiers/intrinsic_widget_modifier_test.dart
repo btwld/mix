@@ -42,24 +42,24 @@ void main() {
     });
   });
 
-  // IntrinsicHeightModifierSpecAttribute
-  group('IntrinsicHeightModifierSpecAttribute', () {
+  // IntrinsicHeightModifierAttribute
+  group('IntrinsicHeightModifierAttribute', () {
     test('merge', () {
-      const modifier = IntrinsicHeightModifierSpecAttribute();
-      const other = IntrinsicHeightModifierSpecAttribute();
+      const modifier = IntrinsicHeightModifierAttribute();
+      const other = IntrinsicHeightModifierAttribute();
       final result = modifier.merge(other);
       expect(result, modifier);
     });
 
     test('resolve', () {
-      const modifier = IntrinsicHeightModifierSpecAttribute();
+      const modifier = IntrinsicHeightModifierAttribute();
       expect(modifier, resolvesTo(const IntrinsicHeightModifier()));
     });
 
     // equality
     test('equality', () {
-      const modifier = IntrinsicHeightModifierSpecAttribute();
-      const other = IntrinsicHeightModifierSpecAttribute();
+      const modifier = IntrinsicHeightModifierAttribute();
+      const other = IntrinsicHeightModifierAttribute();
       expect(modifier, other);
     });
   });
@@ -102,23 +102,23 @@ void main() {
   });
 
   // IntrinsicWidthModifierAttribute
-  group('IntrinsicWidthModifierSpecAttribute', () {
+  group('IntrinsicWidthModifierAttribute', () {
     test('merge', () {
-      const modifier = IntrinsicWidthModifierSpecAttribute();
-      const other = IntrinsicWidthModifierSpecAttribute();
+      const modifier = IntrinsicWidthModifierAttribute();
+      const other = IntrinsicWidthModifierAttribute();
       final result = modifier.merge(other);
       expect(result, modifier);
     });
 
     test('resolve', () {
-      const modifier = IntrinsicWidthModifierSpecAttribute();
+      const modifier = IntrinsicWidthModifierAttribute();
       expect(modifier, resolvesTo(const IntrinsicWidthModifierSpec()));
     });
 
     // equality
     test('equality', () {
-      const modifier = IntrinsicWidthModifierSpecAttribute();
-      const other = IntrinsicWidthModifierSpecAttribute();
+      const modifier = IntrinsicWidthModifierAttribute();
+      const other = IntrinsicWidthModifierAttribute();
       expect(modifier, other);
     });
   });

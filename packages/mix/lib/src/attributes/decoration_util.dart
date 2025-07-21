@@ -13,6 +13,20 @@ import 'scalar_util.dart';
 import 'shadow_util.dart';
 import 'shape_border_util.dart';
 
+class DecorationUtility<T extends SpecAttribute<Object?>>
+    extends MixPropUtility<T, Decoration> {
+  late final box = BoxDecorationUtility<T>(builder);
+
+  late final shape = ShapeDecorationUtility<T>(builder);
+
+  DecorationUtility(super.builder) : super(valueToMix: DecorationDto.value);
+
+  @override
+  T call(DecorationDto value) {
+    return builder(MixProp(value));
+  }
+}
+
 /// Utility class for configuring [BoxDecoration] properties.
 ///
 /// This class provides methods to set individual properties of a [BoxDecoration].

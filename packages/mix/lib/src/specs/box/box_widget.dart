@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 import '../../core/style_mix.dart';
 import '../../core/styled_widget.dart';
 import 'box_spec.dart';
-import 'box_style.dart';
 
 /// A [Container] equivalent widget for applying styles using Mix.
 ///

@@ -89,12 +89,11 @@ final class ClipOvalModifier extends Modifier<ClipOvalModifier>
 ///
 /// Use this class to configure the attributes of a [ClipOvalModifier] and pass it to
 /// the [ClipOvalModifier] constructor.
-class ClipOvalModifierSpecAttribute
-    extends ModifierAttribute<ClipOvalModifier> {
+class ClipOvalModifierAttribute extends ModifierAttribute<ClipOvalModifier> {
   final Prop<CustomClipper<Rect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
-  const ClipOvalModifierSpecAttribute({this.clipper, this.clipBehavior});
+  const ClipOvalModifierAttribute({this.clipper, this.clipBehavior});
 
   /// Resolves to [ClipOvalModifier] using the provided [MixContext].
   ///
@@ -102,7 +101,7 @@ class ClipOvalModifierSpecAttribute
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final clipOvalModifierSpec = ClipOvalModifierSpecAttribute(...).resolve(mix);
+  /// final clipOvalModifierSpec = ClipOvalModifierAttribute(...).resolve(mix);
   /// ```
   @override
   ClipOvalModifier resolve(BuildContext context) {
@@ -112,19 +111,19 @@ class ClipOvalModifierSpecAttribute
     );
   }
 
-  /// Merges the properties of this [ClipOvalModifierSpecAttribute] with the properties of [other].
+  /// Merges the properties of this [ClipOvalModifierAttribute] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [ClipOvalModifierSpecAttribute] with the properties of [other] taking precedence over
+  /// [ClipOvalModifierAttribute] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  ClipOvalModifierSpecAttribute merge(ClipOvalModifierSpecAttribute? other) {
+  ClipOvalModifierAttribute merge(ClipOvalModifierAttribute? other) {
     if (other == null) return this;
 
-    return ClipOvalModifierSpecAttribute(
+    return ClipOvalModifierAttribute(
       clipper: MixHelpers.merge(clipper, other.clipper),
       clipBehavior: MixHelpers.merge(clipBehavior, other.clipBehavior),
     );
@@ -213,12 +212,12 @@ final class ClipRectModifierSpec extends Modifier<ClipRectModifierSpec>
 ///
 /// Use this class to configure the attributes of a [ClipRectModifierSpec] and pass it to
 /// the [ClipRectModifierSpec] constructor.
-class ClipRectModifierSpecAttribute
+class ClipRectModifierAttribute
     extends ModifierAttribute<ClipRectModifierSpec> {
   final Prop<CustomClipper<Rect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
-  const ClipRectModifierSpecAttribute({this.clipper, this.clipBehavior});
+  const ClipRectModifierAttribute({this.clipper, this.clipBehavior});
 
   /// Resolves to [ClipRectModifierSpec] using the provided [MixContext].
   ///
@@ -226,7 +225,7 @@ class ClipRectModifierSpecAttribute
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final clipRectModifierSpec = ClipRectModifierSpecAttribute(...).resolve(mix);
+  /// final clipRectModifierSpec = ClipRectModifierAttribute(...).resolve(mix);
   /// ```
   @override
   ClipRectModifierSpec resolve(BuildContext context) {
@@ -236,19 +235,19 @@ class ClipRectModifierSpecAttribute
     );
   }
 
-  /// Merges the properties of this [ClipRectModifierSpecAttribute] with the properties of [other].
+  /// Merges the properties of this [ClipRectModifierAttribute] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [ClipRectModifierSpecAttribute] with the properties of [other] taking precedence over
+  /// [ClipRectModifierAttribute] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  ClipRectModifierSpecAttribute merge(ClipRectModifierSpecAttribute? other) {
+  ClipRectModifierAttribute merge(ClipRectModifierAttribute? other) {
     if (other == null) return this;
 
-    return ClipRectModifierSpecAttribute(
+    return ClipRectModifierAttribute(
       clipper: MixHelpers.merge(clipper, other.clipper),
       clipBehavior: MixHelpers.merge(clipBehavior, other.clipBehavior),
     );
@@ -354,13 +353,13 @@ final class ClipRRectModifierSpec extends Modifier<ClipRRectModifierSpec>
 ///
 /// Use this class to configure the attributes of a [ClipRRectModifierSpec] and pass it to
 /// the [ClipRRectModifierSpec] constructor.
-class ClipRRectModifierSpecAttribute
+class ClipRRectModifierAttribute
     extends ModifierAttribute<ClipRRectModifierSpec> {
   final MixProp<BorderRadiusGeometry>? borderRadius;
   final Prop<CustomClipper<RRect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
-  const ClipRRectModifierSpecAttribute({
+  const ClipRRectModifierAttribute({
     this.borderRadius,
     this.clipper,
     this.clipBehavior,
@@ -372,7 +371,7 @@ class ClipRRectModifierSpecAttribute
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final clipRRectModifierSpec = ClipRRectModifierSpecAttribute(...).resolve(mix);
+  /// final clipRRectModifierSpec = ClipRRectModifierAttribute(...).resolve(mix);
   /// ```
   @override
   ClipRRectModifierSpec resolve(BuildContext context) {
@@ -383,19 +382,19 @@ class ClipRRectModifierSpecAttribute
     );
   }
 
-  /// Merges the properties of this [ClipRRectModifierSpecAttribute] with the properties of [other].
+  /// Merges the properties of this [ClipRRectModifierAttribute] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [ClipRRectModifierSpecAttribute] with the properties of [other] taking precedence over
+  /// [ClipRRectModifierAttribute] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  ClipRRectModifierSpecAttribute merge(ClipRRectModifierSpecAttribute? other) {
+  ClipRRectModifierAttribute merge(ClipRRectModifierAttribute? other) {
     if (other == null) return this;
 
-    return ClipRRectModifierSpecAttribute(
+    return ClipRRectModifierAttribute(
       borderRadius: MixHelpers.merge(borderRadius, other.borderRadius),
       clipper: MixHelpers.merge(clipper, other.clipper),
       clipBehavior: MixHelpers.merge(clipBehavior, other.clipBehavior),
@@ -485,12 +484,12 @@ final class ClipPathModifierSpec extends Modifier<ClipPathModifierSpec>
 ///
 /// Use this class to configure the attributes of a [ClipPathModifierSpec] and pass it to
 /// the [ClipPathModifierSpec] constructor.
-class ClipPathModifierSpecAttribute
+class ClipPathModifierAttribute
     extends ModifierAttribute<ClipPathModifierSpec> {
   final Prop<CustomClipper<Path>>? clipper;
   final Prop<Clip>? clipBehavior;
 
-  const ClipPathModifierSpecAttribute({this.clipper, this.clipBehavior});
+  const ClipPathModifierAttribute({this.clipper, this.clipBehavior});
 
   /// Resolves to [ClipPathModifierSpec] using the provided [MixContext].
   ///
@@ -498,7 +497,7 @@ class ClipPathModifierSpecAttribute
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final clipPathModifierSpec = ClipPathModifierSpecAttribute(...).resolve(mix);
+  /// final clipPathModifierSpec = ClipPathModifierAttribute(...).resolve(mix);
   /// ```
   @override
   ClipPathModifierSpec resolve(BuildContext context) {
@@ -508,19 +507,19 @@ class ClipPathModifierSpecAttribute
     );
   }
 
-  /// Merges the properties of this [ClipPathModifierSpecAttribute] with the properties of [other].
+  /// Merges the properties of this [ClipPathModifierAttribute] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [ClipPathModifierSpecAttribute] with the properties of [other] taking precedence over
+  /// [ClipPathModifierAttribute] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  ClipPathModifierSpecAttribute merge(ClipPathModifierSpecAttribute? other) {
+  ClipPathModifierAttribute merge(ClipPathModifierAttribute? other) {
     if (other == null) return this;
 
-    return ClipPathModifierSpecAttribute(
+    return ClipPathModifierAttribute(
       clipper: MixHelpers.merge(clipper, other.clipper),
       clipBehavior: MixHelpers.merge(clipBehavior, other.clipBehavior),
     );
@@ -602,11 +601,11 @@ final class ClipTriangleModifierSpec extends Modifier<ClipTriangleModifierSpec>
 ///
 /// Use this class to configure the attributes of a [ClipTriangleModifierSpec] and pass it to
 /// the [ClipTriangleModifierSpec] constructor.
-class ClipTriangleModifierSpecAttribute
+class ClipTriangleModifierAttribute
     extends ModifierAttribute<ClipTriangleModifierSpec> {
   final Prop<Clip>? clipBehavior;
 
-  const ClipTriangleModifierSpecAttribute({this.clipBehavior});
+  const ClipTriangleModifierAttribute({this.clipBehavior});
 
   /// Resolves to [ClipTriangleModifierSpec] using the provided [MixContext].
   ///
@@ -614,7 +613,7 @@ class ClipTriangleModifierSpecAttribute
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final clipTriangleModifierSpec = ClipTriangleModifierSpecAttribute(...).resolve(mix);
+  /// final clipTriangleModifierSpec = ClipTriangleModifierAttribute(...).resolve(mix);
   /// ```
   @override
   ClipTriangleModifierSpec resolve(BuildContext context) {
@@ -623,21 +622,19 @@ class ClipTriangleModifierSpecAttribute
     );
   }
 
-  /// Merges the properties of this [ClipTriangleModifierSpecAttribute] with the properties of [other].
+  /// Merges the properties of this [ClipTriangleModifierAttribute] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [ClipTriangleModifierSpecAttribute] with the properties of [other] taking precedence over
+  /// [ClipTriangleModifierAttribute] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  ClipTriangleModifierSpecAttribute merge(
-    ClipTriangleModifierSpecAttribute? other,
-  ) {
+  ClipTriangleModifierAttribute merge(ClipTriangleModifierAttribute? other) {
     if (other == null) return this;
 
-    return ClipTriangleModifierSpecAttribute(
+    return ClipTriangleModifierAttribute(
       clipBehavior: MixHelpers.merge(clipBehavior, other.clipBehavior),
     );
   }
@@ -663,13 +660,13 @@ class TriangleClipper extends CustomClipper<Path> {
   bool shouldReclip(TriangleClipper oldClipper) => false;
 }
 
-final class ClipPathModifierSpecUtility<T extends SpecAttribute<Object?>>
-    extends MixUtility<T, ClipPathModifierSpecAttribute> {
-  const ClipPathModifierSpecUtility(super.builder);
+final class ClipPathModifierUtility<T extends SpecAttribute<Object?>>
+    extends MixUtility<T, ClipPathModifierAttribute> {
+  const ClipPathModifierUtility(super.builder);
 
   T call({CustomClipper<Path>? clipper, Clip? clipBehavior}) {
     return builder(
-      ClipPathModifierSpecAttribute(
+      ClipPathModifierAttribute(
         clipper: Prop.maybe(clipper),
         clipBehavior: Prop.maybe(clipBehavior),
       ),
@@ -677,16 +674,16 @@ final class ClipPathModifierSpecUtility<T extends SpecAttribute<Object?>>
   }
 }
 
-final class ClipRRectModifierSpecUtility<T extends SpecAttribute<Object?>>
-    extends MixUtility<T, ClipRRectModifierSpecAttribute> {
-  const ClipRRectModifierSpecUtility(super.builder);
+final class ClipRRectModifierUtility<T extends SpecAttribute<Object?>>
+    extends MixUtility<T, ClipRRectModifierAttribute> {
+  const ClipRRectModifierUtility(super.builder);
   T call({
     BorderRadius? borderRadius,
     CustomClipper<RRect>? clipper,
     Clip? clipBehavior,
   }) {
     return builder(
-      ClipRRectModifierSpecAttribute(
+      ClipRRectModifierAttribute(
         borderRadius: MixProp.maybe(
           borderRadius != null ? BorderRadiusDto.value(borderRadius) : null,
         ),
@@ -697,12 +694,12 @@ final class ClipRRectModifierSpecUtility<T extends SpecAttribute<Object?>>
   }
 }
 
-final class ClipOvalModifierSpecUtility<T extends SpecAttribute<Object?>>
-    extends MixUtility<T, ClipOvalModifierSpecAttribute> {
-  const ClipOvalModifierSpecUtility(super.builder);
+final class ClipOvalModifierUtility<T extends SpecAttribute<Object?>>
+    extends MixUtility<T, ClipOvalModifierAttribute> {
+  const ClipOvalModifierUtility(super.builder);
   T call({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
     return builder(
-      ClipOvalModifierSpecAttribute(
+      ClipOvalModifierAttribute(
         clipper: Prop.maybe(clipper),
         clipBehavior: Prop.maybe(clipBehavior),
       ),
@@ -710,12 +707,12 @@ final class ClipOvalModifierSpecUtility<T extends SpecAttribute<Object?>>
   }
 }
 
-final class ClipRectModifierSpecUtility<T extends SpecAttribute<Object?>>
-    extends MixUtility<T, ClipRectModifierSpecAttribute> {
-  const ClipRectModifierSpecUtility(super.builder);
+final class ClipRectModifierUtility<T extends SpecAttribute<Object?>>
+    extends MixUtility<T, ClipRectModifierAttribute> {
+  const ClipRectModifierUtility(super.builder);
   T call({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
     return builder(
-      ClipRectModifierSpecAttribute(
+      ClipRectModifierAttribute(
         clipper: Prop.maybe(clipper),
         clipBehavior: Prop.maybe(clipBehavior),
       ),
@@ -723,12 +720,12 @@ final class ClipRectModifierSpecUtility<T extends SpecAttribute<Object?>>
   }
 }
 
-final class ClipTriangleModifierSpecUtility<T extends SpecAttribute<Object?>>
-    extends MixUtility<T, ClipTriangleModifierSpecAttribute> {
-  const ClipTriangleModifierSpecUtility(super.builder);
+final class ClipTriangleModifierUtility<T extends SpecAttribute<Object?>>
+    extends MixUtility<T, ClipTriangleModifierAttribute> {
+  const ClipTriangleModifierUtility(super.builder);
   T call({Clip? clipBehavior}) {
     return builder(
-      ClipTriangleModifierSpecAttribute(clipBehavior: Prop.maybe(clipBehavior)),
+      ClipTriangleModifierAttribute(clipBehavior: Prop.maybe(clipBehavior)),
     );
   }
 }

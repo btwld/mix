@@ -54,16 +54,16 @@ final class AlignModifier extends Modifier<AlignModifier> with Diagnosticable {
   }
 }
 
-final class AlignModifierSpecUtility<T extends SpecAttribute<Object?>>
-    extends MixUtility<T, AlignModifierSpecAttribute> {
-  const AlignModifierSpecUtility(super.builder);
+final class AlignModifierUtility<T extends SpecAttribute<Object?>>
+    extends MixUtility<T, AlignModifierAttribute> {
+  const AlignModifierUtility(super.builder);
   T call({
     AlignmentGeometry? alignment,
     double? widthFactor,
     double? heightFactor,
   }) {
     return builder(
-      AlignModifierSpecAttribute(
+      AlignModifierAttribute(
         alignment: Prop.maybe(alignment),
         widthFactor: Prop.maybe(widthFactor),
         heightFactor: Prop.maybe(heightFactor),
@@ -72,12 +72,12 @@ final class AlignModifierSpecUtility<T extends SpecAttribute<Object?>>
   }
 }
 
-class AlignModifierSpecAttribute extends ModifierAttribute<AlignModifier> {
+class AlignModifierAttribute extends ModifierAttribute<AlignModifier> {
   final Prop<AlignmentGeometry>? alignment;
   final Prop<double>? widthFactor;
   final Prop<double>? heightFactor;
 
-  const AlignModifierSpecAttribute({
+  const AlignModifierAttribute({
     this.alignment,
     this.widthFactor,
     this.heightFactor,
@@ -93,10 +93,10 @@ class AlignModifierSpecAttribute extends ModifierAttribute<AlignModifier> {
   }
 
   @override
-  AlignModifierSpecAttribute merge(AlignModifierSpecAttribute? other) {
+  AlignModifierAttribute merge(AlignModifierAttribute? other) {
     if (other == null) return this;
 
-    return AlignModifierSpecAttribute(
+    return AlignModifierAttribute(
       alignment: MixHelpers.merge(alignment, other.alignment),
       widthFactor: MixHelpers.merge(widthFactor, other.widthFactor),
       heightFactor: MixHelpers.merge(heightFactor, other.heightFactor),

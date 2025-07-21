@@ -97,6 +97,7 @@ export 'src/modifiers/widget_modifiers_util.dart';
 /// SPECS
 export 'src/specs/box/box_spec.dart';
 export 'src/specs/box/box_widget.dart';
+export 'src/specs/flex/flex_attribute.dart';
 export 'src/specs/flex/flex_spec.dart';
 export 'src/specs/flexbox/flexbox_spec.dart';
 export 'src/specs/flexbox/flexbox_widget.dart';

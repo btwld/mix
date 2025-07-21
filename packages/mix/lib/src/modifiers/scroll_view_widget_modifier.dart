@@ -75,8 +75,8 @@ final class ScrollViewModifier extends Modifier<ScrollViewModifier> {
   }
 }
 
-final class ScrollViewModifierSpecUtility<T extends SpecAttribute<Object?>>
-    extends MixUtility<T, ScrollViewModifierSpecAttribute> {
+final class ScrollViewModifierUtility<T extends SpecAttribute<Object?>>
+    extends MixUtility<T, ScrollViewModifierAttribute> {
   /// Make the scroll view reverse or not.
   late final reverse = BoolUtility((prop) => call(reverse: prop));
 
@@ -88,7 +88,7 @@ final class ScrollViewModifierSpecUtility<T extends SpecAttribute<Object?>>
   /// Set the clip behavior of the scroll view.
   late final clipBehavior = ClipUtility((clip) => call(clipBehavior: clip));
 
-  ScrollViewModifierSpecUtility(super.builder);
+  ScrollViewModifierUtility(super.builder);
 
   /// Set the scroll direction of the scroll view.
   T direction(Axis axis) => call(scrollDirection: Prop(axis));
@@ -119,7 +119,7 @@ final class ScrollViewModifierSpecUtility<T extends SpecAttribute<Object?>>
     Prop<ScrollPhysics>? physics,
     Prop<Clip>? clipBehavior,
   }) => builder(
-    ScrollViewModifierSpecAttribute(
+    ScrollViewModifierAttribute(
       scrollDirection: scrollDirection,
       reverse: reverse,
       padding: padding,
@@ -129,7 +129,7 @@ final class ScrollViewModifierSpecUtility<T extends SpecAttribute<Object?>>
   );
 }
 
-class ScrollViewModifierSpecAttribute
+class ScrollViewModifierAttribute
     extends ModifierAttribute<ScrollViewModifier> {
   final Prop<Axis>? scrollDirection;
   final Prop<bool>? reverse;
@@ -137,7 +137,7 @@ class ScrollViewModifierSpecAttribute
   final Prop<ScrollPhysics>? physics;
   final Prop<Clip>? clipBehavior;
 
-  const ScrollViewModifierSpecAttribute({
+  const ScrollViewModifierAttribute({
     this.scrollDirection,
     this.reverse,
     this.padding,
@@ -157,12 +157,10 @@ class ScrollViewModifierSpecAttribute
   }
 
   @override
-  ScrollViewModifierSpecAttribute merge(
-    ScrollViewModifierSpecAttribute? other,
-  ) {
+  ScrollViewModifierAttribute merge(ScrollViewModifierAttribute? other) {
     if (other == null) return this;
 
-    return ScrollViewModifierSpecAttribute(
+    return ScrollViewModifierAttribute(
       scrollDirection: MixHelpers.merge(scrollDirection, other.scrollDirection),
       reverse: MixHelpers.merge(reverse, other.reverse),
       padding: MixHelpers.merge(padding, other.padding),

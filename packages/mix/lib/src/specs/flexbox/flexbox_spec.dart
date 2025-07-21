@@ -5,7 +5,9 @@ import '../../core/attribute.dart';
 import '../../core/resolved_style_provider.dart';
 import '../../core/spec.dart';
 import '../../core/utility.dart';
+import '../box/box_attribute.dart';
 import '../box/box_spec.dart';
+import '../flex/flex_attribute.dart';
 import '../flex/flex_spec.dart';
 
 final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
@@ -197,7 +199,7 @@ class FlexBoxSpecUtility extends SpecUtility<FlexBoxSpec> {
   final FlexBoxSpecAttribute attribute;
 
   /// Utility for defining [FlexBoxSpecAttribute.box]
-  late final box = BoxSpecUtility(attribute: BoxSpecAttribute());
+  late final box = BoxSpecAttribute();
 
   /// Utility for defining [FlexBoxSpecAttribute.box.alignment]
   late final alignment = box.alignment;
@@ -212,55 +214,55 @@ class FlexBoxSpecUtility extends SpecUtility<FlexBoxSpec> {
   late final constraints = box.constraints;
 
   /// Utility for defining [FlexBoxSpecAttribute.box.constraints.minWidth]
-  late final minWidth = box.constraints.minWidth;
+  late final minWidth = box.minWidth;
 
   /// Utility for defining [FlexBoxSpecAttribute.box.constraints.maxWidth]
-  late final maxWidth = box.constraints.maxWidth;
+  late final maxWidth = box.maxWidth;
 
   /// Utility for defining [FlexBoxSpecAttribute.box.constraints.minHeight]
-  late final minHeight = box.constraints.minHeight;
+  late final minHeight = box.minHeight;
 
   /// Utility for defining [FlexBoxSpecAttribute.box.constraints.maxHeight]
-  late final maxHeight = box.constraints.maxHeight;
+  late final maxHeight = box.maxHeight;
 
   /// Utility for defining [FlexBoxSpecAttribute.box.decoration]
   late final decoration = box.decoration;
 
   /// Utility for defining [FlexBoxSpecAttribute.box.decoration.color]
-  late final color = box.decoration.color;
+  late final color = box.color;
 
   /// Utility for defining [FlexBoxSpecAttribute.box.decoration.border]
-  late final border = box.decoration.border;
+  late final border = box.border;
 
   /// Utility for defining [FlexBoxSpecAttribute.box.decoration.border.directional]
-  late final borderDirectional = box.decoration.border.directional;
+  late final borderDirectional = box.borderDirectional;
 
   /// Utility for defining [FlexBoxSpecAttribute.box.decoration.borderRadius]
-  late final borderRadius = box.decoration.borderRadius;
+  late final borderRadius = box.borderRadius;
 
   /// Utility for defining [FlexBoxSpecAttribute.box.decoration.borderRadius.directional]
-  late final borderRadiusDirectional = box.decoration.borderRadius.directional;
+  late final borderRadiusDirectional = box.borderRadiusDirectional;
 
   /// Utility for defining [FlexBoxSpecAttribute.box.decoration.gradient]
-  late final gradient = box.decoration.gradient;
+  late final gradient = box.gradient;
 
   /// Utility for defining [FlexBoxSpecAttribute.box.decoration.gradient.sweep]
-  late final sweepGradient = box.decoration.gradient.sweep;
+  late final sweepGradient = box.sweepGradient;
 
   /// Utility for defining [FlexBoxSpecAttribute.box.decoration.gradient.radial]
-  late final radialGradient = box.decoration.gradient.radial;
+  late final radialGradient = box.radialGradient;
 
   /// Utility for defining [FlexBoxSpecAttribute.box.decoration.gradient.linear]
-  late final linearGradient = box.decoration.gradient.linear;
+  late final linearGradient = box.linearGradient;
 
   /// Utility for defining [FlexBoxSpecAttribute.box.decoration.boxShadows]
-  late final shadows = box.decoration.boxShadows;
+  late final shadows = box.shadows;
 
   /// Utility for defining [FlexBoxSpecAttribute.box.decoration.boxShadow]
-  late final shadow = box.decoration.boxShadow;
+  late final shadow = box.shadow;
 
   /// Utility for defining [FlexBoxSpecAttribute.box.decoration.elevation]
-  late final elevation = box.decoration.elevation;
+  late final elevation = box.elevation;
 
   /// Utility for defining [FlexBoxSpecAttribute.box.shapeDecoration]
   late final shapeDecoration = box.shapeDecoration;
@@ -287,9 +289,7 @@ class FlexBoxSpecUtility extends SpecUtility<FlexBoxSpec> {
   late final height = box.height;
 
   /// Utility for defining [FlexBoxSpecAttribute.flex]
-  late final flex = FlexSpecUtility<FlexBoxSpecAttribute>(
-    (v) => build(FlexBoxSpecAttribute(flex: v)),
-  );
+  late final flex = FlexSpecAttribute();
 
   FlexBoxSpecUtility({this.attribute = const FlexBoxSpecAttribute()});
 

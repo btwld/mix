@@ -71,7 +71,7 @@ void main() {
 
   group('ScrollViewModifierUtility', () {
     test(
-      'Call method creates ScrollViewModifierSpecAttribute with correct parameters',
+      'Call method creates ScrollViewModifierAttribute with correct parameters',
       () {
         const axis = Axis.horizontal;
         const reverse = true;
@@ -79,7 +79,7 @@ void main() {
         const clip = Clip.antiAlias;
         const physics = AlwaysScrollableScrollPhysics();
 
-        final attribute = ScrollViewModifierSpecUtility(MixUtility.selfBuilder)(
+        final attribute = ScrollViewModifierUtility(MixUtility.selfBuilder)(
           scrollDirection: axis,
           reverse: reverse,
           padding: padding,
@@ -101,7 +101,7 @@ void main() {
       const clip = Clip.antiAlias;
       const physics = AlwaysScrollableScrollPhysics();
 
-      final utility = ScrollViewModifierSpecUtility(MixUtility.selfBuilder);
+      final utility = ScrollViewModifierUtility(MixUtility.selfBuilder);
 
       expect(utility.direction(axis).scrollDirection, axis);
       expect(utility.horizontal().scrollDirection, Axis.horizontal);

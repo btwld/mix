@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../attributes/color/color_util.dart';
-import '../../attributes/enum_util.dart';
 import '../../attributes/scalar_util.dart';
 import '../../attributes/shadow_dto.dart';
 import '../../attributes/shadow_util.dart';
@@ -12,7 +11,6 @@ import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/resolved_style_provider.dart';
 import '../../core/spec.dart';
-import '../../core/utility.dart';
 
 final class IconSpec extends Spec<IconSpec> with Diagnosticable {
   final Color? color;
@@ -150,7 +148,23 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
   final Prop<bool>? $applyTextScaling;
   final Prop<double>? $fill;
 
-  const IconSpecAttribute({
+  late final color = ColorUtility((prop) => IconSpecAttribute(color: prop));
+  late final size = DoubleUtility((prop) => IconSpecAttribute(size: prop));
+  late final weight = DoubleUtility((prop) => IconSpecAttribute(weight: prop));
+  late final grade = DoubleUtility((prop) => IconSpecAttribute(grade: prop));
+  late final opticalSize = DoubleUtility(
+    (prop) => IconSpecAttribute(opticalSize: prop),
+  );
+  late final shadow = ShadowUtility((v) => IconSpecAttribute(shadows: [v]));
+  late final textDirection = TextDirectionUtility(
+    (v) => IconSpecAttribute(textDirection: v),
+  );
+  late final applyTextScaling = BoolUtility(
+    (prop) => IconSpecAttribute(applyTextScaling: prop),
+  );
+  late final fill = DoubleUtility((prop) => IconSpecAttribute(fill: prop));
+
+  IconSpecAttribute({
     Prop<Color>? color,
     Prop<double>? size,
     Prop<double>? weight,
@@ -201,26 +215,6 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
          variants: variants,
        );
 
-  IconSpecAttribute.color(Color value) : this.only(color: value);
-
-  IconSpecAttribute.size(double value) : this.only(size: value);
-
-  IconSpecAttribute.weight(double value) : this.only(weight: value);
-
-  IconSpecAttribute.grade(double value) : this.only(grade: value);
-
-  IconSpecAttribute.opticalSize(double value) : this.only(opticalSize: value);
-
-  IconSpecAttribute.shadows(List<ShadowDto> value) : this.only(shadows: value);
-
-  IconSpecAttribute.textDirection(TextDirection value)
-    : this.only(textDirection: value);
-
-  IconSpecAttribute.applyTextScaling(bool value)
-    : this.only(applyTextScaling: value);
-
-  IconSpecAttribute.fill(double value) : this.only(fill: value);
-
   // Static factory to create from resolved Spec
   static IconSpecAttribute value(IconSpec spec) {
     return IconSpecAttribute.only(
@@ -248,40 +242,8 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
     return spec != null ? IconSpecAttribute.value(spec) : null;
   }
 
-  IconSpecAttribute color(Color value) {
-    return IconSpecAttribute.only(color: value);
-  }
-
-  IconSpecAttribute size(double value) {
-    return IconSpecAttribute.only(size: value);
-  }
-
-  IconSpecAttribute weight(double value) {
-    return IconSpecAttribute.only(weight: value);
-  }
-
-  IconSpecAttribute grade(double value) {
-    return IconSpecAttribute.only(grade: value);
-  }
-
-  IconSpecAttribute opticalSize(double value) {
-    return IconSpecAttribute.only(opticalSize: value);
-  }
-
   IconSpecAttribute shadows(List<ShadowDto> value) {
     return IconSpecAttribute.only(shadows: value);
-  }
-
-  IconSpecAttribute textDirection(TextDirection value) {
-    return IconSpecAttribute.only(textDirection: value);
-  }
-
-  IconSpecAttribute applyTextScaling(bool value) {
-    return IconSpecAttribute.only(applyTextScaling: value);
-  }
-
-  IconSpecAttribute fill(double value) {
-    return IconSpecAttribute.only(fill: value);
   }
 
   @override
@@ -357,50 +319,4 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
     $applyTextScaling,
     $fill,
   ];
-}
-
-class IconSpecUtility extends SpecUtility<IconSpec> {
-  @override
-  final IconSpecAttribute attribute;
-
-  late final color = ColorUtility(
-    (prop) => build(IconSpecAttribute(color: prop)),
-  );
-  late final size = DoubleUtility(
-    (prop) => build(IconSpecAttribute(size: prop)),
-  );
-  late final weight = DoubleUtility(
-    (prop) => build(IconSpecAttribute(weight: prop)),
-  );
-  late final grade = DoubleUtility(
-    (prop) => build(IconSpecAttribute(grade: prop)),
-  );
-  late final opticalSize = DoubleUtility(
-    (prop) => build(IconSpecAttribute(opticalSize: prop)),
-  );
-  late final shadows = ShadowListUtility(
-    (v) => build(IconSpecAttribute(shadows: v)),
-  );
-  late final textDirection = TextDirectionUtility(
-    (v) => build(IconSpecAttribute(textDirection: v)),
-  );
-  late final applyTextScaling = BoolUtility(
-    (prop) => build(IconSpecAttribute(applyTextScaling: prop)),
-  );
-  late final fill = DoubleUtility(
-    (prop) => build(IconSpecAttribute(fill: prop)),
-  );
-
-  IconSpecUtility({this.attribute = const IconSpecAttribute()});
-
-  static IconSpecUtility get self => IconSpecUtility();
-
-  IconSpecUtility build(IconSpecAttribute attribute) {
-    return IconSpecUtility(attribute: this.attribute.merge(attribute));
-  }
-}
-
-extension IconSpecUtilityExt on IconSpecUtility {
-  ShadowUtility get shadow =>
-      ShadowUtility((v) => build(IconSpecAttribute(shadows: [v])));
 }

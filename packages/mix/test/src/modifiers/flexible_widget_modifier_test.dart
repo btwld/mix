@@ -56,22 +56,16 @@ void main() {
     );
   });
 
-  group('FlexibleModifierSpecAttribute', () {
+  group('FlexibleModifierAttribute', () {
     test('merge', () {
-      const modifier = FlexibleModifierSpecAttribute(
-        flex: 1,
-        fit: FlexFit.tight,
-      );
-      const other = FlexibleModifierSpecAttribute(flex: 1, fit: FlexFit.tight);
+      const modifier = FlexibleModifierAttribute(flex: 1, fit: FlexFit.tight);
+      const other = FlexibleModifierAttribute(flex: 1, fit: FlexFit.tight);
       final result = modifier.merge(other);
       expect(result, modifier);
     });
 
     test('resolve', () {
-      const modifier = FlexibleModifierSpecAttribute(
-        flex: 1,
-        fit: FlexFit.tight,
-      );
+      const modifier = FlexibleModifierAttribute(flex: 1, fit: FlexFit.tight);
       expect(
         modifier,
         resolvesTo(const FlexibleModifier(flex: 1, fit: FlexFit.tight)),
@@ -80,20 +74,14 @@ void main() {
 
     // equality
     test('equality', () {
-      const modifier = FlexibleModifierSpecAttribute(
-        flex: 1,
-        fit: FlexFit.tight,
-      );
-      const other = FlexibleModifierSpecAttribute(flex: 1, fit: FlexFit.tight);
+      const modifier = FlexibleModifierAttribute(flex: 1, fit: FlexFit.tight);
+      const other = FlexibleModifierAttribute(flex: 1, fit: FlexFit.tight);
       expect(modifier, other);
     });
 
     test('inequality', () {
-      const modifier = FlexibleModifierSpecAttribute(
-        flex: 1,
-        fit: FlexFit.tight,
-      );
-      const other = FlexibleModifierSpecAttribute(flex: 2, fit: FlexFit.loose);
+      const modifier = FlexibleModifierAttribute(flex: 1, fit: FlexFit.tight);
+      const other = FlexibleModifierAttribute(flex: 2, fit: FlexFit.loose);
       expect(modifier, isNot(other));
     });
   });

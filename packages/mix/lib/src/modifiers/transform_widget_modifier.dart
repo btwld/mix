@@ -47,21 +47,21 @@ final class TransformModifier extends Modifier<TransformModifier> {
   }
 }
 
-final class TransformModifierSpecUtility<T extends SpecAttribute<Object?>>
-    extends MixUtility<T, TransformModifierSpecAttribute> {
-  late final rotate = TransformRotateModifierSpecUtility(
+final class TransformModifierUtility<T extends SpecAttribute<Object?>>
+    extends MixUtility<T, TransformModifierAttribute> {
+  late final rotate = TransformRotateModifierUtility(
     (value) => builder(
-      TransformModifierSpecAttribute(
+      TransformModifierAttribute(
         transform: Prop.maybe(value),
         alignment: Prop(Alignment.center),
       ),
     ),
   );
 
-  TransformModifierSpecUtility(super.builder);
+  TransformModifierUtility(super.builder);
 
   T _flip(bool x, bool y) => builder(
-    TransformModifierSpecAttribute(
+    TransformModifierAttribute(
       transform: Prop(
         Matrix4.diagonal3Values(x ? -1.0 : 1.0, y ? -1.0 : 1.0, 1.0),
       ),
@@ -73,26 +73,26 @@ final class TransformModifierSpecUtility<T extends SpecAttribute<Object?>>
   T flipY() => _flip(false, true);
 
   T call(Matrix4 value) =>
-      builder(TransformModifierSpecAttribute(transform: Prop(value)));
+      builder(TransformModifierAttribute(transform: Prop(value)));
 
   T scale(double value) => builder(
-    TransformModifierSpecAttribute(
+    TransformModifierAttribute(
       transform: Prop(Matrix4.diagonal3Values(value, value, 1.0)),
       alignment: Prop(Alignment.center),
     ),
   );
 
   T translate(double x, double y) => builder(
-    TransformModifierSpecAttribute(
+    TransformModifierAttribute(
       transform: Prop(Matrix4.translationValues(x, y, 0.0)),
       alignment: Prop(Alignment.center),
     ),
   );
 }
 
-final class TransformRotateModifierSpecUtility<T extends SpecAttribute<Object?>>
+final class TransformRotateModifierUtility<T extends SpecAttribute<Object?>>
     extends MixUtility<T, Matrix4> {
-  const TransformRotateModifierSpecUtility(super.builder);
+  const TransformRotateModifierUtility(super.builder);
   T d90() => call(math.pi / 2);
   T d180() => call(math.pi);
   T d270() => call(3 * math.pi / 2);
@@ -100,12 +100,11 @@ final class TransformRotateModifierSpecUtility<T extends SpecAttribute<Object?>>
   T call(double value) => builder(Matrix4.rotationZ(value));
 }
 
-class TransformModifierSpecAttribute
-    extends ModifierAttribute<TransformModifier> {
+class TransformModifierAttribute extends ModifierAttribute<TransformModifier> {
   final Prop<Matrix4>? transform;
   final Prop<Alignment>? alignment;
 
-  const TransformModifierSpecAttribute({this.transform, this.alignment});
+  const TransformModifierAttribute({this.transform, this.alignment});
 
   @override
   TransformModifier resolve(BuildContext context) {
@@ -116,10 +115,10 @@ class TransformModifierSpecAttribute
   }
 
   @override
-  TransformModifierSpecAttribute merge(TransformModifierSpecAttribute? other) {
+  TransformModifierAttribute merge(TransformModifierAttribute? other) {
     if (other == null) return this;
 
-    return TransformModifierSpecAttribute(
+    return TransformModifierAttribute(
       transform: MixHelpers.merge(transform, other.transform),
       alignment: MixHelpers.merge(alignment, other.alignment),
     );

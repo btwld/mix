@@ -74,11 +74,11 @@ final class OpacityModifier extends Modifier<OpacityModifier>
 ///
 /// Use this class to configure the attributes of a [OpacityModifier] and pass it to
 /// the [OpacityModifier] constructor.
-class OpacityModifierSpecAttribute extends ModifierAttribute<OpacityModifier>
+class OpacityModifierAttribute extends ModifierAttribute<OpacityModifier>
     with Diagnosticable {
   final Prop<double>? opacity;
 
-  const OpacityModifierSpecAttribute({this.opacity});
+  const OpacityModifierAttribute({this.opacity});
 
   /// Resolves to [OpacityModifier] using the provided [MixContext].
   ///
@@ -86,26 +86,26 @@ class OpacityModifierSpecAttribute extends ModifierAttribute<OpacityModifier>
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final opacityModifierSpec = OpacityModifierSpecAttribute(...).resolve(mix);
+  /// final opacityModifierSpec = OpacityModifierAttribute(...).resolve(mix);
   /// ```
   @override
   OpacityModifier resolve(BuildContext context) {
     return OpacityModifier(opacity?.resolve(context));
   }
 
-  /// Merges the properties of this [OpacityModifierSpecAttribute] with the properties of [other].
+  /// Merges the properties of this [OpacityModifierAttribute] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [OpacityModifierSpecAttribute] with the properties of [other] taking precedence over
+  /// [OpacityModifierAttribute] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  OpacityModifierSpecAttribute merge(OpacityModifierSpecAttribute? other) {
+  OpacityModifierAttribute merge(OpacityModifierAttribute? other) {
     if (other == null) return this;
 
-    return OpacityModifierSpecAttribute(
+    return OpacityModifierAttribute(
       opacity: opacity?.merge(other.opacity) ?? other.opacity,
     );
   }
@@ -116,21 +116,21 @@ class OpacityModifierSpecAttribute extends ModifierAttribute<OpacityModifier>
     properties.add(DiagnosticsProperty('opacity', opacity, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [OpacityModifierSpecAttribute].
+  /// The list of properties that constitute the state of this [OpacityModifierAttribute].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [OpacityModifierSpecAttribute] instances for equality.
+  /// compare two [OpacityModifierAttribute] instances for equality.
   @override
   List<Object?> get props => [opacity];
 }
 
-final class OpacityModifierSpecUtility<T extends SpecAttribute<Object?>>
-    extends MixUtility<T, OpacityModifierSpecAttribute> {
-  const OpacityModifierSpecUtility(super.builder);
+final class OpacityModifierUtility<T extends SpecAttribute<Object?>>
+    extends MixUtility<T, OpacityModifierAttribute> {
+  const OpacityModifierUtility(super.builder);
 
   T call(double value) =>
-      builder(OpacityModifierSpecAttribute(opacity: Prop(value)));
+      builder(OpacityModifierAttribute(opacity: Prop(value)));
 
   T token(MixToken<double> token) =>
-      builder(OpacityModifierSpecAttribute(opacity: Prop.token(token)));
+      builder(OpacityModifierAttribute(opacity: Prop.token(token)));
 }

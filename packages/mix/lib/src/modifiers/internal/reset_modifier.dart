@@ -37,17 +37,17 @@ final class ResetModifierSpec extends Modifier<ResetModifierSpec>
   }
 }
 
-final class ResetModifierSpecUtility<T extends SpecAttribute<Object?>>
-    extends MixUtility<T, ResetModifierSpecAttribute> {
-  const ResetModifierSpecUtility(super.builder);
+final class ResetModifierUtility<T extends SpecAttribute<Object?>>
+    extends MixUtility<T, ResetModifierAttribute> {
+  const ResetModifierUtility(super.builder);
   T call() {
-    return builder(const ResetModifierSpecAttribute());
+    return builder(const ResetModifierAttribute());
   }
 }
 
-class ResetModifierSpecAttribute extends ModifierAttribute<ResetModifierSpec>
+class ResetModifierAttribute extends ModifierAttribute<ResetModifierSpec>
     with Diagnosticable {
-  const ResetModifierSpecAttribute();
+  const ResetModifierAttribute();
 
   @override
   ResetModifierSpec resolve(BuildContext context) {
@@ -55,7 +55,7 @@ class ResetModifierSpecAttribute extends ModifierAttribute<ResetModifierSpec>
   }
 
   @override
-  ResetModifierSpecAttribute merge(ResetModifierSpecAttribute? other) {
+  ResetModifierAttribute merge(ResetModifierAttribute? other) {
     if (other == null) return this;
 
     return other;

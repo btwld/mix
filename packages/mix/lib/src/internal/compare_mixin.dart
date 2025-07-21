@@ -3,7 +3,7 @@
 import 'package:flutter/widgets.dart';
 
 import 'deep_collection_equality.dart';
-import 'iterable_ext.dart';
+import '../core/extensions.dart';
 
 /// Returns a `hashCode` for [props].
 /// This function uses the Jenkins hash function to generate a hash code for the given properties.

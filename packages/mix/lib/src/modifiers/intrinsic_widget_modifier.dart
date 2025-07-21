@@ -100,9 +100,9 @@ final class IntrinsicWidthModifierSpec
 ///
 /// Use this class to configure the attributes of a [IntrinsicHeightModifier] and pass it to
 /// the [IntrinsicHeightModifier] constructor.
-class IntrinsicHeightModifierSpecAttribute
+class IntrinsicHeightModifierAttribute
     extends ModifierAttribute<IntrinsicHeightModifier> {
-  const IntrinsicHeightModifierSpecAttribute();
+  const IntrinsicHeightModifierAttribute();
 
   /// Resolves to [IntrinsicHeightModifier] using the provided [MixContext].
   ///
@@ -110,7 +110,7 @@ class IntrinsicHeightModifierSpecAttribute
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final intrinsicHeightModifierSpec = IntrinsicHeightModifierSpecAttribute(...).resolve(mix);
+  /// final intrinsicHeightModifierSpec = IntrinsicHeightModifierAttribute(...).resolve(mix);
   /// ```
   @override
   IntrinsicHeightModifier resolve(BuildContext context) {
@@ -118,27 +118,27 @@ class IntrinsicHeightModifierSpecAttribute
     return IntrinsicHeightModifier();
   }
 
-  /// Merges the properties of this [IntrinsicHeightModifierSpecAttribute] with the properties of [other].
+  /// Merges the properties of this [IntrinsicHeightModifierAttribute] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [IntrinsicHeightModifierSpecAttribute] with the properties of [other] taking precedence over
+  /// [IntrinsicHeightModifierAttribute] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  IntrinsicHeightModifierSpecAttribute merge(
-    IntrinsicHeightModifierSpecAttribute? other,
+  IntrinsicHeightModifierAttribute merge(
+    IntrinsicHeightModifierAttribute? other,
   ) {
     if (other == null) return this;
 
     return other;
   }
 
-  /// The list of properties that constitute the state of this [IntrinsicHeightModifierSpecAttribute].
+  /// The list of properties that constitute the state of this [IntrinsicHeightModifierAttribute].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [IntrinsicHeightModifierSpecAttribute] instances for equality.
+  /// compare two [IntrinsicHeightModifierAttribute] instances for equality.
   @override
   List<Object?> get props => [];
 }
@@ -171,9 +171,9 @@ class IntrinsicHeightModifierSpecTween extends Tween<IntrinsicHeightModifier?> {
 ///
 /// Use this class to configure the attributes of a [IntrinsicWidthModifierSpec] and pass it to
 /// the [IntrinsicWidthModifierSpec] constructor.
-class IntrinsicWidthModifierSpecAttribute
+class IntrinsicWidthModifierAttribute
     extends ModifierAttribute<IntrinsicWidthModifierSpec> {
-  const IntrinsicWidthModifierSpecAttribute();
+  const IntrinsicWidthModifierAttribute();
 
   /// Resolves to [IntrinsicWidthModifierSpec] using the provided [MixContext].
   ///
@@ -181,7 +181,7 @@ class IntrinsicWidthModifierSpecAttribute
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final intrinsicWidthModifierSpec = IntrinsicWidthModifierSpecAttribute(...).resolve(mix);
+  /// final intrinsicWidthModifierSpec = IntrinsicWidthModifierAttribute(...).resolve(mix);
   /// ```
   @override
   IntrinsicWidthModifierSpec resolve(BuildContext context) {
@@ -189,27 +189,27 @@ class IntrinsicWidthModifierSpecAttribute
     return IntrinsicWidthModifierSpec();
   }
 
-  /// Merges the properties of this [IntrinsicWidthModifierSpecAttribute] with the properties of [other].
+  /// Merges the properties of this [IntrinsicWidthModifierAttribute] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [IntrinsicWidthModifierSpecAttribute] with the properties of [other] taking precedence over
+  /// [IntrinsicWidthModifierAttribute] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  IntrinsicWidthModifierSpecAttribute merge(
-    IntrinsicWidthModifierSpecAttribute? other,
+  IntrinsicWidthModifierAttribute merge(
+    IntrinsicWidthModifierAttribute? other,
   ) {
     if (other == null) return this;
 
     return other;
   }
 
-  /// The list of properties that constitute the state of this [IntrinsicWidthModifierSpecAttribute].
+  /// The list of properties that constitute the state of this [IntrinsicWidthModifierAttribute].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [IntrinsicWidthModifierSpecAttribute] instances for equality.
+  /// compare two [IntrinsicWidthModifierAttribute] instances for equality.
   @override
   List<Object?> get props => [];
 }
@@ -236,14 +236,14 @@ class IntrinsicWidthModifierSpecTween
   }
 }
 
-final class IntrinsicHeightModifierSpecUtility<T extends SpecAttribute<Object?>>
-    extends MixUtility<T, IntrinsicHeightModifierSpecAttribute> {
-  const IntrinsicHeightModifierSpecUtility(super.builder);
-  T call() => builder(const IntrinsicHeightModifierSpecAttribute());
+final class IntrinsicHeightModifierUtility<T extends SpecAttribute<Object?>>
+    extends MixUtility<T, IntrinsicHeightModifierAttribute> {
+  const IntrinsicHeightModifierUtility(super.builder);
+  T call() => builder(const IntrinsicHeightModifierAttribute());
 }
 
-final class IntrinsicWidthModifierSpecUtility<T extends SpecAttribute<Object?>>
-    extends MixUtility<T, IntrinsicWidthModifierSpecAttribute> {
-  const IntrinsicWidthModifierSpecUtility(super.builder);
-  T call() => builder(const IntrinsicWidthModifierSpecAttribute());
+final class IntrinsicWidthModifierUtility<T extends SpecAttribute<Object?>>
+    extends MixUtility<T, IntrinsicWidthModifierAttribute> {
+  const IntrinsicWidthModifierUtility(super.builder);
+  T call() => builder(const IntrinsicWidthModifierAttribute());
 }

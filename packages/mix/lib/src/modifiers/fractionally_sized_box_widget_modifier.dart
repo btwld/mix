@@ -105,13 +105,13 @@ final class FractionallySizedBoxModifierSpec
 ///
 /// Use this class to configure the attributes of a [FractionallySizedBoxModifierSpec] and pass it to
 /// the [FractionallySizedBoxModifierSpec] constructor.
-class FractionallySizedBoxModifierSpecAttribute
+class FractionallySizedBoxModifierAttribute
     extends ModifierAttribute<FractionallySizedBoxModifierSpec> {
   final Prop<double>? widthFactor;
   final Prop<double>? heightFactor;
   final Prop<AlignmentGeometry>? alignment;
 
-  const FractionallySizedBoxModifierSpecAttribute({
+  const FractionallySizedBoxModifierAttribute({
     this.widthFactor,
     this.heightFactor,
     this.alignment,
@@ -123,7 +123,7 @@ class FractionallySizedBoxModifierSpecAttribute
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final fractionallySizedBoxModifierSpec = FractionallySizedBoxModifierSpecAttribute(...).resolve(mix);
+  /// final fractionallySizedBoxModifierSpec = FractionallySizedBoxModifierAttribute(...).resolve(mix);
   /// ```
   @override
   FractionallySizedBoxModifierSpec resolve(BuildContext context) {
@@ -134,21 +134,21 @@ class FractionallySizedBoxModifierSpecAttribute
     );
   }
 
-  /// Merges the properties of this [FractionallySizedBoxModifierSpecAttribute] with the properties of [other].
+  /// Merges the properties of this [FractionallySizedBoxModifierAttribute] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [FractionallySizedBoxModifierSpecAttribute] with the properties of [other] taking precedence over
+  /// [FractionallySizedBoxModifierAttribute] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  FractionallySizedBoxModifierSpecAttribute merge(
-    FractionallySizedBoxModifierSpecAttribute? other,
+  FractionallySizedBoxModifierAttribute merge(
+    FractionallySizedBoxModifierAttribute? other,
   ) {
     if (other == null) return this;
 
-    return FractionallySizedBoxModifierSpecAttribute(
+    return FractionallySizedBoxModifierAttribute(
       widthFactor: MixHelpers.merge(widthFactor, other.widthFactor),
       heightFactor: MixHelpers.merge(heightFactor, other.heightFactor),
       alignment: MixHelpers.merge(alignment, other.alignment),
@@ -181,11 +181,11 @@ class FractionallySizedBoxModifierSpecTween
   }
 }
 
-final class FractionallySizedBoxModifierSpecUtility<
+final class FractionallySizedBoxModifierUtility<
   T extends SpecAttribute<Object?>
 >
-    extends MixUtility<T, FractionallySizedBoxModifierSpecAttribute> {
-  const FractionallySizedBoxModifierSpecUtility(super.builder);
+    extends MixUtility<T, FractionallySizedBoxModifierAttribute> {
+  const FractionallySizedBoxModifierUtility(super.builder);
 
   T call({
     AlignmentGeometry? alignment,
@@ -193,7 +193,7 @@ final class FractionallySizedBoxModifierSpecUtility<
     double? heightFactor,
   }) {
     return builder(
-      FractionallySizedBoxModifierSpecAttribute(
+      FractionallySizedBoxModifierAttribute(
         widthFactor: Prop.maybe(widthFactor),
         heightFactor: Prop.maybe(heightFactor),
         alignment: Prop.maybe(alignment),

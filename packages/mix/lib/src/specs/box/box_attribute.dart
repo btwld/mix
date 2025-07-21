@@ -1,13 +1,17 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../../attributes/border_dto.dart';
-import '../../attributes/border_radius_dto.dart';
+import '../../attributes/border_radius_util.dart';
+import '../../attributes/border_util.dart';
+import '../../attributes/color/color_util.dart';
 import '../../attributes/constraints_dto.dart';
+import '../../attributes/constraints_util.dart';
 import '../../attributes/decoration_dto.dart';
+import '../../attributes/decoration_util.dart';
 import '../../attributes/edge_insets_dto.dart';
 import '../../attributes/edge_insets_geometry_util.dart';
-import '../../attributes/gradient_dto.dart';
+import '../../attributes/gradient_util.dart';
+import '../../attributes/scalar_util.dart';
 import '../../attributes/shadow_dto.dart';
 import '../../core/animation_config.dart';
 import '../../core/attribute.dart';
@@ -37,6 +41,110 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
 
   final padding = EdgeInsetsGeometryUtility(
     (prop) => BoxSpecAttribute(padding: prop),
+  );
+
+  final margin = EdgeInsetsGeometryUtility(
+    (prop) => BoxSpecAttribute(margin: prop),
+  );
+
+  final constraints = BoxConstraintsUtility(
+    (prop) => BoxSpecAttribute(constraints: prop),
+  );
+
+  final decoration = DecorationUtility(
+    (prop) => BoxSpecAttribute(decoration: prop),
+  );
+
+  final foregroundDecoration = DecorationUtility(
+    (prop) => BoxSpecAttribute(foregroundDecoration: prop),
+  );
+
+  final transform = Matrix4Utility((prop) => BoxSpecAttribute(transform: prop));
+
+  final transformAlignment = AlignmentGeometryUtility(
+    (prop) => BoxSpecAttribute(transformAlignment: prop),
+  );
+
+  final clipBehavior = ClipUtility(
+    (prop) => BoxSpecAttribute(clipBehavior: prop),
+  );
+
+  final width = DoubleUtility((prop) => BoxSpecAttribute(width: prop));
+
+  final height = DoubleUtility((prop) => BoxSpecAttribute(height: prop));
+
+  final alignment = AlignmentGeometryUtility(
+    (prop) => BoxSpecAttribute(alignment: prop),
+  );
+
+  final minWidth = DoubleUtility(
+    (prop) =>
+        BoxSpecAttribute.only(constraints: BoxConstraintsDto(minWidth: prop)),
+  );
+
+  final maxWidth = DoubleUtility(
+    (prop) =>
+        BoxSpecAttribute.only(constraints: BoxConstraintsDto(maxWidth: prop)),
+  );
+
+  final maxHeight = DoubleUtility(
+    (prop) =>
+        BoxSpecAttribute.only(constraints: BoxConstraintsDto(maxHeight: prop)),
+  );
+
+  final minHeight = DoubleUtility(
+    (prop) =>
+        BoxSpecAttribute.only(constraints: BoxConstraintsDto(minHeight: prop)),
+  );
+
+  final border = BoxBorderUtility(
+    (prop) => BoxSpecAttribute.only(decoration: BoxDecorationDto(border: prop)),
+  );
+
+  final borderDirectional = BorderDirectionalUtility(
+    (prop) => BoxSpecAttribute.only(decoration: BoxDecorationDto(border: prop)),
+  );
+
+  final borderRadius = BorderRadiusGeometryUtility(
+    (prop) =>
+        BoxSpecAttribute.only(decoration: BoxDecorationDto(borderRadius: prop)),
+  );
+
+  final borderRadiusDirectional = BorderRadiusDirectionalUtility(
+    (prop) =>
+        BoxSpecAttribute.only(decoration: BoxDecorationDto(borderRadius: prop)),
+  );
+
+  final color = ColorUtility(
+    (prop) => BoxSpecAttribute.only(decoration: BoxDecorationDto(color: prop)),
+  );
+
+  final gradient = GradientUtility(
+    (prop) =>
+        BoxSpecAttribute.only(decoration: BoxDecorationDto(gradient: prop)),
+  );
+
+  final linearGradient = LinearGradientUtility(
+    (prop) =>
+        BoxSpecAttribute.only(decoration: BoxDecorationDto(gradient: prop)),
+  );
+
+  final radialGradient = RadialGradientUtility(
+    (prop) =>
+        BoxSpecAttribute.only(decoration: BoxDecorationDto(gradient: prop)),
+  );
+
+  final sweepGradient = SweepGradientUtility(
+    (prop) =>
+        BoxSpecAttribute.only(decoration: BoxDecorationDto(gradient: prop)),
+  );
+
+  final shapeDecoration = ShapeDecorationUtility(
+    (prop) => BoxSpecAttribute(decoration: prop),
+  );
+
+  final shape = BoxShapeUtility(
+    (prop) => BoxSpecAttribute.only(decoration: BoxDecorationDto(shape: prop)),
   );
 
   BoxSpecAttribute({
@@ -139,125 +247,6 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
     return BoxSpecAttribute.only(animation: animation);
   }
 
-  BoxSpecAttribute margin(EdgeInsetsGeometryDto value) {
-    return BoxSpecAttribute.only(margin: value);
-  }
-
-  BoxSpecAttribute constraints(BoxConstraintsDto value) {
-    return BoxSpecAttribute.only(constraints: value);
-  }
-
-  BoxSpecAttribute decoration(DecorationDto value) {
-    return BoxSpecAttribute.only(decoration: value);
-  }
-
-  BoxSpecAttribute foregroundDecoration(DecorationDto value) {
-    return BoxSpecAttribute.only(foregroundDecoration: value);
-  }
-
-  BoxSpecAttribute transform(Matrix4 value) {
-    return BoxSpecAttribute.only(transform: value);
-  }
-
-  BoxSpecAttribute transformAlignment(AlignmentGeometry value) {
-    return BoxSpecAttribute.only(transformAlignment: value);
-  }
-
-  BoxSpecAttribute clipBehavior(Clip value) {
-    return BoxSpecAttribute.only(clipBehavior: value);
-  }
-
-  BoxSpecAttribute width(double value) {
-    return BoxSpecAttribute.only(width: value);
-  }
-
-  BoxSpecAttribute height(double value) {
-    return BoxSpecAttribute.only(height: value);
-  }
-
-  BoxSpecAttribute alignment(AlignmentGeometry value) {
-    return BoxSpecAttribute.only(alignment: value);
-  }
-
-  BoxSpecAttribute minWidth(double value) {
-    return BoxSpecAttribute.only(
-      constraints: BoxConstraintsDto.only(minWidth: value),
-    );
-  }
-
-  BoxSpecAttribute maxWidth(double value) {
-    return BoxSpecAttribute.only(
-      constraints: BoxConstraintsDto.only(maxWidth: value),
-    );
-  }
-
-  BoxSpecAttribute minHeight(double value) {
-    return BoxSpecAttribute.only(
-      constraints: BoxConstraintsDto.only(minHeight: value),
-    );
-  }
-
-  BoxSpecAttribute maxHeight(double value) {
-    return BoxSpecAttribute.only(
-      constraints: BoxConstraintsDto.only(maxHeight: value),
-    );
-  }
-
-  // Border
-  BoxSpecAttribute border(BoxBorderDto value) {
-    return BoxSpecAttribute.only(
-      decoration: BoxDecorationDto.only(border: value),
-    );
-  }
-
-  BoxSpecAttribute borderDirectional(BorderDirectionalDto value) {
-    return BoxSpecAttribute.only(
-      decoration: BoxDecorationDto.only(border: value),
-    );
-  }
-
-  BoxSpecAttribute borderRadius(BorderRadiusGeometryDto value) {
-    return BoxSpecAttribute.only(
-      decoration: BoxDecorationDto.only(borderRadius: value),
-    );
-  }
-
-  BoxSpecAttribute borderRadiusDirectional(BorderRadiusDirectionalDto value) {
-    return BoxSpecAttribute.only(
-      decoration: BoxDecorationDto.only(borderRadius: value),
-    );
-  }
-
-  BoxSpecAttribute color(Color value) {
-    return BoxSpecAttribute.only(
-      decoration: BoxDecorationDto.only(color: value),
-    );
-  }
-
-  BoxSpecAttribute gradient(GradientDto value) {
-    return BoxSpecAttribute.only(
-      decoration: BoxDecorationDto.only(gradient: value),
-    );
-  }
-
-  BoxSpecAttribute linearGradient(LinearGradientDto value) {
-    return BoxSpecAttribute.only(
-      decoration: BoxDecorationDto.only(gradient: value),
-    );
-  }
-
-  BoxSpecAttribute radialGradient(RadialGradientDto value) {
-    return BoxSpecAttribute.only(
-      decoration: BoxDecorationDto.only(gradient: value),
-    );
-  }
-
-  BoxSpecAttribute sweepGradient(SweepGradientDto value) {
-    return BoxSpecAttribute.only(
-      decoration: BoxDecorationDto.only(gradient: value),
-    );
-  }
-
   BoxSpecAttribute shadows(List<BoxShadowDto> value) {
     return BoxSpecAttribute.only(
       decoration: BoxDecorationDto.only(boxShadow: value),
@@ -275,16 +264,6 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
       decoration: BoxDecorationDto.only(
         boxShadow: BoxShadowDto.fromElevation(value),
       ),
-    );
-  }
-
-  BoxSpecAttribute shapeDecoration(ShapeDecorationDto value) {
-    return BoxSpecAttribute.only(decoration: value);
-  }
-
-  BoxSpecAttribute shape(BoxShape value) {
-    return BoxSpecAttribute.only(
-      decoration: BoxDecorationDto.only(shape: value),
     );
   }
 

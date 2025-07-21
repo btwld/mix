@@ -18,14 +18,15 @@ sealed class DecorationDto<T extends Decoration> extends Mix<T> {
   const DecorationDto({this.color, this.gradient, this.boxShadow, this.image});
 
   /// Constructor that accepts a [Decoration] value and converts it to the appropriate DTO.
-  static DecorationDto value(Decoration decoration) {
+  factory DecorationDto.value(Decoration decoration) {
     return switch (decoration) {
-      BoxDecoration d => BoxDecorationDto.value(d),
-      ShapeDecoration d => ShapeDecorationDto.value(d),
-      _ => throw ArgumentError(
-        'Unsupported Decoration type: ${decoration.runtimeType}',
-      ),
-    };
+          BoxDecoration d => BoxDecorationDto.value(d),
+          ShapeDecoration d => ShapeDecorationDto.value(d),
+          _ => throw ArgumentError(
+            'Unsupported Decoration type: ${decoration.runtimeType}',
+          ),
+        }
+        as DecorationDto<T>;
   }
 
   /// Constructor that accepts a nullable [Decoration] value and converts it to the appropriate DTO.

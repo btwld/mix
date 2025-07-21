@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-import '../internal/diagnostic_properties_builder_ext.dart';
+import '../core/extensions.dart';
 
 /// A Data transfer object that represents a [StrutStyle] value.
 @immutable
