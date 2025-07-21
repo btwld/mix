@@ -91,7 +91,7 @@ class RotatedBoxModifierSpecAttribute
   List<Object?> get props => [quarterTurns];
 }
 
-final class RotatedBoxModifierSpecUtility<T extends SpecUtility<Object?>>
+final class RotatedBoxModifierSpecUtility<T extends SpecAttribute<Object?>>
     extends MixUtility<T, RotatedBoxModifierSpecAttribute> {
   const RotatedBoxModifierSpecUtility(super.builder);
   T d90() => call(1);

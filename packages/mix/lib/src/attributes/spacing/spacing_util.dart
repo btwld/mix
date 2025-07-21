@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import '../../core/attribute.dart';
 import '../../core/prop.dart';
 import '../../core/utility.dart';
 import 'edge_insets_dto.dart';
@@ -7,7 +8,7 @@ import 'edge_insets_dto.dart';
 // Deprecated typedef moved to src/core/deprecated.dart
 
 @immutable
-final class EdgeInsetsGeometryUtility<T extends SpecUtility<Object?>>
+final class EdgeInsetsGeometryUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, EdgeInsetsGeometry> {
   late final directional = EdgeInsetsDirectionalUtility(builder);
 
@@ -40,7 +41,7 @@ final class EdgeInsetsGeometryUtility<T extends SpecUtility<Object?>>
 }
 
 @immutable
-final class EdgeInsetsDirectionalUtility<U extends SpecUtility<Object?>>
+final class EdgeInsetsDirectionalUtility<U extends SpecAttribute<Object?>>
     extends MixPropUtility<U, EdgeInsetsDirectional> {
   late final all = SpacingSideUtility(
     (v) => call(EdgeInsetsDirectionalDto(top: v, bottom: v, start: v, end: v)),
@@ -79,7 +80,7 @@ final class EdgeInsetsDirectionalUtility<U extends SpecUtility<Object?>>
 }
 
 @immutable
-class SpacingSideUtility<T extends SpecUtility<Object?>>
+class SpacingSideUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, double> {
   const SpacingSideUtility(super.builder);
 }

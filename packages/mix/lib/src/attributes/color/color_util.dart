@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/attribute.dart';
 import '../../core/prop.dart';
 import '../../core/utility.dart';
 import '../../theme/tokens/mix_token.dart';
@@ -7,7 +8,7 @@ import 'color_directive.dart';
 import 'material_colors_util.dart';
 
 /// Mixin that provides color directive methods
-base mixin ColorDirectiveMixin<T extends SpecUtility<Object?>>
+base mixin ColorDirectiveMixin<T extends SpecAttribute<Object?>>
     on PropUtility<T, Color> {
   // All directive methods use the directive() method from PropUtility
   T withOpacity(double opacity) => directive(OpacityDirective(opacity));
@@ -31,7 +32,7 @@ base mixin ColorDirectiveMixin<T extends SpecUtility<Object?>>
 
 /// Utility for predefined colors (e.g., Colors.red)
 @immutable
-base class FoundationColorUtility<T extends SpecUtility<Object?>>
+base class FoundationColorUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, Color>
     with ColorDirectiveMixin<T> {
   final Color color;
@@ -42,7 +43,7 @@ base class FoundationColorUtility<T extends SpecUtility<Object?>>
 /// This utility can be called as a function to return a StyleElement,
 /// or accessed as a property to get the Color value.
 @immutable
-final class CallableColorUtility<T extends SpecUtility<Object?>> {
+final class CallableColorUtility<T extends SpecAttribute<Object?>> {
   final T Function(Prop<Color>) builder;
   final Color color;
 
@@ -78,7 +79,7 @@ final class CallableColorUtility<T extends SpecUtility<Object?>> {
 
 /// Simplified ColorUtility using the PropUtility pattern
 @immutable
-final class ColorUtility<T extends SpecUtility<Object?>>
+final class ColorUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, Color>
     with ColorDirectiveMixin<T>, MaterialColorsMixin<T>, BasicColorsMixin<T> {
   ColorUtility(super.builder);
@@ -88,7 +89,7 @@ final class ColorUtility<T extends SpecUtility<Object?>>
   T ref(MixToken<Color> ref) => token(ref);
 }
 
-base mixin BasicColorsMixin<T extends SpecUtility<Object?>>
+base mixin BasicColorsMixin<T extends SpecAttribute<Object?>>
     on PropUtility<T, Color> {
   late final transparent = CallableColorUtility(builder, Colors.transparent);
 

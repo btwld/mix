@@ -10,7 +10,7 @@ import 'package:mix/mix.dart';
 // SCALAR UTILITIES
 // =============================================================================
 
-final class AlignmentUtility<S extends SpecUtility<Object?>>
+final class AlignmentUtility<S extends SpecAttribute<Object?>>
     extends PropUtility<S, AlignmentGeometry> {
   const AlignmentUtility(super.builder);
 
@@ -57,13 +57,13 @@ final class AlignmentUtility<S extends SpecUtility<Object?>>
   S bottomRight() => call(Alignment.bottomRight);
 }
 
-final class AlignmentGeometryUtility<S extends SpecUtility<Object?>>
+final class AlignmentGeometryUtility<S extends SpecAttribute<Object?>>
     extends AlignmentUtility<S> {
   late final directional = AlignmentDirectionalUtility<S>(builder);
   AlignmentGeometryUtility(super.builder);
 }
 
-final class AlignmentDirectionalUtility<S extends SpecUtility<Object?>>
+final class AlignmentDirectionalUtility<S extends SpecAttribute<Object?>>
     extends PropUtility<S, AlignmentDirectional> {
   const AlignmentDirectionalUtility(super.builder);
 
@@ -99,7 +99,7 @@ final class AlignmentDirectionalUtility<S extends SpecUtility<Object?>>
   S bottomEnd() => call(AlignmentDirectional.bottomEnd);
 }
 
-final class FontFeatureUtility<T extends SpecUtility<Object?>>
+final class FontFeatureUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, FontFeature> {
   const FontFeatureUtility(super.builder);
 
@@ -186,10 +186,9 @@ final class FontFeatureUtility<T extends SpecUtility<Object?>>
 
   /// Creates a [Style] instance using the [FontFeature.slashedZero] constructor.
   T slashedZero() => call(const FontFeature.slashedZero());
-
 }
 
-final class DurationUtility<T extends SpecUtility<Object?>>
+final class DurationUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, Duration> {
   const DurationUtility(super.builder);
 
@@ -207,12 +206,12 @@ final class DurationUtility<T extends SpecUtility<Object?>>
   T zero() => call(Duration.zero);
 }
 
-final class FontSizeUtility<T extends SpecUtility<Object?>>
+final class FontSizeUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, double> {
   const FontSizeUtility(super.builder);
 }
 
-final class FontWeightUtility<T extends SpecUtility<Object?>>
+final class FontWeightUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, FontWeight> {
   const FontWeightUtility(super.builder);
 
@@ -250,7 +249,7 @@ final class FontWeightUtility<T extends SpecUtility<Object?>>
   T bold() => call(FontWeight.bold);
 }
 
-final class TextDecorationUtility<T extends SpecUtility<Object?>>
+final class TextDecorationUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, TextDecoration> {
   const TextDecorationUtility(super.builder);
 
@@ -272,7 +271,7 @@ final class TextDecorationUtility<T extends SpecUtility<Object?>>
   }
 }
 
-final class CurveUtility<T extends SpecUtility<Object?>>
+final class CurveUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, Curve> {
   const CurveUtility(super.builder);
 
@@ -414,7 +413,7 @@ final class CurveUtility<T extends SpecUtility<Object?>>
   T elasticInOut() => call(Curves.elasticInOut);
 }
 
-final class OffsetUtility<T extends SpecUtility<Object?>>
+final class OffsetUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, Offset> {
   const OffsetUtility(super.builder);
 
@@ -430,7 +429,7 @@ final class OffsetUtility<T extends SpecUtility<Object?>>
   }
 }
 
-final class RadiusUtility<T extends SpecUtility<Object?>>
+final class RadiusUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, Radius> {
   const RadiusUtility(super.builder);
 
@@ -446,7 +445,7 @@ final class RadiusUtility<T extends SpecUtility<Object?>>
   T elliptical(double x, double y) => call(Radius.elliptical(x, y));
 }
 
-final class RectUtility<T extends SpecUtility<Object?>>
+final class RectUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, Rect> {
   const RectUtility(super.builder);
 
@@ -484,17 +483,17 @@ final class RectUtility<T extends SpecUtility<Object?>>
   T fromPoints(Offset a, Offset b) => call(Rect.fromPoints(a, b));
 }
 
-final class PaintUtility<T extends SpecUtility<Object?>>
+final class PaintUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, Paint> {
   const PaintUtility(super.builder);
 }
 
-final class LocaleUtility<T extends SpecUtility<Object?>>
+final class LocaleUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, Locale> {
   const LocaleUtility(super.builder);
 }
 
-final class ImageProviderUtility<T extends SpecUtility<Object?>>
+final class ImageProviderUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, ImageProvider> {
   const ImageProviderUtility(super.builder);
 
@@ -506,7 +505,7 @@ final class ImageProviderUtility<T extends SpecUtility<Object?>>
   T memory(Uint8List bytes) => call(MemoryImage(bytes));
 }
 
-final class GradientTransformUtility<T extends SpecUtility<Object?>>
+final class GradientTransformUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, GradientTransform> {
   const GradientTransformUtility(super.builder);
 
@@ -514,7 +513,7 @@ final class GradientTransformUtility<T extends SpecUtility<Object?>>
   T rotate(double radians) => call(GradientRotation(radians));
 }
 
-final class Matrix4Utility<T extends SpecUtility<Object?>>
+final class Matrix4Utility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, Matrix4> {
   const Matrix4Utility(super.builder);
 
@@ -561,7 +560,7 @@ final class Matrix4Utility<T extends SpecUtility<Object?>>
   }
 }
 
-final class FontFamilyUtility<T extends SpecUtility<Object?>>
+final class FontFamilyUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, String> {
   const FontFamilyUtility(super.builder);
 
@@ -579,7 +578,7 @@ final class FontFamilyUtility<T extends SpecUtility<Object?>>
   }
 }
 
-final class TextScalerUtility<T extends SpecUtility<Object?>>
+final class TextScalerUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, TextScaler> {
   const TextScalerUtility(super.builder);
 
@@ -590,12 +589,12 @@ final class TextScalerUtility<T extends SpecUtility<Object?>>
   T linear(double textScaleFactor) => call(TextScaler.linear(textScaleFactor));
 }
 
-final class TableColumnWidthUtility<T extends SpecUtility<Object?>>
+final class TableColumnWidthUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, TableColumnWidth> {
   const TableColumnWidthUtility(super.builder);
 }
 
-class TableBorderUtility<T extends SpecUtility<Object?>>
+class TableBorderUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, TableBorder> {
   const TableBorderUtility(super.builder);
 
@@ -632,7 +631,7 @@ class TableBorderUtility<T extends SpecUtility<Object?>>
   }
 }
 
-final class StrokeAlignUtility<T extends SpecUtility<Object?>>
+final class StrokeAlignUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, double> {
   const StrokeAlignUtility(super.builder);
 
@@ -641,12 +640,12 @@ final class StrokeAlignUtility<T extends SpecUtility<Object?>>
   T outside() => call(1);
 }
 
-class ListUtility<T extends SpecUtility<Object?>, V>
+class ListUtility<T extends SpecAttribute<Object?>, V>
     extends PropUtility<T, List<V>> {
   const ListUtility(super.builder);
 }
 
-final class StringUtility<T extends SpecUtility<Object?>>
+final class StringUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, String> {
   const StringUtility(super.builder);
 }
@@ -655,7 +654,7 @@ final class StringUtility<T extends SpecUtility<Object?>>
 ///
 /// This class extends [PropUtility] and provides methods to create [Attribute] instances
 /// from predefined [double] values or custom [double] values.
-final class DoubleUtility<T extends SpecUtility<Object?>>
+final class DoubleUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, double> {
   const DoubleUtility(super.builder);
 
@@ -670,7 +669,7 @@ final class DoubleUtility<T extends SpecUtility<Object?>>
 ///
 /// This class extends [PropUtility] and provides methods to create [Attribute] instances
 /// from predefined [int] values or custom [int] values.
-final class IntUtility<T extends SpecUtility<Object?>>
+final class IntUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, int> {
   const IntUtility(super.builder);
 
@@ -682,7 +681,7 @@ final class IntUtility<T extends SpecUtility<Object?>>
 ///
 /// This class extends [PropUtility] and provides methods to create [Attribute] instances
 /// from predefined [bool] values or custom [bool] values.
-final class BoolUtility<T extends SpecUtility<Object?>>
+final class BoolUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, bool> {
   const BoolUtility(super.builder);
 
@@ -696,7 +695,7 @@ final class BoolUtility<T extends SpecUtility<Object?>>
 /// An abstract utility class for creating [Attribute] instances from [double] values representing sizes.
 ///
 /// This class extends [PropUtility] and serves as a base for more specific sizing utilities.
-abstract base class SizingUtility<T extends SpecUtility<Object?>>
+abstract base class SizingUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, double> {
   const SizingUtility(super.builder);
 }

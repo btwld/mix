@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import '../../core/attribute.dart';
 import '../../core/prop.dart';
 import '../../core/utility.dart';
 import '../scalars/scalar_util.dart';
@@ -9,7 +10,7 @@ import 'border_radius_dto.dart';
 ///
 /// Extends the [BorderRadiusUtility] class to provide additional utility methods for creating and manipulating [BorderRadiusGeometry] attributes.
 /// adds a [directional] property that returns a [BorderRadiusDirectionalUtility] instance.
-final class BorderRadiusGeometryUtility<T extends SpecUtility<Object?>>
+final class BorderRadiusGeometryUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, BorderRadiusGeometry> {
   /// Returns a directional utility for creating and manipulating attributes with [BorderRadiusDirectional]
   late final directional = BorderRadiusDirectionalUtility<T>(builder);
@@ -63,7 +64,7 @@ final class BorderRadiusGeometryUtility<T extends SpecUtility<Object?>>
 ///
 /// Allows setting of radius for a border. This class provides a convenient way to configure and apply border radius to [T]
 /// Accepts a builder function that returns [T] and takes a [BorderRadiusDto] as a parameter.
-final class BorderRadiusUtility<T extends SpecUtility<Object?>>
+final class BorderRadiusUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, BorderRadius> {
   /// Returns a [RadiusUtility] to manipulate [Radius] for bottomLeft corner.
   late final bottomLeft = RadiusUtility<T>(
@@ -131,7 +132,7 @@ final class BorderRadiusUtility<T extends SpecUtility<Object?>>
   T call(BorderRadiusDto value) => builder(MixProp(value));
 }
 
-final class BorderRadiusDirectionalUtility<T extends SpecUtility<Object?>>
+final class BorderRadiusDirectionalUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, BorderRadiusDirectional> {
   const BorderRadiusDirectionalUtility(super.builder)
     : super(valueToMix: BorderRadiusDirectionalDto.value);

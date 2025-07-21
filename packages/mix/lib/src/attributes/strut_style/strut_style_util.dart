@@ -6,7 +6,7 @@ import '../enum/enum_util.dart';
 import '../scalars/scalar_util.dart';
 import 'strut_style_dto.dart';
 
-final class StrutStyleUtility<T extends SpecUtility<Object?>>
+final class StrutStyleUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, StrutStyle> {
   late final fontWeight = FontWeightUtility<T>(
     (prop) => call(StrutStyleDto(fontWeight: prop)),

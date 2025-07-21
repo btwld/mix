@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import '../../core/attribute.dart';
 import '../../core/prop.dart';
 import '../../core/utility.dart';
 import '../enum/enum_util.dart';
@@ -10,7 +11,7 @@ import 'gradient_dto.dart';
 ///
 /// This class provides methods to set individual properties of a [LinearGradient].
 /// Use the methods of this class to configure specific properties of a [LinearGradient].
-final class LinearGradientUtility<T extends SpecUtility<Object?>>
+final class LinearGradientUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, LinearGradient> {
   /// Utility for defining [LinearGradientDto.begin]
   late final begin = AlignmentGeometryUtility<T>(
@@ -53,7 +54,7 @@ final class LinearGradientUtility<T extends SpecUtility<Object?>>
 ///
 /// This class provides methods to set individual properties of a [RadialGradient].
 /// Use the methods of this class to configure specific properties of a [RadialGradient].
-final class RadialGradientUtility<T extends SpecUtility<Object?>>
+final class RadialGradientUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, RadialGradient> {
   /// Utility for defining [RadialGradientDto.center]
   late final center = AlignmentGeometryUtility<T>(
@@ -106,7 +107,7 @@ final class RadialGradientUtility<T extends SpecUtility<Object?>>
 ///
 /// This class provides methods to set individual properties of a [SweepGradient].
 /// Use the methods of this class to configure specific properties of a [SweepGradient].
-final class SweepGradientUtility<T extends SpecUtility<Object?>>
+final class SweepGradientUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, SweepGradient> {
   /// Utility for defining [SweepGradientDto.center]
   late final center = AlignmentGeometryUtility<T>(
@@ -151,7 +152,7 @@ final class SweepGradientUtility<T extends SpecUtility<Object?>>
 }
 
 /// Utility class for working with gradients.
-final class GradientUtility<T extends SpecUtility<Object?>>
+final class GradientUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, Gradient> {
   /// Returns a [LinearGradientUtility] for creating linear gradients
   late final linear = LinearGradientUtility<T>(builder);
@@ -169,7 +170,7 @@ final class GradientUtility<T extends SpecUtility<Object?>>
 }
 
 /// Utility class for creating List<Prop<Color>> from List<Color>
-final class ColorListUtility<T extends SpecUtility<Object?>>
+final class ColorListUtility<T extends SpecAttribute<Object?>>
     extends MixUtility<T, List<Prop<Color>>> {
   const ColorListUtility(super.builder);
 
@@ -179,7 +180,7 @@ final class ColorListUtility<T extends SpecUtility<Object?>>
 }
 
 /// Utility class for creating List<Prop<double>> from List<double>
-final class DoubleListUtility<T extends SpecUtility<Object?>>
+final class DoubleListUtility<T extends SpecAttribute<Object?>>
     extends MixUtility<T, List<Prop<double>>> {
   const DoubleListUtility(super.builder);
 

@@ -123,7 +123,7 @@ class VisibilityModifierSpecAttribute
   List<Object?> get props => [visible];
 }
 
-final class VisibilityModifierSpecUtility<T extends SpecUtility<Object?>>
+final class VisibilityModifierSpecUtility<T extends SpecAttribute<Object?>>
     extends MixUtility<T, VisibilityModifierSpecAttribute> {
   const VisibilityModifierSpecUtility(super.builder);
   T on() => call(true);

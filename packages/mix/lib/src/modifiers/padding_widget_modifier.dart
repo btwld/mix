@@ -129,7 +129,7 @@ class PaddingModifierSpecAttribute
 ///
 /// This class provides methods to set individual properties of a [PaddingModifierSpec].
 /// Use the methods of this class to configure specific properties of a [PaddingModifierSpec].
-class PaddingModifierSpecUtility<T extends SpecUtility<Object?>>
+class PaddingModifierSpecUtility<T extends SpecAttribute<Object?>>
     extends MixUtility<T, PaddingModifierSpecAttribute> {
   /// Utility for defining [PaddingModifierSpecAttribute.padding]
   late final padding = EdgeInsetsGeometryUtility(

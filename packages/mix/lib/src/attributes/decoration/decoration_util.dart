@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/attribute.dart';
 import '../../core/prop.dart';
 import '../../core/utility.dart';
 import '../border/border_radius_util.dart';
@@ -17,7 +18,7 @@ import 'image/decoration_image_util.dart';
 /// This class provides methods to set individual properties of a [BoxDecoration].
 /// Use the methods of this class to configure specific properties of a [BoxDecoration].
 @immutable
-final class BoxDecorationUtility<T extends SpecUtility<Object?>>
+final class BoxDecorationUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, BoxDecoration> {
   /// Utility for defining [BoxDecorationDto.border]
   late final border = BoxBorderUtility<T>(
@@ -81,7 +82,7 @@ final class BoxDecorationUtility<T extends SpecUtility<Object?>>
 /// This class provides methods to set individual properties of a [ShapeDecoration].
 /// Use the methods of this class to configure specific properties of a [ShapeDecoration].
 @immutable
-final class ShapeDecorationUtility<T extends SpecUtility<Object?>>
+final class ShapeDecorationUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, ShapeDecoration> {
   /// Utility for defining [ShapeDecorationDto.shape]
   late final shape = ShapeBorderUtility<T>((v) => only(shape: v));

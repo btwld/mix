@@ -3,7 +3,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-final class BoxBorderUtility<T extends SpecUtility<Object?>>
+final class BoxBorderUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, BoxBorder> {
   late final directional = BorderDirectionalUtility<T>(builder);
   late final all = _border.all;
@@ -55,7 +55,7 @@ final class BoxBorderUtility<T extends SpecUtility<Object?>>
   }
 }
 
-final class BorderUtility<T extends SpecUtility<Object?>>
+final class BorderUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, Border> {
   late final all = BorderSideUtility<T>(
     (v) => call(BorderDto(top: v, bottom: v, left: v, right: v)),
@@ -106,7 +106,7 @@ final class BorderUtility<T extends SpecUtility<Object?>>
   }
 }
 
-final class BorderDirectionalUtility<T extends SpecUtility<Object?>>
+final class BorderDirectionalUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, BorderDirectional> {
   late final all = BorderSideUtility<T>(
     (v) => call(BorderDirectionalDto(top: v, bottom: v, start: v, end: v)),
@@ -167,7 +167,7 @@ final class BorderDirectionalUtility<T extends SpecUtility<Object?>>
 ///
 /// This class provides methods to set individual properties of a [BorderSide].
 /// Use the methods of this class to configure specific properties of a [BorderSide].
-class BorderSideUtility<T extends SpecUtility<Object?>>
+class BorderSideUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, BorderSide> {
   /// Utility for defining [BorderSideDto.color]
   late final color = ColorUtility<T>(

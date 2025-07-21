@@ -7,14 +7,14 @@ import 'mix_element.dart';
 import 'prop.dart';
 import 'spec.dart';
 
-abstract class MixUtility<U extends SpecUtility<Object?>, Value> {
+abstract class MixUtility<U extends SpecAttribute<Object?>, Value> {
   final U Function(Value) builder;
 
   const MixUtility(this.builder);
 }
 
 abstract interface class PropBaseUtility<
-  U extends SpecUtility<Object?>,
+  U extends SpecAttribute<Object?>,
   Value
 > {
   const PropBaseUtility();
@@ -35,7 +35,7 @@ abstract interface class PropBaseUtility<
 ///
 /// Used for simple types like Color, double, FontWeight, etc.
 @immutable
-abstract class PropUtility<U extends SpecUtility<Object?>, Value>
+abstract class PropUtility<U extends SpecAttribute<Object?>, Value>
     extends PropBaseUtility<U, Value> {
   final U Function(Prop<Value>) builder;
   const PropUtility(this.builder);
@@ -57,7 +57,7 @@ abstract class PropUtility<U extends SpecUtility<Object?>, Value>
 }
 
 @immutable
-abstract class MixPropUtility<U extends SpecUtility<Object?>, Value>
+abstract class MixPropUtility<U extends SpecAttribute<Object?>, Value>
     extends PropBaseUtility<U, Value> {
   final Mixable<Value> Function(Value) valueToMix;
   @protected

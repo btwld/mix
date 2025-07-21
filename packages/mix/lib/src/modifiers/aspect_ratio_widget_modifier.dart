@@ -130,7 +130,7 @@ class AspectRatioModifierSpecAttribute
   List<Object?> get props => [aspectRatio];
 }
 
-final class AspectRatioModifierSpecUtility<T extends SpecUtility<Object?>>
+final class AspectRatioModifierSpecUtility<T extends SpecAttribute<Object?>>
     extends MixUtility<T, AspectRatioModifierSpecAttribute> {
   const AspectRatioModifierSpecUtility(super.builder);
 

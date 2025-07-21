@@ -2,6 +2,7 @@
 
 import 'package:flutter/widgets.dart';
 
+import '../../core/attribute.dart';
 import '../../core/utility.dart';
 
 /// {@template vertical_direction_utility}
@@ -10,7 +11,7 @@ import '../../core/utility.dart';
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [VerticalDirection] values.
 /// {@endtemplate}
-final class VerticalDirectionUtility<T extends SpecUtility<Object?>>
+final class VerticalDirectionUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, VerticalDirection> {
   const VerticalDirectionUtility(super.builder);
 
@@ -27,7 +28,7 @@ final class VerticalDirectionUtility<T extends SpecUtility<Object?>>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [BorderStyle] values.
 /// {@endtemplate}
-final class BorderStyleUtility<T extends SpecUtility<Object?>>
+final class BorderStyleUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, BorderStyle> {
   const BorderStyleUtility(super.builder);
 
@@ -44,7 +45,7 @@ final class BorderStyleUtility<T extends SpecUtility<Object?>>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [Clip] values.
 /// {@endtemplate}
-final class ClipUtility<T extends SpecUtility<Object?>>
+final class ClipUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, Clip> {
   const ClipUtility(super.builder);
 
@@ -67,7 +68,7 @@ final class ClipUtility<T extends SpecUtility<Object?>>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [Axis] values.
 /// {@endtemplate}
-final class AxisUtility<T extends SpecUtility<Object?>>
+final class AxisUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, Axis> {
   const AxisUtility(super.builder);
 
@@ -84,7 +85,7 @@ final class AxisUtility<T extends SpecUtility<Object?>>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [FlexFit] values.
 /// {@endtemplate}
-final class FlexFitUtility<T extends SpecUtility<Object?>>
+final class FlexFitUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, FlexFit> {
   const FlexFitUtility(super.builder);
 
@@ -101,7 +102,7 @@ final class FlexFitUtility<T extends SpecUtility<Object?>>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [StackFit] values.
 /// {@endtemplate}
-final class StackFitUtility<T extends SpecUtility<Object?>>
+final class StackFitUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, StackFit> {
   const StackFitUtility(super.builder);
 
@@ -121,7 +122,7 @@ final class StackFitUtility<T extends SpecUtility<Object?>>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [ImageRepeat] values.
 /// {@endtemplate}
-final class ImageRepeatUtility<T extends SpecUtility<Object?>>
+final class ImageRepeatUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, ImageRepeat> {
   const ImageRepeatUtility(super.builder);
 
@@ -144,7 +145,7 @@ final class ImageRepeatUtility<T extends SpecUtility<Object?>>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextDirection] values.
 /// {@endtemplate}
-final class TextDirectionUtility<T extends SpecUtility<Object?>>
+final class TextDirectionUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, TextDirection> {
   const TextDirectionUtility(super.builder);
 
@@ -161,7 +162,7 @@ final class TextDirectionUtility<T extends SpecUtility<Object?>>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextLeadingDistribution] values.
 /// {@endtemplate}
-final class TextLeadingDistributionUtility<T extends SpecUtility<Object?>>
+final class TextLeadingDistributionUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, TextLeadingDistribution> {
   const TextLeadingDistributionUtility(super.builder);
 
@@ -178,7 +179,7 @@ final class TextLeadingDistributionUtility<T extends SpecUtility<Object?>>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TileMode] values.
 /// {@endtemplate}
-final class TileModeUtility<T extends SpecUtility<Object?>>
+final class TileModeUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, TileMode> {
   const TileModeUtility(super.builder);
 
@@ -201,7 +202,7 @@ final class TileModeUtility<T extends SpecUtility<Object?>>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [MainAxisAlignment] values.
 /// {@endtemplate}
-final class MainAxisAlignmentUtility<T extends SpecUtility<Object?>>
+final class MainAxisAlignmentUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, MainAxisAlignment> {
   const MainAxisAlignmentUtility(super.builder);
 
@@ -230,7 +231,7 @@ final class MainAxisAlignmentUtility<T extends SpecUtility<Object?>>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [CrossAxisAlignment] values.
 /// {@endtemplate}
-final class CrossAxisAlignmentUtility<T extends SpecUtility<Object?>>
+final class CrossAxisAlignmentUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, CrossAxisAlignment> {
   const CrossAxisAlignmentUtility(super.builder);
 
@@ -256,7 +257,7 @@ final class CrossAxisAlignmentUtility<T extends SpecUtility<Object?>>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [MainAxisSize] values.
 /// {@endtemplate}
-final class MainAxisSizeUtility<T extends SpecUtility<Object?>>
+final class MainAxisSizeUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, MainAxisSize> {
   const MainAxisSizeUtility(super.builder);
 
@@ -273,7 +274,7 @@ final class MainAxisSizeUtility<T extends SpecUtility<Object?>>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [BoxFit] values.
 /// {@endtemplate}
-final class BoxFitUtility<T extends SpecUtility<Object?>>
+final class BoxFitUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, BoxFit> {
   const BoxFitUtility(super.builder);
 
@@ -305,7 +306,7 @@ final class BoxFitUtility<T extends SpecUtility<Object?>>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [BlendMode] values.
 /// {@endtemplate}
-final class BlendModeUtility<T extends SpecUtility<Object?>>
+final class BlendModeUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, BlendMode> {
   const BlendModeUtility(super.builder);
 
@@ -403,7 +404,7 @@ final class BlendModeUtility<T extends SpecUtility<Object?>>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [BoxShape] values.
 /// {@endtemplate}
-final class BoxShapeUtility<T extends SpecUtility<Object?>>
+final class BoxShapeUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, BoxShape> {
   const BoxShapeUtility(super.builder);
 
@@ -420,7 +421,7 @@ final class BoxShapeUtility<T extends SpecUtility<Object?>>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [FontStyle] values.
 /// {@endtemplate}
-final class FontStyleUtility<T extends SpecUtility<Object?>>
+final class FontStyleUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, FontStyle> {
   const FontStyleUtility(super.builder);
 
@@ -437,7 +438,7 @@ final class FontStyleUtility<T extends SpecUtility<Object?>>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextDecorationStyle] values.
 /// {@endtemplate}
-final class TextDecorationStyleUtility<T extends SpecUtility<Object?>>
+final class TextDecorationStyleUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, TextDecorationStyle> {
   const TextDecorationStyleUtility(super.builder);
 
@@ -463,7 +464,7 @@ final class TextDecorationStyleUtility<T extends SpecUtility<Object?>>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextBaseline] values.
 /// {@endtemplate}
-final class TextBaselineUtility<T extends SpecUtility<Object?>>
+final class TextBaselineUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, TextBaseline> {
   const TextBaselineUtility(super.builder);
 
@@ -480,7 +481,7 @@ final class TextBaselineUtility<T extends SpecUtility<Object?>>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextOverflow] values.
 /// {@endtemplate}
-final class TextOverflowUtility<T extends SpecUtility<Object?>>
+final class TextOverflowUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, TextOverflow> {
   const TextOverflowUtility(super.builder);
 
@@ -503,7 +504,7 @@ final class TextOverflowUtility<T extends SpecUtility<Object?>>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextWidthBasis] values.
 /// {@endtemplate}
-final class TextWidthBasisUtility<T extends SpecUtility<Object?>>
+final class TextWidthBasisUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, TextWidthBasis> {
   const TextWidthBasisUtility(super.builder);
 
@@ -520,7 +521,7 @@ final class TextWidthBasisUtility<T extends SpecUtility<Object?>>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TextAlign] values.
 /// {@endtemplate}
-final class TextAlignUtility<T extends SpecUtility<Object?>>
+final class TextAlignUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, TextAlign> {
   const TextAlignUtility(super.builder);
 
@@ -549,7 +550,7 @@ final class TextAlignUtility<T extends SpecUtility<Object?>>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [FilterQuality] values.
 /// {@endtemplate}
-final class FilterQualityUtility<T extends SpecUtility<Object?>>
+final class FilterQualityUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, FilterQuality> {
   const FilterQualityUtility(super.builder);
 
@@ -572,7 +573,7 @@ final class FilterQualityUtility<T extends SpecUtility<Object?>>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [WrapAlignment] values.
 /// {@endtemplate}
-final class WrapAlignmentUtility<T extends SpecUtility<Object?>>
+final class WrapAlignmentUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, WrapAlignment> {
   const WrapAlignmentUtility(super.builder);
 
@@ -601,7 +602,7 @@ final class WrapAlignmentUtility<T extends SpecUtility<Object?>>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// from predefined [TableCellVerticalAlignment] values.
 /// {@endtemplate}
-class TableCellVerticalAlignmentUtility<T extends SpecUtility<Object?>>
+class TableCellVerticalAlignmentUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, TableCellVerticalAlignment> {
   const TableCellVerticalAlignmentUtility(super.builder);
 

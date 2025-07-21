@@ -206,7 +206,7 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
 
   /// Resolves to [StackSpec] using the provided [MixContext].
   @override
-  StackSpec resolve(BuildContext context) {
+  StackSpec resolveSpec(BuildContext context) {
     return StackSpec(
       alignment: MixHelpers.resolve(context, $alignment),
       fit: MixHelpers.resolve(context, $fit),

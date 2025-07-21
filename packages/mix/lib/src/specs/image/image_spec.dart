@@ -72,27 +72,6 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
     );
   }
 
-  void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    properties.add(DiagnosticsProperty('width', $width, defaultValue: null));
-    properties.add(DiagnosticsProperty('height', $height, defaultValue: null));
-    properties.add(DiagnosticsProperty('color', $color, defaultValue: null));
-    properties.add(DiagnosticsProperty('repeat', $repeat, defaultValue: null));
-    properties.add(DiagnosticsProperty('fit', $fit, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('alignment', $alignment, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('centerSlice', $centerSlice, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty(
-        'colorBlendMode',
-        $colorBlendMode,
-        defaultValue: null,
-      ),
-    );
-  }
-
   @override
   ImageSpec copyWith({
     double? width,

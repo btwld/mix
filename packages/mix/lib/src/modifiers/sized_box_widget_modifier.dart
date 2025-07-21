@@ -135,7 +135,7 @@ class SizedBoxModifierSpecAttribute
   List<Object?> get props => [width, height];
 }
 
-final class SizedBoxModifierSpecUtility<T extends SpecUtility<Object?>>
+final class SizedBoxModifierSpecUtility<T extends SpecAttribute<Object?>>
     extends MixUtility<T, SizedBoxModifierSpecAttribute> {
   // TODO: Add width, height and square utilities when DoubleUtility is available
   // late final width = DoubleUtility(

@@ -76,7 +76,7 @@ final class ScrollViewModifierSpec extends Modifier<ScrollViewModifierSpec> {
   }
 }
 
-final class ScrollViewModifierSpecUtility<T extends SpecUtility<Object?>>
+final class ScrollViewModifierSpecUtility<T extends SpecAttribute<Object?>>
     extends MixUtility<T, ScrollViewModifierSpecAttribute> {
   /// Make the scroll view reverse or not.
   late final reverse = BoolUtility((prop) => call(reverse: prop));

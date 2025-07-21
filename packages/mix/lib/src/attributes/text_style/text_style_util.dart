@@ -8,7 +8,7 @@ import '../scalars/scalar_util.dart';
 import '../shadow/shadow_dto.dart';
 import 'text_style_dto.dart';
 
-final class TextStyleUtility<T extends SpecUtility<Object?>>
+final class TextStyleUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, TextStyle> {
   late final color = ColorUtility<T>((prop) => call(TextStyleDto(color: prop)));
 

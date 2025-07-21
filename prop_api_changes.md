@@ -13,8 +13,8 @@ The Prop system has been redesigned with a cleaner separation of concerns. The k
 **Before:**
 ```dart
 // Two different classes with complex type parameters
-Prop<Color> colorProp = Prop.fromValue(Colors.red);
-MixProp<BorderSide, BorderSideDto> borderProp = MixProp.fromValue(borderDto);
+Prop<Color> colorProp = Prop(Colors.red);
+MixProp<BorderSide, BorderSideDto> borderProp = MixProp(borderDto);
 ```
 
 **After:**
@@ -31,9 +31,9 @@ MixProp<BorderSide> borderProp = MixProp(borderDto);  // Note: V is the resolved
 **Before:**
 ```dart
 // Named constructors
-Prop.fromValue(value)
-Prop.fromValue(value, animation: animConfig)
-Prop.maybeValue(nullableValue)
+Prop(value)
+Prop(value, animation: animConfig)
+Prop.maybe(nullableValue)
 Prop.fromToken(token)
 ```
 
@@ -52,9 +52,9 @@ Prop.animation(animConfig)
 **Before:**
 ```dart
 MixProp<BorderSide, BorderSideDto> prop;
-MixProp.fromValue(borderDto)
+MixProp(borderDto)
 MixProp.fromToken(token, (value) => BorderSideDto.from(value))
-MixProp.maybeValue(nullableBorderDto)
+MixProp.maybe(nullableBorderDto)
 ```
 
 **After:**
@@ -114,8 +114,8 @@ mixProp.getMixSource() // MixPropSource<V> - throws if no source
 **Before:**
 ```dart
 // Directives and animation passed in constructors
-Prop.fromValue(value, animation: animConfig)
-MixProp.fromValue(dto, animation: animConfig)
+Prop(value, animation: animConfig)
+MixProp(dto, animation: animConfig)
 ```
 
 **After:**
@@ -143,8 +143,8 @@ class MyDto {
   final Prop<double>? width;
   
   MyDto({Color? color, double? width})
-    : color = Prop.maybeValue(color),
-      width = Prop.maybeValue(width);
+    : color = Prop.maybe(color),
+      width = Prop.maybe(width);
 }
 ```
 
@@ -173,8 +173,8 @@ class BorderDto {
     BorderSideDto? bottom,
   }) {
     return BorderDto.props(
-      top: MixProp.maybeValue(top),
-      bottom: MixProp.maybeValue(bottom),
+      top: MixProp.maybe(top),
+      bottom: MixProp.maybe(bottom),
     );
   }
 }
@@ -203,7 +203,7 @@ class BorderDto {
 **Before:**
 ```dart
 // Regular token
-final prop = Prop.fromToken($token.color);
+final prop = Prop.token($token.color);
 
 // Mix token with converter
 final mixProp = MixProp.fromToken(
@@ -228,7 +228,7 @@ final mixProp = MixProp.token(
 
 **Before:**
 ```dart
-Prop.fromValue(Colors.red, animation: AnimationConfig(
+Prop(Colors.red, animation: AnimationConfig(
   duration: Duration(seconds: 1),
   curve: Curves.easeIn,
 ))
@@ -255,8 +255,8 @@ static Prop<Color> animatedColor(Color color, AnimationConfig animation) {
 **Before:**
 ```dart
 // Using maybeValue static method
-color: Prop.maybeValue(isEnabled ? Colors.blue : null),
-border: MixProp.maybeValue(isEnabled ? borderDto : null),
+color: Prop.maybe(isEnabled ? Colors.blue : null),
+border: MixProp.maybe(isEnabled ? borderDto : null),
 ```
 
 **After:**
@@ -296,8 +296,8 @@ The method 'maybeValue' isn't defined for the type 'MixProp'
 **Solution:**
 ```dart
 // Before
-Prop.maybeValue(value)
-MixProp.maybeValue(dto)
+Prop.maybe(value)
+MixProp.maybe(dto)
 
 // After
 Prop.maybe(value)
@@ -315,8 +315,8 @@ Method not found: 'MixProp.fromValue'
 **Solution:**
 ```dart
 // Before
-Prop.fromValue(value)
-MixProp.fromValue(dto)
+Prop(value)
+MixProp(dto)
 
 // After
 Prop(value)
@@ -381,11 +381,11 @@ if (mixProp.hasSource) {
    - [ ] Keep `Prop<T>` as is
 
 2. **Update constructor calls:**
-   - [ ] `Prop.fromValue()` → `Prop()`
-   - [ ] `Prop.maybeValue()` → `Prop.maybe()`
+   - [ ] `Prop()` → `Prop()`
+   - [ ] `Prop.maybe()` → `Prop.maybe()`
    - [ ] `Prop.fromToken()` → `Prop.token()`
-   - [ ] `MixProp.fromValue()` → `MixProp()`
-   - [ ] `MixProp.maybeValue()` → `MixProp.maybe()`
+   - [ ] `MixProp()` → `MixProp()`
+   - [ ] `MixProp.maybe()` → `MixProp.maybe()`
    - [ ] `MixProp.fromToken()` → `MixProp.token()`
 
 3. **Update property access:**

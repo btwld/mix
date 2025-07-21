@@ -663,7 +663,7 @@ class TriangleClipper extends CustomClipper<Path> {
   bool shouldReclip(TriangleClipper oldClipper) => false;
 }
 
-final class ClipPathModifierSpecUtility<T extends SpecUtility<Object?>>
+final class ClipPathModifierSpecUtility<T extends SpecAttribute<Object?>>
     extends MixUtility<T, ClipPathModifierSpecAttribute> {
   const ClipPathModifierSpecUtility(super.builder);
 
@@ -677,7 +677,7 @@ final class ClipPathModifierSpecUtility<T extends SpecUtility<Object?>>
   }
 }
 
-final class ClipRRectModifierSpecUtility<T extends SpecUtility<Object?>>
+final class ClipRRectModifierSpecUtility<T extends SpecAttribute<Object?>>
     extends MixUtility<T, ClipRRectModifierSpecAttribute> {
   const ClipRRectModifierSpecUtility(super.builder);
   T call({
@@ -697,7 +697,7 @@ final class ClipRRectModifierSpecUtility<T extends SpecUtility<Object?>>
   }
 }
 
-final class ClipOvalModifierSpecUtility<T extends SpecUtility<Object?>>
+final class ClipOvalModifierSpecUtility<T extends SpecAttribute<Object?>>
     extends MixUtility<T, ClipOvalModifierSpecAttribute> {
   const ClipOvalModifierSpecUtility(super.builder);
   T call({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
@@ -710,7 +710,7 @@ final class ClipOvalModifierSpecUtility<T extends SpecUtility<Object?>>
   }
 }
 
-final class ClipRectModifierSpecUtility<T extends SpecUtility<Object?>>
+final class ClipRectModifierSpecUtility<T extends SpecAttribute<Object?>>
     extends MixUtility<T, ClipRectModifierSpecAttribute> {
   const ClipRectModifierSpecUtility(super.builder);
   T call({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
@@ -723,7 +723,7 @@ final class ClipRectModifierSpecUtility<T extends SpecUtility<Object?>>
   }
 }
 
-final class ClipTriangleModifierSpecUtility<T extends SpecUtility<Object?>>
+final class ClipTriangleModifierSpecUtility<T extends SpecAttribute<Object?>>
     extends MixUtility<T, ClipTriangleModifierSpecAttribute> {
   const ClipTriangleModifierSpecUtility(super.builder);
   T call({Clip? clipBehavior}) {

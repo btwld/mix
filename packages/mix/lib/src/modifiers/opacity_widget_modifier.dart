@@ -127,7 +127,7 @@ class OpacityModifierSpecAttribute
   List<Object?> get props => [opacity];
 }
 
-final class OpacityModifierSpecUtility<T extends SpecUtility<Object?>>
+final class OpacityModifierSpecUtility<T extends SpecAttribute<Object?>>
     extends MixUtility<T, OpacityModifierSpecAttribute> {
   const OpacityModifierSpecUtility(super.builder);
 

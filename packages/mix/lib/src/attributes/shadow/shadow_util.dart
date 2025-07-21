@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/attribute.dart';
 import '../../core/prop.dart';
 import '../../core/utility.dart';
 import '../color/color_util.dart';
@@ -10,7 +11,7 @@ import 'shadow_dto.dart';
 ///
 /// This class provides methods to set individual properties of a [Shadow].
 /// Use the methods of this class to configure specific properties of a [Shadow].
-class ShadowUtility<T extends SpecUtility<Object?>>
+class ShadowUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, Shadow> {
   /// Utility for defining [ShadowDto.blurRadius].
   late final blurRadius = DoubleUtility<T>(
@@ -34,7 +35,7 @@ class ShadowUtility<T extends SpecUtility<Object?>>
 ///
 /// This class provides methods to set individual properties of a [BoxShadow].
 /// Use the methods of this class to configure specific properties of a [BoxShadow].
-class BoxShadowUtility<T extends SpecUtility<Object?>>
+class BoxShadowUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, BoxShadow> {
   late final color = ColorUtility<T>((prop) => call(BoxShadowDto(color: prop)));
 
@@ -65,7 +66,7 @@ class BoxShadowUtility<T extends SpecUtility<Object?>>
 /// This class extends [MixUtility] and provides a way to create [StyleElement]
 /// instances by transforming a list of [BoxShadow] objects into a list of [MixProp<BoxShadow>] objects
 /// that can be directly used in DTOs.
-final class BoxShadowMixPropListUtility<T extends SpecUtility<Object?>>
+final class BoxShadowMixPropListUtility<T extends SpecAttribute<Object?>>
     extends MixUtility<T, List<MixProp<BoxShadow>>> {
   const BoxShadowMixPropListUtility(super.builder);
 
@@ -85,7 +86,7 @@ final class BoxShadowMixPropListUtility<T extends SpecUtility<Object?>>
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// based on predefined elevation values, which are mapped to corresponding lists of
 /// [MixProp<BoxShadow>] objects that can be directly used in DTOs.
-final class ElevationMixPropUtility<T extends SpecUtility<Object?>>
+final class ElevationMixPropUtility<T extends SpecAttribute<Object?>>
     extends MixUtility<T, List<MixProp<BoxShadow>>> {
   /// Creates an [T] instance with an elevation of 1.
   late final e1 = one;

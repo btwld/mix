@@ -1,5 +1,4 @@
-import '../core/attribute.dart';
-import '../modifiers/widget_modifiers_util.dart';
+// import '../modifiers/widget_modifiers_util.dart';
 import '../variants/variant_util.dart';
 import 'box/box_spec.dart';
 import 'flex/flex_spec.dart';
@@ -11,27 +10,26 @@ import 'text/text_spec.dart';
 
 const _mixUtility = MixUtilities();
 
-BoxSpecUtility<BoxSpecAttribute> get $box => _mixUtility.box;
-FlexBoxSpecUtility<FlexBoxSpecAttribute> get $flexbox => _mixUtility.flexbox;
-FlexSpecUtility<FlexSpecAttribute> get $flex => _mixUtility.flex;
-ImageSpecUtility<ImageSpecAttribute> get $image => _mixUtility.image;
-IconSpecUtility<IconSpecAttribute> get $icon => _mixUtility.icon;
-TextSpecUtility<TextSpecAttribute> get $text => _mixUtility.text;
+BoxSpecUtility get $box => _mixUtility.box;
+FlexBoxSpecUtility get $flexbox => _mixUtility.flexbox;
+FlexSpecUtility get $flex => _mixUtility.flex;
+ImageSpecUtility get $image => _mixUtility.image;
+IconSpecUtility get $icon => _mixUtility.icon;
+TextSpecUtility get $text => _mixUtility.text;
 StackSpecUtility get $stack => _mixUtility.stack;
 OnContextVariantUtility get $on => _mixUtility.on;
-WithModifierUtility<ModifierSpecAttribute> get $with => _mixUtility.mod;
+// WithModifierUtility<ModifierSpecAttribute> get $with => _mixUtility.mod;
 
 class MixUtilities {
   const MixUtilities();
-  BoxSpecUtility<BoxSpecAttribute> get box => BoxSpecUtility.self;
-  FlexSpecUtility<FlexSpecAttribute> get flex => FlexSpecUtility.self;
-  FlexBoxSpecUtility<FlexBoxSpecAttribute> get flexbox =>
-      FlexBoxSpecUtility.self;
-  ImageSpecUtility<ImageSpecAttribute> get image => ImageSpecUtility.self;
-  IconSpecUtility<IconSpecAttribute> get icon => IconSpecUtility.self;
-  TextSpecUtility<TextSpecAttribute> get text => TextSpecUtility.self;
+  BoxSpecUtility get box => BoxSpecUtility.self;
+  FlexSpecUtility get flex => FlexSpecUtility.self;
+  FlexBoxSpecUtility get flexbox => FlexBoxSpecUtility.self;
+  ImageSpecUtility get image => ImageSpecUtility.self;
+  IconSpecUtility get icon => IconSpecUtility.self;
+  TextSpecUtility get text => TextSpecUtility.self;
   StackSpecUtility get stack => StackSpecUtility.self;
   OnContextVariantUtility get on => OnContextVariantUtility.self;
-  WithModifierUtility<ModifierSpecAttribute> get mod =>
-      WithModifierUtility.self;
+  // WithModifierUtility<ModifierSpecAttribute> get mod =>
+  //     WithModifierUtility.self;
 }
