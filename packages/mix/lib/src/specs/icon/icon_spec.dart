@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../attributes/color/color_util.dart';
 import '../../attributes/scalar_util.dart';
-import '../../attributes/shadow_dto.dart';
+import '../../attributes/shadow_mix.dart';
 import '../../attributes/shadow_util.dart';
 import '../../core/animation_config.dart';
 import '../../core/attribute.dart';
@@ -193,13 +193,13 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
     double? weight,
     double? grade,
     double? opticalSize,
-    List<ShadowDto>? shadows,
+    List<ShadowMix>? shadows,
     TextDirection? textDirection,
     bool? applyTextScaling,
     double? fill,
     AnimationConfig? animation,
     List<ModifierAttribute>? modifiers,
-    List<VariantAttribute<IconSpec>>? variants,
+    List<VariantSpecAttribute<IconSpec>>? variants,
   }) : this(
          color: Prop.maybe(color),
          size: Prop.maybe(size),
@@ -223,7 +223,7 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
       weight: spec.weight,
       grade: spec.grade,
       opticalSize: spec.opticalSize,
-      shadows: spec.shadows?.map((shadow) => ShadowDto.value(shadow)).toList(),
+      shadows: spec.shadows?.map((shadow) => ShadowMix.value(shadow)).toList(),
       textDirection: spec.textDirection,
       applyTextScaling: spec.applyTextScaling,
       fill: spec.fill,
@@ -242,7 +242,7 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
     return spec != null ? IconSpecAttribute.value(spec) : null;
   }
 
-  IconSpecAttribute shadows(List<ShadowDto> value) {
+  IconSpecAttribute shadows(List<ShadowMix> value) {
     return IconSpecAttribute.only(shadows: value);
   }
 

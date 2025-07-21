@@ -4,13 +4,13 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 // Properties use MixProp for cleaner merging
-class TextHeightBehaviorDto extends Mix<TextHeightBehavior> {
+class TextHeightBehaviorMix extends Mix<TextHeightBehavior> {
   // Properties use MixProp for cleaner merging
   final Prop<bool>? applyHeightToFirstAscent;
   final Prop<bool>? applyHeightToLastDescent;
   final Prop<TextLeadingDistribution>? leadingDistribution;
 
-  TextHeightBehaviorDto.only({
+  TextHeightBehaviorMix.only({
     bool? applyHeightToFirstAscent,
     bool? applyHeightToLastDescent,
     TextLeadingDistribution? leadingDistribution,
@@ -22,20 +22,20 @@ class TextHeightBehaviorDto extends Mix<TextHeightBehavior> {
 
   /// Constructor that accepts a [TextHeightBehavior] value and extracts its properties.
   ///
-  /// This is useful for converting existing [TextHeightBehavior] instances to [TextHeightBehaviorDto].
+  /// This is useful for converting existing [TextHeightBehavior] instances to [TextHeightBehaviorMix].
   ///
   /// ```dart
   /// const behavior = TextHeightBehavior(applyHeightToFirstAscent: false);
-  /// final dto = TextHeightBehaviorDto.value(behavior);
+  /// final dto = TextHeightBehaviorMix.value(behavior);
   /// ```
-  TextHeightBehaviorDto.value(TextHeightBehavior behavior)
+  TextHeightBehaviorMix.value(TextHeightBehavior behavior)
     : this.only(
         applyHeightToFirstAscent: behavior.applyHeightToFirstAscent,
         applyHeightToLastDescent: behavior.applyHeightToLastDescent,
         leadingDistribution: behavior.leadingDistribution,
       );
 
-  const TextHeightBehaviorDto({
+  const TextHeightBehaviorMix({
     this.applyHeightToFirstAscent,
     this.applyHeightToLastDescent,
     this.leadingDistribution,
@@ -43,14 +43,14 @@ class TextHeightBehaviorDto extends Mix<TextHeightBehavior> {
 
   /// Constructor that accepts a nullable [TextHeightBehavior] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [TextHeightBehaviorDto.value].
+  /// Returns null if the input is null, otherwise uses [TextHeightBehaviorMix.value].
   ///
   /// ```dart
   /// const TextHeightBehavior? behavior = TextHeightBehavior(applyHeightToFirstAscent: false);
-  /// final dto = TextHeightBehaviorDto.maybeValue(behavior); // Returns TextHeightBehaviorDto or null
+  /// final dto = TextHeightBehaviorMix.maybeValue(behavior); // Returns TextHeightBehaviorMix or null
   /// ```
-  static TextHeightBehaviorDto? maybeValue(TextHeightBehavior? behavior) {
-    return behavior != null ? TextHeightBehaviorDto.value(behavior) : null;
+  static TextHeightBehaviorMix? maybeValue(TextHeightBehavior? behavior) {
+    return behavior != null ? TextHeightBehaviorMix.value(behavior) : null;
   }
 
   /// Resolves to [TextHeightBehavior] using the provided [MixContext].
@@ -59,7 +59,7 @@ class TextHeightBehaviorDto extends Mix<TextHeightBehavior> {
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final textHeightBehavior = TextHeightBehaviorDto(...).resolve(mix);
+  /// final textHeightBehavior = TextHeightBehaviorMix(...).resolve(mix);
   /// ```
   @override
   TextHeightBehavior resolve(BuildContext context) {
@@ -74,19 +74,19 @@ class TextHeightBehaviorDto extends Mix<TextHeightBehavior> {
     );
   }
 
-  /// Merges the properties of this [TextHeightBehaviorDto] with the properties of [other].
+  /// Merges the properties of this [TextHeightBehaviorMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [TextHeightBehaviorDto] with the properties of [other] taking precedence over
+  /// [TextHeightBehaviorMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  TextHeightBehaviorDto merge(TextHeightBehaviorDto? other) {
+  TextHeightBehaviorMix merge(TextHeightBehaviorMix? other) {
     if (other == null) return this;
 
-    return TextHeightBehaviorDto(
+    return TextHeightBehaviorMix(
       applyHeightToFirstAscent: MixHelpers.merge(
         applyHeightToFirstAscent,
         other.applyHeightToFirstAscent,
@@ -106,7 +106,7 @@ class TextHeightBehaviorDto extends Mix<TextHeightBehavior> {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is TextHeightBehaviorDto &&
+    return other is TextHeightBehaviorMix &&
         other.applyHeightToFirstAscent == applyHeightToFirstAscent &&
         other.applyHeightToLastDescent == applyHeightToLastDescent &&
         other.leadingDistribution == leadingDistribution;

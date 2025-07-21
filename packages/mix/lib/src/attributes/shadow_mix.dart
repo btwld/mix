@@ -19,25 +19,25 @@ sealed class BaseShadowMix<T extends Shadow> extends Mix<T> {
 ///
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a [Shadow]
-class ShadowDto extends BaseShadowMix<Shadow> with MixDefaultValue<Shadow> {
-  ShadowDto.only({double? blurRadius, Color? color, Offset? offset})
+class ShadowMix extends BaseShadowMix<Shadow> with MixDefaultValue<Shadow> {
+  ShadowMix.only({double? blurRadius, Color? color, Offset? offset})
     : this(
         blurRadius: Prop.maybe(blurRadius),
         color: Prop.maybe(color),
         offset: Prop.maybe(offset),
       );
 
-  const ShadowDto({super.blurRadius, super.color, super.offset});
+  const ShadowMix({super.blurRadius, super.color, super.offset});
 
   /// Constructor that accepts a [Shadow] value and extracts its properties.
   ///
-  /// This is useful for converting existing [Shadow] instances to [ShadowDto].
+  /// This is useful for converting existing [Shadow] instances to [ShadowMix].
   ///
   /// ```dart
   /// const shadow = Shadow(color: Colors.black, blurRadius: 5.0);
-  /// final dto = ShadowDto.value(shadow);
+  /// final dto = ShadowMix.value(shadow);
   /// ```
-  ShadowDto.value(Shadow shadow)
+  ShadowMix.value(Shadow shadow)
     : this.only(
         blurRadius: shadow.blurRadius,
         color: shadow.color,
@@ -46,14 +46,14 @@ class ShadowDto extends BaseShadowMix<Shadow> with MixDefaultValue<Shadow> {
 
   /// Constructor that accepts a nullable [Shadow] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [ShadowDto.value].
+  /// Returns null if the input is null, otherwise uses [ShadowMix.value].
   ///
   /// ```dart
   /// const Shadow? shadow = Shadow(color: Colors.black, blurRadius: 5.0);
-  /// final dto = ShadowDto.maybeValue(shadow); // Returns ShadowDto or null
+  /// final dto = ShadowMix.maybeValue(shadow); // Returns ShadowMix or null
   /// ```
-  static ShadowDto? maybeValue(Shadow? shadow) {
-    return shadow != null ? ShadowDto.value(shadow) : null;
+  static ShadowMix? maybeValue(Shadow? shadow) {
+    return shadow != null ? ShadowMix.value(shadow) : null;
   }
 
   /// Resolves to [Shadow] using the provided [MixContext].
@@ -62,7 +62,7 @@ class ShadowDto extends BaseShadowMix<Shadow> with MixDefaultValue<Shadow> {
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final shadow = ShadowDto(...).resolve(mix);
+  /// final shadow = ShadowMix(...).resolve(mix);
   /// ```
   @override
   Shadow resolve(BuildContext context) {
@@ -74,19 +74,19 @@ class ShadowDto extends BaseShadowMix<Shadow> with MixDefaultValue<Shadow> {
     );
   }
 
-  /// Merges the properties of this [ShadowDto] with the properties of [other].
+  /// Merges the properties of this [ShadowMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [ShadowDto] with the properties of [other] taking precedence over
+  /// [ShadowMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  ShadowDto merge(ShadowDto? other) {
+  ShadowMix merge(ShadowMix? other) {
     if (other == null) return this;
 
-    return ShadowDto(
+    return ShadowMix(
       blurRadius: MixHelpers.merge(blurRadius, other.blurRadius),
       color: MixHelpers.merge(color, other.color),
       offset: MixHelpers.merge(offset, other.offset),
@@ -97,7 +97,7 @@ class ShadowDto extends BaseShadowMix<Shadow> with MixDefaultValue<Shadow> {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is ShadowDto &&
+    return other is ShadowMix &&
         other.blurRadius == blurRadius &&
         other.color == color &&
         other.offset == offset;
@@ -116,11 +116,11 @@ class ShadowDto extends BaseShadowMix<Shadow> with MixDefaultValue<Shadow> {
 ///
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a `[BoxShadow]
-class BoxShadowDto extends BaseShadowMix<BoxShadow>
+class BoxShadowMix extends BaseShadowMix<BoxShadow>
     with MixDefaultValue<BoxShadow> {
   final Prop<double>? spreadRadius;
 
-  BoxShadowDto.only({
+  BoxShadowMix.only({
     Color? color,
     Offset? offset,
     double? blurRadius,
@@ -132,7 +132,7 @@ class BoxShadowDto extends BaseShadowMix<BoxShadow>
          spreadRadius: Prop.maybe(spreadRadius),
        );
 
-  const BoxShadowDto({
+  const BoxShadowMix({
     super.color,
     super.offset,
     super.blurRadius,
@@ -141,13 +141,13 @@ class BoxShadowDto extends BaseShadowMix<BoxShadow>
 
   /// Constructor that accepts a [BoxShadow] value and extracts its properties.
   ///
-  /// This is useful for converting existing [BoxShadow] instances to [BoxShadowDto].
+  /// This is useful for converting existing [BoxShadow] instances to [BoxShadowMix].
   ///
   /// ```dart
   /// const boxShadow = BoxShadow(color: Colors.grey, blurRadius: 10.0);
-  /// final dto = BoxShadowDto.value(boxShadow);
+  /// final dto = BoxShadowMix.value(boxShadow);
   /// ```
-  BoxShadowDto.value(BoxShadow boxShadow)
+  BoxShadowMix.value(BoxShadow boxShadow)
     : this.only(
         color: boxShadow.color,
         offset: boxShadow.offset,
@@ -157,19 +157,19 @@ class BoxShadowDto extends BaseShadowMix<BoxShadow>
 
   /// Constructor that accepts a nullable [BoxShadow] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [BoxShadowDto.value].
+  /// Returns null if the input is null, otherwise uses [BoxShadowMix.value].
   ///
   /// ```dart
   /// const BoxShadow? boxShadow = BoxShadow(color: Colors.grey, blurRadius: 10.0);
-  /// final dto = BoxShadowDto.maybeValue(boxShadow); // Returns BoxShadowDto or null
+  /// final dto = BoxShadowMix.maybeValue(boxShadow); // Returns BoxShadowMix or null
   /// ```
-  static BoxShadowDto? maybeValue(BoxShadow? boxShadow) {
-    return boxShadow != null ? BoxShadowDto.value(boxShadow) : null;
+  static BoxShadowMix? maybeValue(BoxShadow? boxShadow) {
+    return boxShadow != null ? BoxShadowMix.value(boxShadow) : null;
   }
 
-  static List<BoxShadowDto> fromElevation(ElevationShadow value) {
+  static List<BoxShadowMix> fromElevation(ElevationShadow value) {
     return kElevationToShadow[value.elevation]!
-        .map(BoxShadowDto.value)
+        .map(BoxShadowMix.value)
         .toList();
   }
 
@@ -179,7 +179,7 @@ class BoxShadowDto extends BaseShadowMix<BoxShadow>
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final boxShadow = BoxShadowDto(...).resolve(mix);
+  /// final boxShadow = BoxShadowMix(...).resolve(mix);
   /// ```
   @override
   BoxShadow resolve(BuildContext context) {
@@ -194,19 +194,19 @@ class BoxShadowDto extends BaseShadowMix<BoxShadow>
     );
   }
 
-  /// Merges the properties of this [BoxShadowDto] with the properties of [other].
+  /// Merges the properties of this [BoxShadowMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [BoxShadowDto] with the properties of [other] taking precedence over
+  /// [BoxShadowMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  BoxShadowDto merge(BoxShadowDto? other) {
+  BoxShadowMix merge(BoxShadowMix? other) {
     if (other == null) return this;
 
-    return BoxShadowDto(
+    return BoxShadowMix(
       color: MixHelpers.merge(color, other.color),
       offset: MixHelpers.merge(offset, other.offset),
       blurRadius: MixHelpers.merge(blurRadius, other.blurRadius),
@@ -218,7 +218,7 @@ class BoxShadowDto extends BaseShadowMix<BoxShadow>
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is BoxShadowDto &&
+    return other is BoxShadowMix &&
         other.color == color &&
         other.offset == offset &&
         other.blurRadius == blurRadius &&
@@ -237,7 +237,7 @@ class BoxShadowDto extends BaseShadowMix<BoxShadow>
   }
 }
 
-// ElevationBoxShadowDto is a convenience class for creating BoxShadowDto from elevation values.
+// ElevationBoxShadowMix is a convenience class for creating BoxShadowMix from elevation values.
 enum ElevationShadow {
   one(1),
   two(2),

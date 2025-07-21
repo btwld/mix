@@ -3,8 +3,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../attributes/text_height_behavior_dto.dart';
-import '../attributes/text_style_dto.dart';
+import '../attributes/text_height_behavior_mix.dart';
+import '../attributes/text_style_mix.dart';
 import '../core/attribute.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
@@ -270,7 +270,7 @@ final class DefaultTextStyleModifierUtility<T extends SpecAttribute<Object?>>
   }) {
     return builder(
       DefaultTextStyleModifierAttribute(
-        style: MixProp.maybe(style != null ? TextStyleDto.value(style) : null),
+        style: MixProp.maybe(style != null ? TextStyleMix.value(style) : null),
         textAlign: Prop.maybe(textAlign),
         softWrap: Prop.maybe(softWrap),
         overflow: Prop.maybe(overflow),
@@ -278,7 +278,7 @@ final class DefaultTextStyleModifierUtility<T extends SpecAttribute<Object?>>
         textWidthBasis: Prop.maybe(textWidthBasis),
         textHeightBehavior: MixProp.maybe(
           textHeightBehavior != null
-              ? TextHeightBehaviorDto.value(textHeightBehavior)
+              ? TextHeightBehaviorMix.value(textHeightBehavior)
               : null,
         ),
       ),

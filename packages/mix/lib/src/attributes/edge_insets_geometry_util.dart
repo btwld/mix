@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import '../core/attribute.dart';
 import '../core/prop.dart';
 import '../core/utility.dart';
-import './edge_insets_dto.dart';
+import './edge_insets_mix.dart';
 
 // Deprecated typedef moved to src/core/deprecated.dart
 
@@ -13,29 +13,29 @@ final class EdgeInsetsGeometryUtility<T extends SpecAttribute<Object?>>
   late final directional = EdgeInsetsDirectionalUtility(builder);
 
   late final horizontal = SpacingSideUtility(
-    (v) => call(EdgeInsetsDto(left: v, right: v)),
+    (v) => call(EdgeInsetsMix(left: v, right: v)),
   );
 
   late final vertical = SpacingSideUtility(
-    (v) => call(EdgeInsetsDto(top: v, bottom: v)),
+    (v) => call(EdgeInsetsMix(top: v, bottom: v)),
   );
 
   late final all = SpacingSideUtility(
-    (v) => call(EdgeInsetsDto(top: v, bottom: v, left: v, right: v)),
+    (v) => call(EdgeInsetsMix(top: v, bottom: v, left: v, right: v)),
   );
 
-  late final top = SpacingSideUtility((v) => call(EdgeInsetsDto(top: v)));
+  late final top = SpacingSideUtility((v) => call(EdgeInsetsMix(top: v)));
 
-  late final bottom = SpacingSideUtility((v) => call(EdgeInsetsDto(bottom: v)));
+  late final bottom = SpacingSideUtility((v) => call(EdgeInsetsMix(bottom: v)));
 
-  late final left = SpacingSideUtility((v) => call(EdgeInsetsDto(left: v)));
-  late final right = SpacingSideUtility((v) => call(EdgeInsetsDto(right: v)));
+  late final left = SpacingSideUtility((v) => call(EdgeInsetsMix(left: v)));
+  late final right = SpacingSideUtility((v) => call(EdgeInsetsMix(right: v)));
 
   EdgeInsetsGeometryUtility(super.builder)
-    : super(convertToMix: EdgeInsetsGeometryDto.value);
+    : super(convertToMix: EdgeInsetsGeometryMix.value);
 
   @override
-  T call(EdgeInsetsGeometryDto value) {
+  T call(EdgeInsetsGeometryMix value) {
     return builder(MixProp(value));
   }
 }
@@ -44,37 +44,37 @@ final class EdgeInsetsGeometryUtility<T extends SpecAttribute<Object?>>
 final class EdgeInsetsDirectionalUtility<U extends SpecAttribute<Object?>>
     extends MixPropUtility<U, EdgeInsetsDirectional> {
   late final all = SpacingSideUtility(
-    (v) => call(EdgeInsetsDirectionalDto(top: v, bottom: v, start: v, end: v)),
+    (v) => call(EdgeInsetsDirectionalMix(top: v, bottom: v, start: v, end: v)),
   );
   late final start = SpacingSideUtility(
-    (v) => call(EdgeInsetsDirectionalDto(start: v)),
+    (v) => call(EdgeInsetsDirectionalMix(start: v)),
   );
 
   late final end = SpacingSideUtility(
-    (v) => call(EdgeInsetsDirectionalDto(end: v)),
+    (v) => call(EdgeInsetsDirectionalMix(end: v)),
   );
 
   late final top = SpacingSideUtility(
-    (v) => call(EdgeInsetsDirectionalDto(top: v)),
+    (v) => call(EdgeInsetsDirectionalMix(top: v)),
   );
 
   late final bottom = SpacingSideUtility(
-    (v) => call(EdgeInsetsDirectionalDto(bottom: v)),
+    (v) => call(EdgeInsetsDirectionalMix(bottom: v)),
   );
 
   late final vertical = SpacingSideUtility(
-    (v) => call(EdgeInsetsDirectionalDto(top: v, bottom: v)),
+    (v) => call(EdgeInsetsDirectionalMix(top: v, bottom: v)),
   );
 
   late final horizontal = SpacingSideUtility(
-    (v) => call(EdgeInsetsDirectionalDto(start: v, end: v)),
+    (v) => call(EdgeInsetsDirectionalMix(start: v, end: v)),
   );
 
   EdgeInsetsDirectionalUtility(super.builder)
-    : super(convertToMix: EdgeInsetsGeometryDto.value);
+    : super(convertToMix: EdgeInsetsGeometryMix.value);
 
   @override
-  U call(EdgeInsetsDirectionalDto value) {
+  U call(EdgeInsetsDirectionalMix value) {
     return builder(MixProp(value));
   }
 }

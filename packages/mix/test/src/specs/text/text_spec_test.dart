@@ -12,13 +12,13 @@ void main() {
         Style(
           TextSpecAttribute.only(
             overflow: TextOverflow.ellipsis,
-            strutStyle: StrutStyleDto(fontSize: 20.0),
+            strutStyle: StrutStyleMix(fontSize: 20.0),
             textAlign: TextAlign.center,
             textScaler: const TextScaler.linear(1.0),
             maxLines: 2,
-            style: TextStyleDto(color: Colors.red),
+            style: TextStyleMix(color: Colors.red),
             textWidthBasis: TextWidthBasis.longestLine,
-            textHeightBehavior: TextHeightBehaviorDto(
+            textHeightBehavior: TextHeightBehaviorMix(
               applyHeightToFirstAscent: true,
               applyHeightToLastDescent: true,
             ),
@@ -189,13 +189,13 @@ void main() {
         Style(
           TextSpecAttribute.only(
             overflow: TextOverflow.ellipsis,
-            strutStyle: StrutStyleDto(fontSize: 20.0),
+            strutStyle: StrutStyleMix(fontSize: 20.0),
             textAlign: TextAlign.center,
             textScaler: const TextScaler.linear(1.0),
             maxLines: 2,
-            style: TextStyleDto(color: Colors.red),
+            style: TextStyleMix(color: Colors.red),
             textWidthBasis: TextWidthBasis.longestLine,
-            textHeightBehavior: TextHeightBehaviorDto(
+            textHeightBehavior: TextHeightBehaviorMix(
               applyHeightToFirstAscent: true,
               applyHeightToLastDescent: true,
             ),

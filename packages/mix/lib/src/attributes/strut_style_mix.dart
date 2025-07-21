@@ -8,7 +8,7 @@ import '../internal/diagnostic_properties_builder_ext.dart';
 
 /// A Data transfer object that represents a [StrutStyle] value.
 @immutable
-class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
+class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
   // Properties use MixableProperty for cleaner merging
   final Prop<String>? fontFamily;
   final List<Prop<String>>? fontFamilyFallback;
@@ -19,7 +19,7 @@ class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
   final Prop<double>? leading;
   final Prop<bool>? forceStrutHeight;
 
-  StrutStyleDto.only({
+  StrutStyleMix.only({
     String? fontFamily,
     List<String>? fontFamilyFallback,
     double? fontSize,
@@ -39,7 +39,7 @@ class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
          forceStrutHeight: Prop.maybe(forceStrutHeight),
        );
 
-  const StrutStyleDto({
+  const StrutStyleMix({
     this.fontFamily,
     this.fontFamilyFallback,
     this.fontSize,
@@ -52,13 +52,13 @@ class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
 
   /// Constructor that accepts a [StrutStyle] value and extracts its properties.
   ///
-  /// This is useful for converting existing [StrutStyle] instances to [StrutStyleDto].
+  /// This is useful for converting existing [StrutStyle] instances to [StrutStyleMix].
   ///
   /// ```dart
   /// const strutStyle = StrutStyle(fontSize: 16.0, fontWeight: FontWeight.bold);
-  /// final dto = StrutStyleDto.value(strutStyle);
+  /// final dto = StrutStyleMix.value(strutStyle);
   /// ```
-  StrutStyleDto.value(StrutStyle strutStyle)
+  StrutStyleMix.value(StrutStyle strutStyle)
     : this.only(
         fontFamily: strutStyle.fontFamily,
         fontFamilyFallback: strutStyle.fontFamilyFallback,
@@ -72,14 +72,14 @@ class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
 
   /// Constructor that accepts a nullable [StrutStyle] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [StrutStyleDto.value].
+  /// Returns null if the input is null, otherwise uses [StrutStyleMix.value].
   ///
   /// ```dart
   /// const StrutStyle? strutStyle = StrutStyle(fontSize: 16.0, fontWeight: FontWeight.bold);
-  /// final dto = StrutStyleDto.maybeValue(strutStyle); // Returns StrutStyleDto or null
+  /// final dto = StrutStyleMix.maybeValue(strutStyle); // Returns StrutStyleMix or null
   /// ```
-  static StrutStyleDto? maybeValue(StrutStyle? strutStyle) {
-    return strutStyle != null ? StrutStyleDto.value(strutStyle) : null;
+  static StrutStyleMix? maybeValue(StrutStyle? strutStyle) {
+    return strutStyle != null ? StrutStyleMix.value(strutStyle) : null;
   }
 
   @override
@@ -97,10 +97,10 @@ class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
   }
 
   @override
-  StrutStyleDto merge(StrutStyleDto? other) {
+  StrutStyleMix merge(StrutStyleMix? other) {
     if (other == null) return this;
 
-    return StrutStyleDto(
+    return StrutStyleMix(
       fontFamily: MixHelpers.merge(fontFamily, other.fontFamily),
       fontFamilyFallback: MixHelpers.mergeList(
         fontFamilyFallback,
@@ -135,7 +135,7 @@ class StrutStyleDto extends Mix<StrutStyle> with Diagnosticable {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is StrutStyleDto &&
+    return other is StrutStyleMix &&
         other.fontFamily == fontFamily &&
         listEquals(other.fontFamilyFallback, fontFamilyFallback) &&
         other.fontSize == fontSize &&

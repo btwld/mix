@@ -20,7 +20,7 @@ sealed class Attribute with Mergeable {
 abstract class SpecAttribute<S extends Spec<S>> extends Mix<ResolvedStyle<S>>
     with EqualityMixin
     implements Attribute {
-  final List<VariantAttribute<S>>? variants;
+  final List<VariantSpecAttribute<S>>? variants;
   final List<ModifierAttribute>? modifiers;
   final AnimationConfig? animation;
   const SpecAttribute({this.variants, this.modifiers, this.animation});
@@ -88,15 +88,15 @@ abstract class SpecAttribute<S extends Spec<S>> extends Mix<ResolvedStyle<S>>
   }
 
   @visibleForTesting
-  List<VariantAttribute<S>> mergeVariantLists(
-    List<VariantAttribute<S>>? current,
-    List<VariantAttribute<S>>? other,
+  List<VariantSpecAttribute<S>> mergeVariantLists(
+    List<VariantSpecAttribute<S>>? current,
+    List<VariantSpecAttribute<S>>? other,
   ) {
     if (current == null && other == null) return [];
-    if (current == null) return List<VariantAttribute<S>>.of(other!);
-    if (other == null) return List<VariantAttribute<S>>.of(current);
+    if (current == null) return List<VariantSpecAttribute<S>>.of(other!);
+    if (other == null) return List<VariantSpecAttribute<S>>.of(current);
 
-    final Map<Object, VariantAttribute<S>> merged = {};
+    final Map<Object, VariantSpecAttribute<S>> merged = {};
 
     // Add current variants
     for (final variant in current) {
@@ -166,18 +166,19 @@ abstract class ModifierAttribute<S extends Modifier<S>> extends Mix<S>
 }
 
 /// Variant wrapper for conditional styling
-final class VariantAttribute<S extends Spec<S>> implements Attribute {
+final class VariantSpecAttribute<S extends Spec<S>> implements Attribute {
   final Variant variant;
   final SpecAttribute<S> _style;
 
-  const VariantAttribute(this.variant, SpecAttribute<S> style) : _style = style;
+  const VariantSpecAttribute(this.variant, SpecAttribute<S> style)
+    : _style = style;
 
   SpecAttribute<S> get value => _style;
 
   bool matches(Iterable<Variant> otherVariants) =>
       otherVariants.contains(variant);
 
-  VariantAttribute<S>? removeVariants(Iterable<Variant> variantsToRemove) {
+  VariantSpecAttribute<S>? removeVariants(Iterable<Variant> variantsToRemove) {
     Variant? remainingVariant;
     if (variant is MultiVariant) {
       final multiVariant = variant as MultiVariant;
@@ -202,20 +203,20 @@ final class VariantAttribute<S extends Spec<S>> implements Attribute {
 
     return remainingVariant == null
         ? null
-        : VariantAttribute(remainingVariant, _style);
+        : VariantSpecAttribute(remainingVariant, _style);
   }
 
   @override
-  VariantAttribute<S> merge(covariant VariantAttribute<S>? other) {
+  VariantSpecAttribute<S> merge(covariant VariantSpecAttribute<S>? other) {
     if (other == null || other.variant != variant) return this;
 
-    return VariantAttribute(variant, _style.merge(other._style));
+    return VariantSpecAttribute(variant, _style.merge(other._style));
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is VariantAttribute<S> &&
+      other is VariantSpecAttribute<S> &&
           other.variant == variant &&
           other._style == _style;
 

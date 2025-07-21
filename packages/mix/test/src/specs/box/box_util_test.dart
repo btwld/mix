@@ -9,14 +9,14 @@ void main() {
   group('BoxUtility', () {
     final boxUtility = BoxSpecUtility(MixUtility.selfBuilder);
     test('call() returns correct instance', () {
-      final constraints = BoxConstraintsDto(
+      final constraints = BoxConstraintsMix(
         minWidth: 50,
         maxWidth: 200,
         minHeight: 40,
         maxHeight: 100,
       );
 
-      final spacing = EdgeInsetsGeometryDto.only(
+      final spacing = EdgeInsetsGeometryMix.only(
         top: 10,
         bottom: 10,
         left: 10,
@@ -62,7 +62,7 @@ void main() {
       final container = boxUtility.color(Colors.blue);
 
       expect(
-        (container.decoration?.mixValue as BoxDecorationDto).color,
+        (container.decoration?.mixValue as BoxDecorationMix).color,
         isA<Prop<Color>>(),
       );
     });
@@ -108,14 +108,14 @@ void main() {
       );
 
       expect(
-        (container.decoration!.mixValue as BoxDecorationDto).color,
+        (container.decoration!.mixValue as BoxDecorationMix).color,
         isA<Prop<Color>>(),
       );
 
-      final decorationDTO = container.decoration?.mixValue as BoxDecorationDto;
+      final decorationDTO = container.decoration?.mixValue as BoxDecorationMix;
       expect(
         decorationDTO.borderRadius?.mixValue,
-        BorderRadiusDto.value(BorderRadius.circular(10)),
+        BorderRadiusMix.value(BorderRadius.circular(10)),
       );
     });
 
@@ -126,16 +126,16 @@ void main() {
       );
 
       expect(
-        (container.foregroundDecoration!.mixValue as BoxDecorationDto).color,
+        (container.foregroundDecoration!.mixValue as BoxDecorationMix).color,
         isA<Prop<Color>>(),
         reason: 'The color is not correct',
       );
 
       final foregroundDecorationDTO =
-          container.foregroundDecoration?.mixValue as BoxDecorationDto;
+          container.foregroundDecoration?.mixValue as BoxDecorationMix;
       expect(
         foregroundDecorationDTO.borderRadius?.mixValue,
-        BorderRadiusDto.value(BorderRadius.circular(10)),
+        BorderRadiusMix.value(BorderRadius.circular(10)),
         reason: 'The BorderRadius is not correct',
       );
     });

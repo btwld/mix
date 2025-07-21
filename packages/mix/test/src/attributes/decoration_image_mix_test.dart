@@ -5,9 +5,9 @@ import 'package:mix/mix.dart';
 import '../../helpers/custom_matchers.dart';
 
 void main() {
-  group('DecorationImageDto', () {
+  group('DecorationImageMix', () {
     const imageProvider = AssetImage('assets/images/test.png');
-    final dto = DecorationImageDto.only(
+    final mix = DecorationImageMix.only(
       image: imageProvider,
       fit: BoxFit.cover,
       alignment: Alignment.topLeft,
@@ -29,7 +29,7 @@ void main() {
         invertColors: true,
         isAntiAlias: true,
       );
-      final result = DecorationImageDto.value(decorationImage);
+      final result = DecorationImageMix.value(decorationImage);
       expect(result, isNotNull);
       expect(result.image, isA<Prop<ImageProvider>>());
       expect(result.fit, equals(Prop(BoxFit.cover)));
@@ -45,7 +45,7 @@ void main() {
     });
 
     test('merge', () {
-      final otherDto = DecorationImageDto.only(
+      final otherDto = DecorationImageMix.only(
         image: imageProvider,
         fit: BoxFit.fill,
         alignment: Alignment.bottomRight,
@@ -56,7 +56,7 @@ void main() {
         isAntiAlias: false,
       );
 
-      final mergedDto = dto.merge(otherDto);
+      final mergedDto = mix.merge(otherDto);
 
       expect(mergedDto.image, isA<Prop<ImageProvider>>());
       expect(mergedDto.fit, resolvesTo(BoxFit.fill));
@@ -72,7 +72,7 @@ void main() {
     });
 
     test('resolve with default values', () {
-      final dto = DecorationImageDto.only(image: imageProvider);
+      final mix = DecorationImageMix.only(image: imageProvider);
 
       const expectedImage = DecorationImage(
         image: imageProvider,
@@ -83,11 +83,11 @@ void main() {
         isAntiAlias: false,
       );
 
-      expect(dto, resolvesTo(expectedImage));
+      expect(mix, resolvesTo(expectedImage));
     });
 
     test('resolve with custom values', () {
-      final dto = DecorationImageDto.only(
+      final mix = DecorationImageMix.only(
         image: imageProvider,
         fit: BoxFit.scaleDown,
         alignment: Alignment.bottomCenter,
@@ -109,11 +109,11 @@ void main() {
         isAntiAlias: true,
       );
 
-      expect(dto, resolvesTo(expectedImage));
+      expect(mix, resolvesTo(expectedImage));
     });
 
     test('equality', () {
-      final dto1 = DecorationImageDto.only(
+      final mix1 = DecorationImageMix.only(
         image: imageProvider,
         fit: BoxFit.scaleDown,
         alignment: Alignment.bottomCenter,
@@ -124,7 +124,7 @@ void main() {
         isAntiAlias: true,
       );
 
-      final dto2 = DecorationImageDto.only(
+      final mix2 = DecorationImageMix.only(
         image: imageProvider,
         fit: BoxFit.scaleDown,
         alignment: Alignment.bottomCenter,
@@ -135,9 +135,9 @@ void main() {
         isAntiAlias: true,
       );
 
-      expect(dto1, equals(dto2));
+      expect(mix1, equals(mix2));
 
-      final dto3 = DecorationImageDto.only(
+      final dto3 = DecorationImageMix.only(
         image: imageProvider,
         fit: BoxFit.scaleDown,
         alignment: Alignment.bottomCenter,
@@ -148,8 +148,8 @@ void main() {
         isAntiAlias: false,
       );
 
-      expect(dto1, isNot(equals(dto3)));
-      expect(dto2, isNot(equals(dto3)));
+      expect(mix1, isNot(equals(mix3)));
+      expect(mix2, isNot(equals(mix3)));
     });
   });
 }

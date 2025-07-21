@@ -2,11 +2,10 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../../core/styled_widget.dart';
+import '../../core/style_widget.dart';
 import '../box/box_spec.dart';
 import '../flex/flex_spec.dart';
 import 'flexbox_spec.dart';
-import 'flexbox_style.dart';
 
 /// A styled flex container widget combining box and flex capabilities.
 ///

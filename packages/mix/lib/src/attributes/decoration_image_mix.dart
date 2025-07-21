@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-final class DecorationImageDto extends Mix<DecorationImage>
+final class DecorationImageMix extends Mix<DecorationImage>
     with Diagnosticable {
   // Properties use MixProp for cleaner merging
   final Prop<ImageProvider>? image;
@@ -15,7 +15,7 @@ final class DecorationImageDto extends Mix<DecorationImage>
   final Prop<bool>? invertColors;
   final Prop<bool>? isAntiAlias;
 
-  DecorationImageDto.only({
+  DecorationImageMix.only({
     ImageProvider? image,
     BoxFit? fit,
     AlignmentGeometry? alignment,
@@ -35,7 +35,7 @@ final class DecorationImageDto extends Mix<DecorationImage>
          isAntiAlias: Prop.maybe(isAntiAlias),
        );
 
-  const DecorationImageDto({
+  const DecorationImageMix({
     this.image,
     this.fit,
     this.alignment,
@@ -48,13 +48,13 @@ final class DecorationImageDto extends Mix<DecorationImage>
 
   /// Constructor that accepts a [DecorationImage] value and extracts its properties.
   ///
-  /// This is useful for converting existing [DecorationImage] instances to [DecorationImageDto].
+  /// This is useful for converting existing [DecorationImage] instances to [DecorationImageMix].
   ///
   /// ```dart
   /// const decorationImage = DecorationImage(image: AssetImage('assets/image.png'));
-  /// final dto = DecorationImageDto.value(decorationImage);
+  /// final dto = DecorationImageMix.value(decorationImage);
   /// ```
-  DecorationImageDto.value(DecorationImage decorationImage)
+  DecorationImageMix.value(DecorationImage decorationImage)
     : this.only(
         image: decorationImage.image,
         fit: decorationImage.fit,
@@ -68,15 +68,15 @@ final class DecorationImageDto extends Mix<DecorationImage>
 
   /// Constructor that accepts a nullable [DecorationImage] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [DecorationImageDto.value].
+  /// Returns null if the input is null, otherwise uses [DecorationImageMix.value].
   ///
   /// ```dart
   /// const DecorationImage? decorationImage = DecorationImage(image: AssetImage('assets/image.png'));
-  /// final dto = DecorationImageDto.maybeValue(decorationImage); // Returns DecorationImageDto or null
+  /// final dto = DecorationImageMix.maybeValue(decorationImage); // Returns DecorationImageMix or null
   /// ```
-  static DecorationImageDto? maybeValue(DecorationImage? decorationImage) {
+  static DecorationImageMix? maybeValue(DecorationImage? decorationImage) {
     return decorationImage != null
-        ? DecorationImageDto.value(decorationImage)
+        ? DecorationImageMix.value(decorationImage)
         : null;
   }
 
@@ -86,7 +86,7 @@ final class DecorationImageDto extends Mix<DecorationImage>
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final decorationImage = DecorationImageDto(...).resolve(mix);
+  /// final decorationImage = DecorationImageMix(...).resolve(mix);
   /// ```
   @override
   DecorationImage resolve(BuildContext context) {
@@ -108,19 +108,19 @@ final class DecorationImageDto extends Mix<DecorationImage>
     );
   }
 
-  /// Merges the properties of this [DecorationImageDto] with the properties of [other].
+  /// Merges the properties of this [DecorationImageMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [DecorationImageDto] with the properties of [other] taking precedence over
+  /// [DecorationImageMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  DecorationImageDto merge(DecorationImageDto? other) {
+  DecorationImageMix merge(DecorationImageMix? other) {
     if (other == null) return this;
 
-    return DecorationImageDto(
+    return DecorationImageMix(
       image: MixHelpers.merge(image, other.image),
       fit: MixHelpers.merge(fit, other.fit),
       alignment: MixHelpers.merge(alignment, other.alignment),
@@ -137,7 +137,7 @@ final class DecorationImageDto extends Mix<DecorationImage>
     if (identical(this, other)) return true;
     if (other.runtimeType != runtimeType) return false;
 
-    return other is DecorationImageDto &&
+    return other is DecorationImageMix &&
         image == other.image &&
         fit == other.fit &&
         alignment == other.alignment &&

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../core/styled_widget.dart';
+import '../../core/style_widget.dart';
 import 'text_spec.dart';
-import 'text_style.dart';
 
 /// A styled text widget for displaying text with Mix styling.
 ///

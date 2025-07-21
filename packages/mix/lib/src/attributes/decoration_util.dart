@@ -6,11 +6,11 @@ import '../core/utility.dart';
 import 'border_radius_util.dart';
 import 'border_util.dart';
 import 'color/color_util.dart';
-import 'decoration_dto.dart';
+import 'decoration_mix.dart';
 import 'decoration_image_util.dart';
 import 'gradient_util.dart';
 import 'scalar_util.dart';
-import 'shadow_dto.dart';
+import 'shadow_mix.dart';
 import 'shadow_util.dart';
 import 'shape_border_util.dart';
 
@@ -20,10 +20,10 @@ class DecorationUtility<T extends SpecAttribute<Object?>>
 
   late final shape = ShapeDecorationUtility<T>(builder);
 
-  DecorationUtility(super.builder) : super(convertToMix: DecorationDto.value);
+  DecorationUtility(super.builder) : super(convertToMix: DecorationMix.value);
 
   @override
-  T call(DecorationDto value) {
+  T call(DecorationMix value) {
     return builder(MixProp(value));
   }
 }
@@ -35,62 +35,62 @@ class DecorationUtility<T extends SpecAttribute<Object?>>
 @immutable
 final class BoxDecorationUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, BoxDecoration> {
-  /// Utility for defining [BoxDecorationDto.border]
+  /// Utility for defining [BoxDecorationMix.border]
   late final border = BoxBorderUtility<T>(
-    (v) => call(BoxDecorationDto(border: v)),
+    (v) => call(BoxDecorationMix(border: v)),
   );
 
-  /// Utility for defining [BoxDecorationDto.borderRadius]
+  /// Utility for defining [BoxDecorationMix.borderRadius]
   late final borderRadius = BorderRadiusGeometryUtility<T>(
-    (v) => call(BoxDecorationDto(borderRadius: v)),
+    (v) => call(BoxDecorationMix(borderRadius: v)),
   );
 
-  /// Utility for defining [BoxDecorationDto.shape]
+  /// Utility for defining [BoxDecorationMix.shape]
   late final shape = BoxShapeUtility<T>(
-    (prop) => call(BoxDecorationDto(shape: prop)),
+    (prop) => call(BoxDecorationMix(shape: prop)),
   );
 
-  /// Utility for defining [BoxDecorationDto.backgroundBlendMode]
+  /// Utility for defining [BoxDecorationMix.backgroundBlendMode]
   late final backgroundBlendMode = BlendModeUtility<T>(
-    (prop) => call(BoxDecorationDto(backgroundBlendMode: prop)),
+    (prop) => call(BoxDecorationMix(backgroundBlendMode: prop)),
   );
 
-  /// Utility for defining [BoxDecorationDto.color]
+  /// Utility for defining [BoxDecorationMix.color]
   late final color = ColorUtility<T>(
-    (prop) => call(BoxDecorationDto(color: prop)),
+    (prop) => call(BoxDecorationMix(color: prop)),
   );
 
-  /// Utility for defining [BoxDecorationDto.gradient]
+  /// Utility for defining [BoxDecorationMix.gradient]
   late final gradient = GradientUtility<T>(
-    (v) => call(BoxDecorationDto(gradient: v)),
+    (v) => call(BoxDecorationMix(gradient: v)),
   );
 
-  /// Utility for defining [BoxDecorationDto.image]
+  /// Utility for defining [BoxDecorationMix.image]
   late final image = DecorationImageUtility<T>(
-    (v) => call(BoxDecorationDto(image: v)),
+    (v) => call(BoxDecorationMix(image: v)),
   );
 
-  /// Utility for defining [BoxDecorationDto.boxShadow] from a list of BoxShadow
-  late final boxShadows = MixPropListUtility<T, BoxShadow, BoxShadowDto>(
-    (prop) => call(BoxDecorationDto(boxShadow: prop)),
-    BoxShadowDto.value,
+  /// Utility for defining [BoxDecorationMix.boxShadow] from a list of BoxShadow
+  late final boxShadows = MixPropListUtility<T, BoxShadow, BoxShadowMix>(
+    (prop) => call(BoxDecorationMix(boxShadow: prop)),
+    BoxShadowMix.value,
   );
 
   /// Utility for defining individual [BoxShadow]
   late final boxShadow = BoxShadowUtility<T>(
-    (v) => call(BoxDecorationDto(boxShadow: [v])),
+    (v) => call(BoxDecorationMix(boxShadow: [v])),
   );
 
-  /// Utility for defining [BoxDecorationDto.boxShadow] from elevation
+  /// Utility for defining [BoxDecorationMix.boxShadow] from elevation
   late final elevation = ElevationMixPropUtility<T>(
-    (mixPropList) => call(BoxDecorationDto(boxShadow: mixPropList)),
+    (mixPropList) => call(BoxDecorationMix(boxShadow: mixPropList)),
   );
 
   BoxDecorationUtility(super.builder)
-    : super(convertToMix: BoxDecorationDto.value);
+    : super(convertToMix: BoxDecorationMix.value);
 
   @override
-  T call(BoxDecorationDto value) => builder(MixProp(value));
+  T call(BoxDecorationMix value) => builder(MixProp(value));
 }
 
 /// Utility class for configuring [ShapeDecoration] properties.
@@ -100,35 +100,35 @@ final class BoxDecorationUtility<T extends SpecAttribute<Object?>>
 @immutable
 final class ShapeDecorationUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, ShapeDecoration> {
-  /// Utility for defining [ShapeDecorationDto.shape]
+  /// Utility for defining [ShapeDecorationMix.shape]
   late final shape = ShapeBorderUtility<T>(
-    (v) => call(ShapeDecorationDto(shape: v)),
+    (v) => call(ShapeDecorationMix(shape: v)),
   );
 
-  /// Utility for defining [ShapeDecorationDto.color]
+  /// Utility for defining [ShapeDecorationMix.color]
   late final color = ColorUtility<T>(
-    (prop) => call(ShapeDecorationDto(color: prop)),
+    (prop) => call(ShapeDecorationMix(color: prop)),
   );
 
-  /// Utility for defining [ShapeDecorationDto.image]
+  /// Utility for defining [ShapeDecorationMix.image]
   late final image = DecorationImageUtility<T>(
-    (v) => call(ShapeDecorationDto(image: v)),
+    (v) => call(ShapeDecorationMix(image: v)),
   );
 
-  /// Utility for defining [ShapeDecorationDto.gradient]
+  /// Utility for defining [ShapeDecorationMix.gradient]
   late final gradient = GradientUtility<T>(
-    (v) => call(ShapeDecorationDto(gradient: v)),
+    (v) => call(ShapeDecorationMix(gradient: v)),
   );
 
-  /// Utility for defining [ShapeDecorationDto.shadows]
-  late final shadows = MixPropListUtility<T, BoxShadow, BoxShadowDto>(
-    (prop) => call(ShapeDecorationDto(shadows: prop)),
-    BoxShadowDto.value,
+  /// Utility for defining [ShapeDecorationMix.shadows]
+  late final shadows = MixPropListUtility<T, BoxShadow, BoxShadowMix>(
+    (prop) => call(ShapeDecorationMix(shadows: prop)),
+    BoxShadowMix.value,
   );
 
   ShapeDecorationUtility(super.builder)
-    : super(convertToMix: ShapeDecorationDto.value);
+    : super(convertToMix: ShapeDecorationMix.value);
 
   @override
-  T call(ShapeDecorationDto value) => builder(MixProp(value));
+  T call(ShapeDecorationMix value) => builder(MixProp(value));
 }

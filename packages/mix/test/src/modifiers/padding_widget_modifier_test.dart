@@ -72,8 +72,8 @@ void main() {
 
   group('PaddingModifierAttribute', () {
     test('merge returns correct PaddingModifierAttribute', () {
-      final padding1 = EdgeInsetsDto.all(10.0);
-      final padding2 = EdgeInsetsDto.all(20.0);
+      final padding1 = EdgeInsetsMix.all(10.0);
+      final padding2 = EdgeInsetsMix.all(20.0);
 
       final attribute1 = PaddingModifierAttribute(padding: padding1);
       final attribute2 = PaddingModifierAttribute(padding: padding2);
@@ -84,8 +84,8 @@ void main() {
     });
 
     test('deep merge returns correct PaddingModifierAttribute', () {
-      final padding1 = EdgeInsetsDto(top: 1, bottom: 2, left: 3, right: 4);
-      final padding2 = EdgeInsetsDto(top: 4, bottom: 3);
+      final padding1 = EdgeInsetsMix(top: 1, bottom: 2, left: 3, right: 4);
+      final padding2 = EdgeInsetsMix(top: 4, bottom: 3);
 
       final attribute1 = PaddingModifierAttribute(padding: padding1);
       final attribute2 = PaddingModifierAttribute(padding: padding2);
@@ -94,14 +94,14 @@ void main() {
 
       expect(
         result.padding,
-        equals(EdgeInsetsDto(top: 4, bottom: 3, left: 3, right: 4)),
+        equals(EdgeInsetsMix(top: 4, bottom: 3, left: 3, right: 4)),
       );
     });
 
     test(
       'merge returns original PaddingModifierAttribute when other is null',
       () {
-        final padding = EdgeInsetsDto.all(10.0);
+        final padding = EdgeInsetsMix.all(10.0);
         final attribute = PaddingModifierAttribute(padding: padding);
 
         final result = attribute.merge(null);
@@ -111,7 +111,7 @@ void main() {
     );
 
     test('resolve returns correct PaddingSpec', () {
-      final padding = EdgeInsetsDto.all(10.0);
+      final padding = EdgeInsetsMix.all(10.0);
       final attribute = PaddingModifierAttribute(padding: padding);
 
       expect(
@@ -121,7 +121,7 @@ void main() {
     });
 
     test('props returns list with padding', () {
-      final padding = EdgeInsetsDto.all(10.0);
+      final padding = EdgeInsetsMix.all(10.0);
       final attribute = PaddingModifierAttribute(padding: padding);
 
       expect(attribute.props, equals([padding]));

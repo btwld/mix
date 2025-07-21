@@ -1,8 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/styled_widget.dart';
+import '../../core/style_widget.dart';
 import 'image_spec.dart';
-import 'image_style.dart';
 
 class StyledImage extends StyleWidget<ImageSpec> {
   const StyledImage({

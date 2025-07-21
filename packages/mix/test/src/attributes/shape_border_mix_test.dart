@@ -6,16 +6,16 @@ import '../../helpers/custom_matchers.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  group('RoundedRectangleBorderDto', () {
+  group('RoundedRectangleBorderMix', () {
     test('only constructor with DTO objects', () {
-      final dto = RoundedRectangleBorderDto.only(
-        borderRadius: BorderRadiusDto.only(
+      final mix = RoundedRectangleBorderMix.only(
+        borderRadius: BorderRadiusMix.only(
           topLeft: const Radius.circular(15),
           topRight: const Radius.circular(20),
           bottomLeft: const Radius.circular(5),
           bottomRight: const Radius.circular(10),
         ),
-        side: BorderSideDto.only(color: Colors.red, width: 1.0),
+        side: BorderSideMix.only(color: Colors.red, width: 1.0),
       );
 
       expect(
@@ -35,16 +35,16 @@ void main() {
     });
 
     test('main constructor with MixProp values', () {
-      final dto = RoundedRectangleBorderDto(
+      final mix = RoundedRectangleBorderMix(
         borderRadius: MixProp(
-          BorderRadiusDto.only(
+          BorderRadiusMix.only(
             topLeft: const Radius.circular(15),
             topRight: const Radius.circular(20),
             bottomLeft: const Radius.circular(5),
             bottomRight: const Radius.circular(10),
           ),
         ),
-        side: MixProp(BorderSideDto.only(color: Colors.red, width: 1.0)),
+        side: MixProp(BorderSideMix.only(color: Colors.red, width: 1.0)),
       );
 
       expect(
@@ -73,27 +73,27 @@ void main() {
         ),
         side: BorderSide(color: Colors.red, width: 1.0),
       );
-      final dto = RoundedRectangleBorderDto.value(border);
+      final mix = RoundedRectangleBorderMix.value(border);
 
-      expect(dto, resolvesTo(border));
+      expect(mix, resolvesTo(border));
     });
 
-    test('merge should combine two RoundedRectangleBorderDtos correctly', () {
-      final original = RoundedRectangleBorderDto.only(
-        borderRadius: BorderRadiusDto.only(
+    test('merge should combine two RoundedRectangleBorderMixs correctly', () {
+      final original = RoundedRectangleBorderMix.only(
+        borderRadius: BorderRadiusMix.only(
           topLeft: const Radius.circular(15),
           topRight: const Radius.circular(20),
           bottomLeft: const Radius.circular(5),
           bottomRight: const Radius.circular(10),
         ),
-        side: BorderSideDto.only(color: Colors.red, width: 1.0),
+        side: BorderSideMix.only(color: Colors.red, width: 1.0),
       );
       final merged = original.merge(
-        RoundedRectangleBorderDto.only(
-          borderRadius: BorderRadiusDto.only(
+        RoundedRectangleBorderMix.only(
+          borderRadius: BorderRadiusMix.only(
             topLeft: const Radius.circular(25),
           ),
-          side: BorderSideDto.only(color: Colors.blue, width: 2.0),
+          side: BorderSideMix.only(color: Colors.blue, width: 2.0),
         ),
       );
 
@@ -114,10 +114,10 @@ void main() {
     });
   });
 
-  group('CircleBorderDto', () {
+  group('CircleBorderMix', () {
     test('only constructor with DTO objects', () {
-      final dto = CircleBorderDto.only(
-        side: BorderSideDto.only(color: Colors.red, width: 1.0),
+      final mix = CircleBorderMix.only(
+        side: BorderSideMix.only(color: Colors.red, width: 1.0),
         eccentricity: 0.5,
       );
 
@@ -133,8 +133,8 @@ void main() {
     });
 
     test('main constructor with MixProp values', () {
-      final dto = CircleBorderDto(
-        side: MixProp(BorderSideDto.only(color: Colors.red, width: 1.0)),
+      final mix = CircleBorderMix(
+        side: MixProp(BorderSideMix.only(color: Colors.red, width: 1.0)),
         eccentricity: Prop(0.5),
       );
 
@@ -154,19 +154,19 @@ void main() {
         side: BorderSide(color: Colors.red, width: 1.0),
         eccentricity: 0.5,
       );
-      final dto = CircleBorderDto.value(border);
+      final mix = CircleBorderMix.value(border);
 
-      expect(dto, resolvesTo(border));
+      expect(mix, resolvesTo(border));
     });
 
-    test('merge should combine two CircleBorderDtos correctly', () {
-      final original = CircleBorderDto.only(
-        side: BorderSideDto.only(color: Colors.red, width: 1.0),
+    test('merge should combine two CircleBorderMixs correctly', () {
+      final original = CircleBorderMix.only(
+        side: BorderSideMix.only(color: Colors.red, width: 1.0),
         eccentricity: 0.5,
       );
       final merged = original.merge(
-        CircleBorderDto.only(
-          side: BorderSideDto.only(color: Colors.blue, width: 2.0),
+        CircleBorderMix.only(
+          side: BorderSideMix.only(color: Colors.blue, width: 2.0),
           eccentricity: 0.75,
         ),
       );
@@ -183,16 +183,16 @@ void main() {
     });
   });
 
-  group('BeveledRectangleBorderDto', () {
+  group('BeveledRectangleBorderMix', () {
     test('only constructor with DTO objects', () {
-      final dto = BeveledRectangleBorderDto.only(
-        borderRadius: BorderRadiusDto.only(
+      final mix = BeveledRectangleBorderMix.only(
+        borderRadius: BorderRadiusMix.only(
           topLeft: const Radius.circular(15),
           topRight: const Radius.circular(20),
           bottomLeft: const Radius.circular(5),
           bottomRight: const Radius.circular(10),
         ),
-        side: BorderSideDto.only(color: Colors.red, width: 1.0),
+        side: BorderSideMix.only(color: Colors.red, width: 1.0),
       );
 
       expect(
@@ -221,22 +221,22 @@ void main() {
         ),
         side: BorderSide(color: Colors.red, width: 1.0),
       );
-      final dto = BeveledRectangleBorderDto.value(border);
+      final mix = BeveledRectangleBorderMix.value(border);
 
-      expect(dto, resolvesTo(border));
+      expect(mix, resolvesTo(border));
     });
   });
 
-  group('ContinuousRectangleBorderDto', () {
+  group('ContinuousRectangleBorderMix', () {
     test('only constructor with DTO objects', () {
-      final dto = ContinuousRectangleBorderDto.only(
-        borderRadius: BorderRadiusDto.only(
+      final mix = ContinuousRectangleBorderMix.only(
+        borderRadius: BorderRadiusMix.only(
           topLeft: const Radius.circular(15),
           topRight: const Radius.circular(20),
           bottomLeft: const Radius.circular(5),
           bottomRight: const Radius.circular(10),
         ),
-        side: BorderSideDto.only(color: Colors.red, width: 1.0),
+        side: BorderSideMix.only(color: Colors.red, width: 1.0),
       );
 
       expect(
@@ -265,16 +265,16 @@ void main() {
         ),
         side: BorderSide(color: Colors.red, width: 1.0),
       );
-      final dto = ContinuousRectangleBorderDto.value(border);
+      final mix = ContinuousRectangleBorderMix.value(border);
 
-      expect(dto, resolvesTo(border));
+      expect(mix, resolvesTo(border));
     });
   });
 
-  group('StadiumBorderDto', () {
+  group('StadiumBorderMix', () {
     test('only constructor with DTO objects', () {
-      final dto = StadiumBorderDto.only(
-        side: BorderSideDto.only(color: Colors.red, width: 1.0),
+      final mix = StadiumBorderMix.only(
+        side: BorderSideMix.only(color: Colors.red, width: 1.0),
       );
 
       expect(
@@ -289,29 +289,29 @@ void main() {
       const border = StadiumBorder(
         side: BorderSide(color: Colors.red, width: 1.0),
       );
-      final dto = StadiumBorderDto.value(border);
+      final mix = StadiumBorderMix.value(border);
 
-      expect(dto, resolvesTo(border));
+      expect(mix, resolvesTo(border));
     });
   });
 
-  group('ShapeBorderDto factory methods', () {
+  group('ShapeBorderMix factory methods', () {
     test(
       'value factory creates correct DTO type for RoundedRectangleBorder',
       () {
-        final border = RoundedRectangleBorderDto.only(
-          borderRadius: BorderRadiusDto.only(
+        final border = RoundedRectangleBorderMix.only(
+          borderRadius: BorderRadiusMix.only(
             topLeft: const Radius.circular(10),
             topRight: const Radius.circular(10),
             bottomLeft: const Radius.circular(10),
             bottomRight: const Radius.circular(10),
           ),
-          side: BorderSideDto.only(color: Colors.red, width: 2.0),
+          side: BorderSideMix.only(color: Colors.red, width: 2.0),
         ).resolve(MockBuildContext());
-        final dto = ShapeBorderDto.value(border);
+        final mix = ShapeBorderMix.value(border);
 
-        expect(dto, isA<RoundedRectangleBorderDto>());
-        expect(dto, resolvesTo(border));
+        expect(mix, isA<RoundedRectangleBorderMix>());
+        expect(mix, resolvesTo(border));
       },
     );
 
@@ -319,23 +319,23 @@ void main() {
       const border = CircleBorder(
         side: BorderSide(color: Colors.blue, width: 1.5),
       );
-      final dto = ShapeBorderDto.value(border);
+      final mix = ShapeBorderMix.value(border);
 
-      expect(dto, isA<CircleBorderDto>());
-      expect(dto, resolvesTo(border));
+      expect(mix, isA<CircleBorderMix>());
+      expect(mix, resolvesTo(border));
     });
 
     test('maybeValue returns null for null input', () {
-      final dto = ShapeBorderDto.maybeValue(null);
-      expect(dto, isNull);
+      final mix = ShapeBorderMix.maybeValue(null);
+      expect(mix, isNull);
     });
 
     test('maybeValue returns DTO for non-null input', () {
       const border = StadiumBorder();
-      final dto = ShapeBorderDto.maybeValue(border);
+      final mix = ShapeBorderMix.maybeValue(border);
 
-      expect(dto, isA<StadiumBorderDto>());
-      expect(dto, resolvesTo(border));
+      expect(mix, isA<StadiumBorderMix>());
+      expect(mix, resolvesTo(border));
     });
   });
 }

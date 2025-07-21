@@ -13,8 +13,8 @@ void main() {
 
     test('merge should return a new instance of IconSpecAttribute', () {
       final shadows = [
-        ShadowDto(color: Colors.black),
-        ShadowDto(color: Colors.black),
+        ShadowMix(color: Colors.black),
+        ShadowMix(color: Colors.black),
       ];
 
       final attribute1 = IconSpecAttribute(
@@ -36,8 +36,8 @@ void main() {
         grade: 32,
         opticalSize: 32,
         shadows: [
-          ShadowDto(color: Colors.black),
-          ShadowDto(color: Colors.white),
+          ShadowMix(color: Colors.black),
+          ShadowMix(color: Colors.white),
         ],
         fill: 32,
         textDirection: TextDirection.rtl,
@@ -57,8 +57,8 @@ void main() {
       expect(
         mergedAttribute.shadows,
         equals([
-          MixProp<Shadow>(ShadowDto(color: Colors.black)),
-          MixProp<Shadow>(ShadowDto(color: Colors.white)),
+          MixProp<Shadow>(ShadowMix(color: Colors.black)),
+          MixProp<Shadow>(ShadowMix(color: Colors.white)),
         ]),
       );
     });
@@ -71,8 +71,8 @@ void main() {
       const grade = 2.0;
       const opticalSize = 2.0;
       final shadows = [
-        ShadowDto(color: Colors.black),
-        ShadowDto(color: Colors.black),
+        ShadowMix(color: Colors.black),
+        ShadowMix(color: Colors.black),
       ];
       const textDirection = TextDirection.ltr;
       const weight = 2.0;
@@ -98,8 +98,8 @@ void main() {
       expect(
         attribute.shadows,
         equals([
-          MixProp<Shadow>(ShadowDto(color: Colors.black)),
-          MixProp<Shadow>(ShadowDto(color: Colors.black)),
+          MixProp<Shadow>(ShadowMix(color: Colors.black)),
+          MixProp<Shadow>(ShadowMix(color: Colors.black)),
         ]),
       );
       expect(attribute.textDirection, equals(textDirection));

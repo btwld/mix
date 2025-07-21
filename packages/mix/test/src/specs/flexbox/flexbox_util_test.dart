@@ -49,7 +49,7 @@ void main() {
     test('box color returns correct instance', () {
       final flexBox = flexBoxUtility..box.color.blue();
       expect(
-        (flexBox.attribute.box!.decoration?.mixValue as BoxDecorationDto).color,
+        (flexBox.attribute.box!.decoration?.mixValue as BoxDecorationMix).color,
         isA<Prop<Color>>(),
       );
     });
@@ -93,11 +93,11 @@ void main() {
         );
 
       final decoration =
-          flexBox.attribute.box!.decoration?.mixValue as BoxDecorationDto;
+          flexBox.attribute.box!.decoration?.mixValue as BoxDecorationMix;
       expect(decoration.color, isA<Prop<Color>>());
       expect(
         decoration.borderRadius?.mixValue,
-        BorderRadiusDto.value(BorderRadius.circular(10)),
+        BorderRadiusMix.value(BorderRadius.circular(10)),
       );
     });
 
@@ -110,7 +110,7 @@ void main() {
 
       final foregroundDecoration =
           flexBox.attribute.box!.foregroundDecoration?.mixValue
-              as BoxDecorationDto;
+              as BoxDecorationMix;
       expect(
         foregroundDecoration.color,
         isA<Prop<Color>>(),
@@ -118,7 +118,7 @@ void main() {
       );
       expect(
         foregroundDecoration.borderRadius?.mixValue,
-        BorderRadiusDto.value(BorderRadius.circular(10)),
+        BorderRadiusMix.value(BorderRadius.circular(10)),
         reason: 'The BorderRadius is not correct',
       );
     });

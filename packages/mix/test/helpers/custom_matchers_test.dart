@@ -90,8 +90,8 @@ void main() {
     });
 
     group('Real-world usage examples', () {
-      test('BorderSideDto testing becomes much cleaner', () {
-        final borderSide = BorderSideDto(
+      test('BorderSideMix testing becomes much cleaner', () {
+        final borderSide = BorderSideMix(
           color: Colors.red,
           width: 2.0,
           style: BorderStyle.solid,
@@ -103,8 +103,8 @@ void main() {
         expect(borderSide.style, resolvesTo(BorderStyle.solid));
       });
 
-      test('BoxShadowDto testing becomes much cleaner', () {
-        final boxShadow = BoxShadowDto(
+      test('BoxShadowMix testing becomes much cleaner', () {
+        final boxShadow = BoxShadowMix(
           color: Colors.black,
           blurRadius: 10.0,
           offset: const Offset(2, 2),
@@ -119,7 +119,7 @@ void main() {
       });
 
       test('DTO resolution testing', () {
-        final borderRadius = BorderRadiusDto(
+        final borderRadius = BorderRadiusMix(
           topLeft: const Radius.circular(10),
           topRight: const Radius.circular(20),
         );

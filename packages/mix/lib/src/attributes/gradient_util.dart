@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import '../core/attribute.dart';
 import '../core/prop.dart';
 import '../core/utility.dart';
-import 'gradient_dto.dart';
+import 'gradient_mix.dart';
 import 'scalar_util.dart';
 
 /// Utility class for configuring [LinearGradient] properties.
@@ -12,41 +12,41 @@ import 'scalar_util.dart';
 /// Use the methods of this class to configure specific properties of a [LinearGradient].
 final class LinearGradientUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, LinearGradient> {
-  /// Utility for defining [LinearGradientDto.begin]
+  /// Utility for defining [LinearGradientMix.begin]
   late final begin = AlignmentGeometryUtility<T>(
-    (v) => call(LinearGradientDto(begin: v)),
+    (v) => call(LinearGradientMix(begin: v)),
   );
 
-  /// Utility for defining [LinearGradientDto.end]
+  /// Utility for defining [LinearGradientMix.end]
   late final end = AlignmentGeometryUtility<T>(
-    (v) => call(LinearGradientDto(end: v)),
+    (v) => call(LinearGradientMix(end: v)),
   );
 
-  /// Utility for defining [LinearGradientDto.tileMode]
+  /// Utility for defining [LinearGradientMix.tileMode]
   late final tileMode = TileModeUtility<T>(
-    (v) => call(LinearGradientDto(tileMode: v)),
+    (v) => call(LinearGradientMix(tileMode: v)),
   );
 
-  /// Utility for defining [LinearGradientDto.transform]
+  /// Utility for defining [LinearGradientMix.transform]
   late final transform = GradientTransformUtility<T>(
-    (v) => call(LinearGradientDto(transform: v)),
+    (v) => call(LinearGradientMix(transform: v)),
   );
 
-  /// Utility for defining [LinearGradientDto.colors]
+  /// Utility for defining [LinearGradientMix.colors]
   late final colors = PropListUtility<T, Color>(
-    (colors) => call(LinearGradientDto(colors: colors)),
+    (colors) => call(LinearGradientMix(colors: colors)),
   );
 
-  /// Utility for defining [LinearGradientDto.stops]
+  /// Utility for defining [LinearGradientMix.stops]
   late final stops = PropListUtility<T, double>(
-    (stops) => call(LinearGradientDto(stops: stops)),
+    (stops) => call(LinearGradientMix(stops: stops)),
   );
 
   LinearGradientUtility(super.builder)
-    : super(convertToMix: LinearGradientDto.value);
+    : super(convertToMix: LinearGradientMix.value);
 
   @override
-  T call(LinearGradientDto value) => builder(MixProp(value));
+  T call(LinearGradientMix value) => builder(MixProp(value));
 }
 
 /// Utility class for configuring [RadialGradient] properties.
@@ -55,51 +55,51 @@ final class LinearGradientUtility<T extends SpecAttribute<Object?>>
 /// Use the methods of this class to configure specific properties of a [RadialGradient].
 final class RadialGradientUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, RadialGradient> {
-  /// Utility for defining [RadialGradientDto.center]
+  /// Utility for defining [RadialGradientMix.center]
   late final center = AlignmentGeometryUtility<T>(
-    (v) => call(RadialGradientDto(center: v)),
+    (v) => call(RadialGradientMix(center: v)),
   );
 
-  /// Utility for defining [RadialGradientDto.radius]
+  /// Utility for defining [RadialGradientMix.radius]
   late final radius = DoubleUtility<T>(
-    (prop) => call(RadialGradientDto(radius: prop)),
+    (prop) => call(RadialGradientMix(radius: prop)),
   );
 
-  /// Utility for defining [RadialGradientDto.tileMode]
+  /// Utility for defining [RadialGradientMix.tileMode]
   late final tileMode = TileModeUtility<T>(
-    (v) => call(RadialGradientDto(tileMode: v)),
+    (v) => call(RadialGradientMix(tileMode: v)),
   );
 
-  /// Utility for defining [RadialGradientDto.focal]
+  /// Utility for defining [RadialGradientMix.focal]
   late final focal = AlignmentGeometryUtility<T>(
-    (v) => call(RadialGradientDto(focal: v)),
+    (v) => call(RadialGradientMix(focal: v)),
   );
 
-  /// Utility for defining [RadialGradientDto.focalRadius]
+  /// Utility for defining [RadialGradientMix.focalRadius]
   late final focalRadius = DoubleUtility<T>(
-    (prop) => call(RadialGradientDto(focalRadius: prop)),
+    (prop) => call(RadialGradientMix(focalRadius: prop)),
   );
 
-  /// Utility for defining [RadialGradientDto.transform]
+  /// Utility for defining [RadialGradientMix.transform]
   late final transform = GradientTransformUtility<T>(
-    (v) => call(RadialGradientDto(transform: v)),
+    (v) => call(RadialGradientMix(transform: v)),
   );
 
-  /// Utility for defining [RadialGradientDto.colors]
+  /// Utility for defining [RadialGradientMix.colors]
   late final colors = PropListUtility<T, Color>(
-    (colors) => call(RadialGradientDto(colors: colors)),
+    (colors) => call(RadialGradientMix(colors: colors)),
   );
 
-  /// Utility for defining [RadialGradientDto.stops]
+  /// Utility for defining [RadialGradientMix.stops]
   late final stops = PropListUtility<T, double>(
-    (stops) => call(RadialGradientDto(stops: stops)),
+    (stops) => call(RadialGradientMix(stops: stops)),
   );
 
   RadialGradientUtility(super.builder)
-    : super(convertToMix: RadialGradientDto.value);
+    : super(convertToMix: RadialGradientMix.value);
 
   @override
-  T call(RadialGradientDto value) => builder(MixProp(value));
+  T call(RadialGradientMix value) => builder(MixProp(value));
 }
 
 /// Utility class for configuring [SweepGradient] properties.
@@ -108,46 +108,46 @@ final class RadialGradientUtility<T extends SpecAttribute<Object?>>
 /// Use the methods of this class to configure specific properties of a [SweepGradient].
 final class SweepGradientUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, SweepGradient> {
-  /// Utility for defining [SweepGradientDto.center]
+  /// Utility for defining [SweepGradientMix.center]
   late final center = AlignmentGeometryUtility<T>(
-    (v) => call(SweepGradientDto(center: v)),
+    (v) => call(SweepGradientMix(center: v)),
   );
 
-  /// Utility for defining [SweepGradientDto.startAngle]
+  /// Utility for defining [SweepGradientMix.startAngle]
   late final startAngle = DoubleUtility<T>(
-    (prop) => call(SweepGradientDto(startAngle: prop)),
+    (prop) => call(SweepGradientMix(startAngle: prop)),
   );
 
-  /// Utility for defining [SweepGradientDto.endAngle]
+  /// Utility for defining [SweepGradientMix.endAngle]
   late final endAngle = DoubleUtility<T>(
-    (prop) => call(SweepGradientDto(endAngle: prop)),
+    (prop) => call(SweepGradientMix(endAngle: prop)),
   );
 
-  /// Utility for defining [SweepGradientDto.tileMode]
+  /// Utility for defining [SweepGradientMix.tileMode]
   late final tileMode = TileModeUtility<T>(
-    (v) => call(SweepGradientDto(tileMode: v)),
+    (v) => call(SweepGradientMix(tileMode: v)),
   );
 
-  /// Utility for defining [SweepGradientDto.transform]
+  /// Utility for defining [SweepGradientMix.transform]
   late final transform = GradientTransformUtility<T>(
-    (v) => call(SweepGradientDto(transform: v)),
+    (v) => call(SweepGradientMix(transform: v)),
   );
 
-  /// Utility for defining [SweepGradientDto.colors]
+  /// Utility for defining [SweepGradientMix.colors]
   late final colors = PropListUtility<T, Color>(
-    (colors) => call(SweepGradientDto(colors: colors)),
+    (colors) => call(SweepGradientMix(colors: colors)),
   );
 
-  /// Utility for defining [SweepGradientDto.stops]
+  /// Utility for defining [SweepGradientMix.stops]
   late final stops = PropListUtility<T, double>(
-    (stops) => call(SweepGradientDto(stops: stops)),
+    (stops) => call(SweepGradientMix(stops: stops)),
   );
 
   SweepGradientUtility(super.builder)
-    : super(convertToMix: SweepGradientDto.value);
+    : super(convertToMix: SweepGradientMix.value);
 
   @override
-  T call(SweepGradientDto value) => builder(MixProp(value));
+  T call(SweepGradientMix value) => builder(MixProp(value));
 }
 
 /// Utility class for working with gradients.
@@ -162,8 +162,8 @@ final class GradientUtility<T extends SpecAttribute<Object?>>
   /// Returns a [SweepGradientUtility] for creating sweep gradients
   late final sweep = SweepGradientUtility<T>(builder);
 
-  GradientUtility(super.builder) : super(convertToMix: GradientDto.value);
+  GradientUtility(super.builder) : super(convertToMix: GradientMix.value);
 
   @override
-  T call(GradientDto value) => builder(MixProp(value));
+  T call(GradientMix value) => builder(MixProp(value));
 }

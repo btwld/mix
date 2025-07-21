@@ -9,70 +9,70 @@ import 'package:mix/mix.dart';
 ///
 /// This DTO is used to resolve a [Decoration] value from a [MixContext] instance.
 @immutable
-sealed class DecorationDto<T extends Decoration> extends Mix<T> {
+sealed class DecorationMix<T extends Decoration> extends Mix<T> {
   final Prop<Color>? color;
   final MixProp<Gradient>? gradient;
   final MixProp<DecorationImage>? image;
   final List<MixProp<BoxShadow>>? boxShadow;
 
-  const DecorationDto({this.color, this.gradient, this.boxShadow, this.image});
+  const DecorationMix({this.color, this.gradient, this.boxShadow, this.image});
 
   /// Constructor that accepts a [Decoration] value and converts it to the appropriate DTO.
-  factory DecorationDto.value(Decoration decoration) {
+  factory DecorationMix.value(Decoration decoration) {
     return switch (decoration) {
-          BoxDecoration d => BoxDecorationDto.value(d),
-          ShapeDecoration d => ShapeDecorationDto.value(d),
+          BoxDecoration d => BoxDecorationMix.value(d),
+          ShapeDecoration d => ShapeDecorationMix.value(d),
           _ => throw ArgumentError(
             'Unsupported Decoration type: ${decoration.runtimeType}',
           ),
         }
-        as DecorationDto<T>;
+        as DecorationMix<T>;
   }
 
   /// Constructor that accepts a nullable [Decoration] value and converts it to the appropriate DTO.
-  static DecorationDto? maybeValue(Decoration? decoration) {
-    return decoration != null ? DecorationDto.value(decoration) : null;
+  static DecorationMix? maybeValue(Decoration? decoration) {
+    return decoration != null ? DecorationMix.value(decoration) : null;
   }
 
   /// Merges with another decoration of the same type.
   /// This method is implemented by subclasses to handle type-specific merging.
   @protected
-  DecorationDto<T> mergeDecoration(covariant DecorationDto<T> other);
+  DecorationMix<T> mergeDecoration(covariant DecorationMix<T> other);
 
-  /// Merges two DecorationDto instances.
+  /// Merges two DecorationMix instances.
   ///
   /// If both are the same type, delegates to [mergeDecoration].
   /// If different types, returns [other] (override behavior).
   /// If [other] is null, returns this instance.
   @override
-  DecorationDto<T> merge(DecorationDto<T>? other) {
+  DecorationMix<T> merge(DecorationMix<T>? other) {
     if (other == null) return this;
 
     return switch ((this, other)) {
-          (BoxDecorationDto a, BoxDecorationDto b) => a.mergeDecoration(b),
-          (ShapeDecorationDto a, ShapeDecorationDto b) => a.mergeDecoration(b),
+          (BoxDecorationMix a, BoxDecorationMix b) => a.mergeDecoration(b),
+          (ShapeDecorationMix a, ShapeDecorationMix b) => a.mergeDecoration(b),
           _ => other, // Different types: override with other
         }
-        as DecorationDto<T>;
+        as DecorationMix<T>;
   }
 }
 
 /// Represents a Data transfer object of [BoxDecoration]
-final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
+final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
   final MixProp<BoxBorder>? border;
   final MixProp<BorderRadiusGeometry>? borderRadius;
   final Prop<BoxShape>? shape;
   final Prop<BlendMode>? backgroundBlendMode;
 
-  BoxDecorationDto.only({
-    BoxBorderDto? border,
-    BorderRadiusGeometryDto? borderRadius,
+  BoxDecorationMix.only({
+    BoxBorderMix? border,
+    BorderRadiusGeometryMix? borderRadius,
     BoxShape? shape,
     BlendMode? backgroundBlendMode,
     Color? color,
-    DecorationImageDto? image,
-    GradientDto? gradient,
-    List<BoxShadowDto>? boxShadow,
+    DecorationImageMix? image,
+    GradientMix? gradient,
+    List<BoxShadowMix>? boxShadow,
   }) : this(
          border: MixProp.maybe(border),
          borderRadius: MixProp.maybe(borderRadius),
@@ -84,45 +84,45 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
          boxShadow: boxShadow?.map(MixProp<BoxShadow>.new).toList(),
        );
 
-  BoxDecorationDto.border(BoxBorderDto border) : this.only(border: border);
+  BoxDecorationMix.border(BoxBorderMix border) : this.only(border: border);
 
-  BoxDecorationDto.borderDirectional(BorderDirectionalDto border)
+  BoxDecorationMix.borderDirectional(BorderDirectionalMix border)
     : this.only(border: border);
 
-  BoxDecorationDto.borderRadius(BorderRadiusGeometryDto borderRadius)
+  BoxDecorationMix.borderRadius(BorderRadiusGeometryMix borderRadius)
     : this.only(borderRadius: borderRadius);
 
-  BoxDecorationDto.shape(BoxShape shape) : this.only(shape: shape);
+  BoxDecorationMix.shape(BoxShape shape) : this.only(shape: shape);
 
-  BoxDecorationDto.backgroundBlendMode(BlendMode backgroundBlendMode)
+  BoxDecorationMix.backgroundBlendMode(BlendMode backgroundBlendMode)
     : this.only(backgroundBlendMode: backgroundBlendMode);
 
-  BoxDecorationDto.color(Color? color) : this.only(color: color);
+  BoxDecorationMix.color(Color? color) : this.only(color: color);
 
-  BoxDecorationDto.image(DecorationImageDto? image) : this.only(image: image);
+  BoxDecorationMix.image(DecorationImageMix? image) : this.only(image: image);
 
-  BoxDecorationDto.gradient(GradientDto? gradient)
+  BoxDecorationMix.gradient(GradientMix? gradient)
     : this.only(gradient: gradient);
 
-  BoxDecorationDto.boxShadow(List<BoxShadowDto>? boxShadow)
+  BoxDecorationMix.boxShadow(List<BoxShadowMix>? boxShadow)
     : this.only(boxShadow: boxShadow);
 
   /// Constructor that accepts a [BoxDecoration] value and extracts its properties.
-  BoxDecorationDto.value(BoxDecoration decoration)
+  BoxDecorationMix.value(BoxDecoration decoration)
     : this.only(
-        border: BoxBorderDto.maybeValue(decoration.border),
-        borderRadius: BorderRadiusGeometryDto.maybeValue(
+        border: BoxBorderMix.maybeValue(decoration.border),
+        borderRadius: BorderRadiusGeometryMix.maybeValue(
           decoration.borderRadius,
         ),
         shape: decoration.shape,
         backgroundBlendMode: decoration.backgroundBlendMode,
         color: decoration.color,
-        image: DecorationImageDto.maybeValue(decoration.image),
-        gradient: GradientDto.maybeValue(decoration.gradient),
-        boxShadow: decoration.boxShadow?.map(BoxShadowDto.value).toList(),
+        image: DecorationImageMix.maybeValue(decoration.image),
+        gradient: GradientMix.maybeValue(decoration.gradient),
+        boxShadow: decoration.boxShadow?.map(BoxShadowMix.value).toList(),
       );
 
-  const BoxDecorationDto({
+  const BoxDecorationMix({
     this.border,
     this.borderRadius,
     this.shape,
@@ -134,8 +134,8 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
   });
 
   /// Constructor that accepts a nullable [BoxDecoration] value and extracts its properties.
-  static BoxDecorationDto? maybeValue(BoxDecoration? decoration) {
-    return decoration != null ? BoxDecorationDto.value(decoration) : null;
+  static BoxDecorationMix? maybeValue(BoxDecoration? decoration) {
+    return decoration != null ? BoxDecorationMix.value(decoration) : null;
   }
 
   /// Resolves to [BoxDecoration] using the provided [BuildContext].
@@ -153,10 +153,10 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
     );
   }
 
-  /// Merges the properties of this [BoxDecorationDto] with the properties of [other].
+  /// Merges the properties of this [BoxDecorationMix] with the properties of [other].
   @override
-  BoxDecorationDto mergeDecoration(BoxDecorationDto other) {
-    return BoxDecorationDto(
+  BoxDecorationMix mergeDecoration(BoxDecorationMix other) {
+    return BoxDecorationMix(
       border: MixHelpers.merge(border, other.border),
       borderRadius: MixHelpers.merge(borderRadius, other.borderRadius),
       shape: MixHelpers.merge(shape, other.shape),
@@ -175,7 +175,7 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is BoxDecorationDto &&
+    return other is BoxDecorationMix &&
         other.border == border &&
         other.borderRadius == borderRadius &&
         other.shape == shape &&
@@ -199,16 +199,16 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
   }
 }
 
-final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
+final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
     with MixDefaultValue<ShapeDecoration> {
   final MixProp<ShapeBorder>? shape;
 
-  ShapeDecorationDto.only({
-    ShapeBorderDto? shape,
+  ShapeDecorationMix.only({
+    ShapeBorderMix? shape,
     Color? color,
-    DecorationImageDto? image,
-    GradientDto? gradient,
-    List<BoxShadowDto>? shadows,
+    DecorationImageMix? image,
+    GradientMix? gradient,
+    List<BoxShadowMix>? shadows,
   }) : this(
          shape: MixProp.maybe(shape),
          color: Prop.maybe(color),
@@ -217,7 +217,7 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
          shadows: shadows?.map(MixProp<BoxShadow>.new).toList(),
        );
 
-  const ShapeDecorationDto({
+  const ShapeDecorationMix({
     this.shape,
     super.color,
     super.image,
@@ -226,18 +226,18 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
   }) : super(boxShadow: shadows);
 
   /// Constructor that accepts a [ShapeDecoration] value and extracts its properties.
-  ShapeDecorationDto.value(ShapeDecoration decoration)
+  ShapeDecorationMix.value(ShapeDecoration decoration)
     : this.only(
-        shape: ShapeBorderDto.maybeValue(decoration.shape),
+        shape: ShapeBorderMix.maybeValue(decoration.shape),
         color: decoration.color,
-        image: DecorationImageDto.maybeValue(decoration.image),
-        gradient: GradientDto.maybeValue(decoration.gradient),
-        shadows: decoration.shadows?.map(BoxShadowDto.value).toList(),
+        image: DecorationImageMix.maybeValue(decoration.image),
+        gradient: GradientMix.maybeValue(decoration.gradient),
+        shadows: decoration.shadows?.map(BoxShadowMix.value).toList(),
       );
 
   /// Constructor that accepts a nullable [ShapeDecoration] value and extracts its properties.
-  static ShapeDecorationDto? maybeValue(ShapeDecoration? decoration) {
-    return decoration != null ? ShapeDecorationDto.value(decoration) : null;
+  static ShapeDecorationMix? maybeValue(ShapeDecoration? decoration) {
+    return decoration != null ? ShapeDecorationMix.value(decoration) : null;
   }
 
   List<MixProp<BoxShadow>>? get shadows => boxShadow;
@@ -256,10 +256,10 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
     );
   }
 
-  /// Merges the properties of this [ShapeDecorationDto] with the properties of [other].
+  /// Merges the properties of this [ShapeDecorationMix] with the properties of [other].
   @override
-  ShapeDecorationDto mergeDecoration(ShapeDecorationDto other) {
-    return ShapeDecorationDto(
+  ShapeDecorationMix mergeDecoration(ShapeDecorationMix other) {
+    return ShapeDecorationMix(
       shape: MixHelpers.merge(shape, other.shape),
       color: MixHelpers.merge(color, other.color),
       image: MixHelpers.merge(image, other.image),
@@ -272,7 +272,7 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is ShapeDecorationDto &&
+    return other is ShapeDecorationMix &&
         other.shape == shape &&
         other.color == color &&
         other.image == image &&

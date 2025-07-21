@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
 @immutable
-class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
+class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
   // Simple properties use MixValue directly
   final Prop<Color>? color;
   final Prop<Color>? backgroundColor;
@@ -33,7 +33,7 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
   // Lists of Mix types (DTOs)
   final List<MixProp<Shadow>>? shadows;
 
-  TextStyleDto.only({
+  TextStyleMix.only({
     Color? color,
     Color? backgroundColor,
     double? fontSize,
@@ -43,7 +43,7 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
     String? debugLabel,
     double? wordSpacing,
     TextBaseline? textBaseline,
-    List<ShadowDto>? shadows,
+    List<ShadowMix>? shadows,
     List<FontFeature>? fontFeatures,
     TextDecoration? decoration,
     Color? decorationColor,
@@ -79,7 +79,7 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
          fontFamilyFallback: fontFamilyFallback?.map(Prop.new).toList(),
        );
 
-  const TextStyleDto({
+  const TextStyleMix({
     this.color,
     this.backgroundColor,
     this.fontSize,
@@ -105,13 +105,13 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
 
   /// Constructor that accepts a [TextStyle] value and extracts its properties.
   ///
-  /// This is useful for converting existing [TextStyle] instances to [TextStyleDto].
+  /// This is useful for converting existing [TextStyle] instances to [TextStyleMix].
   ///
   /// ```dart
   /// const textStyle = TextStyle(color: Colors.blue, fontSize: 16.0);
-  /// final dto = TextStyleDto.value(textStyle);
+  /// final dto = TextStyleMix.value(textStyle);
   /// ```
-  TextStyleDto.value(TextStyle textStyle)
+  TextStyleMix.value(TextStyle textStyle)
     : this.only(
         color: textStyle.color,
         backgroundColor: textStyle.backgroundColor,
@@ -122,7 +122,7 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
         debugLabel: textStyle.debugLabel,
         wordSpacing: textStyle.wordSpacing,
         textBaseline: textStyle.textBaseline,
-        shadows: textStyle.shadows?.map(ShadowDto.value).toList(),
+        shadows: textStyle.shadows?.map(ShadowMix.value).toList(),
         fontFeatures: textStyle.fontFeatures,
         decoration: textStyle.decoration,
         decorationColor: textStyle.decorationColor,
@@ -138,14 +138,14 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
 
   /// Constructor that accepts a nullable [TextStyle] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [TextStyleDto.value].
+  /// Returns null if the input is null, otherwise uses [TextStyleMix.value].
   ///
   /// ```dart
   /// const TextStyle? textStyle = TextStyle(color: Colors.blue, fontSize: 16.0);
-  /// final dto = TextStyleDto.maybeValue(textStyle); // Returns TextStyleDto or null
+  /// final dto = TextStyleMix.maybeValue(textStyle); // Returns TextStyleMix or null
   /// ```
-  static TextStyleDto? maybeValue(TextStyle? textStyle) {
-    return textStyle != null ? TextStyleDto.value(textStyle) : null;
+  static TextStyleMix? maybeValue(TextStyle? textStyle) {
+    return textStyle != null ? TextStyleMix.value(textStyle) : null;
   }
 
   @override
@@ -177,10 +177,10 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
   }
 
   @override
-  TextStyleDto merge(TextStyleDto? other) {
+  TextStyleMix merge(TextStyleMix? other) {
     if (other == null) return this;
 
-    return TextStyleDto(
+    return TextStyleMix(
       color: MixHelpers.merge(color, other.color),
       backgroundColor: MixHelpers.merge(backgroundColor, other.backgroundColor),
       fontSize: MixHelpers.merge(fontSize, other.fontSize),
@@ -301,7 +301,7 @@ class TextStyleDto extends Mix<TextStyle> with Diagnosticable {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is TextStyleDto &&
+    return other is TextStyleMix &&
         other.color == color &&
         other.backgroundColor == backgroundColor &&
         other.fontSize == fontSize &&

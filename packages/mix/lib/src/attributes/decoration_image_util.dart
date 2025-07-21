@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import '../core/attribute.dart';
 import '../core/prop.dart';
 import '../core/utility.dart';
-import 'decoration_image_dto.dart';
+import 'decoration_image_mix.dart';
 import 'scalar_util.dart';
 
 /// Utility class for configuring [DecorationImage] properties.
@@ -12,49 +12,49 @@ import 'scalar_util.dart';
 /// Use the methods of this class to configure specific properties of a [DecorationImage].
 final class DecorationImageUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, DecorationImage> {
-  /// Utility for defining [DecorationImageDto.image]
+  /// Utility for defining [DecorationImageMix.image]
   late final provider = ImageProviderUtility<T>(
-    (prop) => call(DecorationImageDto(image: prop)),
+    (prop) => call(DecorationImageMix(image: prop)),
   );
 
-  /// Utility for defining [DecorationImageDto.fit]
+  /// Utility for defining [DecorationImageMix.fit]
   late final fit = BoxFitUtility<T>(
-    (prop) => call(DecorationImageDto(fit: prop)),
+    (prop) => call(DecorationImageMix(fit: prop)),
   );
 
-  /// Utility for defining [DecorationImageDto.alignment]
+  /// Utility for defining [DecorationImageMix.alignment]
   late final alignment = AlignmentUtility<T>(
-    (prop) => call(DecorationImageDto(alignment: prop)),
+    (prop) => call(DecorationImageMix(alignment: prop)),
   );
 
-  /// Utility for defining [DecorationImageDto.centerSlice]
+  /// Utility for defining [DecorationImageMix.centerSlice]
   late final centerSlice = RectUtility<T>(
-    (prop) => call(DecorationImageDto(centerSlice: prop)),
+    (prop) => call(DecorationImageMix(centerSlice: prop)),
   );
 
-  /// Utility for defining [DecorationImageDto.repeat]
+  /// Utility for defining [DecorationImageMix.repeat]
   late final repeat = ImageRepeatUtility<T>(
-    (prop) => call(DecorationImageDto(repeat: prop)),
+    (prop) => call(DecorationImageMix(repeat: prop)),
   );
 
-  /// Utility for defining [DecorationImageDto.filterQuality]
+  /// Utility for defining [DecorationImageMix.filterQuality]
   late final filterQuality = FilterQualityUtility<T>(
-    (prop) => call(DecorationImageDto(filterQuality: prop)),
+    (prop) => call(DecorationImageMix(filterQuality: prop)),
   );
 
-  /// Utility for defining [DecorationImageDto.invertColors]
+  /// Utility for defining [DecorationImageMix.invertColors]
   late final invertColors = BoolUtility<T>(
-    (prop) => call(DecorationImageDto(invertColors: prop)),
+    (prop) => call(DecorationImageMix(invertColors: prop)),
   );
 
-  /// Utility for defining [DecorationImageDto.isAntiAlias]
+  /// Utility for defining [DecorationImageMix.isAntiAlias]
   late final isAntiAlias = BoolUtility<T>(
-    (prop) => call(DecorationImageDto(isAntiAlias: prop)),
+    (prop) => call(DecorationImageMix(isAntiAlias: prop)),
   );
 
   DecorationImageUtility(super.builder)
-    : super(convertToMix: DecorationImageDto.value);
+    : super(convertToMix: DecorationImageMix.value);
 
   @override
-  T call(DecorationImageDto value) => builder(MixProp(value));
+  T call(DecorationImageMix value) => builder(MixProp(value));
 }

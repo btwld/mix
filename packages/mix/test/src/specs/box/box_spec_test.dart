@@ -10,10 +10,10 @@ void main() {
     test('resolve', () {
       final boxAttribute = BoxSpecAttribute(
         alignment: Alignment.center,
-        padding: EdgeInsetsGeometryDto.only(top: 8, bottom: 16),
-        margin: EdgeInsetsGeometryDto.only(top: 10.0, bottom: 12.0),
-        constraints: BoxConstraintsDto(maxWidth: 300.0, minHeight: 200.0),
-        decoration: BoxDecorationDto(color: Colors.blue),
+        padding: EdgeInsetsGeometryMix.only(top: 8, bottom: 16),
+        margin: EdgeInsetsGeometryMix.only(top: 10.0, bottom: 12.0),
+        constraints: BoxConstraintsMix(maxWidth: 300.0, minHeight: 200.0),
+        decoration: BoxDecorationMix(color: Colors.blue),
         transform: Matrix4.translationValues(10.0, 10.0, 0.0),
         clipBehavior: Clip.antiAlias,
         width: 300,
@@ -203,21 +203,21 @@ void main() {
     test('merge() returns correct instance', () {
       final containerSpecAttribute = BoxSpecAttribute(
         alignment: Alignment.center,
-        padding: EdgeInsetsGeometryDto.only(
+        padding: EdgeInsetsGeometryMix.only(
           top: 20,
           bottom: 20,
           left: 20,
           right: 20,
         ),
-        margin: EdgeInsetsGeometryDto.only(
+        margin: EdgeInsetsGeometryMix.only(
           top: 10,
           bottom: 10,
           left: 10,
           right: 10,
         ),
-        constraints: BoxConstraintsDto(maxHeight: 100),
-        decoration: BoxDecorationDto(color: Colors.blue),
-        foregroundDecoration: BoxDecorationDto(color: Colors.blue),
+        constraints: BoxConstraintsMix(maxHeight: 100),
+        decoration: BoxDecorationMix(color: Colors.blue),
+        foregroundDecoration: BoxDecorationMix(color: Colors.blue),
         transform: Matrix4.identity(),
         clipBehavior: Clip.antiAlias,
         width: 100,
@@ -227,21 +227,21 @@ void main() {
       final mergedBoxSpecAttribute = containerSpecAttribute.merge(
         BoxSpecAttribute(
           alignment: Alignment.centerLeft,
-          padding: EdgeInsetsGeometryDto.only(
+          padding: EdgeInsetsGeometryMix.only(
             top: 30,
             bottom: 30,
             left: 30,
             right: 30,
           ),
-          margin: EdgeInsetsGeometryDto.only(
+          margin: EdgeInsetsGeometryMix.only(
             top: 20,
             bottom: 20,
             left: 20,
             right: 20,
           ),
-          constraints: BoxConstraintsDto(maxHeight: 200),
-          decoration: BoxDecorationDto(color: Colors.red),
-          foregroundDecoration: BoxDecorationDto(color: Colors.amber),
+          constraints: BoxConstraintsMix(maxHeight: 200),
+          decoration: BoxDecorationMix(color: Colors.red),
+          foregroundDecoration: BoxDecorationMix(color: Colors.amber),
           transform: Matrix4.identity(),
           clipBehavior: Clip.antiAliasWithSaveLayer,
           width: 200,
@@ -298,7 +298,7 @@ void main() {
       expect(attr.alignment, resolvesTo(Alignment.center));
       expect(
         attr.padding?.mixValue,
-        EdgeInsetsDto.value(const EdgeInsets.all(8.0)),
+        EdgeInsetsMix.value(const EdgeInsets.all(8.0)),
       );
       expect(attr.margin, null);
 
@@ -309,7 +309,7 @@ void main() {
       expect(boxAttribute?.alignment, resolvesTo(Alignment.center));
       expect(
         boxAttribute?.padding?.mixValue,
-        EdgeInsetsDto.value(const EdgeInsets.all(8.0)),
+        EdgeInsetsMix.value(const EdgeInsets.all(8.0)),
       );
       expect(boxAttribute?.margin, null);
 
@@ -328,11 +328,11 @@ void main() {
 
       expect(
         box1.padding?.mixValue,
-        EdgeInsetsDto.value(const EdgeInsets.all(10.0)),
+        EdgeInsetsMix.value(const EdgeInsets.all(10.0)),
       );
       expect(
         box2.padding?.mixValue,
-        EdgeInsetsDto.value(const EdgeInsets.all(20.0)),
+        EdgeInsetsMix.value(const EdgeInsets.all(20.0)),
       );
 
       final style1 = Style(box1);
@@ -343,11 +343,11 @@ void main() {
 
       expect(
         boxAttribute1?.padding?.mixValue,
-        EdgeInsetsDto.value(const EdgeInsets.all(10.0)),
+        EdgeInsetsMix.value(const EdgeInsets.all(10.0)),
       );
       expect(
         boxAttribute2?.padding?.mixValue,
-        EdgeInsetsDto.value(const EdgeInsets.all(20.0)),
+        EdgeInsetsMix.value(const EdgeInsets.all(20.0)),
       );
 
       final mixData1 = style1.of(MockBuildContext());
@@ -374,14 +374,14 @@ void main() {
 
       expect(boxAttribute.padding, resolvesTo(const EdgeInsets.all(10.0)));
       expect(
-        (boxAttribute.decoration?.mixValue as BoxDecorationDto).color,
+        (boxAttribute.decoration?.mixValue as BoxDecorationMix).color,
         isA<Prop<Color>>(),
       );
       expect(boxAttribute.alignment, resolvesTo(Alignment.center));
 
       expect(boxAttribute2.padding, resolvesTo(const EdgeInsets.all(20.0)));
       expect(
-        (boxAttribute2.decoration?.mixValue as BoxDecorationDto?)?.color,
+        (boxAttribute2.decoration?.mixValue as BoxDecorationMix?)?.color,
         isNull,
       );
 

@@ -16,7 +16,7 @@ final class _TestSpec extends Spec<_TestSpec> {
   @override
   //copyWith
   _TestSpec copyWith({DecorationImage? dto}) {
-    return _TestSpec(dto: dto ?? this.dto);
+    return _TestSpec(mix: dto ?? this.dto);
   }
 
   @override
@@ -26,16 +26,16 @@ final class _TestSpec extends Spec<_TestSpec> {
 }
 
 final class _TestAttribute extends SpecAttribute<_TestSpec> {
-  final DecorationImageDto? dto;
+  final DecorationImageMix? dto;
 
   @override
   _TestAttribute merge(covariant _TestAttribute? other) {
-    return other == null ? this : _TestAttribute(dto?.merge(other.dto));
+    return other == null ? this : _TestAttribute(mix?.merge(other.dto));
   }
 
   @override
   _TestSpec resolve(BuildContext mix) {
-    return _TestSpec(dto: dto?.resolve(mix));
+    return _TestSpec(mix: dto?.resolve(mix));
   }
 
   @override
@@ -50,7 +50,7 @@ void main() {
 
     setUp(() {
       utility = DecorationImageUtility<_TestAttribute>(
-        (dto) => _TestAttribute(dto),
+        (mix) => _TestAttribute(mix),
       );
     });
 

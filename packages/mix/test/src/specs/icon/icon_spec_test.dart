@@ -19,8 +19,8 @@ void main() {
             grade: 2,
             opticalSize: 2,
             shadows: [
-              ShadowDto(color: Colors.black),
-              ShadowDto(color: Colors.black),
+              ShadowMix(color: Colors.black),
+              ShadowMix(color: Colors.black),
             ],
             textDirection: TextDirection.ltr,
             weight: 2,

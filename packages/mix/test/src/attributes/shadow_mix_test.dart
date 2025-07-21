@@ -6,32 +6,32 @@ import '../../helpers/custom_matchers.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  // ShadowDto tests
-  group('ShadowDto', () {
+  // ShadowMix tests
+  group('ShadowMix', () {
     // Constructor Tests
     group('Constructor Tests', () {
       test('only constructor with raw values', () {
-        final dto = ShadowDto.only(
+        final mix = ShadowMix.only(
           blurRadius: 10.0,
           color: Colors.blue,
           offset: const Offset(10, 10),
         );
 
-        expect(dto.blurRadius, resolvesTo(10.0));
-        expect(dto.color, resolvesTo(Colors.blue));
-        expect(dto.offset, resolvesTo(const Offset(10, 10)));
+        expect(mix.blurRadius, resolvesTo(10.0));
+        expect(mix.color, resolvesTo(Colors.blue));
+        expect(mix.offset, resolvesTo(const Offset(10, 10)));
       });
 
       test('main constructor with Prop values', () {
-        final dto = ShadowDto(
+        final mix = ShadowMix(
           blurRadius: Prop(5.0),
           color: Prop(Colors.red),
           offset: Prop(const Offset(5, 5)),
         );
 
-        expect(dto.blurRadius, resolvesTo(5.0));
-        expect(dto.color, resolvesTo(Colors.red));
-        expect(dto.offset, resolvesTo(const Offset(5, 5)));
+        expect(mix.blurRadius, resolvesTo(5.0));
+        expect(mix.color, resolvesTo(Colors.red));
+        expect(mix.offset, resolvesTo(const Offset(5, 5)));
       });
 
       test('value constructor from Shadow', () {
@@ -40,35 +40,35 @@ void main() {
           color: Colors.green,
           offset: Offset(15, 15),
         );
-        final dto = ShadowDto.value(shadow);
+        final mix = ShadowMix.value(shadow);
 
-        expect(dto.blurRadius, resolvesTo(shadow.blurRadius));
-        expect(dto.color, resolvesTo(shadow.color));
-        expect(dto.offset, resolvesTo(shadow.offset));
+        expect(mix.blurRadius, resolvesTo(shadow.blurRadius));
+        expect(mix.color, resolvesTo(shadow.color));
+        expect(mix.offset, resolvesTo(shadow.offset));
       });
     });
 
     // Factory Tests
     group('Factory Tests', () {
-      test('maybeValue returns ShadowDto for non-null Shadow', () {
+      test('maybeValue returns ShadowMix for non-null Shadow', () {
         const shadow = Shadow(blurRadius: 8.0, color: Colors.purple);
-        final dto = ShadowDto.maybeValue(shadow);
+        final mix = ShadowMix.maybeValue(shadow);
 
-        expect(dto, isNotNull);
-        expect(dto?.blurRadius, resolvesTo(shadow.blurRadius));
-        expect(dto?.color, resolvesTo(shadow.color));
+        expect(mix, isNotNull);
+        expect(mix?.blurRadius, resolvesTo(shadow.blurRadius));
+        expect(mix?.color, resolvesTo(shadow.color));
       });
 
       test('maybeValue returns null for null Shadow', () {
-        final dto = ShadowDto.maybeValue(null);
-        expect(dto, isNull);
+        final mix = ShadowMix.maybeValue(null);
+        expect(mix, isNull);
       });
     });
 
     // Resolution Tests
     group('Resolution Tests', () {
       test('resolves to Shadow with all properties', () {
-        final dto = ShadowDto.only(
+        final mix = ShadowMix.only(
           blurRadius: 10.0,
           color: Colors.blue,
           offset: const Offset(10, 10),
@@ -87,10 +87,10 @@ void main() {
       });
 
       test('resolves with default values for null properties', () {
-        const dto = ShadowDto();
+        const dto = ShadowMix();
 
         final context = MockBuildContext();
-        final resolved = dto.resolve(context);
+        final resolved = mix.resolve(context);
 
         expect(resolved.blurRadius, 0.0);
         expect(resolved.color, const Color(0xFF000000));
@@ -98,10 +98,10 @@ void main() {
       });
 
       test('resolves with partial properties', () {
-        final dto = ShadowDto.only(color: Colors.red);
+        final mix = ShadowMix.only(color: Colors.red);
 
         final context = MockBuildContext();
-        final resolved = dto.resolve(context);
+        final resolved = mix.resolve(context);
 
         expect(resolved.color, Colors.red);
         expect(resolved.blurRadius, 0.0);
@@ -111,30 +111,30 @@ void main() {
 
     // Merge Tests
     group('Merge Tests', () {
-      test('merge with another ShadowDto - all properties', () {
-        final dto1 = ShadowDto.only(
+      test('merge with another ShadowMix - all properties', () {
+        final mix1 = ShadowMix.only(
           blurRadius: 10.0,
           color: Colors.blue,
           offset: const Offset(10, 10),
         );
-        final dto2 = ShadowDto.only(
+        final mix2 = ShadowMix.only(
           blurRadius: 20.0,
           color: Colors.red,
           offset: const Offset(20, 20),
         );
 
-        final merged = dto1.merge(dto2);
+        final merged = dto1.merge(mix2);
 
         expect(merged.blurRadius, resolvesTo(20.0));
         expect(merged.color, resolvesTo(Colors.red));
         expect(merged.offset, resolvesTo(const Offset(20, 20)));
       });
 
-      test('merge with another ShadowDto - partial properties', () {
-        final dto1 = ShadowDto.only(blurRadius: 10.0, color: Colors.blue);
-        final dto2 = ShadowDto.only(color: Colors.red);
+      test('merge with another ShadowMix - partial properties', () {
+        final mix1 = ShadowMix.only(blurRadius: 10.0, color: Colors.blue);
+        final mix2 = ShadowMix.only(color: Colors.red);
 
-        final merged = dto1.merge(dto2);
+        final merged = dto1.merge(mix2);
 
         expect(merged.blurRadius, resolvesTo(10.0));
         expect(merged.color, resolvesTo(Colors.red));
@@ -142,83 +142,83 @@ void main() {
       });
 
       test('merge with null returns original', () {
-        final dto = ShadowDto.only(blurRadius: 5.0, color: Colors.purple);
+        final mix = ShadowMix.only(blurRadius: 5.0, color: Colors.purple);
 
-        final merged = dto.merge(null);
+        final merged = mix.merge(null);
 
-        expect(merged, equals(dto));
+        expect(merged, equals(mix));
       });
     });
 
     // Equality Tests
     group('Equality Tests', () {
       test('equality works correctly', () {
-        final dto1 = ShadowDto.only(blurRadius: 10.0, color: Colors.blue);
-        final dto2 = ShadowDto.only(blurRadius: 10.0, color: Colors.blue);
+        final mix1 = ShadowMix.only(blurRadius: 10.0, color: Colors.blue);
+        final mix2 = ShadowMix.only(blurRadius: 10.0, color: Colors.blue);
 
-        expect(dto1, equals(dto2));
+        expect(mix1, equals(mix2));
       });
 
       test('inequality works correctly', () {
-        final dto1 = ShadowDto.only(blurRadius: 10.0, color: Colors.blue);
-        final dto2 = ShadowDto.only(blurRadius: 10.0, color: Colors.red);
+        final mix1 = ShadowMix.only(blurRadius: 10.0, color: Colors.blue);
+        final mix2 = ShadowMix.only(blurRadius: 10.0, color: Colors.red);
 
-        expect(dto1, isNot(equals(dto2)));
+        expect(mix1, isNot(equals(mix2)));
       });
     });
 
     // Edge Cases
     group('Edge Cases', () {
       test('handles zero blur radius', () {
-        final dto = ShadowDto.only(blurRadius: 0.0, color: Colors.black);
+        final mix = ShadowMix.only(blurRadius: 0.0, color: Colors.black);
 
-        expect(dto.blurRadius, resolvesTo(0.0));
+        expect(mix.blurRadius, resolvesTo(0.0));
       });
 
       test('handles negative blur radius', () {
-        final dto = ShadowDto.only(blurRadius: -5.0, color: Colors.black);
+        final mix = ShadowMix.only(blurRadius: -5.0, color: Colors.black);
 
-        expect(dto.blurRadius, resolvesTo(-5.0));
+        expect(mix.blurRadius, resolvesTo(-5.0));
       });
 
       test('handles transparent color', () {
-        final dto = ShadowDto.only(color: Colors.transparent, blurRadius: 10.0);
+        final mix = ShadowMix.only(color: Colors.transparent, blurRadius: 10.0);
 
-        expect(dto.color, resolvesTo(Colors.transparent));
+        expect(mix.color, resolvesTo(Colors.transparent));
       });
     });
   });
 
-  // BoxShadowDto tests
-  group('BoxShadowDto', () {
+  // BoxShadowMix tests
+  group('BoxShadowMix', () {
     // Constructor Tests
     group('Constructor Tests', () {
       test('only constructor with raw values', () {
-        final dto = BoxShadowDto.only(
+        final mix = BoxShadowMix.only(
           color: Colors.red,
           offset: const Offset(5, 5),
           blurRadius: 8.0,
           spreadRadius: 2.0,
         );
 
-        expect(dto.color, resolvesTo(Colors.red));
-        expect(dto.offset, resolvesTo(const Offset(5, 5)));
-        expect(dto.blurRadius, resolvesTo(8.0));
-        expect(dto.spreadRadius, resolvesTo(2.0));
+        expect(mix.color, resolvesTo(Colors.red));
+        expect(mix.offset, resolvesTo(const Offset(5, 5)));
+        expect(mix.blurRadius, resolvesTo(8.0));
+        expect(mix.spreadRadius, resolvesTo(2.0));
       });
 
       test('main constructor with Prop values', () {
-        final dto = BoxShadowDto(
+        final mix = BoxShadowMix(
           color: Prop(Colors.red),
           offset: Prop(const Offset(5, 5)),
           blurRadius: Prop(8.0),
           spreadRadius: Prop(3.0),
         );
 
-        expect(dto.color, resolvesTo(Colors.red));
-        expect(dto.offset, resolvesTo(const Offset(5, 5)));
-        expect(dto.blurRadius, resolvesTo(8.0));
-        expect(dto.spreadRadius, resolvesTo(5.0));
+        expect(mix.color, resolvesTo(Colors.red));
+        expect(mix.offset, resolvesTo(const Offset(5, 5)));
+        expect(mix.blurRadius, resolvesTo(8.0));
+        expect(mix.spreadRadius, resolvesTo(5.0));
       });
 
       test('value constructor from BoxShadow', () {
@@ -228,38 +228,38 @@ void main() {
           blurRadius: 6.0,
           spreadRadius: 1.0,
         );
-        final dto = BoxShadowDto.value(boxShadow);
+        final mix = BoxShadowMix.value(boxShadow);
 
-        expect(dto.color, resolvesTo(boxShadow.color));
-        expect(dto.offset, resolvesTo(boxShadow.offset));
-        expect(dto.blurRadius, resolvesTo(boxShadow.blurRadius));
-        expect(dto.spreadRadius, resolvesTo(boxShadow.spreadRadius));
+        expect(mix.color, resolvesTo(boxShadow.color));
+        expect(mix.offset, resolvesTo(boxShadow.offset));
+        expect(mix.blurRadius, resolvesTo(boxShadow.blurRadius));
+        expect(mix.spreadRadius, resolvesTo(boxShadow.spreadRadius));
       });
     });
 
     // Factory Tests
     group('Factory Tests', () {
-      test('maybeValue returns BoxShadowDto for non-null BoxShadow', () {
+      test('maybeValue returns BoxShadowMix for non-null BoxShadow', () {
         const boxShadow = BoxShadow(
           color: Colors.grey,
           blurRadius: 10.0,
           spreadRadius: 2.0,
         );
-        final dto = BoxShadowDto.maybeValue(boxShadow);
+        final mix = BoxShadowMix.maybeValue(boxShadow);
 
-        expect(dto, isNotNull);
-        expect(dto?.color, resolvesTo(boxShadow.color));
-        expect(dto?.blurRadius, resolvesTo(boxShadow.blurRadius));
-        expect(dto?.spreadRadius, resolvesTo(boxShadow.spreadRadius));
+        expect(mix, isNotNull);
+        expect(mix?.color, resolvesTo(boxShadow.color));
+        expect(mix?.blurRadius, resolvesTo(boxShadow.blurRadius));
+        expect(mix?.spreadRadius, resolvesTo(boxShadow.spreadRadius));
       });
 
       test('maybeValue returns null for null BoxShadow', () {
-        final dto = BoxShadowDto.maybeValue(null);
-        expect(dto, isNull);
+        final mix = BoxShadowMix.maybeValue(null);
+        expect(mix, isNull);
       });
 
       test('fromElevation creates correct shadows', () {
-        final shadows = BoxShadowDto.fromElevation(ElevationShadow.four);
+        final shadows = BoxShadowMix.fromElevation(ElevationShadow.four);
 
         expect(shadows.length, 2);
       });
@@ -268,7 +268,7 @@ void main() {
     // Resolution Tests
     group('Resolution Tests', () {
       test('resolves to BoxShadow with all properties', () {
-        final dto = BoxShadowDto.only(
+        final mix = BoxShadowMix.only(
           color: Colors.grey,
           offset: const Offset(2, 2),
           blurRadius: 4.0,
@@ -289,10 +289,10 @@ void main() {
       });
 
       test('resolves with default values for null properties', () {
-        const dto = BoxShadowDto();
+        const dto = BoxShadowMix();
 
         final context = MockBuildContext();
-        final resolved = dto.resolve(context);
+        final resolved = mix.resolve(context);
 
         expect(resolved.color, const Color(0xFF000000));
         expect(resolved.offset, Offset.zero);
@@ -301,10 +301,10 @@ void main() {
       });
 
       test('resolves with partial properties', () {
-        final dto = BoxShadowDto.only(color: Colors.red, spreadRadius: 3.0);
+        final mix = BoxShadowMix.only(color: Colors.red, spreadRadius: 3.0);
 
         final context = MockBuildContext();
-        final resolved = dto.resolve(context);
+        final resolved = mix.resolve(context);
 
         expect(resolved.color, Colors.red);
         expect(resolved.spreadRadius, 3.0);
@@ -315,26 +315,26 @@ void main() {
 
     // Merge Tests
     group('Merge Tests', () {
-      test('merge with another BoxShadowDto - all properties', () {
-        final dto1 = BoxShadowDto.only(
+      test('merge with another BoxShadowMix - all properties', () {
+        final mix1 = BoxShadowMix.only(
           color: Colors.blue,
           blurRadius: 5.0,
           spreadRadius: 2.0,
         );
-        final dto2 = BoxShadowDto.only(color: Colors.green, blurRadius: 15.0);
+        final mix2 = BoxShadowMix.only(color: Colors.green, blurRadius: 15.0);
 
-        final merged = dto1.merge(dto2);
+        final merged = dto1.merge(mix2);
 
         expect(merged.color, resolvesTo(Colors.green));
         expect(merged.blurRadius, resolvesTo(15.0));
         expect(merged.spreadRadius, resolvesTo(2.0));
       });
 
-      test('merge with another BoxShadowDto - partial properties', () {
-        final dto1 = BoxShadowDto.only(color: Colors.blue, spreadRadius: 5.0);
-        final dto2 = BoxShadowDto.only(color: Colors.blue, spreadRadius: 10.0);
+      test('merge with another BoxShadowMix - partial properties', () {
+        final mix1 = BoxShadowMix.only(color: Colors.blue, spreadRadius: 5.0);
+        final mix2 = BoxShadowMix.only(color: Colors.blue, spreadRadius: 10.0);
 
-        final merged = dto1.merge(dto2);
+        final merged = dto1.merge(mix2);
 
         expect(merged.color, resolvesTo(Colors.blue));
         expect(merged.spreadRadius, resolvesTo(10.0));
@@ -343,59 +343,59 @@ void main() {
       });
 
       test('merge with null returns original', () {
-        final dto = BoxShadowDto.only(color: Colors.black, blurRadius: 10.0);
+        final mix = BoxShadowMix.only(color: Colors.black, blurRadius: 10.0);
 
-        final merged = dto.merge(null);
+        final merged = mix.merge(null);
 
-        expect(merged, equals(dto));
+        expect(merged, equals(mix));
       });
     });
 
     // Equality Tests
     group('Equality Tests', () {
       test('equality works correctly', () {
-        final dto1 = BoxShadowDto.only(
+        final mix1 = BoxShadowMix.only(
           color: Colors.grey,
           blurRadius: 5.0,
           spreadRadius: 2.0,
         );
-        final dto2 = BoxShadowDto.only(
+        final mix2 = BoxShadowMix.only(
           color: Colors.grey,
           blurRadius: 5.0,
           spreadRadius: 2.0,
         );
 
-        expect(dto1, equals(dto2));
+        expect(mix1, equals(mix2));
       });
 
       test('inequality works correctly', () {
-        final dto1 = BoxShadowDto.only(
+        final mix1 = BoxShadowMix.only(
           color: Colors.grey,
           blurRadius: 5.0,
           spreadRadius: 2.0,
         );
-        final dto2 = BoxShadowDto.only(
+        final mix2 = BoxShadowMix.only(
           color: Colors.black,
           blurRadius: 5.0,
           spreadRadius: 2.0,
         );
 
-        expect(dto1, isNot(equals(dto2)));
+        expect(mix1, isNot(equals(mix2)));
       });
     });
 
     // Utility Tests
     group('Utility Tests', () {
       test('merge behavior preserves later values', () {
-        final baseShadow = BoxShadowDto.only(
+        final baseShadow = BoxShadowMix.only(
           color: Colors.black,
           blurRadius: 5.0,
         );
-        final overrideShadow = BoxShadowDto.only(
+        final overrideShadow = BoxShadowMix.only(
           color: Colors.red,
           spreadRadius: 3.0,
         );
-        final finalShadow = BoxShadowDto.only(offset: const Offset(2, 4));
+        final finalShadow = BoxShadowMix.only(offset: const Offset(2, 4));
 
         final result = baseShadow.merge(overrideShadow).merge(finalShadow);
 

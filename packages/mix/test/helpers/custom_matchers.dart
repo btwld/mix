@@ -19,9 +19,9 @@ import 'testing_utils.dart';
 ///
 /// Usage:
 /// ```dart
-/// expect(borderDto, resolvesTo(Border.all(width: 2.0)));
+/// expect(borderMix, resolvesTo(Border.all(width: 2.0)));
 /// expect(colorProp, resolvesTo(Colors.red));
-/// expect(dto.width, resolvesTo(2.0));
+/// expect(mix.width, resolvesTo(2.0));
 /// ```
 Matcher resolvesTo<T>(T expectedValue, {BuildContext? context}) {
   return _ResolvesToMatcher<T>(expectedValue, context ?? TestData.mockContext);
@@ -31,8 +31,8 @@ Matcher resolvesTo<T>(T expectedValue, {BuildContext? context}) {
 ///
 /// Usage:
 /// ```dart
-/// expect(dto.color, resolvesToMaybe(Colors.red));
-/// expect(nullableDto, resolvesToMaybe(null));
+/// expect(mix.color, resolvesToMaybe(Colors.red));
+/// expect(nullableMix, resolvesToMaybe(null));
 /// ```
 Matcher resolvesToMaybe<T>(T? expectedValue, {BuildContext? context}) {
   if (expectedValue == null) {
@@ -45,9 +45,9 @@ Matcher resolvesToMaybe<T>(T? expectedValue, {BuildContext? context}) {
 ///
 /// Usage:
 /// ```dart
-/// expect(borderDto, resolvesProperties({
-///   'top': (dto) => dto.top,
-///   'bottom': (dto) => dto.bottom,
+/// expect(borderMix, resolvesProperties({
+///   'top': (mix) => mix.top,
+///   'bottom': (mix) => mix.bottom,
 /// }, {
 ///   'top': resolvesTo(BorderSide(width: 1.0)),
 ///   'bottom': resolvesTo(BorderSide.none),
@@ -97,7 +97,7 @@ Matcher hasToken<T>() {
 ///
 /// Usage:
 /// ```dart
-/// final merged = dto1.merge(dto2);
+/// final merged = dto1.merge(mix2);
 /// expect(merged, resolvesTo(expectedBorder));
 /// ```
 // Just use resolvesTo! No need for a separate matcher
@@ -106,7 +106,7 @@ Matcher hasToken<T>() {
 ///
 /// Usage:
 /// ```dart
-/// expect(dto.merge(null), same(dto));
+/// expect(mix.merge(null), same(mix));
 /// ```
 // Just use same()! No need for a custom matcher
 

@@ -9,7 +9,7 @@ void main() {
   group('TextSpecAttribute', () {
     final textSpecAttribute = TextSpecAttribute.only(
       overflow: TextOverflow.ellipsis,
-      strutStyle: StrutStyleDto.only(
+      strutStyle: StrutStyleMix.only(
         fontFamily: 'Roboto',
         fontSize: 12,
         fontWeight: FontWeight.w500,
@@ -17,13 +17,13 @@ void main() {
       textAlign: TextAlign.center,
       textScaler: const TextScaler.linear(1.5),
       maxLines: 2,
-      style: TextStyleDto.only(
+      style: TextStyleMix.only(
         fontSize: 12,
         fontWeight: FontWeight.w500,
         fontFamily: 'Roboto',
       ),
       textWidthBasis: TextWidthBasis.longestLine,
-      textHeightBehavior: TextHeightBehaviorDto.only(
+      textHeightBehavior: TextHeightBehaviorMix.only(
         applyHeightToFirstAscent: true,
         applyHeightToLastDescent: true,
       ),
@@ -34,16 +34,16 @@ void main() {
     // Constructor
     test('constructor', () {
       expect(textSpecAttribute.overflow, TextOverflow.ellipsis);
-      expect(textSpecAttribute.strutStyle, isA<StrutStyleDto>());
+      expect(textSpecAttribute.strutStyle, isA<StrutStyleMix>());
       expect(textSpecAttribute.textAlign, TextAlign.center);
       expect(textSpecAttribute.textScaler, const TextScaler.linear(1.5));
       expect(textSpecAttribute.maxLines, isA<Prop<int>>());
       expect(textSpecAttribute.maxLines.value, 2);
-      expect(textSpecAttribute.style, isA<TextStyleDto>());
+      expect(textSpecAttribute.style, isA<TextStyleMix>());
       expect(textSpecAttribute.textWidthBasis, TextWidthBasis.longestLine);
       expect(
         textSpecAttribute.textHeightBehavior,
-        isA<TextHeightBehaviorDto>(),
+        isA<TextHeightBehaviorMix>(),
       );
       expect(textSpecAttribute.textDirection, TextDirection.rtl);
       expect(textSpecAttribute.softWrap, isA<Prop<bool>>());
@@ -54,7 +54,7 @@ void main() {
     test('merge', () {
       final other = TextSpecAttribute.only(
         overflow: TextOverflow.clip,
-        strutStyle: StrutStyleDto.only(
+        strutStyle: StrutStyleMix.only(
           fontFamily: 'Helvetica',
           fontSize: 14,
           fontWeight: FontWeight.w500,
@@ -62,13 +62,13 @@ void main() {
         textAlign: TextAlign.center,
         textScaler: const TextScaler.linear(1.5),
         maxLines: 2,
-        style: TextStyleDto.only(
+        style: TextStyleMix.only(
           fontSize: 16,
           fontWeight: FontWeight.w200,
           fontFamily: 'Helvetica',
         ),
         textWidthBasis: TextWidthBasis.longestLine,
-        textHeightBehavior: TextHeightBehaviorDto.only(
+        textHeightBehavior: TextHeightBehaviorMix.only(
           applyHeightToFirstAscent: false,
           applyHeightToLastDescent: false,
         ),

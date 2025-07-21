@@ -65,9 +65,9 @@ void main() {
       final mixData = MixContext.create(context, Style());
 
       // Use Mixable<Color> to resolve the token
-      final colorDto = Prop<Color>.token(token);
+      final colorMix = Prop<Color>.token(token);
 
-      expect(colorDto, resolvesTo(Colors.blue, context: mixData));
+      expect(colorMix, resolvesTo(Colors.blue, context: mixData));
     });
 
     testWidgets('resolve() throws for undefined tokens', (tester) async {
@@ -79,7 +79,7 @@ void main() {
 
       expect(() {
         final mixData = MixContext.create(context, Style());
-        final colorDto = Prop<Color>.token(token);
+        final colorMix = Prop<Color>.token(token);
         return colorDto.resolve(mixData);
       }, throwsStateError);
     });

@@ -15,7 +15,7 @@ void main() {
         minWidth: 50.0,
       );
 
-      expect(result.value, isA<BoxConstraintsDto>());
+      expect(result.value, isA<BoxConstraintsMix>());
       expect(result.value.minWidth, resolvesTo(50.0));
       expect(result.value.maxWidth, resolvesTo(150.0));
       expect(result.value.minHeight, resolvesTo(100.0));

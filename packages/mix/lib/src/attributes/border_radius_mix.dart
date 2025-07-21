@@ -8,41 +8,41 @@ import 'package:mix/mix.dart';
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a [BorderRadiusGeometry]
 ///
-/// This Dto implements `BorderRadius` and `BorderRadiusDirectional` Flutter classes to allow for
+/// This Mix implements `BorderRadius` and `BorderRadiusDirectional` Flutter classes to allow for
 /// better merging support, and cleaner API for the utilities
 ///
 /// See also:
 /// - [BorderRadiusGeometry], which is the Flutter counterpart of this class.
 @immutable
-sealed class BorderRadiusGeometryDto<T extends BorderRadiusGeometry>
+sealed class BorderRadiusGeometryMix<T extends BorderRadiusGeometry>
     extends Mix<T> {
-  const BorderRadiusGeometryDto();
+  const BorderRadiusGeometryMix();
 
-  factory BorderRadiusGeometryDto.value(BorderRadiusGeometry value) {
+  factory BorderRadiusGeometryMix.value(BorderRadiusGeometry value) {
     return switch (value) {
       BorderRadius() =>
-        BorderRadiusDto.value(value) as BorderRadiusGeometryDto<T>,
+        BorderRadiusMix.value(value) as BorderRadiusGeometryMix<T>,
       BorderRadiusDirectional() =>
-        BorderRadiusDirectionalDto.value(value) as BorderRadiusGeometryDto<T>,
+        BorderRadiusDirectionalMix.value(value) as BorderRadiusGeometryMix<T>,
       _ => throw ArgumentError(
         'Unsupported BorderRadiusGeometry type: ${value.runtimeType}',
       ),
     };
   }
 
-  static BorderRadiusGeometryDto<T>? maybeValue<T extends BorderRadiusGeometry>(
+  static BorderRadiusGeometryMix<T>? maybeValue<T extends BorderRadiusGeometry>(
     T? value,
   ) {
     if (value == null) return null;
 
-    return BorderRadiusGeometryDto.value(value);
+    return BorderRadiusGeometryMix.value(value);
   }
 
   /// Will try to merge two border radius geometries, the type will resolve to type of
   /// `b` if its not null and `a` otherwise.
-  static BorderRadiusGeometryDto? tryToMerge(
-    BorderRadiusGeometryDto? a,
-    BorderRadiusGeometryDto? b,
+  static BorderRadiusGeometryMix? tryToMerge(
+    BorderRadiusGeometryMix? a,
+    BorderRadiusGeometryMix? b,
   ) {
     if (b == null) return a;
     if (a == null) return b;
@@ -51,27 +51,27 @@ sealed class BorderRadiusGeometryDto<T extends BorderRadiusGeometry>
   }
 
   static B _exhaustiveMerge<
-    A extends BorderRadiusGeometryDto,
-    B extends BorderRadiusGeometryDto
+    A extends BorderRadiusGeometryMix,
+    B extends BorderRadiusGeometryMix
   >(A a, B b) {
     if (a.runtimeType == b.runtimeType) return a.merge(b) as B;
 
     return switch (b) {
-      (BorderRadiusDto g) => a._asBorderRadius().merge(g) as B,
-      (BorderRadiusDirectionalDto g) =>
+      (BorderRadiusMix g) => a._asBorderRadius().merge(g) as B,
+      (BorderRadiusDirectionalMix g) =>
         a._asBorderRadiusDirectional().merge(g) as B,
     };
   }
 
   @protected
-  BorderRadiusDto _asBorderRadius() {
-    if (this is BorderRadiusDto) return this as BorderRadiusDto;
+  BorderRadiusMix _asBorderRadius() {
+    if (this is BorderRadiusMix) return this as BorderRadiusMix;
 
-    // For BorderRadiusDirectionalDto converting to BorderRadiusDto
+    // For BorderRadiusDirectionalMix converting to BorderRadiusMix
     // topStart -> topLeft, topEnd -> topRight, bottomStart -> bottomLeft, bottomEnd -> bottomRight
-    final directional = this as BorderRadiusDirectionalDto;
+    final directional = this as BorderRadiusDirectionalMix;
 
-    return BorderRadiusDto(
+    return BorderRadiusMix(
       topLeft: directional.topStart,
       topRight: directional.topEnd,
       bottomLeft: directional.bottomStart,
@@ -80,14 +80,14 @@ sealed class BorderRadiusGeometryDto<T extends BorderRadiusGeometry>
   }
 
   @protected
-  BorderRadiusDirectionalDto _asBorderRadiusDirectional() {
-    if (this is BorderRadiusDirectionalDto) {
-      return this as BorderRadiusDirectionalDto;
+  BorderRadiusDirectionalMix _asBorderRadiusDirectional() {
+    if (this is BorderRadiusDirectionalMix) {
+      return this as BorderRadiusDirectionalMix;
     }
 
-    // For BorderRadiusDto converting to BorderRadiusDirectionalDto
+    // For BorderRadiusMix converting to BorderRadiusDirectionalMix
     // topLeft -> topStart, topRight -> topEnd, bottomLeft -> bottomStart, bottomRight -> bottomEnd
-    return BorderRadiusDirectionalDto(
+    return BorderRadiusDirectionalMix(
       topStart: topLeft,
       topEnd: topRight,
       bottomStart: bottomLeft,
@@ -104,10 +104,10 @@ sealed class BorderRadiusGeometryDto<T extends BorderRadiusGeometry>
   Prop<Radius>? get bottomRight => null;
 
   @override
-  BorderRadiusGeometryDto<T> merge(covariant BorderRadiusGeometryDto<T>? other);
+  BorderRadiusGeometryMix<T> merge(covariant BorderRadiusGeometryMix<T>? other);
 }
 
-final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
+final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
   @override
   final Prop<Radius>? topLeft;
 
@@ -120,7 +120,7 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
   @override
   final Prop<Radius>? bottomRight;
 
-  BorderRadiusDto.only({
+  BorderRadiusMix.only({
     Radius? topLeft,
     Radius? topRight,
     Radius? bottomLeft,
@@ -134,13 +134,13 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
 
   /// Constructor that accepts a [BorderRadius] value and extracts its properties.
   ///
-  /// This is useful for converting existing [BorderRadius] instances to [BorderRadiusDto].
+  /// This is useful for converting existing [BorderRadius] instances to [BorderRadiusMix].
   ///
   /// ```dart
   /// const borderRadius = BorderRadius.circular(12.0);
-  /// final dto = BorderRadiusDto.value(borderRadius);
+  /// final dto = BorderRadiusMix.value(borderRadius);
   /// ```
-  BorderRadiusDto.value(BorderRadius borderRadius)
+  BorderRadiusMix.value(BorderRadius borderRadius)
     : this.only(
         topLeft: borderRadius.topLeft,
         topRight: borderRadius.topRight,
@@ -148,7 +148,7 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
         bottomRight: borderRadius.bottomRight,
       );
 
-  const BorderRadiusDto({
+  const BorderRadiusMix({
     this.topLeft,
     this.topRight,
     this.bottomLeft,
@@ -157,14 +157,14 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
 
   /// Constructor that accepts a nullable [BorderRadius] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [BorderRadiusDto.value].
+  /// Returns null if the input is null, otherwise uses [BorderRadiusMix.value].
   ///
   /// ```dart
   /// const BorderRadius? borderRadius = BorderRadius.circular(12.0);
-  /// final dto = BorderRadiusDto.maybeValue(borderRadius); // Returns BorderRadiusDto or null
+  /// final dto = BorderRadiusMix.maybeValue(borderRadius); // Returns BorderRadiusMix or null
   /// ```
-  static BorderRadiusDto? maybeValue(BorderRadius? borderRadius) {
-    return borderRadius != null ? BorderRadiusDto.value(borderRadius) : null;
+  static BorderRadiusMix? maybeValue(BorderRadius? borderRadius) {
+    return borderRadius != null ? BorderRadiusMix.value(borderRadius) : null;
   }
 
   @override
@@ -178,10 +178,10 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
   }
 
   @override
-  BorderRadiusDto merge(BorderRadiusDto? other) {
+  BorderRadiusMix merge(BorderRadiusMix? other) {
     if (other == null) return this;
 
-    return BorderRadiusDto(
+    return BorderRadiusMix(
       topLeft: MixHelpers.merge(topLeft, other.topLeft),
       topRight: MixHelpers.merge(topRight, other.topRight),
       bottomLeft: MixHelpers.merge(bottomLeft, other.bottomLeft),
@@ -193,7 +193,7 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is BorderRadiusDto &&
+    return other is BorderRadiusMix &&
         other.topLeft == topLeft &&
         other.topRight == topRight &&
         other.bottomLeft == bottomLeft &&
@@ -209,14 +209,14 @@ final class BorderRadiusDto extends BorderRadiusGeometryDto<BorderRadius> {
   }
 }
 
-final class BorderRadiusDirectionalDto
-    extends BorderRadiusGeometryDto<BorderRadiusDirectional> {
+final class BorderRadiusDirectionalMix
+    extends BorderRadiusGeometryMix<BorderRadiusDirectional> {
   final Prop<Radius>? topStart;
   final Prop<Radius>? topEnd;
   final Prop<Radius>? bottomStart;
   final Prop<Radius>? bottomEnd;
 
-  BorderRadiusDirectionalDto.only({
+  BorderRadiusDirectionalMix.only({
     Radius? topStart,
     Radius? topEnd,
     Radius? bottomStart,
@@ -230,13 +230,13 @@ final class BorderRadiusDirectionalDto
 
   /// Constructor that accepts a [BorderRadiusDirectional] value and extracts its properties.
   ///
-  /// This is useful for converting existing [BorderRadiusDirectional] instances to [BorderRadiusDirectionalDto].
+  /// This is useful for converting existing [BorderRadiusDirectional] instances to [BorderRadiusDirectionalMix].
   ///
   /// ```dart
   /// const borderRadius = BorderRadiusDirectional.circular(12.0);
-  /// final dto = BorderRadiusDirectionalDto.value(borderRadius);
+  /// final dto = BorderRadiusDirectionalMix.value(borderRadius);
   /// ```
-  BorderRadiusDirectionalDto.value(BorderRadiusDirectional borderRadius)
+  BorderRadiusDirectionalMix.value(BorderRadiusDirectional borderRadius)
     : this.only(
         topStart: borderRadius.topStart,
         topEnd: borderRadius.topEnd,
@@ -244,7 +244,7 @@ final class BorderRadiusDirectionalDto
         bottomEnd: borderRadius.bottomEnd,
       );
 
-  const BorderRadiusDirectionalDto({
+  const BorderRadiusDirectionalMix({
     this.topStart,
     this.topEnd,
     this.bottomStart,
@@ -253,17 +253,17 @@ final class BorderRadiusDirectionalDto
 
   /// Constructor that accepts a nullable [BorderRadiusDirectional] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [BorderRadiusDirectionalDto.value].
+  /// Returns null if the input is null, otherwise uses [BorderRadiusDirectionalMix.value].
   ///
   /// ```dart
   /// const BorderRadiusDirectional? borderRadius = BorderRadiusDirectional.circular(12.0);
-  /// final dto = BorderRadiusDirectionalDto.maybeValue(borderRadius); // Returns BorderRadiusDirectionalDto or null
+  /// final dto = BorderRadiusDirectionalMix.maybeValue(borderRadius); // Returns BorderRadiusDirectionalMix or null
   /// ```
-  static BorderRadiusDirectionalDto? maybeValue(
+  static BorderRadiusDirectionalMix? maybeValue(
     BorderRadiusDirectional? borderRadius,
   ) {
     return borderRadius != null
-        ? BorderRadiusDirectionalDto.value(borderRadius)
+        ? BorderRadiusDirectionalMix.value(borderRadius)
         : null;
   }
 
@@ -278,10 +278,10 @@ final class BorderRadiusDirectionalDto
   }
 
   @override
-  BorderRadiusDirectionalDto merge(BorderRadiusDirectionalDto? other) {
+  BorderRadiusDirectionalMix merge(BorderRadiusDirectionalMix? other) {
     if (other == null) return this;
 
-    return BorderRadiusDirectionalDto(
+    return BorderRadiusDirectionalMix(
       topStart: MixHelpers.merge(topStart, other.topStart),
       topEnd: MixHelpers.merge(topEnd, other.topEnd),
       bottomStart: MixHelpers.merge(bottomStart, other.bottomStart),
@@ -293,7 +293,7 @@ final class BorderRadiusDirectionalDto
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is BorderRadiusDirectionalDto &&
+    return other is BorderRadiusDirectionalMix &&
         other.topStart == topStart &&
         other.topEnd == topEnd &&
         other.bottomStart == bottomStart &&

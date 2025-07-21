@@ -14,10 +14,10 @@ void main() {
           FlexBoxSpecAttribute(
             box: BoxSpecAttribute(
               alignment: Alignment.center,
-              padding: EdgeInsetsGeometryDto.only(top: 8, bottom: 16),
-              margin: EdgeInsetsGeometryDto.only(top: 10.0, bottom: 12.0),
-              constraints: BoxConstraintsDto(maxWidth: 300.0, minHeight: 200.0),
-              decoration: BoxDecorationDto(color: Colors.blue),
+              padding: EdgeInsetsGeometryMix.only(top: 8, bottom: 16),
+              margin: EdgeInsetsGeometryMix.only(top: 10.0, bottom: 12.0),
+              constraints: BoxConstraintsMix(maxWidth: 300.0, minHeight: 200.0),
+              decoration: BoxDecorationMix(color: Colors.blue),
               transform: Matrix4.translationValues(10.0, 10.0, 0.0),
               clipBehavior: Clip.antiAlias,
               width: 300,
@@ -214,20 +214,20 @@ void main() {
       final flexBoxSpecAttribute = FlexBoxSpecAttribute(
         box: BoxSpecAttribute(
           alignment: Alignment.center,
-          padding: EdgeInsetsGeometryDto.only(
+          padding: EdgeInsetsGeometryMix.only(
             top: 20,
             bottom: 20,
             left: 20,
             right: 20,
           ),
-          margin: EdgeInsetsGeometryDto.only(
+          margin: EdgeInsetsGeometryMix.only(
             top: 10,
             bottom: 10,
             left: 10,
             right: 10,
           ),
-          constraints: BoxConstraintsDto(maxHeight: 100),
-          decoration: BoxDecorationDto(color: Colors.blue),
+          constraints: BoxConstraintsMix(maxHeight: 100),
+          decoration: BoxDecorationMix(color: Colors.blue),
           transform: Matrix4.identity(),
           clipBehavior: Clip.antiAlias,
           width: 100,
@@ -247,20 +247,20 @@ void main() {
         FlexBoxSpecAttribute(
           box: BoxSpecAttribute(
             alignment: Alignment.centerLeft,
-            padding: EdgeInsetsGeometryDto.only(
+            padding: EdgeInsetsGeometryMix.only(
               top: 30,
               bottom: 30,
               left: 30,
               right: 30,
             ),
-            margin: EdgeInsetsGeometryDto.only(
+            margin: EdgeInsetsGeometryMix.only(
               top: 20,
               bottom: 20,
               left: 20,
               right: 20,
             ),
-            constraints: BoxConstraintsDto(maxHeight: 200),
-            decoration: BoxDecorationDto(color: Colors.red),
+            constraints: BoxConstraintsMix(maxHeight: 200),
+            decoration: BoxDecorationMix(color: Colors.red),
             transform: Matrix4.identity(),
             clipBehavior: Clip.antiAliasWithSaveLayer,
             width: 200,
@@ -447,7 +447,7 @@ void main() {
         resolvesTo(const EdgeInsets.all(10.0)),
       );
       expect(
-        (flexBoxAttribute.box!.decoration?.mixValue as BoxDecorationDto).color,
+        (flexBoxAttribute.box!.decoration?.mixValue as BoxDecorationMix).color,
         isA<Prop<Color>>(),
       );
       expect(flexBoxAttribute.box!.alignment, resolvesTo(Alignment.center));
@@ -465,7 +465,7 @@ void main() {
         resolvesTo(const EdgeInsets.all(20.0)),
       );
       expect(
-        (flexBoxAttribute2.box!.decoration?.mixValue as BoxDecorationDto?)
+        (flexBoxAttribute2.box!.decoration?.mixValue as BoxDecorationMix?)
             ?.color,
         isNull,
       );

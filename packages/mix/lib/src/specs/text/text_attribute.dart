@@ -2,11 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../attributes/scalar_util.dart';
-import '../../attributes/strut_style_dto.dart';
+import '../../attributes/strut_style_mix.dart';
 import '../../attributes/strut_style_util.dart';
-import '../../attributes/text_height_behavior_dto.dart';
+import '../../attributes/text_height_behavior_mix.dart';
 import '../../attributes/text_height_behavior_util.dart';
-import '../../attributes/text_style_dto.dart';
+import '../../attributes/text_style_mix.dart';
 import '../../attributes/text_style_util.dart';
 import '../../core/animation_config.dart';
 import '../../core/attribute.dart';
@@ -193,19 +193,19 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
 
   TextSpecAttribute.only({
     TextOverflow? overflow,
-    StrutStyleDto? strutStyle,
+    StrutStyleMix? strutStyle,
     TextAlign? textAlign,
     TextScaler? textScaler,
     int? maxLines,
-    TextStyleDto? style,
+    TextStyleMix? style,
     TextWidthBasis? textWidthBasis,
-    TextHeightBehaviorDto? textHeightBehavior,
+    TextHeightBehaviorMix? textHeightBehavior,
     TextDirection? textDirection,
     bool? softWrap,
     List<MixDirective<String>>? directives,
     AnimationConfig? animation,
     List<ModifierAttribute>? modifiers,
-    List<VariantAttribute<TextSpec>>? variants,
+    List<VariantSpecAttribute<TextSpec>>? variants,
   }) : this(
          overflow: Prop.maybe(overflow),
          strutStyle: MixProp.maybe(strutStyle),
@@ -234,13 +234,13 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
   TextSpecAttribute.value(TextSpec spec)
     : this.only(
         overflow: spec.overflow,
-        strutStyle: StrutStyleDto.maybeValue(spec.strutStyle),
+        strutStyle: StrutStyleMix.maybeValue(spec.strutStyle),
         textAlign: spec.textAlign,
         textScaler: spec.textScaler,
         maxLines: spec.maxLines,
-        style: TextStyleDto.maybeValue(spec.style),
+        style: TextStyleMix.maybeValue(spec.style),
         textWidthBasis: spec.textWidthBasis,
-        textHeightBehavior: TextHeightBehaviorDto.maybeValue(
+        textHeightBehavior: TextHeightBehaviorMix.maybeValue(
           spec.textHeightBehavior,
         ),
         textDirection: spec.textDirection,

@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import '../core/attribute.dart';
 import '../core/prop.dart';
 import '../core/utility.dart';
-import 'border_radius_dto.dart';
+import 'border_radius_mix.dart';
 import 'scalar_util.dart';
 
 /// Utility class for creating and manipulating attributes with [BorderRadiusGeometry]
@@ -54,42 +54,42 @@ final class BorderRadiusGeometryUtility<T extends SpecAttribute<Object?>>
   late final _bordeRadius = BorderRadiusUtility<T>(builder);
 
   BorderRadiusGeometryUtility(super.builder)
-    : super(convertToMix: BorderRadiusGeometryDto.value);
+    : super(convertToMix: BorderRadiusGeometryMix.value);
 
   @override
-  T call(BorderRadiusGeometryDto value) => builder(MixProp(value));
+  T call(BorderRadiusGeometryMix value) => builder(MixProp(value));
 }
 
 /// Utility class for creating and manipulating attributes with [BorderRadius]
 ///
 /// Allows setting of radius for a border. This class provides a convenient way to configure and apply border radius to [T]
-/// Accepts a builder function that returns [T] and takes a [BorderRadiusDto] as a parameter.
+/// Accepts a builder function that returns [T] and takes a [BorderRadiusMix] as a parameter.
 final class BorderRadiusUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, BorderRadius> {
   /// Returns a [RadiusUtility] to manipulate [Radius] for bottomLeft corner.
   late final bottomLeft = RadiusUtility<T>(
-    (radius) => call(BorderRadiusDto(bottomLeft: radius)),
+    (radius) => call(BorderRadiusMix(bottomLeft: radius)),
   );
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for bottomRight corner.
   late final bottomRight = RadiusUtility<T>(
-    (radius) => call(BorderRadiusDto(bottomRight: radius)),
+    (radius) => call(BorderRadiusMix(bottomRight: radius)),
   );
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for topLeft corner.
   late final topLeft = RadiusUtility<T>(
-    (radius) => call(BorderRadiusDto(topLeft: radius)),
+    (radius) => call(BorderRadiusMix(topLeft: radius)),
   );
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for topRight corner.
   late final topRight = RadiusUtility<T>(
-    (radius) => call(BorderRadiusDto(topRight: radius)),
+    (radius) => call(BorderRadiusMix(topRight: radius)),
   );
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for all corners.
   late final all = RadiusUtility<T>(
     (radius) => call(
-      BorderRadiusDto(
+      BorderRadiusMix(
         topLeft: radius,
         topRight: radius,
         bottomLeft: radius,
@@ -100,22 +100,22 @@ final class BorderRadiusUtility<T extends SpecAttribute<Object?>>
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for topLeft and topRight corner.
   late final top = RadiusUtility<T>(
-    (radius) => call(BorderRadiusDto(topLeft: radius, topRight: radius)),
+    (radius) => call(BorderRadiusMix(topLeft: radius, topRight: radius)),
   );
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for bottomLeft and bottomRight corner.
   late final bottom = RadiusUtility<T>(
-    (radius) => call(BorderRadiusDto(bottomLeft: radius, bottomRight: radius)),
+    (radius) => call(BorderRadiusMix(bottomLeft: radius, bottomRight: radius)),
   );
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for topLeft and bottomLeft corner.
   late final left = RadiusUtility<T>(
-    (radius) => call(BorderRadiusDto(topLeft: radius, bottomLeft: radius)),
+    (radius) => call(BorderRadiusMix(topLeft: radius, bottomLeft: radius)),
   );
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for topRight and bottomRight corner.
   late final right = RadiusUtility<T>(
-    (radius) => call(BorderRadiusDto(topRight: radius, bottomRight: radius)),
+    (radius) => call(BorderRadiusMix(topRight: radius, bottomRight: radius)),
   );
 
   /// Sets a circular [Radius] for all corners.
@@ -128,10 +128,10 @@ final class BorderRadiusUtility<T extends SpecAttribute<Object?>>
   late final zero = all.zero;
 
   BorderRadiusUtility(super.builder)
-    : super(convertToMix: BorderRadiusDto.value);
+    : super(convertToMix: BorderRadiusMix.value);
 
   @override
-  T call(BorderRadiusDto value) => builder(MixProp(value));
+  T call(BorderRadiusMix value) => builder(MixProp(value));
 }
 
 final class BorderRadiusDirectionalUtility<T extends SpecAttribute<Object?>>
@@ -139,52 +139,52 @@ final class BorderRadiusDirectionalUtility<T extends SpecAttribute<Object?>>
   /// Returns a [RadiusUtility] to manipulate [Radius] for topStart and topEnd corner.
   late final top = RadiusUtility(
     (radius) =>
-        call(BorderRadiusDirectionalDto(topStart: radius, topEnd: radius)),
+        call(BorderRadiusDirectionalMix(topStart: radius, topEnd: radius)),
   );
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for bottomStart and bottomEnd corner.
   late final bottom = RadiusUtility(
     (radius) => call(
-      BorderRadiusDirectionalDto(bottomStart: radius, bottomEnd: radius),
+      BorderRadiusDirectionalMix(bottomStart: radius, bottomEnd: radius),
     ),
   );
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for topStart and bottomStart corner.
   late final start = RadiusUtility(
     (radius) =>
-        call(BorderRadiusDirectionalDto(topStart: radius, bottomStart: radius)),
+        call(BorderRadiusDirectionalMix(topStart: radius, bottomStart: radius)),
   );
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for topEnd and bottomEnd corner.
   late final end = RadiusUtility(
     (radius) =>
-        call(BorderRadiusDirectionalDto(topEnd: radius, bottomEnd: radius)),
+        call(BorderRadiusDirectionalMix(topEnd: radius, bottomEnd: radius)),
   );
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for topStart corner.
   late final topStart = RadiusUtility(
-    (radius) => call(BorderRadiusDirectionalDto(topStart: radius)),
+    (radius) => call(BorderRadiusDirectionalMix(topStart: radius)),
   );
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for topEnd corner.
   late final topEnd = RadiusUtility(
-    (radius) => call(BorderRadiusDirectionalDto(topEnd: radius)),
+    (radius) => call(BorderRadiusDirectionalMix(topEnd: radius)),
   );
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for bottomStart corner.
   late final bottomStart = RadiusUtility(
-    (radius) => call(BorderRadiusDirectionalDto(bottomStart: radius)),
+    (radius) => call(BorderRadiusDirectionalMix(bottomStart: radius)),
   );
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for bottomEnd corner.
   late final bottomEnd = RadiusUtility(
-    (radius) => call(BorderRadiusDirectionalDto(bottomEnd: radius)),
+    (radius) => call(BorderRadiusDirectionalMix(bottomEnd: radius)),
   );
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for all corners.
   late final all = RadiusUtility(
     (radius) => call(
-      BorderRadiusDirectionalDto(
+      BorderRadiusDirectionalMix(
         topStart: radius,
         topEnd: radius,
         bottomStart: radius,
@@ -194,7 +194,7 @@ final class BorderRadiusDirectionalUtility<T extends SpecAttribute<Object?>>
   );
 
   BorderRadiusDirectionalUtility(super.builder)
-    : super(convertToMix: BorderRadiusDirectionalDto.value);
+    : super(convertToMix: BorderRadiusDirectionalMix.value);
 
   T circular(double radius) {
     return all.circular(radius);
@@ -209,5 +209,5 @@ final class BorderRadiusDirectionalUtility<T extends SpecAttribute<Object?>>
   }
 
   @override
-  T call(BorderRadiusDirectionalDto value) => builder(MixProp(value));
+  T call(BorderRadiusDirectionalMix value) => builder(MixProp(value));
 }

@@ -93,7 +93,7 @@ class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
     double? gap,
     AnimationConfig? animation,
     List<ModifierAttribute>? modifiers,
-    List<VariantAttribute<FlexSpec>>? variants,
+    List<VariantSpecAttribute<FlexSpec>>? variants,
   }) : this(
          direction: Prop.maybe(direction),
          mainAxisAlignment: Prop.maybe(mainAxisAlignment),

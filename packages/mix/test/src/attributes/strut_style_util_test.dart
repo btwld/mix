@@ -20,7 +20,7 @@ void main() {
       );
 
       expect(strutStyleUtility(), isA<UtilityTestAttribute>());
-      expect(strutStyle.value, isA<StrutStyleDto>());
+      expect(strutStyle.value, isA<StrutStyleMix>());
 
       expect(
         strutStyle.value,
@@ -96,8 +96,8 @@ void main() {
       final strutStyle = RandomGenerator.strutStyle();
       final attribute = strutStyleUtility.as(strutStyle);
 
-      expect(attribute.value, isA<StrutStyleDto>());
-      expect(attribute.value, equals(StrutStyleDto.value(strutStyle)));
+      expect(attribute.value, isA<StrutStyleMix>());
+      expect(attribute.value, equals(StrutStyleMix.value(strutStyle)));
       expect(attribute.value, resolvesTo(strutStyle));
     });
   });

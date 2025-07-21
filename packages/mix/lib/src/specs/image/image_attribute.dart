@@ -81,7 +81,7 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
     BlendMode? colorBlendMode,
     AnimationConfig? animation,
     List<ModifierAttribute>? modifiers,
-    List<VariantAttribute<ImageSpec>>? variants,
+    List<VariantSpecAttribute<ImageSpec>>? variants,
   }) : this(
          width: Prop.maybe(width),
          height: Prop.maybe(height),

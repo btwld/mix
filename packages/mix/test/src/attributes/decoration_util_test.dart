@@ -29,15 +29,15 @@ void main() {
         shape: BoxShape.rectangle,
       );
 
-      expect(result.value, isA<BoxDecorationDto>());
-      expect(result.value.border?.mixValue, isA<BoxBorderDto>());
+      expect(result.value, isA<BoxDecorationMix>());
+      expect(result.value.border?.mixValue, isA<BoxBorderMix>());
       expect(
         result.value.borderRadius?.mixValue,
-        isA<BorderRadiusGeometryDto>(),
+        isA<BorderRadiusGeometryMix>(),
       );
       expect(result.value.boxShadow, isA<List<MixProp<BoxShadow>>>());
       expect(result.value.color, resolvesTo(Colors.white));
-      expect(result.value.gradient?.mixValue, isA<GradientDto>());
+      expect(result.value.gradient?.mixValue, isA<GradientMix>());
       expect(result.value.shape?.value, equals(BoxShape.rectangle));
 
       // Test that the values can be resolved correctly
@@ -86,7 +86,7 @@ void main() {
       final result = boxDecoration.gradient.as(gradient);
       expect(
         result.value.gradient?.mixValue,
-        equals(LinearGradientDto.maybeValue(gradient)),
+        equals(LinearGradientMix.maybeValue(gradient)),
       );
     });
 
@@ -109,7 +109,7 @@ void main() {
       expect(result.value.boxShadow?.first, resolvesTo(boxShadow));
       expect(
         resultSingle.value.boxShadow?.first.mixValue,
-        equals(BoxShadowDto.value(boxShadow)),
+        equals(BoxShadowMix.value(boxShadow)),
       );
     });
 
@@ -148,7 +148,7 @@ void main() {
       expect(result.value.color, isNull);
       expect(
         result.value.gradient?.mixValue,
-        equals(LinearGradientDto.maybeValue(linearGradient)),
+        equals(LinearGradientMix.maybeValue(linearGradient)),
       );
       expect(result.value.shadows, isA<List<MixProp<BoxShadow>>>());
       expect(result.value.shadows?.length, 1);
@@ -177,7 +177,7 @@ void main() {
 
       expect(
         result.value.gradient?.mixValue,
-        equals(LinearGradientDto.maybeValue(linearGradient)),
+        equals(LinearGradientMix.maybeValue(linearGradient)),
       );
     });
 
@@ -192,7 +192,7 @@ void main() {
     test('shape() returns correct instance', () {
       final result = shapeDecoration.shape.circle();
 
-      expect(result.value.shape?.mixValue, equals(CircleBorderDto()));
+      expect(result.value.shape?.mixValue, equals(CircleBorderMix()));
     });
   });
 }

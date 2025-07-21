@@ -4,24 +4,24 @@ import '../core/attribute.dart';
 import '../core/prop.dart';
 import '../core/utility.dart';
 import 'scalar_util.dart';
-import 'text_height_behavior_dto.dart';
+import 'text_height_behavior_mix.dart';
 
 final class TextHeightBehaviorUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, TextHeightBehavior> {
   late final heightToFirstAscent = BoolUtility<T>(
-    (prop) => call(TextHeightBehaviorDto(applyHeightToFirstAscent: prop)),
+    (prop) => call(TextHeightBehaviorMix(applyHeightToFirstAscent: prop)),
   );
   late final heightToLastDescent = BoolUtility<T>(
-    (prop) => call(TextHeightBehaviorDto(applyHeightToLastDescent: prop)),
+    (prop) => call(TextHeightBehaviorMix(applyHeightToLastDescent: prop)),
   );
 
   late final leadingDistribution = TextLeadingDistributionUtility<T>(
-    (v) => call(TextHeightBehaviorDto(leadingDistribution: v)),
+    (v) => call(TextHeightBehaviorMix(leadingDistribution: v)),
   );
 
   TextHeightBehaviorUtility(super.builder)
-    : super(convertToMix: TextHeightBehaviorDto.value);
+    : super(convertToMix: TextHeightBehaviorMix.value);
 
   @override
-  T call(TextHeightBehaviorDto value) => builder(MixProp(value));
+  T call(TextHeightBehaviorMix value) => builder(MixProp(value));
 }

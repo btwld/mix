@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../core/styled_widget.dart';
+import '../../core/style_widget.dart';
 import 'icon_spec.dart';
-import 'icon_style.dart';
 
 class StyledIcon extends StyleWidget<IconSpec> {
   const StyledIcon(

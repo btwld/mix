@@ -229,23 +229,23 @@ void main() {
     test('circle() returns correct instance', () {
       final shapeBorder = utility.circle();
 
-      expect(shapeBorder.value, isA<CircleBorderDto>());
+      expect(shapeBorder.value, isA<CircleBorderMix>());
     });
 
     test('stadium() returns correct instance', () {
       final shapeBorder = utility.stadium();
 
-      expect(shapeBorder.value, isA<StadiumBorderDto>());
+      expect(shapeBorder.value, isA<StadiumBorderMix>());
     });
 
     test('rounded() returns correct instance', () {
       final shapeBorder = utility.roundedRectangle.borderRadius(20);
 
-      expect(shapeBorder.value, isA<RoundedRectangleBorderDto>());
+      expect(shapeBorder.value, isA<RoundedRectangleBorderMix>());
       expect(
-        (shapeBorder.value as RoundedRectangleBorderDto).borderRadius,
+        (shapeBorder.value as RoundedRectangleBorderMix).borderRadius,
         MixProp<BorderRadiusGeometry>(
-          BorderRadiusDto.value(BorderRadius.circular(20)),
+          BorderRadiusMix.value(BorderRadius.circular(20)),
         ),
       );
     });
@@ -253,7 +253,7 @@ void main() {
     test('beveled() returns correct instance', () {
       final shapeBorder = utility.beveled();
 
-      expect(shapeBorder.value, isA<BeveledRectangleBorderDto>());
+      expect(shapeBorder.value, isA<BeveledRectangleBorderMix>());
     });
   });
   group('BoxFitUtility Tests', () {

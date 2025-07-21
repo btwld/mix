@@ -4,28 +4,28 @@ import '../core/attribute.dart';
 import '../core/prop.dart';
 import '../core/utility.dart';
 import 'scalar_util.dart';
-import 'strut_style_dto.dart';
+import 'strut_style_mix.dart';
 
 final class StrutStyleUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, StrutStyle> {
   late final fontWeight = FontWeightUtility<T>(
-    (prop) => call(StrutStyleDto(fontWeight: prop)),
+    (prop) => call(StrutStyleMix(fontWeight: prop)),
   );
 
   late final fontStyle = FontStyleUtility<T>(
-    (v) => call(StrutStyleDto(fontStyle: v)),
+    (v) => call(StrutStyleMix(fontStyle: v)),
   );
 
   late final fontSize = FontSizeUtility<T>(
-    (prop) => call(StrutStyleDto(fontSize: prop)),
+    (prop) => call(StrutStyleMix(fontSize: prop)),
   );
 
   late final fontFamily = FontFamilyUtility<T>(
-    (v) => call(StrutStyleDto(fontFamily: v)),
+    (v) => call(StrutStyleMix(fontFamily: v)),
   );
 
-  StrutStyleUtility(super.builder) : super(convertToMix: StrutStyleDto.value);
+  StrutStyleUtility(super.builder) : super(convertToMix: StrutStyleMix.value);
 
   @override
-  T call(StrutStyleDto value) => builder(MixProp(value));
+  T call(StrutStyleMix value) => builder(MixProp(value));
 }

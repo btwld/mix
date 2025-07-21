@@ -8,7 +8,7 @@ import '../../helpers/testing_utils.dart';
 void main() {
   group('TextStyleUtility', () {
     final textStyle = TextStyleUtility(UtilityTestAttribute.new);
-    test('call() creates TextStyleDto correctly', () {
+    test('call() creates TextStyleMix correctly', () {
       final yellowPaint = Paint()..color = Colors.yellow;
       final purplePaint = Paint()..color = Colors.purple;
       final attr = textStyle(
@@ -80,13 +80,13 @@ void main() {
       expect(resolvedWithPaint.background, purplePaint);
     });
 
-    test('color() creates TextStyleDto correctly', () {
+    test('color() creates TextStyleMix correctly', () {
       final attribute = textStyle(color: Colors.red);
 
       expect(attribute.value, resolvesTo(const TextStyle(color: Colors.red)));
     });
 
-    test('backgroundColor() creates TextStyleDto correctly', () {
+    test('backgroundColor() creates TextStyleMix correctly', () {
       final attribute = textStyle(backgroundColor: Colors.blue);
 
       expect(
@@ -95,7 +95,7 @@ void main() {
       );
     });
 
-    test('fontFamily() creates TextStyleDto correctly', () {
+    test('fontFamily() creates TextStyleMix correctly', () {
       final attribute = textStyle(fontFamily: 'Roboto');
 
       expect(
@@ -104,13 +104,13 @@ void main() {
       );
     });
 
-    test('fontSize() creates TextStyleDto correctly', () {
+    test('fontSize() creates TextStyleMix correctly', () {
       final attribute = textStyle(fontSize: 16.0);
 
       expect(attribute.value, resolvesTo(const TextStyle(fontSize: 16.0)));
     });
 
-    test('fontWeight() creates TextStyleDto correctly', () {
+    test('fontWeight() creates TextStyleMix correctly', () {
       final attribute = textStyle.fontWeight.bold();
 
       expect(
@@ -119,7 +119,7 @@ void main() {
       );
     });
 
-    test('fontStyle() creates TextStyleDto correctly', () {
+    test('fontStyle() creates TextStyleMix correctly', () {
       final attribute = textStyle.fontStyle.italic();
 
       expect(
@@ -128,19 +128,19 @@ void main() {
       );
     });
 
-    test('letterSpacing() creates TextStyleDto correctly', () {
+    test('letterSpacing() creates TextStyleMix correctly', () {
       final attribute = textStyle(letterSpacing: 1.0);
 
       expect(attribute.value, resolvesTo(const TextStyle(letterSpacing: 1.0)));
     });
 
-    test('wordSpacing() creates TextStyleDto correctly', () {
+    test('wordSpacing() creates TextStyleMix correctly', () {
       final attribute = textStyle(wordSpacing: 2.0);
 
       expect(attribute.value, resolvesTo(const TextStyle(wordSpacing: 2.0)));
     });
 
-    test('textBaseline() creates TextStyleDto correctly', () {
+    test('textBaseline() creates TextStyleMix correctly', () {
       final attribute = textStyle.textBaseline.ideographic();
 
       expect(
@@ -149,7 +149,7 @@ void main() {
       );
     });
 
-    test('shadows() creates TextStyleDto correctly', () {
+    test('shadows() creates TextStyleMix correctly', () {
       const shadow = Shadow(
         color: Colors.black,
         offset: Offset(1.0, 1.0),
@@ -160,7 +160,7 @@ void main() {
       expect(attribute.value, resolvesTo(const TextStyle(shadows: [shadow])));
     });
 
-    test('fontFeatures() creates TextStyleDto correctly', () {
+    test('fontFeatures() creates TextStyleMix correctly', () {
       final attribute = textStyle.fontFeatures([
         const FontFeature.alternative(4),
       ]);
@@ -171,7 +171,7 @@ void main() {
       );
     });
 
-    test('decoration() creates TextStyleDto correctly', () {
+    test('decoration() creates TextStyleMix correctly', () {
       final attribute = textStyle.decoration.underline();
 
       expect(
@@ -180,7 +180,7 @@ void main() {
       );
     });
 
-    test('decorationColor() creates TextStyleDto correctly', () {
+    test('decorationColor() creates TextStyleMix correctly', () {
       final attribute = textStyle(decorationColor: Colors.green);
 
       expect(
@@ -189,7 +189,7 @@ void main() {
       );
     });
 
-    test('decorationStyle() creates TextStyleDto correctly', () {
+    test('decorationStyle() creates TextStyleMix correctly', () {
       final attribute = textStyle.decorationStyle.dashed();
 
       expect(
@@ -200,21 +200,21 @@ void main() {
       );
     });
 
-    test('foreground() creates TextStyleDto correctly', () {
+    test('foreground() creates TextStyleMix correctly', () {
       final yellowPaint = Paint()..color = Colors.yellow;
       final attribute = textStyle.foreground(yellowPaint);
 
       expect(attribute.value.foreground, resolvesTo(yellowPaint));
     });
 
-    test('background() creates TextStyleDto correctly', () {
+    test('background() creates TextStyleMix correctly', () {
       final purplePaint = Paint()..color = Colors.purple;
       final attribute = textStyle.background(purplePaint);
 
       expect(attribute.value.background, resolvesTo(purplePaint));
     });
 
-    test('fontVariations() creates TextStyleDto correctly', () {
+    test('fontVariations() creates TextStyleMix correctly', () {
       final attribute = textStyle(
         fontVariations: const [FontVariation('wght', 900)],
       );

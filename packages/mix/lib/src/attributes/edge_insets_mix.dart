@@ -5,34 +5,34 @@ import 'package:mix/mix.dart';
 // Deprecated typedef moved to src/core/deprecated.dart
 
 @immutable
-sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
+sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
     extends Mix<T> {
   final Prop<double>? top;
   final Prop<double>? bottom;
 
-  const EdgeInsetsGeometryDto({this.top, this.bottom});
+  const EdgeInsetsGeometryMix({this.top, this.bottom});
 
-  factory EdgeInsetsGeometryDto.value(T value) {
+  factory EdgeInsetsGeometryMix.value(T value) {
     return switch (value) {
-          (EdgeInsets edgeInsets) => EdgeInsetsDto.value(edgeInsets),
+          (EdgeInsets edgeInsets) => EdgeInsetsMix.value(edgeInsets),
           (EdgeInsetsDirectional edgeInsetsDirectional) =>
-            EdgeInsetsDirectionalDto.value(edgeInsetsDirectional),
+            EdgeInsetsDirectionalMix.value(edgeInsetsDirectional),
           _ => throw ArgumentError(
             'Unsupported EdgeInsetsGeometry type: ${value.runtimeType}',
           ),
         }
-        as EdgeInsetsGeometryDto<T>;
+        as EdgeInsetsGeometryMix<T>;
   }
 
-  static EdgeInsetsGeometryDto<T>? maybeValue<T extends EdgeInsetsGeometry>(
+  static EdgeInsetsGeometryMix<T>? maybeValue<T extends EdgeInsetsGeometry>(
     T? edgeInsetsGeometry,
   ) {
     return edgeInsetsGeometry == null
         ? null
-        : EdgeInsetsGeometryDto.value(edgeInsetsGeometry);
+        : EdgeInsetsGeometryMix.value(edgeInsetsGeometry);
   }
 
-  static EdgeInsetsGeometryDto only({
+  static EdgeInsetsGeometryMix only({
     double? top,
     double? bottom,
     double? left,
@@ -49,7 +49,7 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
       'Cannot provide both directional and non-directional values',
     );
     if (start != null || end != null) {
-      return EdgeInsetsDirectionalDto(
+      return EdgeInsetsDirectionalMix(
         top: Prop.maybe(top),
         bottom: Prop.maybe(bottom),
         start: Prop.maybe(start),
@@ -57,7 +57,7 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
       );
     }
 
-    return EdgeInsetsDto(
+    return EdgeInsetsMix(
       top: Prop.maybe(top),
       bottom: Prop.maybe(bottom),
       left: Prop.maybe(left),
@@ -65,9 +65,9 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
     );
   }
 
-  static EdgeInsetsGeometryDto? tryToMerge(
-    EdgeInsetsGeometryDto? a,
-    EdgeInsetsGeometryDto? b,
+  static EdgeInsetsGeometryMix? tryToMerge(
+    EdgeInsetsGeometryMix? a,
+    EdgeInsetsGeometryMix? b,
   ) {
     if (b == null) return a;
     if (a == null) return b;
@@ -76,42 +76,42 @@ sealed class EdgeInsetsGeometryDto<T extends EdgeInsetsGeometry>
   }
 
   static B _exhaustiveMerge<
-    A extends EdgeInsetsGeometryDto,
-    B extends EdgeInsetsGeometryDto
+    A extends EdgeInsetsGeometryMix,
+    B extends EdgeInsetsGeometryMix
   >(A a, B b) {
     if (a.runtimeType == b.runtimeType) return a.merge(b) as B;
 
     return switch (b) {
-      (EdgeInsetsDto g) => a._asEdgeInset().merge(g) as B,
-      (EdgeInsetsDirectionalDto g) => a._asEdgeInsetDirectional().merge(g) as B,
+      (EdgeInsetsMix g) => a._asEdgeInset().merge(g) as B,
+      (EdgeInsetsDirectionalMix g) => a._asEdgeInsetDirectional().merge(g) as B,
     };
   }
 
-  EdgeInsetsDto _asEdgeInset() {
-    if (this is EdgeInsetsDto) return this as EdgeInsetsDto;
+  EdgeInsetsMix _asEdgeInset() {
+    if (this is EdgeInsetsMix) return this as EdgeInsetsMix;
 
-    return EdgeInsetsDto(top: top, bottom: bottom);
+    return EdgeInsetsMix(top: top, bottom: bottom);
   }
 
-  EdgeInsetsDirectionalDto _asEdgeInsetDirectional() {
-    if (this is EdgeInsetsDirectionalDto) {
-      return this as EdgeInsetsDirectionalDto;
+  EdgeInsetsDirectionalMix _asEdgeInsetDirectional() {
+    if (this is EdgeInsetsDirectionalMix) {
+      return this as EdgeInsetsDirectionalMix;
     }
 
-    return EdgeInsetsDirectionalDto(top: top, bottom: bottom);
+    return EdgeInsetsDirectionalMix(top: top, bottom: bottom);
   }
 
   @override
-  EdgeInsetsGeometryDto<T> merge(covariant EdgeInsetsGeometryDto<T>? other);
+  EdgeInsetsGeometryMix<T> merge(covariant EdgeInsetsGeometryMix<T>? other);
 }
 
-final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
+final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
   final Prop<double>? left;
   final Prop<double>? right;
 
-  const EdgeInsetsDto({super.top, super.bottom, this.left, this.right});
+  const EdgeInsetsMix({super.top, super.bottom, this.left, this.right});
 
-  EdgeInsetsDto.only({double? top, double? bottom, double? left, double? right})
+  EdgeInsetsMix.only({double? top, double? bottom, double? left, double? right})
     : this(
         top: Prop.maybe(top),
         bottom: Prop.maybe(bottom),
@@ -121,13 +121,13 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
 
   /// Constructor that accepts an [EdgeInsets] value and extracts its properties.
   ///
-  /// This is useful for converting existing [EdgeInsets] instances to [EdgeInsetsDto].
+  /// This is useful for converting existing [EdgeInsets] instances to [EdgeInsetsMix].
   ///
   /// ```dart
   /// const edgeInsets = EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0);
-  /// final dto = EdgeInsetsDto.value(edgeInsets);
+  /// final dto = EdgeInsetsMix.value(edgeInsets);
   /// ```
-  EdgeInsetsDto.value(EdgeInsets edgeInsets)
+  EdgeInsetsMix.value(EdgeInsets edgeInsets)
     : this.only(
         top: edgeInsets.top,
         bottom: edgeInsets.bottom,
@@ -135,21 +135,21 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
         right: edgeInsets.right,
       );
 
-  EdgeInsetsDto.all(double value)
+  EdgeInsetsMix.all(double value)
     : this.only(top: value, bottom: value, left: value, right: value);
 
-  EdgeInsetsDto.none() : this.all(0);
+  EdgeInsetsMix.none() : this.all(0);
 
   /// Constructor that accepts a nullable [EdgeInsets] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [EdgeInsetsDto.value].
+  /// Returns null if the input is null, otherwise uses [EdgeInsetsMix.value].
   ///
   /// ```dart
   /// const EdgeInsets? edgeInsets = EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0);
-  /// final dto = EdgeInsetsDto.maybeValue(edgeInsets); // Returns EdgeInsetsDto or null
+  /// final dto = EdgeInsetsMix.maybeValue(edgeInsets); // Returns EdgeInsetsMix or null
   /// ```
-  static EdgeInsetsDto? maybeValue(EdgeInsets? edgeInsets) {
-    return edgeInsets != null ? EdgeInsetsDto.value(edgeInsets) : null;
+  static EdgeInsetsMix? maybeValue(EdgeInsets? edgeInsets) {
+    return edgeInsets != null ? EdgeInsetsMix.value(edgeInsets) : null;
   }
 
   @override
@@ -163,10 +163,10 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
   }
 
   @override
-  EdgeInsetsDto merge(EdgeInsetsDto? other) {
+  EdgeInsetsMix merge(EdgeInsetsMix? other) {
     if (other == null) return this;
 
-    return EdgeInsetsDto(
+    return EdgeInsetsMix(
       top: MixHelpers.merge(top, other.top),
       bottom: MixHelpers.merge(bottom, other.bottom),
       left: MixHelpers.merge(left, other.left),
@@ -178,7 +178,7 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is EdgeInsetsDto &&
+    return other is EdgeInsetsMix &&
         other.top == top &&
         other.bottom == bottom &&
         other.left == left &&
@@ -191,19 +191,19 @@ final class EdgeInsetsDto extends EdgeInsetsGeometryDto<EdgeInsets> {
   }
 }
 
-final class EdgeInsetsDirectionalDto
-    extends EdgeInsetsGeometryDto<EdgeInsetsDirectional> {
+final class EdgeInsetsDirectionalMix
+    extends EdgeInsetsGeometryMix<EdgeInsetsDirectional> {
   final Prop<double>? start;
   final Prop<double>? end;
 
-  const EdgeInsetsDirectionalDto({
+  const EdgeInsetsDirectionalMix({
     super.top,
     super.bottom,
     this.start,
     this.end,
   });
 
-  EdgeInsetsDirectionalDto.only({
+  EdgeInsetsDirectionalMix.only({
     double? top,
     double? bottom,
     double? start,
@@ -217,14 +217,14 @@ final class EdgeInsetsDirectionalDto
 
   /// Constructor that accepts an [EdgeInsetsDirectional] value and extracts its properties.
   ///
-  /// This is useful for converting existing [EdgeInsetsDirectional] instances to [EdgeInsetsDirectionalDto].
+  /// This is useful for converting existing [EdgeInsetsDirectional] instances to [EdgeInsetsDirectionalMix].
   ///
   /// ```dart
   /// const edgeInsets = EdgeInsetsDirectional.symmetric(horizontal: 16.0, vertical: 8.0);
-  /// final dto = EdgeInsetsDirectionalDto.value(edgeInsets);
+  /// final dto = EdgeInsetsDirectionalMix.value(edgeInsets);
   /// ```
-  factory EdgeInsetsDirectionalDto.value(EdgeInsetsDirectional edgeInsets) {
-    return EdgeInsetsDirectionalDto.only(
+  factory EdgeInsetsDirectionalMix.value(EdgeInsetsDirectional edgeInsets) {
+    return EdgeInsetsDirectionalMix.only(
       top: edgeInsets.top,
       bottom: edgeInsets.bottom,
       start: edgeInsets.start,
@@ -232,24 +232,24 @@ final class EdgeInsetsDirectionalDto
     );
   }
 
-  EdgeInsetsDirectionalDto.all(double value)
+  EdgeInsetsDirectionalMix.all(double value)
     : this.only(top: value, bottom: value, start: value, end: value);
 
-  EdgeInsetsDirectionalDto.none() : this.all(0);
+  EdgeInsetsDirectionalMix.none() : this.all(0);
 
   /// Constructor that accepts a nullable [EdgeInsetsDirectional] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [EdgeInsetsDirectionalDto.value].
+  /// Returns null if the input is null, otherwise uses [EdgeInsetsDirectionalMix.value].
   ///
   /// ```dart
   /// const EdgeInsetsDirectional? edgeInsets = EdgeInsetsDirectional.symmetric(horizontal: 16.0, vertical: 8.0);
-  /// final dto = EdgeInsetsDirectionalDto.maybeValue(edgeInsets); // Returns EdgeInsetsDirectionalDto or null
+  /// final dto = EdgeInsetsDirectionalMix.maybeValue(edgeInsets); // Returns EdgeInsetsDirectionalMix or null
   /// ```
-  static EdgeInsetsDirectionalDto? maybeValue(
+  static EdgeInsetsDirectionalMix? maybeValue(
     EdgeInsetsDirectional? edgeInsets,
   ) {
     return edgeInsets != null
-        ? EdgeInsetsDirectionalDto.value(edgeInsets)
+        ? EdgeInsetsDirectionalMix.value(edgeInsets)
         : null;
   }
 
@@ -264,10 +264,10 @@ final class EdgeInsetsDirectionalDto
   }
 
   @override
-  EdgeInsetsDirectionalDto merge(EdgeInsetsDirectionalDto? other) {
+  EdgeInsetsDirectionalMix merge(EdgeInsetsDirectionalMix? other) {
     if (other == null) return this;
 
-    return EdgeInsetsDirectionalDto(
+    return EdgeInsetsDirectionalMix(
       top: MixHelpers.merge(top, other.top),
       bottom: MixHelpers.merge(bottom, other.bottom),
       start: MixHelpers.merge(start, other.start),
@@ -279,7 +279,7 @@ final class EdgeInsetsDirectionalDto
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is EdgeInsetsDirectionalDto &&
+    return other is EdgeInsetsDirectionalMix &&
         other.top == top &&
         other.bottom == bottom &&
         other.start == start &&

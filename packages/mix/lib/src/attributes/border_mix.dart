@@ -2,59 +2,59 @@
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-sealed class BoxBorderDto<T extends BoxBorder> extends Mix<T> {
+sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
   final MixProp<BorderSide>? top;
   final MixProp<BorderSide>? bottom;
 
-  const BoxBorderDto({this.top, this.bottom});
+  const BoxBorderMix({this.top, this.bottom});
 
-  /// Merges two BoxBorderDto instances.
+  /// Merges two BoxBorderMix instances.
   ///
   /// If both are the same type, delegates to type-specific merge.
   /// If different types, converts to the type of [b] and merges.
   /// If [b] is null, returns [a]. If [a] is null, returns [b].
-  static BoxBorderDto? tryToMerge(BoxBorderDto? a, BoxBorderDto? b) {
+  static BoxBorderMix? tryToMerge(BoxBorderMix? a, BoxBorderMix? b) {
     if (b == null) return a;
     if (a == null) return b;
 
     return switch ((a, b)) {
-      (BorderDto first, BorderDto second) => first.merge(second),
-      (BorderDirectionalDto first, BorderDirectionalDto second) => first.merge(
+      (BorderMix first, BorderMix second) => first.merge(second),
+      (BorderDirectionalMix first, BorderDirectionalMix second) => first.merge(
         second,
       ),
-      (BorderDto first, BorderDirectionalDto second) =>
+      (BorderMix first, BorderDirectionalMix second) =>
         first._asBorderDirectional().merge(second),
-      (BorderDirectionalDto first, BorderDto second) => first._asBorder().merge(
+      (BorderDirectionalMix first, BorderMix second) => first._asBorder().merge(
         second,
       ),
     };
   }
 
-  static BoxBorderDto<T> value<T extends BoxBorder>(T border) {
+  static BoxBorderMix<T> value<T extends BoxBorder>(T border) {
     return switch (border) {
-      Border() => BorderDto.value(border) as BoxBorderDto<T>,
+      Border() => BorderMix.value(border) as BoxBorderMix<T>,
       BorderDirectional() =>
-        BorderDirectionalDto.value(border) as BoxBorderDto<T>,
+        BorderDirectionalMix.value(border) as BoxBorderMix<T>,
       _ => throw ArgumentError(
         'Unsupported BoxBorder type: ${border.runtimeType}',
       ),
     };
   }
 
-  static BoxBorderDto<T>? maybeValue<T extends BoxBorder>(T? border) {
+  static BoxBorderMix<T>? maybeValue<T extends BoxBorder>(T? border) {
     if (border == null) return null;
 
     return value(border);
   }
 
   @protected
-  BorderDto _asBorder() {
-    if (this is BorderDto) return this as BorderDto;
+  BorderMix _asBorder() {
+    if (this is BorderMix) return this as BorderMix;
 
-    // Convert BorderDirectionalDto to BorderDto
-    final directional = this as BorderDirectionalDto;
+    // Convert BorderDirectionalMix to BorderMix
+    final directional = this as BorderDirectionalMix;
 
-    return BorderDto(
+    return BorderMix(
       top: top,
       bottom: bottom,
       left: directional.start, // start maps to left
@@ -63,13 +63,13 @@ sealed class BoxBorderDto<T extends BoxBorder> extends Mix<T> {
   }
 
   @protected
-  BorderDirectionalDto _asBorderDirectional() {
-    if (this is BorderDirectionalDto) return this as BorderDirectionalDto;
+  BorderDirectionalMix _asBorderDirectional() {
+    if (this is BorderDirectionalMix) return this as BorderDirectionalMix;
 
-    // Convert BorderDto to BorderDirectionalDto
-    final border = this as BorderDto;
+    // Convert BorderMix to BorderDirectionalMix
+    final border = this as BorderMix;
 
-    return BorderDirectionalDto(
+    return BorderDirectionalMix(
       top: top,
       bottom: bottom,
       start: border.left, // left maps to start
@@ -79,23 +79,23 @@ sealed class BoxBorderDto<T extends BoxBorder> extends Mix<T> {
 
   bool get isUniform;
 
-  bool get isDirectional => this is BorderDirectionalDto;
+  bool get isDirectional => this is BorderDirectionalMix;
   @override
-  BoxBorderDto<T> merge(covariant BoxBorderDto<T>? other);
+  BoxBorderMix<T> merge(covariant BoxBorderMix<T>? other);
 }
 
-final class BorderDto extends BoxBorderDto<Border>
+final class BorderMix extends BoxBorderMix<Border>
     with MixDefaultValue<Border> {
   final MixProp<BorderSide>? left;
   final MixProp<BorderSide>? right;
 
-  static BorderDto none = BorderDto.all(BorderSideDto.none);
+  static BorderMix none = BorderMix.all(BorderSideMix.none);
 
-  BorderDto.only({
-    BorderSideDto? top,
-    BorderSideDto? bottom,
-    BorderSideDto? left,
-    BorderSideDto? right,
+  BorderMix.only({
+    BorderSideMix? top,
+    BorderSideMix? bottom,
+    BorderSideMix? left,
+    BorderSideMix? right,
   }) : this(
          top: MixProp.maybe(top),
          bottom: MixProp.maybe(bottom),
@@ -103,28 +103,28 @@ final class BorderDto extends BoxBorderDto<Border>
          right: MixProp.maybe(right),
        );
 
-  const BorderDto({super.top, super.bottom, this.left, this.right});
+  const BorderMix({super.top, super.bottom, this.left, this.right});
 
   /// Constructor that accepts a [Border] value and extracts its properties.
   ///
-  /// This is useful for converting existing [Border] instances to [BorderDto].
+  /// This is useful for converting existing [Border] instances to [BorderMix].
   ///
   /// ```dart
   /// const border = Border.all(color: Colors.red, width: 2.0);
-  /// final dto = BorderDto.value(border);
+  /// final dto = BorderMix.value(border);
   /// ```
-  BorderDto.value(Border border)
+  BorderMix.value(Border border)
     : this.only(
-        top: BorderSideDto.maybeValue(border.top),
-        bottom: BorderSideDto.maybeValue(border.bottom),
-        left: BorderSideDto.maybeValue(border.left),
-        right: BorderSideDto.maybeValue(border.right),
+        top: BorderSideMix.maybeValue(border.top),
+        bottom: BorderSideMix.maybeValue(border.bottom),
+        left: BorderSideMix.maybeValue(border.left),
+        right: BorderSideMix.maybeValue(border.right),
       );
 
-  BorderDto.all(BorderSideDto side)
+  BorderMix.all(BorderSideMix side)
     : this.only(top: side, bottom: side, left: side, right: side);
 
-  BorderDto.symmetric({BorderSideDto? vertical, BorderSideDto? horizontal})
+  BorderMix.symmetric({BorderSideMix? vertical, BorderSideMix? horizontal})
     : this.only(
         top: horizontal,
         bottom: horizontal,
@@ -132,24 +132,24 @@ final class BorderDto extends BoxBorderDto<Border>
         right: vertical,
       );
 
-  factory BorderDto.vertical(BorderSideDto side) {
-    return BorderDto.symmetric(vertical: side);
+  factory BorderMix.vertical(BorderSideMix side) {
+    return BorderMix.symmetric(vertical: side);
   }
 
-  factory BorderDto.horizontal(BorderSideDto side) {
-    return BorderDto.symmetric(horizontal: side);
+  factory BorderMix.horizontal(BorderSideMix side) {
+    return BorderMix.symmetric(horizontal: side);
   }
 
   /// Constructor that accepts a nullable [Border] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [BorderDto.value].
+  /// Returns null if the input is null, otherwise uses [BorderMix.value].
   ///
   /// ```dart
   /// const Border? border = Border.all(color: Colors.red, width: 2.0);
-  /// final dto = BorderDto.maybeValue(border); // Returns BorderDto or null
+  /// final dto = BorderMix.maybeValue(border); // Returns BorderMix or null
   /// ```
-  static BorderDto? maybeValue(Border? border) {
-    return border != null ? BorderDto.value(border) : null;
+  static BorderMix? maybeValue(Border? border) {
+    return border != null ? BorderMix.value(border) : null;
   }
 
   /// Resolves to [Border] using the provided [MixContext].
@@ -158,7 +158,7 @@ final class BorderDto extends BoxBorderDto<Border>
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final border = BorderDto(...).resolve(mix);
+  /// final border = BorderMix(...).resolve(mix);
   /// ```
   @override
   Border resolve(BuildContext context) {
@@ -170,19 +170,19 @@ final class BorderDto extends BoxBorderDto<Border>
     );
   }
 
-  /// Merges the properties of this [BorderDto] with the properties of [other].
+  /// Merges the properties of this [BorderMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [BorderDto] with the properties of [other] taking precedence over
+  /// [BorderMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  BorderDto merge(BorderDto? other) {
+  BorderMix merge(BorderMix? other) {
     if (other == null) return this;
 
-    return BorderDto(
+    return BorderMix(
       top: MixHelpers.merge(top, other.top),
       bottom: MixHelpers.merge(bottom, other.bottom),
       left: MixHelpers.merge(left, other.left),
@@ -194,7 +194,7 @@ final class BorderDto extends BoxBorderDto<Border>
   operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is BorderDto &&
+    return other is BorderMix &&
         other.top == top &&
         other.bottom == bottom &&
         other.left == left &&
@@ -212,19 +212,19 @@ final class BorderDto extends BoxBorderDto<Border>
   Border get defaultValue => const Border();
 }
 
-final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional>
+final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
     with MixDefaultValue<BorderDirectional> {
   final MixProp<BorderSide>? start;
   final MixProp<BorderSide>? end;
-  static final BorderDirectionalDto none = BorderDirectionalDto.all(
-    BorderSideDto.none,
+  static final BorderDirectionalMix none = BorderDirectionalMix.all(
+    BorderSideMix.none,
   );
 
-  BorderDirectionalDto.only({
-    BorderSideDto? top,
-    BorderSideDto? bottom,
-    BorderSideDto? start,
-    BorderSideDto? end,
+  BorderDirectionalMix.only({
+    BorderSideMix? top,
+    BorderSideMix? bottom,
+    BorderSideMix? start,
+    BorderSideMix? end,
   }) : this(
          top: MixProp.maybe(top),
          bottom: MixProp.maybe(bottom),
@@ -232,30 +232,30 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional>
          end: MixProp.maybe(end),
        );
 
-  const BorderDirectionalDto({super.top, super.bottom, this.start, this.end});
+  const BorderDirectionalMix({super.top, super.bottom, this.start, this.end});
 
   /// Constructor that accepts a [BorderDirectional] value and extracts its properties.
   ///
-  /// This is useful for converting existing [BorderDirectional] instances to [BorderDirectionalDto].
+  /// This is useful for converting existing [BorderDirectional] instances to [BorderDirectionalMix].
   ///
   /// ```dart
   /// const border = BorderDirectional.all(BorderSide(color: Colors.red, width: 2.0));
-  /// final dto = BorderDirectionalDto.value(border);
+  /// final dto = BorderDirectionalMix.value(border);
   /// ```
-  BorderDirectionalDto.value(BorderDirectional border)
+  BorderDirectionalMix.value(BorderDirectional border)
     : this.only(
-        top: BorderSideDto.maybeValue(border.top),
-        bottom: BorderSideDto.maybeValue(border.bottom),
-        start: BorderSideDto.maybeValue(border.start),
-        end: BorderSideDto.maybeValue(border.end),
+        top: BorderSideMix.maybeValue(border.top),
+        bottom: BorderSideMix.maybeValue(border.bottom),
+        start: BorderSideMix.maybeValue(border.start),
+        end: BorderSideMix.maybeValue(border.end),
       );
 
-  BorderDirectionalDto.all(BorderSideDto side)
+  BorderDirectionalMix.all(BorderSideMix side)
     : this.only(top: side, bottom: side, start: side, end: side);
 
-  BorderDirectionalDto.symmetric({
-    BorderSideDto? vertical,
-    BorderSideDto? horizontal,
+  BorderDirectionalMix.symmetric({
+    BorderSideMix? vertical,
+    BorderSideMix? horizontal,
   }) : this.only(
          top: horizontal,
          bottom: horizontal,
@@ -263,21 +263,21 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional>
          end: vertical,
        );
 
-  BorderDirectionalDto.vertical(BorderSideDto side)
+  BorderDirectionalMix.vertical(BorderSideMix side)
     : this.symmetric(vertical: side);
-  BorderDirectionalDto.horizontal(BorderSideDto side)
+  BorderDirectionalMix.horizontal(BorderSideMix side)
     : this.symmetric(horizontal: side);
 
   /// Constructor that accepts a nullable [BorderDirectional] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [BorderDirectionalDto.value].
+  /// Returns null if the input is null, otherwise uses [BorderDirectionalMix.value].
   ///
   /// ```dart
   /// const BorderDirectional? border = BorderDirectional.all(BorderSide(color: Colors.red, width: 2.0));
-  /// final dto = BorderDirectionalDto.maybeValue(border); // Returns BorderDirectionalDto or null
+  /// final dto = BorderDirectionalMix.maybeValue(border); // Returns BorderDirectionalMix or null
   /// ```
-  static BorderDirectionalDto? maybeValue(BorderDirectional? border) {
-    return border != null ? BorderDirectionalDto.value(border) : null;
+  static BorderDirectionalMix? maybeValue(BorderDirectional? border) {
+    return border != null ? BorderDirectionalMix.value(border) : null;
   }
 
   /// Resolves to [BorderDirectional] using the provided [MixContext].
@@ -286,7 +286,7 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional>
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final borderDirectional = BorderDirectionalDto(...).resolve(mix);
+  /// final borderDirectional = BorderDirectionalMix(...).resolve(mix);
   /// ```
   @override
   BorderDirectional resolve(BuildContext context) {
@@ -298,19 +298,19 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional>
     );
   }
 
-  /// Merges the properties of this [BorderDirectionalDto] with the properties of [other].
+  /// Merges the properties of this [BorderDirectionalMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [BorderDirectionalDto] with the properties of [other] taking precedence over
+  /// [BorderDirectionalMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  BorderDirectionalDto merge(BorderDirectionalDto? other) {
+  BorderDirectionalMix merge(BorderDirectionalMix? other) {
     if (other == null) return this;
 
-    return BorderDirectionalDto(
+    return BorderDirectionalMix(
       top: MixHelpers.merge(top, other.top),
       bottom: MixHelpers.merge(bottom, other.bottom),
       start: MixHelpers.merge(start, other.start),
@@ -322,7 +322,7 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional>
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is BorderDirectionalDto &&
+    return other is BorderDirectionalMix &&
         other.top == top &&
         other.bottom == bottom &&
         other.start == start &&
@@ -332,10 +332,10 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional>
   @override
   bool get isUniform => top == bottom && top == start && top == end;
 
-  /// The list of properties that constitute the state of this [BorderDirectionalDto].
+  /// The list of properties that constitute the state of this [BorderDirectionalMix].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [BorderDirectionalDto] instances for equality.
+  /// compare two [BorderDirectionalMix] instances for equality.
   @override
   BorderDirectional get defaultValue => const BorderDirectional();
 
@@ -345,7 +345,7 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional>
   }
 }
 
-final class BorderSideDto extends Mix<BorderSide>
+final class BorderSideMix extends Mix<BorderSide>
     with MixDefaultValue<BorderSide> {
   // Properties use MixableProperty for cleaner merging
   final Prop<Color>? color;
@@ -353,9 +353,9 @@ final class BorderSideDto extends Mix<BorderSide>
   final Prop<BorderStyle>? style;
   final Prop<double>? strokeAlign;
 
-  static final BorderSideDto none = BorderSideDto();
+  static final BorderSideMix none = BorderSideMix();
 
-  BorderSideDto.only({
+  BorderSideMix.only({
     Color? color,
     double? strokeAlign,
     BorderStyle? style,
@@ -369,13 +369,13 @@ final class BorderSideDto extends Mix<BorderSide>
 
   /// Constructor that accepts a [BorderSide] value and extracts its properties.
   ///
-  /// This is useful for converting existing [BorderSide] instances to [BorderSideDto].
+  /// This is useful for converting existing [BorderSide] instances to [BorderSideMix].
   ///
   /// ```dart
   /// const borderSide = BorderSide(color: Colors.blue, width: 3.0);
-  /// final dto = BorderSideDto.value(borderSide);
+  /// final dto = BorderSideMix.value(borderSide);
   /// ```
-  BorderSideDto.value(BorderSide borderSide)
+  BorderSideMix.value(BorderSide borderSide)
     : this.only(
         color: borderSide.color,
         strokeAlign: borderSide.strokeAlign,
@@ -383,19 +383,19 @@ final class BorderSideDto extends Mix<BorderSide>
         width: borderSide.width,
       );
 
-  const BorderSideDto({this.color, this.width, this.style, this.strokeAlign});
+  const BorderSideMix({this.color, this.width, this.style, this.strokeAlign});
 
   /// Constructor that accepts a nullable [BorderSide] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [BorderSideDto.value].
+  /// Returns null if the input is null, otherwise uses [BorderSideMix.value].
   ///
   /// ```dart
   /// const BorderSide? borderSide = BorderSide(color: Colors.blue, width: 3.0);
-  /// final dto = BorderSideDto.maybeValue(borderSide); // Returns BorderSideDto or null
+  /// final dto = BorderSideMix.maybeValue(borderSide); // Returns BorderSideMix or null
   /// ```
-  static BorderSideDto? maybeValue(BorderSide? borderSide) {
+  static BorderSideMix? maybeValue(BorderSide? borderSide) {
     return borderSide != null && borderSide != BorderSide.none
-        ? BorderSideDto.value(borderSide)
+        ? BorderSideMix.value(borderSide)
         : null;
   }
 
@@ -405,7 +405,7 @@ final class BorderSideDto extends Mix<BorderSide>
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final borderSide = BorderSideDto(...).resolve(mix);
+  /// final borderSide = BorderSideMix(...).resolve(mix);
   /// ```
   @override
   BorderSide resolve(BuildContext context) {
@@ -418,19 +418,19 @@ final class BorderSideDto extends Mix<BorderSide>
     );
   }
 
-  /// Merges the properties of this [BorderSideDto] with the properties of [other].
+  /// Merges the properties of this [BorderSideMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [BorderSideDto] with the properties of [other] taking precedence over
+  /// [BorderSideMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  BorderSideDto merge(BorderSideDto? other) {
+  BorderSideMix merge(BorderSideMix? other) {
     if (other == null) return this;
 
-    return BorderSideDto(
+    return BorderSideMix(
       color: MixHelpers.merge(color, other.color),
       width: MixHelpers.merge(width, other.width),
       style: MixHelpers.merge(style, other.style),
@@ -442,7 +442,7 @@ final class BorderSideDto extends Mix<BorderSide>
   operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is BorderSideDto &&
+    return other is BorderSideMix &&
         other.color == color &&
         other.width == width &&
         other.style == style &&

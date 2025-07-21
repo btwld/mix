@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 import '../../attributes/border_radius_util.dart';
 import '../../attributes/border_util.dart';
 import '../../attributes/color/color_util.dart';
-import '../../attributes/constraints_dto.dart';
+import '../../attributes/constraints_mix.dart';
 import '../../attributes/constraints_util.dart';
-import '../../attributes/decoration_dto.dart';
+import '../../attributes/decoration_mix.dart';
 import '../../attributes/decoration_util.dart';
-import '../../attributes/edge_insets_dto.dart';
 import '../../attributes/edge_insets_geometry_util.dart';
+import '../../attributes/edge_insets_mix.dart';
 import '../../attributes/gradient_util.dart';
 import '../../attributes/scalar_util.dart';
-import '../../attributes/shadow_dto.dart';
+import '../../attributes/shadow_mix.dart';
 import '../../core/animation_config.dart';
 import '../../core/attribute.dart';
 import '../../core/helpers.dart';
@@ -79,64 +79,64 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
 
   final minWidth = DoubleUtility(
     (prop) =>
-        BoxSpecAttribute.only(constraints: BoxConstraintsDto(minWidth: prop)),
+        BoxSpecAttribute.only(constraints: BoxConstraintsMix(minWidth: prop)),
   );
 
   final maxWidth = DoubleUtility(
     (prop) =>
-        BoxSpecAttribute.only(constraints: BoxConstraintsDto(maxWidth: prop)),
+        BoxSpecAttribute.only(constraints: BoxConstraintsMix(maxWidth: prop)),
   );
 
   final maxHeight = DoubleUtility(
     (prop) =>
-        BoxSpecAttribute.only(constraints: BoxConstraintsDto(maxHeight: prop)),
+        BoxSpecAttribute.only(constraints: BoxConstraintsMix(maxHeight: prop)),
   );
 
   final minHeight = DoubleUtility(
     (prop) =>
-        BoxSpecAttribute.only(constraints: BoxConstraintsDto(minHeight: prop)),
+        BoxSpecAttribute.only(constraints: BoxConstraintsMix(minHeight: prop)),
   );
 
   final border = BoxBorderUtility(
-    (prop) => BoxSpecAttribute.only(decoration: BoxDecorationDto(border: prop)),
+    (prop) => BoxSpecAttribute.only(decoration: BoxDecorationMix(border: prop)),
   );
 
   final borderDirectional = BorderDirectionalUtility(
-    (prop) => BoxSpecAttribute.only(decoration: BoxDecorationDto(border: prop)),
+    (prop) => BoxSpecAttribute.only(decoration: BoxDecorationMix(border: prop)),
   );
 
   final borderRadius = BorderRadiusGeometryUtility(
     (prop) =>
-        BoxSpecAttribute.only(decoration: BoxDecorationDto(borderRadius: prop)),
+        BoxSpecAttribute.only(decoration: BoxDecorationMix(borderRadius: prop)),
   );
 
   final borderRadiusDirectional = BorderRadiusDirectionalUtility(
     (prop) =>
-        BoxSpecAttribute.only(decoration: BoxDecorationDto(borderRadius: prop)),
+        BoxSpecAttribute.only(decoration: BoxDecorationMix(borderRadius: prop)),
   );
 
   final color = ColorUtility(
-    (prop) => BoxSpecAttribute.only(decoration: BoxDecorationDto(color: prop)),
+    (prop) => BoxSpecAttribute.only(decoration: BoxDecorationMix(color: prop)),
   );
 
   final gradient = GradientUtility(
     (prop) =>
-        BoxSpecAttribute.only(decoration: BoxDecorationDto(gradient: prop)),
+        BoxSpecAttribute.only(decoration: BoxDecorationMix(gradient: prop)),
   );
 
   final linearGradient = LinearGradientUtility(
     (prop) =>
-        BoxSpecAttribute.only(decoration: BoxDecorationDto(gradient: prop)),
+        BoxSpecAttribute.only(decoration: BoxDecorationMix(gradient: prop)),
   );
 
   final radialGradient = RadialGradientUtility(
     (prop) =>
-        BoxSpecAttribute.only(decoration: BoxDecorationDto(gradient: prop)),
+        BoxSpecAttribute.only(decoration: BoxDecorationMix(gradient: prop)),
   );
 
   final sweepGradient = SweepGradientUtility(
     (prop) =>
-        BoxSpecAttribute.only(decoration: BoxDecorationDto(gradient: prop)),
+        BoxSpecAttribute.only(decoration: BoxDecorationMix(gradient: prop)),
   );
 
   final shapeDecoration = ShapeDecorationUtility(
@@ -144,7 +144,7 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
   );
 
   final shape = BoxShapeUtility(
-    (prop) => BoxSpecAttribute.only(decoration: BoxDecorationDto(shape: prop)),
+    (prop) => BoxSpecAttribute.only(decoration: BoxDecorationMix(shape: prop)),
   );
 
   BoxSpecAttribute({
@@ -176,11 +176,11 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
 
   BoxSpecAttribute.only({
     AlignmentGeometry? alignment,
-    EdgeInsetsGeometryDto? padding,
-    EdgeInsetsGeometryDto? margin,
-    BoxConstraintsDto? constraints,
-    DecorationDto? decoration,
-    DecorationDto? foregroundDecoration,
+    EdgeInsetsGeometryMix? padding,
+    EdgeInsetsGeometryMix? margin,
+    BoxConstraintsMix? constraints,
+    DecorationMix? decoration,
+    DecorationMix? foregroundDecoration,
     Matrix4? transform,
     AlignmentGeometry? transformAlignment,
     Clip? clipBehavior,
@@ -188,7 +188,7 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
     double? height,
     AnimationConfig? animation,
     List<ModifierAttribute>? modifiers,
-    List<VariantAttribute<BoxSpec>>? variants,
+    List<VariantSpecAttribute<BoxSpec>>? variants,
   }) : this(
          alignment: Prop.maybe(alignment),
          padding: MixProp.maybe(padding),
@@ -217,11 +217,11 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
   BoxSpecAttribute.value(BoxSpec spec)
     : this.only(
         alignment: spec.alignment,
-        padding: EdgeInsetsGeometryDto.maybeValue(spec.padding),
-        margin: EdgeInsetsGeometryDto.maybeValue(spec.margin),
-        constraints: BoxConstraintsDto.maybeValue(spec.constraints),
-        decoration: DecorationDto.maybeValue(spec.decoration),
-        foregroundDecoration: DecorationDto.maybeValue(
+        padding: EdgeInsetsGeometryMix.maybeValue(spec.padding),
+        margin: EdgeInsetsGeometryMix.maybeValue(spec.margin),
+        constraints: BoxConstraintsMix.maybeValue(spec.constraints),
+        decoration: DecorationMix.maybeValue(spec.decoration),
+        foregroundDecoration: DecorationMix.maybeValue(
           spec.foregroundDecoration,
         ),
         transform: spec.transform,
@@ -247,22 +247,22 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
     return BoxSpecAttribute.only(animation: animation);
   }
 
-  BoxSpecAttribute shadows(List<BoxShadowDto> value) {
+  BoxSpecAttribute shadows(List<BoxShadowMix> value) {
     return BoxSpecAttribute.only(
-      decoration: BoxDecorationDto.only(boxShadow: value),
+      decoration: BoxDecorationMix.only(boxShadow: value),
     );
   }
 
-  BoxSpecAttribute shadow(BoxShadowDto value) {
+  BoxSpecAttribute shadow(BoxShadowMix value) {
     return BoxSpecAttribute.only(
-      decoration: BoxDecorationDto.only(boxShadow: [value]),
+      decoration: BoxDecorationMix.only(boxShadow: [value]),
     );
   }
 
   BoxSpecAttribute elevation(ElevationShadow value) {
     return BoxSpecAttribute.only(
-      decoration: BoxDecorationDto.only(
-        boxShadow: BoxShadowDto.fromElevation(value),
+      decoration: BoxDecorationMix.only(
+        boxShadow: BoxShadowMix.fromElevation(value),
       ),
     );
   }

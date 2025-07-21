@@ -158,13 +158,13 @@ final class PropListUtility<T extends SpecAttribute<Object?>, V>
 ///
 /// Usage:
 /// ```dart
-/// final boxShadows = MixPropListUtility<TestAttribute, BoxShadow, BoxShadowDto>(
+/// final boxShadows = MixPropListUtility<TestAttribute, BoxShadow, BoxShadowMix>(
 ///   (mixPropList) => TestAttribute(boxShadow: mixPropList),
-///   BoxShadowDto.value,
+///   BoxShadowMix.value,
 /// );
 ///
 /// // Usage with different methods:
-/// final attr1 = boxShadows([BoxShadowDto(...), BoxShadowDto(...)]);  // call()
+/// final attr1 = boxShadows([BoxShadowMix(...), BoxShadowMix(...)]);  // call()
 /// final attr2 = boxShadows.as([BoxShadow(...), BoxShadow(...)]);     // as()
 /// final attr3 = boxShadows.tokens([token1, token2]);                 // tokens()
 /// final attr4 = boxShadows.directives([directive1, directive2]);     // directives()

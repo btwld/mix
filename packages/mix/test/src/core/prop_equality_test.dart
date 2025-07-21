@@ -152,8 +152,8 @@ void main() {
 
     group('MixProp equality behavior', () {
       test('identical MixProps are equal', () {
-        final shadow1 = BoxShadowDto(color: Colors.red, blurRadius: 5.0);
-        final shadow2 = BoxShadowDto(color: Colors.red, blurRadius: 5.0);
+        final shadow1 = BoxShadowMix(color: Colors.red, blurRadius: 5.0);
+        final shadow2 = BoxShadowMix(color: Colors.red, blurRadius: 5.0);
 
         final prop1 = MixProp(shadow1);
         final prop2 = MixProp(shadow2);
@@ -162,8 +162,8 @@ void main() {
       });
 
       test('different MixProps are not equal', () {
-        final shadow1 = BoxShadowDto(color: Colors.red, blurRadius: 5.0);
-        final shadow2 = BoxShadowDto(color: Colors.blue, blurRadius: 5.0);
+        final shadow1 = BoxShadowMix(color: Colors.red, blurRadius: 5.0);
+        final shadow2 = BoxShadowMix(color: Colors.blue, blurRadius: 5.0);
 
         final prop1 = MixProp(shadow1);
         final prop2 = MixProp(shadow2);
@@ -172,8 +172,8 @@ void main() {
       });
 
       test('merged MixProps with identical values equals original', () {
-        final shadow1 = BoxShadowDto(color: Colors.red, blurRadius: 5.0);
-        final shadow2 = BoxShadowDto(color: Colors.blue, blurRadius: 10.0);
+        final shadow1 = BoxShadowMix(color: Colors.red, blurRadius: 5.0);
+        final shadow2 = BoxShadowMix(color: Colors.blue, blurRadius: 10.0);
 
         final prop1 = MixProp(shadow1);
         final prop2 = MixProp(shadow2);

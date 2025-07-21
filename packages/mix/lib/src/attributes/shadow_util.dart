@@ -5,7 +5,7 @@ import '../core/prop.dart';
 import '../core/utility.dart';
 import 'color/color_util.dart';
 import 'scalar_util.dart';
-import 'shadow_dto.dart';
+import 'shadow_mix.dart';
 
 /// Utility class for configuring [Shadow] properties.
 ///
@@ -13,22 +13,22 @@ import 'shadow_dto.dart';
 /// Use the methods of this class to configure specific properties of a [Shadow].
 class ShadowUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, Shadow> {
-  /// Utility for defining [ShadowDto.blurRadius].
+  /// Utility for defining [ShadowMix.blurRadius].
   late final blurRadius = DoubleUtility<T>(
-    (prop) => call(ShadowDto(blurRadius: prop)),
+    (prop) => call(ShadowMix(blurRadius: prop)),
   );
 
-  /// Utility for defining [ShadowDto.color].
-  late final color = ColorUtility<T>((prop) => call(ShadowDto(color: prop)));
+  /// Utility for defining [ShadowMix.color].
+  late final color = ColorUtility<T>((prop) => call(ShadowMix(color: prop)));
 
-  /// Utility for defining [ShadowDto.offset].
-  late final offset = OffsetUtility<T>((prop) => call(ShadowDto(offset: prop)));
+  /// Utility for defining [ShadowMix.offset].
+  late final offset = OffsetUtility<T>((prop) => call(ShadowMix(offset: prop)));
 
-  ShadowUtility(super.builder) : super(convertToMix: ShadowDto.value);
+  ShadowUtility(super.builder) : super(convertToMix: ShadowMix.value);
 
-  /// Returns a new [T] with the specified [ShadowDto] properties.
+  /// Returns a new [T] with the specified [ShadowMix] properties.
   @override
-  T call(ShadowDto value) => builder(MixProp(value));
+  T call(ShadowMix value) => builder(MixProp(value));
 }
 
 /// Utility class for configuring [BoxShadow] properties.
@@ -37,28 +37,28 @@ class ShadowUtility<T extends SpecAttribute<Object?>>
 /// Use the methods of this class to configure specific properties of a [BoxShadow].
 class BoxShadowUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, BoxShadow> {
-  late final color = ColorUtility<T>((prop) => call(BoxShadowDto(color: prop)));
+  late final color = ColorUtility<T>((prop) => call(BoxShadowMix(color: prop)));
 
-  /// Utility for defining [BoxShadowDto.offset].
+  /// Utility for defining [BoxShadowMix.offset].
   late final offset = OffsetUtility<T>(
-    (prop) => call(BoxShadowDto(offset: prop)),
+    (prop) => call(BoxShadowMix(offset: prop)),
   );
 
-  /// Utility for defining [BoxShadowDto.blurRadius].
+  /// Utility for defining [BoxShadowMix.blurRadius].
   late final blurRadius = DoubleUtility<T>(
-    (prop) => call(BoxShadowDto(blurRadius: prop)),
+    (prop) => call(BoxShadowMix(blurRadius: prop)),
   );
 
-  /// Utility for defining [BoxShadowDto.spreadRadius].
+  /// Utility for defining [BoxShadowMix.spreadRadius].
   late final spreadRadius = DoubleUtility<T>(
-    (prop) => call(BoxShadowDto(spreadRadius: prop)),
+    (prop) => call(BoxShadowMix(spreadRadius: prop)),
   );
 
-  BoxShadowUtility(super.builder) : super(convertToMix: BoxShadowDto.value);
+  BoxShadowUtility(super.builder) : super(convertToMix: BoxShadowMix.value);
 
-  /// Returns a new [T] with the specified [BoxShadowDto] properties.
+  /// Returns a new [T] with the specified [BoxShadowMix] properties.
   @override
-  T call(BoxShadowDto value) => builder(MixProp(value));
+  T call(BoxShadowMix value) => builder(MixProp(value));
 }
 
 /// A utility class for building [StyleElement] instances from elevation values that produces [MixProp<BoxShadow>] lists.
@@ -152,7 +152,7 @@ final class ElevationMixPropUtility<T extends SpecAttribute<Object?>>
 
     final boxShadows = kElevationToShadow[value]!.map(
       (e) => MixProp(
-        BoxShadowDto(
+        BoxShadowMix(
           color: Prop(e.color),
           offset: Prop(e.offset),
           blurRadius: Prop(e.blurRadius),

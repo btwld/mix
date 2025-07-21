@@ -55,7 +55,7 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
     Clip? clipBehavior,
     AnimationConfig? animation,
     List<ModifierAttribute>? modifiers,
-    List<VariantAttribute<StackSpec>>? variants,
+    List<VariantSpecAttribute<StackSpec>>? variants,
   }) : this(
          alignment: Prop.maybe(alignment),
          fit: Prop.maybe(fit),

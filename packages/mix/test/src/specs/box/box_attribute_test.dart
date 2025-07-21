@@ -9,20 +9,20 @@ void main() {
     test('Constructor assigns correct properties', () {
       final containerSpecAttribute = BoxSpecAttribute(
         alignment: Alignment.center,
-        padding: EdgeInsetsGeometryDto.only(
+        padding: EdgeInsetsGeometryMix.only(
           top: 20,
           bottom: 20,
           left: 20,
           right: 20,
         ),
-        margin: EdgeInsetsGeometryDto.only(
+        margin: EdgeInsetsGeometryMix.only(
           top: 10,
           bottom: 10,
           left: 10,
           right: 10,
         ),
-        constraints: BoxConstraintsDto(maxHeight: 100),
-        decoration: BoxDecorationDto(color: Colors.blue),
+        constraints: BoxConstraintsMix(maxHeight: 100),
+        decoration: BoxDecorationMix(color: Colors.blue),
         transform: Matrix4.identity(),
         clipBehavior: Clip.antiAlias,
         width: 100,
@@ -34,21 +34,21 @@ void main() {
 
       expect(
         containerSpecAttribute.constraints?.mixValue,
-        BoxConstraintsDto(maxHeight: 100),
+        BoxConstraintsMix(maxHeight: 100),
       );
       expect(
         containerSpecAttribute.decoration?.mixValue,
-        BoxDecorationDto(color: Colors.blue),
+        BoxDecorationMix(color: Colors.blue),
       );
 
       expect(containerSpecAttribute.height, resolvesTo(100));
       expect(
         containerSpecAttribute.margin?.mixValue,
-        EdgeInsetsGeometryDto.only(top: 10, bottom: 10, left: 10, right: 10),
+        EdgeInsetsGeometryMix.only(top: 10, bottom: 10, left: 10, right: 10),
       );
       expect(
         containerSpecAttribute.padding?.mixValue,
-        EdgeInsetsGeometryDto.only(top: 20, bottom: 20, left: 20, right: 20),
+        EdgeInsetsGeometryMix.only(top: 20, bottom: 20, left: 20, right: 20),
       );
       expect(containerSpecAttribute.transform, resolvesTo(Matrix4.identity()));
       expect(containerSpecAttribute.width, resolvesTo(100));
@@ -58,20 +58,20 @@ void main() {
     test('resolve() returns correct instance', () {
       final containerSpecAttribute = BoxSpecAttribute(
         alignment: Alignment.center,
-        padding: EdgeInsetsGeometryDto.only(
+        padding: EdgeInsetsGeometryMix.only(
           top: 20,
           bottom: 20,
           left: 20,
           right: 20,
         ),
-        margin: EdgeInsetsGeometryDto.only(
+        margin: EdgeInsetsGeometryMix.only(
           top: 10,
           bottom: 10,
           left: 10,
           right: 10,
         ),
-        constraints: BoxConstraintsDto(maxHeight: 100),
-        decoration: BoxDecorationDto(color: Colors.blue),
+        constraints: BoxConstraintsMix(maxHeight: 100),
+        decoration: BoxDecorationMix(color: Colors.blue),
         transform: Matrix4.identity(),
         clipBehavior: Clip.antiAlias,
         width: 100,
@@ -113,20 +113,20 @@ void main() {
     test('merge() returns correct instance', () {
       final containerSpecAttribute = BoxSpecAttribute(
         alignment: Alignment.center,
-        padding: EdgeInsetsGeometryDto.only(
+        padding: EdgeInsetsGeometryMix.only(
           top: 20,
           bottom: 20,
           left: 20,
           right: 20,
         ),
-        margin: EdgeInsetsGeometryDto.only(
+        margin: EdgeInsetsGeometryMix.only(
           top: 10,
           bottom: 10,
           left: 10,
           right: 10,
         ),
-        constraints: BoxConstraintsDto(maxHeight: 100),
-        decoration: BoxDecorationDto(color: Colors.blue),
+        constraints: BoxConstraintsMix(maxHeight: 100),
+        decoration: BoxDecorationMix(color: Colors.blue),
         transform: Matrix4.identity(),
         clipBehavior: Clip.antiAlias,
         width: 100,
@@ -136,20 +136,20 @@ void main() {
       final mergedBoxSpecAttribute = containerSpecAttribute.merge(
         BoxSpecAttribute(
           alignment: Alignment.centerLeft,
-          padding: EdgeInsetsGeometryDto.only(
+          padding: EdgeInsetsGeometryMix.only(
             top: 30,
             bottom: 30,
             left: 30,
             right: 30,
           ),
-          margin: EdgeInsetsGeometryDto.only(
+          margin: EdgeInsetsGeometryMix.only(
             top: 20,
             bottom: 20,
             left: 20,
             right: 20,
           ),
-          constraints: BoxConstraintsDto(maxHeight: 200),
-          decoration: BoxDecorationDto(color: Colors.red),
+          constraints: BoxConstraintsMix(maxHeight: 200),
+          decoration: BoxDecorationMix(color: Colors.red),
           transform: Matrix4.identity(),
           clipBehavior: Clip.antiAliasWithSaveLayer,
           width: 200,
@@ -192,20 +192,20 @@ void main() {
     test('equality', () {
       final containerSpecAttribute = BoxSpecAttribute(
         alignment: Alignment.center,
-        padding: EdgeInsetsGeometryDto.only(
+        padding: EdgeInsetsGeometryMix.only(
           top: 20,
           bottom: 20,
           left: 20,
           right: 20,
         ),
-        margin: EdgeInsetsGeometryDto.only(
+        margin: EdgeInsetsGeometryMix.only(
           top: 10,
           bottom: 10,
           left: 10,
           right: 10,
         ),
-        constraints: BoxConstraintsDto(maxHeight: 100),
-        decoration: BoxDecorationDto(color: Colors.blue),
+        constraints: BoxConstraintsMix(maxHeight: 100),
+        decoration: BoxDecorationMix(color: Colors.blue),
         transform: Matrix4.identity(),
         clipBehavior: Clip.antiAlias,
         width: 100,
@@ -217,20 +217,20 @@ void main() {
         equals(
           BoxSpecAttribute(
             alignment: Alignment.center,
-            padding: EdgeInsetsGeometryDto.only(
+            padding: EdgeInsetsGeometryMix.only(
               top: 20,
               bottom: 20,
               left: 20,
               right: 20,
             ),
-            margin: EdgeInsetsGeometryDto.only(
+            margin: EdgeInsetsGeometryMix.only(
               top: 10,
               bottom: 10,
               left: 10,
               right: 10,
             ),
-            constraints: BoxConstraintsDto(maxHeight: 100),
-            decoration: BoxDecorationDto(color: Colors.blue),
+            constraints: BoxConstraintsMix(maxHeight: 100),
+            decoration: BoxDecorationMix(color: Colors.blue),
             transform: Matrix4.identity(),
             clipBehavior: Clip.antiAlias,
             width: 100,
@@ -244,20 +244,20 @@ void main() {
     test('not equals', () {
       final containerSpecAttribute = BoxSpecAttribute(
         alignment: Alignment.center,
-        padding: EdgeInsetsGeometryDto.only(
+        padding: EdgeInsetsGeometryMix.only(
           top: 20,
           bottom: 20,
           left: 20,
           right: 20,
         ),
-        margin: EdgeInsetsGeometryDto.only(
+        margin: EdgeInsetsGeometryMix.only(
           top: 10,
           bottom: 10,
           left: 10,
           right: 10,
         ),
-        constraints: BoxConstraintsDto(maxHeight: 100),
-        decoration: BoxDecorationDto(color: Colors.blue),
+        constraints: BoxConstraintsMix(maxHeight: 100),
+        decoration: BoxDecorationMix(color: Colors.blue),
         transform: Matrix4.identity(),
         clipBehavior: Clip.antiAlias,
         width: 100,
@@ -270,20 +270,20 @@ void main() {
           equals(
             BoxSpecAttribute(
               alignment: Alignment.centerLeft,
-              padding: EdgeInsetsGeometryDto.only(
+              padding: EdgeInsetsGeometryMix.only(
                 top: 30,
                 bottom: 30,
                 left: 30,
                 right: 30,
               ),
-              margin: EdgeInsetsGeometryDto.only(
+              margin: EdgeInsetsGeometryMix.only(
                 top: 20,
                 bottom: 20,
                 left: 20,
                 right: 20,
               ),
-              constraints: BoxConstraintsDto(maxHeight: 200),
-              decoration: BoxDecorationDto(color: Colors.red),
+              constraints: BoxConstraintsMix(maxHeight: 200),
+              decoration: BoxDecorationMix(color: Colors.red),
               transform: Matrix4.identity(),
               clipBehavior: Clip.antiAliasWithSaveLayer,
               width: 200,

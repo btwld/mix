@@ -4,19 +4,19 @@ import 'package:mix/mix.dart';
 
 /// A Data transfer object that represents a [ShapeBorder] value.
 @immutable
-sealed class ShapeBorderDto<T extends ShapeBorder> extends Mix<T> {
-  const ShapeBorderDto();
+sealed class ShapeBorderMix<T extends ShapeBorder> extends Mix<T> {
+  const ShapeBorderMix();
 
   /// Constructor that accepts a [ShapeBorder] value and converts it to the appropriate DTO.
-  static ShapeBorderDto value(ShapeBorder border) {
+  static ShapeBorderMix value(ShapeBorder border) {
     return switch (border) {
-      RoundedRectangleBorder b => RoundedRectangleBorderDto.value(b),
-      BeveledRectangleBorder b => BeveledRectangleBorderDto.value(b),
-      ContinuousRectangleBorder b => ContinuousRectangleBorderDto.value(b),
-      CircleBorder b => CircleBorderDto.value(b),
-      StarBorder b => StarBorderDto.value(b),
-      LinearBorder b => LinearBorderDto.value(b),
-      StadiumBorder b => StadiumBorderDto.value(b),
+      RoundedRectangleBorder b => RoundedRectangleBorderMix.value(b),
+      BeveledRectangleBorder b => BeveledRectangleBorderMix.value(b),
+      ContinuousRectangleBorder b => ContinuousRectangleBorderMix.value(b),
+      CircleBorder b => CircleBorderMix.value(b),
+      StarBorder b => StarBorderMix.value(b),
+      LinearBorder b => LinearBorderMix.value(b),
+      StadiumBorder b => StadiumBorderMix.value(b),
       _ => throw ArgumentError(
         'Unsupported ShapeBorder type: ${border.runtimeType}',
       ),
@@ -24,72 +24,72 @@ sealed class ShapeBorderDto<T extends ShapeBorder> extends Mix<T> {
   }
 
   /// Constructor that accepts a nullable [ShapeBorder] value and converts it to the appropriate DTO.
-  static ShapeBorderDto? maybeValue(ShapeBorder? border) {
-    return border != null ? ShapeBorderDto.value(border) : null;
+  static ShapeBorderMix? maybeValue(ShapeBorder? border) {
+    return border != null ? ShapeBorderMix.value(border) : null;
   }
 
   /// Merges with another shape border of the same type.
   /// This method is implemented by subclasses to handle type-specific merging.
   @protected
-  ShapeBorderDto<T> mergeShapeBorder(covariant ShapeBorderDto<T> other);
+  ShapeBorderMix<T> mergeShapeBorder(covariant ShapeBorderMix<T> other);
 
-  /// Merges two ShapeBorderDto instances.
+  /// Merges two ShapeBorderMix instances.
   ///
   /// If both are the same type, delegates to [mergeShapeBorder].
   /// If different types, returns [other] (override behavior).
   /// If [other] is null, returns this instance.
   @override
-  ShapeBorderDto<T> merge(covariant ShapeBorderDto<T>? other) {
+  ShapeBorderMix<T> merge(covariant ShapeBorderMix<T>? other) {
     if (other == null) return this;
 
     // Use pattern matching for type-safe merging
     return switch ((this, other)) {
-          (RoundedRectangleBorderDto a, RoundedRectangleBorderDto b) =>
+          (RoundedRectangleBorderMix a, RoundedRectangleBorderMix b) =>
             a.mergeShapeBorder(b),
-          (BeveledRectangleBorderDto a, BeveledRectangleBorderDto b) =>
+          (BeveledRectangleBorderMix a, BeveledRectangleBorderMix b) =>
             a.mergeShapeBorder(b),
-          (ContinuousRectangleBorderDto a, ContinuousRectangleBorderDto b) =>
+          (ContinuousRectangleBorderMix a, ContinuousRectangleBorderMix b) =>
             a.mergeShapeBorder(b),
-          (CircleBorderDto a, CircleBorderDto b) => a.mergeShapeBorder(b),
-          (StarBorderDto a, StarBorderDto b) => a.mergeShapeBorder(b),
-          (LinearBorderDto a, LinearBorderDto b) => a.mergeShapeBorder(b),
-          (StadiumBorderDto a, StadiumBorderDto b) => a.mergeShapeBorder(b),
+          (CircleBorderMix a, CircleBorderMix b) => a.mergeShapeBorder(b),
+          (StarBorderMix a, StarBorderMix b) => a.mergeShapeBorder(b),
+          (LinearBorderMix a, LinearBorderMix b) => a.mergeShapeBorder(b),
+          (StadiumBorderMix a, StadiumBorderMix b) => a.mergeShapeBorder(b),
           _ => other, // Different types: override with other
         }
-        as ShapeBorderDto<T>;
+        as ShapeBorderMix<T>;
   }
 }
 
 /// Base class for borders that extend OutlinedBorder and have a side property.
 @immutable
-abstract class OutlinedBorderDto<T extends OutlinedBorder>
-    extends ShapeBorderDto<T> {
+abstract class OutlinedBorderMix<T extends OutlinedBorder>
+    extends ShapeBorderMix<T> {
   final MixProp<BorderSide>? side;
 
-  const OutlinedBorderDto({this.side});
+  const OutlinedBorderMix({this.side});
 }
 
-final class RoundedRectangleBorderDto
-    extends OutlinedBorderDto<RoundedRectangleBorder> {
+final class RoundedRectangleBorderMix
+    extends OutlinedBorderMix<RoundedRectangleBorder> {
   final MixProp<BorderRadiusGeometry>? borderRadius;
 
-  RoundedRectangleBorderDto.only({
-    BorderRadiusGeometryDto? borderRadius,
-    BorderSideDto? side,
+  RoundedRectangleBorderMix.only({
+    BorderRadiusGeometryMix? borderRadius,
+    BorderSideMix? side,
   }) : this(
          borderRadius: MixProp.maybe(borderRadius),
          side: MixProp.maybe(side),
        );
-  const RoundedRectangleBorderDto({this.borderRadius, super.side});
+  const RoundedRectangleBorderMix({this.borderRadius, super.side});
 
-  RoundedRectangleBorderDto.value(RoundedRectangleBorder border)
+  RoundedRectangleBorderMix.value(RoundedRectangleBorder border)
     : this.only(
-        borderRadius: BorderRadiusGeometryDto.value(border.borderRadius),
-        side: BorderSideDto.maybeValue(border.side),
+        borderRadius: BorderRadiusGeometryMix.value(border.borderRadius),
+        side: BorderSideMix.maybeValue(border.side),
       );
 
-  static RoundedRectangleBorderDto? maybeValue(RoundedRectangleBorder? border) {
-    return border != null ? RoundedRectangleBorderDto.value(border) : null;
+  static RoundedRectangleBorderMix? maybeValue(RoundedRectangleBorder? border) {
+    return border != null ? RoundedRectangleBorderMix.value(border) : null;
   }
 
   @override
@@ -102,8 +102,8 @@ final class RoundedRectangleBorderDto
   }
 
   @override
-  RoundedRectangleBorderDto mergeShapeBorder(RoundedRectangleBorderDto other) {
-    return RoundedRectangleBorderDto(
+  RoundedRectangleBorderMix mergeShapeBorder(RoundedRectangleBorderMix other) {
+    return RoundedRectangleBorderMix(
       borderRadius: MixHelpers.merge(borderRadius, other.borderRadius),
       side: MixHelpers.merge(side, other.side),
     );
@@ -113,7 +113,7 @@ final class RoundedRectangleBorderDto
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is RoundedRectangleBorderDto &&
+    return other is RoundedRectangleBorderMix &&
         other.borderRadius == borderRadius &&
         other.side == side;
   }
@@ -122,28 +122,28 @@ final class RoundedRectangleBorderDto
   int get hashCode => borderRadius.hashCode ^ side.hashCode;
 }
 
-final class BeveledRectangleBorderDto
-    extends OutlinedBorderDto<BeveledRectangleBorder> {
+final class BeveledRectangleBorderMix
+    extends OutlinedBorderMix<BeveledRectangleBorder> {
   final MixProp<BorderRadiusGeometry>? borderRadius;
 
-  BeveledRectangleBorderDto.only({
-    BorderRadiusGeometryDto? borderRadius,
-    BorderSideDto? side,
+  BeveledRectangleBorderMix.only({
+    BorderRadiusGeometryMix? borderRadius,
+    BorderSideMix? side,
   }) : this(
          borderRadius: MixProp.maybe(borderRadius),
          side: MixProp.maybe(side),
        );
 
-  const BeveledRectangleBorderDto({this.borderRadius, super.side});
+  const BeveledRectangleBorderMix({this.borderRadius, super.side});
 
-  BeveledRectangleBorderDto.value(BeveledRectangleBorder border)
+  BeveledRectangleBorderMix.value(BeveledRectangleBorder border)
     : this.only(
-        borderRadius: BorderRadiusGeometryDto.value(border.borderRadius),
-        side: BorderSideDto.maybeValue(border.side),
+        borderRadius: BorderRadiusGeometryMix.value(border.borderRadius),
+        side: BorderSideMix.maybeValue(border.side),
       );
 
-  static BeveledRectangleBorderDto? maybeValue(BeveledRectangleBorder? border) {
-    return border != null ? BeveledRectangleBorderDto.value(border) : null;
+  static BeveledRectangleBorderMix? maybeValue(BeveledRectangleBorder? border) {
+    return border != null ? BeveledRectangleBorderMix.value(border) : null;
   }
 
   @override
@@ -156,8 +156,8 @@ final class BeveledRectangleBorderDto
   }
 
   @override
-  BeveledRectangleBorderDto mergeShapeBorder(BeveledRectangleBorderDto other) {
-    return BeveledRectangleBorderDto(
+  BeveledRectangleBorderMix mergeShapeBorder(BeveledRectangleBorderMix other) {
+    return BeveledRectangleBorderMix(
       borderRadius: MixHelpers.merge(borderRadius, other.borderRadius),
       side: MixHelpers.merge(side, other.side),
     );
@@ -167,7 +167,7 @@ final class BeveledRectangleBorderDto
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is BeveledRectangleBorderDto &&
+    return other is BeveledRectangleBorderMix &&
         other.borderRadius == borderRadius &&
         other.side == side;
   }
@@ -176,30 +176,30 @@ final class BeveledRectangleBorderDto
   int get hashCode => borderRadius.hashCode ^ side.hashCode;
 }
 
-final class ContinuousRectangleBorderDto
-    extends OutlinedBorderDto<ContinuousRectangleBorder> {
+final class ContinuousRectangleBorderMix
+    extends OutlinedBorderMix<ContinuousRectangleBorder> {
   final MixProp<BorderRadiusGeometry>? borderRadius;
 
-  ContinuousRectangleBorderDto.only({
-    BorderRadiusGeometryDto? borderRadius,
-    BorderSideDto? side,
+  ContinuousRectangleBorderMix.only({
+    BorderRadiusGeometryMix? borderRadius,
+    BorderSideMix? side,
   }) : this(
          borderRadius: MixProp.maybe(borderRadius),
          side: MixProp.maybe(side),
        );
 
-  const ContinuousRectangleBorderDto({this.borderRadius, super.side});
+  const ContinuousRectangleBorderMix({this.borderRadius, super.side});
 
-  ContinuousRectangleBorderDto.value(ContinuousRectangleBorder border)
+  ContinuousRectangleBorderMix.value(ContinuousRectangleBorder border)
     : this.only(
-        borderRadius: BorderRadiusGeometryDto.value(border.borderRadius),
-        side: BorderSideDto.maybeValue(border.side),
+        borderRadius: BorderRadiusGeometryMix.value(border.borderRadius),
+        side: BorderSideMix.maybeValue(border.side),
       );
 
-  static ContinuousRectangleBorderDto? maybeValue(
+  static ContinuousRectangleBorderMix? maybeValue(
     ContinuousRectangleBorder? border,
   ) {
-    return border != null ? ContinuousRectangleBorderDto.value(border) : null;
+    return border != null ? ContinuousRectangleBorderMix.value(border) : null;
   }
 
   @override
@@ -212,10 +212,10 @@ final class ContinuousRectangleBorderDto
   }
 
   @override
-  ContinuousRectangleBorderDto mergeShapeBorder(
-    ContinuousRectangleBorderDto other,
+  ContinuousRectangleBorderMix mergeShapeBorder(
+    ContinuousRectangleBorderMix other,
   ) {
-    return ContinuousRectangleBorderDto(
+    return ContinuousRectangleBorderMix(
       borderRadius: MixHelpers.merge(borderRadius, other.borderRadius),
       side: MixHelpers.merge(side, other.side),
     );
@@ -225,7 +225,7 @@ final class ContinuousRectangleBorderDto
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is ContinuousRectangleBorderDto &&
+    return other is ContinuousRectangleBorderMix &&
         other.borderRadius == borderRadius &&
         other.side == side;
   }
@@ -234,22 +234,22 @@ final class ContinuousRectangleBorderDto
   int get hashCode => borderRadius.hashCode ^ side.hashCode;
 }
 
-final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
+final class CircleBorderMix extends OutlinedBorderMix<CircleBorder> {
   final Prop<double>? eccentricity;
 
-  CircleBorderDto.only({BorderSideDto? side, double? eccentricity})
+  CircleBorderMix.only({BorderSideMix? side, double? eccentricity})
     : this(side: MixProp.maybe(side), eccentricity: Prop.maybe(eccentricity));
 
-  const CircleBorderDto({super.side, this.eccentricity});
+  const CircleBorderMix({super.side, this.eccentricity});
 
-  CircleBorderDto.value(CircleBorder border)
+  CircleBorderMix.value(CircleBorder border)
     : this.only(
-        side: BorderSideDto.maybeValue(border.side),
+        side: BorderSideMix.maybeValue(border.side),
         eccentricity: border.eccentricity,
       );
 
-  static CircleBorderDto? maybeValue(CircleBorder? border) {
-    return border != null ? CircleBorderDto.value(border) : null;
+  static CircleBorderMix? maybeValue(CircleBorder? border) {
+    return border != null ? CircleBorderMix.value(border) : null;
   }
 
   @override
@@ -261,8 +261,8 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
   }
 
   @override
-  CircleBorderDto mergeShapeBorder(CircleBorderDto other) {
-    return CircleBorderDto(
+  CircleBorderMix mergeShapeBorder(CircleBorderMix other) {
+    return CircleBorderMix(
       side: MixHelpers.merge(side, other.side),
       eccentricity: MixHelpers.merge(eccentricity, other.eccentricity),
     );
@@ -272,7 +272,7 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is CircleBorderDto &&
+    return other is CircleBorderMix &&
         other.side == side &&
         other.eccentricity == eccentricity;
   }
@@ -281,7 +281,7 @@ final class CircleBorderDto extends OutlinedBorderDto<CircleBorder> {
   int get hashCode => side.hashCode ^ eccentricity.hashCode;
 }
 
-final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
+final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
   final Prop<double>? points;
   final Prop<double>? innerRadiusRatio;
   final Prop<double>? pointRounding;
@@ -289,8 +289,8 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
   final Prop<double>? rotation;
   final Prop<double>? squash;
 
-  StarBorderDto.only({
-    BorderSideDto? side,
+  StarBorderMix.only({
+    BorderSideMix? side,
     double? points,
     double? innerRadiusRatio,
     double? pointRounding,
@@ -307,9 +307,9 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
          squash: Prop.maybe(squash),
        );
 
-  StarBorderDto.value(StarBorder border)
+  StarBorderMix.value(StarBorder border)
     : this.only(
-        side: BorderSideDto.maybeValue(border.side),
+        side: BorderSideMix.maybeValue(border.side),
         points: border.points,
         innerRadiusRatio: border.innerRadiusRatio,
         pointRounding: border.pointRounding,
@@ -318,7 +318,7 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
         squash: border.squash,
       );
 
-  const StarBorderDto({
+  const StarBorderMix({
     super.side,
     this.points,
     this.innerRadiusRatio,
@@ -328,8 +328,8 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
     this.squash,
   });
 
-  static StarBorderDto? maybeValue(StarBorder? border) {
-    return border != null ? StarBorderDto.value(border) : null;
+  static StarBorderMix? maybeValue(StarBorder? border) {
+    return border != null ? StarBorderMix.value(border) : null;
   }
 
   @override
@@ -346,8 +346,8 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
   }
 
   @override
-  StarBorderDto mergeShapeBorder(StarBorderDto other) {
-    return StarBorderDto(
+  StarBorderMix mergeShapeBorder(StarBorderMix other) {
+    return StarBorderMix(
       side: MixHelpers.merge(side, other.side),
       points: MixHelpers.merge(points, other.points),
       innerRadiusRatio: MixHelpers.merge(
@@ -365,7 +365,7 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is StarBorderDto &&
+    return other is StarBorderMix &&
         other.side == side &&
         other.points == points &&
         other.innerRadiusRatio == innerRadiusRatio &&
@@ -387,18 +387,18 @@ final class StarBorderDto extends OutlinedBorderDto<StarBorder> {
   }
 }
 
-final class LinearBorderDto extends OutlinedBorderDto<LinearBorder> {
+final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
   final MixProp<LinearBorderEdge>? start;
   final MixProp<LinearBorderEdge>? end;
   final MixProp<LinearBorderEdge>? top;
   final MixProp<LinearBorderEdge>? bottom;
 
-  LinearBorderDto.only({
-    BorderSideDto? side,
-    LinearBorderEdgeDto? start,
-    LinearBorderEdgeDto? end,
-    LinearBorderEdgeDto? top,
-    LinearBorderEdgeDto? bottom,
+  LinearBorderMix.only({
+    BorderSideMix? side,
+    LinearBorderEdgeMix? start,
+    LinearBorderEdgeMix? end,
+    LinearBorderEdgeMix? top,
+    LinearBorderEdgeMix? bottom,
   }) : this(
          side: MixProp.maybe(side),
          start: MixProp.maybe(start),
@@ -406,7 +406,7 @@ final class LinearBorderDto extends OutlinedBorderDto<LinearBorder> {
          top: MixProp.maybe(top),
          bottom: MixProp.maybe(bottom),
        );
-  const LinearBorderDto({
+  const LinearBorderMix({
     super.side,
     this.start,
     this.end,
@@ -414,17 +414,17 @@ final class LinearBorderDto extends OutlinedBorderDto<LinearBorder> {
     this.bottom,
   });
 
-  LinearBorderDto.value(LinearBorder border)
+  LinearBorderMix.value(LinearBorder border)
     : this.only(
-        side: BorderSideDto.maybeValue(border.side),
-        start: LinearBorderEdgeDto.maybeValue(border.start),
-        end: LinearBorderEdgeDto.maybeValue(border.end),
-        top: LinearBorderEdgeDto.maybeValue(border.top),
-        bottom: LinearBorderEdgeDto.maybeValue(border.bottom),
+        side: BorderSideMix.maybeValue(border.side),
+        start: LinearBorderEdgeMix.maybeValue(border.start),
+        end: LinearBorderEdgeMix.maybeValue(border.end),
+        top: LinearBorderEdgeMix.maybeValue(border.top),
+        bottom: LinearBorderEdgeMix.maybeValue(border.bottom),
       );
 
-  static LinearBorderDto? maybeValue(LinearBorder? border) {
-    return border != null ? LinearBorderDto.value(border) : null;
+  static LinearBorderMix? maybeValue(LinearBorder? border) {
+    return border != null ? LinearBorderMix.value(border) : null;
   }
 
   @override
@@ -439,8 +439,8 @@ final class LinearBorderDto extends OutlinedBorderDto<LinearBorder> {
   }
 
   @override
-  LinearBorderDto mergeShapeBorder(LinearBorderDto other) {
-    return LinearBorderDto(
+  LinearBorderMix mergeShapeBorder(LinearBorderMix other) {
+    return LinearBorderMix(
       side: MixHelpers.merge(side, other.side),
       start: MixHelpers.merge(start, other.start),
       end: MixHelpers.merge(end, other.end),
@@ -453,7 +453,7 @@ final class LinearBorderDto extends OutlinedBorderDto<LinearBorder> {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is LinearBorderDto &&
+    return other is LinearBorderMix &&
         other.side == side &&
         other.start == start &&
         other.end == end &&
@@ -471,18 +471,18 @@ final class LinearBorderDto extends OutlinedBorderDto<LinearBorder> {
   }
 }
 
-final class LinearBorderEdgeDto extends Mix<LinearBorderEdge> {
+final class LinearBorderEdgeMix extends Mix<LinearBorderEdge> {
   final Prop<double>? size;
   final Prop<double>? alignment;
 
-  LinearBorderEdgeDto.only({double? size, double? alignment})
+  LinearBorderEdgeMix.only({double? size, double? alignment})
     : this(size: Prop.maybe(size), alignment: Prop.maybe(alignment));
-  LinearBorderEdgeDto.value(LinearBorderEdge edge)
+  LinearBorderEdgeMix.value(LinearBorderEdge edge)
     : this.only(size: edge.size, alignment: edge.alignment);
-  const LinearBorderEdgeDto({this.size, this.alignment});
+  const LinearBorderEdgeMix({this.size, this.alignment});
 
-  static LinearBorderEdgeDto? maybeValue(LinearBorderEdge? edge) {
-    return edge != null ? LinearBorderEdgeDto.value(edge) : null;
+  static LinearBorderEdgeMix? maybeValue(LinearBorderEdge? edge) {
+    return edge != null ? LinearBorderEdgeMix.value(edge) : null;
   }
 
   @override
@@ -494,10 +494,10 @@ final class LinearBorderEdgeDto extends Mix<LinearBorderEdge> {
   }
 
   @override
-  LinearBorderEdgeDto merge(LinearBorderEdgeDto? other) {
+  LinearBorderEdgeMix merge(LinearBorderEdgeMix? other) {
     if (other == null) return this;
 
-    return LinearBorderEdgeDto(
+    return LinearBorderEdgeMix(
       size: MixHelpers.merge(size, other.size),
       alignment: MixHelpers.merge(alignment, other.alignment),
     );
@@ -507,7 +507,7 @@ final class LinearBorderEdgeDto extends Mix<LinearBorderEdge> {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is LinearBorderEdgeDto &&
+    return other is LinearBorderEdgeMix &&
         other.size == size &&
         other.alignment == alignment;
   }
@@ -516,17 +516,17 @@ final class LinearBorderEdgeDto extends Mix<LinearBorderEdge> {
   int get hashCode => size.hashCode ^ alignment.hashCode;
 }
 
-final class StadiumBorderDto extends OutlinedBorderDto<StadiumBorder> {
-  StadiumBorderDto.only({BorderSideDto? side})
+final class StadiumBorderMix extends OutlinedBorderMix<StadiumBorder> {
+  StadiumBorderMix.only({BorderSideMix? side})
     : this(side: MixProp.maybe(side));
 
-  const StadiumBorderDto({super.side});
+  const StadiumBorderMix({super.side});
 
-  StadiumBorderDto.value(StadiumBorder border)
-    : this.only(side: BorderSideDto.maybeValue(border.side));
+  StadiumBorderMix.value(StadiumBorder border)
+    : this.only(side: BorderSideMix.maybeValue(border.side));
 
-  static StadiumBorderDto? maybeValue(StadiumBorder? border) {
-    return border != null ? StadiumBorderDto.value(border) : null;
+  static StadiumBorderMix? maybeValue(StadiumBorder? border) {
+    return border != null ? StadiumBorderMix.value(border) : null;
   }
 
   @override
@@ -537,15 +537,15 @@ final class StadiumBorderDto extends OutlinedBorderDto<StadiumBorder> {
   }
 
   @override
-  StadiumBorderDto mergeShapeBorder(StadiumBorderDto other) {
-    return StadiumBorderDto(side: MixHelpers.merge(side, other.side));
+  StadiumBorderMix mergeShapeBorder(StadiumBorderMix other) {
+    return StadiumBorderMix(side: MixHelpers.merge(side, other.side));
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is StadiumBorderDto && other.side == side;
+    return other is StadiumBorderMix && other.side == side;
   }
 
   @override

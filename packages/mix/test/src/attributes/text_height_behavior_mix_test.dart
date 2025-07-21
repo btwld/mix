@@ -6,49 +6,49 @@ import '../../helpers/custom_matchers.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  group('TextHeightBehaviorDto', () {
+  group('TextHeightBehaviorMix', () {
     // Constructor Tests
     group('Constructor Tests', () {
       test(
-        'only constructor creates TextHeightBehaviorDto with all properties',
+        'only constructor creates TextHeightBehaviorMix with all properties',
         () {
-          final dto = TextHeightBehaviorDto.only(
+          final mix = TextHeightBehaviorMix.only(
             applyHeightToFirstAscent: true,
             applyHeightToLastDescent: false,
             leadingDistribution: TextLeadingDistribution.even,
           );
 
-          expect(dto.applyHeightToFirstAscent, resolvesTo(true));
-          expect(dto.applyHeightToLastDescent, resolvesTo(false));
+          expect(mix.applyHeightToFirstAscent, resolvesTo(true));
+          expect(mix.applyHeightToLastDescent, resolvesTo(false));
           expect(
-            dto.leadingDistribution,
+            mix.leadingDistribution,
             resolvesTo(TextLeadingDistribution.even),
           );
         },
       );
 
       test(
-        'main constructor creates TextHeightBehaviorDto with null properties',
+        'main constructor creates TextHeightBehaviorMix with null properties',
         () {
-          final dto = TextHeightBehaviorDto();
+          final mix = TextHeightBehaviorMix();
 
-          expect(dto.applyHeightToFirstAscent, isNull);
-          expect(dto.applyHeightToLastDescent, isNull);
-          expect(dto.leadingDistribution, isNull);
+          expect(mix.applyHeightToFirstAscent, isNull);
+          expect(mix.applyHeightToLastDescent, isNull);
+          expect(mix.leadingDistribution, isNull);
         },
       );
 
       test('main constructor with Prop values', () {
-        final dto = TextHeightBehaviorDto(
+        final mix = TextHeightBehaviorMix(
           applyHeightToFirstAscent: Prop(false),
           applyHeightToLastDescent: Prop(true),
           leadingDistribution: Prop(TextLeadingDistribution.proportional),
         );
 
-        expect(dto.applyHeightToFirstAscent, resolvesTo(false));
-        expect(dto.applyHeightToLastDescent, resolvesTo(true));
+        expect(mix.applyHeightToFirstAscent, resolvesTo(false));
+        expect(mix.applyHeightToLastDescent, resolvesTo(true));
         expect(
-          dto.leadingDistribution,
+          mix.leadingDistribution,
           resolvesTo(TextLeadingDistribution.proportional),
         );
       });
@@ -59,18 +59,18 @@ void main() {
           applyHeightToLastDescent: true,
           leadingDistribution: TextLeadingDistribution.even,
         );
-        final dto = TextHeightBehaviorDto.value(behavior);
+        final mix = TextHeightBehaviorMix.value(behavior);
 
         expect(
-          dto.applyHeightToFirstAscent,
+          mix.applyHeightToFirstAscent,
           resolvesTo(behavior.applyHeightToFirstAscent),
         );
         expect(
-          dto.applyHeightToLastDescent,
+          mix.applyHeightToLastDescent,
           resolvesTo(behavior.applyHeightToLastDescent),
         );
         expect(
-          dto.leadingDistribution,
+          mix.leadingDistribution,
           resolvesTo(behavior.leadingDistribution),
         );
       });
@@ -79,15 +79,15 @@ void main() {
     // Factory Tests
     group('Factory Tests', () {
       test(
-        'maybeValue returns TextHeightBehaviorDto for non-null TextHeightBehavior',
+        'maybeValue returns TextHeightBehaviorMix for non-null TextHeightBehavior',
         () {
           const behavior = TextHeightBehavior(
             applyHeightToFirstAscent: true,
             applyHeightToLastDescent: false,
           );
-          final dto = TextHeightBehaviorDto.maybeValue(behavior);
+          final mix = TextHeightBehaviorMix.maybeValue(behavior);
 
-          expect(dto, isNotNull);
+          expect(mix, isNotNull);
           expect(
             dto?.applyHeightToFirstAscent,
             resolvesTo(behavior.applyHeightToFirstAscent),
@@ -100,15 +100,15 @@ void main() {
       );
 
       test('maybeValue returns null for null TextHeightBehavior', () {
-        final dto = TextHeightBehaviorDto.maybeValue(null);
-        expect(dto, isNull);
+        final mix = TextHeightBehaviorMix.maybeValue(null);
+        expect(mix, isNull);
       });
     });
 
     // Resolution Tests
     group('Resolution Tests', () {
       test('resolves to TextHeightBehavior with all properties', () {
-        final dto = TextHeightBehaviorDto.only(
+        final mix = TextHeightBehaviorMix.only(
           applyHeightToFirstAscent: true,
           applyHeightToLastDescent: false,
           leadingDistribution: TextLeadingDistribution.even,
@@ -127,10 +127,10 @@ void main() {
       });
 
       test('resolves with default values for null properties', () {
-        const dto = TextHeightBehaviorDto();
+        const dto = TextHeightBehaviorMix();
 
         final context = MockBuildContext();
-        final resolved = dto.resolve(context);
+        final resolved = mix.resolve(context);
 
         expect(resolved.applyHeightToFirstAscent, true);
         expect(resolved.applyHeightToLastDescent, true);
@@ -141,10 +141,10 @@ void main() {
       });
 
       test('resolves with partial properties', () {
-        final dto = TextHeightBehaviorDto.only(applyHeightToFirstAscent: false);
+        final mix = TextHeightBehaviorMix.only(applyHeightToFirstAscent: false);
 
         final context = MockBuildContext();
-        final resolved = dto.resolve(context);
+        final resolved = mix.resolve(context);
 
         expect(resolved.applyHeightToFirstAscent, false);
         expect(resolved.applyHeightToLastDescent, true); // default
@@ -157,19 +157,19 @@ void main() {
 
     // Merge Tests
     group('Merge Tests', () {
-      test('merge with another TextHeightBehaviorDto - all properties', () {
-        final dto1 = TextHeightBehaviorDto.only(
+      test('merge with another TextHeightBehaviorMix - all properties', () {
+        final mix1 = TextHeightBehaviorMix.only(
           applyHeightToFirstAscent: true,
           applyHeightToLastDescent: true,
           leadingDistribution: TextLeadingDistribution.proportional,
         );
-        final dto2 = TextHeightBehaviorDto.only(
+        final mix2 = TextHeightBehaviorMix.only(
           applyHeightToFirstAscent: false,
           applyHeightToLastDescent: false,
           leadingDistribution: TextLeadingDistribution.even,
         );
 
-        final merged = dto1.merge(dto2);
+        final merged = dto1.merge(mix2);
 
         expect(merged.applyHeightToFirstAscent, resolvesTo(false));
         expect(merged.applyHeightToLastDescent, resolvesTo(false));
@@ -180,16 +180,16 @@ void main() {
       });
 
       test('merge with partial properties', () {
-        final dto1 = TextHeightBehaviorDto.only(
+        final mix1 = TextHeightBehaviorMix.only(
           applyHeightToFirstAscent: true,
           applyHeightToLastDescent: true,
           leadingDistribution: TextLeadingDistribution.proportional,
         );
-        final dto2 = TextHeightBehaviorDto.only(
+        final mix2 = TextHeightBehaviorMix.only(
           applyHeightToFirstAscent: false,
         );
 
-        final merged = dto1.merge(dto2);
+        final merged = dto1.merge(mix2);
 
         expect(merged.applyHeightToFirstAscent, resolvesTo(false));
         expect(merged.applyHeightToLastDescent, resolvesTo(true));
@@ -200,53 +200,53 @@ void main() {
       });
 
       test('merge with null returns original', () {
-        final dto = TextHeightBehaviorDto.only(
+        final mix = TextHeightBehaviorMix.only(
           applyHeightToFirstAscent: true,
           leadingDistribution: TextLeadingDistribution.even,
         );
 
-        final merged = dto.merge(null);
-        expect(merged, same(dto));
+        final merged = mix.merge(null);
+        expect(merged, same(mix));
       });
     });
 
     // Equality and HashCode Tests
     group('Equality and HashCode Tests', () {
-      test('equal TextHeightBehaviorDtos', () {
-        final dto1 = TextHeightBehaviorDto.only(
+      test('equal TextHeightBehaviorMixs', () {
+        final mix1 = TextHeightBehaviorMix.only(
           applyHeightToFirstAscent: true,
           applyHeightToLastDescent: false,
           leadingDistribution: TextLeadingDistribution.even,
         );
-        final dto2 = TextHeightBehaviorDto.only(
+        final mix2 = TextHeightBehaviorMix.only(
           applyHeightToFirstAscent: true,
           applyHeightToLastDescent: false,
           leadingDistribution: TextLeadingDistribution.even,
         );
 
-        expect(dto1, equals(dto2));
-        expect(dto1.hashCode, equals(dto2.hashCode));
+        expect(mix1, equals(mix2));
+        expect(mix1.hashCode, equals(mix2.hashCode));
       });
 
-      test('not equal TextHeightBehaviorDtos', () {
-        final dto1 = TextHeightBehaviorDto.only(
+      test('not equal TextHeightBehaviorMixs', () {
+        final mix1 = TextHeightBehaviorMix.only(
           applyHeightToFirstAscent: true,
           applyHeightToLastDescent: false,
         );
-        final dto2 = TextHeightBehaviorDto.only(
+        final mix2 = TextHeightBehaviorMix.only(
           applyHeightToFirstAscent: true,
           applyHeightToLastDescent: true,
         );
 
-        expect(dto1, isNot(equals(dto2)));
+        expect(mix1, isNot(equals(mix2)));
       });
 
-      test('equal TextHeightBehaviorDtos with all null properties', () {
-        final dto1 = TextHeightBehaviorDto.only();
-        final dto2 = TextHeightBehaviorDto.only();
+      test('equal TextHeightBehaviorMixs with all null properties', () {
+        final mix1 = TextHeightBehaviorMix.only();
+        final mix2 = TextHeightBehaviorMix.only();
 
-        expect(dto1, equals(dto2));
-        expect(dto1.hashCode, equals(dto2.hashCode));
+        expect(mix1, equals(mix2));
+        expect(mix1.hashCode, equals(mix2.hashCode));
       });
     });
 
@@ -261,13 +261,13 @@ void main() {
         ];
 
         for (final (first, last) in combinations) {
-          final dto = TextHeightBehaviorDto.only(
+          final mix = TextHeightBehaviorMix.only(
             applyHeightToFirstAscent: first,
             applyHeightToLastDescent: last,
           );
 
-          expect(dto.applyHeightToFirstAscent, resolvesTo(first));
-          expect(dto.applyHeightToLastDescent, resolvesTo(last));
+          expect(mix.applyHeightToFirstAscent, resolvesTo(first));
+          expect(mix.applyHeightToLastDescent, resolvesTo(last));
         }
       });
 
@@ -278,23 +278,23 @@ void main() {
         ];
 
         for (final distribution in distributions) {
-          final dto = TextHeightBehaviorDto.only(
+          final mix = TextHeightBehaviorMix.only(
             leadingDistribution: distribution,
           );
 
-          expect(dto.leadingDistribution, resolvesTo(distribution));
+          expect(mix.leadingDistribution, resolvesTo(distribution));
         }
       });
 
       test('handles mixed null and non-null properties', () {
-        final dto = TextHeightBehaviorDto.only(
+        final mix = TextHeightBehaviorMix.only(
           applyHeightToFirstAscent: true,
           // applyHeightToLastDescent is null
           leadingDistribution: TextLeadingDistribution.even,
         );
 
         final context = MockBuildContext();
-        final resolved = dto.resolve(context);
+        final resolved = mix.resolve(context);
 
         expect(resolved.applyHeightToFirstAscent, true);
         expect(resolved.applyHeightToLastDescent, true); // default
@@ -304,15 +304,15 @@ void main() {
 
     // Integration Tests
     group('Integration Tests', () {
-      test('TextHeightBehaviorDto used in TextStyle context', () {
-        final dto = TextHeightBehaviorDto.only(
+      test('TextHeightBehaviorMix used in TextStyle context', () {
+        final mix = TextHeightBehaviorMix.only(
           applyHeightToFirstAscent: false,
           applyHeightToLastDescent: true,
           leadingDistribution: TextLeadingDistribution.even,
         );
 
         final context = MockBuildContext();
-        final resolved = dto.resolve(context);
+        final resolved = mix.resolve(context);
 
         expect(resolved.applyHeightToFirstAscent, false);
         expect(resolved.applyHeightToLastDescent, true);
@@ -320,18 +320,18 @@ void main() {
       });
 
       test('complex merge scenario', () {
-        final baseStyle = TextHeightBehaviorDto.only(
+        final baseStyle = TextHeightBehaviorMix.only(
           applyHeightToFirstAscent: true,
           applyHeightToLastDescent: true,
           leadingDistribution: TextLeadingDistribution.proportional,
         );
 
-        final overrideStyle = TextHeightBehaviorDto.only(
+        final overrideStyle = TextHeightBehaviorMix.only(
           applyHeightToFirstAscent: false,
           leadingDistribution: TextLeadingDistribution.even,
         );
 
-        final finalStyle = TextHeightBehaviorDto.only(
+        final finalStyle = TextHeightBehaviorMix.only(
           applyHeightToLastDescent: false,
         );
 
@@ -346,13 +346,13 @@ void main() {
       });
 
       test('compatibility with TextStyle', () {
-        final heightBehavior = TextHeightBehaviorDto.only(
+        final heightBehavior = TextHeightBehaviorMix.only(
           applyHeightToFirstAscent: false,
           applyHeightToLastDescent: true,
           leadingDistribution: TextLeadingDistribution.even,
         );
 
-        final textStyle = TextStyleDto.only(fontSize: 16.0, height: 1.5);
+        final textStyle = TextStyleMix.only(fontSize: 16.0, height: 1.5);
 
         final context = MockBuildContext();
         final resolvedBehavior = heightBehavior.resolve(context);
@@ -369,15 +369,15 @@ void main() {
       });
 
       test('merge preserves non-overlapping properties', () {
-        final dto1 = TextHeightBehaviorDto.only(applyHeightToFirstAscent: true);
-        final dto2 = TextHeightBehaviorDto.only(
+        final mix1 = TextHeightBehaviorMix.only(applyHeightToFirstAscent: true);
+        final mix2 = TextHeightBehaviorMix.only(
           applyHeightToLastDescent: false,
         );
-        final dto3 = TextHeightBehaviorDto.only(
+        final dto3 = TextHeightBehaviorMix.only(
           leadingDistribution: TextLeadingDistribution.even,
         );
 
-        final merged = dto1.merge(dto2).merge(dto3);
+        final merged = dto1.merge(mix2).merge(mix3);
 
         expect(merged.applyHeightToFirstAscent, resolvesTo(true));
         expect(merged.applyHeightToLastDescent, resolvesTo(false));
@@ -401,7 +401,7 @@ void main() {
     test('heightToFirstAscent sets applyHeightToFirstAscent', () {
       final result =
           utility.heightToFirstAscent(true)
-              as UtilityTestAttribute<TextHeightBehaviorDto>;
+              as UtilityTestAttribute<TextHeightBehaviorMix>;
       expect(result.value.applyHeightToFirstAscent, resolvesTo(true));
       expect(result.value.applyHeightToLastDescent, isNull);
       expect(result.value.leadingDistribution, isNull);
@@ -410,7 +410,7 @@ void main() {
     test('heightToLastDescent sets applyHeightToLastDescent', () {
       final result =
           utility.heightToLastDescent(false)
-              as UtilityTestAttribute<TextHeightBehaviorDto>;
+              as UtilityTestAttribute<TextHeightBehaviorMix>;
       expect(result.value.applyHeightToFirstAscent, isNull);
       expect(result.value.applyHeightToLastDescent, resolvesTo(false));
       expect(result.value.leadingDistribution, isNull);
@@ -419,7 +419,7 @@ void main() {
     test('leadingDistribution sets leadingDistribution', () {
       final result =
           utility.leadingDistribution(TextLeadingDistribution.proportional)
-              as UtilityTestAttribute<TextHeightBehaviorDto>;
+              as UtilityTestAttribute<TextHeightBehaviorMix>;
       expect(result.value.applyHeightToFirstAscent, isNull);
       expect(result.value.applyHeightToLastDescent, isNull);
       expect(
@@ -435,7 +435,7 @@ void main() {
                 applyHeightToLastDescent: false,
                 leadingDistribution: TextLeadingDistribution.even,
               )
-              as UtilityTestAttribute<TextHeightBehaviorDto>;
+              as UtilityTestAttribute<TextHeightBehaviorMix>;
       expect(result.value.applyHeightToFirstAscent, resolvesTo(true));
       expect(result.value.applyHeightToLastDescent, resolvesTo(false));
       expect(

@@ -3,7 +3,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../attributes/edge_insets_dto.dart';
+import '../attributes/edge_insets_mix.dart';
 import '../attributes/edge_insets_geometry_util.dart';
 import '../core/attribute.dart';
 import '../core/helpers.dart';
@@ -136,7 +136,7 @@ class PaddingModifierUtility<T extends SpecAttribute<Object?>>
   PaddingModifierUtility(super.builder);
 
   /// Returns a new [PaddingModifierAttribute] with the specified properties.
-  T call({EdgeInsetsGeometryDto? padding}) {
+  T call({EdgeInsetsGeometryMix? padding}) {
     return builder(PaddingModifierAttribute(padding: MixProp.maybe(padding)));
   }
 }

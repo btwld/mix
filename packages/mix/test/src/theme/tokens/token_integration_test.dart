@@ -19,12 +19,12 @@ void main() {
           data: theme,
           child: Builder(
             builder: (context) {
-              final dto1 = Prop.token(primaryToken);
-              final dto2 = Prop.token(secondaryToken);
+              final mix1 = Prop.token(primaryToken);
+              final mix2 = Prop.token(secondaryToken);
 
               final mixContext = MixContext.create(context, Style());
-              expect(dto1, resolvesTo(Colors.blue, context: mixContext));
-              expect(dto2, resolvesTo(Colors.red, context: mixContext));
+              expect(mix1, resolvesTo(Colors.blue, context: mixContext));
+              expect(mix2, resolvesTo(Colors.red, context: mixContext));
 
               return Container();
             },
@@ -46,12 +46,12 @@ void main() {
           data: theme,
           child: Builder(
             builder: (context) {
-              const dto1 = SpaceDto.token(smallToken);
-              const dto2 = SpaceDto.token(largeToken);
+              const mix1 = SpaceDto.token(smallToken);
+              const mix2 = SpaceDto.token(largeToken);
 
               final mixContext = MixContext.create(context, Style());
-              expect(dto1, resolvesTo(8.0, context: mixContext));
-              expect(dto2, resolvesTo(24.0, context: mixContext));
+              expect(mix1, resolvesTo(8.0, context: mixContext));
+              expect(mix2, resolvesTo(24.0, context: mixContext));
 
               return Container();
             },

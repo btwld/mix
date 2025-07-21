@@ -3,7 +3,7 @@ import 'package:flutter/rendering.dart';
 import '../core/attribute.dart';
 import '../core/prop.dart';
 import '../core/utility.dart';
-import 'constraints_dto.dart';
+import 'constraints_mix.dart';
 import 'scalar_util.dart';
 
 /// Utility class for configuring [BoxConstraints] properties.
@@ -12,29 +12,29 @@ import 'scalar_util.dart';
 /// Use the methods of this class to configure specific properties of a [BoxConstraints].
 final class BoxConstraintsUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, BoxConstraints> {
-  /// Utility for defining [BoxConstraintsDto.minWidth]
+  /// Utility for defining [BoxConstraintsMix.minWidth]
   late final minWidth = DoubleUtility<T>(
-    (prop) => call(BoxConstraintsDto(minWidth: prop)),
+    (prop) => call(BoxConstraintsMix(minWidth: prop)),
   );
 
-  /// Utility for defining [BoxConstraintsDto.maxWidth]
+  /// Utility for defining [BoxConstraintsMix.maxWidth]
   late final maxWidth = DoubleUtility<T>(
-    (prop) => call(BoxConstraintsDto(maxWidth: prop)),
+    (prop) => call(BoxConstraintsMix(maxWidth: prop)),
   );
 
-  /// Utility for defining [BoxConstraintsDto.minHeight]
+  /// Utility for defining [BoxConstraintsMix.minHeight]
   late final minHeight = DoubleUtility<T>(
-    (prop) => call(BoxConstraintsDto(minHeight: prop)),
+    (prop) => call(BoxConstraintsMix(minHeight: prop)),
   );
 
-  /// Utility for defining [BoxConstraintsDto.maxHeight]
+  /// Utility for defining [BoxConstraintsMix.maxHeight]
   late final maxHeight = DoubleUtility<T>(
-    (prop) => call(BoxConstraintsDto(maxHeight: prop)),
+    (prop) => call(BoxConstraintsMix(maxHeight: prop)),
   );
 
   BoxConstraintsUtility(super.builder)
-    : super(convertToMix: BoxConstraintsDto.value);
+    : super(convertToMix: BoxConstraintsMix.value);
 
   @override
-  T call(BoxConstraintsDto value) => builder(MixProp(value));
+  T call(BoxConstraintsMix value) => builder(MixProp(value));
 }

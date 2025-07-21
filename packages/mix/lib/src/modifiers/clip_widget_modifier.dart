@@ -3,7 +3,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../attributes/border_radius_dto.dart';
+import '../attributes/border_radius_mix.dart';
 import '../core/attribute.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
@@ -685,7 +685,7 @@ final class ClipRRectModifierUtility<T extends SpecAttribute<Object?>>
     return builder(
       ClipRRectModifierAttribute(
         borderRadius: MixProp.maybe(
-          borderRadius != null ? BorderRadiusDto.value(borderRadius) : null,
+          borderRadius != null ? BorderRadiusMix.value(borderRadius) : null,
         ),
         clipper: Prop.maybe(clipper),
         clipBehavior: Prop.maybe(clipBehavior),
