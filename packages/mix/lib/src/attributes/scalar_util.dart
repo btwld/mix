@@ -1256,11 +1256,6 @@ final class StrokeAlignUtility<T extends SpecAttribute<Object?>>
   T outside() => call(1);
 }
 
-class ListUtility<T extends SpecAttribute<Object?>, V>
-    extends PropUtility<T, List<V>> {
-  const ListUtility(super.builder);
-}
-
 final class StringUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, String> {
   const StringUtility(super.builder);

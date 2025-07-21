@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../core/attribute.dart';
-import '../core/deprecated.dart';
-import '../core/spec.dart';
-import '../core/style_mix.dart';
 import '../core/variant.dart';
 
 /// Utility class for creating variant attributes with context-based variants
@@ -176,15 +172,16 @@ class OnContextVariantUtility {
     );
   }
 
-  /// Creates a variant attribute for a breakpoint based on screen size
-  VariantAttributeBuilder breakpoint(Breakpoint breakpoint) {
-    return VariantAttributeBuilder(
-      ContextVariant.size(
-        'breakpoint_${breakpoint.minWidth}_${breakpoint.maxWidth}',
-        (size) => breakpoint.matches(size),
-      ),
-    );
-  }
+  // TODO: Breakpoint class needs to be defined
+  // /// Creates a variant attribute for a breakpoint based on screen size
+  // VariantAttributeBuilder breakpoint(Breakpoint breakpoint) {
+  //   return VariantAttributeBuilder(
+  //     ContextVariant.size(
+  //       'breakpoint_${breakpoint.minWidth}_${breakpoint.maxWidth}',
+  //       (size) => breakpoint.matches(size),
+  //     ),
+  //   );
+  // }
 
   /// Creates a variant attribute for a minimum width breakpoint
   VariantAttributeBuilder minWidth(double width) {
@@ -244,27 +241,28 @@ class OnContextVariantUtility {
 class VariantAttributeBuilder {
   final Variant _variant;
   const VariantAttributeBuilder(this._variant);
-  VariantAttribute<MultiSpec> call([
-    Attribute? p1,
-    Attribute? p2,
-    Attribute? p3,
-    Attribute? p4,
-    Attribute? p5,
-    Attribute? p6,
-    Attribute? p7,
-    Attribute? p8,
-  ]) {
-    final attributes = [
-      p1,
-      p2,
-      p3,
-      p4,
-      p5,
-      p6,
-      p7,
-      p8,
-    ].whereType<Attribute>().toList();
+  // TODO: Fix this method - Style constructor and MultiSpec issues
+  // VariantAttribute<MultiSpec> call([
+  //   Attribute? p1,
+  //   Attribute? p2,
+  //   Attribute? p3,
+  //   Attribute? p4,
+  //   Attribute? p5,
+  //   Attribute? p6,
+  //   Attribute? p7,
+  //   Attribute? p8,
+  // ]) {
+  //   final attributes = [
+  //     p1,
+  //     p2,
+  //     p3,
+  //     p4,
+  //     p5,
+  //     p6,
+  //     p7,
+  //     p8,
+  //   ].whereType<Attribute>().toList();
 
-    return VariantAttribute<MultiSpec>(_variant, Style.create(attributes));
-  }
+  //   return VariantAttribute<MultiSpec>(_variant, Style(attributes));
+  // }
 }

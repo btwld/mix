@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-export 'package:mix/src/internal/values_ext.dart';
+export 'package:mix/src/internal/internal_extensions.dart';
 
 /// Mock BuildContext for testing
 class MockBuildContext extends BuildContext {

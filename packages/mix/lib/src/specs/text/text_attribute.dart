@@ -12,6 +12,7 @@ import '../../core/animation_config.dart';
 import '../../core/attribute.dart';
 import '../../core/directive.dart';
 import '../../core/helpers.dart';
+import '../../core/mix_element.dart';
 import '../../core/prop.dart';
 import 'text_directives_util.dart';
 import 'text_spec.dart';
@@ -34,7 +35,7 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
   final MixProp<TextHeightBehavior>? $textHeightBehavior;
   final Prop<TextDirection>? $textDirection;
   final Prop<bool>? $softWrap;
-  final MixProp<TextDirective>? $directive;
+  final List<Prop<MixDirective<String>>>? $directives;
 
   /// Utility for defining [TextSpecAttribute.overflow]
   final overflow = TextOverflowUtility(
@@ -82,7 +83,7 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
 
   /// Utility for defining [TextSpecAttribute.directive]
   final directive = TextDirectiveUtility(
-    (prop) => TextSpecAttribute.only(directive: prop),
+    (prop) => TextSpecAttribute(directives: [prop]),
   );
 
   /// Utility for defining [TextSpecAttribute.style.color]
@@ -174,7 +175,7 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
     MixProp<TextHeightBehavior>? textHeightBehavior,
     Prop<TextDirection>? textDirection,
     Prop<bool>? softWrap,
-    MixProp<TextDirective>? directive,
+    List<Prop<MixDirective<String>>>? directives,
     super.animation,
     super.modifiers,
     super.variants,
@@ -188,7 +189,7 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
        $textHeightBehavior = textHeightBehavior,
        $textDirection = textDirection,
        $softWrap = softWrap,
-       $directive = directive;
+       $directives = directives;
 
   TextSpecAttribute.only({
     TextOverflow? overflow,
@@ -201,7 +202,7 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
     TextHeightBehaviorDto? textHeightBehavior,
     TextDirection? textDirection,
     bool? softWrap,
-    TextDirectiveDto? directive,
+    List<MixDirective<String>>? directives,
     AnimationConfig? animation,
     List<ModifierAttribute>? modifiers,
     List<VariantAttribute<TextSpec>>? variants,
@@ -216,7 +217,7 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
          textHeightBehavior: MixProp.maybe(textHeightBehavior),
          textDirection: Prop.maybe(textDirection),
          softWrap: Prop.maybe(softWrap),
-         directive: MixProp.maybe(directive),
+         directives: directives?.map(Prop.new).toList(),
          animation: animation,
          modifiers: modifiers,
          variants: variants,
@@ -244,7 +245,7 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
         ),
         textDirection: spec.textDirection,
         softWrap: spec.softWrap,
-        directive: TextDirectiveDto.maybeValue(spec.directive),
+        directives: spec.directives,
       );
 
   /// Constructor that accepts a nullable [TextSpec] value and extracts its properties.
@@ -280,7 +281,7 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
       textHeightBehavior: MixHelpers.resolve(context, $textHeightBehavior),
       textDirection: MixHelpers.resolve(context, $textDirection),
       softWrap: MixHelpers.resolve(context, $softWrap),
-      directive: MixHelpers.resolve(context, $directive),
+      directives: MixHelpers.resolveList(context, $directives),
     );
   }
 
@@ -310,7 +311,11 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
       ),
       textDirection: MixHelpers.merge($textDirection, other.$textDirection),
       softWrap: MixHelpers.merge($softWrap, other.$softWrap),
-      directive: MixHelpers.merge($directive, other.$directive),
+      directives: MixHelpers.mergeList(
+        $directives,
+        other.$directives,
+        strategy: ListMergeStrategy.append,
+      ),
     );
   }
 
@@ -354,7 +359,11 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
       DiagnosticsProperty('softWrap', $softWrap, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('directive', $directive, defaultValue: null),
+      DiagnosticsProperty('directive', $directives, defaultValue: null),
+    );
+
+    properties.add(
+      DiagnosticsProperty('directives', $directives, defaultValue: null),
     );
   }
 
@@ -374,6 +383,6 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
     $textHeightBehavior,
     $textDirection,
     $softWrap,
-    $directive,
+    $directives,
   ];
 }

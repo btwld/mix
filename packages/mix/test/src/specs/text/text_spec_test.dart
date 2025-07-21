@@ -180,7 +180,7 @@ void main() {
       expect(spec.textHeightBehavior, isNull);
       expect(spec.textDirection, isNull);
       expect(spec.softWrap, isNull);
-      expect(spec.directive, isNull);
+      expect(spec.directives, isNull);
     });
 
     test('TextSpec.from(MixData mix)', () {
@@ -284,118 +284,6 @@ void main() {
       );
       expect(lerpedSpec.textDirection, TextDirection.rtl);
       expect(lerpedSpec.softWrap, false);
-    });
-  });
-
-  group('TextSpecUtility fluent', () {
-    test('fluent behavior', () {
-      final text = TextSpecUtility.self;
-
-      final util = text
-        ..overflow.ellipsis()
-        ..textAlign.center()
-        ..textScaler(const TextScaler.linear(1.5))
-        ..maxLines(3)
-        ..style.color.blue()
-        ..textWidthBasis.longestLine()
-        ..textDirection.rtl()
-        ..softWrap(false);
-
-      final attr = util.attribute;
-
-      expect(util, isA<Style>());
-      expect(attr.overflow, TextOverflow.ellipsis);
-      expect(attr.textAlign, TextAlign.center);
-      expect(attr.textScaler, const TextScaler.linear(1.5));
-      expect(attr.maxLines, 3);
-      // Check if style is TextStyleDto and access color directly
-      expect(attr.style, isA<TextStyleDto>());
-      final valueStyle = attr.style;
-      expect(valueStyle.backgroundColor, isA<Prop<Color>>());
-      expect(attr.textWidthBasis, TextWidthBasis.longestLine);
-      expect(attr.textDirection, TextDirection.rtl);
-      expect(attr.softWrap, false);
-
-      final style = Style(util);
-
-      final textAttribute = style.styles.attributeOfType<TextSpecAttribute>();
-
-      expect(textAttribute?.overflow, TextOverflow.ellipsis);
-      expect(textAttribute?.textAlign, TextAlign.center);
-      expect(textAttribute?.textScaler, const TextScaler.linear(1.5));
-      expect(textAttribute?.maxLines, 3);
-      // Access the TextStyleDto and then its color property
-      expect(textAttribute?.style, isA<TextStyleDto>());
-      final valueStyle2 = textAttribute?.style;
-      expect(valueStyle2?.color, isA<Prop<Color>>());
-      expect(textAttribute?.textWidthBasis, TextWidthBasis.longestLine);
-      expect(textAttribute?.textDirection, TextDirection.rtl);
-      expect(textAttribute?.softWrap, false);
-
-      final mixData = style.of(MockBuildContext());
-      final textSpec = TextSpec.from(mixData);
-
-      expect(textSpec.overflow, TextOverflow.ellipsis);
-      expect(textSpec.textAlign, TextAlign.center);
-      expect(textSpec.textScaler, const TextScaler.linear(1.5));
-      expect(textSpec.maxLines, 3);
-      expect(textSpec.style?.color, Colors.blue);
-      expect(textSpec.textWidthBasis, TextWidthBasis.longestLine);
-      expect(textSpec.textDirection, TextDirection.rtl);
-      expect(textSpec.softWrap, false);
-    });
-
-    test('Immutable behavior when having multiple texts', () {
-      final text1 = TextSpecUtility((v) => v)..maxLines(3);
-      final text2 = TextSpecUtility((v) => v)..maxLines(5);
-
-      final attr1 = text1.attribute;
-      final attr2 = text2.attribute;
-
-      expect(attr1.maxLines, 3);
-      expect(attr2.maxLines, 5);
-
-      final style1 = Style(text1);
-      final style2 = Style(text2);
-
-      final textAttribute1 = style1.styles.attributeOfType<TextSpecAttribute>();
-      final textAttribute2 = style2.styles.attributeOfType<TextSpecAttribute>();
-
-      expect(textAttribute1?.maxLines, 3);
-      expect(textAttribute2?.maxLines, 5);
-
-      final mixData1 = style1.of(MockBuildContext());
-      final mixData2 = style2.of(MockBuildContext());
-
-      final textSpec1 = TextSpec.from(mixData1);
-      final textSpec2 = TextSpec.from(mixData2);
-
-      expect(textSpec1.maxLines, 3);
-      expect(textSpec2.maxLines, 5);
-    });
-
-    test('Mutate behavior and not on same utility', () {
-      final text = TextSpecUtility.self;
-
-      final textValue = text;
-      textValue
-        ..maxLines(3)
-        ..style.color.red()
-        ..textAlign.center();
-
-      final textAttribute = textValue.attribute;
-      final textAttribute2 = text.maxLines(5);
-
-      expect(textAttribute.maxLines, 3);
-      // Access the TextStyleDto and then its color property
-      expect(textAttribute.style, isA<TextStyleDto>());
-      final valueStyle = textAttribute.style;
-      expect(valueStyle.backgroundColor, isA<Prop<Color>>());
-      expect(textAttribute.textAlign, TextAlign.center);
-
-      expect(textAttribute2.maxLines, 5);
-      expect(textAttribute2.style, isNull);
-      expect(textAttribute2.textAlign, isNull);
     });
   });
 }

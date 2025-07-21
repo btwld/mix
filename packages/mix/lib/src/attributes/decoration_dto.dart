@@ -200,7 +200,7 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
 }
 
 final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
-    with HasDefaultValue<ShapeDecoration> {
+    with MixDefaultValue<ShapeDecoration> {
   final MixProp<ShapeBorder>? shape;
 
   ShapeDecorationDto.only({

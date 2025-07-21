@@ -18,7 +18,7 @@ sealed class ConstraintsDto<T extends Constraints> extends Mix<T> {
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a `[BoxConstraints]
 final class BoxConstraintsDto extends ConstraintsDto<BoxConstraints>
-    with HasDefaultValue<BoxConstraints> {
+    with MixDefaultValue<BoxConstraints> {
   // Properties use MixableProperty for cleaner merging
   final Prop<double>? minWidth;
   final Prop<double>? maxWidth;

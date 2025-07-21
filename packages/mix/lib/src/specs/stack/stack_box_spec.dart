@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 import '../../core/attribute.dart';
 import '../../core/resolved_style_provider.dart';
 import '../../core/spec.dart';
-import '../../core/utility.dart';
 import '../box/box_attribute.dart';
 import '../box/box_spec.dart';
 import 'stack_attribute.dart';
@@ -143,8 +142,11 @@ class StackBoxSpecAttribute extends SpecAttribute<ZBoxSpec>
   /// final stackBoxSpec = StackBoxSpecAttribute(...).resolve(context);
   /// ```
   @override
-  ZBoxSpec resolve(BuildContext context) {
-    return ZBoxSpec(box: box?.resolve(context), stack: stack?.resolve(context));
+  ZBoxSpec resolveSpec(BuildContext context) {
+    return ZBoxSpec(
+      box: box?.resolveSpec(context),
+      stack: stack?.resolveSpec(context),
+    );
   }
 
   /// Merges the properties of this [StackBoxSpecAttribute] with the properties of [other].
@@ -184,109 +186,22 @@ class StackBoxSpecAttribute extends SpecAttribute<ZBoxSpec>
 ///
 /// This class provides methods to set individual properties of a [ZBoxSpec].
 /// Use the methods of this class to configure specific properties of a [ZBoxSpec].
-class StackBoxSpecUtility<T extends Attribute>
-    extends SpecUtility<T, StackBoxSpecAttribute> {
+class StackBoxSpecUtility {
   /// Utility for defining [StackBoxSpecAttribute.box]
-  late final box = BoxSpecUtility((v) => only(box: v));
-
-  /// Utility for defining [StackBoxSpecAttribute.box.alignment]
-  late final alignment = box.alignment;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.padding]
-  late final padding = box.padding;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.margin]
-  late final margin = box.margin;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.constraints]
-  late final constraints = box.constraints;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.constraints.minWidth]
-  late final minWidth = box.constraints.minWidth;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.constraints.maxWidth]
-  late final maxWidth = box.constraints.maxWidth;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.constraints.minHeight]
-  late final minHeight = box.constraints.minHeight;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.constraints.maxHeight]
-  late final maxHeight = box.constraints.maxHeight;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.decoration]
-  late final decoration = box.decoration;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.decoration.color]
-  late final color = box.decoration.color;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.decoration.border]
-  late final border = box.decoration.border;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.decoration.border.directional]
-  late final borderDirectional = box.decoration.border.directional;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.decoration.borderRadius]
-  late final borderRadius = box.decoration.borderRadius;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.decoration.borderRadius.directional]
-  late final borderRadiusDirectional = box.decoration.borderRadius.directional;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.decoration.gradient]
-  late final gradient = box.decoration.gradient;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.decoration.gradient.sweep]
-  late final sweepGradient = box.decoration.gradient.sweep;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.decoration.gradient.radial]
-  late final radialGradient = box.decoration.gradient.radial;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.decoration.gradient.linear]
-  late final linearGradient = box.decoration.gradient.linear;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.decoration.boxShadows]
-  late final shadows = box.decoration.boxShadows;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.decoration.boxShadow]
-  late final shadow = box.decoration.boxShadow;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.decoration.elevation]
-  late final elevation = box.decoration.elevation;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.shapeDecoration]
-  late final shapeDecoration = box.shapeDecoration;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.shape]
-  late final shape = box.shape;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.foregroundDecoration]
-  late final foregroundDecoration = box.foregroundDecoration;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.transform]
-  late final transform = box.transform;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.transformAlignment]
-  late final transformAlignment = box.transformAlignment;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.clipBehavior]
-  late final clipBehavior = box.clipBehavior;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.width]
-  late final width = box.width;
-
-  /// Utility for defining [StackBoxSpecAttribute.box.height]
-  late final height = box.height;
+  final box = BoxSpecAttribute();
 
   /// Utility for defining [StackBoxSpecAttribute.stack]
-  late final stack = StackSpecUtility((v) => only(stack: v));
+  final stack = StackSpecAttribute();
 
-  StackBoxSpecUtility(super.attributeBuilder);
+  StackBoxSpecUtility();
 
-  static StackBoxSpecUtility<StackBoxSpecAttribute> get self =>
-      StackBoxSpecUtility((v) => v);
+  static StackBoxSpecUtility get self => StackBoxSpecUtility();
 
   /// Returns a new [StackBoxSpecAttribute] with the specified properties.
-  @override
-  T only({BoxSpecAttribute? box, StackSpecAttribute? stack}) {
-    return builder(StackBoxSpecAttribute(box: box, stack: stack));
+  StackBoxSpecAttribute only({
+    BoxSpecAttribute? box,
+    StackSpecAttribute? stack,
+  }) {
+    return StackBoxSpecAttribute(box: box, stack: stack);
   }
 }

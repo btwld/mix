@@ -1,17 +1,5 @@
 import 'package:flutter/widgets.dart';
 
-// Generic directive for modifying values
-@immutable
-abstract class MixDirective<T> {
-  const MixDirective();
-
-  /// Debug label for the directive
-  String? get debugLabel;
-
-  /// Applies the transformation to the given value
-  T apply(T value);
-}
-
 mixin Resolvable<V> {
   V resolve(BuildContext context);
 }
@@ -54,7 +42,7 @@ abstract class Mix<T> with Mixable<T> {
 
 // Define a mixin for properties that have default values
 // TODO: Rename this to DefaultValueMixin or similar
-mixin HasDefaultValue<Value> {
+mixin MixDefaultValue<Value> on Mix<Value> {
   @protected
   Value get defaultValue;
 }

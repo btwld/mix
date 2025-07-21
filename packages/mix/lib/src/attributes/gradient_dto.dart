@@ -10,7 +10,7 @@ import 'package:mix/mix.dart';
 /// Supports same-type merging and simple override behavior for different types.
 @immutable
 sealed class GradientDto<T extends Gradient> extends Mix<T>
-    with HasDefaultValue<T> {
+    with MixDefaultValue<T> {
   final List<Prop<double>>? stops;
   final List<Prop<Color>>? colors;
   final Prop<GradientTransform>? transform;

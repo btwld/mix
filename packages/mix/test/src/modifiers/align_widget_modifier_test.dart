@@ -22,7 +22,7 @@ void main() {
 
     // equality
     test('equality', () {
-      const modifier = AlignModifierAttribute(
+      const modifier = AlignModifierAttribute.only(
         alignment: Alignment.center,
         widthFactor: 0.5,
         heightFactor: 0.5,

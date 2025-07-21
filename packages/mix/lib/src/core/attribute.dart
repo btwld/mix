@@ -9,7 +9,7 @@ import 'style_mix.dart';
 import 'variant.dart';
 
 /// Base interface for all attributes
-sealed class Attribute with Mergeable, EqualityMixin {
+sealed class Attribute with Mergeable {
   const Attribute();
   Object get mergeKey => runtimeType;
 
@@ -17,8 +17,9 @@ sealed class Attribute with Mergeable, EqualityMixin {
   Attribute merge(covariant Attribute? other);
 }
 
-abstract class SpecAttribute<S extends Spec<S>> extends Attribute
-    with Resolvable<ResolvedStyle<S>> {
+abstract class SpecAttribute<S extends Spec<S>> extends Mix<ResolvedStyle<S>>
+    with EqualityMixin
+    implements Attribute {
   final List<VariantAttribute<S>>? variants;
   final List<ModifierAttribute>? modifiers;
   final AnimationConfig? animation;
@@ -149,8 +150,9 @@ abstract class SpecAttribute<S extends Spec<S>> extends Attribute
   Type get mergeKey => S;
 }
 
-abstract class ModifierAttribute<S extends Modifier<S>> extends Attribute
-    with Resolvable<S> {
+abstract class ModifierAttribute<S extends Modifier<S>> extends Mix<S>
+    with EqualityMixin
+    implements Attribute {
   const ModifierAttribute();
 
   @override
@@ -158,10 +160,13 @@ abstract class ModifierAttribute<S extends Modifier<S>> extends Attribute
 
   @override
   S resolve(BuildContext context);
+
+  @override
+  Type get mergeKey => S;
 }
 
 /// Variant wrapper for conditional styling
-final class VariantAttribute<S extends Spec<S>> extends Attribute {
+final class VariantAttribute<S extends Spec<S>> implements Attribute {
   final Variant variant;
   final SpecAttribute<S> _style;
 
@@ -219,9 +224,6 @@ final class VariantAttribute<S extends Spec<S>> extends Attribute {
 
   @override
   int get hashCode => Object.hash(variant, _style);
-
-  @override
-  List<Object?> get props => [variant, _style];
 }
 
 class MultiSpecAttribute extends SpecAttribute<MultiSpec> {

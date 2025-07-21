@@ -25,7 +25,7 @@ final class RoundedRectangleBorderUtility<T extends SpecAttribute<Object?>>
   );
 
   RoundedRectangleBorderUtility(super.builder)
-    : super(valueToMix: RoundedRectangleBorderDto.value);
+    : super(convertToMix: RoundedRectangleBorderDto.value);
 
   @override
   T call(RoundedRectangleBorderDto value) => builder(MixProp(value));
@@ -48,7 +48,7 @@ final class BeveledRectangleBorderUtility<T extends SpecAttribute<Object?>>
   );
 
   BeveledRectangleBorderUtility(super.builder)
-    : super(valueToMix: BeveledRectangleBorderDto.value);
+    : super(convertToMix: BeveledRectangleBorderDto.value);
 
   @override
   T call(BeveledRectangleBorderDto value) => builder(MixProp(value));
@@ -71,7 +71,7 @@ final class ContinuousRectangleBorderUtility<T extends SpecAttribute<Object?>>
   );
 
   ContinuousRectangleBorderUtility(super.builder)
-    : super(valueToMix: ContinuousRectangleBorderDto.value);
+    : super(convertToMix: ContinuousRectangleBorderDto.value);
 
   @override
   T call(ContinuousRectangleBorderDto value) => builder(MixProp(value));
@@ -91,7 +91,8 @@ final class CircleBorderUtility<T extends SpecAttribute<Object?>>
     (prop) => call(CircleBorderDto(eccentricity: prop)),
   );
 
-  CircleBorderUtility(super.builder) : super(valueToMix: CircleBorderDto.value);
+  CircleBorderUtility(super.builder)
+    : super(convertToMix: CircleBorderDto.value);
 
   @override
   T call(CircleBorderDto value) => builder(MixProp(value));
@@ -136,7 +137,7 @@ final class StarBorderUtility<T extends SpecAttribute<Object?>>
     (prop) => call(StarBorderDto(squash: prop)),
   );
 
-  StarBorderUtility(super.builder) : super(valueToMix: StarBorderDto.value);
+  StarBorderUtility(super.builder) : super(convertToMix: StarBorderDto.value);
 
   @override
   T call(StarBorderDto value) => builder(MixProp(value));
@@ -171,7 +172,8 @@ final class LinearBorderUtility<T extends SpecAttribute<Object?>>
     (v) => call(LinearBorderDto(bottom: v)),
   );
 
-  LinearBorderUtility(super.builder) : super(valueToMix: LinearBorderDto.value);
+  LinearBorderUtility(super.builder)
+    : super(convertToMix: LinearBorderDto.value);
 
   @override
   T call(LinearBorderDto value) => builder(MixProp(value));
@@ -194,7 +196,7 @@ final class LinearBorderEdgeUtility<T extends SpecAttribute<Object?>>
   );
 
   LinearBorderEdgeUtility(super.builder)
-    : super(valueToMix: LinearBorderEdgeDto.value);
+    : super(convertToMix: LinearBorderEdgeDto.value);
 
   @override
   T call(LinearBorderEdgeDto value) => builder(MixProp(value));
@@ -212,7 +214,7 @@ final class StadiumBorderUtility<T extends SpecAttribute<Object?>>
   );
 
   StadiumBorderUtility(super.builder)
-    : super(valueToMix: StadiumBorderDto.value);
+    : super(convertToMix: StadiumBorderDto.value);
 
   @override
   T call(StadiumBorderDto value) => builder(MixProp(value));
@@ -245,7 +247,7 @@ final class ShapeBorderUtility<T extends SpecAttribute<Object?>>
   /// Utility for defining StadiumBorder
   late final stadium = StadiumBorderUtility<T>(builder);
 
-  ShapeBorderUtility(super.builder) : super(valueToMix: ShapeBorderDto.value);
+  ShapeBorderUtility(super.builder) : super(convertToMix: ShapeBorderDto.value);
 
   @override
   T call(ShapeBorderDto value) => builder(MixProp(value));

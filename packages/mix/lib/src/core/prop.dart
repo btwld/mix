@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import '../theme/mix/mix_theme.dart';
 import '../theme/tokens/mix_token.dart';
 import 'animation_config.dart';
+import 'directive.dart';
 import 'mix_element.dart';
 
 /// Base class for all property sources

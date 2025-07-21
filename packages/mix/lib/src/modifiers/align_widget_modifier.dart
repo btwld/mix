@@ -63,10 +63,10 @@ final class AlignModifierUtility<T extends SpecAttribute<Object?>>
     double? heightFactor,
   }) {
     return builder(
-      AlignModifierAttribute(
-        alignment: Prop.maybe(alignment),
-        widthFactor: Prop.maybe(widthFactor),
-        heightFactor: Prop.maybe(heightFactor),
+      AlignModifierAttribute.only(
+        alignment: alignment,
+        widthFactor: widthFactor,
+        heightFactor: heightFactor,
       ),
     );
   }
@@ -82,6 +82,16 @@ class AlignModifierAttribute extends ModifierAttribute<AlignModifier> {
     this.widthFactor,
     this.heightFactor,
   });
+
+  AlignModifierAttribute.only({
+    AlignmentGeometry? alignment,
+    double? widthFactor,
+    double? heightFactor,
+  }) : this(
+         alignment: Prop.maybe(alignment),
+         widthFactor: Prop.maybe(widthFactor),
+         heightFactor: Prop.maybe(heightFactor),
+       );
 
   @override
   AlignModifier resolve(BuildContext context) {

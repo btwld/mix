@@ -7,9 +7,9 @@ import '../../../helpers/testing_utils.dart';
 
 void main() {
   group('TextSpecAttribute', () {
-    final textSpecAttribute = TextSpecAttribute(
+    final textSpecAttribute = TextSpecAttribute.only(
       overflow: TextOverflow.ellipsis,
-      strutStyle: StrutStyleDto(
+      strutStyle: StrutStyleDto.only(
         fontFamily: 'Roboto',
         fontSize: 12,
         fontWeight: FontWeight.w500,
@@ -17,13 +17,13 @@ void main() {
       textAlign: TextAlign.center,
       textScaler: const TextScaler.linear(1.5),
       maxLines: 2,
-      style: TextStyleDto(
+      style: TextStyleDto.only(
         fontSize: 12,
         fontWeight: FontWeight.w500,
         fontFamily: 'Roboto',
       ),
       textWidthBasis: TextWidthBasis.longestLine,
-      textHeightBehavior: TextHeightBehaviorDto(
+      textHeightBehavior: TextHeightBehaviorDto.only(
         applyHeightToFirstAscent: true,
         applyHeightToLastDescent: true,
       ),
@@ -52,9 +52,9 @@ void main() {
 
     //  merge
     test('merge', () {
-      final other = TextSpecAttribute(
+      final other = TextSpecAttribute.only(
         overflow: TextOverflow.clip,
-        strutStyle: StrutStyleDto(
+        strutStyle: StrutStyleDto.only(
           fontFamily: 'Helvetica',
           fontSize: 14,
           fontWeight: FontWeight.w500,
@@ -62,13 +62,13 @@ void main() {
         textAlign: TextAlign.center,
         textScaler: const TextScaler.linear(1.5),
         maxLines: 2,
-        style: TextStyleDto(
+        style: TextStyleDto.only(
           fontSize: 16,
           fontWeight: FontWeight.w200,
           fontFamily: 'Helvetica',
         ),
         textWidthBasis: TextWidthBasis.longestLine,
-        textHeightBehavior: TextHeightBehaviorDto(
+        textHeightBehavior: TextHeightBehaviorDto.only(
           applyHeightToFirstAscent: false,
           applyHeightToLastDescent: false,
         ),

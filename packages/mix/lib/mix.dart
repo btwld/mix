@@ -22,7 +22,6 @@ export 'src/attributes/border_dto.dart';
 export 'src/attributes/border_radius_dto.dart';
 export 'src/attributes/border_radius_util.dart';
 export 'src/attributes/border_util.dart';
-export 'src/attributes/color/color_extensions.dart';
 export 'src/attributes/color/color_util.dart';
 export 'src/attributes/color/material_colors_util.dart';
 export 'src/attributes/constraints_dto.dart';
@@ -32,9 +31,6 @@ export 'src/attributes/decoration_image_dto.dart';
 export 'src/attributes/decoration_image_util.dart';
 export 'src/attributes/decoration_util.dart';
 export 'src/attributes/edge_insets_dto.dart';
-export 'src/attributes/enum_util.dart';
-export 'src/attributes/gap/gap_util.dart';
-export 'src/attributes/gap/space_dto.dart';
 export 'src/attributes/gradient_dto.dart';
 export 'src/attributes/gradient_util.dart';
 export 'src/attributes/scalar_util.dart';
@@ -42,7 +38,6 @@ export 'src/attributes/shadow_dto.dart';
 export 'src/attributes/shadow_util.dart';
 export 'src/attributes/shape_border_dto.dart';
 export 'src/attributes/shape_border_util.dart';
-export 'src/attributes/spacing/spacing_util.dart';
 export 'src/attributes/strut_style_dto.dart';
 export 'src/attributes/strut_style_util.dart';
 export 'src/attributes/text_height_behavior_dto.dart';
@@ -57,13 +52,11 @@ export 'src/core/animation/phase_animation_driver.dart';
 /// ATTRIBUTES
 export 'src/core/animation_config.dart';
 export 'src/core/attribute.dart';
-export 'src/core/deprecated.dart';
 export 'src/core/directive.dart';
 export 'src/core/helpers.dart';
 
 /// CORE
 export 'src/core/mix_element.dart';
-export 'src/core/modifier.dart';
 export 'src/core/named_variant_scope.dart';
 export 'src/core/prop.dart';
 export 'src/core/resolved_style_provider.dart';
@@ -75,7 +68,7 @@ export 'src/core/styled_widget.dart';
 export 'src/core/utility.dart';
 export 'src/core/variant.dart';
 export 'src/core/widget_state/widget_state_controller.dart';
-export 'src/helpers/duration.dart';
+export 'src/helpers/extensions.dart';
 
 /// MODIFIERS
 export 'src/modifiers/align_widget_modifier.dart';

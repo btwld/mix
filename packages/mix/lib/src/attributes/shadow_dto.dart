@@ -6,20 +6,20 @@ import '../core/helpers.dart';
 import '../core/mix_element.dart';
 import '../core/prop.dart';
 
-sealed class BaseShadowDto<T extends Shadow> extends Mix<T> {
+sealed class BaseShadowMix<T extends Shadow> extends Mix<T> {
   // Properties use MixableProperty for cleaner merging
   final Prop<Color>? color;
   final Prop<Offset>? offset;
   final Prop<double>? blurRadius;
 
-  const BaseShadowDto({this.blurRadius, this.color, this.offset});
+  const BaseShadowMix({this.blurRadius, this.color, this.offset});
 }
 
 /// Represents a [Mix] Data transfer object of [Shadow]
 ///
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a [Shadow]
-class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
+class ShadowDto extends BaseShadowMix<Shadow> with MixDefaultValue<Shadow> {
   ShadowDto.only({double? blurRadius, Color? color, Offset? offset})
     : this(
         blurRadius: Prop.maybe(blurRadius),
@@ -116,8 +116,8 @@ class ShadowDto extends BaseShadowDto<Shadow> with HasDefaultValue<Shadow> {
 ///
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a `[BoxShadow]
-class BoxShadowDto extends BaseShadowDto<BoxShadow>
-    with HasDefaultValue<BoxShadow> {
+class BoxShadowDto extends BaseShadowMix<BoxShadow>
+    with MixDefaultValue<BoxShadow> {
   final Prop<double>? spreadRadius;
 
   BoxShadowDto.only({

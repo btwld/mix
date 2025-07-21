@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../core/directive.dart';
+import '../../core/helpers.dart';
 import '../../core/resolved_style_provider.dart';
 import '../../core/spec.dart';
 
@@ -19,7 +20,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
 
   final TextHeightBehavior? textHeightBehavior;
 
-  final TextDirective? directive;
+  final List<MixDirective<String>>? directives;
 
   const TextSpec({
     this.overflow,
@@ -32,7 +33,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     this.textHeightBehavior,
     this.textDirection,
     this.softWrap,
-    this.directive,
+    this.directives,
   });
 
   static TextSpec from(BuildContext context) {
@@ -97,7 +98,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
       DiagnosticsProperty('softWrap', softWrap, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('directive', directive, defaultValue: null),
+      DiagnosticsProperty('directive', directives, defaultValue: null),
     );
   }
 
@@ -115,7 +116,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     TextHeightBehavior? textHeightBehavior,
     TextDirection? textDirection,
     bool? softWrap,
-    TextDirective? directive,
+    List<MixDirective<String>>? directives,
   }) {
     return TextSpec(
       overflow: overflow ?? this.overflow,
@@ -128,7 +129,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
       textHeightBehavior: textHeightBehavior ?? this.textHeightBehavior,
       textDirection: textDirection ?? this.textDirection,
       softWrap: softWrap ?? this.softWrap,
-      directive: directive ?? this.directive,
+      directives: directives ?? this.directives,
     );
   }
 
@@ -144,7 +145,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
   /// interpolation method:
   /// - [MixHelpers.lerpStrutStyle] for [strutStyle].
   /// - [MixHelpers.lerpTextStyle] for [style].
-  /// For [overflow] and [textAlign] and [textScaler] and [maxLines] and [textWidthBasis] and [textHeightBehavior] and [textDirection] and [softWrap] and [directive], the interpolation is performed using a step function.
+  /// For [overflow] and [textAlign] and [textScaler] and [maxLines] and [textWidthBasis] and [textHeightBehavior] and [textDirection] and [softWrap] and [directives], the interpolation is performed using a step function.
   /// If [t] is less than 0.5, the value from the current [TextSpec] is used. Otherwise, the value
   /// from the [other] [TextSpec] is used.
   ///
@@ -167,7 +168,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
           : other.textHeightBehavior,
       textDirection: t < 0.5 ? textDirection : other.textDirection,
       softWrap: t < 0.5 ? softWrap : other.softWrap,
-      directive: t < 0.5 ? directive : other.directive,
+      directives: t < 0.5 ? directives : other.directives,
     );
   }
 
@@ -193,6 +194,6 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     textHeightBehavior,
     textDirection,
     softWrap,
-    directive,
+    directives,
   ];
 }

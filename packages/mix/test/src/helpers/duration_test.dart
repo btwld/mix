@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/src/helpers/duration.dart';
+import 'package:mix/src/helpers/extensions.dart';
 
 void main() {
   group('MixDurationInt Extension', () {

@@ -10,6 +10,7 @@ import 'decoration_dto.dart';
 import 'decoration_image_util.dart';
 import 'gradient_util.dart';
 import 'scalar_util.dart';
+import 'shadow_dto.dart';
 import 'shadow_util.dart';
 import 'shape_border_util.dart';
 
@@ -19,7 +20,7 @@ class DecorationUtility<T extends SpecAttribute<Object?>>
 
   late final shape = ShapeDecorationUtility<T>(builder);
 
-  DecorationUtility(super.builder) : super(valueToMix: DecorationDto.value);
+  DecorationUtility(super.builder) : super(convertToMix: DecorationDto.value);
 
   @override
   T call(DecorationDto value) {
@@ -70,8 +71,9 @@ final class BoxDecorationUtility<T extends SpecAttribute<Object?>>
   );
 
   /// Utility for defining [BoxDecorationDto.boxShadow] from a list of BoxShadow
-  late final boxShadows = BoxShadowMixPropListUtility<T>(
-    (mixPropList) => call(BoxDecorationDto(boxShadow: mixPropList)),
+  late final boxShadows = MixPropListUtility<T, BoxShadow, BoxShadowDto>(
+    (prop) => call(BoxDecorationDto(boxShadow: prop)),
+    BoxShadowDto.value,
   );
 
   /// Utility for defining individual [BoxShadow]
@@ -85,7 +87,7 @@ final class BoxDecorationUtility<T extends SpecAttribute<Object?>>
   );
 
   BoxDecorationUtility(super.builder)
-    : super(valueToMix: BoxDecorationDto.value);
+    : super(convertToMix: BoxDecorationDto.value);
 
   @override
   T call(BoxDecorationDto value) => builder(MixProp(value));
@@ -99,7 +101,9 @@ final class BoxDecorationUtility<T extends SpecAttribute<Object?>>
 final class ShapeDecorationUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, ShapeDecoration> {
   /// Utility for defining [ShapeDecorationDto.shape]
-  late final shape = ShapeBorderUtility<T>((v) => only(shape: v));
+  late final shape = ShapeBorderUtility<T>(
+    (v) => call(ShapeDecorationDto(shape: v)),
+  );
 
   /// Utility for defining [ShapeDecorationDto.color]
   late final color = ColorUtility<T>(
@@ -107,34 +111,23 @@ final class ShapeDecorationUtility<T extends SpecAttribute<Object?>>
   );
 
   /// Utility for defining [ShapeDecorationDto.image]
-  late final image = DecorationImageUtility<T>((v) => only(image: v));
+  late final image = DecorationImageUtility<T>(
+    (v) => call(ShapeDecorationDto(image: v)),
+  );
 
   /// Utility for defining [ShapeDecorationDto.gradient]
-  late final gradient = GradientUtility<T>((v) => only(gradient: v));
+  late final gradient = GradientUtility<T>(
+    (v) => call(ShapeDecorationDto(gradient: v)),
+  );
 
   /// Utility for defining [ShapeDecorationDto.shadows]
-  late final shadows = BoxShadowMixPropListUtility<T>((v) => only(shadows: v));
+  late final shadows = MixPropListUtility<T, BoxShadow, BoxShadowDto>(
+    (prop) => call(ShapeDecorationDto(shadows: prop)),
+    BoxShadowDto.value,
+  );
 
   ShapeDecorationUtility(super.builder)
-    : super(valueToMix: ShapeDecorationDto.value);
-
-  T only({
-    MixProp<ShapeBorder>? shape,
-    Prop<Color>? color,
-    MixProp<DecorationImage>? image,
-    MixProp<Gradient>? gradient,
-    List<MixProp<BoxShadow>>? shadows,
-  }) {
-    return call(
-      ShapeDecorationDto(
-        shape: shape,
-        color: color,
-        image: image,
-        gradient: gradient,
-        shadows: shadows,
-      ),
-    );
-  }
+    : super(convertToMix: ShapeDecorationDto.value);
 
   @override
   T call(ShapeDecorationDto value) => builder(MixProp(value));

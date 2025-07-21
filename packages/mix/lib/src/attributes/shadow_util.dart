@@ -24,7 +24,7 @@ class ShadowUtility<T extends SpecAttribute<Object?>>
   /// Utility for defining [ShadowDto.offset].
   late final offset = OffsetUtility<T>((prop) => call(ShadowDto(offset: prop)));
 
-  ShadowUtility(super.builder) : super(valueToMix: ShadowDto.value);
+  ShadowUtility(super.builder) : super(convertToMix: ShadowDto.value);
 
   /// Returns a new [T] with the specified [ShadowDto] properties.
   @override
@@ -54,31 +54,11 @@ class BoxShadowUtility<T extends SpecAttribute<Object?>>
     (prop) => call(BoxShadowDto(spreadRadius: prop)),
   );
 
-  BoxShadowUtility(super.builder) : super(valueToMix: BoxShadowDto.value);
+  BoxShadowUtility(super.builder) : super(convertToMix: BoxShadowDto.value);
 
   /// Returns a new [T] with the specified [BoxShadowDto] properties.
   @override
   T call(BoxShadowDto value) => builder(MixProp(value));
-}
-
-/// A utility class for building [StyleElement] instances from a list of [MixProp<BoxShadow>] objects.
-///
-/// This class extends [MixUtility] and provides a way to create [StyleElement]
-/// instances by transforming a list of [BoxShadow] objects into a list of [MixProp<BoxShadow>] objects
-/// that can be directly used in DTOs.
-final class BoxShadowMixPropListUtility<T extends SpecAttribute<Object?>>
-    extends MixUtility<T, List<MixProp<BoxShadow>>> {
-  const BoxShadowMixPropListUtility(super.builder);
-
-  /// Creates an [StyleElement] instance from a list of [BoxShadow] objects.
-  ///
-  /// This method maps each [BoxShadow] object to a [MixProp<BoxShadow>] object and passes the
-  /// resulting list to the [builder] function to create the [StyleElement] instance.
-  T call(List<BoxShadow> shadows) {
-    return builder(
-      shadows.map((shadow) => MixProp(BoxShadowDto.value(shadow))).toList(),
-    );
-  }
 }
 
 /// A utility class for building [StyleElement] instances from elevation values that produces [MixProp<BoxShadow>] lists.

@@ -85,7 +85,7 @@ sealed class BoxBorderDto<T extends BoxBorder> extends Mix<T> {
 }
 
 final class BorderDto extends BoxBorderDto<Border>
-    with HasDefaultValue<Border> {
+    with MixDefaultValue<Border> {
   final MixProp<BorderSide>? left;
   final MixProp<BorderSide>? right;
 
@@ -213,7 +213,7 @@ final class BorderDto extends BoxBorderDto<Border>
 }
 
 final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional>
-    with HasDefaultValue<BorderDirectional> {
+    with MixDefaultValue<BorderDirectional> {
   final MixProp<BorderSide>? start;
   final MixProp<BorderSide>? end;
   static final BorderDirectionalDto none = BorderDirectionalDto.all(
@@ -346,7 +346,7 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional>
 }
 
 final class BorderSideDto extends Mix<BorderSide>
-    with HasDefaultValue<BorderSide> {
+    with MixDefaultValue<BorderSide> {
   // Properties use MixableProperty for cleaner merging
   final Prop<Color>? color;
   final Prop<double>? width;

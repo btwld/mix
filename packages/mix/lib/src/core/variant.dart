@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import '../core/widget_state/widget_state_controller.dart';
 import '../internal/deep_collection_equality.dart';
-import 'deprecated.dart';
 import 'style_mix.dart';
 
 /// Priority levels for variant application
@@ -292,14 +291,6 @@ final small = ContextVariant.size('small', (size) => size.width <= 768);
 final medium = ContextVariant.size('medium', (size) => size.width <= 1024);
 final large = ContextVariant.size('large', (size) => size.width <= 1280);
 final xlarge = ContextVariant.size('xlarge', (size) => size.width > 1280);
-
-// Predefined breakpoint helper function
-ContextVariant breakpointVariant(Breakpoint breakpoint) {
-  return ContextVariant.size(
-    'breakpoint_${breakpoint.minWidth}_${breakpoint.maxWidth}',
-    (size) => breakpoint.matches(size),
-  );
-}
 
 // Utility variants using NOT logic
 final enabled = not(disabled);

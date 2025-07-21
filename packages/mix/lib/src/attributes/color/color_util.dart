@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../core/attribute.dart';
+import '../../core/directive.dart';
 import '../../core/prop.dart';
 import '../../core/utility.dart';
 import '../../theme/tokens/mix_token.dart';
-import 'color_directive.dart';
 import 'material_colors_util.dart';
 
 /// Mixin that provides color directive methods
@@ -81,7 +81,7 @@ class CallableColorUtility<T extends SpecAttribute<Object?>> {
 @immutable
 final class ColorUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, Color>
-    with ColorDirectiveMixin<T>, MaterialColorsMixin<T>, BasicColorsMixin<T> {
+    with ColorDirectiveMixin<T>, ColorsUtilityMixin<T>, BasicColorsMixin<T> {
   ColorUtility(super.builder);
 
   /// @deprecated Use [token] instead
@@ -89,7 +89,7 @@ final class ColorUtility<T extends SpecAttribute<Object?>>
   T ref(MixToken<Color> ref) => token(ref);
 }
 
-base mixin BasicColorsMixin<T extends SpecAttribute<Object?>>
+mixin BasicColorsMixin<T extends SpecAttribute<Object?>>
     on PropUtility<T, Color> {
   late final transparent = CallableColorUtility(builder, Colors.transparent);
 

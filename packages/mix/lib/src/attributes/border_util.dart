@@ -27,7 +27,7 @@ final class BoxBorderUtility<T extends SpecAttribute<Object?>>
 
   BoxBorderUtility(super.builder)
     : super(
-        valueToMix: (v) {
+        convertToMix: (v) {
           return switch (v) {
             Border() => BorderDto.value(v),
             BorderDirectional() => BorderDirectionalDto.value(v),
@@ -85,7 +85,7 @@ final class BorderUtility<T extends SpecAttribute<Object?>>
 
   late final strokeAlign = all.strokeAlign;
 
-  BorderUtility(super.builder) : super(valueToMix: BorderDto.value);
+  BorderUtility(super.builder) : super(convertToMix: BorderDto.value);
 
   T none() => call(BorderDto.none);
 
@@ -137,7 +137,7 @@ final class BorderDirectionalUtility<T extends SpecAttribute<Object?>>
   );
 
   BorderDirectionalUtility(super.builder)
-    : super(valueToMix: BorderDirectionalDto.value);
+    : super(convertToMix: BorderDirectionalDto.value);
 
   T none() => call(BorderDirectionalDto.none);
 
@@ -189,7 +189,7 @@ class BorderSideUtility<T extends SpecAttribute<Object?>>
     (prop) => call(BorderSideDto(width: prop)),
   );
 
-  BorderSideUtility(super.builder) : super(valueToMix: BorderSideDto.value);
+  BorderSideUtility(super.builder) : super(convertToMix: BorderSideDto.value);
 
   /// Creates a [Attribute] instance using the [BorderSideDto.none] constructor.
   T none() => call(BorderSideDto.none);
