@@ -33,12 +33,12 @@ final class LinearGradientUtility<T extends SpecUtility<Object?>>
   );
 
   /// Utility for defining [LinearGradientDto.colors]
-  late final colors = ListUtility<T, Color>(
+  late final colors = ColorListUtility<T>(
     (v) => call(LinearGradientDto(colors: v)),
   );
 
   /// Utility for defining [LinearGradientDto.stops]
-  late final stops = ListUtility<T, double>(
+  late final stops = DoubleListUtility<T>(
     (v) => call(LinearGradientDto(stops: v)),
   );
 
@@ -86,12 +86,12 @@ final class RadialGradientUtility<T extends SpecUtility<Object?>>
   );
 
   /// Utility for defining [RadialGradientDto.colors]
-  late final colors = ListUtility<T, Color>(
+  late final colors = ColorListUtility<T>(
     (v) => call(RadialGradientDto(colors: v)),
   );
 
   /// Utility for defining [RadialGradientDto.stops]
-  late final stops = ListUtility<T, double>(
+  late final stops = DoubleListUtility<T>(
     (v) => call(RadialGradientDto(stops: v)),
   );
 
@@ -134,12 +134,12 @@ final class SweepGradientUtility<T extends SpecUtility<Object?>>
   );
 
   /// Utility for defining [SweepGradientDto.colors]
-  late final colors = ListUtility<T, Color>(
+  late final colors = ColorListUtility<T>(
     (v) => call(SweepGradientDto(colors: v)),
   );
 
   /// Utility for defining [SweepGradientDto.stops]
-  late final stops = ListUtility<T, double>(
+  late final stops = DoubleListUtility<T>(
     (v) => call(SweepGradientDto(stops: v)),
   );
 
@@ -152,15 +152,42 @@ final class SweepGradientUtility<T extends SpecUtility<Object?>>
 
 /// Utility class for working with gradients.
 final class GradientUtility<T extends SpecUtility<Object?>>
-    extends MixUtility<T, GradientDto> {
+    extends MixPropUtility<T, Gradient> {
   /// Returns a [LinearGradientUtility] for creating linear gradients
-  late final linear = LinearGradientUtility<T>((dto) => builder(dto));
+  late final linear = LinearGradientUtility<T>(
+    (dto) => call(dto as GradientDto),
+  );
 
   /// Returns a [RadialGradientUtility] for creating radial gradients
-  late final radial = RadialGradientUtility<T>((dto) => builder(dto));
+  late final radial = RadialGradientUtility<T>(
+    (dto) => call(dto as GradientDto),
+  );
 
   /// Returns a [SweepGradientUtility] for creating sweep gradients
-  late final sweep = SweepGradientUtility<T>((dto) => builder(dto));
+  late final sweep = SweepGradientUtility<T>((dto) => call(dto as GradientDto));
 
-  const GradientUtility(super.builder);
+  GradientUtility(super.builder) : super(valueToDto: GradientDto.value);
+
+  @override
+  T call(GradientDto value) => builder(MixProp(value));
+}
+
+/// Utility class for creating List<Prop<Color>> from List<Color>
+final class ColorListUtility<T extends SpecUtility<Object?>>
+    extends MixUtility<T, List<Prop<Color>>> {
+  const ColorListUtility(super.builder);
+
+  T call(List<Color> colors) {
+    return builder(colors.map(Prop.new).toList());
+  }
+}
+
+/// Utility class for creating List<Prop<double>> from List<double>
+final class DoubleListUtility<T extends SpecUtility<Object?>>
+    extends MixUtility<T, List<Prop<double>>> {
+  const DoubleListUtility(super.builder);
+
+  T call(List<double> stops) {
+    return builder(stops.map(Prop.new).toList());
+  }
 }

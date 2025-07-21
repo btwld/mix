@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
 
-import '../attributes/animation/animation_config.dart';
 import '../modifiers/internal/render_widget_modifier.dart';
 import '../widgets/pressable_widget.dart';
 import 'animation/animation_driver.dart';
+import 'animation_config.dart';
 import 'factory/style_mix.dart';
 import 'modifier.dart';
 import 'named_variant_scope.dart';

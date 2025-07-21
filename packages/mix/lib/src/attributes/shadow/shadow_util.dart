@@ -36,7 +36,6 @@ class ShadowUtility<T extends SpecUtility<Object?>>
 /// Use the methods of this class to configure specific properties of a [BoxShadow].
 class BoxShadowUtility<T extends SpecUtility<Object?>>
     extends MixPropUtility<T, BoxShadow> {
-  /// Utility for defining [BoxShadowDto.color].
   late final color = ColorUtility<T>((prop) => call(BoxShadowDto(color: prop)));
 
   /// Utility for defining [BoxShadowDto.offset].
@@ -61,47 +60,33 @@ class BoxShadowUtility<T extends SpecUtility<Object?>>
   T call(BoxShadowDto value) => builder(MixProp(value));
 }
 
-/// A utility class for building [StyleElement] instances from a list of [ShadowDto] objects.
+/// A utility class for building [StyleElement] instances from a list of [MixProp<BoxShadow>] objects.
 ///
-/// This class extends [MixUtility] and provides a convenient way to create [StyleElement]
-/// instances by transforming a list of [BoxShadow] objects into a list of [ShadowDto] objects.
-final class ShadowListUtility<T extends SpecUtility<Object?>>
-    extends MixUtility<T, List<ShadowDto>> {
-  const ShadowListUtility(super.builder);
+/// This class extends [MixUtility] and provides a way to create [StyleElement]
+/// instances by transforming a list of [BoxShadow] objects into a list of [MixProp<BoxShadow>] objects
+/// that can be directly used in DTOs.
+final class BoxShadowMixPropListUtility<T extends SpecUtility<Object?>>
+    extends MixUtility<T, List<MixProp<BoxShadow>>> {
+  const BoxShadowMixPropListUtility(super.builder);
 
   /// Creates an [StyleElement] instance from a list of [BoxShadow] objects.
   ///
-  /// This method maps each [BoxShadow] object to a [ShadowDto] object and passes the
-  /// resulting list to the [builder] function to create the [StyleElement] instance.
-  T call(List<Shadow> shadows) {
-    return builder(shadows.map(ShadowDto.value).toList());
-  }
-}
-
-/// A utility class for building [StyleElement] instances from a list of [BoxShadowDto] objects.
-///
-/// This class extends [MixUtility] and provides a convenient way to create [StyleElement]
-/// instances by transforming a list of [BoxShadow] objects into a list of [BoxShadowDto] objects.
-final class BoxShadowListUtility<T extends SpecUtility<Object?>>
-    extends MixUtility<T, List<BoxShadowDto>> {
-  const BoxShadowListUtility(super.builder);
-
-  /// Creates an [StyleElement] instance from a list of [BoxShadow] objects.
-  ///
-  /// This method maps each [BoxShadow] object to a [BoxShadowDto] object and passes the
+  /// This method maps each [BoxShadow] object to a [MixProp<BoxShadow>] object and passes the
   /// resulting list to the [builder] function to create the [StyleElement] instance.
   T call(List<BoxShadow> shadows) {
-    return builder(shadows.map(BoxShadowDto.value).toList());
+    return builder(
+      shadows.map((shadow) => MixProp(BoxShadowDto.value(shadow))).toList(),
+    );
   }
 }
 
-/// A utility class for building [StyleElement] instances from elevation values.
+/// A utility class for building [StyleElement] instances from elevation values that produces [MixProp<BoxShadow>] lists.
 ///
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// based on predefined elevation values, which are mapped to corresponding lists of
-/// [BoxShadowDto] objects using the [kElevationToShadow] map.
-final class ElevationUtility<T extends SpecUtility<Object?>>
-    extends MixUtility<T, List<BoxShadowDto>> {
+/// [MixProp<BoxShadow>] objects that can be directly used in DTOs.
+final class ElevationMixPropUtility<T extends SpecUtility<Object?>>
+    extends MixUtility<T, List<MixProp<BoxShadow>>> {
   /// Creates an [T] instance with an elevation of 1.
   late final e1 = one;
 
@@ -132,12 +117,42 @@ final class ElevationUtility<T extends SpecUtility<Object?>>
   /// Creates an [T] instance with an elevation of 24.
   late final e24 = twentyFour;
 
-  ElevationUtility(super.builder);
+  ElevationMixPropUtility(super.builder);
+
+  /// Creates an [T] instance with an elevation of 1.
+  T get one => call(1);
+
+  /// Creates an [T] instance with an elevation of 2.
+  T get two => call(2);
+
+  /// Creates an [T] instance with an elevation of 3.
+  T get three => call(3);
+
+  /// Creates an [T] instance with an elevation of 4.
+  T get four => call(4);
+
+  /// Creates an [T] instance with an elevation of 6.
+  T get six => call(6);
+
+  /// Creates an [T] instance with an elevation of 8.
+  T get eight => call(8);
+
+  /// Creates an [T] instance with an elevation of 9.
+  T get nine => call(9);
+
+  /// Creates an [T] instance with an elevation of 12.
+  T get twelve => call(12);
+
+  /// Creates an [T] instance with an elevation of 16.
+  T get sixteen => call(16);
+
+  /// Creates an [T] instance with an elevation of 24.
+  T get twentyFour => call(24);
 
   /// Creates an [StyleElement] instance from an elevation value.
   ///
   /// Retrieves the corresponding list of [BoxShadow] objects from the [kElevationToShadow]
-  /// map, maps each [BoxShadow] to a [BoxShadowDto], and passes the resulting list to
+  /// map, maps each [BoxShadow] to a [MixProp<BoxShadow>], and passes the resulting list to
   /// the [builder] function to create the [StyleElement] instance.
   ///
   /// Throws an [AssertionError] if the provided [value] is not a valid elevation value.
@@ -155,47 +170,16 @@ final class ElevationUtility<T extends SpecUtility<Object?>>
     }
 
     final boxShadows = kElevationToShadow[value]!.map(
-      (e) => BoxShadowDto(
-        color: Prop(e.color),
-        offset: Prop(e.offset),
-        blurRadius: Prop(e.blurRadius),
-        spreadRadius: Prop(e.spreadRadius),
+      (e) => MixProp(
+        BoxShadowDto(
+          color: Prop(e.color),
+          offset: Prop(e.offset),
+          blurRadius: Prop(e.blurRadius),
+          spreadRadius: Prop(e.spreadRadius),
+        ),
       ),
     );
 
     return builder(boxShadows.toList());
   }
-
-  /// Creates an [T] instance with no elevation.
-  T none() => call(0);
-
-  /// Creates an [T] instance with an elevation of 1.
-  T one() => call(1);
-
-  /// Creates an [T] instance with an elevation of 2.
-  T two() => call(2);
-
-  /// Creates an [T] instance with an elevation of 3.
-  T three() => call(3);
-
-  /// Creates an [T] instance with an elevation of 4.
-  T four() => call(4);
-
-  /// Creates an [T] instance with an elevation of 6.
-  T six() => call(6);
-
-  /// Creates an [T] instance with an elevation of 8.
-  T eight() => call(8);
-
-  /// Creates an [T] instance with an elevation of 9.
-  T nine() => call(9);
-
-  /// Creates an [T] instance with an elevation of 12.
-  T twelve() => call(12);
-
-  /// Creates an [T] instance with an elevation of 16.
-  T sixteen() => call(16);
-
-  /// Creates an [T] instance with an elevation of 24.
-  T twentyFour() => call(24);
 }

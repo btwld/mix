@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import '../attributes/animation/animation_config.dart';
 import '../internal/compare_mixin.dart';
+import 'animation_config.dart';
 import 'factory/style_mix.dart';
 import 'mix_element.dart';
 import 'modifier.dart';

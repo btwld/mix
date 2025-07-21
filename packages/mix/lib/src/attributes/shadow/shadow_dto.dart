@@ -12,11 +12,7 @@ sealed class BaseShadowDto<T extends Shadow> extends Mix<T> {
   final Prop<Offset>? offset;
   final Prop<double>? blurRadius;
 
-  const BaseShadowDto({
-    required this.blurRadius,
-    required this.color,
-    required this.offset,
-  });
+  const BaseShadowDto({this.blurRadius, this.color, this.offset});
 }
 
 /// Represents a [Mix] Data transfer object of [Shadow]

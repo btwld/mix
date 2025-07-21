@@ -29,8 +29,8 @@ void main() {
         );
       });
 
-      test('props factory assigns properties correctly', () {
-        final dto = EdgeInsetsDto.props(
+      test('main constructor assigns properties correctly', () {
+        final dto = EdgeInsetsDto(
           top: MixProp(SpaceDto.value(10.0)),
           bottom: MixProp(SpaceDto.value(20.0)),
           left: MixProp(SpaceDto.value(30.0)),
@@ -212,10 +212,7 @@ void main() {
           theme: MixScopeData.static(tokens: {spaceToken: 10.0}),
         );
 
-        expect(
-          dto,
-          resolvesTo(const EdgeInsets.only(top: 10.0, left: 20.0)),
-        );
+        expect(dto, resolvesTo(const EdgeInsets.only(top: 10.0, left: 20.0)));
       });
 
       test('handles missing tokens gracefully', () {
@@ -250,8 +247,8 @@ void main() {
         );
       });
 
-      test('props factory assigns properties correctly', () {
-        final dto = EdgeInsetsDirectionalDto.props(
+      test('main constructor assigns properties correctly', () {
+        final dto = EdgeInsetsDirectionalDto(
           top: MixProp(SpaceDto.value(10.0)),
           bottom: MixProp(SpaceDto.value(20.0)),
           start: MixProp(SpaceDto.value(30.0)),

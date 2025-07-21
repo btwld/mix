@@ -1,6 +1,6 @@
 // ignore_for_file: non_constant_identifier_names, constant_identifier_names, long-parameter-list, prefer-named-boolean-parameters
 
-import '../../attributes/animation/animation_config.dart';
+import '../animation_config.dart';
 import '../attribute.dart';
 import '../modifier.dart';
 import '../spec.dart';

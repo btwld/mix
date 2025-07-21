@@ -10,8 +10,8 @@ void main() {
   group('BorderSideDto', () {
     // Constructor Tests
     group('Constructor Tests', () {
-      test('main constructor creates BorderSideDto with all properties', () {
-        final dto = BorderSideDto(
+      test('only constructor creates BorderSideDto with all properties', () {
+        final dto = BorderSideDto.only(
           color: Colors.red,
           style: BorderStyle.solid,
           width: 2.0,
@@ -40,8 +40,8 @@ void main() {
         expect(dto.strokeAlign, resolvesTo(borderSide.strokeAlign));
       });
 
-      test('props constructor with Prop values', () {
-        final dto = BorderSideDto.props(
+      test('main constructor with Prop values', () {
+        final dto = BorderSideDto(
           color: Prop(Colors.green),
           width: Prop(4.0),
           style: Prop(BorderStyle.none),
@@ -108,7 +108,7 @@ void main() {
       });
 
       test('resolves with default values for null properties', () {
-        const dto = BorderSideDto.props();
+        const dto = BorderSideDto();
 
         final resolved = dto.resolve(MockBuildContext());
         expect(resolved.color, const BorderSide().color);

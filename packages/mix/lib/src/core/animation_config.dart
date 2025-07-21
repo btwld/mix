@@ -1,6 +1,6 @@
 import 'package:flutter/animation.dart';
 
-import '../../internal/constants.dart';
+import '../internal/constants.dart';
 
 /// Configuration data for animated styles in the Mix framework.
 ///

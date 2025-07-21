@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../attributes/animation/animation_config.dart';
 import '../theme/mix/mix_theme.dart';
 import '../theme/tokens/mix_token.dart';
+import 'animation_config.dart';
 import 'mix_element.dart';
 
 /// Base class for all property sources

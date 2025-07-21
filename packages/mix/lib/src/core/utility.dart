@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 
-import '../attributes/animation/animation_config.dart';
 import '../theme/tokens/mix_token.dart';
+import 'animation_config.dart';
 import 'attribute.dart';
 import 'mix_element.dart';
 import 'prop.dart';
@@ -13,21 +13,6 @@ abstract class MixUtility<U extends SpecUtility<Object?>, Value> {
   const MixUtility(this.builder);
 
   static T selfBuilder<T>(T value) => value;
-}
-
-abstract class DtoUtility<
-  A extends SpecUtility<Object?>,
-  D extends Mix<Value>,
-  Value
->
-    extends MixUtility<A, D> {
-  final D Function(Value) fromValue;
-  const DtoUtility(super.builder, {required D Function(Value) valueToDto})
-    : fromValue = valueToDto;
-
-  A only();
-
-  A as(Value value) => builder(fromValue(value));
 }
 
 abstract interface class PropBaseUtility<

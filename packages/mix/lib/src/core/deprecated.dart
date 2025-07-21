@@ -19,7 +19,6 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-import '../attributes/animation/animation_config.dart';
 import '../attributes/border/border_dto.dart';
 import '../attributes/border/border_radius_dto.dart';
 import '../attributes/border/shape_border_dto.dart';
@@ -55,6 +54,7 @@ import '../modifiers/visibility_widget_modifier.dart';
 import '../specs/image/image_spec.dart';
 import '../theme/mix/mix_theme.dart';
 import '../theme/tokens/mix_token.dart';
+import 'animation_config.dart';
 import 'attribute.dart';
 import 'mix_element.dart';
 import 'prop.dart';
@@ -458,9 +458,9 @@ extension DeprecatedBorderSideExt on BorderSide {
   BorderSideDto toDto() {
     return BorderSideDto(
       color: color,
-      strokeAlign: strokeAlign,
-      style: style,
       width: width,
+      style: style,
+      strokeAlign: strokeAlign,
     );
   }
 }

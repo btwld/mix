@@ -15,12 +15,7 @@ sealed class DecorationDto<T extends Decoration> extends Mix<T> {
   final MixProp<DecorationImage>? image;
   final List<MixProp<BoxShadow>>? boxShadow;
 
-  const DecorationDto({
-    required this.color,
-    required this.gradient,
-    required this.boxShadow,
-    required this.image,
-  });
+  const DecorationDto({this.color, this.gradient, this.boxShadow, this.image});
 
   /// Constructor that accepts a [Decoration] value and converts it to the appropriate DTO.
   static DecorationDto value(Decoration decoration) {
@@ -108,7 +103,7 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
     this.borderRadius,
     this.shape,
     this.backgroundBlendMode,
-    required super.color,
+    super.color,
     super.image,
     super.gradient,
     super.boxShadow,
@@ -200,7 +195,7 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
 
   const ShapeDecorationDto({
     this.shape,
-    required super.color,
+    super.color,
     super.image,
     super.gradient,
     List<MixProp<BoxShadow>>? shadows,

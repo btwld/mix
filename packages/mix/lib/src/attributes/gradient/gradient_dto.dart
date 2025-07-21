@@ -14,11 +14,7 @@ sealed class GradientDto<T extends Gradient> extends Mix<T>
   final List<Prop<double>>? stops;
   final List<Prop<Color>>? colors;
   final Prop<GradientTransform>? transform;
-  const GradientDto({
-    required this.stops,
-    required this.colors,
-    required this.transform,
-  });
+  const GradientDto({this.stops, this.colors, this.transform});
 
   static B _exhaustiveMerge<A extends GradientDto, B extends GradientDto>(
     A a,
@@ -125,12 +121,12 @@ final class LinearGradientDto extends GradientDto<LinearGradient> {
        );
 
   const LinearGradientDto({
-    required this.begin,
-    required this.end,
-    required this.tileMode,
-    required super.transform,
-    required super.colors,
-    required super.stops,
+    this.begin,
+    this.end,
+    this.tileMode,
+    super.transform,
+    super.colors,
+    super.stops,
   });
 
   /// Constructor that accepts a [LinearGradient] value and extracts its properties.
@@ -249,14 +245,14 @@ final class RadialGradientDto extends GradientDto<RadialGradient> {
        );
 
   const RadialGradientDto({
-    required this.center,
-    required this.radius,
-    required this.tileMode,
-    required this.focal,
-    required this.focalRadius,
-    required super.transform,
-    required super.colors,
-    required super.stops,
+    this.center,
+    this.radius,
+    this.tileMode,
+    this.focal,
+    this.focalRadius,
+    super.transform,
+    super.colors,
+    super.stops,
   });
 
   /// Constructor that accepts a [RadialGradient] value and extracts its properties.
@@ -384,13 +380,13 @@ final class SweepGradientDto extends GradientDto<SweepGradient> {
        );
 
   const SweepGradientDto({
-    required this.center,
-    required this.startAngle,
-    required this.endAngle,
-    required this.tileMode,
-    required super.transform,
-    required super.colors,
-    required super.stops,
+    this.center,
+    this.startAngle,
+    this.endAngle,
+    this.tileMode,
+    super.transform,
+    super.colors,
+    super.stops,
   });
 
   /// Constructor that accepts a [SweepGradient] value and extracts its properties.

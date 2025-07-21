@@ -21,8 +21,8 @@ void main() {
         expect(dto.offset, resolvesTo(const Offset(10, 10)));
       });
 
-      test('props constructor with Prop values', () {
-        const dto = ShadowDto.props(
+      test('main constructor with Prop values', () {
+        const dto = ShadowDto(
           blurRadius: Prop(5.0),
           color: Prop(Colors.red),
           offset: Prop(Offset(5, 5)),
@@ -86,7 +86,7 @@ void main() {
       });
 
       test('resolves with default values for null properties', () {
-        const dto = ShadowDto.props();
+        const dto = ShadowDto();
 
         final context = MockBuildContext();
         final resolved = dto.resolve(context);
@@ -235,8 +235,8 @@ void main() {
         expect(dto.spreadRadius, resolvesTo(5.0));
       });
 
-      test('props constructor with Prop values', () {
-        const dto = BoxShadowDto.props(
+      test('main constructor with Prop values', () {
+        const dto = BoxShadowDto(
           color: Prop(Colors.red),
           offset: Prop(Offset(5, 5)),
           blurRadius: Prop(8.0),
@@ -311,7 +311,7 @@ void main() {
       });
 
       test('resolves with default values for null properties', () {
-        const dto = BoxShadowDto.props();
+        const dto = BoxShadowDto();
 
         final context = MockBuildContext();
         final resolved = dto.resolve(context);

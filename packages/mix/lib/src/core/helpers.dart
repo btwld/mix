@@ -119,8 +119,11 @@ List<T>? _mergeList<T>(
   }
 }
 
-List<V> _resolveList<T extends Resolvable<V>, V>(BuildContext mix, List<T>? a) {
-  if (a == null) return [];
+List<V>? _resolveList<T extends Resolvable<V>, V>(
+  BuildContext mix,
+  List<T>? a,
+) {
+  if (a == null) return null;
 
   return a.map((e) => e.resolve(mix)).whereType<V>().toList();
 }

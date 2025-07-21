@@ -130,7 +130,6 @@ class SizedBoxModifierSpecAttribute
   List<Object?> get props => [width, height];
 }
 
-
 final class SizedBoxModifierSpecUtility<T extends Attribute>
     extends MixUtility<T, SizedBoxModifierSpecAttribute> {
   /// Utility for defining [SizedBoxModifierSpecAttribute.height]

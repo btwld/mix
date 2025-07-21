@@ -3,7 +3,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../mix.dart';
+import '../core/helpers.dart';
+import '../core/modifier.dart';
+import '../core/utility.dart';
 
 final class AlignModifierSpec extends ModifierSpec<AlignModifierSpec>
     with Diagnosticable {
@@ -137,4 +139,3 @@ class AlignModifierSpecAttribute
   @override
   List<Object?> get props => [alignment, widthFactor, heightFactor];
 }
-

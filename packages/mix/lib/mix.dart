@@ -18,8 +18,6 @@
 
 library mix;
 
-/// ATTRIBUTES
-export 'src/attributes/animation/animation_config.dart';
 export 'src/attributes/border/border_dto.dart';
 export 'src/attributes/border/border_radius_dto.dart';
 export 'src/attributes/border/border_radius_util.dart';
@@ -55,6 +53,9 @@ export 'src/attributes/text_style/text_style_util.dart';
 export 'src/core/animation/animation_driver.dart';
 export 'src/core/animation/controlled_animation_driver.dart';
 export 'src/core/animation/phase_animation_driver.dart';
+
+/// ATTRIBUTES
+export 'src/core/animation_config.dart';
 export 'src/core/attribute.dart';
 export 'src/core/deprecated.dart';
 export 'src/core/directive.dart';
