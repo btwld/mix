@@ -103,7 +103,6 @@ final class BorderDto extends BoxBorderDto<Border>
          right: MixProp.maybe(right),
        );
 
-  // Private constructor that accepts Prop instances
   const BorderDto({super.top, super.bottom, this.left, this.right});
 
   /// Constructor that accepts a [Border] value and extracts its properties.
@@ -221,7 +220,6 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional>
     BorderSideDto.none,
   );
 
-  // Main constructor accepts DTOs
   BorderDirectionalDto.only({
     BorderSideDto? top,
     BorderSideDto? bottom,
@@ -234,7 +232,6 @@ final class BorderDirectionalDto extends BoxBorderDto<BorderDirectional>
          end: MixProp.maybe(end),
        );
 
-  // Private constructor that accepts Prop instances
   const BorderDirectionalDto({super.top, super.bottom, this.start, this.end});
 
   /// Constructor that accepts a [BorderDirectional] value and extracts its properties.
@@ -358,7 +355,6 @@ final class BorderSideDto extends Mix<BorderSide>
 
   static final BorderSideDto none = BorderSideDto();
 
-  // Named constructor for raw values
   BorderSideDto.only({
     Color? color,
     double? strokeAlign,
@@ -387,7 +383,6 @@ final class BorderSideDto extends Mix<BorderSide>
         width: borderSide.width,
       );
 
-  /// Main constructor with clean delegation
   const BorderSideDto({this.color, this.width, this.style, this.strokeAlign});
 
   /// Constructor that accepts a nullable [BorderSide] value and extracts its properties.

@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../../core/attribute.dart';
+import '../../../core/prop.dart';
 import '../../../core/utility.dart';
 import '../../enum/enum_util.dart';
 import '../../scalars/scalar_util.dart';
@@ -10,106 +10,51 @@ import 'decoration_image_dto.dart';
 ///
 /// This class provides methods to set individual properties of a [DecorationImage].
 /// Use the methods of this class to configure specific properties of a [DecorationImage].
-class DecorationImageUtility<T extends Attribute>
-    extends DtoUtility<T, DecorationImageDto, DecorationImage> {
+final class DecorationImageUtility<T extends SpecUtility<Object?>>
+    extends MixPropUtility<T, DecorationImage> {
   /// Utility for defining [DecorationImageDto.image]
-  late final provider = ImageProviderUtility((v) => only(image: v));
+  late final provider = ImageProviderUtility<T>(
+    (prop) => call(DecorationImageDto(image: prop)),
+  );
 
   /// Utility for defining [DecorationImageDto.fit]
-  late final fit = BoxFitUtility((v) => only(fit: v));
+  late final fit = BoxFitUtility<T>(
+    (prop) => call(DecorationImageDto(fit: prop)),
+  );
 
   /// Utility for defining [DecorationImageDto.alignment]
-  late final alignment = AlignmentUtility((v) => only(alignment: v));
+  late final alignment = AlignmentUtility<T>(
+    (prop) => call(DecorationImageDto(alignment: prop)),
+  );
 
   /// Utility for defining [DecorationImageDto.centerSlice]
-  late final centerSlice = RectUtility((v) => only(centerSlice: v));
+  late final centerSlice = RectUtility<T>(
+    (prop) => call(DecorationImageDto(centerSlice: prop)),
+  );
 
   /// Utility for defining [DecorationImageDto.repeat]
-  late final repeat = ImageRepeatUtility((v) => only(repeat: v));
+  late final repeat = ImageRepeatUtility<T>(
+    (prop) => call(DecorationImageDto(repeat: prop)),
+  );
 
   /// Utility for defining [DecorationImageDto.filterQuality]
-  late final filterQuality = FilterQualityUtility(
-    (v) => only(filterQuality: v),
+  late final filterQuality = FilterQualityUtility<T>(
+    (prop) => call(DecorationImageDto(filterQuality: prop)),
   );
 
   /// Utility for defining [DecorationImageDto.invertColors]
-  late final invertColors = BoolUtility(
-    (prop) => builder(DecorationImageDto.props(invertColors: prop)),
+  late final invertColors = BoolUtility<T>(
+    (prop) => call(DecorationImageDto(invertColors: prop)),
   );
 
   /// Utility for defining [DecorationImageDto.isAntiAlias]
-  late final isAntiAlias = BoolUtility(
-    (prop) => builder(DecorationImageDto.props(isAntiAlias: prop)),
+  late final isAntiAlias = BoolUtility<T>(
+    (prop) => call(DecorationImageDto(isAntiAlias: prop)),
   );
 
   DecorationImageUtility(super.builder)
     : super(valueToDto: DecorationImageDto.value);
 
-  T call({
-    ImageProvider<Object>? image,
-    BoxFit? fit,
-    AlignmentGeometry? alignment,
-    Rect? centerSlice,
-    ImageRepeat? repeat,
-    FilterQuality? filterQuality,
-    bool? invertColors,
-    bool? isAntiAlias,
-  }) {
-    return only(
-      image: image,
-      fit: fit,
-      alignment: alignment,
-      centerSlice: centerSlice,
-      repeat: repeat,
-      filterQuality: filterQuality,
-      invertColors: invertColors,
-      isAntiAlias: isAntiAlias,
-    );
-  }
-
-  /// Returns a new [DecorationImageDto] with the specified properties.
   @override
-  T only({
-    ImageProvider? image,
-    BoxFit? fit,
-    AlignmentGeometry? alignment,
-    Rect? centerSlice,
-    ImageRepeat? repeat,
-    FilterQuality? filterQuality,
-    bool? invertColors,
-    bool? isAntiAlias,
-  }) {
-    return builder(
-      DecorationImageDto(
-        image: image,
-        fit: fit,
-        alignment: alignment,
-        centerSlice: centerSlice,
-        repeat: repeat,
-        filterQuality: filterQuality,
-        invertColors: invertColors,
-        isAntiAlias: isAntiAlias,
-      ),
-    );
-  }
-}
-
-// Helper function
-DecorationImageDto _decorationImageToDto(DecorationImage decorationImage) {
-  return DecorationImageDto(
-    image: decorationImage.image,
-    fit: decorationImage.fit,
-    alignment: decorationImage.alignment != Alignment.center
-        ? decorationImage.alignment
-        : null,
-    centerSlice: decorationImage.centerSlice,
-    repeat: decorationImage.repeat != ImageRepeat.noRepeat
-        ? decorationImage.repeat
-        : null,
-    filterQuality: decorationImage.filterQuality != FilterQuality.low
-        ? decorationImage.filterQuality
-        : null,
-    invertColors: decorationImage.invertColors ? true : null,
-    isAntiAlias: !decorationImage.isAntiAlias ? false : null,
-  );
+  T call(DecorationImageDto value) => builder(MixProp(value));
 }

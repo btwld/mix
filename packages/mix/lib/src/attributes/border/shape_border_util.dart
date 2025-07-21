@@ -1,9 +1,8 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/attribute.dart';
+import '../../core/prop.dart';
 import '../../core/utility.dart';
-import 'border_dto.dart';
-import 'border_radius_dto.dart';
+import '../scalars/scalar_util.dart';
 import 'border_radius_util.dart';
 import 'border_util.dart';
 import 'shape_border_dto.dart';
@@ -12,336 +11,241 @@ import 'shape_border_dto.dart';
 ///
 /// This class provides methods to set individual properties of a [RoundedRectangleBorder].
 /// Use the methods of this class to configure specific properties of a [RoundedRectangleBorder].
-class RoundedRectangleBorderUtility<T extends Attribute>
-    extends DtoUtility<T, RoundedRectangleBorderDto, RoundedRectangleBorder> {
+final class RoundedRectangleBorderUtility<T extends SpecUtility<Object?>>
+    extends MixPropUtility<T, RoundedRectangleBorder> {
   /// Utility for defining [RoundedRectangleBorderDto.borderRadius]
-  late final borderRadius = BorderRadiusGeometryUtility(
-    (v) => only(borderRadius: v),
+  late final borderRadius = BorderRadiusGeometryUtility<T>(
+    (v) => call(RoundedRectangleBorderDto(borderRadius: v)),
   );
 
   /// Utility for defining [RoundedRectangleBorderDto.side]
-  late final side = BorderSideUtility((v) => only(side: v));
+  late final side = BorderSideUtility<T>(
+    (v) => call(RoundedRectangleBorderDto(side: v)),
+  );
 
   RoundedRectangleBorderUtility(super.builder)
     : super(valueToDto: RoundedRectangleBorderDto.value);
 
-  T call({BorderRadiusGeometry? borderRadius, BorderSide? side}) {
-    return only(
-      borderRadius: BorderRadiusGeometryDto.maybeValue(borderRadius),
-      side: BorderSideDto.maybeValue(side),
-    );
-  }
-
-  /// Returns a new [RoundedRectangleBorderDto] with the specified properties.
   @override
-  T only({BorderRadiusGeometryDto? borderRadius, BorderSideDto? side}) {
-    return builder(
-      RoundedRectangleBorderDto(borderRadius: borderRadius, side: side),
-    );
-  }
+  T call(RoundedRectangleBorderDto value) => builder(MixProp(value));
 }
 
-class BeveledRectangleBorderUtility<T extends Attribute>
-    extends DtoUtility<T, BeveledRectangleBorderDto, BeveledRectangleBorder> {
+/// Utility class for configuring [BeveledRectangleBorder] properties.
+///
+/// This class provides methods to set individual properties of a [BeveledRectangleBorder].
+/// Use the methods of this class to configure specific properties of a [BeveledRectangleBorder].
+final class BeveledRectangleBorderUtility<T extends SpecUtility<Object?>>
+    extends MixPropUtility<T, BeveledRectangleBorder> {
   /// Utility for defining [BeveledRectangleBorderDto.borderRadius]
-  late final borderRadius = BorderRadiusGeometryUtility(
-    (v) => only(borderRadius: v),
+  late final borderRadius = BorderRadiusGeometryUtility<T>(
+    (v) => call(BeveledRectangleBorderDto(borderRadius: v)),
   );
 
   /// Utility for defining [BeveledRectangleBorderDto.side]
-  late final side = BorderSideUtility((v) => only(side: v));
+  late final side = BorderSideUtility<T>(
+    (v) => call(BeveledRectangleBorderDto(side: v)),
+  );
 
   BeveledRectangleBorderUtility(super.builder)
     : super(valueToDto: BeveledRectangleBorderDto.value);
 
-  T call({BorderRadiusGeometry? borderRadius, BorderSide? side}) {
-    return only(
-      borderRadius: BorderRadiusGeometryDto.maybeValue(borderRadius),
-      side: BorderSideDto.maybeValue(side),
-    );
-  }
-
-  /// Returns a new [BeveledRectangleBorderDto] with the specified properties.
   @override
-  T only({BorderRadiusGeometryDto? borderRadius, BorderSideDto? side}) {
-    return builder(
-      BeveledRectangleBorderDto(borderRadius: borderRadius, side: side),
-    );
-  }
+  T call(BeveledRectangleBorderDto value) => builder(MixProp(value));
 }
 
-class ContinuousRectangleBorderUtility<T extends Attribute>
-    extends
-        DtoUtility<T, ContinuousRectangleBorderDto, ContinuousRectangleBorder> {
+/// Utility class for configuring [ContinuousRectangleBorder] properties.
+///
+/// This class provides methods to set individual properties of a [ContinuousRectangleBorder].
+/// Use the methods of this class to configure specific properties of a [ContinuousRectangleBorder].
+final class ContinuousRectangleBorderUtility<T extends SpecUtility<Object?>>
+    extends MixPropUtility<T, ContinuousRectangleBorder> {
   /// Utility for defining [ContinuousRectangleBorderDto.borderRadius]
-  late final borderRadius = BorderRadiusGeometryUtility(
-    (v) => only(borderRadius: v),
+  late final borderRadius = BorderRadiusGeometryUtility<T>(
+    (v) => call(ContinuousRectangleBorderDto(borderRadius: v)),
   );
 
   /// Utility for defining [ContinuousRectangleBorderDto.side]
-  late final side = BorderSideUtility((v) => only(side: v));
+  late final side = BorderSideUtility<T>(
+    (v) => call(ContinuousRectangleBorderDto(side: v)),
+  );
 
   ContinuousRectangleBorderUtility(super.builder)
     : super(valueToDto: ContinuousRectangleBorderDto.value);
 
-  T call({BorderRadiusGeometry? borderRadius, BorderSide? side}) {
-    return only(
-      borderRadius: BorderRadiusGeometryDto.maybeValue(borderRadius),
-      side: BorderSideDto.maybeValue(side),
-    );
-  }
-
-  /// Returns a new [ContinuousRectangleBorderDto] with the specified properties.
   @override
-  T only({BorderRadiusGeometryDto? borderRadius, BorderSideDto? side}) {
-    return builder(
-      ContinuousRectangleBorderDto(borderRadius: borderRadius, side: side),
-    );
-  }
+  T call(ContinuousRectangleBorderDto value) => builder(MixProp(value));
 }
 
-class CircleBorderUtility<T extends Attribute>
-    extends DtoUtility<T, CircleBorderDto, CircleBorder> {
+/// Utility class for configuring [CircleBorder] properties.
+///
+/// This class provides methods to set individual properties of a [CircleBorder].
+/// Use the methods of this class to configure specific properties of a [CircleBorder].
+final class CircleBorderUtility<T extends SpecUtility<Object?>>
+    extends MixPropUtility<T, CircleBorder> {
   /// Utility for defining [CircleBorderDto.side]
-  late final side = BorderSideUtility((v) => only(side: v));
+  late final side = BorderSideUtility<T>((v) => call(CircleBorderDto(side: v)));
 
   /// Utility for defining [CircleBorderDto.eccentricity]
-  late final eccentricity = DoubleUtility(
-    (prop) => builder(CircleBorderDto.props(eccentricity: prop)),
+  late final eccentricity = DoubleUtility<T>(
+    (prop) => call(CircleBorderDto(eccentricity: prop)),
   );
 
   CircleBorderUtility(super.builder) : super(valueToDto: CircleBorderDto.value);
 
-  T call({BorderSide? side, double? eccentricity}) {
-    return only(
-      side: BorderSideDto.maybeValue(side),
-      eccentricity: eccentricity,
-    );
-  }
-
-  /// Returns a new [CircleBorderDto] with the specified properties.
   @override
-  T only({BorderSideDto? side, double? eccentricity}) {
-    return builder(CircleBorderDto(side: side, eccentricity: eccentricity));
-  }
+  T call(CircleBorderDto value) => builder(MixProp(value));
 }
 
-class StarBorderUtility<T extends Attribute>
-    extends DtoUtility<T, StarBorderDto, StarBorder> {
+/// Utility class for configuring [StarBorder] properties.
+///
+/// This class provides methods to set individual properties of a [StarBorder].
+/// Use the methods of this class to configure specific properties of a [StarBorder].
+final class StarBorderUtility<T extends SpecUtility<Object?>>
+    extends MixPropUtility<T, StarBorder> {
   /// Utility for defining [StarBorderDto.side]
-  late final side = BorderSideUtility((v) => only(side: v));
+  late final side = BorderSideUtility<T>((v) => call(StarBorderDto(side: v)));
 
   /// Utility for defining [StarBorderDto.points]
-  late final points = DoubleUtility(
-    (prop) => builder(StarBorderDto.props(points: prop)),
+  late final points = DoubleUtility<T>(
+    (prop) => call(StarBorderDto(points: prop)),
   );
 
   /// Utility for defining [StarBorderDto.innerRadiusRatio]
-  late final innerRadiusRatio = DoubleUtility(
-    (prop) => builder(StarBorderDto.props(innerRadiusRatio: prop)),
+  late final innerRadiusRatio = DoubleUtility<T>(
+    (prop) => call(StarBorderDto(innerRadiusRatio: prop)),
   );
 
   /// Utility for defining [StarBorderDto.pointRounding]
-  late final pointRounding = DoubleUtility(
-    (prop) => builder(StarBorderDto.props(pointRounding: prop)),
+  late final pointRounding = DoubleUtility<T>(
+    (prop) => call(StarBorderDto(pointRounding: prop)),
   );
 
   /// Utility for defining [StarBorderDto.valleyRounding]
-  late final valleyRounding = DoubleUtility(
-    (prop) => builder(StarBorderDto.props(valleyRounding: prop)),
+  late final valleyRounding = DoubleUtility<T>(
+    (prop) => call(StarBorderDto(valleyRounding: prop)),
   );
 
   /// Utility for defining [StarBorderDto.rotation]
-  late final rotation = DoubleUtility(
-    (prop) => builder(StarBorderDto.props(rotation: prop)),
+  late final rotation = DoubleUtility<T>(
+    (prop) => call(StarBorderDto(rotation: prop)),
   );
 
   /// Utility for defining [StarBorderDto.squash]
-  late final squash = DoubleUtility(
-    (prop) => builder(StarBorderDto.props(squash: prop)),
+  late final squash = DoubleUtility<T>(
+    (prop) => call(StarBorderDto(squash: prop)),
   );
 
   StarBorderUtility(super.builder) : super(valueToDto: StarBorderDto.value);
 
-  T call({
-    BorderSide? side,
-    double? points,
-    double? innerRadiusRatio,
-    double? pointRounding,
-    double? valleyRounding,
-    double? rotation,
-    double? squash,
-  }) {
-    return only(
-      side: BorderSideDto.maybeValue(side),
-      points: points,
-      innerRadiusRatio: innerRadiusRatio,
-      pointRounding: pointRounding,
-      valleyRounding: valleyRounding,
-      rotation: rotation,
-      squash: squash,
-    );
-  }
-
-  /// Returns a new [StarBorderDto] with the specified properties.
   @override
-  T only({
-    BorderSideDto? side,
-    double? points,
-    double? innerRadiusRatio,
-    double? pointRounding,
-    double? valleyRounding,
-    double? rotation,
-    double? squash,
-  }) {
-    return builder(
-      StarBorderDto(
-        side: side,
-        points: points,
-        innerRadiusRatio: innerRadiusRatio,
-        pointRounding: pointRounding,
-        valleyRounding: valleyRounding,
-        rotation: rotation,
-        squash: squash,
-      ),
-    );
-  }
+  T call(StarBorderDto value) => builder(MixProp(value));
 }
 
-class LinearBorderUtility<T extends Attribute>
-    extends DtoUtility<T, LinearBorderDto, LinearBorder> {
+/// Utility class for configuring [LinearBorder] properties.
+///
+/// This class provides methods to set individual properties of a [LinearBorder].
+/// Use the methods of this class to configure specific properties of a [LinearBorder].
+final class LinearBorderUtility<T extends SpecUtility<Object?>>
+    extends MixPropUtility<T, LinearBorder> {
   /// Utility for defining [LinearBorderDto.side]
-  late final side = BorderSideUtility((v) => only(side: v));
+  late final side = BorderSideUtility<T>((v) => call(LinearBorderDto(side: v)));
 
   /// Utility for defining [LinearBorderDto.start]
-  late final start = LinearBorderEdgeUtility((v) => only(start: v));
+  late final start = LinearBorderEdgeUtility<T>(
+    (v) => call(LinearBorderDto(start: v)),
+  );
 
   /// Utility for defining [LinearBorderDto.end]
-  late final end = LinearBorderEdgeUtility((v) => only(end: v));
+  late final end = LinearBorderEdgeUtility<T>(
+    (v) => call(LinearBorderDto(end: v)),
+  );
 
   /// Utility for defining [LinearBorderDto.top]
-  late final top = LinearBorderEdgeUtility((v) => only(top: v));
+  late final top = LinearBorderEdgeUtility<T>(
+    (v) => call(LinearBorderDto(top: v)),
+  );
 
   /// Utility for defining [LinearBorderDto.bottom]
-  late final bottom = LinearBorderEdgeUtility((v) => only(bottom: v));
+  late final bottom = LinearBorderEdgeUtility<T>(
+    (v) => call(LinearBorderDto(bottom: v)),
+  );
 
   LinearBorderUtility(super.builder) : super(valueToDto: LinearBorderDto.value);
 
-  T call({
-    BorderSide? side,
-    LinearBorderEdge? start,
-    LinearBorderEdge? end,
-    LinearBorderEdge? top,
-    LinearBorderEdge? bottom,
-  }) {
-    return only(
-      side: BorderSideDto.maybeValue(side),
-      start: LinearBorderEdgeDto.maybeValue(start),
-      end: LinearBorderEdgeDto.maybeValue(end),
-      top: LinearBorderEdgeDto.maybeValue(top),
-      bottom: LinearBorderEdgeDto.maybeValue(bottom),
-    );
-  }
-
-  /// Returns a new [LinearBorderDto] with the specified properties.
   @override
-  T only({
-    BorderSideDto? side,
-    LinearBorderEdgeDto? start,
-    LinearBorderEdgeDto? end,
-    LinearBorderEdgeDto? top,
-    LinearBorderEdgeDto? bottom,
-  }) {
-    return builder(
-      LinearBorderDto(
-        side: side,
-        start: start,
-        end: end,
-        top: top,
-        bottom: bottom,
-      ),
-    );
-  }
+  T call(LinearBorderDto value) => builder(MixProp(value));
 }
 
-class LinearBorderEdgeUtility<T extends Attribute>
-    extends DtoUtility<T, LinearBorderEdgeDto, LinearBorderEdge> {
+/// Utility class for configuring [LinearBorderEdge] properties.
+///
+/// This class provides methods to set individual properties of a [LinearBorderEdge].
+/// Use the methods of this class to configure specific properties of a [LinearBorderEdge].
+final class LinearBorderEdgeUtility<T extends SpecUtility<Object?>>
+    extends MixPropUtility<T, LinearBorderEdge> {
   /// Utility for defining [LinearBorderEdgeDto.size]
-  late final size = DoubleUtility(
-    (prop) => builder(LinearBorderEdgeDto.props(size: prop)),
+  late final size = DoubleUtility<T>(
+    (prop) => call(LinearBorderEdgeDto(size: prop)),
   );
 
   /// Utility for defining [LinearBorderEdgeDto.alignment]
-  late final alignment = DoubleUtility(
-    (prop) => builder(LinearBorderEdgeDto.props(alignment: prop)),
+  late final alignment = DoubleUtility<T>(
+    (prop) => call(LinearBorderEdgeDto(alignment: prop)),
   );
 
   LinearBorderEdgeUtility(super.builder)
     : super(valueToDto: LinearBorderEdgeDto.value);
 
-  T call({double? size, double? alignment}) {
-    return only(size: size, alignment: alignment);
-  }
-
-  /// Returns a new [LinearBorderEdgeDto] with the specified properties.
   @override
-  T only({double? size, double? alignment}) {
-    return builder(LinearBorderEdgeDto(size: size, alignment: alignment));
-  }
+  T call(LinearBorderEdgeDto value) => builder(MixProp(value));
 }
 
-class StadiumBorderUtility<T extends Attribute>
-    extends DtoUtility<T, StadiumBorderDto, StadiumBorder> {
+/// Utility class for configuring [StadiumBorder] properties.
+///
+/// This class provides methods to set individual properties of a [StadiumBorder].
+/// Use the methods of this class to configure specific properties of a [StadiumBorder].
+final class StadiumBorderUtility<T extends SpecUtility<Object?>>
+    extends MixPropUtility<T, StadiumBorder> {
   /// Utility for defining [StadiumBorderDto.side]
-  late final side = BorderSideUtility((v) => only(side: v));
+  late final side = BorderSideUtility<T>(
+    (v) => call(StadiumBorderDto(side: v)),
+  );
 
   StadiumBorderUtility(super.builder)
     : super(valueToDto: StadiumBorderDto.value);
 
-  T call({BorderSide? side}) {
-    return only(side: BorderSideDto.maybeValue(side));
-  }
-
-  /// Returns a new [StadiumBorderDto] with the specified properties.
   @override
-  T only({BorderSideDto? side}) {
-    return builder(StadiumBorderDto(side: side));
-  }
+  T call(StadiumBorderDto value) => builder(MixProp(value));
 }
 
-class ShapeBorderUtility<T extends Attribute>
-    extends DtoUtility<T, ShapeBorderDto, ShapeBorder> {
+/// Utility class for configuring [ShapeBorder] properties.
+///
+/// This class provides methods to set individual properties of a [ShapeBorder].
+/// Use the methods of this class to configure specific properties of a [ShapeBorder].
+final class ShapeBorderUtility<T extends SpecUtility<Object?>>
+    extends MixPropUtility<T, ShapeBorder> {
   /// Utility for defining RoundedRectangleBorder
-  late final roundedRectangle = RoundedRectangleBorderUtility(builder);
+  late final roundedRectangle = RoundedRectangleBorderUtility<T>(builder);
 
   /// Utility for defining BeveledRectangleBorder
-  late final beveled = BeveledRectangleBorderUtility(builder);
+  late final beveled = BeveledRectangleBorderUtility<T>(builder);
 
   /// Utility for defining ContinuousRectangleBorder
-  late final continuous = ContinuousRectangleBorderUtility(builder);
+  late final continuous = ContinuousRectangleBorderUtility<T>(builder);
 
   /// Utility for defining CircleBorder
-  late final circle = CircleBorderUtility(builder);
+  late final circle = CircleBorderUtility<T>(builder);
 
   /// Utility for defining StarBorder
-  late final star = StarBorderUtility(builder);
+  late final star = StarBorderUtility<T>(builder);
 
   /// Utility for defining LinearBorder
-  late final linear = LinearBorderUtility(builder);
+  late final linear = LinearBorderUtility<T>(builder);
 
   /// Utility for defining StadiumBorder
-  late final stadium = StadiumBorderUtility(builder);
+  late final stadium = StadiumBorderUtility<T>(builder);
 
   ShapeBorderUtility(super.builder) : super(valueToDto: ShapeBorderDto.value);
 
-  T call(ShapeBorder shape) {
-    return builder(ShapeBorderDto.value(shape));
-  }
-
   @override
-  T only() {
-    throw UnsupportedError(
-      'ShapeBorderUtility.only is not supported. Use the specific shape utilities instead.',
-    );
-  }
+  T call(ShapeBorderDto value) => builder(MixProp(value));
 }

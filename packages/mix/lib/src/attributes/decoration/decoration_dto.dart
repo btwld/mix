@@ -198,7 +198,6 @@ final class ShapeDecorationDto extends DecorationDto<ShapeDecoration>
          shadows: shadows?.map(MixProp<BoxShadow>.new).toList(),
        );
 
-  /// Main constructor with clean delegation
   const ShapeDecorationDto({
     this.shape,
     required super.color,

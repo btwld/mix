@@ -1,4 +1,4 @@
-import '../core/attribute.dart';
+import '../core/prop.dart';
 import '../core/utility.dart';
 import 'align_widget_modifier.dart';
 import 'aspect_ratio_widget_modifier.dart';
@@ -16,7 +16,7 @@ import 'sized_box_widget_modifier.dart';
 import 'transform_widget_modifier.dart';
 import 'visibility_widget_modifier.dart';
 
-abstract class ModifierUtility<T extends Attribute, Value>
+abstract class ModifierUtility<T extends SpecUtility<Object?>, Value>
     extends MixUtility<T, Value> {
   late final intrinsicWidth = IntrinsicWidthModifierSpecUtility(only);
   late final intrinsicHeight = IntrinsicHeightModifierSpecUtility(only);
@@ -41,26 +41,27 @@ abstract class ModifierUtility<T extends Attribute, Value>
   late final fractionallySizedBox = FractionallySizedBoxModifierSpecUtility(
     only,
   );
+
+  late final padding = PaddingModifierSpecUtility(only);
   late final sizedBox = SizedBoxModifierSpecUtility(only);
-  late final cursor = MouseCursorModifierSpecUtility(only);
-  late final padding = PaddingModifierSpecUtility(only).padding;
+  late final mouseCursor = MouseCursorModifierSpecUtility(only);
 
-  /// This modifier wraps the widget with a [SingleChildScrollView].
-  late final scrollView = ScrollViewModifierSpecUtility(only);
+  const ModifierUtility(super.builder);
 
-  ModifierUtility(super.builder);
-
-  T only(ModifierSpecAttribute attribute);
+  T only();
 }
 
-class WithModifierUtility<T extends Attribute>
-    extends ModifierUtility<T, ModifierSpecAttribute> {
-  static final self = WithModifierUtility(MixUtility.selfBuilder);
-
+/// Utility class for building [WithModifierUtility] instances.
+final class WithModifierUtility<T extends SpecUtility<Object?>>
+    extends SpecUtility<T, ModifierSpecAttribute>
+    with ModifierUtility<T, T> {
+  /// Creates a [WithModifierUtility] with the provided builder.
   WithModifierUtility(super.builder);
 
+  /// Creates a static instance of [WithModifierUtility].
+  static WithModifierUtility<ModifierSpecAttribute> get self =>
+      WithModifierUtility((v) => v);
+
   @override
-  T only(ModifierSpecAttribute attribute) {
-    return builder(attribute);
-  }
+  T only() => builder(const ModifierSpecAttribute());
 }

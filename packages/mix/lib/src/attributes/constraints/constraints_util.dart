@@ -1,66 +1,39 @@
 import 'package:flutter/rendering.dart';
 
-import '../../core/attribute.dart';
+import '../../core/prop.dart';
 import '../../core/utility.dart';
+import '../scalars/scalar_util.dart';
 import 'constraints_dto.dart';
 
 /// Utility class for configuring [BoxConstraints] properties.
 ///
 /// This class provides methods to set individual properties of a [BoxConstraints].
 /// Use the methods of this class to configure specific properties of a [BoxConstraints].
-class BoxConstraintsUtility<T extends Attribute>
-    extends DtoUtility<T, BoxConstraintsDto, BoxConstraints> {
+final class BoxConstraintsUtility<T extends SpecUtility<Object?>>
+    extends MixPropUtility<T, BoxConstraints> {
   /// Utility for defining [BoxConstraintsDto.minWidth]
-  late final minWidth = DoubleUtility(
-    (prop) => builder(BoxConstraintsDto.props(minWidth: prop)),
+  late final minWidth = DoubleUtility<T>(
+    (prop) => call(BoxConstraintsDto(minWidth: prop)),
   );
 
   /// Utility for defining [BoxConstraintsDto.maxWidth]
-  late final maxWidth = DoubleUtility(
-    (prop) => builder(BoxConstraintsDto.props(maxWidth: prop)),
+  late final maxWidth = DoubleUtility<T>(
+    (prop) => call(BoxConstraintsDto(maxWidth: prop)),
   );
 
   /// Utility for defining [BoxConstraintsDto.minHeight]
-  late final minHeight = DoubleUtility(
-    (prop) => builder(BoxConstraintsDto.props(minHeight: prop)),
+  late final minHeight = DoubleUtility<T>(
+    (prop) => call(BoxConstraintsDto(minHeight: prop)),
   );
 
   /// Utility for defining [BoxConstraintsDto.maxHeight]
-  late final maxHeight = DoubleUtility(
-    (prop) => builder(BoxConstraintsDto.props(maxHeight: prop)),
+  late final maxHeight = DoubleUtility<T>(
+    (prop) => call(BoxConstraintsDto(maxHeight: prop)),
   );
 
   BoxConstraintsUtility(super.builder)
     : super(valueToDto: BoxConstraintsDto.value);
-  T call({
-    double? minWidth,
-    double? maxWidth,
-    double? minHeight,
-    double? maxHeight,
-  }) {
-    return only(
-      minWidth: minWidth,
-      maxWidth: maxWidth,
-      minHeight: minHeight,
-      maxHeight: maxHeight,
-    );
-  }
 
-  /// Returns a new [BoxConstraintsDto] with the specified properties.
   @override
-  T only({
-    double? minWidth,
-    double? maxWidth,
-    double? minHeight,
-    double? maxHeight,
-  }) {
-    return builder(
-      BoxConstraintsDto(
-        minWidth: minWidth,
-        maxWidth: maxWidth,
-        minHeight: minHeight,
-        maxHeight: maxHeight,
-      ),
-    );
-  }
+  T call(BoxConstraintsDto value) => builder(MixProp(value));
 }
