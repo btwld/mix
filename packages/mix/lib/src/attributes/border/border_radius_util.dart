@@ -53,17 +53,7 @@ final class BorderRadiusGeometryUtility<T extends SpecUtility<Object?>>
   late final _bordeRadius = BorderRadiusUtility<T>(builder);
 
   BorderRadiusGeometryUtility(super.builder)
-    : super(
-        valueToMix: (v) {
-          return switch (v) {
-            BorderRadius() => BorderRadiusDto.value(v),
-            BorderRadiusDirectional() => BorderRadiusDirectionalDto.value(v),
-            _ => throw ArgumentError(
-              'Unsupported BorderRadiusGeometry type: ${v.runtimeType}',
-            ),
-          };
-        },
-      );
+    : super(valueToMix: BorderRadiusGeometryDto.value);
 
   @override
   T call(BorderRadiusGeometryDto value) => builder(MixProp(value));

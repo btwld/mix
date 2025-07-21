@@ -3,11 +3,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import '../core/attribute.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
+import '../core/prop.dart';
 import '../core/utility.dart';
 
-final class AlignModifierSpec extends ModifierSpec<AlignModifierSpec>
+final class AlignModifierSpec extends Modifier<AlignModifierSpec>
     with Diagnosticable {
   final AlignmentGeometry? alignment;
   final double? widthFactor;
@@ -44,20 +46,6 @@ final class AlignModifierSpec extends ModifierSpec<AlignModifierSpec>
   }
 
   @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-      DiagnosticsProperty('alignment', alignment, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('widthFactor', widthFactor, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('heightFactor', heightFactor, defaultValue: null),
-    );
-  }
-
-  @override
   List<Object?> get props => [alignment, widthFactor, heightFactor];
 
   @override
@@ -81,20 +69,19 @@ final class AlignModifierSpecUtility<T extends SpecUtility<Object?>>
   }) {
     return builder(
       AlignModifierSpecAttribute(
-        alignment: alignment,
-        widthFactor: widthFactor,
-        heightFactor: heightFactor,
+        alignment: Prop.maybe(alignment),
+        widthFactor: Prop.maybe(widthFactor),
+        heightFactor: Prop.maybe(heightFactor),
       ),
     );
   }
 }
 
 class AlignModifierSpecAttribute
-    extends ModifierSpecAttribute<AlignModifierSpec>
-    with Diagnosticable {
-  final AlignmentGeometry? alignment;
-  final double? widthFactor;
-  final double? heightFactor;
+    extends ModifierSpecAttribute<AlignModifierSpec> {
+  final Prop<AlignmentGeometry>? alignment;
+  final Prop<double>? widthFactor;
+  final Prop<double>? heightFactor;
 
   const AlignModifierSpecAttribute({
     this.alignment,
@@ -105,9 +92,9 @@ class AlignModifierSpecAttribute
   @override
   AlignModifierSpec resolve(BuildContext context) {
     return AlignModifierSpec(
-      alignment: alignment,
-      widthFactor: widthFactor,
-      heightFactor: heightFactor,
+      alignment: MixHelpers.resolve(context, alignment),
+      widthFactor: MixHelpers.resolve(context, widthFactor),
+      heightFactor: MixHelpers.resolve(context, heightFactor),
     );
   }
 
@@ -116,23 +103,9 @@ class AlignModifierSpecAttribute
     if (other == null) return this;
 
     return AlignModifierSpecAttribute(
-      alignment: other.alignment ?? alignment,
-      widthFactor: other.widthFactor ?? widthFactor,
-      heightFactor: other.heightFactor ?? heightFactor,
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-      DiagnosticsProperty('alignment', alignment, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('widthFactor', widthFactor, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('heightFactor', heightFactor, defaultValue: null),
+      alignment: MixHelpers.merge(alignment, other.alignment),
+      widthFactor: MixHelpers.merge(widthFactor, other.widthFactor),
+      heightFactor: MixHelpers.merge(heightFactor, other.heightFactor),
     );
   }
 

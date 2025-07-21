@@ -7,7 +7,7 @@ import '../../core/attribute.dart';
 import '../../core/modifier.dart';
 import '../../core/utility.dart';
 
-final class ResetModifierSpec extends ModifierSpec<ResetModifierSpec>
+final class ResetModifierSpec extends Modifier<ResetModifierSpec>
     with Diagnosticable {
   const ResetModifierSpec();
 

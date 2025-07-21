@@ -83,6 +83,29 @@ final class BoxDecorationDto extends DecorationDto<BoxDecoration> {
          boxShadow: boxShadow?.map(MixProp<BoxShadow>.new).toList(),
        );
 
+  BoxDecorationDto.border(BoxBorderDto border) : this.only(border: border);
+
+  BoxDecorationDto.borderDirectional(BorderDirectionalDto border)
+    : this.only(border: border);
+
+  BoxDecorationDto.borderRadius(BorderRadiusGeometryDto borderRadius)
+    : this.only(borderRadius: borderRadius);
+
+  BoxDecorationDto.shape(BoxShape shape) : this.only(shape: shape);
+
+  BoxDecorationDto.backgroundBlendMode(BlendMode backgroundBlendMode)
+    : this.only(backgroundBlendMode: backgroundBlendMode);
+
+  BoxDecorationDto.color(Color? color) : this.only(color: color);
+
+  BoxDecorationDto.image(DecorationImageDto? image) : this.only(image: image);
+
+  BoxDecorationDto.gradient(GradientDto? gradient)
+    : this.only(gradient: gradient);
+
+  BoxDecorationDto.boxShadow(List<BoxShadowDto>? boxShadow)
+    : this.only(boxShadow: boxShadow);
+
   /// Constructor that accepts a [BoxDecoration] value and extracts its properties.
   BoxDecorationDto.value(BoxDecoration decoration)
     : this.only(

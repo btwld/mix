@@ -7,10 +7,10 @@ import '../core/attribute.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
-import '../theme/tokens/mix_token.dart';
 import '../core/utility.dart';
+import '../theme/tokens/mix_token.dart';
 
-final class SizedBoxModifierSpec extends ModifierSpec<SizedBoxModifierSpec>
+final class SizedBoxModifierSpec extends Modifier<SizedBoxModifierSpec>
     with Diagnosticable {
   final double? width;
   final double? height;
@@ -151,14 +151,18 @@ final class SizedBoxModifierSpecUtility<T extends SpecUtility<Object?>>
   const SizedBoxModifierSpecUtility(super.builder);
 
   T call({double? width, double? height}) {
-    return builder(SizedBoxModifierSpecAttribute(
-      width: width != null ? Prop(width) : null,
-      height: height != null ? Prop(height) : null,
-    ));
+    return builder(
+      SizedBoxModifierSpecAttribute(
+        width: width != null ? Prop(width) : null,
+        height: height != null ? Prop(height) : null,
+      ),
+    );
   }
-  
-  T widthToken(MixToken<double> token) => builder(SizedBoxModifierSpecAttribute(width: Prop.token(token)));
-  T heightToken(MixToken<double> token) => builder(SizedBoxModifierSpecAttribute(height: Prop.token(token)));
+
+  T widthToken(MixToken<double> token) =>
+      builder(SizedBoxModifierSpecAttribute(width: Prop.token(token)));
+  T heightToken(MixToken<double> token) =>
+      builder(SizedBoxModifierSpecAttribute(height: Prop.token(token)));
 
   /// Utility for defining [SizedBoxModifierSpecAttribute.width] and [SizedBoxModifierSpecAttribute.height]
   /// from [Size]

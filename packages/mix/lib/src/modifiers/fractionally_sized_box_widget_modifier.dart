@@ -6,10 +6,11 @@ import 'package:flutter/widgets.dart';
 import '../core/attribute.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
+import '../core/prop.dart';
 import '../core/utility.dart';
 
 final class FractionallySizedBoxModifierSpec
-    extends ModifierSpec<FractionallySizedBoxModifierSpec>
+    extends Modifier<FractionallySizedBoxModifierSpec>
     with Diagnosticable {
   final double? widthFactor;
   final double? heightFactor;
@@ -105,11 +106,10 @@ final class FractionallySizedBoxModifierSpec
 /// Use this class to configure the attributes of a [FractionallySizedBoxModifierSpec] and pass it to
 /// the [FractionallySizedBoxModifierSpec] constructor.
 class FractionallySizedBoxModifierSpecAttribute
-    extends ModifierSpecAttribute<FractionallySizedBoxModifierSpec>
-    with Diagnosticable {
-  final double? widthFactor;
-  final double? heightFactor;
-  final AlignmentGeometry? alignment;
+    extends ModifierSpecAttribute<FractionallySizedBoxModifierSpec> {
+  final Prop<double>? widthFactor;
+  final Prop<double>? heightFactor;
+  final Prop<AlignmentGeometry>? alignment;
 
   const FractionallySizedBoxModifierSpecAttribute({
     this.widthFactor,
@@ -128,9 +128,9 @@ class FractionallySizedBoxModifierSpecAttribute
   @override
   FractionallySizedBoxModifierSpec resolve(BuildContext context) {
     return FractionallySizedBoxModifierSpec(
-      widthFactor: widthFactor,
-      heightFactor: heightFactor,
-      alignment: alignment,
+      widthFactor: MixHelpers.resolve(context, widthFactor),
+      heightFactor: MixHelpers.resolve(context, heightFactor),
+      alignment: MixHelpers.resolve(context, alignment),
     );
   }
 
@@ -149,30 +149,12 @@ class FractionallySizedBoxModifierSpecAttribute
     if (other == null) return this;
 
     return FractionallySizedBoxModifierSpecAttribute(
-      widthFactor: other.widthFactor ?? widthFactor,
-      heightFactor: other.heightFactor ?? heightFactor,
-      alignment: other.alignment ?? alignment,
+      widthFactor: MixHelpers.merge(widthFactor, other.widthFactor),
+      heightFactor: MixHelpers.merge(heightFactor, other.heightFactor),
+      alignment: MixHelpers.merge(alignment, other.alignment),
     );
   }
 
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-      DiagnosticsProperty('widthFactor', widthFactor, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('heightFactor', heightFactor, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('alignment', alignment, defaultValue: null),
-    );
-  }
-
-  /// The list of properties that constitute the state of this [FractionallySizedBoxModifierSpecAttribute].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [FractionallySizedBoxModifierSpecAttribute] instances for equality.
   @override
   List<Object?> get props => [widthFactor, heightFactor, alignment];
 }
@@ -199,7 +181,9 @@ class FractionallySizedBoxModifierSpecTween
   }
 }
 
-final class FractionallySizedBoxModifierSpecUtility<T extends SpecUtility<Object?>>
+final class FractionallySizedBoxModifierSpecUtility<
+  T extends SpecUtility<Object?>
+>
     extends MixUtility<T, FractionallySizedBoxModifierSpecAttribute> {
   const FractionallySizedBoxModifierSpecUtility(super.builder);
 
@@ -210,9 +194,9 @@ final class FractionallySizedBoxModifierSpecUtility<T extends SpecUtility<Object
   }) {
     return builder(
       FractionallySizedBoxModifierSpecAttribute(
-        widthFactor: widthFactor,
-        heightFactor: heightFactor,
-        alignment: alignment,
+        widthFactor: Prop.maybe(widthFactor),
+        heightFactor: Prop.maybe(heightFactor),
+        alignment: Prop.maybe(alignment),
       ),
     );
   }

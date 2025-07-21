@@ -3,14 +3,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../attributes/enum/enum_util.dart';
 import '../core/attribute.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
-import '../theme/tokens/mix_token.dart';
 import '../core/utility.dart';
+import '../theme/tokens/mix_token.dart';
 
-final class FlexibleModifierSpec extends ModifierSpec<FlexibleModifierSpec>
+final class FlexibleModifierSpec extends Modifier<FlexibleModifierSpec>
     with Diagnosticable {
   final int? flex;
   final FlexFit? fit;
@@ -133,10 +132,8 @@ class FlexibleModifierSpecAttribute
   List<Object?> get props => [flex, fit];
 }
 
-
 final class FlexibleModifierSpecUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, FlexibleModifierSpecAttribute> {
-  
   // TODO: Add flex and fit utilities when IntUtility and FlexFitUtility are available
   // late final flex = IntUtility(
   //   (prop) => builder(FlexibleModifierSpecAttribute(flex: prop)),
@@ -144,33 +141,37 @@ final class FlexibleModifierSpecUtility<T extends SpecUtility<Object?>>
   // late final fit = FlexFitUtility(
   //   (prop) => builder(FlexibleModifierSpecAttribute(fit: prop)),
   // );
-  
+
   const FlexibleModifierSpecUtility(super.builder);
-  T tight({int? flex}) =>
-      builder(FlexibleModifierSpecAttribute(
-        flex: flex != null ? Prop(flex) : null,
-        fit: Prop(FlexFit.tight),
-      ));
-  
-  T loose({int? flex}) =>
-      builder(FlexibleModifierSpecAttribute(
-        flex: flex != null ? Prop(flex) : null,
-        fit: Prop(FlexFit.loose),
-      ));
-  
+  T tight({int? flex}) => builder(
+    FlexibleModifierSpecAttribute(
+      flex: flex != null ? Prop(flex) : null,
+      fit: Prop(FlexFit.tight),
+    ),
+  );
+
+  T loose({int? flex}) => builder(
+    FlexibleModifierSpecAttribute(
+      flex: flex != null ? Prop(flex) : null,
+      fit: Prop(FlexFit.loose),
+    ),
+  );
+
   T expanded({int? flex}) => tight(flex: flex);
 
   T call({int? flex, FlexFit? fit}) {
-    return builder(FlexibleModifierSpecAttribute(
-      flex: flex != null ? Prop(flex) : null,
-      fit: fit != null ? Prop(fit) : null,
-    ));
+    return builder(
+      FlexibleModifierSpecAttribute(
+        flex: flex != null ? Prop(flex) : null,
+        fit: fit != null ? Prop(fit) : null,
+      ),
+    );
   }
-  
+
   T flexToken(MixToken<int> token) {
     return builder(FlexibleModifierSpecAttribute(flex: Prop.token(token)));
   }
-  
+
   T fitToken(MixToken<FlexFit> token) {
     return builder(FlexibleModifierSpecAttribute(fit: Prop.token(token)));
   }

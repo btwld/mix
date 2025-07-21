@@ -36,7 +36,7 @@ import 'box_style.dart';
 /// * [Container], which is the Flutter equivalent widget.
 class Box extends StyleWidget<BoxSpec> {
   const Box({
-    super.style = const BoxStyle(),
+    super.style = const BoxSpecAttribute(),
     super.key,
 
     this.child,

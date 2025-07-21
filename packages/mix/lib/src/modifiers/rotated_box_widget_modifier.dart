@@ -1,15 +1,14 @@
 // ignore_for_file: prefer-named-boolean-parameters
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/attribute.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
+import '../core/prop.dart';
 import '../core/utility.dart';
 
-final class RotatedBoxModifierSpec extends ModifierSpec<RotatedBoxModifierSpec>
-    with Diagnosticable {
+final class RotatedBoxModifierSpec extends Modifier<RotatedBoxModifierSpec> {
   final int quarterTurns;
   const RotatedBoxModifierSpec([int? quarterTurns])
     : quarterTurns = quarterTurns ?? 0;
@@ -19,14 +18,6 @@ final class RotatedBoxModifierSpec extends ModifierSpec<RotatedBoxModifierSpec>
   @override
   RotatedBoxModifierSpec copyWith({int? quarterTurns}) {
     return RotatedBoxModifierSpec(quarterTurns ?? this.quarterTurns);
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-      DiagnosticsProperty('quarterTurns', quarterTurns, defaultValue: null),
-    );
   }
 
   @override
@@ -59,9 +50,8 @@ final class RotatedBoxModifierSpec extends ModifierSpec<RotatedBoxModifierSpec>
 /// Use this class to configure the attributes of a [RotatedBoxModifierSpec] and pass it to
 /// the [RotatedBoxModifierSpec] constructor.
 class RotatedBoxModifierSpecAttribute
-    extends ModifierSpecAttribute<RotatedBoxModifierSpec>
-    with Diagnosticable {
-  final int? quarterTurns;
+    extends ModifierSpecAttribute<RotatedBoxModifierSpec> {
+  final Prop<int>? quarterTurns;
 
   const RotatedBoxModifierSpecAttribute({this.quarterTurns});
 
@@ -75,7 +65,7 @@ class RotatedBoxModifierSpecAttribute
   /// ```
   @override
   RotatedBoxModifierSpec resolve(BuildContext context) {
-    return RotatedBoxModifierSpec(quarterTurns);
+    return RotatedBoxModifierSpec(MixHelpers.resolve(context, quarterTurns));
   }
 
   /// Merges the properties of this [RotatedBoxModifierSpecAttribute] with the properties of [other].
@@ -93,26 +83,13 @@ class RotatedBoxModifierSpecAttribute
     if (other == null) return this;
 
     return RotatedBoxModifierSpecAttribute(
-      quarterTurns: other.quarterTurns ?? quarterTurns,
+      quarterTurns: MixHelpers.merge(quarterTurns, other.quarterTurns),
     );
   }
 
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-      DiagnosticsProperty('quarterTurns', quarterTurns, defaultValue: null),
-    );
-  }
-
-  /// The list of properties that constitute the state of this [RotatedBoxModifierSpecAttribute].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [RotatedBoxModifierSpecAttribute] instances for equality.
   @override
   List<Object?> get props => [quarterTurns];
 }
-
 
 final class RotatedBoxModifierSpecUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, RotatedBoxModifierSpecAttribute> {
@@ -122,5 +99,5 @@ final class RotatedBoxModifierSpecUtility<T extends SpecUtility<Object?>>
   T d270() => call(3);
 
   T call(int value) =>
-      builder(RotatedBoxModifierSpecAttribute(quarterTurns: value));
+      builder(RotatedBoxModifierSpecAttribute(quarterTurns: Prop(value)));
 }

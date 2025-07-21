@@ -6,10 +6,12 @@ import 'package:flutter/widgets.dart';
 import '../attributes/spacing/edge_insets_dto.dart';
 import '../attributes/spacing/spacing_util.dart';
 import '../core/attribute.dart';
+import '../core/helpers.dart';
 import '../core/modifier.dart';
+import '../core/prop.dart';
 import '../core/utility.dart';
 
-final class PaddingModifierSpec extends ModifierSpec<PaddingModifierSpec>
+final class PaddingModifierSpec extends Modifier<PaddingModifierSpec>
     with Diagnosticable {
   final EdgeInsetsGeometry padding;
 
@@ -75,7 +77,7 @@ final class PaddingModifierSpec extends ModifierSpec<PaddingModifierSpec>
 class PaddingModifierSpecAttribute
     extends ModifierSpecAttribute<PaddingModifierSpec>
     with Diagnosticable {
-  final EdgeInsetsGeometryDto? padding;
+  final MixProp<EdgeInsetsGeometry>? padding;
 
   const PaddingModifierSpecAttribute({this.padding});
 
@@ -89,7 +91,7 @@ class PaddingModifierSpecAttribute
   /// ```
   @override
   PaddingModifierSpec resolve(BuildContext context) {
-    return PaddingModifierSpec(padding?.resolve(context));
+    return PaddingModifierSpec(MixHelpers.resolve(context, padding));
   }
 
   /// Merges the properties of this [PaddingModifierSpecAttribute] with the properties of [other].
@@ -105,9 +107,7 @@ class PaddingModifierSpecAttribute
     if (other == null) return this;
 
     return PaddingModifierSpecAttribute(
-      padding:
-          padding?.merge(other.padding as MixProp<EdgeInsetsGeometry>?) ??
-          other.padding,
+      padding: MixHelpers.merge(padding, other.padding),
     );
   }
 
@@ -140,6 +140,8 @@ class PaddingModifierSpecUtility<T extends SpecUtility<Object?>>
 
   /// Returns a new [PaddingModifierSpecAttribute] with the specified properties.
   T call({EdgeInsetsGeometryDto? padding}) {
-    return builder(PaddingModifierSpecAttribute(padding: padding));
+    return builder(
+      PaddingModifierSpecAttribute(padding: MixProp.maybe(padding)),
+    );
   }
 }

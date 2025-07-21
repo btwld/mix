@@ -65,8 +65,8 @@ void main() {
     });
   });
 
-  // Cross-type merge tests
-  group('GradientDto cross-type merge tests', () {
+  // Simplified merge tests (same-type merging + override behavior)
+  group('GradientDto simplified merge tests', () {
     test('tryToMerge with same types', () {
       final dto1 = LinearGradientDto.only(colors: const [Colors.red]);
       final dto2 = LinearGradientDto.only(colors: const [Colors.blue]);
@@ -77,7 +77,7 @@ void main() {
       expect(merged!.colors, resolvesTo([Colors.blue]));
     });
 
-    test('tryToMerge LinearGradient with RadialGradient', () {
+    test('tryToMerge LinearGradient with RadialGradient (override behavior)', () {
       final linear = LinearGradientDto.only(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
@@ -89,13 +89,15 @@ void main() {
         colors: const [Colors.blue, Colors.yellow],
       );
 
+      // Simplified behavior: different types result in override (second parameter wins)
       final merged =
           GradientDto.tryToMerge(linear, radial) as RadialGradientDto?;
 
       expect(merged, isNotNull);
-      expect(merged!.colors, resolvesTo([Colors.blue, Colors.yellow]));
-      expect(merged.center, resolvesTo(Alignment.center));
-      expect(merged.radius, resolvesTo(0.8));
+      expect(
+        merged,
+        same(radial),
+      ); // Should be exactly the same object (override behavior)
     });
 
     test('tryToMerge with null values', () {
@@ -104,6 +106,45 @@ void main() {
       expect(GradientDto.tryToMerge(dto, null), same(dto));
       expect(GradientDto.tryToMerge(null, dto), same(dto));
       expect(GradientDto.tryToMerge(null, null), isNull);
+    });
+
+    test('common properties merge correctly across all gradient types', () {
+      // Test that common properties (colors, stops, transform) merge consistently
+      const transform = GradientRotation(1.0);
+      final baseColors = [Colors.red];
+      final baseStops = [0.0];
+      final mergeColors = [Colors.blue, Colors.green];
+      final mergeStops = [0.0, 1.0];
+
+      // Test LinearGradient
+      final linear1 = LinearGradientDto.only(
+        colors: baseColors,
+        stops: baseStops,
+        transform: transform,
+      );
+      final linear2 = LinearGradientDto.only(
+        colors: mergeColors,
+        stops: mergeStops,
+      );
+      final mergedLinear = linear1.merge(linear2);
+      expect(mergedLinear.colors, resolvesTo(mergeColors));
+      expect(mergedLinear.stops, resolvesTo(mergeStops));
+      expect(mergedLinear.transform, resolvesTo(transform));
+
+      // Test RadialGradient
+      final radial1 = RadialGradientDto.only(
+        colors: baseColors,
+        stops: baseStops,
+        transform: transform,
+      );
+      final radial2 = RadialGradientDto.only(
+        colors: mergeColors,
+        stops: mergeStops,
+      );
+      final mergedRadial = radial1.merge(radial2);
+      expect(mergedRadial.colors, resolvesTo(mergeColors));
+      expect(mergedRadial.stops, resolvesTo(mergeStops));
+      expect(mergedRadial.transform, resolvesTo(transform));
     });
   });
 

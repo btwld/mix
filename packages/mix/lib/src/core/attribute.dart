@@ -134,7 +134,7 @@ abstract class SpecAttribute<S extends Spec<S>> extends Attribute
     final resolvedAnimation = styleData.animation;
     final resolvedModifiers = styleData.modifiers
         ?.map((modifier) => modifier.resolve(context))
-        .whereType<ModifierSpec>()
+        .whereType<Modifier>()
         .toList();
 
     return ResolvedStyle(
@@ -149,8 +149,7 @@ abstract class SpecAttribute<S extends Spec<S>> extends Attribute
   Type get mergeKey => S;
 }
 
-abstract class ModifierSpecAttribute<S extends ModifierSpec<S>>
-    extends Attribute
+abstract class ModifierSpecAttribute<S extends Modifier<S>> extends Attribute
     with Resolvable<S> {
   const ModifierSpecAttribute();
 

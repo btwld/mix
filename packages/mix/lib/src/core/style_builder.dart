@@ -4,6 +4,7 @@ import '../modifiers/internal/render_widget_modifier.dart';
 import '../widgets/pressable_widget.dart';
 import 'animation/animation_driver.dart';
 import 'animation_config.dart';
+import 'attribute.dart';
 import 'factory/style_mix.dart';
 import 'modifier.dart';
 import 'named_variant_scope.dart';
@@ -29,7 +30,7 @@ class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
   });
 
   /// The style element to resolve and apply.
-  final Style<S> style;
+  final SpecAttribute<S> style;
 
   /// Function that builds the widget with the resolved style.
   final Widget Function(BuildContext context, S resolved) builder;
@@ -82,7 +83,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
     return _applyModifiers(child, resolved.modifiers);
   }
 
-  Widget _applyModifiers(Widget child, List<ModifierSpec>? modifiers) {
+  Widget _applyModifiers(Widget child, List<Modifier>? modifiers) {
     if (modifiers == null || modifiers.isEmpty) return child;
 
     return RenderModifiers(

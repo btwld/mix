@@ -7,13 +7,13 @@ import '../core/attribute.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
-import '../theme/tokens/mix_token.dart';
 import '../core/utility.dart';
+import '../theme/tokens/mix_token.dart';
 
 /// A modifier that wraps a widget with the [Opacity] widget.
 ///
 /// The [Opacity] widget is used to make a widget partially transparent.
-final class OpacityModifierSpec extends ModifierSpec<OpacityModifierSpec>
+final class OpacityModifierSpec extends Modifier<OpacityModifierSpec>
     with Diagnosticable {
   /// The [opacity] argument must not be null and
   /// must be between 0.0 and 1.0 (inclusive).
@@ -108,7 +108,9 @@ class OpacityModifierSpecAttribute
   OpacityModifierSpecAttribute merge(OpacityModifierSpecAttribute? other) {
     if (other == null) return this;
 
-    return OpacityModifierSpecAttribute(opacity: opacity?.merge(other.opacity) ?? other.opacity);
+    return OpacityModifierSpecAttribute(
+      opacity: opacity?.merge(other.opacity) ?? other.opacity,
+    );
   }
 
   @override
@@ -128,8 +130,10 @@ class OpacityModifierSpecAttribute
 final class OpacityModifierSpecUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, OpacityModifierSpecAttribute> {
   const OpacityModifierSpecUtility(super.builder);
-  
-  T call(double value) => builder(OpacityModifierSpecAttribute(opacity: Prop(value)));
-  
-  T token(MixToken<double> token) => builder(OpacityModifierSpecAttribute(opacity: Prop.token(token)));
+
+  T call(double value) =>
+      builder(OpacityModifierSpecAttribute(opacity: Prop(value)));
+
+  T token(MixToken<double> token) =>
+      builder(OpacityModifierSpecAttribute(opacity: Prop.token(token)));
 }

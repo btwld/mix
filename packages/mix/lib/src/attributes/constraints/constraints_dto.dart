@@ -44,6 +44,16 @@ final class BoxConstraintsDto extends ConstraintsDto<BoxConstraints>
     this.maxHeight,
   });
 
+  BoxConstraintsDto.minWidth(double minWidth) : this.only(minWidth: minWidth);
+
+  BoxConstraintsDto.maxWidth(double maxWidth) : this.only(maxWidth: maxWidth);
+
+  BoxConstraintsDto.minHeight(double minHeight)
+    : this.only(minHeight: minHeight);
+
+  BoxConstraintsDto.maxHeight(double maxHeight)
+    : this.only(maxHeight: maxHeight);
+
   /// Constructor that accepts a [BoxConstraints] value and extracts its properties.
   ///
   /// This is useful for converting existing [BoxConstraints] instances to [BoxConstraintsDto].

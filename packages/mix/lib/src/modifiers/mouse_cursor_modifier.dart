@@ -3,10 +3,12 @@
 import 'package:flutter/material.dart';
 
 import '../core/attribute.dart';
+import '../core/helpers.dart';
 import '../core/modifier.dart';
+import '../core/prop.dart';
 import '../core/utility.dart';
 
-class MouseCursorDecoratorSpec extends ModifierSpec<MouseCursorDecoratorSpec> {
+class MouseCursorDecoratorSpec extends Modifier<MouseCursorDecoratorSpec> {
   final MouseCursor? mouseCursor;
 
   const MouseCursorDecoratorSpec({this.mouseCursor});
@@ -67,7 +69,7 @@ class MouseCursorDecoratorSpec extends ModifierSpec<MouseCursorDecoratorSpec> {
 /// the [MouseCursorDecoratorSpec] constructor.
 class MouseCursorDecoratorSpecAttribute
     extends ModifierSpecAttribute<MouseCursorDecoratorSpec> {
-  final MouseCursor? mouseCursor;
+  final Prop<MouseCursor>? mouseCursor;
 
   const MouseCursorDecoratorSpecAttribute({this.mouseCursor});
 
@@ -81,7 +83,9 @@ class MouseCursorDecoratorSpecAttribute
   /// ```
   @override
   MouseCursorDecoratorSpec resolve(BuildContext context) {
-    return MouseCursorDecoratorSpec(mouseCursor: mouseCursor);
+    return MouseCursorDecoratorSpec(
+      mouseCursor: MixHelpers.resolve(context, mouseCursor),
+    );
   }
 
   /// Merges the properties of this [MouseCursorDecoratorSpecAttribute] with the properties of [other].
@@ -99,7 +103,7 @@ class MouseCursorDecoratorSpecAttribute
     if (other == null) return this;
 
     return MouseCursorDecoratorSpecAttribute(
-      mouseCursor: other.mouseCursor ?? mouseCursor,
+      mouseCursor: MixHelpers.merge(mouseCursor, other.mouseCursor),
     );
   }
 
@@ -111,12 +115,13 @@ class MouseCursorDecoratorSpecAttribute
   List<Object?> get props => [mouseCursor];
 }
 
-
 class MouseCursorModifierSpecUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, MouseCursorDecoratorSpecAttribute> {
   const MouseCursorModifierSpecUtility(super.builder);
   T call(MouseCursor? mouseCursor) {
-    return builder(MouseCursorDecoratorSpecAttribute(mouseCursor: mouseCursor));
+    return builder(
+      MouseCursorDecoratorSpecAttribute(mouseCursor: Prop.maybe(mouseCursor)),
+    );
   }
 
   T defer() => call(MouseCursor.defer);

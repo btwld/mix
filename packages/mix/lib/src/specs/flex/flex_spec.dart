@@ -3,6 +3,9 @@ import 'dart:ui' show lerpDouble;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../attributes/enum/enum_util.dart';
+import '../../attributes/scalars/scalar_util.dart';
+import '../../core/animation_config.dart';
 import '../../core/attribute.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
@@ -62,6 +65,18 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
     return const FlexSpec();
   }
 
+  void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties.add(EnumProperty('direction', direction));
+    properties.add(EnumProperty('mainAxisAlignment', mainAxisAlignment));
+    properties.add(EnumProperty('crossAxisAlignment', crossAxisAlignment));
+    properties.add(EnumProperty('mainAxisSize', mainAxisSize));
+    properties.add(EnumProperty('verticalDirection', verticalDirection));
+    properties.add(EnumProperty('textDirection', textDirection));
+    properties.add(EnumProperty('textBaseline', textBaseline));
+    properties.add(EnumProperty('clipBehavior', clipBehavior));
+    properties.add(DoubleProperty('gap', gap));
+  }
+
   /// Creates a copy of this [FlexSpec] with the given properties replaced.
   @override
   FlexSpec copyWith({
@@ -111,15 +126,7 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(EnumProperty('direction', direction));
-    properties.add(EnumProperty('mainAxisAlignment', mainAxisAlignment));
-    properties.add(EnumProperty('crossAxisAlignment', crossAxisAlignment));
-    properties.add(EnumProperty('mainAxisSize', mainAxisSize));
-    properties.add(EnumProperty('verticalDirection', verticalDirection));
-    properties.add(EnumProperty('textDirection', textDirection));
-    properties.add(EnumProperty('textBaseline', textBaseline));
-    properties.add(EnumProperty('clipBehavior', clipBehavior));
-    properties.add(DoubleProperty('gap', gap));
+    _debugFillProperties(properties);
   }
 
   @override
@@ -140,18 +147,40 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
 @immutable
 final class FlexSpecAttribute extends SpecAttribute<FlexSpec>
     with Diagnosticable {
-  final Prop<Axis>? direction;
-  final Prop<MainAxisAlignment>? mainAxisAlignment;
-  final Prop<CrossAxisAlignment>? crossAxisAlignment;
-  final Prop<MainAxisSize>? mainAxisSize;
-  final Prop<VerticalDirection>? verticalDirection;
-  final Prop<TextDirection>? textDirection;
-  final Prop<TextBaseline>? textBaseline;
-  final Prop<Clip>? clipBehavior;
-  final Prop<double>? gap;
+  final Prop<Axis>? $direction;
+  final Prop<MainAxisAlignment>? $mainAxisAlignment;
+  final Prop<CrossAxisAlignment>? $crossAxisAlignment;
+  final Prop<MainAxisSize>? $mainAxisSize;
+  final Prop<VerticalDirection>? $verticalDirection;
+  final Prop<TextDirection>? $textDirection;
+  final Prop<TextBaseline>? $textBaseline;
+  final Prop<Clip>? $clipBehavior;
+  final Prop<double>? $gap;
 
-  /// Creates a [FlexSpecAttribute] with the provided properties.
-  factory FlexSpecAttribute({
+  const FlexSpecAttribute({
+    Prop<Axis>? direction,
+    Prop<MainAxisAlignment>? mainAxisAlignment,
+    Prop<CrossAxisAlignment>? crossAxisAlignment,
+    Prop<MainAxisSize>? mainAxisSize,
+    Prop<VerticalDirection>? verticalDirection,
+    Prop<TextDirection>? textDirection,
+    Prop<TextBaseline>? textBaseline,
+    Prop<Clip>? clipBehavior,
+    Prop<double>? gap,
+    super.animation,
+    super.modifiers,
+    super.variants,
+  }) : $direction = direction,
+       $mainAxisAlignment = mainAxisAlignment,
+       $crossAxisAlignment = crossAxisAlignment,
+       $mainAxisSize = mainAxisSize,
+       $verticalDirection = verticalDirection,
+       $textDirection = textDirection,
+       $textBaseline = textBaseline,
+       $clipBehavior = clipBehavior,
+       $gap = gap;
+
+  FlexSpecAttribute.only({
     Axis? direction,
     MainAxisAlignment? mainAxisAlignment,
     CrossAxisAlignment? crossAxisAlignment,
@@ -161,36 +190,51 @@ final class FlexSpecAttribute extends SpecAttribute<FlexSpec>
     TextBaseline? textBaseline,
     Clip? clipBehavior,
     double? gap,
-  }) {
-    return FlexSpecAttribute.props(
-      direction: Prop.maybe(direction),
-      mainAxisAlignment: Prop.maybe(mainAxisAlignment),
-      crossAxisAlignment: Prop.maybe(crossAxisAlignment),
-      mainAxisSize: Prop.maybe(mainAxisSize),
-      verticalDirection: Prop.maybe(verticalDirection),
-      textDirection: Prop.maybe(textDirection),
-      textBaseline: Prop.maybe(textBaseline),
-      clipBehavior: Prop.maybe(clipBehavior),
-      gap: Prop.maybe(gap),
-    );
-  }
+    AnimationConfig? animation,
+    List<ModifierSpecAttribute>? modifiers,
+    List<VariantAttribute<FlexSpec>>? variants,
+  }) : this(
+         direction: Prop.maybe(direction),
+         mainAxisAlignment: Prop.maybe(mainAxisAlignment),
+         crossAxisAlignment: Prop.maybe(crossAxisAlignment),
+         mainAxisSize: Prop.maybe(mainAxisSize),
+         verticalDirection: Prop.maybe(verticalDirection),
+         textDirection: Prop.maybe(textDirection),
+         textBaseline: Prop.maybe(textBaseline),
+         clipBehavior: Prop.maybe(clipBehavior),
+         gap: Prop.maybe(gap),
+         animation: animation,
+         modifiers: modifiers,
+         variants: variants,
+       );
 
-  /// Constructor that accepts Prop values directly
-  const FlexSpecAttribute.props({
-    this.direction,
-    this.mainAxisAlignment,
-    this.crossAxisAlignment,
-    this.mainAxisSize,
-    this.verticalDirection,
-    this.textDirection,
-    this.textBaseline,
-    this.clipBehavior,
-    this.gap,
-  });
+  FlexSpecAttribute.direction(Axis value) : this.only(direction: value);
+
+  FlexSpecAttribute.mainAxisAlignment(MainAxisAlignment value)
+    : this.only(mainAxisAlignment: value);
+
+  FlexSpecAttribute.crossAxisAlignment(CrossAxisAlignment value)
+    : this.only(crossAxisAlignment: value);
+
+  FlexSpecAttribute.mainAxisSize(MainAxisSize value)
+    : this.only(mainAxisSize: value);
+
+  FlexSpecAttribute.verticalDirection(VerticalDirection value)
+    : this.only(verticalDirection: value);
+
+  FlexSpecAttribute.textDirection(TextDirection value)
+    : this.only(textDirection: value);
+
+  FlexSpecAttribute.textBaseline(TextBaseline value)
+    : this.only(textBaseline: value);
+
+  FlexSpecAttribute.clipBehavior(Clip value) : this.only(clipBehavior: value);
+
+  FlexSpecAttribute.gap(double value) : this.only(gap: value);
 
   /// Creates a [FlexSpecAttribute] from a [FlexSpec] value.
   static FlexSpecAttribute value(FlexSpec spec) {
-    return FlexSpecAttribute(
+    return FlexSpecAttribute.only(
       direction: spec.direction,
       mainAxisAlignment: spec.mainAxisAlignment,
       crossAxisAlignment: spec.crossAxisAlignment,
@@ -208,143 +252,170 @@ final class FlexSpecAttribute extends SpecAttribute<FlexSpec>
     return spec != null ? FlexSpecAttribute.value(spec) : null;
   }
 
+  FlexSpecAttribute direction(Axis value) {
+    return FlexSpecAttribute.only(direction: value);
+  }
+
+  FlexSpecAttribute mainAxisAlignment(MainAxisAlignment value) {
+    return FlexSpecAttribute.only(mainAxisAlignment: value);
+  }
+
+  FlexSpecAttribute crossAxisAlignment(CrossAxisAlignment value) {
+    return FlexSpecAttribute.only(crossAxisAlignment: value);
+  }
+
+  FlexSpecAttribute mainAxisSize(MainAxisSize value) {
+    return FlexSpecAttribute.only(mainAxisSize: value);
+  }
+
+  FlexSpecAttribute verticalDirection(VerticalDirection value) {
+    return FlexSpecAttribute.only(verticalDirection: value);
+  }
+
+  FlexSpecAttribute textDirection(TextDirection value) {
+    return FlexSpecAttribute.only(textDirection: value);
+  }
+
+  FlexSpecAttribute textBaseline(TextBaseline value) {
+    return FlexSpecAttribute.only(textBaseline: value);
+  }
+
+  FlexSpecAttribute clipBehavior(Clip value) {
+    return FlexSpecAttribute.only(clipBehavior: value);
+  }
+
+  FlexSpecAttribute gap(double value) {
+    return FlexSpecAttribute.only(gap: value);
+  }
+
   @override
   FlexSpecAttribute merge(FlexSpecAttribute? other) {
     if (other == null) return this;
 
-    return FlexSpecAttribute.props(
-      direction: MixHelpers.merge(direction, other.direction),
+    return FlexSpecAttribute(
+      direction: MixHelpers.merge($direction, other.$direction),
       mainAxisAlignment: MixHelpers.merge(
-        mainAxisAlignment,
-        other.mainAxisAlignment,
+        $mainAxisAlignment,
+        other.$mainAxisAlignment,
       ),
       crossAxisAlignment: MixHelpers.merge(
-        crossAxisAlignment,
-        other.crossAxisAlignment,
+        $crossAxisAlignment,
+        other.$crossAxisAlignment,
       ),
-      mainAxisSize: MixHelpers.merge(mainAxisSize, other.mainAxisSize),
+      mainAxisSize: MixHelpers.merge($mainAxisSize, other.$mainAxisSize),
       verticalDirection: MixHelpers.merge(
-        verticalDirection,
-        other.verticalDirection,
+        $verticalDirection,
+        other.$verticalDirection,
       ),
-      textDirection: MixHelpers.merge(textDirection, other.textDirection),
-      textBaseline: MixHelpers.merge(textBaseline, other.textBaseline),
-      clipBehavior: MixHelpers.merge(clipBehavior, other.clipBehavior),
-      gap: MixHelpers.merge(gap, other.gap),
+      textDirection: MixHelpers.merge($textDirection, other.$textDirection),
+      textBaseline: MixHelpers.merge($textBaseline, other.$textBaseline),
+      clipBehavior: MixHelpers.merge($clipBehavior, other.$clipBehavior),
+      gap: MixHelpers.merge($gap, other.$gap),
     );
   }
 
   @override
   FlexSpec resolveSpec(BuildContext context) {
     return FlexSpec(
-      direction: MixHelpers.resolve(context, direction),
-      mainAxisAlignment: MixHelpers.resolve(context, mainAxisAlignment),
-      crossAxisAlignment: MixHelpers.resolve(context, crossAxisAlignment),
-      mainAxisSize: MixHelpers.resolve(context, mainAxisSize),
-      verticalDirection: MixHelpers.resolve(context, verticalDirection),
-      textDirection: MixHelpers.resolve(context, textDirection),
-      textBaseline: MixHelpers.resolve(context, textBaseline),
-      clipBehavior: MixHelpers.resolve(context, clipBehavior),
-      gap: MixHelpers.resolve(context, gap),
+      direction: MixHelpers.resolve(context, $direction),
+      mainAxisAlignment: MixHelpers.resolve(context, $mainAxisAlignment),
+      crossAxisAlignment: MixHelpers.resolve(context, $crossAxisAlignment),
+      mainAxisSize: MixHelpers.resolve(context, $mainAxisSize),
+      verticalDirection: MixHelpers.resolve(context, $verticalDirection),
+      textDirection: MixHelpers.resolve(context, $textDirection),
+      textBaseline: MixHelpers.resolve(context, $textBaseline),
+      clipBehavior: MixHelpers.resolve(context, $clipBehavior),
+      gap: MixHelpers.resolve(context, $gap),
     );
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('direction', direction));
-    properties.add(DiagnosticsProperty('mainAxisAlignment', mainAxisAlignment));
+    properties.add(DiagnosticsProperty('direction', $direction));
     properties.add(
-      DiagnosticsProperty('crossAxisAlignment', crossAxisAlignment),
+      DiagnosticsProperty('mainAxisAlignment', $mainAxisAlignment),
     );
-    properties.add(DiagnosticsProperty('mainAxisSize', mainAxisSize));
-    properties.add(DiagnosticsProperty('verticalDirection', verticalDirection));
-    properties.add(DiagnosticsProperty('textDirection', textDirection));
-    properties.add(DiagnosticsProperty('textBaseline', textBaseline));
-    properties.add(DiagnosticsProperty('clipBehavior', clipBehavior));
-    properties.add(DiagnosticsProperty('gap', gap));
+    properties.add(
+      DiagnosticsProperty('crossAxisAlignment', $crossAxisAlignment),
+    );
+    properties.add(DiagnosticsProperty('mainAxisSize', $mainAxisSize));
+    properties.add(
+      DiagnosticsProperty('verticalDirection', $verticalDirection),
+    );
+    properties.add(DiagnosticsProperty('textDirection', $textDirection));
+    properties.add(DiagnosticsProperty('textBaseline', $textBaseline));
+    properties.add(DiagnosticsProperty('clipBehavior', $clipBehavior));
+    properties.add(DiagnosticsProperty('gap', $gap));
   }
 
   @override
   List<Object?> get props => [
-    direction,
-    mainAxisAlignment,
-    crossAxisAlignment,
-    mainAxisSize,
-    verticalDirection,
-    textDirection,
-    textBaseline,
-    clipBehavior,
-    gap,
+    $direction,
+    $mainAxisAlignment,
+    $crossAxisAlignment,
+    $mainAxisSize,
+    $verticalDirection,
+    $textDirection,
+    $textBaseline,
+    $clipBehavior,
+    $gap,
   ];
 }
 
 /// Utility class for building [FlexSpecAttribute] instances.
-final class FlexSpecUtility<T extends Attribute>
-    extends SpecUtility<T, FlexSpecAttribute> {
-  const
-  /// Creates a [FlexSpecUtility] with the provided builder.
-  FlexSpecUtility(super.builder);
-
-  /// Creates a static instance of [FlexSpecUtility].
-  static FlexSpecUtility<FlexSpecAttribute> get self =>
-      FlexSpecUtility((v) => v);
-
-  /// Sets the direction of the flex layout.
-  T direction(Axis direction) => only(direction: direction);
-
-  /// Sets the main axis alignment.
-  T mainAxisAlignment(MainAxisAlignment alignment) =>
-      only(mainAxisAlignment: alignment);
-
-  /// Sets the cross axis alignment.
-  T crossAxisAlignment(CrossAxisAlignment alignment) =>
-      only(crossAxisAlignment: alignment);
-
-  /// Sets the main axis size.
-  T mainAxisSize(MainAxisSize size) => only(mainAxisSize: size);
-
-  /// Sets the vertical direction.
-  T verticalDirection(VerticalDirection direction) =>
-      only(verticalDirection: direction);
-
-  /// Sets the text direction.
-  T textDirection(TextDirection direction) => only(textDirection: direction);
-
-  /// Sets the text baseline.
-  T textBaseline(TextBaseline baseline) => only(textBaseline: baseline);
-
-  /// Sets the clip behavior.
-  T clipBehavior(Clip behavior) => only(clipBehavior: behavior);
-
-  /// Sets the gap between children.
-  T gap(double gap) => only(gap: gap);
-
-  /// Returns a new [FlexSpecAttribute] with the specified properties.
+final class FlexSpecUtility extends SpecUtility<FlexSpec> {
   @override
-  T only({
-    Axis? direction,
-    MainAxisAlignment? mainAxisAlignment,
-    CrossAxisAlignment? crossAxisAlignment,
-    MainAxisSize? mainAxisSize,
-    VerticalDirection? verticalDirection,
-    TextDirection? textDirection,
-    TextBaseline? textBaseline,
-    Clip? clipBehavior,
-    double? gap,
-  }) {
-    return builder(
-      FlexSpecAttribute(
-        direction: direction,
-        mainAxisAlignment: mainAxisAlignment,
-        crossAxisAlignment: crossAxisAlignment,
-        mainAxisSize: mainAxisSize,
-        verticalDirection: verticalDirection,
-        textDirection: textDirection,
-        textBaseline: textBaseline,
-        clipBehavior: clipBehavior,
-        gap: gap,
-      ),
-    );
+  final FlexSpecAttribute attribute;
+
+  /// Utility for defining [FlexSpecAttribute.direction]
+  late final direction = AxisUtility(
+    (v) => build(FlexSpecAttribute(direction: v)),
+  );
+
+  /// Utility for defining [FlexSpecAttribute.mainAxisAlignment]
+  late final mainAxisAlignment = MainAxisAlignmentUtility(
+    (v) => build(FlexSpecAttribute(mainAxisAlignment: v)),
+  );
+
+  /// Utility for defining [FlexSpecAttribute.crossAxisAlignment]
+  late final crossAxisAlignment = CrossAxisAlignmentUtility(
+    (v) => build(FlexSpecAttribute(crossAxisAlignment: v)),
+  );
+
+  /// Utility for defining [FlexSpecAttribute.mainAxisSize]
+  late final mainAxisSize = MainAxisSizeUtility(
+    (v) => build(FlexSpecAttribute(mainAxisSize: v)),
+  );
+
+  /// Utility for defining [FlexSpecAttribute.verticalDirection]
+  late final verticalDirection = VerticalDirectionUtility(
+    (v) => build(FlexSpecAttribute(verticalDirection: v)),
+  );
+
+  /// Utility for defining [FlexSpecAttribute.textDirection]
+  late final textDirection = TextDirectionUtility(
+    (v) => build(FlexSpecAttribute(textDirection: v)),
+  );
+
+  /// Utility for defining [FlexSpecAttribute.textBaseline]
+  late final textBaseline = TextBaselineUtility(
+    (v) => build(FlexSpecAttribute(textBaseline: v)),
+  );
+
+  /// Utility for defining [FlexSpecAttribute.clipBehavior]
+  late final clipBehavior = ClipUtility(
+    (v) => build(FlexSpecAttribute(clipBehavior: v)),
+  );
+
+  /// Utility for defining [FlexSpecAttribute.gap]
+  late final gap = DoubleUtility((prop) => build(FlexSpecAttribute(gap: prop)));
+
+  FlexSpecUtility({this.attribute = const FlexSpecAttribute()});
+
+  static FlexSpecUtility get self => FlexSpecUtility();
+
+  FlexSpecUtility build(FlexSpecAttribute attribute) {
+    return FlexSpecUtility(attribute: this.attribute.merge(attribute));
   }
 }

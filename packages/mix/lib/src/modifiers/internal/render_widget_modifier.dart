@@ -92,7 +92,7 @@ class RenderModifiers extends StatelessWidget {
 
   final Widget child;
   final List<Type> orderOfModifiers;
-  final List<ModifierSpec<dynamic>> modifiers;
+  final List<Modifier<dynamic>> modifiers;
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +107,7 @@ class _RenderModifiers extends StatelessWidget {
   const _RenderModifiers({required this.child, required this.modifiers});
 
   final Widget child;
-  final Iterable<ModifierSpec<dynamic>> modifiers;
+  final Iterable<Modifier<dynamic>> modifiers;
 
   @override
   Widget build(BuildContext context) {
@@ -123,21 +123,21 @@ class _RenderModifiers extends StatelessWidget {
 
 // RenderSpecModifiers has been removed - use RenderModifiers directly
 
-class ModifierSpecTween extends Tween<ModifierSpec> {
+class ModifierSpecTween extends Tween<Modifier> {
   /// Creates an [EdgeInsetsGeometry] tween.
   ///
   /// The [begin] and [end] properties may be null; the null value
-  /// is treated as an [ModifierSpec]
+  /// is treated as an [Modifier]
   ModifierSpecTween({super.begin, super.end});
 
   /// Returns the value this variable has at the given animation clock value.
   @override
-  ModifierSpec lerp(double t) => ModifierSpec.lerpValue(begin, end, t)!;
+  Modifier lerp(double t) => Modifier.lerpValue(begin, end, t)!;
 }
 
 @visibleForTesting
-List<ModifierSpec<dynamic>> combineModifiers(
-  List<ModifierSpec<dynamic>> modifiers,
+List<Modifier<dynamic>> combineModifiers(
+  List<Modifier<dynamic>> modifiers,
   List<Type> orderOfModifiers, {
   List<Type>? defaultOrder,
 }) {
@@ -149,9 +149,9 @@ List<ModifierSpec<dynamic>> combineModifiers(
 }
 
 @visibleForTesting
-List<ModifierSpec<dynamic>> orderModifiers(
+List<Modifier<dynamic>> orderModifiers(
   List<Type> orderOfModifiers,
-  List<ModifierSpec<dynamic>> modifiers, {
+  List<Modifier<dynamic>> modifiers, {
   List<Type>? defaultOrder,
 }) {
   final listOfModifiers = ({
@@ -163,14 +163,14 @@ List<ModifierSpec<dynamic>> orderModifiers(
     ...modifiers.map((e) => e.type),
   }).toList();
 
-  final specs = <ModifierSpec<dynamic>>[];
+  final specs = <Modifier<dynamic>>[];
 
   for (final modifierType in listOfModifiers) {
     // Resolve the modifier and add it to the list of specs.
     final modifier = modifiers.where((e) => e.type == modifierType).firstOrNull;
     if (modifier == null) continue;
     // ignore: avoid-unnecessary-type-casts
-    specs.add(modifier as ModifierSpec<ModifierSpec<dynamic>>);
+    specs.add(modifier as Modifier<Modifier<dynamic>>);
   }
 
   return specs;

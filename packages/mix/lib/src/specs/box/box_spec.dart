@@ -342,29 +342,29 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
     : this.only(alignment: value);
 
   BoxSpecAttribute.minWidth(double value)
-    : this.only(constraints: BoxConstraintsDto.only(minWidth: value));
+    : this.only(constraints: BoxConstraintsDto.minWidth(value));
   BoxSpecAttribute.maxWidth(double value)
-    : this.only(constraints: BoxConstraintsDto.only(maxWidth: value));
+    : this.only(constraints: BoxConstraintsDto.maxWidth(value));
   BoxSpecAttribute.minHeight(double value)
-    : this.only(constraints: BoxConstraintsDto.only(minHeight: value));
+    : this.only(constraints: BoxConstraintsDto.minHeight(value));
   BoxSpecAttribute.maxHeight(double value)
-    : this.only(constraints: BoxConstraintsDto.only(maxHeight: value));
+    : this.only(constraints: BoxConstraintsDto.maxHeight(value));
 
   // Border
   BoxSpecAttribute.border(BoxBorderDto value)
-    : this.only(decoration: BoxDecorationDto.only(border: value));
+    : this.only(decoration: BoxDecorationDto.border(value));
 
   BoxSpecAttribute.borderDirectional(BorderDirectionalDto value)
-    : this.only(decoration: BoxDecorationDto.only(border: value));
+    : this.only(decoration: BoxDecorationDto.borderDirectional(value));
 
   BoxSpecAttribute.borderRadius(BorderRadiusGeometryDto value)
-    : this.only(decoration: BoxDecorationDto.only(borderRadius: value));
+    : this.only(decoration: BoxDecorationDto.borderRadius(value));
 
   BoxSpecAttribute.borderRadiusDirectional(BorderRadiusDirectionalDto value)
-    : this.only(decoration: BoxDecorationDto.only(borderRadius: value));
+    : this.only(decoration: BoxDecorationDto.borderRadius(value));
 
   BoxSpecAttribute.color(Color value)
-    : this.only(decoration: BoxDecorationDto.only(color: value));
+    : this.only(decoration: BoxDecorationDto.color(value));
 
   BoxSpecAttribute.gradient(GradientDto value)
     : this.only(decoration: BoxDecorationDto.only(gradient: value));

@@ -52,6 +52,47 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
     return maybeOf(context) ?? const ImageSpec();
   }
 
+  void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties.add(DiagnosticsProperty('width', width, defaultValue: null));
+    properties.add(DiagnosticsProperty('height', height, defaultValue: null));
+    properties.add(DiagnosticsProperty('color', color, defaultValue: null));
+    properties.add(DiagnosticsProperty('repeat', repeat, defaultValue: null));
+    properties.add(DiagnosticsProperty('fit', fit, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('alignment', alignment, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('centerSlice', centerSlice, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('filterQuality', filterQuality, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('colorBlendMode', colorBlendMode, defaultValue: null),
+    );
+  }
+
+  void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties.add(DiagnosticsProperty('width', $width, defaultValue: null));
+    properties.add(DiagnosticsProperty('height', $height, defaultValue: null));
+    properties.add(DiagnosticsProperty('color', $color, defaultValue: null));
+    properties.add(DiagnosticsProperty('repeat', $repeat, defaultValue: null));
+    properties.add(DiagnosticsProperty('fit', $fit, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('alignment', $alignment, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('centerSlice', $centerSlice, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty(
+        'colorBlendMode',
+        $colorBlendMode,
+        defaultValue: null,
+      ),
+    );
+  }
+
   @override
   ImageSpec copyWith({
     double? width,
@@ -97,23 +138,7 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('width', width, defaultValue: null));
-    properties.add(DiagnosticsProperty('height', height, defaultValue: null));
-    properties.add(DiagnosticsProperty('color', color, defaultValue: null));
-    properties.add(DiagnosticsProperty('repeat', repeat, defaultValue: null));
-    properties.add(DiagnosticsProperty('fit', fit, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('alignment', alignment, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('centerSlice', centerSlice, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('filterQuality', filterQuality, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('colorBlendMode', colorBlendMode, defaultValue: null),
-    );
+    _debugFillProperties(properties);
   }
 
   @override
@@ -131,31 +156,40 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
 }
 
 class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
-  final Prop<double>? width;
-  final Prop<double>? height;
-  final Prop<Color>? color;
-  final Prop<ImageRepeat>? repeat;
-  final Prop<BoxFit>? fit;
-  final Prop<AlignmentGeometry>? alignment;
-  final Prop<Rect>? centerSlice;
-  final Prop<FilterQuality>? filterQuality;
-  final Prop<BlendMode>? colorBlendMode;
+  final Prop<double>? $width;
+  final Prop<double>? $height;
+  final Prop<Color>? $color;
+  final Prop<ImageRepeat>? $repeat;
+  final Prop<BoxFit>? $fit;
+  final Prop<AlignmentGeometry>? $alignment;
+  final Prop<Rect>? $centerSlice;
+  final Prop<FilterQuality>? $filterQuality;
+  final Prop<BlendMode>? $colorBlendMode;
 
-  /// Constructor that accepts Prop values directly
-  const ImageSpecAttribute.props({
-    this.width,
-    this.height,
-    this.color,
-    this.repeat,
-    this.fit,
-    this.alignment,
-    this.centerSlice,
-    this.filterQuality,
-    this.colorBlendMode,
-  });
+  const ImageSpecAttribute({
+    Prop<double>? width,
+    Prop<double>? height,
+    Prop<Color>? color,
+    Prop<ImageRepeat>? repeat,
+    Prop<BoxFit>? fit,
+    Prop<AlignmentGeometry>? alignment,
+    Prop<Rect>? centerSlice,
+    Prop<FilterQuality>? filterQuality,
+    Prop<BlendMode>? colorBlendMode,
+    super.animation,
+    super.modifiers,
+    super.variants,
+  }) : $width = width,
+       $height = height,
+       $color = color,
+       $repeat = repeat,
+       $fit = fit,
+       $alignment = alignment,
+       $centerSlice = centerSlice,
+       $filterQuality = filterQuality,
+       $colorBlendMode = colorBlendMode;
 
-  // Factory constructor accepts raw values
-  factory ImageSpecAttribute({
+  ImageSpecAttribute.only({
     double? width,
     double? height,
     Color? color,
@@ -165,19 +199,23 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
     Rect? centerSlice,
     FilterQuality? filterQuality,
     BlendMode? colorBlendMode,
-  }) {
-    return ImageSpecAttribute.props(
-      width: Prop.maybe(width),
-      height: Prop.maybe(height),
-      color: Prop.maybe(color),
-      repeat: Prop.maybe(repeat),
-      fit: Prop.maybe(fit),
-      alignment: Prop.maybe(alignment),
-      centerSlice: Prop.maybe(centerSlice),
-      filterQuality: Prop.maybe(filterQuality),
-      colorBlendMode: Prop.maybe(colorBlendMode),
-    );
-  }
+    AnimationConfig? animation,
+    List<ModifierSpecAttribute>? modifiers,
+    List<VariantAttribute<ImageSpec>>? variants,
+  }) : this(
+         width: Prop.maybe(width),
+         height: Prop.maybe(height),
+         color: Prop.maybe(color),
+         repeat: Prop.maybe(repeat),
+         fit: Prop.maybe(fit),
+         alignment: Prop.maybe(alignment),
+         centerSlice: Prop.maybe(centerSlice),
+         filterQuality: Prop.maybe(filterQuality),
+         colorBlendMode: Prop.maybe(colorBlendMode),
+         animation: animation,
+         modifiers: modifiers,
+         variants: variants,
+       );
 
   /// Constructor that accepts an [ImageSpec] value and extracts its properties.
   ///
@@ -188,16 +226,16 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
   /// final attr = ImageSpecAttribute.value(spec);
   /// ```
   static ImageSpecAttribute value(ImageSpec spec) {
-    return ImageSpecAttribute.props(
-      width: Prop.maybe(spec.width),
-      height: Prop.maybe(spec.height),
-      color: Prop.maybe(spec.color),
-      repeat: Prop.maybe(spec.repeat),
-      fit: Prop.maybe(spec.fit),
-      alignment: Prop.maybe(spec.alignment),
-      centerSlice: Prop.maybe(spec.centerSlice),
-      filterQuality: Prop.maybe(spec.filterQuality),
-      colorBlendMode: Prop.maybe(spec.colorBlendMode),
+    return ImageSpecAttribute.only(
+      width: spec.width,
+      height: spec.height,
+      color: spec.color,
+      repeat: spec.repeat,
+      fit: spec.fit,
+      alignment: spec.alignment,
+      centerSlice: spec.centerSlice,
+      filterQuality: spec.filterQuality,
+      colorBlendMode: spec.colorBlendMode,
     );
   }
 
@@ -214,17 +252,17 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
   }
 
   @override
-  ImageSpec resolve(BuildContext context) {
+  ImageSpec resolveSpec(BuildContext context) {
     return ImageSpec(
-      width: MixHelpers.resolve(context, width),
-      height: MixHelpers.resolve(context, height),
-      color: MixHelpers.resolve(context, color),
-      repeat: MixHelpers.resolve(context, repeat),
-      fit: MixHelpers.resolve(context, fit),
-      alignment: MixHelpers.resolve(context, alignment),
-      centerSlice: MixHelpers.resolve(context, centerSlice),
-      filterQuality: MixHelpers.resolve(context, filterQuality),
-      colorBlendMode: MixHelpers.resolve(context, colorBlendMode),
+      width: MixHelpers.resolve(context, $width),
+      height: MixHelpers.resolve(context, $height),
+      color: MixHelpers.resolve(context, $color),
+      repeat: MixHelpers.resolve(context, $repeat),
+      fit: MixHelpers.resolve(context, $fit),
+      alignment: MixHelpers.resolve(context, $alignment),
+      centerSlice: MixHelpers.resolve(context, $centerSlice),
+      filterQuality: MixHelpers.resolve(context, $filterQuality),
+      colorBlendMode: MixHelpers.resolve(context, $colorBlendMode),
     );
   }
 
@@ -232,105 +270,94 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
   ImageSpecAttribute merge(ImageSpecAttribute? other) {
     if (other == null) return this;
 
-    return ImageSpecAttribute.props(
-      width: MixHelpers.merge(width, other.width),
-      height: MixHelpers.merge(height, other.height),
-      color: MixHelpers.merge(color, other.color),
-      repeat: MixHelpers.merge(repeat, other.repeat),
-      fit: MixHelpers.merge(fit, other.fit),
-      alignment: MixHelpers.merge(alignment, other.alignment),
-      centerSlice: MixHelpers.merge(centerSlice, other.centerSlice),
-      filterQuality: MixHelpers.merge(filterQuality, other.filterQuality),
-      colorBlendMode: MixHelpers.merge(colorBlendMode, other.colorBlendMode),
+    return ImageSpecAttribute(
+      width: MixHelpers.merge($width, other.$width),
+      height: MixHelpers.merge($height, other.$height),
+      color: MixHelpers.merge($color, other.$color),
+      repeat: MixHelpers.merge($repeat, other.$repeat),
+      fit: MixHelpers.merge($fit, other.$fit),
+      alignment: MixHelpers.merge($alignment, other.$alignment),
+      centerSlice: MixHelpers.merge($centerSlice, other.$centerSlice),
+      filterQuality: MixHelpers.merge($filterQuality, other.$filterQuality),
+      colorBlendMode: MixHelpers.merge($colorBlendMode, other.$colorBlendMode),
     );
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('width', width, defaultValue: null));
-    properties.add(DiagnosticsProperty('height', height, defaultValue: null));
-    properties.add(DiagnosticsProperty('color', color, defaultValue: null));
-    properties.add(DiagnosticsProperty('repeat', repeat, defaultValue: null));
-    properties.add(DiagnosticsProperty('fit', fit, defaultValue: null));
+    properties.add(DiagnosticsProperty('width', $width, defaultValue: null));
+    properties.add(DiagnosticsProperty('height', $height, defaultValue: null));
+    properties.add(DiagnosticsProperty('color', $color, defaultValue: null));
+    properties.add(DiagnosticsProperty('repeat', $repeat, defaultValue: null));
+    properties.add(DiagnosticsProperty('fit', $fit, defaultValue: null));
     properties.add(
-      DiagnosticsProperty('alignment', alignment, defaultValue: null),
+      DiagnosticsProperty('alignment', $alignment, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('centerSlice', centerSlice, defaultValue: null),
+      DiagnosticsProperty('centerSlice', $centerSlice, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('filterQuality', filterQuality, defaultValue: null),
+      DiagnosticsProperty('filterQuality', $filterQuality, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('colorBlendMode', colorBlendMode, defaultValue: null),
+      DiagnosticsProperty(
+        'colorBlendMode',
+        $colorBlendMode,
+        defaultValue: null,
+      ),
     );
   }
 
   @override
   List<Object?> get props => [
-    width,
-    height,
-    color,
-    repeat,
-    fit,
-    alignment,
-    centerSlice,
-    filterQuality,
-    colorBlendMode,
+    $width,
+    $height,
+    $color,
+    $repeat,
+    $fit,
+    $alignment,
+    $centerSlice,
+    $filterQuality,
+    $colorBlendMode,
   ];
 }
 
-class ImageSpecUtility<T extends Attribute>
-    extends SpecUtility<T, ImageSpecAttribute> {
+class ImageSpecUtility extends SpecUtility<ImageSpec> {
+  @override
+  final ImageSpecAttribute attribute;
+
   late final width = DoubleUtility(
-    (prop) => builder(ImageSpecAttribute.props(width: prop)),
+    (prop) => build(ImageSpecAttribute(width: prop)),
   );
   late final height = DoubleUtility(
-    (prop) => builder(ImageSpecAttribute.props(height: prop)),
+    (prop) => build(ImageSpecAttribute(height: prop)),
   );
   late final color = ColorUtility(
-    (prop) => builder(ImageSpecAttribute.props(color: prop)),
+    (prop) => build(ImageSpecAttribute(color: prop)),
   );
-  late final repeat = ImageRepeatUtility((v) => only(repeat: v));
-  late final fit = BoxFitUtility((v) => only(fit: v));
-  late final alignment = AlignmentGeometryUtility((v) => only(alignment: v));
-  late final centerSlice = RectUtility((v) => only(centerSlice: v));
+  late final repeat = ImageRepeatUtility(
+    (v) => build(ImageSpecAttribute(repeat: v)),
+  );
+  late final fit = BoxFitUtility((v) => build(ImageSpecAttribute(fit: v)));
+  late final alignment = AlignmentGeometryUtility(
+    (v) => build(ImageSpecAttribute(alignment: v)),
+  );
+  late final centerSlice = RectUtility(
+    (v) => build(ImageSpecAttribute(centerSlice: v)),
+  );
   late final filterQuality = FilterQualityUtility(
-    (v) => only(filterQuality: v),
+    (v) => build(ImageSpecAttribute(filterQuality: v)),
   );
-  late final colorBlendMode = BlendModeUtility((v) => only(colorBlendMode: v));
+  late final colorBlendMode = BlendModeUtility(
+    (v) => build(ImageSpecAttribute(colorBlendMode: v)),
+  );
 
-  ImageSpecUtility(super.builder);
+  ImageSpecUtility({this.attribute = const ImageSpecAttribute()});
 
-  static ImageSpecUtility<ImageSpecAttribute> get self =>
-      ImageSpecUtility((v) => v);
+  static ImageSpecUtility get self => ImageSpecUtility();
 
-  @override
-  T only({
-    double? width,
-    double? height,
-    Color? color,
-    ImageRepeat? repeat,
-    BoxFit? fit,
-    AlignmentGeometry? alignment,
-    Rect? centerSlice,
-    FilterQuality? filterQuality,
-    BlendMode? colorBlendMode,
-  }) {
-    return builder(
-      ImageSpecAttribute(
-        width: width,
-        height: height,
-        color: color,
-        repeat: repeat,
-        fit: fit,
-        alignment: alignment,
-        centerSlice: centerSlice,
-        filterQuality: filterQuality,
-        colorBlendMode: colorBlendMode,
-      ),
-    );
+  ImageSpecUtility build(ImageSpecAttribute attribute) {
+    return ImageSpecUtility(attribute: this.attribute.merge(attribute));
   }
 }
-

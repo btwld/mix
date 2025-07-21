@@ -8,10 +8,11 @@ import '../attributes/text_style/text_style_dto.dart';
 import '../core/attribute.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
+import '../core/prop.dart';
 import '../core/utility.dart';
 
 final class DefaultTextStyleModifierSpec
-    extends ModifierSpec<DefaultTextStyleModifierSpec>
+    extends Modifier<DefaultTextStyleModifierSpec>
     with Diagnosticable {
   final TextStyle? style;
   final TextAlign? textAlign;
@@ -157,15 +158,14 @@ final class DefaultTextStyleModifierSpec
 /// Use this class to configure the attributes of a [DefaultTextStyleModifierSpec] and pass it to
 /// the [DefaultTextStyleModifierSpec] constructor.
 class DefaultTextStyleModifierSpecAttribute
-    extends ModifierSpecAttribute<DefaultTextStyleModifierSpec>
-    with Diagnosticable {
-  final TextStyleDto? style;
-  final TextAlign? textAlign;
-  final bool? softWrap;
-  final TextOverflow? overflow;
-  final int? maxLines;
-  final TextWidthBasis? textWidthBasis;
-  final TextHeightBehaviorDto? textHeightBehavior;
+    extends ModifierSpecAttribute<DefaultTextStyleModifierSpec> {
+  final MixProp<TextStyle>? style;
+  final Prop<TextAlign>? textAlign;
+  final Prop<bool>? softWrap;
+  final Prop<TextOverflow>? overflow;
+  final Prop<int>? maxLines;
+  final Prop<TextWidthBasis>? textWidthBasis;
+  final MixProp<TextHeightBehavior>? textHeightBehavior;
 
   const DefaultTextStyleModifierSpecAttribute({
     this.style,
@@ -188,13 +188,13 @@ class DefaultTextStyleModifierSpecAttribute
   @override
   DefaultTextStyleModifierSpec resolve(BuildContext context) {
     return DefaultTextStyleModifierSpec(
-      style: style?.resolve(context),
-      textAlign: textAlign,
-      softWrap: softWrap,
-      overflow: overflow,
-      maxLines: maxLines,
-      textWidthBasis: textWidthBasis,
-      textHeightBehavior: textHeightBehavior?.resolve(context),
+      style: MixHelpers.resolve(context, style),
+      textAlign: MixHelpers.resolve(context, textAlign),
+      softWrap: MixHelpers.resolve(context, softWrap),
+      overflow: MixHelpers.resolve(context, overflow),
+      maxLines: MixHelpers.resolve(context, maxLines),
+      textWidthBasis: MixHelpers.resolve(context, textWidthBasis),
+      textHeightBehavior: MixHelpers.resolve(context, textHeightBehavior),
     );
   }
 
@@ -213,50 +213,19 @@ class DefaultTextStyleModifierSpecAttribute
     if (other == null) return this;
 
     return DefaultTextStyleModifierSpecAttribute(
-      style: style?.merge(other.style) ?? other.style,
-      textAlign: other.textAlign ?? textAlign,
-      softWrap: other.softWrap ?? softWrap,
-      overflow: other.overflow ?? overflow,
-      maxLines: other.maxLines ?? maxLines,
-      textWidthBasis: other.textWidthBasis ?? textWidthBasis,
-      textHeightBehavior:
-          textHeightBehavior?.merge(other.textHeightBehavior) ??
-          other.textHeightBehavior,
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('style', style, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('textAlign', textAlign, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('softWrap', softWrap, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('overflow', overflow, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('maxLines', maxLines, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('textWidthBasis', textWidthBasis, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty(
-        'textHeightBehavior',
+      style: MixHelpers.merge(style, other.style),
+      textAlign: MixHelpers.merge(textAlign, other.textAlign),
+      softWrap: MixHelpers.merge(softWrap, other.softWrap),
+      overflow: MixHelpers.merge(overflow, other.overflow),
+      maxLines: MixHelpers.merge(maxLines, other.maxLines),
+      textWidthBasis: MixHelpers.merge(textWidthBasis, other.textWidthBasis),
+      textHeightBehavior: MixHelpers.merge(
         textHeightBehavior,
-        defaultValue: null,
+        other.textHeightBehavior,
       ),
     );
   }
 
-  /// The list of properties that constitute the state of this [DefaultTextStyleModifierSpecAttribute].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [DefaultTextStyleModifierSpecAttribute] instances for equality.
   @override
   List<Object?> get props => [
     style,
@@ -305,14 +274,16 @@ final class DefaultTextStyleModifierSpecUtility<T extends SpecUtility<Object?>>
   }) {
     return builder(
       DefaultTextStyleModifierSpecAttribute(
-        style: TextStyleDto.maybeValue(style),
-        textAlign: textAlign,
-        softWrap: softWrap,
-        overflow: overflow,
-        maxLines: maxLines,
-        textWidthBasis: textWidthBasis,
-        textHeightBehavior: TextHeightBehaviorDto.maybeValue(
-          textHeightBehavior,
+        style: MixProp.maybe(style != null ? TextStyleDto.value(style) : null),
+        textAlign: Prop.maybe(textAlign),
+        softWrap: Prop.maybe(softWrap),
+        overflow: Prop.maybe(overflow),
+        maxLines: Prop.maybe(maxLines),
+        textWidthBasis: Prop.maybe(textWidthBasis),
+        textHeightBehavior: MixProp.maybe(
+          textHeightBehavior != null
+              ? TextHeightBehaviorDto.value(textHeightBehavior)
+              : null,
         ),
       ),
     );

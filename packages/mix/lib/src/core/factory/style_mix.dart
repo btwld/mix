@@ -24,7 +24,7 @@ abstract class Style<S extends Spec<S>> extends SpecAttribute<S> {
 class ResolvedStyle<V extends Spec<V>> {
   final V? spec; // Resolved spec
   final AnimationConfig? animation; // Animation config
-  final List<ModifierSpec>? modifiers; // Modifiers config
+  final List<Modifier>? modifiers; // Modifiers config
 
   const ResolvedStyle({required this.spec, this.animation, this.modifiers});
 

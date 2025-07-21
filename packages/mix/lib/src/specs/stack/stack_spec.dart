@@ -113,32 +113,51 @@ final class StackSpec extends Spec<StackSpec> with Diagnosticable {
 /// Use this class to configure the attributes of a [StackSpec] and pass it to
 /// the [StackSpec] constructor.
 class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
-  final Prop<AlignmentGeometry>? alignment;
-  final Prop<StackFit>? fit;
-  final Prop<TextDirection>? textDirection;
-  final Prop<Clip>? clipBehavior;
+  final Prop<AlignmentGeometry>? $alignment;
+  final Prop<StackFit>? $fit;
+  final Prop<TextDirection>? $textDirection;
+  final Prop<Clip>? $clipBehavior;
 
-  factory StackSpecAttribute({
+  const StackSpecAttribute({
+    Prop<AlignmentGeometry>? alignment,
+    Prop<StackFit>? fit,
+    Prop<TextDirection>? textDirection,
+    Prop<Clip>? clipBehavior,
+    super.animation,
+    super.modifiers,
+    super.variants,
+  }) : $alignment = alignment,
+       $fit = fit,
+       $textDirection = textDirection,
+       $clipBehavior = clipBehavior;
+
+  StackSpecAttribute.only({
     AlignmentGeometry? alignment,
     StackFit? fit,
     TextDirection? textDirection,
     Clip? clipBehavior,
-  }) {
-    return StackSpecAttribute.props(
-      alignment: Prop.maybe(alignment),
-      fit: Prop.maybe(fit),
-      textDirection: Prop.maybe(textDirection),
-      clipBehavior: Prop.maybe(clipBehavior),
-    );
-  }
+    AnimationConfig? animation,
+    List<ModifierSpecAttribute>? modifiers,
+    List<VariantAttribute<StackSpec>>? variants,
+  }) : this(
+         alignment: Prop.maybe(alignment),
+         fit: Prop.maybe(fit),
+         textDirection: Prop.maybe(textDirection),
+         clipBehavior: Prop.maybe(clipBehavior),
+         animation: animation,
+         modifiers: modifiers,
+         variants: variants,
+       );
 
-  /// Constructor that accepts Prop values directly
-  const StackSpecAttribute.props({
-    this.alignment,
-    this.fit,
-    this.textDirection,
-    this.clipBehavior,
-  });
+  StackSpecAttribute.alignment(AlignmentGeometry value)
+    : this.only(alignment: value);
+
+  StackSpecAttribute.fit(StackFit value) : this.only(fit: value);
+
+  StackSpecAttribute.textDirection(TextDirection value)
+    : this.only(textDirection: value);
+
+  StackSpecAttribute.clipBehavior(Clip value) : this.only(clipBehavior: value);
 
   /// Constructor that accepts a [StackSpec] value and extracts its properties.
   ///
@@ -149,7 +168,7 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
   /// final attr = StackSpecAttribute.value(spec);
   /// ```
   static StackSpecAttribute value(StackSpec spec) {
-    return StackSpecAttribute(
+    return StackSpecAttribute.only(
       alignment: spec.alignment,
       fit: spec.fit,
       textDirection: spec.textDirection,
@@ -169,14 +188,30 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
     return spec != null ? StackSpecAttribute.value(spec) : null;
   }
 
+  StackSpecAttribute alignment(AlignmentGeometry value) {
+    return StackSpecAttribute.only(alignment: value);
+  }
+
+  StackSpecAttribute fit(StackFit value) {
+    return StackSpecAttribute.only(fit: value);
+  }
+
+  StackSpecAttribute textDirection(TextDirection value) {
+    return StackSpecAttribute.only(textDirection: value);
+  }
+
+  StackSpecAttribute clipBehavior(Clip value) {
+    return StackSpecAttribute.only(clipBehavior: value);
+  }
+
   /// Resolves to [StackSpec] using the provided [MixContext].
   @override
   StackSpec resolve(BuildContext context) {
     return StackSpec(
-      alignment: MixHelpers.resolve(context, alignment),
-      fit: MixHelpers.resolve(context, fit),
-      textDirection: MixHelpers.resolve(context, textDirection),
-      clipBehavior: MixHelpers.resolve(context, clipBehavior),
+      alignment: MixHelpers.resolve(context, $alignment),
+      fit: MixHelpers.resolve(context, $fit),
+      textDirection: MixHelpers.resolve(context, $textDirection),
+      clipBehavior: MixHelpers.resolve(context, $clipBehavior),
     );
   }
 
@@ -185,11 +220,11 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
   StackSpecAttribute merge(StackSpecAttribute? other) {
     if (other == null) return this;
 
-    return StackSpecAttribute.props(
-      alignment: MixHelpers.merge(alignment, other.alignment),
-      fit: MixHelpers.merge(fit, other.fit),
-      textDirection: MixHelpers.merge(textDirection, other.textDirection),
-      clipBehavior: MixHelpers.merge(clipBehavior, other.clipBehavior),
+    return StackSpecAttribute(
+      alignment: MixHelpers.merge($alignment, other.$alignment),
+      fit: MixHelpers.merge($fit, other.$fit),
+      textDirection: MixHelpers.merge($textDirection, other.$textDirection),
+      clipBehavior: MixHelpers.merge($clipBehavior, other.$clipBehavior),
     );
   }
 
@@ -197,65 +232,53 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(
-      DiagnosticsProperty('alignment', alignment, defaultValue: null),
+      DiagnosticsProperty('alignment', $alignment, defaultValue: null),
     );
-    properties.add(DiagnosticsProperty('fit', fit, defaultValue: null));
+    properties.add(DiagnosticsProperty('fit', $fit, defaultValue: null));
     properties.add(
-      DiagnosticsProperty('textDirection', textDirection, defaultValue: null),
+      DiagnosticsProperty('textDirection', $textDirection, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
+      DiagnosticsProperty('clipBehavior', $clipBehavior, defaultValue: null),
     );
   }
 
   /// The list of properties that constitute the state of this [StackSpecAttribute].
   @override
-  List<Object?> get props => [alignment, fit, textDirection, clipBehavior];
+  List<Object?> get props => [$alignment, $fit, $textDirection, $clipBehavior];
 }
 
 /// Utility class for configuring [StackSpec] properties.
 ///
 /// This class provides methods to set individual properties of a [StackSpec].
 /// Use the methods of this class to configure specific properties of a [StackSpec].
-class StackSpecUtility<T extends Attribute>
-    extends SpecUtility<T, StackSpecAttribute> {
+class StackSpecUtility extends SpecUtility<StackSpec> {
+  @override
+  final StackSpecAttribute attribute;
+
   /// Utility for defining [StackSpecAttribute.alignment]
-  late final alignment = AlignmentGeometryUtility((v) => only(alignment: v));
+  late final alignment = AlignmentGeometryUtility(
+    (v) => build(StackSpecAttribute(alignment: v)),
+  );
 
   /// Utility for defining [StackSpecAttribute.fit]
-  late final fit = StackFitUtility((v) => only(fit: v));
+  late final fit = StackFitUtility((v) => build(StackSpecAttribute(fit: v)));
 
   /// Utility for defining [StackSpecAttribute.textDirection]
   late final textDirection = TextDirectionUtility(
-    (v) => only(textDirection: v),
+    (v) => build(StackSpecAttribute(textDirection: v)),
   );
 
   /// Utility for defining [StackSpecAttribute.clipBehavior]
-  late final clipBehavior = ClipUtility((v) => only(clipBehavior: v));
+  late final clipBehavior = ClipUtility(
+    (v) => build(StackSpecAttribute(clipBehavior: v)),
+  );
 
-  /// Utility for defining [StackSpecAttribute.animated]
+  StackSpecUtility({this.attribute = const StackSpecAttribute()});
 
-  StackSpecUtility(super.attributeBuilder);
+  static StackSpecUtility get self => StackSpecUtility();
 
-  static StackSpecUtility<StackSpecAttribute> get self =>
-      StackSpecUtility((v) => v);
-
-  /// Returns a new [StackSpecAttribute] with the specified properties.
-  @override
-  T only({
-    AlignmentGeometry? alignment,
-    StackFit? fit,
-    TextDirection? textDirection,
-    Clip? clipBehavior,
-  }) {
-    return builder(
-      StackSpecAttribute(
-        alignment: alignment,
-        fit: fit,
-        textDirection: textDirection,
-        clipBehavior: clipBehavior,
-      ),
-    );
+  StackSpecUtility build(StackSpecAttribute attribute) {
+    return StackSpecUtility(attribute: this.attribute.merge(attribute));
   }
 }
-

@@ -1,6 +1,5 @@
 // ignore_for_file: prefer-named-boolean-parameters
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/attribute.dart';
@@ -8,8 +7,7 @@ import '../core/modifier.dart';
 import '../core/utility.dart';
 
 final class IntrinsicHeightModifierSpec
-    extends ModifierSpec<IntrinsicHeightModifierSpec>
-    with Diagnosticable {
+    extends Modifier<IntrinsicHeightModifierSpec> {
   const IntrinsicHeightModifierSpec();
 
   /// Creates a copy of this [IntrinsicHeightModifierSpec] but with the given fields
@@ -42,11 +40,6 @@ final class IntrinsicHeightModifierSpec
     return const IntrinsicHeightModifierSpec();
   }
 
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-  }
-
   /// The list of properties that constitute the state of this [IntrinsicHeightModifierSpec].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
@@ -61,8 +54,7 @@ final class IntrinsicHeightModifierSpec
 }
 
 final class IntrinsicWidthModifierSpec
-    extends ModifierSpec<IntrinsicWidthModifierSpec>
-    with Diagnosticable {
+    extends Modifier<IntrinsicWidthModifierSpec> {
   const IntrinsicWidthModifierSpec();
 
   /// Creates a copy of this [IntrinsicWidthModifierSpec] but with the given fields
@@ -92,11 +84,6 @@ final class IntrinsicWidthModifierSpec
     return const IntrinsicWidthModifierSpec();
   }
 
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-  }
-
   /// The list of properties that constitute the state of this [IntrinsicWidthModifierSpec].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
@@ -118,8 +105,7 @@ final class IntrinsicWidthModifierSpec
 /// Use this class to configure the attributes of a [IntrinsicHeightModifierSpec] and pass it to
 /// the [IntrinsicHeightModifierSpec] constructor.
 class IntrinsicHeightModifierSpecAttribute
-    extends ModifierSpecAttribute<IntrinsicHeightModifierSpec>
-    with Diagnosticable {
+    extends ModifierSpecAttribute<IntrinsicHeightModifierSpec> {
   const IntrinsicHeightModifierSpecAttribute();
 
   /// Resolves to [IntrinsicHeightModifierSpec] using the provided [MixContext].
@@ -151,11 +137,6 @@ class IntrinsicHeightModifierSpecAttribute
     if (other == null) return this;
 
     return other;
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
   }
 
   /// The list of properties that constitute the state of this [IntrinsicHeightModifierSpecAttribute].
@@ -196,8 +177,7 @@ class IntrinsicHeightModifierSpecTween
 /// Use this class to configure the attributes of a [IntrinsicWidthModifierSpec] and pass it to
 /// the [IntrinsicWidthModifierSpec] constructor.
 class IntrinsicWidthModifierSpecAttribute
-    extends ModifierSpecAttribute<IntrinsicWidthModifierSpec>
-    with Diagnosticable {
+    extends ModifierSpecAttribute<IntrinsicWidthModifierSpec> {
   const IntrinsicWidthModifierSpecAttribute();
 
   /// Resolves to [IntrinsicWidthModifierSpec] using the provided [MixContext].
@@ -229,11 +209,6 @@ class IntrinsicWidthModifierSpecAttribute
     if (other == null) return this;
 
     return other;
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
   }
 
   /// The list of properties that constitute the state of this [IntrinsicWidthModifierSpecAttribute].

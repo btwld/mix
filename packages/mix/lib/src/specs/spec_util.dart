@@ -17,7 +17,7 @@ FlexSpecUtility<FlexSpecAttribute> get $flex => _mixUtility.flex;
 ImageSpecUtility<ImageSpecAttribute> get $image => _mixUtility.image;
 IconSpecUtility<IconSpecAttribute> get $icon => _mixUtility.icon;
 TextSpecUtility<TextSpecAttribute> get $text => _mixUtility.text;
-StackSpecUtility<StackSpecAttribute> get $stack => _mixUtility.stack;
+StackSpecUtility get $stack => _mixUtility.stack;
 OnContextVariantUtility get $on => _mixUtility.on;
 WithModifierUtility<ModifierSpecAttribute> get $with => _mixUtility.mod;
 
@@ -30,7 +30,7 @@ class MixUtilities {
   ImageSpecUtility<ImageSpecAttribute> get image => ImageSpecUtility.self;
   IconSpecUtility<IconSpecAttribute> get icon => IconSpecUtility.self;
   TextSpecUtility<TextSpecAttribute> get text => TextSpecUtility.self;
-  StackSpecUtility<StackSpecAttribute> get stack => StackSpecUtility.self;
+  StackSpecUtility get stack => StackSpecUtility.self;
   OnContextVariantUtility get on => OnContextVariantUtility.self;
   WithModifierUtility<ModifierSpecAttribute> get mod =>
       WithModifierUtility.self;

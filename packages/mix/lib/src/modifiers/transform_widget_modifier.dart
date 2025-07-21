@@ -2,16 +2,15 @@
 
 import 'dart:math' as math;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/attribute.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
+import '../core/prop.dart';
 import '../core/utility.dart';
 
-final class TransformModifierSpec extends ModifierSpec<TransformModifierSpec>
-    with Diagnosticable {
+final class TransformModifierSpec extends Modifier<TransformModifierSpec> {
   final Matrix4? transform;
   final Alignment? alignment;
 
@@ -36,17 +35,6 @@ final class TransformModifierSpec extends ModifierSpec<TransformModifierSpec>
   }
 
   @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-      DiagnosticsProperty('transform', transform, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('alignment', alignment, defaultValue: null),
-    );
-  }
-
-  @override
   List<Object?> get props => [transform, alignment];
 
   @override
@@ -64,8 +52,8 @@ final class TransformModifierSpecUtility<T extends SpecUtility<Object?>>
   late final rotate = TransformRotateModifierSpecUtility(
     (value) => builder(
       TransformModifierSpecAttribute(
-        transform: value,
-        alignment: Alignment.center,
+        transform: Prop.maybe(value),
+        alignment: Prop(Alignment.center),
       ),
     ),
   );
@@ -74,8 +62,10 @@ final class TransformModifierSpecUtility<T extends SpecUtility<Object?>>
 
   T _flip(bool x, bool y) => builder(
     TransformModifierSpecAttribute(
-      transform: Matrix4.diagonal3Values(x ? -1.0 : 1.0, y ? -1.0 : 1.0, 1.0),
-      alignment: Alignment.center,
+      transform: Prop(
+        Matrix4.diagonal3Values(x ? -1.0 : 1.0, y ? -1.0 : 1.0, 1.0),
+      ),
+      alignment: Prop(Alignment.center),
     ),
   );
 
@@ -83,19 +73,19 @@ final class TransformModifierSpecUtility<T extends SpecUtility<Object?>>
   T flipY() => _flip(false, true);
 
   T call(Matrix4 value) =>
-      builder(TransformModifierSpecAttribute(transform: value));
+      builder(TransformModifierSpecAttribute(transform: Prop(value)));
 
   T scale(double value) => builder(
     TransformModifierSpecAttribute(
-      transform: Matrix4.diagonal3Values(value, value, 1.0),
-      alignment: Alignment.center,
+      transform: Prop(Matrix4.diagonal3Values(value, value, 1.0)),
+      alignment: Prop(Alignment.center),
     ),
   );
 
   T translate(double x, double y) => builder(
     TransformModifierSpecAttribute(
-      transform: Matrix4.translationValues(x, y, 0.0),
-      alignment: Alignment.center,
+      transform: Prop(Matrix4.translationValues(x, y, 0.0)),
+      alignment: Prop(Alignment.center),
     ),
   );
 }
@@ -111,16 +101,18 @@ final class TransformRotateModifierSpecUtility<T extends SpecUtility<Object?>>
 }
 
 class TransformModifierSpecAttribute
-    extends ModifierSpecAttribute<TransformModifierSpec>
-    with Diagnosticable {
-  final Matrix4? transform;
-  final Alignment? alignment;
+    extends ModifierSpecAttribute<TransformModifierSpec> {
+  final Prop<Matrix4>? transform;
+  final Prop<Alignment>? alignment;
 
   const TransformModifierSpecAttribute({this.transform, this.alignment});
 
   @override
   TransformModifierSpec resolve(BuildContext context) {
-    return TransformModifierSpec(transform: transform, alignment: alignment);
+    return TransformModifierSpec(
+      transform: MixHelpers.resolve(context, transform),
+      alignment: MixHelpers.resolve(context, alignment),
+    );
   }
 
   @override
@@ -128,23 +120,11 @@ class TransformModifierSpecAttribute
     if (other == null) return this;
 
     return TransformModifierSpecAttribute(
-      transform: other.transform ?? transform,
-      alignment: other.alignment ?? alignment,
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-      DiagnosticsProperty('transform', transform, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('alignment', alignment, defaultValue: null),
+      transform: MixHelpers.merge(transform, other.transform),
+      alignment: MixHelpers.merge(alignment, other.alignment),
     );
   }
 
   @override
   List<Object?> get props => [transform, alignment];
 }
-

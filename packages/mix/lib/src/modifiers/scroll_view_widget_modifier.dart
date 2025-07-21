@@ -1,15 +1,15 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../attributes/enum/enum_util.dart';
-import '../attributes/spacing/edge_insets_dto.dart';
+import '../attributes/scalars/scalar_util.dart';
 import '../attributes/spacing/spacing_util.dart';
 import '../core/attribute.dart';
+import '../core/helpers.dart';
 import '../core/modifier.dart';
+import '../core/prop.dart';
 import '../core/utility.dart';
 
-final class ScrollViewModifierSpec extends ModifierSpec<ScrollViewModifierSpec>
-    with Diagnosticable {
+final class ScrollViewModifierSpec extends Modifier<ScrollViewModifierSpec> {
   final Axis? scrollDirection;
   final bool? reverse;
   final EdgeInsetsGeometry? padding;
@@ -55,24 +55,6 @@ final class ScrollViewModifierSpec extends ModifierSpec<ScrollViewModifierSpec>
   }
 
   @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-      DiagnosticsProperty(
-        'scrollDirection',
-        scrollDirection,
-        defaultValue: null,
-      ),
-    );
-    properties.add(DiagnosticsProperty('reverse', reverse, defaultValue: null));
-    properties.add(DiagnosticsProperty('padding', padding, defaultValue: null));
-    properties.add(DiagnosticsProperty('physics', physics, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
-    );
-  }
-
-  @override
   List<Object?> get props => [
     scrollDirection,
     reverse,
@@ -97,7 +79,7 @@ final class ScrollViewModifierSpec extends ModifierSpec<ScrollViewModifierSpec>
 final class ScrollViewModifierSpecUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, ScrollViewModifierSpecAttribute> {
   /// Make the scroll view reverse or not.
-  late final reverse = BoolUtility((prop) => call(reverse: prop.getValue()));
+  late final reverse = BoolUtility((prop) => call(reverse: prop));
 
   /// Set the padding of the scroll view.
   late final padding = EdgeInsetsGeometryUtility(
@@ -110,16 +92,16 @@ final class ScrollViewModifierSpecUtility<T extends SpecUtility<Object?>>
   ScrollViewModifierSpecUtility(super.builder);
 
   /// Set the scroll direction of the scroll view.
-  T direction(Axis axis) => call(scrollDirection: axis);
+  T direction(Axis axis) => call(scrollDirection: Prop(axis));
 
   /// Set the scroll direction of the scroll view to horizontal.
-  T horizontal() => call(scrollDirection: Axis.horizontal);
+  T horizontal() => call(scrollDirection: Prop(Axis.horizontal));
 
   /// Set the scroll direction of the scroll view to vertical.
-  T vertical() => call(scrollDirection: Axis.vertical);
+  T vertical() => call(scrollDirection: Prop(Axis.vertical));
 
   /// Set the physics of the scroll view.
-  T physics(ScrollPhysics physics) => call(physics: physics);
+  T physics(ScrollPhysics physics) => call(physics: Prop(physics));
 
   /// Disable the scroll physics of the scroll view.
   T neverScrollableScrollPhysics() =>
@@ -132,11 +114,11 @@ final class ScrollViewModifierSpecUtility<T extends SpecUtility<Object?>>
   T clampingScrollPhysics() => physics(const ClampingScrollPhysics());
 
   T call({
-    Axis? scrollDirection,
-    bool? reverse,
-    EdgeInsetsGeometryDto? padding,
-    ScrollPhysics? physics,
-    Clip? clipBehavior,
+    Prop<Axis>? scrollDirection,
+    Prop<bool>? reverse,
+    MixProp<EdgeInsetsGeometry>? padding,
+    Prop<ScrollPhysics>? physics,
+    Prop<Clip>? clipBehavior,
   }) => builder(
     ScrollViewModifierSpecAttribute(
       scrollDirection: scrollDirection,
@@ -149,13 +131,12 @@ final class ScrollViewModifierSpecUtility<T extends SpecUtility<Object?>>
 }
 
 class ScrollViewModifierSpecAttribute
-    extends ModifierSpecAttribute<ScrollViewModifierSpec>
-    with Diagnosticable {
-  final Axis? scrollDirection;
-  final bool? reverse;
-  final EdgeInsetsGeometryDto? padding;
-  final ScrollPhysics? physics;
-  final Clip? clipBehavior;
+    extends ModifierSpecAttribute<ScrollViewModifierSpec> {
+  final Prop<Axis>? scrollDirection;
+  final Prop<bool>? reverse;
+  final MixProp<EdgeInsetsGeometry>? padding;
+  final Prop<ScrollPhysics>? physics;
+  final Prop<Clip>? clipBehavior;
 
   const ScrollViewModifierSpecAttribute({
     this.scrollDirection,
@@ -168,11 +149,11 @@ class ScrollViewModifierSpecAttribute
   @override
   ScrollViewModifierSpec resolve(BuildContext context) {
     return ScrollViewModifierSpec(
-      scrollDirection: scrollDirection,
-      reverse: reverse,
-      padding: padding?.resolve(context),
-      physics: physics,
-      clipBehavior: clipBehavior,
+      scrollDirection: MixHelpers.resolve(context, scrollDirection),
+      reverse: MixHelpers.resolve(context, reverse),
+      padding: MixHelpers.resolve(context, padding),
+      physics: MixHelpers.resolve(context, physics),
+      clipBehavior: MixHelpers.resolve(context, clipBehavior),
     );
   }
 
@@ -183,29 +164,11 @@ class ScrollViewModifierSpecAttribute
     if (other == null) return this;
 
     return ScrollViewModifierSpecAttribute(
-      scrollDirection: other.scrollDirection ?? scrollDirection,
-      reverse: other.reverse ?? reverse,
-      padding: EdgeInsetsGeometryDto.tryToMerge(padding, other.padding),
-      physics: other.physics ?? physics,
-      clipBehavior: other.clipBehavior ?? clipBehavior,
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-      DiagnosticsProperty(
-        'scrollDirection',
-        scrollDirection,
-        defaultValue: null,
-      ),
-    );
-    properties.add(DiagnosticsProperty('reverse', reverse, defaultValue: null));
-    properties.add(DiagnosticsProperty('padding', padding, defaultValue: null));
-    properties.add(DiagnosticsProperty('physics', physics, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
+      scrollDirection: MixHelpers.merge(scrollDirection, other.scrollDirection),
+      reverse: MixHelpers.merge(reverse, other.reverse),
+      padding: MixHelpers.merge(padding, other.padding),
+      physics: MixHelpers.merge(physics, other.physics),
+      clipBehavior: MixHelpers.merge(clipBehavior, other.clipBehavior),
     );
   }
 
@@ -218,4 +181,3 @@ class ScrollViewModifierSpecAttribute
     clipBehavior,
   ];
 }
-

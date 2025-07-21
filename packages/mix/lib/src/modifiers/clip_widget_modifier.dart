@@ -5,10 +5,12 @@ import 'package:flutter/widgets.dart';
 
 import '../attributes/border/border_radius_dto.dart';
 import '../core/attribute.dart';
+import '../core/helpers.dart';
 import '../core/modifier.dart';
+import '../core/prop.dart';
 import '../core/utility.dart';
 
-final class ClipOvalModifierSpec extends ModifierSpec<ClipOvalModifierSpec>
+final class ClipOvalModifierSpec extends Modifier<ClipOvalModifierSpec>
     with Diagnosticable {
   final CustomClipper<Rect>? clipper;
   final Clip? clipBehavior;
@@ -88,10 +90,9 @@ final class ClipOvalModifierSpec extends ModifierSpec<ClipOvalModifierSpec>
 /// Use this class to configure the attributes of a [ClipOvalModifierSpec] and pass it to
 /// the [ClipOvalModifierSpec] constructor.
 class ClipOvalModifierSpecAttribute
-    extends ModifierSpecAttribute<ClipOvalModifierSpec>
-    with Diagnosticable {
-  final CustomClipper<Rect>? clipper;
-  final Clip? clipBehavior;
+    extends ModifierSpecAttribute<ClipOvalModifierSpec> {
+  final Prop<CustomClipper<Rect>>? clipper;
+  final Prop<Clip>? clipBehavior;
 
   const ClipOvalModifierSpecAttribute({this.clipper, this.clipBehavior});
 
@@ -105,7 +106,10 @@ class ClipOvalModifierSpecAttribute
   /// ```
   @override
   ClipOvalModifierSpec resolve(BuildContext context) {
-    return ClipOvalModifierSpec(clipper: clipper, clipBehavior: clipBehavior);
+    return ClipOvalModifierSpec(
+      clipper: MixHelpers.resolve(context, clipper),
+      clipBehavior: MixHelpers.resolve(context, clipBehavior),
+    );
   }
 
   /// Merges the properties of this [ClipOvalModifierSpecAttribute] with the properties of [other].
@@ -121,30 +125,16 @@ class ClipOvalModifierSpecAttribute
     if (other == null) return this;
 
     return ClipOvalModifierSpecAttribute(
-      clipper: other.clipper ?? clipper,
-      clipBehavior: other.clipBehavior ?? clipBehavior,
+      clipper: MixHelpers.merge(clipper, other.clipper),
+      clipBehavior: MixHelpers.merge(clipBehavior, other.clipBehavior),
     );
   }
 
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('clipper', clipper, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
-    );
-  }
-
-  /// The list of properties that constitute the state of this [ClipOvalModifierSpecAttribute].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [ClipOvalModifierSpecAttribute] instances for equality.
   @override
   List<Object?> get props => [clipper, clipBehavior];
 }
 
-
-final class ClipRectModifierSpec extends ModifierSpec<ClipRectModifierSpec>
+final class ClipRectModifierSpec extends Modifier<ClipRectModifierSpec>
     with Diagnosticable {
   final CustomClipper<Rect>? clipper;
   final Clip? clipBehavior;
@@ -224,10 +214,9 @@ final class ClipRectModifierSpec extends ModifierSpec<ClipRectModifierSpec>
 /// Use this class to configure the attributes of a [ClipRectModifierSpec] and pass it to
 /// the [ClipRectModifierSpec] constructor.
 class ClipRectModifierSpecAttribute
-    extends ModifierSpecAttribute<ClipRectModifierSpec>
-    with Diagnosticable {
-  final CustomClipper<Rect>? clipper;
-  final Clip? clipBehavior;
+    extends ModifierSpecAttribute<ClipRectModifierSpec> {
+  final Prop<CustomClipper<Rect>>? clipper;
+  final Prop<Clip>? clipBehavior;
 
   const ClipRectModifierSpecAttribute({this.clipper, this.clipBehavior});
 
@@ -241,7 +230,10 @@ class ClipRectModifierSpecAttribute
   /// ```
   @override
   ClipRectModifierSpec resolve(BuildContext context) {
-    return ClipRectModifierSpec(clipper: clipper, clipBehavior: clipBehavior);
+    return ClipRectModifierSpec(
+      clipper: MixHelpers.resolve(context, clipper),
+      clipBehavior: MixHelpers.resolve(context, clipBehavior),
+    );
   }
 
   /// Merges the properties of this [ClipRectModifierSpecAttribute] with the properties of [other].
@@ -257,30 +249,16 @@ class ClipRectModifierSpecAttribute
     if (other == null) return this;
 
     return ClipRectModifierSpecAttribute(
-      clipper: other.clipper ?? clipper,
-      clipBehavior: other.clipBehavior ?? clipBehavior,
+      clipper: MixHelpers.merge(clipper, other.clipper),
+      clipBehavior: MixHelpers.merge(clipBehavior, other.clipBehavior),
     );
   }
 
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('clipper', clipper, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
-    );
-  }
-
-  /// The list of properties that constitute the state of this [ClipRectModifierSpecAttribute].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [ClipRectModifierSpecAttribute] instances for equality.
   @override
   List<Object?> get props => [clipper, clipBehavior];
 }
 
-
-final class ClipRRectModifierSpec extends ModifierSpec<ClipRRectModifierSpec>
+final class ClipRRectModifierSpec extends Modifier<ClipRRectModifierSpec>
     with Diagnosticable {
   final BorderRadiusGeometry? borderRadius;
   final CustomClipper<RRect>? clipper;
@@ -377,11 +355,10 @@ final class ClipRRectModifierSpec extends ModifierSpec<ClipRRectModifierSpec>
 /// Use this class to configure the attributes of a [ClipRRectModifierSpec] and pass it to
 /// the [ClipRRectModifierSpec] constructor.
 class ClipRRectModifierSpecAttribute
-    extends ModifierSpecAttribute<ClipRRectModifierSpec>
-    with Diagnosticable {
-  final BorderRadiusGeometryDto? borderRadius;
-  final CustomClipper<RRect>? clipper;
-  final Clip? clipBehavior;
+    extends ModifierSpecAttribute<ClipRRectModifierSpec> {
+  final MixProp<BorderRadiusGeometry>? borderRadius;
+  final Prop<CustomClipper<RRect>>? clipper;
+  final Prop<Clip>? clipBehavior;
 
   const ClipRRectModifierSpecAttribute({
     this.borderRadius,
@@ -400,9 +377,9 @@ class ClipRRectModifierSpecAttribute
   @override
   ClipRRectModifierSpec resolve(BuildContext context) {
     return ClipRRectModifierSpec(
-      borderRadius: borderRadius?.resolve(context),
-      clipper: clipper,
-      clipBehavior: clipBehavior,
+      borderRadius: MixHelpers.resolve(context, borderRadius),
+      clipper: MixHelpers.resolve(context, clipper),
+      clipBehavior: MixHelpers.resolve(context, clipBehavior),
     );
   }
 
@@ -419,35 +396,17 @@ class ClipRRectModifierSpecAttribute
     if (other == null) return this;
 
     return ClipRRectModifierSpecAttribute(
-      borderRadius:
-          borderRadius?.merge(other.borderRadius) ?? other.borderRadius,
-      clipper: other.clipper ?? clipper,
-      clipBehavior: other.clipBehavior ?? clipBehavior,
+      borderRadius: MixHelpers.merge(borderRadius, other.borderRadius),
+      clipper: MixHelpers.merge(clipper, other.clipper),
+      clipBehavior: MixHelpers.merge(clipBehavior, other.clipBehavior),
     );
   }
 
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-      DiagnosticsProperty('borderRadius', borderRadius, defaultValue: null),
-    );
-    properties.add(DiagnosticsProperty('clipper', clipper, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
-    );
-  }
-
-  /// The list of properties that constitute the state of this [ClipRRectModifierSpecAttribute].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [ClipRRectModifierSpecAttribute] instances for equality.
   @override
   List<Object?> get props => [borderRadius, clipper, clipBehavior];
 }
 
-
-final class ClipPathModifierSpec extends ModifierSpec<ClipPathModifierSpec>
+final class ClipPathModifierSpec extends Modifier<ClipPathModifierSpec>
     with Diagnosticable {
   final CustomClipper<Path>? clipper;
   final Clip? clipBehavior;
@@ -527,10 +486,9 @@ final class ClipPathModifierSpec extends ModifierSpec<ClipPathModifierSpec>
 /// Use this class to configure the attributes of a [ClipPathModifierSpec] and pass it to
 /// the [ClipPathModifierSpec] constructor.
 class ClipPathModifierSpecAttribute
-    extends ModifierSpecAttribute<ClipPathModifierSpec>
-    with Diagnosticable {
-  final CustomClipper<Path>? clipper;
-  final Clip? clipBehavior;
+    extends ModifierSpecAttribute<ClipPathModifierSpec> {
+  final Prop<CustomClipper<Path>>? clipper;
+  final Prop<Clip>? clipBehavior;
 
   const ClipPathModifierSpecAttribute({this.clipper, this.clipBehavior});
 
@@ -544,7 +502,10 @@ class ClipPathModifierSpecAttribute
   /// ```
   @override
   ClipPathModifierSpec resolve(BuildContext context) {
-    return ClipPathModifierSpec(clipper: clipper, clipBehavior: clipBehavior);
+    return ClipPathModifierSpec(
+      clipper: MixHelpers.resolve(context, clipper),
+      clipBehavior: MixHelpers.resolve(context, clipBehavior),
+    );
   }
 
   /// Merges the properties of this [ClipPathModifierSpecAttribute] with the properties of [other].
@@ -560,31 +521,16 @@ class ClipPathModifierSpecAttribute
     if (other == null) return this;
 
     return ClipPathModifierSpecAttribute(
-      clipper: other.clipper ?? clipper,
-      clipBehavior: other.clipBehavior ?? clipBehavior,
+      clipper: MixHelpers.merge(clipper, other.clipper),
+      clipBehavior: MixHelpers.merge(clipBehavior, other.clipBehavior),
     );
   }
 
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('clipper', clipper, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
-    );
-  }
-
-  /// The list of properties that constitute the state of this [ClipPathModifierSpecAttribute].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [ClipPathModifierSpecAttribute] instances for equality.
   @override
   List<Object?> get props => [clipper, clipBehavior];
 }
 
-
-final class ClipTriangleModifierSpec
-    extends ModifierSpec<ClipTriangleModifierSpec>
+final class ClipTriangleModifierSpec extends Modifier<ClipTriangleModifierSpec>
     with Diagnosticable {
   final Clip? clipBehavior;
 
@@ -657,9 +603,8 @@ final class ClipTriangleModifierSpec
 /// Use this class to configure the attributes of a [ClipTriangleModifierSpec] and pass it to
 /// the [ClipTriangleModifierSpec] constructor.
 class ClipTriangleModifierSpecAttribute
-    extends ModifierSpecAttribute<ClipTriangleModifierSpec>
-    with Diagnosticable {
-  final Clip? clipBehavior;
+    extends ModifierSpecAttribute<ClipTriangleModifierSpec> {
+  final Prop<Clip>? clipBehavior;
 
   const ClipTriangleModifierSpecAttribute({this.clipBehavior});
 
@@ -673,7 +618,9 @@ class ClipTriangleModifierSpecAttribute
   /// ```
   @override
   ClipTriangleModifierSpec resolve(BuildContext context) {
-    return ClipTriangleModifierSpec(clipBehavior: clipBehavior);
+    return ClipTriangleModifierSpec(
+      clipBehavior: MixHelpers.resolve(context, clipBehavior),
+    );
   }
 
   /// Merges the properties of this [ClipTriangleModifierSpecAttribute] with the properties of [other].
@@ -691,26 +638,13 @@ class ClipTriangleModifierSpecAttribute
     if (other == null) return this;
 
     return ClipTriangleModifierSpecAttribute(
-      clipBehavior: other.clipBehavior ?? clipBehavior,
+      clipBehavior: MixHelpers.merge(clipBehavior, other.clipBehavior),
     );
   }
 
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
-    );
-  }
-
-  /// The list of properties that constitute the state of this [ClipTriangleModifierSpecAttribute].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [ClipTriangleModifierSpecAttribute] instances for equality.
   @override
   List<Object?> get props => [clipBehavior];
 }
-
 
 class TriangleClipper extends CustomClipper<Path> {
   const TriangleClipper();
@@ -736,8 +670,8 @@ final class ClipPathModifierSpecUtility<T extends SpecUtility<Object?>>
   T call({CustomClipper<Path>? clipper, Clip? clipBehavior}) {
     return builder(
       ClipPathModifierSpecAttribute(
-        clipper: clipper,
-        clipBehavior: clipBehavior,
+        clipper: Prop.maybe(clipper),
+        clipBehavior: Prop.maybe(clipBehavior),
       ),
     );
   }
@@ -753,9 +687,11 @@ final class ClipRRectModifierSpecUtility<T extends SpecUtility<Object?>>
   }) {
     return builder(
       ClipRRectModifierSpecAttribute(
-        borderRadius: BorderRadiusGeometryDto.maybeValue(borderRadius),
-        clipper: clipper,
-        clipBehavior: clipBehavior,
+        borderRadius: MixProp.maybe(
+          borderRadius != null ? BorderRadiusDto.value(borderRadius) : null,
+        ),
+        clipper: Prop.maybe(clipper),
+        clipBehavior: Prop.maybe(clipBehavior),
       ),
     );
   }
@@ -767,8 +703,8 @@ final class ClipOvalModifierSpecUtility<T extends SpecUtility<Object?>>
   T call({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
     return builder(
       ClipOvalModifierSpecAttribute(
-        clipper: clipper,
-        clipBehavior: clipBehavior,
+        clipper: Prop.maybe(clipper),
+        clipBehavior: Prop.maybe(clipBehavior),
       ),
     );
   }
@@ -780,8 +716,8 @@ final class ClipRectModifierSpecUtility<T extends SpecUtility<Object?>>
   T call({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
     return builder(
       ClipRectModifierSpecAttribute(
-        clipper: clipper,
-        clipBehavior: clipBehavior,
+        clipper: Prop.maybe(clipper),
+        clipBehavior: Prop.maybe(clipBehavior),
       ),
     );
   }
@@ -792,7 +728,7 @@ final class ClipTriangleModifierSpecUtility<T extends SpecUtility<Object?>>
   const ClipTriangleModifierSpecUtility(super.builder);
   T call({Clip? clipBehavior}) {
     return builder(
-      ClipTriangleModifierSpecAttribute(clipBehavior: clipBehavior),
+      ClipTriangleModifierSpecAttribute(clipBehavior: Prop.maybe(clipBehavior)),
     );
   }
 }

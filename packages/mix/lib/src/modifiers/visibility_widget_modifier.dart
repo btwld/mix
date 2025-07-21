@@ -6,10 +6,10 @@ import 'package:flutter/widgets.dart';
 import '../core/attribute.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
-import '../theme/tokens/mix_token.dart';
 import '../core/utility.dart';
+import '../theme/tokens/mix_token.dart';
 
-final class VisibilityModifierSpec extends ModifierSpec<VisibilityModifierSpec>
+final class VisibilityModifierSpec extends Modifier<VisibilityModifierSpec>
     with Diagnosticable {
   final bool visible;
   const VisibilityModifierSpec([bool? visible]) : visible = visible ?? true;
@@ -104,7 +104,9 @@ class VisibilityModifierSpecAttribute
   ) {
     if (other == null) return this;
 
-    return VisibilityModifierSpecAttribute(visible: visible?.merge(other.visible) ?? other.visible);
+    return VisibilityModifierSpecAttribute(
+      visible: visible?.merge(other.visible) ?? other.visible,
+    );
   }
 
   @override
@@ -121,7 +123,6 @@ class VisibilityModifierSpecAttribute
   List<Object?> get props => [visible];
 }
 
-
 final class VisibilityModifierSpecUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, VisibilityModifierSpecAttribute> {
   const VisibilityModifierSpecUtility(super.builder);
@@ -130,7 +131,7 @@ final class VisibilityModifierSpecUtility<T extends SpecUtility<Object?>>
 
   T call(bool value) =>
       builder(VisibilityModifierSpecAttribute(visible: Prop(value)));
-  
+
   T token(MixToken<bool> token) =>
       builder(VisibilityModifierSpecAttribute(visible: Prop.token(token)));
 }

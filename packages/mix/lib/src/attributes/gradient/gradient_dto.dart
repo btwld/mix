@@ -6,8 +6,8 @@ import 'package:mix/mix.dart';
 
 /// Represents a base Data transfer object of [Gradient]
 ///
-/// This is used to allow for resolvable value tokens, and also the correct
-/// merge and combining behavior. It allows to be merged, and resolved to a `[Gradient]
+/// This is used to allow for resolvable value tokens and proper merge behavior.
+/// Supports same-type merging and simple override behavior for different types.
 @immutable
 sealed class GradientDto<T extends Gradient> extends Mix<T>
     with HasDefaultValue<T> {
@@ -27,17 +27,16 @@ sealed class GradientDto<T extends Gradient> extends Mix<T>
     };
   }
 
-  static B _exhaustiveMerge<A extends GradientDto, B extends GradientDto>(
-    A a,
-    B b,
-  ) {
-    if (a.runtimeType == b.runtimeType) return a.merge(b) as B;
+  static RadialGradientDto radial(RadialGradientDto value) {
+    return value;
+  }
 
-    return switch (b) {
-      (LinearGradientDto g) => a.asLinearGradient().merge(g) as B,
-      (RadialGradientDto g) => a.asRadialGradient().merge(g) as B,
-      (SweepGradientDto g) => a.asSweepGradient().merge(g) as B,
-    };
+  static LinearGradientDto linear(LinearGradientDto value) {
+    return value;
+  }
+
+  static SweepGradientDto sweep(SweepGradientDto value) {
+    return value;
   }
 
   static GradientDto<T>? maybeValue<T extends Gradient>(T? value) {
@@ -48,46 +47,19 @@ sealed class GradientDto<T extends Gradient> extends Mix<T>
     if (b == null) return a;
     if (a == null) return b;
 
-    return a.runtimeType == b.runtimeType ? a.merge(b) : _exhaustiveMerge(a, b);
+    // Simple override behavior for different types (follows KISS principle)
+    return a.runtimeType == b.runtimeType ? a.merge(b) : b;
   }
 
+  /// Helper method to merge common gradient properties (transform, colors, stops)
+  /// This follows DRY principle by consolidating shared merge logic
   @protected
-  LinearGradientDto asLinearGradient() {
-    return LinearGradientDto(
-      begin: null,
-      end: null,
-      tileMode: null,
-      transform: transform,
-      colors: colors,
-      stops: stops,
-    );
-  }
-
-  @protected
-  RadialGradientDto asRadialGradient() {
-    return RadialGradientDto(
-      center: null,
-      radius: null,
-      tileMode: null,
-      focal: null,
-      focalRadius: null,
-      transform: transform,
-      colors: colors,
-      stops: stops,
-    );
-  }
-
-  @protected
-  SweepGradientDto asSweepGradient() {
-    return SweepGradientDto(
-      center: null,
-      startAngle: null,
-      endAngle: null,
-      tileMode: null,
-      transform: transform,
-      colors: colors,
-      stops: stops,
-    );
+  Map<String, dynamic> mergeCommonProperties(GradientDto other) {
+    return {
+      'transform': MixHelpers.merge(transform, other.transform),
+      'colors': MixHelpers.mergeList(colors, other.colors),
+      'stops': MixHelpers.mergeList(stops, other.stops),
+    };
   }
 
   @override
@@ -176,13 +148,15 @@ final class LinearGradientDto extends GradientDto<LinearGradient> {
   LinearGradientDto merge(LinearGradientDto? other) {
     if (other == null) return this;
 
+    final commonProps = mergeCommonProperties(other);
+
     return LinearGradientDto(
       begin: MixHelpers.merge(begin, other.begin),
       end: MixHelpers.merge(end, other.end),
       tileMode: MixHelpers.merge(tileMode, other.tileMode),
-      transform: MixHelpers.merge(transform, other.transform),
-      colors: MixHelpers.mergeList(colors, other.colors),
-      stops: MixHelpers.mergeList(stops, other.stops),
+      transform: commonProps['transform'],
+      colors: commonProps['colors'],
+      stops: commonProps['stops'],
     );
   }
 
@@ -307,15 +281,17 @@ final class RadialGradientDto extends GradientDto<RadialGradient> {
   RadialGradientDto merge(RadialGradientDto? other) {
     if (other == null) return this;
 
+    final commonProps = mergeCommonProperties(other);
+
     return RadialGradientDto(
       center: MixHelpers.merge(center, other.center),
       radius: MixHelpers.merge(radius, other.radius),
       tileMode: MixHelpers.merge(tileMode, other.tileMode),
       focal: MixHelpers.merge(focal, other.focal),
       focalRadius: MixHelpers.merge(focalRadius, other.focalRadius),
-      transform: MixHelpers.merge(transform, other.transform),
-      colors: MixHelpers.mergeList(colors, other.colors),
-      stops: MixHelpers.mergeList(stops, other.stops),
+      transform: commonProps['transform'],
+      colors: commonProps['colors'],
+      stops: commonProps['stops'],
     );
   }
 
@@ -439,14 +415,16 @@ final class SweepGradientDto extends GradientDto<SweepGradient> {
   SweepGradientDto merge(SweepGradientDto? other) {
     if (other == null) return this;
 
+    final commonProps = mergeCommonProperties(other);
+
     return SweepGradientDto(
       center: MixHelpers.merge(center, other.center),
       startAngle: MixHelpers.merge(startAngle, other.startAngle),
       endAngle: MixHelpers.merge(endAngle, other.endAngle),
       tileMode: MixHelpers.merge(tileMode, other.tileMode),
-      transform: MixHelpers.merge(transform, other.transform),
-      colors: MixHelpers.mergeList(colors, other.colors),
-      stops: MixHelpers.mergeList(stops, other.stops),
+      transform: commonProps['transform'],
+      colors: commonProps['colors'],
+      stops: commonProps['stops'],
     );
   }
 

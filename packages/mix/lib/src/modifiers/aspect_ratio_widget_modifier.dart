@@ -7,11 +7,10 @@ import '../core/attribute.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
-import '../theme/tokens/mix_token.dart';
 import '../core/utility.dart';
+import '../theme/tokens/mix_token.dart';
 
-final class AspectRatioModifierSpec
-    extends ModifierSpec<AspectRatioModifierSpec>
+final class AspectRatioModifierSpec extends Modifier<AspectRatioModifierSpec>
     with Diagnosticable {
   final double aspectRatio;
 
@@ -131,16 +130,17 @@ class AspectRatioModifierSpecAttribute
   List<Object?> get props => [aspectRatio];
 }
 
-
 final class AspectRatioModifierSpecUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, AspectRatioModifierSpecAttribute> {
   const AspectRatioModifierSpecUtility(super.builder);
-  
+
   T call(double value) {
     return builder(AspectRatioModifierSpecAttribute(aspectRatio: Prop(value)));
   }
-  
+
   T token(MixToken<double> token) {
-    return builder(AspectRatioModifierSpecAttribute(aspectRatio: Prop.token(token)));
+    return builder(
+      AspectRatioModifierSpecAttribute(aspectRatio: Prop.token(token)),
+    );
   }
 }
