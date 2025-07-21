@@ -4,12 +4,11 @@ import '../modifiers/internal/render_widget_modifier.dart';
 import '../widgets/pressable_widget.dart';
 import 'animation/animation_driver.dart';
 import 'animation_config.dart';
-import 'attribute.dart';
 import 'modifier.dart';
 import 'named_variant_scope.dart';
 import 'resolved_style_provider.dart';
 import 'spec.dart';
-import 'style_mix.dart';
+import 'style.dart';
 import 'style_provider.dart';
 import 'variant.dart';
 import 'widget_state/widget_state_controller.dart';
@@ -22,7 +21,7 @@ import 'widget_state/widget_state_controller.dart';
 class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
   const StyleBuilder({
     super.key,
-    required this.style,
+    this.style,
     required this.builder,
     this.inherit = false,
     this.orderOfModifiers,
@@ -30,7 +29,7 @@ class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
   });
 
   /// The style element to resolve and apply.
-  final SpecAttribute<S> style;
+  final SpecAttribute<S>? style;
 
   /// Function that builds the widget with the resolved style.
   final Widget Function(BuildContext context, S resolved) builder;
@@ -52,7 +51,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
   late final WidgetStatesController _controller;
 
   // Cache for optimization
-  Style<S>? _cachedFinalStyle;
+  SpecAttribute<S>? _cachedFinalStyle;
   ResolvedStyle<S>? _cachedResolvedStyle;
   bool? _cachedNeedsInteractivity;
 
@@ -62,7 +61,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
     _controller = widget.controller ?? WidgetStatesController();
   }
 
-  Style<S> _prepareFinalStyle(BuildContext context) {
+  SpecAttribute<S> _prepareFinalStyle(BuildContext context) {
     // Handle inheritance
     final inheritedStyle = widget.inherit ? _getInheritedStyle(context) : null;
     final effectiveStyle = inheritedStyle != null
@@ -96,7 +95,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
   Widget _wrapWithAnimationIfNeeded(
     Widget child,
     AnimationConfig? animationConfig,
-    Style<S> style,
+    SpecAttribute<S> style,
   ) {
     if (animationConfig == null) return child;
 
@@ -125,7 +124,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
     return child;
   }
 
-  Widget _wrapWithStyleProviderIfNeeded(Widget child, Style<S> style) {
+  Widget _wrapWithStyleProviderIfNeeded(Widget child, SpecAttribute<S> style) {
     if (widget.inherit) {
       return StyleProvider<S>(style: style, child: child);
     }
@@ -133,7 +132,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
     return child;
   }
 
-  Style<S>? _getInheritedStyle(BuildContext context) {
+  SpecAttribute<S>? _getInheritedStyle(BuildContext context) {
     // Try to get inherited style of the same type
     return StyleProvider.maybeOf(context);
   }

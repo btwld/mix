@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../spec.dart';
-import '../style_mix.dart';
+import '../style.dart';
 
 /// Base class for animation drivers that handle style interpolation.
 ///
@@ -12,7 +12,7 @@ abstract class AnimationDriver<S extends Spec<S>> {
   /// Builds the animated widget with the given style and builder.
   Widget build({
     required BuildContext context,
-    required Style<S> style,
+    required SpecAttribute<S> style,
     required Widget Function(BuildContext context, ResolvedStyle<S> resolved)
     builder,
   });
@@ -25,7 +25,7 @@ class NoAnimationDriver<S extends Spec<S>> extends AnimationDriver<S> {
   @override
   Widget build({
     required BuildContext context,
-    required Style<S> style,
+    required SpecAttribute<S> style,
     required Widget Function(BuildContext context, ResolvedStyle<S> resolved)
     builder,
   }) {
@@ -50,7 +50,7 @@ class ImplicitAnimationDriver<S extends Spec<S>> extends AnimationDriver<S> {
   @override
   Widget build({
     required BuildContext context,
-    required Style<S> style,
+    required SpecAttribute<S> style,
     required Widget Function(BuildContext context, ResolvedStyle<S> resolved)
     builder,
   }) {
@@ -76,7 +76,7 @@ class _ImplicitAnimationWidget<S extends Spec<S>>
     super.onEnd,
   });
 
-  final Style<S> style;
+  final SpecAttribute<S> style;
   final Widget Function(BuildContext context, ResolvedStyle<S> resolved)
   builder;
 

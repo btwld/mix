@@ -1,9 +1,8 @@
 import 'package:flutter/widgets.dart';
 
-import 'attribute.dart';
 import 'spec.dart';
+import 'style.dart';
 import 'style_builder.dart';
-import 'style_mix.dart';
 
 /// Base class for widgets that apply [Style] definitions.
 ///
@@ -22,7 +21,7 @@ abstract class StyleWidget<S extends Spec<S>> extends StatefulWidget {
   });
 
   /// The style to apply to this widget.
-  final SpecAttribute<S> style;
+  final SpecAttribute<S>? style;
 
   /// The order in which modifiers should be applied.
   final List<Type>? orderOfModifiers;

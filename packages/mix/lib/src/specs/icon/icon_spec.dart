@@ -6,10 +6,10 @@ import '../../attributes/scalar_util.dart';
 import '../../attributes/shadow_mix.dart';
 import '../../attributes/shadow_util.dart';
 import '../../core/animation_config.dart';
-import '../../core/attribute.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/spec.dart';
+import '../../core/style.dart';
 
 final class IconSpec extends Spec<IconSpec> with Diagnosticable {
   final Color? color;

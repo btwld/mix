@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/style_mix.dart';
+import '../../core/style.dart';
 import '../../core/style_widget.dart';
 import 'box_attribute.dart';
 import 'box_spec.dart';

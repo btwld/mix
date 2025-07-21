@@ -3,10 +3,10 @@ import 'package:flutter/widgets.dart';
 import '../attributes/edge_insets_geometry_util.dart';
 import '../attributes/edge_insets_mix.dart';
 import '../attributes/scalar_util.dart';
-import '../core/attribute.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
+import '../core/style.dart';
 import '../core/utility.dart';
 
 final class ScrollViewModifier extends Modifier<ScrollViewModifier> {

@@ -2,11 +2,11 @@ import 'package:meta/meta.dart';
 
 import '../theme/tokens/mix_token.dart';
 import 'animation_config.dart';
-import 'attribute.dart';
 import 'directive.dart';
 import 'mix_element.dart';
 import 'prop.dart';
 import 'spec.dart';
+import 'style.dart';
 
 abstract class MixUtility<U extends SpecAttribute<Object?>, Value> {
   final U Function(Value) builder;

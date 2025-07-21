@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/style_mix.dart';
+import '../../core/style.dart';
 import '../../core/style_widget.dart';
 import 'stack_box_spec.dart';
 

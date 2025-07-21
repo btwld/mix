@@ -3,9 +3,9 @@ import 'package:flutter/widgets.dart';
 
 import '../../attributes/scalar_util.dart';
 import '../../core/animation_config.dart';
-import '../../core/attribute.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
+import '../../core/style.dart';
 import 'flex_spec.dart';
 
 /// Represents the attributes of a [FlexSpec].

@@ -4,9 +4,9 @@ import 'package:flutter/widgets.dart';
 import '../../attributes/color/color_util.dart';
 import '../../attributes/scalar_util.dart';
 import '../../core/animation_config.dart';
-import '../../core/attribute.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
+import '../../core/style.dart';
 import 'image_spec.dart';
 
 class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {

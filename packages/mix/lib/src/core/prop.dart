@@ -10,6 +10,9 @@ import 'mix_element.dart';
 /// Base class for all property sources
 sealed class PropSource<T> {
   const PropSource();
+
+  /// Resolves this source to a value
+  T resolve(BuildContext context);
 }
 
 /// Source for regular values
@@ -18,7 +21,20 @@ class ValueSource<T> extends PropSource<T> {
   const ValueSource(this.value);
 
   @override
+  T resolve(BuildContext context) => value;
+
+  @override
   String toString() => 'ValueSource($value)';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ValueSource<T> && other.value == value;
+  }
+
+  @override
+  int get hashCode => value.hashCode;
 }
 
 /// Source for token references
@@ -27,7 +43,29 @@ class TokenSource<T> extends PropSource<T> {
   const TokenSource(this.token);
 
   @override
+  T resolve(BuildContext context) {
+    final value = MixScope.tokenOf(token, context);
+    if (value == null) {
+      throw FlutterError(
+        'Could not resolve token: $token was not found in context',
+      );
+    }
+
+    return value;
+  }
+
+  @override
   String toString() => 'TokenSource($token)';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is TokenSource<T> && other.token == token;
+  }
+
+  @override
+  int get hashCode => token.hashCode;
 }
 
 /// Source for Mix types that can accumulate and merge
@@ -63,6 +101,7 @@ class MixPropSource<V> extends PropSource<V> {
   }
 
   /// Resolves all accumulated sources and merges them into a single value
+  @override
   V resolve(BuildContext context) {
     if (_sources.isEmpty) {
       throw FlutterError('MixPropSource has no sources to resolve');
@@ -90,6 +129,16 @@ class MixPropSource<V> extends PropSource<V> {
 
   @override
   String toString() => 'MixPropSource(${_sources.length} sources)';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MixPropSource<V> && listEquals(other._sources, _sources);
+  }
+
+  @override
+  int get hashCode => Object.hashAll(_sources);
 }
 
 // Internal Mix source types
@@ -100,12 +149,30 @@ sealed class _MixSource<V> {
 class _MixValueSource<V> extends _MixSource<V> {
   final Mix<V> value;
   const _MixValueSource(this.value);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is _MixValueSource<V> && other.value == value;
+
+  @override
+  int get hashCode => value.hashCode;
 }
 
 class _MixTokenSource<V> extends _MixSource<V> {
   final MixToken<V> token;
   final Mix<V> Function(V) converter;
   const _MixTokenSource(this.token, this.converter);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is _MixTokenSource<V> &&
+          other.token == token &&
+          other.converter == converter;
+
+  @override
+  int get hashCode => Object.hash(token, converter);
 }
 
 /// Base sealed class for all properties
@@ -117,7 +184,8 @@ sealed class PropBase<T> extends Mixable<T> with Resolvable<T> {
   const PropBase({this.directives, this.animation});
 
   /// Helper for merging directives
-  static List<MixDirective<T>>? _mergeDirectives<T>(
+  @protected
+  static List<MixDirective<T>>? mergeDirectives<T>(
     List<MixDirective<T>>? a,
     List<MixDirective<T>>? b,
   ) {
@@ -130,9 +198,44 @@ sealed class PropBase<T> extends Mixable<T> with Resolvable<T> {
   }
 
   /// Returns the value type for this property
-  /// For Prop<T>, this returns T
-  /// For MixProp<V>, this returns V (the resolved type)
   Type get valueType => T;
+
+  /// Applies directives to a resolved value
+  @protected
+  T applyDirectives(T value) {
+    var result = value;
+    for (final directive in directives ?? []) {
+      result = directive.apply(result);
+    }
+
+    return result;
+  }
+
+  /// Creates string representation with common formatting
+  @protected
+  String toStringHelper(String typeName, {String? sourceInfo}) {
+    final buffer = StringBuffer('$typeName<$T>(');
+    final parts = <String>[];
+
+    if (sourceInfo != null) {
+      parts.add(sourceInfo);
+    }
+    if (directives != null && directives!.isNotEmpty) {
+      parts.add('directives: ${directives!.length}');
+    }
+    if (animation != null) {
+      parts.add('animated');
+    }
+
+    if (parts.isEmpty) {
+      parts.add('empty');
+    }
+
+    buffer.write(parts.join(', '));
+    buffer.write(')');
+
+    return buffer.toString();
+  }
 }
 
 /// Regular Prop for non-Mix values
@@ -167,17 +270,6 @@ class Prop<T> extends PropBase<T> {
     return value != null ? Prop(value) : null;
   }
 
-  T _resolveToken(MixToken<T> token, BuildContext context) {
-    final value = MixScope.tokenOf(token, context);
-    if (value == null) {
-      throw FlutterError(
-        'Prop could not resolve token: $token was not found in context',
-      );
-    }
-
-    return value;
-  }
-
   /// Whether this prop has a value source
   bool get hasValue => source is ValueSource<T>;
 
@@ -201,7 +293,7 @@ class Prop<T> extends PropBase<T> {
 
     return Prop._(
       source: other.source ?? source, // Other's source wins
-      directives: PropBase._mergeDirectives(directives, other.directives),
+      directives: PropBase.mergeDirectives(directives, other.directives),
       animation: other.animation ?? animation,
     );
   }
@@ -216,44 +308,15 @@ class Prop<T> extends PropBase<T> {
     }
 
     // Resolve the base value from source
-    final base = switch (source!) {
-      ValueSource(:final value) => value,
-      TokenSource(:final token) => _resolveToken(token, context),
-      _ => throw FlutterError('Unknown source type: ${source.runtimeType}'),
-    };
+    final base = source!.resolve(context);
 
     // Apply directives to the resolved value
-    var result = base;
-    for (final directive in directives ?? []) {
-      result = directive.apply(result);
-    }
-
-    return result;
+    return applyDirectives(base);
   }
 
   @override
   String toString() {
-    final buffer = StringBuffer('Prop<$T>(');
-    final parts = <String>[];
-
-    if (source != null) {
-      parts.add('source: $source');
-    }
-    if (directives != null && directives!.isNotEmpty) {
-      parts.add('directives: ${directives!.length}');
-    }
-    if (animation != null) {
-      parts.add('animated');
-    }
-
-    if (parts.isEmpty) {
-      parts.add('empty');
-    }
-
-    buffer.write(parts.join(', '));
-    buffer.write(')');
-
-    return buffer.toString();
+    return toStringHelper('Prop', sourceInfo: source?.toString());
   }
 
   @override
@@ -324,7 +387,7 @@ class MixProp<V> extends PropBase<V> {
 
     return MixProp._(
       source: mergedSource,
-      directives: PropBase._mergeDirectives(directives, other.directives),
+      directives: PropBase.mergeDirectives(directives, other.directives),
       animation: other.animation ?? animation,
     );
   }
@@ -342,37 +405,12 @@ class MixProp<V> extends PropBase<V> {
     final base = source!.resolve(context);
 
     // Apply directives to the resolved value
-    var result = base;
-    for (final directive in directives ?? []) {
-      result = directive.apply(result);
-    }
-
-    return result;
+    return applyDirectives(base);
   }
 
   @override
   String toString() {
-    final buffer = StringBuffer('MixProp<$V>(');
-    final parts = <String>[];
-
-    if (source != null) {
-      parts.add('source: $source');
-    }
-    if (directives != null && directives!.isNotEmpty) {
-      parts.add('directives: ${directives!.length}');
-    }
-    if (animation != null) {
-      parts.add('animated');
-    }
-
-    if (parts.isEmpty) {
-      parts.add('empty');
-    }
-
-    buffer.write(parts.join(', '));
-    buffer.write(')');
-
-    return buffer.toString();
+    return toStringHelper('MixProp', sourceInfo: source?.toString());
   }
 
   @override

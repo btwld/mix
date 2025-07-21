@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import '../core/attribute.dart';
 import '../core/prop.dart';
+import '../core/style.dart';
 import '../core/utility.dart';
 import 'border_radius_util.dart';
 import 'border_util.dart';

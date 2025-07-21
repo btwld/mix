@@ -5,10 +5,10 @@ import 'package:flutter/widgets.dart';
 
 import '../attributes/text_height_behavior_mix.dart';
 import '../attributes/text_style_mix.dart';
-import '../core/attribute.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
+import '../core/style.dart';
 import '../core/utility.dart';
 
 final class DefaultTextStyleModifier extends Modifier<DefaultTextStyleModifier>

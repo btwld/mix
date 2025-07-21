@@ -1,0 +1,342 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mix/mix.dart';
+import 'package:mix/src/specs/box/box_attribute.dart';
+
+import '../../../helpers/mock_utils.dart';
+
+void main() {
+  group('StackBoxSpecAttribute', () {
+    group('Constructor', () {
+      test('creates StackBoxSpecAttribute with all properties', () {
+        final boxAttribute = BoxSpecAttribute.only(width: 200.0, height: 100.0);
+        final stackAttribute = StackSpecAttribute.only(
+          alignment: Alignment.center,
+          fit: StackFit.expand,
+        );
+
+        final attribute = StackBoxSpecAttribute(
+          box: boxAttribute,
+          stack: stackAttribute,
+        );
+
+        expect(attribute.box, boxAttribute);
+        expect(attribute.stack, stackAttribute);
+        expect(attribute.box!.$width?.getValue(), 200.0);
+        expect(attribute.box!.$height?.getValue(), 100.0);
+        expect(attribute.stack!.$alignment?.getValue(), Alignment.center);
+        expect(attribute.stack!.$fit?.getValue(), StackFit.expand);
+      });
+
+      test('creates StackBoxSpecAttribute with default values', () {
+        final attribute = StackBoxSpecAttribute();
+
+        expect(attribute.box, isNull);
+        expect(attribute.stack, isNull);
+      });
+    });
+
+    group('value constructor', () {
+      test('creates StackBoxSpecAttribute from ZBoxSpec', () {
+        const spec = ZBoxSpec(
+          box: BoxSpec(width: 200.0, height: 100.0),
+          stack: StackSpec(alignment: Alignment.center, fit: StackFit.expand),
+        );
+
+        final attribute = StackBoxSpecAttribute.value(spec);
+
+        expect(attribute.box, isNotNull);
+        expect(attribute.stack, isNotNull);
+        expect(attribute.box!.$width?.getValue(), 200.0);
+        expect(attribute.box!.$height?.getValue(), 100.0);
+        expect(attribute.stack!.$alignment?.getValue(), Alignment.center);
+        expect(attribute.stack!.$fit?.getValue(), StackFit.expand);
+      });
+
+      test('handles null properties in spec', () {
+        const spec = ZBoxSpec(box: BoxSpec(width: 200.0), stack: StackSpec());
+        final attribute = StackBoxSpecAttribute.value(spec);
+
+        expect(attribute.box, isNotNull);
+        expect(attribute.stack, isNotNull);
+        expect(attribute.box!.$width?.getValue(), 200.0);
+        expect(attribute.box!.$height, isNull);
+        expect(attribute.stack!.$alignment, isNull);
+        expect(attribute.stack!.$fit, isNull);
+      });
+    });
+
+    group('maybeValue static method', () {
+      test('returns StackBoxSpecAttribute when spec is not null', () {
+        const spec = ZBoxSpec(
+          box: BoxSpec(width: 200.0),
+          stack: StackSpec(alignment: Alignment.center),
+        );
+        final attribute = StackBoxSpecAttribute.maybeValue(spec);
+
+        expect(attribute, isNotNull);
+        expect(attribute!.box, isNotNull);
+        expect(attribute.stack, isNotNull);
+        expect(attribute.box!.$width?.getValue(), 200.0);
+        expect(attribute.stack!.$alignment?.getValue(), Alignment.center);
+      });
+
+      test('returns null when spec is null', () {
+        final attribute = StackBoxSpecAttribute.maybeValue(null);
+        expect(attribute, isNull);
+      });
+    });
+
+    group('resolveSpec', () {
+      test('resolves to ZBoxSpec with correct properties', () {
+        final boxAttribute = BoxSpecAttribute.only(
+          width: 200.0,
+          height: 100.0,
+          alignment: Alignment.center,
+        );
+        final stackAttribute = StackSpecAttribute.only(
+          alignment: Alignment.topLeft,
+          fit: StackFit.expand,
+          clipBehavior: Clip.antiAlias,
+        );
+
+        final attribute = StackBoxSpecAttribute(
+          box: boxAttribute,
+          stack: stackAttribute,
+        );
+
+        final context = SpecTestHelper.createMockContext();
+        final spec = attribute.resolveSpec(context);
+
+        expect(spec.box.width, 200.0);
+        expect(spec.box.height, 100.0);
+        expect(spec.box.alignment, Alignment.center);
+        expect(spec.stack.alignment, Alignment.topLeft);
+        expect(spec.stack.fit, StackFit.expand);
+        expect(spec.stack.clipBehavior, Clip.antiAlias);
+      });
+
+      test('resolves to ZBoxSpec with null properties when not set', () {
+        final attribute = StackBoxSpecAttribute();
+        final context = SpecTestHelper.createMockContext();
+        final spec = attribute.resolveSpec(context);
+
+        expect(spec.box.width, isNull);
+        expect(spec.box.height, isNull);
+        expect(spec.stack.alignment, isNull);
+        expect(spec.stack.fit, isNull);
+      });
+    });
+
+    group('merge', () {
+      test('merges two StackBoxSpecAttributes correctly', () {
+        final attr1 = StackBoxSpecAttribute(
+          box: BoxSpecAttribute.only(width: 100.0, height: 50.0),
+          stack: StackSpecAttribute.only(alignment: Alignment.topLeft),
+        );
+
+        final attr2 = StackBoxSpecAttribute(
+          box: BoxSpecAttribute.only(
+            width: 200.0,
+            padding: EdgeInsetsGeometryMix.only(
+              top: 8.0,
+              bottom: 8.0,
+              left: 8.0,
+              right: 8.0,
+            ),
+          ),
+          stack: StackSpecAttribute.only(fit: StackFit.expand),
+        );
+
+        final merged = attr1.merge(attr2);
+
+        expect(merged.box!.$width?.getValue(), 200.0); // from attr2
+        expect(merged.box!.$height?.getValue(), 50.0); // from attr1
+        expect(merged.box!.$padding, isNotNull); // from attr2
+        expect(
+          merged.stack!.$alignment?.getValue(),
+          Alignment.topLeft,
+        ); // from attr1
+        expect(merged.stack!.$fit?.getValue(), StackFit.expand); // from attr2
+      });
+
+      test('returns original when merging with null', () {
+        final original = StackBoxSpecAttribute(
+          box: BoxSpecAttribute.only(width: 200.0),
+          stack: StackSpecAttribute.only(alignment: Alignment.center),
+        );
+        final merged = original.merge(null);
+
+        expect(merged, original);
+      });
+
+      test('handles complex merge scenarios', () {
+        final attr1 = StackBoxSpecAttribute(
+          box: BoxSpecAttribute.only(width: 100.0),
+          stack: StackSpecAttribute.only(alignment: Alignment.topLeft),
+        );
+
+        final attr2 = StackBoxSpecAttribute(
+          box: BoxSpecAttribute.only(height: 200.0),
+          stack: StackSpecAttribute.only(fit: StackFit.expand),
+        );
+
+        final merged = attr1.merge(attr2);
+
+        expect(merged.box!.$width?.getValue(), 100.0); // from attr1
+        expect(merged.box!.$height?.getValue(), 200.0); // from attr2
+        expect(
+          merged.stack!.$alignment?.getValue(),
+          Alignment.topLeft,
+        ); // from attr1
+        expect(merged.stack!.$fit?.getValue(), StackFit.expand); // from attr2
+      });
+
+      test('handles null attributes in merge', () {
+        final attr1 = StackBoxSpecAttribute(
+          box: BoxSpecAttribute.only(width: 100.0),
+        );
+
+        final attr2 = StackBoxSpecAttribute(
+          stack: StackSpecAttribute.only(fit: StackFit.expand),
+        );
+
+        final merged = attr1.merge(attr2);
+
+        expect(merged.box!.$width?.getValue(), 100.0); // from attr1
+        expect(merged.stack!.$fit?.getValue(), StackFit.expand); // from attr2
+      });
+    });
+
+    group('equality', () {
+      test('attributes with same properties are equal', () {
+        final boxAttr = BoxSpecAttribute.only(width: 200.0, height: 100.0);
+        final stackAttr = StackSpecAttribute.only(alignment: Alignment.center);
+
+        final attr1 = StackBoxSpecAttribute(box: boxAttr, stack: stackAttr);
+        final attr2 = StackBoxSpecAttribute(box: boxAttr, stack: stackAttr);
+
+        expect(attr1, attr2);
+        expect(attr1.hashCode, attr2.hashCode);
+      });
+
+      test('attributes with different box properties are not equal', () {
+        final boxAttr1 = BoxSpecAttribute.only(width: 100.0);
+        final boxAttr2 = BoxSpecAttribute.only(width: 200.0);
+        final stackAttr = StackSpecAttribute.only(alignment: Alignment.center);
+
+        final attr1 = StackBoxSpecAttribute(box: boxAttr1, stack: stackAttr);
+        final attr2 = StackBoxSpecAttribute(box: boxAttr2, stack: stackAttr);
+
+        expect(attr1, isNot(attr2));
+      });
+
+      test('attributes with different stack properties are not equal', () {
+        final boxAttr = BoxSpecAttribute.only(width: 100.0);
+        final stackAttr1 = StackSpecAttribute.only(
+          alignment: Alignment.topLeft,
+        );
+        final stackAttr2 = StackSpecAttribute.only(
+          alignment: Alignment.bottomRight,
+        );
+
+        final attr1 = StackBoxSpecAttribute(box: boxAttr, stack: stackAttr1);
+        final attr2 = StackBoxSpecAttribute(box: boxAttr, stack: stackAttr2);
+
+        expect(attr1, isNot(attr2));
+      });
+    });
+
+    group('debugFillProperties', () {
+      test('includes all properties in diagnostics', () {
+        final boxAttribute = BoxSpecAttribute.only(width: 200.0, height: 100.0);
+        final stackAttribute = StackSpecAttribute.only(
+          alignment: Alignment.center,
+          fit: StackFit.expand,
+        );
+
+        final attribute = StackBoxSpecAttribute(
+          box: boxAttribute,
+          stack: stackAttribute,
+        );
+
+        final diagnostics = DiagnosticPropertiesBuilder();
+        attribute.debugFillProperties(diagnostics);
+
+        final properties = diagnostics.properties;
+        expect(properties.any((p) => p.name == 'box'), isTrue);
+        expect(properties.any((p) => p.name == 'stack'), isTrue);
+      });
+    });
+
+    group('props', () {
+      test('includes all properties in props list', () {
+        final boxAttribute = BoxSpecAttribute.only(width: 200.0, height: 100.0);
+        final stackAttribute = StackSpecAttribute.only(
+          alignment: Alignment.center,
+          fit: StackFit.expand,
+        );
+
+        final attribute = StackBoxSpecAttribute(
+          box: boxAttribute,
+          stack: stackAttribute,
+        );
+
+        expect(attribute.props.length, 2);
+        expect(attribute.props, contains(boxAttribute));
+        expect(attribute.props, contains(stackAttribute));
+      });
+    });
+
+    group('Real-world scenarios', () {
+      test('creates overlay container attribute', () {
+        final overlayAttr = StackBoxSpecAttribute(
+          box: BoxSpecAttribute.only(
+            width: double.infinity,
+            height: double.infinity,
+          ),
+          stack: StackSpecAttribute.only(
+            alignment: Alignment.center,
+            fit: StackFit.expand,
+          ),
+        );
+
+        expect(overlayAttr.box!.$width?.getValue(), double.infinity);
+        expect(overlayAttr.box!.$height?.getValue(), double.infinity);
+        expect(overlayAttr.stack!.$alignment?.getValue(), Alignment.center);
+        expect(overlayAttr.stack!.$fit?.getValue(), StackFit.expand);
+      });
+
+      test('creates positioned card attribute', () {
+        final cardAttr = StackBoxSpecAttribute(
+          box: BoxSpecAttribute.only(width: 300.0, height: 200.0),
+          stack: StackSpecAttribute.only(
+            alignment: Alignment.topLeft,
+            fit: StackFit.loose,
+            clipBehavior: Clip.antiAlias,
+          ),
+        );
+
+        expect(cardAttr.box!.$width?.getValue(), 300.0);
+        expect(cardAttr.box!.$height?.getValue(), 200.0);
+        expect(cardAttr.stack!.$alignment?.getValue(), Alignment.topLeft);
+        expect(cardAttr.stack!.$fit?.getValue(), StackFit.loose);
+        expect(cardAttr.stack!.$clipBehavior?.getValue(), Clip.antiAlias);
+      });
+
+      test('creates badge container attribute', () {
+        final badgeAttr = StackBoxSpecAttribute(
+          stack: StackSpecAttribute.only(
+            alignment: Alignment.center,
+            fit: StackFit.loose,
+          ),
+        );
+
+        expect(badgeAttr.box, isNull);
+        expect(badgeAttr.stack!.$alignment?.getValue(), Alignment.center);
+        expect(badgeAttr.stack!.$fit?.getValue(), StackFit.loose);
+      });
+    });
+  });
+}

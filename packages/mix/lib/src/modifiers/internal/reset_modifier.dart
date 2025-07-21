@@ -3,8 +3,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../core/attribute.dart';
 import '../../core/modifier.dart';
+import '../../core/style.dart';
 import '../../core/utility.dart';
 
 final class ResetModifierSpec extends Modifier<ResetModifierSpec>

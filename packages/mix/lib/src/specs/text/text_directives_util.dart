@@ -1,6 +1,6 @@
-import '../../core/attribute.dart';
 import '../../core/directive.dart';
 import '../../core/prop.dart';
+import '../../core/style.dart';
 import '../../core/utility.dart';
 
 final class TextDirectiveUtility<T extends SpecAttribute<Object?>>

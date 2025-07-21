@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../spec.dart';
-import '../style_mix.dart';
+import '../style.dart';
 import 'animation_driver.dart';
 
 /// A driver for phase-based animations similar to SwiftUI's PhaseAnimator.
@@ -10,7 +10,7 @@ import 'animation_driver.dart';
 /// represents a different style configuration.
 class PhaseAnimationDriver<S extends Spec<S>, P> extends AnimationDriver<S> {
   final List<P> phases;
-  final Style<S> Function(P phase) phaseBuilder;
+  final SpecAttribute<S> Function(P phase) phaseBuilder;
   final Duration duration;
   final Curve curve;
   final bool repeat;
@@ -26,7 +26,7 @@ class PhaseAnimationDriver<S extends Spec<S>, P> extends AnimationDriver<S> {
   @override
   Widget build({
     required BuildContext context,
-    required Style<S> style,
+    required SpecAttribute<S> style,
     required Widget Function(BuildContext context, ResolvedStyle<S> resolved)
     builder,
   }) {
@@ -54,7 +54,7 @@ class _PhaseAnimationWidget<S extends Spec<S>, P> extends StatefulWidget {
   });
 
   final List<P> phases;
-  final Style<S> Function(P phase) phaseBuilder;
+  final SpecAttribute<S> Function(P phase) phaseBuilder;
   final Duration duration;
   final Curve curve;
   final bool repeat;

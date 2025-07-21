@@ -245,3 +245,131 @@ UtilityTestAttribute createTestAttribute<T>(T value) {
 UtilityTestAttribute createTestDtoAttribute<T>(Mix<T> mix) {
   return UtilityTestAttribute(MixProp(mix));
 }
+
+// =============================================================================
+// ENHANCED SPEC & ATTRIBUTE TESTING INFRASTRUCTURE
+// =============================================================================
+
+/// Enhanced mock infrastructure for testing Specs and SpecAttributes
+class SpecTestHelper {
+  /// Creates a mock BuildContext for testing spec resolution
+  static BuildContext createMockContext() => MockBuildContext();
+
+  /// Creates a mock Style for testing attribute resolution
+  static Style createMockStyle() {
+    return Style();
+  }
+
+  /// Helper to test spec lerp functionality
+  static void testSpecLerp<T extends Spec<T>>(
+    T spec1,
+    T spec2,
+    double t,
+    T expected, {
+    String? description,
+  }) {
+    final result = spec1.lerp(spec2, t);
+    if (result != expected) {
+      throw AssertionError(
+        'Lerp test failed${description != null ? ' ($description)' : ''}: '
+        'Expected $expected, got $result',
+      );
+    }
+  }
+
+  /// Helper to test spec copyWith functionality
+  static void testSpecCopyWith<T extends Spec<T>>(
+    T original,
+    T Function() copyWithCall,
+    bool Function(T result) validator, {
+    String? description,
+  }) {
+    final result = copyWithCall();
+    if (!validator(result)) {
+      throw AssertionError(
+        'CopyWith test failed${description != null ? ' ($description)' : ''}: '
+        'Validator returned false for result $result',
+      );
+    }
+  }
+
+  /// Helper to test spec equality
+  static void testSpecEquality<T extends Spec<T>>(
+    T spec1,
+    T spec2,
+    bool shouldBeEqual, {
+    String? description,
+  }) {
+    final areEqual = spec1 == spec2;
+    if (areEqual != shouldBeEqual) {
+      throw AssertionError(
+        'Equality test failed${description != null ? ' ($description)' : ''}: '
+        'Expected ${shouldBeEqual ? 'equal' : 'not equal'}, but specs were ${areEqual ? 'equal' : 'not equal'}',
+      );
+    }
+  }
+}
+
+/// Enhanced mock infrastructure for testing SpecAttributes
+class AttributeTestHelper {
+  /// Helper to test attribute merge functionality
+  static void testAttributeMerge<T extends Spec<T>, A extends SpecAttribute<T>>(
+    A attr1,
+    A attr2,
+    bool Function(A result) validator, {
+    String? description,
+  }) {
+    final result = attr1.merge(attr2) as A;
+    if (!validator(result)) {
+      throw AssertionError(
+        'Merge test failed${description != null ? ' ($description)' : ''}: '
+        'Validator returned false for result $result',
+      );
+    }
+  }
+
+  /// Helper to test attribute resolution
+  static void testAttributeResolution<
+    T extends Spec<T>,
+    A extends SpecAttribute<T>
+  >(A attribute, bool Function(T spec) validator, {String? description}) {
+    final context = SpecTestHelper.createMockContext();
+    final result = attribute.resolveSpec(context);
+    if (!validator(result)) {
+      throw AssertionError(
+        'Resolution test failed${description != null ? ' ($description)' : ''}: '
+        'Validator returned false for spec $result',
+      );
+    }
+  }
+
+  /// Helper to test attribute equality
+  static void testAttributeEquality<
+    T extends Spec<T>,
+    A extends SpecAttribute<T>
+  >(A attr1, A attr2, bool shouldBeEqual, {String? description}) {
+    final areEqual = attr1 == attr2;
+    if (areEqual != shouldBeEqual) {
+      throw AssertionError(
+        'Equality test failed${description != null ? ' ($description)' : ''}: '
+        'Expected ${shouldBeEqual ? 'equal' : 'not equal'}, but attributes were ${areEqual ? 'equal' : 'not equal'}',
+      );
+    }
+  }
+
+  /// Helper to test attribute property access
+  static void testAttributeProperty<T, A extends SpecAttribute<dynamic>>(
+    A attribute,
+    T? Function(A attr) propertyGetter,
+    T? expectedValue, {
+    String? description,
+  }) {
+    final actualValue = propertyGetter(attribute);
+    if (actualValue != expectedValue) {
+      throw AssertionError(
+        'Property test failed${description != null ? ' ($description)' : ''}: '
+        'Expected $expectedValue, got $actualValue',
+      );
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../core/style_mix.dart';
+import '../core/style.dart';
 import '../core/widget_state/internal/gesture_mix_state.dart';
 import '../core/widget_state/internal/interactive_mix_state.dart';
 import '../core/widget_state/internal/mix_widget_state_builder.dart';

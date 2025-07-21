@@ -2,8 +2,8 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../core/attribute.dart';
 import '../core/modifier.dart';
+import '../core/style.dart';
 import '../core/utility.dart';
 
 final class IntrinsicHeightModifier extends Modifier<IntrinsicHeightModifier> {

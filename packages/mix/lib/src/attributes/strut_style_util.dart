@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import '../core/attribute.dart';
 import '../core/prop.dart';
+import '../core/style.dart';
 import '../core/utility.dart';
 import 'scalar_util.dart';
 import 'strut_style_mix.dart';

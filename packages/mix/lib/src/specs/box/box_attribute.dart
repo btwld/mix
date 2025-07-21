@@ -14,9 +14,9 @@ import '../../attributes/gradient_util.dart';
 import '../../attributes/scalar_util.dart';
 import '../../attributes/shadow_mix.dart';
 import '../../core/animation_config.dart';
-import '../../core/attribute.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
+import '../../core/style.dart';
 import 'box_spec.dart';
 
 /// Represents the attributes of a [BoxSpec].

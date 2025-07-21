@@ -3,10 +3,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../core/attribute.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
+import '../core/style.dart';
 import '../core/utility.dart';
 
 final class AlignModifier extends Modifier<AlignModifier> with Diagnosticable {

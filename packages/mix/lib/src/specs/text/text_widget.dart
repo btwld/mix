@@ -24,7 +24,7 @@ class StyledText extends StyleWidget<TextSpec> {
   const StyledText(
     this.text, {
     this.semanticsLabel,
-    super.style = const TextSpecAttribute(),
+    super.style = TextSpecAttribute(),
     super.key,
 
     this.locale,

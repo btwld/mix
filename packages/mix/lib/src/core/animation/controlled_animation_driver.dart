@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../spec.dart';
-import '../style_mix.dart';
+import '../style.dart';
 import 'animation_driver.dart';
 
 /// A driver for controlled animations that gives full control over the animation.
@@ -9,7 +9,7 @@ import 'animation_driver.dart';
 /// This driver allows external control of animation progress through a controller.
 class ControlledAnimationDriver<S extends Spec<S>> extends AnimationDriver<S> {
   final AnimationController controller;
-  final Style<S> endStyle;
+  final SpecAttribute<S> endStyle;
 
   const ControlledAnimationDriver({
     required this.controller,
@@ -19,7 +19,7 @@ class ControlledAnimationDriver<S extends Spec<S>> extends AnimationDriver<S> {
   @override
   Widget build({
     required BuildContext context,
-    required Style<S> style,
+    required SpecAttribute<S> style,
     required Widget Function(BuildContext context, ResolvedStyle<S> resolved)
     builder,
   }) {
@@ -44,7 +44,7 @@ class ControlledAnimationDriver<S extends Spec<S>> extends AnimationDriver<S> {
 class TweenAnimationDriver<S extends Spec<S>, T> extends AnimationDriver<S> {
   final AnimationController controller;
   final Tween<T> tween;
-  final Style<S> Function(T value) styleBuilder;
+  final SpecAttribute<S> Function(T value) styleBuilder;
 
   const TweenAnimationDriver({
     required this.controller,
@@ -55,7 +55,7 @@ class TweenAnimationDriver<S extends Spec<S>, T> extends AnimationDriver<S> {
   @override
   Widget build({
     required BuildContext context,
-    required Style<S> style,
+    required SpecAttribute<S> style,
     required Widget Function(BuildContext context, ResolvedStyle<S> resolved)
     builder,
   }) {

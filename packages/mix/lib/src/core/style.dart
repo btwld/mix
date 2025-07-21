@@ -5,7 +5,6 @@ import 'animation_config.dart';
 import 'mix_element.dart';
 import 'modifier.dart';
 import 'spec.dart';
-import 'style_mix.dart';
 import 'variant.dart';
 
 abstract class StyleElement<S extends Spec<S>> extends Mixable<S> {
@@ -227,18 +226,133 @@ final class VariantSpecAttribute<S extends Spec<S>> implements StyleElement<S> {
   int get hashCode => Object.hash(variant, _style);
 }
 
-class MultiSpecAttribute extends SpecAttribute<MultiSpec> {
+class Style extends SpecAttribute<MultiSpec> {
   final Map<Type, SpecAttribute> _attributes;
 
-  MultiSpecAttribute({
+  Style._({
     required List<SpecAttribute> attributes,
     super.animation,
     super.modifiers,
     super.variants,
   }) : _attributes = {for (var attr in attributes) attr.mergeKey: attr};
 
-  MultiSpecAttribute.empty()
-    : this(attributes: [], animation: null, modifiers: null, variants: null);
+  /// Creates a new `Style` instance with specified list of [StyleElement]s.
+  ///
+  /// This factory constructor initializes a `Style` with a list of
+  /// style elements provided as individual parameters. Only non-null elements
+  /// are included in the resulting `Style`. Since Attribute extends StyleElement,
+  /// this is backward compatible with existing code.
+  ///
+  /// There is no specific reason for only 20 parameters. This is just a
+  /// reasonable number of parameters to support. If you need more than 20,
+  /// consider breaking up your mixes into many style mixes that can be applied
+  /// or use the `Style.create` constructor.
+  ///
+  /// Example:
+  /// ```dart
+  /// final style = Style(attribute1, attribute2, attribute3);
+  /// ```
+  factory Style([
+    StyleElement? p1,
+    StyleElement? p2,
+    StyleElement? p3,
+    StyleElement? p4,
+    StyleElement? p5,
+    StyleElement? p6,
+    StyleElement? p7,
+    StyleElement? p8,
+    StyleElement? p9,
+    StyleElement? p10,
+    StyleElement? p11,
+    StyleElement? p12,
+    StyleElement? p13,
+    StyleElement? p14,
+    StyleElement? p15,
+    StyleElement? p16,
+    StyleElement? p17,
+    StyleElement? p18,
+    StyleElement? p19,
+    StyleElement? p20,
+  ]) {
+    final params = [
+      p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, //
+      p11, p12, p13, p14, p15, p16, p17, p18, p19, p20,
+    ].whereType<StyleElement>();
+
+    return Style.create(params);
+  }
+
+  /// Constructs a `Style` from an iterable of [StyleElement] instances.
+  ///
+  /// This factory constructor segregates the style elements into attributes
+  /// and variants, initializing a new `MultiSpecAttribute` with these collections.
+  /// Since Attribute extends StyleElement, this is backward compatible.
+  ///
+  /// Example:
+  /// ```dart
+  /// final style = Style.create([attribute1, attribute2]);
+  /// ```
+  factory Style.create(Iterable<StyleElement> elements) {
+    final styleList = <SpecAttribute>[];
+    final modifierList = <ModifierAttribute>[];
+
+    AnimationConfig? animationConfig;
+
+    for (final element in elements) {
+      switch (element) {
+        case SpecAttribute():
+          // Handle MultiSpecAttribute by merging it later
+          if (element is! Style) {
+            styleList.add(element);
+          }
+
+        case VariantSpecAttribute():
+          // VariantSpecAttribute needs to be handled through merge
+          // We'll create a temporary attribute to merge it
+          break;
+
+        case ModifierAttribute():
+          modifierList.add(element);
+
+        default:
+          // For other StyleElement types (like Mixable/DTOs), we don't support them yet
+          throw FlutterError.fromParts([
+            ErrorSummary(
+              'Unsupported StyleElement type encountered in Style creation.',
+            ),
+            ErrorDescription(
+              'The StyleElement of type ${element.runtimeType} is not supported.',
+            ),
+            ErrorHint(
+              'StyleElements must be subclasses of one of the following types: '
+              'SpecAttribute, VariantSpecAttribute, ModifierAttribute, or Style (MultiSpecAttribute). '
+              'For DTOs, use utility functions like \$box.color() instead of direct DTOs.',
+            ),
+          ]);
+      }
+    }
+
+    // Create the base MultiSpecAttribute
+    Style result = Style._(
+      attributes: styleList,
+      animation: animationConfig,
+      modifiers: modifierList.isEmpty ? null : modifierList,
+      variants: null,
+    );
+
+    // Now handle MultiSpecAttribute elements by merging them
+    for (final element in elements) {
+      if (element is Style) {
+        result = result.merge(element);
+      }
+      // Skip VariantSpecAttribute for now - needs proper generic handling
+    }
+
+    return result;
+  }
+
+  Style.empty()
+    : this._(attributes: [], animation: null, modifiers: null, variants: null);
 
   @override
   MultiSpec resolveSpec(BuildContext context) {
@@ -251,7 +365,7 @@ class MultiSpecAttribute extends SpecAttribute<MultiSpec> {
   }
 
   @override
-  MultiSpecAttribute merge(MultiSpecAttribute? other) {
+  Style merge(Style? other) {
     if (other == null) return this;
 
     final mergedAttributes = <SpecAttribute>[];
@@ -275,7 +389,7 @@ class MultiSpecAttribute extends SpecAttribute<MultiSpec> {
       }
     }
 
-    return MultiSpecAttribute(
+    return Style._(
       attributes: mergedAttributes,
       animation: other.animation ?? animation,
       modifiers: mergeModifierLists(modifiers, other.modifiers),
@@ -285,4 +399,31 @@ class MultiSpecAttribute extends SpecAttribute<MultiSpec> {
 
   @override
   get props => [_attributes];
+}
+
+/// Result of Style.resolve() containing fully resolved styling data
+/// Generic type parameter T for the resolved SpecAttribute
+class ResolvedStyle<V extends Spec<V>> {
+  final V? spec; // Resolved spec
+  final AnimationConfig? animation; // Animation config
+  final List<Modifier>? modifiers; // Modifiers config
+
+  const ResolvedStyle({required this.spec, this.animation, this.modifiers});
+
+  /// Linearly interpolate between two ResolvedStyles
+  ResolvedStyle<V> lerp(ResolvedStyle<V>? other, double t) {
+    if (other == null || t == 0.0) return this;
+    if (t == 1.0) return other;
+
+    // Lerp the spec if it's a Spec type
+    final lerpedSpec = (spec as Spec<V>).lerp(other.spec, t);
+
+    // For modifiers and animation, use the target (end) values
+    // We can't meaningfully interpolate these
+    return ResolvedStyle(
+      spec: lerpedSpec,
+      animation: other.animation ?? animation,
+      modifiers: t < 0.5 ? modifiers : other.modifiers,
+    );
+  }
 }
