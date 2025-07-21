@@ -16,6 +16,17 @@ sealed class GradientDto<T extends Gradient> extends Mix<T>
   final Prop<GradientTransform>? transform;
   const GradientDto({this.stops, this.colors, this.transform});
 
+  factory GradientDto.value(T value) {
+    return switch (value) {
+      (LinearGradient v) => LinearGradientDto.value(v) as GradientDto<T>,
+      (RadialGradient v) => RadialGradientDto.value(v) as GradientDto<T>,
+      (SweepGradient v) => SweepGradientDto.value(v) as GradientDto<T>,
+      _ => throw ArgumentError(
+        'Unsupported Gradient type: ${value.runtimeType}',
+      ),
+    };
+  }
+
   static B _exhaustiveMerge<A extends GradientDto, B extends GradientDto>(
     A a,
     B b,
@@ -26,17 +37,6 @@ sealed class GradientDto<T extends Gradient> extends Mix<T>
       (LinearGradientDto g) => a.asLinearGradient().merge(g) as B,
       (RadialGradientDto g) => a.asRadialGradient().merge(g) as B,
       (SweepGradientDto g) => a.asSweepGradient().merge(g) as B,
-    };
-  }
-
-  static GradientDto<T> value<T extends Gradient>(T value) {
-    return switch (value) {
-      (LinearGradient v) => LinearGradientDto.value(v) as GradientDto<T>,
-      (RadialGradient v) => RadialGradientDto.value(v) as GradientDto<T>,
-      (SweepGradient v) => SweepGradientDto.value(v) as GradientDto<T>,
-      _ => throw ArgumentError(
-        'Unsupported Gradient type: ${value.runtimeType}',
-      ),
     };
   }
 

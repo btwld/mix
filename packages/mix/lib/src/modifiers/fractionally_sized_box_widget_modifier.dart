@@ -199,7 +199,7 @@ class FractionallySizedBoxModifierSpecTween
   }
 }
 
-final class FractionallySizedBoxModifierSpecUtility<T extends Attribute>
+final class FractionallySizedBoxModifierSpecUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, FractionallySizedBoxModifierSpecAttribute> {
   const FractionallySizedBoxModifierSpecUtility(super.builder);
 

@@ -37,7 +37,7 @@ final class ResetModifierSpec extends ModifierSpec<ResetModifierSpec>
   }
 }
 
-final class ResetModifierSpecUtility<T extends Attribute>
+final class ResetModifierSpecUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, ResetModifierSpecAttribute> {
   const ResetModifierSpecUtility(super.builder);
   T call() {

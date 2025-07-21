@@ -23,7 +23,7 @@ class ShadowUtility<T extends SpecUtility<Object?>>
   /// Utility for defining [ShadowDto.offset].
   late final offset = OffsetUtility<T>((prop) => call(ShadowDto(offset: prop)));
 
-  ShadowUtility(super.builder) : super(valueToDto: ShadowDto.value);
+  ShadowUtility(super.builder) : super(valueToMix: ShadowDto.value);
 
   /// Returns a new [T] with the specified [ShadowDto] properties.
   @override
@@ -53,7 +53,7 @@ class BoxShadowUtility<T extends SpecUtility<Object?>>
     (prop) => call(BoxShadowDto(spreadRadius: prop)),
   );
 
-  BoxShadowUtility(super.builder) : super(valueToDto: BoxShadowDto.value);
+  BoxShadowUtility(super.builder) : super(valueToMix: BoxShadowDto.value);
 
   /// Returns a new [T] with the specified [BoxShadowDto] properties.
   @override

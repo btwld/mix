@@ -54,7 +54,7 @@ final class BorderRadiusGeometryUtility<T extends SpecUtility<Object?>>
 
   BorderRadiusGeometryUtility(super.builder)
     : super(
-        valueToDto: (v) {
+        valueToMix: (v) {
           return switch (v) {
             BorderRadius() => BorderRadiusDto.value(v),
             BorderRadiusDirectional() => BorderRadiusDirectionalDto.value(v),
@@ -135,7 +135,7 @@ final class BorderRadiusUtility<T extends SpecUtility<Object?>>
 
   /// Sets a zero [Radius] for all corners.
   late final zero = all.zero;
-  BorderRadiusUtility(super.builder) : super(valueToDto: BorderRadiusDto.value);
+  BorderRadiusUtility(super.builder) : super(valueToMix: BorderRadiusDto.value);
 
   @override
   T call(BorderRadiusDto value) => builder(MixProp(value));
@@ -144,7 +144,7 @@ final class BorderRadiusUtility<T extends SpecUtility<Object?>>
 final class BorderRadiusDirectionalUtility<T extends SpecUtility<Object?>>
     extends MixPropUtility<T, BorderRadiusDirectional> {
   const BorderRadiusDirectionalUtility(super.builder)
-    : super(valueToDto: BorderRadiusDirectionalDto.value);
+    : super(valueToMix: BorderRadiusDirectionalDto.value);
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for all corners.
   RadiusUtility<T> get all {

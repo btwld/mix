@@ -31,7 +31,7 @@ final class EdgeInsetsGeometryUtility<T extends SpecUtility<Object?>>
   late final right = SpacingSideUtility((v) => call(EdgeInsetsDto(right: v)));
 
   EdgeInsetsGeometryUtility(super.builder)
-    : super(valueToDto: EdgeInsetsGeometryDto.value);
+    : super(valueToMix: EdgeInsetsGeometryDto.value);
 
   @override
   T call(EdgeInsetsGeometryDto value) {
@@ -70,7 +70,7 @@ final class EdgeInsetsDirectionalUtility<U extends SpecUtility<Object?>>
   );
 
   EdgeInsetsDirectionalUtility(super.builder)
-    : super(valueToDto: EdgeInsetsGeometryDto.value);
+    : super(valueToMix: EdgeInsetsGeometryDto.value);
 
   @override
   U call(EdgeInsetsDirectionalDto value) {

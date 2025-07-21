@@ -6,6 +6,8 @@ import 'package:flutter/widgets.dart';
 import '../core/attribute.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
+import '../core/prop.dart';
+import '../theme/tokens/mix_token.dart';
 import '../core/utility.dart';
 
 /// A modifier that wraps a widget with the [Opacity] widget.
@@ -77,7 +79,7 @@ final class OpacityModifierSpec extends ModifierSpec<OpacityModifierSpec>
 class OpacityModifierSpecAttribute
     extends ModifierSpecAttribute<OpacityModifierSpec>
     with Diagnosticable {
-  final double? opacity;
+  final Prop<double>? opacity;
 
   const OpacityModifierSpecAttribute({this.opacity});
 
@@ -91,7 +93,7 @@ class OpacityModifierSpecAttribute
   /// ```
   @override
   OpacityModifierSpec resolve(BuildContext context) {
-    return OpacityModifierSpec(opacity);
+    return OpacityModifierSpec(opacity?.resolve(context));
   }
 
   /// Merges the properties of this [OpacityModifierSpecAttribute] with the properties of [other].
@@ -106,7 +108,7 @@ class OpacityModifierSpecAttribute
   OpacityModifierSpecAttribute merge(OpacityModifierSpecAttribute? other) {
     if (other == null) return this;
 
-    return OpacityModifierSpecAttribute(opacity: other.opacity ?? opacity);
+    return OpacityModifierSpecAttribute(opacity: opacity?.merge(other.opacity) ?? other.opacity);
   }
 
   @override
@@ -123,8 +125,11 @@ class OpacityModifierSpecAttribute
   List<Object?> get props => [opacity];
 }
 
-final class OpacityModifierSpecUtility<T extends Attribute>
+final class OpacityModifierSpecUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, OpacityModifierSpecAttribute> {
   const OpacityModifierSpecUtility(super.builder);
-  T call(double value) => builder(OpacityModifierSpecAttribute(opacity: value));
+  
+  T call(double value) => builder(OpacityModifierSpecAttribute(opacity: Prop(value)));
+  
+  T token(MixToken<double> token) => builder(OpacityModifierSpecAttribute(opacity: Prop.token(token)));
 }

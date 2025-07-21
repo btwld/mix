@@ -32,7 +32,7 @@ final class BoxConstraintsUtility<T extends SpecUtility<Object?>>
   );
 
   BoxConstraintsUtility(super.builder)
-    : super(valueToDto: BoxConstraintsDto.value);
+    : super(valueToMix: BoxConstraintsDto.value);
 
   @override
   T call(BoxConstraintsDto value) => builder(MixProp(value));

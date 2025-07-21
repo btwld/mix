@@ -68,8 +68,8 @@ void main() {
   // Cross-type merge tests
   group('GradientDto cross-type merge tests', () {
     test('tryToMerge with same types', () {
-      final dto1 = LinearGradientDto(colors: const [Colors.red]);
-      final dto2 = LinearGradientDto(colors: const [Colors.blue]);
+      final dto1 = LinearGradientDto.only(colors: const [Colors.red]);
+      final dto2 = LinearGradientDto.only(colors: const [Colors.blue]);
 
       final merged = GradientDto.tryToMerge(dto1, dto2) as LinearGradientDto?;
 
@@ -78,12 +78,12 @@ void main() {
     });
 
     test('tryToMerge LinearGradient with RadialGradient', () {
-      final linear = LinearGradientDto(
+      final linear = LinearGradientDto.only(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         colors: const [Colors.red, Colors.green],
       );
-      final radial = RadialGradientDto(
+      final radial = RadialGradientDto.only(
         center: Alignment.center,
         radius: 0.8,
         colors: const [Colors.blue, Colors.yellow],
@@ -99,7 +99,7 @@ void main() {
     });
 
     test('tryToMerge with null values', () {
-      final dto = LinearGradientDto(colors: const [Colors.red]);
+      final dto = LinearGradientDto.only(colors: const [Colors.red]);
 
       expect(GradientDto.tryToMerge(dto, null), same(dto));
       expect(GradientDto.tryToMerge(null, dto), same(dto));
@@ -114,7 +114,7 @@ void main() {
         'main constructor creates LinearGradientDto with all properties',
         () {
           const transform = GradientRotation(1.5);
-          final dto = LinearGradientDto(
+          final dto = LinearGradientDto.only(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             tileMode: TileMode.clamp,
@@ -132,12 +132,27 @@ void main() {
         },
       );
 
-      test('props constructor with Prop values', () {
-        final dto = LinearGradientDto.props(
+      test('only constructor with raw values', () {
+        final dto = LinearGradientDto.only(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          tileMode: TileMode.mirror,
+          colors: const [Colors.green, Colors.yellow],
+          stops: const [0.25, 0.75],
+        );
+
+        expect(dto.begin, resolvesTo(Alignment.topCenter));
+        expect(dto.end, resolvesTo(Alignment.bottomCenter));
+        expect(dto.tileMode, resolvesTo(TileMode.mirror));
+        expect(dto.colors, resolvesTo([Colors.green, Colors.yellow]));
+        expect(dto.stops, resolvesTo([0.25, 0.75]));
+      });
+
+      test('main constructor with Prop values', () {
+        final dto = LinearGradientDto(
           begin: Prop(Alignment.topCenter),
           end: Prop(Alignment.bottomCenter),
           tileMode: Prop(TileMode.mirror),
-          transform: null,
           colors: [Prop(Colors.green), Prop(Colors.yellow)],
           stops: [Prop(0.25), Prop(0.75)],
         );
@@ -187,7 +202,7 @@ void main() {
     group('Resolution Tests', () {
       test('resolves to LinearGradient with all properties', () {
         const transform = GradientRotation(2.0);
-        final dto = LinearGradientDto(
+        final dto = LinearGradientDto.only(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: const [Colors.red, Colors.blue],
@@ -212,12 +227,12 @@ void main() {
       });
 
       test('resolves with default values for null properties', () {
-        final dto = LinearGradientDto.props(
+        final dto = LinearGradientDto.only(
           begin: null,
           end: null,
           tileMode: null,
           transform: null,
-          colors: [Prop(Colors.purple)],
+          colors: const [Colors.purple],
           stops: null,
         );
 
@@ -239,7 +254,7 @@ void main() {
         const transform1 = GradientRotation(1.0);
         const transform2 = GradientRotation(2.0);
 
-        final dto1 = LinearGradientDto(
+        final dto1 = LinearGradientDto.only(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: const [Colors.red, Colors.blue],
@@ -247,7 +262,7 @@ void main() {
           tileMode: TileMode.clamp,
           transform: transform1,
         );
-        final dto2 = LinearGradientDto(
+        final dto2 = LinearGradientDto.only(
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
           colors: const [Colors.green, Colors.yellow],
@@ -267,12 +282,12 @@ void main() {
       });
 
       test('merge with partial properties', () {
-        final dto1 = LinearGradientDto(
+        final dto1 = LinearGradientDto.only(
           begin: Alignment.topLeft,
           colors: const [Colors.red, Colors.blue],
           tileMode: TileMode.repeated,
         );
-        final dto2 = LinearGradientDto(
+        final dto2 = LinearGradientDto.only(
           end: Alignment.bottomCenter,
           stops: const [0.3, 0.7],
         );
@@ -287,7 +302,7 @@ void main() {
       });
 
       test('merge with null returns original', () {
-        final dto = LinearGradientDto(
+        final dto = LinearGradientDto.only(
           colors: const [Colors.purple, Colors.orange],
         );
 
@@ -300,7 +315,7 @@ void main() {
     group('Equality and HashCode Tests', () {
       test('equal LinearGradientDtos', () {
         const transform = GradientRotation(1.5);
-        final dto1 = LinearGradientDto(
+        final dto1 = LinearGradientDto.only(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: const [Colors.red, Colors.blue],
@@ -308,7 +323,7 @@ void main() {
           tileMode: TileMode.mirror,
           transform: transform,
         );
-        final dto2 = LinearGradientDto(
+        final dto2 = LinearGradientDto.only(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: const [Colors.red, Colors.blue],
@@ -322,11 +337,11 @@ void main() {
       });
 
       test('not equal LinearGradientDtos', () {
-        final dto1 = LinearGradientDto(
+        final dto1 = LinearGradientDto.only(
           begin: Alignment.topLeft,
           colors: const [Colors.red, Colors.blue],
         );
-        final dto2 = LinearGradientDto(
+        final dto2 = LinearGradientDto.only(
           begin: Alignment.centerLeft,
           colors: const [Colors.red, Colors.blue],
         );
@@ -338,7 +353,7 @@ void main() {
     // Edge Cases
     group('Edge Cases', () {
       test('handles empty colors list', () {
-        final dto = LinearGradientDto(colors: const []);
+        final dto = LinearGradientDto.only(colors: const []);
 
         final context = MockBuildContext();
         final resolved = dto.resolve(context);
@@ -347,13 +362,13 @@ void main() {
       });
 
       test('handles single color', () {
-        final dto = LinearGradientDto(colors: const [Colors.red]);
+        final dto = LinearGradientDto.only(colors: const [Colors.red]);
 
         expect(dto, resolvesTo(const LinearGradient(colors: [Colors.red])));
       });
 
       test('handles many colors without stops', () {
-        final dto = LinearGradientDto(
+        final dto = LinearGradientDto.only(
           colors: const [Colors.red, Colors.green, Colors.blue, Colors.yellow],
         );
 
@@ -365,7 +380,7 @@ void main() {
       });
 
       test('handles mismatched colors and stops lengths', () {
-        final dto = LinearGradientDto(
+        final dto = LinearGradientDto.only(
           colors: const [Colors.red, Colors.blue],
           stops: const [0.0, 0.5, 1.0], // 3 stops for 2 colors
         );
@@ -386,7 +401,7 @@ void main() {
         'main constructor creates RadialGradientDto with all properties',
         () {
           const transform = GradientRotation(1.5);
-          final dto = RadialGradientDto(
+          final dto = RadialGradientDto.only(
             center: Alignment.center,
             radius: 0.5,
             focal: Alignment.bottomRight,
@@ -408,14 +423,27 @@ void main() {
         },
       );
 
-      test('props constructor with Prop values', () {
-        final dto = RadialGradientDto.props(
+      test('only constructor with raw values', () {
+        final dto = RadialGradientDto.only(
+          center: Alignment.topCenter,
+          radius: 0.8,
+          tileMode: TileMode.mirror,
+          colors: const [Colors.green, Colors.yellow],
+          stops: const [0.25, 0.75],
+        );
+
+        expect(dto.center, resolvesTo(Alignment.topCenter));
+        expect(dto.radius, resolvesTo(0.8));
+        expect(dto.tileMode, resolvesTo(TileMode.mirror));
+        expect(dto.colors, resolvesTo([Colors.green, Colors.yellow]));
+        expect(dto.stops, resolvesTo([0.25, 0.75]));
+      });
+
+      test('main constructor with Prop values', () {
+        final dto = RadialGradientDto(
           center: Prop(Alignment.topCenter),
           radius: Prop(0.8),
-          focal: null,
-          focalRadius: null,
           tileMode: Prop(TileMode.mirror),
-          transform: null,
           colors: [Prop(Colors.green), Prop(Colors.yellow)],
           stops: [Prop(0.25), Prop(0.75)],
         );
@@ -469,7 +497,7 @@ void main() {
     group('Resolution Tests', () {
       test('resolves to RadialGradient with all properties', () {
         const transform = GradientRotation(2.0);
-        final dto = RadialGradientDto(
+        final dto = RadialGradientDto.only(
           center: Alignment.center,
           radius: 0.5,
           focal: Alignment.topRight,
@@ -498,14 +526,14 @@ void main() {
       });
 
       test('resolves with default values for null properties', () {
-        final dto = RadialGradientDto.props(
+        final dto = RadialGradientDto.only(
           center: null,
           radius: null,
           focal: null,
           focalRadius: null,
           tileMode: null,
           transform: null,
-          colors: [Prop(Colors.purple)],
+          colors: const [Colors.purple],
           stops: null,
         );
 
@@ -529,7 +557,7 @@ void main() {
         const transform1 = GradientRotation(1.0);
         const transform2 = GradientRotation(2.0);
 
-        final dto1 = RadialGradientDto(
+        final dto1 = RadialGradientDto.only(
           center: Alignment.center,
           radius: 0.5,
           focal: Alignment.bottomLeft,
@@ -539,7 +567,7 @@ void main() {
           tileMode: TileMode.clamp,
           transform: transform1,
         );
-        final dto2 = RadialGradientDto(
+        final dto2 = RadialGradientDto.only(
           center: Alignment.centerLeft,
           radius: 0.75,
           focal: Alignment.topRight,
@@ -563,12 +591,12 @@ void main() {
       });
 
       test('merge with partial properties', () {
-        final dto1 = RadialGradientDto(
+        final dto1 = RadialGradientDto.only(
           center: Alignment.topCenter,
           radius: 0.6,
           colors: const [Colors.red, Colors.blue],
         );
-        final dto2 = RadialGradientDto(
+        final dto2 = RadialGradientDto.only(
           focal: Alignment.center,
           focalRadius: 0.15,
           stops: const [0.3, 0.7],
@@ -585,7 +613,7 @@ void main() {
       });
 
       test('merge with null returns original', () {
-        final dto = RadialGradientDto(
+        final dto = RadialGradientDto.only(
           colors: const [Colors.purple, Colors.orange],
           radius: 0.8,
         );
@@ -599,7 +627,7 @@ void main() {
     group('Equality and HashCode Tests', () {
       test('equal RadialGradientDtos', () {
         const transform = GradientRotation(1.5);
-        final dto1 = RadialGradientDto(
+        final dto1 = RadialGradientDto.only(
           center: Alignment.center,
           radius: 0.5,
           focal: Alignment.topLeft,
@@ -609,7 +637,7 @@ void main() {
           tileMode: TileMode.mirror,
           transform: transform,
         );
-        final dto2 = RadialGradientDto(
+        final dto2 = RadialGradientDto.only(
           center: Alignment.center,
           radius: 0.5,
           focal: Alignment.topLeft,
@@ -625,12 +653,12 @@ void main() {
       });
 
       test('not equal RadialGradientDtos', () {
-        final dto1 = RadialGradientDto(
+        final dto1 = RadialGradientDto.only(
           center: Alignment.center,
           radius: 0.5,
           colors: const [Colors.red, Colors.blue],
         );
-        final dto2 = RadialGradientDto(
+        final dto2 = RadialGradientDto.only(
           center: Alignment.center,
           radius: 0.6,
           colors: const [Colors.red, Colors.blue],
@@ -643,11 +671,11 @@ void main() {
     // Edge Cases
     group('Edge Cases', () {
       test('handles radius at boundaries', () {
-        final dto1 = RadialGradientDto(
+        final dto1 = RadialGradientDto.only(
           radius: 0.0,
           colors: const [Colors.red, Colors.blue],
         );
-        final dto2 = RadialGradientDto(
+        final dto2 = RadialGradientDto.only(
           radius: 1.0,
           colors: const [Colors.red, Colors.blue],
         );
@@ -657,7 +685,7 @@ void main() {
       });
 
       test('handles focal and focalRadius relationships', () {
-        final dto = RadialGradientDto(
+        final dto = RadialGradientDto.only(
           focal: Alignment.topRight,
           focalRadius: 0.5,
           colors: const [Colors.red, Colors.blue],
@@ -671,7 +699,7 @@ void main() {
       });
 
       test('handles focal without focalRadius', () {
-        final dto = RadialGradientDto(
+        final dto = RadialGradientDto.only(
           focal: Alignment.bottomLeft,
           colors: const [Colors.red, Colors.blue],
         );
@@ -690,7 +718,7 @@ void main() {
     group('Constructor Tests', () {
       test('main constructor creates SweepGradientDto with all properties', () {
         const transform = GradientRotation(1.5);
-        final dto = SweepGradientDto(
+        final dto = SweepGradientDto.only(
           center: Alignment.center,
           startAngle: 0.0,
           endAngle: 6.28, // 2π
@@ -709,13 +737,30 @@ void main() {
         expect(dto.stops, resolvesTo([0.0, 1.0]));
       });
 
-      test('props constructor with Prop values', () {
-        final dto = SweepGradientDto.props(
+      test('only constructor with raw values', () {
+        final dto = SweepGradientDto.only(
+          center: Alignment.topCenter,
+          startAngle: 1.57, // π/2
+          endAngle: 4.71, // 3π/2
+          tileMode: TileMode.mirror,
+          colors: const [Colors.green, Colors.yellow],
+          stops: const [0.25, 0.75],
+        );
+
+        expect(dto.center, resolvesTo(Alignment.topCenter));
+        expect(dto.startAngle, resolvesTo(1.57));
+        expect(dto.endAngle, resolvesTo(4.71));
+        expect(dto.tileMode, resolvesTo(TileMode.mirror));
+        expect(dto.colors, resolvesTo([Colors.green, Colors.yellow]));
+        expect(dto.stops, resolvesTo([0.25, 0.75]));
+      });
+
+      test('main constructor with Prop values', () {
+        final dto = SweepGradientDto(
           center: Prop(Alignment.topCenter),
           startAngle: Prop(1.57), // π/2
           endAngle: Prop(4.71), // 3π/2
           tileMode: Prop(TileMode.mirror),
-          transform: null,
           colors: [Prop(Colors.green), Prop(Colors.yellow)],
           stops: [Prop(0.25), Prop(0.75)],
         );
@@ -768,7 +813,7 @@ void main() {
     group('Resolution Tests', () {
       test('resolves to SweepGradient with all properties', () {
         const transform = GradientRotation(2.0);
-        final dto = SweepGradientDto(
+        final dto = SweepGradientDto.only(
           center: Alignment.center,
           startAngle: 0.0,
           endAngle: 6.28,
@@ -795,13 +840,13 @@ void main() {
       });
 
       test('resolves with default values for null properties', () {
-        final dto = SweepGradientDto.props(
+        final dto = SweepGradientDto.only(
           center: null,
           startAngle: null,
           endAngle: null,
           tileMode: null,
           transform: null,
-          colors: [Prop(Colors.purple)],
+          colors: const [Colors.purple],
           stops: null,
         );
 
@@ -824,7 +869,7 @@ void main() {
         const transform1 = GradientRotation(1.0);
         const transform2 = GradientRotation(2.0);
 
-        final dto1 = SweepGradientDto(
+        final dto1 = SweepGradientDto.only(
           center: Alignment.center,
           startAngle: 0.0,
           endAngle: 3.14,
@@ -833,7 +878,7 @@ void main() {
           tileMode: TileMode.clamp,
           transform: transform1,
         );
-        final dto2 = SweepGradientDto(
+        final dto2 = SweepGradientDto.only(
           center: Alignment.centerLeft,
           startAngle: 1.57,
           endAngle: 4.71,
@@ -855,12 +900,12 @@ void main() {
       });
 
       test('merge with partial properties', () {
-        final dto1 = SweepGradientDto(
+        final dto1 = SweepGradientDto.only(
           center: Alignment.topCenter,
           startAngle: 0.5,
           colors: const [Colors.red, Colors.blue],
         );
-        final dto2 = SweepGradientDto(
+        final dto2 = SweepGradientDto.only(
           endAngle: 5.5,
           stops: const [0.3, 0.7],
           tileMode: TileMode.repeated,
@@ -877,7 +922,7 @@ void main() {
       });
 
       test('merge with null returns original', () {
-        final dto = SweepGradientDto(
+        final dto = SweepGradientDto.only(
           colors: const [Colors.purple, Colors.orange],
           startAngle: 0.0,
           endAngle: 6.28,
@@ -892,7 +937,7 @@ void main() {
     group('Equality and HashCode Tests', () {
       test('equal SweepGradientDtos', () {
         const transform = GradientRotation(1.5);
-        final dto1 = SweepGradientDto(
+        final dto1 = SweepGradientDto.only(
           center: Alignment.center,
           startAngle: 0.0,
           endAngle: 6.28,
@@ -901,7 +946,7 @@ void main() {
           tileMode: TileMode.mirror,
           transform: transform,
         );
-        final dto2 = SweepGradientDto(
+        final dto2 = SweepGradientDto.only(
           center: Alignment.center,
           startAngle: 0.0,
           endAngle: 6.28,
@@ -916,12 +961,12 @@ void main() {
       });
 
       test('not equal SweepGradientDtos', () {
-        final dto1 = SweepGradientDto(
+        final dto1 = SweepGradientDto.only(
           center: Alignment.center,
           startAngle: 0.0,
           colors: const [Colors.red, Colors.blue],
         );
-        final dto2 = SweepGradientDto(
+        final dto2 = SweepGradientDto.only(
           center: Alignment.center,
           startAngle: 0.5,
           colors: const [Colors.red, Colors.blue],
@@ -934,7 +979,7 @@ void main() {
     // Edge Cases
     group('Edge Cases', () {
       test('handles angle wrapping', () {
-        final dto = SweepGradientDto(
+        final dto = SweepGradientDto.only(
           startAngle: -1.0,
           endAngle: 7.28, // > 2π
           colors: const [Colors.red, Colors.blue],
@@ -945,7 +990,7 @@ void main() {
       });
 
       test('handles startAngle equal to endAngle', () {
-        final dto = SweepGradientDto(
+        final dto = SweepGradientDto.only(
           startAngle: 3.14,
           endAngle: 3.14,
           colors: const [Colors.red, Colors.blue],
@@ -959,7 +1004,7 @@ void main() {
       });
 
       test('handles colors in circular pattern', () {
-        final dto = SweepGradientDto(
+        final dto = SweepGradientDto.only(
           colors: const [Colors.red, Colors.green, Colors.blue, Colors.red],
           stops: const [0.0, 0.33, 0.67, 1.0],
         );
@@ -977,13 +1022,13 @@ void main() {
   // Integration Tests
   group('Integration Tests', () {
     test('GradientDto in BoxDecoration context', () {
-      final gradientDto = LinearGradientDto(
+      final gradientDto = LinearGradientDto.only(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         colors: const [Colors.purple, Colors.orange],
       );
 
-      final decorationDto = BoxDecorationDto(
+      final decorationDto = BoxDecorationDto.only(
         gradient: gradientDto,
         borderRadius: BorderRadiusDto.value(BorderRadius.circular(12)),
       );
@@ -999,18 +1044,18 @@ void main() {
     });
 
     test('complex gradient merging scenario', () {
-      final baseGradient = LinearGradientDto(
+      final baseGradient = LinearGradientDto.only(
         colors: const [Colors.red, Colors.blue],
         stops: const [0.0, 1.0],
       );
 
-      final overrideGradient = LinearGradientDto(
+      final overrideGradient = LinearGradientDto.only(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         tileMode: TileMode.mirror,
       );
 
-      final finalGradient = LinearGradientDto(
+      final finalGradient = LinearGradientDto.only(
         transform: const GradientRotation(1.57),
       );
 

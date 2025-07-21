@@ -43,7 +43,7 @@ final class LinearGradientUtility<T extends SpecUtility<Object?>>
   );
 
   LinearGradientUtility(super.builder)
-    : super(valueToDto: LinearGradientDto.value);
+    : super(valueToMix: LinearGradientDto.value);
 
   @override
   T call(LinearGradientDto value) => builder(MixProp(value));
@@ -96,7 +96,7 @@ final class RadialGradientUtility<T extends SpecUtility<Object?>>
   );
 
   RadialGradientUtility(super.builder)
-    : super(valueToDto: RadialGradientDto.value);
+    : super(valueToMix: RadialGradientDto.value);
 
   @override
   T call(RadialGradientDto value) => builder(MixProp(value));
@@ -144,7 +144,7 @@ final class SweepGradientUtility<T extends SpecUtility<Object?>>
   );
 
   SweepGradientUtility(super.builder)
-    : super(valueToDto: SweepGradientDto.value);
+    : super(valueToMix: SweepGradientDto.value);
 
   @override
   T call(SweepGradientDto value) => builder(MixProp(value));
@@ -154,19 +154,15 @@ final class SweepGradientUtility<T extends SpecUtility<Object?>>
 final class GradientUtility<T extends SpecUtility<Object?>>
     extends MixPropUtility<T, Gradient> {
   /// Returns a [LinearGradientUtility] for creating linear gradients
-  late final linear = LinearGradientUtility<T>(
-    (dto) => call(dto as GradientDto),
-  );
+  late final linear = LinearGradientUtility<T>(builder);
 
   /// Returns a [RadialGradientUtility] for creating radial gradients
-  late final radial = RadialGradientUtility<T>(
-    (dto) => call(dto as GradientDto),
-  );
+  late final radial = RadialGradientUtility<T>(builder);
 
   /// Returns a [SweepGradientUtility] for creating sweep gradients
-  late final sweep = SweepGradientUtility<T>((dto) => call(dto as GradientDto));
+  late final sweep = SweepGradientUtility<T>(builder);
 
-  GradientUtility(super.builder) : super(valueToDto: GradientDto.value);
+  GradientUtility(super.builder) : super(valueToMix: GradientDto.value);
 
   @override
   T call(GradientDto value) => builder(MixProp(value));

@@ -6,6 +6,8 @@ import 'package:flutter/widgets.dart';
 import '../core/attribute.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
+import '../core/prop.dart';
+import '../theme/tokens/mix_token.dart';
 import '../core/utility.dart';
 
 final class SizedBoxModifierSpec extends ModifierSpec<SizedBoxModifierSpec>
@@ -79,8 +81,8 @@ final class SizedBoxModifierSpec extends ModifierSpec<SizedBoxModifierSpec>
 class SizedBoxModifierSpecAttribute
     extends ModifierSpecAttribute<SizedBoxModifierSpec>
     with Diagnosticable {
-  final double? width;
-  final double? height;
+  final Prop<double>? width;
+  final Prop<double>? height;
 
   const SizedBoxModifierSpecAttribute({this.width, this.height});
 
@@ -94,7 +96,10 @@ class SizedBoxModifierSpecAttribute
   /// ```
   @override
   SizedBoxModifierSpec resolve(BuildContext context) {
-    return SizedBoxModifierSpec(width: width, height: height);
+    return SizedBoxModifierSpec(
+      width: width?.resolve(context),
+      height: height?.resolve(context),
+    );
   }
 
   /// Merges the properties of this [SizedBoxModifierSpecAttribute] with the properties of [other].
@@ -110,8 +115,8 @@ class SizedBoxModifierSpecAttribute
     if (other == null) return this;
 
     return SizedBoxModifierSpecAttribute(
-      width: other.width ?? width,
-      height: other.height ?? height,
+      width: width?.merge(other.width) ?? other.width,
+      height: height?.merge(other.height) ?? other.height,
     );
   }
 
@@ -130,25 +135,30 @@ class SizedBoxModifierSpecAttribute
   List<Object?> get props => [width, height];
 }
 
-final class SizedBoxModifierSpecUtility<T extends Attribute>
+final class SizedBoxModifierSpecUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, SizedBoxModifierSpecAttribute> {
-  /// Utility for defining [SizedBoxModifierSpecAttribute.height]
-  late final height = DoubleUtility((prop) => call(height: prop.getValue()));
+  // TODO: Add width, height and square utilities when DoubleUtility is available
+  // late final width = DoubleUtility(
+  //   (prop) => builder(SizedBoxModifierSpecAttribute(width: prop)),
+  // );
+  // late final height = DoubleUtility(
+  //   (prop) => builder(SizedBoxModifierSpecAttribute(height: prop)),
+  // );
+  // late final square = DoubleUtility(
+  //   (prop) => builder(SizedBoxModifierSpecAttribute(width: prop, height: prop)),
+  // );
 
-  /// Utility for defining [SizedBoxModifierSpecAttribute.width]
-  late final width = DoubleUtility((prop) => call(width: prop.getValue()));
-
-  /// Utility for defining [SizedBoxModifierSpecAttribute.width]
-  /// and [SizedBoxModifierSpecAttribute.height]
-  late final square = DoubleUtility(
-    (prop) => call(width: prop.getValue(), height: prop.getValue()),
-  );
-
-  SizedBoxModifierSpecUtility(super.builder);
+  const SizedBoxModifierSpecUtility(super.builder);
 
   T call({double? width, double? height}) {
-    return builder(SizedBoxModifierSpecAttribute(width: width, height: height));
+    return builder(SizedBoxModifierSpecAttribute(
+      width: width != null ? Prop(width) : null,
+      height: height != null ? Prop(height) : null,
+    ));
   }
+  
+  T widthToken(MixToken<double> token) => builder(SizedBoxModifierSpecAttribute(width: Prop.token(token)));
+  T heightToken(MixToken<double> token) => builder(SizedBoxModifierSpecAttribute(height: Prop.token(token)));
 
   /// Utility for defining [SizedBoxModifierSpecAttribute.width] and [SizedBoxModifierSpecAttribute.height]
   /// from [Size]

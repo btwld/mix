@@ -9,7 +9,7 @@ void main() {
   group('BoxConstraintsDto', () {
     group('constructor', () {
       test('main factory assigns properties correctly', () {
-        final dto = BoxConstraintsDto(
+        final dto = BoxConstraintsDto.only(
           minWidth: 50,
           maxWidth: 150,
           minHeight: 100,
@@ -53,7 +53,7 @@ void main() {
       });
 
       test('.props constructor accepts Prop instances', () {
-        final dto = BoxConstraintsDto.props(
+        final dto = BoxConstraintsDto(
           minWidth: Prop(50),
           maxWidth: Prop(150),
           minHeight: Prop(100),
@@ -76,7 +76,7 @@ void main() {
 
     group('resolve', () {
       test('returns correct BoxConstraints with specific values', () {
-        final dto = BoxConstraintsDto(
+        final dto = BoxConstraintsDto.only(
           minWidth: 50,
           maxWidth: 150,
           minHeight: 100,
@@ -97,7 +97,7 @@ void main() {
       });
 
       test('uses default values for null properties', () {
-        final dto = BoxConstraintsDto(
+        final dto = BoxConstraintsDto.only(
           minWidth: 50,
           minHeight: 100,
           // maxWidth and maxHeight are null
@@ -119,20 +119,20 @@ void main() {
       test('handles all-null DTO', () {
         final dto = BoxConstraintsDto();
 
-        expect(() => dto.resolve(EmptyMixData), returnsNormally);
+        expect(() => dto.resolve(MockBuildContext()), returnsNormally);
         expect(dto, resolvesTo(const BoxConstraints()));
       });
     });
 
     group('merge', () {
       test('combines properties correctly', () {
-        final base = BoxConstraintsDto(
+        final base = BoxConstraintsDto.only(
           minWidth: 50,
           maxWidth: 150,
           minHeight: 100,
           maxHeight: 200,
         );
-        final override = BoxConstraintsDto(
+        final override = BoxConstraintsDto.only(
           minWidth: 60,
           maxWidth: 160,
           // minHeight and maxHeight not specified
@@ -154,13 +154,13 @@ void main() {
       });
 
       test('preserves unspecified properties', () {
-        final base = BoxConstraintsDto(
+        final base = BoxConstraintsDto.only(
           minWidth: 50,
           maxWidth: 150,
           minHeight: 100,
           maxHeight: 200,
         );
-        final override = BoxConstraintsDto(
+        final override = BoxConstraintsDto.only(
           minWidth: 60, // Only minWidth
         );
 
@@ -180,7 +180,7 @@ void main() {
       });
 
       test('returns self when merging with null', () {
-        final dto = BoxConstraintsDto(minWidth: 50, minHeight: 100);
+        final dto = BoxConstraintsDto.only(minWidth: 50, minHeight: 100);
         final merged = dto.merge(null);
 
         expect(merged, same(dto));
@@ -189,24 +189,24 @@ void main() {
 
     group('equality', () {
       test('equals with same values', () {
-        final dto1 = BoxConstraintsDto(minWidth: 50, minHeight: 100);
-        final dto2 = BoxConstraintsDto(minWidth: 50, minHeight: 100);
+        final dto1 = BoxConstraintsDto.only(minWidth: 50, minHeight: 100);
+        final dto2 = BoxConstraintsDto.only(minWidth: 50, minHeight: 100);
 
         expect(dto1, equals(dto2));
         expect(dto1.hashCode, equals(dto2.hashCode));
       });
 
       test('not equals with different values', () {
-        final dto1 = BoxConstraintsDto(minWidth: 50, minHeight: 100);
-        final dto2 = BoxConstraintsDto(minWidth: 60, minHeight: 100);
+        final dto1 = BoxConstraintsDto.only(minWidth: 50, minHeight: 100);
+        final dto2 = BoxConstraintsDto.only(minWidth: 60, minHeight: 100);
 
         expect(dto1, isNot(equals(dto2)));
       });
 
       test('handles null values in equality', () {
-        final dto1 = BoxConstraintsDto(minWidth: 50); // maxWidth is null
-        final dto2 = BoxConstraintsDto(minWidth: 50); // maxWidth is null
-        final dto3 = BoxConstraintsDto(minWidth: 50, maxWidth: 100);
+        final dto1 = BoxConstraintsDto.only(minWidth: 50); // maxWidth is null
+        final dto2 = BoxConstraintsDto.only(minWidth: 50); // maxWidth is null
+        final dto3 = BoxConstraintsDto.only(minWidth: 50, maxWidth: 100);
 
         expect(dto1, equals(dto2));
         expect(dto1, isNot(equals(dto3)));
@@ -218,7 +218,7 @@ void main() {
         const minToken = MixToken<double>('constraints.min');
         const maxToken = MixToken<double>('constraints.max');
 
-        final dto = BoxConstraintsDto.props(
+        final dto = BoxConstraintsDto(
           minWidth: Prop.token(minToken),
           maxWidth: Prop.token(maxToken),
           minHeight: Prop(100),
@@ -245,16 +245,19 @@ void main() {
 
       test('handles missing tokens gracefully', () {
         const token = MixToken<double>('undefined.size');
-        final dto = BoxConstraintsDto.props(minWidth: Prop.token(token));
+        final dto = BoxConstraintsDto(minWidth: Prop.token(token));
 
         // The resolve should throw when token is not found
-        expect(() => dto.resolve(EmptyMixData), throwsA(isA<StateError>()));
+        expect(
+          () => dto.resolve(MockBuildContext()),
+          throwsA(isA<StateError>()),
+        );
       });
 
       testWidgets('mixes tokens and values', (tester) async {
         const sizeToken = MixToken<double>('size.large');
 
-        final dto = BoxConstraintsDto.props(
+        final dto = BoxConstraintsDto(
           minWidth: Prop(10),
           maxWidth: Prop.token(sizeToken),
           minHeight: Prop(20),
@@ -282,22 +285,22 @@ void main() {
 
     group('edge cases', () {
       test('handles extreme values', () {
-        final dto = BoxConstraintsDto(
+        final dto = BoxConstraintsDto.only(
           minWidth: 0,
           maxWidth: double.infinity,
           minHeight: 0,
           maxHeight: double.infinity,
         );
 
-        expect(() => dto.resolve(EmptyMixData), returnsNormally);
+        expect(() => dto.resolve(MockBuildContext()), returnsNormally);
       });
 
       test('merge maintains property types', () {
-        final dto1 = BoxConstraintsDto.props(
+        final dto1 = BoxConstraintsDto(
           minWidth: Prop(50),
           maxWidth: Prop.token(const MixToken<double>('size')),
         );
-        final dto2 = BoxConstraintsDto(minWidth: 60);
+        final dto2 = BoxConstraintsDto.only(minWidth: 60);
 
         final merged = dto1.merge(dto2);
 

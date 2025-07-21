@@ -20,7 +20,7 @@ final class TextHeightBehaviorUtility<T extends SpecUtility<Object?>>
   );
 
   TextHeightBehaviorUtility(super.builder)
-    : super(valueToDto: TextHeightBehaviorDto.value);
+    : super(valueToMix: TextHeightBehaviorDto.value);
 
   @override
   T call(TextHeightBehaviorDto value) => builder(MixProp(value));

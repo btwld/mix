@@ -9,8 +9,8 @@ void main() {
   group('StrutStyleDto', () {
     // Constructor Tests
     group('Constructor Tests', () {
-      test('main constructor creates StrutStyleDto with all properties', () {
-        final dto = StrutStyleDto(
+      test('only constructor creates StrutStyleDto with all properties', () {
+        final dto = StrutStyleDto.only(
           fontFamily: 'Roboto',
           fontFamilyFallback: const ['Arial', 'Helvetica'],
           fontSize: 24.0,
@@ -22,7 +22,13 @@ void main() {
         );
 
         expect(dto.fontFamily, resolvesTo('Roboto'));
-        expect(dto.fontFamilyFallback?.value, ['Arial', 'Helvetica']);
+        // fontFamilyFallback is a list of Prop<String>, so we check the resolved values
+        expect(
+          dto.fontFamilyFallback
+              ?.map((p) => p.resolve(MockBuildContext()))
+              .toList(),
+          ['Arial', 'Helvetica'],
+        );
         expect(dto.fontSize, resolvesTo(24.0));
         expect(dto.fontWeight, resolvesTo(FontWeight.bold));
         expect(dto.fontStyle, resolvesTo(FontStyle.italic));
@@ -31,10 +37,10 @@ void main() {
         expect(dto.forceStrutHeight, resolvesTo(true));
       });
 
-      test('props constructor with Prop values', () {
-        const dto = StrutStyleDto.props(
+      test('main constructor with Prop values', () {
+        final dto = StrutStyleDto(
           fontFamily: Prop('Inter'),
-          fontFamilyFallback: Prop(['Verdana', 'Georgia']),
+          fontFamilyFallback: [Prop('Verdana'), Prop('Georgia')],
           fontSize: Prop(18.0),
           fontWeight: Prop(FontWeight.w600),
           fontStyle: Prop(FontStyle.normal),
@@ -44,7 +50,12 @@ void main() {
         );
 
         expect(dto.fontFamily, resolvesTo('Inter'));
-        expect(dto.fontFamilyFallback?.value, ['Verdana', 'Georgia']);
+        expect(
+          dto.fontFamilyFallback
+              ?.map((p) => p.resolve(MockBuildContext()))
+              .toList(),
+          ['Verdana', 'Georgia'],
+        );
         expect(dto.fontSize, resolvesTo(18.0));
         expect(dto.fontWeight, resolvesTo(FontWeight.w600));
         expect(dto.fontStyle, resolvesTo(FontStyle.normal));
@@ -67,7 +78,12 @@ void main() {
         final dto = StrutStyleDto.value(strutStyle);
 
         expect(dto.fontFamily, resolvesTo(strutStyle.fontFamily));
-        expect(dto.fontFamilyFallback?.value, strutStyle.fontFamilyFallback);
+        expect(
+          dto.fontFamilyFallback
+              ?.map((p) => p.resolve(MockBuildContext()))
+              .toList(),
+          strutStyle.fontFamilyFallback,
+        );
         expect(dto.fontSize, resolvesTo(strutStyle.fontSize));
         expect(dto.fontWeight, resolvesTo(strutStyle.fontWeight));
         expect(dto.fontStyle, resolvesTo(strutStyle.fontStyle));
@@ -100,7 +116,7 @@ void main() {
     // Resolution Tests
     group('Resolution Tests', () {
       test('resolves to StrutStyle with all properties', () {
-        final dto = StrutStyleDto(
+        final dto = StrutStyleDto.only(
           fontFamily: 'Roboto',
           fontFamilyFallback: const ['Arial', 'Helvetica'],
           fontSize: 24.0,
@@ -129,9 +145,9 @@ void main() {
       });
 
       test('resolves with default values for null properties', () {
-        const dto = StrutStyleDto.props();
+        final dto = StrutStyleDto.only();
 
-        final context = createEmptyMixData();
+        final context = MockBuildContext();
         final resolved = dto.resolve(context);
 
         expect(resolved.fontFamily, isNull);
@@ -145,13 +161,13 @@ void main() {
       });
 
       test('resolves with partial properties', () {
-        final dto = StrutStyleDto(
+        final dto = StrutStyleDto.only(
           fontSize: 20.0,
           fontWeight: FontWeight.w500,
           forceStrutHeight: true,
         );
 
-        final context = createEmptyMixData();
+        final context = MockBuildContext();
         final resolved = dto.resolve(context);
 
         expect(resolved.fontSize, 20.0);
@@ -165,7 +181,7 @@ void main() {
     // Merge Tests
     group('Merge Tests', () {
       test('merge with another StrutStyleDto - all properties', () {
-        final dto1 = StrutStyleDto(
+        final dto1 = StrutStyleDto.only(
           fontFamily: 'Roboto',
           fontSize: 24.0,
           fontWeight: FontWeight.normal,
@@ -174,7 +190,7 @@ void main() {
           leading: 0.5,
           forceStrutHeight: false,
         );
-        final dto2 = StrutStyleDto(
+        final dto2 = StrutStyleDto.only(
           fontFamily: 'Inter',
           fontFamilyFallback: const ['Arial'],
           fontSize: 28.0,
@@ -188,7 +204,12 @@ void main() {
         final merged = dto1.merge(dto2);
 
         expect(merged.fontFamily, resolvesTo('Inter'));
-        expect(merged.fontFamilyFallback?.value, ['Arial']);
+        expect(
+          merged.fontFamilyFallback
+              ?.map((p) => p.resolve(MockBuildContext()))
+              .toList(),
+          ['Arial'],
+        );
         expect(merged.fontSize, resolvesTo(28.0));
         expect(merged.fontWeight, resolvesTo(FontWeight.bold));
         expect(merged.fontStyle, resolvesTo(FontStyle.italic));
@@ -198,12 +219,12 @@ void main() {
       });
 
       test('merge with partial properties', () {
-        final dto1 = StrutStyleDto(
+        final dto1 = StrutStyleDto.only(
           fontFamily: 'Roboto',
           fontSize: 24.0,
           fontWeight: FontWeight.bold,
         );
-        final dto2 = StrutStyleDto(
+        final dto2 = StrutStyleDto.only(
           height: 2.0,
           leading: 1.0,
           forceStrutHeight: true,
@@ -220,35 +241,40 @@ void main() {
       });
 
       test('merge with null returns original', () {
-        final dto = StrutStyleDto(fontFamily: 'Roboto', fontSize: 24.0);
+        final dto = StrutStyleDto.only(fontFamily: 'Roboto', fontSize: 24.0);
 
         final merged = dto.merge(null);
         expect(merged, same(dto));
       });
 
       test('merge fontFamilyFallback lists', () {
-        final dto1 = StrutStyleDto(
+        final dto1 = StrutStyleDto.only(
           fontFamilyFallback: const ['Arial', 'Helvetica'],
         );
-        final dto2 = StrutStyleDto(
+        final dto2 = StrutStyleDto.only(
           fontFamilyFallback: const ['Verdana', 'Georgia'],
         );
 
         final merged = dto1.merge(dto2);
-        expect(merged.fontFamilyFallback?.value, ['Verdana', 'Georgia']);
+        expect(
+          merged.fontFamilyFallback
+              ?.map((p) => p.resolve(MockBuildContext()))
+              .toList(),
+          ['Verdana', 'Georgia'],
+        );
       });
     });
 
     // Equality and HashCode Tests
     group('Equality and HashCode Tests', () {
       test('equal StrutStyleDtos', () {
-        final dto1 = StrutStyleDto(
+        final dto1 = StrutStyleDto.only(
           fontFamily: 'Roboto',
           fontSize: 24.0,
           fontWeight: FontWeight.bold,
           forceStrutHeight: true,
         );
-        final dto2 = StrutStyleDto(
+        final dto2 = StrutStyleDto.only(
           fontFamily: 'Roboto',
           fontSize: 24.0,
           fontWeight: FontWeight.bold,
@@ -260,17 +286,17 @@ void main() {
       });
 
       test('not equal StrutStyleDtos', () {
-        final dto1 = StrutStyleDto(fontFamily: 'Roboto', fontSize: 24.0);
-        final dto2 = StrutStyleDto(fontFamily: 'Lato', fontSize: 24.0);
+        final dto1 = StrutStyleDto.only(fontFamily: 'Roboto', fontSize: 24.0);
+        final dto2 = StrutStyleDto.only(fontFamily: 'Lato', fontSize: 24.0);
 
         expect(dto1, isNot(equals(dto2)));
       });
 
       test('equality with lists', () {
-        final dto1 = StrutStyleDto(
+        final dto1 = StrutStyleDto.only(
           fontFamilyFallback: const ['Arial', 'Helvetica'],
         );
-        final dto2 = StrutStyleDto(
+        final dto2 = StrutStyleDto.only(
           fontFamilyFallback: const ['Arial', 'Helvetica'],
         );
 
@@ -282,16 +308,20 @@ void main() {
     // Edge Cases
     group('Edge Cases', () {
       test('handles empty fontFamilyFallback list', () {
-        final dto = StrutStyleDto(fontFamilyFallback: const []);
+        final dto = StrutStyleDto.only(fontFamilyFallback: const []);
 
-        final context = createEmptyMixData();
+        final context = MockBuildContext();
         final resolved = dto.resolve(context);
 
         expect(resolved.fontFamilyFallback, isEmpty);
       });
 
       test('handles zero and negative values', () {
-        final dto = StrutStyleDto(fontSize: 0.0, height: -1.0, leading: -0.5);
+        final dto = StrutStyleDto.only(
+          fontSize: 0.0,
+          height: -1.0,
+          leading: -0.5,
+        );
 
         expect(dto.fontSize, resolvesTo(0.0));
         expect(dto.height, resolvesTo(-1.0));
@@ -299,25 +329,25 @@ void main() {
       });
 
       test('handles extreme font weights', () {
-        final dto1 = StrutStyleDto(fontWeight: FontWeight.w100);
-        final dto2 = StrutStyleDto(fontWeight: FontWeight.w900);
+        final dto1 = StrutStyleDto.only(fontWeight: FontWeight.w100);
+        final dto2 = StrutStyleDto.only(fontWeight: FontWeight.w900);
 
         expect(dto1.fontWeight, resolvesTo(FontWeight.w100));
         expect(dto2.fontWeight, resolvesTo(FontWeight.w900));
       });
 
       test('handles very large fontSize', () {
-        final dto = StrutStyleDto(fontSize: 1000.0);
+        final dto = StrutStyleDto.only(fontSize: 1000.0);
 
         expect(dto.fontSize, resolvesTo(1000.0));
       });
 
       test('handles null fontFamily with non-null fontFamilyFallback', () {
-        final dto = StrutStyleDto(
+        final dto = StrutStyleDto.only(
           fontFamilyFallback: const ['Arial', 'Helvetica'],
         );
 
-        final context = createEmptyMixData();
+        final context = MockBuildContext();
         final resolved = dto.resolve(context);
 
         expect(resolved.fontFamily, isNull);
@@ -325,9 +355,9 @@ void main() {
       });
 
       test('handles forceStrutHeight variations', () {
-        final dto1 = StrutStyleDto(forceStrutHeight: true);
-        final dto2 = StrutStyleDto(forceStrutHeight: false);
-        final dto3 = StrutStyleDto(); // null
+        final dto1 = StrutStyleDto.only(forceStrutHeight: true);
+        final dto2 = StrutStyleDto.only(forceStrutHeight: false);
+        final dto3 = StrutStyleDto.only(); // null
 
         expect(dto1.forceStrutHeight, resolvesTo(true));
         expect(dto2.forceStrutHeight, resolvesTo(false));
@@ -338,14 +368,14 @@ void main() {
     // Integration Tests
     group('Integration Tests', () {
       test('StrutStyleDto used in Text widget context', () {
-        final dto = StrutStyleDto(
+        final dto = StrutStyleDto.only(
           fontFamily: 'Roboto',
           fontSize: 16.0,
           height: 1.5,
           forceStrutHeight: true,
         );
 
-        final context = createEmptyMixData();
+        final context = MockBuildContext();
         final resolved = dto.resolve(context);
 
         expect(resolved.fontFamily, 'Roboto');
@@ -355,19 +385,19 @@ void main() {
       });
 
       test('complex merge scenario', () {
-        final baseStyle = StrutStyleDto(
+        final baseStyle = StrutStyleDto.only(
           fontFamily: 'Roboto',
           fontSize: 14.0,
           fontWeight: FontWeight.normal,
         );
 
-        final headingStyle = StrutStyleDto(
+        final headingStyle = StrutStyleDto.only(
           fontSize: 24.0,
           fontWeight: FontWeight.bold,
           height: 1.2,
         );
 
-        final overrideStyle = StrutStyleDto(
+        final overrideStyle = StrutStyleDto.only(
           fontFamily: 'Inter',
           forceStrutHeight: true,
         );
@@ -382,19 +412,24 @@ void main() {
       });
 
       test('fontFamilyFallback behavior with merge', () {
-        final dto1 = StrutStyleDto(
+        final dto1 = StrutStyleDto.only(
           fontFamily: 'CustomFont',
           fontFamilyFallback: const ['Fallback1'],
         );
 
-        final dto2 = StrutStyleDto(
+        final dto2 = StrutStyleDto.only(
           fontFamilyFallback: const ['Fallback2', 'Fallback3'],
         );
 
         final merged = dto1.merge(dto2);
 
         expect(merged.fontFamily, resolvesTo('CustomFont'));
-        expect(merged.fontFamilyFallback?.value, ['Fallback2', 'Fallback3']);
+        expect(
+          merged.fontFamilyFallback
+              ?.map((p) => p.resolve(MockBuildContext()))
+              .toList(),
+          ['Fallback2', 'Fallback3'],
+        );
       });
     });
   });

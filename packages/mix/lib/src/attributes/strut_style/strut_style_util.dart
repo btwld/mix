@@ -24,7 +24,7 @@ final class StrutStyleUtility<T extends SpecUtility<Object?>>
     (v) => call(StrutStyleDto(fontFamily: v)),
   );
 
-  StrutStyleUtility(super.builder) : super(valueToDto: StrutStyleDto.value);
+  StrutStyleUtility(super.builder) : super(valueToMix: StrutStyleDto.value);
 
   @override
   T call(StrutStyleDto value) => builder(MixProp(value));

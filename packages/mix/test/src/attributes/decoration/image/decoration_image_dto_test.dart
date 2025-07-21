@@ -3,12 +3,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../../../helpers/custom_matchers.dart';
-import '../../../../helpers/testing_utils.dart';
 
 void main() {
   group('DecorationImageDto', () {
     const imageProvider = AssetImage('assets/images/test.png');
-    final dto = DecorationImageDto(
+    final dto = DecorationImageDto.only(
       image: imageProvider,
       fit: BoxFit.cover,
       alignment: Alignment.topLeft,
@@ -36,7 +35,7 @@ void main() {
       expect(result.fit, equals(Prop(BoxFit.cover)));
       expect(
         result.alignment,
-        equals(Prop<AlignmentGeometry>.fromValue(Alignment.topLeft)),
+        equals(Prop<AlignmentGeometry>(Alignment.topLeft)),
       );
       expect(result.centerSlice, equals(Prop(Rect.fromLTRB(10, 20, 30, 40))));
       expect(result.repeat, equals(Prop(ImageRepeat.repeat)));
@@ -46,7 +45,7 @@ void main() {
     });
 
     test('merge', () {
-      final otherDto = DecorationImageDto(
+      final otherDto = DecorationImageDto.only(
         image: imageProvider,
         fit: BoxFit.fill,
         alignment: Alignment.bottomRight,
@@ -73,7 +72,7 @@ void main() {
     });
 
     test('resolve with default values', () {
-      final dto = DecorationImageDto(image: imageProvider);
+      final dto = DecorationImageDto.only(image: imageProvider);
 
       const expectedImage = DecorationImage(
         image: imageProvider,
@@ -88,7 +87,7 @@ void main() {
     });
 
     test('resolve with custom values', () {
-      final dto = DecorationImageDto(
+      final dto = DecorationImageDto.only(
         image: imageProvider,
         fit: BoxFit.scaleDown,
         alignment: Alignment.bottomCenter,
@@ -114,7 +113,7 @@ void main() {
     });
 
     test('equality', () {
-      final dto1 = DecorationImageDto(
+      final dto1 = DecorationImageDto.only(
         image: imageProvider,
         fit: BoxFit.scaleDown,
         alignment: Alignment.bottomCenter,
@@ -125,7 +124,7 @@ void main() {
         isAntiAlias: true,
       );
 
-      final dto2 = DecorationImageDto(
+      final dto2 = DecorationImageDto.only(
         image: imageProvider,
         fit: BoxFit.scaleDown,
         alignment: Alignment.bottomCenter,
@@ -138,7 +137,7 @@ void main() {
 
       expect(dto1, equals(dto2));
 
-      final dto3 = DecorationImageDto(
+      final dto3 = DecorationImageDto.only(
         image: imageProvider,
         fit: BoxFit.scaleDown,
         alignment: Alignment.bottomCenter,

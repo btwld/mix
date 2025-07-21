@@ -114,7 +114,7 @@ class RotatedBoxModifierSpecAttribute
 }
 
 
-final class RotatedBoxModifierSpecUtility<T extends Attribute>
+final class RotatedBoxModifierSpecUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, RotatedBoxModifierSpecAttribute> {
   const RotatedBoxModifierSpecUtility(super.builder);
   T d90() => call(1);

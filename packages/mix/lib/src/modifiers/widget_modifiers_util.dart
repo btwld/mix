@@ -18,33 +18,33 @@ import 'visibility_widget_modifier.dart';
 
 abstract class ModifierUtility<T extends SpecUtility<Object?>, Value>
     extends MixUtility<T, Value> {
-  late final intrinsicWidth = IntrinsicWidthModifierSpecUtility(only);
-  late final intrinsicHeight = IntrinsicHeightModifierSpecUtility(only);
-  late final rotate = RotatedBoxModifierSpecUtility(only);
-  late final opacity = OpacityModifierSpecUtility(only);
-  late final clipPath = ClipPathModifierSpecUtility(only);
-  late final clipRRect = ClipRRectModifierSpecUtility(only);
-  late final clipOval = ClipOvalModifierSpecUtility(only);
-  late final clipRect = ClipRectModifierSpecUtility(only);
-  late final clipTriangle = ClipTriangleModifierSpecUtility(only);
-  late final visibility = VisibilityModifierSpecUtility(only);
+  late final intrinsicWidth = IntrinsicWidthModifierSpecUtility(builder);
+  late final intrinsicHeight = IntrinsicHeightModifierSpecUtility(builder);
+  late final rotate = RotatedBoxModifierSpecUtility(builder);
+  late final opacity = OpacityModifierSpecUtility(builder);
+  late final clipPath = ClipPathModifierSpecUtility(builder);
+  late final clipRRect = ClipRRectModifierSpecUtility(builder);
+  late final clipOval = ClipOvalModifierSpecUtility(builder);
+  late final clipRect = ClipRectModifierSpecUtility(builder);
+  late final clipTriangle = ClipTriangleModifierSpecUtility(builder);
+  late final visibility = VisibilityModifierSpecUtility(builder);
   late final show = visibility.on;
   late final hide = visibility.off;
-  late final aspectRatio = AspectRatioModifierSpecUtility(only);
-  late final flexible = FlexibleModifierSpecUtility(only);
+  late final aspectRatio = AspectRatioModifierSpecUtility(builder);
+  late final flexible = FlexibleModifierSpecUtility(builder);
   late final expanded = flexible.expanded;
-  late final transform = TransformModifierSpecUtility(only);
-  late final defaultTextStyle = DefaultTextStyleModifierSpecUtility(only);
+  late final transform = TransformModifierSpecUtility(builder);
+  late final defaultTextStyle = DefaultTextStyleModifierSpecUtility(builder);
 
   late final scale = transform.scale;
-  late final align = AlignModifierSpecUtility(only);
+  late final align = AlignModifierSpecUtility(builder);
   late final fractionallySizedBox = FractionallySizedBoxModifierSpecUtility(
-    only,
+    builder,
   );
 
-  late final padding = PaddingModifierSpecUtility(only);
-  late final sizedBox = SizedBoxModifierSpecUtility(only);
-  late final mouseCursor = MouseCursorModifierSpecUtility(only);
+  late final padding = PaddingModifierSpecUtility(builder);
+  late final sizedBox = SizedBoxModifierSpecUtility(builder);
+  late final mouseCursor = MouseCursorModifierSpecUtility(builder);
 
   const ModifierUtility(super.builder);
 

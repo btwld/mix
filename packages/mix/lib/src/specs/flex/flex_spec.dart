@@ -3,7 +3,6 @@ import 'dart:ui' show lerpDouble;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../attributes/gap/space_dto.dart';
 import '../../core/attribute.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
@@ -319,7 +318,7 @@ final class FlexSpecUtility<T extends Attribute>
   T clipBehavior(Clip behavior) => only(clipBehavior: behavior);
 
   /// Sets the gap between children.
-  T gap(double gap) => only(gap: SpaceDto.value(gap));
+  T gap(double gap) => only(gap: gap);
 
   /// Returns a new [FlexSpecAttribute] with the specified properties.
   @override
@@ -332,7 +331,7 @@ final class FlexSpecUtility<T extends Attribute>
     TextDirection? textDirection,
     TextBaseline? textBaseline,
     Clip? clipBehavior,
-    SpaceDto? gap,
+    double? gap,
   }) {
     return builder(
       FlexSpecAttribute(

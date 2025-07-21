@@ -87,7 +87,7 @@ void main() {
     // Resolution Tests
     group('Resolution Tests', () {
       test('resolves all properties correctly', () {
-        final dto = BorderSideDto(
+        final dto = BorderSideDto.only(
           color: Colors.purple,
           width: 5.0,
           style: BorderStyle.solid,
@@ -121,14 +121,14 @@ void main() {
     // Merge Tests
     group('Merge Tests', () {
       test('merge with another BorderSideDto - all properties', () {
-        final dto1 = BorderSideDto(
+        final dto1 = BorderSideDto.only(
           color: Colors.red,
           style: BorderStyle.solid,
           width: 1.0,
           strokeAlign: BorderSide.strokeAlignInside,
         );
 
-        final dto2 = BorderSideDto(
+        final dto2 = BorderSideDto.only(
           color: Colors.blue,
           style: BorderStyle.none,
           width: 2.0,
@@ -144,9 +144,9 @@ void main() {
       });
 
       test('merge with partial properties', () {
-        final dto1 = BorderSideDto(color: Colors.red, width: 1.0);
+        final dto1 = BorderSideDto.only(color: Colors.red, width: 1.0);
 
-        final dto2 = BorderSideDto(width: 2.0, style: BorderStyle.solid);
+        final dto2 = BorderSideDto.only(width: 2.0, style: BorderStyle.solid);
 
         final merged = dto1.merge(dto2);
 
@@ -156,7 +156,7 @@ void main() {
       });
 
       test('merge with null returns original', () {
-        final dto = BorderSideDto(color: Colors.green, width: 3.0);
+        final dto = BorderSideDto.only(color: Colors.green, width: 3.0);
 
         final merged = dto.merge(null);
         expect(merged, same(dto));
@@ -166,14 +166,14 @@ void main() {
     // Equality and HashCode Tests
     group('Equality and HashCode Tests', () {
       test('equal BorderSideDtos', () {
-        final dto1 = BorderSideDto(
+        final dto1 = BorderSideDto.only(
           color: Colors.red,
           width: 2.0,
           style: BorderStyle.solid,
           strokeAlign: BorderSide.strokeAlignCenter,
         );
 
-        final dto2 = BorderSideDto(
+        final dto2 = BorderSideDto.only(
           color: Colors.red,
           width: 2.0,
           style: BorderStyle.solid,
@@ -185,8 +185,8 @@ void main() {
       });
 
       test('not equal BorderSideDtos', () {
-        final dto1 = BorderSideDto(color: Colors.red);
-        final dto2 = BorderSideDto(color: Colors.blue);
+        final dto1 = BorderSideDto.only(color: Colors.red);
+        final dto2 = BorderSideDto.only(color: Colors.blue);
 
         expect(dto1, isNot(equals(dto2)));
       });
@@ -197,12 +197,27 @@ void main() {
   group('BorderDto', () {
     // Constructor Tests
     group('Constructor Tests', () {
-      test('main constructor creates BorderDto with all sides', () {
+      test('only constructor creates BorderDto with all sides', () {
+        final dto = BorderDto.only(
+          top: BorderSideDto.only(width: 1.0),
+          bottom: BorderSideDto.only(width: 2.0),
+          left: BorderSideDto.only(width: 3.0),
+          right: BorderSideDto.only(width: 4.0),
+        );
+
+        final resolved = dto.resolve(MockBuildContext());
+        expect(resolved.top.width, 1.0);
+        expect(resolved.bottom.width, 2.0);
+        expect(resolved.left.width, 3.0);
+        expect(resolved.right.width, 4.0);
+      });
+
+      test('main constructor with MixProp values', () {
         final dto = BorderDto(
-          top: BorderSideDto(width: 1.0),
-          bottom: BorderSideDto(width: 2.0),
-          left: BorderSideDto(width: 3.0),
-          right: BorderSideDto(width: 4.0),
+          top: MixProp(BorderSideDto.only(width: 1.0)),
+          bottom: MixProp(BorderSideDto.only(width: 2.0)),
+          left: MixProp(BorderSideDto.only(width: 3.0)),
+          right: MixProp(BorderSideDto.only(width: 4.0)),
         );
 
         final resolved = dto.resolve(MockBuildContext());
@@ -213,7 +228,7 @@ void main() {
       });
 
       test('all constructor creates uniform BorderDto', () {
-        final side = BorderSideDto(color: Colors.red, width: 2.0);
+        final side = BorderSideDto.only(color: Colors.red, width: 2.0);
         final dto = BorderDto.all(side);
 
         const expectedSide = BorderSide(color: Colors.red, width: 2.0);
@@ -225,8 +240,8 @@ void main() {
       });
 
       test('symmetric constructor', () {
-        final vertical = BorderSideDto(color: Colors.red);
-        final horizontal = BorderSideDto(color: Colors.blue);
+        final vertical = BorderSideDto.only(color: Colors.red);
+        final horizontal = BorderSideDto.only(color: Colors.blue);
 
         final dto = BorderDto.symmetric(
           vertical: vertical,
@@ -242,7 +257,7 @@ void main() {
       });
 
       test('vertical constructor', () {
-        final side = BorderSideDto(width: 2.0);
+        final side = BorderSideDto.only(width: 2.0);
         final dto = BorderDto.vertical(side);
 
         const expectedSide = BorderSide(width: 2.0);
@@ -253,7 +268,7 @@ void main() {
       });
 
       test('horizontal constructor', () {
-        final side = BorderSideDto(width: 3.0);
+        final side = BorderSideDto.only(width: 3.0);
         final dto = BorderDto.horizontal(side);
 
         const expectedSide = BorderSide(width: 3.0);
@@ -273,10 +288,22 @@ void main() {
 
         final dto = BorderDto.value(border);
 
-        expect(dto.top, resolvesTo(const BorderSide(color: Colors.red, width: 1.0)));
-        expect(dto.bottom, resolvesTo(const BorderSide(color: Colors.blue, width: 2.0)));
-        expect(dto.left, resolvesTo(const BorderSide(color: Colors.green, width: 3.0)));
-        expect(dto.right, resolvesTo(const BorderSide(color: Colors.yellow, width: 4.0)));
+        expect(
+          dto.top,
+          resolvesTo(const BorderSide(color: Colors.red, width: 1.0)),
+        );
+        expect(
+          dto.bottom,
+          resolvesTo(const BorderSide(color: Colors.blue, width: 2.0)),
+        );
+        expect(
+          dto.left,
+          resolvesTo(const BorderSide(color: Colors.green, width: 3.0)),
+        );
+        expect(
+          dto.right,
+          resolvesTo(const BorderSide(color: Colors.yellow, width: 4.0)),
+        );
       });
 
       test('none constant', () {
@@ -295,7 +322,10 @@ void main() {
         final dto = BorderDto.maybeValue(border);
 
         expect(dto, isNotNull);
-        expect(dto?.top, resolvesTo(const BorderSide(color: Colors.red, width: 2.0)));
+        expect(
+          dto?.top,
+          resolvesTo(const BorderSide(color: Colors.red, width: 2.0)),
+        );
       });
 
       test('maybeValue returns null for null Border', () {
@@ -307,11 +337,11 @@ void main() {
     // Resolution Tests
     group('Resolution Tests', () {
       test('resolves to Border with all sides', () {
-        final dto = BorderDto(
-          top: BorderSideDto(width: 5.0),
-          bottom: BorderSideDto(width: 10.0),
-          left: BorderSideDto(width: 15.0),
-          right: BorderSideDto(width: 20.0),
+        final dto = BorderDto.only(
+          top: BorderSideDto.only(width: 5.0),
+          bottom: BorderSideDto.only(width: 10.0),
+          left: BorderSideDto.only(width: 15.0),
+          right: BorderSideDto.only(width: 20.0),
         );
 
         expect(
@@ -328,9 +358,9 @@ void main() {
       });
 
       test('resolves with default values for missing sides', () {
-        final dto = BorderDto(
-          top: BorderSideDto(width: 5.0),
-          left: BorderSideDto(width: 15.0),
+        final dto = BorderDto.only(
+          top: BorderSideDto.only(width: 5.0),
+          left: BorderSideDto.only(width: 15.0),
         );
 
         expect(
@@ -350,30 +380,42 @@ void main() {
     // Merge Tests
     group('Merge Tests', () {
       test('merge with another BorderDto', () {
-        final dto1 = BorderDto(
-          top: BorderSideDto(color: Colors.red, width: 1.0),
-          bottom: BorderSideDto(color: Colors.red, width: 1.0),
-          left: BorderSideDto(color: Colors.red, width: 1.0),
-          right: BorderSideDto(color: Colors.red, width: 1.0),
+        final dto1 = BorderDto.only(
+          top: BorderSideDto.only(color: Colors.red, width: 1.0),
+          bottom: BorderSideDto.only(color: Colors.red, width: 1.0),
+          left: BorderSideDto.only(color: Colors.red, width: 1.0),
+          right: BorderSideDto.only(color: Colors.red, width: 1.0),
         );
 
-        final dto2 = BorderDto(
-          top: BorderSideDto(width: 2.0),
-          bottom: BorderSideDto(width: 2.0),
-          left: BorderSideDto(width: 2.0),
-          right: BorderSideDto(width: 2.0),
+        final dto2 = BorderDto.only(
+          top: BorderSideDto.only(width: 2.0),
+          bottom: BorderSideDto.only(width: 2.0),
+          left: BorderSideDto.only(width: 2.0),
+          right: BorderSideDto.only(width: 2.0),
         );
 
         final merged = dto1.merge(dto2);
 
-        expect(merged.top, resolvesTo(const BorderSide(color: Colors.red, width: 2.0)));
-        expect(merged.bottom, resolvesTo(const BorderSide(color: Colors.red, width: 2.0)));
-        expect(merged.left, resolvesTo(const BorderSide(color: Colors.red, width: 2.0)));
-        expect(merged.right, resolvesTo(const BorderSide(color: Colors.red, width: 2.0)));
+        expect(
+          merged.top,
+          resolvesTo(const BorderSide(color: Colors.red, width: 2.0)),
+        );
+        expect(
+          merged.bottom,
+          resolvesTo(const BorderSide(color: Colors.red, width: 2.0)),
+        );
+        expect(
+          merged.left,
+          resolvesTo(const BorderSide(color: Colors.red, width: 2.0)),
+        );
+        expect(
+          merged.right,
+          resolvesTo(const BorderSide(color: Colors.red, width: 2.0)),
+        );
       });
 
       test('merge with null returns original', () {
-        final dto = BorderDto.all(BorderSideDto(width: 1.0));
+        final dto = BorderDto.all(BorderSideDto.only(width: 1.0));
         final merged = dto.merge(null);
 
         expect(merged, same(dto));
@@ -388,15 +430,15 @@ void main() {
       });
 
       test('isUniform with all sides equal', () {
-        final side = BorderSideDto(width: 2.0);
+        final side = BorderSideDto.only(width: 2.0);
         final dto = BorderDto.all(side);
         expect(dto.isUniform, isTrue);
       });
 
       test('isUniform with different sides', () {
-        final dto = BorderDto(
-          top: BorderSideDto(width: 1.0),
-          bottom: BorderSideDto(width: 2.0),
+        final dto = BorderDto.only(
+          top: BorderSideDto.only(width: 1.0),
+          bottom: BorderSideDto.only(width: 2.0),
         );
         expect(dto.isUniform, isFalse);
       });
@@ -405,18 +447,18 @@ void main() {
     // Equality and HashCode Tests
     group('Equality and HashCode Tests', () {
       test('equal BorderDtos', () {
-        final dto1 = BorderDto(
-          top: BorderSideDto(width: 1.0),
-          bottom: BorderSideDto(width: 2.0),
-          left: BorderSideDto(width: 3.0),
-          right: BorderSideDto(width: 4.0),
+        final dto1 = BorderDto.only(
+          top: BorderSideDto.only(width: 1.0),
+          bottom: BorderSideDto.only(width: 2.0),
+          left: BorderSideDto.only(width: 3.0),
+          right: BorderSideDto.only(width: 4.0),
         );
 
-        final dto2 = BorderDto(
-          top: BorderSideDto(width: 1.0),
-          bottom: BorderSideDto(width: 2.0),
-          left: BorderSideDto(width: 3.0),
-          right: BorderSideDto(width: 4.0),
+        final dto2 = BorderDto.only(
+          top: BorderSideDto.only(width: 1.0),
+          bottom: BorderSideDto.only(width: 2.0),
+          left: BorderSideDto.only(width: 3.0),
+          right: BorderSideDto.only(width: 4.0),
         );
 
         expect(dto1, equals(dto2));
@@ -424,8 +466,8 @@ void main() {
       });
 
       test('not equal BorderDtos', () {
-        final dto1 = BorderDto(top: BorderSideDto(width: 1.0));
-        final dto2 = BorderDto(top: BorderSideDto(width: 2.0));
+        final dto1 = BorderDto.only(top: BorderSideDto.only(width: 1.0));
+        final dto2 = BorderDto.only(top: BorderSideDto.only(width: 2.0));
 
         expect(dto1, isNot(equals(dto2)));
       });
@@ -436,12 +478,26 @@ void main() {
   group('BorderDirectionalDto', () {
     // Constructor Tests
     group('Constructor Tests', () {
-      test('main constructor creates BorderDirectionalDto with all sides', () {
+      test('only constructor creates BorderDirectionalDto with all sides', () {
+        final dto = BorderDirectionalDto.only(
+          top: BorderSideDto.only(width: 1.0),
+          bottom: BorderSideDto.only(width: 2.0),
+          start: BorderSideDto.only(width: 3.0),
+          end: BorderSideDto.only(width: 4.0),
+        );
+
+        expect(dto.top, resolvesTo(const BorderSide(width: 1.0)));
+        expect(dto.bottom, resolvesTo(const BorderSide(width: 2.0)));
+        expect(dto.start, resolvesTo(const BorderSide(width: 3.0)));
+        expect(dto.end, resolvesTo(const BorderSide(width: 4.0)));
+      });
+
+      test('main constructor with MixProp values', () {
         final dto = BorderDirectionalDto(
-          top: BorderSideDto(width: 1.0),
-          bottom: BorderSideDto(width: 2.0),
-          start: BorderSideDto(width: 3.0),
-          end: BorderSideDto(width: 4.0),
+          top: MixProp(BorderSideDto.only(width: 1.0)),
+          bottom: MixProp(BorderSideDto.only(width: 2.0)),
+          start: MixProp(BorderSideDto.only(width: 3.0)),
+          end: MixProp(BorderSideDto.only(width: 4.0)),
         );
 
         expect(dto.top, resolvesTo(const BorderSide(width: 1.0)));
@@ -451,7 +507,7 @@ void main() {
       });
 
       test('all constructor creates uniform BorderDirectionalDto', () {
-        final side = BorderSideDto(color: Colors.red, width: 2.0);
+        final side = BorderSideDto.only(color: Colors.red, width: 2.0);
         final dto = BorderDirectionalDto.all(side);
 
         const expectedSide = BorderSide(color: Colors.red, width: 2.0);
@@ -463,8 +519,8 @@ void main() {
       });
 
       test('symmetric constructor', () {
-        final vertical = BorderSideDto(color: Colors.red);
-        final horizontal = BorderSideDto(color: Colors.blue);
+        final vertical = BorderSideDto.only(color: Colors.red);
+        final horizontal = BorderSideDto.only(color: Colors.blue);
 
         final dto = BorderDirectionalDto.symmetric(
           vertical: vertical,
@@ -489,10 +545,22 @@ void main() {
 
         final dto = BorderDirectionalDto.value(border);
 
-        expect(dto.top, resolvesTo(const BorderSide(color: Colors.red, width: 1.0)));
-        expect(dto.bottom, resolvesTo(const BorderSide(color: Colors.blue, width: 2.0)));
-        expect(dto.start, resolvesTo(const BorderSide(color: Colors.green, width: 3.0)));
-        expect(dto.end, resolvesTo(const BorderSide(color: Colors.yellow, width: 4.0)));
+        expect(
+          dto.top,
+          resolvesTo(const BorderSide(color: Colors.red, width: 1.0)),
+        );
+        expect(
+          dto.bottom,
+          resolvesTo(const BorderSide(color: Colors.blue, width: 2.0)),
+        );
+        expect(
+          dto.start,
+          resolvesTo(const BorderSide(color: Colors.green, width: 3.0)),
+        );
+        expect(
+          dto.end,
+          resolvesTo(const BorderSide(color: Colors.yellow, width: 4.0)),
+        );
       });
 
       test('none constant', () {
@@ -516,7 +584,10 @@ void main() {
         final dto = BorderDirectionalDto.maybeValue(border);
 
         expect(dto, isNotNull);
-        expect(dto?.top, resolvesTo(const BorderSide(color: Colors.red, width: 2.0)));
+        expect(
+          dto?.top,
+          resolvesTo(const BorderSide(color: Colors.red, width: 2.0)),
+        );
       });
 
       test('maybeValue returns null for null', () {
@@ -528,11 +599,11 @@ void main() {
     // Resolution Tests
     group('Resolution Tests', () {
       test('resolves to BorderDirectional', () {
-        final dto = BorderDirectionalDto(
-          top: BorderSideDto(width: 5.0),
-          bottom: BorderSideDto(width: 10.0),
-          start: BorderSideDto(width: 15.0),
-          end: BorderSideDto(width: 20.0),
+        final dto = BorderDirectionalDto.only(
+          top: BorderSideDto.only(width: 5.0),
+          bottom: BorderSideDto.only(width: 10.0),
+          start: BorderSideDto.only(width: 15.0),
+          end: BorderSideDto.only(width: 20.0),
         );
 
         expect(
@@ -552,19 +623,22 @@ void main() {
     // Merge Tests
     group('Merge Tests', () {
       test('merge with another BorderDirectionalDto', () {
-        final dto1 = BorderDirectionalDto(
-          top: BorderSideDto(color: Colors.red),
-          start: BorderSideDto(width: 1.0),
+        final dto1 = BorderDirectionalDto.only(
+          top: BorderSideDto.only(color: Colors.red),
+          start: BorderSideDto.only(width: 1.0),
         );
 
-        final dto2 = BorderDirectionalDto(
-          top: BorderSideDto(width: 2.0),
-          end: BorderSideDto(color: Colors.blue),
+        final dto2 = BorderDirectionalDto.only(
+          top: BorderSideDto.only(width: 2.0),
+          end: BorderSideDto.only(color: Colors.blue),
         );
 
         final merged = dto1.merge(dto2);
 
-        expect(merged.top, resolvesTo(const BorderSide(color: Colors.red, width: 2.0)));
+        expect(
+          merged.top,
+          resolvesTo(const BorderSide(color: Colors.red, width: 2.0)),
+        );
         expect(merged.start, resolvesTo(const BorderSide(width: 1.0)));
         expect(merged.end, resolvesTo(const BorderSide(color: Colors.blue)));
       });
@@ -578,7 +652,7 @@ void main() {
       });
 
       test('isUniform with all sides equal', () {
-        final side = BorderSideDto(width: 2.0);
+        final side = BorderSideDto.only(width: 2.0);
         final dto = BorderDirectionalDto.all(side);
         expect(dto.isUniform, isTrue);
       });
@@ -589,47 +663,62 @@ void main() {
   group('BoxBorderDto cross-type tests', () {
     test('tryToMerge with BorderDto and BorderDirectionalDto', () {
       final borderDto = BorderDto.all(
-        BorderSideDto(color: Colors.yellow, width: 3.0),
+        BorderSideDto.only(color: Colors.yellow, width: 3.0),
       );
 
-      final borderDirectionalDto = BorderDirectionalDto(
-        top: BorderSideDto(color: Colors.green),
-        bottom: BorderSideDto(width: 4.0),
-        start: BorderSideDto(color: Colors.red, width: 1.0),
-        end: BorderSideDto(color: Colors.blue, width: 2.0),
+      final borderDirectionalDto = BorderDirectionalDto.only(
+        top: BorderSideDto.only(color: Colors.green),
+        bottom: BorderSideDto.only(width: 4.0),
+        start: BorderSideDto.only(color: Colors.red, width: 1.0),
+        end: BorderSideDto.only(color: Colors.blue, width: 2.0),
       );
 
       final merged =
           BoxBorderDto.tryToMerge(borderDto, borderDirectionalDto)
               as BorderDirectionalDto?;
 
-      expect(merged?.top, resolvesTo(const BorderSide(color: Colors.green, width: 3.0)));
-      expect(merged?.bottom, resolvesTo(const BorderSide(color: Colors.yellow, width: 4.0)));
-      expect(merged?.start, resolvesTo(const BorderSide(color: Colors.red, width: 1.0)));
-      expect(merged?.end, resolvesTo(const BorderSide(color: Colors.blue, width: 2.0)));
+      expect(
+        merged?.top,
+        resolvesTo(const BorderSide(color: Colors.green, width: 3.0)),
+      );
+      expect(
+        merged?.bottom,
+        resolvesTo(const BorderSide(color: Colors.yellow, width: 4.0)),
+      );
+      expect(
+        merged?.start,
+        resolvesTo(const BorderSide(color: Colors.red, width: 1.0)),
+      );
+      expect(
+        merged?.end,
+        resolvesTo(const BorderSide(color: Colors.blue, width: 2.0)),
+      );
     });
 
     test('tryToMerge with BorderDirectionalDto and BorderDto', () {
-      final borderDirectionalDto = BorderDirectionalDto(
-        top: BorderSideDto(color: Colors.green),
-        start: BorderSideDto(width: 1.0),
+      final borderDirectionalDto = BorderDirectionalDto.only(
+        top: BorderSideDto.only(color: Colors.green),
+        start: BorderSideDto.only(width: 1.0),
       );
 
-      final borderDto = BorderDto(
-        top: BorderSideDto(width: 3.0),
-        left: BorderSideDto(color: Colors.red),
+      final borderDto = BorderDto.only(
+        top: BorderSideDto.only(width: 3.0),
+        left: BorderSideDto.only(color: Colors.red),
       );
 
       final merged =
           BoxBorderDto.tryToMerge(borderDirectionalDto, borderDto)
               as BorderDto?;
 
-      expect(merged?.top, resolvesTo(const BorderSide(color: Colors.green, width: 3.0)));
+      expect(
+        merged?.top,
+        resolvesTo(const BorderSide(color: Colors.green, width: 3.0)),
+      );
       expect(merged?.left, resolvesTo(const BorderSide(color: Colors.red)));
     });
 
     test('tryToMerge with null values', () {
-      final dto = BorderDto.all(BorderSideDto(width: 1.0));
+      final dto = BorderDto.all(BorderSideDto.only(width: 1.0));
 
       expect(BoxBorderDto.tryToMerge(dto, null), same(dto));
       expect(BoxBorderDto.tryToMerge(null, dto), same(dto));
@@ -641,7 +730,10 @@ void main() {
       final dto = BoxBorderDto.value(border);
 
       expect(dto, isA<BorderDto>());
-      expect((dto as BorderDto).top, resolvesTo(const BorderSide(color: Colors.red)));
+      expect(
+        (dto as BorderDto).top,
+        resolvesTo(const BorderSide(color: Colors.red)),
+      );
     });
 
     test('value factory with BorderDirectional', () {

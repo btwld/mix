@@ -6,6 +6,8 @@ import 'package:flutter/widgets.dart';
 import '../core/attribute.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
+import '../core/prop.dart';
+import '../theme/tokens/mix_token.dart';
 import '../core/utility.dart';
 
 final class AspectRatioModifierSpec
@@ -77,7 +79,7 @@ final class AspectRatioModifierSpec
 class AspectRatioModifierSpecAttribute
     extends ModifierSpecAttribute<AspectRatioModifierSpec>
     with Diagnosticable {
-  final double? aspectRatio;
+  final Prop<double>? aspectRatio;
 
   const AspectRatioModifierSpecAttribute({this.aspectRatio});
 
@@ -91,7 +93,7 @@ class AspectRatioModifierSpecAttribute
   /// ```
   @override
   AspectRatioModifierSpec resolve(BuildContext context) {
-    return AspectRatioModifierSpec(aspectRatio);
+    return AspectRatioModifierSpec(aspectRatio?.resolve(context));
   }
 
   /// Merges the properties of this [AspectRatioModifierSpecAttribute] with the properties of [other].
@@ -109,7 +111,7 @@ class AspectRatioModifierSpecAttribute
     if (other == null) return this;
 
     return AspectRatioModifierSpecAttribute(
-      aspectRatio: other.aspectRatio ?? aspectRatio,
+      aspectRatio: aspectRatio?.merge(other.aspectRatio) ?? other.aspectRatio,
     );
   }
 
@@ -130,10 +132,15 @@ class AspectRatioModifierSpecAttribute
 }
 
 
-final class AspectRatioModifierSpecUtility<T extends Attribute>
+final class AspectRatioModifierSpecUtility<T extends SpecUtility<Object?>>
     extends MixUtility<T, AspectRatioModifierSpecAttribute> {
   const AspectRatioModifierSpecUtility(super.builder);
+  
   T call(double value) {
-    return builder(AspectRatioModifierSpecAttribute(aspectRatio: value));
+    return builder(AspectRatioModifierSpecAttribute(aspectRatio: Prop(value)));
+  }
+  
+  T token(MixToken<double> token) {
+    return builder(AspectRatioModifierSpecAttribute(aspectRatio: Prop.token(token)));
   }
 }

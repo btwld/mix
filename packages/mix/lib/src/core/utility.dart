@@ -11,8 +11,6 @@ abstract class MixUtility<U extends SpecUtility<Object?>, Value> {
   final U Function(Value) builder;
 
   const MixUtility(this.builder);
-
-  static T selfBuilder<T>(T value) => value;
 }
 
 abstract interface class PropBaseUtility<
@@ -61,18 +59,18 @@ abstract class PropUtility<U extends SpecUtility<Object?>, Value>
 @immutable
 abstract class MixPropUtility<U extends SpecUtility<Object?>, Value>
     extends PropBaseUtility<U, Value> {
-  final Mixable<Value> Function(Value) valueToDto;
+  final Mixable<Value> Function(Value) valueToMix;
   @protected
   final U Function(MixProp<Value>) builder;
 
-  const MixPropUtility(this.builder, {required this.valueToDto});
+  const MixPropUtility(this.builder, {required this.valueToMix});
 
   U call(covariant Mixable<Value> value);
 
-  U as(Value value) => call(valueToDto(value));
+  U as(Value value) => call(valueToMix(value));
 
   @override
-  U token(MixToken<Value> token) => builder(MixProp.token(token, valueToDto));
+  U token(MixToken<Value> token) => builder(MixProp.token(token, valueToMix));
 
   @override
   U directive(MixDirective<Value> directive) =>

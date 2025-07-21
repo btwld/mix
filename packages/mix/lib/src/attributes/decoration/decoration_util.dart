@@ -70,7 +70,7 @@ final class BoxDecorationUtility<T extends SpecUtility<Object?>>
   );
 
   BoxDecorationUtility(super.builder)
-    : super(valueToDto: BoxDecorationDto.value);
+    : super(valueToMix: BoxDecorationDto.value);
 
   @override
   T call(BoxDecorationDto value) => builder(MixProp(value));
@@ -101,7 +101,7 @@ final class ShapeDecorationUtility<T extends SpecUtility<Object?>>
   late final shadows = BoxShadowMixPropListUtility<T>((v) => only(shadows: v));
 
   ShapeDecorationUtility(super.builder)
-    : super(valueToDto: ShapeDecorationDto.value);
+    : super(valueToMix: ShapeDecorationDto.value);
 
   T only({
     MixProp<ShapeBorder>? shape,

@@ -48,7 +48,7 @@ final class TextStyleUtility<T extends SpecUtility<Object?>>
     (v) => call(TextStyleDto(fontFamily: v)),
   );
 
-  TextStyleUtility(super.builder) : super(valueToDto: TextStyleDto.value);
+  TextStyleUtility(super.builder) : super(valueToMix: TextStyleDto.value);
 
   T height(double v) => call(TextStyleDto.only(height: v));
 

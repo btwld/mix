@@ -53,7 +53,7 @@ final class DecorationImageUtility<T extends SpecUtility<Object?>>
   );
 
   DecorationImageUtility(super.builder)
-    : super(valueToDto: DecorationImageDto.value);
+    : super(valueToMix: DecorationImageDto.value);
 
   @override
   T call(DecorationImageDto value) => builder(MixProp(value));

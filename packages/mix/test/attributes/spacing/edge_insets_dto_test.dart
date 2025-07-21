@@ -41,25 +41,30 @@ void main() {
     );
 
     test('tryToMerge returns first dto if second is null', () {
-      final dto1 = EdgeInsetsDto(top: 10, bottom: 20, left: 30, right: 40);
+      final dto1 = EdgeInsetsDto.only(
+        top: 10.0,
+        bottom: 20.0,
+        left: 30.0,
+        right: 40.0,
+      );
       final merged = EdgeInsetsGeometryDto.tryToMerge(dto1, null);
       expect(merged, equals(dto1));
     });
 
     test('tryToMerge returns second dto if first is null', () {
-      final dto2 = EdgeInsetsDirectionalDto(
-        top: 10,
-        bottom: 20,
-        start: 30,
-        end: 40,
+      final dto2 = EdgeInsetsDirectionalDto.only(
+        top: 10.0,
+        bottom: 20.0,
+        start: 30.0,
+        end: 40.0,
       );
       final merged = EdgeInsetsGeometryDto.tryToMerge(null, dto2);
       expect(merged, equals(dto2));
     });
 
     test('tryToMerge merges dtos of the same type', () {
-      final dto1 = EdgeInsetsDto(top: 10, bottom: 20);
-      final dto2 = EdgeInsetsDto(left: 30, right: 40);
+      final dto1 = EdgeInsetsDto.only(top: 10.0, bottom: 20.0);
+      final dto2 = EdgeInsetsDto.only(left: 30.0, right: 40.0);
       final merged = EdgeInsetsGeometryDto.tryToMerge(dto1, dto2);
       expect(merged, isA<EdgeInsetsDto>());
       expect(merged!.top, resolvesTo(10.0));
@@ -69,8 +74,8 @@ void main() {
     });
 
     test('tryToMerge merges dtos of different types', () {
-      final dto1 = EdgeInsetsDto(top: 10, bottom: 20);
-      final dto2 = EdgeInsetsDirectionalDto(start: 30, end: 40);
+      final dto1 = EdgeInsetsDto.only(top: 10.0, bottom: 20.0);
+      final dto2 = EdgeInsetsDirectionalDto.only(start: 30.0, end: 40.0);
       final merged = EdgeInsetsGeometryDto.tryToMerge(dto1, dto2);
       expect(merged, isA<EdgeInsetsDirectionalDto>());
       expect(merged!.top, resolvesTo(10.0));
@@ -98,16 +103,16 @@ void main() {
     });
 
     test('resolve returns EdgeInsets with token values', () {
-      final dto = EdgeInsetsDto(top: 10, bottom: 20, left: 30, right: 40);
+      final dto = EdgeInsetsDto.only(
+        top: 10.0,
+        bottom: 20.0,
+        left: 30.0,
+        right: 40.0,
+      );
       expect(
         dto,
         resolvesTo(
-          const EdgeInsets.only(
-            top: 10,
-            bottom: 20,
-            left: 30,
-            right: 40,
-          ),
+          const EdgeInsets.only(top: 10, bottom: 20, left: 30, right: 40),
         ),
       );
     });
@@ -131,11 +136,11 @@ void main() {
     });
 
     test('resolve returns EdgeInsetsDirectional with token values', () {
-      final dto = EdgeInsetsDirectionalDto(
-        top: 10,
-        bottom: 20,
-        start: 30,
-        end: 40,
+      final dto = EdgeInsetsDirectionalDto.only(
+        top: 10.0,
+        bottom: 20.0,
+        start: 30.0,
+        end: 40.0,
       );
       expect(
         dto,

@@ -11,19 +11,19 @@ void main() {
     // Constructor Tests
     group('Constructor Tests', () {
       test('main constructor creates BoxDecorationDto with all properties', () {
-        final borderDto = BorderDto.all(BorderSideDto(width: 2.0));
+        final borderDto = BorderDto.all(BorderSideDto.only(width: 2.0));
         final borderRadiusDto = BorderRadiusDto.value(BorderRadius.circular(8));
-        final imageDto = DecorationImageDto(fit: BoxFit.cover);
-        final gradientDto = LinearGradientDto(
+        final imageDto = DecorationImageDto.only(fit: BoxFit.cover);
+        final gradientDto = LinearGradientDto.only(
           colors: const [Colors.red, Colors.blue],
         );
-        final shadowDto = BoxShadowDto(
+        final shadowDto = BoxShadowDto.only(
           color: Colors.black,
           offset: const Offset(2, 2),
           blurRadius: 4.0,
         );
 
-        final dto = BoxDecorationDto(
+        final dto = BoxDecorationDto.only(
           border: borderDto,
           borderRadius: borderRadiusDto,
           shape: BoxShape.rectangle,
@@ -61,7 +61,7 @@ void main() {
       });
 
       test('props constructor with Prop values', () {
-        final dto = BoxDecorationDto.props(
+        final dto = BoxDecorationDto(
           color: Prop(Colors.green),
           shape: Prop(BoxShape.circle),
           backgroundBlendMode: Prop(BlendMode.multiply),
@@ -95,9 +95,11 @@ void main() {
     // Resolution Tests
     group('Resolution Tests', () {
       test('resolves to BoxDecoration with all properties', () {
-        final dto = BoxDecorationDto(
+        final dto = BoxDecorationDto.only(
           color: Colors.purple,
-          gradient: LinearGradientDto(colors: const [Colors.red, Colors.blue]),
+          gradient: LinearGradientDto.only(
+            colors: const [Colors.red, Colors.blue],
+          ),
           borderRadius: BorderRadiusDto.value(BorderRadius.circular(12)),
           shape: BoxShape.rectangle,
         );
@@ -112,7 +114,7 @@ void main() {
       });
 
       test('resolves with default values for null properties', () {
-        final dto = BoxDecorationDto.props(
+        final dto = BoxDecorationDto(
           color: null,
           gradient: null,
           image: null,
@@ -126,14 +128,14 @@ void main() {
     // Merge Tests
     group('Merge Tests', () {
       test('merge with another BoxDecorationDto', () {
-        final dto1 = BoxDecorationDto(
+        final dto1 = BoxDecorationDto.only(
           color: Colors.red,
           shape: BoxShape.rectangle,
         );
 
-        final dto2 = BoxDecorationDto(
+        final dto2 = BoxDecorationDto.only(
           color: Colors.blue,
-          gradient: LinearGradientDto(
+          gradient: LinearGradientDto.only(
             colors: const [Colors.yellow, Colors.green],
           ),
         );
@@ -145,7 +147,7 @@ void main() {
       });
 
       test('merge with null returns original', () {
-        final dto = BoxDecorationDto(
+        final dto = BoxDecorationDto.only(
           color: Colors.green,
           shape: BoxShape.rectangle,
         );
@@ -158,12 +160,12 @@ void main() {
     // Equality and HashCode Tests
     group('Equality and HashCode Tests', () {
       test('equal BoxDecorationDtos', () {
-        final dto1 = BoxDecorationDto(
+        final dto1 = BoxDecorationDto.only(
           color: Colors.red,
           shape: BoxShape.rectangle,
         );
 
-        final dto2 = BoxDecorationDto(
+        final dto2 = BoxDecorationDto.only(
           color: Colors.red,
           shape: BoxShape.rectangle,
         );
@@ -173,8 +175,8 @@ void main() {
       });
 
       test('not equal BoxDecorationDtos', () {
-        final dto1 = BoxDecorationDto(color: Colors.red);
-        final dto2 = BoxDecorationDto(color: Colors.blue);
+        final dto1 = BoxDecorationDto.only(color: Colors.red);
+        final dto2 = BoxDecorationDto.only(color: Colors.blue);
 
         expect(dto1, isNot(equals(dto2)));
       });
@@ -188,18 +190,20 @@ void main() {
       test(
         'main constructor creates ShapeDecorationDto with all properties',
         () {
-          final shapeDto = CircleBorderDto(side: BorderSideDto(width: 2.0));
-          final imageDto = DecorationImageDto(fit: BoxFit.contain);
-          final gradientDto = LinearGradientDto(
+          final shapeDto = CircleBorderDto.only(
+            side: BorderSideDto.only(width: 2.0),
+          );
+          final imageDto = DecorationImageDto.only(fit: BoxFit.contain);
+          final gradientDto = LinearGradientDto.only(
             colors: const [Colors.orange, Colors.yellow],
           );
-          final shadowDto = BoxShadowDto(
+          final shadowDto = BoxShadowDto.only(
             color: Colors.black,
             offset: const Offset(3, 3),
             blurRadius: 6.0,
           );
 
-          final dto = ShapeDecorationDto(
+          final dto = ShapeDecorationDto.only(
             shape: shapeDto,
             color: Colors.green,
             image: imageDto,
@@ -234,7 +238,7 @@ void main() {
       });
 
       test('props constructor with Prop values', () {
-        final dto = ShapeDecorationDto.props(
+        final dto = ShapeDecorationDto(
           shape: MixProp(CircleBorderDto()),
           color: Prop(Colors.cyan),
         );
@@ -269,11 +273,11 @@ void main() {
     // Resolution Tests
     group('Resolution Tests', () {
       test('resolves to ShapeDecoration with all properties', () {
-        final dto = ShapeDecorationDto(
-          shape: RoundedRectangleBorderDto(
+        final dto = ShapeDecorationDto.only(
+          shape: RoundedRectangleBorderDto.only(
             borderRadius: BorderRadiusDto.value(BorderRadius.circular(8)),
           ),
-          gradient: RadialGradientDto(
+          gradient: RadialGradientDto.only(
             colors: const [Colors.red, Colors.orange],
           ),
         );
@@ -287,7 +291,7 @@ void main() {
       });
 
       test('resolves with default values for null properties', () {
-        final dto = ShapeDecorationDto.props(color: null);
+        final dto = ShapeDecorationDto(color: null);
 
         final context = MockBuildContext();
         final resolved = dto.resolve(context);
@@ -300,16 +304,16 @@ void main() {
     // Merge Tests
     group('Merge Tests', () {
       test('merge with partial properties', () {
-        final dto1 = ShapeDecorationDto(
+        final dto1 = ShapeDecorationDto.only(
           shape: CircleBorderDto(),
           color: Colors.red,
         );
 
-        final dto2 = ShapeDecorationDto(
-          gradient: LinearGradientDto(
+        final dto2 = ShapeDecorationDto.only(
+          gradient: LinearGradientDto.only(
             colors: const [Colors.blue, Colors.green],
           ),
-          image: DecorationImageDto(fit: BoxFit.fill),
+          image: DecorationImageDto.only(fit: BoxFit.fill),
         );
 
         final merged = dto1.merge(dto2);
@@ -319,7 +323,7 @@ void main() {
       });
 
       test('merge with null returns original', () {
-        final dto = ShapeDecorationDto(
+        final dto = ShapeDecorationDto.only(
           shape: CircleBorderDto(),
           color: Colors.green,
         );
@@ -332,12 +336,12 @@ void main() {
     // Equality and HashCode Tests
     group('Equality and HashCode Tests', () {
       test('equal ShapeDecorationDtos', () {
-        final dto1 = ShapeDecorationDto(
+        final dto1 = ShapeDecorationDto.only(
           shape: CircleBorderDto(),
           color: Colors.red,
         );
 
-        final dto2 = ShapeDecorationDto(
+        final dto2 = ShapeDecorationDto.only(
           shape: CircleBorderDto(),
           color: Colors.red,
         );
@@ -347,11 +351,11 @@ void main() {
       });
 
       test('not equal ShapeDecorationDtos', () {
-        final dto1 = ShapeDecorationDto(
+        final dto1 = ShapeDecorationDto.only(
           shape: CircleBorderDto(),
           color: Colors.red,
         );
-        final dto2 = ShapeDecorationDto(
+        final dto2 = ShapeDecorationDto.only(
           shape: CircleBorderDto(),
           color: Colors.blue,
         );
@@ -402,12 +406,12 @@ void main() {
     // Basic merge tests
     group('merge tests', () {
       test('merge BoxDecorationDto with BoxDecorationDto', () {
-        final dto1 = BoxDecorationDto(
+        final dto1 = BoxDecorationDto.only(
           color: Colors.red,
           shape: BoxShape.rectangle,
         );
-        final dto2 = BoxDecorationDto(
-          gradient: LinearGradientDto(
+        final dto2 = BoxDecorationDto.only(
+          gradient: LinearGradientDto.only(
             colors: const [Colors.blue, Colors.green],
           ),
         );
@@ -419,7 +423,7 @@ void main() {
       });
 
       test('merge with null values', () {
-        final dto = BoxDecorationDto(color: Colors.red);
+        final dto = BoxDecorationDto.only(color: Colors.red);
 
         expect(dto.merge(null), same(dto));
       });

@@ -105,7 +105,9 @@ class PaddingModifierSpecAttribute
     if (other == null) return this;
 
     return PaddingModifierSpecAttribute(
-      padding: EdgeInsetsGeometryDto.tryToMerge(padding, other.padding),
+      padding:
+          padding?.merge(other.padding as MixProp<EdgeInsetsGeometry>?) ??
+          other.padding,
     );
   }
 
@@ -127,27 +129,17 @@ class PaddingModifierSpecAttribute
 ///
 /// This class provides methods to set individual properties of a [PaddingModifierSpec].
 /// Use the methods of this class to configure specific properties of a [PaddingModifierSpec].
-class PaddingModifierSpecUtility<T extends Attribute>
-    extends SpecUtility<T, PaddingModifierSpecAttribute> {
+class PaddingModifierSpecUtility<T extends SpecUtility<Object?>>
+    extends MixUtility<T, PaddingModifierSpecAttribute> {
   /// Utility for defining [PaddingModifierSpecAttribute.padding]
-  late final padding = EdgeInsetsGeometryUtility((v) => only(padding: v));
+  late final padding = EdgeInsetsGeometryUtility(
+    (v) => builder(PaddingModifierSpecAttribute(padding: v)),
+  );
 
   PaddingModifierSpecUtility(super.builder);
 
-  @Deprecated(
-    'Use "this" instead of "chain" for method chaining. '
-    'The chain getter will be removed in a future version.',
-  )
-  PaddingModifierSpecUtility<T> get chain =>
-      PaddingModifierSpecUtility(attributeBuilder);
-
-  static PaddingModifierSpecUtility<PaddingModifierSpecAttribute> get self =>
-      PaddingModifierSpecUtility((v) => v);
-
   /// Returns a new [PaddingModifierSpecAttribute] with the specified properties.
-  @override
-  T only({EdgeInsetsGeometryDto? padding}) {
+  T call({EdgeInsetsGeometryDto? padding}) {
     return builder(PaddingModifierSpecAttribute(padding: padding));
   }
 }
-
