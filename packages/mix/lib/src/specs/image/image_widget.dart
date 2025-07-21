@@ -1,12 +1,13 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_widget.dart';
+import 'image_attribute.dart';
 import 'image_spec.dart';
 
 class StyledImage extends StyleWidget<ImageSpec> {
   const StyledImage({
     super.key,
-    super.style = const ImageStyle(),
+    super.style = const ImageSpecAttribute(),
 
     this.frameBuilder,
     this.loadingBuilder,

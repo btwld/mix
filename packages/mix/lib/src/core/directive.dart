@@ -13,10 +13,10 @@ abstract class MixDirective<T> {
 }
 
 /// Directive that applies opacity to a color
-class OpacityDirective extends MixDirective<Color> {
+class OpacityColorDirective extends MixDirective<Color> {
   final double opacity;
 
-  const OpacityDirective(this.opacity);
+  const OpacityColorDirective(this.opacity);
 
   @override
   Color apply(Color color) => color.withValues(alpha: opacity);
@@ -24,7 +24,7 @@ class OpacityDirective extends MixDirective<Color> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is OpacityDirective && opacity == other.opacity;
+      other is OpacityColorDirective && opacity == other.opacity;
 
   @override
   String get key => 'color_opacity';
@@ -34,17 +34,18 @@ class OpacityDirective extends MixDirective<Color> {
 }
 
 /// Directive that applies alpha to a color
-class AlphaDirective extends MixDirective<Color> {
+class AlphaColorDirective extends MixDirective<Color> {
   final int alpha;
 
-  const AlphaDirective(this.alpha);
+  const AlphaColorDirective(this.alpha);
 
   @override
   Color apply(Color color) => color.withAlpha(alpha);
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is AlphaDirective && alpha == other.alpha;
+      identical(this, other) ||
+      other is AlphaColorDirective && alpha == other.alpha;
 
   @override
   String get key => 'color_alpha';
@@ -54,10 +55,10 @@ class AlphaDirective extends MixDirective<Color> {
 }
 
 /// Directive that darkens a color
-class DarkenDirective extends MixDirective<Color> {
+class DarkenColorDirective extends MixDirective<Color> {
   final int amount;
 
-  const DarkenDirective(this.amount);
+  const DarkenColorDirective(this.amount);
 
   @override
   Color apply(Color color) => color.darken(amount);
@@ -65,7 +66,7 @@ class DarkenDirective extends MixDirective<Color> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is DarkenDirective && amount == other.amount;
+      other is DarkenColorDirective && amount == other.amount;
 
   @override
   String get key => 'color_darken';
@@ -75,10 +76,10 @@ class DarkenDirective extends MixDirective<Color> {
 }
 
 /// Directive that lightens a color
-class LightenDirective extends MixDirective<Color> {
+class LightenColorDirective extends MixDirective<Color> {
   final int amount;
 
-  const LightenDirective(this.amount);
+  const LightenColorDirective(this.amount);
 
   @override
   Color apply(Color color) => color.lighten(amount);
@@ -86,7 +87,7 @@ class LightenDirective extends MixDirective<Color> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is LightenDirective && amount == other.amount;
+      other is LightenColorDirective && amount == other.amount;
 
   @override
   String get key => 'color_lighten';
@@ -96,10 +97,10 @@ class LightenDirective extends MixDirective<Color> {
 }
 
 /// Directive that saturates a color
-class SaturateDirective extends MixDirective<Color> {
+class SaturateColorDirective extends MixDirective<Color> {
   final int amount;
 
-  const SaturateDirective(this.amount);
+  const SaturateColorDirective(this.amount);
 
   @override
   Color apply(Color color) => color.saturate(amount);
@@ -107,7 +108,7 @@ class SaturateDirective extends MixDirective<Color> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SaturateDirective && amount == other.amount;
+      other is SaturateColorDirective && amount == other.amount;
 
   @override
   String get key => 'color_saturate';
@@ -117,10 +118,10 @@ class SaturateDirective extends MixDirective<Color> {
 }
 
 /// Directive that desaturates a color
-class DesaturateDirective extends MixDirective<Color> {
+class DesaturateColorDirective extends MixDirective<Color> {
   final int amount;
 
-  const DesaturateDirective(this.amount);
+  const DesaturateColorDirective(this.amount);
 
   @override
   Color apply(Color color) => color.desaturate(amount);
@@ -128,7 +129,7 @@ class DesaturateDirective extends MixDirective<Color> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is DesaturateDirective && amount == other.amount;
+      other is DesaturateColorDirective && amount == other.amount;
 
   @override
   String get key => 'color_desaturate';
@@ -138,10 +139,10 @@ class DesaturateDirective extends MixDirective<Color> {
 }
 
 /// Directive that applies tint to a color
-class TintDirective extends MixDirective<Color> {
+class TintColorDirective extends MixDirective<Color> {
   final int amount;
 
-  const TintDirective(this.amount);
+  const TintColorDirective(this.amount);
 
   @override
   Color apply(Color color) => color.tint(amount);
@@ -149,7 +150,7 @@ class TintDirective extends MixDirective<Color> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TintDirective && amount == other.amount;
+      other is TintColorDirective && amount == other.amount;
 
   @override
   String get key => 'color_tint';
@@ -159,10 +160,10 @@ class TintDirective extends MixDirective<Color> {
 }
 
 /// Directive that applies shade to a color
-class ShadeDirective extends MixDirective<Color> {
+class ShadeColorDirective extends MixDirective<Color> {
   final int amount;
 
-  const ShadeDirective(this.amount);
+  const ShadeColorDirective(this.amount);
 
   @override
   Color apply(Color color) => color.shade(amount);
@@ -170,7 +171,7 @@ class ShadeDirective extends MixDirective<Color> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ShadeDirective && amount == other.amount;
+      other is ShadeColorDirective && amount == other.amount;
 
   @override
   String get key => 'color_shade';
@@ -180,10 +181,10 @@ class ShadeDirective extends MixDirective<Color> {
 }
 
 /// Directive that brightens a color
-class BrightenDirective extends MixDirective<Color> {
+class BrightenColorDirective extends MixDirective<Color> {
   final int amount;
 
-  const BrightenDirective(this.amount);
+  const BrightenColorDirective(this.amount);
 
   @override
   Color apply(Color color) => color.brighten(amount);
@@ -191,7 +192,7 @@ class BrightenDirective extends MixDirective<Color> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is BrightenDirective && amount == other.amount;
+      other is BrightenColorDirective && amount == other.amount;
 
   @override
   String get key => 'color_brighten';

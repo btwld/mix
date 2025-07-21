@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 
 import '../../core/directive.dart';
 import '../../core/helpers.dart';
-import '../../core/resolved_style_provider.dart';
 import '../../core/spec.dart';
 
 final class TextSpec extends Spec<TextSpec> with Diagnosticable {
@@ -36,33 +35,6 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     this.directives,
   });
 
-  static TextSpec from(BuildContext context) {
-    return maybeOf(context) ?? const TextSpec();
-  }
-
-  /// Retrieves the [TextSpec] from the nearest [ResolvedStyleProvider] ancestor.
-  ///
-  /// Returns null if no ancestor [ResolvedStyleProvider] is found.
-  static TextSpec? maybeOf(BuildContext context) {
-    return ResolvedStyleProvider.of<TextSpec>(context)?.spec;
-  }
-
-  /// {@template text_spec_of}
-  /// Retrieves the [TextSpec] from the nearest [ResolvedStyleProvider] ancestor in the widget tree.
-  ///
-  /// This method uses [ResolvedStyleProvider.of] for surgical rebuilds - only widgets
-  /// that call this method will rebuild when [TextSpec] changes, not when other specs change.
-  /// If no ancestor [ResolvedStyleProvider] is found, this method returns an empty [TextSpec].
-  ///
-  /// Example:
-  ///
-  /// ```dart
-  /// final textSpec = TextSpec.of(context);
-  /// ```
-  /// {@endtemplate}
-  static TextSpec of(BuildContext context) {
-    return maybeOf(context) ?? const TextSpec();
-  }
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties.add(

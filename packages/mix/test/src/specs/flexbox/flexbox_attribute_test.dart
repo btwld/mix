@@ -263,7 +263,7 @@ void main() {
     // equality
     test('equality', () {
       final flexBoxSpecAttribute = FlexBoxSpecAttribute(
-        box: BoxSpecAttribute(
+        box: BoxSpecAttribute.only(
           alignment: Alignment.center,
           padding: EdgeInsetsGeometryMix.only(
             top: 20,
@@ -284,7 +284,7 @@ void main() {
           width: 100,
           height: 100,
         ),
-        flex: FlexSpecAttribute(
+        flex: FlexSpecAttribute.only(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
@@ -318,12 +318,10 @@ void main() {
               clipBehavior: Clip.antiAlias,
               width: 100,
               height: 100,
-              modifiers: WidgetModifiersConfigDto(
-                modifiers: const [
-                  OpacityModifierAttribute(opacity: 0.5),
-                  SizedBoxModifierAttribute(height: 10, width: 10),
-                ],
-              ),
+              modifiers: const [
+                OpacityModifierAttribute(opacity: 0.5),
+                SizedBoxModifierAttribute(height: 10, width: 10),
+              ],
             ),
             flex: FlexSpecAttribute(
               mainAxisAlignment: MainAxisAlignment.center,

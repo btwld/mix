@@ -7,7 +7,7 @@ class StyledIcon extends StyleWidget<IconSpec> {
   const StyledIcon(
     this.icon, {
     this.semanticLabel,
-    super.style = const IconStyle(),
+    super.style = const IconSpecAttribute(),
     super.key,
 
     this.textDirection,

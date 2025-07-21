@@ -3,153 +3,195 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../helpers/custom_matchers.dart';
+import '../../helpers/testing_utils.dart';
 
 void main() {
   group('DecorationImageMix', () {
-    const imageProvider = AssetImage('assets/images/test.png');
-    final mix = DecorationImageMix.only(
-      image: imageProvider,
-      fit: BoxFit.cover,
-      alignment: Alignment.topLeft,
-      centerSlice: Rect.fromLTRB(10, 20, 30, 40),
-      repeat: ImageRepeat.repeat,
-      filterQuality: FilterQuality.high,
-      invertColors: true,
-      isAntiAlias: true,
-    );
+    group('Constructor', () {
+      test('only constructor creates instance with correct properties', () {
+        const imageProvider = AssetImage('assets/test.png');
+        const centerSlice = Rect.fromLTWH(10, 10, 20, 20);
 
-    test('maybeFrom', () {
-      const decorationImage = DecorationImage(
-        image: imageProvider,
-        fit: BoxFit.cover,
-        alignment: Alignment.topLeft,
-        centerSlice: Rect.fromLTRB(10, 20, 30, 40),
-        repeat: ImageRepeat.repeat,
-        filterQuality: FilterQuality.high,
-        invertColors: true,
-        isAntiAlias: true,
-      );
-      final result = DecorationImageMix.value(decorationImage);
-      expect(result, isNotNull);
-      expect(result.image, isA<Prop<ImageProvider>>());
-      expect(result.fit, equals(Prop(BoxFit.cover)));
-      expect(
-        result.alignment,
-        equals(Prop<AlignmentGeometry>(Alignment.topLeft)),
-      );
-      expect(result.centerSlice, equals(Prop(Rect.fromLTRB(10, 20, 30, 40))));
-      expect(result.repeat, equals(Prop(ImageRepeat.repeat)));
-      expect(result.filterQuality, equals(Prop(FilterQuality.high)));
-      expect(result.invertColors, equals(Prop(true)));
-      expect(result.isAntiAlias, equals(Prop(true)));
+        final decorationImageMix = DecorationImageMix.only(
+          image: imageProvider,
+          fit: BoxFit.cover,
+          alignment: Alignment.center,
+          centerSlice: centerSlice,
+          repeat: ImageRepeat.repeat,
+          filterQuality: FilterQuality.high,
+          invertColors: true,
+          isAntiAlias: false,
+        );
+
+        expect(decorationImageMix.image, isProp(imageProvider));
+        expect(decorationImageMix.fit, isProp(BoxFit.cover));
+        expect(decorationImageMix.alignment, isProp(Alignment.center));
+        expect(decorationImageMix.centerSlice, isProp(centerSlice));
+        expect(decorationImageMix.repeat, isProp(ImageRepeat.repeat));
+        expect(decorationImageMix.filterQuality, isProp(FilterQuality.high));
+        expect(decorationImageMix.invertColors, isProp(true));
+        expect(decorationImageMix.isAntiAlias, isProp(false));
+      });
+
+      test('value constructor extracts properties from DecorationImage', () {
+        const imageProvider = AssetImage('assets/test.png');
+        const decorationImage = DecorationImage(
+          image: imageProvider,
+          fit: BoxFit.contain,
+          alignment: Alignment.topLeft,
+          repeat: ImageRepeat.noRepeat,
+          filterQuality: FilterQuality.medium,
+        );
+
+        final decorationImageMix = DecorationImageMix.value(decorationImage);
+
+        expect(decorationImageMix.image, isProp(imageProvider));
+        expect(decorationImageMix.fit, isProp(BoxFit.contain));
+        expect(decorationImageMix.alignment, isProp(Alignment.topLeft));
+        expect(decorationImageMix.repeat, isProp(ImageRepeat.noRepeat));
+        expect(decorationImageMix.filterQuality, isProp(FilterQuality.medium));
+      });
+
+      test('maybeValue returns null for null input', () {
+        final result = DecorationImageMix.maybeValue(null);
+        expect(result, isNull);
+      });
+
+      test('maybeValue returns DecorationImageMix for non-null input', () {
+        const decorationImage = DecorationImage(
+          image: AssetImage('assets/test.png'),
+        );
+        final result = DecorationImageMix.maybeValue(decorationImage);
+
+        expect(result, isNotNull);
+        expect(result!.image, isProp(const AssetImage('assets/test.png')));
+      });
     });
 
-    test('merge', () {
-      final otherDto = DecorationImageMix.only(
-        image: imageProvider,
-        fit: BoxFit.fill,
-        alignment: Alignment.bottomRight,
-        centerSlice: const Rect.fromLTRB(50, 60, 70, 80),
-        repeat: ImageRepeat.repeatX,
-        filterQuality: FilterQuality.low,
-        invertColors: false,
-        isAntiAlias: false,
-      );
+    group('resolve', () {
+      test('resolves to DecorationImage with correct properties', () {
+        const imageProvider = AssetImage('assets/test.png');
+        final decorationImageMix = DecorationImageMix.only(
+          image: imageProvider,
+          fit: BoxFit.cover,
+          alignment: Alignment.center,
+          repeat: ImageRepeat.repeat,
+          filterQuality: FilterQuality.high,
+          invertColors: true,
+          isAntiAlias: false,
+        );
 
-      final mergedDto = mix.merge(otherDto);
+        final context = MockBuildContext();
+        final resolved = decorationImageMix.resolve(context);
 
-      expect(mergedDto.image, isA<Prop<ImageProvider>>());
-      expect(mergedDto.fit, resolvesTo(BoxFit.fill));
-      expect(mergedDto.alignment, resolvesTo(Alignment.bottomRight));
-      expect(
-        mergedDto.centerSlice,
-        resolvesTo(const Rect.fromLTRB(50, 60, 70, 80)),
-      );
-      expect(mergedDto.repeat, resolvesTo(ImageRepeat.repeatX));
-      expect(mergedDto.filterQuality, resolvesTo(FilterQuality.low));
-      expect(mergedDto.invertColors, resolvesTo(false));
-      expect(mergedDto.isAntiAlias, resolvesTo(false));
+        expect(resolved.image, imageProvider);
+        expect(resolved.fit, BoxFit.cover);
+        expect(resolved.alignment, Alignment.center);
+        expect(resolved.repeat, ImageRepeat.repeat);
+        expect(resolved.filterQuality, FilterQuality.high);
+        expect(resolved.invertColors, true);
+        expect(resolved.isAntiAlias, false);
+      });
+
+      test('uses default values for null properties', () {
+        const imageProvider = AssetImage('assets/test.png');
+        final decorationImageMix = DecorationImageMix.only(
+          image: imageProvider,
+          fit: BoxFit.cover,
+        );
+
+        final context = MockBuildContext();
+        final resolved = decorationImageMix.resolve(context);
+
+        expect(resolved.image, imageProvider);
+        expect(resolved.fit, BoxFit.cover);
+        expect(resolved.alignment, Alignment.center); // default
+        expect(resolved.repeat, ImageRepeat.noRepeat); // default
+        expect(resolved.filterQuality, FilterQuality.low); // default
+        expect(resolved.invertColors, false); // default
+        expect(resolved.isAntiAlias, false); // default
+      });
     });
 
-    test('resolve with default values', () {
-      final mix = DecorationImageMix.only(image: imageProvider);
+    group('merge', () {
+      test('returns this when other is null', () {
+        final decorationImageMix = DecorationImageMix.only(
+          image: const AssetImage('assets/test.png'),
+        );
+        final merged = decorationImageMix.merge(null);
 
-      const expectedImage = DecorationImage(
-        image: imageProvider,
-        alignment: Alignment.center,
-        repeat: ImageRepeat.noRepeat,
-        filterQuality: FilterQuality.low,
-        invertColors: false,
-        isAntiAlias: false,
-      );
+        expect(merged, same(decorationImageMix));
+      });
 
-      expect(mix, resolvesTo(expectedImage));
+      test('merges properties correctly', () {
+        const imageProvider1 = AssetImage('assets/test1.png');
+        const imageProvider2 = AssetImage('assets/test2.png');
+
+        final first = DecorationImageMix.only(
+          image: imageProvider1,
+          fit: BoxFit.cover,
+          alignment: Alignment.center,
+        );
+
+        final second = DecorationImageMix.only(
+          image: imageProvider2,
+          repeat: ImageRepeat.repeat,
+          filterQuality: FilterQuality.high,
+        );
+
+        final merged = first.merge(second);
+
+        expect(merged.image, isProp(imageProvider2)); // overridden
+        expect(merged.fit, isProp(BoxFit.cover)); // preserved
+        expect(merged.alignment, isProp(Alignment.center)); // preserved
+        expect(merged.repeat, isProp(ImageRepeat.repeat)); // new
+        expect(merged.filterQuality, isProp(FilterQuality.high)); // new
+      });
     });
 
-    test('resolve with custom values', () {
-      final mix = DecorationImageMix.only(
-        image: imageProvider,
-        fit: BoxFit.scaleDown,
-        alignment: Alignment.bottomCenter,
-        centerSlice: const Rect.fromLTRB(5, 10, 15, 20),
-        repeat: ImageRepeat.repeatY,
-        filterQuality: FilterQuality.medium,
-        invertColors: true,
-        isAntiAlias: true,
-      );
+    group('Equality', () {
+      test('returns true when all properties are the same', () {
+        const imageProvider = AssetImage('assets/test.png');
+        final decorationImageMix1 = DecorationImageMix.only(
+          image: imageProvider,
+          fit: BoxFit.cover,
+          alignment: Alignment.center,
+        );
 
-      const expectedImage = DecorationImage(
-        image: imageProvider,
-        fit: BoxFit.scaleDown,
-        alignment: Alignment.bottomCenter,
-        centerSlice: Rect.fromLTRB(5, 10, 15, 20),
-        repeat: ImageRepeat.repeatY,
-        filterQuality: FilterQuality.medium,
-        invertColors: true,
-        isAntiAlias: true,
-      );
+        final decorationImageMix2 = DecorationImageMix.only(
+          image: imageProvider,
+          fit: BoxFit.cover,
+          alignment: Alignment.center,
+        );
 
-      expect(mix, resolvesTo(expectedImage));
-    });
+        expect(decorationImageMix1, decorationImageMix2);
+        expect(decorationImageMix1.hashCode, decorationImageMix2.hashCode);
+      });
 
-    test('equality', () {
-      final mix1 = DecorationImageMix.only(
-        image: imageProvider,
-        fit: BoxFit.scaleDown,
-        alignment: Alignment.bottomCenter,
-        centerSlice: const Rect.fromLTRB(5, 10, 15, 20),
-        repeat: ImageRepeat.repeatY,
-        filterQuality: FilterQuality.medium,
-        invertColors: true,
-        isAntiAlias: true,
-      );
+      test('returns false when properties are different', () {
+        final decorationImageMix1 = DecorationImageMix.only(
+          image: const AssetImage('assets/test1.png'),
+        );
+        final decorationImageMix2 = DecorationImageMix.only(
+          image: const AssetImage('assets/test2.png'),
+        );
 
-      final mix2 = DecorationImageMix.only(
-        image: imageProvider,
-        fit: BoxFit.scaleDown,
-        alignment: Alignment.bottomCenter,
-        centerSlice: const Rect.fromLTRB(5, 10, 15, 20),
-        repeat: ImageRepeat.repeatY,
-        filterQuality: FilterQuality.medium,
-        invertColors: true,
-        isAntiAlias: true,
-      );
+        expect(decorationImageMix1, isNot(decorationImageMix2));
+      });
 
-      expect(mix1, equals(mix2));
+      test('handles complex property differences', () {
+        const imageProvider = AssetImage('assets/test.png');
+        final decorationImageMix1 = DecorationImageMix.only(
+          image: imageProvider,
+          fit: BoxFit.cover,
+        );
+        final decorationImageMix2 = DecorationImageMix.only(
+          image: imageProvider,
+          fit: BoxFit.contain,
+        );
 
-      final dto3 = DecorationImageMix.only(
-        image: imageProvider,
-        fit: BoxFit.scaleDown,
-        alignment: Alignment.bottomCenter,
-        centerSlice: const Rect.fromLTRB(5, 10, 15, 20),
-        repeat: ImageRepeat.repeatY,
-        filterQuality: FilterQuality.medium,
-        invertColors: true,
-        isAntiAlias: false,
-      );
-
-      expect(mix1, isNot(equals(mix3)));
-      expect(mix2, isNot(equals(mix3)));
+        expect(decorationImageMix1, isNot(decorationImageMix2));
+      });
     });
   });
 }

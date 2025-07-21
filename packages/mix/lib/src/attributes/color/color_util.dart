@@ -11,23 +11,23 @@ import 'material_colors_util.dart';
 mixin ColorDirectiveMixin<T extends SpecAttribute<Object?>>
     on PropUtility<T, Color> {
   // All directive methods use the directive() method from PropUtility
-  T withOpacity(double opacity) => directive(OpacityDirective(opacity));
+  T withOpacity(double opacity) => directive(OpacityColorDirective(opacity));
 
-  T withAlpha(int alpha) => directive(AlphaDirective(alpha));
+  T withAlpha(int alpha) => directive(AlphaColorDirective(alpha));
 
-  T darken(int amount) => directive(DarkenDirective(amount));
+  T darken(int amount) => directive(DarkenColorDirective(amount));
 
-  T lighten(int amount) => directive(LightenDirective(amount));
+  T lighten(int amount) => directive(LightenColorDirective(amount));
 
-  T saturate(int amount) => directive(SaturateDirective(amount));
+  T saturate(int amount) => directive(SaturateColorDirective(amount));
 
-  T desaturate(int amount) => directive(DesaturateDirective(amount));
+  T desaturate(int amount) => directive(DesaturateColorDirective(amount));
 
-  T tint(int amount) => directive(TintDirective(amount));
+  T tint(int amount) => directive(TintColorDirective(amount));
 
-  T shade(int amount) => directive(ShadeDirective(amount));
+  T shade(int amount) => directive(ShadeColorDirective(amount));
 
-  T brighten(int amount) => directive(BrightenDirective(amount));
+  T brighten(int amount) => directive(BrightenColorDirective(amount));
 }
 
 /// Utility for predefined colors (e.g., Colors.red)
@@ -55,26 +55,30 @@ class CallableColorUtility<T extends SpecAttribute<Object?>> {
 
   /// Directive methods for color transformations
   T withOpacity(double opacity) =>
-      builder(Prop.directives([OpacityDirective(opacity)]));
+      builder(Prop.directives([OpacityColorDirective(opacity)]));
 
-  T withAlpha(int alpha) => builder(Prop.directives([AlphaDirective(alpha)]));
+  T withAlpha(int alpha) =>
+      builder(Prop.directives([AlphaColorDirective(alpha)]));
 
-  T darken(int amount) => builder(Prop.directives([DarkenDirective(amount)]));
+  T darken(int amount) =>
+      builder(Prop.directives([DarkenColorDirective(amount)]));
 
-  T lighten(int amount) => builder(Prop.directives([LightenDirective(amount)]));
+  T lighten(int amount) =>
+      builder(Prop.directives([LightenColorDirective(amount)]));
 
   T saturate(int amount) =>
-      builder(Prop.directives([SaturateDirective(amount)]));
+      builder(Prop.directives([SaturateColorDirective(amount)]));
 
   T desaturate(int amount) =>
-      builder(Prop.directives([DesaturateDirective(amount)]));
+      builder(Prop.directives([DesaturateColorDirective(amount)]));
 
-  T tint(int amount) => builder(Prop.directives([TintDirective(amount)]));
+  T tint(int amount) => builder(Prop.directives([TintColorDirective(amount)]));
 
-  T shade(int amount) => builder(Prop.directives([ShadeDirective(amount)]));
+  T shade(int amount) =>
+      builder(Prop.directives([ShadeColorDirective(amount)]));
 
   T brighten(int amount) =>
-      builder(Prop.directives([BrightenDirective(amount)]));
+      builder(Prop.directives([BrightenColorDirective(amount)]));
 }
 
 /// Simplified ColorUtility using the PropUtility pattern

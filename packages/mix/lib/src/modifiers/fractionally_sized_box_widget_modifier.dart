@@ -9,57 +9,57 @@ import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/utility.dart';
 
-final class FractionallySizedBoxModifierSpec
-    extends Modifier<FractionallySizedBoxModifierSpec>
+final class FractionallySizedBoxModifier
+    extends Modifier<FractionallySizedBoxModifier>
     with Diagnosticable {
   final double? widthFactor;
   final double? heightFactor;
   final AlignmentGeometry? alignment;
 
-  const FractionallySizedBoxModifierSpec({
+  const FractionallySizedBoxModifier({
     this.widthFactor,
     this.heightFactor,
     this.alignment,
   });
 
-  /// Creates a copy of this [FractionallySizedBoxModifierSpec] but with the given fields
+  /// Creates a copy of this [FractionallySizedBoxModifier] but with the given fields
   /// replaced with the new values.
   @override
-  FractionallySizedBoxModifierSpec copyWith({
+  FractionallySizedBoxModifier copyWith({
     double? widthFactor,
     double? heightFactor,
     AlignmentGeometry? alignment,
   }) {
-    return FractionallySizedBoxModifierSpec(
+    return FractionallySizedBoxModifier(
       widthFactor: widthFactor ?? this.widthFactor,
       heightFactor: heightFactor ?? this.heightFactor,
       alignment: alignment ?? this.alignment,
     );
   }
 
-  /// Linearly interpolates between this [FractionallySizedBoxModifierSpec] and another [FractionallySizedBoxModifierSpec] based on the given parameter [t].
+  /// Linearly interpolates between this [FractionallySizedBoxModifier] and another [FractionallySizedBoxModifier] based on the given parameter [t].
   ///
   /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [FractionallySizedBoxModifierSpec] is returned. When [t] is 1.0, the [other] [FractionallySizedBoxModifierSpec] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [FractionallySizedBoxModifierSpec] is returned.
+  /// When [t] is 0.0, the current [FractionallySizedBoxModifier] is returned. When [t] is 1.0, the [other] [FractionallySizedBoxModifier] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [FractionallySizedBoxModifier] is returned.
   ///
-  /// If [other] is null, this method returns the current [FractionallySizedBoxModifierSpec] instance.
+  /// If [other] is null, this method returns the current [FractionallySizedBoxModifier] instance.
   ///
-  /// The interpolation is performed on each property of the [FractionallySizedBoxModifierSpec] using the appropriate
+  /// The interpolation is performed on each property of the [FractionallySizedBoxModifier] using the appropriate
   /// interpolation method:
   /// - [MixHelpers.lerpDouble] for [widthFactor] and [heightFactor].
   /// - [AlignmentGeometry.lerp] for [alignment].
 
   /// This method is typically used in animations to smoothly transition between
-  /// different [FractionallySizedBoxModifierSpec] configurations.
+  /// different [FractionallySizedBoxModifier] configurations.
   @override
-  FractionallySizedBoxModifierSpec lerp(
-    FractionallySizedBoxModifierSpec? other,
+  FractionallySizedBoxModifier lerp(
+    FractionallySizedBoxModifier? other,
     double t,
   ) {
     if (other == null) return this;
 
-    return FractionallySizedBoxModifierSpec(
+    return FractionallySizedBoxModifier(
       widthFactor: MixHelpers.lerpDouble(widthFactor, other.widthFactor, t),
       heightFactor: MixHelpers.lerpDouble(heightFactor, other.heightFactor, t),
       alignment: AlignmentGeometry.lerp(alignment, other.alignment, t),
@@ -80,10 +80,10 @@ final class FractionallySizedBoxModifierSpec
     );
   }
 
-  /// The list of properties that constitute the state of this [FractionallySizedBoxModifierSpec].
+  /// The list of properties that constitute the state of this [FractionallySizedBoxModifier].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [FractionallySizedBoxModifierSpec] instances for equality.
+  /// compare two [FractionallySizedBoxModifier] instances for equality.
   @override
   List<Object?> get props => [widthFactor, heightFactor, alignment];
 
@@ -98,15 +98,15 @@ final class FractionallySizedBoxModifierSpec
   }
 }
 
-/// Represents the attributes of a [FractionallySizedBoxModifierSpec].
+/// Represents the attributes of a [FractionallySizedBoxModifier].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [FractionallySizedBoxModifierSpec].
+/// appearance of a [FractionallySizedBoxModifier].
 ///
-/// Use this class to configure the attributes of a [FractionallySizedBoxModifierSpec] and pass it to
-/// the [FractionallySizedBoxModifierSpec] constructor.
+/// Use this class to configure the attributes of a [FractionallySizedBoxModifier] and pass it to
+/// the [FractionallySizedBoxModifier] constructor.
 class FractionallySizedBoxModifierAttribute
-    extends ModifierAttribute<FractionallySizedBoxModifierSpec> {
+    extends ModifierAttribute<FractionallySizedBoxModifier> {
   final Prop<double>? widthFactor;
   final Prop<double>? heightFactor;
   final Prop<AlignmentGeometry>? alignment;
@@ -117,7 +117,17 @@ class FractionallySizedBoxModifierAttribute
     this.alignment,
   });
 
-  /// Resolves to [FractionallySizedBoxModifierSpec] using the provided [MixContext].
+  FractionallySizedBoxModifierAttribute.only({
+    double? widthFactor,
+    double? heightFactor,
+    AlignmentGeometry? alignment,
+  }) : this(
+         widthFactor: Prop.maybe(widthFactor),
+         heightFactor: Prop.maybe(heightFactor),
+         alignment: Prop.maybe(alignment),
+       );
+
+  /// Resolves to [FractionallySizedBoxModifier] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
@@ -126,8 +136,8 @@ class FractionallySizedBoxModifierAttribute
   /// final fractionallySizedBoxModifierSpec = FractionallySizedBoxModifierAttribute(...).resolve(mix);
   /// ```
   @override
-  FractionallySizedBoxModifierSpec resolve(BuildContext context) {
-    return FractionallySizedBoxModifierSpec(
+  FractionallySizedBoxModifier resolve(BuildContext context) {
+    return FractionallySizedBoxModifier(
       widthFactor: MixHelpers.resolve(context, widthFactor),
       heightFactor: MixHelpers.resolve(context, heightFactor),
       alignment: MixHelpers.resolve(context, alignment),
@@ -159,18 +169,18 @@ class FractionallySizedBoxModifierAttribute
   List<Object?> get props => [widthFactor, heightFactor, alignment];
 }
 
-/// A tween that interpolates between two [FractionallySizedBoxModifierSpec] instances.
+/// A tween that interpolates between two [FractionallySizedBoxModifier] instances.
 ///
 /// This class can be used in animations to smoothly transition between
-/// different [FractionallySizedBoxModifierSpec] specifications.
+/// different [FractionallySizedBoxModifier] specifications.
 class FractionallySizedBoxModifierSpecTween
-    extends Tween<FractionallySizedBoxModifierSpec?> {
+    extends Tween<FractionallySizedBoxModifier?> {
   FractionallySizedBoxModifierSpecTween({super.begin, super.end});
 
   @override
-  FractionallySizedBoxModifierSpec lerp(double t) {
+  FractionallySizedBoxModifier lerp(double t) {
     if (begin == null && end == null) {
-      return const FractionallySizedBoxModifierSpec();
+      return const FractionallySizedBoxModifier();
     }
 
     if (begin == null) {

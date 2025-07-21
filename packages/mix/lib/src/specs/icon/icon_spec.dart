@@ -9,7 +9,6 @@ import '../../core/animation_config.dart';
 import '../../core/attribute.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
-import '../../core/resolved_style_provider.dart';
 import '../../core/spec.dart';
 
 final class IconSpec extends Spec<IconSpec> with Diagnosticable {
@@ -34,24 +33,6 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
     this.applyTextScaling,
     this.fill,
   });
-
-  static IconSpec from(BuildContext context) {
-    return maybeOf(context) ?? const IconSpec();
-  }
-
-  /// Retrieves the [IconSpec] from the nearest [ResolvedStyleProvider] ancestor.
-  ///
-  /// Returns null if no ancestor [ResolvedStyleProvider] is found.
-  static IconSpec? maybeOf(BuildContext context) {
-    return ResolvedStyleProvider.of<IconSpec>(context)?.spec;
-  }
-
-  /// Retrieves the [IconSpec] from the nearest [ResolvedStyleProvider] ancestor in the widget tree.
-  ///
-  /// If no ancestor [ResolvedStyleProvider] is found, this method returns an empty [IconSpec].
-  static IconSpec of(BuildContext context) {
-    return maybeOf(context) ?? const IconSpec();
-  }
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties.add(DiagnosticsProperty('color', color, defaultValue: null));

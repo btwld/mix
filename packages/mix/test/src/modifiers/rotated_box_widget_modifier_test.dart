@@ -8,23 +8,23 @@ void main() {
   group('RotateModifierSpec', () {
     test('Constructor assigns quarterTurns correctly', () {
       const quarterTurns = 1;
-      const modifier = RotatedBoxModifierSpec(quarterTurns);
+      const modifier = RotatedBoxModifier(quarterTurns);
 
       expect(modifier.quarterTurns, quarterTurns);
     });
 
     test('Lerp method interpolates correctly', () {
-      const start = RotatedBoxModifierSpec(0);
-      const end = RotatedBoxModifierSpec(4);
+      const start = RotatedBoxModifier(0);
+      const end = RotatedBoxModifier(4);
       final result = start.lerp(end, 0.5);
 
       expect(result.quarterTurns, 2);
     });
 
     test('Equality and hashcode test', () {
-      const modifier1 = RotatedBoxModifierSpec(1);
-      const modifier2 = RotatedBoxModifierSpec(1);
-      const modifier3 = RotatedBoxModifierSpec(2);
+      const modifier1 = RotatedBoxModifier(1);
+      const modifier2 = RotatedBoxModifier(1);
+      const modifier3 = RotatedBoxModifier(2);
 
       expect(modifier1, modifier2);
       expect(modifier1.hashCode, modifier2.hashCode);
@@ -36,7 +36,7 @@ void main() {
       'Build method creates RotatedBox widget with correct quarterTurns',
       (WidgetTester tester) async {
         const quarterTurns = 1;
-        const modifier = RotatedBoxModifierSpec(quarterTurns);
+        const modifier = RotatedBoxModifier(quarterTurns);
 
         await tester.pumpMaterialApp(modifier.build(Container()));
 
@@ -61,7 +61,7 @@ void main() {
 
     test('resolve', () {
       const modifier = RotatedBoxModifierAttribute(quarterTurns: 1);
-      expect(modifier, resolvesTo(const RotatedBoxModifierSpec(1)));
+      expect(modifier, resolvesTo(const RotatedBoxModifier(1)));
     });
 
     test('equality', () {

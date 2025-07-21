@@ -3,8 +3,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../attributes/edge_insets_mix.dart';
 import '../attributes/edge_insets_geometry_util.dart';
+import '../attributes/edge_insets_mix.dart';
 import '../core/attribute.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
@@ -77,6 +77,9 @@ class PaddingModifierAttribute extends ModifierAttribute<PaddingModifier>
   final MixProp<EdgeInsetsGeometry>? padding;
 
   const PaddingModifierAttribute({this.padding});
+
+  PaddingModifierAttribute.only({EdgeInsetsGeometryMix? padding})
+    : this(padding: MixProp.maybe(padding));
 
   /// Resolves to [PaddingModifier] using the provided [MixContext].
   ///

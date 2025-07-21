@@ -8,22 +8,23 @@ import 'spec.dart';
 import 'style_mix.dart';
 import 'variant.dart';
 
-/// Base interface for all attributes
-sealed class Attribute with Mergeable {
-  const Attribute();
-  Object get mergeKey => runtimeType;
+abstract class StyleElement<S extends Spec<S>> extends Mixable<S> {
+  const StyleElement();
 
   @override
-  Attribute merge(covariant Attribute? other);
+  StyleElement<S> merge(covariant StyleElement<S>? other);
 }
 
-abstract class SpecAttribute<S extends Spec<S>> extends Mix<ResolvedStyle<S>>
-    with EqualityMixin
-    implements Attribute {
+abstract class SpecAttribute<S extends Spec<S>> extends StyleElement<S>
+    with Resolvable<ResolvedStyle<S>>, EqualityMixin {
   final List<VariantSpecAttribute<S>>? variants;
   final List<ModifierAttribute>? modifiers;
   final AnimationConfig? animation;
-  const SpecAttribute({this.variants, this.modifiers, this.animation});
+  const SpecAttribute({
+    required this.variants,
+    required this.modifiers,
+    required this.animation,
+  });
 
   @visibleForTesting
   List<ModifierAttribute>? mergeModifierLists(
@@ -150,9 +151,8 @@ abstract class SpecAttribute<S extends Spec<S>> extends Mix<ResolvedStyle<S>>
   Type get mergeKey => S;
 }
 
-abstract class ModifierAttribute<S extends Modifier<S>> extends Mix<S>
-    with EqualityMixin
-    implements Attribute {
+abstract class ModifierAttribute<S extends Modifier<S>> extends StyleElement<S>
+    with Resolvable<S>, EqualityMixin {
   const ModifierAttribute();
 
   @override
@@ -166,7 +166,7 @@ abstract class ModifierAttribute<S extends Modifier<S>> extends Mix<S>
 }
 
 /// Variant wrapper for conditional styling
-final class VariantSpecAttribute<S extends Spec<S>> implements Attribute {
+final class VariantSpecAttribute<S extends Spec<S>> implements StyleElement<S> {
   final Variant variant;
   final SpecAttribute<S> _style;
 
@@ -230,10 +230,15 @@ final class VariantSpecAttribute<S extends Spec<S>> implements Attribute {
 class MultiSpecAttribute extends SpecAttribute<MultiSpec> {
   final Map<Type, SpecAttribute> _attributes;
 
-  MultiSpecAttribute(List<SpecAttribute> attributes)
-    : _attributes = {for (var attr in attributes) attr.mergeKey: attr};
+  MultiSpecAttribute({
+    required List<SpecAttribute> attributes,
+    super.animation,
+    super.modifiers,
+    super.variants,
+  }) : _attributes = {for (var attr in attributes) attr.mergeKey: attr};
 
-  const MultiSpecAttribute.empty() : _attributes = const {};
+  MultiSpecAttribute.empty()
+    : this(attributes: [], animation: null, modifiers: null, variants: null);
 
   @override
   MultiSpec resolveSpec(BuildContext context) {
@@ -270,7 +275,12 @@ class MultiSpecAttribute extends SpecAttribute<MultiSpec> {
       }
     }
 
-    return MultiSpecAttribute(mergedAttributes);
+    return MultiSpecAttribute(
+      attributes: mergedAttributes,
+      animation: other.animation ?? animation,
+      modifiers: mergeModifierLists(modifiers, other.modifiers),
+      variants: mergeVariantLists(variants, other.variants),
+    );
   }
 
   @override

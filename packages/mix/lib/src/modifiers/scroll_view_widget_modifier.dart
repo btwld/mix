@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../attributes/edge_insets_geometry_util.dart';
+import '../attributes/edge_insets_mix.dart';
 import '../attributes/scalar_util.dart';
 import '../core/attribute.dart';
 import '../core/helpers.dart';
@@ -144,6 +145,20 @@ class ScrollViewModifierAttribute
     this.physics,
     this.clipBehavior,
   });
+
+  ScrollViewModifierAttribute.only({
+    Axis? scrollDirection,
+    bool? reverse,
+    EdgeInsetsGeometryMix? padding,
+    ScrollPhysics? physics,
+    Clip? clipBehavior,
+  }) : this(
+         scrollDirection: Prop.maybe(scrollDirection),
+         reverse: Prop.maybe(reverse),
+         padding: MixProp.maybe(padding),
+         physics: Prop.maybe(physics),
+         clipBehavior: Prop.maybe(clipBehavior),
+       );
 
   @override
   ScrollViewModifier resolve(BuildContext context) {

@@ -10,7 +10,7 @@ import 'package:mix/mix.dart';
 /// Supports same-type merging and simple override behavior for different types.
 @immutable
 sealed class GradientMix<T extends Gradient> extends Mix<T>
-    with MixDefaultValue<T> {
+    with DefaultValue<T> {
   final List<Prop<double>>? stops;
   final List<Prop<Color>>? colors;
   final Prop<GradientTransform>? transform;
@@ -178,12 +178,7 @@ final class LinearGradientMix extends GradientMix<LinearGradient> {
 
   @override
   int get hashCode {
-    return begin.hashCode ^
-        end.hashCode ^
-        tileMode.hashCode ^
-        transform.hashCode ^
-        colors.hashCode ^
-        stops.hashCode;
+    return Object.hash(begin, end, tileMode, transform, colors, stops);
   }
 }
 
@@ -315,14 +310,16 @@ final class RadialGradientMix extends GradientMix<RadialGradient> {
 
   @override
   int get hashCode {
-    return center.hashCode ^
-        radius.hashCode ^
-        tileMode.hashCode ^
-        focal.hashCode ^
-        focalRadius.hashCode ^
-        transform.hashCode ^
-        colors.hashCode ^
-        stops.hashCode;
+    return Object.hash(
+      center,
+      radius,
+      tileMode,
+      focal,
+      focalRadius,
+      transform,
+      colors,
+      stops,
+    );
   }
 }
 
@@ -447,12 +444,14 @@ final class SweepGradientMix extends GradientMix<SweepGradient> {
 
   @override
   int get hashCode {
-    return center.hashCode ^
-        startAngle.hashCode ^
-        endAngle.hashCode ^
-        tileMode.hashCode ^
-        transform.hashCode ^
-        colors.hashCode ^
-        stops.hashCode;
+    return Object.hash(
+      center,
+      startAngle,
+      endAngle,
+      tileMode,
+      transform,
+      colors,
+      stops,
+    );
   }
 }

@@ -33,7 +33,7 @@ const _defaultOrder = [
   // 4. FractionallySizedBoxModifier: Adjusts the widget's size relative to its parent's size,
   // allowing for responsive layouts that scale with the parent widget. This modifier is applied after
   // explicit sizing to refine the widget's dimensions based on available space.
-  FractionallySizedBoxModifierSpec,
+  FractionallySizedBoxModifier,
 
   // 5. AlignModifier: Aligns the widget within its allocated space, which is especially important
   // for positioning the widget correctly before applying any transformations that could affect its position.
@@ -48,7 +48,7 @@ const _defaultOrder = [
   // 7. IntrinsicWidthModifier: Similar to the IntrinsicHeightModifier, this adjusts the widget's width
   // to its child's intrinsic width. This modifier allows for content-driven width adjustments, making it ideal
   // for widgets that need to wrap their content tightly.
-  IntrinsicWidthModifierSpec,
+  IntrinsicWidthModifier,
 
   // 8. AspectRatioModifier: Maintains the widget's aspect ratio after sizing adjustments.
   // This modifier ensures that the widget scales correctly within its given aspect ratio constraints,
@@ -66,14 +66,14 @@ const _defaultOrder = [
 
   // 11. RotatedBoxModifier: Rotates the widget by a given angle. This modifier is applied after all sizing
   // and positioning adjustments to ensure that the widget's contents will be rotated correctly.
-  RotatedBoxModifierSpec,
+  RotatedBoxModifier,
 
   // 12. Clip Modifiers: Applies clipping in various shapes to the transformed widget, shaping the final appearance.
   // Clipping is one of the last steps to ensure it is applied to the widget's final size, position, and transformation state.
   ClipOvalModifier,
-  ClipRRectModifierSpec,
-  ClipPathModifierSpec,
-  ClipTriangleModifierSpec,
+  ClipRRectModifier,
+  ClipPathModifier,
+  ClipTriangleModifier,
   ClipRectModifierSpec,
 
   // 13. OpacityModifier: Modifies the widget's opacity as the final decoration step. Applying opacity last ensures

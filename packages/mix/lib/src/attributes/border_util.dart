@@ -191,7 +191,7 @@ class BorderSideUtility<T extends SpecAttribute<Object?>>
 
   BorderSideUtility(super.builder) : super(convertToMix: BorderSideMix.value);
 
-  /// Creates a [Attribute] instance using the [BorderSideMix.none] constructor.
+  /// Creates a [StyleElement] instance using the [BorderSideMix.none] constructor.
   T none() => call(BorderSideMix.none);
 
   /// Returns a new [BorderSideMix] with the specified properties.

@@ -187,7 +187,7 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
 
   @override
   int get hashCode {
-    return top.hashCode ^ bottom.hashCode ^ left.hashCode ^ right.hashCode;
+    return Object.hash(top, bottom, left, right);
   }
 }
 
@@ -288,6 +288,6 @@ final class EdgeInsetsDirectionalMix
 
   @override
   int get hashCode {
-    return top.hashCode ^ bottom.hashCode ^ start.hashCode ^ end.hashCode;
+    return Object.hash(top, bottom, start, end);
   }
 }

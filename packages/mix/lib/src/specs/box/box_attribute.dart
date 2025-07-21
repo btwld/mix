@@ -384,3 +384,22 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
     $height,
   ];
 }
+
+class BoxStyle extends BoxSpecAttribute {
+  BoxStyle({
+    super.alignment,
+    super.padding,
+    super.margin,
+    super.constraints,
+    super.decoration,
+    super.foregroundDecoration,
+    super.transform,
+    super.transformAlignment,
+    super.clipBehavior,
+    super.width,
+    super.height,
+    super.animation,
+    super.modifiers,
+    super.variants,
+  });
+}

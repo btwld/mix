@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../core/helpers.dart';
-import '../../core/resolved_style_provider.dart';
 import '../../core/spec.dart';
 
 final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
@@ -55,25 +54,6 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
     this.height,
   });
 
-  static BoxSpec? maybeOf(BuildContext context) {
-    return ResolvedStyleProvider.of<BoxSpec>(context)?.spec;
-  }
-
-  /// {@template box_spec_of}
-  /// Retrieves the [BoxSpec] from the nearest [ResolvedStyleProvider] ancestor in the widget tree.
-  ///
-  /// This method provides the resolved BoxSpec from the style system.
-  /// If no ancestor [ResolvedStyleProvider] is found, this method returns an empty [BoxSpec].
-  ///
-  /// Example:
-  ///
-  /// ```dart
-  /// final boxSpec = BoxSpec.of(context);
-  /// ```
-  /// {@endtemplate}
-  static BoxSpec of(BuildContext context) {
-    return maybeOf(context) ?? const BoxSpec();
-  }
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties.add(

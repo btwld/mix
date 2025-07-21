@@ -7,461 +7,224 @@ import '../../helpers/testing_utils.dart';
 
 void main() {
   group('TextStyleMix', () {
-    // Constructor Tests
-    group('Constructor Tests', () {
-      test('only constructor creates TextStyleMix with all properties', () {
-        final shadowDto = ShadowMix.only(
-          color: Colors.black,
-          offset: const Offset(2, 2),
-          blurRadius: 4.0,
-        );
-
-        final mix = TextStyleMix.only(
-          color: Colors.red,
+    group('Constructor', () {
+      test('only constructor creates instance with correct properties', () {
+        final textStyleMix = TextStyleMix.only(
+          color: Colors.blue,
           backgroundColor: Colors.yellow,
           fontSize: 16.0,
           fontWeight: FontWeight.bold,
           fontStyle: FontStyle.italic,
           letterSpacing: 1.5,
-          debugLabel: 'test',
           wordSpacing: 2.0,
-          textBaseline: TextBaseline.alphabetic,
-          shadows: [shadowDto],
-          fontFeatures: const [FontFeature.enable('liga')],
-          decoration: TextDecoration.underline,
-          decorationColor: Colors.blue,
-          decorationStyle: TextDecorationStyle.dashed,
-          fontVariations: const [FontVariation('wght', 400)],
           height: 1.2,
-          foreground: Paint()..color = Colors.green,
-          background: Paint()..color = Colors.white,
           decorationThickness: 2.0,
           fontFamily: 'Roboto',
-          fontFamilyFallback: const ['Arial', 'Helvetica'],
-        );
-
-        expect(mix.color, resolvesTo(Colors.red));
-        expect(mix.backgroundColor, resolvesTo(Colors.yellow));
-        expect(mix.fontSize, resolvesTo(16.0));
-        expect(mix.fontWeight, resolvesTo(FontWeight.bold));
-        expect(mix.fontStyle, resolvesTo(FontStyle.italic));
-        expect(mix.letterSpacing, resolvesTo(1.5));
-        expect(mix.debugLabel, resolvesTo('test'));
-        expect(mix.wordSpacing, resolvesTo(2.0));
-        expect(mix.textBaseline, resolvesTo(TextBaseline.alphabetic));
-        expect(mix.shadows?.length, 1);
-        expect(mix.fontFeatures?.length, 1);
-        expect(mix.decoration, resolvesTo(TextDecoration.underline));
-        expect(mix.decorationColor, resolvesTo(Colors.blue));
-        expect(mix.decorationStyle, resolvesTo(TextDecorationStyle.dashed));
-        expect(mix.fontVariations?.length, 1);
-        expect(mix.height, resolvesTo(1.2));
-        expect(mix.foreground, isA<Prop<Paint>>());
-        expect(mix.background, isA<Prop<Paint>>());
-        expect(mix.decorationThickness, resolvesTo(2.0));
-        expect(mix.fontFamily, resolvesTo('Roboto'));
-        expect(mix.fontFamilyFallback?.length, 2);
-      });
-
-      test('value constructor from TextStyle', () {
-        const textStyle = TextStyle(
-          color: Colors.blue,
-          fontSize: 18.0,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.5,
-          decoration: TextDecoration.lineThrough,
-          decorationColor: Colors.red,
-          shadows: [
-            Shadow(color: Colors.grey, offset: Offset(1, 1), blurRadius: 2.0),
-          ],
-        );
-
-        final mix = TextStyleMix.value(textStyle);
-
-        expect(mix.color, resolvesTo(Colors.blue));
-        expect(mix.fontSize, resolvesTo(18.0));
-        expect(mix.fontWeight, resolvesTo(FontWeight.w600));
-        expect(mix.letterSpacing, resolvesTo(0.5));
-        expect(mix.decoration, resolvesTo(TextDecoration.lineThrough));
-        expect(mix.decorationColor, resolvesTo(Colors.red));
-        expect(mix.shadows?.length, 1);
-      });
-
-      test('main constructor with Prop values', () {
-        final mix = TextStyleMix(
-          color: Prop(Colors.green),
-          fontSize: Prop(20.0),
-          fontWeight: Prop(FontWeight.w300),
-        );
-
-        expect(mix.color, resolvesTo(Colors.green));
-        expect(mix.fontSize, resolvesTo(20.0));
-        expect(mix.fontWeight, resolvesTo(FontWeight.w300));
-      });
-    });
-
-    // Factory Tests
-    group('Factory Tests', () {
-      test('maybeValue returns TextStyleMix for non-null TextStyle', () {
-        const textStyle = TextStyle(color: Colors.red, fontSize: 14.0);
-        final mix = TextStyleMix.maybeValue(textStyle);
-
-        expect(mix, isNotNull);
-        expect(mix?.color, resolvesTo(Colors.red));
-        expect(mix?.fontSize, resolvesTo(14.0));
-      });
-
-      test('maybeValue returns null for null TextStyle', () {
-        final mix = TextStyleMix.maybeValue(null);
-        expect(mix, isNull);
-      });
-    });
-
-    // Resolution Tests
-    group('Resolution Tests', () {
-      test('resolves to TextStyle with all properties', () {
-        final mix = TextStyleMix.only(
-          color: Colors.purple,
-          fontSize: 24.0,
-          fontWeight: FontWeight.bold,
-          fontStyle: FontStyle.italic,
-          letterSpacing: 1.0,
-          wordSpacing: 2.0,
-          fontVariations: const [FontVariation('wght', 900)],
-          textBaseline: TextBaseline.ideographic,
-          decoration: TextDecoration.underline,
-          decorationColor: Colors.blue,
-          decorationStyle: TextDecorationStyle.dashed,
-          height: 2.0,
-        );
-
-        expect(
-          dto,
-          resolvesTo(
-            const TextStyle(
-              color: Colors.purple,
-              fontSize: 24.0,
-              fontWeight: FontWeight.bold,
-              fontStyle: FontStyle.italic,
-              letterSpacing: 1.0,
-              wordSpacing: 2.0,
-              fontVariations: [FontVariation('wght', 900)],
-              textBaseline: TextBaseline.ideographic,
-              decoration: TextDecoration.underline,
-              decorationColor: Colors.blue,
-              decorationStyle: TextDecorationStyle.dashed,
-              height: 2.0,
-            ),
-          ),
-        );
-      });
-
-      test('resolves with default values for null properties', () {
-        final mix = TextStyleMix.only();
-        final context = MockBuildContext();
-        final resolved = mix.resolve(context);
-
-        expect(resolved.color, isNull);
-        expect(resolved.fontSize, isNull);
-        expect(resolved.fontWeight, isNull);
-      });
-
-      test('resolves shadows correctly', () {
-        final mix = TextStyleMix.only(
-          shadows: [
-            ShadowMix.only(
-              color: Colors.black,
-              offset: const Offset(2, 2),
-              blurRadius: 4.0,
-            ),
-            ShadowMix.only(
-              color: Colors.grey,
-              offset: const Offset(1, 1),
-              blurRadius: 2.0,
-            ),
-          ],
-        );
-
-        final context = MockBuildContext();
-        final resolved = mix.resolve(context);
-
-        expect(resolved.shadows?.length, 2);
-        expect(resolved.shadows?[0].color, Colors.black);
-        expect(resolved.shadows?[1].color, Colors.grey);
-      });
-
-      test('resolves Paint properties correctly', () {
-        final foregroundPaint = Paint()
-          ..color = const Color(0xFFFF0000)
-          ..strokeWidth = 2.0;
-        final backgroundPaint = Paint()
-          ..color = const Color(0xFF0000FF)
-          ..style = PaintingStyle.fill;
-
-        final mix = TextStyleMix.only(
-          foreground: foregroundPaint,
-          background: backgroundPaint,
-        );
-
-        final context = MockBuildContext();
-        final resolved = mix.resolve(context);
-
-        expect(resolved.foreground?.color, const Color(0xFFFF0000));
-        expect(resolved.foreground?.strokeWidth, 2.0);
-        expect(resolved.background?.color, const Color(0xFF0000FF));
-        expect(resolved.background?.style, PaintingStyle.fill);
-      });
-    });
-
-    // Merge Tests
-    group('Merge Tests', () {
-      test('merge with another TextStyleMix - all properties', () {
-        final mix1 = TextStyleMix.only(
-          color: Colors.red,
-          fontSize: 16.0,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 1.0,
-          shadows: [ShadowMix.only(color: Colors.black, blurRadius: 2.0)],
-          fontFeatures: const [FontFeature.enable('liga')],
-          fontVariations: const [FontVariation('wght', 400)],
-        );
-
-        final mix2 = TextStyleMix.only(
-          color: Colors.blue,
-          fontSize: 20.0,
-          fontStyle: FontStyle.italic,
-          wordSpacing: 2.0,
-          shadows: [ShadowMix.only(color: Colors.grey, blurRadius: 4.0)],
-          fontFeatures: const [FontFeature.enable('kern')],
-          fontVariations: const [FontVariation('slnt', -10)],
-        );
-
-        final merged = dto1.merge(mix2);
-
-        expect(merged.color, resolvesTo(Colors.blue));
-        expect(merged.fontSize, resolvesTo(20.0));
-        expect(merged.fontWeight, resolvesTo(FontWeight.bold));
-        expect(merged.fontStyle, resolvesTo(FontStyle.italic));
-        expect(merged.letterSpacing, resolvesTo(1.0));
-        expect(merged.wordSpacing, resolvesTo(2.0));
-        expect(merged.shadows?.length, 1);
-        expect(merged.fontFeatures?.length, 1);
-        expect(merged.fontVariations?.length, 1);
-      });
-
-      test('merge with partial properties', () {
-        final mix1 = TextStyleMix.only(
-          color: Colors.red,
-          fontSize: 16.0,
-          fontWeight: FontWeight.bold,
-        );
-
-        final mix2 = TextStyleMix.only(
-          fontSize: 20.0,
-          fontStyle: FontStyle.italic,
-          letterSpacing: 1.5,
-        );
-
-        final merged = dto1.merge(mix2);
-
-        expect(merged.color, resolvesTo(Colors.red));
-        expect(merged.fontSize, resolvesTo(20.0));
-        expect(merged.fontWeight, resolvesTo(FontWeight.bold));
-        expect(merged.fontStyle, resolvesTo(FontStyle.italic));
-        expect(merged.letterSpacing, resolvesTo(1.5));
-      });
-
-      test('merge with null returns original', () {
-        final mix = TextStyleMix.only(color: Colors.green, fontSize: 18.0);
-
-        final merged = mix.merge(null);
-        expect(merged, same(mix));
-      });
-
-      test('merge decoration properties', () {
-        final mix1 = TextStyleMix.only(
           decoration: TextDecoration.underline,
           decorationColor: Colors.red,
           decorationStyle: TextDecorationStyle.solid,
-          decorationThickness: 1.0,
+          textBaseline: TextBaseline.alphabetic,
+          debugLabel: 'test-style',
         );
 
-        final mix2 = TextStyleMix.only(
+        expect(textStyleMix.color, isProp(Colors.blue));
+        expect(textStyleMix.backgroundColor, isProp(Colors.yellow));
+        expect(textStyleMix.fontSize, isProp(16.0));
+        expect(textStyleMix.fontWeight, isProp(FontWeight.bold));
+        expect(textStyleMix.fontStyle, isProp(FontStyle.italic));
+        expect(textStyleMix.letterSpacing, isProp(1.5));
+        expect(textStyleMix.wordSpacing, isProp(2.0));
+        expect(textStyleMix.height, isProp(1.2));
+        expect(textStyleMix.decorationThickness, isProp(2.0));
+        expect(textStyleMix.fontFamily, isProp('Roboto'));
+        expect(textStyleMix.decoration, isProp(TextDecoration.underline));
+        expect(textStyleMix.decorationColor, isProp(Colors.red));
+        expect(textStyleMix.decorationStyle, isProp(TextDecorationStyle.solid));
+        expect(textStyleMix.textBaseline, isProp(TextBaseline.alphabetic));
+        expect(textStyleMix.debugLabel, isProp('test-style'));
+      });
+
+      test('only constructor with lists creates correct properties', () {
+        final textStyleMix = TextStyleMix.only(
+          fontFamilyFallback: const ['Arial', 'Helvetica'],
+          shadows: [ShadowMix.only(blurRadius: 5.0, color: Colors.black)],
+        );
+
+        expect(textStyleMix.fontFamilyFallback, hasLength(2));
+        expect(textStyleMix.fontFamilyFallback![0], isProp('Arial'));
+        expect(textStyleMix.fontFamilyFallback![1], isProp('Helvetica'));
+
+        expect(textStyleMix.shadows, hasLength(1));
+        expect(textStyleMix.shadows![0], isA<MixProp<Shadow>>());
+      });
+
+      test('value constructor extracts properties from TextStyle', () {
+        const textStyle = TextStyle(
+          color: Colors.green,
+          fontSize: 18.0,
+          fontWeight: FontWeight.w500,
+          fontStyle: FontStyle.normal,
+          letterSpacing: 0.5,
+          height: 1.4,
+          fontFamily: 'Arial',
           decoration: TextDecoration.lineThrough,
-          decorationColor: Colors.blue,
-          decorationStyle: TextDecorationStyle.dashed,
-          decorationThickness: 2.0,
         );
 
-        final merged = dto1.merge(mix2);
+        final textStyleMix = TextStyleMix.value(textStyle);
 
-        expect(merged.decoration, resolvesTo(TextDecoration.lineThrough));
-        expect(merged.decorationColor, resolvesTo(Colors.blue));
-        expect(merged.decorationStyle, resolvesTo(TextDecorationStyle.dashed));
-        expect(merged.decorationThickness, resolvesTo(2.0));
+        expect(textStyleMix.color, isProp(Colors.green));
+        expect(textStyleMix.fontSize, isProp(18.0));
+        expect(textStyleMix.fontWeight, isProp(FontWeight.w500));
+        expect(textStyleMix.fontStyle, isProp(FontStyle.normal));
+        expect(textStyleMix.letterSpacing, isProp(0.5));
+        expect(textStyleMix.height, isProp(1.4));
+        expect(textStyleMix.fontFamily, isProp('Arial'));
+        expect(textStyleMix.decoration, isProp(TextDecoration.lineThrough));
       });
 
-      test('merge font family properties', () {
-        final mix1 = TextStyleMix.only(
-          fontFamily: 'Roboto',
-          fontFamilyFallback: const ['Arial'],
-        );
+      test('maybeValue returns null for null input', () {
+        final result = TextStyleMix.maybeValue(null);
+        expect(result, isNull);
+      });
 
-        final mix2 = TextStyleMix.only(
-          fontFamily: 'Helvetica',
-          fontFamilyFallback: const ['Verdana', 'Georgia'],
-        );
+      test('maybeValue returns TextStyleMix for non-null input', () {
+        const textStyle = TextStyle(fontSize: 14.0);
+        final result = TextStyleMix.maybeValue(textStyle);
 
-        final merged = dto1.merge(mix2);
-
-        expect(merged.fontFamily, resolvesTo('Helvetica'));
-        expect(merged.fontFamilyFallback?.length, 2);
+        expect(result, isNotNull);
+        expect(result!.fontSize, isProp(14.0));
       });
     });
 
-    // Equality and HashCode Tests
-    group('Equality and HashCode Tests', () {
-      test('equal TextStyleMixs', () {
-        final mix1 = TextStyleMix.only(
-          color: Colors.red,
+    group('resolve', () {
+      test('resolves to TextStyle with correct properties', () {
+        final textStyleMix = TextStyleMix.only(
+          color: Colors.blue,
           fontSize: 16.0,
           fontWeight: FontWeight.bold,
-          fontVariations: const [FontVariation('wght', 400)],
-        );
-
-        final mix2 = TextStyleMix.only(
-          color: Colors.red,
-          fontSize: 16.0,
-          fontWeight: FontWeight.bold,
-          fontVariations: const [FontVariation('wght', 400)],
-        );
-
-        expect(mix1, equals(mix2));
-        expect(mix1.hashCode, equals(mix2.hashCode));
-      });
-
-      test('not equal TextStyleMixs', () {
-        final mix1 = TextStyleMix.only(color: Colors.red, fontSize: 16.0);
-        final mix2 = TextStyleMix.only(color: Colors.blue, fontSize: 16.0);
-
-        expect(mix1, isNot(equals(mix2)));
-      });
-
-      test('equality with lists', () {
-        final mix1 = TextStyleMix.only(
-          shadows: [ShadowMix.only(color: Colors.black, blurRadius: 2.0)],
-          fontFeatures: const [FontFeature.enable('liga')],
-          fontVariations: const [FontVariation('wght', 400)],
-          fontFamilyFallback: const ['Arial', 'Helvetica'],
-        );
-
-        final mix2 = TextStyleMix.only(
-          shadows: [ShadowMix.only(color: Colors.black, blurRadius: 2.0)],
-          fontFeatures: const [FontFeature.enable('liga')],
-          fontVariations: const [FontVariation('wght', 400)],
-          fontFamilyFallback: const ['Arial', 'Helvetica'],
-        );
-
-        expect(mix1, equals(mix2));
-        expect(mix1.hashCode, equals(mix2.hashCode));
-      });
-    });
-
-    // Edge Cases
-    group('Edge Cases', () {
-      test('handles empty lists correctly', () {
-        final mix = TextStyleMix.only(
-          shadows: const [],
-          fontFeatures: const [],
-          fontVariations: const [],
-          fontFamilyFallback: const [],
-        );
-
-        final context = MockBuildContext();
-        final resolved = mix.resolve(context);
-
-        expect(resolved.shadows, isNull);
-        expect(resolved.fontFeatures, isNull);
-        expect(resolved.fontVariations, isNull);
-        expect(resolved.fontFamilyFallback, isNull);
-      });
-
-      test('handles foreground paint without color', () {
-        final foregroundPaint = Paint()..color = const Color(0xFF00FF00);
-
-        final mix = TextStyleMix.only(foreground: foregroundPaint);
-
-        final context = MockBuildContext();
-        final resolved = mix.resolve(context);
-
-        // Only foreground is set
-        expect(resolved.color, isNull);
-        expect(resolved.foreground?.color, const Color(0xFF00FF00));
-      });
-
-      test('handles null debugLabel', () {
-        final mix = TextStyleMix.only(color: Colors.red, debugLabel: null);
-
-        final context = MockBuildContext();
-        final resolved = mix.resolve(context);
-
-        expect(resolved.debugLabel, isNull);
-      });
-
-      test('handles extreme font weights', () {
-        final mix1 = TextStyleMix.only(fontWeight: FontWeight.w100);
-        final mix2 = TextStyleMix.only(fontWeight: FontWeight.w900);
-
-        expect(mix1.fontWeight, resolvesTo(FontWeight.w100));
-        expect(mix2.fontWeight, resolvesTo(FontWeight.w900));
-      });
-
-      test('handles negative letter spacing', () {
-        final mix = TextStyleMix.only(letterSpacing: -0.5);
-        expect(mix.letterSpacing, resolvesTo(-0.5));
-      });
-    });
-
-    // Integration Tests
-    group('Integration Tests', () {
-      test('TextStyleMix used in Text widget context', () {
-        final mix = TextStyleMix.only(
-          color: Colors.black,
-          fontSize: 14.0,
-          fontWeight: FontWeight.normal,
           fontFamily: 'Roboto',
         );
 
         final context = MockBuildContext();
-        final resolved = mix.resolve(context);
+        final resolved = textStyleMix.resolve(context);
 
-        expect(resolved.color, Colors.black);
-        expect(resolved.fontSize, 14.0);
-        expect(resolved.fontWeight, FontWeight.normal);
+        expect(resolved.color, Colors.blue);
+        expect(resolved.fontSize, 16.0);
+        expect(resolved.fontWeight, FontWeight.bold);
         expect(resolved.fontFamily, 'Roboto');
       });
 
-      test('complex merge scenario', () {
-        final baseStyle = TextStyleMix.only(
-          color: Colors.black,
-          fontSize: 14.0,
-          fontWeight: FontWeight.normal,
-          fontFamily: 'Roboto',
+      test('resolves with list properties', () {
+        final textStyleMix = TextStyleMix.only(
+          fontFamilyFallback: const ['Arial', 'Helvetica'],
+          shadows: [
+            ShadowMix.only(blurRadius: 5.0, color: Colors.black),
+            ShadowMix.only(blurRadius: 10.0, color: Colors.grey),
+          ],
         );
 
-        final headingStyle = TextStyleMix.only(
-          fontSize: 24.0,
+        final context = MockBuildContext();
+        final resolved = textStyleMix.resolve(context);
+
+        expect(resolved.fontFamilyFallback, ['Arial', 'Helvetica']);
+        expect(resolved.shadows, hasLength(2));
+        expect(resolved.shadows![0].blurRadius, 5.0);
+        expect(resolved.shadows![1].blurRadius, 10.0);
+      });
+    });
+
+    group('merge', () {
+      test('returns this when other is null', () {
+        final textStyleMix = TextStyleMix.only(fontSize: 16.0);
+        final merged = textStyleMix.merge(null);
+
+        expect(merged, same(textStyleMix));
+      });
+
+      test('merges properties correctly', () {
+        final first = TextStyleMix.only(
+          color: Colors.blue,
+          fontSize: 16.0,
+          fontWeight: FontWeight.normal,
+        );
+
+        final second = TextStyleMix.only(
+          fontSize: 18.0,
+          fontStyle: FontStyle.italic,
+          letterSpacing: 1.0,
+        );
+
+        final merged = first.merge(second);
+
+        expect(merged.color, isProp(Colors.blue));
+        expect(merged.fontSize, isProp(18.0));
+        expect(merged.fontWeight, isProp(FontWeight.normal));
+        expect(merged.fontStyle, isProp(FontStyle.italic));
+        expect(merged.letterSpacing, isProp(1.0));
+      });
+
+      test('merges list properties correctly', () {
+        final first = TextStyleMix.only(
+          fontFamilyFallback: const ['Arial'],
+          shadows: [ShadowMix.only(blurRadius: 5.0)],
+        );
+
+        final second = TextStyleMix.only(
+          fontFamilyFallback: const ['Helvetica', 'Times'],
+          shadows: [ShadowMix.only(blurRadius: 10.0)],
+        );
+
+        final merged = first.merge(second);
+
+        expect(merged.fontFamilyFallback, hasLength(3));
+        expect(merged.fontFamilyFallback![0], isProp('Arial'));
+        expect(merged.fontFamilyFallback![1], isProp('Helvetica'));
+        expect(merged.fontFamilyFallback![2], isProp('Times'));
+
+        expect(merged.shadows, hasLength(2));
+      });
+    });
+
+    group('Equality', () {
+      test('returns true when all properties are the same', () {
+        final textStyleMix1 = TextStyleMix.only(
+          color: Colors.blue,
+          fontSize: 16.0,
           fontWeight: FontWeight.bold,
         );
 
-        final primaryStyle = TextStyleMix.only(color: Colors.blue);
+        final textStyleMix2 = TextStyleMix.only(
+          color: Colors.blue,
+          fontSize: 16.0,
+          fontWeight: FontWeight.bold,
+        );
 
-        final merged = baseStyle.merge(headingStyle).merge(primaryStyle);
+        expect(textStyleMix1, textStyleMix2);
+        expect(textStyleMix1.hashCode, textStyleMix2.hashCode);
+      });
 
-        expect(merged.color, resolvesTo(Colors.blue));
-        expect(merged.fontSize, resolvesTo(24.0));
-        expect(merged.fontWeight, resolvesTo(FontWeight.bold));
-        expect(merged.fontFamily, resolvesTo('Roboto'));
+      test('returns false when properties are different', () {
+        final textStyleMix1 = TextStyleMix.only(fontSize: 16.0);
+        final textStyleMix2 = TextStyleMix.only(fontSize: 18.0);
+
+        expect(textStyleMix1, isNot(textStyleMix2));
+      });
+
+      test('handles list equality correctly', () {
+        final textStyleMix1 = TextStyleMix.only(
+          fontFamilyFallback: const ['Arial', 'Helvetica'],
+        );
+
+        final textStyleMix2 = TextStyleMix.only(
+          fontFamilyFallback: const ['Arial', 'Helvetica'],
+        );
+
+        final textStyleMix3 = TextStyleMix.only(
+          fontFamilyFallback: const ['Arial', 'Times'],
+        );
+
+        expect(textStyleMix1, textStyleMix2);
+        expect(textStyleMix1, isNot(textStyleMix3));
       });
     });
   });

@@ -16,9 +16,9 @@ void main() {
       expect(spaceToken.name, 'large');
       expect(textToken.name, 'heading');
 
-      expect(colorToken.toString(), 'MixableToken<Color>(primary)');
-      expect(spaceToken.toString(), 'MixableToken<double>(large)');
-      expect(textToken.toString(), 'MixableToken<TextStyle>(heading)');
+      expect(colorToken.toString(), 'MixToken<Color>(primary)');
+      expect(spaceToken.toString(), 'MixToken<double>(large)');
+      expect(textToken.toString(), 'MixToken<TextStyle>(heading)');
     });
 
     test('equality works correctly', () {

@@ -37,15 +37,12 @@ class MixPropSource<V> extends PropSource<V> {
   const MixPropSource._(this._sources);
 
   /// Creates a MixPropSource with a direct Mix value
-  factory MixPropSource.value(Mixable<V> value) {
+  factory MixPropSource.value(Mix<V> value) {
     return MixPropSource._([_MixValueSource(value)]);
   }
 
   /// Creates a MixPropSource with a token and converter
-  factory MixPropSource.token(
-    MixToken<V> token,
-    Mixable<V> Function(V) converter,
-  ) {
+  factory MixPropSource.token(MixToken<V> token, Mix<V> Function(V) converter) {
     return MixPropSource._([_MixTokenSource(token, converter)]);
   }
 
@@ -71,7 +68,7 @@ class MixPropSource<V> extends PropSource<V> {
       throw FlutterError('MixPropSource has no sources to resolve');
     }
 
-    Mixable<V>? result;
+    Mix<V>? result;
 
     for (final source in _sources) {
       final value = switch (source) {
@@ -101,19 +98,19 @@ sealed class _MixSource<V> {
 }
 
 class _MixValueSource<V> extends _MixSource<V> {
-  final Mixable<V> value;
+  final Mix<V> value;
   const _MixValueSource(this.value);
 }
 
 class _MixTokenSource<V> extends _MixSource<V> {
   final MixToken<V> token;
-  final Mixable<V> Function(V) converter;
+  final Mix<V> Function(V) converter;
   const _MixTokenSource(this.token, this.converter);
 }
 
 /// Base sealed class for all properties
 @immutable
-sealed class PropBase<T> with Resolvable<T>, Mergeable {
+sealed class PropBase<T> extends Mixable<T> with Resolvable<T> {
   final List<MixDirective<T>>? directives;
   final AnimationConfig? animation;
 
@@ -270,8 +267,7 @@ class Prop<T> extends PropBase<T> {
   }
 
   @override
-  int get hashCode =>
-      source.hashCode ^ directives.hashCode ^ animation.hashCode;
+  int get hashCode => Object.hash(source, directives, animation);
 }
 
 /// Specialized Prop for Mix types
@@ -281,13 +277,13 @@ class MixProp<V> extends PropBase<V> {
 
   const MixProp._({this.source, super.directives, super.animation});
 
-  /// Creates a MixProp with a Mixable value
-  factory MixProp(Mixable<V> value) {
+  /// Creates a MixProp with a Mix value
+  factory MixProp(Mix<V> value) {
     return MixProp._(source: MixPropSource.value(value));
   }
 
   /// Creates a MixProp with a token and converter
-  factory MixProp.token(MixToken<V> token, Mixable<V> Function(V) converter) {
+  factory MixProp.token(MixToken<V> token, Mix<V> Function(V) converter) {
     return MixProp._(source: MixPropSource.token(token, converter));
   }
 
@@ -301,8 +297,8 @@ class MixProp<V> extends PropBase<V> {
     return MixProp._(animation: animation);
   }
 
-  /// Creates a MixProp from a nullable Mixable value
-  static MixProp<V>? maybe<V>(Mixable<V>? value) {
+  /// Creates a MixProp from a nullable Mix value
+  static MixProp<V>? maybe<V>(Mix<V>? value) {
     return value != null ? MixProp(value) : null;
   }
 
@@ -390,6 +386,5 @@ class MixProp<V> extends PropBase<V> {
   }
 
   @override
-  int get hashCode =>
-      source.hashCode ^ directives.hashCode ^ animation.hashCode;
+  int get hashCode => Object.hash(source, directives, animation);
 }

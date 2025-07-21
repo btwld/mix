@@ -43,7 +43,7 @@ class CustomObject {
   }
 
   @override
-  int get hashCode => id.hashCode ^ value.hashCode;
+  int get hashCode => Object.hash(id, value);
 }
 
 class AnotherCustomObject {
@@ -67,11 +67,5 @@ class AnotherCustomObject {
           listEquals(children, other.children);
 
   @override
-  int get hashCode =>
-      id.hashCode ^
-      name.hashCode ^
-      children.fold(
-        0,
-        (previousValue, element) => previousValue ^ element.hashCode,
-      );
+  int get hashCode => Object.hash(id, name, Object.hashAll(children));
 }

@@ -138,5 +138,5 @@ class PointerPosition {
   }
 
   @override
-  int get hashCode => position.hashCode ^ offset.hashCode;
+  int get hashCode => Object.hash(position, offset);
 }

@@ -26,7 +26,7 @@ import 'flexbox_spec.dart';
 /// ```
 class FlexBox extends StyleWidget<FlexBoxSpec> {
   const FlexBox({
-    super.style = const FlexBoxStyle(),
+    super.style = const FlexBoxSpecAttribute(),
     super.key,
 
     required this.direction,
@@ -89,7 +89,7 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
 /// ```
 class HBox extends FlexBox {
   const HBox({
-    super.style = const FlexBoxStyle(),
+    super.style = const FlexBoxSpecAttribute(),
     super.key,
 
     super.children = const <Widget>[],
@@ -114,7 +114,7 @@ class HBox extends FlexBox {
 /// ```
 class VBox extends FlexBox {
   const VBox({
-    super.style = const FlexBoxStyle(),
+    super.style = const FlexBoxSpecAttribute(),
     super.key,
 
     super.children = const <Widget>[],

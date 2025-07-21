@@ -10,7 +10,7 @@ void main() {
     test('Constructor assigns widthFactor and heightFactor correctly', () {
       const widthFactor = 0.5;
       const heightFactor = 0.5;
-      const modifier = FractionallySizedBoxModifierSpec(
+      const modifier = FractionallySizedBoxModifier(
         widthFactor: widthFactor,
         heightFactor: heightFactor,
       );
@@ -20,11 +20,11 @@ void main() {
     });
 
     test('Lerp method interpolates correctly', () {
-      const start = FractionallySizedBoxModifierSpec(
+      const start = FractionallySizedBoxModifier(
         widthFactor: 0.5,
         heightFactor: 0.5,
       );
-      const end = FractionallySizedBoxModifierSpec(
+      const end = FractionallySizedBoxModifier(
         widthFactor: 1.0,
         heightFactor: 1.0,
       );
@@ -35,15 +35,15 @@ void main() {
     });
 
     test('Equality and hashcode test', () {
-      const modifier1 = FractionallySizedBoxModifierSpec(
+      const modifier1 = FractionallySizedBoxModifier(
         widthFactor: 0.5,
         heightFactor: 0.5,
       );
-      const modifier2 = FractionallySizedBoxModifierSpec(
+      const modifier2 = FractionallySizedBoxModifier(
         widthFactor: 0.5,
         heightFactor: 0.5,
       );
-      const modifier3 = FractionallySizedBoxModifierSpec(
+      const modifier3 = FractionallySizedBoxModifier(
         widthFactor: 0.5,
         heightFactor: 0.6,
       );
@@ -59,7 +59,7 @@ void main() {
       (WidgetTester tester) async {
         const widthFactor = 0.5;
         const heightFactor = 0.5;
-        const modifier = FractionallySizedBoxModifierSpec(
+        const modifier = FractionallySizedBoxModifier(
           widthFactor: widthFactor,
           heightFactor: heightFactor,
         );
@@ -101,7 +101,7 @@ void main() {
       expect(
         modifier,
         resolvesTo(
-          const FractionallySizedBoxModifierSpec(
+          const FractionallySizedBoxModifier(
             widthFactor: 0.5,
             heightFactor: 0.5,
           ),

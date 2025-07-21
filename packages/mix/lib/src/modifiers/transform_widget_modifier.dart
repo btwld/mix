@@ -106,6 +106,9 @@ class TransformModifierAttribute extends ModifierAttribute<TransformModifier> {
 
   const TransformModifierAttribute({this.transform, this.alignment});
 
+  TransformModifierAttribute.only({Matrix4? transform, Alignment? alignment})
+    : this(transform: Prop.maybe(transform), alignment: Prop.maybe(alignment));
+
   @override
   TransformModifier resolve(BuildContext context) {
     return TransformModifier(

@@ -6,6 +6,9 @@ import 'package:mix/mix.dart';
 
 export 'package:mix/src/internal/internal_extensions.dart';
 
+export 'custom_matchers.dart';
+export 'mock_utils.dart';
+
 /// Mock BuildContext for testing
 class MockBuildContext extends BuildContext {
   @override

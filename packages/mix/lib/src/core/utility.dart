@@ -72,13 +72,13 @@ abstract class PropUtility<U extends SpecAttribute<Object?>, Value>
 @immutable
 abstract class MixPropUtility<U extends SpecAttribute<Object?>, Value>
     extends PropBaseUtility<U, Value> {
-  final Mixable<Value> Function(Value) convertToMix;
+  final Mix<Value> Function(Value) convertToMix;
   @protected
   final U Function(MixProp<Value>) builder;
 
   const MixPropUtility(this.builder, {required this.convertToMix});
 
-  U call(covariant Mixable<Value> value);
+  U call(covariant Mix<Value> value);
 
   U as(Value value) => call(convertToMix(value));
 
@@ -173,7 +173,7 @@ final class PropListUtility<T extends SpecAttribute<Object?>, V>
 final class MixPropListUtility<
   T extends SpecAttribute<Object?>,
   V,
-  M extends Mixable<V>
+  M extends Mix<V>
 >
     extends MixUtility<T, List<MixProp<V>>> {
   final M Function(V) convertToMix;

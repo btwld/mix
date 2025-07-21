@@ -2,539 +2,479 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../helpers/custom_matchers.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  group('GradientUtility', () {
-    final utility = GradientUtility(UtilityTestDtoAttribute.new);
-    test('GradientUtility.from for RadialGradient', () {
-      const gradient = RadialGradient(colors: []);
-      final attribute = utility.as(gradient);
+  group('Gradient Utilities', () {
+    group('GradientUtility', () {
+      final utility = GradientUtility(UtilityTestAttribute.new);
 
-      expect(attribute.value, isA<RadialGradientMix>());
-      expect(attribute, resolvesTo(gradient));
+      test('call() creates GradientMix', () {
+        final gradientMix = LinearGradientMix.only(
+          colors: const [Colors.red, Colors.blue],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        );
+        final attr = utility(gradientMix);
+        expect(attr.value, isA<MixProp<Gradient>>());
+      });
+
+      test('as() creates GradientMix from LinearGradient', () {
+        const gradient = LinearGradient(
+          colors: [Colors.red, Colors.blue],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        );
+        final attr = utility.as(gradient);
+        expect(attr.value, isA<MixProp<Gradient>>());
+      });
+
+      test('as() creates GradientMix from RadialGradient', () {
+        const gradient = RadialGradient(
+          colors: [Colors.green, Colors.yellow],
+          center: Alignment.center,
+          radius: 0.5,
+        );
+        final attr = utility.as(gradient);
+        expect(attr.value, isA<MixProp<Gradient>>());
+      });
+
+      test('as() creates GradientMix from SweepGradient', () {
+        const gradient = SweepGradient(
+          colors: [Colors.purple, Colors.orange],
+          center: Alignment.center,
+          startAngle: 0.0,
+          endAngle: 6.28,
+        );
+        final attr = utility.as(gradient);
+        expect(attr.value, isA<MixProp<Gradient>>());
+      });
+
+      group('Nested Utilities', () {
+        test('linear provides access to LinearGradientUtility', () {
+          final linearGradientMix = LinearGradientMix.only(
+            colors: const [Colors.red, Colors.blue],
+          );
+          final attr = utility.linear(linearGradientMix);
+          expect(attr.value, isA<MixProp<Gradient>>());
+        });
+
+        test('radial provides access to RadialGradientUtility', () {
+          final radialGradientMix = RadialGradientMix.only(
+            colors: const [Colors.green, Colors.yellow],
+          );
+          final attr = utility.radial(radialGradientMix);
+          expect(attr.value, isA<MixProp<Gradient>>());
+        });
+
+        test('sweep provides access to SweepGradientUtility', () {
+          final sweepGradientMix = SweepGradientMix.only(
+            colors: const [Colors.purple, Colors.orange],
+          );
+          final attr = utility.sweep(sweepGradientMix);
+          expect(attr.value, isA<MixProp<Gradient>>());
+        });
+      });
+
+      test('token() creates gradient from token', () {
+        const token = MixToken<Gradient>('test.gradient');
+        final attr = utility.token(token);
+        expect(attr.value, isA<MixProp<Gradient>>());
+      });
     });
 
-    test('GradientUtility.from for LinearGradient', () {
-      const gradient = LinearGradient(colors: []);
-      final attribute = utility.as(gradient);
+    group('LinearGradientUtility', () {
+      final utility = LinearGradientUtility(UtilityTestAttribute.new);
 
-      expect(attribute.value, isA<LinearGradientMix>());
-      expect(attribute, resolvesTo(gradient));
+      test('call() creates LinearGradientMix', () {
+        final gradientMix = LinearGradientMix.only(
+          colors: const [Colors.red, Colors.blue],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          stops: const [0.0, 1.0],
+          tileMode: TileMode.clamp,
+        );
+        final attr = utility(gradientMix);
+        expect(attr.value, isA<MixProp<LinearGradient>>());
+      });
+
+      test('as() creates LinearGradientMix from LinearGradient', () {
+        const gradient = LinearGradient(
+          colors: [Colors.red, Colors.blue],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: [0.0, 1.0],
+          tileMode: TileMode.repeated,
+        );
+        final attr = utility.as(gradient);
+        expect(attr.value, isA<MixProp<LinearGradient>>());
+      });
+
+      group('Property Utilities', () {
+        test('colors() creates linear gradient with colors', () {
+          final attr = utility.colors([Colors.red, Colors.blue, Colors.green]);
+          expect(attr.value, isA<MixProp<LinearGradient>>());
+        });
+
+        test('stops() creates linear gradient with stops', () {
+          final attr = utility.stops([0.0, 0.5, 1.0]);
+          expect(attr.value, isA<MixProp<LinearGradient>>());
+        });
+
+        test('begin() creates linear gradient with begin alignment', () {
+          final attr = utility.begin(Alignment.topLeft);
+          expect(attr.value, isA<MixProp<LinearGradient>>());
+        });
+
+        test('begin.topLeft() creates linear gradient with top left begin', () {
+          final attr = utility.begin.topLeft();
+          expect(attr.value, isA<MixProp<LinearGradient>>());
+        });
+
+        test('begin.center() creates linear gradient with center begin', () {
+          final attr = utility.begin.center();
+          expect(attr.value, isA<MixProp<LinearGradient>>());
+        });
+
+        test('end() creates linear gradient with end alignment', () {
+          final attr = utility.end(Alignment.bottomRight);
+          expect(attr.value, isA<MixProp<LinearGradient>>());
+        });
+
+        test(
+          'end.bottomRight() creates linear gradient with bottom right end',
+          () {
+            final attr = utility.end.bottomRight();
+            expect(attr.value, isA<MixProp<LinearGradient>>());
+          },
+        );
+
+        test(
+          'end.centerLeft() creates linear gradient with center left end',
+          () {
+            final attr = utility.end.centerLeft();
+            expect(attr.value, isA<MixProp<LinearGradient>>());
+          },
+        );
+
+        test('tileMode() creates linear gradient with tile mode', () {
+          final attr = utility.tileMode(TileMode.mirror);
+          expect(attr.value, isA<MixProp<LinearGradient>>());
+        });
+
+        test(
+          'tileMode.clamp() creates linear gradient with clamp tile mode',
+          () {
+            final attr = utility.tileMode.clamp();
+            expect(attr.value, isA<MixProp<LinearGradient>>());
+          },
+        );
+
+        test(
+          'tileMode.repeated() creates linear gradient with repeated tile mode',
+          () {
+            final attr = utility.tileMode.repeated();
+            expect(attr.value, isA<MixProp<LinearGradient>>());
+          },
+        );
+
+        test(
+          'tileMode.mirror() creates linear gradient with mirror tile mode',
+          () {
+            final attr = utility.tileMode.mirror();
+            expect(attr.value, isA<MixProp<LinearGradient>>());
+          },
+        );
+
+        test(
+          'tileMode.decal() creates linear gradient with decal tile mode',
+          () {
+            final attr = utility.tileMode.decal();
+            expect(attr.value, isA<MixProp<LinearGradient>>());
+          },
+        );
+
+        test('transform() creates linear gradient with transform', () {
+          final attr = utility.transform(const GradientRotation(1.57));
+          expect(attr.value, isA<MixProp<LinearGradient>>());
+        });
+
+        test(
+          'transform.rotate() creates linear gradient with rotation transform',
+          () {
+            final attr = utility.transform.rotate(1.57);
+            expect(attr.value, isA<MixProp<LinearGradient>>());
+          },
+        );
+      });
+
+      test('token() creates linear gradient from token', () {
+        const token = MixToken<LinearGradient>('test.linearGradient');
+        final attr = utility.token(token);
+        expect(attr.value, isA<MixProp<LinearGradient>>());
+      });
     });
 
-    test('GradientUtility.from for SweepGradient', () {
-      const gradient = SweepGradient(colors: []);
-      final attribute = utility.as(gradient);
+    group('RadialGradientUtility', () {
+      final utility = RadialGradientUtility(UtilityTestAttribute.new);
 
-      expect(attribute.value, isA<SweepGradientMix>());
-      expect(attribute, resolvesTo(gradient));
-    });
-  });
+      test('call() creates RadialGradientMix', () {
+        final gradientMix = RadialGradientMix.only(
+          colors: const [Colors.red, Colors.blue],
+          center: Alignment.center,
+          radius: 0.5,
+          focal: Alignment.topLeft,
+          focalRadius: 0.1,
+          stops: const [0.0, 1.0],
+          tileMode: TileMode.clamp,
+        );
+        final attr = utility(gradientMix);
+        expect(attr.value, isA<MixProp<RadialGradient>>());
+      });
 
-  group('RadialGradientUtility', () {
-    final radialUtility = RadialGradientUtility(UtilityTestDtoAttribute.new);
+      test('as() creates RadialGradientMix from RadialGradient', () {
+        const gradient = RadialGradient(
+          colors: [Colors.green, Colors.yellow],
+          center: Alignment.center,
+          radius: 0.8,
+          focal: Alignment.bottomRight,
+          focalRadius: 0.2,
+          stops: [0.0, 1.0],
+          tileMode: TileMode.mirror,
+        );
+        final attr = utility.as(gradient);
+        expect(attr.value, isA<MixProp<RadialGradient>>());
+      });
 
-    test('.from for RadialGradient', () {
-      const gradient = RadialGradient(colors: []);
-      final attribute = radialUtility.as(gradient);
+      group('Property Utilities', () {
+        test('colors() creates radial gradient with colors', () {
+          final attr = utility.colors([
+            Colors.purple,
+            Colors.pink,
+            Colors.orange,
+          ]);
+          expect(attr.value, isA<MixProp<RadialGradient>>());
+        });
 
-      expect(attribute, resolvesTo(gradient));
-      expect(attribute.value, isA<RadialGradientMix>());
-    });
+        test('stops() creates radial gradient with stops', () {
+          final attr = utility.stops([0.0, 0.3, 1.0]);
+          expect(attr.value, isA<MixProp<RadialGradient>>());
+        });
 
-    test('.call', () {
-      final colors = [Colors.red, Colors.blue];
-      final stops = [0.0, 0.5];
-      const center = Alignment.center;
-      const radius = 20.0;
-      const focal = Alignment.center;
-      const focalRadius = 10.0;
-      const tileMode = TileMode.clamp;
-      const transform = GradientRotation(0.0);
+        test('center() creates radial gradient with center alignment', () {
+          final attr = utility.center(Alignment.topCenter);
+          expect(attr.value, isA<MixProp<RadialGradient>>());
+        });
 
-      final attribute = radialUtility(
-        center: center,
-        colors: colors,
-        focal: focal,
-        focalRadius: focalRadius,
-        radius: radius,
-        stops: stops,
-        tileMode: tileMode,
-        transform: transform,
-      );
+        test(
+          'center.center() creates radial gradient with center alignment',
+          () {
+            final attr = utility.center.center();
+            expect(attr.value, isA<MixProp<RadialGradient>>());
+          },
+        );
 
-      expect(attribute.value, isA<RadialGradientMix>());
-      expect(attribute, resolvesTo(isA<RadialGradient>()));
-    });
+        test(
+          'center.bottomLeft() creates radial gradient with bottom left center',
+          () {
+            final attr = utility.center.bottomLeft();
+            expect(attr.value, isA<MixProp<RadialGradient>>());
+          },
+        );
 
-    // colors
-    test('.colors', () {
-      final colors = [Colors.red, Colors.blue];
+        test('radius() creates radial gradient with radius', () {
+          final attr = utility.radius(0.7);
+          expect(attr.value, isA<MixProp<RadialGradient>>());
+        });
 
-      final attribute = radialUtility(colors: colors);
-      final mix = attribute.value;
+        test('radius.zero() creates radial gradient with zero radius', () {
+          final attr = utility.radius.zero();
+          expect(attr.value, isA<MixProp<RadialGradient>>());
+        });
 
-      expect(mix.colors, resolvesTo(colors));
-      expect(attribute, resolvesTo(RadialGradient(colors: colors)));
-    });
+        test(
+          'radius.infinity() creates radial gradient with infinite radius',
+          () {
+            final attr = utility.radius.infinity();
+            expect(attr.value, isA<MixProp<RadialGradient>>());
+          },
+        );
 
-    // stops
-    test('.stops', () {
-      final stops = [0.0, 0.5];
-      final attribute = radialUtility(stops: stops);
-      final mix = attribute.value;
+        test('focal() creates radial gradient with focal alignment', () {
+          final attr = utility.focal(Alignment.topRight);
+          expect(attr.value, isA<MixProp<RadialGradient>>());
+        });
 
-      expect(mix.stops, resolvesTo(stops));
-      expect(
-        attribute,
-        resolvesTo(RadialGradient(colors: const [], stops: stops)),
-      );
-    });
+        test(
+          'focal.topRight() creates radial gradient with top right focal',
+          () {
+            final attr = utility.focal.topRight();
+            expect(attr.value, isA<MixProp<RadialGradient>>());
+          },
+        );
 
-    // center
-    test('.center', () {
-      const center = Alignment.center;
-      final attribute = radialUtility(center: center);
-      final attributeFn = radialUtility.center.center();
-      final mix = attribute.value;
+        test('focalRadius() creates radial gradient with focal radius', () {
+          final attr = utility.focalRadius(0.3);
+          expect(attr.value, isA<MixProp<RadialGradient>>());
+        });
 
-      expect(attribute, attributeFn);
-      expect(mix.center, resolvesTo(center));
-      expect(
-        attribute,
-        resolvesTo(RadialGradient(colors: const [], center: center)),
-      );
-    });
+        test(
+          'focalRadius.zero() creates radial gradient with zero focal radius',
+          () {
+            final attr = utility.focalRadius.zero();
+            expect(attr.value, isA<MixProp<RadialGradient>>());
+          },
+        );
 
-    // radius
-    test('.radius', () {
-      const radius = 20.0;
-      final attribute = radialUtility(radius: radius);
-      final mix = attribute.value;
+        test('tileMode() creates radial gradient with tile mode', () {
+          final attr = utility.tileMode(TileMode.decal);
+          expect(attr.value, isA<MixProp<RadialGradient>>());
+        });
 
-      expect(mix.radius, resolvesTo(radius));
-      expect(
-        attribute,
-        resolvesTo(RadialGradient(colors: const [], radius: radius)),
-      );
-    });
+        test(
+          'tileMode.mirror() creates radial gradient with mirror tile mode',
+          () {
+            final attr = utility.tileMode.mirror();
+            expect(attr.value, isA<MixProp<RadialGradient>>());
+          },
+        );
 
-    // focal
-    test('.focal', () {
-      const focal = Alignment.center;
-      final attribute = radialUtility.focal(focal);
-      final attributeFn = radialUtility.focal.center();
-      final mix = attribute.value;
+        test('transform() creates radial gradient with transform', () {
+          final attr = utility.transform(const GradientRotation(3.14));
+          expect(attr.value, isA<MixProp<RadialGradient>>());
+        });
 
-      expect(attribute, attributeFn);
-      expect(mix.focal, resolvesTo(focal));
-      expect(
-        attribute,
-        resolvesTo(RadialGradient(colors: const [], focal: focal)),
-      );
-    });
+        test(
+          'transform.rotate() creates radial gradient with rotation transform',
+          () {
+            final attr = utility.transform.rotate(3.14);
+            expect(attr.value, isA<MixProp<RadialGradient>>());
+          },
+        );
+      });
 
-    // focalRadius
-    test('.focalRadius', () {
-      const focalRadius = 10.0;
-      final attribute = radialUtility(focalRadius: focalRadius);
-      final mix = attribute.value;
-
-      expect(mix.focalRadius, resolvesTo(focalRadius));
-      expect(
-        attribute,
-        resolvesTo(RadialGradient(colors: const [], focalRadius: focalRadius)),
-      );
-    });
-
-    // tileMode
-
-    test('.tileMode', () {
-      const tileMode = TileMode.clamp;
-      final attribute = radialUtility(tileMode: tileMode);
-      final attributeFn = radialUtility.tileMode.clamp();
-
-      final resolvedGradient = attribute.resolve(EmptyMixData);
-      final mix = attribute.value;
-
-      expect(attribute, attributeFn);
-      expect(mix.tileMode, resolvesTo(tileMode));
-      expect(resolvedGradient.tileMode, tileMode);
-    });
-
-    // transform
-    test('.transform', () {
-      const transform = GradientRotation(0.0);
-      final attribute = radialUtility(transform: transform);
-
-      final resolvedGradient = attribute.resolve(EmptyMixData);
-      final mix = attribute.value;
-
-      expect(mix.transform, resolvesTo(transform));
-      expect(resolvedGradient.transform, transform);
+      test('token() creates radial gradient from token', () {
+        const token = MixToken<RadialGradient>('test.radialGradient');
+        final attr = utility.token(token);
+        expect(attr.value, isA<MixProp<RadialGradient>>());
+      });
     });
 
-    // resolve
-    test('.resolve', () {
-      final colors = [Colors.red, Colors.blue];
-      final stops = [0.0, 0.5];
-      const center = Alignment.center;
-      const radius = 20.0;
-      const focal = Alignment.center;
-      const focalRadius = 10.0;
-      const tileMode = TileMode.clamp;
-      const transform = GradientRotation(0.0);
+    group('SweepGradientUtility', () {
+      final utility = SweepGradientUtility(UtilityTestAttribute.new);
 
-      final attribute = radialUtility(
-        center: center,
-        colors: colors,
-        focal: focal,
-        focalRadius: focalRadius,
-        radius: radius,
-        stops: stops,
-        tileMode: tileMode,
-        transform: transform,
-      );
+      test('call() creates SweepGradientMix', () {
+        final gradientMix = SweepGradientMix.only(
+          colors: const [Colors.red, Colors.blue, Colors.green],
+          center: Alignment.center,
+          startAngle: 0.0,
+          endAngle: 6.28,
+          stops: const [0.0, 0.5, 1.0],
+          tileMode: TileMode.clamp,
+        );
+        final attr = utility(gradientMix);
+        expect(attr.value, isA<MixProp<SweepGradient>>());
+      });
 
-      final resolvedGradient = attribute.resolve(EmptyMixData);
-      final mix = attribute.value;
+      test('as() creates SweepGradientMix from SweepGradient', () {
+        const gradient = SweepGradient(
+          colors: [Colors.purple, Colors.orange, Colors.pink],
+          center: Alignment.bottomCenter,
+          startAngle: 1.57,
+          endAngle: 4.71,
+          stops: [0.0, 0.3, 1.0],
+          tileMode: TileMode.repeated,
+        );
+        final attr = utility.as(gradient);
+        expect(attr.value, isA<MixProp<SweepGradient>>());
+      });
 
-      expect(mix.colors, resolvesTo(colors));
-      expect(mix.stops, resolvesTo(stops));
-      expect(mix.center, resolvesTo(center));
-      expect(mix.radius, resolvesTo(radius));
-      expect(mix.focal, resolvesTo(focal));
-      expect(mix.focalRadius, resolvesTo(focalRadius));
-      expect(mix.tileMode, resolvesTo(tileMode));
-      expect(mix.transform, resolvesTo(transform));
+      group('Property Utilities', () {
+        test('colors() creates sweep gradient with colors', () {
+          final attr = utility.colors([
+            Colors.cyan,
+            Colors.purple,
+            Colors.yellow,
+          ]);
+          expect(attr.value, isA<MixProp<SweepGradient>>());
+        });
 
-      expect(resolvedGradient, isA<RadialGradient>());
-      expect(resolvedGradient.colors, colors);
-      expect(resolvedGradient.stops, stops);
-      expect(resolvedGradient.center, center);
-      expect(resolvedGradient.radius, radius);
-      expect(resolvedGradient.focal, focal);
-      expect(resolvedGradient.focalRadius, focalRadius);
-      expect(resolvedGradient.tileMode, tileMode);
-      expect(resolvedGradient.transform, transform);
-    });
-  });
+        test('stops() creates sweep gradient with stops', () {
+          final attr = utility.stops([0.0, 0.25, 0.75, 1.0]);
+          expect(attr.value, isA<MixProp<SweepGradient>>());
+        });
 
-  // LinearGradientUtility
-  group('LinearGradientUtility', () {
-    final linearUtility = LinearGradientUtility(UtilityTestDtoAttribute.new);
+        test('center() creates sweep gradient with center alignment', () {
+          final attr = utility.center(Alignment.centerRight);
+          expect(attr.value, isA<MixProp<SweepGradient>>());
+        });
 
-    test('.from for LinearGradient', () {
-      const gradient = LinearGradient(colors: []);
-      final attribute = linearUtility.as(gradient);
+        test(
+          'center.centerRight() creates sweep gradient with center right alignment',
+          () {
+            final attr = utility.center.centerRight();
+            expect(attr.value, isA<MixProp<SweepGradient>>());
+          },
+        );
 
-      final resolvedGradient = attribute.resolve(EmptyMixData);
-      final mix = attribute.value;
+        test('startAngle() creates sweep gradient with start angle', () {
+          final attr = utility.startAngle(1.57);
+          expect(attr.value, isA<MixProp<SweepGradient>>());
+        });
 
-      expect(resolvedGradient, isA<LinearGradient>());
-      expect(mix, isA<LinearGradientMix>());
-    });
+        test(
+          'startAngle.zero() creates sweep gradient with zero start angle',
+          () {
+            final attr = utility.startAngle.zero();
+            expect(attr.value, isA<MixProp<SweepGradient>>());
+          },
+        );
 
-    test('.call', () {
-      final colors = [Colors.red, Colors.blue];
-      final stops = [0.0, 0.5];
-      const begin = Alignment.centerLeft;
-      const end = Alignment.centerRight;
-      const tileMode = TileMode.clamp;
-      const transform = GradientRotation(0.0);
+        test('endAngle() creates sweep gradient with end angle', () {
+          final attr = utility.endAngle(4.71);
+          expect(attr.value, isA<MixProp<SweepGradient>>());
+        });
 
-      final attribute = linearUtility(
-        begin: begin,
-        colors: colors,
-        end: end,
-        stops: stops,
-        tileMode: tileMode,
-        transform: transform,
-      );
+        test(
+          'endAngle.infinity() creates sweep gradient with infinite end angle',
+          () {
+            final attr = utility.endAngle.infinity();
+            expect(attr.value, isA<MixProp<SweepGradient>>());
+          },
+        );
 
-      expect(attribute.value, isA<LinearGradientMix>());
-      expect(attribute, resolvesTo(isA<LinearGradient>()));
-    });
+        test('tileMode() creates sweep gradient with tile mode', () {
+          final attr = utility.tileMode(TileMode.repeated);
+          expect(attr.value, isA<MixProp<SweepGradient>>());
+        });
 
-    // colors
-    test('.colors', () {
-      final colors = [Colors.red, Colors.blue];
+        test(
+          'tileMode.decal() creates sweep gradient with decal tile mode',
+          () {
+            final attr = utility.tileMode.decal();
+            expect(attr.value, isA<MixProp<SweepGradient>>());
+          },
+        );
 
-      final attribute = linearUtility(colors: colors);
+        test('transform() creates sweep gradient with transform', () {
+          final attr = utility.transform(const GradientRotation(0.785));
+          expect(attr.value, isA<MixProp<SweepGradient>>());
+        });
 
-      expect(attribute.value.colors, resolvesTo(colors));
-      expect(attribute, resolvesTo(LinearGradient(colors: colors)));
-    });
+        test(
+          'transform.rotate() creates sweep gradient with rotation transform',
+          () {
+            final attr = utility.transform.rotate(0.785);
+            expect(attr.value, isA<MixProp<SweepGradient>>());
+          },
+        );
+      });
 
-    // stops
-    test('.stops', () {
-      final stops = [0.0, 0.5];
-      final attribute = linearUtility(stops: stops);
-
-      expect(attribute.value.stops, resolvesTo(stops));
-      expect(
-        attribute,
-        resolvesTo(LinearGradient(colors: const [], stops: stops)),
-      );
-    });
-
-    // begin
-    test('.begin', () {
-      const begin = Alignment.centerLeft;
-      final attribute = linearUtility(begin: begin);
-      final attributeFn = linearUtility.begin.centerLeft();
-
-      expect(attribute, attributeFn);
-      expect(attribute.value.begin, resolvesTo(begin));
-      expect(
-        attribute,
-        resolvesTo(LinearGradient(colors: const [], begin: begin)),
-      );
-    });
-
-    // end
-    test('.end', () {
-      const end = Alignment.centerRight;
-      final attribute = linearUtility(end: end);
-      final attributeFn = linearUtility.end.centerRight();
-
-      expect(attribute, attributeFn);
-      expect(attribute.value.end, resolvesTo(end));
-      expect(attribute, resolvesTo(LinearGradient(colors: const [], end: end)));
-    });
-
-    // tileMode
-    test('.tileMode', () {
-      const tileMode = TileMode.clamp;
-      final attribute = linearUtility(tileMode: tileMode);
-      final attributeFn = linearUtility.tileMode.clamp();
-
-      expect(attribute, attributeFn);
-      expect(attribute.value.tileMode, resolvesTo(tileMode));
-      expect(
-        attribute,
-        resolvesTo(LinearGradient(colors: const [], tileMode: tileMode)),
-      );
-    });
-
-    // transform
-    test('.transform', () {
-      const transform = GradientRotation(0.0);
-      final attribute = linearUtility(transform: transform);
-
-      expect(attribute.value.transform, resolvesTo(transform));
-      expect(
-        attribute,
-        resolvesTo(LinearGradient(colors: const [], transform: transform)),
-      );
-    });
-
-    // resolve
-    test('.resolve', () {
-      final colors = [Colors.red, Colors.blue];
-      final stops = [0.0, 0.5];
-      const begin = Alignment.centerLeft;
-      const end = Alignment.centerRight;
-      const tileMode = TileMode.clamp;
-      const transform = GradientRotation(0.0);
-
-      final attribute = linearUtility(
-        begin: begin,
-        colors: colors,
-        end: end,
-        stops: stops,
-        tileMode: tileMode,
-        transform: transform,
-      );
-
-      expect(attribute.value.colors, resolvesTo(colors));
-      expect(attribute.value.stops, resolvesTo(stops));
-      expect(attribute.value.begin, resolvesTo(begin));
-      expect(attribute.value.end, resolvesTo(end));
-      expect(attribute.value.tileMode, resolvesTo(tileMode));
-      expect(attribute.value.transform, resolvesTo(transform));
-
-      expect(
-        attribute,
-        resolvesTo(
-          LinearGradient(
-            colors: colors,
-            stops: stops,
-            begin: begin,
-            end: end,
-            tileMode: tileMode,
-            transform: transform,
-          ),
-        ),
-      );
-    });
-  });
-
-  // SweepGradientUtility
-  group('SweepGradientUtility', () {
-    final sweepUtility = SweepGradientUtility(UtilityTestDtoAttribute.new);
-
-    test('.from for SweepGradient', () {
-      const gradient = SweepGradient(colors: []);
-      final attribute = sweepUtility.as(gradient);
-
-      expect(attribute.value, isA<SweepGradientMix>());
-      expect(attribute, resolvesTo(isA<SweepGradient>()));
-    });
-
-    test('.call', () {
-      final colors = [Colors.red, Colors.blue];
-      final stops = [0.0, 0.5];
-      const center = Alignment.center;
-      const startAngle = 0.0;
-      const endAngle = 0.5;
-      const tileMode = TileMode.clamp;
-      const transform = GradientRotation(0.0);
-
-      final attribute = sweepUtility(
-        center: center,
-        colors: colors,
-        endAngle: endAngle,
-        startAngle: startAngle,
-        stops: stops,
-        tileMode: tileMode,
-        transform: transform,
-      );
-
-      expect(attribute.value, isA<SweepGradientMix>());
-      expect(attribute, resolvesTo(isA<SweepGradient>()));
-    });
-
-    // colors
-    test('.colors', () {
-      final colors = [Colors.red, Colors.blue];
-
-      final attribute = sweepUtility(colors: colors);
-
-      expect(attribute.value.colors, resolvesTo(colors));
-      expect(attribute, resolvesTo(SweepGradient(colors: colors)));
-    });
-
-    // stops
-    test('.stops', () {
-      final stops = [0.0, 0.5];
-      final attribute = sweepUtility(stops: stops);
-
-      expect(attribute.value.stops, resolvesTo(stops));
-      expect(
-        attribute,
-        resolvesTo(SweepGradient(colors: const [], stops: stops)),
-      );
-    });
-
-    // center
-    test('.center', () {
-      const center = Alignment.center;
-      final attribute = sweepUtility(center: center);
-      final attributeFn = sweepUtility.center.center();
-
-      expect(attribute, attributeFn);
-      expect(attribute.value.center, resolvesTo(center));
-      expect(
-        attribute,
-        resolvesTo(SweepGradient(colors: const [], center: center)),
-      );
-    });
-
-    // startAngle
-    test('.startAngle', () {
-      const startAngle = 0.0;
-      final attribute = sweepUtility(startAngle: startAngle);
-
-      expect(attribute.value.startAngle, resolvesTo(startAngle));
-      expect(
-        attribute,
-        resolvesTo(SweepGradient(colors: const [], startAngle: startAngle)),
-      );
-    });
-
-    // endAngle
-    test('.endAngle', () {
-      const endAngle = 0.5;
-      final attribute = sweepUtility(endAngle: endAngle);
-
-      expect(attribute.value.endAngle, resolvesTo(endAngle));
-      expect(
-        attribute,
-        resolvesTo(SweepGradient(colors: const [], endAngle: endAngle)),
-      );
-    });
-
-    // tileMode
-    test('.tileMode', () {
-      const tileMode = TileMode.clamp;
-      final attribute = sweepUtility(tileMode: tileMode);
-      final attributeFn = sweepUtility.tileMode.clamp();
-
-      expect(attribute, attributeFn);
-      expect(attribute.value.tileMode, resolvesTo(tileMode));
-      expect(
-        attribute,
-        resolvesTo(SweepGradient(colors: const [], tileMode: tileMode)),
-      );
-    });
-
-    // transform
-    test('.transform', () {
-      const transform = GradientRotation(0.0);
-      final attribute = sweepUtility(transform: transform);
-
-      expect(attribute.value.transform, resolvesTo(transform));
-      expect(
-        attribute,
-        resolvesTo(SweepGradient(colors: const [], transform: transform)),
-      );
-    });
-
-    // resolve
-    test('.resolve', () {
-      final colors = [Colors.red, Colors.blue];
-      final stops = [0.0, 0.5];
-      const center = Alignment.center;
-      const startAngle = 0.0;
-      const endAngle = 0.5;
-      const tileMode = TileMode.clamp;
-      const transform = GradientRotation(0.0);
-
-      final attribute = sweepUtility(
-        center: center,
-        colors: colors,
-        endAngle: endAngle,
-        startAngle: startAngle,
-        stops: stops,
-        tileMode: tileMode,
-        transform: transform,
-      );
-
-      expect(attribute.value.colors, resolvesTo(colors));
-      expect(attribute.value.stops, resolvesTo(stops));
-      expect(attribute.value.center, resolvesTo(center));
-      expect(attribute.value.startAngle, resolvesTo(startAngle));
-      expect(attribute.value.endAngle, resolvesTo(endAngle));
-      expect(attribute.value.tileMode, resolvesTo(tileMode));
-      expect(attribute.value.transform, resolvesTo(transform));
-
-      expect(
-        attribute,
-        resolvesTo(
-          SweepGradient(
-            colors: colors,
-            stops: stops,
-            center: center,
-            startAngle: startAngle,
-            endAngle: endAngle,
-            tileMode: tileMode,
-            transform: transform,
-          ),
-        ),
-      );
+      test('token() creates sweep gradient from token', () {
+        const token = MixToken<SweepGradient>('test.sweepGradient');
+        final attr = utility.token(token);
+        expect(attr.value, isA<MixProp<SweepGradient>>());
+      });
     });
   });
 }

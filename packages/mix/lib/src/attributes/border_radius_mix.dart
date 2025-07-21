@@ -104,6 +104,11 @@ sealed class BorderRadiusGeometryMix<T extends BorderRadiusGeometry>
   Prop<Radius>? get bottomRight => null;
 
   @override
+  /// Merges this [BorderRadiusGeometryMix] instance with another of the same type.
+  ///
+  /// Returns a new instance where each property is merged using the [MixHelpers.merge] logic.
+  /// If [other] is null, returns this instance.
+  /// The resulting type will match this instance's type parameter [T].
   BorderRadiusGeometryMix<T> merge(covariant BorderRadiusGeometryMix<T>? other);
 }
 
@@ -202,10 +207,7 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
 
   @override
   int get hashCode {
-    return topLeft.hashCode ^
-        topRight.hashCode ^
-        bottomLeft.hashCode ^
-        bottomRight.hashCode;
+    return Object.hash(topLeft, topRight, bottomLeft, bottomRight);
   }
 }
 
@@ -302,10 +304,7 @@ final class BorderRadiusDirectionalMix
 
   @override
   int get hashCode {
-    return topStart.hashCode ^
-        topEnd.hashCode ^
-        bottomStart.hashCode ^
-        bottomEnd.hashCode;
+    return Object.hash(topStart, topEnd, bottomStart, bottomEnd);
   }
 
   /// These getters return null for BorderRadiusDirectional as they don't apply

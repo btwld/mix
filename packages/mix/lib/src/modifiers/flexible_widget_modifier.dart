@@ -82,6 +82,9 @@ class FlexibleModifierAttribute extends ModifierAttribute<FlexibleModifier>
 
   const FlexibleModifierAttribute({this.flex, this.fit});
 
+  FlexibleModifierAttribute.only({int? flex, FlexFit? fit})
+    : this(flex: Prop.maybe(flex), fit: Prop.maybe(fit));
+
   /// Resolves to [FlexibleModifier] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the

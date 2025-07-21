@@ -84,8 +84,7 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
   BoxBorderMix<T> merge(covariant BoxBorderMix<T>? other);
 }
 
-final class BorderMix extends BoxBorderMix<Border>
-    with MixDefaultValue<Border> {
+final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
   final MixProp<BorderSide>? left;
   final MixProp<BorderSide>? right;
 
@@ -202,18 +201,17 @@ final class BorderMix extends BoxBorderMix<Border>
   }
 
   @override
-  bool get isUniform => top == bottom && top == left && top == right;
+  bool get isUniform => top == bottom && bottom == left && left == right;
 
   @override
-  int get hashCode =>
-      top.hashCode ^ bottom.hashCode ^ left.hashCode ^ right.hashCode;
+  int get hashCode => Object.hash(top, bottom, left, right);
 
   @override
   Border get defaultValue => const Border();
 }
 
 final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
-    with MixDefaultValue<BorderDirectional> {
+    with DefaultValue<BorderDirectional> {
   final MixProp<BorderSide>? start;
   final MixProp<BorderSide>? end;
   static final BorderDirectionalMix none = BorderDirectionalMix.all(
@@ -330,7 +328,7 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
   }
 
   @override
-  bool get isUniform => top == bottom && top == start && top == end;
+  bool get isUniform => top == bottom && bottom == start && start == end;
 
   /// The list of properties that constitute the state of this [BorderDirectionalMix].
   ///
@@ -340,13 +338,12 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
   BorderDirectional get defaultValue => const BorderDirectional();
 
   @override
-  int get hashCode {
-    return top.hashCode ^ bottom.hashCode ^ start.hashCode ^ end.hashCode;
-  }
+  @override
+  int get hashCode => Object.hash(top, bottom, start, end);
 }
 
 final class BorderSideMix extends Mix<BorderSide>
-    with MixDefaultValue<BorderSide> {
+    with DefaultValue<BorderSide> {
   // Properties use MixableProperty for cleaner merging
   final Prop<Color>? color;
   final Prop<double>? width;
@@ -453,6 +450,5 @@ final class BorderSideMix extends Mix<BorderSide>
   BorderSide get defaultValue => const BorderSide();
 
   @override
-  int get hashCode =>
-      color.hashCode ^ width.hashCode ^ style.hashCode ^ strokeAlign.hashCode;
+  int get hashCode => Object.hash(color, width, style, strokeAlign);
 }

@@ -149,13 +149,14 @@ final class DecorationImageMix extends Mix<DecorationImage>
   }
 
   @override
-  int get hashCode =>
-      image.hashCode ^
-      fit.hashCode ^
-      alignment.hashCode ^
-      centerSlice.hashCode ^
-      repeat.hashCode ^
-      filterQuality.hashCode ^
-      invertColors.hashCode ^
-      isAntiAlias.hashCode;
+  int get hashCode => Object.hash(
+    image,
+    fit,
+    alignment,
+    centerSlice,
+    repeat,
+    filterQuality,
+    invertColors,
+    isAntiAlias,
+  );
 }

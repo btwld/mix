@@ -2,692 +2,463 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../helpers/custom_matchers.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  group('BorderUtility', () {
-    final border = BorderUtility(UtilityTestAttribute.new);
+  group('Border Utilities', () {
+    group('BorderSideUtility', () {
+      final utility = BorderSideUtility(UtilityTestAttribute.new);
 
-    test('border.top()', () {
-      final result = border.top(
-        color: Colors.red,
-        strokeAlign: 0.5,
-        style: BorderStyle.solid,
-        width: 10.0,
-      );
+      test('call() creates BorderSideMix', () {
+        final borderSideMix = BorderSideMix.only(
+          color: Colors.red,
+          width: 2.0,
+          style: BorderStyle.solid,
+        );
+        final attr = utility(borderSideMix);
+        expect(attr.value, isA<MixProp<BorderSide>>());
+      });
 
-      expect(result.value.top?.mixValue?.color, resolvesTo(Colors.red));
-      expect(result.value.top?.mixValue?.width, resolvesTo(10.0));
-      expect(result.value.top?.mixValue?.style, resolvesTo(BorderStyle.solid));
-      expect(result.value.top?.mixValue?.strokeAlign, resolvesTo(0.5));
-      expect(result.value.right, null);
-      expect(result.value.bottom, null);
-      expect(result.value.left, null);
+      test('as() creates BorderSideMix from BorderSide', () {
+        const borderSide = BorderSide(
+          color: Colors.blue,
+          width: 3.0,
+          style: BorderStyle.solid,
+        );
+        final attr = utility.as(borderSide);
+        expect(attr.value, isA<MixProp<BorderSide>>());
+      });
 
-      final resultColor = border.top.color(Colors.yellow);
-      final resultWidth = border.top.width(20.0);
-      final resultStyle = border.top.style(BorderStyle.solid);
-      final resultStrokeAlign = border.top.strokeAlign(0.2);
+      test('none() creates BorderSide.none', () {
+        final attr = utility.none();
+        expect(attr.value, isA<MixProp<BorderSide>>());
+      });
 
-      expect(resultColor.value.top?.mixValue?.color, resolvesTo(Colors.yellow));
-      expect(resultWidth.value.top?.mixValue?.width, resolvesTo(20.0));
-      expect(
-        resultStyle.value.top?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(
-        resultStrokeAlign.value.top?.mixValue?.strokeAlign,
-        resolvesTo(0.2),
-      );
+      test('only() creates BorderSideMix with specified properties', () {
+        final attr = utility.only(
+          color: Colors.green,
+          width: 1.5,
+          style: BorderStyle.solid,
+          strokeAlign: 0.5,
+        );
+        expect(attr.value, isA<MixProp<BorderSide>>());
+      });
+
+      group('Property Utilities', () {
+        test('color() creates border side with color', () {
+          final attr = utility.color(Colors.purple);
+          expect(attr.value, isA<MixProp<BorderSide>>());
+        });
+
+        test('color.red() creates border side with red color', () {
+          final attr = utility.color.red();
+          expect(attr.value, isA<MixProp<BorderSide>>());
+        });
+
+        test('width() creates border side with width', () {
+          final attr = utility.width(4.0);
+          expect(attr.value, isA<MixProp<BorderSide>>());
+        });
+
+        test('width.zero() creates border side with zero width', () {
+          final attr = utility.width.zero();
+          expect(attr.value, isA<MixProp<BorderSide>>());
+        });
+
+        test('style() creates border side with style', () {
+          final attr = utility.style(BorderStyle.solid);
+          expect(attr.value, isA<MixProp<BorderSide>>());
+        });
+
+        test('style.solid() creates border side with solid style', () {
+          final attr = utility.style.solid();
+          expect(attr.value, isA<MixProp<BorderSide>>());
+        });
+
+        test('style.none() creates border side with none style', () {
+          final attr = utility.style.none();
+          expect(attr.value, isA<MixProp<BorderSide>>());
+        });
+
+        test('strokeAlign() creates border side with stroke align', () {
+          final attr = utility.strokeAlign(0.8);
+          expect(attr.value, isA<MixProp<BorderSide>>());
+        });
+
+        test('strokeAlign.inside() creates border side with inside stroke align', () {
+          final attr = utility.strokeAlign.inside();
+          expect(attr.value, isA<MixProp<BorderSide>>());
+        });
+
+        test('strokeAlign.center() creates border side with center stroke align', () {
+          final attr = utility.strokeAlign.center();
+          expect(attr.value, isA<MixProp<BorderSide>>());
+        });
+
+        test('strokeAlign.outside() creates border side with outside stroke align', () {
+          final attr = utility.strokeAlign.outside();
+          expect(attr.value, isA<MixProp<BorderSide>>());
+        });
+      });
+
+      test('token() creates border side from token', () {
+        const token = MixToken<BorderSide>('test.borderSide');
+        final attr = utility.token(token);
+        expect(attr.value, isA<MixProp<BorderSide>>());
+      });
     });
 
-    test('border.bottom()', () {
-      final result = border.bottom(
-        color: Colors.red,
-        strokeAlign: 0.5,
-        style: BorderStyle.solid,
-        width: 10.0,
-      );
+    group('BorderUtility', () {
+      final utility = BorderUtility(UtilityTestAttribute.new);
 
-      expect(result.value.bottom?.mixValue?.color, resolvesTo(Colors.red));
-      expect(result.value.bottom?.mixValue?.width, resolvesTo(10.0));
-      expect(
-        result.value.bottom?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(result.value.bottom?.mixValue?.strokeAlign, resolvesTo(0.5));
-      expect(result.value.right, null);
-      expect(result.value.top, null);
-      expect(result.value.left, null);
+      test('call() creates BorderMix', () {
+        final borderMix = BorderMix.only(
+          top: BorderSideMix.only(color: Colors.red, width: 1.0),
+          bottom: BorderSideMix.only(color: Colors.blue, width: 2.0),
+        );
+        final attr = utility(borderMix);
+        expect(attr.value, isA<MixProp<Border>>());
+      });
 
-      final resultColor = border.bottom.color(Colors.yellow);
-      final resultWidth = border.bottom.width(20.0);
-      final resultStyle = border.bottom.style(BorderStyle.solid);
-      final resultStrokeAlign = border.bottom.strokeAlign(0.2);
+      test('as() creates BorderMix from Border', () {
+        const border = Border(
+          top: BorderSide(color: Colors.red, width: 1.0),
+          bottom: BorderSide(color: Colors.blue, width: 2.0),
+        );
+        final attr = utility.as(border);
+        expect(attr.value, isA<MixProp<Border>>());
+      });
 
-      expect(
-        resultColor.value.bottom?.mixValue?.color,
-        resolvesTo(Colors.yellow),
-      );
-      expect(resultWidth.value.bottom?.mixValue?.width, resolvesTo(20.0));
-      expect(
-        resultStyle.value.bottom?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(
-        resultStrokeAlign.value.bottom?.mixValue?.strokeAlign,
-        resolvesTo(0.2),
-      );
+      test('none() creates Border.none', () {
+        final attr = utility.none();
+        expect(attr.value, isA<MixProp<Border>>());
+      });
+
+      test('only() creates BorderMix with specified sides', () {
+        final attr = utility.only(
+          top: BorderSideMix.only(color: Colors.red, width: 1.0),
+          bottom: BorderSideMix.only(color: Colors.blue, width: 2.0),
+          left: BorderSideMix.only(color: Colors.green, width: 3.0),
+          right: BorderSideMix.only(color: Colors.yellow, width: 4.0),
+        );
+        expect(attr.value, isA<MixProp<Border>>());
+      });
+
+      group('Side Utilities', () {
+        test('all() creates border with all sides', () {
+          final attr = utility.all(BorderSideMix.only(color: Colors.black, width: 2.0));
+          expect(attr.value, isA<MixProp<Border>>());
+        });
+
+        test('all.color() creates border with all sides colored', () {
+          final attr = utility.all.color(Colors.orange);
+          expect(attr.value, isA<MixProp<Border>>());
+        });
+
+        test('all.width() creates border with all sides width', () {
+          final attr = utility.all.width(3.0);
+          expect(attr.value, isA<MixProp<Border>>());
+        });
+
+        test('top() creates border with top side', () {
+          final attr = utility.top(BorderSideMix.only(color: Colors.red, width: 1.0));
+          expect(attr.value, isA<MixProp<Border>>());
+        });
+
+        test('top.color() creates border with top side colored', () {
+          final attr = utility.top.color(Colors.red);
+          expect(attr.value, isA<MixProp<Border>>());
+        });
+
+        test('bottom() creates border with bottom side', () {
+          final attr = utility.bottom(BorderSideMix.only(color: Colors.blue, width: 2.0));
+          expect(attr.value, isA<MixProp<Border>>());
+        });
+
+        test('bottom.width() creates border with bottom side width', () {
+          final attr = utility.bottom.width(2.0);
+          expect(attr.value, isA<MixProp<Border>>());
+        });
+
+        test('left() creates border with left side', () {
+          final attr = utility.left(BorderSideMix.only(color: Colors.green, width: 3.0));
+          expect(attr.value, isA<MixProp<Border>>());
+        });
+
+        test('left.style() creates border with left side style', () {
+          final attr = utility.left.style.solid();
+          expect(attr.value, isA<MixProp<Border>>());
+        });
+
+        test('right() creates border with right side', () {
+          final attr = utility.right(BorderSideMix.only(color: Colors.yellow, width: 4.0));
+          expect(attr.value, isA<MixProp<Border>>());
+        });
+
+        test('right.strokeAlign() creates border with right side stroke align', () {
+          final attr = utility.right.strokeAlign.center();
+          expect(attr.value, isA<MixProp<Border>>());
+        });
+
+        test('vertical() creates border with top and bottom sides', () {
+          final attr = utility.vertical(BorderSideMix.only(color: Colors.purple, width: 1.5));
+          expect(attr.value, isA<MixProp<Border>>());
+        });
+
+        test('vertical.color() creates border with vertical sides colored', () {
+          final attr = utility.vertical.color(Colors.purple);
+          expect(attr.value, isA<MixProp<Border>>());
+        });
+
+        test('horizontal() creates border with left and right sides', () {
+          final attr = utility.horizontal(BorderSideMix.only(color: Colors.cyan, width: 2.5));
+          expect(attr.value, isA<MixProp<Border>>());
+        });
+
+        test('horizontal.width() creates border with horizontal sides width', () {
+          final attr = utility.horizontal.width(2.5);
+          expect(attr.value, isA<MixProp<Border>>());
+        });
+      });
+
+      group('Global Properties', () {
+        test('color() creates border with all sides colored', () {
+          final attr = utility.color(Colors.teal);
+          expect(attr.value, isA<MixProp<Border>>());
+        });
+
+        test('width() creates border with all sides width', () {
+          final attr = utility.width(1.8);
+          expect(attr.value, isA<MixProp<Border>>());
+        });
+
+        test('style() creates border with all sides style', () {
+          final attr = utility.style(BorderStyle.solid);
+          expect(attr.value, isA<MixProp<Border>>());
+        });
+
+        test('strokeAlign() creates border with all sides stroke align', () {
+          final attr = utility.strokeAlign(0.6);
+          expect(attr.value, isA<MixProp<Border>>());
+        });
+      });
+
+      test('token() creates border from token', () {
+        const token = MixToken<Border>('test.border');
+        final attr = utility.token(token);
+        expect(attr.value, isA<MixProp<Border>>());
+      });
     });
 
-    test('border.left()', () {
-      final result = border.left(
-        color: Colors.red,
-        strokeAlign: 0.5,
-        style: BorderStyle.solid,
-        width: 10.0,
-      );
-      expect(result.value.left?.mixValue?.color, resolvesTo(Colors.red));
-      expect(result.value.left?.mixValue?.width, resolvesTo(10.0));
-      expect(result.value.left?.mixValue?.style, resolvesTo(BorderStyle.solid));
-      expect(result.value.left?.mixValue?.strokeAlign, resolvesTo(0.5));
-      expect(result.value.right, null);
-      expect(result.value.top, null);
-      expect(result.value.bottom, null);
+    group('BorderDirectionalUtility', () {
+      final utility = BorderDirectionalUtility(UtilityTestAttribute.new);
 
-      final resultColor = border.left.color(Colors.yellow);
-      final resultWidth = border.left.width(20.0);
-      final resultStyle = border.left.style(BorderStyle.solid);
-      final resultStrokeAlign = border.left.strokeAlign(0.2);
+      test('call() creates BorderDirectionalMix', () {
+        final borderMix = BorderDirectionalMix.only(
+          top: BorderSideMix.only(color: Colors.red, width: 1.0),
+          start: BorderSideMix.only(color: Colors.blue, width: 2.0),
+        );
+        final attr = utility(borderMix);
+        expect(attr.value, isA<MixProp<BorderDirectional>>());
+      });
 
-      expect(
-        resultColor.value.left?.mixValue?.color,
-        resolvesTo(Colors.yellow),
-      );
-      expect(resultWidth.value.left?.mixValue?.width, resolvesTo(20.0));
-      expect(
-        resultStyle.value.left?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(
-        resultStrokeAlign.value.left?.mixValue?.strokeAlign,
-        resolvesTo(0.2),
-      );
+      test('as() creates BorderDirectionalMix from BorderDirectional', () {
+        const border = BorderDirectional(
+          top: BorderSide(color: Colors.red, width: 1.0),
+          start: BorderSide(color: Colors.blue, width: 2.0),
+        );
+        final attr = utility.as(border);
+        expect(attr.value, isA<MixProp<BorderDirectional>>());
+      });
+
+      test('none() creates BorderDirectional.none', () {
+        final attr = utility.none();
+        expect(attr.value, isA<MixProp<BorderDirectional>>());
+      });
+
+      test('only() creates BorderDirectionalMix with specified sides', () {
+        final attr = utility.only(
+          top: BorderSideMix.only(color: Colors.red, width: 1.0),
+          bottom: BorderSideMix.only(color: Colors.blue, width: 2.0),
+          start: BorderSideMix.only(color: Colors.green, width: 3.0),
+          end: BorderSideMix.only(color: Colors.yellow, width: 4.0),
+        );
+        expect(attr.value, isA<MixProp<BorderDirectional>>());
+      });
+
+      group('Side Utilities', () {
+        test('all() creates border with all sides', () {
+          final attr = utility.all(BorderSideMix.only(color: Colors.black, width: 2.0));
+          expect(attr.value, isA<MixProp<BorderDirectional>>());
+        });
+
+        test('top() creates border with top side', () {
+          final attr = utility.top(BorderSideMix.only(color: Colors.red, width: 1.0));
+          expect(attr.value, isA<MixProp<BorderDirectional>>());
+        });
+
+        test('bottom() creates border with bottom side', () {
+          final attr = utility.bottom(BorderSideMix.only(color: Colors.blue, width: 2.0));
+          expect(attr.value, isA<MixProp<BorderDirectional>>());
+        });
+
+        test('start() creates border with start side', () {
+          final attr = utility.start(BorderSideMix.only(color: Colors.green, width: 3.0));
+          expect(attr.value, isA<MixProp<BorderDirectional>>());
+        });
+
+        test('end() creates border with end side', () {
+          final attr = utility.end(BorderSideMix.only(color: Colors.yellow, width: 4.0));
+          expect(attr.value, isA<MixProp<BorderDirectional>>());
+        });
+
+        test('vertical() creates border with top and bottom sides', () {
+          final attr = utility.vertical(BorderSideMix.only(color: Colors.purple, width: 1.5));
+          expect(attr.value, isA<MixProp<BorderDirectional>>());
+        });
+
+        test('horizontal() creates border with start and end sides', () {
+          final attr = utility.horizontal(BorderSideMix.only(color: Colors.cyan, width: 2.5));
+          expect(attr.value, isA<MixProp<BorderDirectional>>());
+        });
+      });
+
+      test('token() creates border directional from token', () {
+        const token = MixToken<BorderDirectional>('test.borderDirectional');
+        final attr = utility.token(token);
+        expect(attr.value, isA<MixProp<BorderDirectional>>());
+      });
     });
 
-    test('border.right()', () {
-      final result = border.right(
-        color: Colors.red,
-        strokeAlign: 0.5,
-        style: BorderStyle.solid,
-        width: 10.0,
-      );
-      expect(result.value.right?.mixValue?.color, resolvesTo(Colors.red));
-      expect(result.value.right?.mixValue?.width, resolvesTo(10.0));
-      expect(
-        result.value.right?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(result.value.right?.mixValue?.strokeAlign, resolvesTo(0.5));
-      expect(result.value.left, null);
-      expect(result.value.top, null);
-      expect(result.value.bottom, null);
+    group('BoxBorderUtility', () {
+      final utility = BoxBorderUtility(UtilityTestAttribute.new);
 
-      final resultColor = border.right.color(Colors.yellow);
-      final resultWidth = border.right.width(20.0);
-      final resultStyle = border.right.style(BorderStyle.solid);
-      final resultStrokeAlign = border.right.strokeAlign(0.2);
+      test('call() creates BoxBorderMix from BorderMix', () {
+        final borderMix = BorderMix.only(
+          top: BorderSideMix.only(color: Colors.red, width: 1.0),
+        );
+        final attr = utility(borderMix);
+        expect(attr.value, isA<MixProp<BoxBorder>>());
+      });
 
-      expect(
-        resultColor.value.right?.mixValue?.color,
-        resolvesTo(Colors.yellow),
-      );
-      expect(resultWidth.value.right?.mixValue?.width, resolvesTo(20.0));
-      expect(
-        resultStyle.value.right?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(
-        resultStrokeAlign.value.right?.mixValue?.strokeAlign,
-        resolvesTo(0.2),
-      );
-    });
+      test('call() creates BoxBorderMix from BorderDirectionalMix', () {
+        final borderMix = BorderDirectionalMix.only(
+          start: BorderSideMix.only(color: Colors.blue, width: 2.0),
+        );
+        final attr = utility(borderMix);
+        expect(attr.value, isA<MixProp<BoxBorder>>());
+      });
 
-    test('border.horizontal()', () {
-      final result = border.horizontal(
-        color: Colors.blue,
-        strokeAlign: 0.3,
-        style: BorderStyle.solid,
-        width: 5.0,
-      );
-      expect(result.value.top?.mixValue?.color, resolvesTo(Colors.blue));
-      expect(result.value.top?.mixValue?.width, resolvesTo(5.0));
-      expect(result.value.top?.mixValue?.style, resolvesTo(BorderStyle.solid));
-      expect(result.value.top?.mixValue?.strokeAlign, resolvesTo(0.3));
-      expect(result.value.bottom?.mixValue?.color, resolvesTo(Colors.blue));
-      expect(result.value.bottom?.mixValue?.width, resolvesTo(5.0));
-      expect(
-        result.value.bottom?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(result.value.bottom?.mixValue?.strokeAlign, resolvesTo(0.3));
-      expect(result.value.left, null);
-      expect(result.value.right, null);
+      test('as() creates BoxBorderMix from Border', () {
+        const border = Border(
+          top: BorderSide(color: Colors.red, width: 1.0),
+        );
+        final attr = utility.as(border);
+        expect(attr.value, isA<MixProp<BoxBorder>>());
+      });
 
-      final resultColor = border.horizontal.color(Colors.yellow);
-      final resultWidth = border.horizontal.width(20.0);
-      final resultStyle = border.horizontal.style(BorderStyle.solid);
-      final resultStrokeAlign = border.horizontal.strokeAlign(0.2);
+      test('as() creates BoxBorderMix from BorderDirectional', () {
+        const border = BorderDirectional(
+          start: BorderSide(color: Colors.blue, width: 2.0),
+        );
+        final attr = utility.as(border);
+        expect(attr.value, isA<MixProp<BoxBorder>>());
+      });
 
-      expect(resultColor.value.top?.mixValue?.color, resolvesTo(Colors.yellow));
-      expect(resultWidth.value.top?.mixValue?.width, resolvesTo(20.0));
-      expect(
-        resultStyle.value.top?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(
-        resultStrokeAlign.value.top?.mixValue?.strokeAlign,
-        resolvesTo(0.2),
-      );
+      test('only() creates BoxBorderMix with specified sides', () {
+        final attr = utility.only(
+          top: BorderSideMix.only(color: Colors.red, width: 1.0),
+          bottom: BorderSideMix.only(color: Colors.blue, width: 2.0),
+          left: BorderSideMix.only(color: Colors.green, width: 3.0),
+          right: BorderSideMix.only(color: Colors.yellow, width: 4.0),
+        );
+        expect(attr.value, isA<MixProp<BoxBorder>>());
+      });
 
-      expect(
-        resultColor.value.bottom?.mixValue?.color,
-        resolvesTo(Colors.yellow),
-      );
-      expect(resultWidth.value.bottom?.mixValue?.width, resolvesTo(20.0));
-      expect(
-        resultStyle.value.bottom?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(
-        resultStrokeAlign.value.bottom?.mixValue?.strokeAlign,
-        resolvesTo(0.2),
-      );
-    });
+      group('Delegated Properties', () {
+        test('all() creates box border with all sides', () {
+          final attr = utility.all(BorderSideMix.only(color: Colors.black, width: 2.0));
+          expect(attr.value, isA<MixProp<BoxBorder>>());
+        });
 
-    test('border.vertical()', () {
-      final result = border.vertical(
-        color: Colors.green,
-        strokeAlign: 0.2,
-        style: BorderStyle.solid,
-        width: 7.0,
-      );
-      expect(result.value.left?.mixValue?.color, resolvesTo(Colors.green));
-      expect(result.value.left?.mixValue?.width, resolvesTo(7.0));
-      expect(result.value.left?.mixValue?.style, resolvesTo(BorderStyle.solid));
-      expect(result.value.left?.mixValue?.strokeAlign, resolvesTo(0.2));
-      expect(result.value.right?.mixValue?.color, resolvesTo(Colors.green));
-      expect(result.value.right?.mixValue?.width, resolvesTo(7.0));
-      expect(
-        result.value.right?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(result.value.right?.mixValue?.strokeAlign, resolvesTo(0.2));
-      expect(result.value.top, null);
-      expect(result.value.bottom, null);
+        test('top() creates box border with top side', () {
+          final attr = utility.top(BorderSideMix.only(color: Colors.red, width: 1.0));
+          expect(attr.value, isA<MixProp<BoxBorder>>());
+        });
 
-      final resultColor = border.vertical.color(Colors.yellow);
-      final resultWidth = border.vertical.width(20.0);
-      final resultStyle = border.vertical.style(BorderStyle.solid);
-      final resultStrokeAlign = border.vertical.strokeAlign(0.2);
+        test('bottom() creates box border with bottom side', () {
+          final attr = utility.bottom(BorderSideMix.only(color: Colors.blue, width: 2.0));
+          expect(attr.value, isA<MixProp<BoxBorder>>());
+        });
 
-      expect(
-        resultColor.value.left?.mixValue?.color,
-        resolvesTo(Colors.yellow),
-      );
-      expect(resultWidth.value.left?.mixValue?.width, resolvesTo(20.0));
-      expect(
-        resultStyle.value.left?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(
-        resultStrokeAlign.value.left?.mixValue?.strokeAlign,
-        resolvesTo(0.2),
-      );
+        test('left() creates box border with left side', () {
+          final attr = utility.left(BorderSideMix.only(color: Colors.green, width: 3.0));
+          expect(attr.value, isA<MixProp<BoxBorder>>());
+        });
 
-      expect(
-        resultColor.value.right?.mixValue?.color,
-        resolvesTo(Colors.yellow),
-      );
-      expect(resultWidth.value.right?.mixValue?.width, resolvesTo(20.0));
-      expect(
-        resultStyle.value.right?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(
-        resultStrokeAlign.value.right?.mixValue?.strokeAlign,
-        resolvesTo(0.2),
-      );
-    });
+        test('right() creates box border with right side', () {
+          final attr = utility.right(BorderSideMix.only(color: Colors.yellow, width: 4.0));
+          expect(attr.value, isA<MixProp<BoxBorder>>());
+        });
 
-    test('border.all()', () {
-      final result = border.all(
-        color: Colors.purple,
-        strokeAlign: 0.1,
-        style: BorderStyle.solid,
-        width: 3.0,
-      );
-      expect(result.value.top?.mixValue?.color, resolvesTo(Colors.purple));
-      expect(result.value.top?.mixValue?.width, resolvesTo(3.0));
-      expect(result.value.top?.mixValue?.style, resolvesTo(BorderStyle.solid));
-      expect(result.value.top?.mixValue?.strokeAlign, resolvesTo(0.1));
-      expect(result.value.bottom?.mixValue?.color, resolvesTo(Colors.purple));
-      expect(result.value.bottom?.mixValue?.width, resolvesTo(3.0));
-      expect(
-        result.value.bottom?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(result.value.bottom?.mixValue?.strokeAlign, resolvesTo(0.1));
-      expect(result.value.left?.mixValue?.color, resolvesTo(Colors.purple));
-      expect(result.value.left?.mixValue?.width, resolvesTo(3.0));
-      expect(result.value.left?.mixValue?.style, resolvesTo(BorderStyle.solid));
-      expect(result.value.left?.mixValue?.strokeAlign, resolvesTo(0.1));
-      expect(result.value.right?.mixValue?.color, resolvesTo(Colors.purple));
-      expect(result.value.right?.mixValue?.width, resolvesTo(3.0));
-      expect(
-        result.value.right?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(result.value.right?.mixValue?.strokeAlign, resolvesTo(0.1));
+        test('start() creates box border with start side', () {
+          final attr = utility.start(BorderSideMix.only(color: Colors.purple, width: 1.5));
+          expect(attr.value, isA<MixProp<BoxBorder>>());
+        });
 
-      final resultColor = border.all.color(Colors.yellow);
-      final resultWidth = border.all.width(20.0);
-      final resultStyle = border.all.style(BorderStyle.solid);
-      final resultStrokeAlign = border.all.strokeAlign(0.2);
+        test('end() creates box border with end side', () {
+          final attr = utility.end(BorderSideMix.only(color: Colors.cyan, width: 2.5));
+          expect(attr.value, isA<MixProp<BoxBorder>>());
+        });
 
-      expect(resultColor.value.top?.mixValue?.color, resolvesTo(Colors.yellow));
-      expect(resultWidth.value.top?.mixValue?.width, resolvesTo(20.0));
-      expect(
-        resultStyle.value.top?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(
-        resultStrokeAlign.value.top?.mixValue?.strokeAlign,
-        resolvesTo(0.2),
-      );
+        test('horizontal() creates box border with horizontal sides', () {
+          final attr = utility.horizontal(BorderSideMix.only(color: Colors.orange, width: 1.8));
+          expect(attr.value, isA<MixProp<BoxBorder>>());
+        });
 
-      expect(
-        resultColor.value.bottom?.mixValue?.color,
-        resolvesTo(Colors.yellow),
-      );
-      expect(resultWidth.value.bottom?.mixValue?.width, resolvesTo(20.0));
-      expect(
-        resultStyle.value.bottom?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(
-        resultStrokeAlign.value.bottom?.mixValue?.strokeAlign,
-        resolvesTo(0.2),
-      );
+        test('vertical() creates box border with vertical sides', () {
+          final attr = utility.vertical(BorderSideMix.only(color: Colors.pink, width: 2.2));
+          expect(attr.value, isA<MixProp<BoxBorder>>());
+        });
 
-      expect(
-        resultColor.value.left?.mixValue?.color,
-        resolvesTo(Colors.yellow),
-      );
-      expect(resultWidth.value.left?.mixValue?.width, resolvesTo(20.0));
-      expect(
-        resultStyle.value.left?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(
-        resultStrokeAlign.value.left?.mixValue?.strokeAlign,
-        resolvesTo(0.2),
-      );
+        test('color() creates box border with all sides colored', () {
+          final attr = utility.color(Colors.teal);
+          expect(attr.value, isA<MixProp<BoxBorder>>());
+        });
 
-      expect(
-        resultColor.value.right?.mixValue?.color,
-        resolvesTo(Colors.yellow),
-      );
-      expect(resultWidth.value.right?.mixValue?.width, resolvesTo(20.0));
-      expect(
-        resultStyle.value.right?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(
-        resultStrokeAlign.value.right?.mixValue?.strokeAlign,
-        resolvesTo(0.2),
-      );
-    });
-  });
+        test('width() creates box border with all sides width', () {
+          final attr = utility.width(1.8);
+          expect(attr.value, isA<MixProp<BoxBorder>>());
+        });
 
-  // BorderDirectionalUtility
+        test('style() creates box border with all sides style', () {
+          final attr = utility.style(BorderStyle.solid);
+          expect(attr.value, isA<MixProp<BoxBorder>>());
+        });
 
-  group('BorderDirectionalUtility', () {
-    final borderDirectional = BorderDirectionalUtility(
-      UtilityTestAttribute.new,
-    );
+        test('strokeAlign() creates box border with all sides stroke align', () {
+          final attr = utility.strokeAlign(0.6);
+          expect(attr.value, isA<MixProp<BoxBorder>>());
+        });
 
-    test('borderDirectional.top()', () {
-      final result = borderDirectional.top(
-        color: Colors.red,
-        strokeAlign: 0.5,
-        style: BorderStyle.solid,
-        width: 10.0,
-      );
+        test('none() creates box border with no sides', () {
+          final attr = utility.none();
+          expect(attr.value, isA<MixProp<BoxBorder>>());
+        });
+      });
 
-      expect(result.value.top?.mixValue?.color, resolvesTo(Colors.red));
-      expect(result.value.top?.mixValue?.width, resolvesTo(10.0));
-      expect(result.value.top?.mixValue?.style, resolvesTo(BorderStyle.solid));
-      expect(result.value.top?.mixValue?.strokeAlign, resolvesTo(0.5));
-      expect(result.value.end, null);
-      expect(result.value.bottom, null);
-      expect(result.value.start, null);
+      group('Directional Properties', () {
+        test('directional() provides access to BorderDirectionalUtility', () {
+          final attr = utility.directional.start(BorderSideMix.only(color: Colors.red, width: 1.0));
+          expect(attr.value, isA<MixProp<BoxBorder>>());
+        });
+      });
 
-      final resultColor = borderDirectional.top.color(Colors.yellow);
-      final resultWidth = borderDirectional.top.width(20.0);
-      final resultStyle = borderDirectional.top.style(BorderStyle.solid);
-      final resultStrokeAlign = borderDirectional.top.strokeAlign(0.2);
-
-      expect(resultColor.value.top?.mixValue?.color, resolvesTo(Colors.yellow));
-      expect(resultWidth.value.top?.mixValue?.width, resolvesTo(20.0));
-      expect(
-        resultStyle.value.top?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(
-        resultStrokeAlign.value.top?.mixValue?.strokeAlign,
-        resolvesTo(0.2),
-      );
-    });
-
-    test('borderDirectional.bottom()', () {
-      final result = borderDirectional.bottom(
-        color: Colors.red,
-        strokeAlign: 0.5,
-        style: BorderStyle.solid,
-        width: 10.0,
-      );
-
-      expect(result.value.bottom?.mixValue?.color, resolvesTo(Colors.red));
-      expect(result.value.bottom?.mixValue?.width, resolvesTo(10.0));
-      expect(
-        result.value.bottom?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(result.value.bottom?.mixValue?.strokeAlign, resolvesTo(0.5));
-      expect(result.value.end, null);
-      expect(result.value.top, null);
-      expect(result.value.start, null);
-
-      final resultColor = borderDirectional.bottom.color(Colors.yellow);
-      final resultWidth = borderDirectional.bottom.width(20.0);
-      final resultStyle = borderDirectional.bottom.style(BorderStyle.solid);
-      final resultStrokeAlign = borderDirectional.bottom.strokeAlign(0.2);
-
-      expect(
-        resultColor.value.bottom?.mixValue?.color,
-        resolvesTo(Colors.yellow),
-      );
-      expect(resultWidth.value.bottom?.mixValue?.width, resolvesTo(20.0));
-      expect(
-        resultStyle.value.bottom?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(
-        resultStrokeAlign.value.bottom?.mixValue?.strokeAlign,
-        resolvesTo(0.2),
-      );
-    });
-
-    test('borderDirectional.start()', () {
-      final result = borderDirectional.start(
-        color: Colors.red,
-        strokeAlign: 0.5,
-        style: BorderStyle.solid,
-        width: 10.0,
-      );
-      expect(result.value.start?.mixValue?.color, resolvesTo(Colors.red));
-      expect(result.value.start?.mixValue?.width, resolvesTo(10.0));
-      expect(
-        result.value.start?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(result.value.start?.mixValue?.strokeAlign, resolvesTo(0.5));
-      expect(result.value.end, null);
-      expect(result.value.top, null);
-      expect(result.value.bottom, null);
-
-      final resultColor = borderDirectional.start.color(Colors.yellow);
-      final resultWidth = borderDirectional.start.width(20.0);
-      final resultStyle = borderDirectional.start.style(BorderStyle.solid);
-      final resultStrokeAlign = borderDirectional.start.strokeAlign(0.2);
-
-      expect(
-        resultColor.value.start?.mixValue?.color,
-        resolvesTo(Colors.yellow),
-      );
-      expect(resultWidth.value.start?.mixValue?.width, resolvesTo(20.0));
-      expect(
-        resultStyle.value.start?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(
-        resultStrokeAlign.value.start?.mixValue?.strokeAlign,
-        resolvesTo(0.2),
-      );
-    });
-
-    test('borderDirectional.end()', () {
-      final result = borderDirectional.end(
-        color: Colors.red,
-        strokeAlign: 0.5,
-        style: BorderStyle.solid,
-        width: 10.0,
-      );
-      expect(result.value.end?.mixValue?.color, resolvesTo(Colors.red));
-      expect(result.value.end?.mixValue?.width, resolvesTo(10.0));
-      expect(result.value.end?.mixValue?.style, resolvesTo(BorderStyle.solid));
-      expect(result.value.end?.mixValue?.strokeAlign, resolvesTo(0.5));
-      expect(result.value.start, null);
-      expect(result.value.top, null);
-      expect(result.value.bottom, null);
-
-      final resultColor = borderDirectional.end.color(Colors.yellow);
-      final resultWidth = borderDirectional.end.width(20.0);
-      final resultStyle = borderDirectional.end.style(BorderStyle.solid);
-      final resultStrokeAlign = borderDirectional.end.strokeAlign(0.2);
-
-      expect(resultColor.value.end?.mixValue?.color, resolvesTo(Colors.yellow));
-      expect(resultWidth.value.end?.mixValue?.width, resolvesTo(20.0));
-      expect(
-        resultStyle.value.end?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(
-        resultStrokeAlign.value.end?.mixValue?.strokeAlign,
-        resolvesTo(0.2),
-      );
-    });
-
-    test('borderDirectional.horizontal()', () {
-      final result = borderDirectional.horizontal(
-        color: Colors.blue,
-        strokeAlign: 0.3,
-        style: BorderStyle.solid,
-        width: 5.0,
-      );
-      expect(result.value.top?.mixValue?.color, resolvesTo(Colors.blue));
-      expect(result.value.top?.mixValue?.width, resolvesTo(5.0));
-      expect(result.value.top?.mixValue?.style, resolvesTo(BorderStyle.solid));
-      expect(result.value.top?.mixValue?.strokeAlign, resolvesTo(0.3));
-      expect(result.value.bottom?.mixValue?.color, resolvesTo(Colors.blue));
-      expect(result.value.bottom?.mixValue?.width, resolvesTo(5.0));
-      expect(
-        result.value.bottom?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(result.value.bottom?.mixValue?.strokeAlign, resolvesTo(0.3));
-      expect(result.value.start, null);
-      expect(result.value.end, null);
-
-      final resultColor = borderDirectional.horizontal.color(Colors.yellow);
-      final resultWidth = borderDirectional.horizontal.width(20.0);
-      final resultStyle = borderDirectional.horizontal.style(BorderStyle.solid);
-      final resultStrokeAlign = borderDirectional.horizontal.strokeAlign(0.2);
-
-      expect(resultColor.value.top?.mixValue?.color, resolvesTo(Colors.yellow));
-      expect(resultWidth.value.top?.mixValue?.width, resolvesTo(20.0));
-      expect(
-        resultStyle.value.top?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(
-        resultStrokeAlign.value.top?.mixValue?.strokeAlign,
-        resolvesTo(0.2),
-      );
-
-      expect(
-        resultColor.value.bottom?.mixValue?.color,
-        resolvesTo(Colors.yellow),
-      );
-      expect(resultWidth.value.bottom?.mixValue?.width, resolvesTo(20.0));
-      expect(
-        resultStyle.value.bottom?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(
-        resultStrokeAlign.value.bottom?.mixValue?.strokeAlign,
-        resolvesTo(0.2),
-      );
-    });
-
-    test('borderDirectional.vertical()', () {
-      final result = borderDirectional.vertical(
-        color: Colors.green,
-        strokeAlign: 0.2,
-        style: BorderStyle.solid,
-        width: 7.0,
-      );
-      expect(result.value.start?.mixValue?.color, resolvesTo(Colors.green));
-      expect(result.value.start?.mixValue?.width, resolvesTo(7.0));
-      expect(
-        result.value.start?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(result.value.start?.mixValue?.strokeAlign, resolvesTo(0.2));
-      expect(result.value.end?.mixValue?.color, resolvesTo(Colors.green));
-      expect(result.value.end?.mixValue?.width, resolvesTo(7.0));
-      expect(result.value.end?.mixValue?.style, resolvesTo(BorderStyle.solid));
-      expect(result.value.end?.mixValue?.strokeAlign, resolvesTo(0.2));
-      expect(result.value.top, null);
-      expect(result.value.bottom, null);
-
-      final resultColor = borderDirectional.vertical.color(Colors.yellow);
-      final resultWidth = borderDirectional.vertical.width(20.0);
-      final resultStyle = borderDirectional.vertical.style(BorderStyle.solid);
-      final resultStrokeAlign = borderDirectional.vertical.strokeAlign(0.2);
-
-      expect(
-        resultColor.value.start?.mixValue?.color,
-        resolvesTo(Colors.yellow),
-      );
-      expect(resultWidth.value.start?.mixValue?.width, resolvesTo(20.0));
-      expect(
-        resultStyle.value.start?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(
-        resultStrokeAlign.value.start?.mixValue?.strokeAlign,
-        resolvesTo(0.2),
-      );
-
-      expect(resultColor.value.end?.mixValue?.color, resolvesTo(Colors.yellow));
-      expect(resultWidth.value.end?.mixValue?.width, resolvesTo(20.0));
-      expect(
-        resultStyle.value.end?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(
-        resultStrokeAlign.value.end?.mixValue?.strokeAlign,
-        resolvesTo(0.2),
-      );
-    });
-
-    test('borderDirectional.all()', () {
-      final result = borderDirectional.all(
-        color: Colors.purple,
-        strokeAlign: 0.1,
-        style: BorderStyle.solid,
-        width: 3.0,
-      );
-      expect(result.value.top?.mixValue?.color, resolvesTo(Colors.purple));
-      expect(result.value.top?.mixValue?.width, resolvesTo(3.0));
-      expect(result.value.top?.mixValue?.style, resolvesTo(BorderStyle.solid));
-      expect(result.value.top?.mixValue?.strokeAlign, resolvesTo(0.1));
-      expect(result.value.bottom?.mixValue?.color, resolvesTo(Colors.purple));
-      expect(result.value.bottom?.mixValue?.width, resolvesTo(3.0));
-      expect(
-        result.value.bottom?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(result.value.bottom?.mixValue?.strokeAlign, resolvesTo(0.1));
-      expect(result.value.start?.mixValue?.color, resolvesTo(Colors.purple));
-      expect(result.value.start?.mixValue?.width, resolvesTo(3.0));
-      expect(
-        result.value.start?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(result.value.start?.mixValue?.strokeAlign, resolvesTo(0.1));
-      expect(result.value.end?.mixValue?.color, resolvesTo(Colors.purple));
-      expect(result.value.end?.mixValue?.width, resolvesTo(3.0));
-      expect(result.value.end?.mixValue?.style, resolvesTo(BorderStyle.solid));
-      expect(result.value.end?.mixValue?.strokeAlign, resolvesTo(0.1));
-
-      final resultColor = borderDirectional.all.color(Colors.yellow);
-      final resultWidth = borderDirectional.all.width(20.0);
-      final resultStyle = borderDirectional.all.style(BorderStyle.solid);
-      final resultStrokeAlign = borderDirectional.all.strokeAlign(0.2);
-
-      expect(resultColor.value.top?.mixValue?.color, resolvesTo(Colors.yellow));
-      expect(resultWidth.value.top?.mixValue?.width, resolvesTo(20.0));
-      expect(
-        resultStyle.value.top?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(
-        resultStrokeAlign.value.top?.mixValue?.strokeAlign,
-        resolvesTo(0.2),
-      );
-
-      expect(
-        resultColor.value.bottom?.mixValue?.color,
-        resolvesTo(Colors.yellow),
-      );
-      expect(resultWidth.value.bottom?.mixValue?.width, resolvesTo(20.0));
-      expect(
-        resultStyle.value.bottom?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(
-        resultStrokeAlign.value.bottom?.mixValue?.strokeAlign,
-        resolvesTo(0.2),
-      );
-
-      expect(
-        resultColor.value.start?.mixValue?.color,
-        resolvesTo(Colors.yellow),
-      );
-      expect(resultWidth.value.start?.mixValue?.width, resolvesTo(20.0));
-      expect(
-        resultStyle.value.start?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(
-        resultStrokeAlign.value.start?.mixValue?.strokeAlign,
-        resolvesTo(0.2),
-      );
-
-      expect(resultColor.value.end?.mixValue?.color, resolvesTo(Colors.yellow));
-      expect(resultWidth.value.end?.mixValue?.width, resolvesTo(20.0));
-      expect(
-        resultStyle.value.end?.mixValue?.style,
-        resolvesTo(BorderStyle.solid),
-      );
-      expect(
-        resultStrokeAlign.value.end?.mixValue?.strokeAlign,
-        resolvesTo(0.2),
-      );
+      test('token() creates box border from token', () {
+        const token = MixToken<BoxBorder>('test.boxBorder');
+        final attr = utility.token(token);
+        expect(attr.value, isA<MixProp<BoxBorder>>());
+      });
     });
   });
 }

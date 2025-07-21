@@ -113,8 +113,9 @@ class TextHeightBehaviorMix extends Mix<TextHeightBehavior> {
   }
 
   @override
-  int get hashCode =>
-      applyHeightToFirstAscent.hashCode ^
-      applyHeightToLastDescent.hashCode ^
-      leadingDistribution.hashCode;
+  int get hashCode => Object.hash(
+    applyHeightToFirstAscent,
+    applyHeightToLastDescent,
+    leadingDistribution,
+  );
 }

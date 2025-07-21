@@ -85,6 +85,9 @@ class SizedBoxModifierAttribute extends ModifierAttribute<SizedBoxModifier>
 
   const SizedBoxModifierAttribute({this.width, this.height});
 
+  SizedBoxModifierAttribute.only({double? width, double? height})
+    : this(width: Prop.maybe(width), height: Prop.maybe(height));
+
   /// Resolves to [SizedBoxModifier] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the

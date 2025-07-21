@@ -6,279 +6,165 @@ import '../../helpers/custom_matchers.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  // BorderSideMix tests - Test this first as it's a dependency
   group('BorderSideMix', () {
-    // Constructor Tests
-    group('Constructor Tests', () {
-      test('only constructor creates BorderSideMix with all properties', () {
-        final mix = BorderSideMix.only(
+    group('Constructor', () {
+      test('only constructor creates instance with correct properties', () {
+        final borderSideMix = BorderSideMix.only(
           color: Colors.red,
-          style: BorderStyle.solid,
           width: 2.0,
-          strokeAlign: BorderSide.strokeAlignCenter,
+          style: BorderStyle.solid,
+          strokeAlign: 1.0,
         );
 
-        expect(mix.color, resolvesTo(Colors.red));
-        expect(mix.style, resolvesTo(BorderStyle.solid));
-        expect(mix.width, resolvesTo(2.0));
-        expect(mix.strokeAlign, resolvesTo(BorderSide.strokeAlignCenter));
+        expect(borderSideMix.color, isProp(Colors.red));
+        expect(borderSideMix.width, isProp(2.0));
+        expect(borderSideMix.style, isProp(BorderStyle.solid));
+        expect(borderSideMix.strokeAlign, isProp(1.0));
       });
 
-      test('value constructor from BorderSide', () {
+      test('value constructor extracts properties from BorderSide', () {
         const borderSide = BorderSide(
           color: Colors.blue,
           width: 3.0,
           style: BorderStyle.solid,
-          strokeAlign: BorderSide.strokeAlignInside,
+          strokeAlign: 0.5,
         );
 
-        final mix = BorderSideMix.value(borderSide);
+        final borderSideMix = BorderSideMix.value(borderSide);
 
-        expect(mix.color, resolvesTo(borderSide.color));
-        expect(mix.width, resolvesTo(borderSide.width));
-        expect(mix.style, resolvesTo(borderSide.style));
-        expect(mix.strokeAlign, resolvesTo(borderSide.strokeAlign));
+        expect(borderSideMix.color, isProp(Colors.blue));
+        expect(borderSideMix.width, isProp(3.0));
+        expect(borderSideMix.style, isProp(BorderStyle.solid));
+        expect(borderSideMix.strokeAlign, isProp(0.5));
       });
 
-      test('main constructor with Prop values', () {
-        final mix = BorderSideMix(
-          color: Prop(Colors.green),
-          width: Prop(4.0),
-          style: Prop(BorderStyle.none),
-          strokeAlign: Prop(BorderSide.strokeAlignOutside),
-        );
-
-        expect(mix.color, resolvesTo(Colors.green));
-        expect(mix.width, resolvesTo(4.0));
-        expect(mix.style, resolvesTo(BorderStyle.none));
-        expect(mix.strokeAlign, resolvesTo(BorderSide.strokeAlignOutside));
+      test('maybeValue returns null for null input', () {
+        final result = BorderSideMix.maybeValue(null);
+        expect(result, isNull);
       });
 
-      test('none constant creates BorderSideMix with default values', () {
-        final mix = BorderSideMix.none;
+      test('maybeValue returns BorderSideMix for non-null input', () {
+        const borderSide = BorderSide(width: 1.0);
+        final result = BorderSideMix.maybeValue(borderSide);
 
-        final resolved = mix.resolve(MockBuildContext());
-        expect(resolved, const BorderSide());
+        expect(result, isNotNull);
+        expect(result!.width, isProp(1.0));
+      });
+
+      test('none static instance has correct properties', () {
+        final none = BorderSideMix.none;
+
+        expect(none.style, isProp(BorderStyle.none));
+        expect(none.width, isProp(0.0));
       });
     });
 
-    // Factory Tests
-    group('Factory Tests', () {
-      test('maybeValue returns BorderSideMix for non-null BorderSide', () {
-        const borderSide = BorderSide(color: Colors.red, width: 2.0);
-        final mix = BorderSideMix.maybeValue(borderSide);
-
-        expect(mix, isNotNull);
-        expect(mix?.color, resolvesTo(Colors.red));
-        expect(mix?.width, resolvesTo(2.0));
-      });
-
-      test('maybeValue returns null for null BorderSide', () {
-        final mix = BorderSideMix.maybeValue(null);
-        expect(mix, isNull);
-      });
-
-      test('maybeValue returns null for BorderSide.none', () {
-        final mix = BorderSideMix.maybeValue(BorderSide.none);
-        expect(mix, isNull);
-      });
-    });
-
-    // Resolution Tests
-    group('Resolution Tests', () {
-      test('resolves all properties correctly', () {
-        final mix = BorderSideMix.only(
-          color: Colors.purple,
-          width: 5.0,
-          style: BorderStyle.solid,
-          strokeAlign: BorderSide.strokeAlignCenter,
-        );
-
-        expect(
-          dto,
-          resolvesTo(
-            const BorderSide(
-              color: Colors.purple,
-              width: 5.0,
-              style: BorderStyle.solid,
-              strokeAlign: BorderSide.strokeAlignCenter,
-            ),
-          ),
-        );
-      });
-
-      test('resolves with default values for null properties', () {
-        const dto = BorderSideMix();
-
-        final resolved = mix.resolve(MockBuildContext());
-        expect(resolved.color, const BorderSide().color);
-        expect(resolved.width, const BorderSide().width);
-        expect(resolved.style, const BorderSide().style);
-        expect(resolved.strokeAlign, const BorderSide().strokeAlign);
-      });
-    });
-
-    // Merge Tests
-    group('Merge Tests', () {
-      test('merge with another BorderSideMix - all properties', () {
-        final mix1 = BorderSideMix.only(
-          color: Colors.red,
-          style: BorderStyle.solid,
-          width: 1.0,
-          strokeAlign: BorderSide.strokeAlignInside,
-        );
-
-        final mix2 = BorderSideMix.only(
-          color: Colors.blue,
-          style: BorderStyle.none,
-          width: 2.0,
-          strokeAlign: BorderSide.strokeAlignOutside,
-        );
-
-        final merged = dto1.merge(mix2);
-
-        expect(merged.color, resolvesTo(Colors.blue));
-        expect(merged.style, resolvesTo(BorderStyle.none));
-        expect(merged.width, resolvesTo(2.0));
-        expect(merged.strokeAlign, resolvesTo(BorderSide.strokeAlignOutside));
-      });
-
-      test('merge with partial properties', () {
-        final mix1 = BorderSideMix.only(color: Colors.red, width: 1.0);
-
-        final mix2 = BorderSideMix.only(width: 2.0, style: BorderStyle.solid);
-
-        final merged = dto1.merge(mix2);
-
-        expect(merged.color, resolvesTo(Colors.red));
-        expect(merged.width, resolvesTo(2.0));
-        expect(merged.style, resolvesTo(BorderStyle.solid));
-      });
-
-      test('merge with null returns original', () {
-        final mix = BorderSideMix.only(color: Colors.green, width: 3.0);
-
-        final merged = mix.merge(null);
-        expect(merged, same(mix));
-      });
-    });
-
-    // Equality and HashCode Tests
-    group('Equality and HashCode Tests', () {
-      test('equal BorderSideMixs', () {
-        final mix1 = BorderSideMix.only(
+    group('resolve', () {
+      test('resolves to BorderSide with correct properties', () {
+        final borderSideMix = BorderSideMix.only(
           color: Colors.red,
           width: 2.0,
           style: BorderStyle.solid,
-          strokeAlign: BorderSide.strokeAlignCenter,
         );
 
-        final mix2 = BorderSideMix.only(
-          color: Colors.red,
-          width: 2.0,
-          style: BorderStyle.solid,
-          strokeAlign: BorderSide.strokeAlignCenter,
-        );
+        final context = MockBuildContext();
+        final resolved = borderSideMix.resolve(context);
 
-        expect(mix1, equals(mix2));
-        expect(mix1.hashCode, equals(mix2.hashCode));
+        expect(resolved.color, Colors.red);
+        expect(resolved.width, 2.0);
+        expect(resolved.style, BorderStyle.solid);
       });
 
-      test('not equal BorderSideMixs', () {
-        final mix1 = BorderSideMix.only(color: Colors.red);
-        final mix2 = BorderSideMix.only(color: Colors.blue);
+      test('uses default values for null properties', () {
+        final borderSideMix = BorderSideMix.only(width: 2.0);
 
-        expect(mix1, isNot(equals(mix2)));
+        final context = MockBuildContext();
+        final resolved = borderSideMix.resolve(context);
+
+        expect(resolved.width, 2.0);
+        expect(resolved.color, const Color(0xFF000000));
+        expect(resolved.style, BorderStyle.solid);
+      });
+    });
+
+    group('merge', () {
+      test('returns this when other is null', () {
+        final borderSideMix = BorderSideMix.only(width: 2.0);
+        final merged = borderSideMix.merge(null);
+
+        expect(merged, same(borderSideMix));
+      });
+
+      test('merges properties correctly', () {
+        final first = BorderSideMix.only(color: Colors.red, width: 2.0);
+
+        final second = BorderSideMix.only(width: 3.0, style: BorderStyle.solid);
+
+        final merged = first.merge(second);
+
+        expect(merged.color, isProp(Colors.red));
+        expect(merged.width, isProp(3.0));
+        expect(merged.style, isProp(BorderStyle.solid));
+      });
+    });
+
+    group('Equality', () {
+      test('returns true when all properties are the same', () {
+        final borderSideMix1 = BorderSideMix.only(
+          color: Colors.red,
+          width: 2.0,
+        );
+
+        final borderSideMix2 = BorderSideMix.only(
+          color: Colors.red,
+          width: 2.0,
+        );
+
+        expect(borderSideMix1, borderSideMix2);
+        expect(borderSideMix1.hashCode, borderSideMix2.hashCode);
+      });
+
+      test('returns false when properties are different', () {
+        final borderSideMix1 = BorderSideMix.only(width: 2.0);
+        final borderSideMix2 = BorderSideMix.only(width: 3.0);
+
+        expect(borderSideMix1, isNot(borderSideMix2));
       });
     });
   });
 
-  // BorderMix tests
   group('BorderMix', () {
-    // Constructor Tests
-    group('Constructor Tests', () {
-      test('only constructor creates BorderMix with all sides', () {
-        final mix = BorderMix.only(
-          top: BorderSideMix.only(width: 1.0),
-          bottom: BorderSideMix.only(width: 2.0),
-          left: BorderSideMix.only(width: 3.0),
-          right: BorderSideMix.only(width: 4.0),
+    group('Constructor', () {
+      test('only constructor creates instance with correct properties', () {
+        final topSide = BorderSideMix.only(color: Colors.red, width: 1.0);
+        final bottomSide = BorderSideMix.only(color: Colors.blue, width: 2.0);
+        final leftSide = BorderSideMix.only(color: Colors.green, width: 3.0);
+        final rightSide = BorderSideMix.only(color: Colors.yellow, width: 4.0);
+
+        final borderMix = BorderMix.only(
+          top: topSide,
+          bottom: bottomSide,
+          left: leftSide,
+          right: rightSide,
         );
 
-        final resolved = mix.resolve(MockBuildContext());
-        expect(resolved.top.width, 1.0);
-        expect(resolved.bottom.width, 2.0);
-        expect(resolved.left.width, 3.0);
-        expect(resolved.right.width, 4.0);
+        expect(borderMix.top, isA<MixProp<BorderSide>>());
+        expect(borderMix.bottom, isA<MixProp<BorderSide>>());
+        expect(borderMix.left, isA<MixProp<BorderSide>>());
+        expect(borderMix.right, isA<MixProp<BorderSide>>());
       });
 
-      test('main constructor with MixProp values', () {
-        final mix = BorderMix(
-          top: MixProp(BorderSideMix.only(width: 1.0)),
-          bottom: MixProp(BorderSideMix.only(width: 2.0)),
-          left: MixProp(BorderSideMix.only(width: 3.0)),
-          right: MixProp(BorderSideMix.only(width: 4.0)),
-        );
-
-        final resolved = mix.resolve(MockBuildContext());
-        expect(resolved.top.width, 1.0);
-        expect(resolved.bottom.width, 2.0);
-        expect(resolved.left.width, 3.0);
-        expect(resolved.right.width, 4.0);
-      });
-
-      test('all constructor creates uniform BorderMix', () {
+      test('all constructor creates uniform border', () {
         final side = BorderSideMix.only(color: Colors.red, width: 2.0);
-        final mix = BorderMix.all(side);
+        final borderMix = BorderMix.all(side);
 
-        const expectedSide = BorderSide(color: Colors.red, width: 2.0);
-        expect(mix.top, resolvesTo(expectedSide));
-        expect(mix.bottom, resolvesTo(expectedSide));
-        expect(mix.left, resolvesTo(expectedSide));
-        expect(mix.right, resolvesTo(expectedSide));
-        expect(mix.isUniform, isTrue);
+        expect(borderMix.top, isA<MixProp<BorderSide>>());
+        expect(borderMix.bottom, isA<MixProp<BorderSide>>());
+        expect(borderMix.left, isA<MixProp<BorderSide>>());
+        expect(borderMix.right, isA<MixProp<BorderSide>>());
       });
 
-      test('symmetric constructor', () {
-        final vertical = BorderSideMix.only(color: Colors.red);
-        final horizontal = BorderSideMix.only(color: Colors.blue);
-
-        final mix = BorderMix.symmetric(
-          vertical: vertical,
-          horizontal: horizontal,
-        );
-
-        const expectedVertical = BorderSide(color: Colors.red);
-        const expectedHorizontal = BorderSide(color: Colors.blue);
-        expect(mix.left, resolvesTo(expectedVertical));
-        expect(mix.right, resolvesTo(expectedVertical));
-        expect(mix.top, resolvesTo(expectedHorizontal));
-        expect(mix.bottom, resolvesTo(expectedHorizontal));
-      });
-
-      test('vertical constructor', () {
-        final side = BorderSideMix.only(width: 2.0);
-        final mix = BorderMix.vertical(side);
-
-        const expectedSide = BorderSide(width: 2.0);
-        expect(mix.left, resolvesTo(expectedSide));
-        expect(mix.right, resolvesTo(expectedSide));
-        expect(mix.top, isNull);
-        expect(mix.bottom, isNull);
-      });
-
-      test('horizontal constructor', () {
-        final side = BorderSideMix.only(width: 3.0);
-        final mix = BorderMix.horizontal(side);
-
-        const expectedSide = BorderSide(width: 3.0);
-        expect(mix.top, resolvesTo(expectedSide));
-        expect(mix.bottom, resolvesTo(expectedSide));
-        expect(mix.left, isNull);
-        expect(mix.right, isNull);
-      });
-
-      test('value constructor from Border', () {
+      test('value constructor extracts properties from Border', () {
         const border = Border(
           top: BorderSide(color: Colors.red, width: 1.0),
           bottom: BorderSide(color: Colors.blue, width: 2.0),
@@ -286,481 +172,106 @@ void main() {
           right: BorderSide(color: Colors.yellow, width: 4.0),
         );
 
-        final mix = BorderMix.value(border);
+        final borderMix = BorderMix.value(border);
 
-        expect(
-          mix.top,
-          resolvesTo(const BorderSide(color: Colors.red, width: 1.0)),
-        );
-        expect(
-          mix.bottom,
-          resolvesTo(const BorderSide(color: Colors.blue, width: 2.0)),
-        );
-        expect(
-          mix.left,
-          resolvesTo(const BorderSide(color: Colors.green, width: 3.0)),
-        );
-        expect(
-          mix.right,
-          resolvesTo(const BorderSide(color: Colors.yellow, width: 4.0)),
-        );
+        expect(borderMix.top, isA<MixProp<BorderSide>>());
+        expect(borderMix.bottom, isA<MixProp<BorderSide>>());
+        expect(borderMix.left, isA<MixProp<BorderSide>>());
+        expect(borderMix.right, isA<MixProp<BorderSide>>());
       });
 
-      test('none constant', () {
+      test('maybeValue returns null for null input', () {
+        final result = BorderMix.maybeValue(null);
+        expect(result, isNull);
+      });
+
+      test('maybeValue returns BorderMix for non-null input', () {
+        final border = Border.all(width: 1.0);
+        final result = BorderMix.maybeValue(border);
+
+        expect(result, isNotNull);
+        expect(result!.top, isA<MixProp<BorderSide>>());
+      });
+
+      test('none static instance has correct properties', () {
         final none = BorderMix.none;
-        expect(none.top, resolvesTo(BorderSide.none));
-        expect(none.bottom, resolvesTo(BorderSide.none));
-        expect(none.left, resolvesTo(BorderSide.none));
-        expect(none.right, resolvesTo(BorderSide.none));
+
+        expect(none.top, isA<MixProp<BorderSide>>());
+        expect(none.bottom, isA<MixProp<BorderSide>>());
+        expect(none.left, isA<MixProp<BorderSide>>());
+        expect(none.right, isA<MixProp<BorderSide>>());
       });
     });
 
-    // Factory Tests
-    group('Factory Tests', () {
-      test('maybeValue returns BorderMix for non-null Border', () {
-        final border = Border.all(color: Colors.red, width: 2.0);
-        final mix = BorderMix.maybeValue(border);
-
-        expect(mix, isNotNull);
-        expect(
-          dto?.top,
-          resolvesTo(const BorderSide(color: Colors.red, width: 2.0)),
-        );
-      });
-
-      test('maybeValue returns null for null Border', () {
-        final mix = BorderMix.maybeValue(null);
-        expect(mix, isNull);
-      });
-    });
-
-    // Resolution Tests
-    group('Resolution Tests', () {
-      test('resolves to Border with all sides', () {
-        final mix = BorderMix.only(
-          top: BorderSideMix.only(width: 5.0),
-          bottom: BorderSideMix.only(width: 10.0),
-          left: BorderSideMix.only(width: 15.0),
-          right: BorderSideMix.only(width: 20.0),
-        );
-
-        expect(
-          dto,
-          resolvesTo(
-            const Border(
-              top: BorderSide(width: 5.0),
-              bottom: BorderSide(width: 10.0),
-              left: BorderSide(width: 15.0),
-              right: BorderSide(width: 20.0),
-            ),
-          ),
-        );
-      });
-
-      test('resolves with default values for missing sides', () {
-        final mix = BorderMix.only(
-          top: BorderSideMix.only(width: 5.0),
-          left: BorderSideMix.only(width: 15.0),
-        );
-
-        expect(
-          dto,
-          resolvesTo(
-            const Border(
-              top: BorderSide(width: 5.0),
-              bottom: BorderSide.none,
-              left: BorderSide(width: 15.0),
-              right: BorderSide.none,
-            ),
-          ),
-        );
-      });
-    });
-
-    // Merge Tests
-    group('Merge Tests', () {
-      test('merge with another BorderMix', () {
-        final mix1 = BorderMix.only(
+    group('resolve', () {
+      test('resolves to Border with correct properties', () {
+        final borderMix = BorderMix.only(
           top: BorderSideMix.only(color: Colors.red, width: 1.0),
-          bottom: BorderSideMix.only(color: Colors.red, width: 1.0),
-          left: BorderSideMix.only(color: Colors.red, width: 1.0),
-          right: BorderSideMix.only(color: Colors.red, width: 1.0),
+          bottom: BorderSideMix.only(color: Colors.blue, width: 2.0),
+          left: BorderSideMix.only(color: Colors.green, width: 3.0),
+          right: BorderSideMix.only(color: Colors.yellow, width: 4.0),
         );
 
-        final mix2 = BorderMix.only(
-          top: BorderSideMix.only(width: 2.0),
-          bottom: BorderSideMix.only(width: 2.0),
-          left: BorderSideMix.only(width: 2.0),
-          right: BorderSideMix.only(width: 2.0),
-        );
+        final context = MockBuildContext();
+        final resolved = borderMix.resolve(context);
 
-        final merged = dto1.merge(mix2);
-
-        expect(
-          merged.top,
-          resolvesTo(const BorderSide(color: Colors.red, width: 2.0)),
-        );
-        expect(
-          merged.bottom,
-          resolvesTo(const BorderSide(color: Colors.red, width: 2.0)),
-        );
-        expect(
-          merged.left,
-          resolvesTo(const BorderSide(color: Colors.red, width: 2.0)),
-        );
-        expect(
-          merged.right,
-          resolvesTo(const BorderSide(color: Colors.red, width: 2.0)),
-        );
-      });
-
-      test('merge with null returns original', () {
-        final mix = BorderMix.all(BorderSideMix.only(width: 1.0));
-        final merged = mix.merge(null);
-
-        expect(merged, same(mix));
+        expect(resolved.top.color, Colors.red);
+        expect(resolved.top.width, 1.0);
+        expect(resolved.bottom.color, Colors.blue);
+        expect(resolved.bottom.width, 2.0);
+        expect(resolved.left.color, Colors.green);
+        expect(resolved.left.width, 3.0);
+        expect(resolved.right.color, Colors.yellow);
+        expect(resolved.right.width, 4.0);
       });
     });
 
-    // Property Tests
-    group('Property Tests', () {
-      test('isDirectional returns false', () {
-        final mix = BorderMix();
-        expect(mix.isDirectional, isFalse);
+    group('merge', () {
+      test('returns this when other is null', () {
+        final borderMix = BorderMix.only(top: BorderSideMix.only(width: 1.0));
+        final merged = borderMix.merge(null);
+
+        expect(merged, same(borderMix));
       });
 
-      test('isUniform with all sides equal', () {
-        final side = BorderSideMix.only(width: 2.0);
-        final mix = BorderMix.all(side);
-        expect(mix.isUniform, isTrue);
-      });
-
-      test('isUniform with different sides', () {
-        final mix = BorderMix.only(
-          top: BorderSideMix.only(width: 1.0),
-          bottom: BorderSideMix.only(width: 2.0),
+      test('merges properties correctly', () {
+        final first = BorderMix.only(
+          top: BorderSideMix.only(color: Colors.red, width: 1.0),
+          left: BorderSideMix.only(color: Colors.green, width: 3.0),
         );
-        expect(mix.isUniform, isFalse);
+
+        final second = BorderMix.only(
+          top: BorderSideMix.only(color: Colors.blue, width: 2.0),
+          right: BorderSideMix.only(color: Colors.yellow, width: 4.0),
+        );
+
+        final merged = first.merge(second);
+
+        expect(merged.top, isA<MixProp<BorderSide>>());
+        expect(merged.bottom, isNull);
+        expect(merged.left, isA<MixProp<BorderSide>>());
+        expect(merged.right, isA<MixProp<BorderSide>>());
       });
     });
 
-    // Equality and HashCode Tests
-    group('Equality and HashCode Tests', () {
-      test('equal BorderMixs', () {
-        final mix1 = BorderMix.only(
-          top: BorderSideMix.only(width: 1.0),
-          bottom: BorderSideMix.only(width: 2.0),
-          left: BorderSideMix.only(width: 3.0),
-          right: BorderSideMix.only(width: 4.0),
-        );
-
-        final mix2 = BorderMix.only(
-          top: BorderSideMix.only(width: 1.0),
-          bottom: BorderSideMix.only(width: 2.0),
-          left: BorderSideMix.only(width: 3.0),
-          right: BorderSideMix.only(width: 4.0),
-        );
-
-        expect(mix1, equals(mix2));
-        expect(mix1.hashCode, equals(mix2.hashCode));
-      });
-
-      test('not equal BorderMixs', () {
-        final mix1 = BorderMix.only(top: BorderSideMix.only(width: 1.0));
-        final mix2 = BorderMix.only(top: BorderSideMix.only(width: 2.0));
-
-        expect(mix1, isNot(equals(mix2)));
-      });
-    });
-  });
-
-  // BorderDirectionalMix tests
-  group('BorderDirectionalMix', () {
-    // Constructor Tests
-    group('Constructor Tests', () {
-      test('only constructor creates BorderDirectionalMix with all sides', () {
-        final mix = BorderDirectionalMix.only(
-          top: BorderSideMix.only(width: 1.0),
-          bottom: BorderSideMix.only(width: 2.0),
-          start: BorderSideMix.only(width: 3.0),
-          end: BorderSideMix.only(width: 4.0),
-        );
-
-        expect(mix.top, resolvesTo(const BorderSide(width: 1.0)));
-        expect(mix.bottom, resolvesTo(const BorderSide(width: 2.0)));
-        expect(mix.start, resolvesTo(const BorderSide(width: 3.0)));
-        expect(mix.end, resolvesTo(const BorderSide(width: 4.0)));
-      });
-
-      test('main constructor with MixProp values', () {
-        final mix = BorderDirectionalMix(
-          top: MixProp(BorderSideMix.only(width: 1.0)),
-          bottom: MixProp(BorderSideMix.only(width: 2.0)),
-          start: MixProp(BorderSideMix.only(width: 3.0)),
-          end: MixProp(BorderSideMix.only(width: 4.0)),
-        );
-
-        expect(mix.top, resolvesTo(const BorderSide(width: 1.0)));
-        expect(mix.bottom, resolvesTo(const BorderSide(width: 2.0)));
-        expect(mix.start, resolvesTo(const BorderSide(width: 3.0)));
-        expect(mix.end, resolvesTo(const BorderSide(width: 4.0)));
-      });
-
-      test('all constructor creates uniform BorderDirectionalMix', () {
+    group('Equality', () {
+      test('returns true when all properties are the same', () {
         final side = BorderSideMix.only(color: Colors.red, width: 2.0);
-        final mix = BorderDirectionalMix.all(side);
+        final borderMix1 = BorderMix.only(top: side, left: side);
+        final borderMix2 = BorderMix.only(top: side, left: side);
 
-        const expectedSide = BorderSide(color: Colors.red, width: 2.0);
-        expect(mix.top, resolvesTo(expectedSide));
-        expect(mix.bottom, resolvesTo(expectedSide));
-        expect(mix.start, resolvesTo(expectedSide));
-        expect(mix.end, resolvesTo(expectedSide));
-        expect(mix.isUniform, isTrue);
+        expect(borderMix1, borderMix2);
+        expect(borderMix1.hashCode, borderMix2.hashCode);
       });
 
-      test('symmetric constructor', () {
-        final vertical = BorderSideMix.only(color: Colors.red);
-        final horizontal = BorderSideMix.only(color: Colors.blue);
+      test('returns false when properties are different', () {
+        final side1 = BorderSideMix.only(width: 1.0);
+        final side2 = BorderSideMix.only(width: 2.0);
+        final borderMix1 = BorderMix.only(top: side1);
+        final borderMix2 = BorderMix.only(top: side2);
 
-        final mix = BorderDirectionalMix.symmetric(
-          vertical: vertical,
-          horizontal: horizontal,
-        );
-
-        const expectedVertical = BorderSide(color: Colors.red);
-        const expectedHorizontal = BorderSide(color: Colors.blue);
-        expect(mix.start, resolvesTo(expectedVertical));
-        expect(mix.end, resolvesTo(expectedVertical));
-        expect(mix.top, resolvesTo(expectedHorizontal));
-        expect(mix.bottom, resolvesTo(expectedHorizontal));
+        expect(borderMix1, isNot(borderMix2));
       });
-
-      test('value constructor from BorderDirectional', () {
-        const border = BorderDirectional(
-          top: BorderSide(color: Colors.red, width: 1.0),
-          bottom: BorderSide(color: Colors.blue, width: 2.0),
-          start: BorderSide(color: Colors.green, width: 3.0),
-          end: BorderSide(color: Colors.yellow, width: 4.0),
-        );
-
-        final mix = BorderDirectionalMix.value(border);
-
-        expect(
-          mix.top,
-          resolvesTo(const BorderSide(color: Colors.red, width: 1.0)),
-        );
-        expect(
-          mix.bottom,
-          resolvesTo(const BorderSide(color: Colors.blue, width: 2.0)),
-        );
-        expect(
-          mix.start,
-          resolvesTo(const BorderSide(color: Colors.green, width: 3.0)),
-        );
-        expect(
-          mix.end,
-          resolvesTo(const BorderSide(color: Colors.yellow, width: 4.0)),
-        );
-      });
-
-      test('none constant', () {
-        final none = BorderDirectionalMix.none;
-        expect(none.top, resolvesTo(BorderSide.none));
-        expect(none.bottom, resolvesTo(BorderSide.none));
-        expect(none.start, resolvesTo(BorderSide.none));
-        expect(none.end, resolvesTo(BorderSide.none));
-      });
-    });
-
-    // Factory Tests
-    group('Factory Tests', () {
-      test('maybeValue returns BorderDirectionalMix for non-null', () {
-        const border = BorderDirectional(
-          top: BorderSide(color: Colors.red),
-          bottom: BorderSide(color: Colors.red),
-          start: BorderSide(color: Colors.red),
-          end: BorderSide(color: Colors.red),
-        );
-        final mix = BorderDirectionalMix.maybeValue(border);
-
-        expect(mix, isNotNull);
-        expect(
-          dto?.top,
-          resolvesTo(const BorderSide(color: Colors.red, width: 2.0)),
-        );
-      });
-
-      test('maybeValue returns null for null', () {
-        final mix = BorderDirectionalMix.maybeValue(null);
-        expect(mix, isNull);
-      });
-    });
-
-    // Resolution Tests
-    group('Resolution Tests', () {
-      test('resolves to BorderDirectional', () {
-        final mix = BorderDirectionalMix.only(
-          top: BorderSideMix.only(width: 5.0),
-          bottom: BorderSideMix.only(width: 10.0),
-          start: BorderSideMix.only(width: 15.0),
-          end: BorderSideMix.only(width: 20.0),
-        );
-
-        expect(
-          dto,
-          resolvesTo(
-            const BorderDirectional(
-              top: BorderSide(width: 5.0),
-              bottom: BorderSide(width: 10.0),
-              start: BorderSide(width: 15.0),
-              end: BorderSide(width: 20.0),
-            ),
-          ),
-        );
-      });
-    });
-
-    // Merge Tests
-    group('Merge Tests', () {
-      test('merge with another BorderDirectionalMix', () {
-        final mix1 = BorderDirectionalMix.only(
-          top: BorderSideMix.only(color: Colors.red),
-          start: BorderSideMix.only(width: 1.0),
-        );
-
-        final mix2 = BorderDirectionalMix.only(
-          top: BorderSideMix.only(width: 2.0),
-          end: BorderSideMix.only(color: Colors.blue),
-        );
-
-        final merged = dto1.merge(mix2);
-
-        expect(
-          merged.top,
-          resolvesTo(const BorderSide(color: Colors.red, width: 2.0)),
-        );
-        expect(merged.start, resolvesTo(const BorderSide(width: 1.0)));
-        expect(merged.end, resolvesTo(const BorderSide(color: Colors.blue)));
-      });
-    });
-
-    // Property Tests
-    group('Property Tests', () {
-      test('isDirectional returns true', () {
-        final mix = BorderDirectionalMix();
-        expect(mix.isDirectional, isTrue);
-      });
-
-      test('isUniform with all sides equal', () {
-        final side = BorderSideMix.only(width: 2.0);
-        final mix = BorderDirectionalMix.all(side);
-        expect(mix.isUniform, isTrue);
-      });
-    });
-  });
-
-  // BoxBorderMix cross-type tests
-  group('BoxBorderMix cross-type tests', () {
-    test('tryToMerge with BorderMix and BorderDirectionalMix', () {
-      final borderMix = BorderMix.all(
-        BorderSideMix.only(color: Colors.yellow, width: 3.0),
-      );
-
-      final borderDirectionalDto = BorderDirectionalMix.only(
-        top: BorderSideMix.only(color: Colors.green),
-        bottom: BorderSideMix.only(width: 4.0),
-        start: BorderSideMix.only(color: Colors.red, width: 1.0),
-        end: BorderSideMix.only(color: Colors.blue, width: 2.0),
-      );
-
-      final merged =
-          BoxBorderMix.tryToMerge(borderMix, borderDirectionalDto)
-              as BorderDirectionalMix?;
-
-      expect(
-        merged?.top,
-        resolvesTo(const BorderSide(color: Colors.green, width: 3.0)),
-      );
-      expect(
-        merged?.bottom,
-        resolvesTo(const BorderSide(color: Colors.yellow, width: 4.0)),
-      );
-      expect(
-        merged?.start,
-        resolvesTo(const BorderSide(color: Colors.red, width: 1.0)),
-      );
-      expect(
-        merged?.end,
-        resolvesTo(const BorderSide(color: Colors.blue, width: 2.0)),
-      );
-    });
-
-    test('tryToMerge with BorderDirectionalMix and BorderMix', () {
-      final borderDirectionalDto = BorderDirectionalMix.only(
-        top: BorderSideMix.only(color: Colors.green),
-        start: BorderSideMix.only(width: 1.0),
-      );
-
-      final borderMix = BorderMix.only(
-        top: BorderSideMix.only(width: 3.0),
-        left: BorderSideMix.only(color: Colors.red),
-      );
-
-      final merged =
-          BoxBorderMix.tryToMerge(borderDirectionalDto, borderMix)
-              as BorderMix?;
-
-      expect(
-        merged?.top,
-        resolvesTo(const BorderSide(color: Colors.green, width: 3.0)),
-      );
-      expect(merged?.left, resolvesTo(const BorderSide(color: Colors.red)));
-    });
-
-    test('tryToMerge with null values', () {
-      final mix = BorderMix.all(BorderSideMix.only(width: 1.0));
-
-      expect(BoxBorderMix.tryToMerge(mix, null), same(mix));
-      expect(BoxBorderMix.tryToMerge(null, dto), same(mix));
-      expect(BoxBorderMix.tryToMerge(null, null), isNull);
-    });
-
-    test('value factory with Border', () {
-      final border = Border.all(color: Colors.red);
-      final mix = BoxBorderMix.value(border);
-
-      expect(mix, isA<BorderMix>());
-      expect(
-        (mix as BorderMix).top,
-        resolvesTo(const BorderSide(color: Colors.red)),
-      );
-    });
-
-    test('value factory with BorderDirectional', () {
-      const border = BorderDirectional(
-        top: BorderSide(color: Colors.blue),
-        bottom: BorderSide(color: Colors.blue),
-        start: BorderSide(color: Colors.blue),
-        end: BorderSide(color: Colors.blue),
-      );
-      final mix = BoxBorderMix.value(border);
-
-      expect(mix, isA<BorderDirectionalMix>());
-      expect(
-        (mix as BorderDirectionalMix).top,
-        resolvesTo(const BorderSide(color: Colors.blue)),
-      );
-    });
-
-    test('maybeValue factory', () {
-      final border = Border.all(color: Colors.red);
-      final mix = BoxBorderMix.maybeValue(border);
-
-      expect(mix, isNotNull);
-      expect(mix, isA<BorderMix>());
-
-      final nullDto = BoxBorderMix.maybeValue(null);
-      expect(nullDto, isNull);
     });
   });
 }

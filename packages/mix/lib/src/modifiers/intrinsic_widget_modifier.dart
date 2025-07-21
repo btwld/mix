@@ -49,41 +49,40 @@ final class IntrinsicHeightModifier extends Modifier<IntrinsicHeightModifier> {
   }
 }
 
-final class IntrinsicWidthModifierSpec
-    extends Modifier<IntrinsicWidthModifierSpec> {
-  const IntrinsicWidthModifierSpec();
+final class IntrinsicWidthModifier extends Modifier<IntrinsicWidthModifier> {
+  const IntrinsicWidthModifier();
 
-  /// Creates a copy of this [IntrinsicWidthModifierSpec] but with the given fields
+  /// Creates a copy of this [IntrinsicWidthModifier] but with the given fields
   /// replaced with the new values.
   @override
-  IntrinsicWidthModifierSpec copyWith() {
-    return const IntrinsicWidthModifierSpec();
+  IntrinsicWidthModifier copyWith() {
+    return const IntrinsicWidthModifier();
   }
 
-  /// Linearly interpolates between this [IntrinsicWidthModifierSpec] and another [IntrinsicWidthModifierSpec] based on the given parameter [t].
+  /// Linearly interpolates between this [IntrinsicWidthModifier] and another [IntrinsicWidthModifier] based on the given parameter [t].
   ///
   /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [IntrinsicWidthModifierSpec] is returned. When [t] is 1.0, the [other] [IntrinsicWidthModifierSpec] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [IntrinsicWidthModifierSpec] is returned.
+  /// When [t] is 0.0, the current [IntrinsicWidthModifier] is returned. When [t] is 1.0, the [other] [IntrinsicWidthModifier] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [IntrinsicWidthModifier] is returned.
   ///
-  /// If [other] is null, this method returns the current [IntrinsicWidthModifierSpec] instance.
+  /// If [other] is null, this method returns the current [IntrinsicWidthModifier] instance.
   ///
-  /// The interpolation is performed on each property of the [IntrinsicWidthModifierSpec] using the appropriate
+  /// The interpolation is performed on each property of the [IntrinsicWidthModifier] using the appropriate
   /// interpolation method:
 
   /// This method is typically used in animations to smoothly transition between
-  /// different [IntrinsicWidthModifierSpec] configurations.
+  /// different [IntrinsicWidthModifier] configurations.
   @override
-  IntrinsicWidthModifierSpec lerp(IntrinsicWidthModifierSpec? other, double t) {
+  IntrinsicWidthModifier lerp(IntrinsicWidthModifier? other, double t) {
     if (other == null) return this;
 
-    return const IntrinsicWidthModifierSpec();
+    return const IntrinsicWidthModifier();
   }
 
-  /// The list of properties that constitute the state of this [IntrinsicWidthModifierSpec].
+  /// The list of properties that constitute the state of this [IntrinsicWidthModifier].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [IntrinsicWidthModifierSpec] instances for equality.
+  /// compare two [IntrinsicWidthModifier] instances for equality.
   @override
   List<Object?> get props => [];
 
@@ -164,18 +163,18 @@ class IntrinsicHeightModifierSpecTween extends Tween<IntrinsicHeightModifier?> {
   }
 }
 
-/// Represents the attributes of a [IntrinsicWidthModifierSpec].
+/// Represents the attributes of a [IntrinsicWidthModifier].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [IntrinsicWidthModifierSpec].
+/// appearance of a [IntrinsicWidthModifier].
 ///
-/// Use this class to configure the attributes of a [IntrinsicWidthModifierSpec] and pass it to
-/// the [IntrinsicWidthModifierSpec] constructor.
+/// Use this class to configure the attributes of a [IntrinsicWidthModifier] and pass it to
+/// the [IntrinsicWidthModifier] constructor.
 class IntrinsicWidthModifierAttribute
-    extends ModifierAttribute<IntrinsicWidthModifierSpec> {
+    extends ModifierAttribute<IntrinsicWidthModifier> {
   const IntrinsicWidthModifierAttribute();
 
-  /// Resolves to [IntrinsicWidthModifierSpec] using the provided [MixContext].
+  /// Resolves to [IntrinsicWidthModifier] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
@@ -184,9 +183,9 @@ class IntrinsicWidthModifierAttribute
   /// final intrinsicWidthModifierSpec = IntrinsicWidthModifierAttribute(...).resolve(mix);
   /// ```
   @override
-  IntrinsicWidthModifierSpec resolve(BuildContext context) {
+  IntrinsicWidthModifier resolve(BuildContext context) {
     // ignore: prefer_const_constructors
-    return IntrinsicWidthModifierSpec();
+    return IntrinsicWidthModifier();
   }
 
   /// Merges the properties of this [IntrinsicWidthModifierAttribute] with the properties of [other].
@@ -214,18 +213,17 @@ class IntrinsicWidthModifierAttribute
   List<Object?> get props => [];
 }
 
-/// A tween that interpolates between two [IntrinsicWidthModifierSpec] instances.
+/// A tween that interpolates between two [IntrinsicWidthModifier] instances.
 ///
 /// This class can be used in animations to smoothly transition between
-/// different [IntrinsicWidthModifierSpec] specifications.
-class IntrinsicWidthModifierSpecTween
-    extends Tween<IntrinsicWidthModifierSpec?> {
+/// different [IntrinsicWidthModifier] specifications.
+class IntrinsicWidthModifierSpecTween extends Tween<IntrinsicWidthModifier?> {
   IntrinsicWidthModifierSpecTween({super.begin, super.end});
 
   @override
-  IntrinsicWidthModifierSpec lerp(double t) {
+  IntrinsicWidthModifier lerp(double t) {
     if (begin == null && end == null) {
-      return const IntrinsicWidthModifierSpec();
+      return const IntrinsicWidthModifier();
     }
 
     if (begin == null) {

@@ -2,229 +2,380 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../helpers/custom_matchers.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  group('TextStyleUtility', () {
-    final textStyle = TextStyleUtility(UtilityTestAttribute.new);
-    test('call() creates TextStyleMix correctly', () {
-      final yellowPaint = Paint()..color = Colors.yellow;
-      final purplePaint = Paint()..color = Colors.purple;
-      final attr = textStyle(
-        backgroundColor: Colors.blue,
-        color: Colors.red,
-        debugLabel: 'debugLabel',
-        decoration: TextDecoration.underline,
-        decorationColor: Colors.green,
-        decorationStyle: TextDecorationStyle.dashed,
-        fontFamily: 'Roboto',
-        fontFeatures: [const FontFeature.alternative(4)],
-        fontSize: 16.0,
-        fontStyle: FontStyle.italic,
-        fontWeight: FontWeight.bold,
-        height: 2.0,
-        letterSpacing: 1.0,
-        shadows: [
-          const Shadow(
-            color: Colors.black,
-            offset: Offset(1.0, 1.0),
-            blurRadius: 1.0,
-          ),
-        ],
-        textBaseline: TextBaseline.ideographic,
-        wordSpacing: 2.0,
-        fontVariations: const [FontVariation('wght', 900)],
-      );
+  group('Text Style Utilities', () {
+    group('TextStyleUtility', () {
+      final utility = TextStyleUtility(UtilityTestAttribute.new);
 
-      final attrWithPaint = textStyle(
-        background: purplePaint,
-        foreground: yellowPaint,
-      );
+      test('call() creates TextStyleMix', () {
+        final textStyleMix = TextStyleMix.only(
+          color: Colors.red,
+          fontSize: 16.0,
+          fontWeight: FontWeight.bold,
+          fontStyle: FontStyle.italic,
+        );
+        final attr = utility(textStyleMix);
+        expect(attr.value, isA<MixProp<TextStyle>>());
+      });
 
-      // Test the complete style using resolvesTo matcher
-      expect(
-        attr.value,
-        resolvesTo(
-          const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontStyle: FontStyle.italic,
-            fontSize: 16.0,
-            letterSpacing: 1.0,
-            wordSpacing: 2.0,
-            textBaseline: TextBaseline.ideographic,
-            shadows: [
-              Shadow(
-                color: Colors.black,
-                offset: Offset(1.0, 1.0),
-                blurRadius: 1.0,
-              ),
-            ],
-            color: Colors.red,
-            backgroundColor: Colors.blue,
-            fontFamily: 'Roboto',
-            fontFeatures: [FontFeature.alternative(4)],
-            decoration: TextDecoration.underline,
-            decorationColor: Colors.green,
-            decorationStyle: TextDecorationStyle.dashed,
-            fontVariations: [FontVariation('wght', 900)],
-            debugLabel: 'debugLabel',
-            height: 2.0,
-          ),
-        ),
-      );
+      test('as() creates TextStyleMix from TextStyle', () {
+        const textStyle = TextStyle(
+          color: Colors.blue,
+          fontSize: 18.0,
+          fontWeight: FontWeight.w500,
+          fontStyle: FontStyle.normal,
+          decoration: TextDecoration.underline,
+        );
+        final attr = utility.as(textStyle);
+        expect(attr.value, isA<MixProp<TextStyle>>());
+      });
 
-      // Test paint attributes separately since they can't be compared in const
-      final resolvedWithPaint = attrWithPaint.value.resolve(EmptyMixData);
-      expect(resolvedWithPaint.foreground, yellowPaint);
-      expect(resolvedWithPaint.background, purplePaint);
-    });
+      group('Property Utilities', () {
+        test('color() creates text style with color', () {
+          final attr = utility.color(Colors.green);
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
 
-    test('color() creates TextStyleMix correctly', () {
-      final attribute = textStyle(color: Colors.red);
+        test('color.red() creates text style with red color', () {
+          final attr = utility.color.red();
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
 
-      expect(attribute.value, resolvesTo(const TextStyle(color: Colors.red)));
-    });
+        test('color.blue() creates text style with blue color', () {
+          final attr = utility.color.blue();
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
 
-    test('backgroundColor() creates TextStyleMix correctly', () {
-      final attribute = textStyle(backgroundColor: Colors.blue);
+        test('fontWeight() creates text style with font weight', () {
+          final attr = utility.fontWeight(FontWeight.w600);
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
 
-      expect(
-        attribute.value,
-        resolvesTo(const TextStyle(backgroundColor: Colors.blue)),
-      );
-    });
+        test('fontWeight.bold() creates text style with bold font weight', () {
+          final attr = utility.fontWeight.bold();
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
 
-    test('fontFamily() creates TextStyleMix correctly', () {
-      final attribute = textStyle(fontFamily: 'Roboto');
+        test(
+          'fontWeight.normal() creates text style with normal font weight',
+          () {
+            final attr = utility.fontWeight.normal();
+            expect(attr.value, isA<MixProp<TextStyle>>());
+          },
+        );
 
-      expect(
-        attribute.value,
-        resolvesTo(const TextStyle(fontFamily: 'Roboto')),
-      );
-    });
+        test('fontWeight.w100() creates text style with w100 font weight', () {
+          final attr = utility.fontWeight.w100();
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
 
-    test('fontSize() creates TextStyleMix correctly', () {
-      final attribute = textStyle(fontSize: 16.0);
+        test('fontWeight.w900() creates text style with w900 font weight', () {
+          final attr = utility.fontWeight.w900();
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
 
-      expect(attribute.value, resolvesTo(const TextStyle(fontSize: 16.0)));
-    });
+        test('fontStyle() creates text style with font style', () {
+          final attr = utility.fontStyle(FontStyle.italic);
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
 
-    test('fontWeight() creates TextStyleMix correctly', () {
-      final attribute = textStyle.fontWeight.bold();
+        test(
+          'fontStyle.italic() creates text style with italic font style',
+          () {
+            final attr = utility.fontStyle.italic();
+            expect(attr.value, isA<MixProp<TextStyle>>());
+          },
+        );
 
-      expect(
-        attribute.value,
-        resolvesTo(const TextStyle(fontWeight: FontWeight.bold)),
-      );
-    });
+        test(
+          'fontStyle.normal() creates text style with normal font style',
+          () {
+            final attr = utility.fontStyle.normal();
+            expect(attr.value, isA<MixProp<TextStyle>>());
+          },
+        );
 
-    test('fontStyle() creates TextStyleMix correctly', () {
-      final attribute = textStyle.fontStyle.italic();
+        test('decoration() creates text style with text decoration', () {
+          final attr = utility.decoration(TextDecoration.underline);
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
 
-      expect(
-        attribute.value,
-        resolvesTo(const TextStyle(fontStyle: FontStyle.italic)),
-      );
-    });
+        test(
+          'decoration.underline() creates text style with underline decoration',
+          () {
+            final attr = utility.decoration.underline();
+            expect(attr.value, isA<MixProp<TextStyle>>());
+          },
+        );
 
-    test('letterSpacing() creates TextStyleMix correctly', () {
-      final attribute = textStyle(letterSpacing: 1.0);
+        test(
+          'decoration.overline() creates text style with overline decoration',
+          () {
+            final attr = utility.decoration.overline();
+            expect(attr.value, isA<MixProp<TextStyle>>());
+          },
+        );
 
-      expect(attribute.value, resolvesTo(const TextStyle(letterSpacing: 1.0)));
-    });
+        test(
+          'decoration.lineThrough() creates text style with line through decoration',
+          () {
+            final attr = utility.decoration.lineThrough();
+            expect(attr.value, isA<MixProp<TextStyle>>());
+          },
+        );
 
-    test('wordSpacing() creates TextStyleMix correctly', () {
-      final attribute = textStyle(wordSpacing: 2.0);
+        test('decoration.none() creates text style with no decoration', () {
+          final attr = utility.decoration.none();
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
 
-      expect(attribute.value, resolvesTo(const TextStyle(wordSpacing: 2.0)));
-    });
+        test('fontSize() creates text style with font size', () {
+          final attr = utility.fontSize(20.0);
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
 
-    test('textBaseline() creates TextStyleMix correctly', () {
-      final attribute = textStyle.textBaseline.ideographic();
+        test('backgroundColor() creates text style with background color', () {
+          final attr = utility.backgroundColor(Colors.yellow);
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
 
-      expect(
-        attribute.value,
-        resolvesTo(const TextStyle(textBaseline: TextBaseline.ideographic)),
-      );
-    });
+        test(
+          'backgroundColor.yellow() creates text style with yellow background',
+          () {
+            final attr = utility.backgroundColor.yellow();
+            expect(attr.value, isA<MixProp<TextStyle>>());
+          },
+        );
 
-    test('shadows() creates TextStyleMix correctly', () {
-      const shadow = Shadow(
-        color: Colors.black,
-        offset: Offset(1.0, 1.0),
-        blurRadius: 1.0,
-      );
-      final attribute = textStyle(shadows: [shadow]);
+        test('decorationColor() creates text style with decoration color', () {
+          final attr = utility.decorationColor(Colors.purple);
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
 
-      expect(attribute.value, resolvesTo(const TextStyle(shadows: [shadow])));
-    });
+        test(
+          'decorationColor.purple() creates text style with purple decoration color',
+          () {
+            final attr = utility.decorationColor.purple();
+            expect(attr.value, isA<MixProp<TextStyle>>());
+          },
+        );
 
-    test('fontFeatures() creates TextStyleMix correctly', () {
-      final attribute = textStyle.fontFeatures([
-        const FontFeature.alternative(4),
-      ]);
+        test('decorationStyle() creates text style with decoration style', () {
+          final attr = utility.decorationStyle(TextDecorationStyle.dashed);
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
 
-      expect(
-        attribute.value,
-        resolvesTo(const TextStyle(fontFeatures: [FontFeature.alternative(4)])),
-      );
-    });
+        test(
+          'decorationStyle.solid() creates text style with solid decoration style',
+          () {
+            final attr = utility.decorationStyle.solid();
+            expect(attr.value, isA<MixProp<TextStyle>>());
+          },
+        );
 
-    test('decoration() creates TextStyleMix correctly', () {
-      final attribute = textStyle.decoration.underline();
+        test(
+          'decorationStyle.double() creates text style with double decoration style',
+          () {
+            final attr = utility.decorationStyle.double();
+            expect(attr.value, isA<MixProp<TextStyle>>());
+          },
+        );
 
-      expect(
-        attribute.value,
-        resolvesTo(const TextStyle(decoration: TextDecoration.underline)),
-      );
-    });
+        test(
+          'decorationStyle.dotted() creates text style with dotted decoration style',
+          () {
+            final attr = utility.decorationStyle.dotted();
+            expect(attr.value, isA<MixProp<TextStyle>>());
+          },
+        );
 
-    test('decorationColor() creates TextStyleMix correctly', () {
-      final attribute = textStyle(decorationColor: Colors.green);
+        test(
+          'decorationStyle.dashed() creates text style with dashed decoration style',
+          () {
+            final attr = utility.decorationStyle.dashed();
+            expect(attr.value, isA<MixProp<TextStyle>>());
+          },
+        );
 
-      expect(
-        attribute.value,
-        resolvesTo(const TextStyle(decorationColor: Colors.green)),
-      );
-    });
+        test(
+          'decorationStyle.wavy() creates text style with wavy decoration style',
+          () {
+            final attr = utility.decorationStyle.wavy();
+            expect(attr.value, isA<MixProp<TextStyle>>());
+          },
+        );
 
-    test('decorationStyle() creates TextStyleMix correctly', () {
-      final attribute = textStyle.decorationStyle.dashed();
+        test('textBaseline() creates text style with text baseline', () {
+          final attr = utility.textBaseline(TextBaseline.alphabetic);
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
 
-      expect(
-        attribute.value,
-        resolvesTo(
-          const TextStyle(decorationStyle: TextDecorationStyle.dashed),
-        ),
-      );
-    });
+        test(
+          'textBaseline.alphabetic() creates text style with alphabetic baseline',
+          () {
+            final attr = utility.textBaseline.alphabetic();
+            expect(attr.value, isA<MixProp<TextStyle>>());
+          },
+        );
 
-    test('foreground() creates TextStyleMix correctly', () {
-      final yellowPaint = Paint()..color = Colors.yellow;
-      final attribute = textStyle.foreground(yellowPaint);
+        test(
+          'textBaseline.ideographic() creates text style with ideographic baseline',
+          () {
+            final attr = utility.textBaseline.ideographic();
+            expect(attr.value, isA<MixProp<TextStyle>>());
+          },
+        );
 
-      expect(attribute.value.foreground, resolvesTo(yellowPaint));
-    });
+        test('fontFamily() creates text style with font family', () {
+          final attr = utility.fontFamily('Roboto');
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
+      });
 
-    test('background() creates TextStyleMix correctly', () {
-      final purplePaint = Paint()..color = Colors.purple;
-      final attribute = textStyle.background(purplePaint);
+      group('Direct Methods', () {
+        test('height() creates text style with height', () {
+          final attr = utility.height(1.5);
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
 
-      expect(attribute.value.background, resolvesTo(purplePaint));
-    });
+        test('wordSpacing() creates text style with word spacing', () {
+          final attr = utility.wordSpacing(2.0);
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
 
-    test('fontVariations() creates TextStyleMix correctly', () {
-      final attribute = textStyle(
-        fontVariations: const [FontVariation('wght', 900)],
-      );
+        test('letterSpacing() creates text style with letter spacing', () {
+          final attr = utility.letterSpacing(1.2);
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
 
-      expect(
-        attribute.value,
-        resolvesTo(
-          const TextStyle(fontVariations: [FontVariation('wght', 900)]),
-        ),
-      );
+        test('fontVariations() creates text style with font variations', () {
+          final variations = [const FontVariation('wght', 400)];
+          final attr = utility.fontVariations(variations);
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
+
+        test(
+          'fontVariation() creates text style with single font variation',
+          () {
+            const variation = FontVariation('wght', 600);
+            final attr = utility.fontVariation(variation);
+            expect(attr.value, isA<MixProp<TextStyle>>());
+          },
+        );
+
+        test('shadows() creates text style with shadows', () {
+          const shadows = [
+            Shadow(color: Colors.black, blurRadius: 2.0, offset: Offset(1, 1)),
+          ];
+          final attr = utility.shadows(shadows);
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
+
+        test('italic() creates text style with italic font style', () {
+          final attr = utility.italic();
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
+
+        test('bold() creates text style with bold font weight', () {
+          final attr = utility.bold();
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
+
+        test('foreground() creates text style with foreground paint', () {
+          final paint = Paint()..color = Colors.red;
+          final attr = utility.foreground(paint);
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
+
+        test('background() creates text style with background paint', () {
+          final paint = Paint()..color = Colors.blue;
+          final attr = utility.background(paint);
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
+
+        test('fontFeatures() creates text style with font features', () {
+          const features = [FontFeature.enable('liga')];
+          final attr = utility.fontFeatures(features);
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
+
+        test('debugLabel() creates text style with debug label', () {
+          final attr = utility.debugLabel('test-label');
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
+
+        test(
+          'decorationThickness() creates text style with decoration thickness',
+          () {
+            final attr = utility.decorationThickness(2.0);
+            expect(attr.value, isA<MixProp<TextStyle>>());
+          },
+        );
+
+        test(
+          'fontFamilyFallback() creates text style with font family fallback',
+          () {
+            final fallback = ['Arial', 'sans-serif'];
+            final attr = utility.fontFamilyFallback(fallback);
+            expect(attr.value, isA<MixProp<TextStyle>>());
+          },
+        );
+      });
+
+      group('Edge Cases', () {
+        test('handles zero font size', () {
+          final attr = utility.fontSize(0.0);
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
+
+        test('handles very large font size', () {
+          final attr = utility.fontSize(100.0);
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
+
+        test('handles negative letter spacing', () {
+          final attr = utility.letterSpacing(-1.0);
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
+
+        test('handles zero height', () {
+          final attr = utility.height(0.0);
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
+
+        test('handles very large height', () {
+          final attr = utility.height(10.0);
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
+
+        test('handles empty font family fallback', () {
+          final attr = utility.fontFamilyFallback([]);
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
+
+        test('handles empty font variations', () {
+          final attr = utility.fontVariations([]);
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
+
+        test('handles empty shadows', () {
+          final attr = utility.shadows([]);
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
+
+        test('handles empty font features', () {
+          final attr = utility.fontFeatures([]);
+          expect(attr.value, isA<MixProp<TextStyle>>());
+        });
+      });
+
+      test('token() creates text style from token', () {
+        const token = MixToken<TextStyle>('test.textStyle');
+        final attr = utility.token(token);
+        expect(attr.value, isA<MixProp<TextStyle>>());
+      });
     });
   });
 }

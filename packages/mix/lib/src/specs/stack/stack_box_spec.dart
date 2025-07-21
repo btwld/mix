@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../core/attribute.dart';
-import '../../core/resolved_style_provider.dart';
 import '../../core/spec.dart';
 import '../box/box_attribute.dart';
 import '../box/box_spec.dart';
@@ -16,34 +15,6 @@ final class ZBoxSpec extends Spec<ZBoxSpec> with Diagnosticable {
   const ZBoxSpec({BoxSpec? box, StackSpec? stack})
     : box = box ?? const BoxSpec(),
       stack = stack ?? const StackSpec();
-
-  static ZBoxSpec from(BuildContext context) {
-    return maybeOf(context) ?? const ZBoxSpec();
-  }
-
-  /// Retrieves the [ZBoxSpec] from the nearest [ResolvedStyleProvider] ancestor.
-  ///
-  /// Returns null if no ancestor [ResolvedStyleProvider] is found.
-  static ZBoxSpec? maybeOf(BuildContext context) {
-    return ResolvedStyleProvider.of<ZBoxSpec>(context)?.spec;
-  }
-
-  /// {@template stack_box_spec_of}
-  /// Retrieves the [ZBoxSpec] from the nearest [ResolvedStyleProvider] ancestor in the widget tree.
-  ///
-  /// This method uses [ResolvedStyleProvider.of] for surgical rebuilds - only widgets
-  /// that call this method will rebuild when [ZBoxSpec] changes, not when other specs change.
-  /// If no ancestor [ResolvedStyleProvider] is found, this method returns an empty [ZBoxSpec].
-  ///
-  /// Example:
-  ///
-  /// ```dart
-  /// final stackBoxSpec = StackBoxSpec.of(context);
-  /// ```
-  /// {@endtemplate}
-  static ZBoxSpec of(BuildContext context) {
-    return maybeOf(context) ?? const ZBoxSpec();
-  }
 
   /// Creates a copy of this [ZBoxSpec] but with the given fields
   /// replaced with the new values.

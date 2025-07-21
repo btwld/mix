@@ -18,7 +18,7 @@ sealed class ConstraintsMix<T extends Constraints> extends Mix<T> {
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a `[BoxConstraints]
 final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
-    with MixDefaultValue<BoxConstraints> {
+    with DefaultValue<BoxConstraints> {
   // Properties use MixableProperty for cleaner merging
   final Prop<double>? minWidth;
   final Prop<double>? maxWidth;
@@ -138,9 +138,6 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
 
   @override
   int get hashCode {
-    return minWidth.hashCode ^
-        maxWidth.hashCode ^
-        minHeight.hashCode ^
-        maxHeight.hashCode;
+    return Object.hash(minWidth, maxWidth, minHeight, maxHeight);
   }
 }

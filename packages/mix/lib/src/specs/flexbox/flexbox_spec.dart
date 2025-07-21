@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../core/attribute.dart';
-import '../../core/resolved_style_provider.dart';
 import '../../core/spec.dart';
 import '../../core/utility.dart';
 import '../box/box_attribute.dart';
@@ -17,26 +16,6 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
   const FlexBoxSpec({BoxSpec? box, FlexSpec? flex})
     : box = box ?? const BoxSpec(),
       flex = flex ?? const FlexSpec();
-
-  static FlexBoxSpec? maybeOf(BuildContext context) {
-    return ResolvedStyleProvider.of<FlexBoxSpec>(context)?.spec;
-  }
-
-  /// {@template flex_box_spec_of}
-  /// Retrieves the [FlexBoxSpec] from the nearest [ResolvedStyleProvider] ancestor in the widget tree.
-  ///
-  /// This method provides the resolved FlexBoxSpec from the style system.
-  /// If no ancestor [ResolvedStyleProvider] is found, this method returns an empty [FlexBoxSpec].
-  ///
-  /// Example:
-  ///
-  /// ```dart
-  /// final flexBoxSpec = FlexBoxSpec.of(context);
-  /// ```
-  /// {@endtemplate}
-  static FlexBoxSpec of(BuildContext context) {
-    return maybeOf(context) ?? const FlexBoxSpec();
-  }
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties.add(DiagnosticsProperty('box', box, defaultValue: null));

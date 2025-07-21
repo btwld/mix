@@ -16,7 +16,7 @@ abstract class Style<S extends Spec<S>> extends SpecAttribute<S> {
 
   /// Unique key used for merging elements of the same type
   @override
-  Object get mergeKey => runtimeType;
+  Type get mergeKey => runtimeType;
 }
 
 /// Result of Style.resolve() containing fully resolved styling data

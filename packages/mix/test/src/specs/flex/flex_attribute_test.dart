@@ -32,7 +32,7 @@ void main() {
         textDirection: TextDirection.rtl,
         textBaseline: TextBaseline.alphabetic,
         clipBehavior: Clip.antiAlias,
-        gap: SpaceDto.value(10.0),
+        gap: Prop<double>(10.0),
       );
 
       expect(
@@ -98,7 +98,7 @@ void main() {
         textDirection: TextDirection.rtl,
         textBaseline: TextBaseline.alphabetic,
         clipBehavior: Clip.antiAlias,
-        gap: SpaceDto.value(10.0),
+        gap: Prop<double>(10.0),
       );
       const attribute2 = FlexSpecAttribute(
         direction: Axis.vertical,
@@ -109,7 +109,7 @@ void main() {
         textDirection: TextDirection.ltr,
         textBaseline: TextBaseline.ideographic,
         clipBehavior: Clip.hardEdge,
-        gap: SpaceDto.value(20.0),
+        gap: Prop<double>(20.0),
       );
       final mergedAttribute = attribute1.merge(attribute2);
 
@@ -121,7 +121,7 @@ void main() {
       expect(mergedAttribute.textDirection, TextDirection.ltr);
       expect(mergedAttribute.textBaseline, TextBaseline.ideographic);
       expect(mergedAttribute.clipBehavior, Clip.hardEdge);
-      expect(mergedAttribute.gap, const SpaceDto.value(20.0));
+      expect(mergedAttribute.$gap, Prop<double>(20.0));
     });
   });
 }

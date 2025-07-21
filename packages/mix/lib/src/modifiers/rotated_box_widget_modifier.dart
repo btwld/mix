@@ -8,31 +8,31 @@ import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/utility.dart';
 
-final class RotatedBoxModifierSpec extends Modifier<RotatedBoxModifierSpec> {
+final class RotatedBoxModifier extends Modifier<RotatedBoxModifier> {
   final int quarterTurns;
-  const RotatedBoxModifierSpec([int? quarterTurns])
+  const RotatedBoxModifier([int? quarterTurns])
     : quarterTurns = quarterTurns ?? 0;
 
-  /// Creates a copy of this [RotatedBoxModifierSpec] but with the given fields
+  /// Creates a copy of this [RotatedBoxModifier] but with the given fields
   /// replaced with the new values.
   @override
-  RotatedBoxModifierSpec copyWith({int? quarterTurns}) {
-    return RotatedBoxModifierSpec(quarterTurns ?? this.quarterTurns);
+  RotatedBoxModifier copyWith({int? quarterTurns}) {
+    return RotatedBoxModifier(quarterTurns ?? this.quarterTurns);
   }
 
   @override
-  RotatedBoxModifierSpec lerp(RotatedBoxModifierSpec? other, double t) {
+  RotatedBoxModifier lerp(RotatedBoxModifier? other, double t) {
     if (other == null) return this;
 
-    return RotatedBoxModifierSpec(
+    return RotatedBoxModifier(
       MixHelpers.lerpInt(quarterTurns, other.quarterTurns, t),
     );
   }
 
-  /// The list of properties that constitute the state of this [RotatedBoxModifierSpec].
+  /// The list of properties that constitute the state of this [RotatedBoxModifier].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [RotatedBoxModifierSpec] instances for equality.
+  /// compare two [RotatedBoxModifier] instances for equality.
   @override
   List<Object?> get props => [quarterTurns];
 
@@ -42,20 +42,23 @@ final class RotatedBoxModifierSpec extends Modifier<RotatedBoxModifierSpec> {
   }
 }
 
-/// Represents the attributes of a [RotatedBoxModifierSpec].
+/// Represents the attributes of a [RotatedBoxModifier].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [RotatedBoxModifierSpec].
+/// appearance of a [RotatedBoxModifier].
 ///
-/// Use this class to configure the attributes of a [RotatedBoxModifierSpec] and pass it to
-/// the [RotatedBoxModifierSpec] constructor.
+/// Use this class to configure the attributes of a [RotatedBoxModifier] and pass it to
+/// the [RotatedBoxModifier] constructor.
 class RotatedBoxModifierAttribute
-    extends ModifierAttribute<RotatedBoxModifierSpec> {
+    extends ModifierAttribute<RotatedBoxModifier> {
   final Prop<int>? quarterTurns;
 
   const RotatedBoxModifierAttribute({this.quarterTurns});
 
-  /// Resolves to [RotatedBoxModifierSpec] using the provided [MixContext].
+  RotatedBoxModifierAttribute.only({int? quarterTurns})
+    : this(quarterTurns: Prop.maybe(quarterTurns));
+
+  /// Resolves to [RotatedBoxModifier] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
@@ -64,8 +67,8 @@ class RotatedBoxModifierAttribute
   /// final rotatedBoxModifierSpec = RotatedBoxModifierAttribute(...).resolve(mix);
   /// ```
   @override
-  RotatedBoxModifierSpec resolve(BuildContext context) {
-    return RotatedBoxModifierSpec(MixHelpers.resolve(context, quarterTurns));
+  RotatedBoxModifier resolve(BuildContext context) {
+    return RotatedBoxModifier(MixHelpers.resolve(context, quarterTurns));
   }
 
   /// Merges the properties of this [RotatedBoxModifierAttribute] with the properties of [other].

@@ -33,32 +33,6 @@ void main() {
       );
     });
 
-    testWidgets('SpaceDto with Token<double> integration', (tester) async {
-      const smallToken = MixToken<double>('small');
-      const largeToken = MixToken<double>('large');
-
-      final theme = MixScopeData.static(
-        tokens: {smallToken: 8.0, largeToken: 24.0},
-      );
-
-      await tester.pumpWidget(
-        MixScope(
-          data: theme,
-          child: Builder(
-            builder: (context) {
-              const mix1 = SpaceDto.token(smallToken);
-              const mix2 = SpaceDto.token(largeToken);
-
-              final mixContext = MixContext.create(context, Style());
-              expect(mix1, resolvesTo(8.0, context: mixContext));
-              expect(mix2, resolvesTo(24.0, context: mixContext));
-
-              return Container();
-            },
-          ),
-        ),
-      );
-    });
 
     testWidgets('Utility extensions work with tokens', (tester) async {
       const primaryToken = MixToken<Color>('primary');

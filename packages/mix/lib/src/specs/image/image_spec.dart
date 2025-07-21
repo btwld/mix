@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../core/helpers.dart';
-import '../../core/resolved_style_provider.dart';
 import '../../core/spec.dart';
 
 final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
@@ -28,23 +27,6 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
     this.colorBlendMode,
   });
 
-  static ImageSpec from(BuildContext context) {
-    return maybeOf(context) ?? const ImageSpec();
-  }
-
-  /// Retrieves the [ImageSpec] from the nearest [ResolvedStyleProvider] ancestor.
-  ///
-  /// Returns null if no ancestor [ResolvedStyleProvider] is found.
-  static ImageSpec? maybeOf(BuildContext context) {
-    return ResolvedStyleProvider.of<ImageSpec>(context)?.spec;
-  }
-
-  /// Retrieves the [ImageSpec] from the nearest [ResolvedStyleProvider] ancestor in the widget tree.
-  ///
-  /// If no ancestor [ResolvedStyleProvider] is found, this method returns an empty [ImageSpec].
-  static ImageSpec of(BuildContext context) {
-    return maybeOf(context) ?? const ImageSpec();
-  }
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties.add(DiagnosticsProperty('width', width, defaultValue: null));

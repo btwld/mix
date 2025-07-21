@@ -67,27 +67,27 @@ void main() {
   // IntrinsicWidthModifierSpec
   group('IntrinsicWidthModifierSpec', () {
     test('lerp', () {
-      const spec = IntrinsicWidthModifierSpec();
-      const other = IntrinsicWidthModifierSpec();
+      const spec = IntrinsicWidthModifier();
+      const other = IntrinsicWidthModifier();
       final result = spec.lerp(other, 0.5);
       expect(result, spec);
     });
 
     test('copyWith', () {
-      const spec = IntrinsicWidthModifierSpec();
+      const spec = IntrinsicWidthModifier();
       final result = spec.copyWith();
       expect(result, spec);
     });
 
     // equality
     test('equality', () {
-      const spec = IntrinsicWidthModifierSpec();
-      const other = IntrinsicWidthModifierSpec();
+      const spec = IntrinsicWidthModifier();
+      const other = IntrinsicWidthModifier();
       expect(spec, other);
     });
 
     testWidgets('build', (tester) async {
-      const modifier = IntrinsicWidthModifierSpec();
+      const modifier = IntrinsicWidthModifier();
 
       await tester.pumpMaterialApp(modifier.build(Container()));
 
@@ -112,7 +112,7 @@ void main() {
 
     test('resolve', () {
       const modifier = IntrinsicWidthModifierAttribute();
-      expect(modifier, resolvesTo(const IntrinsicWidthModifierSpec()));
+      expect(modifier, resolvesTo(const IntrinsicWidthModifier()));
     });
 
     // equality

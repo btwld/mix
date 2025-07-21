@@ -173,6 +173,24 @@ class DefaultTextStyleModifierAttribute
     this.textHeightBehavior,
   });
 
+  DefaultTextStyleModifierAttribute.only({
+    TextStyleMix? style,
+    TextAlign? textAlign,
+    bool? softWrap,
+    TextOverflow? overflow,
+    int? maxLines,
+    TextWidthBasis? textWidthBasis,
+    TextHeightBehaviorMix? textHeightBehavior,
+  }) : this(
+         style: MixProp.maybe(style),
+         textAlign: Prop.maybe(textAlign),
+         softWrap: Prop.maybe(softWrap),
+         overflow: Prop.maybe(overflow),
+         maxLines: Prop.maybe(maxLines),
+         textWidthBasis: Prop.maybe(textWidthBasis),
+         textHeightBehavior: MixProp.maybe(textHeightBehavior),
+       );
+
   /// Resolves to [DefaultTextStyleModifier] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the

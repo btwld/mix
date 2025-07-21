@@ -1261,44 +1261,44 @@ final class StringUtility<T extends SpecAttribute<Object?>>
   const StringUtility(super.builder);
 }
 
-/// A utility class for creating [Attribute] instances from [double] values.
+/// A utility class for creating [StyleElement] instances from [double] values.
 ///
-/// This class extends [PropUtility] and provides methods to create [Attribute] instances
+/// This class extends [PropUtility] and provides methods to create [StyleElement] instances
 /// from predefined [double] values or custom [double] values.
 final class DoubleUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, double> {
   const DoubleUtility(super.builder);
 
-  /// Creates an [Attribute] instance with a value of 0.
+  /// Creates an [StyleElement] instance with a value of 0.
   T zero() => call(0);
 
-  /// Creates an [Attribute] instance with a value of [double.infinity].
+  /// Creates an [StyleElement] instance with a value of [double.infinity].
   T infinity() => call(double.infinity);
 }
 
-/// A utility class for creating [Attribute] instances from [int] values.
+/// A utility class for creating [StyleElement] instances from [int] values.
 ///
-/// This class extends [PropUtility] and provides methods to create [Attribute] instances
+/// This class extends [PropUtility] and provides methods to create [StyleElement] instances
 /// from predefined [int] values or custom [int] values.
 final class IntUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, int> {
   const IntUtility(super.builder);
 
-  /// Creates an [Attribute] instance with a value of 0.
+  /// Creates an [StyleElement] instance with a value of 0.
   T zero() => call(0);
 }
 
-/// A utility class for creating [Attribute] instances from [bool] values.
+/// A utility class for creating [StyleElement] instances from [bool] values.
 ///
-/// This class extends [PropUtility] and provides methods to create [Attribute] instances
+/// This class extends [PropUtility] and provides methods to create [StyleElement] instances
 /// from predefined [bool] values or custom [bool] values.
 final class BoolUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, bool> {
   const BoolUtility(super.builder);
 
-  /// Creates an [Attribute] instance with a value of `true`.
+  /// Creates an [StyleElement] instance with a value of `true`.
   T on() => call(true);
 
-  /// Creates an [Attribute] instance with a value of `false`.
+  /// Creates an [StyleElement] instance with a value of `false`.
   T off() => call(false);
 }

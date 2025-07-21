@@ -7,6 +7,7 @@ import '../core/widget_state/internal/mix_widget_state_builder.dart';
 import '../core/widget_state/internal/mouse_region_mix_state.dart';
 import '../core/widget_state/widget_state_controller.dart';
 import '../internal/constants.dart';
+import '../specs/box/box_attribute.dart';
 import '../specs/box/box_spec.dart';
 import '../specs/box/box_widget.dart';
 

@@ -148,13 +148,15 @@ class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
 
   @override
   int get hashCode {
-    return fontFamily.hashCode ^
-        fontFamilyFallback.hashCode ^
-        fontSize.hashCode ^
-        fontWeight.hashCode ^
-        fontStyle.hashCode ^
-        height.hashCode ^
-        leading.hashCode ^
-        forceStrutHeight.hashCode;
+    return Object.hash(
+      fontFamily,
+      fontFamilyFallback,
+      fontSize,
+      fontWeight,
+      fontStyle,
+      height,
+      leading,
+      forceStrutHeight,
+    );
   }
 }

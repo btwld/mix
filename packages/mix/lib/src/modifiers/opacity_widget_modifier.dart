@@ -80,6 +80,9 @@ class OpacityModifierAttribute extends ModifierAttribute<OpacityModifier>
 
   const OpacityModifierAttribute({this.opacity});
 
+  OpacityModifierAttribute.only({double? opacity})
+    : this(opacity: Prop.maybe(opacity));
+
   /// Resolves to [OpacityModifier] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the

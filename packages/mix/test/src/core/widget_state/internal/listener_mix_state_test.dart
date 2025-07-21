@@ -96,7 +96,7 @@ void main() {
 
       expect(
         position.hashCode,
-        equals(position.position.hashCode ^ position.offset.hashCode),
+        equals(Object.hash(position.position, position.offset)),
       );
     });
   });

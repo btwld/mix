@@ -327,26 +327,28 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
 
   @override
   int get hashCode {
-    return color.hashCode ^
-        backgroundColor.hashCode ^
-        fontSize.hashCode ^
-        fontWeight.hashCode ^
-        fontStyle.hashCode ^
-        letterSpacing.hashCode ^
-        debugLabel.hashCode ^
-        wordSpacing.hashCode ^
-        textBaseline.hashCode ^
-        decoration.hashCode ^
-        decorationColor.hashCode ^
-        decorationStyle.hashCode ^
-        height.hashCode ^
-        decorationThickness.hashCode ^
-        fontFamily.hashCode ^
-        foreground.hashCode ^
-        background.hashCode ^
-        fontFamilyFallback.hashCode ^
-        fontFeatures.hashCode ^
-        fontVariations.hashCode ^
-        shadows.hashCode;
+    return Object.hashAll([
+      color,
+      backgroundColor,
+      fontSize,
+      fontWeight,
+      fontStyle,
+      letterSpacing,
+      debugLabel,
+      wordSpacing,
+      textBaseline,
+      decoration,
+      decorationColor,
+      decorationStyle,
+      height,
+      decorationThickness,
+      fontFamily,
+      foreground,
+      background,
+      fontFamilyFallback,
+      fontFeatures,
+      fontVariations,
+      shadows,
+    ]);
   }
 }

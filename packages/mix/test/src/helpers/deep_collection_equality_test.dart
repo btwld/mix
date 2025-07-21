@@ -314,7 +314,7 @@ class _CustomObject {
   }
 
   @override
-  int get hashCode => id.hashCode ^ value.hashCode;
+  int get hashCode => Object.hash(id, value);
 }
 
 class _AnotherCustomObject {
@@ -338,13 +338,7 @@ class _AnotherCustomObject {
           listEquals(children, other.children);
 
   @override
-  int get hashCode =>
-      id.hashCode ^
-      name.hashCode ^
-      children.fold(
-        0,
-        (previousValue, element) => previousValue ^ element.hashCode,
-      );
+  int get hashCode => Object.hash(id, name, Object.hashAll(children));
 }
 
 class _BaseShape {
@@ -361,7 +355,7 @@ class _BaseShape {
           id == other.id;
 
   @override
-  int get hashCode => name.hashCode ^ id.hashCode;
+  int get hashCode => Object.hash(name, id);
 }
 
 class _ExtendedShape extends _BaseShape {

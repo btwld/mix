@@ -71,6 +71,9 @@ class MouseCursorDecoratorSpecAttribute
 
   const MouseCursorDecoratorSpecAttribute({this.mouseCursor});
 
+  MouseCursorDecoratorSpecAttribute.only({MouseCursor? mouseCursor})
+    : this(mouseCursor: Prop.maybe(mouseCursor));
+
   /// Resolves to [MouseCursorDecorator] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the

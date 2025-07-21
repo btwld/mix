@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../internal/iterable_ext.dart';
+import '../../internal/internal_extensions.dart';
 
 @immutable
 class MixToken<T> {
@@ -19,7 +19,7 @@ class MixToken<T> {
   }
 
   @override
-  String toString() => 'MixableToken<$T>($name)';
+  String toString() => 'MixToken<$T>($name)';
 
   @override
   int get hashCode => Object.hash(name, T);

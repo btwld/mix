@@ -12,7 +12,6 @@ import '../../core/animation_config.dart';
 import '../../core/attribute.dart';
 import '../../core/directive.dart';
 import '../../core/helpers.dart';
-import '../../core/mix_element.dart';
 import '../../core/prop.dart';
 import 'text_directives_util.dart';
 import 'text_spec.dart';

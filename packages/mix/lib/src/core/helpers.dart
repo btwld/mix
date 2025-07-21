@@ -49,7 +49,7 @@ class MixHelpers {
     return resolvable.resolve(context);
   }
 
-  static V? merge<V extends Mergeable>(V? a, V? b) {
+  static V? merge<V extends Mixable>(V? a, V? b) {
     return (a?.merge(b) ?? b) as V?;
   }
 
@@ -103,7 +103,7 @@ List<T>? _mergeList<T>(
           final currentValue = a[index];
           final otherValue = b[index];
 
-          if (currentValue is Mergeable && otherValue is Mergeable) {
+          if (currentValue is Mixable && otherValue is Mixable) {
             return currentValue.merge(otherValue) as T;
           }
 
@@ -155,4 +155,16 @@ w.StrutStyle? _lerpStrutStyle(w.StrutStyle? a, w.StrutStyle? b, double t) {
     forceStrutHeight: t < 0.5 ? a.forceStrutHeight : b.forceStrutHeight,
     debugLabel: a.debugLabel ?? b.debugLabel,
   );
+}
+
+/// Merge strategy for lists
+enum ListMergeStrategy {
+  /// Append items from other list (default)
+  append,
+
+  /// Replace items at same index
+  replace,
+
+  /// Override entire list
+  override,
 }

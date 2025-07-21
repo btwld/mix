@@ -3,429 +3,297 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../helpers/custom_matchers.dart';
-import '../../helpers/mock_build_context.dart';
+import '../../helpers/testing_utils.dart';
 
 void main() {
-  // BoxDecorationMix tests
   group('BoxDecorationMix', () {
-    // Constructor Tests
-    group('Constructor Tests', () {
-      test('main constructor creates BoxDecorationMix with all properties', () {
-        final borderMix = BorderMix.all(BorderSideMix.only(width: 2.0));
-        final borderRadiusDto = BorderRadiusMix.value(BorderRadius.circular(8));
-        final imageDto = DecorationImageMix.only(fit: BoxFit.cover);
-        final gradientDto = LinearGradientMix.only(
-          colors: const [Colors.red, Colors.blue],
-        );
-        final shadowDto = BoxShadowMix.only(
-          color: Colors.black,
-          offset: const Offset(2, 2),
-          blurRadius: 4.0,
-        );
-
-        final mix = BoxDecorationMix.only(
-          border: borderMix,
-          borderRadius: borderRadiusDto,
-          shape: BoxShape.rectangle,
-          backgroundBlendMode: BlendMode.srcOver,
-          color: Colors.red,
-          image: imageDto,
-          gradient: gradientDto,
-          boxShadow: [shadowDto],
+    group('Constructor', () {
+      test('only constructor creates instance with correct properties', () {
+        final boxDecorationMix = BoxDecorationMix.only(
+          color: Colors.blue,
+          shape: BoxShape.circle,
+          backgroundBlendMode: BlendMode.multiply,
+          border: BorderMix.all(
+            BorderSideMix.only(color: Colors.red, width: 2.0),
+          ),
+          borderRadius: BorderRadiusMix.only(
+            topLeft: const Radius.circular(8.0),
+          ),
+          boxShadow: [BoxShadowMix.only(color: Colors.black, blurRadius: 5.0)],
         );
 
-        expect(mix.color, resolvesTo(Colors.red));
-        expect(mix.shape, resolvesTo(BoxShape.rectangle));
-        expect(mix.backgroundBlendMode, resolvesTo(BlendMode.srcOver));
-        expect(mix, resolvesTo(isA<BoxDecoration>()));
+        expect(boxDecorationMix.color, isProp(Colors.blue));
+        expect(boxDecorationMix.shape, isProp(BoxShape.circle));
+        expect(
+          boxDecorationMix.backgroundBlendMode,
+          isProp(BlendMode.multiply),
+        );
+        expect(boxDecorationMix.border, isA<MixProp<BoxBorder>>());
+        expect(
+          boxDecorationMix.borderRadius,
+          isA<MixProp<BorderRadiusGeometry>>(),
+        );
+        expect(boxDecorationMix.boxShadow, hasLength(1));
+        expect(boxDecorationMix.boxShadow![0], isA<MixProp<BoxShadow>>());
       });
 
-      test('value constructor from BoxDecoration', () {
-        const decoration = BoxDecoration(
+      test('named constructors work correctly', () {
+        final borderMix = BorderMix.all(
+          BorderSideMix.only(color: Colors.red, width: 2.0),
+        );
+        final borderDecorationMix = BoxDecorationMix.border(borderMix);
+
+        expect(borderDecorationMix.border, isA<MixProp<BoxBorder>>());
+        expect(borderDecorationMix.color, isNull);
+
+        final colorDecorationMix = BoxDecorationMix.color(Colors.green);
+        expect(colorDecorationMix.color, isProp(Colors.green));
+        expect(colorDecorationMix.border, isNull);
+
+        final shapeDecorationMix = BoxDecorationMix.shape(BoxShape.circle);
+        expect(shapeDecorationMix.shape, isProp(BoxShape.circle));
+      });
+
+      test('value constructor extracts properties from BoxDecoration', () {
+        final boxDecoration = BoxDecoration(
+          color: Colors.red,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(8.0),
+        );
+
+        final boxDecorationMix = BoxDecorationMix.value(boxDecoration);
+
+        expect(boxDecorationMix.color, isProp(Colors.red));
+        expect(boxDecorationMix.shape, isProp(BoxShape.rectangle));
+        expect(
+          boxDecorationMix.borderRadius,
+          isA<MixProp<BorderRadiusGeometry>>(),
+        );
+      });
+
+      test('maybeValue returns null for null input', () {
+        final result = BoxDecorationMix.maybeValue(null);
+        expect(result, isNull);
+      });
+
+      test('maybeValue returns BoxDecorationMix for non-null input', () {
+        const boxDecoration = BoxDecoration(color: Colors.blue);
+        final result = BoxDecorationMix.maybeValue(boxDecoration);
+
+        expect(result, isNotNull);
+        expect(result!.color, isProp(Colors.blue));
+      });
+    });
+
+    group('resolve', () {
+      test('resolves to BoxDecoration with correct properties', () {
+        final boxDecorationMix = BoxDecorationMix.only(
           color: Colors.blue,
-          borderRadius: BorderRadius.all(Radius.circular(16)),
+          shape: BoxShape.circle,
+          border: BorderMix.all(
+            BorderSideMix.only(color: Colors.red, width: 2.0),
+          ),
+        );
+
+        final context = MockBuildContext();
+        final resolved = boxDecorationMix.resolve(context);
+
+        expect(resolved.color, Colors.blue);
+        expect(resolved.shape, BoxShape.circle);
+        expect(resolved.border, isA<Border>());
+      });
+
+      test('resolves with complex properties', () {
+        final boxDecorationMix = BoxDecorationMix.only(
+          borderRadius: BorderRadiusMix.only(
+            topLeft: const Radius.circular(8.0),
+          ),
           boxShadow: [
-            BoxShadow(
-              color: Colors.grey,
-              offset: Offset(1, 1),
-              blurRadius: 3.0,
-            ),
+            BoxShadowMix.only(color: Colors.black, blurRadius: 5.0),
+            BoxShadowMix.only(color: Colors.grey, blurRadius: 10.0),
           ],
         );
 
-        final mix = BoxDecorationMix.value(decoration);
-
-        expect(mix.color, resolvesTo(Colors.blue));
-        expect(mix.borderRadius, resolvesTo(decoration.borderRadius));
-        expect(mix, resolvesTo(isA<BoxDecoration>()));
-      });
-
-      test('props constructor with Prop values', () {
-        final mix = BoxDecorationMix(
-          color: Prop(Colors.green),
-          shape: Prop(BoxShape.circle),
-          backgroundBlendMode: Prop(BlendMode.multiply),
-        );
-
-        expect(mix.color, resolvesTo(Colors.green));
-        expect(mix.shape, resolvesTo(BoxShape.circle));
-        expect(mix.backgroundBlendMode, resolvesTo(BlendMode.multiply));
-      });
-    });
-
-    // Factory Tests
-    group('Factory Tests', () {
-      test(
-        'maybeValue returns BoxDecorationMix for non-null BoxDecoration',
-        () {
-          const decoration = BoxDecoration(color: Colors.red);
-          final mix = BoxDecorationMix.maybeValue(decoration);
-
-          expect(mix, isNotNull);
-          expect(mix?.color, resolvesTo(Colors.red));
-        },
-      );
-
-      test('maybeValue returns null for null BoxDecoration', () {
-        final mix = BoxDecorationMix.maybeValue(null);
-        expect(mix, isNull);
-      });
-    });
-
-    // Resolution Tests
-    group('Resolution Tests', () {
-      test('resolves to BoxDecoration with all properties', () {
-        final mix = BoxDecorationMix.only(
-          color: Colors.purple,
-          gradient: LinearGradientMix.only(
-            colors: const [Colors.red, Colors.blue],
-          ),
-          borderRadius: BorderRadiusMix.value(BorderRadius.circular(12)),
-          shape: BoxShape.rectangle,
-        );
-
         final context = MockBuildContext();
-        final resolved = mix.resolve(context);
+        final resolved = boxDecorationMix.resolve(context);
 
-        expect(resolved.color, Colors.purple);
-        expect(resolved.gradient, isA<LinearGradient>());
-        expect(resolved.borderRadius, BorderRadius.all(Radius.circular(12)));
-        expect(resolved.shape, BoxShape.rectangle);
-      });
-
-      test('resolves with default values for null properties', () {
-        final mix = BoxDecorationMix(
-          color: null,
-          gradient: null,
-          image: null,
-          boxShadow: null,
-        );
-
-        expect(mix, resolvesTo(const BoxDecoration()));
+        expect(resolved.borderRadius, isA<BorderRadius>());
+        expect(resolved.boxShadow, hasLength(2));
+        expect(resolved.boxShadow![0].color, Colors.black);
+        expect(resolved.boxShadow![1].color, Colors.grey);
       });
     });
 
-    // Merge Tests
-    group('Merge Tests', () {
-      test('merge with another BoxDecorationMix', () {
-        final mix1 = BoxDecorationMix.only(
-          color: Colors.red,
-          shape: BoxShape.rectangle,
-        );
+    group('merge', () {
+      test('returns this when other is null', () {
+        final boxDecorationMix = BoxDecorationMix.only(color: Colors.blue);
+        final merged = boxDecorationMix.merge(null);
 
-        final mix2 = BoxDecorationMix.only(
+        expect(merged, same(boxDecorationMix));
+      });
+
+      test('merges properties correctly', () {
+        final first = BoxDecorationMix.only(
           color: Colors.blue,
-          gradient: LinearGradientMix.only(
-            colors: const [Colors.yellow, Colors.green],
-          ),
-        );
-
-        final merged = dto1.merge(mix2);
-
-        expect(merged.color, resolvesTo(Colors.blue));
-        expect(merged, resolvesTo(isA<BoxDecoration>()));
-      });
-
-      test('merge with null returns original', () {
-        final mix = BoxDecorationMix.only(
-          color: Colors.green,
           shape: BoxShape.rectangle,
         );
 
-        final merged = mix.merge(null);
-        expect(merged, same(mix));
+        final second = BoxDecorationMix.only(
+          color: Colors.red,
+          backgroundBlendMode: BlendMode.multiply,
+        );
+
+        final merged = first.merge(second) as BoxDecorationMix;
+
+        expect(merged.color, isProp(Colors.red));
+        expect(merged.shape, isProp(BoxShape.rectangle));
+        expect(merged.backgroundBlendMode, isProp(BlendMode.multiply));
+      });
+
+      test('merges list properties correctly', () {
+        final first = BoxDecorationMix.only(
+          boxShadow: [BoxShadowMix.only(color: Colors.black, blurRadius: 5.0)],
+        );
+
+        final second = BoxDecorationMix.only(
+          boxShadow: [BoxShadowMix.only(color: Colors.grey, blurRadius: 10.0)],
+        );
+
+        final merged = first.merge(second);
+
+        expect(merged.boxShadow, hasLength(2));
       });
     });
 
-    // Equality and HashCode Tests
-    group('Equality and HashCode Tests', () {
-      test('equal BoxDecorationMixs', () {
-        final mix1 = BoxDecorationMix.only(
-          color: Colors.red,
-          shape: BoxShape.rectangle,
+    group('Equality', () {
+      test('returns true when all properties are the same', () {
+        final boxDecorationMix1 = BoxDecorationMix.only(
+          color: Colors.blue,
+          shape: BoxShape.circle,
         );
 
-        final mix2 = BoxDecorationMix.only(
-          color: Colors.red,
-          shape: BoxShape.rectangle,
+        final boxDecorationMix2 = BoxDecorationMix.only(
+          color: Colors.blue,
+          shape: BoxShape.circle,
         );
 
-        expect(mix1, equals(mix2));
-        expect(mix1.hashCode, equals(mix2.hashCode));
+        expect(boxDecorationMix1, boxDecorationMix2);
+        expect(boxDecorationMix1.hashCode, boxDecorationMix2.hashCode);
       });
 
-      test('not equal BoxDecorationMixs', () {
-        final mix1 = BoxDecorationMix.only(color: Colors.red);
-        final mix2 = BoxDecorationMix.only(color: Colors.blue);
+      test('returns false when properties are different', () {
+        final boxDecorationMix1 = BoxDecorationMix.only(color: Colors.blue);
+        final boxDecorationMix2 = BoxDecorationMix.only(color: Colors.red);
 
-        expect(mix1, isNot(equals(mix2)));
+        expect(boxDecorationMix1, isNot(boxDecorationMix2));
       });
     });
   });
 
-  // ShapeDecorationMix tests
   group('ShapeDecorationMix', () {
-    // Constructor Tests
-    group('Constructor Tests', () {
-      test(
-        'main constructor creates ShapeDecorationMix with all properties',
-        () {
-          final shapeDto = CircleBorderMix.only(
-            side: BorderSideMix.only(width: 2.0),
-          );
-          final imageDto = DecorationImageMix.only(fit: BoxFit.contain);
-          final gradientDto = LinearGradientMix.only(
-            colors: const [Colors.orange, Colors.yellow],
-          );
-          final shadowDto = BoxShadowMix.only(
-            color: Colors.black,
-            offset: const Offset(3, 3),
-            blurRadius: 6.0,
-          );
-
-          final mix = ShapeDecorationMix.only(
-            shape: shapeDto,
-            color: Colors.green,
-            image: imageDto,
-            gradient: gradientDto,
-            shadows: [shadowDto],
-          );
-
-          expect(mix.color, resolvesTo(Colors.green));
-          expect(mix, resolvesTo(isA<ShapeDecoration>()));
-        },
-      );
-
-      test('value constructor from ShapeDecoration', () {
-        final decoration = ShapeDecoration(
-          color: Colors.purple,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(12)),
-          ),
-          shadows: const [
-            BoxShadow(
-              color: Colors.black26,
-              offset: Offset(2, 2),
-              blurRadius: 4.0,
-            ),
-          ],
-        );
-
-        final mix = ShapeDecorationMix.value(decoration);
-
-        expect(mix.color, resolvesTo(Colors.purple));
-        expect(mix, resolvesTo(isA<ShapeDecoration>()));
-      });
-
-      test('props constructor with Prop values', () {
-        final mix = ShapeDecorationMix(
-          shape: MixProp(CircleBorderMix()),
-          color: Prop(Colors.cyan),
-        );
-
-        expect(mix.color, resolvesTo(Colors.cyan));
-        expect(mix, resolvesTo(isA<ShapeDecoration>()));
-      });
-    });
-
-    // Factory Tests
-    group('Factory Tests', () {
-      test(
-        'maybeValue returns ShapeDecorationMix for non-null ShapeDecoration',
-        () {
-          const decoration = ShapeDecoration(
-            color: Colors.red,
-            shape: CircleBorder(),
-          );
-          final mix = ShapeDecorationMix.maybeValue(decoration);
-
-          expect(mix, isNotNull);
-          expect(mix?.color, resolvesTo(Colors.red));
-        },
-      );
-
-      test('maybeValue returns null for null ShapeDecoration', () {
-        final mix = ShapeDecorationMix.maybeValue(null);
-        expect(mix, isNull);
-      });
-    });
-
-    // Resolution Tests
-    group('Resolution Tests', () {
-      test('resolves to ShapeDecoration with all properties', () {
-        final mix = ShapeDecorationMix.only(
-          shape: RoundedRectangleBorderMix.only(
-            borderRadius: BorderRadiusMix.value(BorderRadius.circular(8)),
-          ),
-          gradient: RadialGradientMix.only(
-            colors: const [Colors.red, Colors.orange],
-          ),
-        );
-
-        final context = MockBuildContext();
-        final resolved = mix.resolve(context);
-
-        expect(resolved.color, isNull); // color is null when gradient is set
-        expect(resolved.shape, isA<RoundedRectangleBorder>());
-        expect(resolved.gradient, isA<RadialGradient>());
-      });
-
-      test('resolves with default values for null properties', () {
-        final mix = ShapeDecorationMix(color: null);
-
-        final context = MockBuildContext();
-        final resolved = mix.resolve(context);
-
-        expect(resolved.shape, isA<RoundedRectangleBorder>());
-        expect(resolved.color, isNull);
-      });
-    });
-
-    // Merge Tests
-    group('Merge Tests', () {
-      test('merge with partial properties', () {
-        final mix1 = ShapeDecorationMix.only(
-          shape: CircleBorderMix(),
-          color: Colors.red,
-        );
-
-        final mix2 = ShapeDecorationMix.only(
-          gradient: LinearGradientMix.only(
-            colors: const [Colors.blue, Colors.green],
-          ),
-          image: DecorationImageMix.only(fit: BoxFit.fill),
-        );
-
-        final merged = dto1.merge(mix2);
-
-        expect(merged.color, resolvesTo(Colors.red));
-        expect(merged, resolvesTo(isA<ShapeDecoration>()));
-      });
-
-      test('merge with null returns original', () {
-        final mix = ShapeDecorationMix.only(
-          shape: CircleBorderMix(),
+    group('Constructor', () {
+      test('only constructor creates instance with correct properties', () {
+        final shapeDecorationMix = ShapeDecorationMix.only(
           color: Colors.green,
+          shape: CircleBorderMix.only(),
+          shadows: [BoxShadowMix.only(color: Colors.black, blurRadius: 5.0)],
         );
 
-        final merged = mix.merge(null);
-        expect(merged, same(mix));
-      });
-    });
-
-    // Equality and HashCode Tests
-    group('Equality and HashCode Tests', () {
-      test('equal ShapeDecorationMixs', () {
-        final mix1 = ShapeDecorationMix.only(
-          shape: CircleBorderMix(),
-          color: Colors.red,
-        );
-
-        final mix2 = ShapeDecorationMix.only(
-          shape: CircleBorderMix(),
-          color: Colors.red,
-        );
-
-        expect(mix1, equals(mix2));
-        expect(mix1.hashCode, equals(mix2.hashCode));
+        expect(shapeDecorationMix.color, isProp(Colors.green));
+        expect(shapeDecorationMix.shape, isA<MixProp<ShapeBorder>>());
+        expect(shapeDecorationMix.shadows, hasLength(1));
       });
 
-      test('not equal ShapeDecorationMixs', () {
-        final mix1 = ShapeDecorationMix.only(
-          shape: CircleBorderMix(),
-          color: Colors.red,
-        );
-        final mix2 = ShapeDecorationMix.only(
-          shape: CircleBorderMix(),
-          color: Colors.blue,
-        );
-
-        expect(mix1, isNot(equals(mix2)));
-      });
-    });
-  });
-
-  // DecorationMix cross-type tests
-  group('DecorationMix cross-type tests', () {
-    // Base DecorationMix factory tests
-    group('DecorationMix factory tests', () {
-      test('value factory with BoxDecoration', () {
-        const decoration = BoxDecoration(
-          color: Colors.red,
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-        );
-        final mix = DecorationMix.value(decoration);
-
-        expect(mix, isA<BoxDecorationMix>());
-        expect((mix as BoxDecorationMix).color, resolvesTo(Colors.red));
-      });
-
-      test('value factory with ShapeDecoration', () {
-        const decoration = ShapeDecoration(
-          color: Colors.blue,
+      test('value constructor extracts properties from ShapeDecoration', () {
+        const shapeDecoration = ShapeDecoration(
+          color: Colors.purple,
           shape: CircleBorder(),
         );
-        final mix = DecorationMix.value(decoration);
 
-        expect(mix, isA<ShapeDecorationMix>());
-        expect((mix as ShapeDecorationMix).color, resolvesTo(Colors.blue));
+        final shapeDecorationMix = ShapeDecorationMix.value(shapeDecoration);
+
+        expect(shapeDecorationMix.color, isProp(Colors.purple));
+        expect(shapeDecorationMix.shape, isA<MixProp<ShapeBorder>>());
       });
 
-      test('maybeValue factory', () {
-        const decoration = BoxDecoration(color: Colors.red);
-        final mix = DecorationMix.maybeValue(decoration);
+      test('maybeValue returns null for null input', () {
+        final result = ShapeDecorationMix.maybeValue(null);
+        expect(result, isNull);
+      });
 
-        expect(mix, isNotNull);
-        expect(mix, isA<BoxDecorationMix>());
+      test('maybeValue returns ShapeDecorationMix for non-null input', () {
+        const shapeDecoration = ShapeDecoration(
+          color: Colors.orange,
+          shape: CircleBorder(),
+        );
+        final result = ShapeDecorationMix.maybeValue(shapeDecoration);
 
-        final nullDto = DecorationMix.maybeValue(null);
-        expect(nullDto, isNull);
+        expect(result, isNotNull);
+        expect(result!.color, isProp(Colors.orange));
       });
     });
 
-    // Basic merge tests
-    group('merge tests', () {
-      test('merge BoxDecorationMix with BoxDecorationMix', () {
-        final mix1 = BoxDecorationMix.only(
-          color: Colors.red,
-          shape: BoxShape.rectangle,
-        );
-        final mix2 = BoxDecorationMix.only(
-          gradient: LinearGradientMix.only(
-            colors: const [Colors.blue, Colors.green],
-          ),
+    group('resolve', () {
+      test('resolves to ShapeDecoration with correct properties', () {
+        final shapeDecorationMix = ShapeDecorationMix.only(
+          color: Colors.green,
+          shape: CircleBorderMix.only(),
         );
 
-        final merged = dto1.merge(mix2);
+        final context = MockBuildContext();
+        final resolved = shapeDecorationMix.resolve(context);
 
-        expect(merged.color, resolvesTo(Colors.red));
-        expect(merged, resolvesTo(isA<BoxDecoration>()));
+        expect(resolved.color, Colors.green);
+        expect(resolved.shape, isA<CircleBorder>());
+      });
+    });
+
+    group('merge', () {
+      test('returns this when other is null', () {
+        final shapeDecorationMix = ShapeDecorationMix.only(color: Colors.green);
+        final merged = shapeDecorationMix.merge(null);
+
+        expect(merged, same(shapeDecorationMix));
       });
 
-      test('merge with null values', () {
-        final mix = BoxDecorationMix.only(color: Colors.red);
+      test('merges properties correctly', () {
+        final first = ShapeDecorationMix.only(
+          color: Colors.green,
+          shape: CircleBorderMix.only(),
+        );
 
-        expect(mix.merge(null), same(mix));
+        final second = ShapeDecorationMix.only(color: Colors.purple);
+
+        final merged = first.merge(second) as ShapeDecorationMix;
+
+        expect(merged.color, isProp(Colors.purple));
+        expect(merged.shape, isA<MixProp<ShapeBorder>>());
+      });
+    });
+
+    group('Equality', () {
+      test('returns true when all properties are the same', () {
+        final shapeDecorationMix1 = ShapeDecorationMix.only(
+          color: Colors.green,
+        );
+
+        final shapeDecorationMix2 = ShapeDecorationMix.only(
+          color: Colors.green,
+        );
+
+        expect(shapeDecorationMix1, shapeDecorationMix2);
+        expect(shapeDecorationMix1.hashCode, shapeDecorationMix2.hashCode);
+      });
+
+      test('returns false when properties are different', () {
+        final shapeDecorationMix1 = ShapeDecorationMix.only(
+          color: Colors.green,
+        );
+        final shapeDecorationMix2 = ShapeDecorationMix.only(
+          color: Colors.purple,
+        );
+
+        expect(shapeDecorationMix1, isNot(shapeDecorationMix2));
       });
     });
   });

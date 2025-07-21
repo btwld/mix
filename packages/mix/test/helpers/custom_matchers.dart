@@ -89,6 +89,27 @@ Matcher hasToken<T>() {
   return _HasTokenMatcher<T>();
 }
 
+/// Checks if a value is a Prop<T> with the expected value
+///
+/// Usage:
+/// ```dart
+/// expect(strutStyleMix.fontSize, isProp(16.0));
+/// expect(strutStyleMix.fontFamily, isProp('Roboto'));
+/// ```
+Matcher isProp<T>(T expectedValue) {
+  return _IsPropMatcher<T>(expectedValue);
+}
+
+/// Checks if a value is a Prop<T> with a token reference
+///
+/// Usage:
+/// ```dart
+/// expect(colorProp, isPropWithToken<Color>());
+/// ```
+Matcher isPropWithToken<T>() {
+  return _IsPropWithTokenMatcher<T>();
+}
+
 // =============================================================================
 // MERGE MATCHERS
 // =============================================================================
@@ -332,6 +353,98 @@ class _ResolvesPropertiesMatcher<T> extends Matcher {
       return mismatchDescription.add(
         'property "${matchState['property']}" did not match',
       );
+    }
+
+    return mismatchDescription.add('was ').addDescriptionOf(item);
+  }
+}
+
+class _IsPropMatcher<T> extends Matcher {
+  final T expectedValue;
+
+  const _IsPropMatcher(this.expectedValue);
+
+  @override
+  bool matches(dynamic item, Map matchState) {
+    if (item is! Prop<T>) {
+      matchState['error'] = 'Expected Prop<$T>, got ${item.runtimeType}';
+      return false;
+    }
+
+    if (!item.hasValue) {
+      matchState['error'] = 'Prop has no value (might be token or empty)';
+      return false;
+    }
+
+    final actualValue = item.getValue();
+    if (actualValue != expectedValue) {
+      matchState['actual'] = actualValue;
+      return false;
+    }
+
+    return true;
+  }
+
+  @override
+  Description describe(Description description) {
+    return description
+        .add('is Prop<$T> with value ')
+        .addDescriptionOf(expectedValue);
+  }
+
+  @override
+  Description describeMismatch(
+    dynamic item,
+    Description mismatchDescription,
+    Map matchState,
+    bool verbose,
+  ) {
+    if (matchState.containsKey('error')) {
+      return mismatchDescription.add(matchState['error']);
+    }
+
+    if (matchState.containsKey('actual')) {
+      return mismatchDescription
+          .add('was Prop<$T> with value ')
+          .addDescriptionOf(matchState['actual']);
+    }
+
+    return mismatchDescription.add('was ').addDescriptionOf(item);
+  }
+}
+
+class _IsPropWithTokenMatcher<T> extends Matcher {
+  const _IsPropWithTokenMatcher();
+
+  @override
+  bool matches(dynamic item, Map matchState) {
+    if (item is! Prop<T>) {
+      matchState['error'] = 'Expected Prop<$T>, got ${item.runtimeType}';
+      return false;
+    }
+
+    if (!item.hasToken) {
+      matchState['error'] = 'Prop has no token';
+      return false;
+    }
+
+    return true;
+  }
+
+  @override
+  Description describe(Description description) {
+    return description.add('is Prop<$T> with token');
+  }
+
+  @override
+  Description describeMismatch(
+    dynamic item,
+    Description mismatchDescription,
+    Map matchState,
+    bool verbose,
+  ) {
+    if (matchState.containsKey('error')) {
+      return mismatchDescription.add(matchState['error']);
     }
 
     return mismatchDescription.add('was ').addDescriptionOf(item);

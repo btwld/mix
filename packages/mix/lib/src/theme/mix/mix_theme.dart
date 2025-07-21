@@ -182,6 +182,6 @@ class MixScopeData {
 
   @override
   int get hashCode {
-    return _tokens.hashCode ^ defaultOrderOfModifiers.hashCode;
+    return Object.hash(_tokens, defaultOrderOfModifiers);
   }
 }

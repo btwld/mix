@@ -45,7 +45,7 @@ sealed class DecorationMix<T extends Decoration> extends Mix<T> {
   /// If different types, returns [other] (override behavior).
   /// If [other] is null, returns this instance.
   @override
-  DecorationMix<T> merge(DecorationMix<T>? other) {
+  DecorationMix<T> merge(covariant DecorationMix<T>? other) {
     if (other == null) return this;
 
     return switch ((this, other)) {
@@ -188,19 +188,21 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
 
   @override
   int get hashCode {
-    return border.hashCode ^
-        borderRadius.hashCode ^
-        shape.hashCode ^
-        backgroundBlendMode.hashCode ^
-        color.hashCode ^
-        image.hashCode ^
-        gradient.hashCode ^
-        boxShadow.hashCode;
+    return Object.hash(
+      border,
+      borderRadius,
+      shape,
+      backgroundBlendMode,
+      color,
+      image,
+      gradient,
+      boxShadow,
+    );
   }
 }
 
 final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
-    with MixDefaultValue<ShapeDecoration> {
+    with DefaultValue<ShapeDecoration> {
   final MixProp<ShapeBorder>? shape;
 
   ShapeDecorationMix.only({
@@ -286,10 +288,6 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
 
   @override
   int get hashCode {
-    return shape.hashCode ^
-        color.hashCode ^
-        image.hashCode ^
-        gradient.hashCode ^
-        shadows.hashCode;
+    return Object.hash(shape, color, image, gradient, shadows);
   }
 }

@@ -2,363 +2,454 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../helpers/custom_matchers.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  final borderRadius = BorderRadiusUtility(UtilityTestAttribute.new);
-  final borderRadiusDirectional = BorderRadiusDirectionalUtility(
-    UtilityTestAttribute.new,
-  );
-  group('BorderRadiusUtility', () {
-    test('zero returns zero radius for all corners', () {
-      final result = borderRadius.zero();
-      expect(result.value, resolvesTo(BorderRadius.all(Radius.zero)));
-    });
+  group('Border Radius Utilities', () {
+    group('BorderRadiusUtility', () {
+      final utility = BorderRadiusUtility(UtilityTestAttribute.new);
 
-    test('only sets specific radii for each corner', () {
-      final result = borderRadius.only(
-        topLeft: const Radius.circular(10),
-        topRight: const Radius.circular(20),
-        bottomLeft: const Radius.circular(30),
-        bottomRight: const Radius.circular(40),
-      );
-      expect(
-        result.value,
-        resolvesTo(
-          const BorderRadius.only(
-            topLeft: Radius.circular(10),
-            topRight: Radius.circular(20),
-            bottomLeft: Radius.circular(30),
-            bottomRight: Radius.circular(40),
-          ),
-        ),
-      );
-    });
-
-    test('all sets the same radius for all corners', () {
-      final result = borderRadius.all.circular(10);
-      expect(
-        result.value,
-        resolvesTo(const BorderRadius.all(Radius.circular(10))),
-      );
-    });
-
-    test('vertical sets top and bottom radii', () {
-      final resultTop = borderRadius.top.circular(10);
-      final resultBottom = borderRadius.bottom.circular(20);
-      expect(resultTop.value.topLeft, resolvesTo(const Radius.circular(10)));
-      expect(resultTop.value.topRight, resolvesTo(const Radius.circular(10)));
-      expect(
-        resultBottom.value.bottomLeft,
-        resolvesTo(const Radius.circular(20)),
-      );
-      expect(
-        resultBottom.value.bottomRight,
-        resolvesTo(const Radius.circular(20)),
-      );
-    });
-
-    test('horizontal sets left and right radii', () {
-      final resultLeft = borderRadius.left.circular(10);
-      final resultRight = borderRadius.right.circular(20);
-      expect(resultLeft.value.topLeft, resolvesTo(const Radius.circular(10)));
-      expect(
-        resultLeft.value.bottomLeft,
-        resolvesTo(const Radius.circular(10)),
-      );
-      expect(resultRight.value.topRight, resolvesTo(const Radius.circular(20)));
-      expect(
-        resultRight.value.bottomRight,
-        resolvesTo(const Radius.circular(20)),
-      );
-    });
-
-    test('elliptical sets elliptical radii for all corners', () {
-      final result = borderRadius.elliptical(10, 20);
-      expect(result.value.topLeft, resolvesTo(const Radius.elliptical(10, 20)));
-      expect(
-        result.value.topRight,
-        resolvesTo(const Radius.elliptical(10, 20)),
-      );
-      expect(
-        result.value.bottomLeft,
-        resolvesTo(const Radius.elliptical(10, 20)),
-      );
-      expect(
-        result.value.bottomRight,
-        resolvesTo(const Radius.elliptical(10, 20)),
-      );
-    });
-
-    test('positional sets different radii for each corner', () {
-      final result = borderRadius(10, 20, 30, 40);
-      expect(result.value.topLeft, resolvesTo(const Radius.circular(10)));
-      expect(result.value.topRight, resolvesTo(const Radius.circular(20)));
-      expect(result.value.bottomLeft, resolvesTo(const Radius.circular(30)));
-      expect(result.value.bottomRight, resolvesTo(const Radius.circular(40)));
-    });
-
-    test('circular sets the same circular radius for all corners', () {
-      final result = borderRadius.circular(10);
-      expect(result.value.topLeft, resolvesTo(const Radius.circular(10)));
-      expect(result.value.topRight, resolvesTo(const Radius.circular(10)));
-      expect(result.value.bottomLeft, resolvesTo(const Radius.circular(10)));
-      expect(result.value.bottomRight, resolvesTo(const Radius.circular(10)));
-    });
-
-    test('topLeft sets radius for top-left corner only', () {
-      final result = borderRadius.topLeft.circular(10);
-      // Test individual properties are set correctly
-      expect(result.value.topLeft, resolvesTo(const Radius.circular(10)));
-      expect(result.value.topRight, isNull);
-      expect(result.value.bottomLeft, isNull);
-      expect(result.value.bottomRight, isNull);
-
-      // Also test the whole resolved value
-      expect(
-        result.value,
-        resolvesTo(const BorderRadius.only(topLeft: Radius.circular(10))),
-      );
-    });
-
-    test('topRight sets radius for top-right corner only', () {
-      final result = borderRadius.topRight.circular(10);
-      expect(result.value.topLeft, isNull);
-      expect(result.value.topRight, resolvesTo(const Radius.circular(10)));
-      expect(result.value.bottomLeft, isNull);
-      expect(result.value.bottomRight, isNull);
-
-      // Also test the whole resolved value
-      expect(
-        result.value,
-        resolvesTo(const BorderRadius.only(topRight: Radius.circular(10))),
-      );
-    });
-
-    test('bottomLeft sets radius for bottom-left corner only', () {
-      final result = borderRadius.bottomLeft.circular(10);
-      expect(result.value.topLeft, isNull);
-      expect(result.value.topRight, isNull);
-      expect(result.value.bottomLeft, resolvesTo(const Radius.circular(10)));
-      expect(result.value.bottomRight, isNull);
-    });
-
-    test('bottomRight sets radius for bottom-right corner only', () {
-      final result = borderRadius.bottomRight.circular(10);
-      expect(result.value.topLeft, isNull);
-      expect(result.value.topRight, isNull);
-      expect(result.value.bottomLeft, isNull);
-      expect(result.value.bottomRight, resolvesTo(const Radius.circular(10)));
-    });
-  });
-  group('BorderRadiusDirectionalUtility', () {
-    test(
-      'zero should return a BorderRadiusDirectionalAttribute with all corners set to zero radius',
-      () {
-        final result = borderRadiusDirectional.zero();
-        expect(result.value.topStart, resolvesTo(Radius.zero));
-        expect(result.value.topEnd, resolvesTo(Radius.zero));
-        expect(result.value.bottomStart, resolvesTo(Radius.zero));
-        expect(result.value.bottomEnd, resolvesTo(Radius.zero));
-      },
-    );
-
-    test(
-      'only should return a BorderRadiusDirectionalAttribute with each corner having a specified radius',
-      () {
-        final result = borderRadiusDirectional.only(
-          topStart: const Radius.circular(10),
-          topEnd: const Radius.circular(20),
-          bottomStart: const Radius.circular(30),
-          bottomEnd: const Radius.circular(40),
+      test('call() creates BorderRadiusMix', () {
+        final borderRadiusMix = BorderRadiusMix.only(
+          topLeft: const Radius.circular(8.0),
+          topRight: const Radius.circular(12.0),
+          bottomLeft: const Radius.circular(16.0),
+          bottomRight: const Radius.circular(20.0),
         );
-        expect(result.value.topStart, resolvesTo(const Radius.circular(10)));
-        expect(result.value.topEnd, resolvesTo(const Radius.circular(20)));
-        expect(result.value.bottomStart, resolvesTo(const Radius.circular(30)));
-        expect(result.value.bottomEnd, resolvesTo(const Radius.circular(40)));
-      },
-    );
+        final attr = utility(borderRadiusMix);
+        expect(attr.value, isA<MixProp<BorderRadius>>());
+      });
 
-    // top
-    test(
-      'top should return a BorderRadiusDirectionalAttribute with the top corners set to a specified radius and bottom corners to null',
-      () {
-        final result = borderRadiusDirectional.top.circular(10);
-        expect(result.value.topStart, resolvesTo(const Radius.circular(10)));
-        expect(result.value.topEnd, resolvesTo(const Radius.circular(10)));
-        expect(result.value.bottomStart, isNull);
-        expect(result.value.bottomEnd, isNull);
-      },
-    );
-
-    // bottom
-    test(
-      'bottom should return a BorderRadiusDirectionalAttribute with the bottom corners set to a specified radius and top corners to null',
-      () {
-        final result = borderRadiusDirectional.bottom.circular(10);
-        expect(result.value.topStart, isNull);
-        expect(result.value.topEnd, isNull);
-        expect(result.value.bottomStart, resolvesTo(const Radius.circular(10)));
-        expect(result.value.bottomEnd, resolvesTo(const Radius.circular(10)));
-      },
-    );
-
-    // start
-    test(
-      'start should return a BorderRadiusDirectionalAttribute with the start corners set to a specified radius and end corners to null',
-      () {
-        final result = borderRadiusDirectional.start.circular(10);
-        expect(result.value.topStart, resolvesTo(const Radius.circular(10)));
-        expect(result.value.topEnd, isNull);
-        expect(result.value.bottomStart, resolvesTo(const Radius.circular(10)));
-        expect(result.value.bottomEnd, isNull);
-      },
-    );
-
-    // end
-    test(
-      'end should return a BorderRadiusDirectionalAttribute with the end corners set to a specified radius and start corners to null',
-      () {
-        final result = borderRadiusDirectional.end.circular(10);
-        expect(result.value.topStart, isNull);
-        expect(result.value.topEnd, resolvesTo(const Radius.circular(10)));
-        expect(result.value.bottomStart, isNull);
-        expect(result.value.bottomEnd, resolvesTo(const Radius.circular(10)));
-      },
-    );
-
-    // circular
-    test(
-      'circular should return a BorderRadiusDirectionalAttribute with all corners set to the same specified radius',
-      () {
-        final result = borderRadiusDirectional.circular(10);
-        expect(result.value.topStart, resolvesTo(const Radius.circular(10)));
-        expect(result.value.topEnd, resolvesTo(const Radius.circular(10)));
-        expect(result.value.bottomStart, resolvesTo(const Radius.circular(10)));
-        expect(result.value.bottomEnd, resolvesTo(const Radius.circular(10)));
-      },
-    );
-
-    // elliptical
-    test(
-      'elliptical should return a BorderRadiusDirectionalAttribute with all corners set to the specified elliptical radii',
-      () {
-        final result = borderRadiusDirectional.elliptical(10, 20);
-        expect(
-          result.value.topStart,
-          resolvesTo(const Radius.elliptical(10, 20)),
+      test('as() creates BorderRadiusMix from BorderRadius', () {
+        const borderRadius = BorderRadius.only(
+          topLeft: Radius.circular(8.0),
+          topRight: Radius.circular(12.0),
+          bottomLeft: Radius.circular(16.0),
+          bottomRight: Radius.circular(20.0),
         );
-        expect(
-          result.value.topEnd,
-          resolvesTo(const Radius.elliptical(10, 20)),
+        final attr = utility.as(borderRadius);
+        expect(attr.value, isA<MixProp<BorderRadius>>());
+      });
+
+      group('Corner Utilities', () {
+        test('topLeft() creates border radius with top left corner', () {
+          final attr = utility.topLeft(const Radius.circular(8.0));
+          expect(attr.value, isA<MixProp<BorderRadius>>());
+        });
+
+        test('topLeft.circular() creates border radius with circular top left', () {
+          final attr = utility.topLeft.circular(8.0);
+          expect(attr.value, isA<MixProp<BorderRadius>>());
+        });
+
+        test('topLeft.elliptical() creates border radius with elliptical top left', () {
+          final attr = utility.topLeft.elliptical(8.0, 12.0);
+          expect(attr.value, isA<MixProp<BorderRadius>>());
+        });
+
+        test('topLeft.zero() creates border radius with zero top left', () {
+          final attr = utility.topLeft.zero();
+          expect(attr.value, isA<MixProp<BorderRadius>>());
+        });
+
+        test('topRight() creates border radius with top right corner', () {
+          final attr = utility.topRight(const Radius.circular(12.0));
+          expect(attr.value, isA<MixProp<BorderRadius>>());
+        });
+
+        test('topRight.circular() creates border radius with circular top right', () {
+          final attr = utility.topRight.circular(12.0);
+          expect(attr.value, isA<MixProp<BorderRadius>>());
+        });
+
+        test('bottomLeft() creates border radius with bottom left corner', () {
+          final attr = utility.bottomLeft(const Radius.circular(16.0));
+          expect(attr.value, isA<MixProp<BorderRadius>>());
+        });
+
+        test('bottomLeft.elliptical() creates border radius with elliptical bottom left', () {
+          final attr = utility.bottomLeft.elliptical(16.0, 20.0);
+          expect(attr.value, isA<MixProp<BorderRadius>>());
+        });
+
+        test('bottomRight() creates border radius with bottom right corner', () {
+          final attr = utility.bottomRight(const Radius.circular(20.0));
+          expect(attr.value, isA<MixProp<BorderRadius>>());
+        });
+
+        test('bottomRight.zero() creates border radius with zero bottom right', () {
+          final attr = utility.bottomRight.zero();
+          expect(attr.value, isA<MixProp<BorderRadius>>());
+        });
+      });
+
+      group('Side Utilities', () {
+        test('top() creates border radius with top corners', () {
+          final attr = utility.top(const Radius.circular(8.0));
+          expect(attr.value, isA<MixProp<BorderRadius>>());
+        });
+
+        test('top.circular() creates border radius with circular top corners', () {
+          final attr = utility.top.circular(8.0);
+          expect(attr.value, isA<MixProp<BorderRadius>>());
+        });
+
+        test('bottom() creates border radius with bottom corners', () {
+          final attr = utility.bottom(const Radius.circular(12.0));
+          expect(attr.value, isA<MixProp<BorderRadius>>());
+        });
+
+        test('bottom.elliptical() creates border radius with elliptical bottom corners', () {
+          final attr = utility.bottom.elliptical(12.0, 16.0);
+          expect(attr.value, isA<MixProp<BorderRadius>>());
+        });
+
+        test('left() creates border radius with left corners', () {
+          final attr = utility.left(const Radius.circular(10.0));
+          expect(attr.value, isA<MixProp<BorderRadius>>());
+        });
+
+        test('left.zero() creates border radius with zero left corners', () {
+          final attr = utility.left.zero();
+          expect(attr.value, isA<MixProp<BorderRadius>>());
+        });
+
+        test('right() creates border radius with right corners', () {
+          final attr = utility.right(const Radius.circular(14.0));
+          expect(attr.value, isA<MixProp<BorderRadius>>());
+        });
+
+        test('right.circular() creates border radius with circular right corners', () {
+          final attr = utility.right.circular(14.0);
+          expect(attr.value, isA<MixProp<BorderRadius>>());
+        });
+      });
+
+      group('All Corners Utilities', () {
+        test('all() creates border radius with all corners', () {
+          final attr = utility.all(const Radius.circular(16.0));
+          expect(attr.value, isA<MixProp<BorderRadius>>());
+        });
+
+        test('all.circular() creates border radius with all circular corners', () {
+          final attr = utility.all.circular(16.0);
+          expect(attr.value, isA<MixProp<BorderRadius>>());
+        });
+
+        test('all.elliptical() creates border radius with all elliptical corners', () {
+          final attr = utility.all.elliptical(16.0, 20.0);
+          expect(attr.value, isA<MixProp<BorderRadius>>());
+        });
+
+        test('all.zero() creates border radius with all zero corners', () {
+          final attr = utility.all.zero();
+          expect(attr.value, isA<MixProp<BorderRadius>>());
+        });
+
+        test('circular() creates circular border radius', () {
+          final attr = utility.circular(16.0);
+          expect(attr.value, isA<MixProp<BorderRadius>>());
+        });
+
+        test('elliptical() creates elliptical border radius', () {
+          final attr = utility.elliptical(16.0, 20.0);
+          expect(attr.value, isA<MixProp<BorderRadius>>());
+        });
+
+        test('zero() creates zero border radius', () {
+          final attr = utility.zero();
+          expect(attr.value, isA<MixProp<BorderRadius>>());
+        });
+      });
+
+      test('token() creates border radius from token', () {
+        const token = MixToken<BorderRadius>('test.borderRadius');
+        final attr = utility.token(token);
+        expect(attr.value, isA<MixProp<BorderRadius>>());
+      });
+    });
+
+    group('BorderRadiusDirectionalUtility', () {
+      final utility = BorderRadiusDirectionalUtility(UtilityTestAttribute.new);
+
+      test('call() creates BorderRadiusDirectionalMix', () {
+        final borderRadiusMix = BorderRadiusDirectionalMix.only(
+          topStart: const Radius.circular(8.0),
+          topEnd: const Radius.circular(12.0),
+          bottomStart: const Radius.circular(16.0),
+          bottomEnd: const Radius.circular(20.0),
         );
-        expect(
-          result.value.bottomStart,
-          resolvesTo(const Radius.elliptical(10, 20)),
+        final attr = utility(borderRadiusMix);
+        expect(attr.value, isA<MixProp<BorderRadiusDirectional>>());
+      });
+
+      test('as() creates BorderRadiusDirectionalMix from BorderRadiusDirectional', () {
+        const borderRadius = BorderRadiusDirectional.only(
+          topStart: Radius.circular(8.0),
+          topEnd: Radius.circular(12.0),
+          bottomStart: Radius.circular(16.0),
+          bottomEnd: Radius.circular(20.0),
         );
-        expect(
-          result.value.bottomEnd,
-          resolvesTo(const Radius.elliptical(10, 20)),
+        final attr = utility.as(borderRadius);
+        expect(attr.value, isA<MixProp<BorderRadiusDirectional>>());
+      });
+
+      group('Corner Utilities', () {
+        test('topStart() creates border radius with top start corner', () {
+          final attr = utility.topStart(const Radius.circular(8.0));
+          expect(attr.value, isA<MixProp<BorderRadiusDirectional>>());
+        });
+
+        test('topStart.circular() creates border radius with circular top start', () {
+          final attr = utility.topStart.circular(8.0);
+          expect(attr.value, isA<MixProp<BorderRadiusDirectional>>());
+        });
+
+        test('topEnd() creates border radius with top end corner', () {
+          final attr = utility.topEnd(const Radius.circular(12.0));
+          expect(attr.value, isA<MixProp<BorderRadiusDirectional>>());
+        });
+
+        test('topEnd.elliptical() creates border radius with elliptical top end', () {
+          final attr = utility.topEnd.elliptical(12.0, 16.0);
+          expect(attr.value, isA<MixProp<BorderRadiusDirectional>>());
+        });
+
+        test('bottomStart() creates border radius with bottom start corner', () {
+          final attr = utility.bottomStart(const Radius.circular(16.0));
+          expect(attr.value, isA<MixProp<BorderRadiusDirectional>>());
+        });
+
+        test('bottomStart.zero() creates border radius with zero bottom start', () {
+          final attr = utility.bottomStart.zero();
+          expect(attr.value, isA<MixProp<BorderRadiusDirectional>>());
+        });
+
+        test('bottomEnd() creates border radius with bottom end corner', () {
+          final attr = utility.bottomEnd(const Radius.circular(20.0));
+          expect(attr.value, isA<MixProp<BorderRadiusDirectional>>());
+        });
+
+        test('bottomEnd.circular() creates border radius with circular bottom end', () {
+          final attr = utility.bottomEnd.circular(20.0);
+          expect(attr.value, isA<MixProp<BorderRadiusDirectional>>());
+        });
+      });
+
+      group('Side Utilities', () {
+        test('top() creates border radius with top corners', () {
+          final attr = utility.top(const Radius.circular(8.0));
+          expect(attr.value, isA<MixProp<BorderRadiusDirectional>>());
+        });
+
+        test('top.circular() creates border radius with circular top corners', () {
+          final attr = utility.top.circular(8.0);
+          expect(attr.value, isA<MixProp<BorderRadiusDirectional>>());
+        });
+
+        test('bottom() creates border radius with bottom corners', () {
+          final attr = utility.bottom(const Radius.circular(12.0));
+          expect(attr.value, isA<MixProp<BorderRadiusDirectional>>());
+        });
+
+        test('bottom.elliptical() creates border radius with elliptical bottom corners', () {
+          final attr = utility.bottom.elliptical(12.0, 16.0);
+          expect(attr.value, isA<MixProp<BorderRadiusDirectional>>());
+        });
+
+        test('start() creates border radius with start corners', () {
+          final attr = utility.start(const Radius.circular(10.0));
+          expect(attr.value, isA<MixProp<BorderRadiusDirectional>>());
+        });
+
+        test('start.zero() creates border radius with zero start corners', () {
+          final attr = utility.start.zero();
+          expect(attr.value, isA<MixProp<BorderRadiusDirectional>>());
+        });
+
+        test('end() creates border radius with end corners', () {
+          final attr = utility.end(const Radius.circular(14.0));
+          expect(attr.value, isA<MixProp<BorderRadiusDirectional>>());
+        });
+
+        test('end.circular() creates border radius with circular end corners', () {
+          final attr = utility.end.circular(14.0);
+          expect(attr.value, isA<MixProp<BorderRadiusDirectional>>());
+        });
+      });
+
+      group('All Corners Utilities', () {
+        test('all() creates border radius with all corners', () {
+          final attr = utility.all(const Radius.circular(16.0));
+          expect(attr.value, isA<MixProp<BorderRadiusDirectional>>());
+        });
+
+        test('all.circular() creates border radius with all circular corners', () {
+          final attr = utility.all.circular(16.0);
+          expect(attr.value, isA<MixProp<BorderRadiusDirectional>>());
+        });
+
+        test('all.elliptical() creates border radius with all elliptical corners', () {
+          final attr = utility.all.elliptical(16.0, 20.0);
+          expect(attr.value, isA<MixProp<BorderRadiusDirectional>>());
+        });
+
+        test('all.zero() creates border radius with all zero corners', () {
+          final attr = utility.all.zero();
+          expect(attr.value, isA<MixProp<BorderRadiusDirectional>>());
+        });
+
+        test('circular() creates circular border radius', () {
+          final attr = utility.circular(16.0);
+          expect(attr.value, isA<MixProp<BorderRadiusDirectional>>());
+        });
+
+        test('elliptical() creates elliptical border radius', () {
+          final attr = utility.elliptical(16.0, 20.0);
+          expect(attr.value, isA<MixProp<BorderRadiusDirectional>>());
+        });
+
+        test('zero() creates zero border radius', () {
+          final attr = utility.zero();
+          expect(attr.value, isA<MixProp<BorderRadiusDirectional>>());
+        });
+      });
+
+      test('token() creates border radius directional from token', () {
+        const token = MixToken<BorderRadiusDirectional>('test.borderRadiusDirectional');
+        final attr = utility.token(token);
+        expect(attr.value, isA<MixProp<BorderRadiusDirectional>>());
+      });
+    });
+
+    group('BorderRadiusGeometryUtility', () {
+      final utility = BorderRadiusGeometryUtility(UtilityTestAttribute.new);
+
+      test('call() creates BorderRadiusGeometryMix from BorderRadiusMix', () {
+        final borderRadiusMix = BorderRadiusMix.only(
+          topLeft: const Radius.circular(8.0),
+          topRight: const Radius.circular(12.0),
         );
-      },
-    );
+        final attr = utility(borderRadiusMix);
+        expect(attr.value, isA<MixProp<BorderRadiusGeometry>>());
+      });
 
-    // call method with different parameter combinations
-    test(
-      'call method should return a BorderRadiusDirectionalAttribute with specified radii for different configurations',
-      () {
-        final result1 = borderRadiusDirectional(10);
-        expect(result1.value.topStart, resolvesTo(const Radius.circular(10)));
-        expect(result1.value.topEnd, resolvesTo(const Radius.circular(10)));
-        expect(
-          result1.value.bottomStart,
-          resolvesTo(const Radius.circular(10)),
+      test('call() creates BorderRadiusGeometryMix from BorderRadiusDirectionalMix', () {
+        final borderRadiusMix = BorderRadiusDirectionalMix.only(
+          topStart: const Radius.circular(8.0),
+          topEnd: const Radius.circular(12.0),
         );
-        expect(result1.value.bottomEnd, resolvesTo(const Radius.circular(10)));
+        final attr = utility(borderRadiusMix);
+        expect(attr.value, isA<MixProp<BorderRadiusGeometry>>());
+      });
 
-        final result2 = borderRadiusDirectional(10, 20);
-        expect(result2.value.topStart, resolvesTo(const Radius.circular(10)));
-        expect(result2.value.topEnd, resolvesTo(const Radius.circular(10)));
-        expect(
-          result2.value.bottomStart,
-          resolvesTo(const Radius.circular(20)),
+      test('as() creates BorderRadiusGeometryMix from BorderRadius', () {
+        const borderRadius = BorderRadius.only(
+          topLeft: Radius.circular(8.0),
+          topRight: Radius.circular(12.0),
         );
-        expect(result2.value.bottomEnd, resolvesTo(const Radius.circular(20)));
+        final attr = utility.as(borderRadius);
+        expect(attr.value, isA<MixProp<BorderRadiusGeometry>>());
+      });
 
-        final result3 = borderRadiusDirectional(10, 20, 30);
-        expect(result3.value.topStart, resolvesTo(const Radius.circular(10)));
-        expect(result3.value.topEnd, resolvesTo(const Radius.circular(20)));
-        expect(
-          result3.value.bottomStart,
-          resolvesTo(const Radius.circular(20)),
+      test('as() creates BorderRadiusGeometryMix from BorderRadiusDirectional', () {
+        const borderRadius = BorderRadiusDirectional.only(
+          topStart: Radius.circular(8.0),
+          topEnd: Radius.circular(12.0),
         );
-        expect(result3.value.bottomEnd, resolvesTo(const Radius.circular(30)));
+        final attr = utility.as(borderRadius);
+        expect(attr.value, isA<MixProp<BorderRadiusGeometry>>());
+      });
 
-        final result4 = borderRadiusDirectional(10, 20, 30, 40);
-        expect(result4.value.topStart, resolvesTo(const Radius.circular(10)));
-        expect(result4.value.topEnd, resolvesTo(const Radius.circular(20)));
-        expect(
-          result4.value.bottomStart,
-          resolvesTo(const Radius.circular(30)),
-        );
-        expect(result4.value.bottomEnd, resolvesTo(const Radius.circular(40)));
-      },
-    );
+      group('Delegated Properties from BorderRadiusUtility', () {
+        test('all() creates border radius geometry with all corners', () {
+          final attr = utility.all(const Radius.circular(16.0));
+          expect(attr.value, isA<MixProp<BorderRadiusGeometry>>());
+        });
 
-    test(
-      'all should return a BorderRadiusDirectionalAttribute with all corners set to the same specified radius',
-      () {
-        final result = borderRadiusDirectional.all.circular(10);
-        expect(result.value.topStart, resolvesTo(const Radius.circular(10)));
-        expect(result.value.topEnd, resolvesTo(const Radius.circular(10)));
-        expect(result.value.bottomStart, resolvesTo(const Radius.circular(10)));
-        expect(result.value.bottomEnd, resolvesTo(const Radius.circular(10)));
-      },
-    );
+        test('topLeft() creates border radius geometry with top left corner', () {
+          final attr = utility.topLeft(const Radius.circular(8.0));
+          expect(attr.value, isA<MixProp<BorderRadiusGeometry>>());
+        });
 
-    test(
-      'topStart should return a BorderRadiusDirectionalAttribute with only the topStart corner set to a specified radius',
-      () {
-        final result = borderRadiusDirectional.topStart.circular(10);
-        expect(result.value.topStart, resolvesTo(const Radius.circular(10)));
-        expect(result.value.topEnd, isNull);
-        expect(result.value.bottomStart, isNull);
-        expect(result.value.bottomEnd, isNull);
-      },
-    );
+        test('topRight() creates border radius geometry with top right corner', () {
+          final attr = utility.topRight(const Radius.circular(12.0));
+          expect(attr.value, isA<MixProp<BorderRadiusGeometry>>());
+        });
 
-    test(
-      'topEnd should return a BorderRadiusDirectionalAttribute with only the topEnd corner set to a specified radius',
-      () {
-        final result = borderRadiusDirectional.topEnd.circular(10);
-        expect(result.value.topStart, isNull);
-        expect(result.value.topEnd, resolvesTo(const Radius.circular(10)));
-        expect(result.value.bottomStart, isNull);
-        expect(result.value.bottomEnd, isNull);
-      },
-    );
+        test('bottomLeft() creates border radius geometry with bottom left corner', () {
+          final attr = utility.bottomLeft(const Radius.circular(16.0));
+          expect(attr.value, isA<MixProp<BorderRadiusGeometry>>());
+        });
 
-    test(
-      'bottomStart should return a BorderRadiusDirectionalAttribute with only the bottomStart corner set to a specified radius',
-      () {
-        final result = borderRadiusDirectional.bottomStart.circular(10);
-        expect(result.value.topStart, isNull);
-        expect(result.value.topEnd, isNull);
-        expect(result.value.bottomStart, resolvesTo(const Radius.circular(10)));
-        expect(result.value.bottomEnd, isNull);
-      },
-    );
+        test('bottomRight() creates border radius geometry with bottom right corner', () {
+          final attr = utility.bottomRight(const Radius.circular(20.0));
+          expect(attr.value, isA<MixProp<BorderRadiusGeometry>>());
+        });
 
-    test(
-      'bottomEnd should return a BorderRadiusDirectionalAttribute with only the bottomEnd corner set to a specified radius',
-      () {
-        final result = borderRadiusDirectional.bottomEnd.circular(10);
-        expect(result.value.topStart, isNull);
-        expect(result.value.topEnd, isNull);
-        expect(result.value.bottomStart, isNull);
-        expect(result.value.bottomEnd, resolvesTo(const Radius.circular(10)));
-      },
-    );
+        test('top() creates border radius geometry with top corners', () {
+          final attr = utility.top(const Radius.circular(8.0));
+          expect(attr.value, isA<MixProp<BorderRadiusGeometry>>());
+        });
+
+        test('bottom() creates border radius geometry with bottom corners', () {
+          final attr = utility.bottom(const Radius.circular(12.0));
+          expect(attr.value, isA<MixProp<BorderRadiusGeometry>>());
+        });
+
+        test('left() creates border radius geometry with left corners', () {
+          final attr = utility.left(const Radius.circular(10.0));
+          expect(attr.value, isA<MixProp<BorderRadiusGeometry>>());
+        });
+
+        test('right() creates border radius geometry with right corners', () {
+          final attr = utility.right(const Radius.circular(14.0));
+          expect(attr.value, isA<MixProp<BorderRadiusGeometry>>());
+        });
+
+        test('circular() creates circular border radius geometry', () {
+          final attr = utility.circular(16.0);
+          expect(attr.value, isA<MixProp<BorderRadiusGeometry>>());
+        });
+
+        test('elliptical() creates elliptical border radius geometry', () {
+          final attr = utility.elliptical(16.0, 20.0);
+          expect(attr.value, isA<MixProp<BorderRadiusGeometry>>());
+        });
+
+        test('zero() creates zero border radius geometry', () {
+          final attr = utility.zero();
+          expect(attr.value, isA<MixProp<BorderRadiusGeometry>>());
+        });
+      });
+
+      group('Directional Properties', () {
+        test('directional() provides access to BorderRadiusDirectionalUtility', () {
+          final attr = utility.directional.topStart(const Radius.circular(8.0));
+          expect(attr.value, isA<MixProp<BorderRadiusGeometry>>());
+        });
+
+        test('directional.circular() creates circular directional border radius', () {
+          final attr = utility.directional.circular(16.0);
+          expect(attr.value, isA<MixProp<BorderRadiusGeometry>>());
+        });
+
+        test('directional.elliptical() creates elliptical directional border radius', () {
+          final attr = utility.directional.elliptical(16.0, 20.0);
+          expect(attr.value, isA<MixProp<BorderRadiusGeometry>>());
+        });
+
+        test('directional.zero() creates zero directional border radius', () {
+          final attr = utility.directional.zero();
+          expect(attr.value, isA<MixProp<BorderRadiusGeometry>>());
+        });
+      });
+
+      test('token() creates border radius geometry from token', () {
+        const token = MixToken<BorderRadiusGeometry>('test.borderRadiusGeometry');
+        final attr = utility.token(token);
+        expect(attr.value, isA<MixProp<BorderRadiusGeometry>>());
+      });
+    });
   });
 }

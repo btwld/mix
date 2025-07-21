@@ -19,7 +19,7 @@ sealed class BaseShadowMix<T extends Shadow> extends Mix<T> {
 ///
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a [Shadow]
-class ShadowMix extends BaseShadowMix<Shadow> with MixDefaultValue<Shadow> {
+class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
   ShadowMix.only({double? blurRadius, Color? color, Offset? offset})
     : this(
         blurRadius: Prop.maybe(blurRadius),
@@ -108,7 +108,7 @@ class ShadowMix extends BaseShadowMix<Shadow> with MixDefaultValue<Shadow> {
 
   @override
   int get hashCode {
-    return blurRadius.hashCode ^ color.hashCode ^ offset.hashCode;
+    return Object.hash(blurRadius, color, offset);
   }
 }
 
@@ -117,7 +117,7 @@ class ShadowMix extends BaseShadowMix<Shadow> with MixDefaultValue<Shadow> {
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a `[BoxShadow]
 class BoxShadowMix extends BaseShadowMix<BoxShadow>
-    with MixDefaultValue<BoxShadow> {
+    with DefaultValue<BoxShadow> {
   final Prop<double>? spreadRadius;
 
   BoxShadowMix.only({
@@ -230,10 +230,7 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
 
   @override
   int get hashCode {
-    return color.hashCode ^
-        offset.hashCode ^
-        blurRadius.hashCode ^
-        spreadRadius.hashCode;
+    return Object.hash(color, offset, blurRadius, spreadRadius);
   }
 }
 

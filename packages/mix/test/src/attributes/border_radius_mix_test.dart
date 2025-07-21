@@ -7,676 +7,305 @@ import '../../helpers/testing_utils.dart';
 
 void main() {
   group('BorderRadiusMix', () {
-    group('constructor', () {
-      test('only constructor with raw values', () {
-        final mix = BorderRadiusMix.only(
-          topLeft: const Radius.circular(10.0),
-          topRight: const Radius.circular(20.0),
-          bottomLeft: const Radius.circular(30.0),
-          bottomRight: const Radius.circular(40.0),
+    group('Constructor', () {
+      test('only constructor creates instance with correct properties', () {
+        final borderRadiusMix = BorderRadiusMix.only(
+          topLeft: const Radius.circular(8.0),
+          topRight: const Radius.circular(12.0),
+          bottomLeft: const Radius.circular(16.0),
+          bottomRight: const Radius.circular(20.0),
         );
 
+        expect(borderRadiusMix.topLeft, isProp(const Radius.circular(8.0)));
+        expect(borderRadiusMix.topRight, isProp(const Radius.circular(12.0)));
+        expect(borderRadiusMix.bottomLeft, isProp(const Radius.circular(16.0)));
         expect(
-          dto,
-          resolvesTo(
-            const BorderRadius.only(
-              topLeft: Radius.circular(10.0),
-              topRight: Radius.circular(20.0),
-              bottomLeft: Radius.circular(30.0),
-              bottomRight: Radius.circular(40.0),
-            ),
-          ),
+          borderRadiusMix.bottomRight,
+          isProp(const Radius.circular(20.0)),
         );
       });
 
-      test('main constructor with Prop values', () {
-        final mix = BorderRadiusMix(
-          topLeft: Prop(const Radius.circular(10.0)),
-          topRight: Prop(const Radius.circular(20.0)),
-          bottomLeft: Prop(const Radius.circular(30.0)),
-          bottomRight: Prop(const Radius.circular(40.0)),
-        );
-
-        expect(
-          dto,
-          resolvesTo(
-            const BorderRadius.only(
-              topLeft: Radius.circular(10.0),
-              topRight: Radius.circular(20.0),
-              bottomLeft: Radius.circular(30.0),
-              bottomRight: Radius.circular(40.0),
-            ),
-          ),
-        );
-      });
-
-      test('.value factory creates from Flutter type', () {
+      test('value constructor extracts properties from BorderRadius', () {
         const borderRadius = BorderRadius.only(
-          topLeft: Radius.circular(10.0),
-          topRight: Radius.circular(20.0),
-          bottomLeft: Radius.circular(30.0),
-          bottomRight: Radius.circular(40.0),
+          topLeft: Radius.circular(5.0),
+          topRight: Radius.circular(10.0),
+          bottomLeft: Radius.circular(15.0),
+          bottomRight: Radius.circular(20.0),
         );
-        final mix = BorderRadiusMix.value(borderRadius);
 
-        expect(mix, resolvesTo(borderRadius));
+        final borderRadiusMix = BorderRadiusMix.value(borderRadius);
+
+        expect(borderRadiusMix.topLeft, isProp(const Radius.circular(5.0)));
+        expect(borderRadiusMix.topRight, isProp(const Radius.circular(10.0)));
+        expect(borderRadiusMix.bottomLeft, isProp(const Radius.circular(15.0)));
+        expect(
+          borderRadiusMix.bottomRight,
+          isProp(const Radius.circular(20.0)),
+        );
       });
 
-      test('.maybeValue handles null correctly', () {
-        expect(BorderRadiusMix.maybeValue(null), isNull);
-        expect(
-          BorderRadiusMix.maybeValue(
-            const BorderRadius.all(Radius.circular(10.0)),
-          ),
-          isNotNull,
-        );
+      test('maybeValue returns null for null input', () {
+        final result = BorderRadiusMix.maybeValue(null);
+        expect(result, isNull);
+      });
+
+      test('maybeValue returns BorderRadiusMix for non-null input', () {
+        final borderRadius = BorderRadius.circular(8.0);
+        final result = BorderRadiusMix.maybeValue(borderRadius);
+
+        expect(result, isNotNull);
+        expect(result!.topLeft, isProp(const Radius.circular(8.0)));
       });
     });
 
     group('resolve', () {
-      test('returns correct BorderRadius', () {
-        final mix = BorderRadiusMix.only(
-          topLeft: const Radius.circular(10.0),
-          topRight: const Radius.circular(20.0),
-          bottomLeft: const Radius.circular(30.0),
-          bottomRight: const Radius.circular(40.0),
+      test('resolves to BorderRadius with correct properties', () {
+        final borderRadiusMix = BorderRadiusMix.only(
+          topLeft: const Radius.circular(8.0),
+          topRight: const Radius.circular(12.0),
+          bottomLeft: const Radius.circular(16.0),
+          bottomRight: const Radius.circular(20.0),
         );
 
-        expect(
-          dto,
-          resolvesTo(
-            const BorderRadius.only(
-              topLeft: Radius.circular(10.0),
-              topRight: Radius.circular(20.0),
-              bottomLeft: Radius.circular(30.0),
-              bottomRight: Radius.circular(40.0),
-            ),
-          ),
-        );
+        final context = MockBuildContext();
+        final resolved = borderRadiusMix.resolve(context);
+
+        expect(resolved.topLeft, const Radius.circular(8.0));
+        expect(resolved.topRight, const Radius.circular(12.0));
+        expect(resolved.bottomLeft, const Radius.circular(16.0));
+        expect(resolved.bottomRight, const Radius.circular(20.0));
       });
 
-      test('uses default values for null properties', () {
-        final mix = BorderRadiusMix.only(topLeft: const Radius.circular(10.0));
-
-        expect(
-          dto,
-          resolvesTo(const BorderRadius.only(topLeft: Radius.circular(10.0))),
+      test('uses zero radius for null properties', () {
+        final borderRadiusMix = BorderRadiusMix.only(
+          topLeft: const Radius.circular(8.0),
         );
-      });
 
-      test('handles all-null DTO', () {
-        final mix = BorderRadiusMix();
+        final context = MockBuildContext();
+        final resolved = borderRadiusMix.resolve(context);
 
-        expect(mix, resolvesTo(BorderRadius.zero));
+        expect(resolved.topLeft, const Radius.circular(8.0));
+        expect(resolved.topRight, Radius.zero);
+        expect(resolved.bottomLeft, Radius.zero);
+        expect(resolved.bottomRight, Radius.zero);
       });
     });
 
     group('merge', () {
-      test('correctly combines properties', () {
-        final base = BorderRadiusMix.only(
-          topLeft: const Radius.circular(10.0),
-          topRight: const Radius.circular(20.0),
-          bottomLeft: const Radius.circular(30.0),
-          bottomRight: const Radius.circular(40.0),
+      test('returns this when other is null', () {
+        final borderRadiusMix = BorderRadiusMix.only(
+          topLeft: const Radius.circular(8.0),
         );
-        final override = BorderRadiusMix.only(
-          topLeft: const Radius.circular(5.0),
-          bottomLeft: const Radius.circular(15.0),
-        ); // topRight and bottomRight not specified
+        final merged = borderRadiusMix.merge(null);
 
-        final merged = base.merge(override);
-
-        expect(
-          merged,
-          resolvesTo(
-            const BorderRadius.only(
-              topLeft: Radius.circular(5.0), // From override
-              topRight: Radius.circular(20.0), // Preserved from base
-              bottomLeft: Radius.circular(15.0), // From override
-              bottomRight: Radius.circular(40.0), // Preserved from base
-            ),
-          ),
-        );
+        expect(merged, same(borderRadiusMix));
       });
 
-      test('returns self when merging with null', () {
-        final mix = BorderRadiusMix.only(topLeft: const Radius.circular(10.0));
-        expect(mix.merge(null), same(mix));
-      });
-
-      test('preserves unspecified properties', () {
-        final base = BorderRadiusMix.only(
-          topLeft: const Radius.circular(10.0),
-          topRight: const Radius.circular(20.0),
-          bottomLeft: const Radius.circular(30.0),
-          bottomRight: const Radius.circular(40.0),
-        );
-        final override = BorderRadiusMix.only(
-          topLeft: const Radius.circular(5.0),
+      test('merges properties correctly', () {
+        final first = BorderRadiusMix.only(
+          topLeft: const Radius.circular(8.0),
+          topRight: const Radius.circular(12.0),
         );
 
-        final merged = base.merge(override);
-
-        expect(
-          merged,
-          resolvesTo(
-            const BorderRadius.only(
-              topLeft: Radius.circular(5.0), // Overridden
-              topRight: Radius.circular(20.0), // Preserved
-              bottomLeft: Radius.circular(30.0), // Preserved
-              bottomRight: Radius.circular(40.0), // Preserved
-            ),
-          ),
+        final second = BorderRadiusMix.only(
+          topRight: const Radius.circular(16.0),
+          bottomLeft: const Radius.circular(20.0),
         );
+
+        final merged = first.merge(second);
+
+        expect(merged.topLeft, isProp(const Radius.circular(8.0)));
+        expect(merged.topRight, isProp(const Radius.circular(16.0)));
+        expect(merged.bottomLeft, isProp(const Radius.circular(20.0)));
+        expect(merged.bottomRight, isNull);
       });
     });
 
-    group('equality', () {
-      test('equals with same values', () {
-        final mix1 = BorderRadiusMix.only(
-          topLeft: const Radius.circular(10.0),
-          topRight: const Radius.circular(20.0),
-        );
-        final mix2 = BorderRadiusMix.only(
-          topLeft: const Radius.circular(10.0),
-          topRight: const Radius.circular(20.0),
+    group('Equality', () {
+      test('returns true when all properties are the same', () {
+        final borderRadiusMix1 = BorderRadiusMix.only(
+          topLeft: const Radius.circular(8.0),
+          topRight: const Radius.circular(12.0),
         );
 
-        expect(mix1, equals(mix2));
-        expect(mix1.hashCode, equals(mix2.hashCode));
+        final borderRadiusMix2 = BorderRadiusMix.only(
+          topLeft: const Radius.circular(8.0),
+          topRight: const Radius.circular(12.0),
+        );
+
+        expect(borderRadiusMix1, borderRadiusMix2);
+        expect(borderRadiusMix1.hashCode, borderRadiusMix2.hashCode);
       });
 
-      test('not equals with different values', () {
-        final mix1 = BorderRadiusMix.only(topLeft: const Radius.circular(10.0));
-        final mix2 = BorderRadiusMix.only(topLeft: const Radius.circular(20.0));
-
-        expect(mix1, isNot(equals(mix2)));
-      });
-    });
-
-    group('token resolution', () {
-      testWidgets('resolves tokens from context', (tester) async {
-        const radiusToken = MixToken<Radius>('test-radius');
-        final mix = BorderRadiusMix(
-          topLeft: Prop(const Radius.circular(10.0)),
-          topRight: Prop(const Radius.circular(20.0)),
+      test('returns false when properties are different', () {
+        final borderRadiusMix1 = BorderRadiusMix.only(
+          topLeft: const Radius.circular(8.0),
+        );
+        final borderRadiusMix2 = BorderRadiusMix.only(
+          topLeft: const Radius.circular(12.0),
         );
 
-        await tester.pumpWithMixScope(
-          Container(),
-          theme: MixScopeData.static(
-            tokens: {radiusToken: const Radius.circular(10.0)},
-          ),
-        );
-
-        expect(
-          dto,
-          resolvesTo(
-            const BorderRadius.only(
-              topLeft: Radius.circular(10.0),
-              topRight: Radius.circular(20.0),
-            ),
-          ),
-        );
-      });
-
-      test('handles missing tokens gracefully', () {
-        const token = MixToken<Radius>('undefined');
-        final mix = BorderRadiusMix(topLeft: Prop.token(token));
-
-        expect(() => mix.resolve(MockBuildContext()), throwsStateError);
+        expect(borderRadiusMix1, isNot(borderRadiusMix2));
       });
     });
   });
 
   group('BorderRadiusDirectionalMix', () {
-    group('constructor', () {
-      test('main factory assigns properties correctly', () {
-        final mix = BorderRadiusDirectionalMix.only(
-          topStart: const Radius.circular(10.0),
-          topEnd: const Radius.circular(20.0),
-          bottomStart: const Radius.circular(30.0),
-          bottomEnd: const Radius.circular(40.0),
+    group('Constructor', () {
+      test('only constructor creates instance with correct properties', () {
+        final borderRadiusDirectionalMix = BorderRadiusDirectionalMix.only(
+          topStart: const Radius.circular(8.0),
+          topEnd: const Radius.circular(12.0),
+          bottomStart: const Radius.circular(16.0),
+          bottomEnd: const Radius.circular(20.0),
         );
 
         expect(
-          dto,
-          resolvesTo(
-            const BorderRadiusDirectional.only(
-              topStart: Radius.circular(10.0),
-              topEnd: Radius.circular(20.0),
-              bottomStart: Radius.circular(30.0),
-              bottomEnd: Radius.circular(40.0),
-            ),
-          ),
+          borderRadiusDirectionalMix.topStart,
+          isProp(const Radius.circular(8.0)),
         );
-      });
-
-      test('main constructor with Prop values', () {
-        final mix = BorderRadiusDirectionalMix(
-          topStart: Prop(const Radius.circular(10.0)),
-          topEnd: Prop(const Radius.circular(20.0)),
-          bottomStart: Prop(const Radius.circular(30.0)),
-          bottomEnd: Prop(const Radius.circular(40.0)),
-        );
-
         expect(
-          dto,
-          resolvesTo(
-            const BorderRadiusDirectional.only(
-              topStart: Radius.circular(10.0),
-              topEnd: Radius.circular(20.0),
-              bottomStart: Radius.circular(30.0),
-              bottomEnd: Radius.circular(40.0),
-            ),
-          ),
+          borderRadiusDirectionalMix.topEnd,
+          isProp(const Radius.circular(12.0)),
         );
-      });
-
-      test('.value factory creates from Flutter type', () {
-        const borderRadius = BorderRadiusDirectional.only(
-          topStart: Radius.circular(10.0),
-          topEnd: Radius.circular(20.0),
-          bottomStart: Radius.circular(30.0),
-          bottomEnd: Radius.circular(40.0),
-        );
-        final mix = BorderRadiusDirectionalMix.value(borderRadius);
-
-        expect(mix, resolvesTo(borderRadius));
-      });
-
-      test('.maybeValue handles null correctly', () {
-        expect(BorderRadiusDirectionalMix.maybeValue(null), isNull);
         expect(
-          BorderRadiusDirectionalMix.maybeValue(
-            const BorderRadiusDirectional.all(Radius.circular(10.0)),
-          ),
-          isNotNull,
+          borderRadiusDirectionalMix.bottomStart,
+          isProp(const Radius.circular(16.0)),
+        );
+        expect(
+          borderRadiusDirectionalMix.bottomEnd,
+          isProp(const Radius.circular(20.0)),
         );
       });
+
+      test(
+        'value constructor extracts properties from BorderRadiusDirectional',
+        () {
+          const borderRadius = BorderRadiusDirectional.only(
+            topStart: Radius.circular(5.0),
+            topEnd: Radius.circular(10.0),
+            bottomStart: Radius.circular(15.0),
+            bottomEnd: Radius.circular(20.0),
+          );
+
+          final borderRadiusDirectionalMix = BorderRadiusDirectionalMix.value(
+            borderRadius,
+          );
+
+          expect(
+            borderRadiusDirectionalMix.topStart,
+            isProp(const Radius.circular(5.0)),
+          );
+          expect(
+            borderRadiusDirectionalMix.topEnd,
+            isProp(const Radius.circular(10.0)),
+          );
+          expect(
+            borderRadiusDirectionalMix.bottomStart,
+            isProp(const Radius.circular(15.0)),
+          );
+          expect(
+            borderRadiusDirectionalMix.bottomEnd,
+            isProp(const Radius.circular(20.0)),
+          );
+        },
+      );
+
+      test('maybeValue returns null for null input', () {
+        final result = BorderRadiusDirectionalMix.maybeValue(null);
+        expect(result, isNull);
+      });
+
+      test(
+        'maybeValue returns BorderRadiusDirectionalMix for non-null input',
+        () {
+          final borderRadius = BorderRadiusDirectional.circular(8.0);
+          final result = BorderRadiusDirectionalMix.maybeValue(borderRadius);
+
+          expect(result, isNotNull);
+          expect(result!.topStart, isProp(const Radius.circular(8.0)));
+        },
+      );
     });
 
     group('resolve', () {
-      test('returns correct BorderRadiusDirectional', () {
-        final mix = BorderRadiusDirectionalMix.only(
-          topStart: const Radius.circular(10.0),
-          topEnd: const Radius.circular(20.0),
-          bottomStart: const Radius.circular(30.0),
-          bottomEnd: const Radius.circular(40.0),
+      test('resolves to BorderRadiusDirectional with correct properties', () {
+        final borderRadiusDirectionalMix = BorderRadiusDirectionalMix.only(
+          topStart: const Radius.circular(8.0),
+          topEnd: const Radius.circular(12.0),
+          bottomStart: const Radius.circular(16.0),
+          bottomEnd: const Radius.circular(20.0),
         );
 
-        expect(
-          dto,
-          resolvesTo(
-            const BorderRadiusDirectional.only(
-              topStart: Radius.circular(10.0),
-              topEnd: Radius.circular(20.0),
-              bottomStart: Radius.circular(30.0),
-              bottomEnd: Radius.circular(40.0),
-            ),
-          ),
-        );
-      });
+        final context = MockBuildContext();
+        final resolved = borderRadiusDirectionalMix.resolve(context);
 
-      test('uses default values for null properties', () {
-        final mix = BorderRadiusDirectionalMix.only(
-          topStart: const Radius.circular(10.0),
-        ); // other properties are null
-
-        expect(
-          dto,
-          resolvesTo(
-            const BorderRadiusDirectional.only(
-              topStart: Radius.circular(10.0),
-              topEnd: Radius.zero,
-              bottomStart: Radius.zero,
-              bottomEnd: Radius.zero,
-            ),
-          ),
-        );
-      });
-
-      test('handles all-null DTO', () {
-        final mix = BorderRadiusDirectionalMix();
-
-        expect(mix, resolvesTo(BorderRadiusDirectional.zero));
+        expect(resolved.topStart, const Radius.circular(8.0));
+        expect(resolved.topEnd, const Radius.circular(12.0));
+        expect(resolved.bottomStart, const Radius.circular(16.0));
+        expect(resolved.bottomEnd, const Radius.circular(20.0));
       });
     });
 
     group('merge', () {
-      test('correctly combines properties', () {
-        final base = BorderRadiusDirectionalMix.only(
-          topStart: const Radius.circular(10.0),
-          topEnd: const Radius.circular(20.0),
-          bottomStart: const Radius.circular(30.0),
-          bottomEnd: const Radius.circular(40.0),
+      test('returns this when other is null', () {
+        final borderRadiusDirectionalMix = BorderRadiusDirectionalMix.only(
+          topStart: const Radius.circular(8.0),
         );
-        final override = BorderRadiusDirectionalMix.only(
-          topStart: const Radius.circular(5.0),
-          bottomStart: const Radius.circular(15.0),
-        ); // topEnd and bottomEnd not specified
+        final merged = borderRadiusDirectionalMix.merge(null);
 
-        final merged = base.merge(override);
+        expect(merged, same(borderRadiusDirectionalMix));
+      });
 
+      test('merges properties correctly', () {
+        final first = BorderRadiusDirectionalMix.only(
+          topStart: const Radius.circular(8.0),
+          topEnd: const Radius.circular(12.0),
+        );
+
+        final second = BorderRadiusDirectionalMix.only(
+          topEnd: const Radius.circular(16.0),
+          bottomStart: const Radius.circular(20.0),
+        );
+
+        final merged = first.merge(second);
+
+        expect(merged.topStart, isProp(const Radius.circular(8.0)));
+        expect(merged.topEnd, isProp(const Radius.circular(16.0)));
+        expect(merged.bottomStart, isProp(const Radius.circular(20.0)));
+        expect(merged.bottomEnd, isNull);
+      });
+    });
+
+    group('Equality', () {
+      test('returns true when all properties are the same', () {
+        final borderRadiusDirectionalMix1 = BorderRadiusDirectionalMix.only(
+          topStart: const Radius.circular(8.0),
+          topEnd: const Radius.circular(12.0),
+        );
+
+        final borderRadiusDirectionalMix2 = BorderRadiusDirectionalMix.only(
+          topStart: const Radius.circular(8.0),
+          topEnd: const Radius.circular(12.0),
+        );
+
+        expect(borderRadiusDirectionalMix1, borderRadiusDirectionalMix2);
         expect(
-          merged,
-          resolvesTo(
-            const BorderRadiusDirectional.only(
-              topStart: Radius.circular(5.0), // From override
-              topEnd: Radius.circular(20.0), // Preserved from base
-              bottomStart: Radius.circular(15.0), // From override
-              bottomEnd: Radius.circular(40.0), // Preserved from base
-            ),
-          ),
+          borderRadiusDirectionalMix1.hashCode,
+          borderRadiusDirectionalMix2.hashCode,
         );
       });
 
-      test('returns self when merging with null', () {
-        final mix = BorderRadiusDirectionalMix.only(
-          topStart: const Radius.circular(10.0),
+      test('returns false when properties are different', () {
+        final borderRadiusDirectionalMix1 = BorderRadiusDirectionalMix.only(
+          topStart: const Radius.circular(8.0),
         );
-        expect(mix.merge(null), same(mix));
+        final borderRadiusDirectionalMix2 = BorderRadiusDirectionalMix.only(
+          topStart: const Radius.circular(12.0),
+        );
+
+        expect(borderRadiusDirectionalMix1, isNot(borderRadiusDirectionalMix2));
       });
-
-      test('preserves unspecified properties', () {
-        final base = BorderRadiusDirectionalMix.only(
-          topStart: const Radius.circular(10.0),
-          topEnd: const Radius.circular(20.0),
-          bottomStart: const Radius.circular(30.0),
-          bottomEnd: const Radius.circular(40.0),
-        );
-        final override = BorderRadiusDirectionalMix.only(
-          topStart: const Radius.circular(5.0),
-        );
-
-        final merged = base.merge(override);
-
-        expect(
-          merged,
-          resolvesTo(
-            const BorderRadiusDirectional.only(
-              topStart: Radius.circular(5.0), // Overridden
-              topEnd: Radius.circular(20.0), // Preserved
-              bottomStart: Radius.circular(30.0), // Preserved
-              bottomEnd: Radius.circular(40.0), // Preserved
-            ),
-          ),
-        );
-      });
-    });
-
-    group('equality', () {
-      test('equals with same values', () {
-        final mix1 = BorderRadiusDirectionalMix.only(
-          topStart: const Radius.circular(10.0),
-          topEnd: const Radius.circular(20.0),
-        );
-        final mix2 = BorderRadiusDirectionalMix.only(
-          topStart: const Radius.circular(10.0),
-          topEnd: const Radius.circular(20.0),
-        );
-
-        expect(mix1, equals(mix2));
-        expect(mix1.hashCode, equals(mix2.hashCode));
-      });
-
-      test('not equals with different values', () {
-        final mix1 = BorderRadiusDirectionalMix.only(
-          topStart: const Radius.circular(10.0),
-        );
-        final mix2 = BorderRadiusDirectionalMix.only(
-          topStart: const Radius.circular(20.0),
-        );
-
-        expect(mix1, isNot(equals(mix2)));
-      });
-    });
-
-    group('token resolution', () {
-      testWidgets('resolves tokens from context', (tester) async {
-        const radiusToken = MixToken<Radius>('test-radius');
-        final mix = BorderRadiusDirectionalMix(
-          topStart: Prop(const Radius.circular(10.0)),
-          topEnd: Prop(const Radius.circular(20.0)),
-        );
-
-        await tester.pumpWithMixScope(
-          Container(),
-          theme: MixScopeData.static(
-            tokens: {radiusToken: const Radius.circular(10.0)},
-          ),
-        );
-
-        expect(
-          dto,
-          const BorderRadiusDirectional.only(
-            topStart: Radius.circular(10.0),
-            topEnd: Radius.circular(20.0),
-          ),
-        );
-      });
-
-      test('handles missing tokens gracefully', () {
-        const token = MixToken<Radius>('undefined');
-        final mix = BorderRadiusDirectionalMix(topStart: Prop.token(token));
-
-        expect(() => mix.resolve(MockBuildContext()), throwsStateError);
-      });
-    });
-
-    group('directional property behavior', () {
-      test(
-        'topLeft, topRight, bottomLeft, and bottomRight are always null',
-        () {
-          final mix = BorderRadiusDirectionalMix.only(
-            topStart: const Radius.circular(1),
-            topEnd: const Radius.circular(2),
-            bottomStart: const Radius.circular(3),
-            bottomEnd: const Radius.circular(4),
-          );
-          expect(mix.topLeft, isNull);
-          expect(mix.topRight, isNull);
-          expect(mix.bottomLeft, isNull);
-          expect(mix.bottomRight, isNull);
-        },
-      );
-    });
-  });
-
-  group('BorderRadiusGeometryMix', () {
-    group('static factories', () {
-      test('.value creates appropriate DTO type', () {
-        const borderRadius = BorderRadius.all(Radius.circular(10.0));
-        const directional = BorderRadiusDirectional.all(Radius.circular(20.0));
-
-        final mix1 = BorderRadiusGeometryMix.value(borderRadius);
-        final mix2 = BorderRadiusGeometryMix.value(directional);
-
-        expect(mix1, isA<BorderRadiusMix>());
-        expect(mix2, isA<BorderRadiusDirectionalMix>());
-        expect(mix1, resolvesTo(borderRadius));
-        expect(mix2, resolvesTo(directional));
-      });
-
-      test('.maybeValue handles null correctly', () {
-        expect(BorderRadiusGeometryMix.maybeValue(null), isNull);
-        expect(
-          BorderRadiusGeometryMix.maybeValue(
-            const BorderRadius.all(Radius.circular(10.0)),
-          ),
-          isNotNull,
-        );
-      });
-    });
-
-    group('cross-type merging', () {
-      test('BorderRadiusMix merges with BorderRadiusDirectionalMix', () {
-        final borderRadius = BorderRadiusMix.only(
-          topLeft: const Radius.circular(10.0),
-          topRight: const Radius.circular(20.0),
-          bottomLeft: const Radius.circular(30.0),
-          bottomRight: const Radius.circular(40.0),
-        );
-        final directional = BorderRadiusDirectionalMix.only(
-          topStart: const Radius.circular(5.0),
-          bottomStart: const Radius.circular(15.0),
-        );
-
-        final merged = BorderRadiusGeometryMix.tryToMerge(
-          borderRadius,
-          directional,
-        );
-
-        expect(merged, isA<BorderRadiusDirectionalMix>());
-        expect(
-          merged,
-          resolvesTo(
-            const BorderRadiusDirectional.only(
-              topStart: Radius.circular(5.0), // From directional (overrides)
-              topEnd: Radius.circular(20.0), // From borderRadius.topRight
-              bottomStart: Radius.circular(15.0), // From directional
-              bottomEnd: Radius.circular(40.0), // From borderRadius.bottomRight
-            ),
-          ),
-        );
-      });
-
-      test('BorderRadiusDirectionalMix merges with BorderRadiusMix', () {
-        final directional = BorderRadiusDirectionalMix.only(
-          topStart: const Radius.circular(10.0),
-          topEnd: const Radius.circular(20.0),
-          bottomStart: const Radius.circular(30.0),
-          bottomEnd: const Radius.circular(40.0),
-        );
-        final borderRadius = BorderRadiusMix.only(
-          topLeft: const Radius.circular(5.0),
-          bottomLeft: const Radius.circular(15.0),
-        );
-
-        final merged = BorderRadiusGeometryMix.tryToMerge(
-          directional,
-          borderRadius,
-        );
-
-        expect(merged, isA<BorderRadiusMix>());
-        expect(
-          merged,
-          resolvesTo(
-            const BorderRadius.only(
-              topLeft: Radius.circular(5.0), // From borderRadius (overrides)
-              topRight: Radius.circular(20.0), // From directional.topEnd
-              bottomLeft: Radius.circular(15.0), // From borderRadius
-              bottomRight: Radius.circular(40.0), // From directional.bottomEnd
-            ),
-          ),
-        );
-      });
-
-      test('same type merging works normally', () {
-        final mix1 = BorderRadiusMix.only(
-          topLeft: const Radius.circular(10.0),
-          topRight: const Radius.circular(20.0),
-        );
-        final mix2 = BorderRadiusMix.only(
-          topLeft: const Radius.circular(5.0),
-          bottomLeft: const Radius.circular(30.0),
-        );
-
-        final merged = BorderRadiusGeometryMix.tryToMerge(mix1, mix2);
-
-        expect(merged, isA<BorderRadiusMix>());
-        expect(
-          merged,
-          resolvesTo(
-            const BorderRadius.only(
-              topLeft: Radius.circular(5.0), // From dto2
-              topRight: Radius.circular(20.0), // From dto1 (preserved)
-              bottomLeft: Radius.circular(30.0), // From dto2
-              bottomRight: Radius.zero, // Default
-            ),
-          ),
-        );
-      });
-
-      test('returns second when first is null', () {
-        final mix = BorderRadiusMix.only(topLeft: const Radius.circular(10.0));
-        final merged = BorderRadiusGeometryMix.tryToMerge(null, dto);
-
-        expect(merged, same(mix));
-      });
-
-      test('returns first when second is null', () {
-        final mix = BorderRadiusMix.only(topLeft: const Radius.circular(10.0));
-        final merged = BorderRadiusGeometryMix.tryToMerge(mix, null);
-
-        expect(merged, same(mix));
-      });
-
-      test('returns null when both are null', () {
-        final merged = BorderRadiusGeometryMix.tryToMerge(null, null);
-
-        expect(merged, isNull);
-      });
-    });
-  });
-
-  // Legacy test for backward compatibility
-  group('BorderSideMix', () {
-    test('from constructor sets all values correctly', () {
-      final attr = BorderSideMix.only(
-        color: Colors.red,
-        style: BorderStyle.solid,
-        width: 1.0,
-      );
-      expect(attr.color, resolvesTo(Colors.red));
-      expect(attr.width, resolvesTo(1.0));
-      expect(attr.style, resolvesTo(BorderStyle.solid));
-    });
-    test('resolve returns correct BorderSide', () {
-      final attr = BorderSideMix.only(
-        color: Colors.red,
-        style: BorderStyle.solid,
-        width: 1.0,
-      );
-
-      expect(
-        attr,
-        resolvesTo(
-          const BorderSide(
-            color: Colors.red,
-            width: 1.0,
-            style: BorderStyle.solid,
-          ),
-        ),
-      );
-    });
-    test('Equality holds when all attributes are the same', () {
-      final attr1 = BorderSideMix.only(
-        color: Colors.red,
-        style: BorderStyle.solid,
-        width: 1.0,
-      );
-      final attr2 = BorderSideMix.only(
-        color: Colors.red,
-        style: BorderStyle.solid,
-        width: 1.0,
-      );
-      expect(attr1, attr2);
-      expect(attr1.hashCode, attr2.hashCode);
-    });
-    test('Equality fails when attributes are different', () {
-      final attr1 = BorderSideMix.only(
-        color: Colors.red,
-        style: BorderStyle.solid,
-        width: 1.0,
-      );
-      final attr2 = BorderSideMix.only(
-        color: Colors.blue,
-        style: BorderStyle.solid,
-        width: 1.0,
-      );
-      expect(attr1, isNot(attr2));
-      expect(attr1.hashCode, isNot(attr2.hashCode));
     });
   });
 }

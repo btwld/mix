@@ -119,7 +119,7 @@ final class RoundedRectangleBorderMix
   }
 
   @override
-  int get hashCode => borderRadius.hashCode ^ side.hashCode;
+  int get hashCode => Object.hash(borderRadius, side);
 }
 
 final class BeveledRectangleBorderMix
@@ -173,7 +173,7 @@ final class BeveledRectangleBorderMix
   }
 
   @override
-  int get hashCode => borderRadius.hashCode ^ side.hashCode;
+  int get hashCode => Object.hash(borderRadius, side);
 }
 
 final class ContinuousRectangleBorderMix
@@ -231,7 +231,7 @@ final class ContinuousRectangleBorderMix
   }
 
   @override
-  int get hashCode => borderRadius.hashCode ^ side.hashCode;
+  int get hashCode => Object.hash(borderRadius, side);
 }
 
 final class CircleBorderMix extends OutlinedBorderMix<CircleBorder> {
@@ -278,7 +278,7 @@ final class CircleBorderMix extends OutlinedBorderMix<CircleBorder> {
   }
 
   @override
-  int get hashCode => side.hashCode ^ eccentricity.hashCode;
+  int get hashCode => Object.hash(side, eccentricity);
 }
 
 final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
@@ -377,13 +377,15 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
 
   @override
   int get hashCode {
-    return side.hashCode ^
-        points.hashCode ^
-        innerRadiusRatio.hashCode ^
-        pointRounding.hashCode ^
-        valleyRounding.hashCode ^
-        rotation.hashCode ^
-        squash.hashCode;
+    return Object.hash(
+      side,
+      points,
+      innerRadiusRatio,
+      pointRounding,
+      valleyRounding,
+      rotation,
+      squash,
+    );
   }
 }
 
@@ -463,11 +465,7 @@ final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
 
   @override
   int get hashCode {
-    return side.hashCode ^
-        start.hashCode ^
-        end.hashCode ^
-        top.hashCode ^
-        bottom.hashCode;
+    return Object.hash(side, start, end, top, bottom);
   }
 }
 
@@ -513,7 +511,7 @@ final class LinearBorderEdgeMix extends Mix<LinearBorderEdge> {
   }
 
   @override
-  int get hashCode => size.hashCode ^ alignment.hashCode;
+  int get hashCode => Object.hash(size, alignment);
 }
 
 final class StadiumBorderMix extends OutlinedBorderMix<StadiumBorder> {

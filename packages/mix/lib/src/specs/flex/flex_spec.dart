@@ -3,7 +3,6 @@ import 'dart:ui' show lerpDouble;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../core/resolved_style_provider.dart';
 import '../../core/spec.dart';
 
 /// Defines the styling for a Flex widget.
@@ -52,25 +51,6 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
     this.gap,
   });
 
-  static FlexSpec? maybeOf(BuildContext context) {
-    return ResolvedStyleProvider.of<FlexSpec>(context)?.spec;
-  }
-
-  /// {@template flex_spec_of}
-  /// Retrieves the [FlexSpec] from the nearest [ResolvedStyleProvider] ancestor in the widget tree.
-  ///
-  /// This method provides the resolved FlexSpec from the style system.
-  /// If no ancestor [ResolvedStyleProvider] is found, this method returns an empty [FlexSpec].
-  ///
-  /// Example:
-  ///
-  /// ```dart
-  /// final flexSpec = FlexSpec.of(context);
-  /// ```
-  /// {@endtemplate}
-  static FlexSpec of(BuildContext context) {
-    return maybeOf(context) ?? const FlexSpec();
-  }
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties.add(EnumProperty('direction', direction));

@@ -76,6 +76,9 @@ class VisibilityModifierAttribute extends ModifierAttribute<VisibilityModifier>
 
   const VisibilityModifierAttribute({this.visible});
 
+  VisibilityModifierAttribute.only({bool? visible})
+    : this(visible: Prop.maybe(visible));
+
   /// Resolves to [VisibilityModifier] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the

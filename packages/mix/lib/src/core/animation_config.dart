@@ -108,7 +108,7 @@ final class ImplicitAnimationConfig extends AnimationConfig {
   }
 
   @override
-  int get hashCode => duration.hashCode ^ curve.hashCode;
+  int get hashCode => Object.hash(duration, curve);
 }
 
 // TODO: Implement a sprint animation

@@ -82,6 +82,9 @@ class AspectRatioModifierAttribute
 
   const AspectRatioModifierAttribute({this.aspectRatio});
 
+  AspectRatioModifierAttribute.only({double? aspectRatio})
+    : this(aspectRatio: Prop.maybe(aspectRatio));
+
   /// Resolves to [AspectRatioModifier] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the
