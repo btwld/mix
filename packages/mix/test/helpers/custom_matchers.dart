@@ -3,11 +3,11 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import 'helpers/testing_utils.dart';
+import 'testing_utils.dart';
 
 /// Simple, focused matchers for testing DTOs and Prop values in Mix
 ///
-/// Core principle: Keep it simple and solve the most common case - 
+/// Core principle: Keep it simple and solve the most common case -
 /// checking if values resolve correctly.
 
 // =============================================================================
@@ -55,10 +55,14 @@ Matcher resolvesToMaybe<T>(T? expectedValue, {BuildContext? context}) {
 /// ```
 Matcher resolvesProperties<T>(
   Map<String, dynamic Function(T)> getters,
-  Map<String, Matcher> expectations,
-  {BuildContext? context}
-) {
-  return _ResolvesPropertiesMatcher<T>(getters, expectations, context ?? TestData.mockContext);
+  Map<String, Matcher> expectations, {
+  BuildContext? context,
+}) {
+  return _ResolvesPropertiesMatcher<T>(
+    getters,
+    expectations,
+    context ?? TestData.mockContext,
+  );
 }
 
 // =============================================================================
@@ -127,12 +131,12 @@ class _ResolvesToMatcher<T> extends Matcher {
     if (item is Resolvable) {
       try {
         final resolved = item.resolve(context);
-        
+
         // If expectedValue is a Matcher, delegate to it
         if (expectedValue is Matcher) {
           return (expectedValue as Matcher).matches(resolved, matchState);
         }
-        
+
         // Direct equality check
         if (resolved != expectedValue) {
           matchState['actual'] = resolved;
@@ -270,7 +274,11 @@ class _ResolvesPropertiesMatcher<T> extends Matcher {
   final Map<String, Matcher> expectations;
   final BuildContext context;
 
-  const _ResolvesPropertiesMatcher(this.getters, this.expectations, this.context);
+  const _ResolvesPropertiesMatcher(
+    this.getters,
+    this.expectations,
+    this.context,
+  );
 
   @override
   bool matches(dynamic item, Map matchState) {
@@ -321,8 +329,9 @@ class _ResolvesPropertiesMatcher<T> extends Matcher {
     }
 
     if (matchState.containsKey('property')) {
-      return mismatchDescription
-          .add('property "${matchState['property']}" did not match');
+      return mismatchDescription.add(
+        'property "${matchState['property']}" did not match',
+      );
     }
 
     return mismatchDescription.add('was ').addDescriptionOf(item);

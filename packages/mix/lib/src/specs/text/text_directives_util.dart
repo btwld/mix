@@ -1,6 +1,7 @@
+import '../../core/attribute.dart';
 import '../../core/directive.dart';
 import '../../core/utility.dart';
-import '../../core/extensions.dart';
+import '../../internal/string_ext.dart';
 
 final class TextDirectiveUtility<T extends SpecAttribute<Object?>>
     extends MixUtility<T, TextDirectiveDto> {

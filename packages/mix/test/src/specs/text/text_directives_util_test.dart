@@ -6,7 +6,7 @@ import '../../../helpers/custom_matchers.dart';
 void main() {
   group('TextDataDirectiveUtility', () {
     final textDirective = TextDirectiveUtility(
-      (directive) => TextSpecAttribute(directive: directive),
+      (directive) => TextSpecAttribute.only(directive: directive),
     );
     test('merge returns merged object correctly', () {
       final attr1 = textDirective.uppercase();

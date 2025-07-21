@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../../helpers/testing_utils.dart';
+import '../../helpers/custom_matchers.dart';
+import '../../helpers/testing_utils.dart';
 
 void main() {
   group('StackFitUtility Tests', () {
@@ -488,7 +489,10 @@ void main() {
         isA<Prop<TextDecoration>>(),
       );
 
-      expect(utility(TextDecoration.underline).value, isA<Prop<TextDecoration>>());
+      expect(
+        utility(TextDecoration.underline).value,
+        isA<Prop<TextDecoration>>(),
+      );
     });
   });
 

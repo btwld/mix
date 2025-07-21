@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../../helpers/custom_matchers.dart';
-import '../../../helpers/testing_utils.dart';
+import '../../helpers/custom_matchers.dart';
+import '../../helpers/testing_utils.dart';
 
 void main() {
   group('BoxDecorationUtility', () {
@@ -35,10 +35,7 @@ void main() {
         result.value.borderRadius?.mixValue,
         isA<BorderRadiusGeometryDto>(),
       );
-      expect(
-        result.value.boxShadow,
-        isA<List<MixProp<BoxShadow>>>(),
-      );
+      expect(result.value.boxShadow, isA<List<MixProp<BoxShadow>>>());
       expect(result.value.color, resolvesTo(Colors.white));
       expect(result.value.gradient?.mixValue, isA<GradientDto>());
       expect(result.value.shape?.value, equals(BoxShape.rectangle));
@@ -153,10 +150,7 @@ void main() {
         result.value.gradient?.mixValue,
         equals(LinearGradientDto.maybeValue(linearGradient)),
       );
-      expect(
-        result.value.shadows,
-        isA<List<MixProp<BoxShadow>>>(),
-      );
+      expect(result.value.shadows, isA<List<MixProp<BoxShadow>>>());
       expect(result.value.shadows?.length, 1);
 
       // Test that it resolves correctly

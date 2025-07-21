@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-import 'package:mix/src/specs/stack/stack_attribute.dart';
 
 import '../../../helpers/custom_matchers.dart';
 
@@ -10,7 +9,7 @@ void main() {
     test(
       'of returns default attribute when mix does not have StackMixAttribute',
       () {
-        const attribute = StackSpecAttribute();
+        final attribute = StackSpecAttribute();
 
         expect(attribute, resolvesTo(const StackSpec()));
       },
@@ -38,13 +37,13 @@ void main() {
     });
 
     test('merge returns correct StackMixAttribute', () {
-      const attribute1 = StackSpecAttribute(
+      final attribute1 = StackSpecAttribute.only(
         alignment: Alignment.center,
         fit: StackFit.expand,
         textDirection: TextDirection.ltr,
         clipBehavior: Clip.antiAlias,
       );
-      const attribute2 = StackSpecAttribute(
+      final attribute2 = StackSpecAttribute.only(
         alignment: Alignment.topLeft,
         fit: StackFit.loose,
         textDirection: TextDirection.rtl,
@@ -66,7 +65,7 @@ void main() {
     });
 
     test('props returns correct list of properties', () {
-      final attribute = StackSpecAttribute(
+      final attribute = StackSpecAttribute.only(
         alignment: Alignment.center,
         fit: StackFit.expand,
         textDirection: TextDirection.ltr,

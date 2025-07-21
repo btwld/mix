@@ -10,7 +10,7 @@ void main() {
       final mix = MixContext.create(
         MockBuildContext(),
         Style(
-          TextSpecAttribute(
+          TextSpecAttribute.only(
             overflow: TextOverflow.ellipsis,
             strutStyle: StrutStyleDto(fontSize: 20.0),
             textAlign: TextAlign.center,
@@ -187,7 +187,7 @@ void main() {
       final mixData = MixContext.create(
         MockBuildContext(),
         Style(
-          TextSpecAttribute(
+          TextSpecAttribute.only(
             overflow: TextOverflow.ellipsis,
             strutStyle: StrutStyleDto(fontSize: 20.0),
             textAlign: TextAlign.center,

@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../../../helpers/custom_matchers.dart';
+import '../../helpers/custom_matchers.dart';
 
 final class _TestSpec extends Spec<_TestSpec> {
   final DecorationImage? dto;
