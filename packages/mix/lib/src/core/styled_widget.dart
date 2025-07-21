@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
 
 import 'attribute.dart';
-import 'factory/style_mix.dart';
 import 'spec.dart';
 import 'style_builder.dart';
+import 'style_mix.dart';
 
 /// Base class for widgets that apply [Style] definitions.
 ///

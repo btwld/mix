@@ -38,7 +38,7 @@ void main() {
       expect(textSpecAttribute.textAlign, TextAlign.center);
       expect(textSpecAttribute.textScaler, const TextScaler.linear(1.5));
       expect(textSpecAttribute.maxLines, isA<Prop<int>>());
-      expect(textSpecAttribute.maxLines!.value, 2);
+      expect(textSpecAttribute.maxLines.value, 2);
       expect(textSpecAttribute.style, isA<TextStyleDto>());
       expect(textSpecAttribute.textWidthBasis, TextWidthBasis.longestLine);
       expect(
@@ -47,7 +47,7 @@ void main() {
       );
       expect(textSpecAttribute.textDirection, TextDirection.rtl);
       expect(textSpecAttribute.softWrap, isA<Prop<bool>>());
-      expect(textSpecAttribute.softWrap!.value, true);
+      expect(textSpecAttribute.softWrap.value, true);
     });
 
     //  merge
@@ -80,31 +80,41 @@ void main() {
 
       expect(merged.overflow, TextOverflow.clip);
       expect(
-        merged.strutStyle!,
-        resolvesTo(const StrutStyle(
-          fontFamily: 'Helvetica',
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        )),
+        merged.strutStyle,
+        resolvesTo(
+          const StrutStyle(
+            fontFamily: 'Helvetica',
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
       );
       expect(merged.textAlign, TextAlign.center);
       expect(merged.textScaler, const TextScaler.linear(1.5));
       expect(merged.maxLines, isA<Prop<int>>());
-      expect(merged.maxLines!.value, 2);
+      expect(merged.maxLines.value, 2);
       expect(
-        merged.style!,
-        resolvesTo(const TextStyle(
-          fontFamily: 'Helvetica',
-          fontSize: 16,
-          fontWeight: FontWeight.w200,
-        )),
+        merged.style,
+        resolvesTo(
+          const TextStyle(
+            fontFamily: 'Helvetica',
+            fontSize: 16,
+            fontWeight: FontWeight.w200,
+          ),
+        ),
       );
       expect(merged.textWidthBasis, TextWidthBasis.longestLine);
-      expect(merged.textHeightBehavior!.applyHeightToFirstAscent, resolvesTo(false));
-      expect(merged.textHeightBehavior!.applyHeightToLastDescent, resolvesTo(false));
+      expect(
+        merged.textHeightBehavior.applyHeightToFirstAscent,
+        resolvesTo(false),
+      );
+      expect(
+        merged.textHeightBehavior.applyHeightToLastDescent,
+        resolvesTo(false),
+      );
       expect(merged.textDirection, TextDirection.ltr);
       expect(merged.softWrap, isA<Prop<bool>>());
-      expect(merged.softWrap!.value, false);
+      expect(merged.softWrap.value, false);
     });
 
     // resolve

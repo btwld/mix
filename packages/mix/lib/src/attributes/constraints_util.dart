@@ -1,10 +1,10 @@
 import 'package:flutter/rendering.dart';
 
-import '../../core/attribute.dart';
-import '../../core/prop.dart';
-import '../../core/utility.dart';
-import '../scalars/scalar_util.dart';
+import '../core/attribute.dart';
+import '../core/prop.dart';
+import '../core/utility.dart';
 import 'constraints_dto.dart';
+import 'scalar_util.dart';
 
 /// Utility class for configuring [BoxConstraints] properties.
 ///

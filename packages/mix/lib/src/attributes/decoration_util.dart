@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-import '../../core/attribute.dart';
-import '../../core/prop.dart';
-import '../../core/utility.dart';
-import '../border/border_radius_util.dart';
-import '../border/border_util.dart';
-import '../border/shape_border_util.dart';
-import '../color/color_util.dart';
-import '../enum/enum_util.dart';
-import '../gradient/gradient_util.dart';
-import '../shadow/shadow_util.dart';
+import '../core/attribute.dart';
+import '../core/prop.dart';
+import '../core/utility.dart';
+import 'border_radius_util.dart';
+import 'border_util.dart';
+import 'color/color_util.dart';
 import 'decoration_dto.dart';
-import 'image/decoration_image_util.dart';
+import 'decoration_image_util.dart';
+import 'gradient_util.dart';
+import 'scalar_util.dart';
+import 'shadow_util.dart';
+import 'shape_border_util.dart';
 
 /// Utility class for configuring [BoxDecoration] properties.
 ///

@@ -10,25 +10,25 @@ import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/utility.dart';
 
-final class TransformModifierSpec extends Modifier<TransformModifierSpec> {
+final class TransformModifier extends Modifier<TransformModifier> {
   final Matrix4? transform;
   final Alignment? alignment;
 
-  const TransformModifierSpec({this.transform, this.alignment});
+  const TransformModifier({this.transform, this.alignment});
 
   @override
-  TransformModifierSpec copyWith({Matrix4? transform, Alignment? alignment}) {
-    return TransformModifierSpec(
+  TransformModifier copyWith({Matrix4? transform, Alignment? alignment}) {
+    return TransformModifier(
       transform: transform ?? this.transform,
       alignment: alignment ?? this.alignment,
     );
   }
 
   @override
-  TransformModifierSpec lerp(TransformModifierSpec? other, double t) {
+  TransformModifier lerp(TransformModifier? other, double t) {
     if (other == null) return this;
 
-    return TransformModifierSpec(
+    return TransformModifier(
       transform: MixHelpers.lerpMatrix4(transform, other.transform, t),
       alignment: Alignment.lerp(alignment, other.alignment, t),
     );
@@ -101,15 +101,15 @@ final class TransformRotateModifierSpecUtility<T extends SpecAttribute<Object?>>
 }
 
 class TransformModifierSpecAttribute
-    extends ModifierSpecAttribute<TransformModifierSpec> {
+    extends ModifierAttribute<TransformModifier> {
   final Prop<Matrix4>? transform;
   final Prop<Alignment>? alignment;
 
   const TransformModifierSpecAttribute({this.transform, this.alignment});
 
   @override
-  TransformModifierSpec resolve(BuildContext context) {
-    return TransformModifierSpec(
+  TransformModifier resolve(BuildContext context) {
+    return TransformModifier(
       transform: MixHelpers.resolve(context, transform),
       alignment: MixHelpers.resolve(context, alignment),
     );

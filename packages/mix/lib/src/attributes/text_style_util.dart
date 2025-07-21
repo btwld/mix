@@ -1,11 +1,11 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/prop.dart';
-import '../../core/utility.dart';
-import '../color/color_util.dart';
-import '../enum/enum_util.dart';
-import '../scalars/scalar_util.dart';
-import '../shadow/shadow_dto.dart';
+import '../core/attribute.dart';
+import '../core/prop.dart';
+import '../core/utility.dart';
+import 'color/color_util.dart';
+import 'scalar_util.dart';
+import 'shadow_dto.dart';
 import 'text_style_dto.dart';
 
 final class TextStyleUtility<T extends SpecAttribute<Object?>>

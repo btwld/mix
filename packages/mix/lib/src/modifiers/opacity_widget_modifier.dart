@@ -13,41 +13,39 @@ import '../theme/tokens/mix_token.dart';
 /// A modifier that wraps a widget with the [Opacity] widget.
 ///
 /// The [Opacity] widget is used to make a widget partially transparent.
-final class OpacityModifierSpec extends Modifier<OpacityModifierSpec>
+final class OpacityModifier extends Modifier<OpacityModifier>
     with Diagnosticable {
   /// The [opacity] argument must not be null and
   /// must be between 0.0 and 1.0 (inclusive).
   final double opacity;
-  const OpacityModifierSpec([double? opacity]) : opacity = opacity ?? 1.0;
+  const OpacityModifier([double? opacity]) : opacity = opacity ?? 1.0;
 
-  /// Creates a copy of this [OpacityModifierSpec] but with the given fields
+  /// Creates a copy of this [OpacityModifier] but with the given fields
   /// replaced with the new values.
   @override
-  OpacityModifierSpec copyWith({double? opacity}) {
-    return OpacityModifierSpec(opacity ?? this.opacity);
+  OpacityModifier copyWith({double? opacity}) {
+    return OpacityModifier(opacity ?? this.opacity);
   }
 
-  /// Linearly interpolates between this [OpacityModifierSpec] and another [OpacityModifierSpec] based on the given parameter [t].
+  /// Linearly interpolates between this [OpacityModifier] and another [OpacityModifier] based on the given parameter [t].
   ///
   /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [OpacityModifierSpec] is returned. When [t] is 1.0, the [other] [OpacityModifierSpec] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [OpacityModifierSpec] is returned.
+  /// When [t] is 0.0, the current [OpacityModifier] is returned. When [t] is 1.0, the [other] [OpacityModifier] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [OpacityModifier] is returned.
   ///
-  /// If [other] is null, this method returns the current [OpacityModifierSpec] instance.
+  /// If [other] is null, this method returns the current [OpacityModifier] instance.
   ///
-  /// The interpolation is performed on each property of the [OpacityModifierSpec] using the appropriate
+  /// The interpolation is performed on each property of the [OpacityModifier] using the appropriate
   /// interpolation method:
   /// - [MixHelpers.lerpDouble] for [opacity].
 
   /// This method is typically used in animations to smoothly transition between
-  /// different [OpacityModifierSpec] configurations.
+  /// different [OpacityModifier] configurations.
   @override
-  OpacityModifierSpec lerp(OpacityModifierSpec? other, double t) {
+  OpacityModifier lerp(OpacityModifier? other, double t) {
     if (other == null) return this;
 
-    return OpacityModifierSpec(
-      MixHelpers.lerpDouble(opacity, other.opacity, t)!,
-    );
+    return OpacityModifier(MixHelpers.lerpDouble(opacity, other.opacity, t)!);
   }
 
   @override
@@ -56,10 +54,10 @@ final class OpacityModifierSpec extends Modifier<OpacityModifierSpec>
     properties.add(DiagnosticsProperty('opacity', opacity, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [OpacityModifierSpec].
+  /// The list of properties that constitute the state of this [OpacityModifier].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [OpacityModifierSpec] instances for equality.
+  /// compare two [OpacityModifier] instances for equality.
   @override
   List<Object?> get props => [opacity];
 
@@ -69,21 +67,20 @@ final class OpacityModifierSpec extends Modifier<OpacityModifierSpec>
   }
 }
 
-/// Represents the attributes of a [OpacityModifierSpec].
+/// Represents the attributes of a [OpacityModifier].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [OpacityModifierSpec].
+/// appearance of a [OpacityModifier].
 ///
-/// Use this class to configure the attributes of a [OpacityModifierSpec] and pass it to
-/// the [OpacityModifierSpec] constructor.
-class OpacityModifierSpecAttribute
-    extends ModifierSpecAttribute<OpacityModifierSpec>
+/// Use this class to configure the attributes of a [OpacityModifier] and pass it to
+/// the [OpacityModifier] constructor.
+class OpacityModifierSpecAttribute extends ModifierAttribute<OpacityModifier>
     with Diagnosticable {
   final Prop<double>? opacity;
 
   const OpacityModifierSpecAttribute({this.opacity});
 
-  /// Resolves to [OpacityModifierSpec] using the provided [MixContext].
+  /// Resolves to [OpacityModifier] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
@@ -92,8 +89,8 @@ class OpacityModifierSpecAttribute
   /// final opacityModifierSpec = OpacityModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  OpacityModifierSpec resolve(BuildContext context) {
-    return OpacityModifierSpec(opacity?.resolve(context));
+  OpacityModifier resolve(BuildContext context) {
+    return OpacityModifier(opacity?.resolve(context));
   }
 
   /// Merges the properties of this [OpacityModifierSpecAttribute] with the properties of [other].

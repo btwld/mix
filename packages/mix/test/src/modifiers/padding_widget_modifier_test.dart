@@ -9,8 +9,8 @@ void main() {
     test('lerp returns correct PaddingSpec', () {
       const padding1 = EdgeInsets.all(10.0);
       const padding2 = EdgeInsets.all(20.0);
-      const spec1 = PaddingModifierSpec(padding1);
-      const spec2 = PaddingModifierSpec(padding2);
+      const spec1 = PaddingModifier(padding1);
+      const spec2 = PaddingModifier(padding2);
 
       final result = spec1.lerp(spec2, 0.5);
 
@@ -21,9 +21,9 @@ void main() {
       const padding = EdgeInsets.all(10.0);
       const padding2 = EdgeInsets.all(20.0);
       const padding3 = EdgeInsets.all(30.0);
-      const spec = PaddingModifierSpec(padding);
-      const spec2 = PaddingModifierSpec(padding2);
-      const spec3 = PaddingModifierSpec(padding3);
+      const spec = PaddingModifier(padding);
+      const spec2 = PaddingModifier(padding2);
+      const spec3 = PaddingModifier(padding3);
 
       final lerp1 = spec.lerp(null, 0.5);
       final lerp2 = spec.lerp(spec2, 0.5);
@@ -40,7 +40,7 @@ void main() {
     test('copyWith returns new PaddingSpec with updated padding', () {
       const padding1 = EdgeInsets.all(10.0);
       const padding2 = EdgeInsets.all(20.0);
-      const spec = PaddingModifierSpec(padding1);
+      const spec = PaddingModifier(padding1);
 
       final result = spec.copyWith(padding: padding2);
 
@@ -49,17 +49,18 @@ void main() {
 
     test('copyWith returns original PaddingSpec when padding is null', () {
       const padding = EdgeInsets.all(10.0);
-      const spec = PaddingModifierSpec(padding);
+      const spec = PaddingModifier(padding);
 
       final result = spec.copyWith();
 
       expect(result.padding, equals(padding));
     });
 
-    testWidgets('build returns Padding widget with correct padding',
-        (WidgetTester tester) async {
+    testWidgets('build returns Padding widget with correct padding', (
+      WidgetTester tester,
+    ) async {
       const padding = EdgeInsets.all(10.0);
-      const spec = PaddingModifierSpec(padding);
+      const spec = PaddingModifier(padding);
       const child = SizedBox();
 
       await tester.pumpWidget(spec.build(child));
@@ -93,30 +94,30 @@ void main() {
 
       expect(
         result.padding,
-        equals(
-          EdgeInsetsDto(top: 4, bottom: 3, left: 3, right: 4),
-        ),
+        equals(EdgeInsetsDto(top: 4, bottom: 3, left: 3, right: 4)),
       );
     });
 
     test(
-        'merge returns original PaddingModifierSpecAttribute when other is null',
-        () {
-      final padding = EdgeInsetsDto.all(10.0);
-      final attribute = PaddingModifierSpecAttribute(padding: padding);
+      'merge returns original PaddingModifierSpecAttribute when other is null',
+      () {
+        final padding = EdgeInsetsDto.all(10.0);
+        final attribute = PaddingModifierSpecAttribute(padding: padding);
 
-      final result = attribute.merge(null);
+        final result = attribute.merge(null);
 
-      expect(result.padding, equals(padding));
-    });
+        expect(result.padding, equals(padding));
+      },
+    );
 
     test('resolve returns correct PaddingSpec', () {
       final padding = EdgeInsetsDto.all(10.0);
       final attribute = PaddingModifierSpecAttribute(padding: padding);
 
-      expect(attribute, resolvesTo(
-        const PaddingModifierSpec(EdgeInsets.all(10.0)),
-      ));
+      expect(
+        attribute,
+        resolvesTo(const PaddingModifier(EdgeInsets.all(10.0))),
+      );
     });
 
     test('props returns list with padding', () {

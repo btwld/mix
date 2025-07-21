@@ -3,16 +3,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../attributes/text_height_behavior/text_height_behavior_dto.dart';
-import '../attributes/text_style/text_style_dto.dart';
+import '../attributes/text_height_behavior_dto.dart';
+import '../attributes/text_style_dto.dart';
 import '../core/attribute.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/utility.dart';
 
-final class DefaultTextStyleModifierSpec
-    extends Modifier<DefaultTextStyleModifierSpec>
+final class DefaultTextStyleModifier extends Modifier<DefaultTextStyleModifier>
     with Diagnosticable {
   final TextStyle? style;
   final TextAlign? textAlign;
@@ -22,7 +21,7 @@ final class DefaultTextStyleModifierSpec
   final TextWidthBasis? textWidthBasis;
   final TextHeightBehavior? textHeightBehavior;
 
-  const DefaultTextStyleModifierSpec({
+  const DefaultTextStyleModifier({
     this.style,
     this.textAlign,
     this.softWrap,
@@ -32,10 +31,10 @@ final class DefaultTextStyleModifierSpec
     this.textHeightBehavior,
   });
 
-  /// Creates a copy of this [DefaultTextStyleModifierSpec] but with the given fields
+  /// Creates a copy of this [DefaultTextStyleModifier] but with the given fields
   /// replaced with the new values.
   @override
-  DefaultTextStyleModifierSpec copyWith({
+  DefaultTextStyleModifier copyWith({
     TextStyle? style,
     TextAlign? textAlign,
     bool? softWrap,
@@ -44,7 +43,7 @@ final class DefaultTextStyleModifierSpec
     TextWidthBasis? textWidthBasis,
     TextHeightBehavior? textHeightBehavior,
   }) {
-    return DefaultTextStyleModifierSpec(
+    return DefaultTextStyleModifier(
       style: style ?? this.style,
       textAlign: textAlign ?? this.textAlign,
       softWrap: softWrap ?? this.softWrap,
@@ -55,31 +54,28 @@ final class DefaultTextStyleModifierSpec
     );
   }
 
-  /// Linearly interpolates between this [DefaultTextStyleModifierSpec] and another [DefaultTextStyleModifierSpec] based on the given parameter [t].
+  /// Linearly interpolates between this [DefaultTextStyleModifier] and another [DefaultTextStyleModifier] based on the given parameter [t].
   ///
   /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [DefaultTextStyleModifierSpec] is returned. When [t] is 1.0, the [other] [DefaultTextStyleModifierSpec] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [DefaultTextStyleModifierSpec] is returned.
+  /// When [t] is 0.0, the current [DefaultTextStyleModifier] is returned. When [t] is 1.0, the [other] [DefaultTextStyleModifier] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [DefaultTextStyleModifier] is returned.
   ///
-  /// If [other] is null, this method returns the current [DefaultTextStyleModifierSpec] instance.
+  /// If [other] is null, this method returns the current [DefaultTextStyleModifier] instance.
   ///
-  /// The interpolation is performed on each property of the [DefaultTextStyleModifierSpec] using the appropriate
+  /// The interpolation is performed on each property of the [DefaultTextStyleModifier] using the appropriate
   /// interpolation method:
   /// - [MixHelpers.lerpTextStyle] for [style].
   /// For [textAlign] and [softWrap] and [overflow] and [maxLines] and [textWidthBasis] and [textHeightBehavior], the interpolation is performed using a step function.
-  /// If [t] is less than 0.5, the value from the current [DefaultTextStyleModifierSpec] is used. Otherwise, the value
-  /// from the [other] [DefaultTextStyleModifierSpec] is used.
+  /// If [t] is less than 0.5, the value from the current [DefaultTextStyleModifier] is used. Otherwise, the value
+  /// from the [other] [DefaultTextStyleModifier] is used.
   ///
   /// This method is typically used in animations to smoothly transition between
-  /// different [DefaultTextStyleModifierSpec] configurations.
+  /// different [DefaultTextStyleModifier] configurations.
   @override
-  DefaultTextStyleModifierSpec lerp(
-    DefaultTextStyleModifierSpec? other,
-    double t,
-  ) {
+  DefaultTextStyleModifier lerp(DefaultTextStyleModifier? other, double t) {
     if (other == null) return this;
 
-    return DefaultTextStyleModifierSpec(
+    return DefaultTextStyleModifier(
       style: MixHelpers.lerpTextStyle(style, other.style, t),
       textAlign: t < 0.5 ? textAlign : other.textAlign,
       softWrap: t < 0.5 ? softWrap : other.softWrap,
@@ -120,10 +116,10 @@ final class DefaultTextStyleModifierSpec
     );
   }
 
-  /// The list of properties that constitute the state of this [DefaultTextStyleModifierSpec].
+  /// The list of properties that constitute the state of this [DefaultTextStyleModifier].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [DefaultTextStyleModifierSpec] instances for equality.
+  /// compare two [DefaultTextStyleModifier] instances for equality.
   @override
   List<Object?> get props => [
     style,
@@ -150,15 +146,15 @@ final class DefaultTextStyleModifierSpec
   }
 }
 
-/// Represents the attributes of a [DefaultTextStyleModifierSpec].
+/// Represents the attributes of a [DefaultTextStyleModifier].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [DefaultTextStyleModifierSpec].
+/// appearance of a [DefaultTextStyleModifier].
 ///
-/// Use this class to configure the attributes of a [DefaultTextStyleModifierSpec] and pass it to
-/// the [DefaultTextStyleModifierSpec] constructor.
+/// Use this class to configure the attributes of a [DefaultTextStyleModifier] and pass it to
+/// the [DefaultTextStyleModifier] constructor.
 class DefaultTextStyleModifierSpecAttribute
-    extends ModifierSpecAttribute<DefaultTextStyleModifierSpec> {
+    extends ModifierAttribute<DefaultTextStyleModifier> {
   final MixProp<TextStyle>? style;
   final Prop<TextAlign>? textAlign;
   final Prop<bool>? softWrap;
@@ -177,7 +173,7 @@ class DefaultTextStyleModifierSpecAttribute
     this.textHeightBehavior,
   });
 
-  /// Resolves to [DefaultTextStyleModifierSpec] using the provided [MixContext].
+  /// Resolves to [DefaultTextStyleModifier] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
@@ -186,8 +182,8 @@ class DefaultTextStyleModifierSpecAttribute
   /// final defaultTextStyleModifierSpec = DefaultTextStyleModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  DefaultTextStyleModifierSpec resolve(BuildContext context) {
-    return DefaultTextStyleModifierSpec(
+  DefaultTextStyleModifier resolve(BuildContext context) {
+    return DefaultTextStyleModifier(
       style: MixHelpers.resolve(context, style),
       textAlign: MixHelpers.resolve(context, textAlign),
       softWrap: MixHelpers.resolve(context, softWrap),
@@ -238,18 +234,18 @@ class DefaultTextStyleModifierSpecAttribute
   ];
 }
 
-/// A tween that interpolates between two [DefaultTextStyleModifierSpec] instances.
+/// A tween that interpolates between two [DefaultTextStyleModifier] instances.
 ///
 /// This class can be used in animations to smoothly transition between
-/// different [DefaultTextStyleModifierSpec] specifications.
+/// different [DefaultTextStyleModifier] specifications.
 class DefaultTextStyleModifierSpecTween
-    extends Tween<DefaultTextStyleModifierSpec?> {
+    extends Tween<DefaultTextStyleModifier?> {
   DefaultTextStyleModifierSpecTween({super.begin, super.end});
 
   @override
-  DefaultTextStyleModifierSpec lerp(double t) {
+  DefaultTextStyleModifier lerp(double t) {
     if (begin == null && end == null) {
-      return const DefaultTextStyleModifierSpec();
+      return const DefaultTextStyleModifier();
     }
 
     if (begin == null) {

@@ -9,25 +9,20 @@ import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/utility.dart';
 
-final class AlignModifierSpec extends Modifier<AlignModifierSpec>
-    with Diagnosticable {
+final class AlignModifier extends Modifier<AlignModifier> with Diagnosticable {
   final AlignmentGeometry? alignment;
   final double? widthFactor;
   final double? heightFactor;
 
-  const AlignModifierSpec({
-    this.alignment,
-    this.widthFactor,
-    this.heightFactor,
-  });
+  const AlignModifier({this.alignment, this.widthFactor, this.heightFactor});
 
   @override
-  AlignModifierSpec copyWith({
+  AlignModifier copyWith({
     AlignmentGeometry? alignment,
     double? widthFactor,
     double? heightFactor,
   }) {
-    return AlignModifierSpec(
+    return AlignModifier(
       alignment: alignment ?? this.alignment,
       widthFactor: widthFactor ?? this.widthFactor,
       heightFactor: heightFactor ?? this.heightFactor,
@@ -35,10 +30,10 @@ final class AlignModifierSpec extends Modifier<AlignModifierSpec>
   }
 
   @override
-  AlignModifierSpec lerp(AlignModifierSpec? other, double t) {
+  AlignModifier lerp(AlignModifier? other, double t) {
     if (other == null) return this;
 
-    return AlignModifierSpec(
+    return AlignModifier(
       alignment: AlignmentGeometry.lerp(alignment, other.alignment, t),
       widthFactor: MixHelpers.lerpDouble(widthFactor, other.widthFactor, t),
       heightFactor: MixHelpers.lerpDouble(heightFactor, other.heightFactor, t),
@@ -77,8 +72,7 @@ final class AlignModifierSpecUtility<T extends SpecAttribute<Object?>>
   }
 }
 
-class AlignModifierSpecAttribute
-    extends ModifierSpecAttribute<AlignModifierSpec> {
+class AlignModifierSpecAttribute extends ModifierAttribute<AlignModifier> {
   final Prop<AlignmentGeometry>? alignment;
   final Prop<double>? widthFactor;
   final Prop<double>? heightFactor;
@@ -90,8 +84,8 @@ class AlignModifierSpecAttribute
   });
 
   @override
-  AlignModifierSpec resolve(BuildContext context) {
-    return AlignModifierSpec(
+  AlignModifier resolve(BuildContext context) {
+    return AlignModifier(
       alignment: MixHelpers.resolve(context, alignment),
       widthFactor: MixHelpers.resolve(context, widthFactor),
       heightFactor: MixHelpers.resolve(context, heightFactor),

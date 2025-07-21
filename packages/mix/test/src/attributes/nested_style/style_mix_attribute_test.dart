@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/src/core/factory/style_mix.dart';
+import 'package:mix/src/core/style_mix.dart';
 
 import '../../../helpers/testing_utils.dart';
 

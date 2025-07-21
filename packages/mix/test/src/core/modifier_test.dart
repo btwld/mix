@@ -59,7 +59,7 @@ final class _TestModifierSpec extends Modifier<_TestModifierSpec> {
 }
 
 final class _TestModifierAttribute
-    extends ModifierSpecAttribute<_TestModifierSpec> {
+    extends ModifierAttribute<_TestModifierSpec> {
   final double value;
   const _TestModifierAttribute(this.value);
 

@@ -22,7 +22,7 @@ void main() {
         ..flex.mainAxisAlignment.center()
         ..flex.crossAxisAlignment.center();
 
-      final attr = flexBox.attribute!;
+      final attr = flexBox.attribute;
 
       expect(attr.box!.alignment, resolvesTo(Alignment.center));
       expect(attr.box!.clipBehavior, resolvesTo(Clip.antiAlias));
@@ -38,19 +38,18 @@ void main() {
 
     test('box alignment returns correct instance', () {
       final flexBox = flexBoxUtility..box.alignment.center();
-      expect(flexBox.attribute!.box!.alignment, resolvesTo(Alignment.center));
+      expect(flexBox.attribute.box!.alignment, resolvesTo(Alignment.center));
     });
 
     test('box clipBehavior returns correct instance', () {
       final flexBox = flexBoxUtility..box.clipBehavior.antiAlias();
-      expect(flexBox.attribute!.box!.clipBehavior, resolvesTo(Clip.antiAlias));
+      expect(flexBox.attribute.box!.clipBehavior, resolvesTo(Clip.antiAlias));
     });
 
     test('box color returns correct instance', () {
       final flexBox = flexBoxUtility..box.color.blue();
       expect(
-        (flexBox.attribute!.box!.decoration?.mixValue as BoxDecorationDto)
-            .color,
+        (flexBox.attribute.box!.decoration?.mixValue as BoxDecorationDto).color,
         isA<Prop<Color>>(),
       );
     });
@@ -65,7 +64,7 @@ void main() {
 
     test('box height returns correct instance', () {
       final flexBox = flexBoxUtility..box.height(10);
-      expect(flexBox.attribute!.box!.height, resolvesTo(10));
+      expect(flexBox.attribute.box!.height, resolvesTo(10));
     });
 
     test('box margin returns correct instance', () {
@@ -78,12 +77,12 @@ void main() {
 
     test('box transform returns correct instance', () {
       final flexBox = flexBoxUtility..box.transform(Matrix4.identity());
-      expect(flexBox.attribute!.box!.transform, resolvesTo(Matrix4.identity()));
+      expect(flexBox.attribute.box!.transform, resolvesTo(Matrix4.identity()));
     });
 
     test('box width returns correct instance', () {
       final flexBox = flexBoxUtility..box.width(10);
-      expect(flexBox.attribute!.box!.width, resolvesTo(10));
+      expect(flexBox.attribute.box!.width, resolvesTo(10));
     });
 
     test('box decoration returns correct instance', () {
@@ -94,7 +93,7 @@ void main() {
         );
 
       final decoration =
-          flexBox.attribute!.box!.decoration?.mixValue as BoxDecorationDto;
+          flexBox.attribute.box!.decoration?.mixValue as BoxDecorationDto;
       expect(decoration.color, isA<Prop<Color>>());
       expect(
         decoration.borderRadius?.mixValue,
@@ -110,7 +109,7 @@ void main() {
         );
 
       final foregroundDecoration =
-          flexBox.attribute!.box!.foregroundDecoration?.mixValue
+          flexBox.attribute.box!.foregroundDecoration?.mixValue
               as BoxDecorationDto;
       expect(
         foregroundDecoration.color,
@@ -136,7 +135,7 @@ void main() {
         ..flex.clipBehavior.antiAlias()
         ..flex.gap(10);
 
-      final attr = flexBox.attribute!.flex!;
+      final attr = flexBox.attribute.flex!;
       expect(attr.mainAxisAlignment, MainAxisAlignment.center);
       expect(attr.crossAxisAlignment, CrossAxisAlignment.center);
       expect(attr.mainAxisSize, MainAxisSize.min);

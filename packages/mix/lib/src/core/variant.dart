@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../core/widget_state/widget_state_controller.dart';
 import '../internal/deep_collection_equality.dart';
 import 'deprecated.dart';
-import 'factory/style_mix.dart';
+import 'style_mix.dart';
 
 /// Priority levels for variant application
 enum VariantPriority {

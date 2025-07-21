@@ -8,49 +8,47 @@ import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/utility.dart';
 
-class MouseCursorDecoratorSpec extends Modifier<MouseCursorDecoratorSpec> {
+class MouseCursorDecorator extends Modifier<MouseCursorDecorator> {
   final MouseCursor? mouseCursor;
 
-  const MouseCursorDecoratorSpec({this.mouseCursor});
+  const MouseCursorDecorator({this.mouseCursor});
 
-  /// Creates a copy of this [MouseCursorDecoratorSpec] but with the given fields
+  /// Creates a copy of this [MouseCursorDecorator] but with the given fields
   /// replaced with the new values.
   @override
-  MouseCursorDecoratorSpec copyWith({MouseCursor? mouseCursor}) {
-    return MouseCursorDecoratorSpec(
-      mouseCursor: mouseCursor ?? this.mouseCursor,
-    );
+  MouseCursorDecorator copyWith({MouseCursor? mouseCursor}) {
+    return MouseCursorDecorator(mouseCursor: mouseCursor ?? this.mouseCursor);
   }
 
-  /// Linearly interpolates between this [MouseCursorDecoratorSpec] and another [MouseCursorDecoratorSpec] based on the given parameter [t].
+  /// Linearly interpolates between this [MouseCursorDecorator] and another [MouseCursorDecorator] based on the given parameter [t].
   ///
   /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [MouseCursorDecoratorSpec] is returned. When [t] is 1.0, the [other] [MouseCursorDecoratorSpec] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [MouseCursorDecoratorSpec] is returned.
+  /// When [t] is 0.0, the current [MouseCursorDecorator] is returned. When [t] is 1.0, the [other] [MouseCursorDecorator] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [MouseCursorDecorator] is returned.
   ///
-  /// If [other] is null, this method returns the current [MouseCursorDecoratorSpec] instance.
+  /// If [other] is null, this method returns the current [MouseCursorDecorator] instance.
   ///
-  /// The interpolation is performed on each property of the [MouseCursorDecoratorSpec] using the appropriate
+  /// The interpolation is performed on each property of the [MouseCursorDecorator] using the appropriate
   /// interpolation method:
   /// For [mouseCursor], the interpolation is performed using a step function.
-  /// If [t] is less than 0.5, the value from the current [MouseCursorDecoratorSpec] is used. Otherwise, the value
-  /// from the [other] [MouseCursorDecoratorSpec] is used.
+  /// If [t] is less than 0.5, the value from the current [MouseCursorDecorator] is used. Otherwise, the value
+  /// from the [other] [MouseCursorDecorator] is used.
   ///
   /// This method is typically used in animations to smoothly transition between
-  /// different [MouseCursorDecoratorSpec] configurations.
+  /// different [MouseCursorDecorator] configurations.
   @override
-  MouseCursorDecoratorSpec lerp(MouseCursorDecoratorSpec? other, double t) {
+  MouseCursorDecorator lerp(MouseCursorDecorator? other, double t) {
     if (other == null) return this;
 
-    return MouseCursorDecoratorSpec(
+    return MouseCursorDecorator(
       mouseCursor: t < 0.5 ? mouseCursor : other.mouseCursor,
     );
   }
 
-  /// The list of properties that constitute the state of this [MouseCursorDecoratorSpec].
+  /// The list of properties that constitute the state of this [MouseCursorDecorator].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [MouseCursorDecoratorSpec] instances for equality.
+  /// compare two [MouseCursorDecorator] instances for equality.
   @override
   List<Object?> get props => [mouseCursor];
 
@@ -60,20 +58,20 @@ class MouseCursorDecoratorSpec extends Modifier<MouseCursorDecoratorSpec> {
   }
 }
 
-/// Represents the attributes of a [MouseCursorDecoratorSpec].
+/// Represents the attributes of a [MouseCursorDecorator].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [MouseCursorDecoratorSpec].
+/// appearance of a [MouseCursorDecorator].
 ///
-/// Use this class to configure the attributes of a [MouseCursorDecoratorSpec] and pass it to
-/// the [MouseCursorDecoratorSpec] constructor.
+/// Use this class to configure the attributes of a [MouseCursorDecorator] and pass it to
+/// the [MouseCursorDecorator] constructor.
 class MouseCursorDecoratorSpecAttribute
-    extends ModifierSpecAttribute<MouseCursorDecoratorSpec> {
+    extends ModifierAttribute<MouseCursorDecorator> {
   final Prop<MouseCursor>? mouseCursor;
 
   const MouseCursorDecoratorSpecAttribute({this.mouseCursor});
 
-  /// Resolves to [MouseCursorDecoratorSpec] using the provided [MixContext].
+  /// Resolves to [MouseCursorDecorator] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
@@ -82,8 +80,8 @@ class MouseCursorDecoratorSpecAttribute
   /// final mouseCursorDecoratorSpec = MouseCursorDecoratorSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  MouseCursorDecoratorSpec resolve(BuildContext context) {
-    return MouseCursorDecoratorSpec(
+  MouseCursorDecorator resolve(BuildContext context) {
+    return MouseCursorDecorator(
       mouseCursor: MixHelpers.resolve(context, mouseCursor),
     );
   }

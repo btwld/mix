@@ -1,14 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../../attributes/border/border_dto.dart';
-import '../../attributes/border/border_radius_dto.dart';
-import '../../attributes/constraints/constraints_dto.dart';
-import '../../attributes/decoration/decoration_dto.dart';
-import '../../attributes/gradient/gradient_dto.dart';
-import '../../attributes/shadow/shadow_dto.dart';
-import '../../attributes/spacing/edge_insets_dto.dart';
-import '../../attributes/spacing/spacing_util.dart';
+import '../../attributes/border_dto.dart';
+import '../../attributes/border_radius_dto.dart';
+import '../../attributes/constraints_dto.dart';
+import '../../attributes/decoration_dto.dart';
+import '../../attributes/edge_insets_dto.dart';
+import '../../attributes/edge_insets_geometry_util.dart';
+import '../../attributes/gradient_dto.dart';
+import '../../attributes/shadow_dto.dart';
 import '../../core/animation_config.dart';
 import '../../core/attribute.dart';
 import '../../core/helpers.dart';
@@ -79,7 +79,7 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
     double? width,
     double? height,
     AnimationConfig? animation,
-    List<ModifierSpecAttribute>? modifiers,
+    List<ModifierAttribute>? modifiers,
     List<VariantAttribute<BoxSpec>>? variants,
   }) : this(
          alignment: Prop.maybe(alignment),

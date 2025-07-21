@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../helpers/custom_matchers.dart';
-import '../../helpers/testing_utils.dart';
 
 void main() {
   // FractionallySizedBoxModifierSpec
@@ -65,12 +64,11 @@ void main() {
           heightFactor: heightFactor,
         );
 
-        await tester.pumpMaterialApp(
-          modifier.build(Container()),
-        );
+        await tester.pumpMaterialApp(modifier.build(Container()));
 
-        final FractionallySizedBox fractionallySizedBoxWidget =
-            tester.widget(find.byType(FractionallySizedBox));
+        final FractionallySizedBox fractionallySizedBoxWidget = tester.widget(
+          find.byType(FractionallySizedBox),
+        );
 
         expect(find.byType(FractionallySizedBox), findsOneWidget);
         expect(fractionallySizedBoxWidget.widthFactor, widthFactor);
@@ -100,12 +98,15 @@ void main() {
         widthFactor: 0.5,
         heightFactor: 0.5,
       );
-      expect(modifier, resolvesTo(
-        const FractionallySizedBoxModifierSpec(
-          widthFactor: 0.5,
-          heightFactor: 0.5,
+      expect(
+        modifier,
+        resolvesTo(
+          const FractionallySizedBoxModifierSpec(
+            widthFactor: 0.5,
+            heightFactor: 0.5,
+          ),
         ),
-      ));
+      );
     });
 
     test('equality', () {

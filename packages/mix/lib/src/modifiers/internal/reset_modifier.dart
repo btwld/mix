@@ -45,8 +45,7 @@ final class ResetModifierSpecUtility<T extends SpecAttribute<Object?>>
   }
 }
 
-class ResetModifierSpecAttribute
-    extends ModifierSpecAttribute<ResetModifierSpec>
+class ResetModifierSpecAttribute extends ModifierAttribute<ResetModifierSpec>
     with Diagnosticable {
   const ResetModifierSpecAttribute();
 

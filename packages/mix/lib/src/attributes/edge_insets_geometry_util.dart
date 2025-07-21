@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/attribute.dart';
-import '../../core/prop.dart';
-import '../../core/utility.dart';
-import 'edge_insets_dto.dart';
+import '../core/attribute.dart';
+import '../core/prop.dart';
+import '../core/utility.dart';
+import './edge_insets_dto.dart';
 
 // Deprecated typedef moved to src/core/deprecated.dart
 

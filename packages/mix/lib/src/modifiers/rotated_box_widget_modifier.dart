@@ -50,7 +50,7 @@ final class RotatedBoxModifierSpec extends Modifier<RotatedBoxModifierSpec> {
 /// Use this class to configure the attributes of a [RotatedBoxModifierSpec] and pass it to
 /// the [RotatedBoxModifierSpec] constructor.
 class RotatedBoxModifierSpecAttribute
-    extends ModifierSpecAttribute<RotatedBoxModifierSpec> {
+    extends ModifierAttribute<RotatedBoxModifierSpec> {
   final Prop<int>? quarterTurns;
 
   const RotatedBoxModifierSpecAttribute({this.quarterTurns});

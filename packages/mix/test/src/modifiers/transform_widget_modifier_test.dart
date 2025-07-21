@@ -6,33 +6,31 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../helpers/custom_matchers.dart';
-import '../../helpers/testing_utils.dart';
 
 void main() {
   group('TransformModifierSpec', () {
     test('lerp', () {
-      final spec = TransformModifierSpec(transform: Matrix4.rotationX(0.5));
-      final other = TransformModifierSpec(transform: Matrix4.rotationX(1.0));
+      final spec = TransformModifier(transform: Matrix4.rotationX(0.5));
+      final other = TransformModifier(transform: Matrix4.rotationX(1.0));
       final result = spec.lerp(other, 0.5);
       expect(
-          result.transform,
-          Matrix4Tween(
-            begin: Matrix4.rotationX(0.5),
-            end: Matrix4.rotationX(1.0),
-          ).lerp(0.5));
+        result.transform,
+        Matrix4Tween(
+          begin: Matrix4.rotationX(0.5),
+          end: Matrix4.rotationX(1.0),
+        ).lerp(0.5),
+      );
     });
 
     test('copyWith', () {
-      final spec = TransformModifierSpec(transform: Matrix4.rotationX(0.5));
-      final result = spec.copyWith(
-        transform: Matrix4.rotationX(0.1),
-      );
-      expect(result, isA<TransformModifierSpec>());
+      final spec = TransformModifier(transform: Matrix4.rotationX(0.5));
+      final result = spec.copyWith(transform: Matrix4.rotationX(0.1));
+      expect(result, isA<TransformModifier>());
       expect(result.transform, Matrix4.rotationX(0.1));
     });
 
     testWidgets('build', (tester) async {
-      const modifier = TransformModifierSpec();
+      const modifier = TransformModifier();
 
       await tester.pumpMaterialApp(modifier.build(Container()));
 
@@ -45,82 +43,91 @@ void main() {
 
     // equality
     test('equality', () {
-      final spec = TransformModifierSpec(transform: Matrix4.rotationX(0.5));
-      final other = TransformModifierSpec(transform: Matrix4.rotationX(0.5));
+      final spec = TransformModifier(transform: Matrix4.rotationX(0.5));
+      final other = TransformModifier(transform: Matrix4.rotationX(0.5));
       expect(spec, other);
     });
 
     test('inequality', () {
-      final spec = TransformModifierSpec(transform: Matrix4.rotationX(0.5));
-      final other = TransformModifierSpec(transform: Matrix4.rotationX(1.0));
+      final spec = TransformModifier(transform: Matrix4.rotationX(0.5));
+      final other = TransformModifier(transform: Matrix4.rotationX(1.0));
       expect(spec, isNot(other));
     });
   });
-  group(
-    'TransformModifierSpecAttribute',
-    () {
-      test('merge', () {
-        const modifier = TransformModifierSpecAttribute();
-        const other = TransformModifierSpecAttribute();
-        final result = modifier.merge(other);
-        expect(result, modifier);
-      });
+  group('TransformModifierSpecAttribute', () {
+    test('merge', () {
+      const modifier = TransformModifierSpecAttribute();
+      const other = TransformModifierSpecAttribute();
+      final result = modifier.merge(other);
+      expect(result, modifier);
+    });
 
-      test('resolve', () {
-        final modifier =
-            TransformModifierSpecAttribute(transform: Matrix4.rotationX(0.5));
-        expect(modifier, resolvesTo(
-          TransformModifierSpec(transform: Matrix4.rotationX(0.5)),
-        ));
-      });
+    test('resolve', () {
+      final modifier = TransformModifierSpecAttribute(
+        transform: Matrix4.rotationX(0.5),
+      );
+      expect(
+        modifier,
+        resolvesTo(TransformModifier(transform: Matrix4.rotationX(0.5))),
+      );
+    });
 
-      // equality
-      test('equality', () {
-        final modifier =
-            TransformModifierSpecAttribute(transform: Matrix4.rotationX(0.5));
-        final other =
-            TransformModifierSpecAttribute(transform: Matrix4.rotationX(0.5));
-        expect(modifier, other);
-      });
+    // equality
+    test('equality', () {
+      final modifier = TransformModifierSpecAttribute(
+        transform: Matrix4.rotationX(0.5),
+      );
+      final other = TransformModifierSpecAttribute(
+        transform: Matrix4.rotationX(0.5),
+      );
+      expect(modifier, other);
+    });
 
-      test('merge with null', () {
-        final modifier =
-            TransformModifierSpecAttribute(transform: Matrix4.rotationX(0.5));
-        final result = modifier.merge(null);
-        expect(result, modifier);
-      });
+    test('merge with null', () {
+      final modifier = TransformModifierSpecAttribute(
+        transform: Matrix4.rotationX(0.5),
+      );
+      final result = modifier.merge(null);
+      expect(result, modifier);
+    });
 
-      test('equality', () {
-        final modifier1 =
-            TransformModifierSpecAttribute(transform: Matrix4.rotationX(0.5));
-        final modifier2 =
-            TransformModifierSpecAttribute(transform: Matrix4.rotationX(0.5));
-        expect(modifier1, modifier2);
-      });
+    test('equality', () {
+      final modifier1 = TransformModifierSpecAttribute(
+        transform: Matrix4.rotationX(0.5),
+      );
+      final modifier2 = TransformModifierSpecAttribute(
+        transform: Matrix4.rotationX(0.5),
+      );
+      expect(modifier1, modifier2);
+    });
 
-      test('inequality', () {
-        final modifier1 =
-            TransformModifierSpecAttribute(transform: Matrix4.rotationX(0.5));
-        final modifier2 =
-            TransformModifierSpecAttribute(transform: Matrix4.rotationX(1.0));
-        expect(modifier1, isNot(modifier2));
-      });
+    test('inequality', () {
+      final modifier1 = TransformModifierSpecAttribute(
+        transform: Matrix4.rotationX(0.5),
+      );
+      final modifier2 = TransformModifierSpecAttribute(
+        transform: Matrix4.rotationX(1.0),
+      );
+      expect(modifier1, isNot(modifier2));
+    });
 
-      test('inequality', () {
-        final modifier =
-            TransformModifierSpecAttribute(transform: Matrix4.rotationX(0.5));
-        final other =
-            TransformModifierSpecAttribute(transform: Matrix4.rotationX(1.0));
-        expect(modifier, isNot(equals(other)));
-      });
-    },
-  );
+    test('inequality', () {
+      final modifier = TransformModifierSpecAttribute(
+        transform: Matrix4.rotationX(0.5),
+      );
+      final other = TransformModifierSpecAttribute(
+        transform: Matrix4.rotationX(1.0),
+      );
+      expect(modifier, isNot(equals(other)));
+    });
+  });
 
   group('TransformUtility', () {
     test('call', () {
       final utility =
           TransformModifierSpecUtility<TransformModifierSpecAttribute>(
-              (attr) => attr);
+            (attr) => attr,
+          );
       final matrix = Matrix4.rotationX(0.5);
       final result = utility(matrix);
       expect(result.transform, matrix);
@@ -129,7 +136,8 @@ void main() {
     test('scale', () {
       final utility =
           TransformModifierSpecUtility<TransformModifierSpecAttribute>(
-              (attr) => attr);
+            (attr) => attr,
+          );
       final result = utility.scale(2.0);
       expect(result.transform, Matrix4.diagonal3Values(2.0, 2.0, 1.0));
       expect(result.alignment, Alignment.center);
@@ -138,42 +146,50 @@ void main() {
     test('rotate', () {
       final utility =
           TransformModifierSpecUtility<TransformModifierSpecAttribute>(
-              (attr) => attr);
+            (attr) => attr,
+          );
       final result = utility.rotate.d90();
 
       expect(result.transform, Matrix4.rotationZ(math.pi / 2));
       expect(result.alignment, Alignment.center);
 
-      expect(result, resolvesTo(
-        TransformModifierSpec(
-          transform: Matrix4.rotationZ(math.pi / 2),
-          alignment: Alignment.center,
+      expect(
+        result,
+        resolvesTo(
+          TransformModifier(
+            transform: Matrix4.rotationZ(math.pi / 2),
+            alignment: Alignment.center,
+          ),
         ),
-      ));
+      );
     });
 
     test('translate', () {
       final utility =
           TransformModifierSpecUtility<TransformModifierSpecAttribute>(
-              (attr) => attr);
+            (attr) => attr,
+          );
 
       final result = utility.translate(10, 20);
 
       expect(result.transform, Matrix4.translationValues(10, 20, 0));
       expect(result.alignment, Alignment.center);
 
-      expect(result, resolvesTo(
-        TransformModifierSpec(
-          transform: Matrix4.translationValues(10, 20, 0),
-          alignment: Alignment.center,
+      expect(
+        result,
+        resolvesTo(
+          TransformModifier(
+            transform: Matrix4.translationValues(10, 20, 0),
+            alignment: Alignment.center,
+          ),
         ),
-      ));
+      );
     });
   });
 
   group('TransformRotateModifierSpecUtility', () {
     late TransformRotateModifierSpecUtility<TransformModifierSpecAttribute>
-        utility;
+    utility;
 
     setUp(() {
       utility = TransformRotateModifierSpecUtility(

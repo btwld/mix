@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/src/modifiers/rotated_box_widget_modifier.dart';
 
 import '../../helpers/custom_matchers.dart';
-import '../../helpers/testing_utils.dart';
 
 void main() {
   group('RotateModifierSpec', () {
@@ -41,8 +40,9 @@ void main() {
 
         await tester.pumpMaterialApp(modifier.build(Container()));
 
-        final RotatedBox rotatedBoxWidget =
-            tester.widget(find.byType(RotatedBox));
+        final RotatedBox rotatedBoxWidget = tester.widget(
+          find.byType(RotatedBox),
+        );
 
         expect(find.byType(RotatedBox), findsOneWidget);
         expect(rotatedBoxWidget.quarterTurns, quarterTurns);

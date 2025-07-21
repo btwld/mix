@@ -124,7 +124,7 @@ void main() {
         ..clipBehavior.antiAlias()
         ..gap(10);
 
-      final attr = util.attribute!;
+      final attr = util.attribute;
 
       expect(util, isA<Style>());
       expect(attr.crossAxisAlignment, CrossAxisAlignment.center);
@@ -169,8 +169,8 @@ void main() {
       final flex1 = FlexSpecUtility.self..crossAxisAlignment.start();
       final flex2 = FlexSpecUtility.self..crossAxisAlignment.end();
 
-      final attr1 = flex1.attribute!;
-      final attr2 = flex2.attribute!;
+      final attr1 = flex1.attribute;
+      final attr2 = flex2.attribute;
 
       expect(attr1.crossAxisAlignment, CrossAxisAlignment.start);
       expect(attr2.crossAxisAlignment, CrossAxisAlignment.end);
@@ -203,7 +203,7 @@ void main() {
         ..mainAxisAlignment.spaceBetween()
         ..mainAxisSize.min();
 
-      final flexAttribute = flexValue.attribute!;
+      final flexAttribute = flexValue.attribute;
       final flexAttribute2 = flex.crossAxisAlignment.end();
 
       expect(flexAttribute.crossAxisAlignment, CrossAxisAlignment.center);

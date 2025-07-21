@@ -85,4 +85,3 @@ extension ColorExtensions on Color {
 
 /// Clamps a value between 0.0 and 1.0.
 double _clamp(double val) => math.min(1.0, math.max(0.0, val));
-

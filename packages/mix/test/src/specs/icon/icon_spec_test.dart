@@ -117,7 +117,7 @@ void main() {
         ..applyTextScaling(true)
         ..fill(0.5);
 
-      final attr = util.attribute!;
+      final attr = util.attribute;
 
       expect(util, isA<Style>());
       expect(attr.color, isA<Prop<Color>>());
@@ -159,8 +159,8 @@ void main() {
       final icon1 = IconSpecUtility.self..size(24);
       final icon2 = IconSpecUtility.self..size(48);
 
-      final attr1 = icon1.attribute!;
-      final attr2 = icon2.attribute!;
+      final attr1 = icon1.attribute;
+      final attr2 = icon2.attribute;
 
       expect(attr1.size, resolvesTo(24));
       expect(attr2.size, resolvesTo(48));
@@ -193,7 +193,7 @@ void main() {
         ..color.red()
         ..weight(500);
 
-      final iconAttribute = iconValue.attribute!;
+      final iconAttribute = iconValue.attribute;
       final iconAttribute2 = icon.size(48);
 
       expect(iconAttribute.size, resolvesTo(24));

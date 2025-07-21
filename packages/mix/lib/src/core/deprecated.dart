@@ -19,21 +19,18 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-import '../attributes/border/border_dto.dart';
-import '../attributes/border/border_radius_dto.dart';
-import '../attributes/border/shape_border_dto.dart';
-import '../attributes/constraints/constraints_dto.dart';
-import '../attributes/decoration/decoration_dto.dart';
-import '../attributes/decoration/image/decoration_image_dto.dart';
-import '../attributes/enum/enum_util.dart';
-import '../attributes/gap/space_dto.dart';
-import '../attributes/gradient/gradient_dto.dart';
-import '../attributes/shadow/shadow_dto.dart';
-import '../attributes/spacing/edge_insets_dto.dart';
-import '../attributes/spacing/spacing_util.dart';
-import '../attributes/strut_style/strut_style_dto.dart';
-import '../attributes/text_height_behavior/text_height_behavior_dto.dart';
-import '../attributes/text_style/text_style_dto.dart';
+import '../attributes/border_dto.dart';
+import '../attributes/border_radius_dto.dart';
+import '../attributes/constraints_dto.dart';
+import '../attributes/decoration_dto.dart';
+import '../attributes/decoration_image_dto.dart';
+import '../attributes/edge_insets_dto.dart';
+import '../attributes/gradient_dto.dart';
+import '../attributes/shadow_dto.dart';
+import '../attributes/shape_border_dto.dart';
+import '../attributes/strut_style_dto.dart';
+import '../attributes/text_height_behavior_dto.dart';
+import '../attributes/text_style_dto.dart';
 import '../core/modifier.dart';
 import '../core/spec.dart';
 import '../core/widget_state/widget_state_controller.dart';
@@ -184,10 +181,10 @@ typedef WidgetModifier<T extends Modifier<T>> = Modifier<T>;
 /// Deprecated: Use WidgetModifierSpecAttribute instead
 @Deprecated('Use WidgetModifierSpecAttribute instead')
 abstract class WidgetModifierAttribute<
-  Self extends ModifierSpecAttribute<Value>,
+  Self extends ModifierAttribute<Value>,
   Value extends Modifier<Value>
 >
-    extends ModifierSpecAttribute<Value> {
+    extends ModifierAttribute<Value> {
   const WidgetModifierAttribute();
 }
 
@@ -343,7 +340,7 @@ typedef PaddingModifierUtility = PaddingModifierSpecUtility;
 
 /// Deprecated: Use PaddingModifierSpec instead
 @Deprecated('Use PaddingModifierSpec instead')
-typedef PaddingSpec = PaddingModifierSpec;
+typedef PaddingSpec = PaddingModifier;
 
 /// Deprecated extension for Color conversion
 extension DeprecatedColorExt on Color {

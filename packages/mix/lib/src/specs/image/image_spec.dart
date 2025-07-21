@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../attributes/color/color_util.dart';
-import '../../attributes/enum/enum_util.dart';
-import '../../attributes/scalars/scalar_util.dart';
+import '../../attributes/enum_util.dart';
+import '../../attributes/scalar_util.dart';
 import '../../core/attribute.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
@@ -179,7 +179,7 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
     FilterQuality? filterQuality,
     BlendMode? colorBlendMode,
     AnimationConfig? animation,
-    List<ModifierSpecAttribute>? modifiers,
+    List<ModifierAttribute>? modifiers,
     List<VariantAttribute<ImageSpec>>? variants,
   }) : this(
          width: Prop.maybe(width),

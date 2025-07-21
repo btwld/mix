@@ -8,7 +8,7 @@ import 'color_directive.dart';
 import 'material_colors_util.dart';
 
 /// Mixin that provides color directive methods
-base mixin ColorDirectiveMixin<T extends SpecAttribute<Object?>>
+mixin ColorDirectiveMixin<T extends SpecAttribute<Object?>>
     on PropUtility<T, Color> {
   // All directive methods use the directive() method from PropUtility
   T withOpacity(double opacity) => directive(OpacityDirective(opacity));
@@ -32,7 +32,7 @@ base mixin ColorDirectiveMixin<T extends SpecAttribute<Object?>>
 
 /// Utility for predefined colors (e.g., Colors.red)
 @immutable
-base class FoundationColorUtility<T extends SpecAttribute<Object?>>
+class FoundationColorUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, Color>
     with ColorDirectiveMixin<T> {
   final Color color;
@@ -43,7 +43,7 @@ base class FoundationColorUtility<T extends SpecAttribute<Object?>>
 /// This utility can be called as a function to return a StyleElement,
 /// or accessed as a property to get the Color value.
 @immutable
-final class CallableColorUtility<T extends SpecAttribute<Object?>> {
+class CallableColorUtility<T extends SpecAttribute<Object?>> {
   final T Function(Prop<Color>) builder;
   final Color color;
 

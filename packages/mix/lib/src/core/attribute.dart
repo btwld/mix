@@ -2,10 +2,10 @@ import 'package:flutter/widgets.dart';
 
 import '../internal/compare_mixin.dart';
 import 'animation_config.dart';
-import 'factory/style_mix.dart';
 import 'mix_element.dart';
 import 'modifier.dart';
 import 'spec.dart';
+import 'style_mix.dart';
 import 'variant.dart';
 
 /// Base interface for all attributes
@@ -20,20 +20,20 @@ sealed class Attribute with Mergeable, EqualityMixin {
 abstract class SpecAttribute<S extends Spec<S>> extends Attribute
     with Resolvable<ResolvedStyle<S>> {
   final List<VariantAttribute<S>>? variants;
-  final List<ModifierSpecAttribute>? modifiers;
+  final List<ModifierAttribute>? modifiers;
   final AnimationConfig? animation;
   const SpecAttribute({this.variants, this.modifiers, this.animation});
 
   @visibleForTesting
-  List<ModifierSpecAttribute>? mergeModifierLists(
-    List<ModifierSpecAttribute>? current,
-    List<ModifierSpecAttribute>? other,
+  List<ModifierAttribute>? mergeModifierLists(
+    List<ModifierAttribute>? current,
+    List<ModifierAttribute>? other,
   ) {
     if (current == null && other == null) return null;
     if (current == null) return List.of(other!);
     if (other == null) return List.of(current);
 
-    final Map<Object, ModifierSpecAttribute> merged = {};
+    final Map<Object, ModifierAttribute> merged = {};
 
     // Add current modifiers
     for (final modifier in current) {
@@ -149,12 +149,12 @@ abstract class SpecAttribute<S extends Spec<S>> extends Attribute
   Type get mergeKey => S;
 }
 
-abstract class ModifierSpecAttribute<S extends Modifier<S>> extends Attribute
+abstract class ModifierAttribute<S extends Modifier<S>> extends Attribute
     with Resolvable<S> {
-  const ModifierSpecAttribute();
+  const ModifierAttribute();
 
   @override
-  ModifierSpecAttribute<S> merge(covariant ModifierSpecAttribute<S>? other);
+  ModifierAttribute<S> merge(covariant ModifierAttribute<S>? other);
 
   @override
   S resolve(BuildContext context);

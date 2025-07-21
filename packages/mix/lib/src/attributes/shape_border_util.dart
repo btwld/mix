@@ -1,11 +1,11 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/attribute.dart';
-import '../../core/prop.dart';
-import '../../core/utility.dart';
-import '../scalars/scalar_util.dart';
+import '../core/attribute.dart';
+import '../core/prop.dart';
+import '../core/utility.dart';
 import 'border_radius_util.dart';
 import 'border_util.dart';
+import 'scalar_util.dart';
 import 'shape_border_dto.dart';
 
 /// Utility class for configuring [RoundedRectangleBorder] properties.

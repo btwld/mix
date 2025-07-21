@@ -1,10 +1,10 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/attribute.dart';
-import '../../core/prop.dart';
-import '../../core/utility.dart';
-import '../scalars/scalar_util.dart';
+import '../core/attribute.dart';
+import '../core/prop.dart';
+import '../core/utility.dart';
 import 'border_radius_dto.dart';
+import 'scalar_util.dart';
 
 /// Utility class for creating and manipulating attributes with [BorderRadiusGeometry]
 ///

@@ -3,8 +3,8 @@ import 'dart:ui' show lerpDouble;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../attributes/enum/enum_util.dart';
-import '../../attributes/scalars/scalar_util.dart';
+import '../../attributes/enum_util.dart';
+import '../../attributes/scalar_util.dart';
 import '../../core/animation_config.dart';
 import '../../core/attribute.dart';
 import '../../core/helpers.dart';
@@ -191,7 +191,7 @@ final class FlexSpecAttribute extends SpecAttribute<FlexSpec>
     Clip? clipBehavior,
     double? gap,
     AnimationConfig? animation,
-    List<ModifierSpecAttribute>? modifiers,
+    List<ModifierAttribute>? modifiers,
     List<VariantAttribute<FlexSpec>>? variants,
   }) : this(
          direction: Prop.maybe(direction),

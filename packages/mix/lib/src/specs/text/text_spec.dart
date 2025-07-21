@@ -1,14 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../attributes/enum/enum_util.dart';
-import '../../attributes/scalars/scalar_util.dart';
-import '../../attributes/strut_style/strut_style_dto.dart';
-import '../../attributes/strut_style/strut_style_util.dart';
-import '../../attributes/text_height_behavior/text_height_behavior_dto.dart';
-import '../../attributes/text_height_behavior/text_height_behavior_util.dart';
-import '../../attributes/text_style/text_style_dto.dart';
-import '../../attributes/text_style/text_style_util.dart';
+import '../../attributes/enum_util.dart';
+import '../../attributes/scalar_util.dart';
+import '../../attributes/strut_style_dto.dart';
+import '../../attributes/strut_style_util.dart';
+import '../../attributes/text_height_behavior_dto.dart';
+import '../../attributes/text_height_behavior_util.dart';
+import '../../attributes/text_style_dto.dart';
+import '../../attributes/text_style_util.dart';
 import '../../core/animation_config.dart';
 import '../../core/attribute.dart';
 import '../../core/directive.dart';
@@ -271,7 +271,7 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
     bool? softWrap,
     TextDirectiveDto? directive,
     AnimationConfig? animation,
-    List<ModifierSpecAttribute>? modifiers,
+    List<ModifierAttribute>? modifiers,
     List<VariantAttribute<TextSpec>>? variants,
   }) : this(
          overflow: Prop.maybe(overflow),

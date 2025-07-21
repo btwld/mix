@@ -275,8 +275,8 @@ void main() {
             duration: const Duration(milliseconds: 200),
             orderOfModifiers: const [],
             modifiers: [
-              OpacityModifierSpec(isActive ? 1.0 : 0.0),
-              SizedBoxModifierSpec(
+              OpacityModifier(isActive ? 1.0 : 0.0),
+              SizedBoxModifier(
                 height: isActive ? 50.0 : 0.0,
                 width: isActive ? 50.0 : 0.0,
               ),
@@ -320,9 +320,9 @@ void main() {
             duration: const Duration(milliseconds: 200),
             orderOfModifiers: const [],
             modifiers: [
-              const OpacityModifierSpec(0.0),
+              const OpacityModifier(0.0),
               if (!isActive)
-                TransformModifierSpec(transform: Matrix4.rotationZ(0.5)),
+                TransformModifier(transform: Matrix4.rotationZ(0.5)),
             ],
             child: Container(),
           ),
@@ -360,9 +360,9 @@ void main() {
         ),
         theme: MixScopeData.static(
           defaultOrderOfModifiers: const [
-            SizedBoxModifierSpec,
+            SizedBoxModifier,
             ClipRectModifierSpec,
-            TransformModifierSpec,
+            TransformModifier,
           ],
         ),
       );

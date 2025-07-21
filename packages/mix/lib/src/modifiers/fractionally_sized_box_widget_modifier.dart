@@ -106,7 +106,7 @@ final class FractionallySizedBoxModifierSpec
 /// Use this class to configure the attributes of a [FractionallySizedBoxModifierSpec] and pass it to
 /// the [FractionallySizedBoxModifierSpec] constructor.
 class FractionallySizedBoxModifierSpecAttribute
-    extends ModifierSpecAttribute<FractionallySizedBoxModifierSpec> {
+    extends ModifierAttribute<FractionallySizedBoxModifierSpec> {
   final Prop<double>? widthFactor;
   final Prop<double>? heightFactor;
   final Prop<AlignmentGeometry>? alignment;

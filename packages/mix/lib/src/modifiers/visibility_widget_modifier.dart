@@ -9,39 +9,39 @@ import '../core/prop.dart';
 import '../core/utility.dart';
 import '../theme/tokens/mix_token.dart';
 
-final class VisibilityModifierSpec extends Modifier<VisibilityModifierSpec>
+final class VisibilityModifier extends Modifier<VisibilityModifier>
     with Diagnosticable {
   final bool visible;
-  const VisibilityModifierSpec([bool? visible]) : visible = visible ?? true;
+  const VisibilityModifier([bool? visible]) : visible = visible ?? true;
 
-  /// Creates a copy of this [VisibilityModifierSpec] but with the given fields
+  /// Creates a copy of this [VisibilityModifier] but with the given fields
   /// replaced with the new values.
   @override
-  VisibilityModifierSpec copyWith({bool? visible}) {
-    return VisibilityModifierSpec(visible ?? this.visible);
+  VisibilityModifier copyWith({bool? visible}) {
+    return VisibilityModifier(visible ?? this.visible);
   }
 
-  /// Linearly interpolates between this [VisibilityModifierSpec] and another [VisibilityModifierSpec] based on the given parameter [t].
+  /// Linearly interpolates between this [VisibilityModifier] and another [VisibilityModifier] based on the given parameter [t].
   ///
   /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [VisibilityModifierSpec] is returned. When [t] is 1.0, the [other] [VisibilityModifierSpec] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [VisibilityModifierSpec] is returned.
+  /// When [t] is 0.0, the current [VisibilityModifier] is returned. When [t] is 1.0, the [other] [VisibilityModifier] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [VisibilityModifier] is returned.
   ///
-  /// If [other] is null, this method returns the current [VisibilityModifierSpec] instance.
+  /// If [other] is null, this method returns the current [VisibilityModifier] instance.
   ///
-  /// The interpolation is performed on each property of the [VisibilityModifierSpec] using the appropriate
+  /// The interpolation is performed on each property of the [VisibilityModifier] using the appropriate
   /// interpolation method:
   /// For [visible], the interpolation is performed using a step function.
-  /// If [t] is less than 0.5, the value from the current [VisibilityModifierSpec] is used. Otherwise, the value
-  /// from the [other] [VisibilityModifierSpec] is used.
+  /// If [t] is less than 0.5, the value from the current [VisibilityModifier] is used. Otherwise, the value
+  /// from the [other] [VisibilityModifier] is used.
   ///
   /// This method is typically used in animations to smoothly transition between
-  /// different [VisibilityModifierSpec] configurations.
+  /// different [VisibilityModifier] configurations.
   @override
-  VisibilityModifierSpec lerp(VisibilityModifierSpec? other, double t) {
+  VisibilityModifier lerp(VisibilityModifier? other, double t) {
     if (other == null) return this;
 
-    return VisibilityModifierSpec(t < 0.5 ? visible : other.visible);
+    return VisibilityModifier(t < 0.5 ? visible : other.visible);
   }
 
   @override
@@ -50,10 +50,10 @@ final class VisibilityModifierSpec extends Modifier<VisibilityModifierSpec>
     properties.add(DiagnosticsProperty('visible', visible, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [VisibilityModifierSpec].
+  /// The list of properties that constitute the state of this [VisibilityModifier].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [VisibilityModifierSpec] instances for equality.
+  /// compare two [VisibilityModifier] instances for equality.
   @override
   List<Object?> get props => [visible];
 
@@ -63,21 +63,21 @@ final class VisibilityModifierSpec extends Modifier<VisibilityModifierSpec>
   }
 }
 
-/// Represents the attributes of a [VisibilityModifierSpec].
+/// Represents the attributes of a [VisibilityModifier].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [VisibilityModifierSpec].
+/// appearance of a [VisibilityModifier].
 ///
-/// Use this class to configure the attributes of a [VisibilityModifierSpec] and pass it to
-/// the [VisibilityModifierSpec] constructor.
+/// Use this class to configure the attributes of a [VisibilityModifier] and pass it to
+/// the [VisibilityModifier] constructor.
 class VisibilityModifierSpecAttribute
-    extends ModifierSpecAttribute<VisibilityModifierSpec>
+    extends ModifierAttribute<VisibilityModifier>
     with Diagnosticable {
   final Prop<bool>? visible;
 
   const VisibilityModifierSpecAttribute({this.visible});
 
-  /// Resolves to [VisibilityModifierSpec] using the provided [MixContext].
+  /// Resolves to [VisibilityModifier] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
@@ -86,8 +86,8 @@ class VisibilityModifierSpecAttribute
   /// final visibilityModifierSpec = VisibilityModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  VisibilityModifierSpec resolve(BuildContext context) {
-    return VisibilityModifierSpec(visible?.resolve(context));
+  VisibilityModifier resolve(BuildContext context) {
+    return VisibilityModifier(visible?.resolve(context));
   }
 
   /// Merges the properties of this [VisibilityModifierSpecAttribute] with the properties of [other].

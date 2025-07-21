@@ -1,11 +1,10 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/attribute.dart';
-import '../../core/prop.dart';
-import '../../core/utility.dart';
-import '../enum/enum_util.dart';
-import '../scalars/scalar_util.dart';
+import '../core/attribute.dart';
+import '../core/prop.dart';
+import '../core/utility.dart';
 import 'gradient_dto.dart';
+import 'scalar_util.dart';
 
 /// Utility class for configuring [LinearGradient] properties.
 ///

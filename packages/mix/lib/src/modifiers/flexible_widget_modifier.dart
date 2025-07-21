@@ -9,40 +9,40 @@ import '../core/prop.dart';
 import '../core/utility.dart';
 import '../theme/tokens/mix_token.dart';
 
-final class FlexibleModifierSpec extends Modifier<FlexibleModifierSpec>
+final class FlexibleModifier extends Modifier<FlexibleModifier>
     with Diagnosticable {
   final int? flex;
   final FlexFit? fit;
-  const FlexibleModifierSpec({this.flex, this.fit});
+  const FlexibleModifier({this.flex, this.fit});
 
-  /// Creates a copy of this [FlexibleModifierSpec] but with the given fields
+  /// Creates a copy of this [FlexibleModifier] but with the given fields
   /// replaced with the new values.
   @override
-  FlexibleModifierSpec copyWith({int? flex, FlexFit? fit}) {
-    return FlexibleModifierSpec(flex: flex ?? this.flex, fit: fit ?? this.fit);
+  FlexibleModifier copyWith({int? flex, FlexFit? fit}) {
+    return FlexibleModifier(flex: flex ?? this.flex, fit: fit ?? this.fit);
   }
 
-  /// Linearly interpolates between this [FlexibleModifierSpec] and another [FlexibleModifierSpec] based on the given parameter [t].
+  /// Linearly interpolates between this [FlexibleModifier] and another [FlexibleModifier] based on the given parameter [t].
   ///
   /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [FlexibleModifierSpec] is returned. When [t] is 1.0, the [other] [FlexibleModifierSpec] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [FlexibleModifierSpec] is returned.
+  /// When [t] is 0.0, the current [FlexibleModifier] is returned. When [t] is 1.0, the [other] [FlexibleModifier] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [FlexibleModifier] is returned.
   ///
-  /// If [other] is null, this method returns the current [FlexibleModifierSpec] instance.
+  /// If [other] is null, this method returns the current [FlexibleModifier] instance.
   ///
-  /// The interpolation is performed on each property of the [FlexibleModifierSpec] using the appropriate
+  /// The interpolation is performed on each property of the [FlexibleModifier] using the appropriate
   /// interpolation method:
   /// For [flex] and [fit], the interpolation is performed using a step function.
-  /// If [t] is less than 0.5, the value from the current [FlexibleModifierSpec] is used. Otherwise, the value
-  /// from the [other] [FlexibleModifierSpec] is used.
+  /// If [t] is less than 0.5, the value from the current [FlexibleModifier] is used. Otherwise, the value
+  /// from the [other] [FlexibleModifier] is used.
   ///
   /// This method is typically used in animations to smoothly transition between
-  /// different [FlexibleModifierSpec] configurations.
+  /// different [FlexibleModifier] configurations.
   @override
-  FlexibleModifierSpec lerp(FlexibleModifierSpec? other, double t) {
+  FlexibleModifier lerp(FlexibleModifier? other, double t) {
     if (other == null) return this;
 
-    return FlexibleModifierSpec(
+    return FlexibleModifier(
       flex: t < 0.5 ? flex : other.flex,
       fit: t < 0.5 ? fit : other.fit,
     );
@@ -55,10 +55,10 @@ final class FlexibleModifierSpec extends Modifier<FlexibleModifierSpec>
     properties.add(DiagnosticsProperty('fit', fit, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [FlexibleModifierSpec].
+  /// The list of properties that constitute the state of this [FlexibleModifier].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [FlexibleModifierSpec] instances for equality.
+  /// compare two [FlexibleModifier] instances for equality.
   @override
   List<Object?> get props => [flex, fit];
 
@@ -68,22 +68,21 @@ final class FlexibleModifierSpec extends Modifier<FlexibleModifierSpec>
   }
 }
 
-/// Represents the attributes of a [FlexibleModifierSpec].
+/// Represents the attributes of a [FlexibleModifier].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [FlexibleModifierSpec].
+/// appearance of a [FlexibleModifier].
 ///
-/// Use this class to configure the attributes of a [FlexibleModifierSpec] and pass it to
-/// the [FlexibleModifierSpec] constructor.
-class FlexibleModifierSpecAttribute
-    extends ModifierSpecAttribute<FlexibleModifierSpec>
+/// Use this class to configure the attributes of a [FlexibleModifier] and pass it to
+/// the [FlexibleModifier] constructor.
+class FlexibleModifierSpecAttribute extends ModifierAttribute<FlexibleModifier>
     with Diagnosticable {
   final Prop<int>? flex;
   final Prop<FlexFit>? fit;
 
   const FlexibleModifierSpecAttribute({this.flex, this.fit});
 
-  /// Resolves to [FlexibleModifierSpec] using the provided [MixContext].
+  /// Resolves to [FlexibleModifier] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
@@ -92,8 +91,8 @@ class FlexibleModifierSpecAttribute
   /// final flexibleModifierSpec = FlexibleModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  FlexibleModifierSpec resolve(BuildContext context) {
-    return FlexibleModifierSpec(
+  FlexibleModifier resolve(BuildContext context) {
+    return FlexibleModifier(
       flex: flex?.resolve(context),
       fit: fit?.resolve(context),
     );

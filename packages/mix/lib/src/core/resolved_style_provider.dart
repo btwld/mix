@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import 'factory/style_mix.dart';
 import 'spec.dart';
+import 'style_mix.dart';
 
 /// Provides resolved style to descendant widgets.
 ///

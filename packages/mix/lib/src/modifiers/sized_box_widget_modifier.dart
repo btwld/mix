@@ -10,42 +10,42 @@ import '../core/prop.dart';
 import '../core/utility.dart';
 import '../theme/tokens/mix_token.dart';
 
-final class SizedBoxModifierSpec extends Modifier<SizedBoxModifierSpec>
+final class SizedBoxModifier extends Modifier<SizedBoxModifier>
     with Diagnosticable {
   final double? width;
   final double? height;
 
-  const SizedBoxModifierSpec({this.width, this.height});
+  const SizedBoxModifier({this.width, this.height});
 
-  /// Creates a copy of this [SizedBoxModifierSpec] but with the given fields
+  /// Creates a copy of this [SizedBoxModifier] but with the given fields
   /// replaced with the new values.
   @override
-  SizedBoxModifierSpec copyWith({double? width, double? height}) {
-    return SizedBoxModifierSpec(
+  SizedBoxModifier copyWith({double? width, double? height}) {
+    return SizedBoxModifier(
       width: width ?? this.width,
       height: height ?? this.height,
     );
   }
 
-  /// Linearly interpolates between this [SizedBoxModifierSpec] and another [SizedBoxModifierSpec] based on the given parameter [t].
+  /// Linearly interpolates between this [SizedBoxModifier] and another [SizedBoxModifier] based on the given parameter [t].
   ///
   /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [SizedBoxModifierSpec] is returned. When [t] is 1.0, the [other] [SizedBoxModifierSpec] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [SizedBoxModifierSpec] is returned.
+  /// When [t] is 0.0, the current [SizedBoxModifier] is returned. When [t] is 1.0, the [other] [SizedBoxModifier] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [SizedBoxModifier] is returned.
   ///
-  /// If [other] is null, this method returns the current [SizedBoxModifierSpec] instance.
+  /// If [other] is null, this method returns the current [SizedBoxModifier] instance.
   ///
-  /// The interpolation is performed on each property of the [SizedBoxModifierSpec] using the appropriate
+  /// The interpolation is performed on each property of the [SizedBoxModifier] using the appropriate
   /// interpolation method:
   /// - [MixHelpers.lerpDouble] for [width] and [height].
 
   /// This method is typically used in animations to smoothly transition between
-  /// different [SizedBoxModifierSpec] configurations.
+  /// different [SizedBoxModifier] configurations.
   @override
-  SizedBoxModifierSpec lerp(SizedBoxModifierSpec? other, double t) {
+  SizedBoxModifier lerp(SizedBoxModifier? other, double t) {
     if (other == null) return this;
 
-    return SizedBoxModifierSpec(
+    return SizedBoxModifier(
       width: MixHelpers.lerpDouble(width, other.width, t),
       height: MixHelpers.lerpDouble(height, other.height, t),
     );
@@ -58,10 +58,10 @@ final class SizedBoxModifierSpec extends Modifier<SizedBoxModifierSpec>
     properties.add(DiagnosticsProperty('height', height, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [SizedBoxModifierSpec].
+  /// The list of properties that constitute the state of this [SizedBoxModifier].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [SizedBoxModifierSpec] instances for equality.
+  /// compare two [SizedBoxModifier] instances for equality.
   @override
   List<Object?> get props => [width, height];
 
@@ -71,22 +71,21 @@ final class SizedBoxModifierSpec extends Modifier<SizedBoxModifierSpec>
   }
 }
 
-/// Represents the attributes of a [SizedBoxModifierSpec].
+/// Represents the attributes of a [SizedBoxModifier].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [SizedBoxModifierSpec].
+/// appearance of a [SizedBoxModifier].
 ///
-/// Use this class to configure the attributes of a [SizedBoxModifierSpec] and pass it to
-/// the [SizedBoxModifierSpec] constructor.
-class SizedBoxModifierSpecAttribute
-    extends ModifierSpecAttribute<SizedBoxModifierSpec>
+/// Use this class to configure the attributes of a [SizedBoxModifier] and pass it to
+/// the [SizedBoxModifier] constructor.
+class SizedBoxModifierSpecAttribute extends ModifierAttribute<SizedBoxModifier>
     with Diagnosticable {
   final Prop<double>? width;
   final Prop<double>? height;
 
   const SizedBoxModifierSpecAttribute({this.width, this.height});
 
-  /// Resolves to [SizedBoxModifierSpec] using the provided [MixContext].
+  /// Resolves to [SizedBoxModifier] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
@@ -95,8 +94,8 @@ class SizedBoxModifierSpecAttribute
   /// final sizedBoxModifierSpec = SizedBoxModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  SizedBoxModifierSpec resolve(BuildContext context) {
-    return SizedBoxModifierSpec(
+  SizedBoxModifier resolve(BuildContext context) {
+    return SizedBoxModifier(
       width: width?.resolve(context),
       height: height?.resolve(context),
     );

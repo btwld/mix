@@ -11,8 +11,7 @@ void main() {
       final modifier = $with.transform.scale(scale);
 
       final spec =
-          modifier.resolve(MockMixData(Style(modifier)))
-              as TransformModifierSpec;
+          modifier.resolve(MockMixData(Style(modifier))) as TransformModifier;
 
       expect(spec.transform, Matrix4.diagonal3Values(scale, scale, 1));
     });

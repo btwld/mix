@@ -7,16 +7,16 @@ void main() {
   group('orderSpecs', () {
     test('should order modifiers based on provided order', () {
       final orderOfModifiers = [
-        ClipOvalModifierSpec,
-        TransformModifierSpec,
-        AlignModifierSpec,
-        OpacityModifierSpec,
+        ClipOvalModifier,
+        TransformModifier,
+        AlignModifier,
+        OpacityModifier,
       ];
       final modifiers = <Modifier>[
-        const OpacityModifierSpec(1),
-        const AlignModifierSpec(alignment: Alignment.center),
-        TransformModifierSpec(transform: Matrix4.rotationX(3)),
-        const ClipOvalModifierSpec(),
+        const OpacityModifier(1),
+        const AlignModifier(alignment: Alignment.center),
+        TransformModifier(transform: Matrix4.rotationX(3)),
+        const ClipOvalModifier(),
       ];
 
       final result = orderModifiers(orderOfModifiers, modifiers);
@@ -26,18 +26,18 @@ void main() {
 
     test('should order modifiers based on provided order', () {
       final orderOfModifiers = [
-        ClipOvalModifierSpec,
-        AspectRatioModifierSpec,
-        TransformModifierSpec,
-        OpacityModifierSpec,
-        VisibilityModifierSpec,
+        ClipOvalModifier,
+        AspectRatioModifier,
+        TransformModifier,
+        OpacityModifier,
+        VisibilityModifier,
       ];
       const modifiers = <Modifier>[
-        VisibilityModifierSpec(true),
-        OpacityModifierSpec(1),
-        TransformModifierSpec(),
-        AspectRatioModifierSpec(2),
-        ClipOvalModifierSpec(),
+        VisibilityModifier(true),
+        OpacityModifier(1),
+        TransformModifier(),
+        AspectRatioModifier(2),
+        ClipOvalModifier(),
       ];
 
       final result = orderModifiers(
@@ -51,21 +51,21 @@ void main() {
 
     test('should order modifiers based on provided order', () {
       final orderOfModifiers = [
-        ClipOvalModifierSpec,
-        AspectRatioModifierSpec,
-        TransformModifierSpec,
-        OpacityModifierSpec,
-        VisibilityModifierSpec,
+        ClipOvalModifier,
+        AspectRatioModifier,
+        TransformModifier,
+        OpacityModifier,
+        VisibilityModifier,
       ];
 
       final result = combineModifiers(
         null,
         const [
-          VisibilityModifierSpec(true),
-          OpacityModifierSpec(1),
-          TransformModifierSpec(),
-          AspectRatioModifierSpec(2),
-          ClipOvalModifierSpec(),
+          VisibilityModifier(true),
+          OpacityModifier(1),
+          TransformModifier(),
+          AspectRatioModifier(2),
+          ClipOvalModifier(),
         ],
         orderOfModifiers,
         defaultOrder: null,
@@ -76,22 +76,22 @@ void main() {
 
     test('should include default order specs', () {
       final modifiers = <Modifier>[
-        TransformModifierSpec(transform: Matrix4.rotationX(3)),
-        const OpacityModifierSpec(1),
-        const AlignModifierSpec(alignment: Alignment.center),
+        TransformModifier(transform: Matrix4.rotationX(3)),
+        const OpacityModifier(1),
+        const AlignModifier(alignment: Alignment.center),
       ];
 
       final result = orderModifiers([], modifiers);
 
       expect(result.map((e) => e.type), [
-        AlignModifierSpec,
-        TransformModifierSpec,
-        OpacityModifierSpec,
+        AlignModifier,
+        TransformModifier,
+        OpacityModifier,
       ]);
     });
 
     test('should handle empty modifiers', () {
-      final orderOfModifiers = [TransformModifierSpec];
+      final orderOfModifiers = [TransformModifier];
       final modifiers = <Modifier>[];
 
       final result = orderModifiers(orderOfModifiers, modifiers);
@@ -100,16 +100,13 @@ void main() {
     });
 
     test('should handle duplicate modifiers', () {
-      final orderOfModifiers = [TransformModifierSpec];
-      final modifiers = [
-        const OpacityModifierSpec(1),
-        const OpacityModifierSpec(0.4),
-      ];
+      final orderOfModifiers = [TransformModifier];
+      final modifiers = [const OpacityModifier(1), const OpacityModifier(0.4)];
 
       final result = orderModifiers(orderOfModifiers, modifiers);
 
       expect(result.length, 1);
-      expect(result.first.type, OpacityModifierSpec);
+      expect(result.first.type, OpacityModifier);
     });
   });
 }

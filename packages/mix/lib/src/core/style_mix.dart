@@ -1,9 +1,9 @@
 // ignore_for_file: non_constant_identifier_names, constant_identifier_names, long-parameter-list, prefer-named-boolean-parameters
 
-import '../animation_config.dart';
-import '../attribute.dart';
-import '../modifier.dart';
-import '../spec.dart';
+import 'animation_config.dart';
+import 'attribute.dart';
+import 'modifier.dart';
+import 'spec.dart';
 
 abstract class Style<S extends Spec<S>> extends SpecAttribute<S> {
   const Style._();

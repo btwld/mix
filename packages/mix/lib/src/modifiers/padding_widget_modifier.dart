@@ -3,49 +3,47 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../attributes/spacing/edge_insets_dto.dart';
-import '../attributes/spacing/spacing_util.dart';
+import '../attributes/edge_insets_dto.dart';
+import '../attributes/edge_insets_geometry_util.dart';
 import '../core/attribute.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/utility.dart';
 
-final class PaddingModifierSpec extends Modifier<PaddingModifierSpec>
+final class PaddingModifier extends Modifier<PaddingModifier>
     with Diagnosticable {
   final EdgeInsetsGeometry padding;
 
-  const PaddingModifierSpec([EdgeInsetsGeometry? padding])
+  const PaddingModifier([EdgeInsetsGeometry? padding])
     : padding = padding ?? EdgeInsets.zero;
 
-  /// Creates a copy of this [PaddingModifierSpec] but with the given fields
+  /// Creates a copy of this [PaddingModifier] but with the given fields
   /// replaced with the new values.
   @override
-  PaddingModifierSpec copyWith({EdgeInsetsGeometry? padding}) {
-    return PaddingModifierSpec(padding ?? this.padding);
+  PaddingModifier copyWith({EdgeInsetsGeometry? padding}) {
+    return PaddingModifier(padding ?? this.padding);
   }
 
-  /// Linearly interpolates between this [PaddingModifierSpec] and another [PaddingModifierSpec] based on the given parameter [t].
+  /// Linearly interpolates between this [PaddingModifier] and another [PaddingModifier] based on the given parameter [t].
   ///
   /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [PaddingModifierSpec] is returned. When [t] is 1.0, the [other] [PaddingModifierSpec] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [PaddingModifierSpec] is returned.
+  /// When [t] is 0.0, the current [PaddingModifier] is returned. When [t] is 1.0, the [other] [PaddingModifier] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [PaddingModifier] is returned.
   ///
-  /// If [other] is null, this method returns the current [PaddingModifierSpec] instance.
+  /// If [other] is null, this method returns the current [PaddingModifier] instance.
   ///
-  /// The interpolation is performed on each property of the [PaddingModifierSpec] using the appropriate
+  /// The interpolation is performed on each property of the [PaddingModifier] using the appropriate
   /// interpolation method:
   /// - [EdgeInsetsGeometry.lerp] for [padding].
 
   /// This method is typically used in animations to smoothly transition between
-  /// different [PaddingModifierSpec] configurations.
+  /// different [PaddingModifier] configurations.
   @override
-  PaddingModifierSpec lerp(PaddingModifierSpec? other, double t) {
+  PaddingModifier lerp(PaddingModifier? other, double t) {
     if (other == null) return this;
 
-    return PaddingModifierSpec(
-      EdgeInsetsGeometry.lerp(padding, other.padding, t)!,
-    );
+    return PaddingModifier(EdgeInsetsGeometry.lerp(padding, other.padding, t)!);
   }
 
   @override
@@ -54,10 +52,10 @@ final class PaddingModifierSpec extends Modifier<PaddingModifierSpec>
     properties.add(DiagnosticsProperty('padding', padding, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [PaddingModifierSpec].
+  /// The list of properties that constitute the state of this [PaddingModifier].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [PaddingModifierSpec] instances for equality.
+  /// compare two [PaddingModifier] instances for equality.
   @override
   List<Object?> get props => [padding];
 
@@ -67,21 +65,20 @@ final class PaddingModifierSpec extends Modifier<PaddingModifierSpec>
   }
 }
 
-/// Represents the attributes of a [PaddingModifierSpec].
+/// Represents the attributes of a [PaddingModifier].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [PaddingModifierSpec].
+/// appearance of a [PaddingModifier].
 ///
-/// Use this class to configure the attributes of a [PaddingModifierSpec] and pass it to
-/// the [PaddingModifierSpec] constructor.
-class PaddingModifierSpecAttribute
-    extends ModifierSpecAttribute<PaddingModifierSpec>
+/// Use this class to configure the attributes of a [PaddingModifier] and pass it to
+/// the [PaddingModifier] constructor.
+class PaddingModifierSpecAttribute extends ModifierAttribute<PaddingModifier>
     with Diagnosticable {
   final MixProp<EdgeInsetsGeometry>? padding;
 
   const PaddingModifierSpecAttribute({this.padding});
 
-  /// Resolves to [PaddingModifierSpec] using the provided [MixContext].
+  /// Resolves to [PaddingModifier] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
@@ -90,8 +87,8 @@ class PaddingModifierSpecAttribute
   /// final paddingModifierSpec = PaddingModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  PaddingModifierSpec resolve(BuildContext context) {
-    return PaddingModifierSpec(MixHelpers.resolve(context, padding));
+  PaddingModifier resolve(BuildContext context) {
+    return PaddingModifier(MixHelpers.resolve(context, padding));
   }
 
   /// Merges the properties of this [PaddingModifierSpecAttribute] with the properties of [other].
@@ -125,10 +122,10 @@ class PaddingModifierSpecAttribute
   List<Object?> get props => [padding];
 }
 
-/// Utility class for configuring [PaddingModifierSpec] properties.
+/// Utility class for configuring [PaddingModifier] properties.
 ///
-/// This class provides methods to set individual properties of a [PaddingModifierSpec].
-/// Use the methods of this class to configure specific properties of a [PaddingModifierSpec].
+/// This class provides methods to set individual properties of a [PaddingModifier].
+/// Use the methods of this class to configure specific properties of a [PaddingModifier].
 class PaddingModifierSpecUtility<T extends SpecAttribute<Object?>>
     extends MixUtility<T, PaddingModifierSpecAttribute> {
   /// Utility for defining [PaddingModifierSpecAttribute.padding]

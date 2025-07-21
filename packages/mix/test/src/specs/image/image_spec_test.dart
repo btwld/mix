@@ -125,7 +125,7 @@ void main() {
         ..color.red()
         ..fit.cover();
 
-      final attr = util.attribute!;
+      final attr = util.attribute;
 
       expect(util, isA<Style>());
       expect(attr.width, 100);
@@ -155,8 +155,8 @@ void main() {
       final image1 = ImageSpecUtility.self..width(100);
       final image2 = ImageSpecUtility.self..width(200);
 
-      final attr1 = image1.attribute!;
-      final attr2 = image2.attribute!;
+      final attr1 = image1.attribute;
+      final attr2 = image2.attribute;
 
       expect(attr1.width, 100);
       expect(attr2.width, 200);
@@ -191,7 +191,7 @@ void main() {
         ..color.red()
         ..fit.cover();
 
-      final imageAttribute = imageValue.attribute!;
+      final imageAttribute = imageValue.attribute;
       final imageAttribute2 = image.width(200);
 
       expect(imageAttribute.width, 100);

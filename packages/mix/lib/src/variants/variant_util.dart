@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../core/attribute.dart';
 import '../core/deprecated.dart';
-import '../core/factory/style_mix.dart';
 import '../core/spec.dart';
+import '../core/style_mix.dart';
 import '../core/variant.dart';
 
 /// Utility class for creating variant attributes with context-based variants

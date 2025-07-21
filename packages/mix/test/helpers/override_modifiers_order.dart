@@ -2,8 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import 'testing_utils.dart';
-
 testOverrideModifiersOrder(
   WidgetTester tester, {
   required Widget Function(Style, List<Type>) widgetBuilder,
@@ -17,11 +15,11 @@ testOverrideModifiersOrder(
     PaddingModifierSpecAttribute(padding: EdgeInsetsDirectionalDto(top: 10)),
   );
   const orderOfModifiersOnlySpecs = [
-    ClipOvalModifierSpec,
-    AspectRatioModifierSpec,
-    TransformModifierSpec,
-    OpacityModifierSpec,
-    VisibilityModifierSpec,
+    ClipOvalModifier,
+    AspectRatioModifier,
+    TransformModifier,
+    OpacityModifier,
+    VisibilityModifier,
   ];
 
   // JUST SPECS
@@ -34,10 +32,10 @@ testOverrideModifiersOrder(
 
   // SPECS + ATTRIBUTES
   const orderOfModifiersSpecsAndAttributes = [
-    ClipOvalModifierSpec,
+    ClipOvalModifier,
     AspectRatioModifierSpecAttribute,
     TransformModifierSpecAttribute,
-    OpacityModifierSpec,
+    OpacityModifier,
     VisibilityModifierSpecAttribute,
   ];
   await verifyDescendants(
@@ -70,9 +68,7 @@ Future<void> verifyDescendants(
   List<Type> orderOfModifiers,
   WidgetTester tester,
 ) async {
-  await tester.pumpMaterialApp(
-    widget,
-  );
+  await tester.pumpMaterialApp(widget);
 
   expect(find.byType(widget.runtimeType), findsOneWidget);
 
@@ -101,18 +97,12 @@ Future<void> verifyDescendants(
   );
 
   expect(
-    find.descendant(
-      of: find.byType(Transform),
-      matching: find.byType(Opacity),
-    ),
+    find.descendant(of: find.byType(Transform), matching: find.byType(Opacity)),
     findsOneWidget,
   );
 
   expect(
-    find.descendant(
-      of: find.byType(Opacity),
-      matching: find.byType(Padding),
-    ),
+    find.descendant(of: find.byType(Opacity), matching: find.byType(Padding)),
     findsOneWidget,
   );
 }

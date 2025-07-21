@@ -2,9 +2,9 @@
 
 import 'package:flutter/material.dart';
 
-import '../../core/helpers.dart';
-import '../../core/mix_element.dart';
-import '../../core/prop.dart';
+import '../core/helpers.dart';
+import '../core/mix_element.dart';
+import '../core/prop.dart';
 
 sealed class BaseShadowDto<T extends Shadow> extends Mix<T> {
   // Properties use MixableProperty for cleaner merging

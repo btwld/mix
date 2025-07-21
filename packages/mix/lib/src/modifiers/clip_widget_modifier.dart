@@ -3,54 +3,54 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../attributes/border/border_radius_dto.dart';
+import '../attributes/border_radius_dto.dart';
 import '../core/attribute.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/utility.dart';
 
-final class ClipOvalModifierSpec extends Modifier<ClipOvalModifierSpec>
+final class ClipOvalModifier extends Modifier<ClipOvalModifier>
     with Diagnosticable {
   final CustomClipper<Rect>? clipper;
   final Clip? clipBehavior;
 
-  const ClipOvalModifierSpec({this.clipper, this.clipBehavior});
+  const ClipOvalModifier({this.clipper, this.clipBehavior});
 
-  /// Creates a copy of this [ClipOvalModifierSpec] but with the given fields
+  /// Creates a copy of this [ClipOvalModifier] but with the given fields
   /// replaced with the new values.
   @override
-  ClipOvalModifierSpec copyWith({
+  ClipOvalModifier copyWith({
     CustomClipper<Rect>? clipper,
     Clip? clipBehavior,
   }) {
-    return ClipOvalModifierSpec(
+    return ClipOvalModifier(
       clipper: clipper ?? this.clipper,
       clipBehavior: clipBehavior ?? this.clipBehavior,
     );
   }
 
-  /// Linearly interpolates between this [ClipOvalModifierSpec] and another [ClipOvalModifierSpec] based on the given parameter [t].
+  /// Linearly interpolates between this [ClipOvalModifier] and another [ClipOvalModifier] based on the given parameter [t].
   ///
   /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [ClipOvalModifierSpec] is returned. When [t] is 1.0, the [other] [ClipOvalModifierSpec] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [ClipOvalModifierSpec] is returned.
+  /// When [t] is 0.0, the current [ClipOvalModifier] is returned. When [t] is 1.0, the [other] [ClipOvalModifier] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [ClipOvalModifier] is returned.
   ///
-  /// If [other] is null, this method returns the current [ClipOvalModifierSpec] instance.
+  /// If [other] is null, this method returns the current [ClipOvalModifier] instance.
   ///
-  /// The interpolation is performed on each property of the [ClipOvalModifierSpec] using the appropriate
+  /// The interpolation is performed on each property of the [ClipOvalModifier] using the appropriate
   /// interpolation method:
   /// For [clipper] and [clipBehavior], the interpolation is performed using a step function.
-  /// If [t] is less than 0.5, the value from the current [ClipOvalModifierSpec] is used. Otherwise, the value
-  /// from the [other] [ClipOvalModifierSpec] is used.
+  /// If [t] is less than 0.5, the value from the current [ClipOvalModifier] is used. Otherwise, the value
+  /// from the [other] [ClipOvalModifier] is used.
   ///
   /// This method is typically used in animations to smoothly transition between
-  /// different [ClipOvalModifierSpec] configurations.
+  /// different [ClipOvalModifier] configurations.
   @override
-  ClipOvalModifierSpec lerp(ClipOvalModifierSpec? other, double t) {
+  ClipOvalModifier lerp(ClipOvalModifier? other, double t) {
     if (other == null) return this;
 
-    return ClipOvalModifierSpec(
+    return ClipOvalModifier(
       clipper: t < 0.5 ? clipper : other.clipper,
       clipBehavior: t < 0.5 ? clipBehavior : other.clipBehavior,
     );
@@ -65,10 +65,10 @@ final class ClipOvalModifierSpec extends Modifier<ClipOvalModifierSpec>
     );
   }
 
-  /// The list of properties that constitute the state of this [ClipOvalModifierSpec].
+  /// The list of properties that constitute the state of this [ClipOvalModifier].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [ClipOvalModifierSpec] instances for equality.
+  /// compare two [ClipOvalModifier] instances for equality.
   @override
   List<Object?> get props => [clipper, clipBehavior];
 
@@ -82,21 +82,21 @@ final class ClipOvalModifierSpec extends Modifier<ClipOvalModifierSpec>
   }
 }
 
-/// Represents the attributes of a [ClipOvalModifierSpec].
+/// Represents the attributes of a [ClipOvalModifier].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [ClipOvalModifierSpec].
+/// appearance of a [ClipOvalModifier].
 ///
-/// Use this class to configure the attributes of a [ClipOvalModifierSpec] and pass it to
-/// the [ClipOvalModifierSpec] constructor.
+/// Use this class to configure the attributes of a [ClipOvalModifier] and pass it to
+/// the [ClipOvalModifier] constructor.
 class ClipOvalModifierSpecAttribute
-    extends ModifierSpecAttribute<ClipOvalModifierSpec> {
+    extends ModifierAttribute<ClipOvalModifier> {
   final Prop<CustomClipper<Rect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
   const ClipOvalModifierSpecAttribute({this.clipper, this.clipBehavior});
 
-  /// Resolves to [ClipOvalModifierSpec] using the provided [MixContext].
+  /// Resolves to [ClipOvalModifier] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
@@ -105,8 +105,8 @@ class ClipOvalModifierSpecAttribute
   /// final clipOvalModifierSpec = ClipOvalModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  ClipOvalModifierSpec resolve(BuildContext context) {
-    return ClipOvalModifierSpec(
+  ClipOvalModifier resolve(BuildContext context) {
+    return ClipOvalModifier(
       clipper: MixHelpers.resolve(context, clipper),
       clipBehavior: MixHelpers.resolve(context, clipBehavior),
     );
@@ -214,7 +214,7 @@ final class ClipRectModifierSpec extends Modifier<ClipRectModifierSpec>
 /// Use this class to configure the attributes of a [ClipRectModifierSpec] and pass it to
 /// the [ClipRectModifierSpec] constructor.
 class ClipRectModifierSpecAttribute
-    extends ModifierSpecAttribute<ClipRectModifierSpec> {
+    extends ModifierAttribute<ClipRectModifierSpec> {
   final Prop<CustomClipper<Rect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
@@ -355,7 +355,7 @@ final class ClipRRectModifierSpec extends Modifier<ClipRRectModifierSpec>
 /// Use this class to configure the attributes of a [ClipRRectModifierSpec] and pass it to
 /// the [ClipRRectModifierSpec] constructor.
 class ClipRRectModifierSpecAttribute
-    extends ModifierSpecAttribute<ClipRRectModifierSpec> {
+    extends ModifierAttribute<ClipRRectModifierSpec> {
   final MixProp<BorderRadiusGeometry>? borderRadius;
   final Prop<CustomClipper<RRect>>? clipper;
   final Prop<Clip>? clipBehavior;
@@ -486,7 +486,7 @@ final class ClipPathModifierSpec extends Modifier<ClipPathModifierSpec>
 /// Use this class to configure the attributes of a [ClipPathModifierSpec] and pass it to
 /// the [ClipPathModifierSpec] constructor.
 class ClipPathModifierSpecAttribute
-    extends ModifierSpecAttribute<ClipPathModifierSpec> {
+    extends ModifierAttribute<ClipPathModifierSpec> {
   final Prop<CustomClipper<Path>>? clipper;
   final Prop<Clip>? clipBehavior;
 
@@ -603,7 +603,7 @@ final class ClipTriangleModifierSpec extends Modifier<ClipTriangleModifierSpec>
 /// Use this class to configure the attributes of a [ClipTriangleModifierSpec] and pass it to
 /// the [ClipTriangleModifierSpec] constructor.
 class ClipTriangleModifierSpecAttribute
-    extends ModifierSpecAttribute<ClipTriangleModifierSpec> {
+    extends ModifierAttribute<ClipTriangleModifierSpec> {
   final Prop<Clip>? clipBehavior;
 
   const ClipTriangleModifierSpecAttribute({this.clipBehavior});

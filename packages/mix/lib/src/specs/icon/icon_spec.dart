@@ -2,10 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../attributes/color/color_util.dart';
-import '../../attributes/enum/enum_util.dart';
-import '../../attributes/scalars/scalar_util.dart';
-import '../../attributes/shadow/shadow_dto.dart';
-import '../../attributes/shadow/shadow_util.dart';
+import '../../attributes/enum_util.dart';
+import '../../attributes/scalar_util.dart';
+import '../../attributes/shadow_dto.dart';
+import '../../attributes/shadow_util.dart';
 import '../../core/animation_config.dart';
 import '../../core/attribute.dart';
 import '../../core/helpers.dart';
@@ -184,7 +184,7 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
     bool? applyTextScaling,
     double? fill,
     AnimationConfig? animation,
-    List<ModifierSpecAttribute>? modifiers,
+    List<ModifierAttribute>? modifiers,
     List<VariantAttribute<IconSpec>>? variants,
   }) : this(
          color: Prop.maybe(color),

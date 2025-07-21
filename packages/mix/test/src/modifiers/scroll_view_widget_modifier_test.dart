@@ -2,8 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../helpers/testing_utils.dart';
-
 void main() {
   group('ScrollViewModifierSpec', () {
     testWidgets(
@@ -15,7 +13,7 @@ void main() {
         const clip = Clip.antiAlias;
         const physics = AlwaysScrollableScrollPhysics();
 
-        const modifier = ScrollViewModifierSpec(
+        const modifier = ScrollViewModifier(
           scrollDirection: axis,
           reverse: reverse,
           padding: padding,
@@ -42,7 +40,7 @@ void main() {
     testWidgets(
       'ScrollViewModifierSpec and SingleChildScrollView default values are equal',
       (tester) async {
-        const modifier = ScrollViewModifierSpec();
+        const modifier = ScrollViewModifier();
         final scrollView = SingleChildScrollView(child: Container());
 
         await tester.pumpMaterialApp(modifier.build(Container()));

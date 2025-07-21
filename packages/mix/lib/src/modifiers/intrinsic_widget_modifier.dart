@@ -6,44 +6,40 @@ import '../core/attribute.dart';
 import '../core/modifier.dart';
 import '../core/utility.dart';
 
-final class IntrinsicHeightModifierSpec
-    extends Modifier<IntrinsicHeightModifierSpec> {
-  const IntrinsicHeightModifierSpec();
+final class IntrinsicHeightModifier extends Modifier<IntrinsicHeightModifier> {
+  const IntrinsicHeightModifier();
 
-  /// Creates a copy of this [IntrinsicHeightModifierSpec] but with the given fields
+  /// Creates a copy of this [IntrinsicHeightModifier] but with the given fields
   /// replaced with the new values.
   @override
-  IntrinsicHeightModifierSpec copyWith() {
-    return const IntrinsicHeightModifierSpec();
+  IntrinsicHeightModifier copyWith() {
+    return const IntrinsicHeightModifier();
   }
 
-  /// Linearly interpolates between this [IntrinsicHeightModifierSpec] and another [IntrinsicHeightModifierSpec] based on the given parameter [t].
+  /// Linearly interpolates between this [IntrinsicHeightModifier] and another [IntrinsicHeightModifier] based on the given parameter [t].
   ///
   /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [IntrinsicHeightModifierSpec] is returned. When [t] is 1.0, the [other] [IntrinsicHeightModifierSpec] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [IntrinsicHeightModifierSpec] is returned.
+  /// When [t] is 0.0, the current [IntrinsicHeightModifier] is returned. When [t] is 1.0, the [other] [IntrinsicHeightModifier] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [IntrinsicHeightModifier] is returned.
   ///
-  /// If [other] is null, this method returns the current [IntrinsicHeightModifierSpec] instance.
+  /// If [other] is null, this method returns the current [IntrinsicHeightModifier] instance.
   ///
-  /// The interpolation is performed on each property of the [IntrinsicHeightModifierSpec] using the appropriate
+  /// The interpolation is performed on each property of the [IntrinsicHeightModifier] using the appropriate
   /// interpolation method:
 
   /// This method is typically used in animations to smoothly transition between
-  /// different [IntrinsicHeightModifierSpec] configurations.
+  /// different [IntrinsicHeightModifier] configurations.
   @override
-  IntrinsicHeightModifierSpec lerp(
-    IntrinsicHeightModifierSpec? other,
-    double t,
-  ) {
+  IntrinsicHeightModifier lerp(IntrinsicHeightModifier? other, double t) {
     if (other == null) return this;
 
-    return const IntrinsicHeightModifierSpec();
+    return const IntrinsicHeightModifier();
   }
 
-  /// The list of properties that constitute the state of this [IntrinsicHeightModifierSpec].
+  /// The list of properties that constitute the state of this [IntrinsicHeightModifier].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [IntrinsicHeightModifierSpec] instances for equality.
+  /// compare two [IntrinsicHeightModifier] instances for equality.
   @override
   List<Object?> get props => [];
 
@@ -97,18 +93,18 @@ final class IntrinsicWidthModifierSpec
   }
 }
 
-/// Represents the attributes of a [IntrinsicHeightModifierSpec].
+/// Represents the attributes of a [IntrinsicHeightModifier].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [IntrinsicHeightModifierSpec].
+/// appearance of a [IntrinsicHeightModifier].
 ///
-/// Use this class to configure the attributes of a [IntrinsicHeightModifierSpec] and pass it to
-/// the [IntrinsicHeightModifierSpec] constructor.
+/// Use this class to configure the attributes of a [IntrinsicHeightModifier] and pass it to
+/// the [IntrinsicHeightModifier] constructor.
 class IntrinsicHeightModifierSpecAttribute
-    extends ModifierSpecAttribute<IntrinsicHeightModifierSpec> {
+    extends ModifierAttribute<IntrinsicHeightModifier> {
   const IntrinsicHeightModifierSpecAttribute();
 
-  /// Resolves to [IntrinsicHeightModifierSpec] using the provided [MixContext].
+  /// Resolves to [IntrinsicHeightModifier] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
@@ -117,9 +113,9 @@ class IntrinsicHeightModifierSpecAttribute
   /// final intrinsicHeightModifierSpec = IntrinsicHeightModifierSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  IntrinsicHeightModifierSpec resolve(BuildContext context) {
+  IntrinsicHeightModifier resolve(BuildContext context) {
     // ignore: prefer_const_constructors
-    return IntrinsicHeightModifierSpec();
+    return IntrinsicHeightModifier();
   }
 
   /// Merges the properties of this [IntrinsicHeightModifierSpecAttribute] with the properties of [other].
@@ -147,18 +143,17 @@ class IntrinsicHeightModifierSpecAttribute
   List<Object?> get props => [];
 }
 
-/// A tween that interpolates between two [IntrinsicHeightModifierSpec] instances.
+/// A tween that interpolates between two [IntrinsicHeightModifier] instances.
 ///
 /// This class can be used in animations to smoothly transition between
-/// different [IntrinsicHeightModifierSpec] specifications.
-class IntrinsicHeightModifierSpecTween
-    extends Tween<IntrinsicHeightModifierSpec?> {
+/// different [IntrinsicHeightModifier] specifications.
+class IntrinsicHeightModifierSpecTween extends Tween<IntrinsicHeightModifier?> {
   IntrinsicHeightModifierSpecTween({super.begin, super.end});
 
   @override
-  IntrinsicHeightModifierSpec lerp(double t) {
+  IntrinsicHeightModifier lerp(double t) {
     if (begin == null && end == null) {
-      return const IntrinsicHeightModifierSpec();
+      return const IntrinsicHeightModifier();
     }
 
     if (begin == null) {
@@ -177,7 +172,7 @@ class IntrinsicHeightModifierSpecTween
 /// Use this class to configure the attributes of a [IntrinsicWidthModifierSpec] and pass it to
 /// the [IntrinsicWidthModifierSpec] constructor.
 class IntrinsicWidthModifierSpecAttribute
-    extends ModifierSpecAttribute<IntrinsicWidthModifierSpec> {
+    extends ModifierAttribute<IntrinsicWidthModifierSpec> {
   const IntrinsicWidthModifierSpecAttribute();
 
   /// Resolves to [IntrinsicWidthModifierSpec] using the provided [MixContext].

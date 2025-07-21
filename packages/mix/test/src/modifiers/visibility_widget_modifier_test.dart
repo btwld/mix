@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/src/modifiers/visibility_widget_modifier.dart';
 
 import '../../helpers/custom_matchers.dart';
-import '../../helpers/testing_utils.dart';
 
 void main() {
   group('VisibilityModifierSpec Tests', () {
@@ -15,8 +14,8 @@ void main() {
     });
 
     test('Lerp method interpolates correctly', () {
-      const start = VisibilityModifierSpec(true);
-      const end = VisibilityModifierSpec(false);
+      const start = VisibilityModifier(true);
+      const end = VisibilityModifier(false);
       final afterResult = start.lerp(end, 0.5);
       final beforeResult = start.lerp(end, 0.49);
 
@@ -25,9 +24,9 @@ void main() {
     });
 
     test('Equality and hashcode test', () {
-      const modifier1 = VisibilityModifierSpec(true);
-      const modifier2 = VisibilityModifierSpec(true);
-      const modifier3 = VisibilityModifierSpec(false);
+      const modifier1 = VisibilityModifier(true);
+      const modifier2 = VisibilityModifier(true);
+      const modifier3 = VisibilityModifier(false);
 
       expect(modifier1, modifier2);
       expect(modifier1.hashCode, modifier2.hashCode);
@@ -39,12 +38,13 @@ void main() {
       'Build method creates Visibility widget with correct visible property',
       (WidgetTester tester) async {
         const visible = true;
-        const modifier = VisibilityModifierSpec(visible);
+        const modifier = VisibilityModifier(visible);
 
         await tester.pumpMaterialApp(modifier.build(Container()));
 
-        final Visibility visibilityWidget =
-            tester.widget(find.byType(Visibility));
+        final Visibility visibilityWidget = tester.widget(
+          find.byType(Visibility),
+        );
 
         expect(find.byType(Visibility), findsOneWidget);
         expect(visibilityWidget.visible, visible);
@@ -63,7 +63,7 @@ void main() {
 
     test('resolve', () {
       const modifier = VisibilityModifierSpecAttribute(visible: true);
-      expect(modifier, resolvesTo(const VisibilityModifierSpec(true)));
+      expect(modifier, resolvesTo(const VisibilityModifier(true)));
     });
 
     // equality

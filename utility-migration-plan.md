@@ -14,7 +14,7 @@ class YourUtility<T extends Attribute>
     extends DtoUtility<T, YourDto, YourType> {
 
 // After
-class YourUtility<T extends SpecUtility<Object?>>
+class YourUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, YourType> {
 ```
 
@@ -37,7 +37,7 @@ T call(YourDto value) => builder(MixProp(value));
 
 **✅ CORRECT PATTERN:**
 ```dart
-class BorderRadiusUtility<T extends SpecUtility<Object?>>
+class BorderRadiusUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, BorderRadius> {
   
   // Nested utilities receive Prop<Radius> and use main constructor
@@ -75,7 +75,7 @@ late final topLeft = RadiusUtility((radius) => ...) // ERROR!
 
 ### Step 1: Update Class Declaration
 ```dart
-final class YourUtility<T extends SpecUtility<Object?>>
+final class YourUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, YourType> {
 ```
 
@@ -154,15 +154,15 @@ late final all = PropertyUtility<T>(
 
 ```dart
 // For DTO-based utilities
-class ShadowUtility<T extends SpecUtility<Object?>>
+class ShadowUtility<T extends SpecAttribute<Object?>>
     extends MixPropUtility<T, Shadow> {
 
 // For simple value utilities  
-class ColorUtility<T extends SpecUtility<Object?>>
+class ColorUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, Color> {
 
 // For collection utilities
-class ShadowListUtility<T extends SpecUtility<Object?>>
+class ShadowListUtility<T extends SpecAttribute<Object?>>
     extends MixUtility<T, List<ShadowDto>> {
 ```
 
@@ -207,7 +207,7 @@ T only({Type? property}) { ... }
 ## Migration Verification Checklist
 
 For each utility file:
-- [ ] Type constraint updated to `SpecUtility<Object?>`
+- [ ] Type constraint updated to `SpecAttribute<Object?>`
 - [ ] Base class changed to appropriate utility type
 - [ ] Constructor uses `super(valueToDto: Dto.value)`
 - [ ] Override `call(Dto value)` method exists

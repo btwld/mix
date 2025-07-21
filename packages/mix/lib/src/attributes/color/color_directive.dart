@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/color_extensions.dart';
 import '../../core/mix_element.dart';
-import 'color_extensions.dart';
 
 /// Base class for color-specific directives
 abstract class ColorDirective extends MixDirective<Color> {

@@ -12,7 +12,7 @@ void main() {
       final attr1 = textDirective.uppercase();
       final attr2 = textDirective.capitalize();
       final merged = attr1.merge(attr2);
-      expect(merged.directive?.length, 2);
+      expect(merged.directive.length, 2);
     });
 
     test('Equality holds when all properties are the same', () {
@@ -29,7 +29,7 @@ void main() {
     group('UppercaseDirective', () {
       test('modify returns correct value', () {
         final attribute = textDirective.uppercase();
-        final directive = attribute.directive!;
+        final directive = attribute.directive;
         expect(directive, resolvesTo(isA<TextDirective>()));
       });
     });
@@ -37,7 +37,7 @@ void main() {
     group('CapitalizeDirective', () {
       test('modify returns correct value', () {
         final attribute = $text.capitalize();
-        final directive = attribute.directive!;
+        final directive = attribute.directive;
         expect(directive, resolvesTo(isA<TextDirective>()));
       });
     });
@@ -45,7 +45,7 @@ void main() {
     group('LowercaseDirective', () {
       test('modify returns correct value', () {
         final attribute = $text.lowercase();
-        final directive = attribute.directive!;
+        final directive = attribute.directive;
         expect(directive, resolvesTo(isA<TextDirective>()));
       });
     });
@@ -53,7 +53,7 @@ void main() {
     group('SentenceCaseDirective', () {
       test('modify returns correct value', () {
         final attribute = $text.sentenceCase();
-        final directive = attribute.directive!;
+        final directive = attribute.directive;
         expect(directive, resolvesTo(isA<TextDirective>()));
       });
     });
@@ -61,7 +61,7 @@ void main() {
     group('TitleCaseDirective', () {
       test('modify returns correct value', () {
         final attribute = $text.titleCase();
-        final directive = attribute.directive!;
+        final directive = attribute.directive;
         expect(directive, resolvesTo(isA<TextDirective>()));
       });
     });

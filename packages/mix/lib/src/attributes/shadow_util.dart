@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../core/attribute.dart';
-import '../../core/prop.dart';
-import '../../core/utility.dart';
-import '../color/color_util.dart';
-import '../scalars/scalar_util.dart';
+import '../core/attribute.dart';
+import '../core/prop.dart';
+import '../core/utility.dart';
+import 'color/color_util.dart';
+import 'scalar_util.dart';
 import 'shadow_dto.dart';
 
 /// Utility class for configuring [Shadow] properties.

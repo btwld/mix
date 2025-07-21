@@ -79,7 +79,7 @@ void main() {
 
       final attribute = IconSpecAttribute(
         size: size,
-        color: color,
+        color: backgroundColor,
         applyTextScaling: applyTextScaling,
         fill: fill,
         grade: grade,

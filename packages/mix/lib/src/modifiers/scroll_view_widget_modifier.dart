@@ -1,22 +1,21 @@
 import 'package:flutter/widgets.dart';
 
-import '../attributes/enum/enum_util.dart';
-import '../attributes/scalars/scalar_util.dart';
-import '../attributes/spacing/spacing_util.dart';
+import '../attributes/edge_insets_geometry_util.dart';
+import '../attributes/scalar_util.dart';
 import '../core/attribute.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/utility.dart';
 
-final class ScrollViewModifierSpec extends Modifier<ScrollViewModifierSpec> {
+final class ScrollViewModifier extends Modifier<ScrollViewModifier> {
   final Axis? scrollDirection;
   final bool? reverse;
   final EdgeInsetsGeometry? padding;
   final ScrollPhysics? physics;
   final Clip? clipBehavior;
 
-  const ScrollViewModifierSpec({
+  const ScrollViewModifier({
     this.scrollDirection,
     this.reverse,
     this.padding,
@@ -25,14 +24,14 @@ final class ScrollViewModifierSpec extends Modifier<ScrollViewModifierSpec> {
   });
 
   @override
-  ScrollViewModifierSpec copyWith({
+  ScrollViewModifier copyWith({
     Axis? scrollDirection,
     bool? reverse,
     EdgeInsetsGeometry? padding,
     ScrollPhysics? physics,
     Clip? clipBehavior,
   }) {
-    return ScrollViewModifierSpec(
+    return ScrollViewModifier(
       scrollDirection: scrollDirection ?? this.scrollDirection,
       reverse: reverse ?? this.reverse,
       padding: padding ?? this.padding,
@@ -42,10 +41,10 @@ final class ScrollViewModifierSpec extends Modifier<ScrollViewModifierSpec> {
   }
 
   @override
-  ScrollViewModifierSpec lerp(ScrollViewModifierSpec? other, double t) {
+  ScrollViewModifier lerp(ScrollViewModifier? other, double t) {
     if (other == null) return this;
 
-    return ScrollViewModifierSpec(
+    return ScrollViewModifier(
       scrollDirection: t < 0.5 ? scrollDirection : other.scrollDirection,
       reverse: t < 0.5 ? reverse : other.reverse,
       padding: EdgeInsetsGeometry.lerp(padding, other.padding, t),
@@ -131,7 +130,7 @@ final class ScrollViewModifierSpecUtility<T extends SpecAttribute<Object?>>
 }
 
 class ScrollViewModifierSpecAttribute
-    extends ModifierSpecAttribute<ScrollViewModifierSpec> {
+    extends ModifierAttribute<ScrollViewModifier> {
   final Prop<Axis>? scrollDirection;
   final Prop<bool>? reverse;
   final MixProp<EdgeInsetsGeometry>? padding;
@@ -147,8 +146,8 @@ class ScrollViewModifierSpecAttribute
   });
 
   @override
-  ScrollViewModifierSpec resolve(BuildContext context) {
-    return ScrollViewModifierSpec(
+  ScrollViewModifier resolve(BuildContext context) {
+    return ScrollViewModifier(
       scrollDirection: MixHelpers.resolve(context, scrollDirection),
       reverse: MixHelpers.resolve(context, reverse),
       padding: MixHelpers.resolve(context, padding),
