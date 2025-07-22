@@ -49,7 +49,7 @@ final class EdgeInsetsGeometryUtility<U extends SpecAttribute<Object?>>
 
   @override
   U call(EdgeInsetsGeometryMix value) {
-    return builder(MixProp(value));
+    return builder(Prop(value));
   }
 }
 
@@ -90,7 +90,7 @@ final class EdgeInsetsDirectionalUtility<U extends SpecAttribute<Object?>>
 
   @override
   U call(EdgeInsetsDirectionalMix value) {
-    return builder(MixProp(value));
+    return builder(Prop(value));
   }
 }
 

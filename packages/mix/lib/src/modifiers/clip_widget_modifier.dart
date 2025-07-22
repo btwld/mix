@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 
 import '../attributes/border_radius_mix.dart';
 import '../core/helpers.dart';
+import '../core/mix_element.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
@@ -366,7 +367,7 @@ final class ClipRRectModifier extends Modifier<ClipRRectModifier>
 /// Use this class to configure the attributes of a [ClipRRectModifier] and pass it to
 /// the [ClipRRectModifier] constructor.
 class ClipRRectModifierAttribute extends ModifierAttribute<ClipRRectModifier> {
-  final MixProp<BorderRadiusGeometry>? borderRadius;
+  final Prop<Mix<BorderRadiusGeometry>>? borderRadius;
   final Prop<CustomClipper<RRect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
@@ -381,7 +382,7 @@ class ClipRRectModifierAttribute extends ModifierAttribute<ClipRRectModifier> {
     CustomClipper<RRect>? clipper,
     Clip? clipBehavior,
   }) : this(
-         borderRadius: MixProp.maybe(borderRadius),
+         borderRadius: Prop.maybe(borderRadius),
          clipper: Prop.maybe(clipper),
          clipBehavior: Prop.maybe(clipBehavior),
        );
@@ -397,7 +398,7 @@ class ClipRRectModifierAttribute extends ModifierAttribute<ClipRRectModifier> {
   @override
   ClipRRectModifier resolve(BuildContext context) {
     return ClipRRectModifier(
-      borderRadius: MixHelpers.resolve(context, borderRadius),
+      borderRadius: MixHelpers.resolveMix(context, borderRadius),
       clipper: MixHelpers.resolve(context, clipper),
       clipBehavior: MixHelpers.resolve(context, clipBehavior),
     );
@@ -715,7 +716,7 @@ final class ClipRRectModifierUtility<T extends SpecAttribute<Object?>>
   }) {
     return builder(
       ClipRRectModifierAttribute(
-        borderRadius: MixProp.maybe(
+        borderRadius: Prop.maybe(
           borderRadius != null ? BorderRadiusMix.value(borderRadius) : null,
         ),
         clipper: Prop.maybe(clipper),

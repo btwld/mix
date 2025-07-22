@@ -44,9 +44,9 @@ void main() {
           color: Colors.black,
           blurRadius: 5.0,
         );
-        final attr = UtilityTestAttribute(MixProp(shadowMix));
+        final attr = UtilityTestAttribute(Prop(shadowMix));
 
-        expect(attr.value, isA<MixProp<BoxShadow>>());
+        expect(attr.value, isA<Prop<Mix<BoxShadow>>>());
       });
 
       test('resolves correctly', () {
@@ -54,7 +54,7 @@ void main() {
           color: Colors.red,
           blurRadius: 10.0,
         );
-        final attr = UtilityTestAttribute(MixProp(shadowMix));
+        final attr = UtilityTestAttribute(Prop(shadowMix));
         final resolved = attr.resolveSpec(mockContext);
 
         expect(resolved, isA<MockSpec>());
@@ -69,17 +69,17 @@ void main() {
         final firstShadow = BoxShadowMix.only(color: Colors.red);
         final secondShadow = BoxShadowMix.only(color: Colors.blue);
 
-        final first = UtilityTestAttribute(MixProp(firstShadow));
-        final second = UtilityTestAttribute(MixProp(secondShadow));
+        final first = UtilityTestAttribute(Prop(firstShadow));
+        final second = UtilityTestAttribute(Prop(secondShadow));
 
         final merged = first.merge(second);
 
-        expect(merged.value, isA<MixProp<BoxShadow>>());
+        expect(merged.value, isA<Prop<Mix<BoxShadow>>>());
       });
 
       test('handles null merge', () {
         final shadowMix = BoxShadowMix.only(color: Colors.green);
-        final attr = UtilityTestAttribute(MixProp(shadowMix));
+        final attr = UtilityTestAttribute(Prop(shadowMix));
         final merged = attr.merge(null);
 
         expect(merged, same(attr));
@@ -126,7 +126,6 @@ void main() {
         expect(copied.resolvedValue, 'updated');
       });
     });
-
 
     group('Constants', () {
       test('mockContext is available', () {

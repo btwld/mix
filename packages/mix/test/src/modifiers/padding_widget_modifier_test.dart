@@ -156,7 +156,7 @@ void main() {
       });
 
       test('creates with provided MixProp padding', () {
-        final padding = MixProp<EdgeInsetsGeometry>(EdgeInsetsMix.all(16.0));
+        final padding = Prop<Mix<EdgeInsetsGeometry>>(EdgeInsetsMix.all(16.0));
         final attribute = PaddingModifierAttribute(padding: padding);
 
         expect(attribute.padding, same(padding));
@@ -169,7 +169,7 @@ void main() {
         final attribute = PaddingModifierAttribute.only(padding: edgeInsetsMix);
 
         expect(attribute.padding, isNotNull);
-        expect(attribute.padding, isA<MixProp<EdgeInsetsGeometry>>());
+        expect(attribute.padding, isA<Prop<Mix<EdgeInsetsGeometry>>>());
       });
 
       test('handles null padding', () {
@@ -225,7 +225,10 @@ void main() {
         final resolved = attribute.resolve(MockBuildContext());
 
         expect(resolved, isA<PaddingModifier>());
-        expect(resolved.padding, const EdgeInsetsDirectional.fromSTEB(30, 10, 40, 20));
+        expect(
+          resolved.padding,
+          const EdgeInsetsDirectional.fromSTEB(30, 10, 40, 20),
+        );
       });
     });
 
@@ -305,10 +308,13 @@ void main() {
   });
 
   group('PaddingModifierUtility', () {
-    late PaddingModifierUtility<UtilityTestAttribute<PaddingModifierAttribute>> utility;
+    late PaddingModifierUtility<UtilityTestAttribute<PaddingModifierAttribute>>
+    utility;
 
     setUp(() {
-      utility = PaddingModifierUtility((attribute) => UtilityTestAttribute(attribute));
+      utility = PaddingModifierUtility(
+        (attribute) => UtilityTestAttribute(attribute),
+      );
     });
 
     test('call() creates attribute with specified padding', () {
@@ -317,7 +323,7 @@ void main() {
       final attribute = result.value;
 
       expect(attribute.padding, isNotNull);
-      expect(attribute.padding, isA<MixProp<EdgeInsetsGeometry>>());
+      expect(attribute.padding, isA<Prop<Mix<EdgeInsetsGeometry>>>());
     });
 
     test('call() handles null padding', () {
@@ -347,13 +353,19 @@ void main() {
       final horizontalResult = utility.padding.horizontal(15.0);
       final horizontalAttr = horizontalResult.value;
       final horizontalResolved = horizontalAttr.resolve(MockBuildContext());
-      expect(horizontalResolved.padding, const EdgeInsets.symmetric(horizontal: 15.0));
+      expect(
+        horizontalResolved.padding,
+        const EdgeInsets.symmetric(horizontal: 15.0),
+      );
 
       // Test vertical padding
       final verticalResult = utility.padding.vertical(25.0);
       final verticalAttr = verticalResult.value;
       final verticalResolved = verticalAttr.resolve(MockBuildContext());
-      expect(verticalResolved.padding, const EdgeInsets.symmetric(vertical: 25.0));
+      expect(
+        verticalResolved.padding,
+        const EdgeInsets.symmetric(vertical: 25.0),
+      );
 
       // Test individual sides
       final topResult = utility.padding.top(10.0);
@@ -392,7 +404,12 @@ void main() {
       );
 
       final override1 = PaddingModifierAttribute.only(
-        padding: EdgeInsetsMix.only(left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
+        padding: EdgeInsetsMix.only(
+          left: 20.0,
+          right: 20.0,
+          top: 10.0,
+          bottom: 10.0,
+        ),
       );
 
       final override2 = PaddingModifierAttribute.only(
@@ -429,7 +446,10 @@ void main() {
       );
 
       final resolved = attribute.resolve(MockBuildContext());
-      expect(resolved.padding, const EdgeInsetsDirectional.fromSTEB(10, 30, 20, 40));
+      expect(
+        resolved.padding,
+        const EdgeInsetsDirectional.fromSTEB(10, 30, 20, 40),
+      );
     });
   });
 }

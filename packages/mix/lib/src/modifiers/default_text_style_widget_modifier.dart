@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import '../attributes/text_height_behavior_mix.dart';
 import '../attributes/text_style_mix.dart';
 import '../core/helpers.dart';
+import '../core/mix_element.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
@@ -155,13 +156,13 @@ final class DefaultTextStyleModifier extends Modifier<DefaultTextStyleModifier>
 /// the [DefaultTextStyleModifier] constructor.
 class DefaultTextStyleModifierAttribute
     extends ModifierAttribute<DefaultTextStyleModifier> {
-  final MixProp<TextStyle>? style;
+  final Prop<Mix<TextStyle>>? style;
   final Prop<TextAlign>? textAlign;
   final Prop<bool>? softWrap;
   final Prop<TextOverflow>? overflow;
   final Prop<int>? maxLines;
   final Prop<TextWidthBasis>? textWidthBasis;
-  final MixProp<TextHeightBehavior>? textHeightBehavior;
+  final Prop<Mix<TextHeightBehavior>>? textHeightBehavior;
 
   const DefaultTextStyleModifierAttribute({
     this.style,
@@ -182,13 +183,13 @@ class DefaultTextStyleModifierAttribute
     TextWidthBasis? textWidthBasis,
     TextHeightBehaviorMix? textHeightBehavior,
   }) : this(
-         style: MixProp.maybe(style),
+         style: Prop.maybe(style),
          textAlign: Prop.maybe(textAlign),
          softWrap: Prop.maybe(softWrap),
          overflow: Prop.maybe(overflow),
          maxLines: Prop.maybe(maxLines),
          textWidthBasis: Prop.maybe(textWidthBasis),
-         textHeightBehavior: MixProp.maybe(textHeightBehavior),
+         textHeightBehavior: Prop.maybe(textHeightBehavior),
        );
 
   /// Resolves to [DefaultTextStyleModifier] using the provided [MixContext].
@@ -202,13 +203,13 @@ class DefaultTextStyleModifierAttribute
   @override
   DefaultTextStyleModifier resolve(BuildContext context) {
     return DefaultTextStyleModifier(
-      style: MixHelpers.resolve(context, style),
+      style: MixHelpers.resolveMix(context, style),
       textAlign: MixHelpers.resolve(context, textAlign),
       softWrap: MixHelpers.resolve(context, softWrap),
       overflow: MixHelpers.resolve(context, overflow),
       maxLines: MixHelpers.resolve(context, maxLines),
       textWidthBasis: MixHelpers.resolve(context, textWidthBasis),
-      textHeightBehavior: MixHelpers.resolve(context, textHeightBehavior),
+      textHeightBehavior: MixHelpers.resolveMix(context, textHeightBehavior),
     );
   }
 
@@ -288,13 +289,13 @@ final class DefaultTextStyleModifierUtility<T extends SpecAttribute<Object?>>
   }) {
     return builder(
       DefaultTextStyleModifierAttribute(
-        style: MixProp.maybe(style != null ? TextStyleMix.value(style) : null),
+        style: Prop.maybe(style != null ? TextStyleMix.value(style) : null),
         textAlign: Prop.maybe(textAlign),
         softWrap: Prop.maybe(softWrap),
         overflow: Prop.maybe(overflow),
         maxLines: Prop.maybe(maxLines),
         textWidthBasis: Prop.maybe(textWidthBasis),
-        textHeightBehavior: MixProp.maybe(
+        textHeightBehavior: Prop.maybe(
           textHeightBehavior != null
               ? TextHeightBehaviorMix.value(textHeightBehavior)
               : null,

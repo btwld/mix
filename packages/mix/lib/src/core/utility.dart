@@ -71,10 +71,10 @@ abstract class PropUtility<U extends SpecAttribute<Object?>, Value>
 
 @immutable
 abstract class MixPropUtility<U extends SpecAttribute<Object?>, Value>
-    extends PropBaseUtility<U, Value> {
+    extends PropBaseUtility<U, Mix<Value>> {
   final Mix<Value> Function(Value) convertToMix;
   @protected
-  final U Function(MixProp<Value>) builder;
+  final U Function(Prop<Mix<Value>>) builder;
 
   const MixPropUtility(this.builder, {required this.convertToMix});
 
@@ -83,14 +83,14 @@ abstract class MixPropUtility<U extends SpecAttribute<Object?>, Value>
   U as(Value value) => call(convertToMix(value));
 
   @override
-  U token(MixToken<Value> token) => builder(MixProp.token(token, convertToMix));
+  U token(MixToken<Mix<Value>> token) => builder(Prop.token(token));
 
   @override
-  U directive(MixDirective<Value> directive) =>
-      builder(MixProp.directives([directive]));
+  U directive(MixDirective<Mix<Value>> directive) =>
+      builder(Prop.directives([directive]));
 
   @override
-  U animate(AnimationConfig animation) => builder(MixProp.animation(animation));
+  U animate(AnimationConfig animation) => builder(Prop.animation(animation));
 }
 
 /// Utility base class for spec utilities
@@ -151,9 +151,9 @@ final class PropListUtility<T extends SpecAttribute<Object?>, V>
   }
 }
 
-/// Generic ListUtility for MixProp<V> lists
+/// Generic ListUtility for Prop<Mix<V>> lists
 ///
-/// This utility provides support for working with lists of MixProp<V>
+/// This utility provides support for working with lists of Prop<Mix<V>>
 /// for complex types that implement Mix<V>.
 ///
 /// Usage:
@@ -175,33 +175,33 @@ final class MixPropListUtility<
   V,
   M extends Mix<V>
 >
-    extends MixUtility<T, List<MixProp<V>>> {
+    extends MixUtility<T, List<Prop<M>>> {
   final M Function(V) convertToMix;
   const MixPropListUtility(super.builder, this.convertToMix);
 
   /// Creates a list attribute from a list of values
-  /// Each value is converted to Mixable<V> then wrapped in MixProp<V>
+  /// Each value is converted to Mixable<V> then wrapped in Prop<Mix<V>>
   T call(List<M> values) {
-    final props = values.map(MixProp.new).toList();
+    final props = values.map(Prop.new).toList();
 
     return builder(props);
   }
 
   T as(List<V> values) {
-    final props = values.map(convertToMix).map(MixProp.new).toList();
+    final props = values.map(convertToMix).map(Prop.new).toList();
 
     return builder(props);
   }
 
-  T tokens(List<MixToken<V>> tokens) {
-    final propList = tokens.map((t) => MixProp.token(t, convertToMix)).toList();
+  T tokens(List<MixToken<M>> tokens) {
+    final propList = tokens.map((t) => Prop.token(t)).toList();
 
     return builder(propList);
   }
 
-  T directives(List<MixDirective<V>> directives) {
+  T directives(List<MixDirective<M>> directives) {
     final propList = directives
-        .map((directive) => MixProp.directives([directive]))
+        .map((directive) => Prop.directives([directive]))
         .toList();
 
     return builder(propList);

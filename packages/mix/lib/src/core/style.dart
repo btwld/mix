@@ -334,6 +334,15 @@ class Style extends SpecAttribute<MultiSpec> {
   Style.empty()
     : this._(attributes: [], animation: null, modifiers: null, variants: null);
 
+  Style animate({Duration? duration, Curve? curve}) {
+    return Style._(
+      attributes: _attributes.values.toList(),
+      animation: AnimationConfig.implicit(duration: duration, curve: curve),
+      modifiers: modifiers,
+      variants: variants,
+    );
+  }
+
   @override
   MultiSpec resolveSpec(BuildContext context) {
     final resolvedSpecs = _attributes.values

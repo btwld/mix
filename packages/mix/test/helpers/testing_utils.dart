@@ -68,7 +68,42 @@ class MockBuildContext extends BuildContext {
   dynamic noSuchMethod(Invocation invocation) => null;
 }
 
-// Mock MixDirective for testing
+// =============================================================================
+// MOCK MIX CLASSES
+// =============================================================================
+
+/// Mock Mix class for testing Mix behavior and accumulation
+class MockMix<T> extends Mix<T> {
+  final String id;
+  final T value;
+
+  MockMix(this.id, this.value);
+
+  @override
+  T resolve(BuildContext context) => value;
+
+  @override
+  Mix<T> merge(Mix<T> other) {
+    if (other is MockMix<T>) {
+      // Concatenate IDs to track merge order
+      return MockMix<T>('$id+${other.id}', value);
+    }
+    return this;
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MockMix<T> && other.id == id && other.value == value;
+
+  @override
+  int get hashCode => Object.hash(id, value);
+
+  @override
+  String toString() => 'MockMix($id, $value)';
+}
+
+/// Mock MixDirective for testing
 class MockMixDirective<T> extends MixDirective<T> {
   final String name;
   final T Function(T) transformer;
@@ -93,6 +128,35 @@ class MockMixDirective<T> extends MixDirective<T> {
 
   @override
   String toString() => 'MockMixDirective($name)';
+}
+
+/// Mock MixScope for token resolution in tests
+class MockMixScope extends StatelessWidget {
+  final Map<MixToken, Object> tokens;
+  final Widget child;
+
+  const MockMixScope({required this.tokens, required this.child, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MixScope(
+      data: MixScopeData.static(tokens: tokens),
+      child: child,
+    );
+  }
+}
+
+/// Helper to create test animation configurations
+ImplicitAnimationConfig createMockAnimation(String name) {
+  return AnimationConfig.linear(
+    Duration(milliseconds: name.hashCode % 1000 + 100),
+  );
+}
+
+/// Simple fake context for basic testing (minimal implementation)
+class FakeBuildContext extends BuildContext {
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 // =============================================================================
 // CUSTOM MATCHERS
@@ -233,18 +297,17 @@ class _IsPropMatcher<T> extends Matcher {
       return false;
     }
 
-    if (!item.hasValue) {
-      matchState['error'] = 'Prop has no value (might be token or empty)';
+    try {
+      final actualValue = item.getValue();
+      if (actualValue != expectedValue) {
+        matchState['actual'] = actualValue;
+        return false;
+      }
+      return true;
+    } catch (e) {
+      matchState['error'] = 'Prop has no value (might be token or empty): $e';
       return false;
     }
-
-    final actualValue = item.getValue();
-    if (actualValue != expectedValue) {
-      matchState['actual'] = actualValue;
-      return false;
-    }
-
-    return true;
   }
 
   @override
@@ -285,12 +348,13 @@ class _IsPropWithTokenMatcher<T> extends Matcher {
       return false;
     }
 
-    if (!item.hasToken) {
-      matchState['error'] = 'Prop has no token';
+    try {
+      item.getToken();
+      return true;
+    } catch (e) {
+      matchState['error'] = 'Prop has no token: $e';
       return false;
     }
-
-    return true;
   }
 
   @override
@@ -325,18 +389,17 @@ class _HasValueMatcher<T> extends Matcher {
       return false;
     }
 
-    if (!item.hasValue) {
-      matchState['error'] = 'Prop has no value (might be token or empty)';
+    try {
+      final actualValue = item.getValue();
+      if (actualValue != expectedValue) {
+        matchState['actual'] = actualValue;
+        return false;
+      }
+      return true;
+    } catch (e) {
+      matchState['error'] = 'Prop has no value (might be token or empty): $e';
       return false;
     }
-
-    final actualValue = item.getValue();
-    if (actualValue != expectedValue) {
-      matchState['actual'] = actualValue;
-      return false;
-    }
-
-    return true;
   }
 
   @override
@@ -375,12 +438,13 @@ class _HasTokenMatcher<T> extends Matcher {
       return false;
     }
 
-    if (!item.hasToken) {
-      matchState['error'] = 'Prop has no token';
+    try {
+      item.getToken();
+      return true;
+    } catch (e) {
+      matchState['error'] = 'Prop has no token: $e';
       return false;
     }
-
-    return true;
   }
 
   @override

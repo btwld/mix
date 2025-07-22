@@ -57,7 +57,7 @@ final class BorderRadiusGeometryUtility<T extends SpecAttribute<Object?>>
     : super(convertToMix: BorderRadiusGeometryMix.value);
 
   @override
-  T call(BorderRadiusGeometryMix value) => builder(MixProp(value));
+  T call(BorderRadiusGeometryMix value) => builder(Prop(value));
 }
 
 /// Utility class for creating and manipulating attributes with [BorderRadius]
@@ -131,7 +131,7 @@ final class BorderRadiusUtility<T extends SpecAttribute<Object?>>
     : super(convertToMix: BorderRadiusMix.value);
 
   @override
-  T call(BorderRadiusMix value) => builder(MixProp(value));
+  T call(BorderRadiusMix value) => builder(Prop(value));
 }
 
 final class BorderRadiusDirectionalUtility<T extends SpecAttribute<Object?>>
@@ -209,5 +209,5 @@ final class BorderRadiusDirectionalUtility<T extends SpecAttribute<Object?>>
   }
 
   @override
-  T call(BorderRadiusDirectionalMix value) => builder(MixProp(value));
+  T call(BorderRadiusDirectionalMix value) => builder(Prop(value));
 }

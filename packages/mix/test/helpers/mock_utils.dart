@@ -11,7 +11,7 @@ import 'package:mix/mix.dart';
 // MOCK TEST ATTRIBUTES
 // =============================================================================
 
-/// Mock attribute for testing utilities - handles both Prop<T> and MixProp<T>
+/// Mock attribute for testing utilities - handles both Prop<T> and Prop<Mix<T>>
 ///
 /// This is a universal SpecMix that can wrap any prop type for testing purposes.
 /// Used with utilities that expect a SpecMix builder function.
@@ -22,7 +22,7 @@ import 'package:mix/mix.dart';
 /// final colorUtility = ColorUtility(UtilityTestAttribute.new);
 /// final attr = colorUtility(Colors.red);
 ///
-/// // For MixPropUtility (takes MixProp<T>)
+/// // For MixPropUtility (takes Prop<Mix<T>>)
 /// final gradientUtility = GradientUtility(UtilityTestAttribute.new);
 /// final attr = gradientUtility.linear(...);
 /// ```
@@ -94,7 +94,9 @@ final class UtilityTestAttribute<T> extends SpecAttribute<MockSpec> {
 
   @override
   MockSpec resolveSpec(BuildContext context) {
-    final resolvedValue = value is Resolvable ? (value as Resolvable).resolve(context) : value;
+    final resolvedValue = value is Resolvable
+        ? (value as Resolvable).resolve(context)
+        : value;
     return MockSpec(resolvedValue: resolvedValue);
   }
 
@@ -204,11 +206,9 @@ class MockBuildContext extends BuildContext {
 /// Mock BuildContext instance for testing
 final mockContext = MockBuildContext();
 
-
 // =============================================================================
 // UTILITY FUNCTIONS
 // =============================================================================
-
 
 // =============================================================================
 // ENHANCED SPEC & ATTRIBUTE TESTING INFRASTRUCTURE

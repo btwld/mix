@@ -27,5 +27,5 @@ final class StrutStyleUtility<T extends SpecAttribute<Object?>>
   StrutStyleUtility(super.builder) : super(convertToMix: StrutStyleMix.value);
 
   @override
-  T call(StrutStyleMix value) => builder(MixProp(value));
+  T call(StrutStyleMix value) => builder(Prop(value));
 }

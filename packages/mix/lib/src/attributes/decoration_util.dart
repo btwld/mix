@@ -24,7 +24,7 @@ class DecorationUtility<T extends SpecAttribute<Object?>>
 
   @override
   T call(DecorationMix value) {
-    return builder(MixProp(value));
+    return builder(Prop(value));
   }
 }
 
@@ -90,7 +90,7 @@ final class BoxDecorationUtility<T extends SpecAttribute<Object?>>
     : super(convertToMix: BoxDecorationMix.value);
 
   @override
-  T call(BoxDecorationMix value) => builder(MixProp(value));
+  T call(BoxDecorationMix value) => builder(Prop(value));
 }
 
 /// Utility class for configuring [ShapeDecoration] properties.
@@ -130,5 +130,5 @@ final class ShapeDecorationUtility<T extends SpecAttribute<Object?>>
     : super(convertToMix: ShapeDecorationMix.value);
 
   @override
-  T call(ShapeDecorationMix value) => builder(MixProp(value));
+  T call(ShapeDecorationMix value) => builder(Prop(value));
 }

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
 sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
-  final MixProp<BorderSide>? top;
-  final MixProp<BorderSide>? bottom;
+  final Prop<Mix<BorderSide>>? top;
+  final Prop<Mix<BorderSide>>? bottom;
 
   const BoxBorderMix({this.top, this.bottom});
 
@@ -85,8 +85,8 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
 }
 
 final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
-  final MixProp<BorderSide>? left;
-  final MixProp<BorderSide>? right;
+  final Prop<Mix<BorderSide>>? left;
+  final Prop<Mix<BorderSide>>? right;
 
   static BorderMix none = BorderMix.all(BorderSideMix.none);
 
@@ -96,10 +96,10 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
     BorderSideMix? left,
     BorderSideMix? right,
   }) : this(
-         top: MixProp.maybe(top),
-         bottom: MixProp.maybe(bottom),
-         left: MixProp.maybe(left),
-         right: MixProp.maybe(right),
+         top: Prop.maybe(top),
+         bottom: Prop.maybe(bottom),
+         left: Prop.maybe(left),
+         right: Prop.maybe(right),
        );
 
   const BorderMix({super.top, super.bottom, this.left, this.right});
@@ -162,10 +162,10 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
   @override
   Border resolve(BuildContext context) {
     return Border(
-      top: MixHelpers.resolve(context, top) ?? BorderSide.none,
-      right: MixHelpers.resolve(context, right) ?? BorderSide.none,
-      bottom: MixHelpers.resolve(context, bottom) ?? BorderSide.none,
-      left: MixHelpers.resolve(context, left) ?? BorderSide.none,
+      top: MixHelpers.resolveMix(context, top) ?? BorderSide.none,
+      right: MixHelpers.resolveMix(context, right) ?? BorderSide.none,
+      bottom: MixHelpers.resolveMix(context, bottom) ?? BorderSide.none,
+      left: MixHelpers.resolveMix(context, left) ?? BorderSide.none,
     );
   }
 
@@ -212,8 +212,8 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
 
 final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
     with DefaultValue<BorderDirectional> {
-  final MixProp<BorderSide>? start;
-  final MixProp<BorderSide>? end;
+  final Prop<Mix<BorderSide>>? start;
+  final Prop<Mix<BorderSide>>? end;
   static final BorderDirectionalMix none = BorderDirectionalMix.all(
     BorderSideMix.none,
   );
@@ -224,10 +224,10 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
     BorderSideMix? start,
     BorderSideMix? end,
   }) : this(
-         top: MixProp.maybe(top),
-         bottom: MixProp.maybe(bottom),
-         start: MixProp.maybe(start),
-         end: MixProp.maybe(end),
+         top: Prop.maybe(top),
+         bottom: Prop.maybe(bottom),
+         start: Prop.maybe(start),
+         end: Prop.maybe(end),
        );
 
   const BorderDirectionalMix({super.top, super.bottom, this.start, this.end});
@@ -289,10 +289,10 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
   @override
   BorderDirectional resolve(BuildContext context) {
     return BorderDirectional(
-      top: MixHelpers.resolve(context, top) ?? defaultValue.top,
-      start: MixHelpers.resolve(context, start) ?? defaultValue.start,
-      end: MixHelpers.resolve(context, end) ?? defaultValue.end,
-      bottom: MixHelpers.resolve(context, bottom) ?? defaultValue.bottom,
+      top: MixHelpers.resolveMix(context, top) ?? defaultValue.top,
+      start: MixHelpers.resolveMix(context, start) ?? defaultValue.start,
+      end: MixHelpers.resolveMix(context, end) ?? defaultValue.end,
+      bottom: MixHelpers.resolveMix(context, bottom) ?? defaultValue.bottom,
     );
   }
 

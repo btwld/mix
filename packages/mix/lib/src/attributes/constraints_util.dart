@@ -36,5 +36,5 @@ final class BoxConstraintsUtility<T extends SpecAttribute<Object?>>
     : super(convertToMix: BoxConstraintsMix.value);
 
   @override
-  T call(BoxConstraintsMix value) => builder(MixProp(value));
+  T call(BoxConstraintsMix value) => builder(Prop(value));
 }

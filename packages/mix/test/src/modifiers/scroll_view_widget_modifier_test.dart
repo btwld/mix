@@ -23,7 +23,7 @@ void main() {
         const padding = EdgeInsets.all(16.0);
         const physics = BouncingScrollPhysics();
         const clipBehavior = Clip.antiAlias;
-        
+
         const modifier = ScrollViewModifier(
           scrollDirection: scrollDirection,
           reverse: reverse,
@@ -92,7 +92,9 @@ void main() {
           padding: EdgeInsets.all(10.0),
         );
 
-        final updatedDirection = original.copyWith(scrollDirection: Axis.horizontal);
+        final updatedDirection = original.copyWith(
+          scrollDirection: Axis.horizontal,
+        );
         expect(updatedDirection.scrollDirection, Axis.horizontal);
         expect(updatedDirection.reverse, original.reverse);
         expect(updatedDirection.padding, original.padding);
@@ -213,18 +215,12 @@ void main() {
 
       test('physics instances affect equality', () {
         // With const, Dart might optimize to the same instance
-        const modifier1 = ScrollViewModifier(
-          physics: BouncingScrollPhysics(),
-        );
-        const modifier2 = ScrollViewModifier(
-          physics: BouncingScrollPhysics(),
-        );
+        const modifier1 = ScrollViewModifier(physics: BouncingScrollPhysics());
+        const modifier2 = ScrollViewModifier(physics: BouncingScrollPhysics());
 
         // These might be equal due to const optimization
         // Different physics types should definitely not be equal
-        const modifier3 = ScrollViewModifier(
-          physics: ClampingScrollPhysics(),
-        );
+        const modifier3 = ScrollViewModifier(physics: ClampingScrollPhysics());
 
         expect(modifier1, isNot(equals(modifier3)));
       });
@@ -365,10 +361,10 @@ void main() {
       test('creates with provided Prop values', () {
         final scrollDirection = Prop<Axis>(Axis.horizontal);
         final reverse = Prop<bool>(true);
-        final padding = MixProp<EdgeInsetsGeometry>(EdgeInsetsMix.all(16.0));
+        final padding = Prop<Mix<EdgeInsetsGeometry>>(EdgeInsetsMix.all(16.0));
         final physics = Prop<ScrollPhysics>(const BouncingScrollPhysics());
         final clipBehavior = Prop<Clip>(Clip.antiAlias);
-        
+
         final attribute = ScrollViewModifierAttribute(
           scrollDirection: scrollDirection,
           reverse: reverse,
@@ -484,10 +480,16 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expect(merged.scrollDirection?.getValue(), Axis.horizontal); // overridden
+        expect(
+          merged.scrollDirection?.getValue(),
+          Axis.horizontal,
+        ); // overridden
         expect(merged.reverse?.getValue(), false); // preserved
         expect(merged.padding, isNotNull); // preserved
-        expect(merged.physics?.getValue(), isA<BouncingScrollPhysics>()); // added
+        expect(
+          merged.physics?.getValue(),
+          isA<BouncingScrollPhysics>(),
+        ); // added
         expect(merged.clipBehavior?.getValue(), Clip.antiAlias); // added
       });
 
@@ -571,10 +573,15 @@ void main() {
   });
 
   group('ScrollViewModifierUtility', () {
-    late ScrollViewModifierUtility<UtilityTestAttribute<ScrollViewModifierAttribute>> utility;
+    late ScrollViewModifierUtility<
+      UtilityTestAttribute<ScrollViewModifierAttribute>
+    >
+    utility;
 
     setUp(() {
-      utility = ScrollViewModifierUtility((attribute) => UtilityTestAttribute(attribute));
+      utility = ScrollViewModifierUtility(
+        (attribute) => UtilityTestAttribute(attribute),
+      );
     });
 
     test('call() creates attribute with specified values', () {
@@ -622,12 +629,18 @@ void main() {
       expect(attribute.physics?.getValue(), isA<BouncingScrollPhysics>());
     });
 
-    test('neverScrollableScrollPhysics() creates attribute with never scrollable physics', () {
-      final result = utility.neverScrollableScrollPhysics();
-      final attribute = result.value;
+    test(
+      'neverScrollableScrollPhysics() creates attribute with never scrollable physics',
+      () {
+        final result = utility.neverScrollableScrollPhysics();
+        final attribute = result.value;
 
-      expect(attribute.physics?.getValue(), isA<NeverScrollableScrollPhysics>());
-    });
+        expect(
+          attribute.physics?.getValue(),
+          isA<NeverScrollableScrollPhysics>(),
+        );
+      },
+    );
 
     test('bouncingScrollPhysics() creates attribute with bouncing physics', () {
       final result = utility.bouncingScrollPhysics();

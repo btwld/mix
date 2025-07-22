@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../core/mix_element.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
@@ -28,7 +29,7 @@ class ShadowUtility<T extends SpecAttribute<Object?>>
 
   /// Returns a new [T] with the specified [ShadowMix] properties.
   @override
-  T call(ShadowMix value) => builder(MixProp(value));
+  T call(ShadowMix value) => builder(Prop(value));
 }
 
 /// Utility class for configuring [BoxShadow] properties.
@@ -58,16 +59,16 @@ class BoxShadowUtility<T extends SpecAttribute<Object?>>
 
   /// Returns a new [T] with the specified [BoxShadowMix] properties.
   @override
-  T call(BoxShadowMix value) => builder(MixProp(value));
+  T call(BoxShadowMix value) => builder(Prop(value));
 }
 
-/// A utility class for building [StyleElement] instances from elevation values that produces [MixProp<BoxShadow>] lists.
+/// A utility class for building [StyleElement] instances from elevation values that produces [Prop<Mix<BoxShadow>>] lists.
 ///
 /// This class extends [MixUtility] and provides methods to create [StyleElement] instances
 /// based on predefined elevation values, which are mapped to corresponding lists of
-/// [MixProp<BoxShadow>] objects that can be directly used in DTOs.
+/// [Prop<Mix<BoxShadow>>] objects that can be directly used in DTOs.
 final class ElevationMixPropUtility<T extends SpecAttribute<Object?>>
-    extends MixUtility<T, List<MixProp<BoxShadow>>> {
+    extends MixUtility<T, List<Prop<Mix<BoxShadow>>>> {
   /// Creates an [T] instance with an elevation of 1.
   late final e1 = one;
 
@@ -133,7 +134,7 @@ final class ElevationMixPropUtility<T extends SpecAttribute<Object?>>
   /// Creates an [StyleElement] instance from an elevation value.
   ///
   /// Retrieves the corresponding list of [BoxShadow] objects from the [kElevationToShadow]
-  /// map, maps each [BoxShadow] to a [MixProp<BoxShadow>], and passes the resulting list to
+  /// map, maps each [BoxShadow] to a [Prop<Mix<BoxShadow>>], and passes the resulting list to
   /// the [builder] function to create the [StyleElement] instance.
   ///
   /// Throws an [AssertionError] if the provided [value] is not a valid elevation value.
@@ -151,7 +152,7 @@ final class ElevationMixPropUtility<T extends SpecAttribute<Object?>>
     }
 
     final boxShadows = kElevationToShadow[value]!.map(
-      (e) => MixProp(
+      (e) => Prop(
         BoxShadowMix(
           color: Prop(e.color),
           offset: Prop(e.offset),

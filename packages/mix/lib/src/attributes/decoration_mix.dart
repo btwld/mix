@@ -11,9 +11,9 @@ import 'package:mix/mix.dart';
 @immutable
 sealed class DecorationMix<T extends Decoration> extends Mix<T> {
   final Prop<Color>? color;
-  final MixProp<Gradient>? gradient;
-  final MixProp<DecorationImage>? image;
-  final List<MixProp<BoxShadow>>? boxShadow;
+  final Prop<Mix<Gradient>>? gradient;
+  final Prop<Mix<DecorationImage>>? image;
+  final List<Prop<Mix<BoxShadow>>>? boxShadow;
 
   const DecorationMix({this.color, this.gradient, this.boxShadow, this.image});
 
@@ -59,8 +59,8 @@ sealed class DecorationMix<T extends Decoration> extends Mix<T> {
 
 /// Represents a Data transfer object of [BoxDecoration]
 final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
-  final MixProp<BoxBorder>? border;
-  final MixProp<BorderRadiusGeometry>? borderRadius;
+  final Prop<Mix<BoxBorder>>? border;
+  final Prop<Mix<BorderRadiusGeometry>>? borderRadius;
   final Prop<BoxShape>? shape;
   final Prop<BlendMode>? backgroundBlendMode;
 
@@ -74,14 +74,14 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
     GradientMix? gradient,
     List<BoxShadowMix>? boxShadow,
   }) : this(
-         border: MixProp.maybe(border),
-         borderRadius: MixProp.maybe(borderRadius),
+         border: Prop.maybe(border),
+         borderRadius: Prop.maybe(borderRadius),
          shape: Prop.maybe(shape),
          backgroundBlendMode: Prop.maybe(backgroundBlendMode),
          color: Prop.maybe(color),
-         image: MixProp.maybe(image),
-         gradient: MixProp.maybe(gradient),
-         boxShadow: boxShadow?.map(MixProp<BoxShadow>.new).toList(),
+         image: Prop.maybe(image),
+         gradient: Prop.maybe(gradient),
+         boxShadow: boxShadow?.map(Prop<Mix<BoxShadow>>.new).toList(),
        );
 
   BoxDecorationMix.border(BoxBorderMix border) : this.only(border: border);
@@ -143,11 +143,11 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
   BoxDecoration resolve(BuildContext context) {
     return BoxDecoration(
       color: MixHelpers.resolve(context, color),
-      image: MixHelpers.resolve(context, image),
-      border: MixHelpers.resolve(context, border),
-      borderRadius: MixHelpers.resolve(context, borderRadius),
-      boxShadow: MixHelpers.resolveList(context, boxShadow),
-      gradient: MixHelpers.resolve(context, gradient),
+      image: MixHelpers.resolveMix(context, image),
+      border: MixHelpers.resolveMix(context, border),
+      borderRadius: MixHelpers.resolveMix(context, borderRadius),
+      boxShadow: MixHelpers.resolveListMix(context, boxShadow),
+      gradient: MixHelpers.resolveMix(context, gradient),
       backgroundBlendMode: MixHelpers.resolve(context, backgroundBlendMode),
       shape: MixHelpers.resolve(context, shape) ?? BoxShape.rectangle,
     );
@@ -203,7 +203,7 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
 
 final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
     with DefaultValue<ShapeDecoration> {
-  final MixProp<ShapeBorder>? shape;
+  final Prop<Mix<ShapeBorder>>? shape;
 
   ShapeDecorationMix.only({
     ShapeBorderMix? shape,
@@ -212,11 +212,11 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
     GradientMix? gradient,
     List<BoxShadowMix>? shadows,
   }) : this(
-         shape: MixProp.maybe(shape),
+         shape: Prop.maybe(shape),
          color: Prop.maybe(color),
-         image: image != null ? MixProp(image) : null,
-         gradient: gradient != null ? MixProp(gradient) : null,
-         shadows: shadows?.map(MixProp<BoxShadow>.new).toList(),
+         image: Prop.maybe(image),
+         gradient: Prop.maybe(gradient),
+         shadows: shadows?.map(Prop<Mix<BoxShadow>>.new).toList(),
        );
 
   const ShapeDecorationMix({
@@ -224,7 +224,7 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
     super.color,
     super.image,
     super.gradient,
-    List<MixProp<BoxShadow>>? shadows,
+    List<Prop<Mix<BoxShadow>>>? shadows,
   }) : super(boxShadow: shadows);
 
   /// Constructor that accepts a [ShapeDecoration] value and extracts its properties.
@@ -242,19 +242,19 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
     return decoration != null ? ShapeDecorationMix.value(decoration) : null;
   }
 
-  List<MixProp<BoxShadow>>? get shadows => boxShadow;
+  List<Prop<Mix<BoxShadow>>>? get shadows => boxShadow;
 
   /// Resolves to [ShapeDecoration] using the provided [BuildContext].
   @override
   ShapeDecoration resolve(BuildContext context) {
     return ShapeDecoration(
       color: MixHelpers.resolve(context, color) ?? defaultValue.color,
-      image: MixHelpers.resolve(context, image) ?? defaultValue.image,
-      gradient: MixHelpers.resolve(context, gradient) ?? defaultValue.gradient,
-      shadows:
-          shadows?.map((e) => e.resolve(context)).toList() ??
-          defaultValue.shadows,
-      shape: MixHelpers.resolve(context, shape) ?? defaultValue.shape,
+      image: MixHelpers.resolveMix(context, image) ?? defaultValue.image,
+      gradient:
+          MixHelpers.resolveMix(context, gradient) ?? defaultValue.gradient,
+      shadows: MixHelpers.resolveListMix(context, boxShadow),
+
+      shape: MixHelpers.resolveMix(context, shape) ?? defaultValue.shape,
     );
   }
 

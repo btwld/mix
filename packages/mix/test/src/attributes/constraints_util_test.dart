@@ -17,11 +17,11 @@ void main() {
         minHeight: 50.0,
         maxHeight: 150.0,
       );
-      
+
       final result = utility(BoxConstraintsMix.value(constraints));
       expect(result, isA<UtilityTestAttribute>());
-      expect(result.value, isA<MixProp<BoxConstraints>>());
-      
+      expect(result.value, isA<Prop<Mix<BoxConstraints>>>());
+
       final mix = result.value.getMix() as BoxConstraintsMix;
       expect(mix.minWidth, isProp(100.0));
       expect(mix.maxWidth, isProp(200.0));
@@ -32,7 +32,7 @@ void main() {
     group('individual constraint utilities', () {
       test('minWidth creates BoxConstraintsMix with minWidth', () {
         final result = utility.minWidth(100.0);
-        
+
         expect(result, isA<UtilityTestAttribute>());
         final mix = result.value.getMix() as BoxConstraintsMix;
         expect(mix.minWidth, isProp(100.0));
@@ -43,7 +43,7 @@ void main() {
 
       test('maxWidth creates BoxConstraintsMix with maxWidth', () {
         final result = utility.maxWidth(200.0);
-        
+
         expect(result, isA<UtilityTestAttribute>());
         final mix = result.value.getMix() as BoxConstraintsMix;
         expect(mix.minWidth, isNull);
@@ -54,7 +54,7 @@ void main() {
 
       test('minHeight creates BoxConstraintsMix with minHeight', () {
         final result = utility.minHeight(50.0);
-        
+
         expect(result, isA<UtilityTestAttribute>());
         final mix = result.value.getMix() as BoxConstraintsMix;
         expect(mix.minWidth, isNull);
@@ -65,7 +65,7 @@ void main() {
 
       test('maxHeight creates BoxConstraintsMix with maxHeight', () {
         final result = utility.maxHeight(150.0);
-        
+
         expect(result, isA<UtilityTestAttribute>());
         final mix = result.value.getMix() as BoxConstraintsMix;
         expect(mix.minWidth, isNull);
@@ -79,7 +79,7 @@ void main() {
       test('minWidth supports tokens', () {
         const token = MixToken<double>('spacing.minWidth');
         final result = utility.minWidth.token(token);
-        
+
         expect(result, isA<UtilityTestAttribute>());
         final mix = result.value.getMix() as BoxConstraintsMix;
         expect(mix.minWidth, isPropWithToken<double>());
@@ -88,7 +88,7 @@ void main() {
       test('maxWidth supports tokens', () {
         const token = MixToken<double>('spacing.maxWidth');
         final result = utility.maxWidth.token(token);
-        
+
         expect(result, isA<UtilityTestAttribute>());
         final mix = result.value.getMix() as BoxConstraintsMix;
         expect(mix.maxWidth, isPropWithToken<double>());
@@ -97,7 +97,7 @@ void main() {
       test('minHeight supports tokens', () {
         const token = MixToken<double>('spacing.minHeight');
         final result = utility.minHeight.token(token);
-        
+
         expect(result, isA<UtilityTestAttribute>());
         final mix = result.value.getMix() as BoxConstraintsMix;
         expect(mix.minHeight, isPropWithToken<double>());
@@ -106,7 +106,7 @@ void main() {
       test('maxHeight supports tokens', () {
         const token = MixToken<double>('spacing.maxHeight');
         final result = utility.maxHeight.token(token);
-        
+
         expect(result, isA<UtilityTestAttribute>());
         final mix = result.value.getMix() as BoxConstraintsMix;
         expect(mix.maxHeight, isPropWithToken<double>());
@@ -115,11 +115,14 @@ void main() {
 
     group('edge cases', () {
       test('creates tight constraints', () {
-        const constraints = BoxConstraints.tightFor(width: 100.0, height: 100.0);
-        
+        const constraints = BoxConstraints.tightFor(
+          width: 100.0,
+          height: 100.0,
+        );
+
         final result = utility(BoxConstraintsMix.value(constraints));
         final mix = result.value.getMix() as BoxConstraintsMix;
-        
+
         expect(mix.minWidth, isProp(100.0));
         expect(mix.maxWidth, isProp(100.0));
         expect(mix.minHeight, isProp(100.0));
@@ -128,10 +131,10 @@ void main() {
 
       test('creates loose constraints', () {
         final constraints = BoxConstraints.loose(const Size(200.0, 150.0));
-        
+
         final result = utility(BoxConstraintsMix.value(constraints));
         final mix = result.value.getMix() as BoxConstraintsMix;
-        
+
         expect(mix.minWidth, isProp(0.0));
         expect(mix.maxWidth, isProp(200.0));
         expect(mix.minHeight, isProp(0.0));
@@ -140,10 +143,10 @@ void main() {
 
       test('creates expand constraints', () {
         const constraints = BoxConstraints.expand(width: 300.0, height: 400.0);
-        
+
         final result = utility(BoxConstraintsMix.value(constraints));
         final mix = result.value.getMix() as BoxConstraintsMix;
-        
+
         expect(mix.minWidth, isProp(300.0));
         expect(mix.maxWidth, isProp(300.0));
         expect(mix.minHeight, isProp(400.0));
@@ -157,10 +160,10 @@ void main() {
           minHeight: 0.0,
           maxHeight: double.infinity,
         );
-        
+
         final result = utility(BoxConstraintsMix.value(constraints));
         final mix = result.value.getMix() as BoxConstraintsMix;
-        
+
         expect(mix.minWidth, isProp(0.0));
         expect(mix.maxWidth, isProp(double.infinity));
         expect(mix.minHeight, isProp(0.0));
@@ -170,15 +173,16 @@ void main() {
 
     group('resolution', () {
       test('resolves to BoxConstraints correctly', () {
-        final result = utility.minWidth(100.0)
+        final result = utility
+            .minWidth(100.0)
             .merge(utility.maxWidth(200.0))
             .merge(utility.minHeight(50.0))
             .merge(utility.maxHeight(150.0));
-        
+
         final context = MockBuildContext();
         final mix = result.value.getMix() as BoxConstraintsMix;
         final resolved = mix.resolve(context);
-        
+
         expect(resolved.minWidth, 100.0);
         expect(resolved.maxWidth, 200.0);
         expect(resolved.minHeight, 50.0);
@@ -187,11 +191,11 @@ void main() {
 
       test('uses default values for null properties', () {
         final result = utility.minWidth(100.0);
-        
+
         final context = MockBuildContext();
         final mix = result.value.getMix() as BoxConstraintsMix;
         final resolved = mix.resolve(context);
-        
+
         expect(resolved.minWidth, 100.0);
         expect(resolved.maxWidth, double.infinity);
         expect(resolved.minHeight, 0.0);

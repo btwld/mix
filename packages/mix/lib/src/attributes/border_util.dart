@@ -51,7 +51,7 @@ final class BoxBorderUtility<T extends SpecAttribute<Object?>>
 
   @override
   T call(BoxBorderMix value) {
-    return builder(MixProp(value));
+    return builder(Prop(value));
   }
 }
 
@@ -102,7 +102,7 @@ final class BorderUtility<T extends SpecAttribute<Object?>>
 
   @override
   T call(BorderMix value) {
-    return builder(MixProp(value));
+    return builder(Prop(value));
   }
 }
 
@@ -159,7 +159,7 @@ final class BorderDirectionalUtility<T extends SpecAttribute<Object?>>
 
   @override
   T call(BorderDirectionalMix value) {
-    return builder(MixProp(value));
+    return builder(Prop(value));
   }
 }
 
@@ -213,6 +213,6 @@ class BorderSideUtility<T extends SpecAttribute<Object?>>
 
   @override
   T call(BorderSideMix value) {
-    return builder(MixProp<BorderSide>(value));
+    return builder(Prop<Mix<BorderSide>>(value));
   }
 }

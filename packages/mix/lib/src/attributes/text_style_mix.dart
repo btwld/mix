@@ -31,7 +31,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
   final List<Prop<FontVariation>>? fontVariations;
 
   // Lists of Mix types (DTOs)
-  final List<MixProp<Shadow>>? shadows;
+  final List<Prop<Mix<Shadow>>>? shadows;
 
   TextStyleMix.only({
     Color? color,
@@ -65,7 +65,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
          debugLabel: Prop.maybe(debugLabel),
          wordSpacing: Prop.maybe(wordSpacing),
          textBaseline: Prop.maybe(textBaseline),
-         shadows: shadows?.map(MixProp<Shadow>.new).toList(),
+         shadows: shadows?.map(Prop<Mix<Shadow>>.new).toList(),
          fontFeatures: fontFeatures?.map(Prop.new).toList(),
          decoration: Prop.maybe(decoration),
          decorationColor: Prop.maybe(decorationColor),
@@ -163,7 +163,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
       foreground: MixHelpers.resolve(context, foreground),
       background: MixHelpers.resolve(context, background),
       // Resolve lists using helpers
-      shadows: MixHelpers.resolveList(context, shadows),
+      shadows: MixHelpers.resolveListMix(context, shadows),
       fontFeatures: MixHelpers.resolveList(context, fontFeatures),
       fontVariations: MixHelpers.resolveList(context, fontVariations),
       decoration: MixHelpers.resolve(context, decoration),

@@ -50,7 +50,7 @@ void main() {
       final thirdNotifier = MixWidgetStateModel.of(thirdContext);
 
       expect(
-        onEnabledAttr.variant.when(firstContext),
+        (onEnabledAttr.variant as ContextVariant).when(firstContext),
         false,
         reason: 'First Pressable should be disabled',
       );
@@ -60,7 +60,7 @@ void main() {
         reason: 'First Pressable should have disabled state',
       );
       expect(
-        onEnabledAttr.variant.when(secondContext),
+        (onEnabledAttr.variant as ContextVariant).when(secondContext),
         false,
         reason: 'Second Pressable should be disabled',
       );
@@ -71,7 +71,7 @@ void main() {
       );
 
       expect(
-        onEnabledAttr.variant.when(thirdContext),
+        (onEnabledAttr.variant as ContextVariant).when(thirdContext),
         true,
         reason: 'Third Pressable should be enabled',
       );

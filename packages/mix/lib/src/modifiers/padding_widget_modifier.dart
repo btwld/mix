@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import '../attributes/edge_insets_geometry_mix.dart';
 import '../attributes/edge_insets_geometry_util.dart';
 import '../core/helpers.dart';
+import '../core/mix_element.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
@@ -74,12 +75,12 @@ final class PaddingModifier extends Modifier<PaddingModifier>
 /// the [PaddingModifier] constructor.
 class PaddingModifierAttribute extends ModifierAttribute<PaddingModifier>
     with Diagnosticable {
-  final MixProp<EdgeInsetsGeometry>? padding;
+  final Prop<Mix<EdgeInsetsGeometry>>? padding;
 
   const PaddingModifierAttribute({this.padding});
 
   PaddingModifierAttribute.only({EdgeInsetsGeometryMix? padding})
-    : this(padding: MixProp.maybe(padding));
+    : this(padding: Prop.maybe(padding));
 
   /// Resolves to [PaddingModifier] using the provided [MixContext].
   ///
@@ -91,7 +92,7 @@ class PaddingModifierAttribute extends ModifierAttribute<PaddingModifier>
   /// ```
   @override
   PaddingModifier resolve(BuildContext context) {
-    return PaddingModifier(MixHelpers.resolve(context, padding));
+    return PaddingModifier(MixHelpers.resolveMix(context, padding));
   }
 
   /// Merges the properties of this [PaddingModifierAttribute] with the properties of [other].
@@ -140,6 +141,6 @@ class PaddingModifierUtility<T extends SpecAttribute<Object?>>
 
   /// Returns a new [PaddingModifierAttribute] with the specified properties.
   T call({EdgeInsetsGeometryMix? padding}) {
-    return builder(PaddingModifierAttribute(padding: MixProp.maybe(padding)));
+    return builder(PaddingModifierAttribute(padding: Prop.maybe(padding)));
   }
 }

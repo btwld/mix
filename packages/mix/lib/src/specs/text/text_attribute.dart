@@ -11,6 +11,7 @@ import '../../attributes/text_style_util.dart';
 import '../../core/animation_config.dart';
 import '../../core/directive.dart';
 import '../../core/helpers.dart';
+import '../../core/mix_element.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import 'text_directives_util.dart';
@@ -25,13 +26,13 @@ import 'text_spec.dart';
 /// the [TextSpec] constructor.
 class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
   final Prop<TextOverflow>? $overflow;
-  final MixProp<StrutStyle>? $strutStyle;
+  final Prop<Mix<StrutStyle>>? $strutStyle;
   final Prop<TextAlign>? $textAlign;
   final Prop<TextScaler>? $textScaler;
   final Prop<int>? $maxLines;
-  final MixProp<TextStyle>? $style;
+  final Prop<Mix<TextStyle>>? $style;
   final Prop<TextWidthBasis>? $textWidthBasis;
-  final MixProp<TextHeightBehavior>? $textHeightBehavior;
+  final Prop<Mix<TextHeightBehavior>>? $textHeightBehavior;
   final Prop<TextDirection>? $textDirection;
   final Prop<bool>? $softWrap;
   final List<Prop<MixDirective<String>>>? $directives;
@@ -165,13 +166,13 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
 
   TextSpecAttribute({
     Prop<TextOverflow>? overflow,
-    MixProp<StrutStyle>? strutStyle,
+    Prop<Mix<StrutStyle>>? strutStyle,
     Prop<TextAlign>? textAlign,
     Prop<TextScaler>? textScaler,
     Prop<int>? maxLines,
-    MixProp<TextStyle>? style,
+    Prop<Mix<TextStyle>>? style,
     Prop<TextWidthBasis>? textWidthBasis,
-    MixProp<TextHeightBehavior>? textHeightBehavior,
+    Prop<Mix<TextHeightBehavior>>? textHeightBehavior,
     Prop<TextDirection>? textDirection,
     Prop<bool>? softWrap,
     List<Prop<MixDirective<String>>>? directives,
@@ -207,13 +208,13 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
     List<VariantSpecAttribute<TextSpec>>? variants,
   }) : this(
          overflow: Prop.maybe(overflow),
-         strutStyle: MixProp.maybe(strutStyle),
+         strutStyle: Prop.maybe(strutStyle),
          textAlign: Prop.maybe(textAlign),
          textScaler: Prop.maybe(textScaler),
          maxLines: Prop.maybe(maxLines),
-         style: MixProp.maybe(style),
+         style: Prop.maybe(style),
          textWidthBasis: Prop.maybe(textWidthBasis),
-         textHeightBehavior: MixProp.maybe(textHeightBehavior),
+         textHeightBehavior: Prop.maybe(textHeightBehavior),
          textDirection: Prop.maybe(textDirection),
          softWrap: Prop.maybe(softWrap),
          directives: directives?.map(Prop.new).toList(),
@@ -276,13 +277,13 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
   TextSpec resolveSpec(BuildContext context) {
     return TextSpec(
       overflow: MixHelpers.resolve(context, $overflow),
-      strutStyle: MixHelpers.resolve(context, $strutStyle),
+      strutStyle: MixHelpers.resolveMix(context, $strutStyle),
       textAlign: MixHelpers.resolve(context, $textAlign),
       textScaler: MixHelpers.resolve(context, $textScaler),
       maxLines: MixHelpers.resolve(context, $maxLines),
-      style: MixHelpers.resolve(context, $style),
+      style: MixHelpers.resolveMix(context, $style),
       textWidthBasis: MixHelpers.resolve(context, $textWidthBasis),
-      textHeightBehavior: MixHelpers.resolve(context, $textHeightBehavior),
+      textHeightBehavior: MixHelpers.resolveMix(context, $textHeightBehavior),
       textDirection: MixHelpers.resolve(context, $textDirection),
       softWrap: MixHelpers.resolve(context, $softWrap),
       directives: MixHelpers.resolveList(context, $directives),

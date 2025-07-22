@@ -23,5 +23,5 @@ final class TextHeightBehaviorUtility<T extends SpecAttribute<Object?>>
     : super(convertToMix: TextHeightBehaviorMix.value);
 
   @override
-  T call(TextHeightBehaviorMix value) => builder(MixProp(value));
+  T call(TextHeightBehaviorMix value) => builder(Prop(value));
 }

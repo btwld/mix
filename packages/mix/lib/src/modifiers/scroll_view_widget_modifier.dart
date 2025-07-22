@@ -4,6 +4,7 @@ import '../attributes/edge_insets_geometry_mix.dart';
 import '../attributes/edge_insets_geometry_util.dart';
 import '../attributes/scalar_util.dart';
 import '../core/helpers.dart';
+import '../core/mix_element.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
@@ -116,7 +117,7 @@ final class ScrollViewModifierUtility<T extends SpecAttribute<Object?>>
   T call({
     Prop<Axis>? scrollDirection,
     Prop<bool>? reverse,
-    MixProp<EdgeInsetsGeometry>? padding,
+    Prop<Mix<EdgeInsetsGeometry>>? padding,
     Prop<ScrollPhysics>? physics,
     Prop<Clip>? clipBehavior,
   }) => builder(
@@ -134,7 +135,7 @@ class ScrollViewModifierAttribute
     extends ModifierAttribute<ScrollViewModifier> {
   final Prop<Axis>? scrollDirection;
   final Prop<bool>? reverse;
-  final MixProp<EdgeInsetsGeometry>? padding;
+  final Prop<Mix<EdgeInsetsGeometry>>? padding;
   final Prop<ScrollPhysics>? physics;
   final Prop<Clip>? clipBehavior;
 
@@ -155,7 +156,7 @@ class ScrollViewModifierAttribute
   }) : this(
          scrollDirection: Prop.maybe(scrollDirection),
          reverse: Prop.maybe(reverse),
-         padding: MixProp.maybe(padding),
+         padding: Prop.maybe(padding),
          physics: Prop.maybe(physics),
          clipBehavior: Prop.maybe(clipBehavior),
        );
@@ -165,7 +166,7 @@ class ScrollViewModifierAttribute
     return ScrollViewModifier(
       scrollDirection: MixHelpers.resolve(context, scrollDirection),
       reverse: MixHelpers.resolve(context, reverse),
-      padding: MixHelpers.resolve(context, padding),
+      padding: MixHelpers.resolveMix(context, padding),
       physics: MixHelpers.resolve(context, physics),
       clipBehavior: MixHelpers.resolve(context, clipBehavior),
     );

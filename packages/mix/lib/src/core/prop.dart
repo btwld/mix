@@ -83,6 +83,18 @@ class Prop<T> extends Mixable<T> with Resolvable<T> {
     return AccumulativePropSource([a, b]);
   }
 
+  bool get hasToken {
+    final source = this.source;
+
+    return source is TokenSource<T>;
+  }
+
+  bool get hasValue {
+    final source = this.source;
+
+    return source is ValueSource<T>;
+  }
+
   T getValue() {
     final source = this.source;
     if (source == null) {
@@ -324,3 +336,5 @@ class AccumulativePropSource<T> extends PropSource<T> {
   @override
   int get hashCode => Object.hashAll(sources);
 }
+
+typedef MixProp<T> = Prop<Mix<T>>;

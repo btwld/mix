@@ -27,13 +27,13 @@ void main() {
           boxDecorationMix.backgroundBlendMode,
           isProp(BlendMode.multiply),
         );
-        expect(boxDecorationMix.border, isA<MixProp<BoxBorder>>());
+        expect(boxDecorationMix.border, isA<Prop<Mix<BoxBorder>>>());
         expect(
           boxDecorationMix.borderRadius,
-          isA<MixProp<BorderRadiusGeometry>>(),
+          isA<Prop<Mix<BorderRadiusGeometry>>>(),
         );
         expect(boxDecorationMix.boxShadow, hasLength(1));
-        expect(boxDecorationMix.boxShadow![0], isA<MixProp<BoxShadow>>());
+        expect(boxDecorationMix.boxShadow![0], isA<Prop<Mix<BoxShadow>>>());
       });
 
       test('named constructors work correctly', () {
@@ -42,7 +42,7 @@ void main() {
         );
         final borderDecorationMix = BoxDecorationMix.border(borderMix);
 
-        expect(borderDecorationMix.border, isA<MixProp<BoxBorder>>());
+        expect(borderDecorationMix.border, isA<Prop<Mix<BoxBorder>>>());
         expect(borderDecorationMix.color, isNull);
 
         final colorDecorationMix = BoxDecorationMix.color(Colors.green);
@@ -66,7 +66,7 @@ void main() {
         expect(boxDecorationMix.shape, isProp(BoxShape.rectangle));
         expect(
           boxDecorationMix.borderRadius,
-          isA<MixProp<BorderRadiusGeometry>>(),
+          isA<Prop<Mix<BorderRadiusGeometry>>>(),
         );
       });
 
@@ -199,7 +199,7 @@ void main() {
         );
 
         expect(shapeDecorationMix.color, isProp(Colors.green));
-        expect(shapeDecorationMix.shape, isA<MixProp<ShapeBorder>>());
+        expect(shapeDecorationMix.shape, isA<Prop<Mix<ShapeBorder>>>());
         expect(shapeDecorationMix.shadows, hasLength(1));
       });
 
@@ -212,7 +212,7 @@ void main() {
         final shapeDecorationMix = ShapeDecorationMix.value(shapeDecoration);
 
         expect(shapeDecorationMix.color, isProp(Colors.purple));
-        expect(shapeDecorationMix.shape, isA<MixProp<ShapeBorder>>());
+        expect(shapeDecorationMix.shape, isA<Prop<Mix<ShapeBorder>>>());
       });
 
       test('maybeValue returns null for null input', () {
@@ -266,7 +266,7 @@ void main() {
         final merged = first.merge(second) as ShapeDecorationMix;
 
         expect(merged.color, isProp(Colors.purple));
-        expect(merged.shape, isA<MixProp<ShapeBorder>>());
+        expect(merged.shape, isA<Prop<Mix<ShapeBorder>>>());
       });
     });
 
