@@ -8,16 +8,13 @@ import 'prop.dart';
 import 'spec.dart';
 import 'style.dart';
 
-abstract class MixUtility<U extends SpecAttribute<Object?>, Value> {
+abstract class MixUtility<U extends SpecStyle<Object?>, Value> {
   final U Function(Value) builder;
 
   const MixUtility(this.builder);
 }
 
-abstract interface class PropBaseUtility<
-  U extends SpecAttribute<Object?>,
-  Value
-> {
+abstract interface class PropBaseUtility<U extends SpecStyle<Object?>, Value> {
   const PropBaseUtility();
 
   U token(MixToken<Value> token);
@@ -36,7 +33,7 @@ abstract interface class PropBaseUtility<
 ///
 /// Used for simple types like Color, double, FontWeight, etc.
 @immutable
-abstract class PropUtility<U extends SpecAttribute<Object?>, Value>
+abstract class PropUtility<U extends SpecStyle<Object?>, Value>
     extends PropBaseUtility<U, Value> {
   final U Function(Prop<Value>) builder;
   const PropUtility(this.builder);
@@ -70,11 +67,11 @@ abstract class PropUtility<U extends SpecAttribute<Object?>, Value>
 }
 
 @immutable
-abstract class MixPropUtility<U extends SpecAttribute<Object?>, Value>
+abstract class MixPropUtility<U extends SpecStyle<Object?>, Value>
     extends PropBaseUtility<U, Mix<Value>> {
   final Mix<Value> Function(Value) convertToMix;
   @protected
-  final U Function(Prop<Mix<Value>>) builder;
+  final U Function(MixProp<Value>) builder;
 
   const MixPropUtility(this.builder, {required this.convertToMix});
 
@@ -97,7 +94,7 @@ abstract class MixPropUtility<U extends SpecAttribute<Object?>, Value>
 abstract class SpecUtility<S extends Spec<S>> {
   const SpecUtility();
 
-  SpecAttribute<S>? get attribute;
+  SpecStyle<S>? get attribute;
 
   @override
   operator ==(Object other) {
@@ -124,7 +121,7 @@ abstract class SpecUtility<S extends Spec<S>> {
 /// final attr = colorListUtil([Colors.red, Colors.blue]);
 /// ```
 @immutable
-final class PropListUtility<T extends SpecAttribute<Object?>, V>
+final class PropListUtility<T extends SpecStyle<Object?>, V>
     extends MixUtility<T, List<Prop<V>>> {
   const PropListUtility(super.builder);
 
@@ -151,9 +148,9 @@ final class PropListUtility<T extends SpecAttribute<Object?>, V>
   }
 }
 
-/// Generic ListUtility for Prop<Mix<V>> lists
+/// Generic ListUtility for MixProp<V> lists
 ///
-/// This utility provides support for working with lists of Prop<Mix<V>>
+/// This utility provides support for working with lists of MixProp<V>
 /// for complex types that implement Mix<V>.
 ///
 /// Usage:
@@ -171,7 +168,7 @@ final class PropListUtility<T extends SpecAttribute<Object?>, V>
 /// ```
 @immutable
 final class MixPropListUtility<
-  T extends SpecAttribute<Object?>,
+  T extends SpecStyle<Object?>,
   V,
   M extends Mix<V>
 >
@@ -180,7 +177,7 @@ final class MixPropListUtility<
   const MixPropListUtility(super.builder, this.convertToMix);
 
   /// Creates a list attribute from a list of values
-  /// Each value is converted to Mixable<V> then wrapped in Prop<Mix<V>>
+  /// Each value is converted to Mixable<V> then wrapped in MixProp<V>
   T call(List<M> values) {
     final props = values.map(Prop.new).toList();
 

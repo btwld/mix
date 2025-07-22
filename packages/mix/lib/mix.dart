@@ -52,10 +52,11 @@ export 'src/core/animation/phase_animation_driver.dart';
 
 /// ATTRIBUTES
 export 'src/core/animation_config.dart';
-export 'src/core/directive.dart';
-export 'src/core/helpers.dart';
 
 /// CORE
+export 'src/core/breakpoint.dart';
+export 'src/core/directive.dart';
+export 'src/core/helpers.dart';
 export 'src/core/mix_element.dart';
 export 'src/core/prop.dart';
 export 'src/core/resolved_style_provider.dart';

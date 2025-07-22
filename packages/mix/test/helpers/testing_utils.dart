@@ -472,7 +472,7 @@ class _HasTokenMatcher<T> extends Matcher {
 // =============================================================================
 
 /// Mock attribute for testing utilities
-final class UtilityTestAttribute<T> extends SpecAttribute<MockSpec> {
+final class UtilityTestAttribute<T> extends SpecStyle<MockSpec> {
   final T value;
 
   const UtilityTestAttribute(this.value);
@@ -495,7 +495,7 @@ final class UtilityTestAttribute<T> extends SpecAttribute<MockSpec> {
   }
 
   @override
-  MockSpec resolveSpec(BuildContext context) {
+  MockSpec resolve(BuildContext context) {
     final resolvedValue = value is Resolvable
         ? (value as Resolvable).resolve(context)
         : value;
@@ -526,6 +526,26 @@ final class MockSpec extends Spec<MockSpec> {
   @override
   List<Object?> get props => [resolvedValue];
 }
+
+// =============================================================================
+// TESTING WIDGETS
+// =============================================================================
+
+/// Widget that builds using a provided builder function for testing purposes
+class WidgetWithTestableBuild extends StatelessWidget {
+  final void Function(BuildContext) builder;
+
+  const WidgetWithTestableBuild(this.builder, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    builder(context);
+    return const SizedBox();
+  }
+}
+
+/// Alias for MultiStyleProvider for backward compatibility in tests
+typedef MixProvider = MultiStyleProvider;
 
 // =============================================================================
 // WIDGET TESTER EXTENSIONS

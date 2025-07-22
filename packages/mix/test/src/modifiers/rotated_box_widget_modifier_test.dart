@@ -56,10 +56,10 @@ void main() {
       test('handles decimal interpolation with rounding', () {
         const start = RotatedBoxModifier(1);
         const end = RotatedBoxModifier(2);
-        
+
         final result25 = start.lerp(end, 0.25);
         expect(result25.quarterTurns, 1); // rounds down
-        
+
         final result75 = start.lerp(end, 0.75);
         expect(result75.quarterTurns, 2); // rounds up
       });
@@ -157,7 +157,9 @@ void main() {
 
       test('creates with provided Prop quarter turns', () {
         final quarterTurns = Prop<int>(2);
-        final attribute = RotatedBoxModifierAttribute(quarterTurns: quarterTurns);
+        final attribute = RotatedBoxModifierAttribute(
+          quarterTurns: quarterTurns,
+        );
 
         expect(attribute.quarterTurns, same(quarterTurns));
       });
@@ -252,10 +254,15 @@ void main() {
   });
 
   group('RotatedBoxModifierUtility', () {
-    late RotatedBoxModifierUtility<UtilityTestAttribute<RotatedBoxModifierAttribute>> utility;
+    late RotatedBoxModifierUtility<
+      UtilityTestAttribute<RotatedBoxModifierAttribute>
+    >
+    utility;
 
     setUp(() {
-      utility = RotatedBoxModifierUtility((attribute) => UtilityTestAttribute(attribute));
+      utility = RotatedBoxModifierUtility(
+        (attribute) => UtilityTestAttribute(attribute),
+      );
     });
 
     test('call() creates attribute with specified quarter turns', () {
@@ -302,21 +309,27 @@ void main() {
     test('utility methods are convenience for call()', () {
       final d90Result = utility.d90();
       final call1Result = utility.call(1);
-      
-      expect(d90Result.value.quarterTurns?.getValue(), 
-             call1Result.value.quarterTurns?.getValue());
+
+      expect(
+        d90Result.value.quarterTurns?.getValue(),
+        call1Result.value.quarterTurns?.getValue(),
+      );
 
       final d180Result = utility.d180();
       final call2Result = utility.call(2);
-      
-      expect(d180Result.value.quarterTurns?.getValue(), 
-             call2Result.value.quarterTurns?.getValue());
+
+      expect(
+        d180Result.value.quarterTurns?.getValue(),
+        call2Result.value.quarterTurns?.getValue(),
+      );
 
       final d270Result = utility.d270();
       final call3Result = utility.call(3);
-      
-      expect(d270Result.value.quarterTurns?.getValue(), 
-             call3Result.value.quarterTurns?.getValue());
+
+      expect(
+        d270Result.value.quarterTurns?.getValue(),
+        call3Result.value.quarterTurns?.getValue(),
+      );
     });
   });
 
@@ -329,11 +342,7 @@ void main() {
       final modifier = attribute.resolve(MockBuildContext());
       const child = SizedBox(width: 100, height: 50);
 
-      await tester.pumpWidget(
-        Center(
-          child: modifier.build(child),
-        ),
-      );
+      await tester.pumpWidget(Center(child: modifier.build(child)));
 
       final rotatedBox = tester.widget<RotatedBox>(find.byType(RotatedBox));
       expect(rotatedBox.quarterTurns, 2);
@@ -378,11 +387,7 @@ void main() {
         await tester.pumpWidget(
           Center(
             child: RotatedBoxModifier(turns).build(
-              Container(
-                width: 100,
-                height: 50,
-                color: const Color(0xFF00FF00),
-              ),
+              Container(width: 100, height: 50, color: const Color(0xFF00FF00)),
             ),
           ),
         );

@@ -5,7 +5,6 @@ import 'package:flutter/widgets.dart';
 
 import '../attributes/border_radius_mix.dart';
 import '../core/helpers.dart';
-import '../core/mix_element.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
@@ -367,7 +366,7 @@ final class ClipRRectModifier extends Modifier<ClipRRectModifier>
 /// Use this class to configure the attributes of a [ClipRRectModifier] and pass it to
 /// the [ClipRRectModifier] constructor.
 class ClipRRectModifierAttribute extends ModifierAttribute<ClipRRectModifier> {
-  final Prop<Mix<BorderRadiusGeometry>>? borderRadius;
+  final MixProp<BorderRadiusGeometry>? borderRadius;
   final Prop<CustomClipper<RRect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
@@ -692,7 +691,7 @@ class TriangleClipper extends CustomClipper<Path> {
   bool shouldReclip(TriangleClipper oldClipper) => false;
 }
 
-final class ClipPathModifierUtility<T extends SpecAttribute<Object?>>
+final class ClipPathModifierUtility<T extends SpecStyle<Object?>>
     extends MixUtility<T, ClipPathModifierAttribute> {
   const ClipPathModifierUtility(super.builder);
 
@@ -706,7 +705,7 @@ final class ClipPathModifierUtility<T extends SpecAttribute<Object?>>
   }
 }
 
-final class ClipRRectModifierUtility<T extends SpecAttribute<Object?>>
+final class ClipRRectModifierUtility<T extends SpecStyle<Object?>>
     extends MixUtility<T, ClipRRectModifierAttribute> {
   const ClipRRectModifierUtility(super.builder);
   T call({
@@ -726,7 +725,7 @@ final class ClipRRectModifierUtility<T extends SpecAttribute<Object?>>
   }
 }
 
-final class ClipOvalModifierUtility<T extends SpecAttribute<Object?>>
+final class ClipOvalModifierUtility<T extends SpecStyle<Object?>>
     extends MixUtility<T, ClipOvalModifierAttribute> {
   const ClipOvalModifierUtility(super.builder);
   T call({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
@@ -739,7 +738,7 @@ final class ClipOvalModifierUtility<T extends SpecAttribute<Object?>>
   }
 }
 
-final class ClipRectModifierUtility<T extends SpecAttribute<Object?>>
+final class ClipRectModifierUtility<T extends SpecStyle<Object?>>
     extends MixUtility<T, ClipRectModifierAttribute> {
   const ClipRectModifierUtility(super.builder);
   T call({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
@@ -752,7 +751,7 @@ final class ClipRectModifierUtility<T extends SpecAttribute<Object?>>
   }
 }
 
-final class ClipTriangleModifierUtility<T extends SpecAttribute<Object?>>
+final class ClipTriangleModifierUtility<T extends SpecStyle<Object?>>
     extends MixUtility<T, ClipTriangleModifierAttribute> {
   const ClipTriangleModifierUtility(super.builder);
   T call({Clip? clipBehavior}) {

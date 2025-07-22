@@ -223,6 +223,7 @@ void main() {
         const modifier3 = ScrollViewModifier(physics: ClampingScrollPhysics());
 
         expect(modifier1, isNot(equals(modifier3)));
+        expect(modifier1, equals(modifier2));
       });
 
       test('not equal when any property differs', () {

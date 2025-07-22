@@ -27,7 +27,10 @@ void main() {
         expect(attribute.$repeat?.getValue(), ImageRepeat.repeat);
         expect(attribute.$fit?.getValue(), BoxFit.cover);
         expect(attribute.$alignment?.getValue(), Alignment.center);
-        expect(attribute.$centerSlice?.getValue(), const Rect.fromLTWH(10, 10, 20, 20));
+        expect(
+          attribute.$centerSlice?.getValue(),
+          const Rect.fromLTWH(10, 10, 20, 20),
+        );
         expect(attribute.$filterQuality?.getValue(), FilterQuality.high);
         expect(attribute.$colorBlendMode?.getValue(), BlendMode.multiply);
       });
@@ -101,7 +104,10 @@ void main() {
         expect(attribute.$repeat?.getValue(), ImageRepeat.repeat);
         expect(attribute.$fit?.getValue(), BoxFit.cover);
         expect(attribute.$alignment?.getValue(), Alignment.center);
-        expect(attribute.$centerSlice?.getValue(), const Rect.fromLTWH(10, 10, 20, 20));
+        expect(
+          attribute.$centerSlice?.getValue(),
+          const Rect.fromLTWH(10, 10, 20, 20),
+        );
         expect(attribute.$filterQuality?.getValue(), FilterQuality.high);
         expect(attribute.$colorBlendMode?.getValue(), BlendMode.multiply);
       });
@@ -144,11 +150,10 @@ void main() {
         );
 
         final context = SpecTestHelper.createMockContext();
-        final resolved = attribute.resolve(context);
-        final spec = resolved.spec;
+        final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec!.width, 200.0);
+        expect(spec.width, 200.0);
         expect(spec.height, 150.0);
         expect(spec.color, Colors.blue);
         expect(spec.fit, BoxFit.cover);
@@ -159,11 +164,10 @@ void main() {
       test('resolves to ImageSpec with null properties when not set', () {
         final attribute = ImageSpecAttribute.only(width: 200.0);
         final context = SpecTestHelper.createMockContext();
-        final resolved = attribute.resolve(context);
-        final spec = resolved.spec;
+        final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec!.width, 200.0);
+        expect(spec.width, 200.0);
         expect(spec.height, isNull);
         expect(spec.color, isNull);
         expect(spec.repeat, isNull);
@@ -276,16 +280,15 @@ void main() {
 
       test('builder methods can be chained fluently with merge', () {
         final attribute = ImageSpecAttribute()
-          .width(200.0)
-          .merge(ImageSpecAttribute().height(150.0))
-          .merge(ImageSpecAttribute().fit(BoxFit.cover))
-          .merge(ImageSpecAttribute().color(Colors.blue));
+            .width(200.0)
+            .merge(ImageSpecAttribute().height(150.0))
+            .merge(ImageSpecAttribute().fit(BoxFit.cover))
+            .merge(ImageSpecAttribute().color(Colors.blue));
 
         final context = SpecTestHelper.createMockContext();
-        final resolved = attribute.resolve(context);
-        final spec = resolved.spec;
+        final spec = attribute.resolve(context);
 
-        expect(spec!.width, 200.0);
+        expect(spec.width, 200.0);
         expect(spec.height, 150.0);
         expect(spec.fit, BoxFit.cover);
         expect(spec.color, Colors.blue);

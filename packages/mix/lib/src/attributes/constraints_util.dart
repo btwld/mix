@@ -10,7 +10,7 @@ import 'scalar_util.dart';
 ///
 /// This class provides methods to set individual properties of a [BoxConstraints].
 /// Use the methods of this class to configure specific properties of a [BoxConstraints].
-final class BoxConstraintsUtility<T extends SpecAttribute<Object?>>
+final class BoxConstraintsUtility<T extends SpecStyle<Object?>>
     extends MixPropUtility<T, BoxConstraints> {
   /// Utility for defining [BoxConstraintsMix.minWidth]
   late final minWidth = DoubleUtility<T>(

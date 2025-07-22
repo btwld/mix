@@ -6,7 +6,6 @@ import 'package:flutter/widgets.dart';
 import '../attributes/edge_insets_geometry_mix.dart';
 import '../attributes/edge_insets_geometry_util.dart';
 import '../core/helpers.dart';
-import '../core/mix_element.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
@@ -75,7 +74,7 @@ final class PaddingModifier extends Modifier<PaddingModifier>
 /// the [PaddingModifier] constructor.
 class PaddingModifierAttribute extends ModifierAttribute<PaddingModifier>
     with Diagnosticable {
-  final Prop<Mix<EdgeInsetsGeometry>>? padding;
+  final MixProp<EdgeInsetsGeometry>? padding;
 
   const PaddingModifierAttribute({this.padding});
 
@@ -130,7 +129,7 @@ class PaddingModifierAttribute extends ModifierAttribute<PaddingModifier>
 ///
 /// This class provides methods to set individual properties of a [PaddingModifier].
 /// Use the methods of this class to configure specific properties of a [PaddingModifier].
-class PaddingModifierUtility<T extends SpecAttribute<Object?>>
+class PaddingModifierUtility<T extends SpecStyle<Object?>>
     extends MixUtility<T, PaddingModifierAttribute> {
   /// Utility for defining [PaddingModifierAttribute.padding]
   late final padding = EdgeInsetsGeometryUtility(

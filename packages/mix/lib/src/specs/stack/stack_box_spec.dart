@@ -70,8 +70,7 @@ final class ZBoxSpec extends Spec<ZBoxSpec> with Diagnosticable {
 ///
 /// Use this class to configure the attributes of a [ZBoxSpec] and pass it to
 /// the [ZBoxSpec] constructor.
-class StackBoxSpecAttribute extends SpecAttribute<ZBoxSpec>
-    with Diagnosticable {
+class StackBoxSpecAttribute extends SpecStyle<ZBoxSpec> with Diagnosticable {
   final BoxSpecAttribute? box;
   final StackSpecAttribute? stack;
 
@@ -113,11 +112,8 @@ class StackBoxSpecAttribute extends SpecAttribute<ZBoxSpec>
   /// final stackBoxSpec = StackBoxSpecAttribute(...).resolve(context);
   /// ```
   @override
-  ZBoxSpec resolveSpec(BuildContext context) {
-    return ZBoxSpec(
-      box: box?.resolveSpec(context),
-      stack: stack?.resolveSpec(context),
-    );
+  ZBoxSpec resolve(BuildContext context) {
+    return ZBoxSpec(box: box?.resolve(context), stack: stack?.resolve(context));
   }
 
   /// Merges the properties of this [StackBoxSpecAttribute] with the properties of [other].

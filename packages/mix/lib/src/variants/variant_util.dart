@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../core/breakpoint.dart';
 import '../core/spec.dart';
 import '../core/style.dart';
 import '../core/variant.dart';
@@ -174,16 +175,15 @@ class OnContextVariantUtility {
     );
   }
 
-  // TODO: Breakpoint class needs to be defined
-  // /// Creates a variant attribute for a breakpoint based on screen size
-  // VariantAttributeBuilder breakpoint(Breakpoint breakpoint) {
-  //   return VariantAttributeBuilder(
-  //     ContextVariant.size(
-  //       'breakpoint_${breakpoint.minWidth}_${breakpoint.maxWidth}',
-  //       (size) => breakpoint.matches(size),
-  //     ),
-  //   );
-  // }
+  /// Creates a variant attribute for a breakpoint based on screen size
+  VariantAttributeBuilder breakpoint(Breakpoint breakpoint) {
+    return VariantAttributeBuilder(
+      ContextVariant.size(
+        'breakpoint_${breakpoint.minWidth ?? 'null'}_${breakpoint.maxWidth ?? 'null'}',
+        (size) => breakpoint.matches(size),
+      ),
+    );
+  }
 
   /// Creates a variant attribute for a minimum width breakpoint
   VariantAttributeBuilder minWidth(double width) {
@@ -241,7 +241,7 @@ class OnContextVariantUtility {
 }
 
 /// Builder class for creating variant-based styling attributes.
-/// 
+///
 /// This class wraps a [Variant] and provides methods to create
 /// [VariantSpecAttribute] instances with styling rules that apply
 /// when the variant condition is met.
@@ -249,10 +249,10 @@ class OnContextVariantUtility {
 class VariantAttributeBuilder {
   /// The variant condition that determines when styling should apply
   final Variant variant;
-  
+
   /// Creates a new [VariantAttributeBuilder] with the given [variant]
   const VariantAttributeBuilder(this.variant);
-  
+
   /// Creates a [VariantSpecAttribute] that applies the given styling elements
   /// when this variant's condition is met.
   ///
@@ -260,8 +260,8 @@ class VariantAttributeBuilder {
   /// ```dart
   /// // Single attribute
   /// final hoverStyle = $on.hover($box.color.blue());
-  /// 
-  /// // Multiple attributes  
+  ///
+  /// // Multiple attributes
   /// final darkStyle = $on.dark(
   ///   $box.color.white(),
   ///   $text.style.color.black(),
@@ -291,27 +291,27 @@ class VariantAttributeBuilder {
       p9,
       p10,
     ].whereType<StyleElement>().toList();
-    
+
     if (elements.isEmpty) {
       throw ArgumentError('At least one StyleElement must be provided');
     }
-    
+
     // Create a Style to contain the elements
     final style = Style.create(elements);
-    
+
     return VariantSpecAttribute(variant, style);
   }
-  
+
   @override
   String toString() => 'VariantAttributeBuilder($variant)';
-  
+
   @override
   bool operator ==(Object other) =>
-    identical(this, other) ||
-    other is VariantAttributeBuilder && 
-    runtimeType == other.runtimeType &&
-    variant == other.variant;
-    
+      identical(this, other) ||
+      other is VariantAttributeBuilder &&
+          runtimeType == other.runtimeType &&
+          variant == other.variant;
+
   @override
   int get hashCode => variant.hashCode;
 }

@@ -9,7 +9,7 @@ import 'animation_driver.dart';
 /// This driver allows external control of animation progress through a controller.
 class ControlledAnimationDriver<S extends Spec<S>> extends AnimationDriver<S> {
   final AnimationController controller;
-  final SpecAttribute<S> endStyle;
+  final SpecStyle<S> endStyle;
 
   const ControlledAnimationDriver({
     required this.controller,
@@ -19,15 +19,15 @@ class ControlledAnimationDriver<S extends Spec<S>> extends AnimationDriver<S> {
   @override
   Widget build({
     required BuildContext context,
-    required SpecAttribute<S> style,
+    required SpecStyle<S> style,
     required Widget Function(BuildContext context, ResolvedStyle<S> resolved)
     builder,
   }) {
     return AnimatedBuilder(
       animation: controller,
       builder: (context, child) {
-        final startResolved = style.resolve(context);
-        final endResolved = endStyle.resolve(context);
+        final startResolved = style.build(context);
+        final endResolved = endStyle.build(context);
 
         final interpolatedResolved = startResolved.lerp(
           endResolved,
@@ -44,7 +44,7 @@ class ControlledAnimationDriver<S extends Spec<S>> extends AnimationDriver<S> {
 class TweenAnimationDriver<S extends Spec<S>, T> extends AnimationDriver<S> {
   final AnimationController controller;
   final Tween<T> tween;
-  final SpecAttribute<S> Function(T value) styleBuilder;
+  final SpecStyle<S> Function(T value) styleBuilder;
 
   const TweenAnimationDriver({
     required this.controller,
@@ -55,7 +55,7 @@ class TweenAnimationDriver<S extends Spec<S>, T> extends AnimationDriver<S> {
   @override
   Widget build({
     required BuildContext context,
-    required SpecAttribute<S> style,
+    required SpecStyle<S> style,
     required Widget Function(BuildContext context, ResolvedStyle<S> resolved)
     builder,
   }) {
@@ -64,7 +64,7 @@ class TweenAnimationDriver<S extends Spec<S>, T> extends AnimationDriver<S> {
       builder: (context, child) {
         final animation = tween.animate(controller);
         final animatedStyle = styleBuilder(animation.value);
-        final resolved = animatedStyle.resolve(context);
+        final resolved = animatedStyle.build(context);
 
         return builder(context, resolved);
       },

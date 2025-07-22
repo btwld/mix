@@ -10,7 +10,7 @@ import 'scalar_util.dart';
 ///
 /// Extends the [BorderRadiusUtility] class to provide additional utility methods for creating and manipulating [BorderRadiusGeometry] attributes.
 /// adds a [directional] property that returns a [BorderRadiusDirectionalUtility] instance.
-final class BorderRadiusGeometryUtility<T extends SpecAttribute<Object?>>
+final class BorderRadiusGeometryUtility<T extends SpecStyle<Object?>>
     extends MixPropUtility<T, BorderRadiusGeometry> {
   /// Returns a directional utility for creating and manipulating attributes with [BorderRadiusDirectional]
   late final directional = BorderRadiusDirectionalUtility<T>(builder);
@@ -64,7 +64,7 @@ final class BorderRadiusGeometryUtility<T extends SpecAttribute<Object?>>
 ///
 /// Allows setting of radius for a border. This class provides a convenient way to configure and apply border radius to [T]
 /// Accepts a builder function that returns [T] and takes a [BorderRadiusMix] as a parameter.
-final class BorderRadiusUtility<T extends SpecAttribute<Object?>>
+final class BorderRadiusUtility<T extends SpecStyle<Object?>>
     extends MixPropUtility<T, BorderRadius> {
   /// Returns a [RadiusUtility] to manipulate [Radius] for bottomLeft corner.
   late final bottomLeft = RadiusUtility<T>(
@@ -134,7 +134,7 @@ final class BorderRadiusUtility<T extends SpecAttribute<Object?>>
   T call(BorderRadiusMix value) => builder(Prop(value));
 }
 
-final class BorderRadiusDirectionalUtility<T extends SpecAttribute<Object?>>
+final class BorderRadiusDirectionalUtility<T extends SpecStyle<Object?>>
     extends MixPropUtility<T, BorderRadiusDirectional> {
   /// Returns a [RadiusUtility] to manipulate [Radius] for topStart and topEnd corner.
   late final top = RadiusUtility(

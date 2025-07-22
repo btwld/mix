@@ -21,16 +21,13 @@ class MyApp extends StatelessWidget {
       textDirection: TextDirection.ltr,
       child: Center(
         child: FlexBox(
-          style: style() as Style<FlexBoxSpec>,
+          style: style(),
           direction: Axis.horizontal,
           children: [
-            StyledIcon(
-              Icons.image,
-              style: Style($icon.color.red()) as Style<IconSpec>,
-            ),
+            StyledIcon(Icons.image, style: SpecStyle($icon.color.red())),
             StyledText(
               'Hello World',
-              style: Style($text.style.color.blue()) as Style<TextSpec>,
+              style: SpecStyle($text.style.color.blue()),
             ),
           ],
         ),
@@ -39,7 +36,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-Style style() => Style(
+SpecStyle style() => SpecStyle(
   $icon.color.red(),
   $flexbox.flex.direction(Axis.horizontal),
   $flexbox.flex.mainAxisSize.min(),

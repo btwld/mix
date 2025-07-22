@@ -54,7 +54,6 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
     this.height,
   });
 
-
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties.add(
       DiagnosticsProperty('alignment', alignment, defaultValue: null),
@@ -195,4 +194,39 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
     width,
     height,
   ];
+}
+
+/// Simple mock BuildContext for testing purposes
+class _MockBuildContext extends BuildContext {
+  @override
+  RenderObject? findRenderObject() => null;
+
+  @override
+  T? dependOnInheritedWidgetOfExactType<T extends InheritedWidget>({
+    Object? aspect,
+  }) => null;
+
+  @override
+  InheritedWidget dependOnInheritedElement(
+    InheritedElement ancestor, {
+    Object? aspect,
+  }) => ancestor.widget as InheritedWidget;
+
+  @override
+  Object? noSuchMethod(Invocation invocation) => null;
+
+  @override
+  bool get debugDoingBuild => false;
+
+  @override
+  bool get mounted => true;
+
+  @override
+  Widget get widget => const SizedBox();
+
+  @override
+  BuildOwner? get owner => null;
+
+  @override
+  Size get size => const Size(800, 600);
 }

@@ -6,7 +6,7 @@ import '../core/utility.dart';
 import 'color_util.dart';
 
 @immutable
-final class MaterialColorUtility<T extends SpecAttribute<Object?>>
+final class MaterialColorUtility<T extends SpecStyle<Object?>>
     extends FoundationColorUtility<T> {
   // Shade utilities
   late final shade50 = FoundationColorUtility(builder, materialColor.shade50);
@@ -27,7 +27,7 @@ final class MaterialColorUtility<T extends SpecAttribute<Object?>>
   MaterialColor get materialColor => color as MaterialColor;
 }
 
-mixin ColorsUtilityMixin<T extends SpecAttribute<Object?>>
+mixin ColorsUtilityMixin<T extends SpecStyle<Object?>>
     on PropUtility<T, Color> {
   T _wrapColor(ColorSwatch color, [int? shade]) =>
       builder(Prop(color[shade ?? 500]!));
@@ -73,7 +73,7 @@ mixin ColorsUtilityMixin<T extends SpecAttribute<Object?>>
 }
 
 @immutable
-final class MaterialAccentColorUtility<T extends SpecAttribute<Object?>>
+final class MaterialAccentColorUtility<T extends SpecStyle<Object?>>
     extends FoundationColorUtility<T> {
   // Shade utilities
   late final shade100 = FoundationColorUtility(

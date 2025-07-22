@@ -145,7 +145,7 @@ void main() {
         final result = attributeWithVariants.getAllStyleVariants(context);
 
         // The result should exist (though the exact behavior depends on implementation)
-        expect(result, isA<SpecAttribute>());
+        expect(result, isA<SpecStyle>());
       });
 
       test('multiple WidgetStateVariants maintain relative order', () {
@@ -178,7 +178,7 @@ void main() {
         final context = MockBuildContext();
         final result = attributeWithVariants.getAllStyleVariants(context);
 
-        expect(result, isA<SpecAttribute>());
+        expect(result, isA<SpecStyle>());
       });
 
       test('mixed variant types are sorted with WidgetStateVariant last', () {
@@ -222,7 +222,7 @@ void main() {
         final context = MockBuildContext();
         final result = attributeWithVariants.getAllStyleVariants(context);
 
-        expect(result, isA<SpecAttribute>());
+        expect(result, isA<SpecStyle>());
       });
     });
 
@@ -268,7 +268,7 @@ void main() {
           final result = attributeWithVariants.getAllStyleVariants(context);
 
           // All should be treated equally (no WidgetStateVariant priority)
-          expect(result, isA<SpecAttribute>());
+          expect(result, isA<SpecStyle>());
         },
       );
     });
@@ -317,14 +317,14 @@ void main() {
 }
 
 // Mock classes to test the priority behavior
-class _MockSpecAttributeForPriority extends SpecAttribute<MockSpec> {
+class _MockSpecAttributeForPriority extends SpecStyle<MockSpec> {
   @override
-  SpecAttribute<MockSpec> merge(covariant SpecAttribute<MockSpec>? other) {
+  SpecStyle<MockSpec> merge(covariant SpecStyle<MockSpec>? other) {
     return this;
   }
 
   @override
-  MockSpec resolveSpec(context) {
+  MockSpec resolve(context) {
     return const MockSpec();
   }
 
@@ -332,7 +332,7 @@ class _MockSpecAttributeForPriority extends SpecAttribute<MockSpec> {
   List<Object?> get props => [];
 }
 
-class _MockSpecAttributeWithVariants extends SpecAttribute<MockSpec> {
+class _MockSpecAttributeWithVariants extends SpecStyle<MockSpec> {
   final List<VariantSpecAttribute<MockSpec>> testVariants;
 
   _MockSpecAttributeWithVariants(this.testVariants);
@@ -341,12 +341,12 @@ class _MockSpecAttributeWithVariants extends SpecAttribute<MockSpec> {
   List<VariantSpecAttribute<MockSpec>>? get variants => testVariants;
 
   @override
-  SpecAttribute<MockSpec> merge(covariant SpecAttribute<MockSpec>? other) {
+  SpecStyle<MockSpec> merge(covariant SpecStyle<MockSpec>? other) {
     return this;
   }
 
   @override
-  MockSpec resolveSpec(context) {
+  MockSpec resolve(context) {
     return const MockSpec();
   }
 

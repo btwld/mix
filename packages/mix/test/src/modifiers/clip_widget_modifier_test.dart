@@ -236,7 +236,9 @@ void main() {
         expect(attribute1.clipper?.getValue(), clipper);
         expect(attribute1.clipBehavior, isNull);
 
-        final attribute2 = ClipPathModifierAttribute.only(clipBehavior: clipBehavior);
+        final attribute2 = ClipPathModifierAttribute.only(
+          clipBehavior: clipBehavior,
+        );
         expect(attribute2.clipper, isNull);
         expect(attribute2.clipBehavior?.getValue(), clipBehavior);
       });

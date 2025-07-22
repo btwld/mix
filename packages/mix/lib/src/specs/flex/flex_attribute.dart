@@ -15,7 +15,7 @@ import 'flex_spec.dart';
 ///
 /// Use this class to configure the attributes of a [FlexSpec] and pass it to
 /// the [FlexSpec] constructor.
-class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
+class FlexSpecAttribute extends SpecStyle<FlexSpec> with Diagnosticable {
   final Prop<Axis>? $direction;
   final Prop<MainAxisAlignment>? $mainAxisAlignment;
   final Prop<CrossAxisAlignment>? $crossAxisAlignment;
@@ -172,7 +172,7 @@ class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
   /// final flexSpec = FlexSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  FlexSpec resolveSpec(BuildContext context) {
+  FlexSpec resolve(BuildContext context) {
     return FlexSpec(
       direction: MixHelpers.resolve(context, $direction),
       mainAxisAlignment: MixHelpers.resolve(context, $mainAxisAlignment),

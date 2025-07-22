@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
 sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
-  final Prop<Mix<BorderSide>>? top;
-  final Prop<Mix<BorderSide>>? bottom;
+  final MixProp<BorderSide>? top;
+  final MixProp<BorderSide>? bottom;
 
   const BoxBorderMix({this.top, this.bottom});
 
@@ -85,8 +85,8 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
 }
 
 final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
-  final Prop<Mix<BorderSide>>? left;
-  final Prop<Mix<BorderSide>>? right;
+  final MixProp<BorderSide>? left;
+  final MixProp<BorderSide>? right;
 
   static BorderMix none = BorderMix.all(BorderSideMix.none);
 
@@ -212,8 +212,8 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
 
 final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
     with DefaultValue<BorderDirectional> {
-  final Prop<Mix<BorderSide>>? start;
-  final Prop<Mix<BorderSide>>? end;
+  final MixProp<BorderSide>? start;
+  final MixProp<BorderSide>? end;
   static final BorderDirectionalMix none = BorderDirectionalMix.all(
     BorderSideMix.none,
   );

@@ -64,14 +64,14 @@ sealed class ShapeBorderMix<T extends ShapeBorder> extends Mix<T> {
 @immutable
 abstract class OutlinedBorderMix<T extends OutlinedBorder>
     extends ShapeBorderMix<T> {
-  final Prop<Mix<BorderSide>>? side;
+  final MixProp<BorderSide>? side;
 
   const OutlinedBorderMix({this.side});
 }
 
 final class RoundedRectangleBorderMix
     extends OutlinedBorderMix<RoundedRectangleBorder> {
-  final Prop<Mix<BorderRadiusGeometry>>? borderRadius;
+  final MixProp<BorderRadiusGeometry>? borderRadius;
 
   RoundedRectangleBorderMix.only({
     BorderRadiusGeometryMix? borderRadius,
@@ -121,7 +121,7 @@ final class RoundedRectangleBorderMix
 
 final class BeveledRectangleBorderMix
     extends OutlinedBorderMix<BeveledRectangleBorder> {
-  final Prop<Mix<BorderRadiusGeometry>>? borderRadius;
+  final MixProp<BorderRadiusGeometry>? borderRadius;
 
   BeveledRectangleBorderMix.only({
     BorderRadiusGeometryMix? borderRadius,
@@ -172,7 +172,7 @@ final class BeveledRectangleBorderMix
 
 final class ContinuousRectangleBorderMix
     extends OutlinedBorderMix<ContinuousRectangleBorder> {
-  final Prop<Mix<BorderRadiusGeometry>>? borderRadius;
+  final MixProp<BorderRadiusGeometry>? borderRadius;
 
   ContinuousRectangleBorderMix.only({
     BorderRadiusGeometryMix? borderRadius,
@@ -381,10 +381,10 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
 }
 
 final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
-  final Prop<Mix<LinearBorderEdge>>? start;
-  final Prop<Mix<LinearBorderEdge>>? end;
-  final Prop<Mix<LinearBorderEdge>>? top;
-  final Prop<Mix<LinearBorderEdge>>? bottom;
+  final MixProp<LinearBorderEdge>? start;
+  final MixProp<LinearBorderEdge>? end;
+  final MixProp<LinearBorderEdge>? top;
+  final MixProp<LinearBorderEdge>? bottom;
 
   LinearBorderMix.only({
     BorderSideMix? side,

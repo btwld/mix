@@ -15,7 +15,7 @@ import 'stack_spec.dart';
 ///
 /// Use this class to configure the attributes of a [StackSpec] and pass it to
 /// the [StackSpec] constructor.
-class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
+class StackSpecAttribute extends SpecStyle<StackSpec> with Diagnosticable {
   final Prop<AlignmentGeometry>? $alignment;
   final Prop<StackFit>? $fit;
   final Prop<TextDirection>? $textDirection;
@@ -105,7 +105,7 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
 
   /// Resolves to [StackSpec] using the provided [MixContext].
   @override
-  StackSpec resolveSpec(BuildContext context) {
+  StackSpec resolve(BuildContext context) {
     return StackSpec(
       alignment: MixHelpers.resolve(context, $alignment),
       fit: MixHelpers.resolve(context, $fit),

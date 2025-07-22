@@ -7,20 +7,20 @@ import 'style.dart';
 class StyleProvider<S extends Spec<S>> extends InheritedWidget {
   const StyleProvider({super.key, required this.style, required super.child});
 
-  static SpecAttribute<S>? of<S extends Spec<S>>(BuildContext context) {
+  static SpecStyle<S>? of<S extends Spec<S>>(BuildContext context) {
     final provider = context
         .dependOnInheritedWidgetOfExactType<StyleProvider<S>>();
 
     return provider?.style;
   }
 
-  static SpecAttribute<S>? maybeOf<S extends Spec<S>>(BuildContext context) {
+  static SpecStyle<S>? maybeOf<S extends Spec<S>>(BuildContext context) {
     final provider = context.getInheritedWidgetOfExactType<StyleProvider<S>>();
 
     return provider?.style;
   }
 
-  final SpecAttribute<S> style;
+  final SpecStyle<S> style;
 
   @override
   bool updateShouldNotify(StyleProvider<S> oldWidget) {
@@ -36,21 +36,21 @@ class MultiStyleProvider extends InheritedWidget {
     required super.child,
   });
 
-  static Style? of(BuildContext context) {
+  static SpecStyle? of(BuildContext context) {
     final provider = context
         .dependOnInheritedWidgetOfExactType<MultiStyleProvider>();
 
     return provider?.style;
   }
 
-  static Style? maybeOf(BuildContext context) {
+  static SpecStyle? maybeOf(BuildContext context) {
     final provider = context
         .getInheritedWidgetOfExactType<MultiStyleProvider>();
 
     return provider?.style;
   }
 
-  final Style style;
+  final SpecStyle style;
 
   @override
   bool updateShouldNotify(MultiStyleProvider oldWidget) {

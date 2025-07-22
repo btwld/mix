@@ -86,7 +86,7 @@ void main() {
           fit: StackFit.expand,
         );
         final attribute = StackSpecAttribute.maybeValue(spec);
-        
+
         expect(attribute, isNotNull);
         expect(attribute!.$alignment, hasValue(Alignment.bottomRight));
         expect(attribute.$fit, hasValue(StackFit.expand));
@@ -95,12 +95,13 @@ void main() {
 
     group('Utility Methods', () {
       test('alignment utility works correctly', () {
-        final center = StackSpecAttribute()
-          .alignment(Alignment.center);
-        final topStart = StackSpecAttribute()
-          .alignment(AlignmentDirectional.topStart);
-        final bottomEnd = StackSpecAttribute()
-          .alignment(AlignmentDirectional.bottomEnd);
+        final center = StackSpecAttribute().alignment(Alignment.center);
+        final topStart = StackSpecAttribute().alignment(
+          AlignmentDirectional.topStart,
+        );
+        final bottomEnd = StackSpecAttribute().alignment(
+          AlignmentDirectional.bottomEnd,
+        );
 
         expect(center.$alignment, hasValue(Alignment.center));
         expect(topStart.$alignment, hasValue(AlignmentDirectional.topStart));
@@ -108,12 +109,9 @@ void main() {
       });
 
       test('fit utility works correctly', () {
-        final loose = StackSpecAttribute()
-          .fit(StackFit.loose);
-        final expand = StackSpecAttribute()
-          .fit(StackFit.expand);
-        final passthrough = StackSpecAttribute()
-          .fit(StackFit.passthrough);
+        final loose = StackSpecAttribute().fit(StackFit.loose);
+        final expand = StackSpecAttribute().fit(StackFit.expand);
+        final passthrough = StackSpecAttribute().fit(StackFit.passthrough);
 
         expect(loose.$fit, hasValue(StackFit.loose));
         expect(expand.$fit, hasValue(StackFit.expand));
@@ -121,37 +119,36 @@ void main() {
       });
 
       test('textDirection utility works correctly', () {
-        final ltr = StackSpecAttribute()
-          .textDirection(TextDirection.ltr);
-        final rtl = StackSpecAttribute()
-          .textDirection(TextDirection.rtl);
+        final ltr = StackSpecAttribute().textDirection(TextDirection.ltr);
+        final rtl = StackSpecAttribute().textDirection(TextDirection.rtl);
 
         expect(ltr.$textDirection, hasValue(TextDirection.ltr));
         expect(rtl.$textDirection, hasValue(TextDirection.rtl));
       });
 
       test('clipBehavior utility works correctly', () {
-        final none = StackSpecAttribute()
-          .clipBehavior(Clip.none);
-        final hardEdge = StackSpecAttribute()
-          .clipBehavior(Clip.hardEdge);
-        final antiAlias = StackSpecAttribute()
-          .clipBehavior(Clip.antiAlias);
-        final antiAliasWithSaveLayer = StackSpecAttribute()
-          .clipBehavior(Clip.antiAliasWithSaveLayer);
+        final none = StackSpecAttribute().clipBehavior(Clip.none);
+        final hardEdge = StackSpecAttribute().clipBehavior(Clip.hardEdge);
+        final antiAlias = StackSpecAttribute().clipBehavior(Clip.antiAlias);
+        final antiAliasWithSaveLayer = StackSpecAttribute().clipBehavior(
+          Clip.antiAliasWithSaveLayer,
+        );
 
         expect(none.$clipBehavior, hasValue(Clip.none));
         expect(hardEdge.$clipBehavior, hasValue(Clip.hardEdge));
         expect(antiAlias.$clipBehavior, hasValue(Clip.antiAlias));
-        expect(antiAliasWithSaveLayer.$clipBehavior, hasValue(Clip.antiAliasWithSaveLayer));
+        expect(
+          antiAliasWithSaveLayer.$clipBehavior,
+          hasValue(Clip.antiAliasWithSaveLayer),
+        );
       });
 
       test('chaining utilities works correctly', () {
         final attribute = StackSpecAttribute()
-          .alignment(Alignment.topLeft)
-          .fit(StackFit.expand)
-          .textDirection(TextDirection.ltr)
-          .clipBehavior(Clip.antiAlias);
+            .alignment(Alignment.topLeft)
+            .fit(StackFit.expand)
+            .textDirection(TextDirection.ltr)
+            .clipBehavior(Clip.antiAlias);
 
         expect(attribute.$alignment, hasValue(Alignment.topLeft));
         expect(attribute.$fit, hasValue(StackFit.expand));
@@ -165,8 +162,7 @@ void main() {
         final animation = AnimationConfig.linear(
           const Duration(milliseconds: 300),
         );
-        final attribute = StackSpecAttribute()
-          .animate(animation);
+        final attribute = StackSpecAttribute().animate(animation);
 
         expect(attribute.animation, equals(animation));
       });
@@ -175,17 +171,16 @@ void main() {
     group('Resolution', () {
       test('resolves to StackSpec with correct properties', () {
         final attribute = StackSpecAttribute()
-          .alignment(AlignmentDirectional.centerStart)
-          .fit(StackFit.loose)
-          .textDirection(TextDirection.rtl)
-          .clipBehavior(Clip.hardEdge);
+            .alignment(AlignmentDirectional.centerStart)
+            .fit(StackFit.loose)
+            .textDirection(TextDirection.rtl)
+            .clipBehavior(Clip.hardEdge);
 
         final context = MockBuildContext();
-        final resolved = attribute.resolve(context);
-        final spec = resolved.spec;
+        final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec!.alignment, AlignmentDirectional.centerStart);
+        expect(spec.alignment, AlignmentDirectional.centerStart);
         expect(spec.fit, StackFit.loose);
         expect(spec.textDirection, TextDirection.rtl);
         expect(spec.clipBehavior, Clip.hardEdge);
@@ -193,15 +188,14 @@ void main() {
 
       test('resolves with partial values correctly', () {
         final attribute = StackSpecAttribute()
-          .alignment(Alignment.bottomCenter)
-          .fit(StackFit.passthrough);
+            .alignment(Alignment.bottomCenter)
+            .fit(StackFit.passthrough);
 
         final context = MockBuildContext();
-        final resolved = attribute.resolve(context);
-        final spec = resolved.spec;
+        final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec!.alignment, Alignment.bottomCenter);
+        expect(spec.alignment, Alignment.bottomCenter);
         expect(spec.fit, StackFit.passthrough);
         expect(spec.textDirection, isNull);
         expect(spec.clipBehavior, isNull);
@@ -211,19 +205,25 @@ void main() {
     group('Merge', () {
       test('merges properties correctly', () {
         final first = StackSpecAttribute()
-          .alignment(Alignment.topLeft)
-          .fit(StackFit.loose)
-          .textDirection(TextDirection.ltr);
+            .alignment(Alignment.topLeft)
+            .fit(StackFit.loose)
+            .textDirection(TextDirection.ltr);
 
         final second = StackSpecAttribute()
-          .alignment(Alignment.bottomRight)
-          .clipBehavior(Clip.antiAlias);
+            .alignment(Alignment.bottomRight)
+            .clipBehavior(Clip.antiAlias);
 
         final merged = first.merge(second);
 
-        expect(merged.$alignment, hasValue(Alignment.bottomRight)); // second overrides
+        expect(
+          merged.$alignment,
+          hasValue(Alignment.bottomRight),
+        ); // second overrides
         expect(merged.$fit, hasValue(StackFit.loose)); // from first
-        expect(merged.$textDirection, hasValue(TextDirection.ltr)); // from first
+        expect(
+          merged.$textDirection,
+          hasValue(TextDirection.ltr),
+        ); // from first
         expect(merged.$clipBehavior, hasValue(Clip.antiAlias)); // from second
       });
 
@@ -236,20 +236,26 @@ void main() {
 
       test('merges all properties when both have values', () {
         final first = StackSpecAttribute()
-          .alignment(AlignmentDirectional.topStart)
-          .fit(StackFit.loose);
+            .alignment(AlignmentDirectional.topStart)
+            .fit(StackFit.loose);
 
         final second = StackSpecAttribute()
-          .alignment(AlignmentDirectional.bottomEnd)
-          .fit(StackFit.expand)
-          .textDirection(TextDirection.rtl)
-          .clipBehavior(Clip.hardEdge);
+            .alignment(AlignmentDirectional.bottomEnd)
+            .fit(StackFit.expand)
+            .textDirection(TextDirection.rtl)
+            .clipBehavior(Clip.hardEdge);
 
         final merged = first.merge(second);
 
-        expect(merged.$alignment, hasValue(AlignmentDirectional.bottomEnd)); // second overrides
+        expect(
+          merged.$alignment,
+          hasValue(AlignmentDirectional.bottomEnd),
+        ); // second overrides
         expect(merged.$fit, hasValue(StackFit.expand)); // second overrides
-        expect(merged.$textDirection, hasValue(TextDirection.rtl)); // from second
+        expect(
+          merged.$textDirection,
+          hasValue(TextDirection.rtl),
+        ); // from second
         expect(merged.$clipBehavior, hasValue(Clip.hardEdge)); // from second
       });
     });
@@ -257,16 +263,16 @@ void main() {
     group('Equality', () {
       test('equal attributes have same hashCode', () {
         final attr1 = StackSpecAttribute()
-          .alignment(Alignment.center)
-          .fit(StackFit.loose)
-          .textDirection(TextDirection.ltr)
-          .clipBehavior(Clip.antiAlias);
+            .alignment(Alignment.center)
+            .fit(StackFit.loose)
+            .textDirection(TextDirection.ltr)
+            .clipBehavior(Clip.antiAlias);
 
         final attr2 = StackSpecAttribute()
-          .alignment(Alignment.center)
-          .fit(StackFit.loose)
-          .textDirection(TextDirection.ltr)
-          .clipBehavior(Clip.antiAlias);
+            .alignment(Alignment.center)
+            .fit(StackFit.loose)
+            .textDirection(TextDirection.ltr)
+            .clipBehavior(Clip.antiAlias);
 
         expect(attr1, equals(attr2));
         expect(attr1.hashCode, equals(attr2.hashCode));
@@ -309,9 +315,7 @@ void main() {
         final attribute = StackSpecAttribute(
           modifiers: [
             OpacityModifierAttribute(opacity: Prop(0.5)),
-            AlignModifierAttribute(
-              alignment: Prop(Alignment.center),
-            ),
+            AlignModifierAttribute(alignment: Prop(Alignment.center)),
           ],
         );
 
@@ -321,21 +325,17 @@ void main() {
 
       test('modifiers merge correctly', () {
         final first = StackSpecAttribute(
-          modifiers: [
-            OpacityModifierAttribute(opacity: Prop(0.5)),
-          ],
+          modifiers: [OpacityModifierAttribute(opacity: Prop(0.5))],
         );
 
         final second = StackSpecAttribute(
           modifiers: [
-            AlignModifierAttribute(
-              alignment: Prop(Alignment.center),
-            ),
+            AlignModifierAttribute(alignment: Prop(Alignment.center)),
           ],
         );
 
         final merged = first.merge(second);
-        
+
         // Note: The actual merge behavior depends on the parent class implementation
         expect(merged.modifiers, isNotNull);
       });
@@ -360,16 +360,15 @@ void main() {
 
       test('builder methods can be chained fluently', () {
         final attribute = StackSpecAttribute()
-          .alignment(AlignmentDirectional.topEnd)
-          .fit(StackFit.expand)
-          .textDirection(TextDirection.rtl)
-          .clipBehavior(Clip.hardEdge);
+            .alignment(AlignmentDirectional.topEnd)
+            .fit(StackFit.expand)
+            .textDirection(TextDirection.rtl)
+            .clipBehavior(Clip.hardEdge);
 
         final context = MockBuildContext();
-        final resolved = attribute.resolve(context);
-        final spec = resolved.spec;
+        final spec = attribute.resolve(context);
 
-        expect(spec!.alignment, AlignmentDirectional.topEnd);
+        expect(spec.alignment, AlignmentDirectional.topEnd);
         expect(spec.fit, StackFit.expand);
         expect(spec.textDirection, TextDirection.rtl);
         expect(spec.clipBehavior, Clip.hardEdge);
@@ -380,8 +379,8 @@ void main() {
       test('debugFillProperties includes all properties', () {
         // This test verifies that the attribute implements Diagnosticable correctly
         final attribute = StackSpecAttribute()
-          .alignment(Alignment.center)
-          .fit(StackFit.loose);
+            .alignment(Alignment.center)
+            .fit(StackFit.loose);
 
         // The presence of debugFillProperties is tested by the framework
         expect(attribute, isA<StackSpecAttribute>());

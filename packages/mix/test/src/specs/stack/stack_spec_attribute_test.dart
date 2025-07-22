@@ -85,7 +85,10 @@ void main() {
 
     group('maybeValue static method', () {
       test('returns StackSpecAttribute when spec is not null', () {
-        const spec = StackSpec(alignment: Alignment.center, fit: StackFit.expand);
+        const spec = StackSpec(
+          alignment: Alignment.center,
+          fit: StackFit.expand,
+        );
         final attribute = StackSpecAttribute.maybeValue(spec);
 
         expect(attribute, isNotNull);
@@ -109,11 +112,10 @@ void main() {
         );
 
         final context = SpecTestHelper.createMockContext();
-        final resolved = attribute.resolve(context);
-        final spec = resolved.spec;
+        final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec!.alignment, Alignment.center);
+        expect(spec.alignment, Alignment.center);
         expect(spec.fit, StackFit.expand);
         expect(spec.textDirection, TextDirection.rtl);
         expect(spec.clipBehavior, Clip.antiAlias);
@@ -122,11 +124,10 @@ void main() {
       test('resolves to StackSpec with null properties when not set', () {
         final attribute = StackSpecAttribute.only(alignment: Alignment.center);
         final context = SpecTestHelper.createMockContext();
-        final resolved = attribute.resolve(context);
-        final spec = resolved.spec;
+        final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec!.alignment, Alignment.center);
+        expect(spec.alignment, Alignment.center);
         expect(spec.fit, isNull);
         expect(spec.textDirection, isNull);
         expect(spec.clipBehavior, isNull);
@@ -149,12 +150,18 @@ void main() {
 
         expect(merged.$alignment?.getValue(), Alignment.center); // from attr2
         expect(merged.$fit?.getValue(), StackFit.loose); // from attr1
-        expect(merged.$textDirection?.getValue(), TextDirection.rtl); // from attr2
+        expect(
+          merged.$textDirection?.getValue(),
+          TextDirection.rtl,
+        ); // from attr2
         expect(merged.$clipBehavior, isNull);
       });
 
       test('returns original when merging with null', () {
-        final original = StackSpecAttribute.only(alignment: Alignment.center, fit: StackFit.expand);
+        final original = StackSpecAttribute.only(
+          alignment: Alignment.center,
+          fit: StackFit.expand,
+        );
         final merged = original.merge(null);
 
         expect(merged, original);
@@ -175,7 +182,10 @@ void main() {
 
         expect(merged.$alignment?.getValue(), Alignment.topLeft); // from attr1
         expect(merged.$fit?.getValue(), StackFit.expand); // from attr2
-        expect(merged.$clipBehavior?.getValue(), Clip.antiAlias); // from attr2 (takes precedence)
+        expect(
+          merged.$clipBehavior?.getValue(),
+          Clip.antiAlias,
+        ); // from attr2 (takes precedence)
       });
     });
 
@@ -228,8 +238,14 @@ void main() {
       });
 
       test('attributes with different properties are not equal', () {
-        final attr1 = StackSpecAttribute.only(alignment: Alignment.center, fit: StackFit.expand);
-        final attr2 = StackSpecAttribute.only(alignment: Alignment.topLeft, fit: StackFit.expand);
+        final attr1 = StackSpecAttribute.only(
+          alignment: Alignment.center,
+          fit: StackFit.expand,
+        );
+        final attr2 = StackSpecAttribute.only(
+          alignment: Alignment.topLeft,
+          fit: StackFit.expand,
+        );
 
         expect(attr1, isNot(attr2));
       });

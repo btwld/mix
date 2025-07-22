@@ -155,11 +155,10 @@ void main() {
         );
 
         final context = SpecTestHelper.createMockContext();
-        final resolved = attribute.resolve(context);
-        final spec = resolved.spec;
+        final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec!.overflow, TextOverflow.ellipsis);
+        expect(spec.overflow, TextOverflow.ellipsis);
         expect(spec.maxLines, 3);
         expect(spec.textAlign, TextAlign.center);
         expect(spec.style, isA<TextStyle>());
@@ -170,11 +169,10 @@ void main() {
       test('resolves to TextSpec with null properties when not set', () {
         final attribute = TextSpecAttribute.only(maxLines: 3);
         final context = SpecTestHelper.createMockContext();
-        final resolved = attribute.resolve(context);
-        final spec = resolved.spec;
+        final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec!.maxLines, 3);
+        expect(spec.maxLines, 3);
         expect(spec.overflow, isNull);
         expect(spec.textAlign, isNull);
         expect(spec.style, isNull);
@@ -315,16 +313,15 @@ void main() {
 
       test('builder methods can be chained fluently with merge', () {
         final attribute = TextSpecAttribute()
-          .maxLines(3)
-          .merge(TextSpecAttribute().overflow(TextOverflow.ellipsis))
-          .merge(TextSpecAttribute().textAlign(TextAlign.center))
-          .merge(TextSpecAttribute().fontSize(16.0));
+            .maxLines(3)
+            .merge(TextSpecAttribute().overflow(TextOverflow.ellipsis))
+            .merge(TextSpecAttribute().textAlign(TextAlign.center))
+            .merge(TextSpecAttribute().fontSize(16.0));
 
         final context = SpecTestHelper.createMockContext();
-        final resolved = attribute.resolve(context);
-        final spec = resolved.spec;
+        final spec = attribute.resolve(context);
 
-        expect(spec!.maxLines, 3);
+        expect(spec.maxLines, 3);
         expect(spec.overflow, TextOverflow.ellipsis);
         expect(spec.textAlign, TextAlign.center);
         expect(spec.style, isA<TextStyle>());

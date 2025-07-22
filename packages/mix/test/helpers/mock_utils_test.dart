@@ -15,7 +15,7 @@ void main() {
 
       test('resolves correctly', () {
         final attr = UtilityTestAttribute(Prop(Colors.blue));
-        final resolved = attr.resolveSpec(mockContext);
+        final resolved = attr.resolve(mockContext);
 
         expect(resolved, isA<MockSpec>());
         expect(resolved.resolvedValue, Colors.blue);
@@ -55,7 +55,7 @@ void main() {
           blurRadius: 10.0,
         );
         final attr = UtilityTestAttribute(Prop(shadowMix));
-        final resolved = attr.resolveSpec(mockContext);
+        final resolved = attr.resolve(mockContext);
 
         expect(resolved, isA<MockSpec>());
         expect(resolved.resolvedValue, isA<BoxShadow>());

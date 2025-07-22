@@ -12,6 +12,18 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
 
   const EdgeInsetsGeometryMix({this.top, this.bottom});
 
+  factory EdgeInsetsGeometryMix.value(T value) {
+    return switch (value) {
+          (EdgeInsets edgeInsets) => EdgeInsetsMix.value(edgeInsets),
+          (EdgeInsetsDirectional edgeInsetsDirectional) =>
+            EdgeInsetsDirectionalMix.value(edgeInsetsDirectional),
+          _ => throw ArgumentError(
+            'Unsupported EdgeInsetsGeometry type: ${value.runtimeType}',
+          ),
+        }
+        as EdgeInsetsGeometryMix<T>;
+  }
+
   /// Creates insets where all the offsets are `value`.
   static EdgeInsetsGeometryMix all(double value) => EdgeInsetsMix.all(value);
 
@@ -56,20 +68,15 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
     double? top,
     double? bottom,
   }) => EdgeInsetsDirectionalMix.only(
-    start: start,
-    end: end,
     top: top,
     bottom: bottom,
+    start: start,
+    end: end,
   );
 
   /// Creates [EdgeInsets] with symmetrical vertical and horizontal offsets.
-  static EdgeInsetsMix symmetric({
-    double? vertical,
-    double? horizontal,
-  }) => EdgeInsetsMix.symmetric(
-    vertical: vertical,
-    horizontal: horizontal,
-  );
+  static EdgeInsetsMix symmetric({double? vertical, double? horizontal}) =>
+      EdgeInsetsMix.symmetric(vertical: vertical, horizontal: horizontal);
 
   /// Creates [EdgeInsets] from offsets from the left, top, right, and bottom.
   static EdgeInsetsMix fromLTRB(
@@ -88,18 +95,6 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
     double bottom,
   ) => EdgeInsetsDirectionalMix.fromSTEB(start, top, end, bottom);
 
-  factory EdgeInsetsGeometryMix.value(T value) {
-    return switch (value) {
-          (EdgeInsets edgeInsets) => EdgeInsetsMix.value(edgeInsets),
-          (EdgeInsetsDirectional edgeInsetsDirectional) =>
-            EdgeInsetsDirectionalMix.value(edgeInsetsDirectional),
-          _ => throw ArgumentError(
-            'Unsupported EdgeInsetsGeometry type: ${value.runtimeType}',
-          ),
-        }
-        as EdgeInsetsGeometryMix<T>;
-  }
-
   static EdgeInsetsGeometryMix<T>? maybeValue<T extends EdgeInsetsGeometry>(
     T? edgeInsetsGeometry,
   ) {
@@ -107,7 +102,6 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
         ? null
         : EdgeInsetsGeometryMix.value(edgeInsetsGeometry);
   }
-
 
   static EdgeInsetsGeometryMix? tryToMerge(
     EdgeInsetsGeometryMix? a,
@@ -296,8 +290,12 @@ final class EdgeInsetsDirectionalMix
         end: horizontal != null ? Prop(horizontal) : null,
       );
 
-  EdgeInsetsDirectionalMix.fromSTEB(double start, double top, double end, double bottom)
-    : this(
+  EdgeInsetsDirectionalMix.fromSTEB(
+    double start,
+    double top,
+    double end,
+    double bottom,
+  ) : this(
         top: Prop(top),
         bottom: Prop(bottom),
         start: Prop(start),

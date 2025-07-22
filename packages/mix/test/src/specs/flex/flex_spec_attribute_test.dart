@@ -21,8 +21,14 @@ void main() {
         );
 
         expect(attribute.$direction, hasValue(Axis.horizontal));
-        expect(attribute.$mainAxisAlignment, hasValue(MainAxisAlignment.center));
-        expect(attribute.$crossAxisAlignment, hasValue(CrossAxisAlignment.stretch));
+        expect(
+          attribute.$mainAxisAlignment,
+          hasValue(MainAxisAlignment.center),
+        );
+        expect(
+          attribute.$crossAxisAlignment,
+          hasValue(CrossAxisAlignment.stretch),
+        );
         expect(attribute.$mainAxisSize, hasValue(MainAxisSize.max));
         expect(attribute.$verticalDirection, hasValue(VerticalDirection.down));
         expect(attribute.$textDirection, hasValue(TextDirection.ltr));
@@ -61,8 +67,14 @@ void main() {
         );
 
         expect(attribute.$direction, hasValue(Axis.vertical));
-        expect(attribute.$mainAxisAlignment, hasValue(MainAxisAlignment.spaceEvenly));
-        expect(attribute.$crossAxisAlignment, hasValue(CrossAxisAlignment.center));
+        expect(
+          attribute.$mainAxisAlignment,
+          hasValue(MainAxisAlignment.spaceEvenly),
+        );
+        expect(
+          attribute.$crossAxisAlignment,
+          hasValue(CrossAxisAlignment.center),
+        );
         expect(attribute.$mainAxisSize, hasValue(MainAxisSize.min));
         expect(attribute.$verticalDirection, hasValue(VerticalDirection.up));
         expect(attribute.$textDirection, hasValue(TextDirection.rtl));
@@ -106,8 +118,14 @@ void main() {
         final attribute = FlexSpecAttribute.value(spec);
 
         expect(attribute.$direction, hasValue(Axis.horizontal));
-        expect(attribute.$mainAxisAlignment, hasValue(MainAxisAlignment.center));
-        expect(attribute.$crossAxisAlignment, hasValue(CrossAxisAlignment.stretch));
+        expect(
+          attribute.$mainAxisAlignment,
+          hasValue(MainAxisAlignment.center),
+        );
+        expect(
+          attribute.$crossAxisAlignment,
+          hasValue(CrossAxisAlignment.stretch),
+        );
         expect(attribute.$mainAxisSize, hasValue(MainAxisSize.max));
         expect(attribute.$verticalDirection, hasValue(VerticalDirection.down));
         expect(attribute.$textDirection, hasValue(TextDirection.ltr));
@@ -123,7 +141,7 @@ void main() {
       test('maybeValue returns attribute for non-null spec', () {
         const spec = FlexSpec(direction: Axis.vertical, gap: 8.0);
         final attribute = FlexSpecAttribute.maybeValue(spec);
-        
+
         expect(attribute, isNotNull);
         expect(attribute!.$direction, hasValue(Axis.vertical));
         expect(attribute.$gap, hasValue(8.0));
@@ -132,81 +150,90 @@ void main() {
 
     group('Utility Methods', () {
       test('direction utility works correctly', () {
-        final horizontal = FlexSpecAttribute()
-          .direction(Axis.horizontal);
-        final vertical = FlexSpecAttribute()
-          .direction(Axis.vertical);
+        final horizontal = FlexSpecAttribute().direction(Axis.horizontal);
+        final vertical = FlexSpecAttribute().direction(Axis.vertical);
 
         expect(horizontal.$direction, hasValue(Axis.horizontal));
         expect(vertical.$direction, hasValue(Axis.vertical));
       });
 
       test('mainAxisAlignment utility works correctly', () {
-        final attribute = FlexSpecAttribute()
-          .mainAxisAlignment(MainAxisAlignment.spaceAround);
+        final attribute = FlexSpecAttribute().mainAxisAlignment(
+          MainAxisAlignment.spaceAround,
+        );
 
-        expect(attribute.$mainAxisAlignment, hasValue(MainAxisAlignment.spaceAround));
+        expect(
+          attribute.$mainAxisAlignment,
+          hasValue(MainAxisAlignment.spaceAround),
+        );
       });
 
       test('crossAxisAlignment utility works correctly', () {
-        final attribute = FlexSpecAttribute()
-          .crossAxisAlignment(CrossAxisAlignment.end);
+        final attribute = FlexSpecAttribute().crossAxisAlignment(
+          CrossAxisAlignment.end,
+        );
 
         expect(attribute.$crossAxisAlignment, hasValue(CrossAxisAlignment.end));
       });
 
       test('mainAxisSize utility works correctly', () {
-        final attribute = FlexSpecAttribute()
-          .mainAxisSize(MainAxisSize.min);
+        final attribute = FlexSpecAttribute().mainAxisSize(MainAxisSize.min);
 
         expect(attribute.$mainAxisSize, hasValue(MainAxisSize.min));
       });
 
       test('verticalDirection utility works correctly', () {
-        final attribute = FlexSpecAttribute()
-          .verticalDirection(VerticalDirection.up);
+        final attribute = FlexSpecAttribute().verticalDirection(
+          VerticalDirection.up,
+        );
 
         expect(attribute.$verticalDirection, hasValue(VerticalDirection.up));
       });
 
       test('textDirection utility works correctly', () {
-        final attribute = FlexSpecAttribute()
-          .textDirection(TextDirection.rtl);
+        final attribute = FlexSpecAttribute().textDirection(TextDirection.rtl);
 
         expect(attribute.$textDirection, hasValue(TextDirection.rtl));
       });
 
       test('textBaseline utility works correctly', () {
-        final attribute = FlexSpecAttribute()
-          .textBaseline(TextBaseline.ideographic);
+        final attribute = FlexSpecAttribute().textBaseline(
+          TextBaseline.ideographic,
+        );
 
         expect(attribute.$textBaseline, hasValue(TextBaseline.ideographic));
       });
 
       test('clipBehavior utility works correctly', () {
-        final attribute = FlexSpecAttribute()
-          .clipBehavior(Clip.antiAliasWithSaveLayer);
+        final attribute = FlexSpecAttribute().clipBehavior(
+          Clip.antiAliasWithSaveLayer,
+        );
 
         expect(attribute.$clipBehavior, hasValue(Clip.antiAliasWithSaveLayer));
       });
 
       test('gap utility works correctly', () {
-        final attribute = FlexSpecAttribute()
-          .gap(24.0);
+        final attribute = FlexSpecAttribute().gap(24.0);
 
         expect(attribute.$gap, hasValue(24.0));
       });
 
       test('chaining utilities works correctly', () {
         final attribute = FlexSpecAttribute()
-          .direction(Axis.horizontal)
-          .mainAxisAlignment(MainAxisAlignment.spaceBetween)
-          .crossAxisAlignment(CrossAxisAlignment.center)
-          .gap(16.0);
+            .direction(Axis.horizontal)
+            .mainAxisAlignment(MainAxisAlignment.spaceBetween)
+            .crossAxisAlignment(CrossAxisAlignment.center)
+            .gap(16.0);
 
         expect(attribute.$direction, hasValue(Axis.horizontal));
-        expect(attribute.$mainAxisAlignment, hasValue(MainAxisAlignment.spaceBetween));
-        expect(attribute.$crossAxisAlignment, hasValue(CrossAxisAlignment.center));
+        expect(
+          attribute.$mainAxisAlignment,
+          hasValue(MainAxisAlignment.spaceBetween),
+        );
+        expect(
+          attribute.$crossAxisAlignment,
+          hasValue(CrossAxisAlignment.center),
+        );
         expect(attribute.$gap, hasValue(16.0));
       });
     });
@@ -228,8 +255,7 @@ void main() {
         final animation = AnimationConfig.linear(
           const Duration(milliseconds: 300),
         );
-        final attribute = FlexSpecAttribute()
-          .animate(animation);
+        final attribute = FlexSpecAttribute().animate(animation);
 
         expect(attribute.animation, equals(animation));
       });
@@ -238,22 +264,21 @@ void main() {
     group('Resolution', () {
       test('resolves to FlexSpec with correct properties', () {
         final attribute = FlexSpecAttribute()
-          .direction(Axis.horizontal)
-          .mainAxisAlignment(MainAxisAlignment.center)
-          .crossAxisAlignment(CrossAxisAlignment.stretch)
-          .mainAxisSize(MainAxisSize.max)
-          .verticalDirection(VerticalDirection.down)
-          .textDirection(TextDirection.ltr)
-          .textBaseline(TextBaseline.alphabetic)
-          .clipBehavior(Clip.antiAlias)
-          .gap(16.0);
+            .direction(Axis.horizontal)
+            .mainAxisAlignment(MainAxisAlignment.center)
+            .crossAxisAlignment(CrossAxisAlignment.stretch)
+            .mainAxisSize(MainAxisSize.max)
+            .verticalDirection(VerticalDirection.down)
+            .textDirection(TextDirection.ltr)
+            .textBaseline(TextBaseline.alphabetic)
+            .clipBehavior(Clip.antiAlias)
+            .gap(16.0);
 
         final context = MockBuildContext();
-        final resolved = attribute.resolve(context);
-        final spec = resolved.spec;
+        final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec!.direction, Axis.horizontal);
+        expect(spec.direction, Axis.horizontal);
         expect(spec.mainAxisAlignment, MainAxisAlignment.center);
         expect(spec.crossAxisAlignment, CrossAxisAlignment.stretch);
         expect(spec.mainAxisSize, MainAxisSize.max);
@@ -266,15 +291,14 @@ void main() {
 
       test('resolves with null values correctly', () {
         final attribute = FlexSpecAttribute()
-          .direction(Axis.vertical)
-          .gap(12.0);
+            .direction(Axis.vertical)
+            .gap(12.0);
 
         final context = MockBuildContext();
-        final resolved = attribute.resolve(context);
-        final spec = resolved.spec;
+        final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec!.direction, Axis.vertical);
+        expect(spec.direction, Axis.vertical);
         expect(spec.gap, 12.0);
         expect(spec.mainAxisAlignment, isNull);
         expect(spec.crossAxisAlignment, isNull);
@@ -289,20 +313,26 @@ void main() {
     group('Merge', () {
       test('merges properties correctly', () {
         final first = FlexSpecAttribute()
-          .direction(Axis.horizontal)
-          .mainAxisAlignment(MainAxisAlignment.start)
-          .gap(8.0);
+            .direction(Axis.horizontal)
+            .mainAxisAlignment(MainAxisAlignment.start)
+            .gap(8.0);
 
         final second = FlexSpecAttribute()
-          .direction(Axis.vertical)
-          .crossAxisAlignment(CrossAxisAlignment.center)
-          .mainAxisSize(MainAxisSize.min);
+            .direction(Axis.vertical)
+            .crossAxisAlignment(CrossAxisAlignment.center)
+            .mainAxisSize(MainAxisSize.min);
 
         final merged = first.merge(second);
 
         expect(merged.$direction, hasValue(Axis.vertical)); // second overrides
-        expect(merged.$mainAxisAlignment, hasValue(MainAxisAlignment.start)); // from first
-        expect(merged.$crossAxisAlignment, hasValue(CrossAxisAlignment.center)); // from second
+        expect(
+          merged.$mainAxisAlignment,
+          hasValue(MainAxisAlignment.start),
+        ); // from first
+        expect(
+          merged.$crossAxisAlignment,
+          hasValue(CrossAxisAlignment.center),
+        ); // from second
         expect(merged.$mainAxisSize, hasValue(MainAxisSize.min)); // from second
         expect(merged.$gap, hasValue(8.0)); // from first
       });
@@ -316,29 +346,44 @@ void main() {
 
       test('merges all properties when both have values', () {
         final first = FlexSpecAttribute()
-          .direction(Axis.horizontal)
-          .mainAxisAlignment(MainAxisAlignment.center)
-          .crossAxisAlignment(CrossAxisAlignment.start)
-          .mainAxisSize(MainAxisSize.max)
-          .verticalDirection(VerticalDirection.down);
+            .direction(Axis.horizontal)
+            .mainAxisAlignment(MainAxisAlignment.center)
+            .crossAxisAlignment(CrossAxisAlignment.start)
+            .mainAxisSize(MainAxisSize.max)
+            .verticalDirection(VerticalDirection.down);
 
         final second = FlexSpecAttribute()
-          .direction(Axis.vertical)
-          .mainAxisAlignment(MainAxisAlignment.end)
-          .textDirection(TextDirection.rtl)
-          .textBaseline(TextBaseline.ideographic)
-          .clipBehavior(Clip.hardEdge)
-          .gap(20.0);
+            .direction(Axis.vertical)
+            .mainAxisAlignment(MainAxisAlignment.end)
+            .textDirection(TextDirection.rtl)
+            .textBaseline(TextBaseline.ideographic)
+            .clipBehavior(Clip.hardEdge)
+            .gap(20.0);
 
         final merged = first.merge(second);
 
         expect(merged.$direction, hasValue(Axis.vertical)); // second overrides
-        expect(merged.$mainAxisAlignment, hasValue(MainAxisAlignment.end)); // second overrides
-        expect(merged.$crossAxisAlignment, hasValue(CrossAxisAlignment.start)); // from first
+        expect(
+          merged.$mainAxisAlignment,
+          hasValue(MainAxisAlignment.end),
+        ); // second overrides
+        expect(
+          merged.$crossAxisAlignment,
+          hasValue(CrossAxisAlignment.start),
+        ); // from first
         expect(merged.$mainAxisSize, hasValue(MainAxisSize.max)); // from first
-        expect(merged.$verticalDirection, hasValue(VerticalDirection.down)); // from first
-        expect(merged.$textDirection, hasValue(TextDirection.rtl)); // from second
-        expect(merged.$textBaseline, hasValue(TextBaseline.ideographic)); // from second
+        expect(
+          merged.$verticalDirection,
+          hasValue(VerticalDirection.down),
+        ); // from first
+        expect(
+          merged.$textDirection,
+          hasValue(TextDirection.rtl),
+        ); // from second
+        expect(
+          merged.$textBaseline,
+          hasValue(TextBaseline.ideographic),
+        ); // from second
         expect(merged.$clipBehavior, hasValue(Clip.hardEdge)); // from second
         expect(merged.$gap, hasValue(20.0)); // from second
       });
@@ -347,14 +392,14 @@ void main() {
     group('Equality', () {
       test('equal attributes have same hashCode', () {
         final attr1 = FlexSpecAttribute()
-          .direction(Axis.horizontal)
-          .mainAxisAlignment(MainAxisAlignment.center)
-          .gap(16.0);
+            .direction(Axis.horizontal)
+            .mainAxisAlignment(MainAxisAlignment.center)
+            .gap(16.0);
 
         final attr2 = FlexSpecAttribute()
-          .direction(Axis.horizontal)
-          .mainAxisAlignment(MainAxisAlignment.center)
-          .gap(16.0);
+            .direction(Axis.horizontal)
+            .mainAxisAlignment(MainAxisAlignment.center)
+            .gap(16.0);
 
         expect(attr1, equals(attr2));
         expect(attr1.hashCode, equals(attr2.hashCode));
@@ -407,9 +452,7 @@ void main() {
         final attribute = FlexSpecAttribute(
           modifiers: [
             OpacityModifierAttribute(opacity: Prop(0.5)),
-            PaddingModifierAttribute.only(
-              padding: EdgeInsetsMix.all(8.0),
-            ),
+            PaddingModifierAttribute.only(padding: EdgeInsetsMix.all(8.0)),
           ],
         );
 
@@ -419,21 +462,17 @@ void main() {
 
       test('modifiers merge correctly', () {
         final first = FlexSpecAttribute(
-          modifiers: [
-            OpacityModifierAttribute(opacity: Prop(0.5)),
-          ],
+          modifiers: [OpacityModifierAttribute(opacity: Prop(0.5))],
         );
 
         final second = FlexSpecAttribute(
           modifiers: [
-            PaddingModifierAttribute.only(
-              padding: EdgeInsetsMix.all(8.0),
-            ),
+            PaddingModifierAttribute.only(padding: EdgeInsetsMix.all(8.0)),
           ],
         );
 
         final merged = first.merge(second);
-        
+
         // Note: The actual merge behavior depends on the parent class implementation
         expect(merged.modifiers, isNotNull);
       });
@@ -458,16 +497,15 @@ void main() {
 
       test('builder methods can be chained fluently', () {
         final attribute = FlexSpecAttribute()
-          .row()
-          .mainAxisAlignment(MainAxisAlignment.spaceBetween)
-          .crossAxisAlignment(CrossAxisAlignment.center)
-          .gap(16.0);
+            .row()
+            .mainAxisAlignment(MainAxisAlignment.spaceBetween)
+            .crossAxisAlignment(CrossAxisAlignment.center)
+            .gap(16.0);
 
         final context = MockBuildContext();
-        final resolved = attribute.resolve(context);
-        final spec = resolved.spec;
+        final spec = attribute.resolve(context);
 
-        expect(spec!.direction, Axis.horizontal);
+        expect(spec.direction, Axis.horizontal);
         expect(spec.mainAxisAlignment, MainAxisAlignment.spaceBetween);
         expect(spec.crossAxisAlignment, CrossAxisAlignment.center);
         expect(spec.gap, 16.0);
@@ -478,9 +516,9 @@ void main() {
       test('debugFillProperties includes all properties', () {
         // This test verifies that the attribute implements Diagnosticable correctly
         final attribute = FlexSpecAttribute()
-          .direction(Axis.horizontal)
-          .mainAxisAlignment(MainAxisAlignment.center)
-          .gap(16.0);
+            .direction(Axis.horizontal)
+            .mainAxisAlignment(MainAxisAlignment.center)
+            .gap(16.0);
 
         // The presence of debugFillProperties is tested by the framework
         expect(attribute, isA<FlexSpecAttribute>());

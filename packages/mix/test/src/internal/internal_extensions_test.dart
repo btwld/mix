@@ -288,7 +288,7 @@ void main() {
     test('lighten increases lightness', () {
       final lightened = testColor.lighten(20);
       expect(lightened, isA<Color>());
-      
+
       final hslOriginal = HSLColor.fromColor(testColor);
       final hslLightened = HSLColor.fromColor(lightened);
       expect(hslLightened.lightness, greaterThan(hslOriginal.lightness));
@@ -298,7 +298,7 @@ void main() {
       const colorWithSaturation = Color(0xFF808040); // Yellowish gray
       final brightened = colorWithSaturation.brighten(20);
       expect(brightened, isA<Color>());
-      
+
       final hslOriginal = HSLColor.fromColor(colorWithSaturation);
       final hslBrightened = HSLColor.fromColor(brightened);
       expect(hslBrightened.lightness, greaterThan(hslOriginal.lightness));
@@ -307,7 +307,7 @@ void main() {
     test('darken decreases lightness', () {
       final darkened = testColor.darken(20);
       expect(darkened, isA<Color>());
-      
+
       final hslOriginal = HSLColor.fromColor(testColor);
       final hslDarkened = HSLColor.fromColor(darkened);
       expect(hslDarkened.lightness, lessThan(hslOriginal.lightness));
@@ -316,7 +316,7 @@ void main() {
     test('tint mixes with white', () {
       final tinted = testColor.tint(20);
       expect(tinted, isA<Color>());
-      
+
       // Tinting should make it lighter
       final hslOriginal = HSLColor.fromColor(testColor);
       final hslTinted = HSLColor.fromColor(tinted);
@@ -326,7 +326,7 @@ void main() {
     test('shade mixes with black', () {
       final shaded = testColor.shade(20);
       expect(shaded, isA<Color>());
-      
+
       // Shading should make it darker
       final hslOriginal = HSLColor.fromColor(testColor);
       final hslShaded = HSLColor.fromColor(shaded);
@@ -337,17 +337,19 @@ void main() {
       const colorWithSaturation = Color(0xFFFF8080); // Light red
       final desaturated = colorWithSaturation.desaturate(30);
       expect(desaturated, isA<Color>());
-      
+
       final hslOriginal = HSLColor.fromColor(colorWithSaturation);
       final hslDesaturated = HSLColor.fromColor(desaturated);
       expect(hslDesaturated.saturation, lessThan(hslOriginal.saturation));
     });
 
     test('saturate increases saturation', () {
-      const grayishColor = Color(0xFF9F9F8F); // Grayish color with low saturation
+      const grayishColor = Color(
+        0xFF9F9F8F,
+      ); // Grayish color with low saturation
       final saturated = grayishColor.saturate(30);
       expect(saturated, isA<Color>());
-      
+
       final hslOriginal = HSLColor.fromColor(grayishColor);
       final hslSaturated = HSLColor.fromColor(saturated);
       expect(hslSaturated.saturation, greaterThan(hslOriginal.saturation));
@@ -357,7 +359,7 @@ void main() {
       const colorWithSaturation = Color(0xFFFF8080); // Light red
       final grayscaled = colorWithSaturation.grayscale();
       expect(grayscaled, isA<Color>());
-      
+
       final hslGrayscaled = HSLColor.fromColor(grayscaled);
       expect(hslGrayscaled.saturation, closeTo(0.0, 0.01));
     });
@@ -366,7 +368,7 @@ void main() {
       const colorWithHue = Color(0xFFFF0000); // Red
       final complemented = colorWithHue.complement();
       expect(complemented, isA<Color>());
-      
+
       final hslOriginal = HSLColor.fromColor(colorWithHue);
       final hslComplemented = HSLColor.fromColor(complemented);
       final expectedHue = (hslOriginal.hue + 180) % 360;
@@ -387,9 +389,11 @@ void main() {
   });
 
   group('BuildContextExt', () {
-    testWidgets('provides correct context information', (WidgetTester tester) async {
+    testWidgets('provides correct context information', (
+      WidgetTester tester,
+    ) async {
       late BuildContext capturedContext;
-      
+
       await tester.pumpWidget(
         MaterialApp(
           theme: ThemeData.light(),
@@ -406,41 +410,56 @@ void main() {
       );
 
       // Test directionality
-      expect(capturedContext.directionality, Directionality.of(capturedContext));
-      
-      // Test orientation  
-      expect(capturedContext.orientation, MediaQuery.of(capturedContext).orientation);
-      
+      expect(
+        capturedContext.directionality,
+        Directionality.of(capturedContext),
+      );
+
+      // Test orientation
+      expect(
+        capturedContext.orientation,
+        MediaQuery.of(capturedContext).orientation,
+      );
+
       // Test screen size
       expect(capturedContext.screenSize, MediaQuery.of(capturedContext).size);
-      
+
       // Test brightness
       expect(capturedContext.brightness, Theme.of(capturedContext).brightness);
-      
+
       // Test theme
       expect(capturedContext.theme, Theme.of(capturedContext));
-      
+
       // Test color scheme
-      expect(capturedContext.colorScheme, Theme.of(capturedContext).colorScheme);
-      
+      expect(
+        capturedContext.colorScheme,
+        Theme.of(capturedContext).colorScheme,
+      );
+
       // Test text theme
       expect(capturedContext.textTheme, Theme.of(capturedContext).textTheme);
-      
+
       // Test mix theme
       expect(capturedContext.mixTheme, const MixScopeData.empty());
-      
+
       // Test computed properties
-      expect(capturedContext.isDarkMode, 
-             Theme.of(capturedContext).brightness == Brightness.dark);
-      expect(capturedContext.isLandscape, 
-             MediaQuery.of(capturedContext).orientation == Orientation.landscape);
-      expect(capturedContext.isPortrait, 
-             MediaQuery.of(capturedContext).orientation == Orientation.portrait);
+      expect(
+        capturedContext.isDarkMode,
+        Theme.of(capturedContext).brightness == Brightness.dark,
+      );
+      expect(
+        capturedContext.isLandscape,
+        MediaQuery.of(capturedContext).orientation == Orientation.landscape,
+      );
+      expect(
+        capturedContext.isPortrait,
+        MediaQuery.of(capturedContext).orientation == Orientation.portrait,
+      );
     });
 
     testWidgets('handles dark theme correctly', (WidgetTester tester) async {
       late BuildContext capturedContext;
-      
+
       await tester.pumpWidget(
         MaterialApp(
           theme: ThemeData.dark(),
@@ -462,11 +481,11 @@ void main() {
 
     testWidgets('handles orientation changes', (WidgetTester tester) async {
       late BuildContext capturedContext;
-      
+
       // Set landscape orientation
       tester.view.physicalSize = const Size(800, 600);
       tester.view.devicePixelRatio = 1.0;
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: MixScope(
@@ -487,7 +506,7 @@ void main() {
 
       // Reset to portrait
       tester.view.physicalSize = const Size(400, 800);
-      
+
       await tester.pump();
 
       expect(capturedContext.orientation, Orientation.portrait);
@@ -500,7 +519,7 @@ void main() {
     test('clamps values between 0.0 and 1.0', () {
       // Testing through color methods that use _clamp internally
       const testColor = Color(0xFF808080);
-      
+
       // These should not throw and should produce valid colors
       expect(() => testColor.lighten(100), returnsNormally);
       expect(() => testColor.darken(100), returnsNormally);

@@ -160,7 +160,7 @@ void main() {
       test('maybeValue returns attribute for non-null spec', () {
         const spec = BoxSpec(width: 100.0, height: 200.0);
         final attribute = BoxSpecAttribute.maybeValue(spec);
-        
+
         expect(attribute, isNotNull);
         expect(attribute!.$width, hasValue(100.0));
         expect(attribute.$height, hasValue(200.0));
@@ -175,7 +175,7 @@ void main() {
 
         final context = MockBuildContext();
         final resolved = attribute.resolve(context);
-        final decoration = resolved.spec?.decoration as BoxDecoration?;
+        final decoration = resolved.decoration as BoxDecoration?;
         expect(decoration?.color, Colors.red);
       });
 
@@ -193,20 +193,19 @@ void main() {
         final context = MockBuildContext();
 
         final colorDecoration =
-            withColor.resolve(context).spec?.decoration as BoxDecoration?;
+            withColor.resolve(context).decoration as BoxDecoration?;
         expect(colorDecoration?.color, Colors.red);
         expect(colorDecoration?.border, isNull);
         expect(colorDecoration?.borderRadius, isNull);
 
         final borderDecoration =
-            withBorder.resolve(context).spec?.decoration as BoxDecoration?;
+            withBorder.resolve(context).decoration as BoxDecoration?;
         expect(borderDecoration?.color, isNull);
         expect(borderDecoration?.border, isNotNull);
         expect(borderDecoration?.borderRadius, isNull);
 
         final radiusDecoration =
-            withBorderRadius.resolve(context).spec?.decoration
-                as BoxDecoration?;
+            withBorderRadius.resolve(context).decoration as BoxDecoration?;
         expect(radiusDecoration?.color, isNull);
         expect(radiusDecoration?.border, isNull);
         expect(radiusDecoration?.borderRadius, isNotNull);
@@ -224,7 +223,7 @@ void main() {
 
         final context = MockBuildContext();
         final decoration =
-            combined.resolve(context).spec?.decoration as BoxDecoration?;
+            combined.resolve(context).decoration as BoxDecoration?;
 
         expect(decoration?.color, Colors.red);
         expect(decoration?.border, isNotNull);
@@ -310,17 +309,17 @@ void main() {
         // Each has only its specific constraint
         final context = MockBuildContext();
 
-        expect(minWidth.resolve(context).spec?.constraints?.minWidth, 100.0);
+        expect(minWidth.resolve(context).constraints?.minWidth, 100.0);
         expect(
-          minWidth.resolve(context).spec?.constraints?.maxWidth,
+          minWidth.resolve(context).constraints?.maxWidth,
           double.infinity,
         );
 
-        expect(maxWidth.resolve(context).spec?.constraints?.maxWidth, 200.0);
-        expect(maxWidth.resolve(context).spec?.constraints?.minWidth, 0.0);
+        expect(maxWidth.resolve(context).constraints?.maxWidth, 200.0);
+        expect(maxWidth.resolve(context).constraints?.minWidth, 0.0);
 
-        expect(minHeight.resolve(context).spec?.constraints?.minHeight, 50.0);
-        expect(maxHeight.resolve(context).spec?.constraints?.maxHeight, 150.0);
+        expect(minHeight.resolve(context).constraints?.minHeight, 50.0);
+        expect(maxHeight.resolve(context).constraints?.maxHeight, 150.0);
       });
 
       test('combine constraints with merge or constructor', () {
@@ -332,7 +331,7 @@ void main() {
             .merge(BoxSpecAttribute().maxHeight(150.0));
 
         final context = MockBuildContext();
-        final constraints = merged.resolve(context).spec?.constraints;
+        final constraints = merged.resolve(context).constraints;
         expect(constraints?.minWidth, 100.0);
         expect(constraints?.maxWidth, 200.0);
         expect(constraints?.minHeight, 50.0);
@@ -348,7 +347,7 @@ void main() {
           ),
         );
 
-        final constraints2 = constructed.resolve(context).spec?.constraints;
+        final constraints2 = constructed.resolve(context).constraints;
         expect(constraints2?.minWidth, 100.0);
         expect(constraints2?.maxWidth, 200.0);
         expect(constraints2?.minHeight, 50.0);
@@ -368,14 +367,14 @@ void main() {
         );
 
         final context = MockBuildContext();
-        final resolved = attribute.resolve(context);
+        final spec = attribute.resolve(context);
 
-        expect(resolved.spec, isNotNull);
-        expect(resolved.spec!.width, 100.0);
-        expect(resolved.spec!.height, 200.0);
-        expect(resolved.spec!.alignment, Alignment.center);
-        expect(resolved.spec!.padding, const EdgeInsets.all(16.0));
-        final decoration = resolved.spec!.decoration as BoxDecoration?;
+        expect(spec, isNotNull);
+        expect(spec.width, 100.0);
+        expect(spec.height, 200.0);
+        expect(spec.alignment, Alignment.center);
+        expect(spec.padding, const EdgeInsets.all(16.0));
+        final decoration = spec.decoration as BoxDecoration?;
         expect(decoration?.color, Colors.red);
       });
 
@@ -391,11 +390,11 @@ void main() {
         );
 
         final context = MockBuildContext();
-        final resolved = attribute.resolve(context);
+        final spec = attribute.resolve(context);
 
-        expect(resolved.spec, isNotNull);
+        expect(spec, isNotNull);
         expect(
-          resolved.spec!.padding,
+          spec.padding,
           const EdgeInsets.only(
             top: 10.0,
             bottom: 20.0,
@@ -525,13 +524,13 @@ void main() {
         expect(attribute.clipBehavior, isNotNull);
         expect(attribute.transform, isNotNull);
         expect(attribute.transformAlignment, isNotNull);
-        
+
         // Decoration utilities
         expect(attribute.color, isNotNull);
         expect(attribute.border, isNotNull);
         expect(attribute.borderRadius, isNotNull);
         expect(attribute.shadow, isNotNull);
-        
+
         // Constraint utilities
         expect(attribute.minWidth, isNotNull);
         expect(attribute.maxWidth, isNotNull);
@@ -571,16 +570,15 @@ void main() {
 
       test('builder methods can be chained fluently with merge', () {
         final attribute = BoxSpecAttribute()
-          .width(100.0)
-          .merge(BoxSpecAttribute().height(200.0))
-          .merge(BoxSpecAttribute().color(Colors.red))
-          .merge(BoxSpecAttribute().alignment(Alignment.center));
+            .width(100.0)
+            .merge(BoxSpecAttribute().height(200.0))
+            .merge(BoxSpecAttribute().color(Colors.red))
+            .merge(BoxSpecAttribute().alignment(Alignment.center));
 
         final context = MockBuildContext();
-        final resolved = attribute.resolve(context);
-        final spec = resolved.spec;
+        final spec = attribute.resolve(context);
 
-        expect(spec!.width, 100.0);
+        expect(spec.width, 100.0);
         expect(spec.height, 200.0);
         expect(spec.alignment, Alignment.center);
         final decoration = spec.decoration as BoxDecoration?;
@@ -617,9 +615,9 @@ void main() {
       test('debugFillProperties includes all properties', () {
         // This test verifies that the attribute implements Diagnosticable correctly
         final attribute = BoxSpecAttribute()
-          .width(100.0)
-          .height(200.0)
-          .color(Colors.red);
+            .width(100.0)
+            .height(200.0)
+            .color(Colors.red);
 
         // The presence of debugFillProperties is tested by the framework
         expect(attribute, isA<BoxSpecAttribute>());

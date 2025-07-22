@@ -11,7 +11,6 @@ import '../../attributes/text_style_util.dart';
 import '../../core/animation_config.dart';
 import '../../core/directive.dart';
 import '../../core/helpers.dart';
-import '../../core/mix_element.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import 'text_directives_util.dart';
@@ -24,15 +23,15 @@ import 'text_spec.dart';
 ///
 /// Use this class to configure the attributes of a [TextSpec] and pass it to
 /// the [TextSpec] constructor.
-class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
+class TextSpecAttribute extends SpecStyle<TextSpec> with Diagnosticable {
   final Prop<TextOverflow>? $overflow;
-  final Prop<Mix<StrutStyle>>? $strutStyle;
+  final MixProp<StrutStyle>? $strutStyle;
   final Prop<TextAlign>? $textAlign;
   final Prop<TextScaler>? $textScaler;
   final Prop<int>? $maxLines;
-  final Prop<Mix<TextStyle>>? $style;
+  final MixProp<TextStyle>? $style;
   final Prop<TextWidthBasis>? $textWidthBasis;
-  final Prop<Mix<TextHeightBehavior>>? $textHeightBehavior;
+  final MixProp<TextHeightBehavior>? $textHeightBehavior;
   final Prop<TextDirection>? $textDirection;
   final Prop<bool>? $softWrap;
   final List<Prop<MixDirective<String>>>? $directives;
@@ -166,13 +165,13 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
 
   TextSpecAttribute({
     Prop<TextOverflow>? overflow,
-    Prop<Mix<StrutStyle>>? strutStyle,
+    MixProp<StrutStyle>? strutStyle,
     Prop<TextAlign>? textAlign,
     Prop<TextScaler>? textScaler,
     Prop<int>? maxLines,
-    Prop<Mix<TextStyle>>? style,
+    MixProp<TextStyle>? style,
     Prop<TextWidthBasis>? textWidthBasis,
-    Prop<Mix<TextHeightBehavior>>? textHeightBehavior,
+    MixProp<TextHeightBehavior>? textHeightBehavior,
     Prop<TextDirection>? textDirection,
     Prop<bool>? softWrap,
     List<Prop<MixDirective<String>>>? directives,
@@ -274,7 +273,7 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
   /// final textSpec = TextSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  TextSpec resolveSpec(BuildContext context) {
+  TextSpec resolve(BuildContext context) {
     return TextSpec(
       overflow: MixHelpers.resolve(context, $overflow),
       strutStyle: MixHelpers.resolveMix(context, $strutStyle),

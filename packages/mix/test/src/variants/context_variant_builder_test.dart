@@ -265,12 +265,12 @@ void main() {
       });
 
       test('can work with base SpecAttribute type', () {
-        final builder = ContextVariantBuilder<SpecAttribute>(
+        final builder = ContextVariantBuilder<SpecStyle>(
           (context) => BoxSpecAttribute.only(width: 100.0),
         );
 
         final result = builder.build(MockBuildContext());
-        expect(result, isA<SpecAttribute>());
+        expect(result, isA<SpecStyle>());
         expect(result, isA<BoxSpecAttribute>());
       });
     });

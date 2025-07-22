@@ -6,7 +6,6 @@ import 'package:flutter/widgets.dart';
 import '../attributes/text_height_behavior_mix.dart';
 import '../attributes/text_style_mix.dart';
 import '../core/helpers.dart';
-import '../core/mix_element.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
@@ -156,13 +155,13 @@ final class DefaultTextStyleModifier extends Modifier<DefaultTextStyleModifier>
 /// the [DefaultTextStyleModifier] constructor.
 class DefaultTextStyleModifierAttribute
     extends ModifierAttribute<DefaultTextStyleModifier> {
-  final Prop<Mix<TextStyle>>? style;
+  final MixProp<TextStyle>? style;
   final Prop<TextAlign>? textAlign;
   final Prop<bool>? softWrap;
   final Prop<TextOverflow>? overflow;
   final Prop<int>? maxLines;
   final Prop<TextWidthBasis>? textWidthBasis;
-  final Prop<Mix<TextHeightBehavior>>? textHeightBehavior;
+  final MixProp<TextHeightBehavior>? textHeightBehavior;
 
   const DefaultTextStyleModifierAttribute({
     this.style,
@@ -275,7 +274,7 @@ class DefaultTextStyleModifierSpecTween
   }
 }
 
-final class DefaultTextStyleModifierUtility<T extends SpecAttribute<Object?>>
+final class DefaultTextStyleModifierUtility<T extends SpecStyle<Object?>>
     extends MixUtility<T, DefaultTextStyleModifierAttribute> {
   const DefaultTextStyleModifierUtility(super.builder);
   T call({

@@ -4,7 +4,6 @@ import '../attributes/edge_insets_geometry_mix.dart';
 import '../attributes/edge_insets_geometry_util.dart';
 import '../attributes/scalar_util.dart';
 import '../core/helpers.dart';
-import '../core/mix_element.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
@@ -77,7 +76,7 @@ final class ScrollViewModifier extends Modifier<ScrollViewModifier> {
   }
 }
 
-final class ScrollViewModifierUtility<T extends SpecAttribute<Object?>>
+final class ScrollViewModifierUtility<T extends SpecStyle<Object?>>
     extends MixUtility<T, ScrollViewModifierAttribute> {
   /// Make the scroll view reverse or not.
   late final reverse = BoolUtility((prop) => call(reverse: prop));
@@ -117,7 +116,7 @@ final class ScrollViewModifierUtility<T extends SpecAttribute<Object?>>
   T call({
     Prop<Axis>? scrollDirection,
     Prop<bool>? reverse,
-    Prop<Mix<EdgeInsetsGeometry>>? padding,
+    MixProp<EdgeInsetsGeometry>? padding,
     Prop<ScrollPhysics>? physics,
     Prop<Clip>? clipBehavior,
   }) => builder(
@@ -135,7 +134,7 @@ class ScrollViewModifierAttribute
     extends ModifierAttribute<ScrollViewModifier> {
   final Prop<Axis>? scrollDirection;
   final Prop<bool>? reverse;
-  final Prop<Mix<EdgeInsetsGeometry>>? padding;
+  final MixProp<EdgeInsetsGeometry>? padding;
   final Prop<ScrollPhysics>? physics;
   final Prop<Clip>? clipBehavior;
 

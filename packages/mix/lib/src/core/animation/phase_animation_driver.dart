@@ -10,7 +10,7 @@ import 'animation_driver.dart';
 /// represents a different style configuration.
 class PhaseAnimationDriver<S extends Spec<S>, P> extends AnimationDriver<S> {
   final List<P> phases;
-  final SpecAttribute<S> Function(P phase) phaseBuilder;
+  final SpecStyle<S> Function(P phase) phaseBuilder;
   final Duration duration;
   final Curve curve;
   final bool repeat;
@@ -26,7 +26,7 @@ class PhaseAnimationDriver<S extends Spec<S>, P> extends AnimationDriver<S> {
   @override
   Widget build({
     required BuildContext context,
-    required SpecAttribute<S> style,
+    required SpecStyle<S> style,
     required Widget Function(BuildContext context, ResolvedStyle<S> resolved)
     builder,
   }) {
@@ -54,7 +54,7 @@ class _PhaseAnimationWidget<S extends Spec<S>, P> extends StatefulWidget {
   });
 
   final List<P> phases;
-  final SpecAttribute<S> Function(P phase) phaseBuilder;
+  final SpecStyle<S> Function(P phase) phaseBuilder;
   final Duration duration;
   final Curve curve;
   final bool repeat;
@@ -115,8 +115,8 @@ class _PhaseAnimationWidgetState<S extends Spec<S>, P>
         final currentStyle = widget.phaseBuilder(currentPhase);
         final nextStyle = widget.phaseBuilder(nextPhase);
 
-        final currentResolved = currentStyle.resolve(context);
-        final nextResolved = nextStyle.resolve(context);
+        final currentResolved = currentStyle.build(context);
+        final nextResolved = nextStyle.build(context);
 
         final t = widget.curve.transform(_controller.value);
         final interpolatedResolved = currentResolved.lerp(nextResolved, t);

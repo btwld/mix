@@ -4,7 +4,7 @@ import 'package:mix/mix.dart';
 
 testOverrideModifiersOrder(
   WidgetTester tester, {
-  required Widget Function(Style, List<Type>) widgetBuilder,
+  required Widget Function(SpecStyle, List<Type>) widgetBuilder,
 }) async {
   final style = Style(
     VisibilityModifierAttribute(visible: Prop(true)),
@@ -12,7 +12,9 @@ testOverrideModifiersOrder(
     const TransformModifierAttribute(),
     AspectRatioModifierAttribute(aspectRatio: Prop(2.0)),
     const ClipOvalModifierAttribute(),
-    PaddingModifierAttribute(padding: MixProp(EdgeInsetsDirectionalMix.only(top: 10.0))),
+    PaddingModifierAttribute(
+      padding: MixProp(EdgeInsetsDirectionalMix.only(top: 10.0)),
+    ),
   );
   const orderOfModifiersOnlySpecs = [
     ClipOvalModifier,
@@ -64,15 +66,11 @@ testOverrideModifiersOrder(
 
 Future<void> verifyDescendants(
   Widget widget,
-  Style style,
+  SpecStyle style,
   List<Type> orderOfModifiers,
   WidgetTester tester,
 ) async {
-  await tester.pumpWidget(
-    MaterialApp(
-      home: Scaffold(body: widget),
-    ),
-  );
+  await tester.pumpWidget(MaterialApp(home: Scaffold(body: widget)));
 
   expect(find.byType(widget.runtimeType), findsOneWidget);
 

@@ -15,7 +15,6 @@ import '../../attributes/scalar_util.dart';
 import '../../attributes/shadow_mix.dart';
 import '../../core/animation_config.dart';
 import '../../core/helpers.dart';
-import '../../core/mix_element.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import 'box_spec.dart';
@@ -27,13 +26,13 @@ import 'box_spec.dart';
 ///
 /// Use this class to configure the attributes of a [BoxSpec] and pass it to
 /// the [BoxSpec] constructor.
-class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
+class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
   final Prop<AlignmentGeometry>? $alignment;
-  final Prop<Mix<EdgeInsetsGeometry>>? $padding;
-  final Prop<Mix<EdgeInsetsGeometry>>? $margin;
-  final Prop<Mix<BoxConstraints>>? $constraints;
-  final Prop<Mix<Decoration>>? $decoration;
-  final Prop<Mix<Decoration>>? $foregroundDecoration;
+  final MixProp<EdgeInsetsGeometry>? $padding;
+  final MixProp<EdgeInsetsGeometry>? $margin;
+  final MixProp<BoxConstraints>? $constraints;
+  final MixProp<Decoration>? $decoration;
+  final MixProp<Decoration>? $foregroundDecoration;
   final Prop<Matrix4>? $transform;
   final Prop<AlignmentGeometry>? $transformAlignment;
   final Prop<Clip>? $clipBehavior;
@@ -152,11 +151,11 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
 
   BoxSpecAttribute({
     Prop<AlignmentGeometry>? alignment,
-    Prop<Mix<EdgeInsetsGeometry>>? padding,
-    Prop<Mix<EdgeInsetsGeometry>>? margin,
-    Prop<Mix<BoxConstraints>>? constraints,
-    Prop<Mix<Decoration>>? decoration,
-    Prop<Mix<Decoration>>? foregroundDecoration,
+    MixProp<EdgeInsetsGeometry>? padding,
+    MixProp<EdgeInsetsGeometry>? margin,
+    MixProp<BoxConstraints>? constraints,
+    MixProp<Decoration>? decoration,
+    MixProp<Decoration>? foregroundDecoration,
     Prop<Matrix4>? transform,
     Prop<AlignmentGeometry>? transformAlignment,
     Prop<Clip>? clipBehavior,
@@ -279,7 +278,7 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
   /// final boxSpec = BoxSpecAttribute(...).resolve(mix);
   /// ```
   @override
-  BoxSpec resolveSpec(BuildContext context) {
+  BoxSpec resolve(BuildContext context) {
     return BoxSpec(
       alignment: MixHelpers.resolve(context, $alignment),
       padding: MixHelpers.resolveMix(context, $padding),

@@ -8,7 +8,7 @@ import '../theme/tokens/mix_token.dart';
 import 'material_colors_util.dart';
 
 /// Mixin that provides color directive methods
-mixin ColorDirectiveMixin<T extends SpecAttribute<Object?>>
+mixin ColorDirectiveMixin<T extends SpecStyle<Object?>>
     on PropUtility<T, Color> {
   // All directive methods use the directive() method from PropUtility
   T withOpacity(double opacity) => directive(OpacityColorDirective(opacity));
@@ -32,7 +32,7 @@ mixin ColorDirectiveMixin<T extends SpecAttribute<Object?>>
 
 /// Utility for predefined colors (e.g., Colors.red)
 @immutable
-class FoundationColorUtility<T extends SpecAttribute<Object?>>
+class FoundationColorUtility<T extends SpecStyle<Object?>>
     extends PropUtility<T, Color>
     with ColorDirectiveMixin<T> {
   final Color color;
@@ -43,7 +43,7 @@ class FoundationColorUtility<T extends SpecAttribute<Object?>>
 /// This utility can be called as a function to return a StyleElement,
 /// or accessed as a property to get the Color value.
 @immutable
-class CallableColorUtility<T extends SpecAttribute<Object?>> {
+class CallableColorUtility<T extends SpecStyle<Object?>> {
   final T Function(Prop<Color>) builder;
   final Color color;
 
@@ -83,7 +83,7 @@ class CallableColorUtility<T extends SpecAttribute<Object?>> {
 
 /// Simplified ColorUtility using the PropUtility pattern
 @immutable
-final class ColorUtility<T extends SpecAttribute<Object?>>
+final class ColorUtility<T extends SpecStyle<Object?>>
     extends PropUtility<T, Color>
     with ColorDirectiveMixin<T>, ColorsUtilityMixin<T>, BasicColorsMixin<T> {
   ColorUtility(super.builder);
@@ -93,8 +93,7 @@ final class ColorUtility<T extends SpecAttribute<Object?>>
   T ref(MixToken<Color> ref) => token(ref);
 }
 
-mixin BasicColorsMixin<T extends SpecAttribute<Object?>>
-    on PropUtility<T, Color> {
+mixin BasicColorsMixin<T extends SpecStyle<Object?>> on PropUtility<T, Color> {
   late final transparent = CallableColorUtility(builder, Colors.transparent);
 
   late final black = CallableColorUtility(builder, Colors.black);

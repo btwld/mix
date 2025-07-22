@@ -119,7 +119,7 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
   ];
 }
 
-class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
+class IconSpecAttribute extends SpecStyle<IconSpec> with Diagnosticable {
   final Prop<Color>? $color;
   final Prop<double>? $size;
   final Prop<double>? $weight;
@@ -229,7 +229,7 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
   }
 
   @override
-  IconSpec resolveSpec(BuildContext context) {
+  IconSpec resolve(BuildContext context) {
     return IconSpec(
       color: MixHelpers.resolve(context, $color),
       size: MixHelpers.resolve(context, $size),

@@ -1,6 +1,3 @@
-import '../core/mix_element.dart';
-import '../core/prop.dart';
-
 /// Extension on [int] to create [Duration] objects with convenient syntax.
 ///
 /// Example:
@@ -47,17 +44,4 @@ extension MixDurationInt on int {
 
   /// Short form for [microseconds].
   Duration get us => Duration(microseconds: this);
-}
-
-extension MixExt<T> on Mix<T> {
-  Prop<Mix<T>> toProp() {
-    return Prop(this);
-  }
-}
-
-extension ObjectExt<T> on T {
-  /// Converts any object to a [MixProp] with the given [context].
-  Prop<T> toProp() {
-    return Prop(this);
-  }
 }

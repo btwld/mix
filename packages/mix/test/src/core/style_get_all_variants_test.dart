@@ -46,7 +46,7 @@ void main() {
 
         // The result should have applied all variants
         // WidgetStateVariant (width: 300) should have been applied last
-        final spec = result.resolveSpec(context);
+        final spec = result.resolve(context);
         expect((spec.resolvedValue as Map)['width'], 300.0);
       });
 
@@ -70,18 +70,14 @@ void main() {
 
         final testAttribute = _MockSpecAttribute(
           width: 50.0,
-          variants: [
-            hoveredVarAttr,
-            pressedVarAttr,
-            focusedVarAttr,
-          ],
+          variants: [hoveredVarAttr, pressedVarAttr, focusedVarAttr],
         );
 
         final context = MockBuildContext();
         final result = testAttribute.getAllStyleVariants(context);
 
         // All WidgetStateVariants should be applied, with focused (300) last
-        final spec = result.resolveSpec(context);
+        final spec = result.resolve(context);
         expect((spec.resolvedValue as Map)['width'], 300.0);
       });
 
@@ -127,11 +123,15 @@ void main() {
         final context = MockBuildContext();
         final result = testAttribute.getAllStyleVariants(
           context,
-          namedVariants: {namedVariant, const NamedVariant('multi1'), const NamedVariant('multi2')},
+          namedVariants: {
+            namedVariant,
+            const NamedVariant('multi1'),
+            const NamedVariant('multi2'),
+          },
         );
 
         // WidgetStateVariant2 (width: 300) should be applied last
-        final spec = result.resolveSpec(context);
+        final spec = result.resolve(context);
         expect((spec.resolvedValue as Map)['width'], 300.0);
       });
 
@@ -150,14 +150,8 @@ void main() {
             contextVariant2,
             _MockSpecAttribute(width: 200.0),
           ),
-          VariantSpecAttribute(
-            namedVariant1,
-            _MockSpecAttribute(width: 300.0),
-          ),
-          VariantSpecAttribute(
-            namedVariant2,
-            _MockSpecAttribute(width: 400.0),
-          ),
+          VariantSpecAttribute(namedVariant1, _MockSpecAttribute(width: 300.0)),
+          VariantSpecAttribute(namedVariant2, _MockSpecAttribute(width: 400.0)),
         ];
 
         final testAttribute = _MockSpecAttribute(
@@ -172,7 +166,7 @@ void main() {
         );
 
         // All should be treated equally, last one applied (namedVariant2: 400)
-        final spec = result.resolveSpec(context);
+        final spec = result.resolve(context);
         expect((spec.resolvedValue as Map)['width'], 400.0);
       });
     });
@@ -181,11 +175,13 @@ void main() {
       test('ContextVariant evaluation with context conditions', () {
         // Context variant that checks screen width
         final mobileVariant = ContextVariant('mobile', (context) {
-          final size = MediaQuery.maybeOf(context)?.size ?? const Size(800, 600);
+          final size =
+              MediaQuery.maybeOf(context)?.size ?? const Size(800, 600);
           return size.width <= 768;
         });
         final desktopVariant = ContextVariant('desktop', (context) {
-          final size = MediaQuery.maybeOf(context)?.size ?? const Size(800, 600);
+          final size =
+              MediaQuery.maybeOf(context)?.size ?? const Size(800, 600);
           return size.width > 768;
         });
 
@@ -208,7 +204,7 @@ void main() {
         final result = testAttribute.getAllStyleVariants(context);
 
         // Desktop variant should apply (width: 200)
-        final spec = result.resolveSpec(context);
+        final spec = result.resolve(context);
         expect((spec.resolvedValue as Map)['width'], 200.0);
       });
 
@@ -242,7 +238,7 @@ void main() {
         );
 
         // Secondary variant should apply last (width: 200)
-        final spec = result.resolveSpec(context);
+        final spec = result.resolve(context);
         expect((spec.resolvedValue as Map)['width'], 200.0);
       });
 
@@ -265,7 +261,7 @@ void main() {
         final result = testAttribute.getAllStyleVariants(context);
 
         // ContextVariantBuilder variant should apply (width: 100)
-        final spec = result.resolveSpec(context);
+        final spec = result.resolve(context);
         expect((spec.resolvedValue as Map)['width'], 100.0);
       });
 
@@ -294,7 +290,7 @@ void main() {
         );
 
         // No variants should apply, base width remains
-        final spec = result.resolveSpec(context);
+        final spec = result.resolve(context);
         expect((spec.resolvedValue as Map)['width'], 50.0);
       });
     });
@@ -323,37 +319,31 @@ void main() {
         final result = testAttribute.getAllStyleVariants(context);
 
         // WidgetStateVariant should override width, but context variant height remains
-        final spec = result.resolveSpec(context);
+        final spec = result.resolve(context);
         expect((spec.resolvedValue as Map)['width'], 300.0);
         expect((spec.resolvedValue as Map)['height'], 200.0);
       });
 
       test('empty variants list returns original attribute', () {
-        final testAttribute = _MockSpecAttribute(
-          width: 100.0,
-          variants: [],
-        );
+        final testAttribute = _MockSpecAttribute(width: 100.0, variants: []);
 
         final context = MockBuildContext();
         final result = testAttribute.getAllStyleVariants(context);
 
         // Should return original attribute unchanged
-        final spec = result.resolveSpec(context);
+        final spec = result.resolve(context);
         expect((spec.resolvedValue as Map)['width'], 100.0);
         expect(identical(result, testAttribute), isTrue);
       });
 
       test('null variants list returns original attribute', () {
-        final testAttribute = _MockSpecAttribute(
-          width: 100.0,
-          variants: null,
-        );
+        final testAttribute = _MockSpecAttribute(width: 100.0, variants: null);
 
         final context = MockBuildContext();
         final result = testAttribute.getAllStyleVariants(context);
 
         // Should return original attribute unchanged
-        final spec = result.resolveSpec(context);
+        final spec = result.resolve(context);
         expect((spec.resolvedValue as Map)['width'], 100.0);
         expect(identical(result, testAttribute), isTrue);
       });
@@ -374,10 +364,7 @@ void main() {
         );
 
         final varAttrs = [
-          VariantSpecAttribute(
-            multiVariant,
-            _MockSpecAttribute(width: 100.0),
-          ),
+          VariantSpecAttribute(multiVariant, _MockSpecAttribute(width: 100.0)),
           VariantSpecAttribute(
             contextVariant,
             _MockSpecAttribute(width: 200.0),
@@ -386,10 +373,7 @@ void main() {
             widgetStateVariant,
             _MockSpecAttribute(width: 300.0),
           ), // Highest priority
-          VariantSpecAttribute(
-            namedVariant,
-            _MockSpecAttribute(width: 400.0),
-          ),
+          VariantSpecAttribute(namedVariant, _MockSpecAttribute(width: 400.0)),
           VariantSpecAttribute(
             contextBuilder,
             _MockSpecAttribute(width: 500.0),
@@ -408,7 +392,7 @@ void main() {
         );
 
         // WidgetStateVariant should have highest priority (width: 300)
-        final spec = result.resolveSpec(context);
+        final spec = result.resolve(context);
         expect((spec.resolvedValue as Map)['width'], 300.0);
       });
 
@@ -433,7 +417,10 @@ void main() {
           ),
           VariantSpecAttribute(
             disabledVariant,
-            _MockSpecAttribute(width: 0.0, height: 400.0), // Only overrides height
+            _MockSpecAttribute(
+              width: 0.0,
+              height: 400.0,
+            ), // Only overrides height
           ),
         ];
 
@@ -447,7 +434,7 @@ void main() {
         final result = testAttribute.getAllStyleVariants(context);
 
         // Last merged properties: width from focused (300), height from disabled (400)
-        final spec = result.resolveSpec(context);
+        final spec = result.resolve(context);
         expect((spec.resolvedValue as Map)['width'], 300.0);
         expect((spec.resolvedValue as Map)['height'], 400.0);
       });
@@ -470,7 +457,7 @@ void main() {
         final result = testAttribute.getAllStyleVariants(context);
 
         // Base width preserved, variant height applied
-        final spec = result.resolveSpec(context);
+        final spec = result.resolve(context);
         expect((spec.resolvedValue as Map)['width'], 100.0);
         expect((spec.resolvedValue as Map)['height'], 200.0);
       });
@@ -493,16 +480,19 @@ void main() {
 
         final context = MockBuildContext();
         final stopwatch = Stopwatch()..start();
-        
+
         final result = testAttribute.getAllStyleVariants(context);
-        
+
         stopwatch.stop();
         expect(stopwatch.elapsedMilliseconds, lessThan(100));
-        final spec = result.resolveSpec(context);
+        final spec = result.resolve(context);
         // Since all ContextVariants match (return true), they merge sequentially
         // The base width is 0.0, and variants with width 0.0 won't override it
         // So we need to check what actually gets merged
-        expect((spec.resolvedValue as Map)['width'], isA<double>()); // Some variant applied
+        expect(
+          (spec.resolvedValue as Map)['width'],
+          isA<double>(),
+        ); // Some variant applied
       });
 
       test('handles empty context with no matching variants', () {
@@ -514,10 +504,7 @@ void main() {
             contextVariant,
             _MockSpecAttribute(width: 100.0),
           ),
-          VariantSpecAttribute(
-            namedVariant,
-            _MockSpecAttribute(width: 200.0),
-          ),
+          VariantSpecAttribute(namedVariant, _MockSpecAttribute(width: 200.0)),
         ];
 
         final testAttribute = _MockSpecAttribute(
@@ -532,7 +519,7 @@ void main() {
         );
 
         // No variants should match, original width preserved
-        final spec = result.resolveSpec(context);
+        final spec = result.resolve(context);
         expect((spec.resolvedValue as Map)['width'], 50.0);
       });
 
@@ -565,11 +552,14 @@ void main() {
         final context = MockBuildContext();
         final result = testAttribute.getAllStyleVariants(
           context,
-          namedVariants: {const NamedVariant('named1'), const NamedVariant('named2')},
+          namedVariants: {
+            const NamedVariant('named1'),
+            const NamedVariant('named2'),
+          },
         );
 
         // Should maintain original order, last applied is named2 (400)
-        final spec = result.resolveSpec(context);
+        final spec = result.resolve(context);
         expect((spec.resolvedValue as Map)['width'], 400.0);
       });
     });
@@ -581,14 +571,8 @@ void main() {
         final pressVariant = _MockWidgetStateVariant();
 
         final varAttrs = [
-          VariantSpecAttribute(
-            hoverVariant,
-            _MockSpecAttribute(width: 100.0),
-          ),
-          VariantSpecAttribute(
-            pressVariant,
-            _MockSpecAttribute(width: 200.0),
-          ),
+          VariantSpecAttribute(hoverVariant, _MockSpecAttribute(width: 100.0)),
+          VariantSpecAttribute(pressVariant, _MockSpecAttribute(width: 200.0)),
         ];
 
         final testAttribute = _MockSpecAttribute(
@@ -600,7 +584,7 @@ void main() {
         final result = testAttribute.getAllStyleVariants(context);
 
         // Press variant (last) should apply
-        final spec = result.resolveSpec(context);
+        final spec = result.resolve(context);
         expect((spec.resolvedValue as Map)['width'], 200.0);
       });
 
@@ -612,7 +596,7 @@ void main() {
             _MockSpecAttribute(width: 100.0),
           ),
           VariantSpecAttribute(
-            _MockWidgetStateVariant(), // Mock press variant  
+            _MockWidgetStateVariant(), // Mock press variant
             _MockSpecAttribute(width: 200.0),
           ),
         ];
@@ -626,7 +610,7 @@ void main() {
         final result = testAttribute.getAllStyleVariants(context);
 
         // Both are WidgetStateVariants, press (last) should apply
-        final spec = result.resolveSpec(context);
+        final spec = result.resolve(context);
         expect((spec.resolvedValue as Map)['width'], 200.0);
       });
     });
@@ -634,18 +618,14 @@ void main() {
 }
 
 // Test helper class that implements SpecAttribute for testing
-class _MockSpecAttribute extends SpecAttribute<MockSpec> {
+class _MockSpecAttribute extends SpecStyle<MockSpec> {
   final double width;
   final double? height;
 
-  _MockSpecAttribute({
-    required this.width,
-    this.height,
-    super.variants,
-  });
+  _MockSpecAttribute({required this.width, this.height, super.variants});
 
   @override
-  MockSpec resolveSpec(BuildContext context) {
+  MockSpec resolve(BuildContext context) {
     return MockSpec(resolvedValue: {'width': width, 'height': height});
   }
 

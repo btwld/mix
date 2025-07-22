@@ -15,7 +15,7 @@ import 'stack_box_spec.dart';
 ///   - [inherit]: Determines whether the [ZBox] should inherit styles from its ancestors.
 ///     Inherits from [StyleWidget].
 ///   - [key]: The key for the widget. Inherits from [StyleWidget].
-///   - [style]: The [Style] to be applied. Inherits from [StyleWidget].
+///   - [style]: The [SpecStyle] to be applied. Inherits from [StyleWidget].
 class ZBox extends StyleWidget<ZBoxSpec> {
   const ZBox({
     super.style,

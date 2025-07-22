@@ -15,7 +15,10 @@ void main() {
       });
 
       test('self returns the same singleton instance', () {
-        expect(OnContextVariantUtility.self, same(OnContextVariantUtility.self));
+        expect(
+          OnContextVariantUtility.self,
+          same(OnContextVariantUtility.self),
+        );
         expect(OnContextVariantUtility.self, isA<OnContextVariantUtility>());
         expect(OnContextVariantUtility.self, equals(utility));
       });
@@ -23,9 +26,12 @@ void main() {
       test('multiple const instances are identical', () {
         const utility1 = OnContextVariantUtility();
         const utility2 = OnContextVariantUtility();
-        
+
         expect(utility1, equals(utility2));
-        expect(identical(utility1, utility2), isTrue); // Const constructor creates identical instances
+        expect(
+          identical(utility1, utility2),
+          isTrue,
+        ); // Const constructor creates identical instances
       });
     });
 
@@ -89,7 +95,7 @@ void main() {
       test('widget state builders return consistent builders', () {
         final hover1 = utility.hover;
         final hover2 = utility.hover;
-        
+
         // Verify they are both VariantAttributeBuilders wrapping the same variant type
         expect(hover1, isA<VariantAttributeBuilder>());
         expect(hover2, isA<VariantAttributeBuilder>());
@@ -111,7 +117,7 @@ void main() {
       test('dark and light are different builders', () {
         final dark = utility.dark;
         final light = utility.light;
-        
+
         expect(identical(dark, light), isFalse);
       });
     });
@@ -130,7 +136,7 @@ void main() {
       test('portrait and landscape are different builders', () {
         final portrait = utility.portrait;
         final landscape = utility.landscape;
-        
+
         expect(identical(portrait, landscape), isFalse);
       });
     });
@@ -153,7 +159,7 @@ void main() {
 
       test('size variants are all different builders', () {
         final sizeBuilders = [utility.mobile, utility.tablet, utility.desktop];
-        
+
         expect(sizeBuilders[0], isNot(same(sizeBuilders[1])));
         expect(sizeBuilders[1], isNot(same(sizeBuilders[2])));
         expect(sizeBuilders[0], isNot(same(sizeBuilders[2])));
@@ -174,7 +180,7 @@ void main() {
       test('ltr and rtl are different builders', () {
         final ltr = utility.ltr;
         final rtl = utility.rtl;
-        
+
         expect(identical(ltr, rtl), isFalse);
       });
     });
@@ -229,30 +235,39 @@ void main() {
         // Check that all builders are different instances
         for (int i = 0; i < platformBuilders.length; i++) {
           for (int j = i + 1; j < platformBuilders.length; j++) {
-            expect(identical(platformBuilders[i], platformBuilders[j]), isFalse);
+            expect(
+              identical(platformBuilders[i], platformBuilders[j]),
+              isFalse,
+            );
           }
         }
       });
     });
 
     group('Breakpoint Variants', () {
-      test('minWidth creates VariantAttributeBuilder with different parameters', () {
-        final builder1 = utility.minWidth(768.0);
-        final builder2 = utility.minWidth(1024.0);
-        
-        expect(builder1, isA<VariantAttributeBuilder>());
-        expect(builder2, isA<VariantAttributeBuilder>());
-        expect(identical(builder1, builder2), isFalse);
-      });
+      test(
+        'minWidth creates VariantAttributeBuilder with different parameters',
+        () {
+          final builder1 = utility.minWidth(768.0);
+          final builder2 = utility.minWidth(1024.0);
 
-      test('maxWidth creates VariantAttributeBuilder with different parameters', () {
-        final builder1 = utility.maxWidth(1024.0);
-        final builder2 = utility.maxWidth(768.0);
-        
-        expect(builder1, isA<VariantAttributeBuilder>());
-        expect(builder2, isA<VariantAttributeBuilder>());
-        expect(identical(builder1, builder2), isFalse);
-      });
+          expect(builder1, isA<VariantAttributeBuilder>());
+          expect(builder2, isA<VariantAttributeBuilder>());
+          expect(identical(builder1, builder2), isFalse);
+        },
+      );
+
+      test(
+        'maxWidth creates VariantAttributeBuilder with different parameters',
+        () {
+          final builder1 = utility.maxWidth(1024.0);
+          final builder2 = utility.maxWidth(768.0);
+
+          expect(builder1, isA<VariantAttributeBuilder>());
+          expect(builder2, isA<VariantAttributeBuilder>());
+          expect(identical(builder1, builder2), isFalse);
+        },
+      );
 
       test('widthRange creates VariantAttributeBuilder', () {
         final builder = utility.widthRange(768.0, 1024.0);
@@ -277,7 +292,7 @@ void main() {
       test('same parameters create functionally equivalent builders', () {
         final builder1 = utility.minWidth(768.0);
         final builder2 = utility.minWidth(768.0);
-        
+
         // Builders with same parameters should work the same way
         expect(builder1, isA<VariantAttributeBuilder>());
         expect(builder2, isA<VariantAttributeBuilder>());
@@ -316,21 +331,24 @@ void main() {
         expect(() => utility.maxWidth(double.maxFinite), returnsNormally);
       });
 
-      test('utility properties create consistent builders on repeated access', () {
-        final hover1 = utility.hover;
-        final hover2 = utility.hover;
-        
-        // Verify they are both VariantAttributeBuilders of same type
-        expect(hover1, isA<VariantAttributeBuilder>());
-        expect(hover2, isA<VariantAttributeBuilder>());
-        // Note: Consistency in behavior matters more than object equality
-      });
+      test(
+        'utility properties create consistent builders on repeated access',
+        () {
+          final hover1 = utility.hover;
+          final hover2 = utility.hover;
+
+          // Verify they are both VariantAttributeBuilders of same type
+          expect(hover1, isA<VariantAttributeBuilder>());
+          expect(hover2, isA<VariantAttributeBuilder>());
+          // Note: Consistency in behavior matters more than object equality
+        },
+      );
     });
 
     group('Performance considerations', () {
       test('utility getter access is efficient', () {
         final stopwatch = Stopwatch()..start();
-        
+
         for (int i = 0; i < 1000; i++) {
           utility.hover;
           utility.press;
@@ -342,20 +360,20 @@ void main() {
           utility.tablet;
           utility.desktop;
         }
-        
+
         stopwatch.stop();
         expect(stopwatch.elapsedMilliseconds, lessThan(50));
       });
 
       test('breakpoint method calls are efficient', () {
         final stopwatch = Stopwatch()..start();
-        
+
         for (int i = 0; i < 1000; i++) {
           utility.minWidth(i.toDouble());
           utility.maxWidth(i.toDouble());
           utility.widthRange(i.toDouble(), (i + 100).toDouble());
         }
-        
+
         stopwatch.stop();
         expect(stopwatch.elapsedMilliseconds, lessThan(100));
       });
@@ -364,7 +382,7 @@ void main() {
     group('Integration patterns', () {
       test('builders can be used as function returns', () {
         VariantAttributeBuilder getBuilder() => utility.hover;
-        
+
         final builder = getBuilder();
         expect(builder, isA<VariantAttributeBuilder>());
       });
@@ -375,7 +393,7 @@ void main() {
           'press': utility.press,
           'mobile': utility.mobile,
         };
-        
+
         expect(storedBuilders['hover'], isA<VariantAttributeBuilder>());
         expect(storedBuilders['press'], isA<VariantAttributeBuilder>());
         expect(storedBuilders['mobile'], isA<VariantAttributeBuilder>());
@@ -384,13 +402,13 @@ void main() {
       test('utility works in different contexts', () {
         // Test that the utility works consistently across different usage patterns
         final builders = <VariantAttributeBuilder>[];
-        
+
         // Direct access
         builders.add(utility.hover);
-        
+
         // Method call
         builders.add(utility.minWidth(768.0));
-        
+
         // All should be valid VariantAttributeBuilder instances
         for (final builder in builders) {
           expect(builder, isA<VariantAttributeBuilder>());
@@ -404,7 +422,7 @@ void main() {
         final mobile = utility.maxWidth(767.0);
         final tablet = utility.widthRange(768.0, 1023.0);
         final desktop = utility.minWidth(1024.0);
-        
+
         expect(mobile, isA<VariantAttributeBuilder>());
         expect(tablet, isA<VariantAttributeBuilder>());
         expect(desktop, isA<VariantAttributeBuilder>());
@@ -418,7 +436,7 @@ void main() {
       test('demonstrates platform-specific styling pattern', () {
         final iosVariant = utility.ios;
         final webVariant = utility.web;
-        
+
         expect(iosVariant, isA<VariantAttributeBuilder>());
         expect(webVariant, isA<VariantAttributeBuilder>());
       });
@@ -430,19 +448,15 @@ void main() {
           utility.focus,
           utility.disabled,
         ];
-        
+
         for (final state in interactionStates) {
           expect(state, isA<VariantAttributeBuilder>());
         }
       });
 
       test('demonstrates size-based responsive design pattern', () {
-        final sizeVariants = [
-          utility.mobile,
-          utility.tablet,
-          utility.desktop,
-        ];
-        
+        final sizeVariants = [utility.mobile, utility.tablet, utility.desktop];
+
         for (final variant in sizeVariants) {
           expect(variant, isA<VariantAttributeBuilder>());
         }
@@ -461,7 +475,7 @@ void main() {
           utility.error,
           utility.enabled,
         ];
-        
+
         for (final util in widgetStateUtils) {
           expect(util, isA<VariantAttributeBuilder>());
         }
@@ -477,7 +491,7 @@ void main() {
           utility.fuchsia,
           utility.web,
         ];
-        
+
         for (final util in platformUtils) {
           expect(util, isA<VariantAttributeBuilder>());
         }
@@ -495,7 +509,7 @@ void main() {
           utility.ltr,
           utility.rtl,
         ];
-        
+
         for (final util in contextUtils) {
           expect(util, isA<VariantAttributeBuilder>());
         }
@@ -510,7 +524,7 @@ void main() {
           utility.maxHeight(400.0),
           utility.heightRange(300.0, 400.0),
         ];
-        
+
         for (final util in parametricUtils) {
           expect(util, isA<VariantAttributeBuilder>());
         }
@@ -531,11 +545,23 @@ void main() {
         final contextVariant = ContextVariant('test', (context) => true);
         final widgetStateVariant = WidgetStateVariant(WidgetState.hovered);
         final multiVariant = MultiVariant.and([namedVariant, contextVariant]);
-        
-        expect(VariantAttributeBuilder(namedVariant), isA<VariantAttributeBuilder>());
-        expect(VariantAttributeBuilder(contextVariant), isA<VariantAttributeBuilder>());
-        expect(VariantAttributeBuilder(widgetStateVariant), isA<VariantAttributeBuilder>());
-        expect(VariantAttributeBuilder(multiVariant), isA<VariantAttributeBuilder>());
+
+        expect(
+          VariantAttributeBuilder(namedVariant),
+          isA<VariantAttributeBuilder>(),
+        );
+        expect(
+          VariantAttributeBuilder(contextVariant),
+          isA<VariantAttributeBuilder>(),
+        );
+        expect(
+          VariantAttributeBuilder(widgetStateVariant),
+          isA<VariantAttributeBuilder>(),
+        );
+        expect(
+          VariantAttributeBuilder(multiVariant),
+          isA<VariantAttributeBuilder>(),
+        );
       });
 
       test('maintains const constructor behavior', () {
@@ -550,7 +576,7 @@ void main() {
         const builder1 = VariantAttributeBuilder(variant);
         const builder2 = VariantAttributeBuilder(variant);
         const builder3 = VariantAttributeBuilder(NamedVariant('other'));
-        
+
         expect(builder1, equals(builder2));
         expect(builder1, isNot(equals(builder3)));
       });
@@ -559,7 +585,7 @@ void main() {
         const variant = NamedVariant('test');
         const builder1 = VariantAttributeBuilder(variant);
         const builder2 = VariantAttributeBuilder(variant);
-        
+
         expect(builder1.hashCode, equals(builder2.hashCode));
         expect(builder1.hashCode, equals(variant.hashCode));
       });
@@ -567,7 +593,7 @@ void main() {
       test('toString provides meaningful representation', () {
         const variant = NamedVariant('primary');
         const builder = VariantAttributeBuilder(variant);
-        
+
         final stringRep = builder.toString();
         expect(stringRep, contains('VariantAttributeBuilder'));
         expect(stringRep, contains('primary'));
@@ -576,10 +602,10 @@ void main() {
       test('different variant types create different builders', () {
         const namedVariant = NamedVariant('test');
         final contextVariant = ContextVariant('test', (context) => true);
-        
+
         const namedBuilder = VariantAttributeBuilder(namedVariant);
         final contextBuilder = VariantAttributeBuilder(contextVariant);
-        
+
         expect(namedBuilder, isNot(equals(contextBuilder)));
         expect(namedBuilder.hashCode, isNot(equals(contextBuilder.hashCode)));
       });
@@ -589,19 +615,19 @@ void main() {
       test('works with utility-created builders', () {
         const utility = OnContextVariantUtility();
         final hoverBuilder = utility.hover;
-        
+
         expect(hoverBuilder, isA<VariantAttributeBuilder>());
       });
 
       test('can be stored in collections', () {
         const variant1 = NamedVariant('test1');
         const variant2 = NamedVariant('test2');
-        
+
         final builders = [
           const VariantAttributeBuilder(variant1),
           const VariantAttributeBuilder(variant2),
         ];
-        
+
         expect(builders, hasLength(2));
         expect(builders.first, isA<VariantAttributeBuilder>());
         expect(builders.last, isA<VariantAttributeBuilder>());
@@ -613,73 +639,73 @@ void main() {
         const variant = NamedVariant('primary');
         const builder = VariantAttributeBuilder(variant);
         final attribute = UtilityTestAttribute<double>(100.0);
-        
+
         final result = builder.call(attribute);
-        
+
         expect(result, isA<VariantSpecAttribute<MultiSpec>>());
         expect(result.variant, same(variant));
-        expect(result.value, isA<Style>());
+        expect(result.value, isA<SpecStyle>());
       });
 
-      test('call method creates VariantSpecAttribute with multiple elements', () {
-        const variant = NamedVariant('primary');
-        const builder = VariantAttributeBuilder(variant);
-        final attr1 = UtilityTestAttribute<double>(100.0);
-        final attr2 = UtilityTestAttribute<String>('test');
-        
-        final result = builder.call(attr1, attr2);
-        
-        expect(result, isA<VariantSpecAttribute<MultiSpec>>());
-        expect(result.variant, same(variant));
-        expect(result.value, isA<Style>());
-      });
+      test(
+        'call method creates VariantSpecAttribute with multiple elements',
+        () {
+          const variant = NamedVariant('primary');
+          const builder = VariantAttributeBuilder(variant);
+          final attr1 = UtilityTestAttribute<double>(100.0);
+          final attr2 = UtilityTestAttribute<String>('test');
+
+          final result = builder.call(attr1, attr2);
+
+          expect(result, isA<VariantSpecAttribute<MultiSpec>>());
+          expect(result.variant, same(variant));
+          expect(result.value, isA<SpecStyle>());
+        },
+      );
 
       test('call method works with utility-created builders', () {
         const utility = OnContextVariantUtility();
         final hoverBuilder = utility.hover;
         final attribute = UtilityTestAttribute<double>(200.0);
-        
+
         final result = hoverBuilder.call(attribute);
-        
+
         expect(result, isA<VariantSpecAttribute<MultiSpec>>());
-        expect(result.value, isA<Style>());
+        expect(result.value, isA<SpecStyle>());
       });
 
       test('call method preserves variant information', () {
         final contextVariant = ContextVariant('hover', (context) => true);
         final builder = VariantAttributeBuilder(contextVariant);
         final attribute = UtilityTestAttribute<String>('test');
-        
+
         final result = builder.call(attribute);
-        
+
         expect(result, isA<VariantSpecAttribute<MultiSpec>>());
         expect(result.variant, same(contextVariant));
-        expect(result.value, isA<Style>());
+        expect(result.value, isA<SpecStyle>());
       });
 
       test('call method throws error with no elements', () {
         const variant = NamedVariant('test');
         const builder = VariantAttributeBuilder(variant);
-        
-        expect(
-          () => builder.call(),
-          throwsA(isA<ArgumentError>()),
-        );
+
+        expect(() => builder.call(), throwsA(isA<ArgumentError>()));
       });
 
       test('call method supports usage pattern like README examples', () {
         const utility = OnContextVariantUtility();
         final darkBuilder = utility.dark;
-        
+
         // Simulate: $on.dark($box.color.white(), $text.style.color.black())
         final boxAttr = UtilityTestAttribute<String>('white');
         final textAttr = UtilityTestAttribute<String>('black');
-        
+
         final result = darkBuilder.call(boxAttr, textAttr);
-        
+
         expect(result, isA<VariantSpecAttribute<MultiSpec>>());
         expect(result.variant, equals(darkBuilder.variant));
-        expect(result.value, isA<Style>());
+        expect(result.value, isA<SpecStyle>());
       });
     });
 
@@ -687,11 +713,11 @@ void main() {
       test('creation is efficient', () {
         const variant = NamedVariant('test');
         final stopwatch = Stopwatch()..start();
-        
+
         for (int i = 0; i < 1000; i++) {
           const VariantAttributeBuilder(variant);
         }
-        
+
         stopwatch.stop();
         expect(stopwatch.elapsedMilliseconds, lessThan(10));
       });
@@ -701,11 +727,11 @@ void main() {
         const builder1 = VariantAttributeBuilder(variant);
         const builder2 = VariantAttributeBuilder(variant);
         final stopwatch = Stopwatch()..start();
-        
+
         for (int i = 0; i < 1000; i++) {
           builder1 == builder2;
         }
-        
+
         stopwatch.stop();
         expect(stopwatch.elapsedMilliseconds, lessThan(5));
       });
@@ -714,11 +740,11 @@ void main() {
         const variant = NamedVariant('test');
         const builder = VariantAttributeBuilder(variant);
         final stopwatch = Stopwatch()..start();
-        
+
         for (int i = 0; i < 1000; i++) {
           builder.hashCode;
         }
-        
+
         stopwatch.stop();
         expect(stopwatch.elapsedMilliseconds, lessThan(5));
       });
@@ -729,10 +755,19 @@ void main() {
         const namedVariant = NamedVariant('test');
         final contextVariant = ContextVariant('test', (context) => true);
         final widgetStateVariant = WidgetStateVariant(WidgetState.hovered);
-        
-        expect(VariantAttributeBuilder(namedVariant), isA<VariantAttributeBuilder>());
-        expect(VariantAttributeBuilder(contextVariant), isA<VariantAttributeBuilder>());
-        expect(VariantAttributeBuilder(widgetStateVariant), isA<VariantAttributeBuilder>());
+
+        expect(
+          VariantAttributeBuilder(namedVariant),
+          isA<VariantAttributeBuilder>(),
+        );
+        expect(
+          VariantAttributeBuilder(contextVariant),
+          isA<VariantAttributeBuilder>(),
+        );
+        expect(
+          VariantAttributeBuilder(widgetStateVariant),
+          isA<VariantAttributeBuilder>(),
+        );
       });
 
       test('works with complex variant compositions', () {
@@ -740,9 +775,15 @@ void main() {
         final contextVariant = ContextVariant('test', (context) => true);
         final multiVariant = MultiVariant.and([namedVariant, contextVariant]);
         final notVariant = MultiVariant.not(namedVariant);
-        
-        expect(VariantAttributeBuilder(multiVariant), isA<VariantAttributeBuilder>());
-        expect(VariantAttributeBuilder(notVariant), isA<VariantAttributeBuilder>());
+
+        expect(
+          VariantAttributeBuilder(multiVariant),
+          isA<VariantAttributeBuilder>(),
+        );
+        expect(
+          VariantAttributeBuilder(notVariant),
+          isA<VariantAttributeBuilder>(),
+        );
       });
     });
   });

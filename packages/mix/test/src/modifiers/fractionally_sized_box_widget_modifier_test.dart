@@ -83,7 +83,9 @@ void main() {
         expect(updatedHeight.heightFactor, 0.9);
         expect(updatedHeight.alignment, original.alignment);
 
-        final updatedAlignment = original.copyWith(alignment: Alignment.bottomLeft);
+        final updatedAlignment = original.copyWith(
+          alignment: Alignment.bottomLeft,
+        );
         expect(updatedAlignment.widthFactor, original.widthFactor);
         expect(updatedAlignment.heightFactor, original.heightFactor);
         expect(updatedAlignment.alignment, Alignment.bottomLeft);
@@ -108,8 +110,12 @@ void main() {
       });
 
       test('interpolates alignment correctly', () {
-        const start = FractionallySizedBoxModifier(alignment: Alignment.topLeft);
-        const end = FractionallySizedBoxModifier(alignment: Alignment.bottomRight);
+        const start = FractionallySizedBoxModifier(
+          alignment: Alignment.topLeft,
+        );
+        const end = FractionallySizedBoxModifier(
+          alignment: Alignment.bottomRight,
+        );
         final result = start.lerp(end, 0.5);
 
         expect(result.alignment, const Alignment(0.0, 0.0)); // Center
@@ -210,8 +216,12 @@ void main() {
       });
 
       test('not equal when alignment differs', () {
-        const modifier1 = FractionallySizedBoxModifier(alignment: Alignment.center);
-        const modifier2 = FractionallySizedBoxModifier(alignment: Alignment.topLeft);
+        const modifier1 = FractionallySizedBoxModifier(
+          alignment: Alignment.center,
+        );
+        const modifier2 = FractionallySizedBoxModifier(
+          alignment: Alignment.topLeft,
+        );
 
         expect(modifier1, isNot(equals(modifier2)));
         // Hash codes might be equal due to hash collisions, so we only test inequality
@@ -246,20 +256,23 @@ void main() {
     });
 
     group('build', () {
-      testWidgets('creates FractionallySizedBox widget with default center alignment', (
-        WidgetTester tester,
-      ) async {
-        const modifier = FractionallySizedBoxModifier();
-        const child = SizedBox(width: 50, height: 50);
+      testWidgets(
+        'creates FractionallySizedBox widget with default center alignment',
+        (WidgetTester tester) async {
+          const modifier = FractionallySizedBoxModifier();
+          const child = SizedBox(width: 50, height: 50);
 
-        await tester.pumpWidget(modifier.build(child));
+          await tester.pumpWidget(modifier.build(child));
 
-        final box = tester.widget<FractionallySizedBox>(find.byType(FractionallySizedBox));
-        expect(box.alignment, Alignment.center);
-        expect(box.widthFactor, isNull);
-        expect(box.heightFactor, isNull);
-        expect(box.child, same(child));
-      });
+          final box = tester.widget<FractionallySizedBox>(
+            find.byType(FractionallySizedBox),
+          );
+          expect(box.alignment, Alignment.center);
+          expect(box.widthFactor, isNull);
+          expect(box.heightFactor, isNull);
+          expect(box.child, same(child));
+        },
+      );
 
       testWidgets('creates FractionallySizedBox widget with custom values', (
         WidgetTester tester,
@@ -273,7 +286,9 @@ void main() {
 
         await tester.pumpWidget(modifier.build(child));
 
-        final box = tester.widget<FractionallySizedBox>(find.byType(FractionallySizedBox));
+        final box = tester.widget<FractionallySizedBox>(
+          find.byType(FractionallySizedBox),
+        );
         expect(box.widthFactor, 0.7);
         expect(box.heightFactor, 0.9);
         expect(box.alignment, Alignment.topRight);
@@ -467,10 +482,15 @@ void main() {
   });
 
   group('FractionallySizedBoxModifierUtility', () {
-    late FractionallySizedBoxModifierUtility<UtilityTestAttribute<FractionallySizedBoxModifierAttribute>> utility;
+    late FractionallySizedBoxModifierUtility<
+      UtilityTestAttribute<FractionallySizedBoxModifierAttribute>
+    >
+    utility;
 
     setUp(() {
-      utility = FractionallySizedBoxModifierUtility((attribute) => UtilityTestAttribute(attribute));
+      utility = FractionallySizedBoxModifierUtility(
+        (attribute) => UtilityTestAttribute(attribute),
+      );
     });
 
     test('call() creates attribute with specified values', () {
@@ -503,7 +523,10 @@ void main() {
       expect(attribute1.heightFactor, isNull);
       expect(attribute1.alignment, isNull);
 
-      final result2 = utility.call(heightFactor: 0.3, alignment: Alignment.center);
+      final result2 = utility.call(
+        heightFactor: 0.3,
+        alignment: Alignment.center,
+      );
       final attribute2 = result2.value;
 
       expect(attribute2.widthFactor, isNull);
@@ -525,7 +548,10 @@ void main() {
         alignment: Alignment.bottomRight,
       );
 
-      final tween = FractionallySizedBoxModifierSpecTween(begin: begin, end: end);
+      final tween = FractionallySizedBoxModifierSpecTween(
+        begin: begin,
+        end: end,
+      );
 
       final result0 = tween.lerp(0.0);
       expect(result0.widthFactor, 0.2);
@@ -549,14 +575,20 @@ void main() {
         heightFactor: 0.7,
       );
 
-      final tween = FractionallySizedBoxModifierSpecTween(begin: null, end: end);
+      final tween = FractionallySizedBoxModifierSpecTween(
+        begin: null,
+        end: end,
+      );
 
       final result = tween.lerp(0.5);
       expect(result, same(end));
     });
 
     test('handles both null', () {
-      final tween = FractionallySizedBoxModifierSpecTween(begin: null, end: null);
+      final tween = FractionallySizedBoxModifierSpecTween(
+        begin: null,
+        end: null,
+      );
 
       final result = tween.lerp(0.5);
       expect(result.widthFactor, isNull);
@@ -566,26 +598,29 @@ void main() {
   });
 
   group('Integration tests', () {
-    testWidgets('FractionallySizedBoxModifierAttribute resolves and builds correctly', (
-      WidgetTester tester,
-    ) async {
-      final attribute = FractionallySizedBoxModifierAttribute.only(
-        widthFactor: 0.7,
-        heightFactor: 0.9,
-        alignment: Alignment.topRight,
-      );
+    testWidgets(
+      'FractionallySizedBoxModifierAttribute resolves and builds correctly',
+      (WidgetTester tester) async {
+        final attribute = FractionallySizedBoxModifierAttribute.only(
+          widthFactor: 0.7,
+          heightFactor: 0.9,
+          alignment: Alignment.topRight,
+        );
 
-      final modifier = attribute.resolve(MockBuildContext());
-      const child = SizedBox(width: 100, height: 100);
+        final modifier = attribute.resolve(MockBuildContext());
+        const child = SizedBox(width: 100, height: 100);
 
-      await tester.pumpWidget(modifier.build(child));
+        await tester.pumpWidget(modifier.build(child));
 
-      final box = tester.widget<FractionallySizedBox>(find.byType(FractionallySizedBox));
-      expect(box.widthFactor, 0.7);
-      expect(box.heightFactor, 0.9);
-      expect(box.alignment, Alignment.topRight);
-      expect(box.child, same(child));
-    });
+        final box = tester.widget<FractionallySizedBox>(
+          find.byType(FractionallySizedBox),
+        );
+        expect(box.widthFactor, 0.7);
+        expect(box.heightFactor, 0.9);
+        expect(box.alignment, Alignment.topRight);
+        expect(box.child, same(child));
+      },
+    );
 
     test('Complex merge scenario preserves and overrides correctly', () {
       final base = FractionallySizedBoxModifierAttribute.only(

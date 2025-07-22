@@ -11,13 +11,14 @@ sealed class StyleElement {
   const StyleElement();
 }
 
-abstract class SpecAttribute<S extends Spec<S>> extends Mix<ResolvedStyle<S>>
+abstract class SpecStyle<S extends Spec<S>> extends Mixable<SpecStyle<S>>
     with EqualityMixin
     implements StyleElement {
   final List<VariantSpecAttribute<S>>? variants;
   final List<ModifierAttribute>? modifiers;
   final AnimationConfig? animation;
-  const SpecAttribute({this.variants, this.modifiers, this.animation});
+
+  const SpecStyle({this.variants, this.modifiers, this.animation});
 
   @visibleForTesting
   List<ModifierAttribute>? mergeModifierLists(
@@ -46,7 +47,7 @@ abstract class SpecAttribute<S extends Spec<S>> extends Mix<ResolvedStyle<S>>
   }
 
   @visibleForTesting
-  SpecAttribute<S> getAllStyleVariants(
+  SpecStyle<S> getAllStyleVariants(
     BuildContext context, {
     Set<NamedVariant>? namedVariants,
   }) {
@@ -72,7 +73,7 @@ abstract class SpecAttribute<S extends Spec<S>> extends Mix<ResolvedStyle<S>>
     final variantStyles =
         contextVariants?.map((variantAttr) => variantAttr.value).toList() ?? [];
 
-    SpecAttribute<S> styleData = this;
+    SpecStyle<S> styleData = this;
 
     for (final style in variantStyles) {
       styleData = styleData.merge(style);
@@ -109,14 +110,17 @@ abstract class SpecAttribute<S extends Spec<S>> extends Mix<ResolvedStyle<S>>
 
   /// Resolves this attribute to its concrete value using the provided [BuildContext].
 
-  S resolveSpec(BuildContext context);
+  S resolve(BuildContext context);
 
   /// Merges this attribute with another attribute of the same type.
   @override
-  SpecAttribute<S> merge(covariant SpecAttribute<S>? other);
+  SpecStyle<S> merge(covariant SpecStyle<S>? other);
 
+  /// Default implementation uses runtimeType as the merge key
   @override
-  ResolvedStyle<S> resolve(
+  Object get mergeKey => S;
+
+  ResolvedStyle<S> build(
     BuildContext context, {
     Set<NamedVariant> namedVariants = const {},
   }) {
@@ -125,7 +129,7 @@ abstract class SpecAttribute<S extends Spec<S>> extends Mix<ResolvedStyle<S>>
       namedVariants: namedVariants,
     );
 
-    final resolvedSpec = resolveSpec(context);
+    final resolvedSpec = resolve(context);
     final resolvedAnimation = styleData.animation;
     final resolvedModifiers = styleData.modifiers
         ?.map((modifier) => modifier.resolve(context))
@@ -138,14 +142,9 @@ abstract class SpecAttribute<S extends Spec<S>> extends Mix<ResolvedStyle<S>>
       modifiers: resolvedModifiers,
     );
   }
-
-  /// Default implementation uses runtimeType as the merge key
-  @override
-  Type get mergeKey => S;
 }
 
-abstract class ModifierAttribute<S extends Modifier<S>> extends Mix<S>
-    with EqualityMixin
+abstract class ModifierAttribute<S extends Modifier<S>> extends SpecStyle<S>
     implements StyleElement {
   const ModifierAttribute();
 
@@ -160,15 +159,13 @@ abstract class ModifierAttribute<S extends Modifier<S>> extends Mix<S>
 }
 
 /// Variant wrapper for conditional styling
-final class VariantSpecAttribute<S extends Spec<S>> extends Mixable<S>
-    implements StyleElement {
+final class VariantSpecAttribute<S extends Spec<S>> extends SpecStyle<S> {
   final Variant variant;
-  final SpecAttribute<S> _style;
+  final SpecStyle<S> _style;
 
-  const VariantSpecAttribute(this.variant, SpecAttribute<S> style)
-    : _style = style;
+  const VariantSpecAttribute(this.variant, SpecStyle<S> style) : _style = style;
 
-  SpecAttribute<S> get value => _style;
+  SpecStyle<S> get value => _style;
 
   bool matches(Iterable<Variant> otherVariants) =>
       otherVariants.contains(variant);
@@ -202,6 +199,11 @@ final class VariantSpecAttribute<S extends Spec<S>> extends Mixable<S>
   }
 
   @override
+  S resolve(BuildContext context) {
+    return _style.resolve(context);
+  }
+
+  @override
   VariantSpecAttribute<S> merge(covariant VariantSpecAttribute<S>? other) {
     if (other == null || other.variant != variant) return this;
 
@@ -209,24 +211,17 @@ final class VariantSpecAttribute<S extends Spec<S>> extends Mixable<S>
   }
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is VariantSpecAttribute<S> &&
-          other.variant == variant &&
-          other._style == _style;
+  List<Object?> get props => [variant, _style];
 
   @override
   Object get mergeKey => variant.key;
-
-  @override
-  int get hashCode => Object.hash(variant, _style);
 }
 
-class Style extends SpecAttribute<MultiSpec> {
-  final Map<Type, SpecAttribute> _attributes;
+class Style extends SpecStyle<MultiSpec> {
+  final Map<Object, SpecStyle> _attributes;
 
   Style._({
-    required List<SpecAttribute> attributes,
+    required List<SpecStyle> attributes,
     super.animation,
     super.modifiers,
     super.variants,
@@ -289,26 +284,25 @@ class Style extends SpecAttribute<MultiSpec> {
   /// final style = Style.create([attribute1, attribute2]);
   /// ```
   factory Style.create(Iterable<StyleElement> elements) {
-    final styleList = <SpecAttribute>[];
+    final styleList = <SpecStyle>[];
     final modifierList = <ModifierAttribute>[];
+    final variants = <VariantSpecAttribute>[];
 
     AnimationConfig? animationConfig;
 
     for (final element in elements) {
       switch (element) {
-        case SpecAttribute():
-          // Handle MultiSpecAttribute by merging it later
-          if (element is! Style) {
-            styleList.add(element);
-          }
-
         case VariantSpecAttribute():
-          // VariantSpecAttribute needs to be handled through merge
-          // We'll create a temporary attribute to merge it
+          variants.add(element);
           break;
 
         case ModifierAttribute():
           modifierList.add(element);
+        case SpecStyle():
+          // Handle MultiSpecAttribute by merging it later
+          if (element is! Style) {
+            styleList.add(element);
+          }
       }
     }
 
@@ -334,6 +328,9 @@ class Style extends SpecAttribute<MultiSpec> {
   Style.empty()
     : this._(attributes: [], animation: null, modifiers: null, variants: null);
 
+  /// Returns the list of attributes in this style
+  List<SpecStyle> get attributes => _attributes.values.toList();
+
   Style animate({Duration? duration, Curve? curve}) {
     return Style._(
       attributes: _attributes.values.toList(),
@@ -344,9 +341,9 @@ class Style extends SpecAttribute<MultiSpec> {
   }
 
   @override
-  MultiSpec resolveSpec(BuildContext context) {
+  MultiSpec resolve(BuildContext context) {
     final resolvedSpecs = _attributes.values
-        .map((attr) => attr.resolveSpec(context))
+        .map((attr) => attr.resolve(context))
         .cast<Spec>()
         .toList();
 
@@ -357,7 +354,7 @@ class Style extends SpecAttribute<MultiSpec> {
   Style merge(Style? other) {
     if (other == null) return this;
 
-    final mergedAttributes = <SpecAttribute>[];
+    final mergedAttributes = <SpecStyle>[];
 
     // Get all unique merge keys from both attributes
     final allKeys = {..._attributes.keys, ...other._attributes.keys};

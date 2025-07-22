@@ -106,11 +106,10 @@ void main() {
         );
 
         final context = SpecTestHelper.createMockContext();
-        final resolved = attribute.resolve(context);
-        final spec = resolved.spec;
+        final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec!.box.width, 200.0);
+        expect(spec.box.width, 200.0);
         expect(spec.box.height, 100.0);
         expect(spec.box.alignment, Alignment.center);
         expect(spec.stack.alignment, Alignment.topLeft);
@@ -121,11 +120,10 @@ void main() {
       test('resolves to ZBoxSpec with null properties when not set', () {
         final attribute = StackBoxSpecAttribute();
         final context = SpecTestHelper.createMockContext();
-        final resolved = attribute.resolve(context);
-        final spec = resolved.spec;
+        final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec!.box.width, isNull);
+        expect(spec.box.width, isNull);
         expect(spec.box.height, isNull);
         expect(spec.stack.alignment, isNull);
         expect(spec.stack.fit, isNull);

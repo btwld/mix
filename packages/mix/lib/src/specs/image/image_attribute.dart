@@ -9,7 +9,7 @@ import '../../core/prop.dart';
 import '../../core/style.dart';
 import 'image_spec.dart';
 
-class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
+class ImageSpecAttribute extends SpecStyle<ImageSpec> with Diagnosticable {
   final Prop<double>? $width;
   final Prop<double>? $height;
   final Prop<Color>? $color;
@@ -145,7 +145,7 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
   }
 
   @override
-  ImageSpec resolveSpec(BuildContext context) {
+  ImageSpec resolve(BuildContext context) {
     return ImageSpec(
       width: MixHelpers.resolve(context, $width),
       height: MixHelpers.resolve(context, $height),

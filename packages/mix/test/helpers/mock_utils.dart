@@ -26,7 +26,7 @@ import 'package:mix/mix.dart';
 /// final gradientUtility = GradientUtility(UtilityTestAttribute.new);
 /// final attr = gradientUtility.linear(...);
 /// ```
-final class UtilityTestAttribute<T> extends SpecAttribute<MockSpec> {
+final class UtilityTestAttribute<T> extends SpecStyle<MockSpec> {
   final T value;
 
   const UtilityTestAttribute(this.value);
@@ -93,7 +93,7 @@ final class UtilityTestAttribute<T> extends SpecAttribute<MockSpec> {
   }
 
   @override
-  MockSpec resolveSpec(BuildContext context) {
+  MockSpec resolve(BuildContext context) {
     final resolvedValue = value is Resolvable
         ? (value as Resolvable).resolve(context)
         : value;
@@ -220,7 +220,7 @@ class SpecTestHelper {
   static BuildContext createMockContext() => MockBuildContext();
 
   /// Creates a mock Style for testing attribute resolution
-  static Style createMockStyle() {
+  static SpecStyle createMockStyle() {
     return Style();
   }
 
@@ -277,7 +277,7 @@ class SpecTestHelper {
 /// Enhanced mock infrastructure for testing SpecAttributes
 class AttributeTestHelper {
   /// Helper to test attribute merge functionality
-  static void testAttributeMerge<T extends Spec<T>, A extends SpecAttribute<T>>(
+  static void testAttributeMerge<T extends Spec<T>, A extends SpecStyle<T>>(
     A attr1,
     A attr2,
     bool Function(A result) validator, {
@@ -295,10 +295,10 @@ class AttributeTestHelper {
   /// Helper to test attribute resolution
   static void testAttributeResolution<
     T extends Spec<T>,
-    A extends SpecAttribute<T>
+    A extends SpecStyle<T>
   >(A attribute, bool Function(T spec) validator, {String? description}) {
     final context = SpecTestHelper.createMockContext();
-    final result = attribute.resolveSpec(context);
+    final result = attribute.resolve(context);
     if (!validator(result)) {
       throw AssertionError(
         'Resolution test failed${description != null ? ' ($description)' : ''}: '
@@ -308,10 +308,12 @@ class AttributeTestHelper {
   }
 
   /// Helper to test attribute equality
-  static void testAttributeEquality<
-    T extends Spec<T>,
-    A extends SpecAttribute<T>
-  >(A attr1, A attr2, bool shouldBeEqual, {String? description}) {
+  static void testAttributeEquality<T extends Spec<T>, A extends SpecStyle<T>>(
+    A attr1,
+    A attr2,
+    bool shouldBeEqual, {
+    String? description,
+  }) {
     final areEqual = attr1 == attr2;
     if (areEqual != shouldBeEqual) {
       throw AssertionError(
@@ -322,7 +324,7 @@ class AttributeTestHelper {
   }
 
   /// Helper to test attribute property access
-  static void testAttributeProperty<T, A extends SpecAttribute<dynamic>>(
+  static void testAttributeProperty<T, A extends SpecStyle<dynamic>>(
     A attribute,
     T? Function(A attr) propertyGetter,
     T? expectedValue, {

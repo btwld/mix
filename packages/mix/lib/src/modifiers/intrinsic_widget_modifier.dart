@@ -234,13 +234,13 @@ class IntrinsicWidthModifierSpecTween extends Tween<IntrinsicWidthModifier?> {
   }
 }
 
-final class IntrinsicHeightModifierUtility<T extends SpecAttribute<Object?>>
+final class IntrinsicHeightModifierUtility<T extends SpecStyle<Object?>>
     extends MixUtility<T, IntrinsicHeightModifierAttribute> {
   const IntrinsicHeightModifierUtility(super.builder);
   T call() => builder(const IntrinsicHeightModifierAttribute());
 }
 
-final class IntrinsicWidthModifierUtility<T extends SpecAttribute<Object?>>
+final class IntrinsicWidthModifierUtility<T extends SpecStyle<Object?>>
     extends MixUtility<T, IntrinsicWidthModifierAttribute> {
   const IntrinsicWidthModifierUtility(super.builder);
   T call() => builder(const IntrinsicWidthModifierAttribute());

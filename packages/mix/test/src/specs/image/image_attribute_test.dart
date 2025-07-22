@@ -250,7 +250,7 @@ void main() {
             .colorBlendMode(BlendMode.multiply);
 
         final context = MockBuildContext();
-        final resolved = attribute.resolve(context);
+        final resolved = attribute.build(context);
         final spec = resolved.spec;
 
         expect(spec, isNotNull);
@@ -269,11 +269,10 @@ void main() {
         final attribute = ImageSpecAttribute().width(150.0).fit(BoxFit.contain);
 
         final context = MockBuildContext();
-        final resolved = attribute.resolve(context);
-        final spec = resolved.spec;
+        final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec!.width, 150.0);
+        expect(spec.width, 150.0);
         expect(spec.fit, BoxFit.contain);
         expect(spec.height, isNull);
         expect(spec.color, isNull);
@@ -471,10 +470,9 @@ void main() {
             .color(Colors.blue.withValues(alpha: 0.5));
 
         final context = MockBuildContext();
-        final resolved = attribute.resolve(context);
-        final spec = resolved.spec;
+        final spec = attribute.resolve(context);
 
-        expect(spec!.width, 200.0);
+        expect(spec.width, 200.0);
         expect(spec.height, 300.0);
         expect(spec.fit, BoxFit.contain);
         expect(spec.alignment, Alignment.topCenter);
