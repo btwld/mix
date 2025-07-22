@@ -259,6 +259,11 @@ class TextSpecAttribute extends SpecAttribute<TextSpec> with Diagnosticable {
     return spec != null ? TextSpecAttribute.value(spec) : null;
   }
 
+  /// Convenience method for animating the TextSpec
+  TextSpecAttribute animate(AnimationConfig animation) {
+    return TextSpecAttribute.only(animation: animation);
+  }
+
   /// Resolves to [TextSpec] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the

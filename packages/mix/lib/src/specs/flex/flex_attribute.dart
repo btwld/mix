@@ -26,36 +26,45 @@ class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
   final Prop<Clip>? $clipBehavior;
   final Prop<double>? $gap;
 
+  /// Utility for defining [FlexSpecAttribute.direction]
   final direction = AxisUtility((prop) => FlexSpecAttribute(direction: prop));
 
+  /// Utility for defining [FlexSpecAttribute.mainAxisAlignment]
   final mainAxisAlignment = MainAxisAlignmentUtility(
     (prop) => FlexSpecAttribute(mainAxisAlignment: prop),
   );
 
+  /// Utility for defining [FlexSpecAttribute.crossAxisAlignment]
   final crossAxisAlignment = CrossAxisAlignmentUtility(
     (prop) => FlexSpecAttribute(crossAxisAlignment: prop),
   );
 
+  /// Utility for defining [FlexSpecAttribute.mainAxisSize]
   final mainAxisSize = MainAxisSizeUtility(
     (prop) => FlexSpecAttribute(mainAxisSize: prop),
   );
 
+  /// Utility for defining [FlexSpecAttribute.verticalDirection]
   final verticalDirection = VerticalDirectionUtility(
     (prop) => FlexSpecAttribute(verticalDirection: prop),
   );
 
+  /// Utility for defining [FlexSpecAttribute.textDirection]
   final textDirection = TextDirectionUtility(
     (prop) => FlexSpecAttribute(textDirection: prop),
   );
 
+  /// Utility for defining [FlexSpecAttribute.textBaseline]
   final textBaseline = TextBaselineUtility(
     (prop) => FlexSpecAttribute(textBaseline: prop),
   );
 
+  /// Utility for defining [FlexSpecAttribute.clipBehavior]
   final clipBehavior = ClipUtility(
     (prop) => FlexSpecAttribute(clipBehavior: prop),
   );
 
+  /// Utility for defining [FlexSpecAttribute.gap]
   final gap = DoubleUtility((prop) => FlexSpecAttribute(gap: prop));
 
   FlexSpecAttribute({
@@ -148,6 +157,11 @@ class FlexSpecAttribute extends SpecAttribute<FlexSpec> with Diagnosticable {
   /// Convenience method for setting direction to vertical (column)
   FlexSpecAttribute column() =>
       FlexSpecAttribute.only(direction: Axis.vertical);
+
+  /// Convenience method for animating the FlexSpec
+  FlexSpecAttribute animate(AnimationConfig animation) {
+    return FlexSpecAttribute.only(animation: animation);
+  }
 
   /// Resolves to [FlexSpec] using the provided [MixContext].
   ///

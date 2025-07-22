@@ -20,28 +20,37 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
   final Prop<FilterQuality>? $filterQuality;
   final Prop<BlendMode>? $colorBlendMode;
 
+  /// Utility for defining [ImageSpecAttribute.width]
   final width = DoubleUtility((prop) => ImageSpecAttribute(width: prop));
 
+  /// Utility for defining [ImageSpecAttribute.height]
   final height = DoubleUtility((prop) => ImageSpecAttribute(height: prop));
 
+  /// Utility for defining [ImageSpecAttribute.color]
   final color = ColorUtility((prop) => ImageSpecAttribute(color: prop));
 
+  /// Utility for defining [ImageSpecAttribute.repeat]
   final repeat = ImageRepeatUtility((prop) => ImageSpecAttribute(repeat: prop));
 
+  /// Utility for defining [ImageSpecAttribute.fit]
   final fit = BoxFitUtility((prop) => ImageSpecAttribute(fit: prop));
 
+  /// Utility for defining [ImageSpecAttribute.alignment]
   final alignment = AlignmentGeometryUtility(
     (prop) => ImageSpecAttribute(alignment: prop),
   );
 
+  /// Utility for defining [ImageSpecAttribute.centerSlice]
   final centerSlice = RectUtility(
     (prop) => ImageSpecAttribute(centerSlice: prop),
   );
 
+  /// Utility for defining [ImageSpecAttribute.filterQuality]
   final filterQuality = FilterQualityUtility(
     (prop) => ImageSpecAttribute(filterQuality: prop),
   );
 
+  /// Utility for defining [ImageSpecAttribute.colorBlendMode]
   final colorBlendMode = BlendModeUtility(
     (prop) => ImageSpecAttribute(colorBlendMode: prop),
   );
@@ -128,6 +137,11 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
   /// ```
   static ImageSpecAttribute? maybeValue(ImageSpec? spec) {
     return spec != null ? ImageSpecAttribute.value(spec) : null;
+  }
+
+  /// Convenience method for animating the ImageSpec
+  ImageSpecAttribute animate(AnimationConfig animation) {
+    return ImageSpecAttribute.only(animation: animation);
   }
 
   @override

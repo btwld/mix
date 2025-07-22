@@ -9,17 +9,25 @@ void main() {
     group('Builder Pattern', () {
       test('creates BoxSpecAttribute with all properties using builder', () {
         final attribute = BoxSpecAttribute()
-          .alignment(Alignment.center)
-          .padding.only(top: 8.0)
-          .margin.only(left: 16.0)
-          .constraints.maxWidth(200.0)
-          .decoration.box.color(Colors.red)
-          .foregroundDecoration.box.color(Colors.blue)
-          .transform.value(Matrix4.identity())
-          .transformAlignment(Alignment.topLeft)
-          .clipBehavior(Clip.antiAlias)
-          .width(100.0)
-          .height(200.0);
+            .alignment(Alignment.center)
+            .padding
+            .only(top: 8.0)
+            .margin
+            .only(left: 16.0)
+            .constraints
+            .maxWidth(200.0)
+            .decoration
+            .box
+            .color(Colors.red)
+            .foregroundDecoration
+            .box
+            .color(Colors.blue)
+            .transform
+            .value(Matrix4.identity())
+            .transformAlignment(Alignment.topLeft)
+            .clipBehavior(Clip.antiAlias)
+            .width(100.0)
+            .height(200.0);
 
         expect(attribute.$alignment, hasValue(Alignment.center));
         expect(attribute.$width, hasValue(100.0));
@@ -63,9 +71,9 @@ void main() {
     group('Color and Decoration', () {
       test('color method creates decoration with color', () {
         final attribute = BoxSpecAttribute().decoration.box.color(Colors.red);
-        
+
         expect(attribute.$decoration, isNotNull);
-        
+
         final context = MockBuildContext();
         final resolved = attribute.resolve(context);
         final decoration = resolved.spec.decoration as BoxDecoration?;
@@ -73,12 +81,14 @@ void main() {
       });
 
       test('color merges with existing decoration', () {
-        final attribute = BoxSpecAttribute()
-          .decoration.box.border.all(BorderSideMix.only(width: 2.0))
-          .decoration.box.color(Colors.blue);
-        
+        final attribute = BoxSpecAttribute().decoration.box.border
+            .all(BorderSideMix.only(width: 2.0))
+            .decoration
+            .box
+            .color(Colors.blue);
+
         expect(attribute.$decoration, isNotNull);
-        
+
         final context = MockBuildContext();
         final resolved = attribute.resolve(context);
         expect(resolved.spec, isNotNull);
@@ -92,18 +102,18 @@ void main() {
       test('padding methods create correct EdgeInsets', () {
         final all = BoxSpecAttribute().padding.all(16.0);
         expect(all.$padding, isNotNull);
-        
+
         // Symmetric padding using vertical and horizontal utilities
         final verticalPadding = BoxSpecAttribute().padding.vertical(8.0);
         expect(verticalPadding.$padding, isNotNull);
-        
+
         final horizontalPadding = BoxSpecAttribute().padding.horizontal(16.0);
         expect(horizontalPadding.$padding, isNotNull);
-        
+
         // Individual sides
         final topPadding = BoxSpecAttribute().padding.top(8.0);
         expect(topPadding.$padding, isNotNull);
-        
+
         final leftPadding = BoxSpecAttribute().padding.left(16.0);
         expect(leftPadding.$padding, isNotNull);
       });
@@ -111,18 +121,18 @@ void main() {
       test('margin methods create correct EdgeInsets', () {
         final all = BoxSpecAttribute().margin.all(16.0);
         expect(all.$margin, isNotNull);
-        
+
         // Symmetric margin using vertical and horizontal utilities
         final verticalMargin = BoxSpecAttribute().margin.vertical(8.0);
         expect(verticalMargin.$margin, isNotNull);
-        
+
         final horizontalMargin = BoxSpecAttribute().margin.horizontal(16.0);
         expect(horizontalMargin.$margin, isNotNull);
-        
+
         // Individual sides
         final topMargin = BoxSpecAttribute().margin.top(8.0);
         expect(topMargin.$margin, isNotNull);
-        
+
         final leftMargin = BoxSpecAttribute().margin.left(16.0);
         expect(leftMargin.$margin, isNotNull);
       });
@@ -130,32 +140,28 @@ void main() {
 
     group('Size Constraints', () {
       test('width and height methods set dimensions', () {
-        final attribute = BoxSpecAttribute()
-          .width(100.0)
-          .height(200.0);
-        
+        final attribute = BoxSpecAttribute().width(100.0).height(200.0);
+
         expect(attribute.$width, hasValue(100.0));
         expect(attribute.$height, hasValue(200.0));
       });
 
       test('square dimensions using same value', () {
-        final attribute = BoxSpecAttribute()
-          .width(100.0)
-          .height(100.0);
-        
+        final attribute = BoxSpecAttribute().width(100.0).height(100.0);
+
         expect(attribute.$width, hasValue(100.0));
         expect(attribute.$height, hasValue(100.0));
       });
 
       test('constraints methods work correctly', () {
         final minMax = BoxSpecAttribute()
-          .minWidth(100.0)
-          .maxWidth(200.0)
-          .minHeight(50.0)
-          .maxHeight(150.0);
-        
+            .minWidth(100.0)
+            .maxWidth(200.0)
+            .minHeight(50.0)
+            .maxHeight(150.0);
+
         expect(minMax.$constraints, isNotNull);
-        
+
         final context = MockBuildContext();
         final resolved = minMax.resolve(context);
         expect(resolved.spec, isNotNull);
@@ -170,11 +176,14 @@ void main() {
     group('Resolution', () {
       test('resolves to BoxSpec with correct properties', () {
         final attribute = BoxSpecAttribute()
-          .width(100.0)
-          .height(200.0)
-          .decoration.box.color(Colors.red)
-          .padding.all(16.0)
-          .alignment(Alignment.center);
+            .width(100.0)
+            .height(200.0)
+            .decoration
+            .box
+            .color(Colors.red)
+            .padding
+            .all(16.0)
+            .alignment(Alignment.center);
 
         final context = MockBuildContext();
         final resolved = attribute.resolve(context);
@@ -189,36 +198,45 @@ void main() {
       });
 
       test('resolves with edge insets geometry', () {
-        final attribute = BoxSpecAttribute()
-          .padding.top(10.0)
-          .padding.bottom(20.0)
-          .padding.left(30.0)
-          .padding.right(40.0);
+        final attribute = BoxSpecAttribute().padding
+            .top(10.0)
+            .padding
+            .bottom(20.0)
+            .padding
+            .left(30.0)
+            .padding
+            .right(40.0);
 
         final context = MockBuildContext();
         final resolved = attribute.resolve(context);
-        
+
         expect(resolved.spec, isNotNull);
-        expect(resolved.spec!.padding, const EdgeInsets.only(
-          top: 10.0,
-          bottom: 20.0,
-          left: 30.0,
-          right: 40.0,
-        ));
+        expect(
+          resolved.spec!.padding,
+          const EdgeInsets.only(
+            top: 10.0,
+            bottom: 20.0,
+            left: 30.0,
+            right: 40.0,
+          ),
+        );
       });
     });
 
     group('Merge', () {
       test('merges properties correctly', () {
         final first = BoxSpecAttribute()
-          .width(100.0)
-          .height(200.0)
-          .decoration.box.color(Colors.red);
+            .width(100.0)
+            .height(200.0)
+            .decoration
+            .box
+            .color(Colors.red);
 
         final second = BoxSpecAttribute()
-          .width(150.0)
-          .padding.all(16.0)
-          .alignment(Alignment.center);
+            .width(150.0)
+            .padding
+            .all(16.0)
+            .alignment(Alignment.center);
 
         final merged = first.merge(second);
 
@@ -232,7 +250,7 @@ void main() {
       test('returns this when other is null', () {
         final attribute = BoxSpecAttribute().width(100.0);
         final merged = attribute.merge(null);
-        
+
         expect(identical(attribute, merged), isTrue);
       });
     });
@@ -252,17 +270,13 @@ void main() {
 
       test('modifiers merge correctly', () {
         final first = BoxSpecAttribute(
-          modifiers: [
-            OpacityModifierAttribute(opacity: Prop(0.5)),
-          ],
+          modifiers: [OpacityModifierAttribute(opacity: Prop(0.5))],
         );
-        
+
         final second = BoxSpecAttribute(
-          modifiers: [
-            const TransformModifierAttribute(),
-          ],
+          modifiers: [const TransformModifierAttribute()],
         );
-        
+
         final merged = first.merge(second);
         expect(merged.modifiers?.length, 2);
       });
@@ -271,14 +285,18 @@ void main() {
     group('Equality', () {
       test('equal attributes have same hashCode', () {
         final attr1 = BoxSpecAttribute()
-          .width(100.0)
-          .height(200.0)
-          .decoration.box.color(Colors.red);
+            .width(100.0)
+            .height(200.0)
+            .decoration
+            .box
+            .color(Colors.red);
 
         final attr2 = BoxSpecAttribute()
-          .width(100.0)
-          .height(200.0)
-          .decoration.box.color(Colors.red);
+            .width(100.0)
+            .height(200.0)
+            .decoration
+            .box
+            .color(Colors.red);
 
         expect(attr1, equals(attr2));
         expect(attr1.hashCode, equals(attr2.hashCode));

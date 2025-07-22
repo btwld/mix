@@ -21,16 +21,20 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
   final Prop<TextDirection>? $textDirection;
   final Prop<Clip>? $clipBehavior;
 
+  /// Utility for defining [StackSpecAttribute.alignment]
   final alignment = AlignmentGeometryUtility(
     (prop) => StackSpecAttribute(alignment: prop),
   );
 
+  /// Utility for defining [StackSpecAttribute.fit]
   final fit = StackFitUtility((prop) => StackSpecAttribute(fit: prop));
 
+  /// Utility for defining [StackSpecAttribute.textDirection]
   final textDirection = TextDirectionUtility(
     (prop) => StackSpecAttribute(textDirection: prop),
   );
 
+  /// Utility for defining [StackSpecAttribute.clipBehavior]
   final clipBehavior = ClipUtility(
     (prop) => StackSpecAttribute(clipBehavior: prop),
   );
@@ -92,6 +96,11 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
   /// ```
   static StackSpecAttribute? maybeValue(StackSpec? spec) {
     return spec != null ? StackSpecAttribute.value(spec) : null;
+  }
+
+  /// Convenience method for animating the StackSpec
+  StackSpecAttribute animate(AnimationConfig animation) {
+    return StackSpecAttribute.only(animation: animation);
   }
 
   /// Resolves to [StackSpec] using the provided [MixContext].
