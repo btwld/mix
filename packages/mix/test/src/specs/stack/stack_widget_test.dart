@@ -13,6 +13,11 @@ void main() {
       $stack.clipBehavior.antiAlias(),
       $stack.textDirection.ltr(),
     );
+
+    // final style = $stack.fit(StackFit.expand)
+    //     .alignment(Alignment.topCenter)
+    //     .clipBehavior(Clip.antiAlias)
+    //     .textDirection(TextDirection.ltr);
     await tester.pumpMaterialApp(
       ZBox(
         style: style,
@@ -27,9 +32,9 @@ void main() {
 
     expect(find.byType(Stack), findsOneWidget);
     expect(
-        find.byType(Container),
-        findsNWidgets(
-            3)); // ZBox creates 1 internal Container + 2 child Containers
+      find.byType(Container),
+      findsNWidgets(3),
+    ); // ZBox creates 1 internal Container + 2 child Containers
     expect(stackWidget.alignment, Alignment.topCenter);
     expect(stackWidget.fit, StackFit.expand);
     expect(stackWidget.clipBehavior, Clip.antiAlias);
@@ -62,63 +67,36 @@ void main() {
     expect(stackWidget.textDirection, TextDirection.ltr);
   });
 
-  testWidgets(
-    'ZBox should apply modifiers only once',
-    (tester) async {
-      await tester.pumpMaterialApp(
-        ZBox(
-          style: Style(
-            $flex.gap(10),
-            $with.align(),
-          ),
-          children: const [
-            SizedBox(
-              height: 10,
-              width: 20,
-            ),
-          ],
-        ),
-      );
+  testWidgets('ZBox should apply modifiers only once', (tester) async {
+    await tester.pumpMaterialApp(
+      ZBox(
+        style: Style($flex.gap(10), $with.align()),
+        children: const [SizedBox(height: 10, width: 20)],
+      ),
+    );
 
-      expect(find.byType(Align), findsOneWidget);
-    },
-  );
+    expect(find.byType(Align), findsOneWidget);
+  });
 
-  testWidgets(
-    'ZBox should apply modifiers only once',
-    (tester) async {
-      await tester.pumpMaterialApp(
-        ZBox(
-          style: Style(
-            $flex.gap(10),
-            $stack.alignment.center(),
-            $with.align(),
-          ),
-          children: const [
-            SizedBox(
-              height: 10,
-              width: 20,
-            ),
-          ],
-        ),
-      );
+  testWidgets('ZBox should apply modifiers only once', (tester) async {
+    await tester.pumpMaterialApp(
+      ZBox(
+        style: Style($flex.gap(10), $stack.alignment.center(), $with.align()),
+        children: const [SizedBox(height: 10, width: 20)],
+      ),
+    );
 
-      expect(find.byType(Align), findsOneWidget);
-    },
-  );
+    expect(find.byType(Align), findsOneWidget);
+  });
 
-  testWidgets(
-    'Renders modifiers in the correct order with many overrides',
-    (tester) async {
-      testOverrideModifiersOrder(
-        tester,
-        widgetBuilder: (style, orderOfModifiers) {
-          return ZBox(
-            style: style,
-            orderOfModifiers: orderOfModifiers,
-          );
-        },
-      );
-    },
-  );
+  testWidgets('Renders modifiers in the correct order with many overrides', (
+    tester,
+  ) async {
+    testOverrideModifiersOrder(
+      tester,
+      widgetBuilder: (style, orderOfModifiers) {
+        return ZBox(style: style, orderOfModifiers: orderOfModifiers);
+      },
+    );
+  });
 }

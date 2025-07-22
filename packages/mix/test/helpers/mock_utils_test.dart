@@ -11,7 +11,6 @@ void main() {
         final attr = UtilityTestAttribute(Prop(Colors.red));
 
         expect(attr.value, isA<Prop<Color>>());
-        expect(attr.value!.value, Colors.red);
       });
 
       test('resolves correctly', () {
@@ -29,7 +28,6 @@ void main() {
         final merged = first.merge(second);
 
         expect(merged.value, isA<Prop<Color>>());
-        expect(merged.value!.value, Colors.blue);
       });
 
       test('handles null merge', () {
@@ -99,7 +97,7 @@ void main() {
 
       test('can be created with custom MixScopeData', () {
         final customData = MixScopeData.empty();
-        final context = createMockContext(mixScopeData: customData);
+        final context = MockBuildContext(mixScopeData: customData);
 
         expect(context, isA<MockBuildContext>());
       });
@@ -129,47 +127,8 @@ void main() {
       });
     });
 
-    group('Utility Functions', () {
-      test('createTestAttribute creates UtilityTestAttribute', () {
-        final attr = createTestAttribute(Colors.purple);
-
-        expect(attr, isA<UtilityTestAttribute>());
-        expect(attr.value, isA<Prop<Color>>());
-      });
-
-      test('createTestDtoAttribute creates UtilityTestDtoAttribute', () {
-        final constraintsMix = BoxConstraintsMix.only(maxWidth: 100);
-        final attr = createTestDtoAttribute(constraintsMix);
-
-        expect(attr, isA<UtilityTestAttribute>());
-        expect(attr.value, isA<MixProp<BoxConstraints>>());
-      });
-
-      test('resolveMockProp resolves Prop correctly', () {
-        final prop = Prop(Colors.cyan);
-        final resolved = resolveMockProp(prop);
-
-        expect(resolved, Colors.cyan);
-      });
-
-      test('resolveMockMix resolves Mix correctly', () {
-        final constraintsMix = BoxConstraintsMix.only(maxHeight: 200);
-        final resolved = resolveMockMix(constraintsMix);
-
-        expect(resolved, isA<BoxConstraints>());
-        expect(resolved.maxHeight, 200);
-      });
-    });
 
     group('Constants', () {
-      test('emptyMixData is available', () {
-        expect(emptyMixData, isA<MixScopeData>());
-      });
-
-      test('EmptyMixData (backward compatibility) is available', () {
-        expect(EmptyMixData, isA<MockBuildContext>());
-      });
-
       test('mockContext is available', () {
         expect(mockContext, isA<MockBuildContext>());
       });

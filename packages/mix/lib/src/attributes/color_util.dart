@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../core/directive.dart';
-import '../../core/prop.dart';
-import '../../core/style.dart';
-import '../../core/utility.dart';
-import '../../theme/tokens/mix_token.dart';
+import '../core/directive.dart';
+import '../core/prop.dart';
+import '../core/style.dart';
+import '../core/utility.dart';
+import '../theme/tokens/mix_token.dart';
 import 'material_colors_util.dart';
 
 /// Mixin that provides color directive methods

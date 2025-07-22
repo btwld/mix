@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/directive.dart';
 import '../../core/style_widget.dart';
-import 'text_attribute.dart';
 import 'text_spec.dart';
 
 /// A styled text widget for displaying text with Mix styling.
@@ -24,7 +24,7 @@ class StyledText extends StyleWidget<TextSpec> {
   const StyledText(
     this.text, {
     this.semanticsLabel,
-    super.style = TextSpecAttribute(),
+    super.style,
     super.key,
 
     this.locale,

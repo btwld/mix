@@ -240,3 +240,16 @@ final class SentenceCaseStringDirective extends MixDirective<String> {
   @override
   String get key => 'sentence_case';
 }
+
+/// Extension on [List<MixDirective<T>>] to provide apply functionality
+extension MixDirectiveListExt<T> on List<MixDirective<T>> {
+  /// Applies all directives in the list to the given value in sequence
+  T apply(T value) {
+    var result = value;
+    for (final directive in this) {
+      result = directive.apply(result);
+    }
+
+    return result;
+  }
+}

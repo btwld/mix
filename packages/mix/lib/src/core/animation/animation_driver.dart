@@ -96,7 +96,7 @@ class _ImplicitAnimationWidgetState<S extends Spec<S>>
         visitor(
               _resolved,
               resolved,
-              (dynamic value) =>
+              (Object? value) =>
                   ResolvedStyleTween<S>(begin: value as ResolvedStyle<S>),
             )
             as ResolvedStyleTween<S>?;

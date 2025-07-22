@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../attributes/border_radius_util.dart';
 import '../../attributes/border_util.dart';
-import '../../attributes/color/color_util.dart';
+import '../../attributes/color_util.dart';
 import '../../attributes/constraints_mix.dart';
 import '../../attributes/constraints_util.dart';
 import '../../attributes/decoration_mix.dart';
@@ -39,111 +39,113 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
   final Prop<double>? $width;
   final Prop<double>? $height;
 
-  final padding = EdgeInsetsGeometryUtility(
+  late final padding = EdgeInsetsGeometryUtility(
     (prop) => BoxSpecAttribute(padding: prop),
   );
 
-  final margin = EdgeInsetsGeometryUtility(
+  late final margin = EdgeInsetsGeometryUtility(
     (prop) => BoxSpecAttribute(margin: prop),
   );
 
-  final constraints = BoxConstraintsUtility(
+  late final constraints = BoxConstraintsUtility(
     (prop) => BoxSpecAttribute(constraints: prop),
   );
 
-  final decoration = DecorationUtility(
+  late final decoration = DecorationUtility(
     (prop) => BoxSpecAttribute(decoration: prop),
   );
 
-  final foregroundDecoration = DecorationUtility(
+  late final foregroundDecoration = DecorationUtility(
     (prop) => BoxSpecAttribute(foregroundDecoration: prop),
   );
 
-  final transform = Matrix4Utility((prop) => BoxSpecAttribute(transform: prop));
+  late final transform = Matrix4Utility(
+    (prop) => BoxSpecAttribute(transform: prop),
+  );
 
-  final transformAlignment = AlignmentGeometryUtility(
+  late final transformAlignment = AlignmentGeometryUtility(
     (prop) => BoxSpecAttribute(transformAlignment: prop),
   );
 
-  final clipBehavior = ClipUtility(
+  late final clipBehavior = ClipUtility(
     (prop) => BoxSpecAttribute(clipBehavior: prop),
   );
 
-  final width = DoubleUtility((prop) => BoxSpecAttribute(width: prop));
+  late final width = DoubleUtility((prop) => BoxSpecAttribute(width: prop));
 
-  final height = DoubleUtility((prop) => BoxSpecAttribute(height: prop));
+  late final height = DoubleUtility((prop) => BoxSpecAttribute(height: prop));
 
-  final alignment = AlignmentGeometryUtility(
+  late final alignment = AlignmentGeometryUtility(
     (prop) => BoxSpecAttribute(alignment: prop),
   );
 
-  final minWidth = DoubleUtility(
+  late final minWidth = DoubleUtility(
     (prop) =>
         BoxSpecAttribute.only(constraints: BoxConstraintsMix(minWidth: prop)),
   );
 
-  final maxWidth = DoubleUtility(
+  late final maxWidth = DoubleUtility(
     (prop) =>
         BoxSpecAttribute.only(constraints: BoxConstraintsMix(maxWidth: prop)),
   );
 
-  final maxHeight = DoubleUtility(
+  late final maxHeight = DoubleUtility(
     (prop) =>
         BoxSpecAttribute.only(constraints: BoxConstraintsMix(maxHeight: prop)),
   );
 
-  final minHeight = DoubleUtility(
+  late final minHeight = DoubleUtility(
     (prop) =>
         BoxSpecAttribute.only(constraints: BoxConstraintsMix(minHeight: prop)),
   );
 
-  final border = BoxBorderUtility(
+  late final border = BoxBorderUtility(
     (prop) => BoxSpecAttribute.only(decoration: BoxDecorationMix(border: prop)),
   );
 
-  final borderDirectional = BorderDirectionalUtility(
+  late final borderDirectional = BorderDirectionalUtility(
     (prop) => BoxSpecAttribute.only(decoration: BoxDecorationMix(border: prop)),
   );
 
-  final borderRadius = BorderRadiusGeometryUtility(
+  late final borderRadius = BorderRadiusGeometryUtility(
     (prop) =>
         BoxSpecAttribute.only(decoration: BoxDecorationMix(borderRadius: prop)),
   );
 
-  final borderRadiusDirectional = BorderRadiusDirectionalUtility(
+  late final borderRadiusDirectional = BorderRadiusDirectionalUtility(
     (prop) =>
         BoxSpecAttribute.only(decoration: BoxDecorationMix(borderRadius: prop)),
   );
 
-  final color = ColorUtility(
+  late final color = ColorUtility(
     (prop) => BoxSpecAttribute.only(decoration: BoxDecorationMix(color: prop)),
   );
 
-  final gradient = GradientUtility(
+  late final gradient = GradientUtility(
     (prop) =>
         BoxSpecAttribute.only(decoration: BoxDecorationMix(gradient: prop)),
   );
 
-  final linearGradient = LinearGradientUtility(
+  late final linearGradient = LinearGradientUtility(
     (prop) =>
         BoxSpecAttribute.only(decoration: BoxDecorationMix(gradient: prop)),
   );
 
-  final radialGradient = RadialGradientUtility(
+  late final radialGradient = RadialGradientUtility(
     (prop) =>
         BoxSpecAttribute.only(decoration: BoxDecorationMix(gradient: prop)),
   );
 
-  final sweepGradient = SweepGradientUtility(
+  late final sweepGradient = SweepGradientUtility(
     (prop) =>
         BoxSpecAttribute.only(decoration: BoxDecorationMix(gradient: prop)),
   );
 
-  final shapeDecoration = ShapeDecorationUtility(
+  late final shapeDecoration = ShapeDecorationUtility(
     (prop) => BoxSpecAttribute(decoration: prop),
   );
 
-  final shape = BoxShapeUtility(
+  late final shape = BoxShapeUtility(
     (prop) => BoxSpecAttribute.only(decoration: BoxDecorationMix(shape: prop)),
   );
 
@@ -383,23 +385,4 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
     $width,
     $height,
   ];
-}
-
-class BoxStyle extends BoxSpecAttribute {
-  BoxStyle({
-    super.alignment,
-    super.padding,
-    super.margin,
-    super.constraints,
-    super.decoration,
-    super.foregroundDecoration,
-    super.transform,
-    super.transformAlignment,
-    super.clipBehavior,
-    super.width,
-    super.height,
-    super.animation,
-    super.modifiers,
-    super.variants,
-  });
 }

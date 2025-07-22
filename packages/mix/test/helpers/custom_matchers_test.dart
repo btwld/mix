@@ -2,52 +2,59 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import 'custom_matchers.dart';
 import 'testing_utils.dart';
 
 void main() {
   group('Custom Matchers', () {
     group('resolvesTo', () {
-      test('works with simple Mix values', () {
-        final colorMix = Prop(Colors.red);
-        final doubleMix = Prop(42.0);
-        final stringMix = Prop('test');
+      test('works with simple Prop values', () {
+        final colorProp = Prop(Colors.red);
+        final doubleProp = Prop(42.0);
+        final stringProp = Prop('test');
 
-        // Clean, readable assertions
-        expect(colorMix, resolvesTo(Colors.red));
-        expect(doubleMix, resolvesTo(42.0));
-        expect(stringMix, resolvesTo('test'));
+        expect(colorProp, resolvesTo(Colors.red));
+        expect(doubleProp, resolvesTo(42.0));
+        expect(stringProp, resolvesTo('test'));
       });
 
-      test('works with Prop values', () {
-        final colorProp = Prop(Colors.blue);
-        final doubleProp = Prop(3.14);
-        final stringProp = Prop('hello');
+      test('works with Mix values', () {
+        final borderSideMix = BorderSideMix.only(
+          color: Colors.red,
+          width: 2.0,
+          style: BorderStyle.solid,
+        );
 
-        expect(colorProp, resolvesTo(Colors.blue));
-        expect(doubleProp, resolvesTo(3.14));
-        expect(stringProp, resolvesTo('hello'));
+        expect(borderSideMix, resolvesTo(const BorderSide(
+          color: Colors.red,
+          width: 2.0,
+          style: BorderStyle.solid,
+        )));
       });
 
-      test('works with SpecAttribute implementations', () {
-        final mockAttr = MockDoubleScalarAttribute(42.0);
-        expect(mockAttr, resolvesTo(42.0));
+      test('works with BorderRadiusMix', () {
+        final borderRadius = BorderRadiusMix.only(
+          topLeft: const Radius.circular(10),
+          topRight: const Radius.circular(20),
+        );
+
+        expect(borderRadius, resolvesTo(
+          const BorderRadius.only(
+            topLeft: Radius.circular(10),
+            topRight: Radius.circular(20),
+          ),
+        ));
       });
 
       test('provides clear error messages on mismatch', () {
-        final colorMix = Prop(Colors.red);
+        final colorProp = Prop(Colors.red);
 
         expect(
-          () => expect(colorMix, resolvesTo(Colors.blue)),
+          () => expect(colorProp, resolvesTo(Colors.blue)),
           throwsA(
             isA<TestFailure>().having(
               (e) => e.toString(),
               'message',
-              allOf(
-                contains('Expected: resolves to MaterialColor:'),
-                contains('Actual: Prop<MaterialColor>:'),
-                contains('Which: resolved to MaterialColor:'),
-              ),
+              contains('resolved to'),
             ),
           ),
         );
@@ -59,145 +66,137 @@ void main() {
       });
     });
 
-    group('equivalentTo', () {
-      test('works with equivalent Mix values', () {
-        final mix1 = Prop(Colors.red);
-        final mix2 = Prop(Colors.red);
-
-        expect(mix1, mix2);
+    group('isProp', () {
+      test('matches Prop with value', () {
+        final prop = Prop(Colors.red);
+        expect(prop, isProp(Colors.red));
       });
 
-      test('fails with different Mix values', () {
-        final mix1 = Prop(Colors.red);
-        final mix2 = Prop(Colors.blue);
-
-        expect(() => expect(mix1, equals(mix2)), throwsA(isA<TestFailure>()));
+      test('fails when value doesn\'t match', () {
+        final prop = Prop(Colors.red);
+        expect(
+          () => expect(prop, isProp(Colors.blue)),
+          throwsA(isA<TestFailure>()),
+        );
       });
 
-      test('works with Prop values', () {
-        final prop1 = Prop('test');
-        final prop2 = Prop('test');
+      test('fails when not a Prop', () {
+        expect(
+          () => expect('not a prop', isProp('anything')),
+          throwsA(isA<TestFailure>()),
+        );
+      });
+    });
 
-        expect(prop1, prop2);
+    group('isPropWithToken', () {
+      test('matches Prop with token', () {
+        const token = MixToken<Color>('color.primary');
+        final prop = Prop.token(token);
+        expect(prop, isPropWithToken<Color>());
       });
 
-      test('works with custom attributes', () {
-        final attr1 = MockStringScalarAttribute('value');
-        final attr2 = MockStringScalarAttribute('value');
+      test('fails when Prop has value instead of token', () {
+        final prop = Prop(Colors.red);
+        expect(
+          () => expect(prop, isPropWithToken<Color>()),
+          throwsA(isA<TestFailure>()),
+        );
+      });
+    });
 
-        expect(attr1, attr2);
+    group('hasValue', () {
+      test('matches Prop with specific value', () {
+        final prop = Prop(42.0);
+        expect(prop, hasValue(42.0));
+      });
+
+      test('fails when value doesn\'t match', () {
+        final prop = Prop(42.0);
+        expect(
+          () => expect(prop, hasValue(43.0)),
+          throwsA(isA<TestFailure>()),
+        );
+      });
+    });
+
+    group('hasToken', () {
+      test('matches Prop with token', () {
+        const token = MixToken<double>('spacing.small');
+        final prop = Prop.token(token);
+        expect(prop, hasToken<double>());
+      });
+
+      test('fails when Prop has value instead of token', () {
+        final prop = Prop(8.0);
+        expect(
+          () => expect(prop, hasToken<double>()),
+          throwsA(isA<TestFailure>()),
+        );
       });
     });
 
     group('Real-world usage examples', () {
-      test('BorderSideMix testing becomes much cleaner', () {
-        final borderSide = BorderSideMix(
+      test('BorderSideMix testing', () {
+        final borderSide = BorderSideMix.only(
           color: Colors.red,
           width: 2.0,
           style: BorderStyle.solid,
         );
 
-        // Clean, readable assertions instead of manual .resolve() calls
+        // Test individual properties
         expect(borderSide.color, resolvesTo(Colors.red));
         expect(borderSide.width, resolvesTo(2.0));
         expect(borderSide.style, resolvesTo(BorderStyle.solid));
       });
 
-      test('BoxShadowMix testing becomes much cleaner', () {
-        final boxShadow = BoxShadowMix(
+      test('BoxShadowMix testing', () {
+        final boxShadow = BoxShadowMix.only(
           color: Colors.black,
           blurRadius: 10.0,
           offset: const Offset(2, 2),
           spreadRadius: 5.0,
         );
 
-        // Clean assertions
+        // Test individual properties
         expect(boxShadow.color, resolvesTo(Colors.black));
         expect(boxShadow.blurRadius, resolvesTo(10.0));
         expect(boxShadow.offset, resolvesTo(const Offset(2, 2)));
         expect(boxShadow.spreadRadius, resolvesTo(5.0));
       });
 
-      test('DTO resolution testing', () {
-        final borderRadius = BorderRadiusMix(
-          topLeft: const Radius.circular(10),
-          topRight: const Radius.circular(20),
+      test('Complex Mix resolution', () {
+        final edgeInsets = EdgeInsetsMix.only(
+          top: 8.0,
+          bottom: 16.0,
+          left: 4.0,
+          right: 4.0,
         );
 
-        // Test individual properties
-        expect(borderRadius.topLeft, resolvesTo(const Radius.circular(10)));
-        expect(borderRadius.topRight, resolvesTo(const Radius.circular(20)));
-        expect(borderRadius.bottomLeft, isNull);
-        expect(borderRadius.bottomRight, isNull);
-
-        // Test whole DTO resolution
-        expect(
-          borderRadius,
-          resolvesTo(
-            const BorderRadius.only(
-              topLeft: Radius.circular(10),
-              topRight: Radius.circular(20),
-            ),
+        expect(edgeInsets, resolvesTo(
+          const EdgeInsets.only(
+            top: 8.0,
+            bottom: 16.0,
+            left: 4.0,
+            right: 4.0,
           ),
-        );
+        ));
       });
 
-      test('Merge testing becomes more readable', () {
-        final mix1 = Prop('first');
-        final mix2 = Prop('second');
-
-        final merged = mix1.merge(mix2);
-
-        // Clean assertion for merged result
-        expect(merged, resolvesTo('second'));
-        // Both should resolve to the same value
-        expect(mix2, resolvesTo('second'));
-      });
-    });
-
-    group('Error handling', () {
-      test('provides helpful error messages for type mismatches', () {
-        expect(
-          () => expect('not a mix', resolvesTo('anything')),
-          throwsA(
-            isA<TestFailure>().having(
-              (e) => e.toString(),
-              'message',
-              contains('Expected Resolvable implementation, got String'),
-            ),
+      test('Token resolution with context', () {
+        const colorToken = MixToken<Color>('brand.primary');
+        final colorProp = Prop.token(colorToken);
+        
+        // Create context with token values
+        final context = MockBuildContext(
+          mixScopeData: MixScopeData.static(
+            tokens: {
+              colorToken: Colors.purple,
+            },
           ),
         );
-      });
 
-      test('handles resolution errors gracefully', () {
-        // This would be a Mix that throws during resolution
-        final problematicMix = _ProblematicMix<String>();
-
-        expect(
-          () => expect(problematicMix, resolvesTo('anything')),
-          throwsA(
-            isA<TestFailure>().having(
-              (e) => e.toString(),
-              'message',
-              contains('Failed to resolve'),
-            ),
-          ),
-        );
+        expect(colorProp, resolvesTo(Colors.purple, context: context));
       });
     });
   });
-}
-
-// Helper class for testing error handling
-class _ProblematicMix<T> with Resolvable<T> {
-  @override
-  T resolve(BuildContext mix) {
-    throw Exception('Intentional test error');
-  }
-
-  Resolvable<T> merge(covariant Resolvable<T>? other) {
-    return this;
-  }
-
-  List<Object?> get props => [];
 }

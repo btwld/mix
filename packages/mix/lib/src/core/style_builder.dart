@@ -5,7 +5,6 @@ import '../widgets/pressable_widget.dart';
 import 'animation/animation_driver.dart';
 import 'animation_config.dart';
 import 'modifier.dart';
-import 'named_variant_scope.dart';
 import 'resolved_style_provider.dart';
 import 'spec.dart';
 import 'style.dart';
@@ -61,23 +60,18 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
     _controller = widget.controller ?? WidgetStatesController();
   }
 
-  SpecAttribute<S> _prepareFinalStyle(BuildContext context) {
+  SpecAttribute<S>? _prepareFinalStyle(BuildContext context) {
     // Handle inheritance
     final inheritedStyle = widget.inherit ? _getInheritedStyle(context) : null;
     final effectiveStyle = inheritedStyle != null
         ? inheritedStyle.merge(widget.style)
         : widget.style;
 
-    // Apply named variants
-    final namedVariants = NamedVariantScope.maybeOf(context);
-
-    return namedVariants.isNotEmpty
-        ? effectiveStyle.applyVariants(namedVariants)
-        : effectiveStyle;
+    return effectiveStyle;
   }
 
   Widget _buildCore(BuildContext context, ResolvedStyle<S> resolved) {
-    Widget child = widget.builder(context, resolved.spec);
+    Widget child = widget.builder(context, resolved.spec!);
 
     return _applyModifiers(child, resolved.modifiers);
   }
@@ -147,11 +141,11 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
     }
 
     // 3. Resolve and cache
-    final resolved = finalStyle.resolve(context);
+    final resolved = finalStyle?.resolve(context);
     _cachedFinalStyle = finalStyle;
     _cachedResolvedStyle = resolved;
 
-    return resolved;
+    return resolved ?? ResolvedStyle<S>(spec: null);
   }
 
   @override
@@ -190,7 +184,8 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
     // Calculate interactivity need (cache it)
     final needsInteractivity = _cachedNeedsInteractivity ??=
         widget.controller != null ||
-        finalStyle.variants.any((v) => v.variant is WidgetStateVariant);
+        (finalStyle.variants?.any((v) => v.variant is WidgetStateVariant) ??
+            false);
 
     return ResolvedStyleProvider<S>(
       resolvedStyle: resolved,

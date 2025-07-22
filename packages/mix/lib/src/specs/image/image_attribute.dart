@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../attributes/color/color_util.dart';
+import '../../attributes/color_util.dart';
 import '../../attributes/scalar_util.dart';
 import '../../core/animation_config.dart';
 import '../../core/helpers.dart';

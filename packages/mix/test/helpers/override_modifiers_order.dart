@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
@@ -7,12 +7,12 @@ testOverrideModifiersOrder(
   required Widget Function(Style, List<Type>) widgetBuilder,
 }) async {
   final style = Style(
-    const VisibilityModifierAttribute(visible: true),
-    const OpacityModifierAttribute(opacity: 1),
+    VisibilityModifierAttribute(visible: Prop(true)),
+    OpacityModifierAttribute(opacity: Prop(1.0)),
     const TransformModifierAttribute(),
-    const AspectRatioModifierAttribute(aspectRatio: 2),
+    AspectRatioModifierAttribute(aspectRatio: Prop(2.0)),
     const ClipOvalModifierAttribute(),
-    PaddingModifierAttribute(padding: EdgeInsetsDirectionalMix(top: 10)),
+    PaddingModifierAttribute(padding: MixProp(EdgeInsetsDirectionalMix.only(top: 10.0))),
   );
   const orderOfModifiersOnlySpecs = [
     ClipOvalModifier,
@@ -68,7 +68,11 @@ Future<void> verifyDescendants(
   List<Type> orderOfModifiers,
   WidgetTester tester,
 ) async {
-  await tester.pumpMaterialApp(widget);
+  await tester.pumpWidget(
+    MaterialApp(
+      home: Scaffold(body: widget),
+    ),
+  );
 
   expect(find.byType(widget.runtimeType), findsOneWidget);
 

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../helpers/custom_matchers.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
@@ -89,10 +88,7 @@ void main() {
       });
 
       test('uses zero for null properties', () {
-        final edgeInsetsMix = EdgeInsetsMix.only(
-          top: 8.0,
-          left: 16.0,
-        );
+        final edgeInsetsMix = EdgeInsetsMix.only(top: 8.0, left: 16.0);
 
         final context = MockBuildContext();
         final resolved = edgeInsetsMix.resolve(context);
@@ -113,15 +109,9 @@ void main() {
       });
 
       test('merges properties correctly', () {
-        final first = EdgeInsetsMix.only(
-          top: 8.0,
-          left: 16.0,
-        );
+        final first = EdgeInsetsMix.only(top: 8.0, left: 16.0);
 
-        final second = EdgeInsetsMix.only(
-          top: 12.0,
-          right: 20.0,
-        );
+        final second = EdgeInsetsMix.only(top: 12.0, right: 20.0);
 
         final merged = first.merge(second);
 
@@ -134,15 +124,9 @@ void main() {
 
     group('Equality', () {
       test('returns true when all properties are the same', () {
-        final edgeInsetsMix1 = EdgeInsetsMix.only(
-          top: 8.0,
-          left: 16.0,
-        );
+        final edgeInsetsMix1 = EdgeInsetsMix.only(top: 8.0, left: 16.0);
 
-        final edgeInsetsMix2 = EdgeInsetsMix.only(
-          top: 8.0,
-          left: 16.0,
-        );
+        final edgeInsetsMix2 = EdgeInsetsMix.only(top: 8.0, left: 16.0);
 
         expect(edgeInsetsMix1, edgeInsetsMix2);
         expect(edgeInsetsMix1.hashCode, edgeInsetsMix2.hashCode);
@@ -173,21 +157,26 @@ void main() {
         expect(edgeInsetsDirectionalMix.end, isProp(20.0));
       });
 
-      test('value constructor extracts properties from EdgeInsetsDirectional', () {
-        const edgeInsets = EdgeInsetsDirectional.only(
-          top: 5.0,
-          bottom: 10.0,
-          start: 15.0,
-          end: 20.0,
-        );
+      test(
+        'value constructor extracts properties from EdgeInsetsDirectional',
+        () {
+          const edgeInsets = EdgeInsetsDirectional.only(
+            top: 5.0,
+            bottom: 10.0,
+            start: 15.0,
+            end: 20.0,
+          );
 
-        final edgeInsetsDirectionalMix = EdgeInsetsDirectionalMix.value(edgeInsets);
+          final edgeInsetsDirectionalMix = EdgeInsetsDirectionalMix.value(
+            edgeInsets,
+          );
 
-        expect(edgeInsetsDirectionalMix.top, isProp(5.0));
-        expect(edgeInsetsDirectionalMix.bottom, isProp(10.0));
-        expect(edgeInsetsDirectionalMix.start, isProp(15.0));
-        expect(edgeInsetsDirectionalMix.end, isProp(20.0));
-      });
+          expect(edgeInsetsDirectionalMix.top, isProp(5.0));
+          expect(edgeInsetsDirectionalMix.bottom, isProp(10.0));
+          expect(edgeInsetsDirectionalMix.start, isProp(15.0));
+          expect(edgeInsetsDirectionalMix.end, isProp(20.0));
+        },
+      );
 
       test('all constructor creates uniform insets', () {
         final edgeInsetsDirectionalMix = EdgeInsetsDirectionalMix.all(16.0);
@@ -212,13 +201,16 @@ void main() {
         expect(result, isNull);
       });
 
-      test('maybeValue returns EdgeInsetsDirectionalMix for non-null input', () {
-        const edgeInsets = EdgeInsetsDirectional.all(8.0);
-        final result = EdgeInsetsDirectionalMix.maybeValue(edgeInsets);
+      test(
+        'maybeValue returns EdgeInsetsDirectionalMix for non-null input',
+        () {
+          const edgeInsets = EdgeInsetsDirectional.all(8.0);
+          final result = EdgeInsetsDirectionalMix.maybeValue(edgeInsets);
 
-        expect(result, isNotNull);
-        expect(result!.top, isProp(8.0));
-      });
+          expect(result, isNotNull);
+          expect(result!.top, isProp(8.0));
+        },
+      );
     });
 
     group('resolve', () {
@@ -242,22 +234,18 @@ void main() {
 
     group('merge', () {
       test('returns this when other is null', () {
-        final edgeInsetsDirectionalMix = EdgeInsetsDirectionalMix.only(top: 8.0);
+        final edgeInsetsDirectionalMix = EdgeInsetsDirectionalMix.only(
+          top: 8.0,
+        );
         final merged = edgeInsetsDirectionalMix.merge(null);
 
         expect(merged, same(edgeInsetsDirectionalMix));
       });
 
       test('merges properties correctly', () {
-        final first = EdgeInsetsDirectionalMix.only(
-          top: 8.0,
-          start: 16.0,
-        );
+        final first = EdgeInsetsDirectionalMix.only(top: 8.0, start: 16.0);
 
-        final second = EdgeInsetsDirectionalMix.only(
-          top: 12.0,
-          end: 20.0,
-        );
+        final second = EdgeInsetsDirectionalMix.only(top: 12.0, end: 20.0);
 
         final merged = first.merge(second);
 
@@ -281,12 +269,19 @@ void main() {
         );
 
         expect(edgeInsetsDirectionalMix1, edgeInsetsDirectionalMix2);
-        expect(edgeInsetsDirectionalMix1.hashCode, edgeInsetsDirectionalMix2.hashCode);
+        expect(
+          edgeInsetsDirectionalMix1.hashCode,
+          edgeInsetsDirectionalMix2.hashCode,
+        );
       });
 
       test('returns false when properties are different', () {
-        final edgeInsetsDirectionalMix1 = EdgeInsetsDirectionalMix.only(top: 8.0);
-        final edgeInsetsDirectionalMix2 = EdgeInsetsDirectionalMix.only(top: 12.0);
+        final edgeInsetsDirectionalMix1 = EdgeInsetsDirectionalMix.only(
+          top: 8.0,
+        );
+        final edgeInsetsDirectionalMix2 = EdgeInsetsDirectionalMix.only(
+          top: 12.0,
+        );
 
         expect(edgeInsetsDirectionalMix1, isNot(edgeInsetsDirectionalMix2));
       });

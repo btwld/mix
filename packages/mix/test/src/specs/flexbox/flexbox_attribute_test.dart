@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../../helpers/custom_matchers.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
@@ -121,7 +120,7 @@ void main() {
         ),
       );
 
-      final resolved = flexBoxSpecAttribute.resolve(EmptyMixData);
+      final resolved = flexBoxSpecAttribute.resolve(MockBuildContext());
       expect(resolved, isA<FlexBoxSpec>());
       expect(resolved.box.alignment, Alignment.center);
       expect(resolved.box.padding, const EdgeInsets.all(20));

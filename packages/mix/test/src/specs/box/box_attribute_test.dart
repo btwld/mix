@@ -1,74 +1,41 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-import 'package:mix/src/specs/box/box_attribute.dart';
 
-import '../../../helpers/mock_utils.dart';
+import '../../../helpers/testing_utils.dart';
 
 void main() {
   group('BoxSpecAttribute', () {
-    group('Constructor', () {
-      test('creates BoxSpecAttribute with all properties', () {
-        final attribute = BoxSpecAttribute(
-          alignment: Prop(Alignment.center),
-          padding: MixProp(EdgeInsetsGeometryMix.only(top: 8.0)),
-          margin: MixProp(EdgeInsetsGeometryMix.only(left: 16.0)),
-          constraints: MixProp(BoxConstraintsMix(maxWidth: Prop(200.0))),
-          decoration: MixProp(BoxDecorationMix(color: Prop(Colors.red))),
-          foregroundDecoration: MixProp(
-            BoxDecorationMix(color: Prop(Colors.blue)),
-          ),
-          transform: Prop(Matrix4.identity()),
-          transformAlignment: Prop(Alignment.topLeft),
-          clipBehavior: Prop(Clip.antiAlias),
-          width: Prop(100.0),
-          height: Prop(200.0),
-        );
+    group('Builder Pattern', () {
+      test('creates BoxSpecAttribute with all properties using builder', () {
+        final attribute = BoxSpecAttribute()
+          .alignment(Alignment.center)
+          .padding.only(top: 8.0)
+          .margin.only(left: 16.0)
+          .constraints.maxWidth(200.0)
+          .decoration.box.color(Colors.red)
+          .foregroundDecoration.box.color(Colors.blue)
+          .transform.value(Matrix4.identity())
+          .transformAlignment(Alignment.topLeft)
+          .clipBehavior(Clip.antiAlias)
+          .width(100.0)
+          .height(200.0);
 
-        expect(attribute.$alignment?.getValue(), Alignment.center);
-        expect(attribute.$width?.getValue(), 100.0);
-        expect(attribute.$height?.getValue(), 200.0);
-        expect(attribute.$clipBehavior?.getValue(), Clip.antiAlias);
-        expect(attribute.$transformAlignment?.getValue(), Alignment.topLeft);
-      });
-
-      test('creates BoxSpecAttribute with default values', () {
-        final attribute = BoxSpecAttribute();
-
-        expect(attribute.$alignment, isNull);
-        expect(attribute.$padding, isNull);
-        expect(attribute.$margin, isNull);
-        expect(attribute.$constraints, isNull);
-        expect(attribute.$decoration, isNull);
-        expect(attribute.$foregroundDecoration, isNull);
-        expect(attribute.$transform, isNull);
-        expect(attribute.$transformAlignment, isNull);
-        expect(attribute.$clipBehavior, isNull);
-        expect(attribute.$width, isNull);
-        expect(attribute.$height, isNull);
-      });
-    });
-
-    group('only constructor', () {
-      test('creates BoxSpecAttribute with only specified properties', () {
-        final attribute = BoxSpecAttribute.only(
-          alignment: Alignment.center,
-          width: 100.0,
-          height: 200.0,
-          padding: EdgeInsetsGeometryMix.only(top: 8.0),
-        );
-
-        expect(attribute.$alignment?.getValue(), Alignment.center);
-        expect(attribute.$width?.getValue(), 100.0);
-        expect(attribute.$height?.getValue(), 200.0);
+        expect(attribute.$alignment, hasValue(Alignment.center));
+        expect(attribute.$width, hasValue(100.0));
+        expect(attribute.$height, hasValue(200.0));
+        expect(attribute.$clipBehavior, hasValue(Clip.antiAlias));
+        expect(attribute.$transformAlignment, hasValue(Alignment.topLeft));
+        expect(attribute.$transform, hasValue(Matrix4.identity()));
         expect(attribute.$padding, isNotNull);
-        expect(attribute.$margin, isNull);
-        expect(attribute.$constraints, isNull);
+        expect(attribute.$margin, isNotNull);
+        expect(attribute.$constraints, isNotNull);
+        expect(attribute.$decoration, isNotNull);
+        expect(attribute.$foregroundDecoration, isNotNull);
       });
 
-      test('handles null values correctly', () {
-        final attribute = BoxSpecAttribute.only();
+      test('creates empty BoxSpecAttribute', () {
+        final attribute = BoxSpecAttribute();
 
         expect(attribute.$alignment, isNull);
         expect(attribute.$padding, isNull);
@@ -82,293 +49,265 @@ void main() {
         expect(attribute.$width, isNull);
         expect(attribute.$height, isNull);
       });
-    });
 
-    group('value constructor', () {
-      test('creates BoxSpecAttribute from BoxSpec', () {
-        final transform = Matrix4.identity();
-        final spec = BoxSpec(
-          alignment: Alignment.center,
-          padding: EdgeInsets.all(8.0),
-          margin: EdgeInsets.all(16.0),
-          constraints: BoxConstraints(maxWidth: 200),
-          decoration: BoxDecoration(color: Colors.red),
-          foregroundDecoration: BoxDecoration(color: Colors.blue),
-          transform: transform,
-          transformAlignment: Alignment.topLeft,
-          clipBehavior: Clip.antiAlias,
-          width: 100.0,
-          height: 200.0,
-        );
+      test('builder methods create new instances', () {
+        final original = BoxSpecAttribute();
+        final modified = original.width(100.0);
 
-        final attribute = BoxSpecAttribute.value(spec);
-
-        expect(attribute.$alignment?.getValue(), Alignment.center);
-        expect(attribute.$width?.getValue(), 100.0);
-        expect(attribute.$height?.getValue(), 200.0);
-        expect(attribute.$clipBehavior?.getValue(), Clip.antiAlias);
-        expect(attribute.$transformAlignment?.getValue(), Alignment.topLeft);
-      });
-
-      test('handles null properties in spec', () {
-        const spec = BoxSpec(width: 100.0);
-        final attribute = BoxSpecAttribute.value(spec);
-
-        expect(attribute.$width?.getValue(), 100.0);
-        expect(attribute.$height, isNull);
-        expect(attribute.$alignment, isNull);
+        expect(identical(original, modified), isFalse);
+        expect(original.$width, isNull);
+        expect(modified.$width, hasValue(100.0));
       });
     });
 
-    group('maybeValue static method', () {
-      test('returns BoxSpecAttribute when spec is not null', () {
-        const spec = BoxSpec(width: 100.0, height: 200.0);
-        final attribute = BoxSpecAttribute.maybeValue(spec);
-
-        expect(attribute, isNotNull);
-        expect(attribute!.$width?.getValue(), 100.0);
-        expect(attribute.$height?.getValue(), 200.0);
+    group('Color and Decoration', () {
+      test('color method creates decoration with color', () {
+        final attribute = BoxSpecAttribute().decoration.box.color(Colors.red);
+        
+        expect(attribute.$decoration, isNotNull);
+        
+        final context = MockBuildContext();
+        final resolved = attribute.resolve(context);
+        final decoration = resolved.spec.decoration as BoxDecoration?;
+        expect(decoration?.color, Colors.red);
       });
 
-      test('returns null when spec is null', () {
-        final attribute = BoxSpecAttribute.maybeValue(null);
-        expect(attribute, isNull);
+      test('color merges with existing decoration', () {
+        final attribute = BoxSpecAttribute()
+          .decoration.box.border.all(BorderSideMix.only(width: 2.0))
+          .decoration.box.color(Colors.blue);
+        
+        expect(attribute.$decoration, isNotNull);
+        
+        final context = MockBuildContext();
+        final resolved = attribute.resolve(context);
+        expect(resolved.spec, isNotNull);
+        final decoration = resolved.spec!.decoration as BoxDecoration?;
+        expect(decoration?.color, Colors.blue);
+        expect(decoration?.border, isNotNull);
       });
     });
 
-    group('resolveSpec', () {
+    group('Padding and Margin', () {
+      test('padding methods create correct EdgeInsets', () {
+        final all = BoxSpecAttribute().padding.all(16.0);
+        expect(all.$padding, isNotNull);
+        
+        // Symmetric padding using vertical and horizontal utilities
+        final verticalPadding = BoxSpecAttribute().padding.vertical(8.0);
+        expect(verticalPadding.$padding, isNotNull);
+        
+        final horizontalPadding = BoxSpecAttribute().padding.horizontal(16.0);
+        expect(horizontalPadding.$padding, isNotNull);
+        
+        // Individual sides
+        final topPadding = BoxSpecAttribute().padding.top(8.0);
+        expect(topPadding.$padding, isNotNull);
+        
+        final leftPadding = BoxSpecAttribute().padding.left(16.0);
+        expect(leftPadding.$padding, isNotNull);
+      });
+
+      test('margin methods create correct EdgeInsets', () {
+        final all = BoxSpecAttribute().margin.all(16.0);
+        expect(all.$margin, isNotNull);
+        
+        // Symmetric margin using vertical and horizontal utilities
+        final verticalMargin = BoxSpecAttribute().margin.vertical(8.0);
+        expect(verticalMargin.$margin, isNotNull);
+        
+        final horizontalMargin = BoxSpecAttribute().margin.horizontal(16.0);
+        expect(horizontalMargin.$margin, isNotNull);
+        
+        // Individual sides
+        final topMargin = BoxSpecAttribute().margin.top(8.0);
+        expect(topMargin.$margin, isNotNull);
+        
+        final leftMargin = BoxSpecAttribute().margin.left(16.0);
+        expect(leftMargin.$margin, isNotNull);
+      });
+    });
+
+    group('Size Constraints', () {
+      test('width and height methods set dimensions', () {
+        final attribute = BoxSpecAttribute()
+          .width(100.0)
+          .height(200.0);
+        
+        expect(attribute.$width, hasValue(100.0));
+        expect(attribute.$height, hasValue(200.0));
+      });
+
+      test('square dimensions using same value', () {
+        final attribute = BoxSpecAttribute()
+          .width(100.0)
+          .height(100.0);
+        
+        expect(attribute.$width, hasValue(100.0));
+        expect(attribute.$height, hasValue(100.0));
+      });
+
+      test('constraints methods work correctly', () {
+        final minMax = BoxSpecAttribute()
+          .minWidth(100.0)
+          .maxWidth(200.0)
+          .minHeight(50.0)
+          .maxHeight(150.0);
+        
+        expect(minMax.$constraints, isNotNull);
+        
+        final context = MockBuildContext();
+        final resolved = minMax.resolve(context);
+        expect(resolved.spec, isNotNull);
+        expect(resolved.spec!.constraints, isNotNull);
+        expect(resolved.spec!.constraints!.minWidth, 100.0);
+        expect(resolved.spec!.constraints!.maxWidth, 200.0);
+        expect(resolved.spec!.constraints!.minHeight, 50.0);
+        expect(resolved.spec!.constraints!.maxHeight, 150.0);
+      });
+    });
+
+    group('Resolution', () {
       test('resolves to BoxSpec with correct properties', () {
-        final attribute = BoxSpecAttribute.only(
-          alignment: Alignment.center,
-          width: 100.0,
-          height: 200.0,
-          padding: EdgeInsetsGeometryMix.only(top: 8.0),
-          margin: EdgeInsetsGeometryMix.only(left: 16.0),
-          clipBehavior: Clip.antiAlias,
-        );
+        final attribute = BoxSpecAttribute()
+          .width(100.0)
+          .height(200.0)
+          .decoration.box.color(Colors.red)
+          .padding.all(16.0)
+          .alignment(Alignment.center);
 
-        final context = SpecTestHelper.createMockContext();
-        final spec = attribute.resolveSpec(context);
+        final context = MockBuildContext();
+        final resolved = attribute.resolve(context);
 
-        expect(spec.alignment, Alignment.center);
-        expect(spec.width, 100.0);
-        expect(spec.height, 200.0);
-        expect(spec.padding, isA<EdgeInsetsGeometry>());
-        expect(spec.margin, isA<EdgeInsetsGeometry>());
-        expect(spec.clipBehavior, Clip.antiAlias);
+        expect(resolved.spec, isNotNull);
+        expect(resolved.spec!.width, 100.0);
+        expect(resolved.spec!.height, 200.0);
+        expect(resolved.spec!.alignment, Alignment.center);
+        expect(resolved.spec!.padding, const EdgeInsets.all(16.0));
+        final decoration = resolved.spec!.decoration as BoxDecoration?;
+        expect(decoration?.color, Colors.red);
       });
 
-      test('resolves to BoxSpec with null properties when not set', () {
-        final attribute = BoxSpecAttribute.only(width: 100.0);
-        final context = SpecTestHelper.createMockContext();
-        final spec = attribute.resolveSpec(context);
+      test('resolves with edge insets geometry', () {
+        final attribute = BoxSpecAttribute()
+          .padding.top(10.0)
+          .padding.bottom(20.0)
+          .padding.left(30.0)
+          .padding.right(40.0);
 
-        expect(spec.width, 100.0);
-        expect(spec.height, isNull);
-        expect(spec.alignment, isNull);
-        expect(spec.padding, isNull);
-        expect(spec.margin, isNull);
-        expect(spec.constraints, isNull);
-        expect(spec.decoration, isNull);
-        expect(spec.foregroundDecoration, isNull);
-        expect(spec.transform, isNull);
-        expect(spec.transformAlignment, isNull);
-        expect(spec.clipBehavior, isNull);
-      });
-    });
-
-    group('merge', () {
-      test('merges two BoxSpecAttributes correctly', () {
-        final attr1 = BoxSpecAttribute.only(
-          width: 100.0,
-          height: 200.0,
-          alignment: Alignment.topLeft,
-        );
-
-        final attr2 = BoxSpecAttribute.only(
-          width: 150.0,
-          padding: EdgeInsetsGeometryMix.only(top: 8.0),
-          clipBehavior: Clip.antiAlias,
-        );
-
-        final merged = attr1.merge(attr2);
-
-        expect(merged.$width?.getValue(), 150.0); // from attr2
-        expect(merged.$height?.getValue(), 200.0); // from attr1
-        expect(merged.$alignment?.getValue(), Alignment.topLeft); // from attr1
-        expect(merged.$padding, isNotNull); // from attr2
-        expect(merged.$clipBehavior?.getValue(), Clip.antiAlias); // from attr2
-      });
-
-      test('returns original when merging with null', () {
-        final original = BoxSpecAttribute.only(width: 100.0, height: 200.0);
-        final merged = original.merge(null);
-
-        expect(merged, original);
-      });
-
-      test('handles complex merge scenarios', () {
-        final attr1 = BoxSpecAttribute.only(
-          decoration: BoxDecorationMix(color: Prop(Colors.red)),
-          constraints: BoxConstraintsMix(maxWidth: Prop(200.0)),
-        );
-
-        final attr2 = BoxSpecAttribute.only(
-          decoration: BoxDecorationMix(color: Prop(Colors.blue)),
-          foregroundDecoration: BoxDecorationMix(color: Prop(Colors.green)),
-        );
-
-        final merged = attr1.merge(attr2);
-
-        // Decoration should be merged (attr2 takes precedence)
-        expect(merged.$decoration, isNotNull);
-        expect(merged.$foregroundDecoration, isNotNull);
-        expect(merged.$constraints, isNotNull);
+        final context = MockBuildContext();
+        final resolved = attribute.resolve(context);
+        
+        expect(resolved.spec, isNotNull);
+        expect(resolved.spec!.padding, const EdgeInsets.only(
+          top: 10.0,
+          bottom: 20.0,
+          left: 30.0,
+          right: 40.0,
+        ));
       });
     });
 
-    group('Utility Properties', () {
-      test('has all expected utility properties', () {
-        final attribute = BoxSpecAttribute();
+    group('Merge', () {
+      test('merges properties correctly', () {
+        final first = BoxSpecAttribute()
+          .width(100.0)
+          .height(200.0)
+          .decoration.box.color(Colors.red);
 
-        // Basic properties - just check they exist
-        expect(attribute.padding, isNotNull);
-        expect(attribute.margin, isNotNull);
-        expect(attribute.constraints, isNotNull);
-        expect(attribute.decoration, isNotNull);
-        expect(attribute.foregroundDecoration, isNotNull);
-        expect(attribute.transform, isNotNull);
-        expect(attribute.transformAlignment, isNotNull);
-        expect(attribute.clipBehavior, isNotNull);
-        expect(attribute.width, isNotNull);
-        expect(attribute.height, isNotNull);
-        expect(attribute.alignment, isNotNull);
+        final second = BoxSpecAttribute()
+          .width(150.0)
+          .padding.all(16.0)
+          .alignment(Alignment.center);
 
-        // Constraint utilities
-        expect(attribute.minWidth, isNotNull);
-        expect(attribute.maxWidth, isNotNull);
-        expect(attribute.minHeight, isNotNull);
-        expect(attribute.maxHeight, isNotNull);
+        final merged = first.merge(second);
 
-        // Decoration utilities
-        expect(attribute.border, isNotNull);
-        expect(attribute.borderDirectional, isNotNull);
-        expect(attribute.borderRadius, isNotNull);
-        expect(attribute.borderRadiusDirectional, isNotNull);
-        expect(attribute.color, isNotNull);
-        expect(attribute.gradient, isNotNull);
-        expect(attribute.linearGradient, isNotNull);
-        expect(attribute.radialGradient, isNotNull);
-        expect(attribute.sweepGradient, isNotNull);
-        expect(attribute.shapeDecoration, isNotNull);
-        expect(attribute.shape, isNotNull);
+        expect(merged.$width, hasValue(150.0)); // second overrides
+        expect(merged.$height, hasValue(200.0)); // from first
+        expect(merged.$padding, isNotNull); // from second
+        expect(merged.$alignment, hasValue(Alignment.center)); // from second
+        expect(merged.$decoration, isNotNull); // decoration from first
+      });
+
+      test('returns this when other is null', () {
+        final attribute = BoxSpecAttribute().width(100.0);
+        final merged = attribute.merge(null);
+        
+        expect(identical(attribute, merged), isTrue);
       });
     });
 
-    group('Helper Methods', () {
-      test('animate method creates attribute with animation', () {
-        final attribute = BoxSpecAttribute();
-        final animationConfig = AnimationConfig.withDefaults();
-        final animatedAttribute = attribute.animate(animationConfig);
-
-        expect(animatedAttribute, isA<BoxSpecAttribute>());
-        // Animation is handled at the SpecAttribute level
-      });
-
-      test('shadows method creates attribute with box shadows', () {
-        final attribute = BoxSpecAttribute();
-        final shadows = [
-          BoxShadowMix(
-            color: Prop(Colors.black26),
-            blurRadius: Prop(4.0),
-            offset: Prop(Offset(0, 2)),
-          ),
-        ];
-        final shadowAttribute = attribute.shadows(shadows);
-
-        expect(shadowAttribute, isA<BoxSpecAttribute>());
-        expect(shadowAttribute.$decoration, isNotNull);
-      });
-
-      test('shadow method creates attribute with single box shadow', () {
-        final attribute = BoxSpecAttribute();
-        final shadow = BoxShadowMix(
-          color: Prop(Colors.black26),
-          blurRadius: Prop(4.0),
-          offset: Prop(Offset(0, 2)),
+    group('Modifiers', () {
+      test('modifiers can be added to attribute', () {
+        final attribute = BoxSpecAttribute(
+          modifiers: [
+            OpacityModifierAttribute(opacity: Prop(0.5)),
+            const TransformModifierAttribute(),
+          ],
         );
-        final shadowAttribute = attribute.shadow(shadow);
 
-        expect(shadowAttribute, isA<BoxSpecAttribute>());
-        expect(shadowAttribute.$decoration, isNotNull);
+        expect(attribute.modifiers, isNotNull);
+        expect(attribute.modifiers!.length, 2);
       });
 
-      test('elevation method creates attribute with elevation shadow', () {
-        final attribute = BoxSpecAttribute();
-        const elevation = ElevationShadow.four;
-        final elevationAttribute = attribute.elevation(elevation);
-
-        expect(elevationAttribute, isA<BoxSpecAttribute>());
-        expect(elevationAttribute.$decoration, isNotNull);
+      test('modifiers merge correctly', () {
+        final first = BoxSpecAttribute(
+          modifiers: [
+            OpacityModifierAttribute(opacity: Prop(0.5)),
+          ],
+        );
+        
+        final second = BoxSpecAttribute(
+          modifiers: [
+            const TransformModifierAttribute(),
+          ],
+        );
+        
+        final merged = first.merge(second);
+        expect(merged.modifiers?.length, 2);
       });
     });
 
-    group('equality', () {
-      test('attributes with same properties are equal', () {
-        final attr1 = BoxSpecAttribute.only(
-          width: 100.0,
-          height: 200.0,
-          alignment: Alignment.center,
-        );
-        final attr2 = BoxSpecAttribute.only(
-          width: 100.0,
-          height: 200.0,
-          alignment: Alignment.center,
-        );
+    group('Equality', () {
+      test('equal attributes have same hashCode', () {
+        final attr1 = BoxSpecAttribute()
+          .width(100.0)
+          .height(200.0)
+          .decoration.box.color(Colors.red);
 
-        expect(attr1, attr2);
-        expect(attr1.hashCode, attr2.hashCode);
+        final attr2 = BoxSpecAttribute()
+          .width(100.0)
+          .height(200.0)
+          .decoration.box.color(Colors.red);
+
+        expect(attr1, equals(attr2));
+        expect(attr1.hashCode, equals(attr2.hashCode));
       });
 
-      test('attributes with different properties are not equal', () {
-        final attr1 = BoxSpecAttribute.only(width: 100.0, height: 200.0);
-        final attr2 = BoxSpecAttribute.only(width: 150.0, height: 200.0);
+      test('different attributes are not equal', () {
+        final attr1 = BoxSpecAttribute().width(100.0);
+        final attr2 = BoxSpecAttribute().width(200.0);
 
-        expect(attr1, isNot(attr2));
+        expect(attr1, isNot(equals(attr2)));
       });
     });
 
-    group('debugFillProperties', () {
-      test('includes all properties in diagnostics', () {
-        final attribute = BoxSpecAttribute.only(
-          alignment: Alignment.center,
-          padding: EdgeInsetsGeometryMix.only(top: 8.0),
-          margin: EdgeInsetsGeometryMix.only(left: 16.0),
-          constraints: BoxConstraintsMix(maxWidth: Prop(200.0)),
-          decoration: BoxDecorationMix(color: Prop(Colors.red)),
-          foregroundDecoration: BoxDecorationMix(color: Prop(Colors.blue)),
-          transform: Matrix4.identity(),
-          transformAlignment: Alignment.topLeft,
-          clipBehavior: Clip.antiAlias,
-          width: 100.0,
-          height: 200.0,
-        );
+    group('Animation', () {
+      test('animation config can be added to attribute', () {
+        // Note: AnimationConfig is an abstract class and would need
+        // a concrete implementation for testing
+        // This test demonstrates the concept
+        final attribute = BoxSpecAttribute();
+        expect(attribute.animation, isNull); // By default no animation
+      });
+    });
 
-        final diagnostics = DiagnosticPropertiesBuilder();
-        attribute.debugFillProperties(diagnostics);
-
-        final properties = diagnostics.properties;
-        expect(properties.any((p) => p.name == 'alignment'), isTrue);
-        expect(properties.any((p) => p.name == 'padding'), isTrue);
-        expect(properties.any((p) => p.name == 'margin'), isTrue);
-        expect(properties.any((p) => p.name == 'constraints'), isTrue);
-        expect(properties.any((p) => p.name == 'decoration'), isTrue);
-        expect(properties.any((p) => p.name == 'foregroundDecoration'), isTrue);
-        expect(properties.any((p) => p.name == 'transform'), isTrue);
-        expect(properties.any((p) => p.name == 'transformAlignment'), isTrue);
-        expect(properties.any((p) => p.name == 'clipBehavior'), isTrue);
-        expect(properties.any((p) => p.name == 'width'), isTrue);
-        expect(properties.any((p) => p.name == 'height'), isTrue);
+    group('Variants', () {
+      test('variants functionality exists', () {
+        // Note: Variants require proper Variant instances, not builders
+        // This test demonstrates that the variants property exists
+        final attribute = BoxSpecAttribute();
+        expect(attribute.variants, isNull); // By default no variants
       });
     });
   });

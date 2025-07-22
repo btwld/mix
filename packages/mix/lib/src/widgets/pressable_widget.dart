@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 
-import '../core/style.dart';
 import '../core/widget_state/internal/gesture_mix_state.dart';
 import '../core/widget_state/internal/interactive_mix_state.dart';
 import '../core/widget_state/internal/mix_widget_state_builder.dart';
@@ -8,7 +7,6 @@ import '../core/widget_state/internal/mouse_region_mix_state.dart';
 import '../core/widget_state/widget_state_controller.dart';
 import '../internal/constants.dart';
 import '../specs/box/box_attribute.dart';
-import '../specs/box/box_spec.dart';
 import '../specs/box/box_widget.dart';
 
 // It expects Style? but Box requires StyleElement<BoxSpec>
@@ -16,7 +14,7 @@ import '../specs/box/box_widget.dart';
 class PressableBox extends StatelessWidget {
   const PressableBox({
     super.key,
-    this.style = const BoxStyle(),
+    this.style,
     this.onLongPress,
     this.focusNode,
     required this.child,
@@ -46,7 +44,7 @@ class PressableBox extends StatelessWidget {
   /// If this callback and [onPress] are null, then `PressableBox` will be disabled automatically.
   final VoidCallback? onLongPress;
 
-  final Style<BoxSpec> style;
+  final BoxSpecAttribute? style;
   final Widget child;
   final bool enabled;
   final FocusNode? focusNode;

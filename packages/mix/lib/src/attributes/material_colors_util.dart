@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../core/prop.dart';
-import '../../core/style.dart';
-import '../../core/utility.dart';
+import '../core/prop.dart';
+import '../core/style.dart';
+import '../core/utility.dart';
 import 'color_util.dart';
 
 @immutable

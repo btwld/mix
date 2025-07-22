@@ -1,308 +1,201 @@
-import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  group('Constraints Utilities', () {
-    group('BoxConstraintsUtility', () {
-      final utility = BoxConstraintsUtility(UtilityTestAttribute.new);
+  group('BoxConstraintsUtility', () {
+    final utility = BoxConstraintsUtility<UtilityTestAttribute>(
+      (prop) => UtilityTestAttribute(prop),
+    );
 
-      test('call() creates BoxConstraintsMix', () {
-        final constraintsMix = BoxConstraintsMix.only(
-          minWidth: 50.0,
-          maxWidth: 150.0,
-          minHeight: 100.0,
-          maxHeight: 200.0,
-        );
-        final attr = utility(constraintsMix);
-        expect(attr.value, isA<MixProp<BoxConstraints>>());
+    test('call() creates BoxConstraintsMix from value', () {
+      const constraints = BoxConstraints(
+        minWidth: 100.0,
+        maxWidth: 200.0,
+        minHeight: 50.0,
+        maxHeight: 150.0,
+      );
+      
+      final result = utility(BoxConstraintsMix.value(constraints));
+      expect(result, isA<UtilityTestAttribute>());
+      expect(result.value, isA<MixProp<BoxConstraints>>());
+      
+      final mix = result.value.getMix() as BoxConstraintsMix;
+      expect(mix.minWidth, isProp(100.0));
+      expect(mix.maxWidth, isProp(200.0));
+      expect(mix.minHeight, isProp(50.0));
+      expect(mix.maxHeight, isProp(150.0));
+    });
+
+    group('individual constraint utilities', () {
+      test('minWidth creates BoxConstraintsMix with minWidth', () {
+        final result = utility.minWidth(100.0);
+        
+        expect(result, isA<UtilityTestAttribute>());
+        final mix = result.value.getMix() as BoxConstraintsMix;
+        expect(mix.minWidth, isProp(100.0));
+        expect(mix.maxWidth, isNull);
+        expect(mix.minHeight, isNull);
+        expect(mix.maxHeight, isNull);
       });
 
-      test('as() creates BoxConstraintsMix from BoxConstraints', () {
+      test('maxWidth creates BoxConstraintsMix with maxWidth', () {
+        final result = utility.maxWidth(200.0);
+        
+        expect(result, isA<UtilityTestAttribute>());
+        final mix = result.value.getMix() as BoxConstraintsMix;
+        expect(mix.minWidth, isNull);
+        expect(mix.maxWidth, isProp(200.0));
+        expect(mix.minHeight, isNull);
+        expect(mix.maxHeight, isNull);
+      });
+
+      test('minHeight creates BoxConstraintsMix with minHeight', () {
+        final result = utility.minHeight(50.0);
+        
+        expect(result, isA<UtilityTestAttribute>());
+        final mix = result.value.getMix() as BoxConstraintsMix;
+        expect(mix.minWidth, isNull);
+        expect(mix.maxWidth, isNull);
+        expect(mix.minHeight, isProp(50.0));
+        expect(mix.maxHeight, isNull);
+      });
+
+      test('maxHeight creates BoxConstraintsMix with maxHeight', () {
+        final result = utility.maxHeight(150.0);
+        
+        expect(result, isA<UtilityTestAttribute>());
+        final mix = result.value.getMix() as BoxConstraintsMix;
+        expect(mix.minWidth, isNull);
+        expect(mix.maxWidth, isNull);
+        expect(mix.minHeight, isNull);
+        expect(mix.maxHeight, isProp(150.0));
+      });
+    });
+
+    group('token support', () {
+      test('minWidth supports tokens', () {
+        const token = MixToken<double>('spacing.minWidth');
+        final result = utility.minWidth.token(token);
+        
+        expect(result, isA<UtilityTestAttribute>());
+        final mix = result.value.getMix() as BoxConstraintsMix;
+        expect(mix.minWidth, isPropWithToken<double>());
+      });
+
+      test('maxWidth supports tokens', () {
+        const token = MixToken<double>('spacing.maxWidth');
+        final result = utility.maxWidth.token(token);
+        
+        expect(result, isA<UtilityTestAttribute>());
+        final mix = result.value.getMix() as BoxConstraintsMix;
+        expect(mix.maxWidth, isPropWithToken<double>());
+      });
+
+      test('minHeight supports tokens', () {
+        const token = MixToken<double>('spacing.minHeight');
+        final result = utility.minHeight.token(token);
+        
+        expect(result, isA<UtilityTestAttribute>());
+        final mix = result.value.getMix() as BoxConstraintsMix;
+        expect(mix.minHeight, isPropWithToken<double>());
+      });
+
+      test('maxHeight supports tokens', () {
+        const token = MixToken<double>('spacing.maxHeight');
+        final result = utility.maxHeight.token(token);
+        
+        expect(result, isA<UtilityTestAttribute>());
+        final mix = result.value.getMix() as BoxConstraintsMix;
+        expect(mix.maxHeight, isPropWithToken<double>());
+      });
+    });
+
+    group('edge cases', () {
+      test('creates tight constraints', () {
+        const constraints = BoxConstraints.tightFor(width: 100.0, height: 100.0);
+        
+        final result = utility(BoxConstraintsMix.value(constraints));
+        final mix = result.value.getMix() as BoxConstraintsMix;
+        
+        expect(mix.minWidth, isProp(100.0));
+        expect(mix.maxWidth, isProp(100.0));
+        expect(mix.minHeight, isProp(100.0));
+        expect(mix.maxHeight, isProp(100.0));
+      });
+
+      test('creates loose constraints', () {
+        final constraints = BoxConstraints.loose(const Size(200.0, 150.0));
+        
+        final result = utility(BoxConstraintsMix.value(constraints));
+        final mix = result.value.getMix() as BoxConstraintsMix;
+        
+        expect(mix.minWidth, isProp(0.0));
+        expect(mix.maxWidth, isProp(200.0));
+        expect(mix.minHeight, isProp(0.0));
+        expect(mix.maxHeight, isProp(150.0));
+      });
+
+      test('creates expand constraints', () {
+        const constraints = BoxConstraints.expand(width: 300.0, height: 400.0);
+        
+        final result = utility(BoxConstraintsMix.value(constraints));
+        final mix = result.value.getMix() as BoxConstraintsMix;
+        
+        expect(mix.minWidth, isProp(300.0));
+        expect(mix.maxWidth, isProp(300.0));
+        expect(mix.minHeight, isProp(400.0));
+        expect(mix.maxHeight, isProp(400.0));
+      });
+
+      test('handles infinity values', () {
         const constraints = BoxConstraints(
-          minWidth: 25.0,
-          maxWidth: 125.0,
-          minHeight: 75.0,
-          maxHeight: 175.0,
+          minWidth: 0.0,
+          maxWidth: double.infinity,
+          minHeight: 0.0,
+          maxHeight: double.infinity,
         );
-        final attr = utility.as(constraints);
-        expect(attr.value, isA<MixProp<BoxConstraints>>());
+        
+        final result = utility(BoxConstraintsMix.value(constraints));
+        final mix = result.value.getMix() as BoxConstraintsMix;
+        
+        expect(mix.minWidth, isProp(0.0));
+        expect(mix.maxWidth, isProp(double.infinity));
+        expect(mix.minHeight, isProp(0.0));
+        expect(mix.maxHeight, isProp(double.infinity));
+      });
+    });
+
+    group('resolution', () {
+      test('resolves to BoxConstraints correctly', () {
+        final result = utility.minWidth(100.0)
+            .merge(utility.maxWidth(200.0))
+            .merge(utility.minHeight(50.0))
+            .merge(utility.maxHeight(150.0));
+        
+        final context = MockBuildContext();
+        final mix = result.value.getMix() as BoxConstraintsMix;
+        final resolved = mix.resolve(context);
+        
+        expect(resolved.minWidth, 100.0);
+        expect(resolved.maxWidth, 200.0);
+        expect(resolved.minHeight, 50.0);
+        expect(resolved.maxHeight, 150.0);
       });
 
-      group('Property Utilities', () {
-        test('minWidth() creates constraints with min width', () {
-          final attr = utility.minWidth(50.0);
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-
-        test('minWidth.zero() creates constraints with zero min width', () {
-          final attr = utility.minWidth.zero();
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-
-        test(
-          'minWidth.infinity() creates constraints with infinite min width',
-          () {
-            final attr = utility.minWidth.infinity();
-            expect(attr.value, isA<MixProp<BoxConstraints>>());
-          },
-        );
-
-        test('maxWidth() creates constraints with max width', () {
-          final attr = utility.maxWidth(150.0);
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-
-        test('maxWidth.zero() creates constraints with zero max width', () {
-          final attr = utility.maxWidth.zero();
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-
-        test(
-          'maxWidth.infinity() creates constraints with infinite max width',
-          () {
-            final attr = utility.maxWidth.infinity();
-            expect(attr.value, isA<MixProp<BoxConstraints>>());
-          },
-        );
-
-        test('minHeight() creates constraints with min height', () {
-          final attr = utility.minHeight(100.0);
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-
-        test('minHeight.zero() creates constraints with zero min height', () {
-          final attr = utility.minHeight.zero();
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-
-        test(
-          'minHeight.infinity() creates constraints with infinite min height',
-          () {
-            final attr = utility.minHeight.infinity();
-            expect(attr.value, isA<MixProp<BoxConstraints>>());
-          },
-        );
-
-        test('maxHeight() creates constraints with max height', () {
-          final attr = utility.maxHeight(200.0);
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-
-        test('maxHeight.zero() creates constraints with zero max height', () {
-          final attr = utility.maxHeight.zero();
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-
-        test(
-          'maxHeight.infinity() creates constraints with infinite max height',
-          () {
-            final attr = utility.maxHeight.infinity();
-            expect(attr.value, isA<MixProp<BoxConstraints>>());
-          },
-        );
-      });
-
-      group('Common Constraint Patterns', () {
-        test('creates tight constraints', () {
-          final attr = utility.as(
-            const BoxConstraints.tightFor(width: 100, height: 200),
-          );
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-
-        test('creates loose constraints', () {
-          final attr = utility.as(
-            const BoxConstraints(maxWidth: 300, maxHeight: 400),
-          );
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-
-        test('creates expand constraints', () {
-          final attr = utility.as(const BoxConstraints.expand());
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-
-        test('creates expand constraints with width', () {
-          final attr = utility.as(const BoxConstraints.expand(width: 500));
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-
-        test('creates expand constraints with height', () {
-          final attr = utility.as(const BoxConstraints.expand(height: 600));
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-
-        test('creates tight for finite constraints', () {
-          final attr = utility.as(
-            const BoxConstraints.tightForFinite(width: 250, height: 350),
-          );
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-      });
-
-      group('Edge Cases', () {
-        test('handles zero constraints', () {
-          final attr = utility.as(BoxConstraints.tight(Size.zero));
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-
-        test('handles infinite constraints', () {
-          final attr = utility.as(
-            const BoxConstraints(
-              minWidth: 0,
-              maxWidth: double.infinity,
-              minHeight: 0,
-              maxHeight: double.infinity,
-            ),
-          );
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-
-        test('handles mixed finite and infinite constraints', () {
-          final attr = utility.as(
-            const BoxConstraints(
-              minWidth: 50,
-              maxWidth: double.infinity,
-              minHeight: 0,
-              maxHeight: 300,
-            ),
-          );
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-
-        test('handles very large finite constraints', () {
-          final attr = utility.as(
-            const BoxConstraints(
-              minWidth: 1000,
-              maxWidth: 5000,
-              minHeight: 2000,
-              maxHeight: 8000,
-            ),
-          );
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-
-        test('handles fractional constraints', () {
-          final attr = utility.as(
-            const BoxConstraints(
-              minWidth: 10.5,
-              maxWidth: 100.7,
-              minHeight: 20.3,
-              maxHeight: 200.9,
-            ),
-          );
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-      });
-
-      group('Constraint Validation Patterns', () {
-        test('creates valid tight constraints', () {
-          final attr = utility.as(
-            const BoxConstraints.tightFor(width: 100, height: 100),
-          );
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-
-        test('creates valid loose constraints with min bounds', () {
-          final attr = utility.as(
-            const BoxConstraints(
-              minWidth: 50,
-              maxWidth: 200,
-              minHeight: 75,
-              maxHeight: 300,
-            ),
-          );
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-
-        test('creates constraints with equal min and max', () {
-          final attr = utility.as(
-            const BoxConstraints(
-              minWidth: 150,
-              maxWidth: 150,
-              minHeight: 200,
-              maxHeight: 200,
-            ),
-          );
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-      });
-
-      group('Responsive Constraint Patterns', () {
-        test('creates mobile-friendly constraints', () {
-          final attr = utility.as(
-            const BoxConstraints(
-              minWidth: 320,
-              maxWidth: 480,
-              minHeight: 0,
-              maxHeight: double.infinity,
-            ),
-          );
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-
-        test('creates tablet-friendly constraints', () {
-          final attr = utility.as(
-            const BoxConstraints(
-              minWidth: 768,
-              maxWidth: 1024,
-              minHeight: 0,
-              maxHeight: double.infinity,
-            ),
-          );
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-
-        test('creates desktop-friendly constraints', () {
-          final attr = utility.as(
-            const BoxConstraints(
-              minWidth: 1200,
-              maxWidth: double.infinity,
-              minHeight: 0,
-              maxHeight: double.infinity,
-            ),
-          );
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-      });
-
-      group('Aspect Ratio Constraint Patterns', () {
-        test('creates square constraints', () {
-          final attr = utility.as(
-            const BoxConstraints.tightFor(width: 200, height: 200),
-          );
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-
-        test('creates 16:9 aspect ratio constraints', () {
-          final attr = utility.as(
-            const BoxConstraints.tightFor(width: 320, height: 180),
-          );
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-
-        test('creates 4:3 aspect ratio constraints', () {
-          final attr = utility.as(
-            const BoxConstraints.tightFor(width: 400, height: 300),
-          );
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-
-        test('creates golden ratio constraints', () {
-          final attr = utility.as(
-            const BoxConstraints.tightFor(width: 161.8, height: 100),
-          );
-          expect(attr.value, isA<MixProp<BoxConstraints>>());
-        });
-      });
-
-      test('token() creates constraints from token', () {
-        const token = MixToken<BoxConstraints>('test.constraints');
-        final attr = utility.token(token);
-        expect(attr.value, isA<MixProp<BoxConstraints>>());
+      test('uses default values for null properties', () {
+        final result = utility.minWidth(100.0);
+        
+        final context = MockBuildContext();
+        final mix = result.value.getMix() as BoxConstraintsMix;
+        final resolved = mix.resolve(context);
+        
+        expect(resolved.minWidth, 100.0);
+        expect(resolved.maxWidth, double.infinity);
+        expect(resolved.minHeight, 0.0);
+        expect(resolved.maxHeight, double.infinity);
       });
     });
   });

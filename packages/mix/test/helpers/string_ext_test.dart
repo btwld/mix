@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/src/internal/string_ext.dart';
+import 'package:mix/src/internal/internal_extensions.dart';
 
 void main() {
   group('ChangeCase - _groupWords', () {

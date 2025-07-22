@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import 'custom_matchers.dart';
+import 'testing_utils.dart';
 
 void main() {
   group('isProp matcher', () {

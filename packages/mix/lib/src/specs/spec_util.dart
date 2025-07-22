@@ -5,6 +5,7 @@ import 'flexbox/flexbox_spec.dart';
 import 'icon/icon_spec.dart';
 import 'image/image_attribute.dart';
 import 'stack/stack_attribute.dart';
+import 'stack/stack_box_spec.dart';
 import 'text/text_attribute.dart';
 
 const _mixUtility = MixUtilities();
@@ -16,6 +17,9 @@ ImageSpecAttribute get $image => _mixUtility.image;
 IconSpecAttribute get $icon => _mixUtility.icon;
 TextSpecAttribute get $text => _mixUtility.text;
 StackSpecAttribute get $stack => _mixUtility.stack;
+StackBoxSpecAttribute get $stackBox =>
+    StackBoxSpecAttribute(); // For compatibility with old code
+OnContextVariantUtility get $onContext => _mixUtility.on;
 OnContextVariantUtility get $on => _mixUtility.on;
 
 class MixUtilities {

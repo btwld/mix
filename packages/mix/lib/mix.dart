@@ -22,27 +22,28 @@ export 'src/attributes/border_mix.dart';
 export 'src/attributes/border_radius_mix.dart';
 export 'src/attributes/border_radius_util.dart';
 export 'src/attributes/border_util.dart';
-export 'src/attributes/color/color_util.dart';
-export 'src/attributes/color/material_colors_util.dart';
+export 'src/attributes/color_util.dart';
 export 'src/attributes/constraints_mix.dart';
 export 'src/attributes/constraints_util.dart';
 export 'src/attributes/decoration_image_mix.dart';
 export 'src/attributes/decoration_image_util.dart';
 export 'src/attributes/decoration_mix.dart';
 export 'src/attributes/decoration_util.dart';
+export 'src/attributes/edge_insets_geometry_util.dart';
 export 'src/attributes/edge_insets_mix.dart';
 export 'src/attributes/gradient_mix.dart';
 export 'src/attributes/gradient_util.dart';
+export 'src/attributes/material_colors_util.dart';
 export 'src/attributes/scalar_util.dart';
 export 'src/attributes/shadow_mix.dart';
 export 'src/attributes/shadow_util.dart';
 export 'src/attributes/shape_border_mix.dart';
 export 'src/attributes/shape_border_util.dart';
-export 'src/attributes/strut_style.dart';
+export 'src/attributes/strut_style_mix.dart';
 export 'src/attributes/strut_style_util.dart';
 export 'src/attributes/text_height_behavior_mix.dart';
 export 'src/attributes/text_height_behavior_util.dart';
-export 'src/attributes/text_style.dart';
+export 'src/attributes/text_style_mix.dart';
 export 'src/attributes/text_style_util.dart';
 export 'src/core/animation/animation_driver.dart';
 export 'src/core/animation/controlled_animation_driver.dart';
@@ -56,7 +57,6 @@ export 'src/core/helpers.dart';
 
 /// CORE
 export 'src/core/mix_element.dart';
-export 'src/core/named_variant_scope.dart';
 export 'src/core/prop.dart';
 export 'src/core/resolved_style_provider.dart';
 export 'src/core/spec.dart';
@@ -86,6 +86,7 @@ export 'src/modifiers/transform_widget_modifier.dart';
 export 'src/modifiers/visibility_widget_modifier.dart';
 
 /// SPECS
+export 'src/specs/box/box_attribute.dart';
 export 'src/specs/box/box_spec.dart';
 export 'src/specs/box/box_widget.dart';
 export 'src/specs/flex/flex_attribute.dart';
@@ -113,6 +114,9 @@ export 'src/theme/material/material_tokens.dart';
 export 'src/theme/mix/mix_theme.dart';
 export 'src/theme/tokens/mix_token.dart';
 export 'src/theme/tokens/value_resolver.dart';
+
+/// VARIANTS
+export 'src/variants/variant_util.dart';
 
 /// WIDGETS
 export 'src/widgets/pressable_widget.dart';

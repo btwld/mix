@@ -19,11 +19,7 @@ abstract class SpecAttribute<S extends Spec<S>> extends StyleElement<S>
   final List<VariantSpecAttribute<S>>? variants;
   final List<ModifierAttribute>? modifiers;
   final AnimationConfig? animation;
-  const SpecAttribute({
-    required this.variants,
-    required this.modifiers,
-    required this.animation,
-  });
+  const SpecAttribute({this.variants, this.modifiers, this.animation});
 
   @visibleForTesting
   List<ModifierAttribute>? mergeModifierLists(

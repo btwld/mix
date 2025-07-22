@@ -27,7 +27,7 @@ import 'package:mix/mix.dart';
 /// final attr = gradientUtility.linear(...);
 /// ```
 final class UtilityTestAttribute<T> extends SpecAttribute<MockSpec> {
-  final dynamic value;
+  final T value;
 
   const UtilityTestAttribute(this.value);
 
@@ -78,12 +78,23 @@ final class UtilityTestAttribute<T> extends SpecAttribute<MockSpec> {
   @override
   UtilityTestAttribute<T> merge(covariant UtilityTestAttribute<T>? other) {
     if (other == null) return this;
-    return UtilityTestAttribute(MixHelpers.merge(value, other.value));
+    // For Prop types, use their merge method
+    if (value is Prop<T> && other.value is Prop<T>) {
+      final merged = (value as Prop<T>).merge(other.value as Prop<T>);
+      return UtilityTestAttribute(merged as T);
+    }
+    // For MixProp types that implement Mixable
+    if (value is Mixable && other.value is Mixable) {
+      final merged = (value as Mixable).merge(other.value as Mixable);
+      return UtilityTestAttribute(merged as T);
+    }
+    // Default: just return the other value
+    return UtilityTestAttribute(other.value);
   }
 
   @override
   MockSpec resolveSpec(BuildContext context) {
-    final resolvedValue = value is Resolvable ? value.resolve(context) : value;
+    final resolvedValue = value is Resolvable ? (value as Resolvable).resolve(context) : value;
     return MockSpec(resolvedValue: resolvedValue);
   }
 
@@ -190,61 +201,14 @@ class MockBuildContext extends BuildContext {
 // MOCK DATA CONSTANTS
 // =============================================================================
 
-/// Empty MixData for testing
-const emptyMixData = MixScopeData.empty();
-
-/// Empty BuildContext for testing (backward compatibility)
-// ignore: constant_identifier_names, non_constant_identifier_names
-final EmptyMixData = MockBuildContext();
-
 /// Mock BuildContext instance for testing
 final mockContext = MockBuildContext();
 
-// =============================================================================
-// EXTENSIONS FOR BACKWARD COMPATIBILITY
-// =============================================================================
-
-/// Extension to add a `value` getter to Prop<T> for backward compatibility
-/// with existing tests that expect `.value.value` pattern
-extension PropTestExtension<T> on Prop<T> {
-  /// Backward compatibility getter that returns the underlying value
-  /// if this prop has a value source
-  T get value {
-    if (hasValue) {
-      return getValue();
-    }
-    throw StateError('Prop does not have a value source');
-  }
-}
 
 // =============================================================================
 // UTILITY FUNCTIONS
 // =============================================================================
 
-/// Create a mock BuildContext with custom MixScopeData
-MockBuildContext createMockContext({MixScopeData? mixScopeData}) {
-  return MockBuildContext(mixScopeData: mixScopeData);
-}
-
-/// Resolve a Mix object using mock context
-T resolveMockMix<T>(Mix<T> mix, {BuildContext? context}) {
-  return mix.resolve(context ?? mockContext);
-}
-
-/// Resolve a Prop using mock context
-T resolveMockProp<T>(Prop<T> prop, {BuildContext? context}) {
-  return prop.resolve(context ?? mockContext);
-}
-
-/// Create a simple test SpecMix for testing
-UtilityTestAttribute createTestAttribute<T>(T value) {
-  return UtilityTestAttribute(Prop(value));
-}
-
-/// Create a test SpecMix with MixProp for testing
-UtilityTestAttribute createTestDtoAttribute<T>(Mix<T> mix) {
-  return UtilityTestAttribute(MixProp(mix));
-}
 
 // =============================================================================
 // ENHANCED SPEC & ATTRIBUTE TESTING INFRASTRUCTURE

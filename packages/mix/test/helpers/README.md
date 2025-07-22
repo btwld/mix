@@ -6,7 +6,7 @@ This directory contains custom test matchers designed to make testing Mix system
 
 ## Key Benefits
 
-1. **Eliminates Boilerplate**: No more `.resolve(EmptyMixData)` calls everywhere
+1. **Eliminates Boilerplate**: No more `.resolve(MockBuildContext())` calls everywhere
 2. **Better Readability**: Tests read like natural language
 3. **Clearer Intent**: `resolvesTo(value)` is more expressive than manual resolution
 4. **Better Error Messages**: Custom matchers provide context-specific error messages
@@ -20,8 +20,8 @@ The most important matcher - checks if a Mix<T> resolves to the expected value.
 
 ```dart
 // BEFORE: Verbose and repetitive
-expect(colorMix.resolve(EmptyMixData), Colors.red);
-expect(borderSide.width.resolve(EmptyMixData), 2.0);
+expect(colorMix.resolve(MockBuildContext()), Colors.red);
+expect(borderSide.width.resolve(MockBuildContext()), 2.0);
 
 // AFTER: Clean and readable
 expect(colorMix, resolvesTo(Colors.red));
@@ -116,7 +116,7 @@ test('DTO merging', () {
 
 ```dart
 // ❌ REPLACE THIS:
-expect(mixObject.resolve(EmptyMixData), expectedValue);
+expect(mixObject.resolve(MockBuildContext()), expectedValue);
 
 // ✅ WITH THIS:
 expect(mixObject, resolvesTo(expectedValue));
@@ -132,7 +132,7 @@ expect(mix1, equivalentTo(mix2));
 
 ```dart
 // ❌ REPLACE THIS:
-final resolved = dto.resolve(EmptyMixData);
+final resolved = dto.resolve(MockBuildContext());
 expect(resolved.property, expectedValue);
 
 // ✅ WITH THIS:

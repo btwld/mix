@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
-import 'color/color_util.dart';
+import 'color_util.dart';
 import 'scalar_util.dart';
 import 'shadow_mix.dart';
 
