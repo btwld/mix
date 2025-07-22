@@ -99,7 +99,7 @@ void main() {
       });
     });
 
-    group('resolveSpec', () {
+    group('Resolution', () {
       test('resolves to StackSpec with correct properties', () {
         final attribute = StackSpecAttribute.only(
           alignment: Alignment.center,
@@ -109,9 +109,11 @@ void main() {
         );
 
         final context = SpecTestHelper.createMockContext();
-        final spec = attribute.resolveSpec(context);
+        final resolved = attribute.resolve(context);
+        final spec = resolved.spec;
 
-        expect(spec.alignment, Alignment.center);
+        expect(spec, isNotNull);
+        expect(spec!.alignment, Alignment.center);
         expect(spec.fit, StackFit.expand);
         expect(spec.textDirection, TextDirection.rtl);
         expect(spec.clipBehavior, Clip.antiAlias);
@@ -120,9 +122,11 @@ void main() {
       test('resolves to StackSpec with null properties when not set', () {
         final attribute = StackSpecAttribute.only(alignment: Alignment.center);
         final context = SpecTestHelper.createMockContext();
-        final spec = attribute.resolveSpec(context);
+        final resolved = attribute.resolve(context);
+        final spec = resolved.spec;
 
-        expect(spec.alignment, Alignment.center);
+        expect(spec, isNotNull);
+        expect(spec!.alignment, Alignment.center);
         expect(spec.fit, isNull);
         expect(spec.textDirection, isNull);
         expect(spec.clipBehavior, isNull);

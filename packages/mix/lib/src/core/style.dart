@@ -7,15 +7,13 @@ import 'modifier.dart';
 import 'spec.dart';
 import 'variant.dart';
 
-abstract class StyleElement<S extends Spec<S>> extends Mixable<S> {
+sealed class StyleElement {
   const StyleElement();
-
-  @override
-  StyleElement<S> merge(covariant StyleElement<S>? other);
 }
 
-abstract class SpecAttribute<S extends Spec<S>> extends StyleElement<S>
-    with Resolvable<ResolvedStyle<S>>, EqualityMixin {
+abstract class SpecAttribute<S extends Spec<S>> extends Mix<ResolvedStyle<S>>
+    with EqualityMixin
+    implements StyleElement {
   final List<VariantSpecAttribute<S>>? variants;
   final List<ModifierAttribute>? modifiers;
   final AnimationConfig? animation;
@@ -146,8 +144,9 @@ abstract class SpecAttribute<S extends Spec<S>> extends StyleElement<S>
   Type get mergeKey => S;
 }
 
-abstract class ModifierAttribute<S extends Modifier<S>> extends StyleElement<S>
-    with Resolvable<S>, EqualityMixin {
+abstract class ModifierAttribute<S extends Modifier<S>> extends Mix<S>
+    with EqualityMixin
+    implements StyleElement {
   const ModifierAttribute();
 
   @override
@@ -161,7 +160,8 @@ abstract class ModifierAttribute<S extends Modifier<S>> extends StyleElement<S>
 }
 
 /// Variant wrapper for conditional styling
-final class VariantSpecAttribute<S extends Spec<S>> implements StyleElement<S> {
+final class VariantSpecAttribute<S extends Spec<S>> extends Mixable<S>
+    implements StyleElement {
   final Variant variant;
   final SpecAttribute<S> _style;
 
@@ -309,22 +309,6 @@ class Style extends SpecAttribute<MultiSpec> {
 
         case ModifierAttribute():
           modifierList.add(element);
-
-        default:
-          // For other StyleElement types (like Mixable/DTOs), we don't support them yet
-          throw FlutterError.fromParts([
-            ErrorSummary(
-              'Unsupported StyleElement type encountered in Style creation.',
-            ),
-            ErrorDescription(
-              'The StyleElement of type ${element.runtimeType} is not supported.',
-            ),
-            ErrorHint(
-              'StyleElements must be subclasses of one of the following types: '
-              'SpecAttribute, VariantSpecAttribute, ModifierAttribute, or Style (MultiSpecAttribute). '
-              'For DTOs, use utility functions like \$box.color() instead of direct DTOs.',
-            ),
-          ]);
       }
     }
 

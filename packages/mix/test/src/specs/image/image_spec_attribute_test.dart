@@ -132,7 +132,7 @@ void main() {
       });
     });
 
-    group('resolveSpec', () {
+    group('Resolution', () {
       test('resolves to ImageSpec with correct properties', () {
         final attribute = ImageSpecAttribute.only(
           width: 200.0,
@@ -144,9 +144,11 @@ void main() {
         );
 
         final context = SpecTestHelper.createMockContext();
-        final spec = attribute.resolveSpec(context);
+        final resolved = attribute.resolve(context);
+        final spec = resolved.spec;
 
-        expect(spec.width, 200.0);
+        expect(spec, isNotNull);
+        expect(spec!.width, 200.0);
         expect(spec.height, 150.0);
         expect(spec.color, Colors.blue);
         expect(spec.fit, BoxFit.cover);
@@ -157,9 +159,11 @@ void main() {
       test('resolves to ImageSpec with null properties when not set', () {
         final attribute = ImageSpecAttribute.only(width: 200.0);
         final context = SpecTestHelper.createMockContext();
-        final spec = attribute.resolveSpec(context);
+        final resolved = attribute.resolve(context);
+        final spec = resolved.spec;
 
-        expect(spec.width, 200.0);
+        expect(spec, isNotNull);
+        expect(spec!.width, 200.0);
         expect(spec.height, isNull);
         expect(spec.color, isNull);
         expect(spec.repeat, isNull);
@@ -257,6 +261,61 @@ void main() {
 
         final alignmentAttr = attribute.alignment(Alignment.center);
         expect(alignmentAttr, isA<ImageSpecAttribute>());
+      });
+    });
+
+    group('Builder pattern', () {
+      test('builder methods create new instances', () {
+        final original = ImageSpecAttribute();
+        final modified = original.width(100.0);
+
+        expect(identical(original, modified), isFalse);
+        expect(original.$width, isNull);
+        expect(modified.$width?.getValue(), 100.0);
+      });
+
+      test('builder methods can be chained fluently with merge', () {
+        final attribute = ImageSpecAttribute()
+          .width(200.0)
+          .merge(ImageSpecAttribute().height(150.0))
+          .merge(ImageSpecAttribute().fit(BoxFit.cover))
+          .merge(ImageSpecAttribute().color(Colors.blue));
+
+        final context = SpecTestHelper.createMockContext();
+        final resolved = attribute.resolve(context);
+        final spec = resolved.spec;
+
+        expect(spec!.width, 200.0);
+        expect(spec.height, 150.0);
+        expect(spec.fit, BoxFit.cover);
+        expect(spec.color, Colors.blue);
+      });
+    });
+
+    group('Props getter', () {
+      test('props includes all properties', () {
+        final attribute = ImageSpecAttribute(
+          width: Prop(200.0),
+          height: Prop(150.0),
+          color: Prop(Colors.blue),
+          repeat: Prop(ImageRepeat.repeat),
+          fit: Prop(BoxFit.cover),
+          alignment: Prop(Alignment.center),
+          centerSlice: Prop(const Rect.fromLTWH(10, 10, 20, 20)),
+          filterQuality: Prop(FilterQuality.high),
+          colorBlendMode: Prop(BlendMode.multiply),
+        );
+
+        expect(attribute.props.length, 9);
+        expect(attribute.props, contains(attribute.$width));
+        expect(attribute.props, contains(attribute.$height));
+        expect(attribute.props, contains(attribute.$color));
+        expect(attribute.props, contains(attribute.$repeat));
+        expect(attribute.props, contains(attribute.$fit));
+        expect(attribute.props, contains(attribute.$alignment));
+        expect(attribute.props, contains(attribute.$centerSlice));
+        expect(attribute.props, contains(attribute.$filterQuality));
+        expect(attribute.props, contains(attribute.$colorBlendMode));
       });
     });
 

@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../helpers/testing_utils.dart';
-import '../../helpers/testing_utils.dart';
 
 void main() {
   group('TextHeightBehaviorMix', () {
@@ -17,7 +16,10 @@ void main() {
 
         expect(textHeightBehaviorMix.applyHeightToFirstAscent, isProp(false));
         expect(textHeightBehaviorMix.applyHeightToLastDescent, isProp(true));
-        expect(textHeightBehaviorMix.leadingDistribution, isProp(TextLeadingDistribution.even));
+        expect(
+          textHeightBehaviorMix.leadingDistribution,
+          isProp(TextLeadingDistribution.even),
+        );
       });
 
       test('value constructor extracts properties from TextHeightBehavior', () {
@@ -27,11 +29,16 @@ void main() {
           leadingDistribution: TextLeadingDistribution.proportional,
         );
 
-        final textHeightBehaviorMix = TextHeightBehaviorMix.value(textHeightBehavior);
+        final textHeightBehaviorMix = TextHeightBehaviorMix.value(
+          textHeightBehavior,
+        );
 
         expect(textHeightBehaviorMix.applyHeightToFirstAscent, isProp(true));
         expect(textHeightBehaviorMix.applyHeightToLastDescent, isProp(false));
-        expect(textHeightBehaviorMix.leadingDistribution, isProp(TextLeadingDistribution.proportional));
+        expect(
+          textHeightBehaviorMix.leadingDistribution,
+          isProp(TextLeadingDistribution.proportional),
+        );
       });
 
       test('maybeValue returns null for null input', () {
@@ -40,7 +47,9 @@ void main() {
       });
 
       test('maybeValue returns TextHeightBehaviorMix for non-null input', () {
-        const textHeightBehavior = TextHeightBehavior(applyHeightToFirstAscent: false);
+        const textHeightBehavior = TextHeightBehavior(
+          applyHeightToFirstAscent: false,
+        );
         final result = TextHeightBehaviorMix.maybeValue(textHeightBehavior);
 
         expect(result, isNotNull);
@@ -74,13 +83,18 @@ void main() {
 
         expect(resolved.applyHeightToFirstAscent, false);
         expect(resolved.applyHeightToLastDescent, true); // default
-        expect(resolved.leadingDistribution, TextLeadingDistribution.proportional); // default
+        expect(
+          resolved.leadingDistribution,
+          TextLeadingDistribution.proportional,
+        ); // default
       });
     });
 
     group('merge', () {
       test('returns this when other is null', () {
-        final textHeightBehaviorMix = TextHeightBehaviorMix.only(applyHeightToFirstAscent: false);
+        final textHeightBehaviorMix = TextHeightBehaviorMix.only(
+          applyHeightToFirstAscent: false,
+        );
         final merged = textHeightBehaviorMix.merge(null);
 
         expect(merged, same(textHeightBehaviorMix));
@@ -101,7 +115,10 @@ void main() {
 
         expect(merged.applyHeightToFirstAscent, isProp(false));
         expect(merged.applyHeightToLastDescent, isProp(false));
-        expect(merged.leadingDistribution, isProp(TextLeadingDistribution.even));
+        expect(
+          merged.leadingDistribution,
+          isProp(TextLeadingDistribution.even),
+        );
       });
     });
 
@@ -118,12 +135,19 @@ void main() {
         );
 
         expect(textHeightBehaviorMix1, textHeightBehaviorMix2);
-        expect(textHeightBehaviorMix1.hashCode, textHeightBehaviorMix2.hashCode);
+        expect(
+          textHeightBehaviorMix1.hashCode,
+          textHeightBehaviorMix2.hashCode,
+        );
       });
 
       test('returns false when properties are different', () {
-        final textHeightBehaviorMix1 = TextHeightBehaviorMix.only(applyHeightToFirstAscent: false);
-        final textHeightBehaviorMix2 = TextHeightBehaviorMix.only(applyHeightToFirstAscent: true);
+        final textHeightBehaviorMix1 = TextHeightBehaviorMix.only(
+          applyHeightToFirstAscent: false,
+        );
+        final textHeightBehaviorMix2 = TextHeightBehaviorMix.only(
+          applyHeightToFirstAscent: true,
+        );
 
         expect(textHeightBehaviorMix1, isNot(textHeightBehaviorMix2));
       });

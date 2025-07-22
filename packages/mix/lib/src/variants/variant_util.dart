@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../core/spec.dart';
+import '../core/style.dart';
 import '../core/variant.dart';
 
 /// Utility class for creating variant attributes with context-based variants
@@ -238,31 +240,78 @@ class OnContextVariantUtility {
   }
 }
 
+/// Builder class for creating variant-based styling attributes.
+/// 
+/// This class wraps a [Variant] and provides methods to create
+/// [VariantSpecAttribute] instances with styling rules that apply
+/// when the variant condition is met.
+@immutable
 class VariantAttributeBuilder {
-  final Variant _variant;
-  const VariantAttributeBuilder(this._variant);
-  // TODO: Fix this method - Style constructor and MultiSpec issues
-  // VariantAttribute<MultiSpec> call([
-  //   Attribute? p1,
-  //   Attribute? p2,
-  //   Attribute? p3,
-  //   Attribute? p4,
-  //   Attribute? p5,
-  //   Attribute? p6,
-  //   Attribute? p7,
-  //   Attribute? p8,
-  // ]) {
-  //   final attributes = [
-  //     p1,
-  //     p2,
-  //     p3,
-  //     p4,
-  //     p5,
-  //     p6,
-  //     p7,
-  //     p8,
-  //   ].whereType<Attribute>().toList();
-
-  //   return VariantAttribute<MultiSpec>(_variant, Style(attributes));
-  // }
+  /// The variant condition that determines when styling should apply
+  final Variant variant;
+  
+  /// Creates a new [VariantAttributeBuilder] with the given [variant]
+  const VariantAttributeBuilder(this.variant);
+  
+  /// Creates a [VariantSpecAttribute] that applies the given styling elements
+  /// when this variant's condition is met.
+  ///
+  /// Supports both single and multiple style elements:
+  /// ```dart
+  /// // Single attribute
+  /// final hoverStyle = $on.hover($box.color.blue());
+  /// 
+  /// // Multiple attributes  
+  /// final darkStyle = $on.dark(
+  ///   $box.color.white(),
+  ///   $text.style.color.black(),
+  /// );
+  /// ```
+  VariantSpecAttribute<MultiSpec> call([
+    StyleElement? p1,
+    StyleElement? p2,
+    StyleElement? p3,
+    StyleElement? p4,
+    StyleElement? p5,
+    StyleElement? p6,
+    StyleElement? p7,
+    StyleElement? p8,
+    StyleElement? p9,
+    StyleElement? p10,
+  ]) {
+    final elements = [
+      p1,
+      p2,
+      p3,
+      p4,
+      p5,
+      p6,
+      p7,
+      p8,
+      p9,
+      p10,
+    ].whereType<StyleElement>().toList();
+    
+    if (elements.isEmpty) {
+      throw ArgumentError('At least one StyleElement must be provided');
+    }
+    
+    // Create a Style to contain the elements
+    final style = Style.create(elements);
+    
+    return VariantSpecAttribute(variant, style);
+  }
+  
+  @override
+  String toString() => 'VariantAttributeBuilder($variant)';
+  
+  @override
+  bool operator ==(Object other) =>
+    identical(this, other) ||
+    other is VariantAttributeBuilder && 
+    runtimeType == other.runtimeType &&
+    variant == other.variant;
+    
+  @override
+  int get hashCode => variant.hashCode;
 }

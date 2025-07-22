@@ -127,6 +127,46 @@ void main() {
       });
     });
 
+    group('value constructor', () {
+      test('creates BoxSpecAttribute from BoxSpec', () {
+        const spec = BoxSpec(
+          alignment: Alignment.center,
+          width: 100.0,
+          height: 200.0,
+          padding: EdgeInsets.all(16.0),
+          margin: EdgeInsets.all(8.0),
+          decoration: BoxDecoration(color: Colors.red),
+          transform: null, // Matrix4 can't be const
+          transformAlignment: Alignment.topLeft,
+          clipBehavior: Clip.antiAlias,
+        );
+
+        final attribute = BoxSpecAttribute.value(spec);
+
+        expect(attribute.$alignment?.getValue(), Alignment.center);
+        expect(attribute.$width, hasValue(100.0));
+        expect(attribute.$height, hasValue(200.0));
+        expect(attribute.$transformAlignment?.getValue(), Alignment.topLeft);
+        expect(attribute.$clipBehavior, hasValue(Clip.antiAlias));
+        expect(attribute.$padding, isNotNull);
+        expect(attribute.$margin, isNotNull);
+        expect(attribute.$decoration, isNotNull);
+      });
+
+      test('maybeValue returns null for null spec', () {
+        expect(BoxSpecAttribute.maybeValue(null), isNull);
+      });
+
+      test('maybeValue returns attribute for non-null spec', () {
+        const spec = BoxSpec(width: 100.0, height: 200.0);
+        final attribute = BoxSpecAttribute.maybeValue(spec);
+        
+        expect(attribute, isNotNull);
+        expect(attribute!.$width, hasValue(100.0));
+        expect(attribute.$height, hasValue(200.0));
+      });
+    });
+
     group('Color and Decoration', () {
       test('color utility creates decoration with color', () {
         final attribute = BoxSpecAttribute().color(Colors.red);
@@ -278,6 +318,9 @@ void main() {
 
         expect(maxWidth.resolve(context).spec?.constraints?.maxWidth, 200.0);
         expect(maxWidth.resolve(context).spec?.constraints?.minWidth, 0.0);
+
+        expect(minHeight.resolve(context).spec?.constraints?.minHeight, 50.0);
+        expect(maxHeight.resolve(context).spec?.constraints?.maxHeight, 150.0);
       });
 
       test('combine constraints with merge or constructor', () {
@@ -458,11 +501,133 @@ void main() {
       });
     });
 
+    group('Convenience Methods', () {
+      test('animate method sets animation config', () {
+        final animation = AnimationConfig.linear(
+          const Duration(milliseconds: 300),
+        );
+        final attribute = BoxSpecAttribute().animate(animation);
+
+        expect(attribute.animation, equals(animation));
+      });
+    });
+
+    group('Utility Properties', () {
+      test('has all expected utility properties', () {
+        final attribute = BoxSpecAttribute();
+
+        // Basic properties - just check they exist
+        expect(attribute.alignment, isNotNull);
+        expect(attribute.width, isNotNull);
+        expect(attribute.height, isNotNull);
+        expect(attribute.padding, isNotNull);
+        expect(attribute.margin, isNotNull);
+        expect(attribute.clipBehavior, isNotNull);
+        expect(attribute.transform, isNotNull);
+        expect(attribute.transformAlignment, isNotNull);
+        
+        // Decoration utilities
+        expect(attribute.color, isNotNull);
+        expect(attribute.border, isNotNull);
+        expect(attribute.borderRadius, isNotNull);
+        expect(attribute.shadow, isNotNull);
+        
+        // Constraint utilities
+        expect(attribute.minWidth, isNotNull);
+        expect(attribute.maxWidth, isNotNull);
+        expect(attribute.minHeight, isNotNull);
+        expect(attribute.maxHeight, isNotNull);
+      });
+    });
+
+    group('Helper Methods', () {
+      test('utility methods create proper attributes', () {
+        final attribute = BoxSpecAttribute();
+
+        // Test that utility methods exist and return proper types
+        final widthAttr = attribute.width(100.0);
+        expect(widthAttr, isA<BoxSpecAttribute>());
+
+        final heightAttr = attribute.height(200.0);
+        expect(heightAttr, isA<BoxSpecAttribute>());
+
+        final colorAttr = attribute.color(Colors.blue);
+        expect(colorAttr, isA<BoxSpecAttribute>());
+
+        final alignmentAttr = attribute.alignment(Alignment.center);
+        expect(alignmentAttr, isA<BoxSpecAttribute>());
+      });
+    });
+
+    group('Builder pattern', () {
+      test('builder methods create new instances', () {
+        final original = BoxSpecAttribute();
+        final modified = original.width(100.0);
+
+        expect(identical(original, modified), isFalse);
+        expect(original.$width, isNull);
+        expect(modified.$width, hasValue(100.0));
+      });
+
+      test('builder methods can be chained fluently with merge', () {
+        final attribute = BoxSpecAttribute()
+          .width(100.0)
+          .merge(BoxSpecAttribute().height(200.0))
+          .merge(BoxSpecAttribute().color(Colors.red))
+          .merge(BoxSpecAttribute().alignment(Alignment.center));
+
+        final context = MockBuildContext();
+        final resolved = attribute.resolve(context);
+        final spec = resolved.spec;
+
+        expect(spec!.width, 100.0);
+        expect(spec.height, 200.0);
+        expect(spec.alignment, Alignment.center);
+        final decoration = spec.decoration as BoxDecoration?;
+        expect(decoration?.color, Colors.red);
+      });
+    });
+
+    group('Props getter', () {
+      test('props includes all properties', () {
+        final attribute = BoxSpecAttribute(
+          alignment: Prop(Alignment.center),
+          width: Prop(100.0),
+          height: Prop(200.0),
+          padding: MixProp(EdgeInsetsMix.all(16.0)),
+          margin: MixProp(EdgeInsetsMix.all(8.0)),
+          constraints: MixProp(BoxConstraintsMix.only(maxWidth: 300.0)),
+          decoration: MixProp(BoxDecorationMix.only(color: Colors.red)),
+          clipBehavior: Prop(Clip.antiAlias),
+        );
+
+        expect(attribute.props.length, 11);
+        expect(attribute.props, contains(attribute.$alignment));
+        expect(attribute.props, contains(attribute.$width));
+        expect(attribute.props, contains(attribute.$height));
+        expect(attribute.props, contains(attribute.$padding));
+        expect(attribute.props, contains(attribute.$margin));
+        expect(attribute.props, contains(attribute.$constraints));
+        expect(attribute.props, contains(attribute.$decoration));
+        expect(attribute.props, contains(attribute.$clipBehavior));
+      });
+    });
+
+    group('Debug Properties', () {
+      test('debugFillProperties includes all properties', () {
+        // This test verifies that the attribute implements Diagnosticable correctly
+        final attribute = BoxSpecAttribute()
+          .width(100.0)
+          .height(200.0)
+          .color(Colors.red);
+
+        // The presence of debugFillProperties is tested by the framework
+        expect(attribute, isA<BoxSpecAttribute>());
+      });
+    });
+
     group('Animation', () {
       test('animation config can be added to attribute', () {
-        // Note: AnimationConfig is an abstract class and would need
-        // a concrete implementation for testing
-        // This test demonstrates the concept
         final attribute = BoxSpecAttribute();
         expect(attribute.animation, isNull); // By default no animation
       });

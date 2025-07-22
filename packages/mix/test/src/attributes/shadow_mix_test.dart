@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../helpers/testing_utils.dart';
-import '../../helpers/testing_utils.dart';
 
 void main() {
   group('ShadowMix', () {
@@ -85,10 +84,7 @@ void main() {
       });
 
       test('merges properties correctly', () {
-        final first = ShadowMix.only(
-          blurRadius: 10.0,
-          color: Colors.blue,
-        );
+        final first = ShadowMix.only(blurRadius: 10.0, color: Colors.blue);
 
         final second = ShadowMix.only(
           color: Colors.red,
@@ -105,15 +101,9 @@ void main() {
 
     group('Equality', () {
       test('returns true when all properties are the same', () {
-        final shadowMix1 = ShadowMix.only(
-          blurRadius: 10.0,
-          color: Colors.blue,
-        );
+        final shadowMix1 = ShadowMix.only(blurRadius: 10.0, color: Colors.blue);
 
-        final shadowMix2 = ShadowMix.only(
-          blurRadius: 10.0,
-          color: Colors.blue,
-        );
+        final shadowMix2 = ShadowMix.only(blurRadius: 10.0, color: Colors.blue);
 
         expect(shadowMix1, shadowMix2);
         expect(shadowMix1.hashCode, shadowMix2.hashCode);

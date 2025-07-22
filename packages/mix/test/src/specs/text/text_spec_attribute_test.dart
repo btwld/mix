@@ -143,7 +143,7 @@ void main() {
       });
     });
 
-    group('resolveSpec', () {
+    group('Resolution', () {
       test('resolves to TextSpec with correct properties', () {
         final attribute = TextSpecAttribute.only(
           overflow: TextOverflow.ellipsis,
@@ -155,9 +155,11 @@ void main() {
         );
 
         final context = SpecTestHelper.createMockContext();
-        final spec = attribute.resolveSpec(context);
+        final resolved = attribute.resolve(context);
+        final spec = resolved.spec;
 
-        expect(spec.overflow, TextOverflow.ellipsis);
+        expect(spec, isNotNull);
+        expect(spec!.overflow, TextOverflow.ellipsis);
         expect(spec.maxLines, 3);
         expect(spec.textAlign, TextAlign.center);
         expect(spec.style, isA<TextStyle>());
@@ -168,9 +170,11 @@ void main() {
       test('resolves to TextSpec with null properties when not set', () {
         final attribute = TextSpecAttribute.only(maxLines: 3);
         final context = SpecTestHelper.createMockContext();
-        final spec = attribute.resolveSpec(context);
+        final resolved = attribute.resolve(context);
+        final spec = resolved.spec;
 
-        expect(spec.maxLines, 3);
+        expect(spec, isNotNull);
+        expect(spec!.maxLines, 3);
         expect(spec.overflow, isNull);
         expect(spec.textAlign, isNull);
         expect(spec.style, isNull);
@@ -296,6 +300,55 @@ void main() {
 
         final colorAttr = attribute.color(Colors.blue);
         expect(colorAttr, isA<TextSpecAttribute>());
+      });
+    });
+
+    group('Builder pattern', () {
+      test('builder methods create new instances', () {
+        final original = TextSpecAttribute();
+        final modified = original.maxLines(3);
+
+        expect(identical(original, modified), isFalse);
+        expect(original.$maxLines, isNull);
+        expect(modified.$maxLines?.getValue(), 3);
+      });
+
+      test('builder methods can be chained fluently with merge', () {
+        final attribute = TextSpecAttribute()
+          .maxLines(3)
+          .merge(TextSpecAttribute().overflow(TextOverflow.ellipsis))
+          .merge(TextSpecAttribute().textAlign(TextAlign.center))
+          .merge(TextSpecAttribute().fontSize(16.0));
+
+        final context = SpecTestHelper.createMockContext();
+        final resolved = attribute.resolve(context);
+        final spec = resolved.spec;
+
+        expect(spec!.maxLines, 3);
+        expect(spec.overflow, TextOverflow.ellipsis);
+        expect(spec.textAlign, TextAlign.center);
+        expect(spec.style, isA<TextStyle>());
+      });
+    });
+
+    group('Props getter', () {
+      test('props includes all properties', () {
+        final attribute = TextSpecAttribute(
+          overflow: Prop(TextOverflow.ellipsis),
+          strutStyle: MixProp(StrutStyleMix(fontSize: Prop(16.0))),
+          textAlign: Prop(TextAlign.center),
+          maxLines: Prop(3),
+          style: MixProp(TextStyleMix(fontSize: Prop(14.0))),
+          softWrap: Prop(false),
+        );
+
+        expect(attribute.props.length, 11);
+        expect(attribute.props, contains(attribute.$overflow));
+        expect(attribute.props, contains(attribute.$strutStyle));
+        expect(attribute.props, contains(attribute.$textAlign));
+        expect(attribute.props, contains(attribute.$maxLines));
+        expect(attribute.props, contains(attribute.$style));
+        expect(attribute.props, contains(attribute.$softWrap));
       });
     });
 

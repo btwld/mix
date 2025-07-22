@@ -125,38 +125,38 @@ void main() {
       });
     });
 
-    group('MixProp equality behavior', () {
-      test('identical MixProps are equal', () {
+    group('Prop equality behavior', () {
+      test('identical Props are equal', () {
         final shadow1 = BoxShadowMix.only(color: Colors.red, blurRadius: 5.0);
         final shadow2 = BoxShadowMix.only(color: Colors.red, blurRadius: 5.0);
 
-        final prop1 = MixProp(shadow1);
-        final prop2 = MixProp(shadow2);
+        final prop1 = Prop(shadow1);
+        final prop2 = Prop(shadow2);
 
         expect(prop1, equals(prop2));
       });
 
-      test('different MixProps are not equal', () {
+      test('different Props are not equal', () {
         final shadow1 = BoxShadowMix.only(color: Colors.red, blurRadius: 5.0);
         final shadow2 = BoxShadowMix.only(color: Colors.blue, blurRadius: 5.0);
 
-        final prop1 = MixProp(shadow1);
-        final prop2 = MixProp(shadow2);
+        final prop1 = Prop(shadow1);
+        final prop2 = Prop(shadow2);
 
         expect(prop1, isNot(equals(prop2)));
       });
 
-      test('merged MixProps with identical values equals original', () {
+      test('merged Props with identical values equals original', () {
         final shadow1 = BoxShadowMix.only(color: Colors.red, blurRadius: 5.0);
         final shadow2 = BoxShadowMix.only(color: Colors.blue, blurRadius: 10.0);
 
-        final prop1 = MixProp(shadow1);
-        final prop2 = MixProp(shadow2);
+        final prop1 = Prop(shadow1);
+        final prop2 = Prop(shadow2);
         final merged = prop1.merge(prop2);
 
         // The merged prop should have the merged shadow
         final expectedShadow = shadow1.merge(shadow2);
-        final expected = MixProp(expectedShadow);
+        final expected = Prop(expectedShadow);
 
         expect(merged, equals(expected));
       });
