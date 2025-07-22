@@ -2,32 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-// Mock MixDirective for testing
-class MockMixDirective<T> extends MixDirective<T> {
-  final String name;
-  final T Function(T) transformer;
-
-  const MockMixDirective(this.name, this.transformer);
-
-  @override
-  String? get debugLabel => name;
-
-  @override
-  T apply(T value) => transformer(value);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is MockMixDirective<T> &&
-          runtimeType == other.runtimeType &&
-          name == other.name;
-
-  @override
-  int get hashCode => name.hashCode;
-
-  @override
-  String toString() => 'MockMixDirective($name)';
-}
+import '../../helpers/testing_utils.dart';
 
 void main() {
   group('Prop equality behavior', () {
@@ -61,7 +36,7 @@ void main() {
         final merged = prop1.merge(prop2);
 
         // The merged prop should have the same value as prop2 (other wins)
-        expect(merged.value, prop2.value);
+        expect(merged.getValue(), prop2.getValue());
 
         // But importantly, the merged prop should be equal to a new prop with the same value
         final expected = Prop(Colors.blue);
@@ -106,8 +81,8 @@ void main() {
         final directive1 = MockMixDirective<Color>('brighten', (c) => c);
         final directive2 = MockMixDirective<Color>('brighten', (c) => c);
 
-        final prop1 = Prop.fromDirectives([directive1]);
-        final prop2 = Prop.fromDirectives([directive2]);
+        final prop1 = Prop.directives([directive1]);
+        final prop2 = Prop.directives([directive2]);
 
         expect(prop1, equals(prop2));
       });
@@ -116,8 +91,8 @@ void main() {
         final directive1 = MockMixDirective<Color>('brighten', (c) => c);
         final directive2 = MockMixDirective<Color>('darken', (c) => c);
 
-        final prop1 = Prop.fromDirectives([directive1]);
-        final prop2 = Prop.fromDirectives([directive2]);
+        final prop1 = Prop.directives([directive1]);
+        final prop2 = Prop.directives([directive2]);
 
         expect(prop1, isNot(equals(prop2)));
       });
@@ -126,8 +101,8 @@ void main() {
         final directive1 = MockMixDirective<Color>('brighten', (c) => c);
         final directive2 = MockMixDirective<Color>('darken', (c) => c);
 
-        final prop1 = Prop.fromDirectives([directive1]);
-        final prop2 = Prop.fromDirectives([directive2]);
+        final prop1 = Prop.directives([directive1]);
+        final prop2 = Prop.directives([directive2]);
         final merged = prop1.merge(prop2);
 
         expect(merged.directives, hasLength(2));
@@ -139,12 +114,12 @@ void main() {
         final directive1 = MockMixDirective<Color>('brighten', (c) => c);
         final directive2 = MockMixDirective<Color>('darken', (c) => c);
 
-        final prop1 = Prop.fromDirectives([directive1]);
-        final prop2 = Prop.fromDirectives([directive2]);
+        final prop1 = Prop.directives([directive1]);
+        final prop2 = Prop.directives([directive2]);
         final merged = prop1.merge(prop2);
 
         // Create expected prop with same directives - use List<MixDirective<Color>> to match merge result
-        final expected = Prop.fromDirectives([directive1, directive2]);
+        final expected = Prop.directives([directive1, directive2]);
 
         expect(merged, equals(expected));
       });
@@ -152,8 +127,8 @@ void main() {
 
     group('MixProp equality behavior', () {
       test('identical MixProps are equal', () {
-        final shadow1 = BoxShadowMix(color: Colors.red, blurRadius: 5.0);
-        final shadow2 = BoxShadowMix(color: Colors.red, blurRadius: 5.0);
+        final shadow1 = BoxShadowMix.only(color: Colors.red, blurRadius: 5.0);
+        final shadow2 = BoxShadowMix.only(color: Colors.red, blurRadius: 5.0);
 
         final prop1 = MixProp(shadow1);
         final prop2 = MixProp(shadow2);
@@ -162,8 +137,8 @@ void main() {
       });
 
       test('different MixProps are not equal', () {
-        final shadow1 = BoxShadowMix(color: Colors.red, blurRadius: 5.0);
-        final shadow2 = BoxShadowMix(color: Colors.blue, blurRadius: 5.0);
+        final shadow1 = BoxShadowMix.only(color: Colors.red, blurRadius: 5.0);
+        final shadow2 = BoxShadowMix.only(color: Colors.blue, blurRadius: 5.0);
 
         final prop1 = MixProp(shadow1);
         final prop2 = MixProp(shadow2);
@@ -172,8 +147,8 @@ void main() {
       });
 
       test('merged MixProps with identical values equals original', () {
-        final shadow1 = BoxShadowMix(color: Colors.red, blurRadius: 5.0);
-        final shadow2 = BoxShadowMix(color: Colors.blue, blurRadius: 10.0);
+        final shadow1 = BoxShadowMix.only(color: Colors.red, blurRadius: 5.0);
+        final shadow2 = BoxShadowMix.only(color: Colors.blue, blurRadius: 10.0);
 
         final prop1 = MixProp(shadow1);
         final prop2 = MixProp(shadow2);
@@ -189,15 +164,15 @@ void main() {
 
     group('Edge cases', () {
       test('Props with null values are equal', () {
-        final prop1 = Prop<Color?>.fromValue(null);
-        final prop2 = Prop<Color?>.fromValue(null);
+        final prop1 = Prop<Color?>(null);
+        final prop2 = Prop<Color?>(null);
 
         expect(prop1, equals(prop2));
       });
 
       test('empty directive lists are equal regardless of creation method', () {
         final prop1 = Prop(Colors.red);
-        final prop2 = Prop.fromDirectives(const []);
+        final prop2 = Prop.directives(const []);
 
         // Both should have empty directive lists
         expect(prop1.directives, isNull);

@@ -246,9 +246,7 @@ class Prop<T> extends PropBase<T> {
   const Prop._({this.source, super.directives, super.animation});
 
   /// Creates a Prop with a direct value
-  factory Prop(T value) {
-    return Prop._(source: ValueSource(value));
-  }
+  Prop(T value) : this._(source: ValueSource(value));
 
   /// Creates a Prop with a token reference
   factory Prop.token(MixToken<T> token) {

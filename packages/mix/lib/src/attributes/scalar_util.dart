@@ -1049,8 +1049,6 @@ final class RadiusUtility<T extends SpecAttribute<Object?>>
     extends PropUtility<T, Radius> {
   const RadiusUtility(super.builder);
 
-  // TODO: Update to use MixableToken<Radius> when RadiusMix integration is complete
-
   /// Creates a [Style] instance with [Radius.zero] value.
   T zero() => call(Radius.zero);
 

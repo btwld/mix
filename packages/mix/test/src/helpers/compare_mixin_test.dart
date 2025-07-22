@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
@@ -6,12 +7,12 @@ void main() {
   test('mapPropsToString', () {
     final firstStyle = Style(
       $box.alignment.center(),
-      $box.borderRadius.all(10),
+      $box.borderRadius.all(Radius.circular(10)),
       $box.color.red(),
     );
     final secondStyle = Style(
       $box.alignment.center(),
-      $box.borderRadius.all(10),
+      $box.borderRadius.all(Radius.circular(10)),
       $box.color.red(),
     );
 

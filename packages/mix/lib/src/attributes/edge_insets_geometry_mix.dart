@@ -12,6 +12,82 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
 
   const EdgeInsetsGeometryMix({this.top, this.bottom});
 
+  /// Creates insets where all the offsets are `value`.
+  static EdgeInsetsGeometryMix all(double value) => EdgeInsetsMix.all(value);
+
+  /// Creates [EdgeInsets] with only the given values non-zero.
+  static EdgeInsetsGeometryMix only({
+    double? left,
+    double? right,
+    double? top,
+    double? bottom,
+    double? start,
+    double? end,
+  }) {
+    final isDirectional = start != null || end != null;
+    final isNotDirectional = left != null || right != null;
+
+    assert(
+      (!isDirectional && !isNotDirectional) ||
+          isDirectional == !isNotDirectional,
+      'Cannot provide both directional and non-directional values',
+    );
+    if (start != null || end != null) {
+      return EdgeInsetsDirectionalMix.only(
+        top: top,
+        bottom: bottom,
+        start: start,
+        end: end,
+      );
+    }
+
+    return EdgeInsetsMix.only(
+      top: top,
+      bottom: bottom,
+      left: left,
+      right: right,
+    );
+  }
+
+  /// Creates [EdgeInsetsDirectional] with only the given values non-zero.
+  static EdgeInsetsDirectionalMix directional({
+    double? start,
+    double? end,
+    double? top,
+    double? bottom,
+  }) => EdgeInsetsDirectionalMix.only(
+    start: start,
+    end: end,
+    top: top,
+    bottom: bottom,
+  );
+
+  /// Creates [EdgeInsets] with symmetrical vertical and horizontal offsets.
+  static EdgeInsetsMix symmetric({
+    double? vertical,
+    double? horizontal,
+  }) => EdgeInsetsMix.symmetric(
+    vertical: vertical,
+    horizontal: horizontal,
+  );
+
+  /// Creates [EdgeInsets] from offsets from the left, top, right, and bottom.
+  static EdgeInsetsMix fromLTRB(
+    double left,
+    double top,
+    double right,
+    double bottom,
+  ) => EdgeInsetsMix.fromLTRB(left, top, right, bottom);
+
+  /// Creates [EdgeInsetsDirectional] from offsets from the start, top, end, and
+  /// bottom.
+  static EdgeInsetsDirectionalMix fromSTEB(
+    double start,
+    double top,
+    double end,
+    double bottom,
+  ) => EdgeInsetsDirectionalMix.fromSTEB(start, top, end, bottom);
+
   factory EdgeInsetsGeometryMix.value(T value) {
     return switch (value) {
           (EdgeInsets edgeInsets) => EdgeInsetsMix.value(edgeInsets),
@@ -32,38 +108,6 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
         : EdgeInsetsGeometryMix.value(edgeInsetsGeometry);
   }
 
-  static EdgeInsetsGeometryMix only({
-    double? top,
-    double? bottom,
-    double? left,
-    double? right,
-    double? start,
-    double? end,
-  }) {
-    final isDirectional = start != null || end != null;
-    final isNotDirectional = left != null || right != null;
-
-    assert(
-      (!isDirectional && !isNotDirectional) ||
-          isDirectional == !isNotDirectional,
-      'Cannot provide both directional and non-directional values',
-    );
-    if (start != null || end != null) {
-      return EdgeInsetsDirectionalMix(
-        top: Prop.maybe(top),
-        bottom: Prop.maybe(bottom),
-        start: Prop.maybe(start),
-        end: Prop.maybe(end),
-      );
-    }
-
-    return EdgeInsetsMix(
-      top: Prop.maybe(top),
-      bottom: Prop.maybe(bottom),
-      left: Prop.maybe(left),
-      right: Prop.maybe(right),
-    );
-  }
 
   static EdgeInsetsGeometryMix? tryToMerge(
     EdgeInsetsGeometryMix? a,
@@ -113,10 +157,34 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
 
   EdgeInsetsMix.only({double? top, double? bottom, double? left, double? right})
     : this(
-        top: Prop.maybe(top),
-        bottom: Prop.maybe(bottom),
-        left: Prop.maybe(left),
-        right: Prop.maybe(right),
+        top: top != null ? Prop(top) : null,
+        bottom: bottom != null ? Prop(bottom) : null,
+        left: left != null ? Prop(left) : null,
+        right: right != null ? Prop(right) : null,
+      );
+
+  EdgeInsetsMix.all(double value)
+    : this(
+        top: Prop(value),
+        bottom: Prop(value),
+        left: Prop(value),
+        right: Prop(value),
+      );
+
+  EdgeInsetsMix.symmetric({double? vertical, double? horizontal})
+    : this(
+        top: vertical != null ? Prop(vertical) : null,
+        bottom: vertical != null ? Prop(vertical) : null,
+        left: horizontal != null ? Prop(horizontal) : null,
+        right: horizontal != null ? Prop(horizontal) : null,
+      );
+
+  EdgeInsetsMix.fromLTRB(double left, double top, double right, double bottom)
+    : this(
+        top: Prop(top),
+        bottom: Prop(bottom),
+        left: Prop(left),
+        right: Prop(right),
       );
 
   /// Constructor that accepts an [EdgeInsets] value and extracts its properties.
@@ -134,9 +202,6 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
         left: edgeInsets.left,
         right: edgeInsets.right,
       );
-
-  EdgeInsetsMix.all(double value)
-    : this.only(top: value, bottom: value, left: value, right: value);
 
   EdgeInsetsMix.none() : this.all(0);
 
@@ -209,11 +274,35 @@ final class EdgeInsetsDirectionalMix
     double? start,
     double? end,
   }) : this(
-         top: Prop.maybe(top),
-         bottom: Prop.maybe(bottom),
-         start: Prop.maybe(start),
-         end: Prop.maybe(end),
+         top: top != null ? Prop(top) : null,
+         bottom: bottom != null ? Prop(bottom) : null,
+         start: start != null ? Prop(start) : null,
+         end: end != null ? Prop(end) : null,
        );
+
+  EdgeInsetsDirectionalMix.all(double value)
+    : this(
+        top: Prop(value),
+        bottom: Prop(value),
+        start: Prop(value),
+        end: Prop(value),
+      );
+
+  EdgeInsetsDirectionalMix.symmetric({double? vertical, double? horizontal})
+    : this(
+        top: vertical != null ? Prop(vertical) : null,
+        bottom: vertical != null ? Prop(vertical) : null,
+        start: horizontal != null ? Prop(horizontal) : null,
+        end: horizontal != null ? Prop(horizontal) : null,
+      );
+
+  EdgeInsetsDirectionalMix.fromSTEB(double start, double top, double end, double bottom)
+    : this(
+        top: Prop(top),
+        bottom: Prop(bottom),
+        start: Prop(start),
+        end: Prop(end),
+      );
 
   /// Constructor that accepts an [EdgeInsetsDirectional] value and extracts its properties.
   ///
@@ -231,9 +320,6 @@ final class EdgeInsetsDirectionalMix
       end: edgeInsets.end,
     );
   }
-
-  EdgeInsetsDirectionalMix.all(double value)
-    : this.only(top: value, bottom: value, start: value, end: value);
 
   EdgeInsetsDirectionalMix.none() : this.all(0);
 

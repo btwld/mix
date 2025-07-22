@@ -25,16 +25,17 @@ class MockBuildContext extends BuildContext {
   }) {
     if (T == MixScope) {
       return MixScope(
-        data: _mixScopeData ?? const MixScopeData.empty(),
-        child: const SizedBox(),
-      ) as T?;
+            data: _mixScopeData ?? const MixScopeData.empty(),
+            child: const SizedBox(),
+          )
+          as T?;
     }
     return null;
   }
 
   @override
   InheritedElement?
-      getElementForInheritedWidgetOfExactType<T extends InheritedWidget>() {
+  getElementForInheritedWidgetOfExactType<T extends InheritedWidget>() {
     return null;
   }
 
@@ -67,6 +68,32 @@ class MockBuildContext extends BuildContext {
   dynamic noSuchMethod(Invocation invocation) => null;
 }
 
+// Mock MixDirective for testing
+class MockMixDirective<T> extends MixDirective<T> {
+  final String name;
+  final T Function(T) transformer;
+
+  const MockMixDirective(this.name, this.transformer);
+
+  @override
+  String get key => name;
+
+  @override
+  T apply(T value) => transformer(value);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MockMixDirective<T> &&
+          runtimeType == other.runtimeType &&
+          name == other.name;
+
+  @override
+  int get hashCode => name.hashCode;
+
+  @override
+  String toString() => 'MockMixDirective($name)';
+}
 // =============================================================================
 // CUSTOM MATCHERS
 // =============================================================================
@@ -163,7 +190,8 @@ class _ResolvesToMatcher<T> extends Matcher {
       }
     }
 
-    matchState['error'] = 'Expected Resolvable implementation, got ${item.runtimeType}';
+    matchState['error'] =
+        'Expected Resolvable implementation, got ${item.runtimeType}';
     return false;
   }
 
@@ -404,7 +432,9 @@ final class UtilityTestAttribute<T> extends SpecAttribute<MockSpec> {
 
   @override
   MockSpec resolveSpec(BuildContext context) {
-    final resolvedValue = value is Resolvable ? (value as Resolvable).resolve(context) : value;
+    final resolvedValue = value is Resolvable
+        ? (value as Resolvable).resolve(context)
+        : value;
     return MockSpec(resolvedValue: resolvedValue);
   }
 
@@ -464,23 +494,6 @@ extension WidgetTesterExtension on WidgetTester {
 
   /// Pump widget wrapped in MaterialApp
   Future<void> pumpMaterialApp(Widget widget) async {
-    await pumpWidget(
-      MaterialApp(
-        home: Scaffold(body: widget),
-      ),
-    );
+    await pumpWidget(MaterialApp(home: Scaffold(body: widget)));
   }
-}
-
-// =============================================================================
-// TEST DATA
-// =============================================================================
-
-/// Common test data and constants
-class TestData {
-  /// Mock BuildContext instance for testing
-  static final mockContext = MockBuildContext();
-  
-  /// Empty MixScopeData for testing
-  static const emptyMixData = MixScopeData.empty();
 }

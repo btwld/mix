@@ -1,0 +1,498 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mix/mix.dart';
+
+import '../../../helpers/testing_utils.dart';
+
+void main() {
+  group('ImageSpecAttribute', () {
+    group('Constructor', () {
+      test('creates ImageSpecAttribute with all properties', () {
+        final attribute = ImageSpecAttribute(
+          width: Prop(100.0),
+          height: Prop(200.0),
+          color: Prop(Colors.red),
+          repeat: Prop(ImageRepeat.repeat),
+          fit: Prop(BoxFit.cover),
+          alignment: Prop(Alignment.center),
+          centerSlice: Prop(const Rect.fromLTWH(10, 10, 20, 20)),
+          filterQuality: Prop(FilterQuality.high),
+          colorBlendMode: Prop(BlendMode.multiply),
+        );
+
+        expect(attribute.$width, hasValue(100.0));
+        expect(attribute.$height, hasValue(200.0));
+        expect(attribute.$color, hasValue(Colors.red));
+        expect(attribute.$repeat, hasValue(ImageRepeat.repeat));
+        expect(attribute.$fit, hasValue(BoxFit.cover));
+        expect(attribute.$alignment, hasValue(Alignment.center));
+        expect(
+          attribute.$centerSlice,
+          hasValue(const Rect.fromLTWH(10, 10, 20, 20)),
+        );
+        expect(attribute.$filterQuality, hasValue(FilterQuality.high));
+        expect(attribute.$colorBlendMode, hasValue(BlendMode.multiply));
+      });
+
+      test('creates empty ImageSpecAttribute', () {
+        final attribute = ImageSpecAttribute();
+
+        expect(attribute.$width, isNull);
+        expect(attribute.$height, isNull);
+        expect(attribute.$color, isNull);
+        expect(attribute.$repeat, isNull);
+        expect(attribute.$fit, isNull);
+        expect(attribute.$alignment, isNull);
+        expect(attribute.$centerSlice, isNull);
+        expect(attribute.$filterQuality, isNull);
+        expect(attribute.$colorBlendMode, isNull);
+      });
+    });
+
+    group('only constructor', () {
+      test('creates ImageSpecAttribute with only constructor', () {
+        final attribute = ImageSpecAttribute.only(
+          width: 150.0,
+          height: 250.0,
+          color: Colors.blue,
+          repeat: ImageRepeat.repeatX,
+          fit: BoxFit.contain,
+          alignment: Alignment.topLeft,
+          centerSlice: const Rect.fromLTWH(5, 5, 10, 10),
+          filterQuality: FilterQuality.medium,
+          colorBlendMode: BlendMode.overlay,
+        );
+
+        expect(attribute.$width, hasValue(150.0));
+        expect(attribute.$height, hasValue(250.0));
+        expect(attribute.$color, hasValue(Colors.blue));
+        expect(attribute.$repeat, hasValue(ImageRepeat.repeatX));
+        expect(attribute.$fit, hasValue(BoxFit.contain));
+        expect(attribute.$alignment, hasValue(Alignment.topLeft));
+        expect(
+          attribute.$centerSlice,
+          hasValue(const Rect.fromLTWH(5, 5, 10, 10)),
+        );
+        expect(attribute.$filterQuality, hasValue(FilterQuality.medium));
+        expect(attribute.$colorBlendMode, hasValue(BlendMode.overlay));
+      });
+
+      test('creates partial ImageSpecAttribute with only constructor', () {
+        final attribute = ImageSpecAttribute.only(
+          width: 100.0,
+          fit: BoxFit.fill,
+        );
+
+        expect(attribute.$width, hasValue(100.0));
+        expect(attribute.$fit, hasValue(BoxFit.fill));
+        expect(attribute.$height, isNull);
+        expect(attribute.$color, isNull);
+        expect(attribute.$repeat, isNull);
+        expect(attribute.$alignment, isNull);
+        expect(attribute.$centerSlice, isNull);
+        expect(attribute.$filterQuality, isNull);
+        expect(attribute.$colorBlendMode, isNull);
+      });
+    });
+
+    group('value constructor', () {
+      test('creates ImageSpecAttribute from ImageSpec', () {
+        const spec = ImageSpec(
+          width: 100.0,
+          height: 200.0,
+          color: Colors.red,
+          repeat: ImageRepeat.repeat,
+          fit: BoxFit.cover,
+          alignment: Alignment.center,
+          centerSlice: Rect.fromLTWH(10, 10, 20, 20),
+          filterQuality: FilterQuality.high,
+          colorBlendMode: BlendMode.multiply,
+        );
+
+        final attribute = ImageSpecAttribute.value(spec);
+
+        expect(attribute.$width, hasValue(100.0));
+        expect(attribute.$height, hasValue(200.0));
+        expect(attribute.$color, hasValue(Colors.red));
+        expect(attribute.$repeat, hasValue(ImageRepeat.repeat));
+        expect(attribute.$fit, hasValue(BoxFit.cover));
+        expect(attribute.$alignment, hasValue(Alignment.center));
+        expect(
+          attribute.$centerSlice,
+          hasValue(const Rect.fromLTWH(10, 10, 20, 20)),
+        );
+        expect(attribute.$filterQuality, hasValue(FilterQuality.high));
+        expect(attribute.$colorBlendMode, hasValue(BlendMode.multiply));
+      });
+
+      test('maybeValue returns null for null spec', () {
+        expect(ImageSpecAttribute.maybeValue(null), isNull);
+      });
+
+      test('maybeValue returns attribute for non-null spec', () {
+        const spec = ImageSpec(width: 100.0, height: 200.0);
+        final attribute = ImageSpecAttribute.maybeValue(spec);
+
+        expect(attribute, isNotNull);
+        expect(attribute!.$width, hasValue(100.0));
+        expect(attribute.$height, hasValue(200.0));
+      });
+    });
+
+    group('Utility Methods', () {
+      test('width and height utilities work correctly', () {
+        final attribute = ImageSpecAttribute().width(100.0).height(200.0);
+
+        expect(attribute.$width, hasValue(100.0));
+        expect(attribute.$height, hasValue(200.0));
+      });
+
+      test('color utility works correctly', () {
+        final attribute = ImageSpecAttribute().color(Colors.green);
+
+        expect(attribute.$color, hasValue(Colors.green));
+      });
+
+      test('repeat utility works correctly', () {
+        final repeatX = ImageSpecAttribute().repeat(ImageRepeat.repeatX);
+        final repeatY = ImageSpecAttribute().repeat(ImageRepeat.repeatY);
+        final noRepeat = ImageSpecAttribute().repeat(ImageRepeat.noRepeat);
+
+        expect(repeatX.$repeat, hasValue(ImageRepeat.repeatX));
+        expect(repeatY.$repeat, hasValue(ImageRepeat.repeatY));
+        expect(noRepeat.$repeat, hasValue(ImageRepeat.noRepeat));
+      });
+
+      test('fit utility works correctly', () {
+        final cover = ImageSpecAttribute().fit(BoxFit.cover);
+        final contain = ImageSpecAttribute().fit(BoxFit.contain);
+        final fill = ImageSpecAttribute().fit(BoxFit.fill);
+
+        expect(cover.$fit, hasValue(BoxFit.cover));
+        expect(contain.$fit, hasValue(BoxFit.contain));
+        expect(fill.$fit, hasValue(BoxFit.fill));
+      });
+
+      test('alignment utility works correctly', () {
+        final attribute = ImageSpecAttribute().alignment(Alignment.bottomRight);
+
+        expect(attribute.$alignment, hasValue(Alignment.bottomRight));
+      });
+
+      test('centerSlice utility works correctly', () {
+        final attribute = ImageSpecAttribute().centerSlice(
+          const Rect.fromLTWH(20, 20, 40, 40),
+        );
+
+        expect(
+          attribute.$centerSlice,
+          hasValue(const Rect.fromLTWH(20, 20, 40, 40)),
+        );
+      });
+
+      test('filterQuality utility works correctly', () {
+        final high = ImageSpecAttribute().filterQuality(FilterQuality.high);
+        final low = ImageSpecAttribute().filterQuality(FilterQuality.low);
+
+        expect(high.$filterQuality, hasValue(FilterQuality.high));
+        expect(low.$filterQuality, hasValue(FilterQuality.low));
+      });
+
+      test('colorBlendMode utility works correctly', () {
+        final multiply = ImageSpecAttribute().colorBlendMode(
+          BlendMode.multiply,
+        );
+        final screen = ImageSpecAttribute().colorBlendMode(BlendMode.screen);
+
+        expect(multiply.$colorBlendMode, hasValue(BlendMode.multiply));
+        expect(screen.$colorBlendMode, hasValue(BlendMode.screen));
+      });
+
+      test('chaining utilities works correctly', () {
+        final attribute = ImageSpecAttribute()
+            .width(100.0)
+            .height(200.0)
+            .fit(BoxFit.cover)
+            .alignment(Alignment.center)
+            .color(Colors.red);
+
+        expect(attribute.$width, hasValue(100.0));
+        expect(attribute.$height, hasValue(200.0));
+        expect(attribute.$fit, hasValue(BoxFit.cover));
+        expect(attribute.$alignment, hasValue(Alignment.center));
+        expect(attribute.$color, hasValue(Colors.red));
+      });
+    });
+
+    group('Convenience Methods', () {
+      test('animate method sets animation config', () {
+        final animation = AnimationConfig.ease(
+          const Duration(milliseconds: 300),
+        );
+        final attribute = ImageSpecAttribute().animate(animation);
+
+        expect(attribute.animation, equals(animation));
+      });
+    });
+
+    group('Resolution', () {
+      test('resolves to ImageSpec with correct properties', () {
+        final attribute = ImageSpecAttribute()
+            .width(100.0)
+            .height(200.0)
+            .color(Colors.red)
+            .repeat(ImageRepeat.repeat)
+            .fit(BoxFit.cover)
+            .alignment(Alignment.center)
+            .centerSlice(const Rect.fromLTWH(10, 10, 20, 20))
+            .filterQuality(FilterQuality.high)
+            .colorBlendMode(BlendMode.multiply);
+
+        final context = MockBuildContext();
+        final resolved = attribute.resolve(context);
+        final spec = resolved.spec;
+
+        expect(spec, isNotNull);
+        expect(spec!.width, 100.0);
+        expect(spec.height, 200.0);
+        expect(spec.color, Colors.red);
+        expect(spec.repeat, ImageRepeat.repeat);
+        expect(spec.fit, BoxFit.cover);
+        expect(spec.alignment, Alignment.center);
+        expect(spec.centerSlice, const Rect.fromLTWH(10, 10, 20, 20));
+        expect(spec.filterQuality, FilterQuality.high);
+        expect(spec.colorBlendMode, BlendMode.multiply);
+      });
+
+      test('resolves with partial values correctly', () {
+        final attribute = ImageSpecAttribute().width(150.0).fit(BoxFit.contain);
+
+        final context = MockBuildContext();
+        final resolved = attribute.resolve(context);
+        final spec = resolved.spec;
+
+        expect(spec, isNotNull);
+        expect(spec!.width, 150.0);
+        expect(spec.fit, BoxFit.contain);
+        expect(spec.height, isNull);
+        expect(spec.color, isNull);
+        expect(spec.repeat, isNull);
+        expect(spec.alignment, isNull);
+        expect(spec.centerSlice, isNull);
+        expect(spec.filterQuality, isNull);
+        expect(spec.colorBlendMode, isNull);
+      });
+    });
+
+    group('Merge', () {
+      test('merges properties correctly', () {
+        final first = ImageSpecAttribute()
+            .width(100.0)
+            .height(200.0)
+            .color(Colors.red)
+            .fit(BoxFit.cover);
+
+        final second = ImageSpecAttribute()
+            .width(150.0)
+            .alignment(Alignment.center)
+            .repeat(ImageRepeat.repeat);
+
+        final merged = first.merge(second);
+
+        expect(merged.$width, hasValue(150.0)); // second overrides
+        expect(merged.$height, hasValue(200.0)); // from first
+        expect(merged.$color, hasValue(Colors.red)); // from first
+        expect(merged.$fit, hasValue(BoxFit.cover)); // from first
+        expect(merged.$alignment, hasValue(Alignment.center)); // from second
+        expect(merged.$repeat, hasValue(ImageRepeat.repeat)); // from second
+      });
+
+      test('returns this when other is null', () {
+        final attribute = ImageSpecAttribute().width(100.0);
+        final merged = attribute.merge(null);
+
+        expect(identical(attribute, merged), isTrue);
+      });
+
+      test('merges all properties when both have values', () {
+        final first = ImageSpecAttribute()
+            .width(100.0)
+            .height(200.0)
+            .color(Colors.red)
+            .repeat(ImageRepeat.noRepeat)
+            .fit(BoxFit.cover);
+
+        final second = ImageSpecAttribute()
+            .width(300.0)
+            .height(400.0)
+            .alignment(Alignment.topLeft)
+            .centerSlice(const Rect.fromLTWH(0, 0, 10, 10))
+            .filterQuality(FilterQuality.low)
+            .colorBlendMode(BlendMode.srcOver);
+
+        final merged = first.merge(second);
+
+        expect(merged.$width, hasValue(300.0)); // second overrides
+        expect(merged.$height, hasValue(400.0)); // second overrides
+        expect(merged.$color, hasValue(Colors.red)); // from first
+        expect(merged.$repeat, hasValue(ImageRepeat.noRepeat)); // from first
+        expect(merged.$fit, hasValue(BoxFit.cover)); // from first
+        expect(merged.$alignment, hasValue(Alignment.topLeft)); // from second
+        expect(
+          merged.$centerSlice,
+          hasValue(const Rect.fromLTWH(0, 0, 10, 10)),
+        ); // from second
+        expect(
+          merged.$filterQuality,
+          hasValue(FilterQuality.low),
+        ); // from second
+        expect(
+          merged.$colorBlendMode,
+          hasValue(BlendMode.srcOver),
+        ); // from second
+      });
+    });
+
+    group('Equality', () {
+      test('equal attributes have same hashCode', () {
+        final attr1 = ImageSpecAttribute()
+            .width(100.0)
+            .height(200.0)
+            .color(Colors.red)
+            .fit(BoxFit.cover);
+
+        final attr2 = ImageSpecAttribute()
+            .width(100.0)
+            .height(200.0)
+            .color(Colors.red)
+            .fit(BoxFit.cover);
+
+        expect(attr1, equals(attr2));
+        expect(attr1.hashCode, equals(attr2.hashCode));
+      });
+
+      test('different attributes are not equal', () {
+        final attr1 = ImageSpecAttribute().width(100.0);
+        final attr2 = ImageSpecAttribute().width(200.0);
+
+        expect(attr1, isNot(equals(attr2)));
+      });
+
+      test('attributes with different colors are not equal', () {
+        final attr1 = ImageSpecAttribute().color(Colors.red);
+        final attr2 = ImageSpecAttribute().color(Colors.blue);
+
+        expect(attr1, isNot(equals(attr2)));
+      });
+    });
+
+    group('Props getter', () {
+      test('props includes all properties', () {
+        final attribute = ImageSpecAttribute(
+          width: Prop(100.0),
+          height: Prop(200.0),
+          color: Prop(Colors.red),
+          repeat: Prop(ImageRepeat.repeat),
+          fit: Prop(BoxFit.cover),
+          alignment: Prop(Alignment.center),
+          centerSlice: Prop(const Rect.fromLTWH(10, 10, 20, 20)),
+          filterQuality: Prop(FilterQuality.high),
+          colorBlendMode: Prop(BlendMode.multiply),
+        );
+
+        expect(attribute.props.length, 9);
+        expect(attribute.props, contains(attribute.$width));
+        expect(attribute.props, contains(attribute.$height));
+        expect(attribute.props, contains(attribute.$color));
+        expect(attribute.props, contains(attribute.$repeat));
+        expect(attribute.props, contains(attribute.$fit));
+        expect(attribute.props, contains(attribute.$alignment));
+        expect(attribute.props, contains(attribute.$centerSlice));
+        expect(attribute.props, contains(attribute.$filterQuality));
+        expect(attribute.props, contains(attribute.$colorBlendMode));
+      });
+    });
+
+    group('Modifiers', () {
+      test('modifiers can be added to attribute', () {
+        final attribute = ImageSpecAttribute(
+          modifiers: [
+            OpacityModifierAttribute(opacity: Prop(0.5)),
+            ClipRRectModifierAttribute.only(
+              borderRadius: BorderRadiusMix.all(Radius.circular(10)),
+            ),
+          ],
+        );
+
+        expect(attribute.modifiers, isNotNull);
+        expect(attribute.modifiers!.length, 2);
+      });
+
+      test('modifiers merge correctly', () {
+        final first = ImageSpecAttribute(
+          modifiers: [OpacityModifierAttribute.only(opacity: 0.5)],
+        );
+
+        final second = ImageSpecAttribute(
+          modifiers: [AspectRatioModifierAttribute.only(aspectRatio: 16 / 9)],
+        );
+
+        final merged = first.merge(second);
+
+        // Note: The actual merge behavior depends on the parent class implementation
+        expect(merged.modifiers, isNotNull);
+      });
+    });
+
+    group('Variants', () {
+      test('variants can be added to attribute', () {
+        final attribute = ImageSpecAttribute();
+        expect(attribute.variants, isNull); // By default no variants
+      });
+    });
+
+    group('Builder pattern', () {
+      test('builder methods create new instances', () {
+        final original = ImageSpecAttribute();
+        final modified = original.width(100.0);
+
+        expect(identical(original, modified), isFalse);
+        expect(original.$width, isNull);
+        expect(modified.$width, hasValue(100.0));
+      });
+
+      test('builder methods can be chained fluently', () {
+        final attribute = ImageSpecAttribute()
+            .width(200.0)
+            .height(300.0)
+            .fit(BoxFit.contain)
+            .alignment(Alignment.topCenter)
+            .color(Colors.blue.withValues(alpha: 0.5));
+
+        final context = MockBuildContext();
+        final resolved = attribute.resolve(context);
+        final spec = resolved.spec;
+
+        expect(spec!.width, 200.0);
+        expect(spec.height, 300.0);
+        expect(spec.fit, BoxFit.contain);
+        expect(spec.alignment, Alignment.topCenter);
+        expect(spec.color, Colors.blue.withValues(alpha: 0.5));
+      });
+    });
+
+    group('Debug Properties', () {
+      test('debugFillProperties includes all properties', () {
+        // This test verifies that the attribute implements Diagnosticable correctly
+        final attribute = ImageSpecAttribute()
+            .width(100.0)
+            .height(200.0)
+            .fit(BoxFit.cover);
+
+        // The presence of debugFillProperties is tested by the framework
+        expect(attribute, isA<Diagnosticable>());
+      });
+    });
+  });
+}

@@ -160,6 +160,14 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
     this.bottomRight,
   });
 
+  BorderRadiusMix.all(Radius radius)
+    : this.only(
+        topLeft: radius,
+        topRight: radius,
+        bottomLeft: radius,
+        bottomRight: radius,
+      );
+
   /// Constructor that accepts a nullable [BorderRadius] value and extracts its properties.
   ///
   /// Returns null if the input is null, otherwise uses [BorderRadiusMix.value].
