@@ -3,34 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-// =============================================================================
-// CORE TEST MATCHERS - Mix 2.0
-//
-// This file provides core matchers for testing Mix components:
-// 1. expectProp() - Tests PropBase<T> structure (Prop<T> and MixProp<V>)
-// 2. resolvesTo() - Matcher for testing what Resolvable types resolve to
-// =============================================================================
-
-/// Tests the structure of a PropBase - what it contains (value, token, or accumulated values)
-///
-/// Usage:
-/// ```dart
-/// // For direct values (Prop<T>)
-/// expectProp(colorProp, Colors.red);  // Matches Prop(Colors.red)
-///
-/// // For tokens (Prop<T> or MixProp<V>)
-/// expectProp(colorProp, MixToken<Color>('primary'));  // Matches Prop.token(MixToken<Color>('primary'))
-///
-/// // For Mix values (MixProp<V>)
-/// expectProp(paddingProp, EdgeInsetsMix.all(10));  // Matches MixProp(EdgeInsetsMix.all(10))
-///
-/// // For accumulated values (MixProp<V>)
-/// expectProp(mergedProp, [EdgeInsetsMix.all(10), MixToken<EdgeInsets>('spacing')]);
-///
-/// // Using matchers for more flexibility
-/// expectProp(someProp, isA<EdgeInsetsMix>());  // Matches any EdgeInsetsMix
-/// expectProp(someProp, isNull);  // Matches null prop
-/// ```
 void expectProp<T>(PropBase<T>? prop, dynamic expected) {
   if (expected == null || expected == isNull) {
     expect(prop, isNull);
@@ -390,29 +362,29 @@ class MockMix<T> extends Mix<T> {
 
 /// Mock directive for testing
 ///
-/// A generic directive implementation that applies a transformation function.
-/// Useful for testing directive application and merging.
+/// A simple directive implementation for testing purposes.
+/// By default, applies identity transformation (returns value unchanged).
+/// Can optionally provide a custom transformer function.
 ///
 /// Usage:
 /// ```dart
+/// // Simple directive for testing presence (identity transform)
+/// final directive1 = MockDirective<int>('test');
+///
+/// // With custom transformer
 /// final doubleDirective = MockDirective<int>(
 ///   'double',
 ///   (value) => value * 2,
 /// );
-///
-/// final uppercaseDirective = MockDirective<String>(
-///   'uppercase',
-///   (value) => value.toUpperCase(),
-/// );
 /// ```
 class MockDirective<T> extends MixDirective<T> {
   final String name;
-  final T Function(T) transformer;
+  final T Function(T)? transformer;
 
-  const MockDirective(this.name, this.transformer);
+  const MockDirective(this.name, [this.transformer]);
 
   @override
-  T apply(T value) => transformer(value);
+  T apply(T value) => transformer?.call(value) ?? value;
 
   @override
   String get key => name;
@@ -461,17 +433,21 @@ extension WidgetTesterExtension on WidgetTester {
 // =============================================================================
 
 /// Mock directive for testing purposes
+///
+/// A simple directive implementation for testing purposes.
+/// By default, applies identity transformation (returns value unchanged).
+/// Can optionally provide a custom transformer function.
 class MockMixDirective<T> extends MixDirective<T> {
   final String name;
-  final T Function(T) transform;
+  final T Function(T)? transform;
 
-  const MockMixDirective(this.name, this.transform);
+  const MockMixDirective(this.name, [this.transform]);
 
   @override
   String get key => name;
 
   @override
-  T apply(T value) => transform(value);
+  T apply(T value) => transform?.call(value) ?? value;
 
   @override
   String toString() => 'MockMixDirective($name)';

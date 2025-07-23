@@ -24,13 +24,13 @@ void main() {
         expectProp(boxDecorationMix.color, Colors.blue);
         expectProp(boxDecorationMix.shape, BoxShape.circle);
         expectProp(boxDecorationMix.backgroundBlendMode, BlendMode.multiply);
-        expect(boxDecorationMix.border, isA<Prop<Mix<BoxBorder>>>());
+        expect(boxDecorationMix.border, isA<MixProp<BoxBorder>>());
         expect(
           boxDecorationMix.borderRadius,
-          isA<Prop<Mix<BorderRadiusGeometry>>>(),
+          isA<MixProp<BorderRadiusGeometry>>(),
         );
         expect(boxDecorationMix.boxShadow, hasLength(1));
-        expect(boxDecorationMix.boxShadow![0], isA<Prop<Mix<BoxShadow>>>());
+        expect(boxDecorationMix.boxShadow![0], isA<MixProp<BoxShadow>>());
       });
 
       test('named constructors work correctly', () {
@@ -39,7 +39,7 @@ void main() {
         );
         final borderDecorationMix = BoxDecorationMix.border(borderMix);
 
-        expect(borderDecorationMix.border, isA<Prop<Mix<BoxBorder>>>());
+        expect(borderDecorationMix.border, isA<MixProp<BoxBorder>>());
         expect(borderDecorationMix.color, isNull);
 
         final colorDecorationMix = BoxDecorationMix.color(Colors.green);
@@ -63,7 +63,7 @@ void main() {
         expectProp(boxDecorationMix.shape, BoxShape.rectangle);
         expect(
           boxDecorationMix.borderRadius,
-          isA<Prop<Mix<BorderRadiusGeometry>>>(),
+          isA<MixProp<BorderRadiusGeometry>>(),
         );
       });
 
@@ -91,7 +91,11 @@ void main() {
           ),
         );
 
-        expect(boxDecorationMix, resolvesTo(isA<BoxDecoration>()));
+        final resolved = boxDecorationMix.resolve(MockBuildContext());
+        expect(resolved, isA<BoxDecoration>());
+        expect(resolved.color, Colors.blue);
+        expect(resolved.shape, BoxShape.circle);
+        expect(resolved.border, isA<Border>());
       });
 
       test('resolves with complex properties', () {
@@ -105,7 +109,12 @@ void main() {
           ],
         );
 
-        expect(boxDecorationMix, resolvesTo(isA<BoxDecoration>()));
+        final resolved = boxDecorationMix.resolve(MockBuildContext());
+        expect(resolved, isA<BoxDecoration>());
+        expect(resolved.borderRadius, isA<BorderRadius>());
+        expect(resolved.boxShadow, hasLength(2));
+        expect(resolved.boxShadow![0].color, Colors.black);
+        expect(resolved.boxShadow![1].color, Colors.grey);
       });
     });
 
@@ -146,7 +155,8 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.boxShadow, hasLength(2));
+        expect(merged.boxShadow, hasLength(1));
+        expectProp(merged.boxShadow![0], isA<BoxShadowMix>());
       });
     });
 
@@ -185,7 +195,7 @@ void main() {
         );
 
         expectProp(shapeDecorationMix.color, Colors.green);
-        expect(shapeDecorationMix.shape, isA<Prop<Mix<ShapeBorder>>>());
+        expect(shapeDecorationMix.shape, isA<MixProp<ShapeBorder>>());
         expect(shapeDecorationMix.shadows, hasLength(1));
       });
 
@@ -198,7 +208,7 @@ void main() {
         final shapeDecorationMix = ShapeDecorationMix.value(shapeDecoration);
 
         expectProp(shapeDecorationMix.color, Colors.purple);
-        expect(shapeDecorationMix.shape, isA<Prop<Mix<ShapeBorder>>>());
+        expect(shapeDecorationMix.shape, isA<MixProp<ShapeBorder>>());
       });
 
       test('maybeValue returns null for null input', () {
@@ -225,7 +235,10 @@ void main() {
           shape: CircleBorderMix.only(),
         );
 
-        expect(shapeDecorationMix, resolvesTo(isA<ShapeDecoration>()));
+        final resolved = shapeDecorationMix.resolve(MockBuildContext());
+        expect(resolved, isA<ShapeDecoration>());
+        expect(resolved.color, Colors.green);
+        expect(resolved.shape, isA<CircleBorder>());
       });
     });
 
@@ -248,7 +261,7 @@ void main() {
         final merged = first.merge(second) as ShapeDecorationMix;
 
         expectProp(merged.color, Colors.purple);
-        expect(merged.shape, isA<Prop<Mix<ShapeBorder>>>());
+        expect(merged.shape, isA<MixProp<ShapeBorder>>());
       });
     });
 

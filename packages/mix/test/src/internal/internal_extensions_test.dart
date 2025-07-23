@@ -265,8 +265,6 @@ void main() {
     const testColor = Color(0xFF808080); // Medium gray
     const red = Color(0xFFFF0000);
     const blue = Color(0xFF0000FF);
-    const white = Color(0xFFFFFFFF);
-    const black = Color(0xFF000000);
 
     test('mix blends colors correctly', () {
       final mixed = red.mix(blue, 50);

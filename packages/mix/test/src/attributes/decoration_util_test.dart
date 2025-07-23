@@ -18,7 +18,7 @@ void main() {
           ),
         );
         final attr = utility(decorationMix);
-        expect(attr.value, isA<Prop<Mix<Decoration>>>());
+        expect(attr.value, isA<MixProp<Decoration>>());
       });
 
       test('as() creates DecorationMix from BoxDecoration', () {
@@ -27,7 +27,7 @@ void main() {
           borderRadius: BorderRadius.all(Radius.circular(12.0)),
         );
         final attr = utility.as(decoration);
-        expect(attr.value, isA<Prop<Mix<Decoration>>>());
+        expect(attr.value, isA<MixProp<Decoration>>());
       });
 
       test('as() creates DecorationMix from ShapeDecoration', () {
@@ -36,25 +36,25 @@ void main() {
           shape: CircleBorder(),
         );
         final attr = utility.as(decoration);
-        expect(attr.value, isA<Prop<Mix<Decoration>>>());
+        expect(attr.value, isA<MixProp<Decoration>>());
       });
 
       group('Nested Utilities', () {
         test('box() provides access to BoxDecorationUtility', () {
           final attr = utility.box.color(Colors.red);
-          expect(attr.value, isA<Prop<Mix<Decoration>>>());
+          expect(attr.value, isA<MixProp<Decoration>>());
         });
 
         test('shape() provides access to ShapeDecorationUtility', () {
           final attr = utility.shape.color(Colors.blue);
-          expect(attr.value, isA<Prop<Mix<Decoration>>>());
+          expect(attr.value, isA<MixProp<Decoration>>());
         });
       });
 
       test('token() creates decoration from token', () {
         const token = MixToken<Decoration>('test.decoration');
         final attr = utility.token(token);
-        expect(attr.value, isA<Prop<Mix<Decoration>>>());
+        expect(attr.value, isA<MixProp<Decoration>>());
       });
     });
 
@@ -73,7 +73,7 @@ void main() {
           ),
         );
         final attr = utility(decorationMix);
-        expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+        expect(attr.value, isA<MixProp<BoxDecoration>>());
       });
 
       test('as() creates BoxDecorationMix from BoxDecoration', () {
@@ -85,18 +85,18 @@ void main() {
           ),
         );
         final attr = utility.as(decoration);
-        expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+        expect(attr.value, isA<MixProp<BoxDecoration>>());
       });
 
       group('Property Utilities', () {
         test('color() creates box decoration with color', () {
           final attr = utility.color(Colors.purple);
-          expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+          expect(attr.value, isA<MixProp<BoxDecoration>>());
         });
 
         test('color.red() creates box decoration with red color', () {
           final attr = utility.color.red();
-          expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+          expect(attr.value, isA<MixProp<BoxDecoration>>());
         });
 
         test('border() creates box decoration with border', () {
@@ -104,7 +104,7 @@ void main() {
             top: BorderSideMix.only(color: Colors.black, width: 2.0),
           );
           final attr = utility.border(borderMix);
-          expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+          expect(attr.value, isA<MixProp<BoxDecoration>>());
         });
 
         test('border.all() creates box decoration with all borders', () {
@@ -113,7 +113,7 @@ void main() {
             width: 1.0,
           );
           final attr = utility.border.all(borderSideMix);
-          expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+          expect(attr.value, isA<MixProp<BoxDecoration>>());
         });
 
         test('border.top() creates box decoration with top border', () {
@@ -122,7 +122,7 @@ void main() {
             width: 3.0,
           );
           final attr = utility.border.top(borderSideMix);
-          expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+          expect(attr.value, isA<MixProp<BoxDecoration>>());
         });
 
         test('borderRadius() creates box decoration with border radius', () {
@@ -131,14 +131,14 @@ void main() {
             topRight: const Radius.circular(8.0),
           );
           final attr = utility.borderRadius(borderRadiusMix);
-          expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+          expect(attr.value, isA<MixProp<BoxDecoration>>());
         });
 
         test(
           'borderRadius.circular() creates box decoration with circular border radius',
           () {
             final attr = utility.borderRadius.circular(12.0);
-            expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+            expect(attr.value, isA<MixProp<BoxDecoration>>());
           },
         );
 
@@ -146,25 +146,25 @@ void main() {
           'borderRadius.topLeft() creates box decoration with top left border radius',
           () {
             final attr = utility.borderRadius.topLeft.circular(8.0);
-            expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+            expect(attr.value, isA<MixProp<BoxDecoration>>());
           },
         );
 
         test('shape() creates box decoration with shape', () {
           final attr = utility.shape(BoxShape.circle);
-          expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+          expect(attr.value, isA<MixProp<BoxDecoration>>());
         });
 
         test('shape.circle() creates box decoration with circle shape', () {
           final attr = utility.shape.circle();
-          expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+          expect(attr.value, isA<MixProp<BoxDecoration>>());
         });
 
         test(
           'shape.rectangle() creates box decoration with rectangle shape',
           () {
             final attr = utility.shape.rectangle();
-            expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+            expect(attr.value, isA<MixProp<BoxDecoration>>());
           },
         );
 
@@ -172,7 +172,7 @@ void main() {
           'backgroundBlendMode() creates box decoration with blend mode',
           () {
             final attr = utility.backgroundBlendMode(BlendMode.multiply);
-            expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+            expect(attr.value, isA<MixProp<BoxDecoration>>());
           },
         );
 
@@ -180,7 +180,7 @@ void main() {
           'backgroundBlendMode.multiply() creates box decoration with multiply blend mode',
           () {
             final attr = utility.backgroundBlendMode.multiply();
-            expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+            expect(attr.value, isA<MixProp<BoxDecoration>>());
           },
         );
 
@@ -189,7 +189,7 @@ void main() {
             colors: const [Colors.red, Colors.blue],
           );
           final attr = utility.gradient(gradientMix);
-          expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+          expect(attr.value, isA<MixProp<BoxDecoration>>());
         });
 
         test(
@@ -199,7 +199,7 @@ void main() {
               colors: const [Colors.red, Colors.blue],
             );
             final attr = utility.gradient.linear(linearGradientMix);
-            expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+            expect(attr.value, isA<MixProp<BoxDecoration>>());
           },
         );
 
@@ -210,7 +210,7 @@ void main() {
               Colors.red,
               Colors.blue,
             ]);
-            expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+            expect(attr.value, isA<MixProp<BoxDecoration>>());
           },
         );
 
@@ -221,7 +221,7 @@ void main() {
               colors: const [Colors.green, Colors.yellow],
             );
             final attr = utility.gradient.radial(radialGradientMix);
-            expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+            expect(attr.value, isA<MixProp<BoxDecoration>>());
           },
         );
 
@@ -232,7 +232,7 @@ void main() {
               Colors.green,
               Colors.yellow,
             ]);
-            expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+            expect(attr.value, isA<MixProp<BoxDecoration>>());
           },
         );
 
@@ -241,7 +241,7 @@ void main() {
             colors: const [Colors.purple, Colors.orange],
           );
           final attr = utility.gradient.sweep(sweepGradientMix);
-          expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+          expect(attr.value, isA<MixProp<BoxDecoration>>());
         });
 
         test(
@@ -251,7 +251,7 @@ void main() {
               Colors.purple,
               Colors.orange,
             ]);
-            expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+            expect(attr.value, isA<MixProp<BoxDecoration>>());
           },
         );
 
@@ -261,19 +261,19 @@ void main() {
             fit: BoxFit.cover,
           );
           final attr = utility.image(imageMix);
-          expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+          expect(attr.value, isA<MixProp<BoxDecoration>>());
         });
 
         test('image.provider() creates box decoration with image provider', () {
           final attr = utility.image.provider(
             const NetworkImage('https://example.com/image.png'),
           );
-          expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+          expect(attr.value, isA<MixProp<BoxDecoration>>());
         });
 
         test('image.fit() creates box decoration with image fit', () {
           final attr = utility.image.fit(BoxFit.contain);
-          expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+          expect(attr.value, isA<MixProp<BoxDecoration>>());
         });
 
         test('boxShadow() creates box decoration with single box shadow', () {
@@ -283,19 +283,19 @@ void main() {
             offset: const Offset(0, 2),
           );
           final attr = utility.boxShadow(shadowMix);
-          expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+          expect(attr.value, isA<MixProp<BoxDecoration>>());
         });
 
         test('boxShadow.color() creates box decoration with shadow color', () {
           final attr = utility.boxShadow.color(Colors.red);
-          expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+          expect(attr.value, isA<MixProp<BoxDecoration>>());
         });
 
         test(
           'boxShadow.blurRadius() creates box decoration with shadow blur radius',
           () {
             final attr = utility.boxShadow.blurRadius(8.0);
-            expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+            expect(attr.value, isA<MixProp<BoxDecoration>>());
           },
         );
 
@@ -307,7 +307,7 @@ void main() {
               BoxShadowMix.only(color: Colors.black12, blurRadius: 8.0),
             ];
             final attr = utility.boxShadows(shadowMixes);
-            expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+            expect(attr.value, isA<MixProp<BoxDecoration>>());
           },
         );
 
@@ -317,29 +317,29 @@ void main() {
             BoxShadow(color: Colors.black12, blurRadius: 8.0),
           ];
           final attr = utility.boxShadows.as(shadows);
-          expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+          expect(attr.value, isA<MixProp<BoxDecoration>>());
         });
 
         test('elevation() creates box decoration with elevation shadows', () {
           final attr = utility.elevation(4);
-          expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+          expect(attr.value, isA<MixProp<BoxDecoration>>());
         });
 
         test('elevation.e2() creates box decoration with elevation 2', () {
           final attr = utility.elevation.e2;
-          expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+          expect(attr.value, isA<MixProp<BoxDecoration>>());
         });
 
         test('elevation.e8() creates box decoration with elevation 8', () {
           final attr = utility.elevation.e8;
-          expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+          expect(attr.value, isA<MixProp<BoxDecoration>>());
         });
       });
 
       test('token() creates box decoration from token', () {
         const token = MixToken<BoxDecoration>('test.boxDecoration');
         final attr = utility.token(token);
-        expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
+        expect(attr.value, isA<MixProp<BoxDecoration>>());
       });
     });
 
@@ -352,7 +352,7 @@ void main() {
           shape: CircleBorderMix.only(),
         );
         final attr = utility(decorationMix);
-        expect(attr.value, isA<Prop<Mix<ShapeDecoration>>>());
+        expect(attr.value, isA<MixProp<ShapeDecoration>>());
       });
 
       test('as() creates ShapeDecorationMix from ShapeDecoration', () {
@@ -363,18 +363,18 @@ void main() {
           ),
         );
         final attr = utility.as(decoration);
-        expect(attr.value, isA<Prop<Mix<ShapeDecoration>>>());
+        expect(attr.value, isA<MixProp<ShapeDecoration>>());
       });
 
       group('Property Utilities', () {
         test('color() creates shape decoration with color', () {
           final attr = utility.color(Colors.green);
-          expect(attr.value, isA<Prop<Mix<ShapeDecoration>>>());
+          expect(attr.value, isA<MixProp<ShapeDecoration>>());
         });
 
         test('color.blue() creates shape decoration with blue color', () {
           final attr = utility.color.blue();
-          expect(attr.value, isA<Prop<Mix<ShapeDecoration>>>());
+          expect(attr.value, isA<MixProp<ShapeDecoration>>());
         });
 
         test('shape() creates shape decoration with shape border', () {
@@ -385,7 +385,7 @@ void main() {
             ),
           );
           final attr = utility.shape(shapeMix);
-          expect(attr.value, isA<Prop<Mix<ShapeDecoration>>>());
+          expect(attr.value, isA<MixProp<ShapeDecoration>>());
         });
 
         test(
@@ -394,18 +394,18 @@ void main() {
             final attr = utility.shape.roundedRectangle.borderRadius.circular(
               12.0,
             );
-            expect(attr.value, isA<Prop<Mix<ShapeDecoration>>>());
+            expect(attr.value, isA<MixProp<ShapeDecoration>>());
           },
         );
 
         test('shape.circle() creates shape decoration with circle', () {
           final attr = utility.shape.circle(CircleBorderMix.only());
-          expect(attr.value, isA<Prop<Mix<ShapeDecoration>>>());
+          expect(attr.value, isA<MixProp<ShapeDecoration>>());
         });
 
         test('shape.stadium() creates shape decoration with stadium', () {
           final attr = utility.shape.stadium(StadiumBorderMix.only());
-          expect(attr.value, isA<Prop<Mix<ShapeDecoration>>>());
+          expect(attr.value, isA<MixProp<ShapeDecoration>>());
         });
 
         test('image() creates shape decoration with decoration image', () {
@@ -414,7 +414,7 @@ void main() {
             fit: BoxFit.cover,
           );
           final attr = utility.image(imageMix);
-          expect(attr.value, isA<Prop<Mix<ShapeDecoration>>>());
+          expect(attr.value, isA<MixProp<ShapeDecoration>>());
         });
 
         test(
@@ -423,7 +423,7 @@ void main() {
             final attr = utility.image.provider(
               const AssetImage('assets/image.png'),
             );
-            expect(attr.value, isA<Prop<Mix<ShapeDecoration>>>());
+            expect(attr.value, isA<MixProp<ShapeDecoration>>());
           },
         );
 
@@ -432,7 +432,7 @@ void main() {
             colors: const [Colors.red, Colors.blue],
           );
           final attr = utility.gradient(gradientMix);
-          expect(attr.value, isA<Prop<Mix<ShapeDecoration>>>());
+          expect(attr.value, isA<MixProp<ShapeDecoration>>());
         });
 
         test(
@@ -442,7 +442,7 @@ void main() {
               colors: const [Colors.purple, Colors.pink],
             );
             final attr = utility.gradient.radial(radialGradientMix);
-            expect(attr.value, isA<Prop<Mix<ShapeDecoration>>>());
+            expect(attr.value, isA<MixProp<ShapeDecoration>>());
           },
         );
 
@@ -453,7 +453,7 @@ void main() {
               Colors.purple,
               Colors.pink,
             ]);
-            expect(attr.value, isA<Prop<Mix<ShapeDecoration>>>());
+            expect(attr.value, isA<MixProp<ShapeDecoration>>());
           },
         );
 
@@ -463,7 +463,7 @@ void main() {
             BoxShadowMix.only(color: Colors.black12, blurRadius: 8.0),
           ];
           final attr = utility.shadows(shadowMixes);
-          expect(attr.value, isA<Prop<Mix<ShapeDecoration>>>());
+          expect(attr.value, isA<MixProp<ShapeDecoration>>());
         });
 
         test('shadows.as() creates shape decoration from BoxShadow list', () {
@@ -472,14 +472,14 @@ void main() {
             BoxShadow(color: Colors.black12, blurRadius: 8.0),
           ];
           final attr = utility.shadows.as(shadows);
-          expect(attr.value, isA<Prop<Mix<ShapeDecoration>>>());
+          expect(attr.value, isA<MixProp<ShapeDecoration>>());
         });
       });
 
       test('token() creates shape decoration from token', () {
         const token = MixToken<ShapeDecoration>('test.shapeDecoration');
         final attr = utility.token(token);
-        expect(attr.value, isA<Prop<Mix<ShapeDecoration>>>());
+        expect(attr.value, isA<MixProp<ShapeDecoration>>());
       });
     });
   });

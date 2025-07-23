@@ -11,17 +11,17 @@ void main() {
 
       test('none() creates BorderStyle.none', () {
         final attr = utility.none();
-        expect(attr.value, resolvesTo(BorderStyle.none));
+        expectProp(attr.value, BorderStyle.none);
       });
 
       test('solid() creates BorderStyle.solid', () {
         final attr = utility.solid();
-        expect(attr.value, resolvesTo(BorderStyle.solid));
+        expectProp(attr.value, BorderStyle.solid);
       });
 
       test('call() creates custom BorderStyle', () {
         final attr = utility(BorderStyle.solid);
-        expect(attr.value, resolvesTo(BorderStyle.solid));
+        expectProp(attr.value, BorderStyle.solid);
       });
     });
 
@@ -30,12 +30,12 @@ void main() {
 
       test('horizontal() creates Axis.horizontal', () {
         final attr = utility.horizontal();
-        expect(attr.value, resolvesTo(Axis.horizontal));
+        expectProp(attr.value, Axis.horizontal);
       });
 
       test('vertical() creates Axis.vertical', () {
         final attr = utility.vertical();
-        expect(attr.value, resolvesTo(Axis.vertical));
+        expectProp(attr.value, Axis.vertical);
       });
     });
 
@@ -44,17 +44,17 @@ void main() {
 
       test('loose() creates StackFit.loose', () {
         final attr = utility.loose();
-        expect(attr.value, resolvesTo(StackFit.loose));
+        expectProp(attr.value, StackFit.loose);
       });
 
       test('expand() creates StackFit.expand', () {
         final attr = utility.expand();
-        expect(attr.value, resolvesTo(StackFit.expand));
+        expectProp(attr.value, StackFit.expand);
       });
 
       test('passthrough() creates StackFit.passthrough', () {
         final attr = utility.passthrough();
-        expect(attr.value, resolvesTo(StackFit.passthrough));
+        expectProp(attr.value, StackFit.passthrough);
       });
     });
 
@@ -63,12 +63,12 @@ void main() {
 
       test('rtl() creates TextDirection.rtl', () {
         final attr = utility.rtl();
-        expect(attr.value, resolvesTo(TextDirection.rtl));
+        expectProp(attr.value, TextDirection.rtl);
       });
 
       test('ltr() creates TextDirection.ltr', () {
         final attr = utility.ltr();
-        expect(attr.value, resolvesTo(TextDirection.ltr));
+        expectProp(attr.value, TextDirection.ltr);
       });
     });
 
@@ -77,12 +77,12 @@ void main() {
 
       test('proportional() creates TextLeadingDistribution.proportional', () {
         final attr = utility.proportional();
-        expect(attr.value, resolvesTo(TextLeadingDistribution.proportional));
+        expectProp(attr.value, TextLeadingDistribution.proportional);
       });
 
       test('even() creates TextLeadingDistribution.even', () {
         final attr = utility.even();
-        expect(attr.value, resolvesTo(TextLeadingDistribution.even));
+        expectProp(attr.value, TextLeadingDistribution.even);
       });
     });
 
@@ -91,22 +91,22 @@ void main() {
 
       test('clamp() creates TileMode.clamp', () {
         final attr = utility.clamp();
-        expect(attr.value, resolvesTo(TileMode.clamp));
+        expectProp(attr.value, TileMode.clamp);
       });
 
       test('repeated() creates TileMode.repeated', () {
         final attr = utility.repeated();
-        expect(attr.value, resolvesTo(TileMode.repeated));
+        expectProp(attr.value, TileMode.repeated);
       });
 
       test('mirror() creates TileMode.mirror', () {
         final attr = utility.mirror();
-        expect(attr.value, resolvesTo(TileMode.mirror));
+        expectProp(attr.value, TileMode.mirror);
       });
 
       test('decal() creates TileMode.decal', () {
         final attr = utility.decal();
-        expect(attr.value, resolvesTo(TileMode.decal));
+        expectProp(attr.value, TileMode.decal);
       });
     });
 
@@ -115,37 +115,37 @@ void main() {
 
       test('fill() creates BoxFit.fill', () {
         final attr = utility.fill();
-        expect(attr.value, resolvesTo(BoxFit.fill));
+        expectProp(attr.value, BoxFit.fill);
       });
 
       test('contain() creates BoxFit.contain', () {
         final attr = utility.contain();
-        expect(attr.value, resolvesTo(BoxFit.contain));
+        expectProp(attr.value, BoxFit.contain);
       });
 
       test('cover() creates BoxFit.cover', () {
         final attr = utility.cover();
-        expect(attr.value, resolvesTo(BoxFit.cover));
+        expectProp(attr.value, BoxFit.cover);
       });
 
       test('fitWidth() creates BoxFit.fitWidth', () {
         final attr = utility.fitWidth();
-        expect(attr.value, resolvesTo(BoxFit.fitWidth));
+        expectProp(attr.value, BoxFit.fitWidth);
       });
 
       test('fitHeight() creates BoxFit.fitHeight', () {
         final attr = utility.fitHeight();
-        expect(attr.value, resolvesTo(BoxFit.fitHeight));
+        expectProp(attr.value, BoxFit.fitHeight);
       });
 
       test('none() creates BoxFit.none', () {
         final attr = utility.none();
-        expect(attr.value, resolvesTo(BoxFit.none));
+        expectProp(attr.value, BoxFit.none);
       });
 
       test('scaleDown() creates BoxFit.scaleDown', () {
         final attr = utility.scaleDown();
-        expect(attr.value, resolvesTo(BoxFit.scaleDown));
+        expectProp(attr.value, BoxFit.scaleDown);
       });
     });
 
@@ -154,12 +154,12 @@ void main() {
 
       test('rectangle() creates BoxShape.rectangle', () {
         final attr = utility.rectangle();
-        expect(attr.value, resolvesTo(BoxShape.rectangle));
+        expectProp(attr.value, BoxShape.rectangle);
       });
 
       test('circle() creates BoxShape.circle', () {
         final attr = utility.circle();
-        expect(attr.value, resolvesTo(BoxShape.circle));
+        expectProp(attr.value, BoxShape.circle);
       });
     });
 
@@ -168,12 +168,12 @@ void main() {
 
       test('normal() creates FontStyle.normal', () {
         final attr = utility.normal();
-        expect(attr.value, resolvesTo(FontStyle.normal));
+        expectProp(attr.value, FontStyle.normal);
       });
 
       test('italic() creates FontStyle.italic', () {
         final attr = utility.italic();
-        expect(attr.value, resolvesTo(FontStyle.italic));
+        expectProp(attr.value, FontStyle.italic);
       });
     });
 
@@ -182,57 +182,57 @@ void main() {
 
       test('bold() creates FontWeight.bold', () {
         final attr = utility.bold();
-        expect(attr.value, resolvesTo(FontWeight.bold));
+        expectProp(attr.value, FontWeight.bold);
       });
 
       test('normal() creates FontWeight.normal', () {
         final attr = utility.normal();
-        expect(attr.value, resolvesTo(FontWeight.normal));
+        expectProp(attr.value, FontWeight.normal);
       });
 
       test('w100() creates FontWeight.w100', () {
         final attr = utility.w100();
-        expect(attr.value, resolvesTo(FontWeight.w100));
+        expectProp(attr.value, FontWeight.w100);
       });
 
       test('w200() creates FontWeight.w200', () {
         final attr = utility.w200();
-        expect(attr.value, resolvesTo(FontWeight.w200));
+        expectProp(attr.value, FontWeight.w200);
       });
 
       test('w300() creates FontWeight.w300', () {
         final attr = utility.w300();
-        expect(attr.value, resolvesTo(FontWeight.w300));
+        expectProp(attr.value, FontWeight.w300);
       });
 
       test('w400() creates FontWeight.w400', () {
         final attr = utility.w400();
-        expect(attr.value, resolvesTo(FontWeight.w400));
+        expectProp(attr.value, FontWeight.w400);
       });
 
       test('w500() creates FontWeight.w500', () {
         final attr = utility.w500();
-        expect(attr.value, resolvesTo(FontWeight.w500));
+        expectProp(attr.value, FontWeight.w500);
       });
 
       test('w600() creates FontWeight.w600', () {
         final attr = utility.w600();
-        expect(attr.value, resolvesTo(FontWeight.w600));
+        expectProp(attr.value, FontWeight.w600);
       });
 
       test('w700() creates FontWeight.w700', () {
         final attr = utility.w700();
-        expect(attr.value, resolvesTo(FontWeight.w700));
+        expectProp(attr.value, FontWeight.w700);
       });
 
       test('w800() creates FontWeight.w800', () {
         final attr = utility.w800();
-        expect(attr.value, resolvesTo(FontWeight.w800));
+        expectProp(attr.value, FontWeight.w800);
       });
 
       test('w900() creates FontWeight.w900', () {
         final attr = utility.w900();
-        expect(attr.value, resolvesTo(FontWeight.w900));
+        expectProp(attr.value, FontWeight.w900);
       });
     });
 
@@ -241,12 +241,12 @@ void main() {
 
       test('alphabetic() creates TextBaseline.alphabetic', () {
         final attr = utility.alphabetic();
-        expect(attr.value, resolvesTo(TextBaseline.alphabetic));
+        expectProp(attr.value, TextBaseline.alphabetic);
       });
 
       test('ideographic() creates TextBaseline.ideographic', () {
         final attr = utility.ideographic();
-        expect(attr.value, resolvesTo(TextBaseline.ideographic));
+        expectProp(attr.value, TextBaseline.ideographic);
       });
     });
 
@@ -255,12 +255,12 @@ void main() {
 
       test('parent() creates TextWidthBasis.parent', () {
         final attr = utility.parent();
-        expect(attr.value, resolvesTo(TextWidthBasis.parent));
+        expectProp(attr.value, TextWidthBasis.parent);
       });
 
       test('longestLine() creates TextWidthBasis.longestLine', () {
         final attr = utility.longestLine();
-        expect(attr.value, resolvesTo(TextWidthBasis.longestLine));
+        expectProp(attr.value, TextWidthBasis.longestLine);
       });
     });
 
@@ -269,57 +269,57 @@ void main() {
 
       test('topLeft() creates Alignment.topLeft', () {
         final attr = utility.topLeft();
-        expect(attr.value, resolvesTo(Alignment.topLeft));
+        expectProp(attr.value, Alignment.topLeft);
       });
 
       test('topCenter() creates Alignment.topCenter', () {
         final attr = utility.topCenter();
-        expect(attr.value, resolvesTo(Alignment.topCenter));
+        expectProp(attr.value, Alignment.topCenter);
       });
 
       test('topRight() creates Alignment.topRight', () {
         final attr = utility.topRight();
-        expect(attr.value, resolvesTo(Alignment.topRight));
+        expectProp(attr.value, Alignment.topRight);
       });
 
       test('centerLeft() creates Alignment.centerLeft', () {
         final attr = utility.centerLeft();
-        expect(attr.value, resolvesTo(Alignment.centerLeft));
+        expectProp(attr.value, Alignment.centerLeft);
       });
 
       test('center() creates Alignment.center', () {
         final attr = utility.center();
-        expect(attr.value, resolvesTo(Alignment.center));
+        expectProp(attr.value, Alignment.center);
       });
 
       test('centerRight() creates Alignment.centerRight', () {
         final attr = utility.centerRight();
-        expect(attr.value, resolvesTo(Alignment.centerRight));
+        expectProp(attr.value, Alignment.centerRight);
       });
 
       test('bottomLeft() creates Alignment.bottomLeft', () {
         final attr = utility.bottomLeft();
-        expect(attr.value, resolvesTo(Alignment.bottomLeft));
+        expectProp(attr.value, Alignment.bottomLeft);
       });
 
       test('bottomCenter() creates Alignment.bottomCenter', () {
         final attr = utility.bottomCenter();
-        expect(attr.value, resolvesTo(Alignment.bottomCenter));
+        expectProp(attr.value, Alignment.bottomCenter);
       });
 
       test('bottomRight() creates Alignment.bottomRight', () {
         final attr = utility.bottomRight();
-        expect(attr.value, resolvesTo(Alignment.bottomRight));
+        expectProp(attr.value, Alignment.bottomRight);
       });
 
       test('only() creates custom Alignment', () {
         final attr = utility.only(x: 0.5, y: -0.5);
-        expect(attr.value, resolvesTo(const Alignment(0.5, -0.5)));
+        expectProp(attr.value, const Alignment(0.5, -0.5));
       });
 
       test('only() creates AlignmentDirectional when start is provided', () {
         final attr = utility.only(start: 0.5, y: -0.5);
-        expect(attr.value, resolvesTo(const AlignmentDirectional(0.5, -0.5)));
+        expectProp(attr.value, const AlignmentDirectional(0.5, -0.5));
       });
 
       test('only() throws when both x and start are provided', () {

@@ -19,7 +19,7 @@ void main() {
 
       final result = utility(BorderSideMix.value(borderSide));
       expect(result, isA<UtilityTestAttribute>());
-      expect(result.value, isA<Prop<Mix<BorderSide>>>());
+      expect(result.value, isA<MixProp<BorderSide>>());
 
       final mix = result.value.getMix() as BorderSideMix;
       expectProp(mix.color, Colors.red);
@@ -94,7 +94,7 @@ void main() {
 
       final result = utility(BorderMix.value(border));
       expect(result, isA<UtilityTestAttribute>());
-      expect(result.value, isA<Prop<Mix<Border>>>());
+      expect(result.value, isA<MixProp<Border>>());
     });
 
     test('none() creates BorderMix.none', () {
@@ -242,7 +242,7 @@ void main() {
 
       final result = utility(BorderDirectionalMix.value(borderDirectional));
       expect(result, isA<UtilityTestAttribute>());
-      expect(result.value, isA<Prop<Mix<BorderDirectional>>>());
+      expect(result.value, isA<MixProp<BorderDirectional>>());
     });
 
     test('none() creates BorderDirectionalMix.none', () {
@@ -333,7 +333,7 @@ void main() {
 
       final result = utility(BorderMix.value(border));
       expect(result, isA<UtilityTestAttribute>());
-      expect(result.value, isA<Prop<Mix<BoxBorder>>>());
+      expect(result.value, isA<MixProp<BoxBorder>>());
     });
 
     test('supports BorderDirectional type', () {
@@ -344,7 +344,7 @@ void main() {
 
       final result = utility(BorderDirectionalMix.value(borderDirectional));
       expect(result, isA<UtilityTestAttribute>());
-      expect(result.value, isA<Prop<Mix<BoxBorder>>>());
+      expect(result.value, isA<MixProp<BoxBorder>>());
     });
 
     test('only() creates BorderMix', () {

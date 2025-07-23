@@ -24,11 +24,12 @@ void main() {
 
         expect(attribute.$overflow, resolvesTo(TextOverflow.ellipsis));
         expect(attribute.$textAlign, resolvesTo(TextAlign.center));
-        expect(attribute.$textScaler, resolvesTo(isA<TextScaler>()));
+        expect(attribute.$textScaler, resolvesTo(TextScaler.linear(1.2)));
         expect(attribute.$maxLines, resolvesTo(3));
         expect(
-          attribute.$textWidthBasis, resolvesTo(TextWidthBasis.longestLine,
-        ));
+          attribute.$textWidthBasis,
+          resolvesTo(TextWidthBasis.longestLine),
+        );
         expect(attribute.$textDirection, resolvesTo(TextDirection.rtl));
         expect(attribute.$softWrap, resolvesTo(false));
         expect(attribute.$directives, isEmpty);
@@ -105,11 +106,12 @@ void main() {
 
         expect(attribute.$overflow, resolvesTo(TextOverflow.ellipsis));
         expect(attribute.$textAlign, resolvesTo(TextAlign.center));
-        expect(attribute.$textScaler, resolvesTo(isA<TextScaler>()));
+        expect(attribute.$textScaler, resolvesTo(TextScaler.linear(1.2)));
         expect(attribute.$maxLines, resolvesTo(3));
         expect(
-          attribute.$textWidthBasis, resolvesTo(TextWidthBasis.longestLine,
-        ));
+          attribute.$textWidthBasis,
+          resolvesTo(TextWidthBasis.longestLine),
+        );
         expect(attribute.$textDirection, resolvesTo(TextDirection.rtl));
         expect(attribute.$softWrap, resolvesTo(false));
         expect(attribute.$directives, isEmpty);

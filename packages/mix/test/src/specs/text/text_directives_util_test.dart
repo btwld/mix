@@ -16,7 +16,7 @@ void main() {
       // Check that it contains a Prop with CapitalizeStringDirective
       expect(result.value, isA<Prop<MixDirective<String>>>());
       final prop = result.value as Prop<MixDirective<String>>;
-      expect(prop, resolvesTo(isA<CapitalizeStringDirective>()));
+      expectProp(prop, isA<CapitalizeStringDirective>());
 
       // Test the directive functionality
       final directive = prop.value;
@@ -29,7 +29,7 @@ void main() {
 
       expect(result.value, isA<Prop<MixDirective<String>>>());
       final prop = result.value as Prop<MixDirective<String>>;
-      expect(prop, resolvesTo(isA<UppercaseStringDirective>()));
+      expectProp(prop, isA<UppercaseStringDirective>());
 
       // Test the directive functionality
       final directive = prop.value;
@@ -42,7 +42,7 @@ void main() {
 
       expect(result.value, isA<Prop<MixDirective<String>>>());
       final prop = result.value as Prop<MixDirective<String>>;
-      expect(prop, resolvesTo(isA<LowercaseStringDirective>()));
+      expectProp(prop, isA<LowercaseStringDirective>());
 
       // Test the directive functionality
       final directive = prop.value;
@@ -55,7 +55,7 @@ void main() {
 
       expect(result.value, isA<Prop<MixDirective<String>>>());
       final prop = result.value as Prop<MixDirective<String>>;
-      expect(prop, resolvesTo(isA<TitleCaseStringDirective>()));
+      expectProp(prop, isA<TitleCaseStringDirective>());
 
       // Test the directive functionality
       final directive = prop.value;
@@ -68,11 +68,11 @@ void main() {
 
       expect(result.value, isA<Prop<MixDirective<String>>>());
       final prop = result.value as Prop<MixDirective<String>>;
-      expect(prop, resolvesTo(isA<SentenceCaseStringDirective>()));
+      expectProp(prop, isA<SentenceCaseStringDirective>());
 
       // Test the directive functionality
       final directive = prop.value;
-      expect(directive.apply('hello. world'), 'Hello. World');
+      expect(directive.apply('hello. world'), 'Hello. world');
     });
 
     test('call method with custom directive', () {
@@ -84,7 +84,7 @@ void main() {
       expect(result.value, isA<Prop<MixDirective<String>>>());
 
       final prop = result.value as Prop<MixDirective<String>>;
-      expect(prop, resolvesTo(same(customDirective)));
+      expectProp(prop, same(customDirective));
     });
   });
 }

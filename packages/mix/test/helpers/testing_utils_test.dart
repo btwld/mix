@@ -40,15 +40,16 @@ void main() {
         expectProp(spacingProp, spacingToken);
       });
 
-      test('matches accumulated values from merged props', () {
+      test('matches value from merged props (replacement strategy)', () {
         final prop1 = Prop(Colors.red);
         final prop2 = Prop(Colors.blue);
         final merged = prop1.merge(prop2);
         
-        expectProp(merged, [Colors.red, Colors.blue]);
+        // Prop uses replacement strategy - second value wins
+        expectProp(merged, Colors.blue);
       });
 
-      test('matches mixed accumulated values (values and tokens)', () {
+      test('matches value from chained merges (replacement strategy)', () {
         const colorToken = MixToken<Color>('primary');
         final prop1 = Prop<Color>(Colors.red);
         final prop2 = Prop<Color>.token(colorToken);
@@ -56,7 +57,8 @@ void main() {
         
         final merged = prop1.merge(prop2).merge(prop3);
         
-        expectProp(merged, [Colors.red, colorToken, Colors.blue]);
+        // Prop uses replacement strategy - last value wins
+        expectProp(merged, Colors.blue);
       });
 
       test('fails when prop is null', () {
@@ -216,8 +218,8 @@ void main() {
         
         final merged = first.merge(second);
         
-        // The merged attribute should contain a merged Prop
-        expectProp(merged.value as Prop<Color>, [Colors.red, Colors.blue]);
+        // The merged attribute should contain a merged Prop (replacement strategy)
+        expectProp(merged.value as Prop<Color>, Colors.blue);
       });
     });
   });

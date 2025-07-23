@@ -52,7 +52,7 @@ void main() {
         expect(1.d, const Duration(days: 1));
         expect(7.d, const Duration(days: 7));
         expect(0.d, const Duration(days: 0));
-        
+
         // Verify it's equivalent to long form
         expect(5.d, equals(5.days));
       });
@@ -61,7 +61,7 @@ void main() {
         expect(1.h, const Duration(hours: 1));
         expect(12.h, const Duration(hours: 12));
         expect(0.h, const Duration(hours: 0));
-        
+
         // Verify it's equivalent to long form
         expect(8.h, equals(8.hours));
       });
@@ -70,7 +70,7 @@ void main() {
         expect(1.min, const Duration(minutes: 1));
         expect(30.min, const Duration(minutes: 30));
         expect(0.min, const Duration(minutes: 0));
-        
+
         // Verify it's equivalent to long form
         expect(45.min, equals(45.minutes));
       });
@@ -79,7 +79,7 @@ void main() {
         expect(1.s, const Duration(seconds: 1));
         expect(30.s, const Duration(seconds: 30));
         expect(0.s, const Duration(seconds: 0));
-        
+
         // Verify it's equivalent to long form
         expect(15.s, equals(15.seconds));
       });
@@ -88,7 +88,7 @@ void main() {
         expect(1.ms, const Duration(milliseconds: 1));
         expect(250.ms, const Duration(milliseconds: 250));
         expect(0.ms, const Duration(milliseconds: 0));
-        
+
         // Verify it's equivalent to long form
         expect(100.ms, equals(100.milliseconds));
       });
@@ -97,7 +97,7 @@ void main() {
         expect(1.us, const Duration(microseconds: 1));
         expect(500.us, const Duration(microseconds: 500));
         expect(0.us, const Duration(microseconds: 0));
-        
+
         // Verify it's equivalent to long form
         expect(750.us, equals(750.microseconds));
       });
@@ -106,16 +106,11 @@ void main() {
     group('Duration arithmetic and comparisons', () {
       test('durations add correctly', () {
         final duration1 = 1.hours + 30.minutes;
-        final duration2 = const Duration(hours: 1, minutes: 30);
+        const duration2 = Duration(hours: 1, minutes: 30);
         expect(duration1, equals(duration2));
 
         final duration3 = 2.days + 3.hours + 45.minutes + 30.seconds;
-        final duration4 = const Duration(
-          days: 2,
-          hours: 3,
-          minutes: 45,
-          seconds: 30,
-        );
+        const duration4 = Duration(days: 2, hours: 3, minutes: 45, seconds: 30);
         expect(duration3, equals(duration4));
       });
 
@@ -189,11 +184,7 @@ void main() {
 
         // Test with short forms
         final complexDurationShort = 2.d + 12.h + 30.min;
-        const expectedShort = Duration(
-          days: 2,
-          hours: 12,
-          minutes: 30,
-        );
+        const expectedShort = Duration(days: 2, hours: 12, minutes: 30);
         expect(complexDurationShort, equals(expectedShort));
       });
     });
@@ -212,13 +203,19 @@ void main() {
 
       test('duration properties are accessible', () {
         final duration = 1.d + 2.h + 3.min + 4.s + 5.ms + 6.us;
-        
+
         expect(duration.inDays, equals(1));
         expect(duration.inHours, equals(26)); // 1 day + 2 hours
         expect(duration.inMinutes, equals(1563)); // 26 hours * 60 + 3 minutes
         expect(duration.inSeconds, greaterThan(90000)); // Many seconds
-        expect(duration.inMilliseconds, greaterThan(90000000)); // Many milliseconds
-        expect(duration.inMicroseconds, greaterThan(90000000000)); // Many microseconds
+        expect(
+          duration.inMilliseconds,
+          greaterThan(90000000),
+        ); // Many milliseconds
+        expect(
+          duration.inMicroseconds,
+          greaterThan(90000000000),
+        ); // Many microseconds
       });
     });
   });

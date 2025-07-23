@@ -14,7 +14,7 @@ void main() {
 
       test('call() creates color from MaterialColor', () {
         final attr = utility(Colors.blue);
-        expect(attr.value, resolvesTo(Colors.blue));
+        expectProp(attr.value, Colors.blue);
       });
 
       test('materialColor getter returns MaterialColor', () {
@@ -25,52 +25,52 @@ void main() {
       group('Shade Utilities', () {
         test('shade50 creates color with shade 50', () {
           final attr = utility.shade50(Colors.red.shade50);
-          expect(attr.value, resolvesTo(Colors.red.shade50));
+          expectProp(attr.value, Colors.red.shade50);
         });
 
         test('shade100 creates color with shade 100', () {
           final attr = utility.shade100(Colors.red.shade100);
-          expect(attr.value, resolvesTo(Colors.red.shade100));
+          expectProp(attr.value, Colors.red.shade100);
         });
 
         test('shade200 creates color with shade 200', () {
           final attr = utility.shade200(Colors.red.shade200);
-          expect(attr.value, resolvesTo(Colors.red.shade200));
+          expectProp(attr.value, Colors.red.shade200);
         });
 
         test('shade300 creates color with shade 300', () {
           final attr = utility.shade300(Colors.red.shade300);
-          expect(attr.value, resolvesTo(Colors.red.shade300));
+          expectProp(attr.value, Colors.red.shade300);
         });
 
         test('shade400 creates color with shade 400', () {
           final attr = utility.shade400(Colors.red.shade400);
-          expect(attr.value, resolvesTo(Colors.red.shade400));
+          expectProp(attr.value, Colors.red.shade400);
         });
 
         test('shade500 creates color with shade 500', () {
           final attr = utility.shade500(Colors.red.shade500);
-          expect(attr.value, resolvesTo(Colors.red.shade500));
+          expectProp(attr.value, Colors.red.shade500);
         });
 
         test('shade600 creates color with shade 600', () {
           final attr = utility.shade600(Colors.red.shade600);
-          expect(attr.value, resolvesTo(Colors.red.shade600));
+          expectProp(attr.value, Colors.red.shade600);
         });
 
         test('shade700 creates color with shade 700', () {
           final attr = utility.shade700(Colors.red.shade700);
-          expect(attr.value, resolvesTo(Colors.red.shade700));
+          expectProp(attr.value, Colors.red.shade700);
         });
 
         test('shade800 creates color with shade 800', () {
           final attr = utility.shade800(Colors.red.shade800);
-          expect(attr.value, resolvesTo(Colors.red.shade800));
+          expectProp(attr.value, Colors.red.shade800);
         });
 
         test('shade900 creates color with shade 900', () {
           final attr = utility.shade900(Colors.red.shade900);
-          expect(attr.value, resolvesTo(Colors.red.shade900));
+          expectProp(attr.value, Colors.red.shade900);
         });
       });
 
@@ -107,7 +107,7 @@ void main() {
             Colors.blue,
           );
           final attr = blueUtility.shade200(Colors.blue.shade200);
-          expect(attr.value, resolvesTo(Colors.blue.shade200));
+          expectProp(attr.value, Colors.blue.shade200);
         });
 
         test('green MaterialColorUtility works correctly', () {
@@ -116,7 +116,7 @@ void main() {
             Colors.green,
           );
           final attr = greenUtility.shade600(Colors.green.shade600);
-          expect(attr.value, resolvesTo(Colors.green.shade600));
+          expectProp(attr.value, Colors.green.shade600);
         });
 
         test('purple MaterialColorUtility works correctly', () {
@@ -125,7 +125,7 @@ void main() {
             Colors.purple,
           );
           final attr = purpleUtility.shade400(Colors.purple.shade400);
-          expect(attr.value, resolvesTo(Colors.purple.shade400));
+          expectProp(attr.value, Colors.purple.shade400);
         });
 
         test('orange MaterialColorUtility works correctly', () {
@@ -134,7 +134,7 @@ void main() {
             Colors.orange,
           );
           final attr = orangeUtility.shade800(Colors.orange.shade800);
-          expect(attr.value, resolvesTo(Colors.orange.shade800));
+          expectProp(attr.value, Colors.orange.shade800);
         });
       });
 
@@ -153,7 +153,7 @@ void main() {
 
       test('call() creates color from MaterialAccentColor', () {
         final attr = utility(Colors.blueAccent);
-        expect(attr.value, resolvesTo(Colors.blueAccent));
+        expectProp(attr.value, Colors.blueAccent);
       });
 
       test('materialAccentColor getter returns MaterialAccentColor', () {
@@ -164,22 +164,22 @@ void main() {
       group('Accent Shade Utilities', () {
         test('shade100 creates accent color with shade 100', () {
           final attr = utility.shade100(Colors.redAccent.shade100);
-          expect(attr.value, resolvesTo(Colors.redAccent.shade100));
+          expectProp(attr.value, Colors.redAccent.shade100);
         });
 
         test('shade200 creates accent color with shade 200', () {
           final attr = utility.shade200(Colors.redAccent.shade200);
-          expect(attr.value, resolvesTo(Colors.redAccent.shade200));
+          expectProp(attr.value, Colors.redAccent.shade200);
         });
 
         test('shade400 creates accent color with shade 400', () {
           final attr = utility.shade400(Colors.redAccent.shade400);
-          expect(attr.value, resolvesTo(Colors.redAccent.shade400));
+          expectProp(attr.value, Colors.redAccent.shade400);
         });
 
         test('shade700 creates accent color with shade 700', () {
           final attr = utility.shade700(Colors.redAccent.shade700);
-          expect(attr.value, resolvesTo(Colors.redAccent.shade700));
+          expectProp(attr.value, Colors.redAccent.shade700);
         });
       });
 
@@ -216,7 +216,7 @@ void main() {
             Colors.blueAccent,
           );
           final attr = blueAccentUtility.shade200(Colors.blueAccent.shade200);
-          expect(attr.value, resolvesTo(Colors.blueAccent.shade200));
+          expectProp(attr.value, Colors.blueAccent.shade200);
         });
 
         test('greenAccent MaterialAccentColorUtility works correctly', () {
@@ -225,7 +225,7 @@ void main() {
             Colors.greenAccent,
           );
           final attr = greenAccentUtility.shade400(Colors.greenAccent.shade400);
-          expect(attr.value, resolvesTo(Colors.greenAccent.shade400));
+          expectProp(attr.value, Colors.greenAccent.shade400);
         });
 
         test('purpleAccent MaterialAccentColorUtility works correctly', () {
@@ -236,7 +236,7 @@ void main() {
           final attr = purpleAccentUtility.shade100(
             Colors.purpleAccent.shade100,
           );
-          expect(attr.value, resolvesTo(Colors.purpleAccent.shade100));
+          expectProp(attr.value, Colors.purpleAccent.shade100);
         });
 
         test('orangeAccent MaterialAccentColorUtility works correctly', () {
@@ -247,7 +247,7 @@ void main() {
           final attr = orangeAccentUtility.shade700(
             Colors.orangeAccent.shade700,
           );
-          expect(attr.value, resolvesTo(Colors.orangeAccent.shade700));
+          expectProp(attr.value, Colors.orangeAccent.shade700);
         });
       });
 
@@ -264,93 +264,93 @@ void main() {
       group('Primary Material Colors', () {
         test('red() creates red color with default shade', () {
           final attr = colorUtility.red();
-          expect(attr.value, resolvesTo(Colors.red));
+          expectProp(attr.value, Colors.red);
         });
 
         test('red(100) creates red color with shade 100', () {
           final attr = colorUtility.red(100);
-          expect(attr.value, resolvesTo(Colors.red.shade100));
+          expectProp(attr.value, Colors.red.shade100);
         });
 
         test('blue(300) creates blue color with shade 300', () {
           final attr = colorUtility.blue(300);
-          expect(attr.value, resolvesTo(Colors.blue.shade300));
+          expectProp(attr.value, Colors.blue.shade300);
         });
 
         test('green(600) creates green color with shade 600', () {
           final attr = colorUtility.green(600);
-          expect(attr.value, resolvesTo(Colors.green.shade600));
+          expectProp(attr.value, Colors.green.shade600);
         });
 
         test('purple(900) creates purple color with shade 900', () {
           final attr = colorUtility.purple(900);
-          expect(attr.value, resolvesTo(Colors.purple.shade900));
+          expectProp(attr.value, Colors.purple.shade900);
         });
       });
 
       group('Extended Material Colors', () {
         test('deepPurple() creates deep purple color', () {
           final attr = colorUtility.deepPurple();
-          expect(attr.value, resolvesTo(Colors.deepPurple));
+          expectProp(attr.value, Colors.deepPurple);
         });
 
         test('lightBlue(200) creates light blue color with shade 200', () {
           final attr = colorUtility.lightBlue(200);
-          expect(attr.value, resolvesTo(Colors.lightBlue.shade200));
+          expectProp(attr.value, Colors.lightBlue.shade200);
         });
 
         test('teal(500) creates teal color with shade 500', () {
           final attr = colorUtility.teal(500);
-          expect(attr.value, resolvesTo(Colors.teal.shade500));
+          expectProp(attr.value, Colors.teal.shade500);
         });
 
         test('amber(700) creates amber color with shade 700', () {
           final attr = colorUtility.amber(700);
-          expect(attr.value, resolvesTo(Colors.amber.shade700));
+          expectProp(attr.value, Colors.amber.shade700);
         });
 
         test('deepOrange(400) creates deep orange color with shade 400', () {
           final attr = colorUtility.deepOrange(400);
-          expect(attr.value, resolvesTo(Colors.deepOrange.shade400));
+          expectProp(attr.value, Colors.deepOrange.shade400);
         });
 
         test('brown(800) creates brown color with shade 800', () {
           final attr = colorUtility.brown(800);
-          expect(attr.value, resolvesTo(Colors.brown.shade800));
+          expectProp(attr.value, Colors.brown.shade800);
         });
 
         test('grey(300) creates grey color with shade 300', () {
           final attr = colorUtility.grey(300);
-          expect(attr.value, resolvesTo(Colors.grey.shade300));
+          expectProp(attr.value, Colors.grey.shade300);
         });
 
         test('blueGrey(600) creates blue grey color with shade 600', () {
           final attr = colorUtility.blueGrey(600);
-          expect(attr.value, resolvesTo(Colors.blueGrey.shade600));
+          expectProp(attr.value, Colors.blueGrey.shade600);
         });
       });
 
       group('Accent Material Colors', () {
         test('redAccent() creates red accent color with default shade', () {
           final attr = colorUtility.redAccent();
-          expect(attr.value, resolvesTo(Colors.redAccent));
+          expectProp(attr.value, Colors.redAccent);
         });
 
         test('blueAccent(100) creates blue accent color with shade 100', () {
           final attr = colorUtility.blueAccent(100);
-          expect(attr.value, resolvesTo(Colors.blueAccent.shade100));
+          expectProp(attr.value, Colors.blueAccent.shade100);
         });
 
         test('greenAccent(400) creates green accent color with shade 400', () {
           final attr = colorUtility.greenAccent(400);
-          expect(attr.value, resolvesTo(Colors.greenAccent.shade400));
+          expectProp(attr.value, Colors.greenAccent.shade400);
         });
 
         test(
           'purpleAccent(700) creates purple accent color with shade 700',
           () {
             final attr = colorUtility.purpleAccent(700);
-            expect(attr.value, resolvesTo(Colors.purpleAccent.shade700));
+            expectProp(attr.value, Colors.purpleAccent.shade700);
           },
         );
 
@@ -358,7 +358,7 @@ void main() {
           'deepPurpleAccent(200) creates deep purple accent color with shade 200',
           () {
             final attr = colorUtility.deepPurpleAccent(200);
-            expect(attr.value, resolvesTo(Colors.deepPurpleAccent.shade200));
+            expectProp(attr.value, Colors.deepPurpleAccent.shade200);
           },
         );
 
@@ -366,25 +366,25 @@ void main() {
           'lightBlueAccent(100) creates light blue accent color with shade 100',
           () {
             final attr = colorUtility.lightBlueAccent(100);
-            expect(attr.value, resolvesTo(Colors.lightBlueAccent.shade100));
+            expectProp(attr.value, Colors.lightBlueAccent.shade100);
           },
         );
 
         test('tealAccent(400) creates teal accent color with shade 400', () {
           final attr = colorUtility.tealAccent(400);
-          expect(attr.value, resolvesTo(Colors.tealAccent.shade400));
+          expectProp(attr.value, Colors.tealAccent.shade400);
         });
 
         test('amberAccent(700) creates amber accent color with shade 700', () {
           final attr = colorUtility.amberAccent(700);
-          expect(attr.value, resolvesTo(Colors.amberAccent.shade700));
+          expectProp(attr.value, Colors.amberAccent.shade700);
         });
 
         test(
           'deepOrangeAccent(200) creates deep orange accent color with shade 200',
           () {
             final attr = colorUtility.deepOrangeAccent(200);
-            expect(attr.value, resolvesTo(Colors.deepOrangeAccent.shade200));
+            expectProp(attr.value, Colors.deepOrangeAccent.shade200);
           },
         );
       });
@@ -393,14 +393,14 @@ void main() {
         test('handles invalid shade gracefully by using default', () {
           // The _wrapColor method uses shade ?? 500, so invalid shades should fall back to 500
           final attr = colorUtility.red();
-          expect(attr.value, resolvesTo(Colors.red.shade500));
+          expectProp(attr.value, Colors.red.shade500);
         });
 
         test('handles all available shades for primary colors', () {
           final shades = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
           for (final shade in shades) {
             final attr = colorUtility.blue(shade);
-            expect(attr.value, resolvesTo(Colors.blue[shade]));
+            expectProp(attr.value, Colors.blue[shade]);
           }
         });
 
@@ -408,7 +408,7 @@ void main() {
           final accentShades = [100, 200, 400, 700];
           for (final shade in accentShades) {
             final attr = colorUtility.redAccent(shade);
-            expect(attr.value, resolvesTo(Colors.redAccent[shade]));
+            expectProp(attr.value, Colors.redAccent[shade]);
           }
         });
       });

@@ -111,7 +111,7 @@ test('Mix types resolve to Flutter types', () {
 
 test('Attributes resolve to specs', () {
   final attribute = OpacityModifierAttribute.only(opacity: 0.5);
-  expect(attribute, resolvesTo(isA<OpacityModifier>()));
+  expect(attribute, resolvesTo(const OpacityModifier(0.5)));
 });
 
 test('Tokens resolve with custom context', () {
@@ -270,7 +270,8 @@ test('spec attribute resolves to spec', () {
     height: Prop(200.0),
   );
 
-  expect(attribute, resolvesTo(isA<BoxSpec>()));
+  const expectedSpec = BoxSpec(width: 150.0, height: 200.0);
+  expect(attribute, resolvesTo(expectedSpec));
 });
 ```
 
@@ -293,7 +294,8 @@ test('Mix resolves to Flutter type', () {
     width: Prop(2.0),
   );
   
-  expect(borderSide, resolvesTo(isA<BorderSide>()));
+  const expectedBorderSide = BorderSide(color: Colors.red, width: 2.0);
+  expect(borderSide, resolvesTo(expectedBorderSide));
 });
 ```
 
@@ -355,8 +357,11 @@ test('MixProp<V> merge behavior - accumulation strategy', () {
 // ❌ Wrong - expectProp doesn't test resolution
 expectProp(borderMix, isA<Border>());
 
-// ✅ Right - use resolvesTo for resolution
-expect(borderMix, resolvesTo(isA<Border>()));
+// ✅ Right - use resolvesTo with specific values when possible
+// For complex objects, test specific properties after resolution
+final resolved = borderMix.resolve(MockBuildContext());
+expect(resolved, isA<Border>());
+expect(resolved.top.color, expectedColor);
 ```
 
 ### **2. Testing resolution without context**
@@ -412,9 +417,13 @@ expect(prop.getValue(), Colors.red);
 expect(prop, hasValue(Colors.red));
 expect(mix.resolve(context), isA<Border>());
 
-// New way  
+// New way
 expectProp(prop, Colors.red);
-expect(mix, resolvesTo(isA<Border>()));
+// For simple types, use resolvesTo with specific values
+expect(colorProp, resolvesTo(Colors.red));
+// For complex types, resolve and test specific properties
+final resolved = borderMix.resolve(context);
+expect(resolved.top.color, expectedColor);
 ```
 
 This unified approach makes testing more consistent, easier to understand, and simpler to maintain across the entire Mix codebase.

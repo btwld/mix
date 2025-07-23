@@ -17,9 +17,9 @@ void main() {
 
         expect(
           roundedRectangleBorderMix.borderRadius,
-          isA<Prop<Mix<BorderRadiusGeometry>>>(),
+          isA<MixProp<BorderRadiusGeometry>>(),
         );
-        expect(roundedRectangleBorderMix.side, isA<Prop<Mix<BorderSide>>>());
+        expect(roundedRectangleBorderMix.side, isA<MixProp<BorderSide>>());
       });
 
       test(
@@ -36,9 +36,9 @@ void main() {
 
           expect(
             roundedRectangleBorderMix.borderRadius,
-            isA<Prop<Mix<BorderRadiusGeometry>>>(),
+            isA<MixProp<BorderRadiusGeometry>>(),
           );
-          expect(roundedRectangleBorderMix.side, isA<Prop<Mix<BorderSide>>>());
+          expect(roundedRectangleBorderMix.side, isA<MixProp<BorderSide>>());
         },
       );
 
@@ -69,10 +69,14 @@ void main() {
           side: BorderSideMix.only(color: Colors.red, width: 2.0),
         );
 
+        final resolved = roundedRectangleBorderMix.resolve(MockBuildContext());
+        expect(resolved, isA<RoundedRectangleBorder>());
         expect(
-          roundedRectangleBorderMix,
-          resolvesTo(isA<RoundedRectangleBorder>()),
+          resolved.borderRadius,
+          const BorderRadius.only(topLeft: Radius.circular(8.0)),
         );
+        expect(resolved.side.color, Colors.red);
+        expect(resolved.side.width, 2.0);
       });
     });
 
@@ -101,8 +105,8 @@ void main() {
 
         final merged = first.merge(second) as RoundedRectangleBorderMix;
 
-        expect(merged.borderRadius, isA<Prop<Mix<BorderRadiusGeometry>>>());
-        expect(merged.side, isA<Prop<Mix<BorderSide>>>());
+        expect(merged.borderRadius, isA<MixProp<BorderRadiusGeometry>>());
+        expect(merged.side, isA<MixProp<BorderSide>>());
       });
     });
 
@@ -150,7 +154,7 @@ void main() {
           side: BorderSideMix.only(color: Colors.green, width: 3.0),
         );
 
-        expect(circleBorderMix.side, isA<Prop<Mix<BorderSide>>>());
+        expect(circleBorderMix.side, isA<MixProp<BorderSide>>());
       });
 
       test('value constructor extracts properties from CircleBorder', () {
@@ -160,7 +164,7 @@ void main() {
 
         final circleBorderMix = CircleBorderMix.value(circleBorder);
 
-        expect(circleBorderMix.side, isA<Prop<Mix<BorderSide>>>());
+        expect(circleBorderMix.side, isA<MixProp<BorderSide>>());
       });
 
       test('maybeValue returns null for null input', () {
@@ -182,10 +186,10 @@ void main() {
           side: BorderSideMix.only(color: Colors.green, width: 3.0),
         );
 
-        expect(
-          circleBorderMix,
-          resolvesTo(isA<CircleBorder>()),
-        );
+        final resolved = circleBorderMix.resolve(MockBuildContext());
+        expect(resolved, isA<CircleBorder>());
+        expect(resolved.side.color, Colors.green);
+        expect(resolved.side.width, 3.0);
       });
     });
 
@@ -201,7 +205,7 @@ void main() {
 
         final merged = first.merge(second) as CircleBorderMix;
 
-        expect(merged.side, isA<Prop<Mix<BorderSide>>>());
+        expect(merged.side, isA<MixProp<BorderSide>>());
       });
     });
   });
@@ -213,7 +217,7 @@ void main() {
           side: BorderSideMix.only(color: Colors.orange, width: 2.5),
         );
 
-        expect(stadiumBorderMix.side, isA<Prop<Mix<BorderSide>>>());
+        expect(stadiumBorderMix.side, isA<MixProp<BorderSide>>());
       });
 
       test('value constructor extracts properties from StadiumBorder', () {
@@ -223,7 +227,7 @@ void main() {
 
         final stadiumBorderMix = StadiumBorderMix.value(stadiumBorder);
 
-        expect(stadiumBorderMix.side, isA<Prop<Mix<BorderSide>>>());
+        expect(stadiumBorderMix.side, isA<MixProp<BorderSide>>());
       });
 
       test('maybeValue returns null for null input', () {
@@ -245,10 +249,10 @@ void main() {
           side: BorderSideMix.only(color: Colors.orange, width: 2.5),
         );
 
-        expect(
-          stadiumBorderMix,
-          resolvesTo(isA<StadiumBorder>()),
-        );
+        final resolved = stadiumBorderMix.resolve(MockBuildContext());
+        expect(resolved, isA<StadiumBorder>());
+        expect(resolved.side.color, Colors.orange);
+        expect(resolved.side.width, 2.5);
       });
     });
 
@@ -264,7 +268,7 @@ void main() {
 
         final merged = first.merge(second) as StadiumBorderMix;
 
-        expect(merged.side, isA<Prop<Mix<BorderSide>>>());
+        expect(merged.side, isA<MixProp<BorderSide>>());
       });
     });
   });
@@ -281,9 +285,9 @@ void main() {
 
         expect(
           beveledRectangleBorderMix.borderRadius,
-          isA<Prop<Mix<BorderRadiusGeometry>>>(),
+          isA<MixProp<BorderRadiusGeometry>>(),
         );
-        expect(beveledRectangleBorderMix.side, isA<Prop<Mix<BorderSide>>>());
+        expect(beveledRectangleBorderMix.side, isA<MixProp<BorderSide>>());
       });
 
       test(
@@ -300,9 +304,9 @@ void main() {
 
           expect(
             beveledRectangleBorderMix.borderRadius,
-            isA<Prop<Mix<BorderRadiusGeometry>>>(),
+            isA<MixProp<BorderRadiusGeometry>>(),
           );
-          expect(beveledRectangleBorderMix.side, isA<Prop<Mix<BorderSide>>>());
+          expect(beveledRectangleBorderMix.side, isA<MixProp<BorderSide>>());
         },
       );
 
@@ -333,10 +337,11 @@ void main() {
           side: BorderSideMix.only(color: Colors.yellow, width: 1.5),
         );
 
-        expect(
-          beveledRectangleBorderMix,
-          resolvesTo(isA<BeveledRectangleBorder>()),
-        );
+        final resolved = beveledRectangleBorderMix.resolve(MockBuildContext());
+        expect(resolved, isA<BeveledRectangleBorder>());
+        expect(resolved.borderRadius, isA<BorderRadius>());
+        expect(resolved.side.color, Colors.yellow);
+        expect(resolved.side.width, 1.5);
       });
     });
 
@@ -354,8 +359,8 @@ void main() {
 
         final merged = first.merge(second) as BeveledRectangleBorderMix;
 
-        expect(merged.borderRadius, isA<Prop<Mix<BorderRadiusGeometry>>>());
-        expect(merged.side, isA<Prop<Mix<BorderSide>>>());
+        expect(merged.borderRadius, isA<MixProp<BorderRadiusGeometry>>());
+        expect(merged.side, isA<MixProp<BorderSide>>());
       });
     });
   });

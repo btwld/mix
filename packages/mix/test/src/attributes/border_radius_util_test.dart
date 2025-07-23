@@ -15,7 +15,7 @@ void main() {
 
       final result = utility(BorderRadiusMix.value(borderRadius));
       expect(result, isA<UtilityTestAttribute>());
-      expect(result.value, isA<Prop<Mix<BorderRadius>>>());
+      expect(result.value, isA<MixProp<BorderRadius>>());
 
       final mix = result.value.value as BorderRadiusMix;
       expectProp(mix.topLeft, const Radius.circular(8.0));
@@ -162,7 +162,7 @@ void main() {
 
       final result = utility(BorderRadiusDirectionalMix.value(borderRadius));
       expect(result, isA<UtilityTestAttribute>());
-      expect(result.value, isA<Prop<Mix<BorderRadiusDirectional>>>());
+      expect(result.value, isA<MixProp<BorderRadiusDirectional>>());
 
       final mix = result.value.value as BorderRadiusDirectionalMix;
       expectProp(mix.topStart, const Radius.circular(8.0));
@@ -317,7 +317,7 @@ void main() {
 
       final result = utility(BorderRadiusMix.value(borderRadius));
       expect(result, isA<UtilityTestAttribute>());
-      expect(result.value, isA<Prop<Mix<BorderRadiusGeometry>>>());
+      expect(result.value, isA<MixProp<BorderRadiusGeometry>>());
     });
 
     test('supports BorderRadiusDirectional type', () {
@@ -329,7 +329,7 @@ void main() {
         BorderRadiusDirectionalMix.value(borderRadiusDirectional),
       );
       expect(result, isA<UtilityTestAttribute>());
-      expect(result.value, isA<Prop<Mix<BorderRadiusGeometry>>>());
+      expect(result.value, isA<MixProp<BorderRadiusGeometry>>());
     });
 
     group('directional access', () {

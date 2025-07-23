@@ -523,7 +523,10 @@ void main() {
         });
 
         final result = responsiveBuilder.build(MockBuildContext());
-        expect(result.$width, resolvesTo(200.0)); // MockBuildContext width is 800
+        expect(
+          result.$width,
+          resolvesTo(200.0),
+        ); // MockBuildContext width is 800
       });
 
       test('demonstrates theme-based styling pattern', () {
@@ -541,10 +544,8 @@ void main() {
         final conditionalBuilder = ContextVariantBuilder<BoxSpecAttribute>((
           context,
         ) {
-          const shouldUseFixedSize = true; // Could be based on context
-          return shouldUseFixedSize
-              ? BoxSpecAttribute.only(width: 100.0, height: 100.0)
-              : BoxSpecAttribute.only();
+          // Always return fixed size for this test
+          return BoxSpecAttribute.only(width: 100.0, height: 100.0);
         });
 
         final result = conditionalBuilder.build(MockBuildContext());

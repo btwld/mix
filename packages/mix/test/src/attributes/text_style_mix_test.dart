@@ -54,7 +54,7 @@ void main() {
         expectProp(textStyleMix.fontFamilyFallback![1], 'Helvetica');
 
         expect(textStyleMix.shadows, hasLength(1));
-        expect(textStyleMix.shadows![0], isA<Prop<Mix<Shadow>>>());
+        expect(textStyleMix.shadows![0], isA<MixProp<Shadow>>());
       });
 
       test('value constructor extracts properties from TextStyle', () {

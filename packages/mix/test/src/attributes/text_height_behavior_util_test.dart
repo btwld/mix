@@ -16,7 +16,7 @@ void main() {
           leadingDistribution: TextLeadingDistribution.proportional,
         );
         final attr = utility(textHeightBehaviorMix);
-        expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+        expect(attr.value, isA<MixProp<TextHeightBehavior>>());
       });
 
       test('as() creates TextHeightBehaviorMix from TextHeightBehavior', () {
@@ -26,7 +26,7 @@ void main() {
           leadingDistribution: TextLeadingDistribution.even,
         );
         final attr = utility.as(textHeightBehavior);
-        expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+        expect(attr.value, isA<MixProp<TextHeightBehavior>>());
       });
 
       group('Property Utilities', () {
@@ -34,7 +34,7 @@ void main() {
           'heightToFirstAscent() creates text height behavior with height to first ascent',
           () {
             final attr = utility.heightToFirstAscent(true);
-            expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+            expect(attr.value, isA<MixProp<TextHeightBehavior>>());
           },
         );
 
@@ -42,7 +42,7 @@ void main() {
           'heightToFirstAscent.on() creates text height behavior with height to first ascent on',
           () {
             final attr = utility.heightToFirstAscent.on();
-            expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+            expect(attr.value, isA<MixProp<TextHeightBehavior>>());
           },
         );
 
@@ -50,7 +50,7 @@ void main() {
           'heightToFirstAscent.off() creates text height behavior with height to first ascent off',
           () {
             final attr = utility.heightToFirstAscent.off();
-            expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+            expect(attr.value, isA<MixProp<TextHeightBehavior>>());
           },
         );
 
@@ -58,7 +58,7 @@ void main() {
           'heightToLastDescent() creates text height behavior with height to last descent',
           () {
             final attr = utility.heightToLastDescent(false);
-            expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+            expect(attr.value, isA<MixProp<TextHeightBehavior>>());
           },
         );
 
@@ -66,7 +66,7 @@ void main() {
           'heightToLastDescent.on() creates text height behavior with height to last descent on',
           () {
             final attr = utility.heightToLastDescent.on();
-            expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+            expect(attr.value, isA<MixProp<TextHeightBehavior>>());
           },
         );
 
@@ -74,7 +74,7 @@ void main() {
           'heightToLastDescent.off() creates text height behavior with height to last descent off',
           () {
             final attr = utility.heightToLastDescent.off();
-            expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+            expect(attr.value, isA<MixProp<TextHeightBehavior>>());
           },
         );
 
@@ -84,7 +84,7 @@ void main() {
             final attr = utility.leadingDistribution(
               TextLeadingDistribution.proportional,
             );
-            expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+            expect(attr.value, isA<MixProp<TextHeightBehavior>>());
           },
         );
 
@@ -92,7 +92,7 @@ void main() {
           'leadingDistribution.proportional() creates text height behavior with proportional leading distribution',
           () {
             final attr = utility.leadingDistribution.proportional();
-            expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+            expect(attr.value, isA<MixProp<TextHeightBehavior>>());
           },
         );
 
@@ -100,7 +100,7 @@ void main() {
           'leadingDistribution.even() creates text height behavior with even leading distribution',
           () {
             final attr = utility.leadingDistribution.even();
-            expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+            expect(attr.value, isA<MixProp<TextHeightBehavior>>());
           },
         );
       });
@@ -113,7 +113,7 @@ void main() {
             leadingDistribution: TextLeadingDistribution.proportional,
           );
           final attr = utility(textHeightBehaviorMix);
-          expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+          expect(attr.value, isA<MixProp<TextHeightBehavior>>());
         });
 
         test('creates text height behavior for tight line spacing', () {
@@ -123,7 +123,7 @@ void main() {
             leadingDistribution: TextLeadingDistribution.even,
           );
           final attr = utility(textHeightBehaviorMix);
-          expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+          expect(attr.value, isA<MixProp<TextHeightBehavior>>());
         });
 
         test('creates text height behavior for loose line spacing', () {
@@ -133,7 +133,7 @@ void main() {
             leadingDistribution: TextLeadingDistribution.proportional,
           );
           final attr = utility(textHeightBehaviorMix);
-          expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+          expect(attr.value, isA<MixProp<TextHeightBehavior>>());
         });
 
         test('creates text height behavior for headings', () {
@@ -143,7 +143,7 @@ void main() {
             leadingDistribution: TextLeadingDistribution.proportional,
           );
           final attr = utility(textHeightBehaviorMix);
-          expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+          expect(attr.value, isA<MixProp<TextHeightBehavior>>());
         });
 
         test('creates text height behavior for body text', () {
@@ -153,7 +153,7 @@ void main() {
             leadingDistribution: TextLeadingDistribution.even,
           );
           final attr = utility(textHeightBehaviorMix);
-          expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+          expect(attr.value, isA<MixProp<TextHeightBehavior>>());
         });
 
         test('creates text height behavior for captions', () {
@@ -163,7 +163,7 @@ void main() {
             leadingDistribution: TextLeadingDistribution.proportional,
           );
           final attr = utility(textHeightBehaviorMix);
-          expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+          expect(attr.value, isA<MixProp<TextHeightBehavior>>());
         });
       });
 
@@ -172,13 +172,13 @@ void main() {
           'creates text height behavior with proportional leading distribution',
           () {
             final attr = utility.leadingDistribution.proportional();
-            expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+            expect(attr.value, isA<MixProp<TextHeightBehavior>>());
           },
         );
 
         test('creates text height behavior with even leading distribution', () {
           final attr = utility.leadingDistribution.even();
-          expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+          expect(attr.value, isA<MixProp<TextHeightBehavior>>());
         });
 
         test('combines leading distribution with height settings', () {
@@ -188,7 +188,7 @@ void main() {
             leadingDistribution: TextLeadingDistribution.even,
           );
           final attr = utility(textHeightBehaviorMix);
-          expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+          expect(attr.value, isA<MixProp<TextHeightBehavior>>());
         });
       });
 
@@ -201,7 +201,7 @@ void main() {
               applyHeightToLastDescent: true,
             );
             final attr = utility(textHeightBehaviorMix);
-            expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+            expect(attr.value, isA<MixProp<TextHeightBehavior>>());
           },
         );
 
@@ -213,7 +213,7 @@ void main() {
               applyHeightToLastDescent: false,
             );
             final attr = utility(textHeightBehaviorMix);
-            expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+            expect(attr.value, isA<MixProp<TextHeightBehavior>>());
           },
         );
 
@@ -225,7 +225,7 @@ void main() {
               applyHeightToLastDescent: false,
             );
             final attr = utility(textHeightBehaviorMix);
-            expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+            expect(attr.value, isA<MixProp<TextHeightBehavior>>());
           },
         );
 
@@ -237,7 +237,7 @@ void main() {
               applyHeightToLastDescent: true,
             );
             final attr = utility(textHeightBehaviorMix);
-            expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+            expect(attr.value, isA<MixProp<TextHeightBehavior>>());
           },
         );
       });
@@ -250,7 +250,7 @@ void main() {
             leadingDistribution: TextLeadingDistribution.proportional,
           );
           final attr = utility(displayTextBehavior);
-          expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+          expect(attr.value, isA<MixProp<TextHeightBehavior>>());
         });
 
         test('creates text height behavior for paragraph text', () {
@@ -260,7 +260,7 @@ void main() {
             leadingDistribution: TextLeadingDistribution.even,
           );
           final attr = utility(paragraphTextBehavior);
-          expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+          expect(attr.value, isA<MixProp<TextHeightBehavior>>());
         });
 
         test('creates text height behavior for code text', () {
@@ -270,7 +270,7 @@ void main() {
             leadingDistribution: TextLeadingDistribution.even,
           );
           final attr = utility(codeTextBehavior);
-          expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+          expect(attr.value, isA<MixProp<TextHeightBehavior>>());
         });
 
         test('creates text height behavior for button text', () {
@@ -280,7 +280,7 @@ void main() {
             leadingDistribution: TextLeadingDistribution.proportional,
           );
           final attr = utility(buttonTextBehavior);
-          expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+          expect(attr.value, isA<MixProp<TextHeightBehavior>>());
         });
 
         test('creates text height behavior for label text', () {
@@ -290,7 +290,7 @@ void main() {
             leadingDistribution: TextLeadingDistribution.proportional,
           );
           final attr = utility(labelTextBehavior);
-          expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+          expect(attr.value, isA<MixProp<TextHeightBehavior>>());
         });
       });
 
@@ -298,7 +298,7 @@ void main() {
         test('creates text height behavior with minimal configuration', () {
           final minimalBehavior = TextHeightBehaviorMix.only();
           final attr = utility(minimalBehavior);
-          expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+          expect(attr.value, isA<MixProp<TextHeightBehavior>>());
         });
 
         test('creates text height behavior with only leading distribution', () {
@@ -306,7 +306,7 @@ void main() {
             leadingDistribution: TextLeadingDistribution.even,
           );
           final attr = utility(onlyLeadingBehavior);
-          expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+          expect(attr.value, isA<MixProp<TextHeightBehavior>>());
         });
 
         test(
@@ -316,7 +316,7 @@ void main() {
               applyHeightToFirstAscent: true,
             );
             final attr = utility(onlyFirstAscentBehavior);
-            expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+            expect(attr.value, isA<MixProp<TextHeightBehavior>>());
           },
         );
 
@@ -327,7 +327,7 @@ void main() {
               applyHeightToLastDescent: false,
             );
             final attr = utility(onlyLastDescentBehavior);
-            expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+            expect(attr.value, isA<MixProp<TextHeightBehavior>>());
           },
         );
       });
@@ -335,7 +335,7 @@ void main() {
       test('token() creates text height behavior from token', () {
         const token = MixToken<TextHeightBehavior>('test.textHeightBehavior');
         final attr = utility.token(token);
-        expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
+        expect(attr.value, isA<MixProp<TextHeightBehavior>>());
       });
     });
   });

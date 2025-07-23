@@ -18,7 +18,7 @@ void main() {
           side: BorderSideMix.only(color: Colors.red, width: 2.0),
         );
         final attr = utility(shapeBorderMix);
-        expect(attr.value, isA<Prop<Mix<ShapeBorder>>>());
+        expect(attr.value, isA<MixProp<ShapeBorder>>());
       });
 
       test('as() creates ShapeBorderMix from RoundedRectangleBorder', () {
@@ -27,7 +27,7 @@ void main() {
           side: BorderSide(color: Colors.blue, width: 1.0),
         );
         final attr = utility.as(shapeBorder);
-        expect(attr.value, isA<Prop<Mix<ShapeBorder>>>());
+        expect(attr.value, isA<MixProp<ShapeBorder>>());
       });
 
       test('as() creates ShapeBorderMix from CircleBorder', () {
@@ -35,7 +35,7 @@ void main() {
           side: BorderSide(color: Colors.green, width: 3.0),
         );
         final attr = utility.as(shapeBorder);
-        expect(attr.value, isA<Prop<Mix<ShapeBorder>>>());
+        expect(attr.value, isA<MixProp<ShapeBorder>>());
       });
 
       group('Nested Utilities', () {
@@ -43,48 +43,48 @@ void main() {
           'roundedRectangle provides access to RoundedRectangleBorderUtility',
           () {
             final attr = utility.roundedRectangle.borderRadius.circular(8.0);
-            expect(attr.value, isA<Prop<Mix<ShapeBorder>>>());
+            expect(attr.value, isA<MixProp<ShapeBorder>>());
           },
         );
 
         test('beveled provides access to BeveledRectangleBorderUtility', () {
           final attr = utility.beveled.borderRadius.circular(6.0);
-          expect(attr.value, isA<Prop<Mix<ShapeBorder>>>());
+          expect(attr.value, isA<MixProp<ShapeBorder>>());
         });
 
         test(
           'continuous provides access to ContinuousRectangleBorderUtility',
           () {
             final attr = utility.continuous.borderRadius.circular(10.0);
-            expect(attr.value, isA<Prop<Mix<ShapeBorder>>>());
+            expect(attr.value, isA<MixProp<ShapeBorder>>());
           },
         );
 
         test('circle provides access to CircleBorderUtility', () {
           final attr = utility.circle.side.color(Colors.red);
-          expect(attr.value, isA<Prop<Mix<ShapeBorder>>>());
+          expect(attr.value, isA<MixProp<ShapeBorder>>());
         });
 
         test('star provides access to StarBorderUtility', () {
           final attr = utility.star.points(5);
-          expect(attr.value, isA<Prop<Mix<ShapeBorder>>>());
+          expect(attr.value, isA<MixProp<ShapeBorder>>());
         });
 
         test('linear provides access to LinearBorderUtility', () {
           final attr = utility.linear.side.width(2.0);
-          expect(attr.value, isA<Prop<Mix<ShapeBorder>>>());
+          expect(attr.value, isA<MixProp<ShapeBorder>>());
         });
 
         test('stadium provides access to StadiumBorderUtility', () {
           final attr = utility.stadium.side.color(Colors.blue);
-          expect(attr.value, isA<Prop<Mix<ShapeBorder>>>());
+          expect(attr.value, isA<MixProp<ShapeBorder>>());
         });
       });
 
       test('token() creates shape border from token', () {
         const token = MixToken<ShapeBorder>('test.shapeBorder');
         final attr = utility.token(token);
-        expect(attr.value, isA<Prop<Mix<ShapeBorder>>>());
+        expect(attr.value, isA<MixProp<ShapeBorder>>());
       });
     });
 
@@ -100,7 +100,7 @@ void main() {
           side: BorderSideMix.only(color: Colors.red, width: 2.0),
         );
         final attr = utility(borderMix);
-        expect(attr.value, isA<Prop<Mix<RoundedRectangleBorder>>>());
+        expect(attr.value, isA<MixProp<RoundedRectangleBorder>>());
       });
 
       test(
@@ -111,7 +111,7 @@ void main() {
             side: BorderSide(color: Colors.blue, width: 1.5),
           );
           final attr = utility.as(border);
-          expect(attr.value, isA<Prop<Mix<RoundedRectangleBorder>>>());
+          expect(attr.value, isA<MixProp<RoundedRectangleBorder>>());
         },
       );
 
@@ -124,7 +124,7 @@ void main() {
               topRight: const Radius.circular(8.0),
             );
             final attr = utility.borderRadius(borderRadiusMix);
-            expect(attr.value, isA<Prop<Mix<RoundedRectangleBorder>>>());
+            expect(attr.value, isA<MixProp<RoundedRectangleBorder>>());
           },
         );
 
@@ -132,7 +132,7 @@ void main() {
           'borderRadius.circular() creates rounded rectangle border with circular radius',
           () {
             final attr = utility.borderRadius.circular(12.0);
-            expect(attr.value, isA<Prop<Mix<RoundedRectangleBorder>>>());
+            expect(attr.value, isA<MixProp<RoundedRectangleBorder>>());
           },
         );
 
@@ -140,7 +140,7 @@ void main() {
           'borderRadius.topLeft() creates rounded rectangle border with top left radius',
           () {
             final attr = utility.borderRadius.topLeft.circular(8.0);
-            expect(attr.value, isA<Prop<Mix<RoundedRectangleBorder>>>());
+            expect(attr.value, isA<MixProp<RoundedRectangleBorder>>());
           },
         );
 
@@ -150,14 +150,14 @@ void main() {
             width: 3.0,
           );
           final attr = utility.side(borderSideMix);
-          expect(attr.value, isA<Prop<Mix<RoundedRectangleBorder>>>());
+          expect(attr.value, isA<MixProp<RoundedRectangleBorder>>());
         });
 
         test(
           'side.color() creates rounded rectangle border with side color',
           () {
             final attr = utility.side.color(Colors.purple);
-            expect(attr.value, isA<Prop<Mix<RoundedRectangleBorder>>>());
+            expect(attr.value, isA<MixProp<RoundedRectangleBorder>>());
           },
         );
 
@@ -165,7 +165,7 @@ void main() {
           'side.width() creates rounded rectangle border with side width',
           () {
             final attr = utility.side.width(2.5);
-            expect(attr.value, isA<Prop<Mix<RoundedRectangleBorder>>>());
+            expect(attr.value, isA<MixProp<RoundedRectangleBorder>>());
           },
         );
 
@@ -173,7 +173,7 @@ void main() {
           'side.style() creates rounded rectangle border with side style',
           () {
             final attr = utility.side.style(BorderStyle.solid);
-            expect(attr.value, isA<Prop<Mix<RoundedRectangleBorder>>>());
+            expect(attr.value, isA<MixProp<RoundedRectangleBorder>>());
           },
         );
       });
@@ -183,7 +183,7 @@ void main() {
           'test.roundedRectangleBorder',
         );
         final attr = utility.token(token);
-        expect(attr.value, isA<Prop<Mix<RoundedRectangleBorder>>>());
+        expect(attr.value, isA<MixProp<RoundedRectangleBorder>>());
       });
     });
 
@@ -196,7 +196,7 @@ void main() {
           eccentricity: 0.5,
         );
         final attr = utility(borderMix);
-        expect(attr.value, isA<Prop<Mix<CircleBorder>>>());
+        expect(attr.value, isA<MixProp<CircleBorder>>());
       });
 
       test('as() creates CircleBorderMix from CircleBorder', () {
@@ -205,7 +205,7 @@ void main() {
           eccentricity: 0.8,
         );
         final attr = utility.as(border);
-        expect(attr.value, isA<Prop<Mix<CircleBorder>>>());
+        expect(attr.value, isA<MixProp<CircleBorder>>());
       });
 
       group('Property Utilities', () {
@@ -215,29 +215,29 @@ void main() {
             width: 3.0,
           );
           final attr = utility.side(borderSideMix);
-          expect(attr.value, isA<Prop<Mix<CircleBorder>>>());
+          expect(attr.value, isA<MixProp<CircleBorder>>());
         });
 
         test('side.color() creates circle border with side color', () {
           final attr = utility.side.color(Colors.orange);
-          expect(attr.value, isA<Prop<Mix<CircleBorder>>>());
+          expect(attr.value, isA<MixProp<CircleBorder>>());
         });
 
         test('side.width() creates circle border with side width', () {
           final attr = utility.side.width(4.0);
-          expect(attr.value, isA<Prop<Mix<CircleBorder>>>());
+          expect(attr.value, isA<MixProp<CircleBorder>>());
         });
 
         test('eccentricity() creates circle border with eccentricity', () {
           final attr = utility.eccentricity(0.7);
-          expect(attr.value, isA<Prop<Mix<CircleBorder>>>());
+          expect(attr.value, isA<MixProp<CircleBorder>>());
         });
 
         test(
           'eccentricity.zero() creates circle border with zero eccentricity',
           () {
             final attr = utility.eccentricity.zero();
-            expect(attr.value, isA<Prop<Mix<CircleBorder>>>());
+            expect(attr.value, isA<MixProp<CircleBorder>>());
           },
         );
 
@@ -245,7 +245,7 @@ void main() {
           'eccentricity.infinity() creates circle border with infinite eccentricity',
           () {
             final attr = utility.eccentricity.infinity();
-            expect(attr.value, isA<Prop<Mix<CircleBorder>>>());
+            expect(attr.value, isA<MixProp<CircleBorder>>());
           },
         );
       });
@@ -253,7 +253,7 @@ void main() {
       test('token() creates circle border from token', () {
         const token = MixToken<CircleBorder>('test.circleBorder');
         final attr = utility.token(token);
-        expect(attr.value, isA<Prop<Mix<CircleBorder>>>());
+        expect(attr.value, isA<MixProp<CircleBorder>>());
       });
     });
 
@@ -265,7 +265,7 @@ void main() {
           side: BorderSideMix.only(color: Colors.red, width: 2.0),
         );
         final attr = utility(borderMix);
-        expect(attr.value, isA<Prop<Mix<StadiumBorder>>>());
+        expect(attr.value, isA<MixProp<StadiumBorder>>());
       });
 
       test('as() creates StadiumBorderMix from StadiumBorder', () {
@@ -273,7 +273,7 @@ void main() {
           side: BorderSide(color: Colors.blue, width: 1.5),
         );
         final attr = utility.as(border);
-        expect(attr.value, isA<Prop<Mix<StadiumBorder>>>());
+        expect(attr.value, isA<MixProp<StadiumBorder>>());
       });
 
       group('Property Utilities', () {
@@ -283,29 +283,29 @@ void main() {
             width: 3.0,
           );
           final attr = utility.side(borderSideMix);
-          expect(attr.value, isA<Prop<Mix<StadiumBorder>>>());
+          expect(attr.value, isA<MixProp<StadiumBorder>>());
         });
 
         test('side.color() creates stadium border with side color', () {
           final attr = utility.side.color(Colors.pink);
-          expect(attr.value, isA<Prop<Mix<StadiumBorder>>>());
+          expect(attr.value, isA<MixProp<StadiumBorder>>());
         });
 
         test('side.width() creates stadium border with side width', () {
           final attr = utility.side.width(2.5);
-          expect(attr.value, isA<Prop<Mix<StadiumBorder>>>());
+          expect(attr.value, isA<MixProp<StadiumBorder>>());
         });
 
         test('side.style() creates stadium border with side style', () {
           final attr = utility.side.style(BorderStyle.solid);
-          expect(attr.value, isA<Prop<Mix<StadiumBorder>>>());
+          expect(attr.value, isA<MixProp<StadiumBorder>>());
         });
       });
 
       test('token() creates stadium border from token', () {
         const token = MixToken<StadiumBorder>('test.stadiumBorder');
         final attr = utility.token(token);
-        expect(attr.value, isA<Prop<Mix<StadiumBorder>>>());
+        expect(attr.value, isA<MixProp<StadiumBorder>>());
       });
     });
 
@@ -321,7 +321,7 @@ void main() {
           side: BorderSideMix.only(color: Colors.red, width: 2.0),
         );
         final attr = utility(borderMix);
-        expect(attr.value, isA<Prop<Mix<BeveledRectangleBorder>>>());
+        expect(attr.value, isA<MixProp<BeveledRectangleBorder>>());
       });
 
       test(
@@ -332,7 +332,7 @@ void main() {
             side: BorderSide(color: Colors.blue, width: 1.5),
           );
           final attr = utility.as(border);
-          expect(attr.value, isA<Prop<Mix<BeveledRectangleBorder>>>());
+          expect(attr.value, isA<MixProp<BeveledRectangleBorder>>());
         },
       );
 
@@ -345,7 +345,7 @@ void main() {
               topRight: const Radius.circular(6.0),
             );
             final attr = utility.borderRadius(borderRadiusMix);
-            expect(attr.value, isA<Prop<Mix<BeveledRectangleBorder>>>());
+            expect(attr.value, isA<MixProp<BeveledRectangleBorder>>());
           },
         );
 
@@ -353,7 +353,7 @@ void main() {
           'borderRadius.circular() creates beveled rectangle border with circular radius',
           () {
             final attr = utility.borderRadius.circular(10.0);
-            expect(attr.value, isA<Prop<Mix<BeveledRectangleBorder>>>());
+            expect(attr.value, isA<MixProp<BeveledRectangleBorder>>());
           },
         );
 
@@ -363,14 +363,14 @@ void main() {
             width: 3.0,
           );
           final attr = utility.side(borderSideMix);
-          expect(attr.value, isA<Prop<Mix<BeveledRectangleBorder>>>());
+          expect(attr.value, isA<MixProp<BeveledRectangleBorder>>());
         });
 
         test(
           'side.color() creates beveled rectangle border with side color',
           () {
             final attr = utility.side.color(Colors.yellow);
-            expect(attr.value, isA<Prop<Mix<BeveledRectangleBorder>>>());
+            expect(attr.value, isA<MixProp<BeveledRectangleBorder>>());
           },
         );
       });
@@ -380,7 +380,7 @@ void main() {
           'test.beveledRectangleBorder',
         );
         final attr = utility.token(token);
-        expect(attr.value, isA<Prop<Mix<BeveledRectangleBorder>>>());
+        expect(attr.value, isA<MixProp<BeveledRectangleBorder>>());
       });
     });
 
@@ -398,7 +398,7 @@ void main() {
           side: BorderSideMix.only(color: Colors.red, width: 2.0),
         );
         final attr = utility(borderMix);
-        expect(attr.value, isA<Prop<Mix<ContinuousRectangleBorder>>>());
+        expect(attr.value, isA<MixProp<ContinuousRectangleBorder>>());
       });
 
       test(
@@ -409,7 +409,7 @@ void main() {
             side: BorderSide(color: Colors.blue, width: 1.5),
           );
           final attr = utility.as(border);
-          expect(attr.value, isA<Prop<Mix<ContinuousRectangleBorder>>>());
+          expect(attr.value, isA<MixProp<ContinuousRectangleBorder>>());
         },
       );
 
@@ -422,7 +422,7 @@ void main() {
               topRight: const Radius.circular(14.0),
             );
             final attr = utility.borderRadius(borderRadiusMix);
-            expect(attr.value, isA<Prop<Mix<ContinuousRectangleBorder>>>());
+            expect(attr.value, isA<MixProp<ContinuousRectangleBorder>>());
           },
         );
 
@@ -430,7 +430,7 @@ void main() {
           'borderRadius.circular() creates continuous rectangle border with circular radius',
           () {
             final attr = utility.borderRadius.circular(18.0);
-            expect(attr.value, isA<Prop<Mix<ContinuousRectangleBorder>>>());
+            expect(attr.value, isA<MixProp<ContinuousRectangleBorder>>());
           },
         );
 
@@ -440,14 +440,14 @@ void main() {
             width: 3.0,
           );
           final attr = utility.side(borderSideMix);
-          expect(attr.value, isA<Prop<Mix<ContinuousRectangleBorder>>>());
+          expect(attr.value, isA<MixProp<ContinuousRectangleBorder>>());
         });
 
         test(
           'side.color() creates continuous rectangle border with side color',
           () {
             final attr = utility.side.color(Colors.cyan);
-            expect(attr.value, isA<Prop<Mix<ContinuousRectangleBorder>>>());
+            expect(attr.value, isA<MixProp<ContinuousRectangleBorder>>());
           },
         );
       });
@@ -457,7 +457,7 @@ void main() {
           'test.continuousRectangleBorder',
         );
         final attr = utility.token(token);
-        expect(attr.value, isA<Prop<Mix<ContinuousRectangleBorder>>>());
+        expect(attr.value, isA<MixProp<ContinuousRectangleBorder>>());
       });
     });
   });

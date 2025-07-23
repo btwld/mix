@@ -20,7 +20,7 @@ void main() {
 
       final result = utility(BoxConstraintsMix.value(constraints));
       expect(result, isA<UtilityTestAttribute>());
-      expect(result.value, isA<Prop<Mix<BoxConstraints>>>());
+      expect(result.value, isA<MixProp<BoxConstraints>>());
 
       final mix = result.value.value as BoxConstraintsMix;
       expectProp(mix.minWidth, 100.0);
