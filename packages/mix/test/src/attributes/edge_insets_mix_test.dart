@@ -78,25 +78,27 @@ void main() {
           right: 20.0,
         );
 
-        final context = MockBuildContext();
-        final resolved = edgeInsetsMix.resolve(context);
+        const resolvedValue = EdgeInsets.only(
+          top: 8.0,
+          bottom: 12.0,
+          left: 16.0,
+          right: 20.0,
+        );
 
-        expect(resolved.top, 8.0);
-        expect(resolved.bottom, 12.0);
-        expect(resolved.left, 16.0);
-        expect(resolved.right, 20.0);
+        expect(edgeInsetsMix, resolvesTo(resolvedValue));
       });
 
       test('uses zero for null properties', () {
         final edgeInsetsMix = EdgeInsetsMix.only(top: 8.0, left: 16.0);
 
-        final context = MockBuildContext();
-        final resolved = edgeInsetsMix.resolve(context);
+        const resolvedValue = EdgeInsets.only(
+          top: 8.0,
+          bottom: 0.0,
+          left: 16.0,
+          right: 0.0,
+        );
 
-        expect(resolved.top, 8.0);
-        expect(resolved.bottom, 0.0);
-        expect(resolved.left, 16.0);
-        expect(resolved.right, 0.0);
+        expect(edgeInsetsMix, resolvesTo(resolvedValue));
       });
     });
 
@@ -222,13 +224,14 @@ void main() {
           end: 20.0,
         );
 
-        final context = MockBuildContext();
-        final resolved = edgeInsetsDirectionalMix.resolve(context);
+        const resolvedValue = EdgeInsetsDirectional.only(
+          top: 8.0,
+          bottom: 12.0,
+          start: 16.0,
+          end: 20.0,
+        );
 
-        expect(resolved.top, 8.0);
-        expect(resolved.bottom, 12.0);
-        expect(resolved.start, 16.0);
-        expect(resolved.end, 20.0);
+        expect(edgeInsetsDirectionalMix, resolvesTo(resolvedValue));
       });
     });
 

@@ -222,8 +222,8 @@ void main() {
           height: 200.0,
         );
 
-        expect(attribute.width?, expectPropResolves(100.0));
-        expect(attribute.height?, expectPropResolves(200.0));
+        expect(attribute.width!, resolvesTo(100.0));
+        expect(attribute.height!, resolvesTo(200.0));
       });
 
       test('handles null values correctly', () {
@@ -235,12 +235,12 @@ void main() {
 
       test('handles partial values', () {
         final attribute1 = SizedBoxModifierAttribute.only(width: 100.0);
-        expect(attribute1.width?, expectPropResolves(100.0));
+        expect(attribute1.width!, resolvesTo(100.0));
         expect(attribute1.height, isNull);
 
         final attribute2 = SizedBoxModifierAttribute.only(height: 200.0);
         expect(attribute2.width, isNull);
-        expect(attribute2.height?, expectPropResolves(200.0));
+        expect(attribute2.height!, resolvesTo(200.0));
       });
     });
 
@@ -282,8 +282,8 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expect(merged.width?, expectPropResolves(200.0)); // overridden
-        expect(merged.height?, expectPropResolves(200.0)); // overridden
+        expect(merged.width!, resolvesTo(200.0)); // overridden
+        expect(merged.height!, resolvesTo(200.0)); // overridden
       });
 
       test('returns original when other is null', () {
@@ -303,8 +303,8 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expect(merged.width?, expectPropResolves(100.0));
-        expect(merged.height?, expectPropResolves(200.0));
+        expect(merged.width!, resolvesTo(100.0));
+        expect(merged.height!, resolvesTo(200.0));
       });
     });
 
@@ -372,8 +372,8 @@ void main() {
 
       final result = base.merge(override1).merge(override2);
 
-      expect(result.width?, expectPropResolves(200.0));
-      expect(result.height?, expectPropResolves(300.0));
+      expect(result.width!, resolvesTo(200.0));
+      expect(result.height!, resolvesTo(300.0));
     });
 
     test('Lerp produces expected intermediate values', () {

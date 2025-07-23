@@ -78,13 +78,14 @@ void main() {
           maxHeight: 200.0,
         );
 
-        final context = MockBuildContext();
-        final resolved = constraintsMix.resolve(context);
+        const resolvedValue = BoxConstraints(
+          minWidth: 50.0,
+          maxWidth: 150.0,
+          minHeight: 100.0,
+          maxHeight: 200.0,
+        );
 
-        expect(resolved.minWidth, 50.0);
-        expect(resolved.maxWidth, 150.0);
-        expect(resolved.minHeight, 100.0);
-        expect(resolved.maxHeight, 200.0);
+        expect(constraintsMix, resolvesTo(resolvedValue));
       });
 
       test('uses default values for null properties', () {
@@ -93,13 +94,14 @@ void main() {
           minHeight: 100.0,
         );
 
-        final context = MockBuildContext();
-        final resolved = constraintsMix.resolve(context);
+        const resolvedValue = BoxConstraints(
+          minWidth: 50.0,
+          maxWidth: double.infinity,
+          minHeight: 100.0,
+          maxHeight: double.infinity,
+        );
 
-        expect(resolved.minWidth, 50.0);
-        expect(resolved.maxWidth, double.infinity);
-        expect(resolved.minHeight, 100.0);
-        expect(resolved.maxHeight, double.infinity);
+        expect(constraintsMix, resolvesTo(resolvedValue));
       });
 
       test('handles infinity and zero values correctly', () {
@@ -110,13 +112,14 @@ void main() {
           maxHeight: double.infinity,
         );
 
-        final context = MockBuildContext();
-        final resolved = constraintsMix.resolve(context);
+        const resolvedValue = BoxConstraints(
+          minWidth: 0.0,
+          maxWidth: double.infinity,
+          minHeight: 0.0,
+          maxHeight: double.infinity,
+        );
 
-        expect(resolved.minWidth, 0.0);
-        expect(resolved.maxWidth, double.infinity);
-        expect(resolved.minHeight, 0.0);
-        expect(resolved.maxHeight, double.infinity);
+        expect(constraintsMix, resolvesTo(resolvedValue));
       });
     });
 

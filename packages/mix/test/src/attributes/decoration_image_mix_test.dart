@@ -80,16 +80,17 @@ void main() {
           isAntiAlias: false,
         );
 
-        final context = MockBuildContext();
-        final resolved = decorationImageMix.resolve(context);
+        const resolvedValue = DecorationImage(
+          image: imageProvider,
+          fit: BoxFit.cover,
+          alignment: Alignment.center,
+          repeat: ImageRepeat.repeat,
+          filterQuality: FilterQuality.high,
+          invertColors: true,
+          isAntiAlias: false,
+        );
 
-        expect(resolved.image, imageProvider);
-        expect(resolved.fit, BoxFit.cover);
-        expect(resolved.alignment, Alignment.center);
-        expect(resolved.repeat, ImageRepeat.repeat);
-        expect(resolved.filterQuality, FilterQuality.high);
-        expect(resolved.invertColors, true);
-        expect(resolved.isAntiAlias, false);
+        expect(decorationImageMix, resolvesTo(resolvedValue));
       });
 
       test('uses default values for null properties', () {
@@ -99,16 +100,17 @@ void main() {
           fit: BoxFit.cover,
         );
 
-        final context = MockBuildContext();
-        final resolved = decorationImageMix.resolve(context);
+        const resolvedValue = DecorationImage(
+          image: imageProvider,
+          fit: BoxFit.cover,
+          alignment: Alignment.center, // default
+          repeat: ImageRepeat.noRepeat, // default
+          filterQuality: FilterQuality.low, // default
+          invertColors: false, // default
+          isAntiAlias: false, // default
+        );
 
-        expect(resolved.image, imageProvider);
-        expect(resolved.fit, BoxFit.cover);
-        expect(resolved.alignment, Alignment.center); // default
-        expect(resolved.repeat, ImageRepeat.noRepeat); // default
-        expect(resolved.filterQuality, FilterQuality.low); // default
-        expect(resolved.invertColors, false); // default
-        expect(resolved.isAntiAlias, false); // default
+        expect(decorationImageMix, resolvesTo(resolvedValue));
       });
     });
 

@@ -74,13 +74,14 @@ void main() {
           tileMode: TileMode.repeated,
         );
 
-        final context = MockBuildContext();
-        final resolved = linearGradientMix.resolve(context);
+        const resolvedValue = LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Colors.red, Colors.blue],
+          tileMode: TileMode.repeated,
+        );
 
-        expect(resolved.begin, Alignment.topLeft);
-        expect(resolved.end, Alignment.bottomRight);
-        expect(resolved.colors, [Colors.red, Colors.blue]);
-        expect(resolved.tileMode, TileMode.repeated);
+        expect(linearGradientMix, resolvesTo(resolvedValue));
       });
 
       test('uses default values for null properties', () {
@@ -88,13 +89,14 @@ void main() {
           colors: const [Colors.red, Colors.blue],
         );
 
-        final context = MockBuildContext();
-        final resolved = linearGradientMix.resolve(context);
+        const resolvedValue = LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: [Colors.red, Colors.blue],
+          tileMode: TileMode.clamp,
+        );
 
-        expect(resolved.colors, [Colors.red, Colors.blue]);
-        expect(resolved.begin, Alignment.centerLeft);
-        expect(resolved.end, Alignment.centerRight);
-        expect(resolved.tileMode, TileMode.clamp);
+        expect(linearGradientMix, resolvesTo(resolvedValue));
       });
     });
 
@@ -216,12 +218,13 @@ void main() {
           colors: const [Colors.red, Colors.blue],
         );
 
-        final context = MockBuildContext();
-        final resolved = radialGradientMix.resolve(context);
+        const resolvedValue = RadialGradient(
+          center: Alignment.center,
+          radius: 0.5,
+          colors: [Colors.red, Colors.blue],
+        );
 
-        expect(resolved.center, Alignment.center);
-        expect(resolved.radius, 0.5);
-        expect(resolved.colors, [Colors.red, Colors.blue]);
+        expect(radialGradientMix, resolvesTo(resolvedValue));
       });
     });
 
@@ -303,13 +306,14 @@ void main() {
           colors: const [Colors.red, Colors.blue],
         );
 
-        final context = MockBuildContext();
-        final resolved = sweepGradientMix.resolve(context);
+        const resolvedValue = SweepGradient(
+          center: Alignment.center,
+          startAngle: 0.0,
+          endAngle: 3.14159,
+          colors: [Colors.red, Colors.blue],
+        );
 
-        expect(resolved.center, Alignment.center);
-        expect(resolved.startAngle, 0.0);
-        expect(resolved.endAngle, 3.14159);
-        expect(resolved.colors, [Colors.red, Colors.blue]);
+        expect(sweepGradientMix, resolvesTo(resolvedValue));
       });
     });
 

@@ -124,7 +124,7 @@ void main() {
       test('creates Prop value from direct opacity', () {
         final attribute = OpacityModifierAttribute.only(opacity: 0.7);
 
-        expect(attribute.opacity?, expectPropResolves(0.7));
+        expect(attribute.opacity!, resolvesTo(0.7));
       });
 
       test('handles null opacity correctly', () {
@@ -161,7 +161,7 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expect(merged.opacity?, expectPropResolves(0.8)); // overridden
+        expect(merged.opacity!, resolvesTo(0.8)); // overridden
       });
 
       test('returns original when other is null', () {
@@ -178,7 +178,7 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expect(merged.opacity?, expectPropResolves(0.7));
+        expect(merged.opacity!, resolvesTo(0.7));
       });
     });
 
@@ -230,7 +230,7 @@ void main() {
 
       final result = base.merge(override1).merge(override2);
 
-      expect(result.opacity?, expectPropResolves(0.2));
+      expect(result.opacity!, resolvesTo(0.2));
     });
 
     test('Lerp produces expected intermediate values', () {

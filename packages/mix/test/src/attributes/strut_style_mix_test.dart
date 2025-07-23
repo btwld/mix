@@ -84,14 +84,15 @@ void main() {
           forceStrutHeight: true,
         );
 
-        final context = MockBuildContext();
-        final resolved = strutStyleMix.resolve(context);
+        const resolvedValue = StrutStyle(
+          fontFamily: 'Roboto',
+          fontSize: 16.0,
+          fontWeight: FontWeight.bold,
+          height: 1.5,
+          forceStrutHeight: true,
+        );
 
-        expect(resolved.fontFamily, 'Roboto');
-        expect(resolved.fontSize, 16.0);
-        expect(resolved.fontWeight, FontWeight.bold);
-        expect(resolved.height, 1.5);
-        expect(resolved.forceStrutHeight, true);
+        expect(strutStyleMix, resolvesTo(resolvedValue));
       });
     });
 

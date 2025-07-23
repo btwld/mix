@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../../helpers/mock_utils.dart';
+import '../../../helpers/testing_utils.dart';
 
 void main() {
   group('TextSpecAttribute', () {
@@ -22,15 +22,15 @@ void main() {
           directives: [],
         );
 
-        expect(attribute.$overflow?, expectPropResolves(TextOverflow.ellipsis));
-        expect(attribute.$textAlign?, expectPropResolves(TextAlign.center));
-        expect(attribute.$textScaler?, expectPropResolves(isA<TextScaler>()));
-        expect(attribute.$maxLines?, expectPropResolves(3));
+        expect(attribute.$overflow, resolvesTo(TextOverflow.ellipsis));
+        expect(attribute.$textAlign, resolvesTo(TextAlign.center));
+        expect(attribute.$textScaler, resolvesTo(isA<TextScaler>()));
+        expect(attribute.$maxLines, resolvesTo(3));
         expect(
-          attribute.$textWidthBasis?, expectPropResolves(TextWidthBasis.longestLine,
+          attribute.$textWidthBasis, resolvesTo(TextWidthBasis.longestLine,
         ));
-        expect(attribute.$textDirection?, expectPropResolves(TextDirection.rtl));
-        expect(attribute.$softWrap?, expectPropResolves(false));
+        expect(attribute.$textDirection, resolvesTo(TextDirection.rtl));
+        expect(attribute.$softWrap, resolvesTo(false));
         expect(attribute.$directives, isEmpty);
       });
 
@@ -60,9 +60,9 @@ void main() {
           style: TextStyleMix(fontSize: Prop(16.0)),
         );
 
-        expect(attribute.$overflow?, expectPropResolves(TextOverflow.ellipsis));
-        expect(attribute.$maxLines?, expectPropResolves(3));
-        expect(attribute.$textAlign?, expectPropResolves(TextAlign.center));
+        expect(attribute.$overflow, resolvesTo(TextOverflow.ellipsis));
+        expect(attribute.$maxLines, resolvesTo(3));
+        expect(attribute.$textAlign, resolvesTo(TextAlign.center));
         expect(attribute.$style, isNotNull);
         expect(attribute.$strutStyle, isNull);
         expect(attribute.$textScaler, isNull);
@@ -103,15 +103,15 @@ void main() {
 
         final attribute = TextSpecAttribute.value(spec);
 
-        expect(attribute.$overflow?, expectPropResolves(TextOverflow.ellipsis));
-        expect(attribute.$textAlign?, expectPropResolves(TextAlign.center));
-        expect(attribute.$textScaler?, expectPropResolves(isA<TextScaler>()));
-        expect(attribute.$maxLines?, expectPropResolves(3));
+        expect(attribute.$overflow, resolvesTo(TextOverflow.ellipsis));
+        expect(attribute.$textAlign, resolvesTo(TextAlign.center));
+        expect(attribute.$textScaler, resolvesTo(isA<TextScaler>()));
+        expect(attribute.$maxLines, resolvesTo(3));
         expect(
-          attribute.$textWidthBasis?, expectPropResolves(TextWidthBasis.longestLine,
+          attribute.$textWidthBasis, resolvesTo(TextWidthBasis.longestLine,
         ));
-        expect(attribute.$textDirection?, expectPropResolves(TextDirection.rtl));
-        expect(attribute.$softWrap?, expectPropResolves(false));
+        expect(attribute.$textDirection, resolvesTo(TextDirection.rtl));
+        expect(attribute.$softWrap, resolvesTo(false));
         expect(attribute.$directives, isEmpty);
       });
 
@@ -119,7 +119,7 @@ void main() {
         const spec = TextSpec(maxLines: 3);
         final attribute = TextSpecAttribute.value(spec);
 
-        expect(attribute.$maxLines?, expectPropResolves(3));
+        expect(attribute.$maxLines, resolvesTo(3));
         expect(attribute.$overflow, isNull);
         expect(attribute.$textAlign, isNull);
       });
@@ -131,8 +131,8 @@ void main() {
         final attribute = TextSpecAttribute.maybeValue(spec);
 
         expect(attribute, isNotNull);
-        expect(attribute!.$maxLines?, expectPropResolves(3));
-        expect(attribute.$overflow?, expectPropResolves(TextOverflow.ellipsis));
+        expect(attribute!.$maxLines, resolvesTo(3));
+        expect(attribute.$overflow, resolvesTo(TextOverflow.ellipsis));
       });
 
       test('returns null when spec is null', () {
@@ -152,7 +152,7 @@ void main() {
           softWrap: true,
         );
 
-        final context = SpecTestHelper.createMockContext();
+        final context = MockBuildContext();
         final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
@@ -166,7 +166,7 @@ void main() {
 
       test('resolves to TextSpec with null properties when not set', () {
         final attribute = TextSpecAttribute.only(maxLines: 3);
-        final context = SpecTestHelper.createMockContext();
+        final context = MockBuildContext();
         final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
@@ -199,11 +199,11 @@ void main() {
 
         final merged = attr1.merge(attr2);
 
-        expect(merged.$maxLines?, expectPropResolves(5)); // from attr2
-        expect(merged.$overflow?, expectPropResolves(TextOverflow.clip)); // from attr1
-        expect(merged.$textAlign?, expectPropResolves(TextAlign.left)); // from attr1
+        expect(merged.$maxLines, resolvesTo(5)); // from attr2
+        expect(merged.$overflow, resolvesTo(TextOverflow.clip)); // from attr1
+        expect(merged.$textAlign, resolvesTo(TextAlign.left)); // from attr1
         expect(merged.$style, isNotNull); // from attr2
-        expect(merged.$softWrap?, expectPropResolves(true)); // from attr2
+        expect(merged.$softWrap, resolvesTo(true)); // from attr2
       });
 
       test('returns original when merging with null', () {
@@ -306,7 +306,7 @@ void main() {
 
         expect(identical(original, modified), isFalse);
         expect(original.$maxLines, isNull);
-        expect(modified.$maxLines?, expectPropResolves(3));
+        expect(modified.$maxLines, resolvesTo(3));
       });
 
       test('builder methods can be chained fluently with merge', () {
@@ -316,7 +316,7 @@ void main() {
             .merge(TextSpecAttribute().textAlign(TextAlign.center))
             .merge(TextSpecAttribute().fontSize(16.0));
 
-        final context = SpecTestHelper.createMockContext();
+        final context = MockBuildContext();
         final spec = attribute.resolve(context);
 
         expect(spec.maxLines, 3);

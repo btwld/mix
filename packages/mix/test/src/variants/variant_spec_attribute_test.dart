@@ -194,8 +194,8 @@ void main() {
 
         expect(merged.variant, variant);
         final mergedBox = merged.value as BoxSpecAttribute;
-        expect(mergedBox.$width, expectPropResolves(100.0));
-        expect(mergedBox.$height, expectPropResolves(200.0));
+        expect(mergedBox.$width, resolvesTo(100.0));
+        expect(mergedBox.$height, resolvesTo(200.0));
       });
 
       test('returns this when variants do not match', () {
@@ -211,7 +211,7 @@ void main() {
 
         expect(merged, same(variantAttr1));
         final mergedBox = merged.value as BoxSpecAttribute;
-        expect(mergedBox.$width, expectPropResolves(100.0));
+        expect(mergedBox.$width, resolvesTo(100.0));
         expect(mergedBox.$height, isNull);
       });
 
@@ -237,8 +237,8 @@ void main() {
 
         expect(merged.variant, variant);
         final mergedBox = merged.value as BoxSpecAttribute;
-        expect(mergedBox.$width, expectPropResolves(200.0)); // other overrides
-        expect(mergedBox.$height, expectPropResolves(150.0)); // from first
+        expect(mergedBox.$width, resolvesTo(200.0)); // other overrides
+        expect(mergedBox.$height, resolvesTo(150.0)); // from first
       });
     });
 
@@ -328,8 +328,8 @@ void main() {
         expect(variantAttr.variant, variant);
         expect(variantAttr.value, textStyle);
         final textAttr = variantAttr.value as TextSpecAttribute;
-        expect(textAttr.$textAlign, expectPropResolves(TextAlign.center));
-        expect(textAttr.$maxLines, expectPropResolves(2));
+        expect(textAttr.$textAlign, resolvesTo(TextAlign.center));
+        expect(textAttr.$maxLines, resolvesTo(2));
       });
 
       test('works with ImageSpecAttribute', () {
@@ -344,9 +344,9 @@ void main() {
         expect(variantAttr.variant, variant);
         expect(variantAttr.value, imageStyle);
         final imageAttr = variantAttr.value as ImageSpecAttribute;
-        expect(imageAttr.$width, expectPropResolves(50.0));
-        expect(imageAttr.$height, expectPropResolves(50.0));
-        expect(imageAttr.$fit, expectPropResolves(BoxFit.cover));
+        expect(imageAttr.$width, resolvesTo(50.0));
+        expect(imageAttr.$height, resolvesTo(50.0));
+        expect(imageAttr.$fit, resolvesTo(BoxFit.cover));
       });
     });
 

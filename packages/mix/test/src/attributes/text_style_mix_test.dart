@@ -104,13 +104,14 @@ void main() {
           fontFamily: 'Roboto',
         );
 
-        final context = MockBuildContext();
-        final resolved = textStyleMix.resolve(context);
+        const resolvedValue = TextStyle(
+          color: Colors.blue,
+          fontSize: 16.0,
+          fontWeight: FontWeight.bold,
+          fontFamily: 'Roboto',
+        );
 
-        expect(resolved.color, Colors.blue);
-        expect(resolved.fontSize, 16.0);
-        expect(resolved.fontWeight, FontWeight.bold);
-        expect(resolved.fontFamily, 'Roboto');
+        expect(textStyleMix, resolvesTo(resolvedValue));
       });
 
       test('resolves with list properties', () {
@@ -122,13 +123,15 @@ void main() {
           ],
         );
 
-        final context = MockBuildContext();
-        final resolved = textStyleMix.resolve(context);
+        const resolvedValue = TextStyle(
+          fontFamilyFallback: ['Arial', 'Helvetica'],
+          shadows: [
+            Shadow(blurRadius: 5.0, color: Colors.black),
+            Shadow(blurRadius: 10.0, color: Colors.grey),
+          ],
+        );
 
-        expect(resolved.fontFamilyFallback, ['Arial', 'Helvetica']);
-        expect(resolved.shadows, hasLength(2));
-        expect(resolved.shadows![0].blurRadius, 5.0);
-        expect(resolved.shadows![1].blurRadius, 10.0);
+        expect(textStyleMix, resolvesTo(resolvedValue));
       });
     });
 

@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../../helpers/testing_utils.dart';
-import '../../../..//helpers/testing_utils.dart';
 
 void main() {
   group('BoxSpecAttribute', () {
@@ -25,12 +24,12 @@ void main() {
           height: Prop(200.0),
         );
 
-        expect(attribute.$alignment?, expectPropResolves(Alignment.center));
-        expect(attribute.$width, expectPropResolves(100.0));
-        expect(attribute.$height, expectPropResolves(200.0));
-        expect(attribute.$clipBehavior, expectPropResolves(Clip.antiAlias));
-        expect(attribute.$transformAlignment?, expectPropResolves(Alignment.topLeft));
-        expect(attribute.$transform, expectPropResolves(Matrix4.identity()));
+        expect(attribute.$alignment!, resolvesTo(Alignment.center));
+        expect(attribute.$width!, resolvesTo(100.0));
+        expect(attribute.$height!, resolvesTo(200.0));
+        expect(attribute.$clipBehavior!, resolvesTo(Clip.antiAlias));
+        expect(attribute.$transformAlignment!, resolvesTo(Alignment.topLeft));
+        expect(attribute.$transform!, resolvesTo(Matrix4.identity()));
         expect(attribute.$padding, isNotNull);
         expect(attribute.$margin, isNotNull);
         expect(attribute.$constraints, isNotNull);
@@ -53,12 +52,12 @@ void main() {
           height: 200.0,
         );
 
-        expect(attribute.$alignment?, expectPropResolves(Alignment.center));
-        expect(attribute.$width, expectPropResolves(100.0));
-        expect(attribute.$height, expectPropResolves(200.0));
-        expect(attribute.$clipBehavior, expectPropResolves(Clip.antiAlias));
-        expect(attribute.$transformAlignment?, expectPropResolves(Alignment.topLeft));
-        expect(attribute.$transform, expectPropResolves(Matrix4.identity()));
+        expect(attribute.$alignment!, resolvesTo(Alignment.center));
+        expect(attribute.$width!, resolvesTo(100.0));
+        expect(attribute.$height!, resolvesTo(200.0));
+        expect(attribute.$clipBehavior!, resolvesTo(Clip.antiAlias));
+        expect(attribute.$transformAlignment!, resolvesTo(Alignment.topLeft));
+        expect(attribute.$transform!, resolvesTo(Matrix4.identity()));
         expect(attribute.$padding, isNotNull);
         expect(attribute.$margin, isNotNull);
         expect(attribute.$constraints, isNotNull);
@@ -99,10 +98,10 @@ void main() {
         expect(original.$height, isNull);
 
         // Each new instance has only its specific property
-        expect(withWidth.$width, expectPropResolves(100.0));
+        expect(withWidth.$width, resolvesTo(100.0));
         expect(withWidth.$height, isNull);
 
-        expect(withHeight.$height, expectPropResolves(200.0));
+        expect(withHeight.$height, resolvesTo(200.0));
         expect(withHeight.$width, isNull);
       });
 
@@ -112,7 +111,7 @@ void main() {
 
         // Only the last property is set because each utility creates a new instance
         expect(chained.$width, isNull);
-        expect(chained.$height, expectPropResolves(200.0));
+        expect(chained.$height, resolvesTo(200.0));
       });
 
       test('use merge to combine utilities', () {
@@ -122,8 +121,8 @@ void main() {
             .merge(BoxSpecAttribute().height(200.0))
             .merge(BoxSpecAttribute().color(Colors.red));
 
-        expect(combined.$width, expectPropResolves(100.0));
-        expect(combined.$height, expectPropResolves(200.0));
+        expect(combined.$width, resolvesTo(100.0));
+        expect(combined.$height, resolvesTo(200.0));
         expect(combined.$decoration, isNotNull);
       });
     });
@@ -144,11 +143,11 @@ void main() {
 
         final attribute = BoxSpecAttribute.value(spec);
 
-        expect(attribute.$alignment?, expectPropResolves(Alignment.center));
-        expect(attribute.$width, expectPropResolves(100.0));
-        expect(attribute.$height, expectPropResolves(200.0));
-        expect(attribute.$transformAlignment?, expectPropResolves(Alignment.topLeft));
-        expect(attribute.$clipBehavior, expectPropResolves(Clip.antiAlias));
+        expect(attribute.$alignment!, resolvesTo(Alignment.center));
+        expect(attribute.$width!, resolvesTo(100.0));
+        expect(attribute.$height!, resolvesTo(200.0));
+        expect(attribute.$transformAlignment!, resolvesTo(Alignment.topLeft));
+        expect(attribute.$clipBehavior, resolvesTo(Clip.antiAlias));
         expect(attribute.$padding, isNotNull);
         expect(attribute.$margin, isNotNull);
         expect(attribute.$decoration, isNotNull);
@@ -163,8 +162,8 @@ void main() {
         final attribute = BoxSpecAttribute.maybeValue(spec);
 
         expect(attribute, isNotNull);
-        expect(attribute!.$width, expectPropResolves(100.0));
-        expect(attribute.$height, expectPropResolves(200.0));
+        expect(attribute!.$width, resolvesTo(100.0));
+        expect(attribute.$height, resolvesTo(200.0));
       });
     });
 
@@ -277,10 +276,10 @@ void main() {
         final withWidth = BoxSpecAttribute().width(100.0);
         final withHeight = BoxSpecAttribute().height(200.0);
 
-        expect(withWidth.$width, expectPropResolves(100.0));
+        expect(withWidth.$width, resolvesTo(100.0));
         expect(withWidth.$height, isNull);
 
-        expect(withHeight.$height, expectPropResolves(200.0));
+        expect(withHeight.$height, resolvesTo(200.0));
         expect(withHeight.$width, isNull);
       });
 
@@ -290,14 +289,14 @@ void main() {
             .width(100.0)
             .merge(BoxSpecAttribute().height(200.0));
 
-        expect(merged.$width, expectPropResolves(100.0));
-        expect(merged.$height, expectPropResolves(200.0));
+        expect(merged.$width, resolvesTo(100.0));
+        expect(merged.$height, resolvesTo(200.0));
 
         // Option 2: Use constructor
         final constructed = BoxSpecAttribute.only(width: 100.0, height: 200.0);
 
-        expect(constructed.$width, expectPropResolves(100.0));
-        expect(constructed.$height, expectPropResolves(200.0));
+        expect(constructed.$width, resolvesTo(100.0));
+        expect(constructed.$height, resolvesTo(200.0));
       });
 
       test('constraint utilities create separate instances', () {
@@ -423,10 +422,10 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.$width, expectPropResolves(150.0)); // second overrides
-        expect(merged.$height, expectPropResolves(200.0)); // from first
+        expect(merged.$width, resolvesTo(150.0)); // second overrides
+        expect(merged.$height, resolvesTo(200.0)); // from first
         expect(merged.$padding, isNotNull); // from second
-        expect(merged.$alignment?, expectPropResolves(Alignment.center)); // from second
+        expect(merged.$alignment!, resolvesTo(Alignment.center)); // from second
         expect(merged.$decoration, isNotNull); // decoration from first
       });
 
@@ -566,7 +565,7 @@ void main() {
 
         expect(identical(original, modified), isFalse);
         expect(original.$width, isNull);
-        expect(modified.$width, expectPropResolves(100.0));
+        expect(modified.$width, resolvesTo(100.0));
       });
 
       test('builder methods can be chained fluently with merge', () {

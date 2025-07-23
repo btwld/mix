@@ -184,19 +184,13 @@ void main() {
       test('resolves to RotatedBoxModifier with resolved quarter turns', () {
         final attribute = RotatedBoxModifierAttribute.only(quarterTurns: 1);
 
-        final resolved = attribute.resolve(MockBuildContext());
-
-        expect(resolved, isA<RotatedBoxModifier>());
-        expect(resolved.quarterTurns, 1);
+        expect(attribute, resolvesTo(const RotatedBoxModifier(1)));
       });
 
       test('resolves with null quarter turns to zero', () {
         const attribute = RotatedBoxModifierAttribute();
 
-        final resolved = attribute.resolve(MockBuildContext());
-
-        expect(resolved, isA<RotatedBoxModifier>());
-        expect(resolved.quarterTurns, 0);
+        expect(attribute, resolvesTo(const RotatedBoxModifier(0)));
       });
     });
 
@@ -207,7 +201,7 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expectProp(merged.quarterTurns, [1, 3]); // accumulated
+        expectProp(merged.quarterTurns, 3); // Prop<int> uses replacement
       });
 
       test('returns original when other is null', () {
@@ -224,7 +218,7 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expect(merged.quarterTurns?, expectPropResolves(1));
+        expect(merged.quarterTurns!, resolvesTo(1));
       });
     });
 
@@ -270,40 +264,37 @@ void main() {
       final attribute = result.value;
 
       expect(attribute.quarterTurns, isNotNull);
-      expect(attribute.quarterTurns?, expectPropResolves(3));
+      expect(attribute.quarterTurns!, resolvesTo(3));
     });
 
     test('d90() creates attribute with 1 quarter turn', () {
       final result = utility.d90();
       final attribute = result.value;
 
-      expect(attribute.quarterTurns?, expectPropResolves(1));
+      expect(attribute.quarterTurns!, resolvesTo(1));
 
       // Verify it creates 90-degree rotation
-      final resolved = attribute.resolve(MockBuildContext());
-      expect(resolved.quarterTurns, 1);
+      expect(attribute, resolvesTo(const RotatedBoxModifier(1)));
     });
 
     test('d180() creates attribute with 2 quarter turns', () {
       final result = utility.d180();
       final attribute = result.value;
 
-      expect(attribute.quarterTurns?, expectPropResolves(2));
+      expect(attribute.quarterTurns!, resolvesTo(2));
 
       // Verify it creates 180-degree rotation
-      final resolved = attribute.resolve(MockBuildContext());
-      expect(resolved.quarterTurns, 2);
+      expect(attribute, resolvesTo(const RotatedBoxModifier(2)));
     });
 
     test('d270() creates attribute with 3 quarter turns', () {
       final result = utility.d270();
       final attribute = result.value;
 
-      expect(attribute.quarterTurns?, expectPropResolves(3));
+      expect(attribute.quarterTurns!, resolvesTo(3));
 
       // Verify it creates 270-degree rotation
-      final resolved = attribute.resolve(MockBuildContext());
-      expect(resolved.quarterTurns, 3);
+      expect(attribute, resolvesTo(const RotatedBoxModifier(3)));
     });
 
     test('utility methods are convenience for call()', () {
@@ -311,21 +302,24 @@ void main() {
       final call1Result = utility.call(1);
 
       expect(
-        d90Result.value.quarterTurns?, expectPropResolves(call1Result.value.quarterTurns?.getValue()),
+        d90Result.value.quarterTurns!,
+        resolvesTo(call1Result.value.quarterTurns!.value),
       );
 
       final d180Result = utility.d180();
       final call2Result = utility.call(2);
 
       expect(
-        d180Result.value.quarterTurns?, expectPropResolves(call2Result.value.quarterTurns?.getValue()),
+        d180Result.value.quarterTurns!,
+        resolvesTo(call2Result.value.quarterTurns!.value),
       );
 
       final d270Result = utility.d270();
       final call3Result = utility.call(3);
 
       expect(
-        d270Result.value.quarterTurns?, expectPropResolves(call3Result.value.quarterTurns?.getValue()),
+        d270Result.value.quarterTurns!,
+        resolvesTo(call3Result.value.quarterTurns!.value),
       );
     });
   });
@@ -335,6 +329,8 @@ void main() {
       WidgetTester tester,
     ) async {
       final attribute = RotatedBoxModifierAttribute.only(quarterTurns: 2);
+
+      expect(attribute, resolvesTo(const RotatedBoxModifier(2)));
 
       final modifier = attribute.resolve(MockBuildContext());
       const child = SizedBox(width: 100, height: 50);
@@ -360,7 +356,7 @@ void main() {
 
       final result = base.merge(override1).merge(override2);
 
-      expect(result.quarterTurns?, expectPropResolves(3));
+      expect(result.quarterTurns!, resolvesTo(3));
     });
 
     test('Lerp produces expected intermediate values', () {

@@ -23,10 +23,7 @@ void main() {
 
         expectProp(boxDecorationMix.color, Colors.blue);
         expectProp(boxDecorationMix.shape, BoxShape.circle);
-        expect(
-          boxDecorationMix.backgroundBlendMode,
-          isProp(BlendMode.multiply),
-        );
+        expectProp(boxDecorationMix.backgroundBlendMode, BlendMode.multiply);
         expect(boxDecorationMix.border, isA<Prop<Mix<BoxBorder>>>());
         expect(
           boxDecorationMix.borderRadius,
@@ -94,12 +91,7 @@ void main() {
           ),
         );
 
-        final context = MockBuildContext();
-        final resolved = boxDecorationMix.resolve(context);
-
-        expect(resolved.color, Colors.blue);
-        expect(resolved.shape, BoxShape.circle);
-        expect(resolved.border, isA<Border>());
+        expect(boxDecorationMix, resolvesTo(isA<BoxDecoration>()));
       });
 
       test('resolves with complex properties', () {
@@ -113,13 +105,7 @@ void main() {
           ],
         );
 
-        final context = MockBuildContext();
-        final resolved = boxDecorationMix.resolve(context);
-
-        expect(resolved.borderRadius, isA<BorderRadius>());
-        expect(resolved.boxShadow, hasLength(2));
-        expect(resolved.boxShadow![0].color, Colors.black);
-        expect(resolved.boxShadow![1].color, Colors.grey);
+        expect(boxDecorationMix, resolvesTo(isA<BoxDecoration>()));
       });
     });
 
@@ -239,11 +225,7 @@ void main() {
           shape: CircleBorderMix.only(),
         );
 
-        final context = MockBuildContext();
-        final resolved = shapeDecorationMix.resolve(context);
-
-        expect(resolved.color, Colors.green);
-        expect(resolved.shape, isA<CircleBorder>());
+        expect(shapeDecorationMix, resolvesTo(isA<ShapeDecoration>()));
       });
     });
 

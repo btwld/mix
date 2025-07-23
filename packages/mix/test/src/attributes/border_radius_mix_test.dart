@@ -64,13 +64,14 @@ void main() {
           bottomRight: const Radius.circular(20.0),
         );
 
-        final context = MockBuildContext();
-        final resolved = borderRadiusMix.resolve(context);
+        const resolvedValue = BorderRadius.only(
+          topLeft: Radius.circular(8.0),
+          topRight: Radius.circular(12.0),
+          bottomLeft: Radius.circular(16.0),
+          bottomRight: Radius.circular(20.0),
+        );
 
-        expect(resolved.topLeft, const Radius.circular(8.0));
-        expect(resolved.topRight, const Radius.circular(12.0));
-        expect(resolved.bottomLeft, const Radius.circular(16.0));
-        expect(resolved.bottomRight, const Radius.circular(20.0));
+        expect(borderRadiusMix, resolvesTo(resolvedValue));
       });
 
       test('uses zero radius for null properties', () {
@@ -78,13 +79,14 @@ void main() {
           topLeft: const Radius.circular(8.0),
         );
 
-        final context = MockBuildContext();
-        final resolved = borderRadiusMix.resolve(context);
+        const resolvedValue = BorderRadius.only(
+          topLeft: Radius.circular(8.0),
+          topRight: Radius.zero,
+          bottomLeft: Radius.zero,
+          bottomRight: Radius.zero,
+        );
 
-        expect(resolved.topLeft, const Radius.circular(8.0));
-        expect(resolved.topRight, Radius.zero);
-        expect(resolved.bottomLeft, Radius.zero);
-        expect(resolved.bottomRight, Radius.zero);
+        expect(borderRadiusMix, resolvesTo(resolvedValue));
       });
     });
 
@@ -226,13 +228,14 @@ void main() {
           bottomEnd: const Radius.circular(20.0),
         );
 
-        final context = MockBuildContext();
-        final resolved = borderRadiusDirectionalMix.resolve(context);
+        const resolvedValue = BorderRadiusDirectional.only(
+          topStart: Radius.circular(8.0),
+          topEnd: Radius.circular(12.0),
+          bottomStart: Radius.circular(16.0),
+          bottomEnd: Radius.circular(20.0),
+        );
 
-        expect(resolved.topStart, const Radius.circular(8.0));
-        expect(resolved.topEnd, const Radius.circular(12.0));
-        expect(resolved.bottomStart, const Radius.circular(16.0));
-        expect(resolved.bottomEnd, const Radius.circular(20.0));
+        expect(borderRadiusDirectionalMix, resolvesTo(resolvedValue));
       });
     });
 

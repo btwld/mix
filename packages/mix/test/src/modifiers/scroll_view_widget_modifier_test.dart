@@ -362,7 +362,7 @@ void main() {
       test('creates with provided Prop values', () {
         final scrollDirection = Prop<Axis>(Axis.horizontal);
         final reverse = Prop<bool>(true);
-        final padding = Prop<Mix<EdgeInsetsGeometry>>(EdgeInsetsMix.all(16.0));
+        final padding = MixProp<EdgeInsetsGeometry>(EdgeInsetsMix.all(16.0));
         final physics = Prop<ScrollPhysics>(const BouncingScrollPhysics());
         final clipBehavior = Prop<Clip>(Clip.antiAlias);
 
@@ -394,7 +394,7 @@ void main() {
 
         expectProp(attribute.scrollDirection, Axis.horizontal);
         expectProp(attribute.reverse, true);
-        expect(attribute.physics, resolvesTo(isA<BouncingScrollPhysics>()));
+        expectProp(attribute.physics, isA<BouncingScrollPhysics>());
         expectProp(attribute.clipBehavior, Clip.antiAlias);
         expect(attribute.padding, isNotNull);
       });
@@ -427,7 +427,7 @@ void main() {
         expect(attribute2.scrollDirection, isNull);
         expect(attribute2.reverse, isNull);
         expect(attribute2.padding, isNotNull);
-        expect(attribute2.physics, resolvesTo(isA<ClampingScrollPhysics>()));
+        expectProp(attribute2.physics, isA<ClampingScrollPhysics>());
         expect(attribute2.clipBehavior, isNull);
       });
     });
@@ -442,27 +442,24 @@ void main() {
           clipBehavior: Clip.antiAlias,
         );
 
-        final resolved = attribute.resolve(MockBuildContext());
-
-        expect(resolved, isA<ScrollViewModifier>());
-        expect(resolved.scrollDirection, Axis.horizontal);
-        expect(resolved.reverse, true);
-        expect(resolved.padding, const EdgeInsets.all(16.0));
-        expect(resolved.physics, isA<BouncingScrollPhysics>());
-        expect(resolved.clipBehavior, Clip.antiAlias);
+        expect(
+          attribute,
+          resolvesTo(
+            const ScrollViewModifier(
+              scrollDirection: Axis.horizontal,
+              reverse: true,
+              padding: EdgeInsets.all(16.0),
+              physics: BouncingScrollPhysics(),
+              clipBehavior: Clip.antiAlias,
+            ),
+          ),
+        );
       });
 
       test('resolves with null values', () {
         final attribute = ScrollViewModifierAttribute();
 
-        final resolved = attribute.resolve(MockBuildContext());
-
-        expect(resolved, isA<ScrollViewModifier>());
-        expect(resolved.scrollDirection, isNull);
-        expect(resolved.reverse, isNull);
-        expect(resolved.padding, isNull);
-        expect(resolved.physics, isNull);
-        expect(resolved.clipBehavior, isNull);
+        expect(attribute, resolvesTo(const ScrollViewModifier()));
       });
     });
 
@@ -484,10 +481,7 @@ void main() {
         expectProp(merged.scrollDirection, Axis.horizontal); // overridden
         expectProp(merged.reverse, false); // preserved
         expect(merged.padding, isNotNull); // preserved
-        expect(
-          merged.physics,
-          resolvesTo(isA<BouncingScrollPhysics>()),
-        ); // added
+        expectProp(merged.physics, isA<BouncingScrollPhysics>()); // added
         expectProp(merged.clipBehavior, Clip.antiAlias); // added
       });
 
@@ -595,7 +589,7 @@ void main() {
       expectProp(attribute.scrollDirection, Axis.horizontal);
       expectProp(attribute.reverse, true);
       expect(attribute.padding, isNotNull);
-      expect(attribute.physics, resolvesTo(isA<BouncingScrollPhysics>()));
+      expectProp(attribute.physics, isA<BouncingScrollPhysics>());
       expectProp(attribute.clipBehavior, Clip.antiAlias);
     });
 
@@ -624,7 +618,7 @@ void main() {
       final result = utility.physics(const BouncingScrollPhysics());
       final attribute = result.value;
 
-      expect(attribute.physics, resolvesTo(isA<BouncingScrollPhysics>()));
+      expectProp(attribute.physics, isA<BouncingScrollPhysics>());
     });
 
     test(
@@ -644,7 +638,7 @@ void main() {
       final result = utility.bouncingScrollPhysics();
       final attribute = result.value;
 
-      expect(attribute.physics, resolvesTo(isA<BouncingScrollPhysics>()));
+      expectProp(attribute.physics, isA<BouncingScrollPhysics>());
     });
 
     test('clampingScrollPhysics() creates attribute with clamping physics', () {
@@ -665,8 +659,10 @@ void main() {
       final result = utility.padding.all(16.0);
       final attribute = result.value;
 
-      final resolved = attribute.resolve(MockBuildContext());
-      expect(resolved.padding, const EdgeInsets.all(16.0));
+      expect(
+        attribute,
+        resolvesTo(const ScrollViewModifier(padding: EdgeInsets.all(16.0))),
+      );
     });
 
     test('clipBehavior utility creates attribute with clip behavior', () {
@@ -687,6 +683,19 @@ void main() {
         padding: EdgeInsetsMix.all(24.0),
         physics: const BouncingScrollPhysics(),
         clipBehavior: Clip.antiAlias,
+      );
+
+      expect(
+        attribute,
+        resolvesTo(
+          const ScrollViewModifier(
+            scrollDirection: Axis.horizontal,
+            reverse: true,
+            padding: EdgeInsets.all(24.0),
+            physics: BouncingScrollPhysics(),
+            clipBehavior: Clip.antiAlias,
+          ),
+        ),
       );
 
       final modifier = attribute.resolve(MockBuildContext());

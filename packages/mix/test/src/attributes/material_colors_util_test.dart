@@ -141,7 +141,7 @@ void main() {
       test('token() creates color from token', () {
         const token = MixToken<Color>('test.materialColor');
         final attr = utility.token(token);
-        expect(attr.value.getToken(), token);
+        expect(attr.value.token, token);
       });
     });
 
@@ -254,7 +254,7 @@ void main() {
       test('token() creates accent color from token', () {
         const token = MixToken<Color>('test.materialAccentColor');
         final attr = utility.token(token);
-        expect(attr.value.getToken(), token);
+        expect(attr.value.token, token);
       });
     });
 

@@ -77,7 +77,7 @@ void main() {
       });
 
       test('token() creates gradient from token', () {
-        const token = MixToken<GradientMix>('test.gradient');
+        const token = MixToken<Gradient>('test.gradient');
         final attr = utility.token(token);
         expect(attr.value, isA<Prop<Mix<Gradient>>>());
       });
@@ -209,7 +209,7 @@ void main() {
       });
 
       test('token() creates linear gradient from token', () {
-        const token = MixToken<LinearGradientMix>('test.linearGradient');
+        const token = MixToken<LinearGradient>('test.linearGradient');
         final attr = utility.token(token);
         expect(attr.value, isA<Prop<Mix<LinearGradient>>>());
       });
@@ -354,7 +354,7 @@ void main() {
       });
 
       test('token() creates radial gradient from token', () {
-        const token = MixToken<RadialGradientMix>('test.radialGradient');
+        const token = MixToken<RadialGradient>('test.radialGradient');
         final attr = utility.token(token);
         expect(attr.value, isA<Prop<Mix<RadialGradient>>>());
       });
@@ -471,7 +471,7 @@ void main() {
       });
 
       test('token() creates sweep gradient from token', () {
-        const token = MixToken<SweepGradientMix>('test.sweepGradient');
+        const token = MixToken<SweepGradient>('test.sweepGradient');
         final attr = utility.token(token);
         expect(attr.value, isA<Prop<Mix<SweepGradient>>>());
       });

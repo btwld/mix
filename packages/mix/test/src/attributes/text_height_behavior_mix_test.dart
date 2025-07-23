@@ -16,9 +16,9 @@ void main() {
 
         expectProp(textHeightBehaviorMix.applyHeightToFirstAscent, false);
         expectProp(textHeightBehaviorMix.applyHeightToLastDescent, true);
-        expect(
+        expectProp(
           textHeightBehaviorMix.leadingDistribution,
-          isProp(TextLeadingDistribution.even),
+          TextLeadingDistribution.even,
         );
       });
 
@@ -35,9 +35,9 @@ void main() {
 
         expectProp(textHeightBehaviorMix.applyHeightToFirstAscent, true);
         expectProp(textHeightBehaviorMix.applyHeightToLastDescent, false);
-        expect(
+        expectProp(
           textHeightBehaviorMix.leadingDistribution,
-          isProp(TextLeadingDistribution.proportional),
+          TextLeadingDistribution.proportional,
         );
       });
 
@@ -65,12 +65,13 @@ void main() {
           leadingDistribution: TextLeadingDistribution.even,
         );
 
-        final context = MockBuildContext();
-        final resolved = textHeightBehaviorMix.resolve(context);
+        const resolvedValue = TextHeightBehavior(
+          applyHeightToFirstAscent: false,
+          applyHeightToLastDescent: true,
+          leadingDistribution: TextLeadingDistribution.even,
+        );
 
-        expect(resolved.applyHeightToFirstAscent, false);
-        expect(resolved.applyHeightToLastDescent, true);
-        expect(resolved.leadingDistribution, TextLeadingDistribution.even);
+        expect(textHeightBehaviorMix, resolvesTo(resolvedValue));
       });
 
       test('uses default values for null properties', () {
@@ -78,15 +79,13 @@ void main() {
           applyHeightToFirstAscent: false,
         );
 
-        final context = MockBuildContext();
-        final resolved = textHeightBehaviorMix.resolve(context);
+        const resolvedValue = TextHeightBehavior(
+          applyHeightToFirstAscent: false,
+          applyHeightToLastDescent: true, // default
+          leadingDistribution: TextLeadingDistribution.proportional, // default
+        );
 
-        expect(resolved.applyHeightToFirstAscent, false);
-        expect(resolved.applyHeightToLastDescent, true); // default
-        expect(
-          resolved.leadingDistribution,
-          TextLeadingDistribution.proportional,
-        ); // default
+        expect(textHeightBehaviorMix, resolvesTo(resolvedValue));
       });
     });
 
@@ -115,10 +114,7 @@ void main() {
 
         expectProp(merged.applyHeightToFirstAscent, false);
         expectProp(merged.applyHeightToLastDescent, false);
-        expect(
-          merged.leadingDistribution,
-          isProp(TextLeadingDistribution.even),
-        );
+        expectProp(merged.leadingDistribution, TextLeadingDistribution.even);
       });
     });
 

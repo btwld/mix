@@ -156,7 +156,7 @@ void main() {
       });
 
       test('creates with provided MixProp padding', () {
-        final padding = Prop<Mix<EdgeInsetsGeometry>>(EdgeInsetsMix.all(16.0));
+        final padding = MixProp<EdgeInsetsGeometry>(EdgeInsetsMix.all(16.0));
         final attribute = PaddingModifierAttribute(padding: padding);
 
         expect(attribute.padding, same(padding));
@@ -188,8 +188,13 @@ void main() {
         final attribute = PaddingModifierAttribute.only(padding: edgeInsetsMix);
 
         expect(attribute.padding, isNotNull);
-        final resolved = attribute.resolve(MockBuildContext());
-        expect(resolved.padding, const EdgeInsets.fromLTRB(30, 10, 40, 20));
+        expectProp(attribute.padding, isA<EdgeInsetsMix>());
+        expect(
+          attribute,
+          resolvesTo(
+            const PaddingModifier(EdgeInsets.fromLTRB(30, 10, 40, 20)),
+          ),
+        );
       });
     });
 
@@ -198,19 +203,16 @@ void main() {
         final edgeInsetsMix = EdgeInsetsMix.all(16.0);
         final attribute = PaddingModifierAttribute.only(padding: edgeInsetsMix);
 
-        final resolved = attribute.resolve(MockBuildContext());
-
-        expect(resolved, isA<PaddingModifier>());
-        expect(resolved.padding, const EdgeInsets.all(16.0));
+        expect(
+          attribute,
+          resolvesTo(const PaddingModifier(EdgeInsets.all(16.0))),
+        );
       });
 
       test('resolves with null padding to zero padding', () {
         const attribute = PaddingModifierAttribute();
 
-        final resolved = attribute.resolve(MockBuildContext());
-
-        expect(resolved, isA<PaddingModifier>());
-        expect(resolved.padding, EdgeInsets.zero);
+        expect(attribute, resolvesTo(const PaddingModifier(EdgeInsets.zero)));
       });
 
       test('resolves EdgeInsetsDirectionalMix correctly', () {
@@ -222,12 +224,13 @@ void main() {
         );
         final attribute = PaddingModifierAttribute.only(padding: edgeInsetsMix);
 
-        final resolved = attribute.resolve(MockBuildContext());
-
-        expect(resolved, isA<PaddingModifier>());
         expect(
-          resolved.padding,
-          const EdgeInsetsDirectional.fromSTEB(30, 10, 40, 20),
+          attribute,
+          resolvesTo(
+            const PaddingModifier(
+              EdgeInsetsDirectional.fromSTEB(30, 10, 40, 20),
+            ),
+          ),
         );
       });
     });
@@ -243,8 +246,9 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        final resolved = merged.resolve(MockBuildContext());
-        expect(resolved.padding, const EdgeInsets.all(20.0)); // overridden
+        // MixProp accumulates, but since both set all sides, second wins
+        expect(merged.padding, isNotNull);
+        expect(merged, resolvesTo(const PaddingModifier(EdgeInsets.all(20.0))));
       });
 
       test('returns original when other is null', () {
@@ -267,8 +271,14 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        final resolved = merged.resolve(MockBuildContext());
-        expect(resolved.padding, const EdgeInsets.fromLTRB(20, 10, 20, 10));
+        // MixProp accumulates - properties from both attributes combine
+        expect(merged.padding, isNotNull);
+        expect(
+          merged,
+          resolvesTo(
+            const PaddingModifier(EdgeInsets.fromLTRB(20, 10, 20, 10)),
+          ),
+        );
       });
     });
 
@@ -338,45 +348,51 @@ void main() {
       final attribute = result.value;
 
       expect(attribute.padding, isNotNull);
-      final resolved = attribute.resolve(MockBuildContext());
-      expect(resolved.padding, const EdgeInsets.all(16.0));
+      expectProp(attribute.padding, isA<EdgeInsetsMix>());
+      expect(
+        attribute,
+        resolvesTo(const PaddingModifier(EdgeInsets.all(16.0))),
+      );
     });
 
     test('padding utility supports various configurations', () {
       // Test all padding
       final allResult = utility.padding.all(16.0);
       final allAttr = allResult.value;
-      final allResolved = allAttr.resolve(MockBuildContext());
-      expect(allResolved.padding, const EdgeInsets.all(16.0));
+      expect(allAttr, resolvesTo(const PaddingModifier(EdgeInsets.all(16.0))));
 
       // Test horizontal padding
       final horizontalResult = utility.padding.horizontal(15.0);
       final horizontalAttr = horizontalResult.value;
-      final horizontalResolved = horizontalAttr.resolve(MockBuildContext());
       expect(
-        horizontalResolved.padding,
-        const EdgeInsets.symmetric(horizontal: 15.0),
+        horizontalAttr,
+        resolvesTo(
+          const PaddingModifier(EdgeInsets.symmetric(horizontal: 15.0)),
+        ),
       );
 
       // Test vertical padding
       final verticalResult = utility.padding.vertical(25.0);
       final verticalAttr = verticalResult.value;
-      final verticalResolved = verticalAttr.resolve(MockBuildContext());
       expect(
-        verticalResolved.padding,
-        const EdgeInsets.symmetric(vertical: 25.0),
+        verticalAttr,
+        resolvesTo(const PaddingModifier(EdgeInsets.symmetric(vertical: 25.0))),
       );
 
       // Test individual sides
       final topResult = utility.padding.top(10.0);
       final topAttr = topResult.value;
-      final topResolved = topAttr.resolve(MockBuildContext());
-      expect(topResolved.padding, const EdgeInsets.only(top: 10.0));
+      expect(
+        topAttr,
+        resolvesTo(const PaddingModifier(EdgeInsets.only(top: 10.0))),
+      );
 
       final leftResult = utility.padding.left(20.0);
       final leftAttr = leftResult.value;
-      final leftResolved = leftAttr.resolve(MockBuildContext());
-      expect(leftResolved.padding, const EdgeInsets.only(left: 20.0));
+      expect(
+        leftAttr,
+        resolvesTo(const PaddingModifier(EdgeInsets.only(left: 20.0))),
+      );
     });
   });
 
@@ -386,6 +402,11 @@ void main() {
     ) async {
       final attribute = PaddingModifierAttribute.only(
         padding: EdgeInsetsMix.all(24.0),
+      );
+
+      expect(
+        attribute,
+        resolvesTo(const PaddingModifier(EdgeInsets.all(24.0))),
       );
 
       final modifier = attribute.resolve(MockBuildContext());
@@ -418,8 +439,12 @@ void main() {
 
       final result = base.merge(override1).merge(override2);
 
-      final resolved = result.resolve(MockBuildContext());
-      expect(resolved.padding, const EdgeInsets.fromLTRB(20, 30, 20, 10));
+      // MixProp accumulates: base -> override1 -> override2
+      // Final result: left/right from override1, top from override2, bottom from override1
+      expect(
+        result,
+        resolvesTo(const PaddingModifier(EdgeInsets.fromLTRB(20, 30, 20, 10))),
+      );
     });
 
     test('Lerp produces expected intermediate values', () {
@@ -445,10 +470,11 @@ void main() {
         ),
       );
 
-      final resolved = attribute.resolve(MockBuildContext());
       expect(
-        resolved.padding,
-        const EdgeInsetsDirectional.fromSTEB(10, 30, 20, 40),
+        attribute,
+        resolvesTo(
+          const PaddingModifier(EdgeInsetsDirectional.fromSTEB(10, 30, 20, 40)),
+        ),
       );
     });
   });

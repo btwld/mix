@@ -16,10 +16,10 @@ void main() {
           clipBehavior: Prop(Clip.antiAlias),
         );
 
-        expect(attribute.$alignment?, expectResolves(Alignment.center));
-        expect(attribute.$fit?, expectResolves(StackFit.expand));
-        expect(attribute.$textDirection?, expectResolves(TextDirection.rtl));
-        expect(attribute.$clipBehavior?, expectResolves(Clip.antiAlias));
+        expect(attribute.$alignment, resolvesTo(Alignment.center));
+        expect(attribute.$fit, resolvesTo(StackFit.expand));
+        expect(attribute.$textDirection, resolvesTo(TextDirection.rtl));
+        expect(attribute.$clipBehavior, resolvesTo(Clip.antiAlias));
       });
 
       test('creates StackSpecAttribute with default values', () {
@@ -39,8 +39,8 @@ void main() {
           fit: StackFit.expand,
         );
 
-        expect(attribute.$alignment?, expectResolves(Alignment.center));
-        expect(attribute.$fit?, expectResolves(StackFit.expand));
+        expect(attribute.$alignment, resolvesTo(Alignment.center));
+        expect(attribute.$fit, resolvesTo(StackFit.expand));
         expect(attribute.$textDirection, isNull);
         expect(attribute.$clipBehavior, isNull);
       });
@@ -66,17 +66,17 @@ void main() {
 
         final attribute = StackSpecAttribute.value(spec);
 
-        expect(attribute.$alignment?, expectResolves(Alignment.center));
-        expect(attribute.$fit?, expectResolves(StackFit.expand));
-        expect(attribute.$textDirection?, expectResolves(TextDirection.rtl));
-        expect(attribute.$clipBehavior?, expectResolves(Clip.antiAlias));
+        expect(attribute.$alignment, resolvesTo(Alignment.center));
+        expect(attribute.$fit, resolvesTo(StackFit.expand));
+        expect(attribute.$textDirection, resolvesTo(TextDirection.rtl));
+        expect(attribute.$clipBehavior, resolvesTo(Clip.antiAlias));
       });
 
       test('handles null properties in spec', () {
         const spec = StackSpec(alignment: Alignment.center);
         final attribute = StackSpecAttribute.value(spec);
 
-        expect(attribute.$alignment?, expectResolves(Alignment.center));
+        expect(attribute.$alignment, resolvesTo(Alignment.center));
         expect(attribute.$fit, isNull);
         expect(attribute.$textDirection, isNull);
         expect(attribute.$clipBehavior, isNull);
@@ -92,8 +92,8 @@ void main() {
         final attribute = StackSpecAttribute.maybeValue(spec);
 
         expect(attribute, isNotNull);
-        expect(attribute!.$alignment?, expectResolves(Alignment.center));
-        expect(attribute.$fit?, expectResolves(StackFit.expand));
+        expect(attribute!.$alignment, resolvesTo(Alignment.center));
+        expect(attribute.$fit, resolvesTo(StackFit.expand));
       });
 
       test('returns null when spec is null', () {
@@ -148,10 +148,10 @@ void main() {
 
         final merged = attr1.merge(attr2);
 
-        expect(merged.$alignment?, expectResolves(Alignment.center)); // from attr2
-        expect(merged.$fit?, expectResolves(StackFit.loose)); // from attr1
+        expect(merged.$alignment, resolvesTo(Alignment.center)); // from attr2
+        expect(merged.$fit, resolvesTo(StackFit.loose)); // from attr1
         expect(
-          merged.$textDirection?, expectResolves(TextDirection.rtl,
+          merged.$textDirection, resolvesTo(TextDirection.rtl,
         )); // from attr2
         expect(merged.$clipBehavior, isNull);
       });
@@ -179,10 +179,10 @@ void main() {
 
         final merged = attr1.merge(attr2);
 
-        expect(merged.$alignment?, expectResolves(Alignment.topLeft)); // from attr1
-        expect(merged.$fit?, expectResolves(StackFit.expand)); // from attr2
+        expect(merged.$alignment, resolvesTo(Alignment.topLeft)); // from attr1
+        expect(merged.$fit, resolvesTo(StackFit.expand)); // from attr2
         expect(
-          merged.$clipBehavior?, expectResolves(Clip.antiAlias,
+          merged.$clipBehavior, resolvesTo(Clip.antiAlias,
         )); // from attr2 (takes precedence)
       });
     });

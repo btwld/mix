@@ -6,81 +6,126 @@ import 'package:mix/mix.dart';
 // =============================================================================
 // CORE TEST MATCHERS - Mix 2.0
 //
-// This file provides two core matchers for testing Mix components:
-// 1. expectProp() - Tests Prop structure (values, tokens, accumulated values)
+// This file provides core matchers for testing Mix components:
+// 1. expectProp() - Tests PropBase<T> structure (Prop<T> and MixProp<V>)
 // 2. resolvesTo() - Matcher for testing what Resolvable types resolve to
 // =============================================================================
 
-/// Tests the structure of a Prop - what it contains (value, token, or accumulated values)
-/// 
+/// Tests the structure of a PropBase - what it contains (value, token, or accumulated values)
+///
 /// Usage:
 /// ```dart
-/// // For direct values
+/// // For direct values (Prop<T>)
 /// expectProp(colorProp, Colors.red);  // Matches Prop(Colors.red)
-/// 
-/// // For Mix values  
-/// expectProp(paddingProp, EdgeInsetsMix.all(10));  // Matches Prop(EdgeInsetsMix.all(10))
-/// 
-/// // For tokens
+///
+/// // For tokens (Prop<T> or MixProp<V>)
 /// expectProp(colorProp, MixToken<Color>('primary'));  // Matches Prop.token(MixToken<Color>('primary'))
-/// 
-/// // For accumulated values (merged props)
-/// expectProp(mergedProp, [Colors.red, MixToken<Color>('primary'), Colors.blue]);
+///
+/// // For Mix values (MixProp<V>)
+/// expectProp(paddingProp, EdgeInsetsMix.all(10));  // Matches MixProp(EdgeInsetsMix.all(10))
+///
+/// // For accumulated values (MixProp<V>)
+/// expectProp(mergedProp, [EdgeInsetsMix.all(10), MixToken<EdgeInsets>('spacing')]);
+///
+/// // Using matchers for more flexibility
+/// expectProp(someProp, isA<EdgeInsetsMix>());  // Matches any EdgeInsetsMix
+/// expectProp(someProp, isNull);  // Matches null prop
 /// ```
-void expectProp<T>(Prop<T>? prop, dynamic expected) {
+void expectProp<T>(PropBase<T>? prop, dynamic expected) {
+  if (expected == null || expected == isNull) {
+    expect(prop, isNull);
+    return;
+  }
+
   if (prop == null) {
-    fail('Expected Prop<$T> to exist, but was null');
+    fail('Expected PropBase<$T> to exist, but was null');
   }
 
   final source = prop.source;
-  
+  if (source == null) {
+    fail('Expected PropBase<$T> to have a source, but source was null');
+  }
+
+  // Handle list expectations (accumulated values for MixProp)
   if (expected is List) {
-    // Expecting accumulated values
-    if (source is! AccumulativePropSource<T>) {
-      fail('Expected Prop<$T> with accumulated values, but got ${source.runtimeType}');
+    if (source is! MixPropAccumulativeSource<T>) {
+      fail(
+        'Expected accumulated values (list), but prop source is ${source.runtimeType}. '
+        'Only MixProp with accumulated sources can match lists.',
+      );
     }
-    
+
     final actualValues = <dynamic>[];
     for (final s in source.sources) {
-      if (s is ValueSource<T>) {
+      if (s is MixPropValueSource<T>) {
         actualValues.add(s.value);
-      } else if (s is TokenSource<T>) {
+      } else if (s is MixPropTokenSource<T>) {
         actualValues.add(s.token);
       } else {
-        fail('Unknown source type in AccumulativePropSource: ${s.runtimeType}');
+        fail(
+          'Unknown source type in MixPropAccumulativeSource: ${s.runtimeType}',
+        );
       }
     }
-    
-    expect(actualValues, equals(expected),
-        reason: 'Prop<$T> accumulated values do not match expected');
-  } else if (expected is MixToken<T>) {
-    // Expecting a token
-    if (source is! TokenSource<T>) {
-      fail('Expected Prop<$T> with token, but got ${source.runtimeType}');
+
+    expect(
+      actualValues,
+      expected,
+      reason: 'Accumulated values do not match expected',
+    );
+    return;
+  }
+
+  // Handle token expectations
+  if (expected is MixToken<T>) {
+    if (source is TokenPropSource<T>) {
+      expect(
+        source.token,
+        expected,
+        reason: 'Prop<$T> token does not match expected',
+      );
+    } else if (source is MixPropTokenSource<T>) {
+      expect(
+        source.token,
+        expected,
+        reason: 'MixProp<$T> token does not match expected',
+      );
+    } else {
+      fail('Expected token, but prop source is ${source.runtimeType}');
     }
-    
-    expect(source.token, equals(expected),
-        reason: 'Prop<$T> token does not match expected');
+    return;
+  }
+
+  // Handle direct value expectations
+  if (source is ValuePropSource<T>) {
+    expect(
+      source.value,
+      expected,
+      reason: 'Prop<$T> value does not match expected',
+    );
+  } else if (source is MixPropValueSource<T>) {
+    expect(
+      source.value,
+      expected,
+      reason: 'MixProp<$T> value does not match expected',
+    );
   } else {
-    // Expecting a direct value
-    if (source is! ValueSource<T>) {
-      fail('Expected Prop<$T> with direct value, but got ${source.runtimeType}');
-    }
-    
-    expect(source.value, equals(expected),
-        reason: 'Prop<$T> value does not match expected');
+    fail(
+      'Expected direct value, but prop source is ${source.runtimeType}. '
+      'Use a token expectation if this prop contains a token.',
+    );
   }
 }
 
 /// Creates a matcher that tests what a Resolvable resolves to
-/// 
+///
 /// Usage:
 /// ```dart
 /// // For any Resolvable type
 /// expect(colorMix, resolvesTo(Colors.red));
 /// expect(paddingAttribute, resolvesTo(EdgeInsets.all(10)));
 /// expect(widthProp, resolvesTo(100.0));
-/// 
+///
 /// // With custom context for token resolution
 /// final context = MockBuildContext(
 ///   mixScopeData: MixScopeData.static(tokens: {
@@ -102,7 +147,8 @@ class _ResolvesToMatcher<T> extends Matcher {
   @override
   bool matches(dynamic item, Map matchState) {
     if (item is! Resolvable<T>) {
-      matchState['error'] = 'Expected Resolvable<$T>, but got ${item.runtimeType}';
+      matchState['error'] =
+          'Expected Resolvable<$T>, but got ${item.runtimeType}';
       return false;
     }
 
@@ -151,7 +197,6 @@ class _ResolvesToMatcher<T> extends Matcher {
         .addDescriptionOf(item)
         .add(' which is not a Resolvable<$T>');
   }
-
 }
 
 // =============================================================================
@@ -223,7 +268,7 @@ class MockBuildContext extends BuildContext {
 // ADDITIONAL TEST UTILITIES
 // =============================================================================
 
-/// Mock attribute for testing utilities - handles both Prop<T> and Prop<Mix<T>>
+/// Mock attribute for testing utilities - handles both Prop<T> and MixProp<V>
 ///
 /// This is a universal SpecMix that can wrap any prop type for testing purposes.
 /// Used with utilities that expect a SpecMix builder function.
@@ -234,7 +279,7 @@ class MockBuildContext extends BuildContext {
 /// final colorUtility = ColorUtility(UtilityTestAttribute.new);
 /// final attr = colorUtility(Colors.red);
 ///
-/// // For MixPropUtility (takes Prop<Mix<T>>)
+/// // For MixPropUtility (takes MixProp<V>)
 /// final gradientUtility = GradientUtility(UtilityTestAttribute.new);
 /// final attr = gradientUtility.linear(...);
 /// ```
@@ -246,12 +291,12 @@ final class UtilityTestAttribute<T> extends SpecStyle<MockSpec> {
   @override
   UtilityTestAttribute<T> merge(covariant UtilityTestAttribute<T>? other) {
     if (other == null) return this;
-    // For Prop types, use their merge method
-    if (value is Prop<T> && other.value is Prop<T>) {
-      final merged = (value as Prop<T>).merge(other.value as Prop<T>);
+    // For PropBase types (Prop<T> and MixProp<V>), use their merge method
+    if (value is PropBase && other.value is PropBase) {
+      final merged = (value as PropBase).merge(other.value as PropBase);
       return UtilityTestAttribute(merged as T);
     }
-    // For MixProp types that implement Mixable
+    // For other Mixable types
     if (value is Mixable && other.value is Mixable) {
       final merged = (value as Mixable).merge(other.value as Mixable);
       return UtilityTestAttribute(merged as T);
@@ -298,6 +343,96 @@ final class MockSpec extends Spec<MockSpec> {
 }
 
 // =============================================================================
+// MOCK TESTING UTILITIES
+// =============================================================================
+
+/// Mock Mix type for testing
+///
+/// A generic Mix implementation that can hold any type of value.
+/// Supports merge operations by delegating to a custom merge function.
+///
+/// Usage:
+/// ```dart
+/// final mixInt = MockMix<int>(42);
+/// final mixString = MockMix<String>('hello');
+///
+/// // With custom merge logic
+/// final mixList = MockMix<List<int>>(
+///   [1, 2, 3],
+///   merger: (a, b) => [...a, ...b],
+/// );
+/// ```
+class MockMix<T> extends Mix<T> {
+  final T value;
+  final T Function(T a, T b)? merger;
+
+  const MockMix(this.value, {this.merger});
+
+  @override
+  MockMix<T> merge(covariant MockMix<T>? other) {
+    if (other == null) return this;
+
+    final mergedValue = merger != null
+        ? merger!(value, other.value)
+        : other.value; // Default: other wins
+
+    return MockMix<T>(mergedValue, merger: merger);
+  }
+
+  @override
+  T resolve(BuildContext context) => value;
+
+  List<Object?> get props => [value];
+
+  @override
+  String toString() => 'MockMix<$T>($value)';
+}
+
+/// Mock directive for testing
+///
+/// A generic directive implementation that applies a transformation function.
+/// Useful for testing directive application and merging.
+///
+/// Usage:
+/// ```dart
+/// final doubleDirective = MockDirective<int>(
+///   'double',
+///   (value) => value * 2,
+/// );
+///
+/// final uppercaseDirective = MockDirective<String>(
+///   'uppercase',
+///   (value) => value.toUpperCase(),
+/// );
+/// ```
+class MockDirective<T> extends MixDirective<T> {
+  final String name;
+  final T Function(T) transformer;
+
+  const MockDirective(this.name, this.transformer);
+
+  @override
+  T apply(T value) => transformer(value);
+
+  @override
+  String get key => name;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is MockDirective<T> &&
+        other.name == name &&
+        other.transformer == transformer;
+  }
+
+  @override
+  int get hashCode => Object.hash(name, transformer);
+
+  @override
+  String toString() => 'MockDirective<$T>($name)';
+}
+
+// =============================================================================
 // WIDGET TESTER EXTENSIONS
 // =============================================================================
 
@@ -321,3 +456,34 @@ extension WidgetTesterExtension on WidgetTester {
   }
 }
 
+// =============================================================================
+// MOCK CLASSES FOR TESTING
+// =============================================================================
+
+/// Mock directive for testing purposes
+class MockMixDirective<T> extends MixDirective<T> {
+  final String name;
+  final T Function(T) transform;
+
+  const MockMixDirective(this.name, this.transform);
+
+  @override
+  String get key => name;
+
+  @override
+  T apply(T value) => transform(value);
+
+  @override
+  String toString() => 'MockMixDirective($name)';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is MockMixDirective<T> &&
+        other.name == name &&
+        other.transform == transform;
+  }
+
+  @override
+  int get hashCode => Object.hash(name, transform);
+}

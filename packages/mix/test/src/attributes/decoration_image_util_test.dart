@@ -349,7 +349,7 @@ void main() {
       });
 
       test('token() creates decoration image from token', () {
-        const token = MixToken<DecorationImageMix>('test.decorationImage');
+        const token = MixToken<DecorationImage>('test.decorationImage');
         final attr = utility.token(token);
         expect(attr.value, isA<Prop<Mix<DecorationImage>>>());
       });

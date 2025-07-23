@@ -17,7 +17,7 @@ void main() {
       test('token() creates color from token', () {
         const token = MixToken<Color>('test.color');
         final attr = utility.token(token);
-        expect(attr.value.getToken(), token);
+        expect(attr.value.token, token);
       });
 
       group('Basic Colors', () {

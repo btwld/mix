@@ -251,21 +251,18 @@ void main() {
           clipBehavior: clipBehavior,
         );
 
-        final resolved = attribute.resolve(MockBuildContext());
-
-        expect(resolved, isA<ClipPathModifier>());
-        expect(resolved.clipper, clipper);
-        expect(resolved.clipBehavior, clipBehavior);
+        const expectedModifier = ClipPathModifier(
+          clipper: clipper,
+          clipBehavior: clipBehavior,
+        );
+        expect(attribute, resolvesTo(expectedModifier));
       });
 
       test('resolves with null values', () {
         const attribute = ClipPathModifierAttribute();
 
-        final resolved = attribute.resolve(MockBuildContext());
-
-        expect(resolved, isA<ClipPathModifier>());
-        expect(resolved.clipper, isNull);
-        expect(resolved.clipBehavior, isNull);
+        const expectedModifier = ClipPathModifier();
+        expect(attribute, resolvesTo(expectedModifier));
       });
     });
 
@@ -448,10 +445,10 @@ void main() {
           clipBehavior: clipBehavior,
         );
 
-        final resolved = attribute.resolve(MockBuildContext());
-
-        expect(resolved, isA<ClipTriangleModifier>());
-        expect(resolved.clipBehavior, clipBehavior);
+        const expectedModifier = ClipTriangleModifier(
+          clipBehavior: clipBehavior,
+        );
+        expect(attribute, resolvesTo(expectedModifier));
       });
     });
 
@@ -515,6 +512,12 @@ void main() {
         clipper: clipper,
         clipBehavior: clipBehavior,
       );
+
+      const expectedModifier = ClipPathModifier(
+        clipper: clipper,
+        clipBehavior: clipBehavior,
+      );
+      expect(attribute, resolvesTo(expectedModifier));
 
       final modifier = attribute.resolve(MockBuildContext());
       const child = SizedBox(width: 100, height: 100);

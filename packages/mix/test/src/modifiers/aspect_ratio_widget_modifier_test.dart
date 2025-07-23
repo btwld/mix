@@ -73,14 +73,12 @@ void main() {
       final attr1 = AspectRatioModifierAttribute(aspectRatio: Prop(1.0));
       final attr2 = AspectRatioModifierAttribute(aspectRatio: Prop(2.0));
       final merged = attr1.merge(attr2);
-      expectProp(merged.aspectRatio, [1.0, 2.0]);
+      expectProp(merged.aspectRatio, 2.0); // Prop uses replacement strategy
     });
 
     test('resolve returns correct modifier', () {
       final attribute = AspectRatioModifierAttribute(aspectRatio: Prop(1.5));
-      final resolved = attribute.resolve(MockBuildContext());
-      expect(resolved, isA<AspectRatioModifier>());
-      expect(resolved.aspectRatio, 1.5);
+      expect(attribute, resolvesTo(const AspectRatioModifier(1.5)));
     });
 
     test('equality', () {
@@ -95,6 +93,8 @@ void main() {
   group('Integration', () {
     testWidgets('attribute resolves and builds correctly', (tester) async {
       final attribute = AspectRatioModifierAttribute(aspectRatio: Prop(2.5));
+      expect(attribute, resolvesTo(const AspectRatioModifier(2.5)));
+
       final modifier = attribute.resolve(MockBuildContext());
       const child = SizedBox();
       await tester.pumpWithMixScope(modifier.build(child));

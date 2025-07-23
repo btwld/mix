@@ -331,9 +331,9 @@ void main() {
           alignment: Alignment.topLeft,
         );
 
-        expect(attribute.widthFactor?, expectPropResolves(0.3));
-        expect(attribute.heightFactor?, expectPropResolves(0.7));
-        expect(attribute.alignment?, expectPropResolves(Alignment.topLeft));
+        expectProp(attribute.widthFactor, 0.3);
+        expectProp(attribute.heightFactor, 0.7);
+        expectProp(attribute.alignment, Alignment.topLeft);
       });
 
       test('handles null values correctly', () {
@@ -348,7 +348,7 @@ void main() {
         final attribute1 = FractionallySizedBoxModifierAttribute.only(
           widthFactor: 0.5,
         );
-        expect(attribute1.widthFactor?, expectPropResolves(0.5));
+        expectProp(attribute1.widthFactor, 0.5);
         expect(attribute1.heightFactor, isNull);
         expect(attribute1.alignment, isNull);
 
@@ -356,7 +356,7 @@ void main() {
           heightFactor: 0.7,
         );
         expect(attribute2.widthFactor, isNull);
-        expect(attribute2.heightFactor?, expectPropResolves(0.7));
+        expectProp(attribute2.heightFactor, 0.7);
         expect(attribute2.alignment, isNull);
 
         final attribute3 = FractionallySizedBoxModifierAttribute.only(
@@ -364,7 +364,7 @@ void main() {
         );
         expect(attribute3.widthFactor, isNull);
         expect(attribute3.heightFactor, isNull);
-        expect(attribute3.alignment?, expectPropResolves(Alignment.bottomRight));
+        expectProp(attribute3.alignment, Alignment.bottomRight);
       });
     });
 
@@ -376,23 +376,19 @@ void main() {
           alignment: Alignment.topRight,
         );
 
-        final resolved = attribute.resolve(MockBuildContext());
-
-        expect(resolved, isA<FractionallySizedBoxModifier>());
-        expect(resolved.widthFactor, 0.4);
-        expect(resolved.heightFactor, 0.6);
-        expect(resolved.alignment, Alignment.topRight);
+        const expectedModifier = FractionallySizedBoxModifier(
+          widthFactor: 0.4,
+          heightFactor: 0.6,
+          alignment: Alignment.topRight,
+        );
+        expect(attribute, resolvesTo(expectedModifier));
       });
 
       test('resolves with null values', () {
         final attribute = FractionallySizedBoxModifierAttribute();
 
-        final resolved = attribute.resolve(MockBuildContext());
-
-        expect(resolved, isA<FractionallySizedBoxModifier>());
-        expect(resolved.widthFactor, isNull);
-        expect(resolved.heightFactor, isNull);
-        expect(resolved.alignment, isNull);
+        const expectedModifier = FractionallySizedBoxModifier();
+        expect(attribute, resolvesTo(expectedModifier));
       });
     });
 
@@ -409,9 +405,9 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expect(merged.widthFactor?, expectPropResolves(0.8)); // overridden
-        expect(merged.heightFactor?, expectPropResolves(0.5)); // preserved
-        expect(merged.alignment?, expectPropResolves(Alignment.topLeft)); // added
+        expectProp(merged.widthFactor, 0.8); // overridden
+        expectProp(merged.heightFactor, 0.5); // preserved
+        expectProp(merged.alignment, Alignment.topLeft); // added
       });
 
       test('returns original when other is null', () {
@@ -434,7 +430,7 @@ void main() {
 
         expect(merged.widthFactor, isNull);
         expect(merged.heightFactor, isNull);
-        expect(merged.alignment?, expectPropResolves(Alignment.bottomRight));
+        expectProp(merged.alignment, Alignment.bottomRight);
       });
     });
 
@@ -501,9 +497,9 @@ void main() {
       );
       final attribute = result.value;
 
-      expect(attribute.widthFactor?, expectPropResolves(0.5));
-      expect(attribute.heightFactor?, expectPropResolves(0.8));
-      expect(attribute.alignment?, expectPropResolves(Alignment.topLeft));
+      expectProp(attribute.widthFactor, 0.5);
+      expectProp(attribute.heightFactor, 0.8);
+      expectProp(attribute.alignment, Alignment.topLeft);
     });
 
     test('call() handles null values', () {
@@ -519,7 +515,7 @@ void main() {
       final result1 = utility.call(widthFactor: 0.7);
       final attribute1 = result1.value;
 
-      expect(attribute1.widthFactor?, expectPropResolves(0.7));
+      expectProp(attribute1.widthFactor, 0.7);
       expect(attribute1.heightFactor, isNull);
       expect(attribute1.alignment, isNull);
 
@@ -530,8 +526,8 @@ void main() {
       final attribute2 = result2.value;
 
       expect(attribute2.widthFactor, isNull);
-      expect(attribute2.heightFactor?, expectPropResolves(0.3));
-      expect(attribute2.alignment?, expectPropResolves(Alignment.center));
+      expectProp(attribute2.heightFactor, 0.3);
+      expectProp(attribute2.alignment, Alignment.center);
     });
   });
 
@@ -607,6 +603,13 @@ void main() {
           alignment: Alignment.topRight,
         );
 
+        const expectedModifier = FractionallySizedBoxModifier(
+          widthFactor: 0.7,
+          heightFactor: 0.9,
+          alignment: Alignment.bottomCenter,
+        );
+        expect(attribute, resolvesTo(expectedModifier));
+
         final modifier = attribute.resolve(MockBuildContext());
         const child = SizedBox(width: 100, height: 100);
 
@@ -640,9 +643,9 @@ void main() {
 
       final result = base.merge(override1).merge(override2);
 
-      expect(result.widthFactor?, expectPropResolves(0.8));
-      expect(result.heightFactor?, expectPropResolves(0.8));
-      expect(result.alignment?, expectPropResolves(Alignment.topLeft));
+      expectProp(result.widthFactor, 0.8);
+      expectProp(result.heightFactor, 0.8);
+      expectProp(result.alignment, Alignment.topLeft);
     });
 
     test('Lerp produces expected intermediate values', () {

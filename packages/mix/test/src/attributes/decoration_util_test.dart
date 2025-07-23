@@ -52,7 +52,7 @@ void main() {
       });
 
       test('token() creates decoration from token', () {
-        const token = MixToken<DecorationMix>('test.decoration');
+        const token = MixToken<Decoration>('test.decoration');
         final attr = utility.token(token);
         expect(attr.value, isA<Prop<Mix<Decoration>>>());
       });
@@ -337,7 +337,7 @@ void main() {
       });
 
       test('token() creates box decoration from token', () {
-        const token = MixToken<BoxDecorationMix>('test.boxDecoration');
+        const token = MixToken<BoxDecoration>('test.boxDecoration');
         final attr = utility.token(token);
         expect(attr.value, isA<Prop<Mix<BoxDecoration>>>());
       });
@@ -477,7 +477,7 @@ void main() {
       });
 
       test('token() creates shape decoration from token', () {
-        const token = MixToken<ShapeDecorationMix>('test.shapeDecoration');
+        const token = MixToken<ShapeDecoration>('test.shapeDecoration');
         final attr = utility.token(token);
         expect(attr.value, isA<Prop<Mix<ShapeDecoration>>>());
       });

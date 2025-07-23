@@ -253,21 +253,16 @@ void main() {
           fit: FlexFit.tight,
         );
 
-        final resolved = attribute.resolve(MockBuildContext());
-
-        expect(resolved, isA<FlexibleModifier>());
-        expect(resolved.flex, 4);
-        expect(resolved.fit, FlexFit.tight);
+        expect(
+          attribute,
+          resolvesTo(const FlexibleModifier(flex: 4, fit: FlexFit.tight)),
+        );
       });
 
       test('resolves with null values', () {
         final attribute = FlexibleModifierAttribute();
 
-        final resolved = attribute.resolve(MockBuildContext());
-
-        expect(resolved, isA<FlexibleModifier>());
-        expect(resolved.flex, isNull);
-        expect(resolved.fit, isNull);
+        expect(attribute, resolvesTo(const FlexibleModifier()));
       });
     });
 
@@ -388,30 +383,18 @@ void main() {
 
     test('expanded() is alias for tight()', () {
       final expanded = utility.expanded();
-      final tight = utility.tight();
       final expandedAttr = expanded.value;
-      final tightAttr = tight.value;
 
-      expect(
-        expandedAttr.fit,
-        resolvesTo(tightAttr.fit?.resolve(MockBuildContext())),
-      );
+      expect(expandedAttr.flex, isNull);
+      expectProp(expandedAttr.fit, FlexFit.tight);
     });
 
     test('expanded() with flex is alias for tight() with flex', () {
       final expanded = utility.expanded(flex: 4);
-      final tight = utility.tight(flex: 4);
       final expandedAttr = expanded.value;
-      final tightAttr = tight.value;
 
-      expect(
-        expandedAttr.flex,
-        resolvesTo(tightAttr.flex?.resolve(MockBuildContext())),
-      );
-      expect(
-        expandedAttr.fit,
-        resolvesTo(tightAttr.fit?.resolve(MockBuildContext())),
-      );
+      expectProp(expandedAttr.flex, 4);
+      expectProp(expandedAttr.fit, FlexFit.tight);
     });
 
     test('call() creates attribute with specified values', () {
@@ -456,6 +439,11 @@ void main() {
       final attribute = FlexibleModifierAttribute.only(
         flex: 2,
         fit: FlexFit.tight,
+      );
+
+      expect(
+        attribute,
+        resolvesTo(const FlexibleModifier(flex: 2, fit: FlexFit.tight)),
       );
 
       final modifier = attribute.resolve(MockBuildContext());

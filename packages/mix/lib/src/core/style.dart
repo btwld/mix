@@ -12,7 +12,7 @@ sealed class StyleElement {
 }
 
 abstract class SpecStyle<S extends Spec<S>> extends Mixable<SpecStyle<S>>
-    with EqualityMixin
+    with EqualityMixin, Resolvable<S>
     implements StyleElement {
   final List<VariantSpecAttribute<S>>? variants;
   final List<ModifierAttribute>? modifiers;
@@ -109,7 +109,7 @@ abstract class SpecStyle<S extends Spec<S>> extends Mixable<SpecStyle<S>>
   }
 
   /// Resolves this attribute to its concrete value using the provided [BuildContext].
-
+  @override
   S resolve(BuildContext context);
 
   /// Merges this attribute with another attribute of the same type.

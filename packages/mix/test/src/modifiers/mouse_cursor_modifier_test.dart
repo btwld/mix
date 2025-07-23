@@ -275,19 +275,18 @@ void main() {
           mouseCursor: SystemMouseCursors.click,
         );
 
-        final resolved = attribute.resolve(MockBuildContext());
-
-        expect(resolved, isA<MouseCursorDecorator>());
-        expect(resolved.mouseCursor, SystemMouseCursors.click);
+        expect(
+          attribute,
+          resolvesTo(
+            const MouseCursorDecorator(mouseCursor: SystemMouseCursors.click),
+          ),
+        );
       });
 
       test('resolves with null value', () {
         final attribute = MouseCursorDecoratorSpecAttribute();
 
-        final resolved = attribute.resolve(MockBuildContext());
-
-        expect(resolved, isA<MouseCursorDecorator>());
-        expect(resolved.mouseCursor, isNull);
+        expect(attribute, resolvesTo(const MouseCursorDecorator()));
       });
     });
 
@@ -376,6 +375,13 @@ void main() {
       (WidgetTester tester) async {
         final attribute = MouseCursorDecoratorSpecAttribute.only(
           mouseCursor: SystemMouseCursors.grab,
+        );
+
+        expect(
+          attribute,
+          resolvesTo(
+            const MouseCursorDecorator(mouseCursor: SystemMouseCursors.grab),
+          ),
         );
 
         final modifier = attribute.resolve(MockBuildContext());
@@ -469,6 +475,11 @@ void main() {
         final attribute = MouseCursorDecoratorSpecAttribute.only(
           mouseCursor: cursor,
         );
+        expect(
+          attribute,
+          resolvesTo(MouseCursorDecorator(mouseCursor: cursor)),
+        );
+
         final modifier = attribute.resolve(MockBuildContext());
         const child = SizedBox(width: 50, height: 50);
 

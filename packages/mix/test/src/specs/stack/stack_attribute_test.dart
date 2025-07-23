@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../../helpers/testing_utils.dart';
-import '../../../..//helpers/testing_utils.dart';
 
 void main() {
   group('StackSpecAttribute', () {
@@ -16,10 +15,10 @@ void main() {
           clipBehavior: Prop(Clip.antiAlias),
         );
 
-        expect(attribute.$alignment, expectPropResolves(AlignmentDirectional.topStart));
-        expect(attribute.$fit, expectPropResolves(StackFit.loose));
-        expect(attribute.$textDirection, expectPropResolves(TextDirection.ltr));
-        expect(attribute.$clipBehavior, expectPropResolves(Clip.antiAlias));
+        expect(attribute.$alignment, resolvesTo(AlignmentDirectional.topStart));
+        expect(attribute.$fit, resolvesTo(StackFit.loose));
+        expect(attribute.$textDirection, resolvesTo(TextDirection.ltr));
+        expect(attribute.$clipBehavior, resolvesTo(Clip.antiAlias));
       });
 
       test('creates empty StackSpecAttribute', () {
@@ -41,10 +40,13 @@ void main() {
           clipBehavior: Clip.hardEdge,
         );
 
-        expect(attribute.$alignment, expectPropResolves(AlignmentDirectional.bottomEnd));
-        expect(attribute.$fit, expectPropResolves(StackFit.expand));
-        expect(attribute.$textDirection, expectPropResolves(TextDirection.rtl));
-        expect(attribute.$clipBehavior, expectPropResolves(Clip.hardEdge));
+        expect(
+          attribute.$alignment,
+          resolvesTo(AlignmentDirectional.bottomEnd),
+        );
+        expect(attribute.$fit, resolvesTo(StackFit.expand));
+        expect(attribute.$textDirection, resolvesTo(TextDirection.rtl));
+        expect(attribute.$clipBehavior, resolvesTo(Clip.hardEdge));
       });
 
       test('creates partial StackSpecAttribute with only constructor', () {
@@ -53,8 +55,8 @@ void main() {
           fit: StackFit.passthrough,
         );
 
-        expect(attribute.$alignment, expectPropResolves(Alignment.center));
-        expect(attribute.$fit, expectPropResolves(StackFit.passthrough));
+        expect(attribute.$alignment, resolvesTo(Alignment.center));
+        expect(attribute.$fit, resolvesTo(StackFit.passthrough));
         expect(attribute.$textDirection, isNull);
         expect(attribute.$clipBehavior, isNull);
       });
@@ -71,10 +73,10 @@ void main() {
 
         final attribute = StackSpecAttribute.value(spec);
 
-        expect(attribute.$alignment, expectPropResolves(AlignmentDirectional.topStart));
-        expect(attribute.$fit, expectPropResolves(StackFit.loose));
-        expect(attribute.$textDirection, expectPropResolves(TextDirection.ltr));
-        expect(attribute.$clipBehavior, expectPropResolves(Clip.antiAlias));
+        expect(attribute.$alignment, resolvesTo(AlignmentDirectional.topStart));
+        expect(attribute.$fit, resolvesTo(StackFit.loose));
+        expect(attribute.$textDirection, resolvesTo(TextDirection.ltr));
+        expect(attribute.$clipBehavior, resolvesTo(Clip.antiAlias));
       });
 
       test('maybeValue returns null for null spec', () {
@@ -89,8 +91,8 @@ void main() {
         final attribute = StackSpecAttribute.maybeValue(spec);
 
         expect(attribute, isNotNull);
-        expect(attribute!.$alignment, expectPropResolves(Alignment.bottomRight));
-        expect(attribute.$fit, expectPropResolves(StackFit.expand));
+        expect(attribute!.$alignment, resolvesTo(Alignment.bottomRight));
+        expect(attribute.$fit, resolvesTo(StackFit.expand));
       });
     });
 
@@ -104,9 +106,12 @@ void main() {
           AlignmentDirectional.bottomEnd,
         );
 
-        expect(center.$alignment, expectPropResolves(Alignment.center));
-        expect(topStart.$alignment, expectPropResolves(AlignmentDirectional.topStart));
-        expect(bottomEnd.$alignment, expectPropResolves(AlignmentDirectional.bottomEnd));
+        expect(center.$alignment, resolvesTo(Alignment.center));
+        expect(topStart.$alignment, resolvesTo(AlignmentDirectional.topStart));
+        expect(
+          bottomEnd.$alignment,
+          resolvesTo(AlignmentDirectional.bottomEnd),
+        );
       });
 
       test('fit utility works correctly', () {
@@ -114,17 +119,17 @@ void main() {
         final expand = StackSpecAttribute().fit(StackFit.expand);
         final passthrough = StackSpecAttribute().fit(StackFit.passthrough);
 
-        expect(loose.$fit, expectPropResolves(StackFit.loose));
-        expect(expand.$fit, expectPropResolves(StackFit.expand));
-        expect(passthrough.$fit, expectPropResolves(StackFit.passthrough));
+        expect(loose.$fit, resolvesTo(StackFit.loose));
+        expect(expand.$fit, resolvesTo(StackFit.expand));
+        expect(passthrough.$fit, resolvesTo(StackFit.passthrough));
       });
 
       test('textDirection utility works correctly', () {
         final ltr = StackSpecAttribute().textDirection(TextDirection.ltr);
         final rtl = StackSpecAttribute().textDirection(TextDirection.rtl);
 
-        expect(ltr.$textDirection, expectPropResolves(TextDirection.ltr));
-        expect(rtl.$textDirection, expectPropResolves(TextDirection.rtl));
+        expect(ltr.$textDirection, resolvesTo(TextDirection.ltr));
+        expect(rtl.$textDirection, resolvesTo(TextDirection.rtl));
       });
 
       test('clipBehavior utility works correctly', () {
@@ -135,12 +140,12 @@ void main() {
           Clip.antiAliasWithSaveLayer,
         );
 
-        expect(none.$clipBehavior, expectPropResolves(Clip.none));
-        expect(hardEdge.$clipBehavior, expectPropResolves(Clip.hardEdge));
-        expect(antiAlias.$clipBehavior, expectPropResolves(Clip.antiAlias));
-        expect(
+        expect(none.$clipBehavior, resolvesTo(Clip.none));
+        expect(hardEdge.$clipBehavior, resolvesTo(Clip.hardEdge));
+        expect(antiAlias.$clipBehavior, resolvesTo(Clip.antiAlias));
+        expectProp(
           antiAliasWithSaveLayer.$clipBehavior,
-          hasValue(Clip.antiAliasWithSaveLayer),
+          Clip.antiAliasWithSaveLayer,
         );
       });
 
@@ -151,10 +156,10 @@ void main() {
             .textDirection(TextDirection.ltr)
             .clipBehavior(Clip.antiAlias);
 
-        expect(attribute.$alignment, expectPropResolves(Alignment.topLeft));
-        expect(attribute.$fit, expectPropResolves(StackFit.expand));
-        expect(attribute.$textDirection, expectPropResolves(TextDirection.ltr));
-        expect(attribute.$clipBehavior, expectPropResolves(Clip.antiAlias));
+        expect(attribute.$alignment, resolvesTo(Alignment.topLeft));
+        expect(attribute.$fit, resolvesTo(StackFit.expand));
+        expect(attribute.$textDirection, resolvesTo(TextDirection.ltr));
+        expect(attribute.$clipBehavior, resolvesTo(Clip.antiAlias));
       });
     });
 
@@ -216,16 +221,13 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(
+        expectProp(
           merged.$alignment,
-          hasValue(Alignment.bottomRight),
+          Alignment.bottomRight,
         ); // second overrides
-        expect(merged.$fit, expectPropResolves(StackFit.loose)); // from first
-        expect(
-          merged.$textDirection,
-          hasValue(TextDirection.ltr),
-        ); // from first
-        expect(merged.$clipBehavior, expectPropResolves(Clip.antiAlias)); // from second
+        expect(merged.$fit, resolvesTo(StackFit.loose)); // from first
+        expectProp(merged.$textDirection, TextDirection.ltr); // from first
+        expect(merged.$clipBehavior, resolvesTo(Clip.antiAlias)); // from second
       });
 
       test('returns this when other is null', () {
@@ -248,16 +250,13 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(
+        expectProp(
           merged.$alignment,
-          hasValue(AlignmentDirectional.bottomEnd),
+          AlignmentDirectional.bottomEnd,
         ); // second overrides
-        expect(merged.$fit, expectPropResolves(StackFit.expand)); // second overrides
-        expect(
-          merged.$textDirection,
-          hasValue(TextDirection.rtl),
-        ); // from second
-        expect(merged.$clipBehavior, expectPropResolves(Clip.hardEdge)); // from second
+        expect(merged.$fit, resolvesTo(StackFit.expand)); // second overrides
+        expectProp(merged.$textDirection, TextDirection.rtl); // from second
+        expect(merged.$clipBehavior, resolvesTo(Clip.hardEdge)); // from second
       });
     });
 
@@ -356,7 +355,7 @@ void main() {
 
         expect(identical(original, modified), isFalse);
         expect(original.$alignment, isNull);
-        expect(modified.$alignment, expectPropResolves(Alignment.center));
+        expect(modified.$alignment, resolvesTo(Alignment.center));
       });
 
       test('builder methods can be chained fluently', () {

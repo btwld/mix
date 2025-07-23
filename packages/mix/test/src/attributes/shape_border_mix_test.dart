@@ -69,12 +69,10 @@ void main() {
           side: BorderSideMix.only(color: Colors.red, width: 2.0),
         );
 
-        final context = MockBuildContext();
-        final resolved = roundedRectangleBorderMix.resolve(context);
-
-        expect(resolved, isA<RoundedRectangleBorder>());
-        expect(resolved.side.color, Colors.red);
-        expect(resolved.side.width, 2.0);
+        expect(
+          roundedRectangleBorderMix,
+          resolvesTo(isA<RoundedRectangleBorder>()),
+        );
       });
     });
 
@@ -184,12 +182,10 @@ void main() {
           side: BorderSideMix.only(color: Colors.green, width: 3.0),
         );
 
-        final context = MockBuildContext();
-        final resolved = circleBorderMix.resolve(context);
-
-        expect(resolved, isA<CircleBorder>());
-        expect(resolved.side.color, Colors.green);
-        expect(resolved.side.width, 3.0);
+        expect(
+          circleBorderMix,
+          resolvesTo(isA<CircleBorder>()),
+        );
       });
     });
 
@@ -249,12 +245,10 @@ void main() {
           side: BorderSideMix.only(color: Colors.orange, width: 2.5),
         );
 
-        final context = MockBuildContext();
-        final resolved = stadiumBorderMix.resolve(context);
-
-        expect(resolved, isA<StadiumBorder>());
-        expect(resolved.side.color, Colors.orange);
-        expect(resolved.side.width, 2.5);
+        expect(
+          stadiumBorderMix,
+          resolvesTo(isA<StadiumBorder>()),
+        );
       });
     });
 
@@ -339,12 +333,10 @@ void main() {
           side: BorderSideMix.only(color: Colors.yellow, width: 1.5),
         );
 
-        final context = MockBuildContext();
-        final resolved = beveledRectangleBorderMix.resolve(context);
-
-        expect(resolved, isA<BeveledRectangleBorder>());
-        expect(resolved.side.color, Colors.yellow);
-        expect(resolved.side.width, 1.5);
+        expect(
+          beveledRectangleBorderMix,
+          resolvesTo(isA<BeveledRectangleBorder>()),
+        );
       });
     });
 

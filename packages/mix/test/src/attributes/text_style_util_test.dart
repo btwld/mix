@@ -372,7 +372,7 @@ void main() {
       });
 
       test('token() creates text style from token', () {
-        const token = MixToken<TextStyleMix>('test.textStyle');
+        const token = MixToken<TextStyle>('test.textStyle');
         final attr = utility.token(token);
         expect(attr.value, isA<Prop<Mix<TextStyle>>>());
       });

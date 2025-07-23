@@ -82,7 +82,7 @@ void main() {
       });
 
       test('token() creates shape border from token', () {
-        const token = MixToken<ShapeBorderMix>('test.shapeBorder');
+        const token = MixToken<ShapeBorder>('test.shapeBorder');
         final attr = utility.token(token);
         expect(attr.value, isA<Prop<Mix<ShapeBorder>>>());
       });
@@ -179,7 +179,7 @@ void main() {
       });
 
       test('token() creates rounded rectangle border from token', () {
-        const token = MixToken<RoundedRectangleBorderMix>(
+        const token = MixToken<RoundedRectangleBorder>(
           'test.roundedRectangleBorder',
         );
         final attr = utility.token(token);
@@ -251,7 +251,7 @@ void main() {
       });
 
       test('token() creates circle border from token', () {
-        const token = MixToken<CircleBorderMix>('test.circleBorder');
+        const token = MixToken<CircleBorder>('test.circleBorder');
         final attr = utility.token(token);
         expect(attr.value, isA<Prop<Mix<CircleBorder>>>());
       });
@@ -303,7 +303,7 @@ void main() {
       });
 
       test('token() creates stadium border from token', () {
-        const token = MixToken<StadiumBorderMix>('test.stadiumBorder');
+        const token = MixToken<StadiumBorder>('test.stadiumBorder');
         final attr = utility.token(token);
         expect(attr.value, isA<Prop<Mix<StadiumBorder>>>());
       });
@@ -376,7 +376,7 @@ void main() {
       });
 
       test('token() creates beveled rectangle border from token', () {
-        const token = MixToken<BeveledRectangleBorderMix>(
+        const token = MixToken<BeveledRectangleBorder>(
           'test.beveledRectangleBorder',
         );
         final attr = utility.token(token);
@@ -453,7 +453,7 @@ void main() {
       });
 
       test('token() creates continuous rectangle border from token', () {
-        const token = MixToken<ContinuousRectangleBorderMix>(
+        const token = MixToken<ContinuousRectangleBorder>(
           'test.continuousRectangleBorder',
         );
         final attr = utility.token(token);

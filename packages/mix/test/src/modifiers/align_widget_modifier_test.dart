@@ -320,9 +320,9 @@ void main() {
           heightFactor: 0.7,
         );
 
-        expect(attribute.alignment?, expectPropResolves(Alignment.topLeft));
-        expect(attribute.widthFactor?, expectPropResolves(0.3));
-        expect(attribute.heightFactor?, expectPropResolves(0.7));
+        expect(attribute.alignment!, resolvesTo(Alignment.topLeft));
+        expect(attribute.widthFactor!, resolvesTo(0.3));
+        expect(attribute.heightFactor!, resolvesTo(0.7));
       });
 
       test('handles null values correctly', () {
@@ -337,13 +337,13 @@ void main() {
         final attribute1 = AlignModifierAttribute.only(
           alignment: Alignment.center,
         );
-        expect(attribute1.alignment?, expectPropResolves(Alignment.center));
+        expect(attribute1.alignment!, resolvesTo(Alignment.center));
         expect(attribute1.widthFactor, isNull);
         expect(attribute1.heightFactor, isNull);
 
         final attribute2 = AlignModifierAttribute.only(widthFactor: 0.5);
         expect(attribute2.alignment, isNull);
-        expect(attribute2.widthFactor?, expectPropResolves(0.5));
+        expect(attribute2.widthFactor!, resolvesTo(0.5));
         expect(attribute2.heightFactor, isNull);
       });
     });
@@ -389,9 +389,9 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expect(merged.alignment?, expectPropResolves(Alignment.topLeft)); // overridden
-        expect(merged.widthFactor?, expectPropResolves(0.5)); // preserved
-        expect(merged.heightFactor?, expectPropResolves(0.8)); // added
+        expect(merged.alignment!, resolvesTo(Alignment.topLeft)); // overridden
+        expect(merged.widthFactor!, resolvesTo(0.5)); // preserved
+        expect(merged.heightFactor!, resolvesTo(0.8)); // added
       });
 
       test('returns original when other is null', () {
@@ -412,7 +412,7 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expect(merged.alignment?, expectPropResolves(Alignment.bottomRight));
+        expect(merged.alignment!, resolvesTo(Alignment.bottomRight));
         expect(merged.widthFactor, isNull);
         expect(merged.heightFactor, isNull);
       });
@@ -499,9 +499,9 @@ void main() {
 
       final result = base.merge(override1).merge(override2);
 
-      expect(result.alignment?, expectPropResolves(Alignment.topLeft));
-      expect(result.widthFactor?, expectPropResolves(0.8));
-      expect(result.heightFactor?, expectPropResolves(0.9));
+      expect(result.alignment!, resolvesTo(Alignment.topLeft));
+      expect(result.widthFactor!, resolvesTo(0.8));
+      expect(result.heightFactor!, resolvesTo(0.9));
     });
 
     test('Lerp produces expected intermediate values', () {

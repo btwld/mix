@@ -55,23 +55,25 @@ void main() {
           offset: const Offset(2.0, 4.0),
         );
 
-        final context = MockBuildContext();
-        final resolved = shadowMix.resolve(context);
+        const resolvedValue = Shadow(
+          blurRadius: 12.0,
+          color: Colors.green,
+          offset: Offset(2.0, 4.0),
+        );
 
-        expect(resolved.blurRadius, 12.0);
-        expect(resolved.color, Colors.green);
-        expect(resolved.offset, const Offset(2.0, 4.0));
+        expect(shadowMix, resolvesTo(resolvedValue));
       });
 
       test('uses default values for null properties', () {
         final shadowMix = ShadowMix.only(blurRadius: 8.0);
 
-        final context = MockBuildContext();
-        final resolved = shadowMix.resolve(context);
+        const resolvedValue = Shadow(
+          blurRadius: 8.0,
+          color: Color(0xFF000000),
+          offset: Offset.zero,
+        );
 
-        expect(resolved.blurRadius, 8.0);
-        expect(resolved.color, const Color(0xFF000000));
-        expect(resolved.offset, Offset.zero);
+        expect(shadowMix, resolvesTo(resolvedValue));
       });
     });
 
@@ -173,25 +175,27 @@ void main() {
           spreadRadius: 3.0,
         );
 
-        final context = MockBuildContext();
-        final resolved = boxShadowMix.resolve(context);
+        const resolvedValue = BoxShadow(
+          blurRadius: 12.0,
+          color: Colors.green,
+          offset: Offset(2.0, 4.0),
+          spreadRadius: 3.0,
+        );
 
-        expect(resolved.blurRadius, 12.0);
-        expect(resolved.color, Colors.green);
-        expect(resolved.offset, const Offset(2.0, 4.0));
-        expect(resolved.spreadRadius, 3.0);
+        expect(boxShadowMix, resolvesTo(resolvedValue));
       });
 
       test('uses default values for null properties', () {
         final boxShadowMix = BoxShadowMix.only(blurRadius: 8.0);
 
-        final context = MockBuildContext();
-        final resolved = boxShadowMix.resolve(context);
+        const resolvedValue = BoxShadow(
+          blurRadius: 8.0,
+          color: Color(0xFF000000),
+          offset: Offset.zero,
+          spreadRadius: 0.0,
+        );
 
-        expect(resolved.blurRadius, 8.0);
-        expect(resolved.color, const Color(0xFF000000));
-        expect(resolved.offset, Offset.zero);
-        expect(resolved.spreadRadius, 0.0);
+        expect(boxShadowMix, resolvesTo(resolvedValue));
       });
     });
 

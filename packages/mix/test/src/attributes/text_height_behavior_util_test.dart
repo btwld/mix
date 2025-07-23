@@ -333,9 +333,7 @@ void main() {
       });
 
       test('token() creates text height behavior from token', () {
-        const token = MixToken<TextHeightBehaviorMix>(
-          'test.textHeightBehavior',
-        );
+        const token = MixToken<TextHeightBehavior>('test.textHeightBehavior');
         final attr = utility.token(token);
         expect(attr.value, isA<Prop<Mix<TextHeightBehavior>>>());
       });

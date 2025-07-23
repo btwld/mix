@@ -70,23 +70,25 @@ void main() {
           style: BorderStyle.solid,
         );
 
-        final context = MockBuildContext();
-        final resolved = borderSideMix.resolve(context);
+        const resolvedValue = BorderSide(
+          color: Colors.red,
+          width: 2.0,
+          style: BorderStyle.solid,
+        );
 
-        expect(resolved.color, Colors.red);
-        expect(resolved.width, 2.0);
-        expect(resolved.style, BorderStyle.solid);
+        expect(borderSideMix, resolvesTo(resolvedValue));
       });
 
       test('uses default values for null properties', () {
         final borderSideMix = BorderSideMix.only(width: 2.0);
 
-        final context = MockBuildContext();
-        final resolved = borderSideMix.resolve(context);
+        const resolvedValue = BorderSide(
+          width: 2.0,
+          color: Color(0xFF000000),
+          style: BorderStyle.solid,
+        );
 
-        expect(resolved.width, 2.0);
-        expect(resolved.color, const Color(0xFF000000));
-        expect(resolved.style, BorderStyle.solid);
+        expect(borderSideMix, resolvesTo(resolvedValue));
       });
     });
 
@@ -218,17 +220,14 @@ void main() {
           right: BorderSideMix.only(color: Colors.yellow, width: 4.0),
         );
 
-        final context = MockBuildContext();
-        final resolved = borderMix.resolve(context);
+        const resolvedValue = Border(
+          top: BorderSide(color: Colors.red, width: 1.0),
+          bottom: BorderSide(color: Colors.blue, width: 2.0),
+          left: BorderSide(color: Colors.green, width: 3.0),
+          right: BorderSide(color: Colors.yellow, width: 4.0),
+        );
 
-        expect(resolved.top.color, Colors.red);
-        expect(resolved.top.width, 1.0);
-        expect(resolved.bottom.color, Colors.blue);
-        expect(resolved.bottom.width, 2.0);
-        expect(resolved.left.color, Colors.green);
-        expect(resolved.left.width, 3.0);
-        expect(resolved.right.color, Colors.yellow);
-        expect(resolved.right.width, 4.0);
+        expect(borderMix, resolvesTo(resolvedValue));
       });
     });
 
