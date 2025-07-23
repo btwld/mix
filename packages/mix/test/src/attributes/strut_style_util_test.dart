@@ -338,7 +338,7 @@ void main() {
       });
 
       test('token() creates strut style from token', () {
-        const token = MixToken<StrutStyleMix>('test.strutStyle');
+        const token = MixToken<StrutStyle>('test.strutStyle');
         final attr = utility.token(token);
         expect(attr.value, isA<Prop<Mix<StrutStyle>>>());
       });

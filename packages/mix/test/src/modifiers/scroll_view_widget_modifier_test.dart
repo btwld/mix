@@ -627,10 +627,7 @@ void main() {
         final result = utility.neverScrollableScrollPhysics();
         final attribute = result.value;
 
-        expect(
-          attribute.physics,
-          resolvesTo(isA<NeverScrollableScrollPhysics>()),
-        );
+        expectProp(attribute.physics, isA<NeverScrollableScrollPhysics>());
       },
     );
 
@@ -645,7 +642,7 @@ void main() {
       final result = utility.clampingScrollPhysics();
       final attribute = result.value;
 
-      expect(attribute.physics, resolvesTo(isA<ClampingScrollPhysics>()));
+      expectProp(attribute.physics, isA<ClampingScrollPhysics>());
     });
 
     test('reverse utility creates attribute with reverse', () {
@@ -745,7 +742,7 @@ void main() {
       expectProp(result.scrollDirection, Axis.horizontal);
       expectProp(result.reverse, true);
       expect(result.padding, isNotNull);
-      expect(result.physics, resolvesTo(isA<ClampingScrollPhysics>()));
+      expectProp(result.physics, isA<ClampingScrollPhysics>());
       expectProp(result.clipBehavior, Clip.antiAlias);
     });
 

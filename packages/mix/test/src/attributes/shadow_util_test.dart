@@ -57,7 +57,7 @@ void main() {
       });
 
       test('token() creates shadow from token', () {
-        const token = MixToken<ShadowMix>('test.shadow');
+        const token = MixToken<Shadow>('test.shadow');
         final attr = utility.token(token);
         expect(attr.value, isA<Prop<Mix<Shadow>>>());
       });
@@ -134,7 +134,7 @@ void main() {
       });
 
       test('token() creates box shadow from token', () {
-        const token = MixToken<BoxShadowMix>('test.boxShadow');
+        const token = MixToken<BoxShadow>('test.boxShadow');
         final attr = utility.token(token);
         expect(attr.value, isA<Prop<Mix<BoxShadow>>>());
       });

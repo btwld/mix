@@ -124,7 +124,7 @@ void main() {
         final attribute = ImageSpecAttribute.maybeValue(spec);
 
         expect(attribute, isNotNull);
-        expect(attribute!.$width?, resolvesTo(200.0));
+        expect(attribute!.$width, resolvesTo(200.0));
         expect(attribute.$height, resolvesTo(150.0));
       });
 

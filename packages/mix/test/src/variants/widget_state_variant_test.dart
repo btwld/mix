@@ -320,8 +320,8 @@ void main() {
 
         expect(merged.variant, hoverVariant);
         final mergedBox = merged.value as BoxSpecAttribute;
-        expect(mergedBox.$width, expectPropResolves(100.0));
-        expect(mergedBox.$height, expectPropResolves(200.0));
+        expect(mergedBox.$width, resolvesTo(100.0));
+        expect(mergedBox.$height, resolvesTo(200.0));
       });
     });
 
