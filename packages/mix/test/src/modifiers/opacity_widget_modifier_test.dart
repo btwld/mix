@@ -137,20 +137,18 @@ void main() {
     group('resolve', () {
       test('resolves to OpacityModifier with resolved opacity', () {
         final attribute = OpacityModifierAttribute.only(opacity: 0.7);
+        
+        const expectedModifier = OpacityModifier(0.7);
 
-        final resolved = attribute.resolve(MockBuildContext());
-
-        expect(resolved, isA<OpacityModifier>());
-        expect(resolved.opacity, 0.7);
+        expect(attribute, resolvesTo(expectedModifier));
       });
 
       test('resolves with null opacity', () {
         const attribute = OpacityModifierAttribute();
+        
+        const expectedModifier = OpacityModifier(1.0); // OpacityModifier defaults to 1.0
 
-        final resolved = attribute.resolve(MockBuildContext());
-
-        expect(resolved, isA<OpacityModifier>());
-        expect(resolved.opacity, 1.0); // OpacityModifier defaults to 1.0
+        expect(attribute, resolvesTo(expectedModifier));
       });
     });
 

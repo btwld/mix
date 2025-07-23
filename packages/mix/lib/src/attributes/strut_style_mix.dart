@@ -105,6 +105,7 @@ class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
       fontFamilyFallback: MixHelpers.mergeList(
         fontFamilyFallback,
         other.fontFamilyFallback,
+        strategy: ListMergeStrategy.append,
       ),
       fontSize: MixHelpers.merge(fontSize, other.fontSize),
       fontWeight: MixHelpers.merge(fontWeight, other.fontWeight),
@@ -132,31 +133,14 @@ class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is StrutStyleMix &&
-        other.fontFamily == fontFamily &&
-        listEquals(other.fontFamilyFallback, fontFamilyFallback) &&
-        other.fontSize == fontSize &&
-        other.fontWeight == fontWeight &&
-        other.fontStyle == fontStyle &&
-        other.height == height &&
-        other.leading == leading &&
-        other.forceStrutHeight == forceStrutHeight;
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(
-      fontFamily,
-      fontFamilyFallback,
-      fontSize,
-      fontWeight,
-      fontStyle,
-      height,
-      leading,
-      forceStrutHeight,
-    );
-  }
+  List<Object?> get props => [
+    fontFamily,
+    fontFamilyFallback,
+    fontSize,
+    fontWeight,
+    fontStyle,
+    height,
+    leading,
+    forceStrutHeight,
+  ];
 }

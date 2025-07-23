@@ -124,6 +124,9 @@ class StackSpecAttribute extends SpecStyle<StackSpec> with Diagnosticable {
       fit: MixHelpers.merge($fit, other.$fit),
       textDirection: MixHelpers.merge($textDirection, other.$textDirection),
       clipBehavior: MixHelpers.merge($clipBehavior, other.$clipBehavior),
+      animation: other.animation ?? animation,
+      modifiers: mergeModifierLists(modifiers, other.modifiers),
+      variants: mergeVariantLists(variants, other.variants),
     );
   }
 

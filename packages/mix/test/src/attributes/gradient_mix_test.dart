@@ -127,7 +127,9 @@ void main() {
         expectProp(merged.begin, Alignment.topLeft);
         expectProp(merged.end, Alignment.bottomRight);
         expectProp(merged.tileMode, TileMode.repeated);
-        expect(merged.colors, hasLength(4));
+        expect(merged.colors, hasLength(2));
+        expectProp(merged.colors![0], Colors.green);
+        expectProp(merged.colors![1], Colors.yellow);
       });
     });
 
@@ -244,7 +246,9 @@ void main() {
 
         expectProp(merged.center, Alignment.center);
         expectProp(merged.radius, 0.8);
-        expect(merged.colors, hasLength(4));
+        expect(merged.colors, hasLength(2));
+        expectProp(merged.colors![0], Colors.green);
+        expectProp(merged.colors![1], Colors.yellow);
       });
     });
   });
@@ -335,7 +339,9 @@ void main() {
         expectProp(merged.center, Alignment.center);
         expectProp(merged.startAngle, 0.0);
         expectProp(merged.endAngle, 3.14159);
-        expect(merged.colors, hasLength(4));
+        expect(merged.colors, hasLength(2));
+        expectProp(merged.colors![0], Colors.green);
+        expectProp(merged.colors![1], Colors.yellow);
       });
     });
   });

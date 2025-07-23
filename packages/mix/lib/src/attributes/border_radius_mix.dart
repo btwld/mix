@@ -203,20 +203,7 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is BorderRadiusMix &&
-        other.topLeft == topLeft &&
-        other.topRight == topRight &&
-        other.bottomLeft == bottomLeft &&
-        other.bottomRight == bottomRight;
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(topLeft, topRight, bottomLeft, bottomRight);
-  }
+  List<Object?> get props => [topLeft, topRight, bottomLeft, bottomRight];
 }
 
 final class BorderRadiusDirectionalMix
@@ -300,20 +287,7 @@ final class BorderRadiusDirectionalMix
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is BorderRadiusDirectionalMix &&
-        other.topStart == topStart &&
-        other.topEnd == topEnd &&
-        other.bottomStart == bottomStart &&
-        other.bottomEnd == bottomEnd;
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(topStart, topEnd, bottomStart, bottomEnd);
-  }
+  List<Object?> get props => [topStart, topEnd, bottomStart, bottomEnd];
 
   /// These getters return null for BorderRadiusDirectional as they don't apply
   /// to directional border radius (which uses topStart/topEnd instead of topLeft/topRight)

@@ -150,6 +150,9 @@ class FlexBoxSpecAttribute extends SpecStyle<FlexBoxSpec> with Diagnosticable {
     return FlexBoxSpecAttribute(
       box: $box?.merge(other.$box) ?? other.$box,
       flex: $flex?.merge(other.$flex) ?? other.$flex,
+      animation: other.animation ?? animation,
+      modifiers: mergeModifierLists(modifiers, other.modifiers),
+      variants: mergeVariantLists(variants, other.variants),
     );
   }
 
@@ -269,9 +272,11 @@ class FlexBoxSpecUtility extends SpecUtility<FlexBoxSpec> {
   /// Utility for defining [FlexBoxSpecAttribute.flex]
   late final flex = FlexSpecAttribute();
 
+  static final FlexBoxSpecUtility _instance = FlexBoxSpecUtility();
+
   FlexBoxSpecUtility({this.attribute = const FlexBoxSpecAttribute()});
 
-  static FlexBoxSpecUtility get self => FlexBoxSpecUtility();
+  static FlexBoxSpecUtility get self => _instance;
 
   FlexBoxSpecUtility build(FlexBoxSpecAttribute attribute) {
     return FlexBoxSpecUtility(attribute: this.attribute.merge(attribute));

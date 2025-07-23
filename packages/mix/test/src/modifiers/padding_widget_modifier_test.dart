@@ -168,8 +168,7 @@ void main() {
         final edgeInsetsMix = EdgeInsetsMix.all(16.0);
         final attribute = PaddingModifierAttribute.only(padding: edgeInsetsMix);
 
-        expect(attribute.padding, isNotNull);
-        expect(attribute.padding, isA<Prop<Mix<EdgeInsetsGeometry>>>());
+        expectProp(attribute.padding, edgeInsetsMix);
       });
 
       test('handles null padding', () {
@@ -332,8 +331,7 @@ void main() {
       final result = utility.call(padding: edgeInsetsMix);
       final attribute = result.value;
 
-      expect(attribute.padding, isNotNull);
-      expect(attribute.padding, isA<Prop<Mix<EdgeInsetsGeometry>>>());
+      expectProp(attribute.padding, edgeInsetsMix);
     });
 
     test('call() handles null padding', () {

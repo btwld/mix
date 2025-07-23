@@ -15,10 +15,10 @@ void main() {
           clipBehavior: Prop(Clip.antiAlias),
         );
 
-        expect(attribute.$alignment, resolvesTo(AlignmentDirectional.topStart));
-        expect(attribute.$fit, resolvesTo(StackFit.loose));
-        expect(attribute.$textDirection, resolvesTo(TextDirection.ltr));
-        expect(attribute.$clipBehavior, resolvesTo(Clip.antiAlias));
+        expectProp(attribute.$alignment, AlignmentDirectional.topStart);
+        expectProp(attribute.$fit, StackFit.loose);
+        expectProp(attribute.$textDirection, TextDirection.ltr);
+        expectProp(attribute.$clipBehavior, Clip.antiAlias);
       });
 
       test('creates empty StackSpecAttribute', () {
@@ -40,13 +40,10 @@ void main() {
           clipBehavior: Clip.hardEdge,
         );
 
-        expect(
-          attribute.$alignment,
-          resolvesTo(AlignmentDirectional.bottomEnd),
-        );
-        expect(attribute.$fit, resolvesTo(StackFit.expand));
-        expect(attribute.$textDirection, resolvesTo(TextDirection.rtl));
-        expect(attribute.$clipBehavior, resolvesTo(Clip.hardEdge));
+        expectProp(attribute.$alignment, AlignmentDirectional.bottomEnd);
+        expectProp(attribute.$fit, StackFit.expand);
+        expectProp(attribute.$textDirection, TextDirection.rtl);
+        expectProp(attribute.$clipBehavior, Clip.hardEdge);
       });
 
       test('creates partial StackSpecAttribute with only constructor', () {
@@ -150,11 +147,12 @@ void main() {
       });
 
       test('chaining utilities works correctly', () {
-        final attribute = StackSpecAttribute()
-            .alignment(Alignment.topLeft)
-            .fit(StackFit.expand)
-            .textDirection(TextDirection.ltr)
-            .clipBehavior(Clip.antiAlias);
+        final attribute = StackSpecAttribute.only(
+          alignment: Alignment.topLeft,
+          fit: StackFit.expand,
+          textDirection: TextDirection.ltr,
+          clipBehavior: Clip.antiAlias,
+        );
 
         expect(attribute.$alignment, resolvesTo(Alignment.topLeft));
         expect(attribute.$fit, resolvesTo(StackFit.expand));
@@ -176,11 +174,12 @@ void main() {
 
     group('Resolution', () {
       test('resolves to StackSpec with correct properties', () {
-        final attribute = StackSpecAttribute()
-            .alignment(AlignmentDirectional.centerStart)
-            .fit(StackFit.loose)
-            .textDirection(TextDirection.rtl)
-            .clipBehavior(Clip.hardEdge);
+        final attribute = StackSpecAttribute.only(
+          alignment: AlignmentDirectional.centerStart,
+          fit: StackFit.loose,
+          textDirection: TextDirection.rtl,
+          clipBehavior: Clip.hardEdge,
+        );
 
         final context = MockBuildContext();
         final spec = attribute.resolve(context);
@@ -193,9 +192,10 @@ void main() {
       });
 
       test('resolves with partial values correctly', () {
-        final attribute = StackSpecAttribute()
-            .alignment(Alignment.bottomCenter)
-            .fit(StackFit.passthrough);
+        final attribute = StackSpecAttribute.only(
+          alignment: Alignment.bottomCenter,
+          fit: StackFit.passthrough,
+        );
 
         final context = MockBuildContext();
         final spec = attribute.resolve(context);
@@ -210,14 +210,16 @@ void main() {
 
     group('Merge', () {
       test('merges properties correctly', () {
-        final first = StackSpecAttribute()
-            .alignment(Alignment.topLeft)
-            .fit(StackFit.loose)
-            .textDirection(TextDirection.ltr);
+        final first = StackSpecAttribute.only(
+          alignment: Alignment.topLeft,
+          fit: StackFit.loose,
+          textDirection: TextDirection.ltr,
+        );
 
-        final second = StackSpecAttribute()
-            .alignment(Alignment.bottomRight)
-            .clipBehavior(Clip.antiAlias);
+        final second = StackSpecAttribute.only(
+          alignment: Alignment.bottomRight,
+          clipBehavior: Clip.antiAlias,
+        );
 
         final merged = first.merge(second);
 
@@ -238,15 +240,17 @@ void main() {
       });
 
       test('merges all properties when both have values', () {
-        final first = StackSpecAttribute()
-            .alignment(AlignmentDirectional.topStart)
-            .fit(StackFit.loose);
+        final first = StackSpecAttribute.only(
+          alignment: AlignmentDirectional.topStart,
+          fit: StackFit.loose,
+        );
 
-        final second = StackSpecAttribute()
-            .alignment(AlignmentDirectional.bottomEnd)
-            .fit(StackFit.expand)
-            .textDirection(TextDirection.rtl)
-            .clipBehavior(Clip.hardEdge);
+        final second = StackSpecAttribute.only(
+          alignment: AlignmentDirectional.bottomEnd,
+          fit: StackFit.expand,
+          textDirection: TextDirection.rtl,
+          clipBehavior: Clip.hardEdge,
+        );
 
         final merged = first.merge(second);
 
@@ -324,20 +328,43 @@ void main() {
       });
 
       test('modifiers merge correctly', () {
-        final first = StackSpecAttribute(
-          modifiers: [OpacityModifierAttribute(opacity: Prop(0.5))],
+        final opacityModifier = OpacityModifierAttribute(opacity: Prop(0.5));
+        final alignModifier = AlignModifierAttribute(
+          alignment: Prop(Alignment.center),
         );
 
-        final second = StackSpecAttribute(
-          modifiers: [
-            AlignModifierAttribute(alignment: Prop(Alignment.center)),
-          ],
-        );
+        final first = StackSpecAttribute(modifiers: [opacityModifier]);
+
+        final second = StackSpecAttribute(modifiers: [alignModifier]);
 
         final merged = first.merge(second);
 
-        // Note: The actual merge behavior depends on the parent class implementation
+        // Check that the modifiers list matches exactly the expected list
+        final expectedModifiers = [
+          OpacityModifierAttribute(opacity: Prop(0.5)),
+          AlignModifierAttribute(alignment: Prop(Alignment.center)),
+        ];
+
+        expect(merged.modifiers, expectedModifiers);
+      });
+
+      test('modifiers with same type merge correctly', () {
+        final firstOpacity = OpacityModifierAttribute(opacity: Prop(0.3));
+        final secondOpacity = OpacityModifierAttribute(opacity: Prop(0.7));
+
+        final first = StackSpecAttribute(modifiers: [firstOpacity]);
+        final second = StackSpecAttribute(modifiers: [secondOpacity]);
+
+        final merged = first.merge(second);
+
+        // Should have only one opacity modifier (merged)
         expect(merged.modifiers, isNotNull);
+        expect(merged.modifiers!.length, 1);
+        expect(merged.modifiers![0], isA<OpacityModifierAttribute>());
+
+        // The second opacity should take precedence
+        final mergedOpacity = merged.modifiers![0] as OpacityModifierAttribute;
+        expect(mergedOpacity.opacity, resolvesTo(0.7));
       });
     });
 
@@ -359,11 +386,12 @@ void main() {
       });
 
       test('builder methods can be chained fluently', () {
-        final attribute = StackSpecAttribute()
-            .alignment(AlignmentDirectional.topEnd)
-            .fit(StackFit.expand)
-            .textDirection(TextDirection.rtl)
-            .clipBehavior(Clip.hardEdge);
+        final attribute = StackSpecAttribute.only(
+          alignment: AlignmentDirectional.topEnd,
+          fit: StackFit.expand,
+          textDirection: TextDirection.rtl,
+          clipBehavior: Clip.hardEdge,
+        );
 
         final context = MockBuildContext();
         final spec = attribute.resolve(context);

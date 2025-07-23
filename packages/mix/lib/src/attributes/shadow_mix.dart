@@ -94,22 +94,10 @@ class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is ShadowMix &&
-        other.blurRadius == blurRadius &&
-        other.color == color &&
-        other.offset == offset;
-  }
+  List<Object?> get props => [blurRadius, color, offset];
 
   @override
   Shadow get defaultValue => const Shadow();
-
-  @override
-  int get hashCode {
-    return Object.hash(blurRadius, color, offset);
-  }
 }
 
 /// Represents a [Mix] Data transfer object of [BoxShadow]
@@ -215,23 +203,10 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is BoxShadowMix &&
-        other.color == color &&
-        other.offset == offset &&
-        other.blurRadius == blurRadius &&
-        other.spreadRadius == spreadRadius;
-  }
+  List<Object?> get props => [color, offset, blurRadius, spreadRadius];
 
   @override
   BoxShadow get defaultValue => const BoxShadow();
-
-  @override
-  int get hashCode {
-    return Object.hash(color, offset, blurRadius, spreadRadius);
-  }
 }
 
 // ElevationBoxShadowMix is a convenience class for creating BoxShadowMix from elevation values.

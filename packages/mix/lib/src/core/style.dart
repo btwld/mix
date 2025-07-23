@@ -20,7 +20,7 @@ abstract class SpecStyle<S extends Spec<S>> extends Mixable<SpecStyle<S>>
 
   const SpecStyle({this.variants, this.modifiers, this.animation});
 
-  @visibleForTesting
+  @protected
   List<ModifierAttribute>? mergeModifierLists(
     List<ModifierAttribute>? current,
     List<ModifierAttribute>? other,
@@ -82,7 +82,7 @@ abstract class SpecStyle<S extends Spec<S>> extends Mixable<SpecStyle<S>>
     return styleData;
   }
 
-  @visibleForTesting
+  @protected
   List<VariantSpecAttribute<S>> mergeVariantLists(
     List<VariantSpecAttribute<S>>? current,
     List<VariantSpecAttribute<S>>? other,

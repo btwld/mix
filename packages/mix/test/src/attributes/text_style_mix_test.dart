@@ -183,7 +183,10 @@ void main() {
         expectProp(merged.fontFamilyFallback![1], 'Helvetica');
         expectProp(merged.fontFamilyFallback![2], 'Times');
 
-        expect(merged.shadows, hasLength(2));
+        expect(merged.shadows, hasLength(1));
+        // Verify the shadow was replaced (second shadow overwrites first)
+        final resolvedShadow = merged.shadows![0].resolve(MockBuildContext());
+        expect(resolvedShadow.blurRadius, 10.0);
       });
     });
 

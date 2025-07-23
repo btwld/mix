@@ -217,6 +217,9 @@ class FlexSpecAttribute extends SpecStyle<FlexSpec> with Diagnosticable {
       textBaseline: MixHelpers.merge($textBaseline, other.$textBaseline),
       clipBehavior: MixHelpers.merge($clipBehavior, other.$clipBehavior),
       gap: MixHelpers.merge($gap, other.$gap),
+      animation: other.animation ?? animation,
+      modifiers: mergeModifierLists(modifiers, other.modifiers),
+      variants: mergeVariantLists(variants, other.variants),
     );
   }
 

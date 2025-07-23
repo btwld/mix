@@ -190,21 +190,10 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
   }
 
   @override
-  operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is BorderMix &&
-        other.top == top &&
-        other.bottom == bottom &&
-        other.left == left &&
-        other.right == right;
-  }
+  List<Object?> get props => [top, bottom, left, right];
 
   @override
   bool get isUniform => top == bottom && bottom == left && left == right;
-
-  @override
-  int get hashCode => Object.hash(top, bottom, left, right);
 
   @override
   Border get defaultValue => const Border();
@@ -317,15 +306,7 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is BorderDirectionalMix &&
-        other.top == top &&
-        other.bottom == bottom &&
-        other.start == start &&
-        other.end == end;
-  }
+  List<Object?> get props => [top, bottom, start, end];
 
   @override
   bool get isUniform => top == bottom && bottom == start && start == end;
@@ -336,10 +317,6 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
   /// compare two [BorderDirectionalMix] instances for equality.
   @override
   BorderDirectional get defaultValue => const BorderDirectional();
-
-  @override
-  @override
-  int get hashCode => Object.hash(top, bottom, start, end);
 }
 
 final class BorderSideMix extends Mix<BorderSide>
@@ -436,19 +413,8 @@ final class BorderSideMix extends Mix<BorderSide>
   }
 
   @override
-  operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is BorderSideMix &&
-        other.color == color &&
-        other.width == width &&
-        other.style == style &&
-        other.strokeAlign == strokeAlign;
-  }
+  List<Object?> get props => [color, width, style, strokeAlign];
 
   @override
   BorderSide get defaultValue => const BorderSide();
-
-  @override
-  int get hashCode => Object.hash(color, width, style, strokeAlign);
 }

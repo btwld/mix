@@ -68,15 +68,13 @@ void main() {
           ),
           side: BorderSideMix.only(color: Colors.red, width: 2.0),
         );
-
-        final resolved = roundedRectangleBorderMix.resolve(MockBuildContext());
-        expect(resolved, isA<RoundedRectangleBorder>());
-        expect(
-          resolved.borderRadius,
-          const BorderRadius.only(topLeft: Radius.circular(8.0)),
+        
+        const expectedBorder = RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(8.0)),
+          side: BorderSide(color: Colors.red, width: 2.0),
         );
-        expect(resolved.side.color, Colors.red);
-        expect(resolved.side.width, 2.0);
+
+        expect(roundedRectangleBorderMix, resolvesTo(expectedBorder));
       });
     });
 
@@ -185,11 +183,12 @@ void main() {
         final circleBorderMix = CircleBorderMix.only(
           side: BorderSideMix.only(color: Colors.green, width: 3.0),
         );
+        
+        const expectedBorder = CircleBorder(
+          side: BorderSide(color: Colors.green, width: 3.0),
+        );
 
-        final resolved = circleBorderMix.resolve(MockBuildContext());
-        expect(resolved, isA<CircleBorder>());
-        expect(resolved.side.color, Colors.green);
-        expect(resolved.side.width, 3.0);
+        expect(circleBorderMix, resolvesTo(expectedBorder));
       });
     });
 
@@ -248,11 +247,12 @@ void main() {
         final stadiumBorderMix = StadiumBorderMix.only(
           side: BorderSideMix.only(color: Colors.orange, width: 2.5),
         );
+        
+        const expectedBorder = StadiumBorder(
+          side: BorderSide(color: Colors.orange, width: 2.5),
+        );
 
-        final resolved = stadiumBorderMix.resolve(MockBuildContext());
-        expect(resolved, isA<StadiumBorder>());
-        expect(resolved.side.color, Colors.orange);
-        expect(resolved.side.width, 2.5);
+        expect(stadiumBorderMix, resolvesTo(expectedBorder));
       });
     });
 

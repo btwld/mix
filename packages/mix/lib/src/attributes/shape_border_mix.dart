@@ -110,16 +110,7 @@ final class RoundedRectangleBorderMix
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is RoundedRectangleBorderMix &&
-        other.borderRadius == borderRadius &&
-        other.side == side;
-  }
-
-  @override
-  int get hashCode => Object.hash(borderRadius, side);
+  List<Object?> get props => [borderRadius, side];
 }
 
 final class BeveledRectangleBorderMix
@@ -164,16 +155,7 @@ final class BeveledRectangleBorderMix
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is BeveledRectangleBorderMix &&
-        other.borderRadius == borderRadius &&
-        other.side == side;
-  }
-
-  @override
-  int get hashCode => Object.hash(borderRadius, side);
+  List<Object?> get props => [borderRadius, side];
 }
 
 final class ContinuousRectangleBorderMix
@@ -222,16 +204,7 @@ final class ContinuousRectangleBorderMix
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is ContinuousRectangleBorderMix &&
-        other.borderRadius == borderRadius &&
-        other.side == side;
-  }
-
-  @override
-  int get hashCode => Object.hash(borderRadius, side);
+  List<Object?> get props => [borderRadius, side];
 }
 
 final class CircleBorderMix extends OutlinedBorderMix<CircleBorder> {
@@ -269,16 +242,7 @@ final class CircleBorderMix extends OutlinedBorderMix<CircleBorder> {
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is CircleBorderMix &&
-        other.side == side &&
-        other.eccentricity == eccentricity;
-  }
-
-  @override
-  int get hashCode => Object.hash(side, eccentricity);
+  List<Object?> get props => [side, eccentricity];
 }
 
 final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
@@ -362,31 +326,15 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is StarBorderMix &&
-        other.side == side &&
-        other.points == points &&
-        other.innerRadiusRatio == innerRadiusRatio &&
-        other.pointRounding == pointRounding &&
-        other.valleyRounding == valleyRounding &&
-        other.rotation == rotation &&
-        other.squash == squash;
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(
-      side,
-      points,
-      innerRadiusRatio,
-      pointRounding,
-      valleyRounding,
-      rotation,
-      squash,
-    );
-  }
+  List<Object?> get props => [
+        side,
+        points,
+        innerRadiusRatio,
+        pointRounding,
+        valleyRounding,
+        rotation,
+        squash,
+      ];
 }
 
 final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
@@ -452,21 +400,7 @@ final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is LinearBorderMix &&
-        other.side == side &&
-        other.start == start &&
-        other.end == end &&
-        other.top == top &&
-        other.bottom == bottom;
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(side, start, end, top, bottom);
-  }
+  List<Object?> get props => [side, start, end, top, bottom];
 }
 
 final class LinearBorderEdgeMix extends Mix<LinearBorderEdge> {
@@ -502,16 +436,7 @@ final class LinearBorderEdgeMix extends Mix<LinearBorderEdge> {
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is LinearBorderEdgeMix &&
-        other.size == size &&
-        other.alignment == alignment;
-  }
-
-  @override
-  int get hashCode => Object.hash(size, alignment);
+  List<Object?> get props => [size, alignment];
 }
 
 final class StadiumBorderMix extends OutlinedBorderMix<StadiumBorder> {
@@ -540,12 +465,5 @@ final class StadiumBorderMix extends OutlinedBorderMix<StadiumBorder> {
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is StadiumBorderMix && other.side == side;
-  }
-
-  @override
-  int get hashCode => side.hashCode;
+  List<Object?> get props => [side];
 }

@@ -190,7 +190,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
       debugLabel: MixHelpers.merge(debugLabel, other.debugLabel),
       wordSpacing: MixHelpers.merge(wordSpacing, other.wordSpacing),
       textBaseline: MixHelpers.merge(textBaseline, other.textBaseline),
-      // Merge lists - default to append strategy
+      // Merge lists - default replace strategy (merge at index)
       shadows: MixHelpers.mergeList(shadows, other.shadows),
       fontFeatures: MixHelpers.mergeList(fontFeatures, other.fontFeatures),
       decoration: MixHelpers.merge(decoration, other.decoration),
@@ -211,6 +211,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
       fontFamilyFallback: MixHelpers.mergeList(
         fontFamilyFallback,
         other.fontFamilyFallback,
+        strategy: ListMergeStrategy.append,
       ),
     );
   }
@@ -298,57 +299,27 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is TextStyleMix &&
-        other.color == color &&
-        other.backgroundColor == backgroundColor &&
-        other.fontSize == fontSize &&
-        other.fontWeight == fontWeight &&
-        other.fontStyle == fontStyle &&
-        other.letterSpacing == letterSpacing &&
-        other.debugLabel == debugLabel &&
-        other.wordSpacing == wordSpacing &&
-        other.textBaseline == textBaseline &&
-        other.decoration == decoration &&
-        other.decorationColor == decorationColor &&
-        other.decorationStyle == decorationStyle &&
-        other.height == height &&
-        other.decorationThickness == decorationThickness &&
-        other.fontFamily == fontFamily &&
-        other.foreground == foreground &&
-        other.background == background &&
-        listEquals(other.fontFamilyFallback, fontFamilyFallback) &&
-        listEquals(other.fontFeatures, fontFeatures) &&
-        listEquals(other.fontVariations, fontVariations) &&
-        listEquals(other.shadows, shadows);
-  }
-
-  @override
-  int get hashCode {
-    return Object.hashAll([
-      color,
-      backgroundColor,
-      fontSize,
-      fontWeight,
-      fontStyle,
-      letterSpacing,
-      debugLabel,
-      wordSpacing,
-      textBaseline,
-      decoration,
-      decorationColor,
-      decorationStyle,
-      height,
-      decorationThickness,
-      fontFamily,
-      foreground,
-      background,
-      fontFamilyFallback,
-      fontFeatures,
-      fontVariations,
-      shadows,
-    ]);
-  }
+  List<Object?> get props => [
+    color,
+    backgroundColor,
+    fontSize,
+    fontWeight,
+    fontStyle,
+    letterSpacing,
+    debugLabel,
+    wordSpacing,
+    textBaseline,
+    decoration,
+    decorationColor,
+    decorationStyle,
+    height,
+    decorationThickness,
+    fontFamily,
+    foreground,
+    background,
+    fontFamilyFallback,
+    fontFeatures,
+    fontVariations,
+    shadows,
+  ];
 }

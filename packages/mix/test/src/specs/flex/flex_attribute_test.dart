@@ -209,20 +209,39 @@ void main() {
         expect(attribute.$gap, resolvesTo(24.0));
       });
 
-      test('chaining utilities works correctly', () {
-        final attribute = FlexSpecAttribute()
+      test('chaining utilities does not accumulate properties', () {
+        // This is the key behavior: chaining creates new instances
+        final chained = FlexSpecAttribute()
             .direction(Axis.horizontal)
             .mainAxisAlignment(MainAxisAlignment.spaceBetween)
             .crossAxisAlignment(CrossAxisAlignment.center)
             .gap(16.0);
 
-        expect(attribute.$direction, resolvesTo(Axis.horizontal));
-        expectProp(
-          attribute.$mainAxisAlignment,
-          MainAxisAlignment.spaceBetween,
-        );
-        expectProp(attribute.$crossAxisAlignment, CrossAxisAlignment.center);
-        expect(attribute.$gap, resolvesTo(16.0));
+        // Only the last property is set because each utility creates a new instance
+        expect(chained.$direction, isNull);
+        expect(chained.$mainAxisAlignment, isNull);
+        expect(chained.$crossAxisAlignment, isNull);
+        expect(chained.$gap, resolvesTo(16.0));
+      });
+
+      test('use merge to combine utilities', () {
+        // Show the correct way to combine multiple utilities
+        final combined = FlexSpecAttribute()
+            .direction(Axis.horizontal)
+            .merge(
+              FlexSpecAttribute().mainAxisAlignment(
+                MainAxisAlignment.spaceBetween,
+              ),
+            )
+            .merge(
+              FlexSpecAttribute().crossAxisAlignment(CrossAxisAlignment.center),
+            )
+            .merge(FlexSpecAttribute().gap(16.0));
+
+        expect(combined.$direction, resolvesTo(Axis.horizontal));
+        expectProp(combined.$mainAxisAlignment, MainAxisAlignment.spaceBetween);
+        expectProp(combined.$crossAxisAlignment, CrossAxisAlignment.center);
+        expect(combined.$gap, resolvesTo(16.0));
       });
     });
 
@@ -251,16 +270,17 @@ void main() {
 
     group('Resolution', () {
       test('resolves to FlexSpec with correct properties', () {
-        final attribute = FlexSpecAttribute()
-            .direction(Axis.horizontal)
-            .mainAxisAlignment(MainAxisAlignment.center)
-            .crossAxisAlignment(CrossAxisAlignment.stretch)
-            .mainAxisSize(MainAxisSize.max)
-            .verticalDirection(VerticalDirection.down)
-            .textDirection(TextDirection.ltr)
-            .textBaseline(TextBaseline.alphabetic)
-            .clipBehavior(Clip.antiAlias)
-            .gap(16.0);
+        final attribute = FlexSpecAttribute.only(
+          direction: Axis.horizontal,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.max,
+          verticalDirection: VerticalDirection.down,
+          textDirection: TextDirection.ltr,
+          textBaseline: TextBaseline.alphabetic,
+          clipBehavior: Clip.antiAlias,
+          gap: 16.0,
+        );
 
         final context = MockBuildContext();
         final spec = attribute.resolve(context);
@@ -300,15 +320,17 @@ void main() {
 
     group('Merge', () {
       test('merges properties correctly', () {
-        final first = FlexSpecAttribute()
-            .direction(Axis.horizontal)
-            .mainAxisAlignment(MainAxisAlignment.start)
-            .gap(8.0);
+        final first = FlexSpecAttribute.only(
+          direction: Axis.horizontal,
+          mainAxisAlignment: MainAxisAlignment.start,
+          gap: 8.0,
+        );
 
-        final second = FlexSpecAttribute()
-            .direction(Axis.vertical)
-            .crossAxisAlignment(CrossAxisAlignment.center)
-            .mainAxisSize(MainAxisSize.min);
+        final second = FlexSpecAttribute.only(
+          direction: Axis.vertical,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+        );
 
         final merged = first.merge(second);
 
@@ -492,12 +514,18 @@ void main() {
         expect(modified.$direction, resolvesTo(Axis.horizontal));
       });
 
-      test('builder methods can be chained fluently', () {
+      test('builder methods can be combined with merge', () {
         final attribute = FlexSpecAttribute()
-            .row()
-            .mainAxisAlignment(MainAxisAlignment.spaceBetween)
-            .crossAxisAlignment(CrossAxisAlignment.center)
-            .gap(16.0);
+            .direction(Axis.horizontal)
+            .merge(
+              FlexSpecAttribute().mainAxisAlignment(
+                MainAxisAlignment.spaceBetween,
+              ),
+            )
+            .merge(
+              FlexSpecAttribute().crossAxisAlignment(CrossAxisAlignment.center),
+            )
+            .merge(FlexSpecAttribute().gap(16.0));
 
         final context = MockBuildContext();
         final spec = attribute.resolve(context);

@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_relative_imports,avoid-importing-entrypoint-exports
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
@@ -161,25 +160,17 @@ final class LinearGradientMix extends GradientMix<LinearGradient> {
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is LinearGradientMix &&
-        other.begin == begin &&
-        other.end == end &&
-        other.tileMode == tileMode &&
-        other.transform == transform &&
-        listEquals(other.colors, colors) &&
-        listEquals(other.stops, stops);
-  }
+  List<Object?> get props => [
+        begin,
+        end,
+        tileMode,
+        transform,
+        colors,
+        stops,
+      ];
 
   @override
   LinearGradient get defaultValue => const LinearGradient(colors: []);
-
-  @override
-  int get hashCode {
-    return Object.hash(begin, end, tileMode, transform, colors, stops);
-  }
 }
 
 /// Represents a Data transfer object of [RadialGradient]
@@ -291,36 +282,19 @@ final class RadialGradientMix extends GradientMix<RadialGradient> {
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is RadialGradientMix &&
-        other.center == center &&
-        other.radius == radius &&
-        other.tileMode == tileMode &&
-        other.focal == focal &&
-        other.focalRadius == focalRadius &&
-        other.transform == transform &&
-        listEquals(other.colors, colors) &&
-        listEquals(other.stops, stops);
-  }
+  List<Object?> get props => [
+        center,
+        radius,
+        tileMode,
+        focal,
+        focalRadius,
+        transform,
+        colors,
+        stops,
+      ];
 
   @override
   RadialGradient get defaultValue => const RadialGradient(colors: []);
-
-  @override
-  int get hashCode {
-    return Object.hash(
-      center,
-      radius,
-      tileMode,
-      focal,
-      focalRadius,
-      transform,
-      colors,
-      stops,
-    );
-  }
 }
 
 /// Represents a Data transfer object of [SweepGradient]
@@ -426,32 +400,16 @@ final class SweepGradientMix extends GradientMix<SweepGradient> {
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is SweepGradientMix &&
-        other.center == center &&
-        other.startAngle == startAngle &&
-        other.endAngle == endAngle &&
-        other.tileMode == tileMode &&
-        other.transform == transform &&
-        listEquals(other.colors, colors) &&
-        listEquals(other.stops, stops);
-  }
+  List<Object?> get props => [
+        center,
+        startAngle,
+        endAngle,
+        tileMode,
+        transform,
+        colors,
+        stops,
+      ];
 
   @override
   SweepGradient get defaultValue => const SweepGradient(colors: []);
-
-  @override
-  int get hashCode {
-    return Object.hash(
-      center,
-      startAngle,
-      endAngle,
-      tileMode,
-      transform,
-      colors,
-      stops,
-    );
-  }
 }

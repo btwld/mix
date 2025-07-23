@@ -453,23 +453,24 @@ void main() {
         expect(attribute.modifiers!.length, 2);
       });
 
-      test('modifiers are not merged by BoxSpecAttribute.merge', () {
-        // Note: BoxSpecAttribute.merge only merges specific properties,
-        // not modifiers or variants
-        final first = BoxSpecAttribute(
-          modifiers: [OpacityModifierAttribute(opacity: Prop(0.5))],
+      test('modifiers merge correctly', () {
+        final opacityModifier = OpacityModifierAttribute(opacity: Prop(0.5));
+        final transformModifier = TransformModifierAttribute.only(
+          transform: Matrix4.identity(),
         );
 
-        final second = BoxSpecAttribute(
-          modifiers: [
-            TransformModifierAttribute.only(transform: Matrix4.identity()),
-          ],
-        );
+        final first = BoxSpecAttribute(modifiers: [opacityModifier]);
+        final second = BoxSpecAttribute(modifiers: [transformModifier]);
 
         final merged = first.merge(second);
 
-        // The merge method doesn't merge modifiers, the result has no modifiers
-        expect(merged.modifiers, isNull);
+        // Check that the modifiers list matches exactly the expected list
+        final expectedModifiers = [
+          OpacityModifierAttribute(opacity: Prop(0.5)),
+          TransformModifierAttribute.only(transform: Matrix4.identity()),
+        ];
+
+        expect(merged.modifiers, expectedModifiers);
       });
     });
 

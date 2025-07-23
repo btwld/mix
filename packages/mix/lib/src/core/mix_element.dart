@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 
+import '../internal/compare_mixin.dart';
+
 mixin Resolvable<V> {
   V resolve(BuildContext context);
 }
@@ -11,7 +13,7 @@ abstract class Mixable<T> {
   Mixable<T> merge(covariant Mixable<T>? other);
 }
 
-abstract class Mix<T> extends Mixable<T> with Resolvable<T> {
+abstract class Mix<T> extends Mixable<T> with Resolvable<T>, EqualityMixin {
   const Mix();
 
   @override

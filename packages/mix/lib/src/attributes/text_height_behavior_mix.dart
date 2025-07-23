@@ -103,19 +103,9 @@ class TextHeightBehaviorMix extends Mix<TextHeightBehavior> {
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is TextHeightBehaviorMix &&
-        other.applyHeightToFirstAscent == applyHeightToFirstAscent &&
-        other.applyHeightToLastDescent == applyHeightToLastDescent &&
-        other.leadingDistribution == leadingDistribution;
-  }
-
-  @override
-  int get hashCode => Object.hash(
-    applyHeightToFirstAscent,
-    applyHeightToLastDescent,
-    leadingDistribution,
-  );
+  List<Object?> get props => [
+        applyHeightToFirstAscent,
+        applyHeightToLastDescent,
+        leadingDistribution,
+      ];
 }

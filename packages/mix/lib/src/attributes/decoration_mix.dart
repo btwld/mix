@@ -1,7 +1,6 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 // ignore_for_file: prefer_relative_imports,avoid-importing-entrypoint-exports
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
@@ -172,33 +171,16 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is BoxDecorationMix &&
-        other.border == border &&
-        other.borderRadius == borderRadius &&
-        other.shape == shape &&
-        other.backgroundBlendMode == backgroundBlendMode &&
-        other.color == color &&
-        other.image == image &&
-        other.gradient == gradient &&
-        listEquals(other.boxShadow, boxShadow);
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(
-      border,
-      borderRadius,
-      shape,
-      backgroundBlendMode,
-      color,
-      image,
-      gradient,
-      boxShadow,
-    );
-  }
+  List<Object?> get props => [
+        border,
+        borderRadius,
+        shape,
+        backgroundBlendMode,
+        color,
+        image,
+        gradient,
+        boxShadow,
+      ];
 }
 
 final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
@@ -270,23 +252,9 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is ShapeDecorationMix &&
-        other.shape == shape &&
-        other.color == color &&
-        other.image == image &&
-        other.gradient == gradient &&
-        listEquals(other.shadows, shadows);
-  }
+  List<Object?> get props => [shape, color, image, gradient, shadows];
 
   @override
   ShapeDecoration get defaultValue =>
       const ShapeDecoration(shape: RoundedRectangleBorder());
-
-  @override
-  int get hashCode {
-    return Object.hash(shape, color, image, gradient, shadows);
-  }
 }

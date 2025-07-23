@@ -123,21 +123,8 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is BoxConstraintsMix &&
-        other.minWidth == minWidth &&
-        other.maxWidth == maxWidth &&
-        other.minHeight == minHeight &&
-        other.maxHeight == maxHeight;
-  }
+  List<Object?> get props => [minWidth, maxWidth, minHeight, maxHeight];
 
   @override
   BoxConstraints get defaultValue => const BoxConstraints();
-
-  @override
-  int get hashCode {
-    return Object.hash(minWidth, maxWidth, minHeight, maxHeight);
-  }
 }

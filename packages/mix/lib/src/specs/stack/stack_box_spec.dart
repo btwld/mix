@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../core/animation_config.dart';
 import '../../core/spec.dart';
 import '../../core/style.dart';
 import '../box/box_attribute.dart';
@@ -74,7 +75,13 @@ class StackBoxSpecAttribute extends SpecStyle<ZBoxSpec> with Diagnosticable {
   final BoxSpecAttribute? box;
   final StackSpecAttribute? stack;
 
-  const StackBoxSpecAttribute({this.box, this.stack});
+  const StackBoxSpecAttribute({
+    this.box,
+    this.stack,
+    super.modifiers,
+    super.animation,
+    super.variants,
+  });
 
   /// Constructor that accepts a [ZBoxSpec] value and extracts its properties.
   ///
@@ -131,6 +138,9 @@ class StackBoxSpecAttribute extends SpecStyle<ZBoxSpec> with Diagnosticable {
     return StackBoxSpecAttribute(
       box: box?.merge(other.box) ?? other.box,
       stack: stack?.merge(other.stack) ?? other.stack,
+      modifiers: mergeModifierLists(modifiers, other.modifiers),
+      animation: other.animation ?? animation,
+      variants: mergeVariantLists(variants, other.variants),
     );
   }
 
@@ -168,7 +178,16 @@ class StackBoxSpecUtility {
   StackBoxSpecAttribute only({
     BoxSpecAttribute? box,
     StackSpecAttribute? stack,
+    List<ModifierAttribute>? modifiers,
+    AnimationConfig? animation,
+    List<VariantSpecAttribute<ZBoxSpec>>? variants,
   }) {
-    return StackBoxSpecAttribute(box: box, stack: stack);
+    return StackBoxSpecAttribute(
+      box: box,
+      stack: stack,
+      modifiers: modifiers,
+      animation: animation,
+      variants: variants,
+    );
   }
 }

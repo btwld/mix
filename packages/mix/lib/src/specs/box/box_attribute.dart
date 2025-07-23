@@ -324,6 +324,9 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
       clipBehavior: MixHelpers.merge($clipBehavior, other.$clipBehavior),
       width: MixHelpers.merge($width, other.$width),
       height: MixHelpers.merge($height, other.$height),
+      animation: other.animation ?? animation,
+      modifiers: mergeModifierLists(modifiers, other.modifiers),
+      variants: mergeVariantLists(variants, other.variants),
     );
   }
 

@@ -250,22 +250,21 @@ void main() {
           width: 100.0,
           height: 200.0,
         );
+        
+        const expectedModifier = SizedBoxModifier(
+          width: 100.0,
+          height: 200.0,
+        );
 
-        final resolved = attribute.resolve(MockBuildContext());
-
-        expect(resolved, isA<SizedBoxModifier>());
-        expect(resolved.width, 100.0);
-        expect(resolved.height, 200.0);
+        expect(attribute, resolvesTo(expectedModifier));
       });
 
       test('resolves with null values', () {
         const attribute = SizedBoxModifierAttribute();
+        
+        const expectedModifier = SizedBoxModifier();
 
-        final resolved = attribute.resolve(MockBuildContext());
-
-        expect(resolved, isA<SizedBoxModifier>());
-        expect(resolved.width, isNull);
-        expect(resolved.height, isNull);
+        expect(attribute, resolvesTo(expectedModifier));
       });
     });
 

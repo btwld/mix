@@ -118,16 +118,26 @@ class _ResolvesToMatcher<T> extends Matcher {
 
   @override
   bool matches(dynamic item, Map matchState) {
-    if (item is! Resolvable<T>) {
-      matchState['error'] =
-          'Expected Resolvable<$T>, but got ${item.runtimeType}';
+    // Check if item implements Resolvable (any type)
+    if (item is! Resolvable) {
+      matchState['error'] = 'Expected Resolvable, but got ${item.runtimeType}';
       return false;
     }
 
     try {
       final ctx = context ?? MockBuildContext();
       final resolved = item.resolve(ctx);
-      return resolved == expected;
+
+      // Let runtime comparison handle type compatibility
+      // This allows Prop<AlignmentGeometry> to work with Alignment expectations
+      if (resolved == expected) {
+        return true;
+      }
+
+      // Provide helpful error message with actual vs expected types
+      matchState['error'] =
+          'Resolved to ${resolved.runtimeType}:<$resolved>, expected $T:<$expected>';
+      return false;
     } catch (e) {
       matchState['error'] = 'Failed to resolve: $e';
       return false;

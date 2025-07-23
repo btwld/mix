@@ -234,20 +234,7 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is EdgeInsetsMix &&
-        other.top == top &&
-        other.bottom == bottom &&
-        other.left == left &&
-        other.right == right;
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(top, bottom, left, right);
-  }
+  List<Object?> get props => [top, bottom, left, right];
 }
 
 final class EdgeInsetsDirectionalMix
@@ -360,18 +347,5 @@ final class EdgeInsetsDirectionalMix
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is EdgeInsetsDirectionalMix &&
-        other.top == top &&
-        other.bottom == bottom &&
-        other.start == start &&
-        other.end == end;
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(top, bottom, start, end);
-  }
+  List<Object?> get props => [top, bottom, start, end];
 }

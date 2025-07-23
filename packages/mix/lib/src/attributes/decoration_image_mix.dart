@@ -133,30 +133,14 @@ final class DecorationImageMix extends Mix<DecorationImage>
   }
 
   @override
-  operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other.runtimeType != runtimeType) return false;
-
-    return other is DecorationImageMix &&
-        image == other.image &&
-        fit == other.fit &&
-        alignment == other.alignment &&
-        centerSlice == other.centerSlice &&
-        repeat == other.repeat &&
-        filterQuality == other.filterQuality &&
-        invertColors == other.invertColors &&
-        isAntiAlias == other.isAntiAlias;
-  }
-
-  @override
-  int get hashCode => Object.hash(
-    image,
-    fit,
-    alignment,
-    centerSlice,
-    repeat,
-    filterQuality,
-    invertColors,
-    isAntiAlias,
-  );
+  List<Object?> get props => [
+        image,
+        fit,
+        alignment,
+        centerSlice,
+        repeat,
+        filterQuality,
+        invertColors,
+        isAntiAlias,
+      ];
 }

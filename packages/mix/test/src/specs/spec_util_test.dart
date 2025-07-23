@@ -5,7 +5,7 @@ void main() {
   group('Spec Utilities Global Getters', () {
     test('\$box returns BoxSpecAttribute instance', () {
       expect($box, isA<BoxSpecAttribute>());
-      expect($box, same($box));
+      expect($box, same($box)); // Same cached instance
     });
 
     test('\$flexbox returns FlexBoxSpecUtility instance', () {
@@ -15,27 +15,27 @@ void main() {
 
     test('\$flex returns FlexSpecAttribute instance', () {
       expect($flex, isA<FlexSpecAttribute>());
-      expect($flex, same($flex));
+      expect($flex, same($flex)); // Same cached instance
     });
 
     test('\$image returns ImageSpecAttribute instance', () {
       expect($image, isA<ImageSpecAttribute>());
-      expect($image, same($image));
+      expect($image, same($image)); // Same cached instance
     });
 
     test('\$icon returns IconSpecAttribute instance', () {
       expect($icon, isA<IconSpecAttribute>());
-      expect($icon, same($icon));
+      expect($icon, same($icon)); // Same cached instance
     });
 
     test('\$text returns TextSpecAttribute instance', () {
       expect($text, isA<TextSpecAttribute>());
-      expect($text, same($text));
+      expect($text, same($text)); // Same cached instance
     });
 
     test('\$stack returns StackSpecAttribute instance', () {
       expect($stack, isA<StackSpecAttribute>());
-      expect($stack, same($stack));
+      expect($stack, same($stack)); // Same cached instance
     });
 
     test('\$on returns OnContextVariantUtility instance', () {
@@ -45,7 +45,7 @@ void main() {
   });
 
   group('MixUtilities', () {
-    const utilities = MixUtilities();
+    final utilities = MixUtilities();
 
     test('box getter returns BoxSpecAttribute instance', () {
       expect(utilities.box, isA<BoxSpecAttribute>());
@@ -81,10 +81,11 @@ void main() {
       expect(utilities.on, same(OnContextVariantUtility.self));
     });
 
-    test('const constructor works', () {
-      const instance1 = MixUtilities();
-      const instance2 = MixUtilities();
-      expect(instance1, same(instance2));
+    test('constructor works', () {
+      final instance1 = MixUtilities();
+      final instance2 = MixUtilities();
+      // Different instances should not be the same
+      expect(instance1, isNot(same(instance2)));
     });
   });
 
@@ -102,8 +103,8 @@ void main() {
     });
 
     test('global getters return new instances except for singletons', () {
-      const utilities1 = MixUtilities();
-      const utilities2 = MixUtilities();
+      final utilities1 = MixUtilities();
+      final utilities2 = MixUtilities();
 
       // Non-singleton getters return new instances
       expect(identical(utilities1.box, utilities2.box), isFalse);

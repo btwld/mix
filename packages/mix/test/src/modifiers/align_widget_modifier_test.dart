@@ -337,7 +337,7 @@ void main() {
         final attribute1 = AlignModifierAttribute.only(
           alignment: Alignment.center,
         );
-        expect(attribute1.alignment!, resolvesTo(Alignment.center));
+        expectProp(attribute1.alignment, Alignment.center);
         expect(attribute1.widthFactor, isNull);
         expect(attribute1.heightFactor, isNull);
 
@@ -356,23 +356,21 @@ void main() {
           heightFactor: 0.6,
         );
 
-        final resolved = attribute.resolve(MockBuildContext());
+        const expectedModifier = AlignModifier(
+          alignment: Alignment.topRight,
+          widthFactor: 0.4,
+          heightFactor: 0.6,
+        );
 
-        expect(resolved, isA<AlignModifier>());
-        expect(resolved.alignment, Alignment.topRight);
-        expect(resolved.widthFactor, 0.4);
-        expect(resolved.heightFactor, 0.6);
+        expect(attribute, resolvesTo(expectedModifier));
       });
 
       test('resolves with null values', () {
         final attribute = AlignModifierAttribute();
 
-        final resolved = attribute.resolve(MockBuildContext());
+        const expectedModifier = AlignModifier();
 
-        expect(resolved, isA<AlignModifier>());
-        expect(resolved.alignment, isNull);
-        expect(resolved.widthFactor, isNull);
-        expect(resolved.heightFactor, isNull);
+        expect(attribute, resolvesTo(expectedModifier));
       });
     });
 
@@ -412,7 +410,7 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expect(merged.alignment!, resolvesTo(Alignment.bottomRight));
+        expectProp(merged.alignment, Alignment.bottomRight);
         expect(merged.widthFactor, isNull);
         expect(merged.heightFactor, isNull);
       });
@@ -499,9 +497,9 @@ void main() {
 
       final result = base.merge(override1).merge(override2);
 
-      expect(result.alignment!, resolvesTo(Alignment.topLeft));
-      expect(result.widthFactor!, resolvesTo(0.8));
-      expect(result.heightFactor!, resolvesTo(0.9));
+      expectProp(result.alignment, Alignment.topLeft);
+      expectProp(result.widthFactor, 0.8);
+      expectProp(result.heightFactor, 0.9);
     });
 
     test('Lerp produces expected intermediate values', () {
