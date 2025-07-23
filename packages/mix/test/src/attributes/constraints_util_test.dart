@@ -23,10 +23,10 @@ void main() {
       expect(result.value, isA<Prop<Mix<BoxConstraints>>>());
 
       final mix = result.value.getMix() as BoxConstraintsMix;
-      expect(mix.minWidth, isProp(100.0));
-      expect(mix.maxWidth, isProp(200.0));
-      expect(mix.minHeight, isProp(50.0));
-      expect(mix.maxHeight, isProp(150.0));
+      expectProp(mix.minWidth, 100.0);
+      expectProp(mix.maxWidth, 200.0);
+      expectProp(mix.minHeight, 50.0);
+      expectProp(mix.maxHeight, 150.0);
     });
 
     group('individual constraint utilities', () {
@@ -35,7 +35,7 @@ void main() {
 
         expect(result, isA<UtilityTestAttribute>());
         final mix = result.value.getMix() as BoxConstraintsMix;
-        expect(mix.minWidth, isProp(100.0));
+        expectProp(mix.minWidth, 100.0);
         expect(mix.maxWidth, isNull);
         expect(mix.minHeight, isNull);
         expect(mix.maxHeight, isNull);
@@ -47,7 +47,7 @@ void main() {
         expect(result, isA<UtilityTestAttribute>());
         final mix = result.value.getMix() as BoxConstraintsMix;
         expect(mix.minWidth, isNull);
-        expect(mix.maxWidth, isProp(200.0));
+        expectProp(mix.maxWidth, 200.0);
         expect(mix.minHeight, isNull);
         expect(mix.maxHeight, isNull);
       });
@@ -59,7 +59,7 @@ void main() {
         final mix = result.value.getMix() as BoxConstraintsMix;
         expect(mix.minWidth, isNull);
         expect(mix.maxWidth, isNull);
-        expect(mix.minHeight, isProp(50.0));
+        expectProp(mix.minHeight, 50.0);
         expect(mix.maxHeight, isNull);
       });
 
@@ -71,7 +71,7 @@ void main() {
         expect(mix.minWidth, isNull);
         expect(mix.maxWidth, isNull);
         expect(mix.minHeight, isNull);
-        expect(mix.maxHeight, isProp(150.0));
+        expectProp(mix.maxHeight, 150.0);
       });
     });
 
@@ -123,10 +123,10 @@ void main() {
         final result = utility(BoxConstraintsMix.value(constraints));
         final mix = result.value.getMix() as BoxConstraintsMix;
 
-        expect(mix.minWidth, isProp(100.0));
-        expect(mix.maxWidth, isProp(100.0));
-        expect(mix.minHeight, isProp(100.0));
-        expect(mix.maxHeight, isProp(100.0));
+        expectProp(mix.minWidth, 100.0);
+        expectProp(mix.maxWidth, 100.0);
+        expectProp(mix.minHeight, 100.0);
+        expectProp(mix.maxHeight, 100.0);
       });
 
       test('creates loose constraints', () {
@@ -135,10 +135,10 @@ void main() {
         final result = utility(BoxConstraintsMix.value(constraints));
         final mix = result.value.getMix() as BoxConstraintsMix;
 
-        expect(mix.minWidth, isProp(0.0));
-        expect(mix.maxWidth, isProp(200.0));
-        expect(mix.minHeight, isProp(0.0));
-        expect(mix.maxHeight, isProp(150.0));
+        expectProp(mix.minWidth, 0.0);
+        expectProp(mix.maxWidth, 200.0);
+        expectProp(mix.minHeight, 0.0);
+        expectProp(mix.maxHeight, 150.0);
       });
 
       test('creates expand constraints', () {
@@ -147,10 +147,10 @@ void main() {
         final result = utility(BoxConstraintsMix.value(constraints));
         final mix = result.value.getMix() as BoxConstraintsMix;
 
-        expect(mix.minWidth, isProp(300.0));
-        expect(mix.maxWidth, isProp(300.0));
-        expect(mix.minHeight, isProp(400.0));
-        expect(mix.maxHeight, isProp(400.0));
+        expectProp(mix.minWidth, 300.0);
+        expectProp(mix.maxWidth, 300.0);
+        expectProp(mix.minHeight, 400.0);
+        expectProp(mix.maxHeight, 400.0);
       });
 
       test('handles infinity values', () {
@@ -164,10 +164,10 @@ void main() {
         final result = utility(BoxConstraintsMix.value(constraints));
         final mix = result.value.getMix() as BoxConstraintsMix;
 
-        expect(mix.minWidth, isProp(0.0));
-        expect(mix.maxWidth, isProp(double.infinity));
-        expect(mix.minHeight, isProp(0.0));
-        expect(mix.maxHeight, isProp(double.infinity));
+        expectProp(mix.minWidth, 0.0);
+        expectProp(mix.maxWidth, double.infinity);
+        expectProp(mix.minHeight, 0.0);
+        expectProp(mix.maxHeight, double.infinity);
       });
     });
 

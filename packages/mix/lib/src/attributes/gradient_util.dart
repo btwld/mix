@@ -46,7 +46,7 @@ final class LinearGradientUtility<T extends SpecStyle<Object?>>
     : super(convertToMix: LinearGradientMix.value);
 
   @override
-  T call(LinearGradientMix value) => builder(Prop(value));
+  T call(LinearGradientMix value) => builder(MixProp(value));
 }
 
 /// Utility class for configuring [RadialGradient] properties.
@@ -99,7 +99,7 @@ final class RadialGradientUtility<T extends SpecStyle<Object?>>
     : super(convertToMix: RadialGradientMix.value);
 
   @override
-  T call(RadialGradientMix value) => builder(Prop(value));
+  T call(RadialGradientMix value) => builder(MixProp(value));
 }
 
 /// Utility class for configuring [SweepGradient] properties.
@@ -147,7 +147,7 @@ final class SweepGradientUtility<T extends SpecStyle<Object?>>
     : super(convertToMix: SweepGradientMix.value);
 
   @override
-  T call(SweepGradientMix value) => builder(Prop(value));
+  T call(SweepGradientMix value) => builder(MixProp(value));
 }
 
 /// Utility class for working with gradients.
@@ -165,5 +165,5 @@ final class GradientUtility<T extends SpecStyle<Object?>>
   GradientUtility(super.builder) : super(convertToMix: GradientMix.value);
 
   @override
-  T call(GradientMix value) => builder(Prop(value));
+  T call(GradientMix value) => builder(MixProp(value));
 }

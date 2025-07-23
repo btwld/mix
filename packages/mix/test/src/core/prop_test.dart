@@ -4,769 +4,839 @@ import 'package:mix/mix.dart';
 
 import '../../helpers/testing_utils.dart';
 
+// Test directive that modifies values
+class _TestDirective<T> extends MixDirective<T> {
+  final T Function(T) transformer;
+  final String name;
+  
+  const _TestDirective(this.transformer, [this.name = 'test']);
+  
+  @override
+  T apply(T value) => transformer(value);
+  
+  @override
+  String get key => name;
+}
+
+// Test Mix type for testing MixProp
+class _TestMix extends Mix<int> {
+  final int value;
+  
+  const _TestMix(this.value);
+  
+  @override
+  _TestMix merge(covariant _TestMix? other) {
+    if (other == null) return this;
+    return _TestMix(value + other.value);
+  }
+  
+  @override
+  int resolve(BuildContext context) => value;
+  
+  @override
+  List<Object?> get props => [value];
+}
+
 void main() {
-  group('Prop Construction', () {
-    test('creates ValueSource for regular values', () {
-      final prop = Prop<int>(42);
-
-      expect(prop.source, isA<ValueSource<int>>());
-      expect((prop.source as ValueSource<int>).value, equals(42));
+  group('PropSource Types', () {
+    group('ValuePropSource', () {
+      test('stores and returns value', () {
+        const source = ValuePropSource<int>(42);
+        expect(source.value, equals(42));
+      });
+      
+      test('supports null values', () {
+        const source = ValuePropSource<int?>(null);
+        expect(source.value, isNull);
+      });
+      
+      test('toString returns correct format', () {
+        const source = ValuePropSource<String>('test');
+        expect(source.toString(), equals('ValuePropSource(test)'));
+      });
+      
+      test('equality and hashCode', () {
+        const source1 = ValuePropSource<int>(42);
+        const source2 = ValuePropSource<int>(42);
+        const source3 = ValuePropSource<int>(24);
+        
+        expect(source1, equals(source2));
+        expect(source1.hashCode, equals(source2.hashCode));
+        expect(source1, isNot(equals(source3)));
+      });
     });
-
-    test('creates ValueSource for Mix values', () {
-      final mixValue = MockMix<String>('mix1', 'value1');
-      final prop = Prop<MockMix<String>>(mixValue);
-
-      expect(prop.source, isA<ValueSource<MockMix<String>>>());
-      expect(
-        (prop.source as ValueSource<MockMix<String>>).value,
-        equals(mixValue),
-      );
+    
+    group('TokenPropSource', () {
+      test('stores token reference', () {
+        final token = MixToken<Color>('primary');
+        final source = TokenPropSource<Color>(token);
+        
+        expect(source.token, equals(token));
+      });
+      
+      test('toString returns correct format', () {
+        final token = MixToken<Color>('primary');
+        final source = TokenPropSource<Color>(token);
+        
+        expect(source.toString(), equals('TokenPropSource($token)'));
+      });
+      
+      test('equality and hashCode', () {
+        final token1 = MixToken<Color>('primary');
+        final token2 = MixToken<Color>('secondary');
+        
+        final source1 = TokenPropSource<Color>(token1);
+        final source2 = TokenPropSource<Color>(token1);
+        final source3 = TokenPropSource<Color>(token2);
+        
+        expect(source1, equals(source2));
+        expect(source1.hashCode, equals(source2.hashCode));
+        expect(source1, isNot(equals(source3)));
+      });
     });
-
-    test('creates TokenSource for tokens', () {
-      final token = MixToken<Color>('primary.color');
-      final prop = Prop<Color>.token(token);
-
-      expect(prop.source, isA<TokenSource<Color>>());
-      expect((prop.source as TokenSource<Color>).token, equals(token));
+    
+    group('MixPropValueSource', () {
+      test('stores Mix value', () {
+        const mixValue = _TestMix(42);
+        const source = MixPropValueSource<int>(mixValue);
+        
+        expect(source.value, equals(mixValue));
+      });
+      
+      test('toString returns correct format', () {
+        const mixValue = _TestMix(42);
+        const source = MixPropValueSource<int>(mixValue);
+        
+        expect(source.toString(), equals('MixPropValueSource($mixValue)'));
+      });
+      
+      test('equality and hashCode', () {
+        const source1 = MixPropValueSource<int>(_TestMix(42));
+        const source2 = MixPropValueSource<int>(_TestMix(42));
+        const source3 = MixPropValueSource<int>(_TestMix(24));
+        
+        expect(source1, equals(source2));
+        expect(source1.hashCode, equals(source2.hashCode));
+        expect(source1, isNot(equals(source3)));
+      });
     });
-
-    test('creates Prop with directives only', () {
-      final directive = MockMixDirective<int>('double', (v) => v * 2);
-      final prop = Prop<int>.directives([directive]);
-
-      expect(prop.source, isNull);
-      expect(prop.directives, equals([directive]));
+    
+    group('MixPropTokenSource', () {
+      test('stores token and converter', () {
+        final token = MixToken<int>('value');
+        _TestMix converter(int v) => _TestMix(v);
+        final source = MixPropTokenSource<int>(token, converter);
+        
+        expect(source.token, equals(token));
+        expect(source.convertToMix, equals(converter));
+      });
+      
+      test('toString returns correct format', () {
+        final token = MixToken<int>('value');
+        final source = MixPropTokenSource<int>(
+          token,
+          (v) => _TestMix(v),
+        );
+        
+        expect(source.toString(), equals('MixPropTokenSource($token)'));
+      });
+      
+      test('equality considers token and converter', () {
+        final token1 = MixToken<int>('value1');
+        final token2 = MixToken<int>('value2');
+        _TestMix converter(int v) => _TestMix(v);
+        
+        final source1 = MixPropTokenSource<int>(token1, converter);
+        final source2 = MixPropTokenSource<int>(token1, converter);
+        final source3 = MixPropTokenSource<int>(token2, converter);
+        
+        expect(source1, equals(source2));
+        expect(source1.hashCode, equals(source2.hashCode));
+        expect(source1, isNot(equals(source3)));
+      });
     });
-
-    test('creates Prop with animation only', () {
-      final animation = AnimationConfig.easeIn(200.ms);
-      final prop = Prop<Color>.animation(animation);
-
-      expect(prop.source, isNull);
-      expect(prop.animation, equals(animation));
-    });
-
-    test('maybe factory returns null for null value', () {
-      final prop = Prop.maybe(null);
-      expect(prop, isNull);
-    });
-
-    test('maybe factory returns Prop for non-null value', () {
-      final prop = Prop.maybe(42);
-      expect(prop, isNotNull);
-      expect((prop!.source as ValueSource<int>).value, equals(42));
-    });
-  });
-
-  group('Prop Merge - Regular Types', () {
-    test('ValueSource + ValueSource creates AccumulativePropSource', () {
-      final prop1 = Prop<int>(10);
-      final prop2 = Prop<int>(20);
-      final merged = prop1.merge(prop2);
-
-      expect(merged.source, isA<AccumulativePropSource<int>>());
-      final accumulative = merged.source as AccumulativePropSource<int>;
-      expect(accumulative.sources.length, equals(2));
-      expect(accumulative.sources[0], isA<ValueSource<int>>());
-      expect(accumulative.sources[1], isA<ValueSource<int>>());
-    });
-
-    test('TokenSource + TokenSource creates AccumulativePropSource', () {
-      final token1 = MixToken<Color>('primary');
-      final token2 = MixToken<Color>('secondary');
-      final prop1 = Prop<Color>.token(token1);
-      final prop2 = Prop<Color>.token(token2);
-      final merged = prop1.merge(prop2);
-
-      expect(merged.source, isA<AccumulativePropSource<Color>>());
-      final accumulative = merged.source as AccumulativePropSource<Color>;
-      expect(accumulative.sources.length, equals(2));
-      expect(
-        (accumulative.sources[0] as TokenSource<Color>).token,
-        equals(token1),
-      );
-      expect(
-        (accumulative.sources[1] as TokenSource<Color>).token,
-        equals(token2),
-      );
-    });
-
-    test('ValueSource + TokenSource creates AccumulativePropSource', () {
-      final prop1 = Prop<Color>(Color(0xFF0000FF));
-      final prop2 = Prop<Color>.token(MixToken<Color>('primary'));
-      final merged = prop1.merge(prop2);
-
-      expect(merged.source, isA<AccumulativePropSource<Color>>());
-      final accumulative = merged.source as AccumulativePropSource<Color>;
-      expect(accumulative.sources.length, equals(2));
-      expect(accumulative.sources[0], isA<ValueSource<Color>>());
-      expect(accumulative.sources[1], isA<TokenSource<Color>>());
-    });
-  });
-
-  group('Prop Merge - Mix Types', () {
-    test('Mix values merge into AccumulativePropSource', () {
-      final mix1 = MockMix<String>('mix1', 'value1');
-      final mix2 = MockMix<String>('mix2', 'value2');
-      final prop1 = Prop<MockMix<String>>(mix1);
-      final prop2 = Prop<MockMix<String>>(mix2);
-      final merged = prop1.merge(prop2);
-
-      expect(merged.source, isA<AccumulativePropSource<MockMix<String>>>());
-      final accumulative =
-          merged.source as AccumulativePropSource<MockMix<String>>;
-      expect(accumulative.sources.length, equals(2));
-      expect(accumulative.sources[0], isA<ValueSource<MockMix<String>>>());
-      expect(accumulative.sources[1], isA<ValueSource<MockMix<String>>>());
-    });
-
-    test('Mix token + Mix value creates AccumulativePropSource', () {
-      final mixValue = MockMix<String>('mix1', 'value1');
-      final mixToken = MixToken<MockMix<String>>('theme.mix');
-      final prop1 = Prop<MockMix<String>>(mixValue);
-      final prop2 = Prop<MockMix<String>>.token(mixToken);
-      final merged = prop1.merge(prop2);
-
-      expect(merged.source, isA<AccumulativePropSource<MockMix<String>>>());
-      final accumulative =
-          merged.source as AccumulativePropSource<MockMix<String>>;
-      expect(accumulative.sources.length, equals(2));
-      expect(accumulative.sources[0], isA<ValueSource<MockMix<String>>>());
-      expect(accumulative.sources[1], isA<TokenSource<MockMix<String>>>());
-    });
-
-    test('Mix values merge correctly when one is already merged', () {
-      final mix1 = MockMix<String>('A', 'value1');
-      final mix2 = MockMix<String>('B', 'value2');
-      final mix3 = MockMix<String>('C', 'value3');
-
-      final prop1 = Prop<MockMix<String>>(mix1);
-      final prop2 = Prop<MockMix<String>>(mix2);
-      final prop3 = Prop<MockMix<String>>(mix3);
-
-      final merged12 = prop1.merge(prop2);
-      final merged123 = merged12.merge(prop3);
-
-      expect(merged123.source, isA<AccumulativePropSource<MockMix<String>>>());
-      final accumulative =
-          merged123.source as AccumulativePropSource<MockMix<String>>;
-      expect(accumulative.sources.length, equals(3));
-    });
-
-    test('special Mix merge behavior in _mergePropSource', () {
-      final mix1 = MockMix<String>('A', 'value1');
-      final mix2 = MockMix<String>('B', 'value2');
-
-      final prop1 = Prop<MockMix<String>>(mix1);
-      final prop2 = Prop<MockMix<String>>(mix2);
-      final merged = prop1.merge(prop2);
-
-      // When both sources are ValueSource with Mix values,
-      // they should be merged directly in the source
-      expect(merged.source, isA<ValueSource<MockMix<String>>>());
-      final valueSource = merged.source as ValueSource<MockMix<String>>;
-      expect(valueSource.value.id, equals('A+B'));
+    
+    group('MixPropAccumulativeSource', () {
+      test('stores list of sources', () {
+        const sources = [
+          MixPropValueSource<int>(_TestMix(10)),
+          MixPropValueSource<int>(_TestMix(20)),
+        ];
+        const accSource = MixPropAccumulativeSource<int>(sources);
+        
+        expect(accSource.sources, equals(sources));
+      });
+      
+      test('toString shows source count', () {
+        const accSource = MixPropAccumulativeSource<int>([
+          MixPropValueSource<int>(_TestMix(10)),
+          MixPropValueSource<int>(_TestMix(20)),
+          MixPropValueSource<int>(_TestMix(30)),
+        ]);
+        
+        expect(accSource.toString(), equals('MixPropAccumulativeSource(3 sources)'));
+      });
+      
+      test('equality and hashCode', () {
+        const source1 = MixPropAccumulativeSource<int>([
+          MixPropValueSource<int>(_TestMix(10)),
+          MixPropValueSource<int>(_TestMix(20)),
+        ]);
+        const source2 = MixPropAccumulativeSource<int>([
+          MixPropValueSource<int>(_TestMix(10)),
+          MixPropValueSource<int>(_TestMix(20)),
+        ]);
+        const source3 = MixPropAccumulativeSource<int>([
+          MixPropValueSource<int>(_TestMix(30)),
+        ]);
+        
+        expect(source1, equals(source2));
+        expect(source1.hashCode, equals(source2.hashCode));
+        expect(source1, isNot(equals(source3)));
+      });
     });
   });
-
-  group('Prop Merge - Directives and Animation', () {
-    test('merges directives from both props', () {
-      final directive1 = MockMixDirective<int>('add10', (v) => v + 10);
-      final directive2 = MockMixDirective<int>('double', (v) => v * 2);
-
-      final prop1 = Prop<int>(5).merge(Prop.directives([directive1]));
-      final prop2 = Prop<int>(10).merge(Prop.directives([directive2]));
-      final merged = prop1.merge(prop2);
-
-      expect(merged.directives, equals([directive1, directive2]));
+  
+  group('Prop', () {
+    group('Construction', () {
+      test('value constructor creates ValuePropSource', () {
+        final prop = Prop(42);
+        
+        expect(prop.source, isA<ValuePropSource<int>>());
+        expect(prop.hasValue, isTrue);
+        expect(prop.hasToken, isFalse);
+        expect(prop.value, equals(42));
+      });
+      
+      test('token constructor creates TokenPropSource', () {
+        final token = MixToken<Color>('primary');
+        final prop = Prop.token(token);
+        
+        expect(prop.source, isA<TokenPropSource<Color>>());
+        expect(prop.hasValue, isFalse);
+        expect(prop.hasToken, isTrue);
+        expect(prop.token, equals(token));
+      });
+      
+      test('maybe returns null for null value', () {
+        final prop = Prop.maybe<int>(null);
+        expect(prop, isNull);
+      });
+      
+      test('maybe returns Prop for non-null value', () {
+        final prop = Prop.maybe<int>(42);
+        expect(prop, isNotNull);
+        expect(prop!.value, equals(42));
+      });
+      
+      test('supports directives', () {
+        final directive = _TestDirective<int>((v) => v * 2);
+        final prop = Prop(42, directives: [directive]);
+        
+        expect(prop.directives, equals([directive]));
+      });
+      
+      test('supports animation', () {
+        final animation = AnimationConfig.withDefaults();
+        final prop = Prop(42, animation: animation);
+        
+        expect(prop.animation, equals(animation));
+      });
+      
+      test('directives constructor creates prop with only directives', () {
+        final directive = _TestDirective<int>((v) => v * 2);
+        final prop = Prop<int>.directives([directive]);
+        
+        expect(prop.source, isNull);
+        expect(prop.directives, equals([directive]));
+        expect(prop.animation, isNull);
+      });
+      
+      test('animation constructor creates prop with only animation', () {
+        final animation = AnimationConfig.withDefaults();
+        final prop = Prop<int>.animation(animation);
+        
+        expect(prop.source, isNull);
+        expect(prop.directives, isNull);
+        expect(prop.animation, equals(animation));
+      });
     });
-
-    test('animation from other prop wins in merge', () {
-      final animation1 = createMockAnimation('fadeIn');
-      final animation2 = createMockAnimation('slideIn');
-
-      final prop1 = Prop<Color>(
-        Color(0xFF0000FF),
-      ).merge(Prop.animation(animation1));
-      final prop2 = Prop<Color>(
-        Color(0xFFFF0000),
-      ).merge(Prop.animation(animation2));
-      final merged = prop1.merge(prop2);
-
-      expect(merged.animation, equals(animation2));
+    
+    group('Getters', () {
+      test('value getter throws for non-value source', () {
+        final token = MixToken<Color>('primary');
+        final prop = Prop.token(token);
+        
+        expect(
+          () => prop.value,
+          throwsA(isA<FlutterError>()),
+        );
+      });
+      
+      test('token getter throws for non-token source', () {
+        final prop = Prop(42);
+        
+        expect(
+          () => prop.token,
+          throwsA(isA<FlutterError>()),
+        );
+      });
     });
-
-    test('preserves animation when other has none', () {
-      final animation = createMockAnimation('fadeIn');
-      final prop1 = Prop<Color>(
-        Color(0xFF0000FF),
-      ).merge(Prop.animation(animation));
-      final prop2 = Prop<Color>(Color(0xFFFF0000));
-      final merged = prop1.merge(prop2);
-
-      expect(merged.animation, equals(animation));
-    });
-  });
-
-  group('Prop Resolution - Regular Types', () {
-    testWidgets('resolves single ValueSource', (tester) async {
-      final prop = Prop<int>(42);
-
-      await tester.pumpWidget(
-        Builder(
-          builder: (context) {
-            final resolved = prop.resolve(context);
-            expect(resolved, equals(42));
-            return Container();
-          },
-        ),
-      );
-    });
-
-    testWidgets('resolves with replacement strategy for non-Mix types', (
-      tester,
-    ) async {
-      final prop1 = Prop<int>(10);
-      final prop2 = Prop<int>(20);
-      final prop3 = Prop<int>(30);
-      final merged = prop1.merge(prop2).merge(prop3);
-
-      await tester.pumpWidget(
-        Builder(
-          builder: (context) {
-            final resolved = merged.resolve(context);
-            expect(resolved, equals(30)); // Last value wins
-            return Container();
-          },
-        ),
-      );
-    });
-
-    testWidgets('resolves TokenSource with context', (tester) async {
-      final token = MixToken<Color>('primary.color');
-      final prop = Prop<Color>.token(token);
-
-      await tester.pumpWidget(
-        MockMixScope(
-          tokens: {token: Color(0xFF0000FF)},
-          child: Builder(
-            builder: (context) {
-              final resolved = prop.resolve(context);
-              expect(resolved, equals(Color(0xFF0000FF)));
-              return Container();
-            },
+    
+    group('Resolution', () {
+      test('resolves direct value', () {
+        final prop = Prop(42);
+        final context = MockBuildContext();
+        
+        expect(prop.resolve(context), equals(42));
+      });
+      
+      test('resolves token from context', () {
+        final token = MixToken<Color>('primary');
+        final prop = Prop.token(token);
+        final context = MockBuildContext(
+          mixScopeData: MixScopeData.static(
+            tokens: {token: Colors.blue},
           ),
-        ),
-      );
+        );
+        
+        expect(prop.resolve(context), equals(Colors.blue));
+      });
+      
+      test('throws when token not found', () {
+        final token = MixToken<Color>('primary');
+        final prop = Prop.token(token);
+        final context = MockBuildContext();
+        
+        expect(
+          () => prop.resolve(context),
+          throwsA(isA<FlutterError>()),
+        );
+      });
+      
+      test('throws when source is null', () {
+        const prop = Prop<int>.directives([]);
+        final context = MockBuildContext();
+        
+        expect(
+          () => prop.resolve(context),
+          throwsA(isA<FlutterError>()),
+        );
+      });
+      
+      test('applies directives in order', () {
+        final prop = Prop(
+          10,
+          directives: [
+            _TestDirective<int>((v) => v * 2),  // 20
+            _TestDirective<int>((v) => v + 5),  // 25
+          ],
+        );
+        final context = MockBuildContext();
+        
+        expect(prop.resolve(context), equals(25));
+      });
     });
-
-    testWidgets('throws when token not found in context', (tester) async {
-      final token = MixToken<Color>('missing.color');
-      final prop = Prop<Color>.token(token);
-
-      await tester.pumpWidget(
-        Builder(
-          builder: (context) {
-            expect(
-              () => prop.resolve(context),
-              throwsA(
-                isA<FlutterError>().having(
-                  (e) => e.message,
-                  'message',
-                  contains('Could not resolve token'),
-                ),
-              ),
-            );
-            return Container();
-          },
-        ),
-      );
+    
+    group('Merge behavior - replacement', () {
+      test('returns self when merging with null', () {
+        final prop = Prop(42);
+        expect(prop.merge(null), same(prop));
+      });
+      
+      test('other source replaces this source', () {
+        final prop1 = Prop(42);
+        final prop2 = Prop(24);
+        final merged = prop1.merge(prop2);
+        
+        expect(merged.value, equals(24));
+      });
+      
+      test('preserves source when other has null source', () {
+        final prop1 = Prop(42);
+        const prop2 = Prop<int>.directives([]);
+        final merged = prop1.merge(prop2);
+        
+        expect(merged.value, equals(42));
+      });
+      
+      test('merges directives - concatenates', () {
+        final directive1 = _TestDirective<int>((v) => v * 2);
+        final directive2 = _TestDirective<int>((v) => v + 10);
+        
+        final prop1 = Prop(10, directives: [directive1]);
+        final prop2 = Prop(20, directives: [directive2]);
+        final merged = prop1.merge(prop2);
+        
+        expect(merged.directives, equals([directive1, directive2]));
+        expect(merged.resolve(MockBuildContext()), equals(50)); // (20 * 2) + 10
+      });
+      
+      test('animation - other wins', () {
+        final animation1 = AnimationConfig.linear(Duration(seconds: 1));
+        final animation2 = AnimationConfig.ease(Duration(seconds: 2));
+        
+        final prop1 = Prop(42, animation: animation1);
+        final prop2 = Prop(24, animation: animation2);
+        final merged = prop1.merge(prop2);
+        
+        expect(merged.animation, equals(animation2));
+      });
+      
+      test('preserves animation when other has none', () {
+        final animation = AnimationConfig.linear(Duration(seconds: 1));
+        
+        final prop1 = Prop(42, animation: animation);
+        final prop2 = Prop(24);
+        final merged = prop1.merge(prop2);
+        
+        expect(merged.animation, equals(animation));
+      });
+    });
+    
+    group('toString', () {
+      test('shows source', () {
+        final prop = Prop(42);
+        expect(prop.toString(), contains('source: ValuePropSource(42)'));
+      });
+      
+      test('shows null source', () {
+        const prop = Prop<int>.directives([]);
+        expect(prop.toString(), contains('source: null'));
+      });
+      
+      test('shows directive count', () {
+        final prop = Prop(42, directives: [
+          _TestDirective<int>((v) => v),
+          _TestDirective<int>((v) => v),
+        ]);
+        expect(prop.toString(), contains('directives: 2'));
+      });
+      
+      test('shows animation', () {
+        final prop = Prop(42, animation: AnimationConfig.withDefaults());
+        expect(prop.toString(), contains('animated'));
+      });
+    });
+    
+    group('Equality', () {
+      test('equal props are equal', () {
+        final prop1 = Prop(42);
+        final prop2 = Prop(42);
+        
+        expect(prop1, equals(prop2));
+        expect(prop1.hashCode, equals(prop2.hashCode));
+      });
+      
+      test('different values are not equal', () {
+        final prop1 = Prop(42);
+        final prop2 = Prop(24);
+        
+        expect(prop1, isNot(equals(prop2)));
+      });
+      
+      test('considers directives', () {
+        final directive = _TestDirective<int>((v) => v * 2);
+        final prop1 = Prop(42);
+        final prop2 = Prop(42, directives: [directive]);
+        
+        expect(prop1, isNot(equals(prop2)));
+      });
+      
+      test('considers animation', () {
+        final animation = AnimationConfig.withDefaults();
+        final prop1 = Prop(42);
+        final prop2 = Prop(42, animation: animation);
+        
+        expect(prop1, isNot(equals(prop2)));
+      });
     });
   });
-
-  group('Prop Resolution - Mix Types', () {
-    testWidgets('resolves with accumulation strategy for Mix types', (
-      tester,
-    ) async {
-      final mix1 = MockMix<String>('A', 'value');
-      final mix2 = MockMix<String>('B', 'value');
-      final mix3 = MockMix<String>('C', 'value');
-
-      final prop1 = Prop<MockMix<String>>(mix1);
-      final prop2 = Prop<MockMix<String>>(mix2);
-      final prop3 = Prop<MockMix<String>>(mix3);
-      final merged = prop1.merge(prop2).merge(prop3);
-
-      await tester.pumpWidget(
-        Builder(
-          builder: (context) {
-            final resolved = merged.resolve(context);
-            expect(resolved.id, equals('A+B+C')); // Accumulated
-            return Container();
-          },
-        ),
-      );
+  
+  group('MixProp', () {
+    group('Construction', () {
+      test('value constructor creates MixPropValueSource', () {
+        const mixValue = _TestMix(42);
+        final prop = MixProp(mixValue);
+        
+        expect(prop.source, isA<MixPropValueSource<int>>());
+        expect(prop.hasValue, isTrue);
+        expect(prop.hasToken, isFalse);
+        expect(prop.value, equals(mixValue));
+      });
+      
+      test('token constructor creates MixPropTokenSource', () {
+        final token = MixToken<int>('value');
+        final prop = MixProp.token(token, (v) => _TestMix(v));
+        
+        expect(prop.source, isA<MixPropTokenSource<int>>());
+        expect(prop.hasValue, isFalse);
+        expect(prop.hasToken, isTrue);
+        expect(prop.token, equals(token));
+      });
+      
+      test('maybe returns null for null value', () {
+        final prop = MixProp.maybe<int>(null);
+        expect(prop, isNull);
+      });
+      
+      test('maybe returns MixProp for non-null value', () {
+        const mixValue = _TestMix(42);
+        final prop = MixProp.maybe<int>(mixValue);
+        expect(prop, isNotNull);
+        expect(prop!.value, equals(mixValue));
+      });
+      
+      test('supports directives', () {
+        final directive = _TestDirective<int>((v) => v * 2);
+        const mixValue = _TestMix(42);
+        final prop = MixProp(mixValue, directives: [directive]);
+        
+        expect(prop.directives, equals([directive]));
+      });
+      
+      test('supports animation', () {
+        final animation = AnimationConfig.withDefaults();
+        const mixValue = _TestMix(42);
+        final prop = MixProp(mixValue, animation: animation);
+        
+        expect(prop.animation, equals(animation));
+      });
+      
+      test('directives constructor creates prop with only directives', () {
+        final directive = _TestDirective<int>((v) => v * 2);
+        final prop = MixProp<int>.directives([directive]);
+        
+        expect(prop.source, isNull);
+        expect(prop.directives, equals([directive]));
+        expect(prop.animation, isNull);
+      });
+      
+      test('animation constructor creates prop with only animation', () {
+        final animation = AnimationConfig.withDefaults();
+        final prop = MixProp<int>.animation(animation);
+        
+        expect(prop.source, isNull);
+        expect(prop.directives, isNull);
+        expect(prop.animation, equals(animation));
+      });
     });
-
-    testWidgets('resolves Mix tokens with accumulation', (tester) async {
-      final mix1 = MockMix<String>('A', 'value1');
-      final mix2 = MockMix<String>('B', 'value2');
-      final token1 = MixToken<MockMix<String>>('mix1');
-      final token2 = MixToken<MockMix<String>>('mix2');
-
-      final prop1 = Prop<MockMix<String>>.token(token1);
-      final prop2 = Prop<MockMix<String>>.token(token2);
-      final merged = prop1.merge(prop2);
-
-      await tester.pumpWidget(
-        MockMixScope(
-          tokens: {token1: mix1, token2: mix2},
-          child: Builder(
-            builder: (context) {
-              final resolved = merged.resolve(context);
-              expect(resolved.id, equals('A+B'));
-              return Container();
-            },
+    
+    group('Getters', () {
+      test('value getter throws for non-value source', () {
+        final token = MixToken<int>('value');
+        final prop = MixProp.token(token, (v) => _TestMix(v));
+        
+        expect(
+          () => prop.value,
+          throwsA(isA<FlutterError>()),
+        );
+      });
+      
+      test('token getter throws for non-token source', () {
+        const mixValue = _TestMix(42);
+        final prop = MixProp(mixValue);
+        
+        expect(
+          () => prop.token,
+          throwsA(isA<FlutterError>()),
+        );
+      });
+    });
+    
+    group('Resolution', () {
+      test('resolves direct Mix value', () {
+        const mixValue = _TestMix(42);
+        final prop = MixProp(mixValue);
+        final context = MockBuildContext();
+        
+        expect(prop.resolve(context), equals(42)); // Mix resolves to int
+      });
+      
+      test('resolves token and converts to Mix', () {
+        final token = MixToken<int>('value');
+        final prop = MixProp.token(token, (v) => _TestMix(v * 2));
+        final context = MockBuildContext(
+          mixScopeData: MixScopeData.static(
+            tokens: {token: 10},
           ),
-        ),
-      );
-    });
-
-    testWidgets('resolves single Mix value correctly', (tester) async {
-      final mix = MockMix<String>('single', 'value');
-      final prop = Prop<MockMix<String>>(mix);
-
-      await tester.pumpWidget(
-        Builder(
-          builder: (context) {
-            final resolved = prop.resolve(context);
-            expect(resolved.id, equals('single'));
-            expect(resolved.value, equals('value'));
-            return Container();
-          },
-        ),
-      );
-    });
-
-    testWidgets('resolves Mix value + token correctly', (tester) async {
-      final mixValue = MockMix<String>('value', 'data');
-      final mixToken = MockMix<String>('token', 'data');
-      final token = MixToken<MockMix<String>>('test.mix');
-
-      final prop1 = Prop<MockMix<String>>(mixValue);
-      final prop2 = Prop<MockMix<String>>.token(token);
-      final merged = prop1.merge(prop2);
-
-      await tester.pumpWidget(
-        MockMixScope(
-          tokens: {token: mixToken},
-          child: Builder(
-            builder: (context) {
-              final resolved = merged.resolve(context);
-              expect(resolved.id, equals('value+token'));
-              return Container();
-            },
+        );
+        
+        expect(prop.resolve(context), equals(20)); // Token 10 * 2 = 20
+      });
+      
+      test('resolves accumulative source', () {
+        // Test accumulative source through actual merge operations
+        final prop1 = MixProp(_TestMix(10));
+        final prop2 = MixProp(_TestMix(20));
+        final prop3 = MixProp(_TestMix(30));
+        final merged = prop1.merge(prop2).merge(prop3);
+        final context = MockBuildContext();
+        
+        // Verify it creates an accumulative source internally
+        expect(merged.source, isA<MixPropAccumulativeSource<int>>());
+        expect(merged.resolve(context), equals(60)); // 10 + 20 + 30
+      });
+      
+      test('resolves accumulative with mixed sources', () {
+        final token = MixToken<int>('value');
+        // Test accumulative source through actual merge operations
+        final prop1 = MixProp(_TestMix(10));
+        final prop2 = MixProp.token(token, (v) => _TestMix(v));
+        final prop3 = MixProp(_TestMix(30));
+        final merged = prop1.merge(prop2).merge(prop3);
+        
+        final context = MockBuildContext(
+          mixScopeData: MixScopeData.static(
+            tokens: {token: 20},
           ),
-        ),
-      );
+        );
+        
+        expect(merged.resolve(context), equals(60)); // 10 + 20 + 30
+      });
+      
+      test('throws when source is null', () {
+        final prop = MixProp<int>._(source: null);
+        final context = MockBuildContext();
+        
+        expect(
+          () => prop.resolve(context),
+          throwsA(isA<FlutterError>()),
+        );
+      });
+      
+      test('applies directives in order', () {
+        const mixValue = _TestMix(10);
+        final prop = MixProp(
+          mixValue,
+          directives: [
+            _TestDirective<int>((v) => v * 2),  // 20
+            _TestDirective<int>((v) => v + 5),  // 25
+          ],
+        );
+        final context = MockBuildContext();
+        
+        expect(prop.resolve(context), equals(25));
+      });
+    });
+    
+    group('Merge behavior - accumulation', () {
+      test('returns self when merging with null', () {
+        const mixValue = _TestMix(42);
+        final prop = MixProp(mixValue);
+        expect(prop.merge(null), same(prop));
+      });
+      
+      test('optimizes two value sources by merging directly', () {
+        final prop1 = MixProp(_TestMix(10));
+        final prop2 = MixProp(_TestMix(20));
+        final merged = prop1.merge(prop2);
+        
+        expect(merged.source, isA<MixPropValueSource<int>>());
+        expect(merged.value, equals(_TestMix(30))); // 10 + 20
+      });
+      
+      test('creates accumulative source for different types', () {
+        final token = MixToken<int>('value');
+        final prop1 = MixProp(_TestMix(10));
+        final prop2 = MixProp.token(token, (v) => _TestMix(v));
+        final merged = prop1.merge(prop2);
+        
+        expect(merged.source, isA<MixPropAccumulativeSource<int>>());
+        final accSource = merged.source as MixPropAccumulativeSource<int>;
+        expect(accSource.sources.length, equals(2));
+      });
+      
+      test('flattens nested accumulative sources', () {
+        final prop1 = MixProp(_TestMix(10));
+        final prop2 = MixProp(_TestMix(20));
+        final prop3 = MixProp(_TestMix(30));
+        final prop4 = MixProp(_TestMix(40));
+        
+        final merged1 = prop1.merge(prop2); // Creates accumulative
+        final merged2 = prop3.merge(prop4); // Creates accumulative
+        final finalMerged = merged1.merge(merged2);
+        
+        expect(finalMerged.source, isA<MixPropAccumulativeSource<int>>());
+        
+        // Should flatten to 2 sources (each merged pair is optimized)
+        final accSource = finalMerged.source as MixPropAccumulativeSource<int>;
+        expect(accSource.sources.length, equals(2));
+        
+        final context = MockBuildContext();
+        expect(finalMerged.resolve(context), equals(100)); // 10+20+30+40
+      });
+      
+      test('merges directives - concatenates', () {
+        final directive1 = _TestDirective<int>((v) => v * 2);
+        final directive2 = _TestDirective<int>((v) => v + 10);
+        
+        final prop1 = MixProp(_TestMix(5), directives: [directive1]);
+        final prop2 = MixProp(_TestMix(10), directives: [directive2]);
+        final merged = prop1.merge(prop2);
+        
+        expect(merged.directives, equals([directive1, directive2]));
+        
+        final result = merged.resolve(MockBuildContext());
+        expect(result, equals(40)); // ((5 + 10) * 2) + 10
+      });
+      
+      test('animation - other wins', () {
+        final animation1 = AnimationConfig.linear(Duration(seconds: 1));
+        final animation2 = AnimationConfig.ease(Duration(seconds: 2));
+        
+        const mixValue = _TestMix(42);
+        final prop1 = MixProp(mixValue, animation: animation1);
+        final prop2 = MixProp(mixValue, animation: animation2);
+        final merged = prop1.merge(prop2);
+        
+        expect(merged.animation, equals(animation2));
+      });
+    });
+    
+    group('toString', () {
+      test('shows source', () {
+        const mixValue = _TestMix(42);
+        final prop = MixProp(mixValue);
+        expect(prop.toString(), contains('source: MixPropValueSource'));
+      });
+      
+      test('shows null source', () {
+        final prop = MixProp<int>._(source: null);
+        expect(prop.toString(), equals('MixProp()'));
+      });
+      
+      test('shows directive count', () {
+        const mixValue = _TestMix(42);
+        final prop = MixProp(mixValue, directives: [
+          _TestDirective<int>((v) => v),
+          _TestDirective<int>((v) => v),
+        ]);
+        expect(prop.toString(), contains('directives: 2'));
+      });
+      
+      test('shows animation', () {
+        const mixValue = _TestMix(42);
+        final prop = MixProp(mixValue, animation: AnimationConfig.withDefaults());
+        expect(prop.toString(), contains('animated'));
+      });
+    });
+    
+    group('Equality', () {
+      test('equal props are equal', () {
+        const mixValue = _TestMix(42);
+        final prop1 = MixProp(mixValue);
+        final prop2 = MixProp(mixValue);
+        
+        expect(prop1, equals(prop2));
+        expect(prop1.hashCode, equals(prop2.hashCode));
+      });
+      
+      test('different values are not equal', () {
+        final prop1 = MixProp(_TestMix(42));
+        final prop2 = MixProp(_TestMix(24));
+        
+        expect(prop1, isNot(equals(prop2)));
+      });
+      
+      test('considers directives', () {
+        final directive = _TestDirective<int>((v) => v * 2);
+        const mixValue = _TestMix(42);
+        final prop1 = MixProp(mixValue);
+        final prop2 = MixProp(mixValue, directives: [directive]);
+        
+        expect(prop1, isNot(equals(prop2)));
+      });
+      
+      test('considers animation', () {
+        final animation = AnimationConfig.withDefaults();
+        const mixValue = _TestMix(42);
+        final prop1 = MixProp(mixValue);
+        final prop2 = MixProp(mixValue, animation: animation);
+        
+        expect(prop1, isNot(equals(prop2)));
+      });
     });
   });
-
-  group('Prop Resolution - Directives', () {
-    testWidgets('applies single directive', (tester) async {
-      final directive = MockMixDirective<int>('double', (v) => v * 2);
-      final prop = Prop<int>(10).merge(Prop.directives([directive]));
-
-      await tester.pumpWidget(
-        Builder(
-          builder: (context) {
-            final resolved = prop.resolve(context);
-            expect(resolved, equals(20));
-            return Container();
-          },
-        ),
-      );
-    });
-
-    testWidgets('applies multiple directives in order', (tester) async {
-      final directive1 = MockMixDirective<int>('add5', (v) => v + 5);
-      final directive2 = MockMixDirective<int>('double', (v) => v * 2);
-      final directive3 = MockMixDirective<int>('subtract3', (v) => v - 3);
-
-      final prop = Prop<int>(
+  
+  group('Integration Tests', () {
+    test('complex merge scenario with directives and animations', () {
+      final animation1 = AnimationConfig.linear(Duration(seconds: 1));
+      final animation2 = AnimationConfig.ease(Duration(seconds: 2));
+      
+      final prop1 = Prop(
         10,
-      ).merge(Prop.directives([directive1, directive2, directive3]));
-
-      await tester.pumpWidget(
-        Builder(
-          builder: (context) {
-            final resolved = prop.resolve(context);
-            // 10 + 5 = 15, 15 * 2 = 30, 30 - 3 = 27
-            expect(resolved, equals(27));
-            return Container();
+        directives: [_TestDirective<int>((v) => v * 2)],
+        animation: animation1,
+      );
+      final prop2 = Prop(
+        20,
+        directives: [_TestDirective<int>((v) => v + 5)],
+      );
+      final prop3 = Prop(
+        30,
+        directives: [_TestDirective<int>((v) => v - 10)],
+        animation: animation2,
+      );
+      
+      final merged = prop1.merge(prop2).merge(prop3);
+      
+      expect(merged.value, equals(30)); // Last value wins
+      expect(merged.directives!.length, equals(3)); // All directives accumulated
+      expect(merged.animation, equals(animation2)); // Last animation wins
+      
+      final result = merged.resolve(MockBuildContext());
+      expect(result, equals(55)); // ((30 * 2) + 5) - 10
+    });
+    
+    test('deep MixProp accumulation with tokens', () {
+      final token1 = MixToken<int>('value1');
+      final token2 = MixToken<int>('value2');
+      
+      final prop1 = MixProp(_TestMix(10));
+      final prop2 = MixProp.token(token1, (v) => _TestMix(v));
+      final prop3 = MixProp(_TestMix(30));
+      final prop4 = MixProp.token(token2, (v) => _TestMix(v));
+      final prop5 = MixProp(_TestMix(50));
+      
+      final merged = prop1.merge(prop2).merge(prop3).merge(prop4).merge(prop5);
+      
+      final context = MockBuildContext(
+        mixScopeData: MixScopeData.static(
+          tokens: {
+            token1: 20,
+            token2: 40,
           },
         ),
       );
+      
+      final result = merged.resolve(context);
+      expect(result, equals(150)); // 10 + 20 + 30 + 40 + 50
     });
-
-    testWidgets('applies directives after resolution', (tester) async {
-      final token = MixToken<int>('value');
-      final directive = MockMixDirective<int>('triple', (v) => v * 3);
-
-      final prop = Prop<int>.token(token).merge(Prop.directives([directive]));
-
-      await tester.pumpWidget(
-        MockMixScope(
-          tokens: {token: 7},
-          child: Builder(
-            builder: (context) {
-              final resolved = prop.resolve(context);
-              expect(resolved, equals(21)); // 7 * 3
-              return Container();
-            },
-          ),
-        ),
-      );
-    });
-  });
-
-  group('Prop getValue and getToken Methods', () {
-    test('getValue returns value from ValueSource', () {
-      final prop = Prop<int>(42);
-      expect(prop.getValue(), equals(42));
-    });
-
-    test('getValue throws when no source exists', () {
-      final prop = Prop<int>.directives(const []);
+    
+    test('error propagation', () {
+      final token = MixToken<Color>('missing');
+      final prop = Prop.token(token);
+      final context = MockBuildContext();
+      
       expect(
-        () => prop.getValue(),
-        throwsA(
-          isA<FlutterError>().having(
-            (e) => e.message,
-            'message',
-            contains('No source exists to resolve'),
-          ),
-        ),
+        () => prop.resolve(context),
+        throwsA(isA<FlutterError>()),
       );
     });
-
-    test('getValue throws for TokenSource', () {
-      final token = MixToken<int>('test.value');
-      final prop = Prop<int>.token(token);
+    
+    test('directive error handling', () {
+      final errorDirective = _TestDirective<int>((value) {
+        throw Exception('Directive error');
+      });
+      
+      final prop = Prop(42, directives: [errorDirective]);
+      final context = MockBuildContext();
+      
       expect(
-        () => prop.getValue(),
-        throwsA(
-          isA<FlutterError>().having(
-            (e) => e.message,
-            'message',
-            contains('No valid source found'),
-          ),
-        ),
+        () => prop.resolve(context),
+        throwsException,
       );
-    });
-
-    test('getToken returns token from TokenSource', () {
-      final token = MixToken<Color>('primary.color');
-      final prop = Prop<Color>.token(token);
-      expect(prop.getToken(), equals(token));
-    });
-
-    test('getToken throws when no source exists', () {
-      final prop = Prop<Color>.directives(const []);
-      expect(
-        () => prop.getToken(),
-        throwsA(
-          isA<FlutterError>().having(
-            (e) => e.message,
-            'message',
-            contains('No source exists to resolve'),
-          ),
-        ),
-      );
-    });
-
-    test('getToken throws for ValueSource', () {
-      final prop = Prop<Color>(Colors.red);
-      expect(
-        () => prop.getToken(),
-        throwsA(
-          isA<FlutterError>().having(
-            (e) => e.message,
-            'message',
-            contains('is not a token source'),
-          ),
-        ),
-      );
-    });
-  });
-
-  group('Prop Error Cases', () {
-    testWidgets('throws when resolving without source', (tester) async {
-      final prop = Prop<int>.directives(const []);
-
-      await tester.pumpWidget(
-        Builder(
-          builder: (context) {
-            expect(
-              () => prop.resolve(context),
-              throwsA(
-                isA<FlutterError>().having(
-                  (e) => e.message,
-                  'message',
-                  contains('No source exists to resolve'),
-                ),
-              ),
-            );
-            return Container();
-          },
-        ),
-      );
-    });
-
-    test('AccumulativePropSource throws with empty sources', () {
-      final accumulative = AccumulativePropSource<int>(const []);
-
-      expect(
-        () => accumulative.resolve(FakeBuildContext()),
-        throwsA(
-          isA<StateError>().having(
-            (e) => e.message,
-            'message',
-            contains('no sources to resolve'),
-          ),
-        ),
-      );
-    });
-  });
-
-  group('AccumulativePropSource Behavior', () {
-    test('flattens nested AccumulativePropSource during construction', () {
-      final source1 = ValueSource<int>(1);
-      final source2 = ValueSource<int>(2);
-      final source3 = ValueSource<int>(3);
-
-      final nested = AccumulativePropSource<int>([source1, source2]);
-      final flattened = AccumulativePropSource<int>([nested, source3]);
-
-      expect(flattened.sources.length, equals(3));
-      expect(flattened.sources[0], equals(source1));
-      expect(flattened.sources[1], equals(source2));
-      expect(flattened.sources[2], equals(source3));
-    });
-
-    test('merge combines sources correctly', () {
-      final source1 = ValueSource<int>(1);
-      final source2 = ValueSource<int>(2);
-      final source3 = ValueSource<int>(3);
-      final source4 = ValueSource<int>(4);
-
-      final acc1 = AccumulativePropSource<int>([source1, source2]);
-      final acc2 = AccumulativePropSource<int>([source3, source4]);
-      final merged = acc1.merge(acc2);
-
-      expect(merged.sources.length, equals(4));
-      expect(merged.sources, equals([source1, source2, source3, source4]));
-    });
-
-    testWidgets('resolves single source directly', (tester) async {
-      final source = ValueSource<int>(42);
-      final accumulative = AccumulativePropSource<int>([source]);
-
-      await tester.pumpWidget(
-        Builder(
-          builder: (context) {
-            final resolved = accumulative.resolve(context);
-            expect(resolved, equals(42));
-            return Container();
-          },
-        ),
-      );
-    });
-
-    testWidgets('resolves non-Mix types with replacement strategy', (
-      tester,
-    ) async {
-      final source1 = ValueSource<int>(10);
-      final source2 = ValueSource<int>(20);
-      final source3 = ValueSource<int>(30);
-      final accumulative = AccumulativePropSource<int>([
-        source1,
-        source2,
-        source3,
-      ]);
-
-      await tester.pumpWidget(
-        Builder(
-          builder: (context) {
-            final resolved = accumulative.resolve(context);
-            expect(resolved, equals(30)); // Last value wins
-            return Container();
-          },
-        ),
-      );
-    });
-
-    testWidgets('resolves Mix types with accumulation strategy', (
-      tester,
-    ) async {
-      final mix1 = MockMix<String>('A', 'value1');
-      final mix2 = MockMix<String>('B', 'value2');
-      final mix3 = MockMix<String>('C', 'value3');
-
-      final source1 = ValueSource<MockMix<String>>(mix1);
-      final source2 = ValueSource<MockMix<String>>(mix2);
-      final source3 = ValueSource<MockMix<String>>(mix3);
-      final accumulative = AccumulativePropSource<MockMix<String>>([
-        source1,
-        source2,
-        source3,
-      ]);
-
-      await tester.pumpWidget(
-        Builder(
-          builder: (context) {
-            final resolved = accumulative.resolve(context);
-            expect(resolved.id, equals('A+B+C')); // Accumulated
-            return Container();
-          },
-        ),
-      );
-    });
-
-    testWidgets('resolves mixed ValueSource and TokenSource', (tester) async {
-      final mix1 = MockMix<String>('A', 'value1');
-      final mix2 = MockMix<String>('B', 'value2');
-      final token = MixToken<MockMix<String>>('test.mix');
-
-      final valueSource = ValueSource<MockMix<String>>(mix1);
-      final tokenSource = TokenSource<MockMix<String>>(token);
-      final accumulative = AccumulativePropSource<MockMix<String>>([
-        valueSource,
-        tokenSource,
-      ]);
-
-      await tester.pumpWidget(
-        MockMixScope(
-          tokens: {token: mix2},
-          child: Builder(
-            builder: (context) {
-              final resolved = accumulative.resolve(context);
-              expect(resolved.id, equals('A+B'));
-              return Container();
-            },
-          ),
-        ),
-      );
-    });
-  });
-
-  group('Prop Equality and HashCode', () {
-    test('Props with same values are equal', () {
-      final prop1 = Prop<int>(42);
-      final prop2 = Prop<int>(42);
-
-      expect(prop1, equals(prop2));
-      expect(prop1.hashCode, equals(prop2.hashCode));
-    });
-
-    test('Props with different values are not equal', () {
-      final prop1 = Prop<int>(42);
-      final prop2 = Prop<int>(43);
-
-      expect(prop1, isNot(equals(prop2)));
-    });
-
-    test('Props with same tokens are equal', () {
-      final token = MixToken<Color>('primary');
-      final prop1 = Prop<Color>.token(token);
-      final prop2 = Prop<Color>.token(token);
-
-      expect(prop1, equals(prop2));
-      expect(prop1.hashCode, equals(prop2.hashCode));
-    });
-
-    test('Props with same directives are equal', () {
-      final directive = MockMixDirective<int>('double', (v) => v * 2);
-      final prop1 = Prop<int>(10).merge(Prop.directives([directive]));
-      final prop2 = Prop<int>(10).merge(Prop.directives([directive]));
-
-      expect(prop1, equals(prop2));
-      expect(prop1.hashCode, equals(prop2.hashCode));
-    });
-
-    test('ValueSource equality', () {
-      final source1 = ValueSource<int>(42);
-      final source2 = ValueSource<int>(42);
-      final source3 = ValueSource<int>(43);
-
-      expect(source1, equals(source2));
-      expect(source1.hashCode, equals(source2.hashCode));
-      expect(source1, isNot(equals(source3)));
-    });
-
-    test('TokenSource equality', () {
-      final token1 = MixToken<Color>('primary');
-      final token2 = MixToken<Color>('primary');
-      final token3 = MixToken<Color>('secondary');
-
-      final source1 = TokenSource<Color>(token1);
-      final source2 = TokenSource<Color>(token2);
-      final source3 = TokenSource<Color>(token3);
-
-      expect(source1, equals(source2));
-      expect(source1.hashCode, equals(source2.hashCode));
-      expect(source1, isNot(equals(source3)));
-    });
-
-    test('AccumulativePropSource equality', () {
-      final value1 = ValueSource<int>(42);
-      final value2 = ValueSource<int>(42);
-      final token = TokenSource<int>(MixToken<int>('value'));
-
-      final acc1 = AccumulativePropSource<int>([value1, token]);
-      final acc2 = AccumulativePropSource<int>([value2, token]);
-      final acc3 = AccumulativePropSource<int>([token, value1]);
-
-      expect(acc1, equals(acc2));
-      expect(acc1.hashCode, equals(acc2.hashCode));
-      expect(acc1, isNot(equals(acc3))); // Order matters
-    });
-  });
-
-  group('Prop toString', () {
-    test('shows ValueSource', () {
-      final prop = Prop<int>(42);
-      expect(prop.toString(), contains('ValueSource(42)'));
-    });
-
-    test('shows TokenSource', () {
-      final token = MixToken<Color>('primary');
-      final prop = Prop<Color>.token(token);
-      expect(prop.toString(), contains('TokenSource'));
-    });
-
-    test('shows AccumulativePropSource with count', () {
-      final prop = Prop<int>(1).merge(Prop<int>(2)).merge(Prop<int>(3));
-      expect(prop.toString(), contains('AccumulativePropSource(3 sources)'));
-    });
-
-    test('shows directives count', () {
-      final prop = Prop<int>(42).merge(
-        Prop.directives([
-          MockMixDirective<int>('d1', (v) => v),
-          MockMixDirective<int>('d2', (v) => v),
-        ]),
-      );
-      expect(prop.toString(), contains('directives: 2'));
-    });
-
-    test('shows animated', () {
-      final prop = Prop<int>(
-        42,
-      ).merge(Prop.animation(createMockAnimation('fade')));
-      expect(prop.toString(), contains('animated'));
     });
   });
 }

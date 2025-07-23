@@ -22,9 +22,9 @@ void main() {
       expect(result.value, isA<Prop<Mix<BorderSide>>>());
 
       final mix = result.value.getMix() as BorderSideMix;
-      expect(mix.color, isProp(Colors.red));
-      expect(mix.width, isProp(2.0));
-      expect(mix.style, isProp(BorderStyle.solid));
+      expectProp(mix.color, Colors.red);
+      expectProp(mix.width, 2.0);
+      expectProp(mix.style, BorderStyle.solid);
     });
 
     test('none() creates BorderSideMix.none', () {
@@ -32,8 +32,8 @@ void main() {
       expect(result, isA<UtilityTestAttribute>());
 
       final mix = result.value.getMix() as BorderSideMix;
-      expect(mix.style, isProp(BorderStyle.none));
-      expect(mix.width, isProp(0.0));
+      expectProp(mix.style, BorderStyle.none);
+      expectProp(mix.width, 0.0);
     });
 
     test('only() creates BorderSideMix with specified properties', () {
@@ -47,10 +47,10 @@ void main() {
       expect(result, isA<UtilityTestAttribute>());
 
       final mix = result.value.getMix() as BorderSideMix;
-      expect(mix.color, isProp(Colors.blue));
-      expect(mix.width, isProp(3.0));
-      expect(mix.style, isProp(BorderStyle.solid));
-      expect(mix.strokeAlign, isProp(BorderSide.strokeAlignCenter));
+      expectProp(mix.color, Colors.blue);
+      expectProp(mix.width, 3.0);
+      expectProp(mix.style, BorderStyle.solid);
+      expectProp(mix.strokeAlign, BorderSide.strokeAlignCenter);
     });
 
     group('property utilities', () {
@@ -58,28 +58,28 @@ void main() {
         final result = utility.color(Colors.green);
 
         final mix = result.value.getMix() as BorderSideMix;
-        expect(mix.color, isProp(Colors.green));
+        expectProp(mix.color, Colors.green);
       });
 
       test('width utility creates BorderSideMix with width', () {
         final result = utility.width(4.0);
 
         final mix = result.value.getMix() as BorderSideMix;
-        expect(mix.width, isProp(4.0));
+        expectProp(mix.width, 4.0);
       });
 
       test('style utility creates BorderSideMix with style', () {
         final result = utility.style(BorderStyle.solid);
 
         final mix = result.value.getMix() as BorderSideMix;
-        expect(mix.style, isProp(BorderStyle.solid));
+        expectProp(mix.style, BorderStyle.solid);
       });
 
       test('strokeAlign utility creates BorderSideMix with strokeAlign', () {
         final result = utility.strokeAlign(BorderSide.strokeAlignInside);
 
         final mix = result.value.getMix() as BorderSideMix;
-        expect(mix.strokeAlign, isProp(BorderSide.strokeAlignInside));
+        expectProp(mix.strokeAlign, BorderSide.strokeAlignInside);
       });
     });
   });

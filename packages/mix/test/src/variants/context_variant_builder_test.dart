@@ -58,7 +58,7 @@ void main() {
 
         expect(builder.fn, isA<Function>());
         final result = builder.build(MockBuildContext());
-        expect(result.$width, hasValue(capturedWidth));
+        expect(result.$width, expectPropResolves(capturedWidth));
       });
     });
 
@@ -224,7 +224,7 @@ void main() {
 
         final result = builder.build(MockBuildContext());
 
-        expect(result.$width, hasValue(800.0));
+        expect(result.$width, expectPropResolves(800.0));
       });
 
       test('can create different attributes based on context', () {
@@ -239,7 +239,7 @@ void main() {
         final result = builder.build(smallContext);
 
         // MockBuildContext has size (800, 600) which is <= 1000
-        expect(result.$width, hasValue(100.0));
+        expect(result.$width, expectPropResolves(100.0));
       });
     });
 
@@ -333,7 +333,7 @@ void main() {
 
           final result = builder.build(MockBuildContext());
           // MockBuildContext has width 800, which falls in 768 < width <= 1024
-          expect(result.$width, hasValue(150.0));
+          expect(result.$width, expectPropResolves(150.0));
         },
       );
 
@@ -343,8 +343,8 @@ void main() {
         });
 
         final result = builder.build(MockBuildContext());
-        expect(result.$width, hasValue(100.0));
-        expect(result.$height, hasValue(200.0));
+        expect(result.$width, expectPropResolves(100.0));
+        expect(result.$height, expectPropResolves(200.0));
       });
 
       test('function can throw exceptions', () {
@@ -364,7 +364,7 @@ void main() {
         });
 
         final result = builder.build(MockBuildContext());
-        expect(result.$width, hasValue(150.0));
+        expect(result.$width, expectPropResolves(150.0));
       });
     });
 
@@ -523,7 +523,7 @@ void main() {
         });
 
         final result = responsiveBuilder.build(MockBuildContext());
-        expect(result.$width, hasValue(200.0)); // MockBuildContext width is 800
+        expect(result.$width, expectPropResolves(200.0)); // MockBuildContext width is 800
       });
 
       test('demonstrates theme-based styling pattern', () {
@@ -534,7 +534,7 @@ void main() {
         });
 
         final result = themeBuilder.build(MockBuildContext());
-        expect(result.$width, hasValue(120.0));
+        expect(result.$width, expectPropResolves(120.0));
       });
 
       test('demonstrates utility for conditional attribute creation', () {
@@ -548,8 +548,8 @@ void main() {
         });
 
         final result = conditionalBuilder.build(MockBuildContext());
-        expect(result.$width, hasValue(100.0));
-        expect(result.$height, hasValue(100.0));
+        expect(result.$width, expectPropResolves(100.0));
+        expect(result.$height, expectPropResolves(100.0));
       });
     });
   });

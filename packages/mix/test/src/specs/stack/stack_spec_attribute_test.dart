@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../../helpers/mock_utils.dart';
+import '../../../helpers/testing_utils.dart';
 
 void main() {
   group('StackSpecAttribute', () {
@@ -16,10 +16,10 @@ void main() {
           clipBehavior: Prop(Clip.antiAlias),
         );
 
-        expect(attribute.$alignment?.getValue(), Alignment.center);
-        expect(attribute.$fit?.getValue(), StackFit.expand);
-        expect(attribute.$textDirection?.getValue(), TextDirection.rtl);
-        expect(attribute.$clipBehavior?.getValue(), Clip.antiAlias);
+        expect(attribute.$alignment?, expectResolves(Alignment.center));
+        expect(attribute.$fit?, expectResolves(StackFit.expand));
+        expect(attribute.$textDirection?, expectResolves(TextDirection.rtl));
+        expect(attribute.$clipBehavior?, expectResolves(Clip.antiAlias));
       });
 
       test('creates StackSpecAttribute with default values', () {
@@ -39,8 +39,8 @@ void main() {
           fit: StackFit.expand,
         );
 
-        expect(attribute.$alignment?.getValue(), Alignment.center);
-        expect(attribute.$fit?.getValue(), StackFit.expand);
+        expect(attribute.$alignment?, expectResolves(Alignment.center));
+        expect(attribute.$fit?, expectResolves(StackFit.expand));
         expect(attribute.$textDirection, isNull);
         expect(attribute.$clipBehavior, isNull);
       });
@@ -66,17 +66,17 @@ void main() {
 
         final attribute = StackSpecAttribute.value(spec);
 
-        expect(attribute.$alignment?.getValue(), Alignment.center);
-        expect(attribute.$fit?.getValue(), StackFit.expand);
-        expect(attribute.$textDirection?.getValue(), TextDirection.rtl);
-        expect(attribute.$clipBehavior?.getValue(), Clip.antiAlias);
+        expect(attribute.$alignment?, expectResolves(Alignment.center));
+        expect(attribute.$fit?, expectResolves(StackFit.expand));
+        expect(attribute.$textDirection?, expectResolves(TextDirection.rtl));
+        expect(attribute.$clipBehavior?, expectResolves(Clip.antiAlias));
       });
 
       test('handles null properties in spec', () {
         const spec = StackSpec(alignment: Alignment.center);
         final attribute = StackSpecAttribute.value(spec);
 
-        expect(attribute.$alignment?.getValue(), Alignment.center);
+        expect(attribute.$alignment?, expectResolves(Alignment.center));
         expect(attribute.$fit, isNull);
         expect(attribute.$textDirection, isNull);
         expect(attribute.$clipBehavior, isNull);
@@ -92,8 +92,8 @@ void main() {
         final attribute = StackSpecAttribute.maybeValue(spec);
 
         expect(attribute, isNotNull);
-        expect(attribute!.$alignment?.getValue(), Alignment.center);
-        expect(attribute.$fit?.getValue(), StackFit.expand);
+        expect(attribute!.$alignment?, expectResolves(Alignment.center));
+        expect(attribute.$fit?, expectResolves(StackFit.expand));
       });
 
       test('returns null when spec is null', () {
@@ -111,7 +111,7 @@ void main() {
           clipBehavior: Clip.antiAlias,
         );
 
-        final context = SpecTestHelper.createMockContext();
+        final context = MockBuildContext();
         final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
@@ -123,7 +123,7 @@ void main() {
 
       test('resolves to StackSpec with null properties when not set', () {
         final attribute = StackSpecAttribute.only(alignment: Alignment.center);
-        final context = SpecTestHelper.createMockContext();
+        final context = MockBuildContext();
         final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
@@ -148,12 +148,11 @@ void main() {
 
         final merged = attr1.merge(attr2);
 
-        expect(merged.$alignment?.getValue(), Alignment.center); // from attr2
-        expect(merged.$fit?.getValue(), StackFit.loose); // from attr1
+        expect(merged.$alignment?, expectResolves(Alignment.center)); // from attr2
+        expect(merged.$fit?, expectResolves(StackFit.loose)); // from attr1
         expect(
-          merged.$textDirection?.getValue(),
-          TextDirection.rtl,
-        ); // from attr2
+          merged.$textDirection?, expectResolves(TextDirection.rtl,
+        )); // from attr2
         expect(merged.$clipBehavior, isNull);
       });
 
@@ -180,12 +179,11 @@ void main() {
 
         final merged = attr1.merge(attr2);
 
-        expect(merged.$alignment?.getValue(), Alignment.topLeft); // from attr1
-        expect(merged.$fit?.getValue(), StackFit.expand); // from attr2
+        expect(merged.$alignment?, expectResolves(Alignment.topLeft)); // from attr1
+        expect(merged.$fit?, expectResolves(StackFit.expand)); // from attr2
         expect(
-          merged.$clipBehavior?.getValue(),
-          Clip.antiAlias,
-        ); // from attr2 (takes precedence)
+          merged.$clipBehavior?, expectResolves(Clip.antiAlias,
+        )); // from attr2 (takes precedence)
       });
     });
 

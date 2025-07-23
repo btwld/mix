@@ -170,7 +170,7 @@ void main() {
         final attribute = RotatedBoxModifierAttribute.only(quarterTurns: 3);
 
         expect(attribute.quarterTurns, isNotNull);
-        expect(attribute.quarterTurns?.getValue(), 3);
+        expectProp(attribute.quarterTurns, 3);
       });
 
       test('handles null quarter turns', () {
@@ -207,7 +207,7 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expect(merged.quarterTurns?.getValue(), 3); // overridden
+        expectProp(merged.quarterTurns, [1, 3]); // accumulated
       });
 
       test('returns original when other is null', () {
@@ -224,7 +224,7 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expect(merged.quarterTurns?.getValue(), 1);
+        expect(merged.quarterTurns?, expectPropResolves(1));
       });
     });
 
@@ -270,14 +270,14 @@ void main() {
       final attribute = result.value;
 
       expect(attribute.quarterTurns, isNotNull);
-      expect(attribute.quarterTurns?.getValue(), 3);
+      expect(attribute.quarterTurns?, expectPropResolves(3));
     });
 
     test('d90() creates attribute with 1 quarter turn', () {
       final result = utility.d90();
       final attribute = result.value;
 
-      expect(attribute.quarterTurns?.getValue(), 1);
+      expect(attribute.quarterTurns?, expectPropResolves(1));
 
       // Verify it creates 90-degree rotation
       final resolved = attribute.resolve(MockBuildContext());
@@ -288,7 +288,7 @@ void main() {
       final result = utility.d180();
       final attribute = result.value;
 
-      expect(attribute.quarterTurns?.getValue(), 2);
+      expect(attribute.quarterTurns?, expectPropResolves(2));
 
       // Verify it creates 180-degree rotation
       final resolved = attribute.resolve(MockBuildContext());
@@ -299,7 +299,7 @@ void main() {
       final result = utility.d270();
       final attribute = result.value;
 
-      expect(attribute.quarterTurns?.getValue(), 3);
+      expect(attribute.quarterTurns?, expectPropResolves(3));
 
       // Verify it creates 270-degree rotation
       final resolved = attribute.resolve(MockBuildContext());
@@ -311,24 +311,21 @@ void main() {
       final call1Result = utility.call(1);
 
       expect(
-        d90Result.value.quarterTurns?.getValue(),
-        call1Result.value.quarterTurns?.getValue(),
+        d90Result.value.quarterTurns?, expectPropResolves(call1Result.value.quarterTurns?.getValue()),
       );
 
       final d180Result = utility.d180();
       final call2Result = utility.call(2);
 
       expect(
-        d180Result.value.quarterTurns?.getValue(),
-        call2Result.value.quarterTurns?.getValue(),
+        d180Result.value.quarterTurns?, expectPropResolves(call2Result.value.quarterTurns?.getValue()),
       );
 
       final d270Result = utility.d270();
       final call3Result = utility.call(3);
 
       expect(
-        d270Result.value.quarterTurns?.getValue(),
-        call3Result.value.quarterTurns?.getValue(),
+        d270Result.value.quarterTurns?, expectPropResolves(call3Result.value.quarterTurns?.getValue()),
       );
     });
   });
@@ -363,7 +360,7 @@ void main() {
 
       final result = base.merge(override1).merge(override2);
 
-      expect(result.quarterTurns?.getValue(), 3);
+      expect(result.quarterTurns?, expectPropResolves(3));
     });
 
     test('Lerp produces expected intermediate values', () {

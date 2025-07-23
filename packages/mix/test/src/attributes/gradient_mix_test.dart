@@ -16,15 +16,15 @@ void main() {
           stops: const [0.0, 1.0],
         );
 
-        expect(linearGradientMix.begin, isProp(Alignment.topLeft));
-        expect(linearGradientMix.end, isProp(Alignment.bottomRight));
-        expect(linearGradientMix.tileMode, isProp(TileMode.repeated));
+        expectProp(linearGradientMix.begin, Alignment.topLeft);
+        expectProp(linearGradientMix.end, Alignment.bottomRight);
+        expectProp(linearGradientMix.tileMode, TileMode.repeated);
         expect(linearGradientMix.colors, hasLength(2));
-        expect(linearGradientMix.colors![0], isProp(Colors.red));
-        expect(linearGradientMix.colors![1], isProp(Colors.blue));
+        expectProp(linearGradientMix.colors![0], Colors.red);
+        expectProp(linearGradientMix.colors![1], Colors.blue);
         expect(linearGradientMix.stops, hasLength(2));
-        expect(linearGradientMix.stops![0], isProp(0.0));
-        expect(linearGradientMix.stops![1], isProp(1.0));
+        expectProp(linearGradientMix.stops![0], 0.0);
+        expectProp(linearGradientMix.stops![1], 1.0);
       });
 
       test('value constructor extracts properties from LinearGradient', () {
@@ -38,15 +38,15 @@ void main() {
 
         final linearGradientMix = LinearGradientMix.value(linearGradient);
 
-        expect(linearGradientMix.begin, isProp(Alignment.topCenter));
-        expect(linearGradientMix.end, isProp(Alignment.bottomCenter));
-        expect(linearGradientMix.tileMode, isProp(TileMode.clamp));
+        expectProp(linearGradientMix.begin, Alignment.topCenter);
+        expectProp(linearGradientMix.end, Alignment.bottomCenter);
+        expectProp(linearGradientMix.tileMode, TileMode.clamp);
         expect(linearGradientMix.colors, hasLength(2));
-        expect(linearGradientMix.colors![0], isProp(Colors.green));
-        expect(linearGradientMix.colors![1], isProp(Colors.yellow));
+        expectProp(linearGradientMix.colors![0], Colors.green);
+        expectProp(linearGradientMix.colors![1], Colors.yellow);
         expect(linearGradientMix.stops, hasLength(2));
-        expect(linearGradientMix.stops![0], isProp(0.2));
-        expect(linearGradientMix.stops![1], isProp(0.8));
+        expectProp(linearGradientMix.stops![0], 0.2);
+        expectProp(linearGradientMix.stops![1], 0.8);
       });
 
       test('maybeValue returns null for null input', () {
@@ -122,9 +122,9 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.begin, isProp(Alignment.topLeft));
-        expect(merged.end, isProp(Alignment.bottomRight));
-        expect(merged.tileMode, isProp(TileMode.repeated));
+        expectProp(merged.begin, Alignment.topLeft);
+        expectProp(merged.end, Alignment.bottomRight);
+        expectProp(merged.tileMode, TileMode.repeated);
         expect(merged.colors, hasLength(4));
       });
     });
@@ -169,9 +169,9 @@ void main() {
           stops: const [0.0, 1.0],
         );
 
-        expect(radialGradientMix.center, isProp(Alignment.center));
-        expect(radialGradientMix.radius, isProp(0.5));
-        expect(radialGradientMix.tileMode, isProp(TileMode.mirror));
+        expectProp(radialGradientMix.center, Alignment.center);
+        expectProp(radialGradientMix.radius, 0.5);
+        expectProp(radialGradientMix.tileMode, TileMode.mirror);
         expect(radialGradientMix.colors, hasLength(2));
         expect(radialGradientMix.stops, hasLength(2));
       });
@@ -186,9 +186,9 @@ void main() {
 
         final radialGradientMix = RadialGradientMix.value(radialGradient);
 
-        expect(radialGradientMix.center, isProp(Alignment.topLeft));
-        expect(radialGradientMix.radius, isProp(0.8));
-        expect(radialGradientMix.tileMode, isProp(TileMode.repeated));
+        expectProp(radialGradientMix.center, Alignment.topLeft);
+        expectProp(radialGradientMix.radius, 0.8);
+        expectProp(radialGradientMix.tileMode, TileMode.repeated);
         expect(radialGradientMix.colors, hasLength(2));
       });
 
@@ -239,8 +239,8 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.center, isProp(Alignment.center));
-        expect(merged.radius, isProp(0.8));
+        expectProp(merged.center, Alignment.center);
+        expectProp(merged.radius, 0.8);
         expect(merged.colors, hasLength(4));
       });
     });
@@ -257,10 +257,10 @@ void main() {
           colors: const [Colors.red, Colors.blue],
         );
 
-        expect(sweepGradientMix.center, isProp(Alignment.center));
-        expect(sweepGradientMix.startAngle, isProp(0.0));
-        expect(sweepGradientMix.endAngle, isProp(3.14159));
-        expect(sweepGradientMix.tileMode, isProp(TileMode.mirror));
+        expectProp(sweepGradientMix.center, Alignment.center);
+        expectProp(sweepGradientMix.startAngle, 0.0);
+        expectProp(sweepGradientMix.endAngle, 3.14159);
+        expectProp(sweepGradientMix.tileMode, TileMode.mirror);
         expect(sweepGradientMix.colors, hasLength(2));
       });
 
@@ -274,9 +274,9 @@ void main() {
 
         final sweepGradientMix = SweepGradientMix.value(sweepGradient);
 
-        expect(sweepGradientMix.center, isProp(Alignment.topRight));
-        expect(sweepGradientMix.startAngle, isProp(1.0));
-        expect(sweepGradientMix.endAngle, isProp(2.0));
+        expectProp(sweepGradientMix.center, Alignment.topRight);
+        expectProp(sweepGradientMix.startAngle, 1.0);
+        expectProp(sweepGradientMix.endAngle, 2.0);
         expect(sweepGradientMix.colors, hasLength(2));
       });
 
@@ -328,9 +328,9 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.center, isProp(Alignment.center));
-        expect(merged.startAngle, isProp(0.0));
-        expect(merged.endAngle, isProp(3.14159));
+        expectProp(merged.center, Alignment.center);
+        expectProp(merged.startAngle, 0.0);
+        expectProp(merged.endAngle, 3.14159);
         expect(merged.colors, hasLength(4));
       });
     });

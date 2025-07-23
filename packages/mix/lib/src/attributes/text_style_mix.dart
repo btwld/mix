@@ -163,7 +163,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
       foreground: MixHelpers.resolve(context, foreground),
       background: MixHelpers.resolve(context, background),
       // Resolve lists using helpers
-      shadows: MixHelpers.resolveListMix(context, shadows),
+      shadows: MixHelpers.resolveList(context, shadows),
       fontFeatures: MixHelpers.resolveList(context, fontFeatures),
       fontVariations: MixHelpers.resolveList(context, fontVariations),
       decoration: MixHelpers.resolve(context, decoration),

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../../helpers/mock_utils.dart';
+import '../../../helpers/testing_utils.dart';
 
 void main() {
   group('StackBoxSpecAttribute', () {
@@ -22,10 +22,10 @@ void main() {
 
         expect(attribute.box, boxAttribute);
         expect(attribute.stack, stackAttribute);
-        expect(attribute.box!.$width?.getValue(), 200.0);
-        expect(attribute.box!.$height?.getValue(), 100.0);
-        expect(attribute.stack!.$alignment?.getValue(), Alignment.center);
-        expect(attribute.stack!.$fit?.getValue(), StackFit.expand);
+        expect(attribute.box!.$width?, expectPropResolves(200.0));
+        expect(attribute.box!.$height?, expectPropResolves(100.0));
+        expect(attribute.stack!.$alignment?, expectPropResolves(Alignment.center));
+        expect(attribute.stack!.$fit?, expectPropResolves(StackFit.expand));
       });
 
       test('creates StackBoxSpecAttribute with default values', () {
@@ -47,10 +47,10 @@ void main() {
 
         expect(attribute.box, isNotNull);
         expect(attribute.stack, isNotNull);
-        expect(attribute.box!.$width?.getValue(), 200.0);
-        expect(attribute.box!.$height?.getValue(), 100.0);
-        expect(attribute.stack!.$alignment?.getValue(), Alignment.center);
-        expect(attribute.stack!.$fit?.getValue(), StackFit.expand);
+        expect(attribute.box!.$width?, expectPropResolves(200.0));
+        expect(attribute.box!.$height?, expectPropResolves(100.0));
+        expect(attribute.stack!.$alignment?, expectPropResolves(Alignment.center));
+        expect(attribute.stack!.$fit?, expectPropResolves(StackFit.expand));
       });
 
       test('handles null properties in spec', () {
@@ -59,7 +59,7 @@ void main() {
 
         expect(attribute.box, isNotNull);
         expect(attribute.stack, isNotNull);
-        expect(attribute.box!.$width?.getValue(), 200.0);
+        expect(attribute.box!.$width?, expectPropResolves(200.0));
         expect(attribute.box!.$height, isNull);
         expect(attribute.stack!.$alignment, isNull);
         expect(attribute.stack!.$fit, isNull);
@@ -77,8 +77,8 @@ void main() {
         expect(attribute, isNotNull);
         expect(attribute!.box, isNotNull);
         expect(attribute.stack, isNotNull);
-        expect(attribute.box!.$width?.getValue(), 200.0);
-        expect(attribute.stack!.$alignment?.getValue(), Alignment.center);
+        expect(attribute.box!.$width?, expectPropResolves(200.0));
+        expect(attribute.stack!.$alignment?, expectPropResolves(Alignment.center));
       });
 
       test('returns null when spec is null', () {
@@ -105,7 +105,7 @@ void main() {
           stack: stackAttribute,
         );
 
-        final context = SpecTestHelper.createMockContext();
+        final context = MockBuildContext();
         final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
@@ -119,7 +119,7 @@ void main() {
 
       test('resolves to ZBoxSpec with null properties when not set', () {
         final attribute = StackBoxSpecAttribute();
-        final context = SpecTestHelper.createMockContext();
+        final context = MockBuildContext();
         final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
@@ -152,14 +152,13 @@ void main() {
 
         final merged = attr1.merge(attr2);
 
-        expect(merged.box!.$width?.getValue(), 200.0); // from attr2
-        expect(merged.box!.$height?.getValue(), 50.0); // from attr1
+        expect(merged.box!.$width?, expectPropResolves(200.0)); // from attr2
+        expect(merged.box!.$height?, expectPropResolves(50.0)); // from attr1
         expect(merged.box!.$padding, isNotNull); // from attr2
         expect(
-          merged.stack!.$alignment?.getValue(),
-          Alignment.topLeft,
-        ); // from attr1
-        expect(merged.stack!.$fit?.getValue(), StackFit.expand); // from attr2
+          merged.stack!.$alignment?, expectPropResolves(Alignment.topLeft,
+        )); // from attr1
+        expect(merged.stack!.$fit?, expectPropResolves(StackFit.expand)); // from attr2
       });
 
       test('returns original when merging with null', () {
@@ -185,13 +184,12 @@ void main() {
 
         final merged = attr1.merge(attr2);
 
-        expect(merged.box!.$width?.getValue(), 100.0); // from attr1
-        expect(merged.box!.$height?.getValue(), 200.0); // from attr2
+        expect(merged.box!.$width?, expectPropResolves(100.0)); // from attr1
+        expect(merged.box!.$height?, expectPropResolves(200.0)); // from attr2
         expect(
-          merged.stack!.$alignment?.getValue(),
-          Alignment.topLeft,
-        ); // from attr1
-        expect(merged.stack!.$fit?.getValue(), StackFit.expand); // from attr2
+          merged.stack!.$alignment?, expectPropResolves(Alignment.topLeft,
+        )); // from attr1
+        expect(merged.stack!.$fit?, expectPropResolves(StackFit.expand)); // from attr2
       });
 
       test('handles null attributes in merge', () {
@@ -205,8 +203,8 @@ void main() {
 
         final merged = attr1.merge(attr2);
 
-        expect(merged.box!.$width?.getValue(), 100.0); // from attr1
-        expect(merged.stack!.$fit?.getValue(), StackFit.expand); // from attr2
+        expect(merged.box!.$width?, expectPropResolves(100.0)); // from attr1
+        expect(merged.stack!.$fit?, expectPropResolves(StackFit.expand)); // from attr2
       });
     });
 
@@ -303,10 +301,10 @@ void main() {
           ),
         );
 
-        expect(overlayAttr.box!.$width?.getValue(), double.infinity);
-        expect(overlayAttr.box!.$height?.getValue(), double.infinity);
-        expect(overlayAttr.stack!.$alignment?.getValue(), Alignment.center);
-        expect(overlayAttr.stack!.$fit?.getValue(), StackFit.expand);
+        expect(overlayAttr.box!.$width?, expectPropResolves(double.infinity));
+        expect(overlayAttr.box!.$height?, expectPropResolves(double.infinity));
+        expect(overlayAttr.stack!.$alignment?, expectPropResolves(Alignment.center));
+        expect(overlayAttr.stack!.$fit?, expectPropResolves(StackFit.expand));
       });
 
       test('creates positioned card attribute', () {
@@ -319,11 +317,11 @@ void main() {
           ),
         );
 
-        expect(cardAttr.box!.$width?.getValue(), 300.0);
-        expect(cardAttr.box!.$height?.getValue(), 200.0);
-        expect(cardAttr.stack!.$alignment?.getValue(), Alignment.topLeft);
-        expect(cardAttr.stack!.$fit?.getValue(), StackFit.loose);
-        expect(cardAttr.stack!.$clipBehavior?.getValue(), Clip.antiAlias);
+        expect(cardAttr.box!.$width?, expectPropResolves(300.0));
+        expect(cardAttr.box!.$height?, expectPropResolves(200.0));
+        expect(cardAttr.stack!.$alignment?, expectPropResolves(Alignment.topLeft));
+        expect(cardAttr.stack!.$fit?, expectPropResolves(StackFit.loose));
+        expect(cardAttr.stack!.$clipBehavior?, expectPropResolves(Clip.antiAlias));
       });
 
       test('creates badge container attribute', () {
@@ -335,8 +333,8 @@ void main() {
         );
 
         expect(badgeAttr.box, isNull);
-        expect(badgeAttr.stack!.$alignment?.getValue(), Alignment.center);
-        expect(badgeAttr.stack!.$fit?.getValue(), StackFit.loose);
+        expect(badgeAttr.stack!.$alignment?, expectPropResolves(Alignment.center));
+        expect(badgeAttr.stack!.$fit?, expectPropResolves(StackFit.loose));
       });
     });
   });

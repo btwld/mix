@@ -96,7 +96,7 @@ void main() {
         const end = SizedBoxModifier(height: 200.0);
         final result = start.lerp(end, 0.5);
 
-        expect(result.width, 100.0);
+        expect(result.width, 50.0); // 100.0 to 0.0 at t=0.5
         expect(result.height, 100.0); // 0.0 to 200.0 at t=0.5
       });
 
@@ -222,8 +222,8 @@ void main() {
           height: 200.0,
         );
 
-        expect(attribute.width?.getValue(), 100.0);
-        expect(attribute.height?.getValue(), 200.0);
+        expect(attribute.width?, expectPropResolves(100.0));
+        expect(attribute.height?, expectPropResolves(200.0));
       });
 
       test('handles null values correctly', () {
@@ -235,12 +235,12 @@ void main() {
 
       test('handles partial values', () {
         final attribute1 = SizedBoxModifierAttribute.only(width: 100.0);
-        expect(attribute1.width?.getValue(), 100.0);
+        expect(attribute1.width?, expectPropResolves(100.0));
         expect(attribute1.height, isNull);
 
         final attribute2 = SizedBoxModifierAttribute.only(height: 200.0);
         expect(attribute2.width, isNull);
-        expect(attribute2.height?.getValue(), 200.0);
+        expect(attribute2.height?, expectPropResolves(200.0));
       });
     });
 
@@ -282,8 +282,8 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expect(merged.width?.getValue(), 200.0); // overridden
-        expect(merged.height?.getValue(), 200.0); // overridden
+        expect(merged.width?, expectPropResolves(200.0)); // overridden
+        expect(merged.height?, expectPropResolves(200.0)); // overridden
       });
 
       test('returns original when other is null', () {
@@ -303,8 +303,8 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expect(merged.width?.getValue(), 100.0);
-        expect(merged.height?.getValue(), 200.0);
+        expect(merged.width?, expectPropResolves(100.0));
+        expect(merged.height?, expectPropResolves(200.0));
       });
     });
 
@@ -372,8 +372,8 @@ void main() {
 
       final result = base.merge(override1).merge(override2);
 
-      expect(result.width?.getValue(), 200.0);
-      expect(result.height?.getValue(), 300.0);
+      expect(result.width?, expectPropResolves(200.0));
+      expect(result.height?, expectPropResolves(300.0));
     });
 
     test('Lerp produces expected intermediate values', () {

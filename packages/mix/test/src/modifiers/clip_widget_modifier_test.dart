@@ -220,8 +220,8 @@ void main() {
           clipBehavior: clipBehavior,
         );
 
-        expect(attribute.clipper?.getValue(), clipper);
-        expect(attribute.clipBehavior?.getValue(), clipBehavior);
+        expectProp(attribute.clipper, clipper);
+        expectProp(attribute.clipBehavior, clipBehavior);
       });
 
       test('handles null values correctly', () {
@@ -233,14 +233,14 @@ void main() {
 
       test('handles partial values', () {
         final attribute1 = ClipPathModifierAttribute.only(clipper: clipper);
-        expect(attribute1.clipper?.getValue(), clipper);
+        expectProp(attribute1.clipper, clipper);
         expect(attribute1.clipBehavior, isNull);
 
         final attribute2 = ClipPathModifierAttribute.only(
           clipBehavior: clipBehavior,
         );
         expect(attribute2.clipper, isNull);
-        expect(attribute2.clipBehavior?.getValue(), clipBehavior);
+        expectProp(attribute2.clipBehavior, clipBehavior);
       });
     });
 
@@ -282,8 +282,8 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expect(merged.clipper?.getValue(), clipper2); // overridden
-        expect(merged.clipBehavior?.getValue(), clipBehavior2); // overridden
+        expectProp(merged.clipper, clipper2); // overridden
+        expectProp(merged.clipBehavior, clipBehavior2); // overridden
       });
 
       test('returns original when other is null', () {
@@ -303,8 +303,8 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expect(merged.clipper?.getValue(), clipper);
-        expect(merged.clipBehavior?.getValue(), clipBehavior);
+        expectProp(merged.clipper, clipper);
+        expectProp(merged.clipBehavior, clipBehavior);
       });
     });
 
@@ -432,7 +432,7 @@ void main() {
           clipBehavior: clipBehavior,
         );
 
-        expect(attribute.clipBehavior?.getValue(), clipBehavior);
+        expectProp(attribute.clipBehavior, clipBehavior);
       });
 
       test('handles null values correctly', () {
@@ -466,7 +466,7 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expect(merged.clipBehavior?.getValue(), clipBehavior2);
+        expectProp(merged.clipBehavior, clipBehavior2);
       });
 
       test('returns original when other is null', () {
@@ -543,8 +543,8 @@ void main() {
 
       final result = base.merge(override1).merge(override2);
 
-      expect(result.clipper?.getValue(), clipper3);
-      expect(result.clipBehavior?.getValue(), Clip.antiAliasWithSaveLayer);
+      expectProp(result.clipper, clipper3);
+      expectProp(result.clipBehavior, Clip.antiAliasWithSaveLayer);
     });
 
     test('Lerp produces expected values', () {

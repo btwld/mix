@@ -15,12 +15,11 @@ void main() {
           bottomRight: const Radius.circular(20.0),
         );
 
-        expect(borderRadiusMix.topLeft, isProp(const Radius.circular(8.0)));
-        expect(borderRadiusMix.topRight, isProp(const Radius.circular(12.0)));
-        expect(borderRadiusMix.bottomLeft, isProp(const Radius.circular(16.0)));
-        expect(
-          borderRadiusMix.bottomRight,
-          isProp(const Radius.circular(20.0)),
+        expectProp(borderRadiusMix.topLeft, const Radius.circular(8.0));
+        expectProp(borderRadiusMix.topRight, const Radius.circular(12.0));
+        expectProp(borderRadiusMix.bottomLeft, const Radius.circular(16.0));
+        expectProp(
+          borderRadiusMix.bottomRight, const Radius.circular(20.0),
         );
       });
 
@@ -34,12 +33,11 @@ void main() {
 
         final borderRadiusMix = BorderRadiusMix.value(borderRadius);
 
-        expect(borderRadiusMix.topLeft, isProp(const Radius.circular(5.0)));
-        expect(borderRadiusMix.topRight, isProp(const Radius.circular(10.0)));
-        expect(borderRadiusMix.bottomLeft, isProp(const Radius.circular(15.0)));
-        expect(
-          borderRadiusMix.bottomRight,
-          isProp(const Radius.circular(20.0)),
+        expectProp(borderRadiusMix.topLeft, const Radius.circular(5.0));
+        expectProp(borderRadiusMix.topRight, const Radius.circular(10.0));
+        expectProp(borderRadiusMix.bottomLeft, const Radius.circular(15.0));
+        expectProp(
+          borderRadiusMix.bottomRight, const Radius.circular(20.0),
         );
       });
 
@@ -53,7 +51,7 @@ void main() {
         final result = BorderRadiusMix.maybeValue(borderRadius);
 
         expect(result, isNotNull);
-        expect(result!.topLeft, isProp(const Radius.circular(8.0)));
+        expectProp(result!.topLeft, const Radius.circular(8.0));
       });
     });
 
@@ -113,9 +111,9 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.topLeft, isProp(const Radius.circular(8.0)));
-        expect(merged.topRight, isProp(const Radius.circular(16.0)));
-        expect(merged.bottomLeft, isProp(const Radius.circular(20.0)));
+        expectProp(merged.topLeft, const Radius.circular(8.0));
+        expectProp(merged.topRight, const Radius.circular(16.0));
+        expectProp(merged.bottomLeft, const Radius.circular(20.0));
         expect(merged.bottomRight, isNull);
       });
     });
@@ -159,21 +157,17 @@ void main() {
           bottomEnd: const Radius.circular(20.0),
         );
 
-        expect(
-          borderRadiusDirectionalMix.topStart,
-          isProp(const Radius.circular(8.0)),
+        expectProp(
+          borderRadiusDirectionalMix.topStart, const Radius.circular(8.0),
         );
-        expect(
-          borderRadiusDirectionalMix.topEnd,
-          isProp(const Radius.circular(12.0)),
+        expectProp(
+          borderRadiusDirectionalMix.topEnd, const Radius.circular(12.0),
         );
-        expect(
-          borderRadiusDirectionalMix.bottomStart,
-          isProp(const Radius.circular(16.0)),
+        expectProp(
+          borderRadiusDirectionalMix.bottomStart, const Radius.circular(16.0),
         );
-        expect(
-          borderRadiusDirectionalMix.bottomEnd,
-          isProp(const Radius.circular(20.0)),
+        expectProp(
+          borderRadiusDirectionalMix.bottomEnd, const Radius.circular(20.0),
         );
       });
 
@@ -191,21 +185,17 @@ void main() {
             borderRadius,
           );
 
-          expect(
-            borderRadiusDirectionalMix.topStart,
-            isProp(const Radius.circular(5.0)),
+          expectProp(
+            borderRadiusDirectionalMix.topStart, const Radius.circular(5.0),
           );
-          expect(
-            borderRadiusDirectionalMix.topEnd,
-            isProp(const Radius.circular(10.0)),
+          expectProp(
+            borderRadiusDirectionalMix.topEnd, const Radius.circular(10.0),
           );
-          expect(
-            borderRadiusDirectionalMix.bottomStart,
-            isProp(const Radius.circular(15.0)),
+          expectProp(
+            borderRadiusDirectionalMix.bottomStart, const Radius.circular(15.0),
           );
-          expect(
-            borderRadiusDirectionalMix.bottomEnd,
-            isProp(const Radius.circular(20.0)),
+          expectProp(
+            borderRadiusDirectionalMix.bottomEnd, const Radius.circular(20.0),
           );
         },
       );
@@ -222,7 +212,7 @@ void main() {
           final result = BorderRadiusDirectionalMix.maybeValue(borderRadius);
 
           expect(result, isNotNull);
-          expect(result!.topStart, isProp(const Radius.circular(8.0)));
+          expectProp(result!.topStart, const Radius.circular(8.0));
         },
       );
     });
@@ -269,9 +259,9 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.topStart, isProp(const Radius.circular(8.0)));
-        expect(merged.topEnd, isProp(const Radius.circular(16.0)));
-        expect(merged.bottomStart, isProp(const Radius.circular(20.0)));
+        expectProp(merged.topStart, const Radius.circular(8.0));
+        expectProp(merged.topEnd, const Radius.circular(16.0));
+        expectProp(merged.bottomStart, const Radius.circular(20.0));
         expect(merged.bottomEnd, isNull);
       });
     });

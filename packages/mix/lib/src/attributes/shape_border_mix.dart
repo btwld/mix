@@ -76,7 +76,10 @@ final class RoundedRectangleBorderMix
   RoundedRectangleBorderMix.only({
     BorderRadiusGeometryMix? borderRadius,
     BorderSideMix? side,
-  }) : this(borderRadius: Prop.maybe(borderRadius), side: Prop.maybe(side));
+  }) : this(
+         borderRadius: MixProp.maybe(borderRadius),
+         side: MixProp.maybe(side),
+       );
   const RoundedRectangleBorderMix({this.borderRadius, super.side});
 
   RoundedRectangleBorderMix.value(RoundedRectangleBorder border)
@@ -92,9 +95,9 @@ final class RoundedRectangleBorderMix
   @override
   RoundedRectangleBorder resolve(BuildContext context) {
     return RoundedRectangleBorder(
-      side: MixHelpers.resolveMix(context, side) ?? BorderSide.none,
+      side: MixHelpers.resolve(context, side) ?? BorderSide.none,
       borderRadius:
-          MixHelpers.resolveMix(context, borderRadius) ?? BorderRadius.zero,
+          MixHelpers.resolve(context, borderRadius) ?? BorderRadius.zero,
     );
   }
 
@@ -126,7 +129,10 @@ final class BeveledRectangleBorderMix
   BeveledRectangleBorderMix.only({
     BorderRadiusGeometryMix? borderRadius,
     BorderSideMix? side,
-  }) : this(borderRadius: Prop.maybe(borderRadius), side: Prop.maybe(side));
+  }) : this(
+         borderRadius: MixProp.maybe(borderRadius),
+         side: MixProp.maybe(side),
+       );
 
   const BeveledRectangleBorderMix({this.borderRadius, super.side});
 
@@ -143,9 +149,9 @@ final class BeveledRectangleBorderMix
   @override
   BeveledRectangleBorder resolve(BuildContext context) {
     return BeveledRectangleBorder(
-      side: MixHelpers.resolveMix(context, side) ?? BorderSide.none,
+      side: MixHelpers.resolve(context, side) ?? BorderSide.none,
       borderRadius:
-          MixHelpers.resolveMix(context, borderRadius) ?? BorderRadius.zero,
+          MixHelpers.resolve(context, borderRadius) ?? BorderRadius.zero,
     );
   }
 
@@ -177,7 +183,10 @@ final class ContinuousRectangleBorderMix
   ContinuousRectangleBorderMix.only({
     BorderRadiusGeometryMix? borderRadius,
     BorderSideMix? side,
-  }) : this(borderRadius: Prop.maybe(borderRadius), side: Prop.maybe(side));
+  }) : this(
+         borderRadius: MixProp.maybe(borderRadius),
+         side: MixProp.maybe(side),
+       );
 
   const ContinuousRectangleBorderMix({this.borderRadius, super.side});
 
@@ -196,9 +205,9 @@ final class ContinuousRectangleBorderMix
   @override
   ContinuousRectangleBorder resolve(BuildContext context) {
     return ContinuousRectangleBorder(
-      side: MixHelpers.resolveMix(context, side) ?? BorderSide.none,
+      side: MixHelpers.resolve(context, side) ?? BorderSide.none,
       borderRadius:
-          MixHelpers.resolveMix(context, borderRadius) ?? BorderRadius.zero,
+          MixHelpers.resolve(context, borderRadius) ?? BorderRadius.zero,
     );
   }
 
@@ -229,7 +238,7 @@ final class CircleBorderMix extends OutlinedBorderMix<CircleBorder> {
   final Prop<double>? eccentricity;
 
   CircleBorderMix.only({BorderSideMix? side, double? eccentricity})
-    : this(side: Prop.maybe(side), eccentricity: Prop.maybe(eccentricity));
+    : this(side: MixProp.maybe(side), eccentricity: Prop.maybe(eccentricity));
 
   const CircleBorderMix({super.side, this.eccentricity});
 
@@ -246,7 +255,7 @@ final class CircleBorderMix extends OutlinedBorderMix<CircleBorder> {
   @override
   CircleBorder resolve(BuildContext context) {
     return CircleBorder(
-      side: MixHelpers.resolveMix(context, side) ?? BorderSide.none,
+      side: MixHelpers.resolve(context, side) ?? BorderSide.none,
       eccentricity: MixHelpers.resolve(context, eccentricity) ?? 0.0,
     );
   }
@@ -289,7 +298,7 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
     double? rotation,
     double? squash,
   }) : this(
-         side: Prop.maybe(side),
+         side: MixProp.maybe(side),
          points: Prop.maybe(points),
          innerRadiusRatio: Prop.maybe(innerRadiusRatio),
          pointRounding: Prop.maybe(pointRounding),
@@ -326,7 +335,7 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
   @override
   StarBorder resolve(BuildContext context) {
     return StarBorder(
-      side: MixHelpers.resolveMix(context, side) ?? BorderSide.none,
+      side: MixHelpers.resolve(context, side) ?? BorderSide.none,
       points: MixHelpers.resolve(context, points) ?? 5,
       innerRadiusRatio: MixHelpers.resolve(context, innerRadiusRatio) ?? 0.4,
       pointRounding: MixHelpers.resolve(context, pointRounding) ?? 0,
@@ -393,11 +402,11 @@ final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
     LinearBorderEdgeMix? top,
     LinearBorderEdgeMix? bottom,
   }) : this(
-         side: Prop.maybe(side),
-         start: Prop.maybe(start),
-         end: Prop.maybe(end),
-         top: Prop.maybe(top),
-         bottom: Prop.maybe(bottom),
+         side: MixProp.maybe(side),
+         start: MixProp.maybe(start),
+         end: MixProp.maybe(end),
+         top: MixProp.maybe(top),
+         bottom: MixProp.maybe(bottom),
        );
   const LinearBorderMix({
     super.side,
@@ -423,11 +432,11 @@ final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
   @override
   LinearBorder resolve(BuildContext context) {
     return LinearBorder(
-      side: MixHelpers.resolveMix(context, side) ?? BorderSide.none,
-      start: MixHelpers.resolveMix(context, start),
-      end: MixHelpers.resolveMix(context, end),
-      top: MixHelpers.resolveMix(context, top),
-      bottom: MixHelpers.resolveMix(context, bottom),
+      side: MixHelpers.resolve(context, side) ?? BorderSide.none,
+      start: MixHelpers.resolve(context, start),
+      end: MixHelpers.resolve(context, end),
+      top: MixHelpers.resolve(context, top),
+      bottom: MixHelpers.resolve(context, bottom),
     );
   }
 
@@ -506,7 +515,8 @@ final class LinearBorderEdgeMix extends Mix<LinearBorderEdge> {
 }
 
 final class StadiumBorderMix extends OutlinedBorderMix<StadiumBorder> {
-  StadiumBorderMix.only({BorderSideMix? side}) : this(side: Prop.maybe(side));
+  StadiumBorderMix.only({BorderSideMix? side})
+    : this(side: MixProp.maybe(side));
 
   const StadiumBorderMix({super.side});
 
@@ -520,7 +530,7 @@ final class StadiumBorderMix extends OutlinedBorderMix<StadiumBorder> {
   @override
   StadiumBorder resolve(BuildContext context) {
     return StadiumBorder(
-      side: MixHelpers.resolveMix(context, side) ?? BorderSide.none,
+      side: MixHelpers.resolve(context, side) ?? BorderSide.none,
     );
   }
 

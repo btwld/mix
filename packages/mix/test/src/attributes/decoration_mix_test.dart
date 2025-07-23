@@ -21,8 +21,8 @@ void main() {
           boxShadow: [BoxShadowMix.only(color: Colors.black, blurRadius: 5.0)],
         );
 
-        expect(boxDecorationMix.color, isProp(Colors.blue));
-        expect(boxDecorationMix.shape, isProp(BoxShape.circle));
+        expectProp(boxDecorationMix.color, Colors.blue);
+        expectProp(boxDecorationMix.shape, BoxShape.circle);
         expect(
           boxDecorationMix.backgroundBlendMode,
           isProp(BlendMode.multiply),
@@ -46,11 +46,11 @@ void main() {
         expect(borderDecorationMix.color, isNull);
 
         final colorDecorationMix = BoxDecorationMix.color(Colors.green);
-        expect(colorDecorationMix.color, isProp(Colors.green));
+        expectProp(colorDecorationMix.color, Colors.green);
         expect(colorDecorationMix.border, isNull);
 
         final shapeDecorationMix = BoxDecorationMix.shape(BoxShape.circle);
-        expect(shapeDecorationMix.shape, isProp(BoxShape.circle));
+        expectProp(shapeDecorationMix.shape, BoxShape.circle);
       });
 
       test('value constructor extracts properties from BoxDecoration', () {
@@ -62,8 +62,8 @@ void main() {
 
         final boxDecorationMix = BoxDecorationMix.value(boxDecoration);
 
-        expect(boxDecorationMix.color, isProp(Colors.red));
-        expect(boxDecorationMix.shape, isProp(BoxShape.rectangle));
+        expectProp(boxDecorationMix.color, Colors.red);
+        expectProp(boxDecorationMix.shape, BoxShape.rectangle);
         expect(
           boxDecorationMix.borderRadius,
           isA<Prop<Mix<BorderRadiusGeometry>>>(),
@@ -80,7 +80,7 @@ void main() {
         final result = BoxDecorationMix.maybeValue(boxDecoration);
 
         expect(result, isNotNull);
-        expect(result!.color, isProp(Colors.blue));
+        expectProp(result!.color, Colors.blue);
       });
     });
 
@@ -144,9 +144,9 @@ void main() {
 
         final merged = first.merge(second) as BoxDecorationMix;
 
-        expect(merged.color, isProp(Colors.red));
-        expect(merged.shape, isProp(BoxShape.rectangle));
-        expect(merged.backgroundBlendMode, isProp(BlendMode.multiply));
+        expectProp(merged.color, Colors.red);
+        expectProp(merged.shape, BoxShape.rectangle);
+        expectProp(merged.backgroundBlendMode, BlendMode.multiply);
       });
 
       test('merges list properties correctly', () {
@@ -198,7 +198,7 @@ void main() {
           shadows: [BoxShadowMix.only(color: Colors.black, blurRadius: 5.0)],
         );
 
-        expect(shapeDecorationMix.color, isProp(Colors.green));
+        expectProp(shapeDecorationMix.color, Colors.green);
         expect(shapeDecorationMix.shape, isA<Prop<Mix<ShapeBorder>>>());
         expect(shapeDecorationMix.shadows, hasLength(1));
       });
@@ -211,7 +211,7 @@ void main() {
 
         final shapeDecorationMix = ShapeDecorationMix.value(shapeDecoration);
 
-        expect(shapeDecorationMix.color, isProp(Colors.purple));
+        expectProp(shapeDecorationMix.color, Colors.purple);
         expect(shapeDecorationMix.shape, isA<Prop<Mix<ShapeBorder>>>());
       });
 
@@ -228,7 +228,7 @@ void main() {
         final result = ShapeDecorationMix.maybeValue(shapeDecoration);
 
         expect(result, isNotNull);
-        expect(result!.color, isProp(Colors.orange));
+        expectProp(result!.color, Colors.orange);
       });
     });
 
@@ -265,7 +265,7 @@ void main() {
 
         final merged = first.merge(second) as ShapeDecorationMix;
 
-        expect(merged.color, isProp(Colors.purple));
+        expectProp(merged.color, Colors.purple);
         expect(merged.shape, isA<Prop<Mix<ShapeBorder>>>());
       });
     });

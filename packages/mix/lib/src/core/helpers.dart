@@ -8,7 +8,6 @@ import 'package:flutter/widgets.dart' as w;
 
 import '../internal/deep_collection_equality.dart';
 import 'mix_element.dart';
-import 'prop.dart';
 
 /// Class to provide some helpers without conflicting
 /// name space with other libraries.
@@ -28,8 +27,6 @@ class MixHelpers {
 
   static const resolveList = _resolveList;
 
-  static const resolveListMix = _resolveListMix;
-
   static const lerpStrutStyle = _lerpStrutStyle;
 
   static const lerpMatrix4 = _lerpMatrix4;
@@ -43,22 +40,13 @@ class MixHelpers {
   static const lerpShadowList = ui.Shadow.lerpList;
 
   const MixHelpers._();
-  static V? resolve<V>(BuildContext context, Prop<V>? prop) {
+  static V? resolve<V>(BuildContext context, Resolvable<V>? prop) {
     if (prop == null) return null;
 
     return prop.resolve(context);
   }
 
-  static V? resolveMix<M extends Mix<V>, V>(
-    BuildContext context,
-    Prop<M>? prop,
-  ) {
-    if (prop == null) return null;
-
-    return prop.resolve(context).resolve(context);
-  }
-
-  static V? merge<V extends Prop>(V? a, V? b) {
+  static V? merge<V extends Mixable>(V? a, V? b) {
     return (a?.merge(b) ?? b) as V?;
   }
 
@@ -135,18 +123,6 @@ List<V>? _resolveList<T extends Resolvable<V>, V>(
   if (a == null) return null;
 
   return a.map((e) => e.resolve(mix)).whereType<V>().toList();
-}
-
-List<V>? _resolveListMix<M extends Mix<V>, V>(
-  BuildContext context,
-  List<Prop<M>>? props,
-) {
-  if (props == null) return null;
-
-  return props
-      .map((e) => MixHelpers.resolveMix(context, e))
-      .whereType<V>()
-      .toList();
 }
 
 w.Matrix4? _lerpMatrix4(w.Matrix4? a, w.Matrix4? b, double t) {

@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../../helpers/testing_utils.dart';
+import '../../../..//helpers/testing_utils.dart';
 
 void main() {
   group('FlexSpecAttribute', () {
@@ -20,7 +21,7 @@ void main() {
           gap: Prop(16.0),
         );
 
-        expect(attribute.$direction, hasValue(Axis.horizontal));
+        expect(attribute.$direction, expectPropResolves(Axis.horizontal));
         expect(
           attribute.$mainAxisAlignment,
           hasValue(MainAxisAlignment.center),
@@ -29,12 +30,12 @@ void main() {
           attribute.$crossAxisAlignment,
           hasValue(CrossAxisAlignment.stretch),
         );
-        expect(attribute.$mainAxisSize, hasValue(MainAxisSize.max));
-        expect(attribute.$verticalDirection, hasValue(VerticalDirection.down));
-        expect(attribute.$textDirection, hasValue(TextDirection.ltr));
-        expect(attribute.$textBaseline, hasValue(TextBaseline.alphabetic));
-        expect(attribute.$clipBehavior, hasValue(Clip.antiAlias));
-        expect(attribute.$gap, hasValue(16.0));
+        expect(attribute.$mainAxisSize, expectPropResolves(MainAxisSize.max));
+        expect(attribute.$verticalDirection, expectPropResolves(VerticalDirection.down));
+        expect(attribute.$textDirection, expectPropResolves(TextDirection.ltr));
+        expect(attribute.$textBaseline, expectPropResolves(TextBaseline.alphabetic));
+        expect(attribute.$clipBehavior, expectPropResolves(Clip.antiAlias));
+        expect(attribute.$gap, expectPropResolves(16.0));
       });
 
       test('creates empty FlexSpecAttribute', () {
@@ -66,7 +67,7 @@ void main() {
           gap: 8.0,
         );
 
-        expect(attribute.$direction, hasValue(Axis.vertical));
+        expect(attribute.$direction, expectPropResolves(Axis.vertical));
         expect(
           attribute.$mainAxisAlignment,
           hasValue(MainAxisAlignment.spaceEvenly),
@@ -75,12 +76,12 @@ void main() {
           attribute.$crossAxisAlignment,
           hasValue(CrossAxisAlignment.center),
         );
-        expect(attribute.$mainAxisSize, hasValue(MainAxisSize.min));
-        expect(attribute.$verticalDirection, hasValue(VerticalDirection.up));
-        expect(attribute.$textDirection, hasValue(TextDirection.rtl));
-        expect(attribute.$textBaseline, hasValue(TextBaseline.ideographic));
-        expect(attribute.$clipBehavior, hasValue(Clip.hardEdge));
-        expect(attribute.$gap, hasValue(8.0));
+        expect(attribute.$mainAxisSize, expectPropResolves(MainAxisSize.min));
+        expect(attribute.$verticalDirection, expectPropResolves(VerticalDirection.up));
+        expect(attribute.$textDirection, expectPropResolves(TextDirection.rtl));
+        expect(attribute.$textBaseline, expectPropResolves(TextBaseline.ideographic));
+        expect(attribute.$clipBehavior, expectPropResolves(Clip.hardEdge));
+        expect(attribute.$gap, expectPropResolves(8.0));
       });
 
       test('creates partial FlexSpecAttribute with only constructor', () {
@@ -89,8 +90,8 @@ void main() {
           gap: 12.0,
         );
 
-        expect(attribute.$direction, hasValue(Axis.horizontal));
-        expect(attribute.$gap, hasValue(12.0));
+        expect(attribute.$direction, expectPropResolves(Axis.horizontal));
+        expect(attribute.$gap, expectPropResolves(12.0));
         expect(attribute.$mainAxisAlignment, isNull);
         expect(attribute.$crossAxisAlignment, isNull);
         expect(attribute.$mainAxisSize, isNull);
@@ -117,7 +118,7 @@ void main() {
 
         final attribute = FlexSpecAttribute.value(spec);
 
-        expect(attribute.$direction, hasValue(Axis.horizontal));
+        expect(attribute.$direction, expectPropResolves(Axis.horizontal));
         expect(
           attribute.$mainAxisAlignment,
           hasValue(MainAxisAlignment.center),
@@ -126,12 +127,12 @@ void main() {
           attribute.$crossAxisAlignment,
           hasValue(CrossAxisAlignment.stretch),
         );
-        expect(attribute.$mainAxisSize, hasValue(MainAxisSize.max));
-        expect(attribute.$verticalDirection, hasValue(VerticalDirection.down));
-        expect(attribute.$textDirection, hasValue(TextDirection.ltr));
-        expect(attribute.$textBaseline, hasValue(TextBaseline.alphabetic));
-        expect(attribute.$clipBehavior, hasValue(Clip.antiAlias));
-        expect(attribute.$gap, hasValue(16.0));
+        expect(attribute.$mainAxisSize, expectPropResolves(MainAxisSize.max));
+        expect(attribute.$verticalDirection, expectPropResolves(VerticalDirection.down));
+        expect(attribute.$textDirection, expectPropResolves(TextDirection.ltr));
+        expect(attribute.$textBaseline, expectPropResolves(TextBaseline.alphabetic));
+        expect(attribute.$clipBehavior, expectPropResolves(Clip.antiAlias));
+        expect(attribute.$gap, expectPropResolves(16.0));
       });
 
       test('maybeValue returns null for null spec', () {
@@ -143,8 +144,8 @@ void main() {
         final attribute = FlexSpecAttribute.maybeValue(spec);
 
         expect(attribute, isNotNull);
-        expect(attribute!.$direction, hasValue(Axis.vertical));
-        expect(attribute.$gap, hasValue(8.0));
+        expect(attribute!.$direction, expectPropResolves(Axis.vertical));
+        expect(attribute.$gap, expectPropResolves(8.0));
       });
     });
 
@@ -153,8 +154,8 @@ void main() {
         final horizontal = FlexSpecAttribute().direction(Axis.horizontal);
         final vertical = FlexSpecAttribute().direction(Axis.vertical);
 
-        expect(horizontal.$direction, hasValue(Axis.horizontal));
-        expect(vertical.$direction, hasValue(Axis.vertical));
+        expect(horizontal.$direction, expectPropResolves(Axis.horizontal));
+        expect(vertical.$direction, expectPropResolves(Axis.vertical));
       });
 
       test('mainAxisAlignment utility works correctly', () {
@@ -173,13 +174,13 @@ void main() {
           CrossAxisAlignment.end,
         );
 
-        expect(attribute.$crossAxisAlignment, hasValue(CrossAxisAlignment.end));
+        expect(attribute.$crossAxisAlignment, expectPropResolves(CrossAxisAlignment.end));
       });
 
       test('mainAxisSize utility works correctly', () {
         final attribute = FlexSpecAttribute().mainAxisSize(MainAxisSize.min);
 
-        expect(attribute.$mainAxisSize, hasValue(MainAxisSize.min));
+        expect(attribute.$mainAxisSize, expectPropResolves(MainAxisSize.min));
       });
 
       test('verticalDirection utility works correctly', () {
@@ -187,13 +188,13 @@ void main() {
           VerticalDirection.up,
         );
 
-        expect(attribute.$verticalDirection, hasValue(VerticalDirection.up));
+        expect(attribute.$verticalDirection, expectPropResolves(VerticalDirection.up));
       });
 
       test('textDirection utility works correctly', () {
         final attribute = FlexSpecAttribute().textDirection(TextDirection.rtl);
 
-        expect(attribute.$textDirection, hasValue(TextDirection.rtl));
+        expect(attribute.$textDirection, expectPropResolves(TextDirection.rtl));
       });
 
       test('textBaseline utility works correctly', () {
@@ -201,7 +202,7 @@ void main() {
           TextBaseline.ideographic,
         );
 
-        expect(attribute.$textBaseline, hasValue(TextBaseline.ideographic));
+        expect(attribute.$textBaseline, expectPropResolves(TextBaseline.ideographic));
       });
 
       test('clipBehavior utility works correctly', () {
@@ -209,13 +210,13 @@ void main() {
           Clip.antiAliasWithSaveLayer,
         );
 
-        expect(attribute.$clipBehavior, hasValue(Clip.antiAliasWithSaveLayer));
+        expect(attribute.$clipBehavior, expectPropResolves(Clip.antiAliasWithSaveLayer));
       });
 
       test('gap utility works correctly', () {
         final attribute = FlexSpecAttribute().gap(24.0);
 
-        expect(attribute.$gap, hasValue(24.0));
+        expect(attribute.$gap, expectPropResolves(24.0));
       });
 
       test('chaining utilities works correctly', () {
@@ -225,7 +226,7 @@ void main() {
             .crossAxisAlignment(CrossAxisAlignment.center)
             .gap(16.0);
 
-        expect(attribute.$direction, hasValue(Axis.horizontal));
+        expect(attribute.$direction, expectPropResolves(Axis.horizontal));
         expect(
           attribute.$mainAxisAlignment,
           hasValue(MainAxisAlignment.spaceBetween),
@@ -234,7 +235,7 @@ void main() {
           attribute.$crossAxisAlignment,
           hasValue(CrossAxisAlignment.center),
         );
-        expect(attribute.$gap, hasValue(16.0));
+        expect(attribute.$gap, expectPropResolves(16.0));
       });
     });
 
@@ -242,13 +243,13 @@ void main() {
       test('row() method sets horizontal direction', () {
         final attribute = FlexSpecAttribute().row();
 
-        expect(attribute.$direction, hasValue(Axis.horizontal));
+        expect(attribute.$direction, expectPropResolves(Axis.horizontal));
       });
 
       test('column() method sets vertical direction', () {
         final attribute = FlexSpecAttribute().column();
 
-        expect(attribute.$direction, hasValue(Axis.vertical));
+        expect(attribute.$direction, expectPropResolves(Axis.vertical));
       });
 
       test('animate method sets animation config', () {
@@ -324,7 +325,7 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.$direction, hasValue(Axis.vertical)); // second overrides
+        expect(merged.$direction, expectPropResolves(Axis.vertical)); // second overrides
         expect(
           merged.$mainAxisAlignment,
           hasValue(MainAxisAlignment.start),
@@ -333,8 +334,8 @@ void main() {
           merged.$crossAxisAlignment,
           hasValue(CrossAxisAlignment.center),
         ); // from second
-        expect(merged.$mainAxisSize, hasValue(MainAxisSize.min)); // from second
-        expect(merged.$gap, hasValue(8.0)); // from first
+        expect(merged.$mainAxisSize, expectPropResolves(MainAxisSize.min)); // from second
+        expect(merged.$gap, expectPropResolves(8.0)); // from first
       });
 
       test('returns this when other is null', () {
@@ -362,7 +363,7 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.$direction, hasValue(Axis.vertical)); // second overrides
+        expect(merged.$direction, expectPropResolves(Axis.vertical)); // second overrides
         expect(
           merged.$mainAxisAlignment,
           hasValue(MainAxisAlignment.end),
@@ -371,7 +372,7 @@ void main() {
           merged.$crossAxisAlignment,
           hasValue(CrossAxisAlignment.start),
         ); // from first
-        expect(merged.$mainAxisSize, hasValue(MainAxisSize.max)); // from first
+        expect(merged.$mainAxisSize, expectPropResolves(MainAxisSize.max)); // from first
         expect(
           merged.$verticalDirection,
           hasValue(VerticalDirection.down),
@@ -384,8 +385,8 @@ void main() {
           merged.$textBaseline,
           hasValue(TextBaseline.ideographic),
         ); // from second
-        expect(merged.$clipBehavior, hasValue(Clip.hardEdge)); // from second
-        expect(merged.$gap, hasValue(20.0)); // from second
+        expect(merged.$clipBehavior, expectPropResolves(Clip.hardEdge)); // from second
+        expect(merged.$gap, expectPropResolves(20.0)); // from second
       });
     });
 
@@ -492,7 +493,7 @@ void main() {
 
         expect(identical(original, modified), isFalse);
         expect(original.$direction, isNull);
-        expect(modified.$direction, hasValue(Axis.horizontal));
+        expect(modified.$direction, expectPropResolves(Axis.horizontal));
       });
 
       test('builder methods can be chained fluently', () {

@@ -20,18 +20,18 @@ void main() {
           forceStrutHeight: true,
         );
 
-        expect(strutStyleMix.fontFamily, isProp('Roboto'));
-        expect(strutStyleMix.fontSize, isProp(16.0));
-        expect(strutStyleMix.fontWeight, isProp(FontWeight.bold));
-        expect(strutStyleMix.fontStyle, isProp(FontStyle.italic));
-        expect(strutStyleMix.height, isProp(1.5));
-        expect(strutStyleMix.leading, isProp(2.0));
-        expect(strutStyleMix.forceStrutHeight, isProp(true));
+        expectProp(strutStyleMix.fontFamily, 'Roboto');
+        expectProp(strutStyleMix.fontSize, 16.0);
+        expectProp(strutStyleMix.fontWeight, FontWeight.bold);
+        expectProp(strutStyleMix.fontStyle, FontStyle.italic);
+        expectProp(strutStyleMix.height, 1.5);
+        expectProp(strutStyleMix.leading, 2.0);
+        expectProp(strutStyleMix.forceStrutHeight, true);
 
         // Test fontFamilyFallback list
         expect(strutStyleMix.fontFamilyFallback, hasLength(2));
-        expect(strutStyleMix.fontFamilyFallback![0], isProp('Arial'));
-        expect(strutStyleMix.fontFamilyFallback![1], isProp('Helvetica'));
+        expectProp(strutStyleMix.fontFamilyFallback![0], 'Arial');
+        expectProp(strutStyleMix.fontFamilyFallback![1], 'Helvetica');
       });
 
       test('value constructor extracts properties from StrutStyle', () {
@@ -48,16 +48,16 @@ void main() {
 
         final strutStyleMix = StrutStyleMix.value(strutStyle);
 
-        expect(strutStyleMix.fontFamily, isProp('Roboto'));
-        expect(strutStyleMix.fontSize, isProp(14.0));
-        expect(strutStyleMix.fontWeight, isProp(FontWeight.w500));
-        expect(strutStyleMix.fontStyle, isProp(FontStyle.normal));
-        expect(strutStyleMix.height, isProp(1.2));
-        expect(strutStyleMix.leading, isProp(1.0));
-        expect(strutStyleMix.forceStrutHeight, isProp(false));
+        expectProp(strutStyleMix.fontFamily, 'Roboto');
+        expectProp(strutStyleMix.fontSize, 14.0);
+        expectProp(strutStyleMix.fontWeight, FontWeight.w500);
+        expectProp(strutStyleMix.fontStyle, FontStyle.normal);
+        expectProp(strutStyleMix.height, 1.2);
+        expectProp(strutStyleMix.leading, 1.0);
+        expectProp(strutStyleMix.forceStrutHeight, false);
 
         expect(strutStyleMix.fontFamilyFallback, hasLength(1));
-        expect(strutStyleMix.fontFamilyFallback![0], isProp('Arial'));
+        expectProp(strutStyleMix.fontFamilyFallback![0], 'Arial');
       });
 
       test('maybeValue returns null for null input', () {
@@ -70,7 +70,7 @@ void main() {
         final result = StrutStyleMix.maybeValue(strutStyle);
 
         expect(result, isNotNull);
-        expect(result!.fontSize, isProp(16.0));
+        expectProp(result!.fontSize, 16.0);
       });
     });
 
@@ -118,11 +118,11 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.fontFamily, isProp('Roboto'));
-        expect(merged.fontSize, isProp(18.0));
-        expect(merged.fontWeight, isProp(FontWeight.normal));
-        expect(merged.fontStyle, isProp(FontStyle.italic));
-        expect(merged.height, isProp(1.5));
+        expectProp(merged.fontFamily, 'Roboto');
+        expectProp(merged.fontSize, 18.0);
+        expectProp(merged.fontWeight, FontWeight.normal);
+        expectProp(merged.fontStyle, FontStyle.italic);
+        expectProp(merged.height, 1.5);
       });
 
       test('merges fontFamilyFallback lists by concatenating', () {
@@ -137,10 +137,10 @@ void main() {
         final merged = first.merge(second);
 
         expect(merged.fontFamilyFallback, hasLength(4));
-        expect(merged.fontFamilyFallback![0], isProp('Arial'));
-        expect(merged.fontFamilyFallback![1], isProp('Helvetica'));
-        expect(merged.fontFamilyFallback![2], isProp('Times'));
-        expect(merged.fontFamilyFallback![3], isProp('Georgia'));
+        expectProp(merged.fontFamilyFallback![0], 'Arial');
+        expectProp(merged.fontFamilyFallback![1], 'Helvetica');
+        expectProp(merged.fontFamilyFallback![2], 'Times');
+        expectProp(merged.fontFamilyFallback![3], 'Georgia');
       });
 
       test('preserves all properties in complex merge', () {
@@ -158,12 +158,12 @@ void main() {
 
         final merged = base.merge(override);
 
-        expect(merged.fontFamily, isProp('Roboto')); // preserved
-        expect(merged.fontSize, isProp(16.0)); // overridden
-        expect(merged.fontWeight, isProp(FontWeight.bold)); // added
+        expectProp(merged.fontFamily, 'Roboto'); // preserved
+        expectProp(merged.fontSize, 16.0); // overridden
+        expectProp(merged.fontWeight, FontWeight.bold); // added
         expect(merged.fontFamilyFallback, hasLength(2)); // concatenated
-        expect(merged.fontFamilyFallback![0], isProp('Arial'));
-        expect(merged.fontFamilyFallback![1], isProp('Times'));
+        expectProp(merged.fontFamilyFallback![0], 'Arial');
+        expectProp(merged.fontFamilyFallback![1], 'Times');
       });
     });
 

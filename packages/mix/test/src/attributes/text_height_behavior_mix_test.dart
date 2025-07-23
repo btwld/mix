@@ -14,8 +14,8 @@ void main() {
           leadingDistribution: TextLeadingDistribution.even,
         );
 
-        expect(textHeightBehaviorMix.applyHeightToFirstAscent, isProp(false));
-        expect(textHeightBehaviorMix.applyHeightToLastDescent, isProp(true));
+        expectProp(textHeightBehaviorMix.applyHeightToFirstAscent, false);
+        expectProp(textHeightBehaviorMix.applyHeightToLastDescent, true);
         expect(
           textHeightBehaviorMix.leadingDistribution,
           isProp(TextLeadingDistribution.even),
@@ -33,8 +33,8 @@ void main() {
           textHeightBehavior,
         );
 
-        expect(textHeightBehaviorMix.applyHeightToFirstAscent, isProp(true));
-        expect(textHeightBehaviorMix.applyHeightToLastDescent, isProp(false));
+        expectProp(textHeightBehaviorMix.applyHeightToFirstAscent, true);
+        expectProp(textHeightBehaviorMix.applyHeightToLastDescent, false);
         expect(
           textHeightBehaviorMix.leadingDistribution,
           isProp(TextLeadingDistribution.proportional),
@@ -53,7 +53,7 @@ void main() {
         final result = TextHeightBehaviorMix.maybeValue(textHeightBehavior);
 
         expect(result, isNotNull);
-        expect(result!.applyHeightToFirstAscent, isProp(false));
+        expectProp(result!.applyHeightToFirstAscent, false);
       });
     });
 
@@ -113,8 +113,8 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.applyHeightToFirstAscent, isProp(false));
-        expect(merged.applyHeightToLastDescent, isProp(false));
+        expectProp(merged.applyHeightToFirstAscent, false);
+        expectProp(merged.applyHeightToLastDescent, false);
         expect(
           merged.leadingDistribution,
           isProp(TextLeadingDistribution.even),

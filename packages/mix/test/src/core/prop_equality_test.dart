@@ -36,7 +36,7 @@ void main() {
         final merged = prop1.merge(prop2);
 
         // The merged prop should have the same value as prop2 (other wins)
-        expect(merged.getValue(), prop2.getValue());
+        expect(merged, expectPropResolves(prop2.getValue()));
 
         // But importantly, the merged prop should be equal to a new prop with the same value
         final expected = Prop(Colors.blue);

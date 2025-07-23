@@ -79,7 +79,7 @@ class PaddingModifierAttribute extends ModifierAttribute<PaddingModifier>
   const PaddingModifierAttribute({this.padding});
 
   PaddingModifierAttribute.only({EdgeInsetsGeometryMix? padding})
-    : this(padding: Prop.maybe(padding));
+    : this(padding: MixProp.maybe(padding));
 
   /// Resolves to [PaddingModifier] using the provided [MixContext].
   ///
@@ -91,7 +91,7 @@ class PaddingModifierAttribute extends ModifierAttribute<PaddingModifier>
   /// ```
   @override
   PaddingModifier resolve(BuildContext context) {
-    return PaddingModifier(MixHelpers.resolveMix(context, padding));
+    return PaddingModifier(MixHelpers.resolve(context, padding));
   }
 
   /// Merges the properties of this [PaddingModifierAttribute] with the properties of [other].
@@ -140,6 +140,6 @@ class PaddingModifierUtility<T extends SpecStyle<Object?>>
 
   /// Returns a new [PaddingModifierAttribute] with the specified properties.
   T call({EdgeInsetsGeometryMix? padding}) {
-    return builder(PaddingModifierAttribute(padding: Prop.maybe(padding)));
+    return builder(PaddingModifierAttribute(padding: MixProp.maybe(padding)));
   }
 }

@@ -155,7 +155,7 @@ class ScrollViewModifierAttribute
   }) : this(
          scrollDirection: Prop.maybe(scrollDirection),
          reverse: Prop.maybe(reverse),
-         padding: Prop.maybe(padding),
+         padding: MixProp.maybe(padding),
          physics: Prop.maybe(physics),
          clipBehavior: Prop.maybe(clipBehavior),
        );
@@ -165,7 +165,7 @@ class ScrollViewModifierAttribute
     return ScrollViewModifier(
       scrollDirection: MixHelpers.resolve(context, scrollDirection),
       reverse: MixHelpers.resolve(context, reverse),
-      padding: MixHelpers.resolveMix(context, padding),
+      padding: MixHelpers.resolve(context, padding),
       physics: MixHelpers.resolve(context, physics),
       clipBehavior: MixHelpers.resolve(context, clipBehavior),
     );

@@ -15,10 +15,10 @@ void main() {
           right: 20.0,
         );
 
-        expect(edgeInsetsMix.top, isProp(8.0));
-        expect(edgeInsetsMix.bottom, isProp(12.0));
-        expect(edgeInsetsMix.left, isProp(16.0));
-        expect(edgeInsetsMix.right, isProp(20.0));
+        expectProp(edgeInsetsMix.top, 8.0);
+        expectProp(edgeInsetsMix.bottom, 12.0);
+        expectProp(edgeInsetsMix.left, 16.0);
+        expectProp(edgeInsetsMix.right, 20.0);
       });
 
       test('value constructor extracts properties from EdgeInsets', () {
@@ -31,28 +31,28 @@ void main() {
 
         final edgeInsetsMix = EdgeInsetsMix.value(edgeInsets);
 
-        expect(edgeInsetsMix.top, isProp(5.0));
-        expect(edgeInsetsMix.bottom, isProp(10.0));
-        expect(edgeInsetsMix.left, isProp(15.0));
-        expect(edgeInsetsMix.right, isProp(20.0));
+        expectProp(edgeInsetsMix.top, 5.0);
+        expectProp(edgeInsetsMix.bottom, 10.0);
+        expectProp(edgeInsetsMix.left, 15.0);
+        expectProp(edgeInsetsMix.right, 20.0);
       });
 
       test('all constructor creates uniform insets', () {
         final edgeInsetsMix = EdgeInsetsMix.all(16.0);
 
-        expect(edgeInsetsMix.top, isProp(16.0));
-        expect(edgeInsetsMix.bottom, isProp(16.0));
-        expect(edgeInsetsMix.left, isProp(16.0));
-        expect(edgeInsetsMix.right, isProp(16.0));
+        expectProp(edgeInsetsMix.top, 16.0);
+        expectProp(edgeInsetsMix.bottom, 16.0);
+        expectProp(edgeInsetsMix.left, 16.0);
+        expectProp(edgeInsetsMix.right, 16.0);
       });
 
       test('none constructor creates zero insets', () {
         final edgeInsetsMix = EdgeInsetsMix.none();
 
-        expect(edgeInsetsMix.top, isProp(0.0));
-        expect(edgeInsetsMix.bottom, isProp(0.0));
-        expect(edgeInsetsMix.left, isProp(0.0));
-        expect(edgeInsetsMix.right, isProp(0.0));
+        expectProp(edgeInsetsMix.top, 0.0);
+        expectProp(edgeInsetsMix.bottom, 0.0);
+        expectProp(edgeInsetsMix.left, 0.0);
+        expectProp(edgeInsetsMix.right, 0.0);
       });
 
       test('maybeValue returns null for null input', () {
@@ -65,7 +65,7 @@ void main() {
         final result = EdgeInsetsMix.maybeValue(edgeInsets);
 
         expect(result, isNotNull);
-        expect(result!.top, isProp(8.0));
+        expectProp(result!.top, 8.0);
       });
     });
 
@@ -115,10 +115,10 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.top, isProp(12.0));
+        expectProp(merged.top, 12.0);
         expect(merged.bottom, isNull);
-        expect(merged.left, isProp(16.0));
-        expect(merged.right, isProp(20.0));
+        expectProp(merged.left, 16.0);
+        expectProp(merged.right, 20.0);
       });
     });
 
@@ -151,10 +151,10 @@ void main() {
           end: 20.0,
         );
 
-        expect(edgeInsetsDirectionalMix.top, isProp(8.0));
-        expect(edgeInsetsDirectionalMix.bottom, isProp(12.0));
-        expect(edgeInsetsDirectionalMix.start, isProp(16.0));
-        expect(edgeInsetsDirectionalMix.end, isProp(20.0));
+        expectProp(edgeInsetsDirectionalMix.top, 8.0);
+        expectProp(edgeInsetsDirectionalMix.bottom, 12.0);
+        expectProp(edgeInsetsDirectionalMix.start, 16.0);
+        expectProp(edgeInsetsDirectionalMix.end, 20.0);
       });
 
       test(
@@ -171,29 +171,29 @@ void main() {
             edgeInsets,
           );
 
-          expect(edgeInsetsDirectionalMix.top, isProp(5.0));
-          expect(edgeInsetsDirectionalMix.bottom, isProp(10.0));
-          expect(edgeInsetsDirectionalMix.start, isProp(15.0));
-          expect(edgeInsetsDirectionalMix.end, isProp(20.0));
+          expectProp(edgeInsetsDirectionalMix.top, 5.0);
+          expectProp(edgeInsetsDirectionalMix.bottom, 10.0);
+          expectProp(edgeInsetsDirectionalMix.start, 15.0);
+          expectProp(edgeInsetsDirectionalMix.end, 20.0);
         },
       );
 
       test('all constructor creates uniform insets', () {
         final edgeInsetsDirectionalMix = EdgeInsetsDirectionalMix.all(16.0);
 
-        expect(edgeInsetsDirectionalMix.top, isProp(16.0));
-        expect(edgeInsetsDirectionalMix.bottom, isProp(16.0));
-        expect(edgeInsetsDirectionalMix.start, isProp(16.0));
-        expect(edgeInsetsDirectionalMix.end, isProp(16.0));
+        expectProp(edgeInsetsDirectionalMix.top, 16.0);
+        expectProp(edgeInsetsDirectionalMix.bottom, 16.0);
+        expectProp(edgeInsetsDirectionalMix.start, 16.0);
+        expectProp(edgeInsetsDirectionalMix.end, 16.0);
       });
 
       test('none constructor creates zero insets', () {
         final edgeInsetsDirectionalMix = EdgeInsetsDirectionalMix.none();
 
-        expect(edgeInsetsDirectionalMix.top, isProp(0.0));
-        expect(edgeInsetsDirectionalMix.bottom, isProp(0.0));
-        expect(edgeInsetsDirectionalMix.start, isProp(0.0));
-        expect(edgeInsetsDirectionalMix.end, isProp(0.0));
+        expectProp(edgeInsetsDirectionalMix.top, 0.0);
+        expectProp(edgeInsetsDirectionalMix.bottom, 0.0);
+        expectProp(edgeInsetsDirectionalMix.start, 0.0);
+        expectProp(edgeInsetsDirectionalMix.end, 0.0);
       });
 
       test('maybeValue returns null for null input', () {
@@ -208,7 +208,7 @@ void main() {
           final result = EdgeInsetsDirectionalMix.maybeValue(edgeInsets);
 
           expect(result, isNotNull);
-          expect(result!.top, isProp(8.0));
+          expectProp(result!.top, 8.0);
         },
       );
     });
@@ -249,10 +249,10 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.top, isProp(12.0));
+        expectProp(merged.top, 12.0);
         expect(merged.bottom, isNull);
-        expect(merged.start, isProp(16.0));
-        expect(merged.end, isProp(20.0));
+        expectProp(merged.start, 16.0);
+        expectProp(merged.end, 20.0);
       });
     });
 

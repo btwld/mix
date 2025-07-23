@@ -7,55 +7,144 @@ import 'animation_config.dart';
 import 'directive.dart';
 import 'mix_element.dart';
 
-/// Unified Prop implementation that handles all property types including Mix
-///
-/// Key design principles:
-/// - Single Prop class for all types
-/// - T can be any type, including Mix<V>
-/// - When T extends Mix, tokens should be MixToken<Mix<V>>
-/// - Merge always creates AccumulativePropSource
-/// - Resolution decides accumulation vs replacement strategy
 @immutable
-class Prop<T> extends Mixable<T> with Resolvable<T> {
-  /// The source of the property value
-  final PropSource<T>? source;
+abstract class PropSource<T> {
+  const PropSource();
+}
 
+/// Source for direct values (used by StaticProp)
+@immutable
+class ValuePropSource<T> extends PropSource<T> {
+  final T value;
+
+  const ValuePropSource(this.value);
+
+  @override
+  String toString() => 'ValuePropSource($value)';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ValuePropSource<T> && other.value == value;
+  }
+
+  @override
+  int get hashCode => value.hashCode;
+}
+
+/// Source for token references (used by StaticProp)
+@immutable
+class TokenPropSource<T> extends PropSource<T> {
+  final MixToken<T> token;
+
+  const TokenPropSource(this.token);
+
+  @override
+  String toString() => 'TokenPropSource($token)';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is TokenPropSource<T> && other.token == token;
+  }
+
+  @override
+  int get hashCode => token.hashCode;
+}
+
+@immutable
+sealed class MixPropSource<V> extends PropSource<V> {
+  const MixPropSource();
+}
+
+/// Mix value source - stores a Mix value directly
+@immutable
+class MixPropValueSource<V> extends MixPropSource<V> {
+  final Mix<V> value;
+
+  const MixPropValueSource(this.value);
+
+  @override
+  String toString() => 'MixPropValueSource($value)';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MixPropValueSource<V> && other.value == value;
+  }
+
+  @override
+  int get hashCode => value.hashCode;
+}
+
+/// Mix token source - resolves token and converts to Mix type
+@immutable
+class MixPropTokenSource<V> extends MixPropSource<V> {
+  final MixToken<V> token;
+  final Mix<V> Function(V) convertToMix;
+
+  const MixPropTokenSource(this.token, this.convertToMix);
+
+  @override
+  String toString() => 'MixPropTokenSource($token)';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MixPropTokenSource<V> &&
+        other.token == token &&
+        other.convertToMix == convertToMix;
+  }
+
+  @override
+  int get hashCode => Object.hash(token, convertToMix);
+}
+
+/// Accumulative source - only accepts MixPropSource types
+@immutable
+class MixPropAccumulativeSource<V> extends MixPropSource<V> {
+  final List<MixPropSource<V>> sources;
+
+  const MixPropAccumulativeSource(this.sources);
+
+  @override
+  String toString() => 'MixPropAccumulativeSource(${sources.length} sources)';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MixPropAccumulativeSource<V> &&
+        listEquals(other.sources, sources);
+  }
+
+  @override
+  int get hashCode => Object.hashAll(sources);
+}
+
+// ====== Prop Types ======
+
+/// Base sealed Prop class
+@immutable
+sealed class PropBase<T> extends Mixable<T> with Resolvable<T> {
   /// Directives to apply to the resolved value
   final List<MixDirective<T>>? directives;
 
   /// Animation configuration for this property
   final AnimationConfig? animation;
 
-  const Prop._({this.source, this.directives, this.animation});
+  const PropBase({this.directives, this.animation});
 
-  /// Creates a Prop with a direct value
-  factory Prop(T value) {
-    return Prop._(source: ValueSource(value));
-  }
-
-  /// Creates a Prop with a token reference
-  ///
-  /// For Mix types, the token should be MixToken<Mix<V>>, not MixToken<V>
-  factory Prop.token(MixToken<T> token) {
-    return Prop._(source: TokenSource(token));
-  }
-
-  /// Creates a Prop with only directives
-  factory Prop.directives(List<MixDirective<T>> directives) {
-    return Prop._(directives: directives);
-  }
-
-  /// Creates a Prop with only animation configuration
-  factory Prop.animation(AnimationConfig animation) {
-    return Prop._(animation: animation);
-  }
-
-  static Prop<T>? maybe<T>(T? value) {
-    return value != null ? Prop(value) : null;
-  }
+  /// The source of the property value
+  PropSource<T>? get source;
 
   /// Applies directives to the resolved value
-  T _applyDirectives(T value) {
+  @protected
+  T applyDirectives(T value) {
     if (directives == null || directives!.isEmpty) return value;
 
     var result = value;
@@ -66,124 +155,135 @@ class Prop<T> extends Mixable<T> with Resolvable<T> {
     return result;
   }
 
-  PropSource<T>? _mergePropSource(PropSource<T>? a, PropSource<T>? b) {
-    if (a == null && b == null) return null;
-    if (a == null) return b;
-    if (b == null) return a;
-
-    if (a is ValueSource<T> && b is ValueSource<T>) {
-      final thisValue = a.value;
-      final otherValue = b.value;
-      if (thisValue is Mix && otherValue is Mix) {
-        // If both values are Mix, merge them
-        return ValueSource(thisValue.merge(otherValue) as T);
-      }
-    }
-
-    return AccumulativePropSource([a, b]);
-  }
-
-  bool get hasToken {
-    final source = this.source;
-
-    return source is TokenSource<T>;
-  }
-
-  bool get hasValue {
-    final source = this.source;
-
-    return source is ValueSource<T>;
-  }
-
-  T getValue() {
-    final source = this.source;
-    if (source == null) {
-      throw FlutterError(
-        'Prop<$T> could not be resolved: No source exists to resolve',
-      );
-    }
-
-    if (source is ValueSource<T>) {
-      // Direct value source, no need to resolve
-      return (source).value;
-    }
-
-    throw FlutterError('Prop<$T> could not be resolved: No valid source found');
-  }
-
-  MixToken<T> getToken() {
-    final source = this.source;
-    if (source == null) {
-      throw FlutterError(
-        'Prop<$T> could not be resolved: No source exists to resolve',
-      );
-    }
-    if (source is TokenSource<T>) {
-      return (source).token;
-    }
-
-    throw FlutterError(
-      'Prop<$T> is not a token source: Cannot get token from $source',
-    );
-  }
-
-  /// Merges this Prop with another
-  ///
-  /// Sources are merged using their merge methods, which always
-  /// results in AccumulativePropSource for proper handling of both
-  /// accumulation (Mix types) and replacement (non-Mix types).
-  @override
-  Prop<T> merge(Prop<T>? other) {
-    if (other == null) return this;
-
-    // Merge directives
-    final mergedDirectives = switch ((directives, other.directives)) {
+  // Helper methods for merging directives and animation
+  @protected
+  List<MixDirective<T>>? mergeDirectives(List<MixDirective<T>>? other) {
+    return switch ((directives, other)) {
       (null, null) => null,
       (final a?, null) => a,
       (null, final b?) => b,
       (final a?, final b?) => [...a, ...b],
     };
+  }
 
-    return Prop._(
-      source: _mergePropSource(source, other.source),
-      directives: mergedDirectives,
-      animation: other.animation ?? animation, // Other's animation wins
-    );
+  @protected
+  AnimationConfig? mergeAnimation(AnimationConfig? other) {
+    return other ?? animation; // Other's animation wins
   }
 
   /// Resolves the property value using the provided context
   @override
-  T resolve(BuildContext context) {
-    if (source == null) {
-      throw FlutterError(
-        'Prop<$T> could not be resolved: No source exists to resolve',
+  T resolve(BuildContext context);
+}
+
+/// Static prop for regular types - uses replacement merge strategy
+@immutable
+class Prop<T> extends PropBase<T> {
+  @override
+  final PropSource<T>? source;
+
+  const Prop._({this.source, super.directives, super.animation});
+
+  // Named constructors for clarity
+  Prop(T value, {List<MixDirective<T>>? directives, AnimationConfig? animation})
+    : this._(
+        source: ValuePropSource(value),
+        directives: directives,
+        animation: animation,
       );
+
+  Prop.token(
+    MixToken<T> token, {
+    List<MixDirective<T>>? directives,
+    AnimationConfig? animation,
+  }) : this._(
+         source: TokenPropSource(token),
+         directives: directives,
+         animation: animation,
+       );
+
+  const Prop.directives(
+    List<MixDirective<T>> directives, {
+    AnimationConfig? animation,
+  }) : this._(source: null, directives: directives, animation: animation);
+
+  const Prop.animation(AnimationConfig animation)
+    : this._(source: null, directives: null, animation: animation);
+
+  static Prop<T>? maybe<T>(
+    T? value, {
+    List<MixDirective<T>>? directives,
+    AnimationConfig? animation,
+  }) {
+    if (value == null) return null;
+
+    return Prop(value, directives: directives, animation: animation);
+  }
+
+  // Helper methods for StaticProp
+  bool get hasValue => source is ValuePropSource<T>;
+
+  bool get hasToken => source is TokenPropSource<T>;
+  T get value {
+    if (source is! ValuePropSource<T>) {
+      throw FlutterError('StaticProp<$T> does not have a direct value source');
     }
 
-    final resolved = source!.resolve(context);
+    return (source as ValuePropSource<T>).value;
+  }
 
-    return _applyDirectives(resolved);
+  MixToken<T> get token {
+    if (source is! TokenPropSource<T>) {
+      throw FlutterError('StaticProp<$T> does not have a token source');
+    }
+
+    return (source as TokenPropSource<T>).token;
+  }
+
+  @override
+  Prop<T> merge(Prop<T>? other) {
+    if (other == null) return this;
+
+    // For static props, the other source replaces this source
+    return Prop._(
+      source: other.source ?? source,
+      directives: mergeDirectives(other.directives),
+      animation: mergeAnimation(other.animation),
+    );
+  }
+
+  @override
+  T resolve(BuildContext context) {
+    if (source == null) {
+      throw FlutterError('Prop<$T> has no source defined');
+    }
+
+    // Resolve the value from the source
+    final resolvedValue = switch (source) {
+      ValuePropSource<T> valueSource => valueSource.value,
+      TokenPropSource<T> tokenSource => MixScope.tokenOf(
+        tokenSource.token,
+        context,
+      ),
+      _ => throw FlutterError(
+        'Unsupported PropSource type: ${source ?? 'null'}',
+      ),
+    };
+
+    // Apply directives if any
+    return applyDirectives(resolvedValue);
   }
 
   @override
   String toString() {
-    final buffer = StringBuffer('Prop<$T>(');
     final parts = <String>[];
-
-    if (source != null) {
-      parts.add('source: $source');
-    }
+    parts.add('source: ${source ?? 'null'}');
     if (directives != null && directives!.isNotEmpty) {
       parts.add('directives: ${directives!.length}');
     }
-    if (animation != null) {
-      parts.add('animated');
-    }
+    if (animation != null) parts.add('animated');
 
-    buffer.write(parts.isEmpty ? 'empty' : parts.join(', '));
-    buffer.write(')');
-
-    return buffer.toString();
+    return 'Prop(${parts.join(', ')})';
   }
 
   @override
@@ -200,141 +300,192 @@ class Prop<T> extends Mixable<T> with Resolvable<T> {
   int get hashCode => Object.hash(source, directives, animation);
 }
 
-/// Base interface for all property sources
-abstract class PropSource<T> {
-  const PropSource();
-
-  /// Resolves this source to a value of type T
-  T resolve(BuildContext context);
-}
-
-/// Source for direct values
+/// Mix prop for Mix types - uses accumulation merge strategy
 @immutable
-class ValueSource<T> extends PropSource<T> {
-  final T value;
+class MixProp<V> extends PropBase<V> {
+  @override
+  final MixPropSource<V>? source;
+  const MixProp._({this.source, super.directives, super.animation});
 
-  const ValueSource(this.value);
+  // Named constructors for clarity
+  MixProp(
+    Mix<V> value, {
+    List<MixDirective<V>>? directives,
+    AnimationConfig? animation,
+  }) : this._(
+         source: MixPropValueSource(value),
+         directives: directives,
+         animation: animation,
+       );
+
+  MixProp.token(
+    MixToken<V> token,
+    Mix<V> Function(V) convertToMix, {
+    List<MixDirective<V>>? directives,
+    AnimationConfig? animation,
+  }) : this._(
+         source: MixPropTokenSource(token, convertToMix),
+         directives: directives,
+         animation: animation,
+       );
+
+  // directives
+  const MixProp.directives(List<MixDirective<V>> directives)
+    : this._(source: null, directives: directives, animation: null);
+
+  const MixProp.animation(AnimationConfig animation)
+    : this._(source: null, directives: null, animation: animation);
+
+  static MixProp<V>? maybe<V>(
+    Mix<V>? value, {
+    List<MixDirective<V>>? directives,
+    AnimationConfig? animation,
+  }) {
+    if (value == null) return null;
+
+    return MixProp._(
+      source: MixPropValueSource(value),
+      directives: directives,
+      animation: animation,
+    );
+  }
+
+  /// Special merge logic for Mix sources - accumulates values
+  MixPropSource<V>? _mergeMixSources(MixPropSource<V>? a, MixPropSource<V>? b) {
+    if (a == null && b == null) return null;
+    if (a == null) return b;
+    if (b == null) return a;
+
+    // Special optimization: if both are value sources, merge directly
+    if (a is MixPropValueSource<V> && b is MixPropValueSource<V>) {
+      return MixPropValueSource(a.value.merge(b.value));
+    }
+
+    // Otherwise, create accumulative source
+    final sources = <MixPropSource<V>>[];
+
+    // Flatten existing accumulative sourcesd
+    if (a is MixPropAccumulativeSource<V>) {
+      sources.addAll(a.sources);
+    } else {
+      sources.add(a);
+    }
+
+    if (b is MixPropAccumulativeSource<V>) {
+      sources.addAll(b.sources);
+    } else {
+      sources.add(b);
+    }
+
+    return MixPropAccumulativeSource(sources);
+  }
+
+  Mix<V> get value {
+    if (source is! MixPropValueSource<V>) {
+      throw FlutterError('MixProp<$V> does not have a direct value source');
+    }
+
+    return (source as MixPropValueSource<V>).value;
+  }
+
+  MixToken<V> get token {
+    if (source is! MixPropTokenSource<V>) {
+      throw FlutterError('MixProp<$V> does not have a token source');
+    }
+
+    return (source as MixPropTokenSource<V>).token;
+  }
+
+  // Helper methods for MixProp
+
+  bool get hasValue => source is MixPropValueSource<V>;
+
+  bool get hasToken => source is MixPropTokenSource<V>;
+  @visibleForTesting
+  V resolveFromMixSources(
+    List<MixPropSource<V>> sources,
+    BuildContext context,
+  ) {
+    return sources
+        .map(
+          (source) => switch (source) {
+            MixPropValueSource<V> valueSource => valueSource.value,
+            MixPropTokenSource<V> tokenSource => tokenSource.convertToMix(
+              MixScope.tokenOf(tokenSource.token, context),
+            ),
+            _ => throw FlutterError('Unsupported MixPropSource type: $source'),
+          },
+        )
+        .toList()
+        .reduce((a, b) => a.merge(b))
+        .resolve(context);
+  }
 
   @override
-  T resolve(BuildContext context) => value;
+  V resolve(BuildContext context) {
+    if (source == null) {
+      throw FlutterError('MixProp<$V> has no source defined');
+    }
+
+    // Resolve the value from the source
+    final resolvedValue = switch (source) {
+      MixPropValueSource<V> valueSource => valueSource.value.resolve(context),
+      MixPropTokenSource<V> tokenSource => MixScope.tokenOf(
+        tokenSource.token,
+        context,
+      ),
+      MixPropAccumulativeSource<V> accumulativeSource => resolveFromMixSources(
+        accumulativeSource.sources,
+        context,
+      ),
+      _ => throw FlutterError(
+        'Unsupported MixPropSource type: ${source ?? 'null'}',
+      ),
+    };
+
+    // Apply directives if any
+    return applyDirectives(resolvedValue);
+  }
 
   @override
-  String toString() => 'ValueSource($value)';
+  MixProp<V> merge(MixProp<V>? other) {
+    if (other == null) return this;
+
+    // Type-safe: we know other must be a MixProp
+    final otherMixProp = other;
+
+    // Merge sources using accumulation strategy
+    final mergedSource = _mergeMixSources(source, otherMixProp.source);
+
+    return MixProp._(
+      source: mergedSource,
+      directives: mergeDirectives(other.directives),
+      animation: mergeAnimation(other.animation),
+    );
+  }
+
+  @override
+  String toString() {
+    final parts = <String>[];
+    if (source != null) parts.add('source: $source');
+    if (directives?.isNotEmpty == true) {
+      parts.add('directives: ${directives!.length}');
+    }
+    if (animation != null) parts.add('animated');
+
+    return 'MixProp(${parts.join(', ')})';
+  }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is ValueSource<T> && other.value == value;
+    return other is MixProp<V> &&
+        other.source == source &&
+        listEquals(other.directives, directives) &&
+        other.animation == animation;
   }
 
   @override
-  int get hashCode => value.hashCode;
+  int get hashCode => Object.hash(source, directives, animation);
 }
-
-/// Source for token references
-@immutable
-class TokenSource<T> extends PropSource<T> {
-  final MixToken<T> token;
-
-  const TokenSource(this.token);
-
-  @override
-  T resolve(BuildContext context) {
-    final value = MixScope.tokenOf(token, context);
-    if (value == null) {
-      throw FlutterError(
-        'Could not resolve token: $token was not found in context',
-      );
-    }
-
-    return value;
-  }
-
-  @override
-  String toString() => 'TokenSource($token)';
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is TokenSource<T> && other.token == token;
-  }
-
-  @override
-  int get hashCode => token.hashCode;
-}
-
-/// Accumulative source for Mix types that merges all sources
-@immutable
-class AccumulativePropSource<T> extends PropSource<T> {
-  final List<PropSource<T>> sources;
-  @protected
-  const AccumulativePropSource._(this.sources);
-
-  factory AccumulativePropSource(List<PropSource<T>> sources) {
-    final sourceList = <PropSource<T>>[];
-
-    for (final source in sources) {
-      if (source is AccumulativePropSource<T>) {
-        sourceList.addAll(source.sources);
-      } else {
-        sourceList.add(source);
-      }
-    }
-
-    return AccumulativePropSource._(sourceList);
-  }
-
-  AccumulativePropSource<T> merge(AccumulativePropSource<T>? other) {
-    return AccumulativePropSource._([...sources, ...?other?.sources]);
-  }
-
-  @override
-  T resolve(BuildContext context) {
-    if (sources.isEmpty) {
-      throw StateError('AccumulativePropSource has no sources to resolve');
-    }
-
-    final resolveValues = sources.map((s) {
-      return switch (s) {
-        ValueSource<T> valueSource => valueSource.value,
-        TokenSource<T> tokenSource => tokenSource.resolve(context),
-        _ => throw FlutterError(
-          'Unsupported PropSource type: ${s.runtimeType}',
-        ),
-      };
-    }).toList();
-
-    if (resolveValues.length == 1) {
-      // If there's only one value, return it directly
-      return resolveValues.first;
-    }
-
-    final firstValue = resolveValues.first;
-
-    if (firstValue is Mix) {
-      // If the first value is a Mix, merge all values
-      return (resolveValues as List<Mix>).reduce((a, b) => a.merge(b)) as T;
-    }
-
-    // If all sources are Mix, merge them
-    return resolveValues.last;
-  }
-
-  @override
-  String toString() => 'AccumulativePropSource(${sources.length} sources)';
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is AccumulativePropSource<T> &&
-        listEquals(other.sources, sources);
-  }
-
-  @override
-  int get hashCode => Object.hashAll(sources);
-}
-
-typedef MixProp<T> = Prop<Mix<T>>;

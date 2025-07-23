@@ -15,10 +15,10 @@ void main() {
           strokeAlign: 1.0,
         );
 
-        expect(borderSideMix.color, isProp(Colors.red));
-        expect(borderSideMix.width, isProp(2.0));
-        expect(borderSideMix.style, isProp(BorderStyle.solid));
-        expect(borderSideMix.strokeAlign, isProp(1.0));
+        expectProp(borderSideMix.color, Colors.red);
+        expectProp(borderSideMix.width, 2.0);
+        expectProp(borderSideMix.style, BorderStyle.solid);
+        expectProp(borderSideMix.strokeAlign, 1.0);
       });
 
       test('value constructor extracts properties from BorderSide', () {
@@ -31,10 +31,10 @@ void main() {
 
         final borderSideMix = BorderSideMix.value(borderSide);
 
-        expect(borderSideMix.color, isProp(Colors.blue));
-        expect(borderSideMix.width, isProp(3.0));
-        expect(borderSideMix.style, isProp(BorderStyle.solid));
-        expect(borderSideMix.strokeAlign, isProp(0.5));
+        expectProp(borderSideMix.color, Colors.blue);
+        expectProp(borderSideMix.width, 3.0);
+        expectProp(borderSideMix.style, BorderStyle.solid);
+        expectProp(borderSideMix.strokeAlign, 0.5);
       });
 
       test('maybeValue returns null for null input', () {
@@ -47,14 +47,18 @@ void main() {
         final result = BorderSideMix.maybeValue(borderSide);
 
         expect(result, isNotNull);
-        expect(result!.width, isProp(1.0));
+        expectProp(result!.width, 1.0);
       });
 
       test('none static instance has correct properties', () {
         final none = BorderSideMix.none;
 
-        expect(none.style, isProp(BorderStyle.none));
-        expect(none.width, isProp(0.0));
+        // BorderSideMix.none is created with BorderSideMix() (no parameters)
+        // so all properties are null
+        expect(none.style, isNull);
+        expect(none.width, isNull);
+        expect(none.color, isNull);
+        expect(none.strokeAlign, isNull);
       });
     });
 
@@ -101,9 +105,12 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.color, isProp(Colors.red));
-        expect(merged.width, isProp(3.0));
-        expect(merged.style, isProp(BorderStyle.solid));
+        // Property that exists only in first remains as direct value
+        expectProp(merged.color, Colors.red);
+        // Property that exists in both becomes accumulated with second overriding first
+        expectProp(merged.width, [2.0, 3.0]);
+        // Property that exists only in second remains as direct value
+        expectProp(merged.style, BorderStyle.solid);
       });
     });
 

@@ -4,6 +4,157 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 // =============================================================================
+// CORE TEST MATCHERS - Mix 2.0
+//
+// This file provides two core matchers for testing Mix components:
+// 1. expectProp() - Tests Prop structure (values, tokens, accumulated values)
+// 2. resolvesTo() - Matcher for testing what Resolvable types resolve to
+// =============================================================================
+
+/// Tests the structure of a Prop - what it contains (value, token, or accumulated values)
+/// 
+/// Usage:
+/// ```dart
+/// // For direct values
+/// expectProp(colorProp, Colors.red);  // Matches Prop(Colors.red)
+/// 
+/// // For Mix values  
+/// expectProp(paddingProp, EdgeInsetsMix.all(10));  // Matches Prop(EdgeInsetsMix.all(10))
+/// 
+/// // For tokens
+/// expectProp(colorProp, MixToken<Color>('primary'));  // Matches Prop.token(MixToken<Color>('primary'))
+/// 
+/// // For accumulated values (merged props)
+/// expectProp(mergedProp, [Colors.red, MixToken<Color>('primary'), Colors.blue]);
+/// ```
+void expectProp<T>(Prop<T>? prop, dynamic expected) {
+  if (prop == null) {
+    fail('Expected Prop<$T> to exist, but was null');
+  }
+
+  final source = prop.source;
+  
+  if (expected is List) {
+    // Expecting accumulated values
+    if (source is! AccumulativePropSource<T>) {
+      fail('Expected Prop<$T> with accumulated values, but got ${source.runtimeType}');
+    }
+    
+    final actualValues = <dynamic>[];
+    for (final s in source.sources) {
+      if (s is ValueSource<T>) {
+        actualValues.add(s.value);
+      } else if (s is TokenSource<T>) {
+        actualValues.add(s.token);
+      } else {
+        fail('Unknown source type in AccumulativePropSource: ${s.runtimeType}');
+      }
+    }
+    
+    expect(actualValues, equals(expected),
+        reason: 'Prop<$T> accumulated values do not match expected');
+  } else if (expected is MixToken<T>) {
+    // Expecting a token
+    if (source is! TokenSource<T>) {
+      fail('Expected Prop<$T> with token, but got ${source.runtimeType}');
+    }
+    
+    expect(source.token, equals(expected),
+        reason: 'Prop<$T> token does not match expected');
+  } else {
+    // Expecting a direct value
+    if (source is! ValueSource<T>) {
+      fail('Expected Prop<$T> with direct value, but got ${source.runtimeType}');
+    }
+    
+    expect(source.value, equals(expected),
+        reason: 'Prop<$T> value does not match expected');
+  }
+}
+
+/// Creates a matcher that tests what a Resolvable resolves to
+/// 
+/// Usage:
+/// ```dart
+/// // For any Resolvable type
+/// expect(colorMix, resolvesTo(Colors.red));
+/// expect(paddingAttribute, resolvesTo(EdgeInsets.all(10)));
+/// expect(widthProp, resolvesTo(100.0));
+/// 
+/// // With custom context for token resolution
+/// final context = MockBuildContext(
+///   mixScopeData: MixScopeData.static(tokens: {
+///     MixToken<Color>('primary'): Colors.blue,
+///   }),
+/// );
+/// expect(tokenProp, resolvesTo(Colors.blue).withContext(context));
+/// ```
+Matcher resolvesTo<T>(T expected, {BuildContext? context}) {
+  return _ResolvesToMatcher<T>(expected, context);
+}
+
+class _ResolvesToMatcher<T> extends Matcher {
+  final T expected;
+  final BuildContext? context;
+
+  const _ResolvesToMatcher(this.expected, this.context);
+
+  @override
+  bool matches(dynamic item, Map matchState) {
+    if (item is! Resolvable<T>) {
+      matchState['error'] = 'Expected Resolvable<$T>, but got ${item.runtimeType}';
+      return false;
+    }
+
+    try {
+      final ctx = context ?? MockBuildContext();
+      final resolved = item.resolve(ctx);
+      return resolved == expected;
+    } catch (e) {
+      matchState['error'] = 'Failed to resolve: $e';
+      return false;
+    }
+  }
+
+  @override
+  Description describe(Description description) {
+    return description.add('resolves to ').addDescriptionOf(expected);
+  }
+
+  @override
+  Description describeMismatch(
+    dynamic item,
+    Description mismatchDescription,
+    Map matchState,
+    bool verbose,
+  ) {
+    if (matchState.containsKey('error')) {
+      return mismatchDescription.add(matchState['error']);
+    }
+
+    if (item is Resolvable<T>) {
+      try {
+        final ctx = context ?? MockBuildContext();
+        final resolved = item.resolve(ctx);
+        return mismatchDescription
+            .add('resolved to ')
+            .addDescriptionOf(resolved)
+            .add(' instead of ')
+            .addDescriptionOf(expected);
+      } catch (e) {
+        return mismatchDescription.add('failed to resolve: $e');
+      }
+    }
+
+    return mismatchDescription
+        .add('was ')
+        .addDescriptionOf(item)
+        .add(' which is not a Resolvable<$T>');
+  }
+
+}
+
+// =============================================================================
 // MOCK BUILD CONTEXT
 // =============================================================================
 
@@ -69,409 +220,24 @@ class MockBuildContext extends BuildContext {
 }
 
 // =============================================================================
-// MOCK MIX CLASSES
+// ADDITIONAL TEST UTILITIES
 // =============================================================================
 
-/// Mock Mix class for testing Mix behavior and accumulation
-class MockMix<T> extends Mix<T> {
-  final String id;
-  final T value;
-
-  MockMix(this.id, this.value);
-
-  @override
-  T resolve(BuildContext context) => value;
-
-  @override
-  Mix<T> merge(Mix<T> other) {
-    if (other is MockMix<T>) {
-      // Concatenate IDs to track merge order
-      return MockMix<T>('$id+${other.id}', value);
-    }
-    return this;
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is MockMix<T> && other.id == id && other.value == value;
-
-  @override
-  int get hashCode => Object.hash(id, value);
-
-  @override
-  String toString() => 'MockMix($id, $value)';
-}
-
-/// Mock MixDirective for testing
-class MockMixDirective<T> extends MixDirective<T> {
-  final String name;
-  final T Function(T) transformer;
-
-  const MockMixDirective(this.name, this.transformer);
-
-  @override
-  String get key => name;
-
-  @override
-  T apply(T value) => transformer(value);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is MockMixDirective<T> &&
-          runtimeType == other.runtimeType &&
-          name == other.name;
-
-  @override
-  int get hashCode => name.hashCode;
-
-  @override
-  String toString() => 'MockMixDirective($name)';
-}
-
-/// Mock MixScope for token resolution in tests
-class MockMixScope extends StatelessWidget {
-  final Map<MixToken, Object> tokens;
-  final Widget child;
-
-  const MockMixScope({required this.tokens, required this.child, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MixScope(
-      data: MixScopeData.static(tokens: tokens),
-      child: child,
-    );
-  }
-}
-
-/// Helper to create test animation configurations
-ImplicitAnimationConfig createMockAnimation(String name) {
-  return AnimationConfig.linear(
-    Duration(milliseconds: name.hashCode % 1000 + 100),
-  );
-}
-
-/// Simple fake context for basic testing (minimal implementation)
-class FakeBuildContext extends BuildContext {
-  @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
-}
-// =============================================================================
-// CUSTOM MATCHERS
-// =============================================================================
-
-/// Checks if a Mix<T> or Resolvable<T> resolves to expected value
+/// Mock attribute for testing utilities - handles both Prop<T> and Prop<Mix<T>>
+///
+/// This is a universal SpecMix that can wrap any prop type for testing purposes.
+/// Used with utilities that expect a SpecMix builder function.
 ///
 /// Usage:
 /// ```dart
-/// expect(borderMix, resolvesTo(Border.all(width: 2.0)));
-/// expect(colorProp, resolvesTo(Colors.red));
-/// expect(mix.width, resolvesTo(2.0));
-/// ```
-Matcher resolvesTo<T>(T expectedValue, {BuildContext? context}) {
-  return _ResolvesToMatcher<T>(expectedValue, context ?? MockBuildContext());
-}
-
-/// Checks if a value is a Prop<T> with the expected value
+/// // For PropUtility (takes Prop<T>)
+/// final colorUtility = ColorUtility(UtilityTestAttribute.new);
+/// final attr = colorUtility(Colors.red);
 ///
-/// Usage:
-/// ```dart
-/// expect(strutStyleMix.fontSize, isProp(16.0));
-/// expect(strutStyleMix.fontFamily, isProp('Roboto'));
+/// // For MixPropUtility (takes Prop<Mix<T>>)
+/// final gradientUtility = GradientUtility(UtilityTestAttribute.new);
+/// final attr = gradientUtility.linear(...);
 /// ```
-Matcher isProp<T>(T expectedValue) {
-  return _IsPropMatcher<T>(expectedValue);
-}
-
-/// Checks if a value is a Prop<T> with a token reference
-///
-/// Usage:
-/// ```dart
-/// expect(colorProp, isPropWithToken<Color>());
-/// ```
-Matcher isPropWithToken<T>() {
-  return _IsPropWithTokenMatcher<T>();
-}
-
-/// Checks if a Prop has a direct value (not a token)
-///
-/// Usage:
-/// ```dart
-/// expect(colorProp, hasValue(Colors.red));
-/// ```
-Matcher hasValue<T>(T expectedValue) {
-  return _HasValueMatcher<T>(expectedValue);
-}
-
-/// Checks if a Prop has a token reference
-///
-/// Usage:
-/// ```dart
-/// expect(colorProp, hasToken<Color>());
-/// ```
-Matcher hasToken<T>() {
-  return _HasTokenMatcher<T>();
-}
-
-// =============================================================================
-// MATCHER IMPLEMENTATIONS
-// =============================================================================
-
-class _ResolvesToMatcher<T> extends Matcher {
-  final T expectedValue;
-  final BuildContext context;
-
-  const _ResolvesToMatcher(this.expectedValue, this.context);
-
-  @override
-  bool matches(dynamic item, Map matchState) {
-    if (item == null) {
-      matchState['error'] = 'Cannot resolve null';
-      return false;
-    }
-
-    // Handle Resolvable (includes all DTOs and Props)
-    if (item is Resolvable) {
-      try {
-        final resolved = item.resolve(context);
-
-        // If expectedValue is a Matcher, delegate to it
-        if (expectedValue is Matcher) {
-          return (expectedValue as Matcher).matches(resolved, matchState);
-        }
-
-        // Direct equality check
-        if (resolved != expectedValue) {
-          matchState['actual'] = resolved;
-          return false;
-        }
-        return true;
-      } catch (e) {
-        matchState['error'] = 'Failed to resolve: $e';
-        return false;
-      }
-    }
-
-    matchState['error'] =
-        'Expected Resolvable implementation, got ${item.runtimeType}';
-    return false;
-  }
-
-  @override
-  Description describe(Description description) {
-    return description.add('resolves to ').addDescriptionOf(expectedValue);
-  }
-
-  @override
-  Description describeMismatch(
-    dynamic item,
-    Description mismatchDescription,
-    Map matchState,
-    bool verbose,
-  ) {
-    if (matchState.containsKey('error')) {
-      return mismatchDescription.add(matchState['error']);
-    }
-
-    if (matchState.containsKey('actual')) {
-      return mismatchDescription
-          .add('resolved to ')
-          .addDescriptionOf(matchState['actual']);
-    }
-
-    return mismatchDescription.add('was ').addDescriptionOf(item);
-  }
-}
-
-class _IsPropMatcher<T> extends Matcher {
-  final T expectedValue;
-
-  const _IsPropMatcher(this.expectedValue);
-
-  @override
-  bool matches(dynamic item, Map matchState) {
-    if (item is! Prop<T>) {
-      matchState['error'] = 'Expected Prop<$T>, got ${item.runtimeType}';
-      return false;
-    }
-
-    try {
-      final actualValue = item.getValue();
-      if (actualValue != expectedValue) {
-        matchState['actual'] = actualValue;
-        return false;
-      }
-      return true;
-    } catch (e) {
-      matchState['error'] = 'Prop has no value (might be token or empty): $e';
-      return false;
-    }
-  }
-
-  @override
-  Description describe(Description description) {
-    return description
-        .add('is Prop<$T> with value ')
-        .addDescriptionOf(expectedValue);
-  }
-
-  @override
-  Description describeMismatch(
-    dynamic item,
-    Description mismatchDescription,
-    Map matchState,
-    bool verbose,
-  ) {
-    if (matchState.containsKey('error')) {
-      return mismatchDescription.add(matchState['error']);
-    }
-
-    if (matchState.containsKey('actual')) {
-      return mismatchDescription
-          .add('was Prop<$T> with value ')
-          .addDescriptionOf(matchState['actual']);
-    }
-
-    return mismatchDescription.add('was ').addDescriptionOf(item);
-  }
-}
-
-class _IsPropWithTokenMatcher<T> extends Matcher {
-  const _IsPropWithTokenMatcher();
-
-  @override
-  bool matches(dynamic item, Map matchState) {
-    if (item is! Prop<T>) {
-      matchState['error'] = 'Expected Prop<$T>, got ${item.runtimeType}';
-      return false;
-    }
-
-    try {
-      item.getToken();
-      return true;
-    } catch (e) {
-      matchState['error'] = 'Prop has no token: $e';
-      return false;
-    }
-  }
-
-  @override
-  Description describe(Description description) {
-    return description.add('is Prop<$T> with token');
-  }
-
-  @override
-  Description describeMismatch(
-    dynamic item,
-    Description mismatchDescription,
-    Map matchState,
-    bool verbose,
-  ) {
-    if (matchState.containsKey('error')) {
-      return mismatchDescription.add(matchState['error']);
-    }
-
-    return mismatchDescription.add('was ').addDescriptionOf(item);
-  }
-}
-
-class _HasValueMatcher<T> extends Matcher {
-  final T expectedValue;
-
-  const _HasValueMatcher(this.expectedValue);
-
-  @override
-  bool matches(dynamic item, Map matchState) {
-    if (item is! Prop<T>) {
-      matchState['error'] = 'Expected Prop<$T>, got ${item.runtimeType}';
-      return false;
-    }
-
-    try {
-      final actualValue = item.getValue();
-      if (actualValue != expectedValue) {
-        matchState['actual'] = actualValue;
-        return false;
-      }
-      return true;
-    } catch (e) {
-      matchState['error'] = 'Prop has no value (might be token or empty): $e';
-      return false;
-    }
-  }
-
-  @override
-  Description describe(Description description) {
-    return description.add('has value ').addDescriptionOf(expectedValue);
-  }
-
-  @override
-  Description describeMismatch(
-    dynamic item,
-    Description mismatchDescription,
-    Map matchState,
-    bool verbose,
-  ) {
-    if (matchState.containsKey('error')) {
-      return mismatchDescription.add(matchState['error']);
-    }
-
-    if (matchState.containsKey('actual')) {
-      return mismatchDescription
-          .add('had value ')
-          .addDescriptionOf(matchState['actual']);
-    }
-
-    return mismatchDescription.add('was ').addDescriptionOf(item);
-  }
-}
-
-class _HasTokenMatcher<T> extends Matcher {
-  const _HasTokenMatcher();
-
-  @override
-  bool matches(dynamic item, Map matchState) {
-    if (item is! Prop<T>) {
-      matchState['error'] = 'Expected Prop<$T>, got ${item.runtimeType}';
-      return false;
-    }
-
-    try {
-      item.getToken();
-      return true;
-    } catch (e) {
-      matchState['error'] = 'Prop has no token: $e';
-      return false;
-    }
-  }
-
-  @override
-  Description describe(Description description) {
-    return description.add('has token of type $T');
-  }
-
-  @override
-  Description describeMismatch(
-    dynamic item,
-    Description mismatchDescription,
-    Map matchState,
-    bool verbose,
-  ) {
-    if (matchState.containsKey('error')) {
-      return mismatchDescription.add(matchState['error']);
-    }
-
-    return mismatchDescription.add('was ').addDescriptionOf(item);
-  }
-}
-
-// =============================================================================
-// TEST UTILITIES & MOCKS
-// =============================================================================
-
-/// Mock attribute for testing utilities
 final class UtilityTestAttribute<T> extends SpecStyle<MockSpec> {
   final T value;
 
@@ -506,7 +272,10 @@ final class UtilityTestAttribute<T> extends SpecStyle<MockSpec> {
   List<Object?> get props => [value];
 }
 
-/// Mock spec for testing
+/// Mock spec for testing purposes
+///
+/// A simple Spec implementation that holds a resolved value.
+/// Used as the target spec for mock attributes.
 final class MockSpec extends Spec<MockSpec> {
   final dynamic resolvedValue;
 
@@ -515,6 +284,7 @@ final class MockSpec extends Spec<MockSpec> {
   @override
   MockSpec lerp(MockSpec? other, double t) {
     if (other == null) return this;
+    // Simple lerp - just return other for testing
     return other;
   }
 
@@ -526,26 +296,6 @@ final class MockSpec extends Spec<MockSpec> {
   @override
   List<Object?> get props => [resolvedValue];
 }
-
-// =============================================================================
-// TESTING WIDGETS
-// =============================================================================
-
-/// Widget that builds using a provided builder function for testing purposes
-class WidgetWithTestableBuild extends StatelessWidget {
-  final void Function(BuildContext) builder;
-
-  const WidgetWithTestableBuild(this.builder, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    builder(context);
-    return const SizedBox();
-  }
-}
-
-/// Alias for MultiStyleProvider for backward compatibility in tests
-typedef MixProvider = MultiStyleProvider;
 
 // =============================================================================
 // WIDGET TESTER EXTENSIONS
@@ -565,19 +315,9 @@ extension WidgetTesterExtension on WidgetTester {
     );
   }
 
-  /// Pump widget with pressable state
-  Future<void> pumpWithPressable(
-    Widget widget, {
-    bool disabled = false,
-    bool focused = false,
-    bool hovered = false,
-    bool pressed = false,
-  }) async {
-    await pumpWithMixScope(Interactable(child: widget));
-  }
-
   /// Pump widget wrapped in MaterialApp
   Future<void> pumpMaterialApp(Widget widget) async {
     await pumpWidget(MaterialApp(home: Scaffold(body: widget)));
   }
 }
+

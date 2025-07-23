@@ -96,10 +96,10 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
     BorderSideMix? left,
     BorderSideMix? right,
   }) : this(
-         top: Prop.maybe(top),
-         bottom: Prop.maybe(bottom),
-         left: Prop.maybe(left),
-         right: Prop.maybe(right),
+         top: MixProp.maybe(top),
+         bottom: MixProp.maybe(bottom),
+         left: MixProp.maybe(left),
+         right: MixProp.maybe(right),
        );
 
   const BorderMix({super.top, super.bottom, this.left, this.right});
@@ -162,10 +162,10 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
   @override
   Border resolve(BuildContext context) {
     return Border(
-      top: MixHelpers.resolveMix(context, top) ?? BorderSide.none,
-      right: MixHelpers.resolveMix(context, right) ?? BorderSide.none,
-      bottom: MixHelpers.resolveMix(context, bottom) ?? BorderSide.none,
-      left: MixHelpers.resolveMix(context, left) ?? BorderSide.none,
+      top: MixHelpers.resolve(context, top) ?? BorderSide.none,
+      right: MixHelpers.resolve(context, right) ?? BorderSide.none,
+      bottom: MixHelpers.resolve(context, bottom) ?? BorderSide.none,
+      left: MixHelpers.resolve(context, left) ?? BorderSide.none,
     );
   }
 
@@ -224,10 +224,10 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
     BorderSideMix? start,
     BorderSideMix? end,
   }) : this(
-         top: Prop.maybe(top),
-         bottom: Prop.maybe(bottom),
-         start: Prop.maybe(start),
-         end: Prop.maybe(end),
+         top: MixProp.maybe(top),
+         bottom: MixProp.maybe(bottom),
+         start: MixProp.maybe(start),
+         end: MixProp.maybe(end),
        );
 
   const BorderDirectionalMix({super.top, super.bottom, this.start, this.end});
@@ -289,10 +289,10 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
   @override
   BorderDirectional resolve(BuildContext context) {
     return BorderDirectional(
-      top: MixHelpers.resolveMix(context, top) ?? defaultValue.top,
-      start: MixHelpers.resolveMix(context, start) ?? defaultValue.start,
-      end: MixHelpers.resolveMix(context, end) ?? defaultValue.end,
-      bottom: MixHelpers.resolveMix(context, bottom) ?? defaultValue.bottom,
+      top: MixHelpers.resolve(context, top) ?? defaultValue.top,
+      start: MixHelpers.resolve(context, start) ?? defaultValue.start,
+      end: MixHelpers.resolve(context, end) ?? defaultValue.end,
+      bottom: MixHelpers.resolve(context, bottom) ?? defaultValue.bottom,
     );
   }
 

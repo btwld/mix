@@ -85,5 +85,5 @@ final class TextStyleUtility<T extends SpecStyle<Object?>>
       call(TextStyleMix.only(fontFamilyFallback: v));
 
   @override
-  T call(TextStyleMix value) => builder(Prop(value));
+  T call(TextStyleMix value) => builder(MixProp(value));
 }

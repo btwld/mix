@@ -90,7 +90,7 @@ class _ImplicitAnimationWidgetState<S extends Spec<S>>
   ResolvedStyleTween<S>? _resolved;
 
   @override
-  void forEachTween(TweenVisitor<dynamic> visitor) {
+  void forEachTween(TweenVisitor<Object?> visitor) {
     final resolved = widget.style.resolve(context);
     _resolved =
         visitor(

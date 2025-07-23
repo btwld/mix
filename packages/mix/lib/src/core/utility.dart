@@ -33,61 +33,65 @@ abstract interface class PropBaseUtility<U extends SpecStyle<Object?>, Value> {
 ///
 /// Used for simple types like Color, double, FontWeight, etc.
 @immutable
+@immutable
 abstract class PropUtility<U extends SpecStyle<Object?>, Value>
     extends PropBaseUtility<U, Value> {
   final U Function(Prop<Value>) builder;
   const PropUtility(this.builder);
 
+  /// Creates a Prop with a direct value
   U call(Value value) => builder(Prop(value));
 
-  /// Creates a list utility that can work with lists of this utility's value type
-  ///
-  /// Usage:
-  /// ```dart
-  /// final colorUtil = ColorUtility<TestAttribute>((prop) => TestAttribute(prop));
-  /// final colorListUtil = colorUtil.list((propList) => TestListAttribute(propList));
-  /// final attr = colorListUtil([Colors.red, Colors.blue]);
-  /// ```
-  PropListUtility<U, Value> list(U Function(List<Prop<Value>>) listBuilder) {
-    return PropListUtility(listBuilder);
-  }
-
-  /// Token support
+  /// Token support - creates Prop with token
   @override
   U token(MixToken<Value> token) => builder(Prop.token(token));
 
-  /// Single directive support
   @override
-  U directive(MixDirective<Value> directive) =>
-      builder(Prop.directives([directive]));
+  U directive(MixDirective<Value> directive) {
+    return builder(Prop.directives([directive]));
+  }
 
-  /// Animation support
+  /// Animation support - creates animated Prop (requires token for now)
   @override
-  U animate(AnimationConfig animation) => builder(Prop.animation(animation));
+  U animate(AnimationConfig animation) {
+    // Note: This creates an animated Prop without a source
+    // The actual source will need to be provided later via merge
+    return builder(Prop.animation(animation));
+  }
 }
 
 @immutable
 abstract class MixPropUtility<U extends SpecStyle<Object?>, Value>
-    extends PropBaseUtility<U, Mix<Value>> {
+    extends PropBaseUtility<U, Value> {
   final Mix<Value> Function(Value) convertToMix;
   @protected
   final U Function(MixProp<Value>) builder;
 
   const MixPropUtility(this.builder, {required this.convertToMix});
 
-  U call(covariant Mix<Value> value);
+  /// Creates a MixProp with a Mix value
+  U call(covariant Mix<Value> value) => builder(MixProp(value));
 
+  /// Creates a MixProp from a raw value (converts to Mix)
   U as(Value value) => call(convertToMix(value));
 
+  /// Token support - expects MixToken<Value> (raw type)
+  /// Uses MixProp.token with conversion function
   @override
-  U token(MixToken<Mix<Value>> token) => builder(Prop.token(token));
+  U token(MixToken<Value> token) => builder(MixProp.token(token, convertToMix));
 
   @override
-  U directive(MixDirective<Mix<Value>> directive) =>
-      builder(Prop.directives([directive]));
+  U directive(MixDirective<Value> directive) {
+    return builder(MixProp.directives([directive]));
+  }
 
+  /// Animation support - creates animated MixProp
   @override
-  U animate(AnimationConfig animation) => builder(Prop.animation(animation));
+  U animate(AnimationConfig animation) {
+    // Note: This creates an animated MixProp without a source
+    // The actual source will need to be provided later via merge
+    return builder(MixProp.animation(animation));
+  }
 }
 
 /// Utility base class for spec utilities
@@ -128,21 +132,13 @@ final class PropListUtility<T extends SpecStyle<Object?>, V>
   /// Creates a list attribute from a list of values
   /// Each value is wrapped in a Prop<V> and passed to the builder
   T call(List<V> values) {
-    final propList = values.map(Prop.new).toList();
+    final propList = values.map((v) => Prop(v)).toList();
 
     return builder(propList);
   }
 
   T tokens(List<MixToken<V>> tokens) {
-    final propList = tokens.map(Prop.token).toList();
-
-    return builder(propList);
-  }
-
-  T directives(List<MixDirective<V>> directives) {
-    final propList = directives
-        .map((directive) => Prop.directives([directive]))
-        .toList();
+    final propList = tokens.map((t) => Prop.token(t)).toList();
 
     return builder(propList);
   }
@@ -167,39 +163,28 @@ final class PropListUtility<T extends SpecStyle<Object?>, V>
 /// final attr4 = boxShadows.directives([directive1, directive2]);     // directives()
 /// ```
 @immutable
-final class MixPropListUtility<
-  T extends SpecStyle<Object?>,
-  V,
-  M extends Mix<V>
->
-    extends MixUtility<T, List<Prop<M>>> {
-  final M Function(V) convertToMix;
+final class MixPropListUtility<T extends SpecStyle<Object?>, V>
+    extends MixUtility<T, List<MixProp<V>>> {
+  final Mix<V> Function(V) convertToMix;
   const MixPropListUtility(super.builder, this.convertToMix);
 
-  /// Creates a list attribute from a list of values
-  /// Each value is converted to Mixable<V> then wrapped in MixProp<V>
-  T call(List<M> values) {
-    final props = values.map(Prop.new).toList();
+  /// Creates a list attribute from a list of Mix values
+  T call(List<Mix<V>> values) {
+    final props = values.map((v) => MixProp(v)).toList();
 
     return builder(props);
   }
 
+  /// Creates a list from raw values (converts to Mix)
   T as(List<V> values) {
-    final props = values.map(convertToMix).map(Prop.new).toList();
+    final props = values.map(convertToMix).map((v) => MixProp(v)).toList();
 
     return builder(props);
   }
 
-  T tokens(List<MixToken<M>> tokens) {
-    final propList = tokens.map((t) => Prop.token(t)).toList();
-
-    return builder(propList);
-  }
-
-  T directives(List<MixDirective<M>> directives) {
-    final propList = directives
-        .map((directive) => Prop.directives([directive]))
-        .toList();
+  /// Creates a list from tokens that store V (need conversion)
+  T tokens(List<MixToken<V>> tokens) {
+    final propList = tokens.map((t) => MixProp.token(t, convertToMix)).toList();
 
     return builder(propList);
   }

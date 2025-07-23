@@ -56,5 +56,5 @@ final class DecorationImageUtility<T extends SpecStyle<Object?>>
     : super(convertToMix: DecorationImageMix.value);
 
   @override
-  T call(DecorationImageMix value) => builder(Prop(value));
+  T call(DecorationImageMix value) => builder(MixProp(value));
 }

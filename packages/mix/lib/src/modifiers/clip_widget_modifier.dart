@@ -381,7 +381,7 @@ class ClipRRectModifierAttribute extends ModifierAttribute<ClipRRectModifier> {
     CustomClipper<RRect>? clipper,
     Clip? clipBehavior,
   }) : this(
-         borderRadius: Prop.maybe(borderRadius),
+         borderRadius: MixProp.maybe(borderRadius),
          clipper: Prop.maybe(clipper),
          clipBehavior: Prop.maybe(clipBehavior),
        );
@@ -397,7 +397,7 @@ class ClipRRectModifierAttribute extends ModifierAttribute<ClipRRectModifier> {
   @override
   ClipRRectModifier resolve(BuildContext context) {
     return ClipRRectModifier(
-      borderRadius: MixHelpers.resolveMix(context, borderRadius),
+      borderRadius: MixHelpers.resolve(context, borderRadius),
       clipper: MixHelpers.resolve(context, clipper),
       clipBehavior: MixHelpers.resolve(context, clipBehavior),
     );
@@ -715,9 +715,7 @@ final class ClipRRectModifierUtility<T extends SpecStyle<Object?>>
   }) {
     return builder(
       ClipRRectModifierAttribute(
-        borderRadius: Prop.maybe(
-          borderRadius != null ? BorderRadiusMix.value(borderRadius) : null,
-        ),
+        borderRadius: MixProp.maybe(BorderRadiusMix.maybeValue(borderRadius)),
         clipper: Prop.maybe(clipper),
         clipBehavior: Prop.maybe(clipBehavior),
       ),

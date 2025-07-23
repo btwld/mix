@@ -15,10 +15,10 @@ void main() {
           maxHeight: 200.0,
         );
 
-        expect(constraintsMix.minWidth, isProp(50.0));
-        expect(constraintsMix.maxWidth, isProp(150.0));
-        expect(constraintsMix.minHeight, isProp(100.0));
-        expect(constraintsMix.maxHeight, isProp(200.0));
+        expectProp(constraintsMix.minWidth, 50.0);
+        expectProp(constraintsMix.maxWidth, 150.0);
+        expectProp(constraintsMix.minHeight, 100.0);
+        expectProp(constraintsMix.maxHeight, 200.0);
       });
 
       test('value constructor extracts properties from BoxConstraints', () {
@@ -31,10 +31,10 @@ void main() {
 
         final constraintsMix = BoxConstraintsMix.value(constraints);
 
-        expect(constraintsMix.minWidth, isProp(25.0));
-        expect(constraintsMix.maxWidth, isProp(125.0));
-        expect(constraintsMix.minHeight, isProp(75.0));
-        expect(constraintsMix.maxHeight, isProp(175.0));
+        expectProp(constraintsMix.minWidth, 25.0);
+        expectProp(constraintsMix.maxWidth, 125.0);
+        expectProp(constraintsMix.minHeight, 75.0);
+        expectProp(constraintsMix.maxHeight, 175.0);
       });
 
       test('maybeValue returns null for null input', () {
@@ -47,24 +47,24 @@ void main() {
         final result = BoxConstraintsMix.maybeValue(constraints);
 
         expect(result, isNotNull);
-        expect(result!.minWidth, isProp(10.0));
+        expectProp(result!.minWidth, 10.0);
       });
 
       test('named constructors work correctly', () {
         final minWidthMix = BoxConstraintsMix.minWidth(50.0);
-        expect(minWidthMix.minWidth, isProp(50.0));
+        expectProp(minWidthMix.minWidth, 50.0);
         expect(minWidthMix.maxWidth, isNull);
 
         final maxWidthMix = BoxConstraintsMix.maxWidth(150.0);
-        expect(maxWidthMix.maxWidth, isProp(150.0));
+        expectProp(maxWidthMix.maxWidth, 150.0);
         expect(maxWidthMix.minWidth, isNull);
 
         final minHeightMix = BoxConstraintsMix.minHeight(100.0);
-        expect(minHeightMix.minHeight, isProp(100.0));
+        expectProp(minHeightMix.minHeight, 100.0);
         expect(minHeightMix.maxHeight, isNull);
 
         final maxHeightMix = BoxConstraintsMix.maxHeight(200.0);
-        expect(maxHeightMix.maxHeight, isProp(200.0));
+        expectProp(maxHeightMix.maxHeight, 200.0);
         expect(maxHeightMix.minHeight, isNull);
       });
     });
@@ -142,10 +142,10 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.minWidth, isProp(50.0));
-        expect(merged.maxWidth, isProp(200.0));
-        expect(merged.minHeight, isProp(100.0));
-        expect(merged.maxHeight, isProp(250.0));
+        expectProp(merged.minWidth, 50.0);
+        expectProp(merged.maxWidth, 200.0);
+        expectProp(merged.minHeight, 100.0);
+        expectProp(merged.maxHeight, 250.0);
       });
 
       test('merges named constructor results correctly', () {
@@ -153,8 +153,8 @@ void main() {
         final height = BoxConstraintsMix.maxHeight(200.0);
         final merged = width.merge(height);
 
-        expect(merged.minWidth, isProp(100.0));
-        expect(merged.maxHeight, isProp(200.0));
+        expectProp(merged.minWidth, 100.0);
+        expectProp(merged.maxHeight, 200.0);
         expect(merged.maxWidth, isNull);
         expect(merged.minHeight, isNull);
       });

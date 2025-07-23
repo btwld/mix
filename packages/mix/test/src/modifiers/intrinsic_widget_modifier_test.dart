@@ -4,6 +4,8 @@ import 'package:mix/mix.dart';
 
 import '../../helpers/testing_utils.dart';
 
+import '../../helpers/testing_utils.dart';
+
 void main() {
   // IntrinsicHeightModifierSpec
   group('IntrinsicHeightModifierSpec', () {
@@ -53,7 +55,7 @@ void main() {
 
     test('resolve', () {
       const modifier = IntrinsicHeightModifierAttribute();
-      expect(modifier, resolvesTo(const IntrinsicHeightModifier()));
+      expect(modifier.resolve(MockBuildContext()), const IntrinsicHeightModifier());
     });
 
     // equality
@@ -112,7 +114,7 @@ void main() {
 
     test('resolve', () {
       const modifier = IntrinsicWidthModifierAttribute();
-      expect(modifier, resolvesTo(const IntrinsicWidthModifier()));
+      expect(modifier.resolve(MockBuildContext()), const IntrinsicWidthModifier());
     });
 
     // equality

@@ -331,9 +331,9 @@ void main() {
           alignment: Alignment.topLeft,
         );
 
-        expect(attribute.widthFactor?.getValue(), 0.3);
-        expect(attribute.heightFactor?.getValue(), 0.7);
-        expect(attribute.alignment?.getValue(), Alignment.topLeft);
+        expect(attribute.widthFactor?, expectPropResolves(0.3));
+        expect(attribute.heightFactor?, expectPropResolves(0.7));
+        expect(attribute.alignment?, expectPropResolves(Alignment.topLeft));
       });
 
       test('handles null values correctly', () {
@@ -348,7 +348,7 @@ void main() {
         final attribute1 = FractionallySizedBoxModifierAttribute.only(
           widthFactor: 0.5,
         );
-        expect(attribute1.widthFactor?.getValue(), 0.5);
+        expect(attribute1.widthFactor?, expectPropResolves(0.5));
         expect(attribute1.heightFactor, isNull);
         expect(attribute1.alignment, isNull);
 
@@ -356,7 +356,7 @@ void main() {
           heightFactor: 0.7,
         );
         expect(attribute2.widthFactor, isNull);
-        expect(attribute2.heightFactor?.getValue(), 0.7);
+        expect(attribute2.heightFactor?, expectPropResolves(0.7));
         expect(attribute2.alignment, isNull);
 
         final attribute3 = FractionallySizedBoxModifierAttribute.only(
@@ -364,7 +364,7 @@ void main() {
         );
         expect(attribute3.widthFactor, isNull);
         expect(attribute3.heightFactor, isNull);
-        expect(attribute3.alignment?.getValue(), Alignment.bottomRight);
+        expect(attribute3.alignment?, expectPropResolves(Alignment.bottomRight));
       });
     });
 
@@ -409,9 +409,9 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expect(merged.widthFactor?.getValue(), 0.8); // overridden
-        expect(merged.heightFactor?.getValue(), 0.5); // preserved
-        expect(merged.alignment?.getValue(), Alignment.topLeft); // added
+        expect(merged.widthFactor?, expectPropResolves(0.8)); // overridden
+        expect(merged.heightFactor?, expectPropResolves(0.5)); // preserved
+        expect(merged.alignment?, expectPropResolves(Alignment.topLeft)); // added
       });
 
       test('returns original when other is null', () {
@@ -434,7 +434,7 @@ void main() {
 
         expect(merged.widthFactor, isNull);
         expect(merged.heightFactor, isNull);
-        expect(merged.alignment?.getValue(), Alignment.bottomRight);
+        expect(merged.alignment?, expectPropResolves(Alignment.bottomRight));
       });
     });
 
@@ -501,9 +501,9 @@ void main() {
       );
       final attribute = result.value;
 
-      expect(attribute.widthFactor?.getValue(), 0.5);
-      expect(attribute.heightFactor?.getValue(), 0.8);
-      expect(attribute.alignment?.getValue(), Alignment.topLeft);
+      expect(attribute.widthFactor?, expectPropResolves(0.5));
+      expect(attribute.heightFactor?, expectPropResolves(0.8));
+      expect(attribute.alignment?, expectPropResolves(Alignment.topLeft));
     });
 
     test('call() handles null values', () {
@@ -519,7 +519,7 @@ void main() {
       final result1 = utility.call(widthFactor: 0.7);
       final attribute1 = result1.value;
 
-      expect(attribute1.widthFactor?.getValue(), 0.7);
+      expect(attribute1.widthFactor?, expectPropResolves(0.7));
       expect(attribute1.heightFactor, isNull);
       expect(attribute1.alignment, isNull);
 
@@ -530,8 +530,8 @@ void main() {
       final attribute2 = result2.value;
 
       expect(attribute2.widthFactor, isNull);
-      expect(attribute2.heightFactor?.getValue(), 0.3);
-      expect(attribute2.alignment?.getValue(), Alignment.center);
+      expect(attribute2.heightFactor?, expectPropResolves(0.3));
+      expect(attribute2.alignment?, expectPropResolves(Alignment.center));
     });
   });
 
@@ -640,9 +640,9 @@ void main() {
 
       final result = base.merge(override1).merge(override2);
 
-      expect(result.widthFactor?.getValue(), 0.8);
-      expect(result.heightFactor?.getValue(), 0.8);
-      expect(result.alignment?.getValue(), Alignment.topLeft);
+      expect(result.widthFactor?, expectPropResolves(0.8));
+      expect(result.heightFactor?, expectPropResolves(0.8));
+      expect(result.alignment?, expectPropResolves(Alignment.topLeft));
     });
 
     test('Lerp produces expected intermediate values', () {

@@ -66,14 +66,14 @@ void main() {
   group('AspectRatioModifierAttribute', () {
     test('constructor assigns aspectRatio', () {
       final attribute = AspectRatioModifierAttribute(aspectRatio: Prop(1.5));
-      expect(attribute.aspectRatio, isProp(1.5));
+      expectProp(attribute.aspectRatio, 1.5);
     });
 
     test('merge returns correct attribute', () {
       final attr1 = AspectRatioModifierAttribute(aspectRatio: Prop(1.0));
       final attr2 = AspectRatioModifierAttribute(aspectRatio: Prop(2.0));
       final merged = attr1.merge(attr2);
-      expect(merged.aspectRatio, isProp(2.0));
+      expectProp(merged.aspectRatio, [1.0, 2.0]);
     });
 
     test('resolve returns correct modifier', () {

@@ -7,7 +7,6 @@ import '../../attributes/shadow_mix.dart';
 import '../../attributes/shadow_util.dart';
 import '../../core/animation_config.dart';
 import '../../core/helpers.dart';
-import '../../core/mix_element.dart';
 import '../../core/prop.dart';
 import '../../core/spec.dart';
 import '../../core/style.dart';
@@ -125,7 +124,7 @@ class IconSpecAttribute extends SpecStyle<IconSpec> with Diagnosticable {
   final Prop<double>? $weight;
   final Prop<double>? $grade;
   final Prop<double>? $opticalSize;
-  final List<Prop<Mix<Shadow>>>? $shadows;
+  final List<MixProp<Shadow>>? $shadows;
   final Prop<TextDirection>? $textDirection;
   final Prop<bool>? $applyTextScaling;
   final Prop<double>? $fill;
@@ -152,7 +151,7 @@ class IconSpecAttribute extends SpecStyle<IconSpec> with Diagnosticable {
     Prop<double>? weight,
     Prop<double>? grade,
     Prop<double>? opticalSize,
-    List<Prop<Mix<Shadow>>>? shadows,
+    List<MixProp<Shadow>>? shadows,
     Prop<TextDirection>? textDirection,
     Prop<bool>? applyTextScaling,
     Prop<double>? fill,
@@ -188,7 +187,7 @@ class IconSpecAttribute extends SpecStyle<IconSpec> with Diagnosticable {
          weight: Prop.maybe(weight),
          grade: Prop.maybe(grade),
          opticalSize: Prop.maybe(opticalSize),
-         shadows: shadows?.map(Prop.new).toList(),
+         shadows: shadows?.map(MixProp.new).toList(),
          textDirection: Prop.maybe(textDirection),
          applyTextScaling: Prop.maybe(applyTextScaling),
          fill: Prop.maybe(fill),
@@ -236,7 +235,7 @@ class IconSpecAttribute extends SpecStyle<IconSpec> with Diagnosticable {
       weight: MixHelpers.resolve(context, $weight),
       grade: MixHelpers.resolve(context, $grade),
       opticalSize: MixHelpers.resolve(context, $opticalSize),
-      shadows: MixHelpers.resolveListMix(context, $shadows),
+      shadows: MixHelpers.resolveList(context, $shadows),
       textDirection: MixHelpers.resolve(context, $textDirection),
       applyTextScaling: MixHelpers.resolve(context, $applyTextScaling),
       fill: MixHelpers.resolve(context, $fill),

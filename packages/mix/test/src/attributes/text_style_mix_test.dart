@@ -26,21 +26,21 @@ void main() {
           debugLabel: 'test-style',
         );
 
-        expect(textStyleMix.color, isProp(Colors.blue));
-        expect(textStyleMix.backgroundColor, isProp(Colors.yellow));
-        expect(textStyleMix.fontSize, isProp(16.0));
-        expect(textStyleMix.fontWeight, isProp(FontWeight.bold));
-        expect(textStyleMix.fontStyle, isProp(FontStyle.italic));
-        expect(textStyleMix.letterSpacing, isProp(1.5));
-        expect(textStyleMix.wordSpacing, isProp(2.0));
-        expect(textStyleMix.height, isProp(1.2));
-        expect(textStyleMix.decorationThickness, isProp(2.0));
-        expect(textStyleMix.fontFamily, isProp('Roboto'));
-        expect(textStyleMix.decoration, isProp(TextDecoration.underline));
-        expect(textStyleMix.decorationColor, isProp(Colors.red));
-        expect(textStyleMix.decorationStyle, isProp(TextDecorationStyle.solid));
-        expect(textStyleMix.textBaseline, isProp(TextBaseline.alphabetic));
-        expect(textStyleMix.debugLabel, isProp('test-style'));
+        expectProp(textStyleMix.color, Colors.blue);
+        expectProp(textStyleMix.backgroundColor, Colors.yellow);
+        expectProp(textStyleMix.fontSize, 16.0);
+        expectProp(textStyleMix.fontWeight, FontWeight.bold);
+        expectProp(textStyleMix.fontStyle, FontStyle.italic);
+        expectProp(textStyleMix.letterSpacing, 1.5);
+        expectProp(textStyleMix.wordSpacing, 2.0);
+        expectProp(textStyleMix.height, 1.2);
+        expectProp(textStyleMix.decorationThickness, 2.0);
+        expectProp(textStyleMix.fontFamily, 'Roboto');
+        expectProp(textStyleMix.decoration, TextDecoration.underline);
+        expectProp(textStyleMix.decorationColor, Colors.red);
+        expectProp(textStyleMix.decorationStyle, TextDecorationStyle.solid);
+        expectProp(textStyleMix.textBaseline, TextBaseline.alphabetic);
+        expectProp(textStyleMix.debugLabel, 'test-style');
       });
 
       test('only constructor with lists creates correct properties', () {
@@ -50,8 +50,8 @@ void main() {
         );
 
         expect(textStyleMix.fontFamilyFallback, hasLength(2));
-        expect(textStyleMix.fontFamilyFallback![0], isProp('Arial'));
-        expect(textStyleMix.fontFamilyFallback![1], isProp('Helvetica'));
+        expectProp(textStyleMix.fontFamilyFallback![0], 'Arial');
+        expectProp(textStyleMix.fontFamilyFallback![1], 'Helvetica');
 
         expect(textStyleMix.shadows, hasLength(1));
         expect(textStyleMix.shadows![0], isA<Prop<Mix<Shadow>>>());
@@ -71,14 +71,14 @@ void main() {
 
         final textStyleMix = TextStyleMix.value(textStyle);
 
-        expect(textStyleMix.color, isProp(Colors.green));
-        expect(textStyleMix.fontSize, isProp(18.0));
-        expect(textStyleMix.fontWeight, isProp(FontWeight.w500));
-        expect(textStyleMix.fontStyle, isProp(FontStyle.normal));
-        expect(textStyleMix.letterSpacing, isProp(0.5));
-        expect(textStyleMix.height, isProp(1.4));
-        expect(textStyleMix.fontFamily, isProp('Arial'));
-        expect(textStyleMix.decoration, isProp(TextDecoration.lineThrough));
+        expectProp(textStyleMix.color, Colors.green);
+        expectProp(textStyleMix.fontSize, 18.0);
+        expectProp(textStyleMix.fontWeight, FontWeight.w500);
+        expectProp(textStyleMix.fontStyle, FontStyle.normal);
+        expectProp(textStyleMix.letterSpacing, 0.5);
+        expectProp(textStyleMix.height, 1.4);
+        expectProp(textStyleMix.fontFamily, 'Arial');
+        expectProp(textStyleMix.decoration, TextDecoration.lineThrough);
       });
 
       test('maybeValue returns null for null input', () {
@@ -91,7 +91,7 @@ void main() {
         final result = TextStyleMix.maybeValue(textStyle);
 
         expect(result, isNotNull);
-        expect(result!.fontSize, isProp(14.0));
+        expectProp(result!.fontSize, 14.0);
       });
     });
 
@@ -155,11 +155,11 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.color, isProp(Colors.blue));
-        expect(merged.fontSize, isProp(18.0));
-        expect(merged.fontWeight, isProp(FontWeight.normal));
-        expect(merged.fontStyle, isProp(FontStyle.italic));
-        expect(merged.letterSpacing, isProp(1.0));
+        expectProp(merged.color, Colors.blue);
+        expectProp(merged.fontSize, 18.0);
+        expectProp(merged.fontWeight, FontWeight.normal);
+        expectProp(merged.fontStyle, FontStyle.italic);
+        expectProp(merged.letterSpacing, 1.0);
       });
 
       test('merges list properties correctly', () {
@@ -176,9 +176,9 @@ void main() {
         final merged = first.merge(second);
 
         expect(merged.fontFamilyFallback, hasLength(3));
-        expect(merged.fontFamilyFallback![0], isProp('Arial'));
-        expect(merged.fontFamilyFallback![1], isProp('Helvetica'));
-        expect(merged.fontFamilyFallback![2], isProp('Times'));
+        expectProp(merged.fontFamilyFallback![0], 'Arial');
+        expectProp(merged.fontFamilyFallback![1], 'Helvetica');
+        expectProp(merged.fontFamilyFallback![2], 'Times');
 
         expect(merged.shadows, hasLength(2));
       });

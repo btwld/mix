@@ -24,7 +24,7 @@ class DecorationUtility<T extends SpecStyle<Object?>>
 
   @override
   T call(DecorationMix value) {
-    return builder(Prop(value));
+    return builder(MixProp(value));
   }
 }
 
@@ -71,7 +71,7 @@ final class BoxDecorationUtility<T extends SpecStyle<Object?>>
   );
 
   /// Utility for defining [BoxDecorationMix.boxShadow] from a list of BoxShadow
-  late final boxShadows = MixPropListUtility<T, BoxShadow, BoxShadowMix>(
+  late final boxShadows = MixPropListUtility<T, BoxShadow>(
     (prop) => call(BoxDecorationMix(boxShadow: prop)),
     BoxShadowMix.value,
   );
@@ -90,7 +90,7 @@ final class BoxDecorationUtility<T extends SpecStyle<Object?>>
     : super(convertToMix: BoxDecorationMix.value);
 
   @override
-  T call(BoxDecorationMix value) => builder(Prop(value));
+  T call(BoxDecorationMix value) => builder(MixProp(value));
 }
 
 /// Utility class for configuring [ShapeDecoration] properties.
@@ -121,7 +121,7 @@ final class ShapeDecorationUtility<T extends SpecStyle<Object?>>
   );
 
   /// Utility for defining [ShapeDecorationMix.shadows]
-  late final shadows = MixPropListUtility<T, BoxShadow, BoxShadowMix>(
+  late final shadows = MixPropListUtility<T, BoxShadow>(
     (prop) => call(ShapeDecorationMix(shadows: prop)),
     BoxShadowMix.value,
   );
@@ -130,5 +130,5 @@ final class ShapeDecorationUtility<T extends SpecStyle<Object?>>
     : super(convertToMix: ShapeDecorationMix.value);
 
   @override
-  T call(ShapeDecorationMix value) => builder(Prop(value));
+  T call(ShapeDecorationMix value) => builder(MixProp(value));
 }

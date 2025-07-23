@@ -21,18 +21,17 @@ void main() {
           colorBlendMode: Prop(BlendMode.multiply),
         );
 
-        expect(attribute.$width?.getValue(), 200.0);
-        expect(attribute.$height?.getValue(), 150.0);
-        expect(attribute.$color?.getValue(), Colors.blue);
-        expect(attribute.$repeat?.getValue(), ImageRepeat.repeat);
-        expect(attribute.$fit?.getValue(), BoxFit.cover);
-        expect(attribute.$alignment?.getValue(), Alignment.center);
+        expect(attribute.$width?, expectPropResolves(200.0));
+        expect(attribute.$height?, expectPropResolves(150.0));
+        expect(attribute.$color?, expectPropResolves(Colors.blue));
+        expect(attribute.$repeat?, expectPropResolves(ImageRepeat.repeat));
+        expect(attribute.$fit?, expectPropResolves(BoxFit.cover));
+        expect(attribute.$alignment?, expectPropResolves(Alignment.center));
         expect(
-          attribute.$centerSlice?.getValue(),
-          const Rect.fromLTWH(10, 10, 20, 20),
+          attribute.$centerSlice?, expectPropResolves(const Rect.fromLTWH(10, 10, 20, 20)),
         );
-        expect(attribute.$filterQuality?.getValue(), FilterQuality.high);
-        expect(attribute.$colorBlendMode?.getValue(), BlendMode.multiply);
+        expect(attribute.$filterQuality?, expectPropResolves(FilterQuality.high));
+        expect(attribute.$colorBlendMode?, expectPropResolves(BlendMode.multiply));
       });
 
       test('creates ImageSpecAttribute with default values', () {
@@ -59,10 +58,10 @@ void main() {
           color: Colors.blue,
         );
 
-        expect(attribute.$width?.getValue(), 200.0);
-        expect(attribute.$height?.getValue(), 150.0);
-        expect(attribute.$fit?.getValue(), BoxFit.cover);
-        expect(attribute.$color?.getValue(), Colors.blue);
+        expect(attribute.$width?, expectPropResolves(200.0));
+        expect(attribute.$height?, expectPropResolves(150.0));
+        expect(attribute.$fit?, expectPropResolves(BoxFit.cover));
+        expect(attribute.$color?, expectPropResolves(Colors.blue));
         expect(attribute.$repeat, isNull);
         expect(attribute.$alignment, isNull);
       });
@@ -98,25 +97,24 @@ void main() {
 
         final attribute = ImageSpecAttribute.value(spec);
 
-        expect(attribute.$width?.getValue(), 200.0);
-        expect(attribute.$height?.getValue(), 150.0);
-        expect(attribute.$color?.getValue(), Colors.blue);
-        expect(attribute.$repeat?.getValue(), ImageRepeat.repeat);
-        expect(attribute.$fit?.getValue(), BoxFit.cover);
-        expect(attribute.$alignment?.getValue(), Alignment.center);
+        expect(attribute.$width?, expectPropResolves(200.0));
+        expect(attribute.$height?, expectPropResolves(150.0));
+        expect(attribute.$color?, expectPropResolves(Colors.blue));
+        expect(attribute.$repeat?, expectPropResolves(ImageRepeat.repeat));
+        expect(attribute.$fit?, expectPropResolves(BoxFit.cover));
+        expect(attribute.$alignment?, expectPropResolves(Alignment.center));
         expect(
-          attribute.$centerSlice?.getValue(),
-          const Rect.fromLTWH(10, 10, 20, 20),
+          attribute.$centerSlice?, expectPropResolves(const Rect.fromLTWH(10, 10, 20, 20)),
         );
-        expect(attribute.$filterQuality?.getValue(), FilterQuality.high);
-        expect(attribute.$colorBlendMode?.getValue(), BlendMode.multiply);
+        expect(attribute.$filterQuality?, expectPropResolves(FilterQuality.high));
+        expect(attribute.$colorBlendMode?, expectPropResolves(BlendMode.multiply));
       });
 
       test('handles null properties in spec', () {
         const spec = ImageSpec(width: 200.0);
         final attribute = ImageSpecAttribute.value(spec);
 
-        expect(attribute.$width?.getValue(), 200.0);
+        expect(attribute.$width?, expectPropResolves(200.0));
         expect(attribute.$height, isNull);
         expect(attribute.$color, isNull);
       });
@@ -128,8 +126,8 @@ void main() {
         final attribute = ImageSpecAttribute.maybeValue(spec);
 
         expect(attribute, isNotNull);
-        expect(attribute!.$width?.getValue(), 200.0);
-        expect(attribute.$height?.getValue(), 150.0);
+        expect(attribute!.$width?, expectPropResolves(200.0));
+        expect(attribute.$height?, expectPropResolves(150.0));
       });
 
       test('returns null when spec is null', () {
@@ -195,11 +193,11 @@ void main() {
 
         final merged = attr1.merge(attr2);
 
-        expect(merged.$width?.getValue(), 300.0); // from attr2
-        expect(merged.$height?.getValue(), 150.0); // from attr1
-        expect(merged.$fit?.getValue(), BoxFit.contain); // from attr1
-        expect(merged.$color?.getValue(), Colors.blue); // from attr2
-        expect(merged.$alignment?.getValue(), Alignment.center); // from attr2
+        expect(merged.$width?, expectPropResolves(300.0)); // from attr2
+        expect(merged.$height?, expectPropResolves(150.0)); // from attr1
+        expect(merged.$fit?, expectPropResolves(BoxFit.contain)); // from attr1
+        expect(merged.$color?, expectPropResolves(Colors.blue)); // from attr2
+        expect(merged.$alignment?, expectPropResolves(Alignment.center)); // from attr2
       });
 
       test('returns original when merging with null', () {
@@ -223,9 +221,9 @@ void main() {
         final merged = attr1.merge(attr2);
 
         // Color should be merged (attr2 takes precedence)
-        expect(merged.$color?.getValue(), Colors.blue);
-        expect(merged.$filterQuality?.getValue(), FilterQuality.high);
-        expect(merged.$repeat?.getValue(), ImageRepeat.repeatX);
+        expect(merged.$color?, expectPropResolves(Colors.blue));
+        expect(merged.$filterQuality?, expectPropResolves(FilterQuality.high));
+        expect(merged.$repeat?, expectPropResolves(ImageRepeat.repeatX));
       });
     });
 
@@ -275,7 +273,7 @@ void main() {
 
         expect(identical(original, modified), isFalse);
         expect(original.$width, isNull);
-        expect(modified.$width?.getValue(), 100.0);
+        expect(modified.$width?, expectPropResolves(100.0));
       });
 
       test('builder methods can be chained fluently with merge', () {

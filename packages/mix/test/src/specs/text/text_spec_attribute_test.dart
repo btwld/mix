@@ -22,16 +22,15 @@ void main() {
           directives: [],
         );
 
-        expect(attribute.$overflow?.getValue(), TextOverflow.ellipsis);
-        expect(attribute.$textAlign?.getValue(), TextAlign.center);
-        expect(attribute.$textScaler?.getValue(), isA<TextScaler>());
-        expect(attribute.$maxLines?.getValue(), 3);
+        expect(attribute.$overflow?, expectPropResolves(TextOverflow.ellipsis));
+        expect(attribute.$textAlign?, expectPropResolves(TextAlign.center));
+        expect(attribute.$textScaler?, expectPropResolves(isA<TextScaler>()));
+        expect(attribute.$maxLines?, expectPropResolves(3));
         expect(
-          attribute.$textWidthBasis?.getValue(),
-          TextWidthBasis.longestLine,
-        );
-        expect(attribute.$textDirection?.getValue(), TextDirection.rtl);
-        expect(attribute.$softWrap?.getValue(), false);
+          attribute.$textWidthBasis?, expectPropResolves(TextWidthBasis.longestLine,
+        ));
+        expect(attribute.$textDirection?, expectPropResolves(TextDirection.rtl));
+        expect(attribute.$softWrap?, expectPropResolves(false));
         expect(attribute.$directives, isEmpty);
       });
 
@@ -61,9 +60,9 @@ void main() {
           style: TextStyleMix(fontSize: Prop(16.0)),
         );
 
-        expect(attribute.$overflow?.getValue(), TextOverflow.ellipsis);
-        expect(attribute.$maxLines?.getValue(), 3);
-        expect(attribute.$textAlign?.getValue(), TextAlign.center);
+        expect(attribute.$overflow?, expectPropResolves(TextOverflow.ellipsis));
+        expect(attribute.$maxLines?, expectPropResolves(3));
+        expect(attribute.$textAlign?, expectPropResolves(TextAlign.center));
         expect(attribute.$style, isNotNull);
         expect(attribute.$strutStyle, isNull);
         expect(attribute.$textScaler, isNull);
@@ -104,16 +103,15 @@ void main() {
 
         final attribute = TextSpecAttribute.value(spec);
 
-        expect(attribute.$overflow?.getValue(), TextOverflow.ellipsis);
-        expect(attribute.$textAlign?.getValue(), TextAlign.center);
-        expect(attribute.$textScaler?.getValue(), isA<TextScaler>());
-        expect(attribute.$maxLines?.getValue(), 3);
+        expect(attribute.$overflow?, expectPropResolves(TextOverflow.ellipsis));
+        expect(attribute.$textAlign?, expectPropResolves(TextAlign.center));
+        expect(attribute.$textScaler?, expectPropResolves(isA<TextScaler>()));
+        expect(attribute.$maxLines?, expectPropResolves(3));
         expect(
-          attribute.$textWidthBasis?.getValue(),
-          TextWidthBasis.longestLine,
-        );
-        expect(attribute.$textDirection?.getValue(), TextDirection.rtl);
-        expect(attribute.$softWrap?.getValue(), false);
+          attribute.$textWidthBasis?, expectPropResolves(TextWidthBasis.longestLine,
+        ));
+        expect(attribute.$textDirection?, expectPropResolves(TextDirection.rtl));
+        expect(attribute.$softWrap?, expectPropResolves(false));
         expect(attribute.$directives, isEmpty);
       });
 
@@ -121,7 +119,7 @@ void main() {
         const spec = TextSpec(maxLines: 3);
         final attribute = TextSpecAttribute.value(spec);
 
-        expect(attribute.$maxLines?.getValue(), 3);
+        expect(attribute.$maxLines?, expectPropResolves(3));
         expect(attribute.$overflow, isNull);
         expect(attribute.$textAlign, isNull);
       });
@@ -133,8 +131,8 @@ void main() {
         final attribute = TextSpecAttribute.maybeValue(spec);
 
         expect(attribute, isNotNull);
-        expect(attribute!.$maxLines?.getValue(), 3);
-        expect(attribute.$overflow?.getValue(), TextOverflow.ellipsis);
+        expect(attribute!.$maxLines?, expectPropResolves(3));
+        expect(attribute.$overflow?, expectPropResolves(TextOverflow.ellipsis));
       });
 
       test('returns null when spec is null', () {
@@ -201,11 +199,11 @@ void main() {
 
         final merged = attr1.merge(attr2);
 
-        expect(merged.$maxLines?.getValue(), 5); // from attr2
-        expect(merged.$overflow?.getValue(), TextOverflow.clip); // from attr1
-        expect(merged.$textAlign?.getValue(), TextAlign.left); // from attr1
+        expect(merged.$maxLines?, expectPropResolves(5)); // from attr2
+        expect(merged.$overflow?, expectPropResolves(TextOverflow.clip)); // from attr1
+        expect(merged.$textAlign?, expectPropResolves(TextAlign.left)); // from attr1
         expect(merged.$style, isNotNull); // from attr2
-        expect(merged.$softWrap?.getValue(), true); // from attr2
+        expect(merged.$softWrap?, expectPropResolves(true)); // from attr2
       });
 
       test('returns original when merging with null', () {
@@ -308,7 +306,7 @@ void main() {
 
         expect(identical(original, modified), isFalse);
         expect(original.$maxLines, isNull);
-        expect(modified.$maxLines?.getValue(), 3);
+        expect(modified.$maxLines?, expectPropResolves(3));
       });
 
       test('builder methods can be chained fluently with merge', () {

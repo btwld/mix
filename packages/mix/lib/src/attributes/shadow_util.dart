@@ -28,7 +28,7 @@ class ShadowUtility<T extends SpecStyle<Object?>>
 
   /// Returns a new [T] with the specified [ShadowMix] properties.
   @override
-  T call(ShadowMix value) => builder(Prop(value));
+  T call(ShadowMix value) => builder(MixProp(value));
 }
 
 /// Utility class for configuring [BoxShadow] properties.
@@ -58,7 +58,7 @@ class BoxShadowUtility<T extends SpecStyle<Object?>>
 
   /// Returns a new [T] with the specified [BoxShadowMix] properties.
   @override
-  T call(BoxShadowMix value) => builder(Prop(value));
+  T call(BoxShadowMix value) => builder(MixProp(value));
 }
 
 /// A utility class for building [StyleElement] instances from elevation values that produces [MixProp<BoxShadow>] lists.
@@ -151,7 +151,7 @@ final class ElevationMixPropUtility<T extends SpecStyle<Object?>>
     }
 
     final boxShadows = kElevationToShadow[value]!.map(
-      (e) => Prop(
+      (e) => MixProp(
         BoxShadowMix(
           color: Prop(e.color),
           offset: Prop(e.offset),

@@ -182,13 +182,13 @@ class DefaultTextStyleModifierAttribute
     TextWidthBasis? textWidthBasis,
     TextHeightBehaviorMix? textHeightBehavior,
   }) : this(
-         style: Prop.maybe(style),
+         style: MixProp.maybe(style),
          textAlign: Prop.maybe(textAlign),
          softWrap: Prop.maybe(softWrap),
          overflow: Prop.maybe(overflow),
          maxLines: Prop.maybe(maxLines),
          textWidthBasis: Prop.maybe(textWidthBasis),
-         textHeightBehavior: Prop.maybe(textHeightBehavior),
+         textHeightBehavior: MixProp.maybe(textHeightBehavior),
        );
 
   /// Resolves to [DefaultTextStyleModifier] using the provided [MixContext].
@@ -202,13 +202,13 @@ class DefaultTextStyleModifierAttribute
   @override
   DefaultTextStyleModifier resolve(BuildContext context) {
     return DefaultTextStyleModifier(
-      style: MixHelpers.resolveMix(context, style),
+      style: MixHelpers.resolve(context, style),
       textAlign: MixHelpers.resolve(context, textAlign),
       softWrap: MixHelpers.resolve(context, softWrap),
       overflow: MixHelpers.resolve(context, overflow),
       maxLines: MixHelpers.resolve(context, maxLines),
       textWidthBasis: MixHelpers.resolve(context, textWidthBasis),
-      textHeightBehavior: MixHelpers.resolveMix(context, textHeightBehavior),
+      textHeightBehavior: MixHelpers.resolve(context, textHeightBehavior),
     );
   }
 
@@ -288,16 +288,14 @@ final class DefaultTextStyleModifierUtility<T extends SpecStyle<Object?>>
   }) {
     return builder(
       DefaultTextStyleModifierAttribute(
-        style: Prop.maybe(style != null ? TextStyleMix.value(style) : null),
+        style: MixProp.maybe(TextStyleMix.maybeValue(style)),
         textAlign: Prop.maybe(textAlign),
         softWrap: Prop.maybe(softWrap),
         overflow: Prop.maybe(overflow),
         maxLines: Prop.maybe(maxLines),
         textWidthBasis: Prop.maybe(textWidthBasis),
-        textHeightBehavior: Prop.maybe(
-          textHeightBehavior != null
-              ? TextHeightBehaviorMix.value(textHeightBehavior)
-              : null,
+        textHeightBehavior: MixProp.maybe(
+          TextHeightBehaviorMix.maybeValue(textHeightBehavior),
         ),
       ),
     );
