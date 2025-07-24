@@ -71,20 +71,20 @@ export 'src/core/widget_state/widget_state_controller.dart';
 export 'src/helpers/extensions.dart';
 
 /// MODIFIERS
-export 'src/modifiers/align_widget_modifier.dart';
-export 'src/modifiers/aspect_ratio_widget_modifier.dart';
-export 'src/modifiers/clip_widget_modifier.dart';
-export 'src/modifiers/flexible_widget_modifier.dart';
-export 'src/modifiers/fractionally_sized_box_widget_modifier.dart';
-export 'src/modifiers/intrinsic_widget_modifier.dart';
+export 'src/modifiers/align_modifier.dart';
+export 'src/modifiers/aspect_ratio_modifier.dart';
+export 'src/modifiers/clip_modifier.dart';
+export 'src/modifiers/flexible_modifier.dart';
+export 'src/modifiers/fractionally_sized_box_modifier.dart';
+export 'src/modifiers/intrinsic_modifier.dart';
 export 'src/modifiers/mouse_cursor_modifier.dart';
-export 'src/modifiers/opacity_widget_modifier.dart';
-export 'src/modifiers/padding_widget_modifier.dart';
-export 'src/modifiers/rotated_box_widget_modifier.dart';
-export 'src/modifiers/scroll_view_widget_modifier.dart';
-export 'src/modifiers/sized_box_widget_modifier.dart';
-export 'src/modifiers/transform_widget_modifier.dart';
-export 'src/modifiers/visibility_widget_modifier.dart';
+export 'src/modifiers/opacity_modifier.dart';
+export 'src/modifiers/padding_modifier.dart';
+export 'src/modifiers/rotated_box_modifier.dart';
+export 'src/modifiers/scroll_view_modifier.dart';
+export 'src/modifiers/sized_box_modifier.dart';
+export 'src/modifiers/transform_modifier.dart';
+export 'src/modifiers/visibility_modifier.dart';
 
 /// SPECS
 export 'src/specs/box/box_attribute.dart';

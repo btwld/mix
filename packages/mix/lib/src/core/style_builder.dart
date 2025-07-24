@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../modifiers/internal/render_widget_modifier.dart';
+import '../modifiers/internal/render_modifier.dart';
 import '../widgets/pressable_widget.dart';
 import 'animation/animation_driver.dart';
 import 'animation_config.dart';

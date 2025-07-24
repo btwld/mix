@@ -3,18 +3,18 @@
 import 'package:flutter/material.dart';
 
 import '../../core/modifier.dart';
-import '../align_widget_modifier.dart';
-import '../aspect_ratio_widget_modifier.dart';
-import '../clip_widget_modifier.dart';
-import '../flexible_widget_modifier.dart';
-import '../fractionally_sized_box_widget_modifier.dart';
-import '../intrinsic_widget_modifier.dart';
-import '../opacity_widget_modifier.dart';
-import '../padding_widget_modifier.dart';
-import '../rotated_box_widget_modifier.dart';
-import '../sized_box_widget_modifier.dart';
-import '../transform_widget_modifier.dart';
-import '../visibility_widget_modifier.dart';
+import '../align_modifier.dart';
+import '../aspect_ratio_modifier.dart';
+import '../clip_modifier.dart';
+import '../flexible_modifier.dart';
+import '../fractionally_sized_box_modifier.dart';
+import '../intrinsic_modifier.dart';
+import '../opacity_modifier.dart';
+import '../padding_modifier.dart';
+import '../rotated_box_modifier.dart';
+import '../sized_box_modifier.dart';
+import '../transform_modifier.dart';
+import '../visibility_modifier.dart';
 
 const _defaultOrder = [
   // 1. FlexibleModifier: When the widget is used inside a Row, Column, or Flex widget, it will
