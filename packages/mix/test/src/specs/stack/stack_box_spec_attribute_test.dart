@@ -9,7 +9,8 @@ void main() {
   group('StackBoxSpecAttribute', () {
     group('Constructor', () {
       test('creates StackBoxSpecAttribute with all properties', () {
-        final boxAttribute = BoxSpecAttribute.only(width: 200.0, height: 100.0);
+        final boxAttribute = BoxSpecAttribute.width(200.0).height(200.0);
+
         final stackAttribute = StackSpecAttribute.only(
           alignment: Alignment.center,
           fit: StackFit.expand,
@@ -22,8 +23,10 @@ void main() {
 
         expect(attribute.box, boxAttribute);
         expect(attribute.stack, stackAttribute);
-        expect(attribute.box!.$width, resolvesTo(200.0));
-        expect(attribute.box!.$height, resolvesTo(100.0));
+        expect(
+          attribute.box!.$constraints,
+          resolvesTo(BoxConstraints.tightFor(width: 200.0, height: 200.0)),
+        );
         expect(attribute.stack!.$alignment, resolvesTo(Alignment.center));
         expect(attribute.stack!.$fit, resolvesTo(StackFit.expand));
       });
@@ -39,7 +42,9 @@ void main() {
     group('value constructor', () {
       test('creates StackBoxSpecAttribute from ZBoxSpec', () {
         const spec = ZBoxSpec(
-          box: BoxSpec(width: 200.0, height: 100.0),
+          box: BoxSpec(
+            constraints: BoxConstraints.tightFor(width: 200.0, height: 100.0),
+          ),
           stack: StackSpec(alignment: Alignment.center, fit: StackFit.expand),
         );
 
@@ -47,8 +52,10 @@ void main() {
 
         expect(attribute.box, isNotNull);
         expect(attribute.stack, isNotNull);
-        expect(attribute.box!.$width, resolvesTo(200.0));
-        expect(attribute.box!.$height, resolvesTo(100.0));
+        expect(
+          attribute.box!.$constraints,
+          resolvesTo(BoxConstraints.tightFor(width: 200.0, height: 100.0)),
+        );
         expect(attribute.stack!.$alignment, resolvesTo(Alignment.center));
         expect(attribute.stack!.$fit, resolvesTo(StackFit.expand));
       });
@@ -59,8 +66,10 @@ void main() {
 
         expect(attribute.box, isNotNull);
         expect(attribute.stack, isNotNull);
-        expect(attribute.box!.$width, resolvesTo(200.0));
-        expect(attribute.box!.$height, isNull);
+        expect(
+          attribute.box!.$constraints,
+          resolvesTo(BoxConstraints.tightFor(width: 200.0)),
+        );
         expect(attribute.stack!.$alignment, isNull);
         expect(attribute.stack!.$fit, isNull);
       });
@@ -69,7 +78,7 @@ void main() {
     group('maybeValue static method', () {
       test('returns StackBoxSpecAttribute when spec is not null', () {
         const spec = ZBoxSpec(
-          box: BoxSpec(width: 200.0),
+          box: BoxSpec(constraints: BoxConstraints.tightFor(width: 200.0)),
           stack: StackSpec(alignment: Alignment.center),
         );
         final attribute = StackBoxSpecAttribute.maybeValue(spec);
@@ -77,7 +86,10 @@ void main() {
         expect(attribute, isNotNull);
         expect(attribute!.box, isNotNull);
         expect(attribute.stack, isNotNull);
-        expect(attribute.box!.$width, resolvesTo(200.0));
+        expect(
+          attribute.box!.$constraints,
+          resolvesTo(BoxConstraints.tightFor(width: 200.0)),
+        );
         expect(attribute.stack!.$alignment, resolvesTo(Alignment.center));
       });
 
@@ -89,11 +101,9 @@ void main() {
 
     group('Resolution', () {
       test('resolves to ZBoxSpec with correct properties', () {
-        final boxAttribute = BoxSpecAttribute.only(
-          width: 200.0,
-          height: 100.0,
-          alignment: Alignment.center,
-        );
+        final boxAttribute = BoxSpecAttribute.width(200.0)
+            .height(100.0)
+            .merge(BoxSpecAttribute.only(alignment: Alignment.center));
         final stackAttribute = StackSpecAttribute.only(
           alignment: Alignment.topLeft,
           fit: StackFit.expand,
@@ -109,8 +119,10 @@ void main() {
         final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec.box.width, 200.0);
-        expect(spec.box.height, 100.0);
+        expect(
+          spec.box.constraints,
+          BoxConstraints.tightFor(width: 200.0, height: 100.0),
+        );
         expect(spec.box.alignment, Alignment.center);
         expect(spec.stack.alignment, Alignment.topLeft);
         expect(spec.stack.fit, StackFit.expand);
@@ -123,8 +135,7 @@ void main() {
         final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec.box.width, isNull);
-        expect(spec.box.height, isNull);
+        expect(spec.box.constraints, isNull);
         expect(spec.stack.alignment, isNull);
         expect(spec.stack.fit, isNull);
       });
@@ -156,8 +167,9 @@ void main() {
         expect(merged.box!.$height, resolvesTo(50.0)); // from attr1
         expect(merged.box!.$padding, isNotNull); // from attr2
         expect(
-          merged.stack!.$alignment, resolvesTo(Alignment.topLeft,
-        )); // from attr1
+          merged.stack!.$alignment,
+          resolvesTo(Alignment.topLeft),
+        ); // from attr1
         expect(merged.stack!.$fit, resolvesTo(StackFit.expand)); // from attr2
       });
 
@@ -187,8 +199,9 @@ void main() {
         expect(merged.box!.$width, resolvesTo(100.0)); // from attr1
         expect(merged.box!.$height, resolvesTo(200.0)); // from attr2
         expect(
-          merged.stack!.$alignment, resolvesTo(Alignment.topLeft,
-        )); // from attr1
+          merged.stack!.$alignment,
+          resolvesTo(Alignment.topLeft),
+        ); // from attr1
         expect(merged.stack!.$fit, resolvesTo(StackFit.expand)); // from attr2
       });
 

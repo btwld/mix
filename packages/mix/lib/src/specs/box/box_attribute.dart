@@ -1,22 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../../attributes/border_mix.dart';
-import '../../attributes/border_radius_mix.dart';
-import '../../attributes/constraints_mix.dart';
-import '../../attributes/constraints_util.dart';
-import '../../attributes/decoration_mix.dart';
-import '../../attributes/decoration_util.dart';
-import '../../attributes/edge_insets_geometry_mix.dart';
-import '../../attributes/edge_insets_geometry_util.dart';
-import '../../attributes/scalar_util.dart';
-import '../../attributes/shadow_mix.dart';
-import '../../core/animation_config.dart';
-import '../../core/helpers.dart';
-import '../../core/prop.dart';
-import '../../core/style.dart';
-import '../../core/variant.dart';
-import 'box_spec.dart';
+import '../../../mix.dart';
+import '../../core/animation/animation_util.dart';
+import '../../modifiers/modifier_util.dart';
 
 /// Represents the attributes of a [BoxSpec].
 ///
@@ -36,6 +23,10 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
   final Prop<AlignmentGeometry>? $transformAlignment;
   final Prop<Clip>? $clipBehavior;
 
+  late final on = OnContextVariantUtility<BoxSpec, BoxSpecAttribute>(
+    (v) => merge(BoxSpecAttribute(variants: [v])),
+  );
+
   late final padding = EdgeInsetsGeometryUtility(
     (prop) => merge(BoxSpecAttribute(padding: prop)),
   );
@@ -50,6 +41,10 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
 
   late final decoration = DecorationUtility(
     (prop) => merge(BoxSpecAttribute(decoration: prop)),
+  );
+
+  late final animate = AnimationConfigUtility(
+    (prop) => merge(BoxSpecAttribute(animation: prop)),
   );
 
   late final boxDecoration = decoration.box;
@@ -70,6 +65,10 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
 
   late final clipBehavior = ClipUtility(
     (prop) => merge(BoxSpecAttribute(clipBehavior: prop)),
+  );
+
+  late final wrap = ModifierUtility(
+    (prop) => merge(BoxSpecAttribute.modifier(prop)),
   );
 
   late final width = constraints.width;
@@ -133,8 +132,8 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
   }
 
   /// Animation
-  factory BoxSpecAttribute.$animation(AnimationConfig animation) {
-    return BoxSpecAttribute.only(animation: animation);
+  factory BoxSpecAttribute.animation(AnimationConfig value) {
+    return BoxSpecAttribute.only(animation: value);
   }
 
   /// Variant
@@ -147,6 +146,10 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
   // minHeight
   factory BoxSpecAttribute.minHeight(double value) {
     return BoxSpecAttribute.constraints(BoxConstraintsMix.minHeight(value));
+  }
+
+  factory BoxSpecAttribute.modifier(ModifierAttribute value) {
+    return BoxSpecAttribute.only(modifiers: [value]);
   }
 
   // maxHeight
@@ -212,7 +215,6 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
     Prop<Matrix4>? transform,
     Prop<AlignmentGeometry>? transformAlignment,
     Prop<Clip>? clipBehavior,
-
     super.animation,
     super.modifiers,
     super.variants,
@@ -236,7 +238,6 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
     Matrix4? transform,
     AlignmentGeometry? transformAlignment,
     Clip? clipBehavior,
-
     AnimationConfig? animation,
     List<ModifierAttribute>? modifiers,
     List<VariantSpecAttribute<BoxSpec>>? variants,
@@ -296,13 +297,7 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
     );
   }
 
-  BoxSpecAttribute variant(Variant variant, BoxSpecAttribute value) {
-    return merge(
-      BoxSpecAttribute.only(variants: [VariantSpecAttribute(variant, value)]),
-    );
-  }
-
-  BoxSpecAttribute animate(AnimationConfig animation) {
+  BoxSpecAttribute animation(AnimationConfig animation) {
     return BoxSpecAttribute.only(animation: animation);
   }
 
@@ -324,12 +319,6 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
         boxShadow: BoxShadowMix.fromElevation(value),
       ),
     );
-  }
-
-  /// animation
-  @override
-  BoxSpecAttribute $animation(AnimationConfig animation) {
-    return BoxSpecAttribute.only(animation: animation);
   }
 
   /// Resolves to [BoxSpec] using the provided [MixContext].

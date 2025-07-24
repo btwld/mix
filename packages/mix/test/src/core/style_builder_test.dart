@@ -39,15 +39,22 @@ void main() {
     });
 
     group('Animation', () {
-      testWidgets('Animation driver is applied when animation config is set', (tester) async {
+      testWidgets('Animation driver is applied when animation config is set', (
+        tester,
+      ) async {
         final animation = AnimationConfig.linear(
           const Duration(milliseconds: 300),
         );
-        final boxAttribute = BoxSpecAttribute()
-            .width(100)
-            .height(200)
-            .color(Colors.blue)
-            .animate(animation);
+        final boxAttribute = BoxSpecAttribute.only(
+          constraints: BoxConstraintsMix.only(
+            minWidth: 100,
+            maxWidth: 100,
+            minHeight: 200,
+            maxHeight: 200,
+          ),
+          decoration: BoxDecorationMix.only(color: Colors.blue),
+          animation: animation,
+        );
 
         await tester.pumpWidget(
           MaterialApp(
@@ -67,7 +74,9 @@ void main() {
         expect(find.byType(ImplicitlyAnimatedWidget), findsOneWidget);
       });
 
-      testWidgets('No animation driver when animation config is null', (tester) async {
+      testWidgets('No animation driver when animation config is null', (
+        tester,
+      ) async {
         final boxAttribute = BoxSpecAttribute()
             .width(100)
             .height(200)
@@ -91,16 +100,23 @@ void main() {
         expect(find.byType(ImplicitlyAnimatedWidget), findsNothing);
       });
 
-      testWidgets('Animation interpolates between style changes', (tester) async {
+      testWidgets('Animation interpolates between style changes', (
+        tester,
+      ) async {
         final animation = AnimationConfig.linear(
           const Duration(milliseconds: 300),
         );
-        
-        final startAttribute = BoxSpecAttribute()
-            .width(100)
-            .height(100)
-            .color(Colors.blue)
-            .animate(animation);
+
+        final startAttribute = BoxSpecAttribute.only(
+          constraints: BoxConstraintsMix.only(
+            minWidth: 100,
+            maxWidth: 100,
+            minHeight: 100,
+            maxHeight: 100,
+          ),
+          decoration: BoxDecorationMix.only(color: Colors.blue),
+          animation: animation,
+        );
 
         await tester.pumpWidget(
           MaterialApp(
@@ -118,11 +134,16 @@ void main() {
         );
 
         // Update to new style
-        final endAttribute = BoxSpecAttribute()
-            .width(200)
-            .height(200)
-            .color(Colors.red)
-            .animate(animation);
+        final endAttribute = BoxSpecAttribute.only(
+          constraints: BoxConstraintsMix.only(
+            minWidth: 200,
+            maxWidth: 200,
+            minHeight: 200,
+            maxHeight: 200,
+          ),
+          decoration: BoxDecorationMix.only(color: Colors.red),
+          animation: animation,
+        );
 
         await tester.pumpWidget(
           MaterialApp(
@@ -143,17 +164,24 @@ void main() {
         await tester.pump(const Duration(milliseconds: 150));
 
         // The container should be somewhere between start and end values
-        final container = tester.widget<Container>(find.byKey(const Key('animated_container')));
+        final container = tester.widget<Container>(
+          find.byKey(const Key('animated_container')),
+        );
         expect(container.constraints?.minWidth, isNot(100));
         expect(container.constraints?.minWidth, isNot(200));
-        
+
         // Complete animation
         await tester.pumpAndSettle();
-        
-        final finalContainer = tester.widget<Container>(find.byKey(const Key('animated_container')));
+
+        final finalContainer = tester.widget<Container>(
+          find.byKey(const Key('animated_container')),
+        );
         expect(finalContainer.constraints?.minWidth, 200);
         expect(finalContainer.constraints?.minHeight, 200);
-        expect((finalContainer.decoration as BoxDecoration?)?.color, Colors.red);
+        expect(
+          (finalContainer.decoration as BoxDecoration?)?.color,
+          Colors.red,
+        );
       });
     });
 
@@ -185,11 +213,11 @@ void main() {
         expect(find.byType(Opacity), findsOneWidget);
         expect(find.byType(Padding), findsOneWidget);
         expect(find.byType(ClipOval), findsOneWidget);
-        
+
         // Check opacity value
         final opacity = tester.widget<Opacity>(find.byType(Opacity));
         expect(opacity.opacity, 0.5);
-        
+
         // Check padding value
         final padding = tester.widget<Padding>(find.byType(Padding));
         expect(padding.padding, const EdgeInsets.all(10));
@@ -221,17 +249,14 @@ void main() {
 
         // Find the StyleBuilder widget
         final styleBuilder = find.byType(StyleBuilder);
-        
+
         // Verify ordering: Visibility should wrap everything, then other modifiers in order
         // The default order has Visibility early, Padding after transformations, ClipOval near end, and Opacity last
         expect(
-          find.descendant(
-            of: styleBuilder,
-            matching: find.byType(Visibility),
-          ),
+          find.descendant(of: styleBuilder, matching: find.byType(Visibility)),
           findsOneWidget,
         );
-        
+
         expect(
           find.descendant(
             of: find.byType(Visibility),
@@ -239,7 +264,7 @@ void main() {
           ),
           findsOneWidget,
         );
-        
+
         expect(
           find.descendant(
             of: find.byType(Padding),
@@ -247,7 +272,7 @@ void main() {
           ),
           findsOneWidget,
         );
-        
+
         expect(
           find.descendant(
             of: find.byType(ClipOval),
@@ -289,16 +314,13 @@ void main() {
 
         // Find the StyleBuilder widget
         final styleBuilder = find.byType(StyleBuilder);
-        
+
         // Verify custom ordering: Opacity -> ClipOval -> Padding
         expect(
-          find.descendant(
-            of: styleBuilder,
-            matching: find.byType(Opacity),
-          ),
+          find.descendant(of: styleBuilder, matching: find.byType(Opacity)),
           findsOneWidget,
         );
-        
+
         expect(
           find.descendant(
             of: find.byType(Opacity),
@@ -306,7 +328,7 @@ void main() {
           ),
           findsOneWidget,
         );
-        
+
         expect(
           find.descendant(
             of: find.byType(ClipOval),
@@ -316,7 +338,9 @@ void main() {
         );
       });
 
-      testWidgets('No RenderModifiers widget when no modifiers present', (tester) async {
+      testWidgets('No RenderModifiers widget when no modifiers present', (
+        tester,
+      ) async {
         final boxAttribute = BoxSpecAttribute()
             .width(100)
             .height(100)

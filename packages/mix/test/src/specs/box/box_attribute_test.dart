@@ -561,7 +561,7 @@ void main() {
         final animation = AnimationConfig.linear(
           const Duration(milliseconds: 300),
         );
-        final attribute = BoxSpecAttribute().animate(animation);
+        final attribute = BoxSpecAttribute.animate(animation);
 
         expect(attribute.$animation, equals(animation));
       });
@@ -956,7 +956,7 @@ void main() {
           final animationConfig = AnimationConfig.linear(
             const Duration(milliseconds: 500),
           );
-          final attribute = BoxSpecAttribute().animate(animationConfig);
+          final attribute = BoxSpecAttribute.animate(animationConfig);
 
           expect(attribute.$animation, equals(animationConfig));
         });

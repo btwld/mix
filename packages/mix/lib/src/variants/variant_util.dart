@@ -3,101 +3,101 @@ import 'package:flutter/material.dart';
 import '../core/breakpoint.dart';
 import '../core/spec.dart';
 import '../core/style.dart';
+import '../core/utility.dart';
 import '../core/variant.dart';
 
 /// Utility class for creating variant attributes with context-based variants
 @immutable
-class OnContextVariantUtility {
-  static const self = OnContextVariantUtility();
-
-  const OnContextVariantUtility();
+class OnContextVariantUtility<S extends Spec<S>, T extends SpecStyle<S>>
+    extends MixUtility<T, VariantSpecAttribute<S>> {
+  const OnContextVariantUtility(super.builder);
 
   /// Creates a variant attribute for the hover state
-  VariantAttributeBuilder get hover {
+  VariantAttributeBuilder<S> get hover {
     return VariantAttributeBuilder(
       ContextVariant.widgetState(WidgetState.hovered),
     );
   }
 
   /// Creates a variant attribute for the press state
-  VariantAttributeBuilder get press {
+  VariantAttributeBuilder<S> get press {
     return VariantAttributeBuilder(
       ContextVariant.widgetState(WidgetState.pressed),
     );
   }
 
   /// Creates a variant attribute for the focus state
-  VariantAttributeBuilder get focus {
+  VariantAttributeBuilder<S> get focus {
     return VariantAttributeBuilder(
       ContextVariant.widgetState(WidgetState.focused),
     );
   }
 
   /// Creates a variant attribute for the disabled state
-  VariantAttributeBuilder get disabled {
+  VariantAttributeBuilder<S> get disabled {
     return VariantAttributeBuilder(
       ContextVariant.widgetState(WidgetState.disabled),
     );
   }
 
   /// Creates a variant attribute for the selected state
-  VariantAttributeBuilder get selected {
+  VariantAttributeBuilder<S> get selected {
     return VariantAttributeBuilder(
       ContextVariant.widgetState(WidgetState.selected),
     );
   }
 
   /// Creates a variant attribute for the dragged state
-  VariantAttributeBuilder get dragged {
+  VariantAttributeBuilder<S> get dragged {
     return VariantAttributeBuilder(
       ContextVariant.widgetState(WidgetState.dragged),
     );
   }
 
   /// Creates a variant attribute for the error state
-  VariantAttributeBuilder get error {
+  VariantAttributeBuilder<S> get error {
     return VariantAttributeBuilder(
       ContextVariant.widgetState(WidgetState.error),
     );
   }
 
   /// Creates a variant attribute for dark mode
-  VariantAttributeBuilder get dark {
+  VariantAttributeBuilder<S> get dark {
     return VariantAttributeBuilder(
       ContextVariant.platformBrightness(Brightness.dark),
     );
   }
 
   /// Creates a variant attribute for light mode
-  VariantAttributeBuilder get light {
+  VariantAttributeBuilder<S> get light {
     return VariantAttributeBuilder(
       ContextVariant.platformBrightness(Brightness.light),
     );
   }
 
   /// Creates a variant attribute for portrait orientation
-  VariantAttributeBuilder get portrait {
+  VariantAttributeBuilder<S> get portrait {
     return VariantAttributeBuilder(
       ContextVariant.orientation(Orientation.portrait),
     );
   }
 
   /// Creates a variant attribute for landscape orientation
-  VariantAttributeBuilder get landscape {
+  VariantAttributeBuilder<S> get landscape {
     return VariantAttributeBuilder(
       ContextVariant.orientation(Orientation.landscape),
     );
   }
 
   /// Creates a variant attribute for mobile size
-  VariantAttributeBuilder get mobile {
+  VariantAttributeBuilder<S> get mobile {
     return VariantAttributeBuilder(
       ContextVariant.size('mobile', (size) => size.width <= 767),
     );
   }
 
   /// Creates a variant attribute for tablet size
-  VariantAttributeBuilder get tablet {
+  VariantAttributeBuilder<S> get tablet {
     return VariantAttributeBuilder(
       ContextVariant.size(
         'tablet',
@@ -107,76 +107,76 @@ class OnContextVariantUtility {
   }
 
   /// Creates a variant attribute for desktop size
-  VariantAttributeBuilder get desktop {
+  VariantAttributeBuilder<S> get desktop {
     return VariantAttributeBuilder(
       ContextVariant.size('desktop', (size) => size.width > 1279),
     );
   }
 
   /// Creates a variant attribute for left-to-right direction
-  VariantAttributeBuilder get ltr {
+  VariantAttributeBuilder<S> get ltr {
     return VariantAttributeBuilder(ContextVariant.direction(TextDirection.ltr));
   }
 
   /// Creates a variant attribute for right-to-left direction
-  VariantAttributeBuilder get rtl {
+  VariantAttributeBuilder<S> get rtl {
     return VariantAttributeBuilder(ContextVariant.direction(TextDirection.rtl));
   }
 
   /// Creates a variant attribute for iOS platform
-  VariantAttributeBuilder get ios {
+  VariantAttributeBuilder<S> get ios {
     return VariantAttributeBuilder(ContextVariant.platform(TargetPlatform.iOS));
   }
 
   /// Creates a variant attribute for Android platform
-  VariantAttributeBuilder get android {
+  VariantAttributeBuilder<S> get android {
     return VariantAttributeBuilder(
       ContextVariant.platform(TargetPlatform.android),
     );
   }
 
   /// Creates a variant attribute for macOS platform
-  VariantAttributeBuilder get macos {
+  VariantAttributeBuilder<S> get macos {
     return VariantAttributeBuilder(
       ContextVariant.platform(TargetPlatform.macOS),
     );
   }
 
   /// Creates a variant attribute for Windows platform
-  VariantAttributeBuilder get windows {
+  VariantAttributeBuilder<S> get windows {
     return VariantAttributeBuilder(
       ContextVariant.platform(TargetPlatform.windows),
     );
   }
 
   /// Creates a variant attribute for Linux platform
-  VariantAttributeBuilder get linux {
+  VariantAttributeBuilder<S> get linux {
     return VariantAttributeBuilder(
       ContextVariant.platform(TargetPlatform.linux),
     );
   }
 
   /// Creates a variant attribute for Fuchsia platform
-  VariantAttributeBuilder get fuchsia {
+  VariantAttributeBuilder<S> get fuchsia {
     return VariantAttributeBuilder(
       ContextVariant.platform(TargetPlatform.fuchsia),
     );
   }
 
   /// Creates a variant attribute for web platform
-  VariantAttributeBuilder get web {
+  VariantAttributeBuilder<S> get web {
     return VariantAttributeBuilder(ContextVariant.web());
   }
 
   /// Creates a variant attribute for the enabled state (opposite of disabled)
-  VariantAttributeBuilder get enabled {
+  VariantAttributeBuilder<S> get enabled {
     return VariantAttributeBuilder(
       MultiVariant.not(ContextVariant.widgetState(WidgetState.disabled)),
     );
   }
 
   /// Creates a variant attribute for a breakpoint based on screen size
-  VariantAttributeBuilder breakpoint(Breakpoint breakpoint) {
+  VariantAttributeBuilder<S> breakpoint(Breakpoint breakpoint) {
     return VariantAttributeBuilder(
       ContextVariant.size(
         'breakpoint_${breakpoint.minWidth ?? 'null'}_${breakpoint.maxWidth ?? 'null'}',
@@ -186,21 +186,21 @@ class OnContextVariantUtility {
   }
 
   /// Creates a variant attribute for a minimum width breakpoint
-  VariantAttributeBuilder minWidth(double width) {
+  VariantAttributeBuilder<S> minWidth(double width) {
     return VariantAttributeBuilder(
       ContextVariant.size('min_width_$width', (size) => size.width >= width),
     );
   }
 
   /// Creates a variant attribute for a maximum width breakpoint
-  VariantAttributeBuilder maxWidth(double width) {
+  VariantAttributeBuilder<S> maxWidth(double width) {
     return VariantAttributeBuilder(
       ContextVariant.size('max_width_$width', (size) => size.width <= width),
     );
   }
 
   /// Creates a variant attribute for a width range breakpoint
-  VariantAttributeBuilder widthRange(double minWidth, double maxWidth) {
+  VariantAttributeBuilder<S> widthRange(double minWidth, double maxWidth) {
     return VariantAttributeBuilder(
       ContextVariant.size(
         'width_range_${minWidth}_$maxWidth',
@@ -210,7 +210,7 @@ class OnContextVariantUtility {
   }
 
   /// Creates a variant attribute for a minimum height breakpoint
-  VariantAttributeBuilder minHeight(double height) {
+  VariantAttributeBuilder<S> minHeight(double height) {
     return VariantAttributeBuilder(
       ContextVariant.size(
         'min_height_$height',
@@ -220,7 +220,7 @@ class OnContextVariantUtility {
   }
 
   /// Creates a variant attribute for a maximum height breakpoint
-  VariantAttributeBuilder maxHeight(double height) {
+  VariantAttributeBuilder<S> maxHeight(double height) {
     return VariantAttributeBuilder(
       ContextVariant.size(
         'max_height_$height',
@@ -230,7 +230,7 @@ class OnContextVariantUtility {
   }
 
   /// Creates a variant attribute for a height range breakpoint
-  VariantAttributeBuilder heightRange(double minHeight, double maxHeight) {
+  VariantAttributeBuilder<S> heightRange(double minHeight, double maxHeight) {
     return VariantAttributeBuilder(
       ContextVariant.size(
         'height_range_${minHeight}_$maxHeight',
@@ -246,7 +246,7 @@ class OnContextVariantUtility {
 /// [VariantSpecAttribute] instances with styling rules that apply
 /// when the variant condition is met.
 @immutable
-class VariantAttributeBuilder {
+class VariantAttributeBuilder<T extends Spec<T>> {
   /// The variant condition that determines when styling should apply
   final Variant variant;
 

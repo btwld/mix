@@ -149,7 +149,7 @@ void main() {
       test('& operator creates AND MultiVariant', () {
         const primary = NamedVariant('primary');
         const large = NamedVariant('large');
-        
+
         final combined = primary & large;
 
         expect(combined, isA<MultiVariant>());
@@ -161,7 +161,7 @@ void main() {
       test('| operator creates OR MultiVariant', () {
         const primary = NamedVariant('primary');
         const secondary = NamedVariant('secondary');
-        
+
         final combined = primary | secondary;
 
         expect(combined, isA<MultiVariant>());
@@ -174,7 +174,7 @@ void main() {
         const primary = NamedVariant('primary');
         const large = NamedVariant('large');
         const outlined = NamedVariant('outlined');
-        
+
         // (primary AND large) OR outlined
         final complex = (primary & large) | outlined;
 
@@ -182,9 +182,11 @@ void main() {
         expect(complex.operatorType, MultiVariantOperator.or);
         expect(complex.variants.length, 2);
         expect(complex.variants, contains(outlined));
-        
+
         // Should contain the AND combination
-        final andVariant = complex.variants.firstWhere((v) => v is MultiVariant) as MultiVariant;
+        final andVariant =
+            complex.variants.firstWhere((v) => v is MultiVariant)
+                as MultiVariant;
         expect(andVariant.operatorType, MultiVariantOperator.and);
         expect(andVariant.variants, contains(primary));
         expect(andVariant.variants, contains(large));
@@ -205,7 +207,7 @@ void main() {
       test('combines with WidgetStateVariants', () {
         const primary = NamedVariant('primary');
         final hovered = WidgetStateVariant(WidgetState.hovered);
-        
+
         final combined = primary & hovered;
 
         expect(combined.variants.length, 2);
@@ -216,7 +218,7 @@ void main() {
       test('combines with ContextVariants', () {
         const primary = NamedVariant('primary');
         final darkMode = ContextVariant('dark', (context) => true);
-        
+
         final combined = primary & darkMode;
 
         expect(combined.variants.length, 2);
@@ -226,7 +228,7 @@ void main() {
 
       test('works with predefined variants', () {
         const custom = NamedVariant('custom');
-        
+
         // Combine with predefined widget state variant
         final withHover = custom & hover;
         expect(withHover.variants, contains(custom));
@@ -242,7 +244,7 @@ void main() {
     group('VariantSpecAttribute integration', () {
       test('can be used in VariantSpecAttribute wrapper', () {
         const primaryVariant = NamedVariant('primary');
-        final style = BoxSpecAttribute.only(width: 100.0);
+        final style = BoxSpecAttribute.width(100.0);
         final variantAttr = VariantSpecAttribute(primaryVariant, style);
 
         expect(variantAttr.variant, primaryVariant);
@@ -253,15 +255,15 @@ void main() {
       test('different NamedVariants create different mergeKeys', () {
         const primaryVariant = NamedVariant('primary');
         const secondaryVariant = NamedVariant('secondary');
-        
+
         final primaryStyle = VariantSpecAttribute(
           primaryVariant,
-          BoxSpecAttribute.only(width: 100.0),
+          BoxSpecAttribute.width(100.0),
         );
-        
+
         final secondaryStyle = VariantSpecAttribute(
           secondaryVariant,
-          BoxSpecAttribute.only(width: 150.0),
+          BoxSpecAttribute.width(150.0),
         );
 
         expect(primaryStyle.mergeKey, 'primary');
@@ -271,45 +273,53 @@ void main() {
 
       test('merges correctly when variants match', () {
         const primaryVariant = NamedVariant('primary');
-        
+
         final style1 = VariantSpecAttribute(
           primaryVariant,
-          BoxSpecAttribute.only(width: 100.0),
+          BoxSpecAttribute.width(100.0),
         );
-        
+
         final style2 = VariantSpecAttribute(
           primaryVariant,
-          BoxSpecAttribute.only(height: 200.0),
+          BoxSpecAttribute.height(200.0),
         );
 
         final merged = style1.merge(style2);
 
         expect(merged.variant, primaryVariant);
         final mergedBox = merged.value as BoxSpecAttribute;
-        expect(mergedBox.$width, resolvesTo(100.0));
-        expect(mergedBox.$height, resolvesTo(200.0));
+        final context = MockBuildContext();
+        final constraints = mergedBox.resolve(context).constraints;
+        expect(constraints?.minWidth, 100.0);
+        expect(constraints?.maxWidth, 100.0);
+        expect(constraints?.minHeight, 200.0);
+        expect(constraints?.maxHeight, 200.0);
       });
 
       test('does not merge when variants differ', () {
         const primaryVariant = NamedVariant('primary');
         const secondaryVariant = NamedVariant('secondary');
-        
+
         final primaryStyle = VariantSpecAttribute(
           primaryVariant,
-          BoxSpecAttribute.only(width: 100.0),
+          BoxSpecAttribute.width(100.0),
         );
-        
+
         final secondaryStyle = VariantSpecAttribute(
           secondaryVariant,
-          BoxSpecAttribute.only(height: 200.0),
+          BoxSpecAttribute.height(200.0),
         );
 
         final merged = primaryStyle.merge(secondaryStyle);
 
         expect(merged, same(primaryStyle));
         final mergedBox = merged.value as BoxSpecAttribute;
-        expect(mergedBox.$width, resolvesTo(100.0));
-        expect(mergedBox.$height, isNull);
+        final context = MockBuildContext();
+        final constraints = mergedBox.resolve(context).constraints;
+        expect(constraints?.minWidth, 100.0);
+        expect(constraints?.maxWidth, 100.0);
+        expect(constraints?.minHeight, 0.0);
+        expect(constraints?.maxHeight, double.infinity);
       });
     });
 
@@ -335,7 +345,7 @@ void main() {
 
         expect(primary, equals(primaryCopy));
         expect(secondary, equals(secondaryCopy));
-        
+
         // Const instances should be identical
         expect(identical(primary, primaryCopy), isTrue);
         expect(identical(secondary, secondaryCopy), isTrue);
@@ -388,7 +398,7 @@ void main() {
 
       test('immutability of name property', () {
         const variant = NamedVariant('primary');
-        
+
         expect(variant.name, 'primary');
         // Name should not be modifiable (enforced by final keyword)
         expect(() => variant.name, returnsNormally);
@@ -396,7 +406,7 @@ void main() {
 
       test('string representation is useful for debugging', () {
         const variant = NamedVariant('primary');
-        
+
         // toString should provide meaningful output
         final stringRep = variant.toString();
         expect(stringRep, isA<String>());
@@ -407,13 +417,13 @@ void main() {
     group('Performance considerations', () {
       test('creating many NamedVariants is efficient', () {
         final stopwatch = Stopwatch()..start();
-        
+
         for (int i = 0; i < 1000; i++) {
           NamedVariant('variant$i');
         }
-        
+
         stopwatch.stop();
-        
+
         // Should complete quickly
         expect(stopwatch.elapsedMilliseconds, lessThan(100));
       });
@@ -422,16 +432,16 @@ void main() {
         const variant1 = NamedVariant('primary');
         const variant2 = NamedVariant('primary');
         const variant3 = NamedVariant('secondary');
-        
+
         final stopwatch = Stopwatch()..start();
-        
+
         for (int i = 0; i < 1000; i++) {
           variant1 == variant2; // true
           variant1 == variant3; // false
         }
-        
+
         stopwatch.stop();
-        
+
         expect(stopwatch.elapsedMilliseconds, lessThan(50));
       });
 
@@ -442,17 +452,17 @@ void main() {
           NamedVariant('large'),
           NamedVariant('small'),
         ];
-        
+
         final stopwatch = Stopwatch()..start();
-        
+
         for (int i = 0; i < 1000; i++) {
           for (final variant in variants) {
             variant.hashCode;
           }
         }
-        
+
         stopwatch.stop();
-        
+
         expect(stopwatch.elapsedMilliseconds, lessThan(50));
       });
 

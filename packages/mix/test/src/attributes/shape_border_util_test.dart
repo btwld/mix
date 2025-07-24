@@ -42,20 +42,23 @@ void main() {
         test(
           'roundedRectangle provides access to RoundedRectangleBorderUtility',
           () {
-            final attr = utility.roundedRectangle.borderRadius.circular(8.0);
+            final attr = utility.roundedRectangle.borderRadius.borderRadius
+                .circular(8.0);
             expect(attr.value, isA<MixProp<ShapeBorder>>());
           },
         );
 
         test('beveled provides access to BeveledRectangleBorderUtility', () {
-          final attr = utility.beveled.borderRadius.circular(6.0);
+          final attr = utility.beveled.borderRadius.borderRadius.circular(6.0);
           expect(attr.value, isA<MixProp<ShapeBorder>>());
         });
 
         test(
           'continuous provides access to ContinuousRectangleBorderUtility',
           () {
-            final attr = utility.continuous.borderRadius.circular(10.0);
+            final attr = utility.continuous.borderRadius.borderRadius.circular(
+              10.0,
+            );
             expect(attr.value, isA<MixProp<ShapeBorder>>());
           },
         );
@@ -131,7 +134,7 @@ void main() {
         test(
           'borderRadius.circular() creates rounded rectangle border with circular radius',
           () {
-            final attr = utility.borderRadius.circular(12.0);
+            final attr = utility.borderRadius.borderRadius.circular(12.0);
             expect(attr.value, isA<MixProp<RoundedRectangleBorder>>());
           },
         );
@@ -139,7 +142,9 @@ void main() {
         test(
           'borderRadius.topLeft() creates rounded rectangle border with top left radius',
           () {
-            final attr = utility.borderRadius.topLeft.circular(8.0);
+            final attr = utility.borderRadius.borderRadius.topLeft.circular(
+              8.0,
+            );
             expect(attr.value, isA<MixProp<RoundedRectangleBorder>>());
           },
         );
@@ -352,7 +357,7 @@ void main() {
         test(
           'borderRadius.circular() creates beveled rectangle border with circular radius',
           () {
-            final attr = utility.borderRadius.circular(10.0);
+            final attr = utility.borderRadius.borderRadius.circular(10.0);
             expect(attr.value, isA<MixProp<BeveledRectangleBorder>>());
           },
         );
@@ -429,7 +434,7 @@ void main() {
         test(
           'borderRadius.circular() creates continuous rectangle border with circular radius',
           () {
-            final attr = utility.borderRadius.circular(18.0);
+            final attr = utility.borderRadius.borderRadius.circular(18.0);
             expect(attr.value, isA<MixProp<ContinuousRectangleBorder>>());
           },
         );

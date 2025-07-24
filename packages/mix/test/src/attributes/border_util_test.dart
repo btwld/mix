@@ -350,7 +350,7 @@ void main() {
     test('only() creates BorderMix', () {
       final topSide = BorderSideMix.only(color: Colors.red, width: 1.0);
 
-      final result = utility.only(top: topSide);
+      final result = utility.border.only(top: topSide);
 
       expect(result, isA<UtilityTestAttribute>());
 
@@ -359,14 +359,18 @@ void main() {
     });
 
     test('none creates border with no sides', () {
-      final result = utility.none();
+      final result = utility.border.none();
       expect(result, isA<UtilityTestAttribute>());
     });
 
     group('directional access', () {
       test('start and end utilities work through directional', () {
-        final resultStart = utility.start(BorderSideMix.only(width: 1.0));
-        final resultEnd = utility.end(BorderSideMix.only(width: 2.0));
+        final resultStart = utility.borderDirectional.start(
+          BorderSideMix.only(width: 1.0),
+        );
+        final resultEnd = utility.borderDirectional.end(
+          BorderSideMix.only(width: 2.0),
+        );
 
         expect(resultStart, isA<UtilityTestAttribute>());
         expect(resultEnd, isA<UtilityTestAttribute>());
@@ -375,24 +379,24 @@ void main() {
 
     group('inherited utilities from BorderUtility', () {
       test('all creates uniform border', () {
-        final result = utility.all(
+        final result = utility.border.all(
           BorderSideMix.only(color: Colors.red, width: 2.0),
         );
         expect(result, isA<UtilityTestAttribute>());
       });
 
       test('color applies to all sides', () {
-        final result = utility.color(Colors.green);
+        final result = utility.border.color(Colors.green);
         expect(result, isA<UtilityTestAttribute>());
       });
 
       test('width applies to all sides', () {
-        final result = utility.width(3.0);
+        final result = utility.border.width(3.0);
         expect(result, isA<UtilityTestAttribute>());
       });
 
       test('style applies to all sides', () {
-        final result = utility.style(BorderStyle.solid);
+        final result = utility.border.style(BorderStyle.solid);
         expect(result, isA<UtilityTestAttribute>());
       });
     });

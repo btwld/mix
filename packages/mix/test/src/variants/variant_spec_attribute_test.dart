@@ -9,7 +9,7 @@ void main() {
     group('Constructor', () {
       test('creates VariantSpecAttribute with variant and style', () {
         const variant = NamedVariant('primary');
-        final style = BoxSpecAttribute.only(width: 100.0);
+        final style = BoxSpecAttribute.width(100.0);
         final variantAttr = VariantSpecAttribute(variant, style);
 
         expect(variantAttr.variant, variant);
@@ -19,7 +19,7 @@ void main() {
 
       test('creates VariantSpecAttribute with ContextVariant', () {
         final variant = ContextVariant.widgetState(WidgetState.hovered);
-        final style = BoxSpecAttribute.only(height: 200.0);
+        final style = BoxSpecAttribute.height(200.0);
         final variantAttr = VariantSpecAttribute(variant, style);
 
         expect(variantAttr.variant, variant);
@@ -32,7 +32,7 @@ void main() {
           NamedVariant('primary'),
           ContextVariant.widgetState(WidgetState.hovered),
         ]);
-        final style = BoxSpecAttribute.only(width: 150.0);
+        final style = BoxSpecAttribute.width(150.0);
         final variantAttr = VariantSpecAttribute(variant, style);
 
         expect(variantAttr.variant, variant);
@@ -44,7 +44,7 @@ void main() {
     group('matches method', () {
       test('matches when variant is in the provided list', () {
         const variant = NamedVariant('primary');
-        final style = BoxSpecAttribute.only(width: 100.0);
+        final style = BoxSpecAttribute.width(100.0);
         final variantAttr = VariantSpecAttribute(variant, style);
 
         const variants = [NamedVariant('primary'), NamedVariant('secondary')];
@@ -53,7 +53,7 @@ void main() {
 
       test('does not match when variant is not in the provided list', () {
         const variant = NamedVariant('tertiary');
-        final style = BoxSpecAttribute.only(width: 100.0);
+        final style = BoxSpecAttribute.width(100.0);
         final variantAttr = VariantSpecAttribute(variant, style);
 
         const variants = [NamedVariant('primary'), NamedVariant('secondary')];
@@ -62,7 +62,7 @@ void main() {
 
       test('matches empty list returns false', () {
         const variant = NamedVariant('primary');
-        final style = BoxSpecAttribute.only(width: 100.0);
+        final style = BoxSpecAttribute.width(100.0);
         final variantAttr = VariantSpecAttribute(variant, style);
 
         expect(variantAttr.matches([]), isFalse);
@@ -73,13 +73,13 @@ void main() {
           NamedVariant('primary'),
           NamedVariant('large'),
         ]);
-        final style = BoxSpecAttribute.only(width: 100.0);
+        final style = BoxSpecAttribute.width(100.0);
         final variantAttr = VariantSpecAttribute(variant, style);
 
         // The exact MultiVariant must be in the list to match
         final variants = [variant];
         expect(variantAttr.matches(variants), isTrue);
-        
+
         // Individual components don't match
         const individualVariants = [NamedVariant('primary')];
         expect(variantAttr.matches(individualVariants), isFalse);
@@ -89,7 +89,7 @@ void main() {
     group('removeVariants method', () {
       test('returns null when removing the only variant', () {
         const variant = NamedVariant('primary');
-        final style = BoxSpecAttribute.only(width: 100.0);
+        final style = BoxSpecAttribute.width(100.0);
         final variantAttr = VariantSpecAttribute(variant, style);
 
         const variantsToRemove = [NamedVariant('primary')];
@@ -100,7 +100,7 @@ void main() {
 
       test('returns same instance when variant not in removal list', () {
         const variant = NamedVariant('primary');
-        final style = BoxSpecAttribute.only(width: 100.0);
+        final style = BoxSpecAttribute.width(100.0);
         final variantAttr = VariantSpecAttribute(variant, style);
 
         const variantsToRemove = [NamedVariant('secondary')];
@@ -115,7 +115,7 @@ void main() {
           NamedVariant('large'),
           NamedVariant('outlined'),
         ]);
-        final style = BoxSpecAttribute.only(width: 100.0);
+        final style = BoxSpecAttribute.width(100.0);
         final variantAttr = VariantSpecAttribute(variant, style);
 
         const variantsToRemove = [NamedVariant('large')];
@@ -123,12 +123,21 @@ void main() {
 
         expect(result, isNotNull);
         expect(result!.variant, isA<MultiVariant>());
-        
+
         final remainingMultiVariant = result.variant as MultiVariant;
         expect(remainingMultiVariant.variants.length, 2);
-        expect(remainingMultiVariant.variants, contains(NamedVariant('primary')));
-        expect(remainingMultiVariant.variants, contains(const NamedVariant('outlined')));
-        expect(remainingMultiVariant.variants, isNot(contains(NamedVariant('large'))));
+        expect(
+          remainingMultiVariant.variants,
+          contains(NamedVariant('primary')),
+        );
+        expect(
+          remainingMultiVariant.variants,
+          contains(const NamedVariant('outlined')),
+        );
+        expect(
+          remainingMultiVariant.variants,
+          isNot(contains(NamedVariant('large'))),
+        );
       });
 
       test('returns single variant when MultiVariant reduced to one', () {
@@ -136,7 +145,7 @@ void main() {
           NamedVariant('primary'),
           NamedVariant('large'),
         ]);
-        final style = BoxSpecAttribute.only(width: 100.0);
+        final style = BoxSpecAttribute.width(100.0);
         final variantAttr = VariantSpecAttribute(variant, style);
 
         const variantsToRemove = [NamedVariant('large')];
@@ -152,10 +161,13 @@ void main() {
           NamedVariant('primary'),
           NamedVariant('large'),
         ]);
-        final style = BoxSpecAttribute.only(width: 100.0);
+        final style = BoxSpecAttribute.width(100.0);
         final variantAttr = VariantSpecAttribute(variant, style);
 
-        const variantsToRemove = [NamedVariant('primary'), NamedVariant('large')];
+        const variantsToRemove = [
+          NamedVariant('primary'),
+          NamedVariant('large'),
+        ];
         final result = variantAttr.removeVariants(variantsToRemove);
 
         expect(result, isNull);
@@ -167,7 +179,7 @@ void main() {
           NamedVariant('large'),
           NamedVariant('outlined'),
         ]);
-        final style = BoxSpecAttribute.only(width: 100.0);
+        final style = BoxSpecAttribute.width(100.0);
         final variantAttr = VariantSpecAttribute(orVariant, style);
 
         const variantsToRemove = [NamedVariant('large')];
@@ -175,7 +187,7 @@ void main() {
 
         expect(result, isNotNull);
         expect(result!.variant, isA<MultiVariant>());
-        
+
         final remainingMultiVariant = result.variant as MultiVariant;
         expect(remainingMultiVariant.operatorType, MultiVariantOperator.or);
       });
@@ -184,9 +196,9 @@ void main() {
     group('merge method', () {
       test('merges styles when variants match', () {
         const variant = NamedVariant('primary');
-        final style1 = BoxSpecAttribute.only(width: 100.0);
-        final style2 = BoxSpecAttribute.only(height: 200.0);
-        
+        final style1 = BoxSpecAttribute.width(100.0);
+        final style2 = BoxSpecAttribute.height(200.0);
+
         final variantAttr1 = VariantSpecAttribute(variant, style1);
         final variantAttr2 = VariantSpecAttribute(variant, style2);
 
@@ -194,16 +206,20 @@ void main() {
 
         expect(merged.variant, variant);
         final mergedBox = merged.value as BoxSpecAttribute;
-        expect(mergedBox.$width, resolvesTo(100.0));
-        expect(mergedBox.$height, resolvesTo(200.0));
+        final context = MockBuildContext();
+        final constraints = mergedBox.resolve(context).constraints;
+        expect(constraints?.minWidth, 100.0);
+        expect(constraints?.maxWidth, 100.0);
+        expect(constraints?.minHeight, 200.0);
+        expect(constraints?.maxHeight, 200.0);
       });
 
       test('returns this when variants do not match', () {
         const variant1 = NamedVariant('primary');
         const variant2 = NamedVariant('secondary');
-        final style1 = BoxSpecAttribute.only(width: 100.0);
-        final style2 = BoxSpecAttribute.only(height: 200.0);
-        
+        final style1 = BoxSpecAttribute.width(100.0);
+        final style2 = BoxSpecAttribute.height(200.0);
+
         final variantAttr1 = VariantSpecAttribute(variant1, style1);
         final variantAttr2 = VariantSpecAttribute(variant2, style2);
 
@@ -211,13 +227,17 @@ void main() {
 
         expect(merged, same(variantAttr1));
         final mergedBox = merged.value as BoxSpecAttribute;
-        expect(mergedBox.$width, resolvesTo(100.0));
-        expect(mergedBox.$height, isNull);
+        final context = MockBuildContext();
+        final constraints = mergedBox.resolve(context).constraints;
+        expect(constraints?.minWidth, 100.0);
+        expect(constraints?.maxWidth, 100.0);
+        expect(constraints?.minHeight, 0.0);
+        expect(constraints?.maxHeight, double.infinity);
       });
 
       test('returns this when other is null', () {
         const variant = NamedVariant('primary');
-        final style = BoxSpecAttribute.only(width: 100.0);
+        final style = BoxSpecAttribute.width(100.0);
         final variantAttr = VariantSpecAttribute(variant, style);
 
         final merged = variantAttr.merge(null);
@@ -227,9 +247,16 @@ void main() {
 
       test('merges with overlapping properties - other takes precedence', () {
         const variant = NamedVariant('primary');
-        final style1 = BoxSpecAttribute.only(width: 100.0, height: 150.0);
-        final style2 = BoxSpecAttribute.only(width: 200.0);
-        
+        final style1 = BoxSpecAttribute.only(
+          constraints: BoxConstraintsMix.only(
+            minWidth: 100.0,
+            maxWidth: 100.0,
+            minHeight: 150.0,
+            maxHeight: 150.0,
+          ),
+        );
+        final style2 = BoxSpecAttribute.width(200.0);
+
         final variantAttr1 = VariantSpecAttribute(variant, style1);
         final variantAttr2 = VariantSpecAttribute(variant, style2);
 
@@ -237,16 +264,20 @@ void main() {
 
         expect(merged.variant, variant);
         final mergedBox = merged.value as BoxSpecAttribute;
-        expect(mergedBox.$width, resolvesTo(200.0)); // other overrides
-        expect(mergedBox.$height, resolvesTo(150.0)); // from first
+        final context = MockBuildContext();
+        final constraints = mergedBox.resolve(context).constraints;
+        expect(constraints?.minWidth, 200.0); // other overrides
+        expect(constraints?.maxWidth, 200.0); // other overrides
+        expect(constraints?.minHeight, 150.0); // from first
+        expect(constraints?.maxHeight, 150.0); // from first
       });
     });
 
     group('Equality', () {
       test('equal VariantSpecAttributes have same hashCode', () {
         const variant = NamedVariant('primary');
-        final style = BoxSpecAttribute.only(width: 100.0);
-        
+        final style = BoxSpecAttribute.width(100.0);
+
         final variantAttr1 = VariantSpecAttribute(variant, style);
         final variantAttr2 = VariantSpecAttribute(variant, style);
 
@@ -257,8 +288,8 @@ void main() {
       test('different variants are not equal', () {
         const variant1 = NamedVariant('primary');
         const variant2 = NamedVariant('secondary');
-        final style = BoxSpecAttribute.only(width: 100.0);
-        
+        final style = BoxSpecAttribute.width(100.0);
+
         final variantAttr1 = VariantSpecAttribute(variant1, style);
         final variantAttr2 = VariantSpecAttribute(variant2, style);
 
@@ -267,9 +298,9 @@ void main() {
 
       test('different styles are not equal', () {
         const variant = NamedVariant('primary');
-        final style1 = BoxSpecAttribute.only(width: 100.0);
-        final style2 = BoxSpecAttribute.only(width: 200.0);
-        
+        final style1 = BoxSpecAttribute.width(100.0);
+        final style2 = BoxSpecAttribute.width(200.0);
+
         final variantAttr1 = VariantSpecAttribute(variant, style1);
         final variantAttr2 = VariantSpecAttribute(variant, style2);
 
@@ -278,7 +309,7 @@ void main() {
 
       test('identical instances are equal', () {
         const variant = NamedVariant('primary');
-        final style = BoxSpecAttribute.only(width: 100.0);
+        final style = BoxSpecAttribute.width(100.0);
         final variantAttr = VariantSpecAttribute(variant, style);
 
         expect(variantAttr, equals(variantAttr));
@@ -289,7 +320,7 @@ void main() {
     group('mergeKey property', () {
       test('uses variant key as merge key', () {
         const variant = NamedVariant('primary');
-        final style = BoxSpecAttribute.only(width: 100.0);
+        final style = BoxSpecAttribute.width(100.0);
         final variantAttr = VariantSpecAttribute(variant, style);
 
         expect(variantAttr.mergeKey, 'primary');
@@ -297,7 +328,7 @@ void main() {
 
       test('uses ContextVariant key as merge key', () {
         final variant = ContextVariant.widgetState(WidgetState.hovered);
-        final style = BoxSpecAttribute.only(width: 100.0);
+        final style = BoxSpecAttribute.width(100.0);
         final variantAttr = VariantSpecAttribute(variant, style);
 
         expect(variantAttr.mergeKey, 'widget_state_hovered');
@@ -308,7 +339,7 @@ void main() {
           NamedVariant('primary'),
           NamedVariant('large'),
         ]);
-        final style = BoxSpecAttribute.only(width: 100.0);
+        final style = BoxSpecAttribute.width(100.0);
         final variantAttr = VariantSpecAttribute(variant, style);
 
         expect(variantAttr.mergeKey, isA<String>());
@@ -356,13 +387,13 @@ void main() {
           NamedVariant('primary'),
           NamedVariant('large'),
         ]);
-        
+
         final variant2 = MultiVariant.or([
           variant1,
           const NamedVariant('secondary'),
         ]);
-        
-        final style = BoxSpecAttribute.only(width: 100.0);
+
+        final style = BoxSpecAttribute.width(100.0);
         final variantAttr = VariantSpecAttribute(variant2, style);
 
         expect(variantAttr.variant, variant2);
@@ -374,13 +405,13 @@ void main() {
           NamedVariant('primary'),
           NamedVariant('large'),
         ]);
-        
+
         final outerOr = MultiVariant.or([
           innerAnd,
           const NamedVariant('secondary'),
         ]);
-        
-        final style = BoxSpecAttribute.only(width: 100.0);
+
+        final style = BoxSpecAttribute.width(100.0);
         final variantAttr = VariantSpecAttribute(outerOr, style);
 
         const variantsToRemove = [NamedVariant('primary')];

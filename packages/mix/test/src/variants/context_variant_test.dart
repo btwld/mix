@@ -272,7 +272,7 @@ void main() {
     group('VariantSpecAttribute integration', () {
       test('can be wrapped in VariantSpecAttribute', () {
         final contextVariant = ContextVariant('test', (context) => true);
-        final style = BoxSpecAttribute.only(width: 100.0);
+        final style = BoxSpecAttribute.width(100.0);
         final variantAttr = VariantSpecAttribute(contextVariant, style);
 
         expect(variantAttr.variant, contextVariant);

@@ -37,42 +37,42 @@ void main() {
 
     group('Widget State Variants', () {
       test('hover creates VariantAttributeBuilder', () {
-        final builder = utility.hover;
+        const builder = utility.hover;
         expect(builder, isA<VariantAttributeBuilder>());
       });
 
       test('press creates VariantAttributeBuilder', () {
-        final builder = utility.press;
+        const builder = utility.press;
         expect(builder, isA<VariantAttributeBuilder>());
       });
 
       test('focus creates VariantAttributeBuilder', () {
-        final builder = utility.focus;
+        const builder = utility.focus;
         expect(builder, isA<VariantAttributeBuilder>());
       });
 
       test('disabled creates VariantAttributeBuilder', () {
-        final builder = utility.disabled;
+        const builder = utility.disabled;
         expect(builder, isA<VariantAttributeBuilder>());
       });
 
       test('selected creates VariantAttributeBuilder', () {
-        final builder = utility.selected;
+        const builder = utility.selected;
         expect(builder, isA<VariantAttributeBuilder>());
       });
 
       test('dragged creates VariantAttributeBuilder', () {
-        final builder = utility.dragged;
+        const builder = utility.dragged;
         expect(builder, isA<VariantAttributeBuilder>());
       });
 
       test('error creates VariantAttributeBuilder', () {
-        final builder = utility.error;
+        const builder = utility.error;
         expect(builder, isA<VariantAttributeBuilder>());
       });
 
       test('enabled creates VariantAttributeBuilder', () {
-        final builder = utility.enabled;
+        const builder = utility.enabled;
         expect(builder, isA<VariantAttributeBuilder>());
       });
 
@@ -93,8 +93,8 @@ void main() {
       });
 
       test('widget state builders return consistent builders', () {
-        final hover1 = utility.hover;
-        final hover2 = utility.hover;
+        const hover1 = utility.hover;
+        const hover2 = utility.hover;
 
         // Verify they are both VariantAttributeBuilders wrapping the same variant type
         expect(hover1, isA<VariantAttributeBuilder>());
@@ -105,18 +105,18 @@ void main() {
 
     group('Platform Brightness Variants', () {
       test('dark creates VariantAttributeBuilder', () {
-        final builder = utility.dark;
+        const builder = utility.dark;
         expect(builder, isA<VariantAttributeBuilder>());
       });
 
       test('light creates VariantAttributeBuilder', () {
-        final builder = utility.light;
+        const builder = utility.light;
         expect(builder, isA<VariantAttributeBuilder>());
       });
 
       test('dark and light are different builders', () {
-        final dark = utility.dark;
-        final light = utility.light;
+        const dark = utility.dark;
+        const light = utility.light;
 
         expect(identical(dark, light), isFalse);
       });
@@ -124,18 +124,18 @@ void main() {
 
     group('Orientation Variants', () {
       test('portrait creates VariantAttributeBuilder', () {
-        final builder = utility.portrait;
+        const builder = utility.portrait;
         expect(builder, isA<VariantAttributeBuilder>());
       });
 
       test('landscape creates VariantAttributeBuilder', () {
-        final builder = utility.landscape;
+        const builder = utility.landscape;
         expect(builder, isA<VariantAttributeBuilder>());
       });
 
       test('portrait and landscape are different builders', () {
-        final portrait = utility.portrait;
-        final landscape = utility.landscape;
+        const portrait = utility.portrait;
+        const landscape = utility.landscape;
 
         expect(identical(portrait, landscape), isFalse);
       });
@@ -143,17 +143,17 @@ void main() {
 
     group('Size Variants', () {
       test('mobile creates VariantAttributeBuilder', () {
-        final builder = utility.mobile;
+        const builder = utility.mobile;
         expect(builder, isA<VariantAttributeBuilder>());
       });
 
       test('tablet creates VariantAttributeBuilder', () {
-        final builder = utility.tablet;
+        const builder = utility.tablet;
         expect(builder, isA<VariantAttributeBuilder>());
       });
 
       test('desktop creates VariantAttributeBuilder', () {
-        final builder = utility.desktop;
+        const builder = utility.desktop;
         expect(builder, isA<VariantAttributeBuilder>());
       });
 
@@ -168,18 +168,18 @@ void main() {
 
     group('Text Direction Variants', () {
       test('ltr creates VariantAttributeBuilder', () {
-        final builder = utility.ltr;
+        const builder = utility.ltr;
         expect(builder, isA<VariantAttributeBuilder>());
       });
 
       test('rtl creates VariantAttributeBuilder', () {
-        final builder = utility.rtl;
+        const builder = utility.rtl;
         expect(builder, isA<VariantAttributeBuilder>());
       });
 
       test('ltr and rtl are different builders', () {
-        final ltr = utility.ltr;
-        final rtl = utility.rtl;
+        const ltr = utility.ltr;
+        const rtl = utility.rtl;
 
         expect(identical(ltr, rtl), isFalse);
       });
@@ -187,37 +187,37 @@ void main() {
 
     group('Platform Variants', () {
       test('ios creates VariantAttributeBuilder', () {
-        final builder = utility.ios;
+        const builder = utility.ios;
         expect(builder, isA<VariantAttributeBuilder>());
       });
 
       test('android creates VariantAttributeBuilder', () {
-        final builder = utility.android;
+        const builder = utility.android;
         expect(builder, isA<VariantAttributeBuilder>());
       });
 
       test('macos creates VariantAttributeBuilder', () {
-        final builder = utility.macos;
+        const builder = utility.macos;
         expect(builder, isA<VariantAttributeBuilder>());
       });
 
       test('windows creates VariantAttributeBuilder', () {
-        final builder = utility.windows;
+        const builder = utility.windows;
         expect(builder, isA<VariantAttributeBuilder>());
       });
 
       test('linux creates VariantAttributeBuilder', () {
-        final builder = utility.linux;
+        const builder = utility.linux;
         expect(builder, isA<VariantAttributeBuilder>());
       });
 
       test('fuchsia creates VariantAttributeBuilder', () {
-        final builder = utility.fuchsia;
+        const builder = utility.fuchsia;
         expect(builder, isA<VariantAttributeBuilder>());
       });
 
       test('web creates VariantAttributeBuilder', () {
-        final builder = utility.web;
+        const builder = utility.web;
         expect(builder, isA<VariantAttributeBuilder>());
       });
 
@@ -334,8 +334,8 @@ void main() {
       test(
         'utility properties create consistent builders on repeated access',
         () {
-          final hover1 = utility.hover;
-          final hover2 = utility.hover;
+          const hover1 = utility.hover;
+          const hover2 = utility.hover;
 
           // Verify they are both VariantAttributeBuilders of same type
           expect(hover1, isA<VariantAttributeBuilder>());
@@ -429,13 +429,13 @@ void main() {
       });
 
       test('demonstrates dark mode usage pattern', () {
-        final darkVariant = utility.dark;
+        const darkVariant = utility.dark;
         expect(darkVariant, isA<VariantAttributeBuilder>());
       });
 
       test('demonstrates platform-specific styling pattern', () {
-        final iosVariant = utility.ios;
-        final webVariant = utility.web;
+        const iosVariant = utility.ios;
+        const webVariant = utility.web;
 
         expect(iosVariant, isA<VariantAttributeBuilder>());
         expect(webVariant, isA<VariantAttributeBuilder>());
@@ -614,7 +614,7 @@ void main() {
     group('Integration', () {
       test('works with utility-created builders', () {
         const utility = OnContextVariantUtility();
-        final hoverBuilder = utility.hover;
+        const hoverBuilder = utility.hover;
 
         expect(hoverBuilder, isA<VariantAttributeBuilder>());
       });
@@ -665,7 +665,7 @@ void main() {
 
       test('call method works with utility-created builders', () {
         const utility = OnContextVariantUtility();
-        final hoverBuilder = utility.hover;
+        const hoverBuilder = utility.hover;
         final attribute = UtilityTestAttribute<double>(200.0);
 
         final result = hoverBuilder.call(attribute);
@@ -695,7 +695,7 @@ void main() {
 
       test('call method supports usage pattern like README examples', () {
         const utility = OnContextVariantUtility();
-        final darkBuilder = utility.dark;
+        const darkBuilder = utility.dark;
 
         // Simulate: $on.dark($box.color.white(), $text.style.color.black())
         final boxAttr = UtilityTestAttribute<String>('white');
@@ -777,12 +777,12 @@ void main() {
         final notVariant = MultiVariant.not(namedVariant);
 
         expect(
-          VariantAttributeBuilder(multiVariant),
-          isA<VariantAttributeBuilder>(),
+          VariantAttributeBuilder<MultiSpec>(multiVariant),
+          isA<VariantAttributeBuilder<MultiSpec>>(),
         );
         expect(
-          VariantAttributeBuilder(notVariant),
-          isA<VariantAttributeBuilder>(),
+          VariantAttributeBuilder<MultiSpec>(notVariant),
+          isA<VariantAttributeBuilder<MultiSpec>>(),
         );
       });
     });

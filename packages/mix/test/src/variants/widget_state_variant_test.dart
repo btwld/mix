@@ -47,16 +47,19 @@ void main() {
         expect(variant.key, 'widget_state_hovered');
       });
 
-      test('factory method creates different variants for different states', () {
-        final hovered = ContextVariant.widgetState(WidgetState.hovered);
-        final pressed = ContextVariant.widgetState(WidgetState.pressed);
+      test(
+        'factory method creates different variants for different states',
+        () {
+          final hovered = ContextVariant.widgetState(WidgetState.hovered);
+          final pressed = ContextVariant.widgetState(WidgetState.pressed);
 
-        expect(hovered, isA<WidgetStateVariant>());
-        expect(pressed, isA<WidgetStateVariant>());
-        expect(hovered.state, WidgetState.hovered);
-        expect(pressed.state, WidgetState.pressed);
-        expect(hovered.key, isNot(equals(pressed.key)));
-      });
+          expect(hovered, isA<WidgetStateVariant>());
+          expect(pressed, isA<WidgetStateVariant>());
+          expect(hovered.state, WidgetState.hovered);
+          expect(pressed.state, WidgetState.pressed);
+          expect(hovered.key, isNot(equals(pressed.key)));
+        },
+      );
     });
 
     group('Key generation', () {
@@ -168,7 +171,7 @@ void main() {
       test('different states have different shouldApply behaviors', () {
         final hovered = WidgetStateVariant(WidgetState.hovered);
         final pressed = WidgetStateVariant(WidgetState.pressed);
-        
+
         // The functions should be different even if they might return the same result
         expect(hovered.shouldApply != pressed.shouldApply, isTrue);
       });
@@ -232,12 +235,14 @@ void main() {
 
         expect(hoverAndPress.variants.length, 2);
         expect(hoverAndPress.operatorType, MultiVariantOperator.and);
-        
-        final containsHover = hoverAndPress.variants
-            .any((v) => v is WidgetStateVariant && v.state == WidgetState.hovered);
-        final containsPress = hoverAndPress.variants
-            .any((v) => v is WidgetStateVariant && v.state == WidgetState.pressed);
-        
+
+        final containsHover = hoverAndPress.variants.any(
+          (v) => v is WidgetStateVariant && v.state == WidgetState.hovered,
+        );
+        final containsPress = hoverAndPress.variants.any(
+          (v) => v is WidgetStateVariant && v.state == WidgetState.pressed,
+        );
+
         expect(containsHover, isTrue);
         expect(containsPress, isTrue);
       });
@@ -250,7 +255,10 @@ void main() {
 
         expect(hoverAndPrimary.variants.length, 2);
         expect(hoverAndPrimary.variants, contains(isA<WidgetStateVariant>()));
-        expect(hoverAndPrimary.variants, contains(const NamedVariant('primary')));
+        expect(
+          hoverAndPrimary.variants,
+          contains(const NamedVariant('primary')),
+        );
       });
 
       test('can be negated with NOT operation', () {
@@ -261,8 +269,9 @@ void main() {
         expect(notHovered.operatorType, MultiVariantOperator.not);
         expect(notHovered.variants.length, 1);
         expect(notHovered.variants.first, isA<WidgetStateVariant>());
-        
-        final widgetStateVariant = notHovered.variants.first as WidgetStateVariant;
+
+        final widgetStateVariant =
+            notHovered.variants.first as WidgetStateVariant;
         expect(widgetStateVariant.state, WidgetState.hovered);
       });
 
@@ -272,14 +281,17 @@ void main() {
 
         expect(enabledAndHovered.variants.length, 2);
         expect(enabledAndHovered.variants, contains(enabled)); // MultiVariant
-        expect(enabledAndHovered.variants, contains(hover)); // WidgetStateVariant
+        expect(
+          enabledAndHovered.variants,
+          contains(hover),
+        ); // WidgetStateVariant
       });
     });
 
     group('VariantSpecAttribute integration', () {
       test('can be used in VariantSpecAttribute wrapper', () {
         final hoverVariant = WidgetStateVariant(WidgetState.hovered);
-        final style = BoxSpecAttribute.only(width: 100.0);
+        final style = BoxSpecAttribute.width(100.0);
         final variantAttr = VariantSpecAttribute(hoverVariant, style);
 
         expect(variantAttr.variant, hoverVariant);
@@ -287,41 +299,48 @@ void main() {
         expect(variantAttr.mergeKey, hoverVariant.key);
       });
 
-      test('different widget states create different VariantSpecAttribute mergeKeys', () {
-        final hoverStyle = VariantSpecAttribute(
-          WidgetStateVariant(WidgetState.hovered),
-          BoxSpecAttribute.only(width: 100.0),
-        );
-        
-        final pressStyle = VariantSpecAttribute(
-          WidgetStateVariant(WidgetState.pressed),
-          BoxSpecAttribute.only(width: 150.0),
-        );
+      test(
+        'different widget states create different VariantSpecAttribute mergeKeys',
+        () {
+          final hoverStyle = VariantSpecAttribute(
+            WidgetStateVariant(WidgetState.hovered),
+            BoxSpecAttribute.width(100.0),
+          );
 
-        expect(hoverStyle.mergeKey, isNot(equals(pressStyle.mergeKey)));
-        expect(hoverStyle.mergeKey, 'widget_state_hovered');
-        expect(pressStyle.mergeKey, 'widget_state_pressed');
-      });
+          final pressStyle = VariantSpecAttribute(
+            WidgetStateVariant(WidgetState.pressed),
+            BoxSpecAttribute.width(150.0),
+          );
+
+          expect(hoverStyle.mergeKey, isNot(equals(pressStyle.mergeKey)));
+          expect(hoverStyle.mergeKey, 'widget_state_hovered');
+          expect(pressStyle.mergeKey, 'widget_state_pressed');
+        },
+      );
 
       test('merges correctly when variants match', () {
         final hoverVariant = WidgetStateVariant(WidgetState.hovered);
-        
+
         final style1 = VariantSpecAttribute(
           hoverVariant,
-          BoxSpecAttribute.only(width: 100.0),
+          BoxSpecAttribute.width(100.0),
         );
-        
+
         final style2 = VariantSpecAttribute(
           hoverVariant,
-          BoxSpecAttribute.only(height: 200.0),
+          BoxSpecAttribute.height(200.0),
         );
 
         final merged = style1.merge(style2);
 
         expect(merged.variant, hoverVariant);
         final mergedBox = merged.value as BoxSpecAttribute;
-        expect(mergedBox.$width, resolvesTo(100.0));
-        expect(mergedBox.$height, resolvesTo(200.0));
+        final context = MockBuildContext();
+        final constraints = mergedBox.resolve(context).constraints;
+        expect(constraints?.minWidth, 100.0);
+        expect(constraints?.maxWidth, 100.0);
+        expect(constraints?.minHeight, 200.0);
+        expect(constraints?.maxHeight, 200.0);
       });
     });
 
@@ -339,7 +358,7 @@ void main() {
       test('state property is immutable', () {
         final variant = WidgetStateVariant(WidgetState.hovered);
         expect(variant.state, WidgetState.hovered);
-        
+
         // Should not be able to modify the state after creation
         // (This is enforced by Dart's final keyword)
         expect(() => variant.state, returnsNormally);
@@ -358,13 +377,13 @@ void main() {
     group('Performance considerations', () {
       test('creating many WidgetStateVariants is efficient', () {
         final stopwatch = Stopwatch()..start();
-        
+
         for (int i = 0; i < 1000; i++) {
           WidgetStateVariant(WidgetState.hovered);
         }
-        
+
         stopwatch.stop();
-        
+
         // Should complete quickly (less than 100ms for 1000 instances)
         expect(stopwatch.elapsedMilliseconds, lessThan(100));
       });
@@ -373,16 +392,16 @@ void main() {
         final variant1 = WidgetStateVariant(WidgetState.hovered);
         final variant2 = WidgetStateVariant(WidgetState.hovered);
         final variant3 = WidgetStateVariant(WidgetState.pressed);
-        
+
         final stopwatch = Stopwatch()..start();
-        
+
         for (int i = 0; i < 1000; i++) {
           variant1 == variant2; // should be true
           variant1 == variant3; // should be false
         }
-        
+
         stopwatch.stop();
-        
+
         // Should complete quickly (less than 50ms for 2000 comparisons)
         expect(stopwatch.elapsedMilliseconds, lessThan(50));
       });

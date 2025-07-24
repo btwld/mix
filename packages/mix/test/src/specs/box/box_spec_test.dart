@@ -310,7 +310,7 @@ void main() {
           clipBehavior: Clip.antiAlias,
         );
 
-        expect(spec.props.length, 11);
+        expect(spec.props.length, 9);
         expect(spec.props, contains(Alignment.center));
         expect(spec.props, contains(const EdgeInsets.all(8.0)));
         expect(spec.props, contains(const EdgeInsets.all(16.0)));
@@ -320,8 +320,6 @@ void main() {
         expect(spec.props, contains(Matrix4.identity()));
         expect(spec.props, contains(Alignment.topLeft));
         expect(spec.props, contains(Clip.antiAlias));
-        expect(spec.props, contains(100.0));
-        expect(spec.props, contains(200.0));
       });
     });
 
