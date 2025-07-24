@@ -2,11 +2,7 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../../core/animated_spec_widget.dart';
-import '../../core/factory/mix_provider.dart';
-import '../../core/spec_widget.dart';
-import '../../core/styled_widget.dart';
-import '../../modifiers/internal/render_widget_modifier.dart';
+import '../../core/style_widget.dart';
 import '../box/box_spec.dart';
 import '../flex/flex_spec.dart';
 import 'flexbox_spec.dart';
@@ -28,106 +24,48 @@ import 'flexbox_spec.dart';
 ///   children: [Widget1(), Widget2()],
 /// )
 /// ```
-class FlexBox extends StyledWidget {
+class FlexBox extends StyleWidget<FlexBoxSpec> {
   const FlexBox({
     super.style,
     super.key,
-    super.inherit,
+
     required this.direction,
     this.children = const <Widget>[],
-    super.orderOfModifiers = const [],
+    super.orderOfModifiers,
   });
 
   final List<Widget> children;
   final Axis direction;
 
   @override
-  Widget build(BuildContext context) {
-    // TODO: the support for FlexBoxSpec using BoxSpec and FlexSpec is a temporary
-    // solution to not break the existing API. it should be implemented using only
-    // FlexBoxSpec in the next major version.
-    return SpecBuilder(
-      inherit: inherit,
-      style: style,
-      orderOfModifiers: orderOfModifiers,
-      builder: (context) {
-        final mixData = MixProvider.of(context);
+  Widget build(BuildContext context, FlexBoxSpec spec) {
+    final boxSpec = spec.box;
+    final flexSpec = spec.flex;
 
-        final spec = mixData.attributeOf<FlexBoxSpecAttribute>()?.resolve(
-          mixData,
-        );
-
-        final boxSpec = spec?.box ?? BoxSpec.of(context);
-        final flexSpec = spec?.flex ?? FlexSpec.of(context);
-
-        final newSpec = FlexBoxSpec(
-          animated: spec?.animated,
-          modifiers: spec?.modifiers,
-          box: boxSpec,
-          flex: flexSpec,
-        );
-
-        return newSpec(direction: direction, children: children);
-      },
-    );
-  }
-}
-
-class FlexBoxSpecWidget extends SpecWidget<FlexBoxSpec> {
-  const FlexBoxSpecWidget({
-    super.key,
-    super.spec,
-    this.children = const <Widget>[],
-    required this.direction,
-    this.orderOfModifiers = const [],
-  });
-
-  final List<Widget> children;
-  final Axis direction;
-  final List<Type> orderOfModifiers;
-
-  @override
-  Widget build(BuildContext context) {
-    final spec = this.spec ?? const FlexBoxSpec();
-
-    // TODO: Convert to a BoxSpecWidget and a FlexSpecWidget in the next major version.
-    // it should be implemented following the same pattern as the others SpecWidgets.
-    // This code must be like this to keep the existing animation API working.
-    return RenderSpecModifiers(
-      spec: spec,
-      orderOfModifiers: orderOfModifiers,
-      child: spec.box(
-        orderOfModifiers: orderOfModifiers,
-        child: spec.flex(direction: direction, children: children),
+    return Container(
+      alignment: boxSpec.alignment,
+      padding: boxSpec.padding,
+      decoration: boxSpec.decoration,
+      foregroundDecoration: boxSpec.foregroundDecoration,
+      constraints: boxSpec.constraints,
+      margin: boxSpec.margin,
+      transform: boxSpec.transform,
+      transformAlignment: boxSpec.transformAlignment,
+      clipBehavior: boxSpec.clipBehavior ?? Clip.none,
+      child: Flex(
+        direction: flexSpec.direction ?? direction,
+        mainAxisAlignment:
+            flexSpec.mainAxisAlignment ?? MainAxisAlignment.start,
+        mainAxisSize: flexSpec.mainAxisSize ?? MainAxisSize.max,
+        crossAxisAlignment:
+            flexSpec.crossAxisAlignment ?? CrossAxisAlignment.center,
+        textDirection: flexSpec.textDirection,
+        verticalDirection: flexSpec.verticalDirection ?? VerticalDirection.down,
+        textBaseline: flexSpec.textBaseline,
+        clipBehavior: flexSpec.clipBehavior ?? Clip.none,
+        spacing: flexSpec.gap ?? 0.0,
+        children: children,
       ),
-    );
-  }
-}
-
-class AnimatedFlexBoxSpecWidget
-    extends ImplicitlyAnimatedSpecWidget<FlexBoxSpec> {
-  const AnimatedFlexBoxSpecWidget({
-    super.key,
-    required super.spec,
-    this.children = const <Widget>[],
-    required this.direction,
-    this.orderOfModifiers = const [],
-    super.curve,
-    required super.duration,
-    super.onEnd,
-  });
-
-  final List<Widget> children;
-  final Axis direction;
-  final List<Type> orderOfModifiers;
-
-  @override
-  Widget build(BuildContext context, FlexBoxSpec animatedSpec) {
-    return FlexBoxSpecWidget(
-      spec: animatedSpec,
-      direction: direction,
-      orderOfModifiers: orderOfModifiers,
-      children: children,
     );
   }
 }
@@ -149,9 +87,9 @@ class AnimatedFlexBoxSpecWidget
 /// ```
 class HBox extends FlexBox {
   const HBox({
-    super.style,
+    super.style = const FlexBoxSpecAttribute(),
     super.key,
-    super.inherit,
+
     super.children = const <Widget>[],
   }) : super(direction: Axis.horizontal);
 }
@@ -173,10 +111,6 @@ class HBox extends FlexBox {
 /// );
 /// ```
 class VBox extends FlexBox {
-  const VBox({
-    super.style,
-    super.key,
-    super.inherit,
-    super.children = const <Widget>[],
-  }) : super(direction: Axis.vertical);
+  const VBox({super.style, super.key, super.children = const <Widget>[]})
+    : super(direction: Axis.vertical);
 }

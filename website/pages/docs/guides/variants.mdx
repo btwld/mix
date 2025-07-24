@@ -24,7 +24,7 @@ Simple variants define custom styling variations intended for specific use cases
 To define a variant, you can use the `Variant` constructor.
 
 ```dart
-const outlined = Variant('outlined');
+const outlined = NamedVariant('outlined');
 ```
 
 ### Using a Variant in a Style
@@ -32,7 +32,7 @@ const outlined = Variant('outlined');
 To use a variant in a style, you can call it as a function on a `Style`, passing the attributes.
 
 ```dart {1, 8-12}
-const outlined = Variant('outlined');
+const outlined = NamedVariant('outlined');
 
 final style = Style(
   $box.padding(20),
@@ -52,7 +52,7 @@ final style = Style(
 To apply a variant, you can use the `applyVariant` method on a `Style`.
 
 ```dart {1, 8-12, 15}
-const outlined = Variant('outlined');
+const outlined = NamedVariant('outlined');
 
 final style = Style(
   $box.padding(20),

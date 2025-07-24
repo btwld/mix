@@ -1,7 +1,7 @@
 // ignore_for_file: mix_avoid_empty_variants
 import 'package:mix/mix.dart';
 
-final variantA = Variant('A');
+final variantA = NamedVariant('A');
 
 final case_1 = Style(
   $on.hover(
@@ -10,15 +10,9 @@ final case_1 = Style(
   ),
 );
 
-final case_2 = Style(
-  variantA(),
-  $on.hover(),
-);
+final case_2 = Style(variantA(), $on.hover());
 
-final case_3 = Style(
-  $on.hover(),
-  variantA(),
-);
+final case_3 = Style($on.hover(), variantA());
 
 final case_4 = Style(
   $on.hover(

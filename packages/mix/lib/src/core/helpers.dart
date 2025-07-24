@@ -7,7 +7,6 @@ import 'package:flutter/rendering.dart' as r;
 import 'package:flutter/widgets.dart' as w;
 
 import '../internal/deep_collection_equality.dart';
-import 'factory/mix_context.dart';
 import 'mix_element.dart';
 
 /// Class to provide some helpers without conflicting
@@ -41,6 +40,16 @@ class MixHelpers {
   static const lerpShadowList = ui.Shadow.lerpList;
 
   const MixHelpers._();
+  static V? resolve<V>(BuildContext context, Resolvable<V>? prop) {
+    if (prop == null) return null;
+
+    return prop.resolve(context);
+  }
+
+  static V? merge<V extends Mixable>(V? a, V? b) {
+    return (a?.merge(b) ?? b) as V?;
+  }
+
   static bool get isWeb => isWebOverride ?? kIsWeb;
   static TargetPlatform get targetPlatform =>
       targetPlatformOverride ?? defaultTargetPlatform;
@@ -67,37 +76,51 @@ int _lerpInt(int? a, int? b, double t) {
   return (a + (b - a) * t).round();
 }
 
-List<T>? _mergeList<T>(List<T>? a, List<T>? b) {
+List<T>? _mergeList<T>(
+  List<T>? a,
+  List<T>? b, {
+  ListMergeStrategy strategy = ListMergeStrategy.replace,
+}) {
   if (b == null) return a;
   if (a == null) return b;
 
   if (a.isEmpty) return b;
   if (b.isEmpty) return a;
 
-  final listLength = a.length;
-  final otherLength = b.length;
-  final maxLength = math.max(listLength, otherLength);
+  switch (strategy) {
+    case ListMergeStrategy.append:
+      return [...a, ...b];
+    case ListMergeStrategy.replace:
+      final listLength = a.length;
+      final otherLength = b.length;
+      final maxLength = math.max(listLength, otherLength);
 
-  return List.generate(maxLength, (int index) {
-    if (index < listLength && index < otherLength) {
-      final currentValue = a[index];
-      final otherValue = b[index];
+      return List.generate(maxLength, (int index) {
+        if (index < listLength && index < otherLength) {
+          final currentValue = a[index];
+          final otherValue = b[index];
 
-      if (currentValue is Mix && otherValue is Mix) {
-        return currentValue.merge(otherValue) as T;
-      }
+          if (currentValue is Mixable && otherValue is Mixable) {
+            return currentValue.merge(otherValue) as T;
+          }
 
-      return otherValue ?? currentValue;
-    } else if (index < listLength) {
-      return a[index];
-    }
+          return otherValue ?? currentValue;
+        } else if (index < listLength) {
+          return a[index];
+        }
 
-    return b[index];
-  });
+        return b[index];
+      });
+    case ListMergeStrategy.override:
+      return b;
+  }
 }
 
-List<V> _resolveList<T extends Mix<V>, V>(List<T>? a, MixContext mix) {
-  if (a == null) return [];
+List<V>? _resolveList<T extends Resolvable<V>, V>(
+  BuildContext mix,
+  List<T>? a,
+) {
+  if (a == null) return null;
 
   return a.map((e) => e.resolve(mix)).whereType<V>().toList();
 }
@@ -129,4 +152,16 @@ w.StrutStyle? _lerpStrutStyle(w.StrutStyle? a, w.StrutStyle? b, double t) {
     forceStrutHeight: t < 0.5 ? a.forceStrutHeight : b.forceStrutHeight,
     debugLabel: a.debugLabel ?? b.debugLabel,
   );
+}
+
+/// Merge strategy for lists
+enum ListMergeStrategy {
+  /// Append items from other list (default)
+  append,
+
+  /// Replace items at same index
+  replace,
+
+  /// Override entire list
+  override,
 }

@@ -13,31 +13,31 @@ final wrong_case_variant = Style(
 
 final wrong_case_token = Style(
   // expect_lint: mix_avoid_defining_tokens_or_variants_within_style
-  $box.color.token(MixableToken<Color>('test')),
+  $box.color.token(MixToken<Color>('test')),
   // expect_lint: mix_avoid_defining_tokens_or_variants_within_style
-  $box.padding.all.token(MixableToken<double>('test')),
+  $box.padding.all.token(MixToken<double>('test')),
   // expect_lint: mix_avoid_defining_tokens_or_variants_within_style
-  $text.style.token(MixableToken<TextStyle>('test')),
+  $text.style.token(MixToken<TextStyle>('test')),
   // expect_lint: mix_avoid_defining_tokens_or_variants_within_style
   $on.breakpoint(Breakpoint())(
     // expect_lint: mix_avoid_defining_tokens_or_variants_within_style
-    $box.color.token(MixableToken<Color>('test')),
+    $box.color.token(MixToken<Color>('test')),
     // expect_lint: mix_avoid_defining_tokens_or_variants_within_style
-    $box.padding.all.token(MixableToken<double>('test')),
+    $box.padding.all.token(MixToken<double>('test')),
     // expect_lint: mix_avoid_defining_tokens_or_variants_within_style
-    $text.style.token(MixableToken<TextStyle>('test')),
+    $text.style.token(MixToken<TextStyle>('test')),
   ),
 );
 
 // Correct case
-final a = Variant('a');
-final b = Variant('b');
+final a = NamedVariant('a');
+final b = NamedVariant('b');
 
 final correct_case_variant = Style(a(b()));
 
-final colorToken = MixableToken<Color>('test');
-final spaceToken = MixableToken<double>('test');
-final textStyleToken = MixableToken<TextStyle>('test');
+final colorToken = MixToken<Color>('test');
+final spaceToken = MixToken<double>('test');
+final textStyleToken = MixToken<TextStyle>('test');
 final breakpoint = Breakpoint();
 
 final correct_case_token = Style(

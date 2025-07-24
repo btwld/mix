@@ -1,114 +1,186 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
-import '../internal/compare_mixin.dart';
-import '../variants/context_variant.dart';
-import '../variants/variant_attribute.dart';
-import 'factory/style_mix.dart';
-import 'mix_element.dart';
+import '../core/widget_state/widget_state_controller.dart';
+import '../internal/deep_collection_equality.dart';
+import 'style.dart';
 
+/// Priority levels for variant application
 enum VariantPriority {
-  low(0),
-  normal(1),
-  high(2),
-  highest(3);
-
-  final int value;
+  normal(0),
+  high(1);
 
   const VariantPriority(this.value);
+  final int value;
 }
 
+/// Sealed base class for all variant types in the Mix framework.
+///
+/// Variants are used to conditionally apply styling based on either:
+/// - Manual application (NamedVariant)
+/// - Automatic context conditions (ContextVariant)
 @immutable
-abstract class IVariant with EqualityMixin {
-  const IVariant();
+sealed class Variant {
+  const Variant();
 
-  /// This is the priority at which the variants are applied.
-  /// In the case of some context variants that are due to
-  /// widget interactivity, they should be applied
-  /// at a higher priority than media query variants, for example.
-  VariantPriority get priority;
+  String get key;
 
-  /// This key determines how variants should be merged.
-  /// For the most part, it's basically the runtimeType.
-  /// However, for some context variants and multivariants, it is different
-  /// as they can have different merge rules.
-  Object get mergeKey;
-
-  MultiVariant operator &(covariant IVariant variant) =>
+  /// Operator for creating AND multi-variants
+  MultiVariant operator &(covariant Variant variant) =>
       MultiVariant.and([this, variant]);
 
-  MultiVariant operator |(covariant IVariant variant) =>
+  /// Operator for creating OR multi-variants
+  MultiVariant operator |(covariant Variant variant) =>
       MultiVariant.or([this, variant]);
-
-  bool matches(Iterable<IVariant> matchVariants) =>
-      matchVariants.contains(this);
-
-  bool when(BuildContext context);
 }
 
+/// Manual variants that are only applied when explicitly requested.
+/// These variants don't automatically apply based on context.
+///
+/// Examples: primary, outlined, large
 @immutable
-class Variant extends IVariant {
+class NamedVariant extends Variant {
   final String name;
 
-  @override
-  final priority = VariantPriority.normal;
-
-  const Variant(this.name);
-
-  VariantAttribute call([
-    StyleElement? p1,
-    StyleElement? p2,
-    StyleElement? p3,
-    StyleElement? p4,
-    StyleElement? p5,
-    StyleElement? p6,
-    StyleElement? p7,
-    StyleElement? p8,
-    StyleElement? p9,
-    StyleElement? p10,
-    StyleElement? p11,
-    StyleElement? p12,
-    StyleElement? p13,
-    StyleElement? p14,
-    StyleElement? p15,
-    StyleElement? p16,
-    StyleElement? p17,
-    StyleElement? p18,
-    StyleElement? p19,
-    StyleElement? p20,
-  ]) {
-    final params = [
-      p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, //
-      p11, p12, p13, p14, p15, p16, p17, p18, p19, p20,
-    ].whereType<StyleElement>();
-
-    return VariantAttribute(this, Style.create(params));
-  }
+  const NamedVariant(this.name);
 
   @override
-  bool when(BuildContext context) => false;
-  @override
-  Object get mergeKey => '$runtimeType.$name';
+  bool operator ==(Object other) =>
+      identical(this, other) || other is NamedVariant && other.name == name;
 
   @override
-  get props => [name];
+  String toString() => 'NamedVariant($name)';
+
+  @override
+  String get key => name;
+
+  @override
+  int get hashCode => name.hashCode;
 }
 
-enum MultiVariantOperator { and, or }
-
+/// Base for variants that automatically apply based on context conditions.
+/// These variants check their conditions during widget build.
 @immutable
-class MultiVariant extends IVariant {
-  final List<IVariant> variants;
+class ContextVariant extends Variant {
+  final bool Function(BuildContext) shouldApply;
 
+  @override
+  final String key;
+  const ContextVariant(this.key, this.shouldApply);
+
+  static WidgetStateVariant widgetState(WidgetState state) {
+    return WidgetStateVariant(state);
+  }
+
+  static ContextVariant orientation(Orientation orientation) {
+    return ContextVariant(
+      'media_query_orientation_${orientation.name}',
+      (context) => MediaQuery.orientationOf(context) == orientation,
+    );
+  }
+
+  static ContextVariant platformBrightness(Brightness brightness) {
+    return ContextVariant(
+      'media_query_platform_brightness_${brightness.name}',
+      (context) => MediaQuery.platformBrightnessOf(context) == brightness,
+    );
+  }
+
+  static ContextVariant size(String name, bool Function(Size) condition) {
+    return ContextVariant(
+      'media_query_size_$name',
+      (context) => condition(MediaQuery.sizeOf(context)),
+    );
+  }
+
+  // Directionality
+  static ContextVariant direction(TextDirection direction) {
+    return ContextVariant(
+      'directionality_${direction.name}',
+      (context) => Directionality.of(context) == direction,
+    );
+  }
+
+  // Platform
+  static ContextVariant platform(TargetPlatform platform) {
+    return ContextVariant(
+      'platform_${platform.name}',
+      (context) => Theme.of(context).platform == platform,
+    );
+  }
+
+  // Web
+  static ContextVariant web() {
+    return ContextVariant('web', (context) => kIsWeb);
+  }
+
+  /// Check if this variant should be active for the given context
+  bool when(BuildContext context) {
+    return shouldApply(context);
+  }
+}
+
+class WidgetStateVariant extends ContextVariant {
+  final WidgetState state;
+
+  WidgetStateVariant(this.state)
+    : super(
+        'widget_state_${state.name}',
+        (context) => MixWidgetStateModel.hasStateOf(context, state),
+      );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is WidgetStateVariant && other.state == state;
+
+  @override
+  int get hashCode => state.hashCode;
+}
+
+/// Variant that dynamically builds a Style based on build context.
+/// This variant type allows for complex styling that depends on runtime context.
+@immutable
+class ContextVariantBuilder<S extends SpecStyle<Object?>> extends Variant {
+  /// Function that builds a Style based on the given BuildContext
+  final S Function(BuildContext) fn;
+
+  const ContextVariantBuilder(this.fn);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ContextVariantBuilder && other.fn == fn;
+
+  @override
+  int get hashCode => fn.hashCode;
+
+  @override
+  String get key => fn.hashCode.toString();
+
+  /// Build a Style from the given BuildContext
+  S build(BuildContext context) => fn(context);
+}
+
+/// Operator for combining variants with AND/OR/NOT logic
+enum MultiVariantOperator { and, or, not }
+
+/// Variant that combines multiple variants with AND/OR logic.
+/// Supports complex conditional styling based on multiple conditions.
+@immutable
+final class MultiVariant extends ContextVariant {
+  final List<Variant> variants;
   final MultiVariantOperator operatorType;
 
-  const MultiVariant._(this.variants, {required this.operatorType});
+  MultiVariant._(this.variants, {required this.operatorType})
+    : super('', (context) => false);
 
   factory MultiVariant(
-    Iterable<IVariant> variants, {
+    Iterable<Variant> variants, {
     required MultiVariantOperator type,
   }) {
     final multiVariants = <MultiVariant>[];
-    final otherVariants = <IVariant>[];
+    final otherVariants = <Variant>[];
 
     for (var variant in variants) {
       if (variant is MultiVariant) {
@@ -127,109 +199,110 @@ class MultiVariant extends IVariant {
     return MultiVariant._(combinedVariants.toList(), operatorType: type);
   }
 
-  factory MultiVariant.and(Iterable<IVariant> variants) {
+  factory MultiVariant.and(Iterable<Variant> variants) {
     return MultiVariant(variants, type: MultiVariantOperator.and);
   }
 
-  factory MultiVariant.or(Iterable<IVariant> variants) {
+  factory MultiVariant.or(Iterable<Variant> variants) {
     return MultiVariant(variants, type: MultiVariantOperator.or);
   }
 
-  IVariant? remove(Iterable<IVariant> variantsToRemove) {
-    final remainingVariants = <IVariant>[];
-
-    for (var variant in variants) {
-      if (variant is MultiVariant) {
-        final remaining = variant.remove(variantsToRemove);
-        if (remaining != null) {
-          remainingVariants.add(remaining);
-        }
-      } else {
-        if (!variantsToRemove.contains(variant)) {
-          remainingVariants.add(variant);
-        }
-      }
-    }
-
-    if (remainingVariants.isEmpty) {
-      return null;
-    }
-
-    return remainingVariants.length == 1
-        ? remainingVariants.first
-        : MultiVariant(remainingVariants, type: operatorType);
+  factory MultiVariant.not(Variant variant) {
+    return MultiVariant._([variant], operatorType: MultiVariantOperator.not);
   }
 
-  VariantAttribute call([
-    StyleElement? p1,
-    StyleElement? p2,
-    StyleElement? p3,
-    StyleElement? p4,
-    StyleElement? p5,
-    StyleElement? p6,
-    StyleElement? p7,
-    StyleElement? p8,
-    StyleElement? p9,
-    StyleElement? p10,
-    StyleElement? p11,
-    StyleElement? p12,
-    StyleElement? p13,
-    StyleElement? p14,
-    StyleElement? p15,
-    StyleElement? p16,
-    StyleElement? p17,
-    StyleElement? p18,
-    StyleElement? p19,
-    StyleElement? p20,
-  ]) {
-    final params = [
-      p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, //
-      p11, p12, p13, p14, p15, p16, p17, p18, p19, p20,
-    ].whereType<StyleElement>();
-
-    return VariantAttribute(this, Style.create(params));
-  }
-
-  @override
-  bool matches(Iterable<IVariant> matchVariants) {
-    final list = variants.map((e) => e.matches(matchVariants)).toList();
-
-    return operatorType == MultiVariantOperator.or
-        ? list.contains(true)
-        : list.every((e) => e);
-  }
+  List<Object?> get props => [variants, operatorType];
 
   @override
   bool when(BuildContext context) {
-    var conditions = variants.map((e) => e.when(context));
+    final conditions = variants.map((variant) {
+      if (variant is ContextVariant) {
+        return variant.when(context);
+      }
 
-    return operatorType == MultiVariantOperator.or
-        ? conditions.contains(true)
-        : conditions.every((e) => e);
-  }
+      // NamedVariants never match context conditions
+      return false;
+    }).toList();
 
-  @override
-  Object get mergeKey =>
-      '$runtimeType.$operatorType.${variants.map((e) => e.mergeKey)}';
-
-  @override
-  VariantPriority get priority {
-    final priorities = variants
-        .whereType<ContextVariant>()
-        .map((e) => e.priority)
-        .toList();
-
-    // Return normal priority if no priorities are found
-    if (priorities.isEmpty) {
-      return VariantPriority.normal;
+    switch (operatorType) {
+      case MultiVariantOperator.or:
+        return conditions.contains(true);
+      case MultiVariantOperator.and:
+        return conditions.every((e) => e);
+      case MultiVariantOperator.not:
+        return !conditions.first;
     }
-
-    // get highest priority
-    return priorities.reduce(
-      (value, element) => value.value > element.value ? value : element,
-    );
   }
 
   @override
-  get props => [variants, operatorType];
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MultiVariant &&
+          other.operatorType == operatorType &&
+          const DeepCollectionEquality().equals(other.variants, variants);
+
+  @override
+  String get key => 'MultiVariant(${variants.map((v) => v.key).join(', ')})';
+
+  @override
+  int get hashCode =>
+      Object.hash(operatorType, const DeepCollectionEquality().hash(variants));
 }
+
+// Predefined widget state variants
+final hover = ContextVariant.widgetState(WidgetState.hovered);
+final press = ContextVariant.widgetState(WidgetState.pressed);
+final focus = ContextVariant.widgetState(WidgetState.focused);
+final disabled = ContextVariant.widgetState(WidgetState.disabled);
+final selected = ContextVariant.widgetState(WidgetState.selected);
+final dragged = ContextVariant.widgetState(WidgetState.dragged);
+final error = ContextVariant.widgetState(WidgetState.error);
+
+// Predefined MediaQuery variants
+// Brightness variants
+final dark = ContextVariant.platformBrightness(Brightness.dark);
+final light = ContextVariant.platformBrightness(Brightness.light);
+
+// Orientation variants
+final portrait = ContextVariant.orientation(Orientation.portrait);
+final landscape = ContextVariant.orientation(Orientation.landscape);
+
+// Size-based responsive variants
+final mobile = ContextVariant.size('mobile', (size) => size.width <= 767);
+final tablet = ContextVariant.size(
+  'tablet',
+  (size) => size.width > 767 && size.width <= 1279,
+);
+final desktop = ContextVariant.size('desktop', (size) => size.width > 1279);
+
+// Directionality variants
+final ltr = ContextVariant.direction(TextDirection.ltr);
+final rtl = ContextVariant.direction(TextDirection.rtl);
+
+// Platform variants
+final ios = ContextVariant.platform(TargetPlatform.iOS);
+final android = ContextVariant.platform(TargetPlatform.android);
+final macos = ContextVariant.platform(TargetPlatform.macOS);
+final windows = ContextVariant.platform(TargetPlatform.windows);
+final linux = ContextVariant.platform(TargetPlatform.linux);
+final fuchsia = ContextVariant.platform(TargetPlatform.fuchsia);
+final web = ContextVariant.web();
+
+// Breakpoint variants (using common responsive breakpoints)
+final xsmall = ContextVariant.size('xsmall', (size) => size.width <= 480);
+final small = ContextVariant.size('small', (size) => size.width <= 768);
+final medium = ContextVariant.size('medium', (size) => size.width <= 1024);
+final large = ContextVariant.size('large', (size) => size.width <= 1280);
+final xlarge = ContextVariant.size('xlarge', (size) => size.width > 1280);
+
+// Utility variants using NOT logic
+final enabled = not(disabled);
+final unselected = not(selected);
+
+// Common named variants
+const primary = NamedVariant('primary');
+const secondary = NamedVariant('secondary');
+const outlined = NamedVariant('outlined');
+
+// NOT operator for creating inverse variants
+MultiVariant not(Variant variant) => MultiVariant.not(variant);

@@ -1,37 +1,22 @@
-import '../core/modifier.dart';
-import '../modifiers/widget_modifiers_util.dart';
-import '../variants/context_variant_util/on_util.dart';
-import 'box/box_spec.dart';
-import 'flex/flex_spec.dart';
+import '../core/spec.dart';
+import '../core/style.dart';
+import '../modifiers/modifier_util.dart';
+import '../variants/variant_util.dart';
+import 'box/box_attribute.dart';
+import 'flex/flex_attribute.dart';
 import 'flexbox/flexbox_spec.dart';
-import 'icon/icon_spec.dart';
-import 'image/image_spec.dart';
-import 'stack/stack_spec.dart';
-import 'text/text_spec.dart';
+import 'icon/icon_attribute.dart';
+import 'image/image_attribute.dart';
+import 'stack/stack_attribute.dart';
+import 'text/text_attribute.dart';
 
-const _mixUtility = MixUtilities();
-
-BoxSpecUtility<BoxSpecAttribute> get $box => _mixUtility.box;
-FlexBoxSpecUtility<FlexBoxSpecAttribute> get $flexbox => _mixUtility.flexbox;
-FlexSpecUtility<FlexSpecAttribute> get $flex => _mixUtility.flex;
-ImageSpecUtility<ImageSpecAttribute> get $image => _mixUtility.image;
-IconSpecUtility<IconSpecAttribute> get $icon => _mixUtility.icon;
-TextSpecUtility<TextSpecAttribute> get $text => _mixUtility.text;
-StackSpecUtility<StackSpecAttribute> get $stack => _mixUtility.stack;
-OnContextVariantUtility get $on => _mixUtility.on;
-WithModifierUtility<WidgetModifierSpecAttribute> get $with => _mixUtility.mod;
-
-class MixUtilities {
-  const MixUtilities();
-  BoxSpecUtility<BoxSpecAttribute> get box => BoxSpecUtility.self;
-  FlexSpecUtility<FlexSpecAttribute> get flex => FlexSpecUtility.self;
-  FlexBoxSpecUtility<FlexBoxSpecAttribute> get flexbox =>
-      FlexBoxSpecUtility.self;
-  ImageSpecUtility<ImageSpecAttribute> get image => ImageSpecUtility.self;
-  IconSpecUtility<IconSpecAttribute> get icon => IconSpecUtility.self;
-  TextSpecUtility<TextSpecAttribute> get text => TextSpecUtility.self;
-  StackSpecUtility<StackSpecAttribute> get stack => StackSpecUtility.self;
-  OnContextVariantUtility get on => OnContextVariantUtility.self;
-  WithModifierUtility<WidgetModifierSpecAttribute> get mod =>
-      WithModifierUtility.self;
-}
+BoxSpecAttribute get $box => BoxSpecAttribute();
+FlexSpecAttribute get $flex => FlexSpecAttribute();
+FlexBoxSpecUtility get $flexbox => FlexBoxSpecUtility.self;
+ImageSpecAttribute get $image => ImageSpecAttribute();
+IconSpecAttribute get $icon => IconSpecAttribute();
+TextSpecAttribute get $text => TextSpecAttribute();
+StackSpecAttribute get $stack => StackSpecAttribute();
+OnContextVariantUtility get $on =>
+    OnContextVariantUtility<MultiSpec, Style>((v) => Style(v));
+ModifierUtility get $wrap => ModifierUtility((v) => Style(v));

@@ -1,82 +1,109 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../../helpers/custom_matchers.dart';
+import '../../../helpers/testing_utils.dart';
 
 void main() {
-  group('TextDataDirectiveUtility', () {
-    final textDirective = TextDirectiveUtility(
-      (directive) => TextSpecAttribute(directive: directive),
+  group('TextDirectiveUtility', () {
+    final utility = TextDirectiveUtility<UtilityTestAttribute>(
+      (prop) => UtilityTestAttribute(prop),
     );
-    test('merge returns merged object correctly', () {
-      final attr1 = textDirective.uppercase();
-      final attr2 = textDirective.capitalize();
-      final merged = attr1.merge(attr2);
-      expect(merged.directive?.length, 2);
+
+    test('capitalize creates CapitalizeStringDirective', () {
+      final result = utility.capitalize();
+      expect(result, isA<UtilityTestAttribute>());
+
+      // Check that it contains a Prop with CapitalizeStringDirective
+      expect(result.value, isA<Prop<MixDirective<String>>>());
+      final prop = result.value as Prop<MixDirective<String>>;
+      expectProp(prop, isA<CapitalizeStringDirective>());
+
+      // Test the directive functionality
+      final directive = prop.value;
+      expect(directive.apply('hello world'), 'Hello world');
     });
 
-    test('Equality holds when all properties are the same', () {
-      final attr1 = textDirective.capitalize();
-      final attr2 = textDirective.capitalize();
-      expect(attr1, attr2);
-    });
-    test('Equality fails when properties are different', () {
-      final attr1 = textDirective.capitalize();
-      final attr2 = textDirective.lowercase();
-      expect(attr1, isNot(attr2));
+    test('uppercase creates UppercaseStringDirective', () {
+      final result = utility.uppercase();
+      expect(result, isA<UtilityTestAttribute>());
+
+      expect(result.value, isA<Prop<MixDirective<String>>>());
+      final prop = result.value as Prop<MixDirective<String>>;
+      expectProp(prop, isA<UppercaseStringDirective>());
+
+      // Test the directive functionality
+      final directive = prop.value;
+      expect(directive.apply('hello world'), 'HELLO WORLD');
     });
 
-    group('UppercaseDirective', () {
-      test('modify returns correct value', () {
-        final attribute = textDirective.uppercase();
-        final directive = attribute.directive!;
-        expect(directive, resolvesTo(isA<TextDirective>()));
-      });
+    test('lowercase creates LowercaseStringDirective', () {
+      final result = utility.lowercase();
+      expect(result, isA<UtilityTestAttribute>());
+
+      expect(result.value, isA<Prop<MixDirective<String>>>());
+      final prop = result.value as Prop<MixDirective<String>>;
+      expectProp(prop, isA<LowercaseStringDirective>());
+
+      // Test the directive functionality
+      final directive = prop.value;
+      expect(directive.apply('HELLO WORLD'), 'hello world');
     });
 
-    group('CapitalizeDirective', () {
-      test('modify returns correct value', () {
-        final attribute = $text.capitalize();
-        final directive = attribute.directive!;
-        expect(directive, resolvesTo(isA<TextDirective>()));
-      });
+    test('titleCase creates TitleCaseStringDirective', () {
+      final result = utility.titleCase();
+      expect(result, isA<UtilityTestAttribute>());
+
+      expect(result.value, isA<Prop<MixDirective<String>>>());
+      final prop = result.value as Prop<MixDirective<String>>;
+      expectProp(prop, isA<TitleCaseStringDirective>());
+
+      // Test the directive functionality
+      final directive = prop.value;
+      expect(directive.apply('hello world'), 'Hello World');
     });
 
-    group('LowercaseDirective', () {
-      test('modify returns correct value', () {
-        final attribute = $text.lowercase();
-        final directive = attribute.directive!;
-        expect(directive, resolvesTo(isA<TextDirective>()));
-      });
+    test('sentenceCase creates SentenceCaseStringDirective', () {
+      final result = utility.sentenceCase();
+      expect(result, isA<UtilityTestAttribute>());
+
+      expect(result.value, isA<Prop<MixDirective<String>>>());
+      final prop = result.value as Prop<MixDirective<String>>;
+      expectProp(prop, isA<SentenceCaseStringDirective>());
+
+      // Test the directive functionality
+      final directive = prop.value;
+      expect(directive.apply('hello. world'), 'Hello. world');
     });
 
-    group('SentenceCaseDirective', () {
-      test('modify returns correct value', () {
-        final attribute = $text.sentenceCase();
-        final directive = attribute.directive!;
-        expect(directive, resolvesTo(isA<TextDirective>()));
-      });
-    });
+    test('call method with custom directive', () {
+      // Create a custom directive for testing
+      final customDirective = _TestStringDirective();
+      final result = utility.call(customDirective);
 
-    group('TitleCaseDirective', () {
-      test('modify returns correct value', () {
-        final attribute = $text.titleCase();
-        final directive = attribute.directive!;
-        expect(directive, resolvesTo(isA<TextDirective>()));
-      });
-    });
+      expect(result, isA<UtilityTestAttribute>());
+      expect(result.value, isA<Prop<MixDirective<String>>>());
 
-    group('TextDirective', () {
-      test('Equality holds when all properties are the same', () {
-        final attr1 = $text.uppercase();
-        final attr2 = $text.uppercase();
-        expect(attr1, attr2);
-      });
-      test('Equality fails when properties are different', () {
-        final attr1 = $text.uppercase();
-        final attr2 = $text.lowercase();
-        expect(attr1, isNot(attr2));
-      });
+      final prop = result.value as Prop<MixDirective<String>>;
+      expectProp(prop, same(customDirective));
     });
   });
+}
+
+// Test helper directive
+class _TestStringDirective implements MixDirective<String> {
+  const _TestStringDirective();
+
+  @override
+  String apply(String value) => 'TEST: $value';
+
+  @override
+  String get key => 'test_string_directive';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is _TestStringDirective && runtimeType == other.runtimeType;
+
+  @override
+  int get hashCode => runtimeType.hashCode;
 }

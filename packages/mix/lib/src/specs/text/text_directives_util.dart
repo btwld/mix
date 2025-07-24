@@ -1,24 +1,18 @@
 import '../../core/directive.dart';
-import '../../core/mix_element.dart';
+import '../../core/prop.dart';
+import '../../core/style.dart';
 import '../../core/utility.dart';
-import '../../internal/string_ext.dart';
 
-final class TextDirectiveUtility<T extends StyleElement>
-    extends MixUtility<T, TextDirectiveDto> {
+final class TextDirectiveUtility<T extends SpecStyle<Object?>>
+    extends PropUtility<T, MixDirective<String>> {
   const TextDirectiveUtility(super.builder);
-  T _wrap(Modifier<String> modifier) => builder(TextDirectiveDto([modifier]));
 
-  T capitalize() => _wrap(_capitalize);
-  T uppercase() => _wrap(_uppercase);
-  T lowercase() => _wrap(_lowercase);
-  T titleCase() => _wrap(_titleCase);
-  T sentenceCase() => _wrap(_sentenceCase);
+  T capitalize() => call(CapitalizeStringDirective());
+  T uppercase() => call(UppercaseStringDirective());
+  T lowercase() => call(LowercaseStringDirective());
+  T titleCase() => call(TitleCaseStringDirective());
+  T sentenceCase() => call(SentenceCaseStringDirective());
 
-  T call(Modifier<String> modifier) => builder(TextDirectiveDto([modifier]));
+  @override
+  T call(MixDirective<String> value) => builder(Prop(value));
 }
-
-String _capitalize(String value) => value.capitalize;
-String _uppercase(String value) => value.toUpperCase();
-String _lowercase(String value) => value.toLowerCase();
-String _titleCase(String value) => value.titleCase;
-String _sentenceCase(String value) => value.sentenceCase;

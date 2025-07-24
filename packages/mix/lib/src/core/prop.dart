@@ -1,232 +1,491 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 
-import '../internal/compare_mixin.dart';
+import '../theme/mix/mix_theme.dart';
 import '../theme/tokens/mix_token.dart';
-import 'factory/mix_context.dart';
+import 'animation_config.dart';
+import 'directive.dart';
 import 'mix_element.dart';
 
-/// Simplified Prop that can hold values or tokens with optional directives
 @immutable
-class Prop<T> with EqualityMixin, ResolvableMixin<T?> {
-  final T? _value;
-  final MixableToken<T>? _token;
-  final List<MixDirective<T>>? _directives;
+abstract class PropSource<T> {
+  const PropSource();
+}
 
-  const Prop._internal(this._value, this._token, this._directives);
+/// Source for direct values (used by StaticProp)
+@immutable
+class ValuePropSource<T> extends PropSource<T> {
+  final T value;
 
-  /// Creates a prop with a direct value
-  const Prop.value(T value) : _value = value, _token = null, _directives = null;
+  const ValuePropSource(this.value);
 
-  /// Creates a prop with a token
-  const Prop.token(MixableToken<T> token)
-    : _value = null,
-      _token = token,
-      _directives = null;
+  @override
+  String toString() => 'ValuePropSource($value)';
 
-  /// Creates a prop with directives only
-  const Prop.directives(List<MixDirective<T>> directives)
-    : _value = null,
-      _token = null,
-      _directives = directives;
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
 
-  static Prop<T>? maybeValue<T>(T? value) {
-    if (value == null) return null;
-
-    return Prop.value(value);
+    return other is ValuePropSource<T> && other.value == value;
   }
 
-  T? get value => _value;
-  MixableToken<T>? get token => _token;
+  @override
+  int get hashCode => value.hashCode;
+}
 
-  /// Whether this prop has a value
-  bool get hasValue => _value != null;
+/// Source for token references (used by StaticProp)
+@immutable
+class TokenPropSource<T> extends PropSource<T> {
+  final MixToken<T> token;
 
-  /// Whether this prop has a token
-  bool get hasToken => _token != null;
+  const TokenPropSource(this.token);
 
-  /// Get the directives
-  List<MixDirective<T>>? get directives => _directives;
+  @override
+  String toString() => 'TokenPropSource($token)';
 
-  /// CENTRALIZED MERGE LOGIC
-  /// Merge behavior:
-  /// - Empty + Anything = other wins
-  /// - Anything + Empty = this wins
-  /// - Other's value/token wins when present, directives always accumulate
-  /// - If other has only directives, this value/token wins, directives accumulate
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is TokenPropSource<T> && other.token == token;
+  }
+
+  @override
+  int get hashCode => token.hashCode;
+}
+
+@immutable
+sealed class MixPropSource<V> extends PropSource<V> {
+  const MixPropSource();
+}
+
+/// Mix value source - stores a Mix value directly
+@immutable
+class MixPropValueSource<V> extends MixPropSource<V> {
+  final Mix<V> value;
+
+  const MixPropValueSource(this.value);
+
+  @override
+  String toString() => 'MixPropValueSource($value)';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MixPropValueSource<V> && other.value == value;
+  }
+
+  @override
+  int get hashCode => value.hashCode;
+}
+
+/// Mix token source - resolves token and converts to Mix type
+@immutable
+class MixPropTokenSource<V> extends MixPropSource<V> {
+  final MixToken<V> token;
+  final Mix<V> Function(V) convertToMix;
+
+  const MixPropTokenSource(this.token, this.convertToMix);
+
+  @override
+  String toString() => 'MixPropTokenSource($token)';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MixPropTokenSource<V> &&
+        other.token == token &&
+        other.convertToMix == convertToMix;
+  }
+
+  @override
+  int get hashCode => Object.hash(token, convertToMix);
+}
+
+/// Accumulative source - only accepts MixPropSource types
+@immutable
+class MixPropAccumulativeSource<V> extends MixPropSource<V> {
+  final List<MixPropSource<V>> sources;
+
+  const MixPropAccumulativeSource(this.sources);
+
+  @override
+  String toString() => 'MixPropAccumulativeSource(${sources.length} sources)';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MixPropAccumulativeSource<V> &&
+        listEquals(other.sources, sources);
+  }
+
+  @override
+  int get hashCode => Object.hashAll(sources);
+}
+
+// ====== Prop Types ======
+
+/// Base sealed Prop class
+@immutable
+sealed class PropBase<T> extends Mixable<T> with Resolvable<T> {
+  /// Directives to apply to the resolved value
+  final List<MixDirective<T>>? directives;
+
+  /// Animation configuration for this property
+  final AnimationConfig? animation;
+
+  const PropBase({this.directives, this.animation});
+
+  /// The source of the property value
+  PropSource<T>? get source;
+
+  /// Applies directives to the resolved value
+  @protected
+  T applyDirectives(T value) {
+    if (directives == null || directives!.isEmpty) return value;
+
+    var result = value;
+    for (final directive in directives!) {
+      result = directive.apply(result);
+    }
+
+    return result;
+  }
+
+  // Helper methods for merging directives and animation
+  @protected
+  List<MixDirective<T>>? mergeDirectives(List<MixDirective<T>>? other) {
+    return switch ((directives, other)) {
+      (null, null) => null,
+      (final a?, null) => a,
+      (null, final b?) => b,
+      (final a?, final b?) => [...a, ...b],
+    };
+  }
+
+  @protected
+  AnimationConfig? mergeAnimation(AnimationConfig? other) {
+    return other ?? animation; // Other's animation wins
+  }
+
+  /// Resolves the property value using the provided context
+  @override
+  T resolve(BuildContext context);
+}
+
+/// Static prop for regular types - uses replacement merge strategy
+@immutable
+class Prop<T> extends PropBase<T> {
+  @override
+  final PropSource<T>? source;
+
+  const Prop._({this.source, super.directives, super.animation});
+
+  // Named constructors for clarity
+  Prop(T value, {List<MixDirective<T>>? directives, AnimationConfig? animation})
+    : this._(
+        source: ValuePropSource(value),
+        directives: directives,
+        animation: animation,
+      );
+
+  Prop.token(
+    MixToken<T> token, {
+    List<MixDirective<T>>? directives,
+    AnimationConfig? animation,
+  }) : this._(
+         source: TokenPropSource(token),
+         directives: directives,
+         animation: animation,
+       );
+
+  const Prop.directives(
+    List<MixDirective<T>> directives, {
+    AnimationConfig? animation,
+  }) : this._(source: null, directives: directives, animation: animation);
+
+  const Prop.animation(AnimationConfig animation)
+    : this._(source: null, directives: null, animation: animation);
+
+  static Prop<T>? maybe<T>(
+    T? value, {
+    List<MixDirective<T>>? directives,
+    AnimationConfig? animation,
+  }) {
+    if (value == null) return null;
+
+    return Prop(value, directives: directives, animation: animation);
+  }
+
+  // Helper methods for StaticProp
+  bool get hasValue => source is ValuePropSource<T>;
+
+  bool get hasToken => source is TokenPropSource<T>;
+  T get value {
+    if (source is! ValuePropSource<T>) {
+      throw FlutterError('StaticProp<$T> does not have a direct value source');
+    }
+
+    return (source as ValuePropSource<T>).value;
+  }
+
+  MixToken<T> get token {
+    if (source is! TokenPropSource<T>) {
+      throw FlutterError('StaticProp<$T> does not have a token source');
+    }
+
+    return (source as TokenPropSource<T>).token;
+  }
+
+  @override
   Prop<T> merge(Prop<T>? other) {
     if (other == null) return this;
 
-    final mergedDirectives = switch ((_directives, other._directives)) {
-      (null, null) => null,
-      (final a?, null) => a, // Only this has directives
-      (null, final b?) => b, // Only other has directives
-      (final a?, final b?) => [...a, ...b], // Both have directives
+    // For static props, the other source replaces this source
+    return Prop._(
+      source: other.source ?? source,
+      directives: mergeDirectives(other.directives),
+      animation: mergeAnimation(other.animation),
+    );
+  }
+
+  @override
+  T resolve(BuildContext context) {
+    if (source == null) {
+      throw FlutterError('Prop<$T> has no source defined');
+    }
+
+    // Resolve the value from the source
+    final resolvedValue = switch (source) {
+      ValuePropSource<T> valueSource => valueSource.value,
+      TokenPropSource<T> tokenSource => MixScope.tokenOf(
+        tokenSource.token,
+        context,
+      ),
+      _ => throw FlutterError(
+        'Unsupported PropSource type: ${source ?? 'null'}',
+      ),
     };
 
-    // Other's base value/token wins when present, but directives accumulate
-    if (other._value != null) {
-      return Prop._internal(other._value, null, mergedDirectives);
-    }
-    if (other._token != null) {
-      return Prop._internal(null, other._token, mergedDirectives);
-    }
-
-    // Other has only directives, keep this value/token, accumulate directives
-    return Prop._internal(_value, _token, mergedDirectives);
+    // Apply directives if any
+    return applyDirectives(resolvedValue);
   }
 
   @override
   String toString() {
-    final buffer = StringBuffer('Prop<${T.toString()}>(');
-    if (_value != null) {
-      buffer.write('value: $_value');
-    } else if (_token != null) {
-      buffer.write('token: $_token');
+    final parts = <String>[];
+    parts.add('source: ${source ?? 'null'}');
+    if (directives != null && directives!.isNotEmpty) {
+      parts.add('directives: ${directives!.length}');
     }
-    if (_directives != null && _directives.isNotEmpty) {
-      if (buffer.length > 5) buffer.write(', ');
-      buffer.write('directives: $_directives');
-    }
-    buffer.write(')');
+    if (animation != null) parts.add('animated');
 
-    return buffer.toString();
-  }
-
-  /// Resolves the value using the provided context
-  @override
-  T? resolve(MixContext context) {
-    T? result;
-
-    if (_value != null) {
-      result = _value;
-    } else if (_token != null) {
-      result = context.getToken(_token);
-    }
-
-    // Apply directives to resolved value
-    if (result != null) {
-      T current = result;
-      for (final directive in _directives ?? []) {
-        current = directive.apply(current);
-      }
-      result = current;
-    }
-
-    return result;
+    return 'Prop(${parts.join(', ')})';
   }
 
   @override
-  List<Object?> get props => [_value, _token, _directives];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is Prop<T> &&
+        other.source == source &&
+        listEquals(other.directives, directives) &&
+        other.animation == animation;
+  }
+
+  @override
+  int get hashCode => Object.hash(source, directives, animation);
 }
 
-/// MixProp for handling Mix objects (DTOs) with simplified logic
+/// Mix prop for Mix types - uses accumulation merge strategy
 @immutable
-class MixProp<V, T extends Mix<V>> with EqualityMixin, ResolvableMixin<V> {
-  final T? _value;
-  final MixableToken<V>? _token;
-  final T Function(V)? _valueToDto;
+class MixProp<V> extends PropBase<V> {
+  @override
+  final MixPropSource<V>? source;
+  const MixProp._({this.source, super.directives, super.animation});
 
-  /// Creates a MixProp with a direct value
-  const MixProp.value(T value)
-    : _value = value,
-      _token = null,
-      _valueToDto = null;
+  // Named constructors for clarity
+  MixProp(
+    Mix<V> value, {
+    List<MixDirective<V>>? directives,
+    AnimationConfig? animation,
+  }) : this._(
+         source: MixPropValueSource(value),
+         directives: directives,
+         animation: animation,
+       );
 
-  /// Creates a MixProp with a token
-  const MixProp.token(MixableToken<V> token, T Function(V) valueToDto)
-    : _value = null,
-      _token = token,
-      _valueToDto = valueToDto;
+  MixProp.token(
+    MixToken<V> token,
+    Mix<V> Function(V) convertToMix, {
+    List<MixDirective<V>>? directives,
+    AnimationConfig? animation,
+  }) : this._(
+         source: MixPropTokenSource(token, convertToMix),
+         directives: directives,
+         animation: animation,
+       );
 
-  static MixProp<V, T>? maybeValue<V, T extends Mix<V>>(T? value) {
+  // directives
+  const MixProp.directives(List<MixDirective<V>> directives)
+    : this._(source: null, directives: directives, animation: null);
+
+  const MixProp.animation(AnimationConfig animation)
+    : this._(source: null, directives: null, animation: animation);
+
+  static MixProp<V>? maybe<V>(
+    Mix<V>? value, {
+    List<MixDirective<V>>? directives,
+    AnimationConfig? animation,
+  }) {
     if (value == null) return null;
 
-    return MixProp.value(value);
+    return MixProp._(
+      source: MixPropValueSource(value),
+      directives: directives,
+      animation: animation,
+    );
   }
 
-  /// Whether this prop has a value
-  bool get hasValue => _value != null;
+  /// Special merge logic for Mix sources - accumulates values
+  MixPropSource<V>? _mergeMixSources(MixPropSource<V>? a, MixPropSource<V>? b) {
+    if (a == null && b == null) return null;
+    if (a == null) return b;
+    if (b == null) return a;
 
-  /// Whether this prop has a token
-  bool get hasToken => _token != null;
-
-  /// Get the value directly (null if token-based)
-  T? get value => _value;
-
-  /// Get the token directly (null if value-based)
-  MixableToken<V>? get token => _token;
-
-  /// CENTRALIZED MERGE LOGIC
-  /// Other's value/token wins, merge DTOs if both have values
-  MixProp<V, T> merge(MixProp<V, T>? other) {
-    if (other == null) return this;
-    // If both have values, merge the DTOs
-    if (other._value != null && _value != null) {
-      final merged = _value.merge(other._value) as T;
-
-      return MixProp.value(merged);
+    // Special optimization: if both are value sources, merge directly
+    if (a is MixPropValueSource<V> && b is MixPropValueSource<V>) {
+      return MixPropValueSource(a.value.merge(b.value));
     }
 
-    // Other's value/token wins
-    if (other._value != null) {
-      return MixProp.value(other._value);
-    } else if (other._token != null) {
-      return MixProp.token(other._token, other._valueToDto!);
+    // Otherwise, create accumulative source
+    final sources = <MixPropSource<V>>[];
+
+    // Flatten existing accumulative sourcesd
+    if (a is MixPropAccumulativeSource<V>) {
+      sources.addAll(a.sources);
+    } else {
+      sources.add(a);
     }
 
-    return this;
+    if (b is MixPropAccumulativeSource<V>) {
+      sources.addAll(b.sources);
+    } else {
+      sources.add(b);
+    }
+
+    return MixPropAccumulativeSource(sources);
   }
 
-  /// Resolves the value using the provided context
-  /// Throws FlutterError if unable to resolve
+  Mix<V> get value {
+    if (source is! MixPropValueSource<V>) {
+      throw FlutterError('MixProp<$V> does not have a direct value source');
+    }
+
+    return (source as MixPropValueSource<V>).value;
+  }
+
+  MixToken<V> get token {
+    if (source is! MixPropTokenSource<V>) {
+      throw FlutterError('MixProp<$V> does not have a token source');
+    }
+
+    return (source as MixPropTokenSource<V>).token;
+  }
+
+  // Helper methods for MixProp
+
+  bool get hasValue => source is MixPropValueSource<V>;
+
+  bool get hasToken => source is MixPropTokenSource<V>;
+  @visibleForTesting
+  V resolveFromMixSources(
+    List<MixPropSource<V>> sources,
+    BuildContext context,
+  ) {
+    return sources
+        .map(
+          (source) => switch (source) {
+            MixPropValueSource<V> valueSource => valueSource.value,
+            MixPropTokenSource<V> tokenSource => tokenSource.convertToMix(
+              MixScope.tokenOf(tokenSource.token, context),
+            ),
+            _ => throw FlutterError('Unsupported MixPropSource type: $source'),
+          },
+        )
+        .toList()
+        .reduce((a, b) => a.merge(b))
+        .resolve(context);
+  }
+
   @override
-  V resolve(MixContext context) {
-    T? dto;
-
-    if (_value != null) {
-      dto = _value;
-    } else if (_token != null) {
-      final tokenValue = context.getToken(_token);
-      if (tokenValue != null) {
-        dto = _valueToDto!(tokenValue);
-      }
+  V resolve(BuildContext context) {
+    if (source == null) {
+      throw FlutterError('MixProp<$V> has no source defined');
     }
 
-    if (dto == null) {
-      if (hasToken) {
-        throw FlutterError(
-          'MixProp could not be resolved: Token ${_token ?? 'unknown'} was not found in context',
-        );
-      }
+    // Resolve the value from the source
+    final resolvedValue = switch (source) {
+      MixPropValueSource<V> valueSource => valueSource.value.resolve(context),
+      MixPropTokenSource<V> tokenSource => MixScope.tokenOf(
+        tokenSource.token,
+        context,
+      ),
+      MixPropAccumulativeSource<V> accumulativeSource => resolveFromMixSources(
+        accumulativeSource.sources,
+        context,
+      ),
+      _ => throw FlutterError(
+        'Unsupported MixPropSource type: ${source ?? 'null'}',
+      ),
+    };
 
-      throw FlutterError(
-        'MixProp could not be resolved: No value or token exists to resolve',
-      );
-    }
+    // Apply directives if any
+    return applyDirectives(resolvedValue);
+  }
 
-    final result = dto.resolve(context);
-    if (result == null) {
-      throw FlutterError(
-        'MixProp resolved to null: DTO ${dto.runtimeType} returned null from resolve()',
-      );
-    }
+  @override
+  MixProp<V> merge(MixProp<V>? other) {
+    if (other == null) return this;
 
-    return result;
+    // Type-safe: we know other must be a MixProp
+    final otherMixProp = other;
+
+    // Merge sources using accumulation strategy
+    final mergedSource = _mergeMixSources(source, otherMixProp.source);
+
+    return MixProp._(
+      source: mergedSource,
+      directives: mergeDirectives(other.directives),
+      animation: mergeAnimation(other.animation),
+    );
   }
 
   @override
   String toString() {
-    final buffer = StringBuffer('MixProp<${V.toString()}, ${T.toString()}>(');
-    if (_value != null) {
-      buffer.write('$_value');
-    } else if (_token != null) {
-      buffer.write('token: $_token');
+    final parts = <String>[];
+    if (source != null) parts.add('source: $source');
+    if (directives?.isNotEmpty == true) {
+      parts.add('directives: ${directives!.length}');
     }
-    buffer.write(')');
-    
-    return buffer.toString();
+    if (animation != null) parts.add('animated');
+
+    return 'MixProp(${parts.join(', ')})';
   }
 
   @override
-  List<Object?> get props => [_value, _token, _valueToDto];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MixProp<V> &&
+        other.source == source &&
+        listEquals(other.directives, directives) &&
+        other.animation == animation;
+  }
+
+  @override
+  int get hashCode => Object.hash(source, directives, animation);
 }

@@ -18,6 +18,12 @@ class MixScope extends InheritedWidget {
     return scopeData!;
   }
 
+  static T tokenOf<T>(MixToken<T> token, BuildContext context) {
+    final scope = MixScope.of(context);
+
+    return scope.getToken(token, context);
+  }
+
   static MixScopeData? maybeOf(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<MixScope>()?.data;
   }
@@ -33,20 +39,20 @@ class MixScope extends InheritedWidget {
 @immutable
 class MixScopeData {
   final List<Type>? defaultOrderOfModifiers;
-  final Map<MixableToken, ValueResolver>? _tokens;
+  final Map<MixToken, ValueResolver>? _tokens;
 
   const MixScopeData.empty() : _tokens = null, defaultOrderOfModifiers = null;
 
   const MixScopeData._({
-    required Map<MixableToken, ValueResolver>? tokens,
+    required Map<MixToken, ValueResolver>? tokens,
     required this.defaultOrderOfModifiers,
   }) : _tokens = tokens;
 
   factory MixScopeData({
-    Map<MixableToken, ValueResolver>? tokens,
+    Map<MixToken, ValueResolver>? tokens,
     List<Type>? defaultOrderOfModifiers,
   }) {
-    final resolverTokens = <MixableToken, ValueResolver>{};
+    final resolverTokens = <MixToken, ValueResolver>{};
 
     if (tokens != null) {
       for (final entry in tokens.entries) {
@@ -61,7 +67,7 @@ class MixScopeData {
   }
 
   factory MixScopeData.withMaterial({
-    Map<MixableToken, ValueResolver>? tokens,
+    Map<MixToken, ValueResolver>? tokens,
     List<Type>? defaultOrderOfModifiers,
   }) {
     return materialMixScope.merge(
@@ -83,11 +89,11 @@ class MixScopeData {
   }
 
   static MixScopeData static({
-    Map<MixableToken, Object>? tokens,
+    Map<MixToken, Object>? tokens,
     List<Type>? defaultOrderOfModifiers,
   }) {
     // Convert tokens to resolvers
-    Map<MixableToken, ValueResolver>? resolverTokens;
+    Map<MixToken, ValueResolver>? resolverTokens;
     if (tokens != null) {
       resolverTokens = {};
       for (final entry in tokens.entries) {
@@ -104,7 +110,7 @@ class MixScopeData {
   /// Creates a MixScopeData with pre-defined resolvers.
   /// Unlike the regular constructor, this doesn't wrap the resolvers again.
   static MixScopeData fromResolvers({
-    Map<MixableToken, ValueResolver>? tokens,
+    Map<MixToken, ValueResolver>? tokens,
     List<Type>? defaultOrderOfModifiers,
   }) {
     return MixScopeData._(
@@ -114,10 +120,10 @@ class MixScopeData {
   }
 
   /// Getter for tokens
-  Map<MixableToken, ValueResolver>? get tokens => _tokens;
+  Map<MixToken, ValueResolver>? get tokens => _tokens;
 
   /// Type-safe token resolution with error handling
-  T getToken<T>(MixableToken<T> token, BuildContext context) {
+  T getToken<T>(MixToken<T> token, BuildContext context) {
     final resolver = _tokens?[token];
     if (resolver == null) {
       throw StateError('Token "${token.name}" not found in scope');
@@ -134,11 +140,11 @@ class MixScopeData {
   }
 
   MixScopeData copyWith({
-    Map<MixableToken, dynamic>? tokens,
+    Map<MixToken, dynamic>? tokens,
     List<Type>? defaultOrderOfModifiers,
   }) {
     // If tokens are provided, convert them to resolvers
-    Map<MixableToken, ValueResolver>? resolverTokens;
+    Map<MixToken, ValueResolver>? resolverTokens;
     if (tokens != null) {
       resolverTokens = {};
       for (final entry in tokens.entries) {
@@ -155,7 +161,7 @@ class MixScopeData {
 
   MixScopeData merge(MixScopeData other) {
     final mergedTokens = _tokens != null || other._tokens != null
-        ? <MixableToken, ValueResolver>{...?_tokens, ...?other._tokens}
+        ? <MixToken, ValueResolver>{...?_tokens, ...?other._tokens}
         : null;
 
     return MixScopeData._(
@@ -176,6 +182,6 @@ class MixScopeData {
 
   @override
   int get hashCode {
-    return _tokens.hashCode ^ defaultOrderOfModifiers.hashCode;
+    return Object.hash(_tokens, defaultOrderOfModifiers);
   }
 }

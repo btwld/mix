@@ -3,12 +3,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../core/factory/mix_context.dart';
-import '../../core/mix_element.dart';
 import '../../core/modifier.dart';
+import '../../core/style.dart';
 import '../../core/utility.dart';
 
-final class ResetModifierSpec extends WidgetModifierSpec<ResetModifierSpec>
+final class ResetModifierSpec extends Modifier<ResetModifierSpec>
     with Diagnosticable {
   const ResetModifierSpec();
 
@@ -38,25 +37,25 @@ final class ResetModifierSpec extends WidgetModifierSpec<ResetModifierSpec>
   }
 }
 
-final class ResetModifierSpecUtility<T extends StyleElement>
-    extends MixUtility<T, ResetModifierSpecAttribute> {
-  const ResetModifierSpecUtility(super.builder);
+final class ResetModifierUtility<T extends SpecStyle<Object?>>
+    extends MixUtility<T, ResetModifierAttribute> {
+  const ResetModifierUtility(super.builder);
   T call() {
-    return builder(const ResetModifierSpecAttribute());
+    return builder(const ResetModifierAttribute());
   }
 }
 
-class ResetModifierSpecAttribute
-    extends WidgetModifierSpecAttribute<ResetModifierSpec> {
-  const ResetModifierSpecAttribute();
+class ResetModifierAttribute extends ModifierAttribute<ResetModifierSpec>
+    with Diagnosticable {
+  const ResetModifierAttribute();
 
   @override
-  ResetModifierSpec resolve(MixContext context) {
+  ResetModifierSpec resolve(BuildContext context) {
     return const ResetModifierSpec();
   }
 
   @override
-  ResetModifierSpecAttribute merge(ResetModifierSpecAttribute? other) {
+  ResetModifierAttribute merge(ResetModifierAttribute? other) {
     if (other == null) return this;
 
     return other;

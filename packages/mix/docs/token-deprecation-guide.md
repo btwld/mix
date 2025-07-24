@@ -1,15 +1,15 @@
-# Token Deprecation Guide
+# MixToken Deprecation Guide
 
-This guide outlines the deprecation of old token classes in favor of the new generic `Token<T>` system.
+This guide outlines the deprecation of old token classes in favor of the new generic `MixToken<T>` system.
 
 ## Deprecated Classes
 
 The following token classes are deprecated and will be removed in v3.0.0:
 
-- `ColorToken` → Use `Token<Color>` instead
-- `SpaceToken` → Use `Token<double>` instead  
-- `TextStyleToken` → Use `Token<TextStyle>` instead
-- `RadiusToken` → Use `Token<Radius>` instead
+- `ColorToken` → Use `MixToken<Color>` instead
+- `SpaceToken` → Use `MixToken<double>` instead  
+- `TextStyleToken` → Use `MixToken<TextStyle>` instead
+- `RadiusToken` → Use `MixToken<Radius>` instead
 
 ## Deprecation Timeline
 
@@ -21,41 +21,41 @@ The following token classes are deprecated and will be removed in v3.0.0:
 ### ColorToken
 ```dart
 // Deprecated
-@Deprecated('Use Token<Color> instead. This will be removed in v3.0.0.')
+@Deprecated('Use MixToken<Color> instead. This will be removed in v3.0.0.')
 const primary = ColorToken('primary');
 
 // New
-const primary = Token<Color>('primary');
+const primary = MixToken<Color>('primary');
 ```
 
 ### SpaceToken
 ```dart
 // Deprecated
-@Deprecated('Use Token<double> instead. This will be removed in v3.0.0.')
+@Deprecated('Use MixToken<double> instead. This will be removed in v3.0.0.')
 const large = SpaceToken('large');
 
 // New
-const large = Token<double>('large');
+const large = MixToken<double>('large');
 ```
 
 ### TextStyleToken
 ```dart
 // Deprecated
-@Deprecated('Use Token<TextStyle> instead. This will be removed in v3.0.0.')
+@Deprecated('Use MixToken<TextStyle> instead. This will be removed in v3.0.0.')
 const heading = TextStyleToken('heading');
 
 // New
-const heading = Token<TextStyle>('heading');
+const heading = MixToken<TextStyle>('heading');
 ```
 
 ### RadiusToken
 ```dart
 // Deprecated
-@Deprecated('Use Token<Radius> instead. This will be removed in v3.0.0.')
+@Deprecated('Use MixToken<Radius> instead. This will be removed in v3.0.0.')
 const rounded = RadiusToken('rounded');
 
 // New
-const rounded = Token<Radius>('rounded');
+const rounded = MixToken<Radius>('rounded');
 ```
 
 ## Suppressing Deprecation Warnings
@@ -80,11 +80,11 @@ const oldToken = ColorToken('primary');
 ## What Stays the Same?
 
 - Theme data structure
-- Token resolution mechanism
+- MixToken resolution mechanism
 - Runtime behavior
-- Token names and values
+- MixToken names and values
 
-## Need to Keep Using Old Tokens?
+## Need to Keep Using Old MixTokens?
 
 If you need more time to migrate:
 

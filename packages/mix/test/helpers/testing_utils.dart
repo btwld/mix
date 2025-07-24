@@ -1,23 +1,211 @@
-// ignore_for_file: non_constant_identifier_names
-
+// ignore_for_file: prefer_relative_imports
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-import 'package:mix/src/core/widget_state/internal/mix_widget_state_builder.dart';
 
-export 'package:mix/src/internal/values_ext.dart';
+void expectProp<T>(PropBase<T>? prop, dynamic expected) {
+  if (expected == null || expected == isNull) {
+    expect(prop, isNull);
+    return;
+  }
 
-class MockBuildContext extends BuildContext {
+  if (prop == null) {
+    fail('Expected PropBase<$T> to exist, but was null');
+  }
+
+  final source = prop.source;
+  if (source == null) {
+    fail('Expected PropBase<$T> to have a source, but source was null');
+  }
+
+  // Handle list expectations (accumulated values for MixProp)
+  if (expected is List) {
+    if (source is! MixPropAccumulativeSource<T>) {
+      fail(
+        'Expected accumulated values (list), but prop source is ${source.runtimeType}. '
+        'Only MixProp with accumulated sources can match lists.',
+      );
+    }
+
+    final actualValues = <dynamic>[];
+    for (final s in source.sources) {
+      if (s is MixPropValueSource<T>) {
+        actualValues.add(s.value);
+      } else if (s is MixPropTokenSource<T>) {
+        actualValues.add(s.token);
+      } else {
+        fail(
+          'Unknown source type in MixPropAccumulativeSource: ${s.runtimeType}',
+        );
+      }
+    }
+
+    expect(
+      actualValues,
+      expected,
+      reason: 'Accumulated values do not match expected',
+    );
+    return;
+  }
+
+  // Handle token expectations
+  if (expected is MixToken<T>) {
+    if (source is TokenPropSource<T>) {
+      expect(
+        source.token,
+        expected,
+        reason: 'Prop<$T> token does not match expected',
+      );
+    } else if (source is MixPropTokenSource<T>) {
+      expect(
+        source.token,
+        expected,
+        reason: 'MixProp<$T> token does not match expected',
+      );
+    } else {
+      fail('Expected token, but prop source is ${source.runtimeType}');
+    }
+    return;
+  }
+
+  // Handle direct value expectations
+  if (source is ValuePropSource<T>) {
+    expect(
+      source.value,
+      expected,
+      reason: 'Prop<$T> value does not match expected',
+    );
+  } else if (source is MixPropValueSource<T>) {
+    expect(
+      source.value,
+      expected,
+      reason: 'MixProp<$T> value does not match expected',
+    );
+  } else {
+    fail(
+      'Expected direct value, but prop source is ${source.runtimeType}. '
+      'Use a token expectation if this prop contains a token.',
+    );
+  }
+}
+
+/// Creates a matcher that tests what a Resolvable resolves to
+///
+/// Usage:
+/// ```dart
+/// // For any Resolvable type
+/// expect(colorMix, resolvesTo(Colors.red));
+/// expect(paddingAttribute, resolvesTo(EdgeInsets.all(10)));
+/// expect(widthProp, resolvesTo(100.0));
+///
+/// // With custom context for token resolution
+/// final context = MockBuildContext(
+///   mixScopeData: MixScopeData.static(tokens: {
+///     MixToken<Color>('primary'): Colors.blue,
+///   }),
+/// );
+/// expect(tokenProp, resolvesTo(Colors.blue).withContext(context));
+/// ```
+Matcher resolvesTo<T>(T expected, {BuildContext? context}) {
+  return _ResolvesToMatcher<T>(expected, context);
+}
+
+class _ResolvesToMatcher<T> extends Matcher {
+  final T expected;
+  final BuildContext? context;
+
+  const _ResolvesToMatcher(this.expected, this.context);
+
   @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+  bool matches(dynamic item, Map matchState) {
+    // Check if item implements Resolvable (any type)
+    if (item is! Resolvable) {
+      matchState['error'] = 'Expected Resolvable, but got ${item.runtimeType}';
+      return false;
+    }
+
+    try {
+      final ctx = context ?? MockBuildContext();
+      final resolved = item.resolve(ctx);
+
+      // Let runtime comparison handle type compatibility
+      // This allows Prop<AlignmentGeometry> to work with Alignment expectations
+      if (resolved == expected) {
+        return true;
+      }
+
+      // Provide helpful error message with actual vs expected types
+      matchState['error'] =
+          'Resolved to ${resolved.runtimeType}:<$resolved>, expected $T:<$expected>';
+      return false;
+    } catch (e) {
+      matchState['error'] = 'Failed to resolve: $e';
+      return false;
+    }
+  }
+
+  @override
+  Description describe(Description description) {
+    return description.add('resolves to ').addDescriptionOf(expected);
+  }
+
+  @override
+  Description describeMismatch(
+    dynamic item,
+    Description mismatchDescription,
+    Map matchState,
+    bool verbose,
+  ) {
+    if (matchState.containsKey('error')) {
+      return mismatchDescription.add(matchState['error']);
+    }
+
+    if (item is Resolvable<T>) {
+      try {
+        final ctx = context ?? MockBuildContext();
+        final resolved = item.resolve(ctx);
+        return mismatchDescription
+            .add('resolved to ')
+            .addDescriptionOf(resolved)
+            .add(' instead of ')
+            .addDescriptionOf(expected);
+      } catch (e) {
+        return mismatchDescription.add('failed to resolve: $e');
+      }
+    }
+
+    return mismatchDescription
+        .add('was ')
+        .addDescriptionOf(item)
+        .add(' which is not a Resolvable<$T>');
+  }
+}
+
+// =============================================================================
+// MOCK BUILD CONTEXT
+// =============================================================================
+
+/// Mock BuildContext for testing Mix components
+class MockBuildContext extends BuildContext {
+  final MixScopeData? _mixScopeData;
+
+  MockBuildContext({MixScopeData? mixScopeData}) : _mixScopeData = mixScopeData;
+
+  @override
+  bool get debugDoingBuild => false;
+
+  @override
+  bool get mounted => true;
 
   @override
   T? dependOnInheritedWidgetOfExactType<T extends InheritedWidget>({
     Object? aspect,
   }) {
-    // Provide a minimal MixScope for testing
     if (T == MixScope) {
-      return const MixScope(data: MixScopeData.empty(), child: SizedBox())
+      return MixScope(
+            data: _mixScopeData ?? const MixScopeData.empty(),
+            child: const SizedBox(),
+          )
           as T?;
     }
     return null;
@@ -28,103 +216,211 @@ class MockBuildContext extends BuildContext {
   getElementForInheritedWidgetOfExactType<T extends InheritedWidget>() {
     return null;
   }
-}
 
-MixContext MockMixData(Style style) {
-  return MixContext.create(MockBuildContext(), style);
-}
-
-// Create a proper MixContext for testing that includes MixScope
-MixContext createEmptyMixData() {
-  // This is a simple implementation that doesn't require widget testing
-  // For tests that need token resolution, use testWidgets with pumpWithMixScope
-  return MixContext.create(MockBuildContext(), const Style.empty());
-}
-
-final EmptyMixData = createEmptyMixData();
-
-MixContext createMixContext({
-  Style? style,
-  Map<MixableToken, dynamic>? tokens,
-}) {
-  // For now, just use the simple create method without tokens
-  // We can enhance this later when we need token support in tests
-  return MixContext.create(MockBuildContext(), style ?? const Style.empty());
-}
-
-MediaQuery createMediaQuery({Size? size, Brightness? brightness}) {
-  return MediaQuery(
-    data: MediaQueryData(
-      size: size ?? const Size.square(500),
-      platformBrightness: brightness ?? Brightness.light,
-    ),
-    child: MixScope(
-      data: const MixScopeData.empty(),
-      child: MaterialApp(
-        home: Scaffold(
-          body: Builder(
-            builder: (BuildContext context) {
-              return Container();
-            },
-          ),
-        ),
-      ),
-    ),
-  );
-}
-
-Widget createDirectionality(TextDirection direction) {
-  return MixScope(
-    data: const MixScopeData.empty(),
-    child: MaterialApp(
-      home: Directionality(
-        textDirection: direction,
-        child: Scaffold(
-          body: Builder(
-            builder: (BuildContext context) {
-              return Container();
-            },
-          ),
-        ),
-      ),
-    ),
-  );
-}
-
-Widget createWithMixScope(MixScopeData theme, {Widget? child}) {
-  return MixScope(
-    data: theme,
-    child: MaterialApp(
-      home: Scaffold(
-        body: Builder(
-          builder: (BuildContext context) {
-            return child ?? Container();
-          },
-        ),
-      ),
-    ),
-  );
-}
-
-extension WidgetTesterExt on WidgetTester {
-  Future<void> pumpWithMix(
-    Widget widget, {
-    Style style = const Style.empty(),
-  }) async {
-    await pumpWithMixScope(
-      Builder(
-        builder: (BuildContext context) {
-          // Populate MixData into the widget tree if needed
-          return MixProvider.build(
-            context,
-            style: style,
-            builder: (_) => widget,
-          );
-        },
-      ),
-    );
+  @override
+  T? getInheritedWidgetOfExactType<T extends InheritedWidget>() {
+    return null;
   }
 
+  @override
+  Widget get widget => const SizedBox();
+
+  @override
+  BuildOwner? get owner => null;
+
+  @override
+  Size? get size => const Size(800, 600);
+
+  @override
+  RenderObject? findRenderObject() => null;
+
+  @override
+  InheritedWidget dependOnInheritedElement(
+    InheritedElement ancestor, {
+    Object? aspect,
+  }) {
+    return ancestor.widget as InheritedWidget;
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => null;
+}
+
+// =============================================================================
+// ADDITIONAL TEST UTILITIES
+// =============================================================================
+
+/// Mock attribute for testing utilities - handles both Prop<T> and MixProp<V>
+///
+/// This is a universal SpecMix that can wrap any prop type for testing purposes.
+/// Used with utilities that expect a SpecMix builder function.
+///
+/// Usage:
+/// ```dart
+/// // For PropUtility (takes Prop<T>)
+/// final colorUtility = ColorUtility(UtilityTestAttribute.new);
+/// final attr = colorUtility(Colors.red);
+///
+/// // For MixPropUtility (takes MixProp<V>)
+/// final gradientUtility = GradientUtility(UtilityTestAttribute.new);
+/// final attr = gradientUtility.linear(...);
+/// ```
+final class UtilityTestAttribute<T> extends SpecStyle<MockSpec> {
+  final T value;
+
+  const UtilityTestAttribute(this.value);
+
+  @override
+  UtilityTestAttribute<T> merge(covariant UtilityTestAttribute<T>? other) {
+    if (other == null) return this;
+    // For PropBase types (Prop<T> and MixProp<V>), use their merge method
+    if (value is PropBase && other.value is PropBase) {
+      final merged = (value as PropBase).merge(other.value as PropBase);
+      return UtilityTestAttribute(merged as T);
+    }
+    // For other Mixable types
+    if (value is Mixable && other.value is Mixable) {
+      final merged = (value as Mixable).merge(other.value as Mixable);
+      return UtilityTestAttribute(merged as T);
+    }
+    // Default: just return the other value
+    return UtilityTestAttribute(other.value);
+  }
+
+  @override
+  MockSpec resolve(BuildContext context) {
+    final resolvedValue = value is Resolvable
+        ? (value as Resolvable).resolve(context)
+        : value;
+    return MockSpec(resolvedValue: resolvedValue);
+  }
+
+  @override
+  List<Object?> get props => [value];
+}
+
+/// Mock spec for testing purposes
+///
+/// A simple Spec implementation that holds a resolved value.
+/// Used as the target spec for mock attributes.
+final class MockSpec extends Spec<MockSpec> {
+  final dynamic resolvedValue;
+
+  const MockSpec({this.resolvedValue});
+
+  @override
+  MockSpec lerp(MockSpec? other, double t) {
+    if (other == null) return this;
+    // Simple lerp - just return other for testing
+    return other;
+  }
+
+  @override
+  MockSpec copyWith({dynamic resolvedValue}) {
+    return MockSpec(resolvedValue: resolvedValue ?? this.resolvedValue);
+  }
+
+  @override
+  List<Object?> get props => [resolvedValue];
+}
+
+// =============================================================================
+// MOCK TESTING UTILITIES
+// =============================================================================
+
+/// Mock Mix type for testing
+///
+/// A generic Mix implementation that can hold any type of value.
+/// Supports merge operations by delegating to a custom merge function.
+///
+/// Usage:
+/// ```dart
+/// final mixInt = MockMix<int>(42);
+/// final mixString = MockMix<String>('hello');
+///
+/// // With custom merge logic
+/// final mixList = MockMix<List<int>>(
+///   [1, 2, 3],
+///   merger: (a, b) => [...a, ...b],
+/// );
+/// ```
+class MockMix<T> extends Mix<T> {
+  final T value;
+  final T Function(T a, T b)? merger;
+
+  const MockMix(this.value, {this.merger});
+
+  @override
+  MockMix<T> merge(covariant MockMix<T>? other) {
+    if (other == null) return this;
+
+    final mergedValue = merger != null
+        ? merger!(value, other.value)
+        : other.value; // Default: other wins
+
+    return MockMix<T>(mergedValue, merger: merger);
+  }
+
+  @override
+  T resolve(BuildContext context) => value;
+
+  List<Object?> get props => [value];
+
+  @override
+  String toString() => 'MockMix<$T>($value)';
+}
+
+/// Mock directive for testing
+///
+/// A simple directive implementation for testing purposes.
+/// By default, applies identity transformation (returns value unchanged).
+/// Can optionally provide a custom transformer function.
+///
+/// Usage:
+/// ```dart
+/// // Simple directive for testing presence (identity transform)
+/// final directive1 = MockDirective<int>('test');
+///
+/// // With custom transformer
+/// final doubleDirective = MockDirective<int>(
+///   'double',
+///   (value) => value * 2,
+/// );
+/// ```
+class MockDirective<T> extends MixDirective<T> {
+  final String name;
+  final T Function(T)? transformer;
+
+  const MockDirective(this.name, [this.transformer]);
+
+  @override
+  T apply(T value) => transformer?.call(value) ?? value;
+
+  @override
+  String get key => name;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is MockDirective<T> &&
+        other.name == name &&
+        other.transformer == transformer;
+  }
+
+  @override
+  int get hashCode => Object.hash(name, transformer);
+
+  @override
+  String toString() => 'MockDirective<$T>($name)';
+}
+
+// =============================================================================
+// WIDGET TESTER EXTENSIONS
+// =============================================================================
+
+/// Extension to add Mix testing utilities to WidgetTester
+extension WidgetTesterExtension on WidgetTester {
+  /// Pump widget with Mix scope
   Future<void> pumpWithMixScope(Widget widget, {MixScopeData? theme}) async {
     await pumpWidget(
       MaterialApp(
@@ -136,341 +432,44 @@ extension WidgetTesterExt on WidgetTester {
     );
   }
 
-  Future<void> pumpWithPressable(
-    Widget widget, {
-    bool disabled = false,
-    bool focused = false,
-    bool pressed = false,
-    bool hovered = false,
-  }) async {
-    final controller = WidgetStatesController();
-
-    controller.disabled = disabled;
-    controller.focused = focused;
-    controller.hovered = hovered;
-    controller.pressed = pressed;
-
-    await pumpWidget(
-      MaterialApp(
-        home: MixWidgetStateBuilder(
-          controller: controller,
-          builder: (_) {
-            return widget;
-          },
-        ),
-      ),
-    );
-  }
-
+  /// Pump widget wrapped in MaterialApp
   Future<void> pumpMaterialApp(Widget widget) async {
-    await pumpWidget(MaterialApp(home: widget));
-  }
-
-  Future<BuildContext> pumpAndGetContext(Widget widget, [Type? type]) async {
-    await pumpWidget(widget);
-    return element(find.byType(type ?? widget.runtimeType)) as BuildContext;
-  }
-
-  Future<void> pumpStyledWidget(
-    StyledWidget widget, {
-    MixScopeData theme = const MixScopeData.empty(),
-  }) async {
-    await pumpWidget(
-      MaterialApp(
-        home: MixScope(data: theme, child: widget),
-      ),
-    );
+    await pumpWidget(MaterialApp(home: Scaffold(body: widget)));
   }
 }
 
-// ignore: constant_identifier_names
-const FillWidget = SizedBox(width: 25, height: 25);
+// =============================================================================
+// MOCK CLASSES FOR TESTING
+// =============================================================================
 
-class WrapMixThemeWidget extends StatelessWidget {
-  const WrapMixThemeWidget({required this.child, this.theme, super.key});
+/// Mock directive for testing purposes
+///
+/// A simple directive implementation for testing purposes.
+/// By default, applies identity transformation (returns value unchanged).
+/// Can optionally provide a custom transformer function.
+class MockMixDirective<T> extends MixDirective<T> {
+  final String name;
+  final T Function(T)? transform;
 
-  final Widget child;
-  final MixScopeData? theme;
-
-  @override
-  Widget build(BuildContext context) {
-    return MixScope(
-      data: theme ?? const MixScopeData.empty(),
-      child: Directionality(textDirection: TextDirection.ltr, child: child),
-    );
-  }
-}
-
-final class MockDoubleScalarAttribute
-    extends TestScalarAttribute<MockDoubleScalarAttribute, double> {
-  const MockDoubleScalarAttribute(super.value);
+  const MockMixDirective(this.name, [this.transform]);
 
   @override
-  double resolve(MixContext mix) => value;
-}
-
-class MockContextVariantCondition extends ContextVariant {
-  final bool condition;
-  @override
-  final VariantPriority priority;
-  const MockContextVariantCondition(
-    this.condition, {
-    this.priority = VariantPriority.normal,
-  });
+  String get key => name;
 
   @override
-  List<Object?> get props => [condition];
+  T apply(T value) => transform?.call(value) ?? value;
 
   @override
-  Object get mergeKey => '$runtimeType.${priority.name}';
+  String toString() => 'MockMixDirective($name)';
 
   @override
-  bool when(BuildContext context) => condition;
-}
-
-final class MockIntScalarAttribute
-    extends TestScalarAttribute<MockIntScalarAttribute, int> {
-  const MockIntScalarAttribute(super.value);
-
-  @override
-  int resolve(MixContext mix) => value;
-}
-
-class MockContextVariant extends ContextVariant {
-  @override
-  final VariantPriority priority;
-  const MockContextVariant([this.priority = VariantPriority.normal]);
-
-  @override
-  bool when(BuildContext context) => true;
-}
-
-final class MockBooleanScalarAttribute
-    extends TestScalarAttribute<MockBooleanScalarAttribute, bool> {
-  const MockBooleanScalarAttribute(super.value);
-
-  @override
-  bool resolve(MixContext mix) => value;
-}
-
-abstract class _MockSpecAttribute<T> extends SpecAttribute<T> {
-  final T _value;
-  const _MockSpecAttribute(this._value);
-
-  @override
-  T resolve(MixContext mix) => _value;
-
-  @override
-  _MockSpecAttribute<T> merge(_MockSpecAttribute<T>? other);
-
-  @override
-  get props => [_value];
-}
-
-final class MockSpecBooleanAttribute extends _MockSpecAttribute<bool> {
-  const MockSpecBooleanAttribute(super.value);
-
-  @override
-  MockSpecBooleanAttribute merge(MockSpecBooleanAttribute? other) {
-    return MockSpecBooleanAttribute(other?._value ?? _value);
-  }
-}
-
-final class MockSpecIntAttribute extends _MockSpecAttribute<int> {
-  const MockSpecIntAttribute(super.value);
-
-  @override
-  MockSpecIntAttribute merge(MockSpecIntAttribute? other) {
-    return MockSpecIntAttribute(other?._value ?? _value);
-  }
-}
-
-final class MockSpecDoubleAttribute extends _MockSpecAttribute<double> {
-  const MockSpecDoubleAttribute(super.value);
-
-  @override
-  MockSpecDoubleAttribute merge(MockSpecDoubleAttribute? other) {
-    return MockSpecDoubleAttribute(other?._value ?? _value);
-  }
-}
-
-final class MockSpecStringAttribute extends _MockSpecAttribute<String> {
-  const MockSpecStringAttribute(super.value);
-
-  @override
-  MockSpecStringAttribute merge(MockSpecStringAttribute? other) {
-    return MockSpecStringAttribute(other?._value ?? _value);
-  }
-}
-
-final class MockStringScalarAttribute
-    extends TestScalarAttribute<MockStringScalarAttribute, String> {
-  const MockStringScalarAttribute(super.value);
-
-  @override
-  String resolve(MixContext mix) => value;
-}
-
-final class MockInvalidAttribute extends StyleElement {
-  const MockInvalidAttribute();
-
-  @override
-  MockInvalidAttribute merge(MockInvalidAttribute? other) {
-    return const MockInvalidAttribute();
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is MockMixDirective<T> &&
+        other.name == name &&
+        other.transform == transform;
   }
 
   @override
-  get props => [];
-}
-
-const mockVariant = Variant('mock-variant');
-
-final class UtilityTestAttribute<T>
-    extends TestScalarAttribute<UtilityTestAttribute<T>, T> {
-  const UtilityTestAttribute(super.value);
-
-  @override
-  T resolve(MixContext mix) => value;
-}
-
-final class UtilityTestDtoAttribute<T extends Mix<V>, V>
-    extends SpecAttribute<V> {
-  final T value;
-  const UtilityTestDtoAttribute(this.value);
-
-  @override
-  V resolve(MixContext mix) {
-    final result = value.resolve(mix);
-    if (result == null) {
-      throw StateError('UtilityTestDtoAttribute resolve returned null');
-    }
-    return result;
-  }
-
-  @override
-  UtilityTestDtoAttribute<T, V> merge(UtilityTestDtoAttribute<T, V>? other) {
-    return UtilityTestDtoAttribute(other?.value ?? value);
-  }
-
-  @override
-  get props => [value];
-}
-
-final class CustomWidgetModifierSpec
-    extends WidgetModifierSpec<CustomWidgetModifierSpec> {
-  final bool value;
-  const CustomWidgetModifierSpec(this.value, {super.animated});
-
-  @override
-  CustomWidgetModifierSpec copyWith({bool? value}) {
-    return CustomWidgetModifierSpec(value ?? this.value);
-  }
-
-  @override
-  CustomWidgetModifierSpec lerp(CustomWidgetModifierSpec? other, double t) {
-    if (other == null) return this;
-
-    return CustomWidgetModifierSpec(
-      MixHelpers.lerpSnap(value, other.value, t) ?? value,
-    );
-  }
-
-  @override
-  get props => [value];
-
-  @override
-  Widget build(Widget child) {
-    return Padding(padding: const EdgeInsets.all(8.0), child: child);
-  }
-}
-
-final class CustomModifierAttribute
-    extends WidgetModifierSpecAttribute<CustomWidgetModifierSpec> {
-  final bool? value;
-  const CustomModifierAttribute([this.value = true]);
-
-  @override
-  CustomWidgetModifierSpec resolve(MixContext mix) {
-    return CustomWidgetModifierSpec(value ?? true);
-  }
-
-  @override
-  CustomModifierAttribute merge(CustomModifierAttribute? other) {
-    return CustomModifierAttribute(other?.value ?? true);
-  }
-
-  @override
-  get props => [value];
-}
-
-class WidgetWithTestableBuild extends StyledWidget {
-  const WidgetWithTestableBuild(
-    this.onBuild, {
-    super.key,
-    super.orderOfModifiers = const [],
-  });
-
-  final void Function(BuildContext context) onBuild;
-
-  @override
-  Widget build(BuildContext context) {
-    return SpecBuilder(
-      inherit: inherit,
-      style: style,
-      orderOfModifiers: orderOfModifiers,
-      builder: (context) {
-        onBuild(context);
-        return const SizedBox();
-      },
-    );
-  }
-}
-
-abstract class TestScalarAttribute<
-  Self extends TestScalarAttribute<Self, Value>,
-  Value
->
-    extends SpecAttribute<Value> {
-  final Value value;
-  const TestScalarAttribute(this.value);
-
-  @override
-  get props => [value];
-
-  @override
-  Self merge(Self? other) {
-    return other ?? this as Self;
-  }
-}
-
-class MixTokensTest {
-  final space = const SpaceTokenUtil();
-  final radius = const RadiusTokenUtil();
-  final color = const ColorTokenUtil();
-  final textStyle = const TextStyleTokenUtil();
-
-  const MixTokensTest();
-}
-
-class RadiusTokenUtil {
-  final small = const MixableToken<Radius>('mix.radius.small');
-  final medium = const MixableToken<Radius>('mix.radius.medium');
-  final large = const MixableToken<Radius>('mix.radius.large');
-  const RadiusTokenUtil();
-}
-
-class SpaceTokenUtil {
-  final large = const MixableToken<double>('mix.space.large');
-  final medium = const MixableToken<double>('mix.space.medium');
-  final small = const MixableToken<double>('mix.space.small');
-
-  const SpaceTokenUtil();
-}
-
-class ColorTokenUtil {
-  const ColorTokenUtil();
-}
-
-class TextStyleTokenUtil {
-  const TextStyleTokenUtil();
+  int get hashCode => Object.hash(name, transform);
 }

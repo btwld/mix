@@ -1,185 +1,30 @@
 import 'package:flutter/widgets.dart';
 
 import '../internal/compare_mixin.dart';
-import 'factory/mix_context.dart';
-import 'prop.dart';
 
-// Generic directive for modifying values
-@immutable
-abstract class MixDirective<T> {
-  const MixDirective();
-
-  /// Debug label for the directive
-  String? get debugLabel;
-
-  /// Applies the transformation to the given value
-  T apply(T value);
+mixin Resolvable<V> {
+  V resolve(BuildContext context);
 }
 
-/// Mixin for classes that can resolve to a value using MixContext
-mixin ResolvableMixin<T> {
-  /// Resolves this instance to a value using the provided context
-  T resolve(MixContext context);
-}
+abstract class Mixable<T> {
+  const Mixable();
 
-// Mixin that provides Mix helper methods to StyleElement classes
-mixin MixHelperMixin {
-  @protected
-  V? resolveProp<V>(MixContext context, Prop<V>? prop) {
-    return prop?.resolve(context);
-  }
-
-  @protected
-  Prop<V>? mergeProp<V>(Prop<V>? a, Prop<V>? b) {
-    return a?.merge(b) ?? b;
-  }
-
-  @protected
-  List<V>? resolvePropList<V>(MixContext context, List<Prop<V>>? list) {
-    if (list == null || list.isEmpty) return null;
-
-    final resolved = <V>[];
-    for (final item in list) {
-      final value = item.resolve(context);
-      if (value != null) resolved.add(value);
-    }
-
-    return resolved.isEmpty ? null : resolved;
-  }
-
-  @protected
-  List<R>? resolveMixPropList<R, D extends Mix<R>>(
-    MixContext context,
-    List<MixProp<R, D>>? list,
-  ) {
-    if (list == null || list.isEmpty) return null;
-
-    final resolved = <R>[];
-    for (final mixProp in list) {
-      final value = mixProp.resolve(context);
-      if (value != null) resolved.add(value);
-    }
-
-    return resolved.isEmpty ? null : resolved;
-  }
-
-  // mergeMixProp merges two V extend Mix
-  @protected
-  MixProp<V, D>? mergeMixProp<V, D extends Mix<V>>(
-    MixProp<V, D>? a,
-    MixProp<V, D>? b,
-  ) {
-    if (a == null) return b;
-    if (b == null) return a;
-
-    return a.merge(b);
-  }
-
-  // resolve mix prop to value
-  @protected
-  V? resolveMixProp<V, D extends Mix<V>>(
-    MixContext context,
-    MixProp<V, D>? prop,
-  ) {
-    return prop?.resolve(context);
-  }
-
-  @protected
-  List<Prop<V>>? mergePropList<V>(
-    List<Prop<V>>? a,
-    List<Prop<V>>? b, {
-    ListMergeStrategy strategy = ListMergeStrategy.replace,
-  }) {
-    if (a == null) return b;
-    if (b == null) return a;
-
-    switch (strategy) {
-      case ListMergeStrategy.append:
-        return [...a, ...b];
-      case ListMergeStrategy.replace:
-        final result = List<Prop<V>>.of(a);
-        for (int i = 0; i < b.length; i++) {
-          if (i < result.length) {
-            result[i] = result[i].merge(b[i]);
-          } else {
-            result.add(b[i]);
-          }
-        }
-
-        return result;
-      case ListMergeStrategy.override:
-        return b;
-    }
-  }
-
-  @protected
-  List<MixProp<R, D>>? mergeMixPropList<R, D extends Mix<R>>(
-    List<MixProp<R, D>>? a,
-    List<MixProp<R, D>>? b, {
-    ListMergeStrategy strategy = ListMergeStrategy.replace,
-  }) {
-    if (a == null) return b;
-    if (b == null) return a;
-
-    switch (strategy) {
-      case ListMergeStrategy.append:
-        return [...a, ...b];
-      case ListMergeStrategy.replace:
-        final result = List<MixProp<R, D>>.of(a);
-        for (int i = 0; i < b.length; i++) {
-          if (i < result.length) {
-            result[i] = result[i].merge(b[i]);
-          } else {
-            result.add(b[i]);
-          }
-        }
-
-        return result;
-      case ListMergeStrategy.override:
-        return b;
-    }
-  }
-}
-
-abstract class StyleElement with EqualityMixin, MixHelperMixin {
-  const StyleElement();
-
-  // Used as the key to determine how
-  // attributes get merged
   Object get mergeKey => runtimeType;
-
-  /// Merges this object with [other], returning a new object of type [T].
-  StyleElement merge(covariant StyleElement? other);
+  Mixable<T> merge(covariant Mixable<T>? other);
 }
 
-/// Simple value Mix - holds a direct value
-@immutable
-abstract class Mix<T> with EqualityMixin, MixHelperMixin, ResolvableMixin<T> {
+abstract class Mix<T> extends Mixable<T> with Resolvable<T>, EqualityMixin {
   const Mix();
 
-  /// Merges this mix with another mix, returning a new mix.
+  @override
   Mix<T> merge(covariant Mix<T>? other);
 
-  /// Resolves to the concrete value using the provided context
   @override
-  T resolve(MixContext context);
-}
-
-/// Merge strategy for lists
-enum ListMergeStrategy {
-  /// Append items from other list (default)
-  append,
-
-  /// Replace items at same index
-  replace,
-
-  /// Override entire list
-  override,
+  T resolve(BuildContext context);
 }
 
 // Define a mixin for properties that have default values
-// TODO: Rename this to DefaultValueMixin or similar
-mixin HasDefaultValue<Value> {
+mixin DefaultValue<Value> {
   @protected
   Value get defaultValue;
 }

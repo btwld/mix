@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 abstract class MixError {
-  static FlutterError unsupportedTypeInDto(
+  static FlutterError unsupportedTypeInMix(
     Type type,
     List<String> supportedTypes,
   ) {
@@ -11,7 +11,7 @@ abstract class MixError {
     return FlutterError.fromParts([
       ErrorSummary('Unsupported $type type'),
       ErrorDescription(
-        'The toDto() method is not implemented for this $type subclass.',
+        'The toMix() method is not implemented for this $type subclass.',
       ),
       ErrorHint('Only $supportedTypesFormated are currently supported.'),
     ]);

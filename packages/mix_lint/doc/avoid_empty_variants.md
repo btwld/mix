@@ -5,7 +5,7 @@ Avoid creating empty variants directly inside `Style`. Empty variants are essent
 #### Don't
 
 ```dart
-final a = Variant('a');
+final a = NamedVariant('a');
 
 final wrong_case = Style(
   a(),

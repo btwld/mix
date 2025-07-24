@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
@@ -6,12 +7,12 @@ void main() {
   test('mapPropsToString', () {
     final firstStyle = Style(
       $box.alignment.center(),
-      $box.borderRadius.all(10),
+      $box.borderRadius.all(Radius.circular(10)),
       $box.color.red(),
     );
     final secondStyle = Style(
       $box.alignment.center(),
-      $box.borderRadius.all(10),
+      $box.borderRadius.all(Radius.circular(10)),
       $box.color.red(),
     );
 
@@ -19,12 +20,8 @@ void main() {
   });
 
   test('getDiff', () {
-    final firstStyle = Style(
-      $box.color.blue(),
-    );
-    final secondStyle = Style(
-      $box.color.red(),
-    );
+    final firstStyle = Style($box.color.blue());
+    final secondStyle = Style($box.color.red());
 
     final diff = firstStyle.getDiff(secondStyle);
 
@@ -47,7 +44,7 @@ class CustomObject {
   }
 
   @override
-  int get hashCode => id.hashCode ^ value.hashCode;
+  int get hashCode => Object.hash(id, value);
 }
 
 class AnotherCustomObject {
@@ -71,11 +68,5 @@ class AnotherCustomObject {
           listEquals(children, other.children);
 
   @override
-  int get hashCode =>
-      id.hashCode ^
-      name.hashCode ^
-      children.fold(
-        0,
-        (previousValue, element) => previousValue ^ element.hashCode,
-      );
+  int get hashCode => Object.hash(id, name, Object.hashAll(children));
 }

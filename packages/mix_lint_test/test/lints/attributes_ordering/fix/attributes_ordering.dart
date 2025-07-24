@@ -13,52 +13,32 @@ final test1 = Style(
 );
 
 // expect_lint: mix_attributes_ordering
-final test2 = Style(
-  $box.color.red(),
-  $flex.gap(3),
-  $box.borderRadius(3),
-);
+final test2 = Style($box.color.red(), $flex.gap(3), $box.borderRadius(3));
 
-final a = Variant('a');
-final b = Variant('b');
-final c = Variant('c');
+final a = NamedVariant('a');
+final b = NamedVariant('b');
+final c = NamedVariant('c');
 
 final test3 = Style(
-// expect_lint: mix_attributes_ordering
-  a(
-    $box.color.red(),
-    $flex.gap(3),
-    $box.borderRadius(3),
-  ),
+  // expect_lint: mix_attributes_ordering
+  a($box.color.red(), $flex.gap(3), $box.borderRadius(3)),
 );
 
 final test4 = Style(
   a(
-// expect_lint: mix_attributes_ordering
-    b(
-      $box.color.red(),
-      $flex.gap(3),
-      $box.borderRadius(3),
-    ),
+    // expect_lint: mix_attributes_ordering
+    b($box.color.red(), $flex.gap(3), $box.borderRadius(3)),
   ),
 );
 
 final test5 = Style(
-// expect_lint: mix_attributes_ordering
+  // expect_lint: mix_attributes_ordering
   a(
     $box.color.red(),
-// expect_lint: mix_attributes_ordering
-    c(
-      $box.color.red(),
-      $flex.gap(3),
-      $box.borderRadius(3),
-    ),
+    // expect_lint: mix_attributes_ordering
+    c($box.color.red(), $flex.gap(3), $box.borderRadius(3)),
     $box.borderRadius(3),
-// expect_lint: mix_attributes_ordering
-    b(
-      $box.color.red(),
-      $flex.gap(3),
-      $box.borderRadius(3),
-    ),
+    // expect_lint: mix_attributes_ordering
+    b($box.color.red(), $flex.gap(3), $box.borderRadius(3)),
   ),
 ).applyVariant(a, b);

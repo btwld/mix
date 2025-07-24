@@ -1,7 +1,7 @@
 import 'package:mix/mix.dart';
 
-final a = Variant('a');
-final b = Variant('b');
+final a = NamedVariant('a');
+final b = NamedVariant('b');
 
 // Wrong case
 
@@ -18,13 +18,4 @@ final wrong_case = Style(
 
 // Correct case
 
-final correct_case = Style(
-  a(
-    $box.color.amber(),
-  ),
-  a(
-    b(
-      $box.color.amber(),
-    ),
-  ),
-);
+final correct_case = Style(a($box.color.amber()), a(b($box.color.amber())));

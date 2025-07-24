@@ -1,29 +1,12 @@
 import 'package:flutter/widgets.dart';
-import 'package:mix_annotations/mix_annotations.dart';
 
-import '../attributes/animation/animated_config_dto.dart';
-import '../attributes/animation/animation_config.dart';
-import '../attributes/modifiers/widget_modifiers_config.dart';
-import '../attributes/modifiers/widget_modifiers_config_dto.dart';
 import '../internal/compare_mixin.dart';
-import 'factory/mix_context.dart';
-import 'mix_element.dart';
 
 @immutable
 abstract class Spec<T extends Spec<T>> with EqualityMixin {
-  final AnimationConfig? animated;
-
-  @MixableField(
-    utilities: [MixableFieldUtility(alias: 'wrap')],
-    isLerpable: false,
-  )
-  final WidgetModifiersConfig? modifiers;
-
-  const Spec({this.animated, this.modifiers});
+  const Spec();
 
   Type get type => T;
-
-  bool get isAnimated => animated != null;
 
   /// Creates a copy of this spec with the given fields
   /// replaced by the non-null parameter values.
@@ -33,20 +16,52 @@ abstract class Spec<T extends Spec<T>> with EqualityMixin {
   T lerp(covariant T? other, double t);
 }
 
-/// An abstract class representing a resolvable attribute.
-///
-/// This class extends the [StyleElement] class and provides a generic type [Self] and [Value].
-/// The [Self] type represents the concrete implementation of the attribute, while the [Value] type represents the resolvable value.
-abstract class SpecAttribute<Value> extends StyleElement implements Mix<Value> {
-  final AnimationConfigDto? animated;
-  final WidgetModifiersConfigDto? modifiers;
-  const SpecAttribute({this.animated, this.modifiers});
+class MultiSpec extends Spec<MultiSpec> {
+  final Map<Type, Spec> _specs;
 
-  /// Resolves this attribute to its concrete value using the provided [MixContext].
-  @override
-  Value resolve(MixContext context);
+  MultiSpec(List<Spec> specs)
+    : _specs = {for (var spec in specs) spec.type: spec};
 
-  /// Merges this attribute with another attribute of the same type.
+  /// Gets a spec of the specified type from this MultiSpec.
+  S? getSpec<S extends Spec<S>>() {
+    return _specs[S] as S?;
+  }
+
   @override
-  SpecAttribute<Value> merge(covariant SpecAttribute<Value>? other);
+  MultiSpec copyWith({List<Spec>? specs}) {
+    if (specs == null) return this;
+
+    return MultiSpec(specs);
+  }
+
+  @override
+  MultiSpec lerp(MultiSpec? other, double t) {
+    if (other == null) return this;
+
+    final interpolatedSpecs = <Spec>[];
+
+    // Get all unique types from both specs
+    final allTypes = {..._specs.keys, ...other._specs.keys};
+
+    for (final type in allTypes) {
+      final spec = _specs[type];
+      final otherSpec = other._specs[type];
+
+      if (spec != null && otherSpec != null) {
+        // Both specs have this type, interpolate between them
+        interpolatedSpecs.add(spec.lerp(otherSpec, t) as Spec);
+      } else if (spec != null) {
+        // Only this spec has this type
+        interpolatedSpecs.add(spec);
+      } else if (otherSpec != null) {
+        // Only other spec has this type
+        interpolatedSpecs.add(otherSpec);
+      }
+    }
+
+    return MultiSpec(interpolatedSpecs);
+  }
+
+  @override
+  get props => [_specs];
 }

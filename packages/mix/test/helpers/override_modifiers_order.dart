@@ -1,27 +1,27 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import 'testing_utils.dart';
-
 testOverrideModifiersOrder(
   WidgetTester tester, {
-  required Widget Function(Style, List<Type>) widgetBuilder,
+  required Widget Function(SpecStyle, List<Type>) widgetBuilder,
 }) async {
   final style = Style(
-    const VisibilityModifierSpecAttribute(visible: true),
-    const OpacityModifierSpecAttribute(opacity: 1),
-    const TransformModifierSpecAttribute(),
-    const AspectRatioModifierSpecAttribute(aspectRatio: 2),
-    const ClipOvalModifierSpecAttribute(),
-    PaddingModifierSpecAttribute(padding: EdgeInsetsDirectionalDto(top: 10)),
+    VisibilityModifierAttribute(visible: Prop(true)),
+    OpacityModifierAttribute(opacity: Prop(1.0)),
+    const TransformModifierAttribute(),
+    AspectRatioModifierAttribute(aspectRatio: Prop(2.0)),
+    const ClipOvalModifierAttribute(),
+    PaddingModifierAttribute(
+      padding: MixProp(EdgeInsetsDirectionalMix.only(top: 10.0)),
+    ),
   );
   const orderOfModifiersOnlySpecs = [
-    ClipOvalModifierSpec,
-    AspectRatioModifierSpec,
-    TransformModifierSpec,
-    OpacityModifierSpec,
-    VisibilityModifierSpec,
+    ClipOvalModifier,
+    AspectRatioModifier,
+    TransformModifier,
+    OpacityModifier,
+    VisibilityModifier,
   ];
 
   // JUST SPECS
@@ -34,11 +34,11 @@ testOverrideModifiersOrder(
 
   // SPECS + ATTRIBUTES
   const orderOfModifiersSpecsAndAttributes = [
-    ClipOvalModifierSpec,
-    AspectRatioModifierSpecAttribute,
-    TransformModifierSpecAttribute,
-    OpacityModifierSpec,
-    VisibilityModifierSpecAttribute,
+    ClipOvalModifier,
+    AspectRatioModifierAttribute,
+    TransformModifierAttribute,
+    OpacityModifier,
+    VisibilityModifierAttribute,
   ];
   await verifyDescendants(
     widgetBuilder(style, orderOfModifiersSpecsAndAttributes),
@@ -49,11 +49,11 @@ testOverrideModifiersOrder(
 
   // JUST ATTRIBUTES
   const orderOfModifiersOnlyAttributes = [
-    ClipOvalModifierSpecAttribute,
-    AspectRatioModifierSpecAttribute,
-    TransformModifierSpecAttribute,
-    OpacityModifierSpecAttribute,
-    VisibilityModifierSpecAttribute,
+    ClipOvalModifierAttribute,
+    AspectRatioModifierAttribute,
+    TransformModifierAttribute,
+    OpacityModifierAttribute,
+    VisibilityModifierAttribute,
   ];
 
   await verifyDescendants(
@@ -66,13 +66,11 @@ testOverrideModifiersOrder(
 
 Future<void> verifyDescendants(
   Widget widget,
-  Style style,
+  SpecStyle style,
   List<Type> orderOfModifiers,
   WidgetTester tester,
 ) async {
-  await tester.pumpMaterialApp(
-    widget,
-  );
+  await tester.pumpWidget(MaterialApp(home: Scaffold(body: widget)));
 
   expect(find.byType(widget.runtimeType), findsOneWidget);
 
@@ -101,18 +99,12 @@ Future<void> verifyDescendants(
   );
 
   expect(
-    find.descendant(
-      of: find.byType(Transform),
-      matching: find.byType(Opacity),
-    ),
+    find.descendant(of: find.byType(Transform), matching: find.byType(Opacity)),
     findsOneWidget,
   );
 
   expect(
-    find.descendant(
-      of: find.byType(Opacity),
-      matching: find.byType(Padding),
-    ),
+    find.descendant(of: find.byType(Opacity), matching: find.byType(Padding)),
     findsOneWidget,
   );
 }

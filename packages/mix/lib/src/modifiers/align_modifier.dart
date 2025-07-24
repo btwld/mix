@@ -1,0 +1,118 @@
+// ignore_for_file: prefer-named-boolean-parameters
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+
+import '../core/helpers.dart';
+import '../core/modifier.dart';
+import '../core/prop.dart';
+import '../core/style.dart';
+import '../core/utility.dart';
+
+final class AlignModifier extends Modifier<AlignModifier> with Diagnosticable {
+  final AlignmentGeometry? alignment;
+  final double? widthFactor;
+  final double? heightFactor;
+
+  const AlignModifier({this.alignment, this.widthFactor, this.heightFactor});
+
+  @override
+  AlignModifier copyWith({
+    AlignmentGeometry? alignment,
+    double? widthFactor,
+    double? heightFactor,
+  }) {
+    return AlignModifier(
+      alignment: alignment ?? this.alignment,
+      widthFactor: widthFactor ?? this.widthFactor,
+      heightFactor: heightFactor ?? this.heightFactor,
+    );
+  }
+
+  @override
+  AlignModifier lerp(AlignModifier? other, double t) {
+    if (other == null) return this;
+
+    return AlignModifier(
+      alignment: AlignmentGeometry.lerp(alignment, other.alignment, t),
+      widthFactor: MixHelpers.lerpDouble(widthFactor, other.widthFactor, t),
+      heightFactor: MixHelpers.lerpDouble(heightFactor, other.heightFactor, t),
+    );
+  }
+
+  @override
+  List<Object?> get props => [alignment, widthFactor, heightFactor];
+
+  @override
+  Widget build(Widget child) {
+    return Align(
+      alignment: alignment ?? Alignment.center,
+      widthFactor: widthFactor,
+      heightFactor: heightFactor,
+      child: child,
+    );
+  }
+}
+
+final class AlignModifierUtility<T extends SpecStyle<Object?>>
+    extends MixUtility<T, AlignModifierAttribute> {
+  const AlignModifierUtility(super.builder);
+  T call({
+    AlignmentGeometry? alignment,
+    double? widthFactor,
+    double? heightFactor,
+  }) {
+    return builder(
+      AlignModifierAttribute.only(
+        alignment: alignment,
+        widthFactor: widthFactor,
+        heightFactor: heightFactor,
+      ),
+    );
+  }
+}
+
+class AlignModifierAttribute extends ModifierAttribute<AlignModifier> {
+  final Prop<AlignmentGeometry>? alignment;
+  final Prop<double>? widthFactor;
+  final Prop<double>? heightFactor;
+
+  const AlignModifierAttribute({
+    this.alignment,
+    this.widthFactor,
+    this.heightFactor,
+  });
+
+  AlignModifierAttribute.only({
+    AlignmentGeometry? alignment,
+    double? widthFactor,
+    double? heightFactor,
+  }) : this(
+         alignment: Prop.maybe(alignment),
+         widthFactor: Prop.maybe(widthFactor),
+         heightFactor: Prop.maybe(heightFactor),
+       );
+
+  @override
+  AlignModifier resolve(BuildContext context) {
+    return AlignModifier(
+      alignment: MixHelpers.resolve(context, alignment),
+      widthFactor: MixHelpers.resolve(context, widthFactor),
+      heightFactor: MixHelpers.resolve(context, heightFactor),
+    );
+  }
+
+  @override
+  AlignModifierAttribute merge(AlignModifierAttribute? other) {
+    if (other == null) return this;
+
+    return AlignModifierAttribute(
+      alignment: MixHelpers.merge(alignment, other.alignment),
+      widthFactor: MixHelpers.merge(widthFactor, other.widthFactor),
+      heightFactor: MixHelpers.merge(heightFactor, other.heightFactor),
+    );
+  }
+
+  @override
+  List<Object?> get props => [alignment, widthFactor, heightFactor];
+}

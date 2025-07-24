@@ -1,98 +1,191 @@
-import 'mix_element.dart';
+import 'package:meta/meta.dart';
 
-abstract class MixUtility<Attr extends StyleElement, Value> {
-  final Attr Function(Value) builder;
+import '../theme/tokens/mix_token.dart';
+import 'animation_config.dart';
+import 'directive.dart';
+import 'mix_element.dart';
+import 'prop.dart';
+import 'spec.dart';
+import 'style.dart';
+
+abstract class MixUtility<U extends SpecStyle<Object?>, Value> {
+  final U Function(Value) builder;
 
   const MixUtility(this.builder);
-
-  static T selfBuilder<T>(T value) => value;
 }
 
-abstract class DtoUtility<A extends StyleElement, D extends Mix<Value>, Value>
-    extends MixUtility<A, D> {
-  final D Function(Value) fromValue;
-  const DtoUtility(super.builder, {required D Function(Value) valueToDto})
-    : fromValue = valueToDto;
+abstract interface class PropBaseUtility<U extends SpecStyle<Object?>, Value> {
+  const PropBaseUtility();
 
-  A only();
+  U token(MixToken<Value> token);
 
-  A as(Value value) => builder(fromValue(value));
+  U directive(MixDirective<Value> directive);
+
+  U animate(AnimationConfig animation);
 }
 
-class GenericUtility<Attr extends StyleElement, Value>
-    extends MixUtility<Attr, Value> {
-  const GenericUtility(super.builder);
-
-  Attr call(Value value) => builder(value);
-}
-
-abstract class ScalarUtility<Return extends StyleElement, V>
-    extends MixUtility<Return, V> {
-  const ScalarUtility(super.builder);
-
-  Return call(V value) => builder(value);
-}
-
-base class ListUtility<T extends StyleElement, V>
-    extends MixUtility<T, List<V>> {
-  const ListUtility(super.builder);
-
-  T call(List<V> values) => builder(values);
-}
-
-final class StringUtility<T extends StyleElement>
-    extends ScalarUtility<T, String> {
-  const StringUtility(super.builder);
-}
-
-/// A utility class for creating [StyleElement] instances from [double] values.
+/// Base utility for simple value properties that use Prop<T>
 ///
-/// This class extends [ScalarUtility] and provides methods to create [StyleElement] instances
-/// from predefined [double] values or custom [double] values.
-final class DoubleUtility<T extends StyleElement>
-    extends ScalarUtility<T, double> {
-  const DoubleUtility(super.builder);
-
-  /// Creates an [StyleElement] instance with a value of 0.
-  T zero() => builder(0);
-
-  /// Creates an [StyleElement] instance with a value of [double.infinity].
-  T infinity() => builder(double.infinity);
-}
-
-/// A utility class for creating [StyleElement] instances from [int] values.
+/// This utility provides a consistent API for working with:
+/// - Direct values: call(value)
+/// - Tokens: token(token)
+/// - Directives: directive(directive)
 ///
-/// This class extends [ScalarUtility] and provides methods to create [StyleElement] instances
-/// from predefined [int] values or custom [int] values.
-final class IntUtility<T extends StyleElement> extends ScalarUtility<T, int> {
-  const IntUtility(super.builder);
+/// Used for simple types like Color, double, FontWeight, etc.
+@immutable
+@immutable
+abstract class PropUtility<U extends SpecStyle<Object?>, Value>
+    extends PropBaseUtility<U, Value> {
+  final U Function(Prop<Value>) builder;
+  const PropUtility(this.builder);
 
-  /// Creates an [StyleElement] instance with a value of 0.
-  T zero() => builder(0);
+  /// Creates a Prop with a direct value
+  U call(Value value) => builder(Prop(value));
 
-  /// Creates an [StyleElement] instance from a custom [int] value.
+  /// Token support - creates Prop with token
   @override
-  T call(int value) => builder(value);
+  U token(MixToken<Value> token) => builder(Prop.token(token));
+
+  @override
+  U directive(MixDirective<Value> directive) {
+    return builder(Prop.directives([directive]));
+  }
+
+  /// Animation support - creates animated Prop (requires token for now)
+  @override
+  U animate(AnimationConfig animation) {
+    // Note: This creates an animated Prop without a source
+    // The actual source will need to be provided later via merge
+    return builder(Prop.animation(animation));
+  }
 }
 
-/// A utility class for creating [StyleElement] instances from [bool] values.
-///
-/// This class extends [ScalarUtility] and provides methods to create [StyleElement] instances
-/// from predefined [bool] values or custom [bool] values.
-final class BoolUtility<T extends StyleElement> extends ScalarUtility<T, bool> {
-  const BoolUtility(super.builder);
+@immutable
+abstract class MixPropUtility<U extends SpecStyle<Object?>, Value>
+    extends PropBaseUtility<U, Value> {
+  final Mix<Value> Function(Value) convertToMix;
+  @protected
+  final U Function(MixProp<Value>) builder;
 
-  /// Creates an [StyleElement] instance with a value of `true`.
-  T on() => builder(true);
+  const MixPropUtility(this.builder, {required this.convertToMix});
 
-  /// Creates an [StyleElement] instance with a value of `false`.
-  T off() => builder(false);
+  /// Creates a MixProp with a Mix value
+  U call(covariant Mix<Value> value) => builder(MixProp(value));
+
+  /// Creates a MixProp from a raw value (converts to Mix)
+  U as(Value value) => call(convertToMix(value));
+
+  /// Token support - expects MixToken<Value> (raw type)
+  /// Uses MixProp.token with conversion function
+  @override
+  U token(MixToken<Value> token) => builder(MixProp.token(token, convertToMix));
+
+  @override
+  U directive(MixDirective<Value> directive) {
+    return builder(MixProp.directives([directive]));
+  }
+
+  /// Animation support - creates animated MixProp
+  @override
+  U animate(AnimationConfig animation) {
+    // Note: This creates an animated MixProp without a source
+    // The actual source will need to be provided later via merge
+    return builder(MixProp.animation(animation));
+  }
 }
 
-/// An abstract utility class for creating [StyleElement] instances from [double] values representing sizes.
+/// Utility base class for spec utilities
+abstract class SpecUtility<S extends Spec<S>> {
+  const SpecUtility();
+
+  SpecStyle<S>? get attribute;
+
+  @override
+  operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    if (other is! SpecUtility<S>) return false;
+
+    return attribute == other.attribute;
+  }
+
+  @override
+  int get hashCode => Object.hash(attribute, runtimeType);
+}
+
+/// Generic ListUtility for Prop<V> lists
 ///
-/// This class extends [DoubleUtility] and serves as a base for more specific sizing utilities.
-abstract base class SizingUtility<T extends StyleElement>
-    extends ScalarUtility<T, double> {
-  const SizingUtility(super.builder);
+/// This utility provides a clean approach for working with lists of Prop<V>
+/// by extending MixUtility and accepting any builder function.
+///
+/// Usage:
+/// ```dart
+/// final colorUtil = ColorUtility<TestAttribute>((prop) => TestAttribute(prop));
+/// final colorListUtil = colorUtil.list((propList) => TestListAttribute(propList));
+/// final attr = colorListUtil([Colors.red, Colors.blue]);
+/// ```
+@immutable
+final class PropListUtility<T extends SpecStyle<Object?>, V>
+    extends MixUtility<T, List<Prop<V>>> {
+  const PropListUtility(super.builder);
+
+  /// Creates a list attribute from a list of values
+  /// Each value is wrapped in a Prop<V> and passed to the builder
+  T call(List<V> values) {
+    final propList = values.map((v) => Prop(v)).toList();
+
+    return builder(propList);
+  }
+
+  T tokens(List<MixToken<V>> tokens) {
+    final propList = tokens.map((t) => Prop.token(t)).toList();
+
+    return builder(propList);
+  }
+}
+
+/// Generic ListUtility for MixProp<V> lists
+///
+/// This utility provides support for working with lists of MixProp<V>
+/// for complex types that implement Mix<V>.
+///
+/// Usage:
+/// ```dart
+/// final boxShadows = MixPropListUtility<TestAttribute, BoxShadow, BoxShadowMix>(
+///   (mixPropList) => TestAttribute(boxShadow: mixPropList),
+///   BoxShadowMix.value,
+/// );
+///
+/// // Usage with different methods:
+/// final attr1 = boxShadows([BoxShadowMix(...), BoxShadowMix(...)]);  // call()
+/// final attr2 = boxShadows.as([BoxShadow(...), BoxShadow(...)]);     // as()
+/// final attr3 = boxShadows.tokens([token1, token2]);                 // tokens()
+/// final attr4 = boxShadows.directives([directive1, directive2]);     // directives()
+/// ```
+@immutable
+final class MixPropListUtility<T extends SpecStyle<Object?>, V>
+    extends MixUtility<T, List<MixProp<V>>> {
+  final Mix<V> Function(V) convertToMix;
+  const MixPropListUtility(super.builder, this.convertToMix);
+
+  /// Creates a list attribute from a list of Mix values
+  T call(List<Mix<V>> values) {
+    final props = values.map((v) => MixProp(v)).toList();
+
+    return builder(props);
+  }
+
+  /// Creates a list from raw values (converts to Mix)
+  T as(List<V> values) {
+    final props = values.map(convertToMix).map((v) => MixProp(v)).toList();
+
+    return builder(props);
+  }
+
+  /// Creates a list from tokens that store V (need conversion)
+  T tokens(List<MixToken<V>> tokens) {
+    final propList = tokens.map((t) => MixProp.token(t, convertToMix)).toList();
+
+    return builder(propList);
+  }
 }

@@ -12,60 +12,36 @@ final ordered = Style(
 );
 
 // expect_lint: mix_attributes_ordering
-final outOrder = Style(
-  $box.color.red(),
-  $flex.gap(3),
-  $box.borderRadius(3),
-);
+final outOrder = Style($box.color.red(), $flex.gap(3), $box.borderRadius(3));
 
 // expect_lint: mix_attributes_ordering
-final outOrder_2 = Style(
-  $box.color.red(),
-  $flex.gap(3),
-  $box.borderRadius(3),
-);
+final outOrder_2 = Style($box.color.red(), $flex.gap(3), $box.borderRadius(3));
 
-final a = Variant('a');
-final b = Variant('b');
-final c = Variant('c');
+final a = NamedVariant('a');
+final b = NamedVariant('b');
+final c = NamedVariant('c');
 
 final outOrder_3 = Style(
-// expect_lint: mix_attributes_ordering
-  a(
-    $box.color.red(),
-    $flex.gap(3),
-    $box.borderRadius(3),
-  ),
+  // expect_lint: mix_attributes_ordering
+  a($box.color.red(), $flex.gap(3), $box.borderRadius(3)),
 );
 
 final outOrder_4 = Style(
   a(
-// expect_lint: mix_attributes_ordering
-    b(
-      $box.color.red(),
-      $flex.gap(3),
-      $box.borderRadius(3),
-    ),
+    // expect_lint: mix_attributes_ordering
+    b($box.color.red(), $flex.gap(3), $box.borderRadius(3)),
   ),
 );
 
 final outOrder_5 = Style(
-// expect_lint: mix_attributes_ordering
+  // expect_lint: mix_attributes_ordering
   a(
     $box.color.red(),
-// expect_lint: mix_attributes_ordering
-    c(
-      $box.color.red(),
-      $flex.gap(3),
-      $box.borderRadius(3),
-    ),
+    // expect_lint: mix_attributes_ordering
+    c($box.color.red(), $flex.gap(3), $box.borderRadius(3)),
     $box.borderRadius(3),
-// expect_lint: mix_attributes_ordering
-    b(
-      $box.color.red(),
-      $flex.gap(3),
-      $box.borderRadius(3),
-    ),
+    // expect_lint: mix_attributes_ordering
+    b($box.color.red(), $flex.gap(3), $box.borderRadius(3)),
   ),
 ).applyVariant(a, b);
 
@@ -76,9 +52,7 @@ final inOrder_1 = Style(
   $icon.color.amber(),
   $text.capitalize(),
   $stack.fit.expand(),
-  $on.dark(
-    $box.height(20),
-  ),
+  $on.dark($box.height(20)),
   $with.clipOval(),
   _style,
   test(),
@@ -86,9 +60,7 @@ final inOrder_1 = Style(
 
 final inOrder_2 = Style(
   $flex.column(),
-  $on.dark(
-    $box.height(20),
-  ),
+  $on.dark($box.height(20)),
   $text.capitalize(),
   $with.clipOval(),
   _style,
@@ -99,10 +71,6 @@ final inOrder_2 = Style(
   $image.alignment.bottomCenter(),
 );
 
-Style _style = Style(
-  $box.border.width(2),
-);
+Style _style = Style($box.border.width(2));
 
-StyleElement test() => Style(
-      $with.scale(1),
-    );
+Style test() => Style($with.scale(1));

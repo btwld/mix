@@ -1,170 +1,273 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../../helpers/custom_matchers.dart';
-import '../../../helpers/testing_utils.dart';
-
 void main() {
   group('StackSpec', () {
-    test('resolve', () {
-      const attribute = StackSpecAttribute(
-        alignment: Alignment.center,
-        fit: StackFit.expand,
-        textDirection: TextDirection.ltr,
-        clipBehavior: Clip.antiAlias,
-      );
+    group('Constructor', () {
+      test('creates StackSpec with all properties', () {
+        const spec = StackSpec(
+          alignment: Alignment.center,
+          fit: StackFit.expand,
+          textDirection: TextDirection.rtl,
+          clipBehavior: Clip.antiAlias,
+        );
 
-      expect(
-        attribute,
-        resolvesTo(
-          const StackSpec(
-            alignment: Alignment.center,
-            fit: StackFit.expand,
-            textDirection: TextDirection.ltr,
-            clipBehavior: Clip.antiAlias,
-          ),
-        ),
-      );
+        expect(spec.alignment, Alignment.center);
+        expect(spec.fit, StackFit.expand);
+        expect(spec.textDirection, TextDirection.rtl);
+        expect(spec.clipBehavior, Clip.antiAlias);
+      });
+
+      test('creates StackSpec with default values', () {
+        const spec = StackSpec();
+
+        expect(spec.alignment, isNull);
+        expect(spec.fit, isNull);
+        expect(spec.textDirection, isNull);
+        expect(spec.clipBehavior, isNull);
+      });
     });
 
-    test('copyWith', () {
-      const spec = StackSpec(
-        alignment: Alignment.center,
-        fit: StackFit.expand,
-        textDirection: TextDirection.ltr,
-        clipBehavior: Clip.antiAlias,
-      );
+    group('copyWith', () {
+      test('creates new instance with updated properties', () {
+        const original = StackSpec(
+          alignment: Alignment.topLeft,
+          fit: StackFit.loose,
+          textDirection: TextDirection.ltr,
+        );
 
-      final copiedSpec = spec.copyWith(
-        alignment: Alignment.topLeft,
-        fit: StackFit.loose,
-        textDirection: TextDirection.rtl,
-        clipBehavior: Clip.none,
-      );
+        final updated = original.copyWith(
+          alignment: Alignment.bottomRight,
+          clipBehavior: Clip.hardEdge,
+        );
 
-      expect(copiedSpec.alignment, Alignment.topLeft);
-      expect(copiedSpec.fit, StackFit.loose);
-      expect(copiedSpec.textDirection, TextDirection.rtl);
-      expect(copiedSpec.clipBehavior, Clip.none);
+        expect(updated.alignment, Alignment.bottomRight);
+        expect(updated.fit, StackFit.loose); // unchanged
+        expect(updated.textDirection, TextDirection.ltr); // unchanged
+        expect(updated.clipBehavior, Clip.hardEdge);
+      });
+
+      test('preserves original properties when not specified', () {
+        const original = StackSpec(
+          fit: StackFit.expand,
+          clipBehavior: Clip.none,
+        );
+
+        final updated = original.copyWith(fit: StackFit.passthrough);
+
+        expect(updated.fit, StackFit.passthrough);
+        expect(updated.clipBehavior, Clip.none); // unchanged
+      });
+
+      test('handles null values correctly', () {
+        const original = StackSpec(alignment: Alignment.center, fit: StackFit.loose);
+        final updated = original.copyWith();
+
+        expect(updated.alignment, Alignment.center);
+        expect(updated.fit, StackFit.loose);
+      });
     });
 
-    test('lerp', () {
-      const spec1 = StackSpec(
-        alignment: Alignment.topLeft,
-        fit: StackFit.loose,
-        textDirection: TextDirection.ltr,
-        clipBehavior: Clip.none,
-      );
+    group('lerp', () {
+      test('interpolates between two StackSpecs correctly', () {
+        const spec1 = StackSpec(
+          alignment: Alignment.topLeft,
+        );
+        const spec2 = StackSpec(
+          alignment: Alignment.bottomRight,
+        );
 
-      const spec2 = StackSpec(
-        alignment: Alignment.bottomRight,
-        fit: StackFit.expand,
-        textDirection: TextDirection.rtl,
-        clipBehavior: Clip.antiAlias,
-      );
+        final lerped = spec1.lerp(spec2, 0.5);
 
-      const t = 0.5;
-      final lerpedSpec = spec1.lerp(spec2, t);
+        expect(lerped.alignment, Alignment.center);
+      });
 
-      expect(
-        lerpedSpec.alignment,
-        Alignment.lerp(Alignment.topLeft, Alignment.bottomRight, t),
-      );
-      expect(lerpedSpec.fit, StackFit.expand);
-      expect(lerpedSpec.textDirection, TextDirection.rtl);
-      expect(lerpedSpec.clipBehavior, Clip.antiAlias);
+      test('returns original spec when other is null', () {
+        const spec = StackSpec(alignment: Alignment.center, fit: StackFit.expand);
+        final lerped = spec.lerp(null, 0.5);
 
-      expect(lerpedSpec, isNot(spec1));
-    });
-  });
+        expect(lerped, spec);
+      });
 
-  group('StackSpecUtility fluent', () {
-    test('fluent behavior', () {
-      final stack = StackSpecUtility.self;
+      test('handles edge cases (t=0, t=1)', () {
+        const spec1 = StackSpec(alignment: Alignment.topLeft, fit: StackFit.loose);
+        const spec2 = StackSpec(alignment: Alignment.bottomRight, fit: StackFit.expand);
 
-      final util = stack
-        ..alignment.topLeft()
-        ..fit.expand()
-        ..textDirection.rtl()
-        ..clipBehavior.antiAlias();
+        final lerpedAt0 = spec1.lerp(spec2, 0.0);
+        final lerpedAt1 = spec1.lerp(spec2, 1.0);
 
-      final attr = util.attributeValue!;
+        expect(lerpedAt0.alignment, Alignment.topLeft);
+        expect(lerpedAt0.fit, StackFit.loose);
+        expect(lerpedAt1.alignment, Alignment.bottomRight);
+        expect(lerpedAt1.fit, StackFit.expand);
+      });
 
-      expect(util, isA<StyleElement>());
-      expect(attr.alignment, Alignment.topLeft);
-      expect(attr.fit, StackFit.expand);
-      expect(attr.textDirection, TextDirection.rtl);
-      expect(attr.clipBehavior, Clip.antiAlias);
+      test('uses step function for discrete properties', () {
+        const spec1 = StackSpec(
+          fit: StackFit.loose,
+          textDirection: TextDirection.ltr,
+          clipBehavior: Clip.none,
+        );
+        const spec2 = StackSpec(
+          fit: StackFit.expand,
+          textDirection: TextDirection.rtl,
+          clipBehavior: Clip.antiAlias,
+        );
 
-      final style = Style(util);
+        final lerpedBefore = spec1.lerp(spec2, 0.4);
+        final lerpedAfter = spec1.lerp(spec2, 0.6);
 
-      final stackAttribute = style.styles.attributeOfType<StackSpecAttribute>();
+        // t < 0.5 uses spec1
+        expect(lerpedBefore.fit, StackFit.loose);
+        expect(lerpedBefore.textDirection, TextDirection.ltr);
+        expect(lerpedBefore.clipBehavior, Clip.none);
 
-      expect(stackAttribute?.alignment, Alignment.topLeft);
-      expect(stackAttribute?.fit, StackFit.expand);
-      expect(stackAttribute?.textDirection, TextDirection.rtl);
-      expect(stackAttribute?.clipBehavior, Clip.antiAlias);
+        // t >= 0.5 uses spec2
+        expect(lerpedAfter.fit, StackFit.expand);
+        expect(lerpedAfter.textDirection, TextDirection.rtl);
+        expect(lerpedAfter.clipBehavior, Clip.antiAlias);
+      });
 
-      final mixData = style.of(MockBuildContext());
-      final stackSpec = StackSpec.from(mixData);
+      test('interpolates AlignmentGeometry correctly', () {
+        const spec1 = StackSpec(alignment: Alignment.topLeft);
+        const spec2 = StackSpec(alignment: Alignment.bottomRight);
 
-      expect(stackSpec.alignment, Alignment.topLeft);
-      expect(stackSpec.fit, StackFit.expand);
-      expect(stackSpec.textDirection, TextDirection.rtl);
-      expect(stackSpec.clipBehavior, Clip.antiAlias);
-    });
+        final lerped = spec1.lerp(spec2, 0.5);
 
-    test('Immutable behavior when having multiple stacks', () {
-      final stack1 = StackSpecUtility.self..alignment.topLeft();
-      final stack2 = StackSpecUtility.self..alignment.bottomRight();
+        expect(lerped.alignment, Alignment.center);
+      });
 
-      final attr1 = stack1.attributeValue!;
-      final attr2 = stack2.attributeValue!;
+      test('handles null alignment interpolation', () {
+        const spec1 = StackSpec(alignment: Alignment.topLeft);
+        const spec2 = StackSpec();
 
-      expect(attr1.alignment, Alignment.topLeft);
-      expect(attr2.alignment, Alignment.bottomRight);
+        final lerped = spec1.lerp(spec2, 0.5);
 
-      final style1 = Style(stack1);
-      final style2 = Style(stack2);
-
-      final stackAttribute1 =
-          style1.styles.attributeOfType<StackSpecAttribute>();
-      final stackAttribute2 =
-          style2.styles.attributeOfType<StackSpecAttribute>();
-
-      expect(stackAttribute1?.alignment, Alignment.topLeft);
-      expect(stackAttribute2?.alignment, Alignment.bottomRight);
-
-      final mixData1 = style1.of(MockBuildContext());
-      final mixData2 = style2.of(MockBuildContext());
-
-      final stackSpec1 = StackSpec.from(mixData1);
-      final stackSpec2 = StackSpec.from(mixData2);
-
-      expect(stackSpec1.alignment, Alignment.topLeft);
-      expect(stackSpec2.alignment, Alignment.bottomRight);
+        expect(lerped.alignment, isA<AlignmentGeometry>());
+      });
     });
 
-    test('Mutate behavior and not on same utility', () {
-      final stack = StackSpecUtility.self;
+    group('equality', () {
+      test('specs with same properties are equal', () {
+        const spec1 = StackSpec(
+          alignment: Alignment.center,
+          fit: StackFit.expand,
+          textDirection: TextDirection.ltr,
+          clipBehavior: Clip.hardEdge,
+        );
+        const spec2 = StackSpec(
+          alignment: Alignment.center,
+          fit: StackFit.expand,
+          textDirection: TextDirection.ltr,
+          clipBehavior: Clip.hardEdge,
+        );
 
-      final stackValue = stack;
-      stackValue
-        ..alignment.topLeft()
-        ..fit.expand()
-        ..textDirection.rtl();
+        expect(spec1, spec2);
+        expect(spec1.hashCode, spec2.hashCode);
+      });
 
-      final stackAttribute = stackValue.attributeValue!;
-      final stackAttribute2 = stack.alignment.bottomRight();
+      test('specs with different properties are not equal', () {
+        const spec1 = StackSpec(alignment: Alignment.center, fit: StackFit.expand);
+        const spec2 = StackSpec(alignment: Alignment.topLeft, fit: StackFit.expand);
 
-      expect(stackAttribute.alignment, Alignment.topLeft);
-      expect(stackAttribute.fit, StackFit.expand);
-      expect(stackAttribute.textDirection, TextDirection.rtl);
+        expect(spec1, isNot(spec2));
+      });
 
-      expect(stackAttribute2.alignment, Alignment.bottomRight);
-      expect(stackAttribute2.fit, isNull);
-      expect(stackAttribute2.textDirection, isNull);
+      test('specs with null vs non-null properties are not equal', () {
+        const spec1 = StackSpec(alignment: Alignment.center);
+        const spec2 = StackSpec();
+
+        expect(spec1, isNot(spec2));
+      });
+    });
+
+    group('debugFillProperties', () {
+      test('includes all properties in diagnostics', () {
+        const spec = StackSpec(
+          alignment: Alignment.center,
+          fit: StackFit.expand,
+          textDirection: TextDirection.rtl,
+          clipBehavior: Clip.antiAlias,
+        );
+
+        final diagnostics = DiagnosticPropertiesBuilder();
+        spec.debugFillProperties(diagnostics);
+
+        final properties = diagnostics.properties;
+        expect(properties.any((p) => p.name == 'alignment'), isTrue);
+        expect(properties.any((p) => p.name == 'fit'), isTrue);
+        expect(properties.any((p) => p.name == 'textDirection'), isTrue);
+        expect(properties.any((p) => p.name == 'clipBehavior'), isTrue);
+      });
+    });
+
+    group('props', () {
+      test('includes all properties in props list', () {
+        const spec = StackSpec(
+          alignment: Alignment.center,
+          fit: StackFit.expand,
+          textDirection: TextDirection.rtl,
+          clipBehavior: Clip.antiAlias,
+        );
+
+        expect(spec.props.length, 4);
+        expect(spec.props, contains(Alignment.center));
+        expect(spec.props, contains(StackFit.expand));
+        expect(spec.props, contains(TextDirection.rtl));
+        expect(spec.props, contains(Clip.antiAlias));
+      });
+    });
+
+    group('Real-world scenarios', () {
+      test('creates overlay stack spec', () {
+        const overlaySpec = StackSpec(
+          alignment: Alignment.center,
+          fit: StackFit.expand,
+          clipBehavior: Clip.none,
+        );
+
+        expect(overlaySpec.alignment, Alignment.center);
+        expect(overlaySpec.fit, StackFit.expand);
+        expect(overlaySpec.clipBehavior, Clip.none);
+      });
+
+      test('creates positioned stack spec', () {
+        const positionedSpec = StackSpec(
+          alignment: Alignment.topLeft,
+          fit: StackFit.loose,
+          textDirection: TextDirection.ltr,
+        );
+
+        expect(positionedSpec.alignment, Alignment.topLeft);
+        expect(positionedSpec.fit, StackFit.loose);
+        expect(positionedSpec.textDirection, TextDirection.ltr);
+      });
+
+      test('creates clipped stack spec', () {
+        const clippedSpec = StackSpec(
+          alignment: Alignment.center,
+          fit: StackFit.passthrough,
+          clipBehavior: Clip.antiAlias,
+        );
+
+        expect(clippedSpec.alignment, Alignment.center);
+        expect(clippedSpec.fit, StackFit.passthrough);
+        expect(clippedSpec.clipBehavior, Clip.antiAlias);
+      });
+
+      test('creates RTL stack spec', () {
+        const rtlSpec = StackSpec(
+          alignment: AlignmentDirectional.topStart,
+          textDirection: TextDirection.rtl,
+          fit: StackFit.expand,
+        );
+
+        expect(rtlSpec.alignment, AlignmentDirectional.topStart);
+        expect(rtlSpec.textDirection, TextDirection.rtl);
+        expect(rtlSpec.fit, StackFit.expand);
+      });
     });
   });
 }

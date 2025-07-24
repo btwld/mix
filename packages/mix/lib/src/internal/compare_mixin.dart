@@ -3,12 +3,8 @@
 import 'package:flutter/widgets.dart';
 
 import 'deep_collection_equality.dart';
-import 'iterable_ext.dart';
+import 'internal_extensions.dart';
 
-/// Returns a `hashCode` for [props].
-/// This function uses the Jenkins hash function to generate a hash code for the given properties.
-int _mapPropsToHashCode(Iterable? props) =>
-    _finish([...?props].fold(0, _combine));
 
 // Instance of DeepCollectionEquality used for deep comparison of collections.
 const _equality = DeepCollectionEquality();
@@ -52,47 +48,6 @@ bool _isEquatable(dynamic object) {
   return object is EqualityMixin;
 }
 
-/// Jenkins Hash Functions
-/// https://en.wikipedia.org/wiki/Jenkins_hash_function
-/// This function implements the Jenkins hash function to generate a hash code for the given object.
-int _combine(int hash, dynamic object) {
-  // If the object is a Map, sort the keys and combine their hash codes.
-  if (object is Map) {
-    object.keys
-        .sorted((dynamic a, dynamic b) => a.hashCode - b.hashCode)
-        .forEach((key) {
-          hash = hash ^ _combine(hash, [key, object[key]]);
-        });
-
-    return hash;
-  }
-  // If the object is a Set, sort the elements and combine their hash codes.
-  if (object is Set) {
-    object = object.sorted(((dynamic a, dynamic b) => a.hashCode - b.hashCode));
-  }
-  // If the object is an Iterable, combine the hash codes of all elements.
-  if (object is Iterable) {
-    for (final value in object) {
-      hash = hash ^ _combine(hash, value);
-    }
-
-    return hash ^ object.length;
-  }
-
-  // Combine the current hash code with the hash code of the object.
-  hash = 0x1fffffff & (hash + object.hashCode);
-  hash = 0x1fffffff & (hash + ((hash & 0x0007ffff) << 10));
-
-  return hash ^ (hash >> 6);
-}
-
-// Finalizes the hash code computation by performing additional bitwise operations.
-int _finish(int hash) {
-  hash = 0x1fffffff & (hash + ((hash & 0x03ffffff) << 3));
-  hash = hash ^ (hash >> 11);
-
-  return 0x1fffffff & (hash + ((hash & 0x00003fff) << 15));
-}
 
 /// Returns a string representation of [props] with property names and values.
 /// Only includes properties that are not null.
@@ -135,7 +90,15 @@ mixin EqualityMixin {
 
   // Overrides the hash code getter to compute the hash code based on the properties.
   @override
-  int get hashCode => runtimeType.hashCode ^ _mapPropsToHashCode(props);
+  int get hashCode {
+    // Combine runtimeType hash with individual property hashes
+    // This provides better distribution than hashAll for sparse lists
+    var hash = runtimeType.hashCode;
+    for (final prop in props) {
+      hash = Object.hash(hash, prop);
+    }
+    return hash;
+  }
 
   // Returns a list of properties that differ between this object and another.
   @visibleForTesting

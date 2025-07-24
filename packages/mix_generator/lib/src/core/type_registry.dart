@@ -342,7 +342,6 @@ class TypeReference {
 final ignoredUtilities = [
   'SpacingSideUtility',
   'FontFamilyUtility',
-  'GapUtility',
   'FontSizeUtility',
   'StrokeAlignUtility',
 ];
@@ -414,7 +413,6 @@ final utilities = {
   'FontFeatureUtility': 'FontFeature',
   'FontStyleUtility': 'FontStyle',
   'FontWeightUtility': 'FontWeight',
-  'GapUtility': 'SpacingSide',
   'GradientUtility': 'Gradient',
   'GradientTransformUtility': 'GradientTransform',
   'ImageProviderUtility': 'ImageProvider<Object>',
