@@ -326,9 +326,9 @@ class TextSpecAttribute extends SpecStyle<TextSpec> with Diagnosticable {
         other.$directives,
         strategy: ListMergeStrategy.append,
       ),
-      animation: other.animation ?? animation,
-      modifiers: mergeModifierLists(modifiers, other.modifiers),
-      variants: mergeVariantLists(variants, other.variants),
+      animation: other.$animation ?? $animation,
+      modifiers: mergeModifierLists($modifiers, other.$modifiers),
+      variants: mergeVariantLists($variants, other.$variants),
     );
   }
 

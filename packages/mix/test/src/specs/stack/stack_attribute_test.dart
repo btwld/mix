@@ -168,7 +168,7 @@ void main() {
         );
         final attribute = StackSpecAttribute().animate(animation);
 
-        expect(attribute.animation, equals(animation));
+        expect(attribute.$animation, equals(animation));
       });
     });
 
@@ -323,8 +323,8 @@ void main() {
           ],
         );
 
-        expect(attribute.modifiers, isNotNull);
-        expect(attribute.modifiers!.length, 2);
+        expect(attribute.$modifiers, isNotNull);
+        expect(attribute.$modifiers!.length, 2);
       });
 
       test('modifiers merge correctly', () {
@@ -345,7 +345,7 @@ void main() {
           AlignModifierAttribute(alignment: Prop(Alignment.center)),
         ];
 
-        expect(merged.modifiers, expectedModifiers);
+        expect(merged.$modifiers, expectedModifiers);
       });
 
       test('modifiers with same type merge correctly', () {
@@ -358,12 +358,12 @@ void main() {
         final merged = first.merge(second);
 
         // Should have only one opacity modifier (merged)
-        expect(merged.modifiers, isNotNull);
-        expect(merged.modifiers!.length, 1);
-        expect(merged.modifiers![0], isA<OpacityModifierAttribute>());
+        expect(merged.$modifiers, isNotNull);
+        expect(merged.$modifiers!.length, 1);
+        expect(merged.$modifiers![0], isA<OpacityModifierAttribute>());
 
         // The second opacity should take precedence
-        final mergedOpacity = merged.modifiers![0] as OpacityModifierAttribute;
+        final mergedOpacity = merged.$modifiers![0] as OpacityModifierAttribute;
         expect(mergedOpacity.opacity, resolvesTo(0.7));
       });
     });
@@ -371,7 +371,7 @@ void main() {
     group('Variants', () {
       test('variants can be added to attribute', () {
         final attribute = StackSpecAttribute();
-        expect(attribute.variants, isNull); // By default no variants
+        expect(attribute.$variants, isNull); // By default no variants
       });
     });
 

@@ -362,7 +362,7 @@ void main() {
           AlignModifierAttribute(alignment: Prop(Alignment.center)),
         ];
 
-        expect(merged.modifiers, expectedModifiers);
+        expect(merged.$modifiers, expectedModifiers);
       });
     });
 

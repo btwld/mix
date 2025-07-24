@@ -264,7 +264,7 @@ void main() {
         );
         final attribute = FlexSpecAttribute().animate(animation);
 
-        expect(attribute.animation, equals(animation));
+        expect(attribute.$animation, equals(animation));
       });
     });
 
@@ -475,8 +475,8 @@ void main() {
           ],
         );
 
-        expect(attribute.modifiers, isNotNull);
-        expect(attribute.modifiers!.length, 2);
+        expect(attribute.$modifiers, isNotNull);
+        expect(attribute.$modifiers!.length, 2);
       });
 
       test('modifiers merge correctly', () {
@@ -493,14 +493,14 @@ void main() {
         final merged = first.merge(second);
 
         // Note: The actual merge behavior depends on the parent class implementation
-        expect(merged.modifiers, isNotNull);
+        expect(merged.$modifiers, isNotNull);
       });
     });
 
     group('Variants', () {
       test('variants can be added to attribute', () {
         final attribute = FlexSpecAttribute();
-        expect(attribute.variants, isNull); // By default no variants
+        expect(attribute.$variants, isNull); // By default no variants
       });
     });
 

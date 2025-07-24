@@ -184,7 +184,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
     // Calculate interactivity need (cache it)
     final needsInteractivity = _cachedNeedsInteractivity ??=
         widget.controller != null ||
-        (finalStyle.variants?.any((v) => v.variant is WidgetStateVariant) ??
+        (finalStyle.$variants?.any((v) => v.variant is WidgetStateVariant) ??
             false);
 
     return ResolvedStyleProvider<S>(
@@ -197,7 +197,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
           // Apply wrappers (these are lightweight)
           child = _wrapWithAnimationIfNeeded(
             child,
-            finalStyle.animation,
+            finalStyle.$animation,
             finalStyle,
           );
           child = _wrapWithInteractableIfNeeded(child, needsInteractivity);

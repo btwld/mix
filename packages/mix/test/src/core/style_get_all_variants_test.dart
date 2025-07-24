@@ -636,12 +636,12 @@ class _MockSpecAttribute extends SpecStyle<MockSpec> {
     return _MockSpecAttribute(
       width: other.width != 0.0 ? other.width : width,
       height: other.height ?? height,
-      variants: mergeVariantLists(variants, other.variants),
+      variants: mergeVariantLists($variants, other.$variants),
     );
   }
 
   @override
-  List<Object?> get props => [width, height, variants];
+  List<Object?> get props => [width, height, $variants];
 }
 
 // Mock WidgetStateVariant that always matches for testing priority behavior

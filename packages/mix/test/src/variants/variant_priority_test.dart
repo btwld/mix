@@ -338,7 +338,7 @@ class _MockSpecAttributeWithVariants extends SpecStyle<MockSpec> {
   _MockSpecAttributeWithVariants(this.testVariants);
 
   @override
-  List<VariantSpecAttribute<MockSpec>>? get variants => testVariants;
+  List<VariantSpecAttribute<MockSpec>>? get $variants => testVariants;
 
   @override
   SpecStyle<MockSpec> merge(covariant SpecStyle<MockSpec>? other) {

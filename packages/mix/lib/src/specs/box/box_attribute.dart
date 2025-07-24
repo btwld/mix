@@ -132,6 +132,18 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
     );
   }
 
+  /// Animation
+  factory BoxSpecAttribute.$animation(AnimationConfig animation) {
+    return BoxSpecAttribute.only(animation: animation);
+  }
+
+  /// Variant
+  factory BoxSpecAttribute.variant(Variant variant, BoxSpecAttribute value) {
+    return BoxSpecAttribute.only(
+      variants: [VariantSpecAttribute(variant, value)],
+    );
+  }
+
   // minHeight
   factory BoxSpecAttribute.minHeight(double value) {
     return BoxSpecAttribute.constraints(BoxConstraintsMix.minHeight(value));
@@ -155,6 +167,7 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
   factory BoxSpecAttribute.alignment(AlignmentGeometry value) {
     return BoxSpecAttribute.only(alignment: value);
   }
+
   factory BoxSpecAttribute.padding(EdgeInsetsGeometryMix value) {
     return BoxSpecAttribute.only(padding: value);
   }
@@ -162,7 +175,6 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
   factory BoxSpecAttribute.margin(EdgeInsetsGeometryMix value) {
     return BoxSpecAttribute.only(margin: value);
   }
-
   factory BoxSpecAttribute.transform(Matrix4 value) {
     return BoxSpecAttribute.only(transform: value);
   }
@@ -284,6 +296,12 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
     );
   }
 
+  BoxSpecAttribute variant(Variant variant, BoxSpecAttribute value) {
+    return merge(
+      BoxSpecAttribute.only(variants: [VariantSpecAttribute(variant, value)]),
+    );
+  }
+
   BoxSpecAttribute animate(AnimationConfig animation) {
     return BoxSpecAttribute.only(animation: animation);
   }
@@ -306,6 +324,12 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
         boxShadow: BoxShadowMix.fromElevation(value),
       ),
     );
+  }
+
+  /// animation
+  @override
+  BoxSpecAttribute $animation(AnimationConfig animation) {
+    return BoxSpecAttribute.only(animation: animation);
   }
 
   /// Resolves to [BoxSpec] using the provided [MixContext].
@@ -359,9 +383,9 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
         other.$transformAlignment,
       ),
       clipBehavior: MixHelpers.merge($clipBehavior, other.$clipBehavior),
-      animation: other.animation ?? animation,
-      modifiers: mergeModifierLists(modifiers, other.modifiers),
-      variants: mergeVariantLists(variants, other.variants),
+      animation: other.$animation ?? $animation,
+      modifiers: mergeModifierLists($modifiers, other.$modifiers),
+      variants: mergeVariantLists($variants, other.$variants),
     );
   }
 

@@ -138,9 +138,9 @@ class StackBoxSpecAttribute extends SpecStyle<ZBoxSpec> with Diagnosticable {
     return StackBoxSpecAttribute(
       box: box?.merge(other.box) ?? other.box,
       stack: stack?.merge(other.stack) ?? other.stack,
-      modifiers: mergeModifierLists(modifiers, other.modifiers),
-      animation: other.animation ?? animation,
-      variants: mergeVariantLists(variants, other.variants),
+      modifiers: mergeModifierLists($modifiers, other.$modifiers),
+      animation: other.$animation ?? $animation,
+      variants: mergeVariantLists($variants, other.$variants),
     );
   }
 

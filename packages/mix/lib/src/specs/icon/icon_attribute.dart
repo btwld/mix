@@ -164,9 +164,9 @@ class IconSpecAttribute extends SpecStyle<IconSpec> with Diagnosticable {
         other.$applyTextScaling,
       ),
       fill: MixHelpers.merge($fill, other.$fill),
-      animation: other.animation ?? animation,
-      modifiers: mergeModifierLists(modifiers, other.modifiers),
-      variants: mergeVariantLists(variants, other.variants),
+      animation: other.$animation ?? $animation,
+      modifiers: mergeModifierLists($modifiers, other.$modifiers),
+      variants: mergeVariantLists($variants, other.$variants),
     );
   }
 

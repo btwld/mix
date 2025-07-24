@@ -150,9 +150,9 @@ class FlexBoxSpecAttribute extends SpecStyle<FlexBoxSpec> with Diagnosticable {
     return FlexBoxSpecAttribute(
       box: $box?.merge(other.$box) ?? other.$box,
       flex: $flex?.merge(other.$flex) ?? other.$flex,
-      animation: other.animation ?? animation,
-      modifiers: mergeModifierLists(modifiers, other.modifiers),
-      variants: mergeVariantLists(variants, other.variants),
+      animation: other.$animation ?? $animation,
+      modifiers: mergeModifierLists($modifiers, other.$modifiers),
+      variants: mergeVariantLists($variants, other.$variants),
     );
   }
 

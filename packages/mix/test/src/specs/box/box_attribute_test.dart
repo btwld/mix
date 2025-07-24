@@ -496,8 +496,8 @@ void main() {
           ],
         );
 
-        expect(attribute.modifiers, isNotNull);
-        expect(attribute.modifiers!.length, 2);
+        expect(attribute.$modifiers, isNotNull);
+        expect(attribute.$modifiers!.length, 2);
       });
 
       test('modifiers merge correctly', () {
@@ -517,7 +517,7 @@ void main() {
           TransformModifierAttribute.only(transform: Matrix4.identity()),
         ];
 
-        expect(merged.modifiers, expectedModifiers);
+        expect(merged.$modifiers, expectedModifiers);
       });
     });
 
@@ -563,7 +563,7 @@ void main() {
         );
         final attribute = BoxSpecAttribute().animate(animation);
 
-        expect(attribute.animation, equals(animation));
+        expect(attribute.$animation, equals(animation));
       });
     });
 
@@ -681,7 +681,7 @@ void main() {
     group('Animation', () {
       test('animation config can be added to attribute', () {
         final attribute = BoxSpecAttribute();
-        expect(attribute.animation, isNull); // By default no animation
+        expect(attribute.$animation, isNull); // By default no animation
       });
     });
 
@@ -690,7 +690,7 @@ void main() {
         // Note: Variants require proper Variant instances, not builders
         // This test demonstrates that the variants property exists
         final attribute = BoxSpecAttribute();
-        expect(attribute.variants, isNull); // By default no variants
+        expect(attribute.$variants, isNull); // By default no variants
       });
     });
 
@@ -958,7 +958,7 @@ void main() {
           );
           final attribute = BoxSpecAttribute().animate(animationConfig);
 
-          expect(attribute.animation, equals(animationConfig));
+          expect(attribute.$animation, equals(animationConfig));
         });
       });
     });

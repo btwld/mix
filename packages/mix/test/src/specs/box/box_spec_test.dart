@@ -310,7 +310,7 @@ void main() {
           clipBehavior: Clip.antiAlias,
         );
 
-        expect(spec.props.length, 9);
+        expect(spec.props.length, 11);
         expect(spec.props, contains(Alignment.center));
         expect(spec.props, contains(const EdgeInsets.all(8.0)));
         expect(spec.props, contains(const EdgeInsets.all(16.0)));
@@ -320,6 +320,8 @@ void main() {
         expect(spec.props, contains(Matrix4.identity()));
         expect(spec.props, contains(Alignment.topLeft));
         expect(spec.props, contains(Clip.antiAlias));
+        expect(spec.props, contains(100.0));
+        expect(spec.props, contains(200.0));
       });
     });
 
@@ -372,14 +374,15 @@ void main() {
         final transformedSpec = BoxSpec(
           transform: transformMatrix,
           transformAlignment: Alignment.center,
-          width: 100.0,
-          height: 100.0,
+          constraints: BoxConstraints.tightFor(width: 150, height: 100),
         );
 
         expect(transformedSpec.transform, transformMatrix);
         expect(transformedSpec.transformAlignment, Alignment.center);
-        expect(transformedSpec.width, 100.0);
-        expect(transformedSpec.height, 100.0);
+        expect(transformedSpec.constraints?.maxWidth, 150);
+        expect(transformedSpec.constraints?.maxHeight, 100);
+        expect(transformedSpec.constraints?.minWidth, 150);
+        expect(transformedSpec.constraints?.minHeight, 100);
       });
     });
   });

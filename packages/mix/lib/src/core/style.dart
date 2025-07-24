@@ -14,11 +14,17 @@ sealed class StyleElement {
 abstract class SpecStyle<S extends Spec<S>> extends Mixable<SpecStyle<S>>
     with EqualityMixin, Resolvable<S>
     implements StyleElement {
-  final List<VariantSpecAttribute<S>>? variants;
-  final List<ModifierAttribute>? modifiers;
-  final AnimationConfig? animation;
+  final List<VariantSpecAttribute<S>>? $variants;
+  final List<ModifierAttribute>? $modifiers;
+  final AnimationConfig? $animation;
 
-  const SpecStyle({this.variants, this.modifiers, this.animation});
+  const SpecStyle({
+    List<VariantSpecAttribute<S>>? variants,
+    List<ModifierAttribute>? modifiers,
+    AnimationConfig? animation,
+  }) : $modifiers = modifiers,
+       $animation = animation,
+       $variants = variants;
 
   @protected
   List<ModifierAttribute>? mergeModifierLists(
@@ -51,7 +57,7 @@ abstract class SpecStyle<S extends Spec<S>> extends Mixable<SpecStyle<S>>
     BuildContext context, {
     Set<NamedVariant>? namedVariants,
   }) {
-    final contextVariants = variants
+    final contextVariants = $variants
         ?.where(
           (variantAttr) => switch (variantAttr.variant) {
             (ContextVariant contextVariant) => contextVariant.when(context),
@@ -130,8 +136,8 @@ abstract class SpecStyle<S extends Spec<S>> extends Mixable<SpecStyle<S>>
     );
 
     final resolvedSpec = resolve(context);
-    final resolvedAnimation = styleData.animation;
-    final resolvedModifiers = styleData.modifiers
+    final resolvedAnimation = styleData.$animation;
+    final resolvedModifiers = styleData.$modifiers
         ?.map((modifier) => modifier.resolve(context))
         .whereType<Modifier>()
         .toList();
@@ -335,8 +341,8 @@ class Style extends SpecStyle<MultiSpec> {
     return Style._(
       attributes: _attributes.values.toList(),
       animation: AnimationConfig.implicit(duration: duration, curve: curve),
-      modifiers: modifiers,
-      variants: variants,
+      modifiers: $modifiers,
+      variants: $variants,
     );
   }
 
@@ -377,9 +383,9 @@ class Style extends SpecStyle<MultiSpec> {
 
     return Style._(
       attributes: mergedAttributes,
-      animation: other.animation ?? animation,
-      modifiers: mergeModifierLists(modifiers, other.modifiers),
-      variants: mergeVariantLists(variants, other.variants),
+      animation: other.$animation ?? $animation,
+      modifiers: mergeModifierLists($modifiers, other.$modifiers),
+      variants: mergeVariantLists($variants, other.$variants),
     );
   }
 

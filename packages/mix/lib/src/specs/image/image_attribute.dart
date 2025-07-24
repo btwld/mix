@@ -183,9 +183,9 @@ class ImageSpecAttribute extends SpecStyle<ImageSpec> with Diagnosticable {
       centerSlice: MixHelpers.merge($centerSlice, other.$centerSlice),
       filterQuality: MixHelpers.merge($filterQuality, other.$filterQuality),
       colorBlendMode: MixHelpers.merge($colorBlendMode, other.$colorBlendMode),
-      animation: other.animation ?? animation,
-      modifiers: mergeModifierLists(modifiers, other.modifiers),
-      variants: mergeVariantLists(variants, other.variants),
+      animation: other.$animation ?? $animation,
+      modifiers: mergeModifierLists($modifiers, other.$modifiers),
+      variants: mergeVariantLists($variants, other.$variants),
     );
   }
 
