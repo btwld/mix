@@ -22,21 +22,23 @@ class StackSpecAttribute extends SpecStyle<StackSpec> with Diagnosticable {
   final Prop<Clip>? $clipBehavior;
 
   /// Utility for defining [StackSpecAttribute.alignment]
-  final alignment = AlignmentGeometryUtility(
-    (prop) => StackSpecAttribute(alignment: prop),
+  late final alignment = AlignmentGeometryUtility(
+    (prop) => merge(StackSpecAttribute(alignment: prop)),
   );
 
   /// Utility for defining [StackSpecAttribute.fit]
-  final fit = StackFitUtility((prop) => StackSpecAttribute(fit: prop));
+  late final fit = StackFitUtility(
+    (prop) => merge(StackSpecAttribute(fit: prop)),
+  );
 
   /// Utility for defining [StackSpecAttribute.textDirection]
-  final textDirection = TextDirectionUtility(
-    (prop) => StackSpecAttribute(textDirection: prop),
+  late final textDirection = TextDirectionUtility(
+    (prop) => merge(StackSpecAttribute(textDirection: prop)),
   );
 
   /// Utility for defining [StackSpecAttribute.clipBehavior]
-  final clipBehavior = ClipUtility(
-    (prop) => StackSpecAttribute(clipBehavior: prop),
+  late final clipBehavior = ClipUtility(
+    (prop) => merge(StackSpecAttribute(clipBehavior: prop)),
   );
 
   StackSpecAttribute({

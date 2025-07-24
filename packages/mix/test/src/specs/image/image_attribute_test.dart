@@ -210,8 +210,8 @@ void main() {
         expect(screen.$colorBlendMode, resolvesTo(BlendMode.screen));
       });
 
-      test('chaining utilities does not accumulate properties', () {
-        // This is the key behavior: chaining creates new instances
+      test('chaining utilities accumulates properties correctly', () {
+        // Chaining now properly accumulates all properties
         final chained = ImageSpecAttribute()
             .width(100.0)
             .height(200.0)
@@ -219,11 +219,11 @@ void main() {
             .alignment(Alignment.center)
             .color(Colors.red);
 
-        // Only the last property is set because each utility creates a new instance
-        expect(chained.$width, isNull);
-        expect(chained.$height, isNull);
-        expect(chained.$fit, isNull);
-        expect(chained.$alignment, isNull);
+        // All properties should be set when chaining
+        expectProp(chained.$width, 100.0);
+        expectProp(chained.$height, 200.0);
+        expectProp(chained.$fit, BoxFit.cover);
+        expectProp(chained.$alignment, Alignment.center);
         expect(chained.$color, resolvesTo(Colors.red));
       });
 

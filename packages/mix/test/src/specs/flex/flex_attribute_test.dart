@@ -209,18 +209,18 @@ void main() {
         expect(attribute.$gap, resolvesTo(24.0));
       });
 
-      test('chaining utilities does not accumulate properties', () {
-        // This is the key behavior: chaining creates new instances
+      test('chaining utilities accumulates properties correctly', () {
+        // Chaining now properly accumulates all properties
         final chained = FlexSpecAttribute()
             .direction(Axis.horizontal)
             .mainAxisAlignment(MainAxisAlignment.spaceBetween)
             .crossAxisAlignment(CrossAxisAlignment.center)
             .gap(16.0);
 
-        // Only the last property is set because each utility creates a new instance
-        expect(chained.$direction, isNull);
-        expect(chained.$mainAxisAlignment, isNull);
-        expect(chained.$crossAxisAlignment, isNull);
+        // All properties should be set when chaining
+        expect(chained.$direction, resolvesTo(Axis.horizontal));
+        expectProp(chained.$mainAxisAlignment, MainAxisAlignment.spaceBetween);
+        expectProp(chained.$crossAxisAlignment, CrossAxisAlignment.center);
         expect(chained.$gap, resolvesTo(16.0));
       });
 

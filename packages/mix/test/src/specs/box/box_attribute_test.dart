@@ -105,25 +105,27 @@ void main() {
         expect(withHeight.$width, isNull);
       });
 
-      test('chaining utilities does not accumulate properties', () {
-        // This is the key behavior: chaining creates new instances
+      test('chaining utilities accumulates properties correctly', () {
+        // Chaining now properly accumulates all properties
         final chained = BoxSpecAttribute().width(100.0).height(200.0);
 
-        // Only the last property is set because each utility creates a new instance
-        expect(chained.$width, isNull);
+        // All properties should be set when chaining
+        expectProp(chained.$width, 100.0);
         expectProp(chained.$height, 200.0);
       });
 
-      test('use merge to combine utilities', () {
-        // To combine multiple utilities, use merge
+      test('chaining with complex properties works correctly', () {
+        // Test chaining with more complex properties
         final combined = BoxSpecAttribute()
             .width(100.0)
-            .merge(BoxSpecAttribute().height(200.0))
-            .merge(BoxSpecAttribute().color(Colors.red));
+            .height(200.0)
+            .color(Colors.red)
+            .padding(EdgeInsetsGeometryMix.value(const EdgeInsets.all(16.0)));
 
         expectProp(combined.$width, 100.0);
         expectProp(combined.$height, 200.0);
         expect(combined.$decoration, isNotNull);
+        expect(combined.$padding, isNotNull);
       });
     });
 

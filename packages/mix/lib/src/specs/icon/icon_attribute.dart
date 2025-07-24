@@ -22,21 +22,33 @@ class IconSpecAttribute extends SpecStyle<IconSpec> with Diagnosticable {
   final Prop<bool>? $applyTextScaling;
   final Prop<double>? $fill;
 
-  late final color = ColorUtility((prop) => IconSpecAttribute(color: prop));
-  late final size = DoubleUtility((prop) => IconSpecAttribute(size: prop));
-  late final weight = DoubleUtility((prop) => IconSpecAttribute(weight: prop));
-  late final grade = DoubleUtility((prop) => IconSpecAttribute(grade: prop));
-  late final opticalSize = DoubleUtility(
-    (prop) => IconSpecAttribute(opticalSize: prop),
+  late final color = ColorUtility(
+    (prop) => merge(IconSpecAttribute(color: prop)),
   );
-  late final shadow = ShadowUtility((v) => IconSpecAttribute(shadows: [v]));
+  late final size = DoubleUtility(
+    (prop) => merge(IconSpecAttribute(size: prop)),
+  );
+  late final weight = DoubleUtility(
+    (prop) => merge(IconSpecAttribute(weight: prop)),
+  );
+  late final grade = DoubleUtility(
+    (prop) => merge(IconSpecAttribute(grade: prop)),
+  );
+  late final opticalSize = DoubleUtility(
+    (prop) => merge(IconSpecAttribute(opticalSize: prop)),
+  );
+  late final shadow = ShadowUtility(
+    (v) => merge(IconSpecAttribute(shadows: [v])),
+  );
   late final textDirection = TextDirectionUtility(
-    (v) => IconSpecAttribute(textDirection: v),
+    (v) => merge(IconSpecAttribute(textDirection: v)),
   );
   late final applyTextScaling = BoolUtility(
-    (prop) => IconSpecAttribute(applyTextScaling: prop),
+    (prop) => merge(IconSpecAttribute(applyTextScaling: prop)),
   );
-  late final fill = DoubleUtility((prop) => IconSpecAttribute(fill: prop));
+  late final fill = DoubleUtility(
+    (prop) => merge(IconSpecAttribute(fill: prop)),
+  );
 
   IconSpecAttribute({
     Prop<Color>? color,

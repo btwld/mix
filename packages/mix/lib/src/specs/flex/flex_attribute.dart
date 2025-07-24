@@ -27,45 +27,47 @@ class FlexSpecAttribute extends SpecStyle<FlexSpec> with Diagnosticable {
   final Prop<double>? $gap;
 
   /// Utility for defining [FlexSpecAttribute.direction]
-  final direction = AxisUtility((prop) => FlexSpecAttribute(direction: prop));
+  late final direction = AxisUtility(
+    (prop) => merge(FlexSpecAttribute(direction: prop)),
+  );
 
   /// Utility for defining [FlexSpecAttribute.mainAxisAlignment]
-  final mainAxisAlignment = MainAxisAlignmentUtility(
-    (prop) => FlexSpecAttribute(mainAxisAlignment: prop),
+  late final mainAxisAlignment = MainAxisAlignmentUtility(
+    (prop) => merge(FlexSpecAttribute(mainAxisAlignment: prop)),
   );
 
   /// Utility for defining [FlexSpecAttribute.crossAxisAlignment]
-  final crossAxisAlignment = CrossAxisAlignmentUtility(
-    (prop) => FlexSpecAttribute(crossAxisAlignment: prop),
+  late final crossAxisAlignment = CrossAxisAlignmentUtility(
+    (prop) => merge(FlexSpecAttribute(crossAxisAlignment: prop)),
   );
 
   /// Utility for defining [FlexSpecAttribute.mainAxisSize]
-  final mainAxisSize = MainAxisSizeUtility(
-    (prop) => FlexSpecAttribute(mainAxisSize: prop),
+  late final mainAxisSize = MainAxisSizeUtility(
+    (prop) => merge(FlexSpecAttribute(mainAxisSize: prop)),
   );
 
   /// Utility for defining [FlexSpecAttribute.verticalDirection]
-  final verticalDirection = VerticalDirectionUtility(
-    (prop) => FlexSpecAttribute(verticalDirection: prop),
+  late final verticalDirection = VerticalDirectionUtility(
+    (prop) => merge(FlexSpecAttribute(verticalDirection: prop)),
   );
 
   /// Utility for defining [FlexSpecAttribute.textDirection]
-  final textDirection = TextDirectionUtility(
-    (prop) => FlexSpecAttribute(textDirection: prop),
+  late final textDirection = TextDirectionUtility(
+    (prop) => merge(FlexSpecAttribute(textDirection: prop)),
   );
 
   /// Utility for defining [FlexSpecAttribute.textBaseline]
-  final textBaseline = TextBaselineUtility(
-    (prop) => FlexSpecAttribute(textBaseline: prop),
+  late final textBaseline = TextBaselineUtility(
+    (prop) => merge(FlexSpecAttribute(textBaseline: prop)),
   );
 
   /// Utility for defining [FlexSpecAttribute.clipBehavior]
-  final clipBehavior = ClipUtility(
-    (prop) => FlexSpecAttribute(clipBehavior: prop),
+  late final clipBehavior = ClipUtility(
+    (prop) => merge(FlexSpecAttribute(clipBehavior: prop)),
   );
 
   /// Utility for defining [FlexSpecAttribute.gap]
-  final gap = DoubleUtility((prop) => FlexSpecAttribute(gap: prop));
+  late final gap = DoubleUtility((prop) => merge(FlexSpecAttribute(gap: prop)));
 
   FlexSpecAttribute({
     Prop<Axis>? direction,

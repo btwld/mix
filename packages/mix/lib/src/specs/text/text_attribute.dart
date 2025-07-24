@@ -37,52 +37,58 @@ class TextSpecAttribute extends SpecStyle<TextSpec> with Diagnosticable {
   final List<Prop<MixDirective<String>>>? $directives;
 
   /// Utility for defining [TextSpecAttribute.overflow]
-  final overflow = TextOverflowUtility(
-    (prop) => TextSpecAttribute(overflow: prop),
+  late final overflow = TextOverflowUtility(
+    (prop) => merge(TextSpecAttribute(overflow: prop)),
   );
 
   /// Utility for defining [TextSpecAttribute.strutStyle]
-  final strutStyle = StrutStyleUtility(
-    (prop) => TextSpecAttribute(strutStyle: prop),
+  late final strutStyle = StrutStyleUtility(
+    (prop) => merge(TextSpecAttribute(strutStyle: prop)),
   );
 
   /// Utility for defining [TextSpecAttribute.textAlign]
-  final textAlign = TextAlignUtility(
-    (prop) => TextSpecAttribute(textAlign: prop),
+  late final textAlign = TextAlignUtility(
+    (prop) => merge(TextSpecAttribute(textAlign: prop)),
   );
 
   /// Utility for defining [TextSpecAttribute.textScaler]
-  final textScaler = TextScalerUtility(
-    (prop) => TextSpecAttribute(textScaler: prop),
+  late final textScaler = TextScalerUtility(
+    (prop) => merge(TextSpecAttribute(textScaler: prop)),
   );
 
   /// Utility for defining [TextSpecAttribute.maxLines]
-  final maxLines = IntUtility((prop) => TextSpecAttribute(maxLines: prop));
+  late final maxLines = IntUtility(
+    (prop) => merge(TextSpecAttribute(maxLines: prop)),
+  );
 
   /// Utility for defining [TextSpecAttribute.style]
-  final style = TextStyleUtility((prop) => TextSpecAttribute(style: prop));
+  late final style = TextStyleUtility(
+    (prop) => merge(TextSpecAttribute(style: prop)),
+  );
 
   /// Utility for defining [TextSpecAttribute.textWidthBasis]
-  final textWidthBasis = TextWidthBasisUtility(
-    (prop) => TextSpecAttribute(textWidthBasis: prop),
+  late final textWidthBasis = TextWidthBasisUtility(
+    (prop) => merge(TextSpecAttribute(textWidthBasis: prop)),
   );
 
   /// Utility for defining [TextSpecAttribute.textHeightBehavior]
-  final textHeightBehavior = TextHeightBehaviorUtility(
-    (prop) => TextSpecAttribute(textHeightBehavior: prop),
+  late final textHeightBehavior = TextHeightBehaviorUtility(
+    (prop) => merge(TextSpecAttribute(textHeightBehavior: prop)),
   );
 
   /// Utility for defining [TextSpecAttribute.textDirection]
-  final textDirection = TextDirectionUtility(
-    (prop) => TextSpecAttribute(textDirection: prop),
+  late final textDirection = TextDirectionUtility(
+    (prop) => merge(TextSpecAttribute(textDirection: prop)),
   );
 
   /// Utility for defining [TextSpecAttribute.softWrap]
-  final softWrap = BoolUtility((prop) => TextSpecAttribute(softWrap: prop));
+  late final softWrap = BoolUtility(
+    (prop) => merge(TextSpecAttribute(softWrap: prop)),
+  );
 
   /// Utility for defining [TextSpecAttribute.directive]
-  final directive = TextDirectiveUtility(
-    (prop) => TextSpecAttribute(directives: [prop]),
+  late final directive = TextDirectiveUtility(
+    (prop) => merge(TextSpecAttribute(directives: [prop])),
   );
 
   /// Utility for defining [TextSpecAttribute.style.color]

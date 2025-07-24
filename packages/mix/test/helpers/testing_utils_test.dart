@@ -19,14 +19,14 @@ void main() {
       });
 
       test('matches Mix values', () {
-        final edgeInsetsProp = Prop(EdgeInsetsMix.all(16.0));
+        final edgeInsetsProp = MixProp(EdgeInsetsMix.all(16.0));
         expectProp(edgeInsetsProp, EdgeInsetsMix.all(16.0));
         
         final borderSide = BorderSideMix(
           color: Prop(Colors.red),
           width: Prop(2.0),
         );
-        final borderProp = Prop(BorderMix.all(borderSide));
+        final borderProp = MixProp(BorderMix.all(borderSide));
         expectProp(borderProp, BorderMix.all(borderSide));
       });
 
@@ -145,11 +145,11 @@ void main() {
       });
 
       test('resolves merged Mix props with accumulation', () {
-        final shadow1 = Prop(BoxShadowMix(
+        final shadow1 = MixProp(BoxShadowMix(
           color: Prop(Colors.red),
           blurRadius: Prop(2.0),
         ));
-        final shadow2 = Prop(BoxShadowMix(
+        final shadow2 = MixProp(BoxShadowMix(
           color: Prop(Colors.blue),
           spreadRadius: Prop(4.0),
         ));
@@ -157,10 +157,10 @@ void main() {
         final merged = shadow1.merge(shadow2);
         final resolved = merged.resolve(MockBuildContext());
         
-        // Mix types accumulate properties
-        expect(resolved.color?.resolve(MockBuildContext()), Colors.blue);
-        expect(resolved.blurRadius?.resolve(MockBuildContext()), 2.0);
-        expect(resolved.spreadRadius?.resolve(MockBuildContext()), 4.0);
+        // MixProp types accumulate properties
+        expect(resolved.color, Colors.blue);
+        expect(resolved.blurRadius, 2.0);
+        expect(resolved.spreadRadius, 4.0);
       });
 
       test('fails when resolvable is null', () {
