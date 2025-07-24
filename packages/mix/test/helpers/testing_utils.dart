@@ -364,6 +364,7 @@ class MockMix<T> extends Mix<T> {
   @override
   T resolve(BuildContext context) => value;
 
+  @override
   List<Object?> get props => [value];
 
   @override

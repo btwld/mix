@@ -1,3 +1,6 @@
+import 'package:flutter/widgets.dart';
+
+import '../attributes/border_radius_mix.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 import 'align_modifier.dart';
@@ -5,6 +8,7 @@ import 'aspect_ratio_modifier.dart';
 import 'clip_modifier.dart';
 import 'flexible_modifier.dart';
 import 'fractionally_sized_box_modifier.dart';
+import 'internal/reset_modifier.dart';
 import 'intrinsic_modifier.dart';
 import 'opacity_modifier.dart';
 import 'padding_modifier.dart';
@@ -62,35 +66,7 @@ final class ModifierUtility<T extends SpecStyle<Object?>>
   /// Utility for rotated box modifiers
   late final rotatedBox = RotatedBoxModifierUtility<T>(builder);
 
-  /// Utility for intrinsic width modifiers
-  late final intrinsicWidth = IntrinsicWidthModifierUtility<T>(builder);
-
-  /// Utility for intrinsic height modifiers
-  late final intrinsicHeight = IntrinsicHeightModifierUtility<T>(builder);
-
-  /// Utility for clip oval modifiers
-  late final clipOval = ClipOvalModifierUtility<T>(builder);
-
-  /// Utility for clip rounded rectangle modifiers
-  late final clipRRect = ClipRRectModifierUtility<T>(builder);
-
-  /// Utility for clip rectangle modifiers
-  late final clipRect = ClipRectModifierUtility<T>(builder);
-
-  /// Utility for clip triangle modifiers
-  late final clipTriangle = ClipTriangleModifierUtility<T>(builder);
-
-  /// Utility for clip path modifiers
-  late final clipPath = ClipPathModifierUtility<T>(builder);
-
   ModifierUtility(super.builder);
-
-  // Convenience methods for common modifiers
-
-  /// Sets the opacity of the widget.
-  ///
-  /// The [value] should be between 0.0 (fully transparent) and 1.0 (fully opaque).
-  T opacityValue(double value) => opacity(value);
 
   /// Scales the widget by the given [value].
   ///
@@ -103,13 +79,64 @@ final class ModifierUtility<T extends SpecStyle<Object?>>
   /// Positive values rotate clockwise, negative values rotate counter-clockwise.
   T rotate(double value) => transform.rotate(value);
 
-  /// Controls the visibility of the widget.
-  ///
-  /// When [visible] is false, the widget is hidden but still takes up space.
-  T visibilityValue(bool visible) => visibility(visible);
+  /// Makes the widget take up only its intrinsic width.
+  T intrinsicWidth() => builder(const IntrinsicWidthModifierAttribute());
 
-  /// Sets the aspect ratio of the widget.
-  ///
-  /// The [ratio] is width divided by height. For example, 16/9 for widescreen.
-  T aspectRatioValue(double ratio) => aspectRatio(ratio);
+  /// Makes the widget take up only its intrinsic height.
+  T intrinsicHeight() => builder(const IntrinsicHeightModifierAttribute());
+
+  /// Clips the widget to an oval shape.
+  T clipOval({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
+    return builder(
+      ClipOvalModifierAttribute.only(
+        clipper: clipper,
+        clipBehavior: clipBehavior,
+      ),
+    );
+  }
+
+  /// Clips the widget to a rounded rectangle.
+  T clipRRect({
+    BorderRadius? borderRadius,
+    CustomClipper<RRect>? clipper,
+    Clip? clipBehavior,
+  }) {
+    return builder(
+      ClipRRectModifierAttribute.only(
+        borderRadius: BorderRadiusMix.maybeValue(borderRadius),
+        clipper: clipper,
+        clipBehavior: clipBehavior,
+      ),
+    );
+  }
+
+  /// Clips the widget to a rectangle.
+  T clipRect({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
+    return builder(
+      ClipRectModifierAttribute.only(
+        clipper: clipper,
+        clipBehavior: clipBehavior,
+      ),
+    );
+  }
+
+  /// Clips the widget to a triangle shape.
+  T clipTriangle({Clip? clipBehavior}) {
+    return builder(
+      ClipTriangleModifierAttribute.only(clipBehavior: clipBehavior),
+    );
+  }
+
+  /// Clips the widget to a custom path.
+  T clipPath({CustomClipper<Path>? clipper, Clip? clipBehavior}) {
+    return builder(
+      ClipPathModifierAttribute.only(
+        clipper: clipper,
+        clipBehavior: clipBehavior,
+      ),
+    );
+  }
+
+  /// Resets all modifiers.
+  T reset() => builder(const ResetModifierAttribute());
 }

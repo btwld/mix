@@ -1,5 +1,6 @@
-import 'package:flutter/animation.dart';
+import 'package:flutter/widgets.dart';
 
+import '../../mix.dart';
 import '../internal/constants.dart';
 
 /// Configuration data for animated styles in the Mix framework.
@@ -27,6 +28,21 @@ sealed class AnimationConfig {
     return const ImplicitAnimationConfig(
       duration: kDefaultAnimationDuration,
       curve: Curves.linear,
+    );
+  }
+
+  // Builder
+  static AnimationBuilderConfig<S, V> builder<S extends Spec<S>, V>({
+    required SpecStyle<S> Function(V) builder,
+    Curve curve = Curves.linear,
+    Duration delay = Duration.zero,
+    Duration duration = kDefaultAnimationDuration,
+  }) {
+    return AnimationBuilderConfig(
+      builder: builder,
+      curve: curve,
+      delay: delay,
+      duration: duration,
     );
   }
 
@@ -140,3 +156,61 @@ final class ControlledAnimationConfig extends AnimationConfig {
   @override
   int get hashCode => controller.hashCode;
 }
+
+class AnimationBuilderConfig<S extends Spec<S>, V> extends AnimationConfig {
+  final SpecStyle<S> Function(V) builder;
+  final Curve curve;
+  final Duration delay;
+  final Duration duration;
+
+  const AnimationBuilderConfig({
+    required this.builder,
+    this.curve = Curves.linear,
+    this.delay = Duration.zero,
+    this.duration = kDefaultAnimationDuration,
+  });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is AnimationBuilderConfig &&
+        other.duration == duration &&
+        other.curve == curve;
+  }
+
+  @override
+  int get hashCode => Object.hash(duration, curve);
+}
+
+typedef BoxStyle = BoxSpecAttribute;
+
+// void main() {
+//   final style = BoxStyle().animationBuilder<double>(
+//     builder: (v) => BoxStyle().wrap.scale(v),
+//     delay: 300.ms,
+//   );
+
+//   Box(style: StyleAnimator(style: style));
+// }
+
+// class StyleAnimator<S extends Spec<S>> extends SpecStyle<S> {
+//   final SpecStyle<S> style;
+
+//   const StyleAnimator({required this.style});
+
+//   @override
+//   S resolve(BuildContext context) {
+//     // Apply the style to the spec.
+//     return style.resolve(context);
+//   }
+
+//   @override
+//   StyleAnimator<S> merge(StyleAnimator<S> other) {
+//     // Merge the styles.
+//     return StyleAnimator(style: style.merge(other.style));
+//   }
+
+//   @override
+//   get props => [style];
+// }

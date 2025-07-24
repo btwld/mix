@@ -54,11 +54,15 @@ void main() {
 
     group('copyWith', () {
       test('creates new instance with updated properties', () {
-        const originalBox = BoxSpec(constraints: BoxConstraints.tightFor(width: 100.0, height: 50.0));
+        const originalBox = BoxSpec(
+          constraints: BoxConstraints.tightFor(width: 100.0, height: 50.0),
+        );
         const originalFlex = FlexSpec(direction: Axis.vertical, gap: 8.0);
         const original = FlexBoxSpec(box: originalBox, flex: originalFlex);
 
-        const newBox = BoxSpec(constraints: BoxConstraints.tightFor(width: 200.0, height: 100.0));
+        const newBox = BoxSpec(
+          constraints: BoxConstraints.tightFor(width: 200.0, height: 100.0),
+        );
         final updated = original.copyWith(box: newBox);
 
         expect(updated.box, newBox);
@@ -84,7 +88,9 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        const originalBox = BoxSpec(constraints: BoxConstraints.tightFor(width: 150.0));
+        const originalBox = BoxSpec(
+          constraints: BoxConstraints.tightFor(width: 150.0),
+        );
         const originalFlex = FlexSpec(gap: 12.0);
         const original = FlexBoxSpec(box: originalBox, flex: originalFlex);
 
@@ -97,11 +103,15 @@ void main() {
 
     group('lerp', () {
       test('interpolates between two FlexBoxSpecs correctly', () {
-        const spec1Box = BoxSpec(constraints: BoxConstraints.tightFor(width: 100.0, height: 50.0));
+        const spec1Box = BoxSpec(
+          constraints: BoxConstraints.tightFor(width: 100.0, height: 50.0),
+        );
         const spec1Flex = FlexSpec(gap: 8.0);
         const spec1 = FlexBoxSpec(box: spec1Box, flex: spec1Flex);
 
-        const spec2Box = BoxSpec(constraints: BoxConstraints.tightFor(width: 200.0, height: 100.0));
+        const spec2Box = BoxSpec(
+          constraints: BoxConstraints.tightFor(width: 200.0, height: 100.0),
+        );
         const spec2Flex = FlexSpec(gap: 16.0);
         const spec2 = FlexBoxSpec(box: spec2Box, flex: spec2Flex);
 
@@ -113,7 +123,9 @@ void main() {
       });
 
       test('returns original spec when other is null', () {
-        const boxSpec = BoxSpec(constraints: BoxConstraints.tightFor(width: 100.0));
+        const boxSpec = BoxSpec(
+          constraints: BoxConstraints.tightFor(width: 100.0),
+        );
         const flexSpec = FlexSpec(gap: 8.0);
         const spec = FlexBoxSpec(box: boxSpec, flex: flexSpec);
 
@@ -123,11 +135,15 @@ void main() {
       });
 
       test('handles edge cases (t=0, t=1)', () {
-        const spec1Box = BoxSpec(constraints: BoxConstraints.tightFor(width: 100.0));
+        const spec1Box = BoxSpec(
+          constraints: BoxConstraints.tightFor(width: 100.0),
+        );
         const spec1Flex = FlexSpec(gap: 8.0);
         const spec1 = FlexBoxSpec(box: spec1Box, flex: spec1Flex);
 
-        const spec2Box = BoxSpec(constraints: BoxConstraints.tightFor(width: 200.0));
+        const spec2Box = BoxSpec(
+          constraints: BoxConstraints.tightFor(width: 200.0),
+        );
         const spec2Flex = FlexSpec(gap: 16.0);
         const spec2 = FlexBoxSpec(box: spec2Box, flex: spec2Flex);
 
@@ -176,7 +192,9 @@ void main() {
 
     group('equality', () {
       test('specs with same properties are equal', () {
-        const boxSpec = BoxSpec(constraints: BoxConstraints.tightFor(width: 100.0, height: 50.0));
+        const boxSpec = BoxSpec(
+          constraints: BoxConstraints.tightFor(width: 100.0, height: 50.0),
+        );
         const flexSpec = FlexSpec(direction: Axis.horizontal, gap: 8.0);
         const spec1 = FlexBoxSpec(box: boxSpec, flex: flexSpec);
         const spec2 = FlexBoxSpec(box: boxSpec, flex: flexSpec);
@@ -186,8 +204,12 @@ void main() {
       });
 
       test('specs with different box properties are not equal', () {
-        const boxSpec1 = BoxSpec(constraints: BoxConstraints.tightFor(width: 100.0));
-        const boxSpec2 = BoxSpec(constraints: BoxConstraints.tightFor(width: 200.0));
+        const boxSpec1 = BoxSpec(
+          constraints: BoxConstraints.tightFor(width: 100.0),
+        );
+        const boxSpec2 = BoxSpec(
+          constraints: BoxConstraints.tightFor(width: 200.0),
+        );
         const flexSpec = FlexSpec(gap: 8.0);
         const spec1 = FlexBoxSpec(box: boxSpec1, flex: flexSpec);
         const spec2 = FlexBoxSpec(box: boxSpec2, flex: flexSpec);
@@ -196,7 +218,9 @@ void main() {
       });
 
       test('specs with different flex properties are not equal', () {
-        const boxSpec = BoxSpec(constraints: BoxConstraints.tightFor(width: 100.0));
+        const boxSpec = BoxSpec(
+          constraints: BoxConstraints.tightFor(width: 100.0),
+        );
         const flexSpec1 = FlexSpec(direction: Axis.horizontal);
         const flexSpec2 = FlexSpec(direction: Axis.vertical);
         const spec1 = FlexBoxSpec(box: boxSpec, flex: flexSpec1);
@@ -216,7 +240,9 @@ void main() {
 
     group('debugFillProperties', () {
       test('includes all properties in diagnostics', () {
-        const boxSpec = BoxSpec(constraints: BoxConstraints.tightFor(width: 100.0, height: 50.0));
+        const boxSpec = BoxSpec(
+          constraints: BoxConstraints.tightFor(width: 100.0, height: 50.0),
+        );
         const flexSpec = FlexSpec(direction: Axis.horizontal, gap: 8.0);
         const spec = FlexBoxSpec(box: boxSpec, flex: flexSpec);
 
@@ -231,7 +257,9 @@ void main() {
 
     group('props', () {
       test('includes all properties in props list', () {
-        const boxSpec = BoxSpec(constraints: BoxConstraints.tightFor(width: 100.0, height: 50.0));
+        const boxSpec = BoxSpec(
+          constraints: BoxConstraints.tightFor(width: 100.0, height: 50.0),
+        );
         const flexSpec = FlexSpec(direction: Axis.horizontal, gap: 8.0);
         const spec = FlexBoxSpec(box: boxSpec, flex: flexSpec);
 
@@ -309,7 +337,10 @@ void main() {
       test('creates responsive container spec', () {
         const responsiveSpec = FlexBoxSpec(
           box: BoxSpec(
-            constraints: BoxConstraints(maxWidth: 1200.0, maxHeight: double.infinity),
+            constraints: BoxConstraints(
+              maxWidth: 1200.0,
+              maxHeight: double.infinity,
+            ),
             margin: EdgeInsets.symmetric(horizontal: 16.0),
           ),
           flex: FlexSpec(
@@ -339,7 +370,6 @@ void main() {
       });
 
       test('creates navigation bar spec', () {
-      test('creates navigation bar spec', () {
         const navSpec = FlexBoxSpec(
           box: BoxSpec(
             constraints: BoxConstraints.tightFor(height: 56.0),
@@ -359,6 +389,7 @@ void main() {
         );
 
         expect(navSpec.box.constraints?.maxHeight, 56.0);
+        expect(
           navSpec.box.padding,
           const EdgeInsets.symmetric(horizontal: 16.0),
         );

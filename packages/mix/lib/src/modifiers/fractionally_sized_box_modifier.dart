@@ -169,28 +169,6 @@ class FractionallySizedBoxModifierAttribute
   List<Object?> get props => [widthFactor, heightFactor, alignment];
 }
 
-/// A tween that interpolates between two [FractionallySizedBoxModifier] instances.
-///
-/// This class can be used in animations to smoothly transition between
-/// different [FractionallySizedBoxModifier] specifications.
-class FractionallySizedBoxModifierSpecTween
-    extends Tween<FractionallySizedBoxModifier?> {
-  FractionallySizedBoxModifierSpecTween({super.begin, super.end});
-
-  @override
-  FractionallySizedBoxModifier lerp(double t) {
-    if (begin == null && end == null) {
-      return const FractionallySizedBoxModifier();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
-  }
-}
-
 final class FractionallySizedBoxModifierUtility<T extends SpecStyle<Object?>>
     extends MixUtility<T, FractionallySizedBoxModifierAttribute> {
   const FractionallySizedBoxModifierUtility(super.builder);

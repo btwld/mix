@@ -5,7 +5,6 @@ import 'package:flutter/widgets.dart';
 
 import '../../core/modifier.dart';
 import '../../core/style.dart';
-import '../../core/utility.dart';
 
 final class ResetModifierSpec extends Modifier<ResetModifierSpec>
     with Diagnosticable {
@@ -37,14 +36,6 @@ final class ResetModifierSpec extends Modifier<ResetModifierSpec>
   }
 }
 
-final class ResetModifierUtility<T extends SpecStyle<Object?>>
-    extends MixUtility<T, ResetModifierAttribute> {
-  const ResetModifierUtility(super.builder);
-  T call() {
-    return builder(const ResetModifierAttribute());
-  }
-}
-
 class ResetModifierAttribute extends ModifierAttribute<ResetModifierSpec>
     with Diagnosticable {
   const ResetModifierAttribute();
@@ -68,21 +59,4 @@ class ResetModifierAttribute extends ModifierAttribute<ResetModifierSpec>
 
   @override
   List<Object?> get props => [];
-}
-
-class ResetModifierSpecTween extends Tween<ResetModifierSpec?> {
-  ResetModifierSpecTween({super.begin, super.end});
-
-  @override
-  ResetModifierSpec lerp(double t) {
-    if (begin == null && end == null) {
-      return const ResetModifierSpec();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
-  }
 }

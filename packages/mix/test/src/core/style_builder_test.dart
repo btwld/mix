@@ -187,13 +187,20 @@ void main() {
 
     group('RenderModifiers', () {
       testWidgets('Modifiers are applied when present', (tester) async {
-        final boxAttribute = BoxSpecAttribute()
-            .width(100)
+        final boxAttribute = BoxSpecAttribute.width(100)
             .height(100)
-            .color(Colors.blue)
-            .opacity(0.5)
-            .padding(EdgeInsets.all(10))
-            .clipOval();
+            .merge(
+              BoxSpecAttribute.only(
+                alignment: Alignment.center,
+                decoration: BoxDecorationMix.only(
+                  borderRadius: BorderRadiusGeometryMix.circular(10),
+                ),
+                modifiers: [
+                  OpacityModifierAttribute(opacity: Prop(0.5)),
+                  PaddingModifierAttribute.only(padding: EdgeInsetsMix.all(10)),
+                ],
+              ),
+            );
 
         await tester.pumpWidget(
           MaterialApp(
@@ -203,6 +210,7 @@ void main() {
                 return Container(
                   decoration: spec.decoration,
                   constraints: spec.constraints,
+                  alignment: spec.alignment,
                 );
               },
             ),
@@ -224,13 +232,18 @@ void main() {
       });
 
       testWidgets('Modifiers follow default order', (tester) async {
-        final boxAttribute = BoxSpecAttribute()
-            .width(100)
+        final boxAttribute = BoxSpecAttribute.width(100)
             .height(100)
-            .color(Colors.blue)
+            .merge(
+              BoxSpecAttribute.only(
+                decoration: BoxDecorationMix.only(color: Colors.blue),
+              ),
+            )
+            .wrap
             .opacity(0.5)
-            .padding(EdgeInsets.all(10))
-            .clipOval()
+            .wrap
+            .padding(padding: EdgeInsetsMix.all(10))
+            .wrap
             .visibility(true);
 
         await tester.pumpWidget(
@@ -283,12 +296,18 @@ void main() {
       });
 
       testWidgets('Custom modifier order is respected', (tester) async {
-        final boxAttribute = BoxSpecAttribute()
-            .width(100)
+        final boxAttribute = BoxSpecAttribute.width(100)
             .height(100)
-            .color(Colors.blue)
+            .merge(
+              BoxSpecAttribute.only(
+                decoration: BoxDecorationMix.only(color: Colors.blue),
+              ),
+            )
+            .wrap
             .opacity(0.5)
-            .padding(EdgeInsets.all(10))
+            .wrap
+            .padding(padding: EdgeInsetsMix.all(10))
+            .wrap
             .clipOval();
 
         const customOrder = [

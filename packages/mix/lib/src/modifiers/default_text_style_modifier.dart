@@ -252,28 +252,6 @@ class DefaultTextStyleModifierAttribute
   ];
 }
 
-/// A tween that interpolates between two [DefaultTextStyleModifier] instances.
-///
-/// This class can be used in animations to smoothly transition between
-/// different [DefaultTextStyleModifier] specifications.
-class DefaultTextStyleModifierSpecTween
-    extends Tween<DefaultTextStyleModifier?> {
-  DefaultTextStyleModifierSpecTween({super.begin, super.end});
-
-  @override
-  DefaultTextStyleModifier lerp(double t) {
-    if (begin == null && end == null) {
-      return const DefaultTextStyleModifier();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
-  }
-}
-
 final class DefaultTextStyleModifierUtility<T extends SpecStyle<Object?>>
     extends MixUtility<T, DefaultTextStyleModifierAttribute> {
   const DefaultTextStyleModifierUtility(super.builder);

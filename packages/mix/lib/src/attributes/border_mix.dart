@@ -36,12 +36,7 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
   }
 
   static BorderDirectionalMix directional(BorderDirectionalMix mix) {
-    return BorderDirectionalMix(
-      top: mix.top,
-      bottom: mix.bottom,
-      start: mix.start,
-      end: mix.end,
-    );
+    return mix;
   }
 
   /// Merges two BoxBorderMix instances.

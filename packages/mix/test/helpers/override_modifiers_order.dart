@@ -11,13 +11,13 @@ testOverrideModifiersOrder(
     OpacityModifierAttribute(opacity: Prop(1.0)),
     const TransformModifierAttribute(),
     AspectRatioModifierAttribute(aspectRatio: Prop(2.0)),
-    const ClipOvalModifierAttribute(),
+    AlignModifierAttribute(alignment: Prop(Alignment.center)),
     PaddingModifierAttribute(
       padding: MixProp(EdgeInsetsDirectionalMix.only(top: 10.0)),
     ),
   );
   const orderOfModifiersOnlySpecs = [
-    ClipOvalModifier,
+    AlignModifier,
     AspectRatioModifier,
     TransformModifier,
     OpacityModifier,
@@ -34,7 +34,7 @@ testOverrideModifiersOrder(
 
   // SPECS + ATTRIBUTES
   const orderOfModifiersSpecsAndAttributes = [
-    ClipOvalModifier,
+    AlignModifier,
     AspectRatioModifierAttribute,
     TransformModifierAttribute,
     OpacityModifier,
@@ -49,7 +49,7 @@ testOverrideModifiersOrder(
 
   // JUST ATTRIBUTES
   const orderOfModifiersOnlyAttributes = [
-    ClipOvalModifierAttribute,
+    AlignModifierAttribute,
     AspectRatioModifierAttribute,
     TransformModifierAttribute,
     OpacityModifierAttribute,
@@ -77,14 +77,14 @@ Future<void> verifyDescendants(
   expect(
     find.descendant(
       of: find.byType(widget.runtimeType),
-      matching: find.byType(ClipOval),
+      matching: find.byType(Align),
     ),
     findsOneWidget,
   );
 
   expect(
     find.descendant(
-      of: find.byType(ClipOval),
+      of: find.byType(Align),
       matching: find.byType(AspectRatio),
     ),
     findsOneWidget,

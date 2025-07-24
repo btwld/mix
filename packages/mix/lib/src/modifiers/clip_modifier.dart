@@ -8,7 +8,6 @@ import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
-import '../core/utility.dart';
 
 final class ClipOvalModifier extends Modifier<ClipOvalModifier>
     with Diagnosticable {
@@ -689,72 +688,4 @@ class TriangleClipper extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(TriangleClipper oldClipper) => false;
-}
-
-final class ClipPathModifierUtility<T extends SpecStyle<Object?>>
-    extends MixUtility<T, ClipPathModifierAttribute> {
-  const ClipPathModifierUtility(super.builder);
-
-  T call({CustomClipper<Path>? clipper, Clip? clipBehavior}) {
-    return builder(
-      ClipPathModifierAttribute(
-        clipper: Prop.maybe(clipper),
-        clipBehavior: Prop.maybe(clipBehavior),
-      ),
-    );
-  }
-}
-
-final class ClipRRectModifierUtility<T extends SpecStyle<Object?>>
-    extends MixUtility<T, ClipRRectModifierAttribute> {
-  const ClipRRectModifierUtility(super.builder);
-  T call({
-    BorderRadius? borderRadius,
-    CustomClipper<RRect>? clipper,
-    Clip? clipBehavior,
-  }) {
-    return builder(
-      ClipRRectModifierAttribute(
-        borderRadius: MixProp.maybe(BorderRadiusMix.maybeValue(borderRadius)),
-        clipper: Prop.maybe(clipper),
-        clipBehavior: Prop.maybe(clipBehavior),
-      ),
-    );
-  }
-}
-
-final class ClipOvalModifierUtility<T extends SpecStyle<Object?>>
-    extends MixUtility<T, ClipOvalModifierAttribute> {
-  const ClipOvalModifierUtility(super.builder);
-  T call({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
-    return builder(
-      ClipOvalModifierAttribute(
-        clipper: Prop.maybe(clipper),
-        clipBehavior: Prop.maybe(clipBehavior),
-      ),
-    );
-  }
-}
-
-final class ClipRectModifierUtility<T extends SpecStyle<Object?>>
-    extends MixUtility<T, ClipRectModifierAttribute> {
-  const ClipRectModifierUtility(super.builder);
-  T call({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
-    return builder(
-      ClipRectModifierAttribute(
-        clipper: Prop.maybe(clipper),
-        clipBehavior: Prop.maybe(clipBehavior),
-      ),
-    );
-  }
-}
-
-final class ClipTriangleModifierUtility<T extends SpecStyle<Object?>>
-    extends MixUtility<T, ClipTriangleModifierAttribute> {
-  const ClipTriangleModifierUtility(super.builder);
-  T call({Clip? clipBehavior}) {
-    return builder(
-      ClipTriangleModifierAttribute(clipBehavior: Prop.maybe(clipBehavior)),
-    );
-  }
 }

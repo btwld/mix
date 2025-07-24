@@ -126,9 +126,6 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
 
   BoxDecorationMix.border(BoxBorderMix border) : this.only(border: border);
 
-  BoxDecorationMix.borderDirectional(BorderDirectionalMix border)
-    : this.only(border: border);
-
   BoxDecorationMix.borderRadius(BorderRadiusGeometryMix borderRadius)
     : this.only(borderRadius: borderRadius);
 
@@ -185,15 +182,15 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
     return mergeDecoration(BoxDecorationMix.only(gradient: value));
   }
 
-  BoxDecorationMix image(DecorationImageMix? image) {
+  BoxDecorationMix image(DecorationImageMix image) {
     return mergeDecoration(BoxDecorationMix.only(image: image));
   }
 
-  BoxDecorationMix color(Color? value) {
+  BoxDecorationMix color(Color value) {
     return mergeDecoration(BoxDecorationMix.only(color: value));
   }
 
-  BoxDecorationMix boxShadow(List<BoxShadowMix>? value) {
+  BoxDecorationMix boxShadow(List<BoxShadowMix> value) {
     return mergeDecoration(BoxDecorationMix.only(boxShadow: value));
   }
 

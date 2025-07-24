@@ -61,7 +61,10 @@ void main() {
       });
 
       test('handles null properties in spec', () {
-        const spec = ZBoxSpec(box: BoxSpec(width: 200.0), stack: StackSpec());
+        const spec = ZBoxSpec(
+          box: BoxSpec(constraints: BoxConstraints.tightFor(width: 200.0)),
+          stack: StackSpec(),
+        );
         final attribute = StackBoxSpecAttribute.value(spec);
 
         expect(attribute.box, isNotNull);
@@ -144,18 +147,19 @@ void main() {
     group('merge', () {
       test('merges two StackBoxSpecAttributes correctly', () {
         final attr1 = StackBoxSpecAttribute(
-          box: BoxSpecAttribute.only(width: 100.0, height: 50.0),
+          box: BoxSpecAttribute.width(100.0).height(50.0),
           stack: StackSpecAttribute.only(alignment: Alignment.topLeft),
         );
 
         final attr2 = StackBoxSpecAttribute(
-          box: BoxSpecAttribute.only(
-            width: 200.0,
-            padding: EdgeInsetsGeometryMix.only(
-              top: 8.0,
-              bottom: 8.0,
-              left: 8.0,
-              right: 8.0,
+          box: BoxSpecAttribute.width(200.0).merge(
+            BoxSpecAttribute.only(
+              padding: EdgeInsetsGeometryMix.only(
+                top: 8.0,
+                bottom: 8.0,
+                left: 8.0,
+                right: 8.0,
+              ),
             ),
           ),
           stack: StackSpecAttribute.only(fit: StackFit.expand),
@@ -163,8 +167,15 @@ void main() {
 
         final merged = attr1.merge(attr2);
 
-        expect(merged.box!.$width, resolvesTo(200.0)); // from attr2
-        expect(merged.box!.$height, resolvesTo(50.0)); // from attr1
+        // Check that constraints were merged properly
+        expect(merged.box!.$constraints, isNotNull);
+        final constraints = merged.box!.$constraints?.resolve(
+          MockBuildContext(),
+        );
+        expect(constraints?.minWidth, 200.0); // from attr2
+        expect(constraints?.maxWidth, 200.0); // from attr2
+        expect(constraints?.minHeight, 50.0); // from attr1
+        expect(constraints?.maxHeight, 50.0); // from attr1
         expect(merged.box!.$padding, isNotNull); // from attr2
         expect(
           merged.stack!.$alignment,
@@ -175,7 +186,7 @@ void main() {
 
       test('returns original when merging with null', () {
         final original = StackBoxSpecAttribute(
-          box: BoxSpecAttribute.only(width: 200.0),
+          box: BoxSpecAttribute.width(200.0),
           stack: StackSpecAttribute.only(alignment: Alignment.center),
         );
         final merged = original.merge(null);
@@ -185,19 +196,26 @@ void main() {
 
       test('handles complex merge scenarios', () {
         final attr1 = StackBoxSpecAttribute(
-          box: BoxSpecAttribute.only(width: 100.0),
+          box: BoxSpecAttribute.width(100.0),
           stack: StackSpecAttribute.only(alignment: Alignment.topLeft),
         );
 
         final attr2 = StackBoxSpecAttribute(
-          box: BoxSpecAttribute.only(height: 200.0),
+          box: BoxSpecAttribute.height(200.0),
           stack: StackSpecAttribute.only(fit: StackFit.expand),
         );
 
         final merged = attr1.merge(attr2);
 
-        expect(merged.box!.$width, resolvesTo(100.0)); // from attr1
-        expect(merged.box!.$height, resolvesTo(200.0)); // from attr2
+        // Check that constraints were merged properly
+        expect(merged.box!.$constraints, isNotNull);
+        final constraints = merged.box!.$constraints?.resolve(
+          MockBuildContext(),
+        );
+        expect(constraints?.minWidth, 100.0); // from attr1
+        expect(constraints?.maxWidth, 100.0); // from attr1
+        expect(constraints?.minHeight, 200.0); // from attr2
+        expect(constraints?.maxHeight, 200.0); // from attr2
         expect(
           merged.stack!.$alignment,
           resolvesTo(Alignment.topLeft),
@@ -206,9 +224,7 @@ void main() {
       });
 
       test('handles null attributes in merge', () {
-        final attr1 = StackBoxSpecAttribute(
-          box: BoxSpecAttribute.only(width: 100.0),
-        );
+        final attr1 = StackBoxSpecAttribute(box: BoxSpecAttribute.width(100.0));
 
         final attr2 = StackBoxSpecAttribute(
           stack: StackSpecAttribute.only(fit: StackFit.expand),
@@ -216,14 +232,19 @@ void main() {
 
         final merged = attr1.merge(attr2);
 
-        expect(merged.box!.$width, resolvesTo(100.0)); // from attr1
+        expect(merged.box!.$constraints, isNotNull);
+        final constraints = merged.box!.$constraints?.resolve(
+          MockBuildContext(),
+        );
+        expect(constraints?.minWidth, 100.0); // from attr1
+        expect(constraints?.maxWidth, 100.0); // from attr1
         expect(merged.stack!.$fit, resolvesTo(StackFit.expand)); // from attr2
       });
     });
 
     group('equality', () {
       test('attributes with same properties are equal', () {
-        final boxAttr = BoxSpecAttribute.only(width: 200.0, height: 100.0);
+        final boxAttr = BoxSpecAttribute.width(200.0).height(100.0);
         final stackAttr = StackSpecAttribute.only(alignment: Alignment.center);
 
         final attr1 = StackBoxSpecAttribute(box: boxAttr, stack: stackAttr);
@@ -234,8 +255,8 @@ void main() {
       });
 
       test('attributes with different box properties are not equal', () {
-        final boxAttr1 = BoxSpecAttribute.only(width: 100.0);
-        final boxAttr2 = BoxSpecAttribute.only(width: 200.0);
+        final boxAttr1 = BoxSpecAttribute.width(100.0);
+        final boxAttr2 = BoxSpecAttribute.width(200.0);
         final stackAttr = StackSpecAttribute.only(alignment: Alignment.center);
 
         final attr1 = StackBoxSpecAttribute(box: boxAttr1, stack: stackAttr);
@@ -245,7 +266,7 @@ void main() {
       });
 
       test('attributes with different stack properties are not equal', () {
-        final boxAttr = BoxSpecAttribute.only(width: 100.0);
+        final boxAttr = BoxSpecAttribute.width(100.0);
         final stackAttr1 = StackSpecAttribute.only(
           alignment: Alignment.topLeft,
         );
@@ -262,7 +283,7 @@ void main() {
 
     group('debugFillProperties', () {
       test('includes all properties in diagnostics', () {
-        final boxAttribute = BoxSpecAttribute.only(width: 200.0, height: 100.0);
+        final boxAttribute = BoxSpecAttribute.width(200.0).height(100.0);
         final stackAttribute = StackSpecAttribute.only(
           alignment: Alignment.center,
           fit: StackFit.expand,
@@ -284,7 +305,7 @@ void main() {
 
     group('props', () {
       test('includes all properties in props list', () {
-        final boxAttribute = BoxSpecAttribute.only(width: 200.0, height: 100.0);
+        final boxAttribute = BoxSpecAttribute.width(200.0).height(100.0);
         final stackAttribute = StackSpecAttribute.only(
           alignment: Alignment.center,
           fit: StackFit.expand,
@@ -304,25 +325,28 @@ void main() {
     group('Real-world scenarios', () {
       test('creates overlay container attribute', () {
         final overlayAttr = StackBoxSpecAttribute(
-          box: BoxSpecAttribute.only(
-            width: double.infinity,
-            height: double.infinity,
-          ),
+          box: BoxSpecAttribute.width(double.infinity).height(double.infinity),
           stack: StackSpecAttribute.only(
             alignment: Alignment.center,
             fit: StackFit.expand,
           ),
         );
 
-        expect(overlayAttr.box!.$width, resolvesTo(double.infinity));
-        expect(overlayAttr.box!.$height, resolvesTo(double.infinity));
+        expect(overlayAttr.box!.$constraints, isNotNull);
+        final constraints = overlayAttr.box!.$constraints?.resolve(
+          MockBuildContext(),
+        );
+        expect(constraints?.minWidth, double.infinity);
+        expect(constraints?.maxWidth, double.infinity);
+        expect(constraints?.minHeight, double.infinity);
+        expect(constraints?.maxHeight, double.infinity);
         expect(overlayAttr.stack!.$alignment, resolvesTo(Alignment.center));
         expect(overlayAttr.stack!.$fit, resolvesTo(StackFit.expand));
       });
 
       test('creates positioned card attribute', () {
         final cardAttr = StackBoxSpecAttribute(
-          box: BoxSpecAttribute.only(width: 300.0, height: 200.0),
+          box: BoxSpecAttribute.width(300.0).height(200.0),
           stack: StackSpecAttribute.only(
             alignment: Alignment.topLeft,
             fit: StackFit.loose,
@@ -330,8 +354,14 @@ void main() {
           ),
         );
 
-        expect(cardAttr.box!.$width, resolvesTo(300.0));
-        expect(cardAttr.box!.$height, resolvesTo(200.0));
+        expect(cardAttr.box!.$constraints, isNotNull);
+        final constraints = cardAttr.box!.$constraints?.resolve(
+          MockBuildContext(),
+        );
+        expect(constraints?.minWidth, 300.0);
+        expect(constraints?.maxWidth, 300.0);
+        expect(constraints?.minHeight, 200.0);
+        expect(constraints?.maxHeight, 200.0);
         expect(cardAttr.stack!.$alignment, resolvesTo(Alignment.topLeft));
         expect(cardAttr.stack!.$fit, resolvesTo(StackFit.loose));
         expect(cardAttr.stack!.$clipBehavior, resolvesTo(Clip.antiAlias));

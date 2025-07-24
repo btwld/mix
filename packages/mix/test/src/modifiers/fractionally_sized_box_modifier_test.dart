@@ -531,68 +531,6 @@ void main() {
     });
   });
 
-  group('FractionallySizedBoxModifierSpecTween', () {
-    test('lerps between two specs', () {
-      const begin = FractionallySizedBoxModifier(
-        widthFactor: 0.2,
-        heightFactor: 0.3,
-        alignment: Alignment.topLeft,
-      );
-      const end = FractionallySizedBoxModifier(
-        widthFactor: 0.8,
-        heightFactor: 0.7,
-        alignment: Alignment.bottomRight,
-      );
-
-      final tween = FractionallySizedBoxModifierSpecTween(
-        begin: begin,
-        end: end,
-      );
-
-      final result0 = tween.lerp(0.0);
-      expect(result0.widthFactor, 0.2);
-      expect(result0.heightFactor, 0.3);
-      expect(result0.alignment, Alignment.topLeft);
-
-      final result05 = tween.lerp(0.5);
-      expect(result05.widthFactor, 0.5);
-      expect(result05.heightFactor, 0.5);
-      expect(result05.alignment, Alignment.center);
-
-      final result1 = tween.lerp(1.0);
-      expect(result1.widthFactor, 0.8);
-      expect(result1.heightFactor, 0.7);
-      expect(result1.alignment, Alignment.bottomRight);
-    });
-
-    test('handles null begin', () {
-      const end = FractionallySizedBoxModifier(
-        widthFactor: 0.8,
-        heightFactor: 0.7,
-      );
-
-      final tween = FractionallySizedBoxModifierSpecTween(
-        begin: null,
-        end: end,
-      );
-
-      final result = tween.lerp(0.5);
-      expect(result, same(end));
-    });
-
-    test('handles both null', () {
-      final tween = FractionallySizedBoxModifierSpecTween(
-        begin: null,
-        end: null,
-      );
-
-      final result = tween.lerp(0.5);
-      expect(result.widthFactor, isNull);
-      expect(result.heightFactor, isNull);
-      expect(result.alignment, isNull);
-    });
-  });
-
   group('Integration tests', () {
     testWidgets(
       'FractionallySizedBoxModifierAttribute resolves and builds correctly',

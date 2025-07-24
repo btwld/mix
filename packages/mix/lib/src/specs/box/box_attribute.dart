@@ -1,9 +1,26 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../../../mix.dart';
+import '../../attributes/border_mix.dart';
+import '../../attributes/border_radius_mix.dart';
+import '../../attributes/constraints_mix.dart';
+import '../../attributes/constraints_util.dart';
+import '../../attributes/decoration_mix.dart';
+import '../../attributes/decoration_util.dart';
+import '../../attributes/edge_insets_geometry_mix.dart';
+import '../../attributes/edge_insets_geometry_util.dart';
+import '../../attributes/scalar_util.dart';
+import '../../attributes/shadow_mix.dart';
 import '../../core/animation/animation_util.dart';
+import '../../core/animation_config.dart';
+import '../../core/helpers.dart';
+import '../../core/prop.dart';
+import '../../core/style.dart';
+import '../../core/variant.dart';
+import '../../internal/constants.dart';
 import '../../modifiers/modifier_util.dart';
+import '../../variants/variant_util.dart';
+import 'box_spec.dart';
 
 /// Represents the attributes of a [BoxSpec].
 ///
@@ -178,6 +195,7 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
   factory BoxSpecAttribute.margin(EdgeInsetsGeometryMix value) {
     return BoxSpecAttribute.only(margin: value);
   }
+
   factory BoxSpecAttribute.transform(Matrix4 value) {
     return BoxSpecAttribute.only(transform: value);
   }
@@ -291,6 +309,10 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
     return spec != null ? BoxSpecAttribute.value(spec) : null;
   }
 
+  BoxSpecAttribute modifier(ModifierAttribute value) {
+    return merge(BoxSpecAttribute.only(modifiers: [value]));
+  }
+
   BoxSpecAttribute variant(Variant variant, BoxSpecAttribute value) {
     return merge(
       BoxSpecAttribute.only(variants: [VariantSpecAttribute(variant, value)]),
@@ -299,6 +321,22 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
 
   BoxSpecAttribute animation(AnimationConfig animation) {
     return BoxSpecAttribute.only(animation: animation);
+  }
+
+  BoxSpecAttribute animationBuilder<V>({
+    required BoxSpecAttribute Function(V) builder,
+    Duration duration = kDefaultAnimationDuration,
+    Curve curve = Curves.linear,
+    Duration delay = Duration.zero,
+  }) {
+    return BoxSpecAttribute.animation(
+      AnimationConfig.builder<BoxSpec, V>(
+        builder: builder,
+        curve: curve,
+        delay: delay,
+        duration: duration,
+      ),
+    );
   }
 
   BoxSpecAttribute shadows(List<BoxShadowMix> value) {

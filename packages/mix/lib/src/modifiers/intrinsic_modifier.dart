@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 
 import '../core/modifier.dart';
 import '../core/style.dart';
-import '../core/utility.dart';
 
 final class IntrinsicHeightModifier extends Modifier<IntrinsicHeightModifier> {
   const IntrinsicHeightModifier();
@@ -142,27 +141,6 @@ class IntrinsicHeightModifierAttribute
   List<Object?> get props => [];
 }
 
-/// A tween that interpolates between two [IntrinsicHeightModifier] instances.
-///
-/// This class can be used in animations to smoothly transition between
-/// different [IntrinsicHeightModifier] specifications.
-class IntrinsicHeightModifierSpecTween extends Tween<IntrinsicHeightModifier?> {
-  IntrinsicHeightModifierSpecTween({super.begin, super.end});
-
-  @override
-  IntrinsicHeightModifier lerp(double t) {
-    if (begin == null && end == null) {
-      return const IntrinsicHeightModifier();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
-  }
-}
-
 /// Represents the attributes of a [IntrinsicWidthModifier].
 ///
 /// This class encapsulates properties defining the layout and
@@ -211,37 +189,4 @@ class IntrinsicWidthModifierAttribute
   /// compare two [IntrinsicWidthModifierAttribute] instances for equality.
   @override
   List<Object?> get props => [];
-}
-
-/// A tween that interpolates between two [IntrinsicWidthModifier] instances.
-///
-/// This class can be used in animations to smoothly transition between
-/// different [IntrinsicWidthModifier] specifications.
-class IntrinsicWidthModifierSpecTween extends Tween<IntrinsicWidthModifier?> {
-  IntrinsicWidthModifierSpecTween({super.begin, super.end});
-
-  @override
-  IntrinsicWidthModifier lerp(double t) {
-    if (begin == null && end == null) {
-      return const IntrinsicWidthModifier();
-    }
-
-    if (begin == null) {
-      return end!;
-    }
-
-    return begin!.lerp(end!, t);
-  }
-}
-
-final class IntrinsicHeightModifierUtility<T extends SpecStyle<Object?>>
-    extends MixUtility<T, IntrinsicHeightModifierAttribute> {
-  const IntrinsicHeightModifierUtility(super.builder);
-  T call() => builder(const IntrinsicHeightModifierAttribute());
-}
-
-final class IntrinsicWidthModifierUtility<T extends SpecStyle<Object?>>
-    extends MixUtility<T, IntrinsicWidthModifierAttribute> {
-  const IntrinsicWidthModifierUtility(super.builder);
-  T call() => builder(const IntrinsicWidthModifierAttribute());
 }
