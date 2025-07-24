@@ -5,8 +5,9 @@ import 'package:mix/mix.dart';
 
 void main() {
   group('Selective Rebuild Optimization', () {
-    testWidgets('Pressable child should not rebuild on state changes',
-        (WidgetTester tester) async {
+    testWidgets('Pressable child should not rebuild on state changes', (
+      WidgetTester tester,
+    ) async {
       int childBuildCount = 0;
       int containerBuildCount = 0;
 
@@ -55,35 +56,54 @@ void main() {
       await tester.pump();
 
       // Child should NOT rebuild on hover
-      expect(childBuildCount, 1,
-          reason: 'Child should not rebuild on hover state change');
-      expect(containerBuildCount, 1,
-          reason: 'Container content should not rebuild on hover state change');
+      expect(
+        childBuildCount,
+        1,
+        reason: 'Child should not rebuild on hover state change',
+      );
+      expect(
+        containerBuildCount,
+        1,
+        reason: 'Container content should not rebuild on hover state change',
+      );
 
       // Press the button
       await tester.tapAt(tester.getCenter(find.byType(Pressable)));
       await tester.pump();
 
       // Child should NOT rebuild on press
-      expect(childBuildCount, 1,
-          reason: 'Child should not rebuild on press state change');
-      expect(containerBuildCount, 1,
-          reason: 'Container content should not rebuild on press state change');
+      expect(
+        childBuildCount,
+        1,
+        reason: 'Child should not rebuild on press state change',
+      );
+      expect(
+        containerBuildCount,
+        1,
+        reason: 'Container content should not rebuild on press state change',
+      );
 
       // Move away to remove hover
       await gesture.moveTo(Offset.zero);
       await tester.pump();
 
       // Child should still NOT rebuild
-      expect(childBuildCount, 1,
-          reason: 'Child should not rebuild when hover state is removed');
-      expect(containerBuildCount, 1,
-          reason:
-              'Container content should not rebuild when hover state is removed');
+      expect(
+        childBuildCount,
+        1,
+        reason: 'Child should not rebuild when hover state is removed',
+      );
+      expect(
+        containerBuildCount,
+        1,
+        reason:
+            'Container content should not rebuild when hover state is removed',
+      );
     });
 
-    testWidgets('Interactable child should not rebuild on state changes',
-        (WidgetTester tester) async {
+    testWidgets('Interactable child should not rebuild on state changes', (
+      WidgetTester tester,
+    ) async {
       int childBuildCount = 0;
 
       await tester.pumpWidget(
@@ -121,9 +141,11 @@ void main() {
       await tester.pump();
 
       // Child should NOT rebuild on hover
-      expect(childBuildCount, 1,
-          reason:
-              'Interactable child should not rebuild on hover state change');
+      expect(
+        childBuildCount,
+        1,
+        reason: 'Interactable child should not rebuild on hover state change',
+      );
     });
   });
 }

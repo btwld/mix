@@ -9,7 +9,6 @@ import 'resolved_style_provider.dart';
 import 'spec.dart';
 import 'style.dart';
 import 'style_provider.dart';
-import 'variant.dart';
 import 'widget_state/widget_state_controller.dart';
 
 /// Builds widgets with Mix styling.
@@ -52,7 +51,6 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
   // Cache for optimization
   SpecStyle<S>? _cachedFinalStyle;
   ResolvedStyle<S>? _cachedResolvedStyle;
-  bool? _cachedNeedsInteractivity;
 
   @override
   void initState() {
@@ -87,6 +85,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
   }
 
   Widget _wrapWithAnimationIfNeeded(
+    BuildContext context,
     Widget child,
     AnimationConfig? animationConfig,
     SpecStyle<S> style,
@@ -105,22 +104,6 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
         style: style,
         builder: (context, resolved) => child,
       );
-    }
-
-    return child;
-  }
-
-  Widget _wrapWithInteractableIfNeeded(Widget child, bool needsInteractivity) {
-    if (needsInteractivity && MixWidgetStateModel.of(context) == null) {
-      return Interactable(controller: _controller, child: child);
-    }
-
-    return child;
-  }
-
-  Widget _wrapWithStyleProviderIfNeeded(Widget child, SpecStyle<S> style) {
-    if (widget.inherit) {
-      return StyleProvider<S>(style: style, child: child);
     }
 
     return child;
@@ -148,6 +131,33 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
     return resolved ?? ResolvedStyle<S>(spec: null);
   }
 
+  Widget _buildInnerTree(BuildContext context) {
+    // Get resolved style (cached when possible)
+    final resolved = _getResolvedStyle(context);
+    final finalStyle = _cachedFinalStyle!;
+
+    return ResolvedStyleProvider<S>(
+      resolvedStyle: resolved,
+      child: Builder(
+        builder: (context) {
+          // Build core widget with modifiers
+          Widget child = _buildCore(context, resolved);
+
+          // Apply wrappers (these are lightweight)
+          child = _wrapWithAnimationIfNeeded(
+            context,
+            child,
+            resolved.animation,
+            finalStyle,
+          );
+          child = StyleProvider<S>(style: finalStyle, child: child);
+
+          return child;
+        },
+      ),
+    );
+  }
+
   @override
   void didUpdateWidget(StyleBuilder<S> oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -162,7 +172,6 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
         orderChanged) {
       _cachedFinalStyle = null;
       _cachedResolvedStyle = null;
-      _cachedNeedsInteractivity = null;
     }
   }
 
@@ -177,35 +186,22 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
 
   @override
   Widget build(BuildContext context) {
-    // Get resolved style (cached when possible)
-    final resolved = _getResolvedStyle(context);
-    final finalStyle = _cachedFinalStyle!;
+    // First prepare style to check if we need interactivity
+    final preliminaryStyle = _prepareFinalStyle(context);
 
-    // Calculate interactivity need (cache it)
-    final needsInteractivity = _cachedNeedsInteractivity ??=
-        widget.controller != null ||
-        (finalStyle.$variants?.any((v) => v.variant is WidgetStateVariant) ??
-            false);
+    // Calculate interactivity need early
+    final needsInteractivity =
+        widget.controller != null || preliminaryStyle?.hasWidgetState == false;
 
-    return ResolvedStyleProvider<S>(
-      resolvedStyle: resolved,
-      child: Builder(
-        builder: (context) {
-          // Build core widget with modifiers
-          Widget child = _buildCore(context, resolved);
+    // Build the widget tree with proper ordering
+    Widget result =
+        needsInteractivity && MixWidgetStateModel.of(context) == null
+        ? Interactable(
+            controller: _controller,
+            child: Builder(builder: (context) => _buildInnerTree(context)),
+          )
+        : _buildInnerTree(context);
 
-          // Apply wrappers (these are lightweight)
-          child = _wrapWithAnimationIfNeeded(
-            child,
-            finalStyle.$animation,
-            finalStyle,
-          );
-          child = _wrapWithInteractableIfNeeded(child, needsInteractivity);
-          child = _wrapWithStyleProviderIfNeeded(child, finalStyle);
-
-          return child;
-        },
-      ),
-    );
+    return result;
   }
 }

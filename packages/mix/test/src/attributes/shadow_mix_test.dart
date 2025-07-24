@@ -14,9 +14,9 @@ void main() {
           offset: const Offset(5.0, 8.0),
         );
 
-        expectProp(shadowMix.blurRadius, 10.0);
-        expectProp(shadowMix.color, Colors.blue);
-        expectProp(shadowMix.offset, const Offset(5.0, 8.0));
+        expectProp(shadowMix.$blurRadius, 10.0);
+        expectProp(shadowMix.$color, Colors.blue);
+        expectProp(shadowMix.$offset, const Offset(5.0, 8.0));
       });
 
       test('value constructor extracts properties from Shadow', () {
@@ -28,9 +28,9 @@ void main() {
 
         final shadowMix = ShadowMix.value(shadow);
 
-        expectProp(shadowMix.blurRadius, 15.0);
-        expectProp(shadowMix.color, Colors.red);
-        expectProp(shadowMix.offset, const Offset(3.0, 6.0));
+        expectProp(shadowMix.$blurRadius, 15.0);
+        expectProp(shadowMix.$color, Colors.red);
+        expectProp(shadowMix.$offset, const Offset(3.0, 6.0));
       });
 
       test('maybeValue returns null for null input', () {
@@ -43,7 +43,7 @@ void main() {
         final result = ShadowMix.maybeValue(shadow);
 
         expect(result, isNotNull);
-        expectProp(result!.blurRadius, 5.0);
+        expectProp(result!.$blurRadius, 5.0);
       });
     });
 
@@ -95,9 +95,9 @@ void main() {
 
         final merged = first.merge(second);
 
-        expectProp(merged.blurRadius, 10.0);
-        expectProp(merged.color, Colors.red);
-        expectProp(merged.offset, const Offset(3.0, 3.0));
+        expectProp(merged.$blurRadius, 10.0);
+        expectProp(merged.$color, Colors.red);
+        expectProp(merged.$offset, const Offset(3.0, 3.0));
       });
     });
 
@@ -130,10 +130,10 @@ void main() {
           spreadRadius: 2.0,
         );
 
-        expectProp(boxShadowMix.blurRadius, 10.0);
-        expectProp(boxShadowMix.color, Colors.blue);
-        expectProp(boxShadowMix.offset, const Offset(5.0, 8.0));
-        expectProp(boxShadowMix.spreadRadius, 2.0);
+        expectProp(boxShadowMix.$blurRadius, 10.0);
+        expectProp(boxShadowMix.$color, Colors.blue);
+        expectProp(boxShadowMix.$offset, const Offset(5.0, 8.0));
+        expectProp(boxShadowMix.$spreadRadius, 2.0);
       });
 
       test('value constructor extracts properties from BoxShadow', () {
@@ -146,10 +146,10 @@ void main() {
 
         final boxShadowMix = BoxShadowMix.value(boxShadow);
 
-        expectProp(boxShadowMix.blurRadius, 15.0);
-        expectProp(boxShadowMix.color, Colors.red);
-        expectProp(boxShadowMix.offset, const Offset(3.0, 6.0));
-        expectProp(boxShadowMix.spreadRadius, 4.0);
+        expectProp(boxShadowMix.$blurRadius, 15.0);
+        expectProp(boxShadowMix.$color, Colors.red);
+        expectProp(boxShadowMix.$offset, const Offset(3.0, 6.0));
+        expectProp(boxShadowMix.$spreadRadius, 4.0);
       });
 
       test('maybeValue returns null for null input', () {
@@ -162,7 +162,7 @@ void main() {
         final result = BoxShadowMix.maybeValue(boxShadow);
 
         expect(result, isNotNull);
-        expectProp(result!.blurRadius, 5.0);
+        expectProp(result!.$blurRadius, 5.0);
       });
     });
 
@@ -222,10 +222,10 @@ void main() {
 
         final merged = first.merge(second);
 
-        expectProp(merged.blurRadius, 10.0);
-        expectProp(merged.color, Colors.red);
-        expectProp(merged.offset, const Offset(3.0, 3.0));
-        expectProp(merged.spreadRadius, 2.0);
+        expectProp(merged.$blurRadius, 10.0);
+        expectProp(merged.$color, Colors.red);
+        expectProp(merged.$offset, const Offset(3.0, 3.0));
+        expectProp(merged.$spreadRadius, 2.0);
       });
     });
 

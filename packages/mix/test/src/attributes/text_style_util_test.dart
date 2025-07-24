@@ -59,26 +59,17 @@ void main() {
       group('Property Utilities', () {
         test('color() creates text style with color', () {
           final attr = utility.color(Colors.green);
-          expect(
-            attr.value,
-            resolvesTo(TextStyle(color: Colors.green)),
-          );
+          expect(attr.value, resolvesTo(TextStyle(color: Colors.green)));
         });
 
         test('color.red() creates text style with red color', () {
           final attr = utility.color.red();
-          expect(
-            attr.value,
-            resolvesTo(TextStyle(color: Colors.red)),
-          );
+          expect(attr.value, resolvesTo(TextStyle(color: Colors.red)));
         });
 
         test('color.blue() creates text style with blue color', () {
           final attr = utility.color.blue();
-          expect(
-            attr.value,
-            resolvesTo(TextStyle(color: Colors.blue)),
-          );
+          expect(attr.value, resolvesTo(TextStyle(color: Colors.blue)));
         });
 
         test('fontWeight() creates text style with font weight', () {
@@ -424,7 +415,7 @@ void main() {
         test('foreground() creates text style with foreground paint', () {
           final paint = Paint()..color = Colors.red;
           final attr = utility.foreground(paint);
-          
+
           // Resolve and test specific properties as per testing guide
           final context = MockBuildContext();
           final resolved = attr.value.resolve(context);
@@ -434,7 +425,7 @@ void main() {
         test('background() creates text style with background paint', () {
           final paint = Paint()..color = Colors.blue;
           final attr = utility.background(paint);
-          
+
           // Resolve and test specific properties as per testing guide
           final context = MockBuildContext();
           final resolved = attr.value.resolve(context);

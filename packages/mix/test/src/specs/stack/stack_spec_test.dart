@@ -62,7 +62,10 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        const original = StackSpec(alignment: Alignment.center, fit: StackFit.loose);
+        const original = StackSpec(
+          alignment: Alignment.center,
+          fit: StackFit.loose,
+        );
         final updated = original.copyWith();
 
         expect(updated.alignment, Alignment.center);
@@ -72,12 +75,8 @@ void main() {
 
     group('lerp', () {
       test('interpolates between two StackSpecs correctly', () {
-        const spec1 = StackSpec(
-          alignment: Alignment.topLeft,
-        );
-        const spec2 = StackSpec(
-          alignment: Alignment.bottomRight,
-        );
+        const spec1 = StackSpec(alignment: Alignment.topLeft);
+        const spec2 = StackSpec(alignment: Alignment.bottomRight);
 
         final lerped = spec1.lerp(spec2, 0.5);
 
@@ -85,15 +84,24 @@ void main() {
       });
 
       test('returns original spec when other is null', () {
-        const spec = StackSpec(alignment: Alignment.center, fit: StackFit.expand);
+        const spec = StackSpec(
+          alignment: Alignment.center,
+          fit: StackFit.expand,
+        );
         final lerped = spec.lerp(null, 0.5);
 
         expect(lerped, spec);
       });
 
       test('handles edge cases (t=0, t=1)', () {
-        const spec1 = StackSpec(alignment: Alignment.topLeft, fit: StackFit.loose);
-        const spec2 = StackSpec(alignment: Alignment.bottomRight, fit: StackFit.expand);
+        const spec1 = StackSpec(
+          alignment: Alignment.topLeft,
+          fit: StackFit.loose,
+        );
+        const spec2 = StackSpec(
+          alignment: Alignment.bottomRight,
+          fit: StackFit.expand,
+        );
 
         final lerpedAt0 = spec1.lerp(spec2, 0.0);
         final lerpedAt1 = spec1.lerp(spec2, 1.0);
@@ -169,8 +177,14 @@ void main() {
       });
 
       test('specs with different properties are not equal', () {
-        const spec1 = StackSpec(alignment: Alignment.center, fit: StackFit.expand);
-        const spec2 = StackSpec(alignment: Alignment.topLeft, fit: StackFit.expand);
+        const spec1 = StackSpec(
+          alignment: Alignment.center,
+          fit: StackFit.expand,
+        );
+        const spec2 = StackSpec(
+          alignment: Alignment.topLeft,
+          fit: StackFit.expand,
+        );
 
         expect(spec1, isNot(spec2));
       });

@@ -35,7 +35,6 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     this.directives,
   });
 
-
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties.add(
       DiagnosticsProperty('overflow', overflow, defaultValue: null),

@@ -26,6 +26,10 @@ abstract class SpecStyle<S extends Spec<S>> extends Mixable<SpecStyle<S>>
        $animation = animation,
        $variants = variants;
 
+  bool get hasWidgetState {
+    return $variants?.any((m) => m.variant is WidgetStateVariant) ?? false;
+  }
+
   @protected
   List<ModifierAttribute>? mergeModifierLists(
     List<ModifierAttribute>? current,

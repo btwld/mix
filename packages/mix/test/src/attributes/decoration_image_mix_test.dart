@@ -22,14 +22,14 @@ void main() {
           isAntiAlias: false,
         );
 
-        expectProp(decorationImageMix.image, imageProvider);
-        expectProp(decorationImageMix.fit, BoxFit.cover);
-        expectProp(decorationImageMix.alignment, Alignment.center);
-        expectProp(decorationImageMix.centerSlice, centerSlice);
-        expectProp(decorationImageMix.repeat, ImageRepeat.repeat);
-        expectProp(decorationImageMix.filterQuality, FilterQuality.high);
-        expectProp(decorationImageMix.invertColors, true);
-        expectProp(decorationImageMix.isAntiAlias, false);
+        expectProp(decorationImageMix.$image, imageProvider);
+        expectProp(decorationImageMix.$fit, BoxFit.cover);
+        expectProp(decorationImageMix.$alignment, Alignment.center);
+        expectProp(decorationImageMix.$centerSlice, centerSlice);
+        expectProp(decorationImageMix.$repeat, ImageRepeat.repeat);
+        expectProp(decorationImageMix.$filterQuality, FilterQuality.high);
+        expectProp(decorationImageMix.$invertColors, true);
+        expectProp(decorationImageMix.$isAntiAlias, false);
       });
 
       test('value constructor extracts properties from DecorationImage', () {
@@ -44,11 +44,11 @@ void main() {
 
         final decorationImageMix = DecorationImageMix.value(decorationImage);
 
-        expectProp(decorationImageMix.image, imageProvider);
-        expectProp(decorationImageMix.fit, BoxFit.contain);
-        expectProp(decorationImageMix.alignment, Alignment.topLeft);
-        expectProp(decorationImageMix.repeat, ImageRepeat.noRepeat);
-        expectProp(decorationImageMix.filterQuality, FilterQuality.medium);
+        expectProp(decorationImageMix.$image, imageProvider);
+        expectProp(decorationImageMix.$fit, BoxFit.contain);
+        expectProp(decorationImageMix.$alignment, Alignment.topLeft);
+        expectProp(decorationImageMix.$repeat, ImageRepeat.noRepeat);
+        expectProp(decorationImageMix.$filterQuality, FilterQuality.medium);
       });
 
       test('maybeValue returns null for null input', () {
@@ -63,7 +63,7 @@ void main() {
         final result = DecorationImageMix.maybeValue(decorationImage);
 
         expect(result, isNotNull);
-        expectProp(result!.image, const AssetImage('assets/test.png'));
+        expectProp(result!.$image, const AssetImage('assets/test.png'));
       });
     });
 
@@ -142,11 +142,11 @@ void main() {
 
         final merged = first.merge(second);
 
-        expectProp(merged.image, imageProvider2); // overridden
-        expectProp(merged.fit, BoxFit.cover); // preserved
-        expectProp(merged.alignment, Alignment.center); // preserved
-        expectProp(merged.repeat, ImageRepeat.repeat); // new
-        expectProp(merged.filterQuality, FilterQuality.high); // new
+        expectProp(merged.$image, imageProvider2); // overridden
+        expectProp(merged.$fit, BoxFit.cover); // preserved
+        expectProp(merged.$alignment, Alignment.center); // preserved
+        expectProp(merged.$repeat, ImageRepeat.repeat); // new
+        expectProp(merged.$filterQuality, FilterQuality.high); // new
       });
     });
 

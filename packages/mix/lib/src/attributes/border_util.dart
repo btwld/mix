@@ -49,7 +49,7 @@ final class BorderUtility<T extends SpecStyle<Object?>>
 
   BorderUtility(super.builder) : super(convertToMix: BorderMix.value);
 
-  T none() => call(BorderMix.none);
+  T none() => call(BorderMix.all(BorderSideMix.none));
 
   T only({
     BorderSideMix? top,

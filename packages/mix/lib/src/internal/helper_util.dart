@@ -1,6 +1,5 @@
-typedef FunctionWithParams<ParamT, ReturnT> = ReturnT Function(
-  List<ParamT> params,
-);
+typedef FunctionWithParams<ParamT, ReturnT> =
+    ReturnT Function(List<ParamT> params);
 
 /// A utility class that wraps a function with parameters and allows calling it with optional arguments.
 ///
@@ -47,27 +46,29 @@ class SpreadFunctionParams<ParamT, ReturnT> {
     ParamT? p19,
     ParamT? p20,
   ]) {
-    return fn([
-      p1,
-      p2,
-      p3,
-      p4,
-      p5,
-      p6,
-      p7,
-      p8,
-      p9,
-      p10,
-      p11,
-      p12,
-      p13,
-      p14,
-      p15,
-      p16,
-      p17,
-      p18,
-      p19,
-      p20,
-    ].whereType<ParamT>().toList());
+    return fn(
+      [
+        p1,
+        p2,
+        p3,
+        p4,
+        p5,
+        p6,
+        p7,
+        p8,
+        p9,
+        p10,
+        p11,
+        p12,
+        p13,
+        p14,
+        p15,
+        p16,
+        p17,
+        p18,
+        p19,
+        p20,
+      ].whereType<ParamT>().toList(),
+    );
   }
 }

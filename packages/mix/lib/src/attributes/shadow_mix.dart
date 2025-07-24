@@ -8,11 +8,17 @@ import '../core/prop.dart';
 
 sealed class BaseShadowMix<T extends Shadow> extends Mix<T> {
   // Properties use MixableProperty for cleaner merging
-  final Prop<Color>? color;
-  final Prop<Offset>? offset;
-  final Prop<double>? blurRadius;
+  final Prop<Color>? $color;
+  final Prop<Offset>? $offset;
+  final Prop<double>? $blurRadius;
 
-  const BaseShadowMix({this.blurRadius, this.color, this.offset});
+  const BaseShadowMix({
+    Prop<double>? blurRadius,
+    Prop<Color>? color,
+    Prop<Offset>? offset,
+  }) : $blurRadius = blurRadius,
+       $color = color,
+       $offset = offset;
 }
 
 /// Represents a [Mix] Data transfer object of [Shadow]
@@ -27,7 +33,11 @@ class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
         offset: Prop.maybe(offset),
       );
 
-  const ShadowMix({super.blurRadius, super.color, super.offset});
+  const ShadowMix({
+    Prop<double>? blurRadius,
+    Prop<Color>? color,
+    Prop<Offset>? offset,
+  }) : super(blurRadius: blurRadius, color: color, offset: offset);
 
   /// Constructor that accepts a [Shadow] value and extracts its properties.
   ///
@@ -44,6 +54,18 @@ class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
         offset: shadow.offset,
       );
 
+  factory ShadowMix.color(Color value) {
+    return ShadowMix.only(color: value);
+  }
+
+  factory ShadowMix.offset(Offset value) {
+    return ShadowMix.only(offset: value);
+  }
+
+  factory ShadowMix.blurRadius(double value) {
+    return ShadowMix.only(blurRadius: value);
+  }
+
   /// Constructor that accepts a nullable [Shadow] value and extracts its properties.
   ///
   /// Returns null if the input is null, otherwise uses [ShadowMix.value].
@@ -54,6 +76,24 @@ class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
   /// ```
   static ShadowMix? maybeValue(Shadow? shadow) {
     return shadow != null ? ShadowMix.value(shadow) : null;
+  }
+
+  /// Creates a new [ShadowMix] with the provided color,
+  /// merging it with the current instance.
+  ShadowMix color(Color value) {
+    return merge(ShadowMix.only(color: value));
+  }
+
+  /// Creates a new [ShadowMix] with the provided offset,
+  /// merging it with the current instance.
+  ShadowMix offset(Offset value) {
+    return merge(ShadowMix.only(offset: value));
+  }
+
+  /// Creates a new [ShadowMix] with the provided blurRadius,
+  /// merging it with the current instance.
+  ShadowMix blurRadius(double value) {
+    return merge(ShadowMix.only(blurRadius: value));
   }
 
   /// Resolves to [Shadow] using the provided [MixContext].
@@ -67,10 +107,10 @@ class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
   @override
   Shadow resolve(BuildContext context) {
     return Shadow(
-      color: MixHelpers.resolve(context, color) ?? defaultValue.color,
-      offset: MixHelpers.resolve(context, offset) ?? defaultValue.offset,
+      color: MixHelpers.resolve(context, $color) ?? defaultValue.color,
+      offset: MixHelpers.resolve(context, $offset) ?? defaultValue.offset,
       blurRadius:
-          MixHelpers.resolve(context, blurRadius) ?? defaultValue.blurRadius,
+          MixHelpers.resolve(context, $blurRadius) ?? defaultValue.blurRadius,
     );
   }
 
@@ -87,14 +127,14 @@ class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
     if (other == null) return this;
 
     return ShadowMix(
-      blurRadius: MixHelpers.merge(blurRadius, other.blurRadius),
-      color: MixHelpers.merge(color, other.color),
-      offset: MixHelpers.merge(offset, other.offset),
+      blurRadius: MixHelpers.merge($blurRadius, other.$blurRadius),
+      color: MixHelpers.merge($color, other.$color),
+      offset: MixHelpers.merge($offset, other.$offset),
     );
   }
 
   @override
-  List<Object?> get props => [blurRadius, color, offset];
+  List<Object?> get props => [$blurRadius, $color, $offset];
 
   @override
   Shadow get defaultValue => const Shadow();
@@ -106,7 +146,7 @@ class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
 /// merge and combining behavior. It allows to be merged, and resolved to a `[BoxShadow]
 class BoxShadowMix extends BaseShadowMix<BoxShadow>
     with DefaultValue<BoxShadow> {
-  final Prop<double>? spreadRadius;
+  final Prop<double>? $spreadRadius;
 
   BoxShadowMix.only({
     Color? color,
@@ -121,11 +161,12 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
        );
 
   const BoxShadowMix({
-    super.color,
-    super.offset,
-    super.blurRadius,
-    this.spreadRadius,
-  });
+    Prop<Color>? color,
+    Prop<Offset>? offset,
+    Prop<double>? blurRadius,
+    Prop<double>? spreadRadius,
+  }) : $spreadRadius = spreadRadius,
+       super(color: color, offset: offset, blurRadius: blurRadius);
 
   /// Constructor that accepts a [BoxShadow] value and extracts its properties.
   ///
@@ -142,6 +183,22 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
         blurRadius: boxShadow.blurRadius,
         spreadRadius: boxShadow.spreadRadius,
       );
+
+  factory BoxShadowMix.color(Color value) {
+    return BoxShadowMix.only(color: value);
+  }
+
+  factory BoxShadowMix.offset(Offset value) {
+    return BoxShadowMix.only(offset: value);
+  }
+
+  factory BoxShadowMix.blurRadius(double value) {
+    return BoxShadowMix.only(blurRadius: value);
+  }
+
+  factory BoxShadowMix.spreadRadius(double value) {
+    return BoxShadowMix.only(spreadRadius: value);
+  }
 
   /// Constructor that accepts a nullable [BoxShadow] value and extracts its properties.
   ///
@@ -161,6 +218,30 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
         .toList();
   }
 
+  /// Creates a new [BoxShadowMix] with the provided color,
+  /// merging it with the current instance.
+  BoxShadowMix color(Color value) {
+    return merge(BoxShadowMix.only(color: value));
+  }
+
+  /// Creates a new [BoxShadowMix] with the provided offset,
+  /// merging it with the current instance.
+  BoxShadowMix offset(Offset value) {
+    return merge(BoxShadowMix.only(offset: value));
+  }
+
+  /// Creates a new [BoxShadowMix] with the provided blurRadius,
+  /// merging it with the current instance.
+  BoxShadowMix blurRadius(double value) {
+    return merge(BoxShadowMix.only(blurRadius: value));
+  }
+
+  /// Creates a new [BoxShadowMix] with the provided spreadRadius,
+  /// merging it with the current instance.
+  BoxShadowMix spreadRadius(double value) {
+    return merge(BoxShadowMix.only(spreadRadius: value));
+  }
+
   /// Resolves to [BoxShadow] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the
@@ -172,12 +253,12 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
   @override
   BoxShadow resolve(BuildContext context) {
     return BoxShadow(
-      color: MixHelpers.resolve(context, color) ?? defaultValue.color,
-      offset: MixHelpers.resolve(context, offset) ?? defaultValue.offset,
+      color: MixHelpers.resolve(context, $color) ?? defaultValue.color,
+      offset: MixHelpers.resolve(context, $offset) ?? defaultValue.offset,
       blurRadius:
-          MixHelpers.resolve(context, blurRadius) ?? defaultValue.blurRadius,
+          MixHelpers.resolve(context, $blurRadius) ?? defaultValue.blurRadius,
       spreadRadius:
-          MixHelpers.resolve(context, spreadRadius) ??
+          MixHelpers.resolve(context, $spreadRadius) ??
           defaultValue.spreadRadius,
     );
   }
@@ -195,15 +276,15 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
     if (other == null) return this;
 
     return BoxShadowMix(
-      color: MixHelpers.merge(color, other.color),
-      offset: MixHelpers.merge(offset, other.offset),
-      blurRadius: MixHelpers.merge(blurRadius, other.blurRadius),
-      spreadRadius: MixHelpers.merge(spreadRadius, other.spreadRadius),
+      color: MixHelpers.merge($color, other.$color),
+      offset: MixHelpers.merge($offset, other.$offset),
+      blurRadius: MixHelpers.merge($blurRadius, other.$blurRadius),
+      spreadRadius: MixHelpers.merge($spreadRadius, other.$spreadRadius),
     );
   }
 
   @override
-  List<Object?> get props => [color, offset, blurRadius, spreadRadius];
+  List<Object?> get props => [$color, $offset, $blurRadius, $spreadRadius];
 
   @override
   BoxShadow get defaultValue => const BoxShadow();

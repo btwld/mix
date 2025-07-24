@@ -7,10 +7,7 @@ void main() {
   group('MultiVariant', () {
     group('Factory constructors', () {
       test('MultiVariant.and creates AND variant with correct properties', () {
-        const variants = [
-          NamedVariant('primary'),
-          NamedVariant('large'),
-        ];
+        const variants = [NamedVariant('primary'), NamedVariant('large')];
         final multiVariant = MultiVariant.and(variants);
 
         expect(multiVariant.operatorType, MultiVariantOperator.and);
@@ -20,16 +17,16 @@ void main() {
       });
 
       test('MultiVariant.or creates OR variant with correct properties', () {
-        const variants = [
-          NamedVariant('primary'),
-          NamedVariant('secondary'),
-        ];
+        const variants = [NamedVariant('primary'), NamedVariant('secondary')];
         final multiVariant = MultiVariant.or(variants);
 
         expect(multiVariant.operatorType, MultiVariantOperator.or);
         expect(multiVariant.variants.length, 2);
         expect(multiVariant.variants, contains(const NamedVariant('primary')));
-        expect(multiVariant.variants, contains(const NamedVariant('secondary')));
+        expect(
+          multiVariant.variants,
+          contains(const NamedVariant('secondary')),
+        );
       });
 
       test('MultiVariant.not creates NOT variant with single variant', () {
@@ -41,18 +38,24 @@ void main() {
         expect(multiVariant.variants.first, const NamedVariant('disabled'));
       });
 
-      test('MultiVariant generic constructor creates variant with specified type', () {
-        const variants = [
-          NamedVariant('primary'),
-          NamedVariant('large'),
-        ];
-        final multiVariant = MultiVariant(variants, type: MultiVariantOperator.or);
+      test(
+        'MultiVariant generic constructor creates variant with specified type',
+        () {
+          const variants = [NamedVariant('primary'), NamedVariant('large')];
+          final multiVariant = MultiVariant(
+            variants,
+            type: MultiVariantOperator.or,
+          );
 
-        expect(multiVariant.operatorType, MultiVariantOperator.or);
-        expect(multiVariant.variants.length, 2);
-        expect(multiVariant.variants, contains(const NamedVariant('primary')));
-        expect(multiVariant.variants, contains(const NamedVariant('large')));
-      });
+          expect(multiVariant.operatorType, MultiVariantOperator.or);
+          expect(multiVariant.variants.length, 2);
+          expect(
+            multiVariant.variants,
+            contains(const NamedVariant('primary')),
+          );
+          expect(multiVariant.variants, contains(const NamedVariant('large')));
+        },
+      );
     });
 
     group('Variant flattening and optimization', () {
@@ -62,7 +65,7 @@ void main() {
           NamedVariant('primary'),
           NamedVariant('large'),
         ]);
-        
+
         final inner2 = MultiVariant.and(const [
           NamedVariant('outlined'),
           NamedVariant('rounded'),
@@ -86,9 +89,12 @@ void main() {
           NamedVariant('primary'),
           NamedVariant('large'),
         ]);
-        
+
         // Create OR variant containing the AND variant
-        final orVariant = MultiVariant.or([andVariant, const NamedVariant('secondary')]);
+        final orVariant = MultiVariant.or([
+          andVariant,
+          const NamedVariant('secondary'),
+        ]);
 
         // Should preserve the nested structure since types differ
         expect(orVariant.operatorType, MultiVariantOperator.or);
@@ -123,7 +129,7 @@ void main() {
       group('AND logic', () {
         test('returns true when all ContextVariants match', () {
           final context = MockBuildContext();
-          
+
           // Create mock ContextVariants with controlled conditions
           final trueVariant1 = ContextVariant('test1', (context) => true);
           final trueVariant2 = ContextVariant('test2', (context) => true);
@@ -135,7 +141,7 @@ void main() {
 
         test('returns false when any ContextVariant does not match', () {
           final context = MockBuildContext();
-          
+
           // Create mock ContextVariants - one true, one false
           final trueVariant = ContextVariant('test1', (context) => true);
           final falseVariant = ContextVariant('test2', (context) => false);
@@ -160,7 +166,7 @@ void main() {
       group('OR logic', () {
         test('returns true when any ContextVariant matches', () {
           final context = MockBuildContext();
-          
+
           // Create mock ContextVariants - one false, one true
           final falseVariant = ContextVariant('test1', (context) => false);
           final trueVariant = ContextVariant('test2', (context) => true);
@@ -172,7 +178,7 @@ void main() {
 
         test('returns false when no ContextVariants match', () {
           final context = MockBuildContext();
-          
+
           // Create mock ContextVariants that both return false
           final falseVariant1 = ContextVariant('test1', (context) => false);
           final falseVariant2 = ContextVariant('test2', (context) => false);
@@ -197,7 +203,7 @@ void main() {
       group('NOT logic', () {
         test('returns true when ContextVariant does not match', () {
           final context = MockBuildContext();
-          
+
           // Create mock ContextVariant that returns false
           final falseVariant = ContextVariant('test', (context) => false);
           final variant = MultiVariant.not(falseVariant);
@@ -207,7 +213,7 @@ void main() {
 
         test('returns false when ContextVariant matches', () {
           final context = MockBuildContext();
-          
+
           // Create mock ContextVariant that returns true
           final trueVariant = ContextVariant('test', (context) => true);
           final variant = MultiVariant.not(trueVariant);
@@ -215,13 +221,16 @@ void main() {
           expect(variant.when(context), isFalse);
         });
 
-        test('returns true when contains NamedVariant (never matches context)', () {
-          final context = MockBuildContext();
+        test(
+          'returns true when contains NamedVariant (never matches context)',
+          () {
+            final context = MockBuildContext();
 
-          final variant = MultiVariant.not(const NamedVariant('primary'));
+            final variant = MultiVariant.not(const NamedVariant('primary'));
 
-          expect(variant.when(context), isTrue);
-        });
+            expect(variant.when(context), isTrue);
+          },
+        );
       });
     });
 
@@ -229,7 +238,7 @@ void main() {
       test('& operator creates AND MultiVariant', () {
         const variant1 = NamedVariant('primary');
         const variant2 = NamedVariant('large');
-        
+
         final combined = variant1 & variant2;
 
         expect(combined, isA<MultiVariant>());
@@ -241,7 +250,7 @@ void main() {
       test('| operator creates OR MultiVariant', () {
         const variant1 = NamedVariant('primary');
         const variant2 = NamedVariant('secondary');
-        
+
         final combined = variant1 | variant2;
 
         expect(combined, isA<MultiVariant>());
@@ -254,7 +263,7 @@ void main() {
         const variant1 = NamedVariant('primary');
         const variant2 = NamedVariant('large');
         const variant3 = NamedVariant('secondary');
-        
+
         // (primary AND large) OR secondary
         final combined = (variant1 & variant2) | variant3;
 
@@ -262,9 +271,11 @@ void main() {
         expect(combined.operatorType, MultiVariantOperator.or);
         expect(combined.variants.length, 2);
         expect(combined.variants, contains(variant3));
-        
+
         // First variant should be the AND combination
-        final andVariant = combined.variants.firstWhere((v) => v is MultiVariant) as MultiVariant;
+        final andVariant =
+            combined.variants.firstWhere((v) => v is MultiVariant)
+                as MultiVariant;
         expect(andVariant.operatorType, MultiVariantOperator.and);
         expect(andVariant.variants, contains(variant1));
         expect(andVariant.variants, contains(variant2));
@@ -299,7 +310,7 @@ void main() {
 
         // NOT (false AND false) = NOT false = true
         final notComplex = MultiVariant.not(
-          MultiVariant.and([falseVariant1, falseVariant2])
+          MultiVariant.and([falseVariant1, falseVariant2]),
         );
 
         expect(notComplex.when(context), isTrue);
@@ -391,7 +402,7 @@ void main() {
 
         // Key generation appears to focus on variant content, not operator type
         expect(andVariant.key, equals(orVariant.key));
-        
+
         // But they should still be different objects with different operator types
         expect(andVariant, isNot(equals(orVariant)));
         expect(andVariant.operatorType, isNot(equals(orVariant.operatorType)));
@@ -430,13 +441,13 @@ void main() {
 
       test('when with empty variants returns appropriate default', () {
         final context = MockBuildContext();
-        
+
         final andVariant = MultiVariant.and(const []);
         final orVariant = MultiVariant.or(const []);
 
         // AND with no conditions should be true (all conditions met vacuously)
         expect(andVariant.when(context), isTrue);
-        
+
         // OR with no conditions should be false (no conditions to satisfy)
         expect(orVariant.when(context), isFalse);
       });
@@ -459,7 +470,7 @@ void main() {
         NamedVariant('primary'),
         NamedVariant('large'),
       ]);
-      
+
       final notVariant = not(complexVariant);
 
       expect(notVariant.operatorType, MultiVariantOperator.not);

@@ -9,12 +9,10 @@ void main() {
   group('Pressable', () {
     testWidgets('renders child widget', (tester) async {
       const childKey = Key('child');
-      
+
       await tester.pumpWidget(
         MaterialApp(
-          home: Pressable(
-            child: Container(key: childKey),
-          ),
+          home: Pressable(child: Container(key: childKey)),
         ),
       );
 
@@ -23,7 +21,7 @@ void main() {
 
     testWidgets('calls onPress when tapped', (tester) async {
       bool wasPressed = false;
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Pressable(
@@ -41,7 +39,7 @@ void main() {
 
     testWidgets('calls onLongPress when long pressed', (tester) async {
       bool wasLongPressed = false;
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Pressable(
@@ -60,7 +58,7 @@ void main() {
     testWidgets('does not trigger callbacks when disabled', (tester) async {
       bool wasPressed = false;
       bool wasLongPressed = false;
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Pressable(
@@ -97,8 +95,10 @@ void main() {
       await gesture.moveTo(tester.getCenter(find.byType(Pressable)));
       await tester.pumpAndSettle();
 
-      expect(RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1),
-          SystemMouseCursors.click);
+      expect(
+        RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1),
+        SystemMouseCursors.click,
+      );
     });
 
     testWidgets('shows forbidden cursor when disabled', (tester) async {
@@ -118,8 +118,10 @@ void main() {
       await gesture.moveTo(tester.getCenter(find.byType(Pressable)));
       await tester.pumpAndSettle();
 
-      expect(RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1),
-          SystemMouseCursors.forbidden);
+      expect(
+        RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1),
+        SystemMouseCursors.forbidden,
+      );
     });
 
     testWidgets('uses custom mouse cursor when provided', (tester) async {
@@ -139,14 +141,16 @@ void main() {
       await gesture.moveTo(tester.getCenter(find.byType(Pressable)));
       await tester.pumpAndSettle();
 
-      expect(RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1),
-          SystemMouseCursors.help);
+      expect(
+        RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1),
+        SystemMouseCursors.help,
+      );
     });
 
     testWidgets('calls onFocusChange when focus changes', (tester) async {
       bool? hasFocus;
       final focusNode = FocusNode();
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Pressable(
@@ -168,10 +172,12 @@ void main() {
       focusNode.dispose();
     });
 
-    testWidgets('handles keyboard activation with ActivateIntent', (tester) async {
+    testWidgets('handles keyboard activation with ActivateIntent', (
+      tester,
+    ) async {
       bool wasPressed = false;
       final focusNode = FocusNode();
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Pressable(
@@ -203,7 +209,7 @@ void main() {
 
     testWidgets('respects hitTestBehavior', (tester) async {
       bool wasPressed = false;
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Stack(
@@ -267,7 +273,9 @@ void main() {
       expect(find.bySemanticsLabel('Test Button'), findsNothing);
     });
 
-    testWidgets('properly disposes controller when not provided', (tester) async {
+    testWidgets('properly disposes controller when not provided', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Pressable(
@@ -278,11 +286,7 @@ void main() {
       );
 
       // Replace with empty container to trigger disposal
-      await tester.pumpWidget(
-        MaterialApp(
-          home: SizedBox(),
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(home: SizedBox()));
 
       // No exceptions should be thrown
       expect(tester.takeException(), isNull);
@@ -290,7 +294,7 @@ void main() {
 
     testWidgets('uses provided controller', (tester) async {
       final controller = WidgetStatesController();
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Pressable(
@@ -311,12 +315,10 @@ void main() {
   group('PressableBox', () {
     testWidgets('renders Box with child', (tester) async {
       const childKey = Key('child');
-      
+
       await tester.pumpWidget(
         MaterialApp(
-          home: PressableBox(
-            child: Text('Test', key: childKey),
-          ),
+          home: PressableBox(child: Text('Test', key: childKey)),
         ),
       );
 
@@ -326,16 +328,13 @@ void main() {
 
     testWidgets('applies style to Box', (tester) async {
       final style = BoxSpecAttribute()
-        .width(200.0)
-        .height(100.0)
-        .color(Colors.red);
-      
+          .width(200.0)
+          .height(100.0)
+          .color(Colors.red);
+
       await tester.pumpWidget(
         MaterialApp(
-          home: PressableBox(
-            style: style,
-            child: const Text('Test'),
-          ),
+          home: PressableBox(style: style, child: const Text('Test')),
         ),
       );
 
@@ -349,7 +348,7 @@ void main() {
       // ignore: unused_local_variable
       bool? focusChanged;
       final focusNode = FocusNode();
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: PressableBox(
@@ -391,12 +390,10 @@ void main() {
   group('Interactable', () {
     testWidgets('renders child widget', (tester) async {
       const childKey = Key('child');
-      
+
       await tester.pumpWidget(
         MaterialApp(
-          home: Interactable(
-            child: Container(key: childKey),
-          ),
+          home: Interactable(child: Container(key: childKey)),
         ),
       );
 
@@ -405,7 +402,7 @@ void main() {
 
     testWidgets('manages widget states', (tester) async {
       final controller = WidgetStatesController();
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Interactable(
@@ -433,21 +430,17 @@ void main() {
       controller.dispose();
     });
 
-    testWidgets('properly disposes controller when not provided', (tester) async {
+    testWidgets('properly disposes controller when not provided', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Interactable(
-            child: const SizedBox(width: 100, height: 100),
-          ),
+          home: Interactable(child: const SizedBox(width: 100, height: 100)),
         ),
       );
 
       // Replace with empty container to trigger disposal
-      await tester.pumpWidget(
-        MaterialApp(
-          home: SizedBox(),
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(home: SizedBox()));
 
       // No exceptions should be thrown
       expect(tester.takeException(), isNull);

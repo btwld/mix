@@ -200,16 +200,35 @@ void main() {
         final result = BorderMix.maybeValue(border);
 
         expect(result, isNotNull);
-        expect(result!.top, isA<MixProp<BorderSide>>());
+
+        // Test that all props contain the expected BorderSideMix values
+        // Border.all(width: 1.0) creates BorderSide with all default values
+        final expectedBorderSide = BorderSideMix.only(
+          color: Colors.black,
+          width: 1.0,
+          style: BorderStyle.solid,
+          strokeAlign: -1.0,
+        );
+        expectProp(result!.$top, expectedBorderSide);
+        expectProp(result.$bottom, expectedBorderSide);
+        expectProp(result.$left, expectedBorderSide);
+        expectProp(result.$right, expectedBorderSide);
+
+        // Test that it resolves to the expected Border
+        expect(result, resolvesTo(Border.all(width: 1.0)));
       });
 
       test('none static instance has correct properties', () {
-        final none = BorderMix.none;
+        final none = BorderMix.all(BorderSideMix.none);
 
-        expect(none.top, isA<MixProp<BorderSide>>());
-        expect(none.bottom, isA<MixProp<BorderSide>>());
-        expect(none.left, isA<MixProp<BorderSide>>());
-        expect(none.right, isA<MixProp<BorderSide>>());
+        // Test that all sides are set to BorderSideMix.none
+        expectProp(none.$top, BorderSideMix.none);
+        expectProp(none.$bottom, BorderSideMix.none);
+        expectProp(none.$left, BorderSideMix.none);
+        expectProp(none.$right, BorderSideMix.none);
+
+        // Test that it resolves to an empty Border
+        expect(none, resolvesTo(const Border()));
       });
     });
 
@@ -254,10 +273,10 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.top, isA<MixProp<BorderSide>>());
-        expect(merged.bottom, isNull);
-        expect(merged.left, isA<MixProp<BorderSide>>());
-        expect(merged.right, isA<MixProp<BorderSide>>());
+        expect(merged.$top, isA<MixProp<BorderSide>>());
+        expect(merged.$bottom, isNull);
+        expect(merged.$left, isA<MixProp<BorderSide>>());
+        expect(merged.$right, isA<MixProp<BorderSide>>());
       });
     });
 

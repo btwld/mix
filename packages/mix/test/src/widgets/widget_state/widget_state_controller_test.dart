@@ -20,9 +20,11 @@ class TrackRebuildWidget<T> extends StatefulWidget {
   TrackRebuildWidgetState createState() => TrackRebuildWidgetState();
 
   static TrackRebuildWidgetState findState(WidgetTester tester, String text) {
-    return tester.state(find.byWidgetPredicate(
-      (widget) => widget is TrackRebuildWidget && widget.text == text,
-    ));
+    return tester.state(
+      find.byWidgetPredicate(
+        (widget) => widget is TrackRebuildWidget && widget.text == text,
+      ),
+    );
   }
 }
 
@@ -154,8 +156,9 @@ void main() {
           ),
         ),
       );
-      final foundModel =
-          MixWidgetStateModel.of(tester.element(find.byType(Container)));
+      final foundModel = MixWidgetStateModel.of(
+        tester.element(find.byType(Container)),
+      );
       expect(foundModel, isNotNull);
       expect(foundModel!.disabled, isTrue);
       expect(foundModel.hovered, isTrue);
@@ -180,17 +183,11 @@ void main() {
             child: Builder(
               builder: (context) {
                 expect(
-                  MixWidgetStateModel.hasStateOf(
-                    context,
-                    WidgetState.disabled,
-                  ),
+                  MixWidgetStateModel.hasStateOf(context, WidgetState.disabled),
                   isTrue,
                 );
                 expect(
-                  MixWidgetStateModel.hasStateOf(
-                    context,
-                    WidgetState.hovered,
-                  ),
+                  MixWidgetStateModel.hasStateOf(context, WidgetState.hovered),
                   isFalse,
                 );
                 return Container();
@@ -249,12 +246,13 @@ void main() {
       );
 
       expect(
-          newModel
-              .updateShouldNotifyDependent(oldModel, {WidgetState.disabled}),
-          isTrue);
+        newModel.updateShouldNotifyDependent(oldModel, {WidgetState.disabled}),
+        isTrue,
+      );
       expect(
-          newModel.updateShouldNotifyDependent(oldModel, {WidgetState.hovered}),
-          isFalse);
+        newModel.updateShouldNotifyDependent(oldModel, {WidgetState.hovered}),
+        isFalse,
+      );
     });
   });
 
@@ -285,7 +283,8 @@ void main() {
                     return Column(
                       children: [
                         Text(
-                            'Disabled: ${controller.has(WidgetState.disabled)}'),
+                          'Disabled: ${controller.has(WidgetState.disabled)}',
+                        ),
                         Text('Hovered: ${controller.has(WidgetState.hovered)}'),
                         Text('Pressed: ${controller.has(WidgetState.pressed)}'),
                       ],
@@ -323,18 +322,20 @@ void main() {
     expect(find.text('Focused: true'), findsNothing);
   });
 
-  testWidgets('PressableState updates inherit model',
-      (WidgetTester tester) async {
+  testWidgets('PressableState updates inherit model', (
+    WidgetTester tester,
+  ) async {
     final controller = WidgetStatesController();
 
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
           body: MixWidgetStateBuilder(
-              controller: controller,
-              builder: (context) {
-                return const PressableStateTestWidget();
-              }),
+            controller: controller,
+            builder: (context) {
+              return const PressableStateTestWidget();
+            },
+          ),
         ),
       ),
     );
@@ -355,18 +356,36 @@ void main() {
     var hovered = getHovered();
     var pressed = getPressed();
 
-    expect(disabled.buildCount, 1,
-        reason: 'Disabled state should not have rebuilt');
-    expect(disabled.state, false,
-        reason: 'Disabled state should initially be false');
-    expect(hovered.buildCount, 1,
-        reason: 'Hovered state should not have rebuilt');
-    expect(hovered.state, false,
-        reason: 'Hovered state should initially be false');
-    expect(pressed.buildCount, 1,
-        reason: 'Pressed state should not have rebuilt');
-    expect(pressed.state, false,
-        reason: 'Pressed state should initially be false');
+    expect(
+      disabled.buildCount,
+      1,
+      reason: 'Disabled state should not have rebuilt',
+    );
+    expect(
+      disabled.state,
+      false,
+      reason: 'Disabled state should initially be false',
+    );
+    expect(
+      hovered.buildCount,
+      1,
+      reason: 'Hovered state should not have rebuilt',
+    );
+    expect(
+      hovered.state,
+      false,
+      reason: 'Hovered state should initially be false',
+    );
+    expect(
+      pressed.buildCount,
+      1,
+      reason: 'Pressed state should not have rebuilt',
+    );
+    expect(
+      pressed.state,
+      false,
+      reason: 'Pressed state should initially be false',
+    );
 
     controller.hovered = true;
     await tester.pump();
@@ -375,18 +394,36 @@ void main() {
     hovered = getHovered();
     pressed = getPressed();
 
-    expect(disabled.buildCount, 1,
-        reason: 'Disabled state should not rebuild when hovered changes');
-    expect(disabled.state, false,
-        reason: 'Disabled state should remain false when hovered changes');
-    expect(hovered.buildCount, 2,
-        reason: 'Hovered state should rebuild when set to true');
-    expect(hovered.state, true,
-        reason: 'Hovered state should be true after being set');
-    expect(pressed.buildCount, 1,
-        reason: 'Pressed state should not rebuild when hovered changes');
-    expect(pressed.state, false,
-        reason: 'Pressed state should remain false when hovered changes');
+    expect(
+      disabled.buildCount,
+      1,
+      reason: 'Disabled state should not rebuild when hovered changes',
+    );
+    expect(
+      disabled.state,
+      false,
+      reason: 'Disabled state should remain false when hovered changes',
+    );
+    expect(
+      hovered.buildCount,
+      2,
+      reason: 'Hovered state should rebuild when set to true',
+    );
+    expect(
+      hovered.state,
+      true,
+      reason: 'Hovered state should be true after being set',
+    );
+    expect(
+      pressed.buildCount,
+      1,
+      reason: 'Pressed state should not rebuild when hovered changes',
+    );
+    expect(
+      pressed.state,
+      false,
+      reason: 'Pressed state should remain false when hovered changes',
+    );
 
     controller.pressed = true;
     await tester.pump();
@@ -395,18 +432,36 @@ void main() {
     hovered = getHovered();
     pressed = getPressed();
 
-    expect(disabled.buildCount, 1,
-        reason: 'Disabled state should not rebuild when pressed changes');
-    expect(disabled.state, false,
-        reason: 'Disabled state should remain false when pressed changes');
-    expect(hovered.buildCount, 2,
-        reason: 'Hovered state should not rebuild when pressed changes');
-    expect(hovered.state, true,
-        reason: 'Hovered state should remain true when pressed changes');
-    expect(pressed.buildCount, 2,
-        reason: 'Pressed state should rebuild when set to true');
-    expect(pressed.state, true,
-        reason: 'Pressed state should be true after being set');
+    expect(
+      disabled.buildCount,
+      1,
+      reason: 'Disabled state should not rebuild when pressed changes',
+    );
+    expect(
+      disabled.state,
+      false,
+      reason: 'Disabled state should remain false when pressed changes',
+    );
+    expect(
+      hovered.buildCount,
+      2,
+      reason: 'Hovered state should not rebuild when pressed changes',
+    );
+    expect(
+      hovered.state,
+      true,
+      reason: 'Hovered state should remain true when pressed changes',
+    );
+    expect(
+      pressed.buildCount,
+      2,
+      reason: 'Pressed state should rebuild when set to true',
+    );
+    expect(
+      pressed.state,
+      true,
+      reason: 'Pressed state should be true after being set',
+    );
 
     await tester.pump();
 
@@ -414,18 +469,36 @@ void main() {
     hovered = getHovered();
     pressed = getPressed();
 
-    expect(disabled.buildCount, 1,
-        reason: 'Disabled state should not rebuild when long pressed changes');
-    expect(disabled.state, false,
-        reason: 'Disabled state should remain false when long pressed changes');
-    expect(hovered.buildCount, 2,
-        reason: 'Hovered state should not rebuild when long pressed changes');
-    expect(hovered.state, true,
-        reason: 'Hovered state should remain true when long pressed changes');
-    expect(pressed.buildCount, 2,
-        reason: 'Pressed state should not rebuild when long pressed changes');
-    expect(pressed.state, true,
-        reason: 'Pressed state should remain true when long pressed changes');
+    expect(
+      disabled.buildCount,
+      1,
+      reason: 'Disabled state should not rebuild when long pressed changes',
+    );
+    expect(
+      disabled.state,
+      false,
+      reason: 'Disabled state should remain false when long pressed changes',
+    );
+    expect(
+      hovered.buildCount,
+      2,
+      reason: 'Hovered state should not rebuild when long pressed changes',
+    );
+    expect(
+      hovered.state,
+      true,
+      reason: 'Hovered state should remain true when long pressed changes',
+    );
+    expect(
+      pressed.buildCount,
+      2,
+      reason: 'Pressed state should not rebuild when long pressed changes',
+    );
+    expect(
+      pressed.state,
+      true,
+      reason: 'Pressed state should remain true when long pressed changes',
+    );
 
     controller.disabled = true;
 
@@ -435,25 +508,41 @@ void main() {
     hovered = getHovered();
     pressed = getPressed();
 
-    expect(disabled.buildCount, 2,
-        reason: 'Disabled state should rebuild when set to true');
-    expect(disabled.state, true,
-        reason: 'Disabled state should be true after being set');
-    expect(hovered.buildCount, 2,
-        reason: 'Hovered state should not rebuild when disabled changes');
-    expect(hovered.state, true,
-        reason: 'Hovered state should remain true when disabled changes');
-    expect(pressed.buildCount, 2,
-        reason: 'Pressed state should not rebuild when disabled changes');
-    expect(pressed.state, true,
-        reason: 'Pressed state should remain true when disabled changes');
+    expect(
+      disabled.buildCount,
+      2,
+      reason: 'Disabled state should rebuild when set to true',
+    );
+    expect(
+      disabled.state,
+      true,
+      reason: 'Disabled state should be true after being set',
+    );
+    expect(
+      hovered.buildCount,
+      2,
+      reason: 'Hovered state should not rebuild when disabled changes',
+    );
+    expect(
+      hovered.state,
+      true,
+      reason: 'Hovered state should remain true when disabled changes',
+    );
+    expect(
+      pressed.buildCount,
+      2,
+      reason: 'Pressed state should not rebuild when disabled changes',
+    );
+    expect(
+      pressed.state,
+      true,
+      reason: 'Pressed state should remain true when disabled changes',
+    );
   });
 }
 
 class PressableStateTestWidget extends StatefulWidget {
-  const PressableStateTestWidget({
-    super.key,
-  });
+  const PressableStateTestWidget({super.key});
 
   @override
   State createState() => _PressableStateTestWidgetState();

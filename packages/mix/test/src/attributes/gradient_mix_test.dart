@@ -16,15 +16,15 @@ void main() {
           stops: const [0.0, 1.0],
         );
 
-        expectProp(linearGradientMix.begin, Alignment.topLeft);
-        expectProp(linearGradientMix.end, Alignment.bottomRight);
-        expectProp(linearGradientMix.tileMode, TileMode.repeated);
-        expect(linearGradientMix.colors, hasLength(2));
-        expectProp(linearGradientMix.colors![0], Colors.red);
-        expectProp(linearGradientMix.colors![1], Colors.blue);
-        expect(linearGradientMix.stops, hasLength(2));
-        expectProp(linearGradientMix.stops![0], 0.0);
-        expectProp(linearGradientMix.stops![1], 1.0);
+        expectProp(linearGradientMix.$begin, Alignment.topLeft);
+        expectProp(linearGradientMix.$end, Alignment.bottomRight);
+        expectProp(linearGradientMix.$tileMode, TileMode.repeated);
+        expect(linearGradientMix.$colors, hasLength(2));
+        expectProp(linearGradientMix.$colors![0], Colors.red);
+        expectProp(linearGradientMix.$colors![1], Colors.blue);
+        expect(linearGradientMix.$stops, hasLength(2));
+        expectProp(linearGradientMix.$stops![0], 0.0);
+        expectProp(linearGradientMix.$stops![1], 1.0);
       });
 
       test('value constructor extracts properties from LinearGradient', () {
@@ -38,15 +38,15 @@ void main() {
 
         final linearGradientMix = LinearGradientMix.value(linearGradient);
 
-        expectProp(linearGradientMix.begin, Alignment.topCenter);
-        expectProp(linearGradientMix.end, Alignment.bottomCenter);
-        expectProp(linearGradientMix.tileMode, TileMode.clamp);
-        expect(linearGradientMix.colors, hasLength(2));
-        expectProp(linearGradientMix.colors![0], Colors.green);
-        expectProp(linearGradientMix.colors![1], Colors.yellow);
-        expect(linearGradientMix.stops, hasLength(2));
-        expectProp(linearGradientMix.stops![0], 0.2);
-        expectProp(linearGradientMix.stops![1], 0.8);
+        expectProp(linearGradientMix.$begin, Alignment.topCenter);
+        expectProp(linearGradientMix.$end, Alignment.bottomCenter);
+        expectProp(linearGradientMix.$tileMode, TileMode.clamp);
+        expect(linearGradientMix.$colors, hasLength(2));
+        expectProp(linearGradientMix.$colors![0], Colors.green);
+        expectProp(linearGradientMix.$colors![1], Colors.yellow);
+        expect(linearGradientMix.$stops, hasLength(2));
+        expectProp(linearGradientMix.$stops![0], 0.2);
+        expectProp(linearGradientMix.$stops![1], 0.8);
       });
 
       test('maybeValue returns null for null input', () {
@@ -61,7 +61,7 @@ void main() {
         final result = LinearGradientMix.maybeValue(linearGradient);
 
         expect(result, isNotNull);
-        expect(result!.colors, hasLength(2));
+        expect(result!.$colors, hasLength(2));
       });
     });
 
@@ -124,12 +124,12 @@ void main() {
 
         final merged = first.merge(second);
 
-        expectProp(merged.begin, Alignment.topLeft);
-        expectProp(merged.end, Alignment.bottomRight);
-        expectProp(merged.tileMode, TileMode.repeated);
-        expect(merged.colors, hasLength(2));
-        expectProp(merged.colors![0], Colors.green);
-        expectProp(merged.colors![1], Colors.yellow);
+        expectProp(merged.$begin, Alignment.topLeft);
+        expectProp(merged.$end, Alignment.bottomRight);
+        expectProp(merged.$tileMode, TileMode.repeated);
+        expect(merged.$colors, hasLength(2));
+        expectProp(merged.$colors![0], Colors.green);
+        expectProp(merged.$colors![1], Colors.yellow);
       });
     });
 
@@ -172,11 +172,11 @@ void main() {
           stops: const [0.0, 1.0],
         );
 
-        expectProp(radialGradientMix.center, Alignment.center);
-        expectProp(radialGradientMix.radius, 0.5);
-        expectProp(radialGradientMix.tileMode, TileMode.mirror);
-        expect(radialGradientMix.colors, hasLength(2));
-        expect(radialGradientMix.stops, hasLength(2));
+        expectProp(radialGradientMix.$center, Alignment.center);
+        expectProp(radialGradientMix.$radius, 0.5);
+        expectProp(radialGradientMix.$tileMode, TileMode.mirror);
+        expect(radialGradientMix.$colors, hasLength(2));
+        expect(radialGradientMix.$stops, hasLength(2));
       });
 
       test('value constructor extracts properties from RadialGradient', () {
@@ -189,10 +189,10 @@ void main() {
 
         final radialGradientMix = RadialGradientMix.value(radialGradient);
 
-        expectProp(radialGradientMix.center, Alignment.topLeft);
-        expectProp(radialGradientMix.radius, 0.8);
-        expectProp(radialGradientMix.tileMode, TileMode.repeated);
-        expect(radialGradientMix.colors, hasLength(2));
+        expectProp(radialGradientMix.$center, Alignment.topLeft);
+        expectProp(radialGradientMix.$radius, 0.8);
+        expectProp(radialGradientMix.$tileMode, TileMode.repeated);
+        expect(radialGradientMix.$colors, hasLength(2));
       });
 
       test('maybeValue returns null for null input', () {
@@ -207,7 +207,7 @@ void main() {
         final result = RadialGradientMix.maybeValue(radialGradient);
 
         expect(result, isNotNull);
-        expect(result!.colors, hasLength(2));
+        expect(result!.$colors, hasLength(2));
       });
     });
 
@@ -243,11 +243,11 @@ void main() {
 
         final merged = first.merge(second);
 
-        expectProp(merged.center, Alignment.center);
-        expectProp(merged.radius, 0.8);
-        expect(merged.colors, hasLength(2));
-        expectProp(merged.colors![0], Colors.green);
-        expectProp(merged.colors![1], Colors.yellow);
+        expectProp(merged.$center, Alignment.center);
+        expectProp(merged.$radius, 0.8);
+        expect(merged.$colors, hasLength(2));
+        expectProp(merged.$colors![0], Colors.green);
+        expectProp(merged.$colors![1], Colors.yellow);
       });
     });
   });
@@ -263,11 +263,11 @@ void main() {
           colors: const [Colors.red, Colors.blue],
         );
 
-        expectProp(sweepGradientMix.center, Alignment.center);
-        expectProp(sweepGradientMix.startAngle, 0.0);
-        expectProp(sweepGradientMix.endAngle, 3.14159);
-        expectProp(sweepGradientMix.tileMode, TileMode.mirror);
-        expect(sweepGradientMix.colors, hasLength(2));
+        expectProp(sweepGradientMix.$center, Alignment.center);
+        expectProp(sweepGradientMix.$startAngle, 0.0);
+        expectProp(sweepGradientMix.$endAngle, 3.14159);
+        expectProp(sweepGradientMix.$tileMode, TileMode.mirror);
+        expect(sweepGradientMix.$colors, hasLength(2));
       });
 
       test('value constructor extracts properties from SweepGradient', () {
@@ -280,10 +280,10 @@ void main() {
 
         final sweepGradientMix = SweepGradientMix.value(sweepGradient);
 
-        expectProp(sweepGradientMix.center, Alignment.topRight);
-        expectProp(sweepGradientMix.startAngle, 1.0);
-        expectProp(sweepGradientMix.endAngle, 2.0);
-        expect(sweepGradientMix.colors, hasLength(2));
+        expectProp(sweepGradientMix.$center, Alignment.topRight);
+        expectProp(sweepGradientMix.$startAngle, 1.0);
+        expectProp(sweepGradientMix.$endAngle, 2.0);
+        expect(sweepGradientMix.$colors, hasLength(2));
       });
 
       test('maybeValue returns null for null input', () {
@@ -296,7 +296,7 @@ void main() {
         final result = SweepGradientMix.maybeValue(sweepGradient);
 
         expect(result, isNotNull);
-        expect(result!.colors, hasLength(2));
+        expect(result!.$colors, hasLength(2));
       });
     });
 
@@ -335,12 +335,12 @@ void main() {
 
         final merged = first.merge(second);
 
-        expectProp(merged.center, Alignment.center);
-        expectProp(merged.startAngle, 0.0);
-        expectProp(merged.endAngle, 3.14159);
-        expect(merged.colors, hasLength(2));
-        expectProp(merged.colors![0], Colors.green);
-        expectProp(merged.colors![1], Colors.yellow);
+        expectProp(merged.$center, Alignment.center);
+        expectProp(merged.$startAngle, 0.0);
+        expectProp(merged.$endAngle, 3.14159);
+        expect(merged.$colors, hasLength(2));
+        expectProp(merged.$colors![0], Colors.green);
+        expectProp(merged.$colors![1], Colors.yellow);
       });
     });
   });

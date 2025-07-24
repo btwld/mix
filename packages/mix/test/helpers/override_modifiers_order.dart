@@ -83,10 +83,7 @@ Future<void> verifyDescendants(
   );
 
   expect(
-    find.descendant(
-      of: find.byType(Align),
-      matching: find.byType(AspectRatio),
-    ),
+    find.descendant(of: find.byType(Align), matching: find.byType(AspectRatio)),
     findsOneWidget,
   );
 

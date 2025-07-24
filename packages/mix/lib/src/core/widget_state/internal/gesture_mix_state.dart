@@ -203,4 +203,3 @@ class _GestureMixStateWidgetState extends State<GestureMixStateWidget> {
     );
   }
 }
-

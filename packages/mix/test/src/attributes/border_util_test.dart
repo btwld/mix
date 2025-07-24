@@ -98,7 +98,7 @@ void main() {
       expect(result, isA<UtilityTestAttribute>());
 
       final mix = result.value.value;
-      expect(mix, BorderMix.none);
+      expect(mix, BorderMix.all(BorderSideMix.none));
     });
 
     test('only() creates BorderMix with specified sides', () {

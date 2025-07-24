@@ -6,9 +6,9 @@ import 'package:mix/mix.dart';
 // Properties use MixProp for cleaner merging
 class TextHeightBehaviorMix extends Mix<TextHeightBehavior> {
   // Properties use MixProp for cleaner merging
-  final Prop<bool>? applyHeightToFirstAscent;
-  final Prop<bool>? applyHeightToLastDescent;
-  final Prop<TextLeadingDistribution>? leadingDistribution;
+  final Prop<bool>? $applyHeightToFirstAscent;
+  final Prop<bool>? $applyHeightToLastDescent;
+  final Prop<TextLeadingDistribution>? $leadingDistribution;
 
   TextHeightBehaviorMix.only({
     bool? applyHeightToFirstAscent,
@@ -36,10 +36,12 @@ class TextHeightBehaviorMix extends Mix<TextHeightBehavior> {
       );
 
   const TextHeightBehaviorMix({
-    this.applyHeightToFirstAscent,
-    this.applyHeightToLastDescent,
-    this.leadingDistribution,
-  });
+    Prop<bool>? applyHeightToFirstAscent,
+    Prop<bool>? applyHeightToLastDescent,
+    Prop<TextLeadingDistribution>? leadingDistribution,
+  }) : $applyHeightToFirstAscent = applyHeightToFirstAscent,
+       $applyHeightToLastDescent = applyHeightToLastDescent,
+       $leadingDistribution = leadingDistribution;
 
   /// Constructor that accepts a nullable [TextHeightBehavior] value and extracts its properties.
   ///
@@ -49,8 +51,40 @@ class TextHeightBehaviorMix extends Mix<TextHeightBehavior> {
   /// const TextHeightBehavior? behavior = TextHeightBehavior(applyHeightToFirstAscent: false);
   /// final dto = TextHeightBehaviorMix.maybeValue(behavior); // Returns TextHeightBehaviorMix or null
   /// ```
+  factory TextHeightBehaviorMix.applyHeightToFirstAscent(bool value) {
+    return TextHeightBehaviorMix.only(applyHeightToFirstAscent: value);
+  }
+
+  factory TextHeightBehaviorMix.applyHeightToLastDescent(bool value) {
+    return TextHeightBehaviorMix.only(applyHeightToLastDescent: value);
+  }
+
+  factory TextHeightBehaviorMix.leadingDistribution(
+    TextLeadingDistribution value,
+  ) {
+    return TextHeightBehaviorMix.only(leadingDistribution: value);
+  }
+
   static TextHeightBehaviorMix? maybeValue(TextHeightBehavior? behavior) {
     return behavior != null ? TextHeightBehaviorMix.value(behavior) : null;
+  }
+
+  /// Creates a new [TextHeightBehaviorMix] with the provided applyHeightToFirstAscent,
+  /// merging it with the current instance.
+  TextHeightBehaviorMix applyHeightToFirstAscent(bool value) {
+    return merge(TextHeightBehaviorMix.only(applyHeightToFirstAscent: value));
+  }
+
+  /// Creates a new [TextHeightBehaviorMix] with the provided applyHeightToLastDescent,
+  /// merging it with the current instance.
+  TextHeightBehaviorMix applyHeightToLastDescent(bool value) {
+    return merge(TextHeightBehaviorMix.only(applyHeightToLastDescent: value));
+  }
+
+  /// Creates a new [TextHeightBehaviorMix] with the provided leadingDistribution,
+  /// merging it with the current instance.
+  TextHeightBehaviorMix leadingDistribution(TextLeadingDistribution value) {
+    return merge(TextHeightBehaviorMix.only(leadingDistribution: value));
   }
 
   /// Resolves to [TextHeightBehavior] using the provided [MixContext].
@@ -65,11 +99,11 @@ class TextHeightBehaviorMix extends Mix<TextHeightBehavior> {
   TextHeightBehavior resolve(BuildContext context) {
     return TextHeightBehavior(
       applyHeightToFirstAscent:
-          MixHelpers.resolve(context, applyHeightToFirstAscent) ?? true,
+          MixHelpers.resolve(context, $applyHeightToFirstAscent) ?? true,
       applyHeightToLastDescent:
-          MixHelpers.resolve(context, applyHeightToLastDescent) ?? true,
+          MixHelpers.resolve(context, $applyHeightToLastDescent) ?? true,
       leadingDistribution:
-          MixHelpers.resolve(context, leadingDistribution) ??
+          MixHelpers.resolve(context, $leadingDistribution) ??
           TextLeadingDistribution.proportional,
     );
   }
@@ -88,24 +122,24 @@ class TextHeightBehaviorMix extends Mix<TextHeightBehavior> {
 
     return TextHeightBehaviorMix(
       applyHeightToFirstAscent: MixHelpers.merge(
-        applyHeightToFirstAscent,
-        other.applyHeightToFirstAscent,
+        $applyHeightToFirstAscent,
+        other.$applyHeightToFirstAscent,
       ),
       applyHeightToLastDescent: MixHelpers.merge(
-        applyHeightToLastDescent,
-        other.applyHeightToLastDescent,
+        $applyHeightToLastDescent,
+        other.$applyHeightToLastDescent,
       ),
       leadingDistribution: MixHelpers.merge(
-        leadingDistribution,
-        other.leadingDistribution,
+        $leadingDistribution,
+        other.$leadingDistribution,
       ),
     );
   }
 
   @override
   List<Object?> get props => [
-        applyHeightToFirstAscent,
-        applyHeightToLastDescent,
-        leadingDistribution,
-      ];
+    $applyHeightToFirstAscent,
+    $applyHeightToLastDescent,
+    $leadingDistribution,
+  ];
 }

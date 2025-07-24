@@ -121,8 +121,6 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
   final MixProp<BorderSide>? $left;
   final MixProp<BorderSide>? $right;
 
-  static BorderMix none = BorderMix.all(BorderSideMix.none);
-
   BorderMix.only({
     BorderSideMix? top,
     BorderSideMix? bottom,

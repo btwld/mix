@@ -62,7 +62,10 @@ void main() {
 
         expect(updated.direction, Axis.horizontal);
         expect(updated.mainAxisAlignment, MainAxisAlignment.end);
-        expect(updated.crossAxisAlignment, CrossAxisAlignment.center); // unchanged
+        expect(
+          updated.crossAxisAlignment,
+          CrossAxisAlignment.center,
+        ); // unchanged
         expect(updated.gap, 8.0); // unchanged
         expect(updated.mainAxisSize, MainAxisSize.min);
       });
@@ -74,7 +77,9 @@ void main() {
           clipBehavior: Clip.hardEdge,
         );
 
-        final updated = original.copyWith(verticalDirection: VerticalDirection.down);
+        final updated = original.copyWith(
+          verticalDirection: VerticalDirection.down,
+        );
 
         expect(updated.verticalDirection, VerticalDirection.down);
         expect(updated.textDirection, TextDirection.rtl); // unchanged

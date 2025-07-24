@@ -27,7 +27,6 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
     this.colorBlendMode,
   });
 
-
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties.add(DiagnosticsProperty('width', width, defaultValue: null));
     properties.add(DiagnosticsProperty('height', height, defaultValue: null));

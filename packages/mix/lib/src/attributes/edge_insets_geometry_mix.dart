@@ -10,11 +10,9 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
   final Prop<double>? $top;
   final Prop<double>? $bottom;
 
-  const EdgeInsetsGeometryMix({
-    Prop<double>? top,
-    Prop<double>? bottom,
-  }) : $top = top,
-       $bottom = bottom;
+  const EdgeInsetsGeometryMix({Prop<double>? top, Prop<double>? bottom})
+    : $top = top,
+      $bottom = bottom;
 
   factory EdgeInsetsGeometryMix.value(T value) {
     return switch (value) {
@@ -95,7 +93,8 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
 
   static EdgeInsetsMix top(double value) => EdgeInsetsMix.only(top: value);
 
-  static EdgeInsetsMix bottom(double value) => EdgeInsetsMix.only(bottom: value);
+  static EdgeInsetsMix bottom(double value) =>
+      EdgeInsetsMix.only(bottom: value);
 
   static EdgeInsetsMix left(double value) => EdgeInsetsMix.only(left: value);
 

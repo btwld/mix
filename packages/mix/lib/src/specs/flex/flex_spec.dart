@@ -51,7 +51,6 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
     this.gap,
   });
 
-
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties.add(EnumProperty('direction', direction));
     properties.add(EnumProperty('mainAxisAlignment', mainAxisAlignment));

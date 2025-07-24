@@ -6,14 +6,14 @@ import 'package:mix/mix.dart';
 final class DecorationImageMix extends Mix<DecorationImage>
     with Diagnosticable {
   // Properties use MixProp for cleaner merging
-  final Prop<ImageProvider>? image;
-  final Prop<BoxFit>? fit;
-  final Prop<AlignmentGeometry>? alignment;
-  final Prop<Rect>? centerSlice;
-  final Prop<ImageRepeat>? repeat;
-  final Prop<FilterQuality>? filterQuality;
-  final Prop<bool>? invertColors;
-  final Prop<bool>? isAntiAlias;
+  final Prop<ImageProvider>? $image;
+  final Prop<BoxFit>? $fit;
+  final Prop<AlignmentGeometry>? $alignment;
+  final Prop<Rect>? $centerSlice;
+  final Prop<ImageRepeat>? $repeat;
+  final Prop<FilterQuality>? $filterQuality;
+  final Prop<bool>? $invertColors;
+  final Prop<bool>? $isAntiAlias;
 
   DecorationImageMix.only({
     ImageProvider? image,
@@ -36,15 +36,22 @@ final class DecorationImageMix extends Mix<DecorationImage>
        );
 
   const DecorationImageMix({
-    this.image,
-    this.fit,
-    this.alignment,
-    this.centerSlice,
-    this.repeat,
-    this.filterQuality,
-    this.invertColors,
-    this.isAntiAlias,
-  });
+    Prop<ImageProvider>? image,
+    Prop<BoxFit>? fit,
+    Prop<AlignmentGeometry>? alignment,
+    Prop<Rect>? centerSlice,
+    Prop<ImageRepeat>? repeat,
+    Prop<FilterQuality>? filterQuality,
+    Prop<bool>? invertColors,
+    Prop<bool>? isAntiAlias,
+  }) : $image = image,
+       $fit = fit,
+       $alignment = alignment,
+       $centerSlice = centerSlice,
+       $repeat = repeat,
+       $filterQuality = filterQuality,
+       $invertColors = invertColors,
+       $isAntiAlias = isAntiAlias;
 
   /// Constructor that accepts a [DecorationImage] value and extracts its properties.
   ///
@@ -74,10 +81,90 @@ final class DecorationImageMix extends Mix<DecorationImage>
   /// const DecorationImage? decorationImage = DecorationImage(image: AssetImage('assets/image.png'));
   /// final dto = DecorationImageMix.maybeValue(decorationImage); // Returns DecorationImageMix or null
   /// ```
+  factory DecorationImageMix.image(ImageProvider value) {
+    return DecorationImageMix.only(image: value);
+  }
+
+  factory DecorationImageMix.fit(BoxFit value) {
+    return DecorationImageMix.only(fit: value);
+  }
+
+  factory DecorationImageMix.alignment(AlignmentGeometry value) {
+    return DecorationImageMix.only(alignment: value);
+  }
+
+  factory DecorationImageMix.centerSlice(Rect value) {
+    return DecorationImageMix.only(centerSlice: value);
+  }
+
+  factory DecorationImageMix.repeat(ImageRepeat value) {
+    return DecorationImageMix.only(repeat: value);
+  }
+
+  factory DecorationImageMix.filterQuality(FilterQuality value) {
+    return DecorationImageMix.only(filterQuality: value);
+  }
+
+  factory DecorationImageMix.invertColors(bool value) {
+    return DecorationImageMix.only(invertColors: value);
+  }
+
+  factory DecorationImageMix.isAntiAlias(bool value) {
+    return DecorationImageMix.only(isAntiAlias: value);
+  }
+
   static DecorationImageMix? maybeValue(DecorationImage? decorationImage) {
     return decorationImage != null
         ? DecorationImageMix.value(decorationImage)
         : null;
+  }
+
+  /// Creates a new [DecorationImageMix] with the provided image,
+  /// merging it with the current instance.
+  DecorationImageMix image(ImageProvider value) {
+    return merge(DecorationImageMix.only(image: value));
+  }
+
+  /// Creates a new [DecorationImageMix] with the provided fit,
+  /// merging it with the current instance.
+  DecorationImageMix fit(BoxFit value) {
+    return merge(DecorationImageMix.only(fit: value));
+  }
+
+  /// Creates a new [DecorationImageMix] with the provided alignment,
+  /// merging it with the current instance.
+  DecorationImageMix alignment(AlignmentGeometry value) {
+    return merge(DecorationImageMix.only(alignment: value));
+  }
+
+  /// Creates a new [DecorationImageMix] with the provided centerSlice,
+  /// merging it with the current instance.
+  DecorationImageMix centerSlice(Rect value) {
+    return merge(DecorationImageMix.only(centerSlice: value));
+  }
+
+  /// Creates a new [DecorationImageMix] with the provided repeat,
+  /// merging it with the current instance.
+  DecorationImageMix repeat(ImageRepeat value) {
+    return merge(DecorationImageMix.only(repeat: value));
+  }
+
+  /// Creates a new [DecorationImageMix] with the provided filterQuality,
+  /// merging it with the current instance.
+  DecorationImageMix filterQuality(FilterQuality value) {
+    return merge(DecorationImageMix.only(filterQuality: value));
+  }
+
+  /// Creates a new [DecorationImageMix] with the provided invertColors,
+  /// merging it with the current instance.
+  DecorationImageMix invertColors(bool value) {
+    return merge(DecorationImageMix.only(invertColors: value));
+  }
+
+  /// Creates a new [DecorationImageMix] with the provided isAntiAlias,
+  /// merging it with the current instance.
+  DecorationImageMix isAntiAlias(bool value) {
+    return merge(DecorationImageMix.only(isAntiAlias: value));
   }
 
   /// Resolves to [DecorationImage] using the provided [MixContext].
@@ -90,21 +177,21 @@ final class DecorationImageMix extends Mix<DecorationImage>
   /// ```
   @override
   DecorationImage resolve(BuildContext context) {
-    final resolvedImage = MixHelpers.resolve(context, image);
+    final resolvedImage = MixHelpers.resolve(context, $image);
     if (resolvedImage == null) {
       throw StateError('DecorationImage requires an image provider');
     }
 
     return DecorationImage(
       image: resolvedImage,
-      fit: MixHelpers.resolve(context, fit),
-      alignment: MixHelpers.resolve(context, alignment) ?? Alignment.center,
-      centerSlice: MixHelpers.resolve(context, centerSlice),
-      repeat: MixHelpers.resolve(context, repeat) ?? ImageRepeat.noRepeat,
+      fit: MixHelpers.resolve(context, $fit),
+      alignment: MixHelpers.resolve(context, $alignment) ?? Alignment.center,
+      centerSlice: MixHelpers.resolve(context, $centerSlice),
+      repeat: MixHelpers.resolve(context, $repeat) ?? ImageRepeat.noRepeat,
       filterQuality:
-          MixHelpers.resolve(context, filterQuality) ?? FilterQuality.low,
-      invertColors: MixHelpers.resolve(context, invertColors) ?? false,
-      isAntiAlias: MixHelpers.resolve(context, isAntiAlias) ?? false,
+          MixHelpers.resolve(context, $filterQuality) ?? FilterQuality.low,
+      invertColors: MixHelpers.resolve(context, $invertColors) ?? false,
+      isAntiAlias: MixHelpers.resolve(context, $isAntiAlias) ?? false,
     );
   }
 
@@ -121,26 +208,26 @@ final class DecorationImageMix extends Mix<DecorationImage>
     if (other == null) return this;
 
     return DecorationImageMix(
-      image: MixHelpers.merge(image, other.image),
-      fit: MixHelpers.merge(fit, other.fit),
-      alignment: MixHelpers.merge(alignment, other.alignment),
-      centerSlice: MixHelpers.merge(centerSlice, other.centerSlice),
-      repeat: MixHelpers.merge(repeat, other.repeat),
-      filterQuality: MixHelpers.merge(filterQuality, other.filterQuality),
-      invertColors: MixHelpers.merge(invertColors, other.invertColors),
-      isAntiAlias: MixHelpers.merge(isAntiAlias, other.isAntiAlias),
+      image: MixHelpers.merge($image, other.$image),
+      fit: MixHelpers.merge($fit, other.$fit),
+      alignment: MixHelpers.merge($alignment, other.$alignment),
+      centerSlice: MixHelpers.merge($centerSlice, other.$centerSlice),
+      repeat: MixHelpers.merge($repeat, other.$repeat),
+      filterQuality: MixHelpers.merge($filterQuality, other.$filterQuality),
+      invertColors: MixHelpers.merge($invertColors, other.$invertColors),
+      isAntiAlias: MixHelpers.merge($isAntiAlias, other.$isAntiAlias),
     );
   }
 
   @override
   List<Object?> get props => [
-        image,
-        fit,
-        alignment,
-        centerSlice,
-        repeat,
-        filterQuality,
-        invertColors,
-        isAntiAlias,
-      ];
+    $image,
+    $fit,
+    $alignment,
+    $centerSlice,
+    $repeat,
+    $filterQuality,
+    $invertColors,
+    $isAntiAlias,
+  ];
 }

@@ -90,7 +90,7 @@ void main() {
             BorderSideMix.only(color: Colors.red, width: 2.0),
           ),
         );
-        
+
         // For complex objects with nested properties, test specific properties after resolution
         // as per testing guide
         final context = MockBuildContext();
@@ -239,7 +239,7 @@ void main() {
           color: Colors.green,
           shape: CircleBorderMix.only(),
         );
-        
+
         const expectedDecoration = ShapeDecoration(
           color: Colors.green,
           shape: CircleBorder(),

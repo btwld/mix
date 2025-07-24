@@ -14,10 +14,10 @@ void main() {
           leadingDistribution: TextLeadingDistribution.even,
         );
 
-        expectProp(textHeightBehaviorMix.applyHeightToFirstAscent, false);
-        expectProp(textHeightBehaviorMix.applyHeightToLastDescent, true);
+        expectProp(textHeightBehaviorMix.$applyHeightToFirstAscent, false);
+        expectProp(textHeightBehaviorMix.$applyHeightToLastDescent, true);
         expectProp(
-          textHeightBehaviorMix.leadingDistribution,
+          textHeightBehaviorMix.$leadingDistribution,
           TextLeadingDistribution.even,
         );
       });
@@ -33,10 +33,10 @@ void main() {
           textHeightBehavior,
         );
 
-        expectProp(textHeightBehaviorMix.applyHeightToFirstAscent, true);
-        expectProp(textHeightBehaviorMix.applyHeightToLastDescent, false);
+        expectProp(textHeightBehaviorMix.$applyHeightToFirstAscent, true);
+        expectProp(textHeightBehaviorMix.$applyHeightToLastDescent, false);
         expectProp(
-          textHeightBehaviorMix.leadingDistribution,
+          textHeightBehaviorMix.$leadingDistribution,
           TextLeadingDistribution.proportional,
         );
       });
@@ -53,7 +53,7 @@ void main() {
         final result = TextHeightBehaviorMix.maybeValue(textHeightBehavior);
 
         expect(result, isNotNull);
-        expectProp(result!.applyHeightToFirstAscent, false);
+        expectProp(result!.$applyHeightToFirstAscent, false);
       });
     });
 
@@ -112,9 +112,9 @@ void main() {
 
         final merged = first.merge(second);
 
-        expectProp(merged.applyHeightToFirstAscent, false);
-        expectProp(merged.applyHeightToLastDescent, false);
-        expectProp(merged.leadingDistribution, TextLeadingDistribution.even);
+        expectProp(merged.$applyHeightToFirstAscent, false);
+        expectProp(merged.$applyHeightToLastDescent, false);
+        expectProp(merged.$leadingDistribution, TextLeadingDistribution.even);
       });
     });
 

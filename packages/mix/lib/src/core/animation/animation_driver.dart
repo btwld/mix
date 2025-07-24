@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import '../../specs/box/box_spec.dart';
 import '../spec.dart';
 import '../style.dart';
 
@@ -91,7 +92,13 @@ class _ImplicitAnimationWidgetState<S extends Spec<S>>
 
   @override
   void forEachTween(TweenVisitor<Object?> visitor) {
-    final resolved = widget.style.resolve(context);
+    final resolved = widget.style.build(context);
+    print('forEachTween: resolved.spec = ${resolved.spec}');
+    if (resolved.spec is BoxSpec) {
+      final boxSpec = resolved.spec as BoxSpec;
+      print('  BoxSpec constraints: ${boxSpec.constraints}');
+    }
+    print('forEachTween: _resolved = $_resolved');
     _resolved =
         visitor(
               _resolved,
@@ -100,6 +107,7 @@ class _ImplicitAnimationWidgetState<S extends Spec<S>>
                   ResolvedStyleTween<S>(begin: value as ResolvedStyle<S>),
             )
             as ResolvedStyleTween<S>?;
+    print('forEachTween: new _resolved = $_resolved');
   }
 
   @override

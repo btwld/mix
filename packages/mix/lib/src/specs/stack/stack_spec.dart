@@ -16,7 +16,6 @@ final class StackSpec extends Spec<StackSpec> with Diagnosticable {
     this.clipBehavior,
   });
 
-
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties.add(
       DiagnosticsProperty('alignment', alignment, defaultValue: null),

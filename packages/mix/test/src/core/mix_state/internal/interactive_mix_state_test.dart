@@ -11,7 +11,9 @@ void main() {
       controller.disabled = true;
       await tester.pumpWidget(
         MixWidgetStateBuilder(
-            controller: controller, builder: (_) => Container()),
+          controller: controller,
+          builder: (_) => Container(),
+        ),
       );
 
       var context = tester.element(find.byType(Container));
@@ -27,8 +29,10 @@ void main() {
 
       context = tester.element(find.byType(Container));
 
-      expect(MixWidgetStateModel.hasStateOf(context, WidgetState.disabled),
-          isFalse);
+      expect(
+        MixWidgetStateModel.hasStateOf(context, WidgetState.disabled),
+        isFalse,
+      );
     });
 
     testWidgets('should update focused state', (WidgetTester tester) async {
@@ -36,7 +40,9 @@ void main() {
       controller.focused = true;
       await tester.pumpWidget(
         MixWidgetStateBuilder(
-            controller: controller, builder: (_) => Container()),
+          controller: controller,
+          builder: (_) => Container(),
+        ),
       );
 
       var context = tester.element(find.byType(Container));
@@ -51,8 +57,10 @@ void main() {
 
       context = tester.element(find.byType(Container));
 
-      expect(MixWidgetStateModel.hasStateOf(context, WidgetState.focused),
-          isFalse);
+      expect(
+        MixWidgetStateModel.hasStateOf(context, WidgetState.focused),
+        isFalse,
+      );
     });
 
     testWidgets('should update hovered state', (WidgetTester tester) async {
@@ -62,12 +70,16 @@ void main() {
 
       await tester.pumpWidget(
         MixWidgetStateBuilder(
-            controller: controller, builder: (_) => Container()),
+          controller: controller,
+          builder: (_) => Container(),
+        ),
       );
 
       var context = tester.element(find.byType(Container));
       expect(
-          MixWidgetStateModel.hasStateOf(context, WidgetState.hovered), isTrue);
+        MixWidgetStateModel.hasStateOf(context, WidgetState.hovered),
+        isTrue,
+      );
 
       controller.hovered = false;
 
@@ -75,8 +87,10 @@ void main() {
 
       context = tester.element(find.byType(Container));
 
-      expect(MixWidgetStateModel.hasStateOf(context, WidgetState.hovered),
-          isFalse);
+      expect(
+        MixWidgetStateModel.hasStateOf(context, WidgetState.hovered),
+        isFalse,
+      );
     });
   });
 }

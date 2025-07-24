@@ -5,7 +5,6 @@ import 'package:flutter/widgets.dart';
 import 'deep_collection_equality.dart';
 import 'internal_extensions.dart';
 
-
 // Instance of DeepCollectionEquality used for deep comparison of collections.
 const _equality = DeepCollectionEquality();
 
@@ -47,7 +46,6 @@ bool _equals(List? list1, List? list2) {
 bool _isEquatable(dynamic object) {
   return object is EqualityMixin;
 }
-
 
 /// Returns a string representation of [props] with property names and values.
 /// Only includes properties that are not null.

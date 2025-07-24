@@ -68,7 +68,14 @@ void main() {
         );
 
         // Verify that the animation wrapper is created
-        expect(find.byType(ImplicitlyAnimatedWidget), findsOneWidget);
+        expect(
+          find.byWidgetPredicate(
+            (widget) => widget.runtimeType.toString().contains(
+              '_ImplicitAnimationWidget',
+            ),
+          ),
+          findsOneWidget,
+        );
       });
 
       testWidgets('No animation driver when animation config is null', (
@@ -94,7 +101,14 @@ void main() {
         );
 
         // Verify that no animation wrapper is created
-        expect(find.byType(ImplicitlyAnimatedWidget), findsNothing);
+        expect(
+          find.byWidgetPredicate(
+            (widget) => widget.runtimeType.toString().contains(
+              '_ImplicitAnimationWidget',
+            ),
+          ),
+          findsNothing,
+        );
       });
 
       testWidgets('Animation interpolates between style changes', (

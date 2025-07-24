@@ -26,8 +26,10 @@ void main() {
       );
       expect(deepEquality.equals({}, {}), isTrue);
       expect(
-        deepEquality
-            .equals({'key': 'value'}, {'key': 'value', 'extra': 'value'}),
+        deepEquality.equals(
+          {'key': 'value'},
+          {'key': 'value', 'extra': 'value'},
+        ),
         isFalse,
       );
     });
@@ -272,28 +274,28 @@ void main() {
     test('ignores runtime type differences for inheritance', () {
       const baseShape = _BaseShape(name: 'shape1', id: 1);
       const extendedShape = _ExtendedShape(name: 'shape1', id: 1);
-      
+
       expect(deepEquality.equals(baseShape, extendedShape), isTrue);
-      
+
       final list1 = [baseShape, extendedShape];
       final list2 = [extendedShape, baseShape];
-      
+
       expect(deepEquality.equals(list1, list2), isTrue);
     });
 
     test('matches extended shape instances with same values in lists', () {
       const extendedShape1 = _ExtendedShape(name: 'shape1', id: 1);
       const extendedShape2 = _ExtendedShape(name: 'shape1', id: 1);
-      
+
       final list1 = [extendedShape1];
       final list2 = [extendedShape2];
-      
+
       expect(deepEquality.equals(list1, list2), isTrue);
-      
+
       // Test with different values to ensure it fails when it should
       const extendedShape3 = _ExtendedShape(name: 'shape2', id: 2);
       final list3 = [extendedShape3];
-      
+
       expect(deepEquality.equals(list1, list3), isFalse);
     });
   });
@@ -350,9 +352,7 @@ class _BaseShape {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is _BaseShape &&
-          name == other.name &&
-          id == other.id;
+      other is _BaseShape && name == other.name && id == other.id;
 
   @override
   int get hashCode => Object.hash(name, id);

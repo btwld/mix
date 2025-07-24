@@ -13,7 +13,9 @@ void main() {
           weight: 400.0,
           grade: 0.0,
           opticalSize: 24.0,
-          shadows: [Shadow(color: Colors.black, offset: Offset(1, 1), blurRadius: 2.0)],
+          shadows: [
+            Shadow(color: Colors.black, offset: Offset(1, 1), blurRadius: 2.0),
+          ],
           textDirection: TextDirection.ltr,
           applyTextScaling: true,
           fill: 1.0,
@@ -168,10 +170,14 @@ void main() {
 
       test('interpolates shadows correctly', () {
         const spec1 = IconSpec(
-          shadows: [Shadow(color: Colors.black, offset: Offset(0, 1), blurRadius: 1.0)],
+          shadows: [
+            Shadow(color: Colors.black, offset: Offset(0, 1), blurRadius: 1.0),
+          ],
         );
         const spec2 = IconSpec(
-          shadows: [Shadow(color: Colors.grey, offset: Offset(2, 3), blurRadius: 5.0)],
+          shadows: [
+            Shadow(color: Colors.grey, offset: Offset(2, 3), blurRadius: 5.0),
+          ],
         );
 
         final lerped = spec1.lerp(spec2, 0.5);
@@ -321,8 +327,16 @@ void main() {
           size: 32.0,
           color: Colors.white,
           shadows: [
-            Shadow(color: Colors.black26, offset: Offset(0, 2), blurRadius: 4.0),
-            Shadow(color: Colors.black12, offset: Offset(0, 1), blurRadius: 2.0),
+            Shadow(
+              color: Colors.black26,
+              offset: Offset(0, 2),
+              blurRadius: 4.0,
+            ),
+            Shadow(
+              color: Colors.black12,
+              offset: Offset(0, 1),
+              blurRadius: 2.0,
+            ),
           ],
         );
 
