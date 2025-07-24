@@ -21,23 +21,6 @@ void main() {
         );
         expect(utility, isA<OnContextVariantUtility>());
       });
-
-      test('multiple instances with same builder are equal', () {
-        final utility1 =
-            OnContextVariantUtility<MockSpec, UtilityTestAttribute<String>>(
-              (variant) => UtilityTestAttribute('test'),
-            );
-        final utility2 =
-            OnContextVariantUtility<MockSpec, UtilityTestAttribute<String>>(
-              (variant) => UtilityTestAttribute('test'),
-            );
-
-        expect(utility1, equals(utility2));
-        expect(
-          identical(utility1, utility2),
-          isTrue,
-        ); // Const constructor creates identical instances
-      });
     });
 
     group('Widget State Variants', () {

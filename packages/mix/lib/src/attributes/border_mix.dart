@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
 sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
-  final MixProp<BorderSide>? top;
-  final MixProp<BorderSide>? bottom;
+  final MixProp<BorderSide>? $top;
+  final MixProp<BorderSide>? $bottom;
 
   static BorderMix none = BorderMix.all(BorderSideMix.none);
 
-  const BoxBorderMix({this.top, this.bottom});
+  const BoxBorderMix({MixProp<BorderSide>? top, MixProp<BorderSide>? bottom})
+    : $top = top,
+      $bottom = bottom;
 
   static BorderMix all(BorderSideMix side) {
     return BorderMix.only(top: side, bottom: side, left: side, right: side);
@@ -86,10 +88,10 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
     final directional = this as BorderDirectionalMix;
 
     return BorderMix(
-      top: top,
-      bottom: bottom,
-      left: directional.start, // start maps to left
-      right: directional.end, // end maps to right
+      top: $top,
+      bottom: $bottom,
+      left: directional.$start, // start maps to left
+      right: directional.$end, // end maps to right
     );
   }
 
@@ -101,10 +103,10 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
     final border = this as BorderMix;
 
     return BorderDirectionalMix(
-      top: top,
-      bottom: bottom,
-      start: border.left, // left maps to start
-      end: border.right, // right maps to end
+      top: $top,
+      bottom: $bottom,
+      start: border.$left, // left maps to start
+      end: border.$right, // right maps to end
     );
   }
 
@@ -116,8 +118,8 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
 }
 
 final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
-  final MixProp<BorderSide>? left;
-  final MixProp<BorderSide>? right;
+  final MixProp<BorderSide>? $left;
+  final MixProp<BorderSide>? $right;
 
   static BorderMix none = BorderMix.all(BorderSideMix.none);
 
@@ -133,7 +135,13 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
          right: MixProp.maybe(right),
        );
 
-  const BorderMix({super.top, super.bottom, this.left, this.right});
+  const BorderMix({
+    super.top,
+    super.bottom,
+    MixProp<BorderSide>? left,
+    MixProp<BorderSide>? right,
+  }) : $left = left,
+       $right = right;
 
   /// Constructor that accepts a [Border] value and extracts its properties.
   ///
@@ -162,12 +170,30 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
         right: vertical,
       );
 
+  /// Creates a new [BorderSideMix] with the provided color,
+
   factory BorderMix.vertical(BorderSideMix side) {
     return BorderMix.symmetric(vertical: side);
   }
 
   factory BorderMix.horizontal(BorderSideMix side) {
     return BorderMix.symmetric(horizontal: side);
+  }
+
+  factory BorderMix.top(BorderSideMix side) {
+    return BorderMix.only(top: side);
+  }
+
+  factory BorderMix.bottom(BorderSideMix side) {
+    return BorderMix.only(bottom: side);
+  }
+
+  factory BorderMix.left(BorderSideMix side) {
+    return BorderMix.only(left: side);
+  }
+
+  factory BorderMix.right(BorderSideMix side) {
+    return BorderMix.only(right: side);
   }
 
   /// Constructor that accepts a nullable [Border] value and extracts its properties.
@@ -182,6 +208,30 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
     return border != null ? BorderMix.value(border) : null;
   }
 
+  /// Creates a new [BorderMix] with the provided top side,
+  /// merging it with the current instance.
+  BorderMix top(BorderSideMix side) {
+    return merge(BorderMix.only(top: side));
+  }
+
+  /// Creates a new [BorderMix] with the provided bottom side,
+  /// merging it with the current instance.
+  BorderMix bottom(BorderSideMix side) {
+    return merge(BorderMix.only(bottom: side));
+  }
+
+  /// Creates a new [BorderMix] with the provided left side,
+  /// merging it with the current instance.
+  BorderMix left(BorderSideMix side) {
+    return merge(BorderMix.only(left: side));
+  }
+
+  /// Creates a new [BorderMix] with the provided right side,
+  /// merging it with the current instance.
+  BorderMix right(BorderSideMix side) {
+    return merge(BorderMix.only(right: side));
+  }
+
   /// Resolves to [Border] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the
@@ -193,10 +243,10 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
   @override
   Border resolve(BuildContext context) {
     return Border(
-      top: MixHelpers.resolve(context, top) ?? BorderSide.none,
-      right: MixHelpers.resolve(context, right) ?? BorderSide.none,
-      bottom: MixHelpers.resolve(context, bottom) ?? BorderSide.none,
-      left: MixHelpers.resolve(context, left) ?? BorderSide.none,
+      top: MixHelpers.resolve(context, $top) ?? BorderSide.none,
+      right: MixHelpers.resolve(context, $right) ?? BorderSide.none,
+      bottom: MixHelpers.resolve(context, $bottom) ?? BorderSide.none,
+      left: MixHelpers.resolve(context, $left) ?? BorderSide.none,
     );
   }
 
@@ -213,18 +263,18 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
     if (other == null) return this;
 
     return BorderMix(
-      top: MixHelpers.merge(top, other.top),
-      bottom: MixHelpers.merge(bottom, other.bottom),
-      left: MixHelpers.merge(left, other.left),
-      right: MixHelpers.merge(right, other.right),
+      top: MixHelpers.merge($top, other.$top),
+      bottom: MixHelpers.merge($bottom, other.$bottom),
+      left: MixHelpers.merge($left, other.$left),
+      right: MixHelpers.merge($right, other.$right),
     );
   }
 
   @override
-  List<Object?> get props => [top, bottom, left, right];
+  List<Object?> get props => [$top, $bottom, $left, $right];
 
   @override
-  bool get isUniform => top == bottom && bottom == left && left == right;
+  bool get isUniform => $top == $bottom && $bottom == $left && $left == $right;
 
   @override
   Border get defaultValue => const Border();
@@ -232,8 +282,8 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
 
 final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
     with DefaultValue<BorderDirectional> {
-  final MixProp<BorderSide>? start;
-  final MixProp<BorderSide>? end;
+  final MixProp<BorderSide>? $start;
+  final MixProp<BorderSide>? $end;
   static final BorderDirectionalMix none = BorderDirectionalMix.all(
     BorderSideMix.none,
   );
@@ -250,7 +300,13 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
          end: MixProp.maybe(end),
        );
 
-  const BorderDirectionalMix({super.top, super.bottom, this.start, this.end});
+  const BorderDirectionalMix({
+    super.top,
+    super.bottom,
+    MixProp<BorderSide>? start,
+    MixProp<BorderSide>? end,
+  }) : $start = start,
+       $end = end;
 
   /// Constructor that accepts a [BorderDirectional] value and extracts its properties.
   ///
@@ -286,6 +342,22 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
   BorderDirectionalMix.horizontal(BorderSideMix side)
     : this.symmetric(horizontal: side);
 
+  factory BorderDirectionalMix.top(BorderSideMix side) {
+    return BorderDirectionalMix.only(top: side);
+  }
+
+  factory BorderDirectionalMix.bottom(BorderSideMix side) {
+    return BorderDirectionalMix.only(bottom: side);
+  }
+
+  factory BorderDirectionalMix.start(BorderSideMix side) {
+    return BorderDirectionalMix.only(start: side);
+  }
+
+  factory BorderDirectionalMix.end(BorderSideMix side) {
+    return BorderDirectionalMix.only(end: side);
+  }
+
   /// Constructor that accepts a nullable [BorderDirectional] value and extracts its properties.
   ///
   /// Returns null if the input is null, otherwise uses [BorderDirectionalMix.value].
@@ -296,6 +368,30 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
   /// ```
   static BorderDirectionalMix? maybeValue(BorderDirectional? border) {
     return border != null ? BorderDirectionalMix.value(border) : null;
+  }
+
+  /// Creates a new [BorderDirectionalMix] with the provided top side,
+  /// merging it with the current instance.
+  BorderDirectionalMix top(BorderSideMix side) {
+    return merge(BorderDirectionalMix.only(top: side));
+  }
+
+  /// Creates a new [BorderDirectionalMix] with the provided bottom side,
+  /// merging it with the current instance.
+  BorderDirectionalMix bottom(BorderSideMix side) {
+    return merge(BorderDirectionalMix.only(bottom: side));
+  }
+
+  /// Creates a new [BorderDirectionalMix] with the provided start side,
+  /// merging it with the current instance.
+  BorderDirectionalMix start(BorderSideMix side) {
+    return merge(BorderDirectionalMix.only(start: side));
+  }
+
+  /// Creates a new [BorderDirectionalMix] with the provided end side,
+  /// merging it with the current instance.
+  BorderDirectionalMix end(BorderSideMix side) {
+    return merge(BorderDirectionalMix.only(end: side));
   }
 
   /// Resolves to [BorderDirectional] using the provided [MixContext].
@@ -309,10 +405,10 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
   @override
   BorderDirectional resolve(BuildContext context) {
     return BorderDirectional(
-      top: MixHelpers.resolve(context, top) ?? defaultValue.top,
-      start: MixHelpers.resolve(context, start) ?? defaultValue.start,
-      end: MixHelpers.resolve(context, end) ?? defaultValue.end,
-      bottom: MixHelpers.resolve(context, bottom) ?? defaultValue.bottom,
+      top: MixHelpers.resolve(context, $top) ?? defaultValue.top,
+      start: MixHelpers.resolve(context, $start) ?? defaultValue.start,
+      end: MixHelpers.resolve(context, $end) ?? defaultValue.end,
+      bottom: MixHelpers.resolve(context, $bottom) ?? defaultValue.bottom,
     );
   }
 
@@ -329,18 +425,18 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
     if (other == null) return this;
 
     return BorderDirectionalMix(
-      top: MixHelpers.merge(top, other.top),
-      bottom: MixHelpers.merge(bottom, other.bottom),
-      start: MixHelpers.merge(start, other.start),
-      end: MixHelpers.merge(end, other.end),
+      top: MixHelpers.merge($top, other.$top),
+      bottom: MixHelpers.merge($bottom, other.$bottom),
+      start: MixHelpers.merge($start, other.$start),
+      end: MixHelpers.merge($end, other.$end),
     );
   }
 
   @override
-  List<Object?> get props => [top, bottom, start, end];
+  List<Object?> get props => [$top, $bottom, $start, $end];
 
   @override
-  bool get isUniform => top == bottom && bottom == start && start == end;
+  bool get isUniform => $top == $bottom && $bottom == $start && $start == $end;
 
   /// The list of properties that constitute the state of this [BorderDirectionalMix].
   ///
@@ -353,10 +449,10 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
 final class BorderSideMix extends Mix<BorderSide>
     with DefaultValue<BorderSide> {
   // Properties use MixableProperty for cleaner merging
-  final Prop<Color>? color;
-  final Prop<double>? width;
-  final Prop<BorderStyle>? style;
-  final Prop<double>? strokeAlign;
+  final Prop<Color>? $color;
+  final Prop<double>? $width;
+  final Prop<BorderStyle>? $style;
+  final Prop<double>? $strokeAlign;
 
   static final BorderSideMix none = BorderSideMix.value(BorderSide.none);
 
@@ -388,7 +484,31 @@ final class BorderSideMix extends Mix<BorderSide>
         width: borderSide.width,
       );
 
-  const BorderSideMix({this.color, this.width, this.style, this.strokeAlign});
+  const BorderSideMix({
+    Prop<Color>? color,
+    Prop<double>? width,
+    Prop<BorderStyle>? style,
+    Prop<double>? strokeAlign,
+  }) : $color = color,
+       $width = width,
+       $style = style,
+       $strokeAlign = strokeAlign;
+
+  factory BorderSideMix.color(Color value) {
+    return BorderSideMix.only(color: value);
+  }
+
+  factory BorderSideMix.width(double value) {
+    return BorderSideMix.only(width: value);
+  }
+
+  factory BorderSideMix.style(BorderStyle value) {
+    return BorderSideMix.only(style: value);
+  }
+
+  factory BorderSideMix.strokeAlign(double value) {
+    return BorderSideMix.only(strokeAlign: value);
+  }
 
   /// Constructor that accepts a nullable [BorderSide] value and extracts its properties.
   ///
@@ -404,6 +524,29 @@ final class BorderSideMix extends Mix<BorderSide>
         : null;
   }
 
+  /// merging it with the current instance.
+  BorderSideMix color(Color value) {
+    return merge(BorderSideMix.only(color: value));
+  }
+
+  /// Creates a new [BorderSideMix] with the provided width,
+  /// merging it with the current instance.
+  BorderSideMix width(double value) {
+    return merge(BorderSideMix.only(width: value));
+  }
+
+  /// Creates a new [BorderSideMix] with the provided style,
+  /// merging it with the current instance.
+  BorderSideMix style(BorderStyle value) {
+    return merge(BorderSideMix.only(style: value));
+  }
+
+  /// Creates a new [BorderSideMix] with the provided strokeAlign,
+  /// merging it with the current instance.
+  BorderSideMix strokeAlign(double value) {
+    return merge(BorderSideMix.only(strokeAlign: value));
+  }
+
   /// Resolves to [BorderSide] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the
@@ -415,11 +558,11 @@ final class BorderSideMix extends Mix<BorderSide>
   @override
   BorderSide resolve(BuildContext context) {
     return BorderSide(
-      color: MixHelpers.resolve(context, color) ?? defaultValue.color,
-      width: MixHelpers.resolve(context, width) ?? defaultValue.width,
-      style: MixHelpers.resolve(context, style) ?? defaultValue.style,
+      color: MixHelpers.resolve(context, $color) ?? defaultValue.color,
+      width: MixHelpers.resolve(context, $width) ?? defaultValue.width,
+      style: MixHelpers.resolve(context, $style) ?? defaultValue.style,
       strokeAlign:
-          MixHelpers.resolve(context, strokeAlign) ?? defaultValue.strokeAlign,
+          MixHelpers.resolve(context, $strokeAlign) ?? defaultValue.strokeAlign,
     );
   }
 
@@ -436,15 +579,15 @@ final class BorderSideMix extends Mix<BorderSide>
     if (other == null) return this;
 
     return BorderSideMix(
-      color: MixHelpers.merge(color, other.color),
-      width: MixHelpers.merge(width, other.width),
-      style: MixHelpers.merge(style, other.style),
-      strokeAlign: MixHelpers.merge(strokeAlign, other.strokeAlign),
+      color: MixHelpers.merge($color, other.$color),
+      width: MixHelpers.merge($width, other.$width),
+      style: MixHelpers.merge($style, other.$style),
+      strokeAlign: MixHelpers.merge($strokeAlign, other.$strokeAlign),
     );
   }
 
   @override
-  List<Object?> get props => [color, width, style, strokeAlign];
+  List<Object?> get props => [$color, $width, $style, $strokeAlign];
 
   @override
   BorderSide get defaultValue => const BorderSide();

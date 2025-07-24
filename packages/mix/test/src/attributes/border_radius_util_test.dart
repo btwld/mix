@@ -6,9 +6,7 @@ import '../../helpers/testing_utils.dart';
 
 void main() {
   group('BorderRadiusUtility', () {
-    final utility = BorderRadiusUtility<UtilityTestAttribute>(
-      (prop) => UtilityTestAttribute(prop),
-    );
+    final utility = BorderRadiusUtility(UtilityTestAttribute.new);
 
     test('call() creates BorderRadiusMix from value', () {
       const borderRadius = BorderRadius.all(Radius.circular(8.0));
@@ -18,10 +16,10 @@ void main() {
       expect(result.value, isA<MixProp<BorderRadius>>());
 
       final mix = result.value.value as BorderRadiusMix;
-      expectProp(mix.topLeft, const Radius.circular(8.0));
-      expectProp(mix.topRight, const Radius.circular(8.0));
-      expectProp(mix.bottomLeft, const Radius.circular(8.0));
-      expectProp(mix.bottomRight, const Radius.circular(8.0));
+      expectProp(mix.$topLeft, const Radius.circular(8.0));
+      expectProp(mix.$topRight, const Radius.circular(8.0));
+      expectProp(mix.$bottomLeft, const Radius.circular(8.0));
+      expectProp(mix.$bottomRight, const Radius.circular(8.0));
     });
 
     group('corner utilities', () {
@@ -30,40 +28,40 @@ void main() {
 
         expect(result, isA<UtilityTestAttribute>());
         final mix = result.value.value as BorderRadiusMix;
-        expectProp(mix.topLeft, const Radius.circular(8.0));
-        expect(mix.topRight, isNull);
-        expect(mix.bottomLeft, isNull);
-        expect(mix.bottomRight, isNull);
+        expectProp(mix.$topLeft, const Radius.circular(8.0));
+        expect(mix.$topRight, isNull);
+        expect(mix.$bottomLeft, isNull);
+        expect(mix.$bottomRight, isNull);
       });
 
       test('topRight creates BorderRadiusMix with topRight radius', () {
         final result = utility.topRight(const Radius.circular(8.0));
 
         final mix = result.value.value as BorderRadiusMix;
-        expect(mix.topLeft, isNull);
-        expectProp(mix.topRight, const Radius.circular(8.0));
-        expect(mix.bottomLeft, isNull);
-        expect(mix.bottomRight, isNull);
+        expect(mix.$topLeft, isNull);
+        expectProp(mix.$topRight, const Radius.circular(8.0));
+        expect(mix.$bottomLeft, isNull);
+        expect(mix.$bottomRight, isNull);
       });
 
       test('bottomLeft creates BorderRadiusMix with bottomLeft radius', () {
         final result = utility.bottomLeft(const Radius.circular(8.0));
 
         final mix = result.value.value as BorderRadiusMix;
-        expect(mix.topLeft, isNull);
-        expect(mix.topRight, isNull);
-        expectProp(mix.bottomLeft, const Radius.circular(8.0));
-        expect(mix.bottomRight, isNull);
+        expect(mix.$topLeft, isNull);
+        expect(mix.$topRight, isNull);
+        expectProp(mix.$bottomLeft, const Radius.circular(8.0));
+        expect(mix.$bottomRight, isNull);
       });
 
       test('bottomRight creates BorderRadiusMix with bottomRight radius', () {
         final result = utility.bottomRight(const Radius.circular(8.0));
 
         final mix = result.value.value as BorderRadiusMix;
-        expect(mix.topLeft, isNull);
-        expect(mix.topRight, isNull);
-        expect(mix.bottomLeft, isNull);
-        expectProp(mix.bottomRight, const Radius.circular(8.0));
+        expect(mix.$topLeft, isNull);
+        expect(mix.$topRight, isNull);
+        expect(mix.$bottomLeft, isNull);
+        expectProp(mix.$bottomRight, const Radius.circular(8.0));
       });
     });
 
@@ -72,50 +70,50 @@ void main() {
         final result = utility.all(const Radius.circular(12.0));
 
         final mix = result.value.value as BorderRadiusMix;
-        expectProp(mix.topLeft, const Radius.circular(12.0));
-        expectProp(mix.topRight, const Radius.circular(12.0));
-        expectProp(mix.bottomLeft, const Radius.circular(12.0));
-        expectProp(mix.bottomRight, const Radius.circular(12.0));
+        expectProp(mix.$topLeft, const Radius.circular(12.0));
+        expectProp(mix.$topRight, const Radius.circular(12.0));
+        expectProp(mix.$bottomLeft, const Radius.circular(12.0));
+        expectProp(mix.$bottomRight, const Radius.circular(12.0));
       });
 
       test('top creates top corners BorderRadiusMix', () {
         final result = utility.top(const Radius.circular(8.0));
 
         final mix = result.value.value as BorderRadiusMix;
-        expectProp(mix.topLeft, const Radius.circular(8.0));
-        expectProp(mix.topRight, const Radius.circular(8.0));
-        expect(mix.bottomLeft, isNull);
-        expect(mix.bottomRight, isNull);
+        expectProp(mix.$topLeft, const Radius.circular(8.0));
+        expectProp(mix.$topRight, const Radius.circular(8.0));
+        expect(mix.$bottomLeft, isNull);
+        expect(mix.$bottomRight, isNull);
       });
 
       test('bottom creates bottom corners BorderRadiusMix', () {
         final result = utility.bottom(const Radius.circular(8.0));
 
         final mix = result.value.value as BorderRadiusMix;
-        expect(mix.topLeft, isNull);
-        expect(mix.topRight, isNull);
-        expectProp(mix.bottomLeft, const Radius.circular(8.0));
-        expectProp(mix.bottomRight, const Radius.circular(8.0));
+        expect(mix.$topLeft, isNull);
+        expect(mix.$topRight, isNull);
+        expectProp(mix.$bottomLeft, const Radius.circular(8.0));
+        expectProp(mix.$bottomRight, const Radius.circular(8.0));
       });
 
       test('left creates left corners BorderRadiusMix', () {
         final result = utility.left(const Radius.circular(8.0));
 
         final mix = result.value.value as BorderRadiusMix;
-        expectProp(mix.topLeft, const Radius.circular(8.0));
-        expect(mix.topRight, isNull);
-        expectProp(mix.bottomLeft, const Radius.circular(8.0));
-        expect(mix.bottomRight, isNull);
+        expectProp(mix.$topLeft, const Radius.circular(8.0));
+        expect(mix.$topRight, isNull);
+        expectProp(mix.$bottomLeft, const Radius.circular(8.0));
+        expect(mix.$bottomRight, isNull);
       });
 
       test('right creates right corners BorderRadiusMix', () {
         final result = utility.right(const Radius.circular(8.0));
 
         final mix = result.value.value as BorderRadiusMix;
-        expect(mix.topLeft, isNull);
-        expectProp(mix.topRight, const Radius.circular(8.0));
-        expect(mix.bottomLeft, isNull);
-        expectProp(mix.bottomRight, const Radius.circular(8.0));
+        expect(mix.$topLeft, isNull);
+        expectProp(mix.$topRight, const Radius.circular(8.0));
+        expect(mix.$bottomLeft, isNull);
+        expectProp(mix.$bottomRight, const Radius.circular(8.0));
       });
     });
 
@@ -124,38 +122,36 @@ void main() {
         final result = utility.circular(16.0);
 
         final mix = result.value.value as BorderRadiusMix;
-        expectProp(mix.topLeft, const Radius.circular(16.0));
-        expectProp(mix.topRight, const Radius.circular(16.0));
-        expectProp(mix.bottomLeft, const Radius.circular(16.0));
-        expectProp(mix.bottomRight, const Radius.circular(16.0));
+        expectProp(mix.$topLeft, const Radius.circular(16.0));
+        expectProp(mix.$topRight, const Radius.circular(16.0));
+        expectProp(mix.$bottomLeft, const Radius.circular(16.0));
+        expectProp(mix.$bottomRight, const Radius.circular(16.0));
       });
 
       test('elliptical creates elliptical radius', () {
         final result = utility.elliptical(20.0, 10.0);
 
         final mix = result.value.value as BorderRadiusMix;
-        expectProp(mix.topLeft, const Radius.elliptical(20.0, 10.0));
-        expectProp(mix.topRight, const Radius.elliptical(20.0, 10.0));
-        expectProp(mix.bottomLeft, const Radius.elliptical(20.0, 10.0));
-        expectProp(mix.bottomRight, const Radius.elliptical(20.0, 10.0));
+        expectProp(mix.$topLeft, const Radius.elliptical(20.0, 10.0));
+        expectProp(mix.$topRight, const Radius.elliptical(20.0, 10.0));
+        expectProp(mix.$bottomLeft, const Radius.elliptical(20.0, 10.0));
+        expectProp(mix.$bottomRight, const Radius.elliptical(20.0, 10.0));
       });
 
       test('zero creates zero radius', () {
         final result = utility.zero();
 
         final mix = result.value.value as BorderRadiusMix;
-        expectProp(mix.topLeft, Radius.zero);
-        expectProp(mix.topRight, Radius.zero);
-        expectProp(mix.bottomLeft, Radius.zero);
-        expectProp(mix.bottomRight, Radius.zero);
+        expectProp(mix.$topLeft, Radius.zero);
+        expectProp(mix.$topRight, Radius.zero);
+        expectProp(mix.$bottomLeft, Radius.zero);
+        expectProp(mix.$bottomRight, Radius.zero);
       });
     });
   });
 
   group('BorderRadiusDirectionalUtility', () {
-    final utility = BorderRadiusDirectionalUtility<UtilityTestAttribute>(
-      (prop) => UtilityTestAttribute(prop),
-    );
+    final utility = BorderRadiusDirectionalUtility(UtilityTestAttribute.new);
 
     test('call() creates BorderRadiusDirectionalMix from value', () {
       const borderRadius = BorderRadiusDirectional.all(Radius.circular(8.0));
@@ -165,10 +161,10 @@ void main() {
       expect(result.value, isA<MixProp<BorderRadiusDirectional>>());
 
       final mix = result.value.value as BorderRadiusDirectionalMix;
-      expectProp(mix.topStart, const Radius.circular(8.0));
-      expectProp(mix.topEnd, const Radius.circular(8.0));
-      expectProp(mix.bottomStart, const Radius.circular(8.0));
-      expectProp(mix.bottomEnd, const Radius.circular(8.0));
+      expectProp(mix.$topStart, const Radius.circular(8.0));
+      expectProp(mix.$topEnd, const Radius.circular(8.0));
+      expectProp(mix.$bottomStart, const Radius.circular(8.0));
+      expectProp(mix.$bottomEnd, const Radius.circular(8.0));
     });
 
     group('corner utilities', () {
@@ -178,10 +174,10 @@ void main() {
           final result = utility.topStart(const Radius.circular(8.0));
 
           final mix = result.value.value as BorderRadiusDirectionalMix;
-          expectProp(mix.topStart, const Radius.circular(8.0));
-          expect(mix.topEnd, isNull);
-          expect(mix.bottomStart, isNull);
-          expect(mix.bottomEnd, isNull);
+          expectProp(mix.$topStart, const Radius.circular(8.0));
+          expect(mix.$topEnd, isNull);
+          expect(mix.$bottomStart, isNull);
+          expect(mix.$bottomEnd, isNull);
         },
       );
 
@@ -189,10 +185,10 @@ void main() {
         final result = utility.topEnd(const Radius.circular(8.0));
 
         final mix = result.value.value as BorderRadiusDirectionalMix;
-        expect(mix.topStart, isNull);
-        expectProp(mix.topEnd, const Radius.circular(8.0));
-        expect(mix.bottomStart, isNull);
-        expect(mix.bottomEnd, isNull);
+        expect(mix.$topStart, isNull);
+        expectProp(mix.$topEnd, const Radius.circular(8.0));
+        expect(mix.$bottomStart, isNull);
+        expect(mix.$bottomEnd, isNull);
       });
 
       test(
@@ -201,10 +197,10 @@ void main() {
           final result = utility.bottomStart(const Radius.circular(8.0));
 
           final mix = result.value.value as BorderRadiusDirectionalMix;
-          expect(mix.topStart, isNull);
-          expect(mix.topEnd, isNull);
-          expectProp(mix.bottomStart, const Radius.circular(8.0));
-          expect(mix.bottomEnd, isNull);
+          expect(mix.$topStart, isNull);
+          expect(mix.$topEnd, isNull);
+          expectProp(mix.$bottomStart, const Radius.circular(8.0));
+          expect(mix.$bottomEnd, isNull);
         },
       );
 
@@ -214,10 +210,10 @@ void main() {
           final result = utility.bottomEnd(const Radius.circular(8.0));
 
           final mix = result.value.value as BorderRadiusDirectionalMix;
-          expect(mix.topStart, isNull);
-          expect(mix.topEnd, isNull);
-          expect(mix.bottomStart, isNull);
-          expectProp(mix.bottomEnd, const Radius.circular(8.0));
+          expect(mix.$topStart, isNull);
+          expect(mix.$topEnd, isNull);
+          expect(mix.$bottomStart, isNull);
+          expectProp(mix.$bottomEnd, const Radius.circular(8.0));
         },
       );
     });
@@ -227,50 +223,50 @@ void main() {
         final result = utility.all(const Radius.circular(12.0));
 
         final mix = result.value.value as BorderRadiusDirectionalMix;
-        expectProp(mix.topStart, const Radius.circular(12.0));
-        expectProp(mix.topEnd, const Radius.circular(12.0));
-        expectProp(mix.bottomStart, const Radius.circular(12.0));
-        expectProp(mix.bottomEnd, const Radius.circular(12.0));
+        expectProp(mix.$topStart, const Radius.circular(12.0));
+        expectProp(mix.$topEnd, const Radius.circular(12.0));
+        expectProp(mix.$bottomStart, const Radius.circular(12.0));
+        expectProp(mix.$bottomEnd, const Radius.circular(12.0));
       });
 
       test('top creates top corners BorderRadiusDirectionalMix', () {
         final result = utility.top(const Radius.circular(8.0));
 
         final mix = result.value.value as BorderRadiusDirectionalMix;
-        expectProp(mix.topStart, const Radius.circular(8.0));
-        expectProp(mix.topEnd, const Radius.circular(8.0));
-        expect(mix.bottomStart, isNull);
-        expect(mix.bottomEnd, isNull);
+        expectProp(mix.$topStart, const Radius.circular(8.0));
+        expectProp(mix.$topEnd, const Radius.circular(8.0));
+        expect(mix.$bottomStart, isNull);
+        expect(mix.$bottomEnd, isNull);
       });
 
       test('bottom creates bottom corners BorderRadiusDirectionalMix', () {
         final result = utility.bottom(const Radius.circular(8.0));
 
         final mix = result.value.value as BorderRadiusDirectionalMix;
-        expect(mix.topStart, isNull);
-        expect(mix.topEnd, isNull);
-        expectProp(mix.bottomStart, const Radius.circular(8.0));
-        expectProp(mix.bottomEnd, const Radius.circular(8.0));
+        expect(mix.$topStart, isNull);
+        expect(mix.$topEnd, isNull);
+        expectProp(mix.$bottomStart, const Radius.circular(8.0));
+        expectProp(mix.$bottomEnd, const Radius.circular(8.0));
       });
 
       test('start creates start corners BorderRadiusDirectionalMix', () {
         final result = utility.start(const Radius.circular(8.0));
 
         final mix = result.value.value as BorderRadiusDirectionalMix;
-        expectProp(mix.topStart, const Radius.circular(8.0));
-        expect(mix.topEnd, isNull);
-        expectProp(mix.bottomStart, const Radius.circular(8.0));
-        expect(mix.bottomEnd, isNull);
+        expectProp(mix.$topStart, const Radius.circular(8.0));
+        expect(mix.$topEnd, isNull);
+        expectProp(mix.$bottomStart, const Radius.circular(8.0));
+        expect(mix.$bottomEnd, isNull);
       });
 
       test('end creates end corners BorderRadiusDirectionalMix', () {
         final result = utility.end(const Radius.circular(8.0));
 
         final mix = result.value.value as BorderRadiusDirectionalMix;
-        expect(mix.topStart, isNull);
-        expectProp(mix.topEnd, const Radius.circular(8.0));
-        expect(mix.bottomStart, isNull);
-        expectProp(mix.bottomEnd, const Radius.circular(8.0));
+        expect(mix.$topStart, isNull);
+        expectProp(mix.$topEnd, const Radius.circular(8.0));
+        expect(mix.$bottomStart, isNull);
+        expectProp(mix.$bottomEnd, const Radius.circular(8.0));
       });
     });
 
@@ -279,38 +275,36 @@ void main() {
         final result = utility.circular(16.0);
 
         final mix = result.value.value as BorderRadiusDirectionalMix;
-        expectProp(mix.topStart, const Radius.circular(16.0));
-        expectProp(mix.topEnd, const Radius.circular(16.0));
-        expectProp(mix.bottomStart, const Radius.circular(16.0));
-        expectProp(mix.bottomEnd, const Radius.circular(16.0));
+        expectProp(mix.$topStart, const Radius.circular(16.0));
+        expectProp(mix.$topEnd, const Radius.circular(16.0));
+        expectProp(mix.$bottomStart, const Radius.circular(16.0));
+        expectProp(mix.$bottomEnd, const Radius.circular(16.0));
       });
 
       test('elliptical creates elliptical radius', () {
         final result = utility.elliptical(20.0, 10.0);
 
         final mix = result.value.value as BorderRadiusDirectionalMix;
-        expectProp(mix.topStart, const Radius.elliptical(20.0, 10.0));
-        expectProp(mix.topEnd, const Radius.elliptical(20.0, 10.0));
-        expectProp(mix.bottomStart, const Radius.elliptical(20.0, 10.0));
-        expectProp(mix.bottomEnd, const Radius.elliptical(20.0, 10.0));
+        expectProp(mix.$topStart, const Radius.elliptical(20.0, 10.0));
+        expectProp(mix.$topEnd, const Radius.elliptical(20.0, 10.0));
+        expectProp(mix.$bottomStart, const Radius.elliptical(20.0, 10.0));
+        expectProp(mix.$bottomEnd, const Radius.elliptical(20.0, 10.0));
       });
 
       test('zero creates zero radius', () {
         final result = utility.zero();
 
         final mix = result.value.value as BorderRadiusDirectionalMix;
-        expectProp(mix.topStart, Radius.zero);
-        expectProp(mix.topEnd, Radius.zero);
-        expectProp(mix.bottomStart, Radius.zero);
-        expectProp(mix.bottomEnd, Radius.zero);
+        expectProp(mix.$topStart, Radius.zero);
+        expectProp(mix.$topEnd, Radius.zero);
+        expectProp(mix.$bottomStart, Radius.zero);
+        expectProp(mix.$bottomEnd, Radius.zero);
       });
     });
   });
 
   group('BorderRadiusGeometryUtility', () {
-    final utility = BorderRadiusGeometryUtility<UtilityTestAttribute>(
-      (prop) => UtilityTestAttribute(prop),
-    );
+    final utility = BorderRadiusGeometryUtility(UtilityTestAttribute.new);
 
     test('supports BorderRadius type', () {
       const borderRadius = BorderRadius.all(Radius.circular(8.0));
@@ -342,7 +336,7 @@ void main() {
 
           expect(result, isA<UtilityTestAttribute>());
           final mix = result.value.value as BorderRadiusDirectionalMix;
-          expectProp(mix.topStart, const Radius.circular(8.0));
+          expectProp(mix.$topStart, const Radius.circular(8.0));
         },
       );
     });
@@ -353,10 +347,10 @@ void main() {
 
         expect(result, isA<UtilityTestAttribute>());
         final mix = result.value.value as BorderRadiusMix;
-        expectProp(mix.topLeft, const Radius.circular(12.0));
-        expectProp(mix.topRight, const Radius.circular(12.0));
-        expectProp(mix.bottomLeft, const Radius.circular(12.0));
-        expectProp(mix.bottomRight, const Radius.circular(12.0));
+        expectProp(mix.$topLeft, const Radius.circular(12.0));
+        expectProp(mix.$topRight, const Radius.circular(12.0));
+        expectProp(mix.$bottomLeft, const Radius.circular(12.0));
+        expectProp(mix.$bottomRight, const Radius.circular(12.0));
       });
 
       test('borderRadius.circular creates circular radius', () {
@@ -364,7 +358,7 @@ void main() {
 
         expect(result, isA<UtilityTestAttribute>());
         final mix = result.value.value as BorderRadiusMix;
-        expectProp(mix.topLeft, const Radius.circular(16.0));
+        expectProp(mix.$topLeft, const Radius.circular(16.0));
       });
 
       test('borderRadius corner utilities work', () {

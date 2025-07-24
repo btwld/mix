@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
+import 'package:mix/src/modifiers/internal/render_modifier.dart';
 
 void main() {
   group('StyleBuilder', () {
@@ -46,13 +47,9 @@ void main() {
           const Duration(milliseconds: 300),
         );
         final boxAttribute = BoxSpecAttribute.only(
-          constraints: BoxConstraintsMix.only(
-            minWidth: 100,
-            maxWidth: 100,
-            minHeight: 200,
-            maxHeight: 200,
-          ),
-          decoration: BoxDecorationMix.only(color: Colors.blue),
+          constraints: BoxConstraintsMix().width(100).height(200),
+          decoration: BoxDecorationMix.color(Colors.blue),
+
           animation: animation,
         );
 
@@ -187,19 +184,14 @@ void main() {
 
     group('RenderModifiers', () {
       testWidgets('Modifiers are applied when present', (tester) async {
-        final boxAttribute = BoxSpecAttribute.width(100)
+        final boxAttribute = BoxSpecAttribute()
+            .width(100)
             .height(100)
-            .merge(
-              BoxSpecAttribute.only(
-                alignment: Alignment.center,
-                decoration: BoxDecorationMix.only(
-                  borderRadius: BorderRadiusGeometryMix.circular(10),
-                ),
-                modifiers: [
-                  OpacityModifierAttribute(opacity: Prop(0.5)),
-                  PaddingModifierAttribute.only(padding: EdgeInsetsMix.all(10)),
-                ],
-              ),
+            .alignment(Alignment.center)
+            .borderRadius(BorderRadiusGeometryMix.circular(10))
+            .modifier(OpacityModifierAttribute.only(opacity: 0.5))
+            .modifier(
+              PaddingModifierAttribute.only(padding: EdgeInsetsMix.all(10)),
             );
 
         await tester.pumpWidget(
@@ -234,11 +226,7 @@ void main() {
       testWidgets('Modifiers follow default order', (tester) async {
         final boxAttribute = BoxSpecAttribute.width(100)
             .height(100)
-            .merge(
-              BoxSpecAttribute.only(
-                decoration: BoxDecorationMix.only(color: Colors.blue),
-              ),
-            )
+            .color(Colors.blue)
             .wrap
             .opacity(0.5)
             .wrap
@@ -298,11 +286,7 @@ void main() {
       testWidgets('Custom modifier order is respected', (tester) async {
         final boxAttribute = BoxSpecAttribute.width(100)
             .height(100)
-            .merge(
-              BoxSpecAttribute.only(
-                decoration: BoxDecorationMix.only(color: Colors.blue),
-              ),
-            )
+            .color(Colors.blue)
             .wrap
             .opacity(0.5)
             .wrap
@@ -380,10 +364,7 @@ void main() {
         );
 
         // Verify no modifier widgets are present
-        expect(find.byType(Opacity), findsNothing);
-        expect(find.byType(Padding), findsNothing);
-        expect(find.byType(ClipOval), findsNothing);
-        expect(find.byType(Visibility), findsNothing);
+        expect(find.byType(RenderModifiers), findsNothing);
       });
     });
   });

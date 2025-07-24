@@ -6,6 +6,34 @@ import 'package:mix/mix.dart';
 sealed class ConstraintsMix<T extends Constraints> extends Mix<T> {
   const ConstraintsMix();
 
+  static BoxConstraintsMix minWidth(double value) {
+    return BoxConstraintsMix.only(minWidth: value);
+  }
+
+  static BoxConstraintsMix maxWidth(double value) {
+    return BoxConstraintsMix.only(maxWidth: value);
+  }
+
+  static BoxConstraintsMix minHeight(double value) {
+    return BoxConstraintsMix.only(minHeight: value);
+  }
+
+  static BoxConstraintsMix maxHeight(double value) {
+    return BoxConstraintsMix.only(maxHeight: value);
+  }
+
+  static BoxConstraintsMix width(double value) {
+    return BoxConstraintsMix.width(value);
+  }
+
+  static BoxConstraintsMix height(double value) {
+    return BoxConstraintsMix.height(value);
+  }
+
+  static BoxConstraintsMix size(Size value) {
+    return BoxConstraintsMix.size(value);
+  }
+
   @override
   T resolve(BuildContext context);
 
@@ -20,10 +48,10 @@ sealed class ConstraintsMix<T extends Constraints> extends Mix<T> {
 final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
     with DefaultValue<BoxConstraints> {
   // Properties use MixableProperty for cleaner merging
-  final Prop<double>? minWidth;
-  final Prop<double>? maxWidth;
-  final Prop<double>? minHeight;
-  final Prop<double>? maxHeight;
+  final Prop<double>? $minWidth;
+  final Prop<double>? $maxWidth;
+  final Prop<double>? $minHeight;
+  final Prop<double>? $maxHeight;
 
   BoxConstraintsMix.only({
     double? minWidth,
@@ -38,11 +66,14 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
        );
 
   const BoxConstraintsMix({
-    this.minWidth,
-    this.maxWidth,
-    this.minHeight,
-    this.maxHeight,
-  });
+    Prop<double>? minWidth,
+    Prop<double>? maxWidth,
+    Prop<double>? minHeight,
+    Prop<double>? maxHeight,
+  }) : $minWidth = minWidth,
+       $maxWidth = maxWidth,
+       $minHeight = minHeight,
+       $maxHeight = maxHeight;
 
   BoxConstraintsMix.height(double height)
     : this.only(minHeight: height, maxHeight: height);
@@ -96,6 +127,39 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
     return constraints != null ? BoxConstraintsMix.value(constraints) : null;
   }
 
+  //height
+  BoxConstraintsMix height(double height) {
+    return BoxConstraintsMix.only(minHeight: height, maxHeight: height);
+  }
+
+  BoxConstraintsMix width(double width) {
+    return BoxConstraintsMix.only(minWidth: width, maxWidth: width);
+  }
+
+  /// Creates a new [BoxConstraintsMix] with the provided minWidth,
+  /// merging it with the current instance.
+  BoxConstraintsMix minWidth(double value) {
+    return merge(BoxConstraintsMix.only(minWidth: value));
+  }
+
+  /// Creates a new [BoxConstraintsMix] with the provided maxWidth,
+  /// merging it with the current instance.
+  BoxConstraintsMix maxWidth(double value) {
+    return merge(BoxConstraintsMix.only(maxWidth: value));
+  }
+
+  /// Creates a new [BoxConstraintsMix] with the provided minHeight,
+  /// merging it with the current instance.
+  BoxConstraintsMix minHeight(double value) {
+    return merge(BoxConstraintsMix.only(minHeight: value));
+  }
+
+  /// Creates a new [BoxConstraintsMix] with the provided maxHeight,
+  /// merging it with the current instance.
+  BoxConstraintsMix maxHeight(double value) {
+    return merge(BoxConstraintsMix.only(maxHeight: value));
+  }
+
   /// Resolves to [BoxConstraints] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the
@@ -107,12 +171,12 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
   @override
   BoxConstraints resolve(BuildContext context) {
     return BoxConstraints(
-      minWidth: MixHelpers.resolve(context, minWidth) ?? defaultValue.minWidth,
-      maxWidth: MixHelpers.resolve(context, maxWidth) ?? defaultValue.maxWidth,
+      minWidth: MixHelpers.resolve(context, $minWidth) ?? defaultValue.minWidth,
+      maxWidth: MixHelpers.resolve(context, $maxWidth) ?? defaultValue.maxWidth,
       minHeight:
-          MixHelpers.resolve(context, minHeight) ?? defaultValue.minHeight,
+          MixHelpers.resolve(context, $minHeight) ?? defaultValue.minHeight,
       maxHeight:
-          MixHelpers.resolve(context, maxHeight) ?? defaultValue.maxHeight,
+          MixHelpers.resolve(context, $maxHeight) ?? defaultValue.maxHeight,
     );
   }
 
@@ -129,15 +193,15 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
     if (other == null) return this;
 
     return BoxConstraintsMix(
-      minWidth: MixHelpers.merge(minWidth, other.minWidth),
-      maxWidth: MixHelpers.merge(maxWidth, other.maxWidth),
-      minHeight: MixHelpers.merge(minHeight, other.minHeight),
-      maxHeight: MixHelpers.merge(maxHeight, other.maxHeight),
+      minWidth: MixHelpers.merge($minWidth, other.$minWidth),
+      maxWidth: MixHelpers.merge($maxWidth, other.$maxWidth),
+      minHeight: MixHelpers.merge($minHeight, other.$minHeight),
+      maxHeight: MixHelpers.merge($maxHeight, other.$maxHeight),
     );
   }
 
   @override
-  List<Object?> get props => [minWidth, maxWidth, minHeight, maxHeight];
+  List<Object?> get props => [$minWidth, $maxWidth, $minHeight, $maxHeight];
 
   @override
   BoxConstraints get defaultValue => const BoxConstraints();

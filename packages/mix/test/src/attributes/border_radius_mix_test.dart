@@ -15,12 +15,10 @@ void main() {
           bottomRight: const Radius.circular(20.0),
         );
 
-        expectProp(borderRadiusMix.topLeft, const Radius.circular(8.0));
-        expectProp(borderRadiusMix.topRight, const Radius.circular(12.0));
-        expectProp(borderRadiusMix.bottomLeft, const Radius.circular(16.0));
-        expectProp(
-          borderRadiusMix.bottomRight, const Radius.circular(20.0),
-        );
+        expectProp(borderRadiusMix.$topLeft, const Radius.circular(8.0));
+        expectProp(borderRadiusMix.$topRight, const Radius.circular(12.0));
+        expectProp(borderRadiusMix.$bottomLeft, const Radius.circular(16.0));
+        expectProp(borderRadiusMix.$bottomRight, const Radius.circular(20.0));
       });
 
       test('value constructor extracts properties from BorderRadius', () {
@@ -33,12 +31,10 @@ void main() {
 
         final borderRadiusMix = BorderRadiusMix.value(borderRadius);
 
-        expectProp(borderRadiusMix.topLeft, const Radius.circular(5.0));
-        expectProp(borderRadiusMix.topRight, const Radius.circular(10.0));
-        expectProp(borderRadiusMix.bottomLeft, const Radius.circular(15.0));
-        expectProp(
-          borderRadiusMix.bottomRight, const Radius.circular(20.0),
-        );
+        expectProp(borderRadiusMix.$topLeft, const Radius.circular(5.0));
+        expectProp(borderRadiusMix.$topRight, const Radius.circular(10.0));
+        expectProp(borderRadiusMix.$bottomLeft, const Radius.circular(15.0));
+        expectProp(borderRadiusMix.$bottomRight, const Radius.circular(20.0));
       });
 
       test('maybeValue returns null for null input', () {
@@ -51,7 +47,7 @@ void main() {
         final result = BorderRadiusMix.maybeValue(borderRadius);
 
         expect(result, isNotNull);
-        expectProp(result!.topLeft, const Radius.circular(8.0));
+        expectProp(result!.$topLeft, const Radius.circular(8.0));
       });
     });
 
@@ -113,10 +109,10 @@ void main() {
 
         final merged = first.merge(second);
 
-        expectProp(merged.topLeft, const Radius.circular(8.0));
-        expectProp(merged.topRight, const Radius.circular(16.0));
-        expectProp(merged.bottomLeft, const Radius.circular(20.0));
-        expect(merged.bottomRight, isNull);
+        expectProp(merged.$topLeft, const Radius.circular(8.0));
+        expectProp(merged.$topRight, const Radius.circular(16.0));
+        expectProp(merged.$bottomLeft, const Radius.circular(20.0));
+        expect(merged.$bottomRight, isNull);
       });
     });
 
@@ -160,16 +156,20 @@ void main() {
         );
 
         expectProp(
-          borderRadiusDirectionalMix.topStart, const Radius.circular(8.0),
+          borderRadiusDirectionalMix.$topStart,
+          const Radius.circular(8.0),
         );
         expectProp(
-          borderRadiusDirectionalMix.topEnd, const Radius.circular(12.0),
+          borderRadiusDirectionalMix.$topEnd,
+          const Radius.circular(12.0),
         );
         expectProp(
-          borderRadiusDirectionalMix.bottomStart, const Radius.circular(16.0),
+          borderRadiusDirectionalMix.$bottomStart,
+          const Radius.circular(16.0),
         );
         expectProp(
-          borderRadiusDirectionalMix.bottomEnd, const Radius.circular(20.0),
+          borderRadiusDirectionalMix.$bottomEnd,
+          const Radius.circular(20.0),
         );
       });
 
@@ -188,16 +188,20 @@ void main() {
           );
 
           expectProp(
-            borderRadiusDirectionalMix.topStart, const Radius.circular(5.0),
+            borderRadiusDirectionalMix.$topStart,
+            const Radius.circular(5.0),
           );
           expectProp(
-            borderRadiusDirectionalMix.topEnd, const Radius.circular(10.0),
+            borderRadiusDirectionalMix.$topEnd,
+            const Radius.circular(10.0),
           );
           expectProp(
-            borderRadiusDirectionalMix.bottomStart, const Radius.circular(15.0),
+            borderRadiusDirectionalMix.$bottomStart,
+            const Radius.circular(15.0),
           );
           expectProp(
-            borderRadiusDirectionalMix.bottomEnd, const Radius.circular(20.0),
+            borderRadiusDirectionalMix.$bottomEnd,
+            const Radius.circular(20.0),
           );
         },
       );
@@ -214,7 +218,7 @@ void main() {
           final result = BorderRadiusDirectionalMix.maybeValue(borderRadius);
 
           expect(result, isNotNull);
-          expectProp(result!.topStart, const Radius.circular(8.0));
+          expectProp(result!.$topStart, const Radius.circular(8.0));
         },
       );
     });
@@ -262,10 +266,10 @@ void main() {
 
         final merged = first.merge(second);
 
-        expectProp(merged.topStart, const Radius.circular(8.0));
-        expectProp(merged.topEnd, const Radius.circular(16.0));
-        expectProp(merged.bottomStart, const Radius.circular(20.0));
-        expect(merged.bottomEnd, isNull);
+        expectProp(merged.$topStart, const Radius.circular(8.0));
+        expectProp(merged.$topEnd, const Radius.circular(16.0));
+        expectProp(merged.$bottomStart, const Radius.circular(20.0));
+        expect(merged.$bottomEnd, isNull);
       });
     });
 

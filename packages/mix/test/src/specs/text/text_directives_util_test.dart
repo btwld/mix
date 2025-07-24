@@ -5,9 +5,7 @@ import '../../../helpers/testing_utils.dart';
 
 void main() {
   group('TextDirectiveUtility', () {
-    final utility = TextDirectiveUtility<UtilityTestAttribute>(
-      (prop) => UtilityTestAttribute(prop),
-    );
+    final utility = TextDirectiveUtility(UtilityTestAttribute.new);
 
     test('capitalize creates CapitalizeStringDirective', () {
       final result = utility.capitalize();
@@ -15,7 +13,7 @@ void main() {
 
       // Check that it contains a Prop with CapitalizeStringDirective
       expect(result.value, isA<Prop<MixDirective<String>>>());
-      final prop = result.value as Prop<MixDirective<String>>;
+      final prop = result.value;
       expectProp(prop, isA<CapitalizeStringDirective>());
 
       // Test the directive functionality
@@ -28,7 +26,7 @@ void main() {
       expect(result, isA<UtilityTestAttribute>());
 
       expect(result.value, isA<Prop<MixDirective<String>>>());
-      final prop = result.value as Prop<MixDirective<String>>;
+      final prop = result.value;
       expectProp(prop, isA<UppercaseStringDirective>());
 
       // Test the directive functionality
@@ -41,7 +39,7 @@ void main() {
       expect(result, isA<UtilityTestAttribute>());
 
       expect(result.value, isA<Prop<MixDirective<String>>>());
-      final prop = result.value as Prop<MixDirective<String>>;
+      final prop = result.value;
       expectProp(prop, isA<LowercaseStringDirective>());
 
       // Test the directive functionality
@@ -54,7 +52,7 @@ void main() {
       expect(result, isA<UtilityTestAttribute>());
 
       expect(result.value, isA<Prop<MixDirective<String>>>());
-      final prop = result.value as Prop<MixDirective<String>>;
+      final prop = result.value;
       expectProp(prop, isA<TitleCaseStringDirective>());
 
       // Test the directive functionality
@@ -67,7 +65,7 @@ void main() {
       expect(result, isA<UtilityTestAttribute>());
 
       expect(result.value, isA<Prop<MixDirective<String>>>());
-      final prop = result.value as Prop<MixDirective<String>>;
+      final prop = result.value;
       expectProp(prop, isA<SentenceCaseStringDirective>());
 
       // Test the directive functionality
@@ -83,7 +81,7 @@ void main() {
       expect(result, isA<UtilityTestAttribute>());
       expect(result.value, isA<Prop<MixDirective<String>>>());
 
-      final prop = result.value as Prop<MixDirective<String>>;
+      final prop = result.value;
       expectProp(prop, same(customDirective));
     });
   });

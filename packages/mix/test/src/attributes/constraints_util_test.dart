@@ -6,9 +6,7 @@ import '../../helpers/testing_utils.dart';
 
 void main() {
   group('BoxConstraintsUtility', () {
-    final utility = BoxConstraintsUtility<UtilityTestAttribute>(
-      (prop) => UtilityTestAttribute(prop),
-    );
+    final utility = BoxConstraintsUtility(UtilityTestAttribute.new);
 
     test('call() creates BoxConstraintsMix from value', () {
       const constraints = BoxConstraints(
@@ -23,10 +21,10 @@ void main() {
       expect(result.value, isA<MixProp<BoxConstraints>>());
 
       final mix = result.value.value as BoxConstraintsMix;
-      expectProp(mix.minWidth, 100.0);
-      expectProp(mix.maxWidth, 200.0);
-      expectProp(mix.minHeight, 50.0);
-      expectProp(mix.maxHeight, 150.0);
+      expectProp(mix.$minWidth, 100.0);
+      expectProp(mix.$maxWidth, 200.0);
+      expectProp(mix.$minHeight, 50.0);
+      expectProp(mix.$maxHeight, 150.0);
     });
 
     group('individual constraint utilities', () {
@@ -35,10 +33,10 @@ void main() {
 
         expect(result, isA<UtilityTestAttribute>());
         final mix = result.value.value as BoxConstraintsMix;
-        expectProp(mix.minWidth, 100.0);
-        expect(mix.maxWidth, isNull);
-        expect(mix.minHeight, isNull);
-        expect(mix.maxHeight, isNull);
+        expectProp(mix.$minWidth, 100.0);
+        expect(mix.$maxWidth, isNull);
+        expect(mix.$minHeight, isNull);
+        expect(mix.$maxHeight, isNull);
       });
 
       test('maxWidth creates BoxConstraintsMix with maxWidth', () {
@@ -46,10 +44,10 @@ void main() {
 
         expect(result, isA<UtilityTestAttribute>());
         final mix = result.value.value as BoxConstraintsMix;
-        expect(mix.minWidth, isNull);
-        expectProp(mix.maxWidth, 200.0);
-        expect(mix.minHeight, isNull);
-        expect(mix.maxHeight, isNull);
+        expect(mix.$minWidth, isNull);
+        expectProp(mix.$maxWidth, 200.0);
+        expect(mix.$minHeight, isNull);
+        expect(mix.$maxHeight, isNull);
       });
 
       test('minHeight creates BoxConstraintsMix with minHeight', () {
@@ -57,10 +55,10 @@ void main() {
 
         expect(result, isA<UtilityTestAttribute>());
         final mix = result.value.value as BoxConstraintsMix;
-        expect(mix.minWidth, isNull);
-        expect(mix.maxWidth, isNull);
-        expectProp(mix.minHeight, 50.0);
-        expect(mix.maxHeight, isNull);
+        expect(mix.$minWidth, isNull);
+        expect(mix.$maxWidth, isNull);
+        expectProp(mix.$minHeight, 50.0);
+        expect(mix.$maxHeight, isNull);
       });
 
       test('maxHeight creates BoxConstraintsMix with maxHeight', () {
@@ -68,10 +66,10 @@ void main() {
 
         expect(result, isA<UtilityTestAttribute>());
         final mix = result.value.value as BoxConstraintsMix;
-        expect(mix.minWidth, isNull);
-        expect(mix.maxWidth, isNull);
-        expect(mix.minHeight, isNull);
-        expectProp(mix.maxHeight, 150.0);
+        expect(mix.$minWidth, isNull);
+        expect(mix.$maxWidth, isNull);
+        expect(mix.$minHeight, isNull);
+        expectProp(mix.$maxHeight, 150.0);
       });
     });
 
@@ -82,7 +80,7 @@ void main() {
 
         expect(result, isA<UtilityTestAttribute>());
         final mix = result.value.value as BoxConstraintsMix;
-        expectProp(mix.minWidth, token);
+        expectProp(mix.$minWidth, token);
       });
 
       test('maxWidth supports tokens', () {
@@ -91,7 +89,7 @@ void main() {
 
         expect(result, isA<UtilityTestAttribute>());
         final mix = result.value.value as BoxConstraintsMix;
-        expectProp(mix.maxWidth, token);
+        expectProp(mix.$maxWidth, token);
       });
 
       test('minHeight supports tokens', () {
@@ -100,7 +98,7 @@ void main() {
 
         expect(result, isA<UtilityTestAttribute>());
         final mix = result.value.value as BoxConstraintsMix;
-        expectProp(mix.minHeight, token);
+        expectProp(mix.$minHeight, token);
       });
 
       test('maxHeight supports tokens', () {
@@ -109,7 +107,7 @@ void main() {
 
         expect(result, isA<UtilityTestAttribute>());
         final mix = result.value.value as BoxConstraintsMix;
-        expectProp(mix.maxHeight, token);
+        expectProp(mix.$maxHeight, token);
       });
     });
 
@@ -123,10 +121,10 @@ void main() {
         final result = utility(BoxConstraintsMix.value(constraints));
         final mix = result.value.value as BoxConstraintsMix;
 
-        expectProp(mix.minWidth, 100.0);
-        expectProp(mix.maxWidth, 100.0);
-        expectProp(mix.minHeight, 100.0);
-        expectProp(mix.maxHeight, 100.0);
+        expectProp(mix.$minWidth, 100.0);
+        expectProp(mix.$maxWidth, 100.0);
+        expectProp(mix.$minHeight, 100.0);
+        expectProp(mix.$maxHeight, 100.0);
       });
 
       test('creates loose constraints', () {
@@ -135,10 +133,10 @@ void main() {
         final result = utility(BoxConstraintsMix.value(constraints));
         final mix = result.value.value as BoxConstraintsMix;
 
-        expectProp(mix.minWidth, 0.0);
-        expectProp(mix.maxWidth, 200.0);
-        expectProp(mix.minHeight, 0.0);
-        expectProp(mix.maxHeight, 150.0);
+        expectProp(mix.$minWidth, 0.0);
+        expectProp(mix.$maxWidth, 200.0);
+        expectProp(mix.$minHeight, 0.0);
+        expectProp(mix.$maxHeight, 150.0);
       });
 
       test('creates expand constraints', () {
@@ -147,10 +145,10 @@ void main() {
         final result = utility(BoxConstraintsMix.value(constraints));
         final mix = result.value.value as BoxConstraintsMix;
 
-        expectProp(mix.minWidth, 300.0);
-        expectProp(mix.maxWidth, 300.0);
-        expectProp(mix.minHeight, 400.0);
-        expectProp(mix.maxHeight, 400.0);
+        expectProp(mix.$minWidth, 300.0);
+        expectProp(mix.$maxWidth, 300.0);
+        expectProp(mix.$minHeight, 400.0);
+        expectProp(mix.$maxHeight, 400.0);
       });
 
       test('handles infinity values', () {
@@ -164,10 +162,10 @@ void main() {
         final result = utility(BoxConstraintsMix.value(constraints));
         final mix = result.value.value as BoxConstraintsMix;
 
-        expectProp(mix.minWidth, 0.0);
-        expectProp(mix.maxWidth, double.infinity);
-        expectProp(mix.minHeight, 0.0);
-        expectProp(mix.maxHeight, double.infinity);
+        expectProp(mix.$minWidth, 0.0);
+        expectProp(mix.$maxWidth, double.infinity);
+        expectProp(mix.$minHeight, 0.0);
+        expectProp(mix.$maxHeight, double.infinity);
       });
     });
 

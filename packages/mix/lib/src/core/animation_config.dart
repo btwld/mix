@@ -1,7 +1,8 @@
 import 'package:flutter/widgets.dart';
 
-import '../../mix.dart';
 import '../internal/constants.dart';
+import 'spec.dart';
+import 'style.dart';
 
 /// Configuration data for animated styles in the Mix framework.
 ///
@@ -182,35 +183,3 @@ class AnimationBuilderConfig<S extends Spec<S>, V> extends AnimationConfig {
   @override
   int get hashCode => Object.hash(duration, curve);
 }
-
-typedef BoxStyle = BoxSpecAttribute;
-
-// void main() {
-//   final style = BoxStyle().animationBuilder<double>(
-//     builder: (v) => BoxStyle().wrap.scale(v),
-//     delay: 300.ms,
-//   );
-
-//   Box(style: StyleAnimator(style: style));
-// }
-
-// class StyleAnimator<S extends Spec<S>> extends SpecStyle<S> {
-//   final SpecStyle<S> style;
-
-//   const StyleAnimator({required this.style});
-
-//   @override
-//   S resolve(BuildContext context) {
-//     // Apply the style to the spec.
-//     return style.resolve(context);
-//   }
-
-//   @override
-//   StyleAnimator<S> merge(StyleAnimator<S> other) {
-//     // Merge the styles.
-//     return StyleAnimator(style: style.merge(other.style));
-//   }
-
-//   @override
-//   get props => [style];
-// }

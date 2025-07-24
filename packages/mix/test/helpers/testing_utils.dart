@@ -265,7 +265,7 @@ class MockBuildContext extends BuildContext {
 /// final gradientUtility = GradientUtility(UtilityTestAttribute.new);
 /// final attr = gradientUtility.linear(...);
 /// ```
-final class UtilityTestAttribute<T> extends SpecStyle<MockSpec> {
+final class UtilityTestAttribute<T> extends SpecStyle<MockSpec<T>> {
   final T value;
 
   const UtilityTestAttribute(this.value);
@@ -288,11 +288,8 @@ final class UtilityTestAttribute<T> extends SpecStyle<MockSpec> {
   }
 
   @override
-  MockSpec resolve(BuildContext context) {
-    final resolvedValue = value is Resolvable
-        ? (value as Resolvable).resolve(context)
-        : value;
-    return MockSpec(resolvedValue: resolvedValue);
+  MockSpec<T> resolve(BuildContext context) {
+    return MockSpec<T>(resolvedValue: value);
   }
 
   @override
@@ -303,20 +300,20 @@ final class UtilityTestAttribute<T> extends SpecStyle<MockSpec> {
 ///
 /// A simple Spec implementation that holds a resolved value.
 /// Used as the target spec for mock attributes.
-final class MockSpec extends Spec<MockSpec> {
-  final dynamic resolvedValue;
+final class MockSpec<T> extends Spec<MockSpec<T>> {
+  final T? resolvedValue;
 
   const MockSpec({this.resolvedValue});
 
   @override
-  MockSpec lerp(MockSpec? other, double t) {
+  MockSpec<T> lerp(MockSpec<T>? other, double t) {
     if (other == null) return this;
     // Simple lerp - just return other for testing
     return other;
   }
 
   @override
-  MockSpec copyWith({dynamic resolvedValue}) {
+  MockSpec<T> copyWith({T? resolvedValue}) {
     return MockSpec(resolvedValue: resolvedValue ?? this.resolvedValue);
   }
 

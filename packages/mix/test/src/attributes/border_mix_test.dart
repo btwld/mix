@@ -15,10 +15,10 @@ void main() {
           strokeAlign: 1.0,
         );
 
-        expectProp(borderSideMix.color, Colors.red);
-        expectProp(borderSideMix.width, 2.0);
-        expectProp(borderSideMix.style, BorderStyle.solid);
-        expectProp(borderSideMix.strokeAlign, 1.0);
+        expectProp(borderSideMix.$color, Colors.red);
+        expectProp(borderSideMix.$width, 2.0);
+        expectProp(borderSideMix.$style, BorderStyle.solid);
+        expectProp(borderSideMix.$strokeAlign, 1.0);
       });
 
       test('value constructor extracts properties from BorderSide', () {
@@ -31,10 +31,10 @@ void main() {
 
         final borderSideMix = BorderSideMix.value(borderSide);
 
-        expectProp(borderSideMix.color, Colors.blue);
-        expectProp(borderSideMix.width, 3.0);
-        expectProp(borderSideMix.style, BorderStyle.solid);
-        expectProp(borderSideMix.strokeAlign, 0.5);
+        expectProp(borderSideMix.$color, Colors.blue);
+        expectProp(borderSideMix.$width, 3.0);
+        expectProp(borderSideMix.$style, BorderStyle.solid);
+        expectProp(borderSideMix.$strokeAlign, 0.5);
       });
 
       test('maybeValue returns null for null input', () {
@@ -47,7 +47,7 @@ void main() {
         final result = BorderSideMix.maybeValue(borderSide);
 
         expect(result, isNotNull);
-        expectProp(result!.width, 1.0);
+        expectProp(result!.$width, 1.0);
       });
 
       test('none static instance has correct properties', () {
@@ -57,10 +57,10 @@ void main() {
 
         // BorderSideMix.none is created with BorderSideMix() (no parameters)
         // so all properties are null
-        expectProp(none.style, resolvedValue.style);
-        expectProp(none.width, resolvedValue.width);
-        expectProp(none.color, resolvedValue.color);
-        expectProp(none.strokeAlign, resolvedValue.strokeAlign);
+        expectProp(none.$style, resolvedValue.style);
+        expectProp(none.$width, resolvedValue.width);
+        expectProp(none.$color, resolvedValue.color);
+        expectProp(none.$strokeAlign, resolvedValue.strokeAlign);
       });
     });
 
@@ -110,11 +110,11 @@ void main() {
         final merged = first.merge(second);
 
         // Property that exists only in first remains as direct value
-        expectProp(merged.color, Colors.red);
+        expectProp(merged.$color, Colors.red);
         // Property that exists in both - second value replaces first (Prop replacement strategy)
-        expectProp(merged.width, 3.0);
+        expectProp(merged.$width, 3.0);
         // Property that exists only in second remains as direct value
-        expectProp(merged.style, BorderStyle.solid);
+        expectProp(merged.$style, BorderStyle.solid);
       });
     });
 
@@ -158,20 +158,20 @@ void main() {
           right: rightSide,
         );
 
-        expect(borderMix.top, isA<MixProp<BorderSide>>());
-        expect(borderMix.bottom, isA<MixProp<BorderSide>>());
-        expect(borderMix.left, isA<MixProp<BorderSide>>());
-        expect(borderMix.right, isA<MixProp<BorderSide>>());
+        expect(borderMix.$top, isA<MixProp<BorderSide>>());
+        expect(borderMix.$bottom, isA<MixProp<BorderSide>>());
+        expect(borderMix.$left, isA<MixProp<BorderSide>>());
+        expect(borderMix.$right, isA<MixProp<BorderSide>>());
       });
 
       test('all constructor creates uniform border', () {
         final side = BorderSideMix.only(color: Colors.red, width: 2.0);
         final borderMix = BorderMix.all(side);
 
-        expect(borderMix.top, isA<MixProp<BorderSide>>());
-        expect(borderMix.bottom, isA<MixProp<BorderSide>>());
-        expect(borderMix.left, isA<MixProp<BorderSide>>());
-        expect(borderMix.right, isA<MixProp<BorderSide>>());
+        expect(borderMix.$top, isA<MixProp<BorderSide>>());
+        expect(borderMix.$bottom, isA<MixProp<BorderSide>>());
+        expect(borderMix.$left, isA<MixProp<BorderSide>>());
+        expect(borderMix.$right, isA<MixProp<BorderSide>>());
       });
 
       test('value constructor extracts properties from Border', () {
@@ -184,10 +184,10 @@ void main() {
 
         final borderMix = BorderMix.value(border);
 
-        expect(borderMix.top, isA<MixProp<BorderSide>>());
-        expect(borderMix.bottom, isA<MixProp<BorderSide>>());
-        expect(borderMix.left, isA<MixProp<BorderSide>>());
-        expect(borderMix.right, isA<MixProp<BorderSide>>());
+        expect(borderMix.$top, isA<MixProp<BorderSide>>());
+        expect(borderMix.$bottom, isA<MixProp<BorderSide>>());
+        expect(borderMix.$left, isA<MixProp<BorderSide>>());
+        expect(borderMix.$right, isA<MixProp<BorderSide>>());
       });
 
       test('maybeValue returns null for null input', () {

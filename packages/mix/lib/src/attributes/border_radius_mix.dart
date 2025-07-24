@@ -46,6 +46,38 @@ sealed class BorderRadiusGeometryMix<T extends BorderRadiusGeometry>
     return BorderRadiusGeometryMix.value(value);
   }
 
+  static BorderRadiusMix topLeft(Radius radius) {
+    return BorderRadiusMix.only(topLeft: radius);
+  }
+
+  static BorderRadiusMix topRight(Radius radius) {
+    return BorderRadiusMix.only(topRight: radius);
+  }
+
+  static BorderRadiusMix bottomLeft(Radius radius) {
+    return BorderRadiusMix.only(bottomLeft: radius);
+  }
+
+  static BorderRadiusMix bottomRight(Radius radius) {
+    return BorderRadiusMix.only(bottomRight: radius);
+  }
+
+  static BorderRadiusDirectionalMix topStart(Radius radius) {
+    return BorderRadiusDirectionalMix.only(topStart: radius);
+  }
+
+  static BorderRadiusDirectionalMix topEnd(Radius radius) {
+    return BorderRadiusDirectionalMix.only(topEnd: radius);
+  }
+
+  static BorderRadiusDirectionalMix bottomStart(Radius radius) {
+    return BorderRadiusDirectionalMix.only(bottomStart: radius);
+  }
+
+  static BorderRadiusDirectionalMix bottomEnd(Radius radius) {
+    return BorderRadiusDirectionalMix.only(bottomEnd: radius);
+  }
+
   /// Will try to merge two border radius geometries, the type will resolve to type of
   /// `b` if its not null and `a` otherwise.
   static BorderRadiusGeometryMix? tryToMerge(
@@ -62,54 +94,28 @@ sealed class BorderRadiusGeometryMix<T extends BorderRadiusGeometry>
     A extends BorderRadiusGeometryMix,
     B extends BorderRadiusGeometryMix
   >(A a, B b) {
-    if (a.runtimeType == b.runtimeType) return a.merge(b) as B;
-
-    return switch (b) {
-      (BorderRadiusMix g) => a._asBorderRadius().merge(g) as B,
-      (BorderRadiusDirectionalMix g) =>
-        a._asBorderRadiusDirectional().merge(g) as B,
+    return switch ((a, b)) {
+      (BorderRadiusMix a, BorderRadiusMix b) => a.merge(b) as B,
+      (BorderRadiusDirectionalMix a, BorderRadiusDirectionalMix b) =>
+        a.merge(b) as B,
+      (BorderRadiusMix a, BorderRadiusDirectionalMix b) =>
+        BorderRadiusDirectionalMix(
+              topStart: a.$topLeft,
+              topEnd: a.$topRight,
+              bottomStart: a.$bottomLeft,
+              bottomEnd: a.$bottomRight,
+            ).merge(b)
+            as B,
+      (BorderRadiusDirectionalMix a, BorderRadiusMix b) =>
+        BorderRadiusMix(
+              topLeft: a.$topStart,
+              topRight: a.$topEnd,
+              bottomLeft: a.$bottomStart,
+              bottomRight: a.$bottomEnd,
+            ).merge(b)
+            as B,
     };
   }
-
-  @protected
-  BorderRadiusMix _asBorderRadius() {
-    if (this is BorderRadiusMix) return this as BorderRadiusMix;
-
-    // For BorderRadiusDirectionalMix converting to BorderRadiusMix
-    // topStart -> topLeft, topEnd -> topRight, bottomStart -> bottomLeft, bottomEnd -> bottomRight
-    final directional = this as BorderRadiusDirectionalMix;
-
-    return BorderRadiusMix(
-      topLeft: directional.topStart,
-      topRight: directional.topEnd,
-      bottomLeft: directional.bottomStart,
-      bottomRight: directional.bottomEnd,
-    );
-  }
-
-  @protected
-  BorderRadiusDirectionalMix _asBorderRadiusDirectional() {
-    if (this is BorderRadiusDirectionalMix) {
-      return this as BorderRadiusDirectionalMix;
-    }
-
-    // For BorderRadiusMix converting to BorderRadiusDirectionalMix
-    // topLeft -> topStart, topRight -> topEnd, bottomLeft -> bottomStart, bottomRight -> bottomEnd
-    return BorderRadiusDirectionalMix(
-      topStart: topLeft,
-      topEnd: topRight,
-      bottomStart: bottomLeft,
-      bottomEnd: bottomRight,
-    );
-  }
-
-  /// Common getters for accessing radius properties
-  /// These return null for types that don't support these properties
-  Prop<Radius>? get topLeft => null;
-  Prop<Radius>? get topRight => null;
-  Prop<Radius>? get bottomLeft => null;
-
-  Prop<Radius>? get bottomRight => null;
 
   @override
   /// Merges this [BorderRadiusGeometryMix] instance with another of the same type.
@@ -121,17 +127,10 @@ sealed class BorderRadiusGeometryMix<T extends BorderRadiusGeometry>
 }
 
 final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
-  @override
-  final Prop<Radius>? topLeft;
-
-  @override
-  final Prop<Radius>? topRight;
-
-  @override
-  final Prop<Radius>? bottomLeft;
-
-  @override
-  final Prop<Radius>? bottomRight;
+  final Prop<Radius>? $topLeft;
+  final Prop<Radius>? $topRight;
+  final Prop<Radius>? $bottomLeft;
+  final Prop<Radius>? $bottomRight;
 
   BorderRadiusMix.only({
     Radius? topLeft,
@@ -162,11 +161,14 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
       );
 
   const BorderRadiusMix({
-    this.topLeft,
-    this.topRight,
-    this.bottomLeft,
-    this.bottomRight,
-  });
+    Prop<Radius>? topLeft,
+    Prop<Radius>? topRight,
+    Prop<Radius>? bottomLeft,
+    Prop<Radius>? bottomRight,
+  }) : $topLeft = topLeft,
+       $topRight = topRight,
+       $bottomLeft = bottomLeft,
+       $bottomRight = bottomRight;
 
   BorderRadiusMix.all(Radius radius)
     : this.only(
@@ -188,13 +190,37 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
     return borderRadius != null ? BorderRadiusMix.value(borderRadius) : null;
   }
 
+  /// Creates a new [BorderRadiusMix] with the provided topLeft radius,
+  /// merging it with the current instance.
+  BorderRadiusMix topLeft(Radius radius) {
+    return merge(BorderRadiusMix.only(topLeft: radius));
+  }
+
+  /// Creates a new [BorderRadiusMix] with the provided topRight radius,
+  /// merging it with the current instance.
+  BorderRadiusMix topRight(Radius radius) {
+    return merge(BorderRadiusMix.only(topRight: radius));
+  }
+
+  /// Creates a new [BorderRadiusMix] with the provided bottomLeft radius,
+  /// merging it with the current instance.
+  BorderRadiusMix bottomLeft(Radius radius) {
+    return merge(BorderRadiusMix.only(bottomLeft: radius));
+  }
+
+  /// Creates a new [BorderRadiusMix] with the provided bottomRight radius,
+  /// merging it with the current instance.
+  BorderRadiusMix bottomRight(Radius radius) {
+    return merge(BorderRadiusMix.only(bottomRight: radius));
+  }
+
   @override
   BorderRadius resolve(BuildContext context) {
     return BorderRadius.only(
-      topLeft: MixHelpers.resolve(context, topLeft) ?? Radius.zero,
-      topRight: MixHelpers.resolve(context, topRight) ?? Radius.zero,
-      bottomLeft: MixHelpers.resolve(context, bottomLeft) ?? Radius.zero,
-      bottomRight: MixHelpers.resolve(context, bottomRight) ?? Radius.zero,
+      topLeft: MixHelpers.resolve(context, $topLeft) ?? Radius.zero,
+      topRight: MixHelpers.resolve(context, $topRight) ?? Radius.zero,
+      bottomLeft: MixHelpers.resolve(context, $bottomLeft) ?? Radius.zero,
+      bottomRight: MixHelpers.resolve(context, $bottomRight) ?? Radius.zero,
     );
   }
 
@@ -203,23 +229,23 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
     if (other == null) return this;
 
     return BorderRadiusMix(
-      topLeft: MixHelpers.merge(topLeft, other.topLeft),
-      topRight: MixHelpers.merge(topRight, other.topRight),
-      bottomLeft: MixHelpers.merge(bottomLeft, other.bottomLeft),
-      bottomRight: MixHelpers.merge(bottomRight, other.bottomRight),
+      topLeft: MixHelpers.merge($topLeft, other.$topLeft),
+      topRight: MixHelpers.merge($topRight, other.$topRight),
+      bottomLeft: MixHelpers.merge($bottomLeft, other.$bottomLeft),
+      bottomRight: MixHelpers.merge($bottomRight, other.$bottomRight),
     );
   }
 
   @override
-  List<Object?> get props => [topLeft, topRight, bottomLeft, bottomRight];
+  List<Object?> get props => [$topLeft, $topRight, $bottomLeft, $bottomRight];
 }
 
 final class BorderRadiusDirectionalMix
     extends BorderRadiusGeometryMix<BorderRadiusDirectional> {
-  final Prop<Radius>? topStart;
-  final Prop<Radius>? topEnd;
-  final Prop<Radius>? bottomStart;
-  final Prop<Radius>? bottomEnd;
+  final Prop<Radius>? $topStart;
+  final Prop<Radius>? $topEnd;
+  final Prop<Radius>? $bottomStart;
+  final Prop<Radius>? $bottomEnd;
 
   BorderRadiusDirectionalMix.only({
     Radius? topStart,
@@ -250,11 +276,14 @@ final class BorderRadiusDirectionalMix
       );
 
   const BorderRadiusDirectionalMix({
-    this.topStart,
-    this.topEnd,
-    this.bottomStart,
-    this.bottomEnd,
-  });
+    Prop<Radius>? topStart,
+    Prop<Radius>? topEnd,
+    Prop<Radius>? bottomStart,
+    Prop<Radius>? bottomEnd,
+  }) : $topStart = topStart,
+       $topEnd = topEnd,
+       $bottomStart = bottomStart,
+       $bottomEnd = bottomEnd;
 
   /// Constructor that accepts a nullable [BorderRadiusDirectional] value and extracts its properties.
   ///
@@ -272,13 +301,37 @@ final class BorderRadiusDirectionalMix
         : null;
   }
 
+  /// Creates a new [BorderRadiusDirectionalMix] with the provided topStart radius,
+  /// merging it with the current instance.
+  BorderRadiusDirectionalMix topStart(Radius radius) {
+    return merge(BorderRadiusDirectionalMix.only(topStart: radius));
+  }
+
+  /// Creates a new [BorderRadiusDirectionalMix] with the provided topEnd radius,
+  /// merging it with the current instance.
+  BorderRadiusDirectionalMix topEnd(Radius radius) {
+    return merge(BorderRadiusDirectionalMix.only(topEnd: radius));
+  }
+
+  /// Creates a new [BorderRadiusDirectionalMix] with the provided bottomStart radius,
+  /// merging it with the current instance.
+  BorderRadiusDirectionalMix bottomStart(Radius radius) {
+    return merge(BorderRadiusDirectionalMix.only(bottomStart: radius));
+  }
+
+  /// Creates a new [BorderRadiusDirectionalMix] with the provided bottomEnd radius,
+  /// merging it with the current instance.
+  BorderRadiusDirectionalMix bottomEnd(Radius radius) {
+    return merge(BorderRadiusDirectionalMix.only(bottomEnd: radius));
+  }
+
   @override
   BorderRadiusDirectional resolve(BuildContext context) {
     return BorderRadiusDirectional.only(
-      topStart: MixHelpers.resolve(context, topStart) ?? Radius.zero,
-      topEnd: MixHelpers.resolve(context, topEnd) ?? Radius.zero,
-      bottomStart: MixHelpers.resolve(context, bottomStart) ?? Radius.zero,
-      bottomEnd: MixHelpers.resolve(context, bottomEnd) ?? Radius.zero,
+      topStart: MixHelpers.resolve(context, $topStart) ?? Radius.zero,
+      topEnd: MixHelpers.resolve(context, $topEnd) ?? Radius.zero,
+      bottomStart: MixHelpers.resolve(context, $bottomStart) ?? Radius.zero,
+      bottomEnd: MixHelpers.resolve(context, $bottomEnd) ?? Radius.zero,
     );
   }
 
@@ -287,24 +340,13 @@ final class BorderRadiusDirectionalMix
     if (other == null) return this;
 
     return BorderRadiusDirectionalMix(
-      topStart: MixHelpers.merge(topStart, other.topStart),
-      topEnd: MixHelpers.merge(topEnd, other.topEnd),
-      bottomStart: MixHelpers.merge(bottomStart, other.bottomStart),
-      bottomEnd: MixHelpers.merge(bottomEnd, other.bottomEnd),
+      topStart: MixHelpers.merge($topStart, other.$topStart),
+      topEnd: MixHelpers.merge($topEnd, other.$topEnd),
+      bottomStart: MixHelpers.merge($bottomStart, other.$bottomStart),
+      bottomEnd: MixHelpers.merge($bottomEnd, other.$bottomEnd),
     );
   }
 
   @override
-  List<Object?> get props => [topStart, topEnd, bottomStart, bottomEnd];
-
-  /// These getters return null for BorderRadiusDirectional as they don't apply
-  /// to directional border radius (which uses topStart/topEnd instead of topLeft/topRight)
-  @override
-  Prop<Radius>? get topLeft => null;
-  @override
-  Prop<Radius>? get topRight => null;
-  @override
-  Prop<Radius>? get bottomLeft => null;
-  @override
-  Prop<Radius>? get bottomRight => null;
+  List<Object?> get props => [$topStart, $topEnd, $bottomStart, $bottomEnd];
 }
