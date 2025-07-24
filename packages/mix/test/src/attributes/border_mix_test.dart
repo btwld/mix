@@ -53,12 +53,14 @@ void main() {
       test('none static instance has correct properties', () {
         final none = BorderSideMix.none;
 
+        const resolvedValue = BorderSide.none;
+
         // BorderSideMix.none is created with BorderSideMix() (no parameters)
         // so all properties are null
-        expect(none.style, isNull);
-        expect(none.width, isNull);
-        expect(none.color, isNull);
-        expect(none.strokeAlign, isNull);
+        expectProp(none.style, resolvedValue.style);
+        expectProp(none.width, resolvedValue.width);
+        expectProp(none.color, resolvedValue.color);
+        expectProp(none.strokeAlign, resolvedValue.strokeAlign);
       });
     });
 

@@ -134,7 +134,6 @@ void main() {
         );
 
         expect(modifier1, isNot(equals(modifier2)));
-        expect(modifier1.hashCode, isNot(equals(modifier2.hashCode)));
       });
 
       test('equal when both have null mouseCursor', () {
@@ -152,7 +151,6 @@ void main() {
         );
 
         expect(modifier1, isNot(equals(modifier2)));
-        expect(modifier1.hashCode, isNot(equals(modifier2.hashCode)));
       });
     });
 

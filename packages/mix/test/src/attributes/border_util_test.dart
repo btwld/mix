@@ -21,7 +21,7 @@ void main() {
       expect(result, isA<UtilityTestAttribute>());
       expect(result.value, isA<MixProp<BorderSide>>());
 
-      final mix = result.value.getMix() as BorderSideMix;
+      final mix = result.value.value;
       expectProp(mix.color, Colors.red);
       expectProp(mix.width, 2.0);
       expectProp(mix.style, BorderStyle.solid);
@@ -31,7 +31,7 @@ void main() {
       final result = utility.none();
       expect(result, isA<UtilityTestAttribute>());
 
-      final mix = result.value.getMix() as BorderSideMix;
+      final mix = result.value.value;
       expectProp(mix.style, BorderStyle.none);
       expectProp(mix.width, 0.0);
     });
@@ -46,7 +46,7 @@ void main() {
 
       expect(result, isA<UtilityTestAttribute>());
 
-      final mix = result.value.getMix() as BorderSideMix;
+      final mix = result.value.value;
       expectProp(mix.color, Colors.blue);
       expectProp(mix.width, 3.0);
       expectProp(mix.style, BorderStyle.solid);
@@ -57,28 +57,28 @@ void main() {
       test('color utility creates BorderSideMix with color', () {
         final result = utility.color(Colors.green);
 
-        final mix = result.value.getMix() as BorderSideMix;
+        final mix = result.value.value;
         expectProp(mix.color, Colors.green);
       });
 
       test('width utility creates BorderSideMix with width', () {
         final result = utility.width(4.0);
 
-        final mix = result.value.getMix() as BorderSideMix;
+        final mix = result.value.value;
         expectProp(mix.width, 4.0);
       });
 
       test('style utility creates BorderSideMix with style', () {
         final result = utility.style(BorderStyle.solid);
 
-        final mix = result.value.getMix() as BorderSideMix;
+        final mix = result.value.value;
         expectProp(mix.style, BorderStyle.solid);
       });
 
       test('strokeAlign utility creates BorderSideMix with strokeAlign', () {
         final result = utility.strokeAlign(BorderSide.strokeAlignInside);
 
-        final mix = result.value.getMix() as BorderSideMix;
+        final mix = result.value.value;
         expectProp(mix.strokeAlign, BorderSide.strokeAlignInside);
       });
     });
@@ -101,7 +101,7 @@ void main() {
       final result = utility.none();
       expect(result, isA<UtilityTestAttribute>());
 
-      final mix = result.value.getMix() as BorderMix;
+      final mix = result.value.value;
       expect(mix, BorderMix.none);
     });
 
@@ -113,7 +113,7 @@ void main() {
 
       expect(result, isA<UtilityTestAttribute>());
 
-      final mix = result.value.getMix() as BorderMix;
+      final mix = result.value.value;
       expect(mix.top, isNotNull);
       expect(mix.bottom, isNotNull);
       expect(mix.left, isNull);
@@ -126,7 +126,7 @@ void main() {
           BorderSideMix.only(color: Colors.red, width: 2.0),
         );
 
-        final mix = result.value.getMix() as BorderMix;
+        final mix = result.value.value;
         expect(mix.top, isNotNull);
         expect(mix.bottom, isNotNull);
         expect(mix.left, isNotNull);
@@ -136,7 +136,7 @@ void main() {
       test('top creates top border only', () {
         final result = utility.top(BorderSideMix.only(width: 1.0));
 
-        final mix = result.value.getMix() as BorderMix;
+        final mix = result.value.value;
         expect(mix.top, isNotNull);
         expect(mix.bottom, isNull);
         expect(mix.left, isNull);
@@ -146,7 +146,7 @@ void main() {
       test('bottom creates bottom border only', () {
         final result = utility.bottom(BorderSideMix.only(width: 1.0));
 
-        final mix = result.value.getMix() as BorderMix;
+        final mix = result.value.value;
         expect(mix.top, isNull);
         expect(mix.bottom, isNotNull);
         expect(mix.left, isNull);
@@ -156,7 +156,7 @@ void main() {
       test('left creates left border only', () {
         final result = utility.left(BorderSideMix.only(width: 1.0));
 
-        final mix = result.value.getMix() as BorderMix;
+        final mix = result.value.value;
         expect(mix.top, isNull);
         expect(mix.bottom, isNull);
         expect(mix.left, isNotNull);
@@ -166,7 +166,7 @@ void main() {
       test('right creates right border only', () {
         final result = utility.right(BorderSideMix.only(width: 1.0));
 
-        final mix = result.value.getMix() as BorderMix;
+        final mix = result.value.value;
         expect(mix.top, isNull);
         expect(mix.bottom, isNull);
         expect(mix.left, isNull);
@@ -176,7 +176,7 @@ void main() {
       test('horizontal creates left and right borders', () {
         final result = utility.horizontal(BorderSideMix.only(width: 1.0));
 
-        final mix = result.value.getMix() as BorderMix;
+        final mix = result.value.value;
         expect(mix.top, isNull);
         expect(mix.bottom, isNull);
         expect(mix.left, isNotNull);
@@ -186,7 +186,7 @@ void main() {
       test('vertical creates top and bottom borders', () {
         final result = utility.vertical(BorderSideMix.only(width: 1.0));
 
-        final mix = result.value.getMix() as BorderMix;
+        final mix = result.value.value;
         expect(mix.top, isNotNull);
         expect(mix.bottom, isNotNull);
         expect(mix.left, isNull);
@@ -198,7 +198,7 @@ void main() {
       test('color applies to all sides', () {
         final result = utility.color(Colors.green);
 
-        final mix = result.value.getMix() as BorderMix;
+        final mix = result.value.value;
         expect(mix.top, isNotNull);
         expect(mix.bottom, isNotNull);
         expect(mix.left, isNotNull);
@@ -208,7 +208,7 @@ void main() {
       test('width applies to all sides', () {
         final result = utility.width(3.0);
 
-        final mix = result.value.getMix() as BorderMix;
+        final mix = result.value.value;
         expect(mix.top, isNotNull);
         expect(mix.bottom, isNotNull);
         expect(mix.left, isNotNull);
@@ -218,7 +218,7 @@ void main() {
       test('style applies to all sides', () {
         final result = utility.style(BorderStyle.solid);
 
-        final mix = result.value.getMix() as BorderMix;
+        final mix = result.value.value;
         expect(mix.top, isNotNull);
         expect(mix.bottom, isNotNull);
         expect(mix.left, isNotNull);
@@ -249,7 +249,7 @@ void main() {
       final result = utility.none();
       expect(result, isA<UtilityTestAttribute>());
 
-      final mix = result.value.getMix() as BorderDirectionalMix;
+      final mix = result.value.value;
       expect(mix, BorderDirectionalMix.none);
     });
 
@@ -261,7 +261,7 @@ void main() {
 
       expect(result, isA<UtilityTestAttribute>());
 
-      final mix = result.value.getMix() as BorderDirectionalMix;
+      final mix = result.value.value;
       expect(mix.top, isNotNull);
       expect(mix.bottom, isNull);
       expect(mix.start, isNotNull);
@@ -274,7 +274,7 @@ void main() {
           BorderSideMix.only(color: Colors.red, width: 2.0),
         );
 
-        final mix = result.value.getMix() as BorderDirectionalMix;
+        final mix = result.value.value;
         expect(mix.top, isNotNull);
         expect(mix.bottom, isNotNull);
         expect(mix.start, isNotNull);
@@ -284,7 +284,7 @@ void main() {
       test('horizontal creates start and end borders', () {
         final result = utility.horizontal(BorderSideMix.only(width: 1.0));
 
-        final mix = result.value.getMix() as BorderDirectionalMix;
+        final mix = result.value.value;
         expect(mix.top, isNull);
         expect(mix.bottom, isNull);
         expect(mix.start, isNotNull);
@@ -294,7 +294,7 @@ void main() {
       test('vertical creates top and bottom borders', () {
         final result = utility.vertical(BorderSideMix.only(width: 1.0));
 
-        final mix = result.value.getMix() as BorderDirectionalMix;
+        final mix = result.value.value;
         expect(mix.top, isNotNull);
         expect(mix.bottom, isNotNull);
         expect(mix.start, isNull);
@@ -304,7 +304,7 @@ void main() {
       test('start creates start border only', () {
         final result = utility.start(BorderSideMix.only(width: 1.0));
 
-        final mix = result.value.getMix() as BorderDirectionalMix;
+        final mix = result.value.value;
         expect(mix.top, isNull);
         expect(mix.bottom, isNull);
         expect(mix.start, isNotNull);
@@ -314,7 +314,7 @@ void main() {
       test('end creates end border only', () {
         final result = utility.end(BorderSideMix.only(width: 1.0));
 
-        final mix = result.value.getMix() as BorderDirectionalMix;
+        final mix = result.value.value;
         expect(mix.top, isNull);
         expect(mix.bottom, isNull);
         expect(mix.start, isNull);
@@ -354,7 +354,7 @@ void main() {
 
       expect(result, isA<UtilityTestAttribute>());
 
-      final mix = result.value.getMix() as BorderMix;
+      final mix = result.value.value;
       expect(mix.top, isNotNull);
     });
 

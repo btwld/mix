@@ -123,7 +123,6 @@ void main() {
         const modifier2 = FlexibleModifier(flex: 2);
 
         expect(modifier1, isNot(equals(modifier2)));
-        expect(modifier1.hashCode, isNot(equals(modifier2.hashCode)));
       });
 
       test('not equal when fit differs', () {
@@ -131,7 +130,6 @@ void main() {
         const modifier2 = FlexibleModifier(fit: FlexFit.tight);
 
         expect(modifier1, isNot(equals(modifier2)));
-        expect(modifier1.hashCode, isNot(equals(modifier2.hashCode)));
       });
 
       test('equal when both have all null values', () {

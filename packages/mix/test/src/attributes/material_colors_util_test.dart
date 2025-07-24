@@ -391,9 +391,9 @@ void main() {
 
       group('Edge Cases', () {
         test('handles invalid shade gracefully by using default', () {
-          // The _wrapColor method uses shade ?? 500, so invalid shades should fall back to 500
+          // When no shade is specified, _wrapColor returns the MaterialColor itself
           final attr = colorUtility.red();
-          expectProp(attr.value, Colors.red.shade500);
+          expectProp(attr.value, Colors.red);
         });
 
         test('handles all available shades for primary colors', () {

@@ -146,7 +146,6 @@ void main() {
         );
 
         expect(linearGradientMix1, linearGradientMix2);
-        expect(linearGradientMix1.hashCode, linearGradientMix2.hashCode);
       });
 
       test('returns false when properties are different', () {

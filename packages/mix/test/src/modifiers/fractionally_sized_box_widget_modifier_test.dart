@@ -600,7 +600,7 @@ void main() {
         final attribute = FractionallySizedBoxModifierAttribute.only(
           widthFactor: 0.7,
           heightFactor: 0.9,
-          alignment: Alignment.topRight,
+          alignment: Alignment.bottomCenter,
         );
 
         const expectedModifier = FractionallySizedBoxModifier(
@@ -620,7 +620,7 @@ void main() {
         );
         expect(box.widthFactor, 0.7);
         expect(box.heightFactor, 0.9);
-        expect(box.alignment, Alignment.topRight);
+        expect(box.alignment, Alignment.bottomCenter);
         expect(box.child, same(child));
       },
     );

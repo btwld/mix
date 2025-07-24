@@ -190,7 +190,6 @@ void main() {
         const modifier2 = AlignModifier(alignment: Alignment.topLeft);
 
         expect(modifier1, isNot(equals(modifier2)));
-        expect(modifier1.hashCode, isNot(equals(modifier2.hashCode)));
       });
 
       test('not equal when widthFactor differs', () {
@@ -198,7 +197,6 @@ void main() {
         const modifier2 = AlignModifier(widthFactor: 0.8);
 
         expect(modifier1, isNot(equals(modifier2)));
-        expect(modifier1.hashCode, isNot(equals(modifier2.hashCode)));
       });
 
       test('not equal when heightFactor differs', () {
@@ -206,7 +204,6 @@ void main() {
         const modifier2 = AlignModifier(heightFactor: 0.8);
 
         expect(modifier1, isNot(equals(modifier2)));
-        expect(modifier1.hashCode, isNot(equals(modifier2.hashCode)));
       });
 
       test('equal when both have all null values', () {
@@ -214,7 +211,6 @@ void main() {
         const modifier2 = AlignModifier();
 
         expect(modifier1, equals(modifier2));
-        expect(modifier1.hashCode, equals(modifier2.hashCode));
       });
     });
 

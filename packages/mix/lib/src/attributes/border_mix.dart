@@ -327,7 +327,7 @@ final class BorderSideMix extends Mix<BorderSide>
   final Prop<BorderStyle>? style;
   final Prop<double>? strokeAlign;
 
-  static final BorderSideMix none = BorderSideMix();
+  static final BorderSideMix none = BorderSideMix.value(BorderSide.none);
 
   BorderSideMix.only({
     Color? color,

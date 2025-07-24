@@ -95,13 +95,13 @@ void main() {
         const spec1 = ImageSpec(
           width: 100.0,
           height: 200.0,
-          color: Colors.red,
+          color: Colors.red, // Pure red
           alignment: Alignment.topLeft,
         );
         const spec2 = ImageSpec(
           width: 200.0,
           height: 400.0,
-          color: Colors.blue,
+          color: Colors.blue, // Pure blue
           alignment: Alignment.bottomRight,
         );
 
@@ -109,7 +109,9 @@ void main() {
 
         expect(lerped.width, 150.0);
         expect(lerped.height, 300.0);
-        expect(lerped.color, const Color(0xff800080)); // halfway between red and blue
+        // The color should match exactly what Color.lerp produces
+        final expectedColor = Color.lerp(Colors.red, Colors.blue, 0.5);
+        expect(lerped.color, expectedColor);
         expect(lerped.alignment, Alignment.center);
       });
 
@@ -128,9 +130,9 @@ void main() {
         final lerpedAt1 = spec1.lerp(spec2, 1.0);
 
         expect(lerpedAt0.width, 100.0);
-        expect(lerpedAt0.color, Colors.red);
+        expect(lerpedAt0.color, Color.lerp(Colors.red, Colors.blue, 0.0));
         expect(lerpedAt1.width, 200.0);
-        expect(lerpedAt1.color, Colors.blue);
+        expect(lerpedAt1.color, Color.lerp(Colors.red, Colors.blue, 1.0));
       });
 
       test('uses step function for discrete properties', () {
@@ -164,12 +166,8 @@ void main() {
       });
 
       test('interpolates Rect centerSlice correctly', () {
-        const spec1 = ImageSpec(
-          centerSlice: Rect.fromLTWH(0, 0, 10, 10),
-        );
-        const spec2 = ImageSpec(
-          centerSlice: Rect.fromLTWH(10, 10, 30, 30),
-        );
+        const spec1 = ImageSpec(centerSlice: Rect.fromLTWH(0, 0, 10, 10));
+        const spec2 = ImageSpec(centerSlice: Rect.fromLTWH(10, 10, 30, 30));
 
         final lerped = spec1.lerp(spec2, 0.5);
 

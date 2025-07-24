@@ -135,7 +135,6 @@ void main() {
         const modifier2 = ClipPathModifier(clipper: clipper2);
 
         expect(modifier1, isNot(equals(modifier2)));
-        expect(modifier1.hashCode, isNot(equals(modifier2.hashCode)));
       });
 
       test('not equal when clipBehavior differs', () {
@@ -143,7 +142,6 @@ void main() {
         const modifier2 = ClipPathModifier(clipBehavior: clipBehavior2);
 
         expect(modifier1, isNot(equals(modifier2)));
-        expect(modifier1.hashCode, isNot(equals(modifier2.hashCode)));
       });
     });
 

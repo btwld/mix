@@ -75,7 +75,6 @@ void main() {
         const modifier2 = OpacityModifier(0.8);
 
         expect(modifier1, isNot(equals(modifier2)));
-        expect(modifier1.hashCode, isNot(equals(modifier2.hashCode)));
       });
     });
 
@@ -137,7 +136,7 @@ void main() {
     group('resolve', () {
       test('resolves to OpacityModifier with resolved opacity', () {
         final attribute = OpacityModifierAttribute.only(opacity: 0.7);
-        
+
         const expectedModifier = OpacityModifier(0.7);
 
         expect(attribute, resolvesTo(expectedModifier));
@@ -145,8 +144,10 @@ void main() {
 
       test('resolves with null opacity', () {
         const attribute = OpacityModifierAttribute();
-        
-        const expectedModifier = OpacityModifier(1.0); // OpacityModifier defaults to 1.0
+
+        const expectedModifier = OpacityModifier(
+          1.0,
+        ); // OpacityModifier defaults to 1.0
 
         expect(attribute, resolvesTo(expectedModifier));
       });

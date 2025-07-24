@@ -116,7 +116,7 @@ void main() {
         final lerped = spec1.lerp(spec2, 0.5);
 
         // Step function properties (t < 0.5 uses spec1, t >= 0.5 uses spec2)
-        expect(lerped.maxLines, 1); // t = 0.5, so uses spec1
+        expect(lerped.maxLines, 5); // t = 0.5, so uses spec2
 
         // Interpolated properties
         expect(lerped.style?.fontSize, 16.0); // (12 + 20) / 2
@@ -266,7 +266,7 @@ void main() {
         expect(properties.any((p) => p.name == 'textHeightBehavior'), isTrue);
         expect(properties.any((p) => p.name == 'textDirection'), isTrue);
         expect(properties.any((p) => p.name == 'softWrap'), isTrue);
-        expect(properties.any((p) => p.name == 'directives'), isTrue);
+        expect(properties.any((p) => p.name == 'directive'), isTrue);
       });
     });
 

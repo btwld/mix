@@ -114,7 +114,7 @@ void main() {
 
         final lerped = spec1.lerp(spec2, 0.5);
 
-        expect(lerped.color, const Color(0xff800080)); // halfway between red and blue
+        expect(lerped.color, Color.lerp(Colors.red, Colors.blue, 0.5));
         expect(lerped.size, 20.0); // (16 + 24) / 2
         expect(lerped.weight, 400.0); // (300 + 500) / 2
         expect(lerped.grade, 100.0); // (0 + 200) / 2
@@ -136,10 +136,10 @@ void main() {
         final lerpedAt0 = spec1.lerp(spec2, 0.0);
         final lerpedAt1 = spec1.lerp(spec2, 1.0);
 
-        expect(lerpedAt0.color, Colors.red);
+        expect(lerpedAt0.color, Color.lerp(Colors.red, Colors.blue, 0.0));
         expect(lerpedAt0.size, 16.0);
         expect(lerpedAt0.weight, 300.0);
-        expect(lerpedAt1.color, Colors.blue);
+        expect(lerpedAt1.color, Color.lerp(Colors.red, Colors.blue, 1.0));
         expect(lerpedAt1.size, 24.0);
         expect(lerpedAt1.weight, 500.0);
       });

@@ -224,22 +224,22 @@ void main() {
         expect(chained.$gap, resolvesTo(16.0));
       });
 
-      test('use merge to combine utilities', () {
-        // Show the correct way to combine multiple utilities
-        final combined = FlexSpecAttribute()
-            .direction(Axis.horizontal)
-            .merge(
-              FlexSpecAttribute().mainAxisAlignment(
-                MainAxisAlignment.spaceBetween,
-              ),
-            )
-            .merge(
-              FlexSpecAttribute().crossAxisAlignment(CrossAxisAlignment.center),
-            )
-            .merge(FlexSpecAttribute().gap(16.0));
+      test('merge combines different attribute instances', () {
+        // Merge is still useful for combining separate attribute instances
+        final first = FlexSpecAttribute.only(
+          direction: Axis.horizontal,
+          mainAxisAlignment: MainAxisAlignment.start,
+        );
+
+        final second = FlexSpecAttribute.only(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          gap: 16.0,
+        );
+
+        final combined = first.merge(second);
 
         expect(combined.$direction, resolvesTo(Axis.horizontal));
-        expectProp(combined.$mainAxisAlignment, MainAxisAlignment.spaceBetween);
+        expectProp(combined.$mainAxisAlignment, MainAxisAlignment.start);
         expectProp(combined.$crossAxisAlignment, CrossAxisAlignment.center);
         expect(combined.$gap, resolvesTo(16.0));
       });

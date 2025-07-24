@@ -24,11 +24,8 @@ class MyApp extends StatelessWidget {
           style: style(),
           direction: Axis.horizontal,
           children: [
-            StyledIcon(Icons.image, style: SpecStyle($icon.color.red())),
-            StyledText(
-              'Hello World',
-              style: SpecStyle($text.style.color.blue()),
-            ),
+            StyledIcon(Icons.image, style: Style($icon.color.red())),
+            StyledText('Hello World', style: Style($text.style.color.blue())),
           ],
         ),
       ),
@@ -36,7 +33,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-SpecStyle style() => SpecStyle(
+Style style() => Style(
   $icon.color.red(),
   $flexbox.flex.direction(Axis.horizontal),
   $flexbox.flex.mainAxisSize.min(),

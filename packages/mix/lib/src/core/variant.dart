@@ -49,6 +49,9 @@ class NamedVariant extends Variant {
       identical(this, other) || other is NamedVariant && other.name == name;
 
   @override
+  String toString() => 'NamedVariant($name)';
+
+  @override
   String get key => name;
 
   @override

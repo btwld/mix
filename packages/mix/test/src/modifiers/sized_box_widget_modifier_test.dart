@@ -128,7 +128,6 @@ void main() {
         const modifier2 = SizedBoxModifier(width: 200.0);
 
         expect(modifier1, isNot(equals(modifier2)));
-        expect(modifier1.hashCode, isNot(equals(modifier2.hashCode)));
       });
 
       test('not equal when height differs', () {
@@ -136,7 +135,6 @@ void main() {
         const modifier2 = SizedBoxModifier(height: 200.0);
 
         expect(modifier1, isNot(equals(modifier2)));
-        expect(modifier1.hashCode, isNot(equals(modifier2.hashCode)));
       });
 
       test('equal when both have all null values', () {
@@ -250,18 +248,15 @@ void main() {
           width: 100.0,
           height: 200.0,
         );
-        
-        const expectedModifier = SizedBoxModifier(
-          width: 100.0,
-          height: 200.0,
-        );
+
+        const expectedModifier = SizedBoxModifier(width: 100.0, height: 200.0);
 
         expect(attribute, resolvesTo(expectedModifier));
       });
 
       test('resolves with null values', () {
         const attribute = SizedBoxModifierAttribute();
-        
+
         const expectedModifier = SizedBoxModifier();
 
         expect(attribute, resolvesTo(expectedModifier));

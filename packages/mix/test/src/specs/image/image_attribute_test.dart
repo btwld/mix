@@ -227,14 +227,17 @@ void main() {
         expect(chained.$color, resolvesTo(Colors.red));
       });
 
-      test('use merge to combine utilities', () {
-        // To combine multiple utilities, use merge
-        final combined = ImageSpecAttribute()
-            .width(100.0)
-            .merge(ImageSpecAttribute().height(200.0))
-            .merge(ImageSpecAttribute().fit(BoxFit.cover))
-            .merge(ImageSpecAttribute().alignment(Alignment.center))
-            .merge(ImageSpecAttribute().color(Colors.red));
+      test('merge combines different attribute instances', () {
+        // Merge is still useful for combining separate attribute instances
+        final first = ImageSpecAttribute.only(width: 100.0, height: 200.0);
+
+        final second = ImageSpecAttribute.only(
+          fit: BoxFit.cover,
+          alignment: Alignment.center,
+          color: Colors.red,
+        );
+
+        final combined = first.merge(second);
 
         expect(combined.$width, resolvesTo(100.0));
         expect(combined.$height, resolvesTo(200.0));
