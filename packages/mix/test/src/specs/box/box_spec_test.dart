@@ -17,8 +17,6 @@ void main() {
           transform: Matrix4.identity(),
           transformAlignment: Alignment.topLeft,
           clipBehavior: Clip.antiAlias,
-          width: 100.0,
-          height: 200.0,
         );
 
         expect(spec.alignment, Alignment.center);
@@ -33,8 +31,6 @@ void main() {
         expect(spec.transform, Matrix4.identity());
         expect(spec.transformAlignment, Alignment.topLeft);
         expect(spec.clipBehavior, Clip.antiAlias);
-        expect(spec.width, 100.0);
-        expect(spec.height, 200.0);
       });
 
       test('creates BoxSpec with default values', () {
@@ -49,27 +45,21 @@ void main() {
         expect(spec.transform, isNull);
         expect(spec.transformAlignment, isNull);
         expect(spec.clipBehavior, isNull);
-        expect(spec.width, isNull);
-        expect(spec.height, isNull);
       });
     });
 
     group('copyWith', () {
       test('creates new instance with updated properties', () {
-        const original = BoxSpec(
-          alignment: Alignment.center,
-          width: 100.0,
-          height: 200.0,
-        );
+        const original = BoxSpec(alignment: Alignment.center);
 
         final updated = original.copyWith(
           alignment: Alignment.topLeft,
-          width: 150.0,
+          constraints: const BoxConstraints(minWidth: 150.0, maxWidth: 150.0),
         );
 
         expect(updated.alignment, Alignment.topLeft);
-        expect(updated.width, 150.0);
-        expect(updated.height, 200.0); // unchanged
+        expect(updated.constraints?.minWidth, 150.0);
+        expect(updated.constraints?.maxWidth, 150.0);
       });
 
       test('preserves original properties when not specified', () {
@@ -87,50 +77,82 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        const original = BoxSpec(width: 100.0, height: 200.0);
+        const original = BoxSpec(
+          constraints: BoxConstraints(
+            minWidth: 100.0,
+            maxWidth: 100.0,
+            minHeight: 200.0,
+            maxHeight: 200.0,
+          ),
+        );
         final updated = original.copyWith();
 
-        expect(updated.width, 100.0);
-        expect(updated.height, 200.0);
+        expect(updated.constraints?.minWidth, 100.0);
+        expect(updated.constraints?.maxWidth, 100.0);
+        expect(updated.constraints?.minHeight, 200.0);
+        expect(updated.constraints?.maxHeight, 200.0);
       });
     });
 
     group('lerp', () {
       test('interpolates between two BoxSpecs correctly', () {
         const spec1 = BoxSpec(
-          width: 100.0,
-          height: 200.0,
+          constraints: BoxConstraints(
+            minWidth: 100.0,
+            maxWidth: 100.0,
+            minHeight: 200.0,
+            maxHeight: 200.0,
+          ),
           alignment: Alignment.topLeft,
         );
         const spec2 = BoxSpec(
-          width: 200.0,
-          height: 400.0,
+          constraints: BoxConstraints(
+            minWidth: 200.0,
+            maxWidth: 200.0,
+            minHeight: 400.0,
+            maxHeight: 400.0,
+          ),
           alignment: Alignment.bottomRight,
         );
 
         final lerped = spec1.lerp(spec2, 0.5);
 
-        expect(lerped.width, 150.0);
-        expect(lerped.height, 300.0);
+        expect(lerped.constraints?.minWidth, 150.0);
+        expect(lerped.constraints?.maxWidth, 150.0);
+        expect(lerped.constraints?.minHeight, 300.0);
+        expect(lerped.constraints?.maxHeight, 300.0);
         expect(lerped.alignment, Alignment.center);
       });
 
       test('returns original spec when other is null', () {
-        const spec = BoxSpec(width: 100.0, height: 200.0);
+        const spec = BoxSpec(
+          constraints: BoxConstraints(
+            minWidth: 100.0,
+            maxWidth: 100.0,
+            minHeight: 200.0,
+            maxHeight: 200.0,
+          ),
+        );
         final lerped = spec.lerp(null, 0.5);
 
         expect(lerped, spec);
       });
 
       test('handles edge cases (t=0, t=1)', () {
-        const spec1 = BoxSpec(width: 100.0);
-        const spec2 = BoxSpec(width: 200.0);
+        const spec1 = BoxSpec(
+          constraints: BoxConstraints(minWidth: 100.0, maxWidth: 100.0),
+        );
+        const spec2 = BoxSpec(
+          constraints: BoxConstraints(minWidth: 200.0, maxWidth: 200.0),
+        );
 
         final lerpedAt0 = spec1.lerp(spec2, 0.0);
         final lerpedAt1 = spec1.lerp(spec2, 1.0);
 
-        expect(lerpedAt0.width, 100.0);
-        expect(lerpedAt1.width, 200.0);
+        expect(lerpedAt0.constraints?.minWidth, 100.0);
+        expect(lerpedAt0.constraints?.maxWidth, 100.0);
+        expect(lerpedAt1.constraints?.minWidth, 200.0);
+        expect(lerpedAt1.constraints?.maxWidth, 200.0);
       });
 
       test('interpolates padding and margin correctly', () {
@@ -191,13 +213,21 @@ void main() {
     group('equality', () {
       test('specs with same properties are equal', () {
         const spec1 = BoxSpec(
-          width: 100.0,
-          height: 200.0,
+          constraints: BoxConstraints(
+            minWidth: 100.0,
+            maxWidth: 100.0,
+            minHeight: 200.0,
+            maxHeight: 200.0,
+          ),
           alignment: Alignment.center,
         );
         const spec2 = BoxSpec(
-          width: 100.0,
-          height: 200.0,
+          constraints: BoxConstraints(
+            minWidth: 100.0,
+            maxWidth: 100.0,
+            minHeight: 200.0,
+            maxHeight: 200.0,
+          ),
           alignment: Alignment.center,
         );
 
@@ -206,14 +236,30 @@ void main() {
       });
 
       test('specs with different properties are not equal', () {
-        const spec1 = BoxSpec(width: 100.0, height: 200.0);
-        const spec2 = BoxSpec(width: 150.0, height: 200.0);
+        const spec1 = BoxSpec(
+          constraints: BoxConstraints(
+            minWidth: 100.0,
+            maxWidth: 100.0,
+            minHeight: 200.0,
+            maxHeight: 200.0,
+          ),
+        );
+        const spec2 = BoxSpec(
+          constraints: BoxConstraints(
+            minWidth: 150.0,
+            maxWidth: 150.0,
+            minHeight: 200.0,
+            maxHeight: 200.0,
+          ),
+        );
 
         expect(spec1, isNot(spec2));
       });
 
       test('specs with null vs non-null properties are not equal', () {
-        const spec1 = BoxSpec(width: 100.0);
+        const spec1 = BoxSpec(
+          constraints: BoxConstraints(minWidth: 100.0, maxWidth: 100.0),
+        );
         const spec2 = BoxSpec();
 
         expect(spec1, isNot(spec2));
@@ -232,8 +278,6 @@ void main() {
           transform: Matrix4.identity(),
           transformAlignment: Alignment.topLeft,
           clipBehavior: Clip.antiAlias,
-          width: 100.0,
-          height: 200.0,
         );
 
         final diagnostics = DiagnosticPropertiesBuilder();
@@ -249,8 +293,6 @@ void main() {
         expect(properties.any((p) => p.name == 'transform'), isTrue);
         expect(properties.any((p) => p.name == 'transformAlignment'), isTrue);
         expect(properties.any((p) => p.name == 'clipBehavior'), isTrue);
-        expect(properties.any((p) => p.name == 'width'), isTrue);
-        expect(properties.any((p) => p.name == 'height'), isTrue);
       });
     });
 
@@ -266,11 +308,9 @@ void main() {
           transform: Matrix4.identity(),
           transformAlignment: Alignment.topLeft,
           clipBehavior: Clip.antiAlias,
-          width: 100.0,
-          height: 200.0,
         );
 
-        expect(spec.props.length, 11);
+        expect(spec.props.length, 9);
         expect(spec.props, contains(Alignment.center));
         expect(spec.props, contains(const EdgeInsets.all(8.0)));
         expect(spec.props, contains(const EdgeInsets.all(16.0)));
@@ -280,8 +320,6 @@ void main() {
         expect(spec.props, contains(Matrix4.identity()));
         expect(spec.props, contains(Alignment.topLeft));
         expect(spec.props, contains(Clip.antiAlias));
-        expect(spec.props, contains(100.0));
-        expect(spec.props, contains(200.0));
       });
     });
 

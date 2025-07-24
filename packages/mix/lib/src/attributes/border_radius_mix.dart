@@ -30,6 +30,14 @@ sealed class BorderRadiusGeometryMix<T extends BorderRadiusGeometry>
     };
   }
 
+  static BorderRadiusMix circular(double radius) {
+    return BorderRadiusMix.all(Radius.circular(radius));
+  }
+
+  static BorderRadiusMix elliptical(double xRadius, double yRadius) {
+    return BorderRadiusMix.all(Radius.elliptical(xRadius, yRadius));
+  }
+
   static BorderRadiusGeometryMix<T>? maybeValue<T extends BorderRadiusGeometry>(
     T? value,
   ) {

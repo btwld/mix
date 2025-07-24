@@ -6,7 +6,43 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
   final MixProp<BorderSide>? top;
   final MixProp<BorderSide>? bottom;
 
+  static BorderMix none = BorderMix.all(BorderSideMix.none);
+
   const BoxBorderMix({this.top, this.bottom});
+
+  static BorderMix all(BorderSideMix side) {
+    return BorderMix.only(top: side, bottom: side, left: side, right: side);
+  }
+
+  // symetric
+  static BorderMix symmetric({
+    BorderSideMix? vertical,
+    BorderSideMix? horizontal,
+  }) {
+    return BorderMix.only(
+      top: horizontal,
+      bottom: horizontal,
+      left: vertical,
+      right: vertical,
+    );
+  }
+
+  static BorderMix vertical(BorderSideMix side) {
+    return BorderMix.symmetric(vertical: side);
+  }
+
+  static BorderMix horizontal(BorderSideMix side) {
+    return BorderMix.symmetric(horizontal: side);
+  }
+
+  static BorderDirectionalMix directional(BorderDirectionalMix mix) {
+    return BorderDirectionalMix(
+      top: mix.top,
+      bottom: mix.bottom,
+      start: mix.start,
+      end: mix.end,
+    );
+  }
 
   /// Merges two BoxBorderMix instances.
   ///

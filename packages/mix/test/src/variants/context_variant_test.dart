@@ -286,11 +286,11 @@ void main() {
 
         final style1 = VariantSpecAttribute(
           variant1,
-          BoxSpecAttribute.only(width: 100.0),
+          BoxSpecAttribute.width(100.0),
         );
         final style2 = VariantSpecAttribute(
           variant2,
-          BoxSpecAttribute.only(height: 200.0),
+          BoxSpecAttribute.height(200.0),
         );
 
         expect(style1.mergeKey, 'context1');

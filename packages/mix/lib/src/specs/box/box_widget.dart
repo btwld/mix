@@ -52,8 +52,6 @@ class Box extends StyleWidget<BoxSpec> {
       padding: spec.padding,
       decoration: spec.decoration,
       foregroundDecoration: spec.foregroundDecoration,
-      width: spec.width,
-      height: spec.height,
       constraints: spec.constraints,
       margin: spec.margin,
       transform: spec.transform,

@@ -36,14 +36,14 @@ class DecorationUtility<T extends SpecStyle<Object?>>
 final class BoxDecorationUtility<T extends SpecStyle<Object?>>
     extends MixPropUtility<T, BoxDecoration> {
   /// Utility for defining [BoxDecorationMix.border]
-  late final border = BoxBorderUtility<T>(
-    (v) => call(BoxDecorationMix(border: v)),
-  );
+  late final border = _boxBorder.border;
 
-  /// Utility for defining [BoxDecorationMix.borderRadius]
-  late final borderRadius = BorderRadiusGeometryUtility<T>(
-    (v) => call(BoxDecorationMix(borderRadius: v)),
-  );
+  late final borderDirectional = _boxBorder.borderDirectional;
+
+  late final borderRadius = _borderRadiusGeometry.borderRadius;
+
+  late final borderRadiusDirectional =
+      _borderRadiusGeometry.borderRadiusDirectional;
 
   /// Utility for defining [BoxDecorationMix.shape]
   late final shape = BoxShapeUtility<T>(
@@ -84,6 +84,15 @@ final class BoxDecorationUtility<T extends SpecStyle<Object?>>
   /// Utility for defining [BoxDecorationMix.boxShadow] from elevation
   late final elevation = ElevationMixPropUtility<T>(
     (mixPropList) => call(BoxDecorationMix(boxShadow: mixPropList)),
+  );
+
+  /// Utility for defining [BoxDecorationMix.borderRadius]
+  late final _borderRadiusGeometry = BorderRadiusGeometryUtility<T>(
+    (v) => call(BoxDecorationMix(borderRadius: v)),
+  );
+
+  late final _boxBorder = BoxBorderUtility<T>(
+    (v) => call(BoxDecorationMix(border: v)),
   );
 
   BoxDecorationUtility(super.builder)

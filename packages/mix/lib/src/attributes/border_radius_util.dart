@@ -13,45 +13,11 @@ import 'scalar_util.dart';
 final class BorderRadiusGeometryUtility<T extends SpecStyle<Object?>>
     extends MixPropUtility<T, BorderRadiusGeometry> {
   /// Returns a directional utility for creating and manipulating attributes with [BorderRadiusDirectional]
-  late final directional = BorderRadiusDirectionalUtility<T>(builder);
+  late final borderRadiusDirectional = BorderRadiusDirectionalUtility<T>(
+    builder,
+  );
 
-  /// Returns a [RadiusUtility] to manipulate [Radius] for all corners.
-  late final all = _bordeRadius.all;
-
-  /// Returns a [RadiusUtility] to manipulate [Radius] for bottomLeft corner.
-  late final bottomLeft = _bordeRadius.bottomLeft;
-
-  /// Returns a [RadiusUtility] to manipulate [Radius] for bottomRight corner.
-  late final bottomRight = _bordeRadius.bottomRight;
-
-  /// Returns a [RadiusUtility] to manipulate [Radius] for topLeft corner.
-  late final topLeft = _bordeRadius.topLeft;
-
-  /// Returns a [RadiusUtility] to manipulate [Radius] for topRight corner.
-  late final topRight = _bordeRadius.topRight;
-
-  /// Returns a [RadiusUtility] to manipulate [Radius] for topLeft and topRight corner.
-  late final top = _bordeRadius.top;
-
-  /// Returns a [RadiusUtility] to manipulate [Radius] for bottomLeft and bottomRight corner.
-  late final bottom = _bordeRadius.bottom;
-
-  /// Returns a [RadiusUtility] to manipulate [Radius] for topLeft and bottomLeft corner.
-  late final left = _bordeRadius.left;
-
-  /// Returns a [RadiusUtility] to manipulate [Radius] for topRight and bottomRight corner.
-  late final right = _bordeRadius.right;
-
-  /// Sets a circular [Radius] for all corners.
-  late final circular = _bordeRadius.circular;
-
-  /// Sets an elliptical [Radius] for all corners.
-  late final elliptical = _bordeRadius.elliptical;
-
-  /// Sets a zero [Radius] for all corn
-  late final zero = _bordeRadius.zero;
-
-  late final _bordeRadius = BorderRadiusUtility<T>(builder);
+  late final borderRadius = BorderRadiusUtility<T>(builder);
 
   BorderRadiusGeometryUtility(super.builder)
     : super(convertToMix: BorderRadiusGeometryMix.value);

@@ -1,22 +1,21 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../../attributes/border_radius_util.dart';
-import '../../attributes/border_util.dart';
-import '../../attributes/color_util.dart';
+import '../../attributes/border_mix.dart';
+import '../../attributes/border_radius_mix.dart';
 import '../../attributes/constraints_mix.dart';
 import '../../attributes/constraints_util.dart';
 import '../../attributes/decoration_mix.dart';
 import '../../attributes/decoration_util.dart';
 import '../../attributes/edge_insets_geometry_mix.dart';
 import '../../attributes/edge_insets_geometry_util.dart';
-import '../../attributes/gradient_util.dart';
 import '../../attributes/scalar_util.dart';
 import '../../attributes/shadow_mix.dart';
 import '../../core/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
+import '../../core/variant.dart';
 import 'box_spec.dart';
 
 /// Represents the attributes of a [BoxSpec].
@@ -36,8 +35,6 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
   final Prop<Matrix4>? $transform;
   final Prop<AlignmentGeometry>? $transformAlignment;
   final Prop<Clip>? $clipBehavior;
-  final Prop<double>? $width;
-  final Prop<double>? $height;
 
   late final padding = EdgeInsetsGeometryUtility(
     (prop) => merge(BoxSpecAttribute(padding: prop)),
@@ -55,6 +52,10 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
     (prop) => merge(BoxSpecAttribute(decoration: prop)),
   );
 
+  late final boxDecoration = decoration.box;
+
+  late final shapeDecoration = decoration.shape;
+
   late final foregroundDecoration = DecorationUtility(
     (prop) => merge(BoxSpecAttribute(foregroundDecoration: prop)),
   );
@@ -71,103 +72,123 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
     (prop) => merge(BoxSpecAttribute(clipBehavior: prop)),
   );
 
-  late final width = DoubleUtility(
-    (prop) => merge(BoxSpecAttribute(width: prop)),
-  );
+  late final width = constraints.width;
 
-  late final height = DoubleUtility(
-    (prop) => merge(BoxSpecAttribute(height: prop)),
-  );
+  late final height = constraints.height;
 
   late final alignment = AlignmentGeometryUtility(
     (prop) => merge(BoxSpecAttribute(alignment: prop)),
   );
 
-  late final minWidth = DoubleUtility(
-    (prop) => merge(
-      BoxSpecAttribute.only(constraints: BoxConstraintsMix(minWidth: prop)),
-    ),
-  );
+  late final minWidth = constraints.minWidth;
 
-  late final maxWidth = DoubleUtility(
-    (prop) => merge(
-      BoxSpecAttribute.only(constraints: BoxConstraintsMix(maxWidth: prop)),
-    ),
-  );
+  late final maxWidth = constraints.maxWidth;
 
-  late final maxHeight = DoubleUtility(
-    (prop) => merge(
-      BoxSpecAttribute.only(constraints: BoxConstraintsMix(maxHeight: prop)),
-    ),
-  );
+  late final maxHeight = constraints.maxHeight;
 
-  late final minHeight = DoubleUtility(
-    (prop) => merge(
-      BoxSpecAttribute.only(constraints: BoxConstraintsMix(minHeight: prop)),
-    ),
-  );
+  late final minHeight = constraints.minHeight;
 
-  late final border = BoxBorderUtility(
-    (prop) => merge(
-      BoxSpecAttribute.only(decoration: BoxDecorationMix(border: prop)),
-    ),
-  );
+  late final border = decoration.box.border;
 
-  late final borderDirectional = BorderDirectionalUtility(
-    (prop) => merge(
-      BoxSpecAttribute.only(decoration: BoxDecorationMix(border: prop)),
-    ),
-  );
+  late final borderDirectional = decoration.box.borderDirectional;
 
-  late final borderRadius = BorderRadiusGeometryUtility(
-    (prop) => merge(
-      BoxSpecAttribute.only(decoration: BoxDecorationMix(borderRadius: prop)),
-    ),
-  );
+  late final borderRadius = decoration.box.borderRadius;
 
-  late final borderRadiusDirectional = BorderRadiusDirectionalUtility(
-    (prop) => merge(
-      BoxSpecAttribute.only(decoration: BoxDecorationMix(borderRadius: prop)),
-    ),
-  );
+  late final borderRadiusDirectional = decoration.box.borderRadiusDirectional;
+  late final color = decoration.box.color;
 
-  late final color = ColorUtility(
-    (prop) =>
-        merge(BoxSpecAttribute.only(decoration: BoxDecorationMix(color: prop))),
-  );
+  late final gradient = decoration.box.gradient;
 
-  late final gradient = GradientUtility(
-    (prop) => merge(
-      BoxSpecAttribute.only(decoration: BoxDecorationMix(gradient: prop)),
-    ),
-  );
+  late final linearGradient = decoration.box.gradient.linear;
 
-  late final linearGradient = LinearGradientUtility(
-    (prop) => merge(
-      BoxSpecAttribute.only(decoration: BoxDecorationMix(gradient: prop)),
-    ),
-  );
+  late final radialGradient = decoration.box.gradient.radial;
 
-  late final radialGradient = RadialGradientUtility(
-    (prop) => merge(
-      BoxSpecAttribute.only(decoration: BoxDecorationMix(gradient: prop)),
-    ),
-  );
+  late final sweepGradient = decoration.box.gradient.sweep;
 
-  late final sweepGradient = SweepGradientUtility(
-    (prop) => merge(
-      BoxSpecAttribute.only(decoration: BoxDecorationMix(gradient: prop)),
-    ),
-  );
+  late final shape = decoration.box.shape;
 
-  late final shapeDecoration = ShapeDecorationUtility(
-    (prop) => merge(BoxSpecAttribute(decoration: prop)),
-  );
+  factory BoxSpecAttribute.height(double value) {
+    return BoxSpecAttribute.constraints(BoxConstraintsMix.height(value));
+  }
 
-  late final shape = BoxShapeUtility(
-    (prop) =>
-        merge(BoxSpecAttribute.only(decoration: BoxDecorationMix(shape: prop))),
-  );
+  factory BoxSpecAttribute.width(double value) {
+    return BoxSpecAttribute.constraints(BoxConstraintsMix.width(value));
+  }
+
+  // constraints
+  factory BoxSpecAttribute.constraints(BoxConstraintsMix value) {
+    return BoxSpecAttribute.only(constraints: value);
+  }
+
+  // minWidth
+  factory BoxSpecAttribute.minWidth(double value) {
+    return BoxSpecAttribute.constraints(BoxConstraintsMix.minWidth(value));
+  }
+
+  // maxWidth
+  factory BoxSpecAttribute.maxWidth(double value) {
+    return BoxSpecAttribute.only(
+      constraints: BoxConstraintsMix.maxWidth(value),
+    );
+  }
+
+  // minHeight
+  factory BoxSpecAttribute.minHeight(double value) {
+    return BoxSpecAttribute.constraints(BoxConstraintsMix.minHeight(value));
+  }
+
+  // maxHeight
+  factory BoxSpecAttribute.maxHeight(double value) {
+    return BoxSpecAttribute.only(
+      constraints: BoxConstraintsMix.maxHeight(value),
+    );
+  }
+
+  factory BoxSpecAttribute.foregroundDecoration(DecorationMix value) {
+    return BoxSpecAttribute.only(foregroundDecoration: value);
+  }
+
+  factory BoxSpecAttribute.decoration(DecorationMix value) {
+    return BoxSpecAttribute.only(decoration: value);
+  }
+
+  factory BoxSpecAttribute.alignment(AlignmentGeometry value) {
+    return BoxSpecAttribute.only(alignment: value);
+  }
+  factory BoxSpecAttribute.padding(EdgeInsetsGeometryMix value) {
+    return BoxSpecAttribute.only(padding: value);
+  }
+
+  factory BoxSpecAttribute.margin(EdgeInsetsGeometryMix value) {
+    return BoxSpecAttribute.only(margin: value);
+  }
+
+  factory BoxSpecAttribute.transform(Matrix4 value) {
+    return BoxSpecAttribute.only(transform: value);
+  }
+
+  /// Animation
+  factory BoxSpecAttribute.animate(AnimationConfig animation) {
+    return BoxSpecAttribute.only(animation: animation);
+  }
+
+  factory BoxSpecAttribute.transformAlignment(AlignmentGeometry value) {
+    return BoxSpecAttribute.only(transformAlignment: value);
+  }
+
+  factory BoxSpecAttribute.clipBehavior(Clip value) {
+    return BoxSpecAttribute.only(clipBehavior: value);
+  }
+
+  // border
+  factory BoxSpecAttribute.border(BoxBorderMix value) {
+    return BoxSpecAttribute.only(decoration: DecorationMix.border(value));
+  }
+
+  // Border radius
+  factory BoxSpecAttribute.borderRadius(BorderRadiusGeometryMix value) {
+    return BoxSpecAttribute.only(decoration: DecorationMix.borderRadius(value));
+  }
 
   BoxSpecAttribute({
     Prop<AlignmentGeometry>? alignment,
@@ -179,14 +200,11 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
     Prop<Matrix4>? transform,
     Prop<AlignmentGeometry>? transformAlignment,
     Prop<Clip>? clipBehavior,
-    Prop<double>? width,
-    Prop<double>? height,
+
     super.animation,
     super.modifiers,
     super.variants,
-  }) : $width = width,
-       $height = height,
-       $alignment = alignment,
+  }) : $alignment = alignment,
        $padding = padding,
        $margin = margin,
        $constraints = constraints,
@@ -206,8 +224,7 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
     Matrix4? transform,
     AlignmentGeometry? transformAlignment,
     Clip? clipBehavior,
-    double? width,
-    double? height,
+
     AnimationConfig? animation,
     List<ModifierAttribute>? modifiers,
     List<VariantSpecAttribute<BoxSpec>>? variants,
@@ -221,8 +238,6 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
          transform: Prop.maybe(transform),
          transformAlignment: Prop.maybe(transformAlignment),
          clipBehavior: Prop.maybe(clipBehavior),
-         width: Prop.maybe(width),
-         height: Prop.maybe(height),
          animation: animation,
          modifiers: modifiers,
          variants: variants,
@@ -249,8 +264,6 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
         transform: spec.transform,
         transformAlignment: spec.transformAlignment,
         clipBehavior: spec.clipBehavior,
-        width: spec.width,
-        height: spec.height,
       );
 
   /// Constructor that accepts a nullable [BoxSpec] value and extracts its properties.
@@ -263,6 +276,12 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
   /// ```
   static BoxSpecAttribute? maybeValue(BoxSpec? spec) {
     return spec != null ? BoxSpecAttribute.value(spec) : null;
+  }
+
+  BoxSpecAttribute variant(Variant variant, BoxSpecAttribute value) {
+    return merge(
+      BoxSpecAttribute.only(variants: [VariantSpecAttribute(variant, value)]),
+    );
   }
 
   BoxSpecAttribute animate(AnimationConfig animation) {
@@ -309,8 +328,6 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
       transform: MixHelpers.resolve(context, $transform),
       transformAlignment: MixHelpers.resolve(context, $transformAlignment),
       clipBehavior: MixHelpers.resolve(context, $clipBehavior),
-      width: MixHelpers.resolve(context, $width),
-      height: MixHelpers.resolve(context, $height),
     );
   }
 
@@ -342,8 +359,6 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
         other.$transformAlignment,
       ),
       clipBehavior: MixHelpers.merge($clipBehavior, other.$clipBehavior),
-      width: MixHelpers.merge($width, other.$width),
-      height: MixHelpers.merge($height, other.$height),
       animation: other.animation ?? animation,
       modifiers: mergeModifierLists(modifiers, other.modifiers),
       variants: mergeVariantLists(variants, other.variants),
@@ -386,8 +401,6 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
     properties.add(
       DiagnosticsProperty('clipBehavior', $clipBehavior, defaultValue: null),
     );
-    properties.add(DiagnosticsProperty('width', $width, defaultValue: null));
-    properties.add(DiagnosticsProperty('height', $height, defaultValue: null));
   }
 
   /// The list of properties that constitute the state of this [BoxSpecAttribute].
@@ -405,7 +418,5 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
     $transform,
     $transformAlignment,
     $clipBehavior,
-    $width,
-    $height,
   ];
 }

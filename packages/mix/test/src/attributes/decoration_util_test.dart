@@ -391,7 +391,7 @@ void main() {
         test(
           'shape.roundedRectangle() creates shape decoration with rounded rectangle',
           () {
-            final attr = utility.shape.roundedRectangle.borderRadius.circular(
+            final attr = utility.shape.roundedRectangle.borderRadius.borderRadius.circular(
               12.0,
             );
             expect(attr.value, isA<MixProp<ShapeDecoration>>());

@@ -34,12 +34,6 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
   /// when [BoxConstraints] has a negative minimum extent.
   final Clip? clipBehavior;
 
-  /// Specifies the width of the box.
-  final double? width;
-
-  /// Specifies the height of the box.
-  final double? height;
-
   const BoxSpec({
     this.alignment,
     this.padding,
@@ -50,8 +44,6 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
     this.transform,
     this.transformAlignment,
     this.clipBehavior,
-    this.width,
-    this.height,
   });
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -86,8 +78,6 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
     properties.add(
       DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
     );
-    properties.add(DiagnosticsProperty('width', width, defaultValue: null));
-    properties.add(DiagnosticsProperty('height', height, defaultValue: null));
   }
 
   /// Creates a copy of this [BoxSpec] but with the given fields
@@ -116,8 +106,6 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
       transform: transform ?? this.transform,
       transformAlignment: transformAlignment ?? this.transformAlignment,
       clipBehavior: clipBehavior ?? this.clipBehavior,
-      width: width ?? this.width,
-      height: height ?? this.height,
     );
   }
 
@@ -165,8 +153,6 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
         t,
       ),
       clipBehavior: t < 0.5 ? clipBehavior : other.clipBehavior,
-      width: MixHelpers.lerpDouble(width, other.width, t),
-      height: MixHelpers.lerpDouble(height, other.height, t),
     );
   }
 
@@ -191,7 +177,5 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
     transform,
     transformAlignment,
     clipBehavior,
-    width,
-    height,
   ];
 }

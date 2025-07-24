@@ -47,8 +47,7 @@ class ZBox extends StyleWidget<ZBoxSpec> {
       padding: boxSpec.padding,
       decoration: boxSpec.decoration,
       foregroundDecoration: boxSpec.foregroundDecoration,
-      width: boxSpec.width,
-      height: boxSpec.height,
+
       constraints: boxSpec.constraints,
       margin: boxSpec.margin,
       transform: boxSpec.transform,

@@ -332,19 +332,24 @@ void main() {
       expect(result.value, isA<MixProp<BorderRadiusGeometry>>());
     });
 
-    group('directional access', () {
-      test('directional property returns BorderRadiusDirectionalUtility', () {
-        final result = utility.directional.topStart(const Radius.circular(8.0));
+    group('borderRadiusDirectional access', () {
+      test(
+        'borderRadiusDirectional property returns BorderRadiusDirectionalUtility',
+        () {
+          final result = utility.borderRadiusDirectional.topStart(
+            const Radius.circular(8.0),
+          );
 
-        expect(result, isA<UtilityTestAttribute>());
-        final mix = result.value.value as BorderRadiusDirectionalMix;
-        expectProp(mix.topStart, const Radius.circular(8.0));
-      });
+          expect(result, isA<UtilityTestAttribute>());
+          final mix = result.value.value as BorderRadiusDirectionalMix;
+          expectProp(mix.topStart, const Radius.circular(8.0));
+        },
+      );
     });
 
-    group('inherited utilities from BorderRadiusUtility', () {
-      test('all creates uniform BorderRadiusMix', () {
-        final result = utility.all(const Radius.circular(12.0));
+    group('borderRadius access', () {
+      test('borderRadius.all creates uniform BorderRadiusMix', () {
+        final result = utility.borderRadius.all(const Radius.circular(12.0));
 
         expect(result, isA<UtilityTestAttribute>());
         final mix = result.value.value as BorderRadiusMix;
@@ -354,19 +359,27 @@ void main() {
         expectProp(mix.bottomRight, const Radius.circular(12.0));
       });
 
-      test('circular creates circular radius', () {
-        final result = utility.circular(16.0);
+      test('borderRadius.circular creates circular radius', () {
+        final result = utility.borderRadius.circular(16.0);
 
         expect(result, isA<UtilityTestAttribute>());
         final mix = result.value.value as BorderRadiusMix;
         expectProp(mix.topLeft, const Radius.circular(16.0));
       });
 
-      test('corner utilities work', () {
-        final topLeft = utility.topLeft(const Radius.circular(8.0));
-        final topRight = utility.topRight(const Radius.circular(10.0));
-        final bottomLeft = utility.bottomLeft(const Radius.circular(12.0));
-        final bottomRight = utility.bottomRight(const Radius.circular(14.0));
+      test('borderRadius corner utilities work', () {
+        final topLeft = utility.borderRadius.topLeft(
+          const Radius.circular(8.0),
+        );
+        final topRight = utility.borderRadius.topRight(
+          const Radius.circular(10.0),
+        );
+        final bottomLeft = utility.borderRadius.bottomLeft(
+          const Radius.circular(12.0),
+        );
+        final bottomRight = utility.borderRadius.bottomRight(
+          const Radius.circular(14.0),
+        );
 
         expect(topLeft, isA<UtilityTestAttribute>());
         expect(topRight, isA<UtilityTestAttribute>());
@@ -377,7 +390,7 @@ void main() {
 
     group('resolution', () {
       test('resolves BorderRadius correctly', () {
-        final result = utility.all(const Radius.circular(8.0));
+        final result = utility.borderRadius.all(const Radius.circular(8.0));
 
         final mix = result.value.value as BorderRadiusMix;
         const resolvedValue = BorderRadius.all(Radius.circular(8.0));
@@ -386,10 +399,14 @@ void main() {
       });
 
       test('resolves BorderRadiusDirectional correctly', () {
-        final result = utility.directional.all(const Radius.circular(12.0));
+        final result = utility.borderRadiusDirectional.all(
+          const Radius.circular(12.0),
+        );
 
         final mix = result.value.value as BorderRadiusDirectionalMix;
-        const resolvedValue = BorderRadiusDirectional.all(Radius.circular(12.0));
+        const resolvedValue = BorderRadiusDirectional.all(
+          Radius.circular(12.0),
+        );
 
         expect(mix, resolvesTo(resolvedValue));
       });

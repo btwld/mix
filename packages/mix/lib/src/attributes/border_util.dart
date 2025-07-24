@@ -5,49 +5,11 @@ import 'package:mix/mix.dart';
 
 final class BoxBorderUtility<T extends SpecStyle<Object?>>
     extends MixPropUtility<T, BoxBorder> {
-  late final directional = BorderDirectionalUtility<T>(builder);
-  late final all = _border.all;
-  late final bottom = _border.bottom;
-  late final top = _border.top;
-  late final left = _border.left;
-  late final right = _border.right;
-  late final horizontal = _border.horizontal;
-  late final vertical = _border.vertical;
-  late final start = directional.start;
-  late final end = directional.end;
+  late final border = BorderUtility<T>(builder);
 
-  late final color = _border.color;
-  late final width = _border.width;
-  late final style = _border.style;
-  late final strokeAlign = _border.strokeAlign;
+  late final borderDirectional = BorderDirectionalUtility<T>(builder);
 
-  late final none = _border.none;
-
-  late final _border = BorderUtility<T>(builder);
-
-  BoxBorderUtility(super.builder)
-    : super(
-        convertToMix: (v) {
-          return switch (v) {
-            Border() => BorderMix.value(v),
-            BorderDirectional() => BorderDirectionalMix.value(v),
-            _ => throw ArgumentError(
-              'Unsupported BoxBorder type: ${v.runtimeType}',
-            ),
-          };
-        },
-      );
-
-  T only({
-    BorderSideMix? top,
-    BorderSideMix? bottom,
-    BorderSideMix? left,
-    BorderSideMix? right,
-  }) {
-    return call(
-      BorderMix.only(top: top, bottom: bottom, left: left, right: right),
-    );
-  }
+  BoxBorderUtility(super.builder) : super(convertToMix: BoxBorderMix.value);
 
   @override
   T call(BoxBorderMix value) {

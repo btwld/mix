@@ -44,6 +44,20 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
     this.maxHeight,
   });
 
+  BoxConstraintsMix.height(double height)
+    : this.only(minHeight: height, maxHeight: height);
+
+  BoxConstraintsMix.width(double width)
+    : this.only(minWidth: width, maxWidth: width);
+
+  BoxConstraintsMix.size(Size size)
+    : this.only(
+        minWidth: size.width,
+        maxWidth: size.width,
+        minHeight: size.height,
+        maxHeight: size.height,
+      );
+
   BoxConstraintsMix.minWidth(double minWidth) : this.only(minWidth: minWidth);
 
   BoxConstraintsMix.maxWidth(double maxWidth) : this.only(maxWidth: maxWidth);

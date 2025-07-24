@@ -32,6 +32,14 @@ final class BoxConstraintsUtility<T extends SpecStyle<Object?>>
     (prop) => call(BoxConstraintsMix(maxHeight: prop)),
   );
 
+  late final height = DoubleUtility<T>(
+    (prop) => call(BoxConstraintsMix(minHeight: prop, maxHeight: prop)),
+  );
+
+  late final width = DoubleUtility<T>(
+    (prop) => call(BoxConstraintsMix(minWidth: prop, maxWidth: prop)),
+  );
+
   BoxConstraintsUtility(super.builder)
     : super(convertToMix: BoxConstraintsMix.value);
 
