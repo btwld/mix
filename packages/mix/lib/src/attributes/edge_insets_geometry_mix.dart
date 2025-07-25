@@ -216,28 +216,6 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
     return edgeInsets != null ? EdgeInsetsMix.value(edgeInsets) : null;
   }
 
-  @override
-  EdgeInsets resolve(BuildContext context) {
-    return EdgeInsets.only(
-      left: MixHelpers.resolve(context, $left) ?? 0,
-      top: MixHelpers.resolve(context, $top) ?? 0,
-      right: MixHelpers.resolve(context, $right) ?? 0,
-      bottom: MixHelpers.resolve(context, $bottom) ?? 0,
-    );
-  }
-
-  @override
-  EdgeInsetsMix merge(EdgeInsetsMix? other) {
-    if (other == null) return this;
-
-    return EdgeInsetsMix(
-      top: MixHelpers.merge($top, other.$top),
-      bottom: MixHelpers.merge($bottom, other.$bottom),
-      left: MixHelpers.merge($left, other.$left),
-      right: MixHelpers.merge($right, other.$right),
-    );
-  }
-
   /// Creates a new [EdgeInsetsMix] with the provided top inset,
   /// merging it with the current instance.
   EdgeInsetsMix top(double value) {
@@ -260,6 +238,28 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
   /// merging it with the current instance.
   EdgeInsetsMix right(double value) {
     return merge(EdgeInsetsMix.only(right: value));
+  }
+
+  @override
+  EdgeInsets resolve(BuildContext context) {
+    return EdgeInsets.only(
+      left: MixHelpers.resolve(context, $left) ?? 0,
+      top: MixHelpers.resolve(context, $top) ?? 0,
+      right: MixHelpers.resolve(context, $right) ?? 0,
+      bottom: MixHelpers.resolve(context, $bottom) ?? 0,
+    );
+  }
+
+  @override
+  EdgeInsetsMix merge(EdgeInsetsMix? other) {
+    if (other == null) return this;
+
+    return EdgeInsetsMix(
+      top: MixHelpers.merge($top, other.$top),
+      bottom: MixHelpers.merge($bottom, other.$bottom),
+      left: MixHelpers.merge($left, other.$left),
+      right: MixHelpers.merge($right, other.$right),
+    );
   }
 
   @override
@@ -350,28 +350,6 @@ final class EdgeInsetsDirectionalMix
         : null;
   }
 
-  @override
-  EdgeInsetsDirectional resolve(BuildContext context) {
-    return EdgeInsetsDirectional.only(
-      start: MixHelpers.resolve(context, $start) ?? 0,
-      top: MixHelpers.resolve(context, $top) ?? 0,
-      end: MixHelpers.resolve(context, $end) ?? 0,
-      bottom: MixHelpers.resolve(context, $bottom) ?? 0,
-    );
-  }
-
-  @override
-  EdgeInsetsDirectionalMix merge(EdgeInsetsDirectionalMix? other) {
-    if (other == null) return this;
-
-    return EdgeInsetsDirectionalMix(
-      top: MixHelpers.merge($top, other.$top),
-      bottom: MixHelpers.merge($bottom, other.$bottom),
-      start: MixHelpers.merge($start, other.$start),
-      end: MixHelpers.merge($end, other.$end),
-    );
-  }
-
   /// Creates a new [EdgeInsetsDirectionalMix] with the provided top inset,
   /// merging it with the current instance.
   EdgeInsetsDirectionalMix top(double value) {
@@ -394,6 +372,28 @@ final class EdgeInsetsDirectionalMix
   /// merging it with the current instance.
   EdgeInsetsDirectionalMix end(double value) {
     return merge(EdgeInsetsDirectionalMix.only(end: value));
+  }
+
+  @override
+  EdgeInsetsDirectional resolve(BuildContext context) {
+    return EdgeInsetsDirectional.only(
+      start: MixHelpers.resolve(context, $start) ?? 0,
+      top: MixHelpers.resolve(context, $top) ?? 0,
+      end: MixHelpers.resolve(context, $end) ?? 0,
+      bottom: MixHelpers.resolve(context, $bottom) ?? 0,
+    );
+  }
+
+  @override
+  EdgeInsetsDirectionalMix merge(EdgeInsetsDirectionalMix? other) {
+    if (other == null) return this;
+
+    return EdgeInsetsDirectionalMix(
+      top: MixHelpers.merge($top, other.$top),
+      bottom: MixHelpers.merge($bottom, other.$bottom),
+      start: MixHelpers.merge($start, other.$start),
+      end: MixHelpers.merge($end, other.$end),
+    );
   }
 
   @override

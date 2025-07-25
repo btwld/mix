@@ -95,6 +95,7 @@ mixin EqualityMixin {
     for (final prop in props) {
       hash = Object.hash(hash, prop);
     }
+
     return hash;
   }
 

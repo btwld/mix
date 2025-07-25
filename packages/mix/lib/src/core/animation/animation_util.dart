@@ -9,7 +9,7 @@ class AnimationConfigUtility<T extends SpecStyle<Object?>>
   const AnimationConfigUtility(super.builder);
 
   T implicit({required Duration duration, Curve curve = Curves.linear}) {
-    return builder(ImplicitAnimationConfig(duration: duration, curve: curve));
+    return builder(CurveAnimationConfig(duration: duration, curve: curve));
   }
 
   T call({required Duration duration, Curve curve = Curves.linear}) {

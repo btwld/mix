@@ -33,11 +33,7 @@ class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
         offset: Prop.maybe(offset),
       );
 
-  const ShadowMix({
-    Prop<double>? blurRadius,
-    Prop<Color>? color,
-    Prop<Offset>? offset,
-  }) : super(blurRadius: blurRadius, color: color, offset: offset);
+  const ShadowMix({super.blurRadius, super.color, super.offset});
 
   /// Constructor that accepts a [Shadow] value and extracts its properties.
   ///
@@ -161,12 +157,11 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
        );
 
   const BoxShadowMix({
-    Prop<Color>? color,
-    Prop<Offset>? offset,
-    Prop<double>? blurRadius,
+    super.color,
+    super.offset,
+    super.blurRadius,
     Prop<double>? spreadRadius,
-  }) : $spreadRadius = spreadRadius,
-       super(color: color, offset: offset, blurRadius: blurRadius);
+  }) : $spreadRadius = spreadRadius;
 
   /// Constructor that accepts a [BoxShadow] value and extracts its properties.
   ///

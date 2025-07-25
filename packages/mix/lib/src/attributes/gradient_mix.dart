@@ -101,13 +101,12 @@ final class LinearGradientMix extends GradientMix<LinearGradient> {
     Prop<AlignmentGeometry>? begin,
     Prop<AlignmentGeometry>? end,
     Prop<TileMode>? tileMode,
-    Prop<GradientTransform>? transform,
-    List<Prop<Color>>? colors,
-    List<Prop<double>>? stops,
+    super.transform,
+    super.colors,
+    super.stops,
   }) : $begin = begin,
        $end = end,
-       $tileMode = tileMode,
-       super(transform: transform, colors: colors, stops: stops);
+       $tileMode = tileMode;
 
   /// Constructor that accepts a [LinearGradient] value and extracts its properties.
   ///
@@ -279,15 +278,14 @@ final class RadialGradientMix extends GradientMix<RadialGradient> {
     Prop<TileMode>? tileMode,
     Prop<AlignmentGeometry>? focal,
     Prop<double>? focalRadius,
-    Prop<GradientTransform>? transform,
-    List<Prop<Color>>? colors,
-    List<Prop<double>>? stops,
+    super.transform,
+    super.colors,
+    super.stops,
   }) : $center = center,
        $radius = radius,
        $tileMode = tileMode,
        $focal = focal,
-       $focalRadius = focalRadius,
-       super(transform: transform, colors: colors, stops: stops);
+       $focalRadius = focalRadius;
 
   /// Constructor that accepts a [RadialGradient] value and extracts its properties.
   ///
@@ -485,14 +483,13 @@ final class SweepGradientMix extends GradientMix<SweepGradient> {
     Prop<double>? startAngle,
     Prop<double>? endAngle,
     Prop<TileMode>? tileMode,
-    Prop<GradientTransform>? transform,
-    List<Prop<Color>>? colors,
-    List<Prop<double>>? stops,
+    super.transform,
+    super.colors,
+    super.stops,
   }) : $center = center,
        $startAngle = startAngle,
        $endAngle = endAngle,
-       $tileMode = tileMode,
-       super(transform: transform, colors: colors, stops: stops);
+       $tileMode = tileMode;
 
   /// Constructor that accepts a [SweepGradient] value and extracts its properties.
   ///

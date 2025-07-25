@@ -82,9 +82,8 @@ final class RoundedRectangleBorderMix
        );
   const RoundedRectangleBorderMix({
     MixProp<BorderRadiusGeometry>? borderRadius,
-    MixProp<BorderSide>? side,
-  }) : $borderRadius = borderRadius,
-       super(side: side);
+    super.side,
+  }) : $borderRadius = borderRadius;
 
   RoundedRectangleBorderMix.value(RoundedRectangleBorder border)
     : this.only(
@@ -131,9 +130,8 @@ final class BeveledRectangleBorderMix
 
   const BeveledRectangleBorderMix({
     MixProp<BorderRadiusGeometry>? borderRadius,
-    MixProp<BorderSide>? side,
-  }) : $borderRadius = borderRadius,
-       super(side: side);
+    super.side,
+  }) : $borderRadius = borderRadius;
 
   BeveledRectangleBorderMix.value(BeveledRectangleBorder border)
     : this.only(
@@ -180,9 +178,8 @@ final class ContinuousRectangleBorderMix
 
   const ContinuousRectangleBorderMix({
     MixProp<BorderRadiusGeometry>? borderRadius,
-    MixProp<BorderSide>? side,
-  }) : $borderRadius = borderRadius,
-       super(side: side);
+    super.side,
+  }) : $borderRadius = borderRadius;
 
   ContinuousRectangleBorderMix.value(ContinuousRectangleBorder border)
     : this.only(
@@ -225,9 +222,8 @@ final class CircleBorderMix extends OutlinedBorderMix<CircleBorder> {
   CircleBorderMix.only({BorderSideMix? side, double? eccentricity})
     : this(side: MixProp.maybe(side), eccentricity: Prop.maybe(eccentricity));
 
-  const CircleBorderMix({MixProp<BorderSide>? side, Prop<double>? eccentricity})
-    : $eccentricity = eccentricity,
-      super(side: side);
+  const CircleBorderMix({super.side, Prop<double>? eccentricity})
+    : $eccentricity = eccentricity;
 
   CircleBorderMix.value(CircleBorder border)
     : this.only(
@@ -297,7 +293,7 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
       );
 
   const StarBorderMix({
-    MixProp<BorderSide>? side,
+    super.side,
     Prop<double>? points,
     Prop<double>? innerRadiusRatio,
     Prop<double>? pointRounding,
@@ -309,8 +305,7 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
        $pointRounding = pointRounding,
        $valleyRounding = valleyRounding,
        $rotation = rotation,
-       $squash = squash,
-       super(side: side);
+       $squash = squash;
 
   factory StarBorderMix.points(double value) {
     return StarBorderMix.only(points: value);
@@ -447,7 +442,7 @@ final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
          bottom: MixProp.maybe(bottom),
        );
   const LinearBorderMix({
-    MixProp<BorderSide>? side,
+    super.side,
     MixProp<LinearBorderEdge>? start,
     MixProp<LinearBorderEdge>? end,
     MixProp<LinearBorderEdge>? top,
@@ -455,8 +450,7 @@ final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
   }) : $start = start,
        $end = end,
        $top = top,
-       $bottom = bottom,
-       super(side: side);
+       $bottom = bottom;
 
   LinearBorderMix.value(LinearBorder border)
     : this.only(

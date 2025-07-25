@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import '../modifiers/internal/render_modifier.dart';
 import '../widgets/pressable_widget.dart';
 import 'animation/animation_driver.dart';
+import 'animation/animation_style_widget.dart';
 import 'animation_config.dart';
 import 'modifier.dart';
 import 'resolved_style_provider.dart';
@@ -45,7 +46,8 @@ class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
   State<StyleBuilder<S>> createState() => _StyleBuilderState<S>();
 }
 
-class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
+class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
+    with TickerProviderStateMixin {
   late final WidgetStatesController _controller;
 
   // Cache for optimization
@@ -84,29 +86,57 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
     );
   }
 
+  // Cache for animation driver
+  AnimationDriver<S>? _animationDriver;
+  AnimationConfig? _lastAnimationConfig;
+
   Widget _wrapWithAnimationIfNeeded(
     BuildContext context,
     Widget child,
     AnimationConfig? animationConfig,
     SpecStyle<S> style,
   ) {
-    if (animationConfig == null) return child;
+    if (animationConfig == null) {
+      _disposeAnimationDriver();
 
-    if (animationConfig is ImplicitAnimationConfig) {
-      final driver = ImplicitAnimationDriver<S>(
-        duration: animationConfig.duration,
-        curve: animationConfig.curve,
-        onEnd: animationConfig.onEnd,
-      );
-
-      return driver.build(
-        context: context,
-        style: style,
-        builder: (context, resolved) => child,
-      );
+      return child;
     }
 
-    return child;
+    // Create or update animation driver if needed
+    if (_animationDriver == null || _lastAnimationConfig != animationConfig) {
+      _disposeAnimationDriver();
+      _animationDriver = _createAnimationDriver(animationConfig);
+      _lastAnimationConfig = animationConfig;
+    }
+
+    final resolved = style.build(context);
+
+    return AnimationStyleWidget<S>(
+      driver: _animationDriver!,
+      style: resolved,
+      builder: (context, spec) => child,
+    );
+  }
+
+  AnimationDriver<S> _createAnimationDriver(AnimationConfig config) {
+    return switch (config) {
+      CurveAnimationConfig(:final duration, :final curve, :final onEnd) =>
+        CurveAnimationDriver<S>(
+          vsync: this,
+          duration: duration,
+          curve: curve,
+          onEnd: onEnd,
+        ),
+      SpringAnimationConfig(:final spring, :final onEnd) =>
+        SpringAnimationDriver<S>(vsync: this, spring: spring, onEnd: onEnd),
+      _ => throw UnsupportedError('Animation config not supported: $config'),
+    };
+  }
+
+  void _disposeAnimationDriver() {
+    _animationDriver?.dispose();
+    _animationDriver = null;
+    _lastAnimationConfig = null;
   }
 
   SpecStyle<S>? _getInheritedStyle(BuildContext context) {
@@ -181,6 +211,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
     if (widget.controller == null) {
       _controller.dispose();
     }
+    _disposeAnimationDriver();
     super.dispose();
   }
 
