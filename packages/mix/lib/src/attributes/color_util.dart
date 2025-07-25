@@ -7,26 +7,37 @@ import '../core/utility.dart';
 import '../theme/tokens/mix_token.dart';
 import 'material_colors_util.dart';
 
-/// Mixin that provides color directive methods
+/// Provides color transformation methods for applying opacity, brightness, and saturation changes.
+///
+/// All directive methods modify the color value through transformation directives
+/// that are applied during resolution.
 mixin ColorDirectiveMixin<T extends SpecStyle<Object?>>
     on PropUtility<T, Color> {
-  // All directive methods use the directive() method from PropUtility
+  /// Applies the specified opacity to the color (0.0 to 1.0).
   T withOpacity(double opacity) => directive(OpacityColorDirective(opacity));
 
+  /// Sets the alpha channel of the color (0 to 255).
   T withAlpha(int alpha) => directive(AlphaColorDirective(alpha));
 
+  /// Darkens the color by the specified percentage (0 to 100).
   T darken(int amount) => directive(DarkenColorDirective(amount));
 
+  /// Lightens the color by the specified percentage (0 to 100).
   T lighten(int amount) => directive(LightenColorDirective(amount));
 
+  /// Increases the color saturation by the specified percentage (0 to 100).
   T saturate(int amount) => directive(SaturateColorDirective(amount));
 
+  /// Decreases the color saturation by the specified percentage (0 to 100).
   T desaturate(int amount) => directive(DesaturateColorDirective(amount));
 
+  /// Mixes the color with white by the specified percentage (0 to 100).
   T tint(int amount) => directive(TintColorDirective(amount));
 
+  /// Mixes the color with black by the specified percentage (0 to 100).
   T shade(int amount) => directive(ShadeColorDirective(amount));
 
+  /// Increases the color brightness by the specified percentage (0 to 100).
   T brighten(int amount) => directive(BrightenColorDirective(amount));
 }
 
@@ -39,9 +50,10 @@ class FoundationColorUtility<T extends SpecStyle<Object?>>
   const FoundationColorUtility(super.builder, this.color);
 }
 
-/// Callable color utility that supports both function call and property access
-/// This utility can be called as a function to return a StyleElement,
-/// or accessed as a property to get the Color value.
+/// Color utility that can be called as a function or used with directive methods.
+///
+/// Supports both direct function calls to apply the color and method chaining
+/// for color transformations like opacity, darkening, or saturation changes.
 @immutable
 class CallableColorUtility<T extends SpecStyle<Object?>> {
   final T Function(Prop<Color>) builder;
@@ -53,7 +65,7 @@ class CallableColorUtility<T extends SpecStyle<Object?>> {
   /// Usage: colorUtil.black() returns T that resolves to Colors.black
   T call() => builder(Prop(color));
 
-  /// Directive methods for color transformations
+  /// Applies the specified opacity to the color (0.0 to 1.0).
   T withOpacity(double opacity) =>
       builder(Prop.directives([OpacityColorDirective(opacity)]));
 

@@ -11,6 +11,10 @@ import '../specs/box/box_widget.dart';
 
 // It expects Style? but Box requires StyleElement<BoxSpec>
 // Need to redesign how Style interacts with typed widgets
+
+/// A pressable widget that wraps content in a [Box] with gesture handling.
+///
+/// Provides press, long press, and focus interactions with customizable styling.
 class PressableBox extends StatelessWidget {
   const PressableBox({
     super.key,
@@ -70,6 +74,10 @@ class PressableBox extends StatelessWidget {
   }
 }
 
+/// A widget that handles press gestures and provides visual feedback.
+///
+/// Supports press detection, hover states, and focus management with
+/// configurable hit test behavior and feedback options.
 class Pressable extends StatefulWidget {
   const Pressable({
     super.key,
@@ -240,6 +248,10 @@ class PressableWidgetState extends State<Pressable> {
   }
 }
 
+/// A widget that provides interaction states without gesture handling.
+///
+/// Manages focus, hover, and enabled states for accessibility and styling
+/// purposes without built-in press gesture handling.
 class Interactable extends StatefulWidget {
   const Interactable({
     super.key,

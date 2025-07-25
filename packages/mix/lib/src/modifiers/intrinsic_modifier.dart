@@ -5,29 +5,17 @@ import 'package:flutter/widgets.dart';
 import '../core/modifier.dart';
 import '../core/style.dart';
 
+/// Modifier that forces its child to be exactly as tall as its intrinsic height.
+///
+/// Wraps the child in an [IntrinsicHeight] widget.
 final class IntrinsicHeightModifier extends Modifier<IntrinsicHeightModifier> {
   const IntrinsicHeightModifier();
 
-  /// Creates a copy of this [IntrinsicHeightModifier] but with the given fields
-  /// replaced with the new values.
   @override
   IntrinsicHeightModifier copyWith() {
     return const IntrinsicHeightModifier();
   }
 
-  /// Linearly interpolates between this [IntrinsicHeightModifier] and another [IntrinsicHeightModifier] based on the given parameter [t].
-  ///
-  /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [IntrinsicHeightModifier] is returned. When [t] is 1.0, the [other] [IntrinsicHeightModifier] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [IntrinsicHeightModifier] is returned.
-  ///
-  /// If [other] is null, this method returns the current [IntrinsicHeightModifier] instance.
-  ///
-  /// The interpolation is performed on each property of the [IntrinsicHeightModifier] using the appropriate
-  /// interpolation method:
-
-  /// This method is typically used in animations to smoothly transition between
-  /// different [IntrinsicHeightModifier] configurations.
   @override
   IntrinsicHeightModifier lerp(IntrinsicHeightModifier? other, double t) {
     if (other == null) return this;
@@ -35,10 +23,6 @@ final class IntrinsicHeightModifier extends Modifier<IntrinsicHeightModifier> {
     return const IntrinsicHeightModifier();
   }
 
-  /// The list of properties that constitute the state of this [IntrinsicHeightModifier].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [IntrinsicHeightModifier] instances for equality.
   @override
   List<Object?> get props => [];
 
@@ -48,29 +32,17 @@ final class IntrinsicHeightModifier extends Modifier<IntrinsicHeightModifier> {
   }
 }
 
+/// Modifier that forces its child to be exactly as wide as its intrinsic width.
+///
+/// Wraps the child in an [IntrinsicWidth] widget.
 final class IntrinsicWidthModifier extends Modifier<IntrinsicWidthModifier> {
   const IntrinsicWidthModifier();
 
-  /// Creates a copy of this [IntrinsicWidthModifier] but with the given fields
-  /// replaced with the new values.
   @override
   IntrinsicWidthModifier copyWith() {
     return const IntrinsicWidthModifier();
   }
 
-  /// Linearly interpolates between this [IntrinsicWidthModifier] and another [IntrinsicWidthModifier] based on the given parameter [t].
-  ///
-  /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [IntrinsicWidthModifier] is returned. When [t] is 1.0, the [other] [IntrinsicWidthModifier] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [IntrinsicWidthModifier] is returned.
-  ///
-  /// If [other] is null, this method returns the current [IntrinsicWidthModifier] instance.
-  ///
-  /// The interpolation is performed on each property of the [IntrinsicWidthModifier] using the appropriate
-  /// interpolation method:
-
-  /// This method is typically used in animations to smoothly transition between
-  /// different [IntrinsicWidthModifier] configurations.
   @override
   IntrinsicWidthModifier lerp(IntrinsicWidthModifier? other, double t) {
     if (other == null) return this;
@@ -78,10 +50,6 @@ final class IntrinsicWidthModifier extends Modifier<IntrinsicWidthModifier> {
     return const IntrinsicWidthModifier();
   }
 
-  /// The list of properties that constitute the state of this [IntrinsicWidthModifier].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [IntrinsicWidthModifier] instances for equality.
   @override
   List<Object?> get props => [];
 

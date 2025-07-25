@@ -2,6 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
+/// Base class for Mix-compatible border styling that wraps Flutter's [BoxBorder] types.
+///
+/// Provides common functionality for [BorderMix] and [BorderDirectionalMix] with
+/// merging support and type conversion between border variants.
 sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
   final MixProp<BorderSide>? $top;
   final MixProp<BorderSide>? $bottom;
@@ -16,7 +20,10 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
     return BorderMix.only(top: side, bottom: side, left: side, right: side);
   }
 
-  // symetric
+  /// Creates a border with symmetric sides using vertical and horizontal borders.
+  ///
+  /// The [vertical] border is applied to left and right sides,
+  /// while [horizontal] border is applied to top and bottom sides.
   static BorderMix symmetric({
     BorderSideMix? vertical,
     BorderSideMix? horizontal,
@@ -117,6 +124,10 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
   BoxBorderMix<T> merge(covariant BoxBorderMix<T>? other);
 }
 
+/// Mix-compatible representation of Flutter's [Border] with individual side control.
+///
+/// Allows styling of top, bottom, left, and right border sides independently
+/// with token support and merging capabilities.
 final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
   final MixProp<BorderSide>? $left;
   final MixProp<BorderSide>? $right;
@@ -141,9 +152,7 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
   }) : $left = left,
        $right = right;
 
-  /// Constructor that accepts a [Border] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [Border] instances to [BorderMix].
+  /// Creates a [BorderMix] from an existing [Border].
   ///
   /// ```dart
   /// const border = Border.all(color: Colors.red, width: 2.0);
@@ -168,7 +177,7 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
         right: vertical,
       );
 
-  /// Creates a new [BorderSideMix] with the provided color,
+  /// Creates a border with the same side on vertical edges.
 
   factory BorderMix.vertical(BorderSideMix side) {
     return BorderMix.symmetric(vertical: side);
@@ -194,9 +203,9 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
     return BorderMix.only(right: side);
   }
 
-  /// Constructor that accepts a nullable [Border] value and extracts its properties.
+  /// Creates a [BorderMix] from a nullable [Border].
   ///
-  /// Returns null if the input is null, otherwise uses [BorderMix.value].
+  /// Returns null if the input is null.
   ///
   /// ```dart
   /// const Border? border = Border.all(color: Colors.red, width: 2.0);
@@ -206,26 +215,22 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
     return border != null ? BorderMix.value(border) : null;
   }
 
-  /// Creates a new [BorderMix] with the provided top side,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified top border side.
   BorderMix top(BorderSideMix side) {
     return merge(BorderMix.only(top: side));
   }
 
-  /// Creates a new [BorderMix] with the provided bottom side,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified bottom border side.
   BorderMix bottom(BorderSideMix side) {
     return merge(BorderMix.only(bottom: side));
   }
 
-  /// Creates a new [BorderMix] with the provided left side,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified left border side.
   BorderMix left(BorderSideMix side) {
     return merge(BorderMix.only(left: side));
   }
 
-  /// Creates a new [BorderMix] with the provided right side,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified right border side.
   BorderMix right(BorderSideMix side) {
     return merge(BorderMix.only(right: side));
   }
@@ -278,6 +283,10 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
   Border get defaultValue => const Border();
 }
 
+/// Mix-compatible representation of Flutter's [BorderDirectional] with RTL support.
+///
+/// Allows styling of top, bottom, start, and end border sides with proper
+/// right-to-left layout handling and token support.
 final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
     with DefaultValue<BorderDirectional> {
   final MixProp<BorderSide>? $start;
@@ -306,9 +315,7 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
   }) : $start = start,
        $end = end;
 
-  /// Constructor that accepts a [BorderDirectional] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [BorderDirectional] instances to [BorderDirectionalMix].
+  /// Creates a [BorderDirectionalMix] from an existing [BorderDirectional].
   ///
   /// ```dart
   /// const border = BorderDirectional.all(BorderSide(color: Colors.red, width: 2.0));
@@ -356,9 +363,9 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
     return BorderDirectionalMix.only(end: side);
   }
 
-  /// Constructor that accepts a nullable [BorderDirectional] value and extracts its properties.
+  /// Creates a [BorderDirectionalMix] from a nullable [BorderDirectional].
   ///
-  /// Returns null if the input is null, otherwise uses [BorderDirectionalMix.value].
+  /// Returns null if the input is null.
   ///
   /// ```dart
   /// const BorderDirectional? border = BorderDirectional.all(BorderSide(color: Colors.red, width: 2.0));
@@ -368,26 +375,22 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
     return border != null ? BorderDirectionalMix.value(border) : null;
   }
 
-  /// Creates a new [BorderDirectionalMix] with the provided top side,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified top border side.
   BorderDirectionalMix top(BorderSideMix side) {
     return merge(BorderDirectionalMix.only(top: side));
   }
 
-  /// Creates a new [BorderDirectionalMix] with the provided bottom side,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified bottom border side.
   BorderDirectionalMix bottom(BorderSideMix side) {
     return merge(BorderDirectionalMix.only(bottom: side));
   }
 
-  /// Creates a new [BorderDirectionalMix] with the provided start side,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified start border side.
   BorderDirectionalMix start(BorderSideMix side) {
     return merge(BorderDirectionalMix.only(start: side));
   }
 
-  /// Creates a new [BorderDirectionalMix] with the provided end side,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified end border side.
   BorderDirectionalMix end(BorderSideMix side) {
     return merge(BorderDirectionalMix.only(end: side));
   }
@@ -436,17 +439,16 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
   @override
   bool get isUniform => $top == $bottom && $bottom == $start && $start == $end;
 
-  /// The list of properties that constitute the state of this [BorderDirectionalMix].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [BorderDirectionalMix] instances for equality.
   @override
   BorderDirectional get defaultValue => const BorderDirectional();
 }
 
+/// Mix-compatible representation of Flutter's [BorderSide] for individual border styling.
+///
+/// Configures color, width, style, and stroke alignment for a single border edge
+/// with token support and merging capabilities.
 final class BorderSideMix extends Mix<BorderSide>
     with DefaultValue<BorderSide> {
-  // Properties use MixableProperty for cleaner merging
   final Prop<Color>? $color;
   final Prop<double>? $width;
   final Prop<BorderStyle>? $style;
@@ -466,9 +468,7 @@ final class BorderSideMix extends Mix<BorderSide>
          strokeAlign: Prop.maybe(strokeAlign),
        );
 
-  /// Constructor that accepts a [BorderSide] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [BorderSide] instances to [BorderSideMix].
+  /// Creates a [BorderSideMix] from an existing [BorderSide].
   ///
   /// ```dart
   /// const borderSide = BorderSide(color: Colors.blue, width: 3.0);
@@ -508,9 +508,9 @@ final class BorderSideMix extends Mix<BorderSide>
     return BorderSideMix.only(strokeAlign: value);
   }
 
-  /// Constructor that accepts a nullable [BorderSide] value and extracts its properties.
+  /// Creates a [BorderSideMix] from a nullable [BorderSide].
   ///
-  /// Returns null if the input is null, otherwise uses [BorderSideMix.value].
+  /// Returns null if the input is null.
   ///
   /// ```dart
   /// const BorderSide? borderSide = BorderSide(color: Colors.blue, width: 3.0);
@@ -522,25 +522,22 @@ final class BorderSideMix extends Mix<BorderSide>
         : null;
   }
 
-  /// merging it with the current instance.
+  /// Returns a copy with the specified color.
   BorderSideMix color(Color value) {
     return merge(BorderSideMix.only(color: value));
   }
 
-  /// Creates a new [BorderSideMix] with the provided width,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified width.
   BorderSideMix width(double value) {
     return merge(BorderSideMix.only(width: value));
   }
 
-  /// Creates a new [BorderSideMix] with the provided style,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified border style.
   BorderSideMix style(BorderStyle value) {
     return merge(BorderSideMix.only(style: value));
   }
 
-  /// Creates a new [BorderSideMix] with the provided strokeAlign,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified stroke alignment.
   BorderSideMix strokeAlign(double value) {
     return merge(BorderSideMix.only(strokeAlign: value));
   }

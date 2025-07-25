@@ -163,8 +163,9 @@ void main() {
 
     group('Convenience Methods', () {
       test('animate method sets animation config', () {
-        final animation = AnimationConfig.linear(
-          const Duration(milliseconds: 300),
+        final animation = AnimationConfig.implicit(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.linear,
         );
         final attribute = StackSpecAttribute().animate(animation);
 

@@ -1,8 +1,6 @@
 import 'package:flutter/widgets.dart';
 
 import '../internal/constants.dart';
-import 'spec.dart';
-import 'style.dart';
 
 /// Configuration data for animated styles in the Mix framework.
 ///
@@ -32,68 +30,7 @@ sealed class AnimationConfig {
     );
   }
 
-  // Builder
-  static AnimationBuilderConfig<S, V> builder<S extends Spec<S>, V>({
-    required SpecStyle<S> Function(V) builder,
-    Curve curve = Curves.linear,
-    Duration delay = Duration.zero,
-    Duration duration = kDefaultAnimationDuration,
-  }) {
-    return AnimationBuilderConfig(
-      builder: builder,
-      curve: curve,
-      delay: delay,
-      duration: duration,
-    );
-  }
 
-  /// Creates an implicit animation configuration with linear curve.
-  static CurveAnimationConfig linear(Duration duration) =>
-      CurveAnimationConfig(duration: duration, curve: Curves.linear);
-
-  /// Creates an implicit animation configuration with ease curve.
-  static CurveAnimationConfig ease(Duration duration) =>
-      CurveAnimationConfig(duration: duration, curve: Curves.ease);
-
-  /// Creates an implicit animation configuration with ease-in curve.
-  static CurveAnimationConfig easeIn(Duration duration) =>
-      CurveAnimationConfig(duration: duration, curve: Curves.easeIn);
-
-  /// Creates an implicit animation configuration with ease-out curve.
-  static CurveAnimationConfig easeOut(Duration duration) =>
-      CurveAnimationConfig(duration: duration, curve: Curves.easeOut);
-
-  /// Creates an implicit animation configuration with ease-in-out curve.
-  static CurveAnimationConfig easeInOut(Duration duration) =>
-      CurveAnimationConfig(duration: duration, curve: Curves.easeInOut);
-
-  /// Creates an implicit animation configuration with fast-out-slow-in curve.
-  static CurveAnimationConfig fastOutSlowIn(Duration duration) =>
-      CurveAnimationConfig(duration: duration, curve: Curves.fastOutSlowIn);
-
-  /// Creates an implicit animation configuration with bounce-in curve.
-  static CurveAnimationConfig bounceIn(Duration duration) =>
-      CurveAnimationConfig(duration: duration, curve: Curves.bounceIn);
-
-  /// Creates an implicit animation configuration with bounce-out curve.
-  static CurveAnimationConfig bounceOut(Duration duration) =>
-      CurveAnimationConfig(duration: duration, curve: Curves.bounceOut);
-
-  /// Creates an implicit animation configuration with bounce-in-out curve.
-  static CurveAnimationConfig bounceInOut(Duration duration) =>
-      CurveAnimationConfig(duration: duration, curve: Curves.bounceInOut);
-
-  /// Creates an implicit animation configuration with elastic-in curve.
-  static CurveAnimationConfig elasticIn(Duration duration) =>
-      CurveAnimationConfig(duration: duration, curve: Curves.elasticIn);
-
-  /// Creates an implicit animation configuration with elastic-out curve.
-  static CurveAnimationConfig elasticOut(Duration duration) =>
-      CurveAnimationConfig(duration: duration, curve: Curves.elasticOut);
-
-  /// Creates an implicit animation configuration with elastic-in-out curve.
-  static CurveAnimationConfig elasticInOut(Duration duration) =>
-      CurveAnimationConfig(duration: duration, curve: Curves.elasticInOut);
 
   /// Creates a spring animation configuration with standard spring physics.
   static SpringAnimationConfig spring({
@@ -133,9 +70,6 @@ sealed class AnimationConfig {
     onEnd: onEnd,
   );
 
-  /// Creates a controlled animation configuration for explicit animations.
-  static ControlledAnimationConfig controller(AnimationController controller) =>
-      ControlledAnimationConfig(controller: controller);
 }
 
 /// Curve-based animation configuration with fixed duration.
@@ -223,62 +157,4 @@ final class SpringAnimationConfig extends AnimationConfig {
 
   @override
   int get hashCode => Object.hash(spring.mass, spring.stiffness, spring.damping);
-}
-
-/// Type alias for backward compatibility
-@Deprecated('Use CurveAnimationConfig instead')
-typedef ImplicitAnimationConfig = CurveAnimationConfig;
-
-/// Controlled animation configuration for explicit animations.
-///
-/// This configuration holds a reference to an AnimationController that you manage
-/// yourself, providing full control over the animation lifecycle.
-final class ControlledAnimationConfig extends AnimationConfig {
-  final AnimationController controller;
-
-  final VoidCallback? onEnd;
-
-  const ControlledAnimationConfig({required this.controller, this.onEnd});
-
-  /// Duration from the controller.
-  Duration get duration => controller.duration ?? kDefaultAnimationDuration;
-
-  /// Curve is not applicable for controlled animations - use CurvedAnimation instead.
-  Curve get curve => Curves.linear;
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is ControlledAnimationConfig && other.controller == controller;
-  }
-
-  @override
-  int get hashCode => controller.hashCode;
-}
-
-class AnimationBuilderConfig<S extends Spec<S>, V> extends AnimationConfig {
-  final SpecStyle<S> Function(V) builder;
-  final Curve curve;
-  final Duration delay;
-  final Duration duration;
-
-  const AnimationBuilderConfig({
-    required this.builder,
-    this.curve = Curves.linear,
-    this.delay = Duration.zero,
-    this.duration = kDefaultAnimationDuration,
-  });
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is AnimationBuilderConfig &&
-        other.duration == duration &&
-        other.curve == curve;
-  }
-
-  @override
-  int get hashCode => Object.hash(duration, curve);
 }

@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../tokens/mix_token.dart';
 
+/// Provides access to Material Design tokens for colors and text styles.
+///
+/// Contains organized token collections that map to Material Design 3
+/// color schemes and typography system.
 @immutable
 class MaterialTokens {
   final colorScheme = const _MaterialColorTokens();
@@ -10,6 +14,7 @@ class MaterialTokens {
   const MaterialTokens();
 }
 
+/// Material Design color tokens for theme integration.
 @immutable
 class _MaterialColorTokens {
   final primary = const MixToken<Color>('md.color.primary');
@@ -39,8 +44,8 @@ class _MaterialColorTokens {
   const _MaterialColorTokens();
 }
 
+/// Material Design 3 text style tokens for typography.
 @immutable
-// Material 3 TextTheme Tokens.
 class _MaterialTextStyles {
   //  Material 3 text styles
   final displayLarge = const MixToken<TextStyle>(

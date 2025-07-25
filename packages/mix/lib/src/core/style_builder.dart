@@ -129,7 +129,6 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
         ),
       SpringAnimationConfig(:final spring, :final onEnd) =>
         SpringAnimationDriver<S>(vsync: this, spring: spring, onEnd: onEnd),
-      _ => throw UnsupportedError('Animation config not supported: $config'),
     };
   }
 

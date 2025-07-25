@@ -2,6 +2,10 @@ import 'package:flutter/widgets.dart';
 
 import '../internal/compare_mixin.dart';
 
+/// Base class for all resolved specifications that define widget properties.
+///
+/// Specs are the final resolved form of styling attributes after applying
+/// context-specific values and merging operations.
 @immutable
 abstract class Spec<T extends Spec<T>> with EqualityMixin {
   const Spec();
@@ -16,6 +20,9 @@ abstract class Spec<T extends Spec<T>> with EqualityMixin {
   T lerp(covariant T? other, double t);
 }
 
+/// Combines multiple [Spec] instances into a single specification.
+///
+/// Allows composing different types of specs together for complex styling.
 class MultiSpec extends Spec<MultiSpec> {
   final Map<Type, Spec> _specs;
 

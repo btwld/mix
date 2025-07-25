@@ -3,9 +3,10 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-// Properties use MixProp for cleaner merging
+/// Mix-compatible representation of [TextHeightBehavior] for text styling.
+///
+/// Configures how text height is applied to the first ascent and last descent.
 class TextHeightBehaviorMix extends Mix<TextHeightBehavior> {
-  // Properties use MixProp for cleaner merging
   final Prop<bool>? $applyHeightToFirstAscent;
   final Prop<bool>? $applyHeightToLastDescent;
   final Prop<TextLeadingDistribution>? $leadingDistribution;

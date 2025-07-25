@@ -43,8 +43,9 @@ void main() {
       testWidgets('Animation driver is applied when animation config is set', (
         tester,
       ) async {
-        final animation = AnimationConfig.linear(
-          const Duration(milliseconds: 300),
+        final animation = AnimationConfig.implicit(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.linear,
         );
         final boxAttribute = BoxSpecAttribute.only(
           constraints: BoxConstraintsMix().width(100).height(200),
@@ -114,8 +115,9 @@ void main() {
       testWidgets('Animation interpolates between style changes', (
         tester,
       ) async {
-        final animation = AnimationConfig.linear(
-          const Duration(milliseconds: 300),
+        final animation = AnimationConfig.implicit(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.linear,
         );
 
         final startAttribute = BoxSpecAttribute.only(

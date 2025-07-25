@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-import 'package:mix/src/internal/constants.dart';
 
 void main() {
   group('AnimationConfig', () {
@@ -17,57 +16,34 @@ void main() {
         expect(config.curve, Curves.easeIn);
       });
 
-      test('creates with curve shortcuts', () {
-        final linear = AnimationConfig.linear(const Duration(seconds: 1));
-        expect(linear.curve, Curves.linear);
-        expect(linear.duration, const Duration(seconds: 1));
-
-        final ease = AnimationConfig.ease(const Duration(seconds: 1));
-        expect(ease.curve, Curves.ease);
-
-        final easeIn = AnimationConfig.easeIn(const Duration(seconds: 1));
-        expect(easeIn.curve, Curves.easeIn);
-
-        final easeOut = AnimationConfig.easeOut(const Duration(seconds: 1));
-        expect(easeOut.curve, Curves.easeOut);
-
-        final easeInOut = AnimationConfig.easeInOut(const Duration(seconds: 1));
-        expect(easeInOut.curve, Curves.easeInOut);
-
-        final fastOutSlowIn = AnimationConfig.fastOutSlowIn(const Duration(seconds: 1));
-        expect(fastOutSlowIn.curve, Curves.fastOutSlowIn);
-
-        final bounceIn = AnimationConfig.bounceIn(const Duration(seconds: 1));
-        expect(bounceIn.curve, Curves.bounceIn);
-
-        final bounceOut = AnimationConfig.bounceOut(const Duration(seconds: 1));
-        expect(bounceOut.curve, Curves.bounceOut);
-
-        final bounceInOut = AnimationConfig.bounceInOut(const Duration(seconds: 1));
-        expect(bounceInOut.curve, Curves.bounceInOut);
-
-        final elasticIn = AnimationConfig.elasticIn(const Duration(seconds: 1));
-        expect(elasticIn.curve, Curves.elasticIn);
-
-        final elasticOut = AnimationConfig.elasticOut(const Duration(seconds: 1));
-        expect(elasticOut.curve, Curves.elasticOut);
-
-        final elasticInOut = AnimationConfig.elasticInOut(const Duration(seconds: 1));
-        expect(elasticInOut.curve, Curves.elasticInOut);
-      });
 
       test('supports equality', () {
-        final config1 = AnimationConfig.linear(const Duration(seconds: 1));
-        final config2 = AnimationConfig.linear(const Duration(seconds: 1));
-        final config3 = AnimationConfig.ease(const Duration(seconds: 1));
+        final config1 = AnimationConfig.implicit(
+          duration: const Duration(seconds: 1),
+          curve: Curves.linear,
+        );
+        final config2 = AnimationConfig.implicit(
+          duration: const Duration(seconds: 1),
+          curve: Curves.linear,
+        );
+        final config3 = AnimationConfig.implicit(
+          duration: const Duration(seconds: 1),
+          curve: Curves.ease,
+        );
 
         expect(config1, equals(config2));
         expect(config1, isNot(equals(config3)));
       });
 
       test('has correct hashCode', () {
-        final config1 = AnimationConfig.linear(const Duration(seconds: 1));
-        final config2 = AnimationConfig.linear(const Duration(seconds: 1));
+        final config1 = AnimationConfig.implicit(
+          duration: const Duration(seconds: 1),
+          curve: Curves.linear,
+        );
+        final config2 = AnimationConfig.implicit(
+          duration: const Duration(seconds: 1),
+          curve: Curves.linear,
+        );
 
         expect(config1.hashCode, equals(config2.hashCode));
       });
@@ -187,81 +163,6 @@ void main() {
         
         expect(config.spring.mass, 1.0);
         expect(config.spring.stiffness, 180.0);
-      });
-    });
-
-    group('ControlledAnimationConfig', () {
-      test('creates with controller', () {
-        final controller = AnimationController(
-          vsync: const TestVSync(),
-          duration: const Duration(seconds: 1),
-        );
-        final config = AnimationConfig.controller(controller);
-
-        expect(config, isA<ControlledAnimationConfig>());
-        expect(config.controller, controller);
-        expect(config.duration, const Duration(seconds: 1));
-        expect(config.curve, Curves.linear);
-
-        controller.dispose();
-      });
-
-      test('supports equality', () {
-        final controller1 = AnimationController(
-          vsync: const TestVSync(),
-        );
-        final controller2 = AnimationController(
-          vsync: const TestVSync(),
-        );
-
-        final config1 = AnimationConfig.controller(controller1);
-        final config2 = AnimationConfig.controller(controller1);
-        final config3 = AnimationConfig.controller(controller2);
-
-        expect(config1, equals(config2));
-        expect(config1, isNot(equals(config3)));
-
-        controller1.dispose();
-        controller2.dispose();
-      });
-    });
-
-    group('AnimationBuilderConfig', () {
-      test('creates with builder factory', () {
-        SpecStyle<BoxSpec> builder(int value) {
-          return BoxSpecAttribute()
-              .width(value.toDouble())
-              .height(value.toDouble());
-        }
-
-        final config = AnimationConfig.builder<BoxSpec, int>(
-          builder: builder,
-          curve: Curves.bounceIn,
-          delay: const Duration(milliseconds: 100),
-          duration: const Duration(seconds: 2),
-        );
-
-        expect(config, isA<AnimationBuilderConfig>());
-        expect(config.builder, builder);
-        expect(config.curve, Curves.bounceIn);
-        expect(config.delay, const Duration(milliseconds: 100));
-        expect(config.duration, const Duration(seconds: 2));
-      });
-
-      test('uses default values', () {
-        SpecStyle<BoxSpec> builder(int value) {
-          return BoxSpecAttribute()
-              .width(value.toDouble())
-              .height(value.toDouble());
-        }
-
-        final config = AnimationConfig.builder<BoxSpec, int>(
-          builder: builder,
-        );
-
-        expect(config.curve, Curves.linear);
-        expect(config.delay, Duration.zero);
-        expect(config.duration, kDefaultAnimationDuration);
       });
     });
   });

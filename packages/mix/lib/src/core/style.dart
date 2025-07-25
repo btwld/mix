@@ -7,6 +7,7 @@ import 'modifier.dart';
 import 'spec.dart';
 import 'variant.dart';
 
+/// Base interface for all style elements in the Mix framework.
 sealed class StyleElement {
   const StyleElement();
 }

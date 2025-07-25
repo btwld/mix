@@ -53,9 +53,7 @@ final class DecorationImageMix extends Mix<DecorationImage>
        $invertColors = invertColors,
        $isAntiAlias = isAntiAlias;
 
-  /// Constructor that accepts a [DecorationImage] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [DecorationImage] instances to [DecorationImageMix].
+  /// Creates a [DecorationImageMix] from an existing [DecorationImage].
   ///
   /// ```dart
   /// const decorationImage = DecorationImage(image: AssetImage('assets/image.png'));

@@ -3,16 +3,10 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-/// Represents a [Mix] Data transfer object of [BorderRadiusGeometry]
+/// Base class for Mix-compatible border radius styling with token support.
 ///
-/// This is used to allow for resolvable value tokens, and also the correct
-/// merge and combining behavior. It allows to be merged, and resolved to a [BorderRadiusGeometry]
-///
-/// This Mix implements `BorderRadius` and `BorderRadiusDirectional` Flutter classes to allow for
-/// better merging support, and cleaner API for the utilities
-///
-/// See also:
-/// - [BorderRadiusGeometry], which is the Flutter counterpart of this class.
+/// Supports both [BorderRadius] and [BorderRadiusDirectional] with automatic
+/// type conversion and merging between different radius types.
 @immutable
 sealed class BorderRadiusGeometryMix<T extends BorderRadiusGeometry>
     extends Mix<T> {
@@ -30,10 +24,12 @@ sealed class BorderRadiusGeometryMix<T extends BorderRadiusGeometry>
     };
   }
 
+  /// Creates a border radius with the same circular radius for all corners.
   static BorderRadiusMix circular(double radius) {
     return BorderRadiusMix.all(Radius.circular(radius));
   }
 
+  /// Creates a border radius with the same elliptical radius for all corners.
   static BorderRadiusMix elliptical(double xRadius, double yRadius) {
     return BorderRadiusMix.all(Radius.elliptical(xRadius, yRadius));
   }
@@ -46,40 +42,50 @@ sealed class BorderRadiusGeometryMix<T extends BorderRadiusGeometry>
     return BorderRadiusGeometryMix.value(value);
   }
 
+  /// Creates a border radius with only the top-left corner rounded.
   static BorderRadiusMix topLeft(Radius radius) {
     return BorderRadiusMix.only(topLeft: radius);
   }
 
+  /// Creates a border radius with only the top-right corner rounded.
   static BorderRadiusMix topRight(Radius radius) {
     return BorderRadiusMix.only(topRight: radius);
   }
 
+  /// Creates a border radius with only the bottom-left corner rounded.
   static BorderRadiusMix bottomLeft(Radius radius) {
     return BorderRadiusMix.only(bottomLeft: radius);
   }
 
+  /// Creates a border radius with only the bottom-right corner rounded.
   static BorderRadiusMix bottomRight(Radius radius) {
     return BorderRadiusMix.only(bottomRight: radius);
   }
 
+  /// Creates a directional border radius with only the top-start corner rounded.
   static BorderRadiusDirectionalMix topStart(Radius radius) {
     return BorderRadiusDirectionalMix.only(topStart: radius);
   }
 
+  /// Creates a directional border radius with only the top-end corner rounded.
   static BorderRadiusDirectionalMix topEnd(Radius radius) {
     return BorderRadiusDirectionalMix.only(topEnd: radius);
   }
 
+  /// Creates a directional border radius with only the bottom-start corner rounded.
   static BorderRadiusDirectionalMix bottomStart(Radius radius) {
     return BorderRadiusDirectionalMix.only(bottomStart: radius);
   }
 
+  /// Creates a directional border radius with only the bottom-end corner rounded.
   static BorderRadiusDirectionalMix bottomEnd(Radius radius) {
     return BorderRadiusDirectionalMix.only(bottomEnd: radius);
   }
 
-  /// Will try to merge two border radius geometries, the type will resolve to type of
-  /// `b` if its not null and `a` otherwise.
+  /// Merges two border radius geometries with automatic type conversion.
+  ///
+  /// Returns the type of [b] if not null, otherwise [a]. Handles conversion
+  /// between [BorderRadiusMix] and [BorderRadiusDirectionalMix] automatically.
   static BorderRadiusGeometryMix? tryToMerge(
     BorderRadiusGeometryMix? a,
     BorderRadiusGeometryMix? b,
@@ -126,6 +132,10 @@ sealed class BorderRadiusGeometryMix<T extends BorderRadiusGeometry>
   BorderRadiusGeometryMix<T> merge(covariant BorderRadiusGeometryMix<T>? other);
 }
 
+/// Mix-compatible representation of Flutter's [BorderRadius] with individual corner control.
+///
+/// Allows independent styling of topLeft, topRight, bottomLeft, and bottomRight
+/// corners with token support and merging capabilities.
 final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
   final Prop<Radius>? $topLeft;
   final Prop<Radius>? $topRight;
@@ -144,9 +154,7 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
          bottomRight: Prop.maybe(bottomRight),
        );
 
-  /// Constructor that accepts a [BorderRadius] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [BorderRadius] instances to [BorderRadiusMix].
+  /// Creates a [BorderRadiusMix] from an existing [BorderRadius].
   ///
   /// ```dart
   /// const borderRadius = BorderRadius.circular(12.0);
@@ -178,9 +186,9 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
         bottomRight: radius,
       );
 
-  /// Constructor that accepts a nullable [BorderRadius] value and extracts its properties.
+  /// Creates a [BorderRadiusMix] from a nullable [BorderRadius].
   ///
-  /// Returns null if the input is null, otherwise uses [BorderRadiusMix.value].
+  /// Returns null if the input is null.
   ///
   /// ```dart
   /// const BorderRadius? borderRadius = BorderRadius.circular(12.0);
@@ -190,26 +198,22 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
     return borderRadius != null ? BorderRadiusMix.value(borderRadius) : null;
   }
 
-  /// Creates a new [BorderRadiusMix] with the provided topLeft radius,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified top-left corner radius.
   BorderRadiusMix topLeft(Radius radius) {
     return merge(BorderRadiusMix.only(topLeft: radius));
   }
 
-  /// Creates a new [BorderRadiusMix] with the provided topRight radius,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified top-right corner radius.
   BorderRadiusMix topRight(Radius radius) {
     return merge(BorderRadiusMix.only(topRight: radius));
   }
 
-  /// Creates a new [BorderRadiusMix] with the provided bottomLeft radius,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified bottom-left corner radius.
   BorderRadiusMix bottomLeft(Radius radius) {
     return merge(BorderRadiusMix.only(bottomLeft: radius));
   }
 
-  /// Creates a new [BorderRadiusMix] with the provided bottomRight radius,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified bottom-right corner radius.
   BorderRadiusMix bottomRight(Radius radius) {
     return merge(BorderRadiusMix.only(bottomRight: radius));
   }
@@ -240,6 +244,10 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
   List<Object?> get props => [$topLeft, $topRight, $bottomLeft, $bottomRight];
 }
 
+/// Mix-compatible representation of Flutter's [BorderRadiusDirectional] with RTL support.
+///
+/// Allows independent styling of topStart, topEnd, bottomStart, and bottomEnd
+/// corners with proper right-to-left layout handling and token support.
 final class BorderRadiusDirectionalMix
     extends BorderRadiusGeometryMix<BorderRadiusDirectional> {
   final Prop<Radius>? $topStart;
@@ -259,9 +267,7 @@ final class BorderRadiusDirectionalMix
          bottomEnd: Prop.maybe(bottomEnd),
        );
 
-  /// Constructor that accepts a [BorderRadiusDirectional] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [BorderRadiusDirectional] instances to [BorderRadiusDirectionalMix].
+  /// Creates a [BorderRadiusDirectionalMix] from an existing [BorderRadiusDirectional].
   ///
   /// ```dart
   /// const borderRadius = BorderRadiusDirectional.circular(12.0);
@@ -285,9 +291,9 @@ final class BorderRadiusDirectionalMix
        $bottomStart = bottomStart,
        $bottomEnd = bottomEnd;
 
-  /// Constructor that accepts a nullable [BorderRadiusDirectional] value and extracts its properties.
+  /// Creates a [BorderRadiusDirectionalMix] from a nullable [BorderRadiusDirectional].
   ///
-  /// Returns null if the input is null, otherwise uses [BorderRadiusDirectionalMix.value].
+  /// Returns null if the input is null.
   ///
   /// ```dart
   /// const BorderRadiusDirectional? borderRadius = BorderRadiusDirectional.circular(12.0);
@@ -301,26 +307,22 @@ final class BorderRadiusDirectionalMix
         : null;
   }
 
-  /// Creates a new [BorderRadiusDirectionalMix] with the provided topStart radius,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified top-start corner radius.
   BorderRadiusDirectionalMix topStart(Radius radius) {
     return merge(BorderRadiusDirectionalMix.only(topStart: radius));
   }
 
-  /// Creates a new [BorderRadiusDirectionalMix] with the provided topEnd radius,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified top-end corner radius.
   BorderRadiusDirectionalMix topEnd(Radius radius) {
     return merge(BorderRadiusDirectionalMix.only(topEnd: radius));
   }
 
-  /// Creates a new [BorderRadiusDirectionalMix] with the provided bottomStart radius,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified bottom-start corner radius.
   BorderRadiusDirectionalMix bottomStart(Radius radius) {
     return merge(BorderRadiusDirectionalMix.only(bottomStart: radius));
   }
 
-  /// Creates a new [BorderRadiusDirectionalMix] with the provided bottomEnd radius,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified bottom-end corner radius.
   BorderRadiusDirectionalMix bottomEnd(Radius radius) {
     return merge(BorderRadiusDirectionalMix.only(bottomEnd: radius));
   }

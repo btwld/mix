@@ -130,18 +130,6 @@ abstract class AnimationDriver<S extends Spec<S>> extends ChangeNotifier {
     _onCompleteCallbacks.clear();
     super.dispose();
   }
-
-  /// Builds the animated widget with the given style and builder.
-  /// This method is kept for backwards compatibility.
-  Widget build({
-    required BuildContext context,
-    required SpecStyle<S> style,
-    required Widget Function(BuildContext context, ResolvedStyle<S> resolved)
-    builder,
-  }) {
-    // This will be implemented by the AnimationStyleWidget
-    throw UnimplementedError('Use AnimationStyleWidget instead');
-  }
 }
 
 /// A driver that performs no animation - just passes through the resolved style.
@@ -159,18 +147,6 @@ class NoAnimationDriver<S extends Spec<S>> extends AnimationDriver<S> {
     return targetResolvedStyle ?? _currentResolvedStyle!;
   }
 
-  @override
-  Widget build({
-    required BuildContext context,
-    required SpecStyle<S> style,
-    required Widget Function(BuildContext context, ResolvedStyle<S> resolved)
-    builder,
-  }) {
-    final resolved = style.build(context);
-    _currentResolvedStyle = resolved;
-
-    return builder(context, resolved);
-  }
 }
 
 /// A driver for curve-based animations with fixed duration.

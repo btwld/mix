@@ -558,8 +558,9 @@ void main() {
 
     group('Convenience Methods', () {
       test('animate method sets animation config', () {
-        final animation = AnimationConfig.linear(
-          const Duration(milliseconds: 300),
+        final animation = AnimationConfig.implicit(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.linear,
         );
         final attribute = BoxSpecAttribute.animate(animation);
 
@@ -953,8 +954,9 @@ void main() {
 
       group('Animation Method', () {
         test('animate method creates attribute with animation config', () {
-          final animationConfig = AnimationConfig.linear(
-            const Duration(milliseconds: 500),
+          final animationConfig = AnimationConfig.implicit(
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.linear,
           );
           final attribute = BoxSpecAttribute.animate(animationConfig);
 

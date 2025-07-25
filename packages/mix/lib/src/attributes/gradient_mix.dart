@@ -3,10 +3,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-/// Represents a base Data transfer object of [Gradient]
+/// Base class for gradient styling with resolvable tokens and merging support.
 ///
-/// This is used to allow for resolvable value tokens and proper merge behavior.
-/// Supports same-type merging and simple override behavior for different types.
+/// Supports same-type merging and override behavior for different gradient types.
 @immutable
 sealed class GradientMix<T extends Gradient> extends Mix<T>
     with DefaultValue<T> {
@@ -71,10 +70,7 @@ sealed class GradientMix<T extends Gradient> extends Mix<T>
   GradientMix<T> merge(covariant GradientMix<T>? other);
 }
 
-/// Represents a Data transfer object of [LinearGradient]
-///
-/// This is used to allow for resolvable value tokens, and also the correct
-/// merge and combining behavior. It allows to be merged, and resolved to a `[LinearGradient]
+/// Mix-compatible representation of [LinearGradient] with token support and merging behavior.
 
 final class LinearGradientMix extends GradientMix<LinearGradient> {
   final Prop<AlignmentGeometry>? $begin;
@@ -241,10 +237,7 @@ final class LinearGradientMix extends GradientMix<LinearGradient> {
   LinearGradient get defaultValue => const LinearGradient(colors: []);
 }
 
-/// Represents a Data transfer object of [RadialGradient]
-///
-/// This is used to allow for resolvable value tokens, and also the correct
-/// merge and combining behavior. It allows to be merged, and resolved to a `[RadialGradient]
+/// Mix-compatible representation of [RadialGradient] with token support and merging behavior.
 final class RadialGradientMix extends GradientMix<RadialGradient> {
   final Prop<AlignmentGeometry>? $center;
   final Prop<double>? $radius;
@@ -449,10 +442,7 @@ final class RadialGradientMix extends GradientMix<RadialGradient> {
   RadialGradient get defaultValue => const RadialGradient(colors: []);
 }
 
-/// Represents a Data transfer object of [SweepGradient]
-///
-/// This is used to allow for resolvable value tokens, and also the correct
-/// merge and combining behavior. It allows to be merged, and resolved to a `[SweepGradient]
+/// Mix-compatible representation of [SweepGradient] with token support and merging behavior.
 
 final class SweepGradientMix extends GradientMix<SweepGradient> {
   final Prop<AlignmentGeometry>? $center;

@@ -109,28 +109,7 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
     );
   }
 
-  /// Linearly interpolates between this [BoxSpec] and another [BoxSpec] based on the given parameter [t].
-  ///
-  /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [BoxSpec] is returned. When [t] is 1.0, the [other] [BoxSpec] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [BoxSpec] is returned.
-  ///
-  /// If [other] is null, this method returns the current [BoxSpec] instance.
-  ///
-  /// The interpolation is performed on each property of the [BoxSpec] using the appropriate
-  /// interpolation method:
-  /// - [AlignmentGeometry.lerp] for [alignment] and [transformAlignment].
-  /// - [EdgeInsetsGeometry.lerp] for [padding] and [margin].
-  /// - [BoxConstraints.lerp] for [constraints].
-  /// - [Decoration.lerp] for [decoration] and [foregroundDecoration].
-  /// - [MixHelpers.lerpMatrix4] for [transform].
-  /// - [MixHelpers.lerpDouble] for [width] and [height].
-  /// For [clipBehavior], the interpolation is performed using a step function.
-  /// If [t] is less than 0.5, the value from the current [BoxSpec] is used. Otherwise, the value
-  /// from the [other] [BoxSpec] is used.
-  ///
-  /// This method is typically used in animations to smoothly transition between
-  /// different [BoxSpec] configurations.
+  /// Linearly interpolates between this and [other] BoxSpec.
   @override
   BoxSpec lerp(BoxSpec? other, double t) {
     if (other == null) return this;

@@ -249,8 +249,9 @@ void main() {
 
     group('Convenience Methods', () {
       test('animate method sets animation config', () {
-        final animation = AnimationConfig.ease(
-          const Duration(milliseconds: 300),
+        final animation = AnimationConfig.implicit(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.ease,
         );
         final attribute = ImageSpecAttribute().animate(animation);
 

@@ -6,7 +6,7 @@ import 'package:mix/mix.dart';
 
 import '../internal/diagnostic_properties_builder_ext.dart';
 
-/// A Data transfer object that represents a [StrutStyle] value.
+/// Provides styling for text strut properties including font family, size, weight, and height.
 @immutable
 class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
   // Properties use MixableProperty for cleaner merging

@@ -17,7 +17,6 @@ import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/variant.dart';
-import '../../internal/constants.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../variants/variant_util.dart';
 import 'box_spec.dart';
@@ -323,21 +322,6 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
     return BoxSpecAttribute.only(animation: animation);
   }
 
-  BoxSpecAttribute animationBuilder<V>({
-    required BoxSpecAttribute Function(V) builder,
-    Duration duration = kDefaultAnimationDuration,
-    Curve curve = Curves.linear,
-    Duration delay = Duration.zero,
-  }) {
-    return BoxSpecAttribute.animation(
-      AnimationConfig.builder<BoxSpec, V>(
-        builder: builder,
-        curve: curve,
-        delay: delay,
-        duration: duration,
-      ),
-    );
-  }
 
   BoxSpecAttribute shadows(List<BoxShadowMix> value) {
     return BoxSpecAttribute.only(

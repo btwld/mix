@@ -4,9 +4,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart' hide $image;
 
-/// A Data transfer object that represents a [Decoration] value.
+/// Base class for decoration styling that supports color, gradient, image, and shadow properties.
 ///
-/// This DTO is used to resolve a [Decoration] value from a [MixContext] instance.
+/// Provides factory methods for common decoration types and merging capabilities.
 @immutable
 sealed class DecorationMix<T extends Decoration> extends Mix<T> {
   final Prop<Color>? $color;
@@ -97,7 +97,7 @@ sealed class DecorationMix<T extends Decoration> extends Mix<T> {
   }
 }
 
-/// Represents a Data transfer object of [BoxDecoration]
+/// Mix-compatible representation of [BoxDecoration] for styling.
 final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
   final MixProp<BoxBorder>? $border;
   final MixProp<BorderRadiusGeometry>? $borderRadius;
