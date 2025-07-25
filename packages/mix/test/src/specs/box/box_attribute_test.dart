@@ -558,7 +558,7 @@ void main() {
 
     group('Convenience Methods', () {
       test('animate method sets animation config', () {
-        final animation = AnimationConfig.implicit(
+        final animation = AnimationConfig.curve(
           duration: const Duration(milliseconds: 300),
           curve: Curves.linear,
         );
@@ -954,7 +954,7 @@ void main() {
 
       group('Animation Method', () {
         test('animate method creates attribute with animation config', () {
-          final animationConfig = AnimationConfig.implicit(
+          final animationConfig = AnimationConfig.curve(
             duration: const Duration(milliseconds: 500),
             curve: Curves.linear,
           );

@@ -2,20 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-
 void main() {
   group('CurveAnimationDriver', () {
     late AnimationController controller;
     late CurveAnimationDriver<MockSpec> driver;
 
     setUp(() {
-      controller = AnimationController(
-        vsync: const TestVSync(),
-      );
+      controller = AnimationController(vsync: const TestVSync());
       driver = CurveAnimationDriver<MockSpec>(
         vsync: const TestVSync(),
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
+        config: const CurveAnimationConfig(
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        ),
       );
     });
 
@@ -25,8 +24,6 @@ void main() {
     });
 
     test('initializes with correct properties', () {
-      expect(driver.duration, const Duration(milliseconds: 300));
-      expect(driver.curve, Curves.easeInOut);
       expect(driver.isAnimating, false);
       expect(driver.progress, 0.0);
     });
@@ -115,9 +112,11 @@ void main() {
     setUp(() {
       driver = SpringAnimationDriver<MockSpec>(
         vsync: const TestVSync(),
-        stiffness: 200.0,
-        damping: 15.0,
-        mass: 1.0,
+        config: SpringAnimationConfig.standard(
+          stiffness: 200.0,
+          damping: 15.0,
+          mass: 1.0,
+        ),
       );
     });
 
@@ -126,9 +125,9 @@ void main() {
     });
 
     test('initializes with correct spring properties', () {
-      expect(driver.spring.mass, 1.0);
-      expect(driver.spring.stiffness, 200.0);
-      expect(driver.spring.damping, 15.0);
+      // Spring properties are now internal to the driver
+      expect(driver.isAnimating, false);
+      expect(driver.progress, 0.0);
     });
 
     testWidgets('animates with spring physics', (tester) async {
@@ -163,34 +162,16 @@ void main() {
     });
   });
 
-  group('NoAnimationDriver', () {
-    late NoAnimationDriver<MockSpec> driver;
-
-    setUp(() {
-      driver = NoAnimationDriver<MockSpec>(
-        vsync: const TestVSync(),
-      );
-    });
-
-    tearDown(() {
-      driver.dispose();
-    });
-
-    test('updates immediately without animation', () async {
-      final style = MockResolvedStyle();
-
-      await driver.animateTo(style);
-
-      expect(driver.currentResolvedStyle, style);
-      expect(driver.isAnimating, false);
-    });
-  });
+  // NoAnimationDriver was removed as it wasn't used in the codebase
 
   group('AnimationDriver lifecycle', () {
     testWidgets('disposes correctly', (tester) async {
       final driver = CurveAnimationDriver<MockSpec>(
         vsync: tester,
-        duration: const Duration(milliseconds: 100),
+        config: const CurveAnimationConfig(
+          duration: Duration(milliseconds: 100),
+          curve: Curves.linear,
+        ),
       );
 
       await tester.pumpWidget(Container());
@@ -202,7 +183,6 @@ void main() {
       // Dispose should not throw
       expect(() => driver.dispose(), returnsNormally);
     });
-
   });
 }
 

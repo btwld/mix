@@ -227,7 +227,7 @@ class PressableWidgetState extends State<Pressable> {
         controller: _controller,
         actions: actions,
         child: MouseRegionMixStateWidget(
-          child: MixWidgetStateBuilder(
+          child: WidgetStateBuilder(
             controller: _controller,
             builder: (_) => widget.child,
           ),
@@ -337,7 +337,7 @@ class _InteractableState extends State<Interactable> {
       controller: _controller,
       actions: widget.actions,
       child: MouseRegionMixStateWidget(
-        child: MixWidgetStateBuilder(
+        child: WidgetStateBuilder(
           controller: _controller,
           builder: (context) => widget.child,
         ),

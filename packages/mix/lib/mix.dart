@@ -45,9 +45,9 @@ export 'src/attributes/text_height_behavior_mix.dart';
 export 'src/attributes/text_height_behavior_util.dart';
 export 'src/attributes/text_style_mix.dart';
 export 'src/attributes/text_style_util.dart';
-export 'src/core/animation/animation_driver.dart';
-export 'src/core/animation/animation_style_widget.dart';
 export 'src/core/animation/curves.dart';
+export 'src/core/animation/style_animation_builder.dart';
+export 'src/core/animation/style_animation_driver.dart';
 
 /// ATTRIBUTES
 export 'src/core/animation_config.dart';

@@ -163,7 +163,7 @@ void main() {
 
     group('Convenience Methods', () {
       test('animate method sets animation config', () {
-        final animation = AnimationConfig.implicit(
+        final animation = AnimationConfig.curve(
           duration: const Duration(milliseconds: 300),
           curve: Curves.linear,
         );

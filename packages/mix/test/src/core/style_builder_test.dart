@@ -17,13 +17,13 @@ void main() {
             home: StyleBuilder(
               style: boxAttribute,
               builder: (context, spec) {
-                expect(spec.constraints?.minWidth, 100);
-                expect(spec.constraints?.maxWidth, 100);
-                expect(spec.constraints?.minHeight, 200);
-                expect(spec.constraints?.maxHeight, 200);
+                expect(spec?.constraints?.minWidth, 100);
+                expect(spec?.constraints?.maxWidth, 100);
+                expect(spec?.constraints?.minHeight, 200);
+                expect(spec?.constraints?.maxHeight, 200);
                 return Container(
-                  decoration: spec.decoration,
-                  constraints: spec.constraints,
+                  decoration: spec?.decoration,
+                  constraints: spec?.constraints,
                 );
               },
             ),
@@ -43,16 +43,18 @@ void main() {
       testWidgets('Animation driver is applied when animation config is set', (
         tester,
       ) async {
-        final animation = AnimationConfig.implicit(
+        final animation = AnimationConfig.curve(
           duration: const Duration(milliseconds: 300),
           curve: Curves.linear,
         );
         final boxAttribute = BoxSpecAttribute.only(
           constraints: BoxConstraintsMix().width(100).height(200),
           decoration: BoxDecorationMix.color(Colors.blue),
-
           animation: animation,
         );
+
+        // Debug: Verify animation is set on the attribute
+        expect(boxAttribute.$animation, equals(animation));
 
         await tester.pumpWidget(
           MaterialApp(
@@ -60,8 +62,8 @@ void main() {
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(
-                  decoration: spec.decoration,
-                  constraints: spec.constraints,
+                  decoration: spec?.decoration,
+                  constraints: spec?.constraints,
                 );
               },
             ),
@@ -69,14 +71,7 @@ void main() {
         );
 
         // Verify that the animation wrapper is created
-        expect(
-          find.byWidgetPredicate(
-            (widget) => widget.runtimeType.toString().contains(
-              '_ImplicitAnimationWidget',
-            ),
-          ),
-          findsOneWidget,
-        );
+        expect(find.byType(StyleAnimationBuilder<BoxSpec>), findsOneWidget);
       });
 
       testWidgets('No animation driver when animation config is null', (
@@ -93,8 +88,8 @@ void main() {
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(
-                  decoration: spec.decoration,
-                  constraints: spec.constraints,
+                  decoration: spec?.decoration,
+                  constraints: spec?.constraints,
                 );
               },
             ),
@@ -102,20 +97,13 @@ void main() {
         );
 
         // Verify that no animation wrapper is created
-        expect(
-          find.byWidgetPredicate(
-            (widget) => widget.runtimeType.toString().contains(
-              '_ImplicitAnimationWidget',
-            ),
-          ),
-          findsNothing,
-        );
+        expect(find.byType(StyleAnimationBuilder<BoxSpec>), findsNothing);
       });
 
       testWidgets('Animation interpolates between style changes', (
         tester,
       ) async {
-        final animation = AnimationConfig.implicit(
+        final animation = AnimationConfig.curve(
           duration: const Duration(milliseconds: 300),
           curve: Curves.linear,
         );
@@ -138,8 +126,8 @@ void main() {
               builder: (context, spec) {
                 return Container(
                   key: const Key('animated_container'),
-                  decoration: spec.decoration,
-                  constraints: spec.constraints,
+                  decoration: spec?.decoration,
+                  constraints: spec?.constraints,
                 );
               },
             ),
@@ -165,8 +153,8 @@ void main() {
               builder: (context, spec) {
                 return Container(
                   key: const Key('animated_container'),
-                  decoration: spec.decoration,
-                  constraints: spec.constraints,
+                  decoration: spec?.decoration,
+                  constraints: spec?.constraints,
                 );
               },
             ),
@@ -204,11 +192,11 @@ void main() {
             .width(100)
             .height(100)
             .alignment(Alignment.center)
-            .borderRadius(BorderRadiusGeometryMix.circular(10))
             .modifier(OpacityModifierAttribute.only(opacity: 0.5))
             .modifier(
               PaddingModifierAttribute.only(padding: EdgeInsetsMix.all(10)),
-            );
+            )
+            .modifier(ClipOvalModifierAttribute());
 
         await tester.pumpWidget(
           MaterialApp(
@@ -216,9 +204,9 @@ void main() {
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(
-                  decoration: spec.decoration,
-                  constraints: spec.constraints,
-                  alignment: spec.alignment,
+                  decoration: spec?.decoration,
+                  constraints: spec?.constraints,
+                  alignment: spec?.alignment,
                 );
               },
             ),
@@ -227,16 +215,23 @@ void main() {
 
         // Verify modifiers are applied
         expect(find.byType(Opacity), findsOneWidget);
-        expect(find.byType(Padding), findsOneWidget);
         expect(find.byType(ClipOval), findsOneWidget);
+
+        // There might be multiple Padding widgets, so let's be more specific
+        final paddingWidgets = find.byType(Padding);
+        expect(paddingWidgets, findsAtLeastNWidgets(1));
+
+        // Find the padding with EdgeInsets.all(10)
+        final paddingWithCorrectInsets = paddingWidgets
+            .evaluate()
+            .map((e) => e.widget as Padding)
+            .where((p) => p.padding == const EdgeInsets.all(10))
+            .toList();
+        expect(paddingWithCorrectInsets, hasLength(1));
 
         // Check opacity value
         final opacity = tester.widget<Opacity>(find.byType(Opacity));
         expect(opacity.opacity, 0.5);
-
-        // Check padding value
-        final padding = tester.widget<Padding>(find.byType(Padding));
-        expect(padding.padding, const EdgeInsets.all(10));
       });
 
       testWidgets('Modifiers follow default order', (tester) async {
@@ -248,6 +243,8 @@ void main() {
             .wrap
             .padding(padding: EdgeInsetsMix.all(10))
             .wrap
+            .clipOval()
+            .wrap
             .visibility(true);
 
         await tester.pumpWidget(
@@ -256,8 +253,8 @@ void main() {
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(
-                  decoration: spec.decoration,
-                  constraints: spec.constraints,
+                  decoration: spec?.decoration,
+                  constraints: spec?.constraints,
                 );
               },
             ),
@@ -265,7 +262,7 @@ void main() {
         );
 
         // Find the StyleBuilder widget
-        final styleBuilder = find.byType(StyleBuilder);
+        final styleBuilder = find.byType(StyleBuilder<BoxSpec>);
 
         // Verify ordering: Visibility should wrap everything, then other modifiers in order
         // The default order has Visibility early, Padding after transformations, ClipOval near end, and Opacity last
@@ -274,13 +271,18 @@ void main() {
           findsOneWidget,
         );
 
-        expect(
-          find.descendant(
-            of: find.byType(Visibility),
-            matching: find.byType(Padding),
-          ),
-          findsOneWidget,
+        // Find the modifier padding (EdgeInsets.all(10))
+        final visibilityWidget = find.byType(Visibility);
+        final paddingWidgets = find.descendant(
+          of: visibilityWidget,
+          matching: find.byType(Padding),
         );
+        final modifierPadding = paddingWidgets
+            .evaluate()
+            .map((e) => e.widget as Padding)
+            .where((p) => p.padding == const EdgeInsets.all(10))
+            .toList();
+        expect(modifierPadding, hasLength(1));
 
         expect(
           find.descendant(
@@ -323,8 +325,8 @@ void main() {
               orderOfModifiers: customOrder,
               builder: (context, spec) {
                 return Container(
-                  decoration: spec.decoration,
-                  constraints: spec.constraints,
+                  decoration: spec?.decoration,
+                  constraints: spec?.constraints,
                 );
               },
             ),
@@ -332,7 +334,7 @@ void main() {
         );
 
         // Find the StyleBuilder widget
-        final styleBuilder = find.byType(StyleBuilder);
+        final styleBuilder = find.byType(StyleBuilder<BoxSpec>);
 
         // Verify custom ordering: Opacity -> ClipOval -> Padding
         expect(
@@ -348,13 +350,18 @@ void main() {
           findsOneWidget,
         );
 
-        expect(
-          find.descendant(
-            of: find.byType(ClipOval),
-            matching: find.byType(Padding),
-          ),
-          findsOneWidget,
+        // Find the modifier padding (EdgeInsets.all(10))
+        final clipOvalWidget = find.byType(ClipOval);
+        final paddingWidgets = find.descendant(
+          of: clipOvalWidget,
+          matching: find.byType(Padding),
         );
+        final modifierPadding = paddingWidgets
+            .evaluate()
+            .map((e) => e.widget as Padding)
+            .where((p) => p.padding == const EdgeInsets.all(10))
+            .toList();
+        expect(modifierPadding, hasLength(1));
       });
 
       testWidgets('No RenderModifiers widget when no modifiers present', (
@@ -371,8 +378,8 @@ void main() {
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(
-                  decoration: spec.decoration,
-                  constraints: spec.constraints,
+                  decoration: spec?.decoration,
+                  constraints: spec?.constraints,
                 );
               },
             ),

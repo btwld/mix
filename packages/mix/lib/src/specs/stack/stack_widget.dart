@@ -28,31 +28,31 @@ class ZBox extends StyleWidget<ZBoxSpec> {
   final List<Widget> children;
 
   @override
-  Widget build(BuildContext context, ZBoxSpec spec) {
-    final boxSpec = spec.box;
-    final stackSpec = spec.stack;
+  Widget build(BuildContext context, ZBoxSpec? spec) {
+    final boxSpec = spec?.box;
+    final stackSpec = spec?.stack;
 
     // Build the stack
     Widget stack = Stack(
-      alignment: stackSpec.alignment ?? AlignmentDirectional.topStart,
-      textDirection: stackSpec.textDirection,
-      fit: stackSpec.fit ?? StackFit.loose,
-      clipBehavior: stackSpec.clipBehavior ?? Clip.hardEdge,
+      alignment: stackSpec?.alignment ?? AlignmentDirectional.topStart,
+      textDirection: stackSpec?.textDirection,
+      fit: stackSpec?.fit ?? StackFit.loose,
+      clipBehavior: stackSpec?.clipBehavior ?? Clip.hardEdge,
       children: children,
     );
 
     // Wrap with Container for box styling
     return Container(
-      alignment: boxSpec.alignment,
-      padding: boxSpec.padding,
-      decoration: boxSpec.decoration,
-      foregroundDecoration: boxSpec.foregroundDecoration,
+      alignment: boxSpec?.alignment,
+      padding: boxSpec?.padding,
+      decoration: boxSpec?.decoration,
+      foregroundDecoration: boxSpec?.foregroundDecoration,
 
-      constraints: boxSpec.constraints,
-      margin: boxSpec.margin,
-      transform: boxSpec.transform,
-      transformAlignment: boxSpec.transformAlignment,
-      clipBehavior: boxSpec.clipBehavior ?? Clip.none,
+      constraints: boxSpec?.constraints,
+      margin: boxSpec?.margin,
+      transform: boxSpec?.transform,
+      transformAlignment: boxSpec?.transformAlignment,
+      clipBehavior: boxSpec?.clipBehavior ?? Clip.none,
       child: stack,
     );
   }

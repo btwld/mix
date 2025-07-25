@@ -150,13 +150,13 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: MixWidgetStateModel.fromSet(
+          home: WidgetStateProvider.fromSet(
             states: controller.value,
             child: Container(),
           ),
         ),
       );
-      final foundModel = MixWidgetStateModel.of(
+      final foundModel = WidgetStateProvider.of(
         tester.element(find.byType(Container)),
       );
       expect(foundModel, isNotNull);
@@ -172,7 +172,7 @@ void main() {
     testWidgets('hasStateOf returns if state is set', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: MixWidgetStateModel(
+          home: WidgetStateProvider(
             disabled: true,
             hovered: false,
             focused: false,
@@ -183,11 +183,11 @@ void main() {
             child: Builder(
               builder: (context) {
                 expect(
-                  MixWidgetStateModel.hasStateOf(context, WidgetState.disabled),
+                  WidgetStateProvider.hasStateOf(context, WidgetState.disabled),
                   isTrue,
                 );
                 expect(
-                  MixWidgetStateModel.hasStateOf(context, WidgetState.hovered),
+                  WidgetStateProvider.hasStateOf(context, WidgetState.hovered),
                   isFalse,
                 );
                 return Container();
@@ -199,7 +199,7 @@ void main() {
     });
 
     test('updateShouldNotify returns true if value changed', () {
-      final oldModel = MixWidgetStateModel(
+      final oldModel = WidgetStateProvider(
         disabled: false,
         hovered: false,
         focused: false,
@@ -209,7 +209,7 @@ void main() {
         error: false,
         child: Container(),
       );
-      final newModel = MixWidgetStateModel(
+      final newModel = WidgetStateProvider(
         disabled: true,
         hovered: false,
         focused: false,
@@ -224,7 +224,7 @@ void main() {
     });
 
     test('updateShouldNotifyDependent returns if a dependency changed', () {
-      final oldModel = MixWidgetStateModel(
+      final oldModel = WidgetStateProvider(
         disabled: false,
         hovered: false,
         focused: false,
@@ -234,7 +234,7 @@ void main() {
         error: false,
         child: Container(),
       );
-      final newModel = MixWidgetStateModel(
+      final newModel = WidgetStateProvider(
         disabled: true,
         hovered: false,
         focused: false,
@@ -277,7 +277,7 @@ void main() {
 
             return Column(
               children: [
-                MixWidgetStateBuilder(
+                WidgetStateBuilder(
                   controller: controller,
                   builder: (BuildContext context) {
                     return Column(
@@ -330,7 +330,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: MixWidgetStateBuilder(
+          body: WidgetStateBuilder(
             controller: controller,
             builder: (context) {
               return const PressableStateTestWidget();
@@ -551,7 +551,7 @@ class PressableStateTestWidget extends StatefulWidget {
 class _PressableStateTestWidgetState extends State<PressableStateTestWidget> {
   bool Function(BuildContext) _widgetStateOf(WidgetState state) {
     return (BuildContext context) {
-      return MixWidgetStateModel.hasStateOf(context, state);
+      return WidgetStateProvider.hasStateOf(context, state);
     };
   }
 

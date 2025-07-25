@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/src/core/widget_state/internal/mix_widget_state_builder.dart';
 import 'package:mix/src/core/widget_state/widget_state_controller.dart';
+import 'package:mix/src/core/widget_state/widget_state_provider.dart';
 
 void main() {
   group('InteractiveMixState', () {
@@ -10,16 +10,13 @@ void main() {
 
       controller.disabled = true;
       await tester.pumpWidget(
-        MixWidgetStateBuilder(
-          controller: controller,
-          builder: (_) => Container(),
-        ),
+        WidgetStateBuilder(controller: controller, builder: (_) => Container()),
       );
 
       var context = tester.element(find.byType(Container));
 
       expect(
-        MixWidgetStateModel.hasStateOf(context, WidgetState.disabled),
+        WidgetStateProvider.hasStateOf(context, WidgetState.disabled),
         isTrue,
       );
 
@@ -30,7 +27,7 @@ void main() {
       context = tester.element(find.byType(Container));
 
       expect(
-        MixWidgetStateModel.hasStateOf(context, WidgetState.disabled),
+        WidgetStateProvider.hasStateOf(context, WidgetState.disabled),
         isFalse,
       );
     });
@@ -39,15 +36,12 @@ void main() {
       final controller = WidgetStatesController();
       controller.focused = true;
       await tester.pumpWidget(
-        MixWidgetStateBuilder(
-          controller: controller,
-          builder: (_) => Container(),
-        ),
+        WidgetStateBuilder(controller: controller, builder: (_) => Container()),
       );
 
       var context = tester.element(find.byType(Container));
       expect(
-        MixWidgetStateModel.hasStateOf(context, WidgetState.focused),
+        WidgetStateProvider.hasStateOf(context, WidgetState.focused),
         isTrue,
       );
 
@@ -58,7 +52,7 @@ void main() {
       context = tester.element(find.byType(Container));
 
       expect(
-        MixWidgetStateModel.hasStateOf(context, WidgetState.focused),
+        WidgetStateProvider.hasStateOf(context, WidgetState.focused),
         isFalse,
       );
     });
@@ -69,15 +63,12 @@ void main() {
       controller.hovered = true;
 
       await tester.pumpWidget(
-        MixWidgetStateBuilder(
-          controller: controller,
-          builder: (_) => Container(),
-        ),
+        WidgetStateBuilder(controller: controller, builder: (_) => Container()),
       );
 
       var context = tester.element(find.byType(Container));
       expect(
-        MixWidgetStateModel.hasStateOf(context, WidgetState.hovered),
+        WidgetStateProvider.hasStateOf(context, WidgetState.hovered),
         isTrue,
       );
 
@@ -88,7 +79,7 @@ void main() {
       context = tester.element(find.byType(Container));
 
       expect(
-        MixWidgetStateModel.hasStateOf(context, WidgetState.hovered),
+        WidgetStateProvider.hasStateOf(context, WidgetState.hovered),
         isFalse,
       );
     });

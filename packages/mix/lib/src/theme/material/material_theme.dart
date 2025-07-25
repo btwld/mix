@@ -3,6 +3,7 @@
 /// Provides a pre-configured [MixScopeData] that maps Material Design tokens
 /// to Flutter's Material theme values, enabling seamless integration between
 /// Mix styling and Material Design systems.
+library;
 
 import '../../internal/internal_extensions.dart';
 import '../mix/mix_theme.dart';

@@ -117,7 +117,7 @@ class WidgetStateVariant extends ContextVariant {
   WidgetStateVariant(this.state)
     : super(
         'widget_state_${state.name}',
-        (context) => MixWidgetStateModel.hasStateOf(context, state),
+        (context) => WidgetStateProvider.hasStateOf(context, state),
       );
 
   @override

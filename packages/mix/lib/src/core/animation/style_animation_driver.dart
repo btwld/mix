@@ -10,7 +10,7 @@ import '../style.dart';
 /// Animation drivers define how styles should be animated between changes.
 /// This base class provides lifecycle management, event callbacks, and
 /// common animation control methods.
-abstract class MixAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
+abstract class StyleAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
   /// The ticker provider for animations.
   final TickerProvider vsync;
 
@@ -29,7 +29,11 @@ abstract class MixAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
   /// List of callbacks to invoke when animation completes.
   final List<VoidCallback> _onCompleteCallbacks = [];
 
-  MixAnimationDriver({required this.vsync}) {
+  /// The starting style for interpolation.
+  @protected
+  ResolvedStyle<S>? _fromStyle;
+
+  StyleAnimationDriver({required this.vsync}) {
     _controller = AnimationController(vsync: vsync);
 
     _controller.addListener(_onAnimationTick);
@@ -83,11 +87,40 @@ abstract class MixAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
   double get progress => _controller.value;
 
   /// Animates to the given target style.
-  Future<void> animateTo(ResolvedStyle<S> targetStyle);
+  Future<void> animateTo(ResolvedStyle<S> targetStyle) async {
+    // Skip if already at target
+    if (_targetResolvedStyle == targetStyle && !isAnimating) {
+      return;
+    }
+
+    // Capture animation start state
+    _fromStyle = _currentResolvedStyle ?? targetStyle;
+    _targetResolvedStyle = targetStyle;
+
+    // Execute subclass-specific animation
+    await executeAnimation();
+  }
+
+  /// Execute the animation (curve vs spring).
+  @protected
+  Future<void> executeAnimation();
 
   /// Interpolates between current and target styles at the given progress.
+  @visibleForTesting
+  ResolvedStyle<S> interpolateAt(double t) {
+    if (_fromStyle == null || _targetResolvedStyle == null) {
+      return _targetResolvedStyle ?? _fromStyle!;
+    }
+
+    // Apply any value transformation (e.g., curve)
+    final transformedT = transformProgress(t);
+
+    return _fromStyle!.lerp(_targetResolvedStyle!, transformedT);
+  }
+
+  /// Transform progress value (e.g., apply curve).
   @protected
-  ResolvedStyle<S> interpolateAt(double t);
+  double transformProgress(double t) => t;
 
   /// Stops the current animation.
   void stop() => _controller.stop();
@@ -130,9 +163,8 @@ abstract class MixAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
 }
 
 /// A driver for curve-based animations with fixed duration.
-class CurveAnimationDriver<S extends Spec<S>> extends MixAnimationDriver<S> {
+class CurveAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   final CurveAnimationConfig _config;
-  ResolvedStyle<S>? _fromStyle;
 
   CurveAnimationDriver({
     required super.vsync,
@@ -144,15 +176,7 @@ class CurveAnimationDriver<S extends Spec<S>> extends MixAnimationDriver<S> {
   }
 
   @override
-  Future<void> animateTo(ResolvedStyle<S> targetStyle) async {
-    // Skip if already at target
-    if (_targetResolvedStyle == targetStyle && !isAnimating) {
-      return;
-    }
-
-    _fromStyle = _currentResolvedStyle ?? targetStyle;
-    _targetResolvedStyle = targetStyle;
-
+  Future<void> executeAnimation() async {
     controller.duration = _config.duration;
 
     try {
@@ -163,20 +187,11 @@ class CurveAnimationDriver<S extends Spec<S>> extends MixAnimationDriver<S> {
   }
 
   @override
-  ResolvedStyle<S> interpolateAt(double t) {
-    if (_fromStyle == null || _targetResolvedStyle == null) {
-      return _targetResolvedStyle ?? _fromStyle!;
-    }
-
-    final curvedT = _config.curve.transform(t);
-
-    return _fromStyle!.lerp(_targetResolvedStyle!, curvedT);
-  }
+  double transformProgress(double t) => _config.curve.transform(t);
 }
 
 /// A driver for spring-based physics animations.
-class SpringAnimationDriver<S extends Spec<S>> extends MixAnimationDriver<S> {
-  /// The spring description for the animation.
+class SpringAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   final SpringAnimationConfig _config;
 
   SpringAnimationDriver({
@@ -189,15 +204,7 @@ class SpringAnimationDriver<S extends Spec<S>> extends MixAnimationDriver<S> {
   }
 
   @override
-  Future<void> animateTo(ResolvedStyle<S> targetStyle) async {
-    // Skip if already at target
-    if (_targetResolvedStyle == targetStyle && !isAnimating) {
-      return;
-    }
-
-    _fromStyle = _currentResolvedStyle ?? targetStyle;
-    _targetResolvedStyle = targetStyle;
-
+  Future<void> executeAnimation() async {
     final simulation = SpringSimulation(_config.spring, 0.0, 1.0, 0.0);
 
     try {
@@ -205,14 +212,5 @@ class SpringAnimationDriver<S extends Spec<S>> extends MixAnimationDriver<S> {
     } on TickerCanceled {
       // Animation was cancelled - this is normal
     }
-  }
-
-  @override
-  ResolvedStyle<S> interpolateAt(double t) {
-    if (_fromStyle == null || _targetResolvedStyle == null) {
-      return _targetResolvedStyle ?? _fromStyle!;
-    }
-
-    return _fromStyle!.lerp(_targetResolvedStyle!, t);
   }
 }

@@ -46,17 +46,17 @@ class Box extends StyleWidget<BoxSpec> {
   final Widget? child;
 
   @override
-  Widget build(BuildContext context, BoxSpec spec) {
+  Widget build(BuildContext context, BoxSpec? spec) {
     return Container(
-      alignment: spec.alignment,
-      padding: spec.padding,
-      decoration: spec.decoration,
-      foregroundDecoration: spec.foregroundDecoration,
-      constraints: spec.constraints,
-      margin: spec.margin,
-      transform: spec.transform,
-      transformAlignment: spec.transformAlignment,
-      clipBehavior: spec.clipBehavior ?? Clip.none,
+      alignment: spec?.alignment,
+      padding: spec?.padding,
+      decoration: spec?.decoration,
+      foregroundDecoration: spec?.foregroundDecoration,
+      constraints: spec?.constraints,
+      margin: spec?.margin,
+      transform: spec?.transform,
+      transformAlignment: spec?.transformAlignment,
+      clipBehavior: spec?.clipBehavior ?? Clip.none,
       child: child,
     );
   }

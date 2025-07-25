@@ -33,7 +33,7 @@ class StyledImage extends StyleWidget<ImageSpec> {
   final Animation<double>? opacity;
 
   @override
-  Widget build(BuildContext context, ImageSpec spec) {
+  Widget build(BuildContext context, ImageSpec? spec) {
     return Image(
       image: image,
       frameBuilder: frameBuilder,
@@ -41,19 +41,19 @@ class StyledImage extends StyleWidget<ImageSpec> {
       errorBuilder: errorBuilder,
       semanticLabel: semanticLabel,
       excludeFromSemantics: excludeFromSemantics,
-      width: spec.width,
-      height: spec.height,
-      color: spec.color,
+      width: spec?.width,
+      height: spec?.height,
+      color: spec?.color,
       opacity: opacity,
-      colorBlendMode: spec.colorBlendMode ?? BlendMode.clear,
-      fit: spec.fit,
-      alignment: spec.alignment ?? Alignment.center,
-      repeat: spec.repeat ?? ImageRepeat.noRepeat,
-      centerSlice: spec.centerSlice,
+      colorBlendMode: spec?.colorBlendMode ?? BlendMode.clear,
+      fit: spec?.fit,
+      alignment: spec?.alignment ?? Alignment.center,
+      repeat: spec?.repeat ?? ImageRepeat.noRepeat,
+      centerSlice: spec?.centerSlice,
       matchTextDirection: matchTextDirection,
       gaplessPlayback: gaplessPlayback,
       isAntiAlias: isAntiAlias,
-      filterQuality: spec.filterQuality ?? FilterQuality.low,
+      filterQuality: spec?.filterQuality ?? FilterQuality.low,
     );
   }
 }

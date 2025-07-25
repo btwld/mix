@@ -38,32 +38,33 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
   final Axis direction;
 
   @override
-  Widget build(BuildContext context, FlexBoxSpec spec) {
-    final boxSpec = spec.box;
-    final flexSpec = spec.flex;
+  Widget build(BuildContext context, FlexBoxSpec? spec) {
+    final boxSpec = spec?.box;
+    final flexSpec = spec?.flex;
 
     return Container(
-      alignment: boxSpec.alignment,
-      padding: boxSpec.padding,
-      decoration: boxSpec.decoration,
-      foregroundDecoration: boxSpec.foregroundDecoration,
-      constraints: boxSpec.constraints,
-      margin: boxSpec.margin,
-      transform: boxSpec.transform,
-      transformAlignment: boxSpec.transformAlignment,
-      clipBehavior: boxSpec.clipBehavior ?? Clip.none,
+      alignment: boxSpec?.alignment,
+      padding: boxSpec?.padding,
+      decoration: boxSpec?.decoration,
+      foregroundDecoration: boxSpec?.foregroundDecoration,
+      constraints: boxSpec?.constraints,
+      margin: boxSpec?.margin,
+      transform: boxSpec?.transform,
+      transformAlignment: boxSpec?.transformAlignment,
+      clipBehavior: boxSpec?.clipBehavior ?? Clip.none,
       child: Flex(
-        direction: flexSpec.direction ?? direction,
+        direction: flexSpec?.direction ?? direction,
         mainAxisAlignment:
-            flexSpec.mainAxisAlignment ?? MainAxisAlignment.start,
-        mainAxisSize: flexSpec.mainAxisSize ?? MainAxisSize.max,
+            flexSpec?.mainAxisAlignment ?? MainAxisAlignment.start,
+        mainAxisSize: flexSpec?.mainAxisSize ?? MainAxisSize.max,
         crossAxisAlignment:
-            flexSpec.crossAxisAlignment ?? CrossAxisAlignment.center,
-        textDirection: flexSpec.textDirection,
-        verticalDirection: flexSpec.verticalDirection ?? VerticalDirection.down,
-        textBaseline: flexSpec.textBaseline,
-        clipBehavior: flexSpec.clipBehavior ?? Clip.none,
-        spacing: flexSpec.gap ?? 0.0,
+            flexSpec?.crossAxisAlignment ?? CrossAxisAlignment.center,
+        textDirection: flexSpec?.textDirection,
+        verticalDirection:
+            flexSpec?.verticalDirection ?? VerticalDirection.down,
+        textBaseline: flexSpec?.textBaseline,
+        clipBehavior: flexSpec?.clipBehavior ?? Clip.none,
+        spacing: flexSpec?.gap ?? 0.0,
         children: children,
       ),
     );

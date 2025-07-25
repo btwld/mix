@@ -324,8 +324,14 @@ void main() {
       });
 
       test('animation - other wins', () {
-        final animation1 = AnimationConfig.implicit(duration: Duration(seconds: 1), curve: Curves.linear);
-        final animation2 = AnimationConfig.implicit(duration: Duration(seconds: 2), curve: Curves.ease);
+        final animation1 = AnimationConfig.curve(
+          duration: Duration(seconds: 1),
+          curve: Curves.linear,
+        );
+        final animation2 = AnimationConfig.curve(
+          duration: Duration(seconds: 2),
+          curve: Curves.ease,
+        );
 
         final prop1 = Prop(42, animation: animation1);
         final prop2 = Prop(24, animation: animation2);
@@ -335,7 +341,10 @@ void main() {
       });
 
       test('preserves animation when other has none', () {
-        final animation = AnimationConfig.implicit(duration: Duration(seconds: 1), curve: Curves.linear);
+        final animation = AnimationConfig.curve(
+          duration: Duration(seconds: 1),
+          curve: Curves.linear,
+        );
 
         final prop1 = Prop(42, animation: animation);
         final prop2 = Prop(24);
@@ -642,8 +651,14 @@ void main() {
       });
 
       test('animation - other wins', () {
-        final animation1 = AnimationConfig.implicit(duration: Duration(seconds: 1), curve: Curves.linear);
-        final animation2 = AnimationConfig.implicit(duration: Duration(seconds: 2), curve: Curves.ease);
+        final animation1 = AnimationConfig.curve(
+          duration: Duration(seconds: 1),
+          curve: Curves.linear,
+        );
+        final animation2 = AnimationConfig.curve(
+          duration: Duration(seconds: 2),
+          curve: Curves.ease,
+        );
 
         final mixValue = MockMix<int>(42, merger: (a, b) => a + b);
         final prop1 = MixProp(mixValue, animation: animation1);
@@ -906,8 +921,14 @@ void main() {
 
   group('Integration Tests', () {
     test('complex merge scenario with directives and animations', () {
-      final animation1 = AnimationConfig.implicit(duration: Duration(seconds: 1), curve: Curves.linear);
-      final animation2 = AnimationConfig.implicit(duration: Duration(seconds: 2), curve: Curves.ease);
+      final animation1 = AnimationConfig.curve(
+        duration: Duration(seconds: 1),
+        curve: Curves.linear,
+      );
+      final animation2 = AnimationConfig.curve(
+        duration: Duration(seconds: 2),
+        curve: Curves.ease,
+      );
 
       final prop1 = Prop(
         10,

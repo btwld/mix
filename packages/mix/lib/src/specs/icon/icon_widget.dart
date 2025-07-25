@@ -21,16 +21,16 @@ class StyledIcon extends StyleWidget<IconSpec> {
   final TextDirection? textDirection;
 
   @override
-  Widget build(BuildContext context, IconSpec spec) {
+  Widget build(BuildContext context, IconSpec? spec) {
     return Icon(
       icon,
-      size: spec.size,
-      fill: spec.fill,
-      weight: spec.weight,
-      grade: spec.grade,
-      opticalSize: spec.opticalSize,
-      color: spec.color,
-      shadows: spec.shadows,
+      size: spec?.size,
+      fill: spec?.fill,
+      weight: spec?.weight,
+      grade: spec?.grade,
+      opticalSize: spec?.opticalSize,
+      color: spec?.color,
+      shadows: spec?.shadows,
       semanticLabel: semanticLabel,
       textDirection: textDirection,
     );

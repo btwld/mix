@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../internal/compare_mixin.dart';
+import '../internal/constants.dart';
 import 'animation_config.dart';
 import 'mix_element.dart';
 import 'modifier.dart';
@@ -348,7 +349,10 @@ class Style extends SpecStyle<MultiSpec> {
   Style animate({Duration? duration, Curve? curve}) {
     return Style._(
       attributes: _attributes.values.toList(),
-      animation: AnimationConfig.implicit(duration: duration, curve: curve),
+      animation: AnimationConfig.curve(
+        curve: curve ?? Curves.linear,
+        duration: duration ?? kDefaultAnimationDuration,
+      ),
       modifiers: $modifiers,
       variants: $variants,
     );
@@ -408,7 +412,7 @@ class ResolvedStyle<V extends Spec<V>> {
   final AnimationConfig? animation; // Animation config
   final List<Modifier>? modifiers; // Modifiers config
 
-  const ResolvedStyle({required this.spec, this.animation, this.modifiers});
+  const ResolvedStyle({this.spec, this.animation, this.modifiers});
 
   /// Linearly interpolate between two ResolvedStyles
   ResolvedStyle<V> lerp(ResolvedStyle<V>? other, double t) {

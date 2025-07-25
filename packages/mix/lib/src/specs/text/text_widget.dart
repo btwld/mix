@@ -41,21 +41,21 @@ class StyledText extends StyleWidget<TextSpec> {
   final Locale? locale;
 
   @override
-  Widget build(BuildContext context, TextSpec spec) {
+  Widget build(BuildContext context, TextSpec? spec) {
     return Text(
-      spec.directives?.apply(text) ?? text,
-      style: spec.style,
-      strutStyle: spec.strutStyle,
-      textAlign: spec.textAlign,
-      textDirection: spec.textDirection,
+      spec?.directives?.apply(text) ?? text,
+      style: spec?.style,
+      strutStyle: spec?.strutStyle,
+      textAlign: spec?.textAlign,
+      textDirection: spec?.textDirection,
       locale: locale,
-      softWrap: spec.softWrap,
-      overflow: spec.overflow,
-      textScaler: spec.textScaler,
-      maxLines: spec.maxLines,
+      softWrap: spec?.softWrap,
+      overflow: spec?.overflow,
+      textScaler: spec?.textScaler,
+      maxLines: spec?.maxLines,
       semanticsLabel: semanticsLabel,
-      textWidthBasis: spec.textWidthBasis,
-      textHeightBehavior: spec.textHeightBehavior,
+      textWidthBasis: spec?.textWidthBasis,
+      textHeightBehavior: spec?.textHeightBehavior,
     );
   }
 }

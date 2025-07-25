@@ -2,6 +2,7 @@
 ///
 /// This file provides convenient global accessors for commonly used spec attributes,
 /// utilities, and modifiers in the Mix framework.
+library;
 
 import '../core/spec.dart';
 import '../core/style.dart';

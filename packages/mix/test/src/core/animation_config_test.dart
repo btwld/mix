@@ -6,7 +6,7 @@ void main() {
   group('AnimationConfig', () {
     group('CurveAnimationConfig', () {
       test('creates with implicit factory', () {
-        final config = AnimationConfig.implicit(
+        final config = AnimationConfig.curve(
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeIn,
         );
@@ -16,17 +16,16 @@ void main() {
         expect(config.curve, Curves.easeIn);
       });
 
-
       test('supports equality', () {
-        final config1 = AnimationConfig.implicit(
+        final config1 = AnimationConfig.curve(
           duration: const Duration(seconds: 1),
           curve: Curves.linear,
         );
-        final config2 = AnimationConfig.implicit(
+        final config2 = AnimationConfig.curve(
           duration: const Duration(seconds: 1),
           curve: Curves.linear,
         );
-        final config3 = AnimationConfig.implicit(
+        final config3 = AnimationConfig.curve(
           duration: const Duration(seconds: 1),
           curve: Curves.ease,
         );
@@ -36,11 +35,11 @@ void main() {
       });
 
       test('has correct hashCode', () {
-        final config1 = AnimationConfig.implicit(
+        final config1 = AnimationConfig.curve(
           duration: const Duration(seconds: 1),
           curve: Curves.linear,
         );
-        final config2 = AnimationConfig.implicit(
+        final config2 = AnimationConfig.curve(
           duration: const Duration(seconds: 1),
           curve: Curves.linear,
         );
@@ -50,7 +49,7 @@ void main() {
 
       test('handles onEnd callback', () {
         bool called = false;
-        final config = AnimationConfig.implicit(
+        final config = AnimationConfig.curve(
           duration: const Duration(seconds: 1),
           curve: Curves.linear,
           onEnd: () => called = true,
@@ -77,21 +76,20 @@ void main() {
       });
 
       test('creates with custom SpringDescription', () {
-        final spring = SpringDescription(
+        final config = AnimationConfig.spring(
           mass: 3.0,
           stiffness: 150.0,
           damping: 15.0,
         );
-        final config = AnimationConfig.spring(spring: spring);
 
-        expect(config.spring, spring);
+        expect(
+          config.spring,
+          SpringDescription(mass: 3.0, stiffness: 150.0, damping: 15.0),
+        );
       });
 
       test('creates critically damped spring', () {
-        final config = AnimationConfig.criticallyDamped(
-          mass: 2.0,
-          stiffness: 200.0,
-        );
+        final config = AnimationConfig.spring(mass: 2.0, stiffness: 200.0);
 
         expect(config, isA<SpringAnimationConfig>());
         expect(config.spring.mass, 2.0);
@@ -100,11 +98,7 @@ void main() {
       });
 
       test('creates underdamped spring', () {
-        final config = AnimationConfig.underdamped(
-          mass: 1.5,
-          stiffness: 250.0,
-          ratio: 0.7,
-        );
+        final config = AnimationConfig.spring(mass: 1.5, stiffness: 250.0);
 
         expect(config, isA<SpringAnimationConfig>());
         expect(config.spring.mass, 1.5);
@@ -134,9 +128,7 @@ void main() {
 
       test('handles onEnd callback', () {
         bool called = false;
-        final config = AnimationConfig.spring(
-          onEnd: () => called = true,
-        );
+        final config = AnimationConfig.spring(onEnd: () => called = true);
 
         expect(config.onEnd, isNotNull);
         config.onEnd!();
@@ -145,7 +137,7 @@ void main() {
 
       test('creates with standard constructor', () {
         final config = SpringAnimationConfig.standard();
-        
+
         expect(config.spring.mass, 1.0);
         expect(config.spring.stiffness, 180.0);
         expect(config.spring.damping, 12.0);
@@ -153,19 +145,17 @@ void main() {
 
       test('creates with critically damped constructor', () {
         final config = SpringAnimationConfig.criticallyDamped();
-        
+
         expect(config.spring.mass, 1.0);
         expect(config.spring.stiffness, 180.0);
       });
 
       test('creates with underdamped constructor', () {
         final config = SpringAnimationConfig.underdamped();
-        
+
         expect(config.spring.mass, 1.0);
         expect(config.spring.stiffness, 180.0);
       });
     });
   });
 }
-
-

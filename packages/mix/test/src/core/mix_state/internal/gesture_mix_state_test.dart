@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/src/core/widget_state/internal/gesture_mix_state.dart';
 import 'package:mix/src/core/widget_state/internal/mix_widget_state_builder.dart';
-import 'package:mix/src/core/widget_state/widget_state_controller.dart';
+import 'package:mix/src/core/widget_state/widget_state_provider.dart';
 
 void main() {
   group('GesturableWidget', () {
@@ -29,7 +29,7 @@ void main() {
         onPanDown: onPanDown,
         onPanUpdate: onPanUpdate,
         onPanEnd: onPanEnd,
-        child: MixWidgetStateBuilder(
+        child: WidgetStateBuilder(
           controller: controller,
           builder: (_) => const SizedBox(key: key, height: 100, width: 100),
         ),
@@ -52,7 +52,7 @@ void main() {
       final context = tester.element(find.byKey(key));
 
       expect(
-        MixWidgetStateModel.hasStateOf(context, WidgetState.pressed),
+        WidgetStateProvider.hasStateOf(context, WidgetState.pressed),
         isTrue,
         reason: 'GesturableState should be pressed immediately after tap',
       );
@@ -90,21 +90,21 @@ void main() {
       await tester.pump();
       final context = tester.element(find.byKey(key));
       expect(
-        MixWidgetStateModel.hasStateOf(context, WidgetState.pressed),
+        WidgetStateProvider.hasStateOf(context, WidgetState.pressed),
         isTrue,
         reason: 'GesturableState should be pressed immediately after tap',
       );
 
       await tester.pump(const Duration(milliseconds: 50));
       expect(
-        MixWidgetStateModel.hasStateOf(context, WidgetState.pressed),
+        WidgetStateProvider.hasStateOf(context, WidgetState.pressed),
         isTrue,
         reason: 'GesturableState should still be pressed 50ms after tap',
       );
 
       await tester.pump(const Duration(milliseconds: 100));
       expect(
-        MixWidgetStateModel.hasStateOf(context, WidgetState.pressed),
+        WidgetStateProvider.hasStateOf(context, WidgetState.pressed),
         isFalse,
         reason:
             'GesturableState should be unpressed after unpressDelay has passed',
@@ -119,7 +119,7 @@ void main() {
       await tester.tap(find.byType(GestureMixStateWidget));
       final context = tester.element(find.byKey(key));
       expect(
-        MixWidgetStateModel.hasStateOf(context, WidgetState.pressed),
+        WidgetStateProvider.hasStateOf(context, WidgetState.pressed),
         isFalse,
       );
     });
