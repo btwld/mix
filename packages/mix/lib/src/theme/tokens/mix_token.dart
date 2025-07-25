@@ -4,6 +4,10 @@ import 'package:flutter/widgets.dart';
 
 import '../../internal/internal_extensions.dart';
 
+/// A design token that can be resolved to a value within a Mix theme.
+///
+/// Tokens provide a way to reference theme values indirectly, allowing for
+/// dynamic theming and consistent design system implementation.
 @immutable
 class MixToken<T> {
   final String name;
@@ -31,11 +35,15 @@ mixin MixTokenCallable<T> on MixToken<T> {
   T resolve(BuildContext context);
 }
 
+/// Mixin for classes that reference a Mix token.
 mixin TokenRef<T extends MixToken> {
+  /// The referenced token.
   T get token;
 }
 
+/// Mixin for classes that provide token resolution capabilities.
 mixin WithTokenResolver<V> {
+  /// The resolver function for converting context to values.
   BuildContextResolver<V> get resolve;
 }
 

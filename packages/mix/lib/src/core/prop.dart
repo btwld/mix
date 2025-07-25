@@ -7,12 +7,16 @@ import 'animation_config.dart';
 import 'directive.dart';
 import 'mix_element.dart';
 
+/// Base class for property value sources.
+///
+/// Defines the source of a property value, which can be a direct value,
+/// a token reference, or a mix value.
 @immutable
 abstract class PropSource<T> {
   const PropSource();
 }
 
-/// Source for direct values (used by StaticProp)
+/// Source for direct values (used by StaticProp).
 @immutable
 class ValuePropSource<T> extends PropSource<T> {
   final T value;
@@ -33,7 +37,7 @@ class ValuePropSource<T> extends PropSource<T> {
   int get hashCode => value.hashCode;
 }
 
-/// Source for token references (used by StaticProp)
+/// Source for token references (used by StaticProp).
 @immutable
 class TokenPropSource<T> extends PropSource<T> {
   final MixToken<T> token;
@@ -54,12 +58,13 @@ class TokenPropSource<T> extends PropSource<T> {
   int get hashCode => token.hashCode;
 }
 
+/// Base class for Mix property sources that can be resolved to Mix types.
 @immutable
 sealed class MixPropSource<V> extends PropSource<V> {
   const MixPropSource();
 }
 
-/// Mix value source - stores a Mix value directly
+/// Mix value source - stores a Mix value directly.
 @immutable
 class MixPropValueSource<V> extends MixPropSource<V> {
   final Mix<V> value;
@@ -80,7 +85,7 @@ class MixPropValueSource<V> extends MixPropSource<V> {
   int get hashCode => value.hashCode;
 }
 
-/// Mix token source - resolves token and converts to Mix type
+/// Mix token source - resolves token and converts to Mix type.
 @immutable
 class MixPropTokenSource<V> extends MixPropSource<V> {
   final MixToken<V> token;
@@ -104,7 +109,7 @@ class MixPropTokenSource<V> extends MixPropSource<V> {
   int get hashCode => Object.hash(token, convertToMix);
 }
 
-/// Accumulative source - only accepts MixPropSource types
+/// Accumulative source - only accepts MixPropSource types.
 @immutable
 class MixPropAccumulativeSource<V> extends MixPropSource<V> {
   final List<MixPropSource<V>> sources;
@@ -128,7 +133,10 @@ class MixPropAccumulativeSource<V> extends MixPropSource<V> {
 
 // ====== Prop Types ======
 
-/// Base sealed Prop class
+/// Base class for property values that can be resolved and merged.
+///
+/// Properties are the foundation of the Mix system, providing value resolution,
+/// merging capabilities, directive application, and animation support.
 @immutable
 sealed class PropBase<T> extends Mixable<T> with Resolvable<T> {
   /// Directives to apply to the resolved value

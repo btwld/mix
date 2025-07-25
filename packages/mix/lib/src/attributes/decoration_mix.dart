@@ -24,7 +24,7 @@ sealed class DecorationMix<T extends Decoration> extends Mix<T> {
        $boxShadow = boxShadow,
        $image = image;
 
-  /// Constructor that accepts a [Decoration] value and converts it to the appropriate DTO.
+  /// Creates the appropriate decoration mix type from a Flutter [Decoration].
   factory DecorationMix.value(Decoration decoration) {
     return switch (decoration) {
           BoxDecoration d => BoxDecorationMix.value(d),
@@ -36,40 +36,49 @@ sealed class DecorationMix<T extends Decoration> extends Mix<T> {
         as DecorationMix<T>;
   }
 
+  /// Creates a box decoration with the specified color.
   static BoxDecorationMix color(Color value) {
     return BoxDecorationMix.only(color: value);
   }
 
+  /// Creates a box decoration with the specified gradient.
   static BoxDecorationMix gradient(GradientMix value) {
     return BoxDecorationMix.only(gradient: value);
   }
 
+  /// Creates a box decoration with the specified background image.
   static BoxDecorationMix image(DecorationImageMix value) {
     return BoxDecorationMix.only(image: value);
   }
 
+  /// Creates a box decoration with the specified box shadows.
   static BoxDecorationMix boxShadow(List<BoxShadowMix> value) {
     return BoxDecorationMix.only(boxShadow: value);
   }
 
+  /// Creates a box decoration with the specified shape.
   static BoxDecorationMix shape(BoxShape value) {
     return BoxDecorationMix.only(shape: value);
   }
 
+  /// Creates a box decoration with the specified border.
   static BoxDecorationMix border(BoxBorderMix value) {
     return BoxDecorationMix.only(border: value);
   }
 
-  // borderRadius
+  /// Creates a box decoration with the specified border radius.
   static BoxDecorationMix borderRadius(BorderRadiusGeometryMix value) {
     return BoxDecorationMix.only(borderRadius: value);
   }
 
+  /// Returns the provided shape decoration (identity function for consistency).
   static ShapeDecorationMix shapeDecoration(ShapeDecorationMix value) {
     return value;
   }
 
-  /// Constructor that accepts a nullable [Decoration] value and converts it to the appropriate DTO.
+  /// Creates the appropriate decoration mix type from a nullable Flutter [Decoration].
+  ///
+  /// Returns null if the input is null.
   static DecorationMix? maybeValue(Decoration? decoration) {
     return decoration != null ? DecorationMix.value(decoration) : null;
   }
@@ -124,27 +133,35 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
          boxShadow: boxShadow?.map(MixProp<BoxShadow>.new).toList(),
        );
 
+  /// Creates a box decoration with only the border specified.
   BoxDecorationMix.border(BoxBorderMix border) : this.only(border: border);
 
+  /// Creates a box decoration with only the border radius specified.
   BoxDecorationMix.borderRadius(BorderRadiusGeometryMix borderRadius)
     : this.only(borderRadius: borderRadius);
 
+  /// Creates a box decoration with only the shape specified.
   BoxDecorationMix.shape(BoxShape shape) : this.only(shape: shape);
 
+  /// Creates a box decoration with only the background blend mode specified.
   BoxDecorationMix.backgroundBlendMode(BlendMode backgroundBlendMode)
     : this.only(backgroundBlendMode: backgroundBlendMode);
 
+  /// Creates a box decoration with only the color specified.
   BoxDecorationMix.color(Color? color) : this.only(color: color);
 
+  /// Creates a box decoration with only the background image specified.
   BoxDecorationMix.image(DecorationImageMix? image) : this.only(image: image);
 
+  /// Creates a box decoration with only the gradient specified.
   BoxDecorationMix.gradient(GradientMix? gradient)
     : this.only(gradient: gradient);
 
+  /// Creates a box decoration with only the box shadows specified.
   BoxDecorationMix.boxShadow(List<BoxShadowMix>? boxShadow)
     : this.only(boxShadow: boxShadow);
 
-  /// Constructor that accepts a [BoxDecoration] value and extracts its properties.
+  /// Creates a [BoxDecorationMix] from an existing [BoxDecoration].
   BoxDecorationMix.value(BoxDecoration decoration)
     : this.only(
         border: BoxBorderMix.maybeValue(decoration.border),
@@ -173,39 +190,49 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
        $shape = shape,
        $backgroundBlendMode = backgroundBlendMode;
 
-  /// Constructor that accepts a nullable [BoxDecoration] value and extracts its properties.
+  /// Creates a [BoxDecorationMix] from a nullable [BoxDecoration].
+  ///
+  /// Returns null if the input is null.
   static BoxDecorationMix? maybeValue(BoxDecoration? decoration) {
     return decoration != null ? BoxDecorationMix.value(decoration) : null;
   }
 
+  /// Returns a copy with the specified gradient.
   BoxDecorationMix gradient(GradientMix value) {
     return mergeDecoration(BoxDecorationMix.only(gradient: value));
   }
 
+  /// Returns a copy with the specified background image.
   BoxDecorationMix image(DecorationImageMix image) {
     return mergeDecoration(BoxDecorationMix.only(image: image));
   }
 
+  /// Returns a copy with the specified color.
   BoxDecorationMix color(Color value) {
     return mergeDecoration(BoxDecorationMix.only(color: value));
   }
 
+  /// Returns a copy with the specified box shadows.
   BoxDecorationMix boxShadow(List<BoxShadowMix> value) {
     return mergeDecoration(BoxDecorationMix.only(boxShadow: value));
   }
 
+  /// Returns a copy with the specified border.
   BoxDecorationMix border(BoxBorderMix value) {
     return mergeDecoration(BoxDecorationMix.only(border: value));
   }
 
+  /// Returns a copy with the specified border radius.
   BoxDecorationMix borderRadius(BorderRadiusGeometryMix value) {
     return mergeDecoration(BoxDecorationMix.only(borderRadius: value));
   }
 
+  /// Returns a copy with the specified shape.
   BoxDecorationMix shape(BoxShape value) {
     return mergeDecoration(BoxDecorationMix.only(shape: value));
   }
 
+  /// Returns a copy with the specified background blend mode.
   BoxDecorationMix backgroundBlendMode(BlendMode value) {
     return mergeDecoration(BoxDecorationMix.only(backgroundBlendMode: value));
   }
@@ -256,6 +283,10 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
   ];
 }
 
+/// Mix-compatible representation of Flutter's [ShapeDecoration] with custom shape support.
+///
+/// Allows decoration with custom shape borders, color, gradient, image, and shadows
+/// with token support and merging capabilities.
 final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
     with DefaultValue<ShapeDecoration> {
   final MixProp<ShapeBorder>? $shape;
@@ -283,7 +314,7 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
   }) : $shape = shape,
        super(boxShadow: shadows);
 
-  /// Constructor that accepts a [ShapeDecoration] value and extracts its properties.
+  /// Creates a [ShapeDecorationMix] from an existing [ShapeDecoration].
   ShapeDecorationMix.value(ShapeDecoration decoration)
     : this.only(
         shape: ShapeBorderMix.maybeValue(decoration.shape),
@@ -293,7 +324,9 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
         shadows: decoration.shadows?.map(BoxShadowMix.value).toList(),
       );
 
-  /// Constructor that accepts a nullable [ShapeDecoration] value and extracts its properties.
+  /// Creates a [ShapeDecorationMix] from a nullable [ShapeDecoration].
+  ///
+  /// Returns null if the input is null.
   static ShapeDecorationMix? maybeValue(ShapeDecoration? decoration) {
     return decoration != null ? ShapeDecorationMix.value(decoration) : null;
   }

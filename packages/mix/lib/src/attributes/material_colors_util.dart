@@ -5,6 +5,10 @@ import '../core/style.dart';
 import '../core/utility.dart';
 import 'color_util.dart';
 
+/// Utility for Material Design color palettes with shade access.
+///
+/// Provides access to Material Design color shades (50, 100, 200, etc.) for
+/// systematic color usage following Material Design guidelines.
 @immutable
 final class MaterialColorUtility<T extends SpecStyle<Object?>>
     extends FoundationColorUtility<T> {
@@ -23,10 +27,14 @@ final class MaterialColorUtility<T extends SpecStyle<Object?>>
   late final shade900 = FoundationColorUtility(builder, materialColor.shade900);
   MaterialColorUtility(super.builder, MaterialColor super.color);
 
-  // Cast color to MaterialColor for shade access
+  /// Gets the underlying MaterialColor for shade access.
   MaterialColor get materialColor => color as MaterialColor;
 }
 
+/// Provides access to all Material Design colors with optional shade selection.
+///
+/// Each color method accepts an optional shade parameter (50, 100, 200, etc.) to access
+/// specific variations of the color. Without a shade, returns the primary color.
 mixin ColorsUtilityMixin<T extends SpecStyle<Object?>>
     on PropUtility<T, Color> {
   T _wrapColor(ColorSwatch color, [int? shade]) =>
@@ -72,6 +80,10 @@ mixin ColorsUtilityMixin<T extends SpecStyle<Object?>>
       _wrapColor(Colors.deepOrangeAccent, shade);
 }
 
+/// Utility for Material Design accent colors with limited shade access.
+///
+/// Provides access to accent color shades (100, 200, 400, 700) which are
+/// the available shades for Material Design accent colors.
 @immutable
 final class MaterialAccentColorUtility<T extends SpecStyle<Object?>>
     extends FoundationColorUtility<T> {
@@ -96,6 +108,6 @@ final class MaterialAccentColorUtility<T extends SpecStyle<Object?>>
   );
   MaterialAccentColorUtility(super.builder, MaterialAccentColor super.color);
 
-  // Cast color to MaterialAccentColor for shade access
+  /// Gets the underlying MaterialAccentColor for shade access.
   MaterialAccentColor get materialAccentColor => color as MaterialAccentColor;
 }

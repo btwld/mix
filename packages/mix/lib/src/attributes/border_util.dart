@@ -3,6 +3,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
+/// Utility class for creating box border styling with comprehensive border support.
+///
+/// Provides access to border and directional border utilities for flexible border styling.
 final class BoxBorderUtility<T extends SpecStyle<Object?>>
     extends MixPropUtility<T, BoxBorder> {
   late final border = BorderUtility<T>(builder);
@@ -17,6 +20,9 @@ final class BoxBorderUtility<T extends SpecStyle<Object?>>
   }
 }
 
+/// Utility class for creating border styling with individual side control.
+///
+/// Provides utilities for styling all sides together or individual border sides.
 final class BorderUtility<T extends SpecStyle<Object?>>
     extends MixPropUtility<T, Border> {
   late final all = BorderSideUtility<T>(

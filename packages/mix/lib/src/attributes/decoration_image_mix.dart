@@ -3,9 +3,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
+/// Mix-compatible representation of Flutter's [DecorationImage] for background styling.
+///
+/// Configures how images are displayed within decorations, including fit, alignment,
+/// repeat behavior, and quality settings with token support and merging capabilities.
 final class DecorationImageMix extends Mix<DecorationImage>
     with Diagnosticable {
-  // Properties use MixProp for cleaner merging
   final Prop<ImageProvider>? $image;
   final Prop<BoxFit>? $fit;
   final Prop<AlignmentGeometry>? $alignment;
@@ -71,96 +74,91 @@ final class DecorationImageMix extends Mix<DecorationImage>
         isAntiAlias: decorationImage.isAntiAlias,
       );
 
-  /// Constructor that accepts a nullable [DecorationImage] value and extracts its properties.
-  ///
-  /// Returns null if the input is null, otherwise uses [DecorationImageMix.value].
-  ///
-  /// ```dart
-  /// const DecorationImage? decorationImage = DecorationImage(image: AssetImage('assets/image.png'));
-  /// final dto = DecorationImageMix.maybeValue(decorationImage); // Returns DecorationImageMix or null
-  /// ```
+  /// Creates a decoration image with the specified image provider.
   factory DecorationImageMix.image(ImageProvider value) {
     return DecorationImageMix.only(image: value);
   }
 
+  /// Creates a decoration image with the specified fit behavior.
   factory DecorationImageMix.fit(BoxFit value) {
     return DecorationImageMix.only(fit: value);
   }
 
+  /// Creates a decoration image with the specified alignment.
   factory DecorationImageMix.alignment(AlignmentGeometry value) {
     return DecorationImageMix.only(alignment: value);
   }
 
+  /// Creates a decoration image with the specified center slice for nine-patch scaling.
   factory DecorationImageMix.centerSlice(Rect value) {
     return DecorationImageMix.only(centerSlice: value);
   }
 
+  /// Creates a decoration image with the specified repeat behavior.
   factory DecorationImageMix.repeat(ImageRepeat value) {
     return DecorationImageMix.only(repeat: value);
   }
 
+  /// Creates a decoration image with the specified filter quality.
   factory DecorationImageMix.filterQuality(FilterQuality value) {
     return DecorationImageMix.only(filterQuality: value);
   }
 
+  /// Creates a decoration image with color inversion enabled or disabled.
   factory DecorationImageMix.invertColors(bool value) {
     return DecorationImageMix.only(invertColors: value);
   }
 
+  /// Creates a decoration image with anti-aliasing enabled or disabled.
   factory DecorationImageMix.isAntiAlias(bool value) {
     return DecorationImageMix.only(isAntiAlias: value);
   }
 
+  /// Creates a [DecorationImageMix] from a nullable [DecorationImage].
+  ///
+  /// Returns null if the input is null.
   static DecorationImageMix? maybeValue(DecorationImage? decorationImage) {
     return decorationImage != null
         ? DecorationImageMix.value(decorationImage)
         : null;
   }
 
-  /// Creates a new [DecorationImageMix] with the provided image,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified image provider.
   DecorationImageMix image(ImageProvider value) {
     return merge(DecorationImageMix.only(image: value));
   }
 
-  /// Creates a new [DecorationImageMix] with the provided fit,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified fit behavior.
   DecorationImageMix fit(BoxFit value) {
     return merge(DecorationImageMix.only(fit: value));
   }
 
-  /// Creates a new [DecorationImageMix] with the provided alignment,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified alignment.
   DecorationImageMix alignment(AlignmentGeometry value) {
     return merge(DecorationImageMix.only(alignment: value));
   }
 
-  /// Creates a new [DecorationImageMix] with the provided centerSlice,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified center slice for nine-patch scaling.
   DecorationImageMix centerSlice(Rect value) {
     return merge(DecorationImageMix.only(centerSlice: value));
   }
 
-  /// Creates a new [DecorationImageMix] with the provided repeat,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified repeat behavior.
   DecorationImageMix repeat(ImageRepeat value) {
     return merge(DecorationImageMix.only(repeat: value));
   }
 
-  /// Creates a new [DecorationImageMix] with the provided filterQuality,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified filter quality.
   DecorationImageMix filterQuality(FilterQuality value) {
     return merge(DecorationImageMix.only(filterQuality: value));
   }
 
-  /// Creates a new [DecorationImageMix] with the provided invertColors,
-  /// merging it with the current instance.
+  /// Returns a copy with color inversion enabled or disabled.
   DecorationImageMix invertColors(bool value) {
     return merge(DecorationImageMix.only(invertColors: value));
   }
 
-  /// Creates a new [DecorationImageMix] with the provided isAntiAlias,
-  /// merging it with the current instance.
+  /// Returns a copy with anti-aliasing enabled or disabled.
   DecorationImageMix isAntiAlias(bool value) {
     return merge(DecorationImageMix.only(isAntiAlias: value));
   }

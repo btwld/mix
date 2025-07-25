@@ -1,6 +1,7 @@
 import 'package:flutter/physics.dart';
 import 'package:flutter/widgets.dart';
 
+import '../animation_config.dart';
 import '../spec.dart';
 import '../style.dart';
 
@@ -9,7 +10,7 @@ import '../style.dart';
 /// Animation drivers define how styles should be animated between changes.
 /// This base class provides lifecycle management, event callbacks, and
 /// common animation control methods.
-abstract class AnimationDriver<S extends Spec<S>> extends ChangeNotifier {
+abstract class MixAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
   /// The ticker provider for animations.
   final TickerProvider vsync;
 
@@ -28,13 +29,9 @@ abstract class AnimationDriver<S extends Spec<S>> extends ChangeNotifier {
   /// List of callbacks to invoke when animation completes.
   final List<VoidCallback> _onCompleteCallbacks = [];
 
-  AnimationDriver({required this.vsync}) {
+  MixAnimationDriver({required this.vsync}) {
     _controller = AnimationController(vsync: vsync);
-    _setupController();
-  }
 
-  /// Sets up the animation controller with listeners.
-  void _setupController() {
     _controller.addListener(_onAnimationTick);
     _controller.addStatusListener(_onAnimationStatusChanged);
   }
@@ -132,42 +129,17 @@ abstract class AnimationDriver<S extends Spec<S>> extends ChangeNotifier {
   }
 }
 
-/// A driver that performs no animation - just passes through the resolved style.
-class NoAnimationDriver<S extends Spec<S>> extends AnimationDriver<S> {
-  NoAnimationDriver({required super.vsync});
-
-  @override
-  Future<void> animateTo(ResolvedStyle<S> targetStyle) async {
-    _currentResolvedStyle = targetStyle;
-    notifyListeners();
-  }
-
-  @override
-  ResolvedStyle<S> interpolateAt(double t) {
-    return targetResolvedStyle ?? _currentResolvedStyle!;
-  }
-
-}
-
 /// A driver for curve-based animations with fixed duration.
-class CurveAnimationDriver<S extends Spec<S>> extends AnimationDriver<S> {
-  /// The duration of the animation.
-  final Duration duration;
-
-  /// The curve of the animation.
-  final Curve curve;
-
-  /// The starting style for interpolation.
+class CurveAnimationDriver<S extends Spec<S>> extends MixAnimationDriver<S> {
+  final CurveAnimationConfig _config;
   ResolvedStyle<S>? _fromStyle;
 
   CurveAnimationDriver({
     required super.vsync,
-    required this.duration,
-    this.curve = Curves.linear,
-    VoidCallback? onEnd,
-  }) {
-    if (onEnd != null) {
-      addOnCompleteListener(onEnd);
+    required CurveAnimationConfig config,
+  }) : _config = config {
+    if (config.onEnd != null) {
+      addOnCompleteListener(config.onEnd!);
     }
   }
 
@@ -181,7 +153,7 @@ class CurveAnimationDriver<S extends Spec<S>> extends AnimationDriver<S> {
     _fromStyle = _currentResolvedStyle ?? targetStyle;
     _targetResolvedStyle = targetStyle;
 
-    controller.duration = duration;
+    controller.duration = _config.duration;
 
     try {
       await controller.forward(from: 0.0);
@@ -196,36 +168,23 @@ class CurveAnimationDriver<S extends Spec<S>> extends AnimationDriver<S> {
       return _targetResolvedStyle ?? _fromStyle!;
     }
 
-    final curvedT = curve.transform(t);
+    final curvedT = _config.curve.transform(t);
 
     return _fromStyle!.lerp(_targetResolvedStyle!, curvedT);
   }
 }
 
 /// A driver for spring-based physics animations.
-class SpringAnimationDriver<S extends Spec<S>> extends AnimationDriver<S> {
+class SpringAnimationDriver<S extends Spec<S>> extends MixAnimationDriver<S> {
   /// The spring description for the animation.
-  final SpringDescription spring;
-
-  /// The starting style for interpolation.
-  ResolvedStyle<S>? _fromStyle;
+  final SpringAnimationConfig _config;
 
   SpringAnimationDriver({
     required super.vsync,
-    SpringDescription? spring,
-    double stiffness = 180.0,
-    double damping = 12.0,
-    double mass = 1.0,
-    VoidCallback? onEnd,
-  }) : spring =
-           spring ??
-           SpringDescription(
-             mass: mass,
-             stiffness: stiffness,
-             damping: damping,
-           ) {
-    if (onEnd != null) {
-      addOnCompleteListener(onEnd);
+    required SpringAnimationConfig config,
+  }) : _config = config {
+    if (config.onEnd != null) {
+      addOnCompleteListener(config.onEnd!);
     }
   }
 
@@ -239,7 +198,7 @@ class SpringAnimationDriver<S extends Spec<S>> extends AnimationDriver<S> {
     _fromStyle = _currentResolvedStyle ?? targetStyle;
     _targetResolvedStyle = targetStyle;
 
-    final simulation = SpringSimulation(spring, 0.0, 1.0, 0.0);
+    final simulation = SpringSimulation(_config.spring, 0.0, 1.0, 0.0);
 
     try {
       await controller.animateWith(simulation);
@@ -257,4 +216,3 @@ class SpringAnimationDriver<S extends Spec<S>> extends AnimationDriver<S> {
     return _fromStyle!.lerp(_targetResolvedStyle!, t);
   }
 }
-

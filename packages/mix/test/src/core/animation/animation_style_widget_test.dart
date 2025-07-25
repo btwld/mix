@@ -5,9 +5,7 @@ import 'package:mix/mix.dart';
 void main() {
   group('AnimationStyleWidget', () {
     testWidgets('builds with initial style', (tester) async {
-      final driver = TestAnimationDriver<TestSpec>(
-        vsync: const TestVSync(),
-      );
+      final driver = TestAnimationDriver<TestSpec>(vsync: const TestVSync());
       final style = TestResolvedStyle();
 
       await tester.pumpWidget(
@@ -15,10 +13,8 @@ void main() {
           home: AnimationStyleWidget<TestSpec>(
             driver: driver,
             style: style,
-            builder: (context, spec) => Container(
-              key: const Key('test-container'),
-              color: spec.color,
-            ),
+            builder: (context, spec) =>
+                Container(key: const Key('test-container'), color: spec.color),
           ),
         ),
       );
@@ -27,9 +23,7 @@ void main() {
     });
 
     testWidgets('triggers animation on mount', (tester) async {
-      final driver = TestAnimationDriver<TestSpec>(
-        vsync: const TestVSync(),
-      );
+      final driver = TestAnimationDriver<TestSpec>(vsync: const TestVSync());
       final style = TestResolvedStyle();
 
       bool animationTriggered = false;
@@ -55,9 +49,7 @@ void main() {
     });
 
     testWidgets('animates to new style when updated', (tester) async {
-      final driver = TestAnimationDriver<TestSpec>(
-        vsync: const TestVSync(),
-      );
+      final driver = TestAnimationDriver<TestSpec>(vsync: const TestVSync());
       final style1 = TestResolvedStyle(color: Colors.red);
       final style2 = TestResolvedStyle(color: Colors.blue);
 
@@ -94,12 +86,8 @@ void main() {
     });
 
     testWidgets('updates when driver changes', (tester) async {
-      final driver1 = TestAnimationDriver<TestSpec>(
-        vsync: const TestVSync(),
-      );
-      final driver2 = TestAnimationDriver<TestSpec>(
-        vsync: const TestVSync(),
-      );
+      final driver1 = TestAnimationDriver<TestSpec>(vsync: const TestVSync());
+      final driver2 = TestAnimationDriver<TestSpec>(vsync: const TestVSync());
       final style = TestResolvedStyle();
 
       await tester.pumpWidget(
@@ -107,9 +95,7 @@ void main() {
           home: AnimationStyleWidget<TestSpec>(
             driver: driver1,
             style: style,
-            builder: (context, spec) => Container(
-              color: spec.color,
-            ),
+            builder: (context, spec) => Container(color: spec.color),
           ),
         ),
       );
@@ -124,9 +110,7 @@ void main() {
           home: AnimationStyleWidget<TestSpec>(
             driver: driver2,
             style: style,
-            builder: (context, spec) => Container(
-              color: spec.color,
-            ),
+            builder: (context, spec) => Container(color: spec.color),
           ),
         ),
       );
@@ -144,9 +128,7 @@ void main() {
     });
 
     testWidgets('disposes correctly', (tester) async {
-      final driver = TestAnimationDriver<TestSpec>(
-        vsync: const TestVSync(),
-      );
+      final driver = TestAnimationDriver<TestSpec>(vsync: const TestVSync());
       final style = TestResolvedStyle();
 
       await tester.pumpWidget(
@@ -168,9 +150,7 @@ void main() {
     });
 
     testWidgets('handles null spec gracefully', (tester) async {
-      final driver = TestAnimationDriver<TestSpec>(
-        vsync: const TestVSync(),
-      );
+      final driver = TestAnimationDriver<TestSpec>(vsync: const TestVSync());
       final style = TestResolvedStyle(hasNullSpec: true);
 
       await tester.pumpWidget(
@@ -178,9 +158,8 @@ void main() {
           home: AnimationStyleWidget<TestSpec>(
             driver: driver,
             style: style,
-            builder: (context, spec) => Container(
-              key: const Key('test-container'),
-            ),
+            builder: (context, spec) =>
+                Container(key: const Key('test-container')),
           ),
         ),
       );
@@ -204,9 +183,7 @@ class TestSpec extends Spec<TestSpec> {
   @override
   TestSpec lerp(TestSpec? other, double t) {
     if (other == null) return this;
-    return TestSpec(
-      color: Color.lerp(color, other.color, t) ?? color,
-    );
+    return TestSpec(color: Color.lerp(color, other.color, t) ?? color);
   }
 
   @override
@@ -219,10 +196,8 @@ class TestResolvedStyle extends ResolvedStyle<TestSpec> {
   final Color color;
   final bool hasNullSpec;
 
-  TestResolvedStyle({
-    this.color = Colors.black,
-    this.hasNullSpec = false,
-  }) : super(spec: hasNullSpec ? null : TestSpec(color: color));
+  TestResolvedStyle({this.color = Colors.black, this.hasNullSpec = false})
+    : super(spec: hasNullSpec ? null : TestSpec(color: color));
 
   @override
   ResolvedStyle<TestSpec> lerp(ResolvedStyle<TestSpec>? other, double t) {
@@ -233,14 +208,15 @@ class TestResolvedStyle extends ResolvedStyle<TestSpec> {
   }
 }
 
-class TestAnimationDriver<S extends Spec<S>> extends AnimationDriver<S> {
+class TestAnimationDriver<S extends Spec<S>> extends MixAnimationDriver<S> {
   TestAnimationDriver({required super.vsync});
 
   void Function(ResolvedStyle<S>)? onAnimateTo;
   ResolvedStyle<S>? testResolvedStyle;
 
   @override
-  ResolvedStyle<S>? get currentResolvedStyle => testResolvedStyle ?? super.currentResolvedStyle;
+  ResolvedStyle<S>? get currentResolvedStyle =>
+      testResolvedStyle ?? super.currentResolvedStyle;
 
   @override
   Future<void> animateTo(ResolvedStyle<S> targetStyle) async {

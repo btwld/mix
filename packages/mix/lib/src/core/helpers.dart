@@ -9,14 +9,16 @@ import 'package:flutter/widgets.dart' as w;
 import '../internal/deep_collection_equality.dart';
 import 'mix_element.dart';
 
-/// Class to provide some helpers without conflicting
-/// name space with other libraries.
+/// Utility class providing helper functions for value resolution, merging, and interpolation.
+///
+/// Contains static methods for common operations in the Mix framework including
+/// property resolution, value merging, and interpolation functions.
 class MixHelpers {
-  // This should only be used for testing
+  /// Override for target platform in testing scenarios.
   @visibleForTesting
   static TargetPlatform? targetPlatformOverride;
 
-  // This should only be used for testing
+  /// Override for web platform detection in testing scenarios.
   @visibleForTesting
   static bool? isWebOverride;
   static const deepEquality = DeepCollectionEquality();

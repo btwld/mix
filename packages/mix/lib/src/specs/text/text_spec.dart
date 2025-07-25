@@ -5,6 +5,10 @@ import '../../core/directive.dart';
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
 
+/// Specification for text styling and layout properties.
+///
+/// Provides comprehensive text styling including overflow behavior, structure styling,
+/// alignment, line limits, text direction, and string directive support.
 final class TextSpec extends Spec<TextSpec> with Diagnosticable {
   final TextOverflow? overflow;
   final StrutStyle? strutStyle;

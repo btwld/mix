@@ -4,6 +4,10 @@ import 'package:flutter/widgets.dart';
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
 
+/// Specification for icon styling properties.
+///
+/// Provides comprehensive icon styling including color, size, weight, optical properties,
+/// text direction, scaling behavior, and shadow effects.
 final class IconSpec extends Spec<IconSpec> with Diagnosticable {
   final Color? color;
   final double? size;

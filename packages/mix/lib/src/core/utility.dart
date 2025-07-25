@@ -8,19 +8,29 @@ import 'prop.dart';
 import 'spec.dart';
 import 'style.dart';
 
+/// Base class for Mix utilities that convert values to styled elements.
+///
+/// Utilities provide a fluent API for building styled elements from various value types.
 abstract class MixUtility<U extends SpecStyle<Object?>, Value> {
+  /// The builder function that converts values to styled elements.
   final U Function(Value) builder;
 
   const MixUtility(this.builder);
 }
 
+/// Interface for utilities that work with property-based values.
+///
+/// Provides common methods for working with tokens, directives, and animations.
 abstract interface class PropBaseUtility<U extends SpecStyle<Object?>, Value> {
   const PropBaseUtility();
 
+  /// Creates a styled element using a token reference.
   U token(MixToken<Value> token);
 
+  /// Creates a styled element with an applied directive.
   U directive(MixDirective<Value> directive);
 
+  /// Creates a styled element with animation configuration.
   U animate(AnimationConfig animation);
 }
 
@@ -32,7 +42,6 @@ abstract interface class PropBaseUtility<U extends SpecStyle<Object?>, Value> {
 /// - Directives: directive(directive)
 ///
 /// Used for simple types like Color, double, FontWeight, etc.
-@immutable
 @immutable
 abstract class PropUtility<U extends SpecStyle<Object?>, Value>
     extends PropBaseUtility<U, Value> {

@@ -54,10 +54,13 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
   SpecStyle<S>? _cachedFinalStyle;
   ResolvedStyle<S>? _cachedResolvedStyle;
 
+  late final MixAnimationDriver<S>? _animationDriver;
+
   @override
   void initState() {
     super.initState();
     _controller = widget.controller ?? WidgetStatesController();
+    _animationDriver = _createAnimationDriver(widget.style?.$animation);
   }
 
   SpecStyle<S>? _prepareFinalStyle(BuildContext context) {
@@ -71,6 +74,14 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
   }
 
   Widget _buildCore(BuildContext context, ResolvedStyle<S> resolved) {
+    // If spec is null, we can't build anything meaningful
+    if (resolved.spec == null) {
+      throw FlutterError(
+        'StyleBuilder: Cannot build widget without a resolved spec. '
+        'Ensure that a style is provided either directly or through inheritance.',
+      );
+    }
+
     Widget child = widget.builder(context, resolved.spec!);
 
     return _applyModifiers(child, resolved.modifiers);
@@ -86,56 +97,40 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
     );
   }
 
-  // Cache for animation driver
-  AnimationDriver<S>? _animationDriver;
-  AnimationConfig? _lastAnimationConfig;
-
   Widget _wrapWithAnimationIfNeeded(
     BuildContext context,
     Widget child,
-    AnimationConfig? animationConfig,
+
     SpecStyle<S> style,
   ) {
-    if (animationConfig == null) {
-      _disposeAnimationDriver();
-
+    if (_animationDriver == null) {
       return child;
-    }
-
-    // Create or update animation driver if needed
-    if (_animationDriver == null || _lastAnimationConfig != animationConfig) {
-      _disposeAnimationDriver();
-      _animationDriver = _createAnimationDriver(animationConfig);
-      _lastAnimationConfig = animationConfig;
     }
 
     final resolved = style.build(context);
 
     return AnimationStyleWidget<S>(
-      driver: _animationDriver!,
+      driver: _animationDriver,
       style: resolved,
       builder: (context, spec) => child,
     );
   }
 
-  AnimationDriver<S> _createAnimationDriver(AnimationConfig config) {
-    return switch (config) {
-      CurveAnimationConfig(:final duration, :final curve, :final onEnd) =>
-        CurveAnimationDriver<S>(
-          vsync: this,
-          duration: duration,
-          curve: curve,
-          onEnd: onEnd,
-        ),
-      SpringAnimationConfig(:final spring, :final onEnd) =>
-        SpringAnimationDriver<S>(vsync: this, spring: spring, onEnd: onEnd),
-    };
-  }
+  MixAnimationDriver<S>? _createAnimationDriver(AnimationConfig? config) {
+    if (config == null) return null;
 
-  void _disposeAnimationDriver() {
-    _animationDriver?.dispose();
-    _animationDriver = null;
-    _lastAnimationConfig = null;
+    return switch (config) {
+      // ignore: avoid-undisposed-instances
+      (CurveAnimationConfig config) => CurveAnimationDriver<S>(
+        vsync: this,
+        config: config,
+      ),
+      // ignore: avoid-undisposed-instances
+      (SpringAnimationConfig config) => SpringAnimationDriver<S>(
+        vsync: this,
+        config: config,
+      ),
+    };
   }
 
   SpecStyle<S>? _getInheritedStyle(BuildContext context) {
@@ -163,7 +158,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
   Widget _buildInnerTree(BuildContext context) {
     // Get resolved style (cached when possible)
     final resolved = _getResolvedStyle(context);
-    final finalStyle = _cachedFinalStyle!;
+    final finalStyle = _cachedFinalStyle;
 
     return ResolvedStyleProvider<S>(
       resolvedStyle: resolved,
@@ -173,13 +168,10 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
           Widget child = _buildCore(context, resolved);
 
           // Apply wrappers (these are lightweight)
-          child = _wrapWithAnimationIfNeeded(
-            context,
-            child,
-            resolved.animation,
-            finalStyle,
-          );
-          child = StyleProvider<S>(style: finalStyle, child: child);
+          if (finalStyle != null) {
+            child = _wrapWithAnimationIfNeeded(context, child, finalStyle);
+            child = StyleProvider<S>(style: finalStyle, child: child);
+          }
 
           return child;
         },
@@ -210,7 +202,9 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
     if (widget.controller == null) {
       _controller.dispose();
     }
-    _disposeAnimationDriver();
+    _animationDriver?.dispose();
+    _cachedFinalStyle = null;
+    _cachedResolvedStyle = null;
     super.dispose();
   }
 
@@ -221,7 +215,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
 
     // Calculate interactivity need early
     final needsInteractivity =
-        widget.controller != null || preliminaryStyle?.hasWidgetState == false;
+        widget.controller != null || preliminaryStyle?.hasWidgetState == true;
 
     // Build the widget tree with proper ordering
     Widget result =

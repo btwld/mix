@@ -18,7 +18,7 @@ class AnimationStyleWidget<S extends Spec<S>> extends StatefulWidget {
   });
 
   /// The animation driver that controls the animation.
-  final AnimationDriver<S> driver;
+  final MixAnimationDriver<S> driver;
 
   /// The target style to animate to.
   final ResolvedStyle<S> style;

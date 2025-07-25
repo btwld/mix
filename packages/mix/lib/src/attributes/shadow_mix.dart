@@ -6,6 +6,10 @@ import '../core/helpers.dart';
 import '../core/mix_element.dart';
 import '../core/prop.dart';
 
+/// Base class for shadow styling with common shadow properties.
+///
+/// Provides color, offset, and blur radius properties that are shared between
+/// [ShadowMix] and [BoxShadowMix] implementations.
 sealed class BaseShadowMix<T extends Shadow> extends Mix<T> {
   // Properties use MixableProperty for cleaner merging
   final Prop<Color>? $color;
@@ -21,10 +25,10 @@ sealed class BaseShadowMix<T extends Shadow> extends Mix<T> {
        $offset = offset;
 }
 
-/// Represents a [Mix] Data transfer object of [Shadow]
+/// Mix-compatible representation of Flutter's [Shadow] with token support.
 ///
-/// This is used to allow for resolvable value tokens, and also the correct
-/// merge and combining behavior. It allows to be merged, and resolved to a [Shadow]
+/// Provides shadow styling with color, offset, and blur radius properties
+/// that support resolvable tokens and merging capabilities.
 class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
   ShadowMix.only({double? blurRadius, Color? color, Offset? offset})
     : this(
@@ -35,14 +39,7 @@ class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
 
   const ShadowMix({super.blurRadius, super.color, super.offset});
 
-  /// Constructor that accepts a [Shadow] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [Shadow] instances to [ShadowMix].
-  ///
-  /// ```dart
-  /// const shadow = Shadow(color: Colors.black, blurRadius: 5.0);
-  /// final dto = ShadowMix.value(shadow);
-  /// ```
+  /// Creates a [ShadowMix] from an existing [Shadow].
   ShadowMix.value(Shadow shadow)
     : this.only(
         blurRadius: shadow.blurRadius,
@@ -50,56 +47,44 @@ class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
         offset: shadow.offset,
       );
 
+  /// Creates a shadow with the specified color.
   factory ShadowMix.color(Color value) {
     return ShadowMix.only(color: value);
   }
 
+  /// Creates a shadow with the specified offset.
   factory ShadowMix.offset(Offset value) {
     return ShadowMix.only(offset: value);
   }
 
+  /// Creates a shadow with the specified blur radius.
   factory ShadowMix.blurRadius(double value) {
     return ShadowMix.only(blurRadius: value);
   }
 
-  /// Constructor that accepts a nullable [Shadow] value and extracts its properties.
+  /// Creates a [ShadowMix] from a nullable [Shadow].
   ///
-  /// Returns null if the input is null, otherwise uses [ShadowMix.value].
-  ///
-  /// ```dart
-  /// const Shadow? shadow = Shadow(color: Colors.black, blurRadius: 5.0);
-  /// final dto = ShadowMix.maybeValue(shadow); // Returns ShadowMix or null
-  /// ```
+  /// Returns null if the input is null.
   static ShadowMix? maybeValue(Shadow? shadow) {
     return shadow != null ? ShadowMix.value(shadow) : null;
   }
 
-  /// Creates a new [ShadowMix] with the provided color,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified color.
   ShadowMix color(Color value) {
     return merge(ShadowMix.only(color: value));
   }
 
-  /// Creates a new [ShadowMix] with the provided offset,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified offset.
   ShadowMix offset(Offset value) {
     return merge(ShadowMix.only(offset: value));
   }
 
-  /// Creates a new [ShadowMix] with the provided blurRadius,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified blur radius.
   ShadowMix blurRadius(double value) {
     return merge(ShadowMix.only(blurRadius: value));
   }
 
-  /// Resolves to [Shadow] using the provided [MixContext].
-  ///
-  /// If a property is null in the [MixContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
-  ///
-  /// ```dart
-  /// final shadow = ShadowMix(...).resolve(mix);
-  /// ```
+  /// Resolves to [Shadow] using the provided [BuildContext].
   @override
   Shadow resolve(BuildContext context) {
     return Shadow(
@@ -110,14 +95,7 @@ class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
     );
   }
 
-  /// Merges the properties of this [ShadowMix] with the properties of [other].
-  ///
-  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [ShadowMix] with the properties of [other] taking precedence over
-  /// the corresponding properties of this instance.
-  ///
-  /// Properties from [other] that are null will fall back
-  /// to the values from this instance.
+  /// Merges this shadow with another, with other taking precedence.
   @override
   ShadowMix merge(ShadowMix? other) {
     if (other == null) return this;
@@ -136,10 +114,10 @@ class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
   Shadow get defaultValue => const Shadow();
 }
 
-/// Represents a [Mix] Data transfer object of [BoxShadow]
+/// Mix-compatible representation of Flutter's [BoxShadow] with additional spread radius.
 ///
-/// This is used to allow for resolvable value tokens, and also the correct
-/// merge and combining behavior. It allows to be merged, and resolved to a `[BoxShadow]
+/// Extends shadow styling with spread radius for box shadow effects, supporting
+/// resolvable tokens and merging capabilities.
 class BoxShadowMix extends BaseShadowMix<BoxShadow>
     with DefaultValue<BoxShadow> {
   final Prop<double>? $spreadRadius;
@@ -163,14 +141,7 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
     Prop<double>? spreadRadius,
   }) : $spreadRadius = spreadRadius;
 
-  /// Constructor that accepts a [BoxShadow] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [BoxShadow] instances to [BoxShadowMix].
-  ///
-  /// ```dart
-  /// const boxShadow = BoxShadow(color: Colors.grey, blurRadius: 10.0);
-  /// final dto = BoxShadowMix.value(boxShadow);
-  /// ```
+  /// Creates a [BoxShadowMix] from an existing [BoxShadow].
   BoxShadowMix.value(BoxShadow boxShadow)
     : this.only(
         color: boxShadow.color,
@@ -179,72 +150,61 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
         spreadRadius: boxShadow.spreadRadius,
       );
 
+  /// Creates a box shadow with the specified color.
   factory BoxShadowMix.color(Color value) {
     return BoxShadowMix.only(color: value);
   }
 
+  /// Creates a box shadow with the specified offset.
   factory BoxShadowMix.offset(Offset value) {
     return BoxShadowMix.only(offset: value);
   }
 
+  /// Creates a box shadow with the specified blur radius.
   factory BoxShadowMix.blurRadius(double value) {
     return BoxShadowMix.only(blurRadius: value);
   }
 
+  /// Creates a box shadow with the specified spread radius.
   factory BoxShadowMix.spreadRadius(double value) {
     return BoxShadowMix.only(spreadRadius: value);
   }
 
-  /// Constructor that accepts a nullable [BoxShadow] value and extracts its properties.
+  /// Creates a [BoxShadowMix] from a nullable [BoxShadow].
   ///
-  /// Returns null if the input is null, otherwise uses [BoxShadowMix.value].
-  ///
-  /// ```dart
-  /// const BoxShadow? boxShadow = BoxShadow(color: Colors.grey, blurRadius: 10.0);
-  /// final dto = BoxShadowMix.maybeValue(boxShadow); // Returns BoxShadowMix or null
-  /// ```
+  /// Returns null if the input is null.
   static BoxShadowMix? maybeValue(BoxShadow? boxShadow) {
     return boxShadow != null ? BoxShadowMix.value(boxShadow) : null;
   }
 
+  /// Creates a list of box shadows from Material Design elevation levels.
   static List<BoxShadowMix> fromElevation(ElevationShadow value) {
     return kElevationToShadow[value.elevation]!
         .map(BoxShadowMix.value)
         .toList();
   }
 
-  /// Creates a new [BoxShadowMix] with the provided color,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified color.
   BoxShadowMix color(Color value) {
     return merge(BoxShadowMix.only(color: value));
   }
 
-  /// Creates a new [BoxShadowMix] with the provided offset,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified offset.
   BoxShadowMix offset(Offset value) {
     return merge(BoxShadowMix.only(offset: value));
   }
 
-  /// Creates a new [BoxShadowMix] with the provided blurRadius,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified blur radius.
   BoxShadowMix blurRadius(double value) {
     return merge(BoxShadowMix.only(blurRadius: value));
   }
 
-  /// Creates a new [BoxShadowMix] with the provided spreadRadius,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified spread radius.
   BoxShadowMix spreadRadius(double value) {
     return merge(BoxShadowMix.only(spreadRadius: value));
   }
 
-  /// Resolves to [BoxShadow] using the provided [MixContext].
-  ///
-  /// If a property is null in the [MixContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
-  ///
-  /// ```dart
-  /// final boxShadow = BoxShadowMix(...).resolve(mix);
-  /// ```
+  /// Resolves to [BoxShadow] using the provided [BuildContext].
   @override
   BoxShadow resolve(BuildContext context) {
     return BoxShadow(
@@ -258,14 +218,7 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
     );
   }
 
-  /// Merges the properties of this [BoxShadowMix] with the properties of [other].
-  ///
-  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [BoxShadowMix] with the properties of [other] taking precedence over
-  /// the corresponding properties of this instance.
-  ///
-  /// Properties from [other] that are null will fall back
-  /// to the values from this instance.
+  /// Merges this box shadow with another, with other taking precedence.
   @override
   BoxShadowMix merge(BoxShadowMix? other) {
     if (other == null) return this;
@@ -285,7 +238,9 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
   BoxShadow get defaultValue => const BoxShadow();
 }
 
-// ElevationBoxShadowMix is a convenience class for creating BoxShadowMix from elevation values.
+/// Material Design elevation levels for generating appropriate box shadows.
+///
+/// Provides predefined elevation values that correspond to Material Design shadow specifications.
 enum ElevationShadow {
   one(1),
   two(2),
@@ -298,6 +253,7 @@ enum ElevationShadow {
   sixteen(16),
   twentyFour(24);
 
+  /// The elevation value in logical pixels.
   final int elevation;
 
   const ElevationShadow(this.elevation);

@@ -9,6 +9,9 @@ import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 
+/// Modifier that clips its child to an oval shape.
+///
+/// Wraps the child in a [ClipOval] widget with the specified clipper and clip behavior.
 final class ClipOvalModifier extends Modifier<ClipOvalModifier>
     with Diagnosticable {
   final CustomClipper<Rect>? clipper;
@@ -16,8 +19,7 @@ final class ClipOvalModifier extends Modifier<ClipOvalModifier>
 
   const ClipOvalModifier({this.clipper, this.clipBehavior});
 
-  /// Creates a copy of this [ClipOvalModifier] but with the given fields
-  /// replaced with the new values.
+  /// Returns a copy with the specified fields replaced.
   @override
   ClipOvalModifier copyWith({
     CustomClipper<Rect>? clipper,
@@ -29,22 +31,7 @@ final class ClipOvalModifier extends Modifier<ClipOvalModifier>
     );
   }
 
-  /// Linearly interpolates between this [ClipOvalModifier] and another [ClipOvalModifier] based on the given parameter [t].
-  ///
-  /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [ClipOvalModifier] is returned. When [t] is 1.0, the [other] [ClipOvalModifier] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [ClipOvalModifier] is returned.
-  ///
-  /// If [other] is null, this method returns the current [ClipOvalModifier] instance.
-  ///
-  /// The interpolation is performed on each property of the [ClipOvalModifier] using the appropriate
-  /// interpolation method:
-  /// For [clipper] and [clipBehavior], the interpolation is performed using a step function.
-  /// If [t] is less than 0.5, the value from the current [ClipOvalModifier] is used. Otherwise, the value
-  /// from the [other] [ClipOvalModifier] is used.
-  ///
-  /// This method is typically used in animations to smoothly transition between
-  /// different [ClipOvalModifier] configurations.
+  /// Linearly interpolates between this and [other] using step interpolation.
   @override
   ClipOvalModifier lerp(ClipOvalModifier? other, double t) {
     if (other == null) return this;
@@ -81,13 +68,7 @@ final class ClipOvalModifier extends Modifier<ClipOvalModifier>
   }
 }
 
-/// Represents the attributes of a [ClipOvalModifier].
-///
-/// This class encapsulates properties defining the layout and
-/// appearance of a [ClipOvalModifier].
-///
-/// Use this class to configure the attributes of a [ClipOvalModifier] and pass it to
-/// the [ClipOvalModifier] constructor.
+/// Attribute class for [ClipOvalModifier] with resolvable properties.
 class ClipOvalModifierAttribute extends ModifierAttribute<ClipOvalModifier> {
   final Prop<CustomClipper<Rect>>? clipper;
   final Prop<Clip>? clipBehavior;
@@ -102,14 +83,7 @@ class ClipOvalModifierAttribute extends ModifierAttribute<ClipOvalModifier> {
          clipBehavior: Prop.maybe(clipBehavior),
        );
 
-  /// Resolves to [ClipOvalModifier] using the provided [MixContext].
-  ///
-  /// If a property is null in the [MixContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
-  ///
-  /// ```dart
-  /// final clipOvalModifierSpec = ClipOvalModifierAttribute(...).resolve(mix);
-  /// ```
+  /// Resolves to [ClipOvalModifier] using the provided [BuildContext].
   @override
   ClipOvalModifier resolve(BuildContext context) {
     return ClipOvalModifier(
@@ -140,6 +114,9 @@ class ClipOvalModifierAttribute extends ModifierAttribute<ClipOvalModifier> {
   List<Object?> get props => [clipper, clipBehavior];
 }
 
+/// Modifier that clips its child to a rectangular shape.
+///
+/// Wraps the child in a [ClipRect] widget with the specified clipper and clip behavior.
 final class ClipRectModifierSpec extends Modifier<ClipRectModifierSpec>
     with Diagnosticable {
   final CustomClipper<Rect>? clipper;
@@ -147,8 +124,7 @@ final class ClipRectModifierSpec extends Modifier<ClipRectModifierSpec>
 
   const ClipRectModifierSpec({this.clipper, this.clipBehavior});
 
-  /// Creates a copy of this [ClipRectModifierSpec] but with the given fields
-  /// replaced with the new values.
+  /// Returns a copy with the specified fields replaced.
   @override
   ClipRectModifierSpec copyWith({
     CustomClipper<Rect>? clipper,
@@ -160,22 +136,7 @@ final class ClipRectModifierSpec extends Modifier<ClipRectModifierSpec>
     );
   }
 
-  /// Linearly interpolates between this [ClipRectModifierSpec] and another [ClipRectModifierSpec] based on the given parameter [t].
-  ///
-  /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [ClipRectModifierSpec] is returned. When [t] is 1.0, the [other] [ClipRectModifierSpec] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [ClipRectModifierSpec] is returned.
-  ///
-  /// If [other] is null, this method returns the current [ClipRectModifierSpec] instance.
-  ///
-  /// The interpolation is performed on each property of the [ClipRectModifierSpec] using the appropriate
-  /// interpolation method:
-  /// For [clipper] and [clipBehavior], the interpolation is performed using a step function.
-  /// If [t] is less than 0.5, the value from the current [ClipRectModifierSpec] is used. Otherwise, the value
-  /// from the [other] [ClipRectModifierSpec] is used.
-  ///
-  /// This method is typically used in animations to smoothly transition between
-  /// different [ClipRectModifierSpec] configurations.
+  /// Linearly interpolates between this and [other] using step interpolation.
   @override
   ClipRectModifierSpec lerp(ClipRectModifierSpec? other, double t) {
     if (other == null) return this;
@@ -195,10 +156,7 @@ final class ClipRectModifierSpec extends Modifier<ClipRectModifierSpec>
     );
   }
 
-  /// The list of properties that constitute the state of this [ClipRectModifierSpec].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [ClipRectModifierSpec] instances for equality.
+  /// Properties used for equality comparison.
   @override
   List<Object?> get props => [clipper, clipBehavior];
 
@@ -212,13 +170,7 @@ final class ClipRectModifierSpec extends Modifier<ClipRectModifierSpec>
   }
 }
 
-/// Represents the attributes of a [ClipRectModifierSpec].
-///
-/// This class encapsulates properties defining the layout and
-/// appearance of a [ClipRectModifierSpec].
-///
-/// Use this class to configure the attributes of a [ClipRectModifierSpec] and pass it to
-/// the [ClipRectModifierSpec] constructor.
+/// Attribute class for [ClipRectModifierSpec] with resolvable properties.
 class ClipRectModifierAttribute
     extends ModifierAttribute<ClipRectModifierSpec> {
   final Prop<CustomClipper<Rect>>? clipper;

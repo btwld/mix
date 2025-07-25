@@ -2,12 +2,15 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-/// A Data transfer object that represents a [ShapeBorder] value.
+/// Base class for Mix-compatible shape border styling with token support.
+///
+/// Provides factory methods for converting Flutter [ShapeBorder] types to their
+/// corresponding Mix representations with merging capabilities.
 @immutable
 sealed class ShapeBorderMix<T extends ShapeBorder> extends Mix<T> {
   const ShapeBorderMix();
 
-  /// Constructor that accepts a [ShapeBorder] value and converts it to the appropriate DTO.
+  /// Creates the appropriate shape border mix type from a Flutter [ShapeBorder].
   static ShapeBorderMix value(ShapeBorder border) {
     return switch (border) {
       RoundedRectangleBorder b => RoundedRectangleBorderMix.value(b),
@@ -23,7 +26,9 @@ sealed class ShapeBorderMix<T extends ShapeBorder> extends Mix<T> {
     };
   }
 
-  /// Constructor that accepts a nullable [ShapeBorder] value and converts it to the appropriate DTO.
+  /// Creates the appropriate shape border mix type from a nullable Flutter [ShapeBorder].
+  ///
+  /// Returns null if the input is null.
   static ShapeBorderMix? maybeValue(ShapeBorder? border) {
     return border != null ? ShapeBorderMix.value(border) : null;
   }
@@ -60,7 +65,10 @@ sealed class ShapeBorderMix<T extends ShapeBorder> extends Mix<T> {
   }
 }
 
-/// Base class for borders that extend OutlinedBorder and have a side property.
+/// Base class for outlined shape borders with border side styling.
+///
+/// Provides common border side functionality for outlined border types like
+/// rounded rectangles, circles, and other outlined shapes.
 @immutable
 abstract class OutlinedBorderMix<T extends OutlinedBorder>
     extends ShapeBorderMix<T> {
@@ -69,6 +77,7 @@ abstract class OutlinedBorderMix<T extends OutlinedBorder>
   const OutlinedBorderMix({MixProp<BorderSide>? side}) : $side = side;
 }
 
+/// Mix-compatible representation of Flutter's [RoundedRectangleBorder] with customizable radius and border side.
 final class RoundedRectangleBorderMix
     extends OutlinedBorderMix<RoundedRectangleBorder> {
   final MixProp<BorderRadiusGeometry>? $borderRadius;
@@ -116,6 +125,7 @@ final class RoundedRectangleBorderMix
   List<Object?> get props => [$borderRadius, $side];
 }
 
+/// Mix-compatible representation of Flutter's [BeveledRectangleBorder] with beveled corners.
 final class BeveledRectangleBorderMix
     extends OutlinedBorderMix<BeveledRectangleBorder> {
   final MixProp<BorderRadiusGeometry>? $borderRadius;
@@ -164,6 +174,7 @@ final class BeveledRectangleBorderMix
   List<Object?> get props => [$borderRadius, $side];
 }
 
+/// Mix-compatible representation of Flutter's [ContinuousRectangleBorder] with smooth curved corners.
 final class ContinuousRectangleBorderMix
     extends OutlinedBorderMix<ContinuousRectangleBorder> {
   final MixProp<BorderRadiusGeometry>? $borderRadius;
@@ -216,6 +227,7 @@ final class ContinuousRectangleBorderMix
   List<Object?> get props => [$borderRadius, $side];
 }
 
+/// Mix-compatible representation of Flutter's [CircleBorder] with configurable eccentricity.
 final class CircleBorderMix extends OutlinedBorderMix<CircleBorder> {
   final Prop<double>? $eccentricity;
 
@@ -255,6 +267,7 @@ final class CircleBorderMix extends OutlinedBorderMix<CircleBorder> {
   List<Object?> get props => [$side, $eccentricity];
 }
 
+/// Mix-compatible representation of Flutter's [StarBorder] with customizable star properties.
 final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
   final Prop<double>? $points;
   final Prop<double>? $innerRadiusRatio;
@@ -307,30 +320,37 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
        $rotation = rotation,
        $squash = squash;
 
+  /// Creates a star border with the specified number of points.
   factory StarBorderMix.points(double value) {
     return StarBorderMix.only(points: value);
   }
 
+  /// Creates a star border with the specified inner radius ratio.
   factory StarBorderMix.innerRadiusRatio(double value) {
     return StarBorderMix.only(innerRadiusRatio: value);
   }
 
+  /// Creates a star border with the specified point rounding.
   factory StarBorderMix.pointRounding(double value) {
     return StarBorderMix.only(pointRounding: value);
   }
 
+  /// Creates a star border with the specified valley rounding.
   factory StarBorderMix.valleyRounding(double value) {
     return StarBorderMix.only(valleyRounding: value);
   }
 
+  /// Creates a star border with the specified rotation.
   factory StarBorderMix.rotation(double value) {
     return StarBorderMix.only(rotation: value);
   }
 
+  /// Creates a star border with the specified squash factor.
   factory StarBorderMix.squash(double value) {
     return StarBorderMix.only(squash: value);
   }
 
+  /// Creates a star border with the specified border side.
   factory StarBorderMix.side(BorderSideMix value) {
     return StarBorderMix.only(side: value);
   }
@@ -339,44 +359,37 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
     return border != null ? StarBorderMix.value(border) : null;
   }
 
-  /// Creates a new [StarBorderMix] with the provided points,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified number of points.
   StarBorderMix points(double value) {
     return mergeShapeBorder(StarBorderMix.only(points: value));
   }
 
-  /// Creates a new [StarBorderMix] with the provided innerRadiusRatio,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified inner radius ratio.
   StarBorderMix innerRadiusRatio(double value) {
     return mergeShapeBorder(StarBorderMix.only(innerRadiusRatio: value));
   }
 
-  /// Creates a new [StarBorderMix] with the provided pointRounding,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified point rounding.
   StarBorderMix pointRounding(double value) {
     return mergeShapeBorder(StarBorderMix.only(pointRounding: value));
   }
 
-  /// Creates a new [StarBorderMix] with the provided valleyRounding,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified valley rounding.
   StarBorderMix valleyRounding(double value) {
     return mergeShapeBorder(StarBorderMix.only(valleyRounding: value));
   }
 
-  /// Creates a new [StarBorderMix] with the provided rotation,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified rotation.
   StarBorderMix rotation(double value) {
     return mergeShapeBorder(StarBorderMix.only(rotation: value));
   }
 
-  /// Creates a new [StarBorderMix] with the provided squash,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified squash factor.
   StarBorderMix squash(double value) {
     return mergeShapeBorder(StarBorderMix.only(squash: value));
   }
 
-  /// Creates a new [StarBorderMix] with the provided side,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified border side.
   StarBorderMix side(BorderSideMix value) {
     return mergeShapeBorder(StarBorderMix.only(side: value));
   }
@@ -422,6 +435,7 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
   ];
 }
 
+/// Mix-compatible representation of Flutter's [LinearBorder] with configurable edge styling.
 final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
   final MixProp<LinearBorderEdge>? $start;
   final MixProp<LinearBorderEdge>? $end;
@@ -461,22 +475,27 @@ final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
         bottom: LinearBorderEdgeMix.maybeValue(border.bottom),
       );
 
+  /// Creates a linear border with the specified start edge.
   factory LinearBorderMix.start(LinearBorderEdgeMix value) {
     return LinearBorderMix.only(start: value);
   }
 
+  /// Creates a linear border with the specified end edge.
   factory LinearBorderMix.end(LinearBorderEdgeMix value) {
     return LinearBorderMix.only(end: value);
   }
 
+  /// Creates a linear border with the specified top edge.
   factory LinearBorderMix.top(LinearBorderEdgeMix value) {
     return LinearBorderMix.only(top: value);
   }
 
+  /// Creates a linear border with the specified bottom edge.
   factory LinearBorderMix.bottom(LinearBorderEdgeMix value) {
     return LinearBorderMix.only(bottom: value);
   }
 
+  /// Creates a linear border with the specified border side.
   factory LinearBorderMix.side(BorderSideMix value) {
     return LinearBorderMix.only(side: value);
   }
@@ -485,32 +504,27 @@ final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
     return border != null ? LinearBorderMix.value(border) : null;
   }
 
-  /// Creates a new [LinearBorderMix] with the provided start,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified start edge.
   LinearBorderMix start(LinearBorderEdgeMix value) {
     return mergeShapeBorder(LinearBorderMix.only(start: value));
   }
 
-  /// Creates a new [LinearBorderMix] with the provided end,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified end edge.
   LinearBorderMix end(LinearBorderEdgeMix value) {
     return mergeShapeBorder(LinearBorderMix.only(end: value));
   }
 
-  /// Creates a new [LinearBorderMix] with the provided top,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified top edge.
   LinearBorderMix top(LinearBorderEdgeMix value) {
     return mergeShapeBorder(LinearBorderMix.only(top: value));
   }
 
-  /// Creates a new [LinearBorderMix] with the provided bottom,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified bottom edge.
   LinearBorderMix bottom(LinearBorderEdgeMix value) {
     return mergeShapeBorder(LinearBorderMix.only(bottom: value));
   }
 
-  /// Creates a new [LinearBorderMix] with the provided side,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified border side.
   LinearBorderMix side(BorderSideMix value) {
     return mergeShapeBorder(LinearBorderMix.only(side: value));
   }
@@ -541,6 +555,7 @@ final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
   List<Object?> get props => [$side, $start, $end, $top, $bottom];
 }
 
+/// Mix-compatible representation of [LinearBorderEdge] with size and alignment properties.
 final class LinearBorderEdgeMix extends Mix<LinearBorderEdge> {
   final Prop<double>? $size;
   final Prop<double>? $alignment;
@@ -553,10 +568,12 @@ final class LinearBorderEdgeMix extends Mix<LinearBorderEdge> {
     : $size = size,
       $alignment = alignment;
 
+  /// Creates a linear border edge with the specified size.
   factory LinearBorderEdgeMix.size(double value) {
     return LinearBorderEdgeMix.only(size: value);
   }
 
+  /// Creates a linear border edge with the specified alignment.
   factory LinearBorderEdgeMix.alignment(double value) {
     return LinearBorderEdgeMix.only(alignment: value);
   }
@@ -565,14 +582,12 @@ final class LinearBorderEdgeMix extends Mix<LinearBorderEdge> {
     return edge != null ? LinearBorderEdgeMix.value(edge) : null;
   }
 
-  /// Creates a new [LinearBorderEdgeMix] with the provided size,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified size.
   LinearBorderEdgeMix size(double value) {
     return merge(LinearBorderEdgeMix.only(size: value));
   }
 
-  /// Creates a new [LinearBorderEdgeMix] with the provided alignment,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified alignment.
   LinearBorderEdgeMix alignment(double value) {
     return merge(LinearBorderEdgeMix.only(alignment: value));
   }
@@ -599,6 +614,7 @@ final class LinearBorderEdgeMix extends Mix<LinearBorderEdge> {
   List<Object?> get props => [$size, $alignment];
 }
 
+/// Mix-compatible representation of Flutter's [StadiumBorder] with rounded stadium shape.
 final class StadiumBorderMix extends OutlinedBorderMix<StadiumBorder> {
   StadiumBorderMix.only({BorderSideMix? side})
     : this(side: MixProp.maybe(side));
@@ -608,6 +624,7 @@ final class StadiumBorderMix extends OutlinedBorderMix<StadiumBorder> {
   StadiumBorderMix.value(StadiumBorder border)
     : this.only(side: BorderSideMix.maybeValue(border.side));
 
+  /// Creates a stadium border with the specified border side.
   factory StadiumBorderMix.side(BorderSideMix value) {
     return StadiumBorderMix.only(side: value);
   }
@@ -616,8 +633,7 @@ final class StadiumBorderMix extends OutlinedBorderMix<StadiumBorder> {
     return border != null ? StadiumBorderMix.value(border) : null;
   }
 
-  /// Creates a new [StadiumBorderMix] with the provided side,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified border side.
   StadiumBorderMix side(BorderSideMix value) {
     return mergeShapeBorder(StadiumBorderMix.only(side: value));
   }

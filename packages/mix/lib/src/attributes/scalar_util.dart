@@ -6,46 +6,31 @@ import 'dart:typed_data';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-/// {@template vertical_direction_utility}
-/// A utility class for creating [StyleElement] instances from [VerticalDirection] values.
-///
-/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
-/// from predefined [VerticalDirection] values.
-/// {@endtemplate}
+/// Utility for creating [VerticalDirection] values with predefined options.
 final class VerticalDirectionUtility<T extends SpecStyle<Object?>>
     extends PropUtility<T, VerticalDirection> {
   const VerticalDirectionUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with [VerticalDirection.up] value.
+  /// Creates a style with [VerticalDirection.up] value.
   T up() => call(VerticalDirection.up);
 
-  /// Creates a [StyleElement] instance with [VerticalDirection.down] value.
+  /// Creates a style with [VerticalDirection.down] value.
   T down() => call(VerticalDirection.down);
 }
 
-/// {@template border_style_utility}
-/// A utility class for creating [StyleElement] instances from [BorderStyle] values.
-///
-/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
-/// from predefined [BorderStyle] values.
-/// {@endtemplate}
+/// Utility for creating [BorderStyle] values with predefined options.
 final class BorderStyleUtility<T extends SpecStyle<Object?>>
     extends PropUtility<T, BorderStyle> {
   const BorderStyleUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with [BorderStyle.none] value.
+  /// Creates a style with [BorderStyle.none] value.
   T none() => call(BorderStyle.none);
 
-  /// Creates a [StyleElement] instance with [BorderStyle.solid] value.
+  /// Creates a style with [BorderStyle.solid] value.
   T solid() => call(BorderStyle.solid);
 }
 
-/// {@template clip_utility}
-/// A utility class for creating [StyleElement] instances from [Clip] values.
-///
-/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
-/// from predefined [Clip] values.
-/// {@endtemplate}
+/// Utility for creating [Clip] values with predefined options.
 final class ClipUtility<T extends SpecStyle<Object?>>
     extends PropUtility<T, Clip> {
   const ClipUtility(super.builder);
@@ -63,12 +48,7 @@ final class ClipUtility<T extends SpecStyle<Object?>>
   T antiAliasWithSaveLayer() => call(Clip.antiAliasWithSaveLayer);
 }
 
-/// {@template axis_utility}
-/// A utility class for creating [StyleElement] instances from [Axis] values.
-///
-/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
-/// from predefined [Axis] values.
-/// {@endtemplate}
+/// Utility for creating [Axis] values with predefined options.
 final class AxisUtility<T extends SpecStyle<Object?>>
     extends PropUtility<T, Axis> {
   const AxisUtility(super.builder);
@@ -626,6 +606,7 @@ class TableCellVerticalAlignmentUtility<T extends SpecStyle<Object?>>
   T intrinsicHeight() => call(TableCellVerticalAlignment.intrinsicHeight);
 }
 
+/// Utility for creating [AlignmentGeometry] values with predefined alignments.
 final class AlignmentUtility<S extends SpecStyle<Object?>>
     extends PropUtility<S, AlignmentGeometry> {
   const AlignmentUtility(super.builder);
@@ -673,12 +654,15 @@ final class AlignmentUtility<S extends SpecStyle<Object?>>
   S bottomRight() => call(Alignment.bottomRight);
 }
 
+/// Utility for creating [AlignmentGeometry] values with both absolute and directional alignments.
 final class AlignmentGeometryUtility<S extends SpecStyle<Object?>>
     extends AlignmentUtility<S> {
+  /// Provides access to directional alignment utilities.
   late final directional = AlignmentDirectionalUtility<S>(builder);
   AlignmentGeometryUtility(super.builder);
 }
 
+/// Utility for creating [AlignmentDirectional] values that respect text direction.
 final class AlignmentDirectionalUtility<S extends SpecStyle<Object?>>
     extends PropUtility<S, AlignmentDirectional> {
   const AlignmentDirectionalUtility(super.builder);
@@ -715,6 +699,7 @@ final class AlignmentDirectionalUtility<S extends SpecStyle<Object?>>
   S bottomEnd() => call(AlignmentDirectional.bottomEnd);
 }
 
+/// Utility for creating [FontFeature] values with predefined OpenType features.
 final class FontFeatureUtility<T extends SpecStyle<Object?>>
     extends PropUtility<T, FontFeature> {
   const FontFeatureUtility(super.builder);
@@ -804,6 +789,7 @@ final class FontFeatureUtility<T extends SpecStyle<Object?>>
   T slashedZero() => call(const FontFeature.slashedZero());
 }
 
+/// Utility for creating [Duration] values with time unit methods.
 final class DurationUtility<T extends SpecStyle<Object?>>
     extends PropUtility<T, Duration> {
   const DurationUtility(super.builder);
@@ -822,11 +808,13 @@ final class DurationUtility<T extends SpecStyle<Object?>>
   T zero() => call(Duration.zero);
 }
 
+/// Utility for creating font size values as doubles.
 final class FontSizeUtility<T extends SpecStyle<Object?>>
     extends PropUtility<T, double> {
   const FontSizeUtility(super.builder);
 }
 
+/// Utility for creating [FontWeight] values with predefined weights.
 final class FontWeightUtility<T extends SpecStyle<Object?>>
     extends PropUtility<T, FontWeight> {
   const FontWeightUtility(super.builder);
@@ -865,6 +853,7 @@ final class FontWeightUtility<T extends SpecStyle<Object?>>
   T bold() => call(FontWeight.bold);
 }
 
+/// Utility for creating [TextDecoration] values with predefined decorations.
 final class TextDecorationUtility<T extends SpecStyle<Object?>>
     extends PropUtility<T, TextDecoration> {
   const TextDecorationUtility(super.builder);
@@ -887,6 +876,7 @@ final class TextDecorationUtility<T extends SpecStyle<Object?>>
   }
 }
 
+/// Utility for creating [Curve] values with predefined animation curves.
 final class CurveUtility<T extends SpecStyle<Object?>>
     extends PropUtility<T, Curve> {
   const CurveUtility(super.builder);
@@ -1029,6 +1019,7 @@ final class CurveUtility<T extends SpecStyle<Object?>>
   T elasticInOut() => call(Curves.elasticInOut);
 }
 
+/// Utility for creating [Offset] values with predefined positions.
 final class OffsetUtility<T extends SpecStyle<Object?>>
     extends PropUtility<T, Offset> {
   const OffsetUtility(super.builder);
@@ -1045,6 +1036,7 @@ final class OffsetUtility<T extends SpecStyle<Object?>>
   }
 }
 
+/// Utility for creating [Radius] values with predefined radius shapes.
 final class RadiusUtility<T extends SpecStyle<Object?>>
     extends PropUtility<T, Radius> {
   const RadiusUtility(super.builder);
@@ -1059,6 +1051,7 @@ final class RadiusUtility<T extends SpecStyle<Object?>>
   T elliptical(double x, double y) => call(Radius.elliptical(x, y));
 }
 
+/// Utility for creating [Rect] values with predefined rectangles and constructors.
 final class RectUtility<T extends SpecStyle<Object?>>
     extends PropUtility<T, Rect> {
   const RectUtility(super.builder);
@@ -1097,16 +1090,19 @@ final class RectUtility<T extends SpecStyle<Object?>>
   T fromPoints(Offset a, Offset b) => call(Rect.fromPoints(a, b));
 }
 
+/// Utility for creating [Paint] values for custom drawing operations.
 final class PaintUtility<T extends SpecStyle<Object?>>
     extends PropUtility<T, Paint> {
   const PaintUtility(super.builder);
 }
 
+/// Utility for creating [Locale] values for internationalization.
 final class LocaleUtility<T extends SpecStyle<Object?>>
     extends PropUtility<T, Locale> {
   const LocaleUtility(super.builder);
 }
 
+/// Utility for creating [ImageProvider] values with different image sources.
 final class ImageProviderUtility<T extends SpecStyle<Object?>>
     extends PropUtility<T, ImageProvider> {
   const ImageProviderUtility(super.builder);
@@ -1119,6 +1115,7 @@ final class ImageProviderUtility<T extends SpecStyle<Object?>>
   T memory(Uint8List bytes) => call(MemoryImage(bytes));
 }
 
+/// Utility for creating [GradientTransform] values for gradient transformations.
 final class GradientTransformUtility<T extends SpecStyle<Object?>>
     extends PropUtility<T, GradientTransform> {
   const GradientTransformUtility(super.builder);
@@ -1127,6 +1124,7 @@ final class GradientTransformUtility<T extends SpecStyle<Object?>>
   T rotate(double radians) => call(GradientRotation(radians));
 }
 
+/// Utility for creating [Matrix4] values for 3D transformations.
 final class Matrix4Utility<T extends SpecStyle<Object?>>
     extends PropUtility<T, Matrix4> {
   const Matrix4Utility(super.builder);
@@ -1174,6 +1172,7 @@ final class Matrix4Utility<T extends SpecStyle<Object?>>
   }
 }
 
+/// Utility for creating font family strings with various constructors.
 final class FontFamilyUtility<T extends SpecStyle<Object?>>
     extends PropUtility<T, String> {
   const FontFamilyUtility(super.builder);
@@ -1192,6 +1191,7 @@ final class FontFamilyUtility<T extends SpecStyle<Object?>>
   }
 }
 
+/// Utility for creating [TextScaler] values for text scaling.
 final class TextScalerUtility<T extends SpecStyle<Object?>>
     extends PropUtility<T, TextScaler> {
   const TextScalerUtility(super.builder);
@@ -1203,11 +1203,13 @@ final class TextScalerUtility<T extends SpecStyle<Object?>>
   T linear(double textScaleFactor) => call(TextScaler.linear(textScaleFactor));
 }
 
+/// Utility for creating [TableColumnWidth] values for table column sizing.
 final class TableColumnWidthUtility<T extends SpecStyle<Object?>>
     extends PropUtility<T, TableColumnWidth> {
   const TableColumnWidthUtility(super.builder);
 }
 
+/// Utility for creating [TableBorder] values with predefined border styles.
 class TableBorderUtility<T extends SpecStyle<Object?>>
     extends PropUtility<T, TableBorder> {
   const TableBorderUtility(super.builder);
@@ -1245,6 +1247,7 @@ class TableBorderUtility<T extends SpecStyle<Object?>>
   }
 }
 
+/// Utility for creating stroke alignment values for border positioning.
 final class StrokeAlignUtility<T extends SpecStyle<Object?>>
     extends PropUtility<T, double> {
   const StrokeAlignUtility(super.builder);
@@ -1254,6 +1257,7 @@ final class StrokeAlignUtility<T extends SpecStyle<Object?>>
   T outside() => call(1);
 }
 
+/// Utility for creating string values.
 final class StringUtility<T extends SpecStyle<Object?>>
     extends PropUtility<T, String> {
   const StringUtility(super.builder);

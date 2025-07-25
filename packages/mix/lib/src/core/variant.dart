@@ -5,15 +5,6 @@ import '../core/widget_state/widget_state_controller.dart';
 import '../internal/deep_collection_equality.dart';
 import 'style.dart';
 
-/// Priority levels for variant application
-enum VariantPriority {
-  normal(0),
-  high(1);
-
-  const VariantPriority(this.value);
-  final int value;
-}
-
 /// Sealed base class for all variant types in the Mix framework.
 ///
 /// Variants are used to conditionally apply styling based on either:
@@ -230,7 +221,7 @@ final class MultiVariant extends ContextVariant {
       case MultiVariantOperator.and:
         return conditions.every((e) => e);
       case MultiVariantOperator.not:
-        return !conditions.first;
+        return conditions.isNotEmpty ? !conditions.first : false;
     }
   }
 

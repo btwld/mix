@@ -5,6 +5,10 @@ import '../material/material_theme.dart';
 import '../tokens/mix_token.dart';
 import '../tokens/value_resolver.dart';
 
+/// Inherited widget that provides Mix theme data and token resolution to its descendants.
+///
+/// The [MixScope] is the root of the Mix theming system, providing access to design tokens,
+/// default modifier ordering, and other theme-related configuration.
 class MixScope extends InheritedWidget {
   const MixScope({required this.data, super.key, required super.child});
 
@@ -36,6 +40,10 @@ class MixScope extends InheritedWidget {
 
 // Deprecated typedefs moved to src/core/deprecated.dart
 
+/// Data container for Mix theme configuration.
+///
+/// Contains design tokens, default modifier ordering, and other theme-related settings
+/// that are provided throughout the widget tree via [MixScope].
 @immutable
 class MixScopeData {
   final List<Type>? defaultOrderOfModifiers;

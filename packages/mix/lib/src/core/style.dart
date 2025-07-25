@@ -12,6 +12,9 @@ sealed class StyleElement {
   const StyleElement();
 }
 
+/// Base class for style containers that can be resolved to specifications.
+///
+/// Provides variant support, modifiers, and animation configuration for styled elements.
 abstract class SpecStyle<S extends Spec<S>> extends Mixable<SpecStyle<S>>
     with EqualityMixin, Resolvable<S>
     implements StyleElement {

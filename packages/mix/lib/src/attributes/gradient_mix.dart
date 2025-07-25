@@ -31,18 +31,24 @@ sealed class GradientMix<T extends Gradient> extends Mix<T>
     };
   }
 
+  /// Returns the provided radial gradient (identity function for consistency).
   static RadialGradientMix radial(RadialGradientMix value) {
     return value;
   }
 
+  /// Returns the provided linear gradient (identity function for consistency).
   static LinearGradientMix linear(LinearGradientMix value) {
     return value;
   }
 
+  /// Returns the provided sweep gradient (identity function for consistency).
   static SweepGradientMix sweep(SweepGradientMix value) {
     return value;
   }
 
+  /// Creates the appropriate gradient mix type from a nullable Flutter [Gradient].
+  ///
+  /// Returns null if the input is null.
   static GradientMix<T>? maybeValue<T extends Gradient>(T? value) {
     return value != null ? GradientMix.value(value) : null;
   }
@@ -104,14 +110,7 @@ final class LinearGradientMix extends GradientMix<LinearGradient> {
        $end = end,
        $tileMode = tileMode;
 
-  /// Constructor that accepts a [LinearGradient] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [LinearGradient] instances to [LinearGradientMix].
-  ///
-  /// ```dart
-  /// const gradient = LinearGradient(colors: [Colors.red, Colors.blue]);
-  /// final dto = LinearGradientMix.value(gradient);
-  /// ```
+  /// Creates a [LinearGradientMix] from an existing [LinearGradient].
   LinearGradientMix.value(LinearGradient gradient)
     : this.only(
         begin: gradient.begin,
@@ -122,74 +121,69 @@ final class LinearGradientMix extends GradientMix<LinearGradient> {
         stops: gradient.stops,
       );
 
-  /// Constructor that accepts a nullable [LinearGradient] value and extracts its properties.
-  ///
-  /// Returns null if the input is null, otherwise uses [LinearGradientMix.value].
-  ///
-  /// ```dart
-  /// const LinearGradient? gradient = LinearGradient(colors: [Colors.red, Colors.blue]);
-  /// final dto = LinearGradientMix.maybeValue(gradient); // Returns LinearGradientMix or null
-  /// ```
+  /// Creates a linear gradient with the specified start alignment.
   factory LinearGradientMix.begin(AlignmentGeometry value) {
     return LinearGradientMix.only(begin: value);
   }
 
+  /// Creates a linear gradient with the specified end alignment.
   factory LinearGradientMix.end(AlignmentGeometry value) {
     return LinearGradientMix.only(end: value);
   }
 
+  /// Creates a linear gradient with the specified tile mode.
   factory LinearGradientMix.tileMode(TileMode value) {
     return LinearGradientMix.only(tileMode: value);
   }
 
+  /// Creates a linear gradient with the specified transform.
   factory LinearGradientMix.transform(GradientTransform value) {
     return LinearGradientMix.only(transform: value);
   }
 
+  /// Creates a linear gradient with the specified colors.
   factory LinearGradientMix.colors(List<Color> value) {
     return LinearGradientMix.only(colors: value);
   }
 
+  /// Creates a linear gradient with the specified color stops.
   factory LinearGradientMix.stops(List<double> value) {
     return LinearGradientMix.only(stops: value);
   }
 
+  /// Creates a [LinearGradientMix] from a nullable [LinearGradient].
+  ///
+  /// Returns null if the input is null.
   static LinearGradientMix? maybeValue(LinearGradient? gradient) {
     return gradient != null ? LinearGradientMix.value(gradient) : null;
   }
 
-  /// Creates a new [LinearGradientMix] with the provided begin,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified start alignment.
   LinearGradientMix begin(AlignmentGeometry value) {
     return merge(LinearGradientMix.only(begin: value));
   }
 
-  /// Creates a new [LinearGradientMix] with the provided end,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified end alignment.
   LinearGradientMix end(AlignmentGeometry value) {
     return merge(LinearGradientMix.only(end: value));
   }
 
-  /// Creates a new [LinearGradientMix] with the provided tileMode,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified tile mode.
   LinearGradientMix tileMode(TileMode value) {
     return merge(LinearGradientMix.only(tileMode: value));
   }
 
-  /// Creates a new [LinearGradientMix] with the provided transform,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified transform.
   LinearGradientMix transform(GradientTransform value) {
     return merge(LinearGradientMix.only(transform: value));
   }
 
-  /// Creates a new [LinearGradientMix] with the provided colors,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified colors.
   LinearGradientMix colors(List<Color> value) {
     return merge(LinearGradientMix.only(colors: value));
   }
 
-  /// Creates a new [LinearGradientMix] with the provided stops,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified color stops.
   LinearGradientMix stops(List<double> value) {
     return merge(LinearGradientMix.only(stops: value));
   }
@@ -280,14 +274,7 @@ final class RadialGradientMix extends GradientMix<RadialGradient> {
        $focal = focal,
        $focalRadius = focalRadius;
 
-  /// Constructor that accepts a [RadialGradient] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [RadialGradient] instances to [RadialGradientMix].
-  ///
-  /// ```dart
-  /// const gradient = RadialGradient(colors: [Colors.red, Colors.blue]);
-  /// final dto = RadialGradientMix.value(gradient);
-  /// ```
+  /// Creates a [RadialGradientMix] from an existing [RadialGradient].
   RadialGradientMix.value(RadialGradient gradient)
     : this.only(
         center: gradient.center,
@@ -300,94 +287,89 @@ final class RadialGradientMix extends GradientMix<RadialGradient> {
         stops: gradient.stops,
       );
 
-  /// Constructor that accepts a nullable [RadialGradient] value and extracts its properties.
-  ///
-  /// Returns null if the input is null, otherwise uses [RadialGradientMix.value].
-  ///
-  /// ```dart
-  /// const RadialGradient? gradient = RadialGradient(colors: [Colors.red, Colors.blue]);
-  /// final dto = RadialGradientMix.maybeValue(gradient); // Returns RadialGradientMix or null
-  /// ```
+  /// Creates a radial gradient with the specified center alignment.
   factory RadialGradientMix.center(AlignmentGeometry value) {
     return RadialGradientMix.only(center: value);
   }
 
+  /// Creates a radial gradient with the specified radius.
   factory RadialGradientMix.radius(double value) {
     return RadialGradientMix.only(radius: value);
   }
 
+  /// Creates a radial gradient with the specified tile mode.
   factory RadialGradientMix.tileMode(TileMode value) {
     return RadialGradientMix.only(tileMode: value);
   }
 
+  /// Creates a radial gradient with the specified focal point.
   factory RadialGradientMix.focal(AlignmentGeometry value) {
     return RadialGradientMix.only(focal: value);
   }
 
+  /// Creates a radial gradient with the specified focal radius.
   factory RadialGradientMix.focalRadius(double value) {
     return RadialGradientMix.only(focalRadius: value);
   }
 
+  /// Creates a radial gradient with the specified transform.
   factory RadialGradientMix.transform(GradientTransform value) {
     return RadialGradientMix.only(transform: value);
   }
 
+  /// Creates a radial gradient with the specified colors.
   factory RadialGradientMix.colors(List<Color> value) {
     return RadialGradientMix.only(colors: value);
   }
 
+  /// Creates a radial gradient with the specified color stops.
   factory RadialGradientMix.stops(List<double> value) {
     return RadialGradientMix.only(stops: value);
   }
 
+  /// Creates a [RadialGradientMix] from a nullable [RadialGradient].
+  ///
+  /// Returns null if the input is null.
   static RadialGradientMix? maybeValue(RadialGradient? gradient) {
     return gradient != null ? RadialGradientMix.value(gradient) : null;
   }
 
-  /// Creates a new [RadialGradientMix] with the provided center,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified center alignment.
   RadialGradientMix center(AlignmentGeometry value) {
     return merge(RadialGradientMix.only(center: value));
   }
 
-  /// Creates a new [RadialGradientMix] with the provided radius,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified radius.
   RadialGradientMix radius(double value) {
     return merge(RadialGradientMix.only(radius: value));
   }
 
-  /// Creates a new [RadialGradientMix] with the provided tileMode,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified tile mode.
   RadialGradientMix tileMode(TileMode value) {
     return merge(RadialGradientMix.only(tileMode: value));
   }
 
-  /// Creates a new [RadialGradientMix] with the provided focal,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified focal point.
   RadialGradientMix focal(AlignmentGeometry value) {
     return merge(RadialGradientMix.only(focal: value));
   }
 
-  /// Creates a new [RadialGradientMix] with the provided focalRadius,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified focal radius.
   RadialGradientMix focalRadius(double value) {
     return merge(RadialGradientMix.only(focalRadius: value));
   }
 
-  /// Creates a new [RadialGradientMix] with the provided transform,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified transform.
   RadialGradientMix transform(GradientTransform value) {
     return merge(RadialGradientMix.only(transform: value));
   }
 
-  /// Creates a new [RadialGradientMix] with the provided colors,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified colors.
   RadialGradientMix colors(List<Color> value) {
     return merge(RadialGradientMix.only(colors: value));
   }
 
-  /// Creates a new [RadialGradientMix] with the provided stops,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified color stops.
   RadialGradientMix stops(List<double> value) {
     return merge(RadialGradientMix.only(stops: value));
   }
@@ -481,14 +463,7 @@ final class SweepGradientMix extends GradientMix<SweepGradient> {
        $endAngle = endAngle,
        $tileMode = tileMode;
 
-  /// Constructor that accepts a [SweepGradient] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [SweepGradient] instances to [SweepGradientMix].
-  ///
-  /// ```dart
-  /// const gradient = SweepGradient(colors: [Colors.red, Colors.blue]);
-  /// final dto = SweepGradientMix.value(gradient);
-  /// ```
+  /// Creates a [SweepGradientMix] from an existing [SweepGradient].
   SweepGradientMix.value(SweepGradient gradient)
     : this.only(
         center: gradient.center,
@@ -500,84 +475,79 @@ final class SweepGradientMix extends GradientMix<SweepGradient> {
         stops: gradient.stops,
       );
 
-  /// Constructor that accepts a nullable [SweepGradient] value and extracts its properties.
-  ///
-  /// Returns null if the input is null, otherwise uses [SweepGradientMix.value].
-  ///
-  /// ```dart
-  /// const SweepGradient? gradient = SweepGradient(colors: [Colors.red, Colors.blue]);
-  /// final dto = SweepGradientMix.maybeValue(gradient); // Returns SweepGradientMix or null
-  /// ```
+  /// Creates a sweep gradient with the specified center alignment.
   factory SweepGradientMix.center(AlignmentGeometry value) {
     return SweepGradientMix.only(center: value);
   }
 
+  /// Creates a sweep gradient with the specified start angle.
   factory SweepGradientMix.startAngle(double value) {
     return SweepGradientMix.only(startAngle: value);
   }
 
+  /// Creates a sweep gradient with the specified end angle.
   factory SweepGradientMix.endAngle(double value) {
     return SweepGradientMix.only(endAngle: value);
   }
 
+  /// Creates a sweep gradient with the specified tile mode.
   factory SweepGradientMix.tileMode(TileMode value) {
     return SweepGradientMix.only(tileMode: value);
   }
 
+  /// Creates a sweep gradient with the specified transform.
   factory SweepGradientMix.transform(GradientTransform value) {
     return SweepGradientMix.only(transform: value);
   }
 
+  /// Creates a sweep gradient with the specified colors.
   factory SweepGradientMix.colors(List<Color> value) {
     return SweepGradientMix.only(colors: value);
   }
 
+  /// Creates a sweep gradient with the specified color stops.
   factory SweepGradientMix.stops(List<double> value) {
     return SweepGradientMix.only(stops: value);
   }
 
+  /// Creates a [SweepGradientMix] from a nullable [SweepGradient].
+  ///
+  /// Returns null if the input is null.
   static SweepGradientMix? maybeValue(SweepGradient? gradient) {
     return gradient != null ? SweepGradientMix.value(gradient) : null;
   }
 
-  /// Creates a new [SweepGradientMix] with the provided center,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified center alignment.
   SweepGradientMix center(AlignmentGeometry value) {
     return merge(SweepGradientMix.only(center: value));
   }
 
-  /// Creates a new [SweepGradientMix] with the provided startAngle,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified start angle.
   SweepGradientMix startAngle(double value) {
     return merge(SweepGradientMix.only(startAngle: value));
   }
 
-  /// Creates a new [SweepGradientMix] with the provided endAngle,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified end angle.
   SweepGradientMix endAngle(double value) {
     return merge(SweepGradientMix.only(endAngle: value));
   }
 
-  /// Creates a new [SweepGradientMix] with the provided tileMode,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified tile mode.
   SweepGradientMix tileMode(TileMode value) {
     return merge(SweepGradientMix.only(tileMode: value));
   }
 
-  /// Creates a new [SweepGradientMix] with the provided transform,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified transform.
   SweepGradientMix transform(GradientTransform value) {
     return merge(SweepGradientMix.only(transform: value));
   }
 
-  /// Creates a new [SweepGradientMix] with the provided colors,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified colors.
   SweepGradientMix colors(List<Color> value) {
     return merge(SweepGradientMix.only(colors: value));
   }
 
-  /// Creates a new [SweepGradientMix] with the provided stops,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified color stops.
   SweepGradientMix stops(List<double> value) {
     return merge(SweepGradientMix.only(stops: value));
   }

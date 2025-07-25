@@ -4,6 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
+/// Mix-compatible representation of Flutter's [TextStyle] with comprehensive styling properties.
+///
+/// Provides text styling capabilities including font, color, decoration, spacing, and shadow
+/// properties with resolvable tokens and merging capabilities for flexible text appearance.
 @immutable
 class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
   // Simple properties use MixValue directly
@@ -30,7 +34,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
   final List<Prop<FontFeature>>? fontFeatures;
   final List<Prop<FontVariation>>? fontVariations;
 
-  // Lists of Mix types (DTOs)
+  // Lists of Mix types
   final List<MixProp<Shadow>>? shadows;
 
   TextStyleMix.only({
@@ -103,14 +107,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
     this.fontFamilyFallback,
   });
 
-  /// Constructor that accepts a [TextStyle] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [TextStyle] instances to [TextStyleMix].
-  ///
-  /// ```dart
-  /// const textStyle = TextStyle(color: Colors.blue, fontSize: 16.0);
-  /// final dto = TextStyleMix.value(textStyle);
-  /// ```
+  /// Creates a [TextStyleMix] from an existing [TextStyle].
   TextStyleMix.value(TextStyle textStyle)
     : this.only(
         color: textStyle.color,

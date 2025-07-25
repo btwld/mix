@@ -3,9 +3,10 @@
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-/// Mix-compatible representation of [TextHeightBehavior] for text styling.
+/// Mix-compatible representation of Flutter's [TextHeightBehavior] with token support.
 ///
-/// Configures how text height is applied to the first ascent and last descent.
+/// Configures text height application behavior including ascent, descent, and leading
+/// distribution with resolvable tokens and merging capabilities.
 class TextHeightBehaviorMix extends Mix<TextHeightBehavior> {
   final Prop<bool>? $applyHeightToFirstAscent;
   final Prop<bool>? $applyHeightToLastDescent;
@@ -21,14 +22,7 @@ class TextHeightBehaviorMix extends Mix<TextHeightBehavior> {
          leadingDistribution: Prop.maybe(leadingDistribution),
        );
 
-  /// Constructor that accepts a [TextHeightBehavior] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [TextHeightBehavior] instances to [TextHeightBehaviorMix].
-  ///
-  /// ```dart
-  /// const behavior = TextHeightBehavior(applyHeightToFirstAscent: false);
-  /// final dto = TextHeightBehaviorMix.value(behavior);
-  /// ```
+  /// Creates a [TextHeightBehaviorMix] from an existing [TextHeightBehavior].
   TextHeightBehaviorMix.value(TextHeightBehavior behavior)
     : this.only(
         applyHeightToFirstAscent: behavior.applyHeightToFirstAscent,
@@ -44,58 +38,46 @@ class TextHeightBehaviorMix extends Mix<TextHeightBehavior> {
        $applyHeightToLastDescent = applyHeightToLastDescent,
        $leadingDistribution = leadingDistribution;
 
-  /// Constructor that accepts a nullable [TextHeightBehavior] value and extracts its properties.
-  ///
-  /// Returns null if the input is null, otherwise uses [TextHeightBehaviorMix.value].
-  ///
-  /// ```dart
-  /// const TextHeightBehavior? behavior = TextHeightBehavior(applyHeightToFirstAscent: false);
-  /// final dto = TextHeightBehaviorMix.maybeValue(behavior); // Returns TextHeightBehaviorMix or null
-  /// ```
+  /// Creates a text height behavior with height applied to first ascent enabled or disabled.
   factory TextHeightBehaviorMix.applyHeightToFirstAscent(bool value) {
     return TextHeightBehaviorMix.only(applyHeightToFirstAscent: value);
   }
 
+  /// Creates a text height behavior with height applied to last descent enabled or disabled.
   factory TextHeightBehaviorMix.applyHeightToLastDescent(bool value) {
     return TextHeightBehaviorMix.only(applyHeightToLastDescent: value);
   }
 
+  /// Creates a text height behavior with the specified leading distribution.
   factory TextHeightBehaviorMix.leadingDistribution(
     TextLeadingDistribution value,
   ) {
     return TextHeightBehaviorMix.only(leadingDistribution: value);
   }
 
+  /// Creates a [TextHeightBehaviorMix] from a nullable [TextHeightBehavior].
+  ///
+  /// Returns null if the input is null.
   static TextHeightBehaviorMix? maybeValue(TextHeightBehavior? behavior) {
     return behavior != null ? TextHeightBehaviorMix.value(behavior) : null;
   }
 
-  /// Creates a new [TextHeightBehaviorMix] with the provided applyHeightToFirstAscent,
-  /// merging it with the current instance.
+  /// Returns a copy with height applied to first ascent enabled or disabled.
   TextHeightBehaviorMix applyHeightToFirstAscent(bool value) {
     return merge(TextHeightBehaviorMix.only(applyHeightToFirstAscent: value));
   }
 
-  /// Creates a new [TextHeightBehaviorMix] with the provided applyHeightToLastDescent,
-  /// merging it with the current instance.
+  /// Returns a copy with height applied to last descent enabled or disabled.
   TextHeightBehaviorMix applyHeightToLastDescent(bool value) {
     return merge(TextHeightBehaviorMix.only(applyHeightToLastDescent: value));
   }
 
-  /// Creates a new [TextHeightBehaviorMix] with the provided leadingDistribution,
-  /// merging it with the current instance.
+  /// Returns a copy with the specified leading distribution.
   TextHeightBehaviorMix leadingDistribution(TextLeadingDistribution value) {
     return merge(TextHeightBehaviorMix.only(leadingDistribution: value));
   }
 
-  /// Resolves to [TextHeightBehavior] using the provided [MixContext].
-  ///
-  /// If a property is null in the [MixContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
-  ///
-  /// ```dart
-  /// final textHeightBehavior = TextHeightBehaviorMix(...).resolve(mix);
-  /// ```
+  /// Resolves to [TextHeightBehavior] using the provided [BuildContext].
   @override
   TextHeightBehavior resolve(BuildContext context) {
     return TextHeightBehavior(
@@ -109,14 +91,7 @@ class TextHeightBehaviorMix extends Mix<TextHeightBehavior> {
     );
   }
 
-  /// Merges the properties of this [TextHeightBehaviorMix] with the properties of [other].
-  ///
-  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [TextHeightBehaviorMix] with the properties of [other] taking precedence over
-  /// the corresponding properties of this instance.
-  ///
-  /// Properties from [other] that are null will fall back
-  /// to the values from this instance.
+  /// Merges this text height behavior with another, with other taking precedence.
   @override
   TextHeightBehaviorMix merge(TextHeightBehaviorMix? other) {
     if (other == null) return this;

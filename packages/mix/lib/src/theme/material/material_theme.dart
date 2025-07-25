@@ -1,9 +1,19 @@
+/// Material Design theme integration for Mix framework.
+///
+/// Provides a pre-configured [MixScopeData] that maps Material Design tokens
+/// to Flutter's Material theme values, enabling seamless integration between
+/// Mix styling and Material Design systems.
+
 import '../../internal/internal_extensions.dart';
 import '../mix/mix_theme.dart';
 import 'material_tokens.dart';
 
 const _md = MaterialTokens();
 
+/// Pre-configured Mix scope data that integrates with Material Design theme.
+///
+/// Maps Material Design color and typography tokens to Flutter's theme values,
+/// providing automatic theme integration for Mix-styled widgets.
 final materialMixScope = MixScopeData.fromResolvers(
   tokens: {
     // Color tokens
