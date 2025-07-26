@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/src/core/widget_state/internal/mix_widget_state_builder.dart';
 import 'package:mix/src/core/widget_state/widget_state_controller.dart';
+import 'package:mix/src/core/widget_state/widget_state_provider.dart';
 
 class TrackRebuildWidget<T> extends StatefulWidget {
   final String text;
@@ -150,36 +150,30 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: WidgetStateProvider.fromSet(
+          home: WidgetStateProvider(
             states: controller.value,
             child: Container(),
           ),
         ),
       );
-      final foundModel = WidgetStateProvider.of(
+      final foundStates = WidgetStateProvider.of(
         tester.element(find.byType(Container)),
       );
-      expect(foundModel, isNotNull);
-      expect(foundModel!.disabled, isTrue);
-      expect(foundModel.hovered, isTrue);
-      expect(foundModel.focused, isTrue);
-      expect(foundModel.pressed, isTrue);
-      expect(foundModel.dragged, isTrue);
-      expect(foundModel.selected, isTrue);
-      expect(foundModel.error, isTrue);
+      expect(foundStates, isNotNull);
+      expect(foundStates!.contains(WidgetState.disabled), isTrue);
+      expect(foundStates.contains(WidgetState.hovered), isTrue);
+      expect(foundStates.contains(WidgetState.focused), isTrue);
+      expect(foundStates.contains(WidgetState.pressed), isTrue);
+      expect(foundStates.contains(WidgetState.dragged), isTrue);
+      expect(foundStates.contains(WidgetState.selected), isTrue);
+      expect(foundStates.contains(WidgetState.error), isTrue);
     });
 
     testWidgets('hasStateOf returns if state is set', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: WidgetStateProvider(
-            disabled: true,
-            hovered: false,
-            focused: false,
-            pressed: false,
-            dragged: false,
-            selected: false,
-            error: false,
+            states: {WidgetState.disabled},
             child: Builder(
               builder: (context) {
                 expect(
@@ -200,23 +194,11 @@ void main() {
 
     test('updateShouldNotify returns true if value changed', () {
       final oldModel = WidgetStateProvider(
-        disabled: false,
-        hovered: false,
-        focused: false,
-        pressed: false,
-        dragged: false,
-        selected: false,
-        error: false,
+        states: {},
         child: Container(),
       );
       final newModel = WidgetStateProvider(
-        disabled: true,
-        hovered: false,
-        focused: false,
-        pressed: false,
-        dragged: false,
-        selected: false,
-        error: false,
+        states: {WidgetState.disabled},
         child: Container(),
       );
 
@@ -225,32 +207,20 @@ void main() {
 
     test('updateShouldNotifyDependent returns if a dependency changed', () {
       final oldModel = WidgetStateProvider(
-        disabled: false,
-        hovered: false,
-        focused: false,
-        pressed: false,
-        dragged: false,
-        selected: false,
-        error: false,
+        states: {},
         child: Container(),
       );
       final newModel = WidgetStateProvider(
-        disabled: true,
-        hovered: false,
-        focused: false,
-        pressed: false,
-        dragged: false,
-        selected: false,
-        error: false,
+        states: {WidgetState.disabled},
         child: Container(),
       );
 
       expect(
-        newModel.updateShouldNotifyDependent(oldModel, {WidgetState.disabled}),
+        newModel.updateShouldNotifyDependent(oldModel, {WidgetState.disabled.name}),
         isTrue,
       );
       expect(
-        newModel.updateShouldNotifyDependent(oldModel, {WidgetState.hovered}),
+        newModel.updateShouldNotifyDependent(oldModel, {WidgetState.hovered.name}),
         isFalse,
       );
     });

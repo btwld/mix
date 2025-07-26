@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../core/widget_state/widget_state_controller.dart';
 import '../internal/deep_collection_equality.dart';
 import 'style.dart';
+import 'widget_state/widget_state_provider.dart';
 
 /// Sealed base class for all variant types in the Mix framework.
 ///
@@ -111,7 +111,7 @@ class ContextVariant extends Variant {
   }
 }
 
-class WidgetStateVariant extends ContextVariant {
+final class WidgetStateVariant extends ContextVariant {
   final WidgetState state;
 
   WidgetStateVariant(this.state)

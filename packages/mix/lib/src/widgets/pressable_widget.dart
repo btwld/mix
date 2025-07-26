@@ -2,8 +2,6 @@ import 'package:flutter/widgets.dart';
 
 import '../core/widget_state/internal/gesture_mix_state.dart';
 import '../core/widget_state/internal/interactive_mix_state.dart';
-import '../core/widget_state/internal/mix_widget_state_builder.dart';
-import '../core/widget_state/internal/mouse_region_mix_state.dart';
 import '../core/widget_state/widget_state_controller.dart';
 import '../internal/constants.dart';
 import '../specs/box/box_attribute.dart';
@@ -215,23 +213,16 @@ class PressableWidgetState extends State<Pressable> {
       excludeFromSemantics: widget.excludeFromSemantics,
       hitTestBehavior: widget.hitTestBehavior,
       unpressDelay: widget.unpressDelay,
-      child: InteractiveMixStateWidget(
+      child: MixInteractable(
         enabled: widget.enabled,
-        onFocusChange: widget.onFocusChange,
+        controller: _controller,
         autofocus: widget.autofocus,
         focusNode: widget.focusNode,
-        onKey: widget.onKey,
-        onKeyEvent: widget.onKeyEvent,
-        canRequestFocus: widget.canRequestFocus,
-        mouseCursor: mouseCursor,
-        controller: _controller,
+        onFocusChange: widget.onFocusChange,
         actions: actions,
-        child: MouseRegionMixStateWidget(
-          child: WidgetStateBuilder(
-            controller: _controller,
-            builder: (_) => widget.child,
-          ),
-        ),
+        mouseCursor: mouseCursor,
+        trackMousePosition: false,
+        child: widget.child,
       ),
     );
 
@@ -322,26 +313,19 @@ class _InteractableState extends State<Interactable> {
 
   @override
   Widget build(BuildContext context) {
-    return InteractiveMixStateWidget(
+    return MixInteractable(
       enabled: widget.enabled,
-      onFocusChange: widget.onFocusChange,
+      controller: _controller,
       autofocus: widget.autofocus,
       focusNode: widget.focusNode,
-      onKey: widget.onKey,
+      onFocusChange: widget.onFocusChange,
       onShowFocusHighlight: widget.onShowFocusHighlight,
       onShowHoverHighlight: widget.onShowHoverHighlight,
-      onKeyEvent: widget.onKeyEvent,
-      canRequestFocus: widget.canRequestFocus,
-      mouseCursor: widget.mouseCursor,
       shortcuts: widget.shortcuts,
-      controller: _controller,
       actions: widget.actions,
-      child: MouseRegionMixStateWidget(
-        child: WidgetStateBuilder(
-          controller: _controller,
-          builder: (context) => widget.child,
-        ),
-      ),
+      mouseCursor: widget.mouseCursor,
+      trackMousePosition: false,
+      child: widget.child,
     );
   }
 }

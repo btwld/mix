@@ -644,12 +644,12 @@ class _MockSpecAttribute extends SpecStyle<MockSpec> {
   List<Object?> get props => [width, height, $variants];
 }
 
-// Mock WidgetStateVariant that always matches for testing priority behavior
-class _MockWidgetStateVariant extends WidgetStateVariant {
+// Mock ContextVariant that always matches for testing priority behavior
+class _MockWidgetStateVariant extends ContextVariant {
   static int _counter = 0;
   final int _id = _counter++;
 
-  _MockWidgetStateVariant() : super(WidgetState.hovered);
+  _MockWidgetStateVariant() : super('mock_widget_state_$_counter', (_) => true);
 
   @override
   String get key => 'mock_widget_state_$_id';

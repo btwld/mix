@@ -22,4 +22,8 @@ extension WidgetStateControllerExtension on WidgetStatesController {
   bool get dragged => value.contains(WidgetState.dragged);
   bool get scrolledUnder => value.contains(WidgetState.scrolledUnder);
   bool get error => value.contains(WidgetState.error);
+
+  /// Checks if the controller has a specific widget state.
+  bool has(WidgetState state) => value.contains(state);
 }
+

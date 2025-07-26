@@ -6,7 +6,6 @@ import 'animation/style_animation_builder.dart';
 import 'resolved_style_provider.dart';
 import 'spec.dart';
 import 'style.dart';
-import 'widget_state/widget_state_controller.dart';
 import 'widget_state/widget_state_provider.dart';
 
 /// Builds widgets with Mix styling.

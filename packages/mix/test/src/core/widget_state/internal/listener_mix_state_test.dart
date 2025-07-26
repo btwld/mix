@@ -1,38 +1,35 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/src/core/widget_state/internal/mouse_region_mix_state.dart';
+import 'package:mix/src/core/widget_state/internal/interactive_mix_state.dart';
+import 'package:mix/src/core/widget_state/widget_state_provider.dart';
 
 import '../../../../helpers/testing_utils.dart';
 
 void main() {
-  group('PointerPositionStateWidget', () {
-    testWidgets('updates pointer position on hover', (
+  group('CursorPositionController with MixInteractable', () {
+    testWidgets('updates cursor position on hover', (
       WidgetTester tester,
     ) async {
+      final cursorController = CursorPositionController();
+      
       await tester.pumpMaterialApp(
-        const MouseRegionMixStateWidget(
-          child: SizedBox(width: 100, height: 100),
+        MixInteractable(
+          cursorPositionController: cursorController,
+          trackMousePosition: true,
+          child: const SizedBox(width: 100, height: 100),
         ),
       );
 
       final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
       await gesture.addPointer(location: Offset.zero);
 
-      var context = tester.element(find.byType(SizedBox));
-
-      final beforePosition = MouseRegionMixWidgetState.of(
-        tester.element(find.byType(SizedBox)),
-      )!.pointerPosition;
+      final beforePosition = cursorController.value;
 
       await gesture.moveTo(const Offset(50, 50));
       await tester.pumpAndSettle();
 
-      context = tester.element(find.byType(SizedBox));
-
-      final afterPosition = MouseRegionMixWidgetState.of(
-        context,
-      )!.pointerPosition;
+      final afterPosition = cursorController.value;
       expect(beforePosition, isNull);
 
       expect(afterPosition?.offset, equals(const Offset(50, 50)));
@@ -40,34 +37,45 @@ void main() {
       addTearDown(gesture.removePointer);
     });
   });
-  group('PointerListenerMixStateController', () {
-    test('updates pointer position correctly', () {
-      final controller = MouseRegionMixStateController();
+  group('CursorPositionController', () {
+    test('updates cursor position correctly', () {
+      final controller = CursorPositionController();
       const size = Size(200, 100);
 
-      controller.updateCursorPosition(const Offset(100, 50), size);
+      controller.updatePosition(const Offset(100, 50), size);
 
       expect(
-        controller.pointerPosition?.position,
+        controller.value?.position,
         equals(const Alignment(0.0, 0.0)),
       );
-      expect(controller.pointerPosition?.offset, equals(const Offset(100, 50)));
+      expect(controller.value?.offset, equals(const Offset(100, 50)));
     });
 
-    test('clamps pointer position to valid range', () {
-      final controller = MouseRegionMixStateController();
+    test('clamps cursor position to valid range', () {
+      final controller = CursorPositionController();
       const size = Size(200, 100);
 
-      controller.updateCursorPosition(const Offset(250, 150), size);
+      controller.updatePosition(const Offset(250, 150), size);
 
       expect(
-        controller.pointerPosition?.position,
+        controller.value?.position,
         equals(const Alignment(1.0, 1.0)),
       );
       expect(
-        controller.pointerPosition?.offset,
+        controller.value?.offset,
         equals(const Offset(250, 150)),
       );
+    });
+
+    test('clears cursor position', () {
+      final controller = CursorPositionController();
+      const size = Size(200, 100);
+
+      controller.updatePosition(const Offset(100, 50), size);
+      expect(controller.value, isNotNull);
+
+      controller.clear();
+      expect(controller.value, isNull);
     });
   });
 

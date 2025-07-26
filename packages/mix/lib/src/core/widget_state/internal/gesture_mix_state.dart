@@ -146,7 +146,8 @@ class _GestureMixStateWidgetState extends State<GestureMixStateWidget> {
 
   void _unpressAfterDelay(int initialPressCount) {
     void unpressCallback() {
-      if (_controller.pressed && _pressCount == initialPressCount) {
+      if (_controller.has(WidgetState.pressed) &&
+          _pressCount == initialPressCount) {
         _controller.pressed = false;
       }
     }
