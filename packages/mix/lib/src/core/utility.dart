@@ -11,7 +11,7 @@ import 'style.dart';
 /// Base class for Mix utilities that convert values to styled elements.
 ///
 /// Utilities provide a fluent API for building styled elements from various value types.
-abstract class MixUtility<U extends SpecStyle<Object?>, Value> {
+abstract class MixUtility<U extends StyleAttribute<Object?>, Value> {
   /// The builder function that converts values to styled elements.
   final U Function(Value) builder;
 
@@ -21,7 +21,10 @@ abstract class MixUtility<U extends SpecStyle<Object?>, Value> {
 /// Interface for utilities that work with property-based values.
 ///
 /// Provides common methods for working with tokens, directives, and animations.
-abstract interface class PropBaseUtility<U extends SpecStyle<Object?>, Value> {
+abstract interface class PropBaseUtility<
+  U extends StyleAttribute<Object?>,
+  Value
+> {
   const PropBaseUtility();
 
   /// Creates a styled element using a token reference.
@@ -43,7 +46,7 @@ abstract interface class PropBaseUtility<U extends SpecStyle<Object?>, Value> {
 ///
 /// Used for simple types like Color, double, FontWeight, etc.
 @immutable
-abstract class PropUtility<U extends SpecStyle<Object?>, Value>
+abstract class PropUtility<U extends StyleAttribute<Object?>, Value>
     extends PropBaseUtility<U, Value> {
   final U Function(Prop<Value>) builder;
   const PropUtility(this.builder);
@@ -70,7 +73,7 @@ abstract class PropUtility<U extends SpecStyle<Object?>, Value>
 }
 
 @immutable
-abstract class MixPropUtility<U extends SpecStyle<Object?>, Value>
+abstract class MixPropUtility<U extends StyleAttribute<Object?>, Value>
     extends PropBaseUtility<U, Value> {
   final Mix<Value> Function(Value) convertToMix;
   @protected
@@ -107,7 +110,7 @@ abstract class MixPropUtility<U extends SpecStyle<Object?>, Value>
 abstract class SpecUtility<S extends Spec<S>> {
   const SpecUtility();
 
-  SpecStyle<S>? get attribute;
+  StyleAttribute<S>? get attribute;
 
   @override
   operator ==(Object other) {
@@ -134,7 +137,7 @@ abstract class SpecUtility<S extends Spec<S>> {
 /// final attr = colorListUtil([Colors.red, Colors.blue]);
 /// ```
 @immutable
-final class PropListUtility<T extends SpecStyle<Object?>, V>
+final class PropListUtility<T extends StyleAttribute<Object?>, V>
     extends MixUtility<T, List<Prop<V>>> {
   const PropListUtility(super.builder);
 
@@ -172,7 +175,7 @@ final class PropListUtility<T extends SpecStyle<Object?>, V>
 /// final attr4 = boxShadows.directives([directive1, directive2]);     // directives()
 /// ```
 @immutable
-final class MixPropListUtility<T extends SpecStyle<Object?>, V>
+final class MixPropListUtility<T extends StyleAttribute<Object?>, V>
     extends MixUtility<T, List<MixProp<V>>> {
   final Mix<V> Function(V) convertToMix;
   const MixPropListUtility(super.builder, this.convertToMix);

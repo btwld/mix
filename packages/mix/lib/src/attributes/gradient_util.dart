@@ -10,7 +10,7 @@ import 'scalar_util.dart';
 ///
 /// This class provides methods to set individual properties of a [LinearGradient].
 /// Use the methods of this class to configure specific properties of a [LinearGradient].
-final class LinearGradientUtility<T extends SpecStyle<Object?>>
+final class LinearGradientUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, LinearGradient> {
   /// Utility for defining [LinearGradientMix.begin]
   late final begin = AlignmentGeometryUtility<T>(
@@ -53,7 +53,7 @@ final class LinearGradientUtility<T extends SpecStyle<Object?>>
 ///
 /// This class provides methods to set individual properties of a [RadialGradient].
 /// Use the methods of this class to configure specific properties of a [RadialGradient].
-final class RadialGradientUtility<T extends SpecStyle<Object?>>
+final class RadialGradientUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, RadialGradient> {
   /// Utility for defining [RadialGradientMix.center]
   late final center = AlignmentGeometryUtility<T>(
@@ -106,7 +106,7 @@ final class RadialGradientUtility<T extends SpecStyle<Object?>>
 ///
 /// This class provides methods to set individual properties of a [SweepGradient].
 /// Use the methods of this class to configure specific properties of a [SweepGradient].
-final class SweepGradientUtility<T extends SpecStyle<Object?>>
+final class SweepGradientUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, SweepGradient> {
   /// Utility for defining [SweepGradientMix.center]
   late final center = AlignmentGeometryUtility<T>(
@@ -151,7 +151,7 @@ final class SweepGradientUtility<T extends SpecStyle<Object?>>
 }
 
 /// Utility class for working with gradients.
-final class GradientUtility<T extends SpecStyle<Object?>>
+final class GradientUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, Gradient> {
   /// Returns a [LinearGradientUtility] for creating linear gradients
   late final linear = LinearGradientUtility<T>(builder);

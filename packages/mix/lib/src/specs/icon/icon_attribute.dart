@@ -11,7 +11,7 @@ import '../../core/prop.dart';
 import '../../core/style.dart';
 import 'icon_spec.dart';
 
-class IconSpecAttribute extends SpecStyle<IconSpec> with Diagnosticable {
+class IconSpecAttribute extends StyleAttribute<IconSpec> with Diagnosticable {
   final Prop<Color>? $color;
   final Prop<double>? $size;
   final Prop<double>? $weight;
@@ -85,7 +85,7 @@ class IconSpecAttribute extends SpecStyle<IconSpec> with Diagnosticable {
     double? fill,
     AnimationConfig? animation,
     List<ModifierAttribute>? modifiers,
-    List<VariantSpecAttribute<IconSpec>>? variants,
+    List<VariantStyleAttribute<IconSpec>>? variants,
   }) : this(
          color: Prop.maybe(color),
          size: Prop.maybe(size),

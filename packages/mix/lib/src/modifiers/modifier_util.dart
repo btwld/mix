@@ -32,7 +32,7 @@ import 'visibility_modifier.dart';
 ///   $with.aspectRatio(16/9),
 /// )
 /// ```
-final class ModifierUtility<T extends SpecStyle<Object?>>
+final class ModifierUtility<T extends StyleAttribute<Object?>>
     extends MixUtility<T, ModifierAttribute> {
   /// Utility for opacity modifiers
   late final opacity = OpacityModifierUtility<T>(builder);

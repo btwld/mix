@@ -13,7 +13,7 @@ import 'box_spec.dart';
 ///
 /// The primary purpose of `Box` is to provide a flexible and reusable way to style
 /// widgets without the need to repeatedly define common style properties. It leverages
-/// the [SpecStyle] object to define the appearance and allows inheriting styles from
+/// the [StyleAttribute] object to define the appearance and allows inheriting styles from
 /// ancestor [StyleWidget]s in the widget tree.
 ///
 /// ## Inheriting Styles
@@ -30,7 +30,7 @@ import 'box_spec.dart';
 /// affect the performance of your application.
 ///
 /// See also:
-/// * [SpecStyle], which defines the visual properties to be applied.
+/// * [StyleAttribute], which defines the visual properties to be applied.
 /// * [BoxSpecWidget], which is used internally by `Box` to render the styled widget.
 /// * [Container], which is the Flutter equivalent widget.
 class Box extends StyleWidget<BoxSpec> {

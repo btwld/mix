@@ -169,7 +169,9 @@ class FractionallySizedBoxModifierAttribute
   List<Object?> get props => [widthFactor, heightFactor, alignment];
 }
 
-final class FractionallySizedBoxModifierUtility<T extends SpecStyle<Object?>>
+final class FractionallySizedBoxModifierUtility<
+  T extends StyleAttribute<Object?>
+>
     extends MixUtility<T, FractionallySizedBoxModifierAttribute> {
   const FractionallySizedBoxModifierUtility(super.builder);
 

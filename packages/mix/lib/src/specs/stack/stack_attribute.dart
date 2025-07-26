@@ -15,7 +15,7 @@ import 'stack_spec.dart';
 ///
 /// Use this class to configure the attributes of a [StackSpec] and pass it to
 /// the [StackSpec] constructor.
-class StackSpecAttribute extends SpecStyle<StackSpec> with Diagnosticable {
+class StackSpecAttribute extends StyleAttribute<StackSpec> with Diagnosticable {
   final Prop<AlignmentGeometry>? $alignment;
   final Prop<StackFit>? $fit;
   final Prop<TextDirection>? $textDirection;
@@ -61,7 +61,7 @@ class StackSpecAttribute extends SpecStyle<StackSpec> with Diagnosticable {
     Clip? clipBehavior,
     AnimationConfig? animation,
     List<ModifierAttribute>? modifiers,
-    List<VariantSpecAttribute<StackSpec>>? variants,
+    List<VariantStyleAttribute<StackSpec>>? variants,
   }) : this(
          alignment: Prop.maybe(alignment),
          fit: Prop.maybe(fit),

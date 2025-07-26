@@ -47,7 +47,7 @@ final class TransformModifier extends Modifier<TransformModifier> {
   }
 }
 
-final class TransformModifierUtility<T extends SpecStyle<Object?>>
+final class TransformModifierUtility<T extends StyleAttribute<Object?>>
     extends MixUtility<T, TransformModifierAttribute> {
   late final rotate = TransformRotateModifierUtility(
     (value) => builder(
@@ -90,7 +90,7 @@ final class TransformModifierUtility<T extends SpecStyle<Object?>>
   );
 }
 
-final class TransformRotateModifierUtility<T extends SpecStyle<Object?>>
+final class TransformRotateModifierUtility<T extends StyleAttribute<Object?>>
     extends MixUtility<T, Matrix4> {
   const TransformRotateModifierUtility(super.builder);
   T d90() => call(math.pi / 2);

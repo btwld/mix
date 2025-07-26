@@ -103,7 +103,7 @@ void main() {
     test('wrap getter can be used for modifier utilities', () {
       expect($wrap, isA<ModifierUtility>());
       final opacityModifier = $wrap.opacity(0.5);
-      expect(opacityModifier, isA<SpecStyle>());
+      expect(opacityModifier, isA<StyleAttribute>());
     });
   });
 

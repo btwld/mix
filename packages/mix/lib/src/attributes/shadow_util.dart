@@ -11,7 +11,7 @@ import 'shadow_mix.dart';
 ///
 /// This class provides methods to set individual properties of a [Shadow].
 /// Use the methods of this class to configure specific properties of a [Shadow].
-class ShadowUtility<T extends SpecStyle<Object?>>
+class ShadowUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, Shadow> {
   /// Utility for defining [ShadowMix.blurRadius].
   late final blurRadius = DoubleUtility<T>(
@@ -35,7 +35,7 @@ class ShadowUtility<T extends SpecStyle<Object?>>
 ///
 /// This class provides methods to set individual properties of a [BoxShadow].
 /// Use the methods of this class to configure specific properties of a [BoxShadow].
-class BoxShadowUtility<T extends SpecStyle<Object?>>
+class BoxShadowUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, BoxShadow> {
   late final color = ColorUtility<T>((prop) => call(BoxShadowMix(color: prop)));
 
@@ -61,12 +61,12 @@ class BoxShadowUtility<T extends SpecStyle<Object?>>
   T call(BoxShadowMix value) => builder(MixProp(value));
 }
 
-/// A utility class for building [StyleElement] instances from elevation values that produces [MixProp<BoxShadow>] lists.
+/// A utility class for building [StyleAttribute] instances from elevation values that produces [MixProp<BoxShadow>] lists.
 ///
-/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
+/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
 /// based on predefined elevation values, which are mapped to corresponding lists of
 /// [MixProp<BoxShadow>] objects that can be directly used in DTOs.
-final class ElevationMixPropUtility<T extends SpecStyle<Object?>>
+final class ElevationMixPropUtility<T extends StyleAttribute<Object?>>
     extends MixUtility<T, List<MixProp<BoxShadow>>> {
   /// Creates an [T] instance with an elevation of 1.
   late final e1 = one;
@@ -130,11 +130,11 @@ final class ElevationMixPropUtility<T extends SpecStyle<Object?>>
   /// Creates an [T] instance with an elevation of 24.
   T get twentyFour => call(24);
 
-  /// Creates an [StyleElement] instance from an elevation value.
+  /// Creates an [StyleAttribute] instance from an elevation value.
   ///
   /// Retrieves the corresponding list of [BoxShadow] objects from the [kElevationToShadow]
   /// map, maps each [BoxShadow] to a [MixProp<BoxShadow>], and passes the resulting list to
-  /// the [builder] function to create the [StyleElement] instance.
+  /// the [builder] function to create the [StyleAttribute] instance.
   ///
   /// Throws an [AssertionError] if the provided [value] is not a valid elevation value.
   T call(int value) {

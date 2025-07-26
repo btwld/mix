@@ -57,7 +57,7 @@ final class AlignModifier extends Modifier<AlignModifier> with Diagnosticable {
   }
 }
 
-final class AlignModifierUtility<T extends SpecStyle<Object?>>
+final class AlignModifierUtility<T extends StyleAttribute<Object?>>
     extends MixUtility<T, AlignModifierAttribute> {
   const AlignModifierUtility(super.builder);
   T call({

@@ -75,7 +75,8 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
 ///
 /// Use this class to configure the attributes of a [FlexBoxSpec] and pass it to
 /// the [FlexBoxSpec] constructor.
-class FlexBoxSpecAttribute extends SpecStyle<FlexBoxSpec> with Diagnosticable {
+class FlexBoxSpecAttribute extends StyleAttribute<FlexBoxSpec>
+    with Diagnosticable {
   final BoxSpecAttribute? $box;
   final FlexSpecAttribute? $flex;
 

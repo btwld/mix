@@ -8,8 +8,8 @@ import '../core/variant.dart';
 
 /// Utility class for creating variant attributes with context-based variants
 @immutable
-class OnContextVariantUtility<S extends Spec<S>, T extends SpecStyle<S>>
-    extends MixUtility<T, VariantSpecAttribute<S>> {
+class OnContextVariantUtility<S extends Spec<S>, T extends StyleAttribute<S>>
+    extends MixUtility<T, VariantStyleAttribute<S>> {
   const OnContextVariantUtility(super.builder);
 
   /// Creates a variant attribute for the hover state
@@ -243,7 +243,7 @@ class OnContextVariantUtility<S extends Spec<S>, T extends SpecStyle<S>>
 /// Builder class for creating variant-based styling attributes.
 ///
 /// This class wraps a [Variant] and provides methods to create
-/// [VariantSpecAttribute] instances with styling rules that apply
+/// [VariantStyleAttribute] instances with styling rules that apply
 /// when the variant condition is met.
 @immutable
 class VariantAttributeBuilder<T extends Spec<T>> {
@@ -253,7 +253,7 @@ class VariantAttributeBuilder<T extends Spec<T>> {
   /// Creates a new [VariantAttributeBuilder] with the given [variant]
   const VariantAttributeBuilder(this.variant);
 
-  /// Creates a [VariantSpecAttribute] that applies the given styling elements
+  /// Creates a [VariantStyleAttribute] that applies the given styling elements
   /// when this variant's condition is met.
   ///
   /// Supports both single and multiple style elements:
@@ -267,17 +267,17 @@ class VariantAttributeBuilder<T extends Spec<T>> {
   ///   $text.style.color.black(),
   /// );
   /// ```
-  VariantSpecAttribute<MultiSpec> call([
-    StyleElement? p1,
-    StyleElement? p2,
-    StyleElement? p3,
-    StyleElement? p4,
-    StyleElement? p5,
-    StyleElement? p6,
-    StyleElement? p7,
-    StyleElement? p8,
-    StyleElement? p9,
-    StyleElement? p10,
+  VariantStyleAttribute<MultiSpec> call([
+    StyleAttribute? p1,
+    StyleAttribute? p2,
+    StyleAttribute? p3,
+    StyleAttribute? p4,
+    StyleAttribute? p5,
+    StyleAttribute? p6,
+    StyleAttribute? p7,
+    StyleAttribute? p8,
+    StyleAttribute? p9,
+    StyleAttribute? p10,
   ]) {
     final elements = [
       p1,
@@ -290,16 +290,16 @@ class VariantAttributeBuilder<T extends Spec<T>> {
       p8,
       p9,
       p10,
-    ].whereType<StyleElement>().toList();
+    ].whereType<StyleAttribute>().toList();
 
     if (elements.isEmpty) {
-      throw ArgumentError('At least one StyleElement must be provided');
+      throw ArgumentError('At least one StyleAttribute must be provided');
     }
 
     // Create a Style to contain the elements
     final style = Style.create(elements);
 
-    return VariantSpecAttribute(variant, style);
+    return VariantStyleAttribute(variant, style);
   }
 
   @override

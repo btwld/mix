@@ -8,32 +8,23 @@ import 'modifier.dart';
 import 'spec.dart';
 import 'variant.dart';
 
-/// Base interface for all style elements in the Mix framework.
-sealed class StyleElement {
-  const StyleElement();
-}
-
 /// Base class for style containers that can be resolved to specifications.
 ///
 /// Provides variant support, modifiers, and animation configuration for styled elements.
-abstract class SpecStyle<S extends Spec<S>> extends Mixable<SpecStyle<S>>
-    with EqualityMixin, Resolvable<S>
-    implements StyleElement {
-  final List<VariantSpecAttribute<S>>? $variants;
+abstract class StyleAttribute<S extends Spec<S>>
+    extends Mixable<StyleAttribute<S>>
+    with EqualityMixin, Resolvable<S> {
+  final List<VariantStyleAttribute<S>>? $variants;
   final List<ModifierAttribute>? $modifiers;
   final AnimationConfig? $animation;
 
-  const SpecStyle({
-    List<VariantSpecAttribute<S>>? variants,
+  const StyleAttribute({
+    List<VariantStyleAttribute<S>>? variants,
     List<ModifierAttribute>? modifiers,
     AnimationConfig? animation,
   }) : $modifiers = modifiers,
        $animation = animation,
        $variants = variants;
-
-  bool get hasWidgetState {
-    return $variants?.any((m) => m.variant is WidgetStateVariant) ?? false;
-  }
 
   @protected
   List<ModifierAttribute>? mergeModifierLists(
@@ -62,33 +53,33 @@ abstract class SpecStyle<S extends Spec<S>> extends Mixable<SpecStyle<S>>
   }
 
   @visibleForTesting
-  SpecStyle<S> getAllStyleVariants(
+  StyleAttribute<S> getAllStyleVariants(
     BuildContext context, {
-    Set<NamedVariant>? namedVariants,
+    required Set<NamedVariant> namedVariants,
   }) {
-    final contextVariants = $variants
-        ?.where(
+    final variants = ($variants ?? [])
+        .where(
           (variantAttr) => switch (variantAttr.variant) {
-            (ContextVariant contextVariant) => contextVariant.when(context),
-            (NamedVariant namedVariant) =>
-              namedVariants?.contains(namedVariant) ?? false,
+            (ContextVariant variant) => variant.when(context),
+            (NamedVariant variant) => namedVariants.contains(variant),
             (ContextVariantBuilder _) => true,
           },
         )
         .toList();
 
     // Sort by priority: WidgetStateVariant gets applied last
-    contextVariants?.sort(
+    variants.sort(
       (a, b) => Comparable.compare(
         a.variant is WidgetStateVariant ? 1 : 0,
         b.variant is WidgetStateVariant ? 1 : 0,
       ),
     );
 
-    final variantStyles =
-        contextVariants?.map((variantAttr) => variantAttr.value).toList() ?? [];
+    final variantStyles = variants
+        .map((variantAttr) => variantAttr.value)
+        .toList();
 
-    SpecStyle<S> styleData = this;
+    StyleAttribute<S> styleData = this;
 
     for (final style in variantStyles) {
       styleData = styleData.merge(style);
@@ -98,15 +89,15 @@ abstract class SpecStyle<S extends Spec<S>> extends Mixable<SpecStyle<S>>
   }
 
   @protected
-  List<VariantSpecAttribute<S>> mergeVariantLists(
-    List<VariantSpecAttribute<S>>? current,
-    List<VariantSpecAttribute<S>>? other,
+  List<VariantStyleAttribute<S>> mergeVariantLists(
+    List<VariantStyleAttribute<S>>? current,
+    List<VariantStyleAttribute<S>>? other,
   ) {
     if (current == null && other == null) return [];
-    if (current == null) return List<VariantSpecAttribute<S>>.of(other!);
-    if (other == null) return List<VariantSpecAttribute<S>>.of(current);
+    if (current == null) return List<VariantStyleAttribute<S>>.of(other!);
+    if (other == null) return List<VariantStyleAttribute<S>>.of(current);
 
-    final Map<Object, VariantSpecAttribute<S>> merged = {};
+    final Map<Object, VariantStyleAttribute<S>> merged = {};
 
     // Add current variants
     for (final variant in current) {
@@ -129,7 +120,7 @@ abstract class SpecStyle<S extends Spec<S>> extends Mixable<SpecStyle<S>>
 
   /// Merges this attribute with another attribute of the same type.
   @override
-  SpecStyle<S> merge(covariant SpecStyle<S>? other);
+  StyleAttribute<S> merge(covariant StyleAttribute<S>? other);
 
   /// Default implementation uses runtimeType as the merge key
   @override
@@ -159,8 +150,8 @@ abstract class SpecStyle<S extends Spec<S>> extends Mixable<SpecStyle<S>>
   }
 }
 
-abstract class ModifierAttribute<S extends Modifier<S>> extends SpecStyle<S>
-    implements StyleElement {
+abstract class ModifierAttribute<S extends Modifier<S>>
+    extends StyleAttribute<S> {
   const ModifierAttribute();
 
   @override
@@ -174,18 +165,19 @@ abstract class ModifierAttribute<S extends Modifier<S>> extends SpecStyle<S>
 }
 
 /// Variant wrapper for conditional styling
-final class VariantSpecAttribute<S extends Spec<S>> extends SpecStyle<S> {
+final class VariantStyleAttribute<S extends Spec<S>> extends StyleAttribute<S> {
   final Variant variant;
-  final SpecStyle<S> _style;
+  final StyleAttribute<S> _style;
 
-  const VariantSpecAttribute(this.variant, SpecStyle<S> style) : _style = style;
+  const VariantStyleAttribute(this.variant, StyleAttribute<S> style)
+    : _style = style;
 
-  SpecStyle<S> get value => _style;
+  StyleAttribute<S> get value => _style;
 
   bool matches(Iterable<Variant> otherVariants) =>
       otherVariants.contains(variant);
 
-  VariantSpecAttribute<S>? removeVariants(Iterable<Variant> variantsToRemove) {
+  VariantStyleAttribute<S>? removeVariants(Iterable<Variant> variantsToRemove) {
     Variant? remainingVariant;
     if (variant is MultiVariant) {
       final multiVariant = variant as MultiVariant;
@@ -210,7 +202,7 @@ final class VariantSpecAttribute<S extends Spec<S>> extends SpecStyle<S> {
 
     return remainingVariant == null
         ? null
-        : VariantSpecAttribute(remainingVariant, _style);
+        : VariantStyleAttribute(remainingVariant, _style);
   }
 
   @override
@@ -219,10 +211,10 @@ final class VariantSpecAttribute<S extends Spec<S>> extends SpecStyle<S> {
   }
 
   @override
-  VariantSpecAttribute<S> merge(covariant VariantSpecAttribute<S>? other) {
+  VariantStyleAttribute<S> merge(covariant VariantStyleAttribute<S>? other) {
     if (other == null || other.variant != variant) return this;
 
-    return VariantSpecAttribute(variant, _style.merge(other._style));
+    return VariantStyleAttribute(variant, _style.merge(other._style));
   }
 
   @override
@@ -232,21 +224,21 @@ final class VariantSpecAttribute<S extends Spec<S>> extends SpecStyle<S> {
   Object get mergeKey => variant.key;
 }
 
-class Style extends SpecStyle<MultiSpec> {
-  final Map<Object, SpecStyle> _attributes;
+class Style extends StyleAttribute<MultiSpec> {
+  final Map<Object, StyleAttribute> _attributes;
 
   Style._({
-    required List<SpecStyle> attributes,
+    required List<StyleAttribute> attributes,
     super.animation,
     super.modifiers,
     super.variants,
   }) : _attributes = {for (var attr in attributes) attr.mergeKey: attr};
 
-  /// Creates a new `Style` instance with specified list of [StyleElement]s.
+  /// Creates a new `Style` instance with specified list of [StyleAttribute]s.
   ///
   /// This factory constructor initializes a `Style` with a list of
   /// style elements provided as individual parameters. Only non-null elements
-  /// are included in the resulting `Style`. Since Attribute extends StyleElement,
+  /// are included in the resulting `Style`. Since Attribute extends StyleAttribute,
   /// this is backward compatible with existing code.
   ///
   /// There is no specific reason for only 20 parameters. This is just a
@@ -259,61 +251,61 @@ class Style extends SpecStyle<MultiSpec> {
   /// final style = Style(attribute1, attribute2, attribute3);
   /// ```
   factory Style([
-    StyleElement? p1,
-    StyleElement? p2,
-    StyleElement? p3,
-    StyleElement? p4,
-    StyleElement? p5,
-    StyleElement? p6,
-    StyleElement? p7,
-    StyleElement? p8,
-    StyleElement? p9,
-    StyleElement? p10,
-    StyleElement? p11,
-    StyleElement? p12,
-    StyleElement? p13,
-    StyleElement? p14,
-    StyleElement? p15,
-    StyleElement? p16,
-    StyleElement? p17,
-    StyleElement? p18,
-    StyleElement? p19,
-    StyleElement? p20,
+    StyleAttribute? p1,
+    StyleAttribute? p2,
+    StyleAttribute? p3,
+    StyleAttribute? p4,
+    StyleAttribute? p5,
+    StyleAttribute? p6,
+    StyleAttribute? p7,
+    StyleAttribute? p8,
+    StyleAttribute? p9,
+    StyleAttribute? p10,
+    StyleAttribute? p11,
+    StyleAttribute? p12,
+    StyleAttribute? p13,
+    StyleAttribute? p14,
+    StyleAttribute? p15,
+    StyleAttribute? p16,
+    StyleAttribute? p17,
+    StyleAttribute? p18,
+    StyleAttribute? p19,
+    StyleAttribute? p20,
   ]) {
     final params = [
       p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, //
       p11, p12, p13, p14, p15, p16, p17, p18, p19, p20,
-    ].whereType<StyleElement>();
+    ].whereType<StyleAttribute>();
 
     return Style.create(params);
   }
 
-  /// Constructs a `Style` from an iterable of [StyleElement] instances.
+  /// Constructs a `Style` from an iterable of [StyleAttribute] instances.
   ///
   /// This factory constructor segregates the style elements into attributes
   /// and variants, initializing a new `MultiSpecAttribute` with these collections.
-  /// Since Attribute extends StyleElement, this is backward compatible.
+  /// Since Attribute extends StyleAttribute, this is backward compatible.
   ///
   /// Example:
   /// ```dart
   /// final style = Style.create([attribute1, attribute2]);
   /// ```
-  factory Style.create(Iterable<StyleElement> elements) {
-    final styleList = <SpecStyle>[];
+  factory Style.create(Iterable<StyleAttribute> elements) {
+    final styleList = <StyleAttribute>[];
     final modifierList = <ModifierAttribute>[];
-    final variants = <VariantSpecAttribute>[];
+    final variants = <VariantStyleAttribute>[];
 
     AnimationConfig? animationConfig;
 
     for (final element in elements) {
       switch (element) {
-        case VariantSpecAttribute():
+        case VariantStyleAttribute():
           variants.add(element);
           break;
 
         case ModifierAttribute():
           modifierList.add(element);
-        case SpecStyle():
+        case StyleAttribute():
           // Handle MultiSpecAttribute by merging it later
           if (element is! Style) {
             styleList.add(element);
@@ -344,7 +336,7 @@ class Style extends SpecStyle<MultiSpec> {
     : this._(attributes: [], animation: null, modifiers: null, variants: null);
 
   /// Returns the list of attributes in this style
-  List<SpecStyle> get attributes => _attributes.values.toList();
+  List<StyleAttribute> get attributes => _attributes.values.toList();
 
   Style animate({Duration? duration, Curve? curve}) {
     return Style._(
@@ -372,7 +364,7 @@ class Style extends SpecStyle<MultiSpec> {
   Style merge(Style? other) {
     if (other == null) return this;
 
-    final mergedAttributes = <SpecStyle>[];
+    final mergedAttributes = <StyleAttribute>[];
 
     // Get all unique merge keys from both attributes
     final allKeys = {..._attributes.keys, ...other._attributes.keys};

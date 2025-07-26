@@ -28,7 +28,7 @@ import 'box_spec.dart';
 ///
 /// Use this class to configure the attributes of a [BoxSpec] and pass it to
 /// the [BoxSpec] constructor.
-class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
+class BoxSpecAttribute extends StyleAttribute<BoxSpec> with Diagnosticable {
   final Prop<AlignmentGeometry>? $alignment;
   final MixProp<EdgeInsetsGeometry>? $padding;
   final MixProp<EdgeInsetsGeometry>? $margin;
@@ -155,7 +155,7 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
   /// Variant
   factory BoxSpecAttribute.variant(Variant variant, BoxSpecAttribute value) {
     return BoxSpecAttribute.only(
-      variants: [VariantSpecAttribute(variant, value)],
+      variants: [VariantStyleAttribute(variant, value)],
     );
   }
 
@@ -257,7 +257,7 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
     Clip? clipBehavior,
     AnimationConfig? animation,
     List<ModifierAttribute>? modifiers,
-    List<VariantSpecAttribute<BoxSpec>>? variants,
+    List<VariantStyleAttribute<BoxSpec>>? variants,
   }) : this(
          alignment: Prop.maybe(alignment),
          padding: MixProp.maybe(padding),
@@ -314,14 +314,13 @@ class BoxSpecAttribute extends SpecStyle<BoxSpec> with Diagnosticable {
 
   BoxSpecAttribute variant(Variant variant, BoxSpecAttribute value) {
     return merge(
-      BoxSpecAttribute.only(variants: [VariantSpecAttribute(variant, value)]),
+      BoxSpecAttribute.only(variants: [VariantStyleAttribute(variant, value)]),
     );
   }
 
   BoxSpecAttribute animation(AnimationConfig animation) {
     return BoxSpecAttribute.only(animation: animation);
   }
-
 
   BoxSpecAttribute shadows(List<BoxShadowMix> value) {
     return BoxSpecAttribute.only(

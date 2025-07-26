@@ -6,7 +6,7 @@ import '../core/utility.dart';
 import 'scalar_util.dart';
 import 'text_height_behavior_mix.dart';
 
-final class TextHeightBehaviorUtility<T extends SpecStyle<Object?>>
+final class TextHeightBehaviorUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, TextHeightBehavior> {
   late final heightToFirstAscent = BoolUtility<T>(
     (prop) => call(TextHeightBehaviorMix(applyHeightToFirstAscent: prop)),

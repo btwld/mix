@@ -252,7 +252,7 @@ class DefaultTextStyleModifierAttribute
   ];
 }
 
-final class DefaultTextStyleModifierUtility<T extends SpecStyle<Object?>>
+final class DefaultTextStyleModifierUtility<T extends StyleAttribute<Object?>>
     extends MixUtility<T, DefaultTextStyleModifierAttribute> {
   const DefaultTextStyleModifierUtility(super.builder);
   T call({

@@ -23,7 +23,7 @@ import 'text_spec.dart';
 ///
 /// Use this class to configure the attributes of a [TextSpec] and pass it to
 /// the [TextSpec] constructor.
-class TextSpecAttribute extends SpecStyle<TextSpec> with Diagnosticable {
+class TextSpecAttribute extends StyleAttribute<TextSpec> with Diagnosticable {
   final Prop<TextOverflow>? $overflow;
   final MixProp<StrutStyle>? $strutStyle;
   final Prop<TextAlign>? $textAlign;
@@ -210,7 +210,7 @@ class TextSpecAttribute extends SpecStyle<TextSpec> with Diagnosticable {
     List<MixDirective<String>>? directives,
     AnimationConfig? animation,
     List<ModifierAttribute>? modifiers,
-    List<VariantSpecAttribute<TextSpec>>? variants,
+    List<VariantStyleAttribute<TextSpec>>? variants,
   }) : this(
          overflow: Prop.maybe(overflow),
          strutStyle: MixProp.maybe(strutStyle),

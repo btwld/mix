@@ -8,7 +8,7 @@ import 'edge_insets_geometry_mix.dart';
 // Deprecated typedef moved to src/core/deprecated.dart
 
 @immutable
-final class EdgeInsetsGeometryUtility<U extends SpecStyle<Object?>>
+final class EdgeInsetsGeometryUtility<U extends StyleAttribute<Object?>>
     extends MixPropUtility<U, EdgeInsetsGeometry> {
   late final directional = EdgeInsetsDirectionalUtility(builder);
 
@@ -54,7 +54,7 @@ final class EdgeInsetsGeometryUtility<U extends SpecStyle<Object?>>
 }
 
 @immutable
-final class EdgeInsetsDirectionalUtility<U extends SpecStyle<Object?>>
+final class EdgeInsetsDirectionalUtility<U extends StyleAttribute<Object?>>
     extends MixPropUtility<U, EdgeInsetsDirectional> {
   late final all = SpacingSideUtility(
     (prop) => call(
@@ -95,7 +95,7 @@ final class EdgeInsetsDirectionalUtility<U extends SpecStyle<Object?>>
 }
 
 @immutable
-class SpacingSideUtility<T extends SpecStyle<Object?>>
+class SpacingSideUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, double> {
   const SpacingSideUtility(super.builder);
 }

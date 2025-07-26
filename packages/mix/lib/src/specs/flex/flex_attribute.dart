@@ -15,7 +15,7 @@ import 'flex_spec.dart';
 ///
 /// Use this class to configure the attributes of a [FlexSpec] and pass it to
 /// the [FlexSpec] constructor.
-class FlexSpecAttribute extends SpecStyle<FlexSpec> with Diagnosticable {
+class FlexSpecAttribute extends StyleAttribute<FlexSpec> with Diagnosticable {
   final Prop<Axis>? $direction;
   final Prop<MainAxisAlignment>? $mainAxisAlignment;
   final Prop<CrossAxisAlignment>? $crossAxisAlignment;
@@ -104,7 +104,7 @@ class FlexSpecAttribute extends SpecStyle<FlexSpec> with Diagnosticable {
     double? gap,
     AnimationConfig? animation,
     List<ModifierAttribute>? modifiers,
-    List<VariantSpecAttribute<FlexSpec>>? variants,
+    List<VariantStyleAttribute<FlexSpec>>? variants,
   }) : this(
          direction: Prop.maybe(direction),
          mainAxisAlignment: Prop.maybe(mainAxisAlignment),

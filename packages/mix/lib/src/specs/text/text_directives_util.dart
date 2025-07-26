@@ -3,7 +3,7 @@ import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
 
-final class TextDirectiveUtility<T extends SpecStyle<Object?>>
+final class TextDirectiveUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, MixDirective<String>> {
   const TextDirectiveUtility(super.builder);
 

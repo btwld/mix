@@ -9,7 +9,7 @@ import '../../core/prop.dart';
 import '../../core/style.dart';
 import 'image_spec.dart';
 
-class ImageSpecAttribute extends SpecStyle<ImageSpec> with Diagnosticable {
+class ImageSpecAttribute extends StyleAttribute<ImageSpec> with Diagnosticable {
   final Prop<double>? $width;
   final Prop<double>? $height;
   final Prop<Color>? $color;
@@ -100,7 +100,7 @@ class ImageSpecAttribute extends SpecStyle<ImageSpec> with Diagnosticable {
     BlendMode? colorBlendMode,
     AnimationConfig? animation,
     List<ModifierAttribute>? modifiers,
-    List<VariantSpecAttribute<ImageSpec>>? variants,
+    List<VariantStyleAttribute<ImageSpec>>? variants,
   }) : this(
          width: Prop.maybe(width),
          height: Prop.maybe(height),

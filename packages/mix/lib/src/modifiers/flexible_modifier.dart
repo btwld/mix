@@ -134,7 +134,7 @@ class FlexibleModifierAttribute extends ModifierAttribute<FlexibleModifier>
   List<Object?> get props => [flex, fit];
 }
 
-final class FlexibleModifierUtility<T extends SpecStyle<Object?>>
+final class FlexibleModifierUtility<T extends StyleAttribute<Object?>>
     extends MixUtility<T, FlexibleModifierAttribute> {
   // TODO: Add flex and fit utilities when IntUtility and FlexFitUtility are available
   // late final flex = IntUtility(

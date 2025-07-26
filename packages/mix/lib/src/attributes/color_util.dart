@@ -11,7 +11,7 @@ import 'material_colors_util.dart';
 ///
 /// All directive methods modify the color value through transformation directives
 /// that are applied during resolution.
-mixin ColorDirectiveMixin<T extends SpecStyle<Object?>>
+mixin ColorDirectiveMixin<T extends StyleAttribute<Object?>>
     on PropUtility<T, Color> {
   /// Applies the specified opacity to the color (0.0 to 1.0).
   T withOpacity(double opacity) => directive(OpacityColorDirective(opacity));
@@ -43,7 +43,7 @@ mixin ColorDirectiveMixin<T extends SpecStyle<Object?>>
 
 /// Utility for predefined colors (e.g., Colors.red)
 @immutable
-class FoundationColorUtility<T extends SpecStyle<Object?>>
+class FoundationColorUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, Color>
     with ColorDirectiveMixin<T> {
   final Color color;
@@ -55,7 +55,7 @@ class FoundationColorUtility<T extends SpecStyle<Object?>>
 /// Supports both direct function calls to apply the color and method chaining
 /// for color transformations like opacity, darkening, or saturation changes.
 @immutable
-class CallableColorUtility<T extends SpecStyle<Object?>> {
+class CallableColorUtility<T extends StyleAttribute<Object?>> {
   final T Function(Prop<Color>) builder;
   final Color color;
 
@@ -103,7 +103,7 @@ class CallableColorUtility<T extends SpecStyle<Object?>> {
 
 /// Simplified ColorUtility using the PropUtility pattern
 @immutable
-final class ColorUtility<T extends SpecStyle<Object?>>
+final class ColorUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, Color>
     with ColorDirectiveMixin<T>, ColorsUtilityMixin<T>, BasicColorsMixin<T> {
   ColorUtility(super.builder);
@@ -117,7 +117,8 @@ final class ColorUtility<T extends SpecStyle<Object?>>
 ///
 /// All colors are available as callable utilities that support both direct application
 /// and color transformation methods.
-mixin BasicColorsMixin<T extends SpecStyle<Object?>> on PropUtility<T, Color> {
+mixin BasicColorsMixin<T extends StyleAttribute<Object?>>
+    on PropUtility<T, Color> {
   /// Fully transparent color utility.
   late final transparent = CallableColorUtility(builder, Colors.transparent);
 

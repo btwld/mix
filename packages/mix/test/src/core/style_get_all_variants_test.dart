@@ -15,15 +15,15 @@ void main() {
         final widgetStateVariant = _MockWidgetStateVariant();
 
         // Create VariantSpecAttributes with different priorities
-        final contextVarAttr = VariantSpecAttribute(
+        final contextVarAttr = VariantStyleAttribute(
           contextVariant,
           _MockSpecAttribute(width: 100.0),
         );
-        final namedVarAttr = VariantSpecAttribute(
+        final namedVarAttr = VariantStyleAttribute(
           namedVariant,
           _MockSpecAttribute(width: 200.0),
         );
-        final widgetStateVarAttr = VariantSpecAttribute(
+        final widgetStateVarAttr = VariantStyleAttribute(
           widgetStateVariant,
           _MockSpecAttribute(width: 300.0),
         );
@@ -55,15 +55,15 @@ void main() {
         final pressedVariant = _MockWidgetStateVariant();
         final focusedVariant = _MockWidgetStateVariant();
 
-        final hoveredVarAttr = VariantSpecAttribute(
+        final hoveredVarAttr = VariantStyleAttribute(
           hoveredVariant,
           _MockSpecAttribute(width: 100.0),
         );
-        final pressedVarAttr = VariantSpecAttribute(
+        final pressedVarAttr = VariantStyleAttribute(
           pressedVariant,
           _MockSpecAttribute(width: 200.0),
         );
-        final focusedVarAttr = VariantSpecAttribute(
+        final focusedVarAttr = VariantStyleAttribute(
           focusedVariant,
           _MockSpecAttribute(width: 300.0),
         );
@@ -93,23 +93,23 @@ void main() {
         ]);
 
         final varAttrs = [
-          VariantSpecAttribute(
+          VariantStyleAttribute(
             widgetStateVariant1,
             _MockSpecAttribute(width: 100.0),
           ), // Should be sorted to end
-          VariantSpecAttribute(
+          VariantStyleAttribute(
             contextVariant,
             _MockSpecAttribute(width: 200.0),
           ), // Should be sorted earlier
-          VariantSpecAttribute(
+          VariantStyleAttribute(
             widgetStateVariant2,
             _MockSpecAttribute(width: 300.0),
           ), // Should be sorted to end
-          VariantSpecAttribute(
+          VariantStyleAttribute(
             namedVariant,
             _MockSpecAttribute(width: 400.0),
           ), // Should be sorted earlier
-          VariantSpecAttribute(
+          VariantStyleAttribute(
             multiVariant,
             _MockSpecAttribute(width: 500.0),
           ), // Should be sorted earlier
@@ -142,16 +142,22 @@ void main() {
         const namedVariant2 = NamedVariant('named2');
 
         final varAttrs = [
-          VariantSpecAttribute(
+          VariantStyleAttribute(
             contextVariant1,
             _MockSpecAttribute(width: 100.0),
           ),
-          VariantSpecAttribute(
+          VariantStyleAttribute(
             contextVariant2,
             _MockSpecAttribute(width: 200.0),
           ),
-          VariantSpecAttribute(namedVariant1, _MockSpecAttribute(width: 300.0)),
-          VariantSpecAttribute(namedVariant2, _MockSpecAttribute(width: 400.0)),
+          VariantStyleAttribute(
+            namedVariant1,
+            _MockSpecAttribute(width: 300.0),
+          ),
+          VariantStyleAttribute(
+            namedVariant2,
+            _MockSpecAttribute(width: 400.0),
+          ),
         ];
 
         final testAttribute = _MockSpecAttribute(
@@ -185,11 +191,11 @@ void main() {
           return size.width > 768;
         });
 
-        final mobileVarAttr = VariantSpecAttribute(
+        final mobileVarAttr = VariantStyleAttribute(
           mobileVariant,
           _MockSpecAttribute(width: 100.0),
         );
-        final desktopVarAttr = VariantSpecAttribute(
+        final desktopVarAttr = VariantStyleAttribute(
           desktopVariant,
           _MockSpecAttribute(width: 200.0),
         );
@@ -213,15 +219,15 @@ void main() {
         const secondaryVariant = NamedVariant('secondary');
         const unusedVariant = NamedVariant('unused');
 
-        final primaryVarAttr = VariantSpecAttribute(
+        final primaryVarAttr = VariantStyleAttribute(
           primaryVariant,
           _MockSpecAttribute(width: 100.0),
         );
-        final secondaryVarAttr = VariantSpecAttribute(
+        final secondaryVarAttr = VariantStyleAttribute(
           secondaryVariant,
           _MockSpecAttribute(width: 200.0),
         );
-        final unusedVarAttr = VariantSpecAttribute(
+        final unusedVarAttr = VariantStyleAttribute(
           unusedVariant,
           _MockSpecAttribute(width: 300.0),
         );
@@ -247,7 +253,7 @@ void main() {
           (context) => _MockSpecAttribute(width: 150.0),
         );
 
-        final builderVarAttr = VariantSpecAttribute(
+        final builderVarAttr = VariantStyleAttribute(
           contextBuilder,
           _MockSpecAttribute(width: 100.0),
         );
@@ -269,11 +275,11 @@ void main() {
         final falseContextVariant = ContextVariant('false', (context) => false);
         const unmatchedNamedVariant = NamedVariant('unmatched');
 
-        final falseVarAttr = VariantSpecAttribute(
+        final falseVarAttr = VariantStyleAttribute(
           falseContextVariant,
           _MockSpecAttribute(width: 100.0),
         );
-        final unmatchedVarAttr = VariantSpecAttribute(
+        final unmatchedVarAttr = VariantStyleAttribute(
           unmatchedNamedVariant,
           _MockSpecAttribute(width: 200.0),
         );
@@ -300,11 +306,11 @@ void main() {
         final contextVariant = ContextVariant('context', (context) => true);
         final widgetStateVariant = _MockWidgetStateVariant();
 
-        final contextVarAttr = VariantSpecAttribute(
+        final contextVarAttr = VariantStyleAttribute(
           contextVariant,
           _MockSpecAttribute(width: 100.0, height: 200.0),
         );
-        final widgetStateVarAttr = VariantSpecAttribute(
+        final widgetStateVarAttr = VariantStyleAttribute(
           widgetStateVariant,
           _MockSpecAttribute(width: 300.0), // Overrides width, keeps height
         );
@@ -364,17 +370,17 @@ void main() {
         );
 
         final varAttrs = [
-          VariantSpecAttribute(multiVariant, _MockSpecAttribute(width: 100.0)),
-          VariantSpecAttribute(
+          VariantStyleAttribute(multiVariant, _MockSpecAttribute(width: 100.0)),
+          VariantStyleAttribute(
             contextVariant,
             _MockSpecAttribute(width: 200.0),
           ),
-          VariantSpecAttribute(
+          VariantStyleAttribute(
             widgetStateVariant,
             _MockSpecAttribute(width: 300.0),
           ), // Highest priority
-          VariantSpecAttribute(namedVariant, _MockSpecAttribute(width: 400.0)),
-          VariantSpecAttribute(
+          VariantStyleAttribute(namedVariant, _MockSpecAttribute(width: 400.0)),
+          VariantStyleAttribute(
             contextBuilder,
             _MockSpecAttribute(width: 500.0),
           ),
@@ -403,19 +409,19 @@ void main() {
         final disabledVariant = _MockWidgetStateVariant();
 
         final varAttrs = [
-          VariantSpecAttribute(
+          VariantStyleAttribute(
             hoveredVariant,
             _MockSpecAttribute(width: 100.0, height: 100.0),
           ),
-          VariantSpecAttribute(
+          VariantStyleAttribute(
             pressedVariant,
             _MockSpecAttribute(width: 200.0, height: 200.0),
           ),
-          VariantSpecAttribute(
+          VariantStyleAttribute(
             focusedVariant,
             _MockSpecAttribute(width: 300.0), // Only overrides width
           ),
-          VariantSpecAttribute(
+          VariantStyleAttribute(
             disabledVariant,
             _MockSpecAttribute(
               width: 0.0,
@@ -442,7 +448,7 @@ void main() {
       test('variant merging preserves base attribute properties', () {
         final contextVariant = ContextVariant('context', (context) => true);
 
-        final contextVarAttr = VariantSpecAttribute(
+        final contextVarAttr = VariantStyleAttribute(
           contextVariant,
           _MockSpecAttribute(width: 0.0, height: 200.0), // Only sets height
         );
@@ -467,7 +473,7 @@ void main() {
       test('handles large number of variants efficiently', () {
         final variants = List.generate(100, (i) {
           final variant = ContextVariant('variant_$i', (context) => true);
-          return VariantSpecAttribute(
+          return VariantStyleAttribute(
             variant,
             _MockSpecAttribute(width: i.toDouble()),
           );
@@ -500,11 +506,11 @@ void main() {
         const namedVariant = NamedVariant('named');
 
         final varAttrs = [
-          VariantSpecAttribute(
+          VariantStyleAttribute(
             contextVariant,
             _MockSpecAttribute(width: 100.0),
           ),
-          VariantSpecAttribute(namedVariant, _MockSpecAttribute(width: 200.0)),
+          VariantStyleAttribute(namedVariant, _MockSpecAttribute(width: 200.0)),
         ];
 
         final testAttribute = _MockSpecAttribute(
@@ -526,19 +532,19 @@ void main() {
       test('sorting is stable for non-WidgetStateVariant elements', () {
         // Create multiple non-WidgetState variants to test stable sort
         final variants = [
-          VariantSpecAttribute(
+          VariantStyleAttribute(
             ContextVariant('context1', (context) => true),
             _MockSpecAttribute(width: 100.0),
           ),
-          VariantSpecAttribute(
+          VariantStyleAttribute(
             const NamedVariant('named1'),
             _MockSpecAttribute(width: 200.0),
           ),
-          VariantSpecAttribute(
+          VariantStyleAttribute(
             ContextVariant('context2', (context) => true),
             _MockSpecAttribute(width: 300.0),
           ),
-          VariantSpecAttribute(
+          VariantStyleAttribute(
             const NamedVariant('named2'),
             _MockSpecAttribute(width: 400.0),
           ),
@@ -571,8 +577,8 @@ void main() {
         final pressVariant = _MockWidgetStateVariant();
 
         final varAttrs = [
-          VariantSpecAttribute(hoverVariant, _MockSpecAttribute(width: 100.0)),
-          VariantSpecAttribute(pressVariant, _MockSpecAttribute(width: 200.0)),
+          VariantStyleAttribute(hoverVariant, _MockSpecAttribute(width: 100.0)),
+          VariantStyleAttribute(pressVariant, _MockSpecAttribute(width: 200.0)),
         ];
 
         final testAttribute = _MockSpecAttribute(
@@ -591,11 +597,11 @@ void main() {
       test('integrates with predefined variant instances', () {
         // Test with predefined variants from the variant system
         final varAttrs = [
-          VariantSpecAttribute(
+          VariantStyleAttribute(
             _MockWidgetStateVariant(), // Mock hover variant
             _MockSpecAttribute(width: 100.0),
           ),
-          VariantSpecAttribute(
+          VariantStyleAttribute(
             _MockWidgetStateVariant(), // Mock press variant
             _MockSpecAttribute(width: 200.0),
           ),
@@ -618,7 +624,7 @@ void main() {
 }
 
 // Test helper class that implements SpecAttribute for testing
-class _MockSpecAttribute extends SpecStyle<MockSpec> {
+class _MockSpecAttribute extends StyleAttribute<MockSpec> {
   final double width;
   final double? height;
 

@@ -274,12 +274,12 @@ void main() {
       });
 
       test('can work with base SpecAttribute type', () {
-        final builder = ContextVariantBuilder<SpecStyle>(
+        final builder = ContextVariantBuilder<StyleAttribute>(
           (context) => BoxSpecAttribute.width(100.0),
         );
 
         final result = builder.build(MockBuildContext());
-        expect(result, isA<SpecStyle>());
+        expect(result, isA<StyleAttribute>());
         expect(result, isA<BoxSpecAttribute>());
       });
     });
@@ -508,7 +508,7 @@ void main() {
           (context) => BoxSpecAttribute.width(100.0),
         );
         final style = BoxSpecAttribute.height(200.0);
-        final variantAttr = VariantSpecAttribute(builder, style);
+        final variantAttr = VariantStyleAttribute(builder, style);
 
         expect(variantAttr.variant, builder);
         expect(variantAttr.value, style);
@@ -523,11 +523,11 @@ void main() {
           (context) => BoxSpecAttribute.width(200.0),
         );
 
-        final style1 = VariantSpecAttribute(
+        final style1 = VariantStyleAttribute(
           builder1,
           BoxSpecAttribute.height(100.0),
         );
-        final style2 = VariantSpecAttribute(
+        final style2 = VariantStyleAttribute(
           builder2,
           BoxSpecAttribute.height(200.0),
         );

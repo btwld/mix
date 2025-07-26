@@ -4,7 +4,7 @@ import '../animation_config.dart';
 import '../style.dart';
 import '../utility.dart';
 
-class AnimationConfigUtility<T extends SpecStyle<Object?>>
+class AnimationConfigUtility<T extends StyleAttribute<Object?>>
     extends MixUtility<T, AnimationConfig> {
   const AnimationConfigUtility(super.builder);
 

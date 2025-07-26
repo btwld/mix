@@ -132,7 +132,7 @@ final class WidgetStateVariant extends ContextVariant {
 /// Variant that dynamically builds a Style based on build context.
 /// This variant type allows for complex styling that depends on runtime context.
 @immutable
-class ContextVariantBuilder<S extends SpecStyle<Object?>> extends Variant {
+class ContextVariantBuilder<S extends StyleAttribute<Object?>> extends Variant {
   /// Function that builds a Style based on the given BuildContext
   final S Function(BuildContext) fn;
 

@@ -4,7 +4,7 @@ import 'spec.dart';
 import 'style.dart';
 import 'style_builder.dart';
 
-/// Base class for widgets that apply [SpecStyle] definitions.
+/// Base class for widgets that apply [StyleAttribute] definitions.
 ///
 /// Provides automatic style inheritance from parent [StyleWidget]s and handles
 /// style application through the Mix framework. Extend this class to
@@ -22,7 +22,7 @@ abstract class StyleWidget<S extends Spec<S>> extends StatefulWidget {
   });
 
   /// The style to apply to this widget.
-  final SpecStyle<S>? style;
+  final StyleAttribute<S>? style;
 
   /// Whether to inherit style from parent widgets.
   final bool inherit;

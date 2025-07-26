@@ -7,7 +7,7 @@ import '../internal/constants.dart';
 import '../specs/box/box_attribute.dart';
 import '../specs/box/box_widget.dart';
 
-// It expects Style? but Box requires StyleElement<BoxSpec>
+// It expects Style? but Box requires StyleAttribute<BoxSpec>
 // Need to redesign how Style interacts with typed widgets
 
 /// A pressable widget that wraps content in a [Box] with gesture handling.

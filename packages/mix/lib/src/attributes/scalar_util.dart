@@ -7,7 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 /// Utility for creating [VerticalDirection] values with predefined options.
-final class VerticalDirectionUtility<T extends SpecStyle<Object?>>
+final class VerticalDirectionUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, VerticalDirection> {
   const VerticalDirectionUtility(super.builder);
 
@@ -19,7 +19,7 @@ final class VerticalDirectionUtility<T extends SpecStyle<Object?>>
 }
 
 /// Utility for creating [BorderStyle] values with predefined options.
-final class BorderStyleUtility<T extends SpecStyle<Object?>>
+final class BorderStyleUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, BorderStyle> {
   const BorderStyleUtility(super.builder);
 
@@ -31,583 +31,583 @@ final class BorderStyleUtility<T extends SpecStyle<Object?>>
 }
 
 /// Utility for creating [Clip] values with predefined options.
-final class ClipUtility<T extends SpecStyle<Object?>>
+final class ClipUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, Clip> {
   const ClipUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with [Clip.none] value.
+  /// Creates a [StyleAttribute] instance with [Clip.none] value.
   T none() => call(Clip.none);
 
-  /// Creates a [StyleElement] instance with [Clip.hardEdge] value.
+  /// Creates a [StyleAttribute] instance with [Clip.hardEdge] value.
   T hardEdge() => call(Clip.hardEdge);
 
-  /// Creates a [StyleElement] instance with [Clip.antiAlias] value.
+  /// Creates a [StyleAttribute] instance with [Clip.antiAlias] value.
   T antiAlias() => call(Clip.antiAlias);
 
-  /// Creates a [StyleElement] instance with [Clip.antiAliasWithSaveLayer] value.
+  /// Creates a [StyleAttribute] instance with [Clip.antiAliasWithSaveLayer] value.
   T antiAliasWithSaveLayer() => call(Clip.antiAliasWithSaveLayer);
 }
 
 /// Utility for creating [Axis] values with predefined options.
-final class AxisUtility<T extends SpecStyle<Object?>>
+final class AxisUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, Axis> {
   const AxisUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with [Axis.horizontal] value.
+  /// Creates a [StyleAttribute] instance with [Axis.horizontal] value.
   T horizontal() => call(Axis.horizontal);
 
-  /// Creates a [StyleElement] instance with [Axis.vertical] value.
+  /// Creates a [StyleAttribute] instance with [Axis.vertical] value.
   T vertical() => call(Axis.vertical);
 }
 
 /// {@template flex_fit_utility}
-/// A utility class for creating [StyleElement] instances from [FlexFit] values.
+/// A utility class for creating [StyleAttribute] instances from [FlexFit] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
+/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
 /// from predefined [FlexFit] values.
 /// {@endtemplate}
-final class FlexFitUtility<T extends SpecStyle<Object?>>
+final class FlexFitUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, FlexFit> {
   const FlexFitUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with [FlexFit.tight] value.
+  /// Creates a [StyleAttribute] instance with [FlexFit.tight] value.
   T tight() => call(FlexFit.tight);
 
-  /// Creates a [StyleElement] instance with [FlexFit.loose] value.
+  /// Creates a [StyleAttribute] instance with [FlexFit.loose] value.
   T loose() => call(FlexFit.loose);
 }
 
 /// {@template stack_fit_utility}
-/// A utility class for creating [StyleElement] instances from [StackFit] values.
+/// A utility class for creating [StyleAttribute] instances from [StackFit] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
+/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
 /// from predefined [StackFit] values.
 /// {@endtemplate}
-final class StackFitUtility<T extends SpecStyle<Object?>>
+final class StackFitUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, StackFit> {
   const StackFitUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with [StackFit.loose] value.
+  /// Creates a [StyleAttribute] instance with [StackFit.loose] value.
   T loose() => call(StackFit.loose);
 
-  /// Creates a [StyleElement] instance with [StackFit.expand] value.
+  /// Creates a [StyleAttribute] instance with [StackFit.expand] value.
   T expand() => call(StackFit.expand);
 
-  /// Creates a [StyleElement] instance with [StackFit.passthrough] value.
+  /// Creates a [StyleAttribute] instance with [StackFit.passthrough] value.
   T passthrough() => call(StackFit.passthrough);
 }
 
 /// {@template image_repeat_utility}
-/// A utility class for creating [StyleElement] instances from [ImageRepeat] values.
+/// A utility class for creating [StyleAttribute] instances from [ImageRepeat] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
+/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
 /// from predefined [ImageRepeat] values.
 /// {@endtemplate}
-final class ImageRepeatUtility<T extends SpecStyle<Object?>>
+final class ImageRepeatUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, ImageRepeat> {
   const ImageRepeatUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with [ImageRepeat.repeat] value.
+  /// Creates a [StyleAttribute] instance with [ImageRepeat.repeat] value.
   T repeat() => call(ImageRepeat.repeat);
 
-  /// Creates a [StyleElement] instance with [ImageRepeat.repeatX] value.
+  /// Creates a [StyleAttribute] instance with [ImageRepeat.repeatX] value.
   T repeatX() => call(ImageRepeat.repeatX);
 
-  /// Creates a [StyleElement] instance with [ImageRepeat.repeatY] value.
+  /// Creates a [StyleAttribute] instance with [ImageRepeat.repeatY] value.
   T repeatY() => call(ImageRepeat.repeatY);
 
-  /// Creates a [StyleElement] instance with [ImageRepeat.noRepeat] value.
+  /// Creates a [StyleAttribute] instance with [ImageRepeat.noRepeat] value.
   T noRepeat() => call(ImageRepeat.noRepeat);
 }
 
 /// {@template text_direction_utility}
-/// A utility class for creating [StyleElement] instances from [TextDirection] values.
+/// A utility class for creating [StyleAttribute] instances from [TextDirection] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
+/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
 /// from predefined [TextDirection] values.
 /// {@endtemplate}
-final class TextDirectionUtility<T extends SpecStyle<Object?>>
+final class TextDirectionUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, TextDirection> {
   const TextDirectionUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with [TextDirection.rtl] value.
+  /// Creates a [StyleAttribute] instance with [TextDirection.rtl] value.
   T rtl() => call(TextDirection.rtl);
 
-  /// Creates a [StyleElement] instance with [TextDirection.ltr] value.
+  /// Creates a [StyleAttribute] instance with [TextDirection.ltr] value.
   T ltr() => call(TextDirection.ltr);
 }
 
 /// {@template text_leading_distribution_utility}
-/// A utility class for creating [StyleElement] instances from [TextLeadingDistribution] values.
+/// A utility class for creating [StyleAttribute] instances from [TextLeadingDistribution] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
+/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
 /// from predefined [TextLeadingDistribution] values.
 /// {@endtemplate}
-final class TextLeadingDistributionUtility<T extends SpecStyle<Object?>>
+final class TextLeadingDistributionUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, TextLeadingDistribution> {
   const TextLeadingDistributionUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with [TextLeadingDistribution.proportional] value.
+  /// Creates a [StyleAttribute] instance with [TextLeadingDistribution.proportional] value.
   T proportional() => call(TextLeadingDistribution.proportional);
 
-  /// Creates a [StyleElement] instance with [TextLeadingDistribution.even] value.
+  /// Creates a [StyleAttribute] instance with [TextLeadingDistribution.even] value.
   T even() => call(TextLeadingDistribution.even);
 }
 
 /// {@template tile_mode_utility}
-/// A utility class for creating [StyleElement] instances from [TileMode] values.
+/// A utility class for creating [StyleAttribute] instances from [TileMode] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
+/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
 /// from predefined [TileMode] values.
 /// {@endtemplate}
-final class TileModeUtility<T extends SpecStyle<Object?>>
+final class TileModeUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, TileMode> {
   const TileModeUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with [TileMode.clamp] value.
+  /// Creates a [StyleAttribute] instance with [TileMode.clamp] value.
   T clamp() => call(TileMode.clamp);
 
-  /// Creates a [StyleElement] instance with [TileMode.repeated] value.
+  /// Creates a [StyleAttribute] instance with [TileMode.repeated] value.
   T repeated() => call(TileMode.repeated);
 
-  /// Creates a [StyleElement] instance with [TileMode.mirror] value.
+  /// Creates a [StyleAttribute] instance with [TileMode.mirror] value.
   T mirror() => call(TileMode.mirror);
 
-  /// Creates a [StyleElement] instance with [TileMode.decal] value.
+  /// Creates a [StyleAttribute] instance with [TileMode.decal] value.
   T decal() => call(TileMode.decal);
 }
 
 /// {@template main_axis_alignment_utility}
-/// A utility class for creating [StyleElement] instances from [MainAxisAlignment] values.
+/// A utility class for creating [StyleAttribute] instances from [MainAxisAlignment] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
+/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
 /// from predefined [MainAxisAlignment] values.
 /// {@endtemplate}
-final class MainAxisAlignmentUtility<T extends SpecStyle<Object?>>
+final class MainAxisAlignmentUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, MainAxisAlignment> {
   const MainAxisAlignmentUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with [MainAxisAlignment.start] value.
+  /// Creates a [StyleAttribute] instance with [MainAxisAlignment.start] value.
   T start() => call(MainAxisAlignment.start);
 
-  /// Creates a [StyleElement] instance with [MainAxisAlignment.end] value.
+  /// Creates a [StyleAttribute] instance with [MainAxisAlignment.end] value.
   T end() => call(MainAxisAlignment.end);
 
-  /// Creates a [StyleElement] instance with [MainAxisAlignment.center] value.
+  /// Creates a [StyleAttribute] instance with [MainAxisAlignment.center] value.
   T center() => call(MainAxisAlignment.center);
 
-  /// Creates a [StyleElement] instance with [MainAxisAlignment.spaceBetween] value.
+  /// Creates a [StyleAttribute] instance with [MainAxisAlignment.spaceBetween] value.
   T spaceBetween() => call(MainAxisAlignment.spaceBetween);
 
-  /// Creates a [StyleElement] instance with [MainAxisAlignment.spaceAround] value.
+  /// Creates a [StyleAttribute] instance with [MainAxisAlignment.spaceAround] value.
   T spaceAround() => call(MainAxisAlignment.spaceAround);
 
-  /// Creates a [StyleElement] instance with [MainAxisAlignment.spaceEvenly] value.
+  /// Creates a [StyleAttribute] instance with [MainAxisAlignment.spaceEvenly] value.
   T spaceEvenly() => call(MainAxisAlignment.spaceEvenly);
 }
 
 /// {@template cross_axis_alignment_utility}
-/// A utility class for creating [StyleElement] instances from [CrossAxisAlignment] values.
+/// A utility class for creating [StyleAttribute] instances from [CrossAxisAlignment] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
+/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
 /// from predefined [CrossAxisAlignment] values.
 /// {@endtemplate}
-final class CrossAxisAlignmentUtility<T extends SpecStyle<Object?>>
+final class CrossAxisAlignmentUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, CrossAxisAlignment> {
   const CrossAxisAlignmentUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with [CrossAxisAlignment.start] value.
+  /// Creates a [StyleAttribute] instance with [CrossAxisAlignment.start] value.
   T start() => call(CrossAxisAlignment.start);
 
-  /// Creates a [StyleElement] instance with [CrossAxisAlignment.end] value.
+  /// Creates a [StyleAttribute] instance with [CrossAxisAlignment.end] value.
   T end() => call(CrossAxisAlignment.end);
 
-  /// Creates a [StyleElement] instance with [CrossAxisAlignment.center] value.
+  /// Creates a [StyleAttribute] instance with [CrossAxisAlignment.center] value.
   T center() => call(CrossAxisAlignment.center);
 
-  /// Creates a [StyleElement] instance with [CrossAxisAlignment.stretch] value.
+  /// Creates a [StyleAttribute] instance with [CrossAxisAlignment.stretch] value.
   T stretch() => call(CrossAxisAlignment.stretch);
 
-  /// Creates a [StyleElement] instance with [CrossAxisAlignment.baseline] value.
+  /// Creates a [StyleAttribute] instance with [CrossAxisAlignment.baseline] value.
   T baseline() => call(CrossAxisAlignment.baseline);
 }
 
 /// {@template main_axis_size_utility}
-/// A utility class for creating [StyleElement] instances from [MainAxisSize] values.
+/// A utility class for creating [StyleAttribute] instances from [MainAxisSize] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
+/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
 /// from predefined [MainAxisSize] values.
 /// {@endtemplate}
-final class MainAxisSizeUtility<T extends SpecStyle<Object?>>
+final class MainAxisSizeUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, MainAxisSize> {
   const MainAxisSizeUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with [MainAxisSize.min] value.
+  /// Creates a [StyleAttribute] instance with [MainAxisSize.min] value.
   T min() => call(MainAxisSize.min);
 
-  /// Creates a [StyleElement] instance with [MainAxisSize.max] value.
+  /// Creates a [StyleAttribute] instance with [MainAxisSize.max] value.
   T max() => call(MainAxisSize.max);
 }
 
 /// {@template box_fit_utility}
-/// A utility class for creating [StyleElement] instances from [BoxFit] values.
+/// A utility class for creating [StyleAttribute] instances from [BoxFit] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
+/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
 /// from predefined [BoxFit] values.
 /// {@endtemplate}
-final class BoxFitUtility<T extends SpecStyle<Object?>>
+final class BoxFitUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, BoxFit> {
   const BoxFitUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with [BoxFit.fill] value.
+  /// Creates a [StyleAttribute] instance with [BoxFit.fill] value.
   T fill() => call(BoxFit.fill);
 
-  /// Creates a [StyleElement] instance with [BoxFit.contain] value.
+  /// Creates a [StyleAttribute] instance with [BoxFit.contain] value.
   T contain() => call(BoxFit.contain);
 
-  /// Creates a [StyleElement] instance with [BoxFit.cover] value.
+  /// Creates a [StyleAttribute] instance with [BoxFit.cover] value.
   T cover() => call(BoxFit.cover);
 
-  /// Creates a [StyleElement] instance with [BoxFit.fitWidth] value.
+  /// Creates a [StyleAttribute] instance with [BoxFit.fitWidth] value.
   T fitWidth() => call(BoxFit.fitWidth);
 
-  /// Creates a [StyleElement] instance with [BoxFit.fitHeight] value.
+  /// Creates a [StyleAttribute] instance with [BoxFit.fitHeight] value.
   T fitHeight() => call(BoxFit.fitHeight);
 
-  /// Creates a [StyleElement] instance with [BoxFit.none] value.
+  /// Creates a [StyleAttribute] instance with [BoxFit.none] value.
   T none() => call(BoxFit.none);
 
-  /// Creates a [StyleElement] instance with [BoxFit.scaleDown] value.
+  /// Creates a [StyleAttribute] instance with [BoxFit.scaleDown] value.
   T scaleDown() => call(BoxFit.scaleDown);
 }
 
 /// {@template blend_mode_utility}
-/// A utility class for creating [StyleElement] instances from [BlendMode] values.
+/// A utility class for creating [StyleAttribute] instances from [BlendMode] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
+/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
 /// from predefined [BlendMode] values.
 /// {@endtemplate}
-final class BlendModeUtility<T extends SpecStyle<Object?>>
+final class BlendModeUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, BlendMode> {
   const BlendModeUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with [BlendMode.clear] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.clear] value.
   T clear() => call(BlendMode.clear);
 
-  /// Creates a [StyleElement] instance with [BlendMode.src] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.src] value.
   T src() => call(BlendMode.src);
 
-  /// Creates a [StyleElement] instance with [BlendMode.dst] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.dst] value.
   T dst() => call(BlendMode.dst);
 
-  /// Creates a [StyleElement] instance with [BlendMode.srcOver] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.srcOver] value.
   T srcOver() => call(BlendMode.srcOver);
 
-  /// Creates a [StyleElement] instance with [BlendMode.dstOver] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.dstOver] value.
   T dstOver() => call(BlendMode.dstOver);
 
-  /// Creates a [StyleElement] instance with [BlendMode.srcIn] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.srcIn] value.
   T srcIn() => call(BlendMode.srcIn);
 
-  /// Creates a [StyleElement] instance with [BlendMode.dstIn] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.dstIn] value.
   T dstIn() => call(BlendMode.dstIn);
 
-  /// Creates a [StyleElement] instance with [BlendMode.srcOut] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.srcOut] value.
   T srcOut() => call(BlendMode.srcOut);
 
-  /// Creates a [StyleElement] instance with [BlendMode.dstOut] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.dstOut] value.
   T dstOut() => call(BlendMode.dstOut);
 
-  /// Creates a [StyleElement] instance with [BlendMode.srcATop] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.srcATop] value.
   T srcATop() => call(BlendMode.srcATop);
 
-  /// Creates a [StyleElement] instance with [BlendMode.dstATop] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.dstATop] value.
   T dstATop() => call(BlendMode.dstATop);
 
-  /// Creates a [StyleElement] instance with [BlendMode.xor] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.xor] value.
   T xor() => call(BlendMode.xor);
 
-  /// Creates a [StyleElement] instance with [BlendMode.plus] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.plus] value.
   T plus() => call(BlendMode.plus);
 
-  /// Creates a [StyleElement] instance with [BlendMode.modulate] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.modulate] value.
   T modulate() => call(BlendMode.modulate);
 
-  /// Creates a [StyleElement] instance with [BlendMode.screen] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.screen] value.
   T screen() => call(BlendMode.screen);
 
-  /// Creates a [StyleElement] instance with [BlendMode.overlay] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.overlay] value.
   T overlay() => call(BlendMode.overlay);
 
-  /// Creates a [StyleElement] instance with [BlendMode.darken] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.darken] value.
   T darken() => call(BlendMode.darken);
 
-  /// Creates a [StyleElement] instance with [BlendMode.lighten] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.lighten] value.
   T lighten() => call(BlendMode.lighten);
 
-  /// Creates a [StyleElement] instance with [BlendMode.colorDodge] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.colorDodge] value.
   T colorDodge() => call(BlendMode.colorDodge);
 
-  /// Creates a [StyleElement] instance with [BlendMode.colorBurn] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.colorBurn] value.
   T colorBurn() => call(BlendMode.colorBurn);
 
-  /// Creates a [StyleElement] instance with [BlendMode.hardLight] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.hardLight] value.
   T hardLight() => call(BlendMode.hardLight);
 
-  /// Creates a [StyleElement] instance with [BlendMode.softLight] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.softLight] value.
   T softLight() => call(BlendMode.softLight);
 
-  /// Creates a [StyleElement] instance with [BlendMode.difference] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.difference] value.
   T difference() => call(BlendMode.difference);
 
-  /// Creates a [StyleElement] instance with [BlendMode.exclusion] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.exclusion] value.
   T exclusion() => call(BlendMode.exclusion);
 
-  /// Creates a [StyleElement] instance with [BlendMode.multiply] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.multiply] value.
   T multiply() => call(BlendMode.multiply);
 
-  /// Creates a [StyleElement] instance with [BlendMode.hue] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.hue] value.
   T hue() => call(BlendMode.hue);
 
-  /// Creates a [StyleElement] instance with [BlendMode.saturation] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.saturation] value.
   T saturation() => call(BlendMode.saturation);
 
-  /// Creates a [StyleElement] instance with [BlendMode.color] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.color] value.
   T color() => call(BlendMode.color);
 
-  /// Creates a [StyleElement] instance with [BlendMode.luminosity] value.
+  /// Creates a [StyleAttribute] instance with [BlendMode.luminosity] value.
   T luminosity() => call(BlendMode.luminosity);
 }
 
 /// {@template box_shape_utility}
-/// A utility class for creating [StyleElement] instances from [BoxShape] values.
+/// A utility class for creating [StyleAttribute] instances from [BoxShape] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
+/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
 /// from predefined [BoxShape] values.
 /// {@endtemplate}
-final class BoxShapeUtility<T extends SpecStyle<Object?>>
+final class BoxShapeUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, BoxShape> {
   const BoxShapeUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with [BoxShape.rectangle] value.
+  /// Creates a [StyleAttribute] instance with [BoxShape.rectangle] value.
   T rectangle() => call(BoxShape.rectangle);
 
-  /// Creates a [StyleElement] instance with [BoxShape.circle] value.
+  /// Creates a [StyleAttribute] instance with [BoxShape.circle] value.
   T circle() => call(BoxShape.circle);
 }
 
 /// {@template font_style_utility}
-/// A utility class for creating [StyleElement] instances from [FontStyle] values.
+/// A utility class for creating [StyleAttribute] instances from [FontStyle] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
+/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
 /// from predefined [FontStyle] values.
 /// {@endtemplate}
-final class FontStyleUtility<T extends SpecStyle<Object?>>
+final class FontStyleUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, FontStyle> {
   const FontStyleUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with [FontStyle.normal] value.
+  /// Creates a [StyleAttribute] instance with [FontStyle.normal] value.
   T normal() => call(FontStyle.normal);
 
-  /// Creates a [StyleElement] instance with [FontStyle.italic] value.
+  /// Creates a [StyleAttribute] instance with [FontStyle.italic] value.
   T italic() => call(FontStyle.italic);
 }
 
 /// {@template text_decoration_style_utility}
-/// A utility class for creating [StyleElement] instances from [TextDecorationStyle] values.
+/// A utility class for creating [StyleAttribute] instances from [TextDecorationStyle] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
+/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
 /// from predefined [TextDecorationStyle] values.
 /// {@endtemplate}
-final class TextDecorationStyleUtility<T extends SpecStyle<Object?>>
+final class TextDecorationStyleUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, TextDecorationStyle> {
   const TextDecorationStyleUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with [TextDecorationStyle.solid] value.
+  /// Creates a [StyleAttribute] instance with [TextDecorationStyle.solid] value.
   T solid() => call(TextDecorationStyle.solid);
 
-  /// Creates a [StyleElement] instance with [TextDecorationStyle.double] value.
+  /// Creates a [StyleAttribute] instance with [TextDecorationStyle.double] value.
   T double() => call(TextDecorationStyle.double);
 
-  /// Creates a [StyleElement] instance with [TextDecorationStyle.dotted] value.
+  /// Creates a [StyleAttribute] instance with [TextDecorationStyle.dotted] value.
   T dotted() => call(TextDecorationStyle.dotted);
 
-  /// Creates a [StyleElement] instance with [TextDecorationStyle.dashed] value.
+  /// Creates a [StyleAttribute] instance with [TextDecorationStyle.dashed] value.
   T dashed() => call(TextDecorationStyle.dashed);
 
-  /// Creates a [StyleElement] instance with [TextDecorationStyle.wavy] value.
+  /// Creates a [StyleAttribute] instance with [TextDecorationStyle.wavy] value.
   T wavy() => call(TextDecorationStyle.wavy);
 }
 
 /// {@template text_baseline_utility}
-/// A utility class for creating [StyleElement] instances from [TextBaseline] values.
+/// A utility class for creating [StyleAttribute] instances from [TextBaseline] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
+/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
 /// from predefined [TextBaseline] values.
 /// {@endtemplate}
-final class TextBaselineUtility<T extends SpecStyle<Object?>>
+final class TextBaselineUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, TextBaseline> {
   const TextBaselineUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with [TextBaseline.alphabetic] value.
+  /// Creates a [StyleAttribute] instance with [TextBaseline.alphabetic] value.
   T alphabetic() => call(TextBaseline.alphabetic);
 
-  /// Creates a [StyleElement] instance with [TextBaseline.ideographic] value.
+  /// Creates a [StyleAttribute] instance with [TextBaseline.ideographic] value.
   T ideographic() => call(TextBaseline.ideographic);
 }
 
 /// {@template text_overflow_utility}
-/// A utility class for creating [StyleElement] instances from [TextOverflow] values.
+/// A utility class for creating [StyleAttribute] instances from [TextOverflow] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
+/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
 /// from predefined [TextOverflow] values.
 /// {@endtemplate}
-final class TextOverflowUtility<T extends SpecStyle<Object?>>
+final class TextOverflowUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, TextOverflow> {
   const TextOverflowUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with [TextOverflow.clip] value.
+  /// Creates a [StyleAttribute] instance with [TextOverflow.clip] value.
   T clip() => call(TextOverflow.clip);
 
-  /// Creates a [StyleElement] instance with [TextOverflow.fade] value.
+  /// Creates a [StyleAttribute] instance with [TextOverflow.fade] value.
   T fade() => call(TextOverflow.fade);
 
-  /// Creates a [StyleElement] instance with [TextOverflow.ellipsis] value.
+  /// Creates a [StyleAttribute] instance with [TextOverflow.ellipsis] value.
   T ellipsis() => call(TextOverflow.ellipsis);
 
-  /// Creates a [StyleElement] instance with [TextOverflow.visible] value.
+  /// Creates a [StyleAttribute] instance with [TextOverflow.visible] value.
   T visible() => call(TextOverflow.visible);
 }
 
 /// {@template text_width_basis_utility}
-/// A utility class for creating [StyleElement] instances from [TextWidthBasis] values.
+/// A utility class for creating [StyleAttribute] instances from [TextWidthBasis] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
+/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
 /// from predefined [TextWidthBasis] values.
 /// {@endtemplate}
-final class TextWidthBasisUtility<T extends SpecStyle<Object?>>
+final class TextWidthBasisUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, TextWidthBasis> {
   const TextWidthBasisUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with [TextWidthBasis.parent] value.
+  /// Creates a [StyleAttribute] instance with [TextWidthBasis.parent] value.
   T parent() => call(TextWidthBasis.parent);
 
-  /// Creates a [StyleElement] instance with [TextWidthBasis.longestLine] value.
+  /// Creates a [StyleAttribute] instance with [TextWidthBasis.longestLine] value.
   T longestLine() => call(TextWidthBasis.longestLine);
 }
 
 /// {@template text_align_utility}
-/// A utility class for creating [StyleElement] instances from [TextAlign] values.
+/// A utility class for creating [StyleAttribute] instances from [TextAlign] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
+/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
 /// from predefined [TextAlign] values.
 /// {@endtemplate}
-final class TextAlignUtility<T extends SpecStyle<Object?>>
+final class TextAlignUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, TextAlign> {
   const TextAlignUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with [TextAlign.left] value.
+  /// Creates a [StyleAttribute] instance with [TextAlign.left] value.
   T left() => call(TextAlign.left);
 
-  /// Creates a [StyleElement] instance with [TextAlign.right] value.
+  /// Creates a [StyleAttribute] instance with [TextAlign.right] value.
   T right() => call(TextAlign.right);
 
-  /// Creates a [StyleElement] instance with [TextAlign.center] value.
+  /// Creates a [StyleAttribute] instance with [TextAlign.center] value.
   T center() => call(TextAlign.center);
 
-  /// Creates a [StyleElement] instance with [TextAlign.justify] value.
+  /// Creates a [StyleAttribute] instance with [TextAlign.justify] value.
   T justify() => call(TextAlign.justify);
 
-  /// Creates a [StyleElement] instance with [TextAlign.start] value.
+  /// Creates a [StyleAttribute] instance with [TextAlign.start] value.
   T start() => call(TextAlign.start);
 
-  /// Creates a [StyleElement] instance with [TextAlign.end] value.
+  /// Creates a [StyleAttribute] instance with [TextAlign.end] value.
   T end() => call(TextAlign.end);
 }
 
 /// {@template filter_quality_utility}
-/// A utility class for creating [StyleElement] instances from [FilterQuality] values.
+/// A utility class for creating [StyleAttribute] instances from [FilterQuality] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
+/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
 /// from predefined [FilterQuality] values.
 /// {@endtemplate}
-final class FilterQualityUtility<T extends SpecStyle<Object?>>
+final class FilterQualityUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, FilterQuality> {
   const FilterQualityUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with [FilterQuality.none] value.
+  /// Creates a [StyleAttribute] instance with [FilterQuality.none] value.
   T none() => call(FilterQuality.none);
 
-  /// Creates a [StyleElement] instance with [FilterQuality.low] value.
+  /// Creates a [StyleAttribute] instance with [FilterQuality.low] value.
   T low() => call(FilterQuality.low);
 
-  /// Creates a [StyleElement] instance with [FilterQuality.medium] value.
+  /// Creates a [StyleAttribute] instance with [FilterQuality.medium] value.
   T medium() => call(FilterQuality.medium);
 
-  /// Creates a [StyleElement] instance with [FilterQuality.high] value.
+  /// Creates a [StyleAttribute] instance with [FilterQuality.high] value.
   T high() => call(FilterQuality.high);
 }
 
 /// {@template wrap_alignment_utility}
-/// A utility class for creating [StyleElement] instances from [WrapAlignment] values.
+/// A utility class for creating [StyleAttribute] instances from [WrapAlignment] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
+/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
 /// from predefined [WrapAlignment] values.
 /// {@endtemplate}
-final class WrapAlignmentUtility<T extends SpecStyle<Object?>>
+final class WrapAlignmentUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, WrapAlignment> {
   const WrapAlignmentUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with [WrapAlignment.start] value.
+  /// Creates a [StyleAttribute] instance with [WrapAlignment.start] value.
   T start() => call(WrapAlignment.start);
 
-  /// Creates a [StyleElement] instance with [WrapAlignment.end] value.
+  /// Creates a [StyleAttribute] instance with [WrapAlignment.end] value.
   T end() => call(WrapAlignment.end);
 
-  /// Creates a [StyleElement] instance with [WrapAlignment.center] value.
+  /// Creates a [StyleAttribute] instance with [WrapAlignment.center] value.
   T center() => call(WrapAlignment.center);
 
-  /// Creates a [StyleElement] instance with [WrapAlignment.spaceBetween] value.
+  /// Creates a [StyleAttribute] instance with [WrapAlignment.spaceBetween] value.
   T spaceBetween() => call(WrapAlignment.spaceBetween);
 
-  /// Creates a [StyleElement] instance with [WrapAlignment.spaceAround] value.
+  /// Creates a [StyleAttribute] instance with [WrapAlignment.spaceAround] value.
   T spaceAround() => call(WrapAlignment.spaceAround);
 
-  /// Creates a [StyleElement] instance with [WrapAlignment.spaceEvenly] value.
+  /// Creates a [StyleAttribute] instance with [WrapAlignment.spaceEvenly] value.
   T spaceEvenly() => call(WrapAlignment.spaceEvenly);
 }
 
 /// {@template table_cell_vertical_alignment_utility}
-/// A utility class for creating [StyleElement] instances from [TableCellVerticalAlignment] values.
+/// A utility class for creating [StyleAttribute] instances from [TableCellVerticalAlignment] values.
 ///
-/// This class extends [MixUtility] and provides methods to create [StyleElement] instances
+/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
 /// from predefined [TableCellVerticalAlignment] values.
 /// {@endtemplate}
-class TableCellVerticalAlignmentUtility<T extends SpecStyle<Object?>>
+class TableCellVerticalAlignmentUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, TableCellVerticalAlignment> {
   const TableCellVerticalAlignmentUtility(super.builder);
 
-  /// Creates a [StyleElement] instance with [TableCellVerticalAlignment.top] value.
+  /// Creates a [StyleAttribute] instance with [TableCellVerticalAlignment.top] value.
   T top() => call(TableCellVerticalAlignment.top);
 
-  /// Creates a [StyleElement] instance with [TableCellVerticalAlignment.middle] value.
+  /// Creates a [StyleAttribute] instance with [TableCellVerticalAlignment.middle] value.
   T middle() => call(TableCellVerticalAlignment.middle);
 
-  /// Creates a [StyleElement] instance with [TableCellVerticalAlignment.bottom] value.
+  /// Creates a [StyleAttribute] instance with [TableCellVerticalAlignment.bottom] value.
   T bottom() => call(TableCellVerticalAlignment.bottom);
 
-  /// Creates a [StyleElement] instance with [TableCellVerticalAlignment.baseline] value.
+  /// Creates a [StyleAttribute] instance with [TableCellVerticalAlignment.baseline] value.
   T baseline() => call(TableCellVerticalAlignment.baseline);
 
-  /// Creates a [StyleElement] instance with [TableCellVerticalAlignment.fill] value.
+  /// Creates a [StyleAttribute] instance with [TableCellVerticalAlignment.fill] value.
   T fill() => call(TableCellVerticalAlignment.fill);
 
-  /// Creates a [StyleElement] instance with [TableCellVerticalAlignment.intrinsicHeight] value.
+  /// Creates a [StyleAttribute] instance with [TableCellVerticalAlignment.intrinsicHeight] value.
   T intrinsicHeight() => call(TableCellVerticalAlignment.intrinsicHeight);
 }
 
 /// Utility for creating [AlignmentGeometry] values with predefined alignments.
-final class AlignmentUtility<S extends SpecStyle<Object?>>
+final class AlignmentUtility<S extends StyleAttribute<Object?>>
     extends PropUtility<S, AlignmentGeometry> {
   const AlignmentUtility(super.builder);
 
@@ -655,7 +655,7 @@ final class AlignmentUtility<S extends SpecStyle<Object?>>
 }
 
 /// Utility for creating [AlignmentGeometry] values with both absolute and directional alignments.
-final class AlignmentGeometryUtility<S extends SpecStyle<Object?>>
+final class AlignmentGeometryUtility<S extends StyleAttribute<Object?>>
     extends AlignmentUtility<S> {
   /// Provides access to directional alignment utilities.
   late final directional = AlignmentDirectionalUtility<S>(builder);
@@ -663,7 +663,7 @@ final class AlignmentGeometryUtility<S extends SpecStyle<Object?>>
 }
 
 /// Utility for creating [AlignmentDirectional] values that respect text direction.
-final class AlignmentDirectionalUtility<S extends SpecStyle<Object?>>
+final class AlignmentDirectionalUtility<S extends StyleAttribute<Object?>>
     extends PropUtility<S, AlignmentDirectional> {
   const AlignmentDirectionalUtility(super.builder);
 
@@ -700,97 +700,97 @@ final class AlignmentDirectionalUtility<S extends SpecStyle<Object?>>
 }
 
 /// Utility for creating [FontFeature] values with predefined OpenType features.
-final class FontFeatureUtility<T extends SpecStyle<Object?>>
+final class FontFeatureUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, FontFeature> {
   const FontFeatureUtility(super.builder);
 
-  /// Creates a [SpecStyle] instance using the [FontFeature.enable] constructor.
+  /// Creates a [StyleAttribute] instance using the [FontFeature.enable] constructor.
   T enable(String feature) => call(FontFeature.enable(feature));
 
-  /// Creates a [SpecStyle] instance using the [FontFeature.disable] constructor.
+  /// Creates a [StyleAttribute] instance using the [FontFeature.disable] constructor.
   T disable(String feature) => call(FontFeature.disable(feature));
 
-  /// Creates a [SpecStyle] instance using the [FontFeature.alternative] constructor.
+  /// Creates a [StyleAttribute] instance using the [FontFeature.alternative] constructor.
   T alternative(int value) => call(FontFeature.alternative(value));
 
-  /// Creates a [SpecStyle] instance using the [FontFeature.alternativeFractions] constructor.
+  /// Creates a [StyleAttribute] instance using the [FontFeature.alternativeFractions] constructor.
   T alternativeFractions() => call(const FontFeature.alternativeFractions());
 
-  /// Creates a [SpecStyle] instance using the [FontFeature.contextualAlternates] constructor.
+  /// Creates a [StyleAttribute] instance using the [FontFeature.contextualAlternates] constructor.
   T contextualAlternates() => call(const FontFeature.contextualAlternates());
 
-  /// Creates a [SpecStyle] instance using the [FontFeature.caseSensitiveForms] constructor.
+  /// Creates a [StyleAttribute] instance using the [FontFeature.caseSensitiveForms] constructor.
   T caseSensitiveForms() => call(const FontFeature.caseSensitiveForms());
 
-  /// Creates a [SpecStyle] instance using the [FontFeature.characterVariant] constructor.
+  /// Creates a [StyleAttribute] instance using the [FontFeature.characterVariant] constructor.
   T characterVariant(int value) => call(FontFeature.characterVariant(value));
 
-  /// Creates a [SpecStyle] instance using the [FontFeature.denominator] constructor.
+  /// Creates a [StyleAttribute] instance using the [FontFeature.denominator] constructor.
   T denominator() => call(const FontFeature.denominator());
 
-  /// Creates a [SpecStyle] instance using the [FontFeature.fractions] constructor.
+  /// Creates a [StyleAttribute] instance using the [FontFeature.fractions] constructor.
   T fractions() => call(const FontFeature.fractions());
 
-  /// Creates a [SpecStyle] instance using the [FontFeature.historicalForms] constructor.
+  /// Creates a [StyleAttribute] instance using the [FontFeature.historicalForms] constructor.
   T historicalForms() => call(const FontFeature.historicalForms());
 
-  /// Creates a [SpecStyle] instance using the [FontFeature.historicalLigatures] constructor.
+  /// Creates a [StyleAttribute] instance using the [FontFeature.historicalLigatures] constructor.
   T historicalLigatures() => call(const FontFeature.historicalLigatures());
 
-  /// Creates a [SpecStyle] instance using the [FontFeature.liningFigures] constructor.
+  /// Creates a [StyleAttribute] instance using the [FontFeature.liningFigures] constructor.
   T liningFigures() => call(const FontFeature.liningFigures());
 
-  /// Creates a [SpecStyle] instance using the [FontFeature.localeAware] constructor.
+  /// Creates a [StyleAttribute] instance using the [FontFeature.localeAware] constructor.
   T localeAware({bool enable = true}) {
     return call(FontFeature.localeAware(enable: enable));
   }
 
-  /// Creates a [SpecStyle] instance using the [FontFeature.notationalForms] constructor.
+  /// Creates a [StyleAttribute] instance using the [FontFeature.notationalForms] constructor.
   T notationalForms([int value = 1]) =>
       call(FontFeature.notationalForms(value));
 
-  /// Creates a [SpecStyle] instance using the [FontFeature.numerators] constructor.
+  /// Creates a [StyleAttribute] instance using the [FontFeature.numerators] constructor.
   T numerators() => call(const FontFeature.numerators());
 
-  /// Creates a [SpecStyle] instance using the [FontFeature.oldstyleFigures] constructor.
+  /// Creates a [StyleAttribute] instance using the [FontFeature.oldstyleFigures] constructor.
   T oldstyleFigures() => call(const FontFeature.oldstyleFigures());
 
-  /// Creates a [SpecStyle] instance using the [FontFeature.ordinalForms] constructor.
+  /// Creates a [StyleAttribute] instance using the [FontFeature.ordinalForms] constructor.
   T ordinalForms() => call(const FontFeature.ordinalForms());
 
-  /// Creates a [SpecStyle] instance using the [FontFeature.proportionalFigures] constructor.
+  /// Creates a [StyleAttribute] instance using the [FontFeature.proportionalFigures] constructor.
   T proportionalFigures() => call(const FontFeature.proportionalFigures());
 
-  /// Creates a [SpecStyle] instance using the [FontFeature.randomize] constructor.
+  /// Creates a [StyleAttribute] instance using the [FontFeature.randomize] constructor.
   T randomize() => call(const FontFeature.randomize());
 
-  /// Creates a [SpecStyle] instance using the [FontFeature.stylisticAlternates] constructor.
+  /// Creates a [StyleAttribute] instance using the [FontFeature.stylisticAlternates] constructor.
   T stylisticAlternates() => call(const FontFeature.stylisticAlternates());
 
-  /// Creates a [SpecStyle] instance using the [FontFeature.scientificInferiors] constructor.
+  /// Creates a [StyleAttribute] instance using the [FontFeature.scientificInferiors] constructor.
   T scientificInferiors() => call(const FontFeature.scientificInferiors());
 
-  /// Creates a [SpecStyle] instance using the [FontFeature.stylisticSet] constructor.
+  /// Creates a [StyleAttribute] instance using the [FontFeature.stylisticSet] constructor.
   T stylisticSet(int value) => call(FontFeature.stylisticSet(value));
 
-  /// Creates a [SpecStyle] instance using the [FontFeature.subscripts] constructor.
+  /// Creates a [StyleAttribute] instance using the [FontFeature.subscripts] constructor.
   T subscripts() => call(const FontFeature.subscripts());
 
-  /// Creates a [SpecStyle] instance using the [FontFeature.superscripts] constructor.
+  /// Creates a [StyleAttribute] instance using the [FontFeature.superscripts] constructor.
   T superscripts() => call(const FontFeature.superscripts());
 
-  /// Creates a [SpecStyle] instance using the [FontFeature.swash] constructor.
+  /// Creates a [StyleAttribute] instance using the [FontFeature.swash] constructor.
   T swash([int value = 1]) => call(FontFeature.swash(value));
 
-  /// Creates a [SpecStyle] instance using the [FontFeature.tabularFigures] constructor.
+  /// Creates a [StyleAttribute] instance using the [FontFeature.tabularFigures] constructor.
   T tabularFigures() => call(const FontFeature.tabularFigures());
 
-  /// Creates a [SpecStyle] instance using the [FontFeature.slashedZero] constructor.
+  /// Creates a [StyleAttribute] instance using the [FontFeature.slashedZero] constructor.
   T slashedZero() => call(const FontFeature.slashedZero());
 }
 
 /// Utility for creating [Duration] values with time unit methods.
-final class DurationUtility<T extends SpecStyle<Object?>>
+final class DurationUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, Duration> {
   const DurationUtility(super.builder);
 
@@ -804,80 +804,80 @@ final class DurationUtility<T extends SpecStyle<Object?>>
 
   T minutes(int minutes) => call(Duration(minutes: minutes));
 
-  /// Creates a [SpecStyle] instance with [Duration.zero] value.
+  /// Creates a [StyleAttribute] instance with [Duration.zero] value.
   T zero() => call(Duration.zero);
 }
 
 /// Utility for creating font size values as doubles.
-final class FontSizeUtility<T extends SpecStyle<Object?>>
+final class FontSizeUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, double> {
   const FontSizeUtility(super.builder);
 }
 
 /// Utility for creating [FontWeight] values with predefined weights.
-final class FontWeightUtility<T extends SpecStyle<Object?>>
+final class FontWeightUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, FontWeight> {
   const FontWeightUtility(super.builder);
 
-  /// Creates a [SpecStyle] instance with [FontWeight.w100] value.
+  /// Creates a [StyleAttribute] instance with [FontWeight.w100] value.
   T w100() => call(FontWeight.w100);
 
-  /// Creates a [SpecStyle] instance with [FontWeight.w200] value.
+  /// Creates a [StyleAttribute] instance with [FontWeight.w200] value.
   T w200() => call(FontWeight.w200);
 
-  /// Creates a [SpecStyle] instance with [FontWeight.w300] value.
+  /// Creates a [StyleAttribute] instance with [FontWeight.w300] value.
   T w300() => call(FontWeight.w300);
 
-  /// Creates a [SpecStyle] instance with [FontWeight.w400] value.
+  /// Creates a [StyleAttribute] instance with [FontWeight.w400] value.
   T w400() => call(FontWeight.w400);
 
-  /// Creates a [SpecStyle] instance with [FontWeight.w500] value.
+  /// Creates a [StyleAttribute] instance with [FontWeight.w500] value.
   T w500() => call(FontWeight.w500);
 
-  /// Creates a [SpecStyle] instance with [FontWeight.w600] value.
+  /// Creates a [StyleAttribute] instance with [FontWeight.w600] value.
   T w600() => call(FontWeight.w600);
 
-  /// Creates a [SpecStyle] instance with [FontWeight.w700] value.
+  /// Creates a [StyleAttribute] instance with [FontWeight.w700] value.
   T w700() => call(FontWeight.w700);
 
-  /// Creates a [SpecStyle] instance with [FontWeight.w800] value.
+  /// Creates a [StyleAttribute] instance with [FontWeight.w800] value.
   T w800() => call(FontWeight.w800);
 
-  /// Creates a [SpecStyle] instance with [FontWeight.w900] value.
+  /// Creates a [StyleAttribute] instance with [FontWeight.w900] value.
   T w900() => call(FontWeight.w900);
 
-  /// Creates a [SpecStyle] instance with [FontWeight.normal] value.
+  /// Creates a [StyleAttribute] instance with [FontWeight.normal] value.
   T normal() => call(FontWeight.normal);
 
-  /// Creates a [SpecStyle] instance with [FontWeight.bold] value.
+  /// Creates a [StyleAttribute] instance with [FontWeight.bold] value.
   T bold() => call(FontWeight.bold);
 }
 
 /// Utility for creating [TextDecoration] values with predefined decorations.
-final class TextDecorationUtility<T extends SpecStyle<Object?>>
+final class TextDecorationUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, TextDecoration> {
   const TextDecorationUtility(super.builder);
 
-  /// Creates a [SpecStyle] instance with [TextDecoration.none] value.
+  /// Creates a [StyleAttribute] instance with [TextDecoration.none] value.
   T none() => call(TextDecoration.none);
 
-  /// Creates a [SpecStyle] instance with [TextDecoration.underline] value.
+  /// Creates a [StyleAttribute] instance with [TextDecoration.underline] value.
   T underline() => call(TextDecoration.underline);
 
-  /// Creates a [SpecStyle] instance with [TextDecoration.overline] value.
+  /// Creates a [StyleAttribute] instance with [TextDecoration.overline] value.
   T overline() => call(TextDecoration.overline);
 
-  /// Creates a [SpecStyle] instance with [TextDecoration.lineThrough] value.
+  /// Creates a [StyleAttribute] instance with [TextDecoration.lineThrough] value.
   T lineThrough() => call(TextDecoration.lineThrough);
 
-  /// Creates a [SpecStyle] instance using the [TextDecoration.combine] constructor.
+  /// Creates a [StyleAttribute] instance using the [TextDecoration.combine] constructor.
   T combine(List<TextDecoration> decorations) {
     return call(TextDecoration.combine(decorations));
   }
 }
 
 /// Utility for creating [Curve] values with predefined animation curves.
-final class CurveUtility<T extends SpecStyle<Object?>>
+final class CurveUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, Curve> {
   const CurveUtility(super.builder);
 
@@ -889,195 +889,195 @@ final class CurveUtility<T extends SpecStyle<Object?>>
     SpringCurve(stiffness: stiffness, dampingRatio: dampingRatio, mass: mass),
   );
 
-  /// Creates a [SpecStyle] instance with [Curves.linear] value.
+  /// Creates a [StyleAttribute] instance with [Curves.linear] value.
   T linear() => call(Curves.linear);
 
-  /// Creates a [SpecStyle] instance with [Curves.decelerate] value.
+  /// Creates a [StyleAttribute] instance with [Curves.decelerate] value.
   T decelerate() => call(Curves.decelerate);
 
-  /// Creates a [SpecStyle] instance with [Curves.fastLinearToSlowEaseIn] value.
+  /// Creates a [StyleAttribute] instance with [Curves.fastLinearToSlowEaseIn] value.
   T fastLinearToSlowEaseIn() => call(Curves.fastLinearToSlowEaseIn);
 
-  /// Creates a [SpecStyle] instance with [Curves.fastEaseInToSlowEaseOut] value.
+  /// Creates a [StyleAttribute] instance with [Curves.fastEaseInToSlowEaseOut] value.
   T fastEaseInToSlowEaseOut() => call(Curves.fastEaseInToSlowEaseOut);
 
-  /// Creates a [SpecStyle] instance with [Curves.ease] value.
+  /// Creates a [StyleAttribute] instance with [Curves.ease] value.
   T ease() => call(Curves.ease);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeIn] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeIn] value.
   T easeIn() => call(Curves.easeIn);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeInToLinear] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeInToLinear] value.
   T easeInToLinear() => call(Curves.easeInToLinear);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeInSine] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeInSine] value.
   T easeInSine() => call(Curves.easeInSine);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeInQuad] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeInQuad] value.
   T easeInQuad() => call(Curves.easeInQuad);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeInCubic] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeInCubic] value.
   T easeInCubic() => call(Curves.easeInCubic);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeInQuart] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeInQuart] value.
   T easeInQuart() => call(Curves.easeInQuart);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeInQuint] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeInQuint] value.
   T easeInQuint() => call(Curves.easeInQuint);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeInExpo] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeInExpo] value.
   T easeInExpo() => call(Curves.easeInExpo);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeInCirc] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeInCirc] value.
   T easeInCirc() => call(Curves.easeInCirc);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeInBack] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeInBack] value.
   T easeInBack() => call(Curves.easeInBack);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeOut] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeOut] value.
   T easeOut() => call(Curves.easeOut);
 
-  /// Creates a [SpecStyle] instance with [Curves.linearToEaseOut] value.
+  /// Creates a [StyleAttribute] instance with [Curves.linearToEaseOut] value.
   T linearToEaseOut() => call(Curves.linearToEaseOut);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeOutSine] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeOutSine] value.
   T easeOutSine() => call(Curves.easeOutSine);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeOutQuad] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeOutQuad] value.
   T easeOutQuad() => call(Curves.easeOutQuad);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeOutCubic] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeOutCubic] value.
   T easeOutCubic() => call(Curves.easeOutCubic);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeOutQuart] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeOutQuart] value.
   T easeOutQuart() => call(Curves.easeOutQuart);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeOutQuint] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeOutQuint] value.
   T easeOutQuint() => call(Curves.easeOutQuint);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeOutExpo] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeOutExpo] value.
   T easeOutExpo() => call(Curves.easeOutExpo);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeOutCirc] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeOutCirc] value.
   T easeOutCirc() => call(Curves.easeOutCirc);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeOutBack] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeOutBack] value.
   T easeOutBack() => call(Curves.easeOutBack);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeInOut] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeInOut] value.
   T easeInOut() => call(Curves.easeInOut);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeInOutSine] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeInOutSine] value.
   T easeInOutSine() => call(Curves.easeInOutSine);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeInOutQuad] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeInOutQuad] value.
   T easeInOutQuad() => call(Curves.easeInOutQuad);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeInOutCubic] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeInOutCubic] value.
   T easeInOutCubic() => call(Curves.easeInOutCubic);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeInOutCubicEmphasized] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeInOutCubicEmphasized] value.
   T easeInOutCubicEmphasized() => call(Curves.easeInOutCubicEmphasized);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeInOutQuart] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeInOutQuart] value.
   T easeInOutQuart() => call(Curves.easeInOutQuart);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeInOutQuint] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeInOutQuint] value.
   T easeInOutQuint() => call(Curves.easeInOutQuint);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeInOutExpo] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeInOutExpo] value.
   T easeInOutExpo() => call(Curves.easeInOutExpo);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeInOutCirc] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeInOutCirc] value.
   T easeInOutCirc() => call(Curves.easeInOutCirc);
 
-  /// Creates a [SpecStyle] instance with [Curves.easeInOutBack] value.
+  /// Creates a [StyleAttribute] instance with [Curves.easeInOutBack] value.
   T easeInOutBack() => call(Curves.easeInOutBack);
 
-  /// Creates a [SpecStyle] instance with [Curves.fastOutSlowIn] value.
+  /// Creates a [StyleAttribute] instance with [Curves.fastOutSlowIn] value.
   T fastOutSlowIn() => call(Curves.fastOutSlowIn);
 
-  /// Creates a [SpecStyle] instance with [Curves.slowMiddle] value.
+  /// Creates a [StyleAttribute] instance with [Curves.slowMiddle] value.
   T slowMiddle() => call(Curves.slowMiddle);
 
-  /// Creates a [SpecStyle] instance with [Curves.bounceIn] value.
+  /// Creates a [StyleAttribute] instance with [Curves.bounceIn] value.
   T bounceIn() => call(Curves.bounceIn);
 
-  /// Creates a [SpecStyle] instance with [Curves.bounceOut] value.
+  /// Creates a [StyleAttribute] instance with [Curves.bounceOut] value.
   T bounceOut() => call(Curves.bounceOut);
 
-  /// Creates a [SpecStyle] instance with [Curves.bounceInOut] value.
+  /// Creates a [StyleAttribute] instance with [Curves.bounceInOut] value.
   T bounceInOut() => call(Curves.bounceInOut);
 
-  /// Creates a [SpecStyle] instance with [Curves.elasticIn] value.
+  /// Creates a [StyleAttribute] instance with [Curves.elasticIn] value.
   T elasticIn() => call(Curves.elasticIn);
 
-  /// Creates a [SpecStyle] instance with [Curves.elasticOut] value.
+  /// Creates a [StyleAttribute] instance with [Curves.elasticOut] value.
   T elasticOut() => call(Curves.elasticOut);
 
-  /// Creates a [SpecStyle] instance with [Curves.elasticInOut] value.
+  /// Creates a [StyleAttribute] instance with [Curves.elasticInOut] value.
   T elasticInOut() => call(Curves.elasticInOut);
 }
 
 /// Utility for creating [Offset] values with predefined positions.
-final class OffsetUtility<T extends SpecStyle<Object?>>
+final class OffsetUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, Offset> {
   const OffsetUtility(super.builder);
 
-  /// Creates a [SpecStyle] instance with [Offset.zero] value.
+  /// Creates a [StyleAttribute] instance with [Offset.zero] value.
   T zero() => call(Offset.zero);
 
-  /// Creates a [SpecStyle] instance with [Offset.infinite] value.
+  /// Creates a [StyleAttribute] instance with [Offset.infinite] value.
   T infinite() => call(Offset.infinite);
 
-  /// Creates a [SpecStyle] instance using the [Offset.fromDirection] constructor.
+  /// Creates a [StyleAttribute] instance using the [Offset.fromDirection] constructor.
   T fromDirection(double direction, [double distance = 1.0]) {
     return call(Offset.fromDirection(direction, distance));
   }
 }
 
 /// Utility for creating [Radius] values with predefined radius shapes.
-final class RadiusUtility<T extends SpecStyle<Object?>>
+final class RadiusUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, Radius> {
   const RadiusUtility(super.builder);
 
-  /// Creates a [SpecStyle] instance with [Radius.zero] value.
+  /// Creates a [StyleAttribute] instance with [Radius.zero] value.
   T zero() => call(Radius.zero);
 
-  /// Creates a [SpecStyle] instance using the [Radius.circular] constructor.
+  /// Creates a [StyleAttribute] instance using the [Radius.circular] constructor.
   T circular(double radius) => call(Radius.circular(radius));
 
-  /// Creates a [SpecStyle] instance using the [Radius.elliptical] constructor.
+  /// Creates a [StyleAttribute] instance using the [Radius.elliptical] constructor.
   T elliptical(double x, double y) => call(Radius.elliptical(x, y));
 }
 
 /// Utility for creating [Rect] values with predefined rectangles and constructors.
-final class RectUtility<T extends SpecStyle<Object?>>
+final class RectUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, Rect> {
   const RectUtility(super.builder);
 
-  /// Creates a [SpecStyle] instance with [Rect.zero] value.
+  /// Creates a [StyleAttribute] instance with [Rect.zero] value.
   T zero() => call(Rect.zero);
 
-  /// Creates a [SpecStyle] instance with [Rect.largest] value.
+  /// Creates a [StyleAttribute] instance with [Rect.largest] value.
   T largest() => call(Rect.largest);
 
-  /// Creates a [SpecStyle] instance using the [Rect.fromLTRB] constructor.
+  /// Creates a [StyleAttribute] instance using the [Rect.fromLTRB] constructor.
   T fromLTRB(double left, double top, double right, double bottom) {
     return call(Rect.fromLTRB(left, top, right, bottom));
   }
 
-  /// Creates a [SpecStyle] instance using the [Rect.fromLTWH] constructor.
+  /// Creates a [StyleAttribute] instance using the [Rect.fromLTWH] constructor.
   T fromLTWH(double left, double top, double width, double height) {
     return call(Rect.fromLTWH(left, top, width, height));
   }
 
-  /// Creates a [SpecStyle] instance using the [Rect.fromCircle] constructor.
+  /// Creates a [StyleAttribute] instance using the [Rect.fromCircle] constructor.
   T fromCircle({required Offset center, required double radius}) {
     return call(Rect.fromCircle(center: center, radius: radius));
   }
 
-  /// Creates a [SpecStyle] instance using the [Rect.fromCenter] constructor.
+  /// Creates a [StyleAttribute] instance using the [Rect.fromCenter] constructor.
   T fromCenter({
     required Offset center,
     required double width,
@@ -1086,28 +1086,28 @@ final class RectUtility<T extends SpecStyle<Object?>>
     return call(Rect.fromCenter(center: center, width: width, height: height));
   }
 
-  /// Creates a [SpecStyle] instance using the [Rect.fromPoints] constructor.
+  /// Creates a [StyleAttribute] instance using the [Rect.fromPoints] constructor.
   T fromPoints(Offset a, Offset b) => call(Rect.fromPoints(a, b));
 }
 
 /// Utility for creating [Paint] values for custom drawing operations.
-final class PaintUtility<T extends SpecStyle<Object?>>
+final class PaintUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, Paint> {
   const PaintUtility(super.builder);
 }
 
 /// Utility for creating [Locale] values for internationalization.
-final class LocaleUtility<T extends SpecStyle<Object?>>
+final class LocaleUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, Locale> {
   const LocaleUtility(super.builder);
 }
 
 /// Utility for creating [ImageProvider] values with different image sources.
-final class ImageProviderUtility<T extends SpecStyle<Object?>>
+final class ImageProviderUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, ImageProvider> {
   const ImageProviderUtility(super.builder);
 
-  /// Creates an [SpecStyle] instance with [ImageProvider.network].
+  /// Creates an [StyleAttribute] instance with [ImageProvider.network].
   /// @param url The URL of the image.
   T network(String url) => call(NetworkImage(url));
   T file(File file) => call(FileImage(file));
@@ -1116,105 +1116,105 @@ final class ImageProviderUtility<T extends SpecStyle<Object?>>
 }
 
 /// Utility for creating [GradientTransform] values for gradient transformations.
-final class GradientTransformUtility<T extends SpecStyle<Object?>>
+final class GradientTransformUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, GradientTransform> {
   const GradientTransformUtility(super.builder);
 
-  /// Creates an [SpecStyle] instance with a [GradientRotation] value.
+  /// Creates an [StyleAttribute] instance with a [GradientRotation] value.
   T rotate(double radians) => call(GradientRotation(radians));
 }
 
 /// Utility for creating [Matrix4] values for 3D transformations.
-final class Matrix4Utility<T extends SpecStyle<Object?>>
+final class Matrix4Utility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, Matrix4> {
   const Matrix4Utility(super.builder);
 
-  /// Creates a [SpecStyle] instance using the [Matrix4.fromList] constructor.
+  /// Creates a [StyleAttribute] instance using the [Matrix4.fromList] constructor.
   T fromList(List<double> values) => call(Matrix4.fromList(values));
 
-  /// Creates a [SpecStyle] instance using the [Matrix4.zero] constructor.
+  /// Creates a [StyleAttribute] instance using the [Matrix4.zero] constructor.
   T zero() => call(Matrix4.zero());
 
-  /// Creates a [SpecStyle] instance using the [Matrix4.identity] constructor.
+  /// Creates a [StyleAttribute] instance using the [Matrix4.identity] constructor.
   T identity() => call(Matrix4.identity());
 
-  /// Creates a [SpecStyle] instance using the [Matrix4.rotationX] constructor.
+  /// Creates a [StyleAttribute] instance using the [Matrix4.rotationX] constructor.
   T rotationX(double radians) => call(Matrix4.rotationX(radians));
 
-  /// Creates a [SpecStyle] instance using the [Matrix4.rotationY] constructor.
+  /// Creates a [StyleAttribute] instance using the [Matrix4.rotationY] constructor.
   T rotationY(double radians) => call(Matrix4.rotationY(radians));
 
-  /// Creates a [SpecStyle] instance using the [Matrix4.rotationZ] constructor.
+  /// Creates a [StyleAttribute] instance using the [Matrix4.rotationZ] constructor.
   T rotationZ(double radians) => call(Matrix4.rotationZ(radians));
 
-  /// Creates a [SpecStyle] instance using the [Matrix4.translationValues] constructor.
+  /// Creates a [StyleAttribute] instance using the [Matrix4.translationValues] constructor.
   T translationValues(double x, double y, double z) {
     return call(Matrix4.translationValues(x, y, z));
   }
 
-  /// Creates a [SpecStyle] instance using the [Matrix4.diagonal3Values] constructor.
+  /// Creates a [StyleAttribute] instance using the [Matrix4.diagonal3Values] constructor.
   T diagonal3Values(double x, double y, double z) {
     return call(Matrix4.diagonal3Values(x, y, z));
   }
 
-  /// Creates a [SpecStyle] instance using the [Matrix4.skewX] constructor.
+  /// Creates a [StyleAttribute] instance using the [Matrix4.skewX] constructor.
   T skewX(double alpha) => call(Matrix4.skewX(alpha));
 
-  /// Creates a [SpecStyle] instance using the [Matrix4.skewY] constructor.
+  /// Creates a [StyleAttribute] instance using the [Matrix4.skewY] constructor.
   T skewY(double beta) => call(Matrix4.skewY(beta));
 
-  /// Creates a [SpecStyle] instance using the [Matrix4.skew] constructor.
+  /// Creates a [StyleAttribute] instance using the [Matrix4.skew] constructor.
   T skew(double alpha, double beta) => call(Matrix4.skew(alpha, beta));
 
-  /// Creates a [SpecStyle] instance using the [Matrix4.fromBuffer] constructor.
+  /// Creates a [StyleAttribute] instance using the [Matrix4.fromBuffer] constructor.
   T fromBuffer(ByteBuffer buffer, int offset) {
     return call(Matrix4.fromBuffer(buffer, offset));
   }
 }
 
 /// Utility for creating font family strings with various constructors.
-final class FontFamilyUtility<T extends SpecStyle<Object?>>
+final class FontFamilyUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, String> {
   const FontFamilyUtility(super.builder);
 
-  /// Creates a [SpecStyle] instance using the [String.fromCharCodes] constructor.
+  /// Creates a [StyleAttribute] instance using the [String.fromCharCodes] constructor.
   T fromCharCodes(Iterable<int> charCodes, [int start = 0, int? end]) {
     return call(String.fromCharCodes(charCodes, start, end));
   }
 
-  /// Creates a [SpecStyle] instance using the [String.fromCharCode] constructor.
+  /// Creates a [StyleAttribute] instance using the [String.fromCharCode] constructor.
   T fromCharCode(int charCode) => call(String.fromCharCode(charCode));
 
-  /// Creates a [SpecStyle] instance using the [String.fromEnvironment] constructor.
+  /// Creates a [StyleAttribute] instance using the [String.fromEnvironment] constructor.
   T fromEnvironment(String name, {String defaultValue = ""}) {
     return call(String.fromEnvironment(name, defaultValue: defaultValue));
   }
 }
 
 /// Utility for creating [TextScaler] values for text scaling.
-final class TextScalerUtility<T extends SpecStyle<Object?>>
+final class TextScalerUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, TextScaler> {
   const TextScalerUtility(super.builder);
 
-  /// Creates a [SpecStyle] instance with [TextScaler.noScaling] value.
+  /// Creates a [StyleAttribute] instance with [TextScaler.noScaling] value.
   T noScaling() => call(TextScaler.noScaling);
 
-  /// Creates a [SpecStyle] instance using the [TextScaler.linear] constructor.
+  /// Creates a [StyleAttribute] instance using the [TextScaler.linear] constructor.
   T linear(double textScaleFactor) => call(TextScaler.linear(textScaleFactor));
 }
 
 /// Utility for creating [TableColumnWidth] values for table column sizing.
-final class TableColumnWidthUtility<T extends SpecStyle<Object?>>
+final class TableColumnWidthUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, TableColumnWidth> {
   const TableColumnWidthUtility(super.builder);
 }
 
 /// Utility for creating [TableBorder] values with predefined border styles.
-class TableBorderUtility<T extends SpecStyle<Object?>>
+class TableBorderUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, TableBorder> {
   const TableBorderUtility(super.builder);
 
-  /// Creates a [SpecStyle] instance using the [TableBorder.all] constructor.
+  /// Creates a [StyleAttribute] instance using the [TableBorder.all] constructor.
   T all({
     Color color = const Color(0xFF000000),
     double width = 1.0,
@@ -1231,7 +1231,7 @@ class TableBorderUtility<T extends SpecStyle<Object?>>
     );
   }
 
-  /// Creates a [SpecStyle] instance using the [TableBorder.symmetric] constructor.
+  /// Creates a [StyleAttribute] instance using the [TableBorder.symmetric] constructor.
   T symmetric({
     BorderSide inside = BorderSide.none,
     BorderSide outside = BorderSide.none,
@@ -1248,7 +1248,7 @@ class TableBorderUtility<T extends SpecStyle<Object?>>
 }
 
 /// Utility for creating stroke alignment values for border positioning.
-final class StrokeAlignUtility<T extends SpecStyle<Object?>>
+final class StrokeAlignUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, double> {
   const StrokeAlignUtility(super.builder);
 
@@ -1258,49 +1258,49 @@ final class StrokeAlignUtility<T extends SpecStyle<Object?>>
 }
 
 /// Utility for creating string values.
-final class StringUtility<T extends SpecStyle<Object?>>
+final class StringUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, String> {
   const StringUtility(super.builder);
 }
 
-/// A utility class for creating [StyleElement] instances from [double] values.
+/// A utility class for creating [StyleAttribute] instances from [double] values.
 ///
-/// This class extends [PropUtility] and provides methods to create [StyleElement] instances
+/// This class extends [PropUtility] and provides methods to create [StyleAttribute] instances
 /// from predefined [double] values or custom [double] values.
-final class DoubleUtility<T extends SpecStyle<Object?>>
+final class DoubleUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, double> {
   const DoubleUtility(super.builder);
 
-  /// Creates an [StyleElement] instance with a value of 0.
+  /// Creates an [StyleAttribute] instance with a value of 0.
   T zero() => call(0);
 
-  /// Creates an [StyleElement] instance with a value of [double.infinity].
+  /// Creates an [StyleAttribute] instance with a value of [double.infinity].
   T infinity() => call(double.infinity);
 }
 
-/// A utility class for creating [StyleElement] instances from [int] values.
+/// A utility class for creating [StyleAttribute] instances from [int] values.
 ///
-/// This class extends [PropUtility] and provides methods to create [StyleElement] instances
+/// This class extends [PropUtility] and provides methods to create [StyleAttribute] instances
 /// from predefined [int] values or custom [int] values.
-final class IntUtility<T extends SpecStyle<Object?>>
+final class IntUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, int> {
   const IntUtility(super.builder);
 
-  /// Creates an [StyleElement] instance with a value of 0.
+  /// Creates an [StyleAttribute] instance with a value of 0.
   T zero() => call(0);
 }
 
-/// A utility class for creating [StyleElement] instances from [bool] values.
+/// A utility class for creating [StyleAttribute] instances from [bool] values.
 ///
-/// This class extends [PropUtility] and provides methods to create [StyleElement] instances
+/// This class extends [PropUtility] and provides methods to create [StyleAttribute] instances
 /// from predefined [bool] values or custom [bool] values.
-final class BoolUtility<T extends SpecStyle<Object?>>
+final class BoolUtility<T extends StyleAttribute<Object?>>
     extends PropUtility<T, bool> {
   const BoolUtility(super.builder);
 
-  /// Creates an [StyleElement] instance with a value of `true`.
+  /// Creates an [StyleAttribute] instance with a value of `true`.
   T on() => call(true);
 
-  /// Creates an [StyleElement] instance with a value of `false`.
+  /// Creates an [StyleAttribute] instance with a value of `false`.
   T off() => call(false);
 }

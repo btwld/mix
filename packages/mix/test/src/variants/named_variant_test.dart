@@ -245,7 +245,7 @@ void main() {
       test('can be used in VariantSpecAttribute wrapper', () {
         const primaryVariant = NamedVariant('primary');
         final style = BoxSpecAttribute.width(100.0);
-        final variantAttr = VariantSpecAttribute(primaryVariant, style);
+        final variantAttr = VariantStyleAttribute(primaryVariant, style);
 
         expect(variantAttr.variant, primaryVariant);
         expect(variantAttr.value, style);
@@ -256,12 +256,12 @@ void main() {
         const primaryVariant = NamedVariant('primary');
         const secondaryVariant = NamedVariant('secondary');
 
-        final primaryStyle = VariantSpecAttribute(
+        final primaryStyle = VariantStyleAttribute(
           primaryVariant,
           BoxSpecAttribute.width(100.0),
         );
 
-        final secondaryStyle = VariantSpecAttribute(
+        final secondaryStyle = VariantStyleAttribute(
           secondaryVariant,
           BoxSpecAttribute.width(150.0),
         );
@@ -274,12 +274,12 @@ void main() {
       test('merges correctly when variants match', () {
         const primaryVariant = NamedVariant('primary');
 
-        final style1 = VariantSpecAttribute(
+        final style1 = VariantStyleAttribute(
           primaryVariant,
           BoxSpecAttribute.width(100.0),
         );
 
-        final style2 = VariantSpecAttribute(
+        final style2 = VariantStyleAttribute(
           primaryVariant,
           BoxSpecAttribute.height(200.0),
         );
@@ -300,12 +300,12 @@ void main() {
         const primaryVariant = NamedVariant('primary');
         const secondaryVariant = NamedVariant('secondary');
 
-        final primaryStyle = VariantSpecAttribute(
+        final primaryStyle = VariantStyleAttribute(
           primaryVariant,
           BoxSpecAttribute.width(100.0),
         );
 
-        final secondaryStyle = VariantSpecAttribute(
+        final secondaryStyle = VariantStyleAttribute(
           secondaryVariant,
           BoxSpecAttribute.height(200.0),
         );

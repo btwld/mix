@@ -14,7 +14,7 @@ import 'shadow_mix.dart';
 import 'shadow_util.dart';
 import 'shape_border_util.dart';
 
-class DecorationUtility<T extends SpecStyle<Object?>>
+class DecorationUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, Decoration> {
   late final box = BoxDecorationUtility<T>(builder);
 
@@ -33,7 +33,7 @@ class DecorationUtility<T extends SpecStyle<Object?>>
 /// This class provides methods to set individual properties of a [BoxDecoration].
 /// Use the methods of this class to configure specific properties of a [BoxDecoration].
 @immutable
-final class BoxDecorationUtility<T extends SpecStyle<Object?>>
+final class BoxDecorationUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, BoxDecoration> {
   /// Utility for defining [BoxDecorationMix.border]
   late final border = _boxBorder.border;
@@ -107,7 +107,7 @@ final class BoxDecorationUtility<T extends SpecStyle<Object?>>
 /// This class provides methods to set individual properties of a [ShapeDecoration].
 /// Use the methods of this class to configure specific properties of a [ShapeDecoration].
 @immutable
-final class ShapeDecorationUtility<T extends SpecStyle<Object?>>
+final class ShapeDecorationUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, ShapeDecoration> {
   /// Utility for defining [ShapeDecorationMix.shape]
   late final shape = ShapeBorderUtility<T>(

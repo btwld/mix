@@ -273,7 +273,7 @@ void main() {
       test('can be wrapped in VariantSpecAttribute', () {
         final contextVariant = ContextVariant('test', (context) => true);
         final style = BoxSpecAttribute.width(100.0);
-        final variantAttr = VariantSpecAttribute(contextVariant, style);
+        final variantAttr = VariantStyleAttribute(contextVariant, style);
 
         expect(variantAttr.variant, contextVariant);
         expect(variantAttr.value, style);
@@ -284,11 +284,11 @@ void main() {
         final variant1 = ContextVariant('context1', (context) => true);
         final variant2 = ContextVariant('context2', (context) => false);
 
-        final style1 = VariantSpecAttribute(
+        final style1 = VariantStyleAttribute(
           variant1,
           BoxSpecAttribute.width(100.0),
         );
-        final style2 = VariantSpecAttribute(
+        final style2 = VariantStyleAttribute(
           variant2,
           BoxSpecAttribute.height(200.0),
         );

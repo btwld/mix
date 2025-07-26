@@ -12,7 +12,7 @@ import 'shape_border_mix.dart';
 ///
 /// This class provides methods to set individual properties of a [RoundedRectangleBorder].
 /// Use the methods of this class to configure specific properties of a [RoundedRectangleBorder].
-final class RoundedRectangleBorderUtility<T extends SpecStyle<Object?>>
+final class RoundedRectangleBorderUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, RoundedRectangleBorder> {
   /// Utility for defining [RoundedRectangleBorderMix.borderRadius]
   late final borderRadius = BorderRadiusGeometryUtility<T>(
@@ -35,7 +35,7 @@ final class RoundedRectangleBorderUtility<T extends SpecStyle<Object?>>
 ///
 /// This class provides methods to set individual properties of a [BeveledRectangleBorder].
 /// Use the methods of this class to configure specific properties of a [BeveledRectangleBorder].
-final class BeveledRectangleBorderUtility<T extends SpecStyle<Object?>>
+final class BeveledRectangleBorderUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, BeveledRectangleBorder> {
   /// Utility for defining [BeveledRectangleBorderMix.borderRadius]
   late final borderRadius = BorderRadiusGeometryUtility<T>(
@@ -58,7 +58,7 @@ final class BeveledRectangleBorderUtility<T extends SpecStyle<Object?>>
 ///
 /// This class provides methods to set individual properties of a [ContinuousRectangleBorder].
 /// Use the methods of this class to configure specific properties of a [ContinuousRectangleBorder].
-final class ContinuousRectangleBorderUtility<T extends SpecStyle<Object?>>
+final class ContinuousRectangleBorderUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, ContinuousRectangleBorder> {
   /// Utility for defining [ContinuousRectangleBorderMix.borderRadius]
   late final borderRadius = BorderRadiusGeometryUtility<T>(
@@ -81,7 +81,7 @@ final class ContinuousRectangleBorderUtility<T extends SpecStyle<Object?>>
 ///
 /// This class provides methods to set individual properties of a [CircleBorder].
 /// Use the methods of this class to configure specific properties of a [CircleBorder].
-final class CircleBorderUtility<T extends SpecStyle<Object?>>
+final class CircleBorderUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, CircleBorder> {
   /// Utility for defining [CircleBorderMix.side]
   late final side = BorderSideUtility<T>((v) => call(CircleBorderMix(side: v)));
@@ -102,7 +102,7 @@ final class CircleBorderUtility<T extends SpecStyle<Object?>>
 ///
 /// This class provides methods to set individual properties of a [StarBorder].
 /// Use the methods of this class to configure specific properties of a [StarBorder].
-final class StarBorderUtility<T extends SpecStyle<Object?>>
+final class StarBorderUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, StarBorder> {
   /// Utility for defining [StarBorderMix.side]
   late final side = BorderSideUtility<T>((v) => call(StarBorderMix(side: v)));
@@ -147,7 +147,7 @@ final class StarBorderUtility<T extends SpecStyle<Object?>>
 ///
 /// This class provides methods to set individual properties of a [LinearBorder].
 /// Use the methods of this class to configure specific properties of a [LinearBorder].
-final class LinearBorderUtility<T extends SpecStyle<Object?>>
+final class LinearBorderUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, LinearBorder> {
   /// Utility for defining [LinearBorderMix.side]
   late final side = BorderSideUtility<T>((v) => call(LinearBorderMix(side: v)));
@@ -183,7 +183,7 @@ final class LinearBorderUtility<T extends SpecStyle<Object?>>
 ///
 /// This class provides methods to set individual properties of a [LinearBorderEdge].
 /// Use the methods of this class to configure specific properties of a [LinearBorderEdge].
-final class LinearBorderEdgeUtility<T extends SpecStyle<Object?>>
+final class LinearBorderEdgeUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, LinearBorderEdge> {
   /// Utility for defining [LinearBorderEdgeMix.size]
   late final size = DoubleUtility<T>(
@@ -206,7 +206,7 @@ final class LinearBorderEdgeUtility<T extends SpecStyle<Object?>>
 ///
 /// This class provides methods to set individual properties of a [StadiumBorder].
 /// Use the methods of this class to configure specific properties of a [StadiumBorder].
-final class StadiumBorderUtility<T extends SpecStyle<Object?>>
+final class StadiumBorderUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, StadiumBorder> {
   /// Utility for defining [StadiumBorderMix.side]
   late final side = BorderSideUtility<T>(
@@ -224,7 +224,7 @@ final class StadiumBorderUtility<T extends SpecStyle<Object?>>
 ///
 /// This class provides methods to set individual properties of a [ShapeBorder].
 /// Use the methods of this class to configure specific properties of a [ShapeBorder].
-final class ShapeBorderUtility<T extends SpecStyle<Object?>>
+final class ShapeBorderUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, ShapeBorder> {
   /// Utility for defining RoundedRectangleBorder
   late final roundedRectangle = RoundedRectangleBorderUtility<T>(builder);
