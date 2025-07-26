@@ -208,7 +208,8 @@ void main() {
     });
 
     testWidgets('respects hitTestBehavior', (tester) async {
-      bool wasPressed = false;
+      bool pressablePressed = false;
+      bool backgroundPressed = false;
 
       await tester.pumpWidget(
         MaterialApp(
@@ -216,14 +217,51 @@ void main() {
             children: [
               Positioned.fill(
                 child: GestureDetector(
-                  onTap: () => wasPressed = true,
+                  onTap: () => backgroundPressed = true,
                   child: Container(color: Colors.blue),
                 ),
               ),
               Center(
                 child: Pressable(
-                  hitTestBehavior: HitTestBehavior.translucent,
-                  onPress: () {},
+                  hitTestBehavior: HitTestBehavior.opaque,
+                  onPress: () => pressablePressed = true,
+                  child: Container(
+                    width: 100,
+                    height: 100,
+                    color: Colors.transparent,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
+      // Test with opaque behavior - should block background
+      await tester.tap(find.byType(Pressable));
+      await tester.pumpAndSettle();
+
+      expect(pressablePressed, isTrue);
+      expect(backgroundPressed, isFalse);
+
+      // Reset and test with deferToChild behavior
+      pressablePressed = false;
+      backgroundPressed = false;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Stack(
+            children: [
+              Positioned.fill(
+                child: GestureDetector(
+                  onTap: () => backgroundPressed = true,
+                  child: Container(color: Colors.blue),
+                ),
+              ),
+              Center(
+                child: Pressable(
+                  hitTestBehavior: HitTestBehavior.deferToChild,
+                  onPress: () => pressablePressed = true,
                   child: Container(
                     width: 100,
                     height: 100,
@@ -239,7 +277,9 @@ void main() {
       await tester.tap(find.byType(Pressable));
       await tester.pumpAndSettle();
 
-      expect(wasPressed, isTrue);
+      // With deferToChild and a Container child, the tap should still be handled
+      expect(pressablePressed, isTrue);
+      expect(backgroundPressed, isFalse);
     });
 
     testWidgets('adds semantics when not excluded', (tester) async {

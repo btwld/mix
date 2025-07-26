@@ -214,10 +214,10 @@ class PressableWidgetState extends State<Pressable> {
       hitTestBehavior: widget.hitTestBehavior,
       unpressDelay: widget.unpressDelay,
       child: MixInteractable(
-        enabled: widget.enabled,
         controller: _controller,
-        autofocus: widget.autofocus,
+        enabled: widget.enabled,
         focusNode: widget.focusNode,
+        autofocus: widget.autofocus,
         onFocusChange: widget.onFocusChange,
         actions: actions,
         mouseCursor: mouseCursor,
@@ -314,10 +314,10 @@ class _InteractableState extends State<Interactable> {
   @override
   Widget build(BuildContext context) {
     return MixInteractable(
-      enabled: widget.enabled,
       controller: _controller,
-      autofocus: widget.autofocus,
+      enabled: widget.enabled,
       focusNode: widget.focusNode,
+      autofocus: widget.autofocus,
       onFocusChange: widget.onFocusChange,
       onShowFocusHighlight: widget.onShowFocusHighlight,
       onShowHoverHighlight: widget.onShowHoverHighlight,

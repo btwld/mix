@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 /// A streamlined provider for widget states using [InheritedModel].
@@ -36,7 +37,10 @@ class WidgetStateProvider extends InheritedModel<String> {
   /// This method subscribes to changes only for the specified state,
   /// ensuring minimal rebuilds.
   static bool hasStateOf(BuildContext context, WidgetState state) {
-    return of(context, aspect: state.name)?.any((s) => s == state) ?? false;
+    // Use the of method which properly establishes the dependency
+    final states = of(context, aspect: state.name);
+
+    return states?.contains(state) ?? false;
   }
 
   /// The current set of active widget states.
@@ -47,7 +51,8 @@ class WidgetStateProvider extends InheritedModel<String> {
 
   @override
   bool updateShouldNotify(WidgetStateProvider oldWidget) {
-    return !identical(states, oldWidget.states) ||
+    // Compare the actual content of the sets, not their identity
+    return !setEquals(states, oldWidget.states) ||
         mousePosition != oldWidget.mousePosition;
   }
 
@@ -58,8 +63,8 @@ class WidgetStateProvider extends InheritedModel<String> {
   ) {
     // Only notify dependents if a state they care about changed
     for (final state in dependencies) {
-      final hadState = oldWidget.states.map((s) => s.name).contains(state);
-      final hasState = states.map((s) => s.name).contains(state);
+      final hadState = oldWidget.states.any((s) => s.name == state);
+      final hasState = states.any((s) => s.name == state);
       if (hadState != hasState) return true;
     }
 
