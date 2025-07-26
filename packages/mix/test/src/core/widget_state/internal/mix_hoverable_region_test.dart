@@ -45,7 +45,7 @@ void main() {
           home: MixHoverableRegion(
             controller: controller,
             onHoverChange: (hovered) => lastHoverState = hovered,
-            child: Container(
+            child: SizedBox(
               key: const Key('test'),
               width: 100,
               height: 100,
@@ -78,7 +78,7 @@ void main() {
       await gesture.removePointer();
     });
 
-    testWidgets('tracks mouse position when enabled', (WidgetTester tester) async {
+    testWidgets('tracks mouse position when widgets are listening', (WidgetTester tester) async {
       final controller = WidgetStatesController();
       PointerPosition? capturedPosition;
 
@@ -86,12 +86,10 @@ void main() {
         MaterialApp(
           home: MixHoverableRegion(
             controller: controller,
-            trackMousePosition: true,
             child: Builder(
               builder: (context) {
-                final scope = context.dependOnInheritedWidgetOfExactType<WidgetStateScope>()!;
-                capturedPosition = scope.pointerPosition;
-                return Container(
+                capturedPosition = PointerPosition.of(context);
+                return SizedBox(
                   key: const Key('test'),
                   width: 100,
                   height: 100,
@@ -116,12 +114,10 @@ void main() {
         MaterialApp(
           home: MixHoverableRegion(
             controller: controller,
-            trackMousePosition: true,
             child: Builder(
               builder: (context) {
-                final scope = context.dependOnInheritedWidgetOfExactType<WidgetStateScope>()!;
-                capturedPosition = scope.pointerPosition;
-                return Container(
+                capturedPosition = PointerPosition.of(context);
+                return SizedBox(
                   key: const Key('test'),
                   width: 100,
                   height: 100,
@@ -149,7 +145,7 @@ void main() {
             controller: controller,
             enabled: false,
             onHoverChange: (hovered) => hoverCallbackCalled = true,
-            child: Container(
+            child: SizedBox(
               key: const Key('test'),
               width: 100,
               height: 100,

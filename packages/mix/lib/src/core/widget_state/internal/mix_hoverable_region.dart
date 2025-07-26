@@ -2,12 +2,13 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import '../cursor_position_provider.dart';
 import '../widget_state_provider.dart';
 
-/// A widget that provides hover state and mouse position tracking.
+/// A widget that provides hover state and automatic mouse position tracking.
 ///
 /// This widget wraps its child with a MouseRegion to track hover state
-/// and optionally track the mouse position relative to the widget bounds.
+/// and automatically tracks mouse position when widgets are listening for it.
 class MixHoverableRegion extends StatefulWidget {
   const MixHoverableRegion({
     super.key,
@@ -15,14 +16,12 @@ class MixHoverableRegion extends StatefulWidget {
     this.controller,
     this.enabled = true,
     this.onHoverChange,
-    this.trackMousePosition = false,
   });
 
   final Widget child;
   final WidgetStatesController? controller;
   final bool enabled;
   final ValueChanged<bool>? onHoverChange;
-  final bool trackMousePosition;
 
   @override
   State<MixHoverableRegion> createState() => _MixHoverableRegionState();
@@ -30,14 +29,14 @@ class MixHoverableRegion extends StatefulWidget {
 
 class _MixHoverableRegionState extends State<MixHoverableRegion> {
   late final WidgetStatesController _controller;
-  late final ValueNotifier<PointerPosition?> _pointerPositionNotifier;
+  late final CursorPositionNotifier _cursorPositionNotifier;
 
   @override
   void initState() {
     super.initState();
     _controller = widget.controller ?? WidgetStatesController();
     _controller.disabled = !widget.enabled;
-    _pointerPositionNotifier = ValueNotifier<PointerPosition?>(null);
+    _cursorPositionNotifier = CursorPositionNotifier();
   }
 
 
@@ -54,12 +53,15 @@ class _MixHoverableRegionState extends State<MixHoverableRegion> {
     setState(() {
       _controller.hovered = false;
     });
-    _pointerPositionNotifier.value = null;
+    _cursorPositionNotifier.clearPosition();
     widget.onHoverChange?.call(false);
   }
 
   void _handleMouseMove(PointerHoverEvent event) {
-    if (!widget.enabled || !widget.trackMousePosition) return;
+    if (!widget.enabled) return;
+
+    // Only update position if there are listeners
+    if (!_cursorPositionNotifier.shouldTrack) return;
 
     // Only update position, no setState - avoids rebuilds
     final box = context.findRenderObject() as RenderBox?;
@@ -75,10 +77,7 @@ class _MixHoverableRegionState extends State<MixHoverableRegion> {
         ((ay - 0.5) * 2).clamp(-1.0, 1.0),
       );
 
-      _pointerPositionNotifier.value = PointerPosition(
-        position: alignment,
-        offset: localPosition,
-      );
+      _cursorPositionNotifier.updatePosition(alignment, localPosition);
     }
   }
 
@@ -95,7 +94,7 @@ class _MixHoverableRegionState extends State<MixHoverableRegion> {
     if (widget.controller == null) {
       _controller.dispose();
     }
-    _pointerPositionNotifier.dispose();
+    _cursorPositionNotifier.dispose();
     super.dispose();
   }
 
@@ -105,17 +104,19 @@ class _MixHoverableRegionState extends State<MixHoverableRegion> {
     return MouseRegion(
       onEnter: _handleHoverEnter,
       onExit: _handleHoverExit,
-      onHover: widget.trackMousePosition ? _handleMouseMove : null,
+      onHover: _handleMouseMove,
       opaque: false,
-      child: ListenableBuilder(
-        listenable: _controller,
-        builder: (context, _) {
-          return WidgetStateScope(
-            states: _controller.value,
-            pointerPosition: _pointerPositionNotifier.value,
-            child: widget.child,
-          );
-        },
+      child: CursorPositionProvider(
+        notifier: _cursorPositionNotifier,
+        child: ListenableBuilder(
+          listenable: _controller,
+          builder: (context, _) {
+            return WidgetStateScope(
+              states: _controller.value,
+              child: widget.child,
+            );
+          },
+        ),
       ),
     );
   }

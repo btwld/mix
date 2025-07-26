@@ -1,20 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'cursor_position_provider.dart';
+
 class WidgetStateScope extends InheritedModel<WidgetState> {
   const WidgetStateScope({
     super.key,
     required this.states,
-    this.pointerPosition,
     required super.child,
   });
-
-  static PointerPosition? positionOf(BuildContext context) {
-    final provider = context
-        .dependOnInheritedWidgetOfExactType<WidgetStateScope>();
-
-    return provider?.pointerPosition;
-  }
 
   static WidgetStateScope? maybeOf(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType();
@@ -31,12 +25,9 @@ class WidgetStateScope extends InheritedModel<WidgetState> {
 
   final Set<WidgetState> states;
 
-  final PointerPosition? pointerPosition;
-
   @override
   bool updateShouldNotify(WidgetStateScope oldWidget) {
-    return !setEquals(states, oldWidget.states) ||
-        pointerPosition != oldWidget.pointerPosition;
+    return !setEquals(states, oldWidget.states);
   }
 
   @override
@@ -51,12 +42,6 @@ class WidgetStateScope extends InheritedModel<WidgetState> {
       }
     }
 
-    // Also check if cursor position changed when hovering
-    if (states.contains(WidgetState.hovered) &&
-        pointerPosition != oldWidget.pointerPosition) {
-      return dependencies.contains(WidgetState.hovered);
-    }
-
     return false;
   }
 }
@@ -67,6 +52,43 @@ class PointerPosition {
   final Offset offset;
 
   const PointerPosition({required this.position, required this.offset});
+
+  /// Gets the current cursor position from the nearest provider.
+  ///
+  /// Returns the current [PointerPosition] if available, or null if no cursor
+  /// position is being tracked or the widget is not hovering.
+  ///
+  /// This method registers the calling widget as a dependency, so it will
+  /// rebuild when the cursor position changes.
+  static PointerPosition? of(BuildContext context) {
+    final provider = context.dependOnInheritedWidgetOfExactType<CursorPositionProvider>();
+
+    return provider?.notifier?.value;
+  }
+
+  /// Gets the cursor position without creating a dependency.
+  ///
+  /// Returns the current [PointerPosition] if available, or null if no cursor
+  /// position is being tracked. Unlike [of], this method does not register
+  /// the calling widget as a dependency.
+  static PointerPosition? maybeOf(BuildContext context) {
+    final provider = context.getInheritedWidgetOfExactType<CursorPositionProvider>();
+
+    return provider?.notifier?.value;
+  }
+
+  /// Gets the notifier for direct listening.
+  ///
+  /// This method is primarily intended for testing and advanced use cases.
+  /// Most widgets should use [of] instead.
+  /// 
+  /// Note: This method does not create a dependency on the provider.
+  @visibleForTesting
+  static CursorPositionNotifier? notifierOf(BuildContext context) {
+    final provider = context.getInheritedWidgetOfExactType<CursorPositionProvider>();
+
+    return provider?.notifier;
+  }
 
   @override
   bool operator ==(Object other) {

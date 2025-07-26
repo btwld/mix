@@ -70,7 +70,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: WidgetStateScope(
-              states: {WidgetState.hovered}, // Enable hovered state
+              states: const {WidgetState.hovered}, // Enable hovered state
               child: Builder(
                 builder: (context) {
                   final result = testAttribute.getAllStyleVariants(
@@ -118,7 +118,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: WidgetStateScope(
-              states: {WidgetState.hovered, WidgetState.pressed, WidgetState.focused},
+              states: const {WidgetState.hovered, WidgetState.pressed, WidgetState.focused},
               child: Builder(
                 builder: (context) {
                   final result = testAttribute.getAllStyleVariants(context, namedVariants: {});
@@ -376,7 +376,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: WidgetStateScope(
-              states: {WidgetState.hovered}, // Enable hovered state
+              states: const {WidgetState.hovered}, // Enable hovered state
               child: Builder(
                 builder: (context) {
                   final result = testAttribute.getAllStyleVariants(context, namedVariants: {});
@@ -458,7 +458,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: WidgetStateScope(
-              states: {WidgetState.hovered}, // Enable hovered state
+              states: const {WidgetState.hovered}, // Enable hovered state
               child: Builder(
                 builder: (context) {
                   final result = testAttribute.getAllStyleVariants(
@@ -515,7 +515,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: WidgetStateScope(
-              states: {WidgetState.hovered, WidgetState.pressed, WidgetState.focused, WidgetState.disabled},
+              states: const {WidgetState.hovered, WidgetState.pressed, WidgetState.focused, WidgetState.disabled},
               child: Builder(
                 builder: (context) {
                   final result = testAttribute.getAllStyleVariants(context, namedVariants: {});
@@ -677,7 +677,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: WidgetStateScope(
-              states: {WidgetState.hovered, WidgetState.pressed},
+              states: const {WidgetState.hovered, WidgetState.pressed},
               child: Builder(
                 builder: (context) {
                   final result = testAttribute.getAllStyleVariants(context, namedVariants: {});
@@ -715,7 +715,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: WidgetStateScope(
-              states: {WidgetState.hovered, WidgetState.pressed},
+              states: const {WidgetState.hovered, WidgetState.pressed},
               child: Builder(
                 builder: (context) {
                   final result = testAttribute.getAllStyleVariants(context, namedVariants: {});
