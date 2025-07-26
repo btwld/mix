@@ -1,74 +1,80 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/src/core/widget_state/internal/mix_interactable.dart';
+import 'package:mix/src/core/widget_state/internal/mix_hoverable_region.dart';
 import 'package:mix/src/core/widget_state/widget_state_provider.dart';
 
 import '../../../../helpers/testing_utils.dart';
 
 void main() {
-  group('CursorPositionController with MixInteractable', () {
-    testWidgets('updates cursor position on hover', (
+  group('MixHoverableRegion pointer position tracking', () {
+    testWidgets('updates pointer position on hover when trackMousePosition is true', (
       WidgetTester tester,
     ) async {
       const key = ValueKey('test_box');
 
       await tester.pumpMaterialApp(
-        MixInteractable(
-          child: const SizedBox(key: key, width: 100, height: 100),
+        MixHoverableRegion(
+          trackMousePosition: true,
+          child: Builder(
+            builder: (context) {
+              return const SizedBox(key: key, width: 100, height: 100);
+            },
+          ),
         ),
       );
 
       final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
       await gesture.addPointer(location: Offset.zero);
 
-      /// Get he WidgetStateProvider to access the cursor position
+      // Get the WidgetStateScope to access the pointer position
       var context = tester.element(find.byKey(key));
-      final (_, beforePosition) = WidgetStateScope.of(context);
+      var position = WidgetStateScope.positionOf(context);
+      expect(position, isNull);
 
-      await gesture.moveTo(const Offset(50, 50));
+      // Move mouse to center
+      await gesture.moveTo(tester.getCenter(find.byKey(key)));
       await tester.pumpAndSettle();
 
       context = tester.element(find.byKey(key));
-
-      final (_, afterPosition) = WidgetStateScope.of(context);
-      expect(beforePosition, isNull);
-
-      expect(afterPosition?.offset, equals(const Offset(50, 50)));
+      position = WidgetStateScope.positionOf(context);
+      
+      expect(position, isNotNull);
+      expect(position!.position, equals(const Alignment(0.0, 0.0)));
+      expect(position.offset, equals(const Offset(50, 50)));
 
       addTearDown(gesture.removePointer);
     });
-  });
-  group('CursorPositionController', () {
-    test('updates cursor position correctly', () {
-      final controller = CursorPositionController();
-      const size = Size(200, 100);
 
-      controller.updatePosition(const Offset(100, 50), size);
+    testWidgets('does not track pointer position when trackMousePosition is false', (
+      WidgetTester tester,
+    ) async {
+      const key = ValueKey('test_box');
 
-      expect(controller.value?.position, equals(const Alignment(0.0, 0.0)));
-      expect(controller.value?.offset, equals(const Offset(100, 50)));
-    });
+      await tester.pumpMaterialApp(
+        MixHoverableRegion(
+          trackMousePosition: false, // Default
+          child: Builder(
+            builder: (context) {
+              return const SizedBox(key: key, width: 100, height: 100);
+            },
+          ),
+        ),
+      );
 
-    test('clamps cursor position to valid range', () {
-      final controller = CursorPositionController();
-      const size = Size(200, 100);
+      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer(location: Offset.zero);
 
-      controller.updatePosition(const Offset(250, 150), size);
+      // Move mouse to center
+      await gesture.moveTo(tester.getCenter(find.byKey(key)));
+      await tester.pumpAndSettle();
 
-      expect(controller.value?.position, equals(const Alignment(1.0, 1.0)));
-      expect(controller.value?.offset, equals(const Offset(250, 150)));
-    });
+      final context = tester.element(find.byKey(key));
+      final position = WidgetStateScope.positionOf(context);
+      
+      expect(position, isNull);
 
-    test('clears cursor position', () {
-      final controller = CursorPositionController();
-      const size = Size(200, 100);
-
-      controller.updatePosition(const Offset(100, 50), size);
-      expect(controller.value, isNotNull);
-
-      controller.clear();
-      expect(controller.value, isNull);
+      addTearDown(gesture.removePointer);
     });
   });
 

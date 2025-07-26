@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/src/core/widget_state/widget_state_controller.dart';
-import 'package:mix/src/widgets/pressable_widget.dart';
+import 'package:mix/mix.dart';
 
 import 'widget_state_test_helper.dart';
 

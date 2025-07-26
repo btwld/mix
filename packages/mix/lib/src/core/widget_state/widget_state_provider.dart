@@ -5,7 +5,7 @@ class WidgetStateScope extends InheritedModel<WidgetState> {
   const WidgetStateScope({
     super.key,
     required this.states,
-    this.cursorPosition,
+    this.pointerPosition,
     required super.child,
   });
 
@@ -13,7 +13,11 @@ class WidgetStateScope extends InheritedModel<WidgetState> {
     final provider = context
         .dependOnInheritedWidgetOfExactType<WidgetStateScope>();
 
-    return provider?.cursorPosition;
+    return provider?.pointerPosition;
+  }
+
+  static WidgetStateScope? maybeOf(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType();
   }
 
   static bool hasState(BuildContext context, WidgetState state) {
@@ -27,12 +31,12 @@ class WidgetStateScope extends InheritedModel<WidgetState> {
 
   final Set<WidgetState> states;
 
-  final PointerPosition? cursorPosition;
+  final PointerPosition? pointerPosition;
 
   @override
   bool updateShouldNotify(WidgetStateScope oldWidget) {
-    return setEquals(states, oldWidget.states) ||
-        cursorPosition != oldWidget.cursorPosition;
+    return !setEquals(states, oldWidget.states) ||
+        pointerPosition != oldWidget.pointerPosition;
   }
 
   @override
@@ -49,7 +53,7 @@ class WidgetStateScope extends InheritedModel<WidgetState> {
 
     // Also check if cursor position changed when hovering
     if (states.contains(WidgetState.hovered) &&
-        cursorPosition != oldWidget.cursorPosition) {
+        pointerPosition != oldWidget.pointerPosition) {
       return dependencies.contains(WidgetState.hovered);
     }
 

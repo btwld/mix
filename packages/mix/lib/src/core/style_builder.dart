@@ -5,7 +5,7 @@ import 'animation/style_animation_builder.dart';
 import 'resolved_style_provider.dart';
 import 'spec.dart';
 import 'style.dart';
-import 'widget_state/internal/mix_interactable.dart';
+import 'widget_state/internal/mix_hoverable_region.dart';
 import 'widget_state/widget_state_provider.dart';
 
 /// Builds widgets with Mix styling.
@@ -64,9 +64,13 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
 
   @override
   Widget build(BuildContext context) {
+    final widgetStates = widget.style?.widgetStates ?? {};
     // Calculate interactivity need early
-    final needsInteractivity =
-        widget.controller != null || widget.style?.hasWidgetState == true;
+    final needsToTrackWidgetState =
+        widget.controller == null || widgetStates.isNotEmpty;
+
+    final alreadyHasWidgetStateScope =
+        WidgetStateScope.maybeOf(context) != null;
 
     Widget current = ResolvedStyleBuilder(
       builder: widget.builder,
@@ -75,10 +79,10 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
       orderOfModifiers: widget.orderOfModifiers,
     );
 
-    if (needsInteractivity && WidgetStateScope.of(context) == null) {
+    if (needsToTrackWidgetState && !alreadyHasWidgetStateScope) {
       // If we need interactivity and no MixWidgetStateModel is present,
-      // wrap in MixInteractable
-      current = MixInteractable(controller: _controller, child: current);
+      // wrap in MixHoverableRegion
+      current = MixHoverableRegion(controller: _controller, child: current);
     }
 
     return current;

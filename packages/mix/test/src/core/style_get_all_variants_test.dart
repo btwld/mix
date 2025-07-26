@@ -5,14 +5,42 @@ import 'package:mix/mix.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
+  // Helper to test variant priority with proper WidgetStateScope
+  Future<void> testVariantPriority(
+    WidgetTester tester, {
+    required _MockSpecAttribute testAttribute,
+    required Set<WidgetState> activeStates,
+    required Set<NamedVariant> namedVariants,
+    required double expectedWidth,
+  }) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: WidgetStateScope(
+          states: activeStates,
+          child: Builder(
+            builder: (context) {
+              final result = testAttribute.getAllStyleVariants(
+                context,
+                namedVariants: namedVariants,
+              );
+              final spec = result.resolve(context);
+              expect((spec.resolvedValue as Map)['width'], expectedWidth);
+              return Container();
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
   group('Style.getAllStyleVariants', () {
     group('Variant priority system', () {
-      test('WidgetStateVariant gets sorted last (highest priority)', () {
+      testWidgets('WidgetStateVariant gets sorted last (highest priority)', (tester) async {
         // Create test attribute with mixed variant types
         final contextVariant = ContextVariant('context', (context) => true);
         const namedVariant = NamedVariant('named');
-        // Create a mock WidgetStateVariant that always matches for testing priority
-        final widgetStateVariant = _MockWidgetStateVariant();
+        // Create a real WidgetStateVariant for testing priority
+        final widgetStateVariant = WidgetStateVariant(WidgetState.hovered);
 
         // Create VariantSpecAttributes with different priorities
         final contextVarAttr = VariantStyleAttribute(
@@ -38,22 +66,35 @@ void main() {
           ],
         );
 
-        final context = MockBuildContext();
-        final result = testAttribute.getAllStyleVariants(
-          context,
-          namedVariants: {namedVariant},
+        // Create a proper widget tree with WidgetStateScope
+        await tester.pumpWidget(
+          MaterialApp(
+            home: WidgetStateScope(
+              states: {WidgetState.hovered}, // Enable hovered state
+              child: Builder(
+                builder: (context) {
+                  final result = testAttribute.getAllStyleVariants(
+                    context,
+                    namedVariants: {namedVariant},
+                  );
+                  
+                  // The result should have applied all variants
+                  // WidgetStateVariant (width: 300) should have been applied last
+                  final spec = result.resolve(context);
+                  expect((spec.resolvedValue as Map)['width'], 300.0);
+                  
+                  return Container();
+                },
+              ),
+            ),
+          ),
         );
-
-        // The result should have applied all variants
-        // WidgetStateVariant (width: 300) should have been applied last
-        final spec = result.resolve(context);
-        expect((spec.resolvedValue as Map)['width'], 300.0);
       });
 
-      test('multiple WidgetStateVariants maintain relative order', () {
-        final hoveredVariant = _MockWidgetStateVariant();
-        final pressedVariant = _MockWidgetStateVariant();
-        final focusedVariant = _MockWidgetStateVariant();
+      testWidgets('multiple WidgetStateVariants maintain relative order', (tester) async {
+        final hoveredVariant = WidgetStateVariant(WidgetState.hovered);
+        final pressedVariant = WidgetStateVariant(WidgetState.pressed);
+        final focusedVariant = WidgetStateVariant(WidgetState.focused);
 
         final hoveredVarAttr = VariantStyleAttribute(
           hoveredVariant,
@@ -73,20 +114,33 @@ void main() {
           variants: [hoveredVarAttr, pressedVarAttr, focusedVarAttr],
         );
 
-        final context = MockBuildContext();
-        final result = testAttribute.getAllStyleVariants(context);
-
-        // All WidgetStateVariants should be applied, with focused (300) last
-        final spec = result.resolve(context);
-        expect((spec.resolvedValue as Map)['width'], 300.0);
+        // Create a proper widget tree with all widget states enabled
+        await tester.pumpWidget(
+          MaterialApp(
+            home: WidgetStateScope(
+              states: {WidgetState.hovered, WidgetState.pressed, WidgetState.focused},
+              child: Builder(
+                builder: (context) {
+                  final result = testAttribute.getAllStyleVariants(context, namedVariants: {});
+                  
+                  // All WidgetStateVariants should be applied, with focused (300) last
+                  final spec = result.resolve(context);
+                  expect((spec.resolvedValue as Map)['width'], 300.0);
+                  
+                  return Container();
+                },
+              ),
+            ),
+          ),
+        );
       });
 
-      test('mixed variant types are sorted correctly', () {
+      testWidgets('mixed variant types are sorted correctly', (tester) async {
         // Create a mix of all variant types
         final contextVariant = ContextVariant('context', (context) => true);
         const namedVariant = NamedVariant('named');
-        final widgetStateVariant1 = _MockWidgetStateVariant();
-        final widgetStateVariant2 = _MockWidgetStateVariant();
+        final widgetStateVariant1 = WidgetStateVariant(WidgetState.hovered);
+        final widgetStateVariant2 = WidgetStateVariant(WidgetState.pressed);
         final multiVariant = MultiVariant.and(const [
           NamedVariant('multi1'),
           NamedVariant('multi2'),
@@ -120,19 +174,17 @@ void main() {
           variants: varAttrs,
         );
 
-        final context = MockBuildContext();
-        final result = testAttribute.getAllStyleVariants(
-          context,
+        await testVariantPriority(
+          tester,
+          testAttribute: testAttribute,
+          activeStates: {WidgetState.hovered, WidgetState.pressed},
           namedVariants: {
             namedVariant,
             const NamedVariant('multi1'),
             const NamedVariant('multi2'),
           },
+          expectedWidth: 300.0, // WidgetStateVariant2 (pressed) applied last
         );
-
-        // WidgetStateVariant2 (width: 300) should be applied last
-        final spec = result.resolve(context);
-        expect((spec.resolvedValue as Map)['width'], 300.0);
       });
 
       test('non-WidgetStateVariants have equal priority', () {
@@ -207,7 +259,7 @@ void main() {
 
         // MockBuildContext has size (800, 600) which is > 768
         final context = MockBuildContext();
-        final result = testAttribute.getAllStyleVariants(context);
+        final result = testAttribute.getAllStyleVariants(context, namedVariants: {});
 
         // Desktop variant should apply (width: 200)
         final spec = result.resolve(context);
@@ -264,7 +316,7 @@ void main() {
         );
 
         final context = MockBuildContext();
-        final result = testAttribute.getAllStyleVariants(context);
+        final result = testAttribute.getAllStyleVariants(context, namedVariants: {});
 
         // ContextVariantBuilder variant should apply (width: 100)
         final spec = result.resolve(context);
@@ -302,9 +354,9 @@ void main() {
     });
 
     group('Merging behavior', () {
-      test('variants are merged in sorted order', () {
+      testWidgets('variants are merged in sorted order', (tester) async {
         final contextVariant = ContextVariant('context', (context) => true);
-        final widgetStateVariant = _MockWidgetStateVariant();
+        final widgetStateVariant = WidgetStateVariant(WidgetState.hovered);
 
         final contextVarAttr = VariantStyleAttribute(
           contextVariant,
@@ -321,20 +373,32 @@ void main() {
           variants: [contextVarAttr, widgetStateVarAttr],
         );
 
-        final context = MockBuildContext();
-        final result = testAttribute.getAllStyleVariants(context);
-
-        // WidgetStateVariant should override width, but context variant height remains
-        final spec = result.resolve(context);
-        expect((spec.resolvedValue as Map)['width'], 300.0);
-        expect((spec.resolvedValue as Map)['height'], 200.0);
+        await tester.pumpWidget(
+          MaterialApp(
+            home: WidgetStateScope(
+              states: {WidgetState.hovered}, // Enable hovered state
+              child: Builder(
+                builder: (context) {
+                  final result = testAttribute.getAllStyleVariants(context, namedVariants: {});
+                  
+                  // WidgetStateVariant should override width, but context variant height remains
+                  final spec = result.resolve(context);
+                  expect((spec.resolvedValue as Map)['width'], 300.0);
+                  expect((spec.resolvedValue as Map)['height'], 200.0);
+                  
+                  return Container();
+                },
+              ),
+            ),
+          ),
+        );
       });
 
       test('empty variants list returns original attribute', () {
         final testAttribute = _MockSpecAttribute(width: 100.0, variants: []);
 
         final context = MockBuildContext();
-        final result = testAttribute.getAllStyleVariants(context);
+        final result = testAttribute.getAllStyleVariants(context, namedVariants: {});
 
         // Should return original attribute unchanged
         final spec = result.resolve(context);
@@ -346,7 +410,7 @@ void main() {
         final testAttribute = _MockSpecAttribute(width: 100.0, variants: null);
 
         final context = MockBuildContext();
-        final result = testAttribute.getAllStyleVariants(context);
+        final result = testAttribute.getAllStyleVariants(context, namedVariants: {});
 
         // Should return original attribute unchanged
         final spec = result.resolve(context);
@@ -356,11 +420,11 @@ void main() {
     });
 
     group('Complex scenarios', () {
-      test('combination of all variant types with priority', () {
+      testWidgets('combination of all variant types with priority', (tester) async {
         // Create comprehensive test with all variant types
         final contextVariant = ContextVariant('context', (context) => true);
         const namedVariant = NamedVariant('named');
-        final widgetStateVariant = _MockWidgetStateVariant();
+        final widgetStateVariant = WidgetStateVariant(WidgetState.hovered);
         final multiVariant = MultiVariant.and([
           ContextVariant('multi_context', (context) => true),
           const NamedVariant('multi_named'),
@@ -391,22 +455,34 @@ void main() {
           variants: varAttrs,
         );
 
-        final context = MockBuildContext();
-        final result = testAttribute.getAllStyleVariants(
-          context,
-          namedVariants: {namedVariant, const NamedVariant('multi_named')},
+        await tester.pumpWidget(
+          MaterialApp(
+            home: WidgetStateScope(
+              states: {WidgetState.hovered}, // Enable hovered state
+              child: Builder(
+                builder: (context) {
+                  final result = testAttribute.getAllStyleVariants(
+                    context,
+                    namedVariants: {namedVariant, const NamedVariant('multi_named')},
+                  );
+                  
+                  // WidgetStateVariant should have highest priority (width: 300)
+                  final spec = result.resolve(context);
+                  expect((spec.resolvedValue as Map)['width'], 300.0);
+                  
+                  return Container();
+                },
+              ),
+            ),
+          ),
         );
-
-        // WidgetStateVariant should have highest priority (width: 300)
-        final spec = result.resolve(context);
-        expect((spec.resolvedValue as Map)['width'], 300.0);
       });
 
-      test('multiple WidgetStateVariants with different states', () {
-        final hoveredVariant = _MockWidgetStateVariant();
-        final pressedVariant = _MockWidgetStateVariant();
-        final focusedVariant = _MockWidgetStateVariant();
-        final disabledVariant = _MockWidgetStateVariant();
+      testWidgets('multiple WidgetStateVariants with different states', (tester) async {
+        final hoveredVariant = WidgetStateVariant(WidgetState.hovered);
+        final pressedVariant = WidgetStateVariant(WidgetState.pressed);
+        final focusedVariant = WidgetStateVariant(WidgetState.focused);
+        final disabledVariant = WidgetStateVariant(WidgetState.disabled);
 
         final varAttrs = [
           VariantStyleAttribute(
@@ -436,13 +512,25 @@ void main() {
           variants: varAttrs,
         );
 
-        final context = MockBuildContext();
-        final result = testAttribute.getAllStyleVariants(context);
-
-        // Last merged properties: width from focused (300), height from disabled (400)
-        final spec = result.resolve(context);
-        expect((spec.resolvedValue as Map)['width'], 300.0);
-        expect((spec.resolvedValue as Map)['height'], 400.0);
+        await tester.pumpWidget(
+          MaterialApp(
+            home: WidgetStateScope(
+              states: {WidgetState.hovered, WidgetState.pressed, WidgetState.focused, WidgetState.disabled},
+              child: Builder(
+                builder: (context) {
+                  final result = testAttribute.getAllStyleVariants(context, namedVariants: {});
+                  
+                  // Last merged properties: width from focused (300), height from disabled (400)
+                  final spec = result.resolve(context);
+                  expect((spec.resolvedValue as Map)['width'], 300.0);
+                  expect((spec.resolvedValue as Map)['height'], 400.0);
+                  
+                  return Container();
+                },
+              ),
+            ),
+          ),
+        );
       });
 
       test('variant merging preserves base attribute properties', () {
@@ -460,7 +548,7 @@ void main() {
         );
 
         final context = MockBuildContext();
-        final result = testAttribute.getAllStyleVariants(context);
+        final result = testAttribute.getAllStyleVariants(context, namedVariants: {});
 
         // Base width preserved, variant height applied
         final spec = result.resolve(context);
@@ -487,7 +575,7 @@ void main() {
         final context = MockBuildContext();
         final stopwatch = Stopwatch()..start();
 
-        final result = testAttribute.getAllStyleVariants(context);
+        final result = testAttribute.getAllStyleVariants(context, namedVariants: {});
 
         stopwatch.stop();
         expect(stopwatch.elapsedMilliseconds, lessThan(100));
@@ -571,10 +659,10 @@ void main() {
     });
 
     group('Integration with existing variant system', () {
-      test('works with actual WidgetStateVariant instances', () {
+      testWidgets('works with actual WidgetStateVariant instances', (tester) async {
         // Test with real WidgetStateVariant from the codebase
-        final hoverVariant = _MockWidgetStateVariant();
-        final pressVariant = _MockWidgetStateVariant();
+        final hoverVariant = WidgetStateVariant(WidgetState.hovered);
+        final pressVariant = WidgetStateVariant(WidgetState.pressed);
 
         final varAttrs = [
           VariantStyleAttribute(hoverVariant, _MockSpecAttribute(width: 100.0)),
@@ -586,23 +674,35 @@ void main() {
           variants: varAttrs,
         );
 
-        final context = MockBuildContext();
-        final result = testAttribute.getAllStyleVariants(context);
-
-        // Press variant (last) should apply
-        final spec = result.resolve(context);
-        expect((spec.resolvedValue as Map)['width'], 200.0);
+        await tester.pumpWidget(
+          MaterialApp(
+            home: WidgetStateScope(
+              states: {WidgetState.hovered, WidgetState.pressed},
+              child: Builder(
+                builder: (context) {
+                  final result = testAttribute.getAllStyleVariants(context, namedVariants: {});
+                  
+                  // Press variant (last) should apply
+                  final spec = result.resolve(context);
+                  expect((spec.resolvedValue as Map)['width'], 200.0);
+                  
+                  return Container();
+                },
+              ),
+            ),
+          ),
+        );
       });
 
-      test('integrates with predefined variant instances', () {
+      testWidgets('integrates with predefined variant instances', (tester) async {
         // Test with predefined variants from the variant system
         final varAttrs = [
           VariantStyleAttribute(
-            _MockWidgetStateVariant(), // Mock hover variant
+            WidgetStateVariant(WidgetState.hovered), // hover variant
             _MockSpecAttribute(width: 100.0),
           ),
           VariantStyleAttribute(
-            _MockWidgetStateVariant(), // Mock press variant
+            WidgetStateVariant(WidgetState.pressed), // press variant
             _MockSpecAttribute(width: 200.0),
           ),
         ];
@@ -612,12 +712,24 @@ void main() {
           variants: varAttrs,
         );
 
-        final context = MockBuildContext();
-        final result = testAttribute.getAllStyleVariants(context);
-
-        // Both are WidgetStateVariants, press (last) should apply
-        final spec = result.resolve(context);
-        expect((spec.resolvedValue as Map)['width'], 200.0);
+        await tester.pumpWidget(
+          MaterialApp(
+            home: WidgetStateScope(
+              states: {WidgetState.hovered, WidgetState.pressed},
+              child: Builder(
+                builder: (context) {
+                  final result = testAttribute.getAllStyleVariants(context, namedVariants: {});
+                  
+                  // Both are WidgetStateVariants, press (last) should apply
+                  final spec = result.resolve(context);
+                  expect((spec.resolvedValue as Map)['width'], 200.0);
+                  
+                  return Container();
+                },
+              ),
+            ),
+          ),
+        );
       });
     });
   });
@@ -651,23 +763,3 @@ class _MockSpecAttribute extends StyleAttribute<MockSpec> {
 }
 
 // Mock ContextVariant that always matches for testing priority behavior
-class _MockWidgetStateVariant extends ContextVariant {
-  static int _counter = 0;
-  final int _id = _counter++;
-
-  _MockWidgetStateVariant() : super('mock_widget_state_$_counter', (_) => true);
-
-  @override
-  String get key => 'mock_widget_state_$_id';
-
-  @override
-  bool when(BuildContext context) => true; // Always matches for testing
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is _MockWidgetStateVariant && other._id == _id;
-
-  @override
-  int get hashCode => _id.hashCode;
-}

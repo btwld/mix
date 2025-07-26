@@ -1,7 +1,8 @@
 import 'package:flutter/widgets.dart';
 
 import '../core/widget_state/internal/mix_gesturable.dart';
-import '../core/widget_state/internal/mix_interactable.dart';
+import '../core/widget_state/internal/mix_hoverable_region.dart';
+import '../core/widget_state/widget_state_provider.dart';
 import '../internal/constants.dart';
 import '../specs/box/box_attribute.dart';
 import '../specs/box/box_widget.dart';
@@ -212,16 +213,30 @@ class PressableWidgetState extends State<Pressable> {
       excludeFromSemantics: widget.excludeFromSemantics,
       hitTestBehavior: widget.hitTestBehavior,
       unpressDelay: widget.unpressDelay,
-      child: MixInteractable(
-        focusNode: widget.focusNode,
-        autofocus: widget.autofocus,
-        actions: actions,
-        mouseCursor: mouseCursor,
-
-        controller: _controller,
-        enabled: widget.enabled,
-        onFocusChange: widget.onFocusChange,
-        child: widget.child,
+      child: MouseRegion(
+        cursor: mouseCursor,
+        child: Actions(
+          actions: actions,
+          child: Focus(
+            focusNode: widget.focusNode,
+            autofocus: widget.autofocus,
+            onFocusChange: (hasFocus) {
+              if (widget.enabled) {
+                setState(() {
+                  _controller.focused = hasFocus;
+                });
+              }
+              widget.onFocusChange?.call(hasFocus);
+            },
+            onKeyEvent: widget.onKeyEvent ?? widget.onKey,
+            canRequestFocus: widget.canRequestFocus && widget.enabled,
+            child: MixHoverableRegion(
+              controller: _controller,
+              enabled: widget.enabled,
+              child: widget.child,
+            ),
+          ),
+        ),
       ),
     );
 

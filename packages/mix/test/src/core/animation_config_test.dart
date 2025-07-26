@@ -82,10 +82,9 @@ void main() {
           damping: 15.0,
         );
 
-        expect(
-          config.spring,
-          SpringDescription(mass: 3.0, stiffness: 150.0, damping: 15.0),
-        );
+        expect(config.spring.mass, 3.0);
+        expect(config.spring.stiffness, 150.0);
+        expect(config.spring.damping, 15.0);
       });
 
       test('creates critically damped spring', () {

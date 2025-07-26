@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/src/core/widget_state/widget_state_controller.dart';
 import 'package:mix/src/core/widget_state/widget_state_provider.dart';
 
 class TrackRebuildWidget<T> extends StatefulWidget {
@@ -153,9 +152,9 @@ void main() {
           home: WidgetStateScope(states: controller.value, child: Container()),
         ),
       );
-      final foundStates = WidgetStateScope.of(
-        tester.element(find.byType(Container)),
-      );
+      final scope = tester.element(find.byType(Container))
+          .dependOnInheritedWidgetOfExactType<WidgetStateScope>();
+      final foundStates = scope?.states;
       expect(foundStates, isNotNull);
       expect(foundStates!.contains(WidgetState.disabled), isTrue);
       expect(foundStates.contains(WidgetState.hovered), isTrue);
@@ -166,7 +165,7 @@ void main() {
       expect(foundStates.contains(WidgetState.error), isTrue);
     });
 
-    testWidgets('hasStateOf returns if state is set', (tester) async {
+    testWidgets('hasState returns if state is set', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: WidgetStateScope(
@@ -174,11 +173,11 @@ void main() {
             child: Builder(
               builder: (context) {
                 expect(
-                  WidgetStateScope.hasStateOf(context, WidgetState.disabled),
+                  WidgetStateScope.hasState(context, WidgetState.disabled),
                   isTrue,
                 );
                 expect(
-                  WidgetStateScope.hasStateOf(context, WidgetState.hovered),
+                  WidgetStateScope.hasState(context, WidgetState.hovered),
                   isFalse,
                 );
                 return Container();
@@ -208,13 +207,13 @@ void main() {
 
       expect(
         newModel.updateShouldNotifyDependent(oldModel, {
-          WidgetState.disabled.name,
+          WidgetState.disabled,
         }),
         isTrue,
       );
       expect(
         newModel.updateShouldNotifyDependent(oldModel, {
-          WidgetState.hovered.name,
+          WidgetState.hovered,
         }),
         isFalse,
       );
@@ -242,9 +241,9 @@ void main() {
 
             return Column(
               children: [
-                WidgetStateBuilder(
-                  controller: controller,
-                  builder: (BuildContext context) {
+                ListenableBuilder(
+                  listenable: controller,
+                  builder: (BuildContext context, _) {
                     return Column(
                       children: [
                         Text(
@@ -287,7 +286,7 @@ void main() {
     expect(find.text('Focused: true'), findsNothing);
   });
 
-  testWidgets('WidgetStateBuilder updates all children on state change', (
+  testWidgets('ListenableBuilder updates all children on state change', (
     WidgetTester tester,
   ) async {
     final controller = WidgetStatesController();
@@ -295,10 +294,13 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: WidgetStateBuilder(
-            controller: controller,
-            builder: (context) {
-              return PressableStateTestWidget();
+          body: ListenableBuilder(
+            listenable: controller,
+            builder: (context, _) {
+              return WidgetStateScope(
+                states: controller.value,
+                child: PressableStateTestWidget(),
+              );
             },
           ),
         ),
@@ -518,7 +520,7 @@ class PressableStateTestWidget extends StatefulWidget {
 class _PressableStateTestWidgetState extends State<PressableStateTestWidget> {
   bool Function(BuildContext) _widgetStateOf(WidgetState state) {
     return (BuildContext context) {
-      return WidgetStateScope.hasStateOf(context, state);
+      return WidgetStateScope.hasState(context, state);
     };
   }
 

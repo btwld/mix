@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/src/core/widget_state/widget_state_controller.dart';
+import 'package:mix/mix.dart';
 
 /// Helper for testing widget state changes in Mix framework.
 ///

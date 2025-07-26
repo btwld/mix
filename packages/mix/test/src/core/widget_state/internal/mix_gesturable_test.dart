@@ -28,9 +28,12 @@ void main() {
         onPanDown: onPanDown,
         onPanUpdate: onPanUpdate,
         onPanEnd: onPanEnd,
-        child: WidgetStateBuilder(
-          controller: controller,
-          builder: (_) => const SizedBox(key: key, height: 100, width: 100),
+        child: ListenableBuilder(
+          listenable: controller,
+          builder: (context, _) => WidgetStateScope(
+            states: controller.value,
+            child: const SizedBox(key: key, height: 100, width: 100),
+          ),
         ),
       );
     }
@@ -51,7 +54,7 @@ void main() {
       final context = tester.element(find.byKey(key));
 
       expect(
-        WidgetStateScope.hasStateOf(context, WidgetState.pressed),
+        WidgetStateScope.hasState(context, WidgetState.pressed),
         isTrue,
         reason: 'GesturableState should be pressed immediately after tap',
       );
@@ -89,21 +92,21 @@ void main() {
       await tester.pump();
       final context = tester.element(find.byKey(key));
       expect(
-        WidgetStateScope.hasStateOf(context, WidgetState.pressed),
+        WidgetStateScope.hasState(context, WidgetState.pressed),
         isTrue,
         reason: 'GesturableState should be pressed immediately after tap',
       );
 
       await tester.pump(const Duration(milliseconds: 50));
       expect(
-        WidgetStateScope.hasStateOf(context, WidgetState.pressed),
+        WidgetStateScope.hasState(context, WidgetState.pressed),
         isTrue,
         reason: 'GesturableState should still be pressed 50ms after tap',
       );
 
       await tester.pump(const Duration(milliseconds: 100));
       expect(
-        WidgetStateScope.hasStateOf(context, WidgetState.pressed),
+        WidgetStateScope.hasState(context, WidgetState.pressed),
         isFalse,
         reason:
             'GesturableState should be unpressed after unpressDelay has passed',
@@ -118,7 +121,7 @@ void main() {
       await tester.tap(find.byType(MixGesturable));
       final context = tester.element(find.byKey(key));
       expect(
-        WidgetStateScope.hasStateOf(context, WidgetState.pressed),
+        WidgetStateScope.hasState(context, WidgetState.pressed),
         isFalse,
       );
     });

@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
+import 'package:mix/src/core/widget_state/internal/mix_hoverable_region.dart';
 
 void main() {
   group('Selective Rebuild Optimization', () {
@@ -101,7 +102,7 @@ void main() {
       );
     });
 
-    testWidgets('Interactable child should not rebuild on state changes', (
+    testWidgets('MixHoverableRegion child should not rebuild on state changes', (
       WidgetTester tester,
     ) async {
       int childBuildCount = 0;
@@ -110,7 +111,7 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: Center(
-              child: Interactable(
+              child: MixHoverableRegion(
                 child: Builder(
                   builder: (context) {
                     childBuildCount++;
@@ -137,14 +138,14 @@ void main() {
       await gesture.addPointer(location: Offset.zero);
       addTearDown(gesture.removePointer);
       await tester.pump();
-      await gesture.moveTo(tester.getCenter(find.byType(Interactable)));
+      await gesture.moveTo(tester.getCenter(find.byType(MixHoverableRegion)));
       await tester.pump();
 
       // Child should NOT rebuild on hover
       expect(
         childBuildCount,
         1,
-        reason: 'Interactable child should not rebuild on hover state change',
+        reason: 'MixHoverableRegion child should not rebuild on hover state change',
       );
     });
   });

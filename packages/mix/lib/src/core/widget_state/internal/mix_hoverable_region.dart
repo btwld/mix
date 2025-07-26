@@ -4,13 +4,16 @@ import 'package:flutter/widgets.dart';
 
 import '../widget_state_provider.dart';
 
-class MixInteractable extends StatefulWidget {
-  const MixInteractable({
+/// A widget that provides hover state and mouse position tracking.
+///
+/// This widget wraps its child with a MouseRegion to track hover state
+/// and optionally track the mouse position relative to the widget bounds.
+class MixHoverableRegion extends StatefulWidget {
+  const MixHoverableRegion({
     super.key,
     required this.child,
     this.controller,
     this.enabled = true,
-    this.onFocusChange,
     this.onHoverChange,
     this.trackMousePosition = false,
   });
@@ -18,15 +21,14 @@ class MixInteractable extends StatefulWidget {
   final Widget child;
   final WidgetStatesController? controller;
   final bool enabled;
-  final ValueChanged<bool>? onFocusChange;
   final ValueChanged<bool>? onHoverChange;
   final bool trackMousePosition;
 
   @override
-  State<MixInteractable> createState() => _MixInteractableState();
+  State<MixHoverableRegion> createState() => _MixHoverableRegionState();
 }
 
-class _MixInteractableState extends State<MixInteractable> {
+class _MixHoverableRegionState extends State<MixHoverableRegion> {
   late final WidgetStatesController _controller;
   late final ValueNotifier<PointerPosition?> _pointerPositionNotifier;
 
@@ -38,13 +40,6 @@ class _MixInteractableState extends State<MixInteractable> {
     _pointerPositionNotifier = ValueNotifier<PointerPosition?>(null);
   }
 
-  void _handleFocusChange(bool hasFocus) {
-    if (!widget.enabled) return;
-    setState(() {
-      _controller.focused = hasFocus;
-    });
-    widget.onFocusChange?.call(hasFocus);
-  }
 
   void _handleHoverEnter(PointerEnterEvent event) {
     if (!widget.enabled) return;
@@ -58,8 +53,8 @@ class _MixInteractableState extends State<MixInteractable> {
     if (!widget.enabled) return;
     setState(() {
       _controller.hovered = false;
-      _pointerPositionNotifier.value = null;
     });
+    _pointerPositionNotifier.value = null;
     widget.onHoverChange?.call(false);
   }
 
@@ -88,7 +83,7 @@ class _MixInteractableState extends State<MixInteractable> {
   }
 
   @override
-  void didUpdateWidget(MixInteractable oldWidget) {
+  void didUpdateWidget(MixHoverableRegion oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.enabled != oldWidget.enabled) {
       _controller.disabled = !widget.enabled;
@@ -106,27 +101,21 @@ class _MixInteractableState extends State<MixInteractable> {
 
   @override
   Widget build(BuildContext context) {
-    // MouseRegion at the top - no rebuilds on mouse events
+    // MouseRegion for hover tracking - no rebuilds on mouse events
     return MouseRegion(
-      // Allows events to pass through
       onEnter: _handleHoverEnter,
       onExit: _handleHoverExit,
       onHover: widget.trackMousePosition ? _handleMouseMove : null,
       opaque: false,
-      child: Focus(
-        onFocusChange: _handleFocusChange,
-        canRequestFocus: widget.enabled,
-        skipTraversal: !widget.enabled,
-        child: ListenableBuilder(
-          listenable: _controller,
-          builder: (context, _) {
-            return WidgetStateScope(
-              states: _controller.value,
-              cursorPosition: _pointerPositionNotifier.value,
-              child: widget.child,
-            );
-          },
-        ),
+      child: ListenableBuilder(
+        listenable: _controller,
+        builder: (context, _) {
+          return WidgetStateScope(
+            states: _controller.value,
+            pointerPosition: _pointerPositionNotifier.value,
+            child: widget.child,
+          );
+        },
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:meta/meta.dart';
 
 import '../internal/compare_mixin.dart';
 import '../internal/constants.dart';
@@ -25,6 +26,14 @@ abstract class StyleAttribute<S extends Spec<S>>
   }) : $modifiers = modifiers,
        $animation = animation,
        $variants = variants;
+
+  @internal
+  Set<WidgetState> get widgetStates {
+    return ($variants ?? [])
+        .where((v) => v.variant is WidgetStateVariant)
+        .map((v) => (v.variant as WidgetStateVariant).state)
+        .toSet();
+  }
 
   @protected
   List<ModifierAttribute>? mergeModifierLists(
