@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../widget_state_controller.dart';
+import '../widget_state_provider.dart';
 
-class GestureMixStateWidget extends StatefulWidget {
-  const GestureMixStateWidget({
+class MixGesturable extends StatefulWidget {
+  const MixGesturable({
     super.key,
     required this.child,
     this.enableFeedback = false,
@@ -80,10 +80,10 @@ class GestureMixStateWidget extends StatefulWidget {
   final Duration unpressDelay;
 
   @override
-  State createState() => _GestureMixStateWidgetState();
+  State createState() => _MixGesturableState();
 }
 
-class _GestureMixStateWidgetState extends State<GestureMixStateWidget> {
+class _MixGesturableState extends State<MixGesturable> {
   int _pressCount = 0;
   Timer? _timer;
   late final WidgetStatesController _controller;

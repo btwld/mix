@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/src/core/widget_state/internal/interactive_mix_state.dart';
+import 'package:mix/src/core/widget_state/internal/mix_interactable.dart';
 import 'package:mix/src/core/widget_state/widget_state_provider.dart';
 
 import '../../../../helpers/testing_utils.dart';
@@ -11,25 +11,27 @@ void main() {
     testWidgets('updates cursor position on hover', (
       WidgetTester tester,
     ) async {
-      final cursorController = CursorPositionController();
-      
+      const key = ValueKey('test_box');
+
       await tester.pumpMaterialApp(
         MixInteractable(
-          cursorPositionController: cursorController,
-          trackMousePosition: true,
-          child: const SizedBox(width: 100, height: 100),
+          child: const SizedBox(key: key, width: 100, height: 100),
         ),
       );
 
       final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
       await gesture.addPointer(location: Offset.zero);
 
-      final beforePosition = cursorController.value;
+      /// Get he WidgetStateProvider to access the cursor position
+      var context = tester.element(find.byKey(key));
+      final (_, beforePosition) = WidgetStateScope.of(context);
 
       await gesture.moveTo(const Offset(50, 50));
       await tester.pumpAndSettle();
 
-      final afterPosition = cursorController.value;
+      context = tester.element(find.byKey(key));
+
+      final (_, afterPosition) = WidgetStateScope.of(context);
       expect(beforePosition, isNull);
 
       expect(afterPosition?.offset, equals(const Offset(50, 50)));
@@ -44,10 +46,7 @@ void main() {
 
       controller.updatePosition(const Offset(100, 50), size);
 
-      expect(
-        controller.value?.position,
-        equals(const Alignment(0.0, 0.0)),
-      );
+      expect(controller.value?.position, equals(const Alignment(0.0, 0.0)));
       expect(controller.value?.offset, equals(const Offset(100, 50)));
     });
 
@@ -57,14 +56,8 @@ void main() {
 
       controller.updatePosition(const Offset(250, 150), size);
 
-      expect(
-        controller.value?.position,
-        equals(const Alignment(1.0, 1.0)),
-      );
-      expect(
-        controller.value?.offset,
-        equals(const Offset(250, 150)),
-      );
+      expect(controller.value?.position, equals(const Alignment(1.0, 1.0)));
+      expect(controller.value?.offset, equals(const Offset(250, 150)));
     });
 
     test('clears cursor position', () {

@@ -1,8 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import '../core/widget_state/internal/gesture_mix_state.dart';
-import '../core/widget_state/internal/interactive_mix_state.dart';
-import '../core/widget_state/widget_state_controller.dart';
+import '../core/widget_state/internal/mix_gesturable.dart';
+import '../core/widget_state/internal/mix_interactable.dart';
 import '../internal/constants.dart';
 import '../specs/box/box_attribute.dart';
 import '../specs/box/box_widget.dart';
@@ -205,7 +204,7 @@ class PressableWidgetState extends State<Pressable> {
 
   @override
   Widget build(BuildContext context) {
-    Widget current = GestureMixStateWidget(
+    Widget current = MixGesturable(
       enableFeedback: widget.enableFeedback,
       controller: _controller,
       onTap: widget.enabled ? widget.onPress?.call : null,
@@ -214,14 +213,14 @@ class PressableWidgetState extends State<Pressable> {
       hitTestBehavior: widget.hitTestBehavior,
       unpressDelay: widget.unpressDelay,
       child: MixInteractable(
-        controller: _controller,
-        enabled: widget.enabled,
         focusNode: widget.focusNode,
         autofocus: widget.autofocus,
-        onFocusChange: widget.onFocusChange,
         actions: actions,
         mouseCursor: mouseCursor,
-        trackMousePosition: false,
+
+        controller: _controller,
+        enabled: widget.enabled,
+        onFocusChange: widget.onFocusChange,
         child: widget.child,
       ),
     );
@@ -236,96 +235,5 @@ class PressableWidgetState extends State<Pressable> {
     }
 
     return current;
-  }
-}
-
-/// A widget that provides interaction states without gesture handling.
-///
-/// Manages focus, hover, and enabled states for accessibility and styling
-/// purposes without built-in press gesture handling.
-class Interactable extends StatefulWidget {
-  const Interactable({
-    super.key,
-    required this.child,
-    this.enabled = true,
-    this.onFocusChange,
-    this.autofocus = false,
-    this.focusNode,
-    this.onKey,
-    this.onShowFocusHighlight,
-    this.onShowHoverHighlight,
-    this.onKeyEvent,
-    this.canRequestFocus = true,
-    this.mouseCursor = MouseCursor.defer,
-    this.shortcuts,
-    this.controller,
-    this.actions,
-  });
-
-  final bool enabled;
-  final MouseCursor mouseCursor;
-
-  final WidgetStatesController? controller;
-
-  final bool canRequestFocus;
-
-  final Widget child;
-  final Function(bool focus)? onShowFocusHighlight;
-  final Function(bool hover)? onShowHoverHighlight;
-
-  final ValueChanged<bool>? onFocusChange;
-
-  final Map<ShortcutActivator, Intent>? shortcuts;
-
-  final bool autofocus;
-
-  final FocusNode? focusNode;
-
-  final FocusOnKeyEventCallback? onKey;
-
-  final FocusOnKeyEventCallback? onKeyEvent;
-
-  final Map<Type, Action<Intent>>? actions;
-
-  @override
-  State<Interactable> createState() => _InteractableState();
-}
-
-class _InteractableState extends State<Interactable> {
-  late final WidgetStatesController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = widget.controller ?? WidgetStatesController();
-
-    _controller.disabled = !widget.enabled;
-  }
-
-  @override
-  void dispose() {
-    if (widget.controller == null) {
-      _controller.dispose();
-    }
-
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MixInteractable(
-      controller: _controller,
-      enabled: widget.enabled,
-      focusNode: widget.focusNode,
-      autofocus: widget.autofocus,
-      onFocusChange: widget.onFocusChange,
-      onShowFocusHighlight: widget.onShowFocusHighlight,
-      onShowHoverHighlight: widget.onShowHoverHighlight,
-      shortcuts: widget.shortcuts,
-      actions: widget.actions,
-      mouseCursor: widget.mouseCursor,
-      trackMousePosition: false,
-      child: widget.child,
-    );
   }
 }

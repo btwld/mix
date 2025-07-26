@@ -1,134 +1,59 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-/// A streamlined provider for widget states using [InheritedModel].
-///
-/// This provider replaces the verbose [MixWidgetStateModel] with a cleaner
-/// Set-based approach while maintaining granular rebuild capabilities.
-class WidgetStateProvider extends InheritedModel<String> {
-  const WidgetStateProvider({
+class WidgetStateScope extends InheritedModel<WidgetState> {
+  const WidgetStateScope({
     super.key,
     required this.states,
-    this.mousePosition,
+    this.cursorPosition,
     required super.child,
   });
 
-  /// Retrieves the widget states from the nearest [WidgetStateProvider] ancestor.
-  ///
-  /// If [aspect] is provided, the widget will only rebuild when that specific
-  /// state changes, enabling granular performance optimization.
-  static Set<WidgetState>? of(BuildContext context, {String? aspect}) {
-    return InheritedModel.inheritFrom<WidgetStateProvider>(
-      context,
-      aspect: aspect,
-    )?.states;
-  }
-
-  /// Retrieves the mouse position from the nearest [WidgetStateProvider] ancestor.
-  PointerPosition? mousePositionOf(BuildContext context) {
+  static PointerPosition? positionOf(BuildContext context) {
     final provider = context
-        .dependOnInheritedWidgetOfExactType<WidgetStateProvider>();
+        .dependOnInheritedWidgetOfExactType<WidgetStateScope>();
 
-    return provider?.mousePosition;
+    return provider?.cursorPosition;
   }
 
-  /// Checks if a specific state is active in the current context.
-  ///
-  /// This method subscribes to changes only for the specified state,
-  /// ensuring minimal rebuilds.
-  static bool hasStateOf(BuildContext context, WidgetState state) {
-    // Use the of method which properly establishes the dependency
-    final states = of(context, aspect: state.name);
+  static bool hasState(BuildContext context, WidgetState state) {
+    final provider = InheritedModel.inheritFrom<WidgetStateScope>(
+      context,
+      aspect: state,
+    );
 
-    return states?.contains(state) ?? false;
+    return provider?.states.contains(state) ?? false;
   }
 
-  /// The current set of active widget states.
   final Set<WidgetState> states;
 
-  /// Optional mouse position for advanced hover effects.
-  final PointerPosition? mousePosition;
+  final PointerPosition? cursorPosition;
 
   @override
-  bool updateShouldNotify(WidgetStateProvider oldWidget) {
-    // Compare the actual content of the sets, not their identity
-    return !setEquals(states, oldWidget.states) ||
-        mousePosition != oldWidget.mousePosition;
+  bool updateShouldNotify(WidgetStateScope oldWidget) {
+    return setEquals(states, oldWidget.states) ||
+        cursorPosition != oldWidget.cursorPosition;
   }
 
   @override
   bool updateShouldNotifyDependent(
-    WidgetStateProvider oldWidget,
-    Set<String> dependencies,
+    WidgetStateScope oldWidget,
+    Set<WidgetState> dependencies,
   ) {
-    // Only notify dependents if a state they care about changed
+    // Only notify if a dependent state actually changed
     for (final state in dependencies) {
-      final hadState = oldWidget.states.any((s) => s.name == state);
-      final hasState = states.any((s) => s.name == state);
-      if (hadState != hasState) return true;
+      if (oldWidget.states.contains(state) != states.contains(state)) {
+        return true;
+      }
+    }
+
+    // Also check if cursor position changed when hovering
+    if (states.contains(WidgetState.hovered) &&
+        cursorPosition != oldWidget.cursorPosition) {
+      return dependencies.contains(WidgetState.hovered);
     }
 
     return false;
-  }
-}
-
-/// Simple controller for cursor position tracking
-class CursorPositionController extends ValueNotifier<PointerPosition?> {
-  CursorPositionController() : super(null);
-
-  /// Updates the cursor position based on local position and widget size
-  void updatePosition(Offset localPosition, Size size) {
-    // Calculate normalized coordinates (0.0 to 1.0)
-    final ax = localPosition.dx / size.width;
-    final ay = localPosition.dy / size.height;
-
-    // Convert to alignment coordinates (-1.0 to 1.0)
-    final alignment = Alignment(
-      ((ax - 0.5) * 2).clamp(-1.0, 1.0),
-      ((ay - 0.5) * 2).clamp(-1.0, 1.0),
-    );
-
-    // Update the value
-    value = PointerPosition(position: alignment, offset: localPosition);
-  }
-
-  /// Clears the cursor position
-  void clear() {
-    value = null;
-  }
-}
-
-/// Updated WidgetStateBuilder that always accepts both controllers
-class WidgetStateBuilder extends StatelessWidget {
-  const WidgetStateBuilder({
-    super.key,
-    required this.controller,
-    this.cursorPositionController,
-    required this.builder,
-  });
-
-  final WidgetStatesController controller;
-  final CursorPositionController? cursorPositionController;
-  final Widget Function(BuildContext context) builder;
-
-  @override
-  Widget build(BuildContext context) {
-    // Always listen to state controller, optionally to cursor controller
-    final listenables = [
-      controller,
-      if (cursorPositionController != null) cursorPositionController!,
-    ];
-
-    return ListenableBuilder(
-      listenable: Listenable.merge(listenables),
-      builder: (context, _) {
-        return WidgetStateProvider(
-          states: controller.value,
-          mousePosition: cursorPositionController?.value,
-          child: Builder(builder: builder),
-        );
-      },
-    );
   }
 }
 
@@ -150,4 +75,31 @@ class PointerPosition {
 
   @override
   int get hashCode => Object.hash(position, offset);
+}
+
+extension WidgetStateControllerExtension on WidgetStatesController {
+  set disabled(bool value) => update(WidgetState.disabled, value);
+
+  set hovered(bool value) => update(WidgetState.hovered, value);
+
+  set pressed(bool value) => update(WidgetState.pressed, value);
+
+  set focused(bool value) => update(WidgetState.focused, value);
+
+  set selected(bool value) => update(WidgetState.selected, value);
+  set dragged(bool value) => update(WidgetState.dragged, value);
+  set scrolledUnder(bool value) => update(WidgetState.scrolledUnder, value);
+  set error(bool value) => update(WidgetState.error, value);
+
+  bool get disabled => value.contains(WidgetState.disabled);
+  bool get hovered => value.contains(WidgetState.hovered);
+  bool get pressed => value.contains(WidgetState.pressed);
+  bool get focused => value.contains(WidgetState.focused);
+  bool get selected => value.contains(WidgetState.selected);
+  bool get dragged => value.contains(WidgetState.dragged);
+  bool get scrolledUnder => value.contains(WidgetState.scrolledUnder);
+  bool get error => value.contains(WidgetState.error);
+
+  /// Checks if the controller has a specific widget state.
+  bool has(WidgetState state) => value.contains(state);
 }

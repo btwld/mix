@@ -117,7 +117,7 @@ final class WidgetStateVariant extends ContextVariant {
   WidgetStateVariant(this.state)
     : super(
         'widget_state_${state.name}',
-        (context) => WidgetStateProvider.hasStateOf(context, state),
+        (context) => WidgetStateScope.hasState(context, state),
       );
 
   @override

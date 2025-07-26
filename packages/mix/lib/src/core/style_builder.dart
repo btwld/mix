@@ -1,11 +1,11 @@
 import 'package:flutter/widgets.dart';
 
 import '../modifiers/internal/render_modifier.dart';
-import '../widgets/pressable_widget.dart';
 import 'animation/style_animation_builder.dart';
 import 'resolved_style_provider.dart';
 import 'spec.dart';
 import 'style.dart';
+import 'widget_state/internal/mix_interactable.dart';
 import 'widget_state/widget_state_provider.dart';
 
 /// Builds widgets with Mix styling.
@@ -75,10 +75,10 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
       orderOfModifiers: widget.orderOfModifiers,
     );
 
-    if (needsInteractivity && WidgetStateProvider.of(context) == null) {
+    if (needsInteractivity && WidgetStateScope.of(context) == null) {
       // If we need interactivity and no MixWidgetStateModel is present,
-      // wrap in Interactable
-      current = Interactable(controller: _controller, child: current);
+      // wrap in MixInteractable
+      current = MixInteractable(controller: _controller, child: current);
     }
 
     return current;

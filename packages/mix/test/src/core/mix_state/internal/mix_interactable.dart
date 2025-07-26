@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/src/core/widget_state/widget_state_controller.dart';
 import 'package:mix/src/core/widget_state/widget_state_provider.dart';
 
 void main() {
@@ -15,10 +14,7 @@ void main() {
 
       var context = tester.element(find.byType(Container));
 
-      expect(
-        WidgetStateProvider.hasStateOf(context, WidgetState.disabled),
-        isTrue,
-      );
+      expect(WidgetStateScope.hasState(context, WidgetState.disabled), isTrue);
 
       controller.disabled = false;
 
@@ -26,10 +22,7 @@ void main() {
 
       context = tester.element(find.byType(Container));
 
-      expect(
-        WidgetStateProvider.hasStateOf(context, WidgetState.disabled),
-        isFalse,
-      );
+      expect(WidgetStateScope.hasState(context, WidgetState.disabled), isFalse);
     });
 
     testWidgets('should update focused state', (WidgetTester tester) async {
@@ -40,10 +33,7 @@ void main() {
       );
 
       var context = tester.element(find.byType(Container));
-      expect(
-        WidgetStateProvider.hasStateOf(context, WidgetState.focused),
-        isTrue,
-      );
+      expect(WidgetStateScope.hasState(context, WidgetState.focused), isTrue);
 
       controller.focused = false;
 
@@ -51,10 +41,7 @@ void main() {
 
       context = tester.element(find.byType(Container));
 
-      expect(
-        WidgetStateProvider.hasStateOf(context, WidgetState.focused),
-        isFalse,
-      );
+      expect(WidgetStateScope.hasState(context, WidgetState.focused), isFalse);
     });
 
     testWidgets('should update hovered state', (WidgetTester tester) async {
@@ -67,10 +54,7 @@ void main() {
       );
 
       var context = tester.element(find.byType(Container));
-      expect(
-        WidgetStateProvider.hasStateOf(context, WidgetState.hovered),
-        isTrue,
-      );
+      expect(WidgetStateScope.hasState(context, WidgetState.hovered), isTrue);
 
       controller.hovered = false;
 
@@ -78,10 +62,7 @@ void main() {
 
       context = tester.element(find.byType(Container));
 
-      expect(
-        WidgetStateProvider.hasStateOf(context, WidgetState.hovered),
-        isFalse,
-      );
+      expect(WidgetStateScope.hasState(context, WidgetState.hovered), isFalse);
     });
   });
 }

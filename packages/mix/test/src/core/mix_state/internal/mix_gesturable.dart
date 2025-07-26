@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/src/core/widget_state/internal/gesture_mix_state.dart';
+import 'package:mix/src/core/widget_state/internal/mix_gesturable.dart';
 import 'package:mix/src/core/widget_state/widget_state_provider.dart';
 
 void main() {
@@ -10,7 +10,7 @@ void main() {
 
     final controller = WidgetStatesController();
 
-    GestureMixStateWidget buildGestureMixStateWidget({
+    MixGesturable buildGestureMixStateWidget({
       Duration unpressDelay = unpressDelay,
       Function()? onTap,
       Function()? onLongPress,
@@ -19,7 +19,7 @@ void main() {
       Function(DragUpdateDetails)? onPanUpdate,
       Function(DragEndDetails)? onPanEnd,
     }) {
-      return GestureMixStateWidget(
+      return MixGesturable(
         controller: controller,
         onTap: onTap,
         onLongPress: onLongPress,
@@ -45,13 +45,13 @@ void main() {
         ),
       );
 
-      await tester.tap(find.byType(GestureMixStateWidget));
+      await tester.tap(find.byType(MixGesturable));
       await tester.pump();
 
       final context = tester.element(find.byKey(key));
 
       expect(
-        WidgetStateProvider.hasStateOf(context, WidgetState.pressed),
+        WidgetStateScope.hasStateOf(context, WidgetState.pressed),
         isTrue,
         reason: 'GesturableState should be pressed immediately after tap',
       );
@@ -70,7 +70,7 @@ void main() {
         ),
       );
 
-      await tester.longPress(find.byType(GestureMixStateWidget));
+      await tester.longPress(find.byType(MixGesturable));
 
       expect(onLongPressCalled, isTrue);
     });
@@ -85,25 +85,25 @@ void main() {
         ),
       );
 
-      await tester.tap(find.byType(GestureMixStateWidget));
+      await tester.tap(find.byType(MixGesturable));
       await tester.pump();
       final context = tester.element(find.byKey(key));
       expect(
-        WidgetStateProvider.hasStateOf(context, WidgetState.pressed),
+        WidgetStateScope.hasStateOf(context, WidgetState.pressed),
         isTrue,
         reason: 'GesturableState should be pressed immediately after tap',
       );
 
       await tester.pump(const Duration(milliseconds: 50));
       expect(
-        WidgetStateProvider.hasStateOf(context, WidgetState.pressed),
+        WidgetStateScope.hasStateOf(context, WidgetState.pressed),
         isTrue,
         reason: 'GesturableState should still be pressed 50ms after tap',
       );
 
       await tester.pump(const Duration(milliseconds: 100));
       expect(
-        WidgetStateProvider.hasStateOf(context, WidgetState.pressed),
+        WidgetStateScope.hasStateOf(context, WidgetState.pressed),
         isFalse,
         reason:
             'GesturableState should be unpressed after unpressDelay has passed',
@@ -115,10 +115,10 @@ void main() {
         buildGestureMixStateWidget(onTap: () {}, unpressDelay: Duration.zero),
       );
 
-      await tester.tap(find.byType(GestureMixStateWidget));
+      await tester.tap(find.byType(MixGesturable));
       final context = tester.element(find.byKey(key));
       expect(
-        WidgetStateProvider.hasStateOf(context, WidgetState.pressed),
+        WidgetStateScope.hasStateOf(context, WidgetState.pressed),
         isFalse,
       );
     });
@@ -151,7 +151,7 @@ void main() {
         ),
       );
 
-      final gesturableWidget = find.byType(GestureMixStateWidget);
+      final gesturableWidget = find.byType(MixGesturable);
       expect(gesturableWidget, findsOneWidget);
 
       final gesturableWidgetCenter = tester.getCenter(gesturableWidget);
@@ -191,7 +191,7 @@ void main() {
         ),
       );
 
-      await tester.tap(find.byType(GestureMixStateWidget));
+      await tester.tap(find.byType(MixGesturable));
 
       expect(onTapCalled, isTrue);
     });
