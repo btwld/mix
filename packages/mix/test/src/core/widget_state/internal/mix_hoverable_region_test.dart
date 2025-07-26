@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mix/src/core/widget_state/cursor_position.dart';
 import 'package:mix/src/core/widget_state/internal/mix_hoverable_region.dart';
 import 'package:mix/src/core/widget_state/widget_state_provider.dart';
 

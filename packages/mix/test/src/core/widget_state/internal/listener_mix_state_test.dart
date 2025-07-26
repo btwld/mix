@@ -1,97 +1,102 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/src/core/widget_state/cursor_position_provider.dart';
+import 'package:mix/src/core/widget_state/cursor_position.dart';
 import 'package:mix/src/core/widget_state/internal/mix_hoverable_region.dart';
-import 'package:mix/src/core/widget_state/widget_state_provider.dart';
 
 import '../../../../helpers/testing_utils.dart';
 
 void main() {
   group('MixHoverableRegion pointer position tracking', () {
-    testWidgets('automatically tracks pointer position when widgets are listening', (
-      WidgetTester tester,
-    ) async {
-      const key = ValueKey('test_box');
-      PointerPosition? capturedPosition;
+    testWidgets(
+      'automatically tracks pointer position when widgets are listening',
+      (WidgetTester tester) async {
+        const key = ValueKey('test_box');
+        PointerPosition? capturedPosition;
 
-      await tester.pumpMaterialApp(
-        MixHoverableRegion(
-          child: Builder(
-            builder: (context) {
-              capturedPosition = PointerPosition.of(context);
-              return const SizedBox(key: key, width: 100, height: 100);
-            },
+        await tester.pumpMaterialApp(
+          MixHoverableRegion(
+            child: Builder(
+              builder: (context) {
+                capturedPosition = PointerPosition.of(context);
+                return const SizedBox(key: key, width: 100, height: 100);
+              },
+            ),
           ),
-        ),
-      );
+        );
 
-      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
-      await gesture.addPointer(location: Offset.zero);
+        final gesture = await tester.createGesture(
+          kind: PointerDeviceKind.mouse,
+        );
+        await gesture.addPointer(location: Offset.zero);
 
-      // Initially no position
-      expect(capturedPosition, isNull);
+        // Initially no position
+        expect(capturedPosition, isNull);
 
-      // Move mouse to center
-      await gesture.moveTo(tester.getCenter(find.byKey(key)));
-      await tester.pumpAndSettle();
+        // Move mouse to center
+        await gesture.moveTo(tester.getCenter(find.byKey(key)));
+        await tester.pumpAndSettle();
 
-      // Force rebuild to capture position
-      await tester.pumpMaterialApp(
-        MixHoverableRegion(
-          child: Builder(
-            builder: (context) {
-              capturedPosition = PointerPosition.of(context);
-              return const SizedBox(key: key, width: 100, height: 100);
-            },
+        // Force rebuild to capture position
+        await tester.pumpMaterialApp(
+          MixHoverableRegion(
+            child: Builder(
+              builder: (context) {
+                capturedPosition = PointerPosition.of(context);
+                return const SizedBox(key: key, width: 100, height: 100);
+              },
+            ),
           ),
-        ),
-      );
-      
-      expect(capturedPosition, isNotNull);
-      expect(capturedPosition!.position, equals(const Alignment(0.0, 0.0)));
-      expect(capturedPosition!.offset, equals(const Offset(50, 50)));
+        );
 
-      addTearDown(gesture.removePointer);
-    });
+        expect(capturedPosition, isNotNull);
+        expect(capturedPosition!.position, equals(const Alignment(0.0, 0.0)));
+        expect(capturedPosition!.offset, equals(const Offset(50, 50)));
 
-    testWidgets('provides cursor position infrastructure even when not actively used', (
-      WidgetTester tester,
-    ) async {
-      const key = ValueKey('test_box');
-      late CursorPositionNotifier notifier;
+        addTearDown(gesture.removePointer);
+      },
+    );
 
-      await tester.pumpMaterialApp(
-        MixHoverableRegion(
-          child: Builder(
-            builder: (context) {
-              // Get access to the notifier without creating a dependency
-              notifier = PointerPosition.notifierOf(context)!;
-              // Not calling PointerPosition.of(context) - no dependency created
-              return const SizedBox(key: key, width: 100, height: 100);
-            },
+    testWidgets(
+      'provides cursor position infrastructure even when not actively used',
+      (WidgetTester tester) async {
+        const key = ValueKey('test_box');
+        late PointerPositionNotifier notifier;
+
+        await tester.pumpMaterialApp(
+          MixHoverableRegion(
+            child: Builder(
+              builder: (context) {
+                // Get access to the notifier without creating a dependency
+                notifier = PointerPosition._notifierOf(context)!;
+                // Not calling PointerPosition.of(context) - no dependency created
+                return const SizedBox(key: key, width: 100, height: 100);
+              },
+            ),
           ),
-        ),
-      );
+        );
 
-      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
-      await gesture.addPointer(location: Offset.zero);
+        final gesture = await tester.createGesture(
+          kind: PointerDeviceKind.mouse,
+        );
+        await gesture.addPointer(location: Offset.zero);
 
-      // The provider infrastructure is always present (InheritedNotifier creates a listener)
-      expect(notifier.shouldTrack, isTrue);
-      expect(notifier.value, isNull);
+        // The provider infrastructure is always present (InheritedNotifier creates a listener)
+        expect(notifier.shouldTrack, isTrue);
+        expect(notifier.value, isNull);
 
-      // Move mouse to center
-      await gesture.moveTo(tester.getCenter(find.byKey(key)));
-      await tester.pumpAndSettle();
+        // Move mouse to center
+        await gesture.moveTo(tester.getCenter(find.byKey(key)));
+        await tester.pumpAndSettle();
 
-      // Position is updated because infrastructure is present, but no widgets depend on it
-      expect(notifier.shouldTrack, isTrue);
-      expect(notifier.value, isNotNull);
-      expect(notifier.value!.position, equals(const Alignment(0.0, 0.0)));
+        // Position is updated because infrastructure is present, but no widgets depend on it
+        expect(notifier.shouldTrack, isTrue);
+        expect(notifier.value, isNotNull);
+        expect(notifier.value!.position, equals(const Alignment(0.0, 0.0)));
 
-      addTearDown(gesture.removePointer);
-    });
+        addTearDown(gesture.removePointer);
+      },
+    );
   });
 
   group('PointerPosition', () {

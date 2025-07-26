@@ -85,7 +85,7 @@ class ContextVariant extends Variant {
   }
 
   // Directionality
-  static ContextVariant direction(TextDirection direction) {
+  static ContextVariant directionality(TextDirection direction) {
     return ContextVariant(
       'directionality_${direction.name}',
       (context) => Directionality.of(context) == direction,
@@ -267,8 +267,8 @@ final tablet = ContextVariant.size(
 final desktop = ContextVariant.size('desktop', (size) => size.width > 1279);
 
 // Directionality variants
-final ltr = ContextVariant.direction(TextDirection.ltr);
-final rtl = ContextVariant.direction(TextDirection.rtl);
+final ltr = ContextVariant.directionality(TextDirection.ltr);
+final rtl = ContextVariant.directionality(TextDirection.rtl);
 
 // Platform variants
 final ios = ContextVariant.platform(TargetPlatform.iOS);

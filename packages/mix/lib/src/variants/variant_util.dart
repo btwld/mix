@@ -115,12 +115,16 @@ class OnContextVariantUtility<S extends Spec<S>, T extends StyleAttribute<S>>
 
   /// Creates a variant attribute for left-to-right direction
   VariantAttributeBuilder<S> get ltr {
-    return VariantAttributeBuilder(ContextVariant.direction(TextDirection.ltr));
+    return VariantAttributeBuilder(
+      ContextVariant.directionality(TextDirection.ltr),
+    );
   }
 
   /// Creates a variant attribute for right-to-left direction
   VariantAttributeBuilder<S> get rtl {
-    return VariantAttributeBuilder(ContextVariant.direction(TextDirection.rtl));
+    return VariantAttributeBuilder(
+      ContextVariant.directionality(TextDirection.rtl),
+    );
   }
 
   /// Creates a variant attribute for iOS platform

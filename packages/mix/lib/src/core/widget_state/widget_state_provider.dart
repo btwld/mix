@@ -1,8 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'cursor_position_provider.dart';
-
 class WidgetStateScope extends InheritedModel<WidgetState> {
   const WidgetStateScope({
     super.key,
@@ -46,62 +44,6 @@ class WidgetStateScope extends InheritedModel<WidgetState> {
   }
 }
 
-/// Data class for pointer position
-class PointerPosition {
-  final Alignment position;
-  final Offset offset;
-
-  const PointerPosition({required this.position, required this.offset});
-
-  /// Gets the current cursor position from the nearest provider.
-  ///
-  /// Returns the current [PointerPosition] if available, or null if no cursor
-  /// position is being tracked or the widget is not hovering.
-  ///
-  /// This method registers the calling widget as a dependency, so it will
-  /// rebuild when the cursor position changes.
-  static PointerPosition? of(BuildContext context) {
-    final provider = context.dependOnInheritedWidgetOfExactType<CursorPositionProvider>();
-
-    return provider?.notifier?.value;
-  }
-
-  /// Gets the cursor position without creating a dependency.
-  ///
-  /// Returns the current [PointerPosition] if available, or null if no cursor
-  /// position is being tracked. Unlike [of], this method does not register
-  /// the calling widget as a dependency.
-  static PointerPosition? maybeOf(BuildContext context) {
-    final provider = context.getInheritedWidgetOfExactType<CursorPositionProvider>();
-
-    return provider?.notifier?.value;
-  }
-
-  /// Gets the notifier for direct listening.
-  ///
-  /// This method is primarily intended for testing and advanced use cases.
-  /// Most widgets should use [of] instead.
-  /// 
-  /// Note: This method does not create a dependency on the provider.
-  @visibleForTesting
-  static CursorPositionNotifier? notifierOf(BuildContext context) {
-    final provider = context.getInheritedWidgetOfExactType<CursorPositionProvider>();
-
-    return provider?.notifier;
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is PointerPosition &&
-        other.position == position &&
-        other.offset == offset;
-  }
-
-  @override
-  int get hashCode => Object.hash(position, offset);
-}
 
 extension WidgetStateControllerExtension on WidgetStatesController {
   set disabled(bool value) => update(WidgetState.disabled, value);

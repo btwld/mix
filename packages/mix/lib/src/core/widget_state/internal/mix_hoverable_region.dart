@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import '../cursor_position_provider.dart';
+import '../cursor_position.dart';
 import '../widget_state_provider.dart';
 
 /// A widget that provides hover state and automatic mouse position tracking.
@@ -16,12 +16,14 @@ class MixHoverableRegion extends StatefulWidget {
     this.controller,
     this.enabled = true,
     this.onHoverChange,
+    this.onPointerPositionChange,
   });
 
   final Widget child;
   final WidgetStatesController? controller;
   final bool enabled;
   final ValueChanged<bool>? onHoverChange;
+  final ValueChanged<PointerPosition>? onPointerPositionChange;
 
   @override
   State<MixHoverableRegion> createState() => _MixHoverableRegionState();
@@ -29,16 +31,15 @@ class MixHoverableRegion extends StatefulWidget {
 
 class _MixHoverableRegionState extends State<MixHoverableRegion> {
   late final WidgetStatesController _controller;
-  late final CursorPositionNotifier _cursorPositionNotifier;
+  late final PointerPositionNotifier _cursorPositionNotifier;
 
   @override
   void initState() {
     super.initState();
     _controller = widget.controller ?? WidgetStatesController();
     _controller.disabled = !widget.enabled;
-    _cursorPositionNotifier = CursorPositionNotifier();
+    _cursorPositionNotifier = PointerPositionNotifier();
   }
-
 
   void _handleHoverEnter(PointerEnterEvent event) {
     if (!widget.enabled) return;
@@ -57,15 +58,15 @@ class _MixHoverableRegionState extends State<MixHoverableRegion> {
     widget.onHoverChange?.call(false);
   }
 
-  void _handleMouseMove(PointerHoverEvent event) {
-    if (!widget.enabled) return;
+  void _handleOnPointerMove(PointerHoverEvent event) {
+    if (!widget.enabled || !mounted) return;
 
     // Only update position if there are listeners
     if (!_cursorPositionNotifier.shouldTrack) return;
 
     // Only update position, no setState - avoids rebuilds
     final box = context.findRenderObject() as RenderBox?;
-    if (box != null) {
+    if (box != null && box.attached) {
       final size = box.size;
       final localPosition = event.localPosition;
 
@@ -104,9 +105,9 @@ class _MixHoverableRegionState extends State<MixHoverableRegion> {
     return MouseRegion(
       onEnter: _handleHoverEnter,
       onExit: _handleHoverExit,
-      onHover: _handleMouseMove,
+      onHover: _handleOnPointerMove,
       opaque: false,
-      child: CursorPositionProvider(
+      child: PointerPositionProvider(
         notifier: _cursorPositionNotifier,
         child: ListenableBuilder(
           listenable: _controller,

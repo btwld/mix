@@ -111,14 +111,14 @@ void main() {
 
     group('direction factory', () {
       test('creates direction variant with correct key', () {
-        final variant = ContextVariant.direction(TextDirection.ltr);
+        final variant = ContextVariant.directionality(TextDirection.ltr);
 
         expect(variant.key, 'directionality_ltr');
       });
 
       test('creates different variants for different directions', () {
-        final ltr = ContextVariant.direction(TextDirection.ltr);
-        final rtl = ContextVariant.direction(TextDirection.rtl);
+        final ltr = ContextVariant.directionality(TextDirection.ltr);
+        final rtl = ContextVariant.directionality(TextDirection.rtl);
 
         expect(ltr.key, 'directionality_ltr');
         expect(rtl.key, 'directionality_rtl');
@@ -351,7 +351,7 @@ void main() {
 
       test('all text direction values create valid variants', () {
         for (final direction in TextDirection.values) {
-          final variant = ContextVariant.direction(direction);
+          final variant = ContextVariant.directionality(direction);
           expect(variant.key, contains(direction.name));
           expect(variant, isA<ContextVariant>());
         }
