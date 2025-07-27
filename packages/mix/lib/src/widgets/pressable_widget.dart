@@ -1,6 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 
-import '../core/widget_state/internal/mix_gesturable.dart';
 import '../core/widget_state/internal/mix_hoverable_region.dart';
 import '../core/widget_state/widget_state_provider.dart';
 import '../internal/constants.dart';
@@ -164,6 +165,8 @@ class Pressable extends StatefulWidget {
 @visibleForTesting
 class PressableWidgetState extends State<Pressable> {
   late final WidgetStatesController _controller;
+  int _pressCount = 0;
+  Timer? _timer;
 
   @override
   void initState() {
@@ -171,8 +174,48 @@ class PressableWidgetState extends State<Pressable> {
     _controller = widget.controller ?? WidgetStatesController();
   }
 
+  void _handlePress(bool value) {
+    _controller.pressed = value;
+    if (value) {
+      _pressCount++;
+      final initialPressCount = _pressCount;
+      _unpressAfterDelay(initialPressCount);
+    }
+  }
+
+  void _unpressAfterDelay(int initialPressCount) {
+    void unpressCallback() {
+      if (_controller.has(WidgetState.pressed) &&
+          _pressCount == initialPressCount) {
+        _controller.pressed = false;
+      }
+    }
+
+    _timer?.cancel();
+
+    final delay = widget.unpressDelay;
+
+    if (delay != Duration.zero) {
+      _timer = Timer(delay, unpressCallback);
+    } else {
+      unpressCallback();
+    }
+  }
+
+  void _onTap() {
+    _handlePress(true);
+    widget.onPress?.call();
+    if (widget.enableFeedback) Feedback.forTap(context);
+  }
+
+  void _onLongPress() {
+    widget.onLongPress?.call();
+    if (widget.enableFeedback) Feedback.forLongPress(context);
+  }
+
   @override
   void dispose() {
+    _timer?.cancel();
     if (widget.controller == null) _controller.dispose();
     super.dispose();
   }
@@ -205,14 +248,13 @@ class PressableWidgetState extends State<Pressable> {
 
   @override
   Widget build(BuildContext context) {
-    Widget current = MixGesturable(
-      enableFeedback: widget.enableFeedback,
-      controller: _controller,
-      onTap: widget.enabled ? widget.onPress?.call : null,
-      onLongPress: widget.enabled ? widget.onLongPress?.call : null,
+    Widget current = GestureDetector(
+      onTap: widget.enabled && widget.onPress != null ? _onTap : null,
+      onLongPress: widget.enabled && widget.onLongPress != null
+          ? _onLongPress
+          : null,
+      behavior: widget.hitTestBehavior,
       excludeFromSemantics: widget.excludeFromSemantics,
-      hitTestBehavior: widget.hitTestBehavior,
-      unpressDelay: widget.unpressDelay,
       child: MouseRegion(
         cursor: mouseCursor,
         child: Actions(
