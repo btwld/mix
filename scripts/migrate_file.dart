@@ -72,6 +72,9 @@ class FileMigrator {
   final List<String> warnings = [];
   final Map<String, String> importUpdates = {};
   final Set<String> modifiedFiles = {}; // Track for reset
+  final Set<String> createdFiles = {}; // Track created files
+  final Set<String> deletedFiles = {}; // Track deleted files
+  final Set<String> createdDirs = {}; // Track created directories
 
   FileMigrator({
     required this.from,
@@ -108,28 +111,39 @@ class FileMigrator {
       throw Exception('Source file not found: $from');
     }
 
-    // Phase 1: Analyze the file movement
-    await analyzeFileMigration();
+    try {
+      // Phase 1: Analyze the file movement
+      await analyzeFileMigration();
 
-    // Phase 2: Move the main file and update its imports
-    await migrateMainFile();
+      // Phase 2: Move the main file and update its imports
+      await migrateMainFile();
 
-    // Phase 3: Move the test file if it exists
-    if (!skipTest) {
-      await migrateTestFile();
+      // Phase 3: Move the test file if it exists
+      if (!skipTest) {
+        await migrateTestFile();
+      }
+
+      // Phase 4: Update imports in all files that reference the moved file
+      await updateProjectImports();
+
+      // Phase 5: Handle special cases
+      await handleSpecialCases();
+
+      // Phase 6: Validate the migration
+      await validateMigration();
+
+      // Report results
+      generateReport();
+    } catch (e) {
+      // If any error occurs, revert all changes
+      if (!isDryRun) {
+        print('\n⚠️  Error occurred: $e');
+        print('🔄 Reverting all changes...');
+        await _revertAllChanges();
+        print('✅ Revert complete.');
+      }
+      rethrow;
     }
-
-    // Phase 4: Update imports in all files that reference the moved file
-    await updateProjectImports();
-
-    // Phase 5: Handle special cases
-    await handleSpecialCases();
-
-    // Phase 6: Validate the migration
-    await validateMigration();
-
-    // Report results
-    generateReport();
   }
 
   Future<void> analyzeFileMigration() async {
@@ -170,14 +184,18 @@ class FileMigrator {
 
     if (!isDryRun) {
       // Create target directory
-      await targetFile.parent.create(recursive: true);
+      if (!await targetFile.parent.exists()) {
+        await targetFile.parent.create(recursive: true);
+        createdDirs.add(targetFile.parent.path);
+      }
 
       // Write updated content to new location
       await targetFile.writeAsString(content);
-      modifiedFiles.add(targetFile.path);
+      createdFiles.add(targetFile.path);
 
       // Delete old file
       await sourceFile.delete();
+      deletedFiles.add(sourceFile.path);
     }
 
     print('   ✅ Moved and updated imports\n');
@@ -265,10 +283,14 @@ class FileMigrator {
 
       if (!isDryRun) {
         final targetTestFile = File(path.join(baseDir, testTo));
-        await targetTestFile.parent.create(recursive: true);
+        if (!await targetTestFile.parent.exists()) {
+          await targetTestFile.parent.create(recursive: true);
+          createdDirs.add(targetTestFile.parent.path);
+        }
         await targetTestFile.writeAsString(content);
-        modifiedFiles.add(targetTestFile.path);
+        createdFiles.add(targetTestFile.path);
         await testFile.delete();
+        deletedFiles.add(testFile.path);
 
         // Update imports in the test file
         await updateTestImports(targetTestFile);
@@ -458,15 +480,9 @@ class FileMigrator {
         print('   ⚠️  Analyze output:');
         print(result.stdout);
       }
-      // Auto-reset unstaged changes
-      for (final filePath in modifiedFiles) {
-        await Process.run('git', [
-          'checkout',
-          '--',
-          filePath,
-        ], workingDirectory: baseDir);
-      }
-      print('   🔄 Changes reverted.');
+      // Complete revert of all changes
+      await _revertAllChanges();
+      print('   🔄 All changes reverted.');
     } else {
       print('   ✅ No analyze errors\n');
     }
@@ -799,6 +815,50 @@ class FileMigrator {
 
     // No imports found, add at the beginning
     return 'import \'$importPath\';\n\n$content';
+  }
+
+  Future<void> _revertAllChanges() async {
+    try {
+      // 1. Delete created files
+      for (final filePath in createdFiles) {
+        final file = File(filePath);
+        if (await file.exists()) {
+          await file.delete();
+        }
+      }
+
+      // 2. Restore deleted files
+      for (final filePath in deletedFiles) {
+        await Process.run('git', [
+          'checkout',
+          'HEAD',
+          '--',
+          path.relative(filePath, from: baseDir),
+        ], workingDirectory: baseDir);
+      }
+
+      // 3. Revert modified files
+      for (final filePath in modifiedFiles) {
+        await Process.run('git', [
+          'checkout',
+          'HEAD',
+          '--',
+          path.relative(filePath, from: baseDir),
+        ], workingDirectory: baseDir);
+      }
+
+      // 4. Remove created directories (in reverse order to handle nested dirs)
+      final sortedDirs = createdDirs.toList()
+        ..sort((a, b) => b.length.compareTo(a.length));
+      for (final dirPath in sortedDirs) {
+        final dir = Directory(dirPath);
+        if (await dir.exists() && (await dir.list().toList()).isEmpty) {
+          await dir.delete();
+        }
+      }
+    } catch (e) {
+      print('   ⚠️  Error during revert: $e');
+    }
   }
 }
 
