@@ -251,7 +251,7 @@ void main() {
 
       test('can be negated with NOT operation', () {
         final variant = ContextVariant('test', (context) => true);
-        final notVariant = not(variant);
+        final notVariant = MultiVariant.not(variant);
 
         expect(notVariant, isA<MultiVariant>());
         expect(notVariant.operatorType, MultiVariantOperator.not);
@@ -431,55 +431,60 @@ void main() {
 
   group('Predefined variants', () {
     test('widget state variants are defined', () {
-      expect(hover.key, 'widget_state_hovered');
-      expect(press.key, 'widget_state_pressed');
-      expect(focus.key, 'widget_state_focused');
-      expect(disabled.key, 'widget_state_disabled');
-      expect(selected.key, 'widget_state_selected');
-      expect(dragged.key, 'widget_state_dragged');
-      expect(error.key, 'widget_state_error');
+      expect(ContextVariant.widgetState(WidgetState.hovered).key, 'widget_state_hovered');
+      expect(ContextVariant.widgetState(WidgetState.pressed).key, 'widget_state_pressed');
+      expect(ContextVariant.widgetState(WidgetState.focused).key, 'widget_state_focused');
+      expect(ContextVariant.widgetState(WidgetState.disabled).key, 'widget_state_disabled');
+      expect(ContextVariant.widgetState(WidgetState.selected).key, 'widget_state_selected');
+      expect(ContextVariant.widgetState(WidgetState.dragged).key, 'widget_state_dragged');
+      expect(ContextVariant.widgetState(WidgetState.error).key, 'widget_state_error');
     });
 
     test('brightness variants are defined', () {
-      expect(dark.key, 'media_query_platform_brightness_dark');
-      expect(light.key, 'media_query_platform_brightness_light');
+      expect(ContextVariant.platformBrightness(Brightness.dark).key, 'media_query_platform_brightness_dark');
+      expect(ContextVariant.platformBrightness(Brightness.light).key, 'media_query_platform_brightness_light');
     });
 
     test('orientation variants are defined', () {
-      expect(portrait.key, 'media_query_orientation_portrait');
-      expect(landscape.key, 'media_query_orientation_landscape');
+      expect(ContextVariant.orientation(Orientation.portrait).key, 'media_query_orientation_portrait');
+      expect(ContextVariant.orientation(Orientation.landscape).key, 'media_query_orientation_landscape');
     });
 
     test('size variants are defined', () {
-      expect(mobile.key, 'media_query_size_mobile');
-      expect(tablet.key, 'media_query_size_tablet');
-      expect(desktop.key, 'media_query_size_desktop');
+      expect(ContextVariant.size('mobile', (size) => size.width <= 767).key, 'media_query_size_mobile');
+      expect(ContextVariant.size('tablet', (size) => size.width > 767 && size.width <= 1279).key, 'media_query_size_tablet');
+      expect(ContextVariant.size('desktop', (size) => size.width > 1279).key, 'media_query_size_desktop');
     });
 
     test('breakpoint variants are defined', () {
-      expect(xsmall.key, 'media_query_size_xsmall');
-      expect(small.key, 'media_query_size_small');
-      expect(medium.key, 'media_query_size_medium');
-      expect(large.key, 'media_query_size_large');
-      expect(xlarge.key, 'media_query_size_xlarge');
+      expect(ContextVariant.size('xsmall', (size) => size.width <= 480).key, 'media_query_size_xsmall');
+      expect(ContextVariant.size('small', (size) => size.width <= 768).key, 'media_query_size_small');
+      expect(ContextVariant.size('medium', (size) => size.width <= 1024).key, 'media_query_size_medium');
+      expect(ContextVariant.size('large', (size) => size.width <= 1280).key, 'media_query_size_large');
+      expect(ContextVariant.size('xlarge', (size) => size.width > 1280).key, 'media_query_size_xlarge');
     });
 
     test('platform variants are defined', () {
-      expect(ios.key, 'platform_iOS');
-      expect(android.key, 'platform_android');
-      expect(macos.key, 'platform_macOS');
-      expect(windows.key, 'platform_windows');
-      expect(linux.key, 'platform_linux');
-      expect(fuchsia.key, 'platform_fuchsia');
-      expect(web.key, 'web');
+      expect(ContextVariant.platform(TargetPlatform.iOS).key, 'platform_iOS');
+      expect(ContextVariant.platform(TargetPlatform.android).key, 'platform_android');
+      expect(ContextVariant.platform(TargetPlatform.macOS).key, 'platform_macOS');
+      expect(ContextVariant.platform(TargetPlatform.windows).key, 'platform_windows');
+      expect(ContextVariant.platform(TargetPlatform.linux).key, 'platform_linux');
+      expect(ContextVariant.platform(TargetPlatform.fuchsia).key, 'platform_fuchsia');
+      expect(ContextVariant.web().key, 'web');
     });
 
     test('direction variants are defined', () {
-      expect(ltr.key, 'directionality_ltr');
-      expect(rtl.key, 'directionality_rtl');
+      expect(ContextVariant.directionality(TextDirection.ltr).key, 'directionality_ltr');
+      expect(ContextVariant.directionality(TextDirection.rtl).key, 'directionality_rtl');
     });
 
     test('utility variants using NOT logic are defined', () {
+      final disabled = ContextVariant.widgetState(WidgetState.disabled);
+      final selected = ContextVariant.widgetState(WidgetState.selected);
+      final enabled = not(disabled);
+      final unselected = not(selected);
+      
       expect(enabled, isA<MultiVariant>());
       expect(enabled.operatorType, MultiVariantOperator.not);
       expect(enabled.variants.first, disabled);
@@ -499,21 +504,30 @@ void main() {
     });
 
     test('all predefined context variants are ContextVariant instances', () {
-      expect(dark, isA<ContextVariant>());
-      expect(light, isA<ContextVariant>());
-      expect(portrait, isA<ContextVariant>());
-      expect(landscape, isA<ContextVariant>());
-      expect(mobile, isA<ContextVariant>());
-      expect(tablet, isA<ContextVariant>());
-      expect(desktop, isA<ContextVariant>());
-      expect(ltr, isA<ContextVariant>());
-      expect(rtl, isA<ContextVariant>());
-      expect(ios, isA<ContextVariant>());
-      expect(android, isA<ContextVariant>());
-      expect(web, isA<ContextVariant>());
+      expect(ContextVariant.platformBrightness(Brightness.dark), isA<ContextVariant>());
+      expect(ContextVariant.platformBrightness(Brightness.light), isA<ContextVariant>());
+      expect(ContextVariant.orientation(Orientation.portrait), isA<ContextVariant>());
+      expect(ContextVariant.orientation(Orientation.landscape), isA<ContextVariant>());
+      expect(ContextVariant.size('mobile', (size) => size.width <= 767), isA<ContextVariant>());
+      expect(ContextVariant.size('tablet', (size) => size.width > 767 && size.width <= 1279), isA<ContextVariant>());
+      expect(ContextVariant.size('desktop', (size) => size.width > 1279), isA<ContextVariant>());
+      expect(ContextVariant.directionality(TextDirection.ltr), isA<ContextVariant>());
+      expect(ContextVariant.directionality(TextDirection.rtl), isA<ContextVariant>());
+      expect(ContextVariant.platform(TargetPlatform.iOS), isA<ContextVariant>());
+      expect(ContextVariant.platform(TargetPlatform.android), isA<ContextVariant>());
+      expect(ContextVariant.web(), isA<ContextVariant>());
     });
 
     test('predefined size variants have different breakpoints', () {
+      final mobile = ContextVariant.size('mobile', (size) => size.width <= 767);
+      final tablet = ContextVariant.size('tablet', (size) => size.width > 767 && size.width <= 1279);
+      final desktop = ContextVariant.size('desktop', (size) => size.width > 1279);
+      final xsmall = ContextVariant.size('xsmall', (size) => size.width <= 480);
+      final small = ContextVariant.size('small', (size) => size.width <= 768);
+      final medium = ContextVariant.size('medium', (size) => size.width <= 1024);
+      final large = ContextVariant.size('large', (size) => size.width <= 1280);
+      final xlarge = ContextVariant.size('xlarge', (size) => size.width > 1280);
+      
       // Test that the size conditions are different
       expect(mobile.key, isNot(equals(tablet.key)));
       expect(tablet.key, isNot(equals(desktop.key)));

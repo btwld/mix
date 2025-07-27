@@ -240,56 +240,6 @@ final class MultiVariant extends ContextVariant {
       Object.hash(operatorType, const DeepCollectionEquality().hash(variants));
 }
 
-// Predefined widget state variants
-final hover = ContextVariant.widgetState(WidgetState.hovered);
-final press = ContextVariant.widgetState(WidgetState.pressed);
-final focus = ContextVariant.widgetState(WidgetState.focused);
-final disabled = ContextVariant.widgetState(WidgetState.disabled);
-final selected = ContextVariant.widgetState(WidgetState.selected);
-final dragged = ContextVariant.widgetState(WidgetState.dragged);
-final error = ContextVariant.widgetState(WidgetState.error);
-
-// Predefined MediaQuery variants
-// Brightness variants
-final dark = ContextVariant.platformBrightness(Brightness.dark);
-final light = ContextVariant.platformBrightness(Brightness.light);
-
-// Orientation variants
-final portrait = ContextVariant.orientation(Orientation.portrait);
-final landscape = ContextVariant.orientation(Orientation.landscape);
-
-// Size-based responsive variants
-final mobile = ContextVariant.size('mobile', (size) => size.width <= 767);
-final tablet = ContextVariant.size(
-  'tablet',
-  (size) => size.width > 767 && size.width <= 1279,
-);
-final desktop = ContextVariant.size('desktop', (size) => size.width > 1279);
-
-// Directionality variants
-final ltr = ContextVariant.directionality(TextDirection.ltr);
-final rtl = ContextVariant.directionality(TextDirection.rtl);
-
-// Platform variants
-final ios = ContextVariant.platform(TargetPlatform.iOS);
-final android = ContextVariant.platform(TargetPlatform.android);
-final macos = ContextVariant.platform(TargetPlatform.macOS);
-final windows = ContextVariant.platform(TargetPlatform.windows);
-final linux = ContextVariant.platform(TargetPlatform.linux);
-final fuchsia = ContextVariant.platform(TargetPlatform.fuchsia);
-final web = ContextVariant.web();
-
-// Breakpoint variants (using common responsive breakpoints)
-final xsmall = ContextVariant.size('xsmall', (size) => size.width <= 480);
-final small = ContextVariant.size('small', (size) => size.width <= 768);
-final medium = ContextVariant.size('medium', (size) => size.width <= 1024);
-final large = ContextVariant.size('large', (size) => size.width <= 1280);
-final xlarge = ContextVariant.size('xlarge', (size) => size.width > 1280);
-
-// Utility variants using NOT logic
-final enabled = not(disabled);
-final unselected = not(selected);
-
 // Common named variants
 const primary = NamedVariant('primary');
 const secondary = NamedVariant('secondary');

@@ -68,7 +68,7 @@ void main() {
             child: Builder(
               builder: (context) {
                 // Get access to the notifier without creating a dependency
-                notifier = PointerPosition._notifierOf(context)!;
+                notifier = PointerPosition.notifierOf(context)!;
                 // Not calling PointerPosition.of(context) - no dependency created
                 return const SizedBox(key: key, width: 100, height: 100);
               },

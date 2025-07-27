@@ -229,12 +229,14 @@ void main() {
       test('works with predefined variants', () {
         const custom = NamedVariant('custom');
 
-        // Combine with predefined widget state variant
+        // Combine with widget state variant
+        final hover = ContextVariant.widgetState(WidgetState.hovered);
         final withHover = custom & hover;
         expect(withHover.variants, contains(custom));
         expect(withHover.variants, contains(hover));
 
-        // Combine with predefined context variant
+        // Combine with context variant
+        final dark = ContextVariant.platformBrightness(Brightness.dark);
         final withDark = custom & dark;
         expect(withDark.variants, contains(custom));
         expect(withDark.variants, contains(dark));

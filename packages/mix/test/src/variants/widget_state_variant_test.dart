@@ -179,38 +179,38 @@ void main() {
 
     group('Predefined widget state variants', () {
       test('predefined variants use WidgetStateVariant', () {
-        // These are imported from variant.dart
-        expect(hover, isA<WidgetStateVariant>());
-        expect(press, isA<WidgetStateVariant>());
-        expect(focus, isA<WidgetStateVariant>());
-        expect(disabled, isA<WidgetStateVariant>());
-        expect(selected, isA<WidgetStateVariant>());
-        expect(dragged, isA<WidgetStateVariant>());
-        expect(error, isA<WidgetStateVariant>());
+        expect(ContextVariant.widgetState(WidgetState.hovered), isA<WidgetStateVariant>());
+        expect(ContextVariant.widgetState(WidgetState.pressed), isA<WidgetStateVariant>());
+        expect(ContextVariant.widgetState(WidgetState.focused), isA<WidgetStateVariant>());
+        expect(ContextVariant.widgetState(WidgetState.disabled), isA<WidgetStateVariant>());
+        expect(ContextVariant.widgetState(WidgetState.selected), isA<WidgetStateVariant>());
+        expect(ContextVariant.widgetState(WidgetState.dragged), isA<WidgetStateVariant>());
+        expect(ContextVariant.widgetState(WidgetState.error), isA<WidgetStateVariant>());
       });
 
       test('predefined variants have correct states', () {
-        expect(hover.state, WidgetState.hovered);
-        expect(press.state, WidgetState.pressed);
-        expect(focus.state, WidgetState.focused);
-        expect(disabled.state, WidgetState.disabled);
-        expect(selected.state, WidgetState.selected);
-        expect(dragged.state, WidgetState.dragged);
-        expect(error.state, WidgetState.error);
+        expect(ContextVariant.widgetState(WidgetState.hovered).state, WidgetState.hovered);
+        expect(ContextVariant.widgetState(WidgetState.pressed).state, WidgetState.pressed);
+        expect(ContextVariant.widgetState(WidgetState.focused).state, WidgetState.focused);
+        expect(ContextVariant.widgetState(WidgetState.disabled).state, WidgetState.disabled);
+        expect(ContextVariant.widgetState(WidgetState.selected).state, WidgetState.selected);
+        expect(ContextVariant.widgetState(WidgetState.dragged).state, WidgetState.dragged);
+        expect(ContextVariant.widgetState(WidgetState.error).state, WidgetState.error);
       });
 
       test('predefined variants have correct keys', () {
-        expect(hover.key, 'widget_state_hovered');
-        expect(press.key, 'widget_state_pressed');
-        expect(focus.key, 'widget_state_focused');
-        expect(disabled.key, 'widget_state_disabled');
-        expect(selected.key, 'widget_state_selected');
-        expect(dragged.key, 'widget_state_dragged');
-        expect(error.key, 'widget_state_error');
+        expect(ContextVariant.widgetState(WidgetState.hovered).key, 'widget_state_hovered');
+        expect(ContextVariant.widgetState(WidgetState.pressed).key, 'widget_state_pressed');
+        expect(ContextVariant.widgetState(WidgetState.focused).key, 'widget_state_focused');
+        expect(ContextVariant.widgetState(WidgetState.disabled).key, 'widget_state_disabled');
+        expect(ContextVariant.widgetState(WidgetState.selected).key, 'widget_state_selected');
+        expect(ContextVariant.widgetState(WidgetState.dragged).key, 'widget_state_dragged');
+        expect(ContextVariant.widgetState(WidgetState.error).key, 'widget_state_error');
       });
 
       test('predefined enabled variant uses NOT logic', () {
-        // enabled is defined as not(disabled) in variant.dart
+        final disabled = ContextVariant.widgetState(WidgetState.disabled);
+        final enabled = not(disabled);
         expect(enabled, isA<MultiVariant>());
         expect(enabled.operatorType, MultiVariantOperator.not);
         expect(enabled.variants.length, 1);
@@ -218,7 +218,8 @@ void main() {
       });
 
       test('predefined unselected variant uses NOT logic', () {
-        // unselected is defined as not(selected) in variant.dart
+        final selected = ContextVariant.widgetState(WidgetState.selected);
+        final unselected = not(selected);
         expect(unselected, isA<MultiVariant>());
         expect(unselected.operatorType, MultiVariantOperator.not);
         expect(unselected.variants.length, 1);
@@ -276,7 +277,10 @@ void main() {
       });
 
       test('works with predefined utility variants', () {
-        // Test with predefined enabled (not disabled)
+        // Test with enabled (not disabled)
+        final disabled = ContextVariant.widgetState(WidgetState.disabled);
+        final hover = ContextVariant.widgetState(WidgetState.hovered);
+        final enabled = not(disabled);
         final enabledAndHovered = MultiVariant.and([enabled, hover]);
 
         expect(enabledAndHovered.variants.length, 2);

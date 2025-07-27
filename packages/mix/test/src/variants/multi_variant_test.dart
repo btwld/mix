@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
@@ -480,7 +481,8 @@ void main() {
 
   group('Integration with predefined variants', () {
     test('works with predefined widget state variants', () {
-      // Using predefined variants from variant.dart
+      final hover = ContextVariant.widgetState(WidgetState.hovered);
+      final press = ContextVariant.widgetState(WidgetState.pressed);
       final variant = MultiVariant.and([hover, press]);
 
       expect(variant.operatorType, MultiVariantOperator.and);
@@ -489,6 +491,9 @@ void main() {
     });
 
     test('works with predefined responsive variants', () {
+      final mobile = ContextVariant.size('mobile', (size) => size.width <= 767);
+      final tablet = ContextVariant.size('tablet', (size) => size.width > 767 && size.width <= 1279);
+      final desktop = ContextVariant.size('desktop', (size) => size.width > 1279);
       final variant = MultiVariant.or([mobile, tablet, desktop]);
 
       expect(variant.operatorType, MultiVariantOperator.or);
@@ -498,8 +503,9 @@ void main() {
     });
 
     test('mixed predefined and custom variants', () {
+      final dark = ContextVariant.platformBrightness(Brightness.dark);
       final variant = MultiVariant.and([
-        dark, // predefined
+        dark,
         const NamedVariant('custom'), // custom
       ]);
 
