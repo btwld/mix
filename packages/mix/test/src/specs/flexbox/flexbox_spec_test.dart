@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../../helpers/testing_utils.dart';
-import 'package:mix/src/widgets/flexbox/flexbox_spec.dart';
+import 'package:mix/src/specs/flexbox/flexbox_spec.dart';
 
 void main() {
   group('FlexBoxSpecAttribute', () {

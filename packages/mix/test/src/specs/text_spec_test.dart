@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-import 'package:mix/src/widgets/text/text_spec.dart';
+import 'package:mix/src/specs/text/text_spec.dart';
 
 void main() {
   group('TextSpec', () {
