@@ -93,15 +93,14 @@ class FileMigrator {
     if (isDryRun) {
       print('🔍 DRY RUN MODE - No files will be modified\n');
     } else {
-      // Check for no unstaged changes
+      // Check for unstaged changes and warn
       final gitStatus = await Process.run('git', [
         'status',
         '--porcelain',
       ], workingDirectory: baseDir);
       if (gitStatus.stdout.toString().trim().isNotEmpty) {
-        throw Exception(
-          'Unstaged changes detected. Please commit or stash before migration.',
-        );
+        print('⚠️  WARNING: Unstaged changes detected.');
+        print('   It\'s recommended to commit changes between migrations.\n');
       }
     }
 
