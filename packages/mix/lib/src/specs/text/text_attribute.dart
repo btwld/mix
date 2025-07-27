@@ -1,18 +1,18 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../properties/typography/strut_style_mix.dart';
-import '../../properties/typography/strut_style_util.dart';
-import '../../properties/typography/text_height_behavior_mix.dart';
-import '../../properties/typography/text_height_behavior_util.dart';
-import '../../properties/typography/text_style_mix.dart';
-import '../../properties/typography/text_style_util.dart';
 import '../../animation/animation_config.dart';
 import '../../core/directive.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
+import '../../properties/typography/strut_style_mix.dart';
+import '../../properties/typography/strut_style_util.dart';
+import '../../properties/typography/text_height_behavior_mix.dart';
+import '../../properties/typography/text_height_behavior_util.dart';
+import '../../properties/typography/text_style_mix.dart';
+import '../../properties/typography/text_style_util.dart';
 import 'text_directives_util.dart';
 import 'text_spec.dart';
 
@@ -23,7 +23,7 @@ import 'text_spec.dart';
 ///
 /// Use this class to configure the attributes of a [TextSpec] and pass it to
 /// the [TextSpec] constructor.
-class TextSpecAttribute extends StyleAttribute<TextSpec> with Diagnosticable {
+class TextSpecAttribute extends StyleAttribute<TextSpec> with Diagnosticable, SpecAttributeMixin<TextSpec> {
   final Prop<TextOverflow>? $overflow;
   final MixProp<StrutStyle>? $strutStyle;
   final Prop<TextAlign>? $textAlign;
@@ -268,6 +268,16 @@ class TextSpecAttribute extends StyleAttribute<TextSpec> with Diagnosticable {
   /// Convenience method for animating the TextSpec
   TextSpecAttribute animate(AnimationConfig animation) {
     return TextSpecAttribute.only(animation: animation);
+  }
+
+  @override
+  TextSpecAttribute modifiers(List<ModifierAttribute> modifiers) {
+    return merge(TextSpecAttribute.only(modifiers: modifiers));
+  }
+
+  @override
+  TextSpecAttribute variants(List<VariantStyleAttribute<TextSpec>> variants) {
+    return merge(TextSpecAttribute.only(variants: variants));
   }
 
   /// Resolves to [TextSpec] using the provided [MixContext].

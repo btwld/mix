@@ -124,6 +124,18 @@ class StackBoxSpecAttribute extends StyleAttribute<ZBoxSpec>
     return ZBoxSpec(box: box?.resolve(context), stack: stack?.resolve(context));
   }
 
+  @override
+  StackBoxSpecAttribute modifiers(List<ModifierAttribute> modifiers) {
+    return merge(StackBoxSpecAttribute(modifiers: modifiers));
+  }
+
+  @override
+  StackBoxSpecAttribute variants(
+    List<VariantStyleAttribute<ZBoxSpec>> variants,
+  ) {
+    return merge(StackBoxSpecAttribute(variants: variants));
+  }
+
   /// Merges the properties of this [StackBoxSpecAttribute] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new

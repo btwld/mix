@@ -653,16 +653,25 @@ void main() {
           margin: MixProp(EdgeInsetsMix.all(8.0)),
           constraints: MixProp(BoxConstraintsMix.only(maxWidth: 300.0)),
           decoration: MixProp(BoxDecorationMix.only(color: Colors.red)),
+          foregroundDecoration: MixProp(BoxDecorationMix.only(color: Colors.blue)),
+          transform: Prop(Matrix4.identity()),
+          transformAlignment: Prop(Alignment.topLeft),
           clipBehavior: Prop(Clip.antiAlias),
         );
 
-        expect(attribute.props.length, 9);
+        expect(attribute.props.length, 12);
         expect(attribute.props, contains(attribute.$alignment));
         expect(attribute.props, contains(attribute.$padding));
         expect(attribute.props, contains(attribute.$margin));
         expect(attribute.props, contains(attribute.$constraints));
         expect(attribute.props, contains(attribute.$decoration));
+        expect(attribute.props, contains(attribute.$foregroundDecoration));
+        expect(attribute.props, contains(attribute.$transform));
+        expect(attribute.props, contains(attribute.$transformAlignment));
         expect(attribute.props, contains(attribute.$clipBehavior));
+        expect(attribute.props, contains(attribute.$animation));
+        expect(attribute.props, contains(attribute.$modifiers));
+        expect(attribute.props, contains(attribute.$variants));
       });
     });
 

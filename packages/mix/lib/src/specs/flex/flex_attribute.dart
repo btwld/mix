@@ -15,7 +15,7 @@ import 'flex_spec.dart';
 ///
 /// Use this class to configure the attributes of a [FlexSpec] and pass it to
 /// the [FlexSpec] constructor.
-class FlexSpecAttribute extends StyleAttribute<FlexSpec> with Diagnosticable {
+class FlexSpecAttribute extends StyleAttribute<FlexSpec> with Diagnosticable, SpecAttributeMixin<FlexSpec> {
   final Prop<Axis>? $direction;
   final Prop<MainAxisAlignment>? $mainAxisAlignment;
   final Prop<CrossAxisAlignment>? $crossAxisAlignment;
@@ -26,21 +26,22 @@ class FlexSpecAttribute extends StyleAttribute<FlexSpec> with Diagnosticable {
   final Prop<Clip>? $clipBehavior;
   final Prop<double>? $gap;
 
-
   /// Utility for defining [FlexSpecAttribute.direction]
   late final direction = PropUtility<FlexSpecAttribute, Axis>(
     (prop) => merge(FlexSpecAttribute(direction: prop)),
   );
 
   /// Utility for defining [FlexSpecAttribute.mainAxisAlignment]
-  late final mainAxisAlignment = PropUtility<FlexSpecAttribute, MainAxisAlignment>(
-    (prop) => merge(FlexSpecAttribute(mainAxisAlignment: prop)),
-  );
+  late final mainAxisAlignment =
+      PropUtility<FlexSpecAttribute, MainAxisAlignment>(
+        (prop) => merge(FlexSpecAttribute(mainAxisAlignment: prop)),
+      );
 
   /// Utility for defining [FlexSpecAttribute.crossAxisAlignment]
-  late final crossAxisAlignment = PropUtility<FlexSpecAttribute, CrossAxisAlignment>(
-    (prop) => merge(FlexSpecAttribute(crossAxisAlignment: prop)),
-  );
+  late final crossAxisAlignment =
+      PropUtility<FlexSpecAttribute, CrossAxisAlignment>(
+        (prop) => merge(FlexSpecAttribute(crossAxisAlignment: prop)),
+      );
 
   /// Utility for defining [FlexSpecAttribute.mainAxisSize]
   late final mainAxisSize = PropUtility<FlexSpecAttribute, MainAxisSize>(
@@ -48,9 +49,10 @@ class FlexSpecAttribute extends StyleAttribute<FlexSpec> with Diagnosticable {
   );
 
   /// Utility for defining [FlexSpecAttribute.verticalDirection]
-  late final verticalDirection = PropUtility<FlexSpecAttribute, VerticalDirection>(
-    (prop) => merge(FlexSpecAttribute(verticalDirection: prop)),
-  );
+  late final verticalDirection =
+      PropUtility<FlexSpecAttribute, VerticalDirection>(
+        (prop) => merge(FlexSpecAttribute(verticalDirection: prop)),
+      );
 
   /// Utility for defining [FlexSpecAttribute.textDirection]
   late final textDirection = PropUtility<FlexSpecAttribute, TextDirection>(
@@ -166,6 +168,16 @@ class FlexSpecAttribute extends StyleAttribute<FlexSpec> with Diagnosticable {
   /// Convenience method for animating the FlexSpec
   FlexSpecAttribute animate(AnimationConfig animation) {
     return FlexSpecAttribute.only(animation: animation);
+  }
+
+  @override
+  FlexSpecAttribute modifiers(List<ModifierAttribute> modifiers) {
+    return merge(FlexSpecAttribute.only(modifiers: modifiers));
+  }
+
+  @override
+  FlexSpecAttribute variants(List<VariantStyleAttribute<FlexSpec>> variants) {
+    return merge(FlexSpecAttribute.only(variants: variants));
   }
 
   /// Resolves to [FlexSpec] using the provided [MixContext].

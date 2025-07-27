@@ -15,12 +15,11 @@ import 'stack_spec.dart';
 ///
 /// Use this class to configure the attributes of a [StackSpec] and pass it to
 /// the [StackSpec] constructor.
-class StackSpecAttribute extends StyleAttribute<StackSpec> with Diagnosticable {
+class StackSpecAttribute extends StyleAttribute<StackSpec> with Diagnosticable, SpecAttributeMixin<StackSpec> {
   final Prop<AlignmentGeometry>? $alignment;
   final Prop<StackFit>? $fit;
   final Prop<TextDirection>? $textDirection;
   final Prop<Clip>? $clipBehavior;
-
 
   /// Utility for defining [StackSpecAttribute.alignment]
   late final alignment = PropUtility<StackSpecAttribute, AlignmentGeometry>(
@@ -104,6 +103,16 @@ class StackSpecAttribute extends StyleAttribute<StackSpec> with Diagnosticable {
   /// Convenience method for animating the StackSpec
   StackSpecAttribute animate(AnimationConfig animation) {
     return StackSpecAttribute.only(animation: animation);
+  }
+
+  @override
+  StackSpecAttribute modifiers(List<ModifierAttribute> modifiers) {
+    return merge(StackSpecAttribute.only(modifiers: modifiers));
+  }
+
+  @override
+  StackSpecAttribute variants(List<VariantStyleAttribute<StackSpec>> variants) {
+    return merge(StackSpecAttribute.only(variants: variants));
   }
 
   /// Resolves to [StackSpec] using the provided [MixContext].

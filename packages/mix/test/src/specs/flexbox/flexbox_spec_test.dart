@@ -74,24 +74,20 @@ void main() {
     });
 
     group('Utility Methods', () {
-      test('utility methods create new instances', () {
-        final utility = FlexBoxSpecUtility();
-        final original = const FlexBoxSpecAttribute();
-        final withBox = utility.build(
-          FlexBoxSpecAttribute(box: BoxSpecAttribute()),
-        );
-        final withFlex = utility.build(
-          FlexBoxSpecAttribute(flex: FlexSpecAttribute()),
-        );
+      test('utility methods work with mutable pattern', () {
+        final utility1 = FlexBoxSpecUtility();
+        final utility2 = FlexBoxSpecUtility();
+        
+        // Use the mutable utilities to set properties
+        utility1.padding.all(16);
+        utility2.margin.all(8);
 
-        // Each utility creates a new instance
-        expect(identical(original, withBox.attribute), isFalse);
-        expect(identical(original, withFlex.attribute), isFalse);
-        expect(identical(withBox.attribute, withFlex.attribute), isFalse);
-
-        // New instances have their properties set
-        expect(withBox.attribute.$box, isNotNull);
-        expect(withFlex.attribute.$flex, isNotNull);
+        // Each utility maintains its own state
+        expect(identical(utility1.attribute, utility2.attribute), isFalse);
+        
+        // Properties are set correctly
+        expect(utility1.attribute.$box?.padding, isNotNull);
+        expect(utility2.attribute.$box?.margin, isNotNull);
       });
 
       test('utility provides access to nested box utilities', () {
@@ -450,29 +446,14 @@ void main() {
       test('handles complex nested chaining', () {
         final utility = FlexBoxSpecUtility();
 
-        // Build complex nested structure using utilities
-        final complex = utility.build(
-          FlexBoxSpecAttribute(
-            box: BoxSpecAttribute()
-                .alignment(Alignment.center)
-                .padding
-                .all(10.0)
-                .margin
-                .horizontal(20.0)
-                .color(Colors.red)
-                .border
-                .all(BorderSideMix.only(width: 2.0))
-                .borderRadius
-                .all(const Radius.circular(8.0)),
-            flex: FlexSpecAttribute()
-                .direction(Axis.horizontal)
-                .mainAxisAlignment(MainAxisAlignment.spaceBetween)
-                .gap(10.0),
-          ),
-        );
+        // Build complex nested structure using mutable utilities
+        utility.alignment(Alignment.center);
+        utility.padding.all(10.0);
+        utility.margin.horizontal(20.0);
+        utility.color.red();
 
         final context = MockBuildContext();
-        final resolved = complex.attribute.resolve(context);
+        final resolved = utility.attribute.resolve(context);
 
         // Verify all properties are resolved correctly
         expect(resolved.box.alignment, Alignment.center);

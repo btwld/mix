@@ -192,11 +192,11 @@ void main() {
             .width(100)
             .height(100)
             .alignment(Alignment.center)
-            .modifier(OpacityModifierAttribute.only(opacity: 0.5))
-            .modifier(
+            .modifiers([
+              OpacityModifierAttribute.only(opacity: 0.5),
               PaddingModifierAttribute.only(padding: EdgeInsetsMix.all(10)),
-            )
-            .modifier(ClipOvalModifierAttribute());
+              ClipOvalModifierAttribute(),
+            ]);
 
         await tester.pumpWidget(
           MaterialApp(
@@ -238,14 +238,10 @@ void main() {
         final boxAttribute = BoxSpecAttribute.width(100)
             .height(100)
             .color(Colors.blue)
-            .wrap
-            .opacity(0.5)
-            .wrap
-            .padding(padding: EdgeInsetsMix.all(10))
-            .wrap
-            .clipOval()
-            .wrap
-            .visibility(true);
+            .wrap(OpacityModifierAttribute.only(opacity: 0.5))
+            .wrap(PaddingModifierAttribute.only(padding: EdgeInsetsMix.all(10)))
+            .wrap(ClipOvalModifierAttribute())
+            .wrap(VisibilityModifierAttribute.only(visible: true));
 
         await tester.pumpWidget(
           MaterialApp(
@@ -305,12 +301,9 @@ void main() {
         final boxAttribute = BoxSpecAttribute.width(100)
             .height(100)
             .color(Colors.blue)
-            .wrap
-            .opacity(0.5)
-            .wrap
-            .padding(padding: EdgeInsetsMix.all(10))
-            .wrap
-            .clipOval();
+            .wrap(OpacityModifierAttribute.only(opacity: 0.5))
+            .wrap(PaddingModifierAttribute.only(padding: EdgeInsetsMix.all(10)))
+            .wrap(ClipOvalModifierAttribute());
 
         const customOrder = [
           OpacityModifier,

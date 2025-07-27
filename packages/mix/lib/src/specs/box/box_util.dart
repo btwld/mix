@@ -40,7 +40,7 @@ class BoxSpecUtility extends StyleAttributeBuilder<BoxSpec> {
   );
 
   late final wrap = ModifierUtility<BoxSpecUtility>(
-    (prop) => _build(BoxSpecAttribute.modifier(prop)),
+    (prop) => _build(BoxSpecAttribute.only(modifiers: [prop])),
   );
 
   // FLATTENED ACCESS - Same as BoxSpecAttribute
@@ -105,6 +105,11 @@ class BoxSpecUtility extends StyleAttributeBuilder<BoxSpec> {
     }
 
     return BoxSpecUtility(_baseAttribute);
+  }
+
+  @override
+  BoxSpec resolve(BuildContext context) {
+    return _baseAttribute.resolve(context);
   }
 
   /// Access to internal attribute

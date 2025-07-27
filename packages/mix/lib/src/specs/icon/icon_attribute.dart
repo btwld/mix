@@ -1,17 +1,17 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../properties/painting/color_util.dart';
-import '../../properties/painting/shadow_mix.dart';
-import '../../properties/painting/shadow_util.dart';
 import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
+import '../../properties/painting/color_util.dart';
+import '../../properties/painting/shadow_mix.dart';
+import '../../properties/painting/shadow_util.dart';
 import 'icon_spec.dart';
 
-class IconSpecAttribute extends StyleAttribute<IconSpec> with Diagnosticable {
+class IconSpecAttribute extends StyleAttribute<IconSpec> with Diagnosticable, SpecAttributeMixin<IconSpec> {
   final Prop<Color>? $color;
   final Prop<double>? $size;
   final Prop<double>? $weight;
@@ -130,6 +130,16 @@ class IconSpecAttribute extends StyleAttribute<IconSpec> with Diagnosticable {
 
   IconSpecAttribute shadows(List<ShadowMix> value) {
     return IconSpecAttribute.only(shadows: value);
+  }
+
+  @override
+  IconSpecAttribute modifiers(List<ModifierAttribute> modifiers) {
+    return merge(IconSpecAttribute.only(modifiers: modifiers));
+  }
+
+  @override
+  IconSpecAttribute variants(List<VariantStyleAttribute<IconSpec>> variants) {
+    return merge(IconSpecAttribute.only(variants: variants));
   }
 
   @override

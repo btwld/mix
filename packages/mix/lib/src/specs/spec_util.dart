@@ -9,33 +9,33 @@ import '../core/style.dart';
 import '../modifiers/modifier_util.dart';
 import '../variants/variant_util.dart';
 import 'box/box_util.dart';
-import 'flex/flex_attribute.dart';
+import 'flex/flex_util.dart';
 import 'flexbox/flexbox_util.dart';
-import 'icon/icon_attribute.dart';
-import 'image/image_attribute.dart';
-import 'stack/stack_attribute.dart';
-import 'text/text_attribute.dart';
+import 'icon/icon_util.dart';
+import 'image/image_util.dart';
+import 'stack/stack_util.dart';
+import 'text/text_util.dart';
 
 /// Global accessor for box specification utilities.
 BoxSpecUtility get $box => BoxSpecUtility();
 
-/// Global accessor for flex specification attributes.
-FlexSpecAttribute get $flex => FlexSpecAttribute();
+/// Global accessor for flex specification utilities.
+FlexSpecUtility get $flex => FlexSpecUtility();
 
 /// Global accessor for flexbox specification utilities.
 FlexBoxSpecUtility get $flexbox => FlexBoxSpecUtility();
 
-/// Global accessor for image specification attributes.
-ImageSpecAttribute get $image => ImageSpecAttribute();
+/// Global accessor for image specification utilities.
+ImageSpecUtility get $image => ImageSpecUtility();
 
-/// Global accessor for icon specification attributes.
-IconSpecAttribute get $icon => IconSpecAttribute();
+/// Global accessor for icon specification utilities.
+IconSpecUtility get $icon => IconSpecUtility();
 
-/// Global accessor for text specification attributes.
-TextSpecAttribute get $text => TextSpecAttribute();
+/// Global accessor for text specification utilities.
+TextSpecUtility get $text => TextSpecUtility();
 
-/// Global accessor for stack specification attributes.
-StackSpecAttribute get $stack => StackSpecAttribute();
+/// Global accessor for stack specification utilities.
+StackSpecUtility get $stack => StackSpecUtility();
 
 /// Global accessor for context variant utilities.
 OnContextVariantUtility get $on =>

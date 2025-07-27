@@ -4,8 +4,8 @@ import 'package:mix/mix.dart';
 
 void main() {
   group('Spec Utilities Global Getters', () {
-    test('\$box returns BoxSpecAttribute instance', () {
-      expect($box, isA<BoxSpecAttribute>());
+    test('\$box returns BoxSpecUtility instance', () {
+      expect($box, isA<BoxSpecUtility>());
       // Each call returns a new instance
       expect($box, isNot(same($box)));
     });
@@ -15,32 +15,32 @@ void main() {
       expect($flexbox, same($flexbox)); // Singleton instance
     });
 
-    test('\$flex returns FlexSpecAttribute instance', () {
-      expect($flex, isA<FlexSpecAttribute>());
+    test('\$flex returns FlexSpecUtility instance', () {
+      expect($flex, isA<FlexSpecUtility>());
       // Each call returns a new instance
       expect($flex, isNot(same($flex)));
     });
 
-    test('\$image returns ImageSpecAttribute instance', () {
-      expect($image, isA<ImageSpecAttribute>());
+    test('\$image returns ImageSpecUtility instance', () {
+      expect($image, isA<ImageSpecUtility>());
       // Each call returns a new instance
       expect($image, isNot(same($image)));
     });
 
-    test('\$icon returns IconSpecAttribute instance', () {
-      expect($icon, isA<IconSpecAttribute>());
+    test('\$icon returns IconSpecUtility instance', () {
+      expect($icon, isA<IconSpecUtility>());
       // Each call returns a new instance
       expect($icon, isNot(same($icon)));
     });
 
-    test('\$text returns TextSpecAttribute instance', () {
-      expect($text, isA<TextSpecAttribute>());
+    test('\$text returns TextSpecUtility instance', () {
+      expect($text, isA<TextSpecUtility>());
       // Each call returns a new instance
       expect($text, isNot(same($text)));
     });
 
-    test('\$stack returns StackSpecAttribute instance', () {
-      expect($stack, isA<StackSpecAttribute>());
+    test('\$stack returns StackSpecUtility instance', () {
+      expect($stack, isA<StackSpecUtility>());
       // Each call returns a new instance
       expect($stack, isNot(same($stack)));
     });
@@ -60,13 +60,13 @@ void main() {
 
   group('Utility Functionality', () {
     test('box getter can be used to create attributes', () {
-      final attr = $box.width(100).height(200);
-      expect(attr, isA<BoxSpecAttribute>());
+      $box.width(100).height(200);
+      expect($box.attribute, isA<BoxSpecAttribute>());
     });
 
     test('flex getter can be used to create attributes', () {
-      final attr = $flex.direction(Axis.horizontal);
-      expect(attr, isA<FlexSpecAttribute>());
+      $flex.direction(Axis.horizontal);
+      expect($flex.attribute, isA<FlexSpecAttribute>());
     });
 
     test('flexbox getter provides utility methods', () {
@@ -75,23 +75,23 @@ void main() {
     });
 
     test('image getter can be used to create attributes', () {
-      final attr = $image.fit(BoxFit.cover);
-      expect(attr, isA<ImageSpecAttribute>());
+      $image.fit(BoxFit.cover);
+      expect($image.attribute, isA<ImageSpecAttribute>());
     });
 
     test('icon getter can be used to create attributes', () {
-      final attr = $icon.size(24);
-      expect(attr, isA<IconSpecAttribute>());
+      $icon.size(24);
+      expect($icon.attribute, isA<IconSpecAttribute>());
     });
 
     test('text getter can be used to create attributes', () {
-      final attr = $text.style.fontSize(16);
-      expect(attr, isA<TextSpecAttribute>());
+      $text.style.fontSize(16);
+      expect($text.attribute, isA<TextSpecAttribute>());
     });
 
     test('stack getter can be used to create attributes', () {
-      final attr = $stack.alignment(Alignment.center);
-      expect(attr, isA<StackSpecAttribute>());
+      $stack.alignment(Alignment.center);
+      expect($stack.attribute, isA<StackSpecAttribute>());
     });
 
     test('on getter can be used for variant utilities', () {
@@ -108,8 +108,8 @@ void main() {
   });
 
   group('Global getters behavior', () {
-    test('attribute getters return new instances each time', () {
-      // Test that attribute getters return new instances (not cached)
+    test('utility getters return new instances each time', () {
+      // Test that utility getters return new instances (not cached)
       expect($box, isNot(same($box)));
       expect($flex, isNot(same($flex)));
       expect($image, isNot(same($image)));
@@ -126,13 +126,13 @@ void main() {
     });
 
     test('all getters return correct types', () {
-      expect($box, isA<BoxSpecAttribute>());
-      expect($flex, isA<FlexSpecAttribute>());
+      expect($box, isA<BoxSpecUtility>());
+      expect($flex, isA<FlexSpecUtility>());
       expect($flexbox, isA<FlexBoxSpecUtility>());
-      expect($image, isA<ImageSpecAttribute>());
-      expect($icon, isA<IconSpecAttribute>());
-      expect($text, isA<TextSpecAttribute>());
-      expect($stack, isA<StackSpecAttribute>());
+      expect($image, isA<ImageSpecUtility>());
+      expect($icon, isA<IconSpecUtility>());
+      expect($text, isA<TextSpecUtility>());
+      expect($stack, isA<StackSpecUtility>());
       expect($on, isA<OnContextVariantUtility>());
       expect($wrap, isA<ModifierUtility>());
     });

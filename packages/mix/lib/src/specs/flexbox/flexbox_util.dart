@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show StyleAttributeBuilder;
-import '../../core/style.dart' show StyleAttribute;
+import '../../core/style.dart'
+    show StyleAttribute, VariantStyleAttribute, ModifierAttribute;
 import '../../core/utility.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/layout/constraints_util.dart';
@@ -15,15 +16,14 @@ import 'flexbox_spec.dart';
 
 /// Mutable utility class for flexbox styling using composition over inheritance.
 ///
-/// Same API as FlexBoxSpecAttribute but with mutable internal state 
+/// Same API as FlexBoxSpecAttribute but with mutable internal state
 /// for cascade notation support: `$flexbox..color.red()..width(100)`
 class FlexBoxSpecUtility extends StyleAttributeBuilder<FlexBoxSpec> {
-  FlexBoxSpecAttribute _baseAttribute;
-
   // BOX UTILITIES - Same as BoxSpecUtility but return FlexBoxSpecUtility for cascade
-  
+
   late final padding = EdgeInsetsGeometryUtility<FlexBoxSpecUtility>(
-    (prop) => _build(FlexBoxSpecAttribute(box: BoxSpecAttribute(padding: prop))),
+    (prop) =>
+        _build(FlexBoxSpecAttribute(box: BoxSpecAttribute(padding: prop))),
   );
 
   late final margin = EdgeInsetsGeometryUtility<FlexBoxSpecUtility>(
@@ -31,11 +31,13 @@ class FlexBoxSpecUtility extends StyleAttributeBuilder<FlexBoxSpec> {
   );
 
   late final constraints = BoxConstraintsUtility<FlexBoxSpecUtility>(
-    (prop) => _build(FlexBoxSpecAttribute(box: BoxSpecAttribute(constraints: prop))),
+    (prop) =>
+        _build(FlexBoxSpecAttribute(box: BoxSpecAttribute(constraints: prop))),
   );
 
   late final decoration = DecorationUtility<FlexBoxSpecUtility>(
-    (prop) => _build(FlexBoxSpecAttribute(box: BoxSpecAttribute(decoration: prop))),
+    (prop) =>
+        _build(FlexBoxSpecAttribute(box: BoxSpecAttribute(decoration: prop))),
   );
 
   late final on = OnContextVariantUtility<FlexBoxSpec, FlexBoxSpecUtility>(
@@ -48,38 +50,44 @@ class FlexBoxSpecUtility extends StyleAttributeBuilder<FlexBoxSpec> {
 
   // FLATTENED ACCESS - Same as BoxSpecUtility but for FlexBox
   late final border = decoration.box.border;
+
   late final borderRadius = decoration.box.borderRadius;
   late final color = decoration.box.color;
   late final gradient = decoration.box.gradient;
-  late final shape = decoration.box.shape;
-
-  // BOX CONVENIENCE SHORTCUTS
+  late final shape = decoration.box.shape; // BOX CONVENIENCE SHORTCUTS
   late final width = constraints.width;
+
   late final height = constraints.height;
   late final minWidth = constraints.minWidth;
   late final maxWidth = constraints.maxWidth;
   late final minHeight = constraints.minHeight;
-  late final maxHeight = constraints.maxHeight;
-
-  // BOX PROP UTILITIES
+  late final maxHeight = constraints.maxHeight; // BOX PROP UTILITIES
   late final transform = PropUtility<FlexBoxSpecUtility, Matrix4>(
-    (prop) => _build(FlexBoxSpecAttribute(box: BoxSpecAttribute(transform: prop))),
+    (prop) =>
+        _build(FlexBoxSpecAttribute(box: BoxSpecAttribute(transform: prop))),
   );
 
-  late final transformAlignment = PropUtility<FlexBoxSpecUtility, AlignmentGeometry>(
-    (prop) => _build(FlexBoxSpecAttribute(box: BoxSpecAttribute(transformAlignment: prop))),
-  );
+  late final transformAlignment =
+      PropUtility<FlexBoxSpecUtility, AlignmentGeometry>(
+        (prop) => _build(
+          FlexBoxSpecAttribute(box: BoxSpecAttribute(transformAlignment: prop)),
+        ),
+      );
 
   late final clipBehavior = PropUtility<FlexBoxSpecUtility, Clip>(
-    (prop) => _build(FlexBoxSpecAttribute(box: BoxSpecAttribute(clipBehavior: prop))),
+    (prop) =>
+        _build(FlexBoxSpecAttribute(box: BoxSpecAttribute(clipBehavior: prop))),
   );
 
   late final alignment = PropUtility<FlexBoxSpecUtility, AlignmentGeometry>(
-    (prop) => _build(FlexBoxSpecAttribute(box: BoxSpecAttribute(alignment: prop))),
+    (prop) =>
+        _build(FlexBoxSpecAttribute(box: BoxSpecAttribute(alignment: prop))),
   );
 
   // FLEX UTILITIES - Using FlexSpecAttribute utilities
   late final flex = FlexSpecAttribute();
+
+  FlexBoxSpecAttribute _baseAttribute;
 
   FlexBoxSpecUtility([FlexBoxSpecAttribute? attribute])
     : _baseAttribute = attribute ?? const FlexBoxSpecAttribute(),
@@ -88,12 +96,11 @@ class FlexBoxSpecUtility extends StyleAttributeBuilder<FlexBoxSpec> {
   /// Mutable builder - updates internal state and returns this for cascade
   FlexBoxSpecUtility _build(FlexBoxSpecAttribute newAttribute) {
     _baseAttribute = _baseAttribute.merge(newAttribute);
+
     return this;
   }
 
-  /// Access to internal attribute
-  @override
-  FlexBoxSpecAttribute get attribute => _baseAttribute;
+  static FlexBoxSpecUtility get self => FlexBoxSpecUtility();
 
   /// Animation
   FlexBoxSpecUtility animate(AnimationConfig animation) =>
@@ -113,4 +120,14 @@ class FlexBoxSpecUtility extends StyleAttributeBuilder<FlexBoxSpec> {
 
     return FlexBoxSpecUtility(_baseAttribute);
   }
+
+  @override
+  FlexBoxSpec resolve(BuildContext context) {
+    return _baseAttribute.resolve(context);
+  }
+
+
+  /// Access to internal attribute
+  @override
+  FlexBoxSpecAttribute get attribute => _baseAttribute;
 }

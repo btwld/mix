@@ -1,0 +1,106 @@
+import 'package:flutter/material.dart';
+
+import '../../animation/animation_config.dart';
+import '../../core/spec_utility.dart' show StyleAttributeBuilder;
+import '../../core/style.dart'
+    show StyleAttribute, VariantStyleAttribute, ModifierAttribute;
+import '../../core/utility.dart';
+import '../../modifiers/modifier_util.dart';
+import '../../properties/painting/color_util.dart';
+import '../../variants/variant_util.dart';
+import 'image_attribute.dart';
+import 'image_spec.dart';
+
+/// Mutable utility class for image styling using composition over inheritance.
+///
+/// Same API as ImageSpecAttribute but with mutable internal state
+/// for cascade notation support: `$image..width(100)..height(100)..fit(BoxFit.cover)`
+class ImageSpecUtility extends StyleAttributeBuilder<ImageSpec> {
+  // IMAGE UTILITIES - Same as ImageSpecAttribute but return ImageSpecUtility for cascade
+
+  late final width = PropUtility<ImageSpecUtility, double>(
+    (prop) => _build(ImageSpecAttribute(width: prop)),
+  );
+
+  late final height = PropUtility<ImageSpecUtility, double>(
+    (prop) => _build(ImageSpecAttribute(height: prop)),
+  );
+
+  late final color = ColorUtility<ImageSpecUtility>(
+    (prop) => _build(ImageSpecAttribute(color: prop)),
+  );
+
+  late final repeat = PropUtility<ImageSpecUtility, ImageRepeat>(
+    (prop) => _build(ImageSpecAttribute(repeat: prop)),
+  );
+
+  late final fit = PropUtility<ImageSpecUtility, BoxFit>(
+    (prop) => _build(ImageSpecAttribute(fit: prop)),
+  );
+
+  late final alignment = PropUtility<ImageSpecUtility, AlignmentGeometry>(
+    (prop) => _build(ImageSpecAttribute(alignment: prop)),
+  );
+
+  late final centerSlice = PropUtility<ImageSpecUtility, Rect>(
+    (prop) => _build(ImageSpecAttribute(centerSlice: prop)),
+  );
+
+  late final filterQuality = PropUtility<ImageSpecUtility, FilterQuality>(
+    (prop) => _build(ImageSpecAttribute(filterQuality: prop)),
+  );
+
+  late final colorBlendMode = PropUtility<ImageSpecUtility, BlendMode>(
+    (prop) => _build(ImageSpecAttribute(colorBlendMode: prop)),
+  );
+
+  late final on = OnContextVariantUtility<ImageSpec, ImageSpecUtility>(
+    (v) => _build(ImageSpecAttribute(variants: [v])),
+  );
+
+  late final wrap = ModifierUtility<ImageSpecUtility>(
+    (prop) => _build(ImageSpecAttribute(modifiers: [prop])),
+  );
+
+  ImageSpecAttribute _baseAttribute;
+
+  ImageSpecUtility([ImageSpecAttribute? attribute])
+    : _baseAttribute = attribute ?? ImageSpecAttribute(),
+      super();
+
+  /// Mutable builder - updates internal state and returns this for cascade
+  ImageSpecUtility _build(ImageSpecAttribute newAttribute) {
+    _baseAttribute = _baseAttribute.merge(newAttribute);
+
+    return this;
+  }
+
+  /// Animation
+  ImageSpecUtility animate(AnimationConfig animation) =>
+      _build(ImageSpecAttribute(animation: animation));
+
+  // StyleAttribute interface implementation
+
+  @override
+  ImageSpecUtility merge(StyleAttribute<ImageSpec>? other) {
+    // IMMUTABLE: Always create new instance (StyleAttribute contract)
+    if (other is ImageSpecUtility) {
+      return ImageSpecUtility(_baseAttribute.merge(other._baseAttribute));
+    }
+    if (other is ImageSpecAttribute) {
+      return ImageSpecUtility(_baseAttribute.merge(other));
+    }
+
+    return ImageSpecUtility(_baseAttribute);
+  }
+
+  @override
+  ImageSpec resolve(BuildContext context) {
+    return _baseAttribute.resolve(context);
+  }
+
+
+  /// Access to internal attribute
+  @override
+  ImageSpecAttribute get attribute => _baseAttribute;
+}
