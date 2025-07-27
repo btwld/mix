@@ -14,6 +14,8 @@ import '../../properties/typography/text_height_behavior_util.dart';
 import '../../properties/typography/text_style_mix.dart';
 import '../../properties/typography/text_style_util.dart';
 import '../../modifiers/modifier_util.dart';
+import '../../variants/variant.dart';
+import '../../variants/variant_util.dart';
 import 'text_directives_util.dart';
 import 'text_spec.dart';
 
@@ -24,7 +26,7 @@ import 'text_spec.dart';
 ///
 /// Use this class to configure the attributes of a [TextSpec] and pass it to
 /// the [TextSpec] constructor.
-class TextSpecAttribute extends StyleAttribute<TextSpec> with Diagnosticable, ModifierMixin<TextSpecAttribute, TextSpec> {
+class TextSpecAttribute extends StyleAttribute<TextSpec> with Diagnosticable, ModifierMixin<TextSpecAttribute, TextSpec>, VariantMixin<TextSpecAttribute, TextSpec> {
   final Prop<TextOverflow>? $overflow;
   final MixProp<StrutStyle>? $strutStyle;
   final Prop<TextAlign>? $textAlign;
@@ -392,6 +394,18 @@ class TextSpecAttribute extends StyleAttribute<TextSpec> with Diagnosticable, Mo
 
   /// The list of properties that constitute the state of this [TextSpecAttribute].
   ///
+  @override
+  TextSpecAttribute createEmptyStyle() {
+    return TextSpecAttribute();
+  }
+
+  @override
+  TextSpecAttribute variant(Variant variant, TextSpecAttribute style) {
+    return merge(
+      TextSpecAttribute.only(variants: [VariantStyleAttribute(variant, style)]),
+    );
+  }
+
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [TextSpecAttribute] instances for equality.
   @override

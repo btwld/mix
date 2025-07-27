@@ -10,10 +10,12 @@ import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/color_util.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../properties/painting/shadow_util.dart';
+import '../../variants/variant.dart';
+import '../../variants/variant_util.dart';
 import 'icon_spec.dart';
 
 class IconSpecAttribute extends StyleAttribute<IconSpec>
-    with Diagnosticable, ModifierMixin<IconSpecAttribute, IconSpec> {
+    with Diagnosticable, ModifierMixin<IconSpecAttribute, IconSpec>, VariantMixin<IconSpecAttribute, IconSpec> {
   final Prop<Color>? $color;
   final Prop<double>? $size;
   final Prop<double>? $weight;
@@ -205,6 +207,18 @@ class IconSpecAttribute extends StyleAttribute<IconSpec>
       ),
     );
     properties.add(DiagnosticsProperty('fill', $fill, defaultValue: null));
+  }
+
+  @override
+  IconSpecAttribute createEmptyStyle() {
+    return const IconSpecAttribute();
+  }
+
+  @override
+  IconSpecAttribute variant(Variant variant, IconSpecAttribute style) {
+    return merge(
+      IconSpecAttribute.only(variants: [VariantStyleAttribute(variant, style)]),
+    );
   }
 
   @override

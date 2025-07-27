@@ -230,7 +230,7 @@ void main() {
       test('combine decorations with merge', () {
         final combined = BoxSpecAttribute()
             .color(Colors.red)
-            .merge(BoxSpecAttribute().border(BorderSideMix.only(width: 2.0)))
+            .merge(BoxSpecAttribute().borders(all: BorderSideMix.only(width: 2.0)))
             .merge(
               BoxSpecAttribute().corners(all: const Radius.circular(8.0)),
             );
@@ -979,9 +979,8 @@ void main() {
         test('boxDecoration utility creates box decoration attributes', () {
           final attribute = BoxSpecAttribute();
 
-          expect(attribute.boxDecoration, isNotNull);
-          final colorAttr = attribute.boxDecoration.backgroundColor(
-            Colors.purple,
+          final colorAttr = attribute.boxDecoration(
+            color: Colors.purple,
           );
           expect(colorAttr, isA<BoxSpecAttribute>());
           expect(colorAttr.$decoration, isNotNull);
@@ -990,9 +989,8 @@ void main() {
         test('shapeDecoration utility creates shape decoration attributes', () {
           final attribute = BoxSpecAttribute();
 
-          expect(attribute.shapeDecoration, isNotNull);
-          final colorAttr = attribute.shapeDecoration.backgroundColor(
-            Colors.orange,
+          final colorAttr = attribute.shapeDecoration(
+            color: Colors.orange,
           );
           expect(colorAttr, isA<BoxSpecAttribute>());
           expect(colorAttr.$decoration, isNotNull);
@@ -1037,9 +1035,11 @@ void main() {
         test('gradient utility creates gradient attributes', () {
           final attribute = BoxSpecAttribute();
 
-          expect(attribute.gradient, isNotNull);
-          // Test that gradient utility exists and can be used
-          expect(attribute.gradient, isA<GradientUtility>());
+          final gradientAttr = attribute.gradient(LinearGradientMix.only(
+            colors: [Colors.red, Colors.blue],
+          ));
+          expect(gradientAttr, isA<BoxSpecAttribute>());
+          expect(gradientAttr.$decoration, isNotNull);
         });
 
         test('linearGradient utility creates linear gradient attributes', () {

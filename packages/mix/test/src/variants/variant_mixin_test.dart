@@ -168,11 +168,13 @@ void main() {
       final selectedResult = attribute.onSelected((style) => style);
       final draggedResult = attribute.onDragged((style) => style);
       final errorResult = attribute.onError((style) => style);
+      final scrolledUnderResult = attribute.onScrolledUnder((style) => style);
 
       expect(focusResult.$variants!.length, 1);
       expect(selectedResult.$variants!.length, 1);
       expect(draggedResult.$variants!.length, 1);
       expect(errorResult.$variants!.length, 1);
+      expect(scrolledUnderResult.$variants!.length, 1);
     });
 
     test('onTablet creates correct variant', () {

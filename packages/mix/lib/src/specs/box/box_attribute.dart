@@ -14,11 +14,9 @@ import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/painting/border_radius_util.dart';
 import '../../properties/painting/border_util.dart';
-import '../../properties/painting/decoration_image_mix.dart';
 import '../../properties/painting/decoration_mix.dart';
+import '../../properties/painting/decoration_util.dart';
 import '../../properties/painting/gradient_mix.dart';
-import '../../properties/painting/shadow_mix.dart';
-import '../../properties/painting/shape_border_mix.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'box_spec.dart';
@@ -36,7 +34,9 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
         VariantMixin<BoxSpecAttribute, BoxSpec>,
         PaddingMixin<BoxSpecAttribute, BoxSpec>,
         MarginMixin<BoxSpecAttribute, BoxSpec>,
-        ConstraintsMixin<BoxSpecAttribute, BoxSpec> {
+        ConstraintsMixin<BoxSpecAttribute, BoxSpec>,
+        DecorationMixin<BoxSpecAttribute, BoxSpec>,
+        ForegroundDecorationMixin<BoxSpecAttribute, BoxSpec> {
   final Prop<AlignmentGeometry>? $alignment;
   final MixProp<EdgeInsetsGeometry>? $padding;
   final MixProp<EdgeInsetsGeometry>? $margin;
@@ -244,31 +244,6 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
     return spec != null ? BoxSpecAttribute.value(spec) : null;
   }
 
-  BoxSpecAttribute shadows(List<BoxShadowMix> value) {
-    return merge(
-      BoxSpecAttribute.only(
-        decoration: BoxDecorationMix.only(boxShadow: value),
-      ),
-    );
-  }
-
-  BoxSpecAttribute shadow(BoxShadowMix value) {
-    return merge(
-      BoxSpecAttribute.only(
-        decoration: BoxDecorationMix.only(boxShadow: [value]),
-      ),
-    );
-  }
-
-  BoxSpecAttribute elevation(ElevationShadow value) {
-    return merge(
-      BoxSpecAttribute.only(
-        decoration: BoxDecorationMix.only(
-          boxShadow: BoxShadowMix.fromElevation(value),
-        ),
-      ),
-    );
-  }
 
   BoxSpecAttribute transform(Matrix4 value) {
     return merge(BoxSpecAttribute.only(transform: value));
@@ -292,21 +267,15 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
   }
 
   // Color instance method
-  BoxSpecAttribute color(Color value) {
-    return merge(BoxSpecAttribute.only(decoration: DecorationMix.color(value)));
-  }
-
-  // Shape instance method
-  BoxSpecAttribute shape(BoxShape value) {
-    return merge(BoxSpecAttribute.only(decoration: DecorationMix.shape(value)));
-  }
 
   // Decoration instance method
+  @override
   BoxSpecAttribute decoration(DecorationMix value) {
     return merge(BoxSpecAttribute.only(decoration: value));
   }
 
   // Foreground decoration instance method
+  @override
   BoxSpecAttribute foregroundDecoration(DecorationMix value) {
     return merge(BoxSpecAttribute.only(foregroundDecoration: value));
   }
@@ -316,141 +285,11 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
     return merge(BoxSpecAttribute.only(modifiers: [modifier]));
   }
 
-  // Box decoration instance method with .only() parameters
-  BoxSpecAttribute boxDecoration({
-    BoxBorderMix? border,
-    BorderRadiusGeometryMix? borderRadius,
-    BoxShape? shape,
-    BlendMode? backgroundBlendMode,
-    Color? color,
-    DecorationImageMix? image,
-    GradientMix? gradient,
-    List<BoxShadowMix>? boxShadow,
-  }) {
-    return merge(
-      BoxSpecAttribute.only(
-        decoration: BoxDecorationMix.only(
-          border: border,
-          borderRadius: borderRadius,
-          shape: shape,
-          backgroundBlendMode: backgroundBlendMode,
-          color: color,
-          image: image,
-          gradient: gradient,
-          boxShadow: boxShadow,
-        ),
-      ),
-    );
-  }
 
-  // Shape decoration instance method with .only() parameters
-  BoxSpecAttribute shapeDecoration({
-    ShapeBorderMix? shape,
-    Color? color,
-    DecorationImageMix? image,
-    GradientMix? gradient,
-    List<BoxShadowMix>? shadows,
-  }) {
-    return merge(
-      BoxSpecAttribute.only(
-        decoration: ShapeDecorationMix.only(
-          shape: shape,
-          color: color,
-          image: image,
-          gradient: gradient,
-          shadows: shadows,
-        ),
-      ),
-    );
-  }
 
-  // Gradient instance method
-  BoxSpecAttribute gradient(GradientMix value) {
-    return merge(
-      BoxSpecAttribute.only(decoration: DecorationMix.gradient(value)),
-    );
-  }
 
-  // Linear gradient instance method with .only() parameters
-  BoxSpecAttribute linearGradient({
-    AlignmentGeometry? begin,
-    AlignmentGeometry? end,
-    TileMode? tileMode,
-    GradientTransform? transform,
-    List<Color>? colors,
-    List<double>? stops,
-  }) {
-    return merge(
-      BoxSpecAttribute.only(
-        decoration: DecorationMix.gradient(
-          LinearGradientMix.only(
-            begin: begin,
-            end: end,
-            tileMode: tileMode,
-            transform: transform,
-            colors: colors,
-            stops: stops,
-          ),
-        ),
-      ),
-    );
-  }
 
-  // Radial gradient instance method with .only() parameters
-  BoxSpecAttribute radialGradient({
-    AlignmentGeometry? center,
-    double? radius,
-    TileMode? tileMode,
-    AlignmentGeometry? focal,
-    double? focalRadius,
-    GradientTransform? transform,
-    List<Color>? colors,
-    List<double>? stops,
-  }) {
-    return merge(
-      BoxSpecAttribute.only(
-        decoration: DecorationMix.gradient(
-          RadialGradientMix.only(
-            center: center,
-            radius: radius,
-            tileMode: tileMode,
-            focal: focal,
-            focalRadius: focalRadius,
-            transform: transform,
-            colors: colors,
-            stops: stops,
-          ),
-        ),
-      ),
-    );
-  }
 
-  // Sweep gradient instance method with .only() parameters
-  BoxSpecAttribute sweepGradient({
-    AlignmentGeometry? center,
-    double? startAngle,
-    double? endAngle,
-    TileMode? tileMode,
-    GradientTransform? transform,
-    List<Color>? colors,
-    List<double>? stops,
-  }) {
-    return merge(
-      BoxSpecAttribute.only(
-        decoration: DecorationMix.gradient(
-          SweepGradientMix.only(
-            center: center,
-            startAngle: startAngle,
-            endAngle: endAngle,
-            tileMode: tileMode,
-            transform: transform,
-            colors: colors,
-            stops: stops,
-          ),
-        ),
-      ),
-    );
-  }
 
   BoxSpecAttribute variants(List<VariantStyleAttribute<BoxSpec>> value) {
     return merge(BoxSpecAttribute.only(variants: value));
