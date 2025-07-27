@@ -9,16 +9,11 @@ class StyledIcon extends StyleWidget<IconSpec> {
     this.semanticLabel,
     super.style,
     super.key,
-
-    this.textDirection,
-
     super.orderOfModifiers,
   });
 
   final IconData? icon;
   final String? semanticLabel;
-  // TODO: Should textDirection be a contructor argument or a style attribute?
-  final TextDirection? textDirection;
 
   @override
   Widget build(BuildContext context, IconSpec? spec) {
@@ -32,7 +27,7 @@ class StyledIcon extends StyleWidget<IconSpec> {
       color: spec?.color,
       shadows: spec?.shadows,
       semanticLabel: semanticLabel,
-      textDirection: textDirection,
+      textDirection: spec?.textDirection,
     );
   }
 }

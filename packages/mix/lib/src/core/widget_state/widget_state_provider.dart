@@ -1,5 +1,6 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show setEquals;
+import 'package:flutter/widgets.dart'
+    show WidgetState, InheritedModel, BuildContext, WidgetStatesController;
 
 class WidgetStateProvider extends InheritedModel<WidgetState> {
   const WidgetStateProvider({

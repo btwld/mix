@@ -1,8 +1,8 @@
-// ignore_for_file: prefer-named-boolean-parameters
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import '../attributes/scalar_util.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
@@ -136,15 +136,14 @@ class FlexibleModifierAttribute extends ModifierAttribute<FlexibleModifier>
 
 final class FlexibleModifierUtility<T extends StyleAttribute<Object?>>
     extends MixUtility<T, FlexibleModifierAttribute> {
-  // TODO: Add flex and fit utilities when IntUtility and FlexFitUtility are available
-  // late final flex = IntUtility(
-  //   (prop) => builder(FlexibleModifierAttribute(flex: prop)),
-  // );
-  // late final fit = FlexFitUtility(
-  //   (prop) => builder(FlexibleModifierAttribute(fit: prop)),
-  // );
+  late final flex = IntUtility(
+    (prop) => builder(FlexibleModifierAttribute(flex: prop)),
+  );
+  late final fit = FlexFitUtility(
+    (prop) => builder(FlexibleModifierAttribute(fit: prop)),
+  );
 
-  const FlexibleModifierUtility(super.builder);
+  FlexibleModifierUtility(super.builder);
   T tight({int? flex}) => builder(
     FlexibleModifierAttribute(
       flex: flex != null ? Prop(flex) : null,

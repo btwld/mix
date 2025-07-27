@@ -109,6 +109,15 @@ final class ColorUtility<T extends StyleAttribute<Object?>>
   ColorUtility(super.builder);
 
   /// @deprecated Use [token] instead
+  /// 
+  /// Migration example:
+  /// ```dart
+  /// // Before
+  /// $box.color.ref(colorToken)
+  /// 
+  /// // After  
+  /// $box.color.token(colorToken)
+  /// ```
   @Deprecated('Use token() instead. Will be removed in a future version.')
   T ref(MixToken<Color> ref) => token(ref);
 }

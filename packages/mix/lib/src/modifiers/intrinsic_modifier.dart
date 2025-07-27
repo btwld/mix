@@ -1,4 +1,3 @@
-// ignore_for_file: prefer-named-boolean-parameters
 
 import 'package:flutter/widgets.dart';
 

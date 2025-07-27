@@ -1,4 +1,3 @@
-// ignore_for_file: prefer-named-boolean-parameters
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -65,13 +64,9 @@ final class PaddingModifier extends Modifier<PaddingModifier>
   }
 }
 
-/// Represents the attributes of a [PaddingModifier].
+/// Attribute class for configuring [PaddingModifier] properties.
 ///
-/// This class encapsulates properties defining the layout and
-/// appearance of a [PaddingModifier].
-///
-/// Use this class to configure the attributes of a [PaddingModifier] and pass it to
-/// the [PaddingModifier] constructor.
+/// Encapsulates padding values for widget spacing and layout.
 class PaddingModifierAttribute extends ModifierAttribute<PaddingModifier>
     with Diagnosticable {
   final MixProp<EdgeInsetsGeometry>? padding;

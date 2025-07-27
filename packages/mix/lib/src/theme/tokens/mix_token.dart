@@ -59,8 +59,10 @@ class StyledTokens<T extends MixToken<V>, V> {
 
   V? operator [](T token) => _map[token];
 
-  // Looks for the token the value set within the MixToken
-  // TODO: Needs to be optimized, but this is a temporary solution
+  /// Finds a token by its resolved value using linear search.
+  /// 
+  /// Performance note: This method performs O(n) lookup through all tokens.
+  /// Consider using direct token references instead of reverse lookups when possible.
   T? findByRef(V value) {
     return _map.keys.firstWhereOrNull((token) {
       if (token is MixTokenCallable<V>) {

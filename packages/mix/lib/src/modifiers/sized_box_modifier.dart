@@ -1,8 +1,8 @@
-// ignore_for_file: prefer-named-boolean-parameters
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import '../attributes/scalar_util.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
@@ -139,18 +139,23 @@ class SizedBoxModifierAttribute extends ModifierAttribute<SizedBoxModifier>
 
 final class SizedBoxModifierUtility<T extends StyleAttribute<Object?>>
     extends MixUtility<T, SizedBoxModifierAttribute> {
-  // TODO: Add width, height and square utilities when DoubleUtility is available
-  // late final width = DoubleUtility(
-  //   (prop) => builder(SizedBoxModifierAttribute(width: prop)),
-  // );
-  // late final height = DoubleUtility(
-  //   (prop) => builder(SizedBoxModifierAttribute(height: prop)),
-  // );
+  late final width = DoubleUtility(
+    (prop) => builder(SizedBoxModifierAttribute(width: prop)),
+  );
+  late final height = DoubleUtility(
+    (prop) => builder(SizedBoxModifierAttribute(height: prop)),
+  );
+  
+  /// Creates a square-sized box with the same width and height
+  T square(double size) => builder(SizedBoxModifierAttribute(
+    width: Prop(size), 
+    height: Prop(size),
+  ));
   // late final square = DoubleUtility(
   //   (prop) => builder(SizedBoxModifierAttribute(width: prop, height: prop)),
   // );
 
-  const SizedBoxModifierUtility(super.builder);
+  SizedBoxModifierUtility(super.builder);
 
   T call({double? width, double? height}) {
     return builder(

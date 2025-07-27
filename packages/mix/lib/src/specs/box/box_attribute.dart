@@ -21,13 +21,10 @@ import '../../modifiers/modifier_util.dart';
 import '../../variants/variant_util.dart';
 import 'box_spec.dart';
 
-/// Represents the attributes of a [BoxSpec].
+/// Attribute class for configuring [BoxSpec] properties.
 ///
-/// This class encapsulates properties defining the layout and
-/// appearance of a [BoxSpec].
-///
-/// Use this class to configure the attributes of a [BoxSpec] and pass it to
-/// the [BoxSpec] constructor.
+/// Encapsulates alignment, padding, margin, constraints, decoration,
+/// and other styling properties for box layouts.
 class BoxSpecAttribute extends StyleAttribute<BoxSpec> with Diagnosticable {
   final Prop<AlignmentGeometry>? $alignment;
   final MixProp<EdgeInsetsGeometry>? $padding;

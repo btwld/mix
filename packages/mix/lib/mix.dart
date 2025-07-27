@@ -73,6 +73,7 @@ export 'src/helpers/extensions.dart';
 export 'src/modifiers/align_modifier.dart';
 export 'src/modifiers/aspect_ratio_modifier.dart';
 export 'src/modifiers/clip_modifier.dart';
+export 'src/modifiers/default_text_style_modifier.dart';
 export 'src/modifiers/flexible_modifier.dart';
 export 'src/modifiers/fractionally_sized_box_modifier.dart';
 export 'src/modifiers/intrinsic_modifier.dart';
