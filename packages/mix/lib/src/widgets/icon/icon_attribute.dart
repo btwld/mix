@@ -207,5 +207,8 @@ class IconSpecAttribute extends StyleAttribute<IconSpec> with Diagnosticable {
     $textDirection,
     $applyTextScaling,
     $fill,
+    $animation,
+    $modifiers,
+    $variants,
   ];
 }

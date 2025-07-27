@@ -226,5 +226,8 @@ class ImageSpecAttribute extends StyleAttribute<ImageSpec> with Diagnosticable {
     $centerSlice,
     $filterQuality,
     $colorBlendMode,
+    $animation,
+    $modifiers,
+    $variants,
   ];
 }

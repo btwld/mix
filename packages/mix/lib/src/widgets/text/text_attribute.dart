@@ -397,5 +397,8 @@ class TextSpecAttribute extends StyleAttribute<TextSpec> with Diagnosticable {
     $textDirection,
     $softWrap,
     $directives,
+    $animation,
+    $modifiers,
+    $variants,
   ];
 }

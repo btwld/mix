@@ -239,3 +239,142 @@ final class DecorationImageRef extends TokenRef<DecorationImage>
 final class CurveRef extends TokenRef<Curve> implements Curve {
   const CurveRef(super.token);
 }
+
+// =============================================================================
+// EXTENSION TYPE TOKEN REFERENCES
+// =============================================================================
+// Extension types provide zero-cost abstractions for token references,
+// making them perfect for primitive types and enums.
+
+/// Extension type token reference for [double] values.
+/// Provides a zero-cost wrapper around `MixToken<double>`.
+extension type const DoubleToken(MixToken<double> _token) {
+  /// Gets the underlying MixToken
+  MixToken<double> get mixToken => _token;
+}
+
+/// Extension type token reference for [int] values.
+/// Provides a zero-cost wrapper around `MixToken<int>`.
+extension type const IntToken(MixToken<int> _token) {
+  /// Gets the underlying MixToken
+  MixToken<int> get mixToken => _token;
+}
+
+/// Extension type token reference for [bool] values.
+/// Provides a zero-cost wrapper around `MixToken<bool>`.
+extension type const BoolToken(MixToken<bool> _token) {
+  /// Gets the underlying MixToken
+  MixToken<bool> get mixToken => _token;
+}
+
+/// Extension type token reference for [String] values.
+/// Provides a zero-cost wrapper around `MixToken<String>`.
+extension type const StringToken(MixToken<String> _token) {
+  /// Gets the underlying MixToken
+  MixToken<String> get mixToken => _token;
+}
+
+// =============================================================================
+// ENUM EXTENSION TYPE TOKEN REFERENCES
+// =============================================================================
+// Extension types for enums that implement the enum interface
+
+/// Extension type token reference for [VerticalDirection] values.
+extension type const VerticalDirectionToken(MixToken<VerticalDirection> _token) implements VerticalDirection {
+  @override
+  Never noSuchMethod(Invocation invocation) {
+    throw UnimplementedError(
+      'This is a Token reference for VerticalDirection, so it does not implement ${invocation.memberName}.',
+    );
+  }
+}
+
+/// Extension type token reference for [BorderStyle] values.
+extension type const BorderStyleToken(MixToken<BorderStyle> _token) implements BorderStyle {
+  @override
+  Never noSuchMethod(Invocation invocation) {
+    throw UnimplementedError(
+      'This is a Token reference for BorderStyle, so it does not implement ${invocation.memberName}.',
+    );
+  }
+}
+
+/// Extension type token reference for [Clip] values.
+extension type const ClipToken(MixToken<Clip> _token) implements Clip {
+  @override
+  Never noSuchMethod(Invocation invocation) {
+    throw UnimplementedError(
+      'This is a Token reference for Clip, so it does not implement ${invocation.memberName}.',
+    );
+  }
+}
+
+/// Extension type token reference for [Axis] values.
+extension type const AxisToken(MixToken<Axis> _token) implements Axis {
+  @override
+  Never noSuchMethod(Invocation invocation) {
+    throw UnimplementedError(
+      'This is a Token reference for Axis, so it does not implement ${invocation.memberName}.',
+    );
+  }
+}
+
+/// Extension type token reference for [FlexFit] values.
+extension type const FlexFitToken(MixToken<FlexFit> _token) implements FlexFit {
+  @override
+  Never noSuchMethod(Invocation invocation) {
+    throw UnimplementedError(
+      'This is a Token reference for FlexFit, so it does not implement ${invocation.memberName}.',
+    );
+  }
+}
+
+/// Extension type token reference for [MainAxisAlignment] values.
+extension type const MainAxisAlignmentToken(MixToken<MainAxisAlignment> _token) implements MainAxisAlignment {
+  @override
+  Never noSuchMethod(Invocation invocation) {
+    throw UnimplementedError(
+      'This is a Token reference for MainAxisAlignment, so it does not implement ${invocation.memberName}.',
+    );
+  }
+}
+
+/// Extension type token reference for [CrossAxisAlignment] values.
+extension type const CrossAxisAlignmentToken(MixToken<CrossAxisAlignment> _token) implements CrossAxisAlignment {
+  @override
+  Never noSuchMethod(Invocation invocation) {
+    throw UnimplementedError(
+      'This is a Token reference for CrossAxisAlignment, so it does not implement ${invocation.memberName}.',
+    );
+  }
+}
+
+/// Extension type token reference for [TextAlign] values.
+extension type const TextAlignToken(MixToken<TextAlign> _token) implements TextAlign {
+  @override
+  Never noSuchMethod(Invocation invocation) {
+    throw UnimplementedError(
+      'This is a Token reference for TextAlign, so it does not implement ${invocation.memberName}.',
+    );
+  }
+}
+
+/// Extension type token reference for [FontStyle] values.
+extension type const FontStyleToken(MixToken<FontStyle> _token) implements FontStyle {
+  @override
+  Never noSuchMethod(Invocation invocation) {
+    throw UnimplementedError(
+      'This is a Token reference for FontStyle, so it does not implement ${invocation.memberName}.',
+    );
+  }
+}
+
+/// Extension type token reference for [BoxFit] values.
+extension type const BoxFitToken(MixToken<BoxFit> _token) implements BoxFit {
+  @override
+  Never noSuchMethod(Invocation invocation) {
+    throw UnimplementedError(
+      'This is a Token reference for BoxFit, so it does not implement ${invocation.memberName}.',
+    );
+  }
+}

@@ -102,7 +102,7 @@ export 'src/widgets/icon/icon_widget.dart';
 export 'src/widgets/image/image_attribute.dart';
 export 'src/widgets/image/image_spec.dart';
 export 'src/widgets/image/image_widget.dart';
-export 'src/widgets/spec_util.dart';
+export 'src/properties/spec_util.dart';
 export 'src/widgets/stack/stack_attribute.dart';
 export 'src/widgets/stack/stack_box_spec.dart';
 export 'src/widgets/stack/stack_spec.dart';

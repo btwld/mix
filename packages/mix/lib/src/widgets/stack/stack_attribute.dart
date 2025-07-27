@@ -150,5 +150,13 @@ class StackSpecAttribute extends StyleAttribute<StackSpec> with Diagnosticable {
 
   /// The list of properties that constitute the state of this [StackSpecAttribute].
   @override
-  List<Object?> get props => [$alignment, $fit, $textDirection, $clipBehavior];
+  List<Object?> get props => [
+    $alignment,
+    $fit,
+    $textDirection,
+    $clipBehavior,
+    $animation,
+    $modifiers,
+    $variants,
+  ];
 }

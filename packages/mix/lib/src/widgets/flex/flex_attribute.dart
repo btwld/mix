@@ -263,5 +263,8 @@ class FlexSpecAttribute extends StyleAttribute<FlexSpec> with Diagnosticable {
     $textBaseline,
     $clipBehavior,
     $gap,
+    $animation,
+    $modifiers,
+    $variants,
   ];
 }
