@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../attributes/border_radius_mix.dart';
+import '../properties/painting/border_radius_mix.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 import 'align_modifier.dart';

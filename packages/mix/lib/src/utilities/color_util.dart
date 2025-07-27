@@ -5,7 +5,7 @@ import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 import '../theme/tokens/mix_token.dart';
-import '../attributes/material_colors_util.dart';
+import '../properties/painting/material_colors_util.dart';
 
 /// Provides color transformation methods for applying opacity, brightness, and saturation changes.
 ///

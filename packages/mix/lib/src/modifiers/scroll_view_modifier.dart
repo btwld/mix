@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import '../attributes/edge_insets_geometry_mix.dart';
-import '../attributes/edge_insets_geometry_util.dart';
+import '../properties/layout/edge_insets_geometry_mix.dart';
+import '../properties/layout/edge_insets_geometry_util.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';

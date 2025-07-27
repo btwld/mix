@@ -2,8 +2,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../attributes/text_height_behavior_mix.dart';
-import '../attributes/text_style_mix.dart';
+import '../properties/typography/text_height_behavior_mix.dart';
+import '../properties/typography/text_style_mix.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
