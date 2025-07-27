@@ -429,16 +429,9 @@ extension WrapAlignmentPropUtilityExt<T extends StyleAttribute<Object?>>
   T spaceEvenly() => call(WrapAlignment.spaceEvenly);
 }
 
-/// {@template table_cell_vertical_alignment_utility}
-/// A utility class for creating [StyleAttribute] instances from [TableCellVerticalAlignment] values.
-///
-/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
-/// from predefined [TableCellVerticalAlignment] values.
-/// {@endtemplate}
-class TableCellVerticalAlignmentUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, TableCellVerticalAlignment> {
-  const TableCellVerticalAlignmentUtility(super.builder);
-
+/// Extension for creating [TableCellVerticalAlignment] values with predefined options.
+extension TableCellVerticalAlignmentPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, TableCellVerticalAlignment> {
   /// Creates a [StyleAttribute] instance with [TableCellVerticalAlignment.top] value.
   T top() => call(TableCellVerticalAlignment.top);
 
