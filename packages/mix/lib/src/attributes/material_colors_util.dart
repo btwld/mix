@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
-import 'color_util.dart';
+import '../utilities/color_util.dart';
 
 /// Utility for Material Design color palettes with shade access.
 ///

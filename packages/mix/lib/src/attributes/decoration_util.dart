@@ -5,7 +5,7 @@ import '../core/style.dart';
 import '../core/utility.dart';
 import 'border_radius_util.dart';
 import 'border_util.dart';
-import 'color_util.dart';
+import '../utilities/color_util.dart';
 import 'decoration_image_util.dart';
 import 'decoration_mix.dart';
 import 'gradient_util.dart';

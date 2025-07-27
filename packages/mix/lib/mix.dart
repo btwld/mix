@@ -22,7 +22,7 @@ export 'src/attributes/border_mix.dart';
 export 'src/attributes/border_radius_mix.dart';
 export 'src/attributes/border_radius_util.dart';
 export 'src/attributes/border_util.dart';
-export 'src/attributes/color_util.dart';
+export 'src/utilities/color_util.dart';
 export 'src/attributes/constraints_mix.dart';
 export 'src/attributes/constraints_util.dart';
 export 'src/attributes/decoration_image_mix.dart';
