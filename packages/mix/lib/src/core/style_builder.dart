@@ -6,7 +6,7 @@ import 'providers/resolved_style_provider.dart';
 import 'spec.dart';
 import 'style.dart';
 import 'internal/mix_hoverable_region.dart';
-import 'widget_state/widget_state_provider.dart';
+import 'providers/widget_state_provider.dart';
 
 /// Builds widgets with Mix styling.
 ///

@@ -7,7 +7,7 @@ import '../animation/animation_config.dart';
 import 'mix_element.dart';
 import 'modifier.dart';
 import 'spec.dart';
-import 'variant.dart';
+import '../variants/variant.dart';
 
 /// Base class for style containers that can be resolved to specifications.
 ///

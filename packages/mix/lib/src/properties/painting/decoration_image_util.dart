@@ -4,7 +4,6 @@ import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
 import 'decoration_image_mix.dart';
-import '../layout/scalar_util.dart';
 
 /// Utility class for configuring [DecorationImage] properties.
 ///

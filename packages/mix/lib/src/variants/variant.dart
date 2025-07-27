@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'internal/deep_collection_equality.dart';
-import 'style.dart';
-import 'widget_state/widget_state_provider.dart';
+import '../core/internal/deep_collection_equality.dart';
+import '../core/style.dart';
+import '../core/providers/widget_state_provider.dart';
 
 /// Sealed base class for all variant types in the Mix framework.
 ///

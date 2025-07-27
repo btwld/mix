@@ -1,25 +1,24 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../../properties/painting/border_mix.dart';
-import '../../properties/painting/border_radius_mix.dart';
-import '../../properties/layout/constraints_mix.dart';
-import '../../properties/layout/constraints_util.dart';
-import '../../properties/painting/decoration_mix.dart';
-import '../../properties/painting/decoration_util.dart';
-import '../../properties/layout/edge_insets_geometry_mix.dart';
-import '../../properties/layout/edge_insets_geometry_util.dart';
-import '../../properties/layout/scalar_util.dart';
-import '../../properties/painting/shadow_mix.dart';
-import '../../animation/animation_util.dart';
 import '../../animation/animation_config.dart';
+import '../../animation/animation_util.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
-import '../../core/variant.dart';
-import '../../modifiers/modifier_util.dart';
 import '../../core/variant/variant_util.dart';
+import '../../modifiers/modifier_util.dart';
+import '../../properties/layout/constraints_mix.dart';
+import '../../properties/layout/constraints_util.dart';
+import '../../properties/layout/edge_insets_geometry_mix.dart';
+import '../../properties/layout/edge_insets_geometry_util.dart';
+import '../../properties/painting/border_mix.dart';
+import '../../properties/painting/border_radius_mix.dart';
+import '../../properties/painting/decoration_mix.dart';
+import '../../properties/painting/decoration_util.dart';
+import '../../properties/painting/shadow_mix.dart';
+import '../../variants/variant.dart';
 import 'box_spec.dart';
 
 /// Attribute class for configuring [BoxSpec] properties.
@@ -73,9 +72,10 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec> with Diagnosticable {
     (prop) => merge(BoxSpecAttribute(transform: prop)),
   );
 
-  late final transformAlignment = PropUtility<BoxSpecAttribute, AlignmentGeometry>(
-    (prop) => merge(BoxSpecAttribute(transformAlignment: prop)),
-  );
+  late final transformAlignment =
+      PropUtility<BoxSpecAttribute, AlignmentGeometry>(
+        (prop) => merge(BoxSpecAttribute(transformAlignment: prop)),
+      );
 
   late final clipBehavior = PropUtility<BoxSpecAttribute, Clip>(
     (prop) => merge(BoxSpecAttribute(clipBehavior: prop)),

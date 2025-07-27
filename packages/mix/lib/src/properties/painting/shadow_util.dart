@@ -4,7 +4,6 @@ import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
 import '../../utilities/color_util.dart';
-import '../layout/scalar_util.dart';
 import 'shadow_mix.dart';
 
 /// Utility class for configuring [Shadow] properties.
@@ -15,14 +14,16 @@ class ShadowUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, Shadow> {
   /// Utility for defining [ShadowMix.blurRadius].
   late final blurRadius = PropUtility<T, double>(
-    (prop) => call(ShadowMix(blurRadius: prop),)
+    (prop) => call(ShadowMix(blurRadius: prop)),
   );
 
   /// Utility for defining [ShadowMix.color].
   late final color = ColorUtility<T>((prop) => call(ShadowMix(color: prop)));
 
   /// Utility for defining [ShadowMix.offset].
-  late final offset = PropUtility<T, Offset>((prop) => call(ShadowMix(offset: prop)));
+  late final offset = PropUtility<T, Offset>(
+    (prop) => call(ShadowMix(offset: prop)),
+  );
 
   ShadowUtility(super.builder) : super(convertToMix: ShadowMix.value);
 
@@ -46,12 +47,12 @@ class BoxShadowUtility<T extends StyleAttribute<Object?>>
 
   /// Utility for defining [BoxShadowMix.blurRadius].
   late final blurRadius = PropUtility<T, double>(
-    (prop) => call(BoxShadowMix(blurRadius: prop),)
+    (prop) => call(BoxShadowMix(blurRadius: prop)),
   );
 
   /// Utility for defining [BoxShadowMix.spreadRadius].
   late final spreadRadius = PropUtility<T, double>(
-    (prop) => call(BoxShadowMix(spreadRadius: prop),)
+    (prop) => call(BoxShadowMix(spreadRadius: prop)),
   );
 
   BoxShadowUtility(super.builder) : super(convertToMix: BoxShadowMix.value);

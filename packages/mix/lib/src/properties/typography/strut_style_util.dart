@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
-import '../layout/scalar_util.dart';
 import 'strut_style_mix.dart';
 
 final class StrutStyleUtility<T extends StyleAttribute<Object?>>

@@ -66,8 +66,8 @@ export 'src/core/style_builder.dart';
 export 'src/core/providers/style_provider.dart';
 export 'src/core/style_widget.dart';
 export 'src/core/utility.dart';
-export 'src/core/variant.dart';
-export 'src/core/widget_state/widget_state_provider.dart';
+export 'src/variants/variant.dart';
+export 'src/core/providers/widget_state_provider.dart';
 export 'src/core/extensions/extensions.dart';
 
 /// MODIFIERS
@@ -123,4 +123,4 @@ export 'src/theme/tokens/value_resolver.dart';
 export 'src/core/variant/variant_util.dart';
 
 /// WIDGETS
-export 'src/widgets/pressable_widget.dart';
+export 'src/widgets/pressable/pressable_widget.dart';

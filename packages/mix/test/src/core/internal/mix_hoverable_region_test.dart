@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/src/widget_state/cursor_position.dart';
 import 'package:mix/src/core/internal/mix_hoverable_region.dart';
-import 'package:mix/src/core/widget_state/widget_state_provider.dart';
+import 'package:mix/src/core/providers/widget_state_provider.dart';
 
 void main() {
   group('MixHoverableRegion', () {

@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 
-import '../core/internal/mix_hoverable_region.dart';
-import '../core/widget_state/widget_state_provider.dart';
-import '../core/internal/constants.dart';
-import 'box/box_attribute.dart';
-import 'box/box_widget.dart';
+import '../../core/internal/mix_hoverable_region.dart';
+import '../../core/providers/widget_state_provider.dart';
+import '../../core/internal/constants.dart';
+import '../box/box_attribute.dart';
+import '../box/box_widget.dart';
 
 // It expects Style? but Box requires StyleAttribute<BoxSpec>
 // Need to redesign how Style interacts with typed widgets

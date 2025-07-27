@@ -4,7 +4,7 @@ import '../breakpoint.dart';
 import '../spec.dart';
 import '../style.dart';
 import '../utility.dart';
-import '../variant.dart';
+import '../../variants/variant.dart';
 
 /// Utility class for creating variant attributes with context-based variants
 @immutable

@@ -35,12 +35,6 @@ mixin MixTokenCallable<T> on MixToken<T> {
   T resolve(BuildContext context);
 }
 
-/// Mixin for classes that reference a Mix token.
-mixin TokenRef<T extends MixToken> {
-  /// The referenced token.
-  T get token;
-}
-
 /// Mixin for classes that provide token resolution capabilities.
 mixin WithTokenResolver<V> {
   /// The resolver function for converting context to values.
@@ -60,7 +54,7 @@ class StyledTokens<T extends MixToken<V>, V> {
   V? operator [](T token) => _map[token];
 
   /// Finds a token by its resolved value using linear search.
-  /// 
+  ///
   /// Performance note: This method performs O(n) lookup through all tokens.
   /// Consider using direct token references instead of reverse lookups when possible.
   T? findByRef(V value) {
