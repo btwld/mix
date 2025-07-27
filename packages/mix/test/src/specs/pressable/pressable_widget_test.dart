@@ -4,7 +4,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-import 'package:mix/src/specs/pressable/pressable_widget.dart';
 
 void main() {
   group('Pressable', () {
@@ -427,5 +426,4 @@ void main() {
       focusNode.dispose();
     });
   });
-
 }

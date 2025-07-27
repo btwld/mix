@@ -4,7 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../../helpers/testing_utils.dart';
-import 'package:mix/src/specs/image/image_attribute.dart';
 
 void main() {
   group('ImageSpecAttribute', () {

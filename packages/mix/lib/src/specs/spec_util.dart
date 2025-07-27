@@ -8,22 +8,22 @@ import '../core/spec.dart';
 import '../core/style.dart';
 import '../modifiers/modifier_util.dart';
 import '../variants/variant_util.dart';
-import 'box/box_attribute.dart';
+import 'box/box_util.dart';
 import 'flex/flex_attribute.dart';
-import 'flexbox/flexbox_spec.dart';
+import 'flexbox/flexbox_util.dart';
 import 'icon/icon_attribute.dart';
 import 'image/image_attribute.dart';
 import 'stack/stack_attribute.dart';
 import 'text/text_attribute.dart';
 
-/// Global accessor for box specification attributes.
-BoxSpecAttribute get $box => BoxSpecAttribute();
+/// Global accessor for box specification utilities.
+BoxSpecUtility get $box => BoxSpecUtility();
 
 /// Global accessor for flex specification attributes.
 FlexSpecAttribute get $flex => FlexSpecAttribute();
 
 /// Global accessor for flexbox specification utilities.
-FlexBoxSpecUtility get $flexbox => FlexBoxSpecUtility.self;
+FlexBoxSpecUtility get $flexbox => FlexBoxSpecUtility();
 
 /// Global accessor for image specification attributes.
 ImageSpecAttribute get $image => ImageSpecAttribute();

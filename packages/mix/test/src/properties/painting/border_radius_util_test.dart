@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../../helpers/testing_utils.dart';
-import 'package:mix/src/properties/painting/border_radius_util.dart';
 
 void main() {
   group('BorderRadiusUtility', () {

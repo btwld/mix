@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../../helpers/testing_utils.dart';
-import 'package:mix/src/specs/flexbox/flexbox_spec.dart';
 
 void main() {
   group('FlexBoxSpecAttribute', () {
@@ -11,10 +10,7 @@ void main() {
       test('creates FlexBoxSpecAttribute with all properties', () {
         final boxAttr = BoxSpecAttribute(
           alignment: Prop(Alignment.center),
-          padding: MixProp(EdgeInsetsMix.only(
-            top: 10.0,
-            bottom: 20.0,
-          )),
+          padding: MixProp(EdgeInsetsMix.only(top: 10.0, bottom: 20.0)),
         );
 
         final flexAttr = FlexSpecAttribute(
@@ -23,10 +19,7 @@ void main() {
           crossAxisAlignment: Prop(CrossAxisAlignment.start),
         );
 
-        final attribute = FlexBoxSpecAttribute(
-          box: boxAttr,
-          flex: flexAttr,
-        );
+        final attribute = FlexBoxSpecAttribute(box: boxAttr, flex: flexAttr);
 
         // Verify properties are set
         expect(attribute.$box, equals(boxAttr));
@@ -41,23 +34,26 @@ void main() {
         expect(attribute.$flex, isNull);
       });
 
-      test('value constructor creates FlexBoxSpecAttribute from FlexBoxSpec', () {
-        const spec = FlexBoxSpec(
-          box: BoxSpec(
-            alignment: Alignment.center,
-            padding: EdgeInsets.all(16.0),
-          ),
-          flex: FlexSpec(
-            direction: Axis.horizontal,
-            mainAxisAlignment: MainAxisAlignment.center,
-          ),
-        );
+      test(
+        'value constructor creates FlexBoxSpecAttribute from FlexBoxSpec',
+        () {
+          const spec = FlexBoxSpec(
+            box: BoxSpec(
+              alignment: Alignment.center,
+              padding: EdgeInsets.all(16.0),
+            ),
+            flex: FlexSpec(
+              direction: Axis.horizontal,
+              mainAxisAlignment: MainAxisAlignment.center,
+            ),
+          );
 
-        final attribute = FlexBoxSpecAttribute.value(spec);
+          final attribute = FlexBoxSpecAttribute.value(spec);
 
-        expect(attribute.$box, isNotNull);
-        expect(attribute.$flex, isNotNull);
-      });
+          expect(attribute.$box, isNotNull);
+          expect(attribute.$flex, isNotNull);
+        },
+      );
 
       test('maybeValue returns null for null spec', () {
         expect(FlexBoxSpecAttribute.maybeValue(null), isNull);
@@ -81,8 +77,12 @@ void main() {
       test('utility methods create new instances', () {
         final utility = FlexBoxSpecUtility();
         final original = const FlexBoxSpecAttribute();
-        final withBox = utility.build(FlexBoxSpecAttribute(box: BoxSpecAttribute()));
-        final withFlex = utility.build(FlexBoxSpecAttribute(flex: FlexSpecAttribute()));
+        final withBox = utility.build(
+          FlexBoxSpecAttribute(box: BoxSpecAttribute()),
+        );
+        final withFlex = utility.build(
+          FlexBoxSpecAttribute(flex: FlexSpecAttribute()),
+        );
 
         // Each utility creates a new instance
         expect(identical(original, withBox.attribute), isFalse);
@@ -123,10 +123,7 @@ void main() {
         final attribute = FlexBoxSpecAttribute(
           box: BoxSpecAttribute(
             alignment: Prop(Alignment.center),
-            padding: MixProp(EdgeInsetsMix.only(
-              top: 10.0,
-              bottom: 20.0,
-            )),
+            padding: MixProp(EdgeInsetsMix.only(top: 10.0, bottom: 20.0)),
           ),
           flex: FlexSpecAttribute(
             direction: Prop(Axis.horizontal),
@@ -139,10 +136,10 @@ void main() {
 
         expect(resolved, isNotNull);
         expect(resolved.box.alignment, Alignment.center);
-        expect(resolved.box.padding, const EdgeInsets.only(
-          top: 10.0,
-          bottom: 20.0,
-        ));
+        expect(
+          resolved.box.padding,
+          const EdgeInsets.only(top: 10.0, bottom: 20.0),
+        );
         expect(resolved.flex.direction, Axis.horizontal);
         expect(resolved.flex.mainAxisAlignment, MainAxisAlignment.center);
       });
@@ -150,17 +147,22 @@ void main() {
       test('resolves complex nested properties correctly', () {
         final attribute = FlexBoxSpecAttribute(
           box: BoxSpecAttribute(
-            decoration: MixProp(BoxDecorationMix(
-              color: Prop(Colors.red),
-              border: MixProp(BoxBorderMix.all(BorderSideMix.only(
-                color: Colors.blue,
-                width: 2.0,
-              ))),
-              borderRadius: MixProp(BorderRadiusMix.only(
-                topLeft: const Radius.circular(8.0),
-                topRight: const Radius.circular(8.0),
-              )),
-            )),
+            decoration: MixProp(
+              BoxDecorationMix(
+                color: Prop(Colors.red),
+                border: MixProp(
+                  BoxBorderMix.all(
+                    BorderSideMix.only(color: Colors.blue, width: 2.0),
+                  ),
+                ),
+                borderRadius: MixProp(
+                  BorderRadiusMix.only(
+                    topLeft: const Radius.circular(8.0),
+                    topRight: const Radius.circular(8.0),
+                  ),
+                ),
+              ),
+            ),
           ),
           flex: FlexSpecAttribute(
             gap: Prop(10.0),
@@ -188,9 +190,7 @@ void main() {
             alignment: Prop(Alignment.center),
             padding: MixProp(EdgeInsetsMix.all(10.0)),
           ),
-          flex: FlexSpecAttribute(
-            direction: Prop(Axis.horizontal),
-          ),
+          flex: FlexSpecAttribute(direction: Prop(Axis.horizontal)),
         );
 
         final second = FlexBoxSpecAttribute(
@@ -199,7 +199,9 @@ void main() {
             margin: MixProp(EdgeInsetsMix.all(20.0)), // This should be added
           ),
           flex: FlexSpecAttribute(
-            mainAxisAlignment: Prop(MainAxisAlignment.center), // This should be added
+            mainAxisAlignment: Prop(
+              MainAxisAlignment.center,
+            ), // This should be added
           ),
         );
 
@@ -209,18 +211,22 @@ void main() {
         final context = MockBuildContext();
         final resolved = merged.resolve(context);
 
-        expect(resolved.box.alignment, Alignment.topLeft); // second overrides first
+        expect(
+          resolved.box.alignment,
+          Alignment.topLeft,
+        ); // second overrides first
         expect(resolved.box.padding, const EdgeInsets.all(10.0)); // from first
         expect(resolved.box.margin, const EdgeInsets.all(20.0)); // from second
         expect(resolved.flex.direction, Axis.horizontal); // from first
-        expect(resolved.flex.mainAxisAlignment, MainAxisAlignment.center); // from second
+        expect(
+          resolved.flex.mainAxisAlignment,
+          MainAxisAlignment.center,
+        ); // from second
       });
 
       test('returns this when other is null', () {
         final attribute = FlexBoxSpecAttribute(
-          box: BoxSpecAttribute(
-            alignment: Prop(Alignment.center),
-          ),
+          box: BoxSpecAttribute(alignment: Prop(Alignment.center)),
         );
 
         final merged = attribute.merge(null);
@@ -231,9 +237,7 @@ void main() {
       test('merges nested box and flex attributes correctly', () {
         final first = FlexBoxSpecAttribute(
           box: BoxSpecAttribute(
-            decoration: MixProp(
-              BoxDecorationMix.only(color: Colors.red),
-            ),
+            decoration: MixProp(BoxDecorationMix.only(color: Colors.red)),
           ),
         );
 
@@ -241,7 +245,9 @@ void main() {
           box: BoxSpecAttribute(
             decoration: MixProp(
               BoxDecorationMix(
-                border: MixProp(BoxBorderMix.all(BorderSideMix.only(color: Colors.blue))),
+                border: MixProp(
+                  BoxBorderMix.all(BorderSideMix.only(color: Colors.blue)),
+                ),
               ),
             ),
           ),
@@ -262,21 +268,13 @@ void main() {
     group('Equality', () {
       test('equal attributes have same hashCode', () {
         final attr1 = FlexBoxSpecAttribute(
-          box: BoxSpecAttribute(
-            alignment: Prop(Alignment.center),
-          ),
-          flex: FlexSpecAttribute(
-            direction: Prop(Axis.horizontal),
-          ),
+          box: BoxSpecAttribute(alignment: Prop(Alignment.center)),
+          flex: FlexSpecAttribute(direction: Prop(Axis.horizontal)),
         );
 
         final attr2 = FlexBoxSpecAttribute(
-          box: BoxSpecAttribute(
-            alignment: Prop(Alignment.center),
-          ),
-          flex: FlexSpecAttribute(
-            direction: Prop(Axis.horizontal),
-          ),
+          box: BoxSpecAttribute(alignment: Prop(Alignment.center)),
+          flex: FlexSpecAttribute(direction: Prop(Axis.horizontal)),
         );
 
         expect(attr1, equals(attr2));
@@ -285,15 +283,11 @@ void main() {
 
       test('different attributes are not equal', () {
         final attr1 = FlexBoxSpecAttribute(
-          box: BoxSpecAttribute(
-            alignment: Prop(Alignment.center),
-          ),
+          box: BoxSpecAttribute(alignment: Prop(Alignment.center)),
         );
 
         final attr2 = FlexBoxSpecAttribute(
-          box: BoxSpecAttribute(
-            alignment: Prop(Alignment.topLeft),
-          ),
+          box: BoxSpecAttribute(alignment: Prop(Alignment.topLeft)),
         );
 
         expect(attr1, isNot(equals(attr2)));
@@ -301,15 +295,11 @@ void main() {
 
       test('attributes with different nested properties are not equal', () {
         final attr1 = FlexBoxSpecAttribute(
-          flex: FlexSpecAttribute(
-            direction: Prop(Axis.horizontal),
-          ),
+          flex: FlexSpecAttribute(direction: Prop(Axis.horizontal)),
         );
 
         final attr2 = FlexBoxSpecAttribute(
-          flex: FlexSpecAttribute(
-            direction: Prop(Axis.vertical),
-          ),
+          flex: FlexSpecAttribute(direction: Prop(Axis.vertical)),
         );
 
         expect(attr1, isNot(equals(attr2)));
@@ -338,7 +328,9 @@ void main() {
         );
 
         final second = FlexBoxSpecAttribute(
-          modifiers: [TransformModifierAttribute.only(transform: Matrix4.identity())],
+          modifiers: [
+            TransformModifierAttribute.only(transform: Matrix4.identity()),
+          ],
         );
 
         final merged = first.merge(second);
@@ -394,15 +386,11 @@ void main() {
     group('Composite Behavior', () {
       test('box and flex attributes work independently', () {
         final boxOnly = FlexBoxSpecAttribute(
-          box: BoxSpecAttribute(
-            alignment: Prop(Alignment.center),
-          ),
+          box: BoxSpecAttribute(alignment: Prop(Alignment.center)),
         );
 
         final flexOnly = FlexBoxSpecAttribute(
-          flex: FlexSpecAttribute(
-            direction: Prop(Axis.horizontal),
-          ),
+          flex: FlexSpecAttribute(direction: Prop(Axis.horizontal)),
         );
 
         expect(boxOnly.$box, isNotNull);
@@ -414,18 +402,12 @@ void main() {
 
       test('partial updates preserve other attribute', () {
         final initial = FlexBoxSpecAttribute(
-          box: BoxSpecAttribute(
-            alignment: Prop(Alignment.center),
-          ),
-          flex: FlexSpecAttribute(
-            direction: Prop(Axis.horizontal),
-          ),
+          box: BoxSpecAttribute(alignment: Prop(Alignment.center)),
+          flex: FlexSpecAttribute(direction: Prop(Axis.horizontal)),
         );
 
         final updateBox = FlexBoxSpecAttribute(
-          box: BoxSpecAttribute(
-            padding: MixProp(EdgeInsetsMix.all(10.0)),
-          ),
+          box: BoxSpecAttribute(padding: MixProp(EdgeInsetsMix.all(10.0))),
         );
 
         final merged = initial.merge(updateBox);
@@ -436,7 +418,10 @@ void main() {
 
         expect(resolved.flex.direction, Axis.horizontal); // preserved
         expect(resolved.box.padding, const EdgeInsets.all(10.0)); // updated
-        expect(resolved.box.alignment, Alignment.center); // preserved from initial box
+        expect(
+          resolved.box.alignment,
+          Alignment.center,
+        ); // preserved from initial box
       });
     });
 
@@ -464,21 +449,25 @@ void main() {
 
       test('handles complex nested chaining', () {
         final utility = FlexBoxSpecUtility();
-        
+
         // Build complex nested structure using utilities
         final complex = utility.build(
           FlexBoxSpecAttribute(
             box: BoxSpecAttribute()
-              .alignment(Alignment.center)
-              .padding.all(10.0)
-              .margin.horizontal(20.0)
-              .color(Colors.red)
-              .border.all(BorderSideMix.only(width: 2.0))
-              .borderRadius.all(const Radius.circular(8.0)),
+                .alignment(Alignment.center)
+                .padding
+                .all(10.0)
+                .margin
+                .horizontal(20.0)
+                .color(Colors.red)
+                .border
+                .all(BorderSideMix.only(width: 2.0))
+                .borderRadius
+                .all(const Radius.circular(8.0)),
             flex: FlexSpecAttribute()
-              .direction(Axis.horizontal)
-              .mainAxisAlignment(MainAxisAlignment.spaceBetween)
-              .gap(10.0),
+                .direction(Axis.horizontal)
+                .mainAxisAlignment(MainAxisAlignment.spaceBetween)
+                .gap(10.0),
           ),
         );
 
@@ -488,7 +477,10 @@ void main() {
         // Verify all properties are resolved correctly
         expect(resolved.box.alignment, Alignment.center);
         expect(resolved.box.padding, const EdgeInsets.all(10.0));
-        expect(resolved.box.margin, const EdgeInsets.symmetric(horizontal: 20.0));
+        expect(
+          resolved.box.margin,
+          const EdgeInsets.symmetric(horizontal: 20.0),
+        );
         expect((resolved.box.decoration as BoxDecoration?)?.color, Colors.red);
         expect(resolved.flex.direction, Axis.horizontal);
         expect(resolved.flex.mainAxisAlignment, MainAxisAlignment.spaceBetween);
@@ -531,21 +523,13 @@ void main() {
 
     test('lerp interpolates between two FlexBoxSpec instances', () {
       const spec1 = FlexBoxSpec(
-        box: BoxSpec(
-          padding: EdgeInsets.all(10.0),
-        ),
-        flex: FlexSpec(
-          gap: 10.0,
-        ),
+        box: BoxSpec(padding: EdgeInsets.all(10.0)),
+        flex: FlexSpec(gap: 10.0),
       );
 
       const spec2 = FlexBoxSpec(
-        box: BoxSpec(
-          padding: EdgeInsets.all(20.0),
-        ),
-        flex: FlexSpec(
-          gap: 20.0,
-        ),
+        box: BoxSpec(padding: EdgeInsets.all(20.0)),
+        flex: FlexSpec(gap: 20.0),
       );
 
       final interpolated = spec1.lerp(spec2, 0.5);
@@ -555,9 +539,7 @@ void main() {
     });
 
     test('lerp returns this when other is null', () {
-      const spec = FlexBoxSpec(
-        box: BoxSpec(alignment: Alignment.center),
-      );
+      const spec = FlexBoxSpec(box: BoxSpec(alignment: Alignment.center));
 
       final result = spec.lerp(null, 0.5);
 

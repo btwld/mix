@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../helpers/testing_utils.dart';
-import 'package:mix/src/specs/stack/stack_attribute.dart';
 
 void main() {
   group('StackSpecAttribute', () {
@@ -188,7 +187,9 @@ void main() {
         final chained = StackSpecAttribute()
             .alignment(Alignment.topLeft)
             .fit(StackFit.loose)
-            .alignment(Alignment.bottomRight) // This overrides the first alignment
+            .alignment(
+              Alignment.bottomRight,
+            ) // This overrides the first alignment
             .fit(StackFit.expand); // This overrides the first fit
 
         expect(chained.$alignment, resolvesTo(Alignment.bottomRight));
