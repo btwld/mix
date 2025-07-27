@@ -627,6 +627,13 @@ class FileMigrator {
           fromPath,
           toPath,
         );
+        if (verbose) {
+          final relativeFilePath = path.relative(
+            path.join(baseDir, importingFileDir),
+            from: baseDir,
+          );
+          print('     $relativeFilePath: "$importPath" → "$newImportPath"');
+        }
         return '$statement $quote$newImportPath$quote$restOfStatement';
       }
 
@@ -691,6 +698,9 @@ class FileMigrator {
     String fromPath,
     String toPath,
   ) {
+    // Note: importingFileDir is like 'lib/src/attributes'
+    // fromPath is like 'src/attributes/color_util.dart' 
+    // toPath is like 'src/utilities/color_util.dart'
     // Handle package imports
     if (oldImportPath.startsWith('package:$packageName/')) {
       // Replace the old path portion with the new path
@@ -701,30 +711,35 @@ class FileMigrator {
     }
 
     // Handle absolute imports that match our from path
+    // These need to be converted to relative paths too
     if (oldImportPath == fromPath ||
         oldImportPath == fromPath.replaceAll('.dart', '')) {
-      return toPath;
+      // Calculate relative path from importing file to new location
+      // importingFileDir already includes 'lib/src/attributes' format
+      final newAbsolutePath = path.join(baseDir, to);
+      final relativePath = path.relative(
+        newAbsolutePath,
+        from: path.join(baseDir, importingFileDir),
+      );
+      return relativePath.replaceAll('\\', '/');
     }
 
     // Handle relative imports
     if (oldImportPath.startsWith('.')) {
       // Calculate the absolute path of what's being imported from the importing file's perspective
-      final importingDirFull = path.join(
-        libRoot,
-        importingFileDir.replaceFirst('$libRoot/', ''),
-      );
+      final importingDirFull = path.join(baseDir, importingFileDir);
       final resolvedOldPath = path.normalize(
-        path.join(path.dirname(importingDirFull), oldImportPath),
+        path.join(importingDirFull, oldImportPath),
       );
 
       // Check if this resolves to our moved file
       if (resolvedOldPath.endsWith(fromPath)) {
         // Stricter endsWith
         // Calculate new relative path
-        final newAbsolutePath = path.join(libRoot, toPath);
+        final newAbsolutePath = path.join(baseDir, to);
         final relativePath = path.relative(
           newAbsolutePath,
-          from: path.dirname(importingDirFull),
+          from: importingDirFull,
         );
         return relativePath.replaceAll('\\', '/');
       }
@@ -735,14 +750,11 @@ class FileMigrator {
         path.basename(oldImportPath) ==
             path.basenameWithoutExtension(fromPath)) {
       // Calculate relative path from importing file to new location
-      final importingDirFull = path.join(
-        libRoot,
-        importingFileDir.replaceFirst('$libRoot/', ''),
-      );
-      final newAbsolutePath = path.join(libRoot, toPath);
+      final importingDirFull = path.join(baseDir, importingFileDir);
+      final newAbsolutePath = path.join(baseDir, to);
       final relativePath = path.relative(
         newAbsolutePath,
-        from: path.dirname(importingDirFull),
+        from: importingDirFull,
       );
       return relativePath.replaceAll('\\', '/');
     }
@@ -753,8 +765,14 @@ class FileMigrator {
       for (int i = 0; i < fromPath.length; i++) {
         if (fromPath.substring(i) == oldImportPath ||
             fromPath.substring(i).replaceAll('.dart', '') == oldImportPath) {
-          // Found a match, replace with corresponding portion of to path
-          return toPath.substring(i);
+          // Found a match, calculate relative path to new location
+          final importingDirFull = path.join(baseDir, importingFileDir);
+          final newAbsolutePath = path.join(baseDir, to);
+          final relativePath = path.relative(
+            newAbsolutePath,
+            from: importingDirFull,
+          );
+          return relativePath.replaceAll('\\', '/');
         }
       }
     }
