@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import 'spec.dart';
-import 'style.dart';
+import '../spec.dart';
+import '../style.dart';
 
 /// Provides unresolved styles to descendant widgets for inheritance.
 class StyleProvider<S extends Spec<S>> extends InheritedWidget {
