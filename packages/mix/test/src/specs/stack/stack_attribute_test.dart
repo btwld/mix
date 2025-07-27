@@ -94,6 +94,27 @@ void main() {
     });
 
     group('Utility Methods', () {
+      test('utility methods create new instances', () {
+        final original = StackSpecAttribute();
+        final withAlignment = original.alignment(Alignment.center);
+        final withFit = original.fit(StackFit.expand);
+
+        // Each utility creates a new instance
+        expect(identical(original, withAlignment), isFalse);
+        expect(identical(original, withFit), isFalse);
+        expect(identical(withAlignment, withFit), isFalse);
+
+        // Original remains unchanged
+        expect(original.$alignment, isNull);
+        expect(original.$fit, isNull);
+
+        // New instances have their properties set
+        expect(withAlignment.$alignment, resolvesTo(Alignment.center));
+        expect(withAlignment.$fit, isNull);
+        expect(withFit.$fit, resolvesTo(StackFit.expand));
+        expect(withFit.$alignment, isNull);
+      });
+
       test('alignment utility works correctly', () {
         final center = StackSpecAttribute().alignment(Alignment.center);
         final topStart = StackSpecAttribute().alignment(
@@ -146,18 +167,31 @@ void main() {
         );
       });
 
-      test('chaining utilities works correctly', () {
-        final attribute = StackSpecAttribute.only(
-          alignment: Alignment.topLeft,
-          fit: StackFit.expand,
-          textDirection: TextDirection.ltr,
-          clipBehavior: Clip.antiAlias,
-        );
+      test('chaining utilities accumulates properties correctly', () {
+        // Chaining now properly accumulates all properties
+        final chained = StackSpecAttribute()
+            .alignment(Alignment.topLeft)
+            .fit(StackFit.expand)
+            .textDirection(TextDirection.ltr)
+            .clipBehavior(Clip.antiAlias);
 
-        expect(attribute.$alignment, resolvesTo(Alignment.topLeft));
-        expect(attribute.$fit, resolvesTo(StackFit.expand));
-        expect(attribute.$textDirection, resolvesTo(TextDirection.ltr));
-        expect(attribute.$clipBehavior, resolvesTo(Clip.antiAlias));
+        // All properties should be accumulated
+        expect(chained.$alignment, resolvesTo(Alignment.topLeft));
+        expect(chained.$fit, resolvesTo(StackFit.expand));
+        expect(chained.$textDirection, resolvesTo(TextDirection.ltr));
+        expect(chained.$clipBehavior, resolvesTo(Clip.antiAlias));
+      });
+
+      test('chaining with overrides works correctly', () {
+        // Later values override earlier ones
+        final chained = StackSpecAttribute()
+            .alignment(Alignment.topLeft)
+            .fit(StackFit.loose)
+            .alignment(Alignment.bottomRight) // This overrides the first alignment
+            .fit(StackFit.expand); // This overrides the first fit
+
+        expect(chained.$alignment, resolvesTo(Alignment.bottomRight));
+        expect(chained.$fit, resolvesTo(StackFit.expand));
       });
     });
 

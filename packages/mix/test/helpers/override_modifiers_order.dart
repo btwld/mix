@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-testOverrideModifiersOrder(
+Future<void> testOverrideModifiersOrder(
   WidgetTester tester, {
   required Widget Function(StyleAttribute, List<Type>) widgetBuilder,
 }) async {

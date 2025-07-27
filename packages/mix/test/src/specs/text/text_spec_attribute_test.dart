@@ -311,20 +311,56 @@ void main() {
         expect(modified.$maxLines, resolvesTo(3));
       });
 
-      test('builder methods can be chained fluently with merge', () {
-        final attribute = TextSpecAttribute()
+      test('chaining utilities accumulates properties correctly', () {
+        // Chaining now properly accumulates all properties
+        final chained = TextSpecAttribute()
             .maxLines(3)
-            .merge(TextSpecAttribute().overflow(TextOverflow.ellipsis))
-            .merge(TextSpecAttribute().textAlign(TextAlign.center))
-            .merge(TextSpecAttribute().fontSize(16.0));
+            .overflow(TextOverflow.ellipsis)
+            .textAlign(TextAlign.center)
+            .fontSize(16.0)
+            .fontWeight(FontWeight.bold)
+            .color(Colors.blue)
+            .letterSpacing(1.5)
+            .softWrap(false);
 
         final context = MockBuildContext();
-        final spec = attribute.resolve(context);
+        final spec = chained.resolve(context);
 
+        // All properties should be accumulated
         expect(spec.maxLines, 3);
         expect(spec.overflow, TextOverflow.ellipsis);
         expect(spec.textAlign, TextAlign.center);
-        expect(spec.style, isA<TextStyle>());
+        expect(spec.style, isNotNull);
+        expect(spec.style!.fontSize, 16.0);
+        expect(spec.style!.fontWeight, FontWeight.bold);
+        expect(spec.style!.color, Colors.blue);
+        expect(spec.style!.letterSpacing, 1.5);
+        expect(spec.softWrap, false);
+      });
+
+      test('chaining with complex properties works correctly', () {
+        // Test chaining with more complex properties
+        final chained = TextSpecAttribute()
+            .fontFamily('Roboto')
+            .shadows([
+              const Shadow(color: Colors.black, offset: Offset(1, 1), blurRadius: 2),
+            ])
+            .decoration(TextDecoration.underline)
+            .decorationColor(Colors.red)
+            .decorationStyle(TextDecorationStyle.wavy)
+            .uppercase(); // directive
+
+        final context = MockBuildContext();
+        final spec = chained.resolve(context);
+
+        expect(spec.style, isNotNull);
+        expect(spec.style!.fontFamily, 'Roboto');
+        expect(spec.style!.shadows, isNotNull);
+        expect(spec.style!.shadows!.length, 1);
+        expect(spec.style!.decoration, TextDecoration.underline);
+        expect(spec.style!.decorationColor, Colors.red);
+        expect(spec.style!.decorationStyle, TextDecorationStyle.wavy);
+        // Note: directives are handled separately in TextSpec
       });
     });
 

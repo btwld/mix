@@ -121,6 +121,76 @@ void main() {
     });
 
     group('Utility methods', () {
+      test('utility methods create new instances', () {
+        final original = IconSpecAttribute();
+        final withColor = original.color(Colors.orange);
+        final withSize = original.size(24.0);
+
+        // Each utility creates a new instance
+        expect(identical(original, withColor), isFalse);
+        expect(identical(original, withSize), isFalse);
+        expect(identical(withColor, withSize), isFalse);
+
+        // Original remains unchanged
+        expect(original.$color, isNull);
+        expect(original.$size, isNull);
+
+        // New instances have their properties set
+        expect(withColor.$color, resolvesTo(Colors.orange));
+        expect(withColor.$size, isNull);
+        expect(withSize.$size, resolvesTo(24.0));
+        expect(withSize.$color, isNull);
+      });
+
+      test('chaining utilities accumulates properties correctly', () {
+        // Chaining now properly accumulates all properties
+        final chained = IconSpecAttribute()
+            .color(Colors.red)
+            .size(24.0)
+            .weight(600.0)
+            .grade(25.0)
+            .opticalSize(48.0)
+            .textDirection(TextDirection.ltr)
+            .applyTextScaling(true)
+            .fill(0.8);
+
+        // All properties should be accumulated
+        expect(chained.$color, resolvesTo(Colors.red));
+        expect(chained.$size, resolvesTo(24.0));
+        expect(chained.$weight, resolvesTo(600.0));
+        expect(chained.$grade, resolvesTo(25.0));
+        expect(chained.$opticalSize, resolvesTo(48.0));
+        expect(chained.$textDirection, resolvesTo(TextDirection.ltr));
+        expect(chained.$applyTextScaling, resolvesTo(true));
+        expect(chained.$fill, resolvesTo(0.8));
+      });
+
+      test('chaining with complex properties works correctly', () {
+        // Test chaining with shadows
+        final chained = IconSpecAttribute()
+            .color(Colors.blue)
+            .size(32.0)
+            .shadow(
+              ShadowMix.only(
+                color: Colors.black,
+                offset: const Offset(2, 2),
+                blurRadius: 4.0,
+              ),
+            )
+            .shadow(
+              ShadowMix.only(
+                color: Colors.grey,
+                offset: const Offset(1, 1),
+                blurRadius: 2.0,
+              ),
+            );
+
+        expect(chained.$color, resolvesTo(Colors.blue));
+        expect(chained.$size, resolvesTo(32.0));
+        expect(chained.$shadows, isNotNull);
+        expect(chained.$shadows!.length, 1); // Last shadow overrides
+      });
+
       test('color utility creates IconSpecAttribute with color', () {
         final attribute = IconSpecAttribute();
         final colorAttribute = attribute.color(Colors.orange);
