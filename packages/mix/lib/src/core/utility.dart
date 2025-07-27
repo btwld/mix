@@ -37,7 +37,7 @@ abstract interface class PropBaseUtility<
   U animate(AnimationConfig animation);
 }
 
-/// Base utility for simple value properties that use Prop<T>
+/// Base utility for simple value properties that use [Prop<T>]
 ///
 /// This utility provides a consistent API for working with:
 /// - Direct values: call(value)

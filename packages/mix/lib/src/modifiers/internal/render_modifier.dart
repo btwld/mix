@@ -1,6 +1,7 @@
 // ignore_for_file: avoid-dynamic
 
 import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 
 import '../../core/modifier.dart';
 import '../align_modifier.dart';
@@ -82,6 +83,7 @@ const _defaultOrder = [
   OpacityModifier,
 ];
 
+@internal
 class RenderModifiers extends StatelessWidget {
   const RenderModifiers({
     required this.child,

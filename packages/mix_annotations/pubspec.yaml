@@ -8,5 +8,5 @@ environment:
 
 dev_dependencies:
   test: ^1.21.0
-  dart_code_metrics_presets: ^2.22.0
-  flutter_lints: ^4.0.0
+  dart_code_metrics_presets: ^2.24.0
+  flutter_lints: ^6.0.0

@@ -16,7 +16,7 @@
 ///               \/\             Generated with barrel script        \ \
 ///                \/////////////////////////////////////////////////////
 
-library mix;
+library;
 
 export 'src/attributes/border_mix.dart';
 export 'src/attributes/border_radius_mix.dart';
