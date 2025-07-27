@@ -143,7 +143,7 @@ class BorderSideUtility<T extends StyleAttribute<Object?>>
   );
 
   /// Utility for defining [BorderSideMix.strokeAlign]
-  late final strokeAlign = StrokeAlignUtility<T>(
+  late final strokeAlign = PropUtility<T, double>(
     (prop) => call(BorderSideMix(strokeAlign: prop)),
   );
 

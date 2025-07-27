@@ -28,7 +28,7 @@ final class LinearGradientUtility<T extends StyleAttribute<Object?>>
   );
 
   /// Utility for defining [LinearGradientMix.transform]
-  late final transform = GradientTransformUtility<T>(
+  late final transform = PropUtility<T, GradientTransform>(
     (v) => call(LinearGradientMix(transform: v)),
   );
 
@@ -81,7 +81,7 @@ final class RadialGradientUtility<T extends StyleAttribute<Object?>>
   );
 
   /// Utility for defining [RadialGradientMix.transform]
-  late final transform = GradientTransformUtility<T>(
+  late final transform = PropUtility<T, GradientTransform>(
     (v) => call(RadialGradientMix(transform: v)),
   );
 
@@ -129,7 +129,7 @@ final class SweepGradientUtility<T extends StyleAttribute<Object?>>
   );
 
   /// Utility for defining [SweepGradientMix.transform]
-  late final transform = GradientTransformUtility<T>(
+  late final transform = PropUtility<T, GradientTransform>(
     (v) => call(SweepGradientMix(transform: v)),
   );
 

@@ -960,11 +960,9 @@ final class ImageProviderUtility<T extends StyleAttribute<Object?>>
   T memory(Uint8List bytes) => call(MemoryImage(bytes));
 }
 
-/// Utility for creating [GradientTransform] values for gradient transformations.
-final class GradientTransformUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, GradientTransform> {
-  const GradientTransformUtility(super.builder);
-
+/// Extension for creating [GradientTransform] values for gradient transformations.
+extension GradientTransformPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, GradientTransform> {
   /// Creates an [StyleAttribute] instance with a [GradientRotation] value.
   T rotate(double radians) => call(GradientRotation(radians));
 }
@@ -1036,11 +1034,9 @@ final class FontFamilyUtility<T extends StyleAttribute<Object?>>
   }
 }
 
-/// Utility for creating [TextScaler] values for text scaling.
-final class TextScalerUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, TextScaler> {
-  const TextScalerUtility(super.builder);
-
+/// Extension for creating [TextScaler] values for text scaling.
+extension TextScalerPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, TextScaler> {
   /// Creates a [StyleAttribute] instance with [TextScaler.noScaling] value.
   T noScaling() => call(TextScaler.noScaling);
 
@@ -1092,13 +1088,16 @@ class TableBorderUtility<T extends StyleAttribute<Object?>>
   }
 }
 
-/// Utility for creating stroke alignment values for border positioning.
-final class StrokeAlignUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, double> {
-  const StrokeAlignUtility(super.builder);
-
+/// Extension for creating stroke alignment values for border positioning.
+extension StrokeAlignPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, double> {
+  /// Creates a [StyleAttribute] instance with center stroke alignment (0).
   T center() => call(0);
+  
+  /// Creates a [StyleAttribute] instance with inside stroke alignment (-1).
   T inside() => call(-1);
+  
+  /// Creates a [StyleAttribute] instance with outside stroke alignment (1).
   T outside() => call(1);
 }
 
