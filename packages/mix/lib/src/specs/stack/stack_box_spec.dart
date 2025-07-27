@@ -124,12 +124,10 @@ class StackBoxSpecAttribute extends StyleAttribute<ZBoxSpec>
     return ZBoxSpec(box: box?.resolve(context), stack: stack?.resolve(context));
   }
 
-  @override
   StackBoxSpecAttribute modifiers(List<ModifierAttribute> modifiers) {
     return merge(StackBoxSpecAttribute(modifiers: modifiers));
   }
 
-  @override
   StackBoxSpecAttribute variants(
     List<VariantStyleAttribute<ZBoxSpec>> variants,
   ) {

@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show StyleAttributeBuilder;
-import '../../core/style.dart'
-    show StyleAttribute, VariantStyleAttribute, ModifierAttribute;
+import '../../core/style.dart' show StyleAttribute;
 import '../../core/utility.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/color_util.dart';
@@ -98,7 +97,6 @@ class ImageSpecUtility extends StyleAttributeBuilder<ImageSpec> {
   ImageSpec resolve(BuildContext context) {
     return _baseAttribute.resolve(context);
   }
-
 
   /// Access to internal attribute
   @override

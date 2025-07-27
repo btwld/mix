@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show StyleAttributeBuilder;
-import '../../core/style.dart'
-    show StyleAttribute, VariantStyleAttribute, ModifierAttribute;
+import '../../core/style.dart' show StyleAttribute;
 import '../../core/utility.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../variants/variant_util.dart';
@@ -77,7 +76,6 @@ class StackSpecUtility extends StyleAttributeBuilder<StackSpec> {
   StackSpec resolve(BuildContext context) {
     return _baseAttribute.resolve(context);
   }
-
 
   /// Access to internal attribute
   @override

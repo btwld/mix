@@ -198,11 +198,11 @@ void main() {
       test('decoration utilities create new instances', () {
         // Each decoration utility creates a new BoxSpecAttribute
         final withColor = BoxSpecAttribute().color(Colors.red);
-        final withBorder = BoxSpecAttribute().border.all(
-          BorderSideMix.only(width: 2.0),
+        final withBorder = BoxSpecAttribute().borders(
+          all: BorderSideMix.only(width: 2.0),
         );
-        final withBorderRadius = BoxSpecAttribute().borderRadius.all(
-          const Radius.circular(8.0),
+        final withBorderRadius = BoxSpecAttribute().corners(
+          all: const Radius.circular(8.0),
         );
 
         // Each has only its specific decoration property
@@ -230,11 +230,9 @@ void main() {
       test('combine decorations with merge', () {
         final combined = BoxSpecAttribute()
             .color(Colors.red)
+            .merge(BoxSpecAttribute().border(BorderSideMix.only(width: 2.0)))
             .merge(
-              BoxSpecAttribute().border.all(BorderSideMix.only(width: 2.0)),
-            )
-            .merge(
-              BoxSpecAttribute().borderRadius.all(const Radius.circular(8.0)),
+              BoxSpecAttribute().corners(all: const Radius.circular(8.0)),
             );
 
         final context = MockBuildContext();
@@ -249,40 +247,40 @@ void main() {
 
     group('Padding and Margin', () {
       test('padding methods create correct EdgeInsets', () {
-        final all = BoxSpecAttribute().padding.all(16.0);
+        final all = BoxSpecAttribute().paddingAll(16.0);
         expect(all.$padding, isNotNull);
 
         // Symmetric padding using vertical and horizontal utilities
-        final verticalPadding = BoxSpecAttribute().padding.vertical(8.0);
+        final verticalPadding = BoxSpecAttribute().paddingVertical(8.0);
         expect(verticalPadding.$padding, isNotNull);
 
-        final horizontalPadding = BoxSpecAttribute().padding.horizontal(16.0);
+        final horizontalPadding = BoxSpecAttribute().paddingHorizontal(16.0);
         expect(horizontalPadding.$padding, isNotNull);
 
         // Individual sides
-        final topPadding = BoxSpecAttribute().padding.top(8.0);
+        final topPadding = BoxSpecAttribute().paddingTop(8.0);
         expect(topPadding.$padding, isNotNull);
 
-        final leftPadding = BoxSpecAttribute().padding.left(16.0);
+        final leftPadding = BoxSpecAttribute().paddingLeft(16.0);
         expect(leftPadding.$padding, isNotNull);
       });
 
       test('margin methods create correct EdgeInsets', () {
-        final all = BoxSpecAttribute().margin.all(16.0);
+        final all = BoxSpecAttribute().marginAll(16.0);
         expect(all.$margin, isNotNull);
 
         // Symmetric margin using vertical and horizontal utilities
-        final verticalMargin = BoxSpecAttribute().margin.vertical(8.0);
+        final verticalMargin = BoxSpecAttribute().marginVertical(8.0);
         expect(verticalMargin.$margin, isNotNull);
 
-        final horizontalMargin = BoxSpecAttribute().margin.horizontal(16.0);
+        final horizontalMargin = BoxSpecAttribute().marginHorizontal(16.0);
         expect(horizontalMargin.$margin, isNotNull);
 
         // Individual sides
-        final topMargin = BoxSpecAttribute().margin.top(8.0);
+        final topMargin = BoxSpecAttribute().marginTop(8.0);
         expect(topMargin.$margin, isNotNull);
 
-        final leftMargin = BoxSpecAttribute().margin.left(16.0);
+        final leftMargin = BoxSpecAttribute().marginLeft(16.0);
         expect(leftMargin.$margin, isNotNull);
       });
     });
@@ -653,7 +651,9 @@ void main() {
           margin: MixProp(EdgeInsetsMix.all(8.0)),
           constraints: MixProp(BoxConstraintsMix.only(maxWidth: 300.0)),
           decoration: MixProp(BoxDecorationMix.only(color: Colors.red)),
-          foregroundDecoration: MixProp(BoxDecorationMix.only(color: Colors.blue)),
+          foregroundDecoration: MixProp(
+            BoxDecorationMix.only(color: Colors.blue),
+          ),
           transform: Prop(Matrix4.identity()),
           transformAlignment: Prop(Alignment.topLeft),
           clipBehavior: Prop(Clip.antiAlias),
@@ -980,7 +980,9 @@ void main() {
           final attribute = BoxSpecAttribute();
 
           expect(attribute.boxDecoration, isNotNull);
-          final colorAttr = attribute.boxDecoration.color(Colors.purple);
+          final colorAttr = attribute.boxDecoration.backgroundColor(
+            Colors.purple,
+          );
           expect(colorAttr, isA<BoxSpecAttribute>());
           expect(colorAttr.$decoration, isNotNull);
         });
@@ -989,7 +991,9 @@ void main() {
           final attribute = BoxSpecAttribute();
 
           expect(attribute.shapeDecoration, isNotNull);
-          final colorAttr = attribute.shapeDecoration.color(Colors.orange);
+          final colorAttr = attribute.shapeDecoration.backgroundColor(
+            Colors.orange,
+          );
           expect(colorAttr, isA<BoxSpecAttribute>());
           expect(colorAttr.$decoration, isNotNull);
         });
@@ -1001,9 +1005,11 @@ void main() {
           () {
             final attribute = BoxSpecAttribute();
 
-            expect(attribute.borderDirectional, isNotNull);
-            final borderAttr = attribute.borderDirectional.all(
-              BorderSideMix.only(width: 1.0, color: Colors.grey),
+            final borderAttr = attribute.borders(
+              start: BorderSideMix.only(width: 1.0, color: Colors.grey),
+              end: BorderSideMix.only(width: 1.0, color: Colors.grey),
+              top: BorderSideMix.only(width: 1.0, color: Colors.grey),
+              bottom: BorderSideMix.only(width: 1.0, color: Colors.grey),
             );
             expect(borderAttr, isA<BoxSpecAttribute>());
             expect(borderAttr.$decoration, isNotNull);
@@ -1015,9 +1021,11 @@ void main() {
           () {
             final attribute = BoxSpecAttribute();
 
-            expect(attribute.borderRadiusDirectional, isNotNull);
-            final radiusAttr = attribute.borderRadiusDirectional.all(
-              const Radius.circular(12.0),
+            final radiusAttr = attribute.corners(
+              topStart: const Radius.circular(12.0),
+              topEnd: const Radius.circular(12.0),
+              bottomStart: const Radius.circular(12.0),
+              bottomEnd: const Radius.circular(12.0),
             );
             expect(radiusAttr, isA<BoxSpecAttribute>());
             expect(radiusAttr.$decoration, isNotNull);
@@ -1037,11 +1045,12 @@ void main() {
         test('linearGradient utility creates linear gradient attributes', () {
           final attribute = BoxSpecAttribute();
 
-          expect(attribute.linearGradient, isNotNull);
-          final gradientAttr = attribute.linearGradient.colors([
-            Colors.red,
-            Colors.blue,
-          ]);
+          final gradientAttr = attribute.linearGradient(
+            colors: [
+              Colors.red,
+              Colors.blue,
+            ],
+          );
           expect(gradientAttr, isA<BoxSpecAttribute>());
           expect(gradientAttr.$decoration, isNotNull);
         });
@@ -1049,11 +1058,12 @@ void main() {
         test('radialGradient utility creates radial gradient attributes', () {
           final attribute = BoxSpecAttribute();
 
-          expect(attribute.radialGradient, isNotNull);
-          final gradientAttr = attribute.radialGradient.colors([
-            Colors.yellow,
-            Colors.green,
-          ]);
+          final gradientAttr = attribute.radialGradient(
+            colors: [
+              Colors.yellow,
+              Colors.green,
+            ],
+          );
           expect(gradientAttr, isA<BoxSpecAttribute>());
           expect(gradientAttr.$decoration, isNotNull);
         });
@@ -1061,11 +1071,12 @@ void main() {
         test('sweepGradient utility creates sweep gradient attributes', () {
           final attribute = BoxSpecAttribute();
 
-          expect(attribute.sweepGradient, isNotNull);
-          final gradientAttr = attribute.sweepGradient.colors([
-            Colors.pink,
-            Colors.cyan,
-          ]);
+          final gradientAttr = attribute.sweepGradient(
+            colors: [
+              Colors.pink,
+              Colors.cyan,
+            ],
+          );
           expect(gradientAttr, isA<BoxSpecAttribute>());
           expect(gradientAttr.$decoration, isNotNull);
         });
@@ -1131,7 +1142,7 @@ void main() {
         final attribute = BoxSpecAttribute()
             .width(150.0)
             .merge(BoxSpecAttribute().height(100.0))
-            .merge(BoxSpecAttribute().padding.all(20.0))
+            .merge(BoxSpecAttribute().paddingAll(20.0))
             .merge(
               BoxSpecAttribute().margin(
                 EdgeInsetsMix.symmetric(horizontal: 12.0, vertical: 8.0),

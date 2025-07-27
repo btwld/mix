@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../core/breakpoint.dart';
 import '../core/internal/deep_collection_equality.dart';
-import '../core/style.dart';
 import '../core/providers/widget_state_provider.dart';
+import '../core/style.dart';
 
 /// Sealed base class for all variant types in the Mix framework.
 ///
@@ -70,6 +71,13 @@ class ContextVariant extends Variant {
     );
   }
 
+  static ContextVariant breakpoint(Breakpoint breakpoint) {
+    return ContextVariant(
+      'breakpoint_${breakpoint.minWidth ?? '0.0'}_${breakpoint.maxWidth ?? 'infinity'}',
+      (context) => breakpoint.matches(MediaQuery.sizeOf(context)),
+    );
+  }
+
   static ContextVariant platformBrightness(Brightness brightness) {
     return ContextVariant(
       'media_query_platform_brightness_${brightness.name}',
@@ -96,7 +104,7 @@ class ContextVariant extends Variant {
   static ContextVariant platform(TargetPlatform platform) {
     return ContextVariant(
       'platform_${platform.name}',
-      (context) => Theme.of(context).platform == platform,
+      (context) => defaultTargetPlatform == platform,
     );
   }
 

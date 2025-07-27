@@ -1,9 +1,60 @@
 import 'package:flutter/rendering.dart';
 
 import '../../core/prop.dart';
+import '../../core/spec.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
 import 'constraints_mix.dart';
+
+/// Mixin that provides convenient constraints methods for spec attributes.
+///
+/// This mixin follows the same pattern as BorderRadiusMixin and ModifierMixin,
+/// providing a fluent API for applying constraints to spec attributes.
+mixin ConstraintsMixin<T extends StyleAttribute<S>, S extends Spec<S>>
+    on StyleAttribute<S> {
+  /// Must be implemented by the class using this mixin
+  T constraints(BoxConstraintsMix value);
+
+  /// Sets both min and max width to create a fixed width
+  T width(double value) {
+    return constraints(BoxConstraintsMix.width(value));
+  }
+
+  /// Sets both min and max height to create a fixed height
+  T height(double value) {
+    return constraints(BoxConstraintsMix.height(value));
+  }
+
+  /// Sets minimum width constraint
+  T minWidth(double value) {
+    return constraints(BoxConstraintsMix.minWidth(value));
+  }
+
+  /// Sets maximum width constraint
+  T maxWidth(double value) {
+    return constraints(BoxConstraintsMix.maxWidth(value));
+  }
+
+  /// Sets minimum height constraint
+  T minHeight(double value) {
+    return constraints(BoxConstraintsMix.minHeight(value));
+  }
+
+  /// Sets maximum height constraint
+  T maxHeight(double value) {
+    return constraints(BoxConstraintsMix.maxHeight(value));
+  }
+
+  /// Sets both width and height to specific values
+  T size(double width, double height) {
+    return constraints(BoxConstraintsMix.only(
+      minWidth: width,
+      maxWidth: width,
+      minHeight: height,
+      maxHeight: height,
+    ));
+  }
+}
 
 /// Utility class for configuring [BoxConstraints] properties.
 ///

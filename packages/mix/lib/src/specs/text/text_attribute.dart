@@ -13,6 +13,7 @@ import '../../properties/typography/text_height_behavior_mix.dart';
 import '../../properties/typography/text_height_behavior_util.dart';
 import '../../properties/typography/text_style_mix.dart';
 import '../../properties/typography/text_style_util.dart';
+import '../../modifiers/modifier_util.dart';
 import 'text_directives_util.dart';
 import 'text_spec.dart';
 
@@ -23,7 +24,7 @@ import 'text_spec.dart';
 ///
 /// Use this class to configure the attributes of a [TextSpec] and pass it to
 /// the [TextSpec] constructor.
-class TextSpecAttribute extends StyleAttribute<TextSpec> with Diagnosticable, SpecAttributeMixin<TextSpec> {
+class TextSpecAttribute extends StyleAttribute<TextSpec> with Diagnosticable, ModifierMixin<TextSpecAttribute, TextSpec> {
   final Prop<TextOverflow>? $overflow;
   final MixProp<StrutStyle>? $strutStyle;
   final Prop<TextAlign>? $textAlign;
@@ -275,7 +276,6 @@ class TextSpecAttribute extends StyleAttribute<TextSpec> with Diagnosticable, Sp
     return merge(TextSpecAttribute.only(modifiers: modifiers));
   }
 
-  @override
   TextSpecAttribute variants(List<VariantStyleAttribute<TextSpec>> variants) {
     return merge(TextSpecAttribute.only(variants: variants));
   }

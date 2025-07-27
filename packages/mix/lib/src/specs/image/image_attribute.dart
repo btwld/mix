@@ -6,10 +6,12 @@ import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
+import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/color_util.dart';
 import 'image_spec.dart';
 
-class ImageSpecAttribute extends StyleAttribute<ImageSpec> with Diagnosticable, SpecAttributeMixin<ImageSpec> {
+class ImageSpecAttribute extends StyleAttribute<ImageSpec>
+    with Diagnosticable, ModifierMixin<ImageSpecAttribute, ImageSpec> {
   final Prop<double>? $width;
   final Prop<double>? $height;
   final Prop<Color>? $color;
@@ -159,7 +161,6 @@ class ImageSpecAttribute extends StyleAttribute<ImageSpec> with Diagnosticable, 
     return merge(ImageSpecAttribute.only(modifiers: modifiers));
   }
 
-  @override
   ImageSpecAttribute variants(List<VariantStyleAttribute<ImageSpec>> variants) {
     return merge(ImageSpecAttribute.only(variants: variants));
   }

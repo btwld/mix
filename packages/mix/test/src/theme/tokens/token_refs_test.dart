@@ -3,8 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/src/theme/tokens/mix_token.dart';
 import 'package:mix/src/theme/tokens/token_refs.dart';
 
-import '../../../helpers/testing_utils.dart';
-
 void main() {
   group('Token References', () {
     setUp(() {
@@ -22,7 +20,9 @@ void main() {
 
       test('equality based on token', () {
         final token1 = MixToken<Color>('test-color');
-        final token2 = MixToken<Color>('test-color');  // Same name, different instance
+        final token2 = MixToken<Color>(
+          'test-color',
+        ); // Same name, different instance
         final token3 = MixToken<Color>('different-color');
 
         final ref1 = ColorRef(token1);
@@ -31,7 +31,10 @@ void main() {
         final ref4 = ColorRef(token3); // Different token
 
         expect(ref1, equals(ref2));
-        expect(ref1, equals(ref3)); // MixToken equality is based on name, so these are equal
+        expect(
+          ref1,
+          equals(ref3),
+        ); // MixToken equality is based on name, so these are equal
         expect(ref1, isNot(equals(ref4)));
       });
 
@@ -57,11 +60,13 @@ void main() {
 
         expect(
           () => (ref as dynamic).nonExistentMethod(),
-          throwsA(isA<UnimplementedError>().having(
-            (e) => e.message,
-            'message',
-            contains('This is a Token reference for Color'),
-          )),
+          throwsA(
+            isA<UnimplementedError>().having(
+              (e) => e.message,
+              'message',
+              contains('This is a Token reference for Color'),
+            ),
+          ),
         );
       });
     });
@@ -152,11 +157,8 @@ void main() {
         test('throws when token not found in registry', () {
           // Create a DoubleRef manually without registering it
           final manualRef = DoubleRef(42.0);
-          
-          expect(
-            () => manualRef.mixToken,
-            throwsA(isA<TypeError>()),
-          );
+
+          expect(() => manualRef.mixToken, throwsA(isA<TypeError>()));
         });
       });
 
@@ -278,10 +280,7 @@ void main() {
       });
 
       test('registry handles multiple tokens correctly', () {
-        final tokens = List.generate(
-          10,
-          (i) => MixToken<double>('token-$i'),
-        );
+        final tokens = List.generate(10, (i) => MixToken<double>('token-$i'));
         final refs = tokens.map((token) => DoubleRef.token(token)).toList();
 
         // Verify all references work
@@ -320,7 +319,10 @@ void main() {
 
         // Different token instances with same name are equal (MixToken equality is name-based)
         // but may produce different representation values based on object hashCode
-        expect(ref1.mixToken, equals(ref2.mixToken)); // Tokens are equal by name
+        expect(
+          ref1.mixToken,
+          equals(ref2.mixToken),
+        ); // Tokens are equal by name
 
         // But each ref should correctly retrieve its own token
         expect(ref1.mixToken, equals(token1));
@@ -359,7 +361,7 @@ void main() {
     group('Performance', () {
       test('registry lookup is efficient for many entries', () {
         final stopwatch = Stopwatch()..start();
-        
+
         // Create many token references
         final refs = <DoubleRef>[];
         for (int i = 0; i < 1000; i++) {
@@ -373,7 +375,7 @@ void main() {
         }
 
         stopwatch.stop();
-        
+
         // Sanity check that it completes reasonably quickly
         expect(stopwatch.elapsedMilliseconds, lessThan(1000));
       });

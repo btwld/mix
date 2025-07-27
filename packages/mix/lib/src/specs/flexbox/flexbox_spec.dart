@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../core/spec.dart';
 import '../../core/style.dart';
+import '../../modifiers/modifier_util.dart';
 import '../box/box_attribute.dart';
 import '../box/box_spec.dart';
 import '../flex/flex_attribute.dart';
@@ -75,7 +76,7 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
 /// Use this class to configure the attributes of a [FlexBoxSpec] and pass it to
 /// the [FlexBoxSpec] constructor.
 class FlexBoxSpecAttribute extends StyleAttribute<FlexBoxSpec>
-    with Diagnosticable, SpecAttributeMixin<FlexBoxSpec> {
+    with Diagnosticable, ModifierMixin<FlexBoxSpecAttribute, FlexBoxSpec> {
   final BoxSpecAttribute? $box;
   final FlexSpecAttribute? $flex;
 
@@ -140,7 +141,6 @@ class FlexBoxSpecAttribute extends StyleAttribute<FlexBoxSpec>
     return merge(FlexBoxSpecAttribute(modifiers: modifiers));
   }
 
-  @override
   FlexBoxSpecAttribute variants(
     List<VariantStyleAttribute<FlexBoxSpec>> variants,
   ) {

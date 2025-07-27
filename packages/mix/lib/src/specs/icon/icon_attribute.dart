@@ -6,12 +6,14 @@ import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
+import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/color_util.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../properties/painting/shadow_util.dart';
 import 'icon_spec.dart';
 
-class IconSpecAttribute extends StyleAttribute<IconSpec> with Diagnosticable, SpecAttributeMixin<IconSpec> {
+class IconSpecAttribute extends StyleAttribute<IconSpec>
+    with Diagnosticable, ModifierMixin<IconSpecAttribute, IconSpec> {
   final Prop<Color>? $color;
   final Prop<double>? $size;
   final Prop<double>? $weight;
@@ -137,7 +139,6 @@ class IconSpecAttribute extends StyleAttribute<IconSpec> with Diagnosticable, Sp
     return merge(IconSpecAttribute.only(modifiers: modifiers));
   }
 
-  @override
   IconSpecAttribute variants(List<VariantStyleAttribute<IconSpec>> variants) {
     return merge(IconSpecAttribute.only(variants: variants));
   }

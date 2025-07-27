@@ -6,6 +6,7 @@ import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
+import '../../modifiers/modifier_util.dart';
 import 'flex_spec.dart';
 
 /// Represents the attributes of a [FlexSpec].
@@ -15,7 +16,8 @@ import 'flex_spec.dart';
 ///
 /// Use this class to configure the attributes of a [FlexSpec] and pass it to
 /// the [FlexSpec] constructor.
-class FlexSpecAttribute extends StyleAttribute<FlexSpec> with Diagnosticable, SpecAttributeMixin<FlexSpec> {
+class FlexSpecAttribute extends StyleAttribute<FlexSpec>
+    with Diagnosticable, ModifierMixin<FlexSpecAttribute, FlexSpec> {
   final Prop<Axis>? $direction;
   final Prop<MainAxisAlignment>? $mainAxisAlignment;
   final Prop<CrossAxisAlignment>? $crossAxisAlignment;
@@ -170,14 +172,13 @@ class FlexSpecAttribute extends StyleAttribute<FlexSpec> with Diagnosticable, Sp
     return FlexSpecAttribute.only(animation: animation);
   }
 
-  @override
-  FlexSpecAttribute modifiers(List<ModifierAttribute> modifiers) {
-    return merge(FlexSpecAttribute.only(modifiers: modifiers));
+  FlexSpecAttribute variants(List<VariantStyleAttribute<FlexSpec>> variants) {
+    return merge(FlexSpecAttribute.only(variants: variants));
   }
 
   @override
-  FlexSpecAttribute variants(List<VariantStyleAttribute<FlexSpec>> variants) {
-    return merge(FlexSpecAttribute.only(variants: variants));
+  FlexSpecAttribute modifiers(List<ModifierAttribute> modifiers) {
+    return merge(FlexSpecAttribute.only(modifiers: modifiers));
   }
 
   /// Resolves to [FlexSpec] using the provided [MixContext].

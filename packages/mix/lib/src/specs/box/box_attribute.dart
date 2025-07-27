@@ -5,16 +5,22 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
+import '../../modifiers/modifier_util.dart';
 import '../../properties/layout/constraints_mix.dart';
+import '../../properties/layout/constraints_util.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
+import '../../properties/layout/edge_insets_geometry_util.dart';
 import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
+import '../../properties/painting/border_radius_util.dart';
+import '../../properties/painting/border_util.dart';
 import '../../properties/painting/decoration_image_mix.dart';
 import '../../properties/painting/decoration_mix.dart';
 import '../../properties/painting/gradient_mix.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../properties/painting/shape_border_mix.dart';
 import '../../variants/variant.dart';
+import '../../variants/variant_util.dart';
 import 'box_spec.dart';
 
 /// Attribute class for configuring [BoxSpec] properties.
@@ -22,7 +28,15 @@ import 'box_spec.dart';
 /// Encapsulates alignment, padding, margin, constraints, decoration,
 /// and other styling properties for box layouts.
 class BoxSpecAttribute extends StyleAttribute<BoxSpec>
-    with Diagnosticable, SpecAttributeMixin<BoxSpec> {
+    with
+        Diagnosticable,
+        BorderRadiusMixin<BoxSpecAttribute, BoxSpec>,
+        ModifierMixin<BoxSpecAttribute, BoxSpec>,
+        BorderMixin<BoxSpecAttribute, BoxSpec>,
+        VariantMixin<BoxSpecAttribute, BoxSpec>,
+        PaddingMixin<BoxSpecAttribute, BoxSpec>,
+        MarginMixin<BoxSpecAttribute, BoxSpec>,
+        ConstraintsMixin<BoxSpecAttribute, BoxSpec> {
   final Prop<AlignmentGeometry>? $alignment;
   final MixProp<EdgeInsetsGeometry>? $padding;
   final MixProp<EdgeInsetsGeometry>? $margin;
@@ -272,43 +286,6 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
     return merge(BoxSpecAttribute.only(alignment: value));
   }
 
-  // Dimension instance methods
-  BoxSpecAttribute width(double value) {
-    return merge(
-      BoxSpecAttribute.only(constraints: BoxConstraintsMix.width(value)),
-    );
-  }
-
-  BoxSpecAttribute height(double value) {
-    return merge(
-      BoxSpecAttribute.only(constraints: BoxConstraintsMix.height(value)),
-    );
-  }
-
-  BoxSpecAttribute minWidth(double value) {
-    return merge(
-      BoxSpecAttribute.only(constraints: BoxConstraintsMix.minWidth(value)),
-    );
-  }
-
-  BoxSpecAttribute maxWidth(double value) {
-    return merge(
-      BoxSpecAttribute.only(constraints: BoxConstraintsMix.maxWidth(value)),
-    );
-  }
-
-  BoxSpecAttribute minHeight(double value) {
-    return merge(
-      BoxSpecAttribute.only(constraints: BoxConstraintsMix.minHeight(value)),
-    );
-  }
-
-  BoxSpecAttribute maxHeight(double value) {
-    return merge(
-      BoxSpecAttribute.only(constraints: BoxConstraintsMix.maxHeight(value)),
-    );
-  }
-
   // Animation instance method
   BoxSpecAttribute animate(AnimationConfig animation) {
     return merge(BoxSpecAttribute.only(animation: animation));
@@ -322,21 +299,6 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
   // Shape instance method
   BoxSpecAttribute shape(BoxShape value) {
     return merge(BoxSpecAttribute.only(decoration: DecorationMix.shape(value)));
-  }
-
-  // Padding instance method
-  BoxSpecAttribute padding(EdgeInsetsGeometryMix value) {
-    return merge(BoxSpecAttribute.only(padding: value));
-  }
-
-  // Margin instance method
-  BoxSpecAttribute margin(EdgeInsetsGeometryMix value) {
-    return merge(BoxSpecAttribute.only(margin: value));
-  }
-
-  // Constraints instance method
-  BoxSpecAttribute constraints(BoxConstraintsMix value) {
-    return merge(BoxSpecAttribute.only(constraints: value));
   }
 
   // Decoration instance method
@@ -399,20 +361,6 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
           shadows: shadows,
         ),
       ),
-    );
-  }
-
-  // Border instance method
-  BoxSpecAttribute border(BoxBorderMix value) {
-    return merge(
-      BoxSpecAttribute.only(decoration: DecorationMix.border(value)),
-    );
-  }
-
-  // Border radius instance method
-  BoxSpecAttribute borderRadius(BorderRadiusGeometryMix value) {
-    return merge(
-      BoxSpecAttribute.only(decoration: DecorationMix.borderRadius(value)),
     );
   }
 
@@ -504,17 +452,62 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
     );
   }
 
+  BoxSpecAttribute variants(List<VariantStyleAttribute<BoxSpec>> value) {
+    return merge(BoxSpecAttribute.only(variants: value));
+  }
+
+  // Padding instance method
+  @override
+  BoxSpecAttribute padding(EdgeInsetsGeometryMix value) {
+    return merge(BoxSpecAttribute.only(padding: value));
+  }
+
+  // Margin instance method
+  @override
+  BoxSpecAttribute margin(EdgeInsetsGeometryMix value) {
+    return merge(BoxSpecAttribute.only(margin: value));
+  }
+
+  @override
+  BoxSpecAttribute createEmptyStyle() {
+    return BoxSpecAttribute();
+  }
+
+  @override
+  BoxSpecAttribute variant(Variant variant, BoxSpecAttribute style) {
+    return merge(
+      BoxSpecAttribute.only(variants: [VariantStyleAttribute(variant, style)]),
+    );
+  }
+
+  // Constraints instance method
+  @override
+  BoxSpecAttribute constraints(BoxConstraintsMix value) {
+    return merge(BoxSpecAttribute.only(constraints: value));
+  }
+
+  // Border instance method
+  @override
+  BoxSpecAttribute border(BoxBorderMix value) {
+    return merge(
+      BoxSpecAttribute.only(decoration: DecorationMix.border(value)),
+    );
+  }
+
+  // Border radius instance method
+  @override
+  BoxSpecAttribute borderRadius(BorderRadiusGeometryMix value) {
+    return merge(
+      BoxSpecAttribute.only(decoration: DecorationMix.borderRadius(value)),
+    );
+  }
+
   /// The list of properties that constitute the state of this [BoxSpecAttribute].
   ///
 
   @override
   BoxSpecAttribute modifiers(List<ModifierAttribute> value) {
     return merge(BoxSpecAttribute.only(modifiers: value));
-  }
-
-  @override
-  BoxSpecAttribute variants(List<VariantStyleAttribute<BoxSpec>> value) {
-    return merge(BoxSpecAttribute.only(variants: value));
   }
 
   /// Resolves to [BoxSpec] using the provided [MixContext].
@@ -631,374 +624,8 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
   ];
 }
 
-/// Extension that replicates EdgeInsets factory constructors as padding methods
-extension BoxSpecAttributePaddingExtension on BoxSpecAttribute {
-  /// Sets padding to the same value on all sides
-  /// Replicates EdgeInsets.all()
-  BoxSpecAttribute paddingAll(double value) {
-    return padding(EdgeInsetsGeometryMix.all(value));
-  }
-
-  /// Sets symmetric padding
-  /// Replicates EdgeInsets.symmetric()
-  BoxSpecAttribute paddingSymmetric({double? vertical, double? horizontal}) {
-    return padding(
-      EdgeInsetsGeometryMix.symmetric(
-        vertical: vertical,
-        horizontal: horizontal,
-      ),
-    );
-  }
-
-  /// Sets padding on specific sides only
-  /// Replicates EdgeInsets.only()
-  BoxSpecAttribute paddingOnly({
-    double? left,
-    double? top,
-    double? right,
-    double? bottom,
-  }) {
-    return padding(
-      EdgeInsetsGeometryMix.only(
-        left: left,
-        right: right,
-        top: top,
-        bottom: bottom,
-      ),
-    );
-  }
-
-  /// Convenience methods for individual sides
-  BoxSpecAttribute paddingHorizontal(double value) {
-    return paddingSymmetric(horizontal: value);
-  }
-
-  BoxSpecAttribute paddingVertical(double value) {
-    return paddingSymmetric(vertical: value);
-  }
-
-  BoxSpecAttribute paddingTop(double value) {
-    return paddingOnly(top: value);
-  }
-
-  BoxSpecAttribute paddingBottom(double value) {
-    return paddingOnly(bottom: value);
-  }
-
-  BoxSpecAttribute paddingLeft(double value) {
-    return paddingOnly(left: value);
-  }
-
-  BoxSpecAttribute paddingRight(double value) {
-    return paddingOnly(right: value);
-  }
-}
-
-/// Extension that replicates EdgeInsets factory constructors as margin methods
-extension BoxSpecAttributeMarginExtension on BoxSpecAttribute {
-  /// Sets margin to the same value on all sides
-  /// Replicates EdgeInsets.all()
-  BoxSpecAttribute marginAll(double value) {
-    return margin(EdgeInsetsGeometryMix.all(value));
-  }
-
-  /// Sets symmetric margin
-  /// Replicates EdgeInsets.symmetric()
-  BoxSpecAttribute marginSymmetric({double? vertical, double? horizontal}) {
-    return margin(
-      EdgeInsetsGeometryMix.symmetric(
-        vertical: vertical,
-        horizontal: horizontal,
-      ),
-    );
-  }
-
-  /// Sets margin on specific sides only
-  /// Replicates EdgeInsets.only()
-  BoxSpecAttribute marginOnly({
-    double? left,
-    double? top,
-    double? right,
-    double? bottom,
-  }) {
-    return margin(
-      EdgeInsetsGeometryMix.only(
-        left: left,
-        right: right,
-        top: top,
-        bottom: bottom,
-      ),
-    );
-  }
-
-  /// Convenience methods for individual sides
-  BoxSpecAttribute marginHorizontal(double value) {
-    return marginSymmetric(horizontal: value);
-  }
-
-  BoxSpecAttribute marginVertical(double value) {
-    return marginSymmetric(vertical: value);
-  }
-
-  BoxSpecAttribute marginTop(double value) {
-    return marginOnly(top: value);
-  }
-
-  BoxSpecAttribute marginBottom(double value) {
-    return marginOnly(bottom: value);
-  }
-
-  BoxSpecAttribute marginLeft(double value) {
-    return marginOnly(left: value);
-  }
-
-  BoxSpecAttribute marginRight(double value) {
-    return marginOnly(right: value);
-  }
-}
-
-/// Extension that replicates BoxConstraints factory constructors and common size methods
-extension BoxSpecAttributeConstraintsExtension on BoxSpecAttribute {
-  /// Sets a fixed width and height
-  BoxSpecAttribute size(double width, double height) {
-    return this.width(width).height(height);
-  }
-
-  /// Sets a square size (width = height)
-  BoxSpecAttribute square(double size) {
-    return width(size).height(size);
-  }
-}
-
+/// Extension
 /// Extension for decoration convenience methods
-extension BoxSpecAttributeDecorationExtension on BoxSpecAttribute {
-  /// Sets rounded corners on all sides - clean and simple
-  BoxSpecAttribute rounded(double radius) {
-    return borderRadius(BorderRadiusGeometryMix.circular(radius));
-  }
-
-  /// Sets rounded corner on top-left only
-  BoxSpecAttribute roundedTopLeft(double radius) {
-    return borderRadius(BorderRadiusGeometryMix.topLeft(Radius.circular(radius)));
-  }
-
-  /// Sets rounded corner on top-right only
-  BoxSpecAttribute roundedTopRight(double radius) {
-    return borderRadius(BorderRadiusGeometryMix.topRight(Radius.circular(radius)));
-  }
-
-  /// Sets rounded corner on bottom-left only
-  BoxSpecAttribute roundedBottomLeft(double radius) {
-    return borderRadius(BorderRadiusGeometryMix.bottomLeft(Radius.circular(radius)));
-  }
-
-  /// Sets rounded corner on bottom-right only
-  BoxSpecAttribute roundedBottomRight(double radius) {
-    return borderRadius(BorderRadiusGeometryMix.bottomRight(Radius.circular(radius)));
-  }
-
-  /// Sets rounded corners on top sides (top-left and top-right)
-  BoxSpecAttribute roundedTop(double radius) {
-    return borderRadius(BorderRadiusMix.only(
-      topLeft: Radius.circular(radius),
-      topRight: Radius.circular(radius),
-    ));
-  }
-
-  /// Sets rounded corners on bottom sides (bottom-left and bottom-right)
-  BoxSpecAttribute roundedBottom(double radius) {
-    return borderRadius(BorderRadiusMix.only(
-      bottomLeft: Radius.circular(radius),
-      bottomRight: Radius.circular(radius),
-    ));
-  }
-
-  /// Sets rounded corners on left sides (top-left and bottom-left)
-  BoxSpecAttribute roundedLeft(double radius) {
-    return borderRadius(BorderRadiusMix.only(
-      topLeft: Radius.circular(radius),
-      bottomLeft: Radius.circular(radius),
-    ));
-  }
-
-  /// Sets rounded corners on right sides (top-right and bottom-right)
-  BoxSpecAttribute roundedRight(double radius) {
-    return borderRadius(BorderRadiusMix.only(
-      topRight: Radius.circular(radius),
-      bottomRight: Radius.circular(radius),
-    ));
-  }
-
-  /// Sets oval border radius on all corners
-  BoxSpecAttribute oval(double xRadius, double yRadius) {
-    return borderRadius(BorderRadiusGeometryMix.elliptical(xRadius, yRadius));
-  }
-
-  /// Sets border on all sides with the same properties
-  BoxSpecAttribute borderAll({
-    Color? color,
-    double? width,
-    BorderStyle? style,
-    double? strokeAlign,
-  }) {
-    final side = BorderSideMix.only(
-      color: color,
-      strokeAlign: strokeAlign,
-      style: style,
-      width: width,
-    );
-
-    return border(BorderMix.all(side));
-  }
-
-  /// Sets border on top side only
-  BoxSpecAttribute borderTop({
-    Color? color,
-    double? width,
-    BorderStyle? style,
-    double? strokeAlign,
-  }) {
-    return border(
-      BorderMix.only(
-        top: BorderSideMix.only(
-          color: color,
-          strokeAlign: strokeAlign,
-          style: style,
-          width: width,
-        ),
-      ),
-    );
-  }
-
-  /// Sets border on bottom side only
-  BoxSpecAttribute borderBottom({
-    Color? color,
-    double? width,
-    BorderStyle? style,
-    double? strokeAlign,
-  }) {
-    return border(
-      BorderMix.only(
-        bottom: BorderSideMix.only(
-          color: color,
-          strokeAlign: strokeAlign,
-          style: style,
-          width: width,
-        ),
-      ),
-    );
-  }
-
-  /// Sets border on left side only
-  BoxSpecAttribute borderLeft({
-    Color? color,
-    double? width,
-    BorderStyle? style,
-    double? strokeAlign,
-  }) {
-    return border(
-      BorderMix.only(
-        left: BorderSideMix.only(
-          color: color,
-          strokeAlign: strokeAlign,
-          style: style,
-          width: width,
-        ),
-      ),
-    );
-  }
-
-  /// Sets border on right side only
-  BoxSpecAttribute borderRight({
-    Color? color,
-    double? width,
-    BorderStyle? style,
-    double? strokeAlign,
-  }) {
-    return border(
-      BorderMix.only(
-        right: BorderSideMix.only(
-          color: color,
-          strokeAlign: strokeAlign,
-          style: style,
-          width: width,
-        ),
-      ),
-    );
-  }
-
-  /// Sets border on horizontal sides (top and bottom)
-  BoxSpecAttribute borderHorizontal({
-    Color? color,
-    double? width,
-    BorderStyle? style,
-    double? strokeAlign,
-  }) {
-    final side = BorderSideMix.only(
-      color: color,
-      strokeAlign: strokeAlign,
-      style: style,
-      width: width,
-    );
-
-    return border(BorderMix.horizontal(side));
-  }
-
-  /// Sets border on vertical sides (left and right)
-  BoxSpecAttribute borderVertical({
-    Color? color,
-    double? width,
-    BorderStyle? style,
-    double? strokeAlign,
-  }) {
-    final side = BorderSideMix.only(
-      color: color,
-      strokeAlign: strokeAlign,
-      style: style,
-      width: width,
-    );
-
-    return border(BorderMix.vertical(side));
-  }
-
-  /// Sets border on start side (respects text direction)
-  BoxSpecAttribute borderStart({
-    Color? color,
-    double? width,
-    BorderStyle? style,
-    double? strokeAlign,
-  }) {
-    return border(
-      BorderDirectionalMix.only(
-        start: BorderSideMix.only(
-          color: color,
-          strokeAlign: strokeAlign,
-          style: style,
-          width: width,
-        ),
-      ),
-    );
-  }
-
-  /// Sets border on end side (respects text direction)
-  BoxSpecAttribute borderEnd({
-    Color? color,
-    double? width,
-    BorderStyle? style,
-    double? strokeAlign,
-  }) {
-    return border(
-      BorderDirectionalMix.only(
-        end: BorderSideMix.only(
-          color: color,
-          strokeAlign: strokeAlign,
-          style: style,
-          width: width,
-        ),
-      ),
-    );
-  }
-}
 
 /// Extension for transform effect convenience methods
 extension BoxSpecAttributeTransformExtension on BoxSpecAttribute {

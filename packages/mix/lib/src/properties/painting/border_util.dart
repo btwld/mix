@@ -184,3 +184,129 @@ class BorderSideUtility<T extends StyleAttribute<Object?>>
     return builder(MixProp<BorderSide>(value));
   }
 }
+
+mixin BorderMixin<T extends StyleAttribute<S>, S extends Spec<S>>
+    on StyleAttribute<S> {
+  /// Must be implemented - accepts BoxBorderMix
+  T border(BoxBorderMix value);
+
+  /// Complex borders with priority system using BorderSideMix
+  T borders({
+    BorderSideMix? all,
+    BorderSideMix? horizontal,
+    BorderSideMix? vertical,
+    BorderSideMix? top,
+    BorderSideMix? bottom,
+    BorderSideMix? left,
+    BorderSideMix? right,
+    BorderSideMix? start,
+    BorderSideMix? end,
+  }) {
+    // Validation
+    final hasPhysical = left != null || right != null;
+    final hasLogical = start != null || end != null;
+
+    if (hasPhysical && hasLogical) {
+      throw ArgumentError(
+        'Cannot mix physical (left/right) and logical (start/end) properties.',
+      );
+    }
+
+    // Start with all as base
+    BorderSideMix? t = all;
+    BorderSideMix? b = all;
+    BorderSideMix? l = all;
+    BorderSideMix? r = all;
+
+    // Apply horizontal/vertical
+    if (horizontal != null) {
+      l = horizontal;
+      r = horizontal;
+    }
+    if (vertical != null) {
+      t = vertical;
+      b = vertical;
+    }
+
+    // Apply specific sides
+    if (top != null) t = top;
+    if (bottom != null) b = bottom;
+
+    if (hasLogical) {
+      if (start != null) l = start;
+      if (end != null) r = end;
+    } else {
+      if (left != null) l = left;
+      if (right != null) r = right;
+    }
+
+    return border(
+      hasLogical
+          ? BorderDirectionalMix.only(top: t, bottom: b, start: l, end: r)
+          : BorderMix.only(top: t, bottom: b, left: l, right: r),
+    );
+  }
+
+  /// Convenience for setting all borders
+  T borderAll({double? width, Color? color, BorderStyle? style}) {
+    return borders(
+      all: BorderSideMix.only(color: color, style: style, width: width),
+    );
+  }
+
+  /// Convenience for horizontal borders
+  T borderHorizontal({double? width, Color? color, BorderStyle? style}) {
+    return borders(
+      horizontal: BorderSideMix.only(color: color, style: style, width: width),
+    );
+  }
+
+  /// Convenience for vertical borders
+  T borderVertical({double? width, Color? color, BorderStyle? style}) {
+    return borders(
+      vertical: BorderSideMix.only(color: color, style: style, width: width),
+    );
+  }
+
+  /// Convenience for top border
+  T borderTop({double? width, Color? color, BorderStyle? style}) {
+    return borders(
+      top: BorderSideMix.only(color: color, style: style, width: width),
+    );
+  }
+
+  /// Convenience for bottom border
+  T borderBottom({double? width, Color? color, BorderStyle? style}) {
+    return borders(
+      bottom: BorderSideMix.only(color: color, style: style, width: width),
+    );
+  }
+
+  /// Convenience for left border
+  T borderLeft({double? width, Color? color, BorderStyle? style}) {
+    return borders(
+      left: BorderSideMix.only(color: color, style: style, width: width),
+    );
+  }
+
+  /// Convenience for right border
+  T borderRight({double? width, Color? color, BorderStyle? style}) {
+    return borders(
+      right: BorderSideMix.only(color: color, style: style, width: width),
+    );
+  }
+
+  /// Convenience for start border (logical)
+  T borderStart({double? width, Color? color, BorderStyle? style}) {
+    return borders(
+      start: BorderSideMix.only(color: color, style: style, width: width),
+    );
+  }
+
+  /// Convenience for end border (logical)
+  T borderEnd({double? width, Color? color, BorderStyle? style}) {
+    return borders(
+      end: BorderSideMix.only(color: color, style: style, width: width),
+    );
+  }
+}
