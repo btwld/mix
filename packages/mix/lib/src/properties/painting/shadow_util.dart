@@ -22,7 +22,7 @@ class ShadowUtility<T extends StyleAttribute<Object?>>
   late final color = ColorUtility<T>((prop) => call(ShadowMix(color: prop)));
 
   /// Utility for defining [ShadowMix.offset].
-  late final offset = OffsetUtility<T>((prop) => call(ShadowMix(offset: prop)));
+  late final offset = PropUtility<T, Offset>((prop) => call(ShadowMix(offset: prop)));
 
   ShadowUtility(super.builder) : super(convertToMix: ShadowMix.value);
 
@@ -40,7 +40,7 @@ class BoxShadowUtility<T extends StyleAttribute<Object?>>
   late final color = ColorUtility<T>((prop) => call(BoxShadowMix(color: prop)));
 
   /// Utility for defining [BoxShadowMix.offset].
-  late final offset = OffsetUtility<T>(
+  late final offset = PropUtility<T, Offset>(
     (prop) => call(BoxShadowMix(offset: prop)),
   );
 

@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-import 'package:mix/src/core/widget_state/internal/mix_hoverable_region.dart';
+import 'package:mix/src/core/internal/mix_hoverable_region.dart';
 
 void main() {
   group('Selective Rebuild Optimization', () {

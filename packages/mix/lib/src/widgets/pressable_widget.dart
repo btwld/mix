@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 
-import '../core/widget_state/internal/mix_hoverable_region.dart';
+import '../core/internal/mix_hoverable_region.dart';
 import '../core/widget_state/widget_state_provider.dart';
 import '../core/internal/constants.dart';
 import 'box/box_attribute.dart';

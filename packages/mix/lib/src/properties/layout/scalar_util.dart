@@ -451,11 +451,9 @@ extension TableCellVerticalAlignmentPropUtilityExt<T extends StyleAttribute<Obje
   T intrinsicHeight() => call(TableCellVerticalAlignment.intrinsicHeight);
 }
 
-/// Utility for creating [AlignmentGeometry] values with predefined alignments.
-final class AlignmentUtility<S extends StyleAttribute<Object?>>
-    extends PropUtility<S, AlignmentGeometry> {
-  const AlignmentUtility(super.builder);
-
+/// Extension for creating [AlignmentGeometry] values with both absolute and directional alignments.
+extension AlignmentPropUtilityExt<S extends StyleAttribute<Object?>>
+    on PropUtility<S, AlignmentGeometry> {
   /// Creates a [StyleBase] instance with a custom [Alignment] or [AlignmentDirectional] value.
   ///
   /// If [start] is provided, an [AlignmentDirectional] is created. Otherwise, an [Alignment] is created.
@@ -499,19 +497,10 @@ final class AlignmentUtility<S extends StyleAttribute<Object?>>
   S bottomRight() => call(Alignment.bottomRight);
 }
 
-/// Utility for creating [AlignmentGeometry] values with both absolute and directional alignments.
-final class AlignmentGeometryUtility<S extends StyleAttribute<Object?>>
-    extends AlignmentUtility<S> {
-  /// Provides access to directional alignment utilities.
-  late final directional = AlignmentDirectionalUtility<S>(builder);
-  AlignmentGeometryUtility(super.builder);
-}
 
-/// Utility for creating [AlignmentDirectional] values that respect text direction.
-final class AlignmentDirectionalUtility<S extends StyleAttribute<Object?>>
-    extends PropUtility<S, AlignmentDirectional> {
-  const AlignmentDirectionalUtility(super.builder);
-
+/// Extension for creating [AlignmentDirectional] values that respect text direction.
+extension AlignmentDirectionalPropUtilityExt<S extends StyleAttribute<Object?>>
+    on PropUtility<S, AlignmentDirectional> {
   S only({double? y, double? start}) {
     return call(AlignmentDirectional(start ?? 0, y ?? 0));
   }
@@ -544,11 +533,9 @@ final class AlignmentDirectionalUtility<S extends StyleAttribute<Object?>>
   S bottomEnd() => call(AlignmentDirectional.bottomEnd);
 }
 
-/// Utility for creating [FontFeature] values with predefined OpenType features.
-final class FontFeatureUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, FontFeature> {
-  const FontFeatureUtility(super.builder);
-
+/// Extension for creating [FontFeature] values with predefined OpenType features.
+extension FontFeaturePropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, FontFeature> {
   /// Creates a [StyleAttribute] instance using the [FontFeature.enable] constructor.
   T enable(String feature) => call(FontFeature.enable(feature));
 
@@ -634,11 +621,9 @@ final class FontFeatureUtility<T extends StyleAttribute<Object?>>
   T slashedZero() => call(const FontFeature.slashedZero());
 }
 
-/// Utility for creating [Duration] values with time unit methods.
-final class DurationUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, Duration> {
-  const DurationUtility(super.builder);
-
+/// Extension for creating [Duration] values with time unit methods.
+extension DurationPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, Duration> {
   T microseconds(int microseconds) =>
       call(Duration(microseconds: microseconds));
 
@@ -659,11 +644,9 @@ extension FontSizePropUtilityExt<T extends StyleAttribute<Object?>>
   // No predefined font size values - this extension provides type consistency for font sizes
 }
 
-/// Utility for creating [FontWeight] values with predefined weights.
-final class FontWeightUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, FontWeight> {
-  const FontWeightUtility(super.builder);
-
+/// Extension for creating [FontWeight] values with predefined weights.
+extension FontWeightPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, FontWeight> {
   /// Creates a [StyleAttribute] instance with [FontWeight.w100] value.
   T w100() => call(FontWeight.w100);
 
@@ -698,11 +681,9 @@ final class FontWeightUtility<T extends StyleAttribute<Object?>>
   T bold() => call(FontWeight.bold);
 }
 
-/// Utility for creating [TextDecoration] values with predefined decorations.
-final class TextDecorationUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, TextDecoration> {
-  const TextDecorationUtility(super.builder);
-
+/// Extension for creating [TextDecoration] values with predefined decorations.
+extension TextDecorationPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, TextDecoration> {
   /// Creates a [StyleAttribute] instance with [TextDecoration.none] value.
   T none() => call(TextDecoration.none);
 
@@ -721,10 +702,9 @@ final class TextDecorationUtility<T extends StyleAttribute<Object?>>
   }
 }
 
-/// Utility for creating [Curve] values with predefined animation curves.
-final class CurveUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, Curve> {
-  const CurveUtility(super.builder);
+/// Extension for creating [Curve] values with predefined animation curves.
+extension CurvePropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, Curve> {
 
   T spring({
     double stiffness = 3.5,
@@ -864,11 +844,9 @@ final class CurveUtility<T extends StyleAttribute<Object?>>
   T elasticInOut() => call(Curves.elasticInOut);
 }
 
-/// Utility for creating [Offset] values with predefined positions.
-final class OffsetUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, Offset> {
-  const OffsetUtility(super.builder);
-
+/// Extension for creating [Offset] values with predefined positions.
+extension OffsetPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, Offset> {
   /// Creates a [StyleAttribute] instance with [Offset.zero] value.
   T zero() => call(Offset.zero);
 
@@ -881,11 +859,9 @@ final class OffsetUtility<T extends StyleAttribute<Object?>>
   }
 }
 
-/// Utility for creating [Radius] values with predefined radius shapes.
-final class RadiusUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, Radius> {
-  const RadiusUtility(super.builder);
-
+/// Extension for creating [Radius] values with predefined radius shapes.
+extension RadiusPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, Radius> {
   /// Creates a [StyleAttribute] instance with [Radius.zero] value.
   T zero() => call(Radius.zero);
 
@@ -896,11 +872,9 @@ final class RadiusUtility<T extends StyleAttribute<Object?>>
   T elliptical(double x, double y) => call(Radius.elliptical(x, y));
 }
 
-/// Utility for creating [Rect] values with predefined rectangles and constructors.
-final class RectUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, Rect> {
-  const RectUtility(super.builder);
-
+/// Extension for creating [Rect] values with predefined rectangles and constructors.
+extension RectPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, Rect> {
   /// Creates a [StyleAttribute] instance with [Rect.zero] value.
   T zero() => call(Rect.zero);
 
@@ -947,11 +921,9 @@ extension LocalePropUtilityExt<T extends StyleAttribute<Object?>>
   // No predefined locale values - this extension provides type consistency
 }
 
-/// Utility for creating [ImageProvider] values with different image sources.
-final class ImageProviderUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, ImageProvider> {
-  const ImageProviderUtility(super.builder);
-
+/// Extension for creating [ImageProvider] values with different image sources.
+extension ImageProviderPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, ImageProvider> {
   /// Creates an [StyleAttribute] instance with [ImageProvider.network].
   /// @param url The URL of the image.
   T network(String url) => call(NetworkImage(url));
@@ -967,11 +939,9 @@ extension GradientTransformPropUtilityExt<T extends StyleAttribute<Object?>>
   T rotate(double radians) => call(GradientRotation(radians));
 }
 
-/// Utility for creating [Matrix4] values for 3D transformations.
-final class Matrix4Utility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, Matrix4> {
-  const Matrix4Utility(super.builder);
-
+/// Extension for creating [Matrix4] values for 3D transformations.
+extension Matrix4PropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, Matrix4> {
   /// Creates a [StyleAttribute] instance using the [Matrix4.fromList] constructor.
   T fromList(List<double> values) => call(Matrix4.fromList(values));
 
@@ -1015,11 +985,9 @@ final class Matrix4Utility<T extends StyleAttribute<Object?>>
   }
 }
 
-/// Utility for creating font family strings with various constructors.
-final class FontFamilyUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, String> {
-  const FontFamilyUtility(super.builder);
-
+/// Extension for creating font family strings with various constructors.
+extension FontFamilyPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, String> {
   /// Creates a [StyleAttribute] instance using the [String.fromCharCodes] constructor.
   T fromCharCodes(Iterable<int> charCodes, [int start = 0, int? end]) {
     return call(String.fromCharCodes(charCodes, start, end));

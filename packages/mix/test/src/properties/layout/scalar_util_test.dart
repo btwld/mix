@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 import '../../../helpers/testing_utils.dart';
-import 'package:mix/src/properties/layout/scalar_util.dart';
 
 void main() {
   group('Scalar Utilities Extensions', () {
@@ -198,7 +197,9 @@ void main() {
     });
 
     group('FontWeightUtility', () {
-      const utility = FontWeightUtility(UtilityTestAttribute.new);
+      final utility = PropUtility<UtilityTestAttribute, FontWeight>(
+        UtilityTestAttribute.new,
+      );
 
       test('bold() creates FontWeight.bold', () {
         final attr = utility.bold();
@@ -289,7 +290,7 @@ void main() {
     });
 
     group('AlignmentUtility', () {
-      const utility = AlignmentUtility(UtilityTestAttribute.new);
+      final utility = PropUtility<UtilityTestAttribute, AlignmentGeometry>(UtilityTestAttribute.new);
 
       test('topLeft() creates Alignment.topLeft', () {
         final attr = utility.topLeft();

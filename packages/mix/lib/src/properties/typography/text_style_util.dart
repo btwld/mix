@@ -12,7 +12,7 @@ final class TextStyleUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, TextStyle> {
   late final color = ColorUtility<T>((prop) => call(TextStyleMix(color: prop)));
 
-  late final fontWeight = FontWeightUtility<T>(
+  late final fontWeight = PropUtility<T, FontWeight>(
     (prop) => call(TextStyleMix(fontWeight: prop)),
   );
 
@@ -20,7 +20,7 @@ final class TextStyleUtility<T extends StyleAttribute<Object?>>
     (prop) => call(TextStyleMix(fontStyle: prop),)
   );
 
-  late final decoration = TextDecorationUtility<T>(
+  late final decoration = PropUtility<T, TextDecoration>(
     (prop) => call(TextStyleMix(decoration: prop)),
   );
 
@@ -44,7 +44,7 @@ final class TextStyleUtility<T extends StyleAttribute<Object?>>
     (prop) => call(TextStyleMix(textBaseline: prop),)
   );
 
-  late final fontFamily = FontFamilyUtility<T>(
+  late final fontFamily = PropUtility<T, String>(
     (v) => call(TextStyleMix(fontFamily: v)),
   );
 

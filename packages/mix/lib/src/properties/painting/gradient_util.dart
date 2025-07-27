@@ -13,12 +13,12 @@ import '../layout/scalar_util.dart';
 final class LinearGradientUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, LinearGradient> {
   /// Utility for defining [LinearGradientMix.begin]
-  late final begin = AlignmentGeometryUtility<T>(
+  late final begin = PropUtility<T, AlignmentGeometry>(
     (v) => call(LinearGradientMix(begin: v)),
   );
 
   /// Utility for defining [LinearGradientMix.end]
-  late final end = AlignmentGeometryUtility<T>(
+  late final end = PropUtility<T, AlignmentGeometry>(
     (v) => call(LinearGradientMix(end: v)),
   );
 
@@ -56,7 +56,7 @@ final class LinearGradientUtility<T extends StyleAttribute<Object?>>
 final class RadialGradientUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, RadialGradient> {
   /// Utility for defining [RadialGradientMix.center]
-  late final center = AlignmentGeometryUtility<T>(
+  late final center = PropUtility<T, AlignmentGeometry>(
     (v) => call(RadialGradientMix(center: v)),
   );
 
@@ -71,7 +71,7 @@ final class RadialGradientUtility<T extends StyleAttribute<Object?>>
   );
 
   /// Utility for defining [RadialGradientMix.focal]
-  late final focal = AlignmentGeometryUtility<T>(
+  late final focal = PropUtility<T, AlignmentGeometry>(
     (v) => call(RadialGradientMix(focal: v)),
   );
 
@@ -109,7 +109,7 @@ final class RadialGradientUtility<T extends StyleAttribute<Object?>>
 final class SweepGradientUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, SweepGradient> {
   /// Utility for defining [SweepGradientMix.center]
-  late final center = AlignmentGeometryUtility<T>(
+  late final center = PropUtility<T, AlignmentGeometry>(
     (v) => call(SweepGradientMix(center: v)),
   );
 

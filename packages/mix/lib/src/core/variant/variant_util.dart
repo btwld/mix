@@ -293,7 +293,7 @@ class VariantAttributeBuilder<T extends Spec<T>> {
       p7,
       p8,
       p9,
-      p10
+      p10,
     ].whereType<StyleAttribute>().toList();
 
     if (elements.isEmpty) {

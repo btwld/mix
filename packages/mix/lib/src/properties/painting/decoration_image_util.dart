@@ -13,7 +13,7 @@ import '../layout/scalar_util.dart';
 final class DecorationImageUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, DecorationImage> {
   /// Utility for defining [DecorationImageMix.image]
-  late final provider = ImageProviderUtility<T>(
+  late final provider = PropUtility<T, ImageProvider>(
     (prop) => call(DecorationImageMix(image: prop)),
   );
 
@@ -23,12 +23,12 @@ final class DecorationImageUtility<T extends StyleAttribute<Object?>>
   );
 
   /// Utility for defining [DecorationImageMix.alignment]
-  late final alignment = AlignmentUtility<T>(
+  late final alignment = PropUtility<T, AlignmentGeometry>(
     (prop) => call(DecorationImageMix(alignment: prop)),
   );
 
   /// Utility for defining [DecorationImageMix.centerSlice]
-  late final centerSlice = RectUtility<T>(
+  late final centerSlice = PropUtility<T, Rect>(
     (prop) => call(DecorationImageMix(centerSlice: prop)),
   );
 

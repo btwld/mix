@@ -89,7 +89,7 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec> with Diagnosticable {
 
   late final height = constraints.height;
 
-  late final alignment = AlignmentGeometryUtility(
+  late final alignment = PropUtility<BoxSpecAttribute, AlignmentGeometry>(
     (prop) => merge(BoxSpecAttribute(alignment: prop)),
   );
 
