@@ -9,7 +9,6 @@ import 'color_util.dart';
 import 'decoration_image_util.dart';
 import 'decoration_mix.dart';
 import 'gradient_util.dart';
-import 'scalar_util.dart';
 import 'shadow_mix.dart';
 import 'shadow_util.dart';
 import 'shape_border_util.dart';
@@ -46,12 +45,12 @@ final class BoxDecorationUtility<T extends StyleAttribute<Object?>>
       _borderRadiusGeometry.borderRadiusDirectional;
 
   /// Utility for defining [BoxDecorationMix.shape]
-  late final shape = BoxShapeUtility<T>(
+  late final shape = PropUtility<T, BoxShape>(
     (prop) => call(BoxDecorationMix(shape: prop)),
   );
 
   /// Utility for defining [BoxDecorationMix.backgroundBlendMode]
-  late final backgroundBlendMode = BlendModeUtility<T>(
+  late final backgroundBlendMode = PropUtility<T, BlendMode>(
     (prop) => call(BoxDecorationMix(backgroundBlendMode: prop)),
   );
 

@@ -6,11 +6,9 @@ import 'dart:typed_data';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-/// Utility for creating [VerticalDirection] values with predefined options.
-final class VerticalDirectionUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, VerticalDirection> {
-  const VerticalDirectionUtility(super.builder);
-
+/// Extension for creating [VerticalDirection] values with predefined options.
+extension VerticalDirectionPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, VerticalDirection> {
   /// Creates a style with [VerticalDirection.up] value.
   T up() => call(VerticalDirection.up);
 
@@ -18,11 +16,9 @@ final class VerticalDirectionUtility<T extends StyleAttribute<Object?>>
   T down() => call(VerticalDirection.down);
 }
 
-/// Utility for creating [BorderStyle] values with predefined options.
-final class BorderStyleUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, BorderStyle> {
-  const BorderStyleUtility(super.builder);
-
+/// Extension for creating [BorderStyle] values with predefined options.
+extension BorderStylePropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, BorderStyle> {
   /// Creates a style with [BorderStyle.none] value.
   T none() => call(BorderStyle.none);
 
@@ -30,11 +26,9 @@ final class BorderStyleUtility<T extends StyleAttribute<Object?>>
   T solid() => call(BorderStyle.solid);
 }
 
-/// Utility for creating [Clip] values with predefined options.
-final class ClipUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, Clip> {
-  const ClipUtility(super.builder);
-
+/// Extension for creating [Clip] values with predefined options.
+extension ClipPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, Clip> {
   /// Creates a [StyleAttribute] instance with [Clip.none] value.
   T none() => call(Clip.none);
 
@@ -48,11 +42,9 @@ final class ClipUtility<T extends StyleAttribute<Object?>>
   T antiAliasWithSaveLayer() => call(Clip.antiAliasWithSaveLayer);
 }
 
-/// Utility for creating [Axis] values with predefined options.
-final class AxisUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, Axis> {
-  const AxisUtility(super.builder);
-
+/// Extension for creating [Axis] values with predefined options.
+extension AxisPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, Axis> {
   /// Creates a [StyleAttribute] instance with [Axis.horizontal] value.
   T horizontal() => call(Axis.horizontal);
 
@@ -60,16 +52,9 @@ final class AxisUtility<T extends StyleAttribute<Object?>>
   T vertical() => call(Axis.vertical);
 }
 
-/// {@template flex_fit_utility}
-/// A utility class for creating [StyleAttribute] instances from [FlexFit] values.
-///
-/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
-/// from predefined [FlexFit] values.
-/// {@endtemplate}
-final class FlexFitUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, FlexFit> {
-  const FlexFitUtility(super.builder);
-
+/// Extension for creating [FlexFit] values with predefined options.
+extension FlexFitPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, FlexFit> {
   /// Creates a [StyleAttribute] instance with [FlexFit.tight] value.
   T tight() => call(FlexFit.tight);
 
@@ -77,16 +62,9 @@ final class FlexFitUtility<T extends StyleAttribute<Object?>>
   T loose() => call(FlexFit.loose);
 }
 
-/// {@template stack_fit_utility}
-/// A utility class for creating [StyleAttribute] instances from [StackFit] values.
-///
-/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
-/// from predefined [StackFit] values.
-/// {@endtemplate}
-final class StackFitUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, StackFit> {
-  const StackFitUtility(super.builder);
-
+/// Extension for creating [StackFit] values with predefined options.
+extension StackFitPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, StackFit> {
   /// Creates a [StyleAttribute] instance with [StackFit.loose] value.
   T loose() => call(StackFit.loose);
 
@@ -97,16 +75,9 @@ final class StackFitUtility<T extends StyleAttribute<Object?>>
   T passthrough() => call(StackFit.passthrough);
 }
 
-/// {@template image_repeat_utility}
-/// A utility class for creating [StyleAttribute] instances from [ImageRepeat] values.
-///
-/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
-/// from predefined [ImageRepeat] values.
-/// {@endtemplate}
-final class ImageRepeatUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, ImageRepeat> {
-  const ImageRepeatUtility(super.builder);
-
+/// Extension for creating [ImageRepeat] values with predefined options.
+extension ImageRepeatPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, ImageRepeat> {
   /// Creates a [StyleAttribute] instance with [ImageRepeat.repeat] value.
   T repeat() => call(ImageRepeat.repeat);
 
@@ -120,16 +91,9 @@ final class ImageRepeatUtility<T extends StyleAttribute<Object?>>
   T noRepeat() => call(ImageRepeat.noRepeat);
 }
 
-/// {@template text_direction_utility}
-/// A utility class for creating [StyleAttribute] instances from [TextDirection] values.
-///
-/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
-/// from predefined [TextDirection] values.
-/// {@endtemplate}
-final class TextDirectionUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, TextDirection> {
-  const TextDirectionUtility(super.builder);
-
+/// Extension for creating [TextDirection] values with predefined options.
+extension TextDirectionPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, TextDirection> {
   /// Creates a [StyleAttribute] instance with [TextDirection.rtl] value.
   T rtl() => call(TextDirection.rtl);
 
@@ -137,16 +101,9 @@ final class TextDirectionUtility<T extends StyleAttribute<Object?>>
   T ltr() => call(TextDirection.ltr);
 }
 
-/// {@template text_leading_distribution_utility}
-/// A utility class for creating [StyleAttribute] instances from [TextLeadingDistribution] values.
-///
-/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
-/// from predefined [TextLeadingDistribution] values.
-/// {@endtemplate}
-final class TextLeadingDistributionUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, TextLeadingDistribution> {
-  const TextLeadingDistributionUtility(super.builder);
-
+/// Extension for creating [TextLeadingDistribution] values with predefined options.
+extension TextLeadingDistributionPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, TextLeadingDistribution> {
   /// Creates a [StyleAttribute] instance with [TextLeadingDistribution.proportional] value.
   T proportional() => call(TextLeadingDistribution.proportional);
 
@@ -154,16 +111,9 @@ final class TextLeadingDistributionUtility<T extends StyleAttribute<Object?>>
   T even() => call(TextLeadingDistribution.even);
 }
 
-/// {@template tile_mode_utility}
-/// A utility class for creating [StyleAttribute] instances from [TileMode] values.
-///
-/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
-/// from predefined [TileMode] values.
-/// {@endtemplate}
-final class TileModeUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, TileMode> {
-  const TileModeUtility(super.builder);
-
+/// Extension for creating [TileMode] values with predefined options.
+extension TileModePropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, TileMode> {
   /// Creates a [StyleAttribute] instance with [TileMode.clamp] value.
   T clamp() => call(TileMode.clamp);
 
@@ -177,16 +127,9 @@ final class TileModeUtility<T extends StyleAttribute<Object?>>
   T decal() => call(TileMode.decal);
 }
 
-/// {@template main_axis_alignment_utility}
-/// A utility class for creating [StyleAttribute] instances from [MainAxisAlignment] values.
-///
-/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
-/// from predefined [MainAxisAlignment] values.
-/// {@endtemplate}
-final class MainAxisAlignmentUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, MainAxisAlignment> {
-  const MainAxisAlignmentUtility(super.builder);
-
+/// Extension for creating [MainAxisAlignment] values with predefined options.
+extension MainAxisAlignmentPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, MainAxisAlignment> {
   /// Creates a [StyleAttribute] instance with [MainAxisAlignment.start] value.
   T start() => call(MainAxisAlignment.start);
 
@@ -206,16 +149,9 @@ final class MainAxisAlignmentUtility<T extends StyleAttribute<Object?>>
   T spaceEvenly() => call(MainAxisAlignment.spaceEvenly);
 }
 
-/// {@template cross_axis_alignment_utility}
-/// A utility class for creating [StyleAttribute] instances from [CrossAxisAlignment] values.
-///
-/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
-/// from predefined [CrossAxisAlignment] values.
-/// {@endtemplate}
-final class CrossAxisAlignmentUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, CrossAxisAlignment> {
-  const CrossAxisAlignmentUtility(super.builder);
-
+/// Extension for creating [CrossAxisAlignment] values with predefined options.
+extension CrossAxisAlignmentPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, CrossAxisAlignment> {
   /// Creates a [StyleAttribute] instance with [CrossAxisAlignment.start] value.
   T start() => call(CrossAxisAlignment.start);
 
@@ -232,16 +168,9 @@ final class CrossAxisAlignmentUtility<T extends StyleAttribute<Object?>>
   T baseline() => call(CrossAxisAlignment.baseline);
 }
 
-/// {@template main_axis_size_utility}
-/// A utility class for creating [StyleAttribute] instances from [MainAxisSize] values.
-///
-/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
-/// from predefined [MainAxisSize] values.
-/// {@endtemplate}
-final class MainAxisSizeUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, MainAxisSize> {
-  const MainAxisSizeUtility(super.builder);
-
+/// Extension for creating [MainAxisSize] values with predefined options.
+extension MainAxisSizePropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, MainAxisSize> {
   /// Creates a [StyleAttribute] instance with [MainAxisSize.min] value.
   T min() => call(MainAxisSize.min);
 
@@ -249,16 +178,9 @@ final class MainAxisSizeUtility<T extends StyleAttribute<Object?>>
   T max() => call(MainAxisSize.max);
 }
 
-/// {@template box_fit_utility}
-/// A utility class for creating [StyleAttribute] instances from [BoxFit] values.
-///
-/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
-/// from predefined [BoxFit] values.
-/// {@endtemplate}
-final class BoxFitUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, BoxFit> {
-  const BoxFitUtility(super.builder);
-
+/// Extension for creating [BoxFit] values with predefined options.
+extension BoxFitPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, BoxFit> {
   /// Creates a [StyleAttribute] instance with [BoxFit.fill] value.
   T fill() => call(BoxFit.fill);
 
@@ -281,16 +203,9 @@ final class BoxFitUtility<T extends StyleAttribute<Object?>>
   T scaleDown() => call(BoxFit.scaleDown);
 }
 
-/// {@template blend_mode_utility}
-/// A utility class for creating [StyleAttribute] instances from [BlendMode] values.
-///
-/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
-/// from predefined [BlendMode] values.
-/// {@endtemplate}
-final class BlendModeUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, BlendMode> {
-  const BlendModeUtility(super.builder);
-
+/// Extension for creating [BlendMode] values with predefined options.
+extension BlendModePropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, BlendMode> {
   /// Creates a [StyleAttribute] instance with [BlendMode.clear] value.
   T clear() => call(BlendMode.clear);
 
@@ -379,16 +294,9 @@ final class BlendModeUtility<T extends StyleAttribute<Object?>>
   T luminosity() => call(BlendMode.luminosity);
 }
 
-/// {@template box_shape_utility}
-/// A utility class for creating [StyleAttribute] instances from [BoxShape] values.
-///
-/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
-/// from predefined [BoxShape] values.
-/// {@endtemplate}
-final class BoxShapeUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, BoxShape> {
-  const BoxShapeUtility(super.builder);
-
+/// Extension for creating [BoxShape] values with predefined options.
+extension BoxShapePropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, BoxShape> {
   /// Creates a [StyleAttribute] instance with [BoxShape.rectangle] value.
   T rectangle() => call(BoxShape.rectangle);
 
@@ -396,16 +304,9 @@ final class BoxShapeUtility<T extends StyleAttribute<Object?>>
   T circle() => call(BoxShape.circle);
 }
 
-/// {@template font_style_utility}
-/// A utility class for creating [StyleAttribute] instances from [FontStyle] values.
-///
-/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
-/// from predefined [FontStyle] values.
-/// {@endtemplate}
-final class FontStyleUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, FontStyle> {
-  const FontStyleUtility(super.builder);
-
+/// Extension for creating [FontStyle] values with predefined options.
+extension FontStylePropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, FontStyle> {
   /// Creates a [StyleAttribute] instance with [FontStyle.normal] value.
   T normal() => call(FontStyle.normal);
 
@@ -413,16 +314,9 @@ final class FontStyleUtility<T extends StyleAttribute<Object?>>
   T italic() => call(FontStyle.italic);
 }
 
-/// {@template text_decoration_style_utility}
-/// A utility class for creating [StyleAttribute] instances from [TextDecorationStyle] values.
-///
-/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
-/// from predefined [TextDecorationStyle] values.
-/// {@endtemplate}
-final class TextDecorationStyleUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, TextDecorationStyle> {
-  const TextDecorationStyleUtility(super.builder);
-
+/// Extension for creating [TextDecorationStyle] values with predefined options.
+extension TextDecorationStylePropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, TextDecorationStyle> {
   /// Creates a [StyleAttribute] instance with [TextDecorationStyle.solid] value.
   T solid() => call(TextDecorationStyle.solid);
 
@@ -439,16 +333,9 @@ final class TextDecorationStyleUtility<T extends StyleAttribute<Object?>>
   T wavy() => call(TextDecorationStyle.wavy);
 }
 
-/// {@template text_baseline_utility}
-/// A utility class for creating [StyleAttribute] instances from [TextBaseline] values.
-///
-/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
-/// from predefined [TextBaseline] values.
-/// {@endtemplate}
-final class TextBaselineUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, TextBaseline> {
-  const TextBaselineUtility(super.builder);
-
+/// Extension for creating [TextBaseline] values with predefined options.
+extension TextBaselinePropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, TextBaseline> {
   /// Creates a [StyleAttribute] instance with [TextBaseline.alphabetic] value.
   T alphabetic() => call(TextBaseline.alphabetic);
 
@@ -456,16 +343,9 @@ final class TextBaselineUtility<T extends StyleAttribute<Object?>>
   T ideographic() => call(TextBaseline.ideographic);
 }
 
-/// {@template text_overflow_utility}
-/// A utility class for creating [StyleAttribute] instances from [TextOverflow] values.
-///
-/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
-/// from predefined [TextOverflow] values.
-/// {@endtemplate}
-final class TextOverflowUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, TextOverflow> {
-  const TextOverflowUtility(super.builder);
-
+/// Extension for creating [TextOverflow] values with predefined options.
+extension TextOverflowPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, TextOverflow> {
   /// Creates a [StyleAttribute] instance with [TextOverflow.clip] value.
   T clip() => call(TextOverflow.clip);
 
@@ -479,16 +359,9 @@ final class TextOverflowUtility<T extends StyleAttribute<Object?>>
   T visible() => call(TextOverflow.visible);
 }
 
-/// {@template text_width_basis_utility}
-/// A utility class for creating [StyleAttribute] instances from [TextWidthBasis] values.
-///
-/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
-/// from predefined [TextWidthBasis] values.
-/// {@endtemplate}
-final class TextWidthBasisUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, TextWidthBasis> {
-  const TextWidthBasisUtility(super.builder);
-
+/// Extension for creating [TextWidthBasis] values with predefined options.
+extension TextWidthBasisPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, TextWidthBasis> {
   /// Creates a [StyleAttribute] instance with [TextWidthBasis.parent] value.
   T parent() => call(TextWidthBasis.parent);
 
@@ -496,16 +369,9 @@ final class TextWidthBasisUtility<T extends StyleAttribute<Object?>>
   T longestLine() => call(TextWidthBasis.longestLine);
 }
 
-/// {@template text_align_utility}
-/// A utility class for creating [StyleAttribute] instances from [TextAlign] values.
-///
-/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
-/// from predefined [TextAlign] values.
-/// {@endtemplate}
-final class TextAlignUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, TextAlign> {
-  const TextAlignUtility(super.builder);
-
+/// Extension for creating [TextAlign] values with predefined options.
+extension TextAlignPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, TextAlign> {
   /// Creates a [StyleAttribute] instance with [TextAlign.left] value.
   T left() => call(TextAlign.left);
 
@@ -525,16 +391,9 @@ final class TextAlignUtility<T extends StyleAttribute<Object?>>
   T end() => call(TextAlign.end);
 }
 
-/// {@template filter_quality_utility}
-/// A utility class for creating [StyleAttribute] instances from [FilterQuality] values.
-///
-/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
-/// from predefined [FilterQuality] values.
-/// {@endtemplate}
-final class FilterQualityUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, FilterQuality> {
-  const FilterQualityUtility(super.builder);
-
+/// Extension for creating [FilterQuality] values with predefined options.
+extension FilterQualityPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, FilterQuality> {
   /// Creates a [StyleAttribute] instance with [FilterQuality.none] value.
   T none() => call(FilterQuality.none);
 
@@ -548,16 +407,9 @@ final class FilterQualityUtility<T extends StyleAttribute<Object?>>
   T high() => call(FilterQuality.high);
 }
 
-/// {@template wrap_alignment_utility}
-/// A utility class for creating [StyleAttribute] instances from [WrapAlignment] values.
-///
-/// This class extends [MixUtility] and provides methods to create [StyleAttribute] instances
-/// from predefined [WrapAlignment] values.
-/// {@endtemplate}
-final class WrapAlignmentUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, WrapAlignment> {
-  const WrapAlignmentUtility(super.builder);
-
+/// Extension for creating [WrapAlignment] values with predefined options.
+extension WrapAlignmentPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, WrapAlignment> {
   /// Creates a [StyleAttribute] instance with [WrapAlignment.start] value.
   T start() => call(WrapAlignment.start);
 
@@ -808,10 +660,10 @@ final class DurationUtility<T extends StyleAttribute<Object?>>
   T zero() => call(Duration.zero);
 }
 
-/// Utility for creating font size values as doubles.
-final class FontSizeUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, double> {
-  const FontSizeUtility(super.builder);
+/// Extension for creating font size values as doubles.
+extension FontSizePropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, double> {
+  // No predefined font size values - this extension provides type consistency for font sizes
 }
 
 /// Utility for creating [FontWeight] values with predefined weights.
@@ -1090,16 +942,16 @@ final class RectUtility<T extends StyleAttribute<Object?>>
   T fromPoints(Offset a, Offset b) => call(Rect.fromPoints(a, b));
 }
 
-/// Utility for creating [Paint] values for custom drawing operations.
-final class PaintUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, Paint> {
-  const PaintUtility(super.builder);
+/// Extension for creating [Paint] values for custom drawing operations.
+extension PaintPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, Paint> {
+  // No predefined paint values - this extension provides type consistency
 }
 
-/// Utility for creating [Locale] values for internationalization.
-final class LocaleUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, Locale> {
-  const LocaleUtility(super.builder);
+/// Extension for creating [Locale] values for internationalization.
+extension LocalePropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, Locale> {
+  // No predefined locale values - this extension provides type consistency
 }
 
 /// Utility for creating [ImageProvider] values with different image sources.
@@ -1203,10 +1055,10 @@ final class TextScalerUtility<T extends StyleAttribute<Object?>>
   T linear(double textScaleFactor) => call(TextScaler.linear(textScaleFactor));
 }
 
-/// Utility for creating [TableColumnWidth] values for table column sizing.
-final class TableColumnWidthUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, TableColumnWidth> {
-  const TableColumnWidthUtility(super.builder);
+/// Extension for creating [TableColumnWidth] values for table column sizing.
+extension TableColumnWidthPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, TableColumnWidth> {
+  // No predefined table column width values - this extension provides type consistency
 }
 
 /// Utility for creating [TableBorder] values with predefined border styles.
@@ -1257,20 +1109,15 @@ final class StrokeAlignUtility<T extends StyleAttribute<Object?>>
   T outside() => call(1);
 }
 
-/// Utility for creating string values.
-final class StringUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, String> {
-  const StringUtility(super.builder);
+/// Extension for creating string values.
+extension StringPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, String> {
+  // No predefined string values - this extension provides type consistency
 }
 
-/// A utility class for creating [StyleAttribute] instances from [double] values.
-///
-/// This class extends [PropUtility] and provides methods to create [StyleAttribute] instances
-/// from predefined [double] values or custom [double] values.
-final class DoubleUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, double> {
-  const DoubleUtility(super.builder);
-
+/// Extension for creating [double] values with predefined options.
+extension DoublePropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, double> {
   /// Creates an [StyleAttribute] instance with a value of 0.
   T zero() => call(0);
 
@@ -1278,26 +1125,16 @@ final class DoubleUtility<T extends StyleAttribute<Object?>>
   T infinity() => call(double.infinity);
 }
 
-/// A utility class for creating [StyleAttribute] instances from [int] values.
-///
-/// This class extends [PropUtility] and provides methods to create [StyleAttribute] instances
-/// from predefined [int] values or custom [int] values.
-final class IntUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, int> {
-  const IntUtility(super.builder);
-
+/// Extension for creating [int] values with predefined options.
+extension IntPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, int> {
   /// Creates an [StyleAttribute] instance with a value of 0.
   T zero() => call(0);
 }
 
-/// A utility class for creating [StyleAttribute] instances from [bool] values.
-///
-/// This class extends [PropUtility] and provides methods to create [StyleAttribute] instances
-/// from predefined [bool] values or custom [bool] values.
-final class BoolUtility<T extends StyleAttribute<Object?>>
-    extends PropUtility<T, bool> {
-  const BoolUtility(super.builder);
-
+/// Extension for creating [bool] values with predefined options.
+extension BoolPropUtilityExt<T extends StyleAttribute<Object?>>
+    on PropUtility<T, bool> {
   /// Creates an [StyleAttribute] instance with a value of `true`.
   T on() => call(true);
 

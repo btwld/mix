@@ -4,7 +4,6 @@ import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 import 'constraints_mix.dart';
-import 'scalar_util.dart';
 
 /// Utility class for configuring [BoxConstraints] properties.
 ///
@@ -13,30 +12,30 @@ import 'scalar_util.dart';
 final class BoxConstraintsUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, BoxConstraints> {
   /// Utility for defining [BoxConstraintsMix.minWidth]
-  late final minWidth = DoubleUtility<T>(
+  late final minWidth = PropUtility<T, double>(
     (prop) => call(BoxConstraintsMix(minWidth: prop)),
   );
 
   /// Utility for defining [BoxConstraintsMix.maxWidth]
-  late final maxWidth = DoubleUtility<T>(
+  late final maxWidth = PropUtility<T, double>(
     (prop) => call(BoxConstraintsMix(maxWidth: prop)),
   );
 
   /// Utility for defining [BoxConstraintsMix.minHeight]
-  late final minHeight = DoubleUtility<T>(
+  late final minHeight = PropUtility<T, double>(
     (prop) => call(BoxConstraintsMix(minHeight: prop)),
   );
 
   /// Utility for defining [BoxConstraintsMix.maxHeight]
-  late final maxHeight = DoubleUtility<T>(
+  late final maxHeight = PropUtility<T, double>(
     (prop) => call(BoxConstraintsMix(maxHeight: prop)),
   );
 
-  late final height = DoubleUtility<T>(
+  late final height = PropUtility<T, double>(
     (prop) => call(BoxConstraintsMix(minHeight: prop, maxHeight: prop)),
   );
 
-  late final width = DoubleUtility<T>(
+  late final width = PropUtility<T, double>(
     (prop) => call(BoxConstraintsMix(minWidth: prop, maxWidth: prop)),
   );
 

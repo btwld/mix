@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../attributes/scalar_util.dart';
 import '../../core/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
+import '../../core/utility.dart';
 import 'stack_spec.dart';
 
 /// Represents the attributes of a [StackSpec].
@@ -21,23 +21,24 @@ class StackSpecAttribute extends StyleAttribute<StackSpec> with Diagnosticable {
   final Prop<TextDirection>? $textDirection;
   final Prop<Clip>? $clipBehavior;
 
+
   /// Utility for defining [StackSpecAttribute.alignment]
-  late final alignment = AlignmentGeometryUtility(
+  late final alignment = PropUtility<StackSpecAttribute, AlignmentGeometry>(
     (prop) => merge(StackSpecAttribute(alignment: prop)),
   );
 
   /// Utility for defining [StackSpecAttribute.fit]
-  late final fit = StackFitUtility(
+  late final fit = PropUtility<StackSpecAttribute, StackFit>(
     (prop) => merge(StackSpecAttribute(fit: prop)),
   );
 
   /// Utility for defining [StackSpecAttribute.textDirection]
-  late final textDirection = TextDirectionUtility(
+  late final textDirection = PropUtility<StackSpecAttribute, TextDirection>(
     (prop) => merge(StackSpecAttribute(textDirection: prop)),
   );
 
   /// Utility for defining [StackSpecAttribute.clipBehavior]
-  late final clipBehavior = ClipUtility(
+  late final clipBehavior = PropUtility<StackSpecAttribute, Clip>(
     (prop) => merge(StackSpecAttribute(clipBehavior: prop)),
   );
 

@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../attributes/scalar_util.dart';
 import '../../attributes/strut_style_mix.dart';
 import '../../attributes/strut_style_util.dart';
 import '../../attributes/text_height_behavior_mix.dart';
@@ -13,6 +12,7 @@ import '../../core/directive.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
+import '../../core/utility.dart';
 import 'text_directives_util.dart';
 import 'text_spec.dart';
 
@@ -37,7 +37,7 @@ class TextSpecAttribute extends StyleAttribute<TextSpec> with Diagnosticable {
   final List<Prop<MixDirective<String>>>? $directives;
 
   /// Utility for defining [TextSpecAttribute.overflow]
-  late final overflow = TextOverflowUtility(
+  late final overflow = PropUtility<TextSpecAttribute, TextOverflow>(
     (prop) => merge(TextSpecAttribute(overflow: prop)),
   );
 
@@ -47,17 +47,17 @@ class TextSpecAttribute extends StyleAttribute<TextSpec> with Diagnosticable {
   );
 
   /// Utility for defining [TextSpecAttribute.textAlign]
-  late final textAlign = TextAlignUtility(
+  late final textAlign = PropUtility<TextSpecAttribute, TextAlign>(
     (prop) => merge(TextSpecAttribute(textAlign: prop)),
   );
 
   /// Utility for defining [TextSpecAttribute.textScaler]
-  late final textScaler = TextScalerUtility(
+  late final textScaler = PropUtility<TextSpecAttribute, TextScaler>(
     (prop) => merge(TextSpecAttribute(textScaler: prop)),
   );
 
   /// Utility for defining [TextSpecAttribute.maxLines]
-  late final maxLines = IntUtility(
+  late final maxLines = PropUtility<TextSpecAttribute, int>(
     (prop) => merge(TextSpecAttribute(maxLines: prop)),
   );
 
@@ -67,7 +67,7 @@ class TextSpecAttribute extends StyleAttribute<TextSpec> with Diagnosticable {
   );
 
   /// Utility for defining [TextSpecAttribute.textWidthBasis]
-  late final textWidthBasis = TextWidthBasisUtility(
+  late final textWidthBasis = PropUtility<TextSpecAttribute, TextWidthBasis>(
     (prop) => merge(TextSpecAttribute(textWidthBasis: prop)),
   );
 
@@ -77,12 +77,12 @@ class TextSpecAttribute extends StyleAttribute<TextSpec> with Diagnosticable {
   );
 
   /// Utility for defining [TextSpecAttribute.textDirection]
-  late final textDirection = TextDirectionUtility(
+  late final textDirection = PropUtility<TextSpecAttribute, TextDirection>(
     (prop) => merge(TextSpecAttribute(textDirection: prop)),
   );
 
   /// Utility for defining [TextSpecAttribute.softWrap]
-  late final softWrap = BoolUtility(
+  late final softWrap = PropUtility<TextSpecAttribute, bool>(
     (prop) => merge(TextSpecAttribute(softWrap: prop)),
   );
 

@@ -2,13 +2,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../attributes/color_util.dart';
-import '../../attributes/scalar_util.dart';
 import '../../attributes/shadow_mix.dart';
 import '../../attributes/shadow_util.dart';
 import '../../core/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
+import '../../core/utility.dart';
 import 'icon_spec.dart';
 
 class IconSpecAttribute extends StyleAttribute<IconSpec> with Diagnosticable {
@@ -25,28 +25,28 @@ class IconSpecAttribute extends StyleAttribute<IconSpec> with Diagnosticable {
   late final color = ColorUtility(
     (prop) => merge(IconSpecAttribute(color: prop)),
   );
-  late final size = DoubleUtility(
+  late final size = PropUtility<IconSpecAttribute, double>(
     (prop) => merge(IconSpecAttribute(size: prop)),
   );
-  late final weight = DoubleUtility(
+  late final weight = PropUtility<IconSpecAttribute, double>(
     (prop) => merge(IconSpecAttribute(weight: prop)),
   );
-  late final grade = DoubleUtility(
+  late final grade = PropUtility<IconSpecAttribute, double>(
     (prop) => merge(IconSpecAttribute(grade: prop)),
   );
-  late final opticalSize = DoubleUtility(
+  late final opticalSize = PropUtility<IconSpecAttribute, double>(
     (prop) => merge(IconSpecAttribute(opticalSize: prop)),
   );
   late final shadow = ShadowUtility(
     (v) => merge(IconSpecAttribute(shadows: [v])),
   );
-  late final textDirection = TextDirectionUtility(
-    (v) => merge(IconSpecAttribute(textDirection: v)),
+  late final textDirection = PropUtility<IconSpecAttribute, TextDirection>(
+    (prop) => merge(IconSpecAttribute(textDirection: prop)),
   );
-  late final applyTextScaling = BoolUtility(
+  late final applyTextScaling = PropUtility<IconSpecAttribute, bool>(
     (prop) => merge(IconSpecAttribute(applyTextScaling: prop)),
   );
-  late final fill = DoubleUtility(
+  late final fill = PropUtility<IconSpecAttribute, double>(
     (prop) => merge(IconSpecAttribute(fill: prop)),
   );
 

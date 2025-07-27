@@ -14,8 +14,8 @@ import 'shadow_mix.dart';
 class ShadowUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, Shadow> {
   /// Utility for defining [ShadowMix.blurRadius].
-  late final blurRadius = DoubleUtility<T>(
-    (prop) => call(ShadowMix(blurRadius: prop)),
+  late final blurRadius = PropUtility<T, double>(
+    (prop) => call(ShadowMix(blurRadius: prop),)
   );
 
   /// Utility for defining [ShadowMix.color].
@@ -45,13 +45,13 @@ class BoxShadowUtility<T extends StyleAttribute<Object?>>
   );
 
   /// Utility for defining [BoxShadowMix.blurRadius].
-  late final blurRadius = DoubleUtility<T>(
-    (prop) => call(BoxShadowMix(blurRadius: prop)),
+  late final blurRadius = PropUtility<T, double>(
+    (prop) => call(BoxShadowMix(blurRadius: prop),)
   );
 
   /// Utility for defining [BoxShadowMix.spreadRadius].
-  late final spreadRadius = DoubleUtility<T>(
-    (prop) => call(BoxShadowMix(spreadRadius: prop)),
+  late final spreadRadius = PropUtility<T, double>(
+    (prop) => call(BoxShadowMix(spreadRadius: prop),)
   );
 
   BoxShadowUtility(super.builder) : super(convertToMix: BoxShadowMix.value);

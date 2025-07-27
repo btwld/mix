@@ -16,6 +16,7 @@ import '../../core/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
+import '../../core/utility.dart';
 import '../../core/variant.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../variants/variant_util.dart';
@@ -68,15 +69,15 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec> with Diagnosticable {
     (prop) => merge(BoxSpecAttribute(foregroundDecoration: prop)),
   );
 
-  late final transform = Matrix4Utility(
+  late final transform = PropUtility<BoxSpecAttribute, Matrix4>(
     (prop) => merge(BoxSpecAttribute(transform: prop)),
   );
 
-  late final transformAlignment = AlignmentGeometryUtility(
+  late final transformAlignment = PropUtility<BoxSpecAttribute, AlignmentGeometry>(
     (prop) => merge(BoxSpecAttribute(transformAlignment: prop)),
   );
 
-  late final clipBehavior = ClipUtility(
+  late final clipBehavior = PropUtility<BoxSpecAttribute, Clip>(
     (prop) => merge(BoxSpecAttribute(clipBehavior: prop)),
   );
 
@@ -305,6 +306,9 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec> with Diagnosticable {
     return spec != null ? BoxSpecAttribute.value(spec) : null;
   }
 
+  /// The list of properties that constitute the state of this [BoxSpecAttribute].
+  ///
+
   BoxSpecAttribute modifier(ModifierAttribute value) {
     return merge(BoxSpecAttribute.only(modifiers: [value]));
   }
@@ -434,8 +438,6 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec> with Diagnosticable {
     );
   }
 
-  /// The list of properties that constitute the state of this [BoxSpecAttribute].
-  ///
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [BoxSpecAttribute] instances for equality.
   @override

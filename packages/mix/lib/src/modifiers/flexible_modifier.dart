@@ -2,7 +2,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../attributes/scalar_util.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
@@ -136,10 +135,10 @@ class FlexibleModifierAttribute extends ModifierAttribute<FlexibleModifier>
 
 final class FlexibleModifierUtility<T extends StyleAttribute<Object?>>
     extends MixUtility<T, FlexibleModifierAttribute> {
-  late final flex = IntUtility(
+  late final flex = PropUtility<T, int>(
     (prop) => builder(FlexibleModifierAttribute(flex: prop)),
   );
-  late final fit = FlexFitUtility(
+  late final fit = PropUtility<T, FlexFit>(
     (prop) => builder(FlexibleModifierAttribute(fit: prop)),
   );
 

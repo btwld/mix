@@ -5,9 +5,11 @@ import 'package:mix/mix.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  group('Scalar Utilities', () {
-    group('BorderStyleUtility', () {
-      const utility = BorderStyleUtility(UtilityTestAttribute.new);
+  group('Scalar Utilities Extensions', () {
+    group('BorderStylePropUtilityExt', () {
+      final utility = PropUtility<UtilityTestAttribute, BorderStyle>(
+        UtilityTestAttribute.new,
+      );
 
       test('none() creates BorderStyle.none', () {
         final attr = utility.none();
@@ -25,8 +27,10 @@ void main() {
       });
     });
 
-    group('AxisUtility', () {
-      const utility = AxisUtility(UtilityTestAttribute.new);
+    group('AxisPropUtilityExt', () {
+      final utility = PropUtility<UtilityTestAttribute, Axis>(
+        UtilityTestAttribute.new,
+      );
 
       test('horizontal() creates Axis.horizontal', () {
         final attr = utility.horizontal();
@@ -39,8 +43,10 @@ void main() {
       });
     });
 
-    group('StackFitUtility', () {
-      const utility = StackFitUtility(UtilityTestAttribute.new);
+    group('StackFitPropUtilityExt', () {
+      final utility = PropUtility<UtilityTestAttribute, StackFit>(
+        UtilityTestAttribute.new,
+      );
 
       test('loose() creates StackFit.loose', () {
         final attr = utility.loose();
@@ -58,8 +64,10 @@ void main() {
       });
     });
 
-    group('TextDirectionUtility', () {
-      const utility = TextDirectionUtility(UtilityTestAttribute.new);
+    group('TextDirectionPropUtilityExt', () {
+      final utility = PropUtility<UtilityTestAttribute, TextDirection>(
+        UtilityTestAttribute.new,
+      );
 
       test('rtl() creates TextDirection.rtl', () {
         final attr = utility.rtl();
@@ -72,8 +80,11 @@ void main() {
       });
     });
 
-    group('TextLeadingDistributionUtility', () {
-      const utility = TextLeadingDistributionUtility(UtilityTestAttribute.new);
+    group('TextLeadingDistributionPropUtilityExt', () {
+      final utility =
+          PropUtility<UtilityTestAttribute, TextLeadingDistribution>(
+            UtilityTestAttribute.new,
+          );
 
       test('proportional() creates TextLeadingDistribution.proportional', () {
         final attr = utility.proportional();
@@ -87,7 +98,9 @@ void main() {
     });
 
     group('TileModeUtility', () {
-      const utility = TileModeUtility(UtilityTestAttribute.new);
+      const utility = PropUtility<UtilityTestAttribute, TileMode>(
+        UtilityTestAttribute.new,
+      );
 
       test('clamp() creates TileMode.clamp', () {
         final attr = utility.clamp();
@@ -111,7 +124,9 @@ void main() {
     });
 
     group('BoxFitUtility', () {
-      const utility = BoxFitUtility(UtilityTestAttribute.new);
+      const utility = PropUtility<UtilityTestAttribute, BoxFit>(
+        UtilityTestAttribute.new,
+      );
 
       test('fill() creates BoxFit.fill', () {
         final attr = utility.fill();
@@ -150,7 +165,9 @@ void main() {
     });
 
     group('BoxShapeUtility', () {
-      const utility = BoxShapeUtility(UtilityTestAttribute.new);
+      const utility = PropUtility<UtilityTestAttribute, BoxShape>(
+        UtilityTestAttribute.new,
+      );
 
       test('rectangle() creates BoxShape.rectangle', () {
         final attr = utility.rectangle();
@@ -164,7 +181,9 @@ void main() {
     });
 
     group('FontStyleUtility', () {
-      const utility = FontStyleUtility(UtilityTestAttribute.new);
+      const utility = PropUtility<UtilityTestAttribute, FontStyle>(
+        UtilityTestAttribute.new,
+      );
 
       test('normal() creates FontStyle.normal', () {
         final attr = utility.normal();
@@ -237,7 +256,9 @@ void main() {
     });
 
     group('TextBaselineUtility', () {
-      const utility = TextBaselineUtility(UtilityTestAttribute.new);
+      const utility = PropUtility<UtilityTestAttribute, TextBaseline>(
+        UtilityTestAttribute.new,
+      );
 
       test('alphabetic() creates TextBaseline.alphabetic', () {
         final attr = utility.alphabetic();
@@ -251,7 +272,9 @@ void main() {
     });
 
     group('TextWidthBasisUtility', () {
-      const utility = TextWidthBasisUtility(UtilityTestAttribute.new);
+      const utility = PropUtility<UtilityTestAttribute, TextWidthBasis>(
+        UtilityTestAttribute.new,
+      );
 
       test('parent() creates TextWidthBasis.parent', () {
         final attr = utility.parent();

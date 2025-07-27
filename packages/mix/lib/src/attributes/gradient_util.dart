@@ -23,8 +23,8 @@ final class LinearGradientUtility<T extends StyleAttribute<Object?>>
   );
 
   /// Utility for defining [LinearGradientMix.tileMode]
-  late final tileMode = TileModeUtility<T>(
-    (v) => call(LinearGradientMix(tileMode: v)),
+  late final tileMode = PropUtility<T, TileMode>(
+    (prop) => call(LinearGradientMix(tileMode: prop)),
   );
 
   /// Utility for defining [LinearGradientMix.transform]
@@ -61,13 +61,13 @@ final class RadialGradientUtility<T extends StyleAttribute<Object?>>
   );
 
   /// Utility for defining [RadialGradientMix.radius]
-  late final radius = DoubleUtility<T>(
+  late final radius = PropUtility<T, double>(
     (prop) => call(RadialGradientMix(radius: prop)),
   );
 
   /// Utility for defining [RadialGradientMix.tileMode]
-  late final tileMode = TileModeUtility<T>(
-    (v) => call(RadialGradientMix(tileMode: v)),
+  late final tileMode = PropUtility<T, TileMode>(
+    (prop) => call(RadialGradientMix(tileMode: prop)),
   );
 
   /// Utility for defining [RadialGradientMix.focal]
@@ -76,7 +76,7 @@ final class RadialGradientUtility<T extends StyleAttribute<Object?>>
   );
 
   /// Utility for defining [RadialGradientMix.focalRadius]
-  late final focalRadius = DoubleUtility<T>(
+  late final focalRadius = PropUtility<T, double>(
     (prop) => call(RadialGradientMix(focalRadius: prop)),
   );
 
@@ -114,18 +114,18 @@ final class SweepGradientUtility<T extends StyleAttribute<Object?>>
   );
 
   /// Utility for defining [SweepGradientMix.startAngle]
-  late final startAngle = DoubleUtility<T>(
+  late final startAngle = PropUtility<T, double>(
     (prop) => call(SweepGradientMix(startAngle: prop)),
   );
 
   /// Utility for defining [SweepGradientMix.endAngle]
-  late final endAngle = DoubleUtility<T>(
+  late final endAngle = PropUtility<T, double>(
     (prop) => call(SweepGradientMix(endAngle: prop)),
   );
 
   /// Utility for defining [SweepGradientMix.tileMode]
-  late final tileMode = TileModeUtility<T>(
-    (v) => call(SweepGradientMix(tileMode: v)),
+  late final tileMode = PropUtility<T, TileMode>(
+    (prop) => call(SweepGradientMix(tileMode: prop)),
   );
 
   /// Utility for defining [SweepGradientMix.transform]

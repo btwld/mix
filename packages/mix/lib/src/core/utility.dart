@@ -46,7 +46,7 @@ abstract interface class PropBaseUtility<
 ///
 /// Used for simple types like Color, double, FontWeight, etc.
 @immutable
-abstract class PropUtility<U extends StyleAttribute<Object?>, Value>
+class PropUtility<U extends StyleAttribute<Object?>, Value>
     extends PropBaseUtility<U, Value> {
   final U Function(Prop<Value>) builder;
   const PropUtility(this.builder);
@@ -86,6 +86,7 @@ abstract class MixPropUtility<U extends StyleAttribute<Object?>, Value>
 
   /// Creates a MixProp from a raw value (converts to Mix)
   U as(Value value) => call(convertToMix(value));
+
 
   /// Token support - expects `MixToken<Value>` (raw type)
   /// Uses MixProp.token with conversion function

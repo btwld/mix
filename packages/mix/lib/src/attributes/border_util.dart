@@ -148,12 +148,12 @@ class BorderSideUtility<T extends StyleAttribute<Object?>>
   );
 
   /// Utility for defining [BorderSideMix.style]
-  late final style = BorderStyleUtility<T>(
+  late final style = PropUtility<T, BorderStyle>(
     (prop) => call(BorderSideMix(style: prop)),
   );
 
   /// Utility for defining [BorderSideMix.width]
-  late final width = DoubleUtility<T>(
+  late final width = PropUtility<T, double>(
     (prop) => call(BorderSideMix(width: prop)),
   );
 

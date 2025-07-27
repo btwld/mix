@@ -2,11 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../attributes/color_util.dart';
-import '../../attributes/scalar_util.dart';
 import '../../core/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
+import '../../core/utility.dart';
 import 'image_spec.dart';
 
 class ImageSpecAttribute extends StyleAttribute<ImageSpec> with Diagnosticable {
@@ -21,12 +21,12 @@ class ImageSpecAttribute extends StyleAttribute<ImageSpec> with Diagnosticable {
   final Prop<BlendMode>? $colorBlendMode;
 
   /// Utility for defining [ImageSpecAttribute.width]
-  late final width = DoubleUtility(
+  late final width = PropUtility<ImageSpecAttribute, double>(
     (prop) => merge(ImageSpecAttribute(width: prop)),
   );
 
   /// Utility for defining [ImageSpecAttribute.height]
-  late final height = DoubleUtility(
+  late final height = PropUtility<ImageSpecAttribute, double>(
     (prop) => merge(ImageSpecAttribute(height: prop)),
   );
 
@@ -36,32 +36,32 @@ class ImageSpecAttribute extends StyleAttribute<ImageSpec> with Diagnosticable {
   );
 
   /// Utility for defining [ImageSpecAttribute.repeat]
-  late final repeat = ImageRepeatUtility(
+  late final repeat = PropUtility<ImageSpecAttribute, ImageRepeat>(
     (prop) => merge(ImageSpecAttribute(repeat: prop)),
   );
 
   /// Utility for defining [ImageSpecAttribute.fit]
-  late final fit = BoxFitUtility(
+  late final fit = PropUtility<ImageSpecAttribute, BoxFit>(
     (prop) => merge(ImageSpecAttribute(fit: prop)),
   );
 
   /// Utility for defining [ImageSpecAttribute.alignment]
-  late final alignment = AlignmentGeometryUtility(
+  late final alignment = PropUtility<ImageSpecAttribute, AlignmentGeometry>(
     (prop) => merge(ImageSpecAttribute(alignment: prop)),
   );
 
   /// Utility for defining [ImageSpecAttribute.centerSlice]
-  late final centerSlice = RectUtility(
+  late final centerSlice = PropUtility<ImageSpecAttribute, Rect>(
     (prop) => merge(ImageSpecAttribute(centerSlice: prop)),
   );
 
   /// Utility for defining [ImageSpecAttribute.filterQuality]
-  late final filterQuality = FilterQualityUtility(
+  late final filterQuality = PropUtility<ImageSpecAttribute, FilterQuality>(
     (prop) => merge(ImageSpecAttribute(filterQuality: prop)),
   );
 
   /// Utility for defining [ImageSpecAttribute.colorBlendMode]
-  late final colorBlendMode = BlendModeUtility(
+  late final colorBlendMode = PropUtility<ImageSpecAttribute, BlendMode>(
     (prop) => merge(ImageSpecAttribute(colorBlendMode: prop)),
   );
 

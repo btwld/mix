@@ -12,11 +12,11 @@ final class StrutStyleUtility<T extends StyleAttribute<Object?>>
     (prop) => call(StrutStyleMix(fontWeight: prop)),
   );
 
-  late final fontStyle = FontStyleUtility<T>(
-    (v) => call(StrutStyleMix(fontStyle: v)),
+  late final fontStyle = PropUtility<T, FontStyle>(
+    (prop) => call(StrutStyleMix(fontStyle: prop)),
   );
 
-  late final fontSize = FontSizeUtility<T>(
+  late final fontSize = PropUtility<T, double>(
     (prop) => call(StrutStyleMix(fontSize: prop)),
   );
 

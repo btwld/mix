@@ -18,7 +18,7 @@ final class DecorationImageUtility<T extends StyleAttribute<Object?>>
   );
 
   /// Utility for defining [DecorationImageMix.fit]
-  late final fit = BoxFitUtility<T>(
+  late final fit = PropUtility<T, BoxFit>(
     (prop) => call(DecorationImageMix(fit: prop)),
   );
 
@@ -33,22 +33,22 @@ final class DecorationImageUtility<T extends StyleAttribute<Object?>>
   );
 
   /// Utility for defining [DecorationImageMix.repeat]
-  late final repeat = ImageRepeatUtility<T>(
+  late final repeat = PropUtility<T, ImageRepeat>(
     (prop) => call(DecorationImageMix(repeat: prop)),
   );
 
   /// Utility for defining [DecorationImageMix.filterQuality]
-  late final filterQuality = FilterQualityUtility<T>(
+  late final filterQuality = PropUtility<T, FilterQuality>(
     (prop) => call(DecorationImageMix(filterQuality: prop)),
   );
 
   /// Utility for defining [DecorationImageMix.invertColors]
-  late final invertColors = BoolUtility<T>(
+  late final invertColors = PropUtility<T, bool>(
     (prop) => call(DecorationImageMix(invertColors: prop)),
   );
 
   /// Utility for defining [DecorationImageMix.isAntiAlias]
-  late final isAntiAlias = BoolUtility<T>(
+  late final isAntiAlias = PropUtility<T, bool>(
     (prop) => call(DecorationImageMix(isAntiAlias: prop)),
   );
 

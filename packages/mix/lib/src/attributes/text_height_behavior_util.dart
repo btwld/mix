@@ -3,20 +3,19 @@ import 'package:flutter/widgets.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
-import 'scalar_util.dart';
 import 'text_height_behavior_mix.dart';
 
 final class TextHeightBehaviorUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, TextHeightBehavior> {
-  late final heightToFirstAscent = BoolUtility<T>(
+  late final heightToFirstAscent = PropUtility<T, bool>(
     (prop) => call(TextHeightBehaviorMix(applyHeightToFirstAscent: prop)),
   );
-  late final heightToLastDescent = BoolUtility<T>(
+  late final heightToLastDescent = PropUtility<T, bool>(
     (prop) => call(TextHeightBehaviorMix(applyHeightToLastDescent: prop)),
   );
 
-  late final leadingDistribution = TextLeadingDistributionUtility<T>(
-    (v) => call(TextHeightBehaviorMix(leadingDistribution: v)),
+  late final leadingDistribution = PropUtility<T, TextLeadingDistribution>(
+    (prop) => call(TextHeightBehaviorMix(leadingDistribution: prop)),
   );
 
   TextHeightBehaviorUtility(super.builder)

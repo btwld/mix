@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 
 import '../attributes/edge_insets_geometry_mix.dart';
 import '../attributes/edge_insets_geometry_util.dart';
-import '../attributes/scalar_util.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
@@ -79,7 +78,7 @@ final class ScrollViewModifier extends Modifier<ScrollViewModifier> {
 final class ScrollViewModifierUtility<T extends StyleAttribute<Object?>>
     extends MixUtility<T, ScrollViewModifierAttribute> {
   /// Make the scroll view reverse or not.
-  late final reverse = BoolUtility((prop) => call(reverse: prop));
+  late final reverse = PropUtility<T, bool>((prop) => call(reverse: prop));
 
   /// Set the padding of the scroll view.
   late final padding = EdgeInsetsGeometryUtility(
@@ -87,7 +86,7 @@ final class ScrollViewModifierUtility<T extends StyleAttribute<Object?>>
   );
 
   /// Set the clip behavior of the scroll view.
-  late final clipBehavior = ClipUtility((clip) => call(clipBehavior: clip));
+  late final clipBehavior = PropUtility<T, Clip>((clip) => call(clipBehavior: clip));
 
   ScrollViewModifierUtility(super.builder);
 
