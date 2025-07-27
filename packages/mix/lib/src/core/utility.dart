@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 
 import '../theme/tokens/mix_token.dart';
-import 'animation_config.dart';
+import '../animation/animation_config.dart';
 import 'directive.dart';
 import 'mix_element.dart';
 import 'prop.dart';

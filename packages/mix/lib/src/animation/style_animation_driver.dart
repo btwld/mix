@@ -1,9 +1,9 @@
 import 'package:flutter/physics.dart';
 import 'package:flutter/widgets.dart';
 
-import '../animation_config.dart';
-import '../spec.dart';
-import '../style.dart';
+import 'animation_config.dart';
+import '../core/spec.dart';
+import '../core/style.dart';
 
 /// Base class for animation drivers that handle style interpolation.
 ///

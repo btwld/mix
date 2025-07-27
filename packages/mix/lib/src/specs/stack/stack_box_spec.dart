@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../core/animation_config.dart';
+import '../../animation/animation_config.dart';
 import '../../core/spec.dart';
 import '../../core/style.dart';
 import '../box/box_attribute.dart';

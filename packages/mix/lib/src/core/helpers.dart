@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' as r;
 import 'package:flutter/widgets.dart' as w;
 
-import '../internal/deep_collection_equality.dart';
+import 'internal/deep_collection_equality.dart';
 import 'mix_element.dart';
 
 /// Utility class providing helper functions for value resolution, merging, and interpolation.

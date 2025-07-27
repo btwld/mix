@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
-import '../animation_config.dart';
-import '../style.dart';
-import '../utility.dart';
+import 'animation_config.dart';
+import '../core/style.dart';
+import '../core/utility.dart';
 
 class AnimationConfigUtility<T extends StyleAttribute<Object?>>
     extends MixUtility<T, AnimationConfig> {

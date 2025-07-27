@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
-import '../animation_config.dart';
-import '../spec.dart';
-import '../style.dart';
+import 'animation_config.dart';
+import '../core/spec.dart';
+import '../core/style.dart';
 import 'style_animation_driver.dart';
 
 /// A widget that handles animation of styles using an AnimationDriver.

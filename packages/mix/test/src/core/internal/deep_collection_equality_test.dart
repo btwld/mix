@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/src/internal/deep_collection_equality.dart';
+import 'package:mix/src/core/internal/deep_collection_equality.dart';
 
 void main() {
   group('DeepEqualityChecker hash code', () {

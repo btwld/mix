@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-import 'package:mix/src/internal/internal_extensions.dart';
+import 'package:mix/src/core/internal/internal_extensions.dart';
 
 void main() {
   group('StringExt', () {

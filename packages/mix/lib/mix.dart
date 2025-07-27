@@ -45,12 +45,13 @@ export 'src/attributes/text_height_behavior_mix.dart';
 export 'src/attributes/text_height_behavior_util.dart';
 export 'src/attributes/text_style_mix.dart';
 export 'src/attributes/text_style_util.dart';
-export 'src/core/animation/curves.dart';
-export 'src/core/animation/style_animation_builder.dart';
-export 'src/core/animation/style_animation_driver.dart';
+export 'src/animation/curves.dart';
+export 'src/animation/style_animation_builder.dart';
+export 'src/animation/style_animation_driver.dart';
+export 'src/animation/animation_util.dart';
 
 /// ATTRIBUTES
-export 'src/core/animation_config.dart';
+export 'src/animation/animation_config.dart';
 
 /// CORE
 export 'src/core/breakpoint.dart';
@@ -67,7 +68,7 @@ export 'src/core/style_widget.dart';
 export 'src/core/utility.dart';
 export 'src/core/variant.dart';
 export 'src/core/widget_state/widget_state_provider.dart';
-export 'src/helpers/extensions.dart';
+export 'src/core/extensions/extensions.dart';
 
 /// MODIFIERS
 export 'src/modifiers/align_modifier.dart';

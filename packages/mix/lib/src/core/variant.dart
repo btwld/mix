@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../internal/deep_collection_equality.dart';
+import 'internal/deep_collection_equality.dart';
 import 'style.dart';
 import 'widget_state/widget_state_provider.dart';
 

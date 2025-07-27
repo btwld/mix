@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../internal/internal_extensions.dart';
+import '../../core/internal/internal_extensions.dart';
 
 /// A design token that can be resolved to a value within a Mix theme.
 ///

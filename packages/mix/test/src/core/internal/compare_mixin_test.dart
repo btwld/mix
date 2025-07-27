@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/src/internal/compare_mixin.dart';
+import 'package:mix/src/core/internal/compare_mixin.dart';
 
 void main() {
   group('EquatableMixin', () {

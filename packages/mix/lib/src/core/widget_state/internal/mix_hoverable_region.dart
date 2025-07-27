@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import '../cursor_position.dart';
+import '../../../widget_state/cursor_position.dart';
 import '../widget_state_provider.dart';
 
 /// A widget that provides hover state and automatic mouse position tracking.

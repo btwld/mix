@@ -5,7 +5,7 @@
 /// Mix styling and Material Design systems.
 library;
 
-import '../../internal/internal_extensions.dart';
+import '../../core/internal/internal_extensions.dart';
 import '../mix/mix_theme.dart';
 import 'material_tokens.dart';
 

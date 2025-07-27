@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 
-import '../internal/compare_mixin.dart';
-import '../internal/constants.dart';
-import 'animation_config.dart';
+import 'internal/compare_mixin.dart';
+import 'internal/constants.dart';
+import '../animation/animation_config.dart';
 import 'mix_element.dart';
 import 'modifier.dart';
 import 'spec.dart';

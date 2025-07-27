@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/src/internal/helper_util.dart';
+import 'package:mix/src/core/internal/helper_util.dart';
 
 void main() {
   group('SpreadFunctionParams', () {

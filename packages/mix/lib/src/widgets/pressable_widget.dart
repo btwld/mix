@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 
 import '../core/widget_state/internal/mix_hoverable_region.dart';
 import '../core/widget_state/widget_state_provider.dart';
-import '../internal/constants.dart';
+import '../core/internal/constants.dart';
 import '../specs/box/box_attribute.dart';
 import '../specs/box/box_widget.dart';
 

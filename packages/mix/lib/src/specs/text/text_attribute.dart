@@ -7,7 +7,7 @@ import '../../attributes/text_height_behavior_mix.dart';
 import '../../attributes/text_height_behavior_util.dart';
 import '../../attributes/text_style_mix.dart';
 import '../../attributes/text_style_util.dart';
-import '../../core/animation_config.dart';
+import '../../animation/animation_config.dart';
 import '../../core/directive.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';

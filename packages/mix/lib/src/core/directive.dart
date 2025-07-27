@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../internal/internal_extensions.dart';
+import 'internal/internal_extensions.dart';
 
 /// Base class for directives that apply transformations to values.
 ///
