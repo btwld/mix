@@ -1,19 +1,19 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class WidgetStateScope extends InheritedModel<WidgetState> {
-  const WidgetStateScope({
+class WidgetStateProvider extends InheritedModel<WidgetState> {
+  const WidgetStateProvider({
     super.key,
     required this.states,
     required super.child,
   });
 
-  static WidgetStateScope? maybeOf(BuildContext context) {
+  static WidgetStateProvider? maybeOf(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType();
   }
 
   static bool hasState(BuildContext context, WidgetState state) {
-    final provider = InheritedModel.inheritFrom<WidgetStateScope>(
+    final provider = InheritedModel.inheritFrom<WidgetStateProvider>(
       context,
       aspect: state,
     );
@@ -24,13 +24,13 @@ class WidgetStateScope extends InheritedModel<WidgetState> {
   final Set<WidgetState> states;
 
   @override
-  bool updateShouldNotify(WidgetStateScope oldWidget) {
+  bool updateShouldNotify(WidgetStateProvider oldWidget) {
     return !setEquals(states, oldWidget.states);
   }
 
   @override
   bool updateShouldNotifyDependent(
-    WidgetStateScope oldWidget,
+    WidgetStateProvider oldWidget,
     Set<WidgetState> dependencies,
   ) {
     // Only notify if a dependent state actually changed
@@ -43,7 +43,6 @@ class WidgetStateScope extends InheritedModel<WidgetState> {
     return false;
   }
 }
-
 
 extension WidgetStateControllerExtension on WidgetStatesController {
   set disabled(bool value) => update(WidgetState.disabled, value);

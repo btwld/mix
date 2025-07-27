@@ -70,7 +70,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
         widget.controller == null || widgetStates.isNotEmpty;
 
     final alreadyHasWidgetStateScope =
-        WidgetStateScope.maybeOf(context) != null;
+        WidgetStateProvider.maybeOf(context) != null;
 
     Widget current = ResolvedStyleBuilder(
       builder: widget.builder,

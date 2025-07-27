@@ -149,11 +149,15 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: WidgetStateScope(states: controller.value, child: Container()),
+          home: WidgetStateProvider(
+            states: controller.value,
+            child: Container(),
+          ),
         ),
       );
-      final scope = tester.element(find.byType(Container))
-          .dependOnInheritedWidgetOfExactType<WidgetStateScope>();
+      final scope = tester
+          .element(find.byType(Container))
+          .dependOnInheritedWidgetOfExactType<WidgetStateProvider>();
       final foundStates = scope?.states;
       expect(foundStates, isNotNull);
       expect(foundStates!.contains(WidgetState.disabled), isTrue);
@@ -168,16 +172,16 @@ void main() {
     testWidgets('hasState returns if state is set', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: WidgetStateScope(
+          home: WidgetStateProvider(
             states: {WidgetState.disabled},
             child: Builder(
               builder: (context) {
                 expect(
-                  WidgetStateScope.hasState(context, WidgetState.disabled),
+                  WidgetStateProvider.hasState(context, WidgetState.disabled),
                   isTrue,
                 );
                 expect(
-                  WidgetStateScope.hasState(context, WidgetState.hovered),
+                  WidgetStateProvider.hasState(context, WidgetState.hovered),
                   isFalse,
                 );
                 return Container();
@@ -189,8 +193,8 @@ void main() {
     });
 
     test('updateShouldNotify returns true if value changed', () {
-      final oldModel = WidgetStateScope(states: {}, child: Container());
-      final newModel = WidgetStateScope(
+      final oldModel = WidgetStateProvider(states: {}, child: Container());
+      final newModel = WidgetStateProvider(
         states: {WidgetState.disabled},
         child: Container(),
       );
@@ -199,22 +203,18 @@ void main() {
     });
 
     test('updateShouldNotifyDependent returns if a dependency changed', () {
-      final oldModel = WidgetStateScope(states: {}, child: Container());
-      final newModel = WidgetStateScope(
+      final oldModel = WidgetStateProvider(states: {}, child: Container());
+      final newModel = WidgetStateProvider(
         states: {WidgetState.disabled},
         child: Container(),
       );
 
       expect(
-        newModel.updateShouldNotifyDependent(oldModel, {
-          WidgetState.disabled,
-        }),
+        newModel.updateShouldNotifyDependent(oldModel, {WidgetState.disabled}),
         isTrue,
       );
       expect(
-        newModel.updateShouldNotifyDependent(oldModel, {
-          WidgetState.hovered,
-        }),
+        newModel.updateShouldNotifyDependent(oldModel, {WidgetState.hovered}),
         isFalse,
       );
     });
@@ -297,7 +297,7 @@ void main() {
           body: ListenableBuilder(
             listenable: controller,
             builder: (context, _) {
-              return WidgetStateScope(
+              return WidgetStateProvider(
                 states: controller.value,
                 child: PressableStateTestWidget(),
               );
@@ -520,7 +520,7 @@ class PressableStateTestWidget extends StatefulWidget {
 class _PressableStateTestWidgetState extends State<PressableStateTestWidget> {
   bool Function(BuildContext) _widgetStateOf(WidgetState state) {
     return (BuildContext context) {
-      return WidgetStateScope.hasState(context, state);
+      return WidgetStateProvider.hasState(context, state);
     };
   }
 

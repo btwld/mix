@@ -7,7 +7,9 @@ import 'package:mix/src/core/widget_state/widget_state_provider.dart';
 
 void main() {
   group('MixHoverableRegion', () {
-    testWidgets('updates disabled state when enabled changes', (WidgetTester tester) async {
+    testWidgets('updates disabled state when enabled changes', (
+      WidgetTester tester,
+    ) async {
       final controller = WidgetStatesController();
 
       await tester.pumpWidget(
@@ -37,7 +39,9 @@ void main() {
       expect(controller.has(WidgetState.disabled), isFalse);
     });
 
-    testWidgets('updates hovered state on mouse enter/exit', (WidgetTester tester) async {
+    testWidgets('updates hovered state on mouse enter/exit', (
+      WidgetTester tester,
+    ) async {
       final controller = WidgetStatesController();
       bool? lastHoverState;
 
@@ -46,11 +50,7 @@ void main() {
           home: MixHoverableRegion(
             controller: controller,
             onHoverChange: (hovered) => lastHoverState = hovered,
-            child: SizedBox(
-              key: const Key('test'),
-              width: 100,
-              height: 100,
-            ),
+            child: SizedBox(key: const Key('test'), width: 100, height: 100),
           ),
         ),
       );
@@ -79,7 +79,9 @@ void main() {
       await gesture.removePointer();
     });
 
-    testWidgets('tracks mouse position when widgets are listening', (WidgetTester tester) async {
+    testWidgets('tracks mouse position when widgets are listening', (
+      WidgetTester tester,
+    ) async {
       final controller = WidgetStatesController();
       PointerPosition? capturedPosition;
 
@@ -136,7 +138,9 @@ void main() {
       await gesture.removePointer();
     });
 
-    testWidgets('does not respond to hover when disabled', (WidgetTester tester) async {
+    testWidgets('does not respond to hover when disabled', (
+      WidgetTester tester,
+    ) async {
       final controller = WidgetStatesController();
       bool hoverCallbackCalled = false;
 
@@ -146,11 +150,7 @@ void main() {
             controller: controller,
             enabled: false,
             onHoverChange: (hovered) => hoverCallbackCalled = true,
-            child: SizedBox(
-              key: const Key('test'),
-              width: 100,
-              height: 100,
-            ),
+            child: SizedBox(key: const Key('test'), width: 100, height: 100),
           ),
         ),
       );
@@ -170,7 +170,9 @@ void main() {
       await gesture.removePointer();
     });
 
-    testWidgets('provides WidgetStateScope to descendants', (WidgetTester tester) async {
+    testWidgets('provides WidgetStateScope to descendants', (
+      WidgetTester tester,
+    ) async {
       final controller = WidgetStatesController();
 
       await tester.pumpWidget(
@@ -180,7 +182,10 @@ void main() {
             enabled: false, // This will set disabled to true
             child: Builder(
               builder: (context) {
-                final hasDisabled = WidgetStateScope.hasState(context, WidgetState.disabled);
+                final hasDisabled = WidgetStateProvider.hasState(
+                  context,
+                  WidgetState.disabled,
+                );
                 return Text(hasDisabled ? 'disabled' : 'enabled');
               },
             ),
@@ -198,7 +203,10 @@ void main() {
             enabled: true,
             child: Builder(
               builder: (context) {
-                final hasDisabled = WidgetStateScope.hasState(context, WidgetState.disabled);
+                final hasDisabled = WidgetStateProvider.hasState(
+                  context,
+                  WidgetState.disabled,
+                );
                 return Text(hasDisabled ? 'disabled' : 'enabled');
               },
             ),
@@ -209,43 +217,32 @@ void main() {
       expect(find.text('enabled'), findsOneWidget);
     });
 
-    testWidgets('disposes controller when not provided externally', (WidgetTester tester) async {
+    testWidgets('disposes controller when not provided externally', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
-        MaterialApp(
-          home: MixHoverableRegion(
-            child: Container(),
-          ),
-        ),
+        MaterialApp(home: MixHoverableRegion(child: Container())),
       );
 
       // Remove widget to trigger disposal
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: SizedBox(),
-        ),
-      );
+      await tester.pumpWidget(const MaterialApp(home: SizedBox()));
 
       // No exception should be thrown
     });
 
-    testWidgets('does not dispose external controller', (WidgetTester tester) async {
+    testWidgets('does not dispose external controller', (
+      WidgetTester tester,
+    ) async {
       final controller = WidgetStatesController();
 
       await tester.pumpWidget(
         MaterialApp(
-          home: MixHoverableRegion(
-            controller: controller,
-            child: Container(),
-          ),
+          home: MixHoverableRegion(controller: controller, child: Container()),
         ),
       );
 
       // Remove widget
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: SizedBox(),
-        ),
-      );
+      await tester.pumpWidget(const MaterialApp(home: SizedBox()));
 
       // Controller should still be usable
       expect(() => controller.disabled = true, returnsNormally);

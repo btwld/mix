@@ -112,7 +112,7 @@ class _MixHoverableRegionState extends State<MixHoverableRegion> {
         child: ListenableBuilder(
           listenable: _controller,
           builder: (context, _) {
-            return WidgetStateScope(
+            return WidgetStateProvider(
               states: _controller.value,
               child: widget.child,
             );

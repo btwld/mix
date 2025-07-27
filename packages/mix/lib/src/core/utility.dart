@@ -87,7 +87,7 @@ abstract class MixPropUtility<U extends StyleAttribute<Object?>, Value>
   /// Creates a MixProp from a raw value (converts to Mix)
   U as(Value value) => call(convertToMix(value));
 
-  /// Token support - expects MixToken<Value> (raw type)
+  /// Token support - expects `MixToken<Value>` (raw type)
   /// Uses MixProp.token with conversion function
   @override
   U token(MixToken<Value> token) => builder(MixProp.token(token, convertToMix));
@@ -125,9 +125,9 @@ abstract class SpecUtility<S extends Spec<S>> {
   int get hashCode => Object.hash(attribute, runtimeType);
 }
 
-/// Generic ListUtility for Prop<V> lists
+/// Generic ListUtility for `Prop<V>` lists
 ///
-/// This utility provides a clean approach for working with lists of Prop<V>
+/// This utility provides a clean approach for working with lists of `Prop<V>`
 /// by extending MixUtility and accepting any builder function.
 ///
 /// Usage:
@@ -142,7 +142,7 @@ final class PropListUtility<T extends StyleAttribute<Object?>, V>
   const PropListUtility(super.builder);
 
   /// Creates a list attribute from a list of values
-  /// Each value is wrapped in a Prop<V> and passed to the builder
+  /// Each value is wrapped in a `Prop<V>` and passed to the builder
   T call(List<V> values) {
     final propList = values.map((v) => Prop(v)).toList();
 
@@ -156,10 +156,10 @@ final class PropListUtility<T extends StyleAttribute<Object?>, V>
   }
 }
 
-/// Generic ListUtility for MixProp<V> lists
+/// Generic ListUtility for `MixProp<V>` lists
 ///
-/// This utility provides support for working with lists of MixProp<V>
-/// for complex types that implement Mix<V>.
+/// This utility provides support for working with lists of `MixProp<V>`
+/// for complex types that implement `Mix<V>`.
 ///
 /// Usage:
 /// ```dart

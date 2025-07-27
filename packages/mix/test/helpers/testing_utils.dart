@@ -250,7 +250,7 @@ class MockBuildContext extends BuildContext {
 // ADDITIONAL TEST UTILITIES
 // =============================================================================
 
-/// Mock attribute for testing utilities - handles both Prop<T> and MixProp<V>
+/// Mock attribute for testing utilities - handles both `Prop<T>` and `MixProp<V>`
 ///
 /// This is a universal SpecMix that can wrap any prop type for testing purposes.
 /// Used with utilities that expect a SpecMix builder function.
