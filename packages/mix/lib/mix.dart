@@ -58,7 +58,7 @@ export 'src/core/directive.dart';
 export 'src/core/helpers.dart';
 export 'src/core/mix_element.dart';
 export 'src/core/prop.dart';
-export 'src/core/resolved_style_provider.dart';
+export 'src/core/providers/resolved_style_provider.dart';
 export 'src/core/spec.dart';
 export 'src/core/style.dart';
 export 'src/core/style_builder.dart';

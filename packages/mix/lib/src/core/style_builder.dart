@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../modifiers/internal/render_modifier.dart';
 import 'animation/style_animation_builder.dart';
-import 'resolved_style_provider.dart';
+import 'providers/resolved_style_provider.dart';
 import 'spec.dart';
 import 'style.dart';
 import 'widget_state/internal/mix_hoverable_region.dart';

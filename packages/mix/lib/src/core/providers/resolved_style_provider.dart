@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import 'spec.dart';
-import 'style.dart';
+import '../spec.dart';
+import '../style.dart';
 
 /// Provides resolved style to descendant widgets.
 ///
