@@ -220,6 +220,24 @@ class FileMigrator {
 
         // Update the import
         content = updateImportInContent(content, import, newRelativePath);
+      } else if (!import.path.startsWith('package:') && 
+                 !import.path.startsWith('dart:') && 
+                 import.path.endsWith('.dart')) {
+        // Handle bare filename imports like 'material_colors_util.dart'
+        // These are relative to the current file's directory
+        final oldDir = path.dirname(oldPath);
+        final importedPath = path.normalize(path.join(oldDir, import.path));
+        
+        // Check if the file exists relative to old location
+        final importedFile = File(path.join(baseDir, importedPath));
+        if (await importedFile.exists()) {
+          // Calculate new relative path from new location
+          final newDir = path.dirname(newPath);
+          final newRelativePath = path.relative(importedPath, from: newDir);
+          
+          // Update the import
+          content = updateImportInContent(content, import, newRelativePath);
+        }
       }
     }
 
