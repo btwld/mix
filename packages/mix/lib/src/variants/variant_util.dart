@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../breakpoint.dart';
-import '../spec.dart';
-import '../style.dart';
-import '../utility.dart';
-import '../../variants/variant.dart';
+import '../core/breakpoint.dart';
+import '../core/spec.dart';
+import '../core/style.dart';
+import '../core/utility.dart';
+import 'variant.dart';
 
 /// Utility class for creating variant attributes with context-based variants
 @immutable

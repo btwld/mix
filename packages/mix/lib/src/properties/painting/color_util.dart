@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../core/directive.dart';
-import '../core/prop.dart';
-import '../core/style.dart';
-import '../core/utility.dart';
-import '../theme/tokens/mix_token.dart';
-import '../properties/painting/material_colors_util.dart';
+import '../../core/directive.dart';
+import '../../core/prop.dart';
+import '../../core/style.dart';
+import '../../core/utility.dart';
+import '../../theme/tokens/mix_token.dart';
+import 'material_colors_util.dart';
 
 /// Provides color transformation methods for applying opacity, brightness, and saturation changes.
 ///

@@ -7,7 +7,7 @@ library;
 import '../core/spec.dart';
 import '../core/style.dart';
 import '../modifiers/modifier_util.dart';
-import '../core/variant/variant_util.dart';
+import '../variants/variant_util.dart';
 import 'box/box_attribute.dart';
 import 'flex/flex_attribute.dart';
 import 'flexbox/flexbox_spec.dart';

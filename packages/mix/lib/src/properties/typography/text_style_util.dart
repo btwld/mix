@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
-import '../../utilities/color_util.dart';
+import '../painting/color_util.dart';
 import '../layout/scalar_util.dart';
 import '../painting/shadow_mix.dart';
 import 'text_style_mix.dart';

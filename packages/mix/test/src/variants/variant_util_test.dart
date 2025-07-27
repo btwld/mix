@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../../helpers/testing_utils.dart';
-import 'package:mix/src/core/variant/variant_util.dart';
+import '../../helpers/testing_utils.dart';
+import 'package:mix/src/variants/variant_util.dart';
 
 void main() {
   group('OnContextVariantUtility', () {

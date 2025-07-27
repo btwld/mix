@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../utilities/color_util.dart';
+import '../../properties/painting/color_util.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../properties/painting/shadow_util.dart';
 import '../../animation/animation_config.dart';

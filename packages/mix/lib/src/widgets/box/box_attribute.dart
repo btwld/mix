@@ -7,7 +7,6 @@ import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
-import '../../core/variant/variant_util.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/layout/constraints_mix.dart';
 import '../../properties/layout/constraints_util.dart';
@@ -19,6 +18,7 @@ import '../../properties/painting/decoration_mix.dart';
 import '../../properties/painting/decoration_util.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../variants/variant.dart';
+import '../../variants/variant_util.dart';
 import 'box_spec.dart';
 
 /// Attribute class for configuring [BoxSpec] properties.
@@ -451,5 +451,8 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec> with Diagnosticable {
     $transform,
     $transformAlignment,
     $clipBehavior,
+    $animation,
+    $modifiers,
+    $variants,
   ];
 }

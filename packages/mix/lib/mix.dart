@@ -22,7 +22,7 @@ export 'src/properties/painting/border_mix.dart';
 export 'src/properties/painting/border_radius_mix.dart';
 export 'src/properties/painting/border_radius_util.dart';
 export 'src/properties/painting/border_util.dart';
-export 'src/utilities/color_util.dart';
+export 'src/properties/painting/color_util.dart';
 export 'src/properties/layout/constraints_mix.dart';
 export 'src/properties/layout/constraints_util.dart';
 export 'src/properties/painting/decoration_image_mix.dart';
@@ -120,7 +120,7 @@ export 'src/theme/tokens/mix_token.dart';
 export 'src/theme/tokens/value_resolver.dart';
 
 /// VARIANTS
-export 'src/core/variant/variant_util.dart';
+export 'src/variants/variant_util.dart';
 
 /// WIDGETS
 export 'src/widgets/pressable/pressable_widget.dart';
