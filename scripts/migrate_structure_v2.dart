@@ -1,13 +1,9 @@
 import 'dart:io';
 import 'package:path/path.dart' as path;
 
-/// Migration script for reorganizing the Mix package structure
+/// Enhanced migration script for reorganizing the Mix package structure
 /// 
-/// This script automates:
-/// - Moving files to new locations
-/// - Updating imports in all affected files
-/// - Migrating test files to match new structure
-/// - Generating a detailed migration report
+/// This version includes comprehensive import handling and validation
 void main(List<String> args) async {
   final script = MigrationScript();
   
@@ -38,10 +34,17 @@ class FileMigration {
   });
 }
 
+class ImportMapping {
+  final String oldPath;
+  final String newPath;
+  
+  ImportMapping(this.oldPath, this.newPath);
+}
+
 class MigrationScript {
   final baseDir = 'packages/mix';
   final List<FileMigration> migrations = [];
-  final Map<String, String> importMap = {};
+  final List<ImportMapping> importMappings = [];
   final List<String> createdDirectories = [];
   final List<String> movedFiles = [];
   final List<String> updatedFiles = [];
@@ -49,7 +52,7 @@ class MigrationScript {
   bool isDryRun = false;
   
   Future<void> run() async {
-    print('🚀 Starting Mix package reorganization...\n');
+    print('🚀 Starting Mix package reorganization (v2)...\n');
     
     // Preflight checks
     if (!await preflightCheck()) {
@@ -60,6 +63,9 @@ class MigrationScript {
     // Define all migrations
     defineMigrations();
     
+    // Build comprehensive import mappings
+    buildImportMappings();
+    
     // Create new directory structure
     await createDirectories();
     
@@ -69,8 +75,8 @@ class MigrationScript {
     // Move files
     await moveFiles();
     
-    // Update imports in all Dart files
-    await updateImports();
+    // Update all imports
+    await updateAllImports();
     
     // Move and update test files
     await migrateTests();
@@ -79,6 +85,9 @@ class MigrationScript {
     if (!isDryRun) {
       await cleanupEmptyDirectories();
     }
+    
+    // Validate the migration
+    await validateMigration();
     
     // Generate report
     generateReport();
@@ -447,6 +456,52 @@ class MigrationScript {
     ]);
   }
   
+  void buildImportMappings() {
+    print('📋 Building import mappings...\n');
+    
+    // Build mappings from migrations
+    for (final migration in migrations) {
+      if (migration.needsExtraction) continue;
+      
+      // Add package import mapping
+      final oldPackageImport = migration.from.replaceFirst('lib/', '');
+      final newPackageImport = migration.to.replaceFirst('lib/', '');
+      importMappings.add(ImportMapping(oldPackageImport, newPackageImport));
+      
+      // Add file name mapping for relative imports
+      final oldFileName = path.basename(migration.from);
+      importMappings.add(ImportMapping(oldFileName, newPackageImport));
+    }
+    
+    // Add specific mappings for common patterns
+    importMappings.addAll([
+      // Internal directory mappings
+      ImportMapping('../internal/', 'internal/'),
+      ImportMapping('../../internal/', '../internal/'),
+      ImportMapping('../../../internal/', '../../internal/'),
+      
+      // Animation mappings
+      ImportMapping('animation_config.dart', '../animation/animation_config.dart'),
+      ImportMapping('animation/', '../animation/'),
+      ImportMapping('../animation/', '../../animation/'),
+      
+      // Variant mappings
+      ImportMapping('variant.dart', '../variants/variant.dart'),
+      ImportMapping('../variant.dart', '../../variants/variant.dart'),
+      
+      // Provider mappings
+      ImportMapping('style_provider.dart', 'providers/style_provider.dart'),
+      ImportMapping('resolved_style_provider.dart', 'providers/resolved_style_provider.dart'),
+      ImportMapping('../style_provider.dart', '../providers/style_provider.dart'),
+      ImportMapping('../resolved_style_provider.dart', '../providers/resolved_style_provider.dart'),
+      
+      // Widget state mappings
+      ImportMapping('../core/widget_state/', '../widget_state/'),
+      ImportMapping('../../core/widget_state/', '../../widget_state/'),
+      ImportMapping('widget_state/', '../widget_state/'),
+    ]);
+  }
+  
   Future<void> createDirectories() async {
     print('📁 Creating directory structure...\n');
     
@@ -540,27 +595,20 @@ class MigrationScript {
     }
   }
   
-  Future<void> updateImports() async {
+  Future<void> updateAllImports() async {
     print('\n📝 Updating imports...\n');
     
-    // Build import mapping
-    for (final migration in migrations) {
-      if (migration.needsExtraction) continue;
-      
-      // Package imports
-      final oldImport = migration.from.replaceFirst('lib/', 'package:mix/');
-      final newImport = migration.to.replaceFirst('lib/', 'package:mix/');
-      importMap[oldImport] = newImport;
-      
-      // Also map the source file without package prefix
-      final oldSrc = migration.from.replaceFirst('lib/', '');
-      final newSrc = migration.to.replaceFirst('lib/', '');
-      importMap[oldSrc] = newSrc;
-    }
-    
-    // Update all Dart files
+    // Update imports in lib directory
     await _updateImportsInDirectory(Directory('$baseDir/lib'));
+    
+    // Update imports in test directory
     await _updateImportsInDirectory(Directory('$baseDir/test'));
+    
+    // Update imports in example directory if it exists
+    final exampleDir = Directory('$baseDir/example/lib');
+    if (await exampleDir.exists()) {
+      await _updateImportsInDirectory(exampleDir);
+    }
   }
   
   Future<void> _updateImportsInDirectory(Directory dir) async {
@@ -575,128 +623,111 @@ class MigrationScript {
   
   Future<void> _updateFileImports(File file) async {
     var content = await file.readAsString();
-    var modified = false;
+    var originalContent = content;
     
-    // Update imports
-    importMap.forEach((oldImport, newImport) {
-      // Package imports
-      final packagePattern = RegExp('import\\s+[\'"]$oldImport[\'"];');
-      if (content.contains(packagePattern)) {
-        content = content.replaceAll(packagePattern, "import '$newImport';");
-        modified = true;
-      }
+    // Apply all import mappings
+    for (final mapping in importMappings) {
+      // Handle package imports
+      content = content.replaceAll(
+        RegExp('import\\s+[\'"]package:mix/${mapping.oldPath}[\'"];'),
+        "import 'package:mix/${mapping.newPath}';",
+      );
       
-      // Relative imports from src
-      final srcPattern = RegExp('import\\s+[\'"]../+$oldImport[\'"];');
-      final replacement = "import 'package:mix/$newImport';";
-      if (content.contains(srcPattern)) {
-        content = content.replaceAll(srcPattern, replacement);
-        modified = true;
-      }
-    });
-    
-    // Handle relative imports within moved files
-    if (movedFiles.any((f) => file.path.endsWith(f))) {
-      // Update relative imports like '../internal/compare_mixin.dart'
-      content = _updateRelativeImports(content, file.path);
-      modified = true;
+      // Handle relative imports
+      content = content.replaceAll(
+        RegExp('import\\s+[\'"]${mapping.oldPath}[\'"];'),
+        "import '${mapping.newPath}';",
+      );
     }
     
-    // Special case: Update extracted widget state controller extension import
-    if (content.contains("import 'package:mix/src/core/widget_state/widget_state_provider.dart';") ||
-        content.contains("import '../core/widget_state/widget_state_provider.dart';")) {
-      
-      // Check if file uses the extension
-      if (content.contains('WidgetStateControllerExtension') || 
-          content.contains('.disabled') ||
-          content.contains('.hovered') ||
-          content.contains('.pressed')) {
-        
-        // Add the new import if not already present
-        if (!content.contains("import 'package:mix/src/core/extensions/widget_state_controller_ext.dart';")) {
-          final importSection = content.indexOf('import');
-          final firstImport = content.indexOf(';', importSection) + 1;
-          content = content.substring(0, firstImport) + 
-                   "\nimport 'package:mix/src/core/extensions/widget_state_controller_ext.dart';" +
-                   content.substring(firstImport);
-          modified = true;
-        }
-      }
-    }
+    // Apply specific transformations based on file location
+    final relativePath = path.relative(file.path, from: baseDir);
+    content = _applyLocationSpecificTransforms(content, relativePath);
     
-    if (modified && !isDryRun) {
+    // Handle special cases
+    content = _handleSpecialCases(content);
+    
+    if (content != originalContent && !isDryRun) {
       await file.writeAsString(content);
       updatedFiles.add(file.path);
     }
   }
   
-  String _updateRelativeImports(String content, String filePath) {
-    // Update all relative imports in the content based on the file's new location
-    
-    // Handle imports to internal directory
-    content = content.replaceAll(
-      RegExp(r"import\s+['\"]\.\.\/internal\/([^'\"]+)['\"];"),
-      "import 'internal/\$1';",
-    );
-    
-    // Handle imports to animation_config (now in animation/)
-    content = content.replaceAll(
-      "import 'animation_config.dart';",
-      "import '../animation/animation_config.dart';",
-    );
-    
-    // Handle imports to animation directory
-    content = content.replaceAll(
-      RegExp(r"import\s+['\"]animation\/([^'\"]+)['\"];"),
-      "import '../animation/\$1';",
-    );
-    
-    // Handle imports to variant.dart
-    content = content.replaceAll(
-      "import 'variant.dart';",
-      "import '../variants/variant.dart';",
-    );
-    
-    // Handle imports to widget_state
-    content = content.replaceAll(
-      RegExp(r"import\s+['\"]\.\.\/core\/widget_state\/([^'\"]+)['\"];"),
-      "import '../widget_state/\$1';",
-    );
-    
-    // Handle imports to style_provider and resolved_style_provider
-    content = content.replaceAll(
-      "import 'style_provider.dart';",
-      "import 'providers/style_provider.dart';",
-    );
-    content = content.replaceAll(
-      "import 'resolved_style_provider.dart';",
-      "import 'providers/resolved_style_provider.dart';",
-    );
-    
-    // Handle imports from widgets to other widgets
-    if (filePath.contains('/widgets/')) {
+  String _applyLocationSpecificTransforms(String content, String filePath) {
+    // Files in core directory
+    if (filePath.startsWith('lib/src/core/')) {
+      // Fix internal imports
+      final internalRegex = RegExp(r'''import\s+['"]\.\.\/internal\/(.+?)['"];''');
+      content = content.replaceAllMapped(internalRegex, (match) {
+        return "import 'internal/${match.group(1)}';";
+      });
+      
+      // Fix animation imports
       content = content.replaceAll(
-        RegExp(r"import\s+['\"]\.\.\/\.\.\/specs\/([^\/]+)\/([^'\"]+)['\"];"),
-        "import '../\$1/\$2';",
+        "import 'animation_config.dart';",
+        "import '../animation/animation_config.dart';",
+      );
+      
+      // Fix variant imports
+      content = content.replaceAll(
+        "import 'variant.dart';",
+        "import '../variants/variant.dart';",
       );
     }
     
-    // Handle imports from properties to other properties
-    if (filePath.contains('/properties/')) {
-      content = content.replaceAll(
-        RegExp(r"import\s+['\"]\.\.\/\.\.\/attributes\/([^'\"]+)['\"];"),
-        (match) {
-          final fileName = match.group(1)!;
-          // Determine which subdirectory based on file name
-          if (fileName.contains('text_style') || fileName.contains('strut_style') || fileName.contains('text_height_behavior')) {
-            return "import '../typography/$fileName';";
-          } else if (fileName.contains('constraints') || fileName.contains('edge_insets') || fileName.contains('scalar')) {
-            return "import '../layout/$fileName';";
-          } else {
-            return "import '../painting/$fileName';";
-          }
-        },
-      );
+    // Files in properties directory
+    if (filePath.startsWith('lib/src/properties/')) {
+      // Fix imports between property subdirectories
+      final attributesRegex = RegExp(r'''import\s+['"]\.\.\/\.\.\/attributes\/(.+?)['"];''');
+      content = content.replaceAllMapped(attributesRegex, (match) {
+        final fileName = match.group(1)!;
+        final subdir = _getPropertySubdir(fileName);
+        return "import '../$subdir/$fileName';";
+      });
+    }
+    
+    // Files in widgets directory
+    if (filePath.startsWith('lib/src/widgets/')) {
+      // Fix imports from old specs directory
+      final specsRegex = RegExp(r'''import\s+['"]\.\.\/\.\.\/specs\/(.+?)\/(.+?)['"];''');
+      content = content.replaceAllMapped(specsRegex, (match) {
+        return "import '../${match.group(1)}/${match.group(2)}';";
+      });
+    }
+    
+    return content;
+  }
+  
+  String _getPropertySubdir(String fileName) {
+    if (fileName.contains('text_style') || 
+        fileName.contains('strut_style') || 
+        fileName.contains('text_height_behavior')) {
+      return 'typography';
+    } else if (fileName.contains('constraints') || 
+               fileName.contains('edge_insets') || 
+               fileName.contains('scalar')) {
+      return 'layout';
+    } else {
+      return 'painting';
+    }
+  }
+  
+  String _handleSpecialCases(String content) {
+    // Add widget state controller extension import where needed
+    if ((content.contains('WidgetStatesController') || 
+         content.contains('.disabled') ||
+         content.contains('.hovered') ||
+         content.contains('.pressed')) &&
+        !content.contains("import 'package:mix/src/core/extensions/widget_state_controller_ext.dart';")) {
+      
+      // Find the last import statement
+      final lastImportIndex = content.lastIndexOf("import '");
+      if (lastImportIndex != -1) {
+        final endOfImport = content.indexOf(';', lastImportIndex) + 1;
+        content = content.substring(0, endOfImport) + 
+                 "\nimport 'package:mix/src/core/extensions/widget_state_controller_ext.dart';" +
+                 content.substring(endOfImport);
+      }
     }
     
     return content;
@@ -740,11 +771,14 @@ class MigrationScript {
       '$baseDir/lib/src/helpers',
       '$baseDir/lib/src/internal',
       '$baseDir/lib/src/core/animation',
+      '$baseDir/lib/src/core/widget_state/internal',
       '$baseDir/lib/src/core/widget_state',
       '$baseDir/test/src/attributes',
       '$baseDir/test/src/specs',
       '$baseDir/test/src/helpers',
       '$baseDir/test/src/internal',
+      '$baseDir/test/src/core/widget_state/internal',
+      '$baseDir/test/src/core/widget_state',
     ];
     
     for (final dirPath in dirsToCheck) {
@@ -756,6 +790,28 @@ class MigrationScript {
           print('   ✅ Removed empty directory: $dirPath');
         }
       }
+    }
+  }
+  
+  Future<void> validateMigration() async {
+    print('\n🔍 Validating migration...\n');
+    
+    // Check that all expected files exist
+    int missingFiles = 0;
+    for (final migration in migrations) {
+      if (!migration.needsExtraction) {
+        final targetFile = File('$baseDir/${migration.to}');
+        if (!await targetFile.exists() && !isDryRun) {
+          print('   ❌ Missing: ${migration.to}');
+          missingFiles++;
+        }
+      }
+    }
+    
+    if (missingFiles > 0) {
+      errors.add('$missingFiles files are missing after migration');
+    } else {
+      print('   ✅ All files migrated successfully');
     }
   }
   
@@ -784,12 +840,22 @@ class MigrationScript {
       report.writeln(_generateTreeView());
       
       // Save report
-      final reportFile = File('migration_report.txt');
+      final reportFile = File('migration_report_v2.txt');
       reportFile.writeAsStringSync(report.toString());
-      print('\n📄 Full report saved to: migration_report.txt');
+      print('\n📄 Full report saved to: migration_report_v2.txt');
     }
     
     print(report.toString());
+    
+    // Print next steps
+    print('\n📌 Next Steps:');
+    print('   1. Run: melos run analyze');
+    print('   2. Run: melos run test:flutter');
+    print('   3. Fix any remaining import issues');
+    print('   4. Commit the changes');
+    if (!isDryRun) {
+      print('\n   To rollback: rm -rf $baseDir && mv $baseDir.backup $baseDir');
+    }
   }
   
   String _generateTreeView() {
