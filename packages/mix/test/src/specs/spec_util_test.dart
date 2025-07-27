@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-import 'package:mix/src/properties/spec_util.dart';
+import 'package:mix/src/specs/spec_util.dart';
 
 void main() {
   group('Spec Utilities Global Getters', () {

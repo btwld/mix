@@ -243,35 +243,66 @@ final class CurveRef extends TokenRef<Curve> implements Curve {
 // =============================================================================
 // EXTENSION TYPE TOKEN REFERENCES
 // =============================================================================
-// Extension types provide zero-cost abstractions for token references,
-// making them perfect for primitive types and enums.
+// Extension types that wrap primitive values and implement the primitive interface
+// while being trackable through a token registry.
 
-/// Extension type token reference for [double] values.
-/// Provides a zero-cost wrapper around `MixToken<double>`.
-extension type const DoubleToken(MixToken<double> _token) {
-  /// Gets the underlying MixToken
-  MixToken<double> get mixToken => _token;
+/// Global registry to associate extension type values with their tokens
+final Map<Object, MixToken> _tokenRegistry = <Object, MixToken>{};
+
+/// Extension type for [double] values with token tracking
+extension type const DoubleTokenRef(double _value) implements double {
+  /// Creates a DoubleTokenRef and registers it with a token
+  static DoubleTokenRef withToken(double value, MixToken<double> token) {
+    final ref = DoubleTokenRef(value);
+    _tokenRegistry[ref] = token;
+
+    return ref;
+  }
+
+  /// Gets the associated token for this reference
+  MixToken<double>? get token => _tokenRegistry[this] as MixToken<double>?;
 }
 
-/// Extension type token reference for [int] values.
-/// Provides a zero-cost wrapper around `MixToken<int>`.
-extension type const IntToken(MixToken<int> _token) {
-  /// Gets the underlying MixToken
-  MixToken<int> get mixToken => _token;
+/// Extension type for [int] values with token tracking
+extension type const IntTokenRef(int _value) implements int {
+  /// Creates an IntTokenRef and registers it with a token
+  static IntTokenRef withToken(int value, MixToken<int> token) {
+    final ref = IntTokenRef(value);
+    _tokenRegistry[ref] = token;
+
+    return ref;
+  }
+
+  /// Gets the associated token for this reference
+  MixToken<int>? get token => _tokenRegistry[this] as MixToken<int>?;
 }
 
-/// Extension type token reference for [bool] values.
-/// Provides a zero-cost wrapper around `MixToken<bool>`.
-extension type const BoolToken(MixToken<bool> _token) {
-  /// Gets the underlying MixToken
-  MixToken<bool> get mixToken => _token;
+/// Extension type for [bool] values with token tracking
+extension type const BoolTokenRef(bool _value) implements bool {
+  /// Creates a BoolTokenRef and registers it with a token
+  static BoolTokenRef withToken(bool value, MixToken<bool> token) {
+    final ref = BoolTokenRef(value);
+    _tokenRegistry[ref] = token;
+
+    return ref;
+  }
+
+  /// Gets the associated token for this reference
+  MixToken<bool>? get token => _tokenRegistry[this] as MixToken<bool>?;
 }
 
-/// Extension type token reference for [String] values.
-/// Provides a zero-cost wrapper around `MixToken<String>`.
-extension type const StringToken(MixToken<String> _token) {
-  /// Gets the underlying MixToken
-  MixToken<String> get mixToken => _token;
+/// Extension type for [String] values with token tracking
+extension type const StringTokenRef(String _value) implements String {
+  /// Creates a StringTokenRef and registers it with a token
+  static StringTokenRef withToken(String value, MixToken<String> token) {
+    final ref = StringTokenRef(value);
+    _tokenRegistry[ref] = token;
+
+    return ref;
+  }
+
+  /// Gets the associated token for this reference
+  MixToken<String>? get token => _tokenRegistry[this] as MixToken<String>?;
 }
 
 // =============================================================================
@@ -280,101 +311,40 @@ extension type const StringToken(MixToken<String> _token) {
 // Extension types for enums that implement the enum interface
 
 /// Extension type token reference for [VerticalDirection] values.
-extension type const VerticalDirectionToken(MixToken<VerticalDirection> _token) implements VerticalDirection {
-  @override
-  Never noSuchMethod(Invocation invocation) {
-    throw UnimplementedError(
-      'This is a Token reference for VerticalDirection, so it does not implement ${invocation.memberName}.',
-    );
-  }
-}
+extension type const VerticalDirectionToken(MixToken<VerticalDirection> _token)
+    implements VerticalDirection {}
 
 /// Extension type token reference for [BorderStyle] values.
-extension type const BorderStyleToken(MixToken<BorderStyle> _token) implements BorderStyle {
-  @override
-  Never noSuchMethod(Invocation invocation) {
-    throw UnimplementedError(
-      'This is a Token reference for BorderStyle, so it does not implement ${invocation.memberName}.',
-    );
-  }
-}
+extension type const BorderStyleToken(MixToken<BorderStyle> _token)
+    implements BorderStyle {}
 
 /// Extension type token reference for [Clip] values.
-extension type const ClipToken(MixToken<Clip> _token) implements Clip {
-  @override
-  Never noSuchMethod(Invocation invocation) {
-    throw UnimplementedError(
-      'This is a Token reference for Clip, so it does not implement ${invocation.memberName}.',
-    );
-  }
-}
+extension type const ClipToken(MixToken<Clip> _token) implements Clip {}
 
 /// Extension type token reference for [Axis] values.
-extension type const AxisToken(MixToken<Axis> _token) implements Axis {
-  @override
-  Never noSuchMethod(Invocation invocation) {
-    throw UnimplementedError(
-      'This is a Token reference for Axis, so it does not implement ${invocation.memberName}.',
-    );
-  }
-}
+extension type const AxisToken(MixToken<Axis> _token) implements Axis {}
 
 /// Extension type token reference for [FlexFit] values.
-extension type const FlexFitToken(MixToken<FlexFit> _token) implements FlexFit {
-  @override
-  Never noSuchMethod(Invocation invocation) {
-    throw UnimplementedError(
-      'This is a Token reference for FlexFit, so it does not implement ${invocation.memberName}.',
-    );
-  }
-}
+extension type const FlexFitToken(MixToken<FlexFit> _token)
+    implements FlexFit {}
 
 /// Extension type token reference for [MainAxisAlignment] values.
-extension type const MainAxisAlignmentToken(MixToken<MainAxisAlignment> _token) implements MainAxisAlignment {
-  @override
-  Never noSuchMethod(Invocation invocation) {
-    throw UnimplementedError(
-      'This is a Token reference for MainAxisAlignment, so it does not implement ${invocation.memberName}.',
-    );
-  }
-}
+extension type const MainAxisAlignmentToken(MixToken<MainAxisAlignment> _token)
+    implements MainAxisAlignment {}
 
 /// Extension type token reference for [CrossAxisAlignment] values.
-extension type const CrossAxisAlignmentToken(MixToken<CrossAxisAlignment> _token) implements CrossAxisAlignment {
-  @override
-  Never noSuchMethod(Invocation invocation) {
-    throw UnimplementedError(
-      'This is a Token reference for CrossAxisAlignment, so it does not implement ${invocation.memberName}.',
-    );
-  }
-}
+extension type const CrossAxisAlignmentToken(
+  MixToken<CrossAxisAlignment> _token
+)
+    implements CrossAxisAlignment {}
 
 /// Extension type token reference for [TextAlign] values.
-extension type const TextAlignToken(MixToken<TextAlign> _token) implements TextAlign {
-  @override
-  Never noSuchMethod(Invocation invocation) {
-    throw UnimplementedError(
-      'This is a Token reference for TextAlign, so it does not implement ${invocation.memberName}.',
-    );
-  }
-}
+extension type const TextAlignToken(MixToken<TextAlign> _token)
+    implements TextAlign {}
 
 /// Extension type token reference for [FontStyle] values.
-extension type const FontStyleToken(MixToken<FontStyle> _token) implements FontStyle {
-  @override
-  Never noSuchMethod(Invocation invocation) {
-    throw UnimplementedError(
-      'This is a Token reference for FontStyle, so it does not implement ${invocation.memberName}.',
-    );
-  }
-}
+extension type const FontStyleToken(MixToken<FontStyle> _token)
+    implements FontStyle {}
 
 /// Extension type token reference for [BoxFit] values.
-extension type const BoxFitToken(MixToken<BoxFit> _token) implements BoxFit {
-  @override
-  Never noSuchMethod(Invocation invocation) {
-    throw UnimplementedError(
-      'This is a Token reference for BoxFit, so it does not implement ${invocation.memberName}.',
-    );
-  }
-}
+extension type const BoxFitToken(MixToken<BoxFit> _token) implements BoxFit {}

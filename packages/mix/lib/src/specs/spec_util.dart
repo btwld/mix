@@ -8,13 +8,13 @@ import '../core/spec.dart';
 import '../core/style.dart';
 import '../modifiers/modifier_util.dart';
 import '../variants/variant_util.dart';
-import '../widgets/box/box_attribute.dart';
-import '../widgets/flex/flex_attribute.dart';
-import '../widgets/flexbox/flexbox_spec.dart';
-import '../widgets/icon/icon_attribute.dart';
-import '../widgets/image/image_attribute.dart';
-import '../widgets/stack/stack_attribute.dart';
-import '../widgets/text/text_attribute.dart';
+import 'box/box_attribute.dart';
+import 'flex/flex_attribute.dart';
+import 'flexbox/flexbox_spec.dart';
+import 'icon/icon_attribute.dart';
+import 'image/image_attribute.dart';
+import 'stack/stack_attribute.dart';
+import 'text/text_attribute.dart';
 
 /// Global accessor for box specification attributes.
 BoxSpecAttribute get $box => BoxSpecAttribute();

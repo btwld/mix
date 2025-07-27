@@ -55,6 +55,7 @@ export 'src/animation/animation_config.dart';
 
 /// CORE
 export 'src/core/breakpoint.dart';
+export 'src/core/cursor_position.dart';
 export 'src/core/directive.dart';
 export 'src/core/helpers.dart';
 export 'src/core/mix_element.dart';
@@ -89,28 +90,28 @@ export 'src/modifiers/transform_modifier.dart';
 export 'src/modifiers/visibility_modifier.dart';
 
 /// SPECS
-export 'src/widgets/box/box_attribute.dart';
-export 'src/widgets/box/box_spec.dart';
-export 'src/widgets/box/box_widget.dart';
-export 'src/widgets/flex/flex_attribute.dart';
-export 'src/widgets/flex/flex_spec.dart';
-export 'src/widgets/flexbox/flexbox_spec.dart';
-export 'src/widgets/flexbox/flexbox_widget.dart';
-export 'src/widgets/icon/icon_attribute.dart';
-export 'src/widgets/icon/icon_spec.dart';
-export 'src/widgets/icon/icon_widget.dart';
-export 'src/widgets/image/image_attribute.dart';
-export 'src/widgets/image/image_spec.dart';
-export 'src/widgets/image/image_widget.dart';
-export 'src/properties/spec_util.dart';
-export 'src/widgets/stack/stack_attribute.dart';
-export 'src/widgets/stack/stack_box_spec.dart';
-export 'src/widgets/stack/stack_spec.dart';
-export 'src/widgets/stack/stack_widget.dart';
-export 'src/widgets/text/text_attribute.dart';
-export 'src/widgets/text/text_directives_util.dart';
-export 'src/widgets/text/text_spec.dart';
-export 'src/widgets/text/text_widget.dart';
+export 'src/specs/box/box_attribute.dart';
+export 'src/specs/box/box_spec.dart';
+export 'src/specs/box/box_widget.dart';
+export 'src/specs/flex/flex_attribute.dart';
+export 'src/specs/flex/flex_spec.dart';
+export 'src/specs/flexbox/flexbox_spec.dart';
+export 'src/specs/flexbox/flexbox_widget.dart';
+export 'src/specs/icon/icon_attribute.dart';
+export 'src/specs/icon/icon_spec.dart';
+export 'src/specs/icon/icon_widget.dart';
+export 'src/specs/image/image_attribute.dart';
+export 'src/specs/image/image_spec.dart';
+export 'src/specs/image/image_widget.dart';
+export 'src/specs/spec_util.dart';
+export 'src/specs/stack/stack_attribute.dart';
+export 'src/specs/stack/stack_box_spec.dart';
+export 'src/specs/stack/stack_spec.dart';
+export 'src/specs/stack/stack_widget.dart';
+export 'src/specs/text/text_attribute.dart';
+export 'src/specs/text/text_directives_util.dart';
+export 'src/specs/text/text_spec.dart';
+export 'src/specs/text/text_widget.dart';
 
 /// THEME
 export 'src/theme/material/material_theme.dart';
@@ -123,4 +124,4 @@ export 'src/theme/tokens/value_resolver.dart';
 export 'src/variants/variant_util.dart';
 
 /// WIDGETS
-export 'src/widgets/pressable/pressable_widget.dart';
+export 'src/specs/pressable/pressable_widget.dart';

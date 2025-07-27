@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/src/widget_state/cursor_position.dart';
+import 'package:mix/src/core/cursor_position.dart';
 
 void main() {
   group('CursorPositionNotifier', () {
