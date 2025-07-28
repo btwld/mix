@@ -113,10 +113,9 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
 
     final variantStyles = variants.map((variantAttr) {
       return switch (variantAttr.variant) {
-            ContextVariantBuilder variant => variant.build(context),
-            (ContextVariant() || NamedVariant()) => variantAttr,
-          }
-          as Style<S>;
+        ContextVariantBuilder variant => variant.build(context) as Style<S>,
+        (ContextVariant() || NamedVariant()) => variantAttr.value,
+      };
     }).toList();
 
     Style<S> styleData = this;

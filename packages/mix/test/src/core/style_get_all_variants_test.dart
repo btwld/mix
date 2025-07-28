@@ -328,9 +328,9 @@ void main() {
           namedVariants: {},
         );
 
-        // ContextVariantBuilder variant should apply (width: 100)
+        // ContextVariantBuilder variant should apply (width: 150 from builder)
         final spec = result.resolve(context);
-        expect((spec.resolvedValue as Map)['width'], 100.0);
+        expect((spec.resolvedValue as Map)['width'], 150.0);
       });
 
       test('filtering excludes non-matching variants', () {
@@ -822,5 +822,3 @@ class _MockSpecAttribute extends Style<MockSpec> {
   @override
   List<Object?> get props => [width, height, $variants];
 }
-
-// Mock ContextVariant that always matches for testing priority behavior

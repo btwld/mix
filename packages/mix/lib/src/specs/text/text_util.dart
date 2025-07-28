@@ -15,10 +15,10 @@ import 'text_spec.dart';
 
 /// Mutable utility class for text styling using composition over inheritance.
 ///
-/// Same API as TextSpecAttribute but with mutable internal state
+/// Same API as TextMix but with mutable internal state
 /// for cascade notation support: `$text..color.red()..fontSize(16)`
 class TextSpecUtility extends StyleAttributeBuilder<TextSpec> {
-  // TEXT UTILITIES - Same as TextSpecAttribute but return TextSpecUtility for cascade
+  // TEXT UTILITIES - Same as TextMix but return TextSpecUtility for cascade
 
   late final textOverflow = PropUtility<TextSpecUtility, TextOverflow>(
     (prop) => _build(TextMix.raw(overflow: prop)),

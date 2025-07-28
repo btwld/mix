@@ -100,7 +100,7 @@ class StackMix extends Style<StackSpec>
   ///
   /// ```dart
   /// const spec = StackSpec(alignment: AlignmentDirectional.topStart, fit: StackFit.loose);
-  /// final attr = StackSpecAttribute.value(spec);
+  /// final attr = StackMix.value(spec);
   /// ```
   StackMix.value(StackSpec spec)
     : this(
@@ -112,11 +112,11 @@ class StackMix extends Style<StackSpec>
 
   /// Constructor that accepts a nullable [StackSpec] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [StackSpecAttribute.value].
+  /// Returns null if the input is null, otherwise uses [StackMix.value].
   ///
   /// ```dart
   /// const StackSpec? spec = StackSpec(alignment: AlignmentDirectional.topStart, fit: StackFit.loose);
-  /// final attr = StackSpecAttribute.maybeValue(spec); // Returns StackSpecAttribute or null
+  /// final attr = StackMix.maybeValue(spec); // Returns StackMix or null
   /// ```
   static StackMix? maybeValue(StackSpec? spec) {
     return spec != null ? StackMix.value(spec) : null;

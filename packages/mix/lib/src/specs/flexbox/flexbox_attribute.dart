@@ -58,7 +58,7 @@ class FlexBoxMix extends Style<FlexBoxSpec>
   ///
   /// ```dart
   /// const spec = FlexBoxSpec(box: BoxSpec(...), flex: FlexSpec(...));
-  /// final attr = FlexBoxSpecAttribute.value(spec);
+  /// final attr = FlexBoxMix.value(spec);
   /// ```
   static FlexBoxMix value(FlexBoxSpec spec) {
     return FlexBoxMix(
@@ -73,7 +73,7 @@ class FlexBoxMix extends Style<FlexBoxSpec>
   ///
   /// ```dart
   /// const FlexBoxSpec? spec = FlexBoxSpec(box: BoxSpec(...), flex: FlexSpec(...));
-  /// final attr = FlexBoxSpecAttribute.maybeValue(spec); // Returns FlexBoxSpecAttribute or null
+  /// final attr = FlexBoxMix.maybeValue(spec); // Returns FlexBoxMix or null
   /// ```
   static FlexBoxMix? maybeValue(FlexBoxSpec? spec) {
     return spec != null ? FlexBoxMix.value(spec) : null;
@@ -98,13 +98,13 @@ class FlexBoxMix extends Style<FlexBoxSpec>
     return merge(FlexBoxMix(variants: variants));
   }
 
-  /// Resolves to [FlexBoxSpec] using the provided [MixContext].
+  /// Resolves to [FlexBoxSpec] using the provided [BuildContext].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
+  /// If a property is null in the context, it uses the default value
+  /// defined in the property specification.
   ///
   /// ```dart
-  /// final flexBoxSpec = FlexBoxSpecAttribute(...).resolveSpec(context);
+  /// final flexBoxSpec = FlexBoxMix(...).resolve(context);
   /// ```
   @override
   FlexBoxSpec resolve(BuildContext context) {

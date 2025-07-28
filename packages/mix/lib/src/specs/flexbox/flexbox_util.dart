@@ -16,7 +16,7 @@ import 'flexbox_spec.dart';
 
 /// Mutable utility class for flexbox styling using composition over inheritance.
 ///
-/// Same API as FlexBoxSpecAttribute but with mutable internal state
+/// Same API as FlexBoxMix but with mutable internal state
 /// for cascade notation support: `$flexbox..color.red()..width(100)`
 class FlexBoxSpecUtility extends StyleAttributeBuilder<FlexBoxSpec> {
   // BOX UTILITIES - Same as BoxSpecUtility but return FlexBoxSpecUtility for cascade

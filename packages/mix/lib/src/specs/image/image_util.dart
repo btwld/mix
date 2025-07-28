@@ -12,10 +12,10 @@ import 'image_spec.dart';
 
 /// Mutable utility class for image styling using composition over inheritance.
 ///
-/// Same API as ImageSpecAttribute but with mutable internal state
+/// Same API as ImageMix but with mutable internal state
 /// for cascade notation support: `$image..width(100)..height(100)..fit(BoxFit.cover)`
 class ImageSpecUtility extends StyleAttributeBuilder<ImageSpec> {
-  // IMAGE UTILITIES - Same as ImageSpecAttribute but return ImageSpecUtility for cascade
+  // IMAGE UTILITIES - Same as ImageMix but return ImageSpecUtility for cascade
 
   late final width = PropUtility<ImageSpecUtility, double>(
     (prop) => _build(ImageMix.raw(width: prop)),

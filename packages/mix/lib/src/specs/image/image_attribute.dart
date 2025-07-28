@@ -143,7 +143,7 @@ class ImageMix extends Style<ImageSpec>
   ///
   /// ```dart
   /// const spec = ImageSpec(width: 100, height: 100, fit: BoxFit.cover);
-  /// final attr = ImageSpecAttribute.value(spec);
+  /// final attr = ImageMix.value(spec);
   /// ```
   ImageMix.value(ImageSpec spec)
     : this(
@@ -160,11 +160,11 @@ class ImageMix extends Style<ImageSpec>
 
   /// Constructor that accepts a nullable [ImageSpec] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [ImageSpecAttribute.value].
+  /// Returns null if the input is null, otherwise uses [ImageMix.value].
   ///
   /// ```dart
   /// const ImageSpec? spec = ImageSpec(width: 100, height: 100, fit: BoxFit.cover);
-  /// final attr = ImageSpecAttribute.maybeValue(spec); // Returns ImageSpecAttribute or null
+  /// final attr = ImageMix.maybeValue(spec); // Returns ImageMix or null
   /// ```
   static ImageMix? maybeValue(ImageSpec? spec) {
     return spec != null ? ImageMix.value(spec) : null;

@@ -300,7 +300,7 @@ class TextMix extends Style<TextSpec>
   ///
   /// ```dart
   /// const spec = TextSpec(overflow: TextOverflow.ellipsis, maxLines: 2);
-  /// final attr = TextSpecAttribute.value(spec);
+  /// final attr = TextMix.value(spec);
   /// ```
   TextMix.value(TextSpec spec)
     : this(
@@ -321,11 +321,11 @@ class TextMix extends Style<TextSpec>
 
   /// Constructor that accepts a nullable [TextSpec] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [TextSpecAttribute.value].
+  /// Returns null if the input is null, otherwise uses [TextMix.value].
   ///
   /// ```dart
   /// const TextSpec? spec = TextSpec(overflow: TextOverflow.ellipsis, maxLines: 2);
-  /// final attr = TextSpecAttribute.maybeValue(spec); // Returns TextSpecAttribute or null
+  /// final attr = TextMix.maybeValue(spec); // Returns TextMix or null
   /// ```
   static TextMix? maybeValue(TextSpec? spec) {
     return spec != null ? TextMix.value(spec) : null;

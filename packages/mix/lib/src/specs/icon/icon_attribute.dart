@@ -164,7 +164,7 @@ class IconMix extends Style<IconSpec>
   ///
   /// ```dart
   /// const IconSpec? spec = IconSpec(color: Colors.blue, size: 24.0);
-  /// final attr = IconSpecAttribute.maybeValue(spec); // Returns IconSpecAttribute or null
+  /// final attr = IconMix.maybeValue(spec); // Returns IconMix or null
   /// ```
   static IconMix? maybeValue(IconSpec? spec) {
     return spec != null ? IconMix.value(spec) : null;

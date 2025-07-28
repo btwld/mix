@@ -62,7 +62,7 @@ class BoxExampleApp extends StatelessWidget {
 
               // Box with border
               Box(
-                style: BoxMix()
+                style: Style.box()
                     .width(200)
                     .height(80)
                     .color(Colors.orange)

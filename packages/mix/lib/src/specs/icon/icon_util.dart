@@ -14,10 +14,10 @@ import 'icon_spec.dart';
 
 /// Mutable utility class for icon styling using composition over inheritance.
 ///
-/// Same API as IconSpecAttribute but with mutable internal state
+/// Same API as IconMix but with mutable internal state
 /// for cascade notation support: `$icon..color(Colors.blue)..size(24)..weight(400)`
 class IconSpecUtility extends StyleAttributeBuilder<IconSpec> {
-  // ICON UTILITIES - Same as IconSpecAttribute but return IconSpecUtility for cascade
+  // ICON UTILITIES - Same as IconMix but return IconSpecUtility for cascade
 
   late final color = ColorUtility<IconSpecUtility>(
     (prop) => _build(IconMix.raw(color: prop)),
