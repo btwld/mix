@@ -9,8 +9,10 @@ import 'mix_element.dart';
 import 'modifier.dart';
 import 'spec.dart';
 
-abstract class Style<S extends Spec<S>> extends Mixable<Style<S>> {
-  const Style();
+/// This is used just to pass all the values into one place if needed
+@internal
+sealed class StyleElement {
+  const StyleElement();
 }
 
 /// Base class for style containers that can be resolved to specifications.
@@ -18,7 +20,8 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>> {
 /// Provides variant support, modifiers, and animation configuration for styled elements.
 abstract class StyleAttribute<S extends Spec<S>>
     extends Mixable<StyleAttribute<S>>
-    with EqualityMixin, Resolvable<S> {
+    with Equatable, Resolvable<S>
+    implements StyleElement {
   final List<VariantStyleAttribute<S>>? $variants;
   final List<ModifierAttribute>? $modifiers;
   final AnimationConfig? $animation;
@@ -167,8 +170,8 @@ abstract class StyleAttribute<S extends Spec<S>>
   }
 }
 
-abstract class ModifierAttribute<S extends Modifier<S>>
-    extends StyleAttribute<S> {
+abstract class ModifierAttribute<S extends Modifier<S>> extends Mix<S>
+    implements StyleElement {
   const ModifierAttribute();
 
   @override
@@ -182,7 +185,9 @@ abstract class ModifierAttribute<S extends Modifier<S>>
 }
 
 /// Variant wrapper for conditional styling
-final class VariantStyleAttribute<S extends Spec<S>> extends StyleAttribute<S> {
+final class VariantStyleAttribute<S extends Spec<S>> extends Mixable<S>
+    with Equatable
+    implements StyleElement {
   final Variant variant;
   final StyleAttribute<S> _style;
 
@@ -220,11 +225,6 @@ final class VariantStyleAttribute<S extends Spec<S>> extends StyleAttribute<S> {
     return remainingVariant == null
         ? null
         : VariantStyleAttribute(remainingVariant, _style);
-  }
-
-  @override
-  S resolve(BuildContext context) {
-    throw UnimplementedError('Do not try to resolve a variant attribute');
   }
 
   @override
@@ -334,7 +334,7 @@ class CompoundStyle extends StyleAttribute<MultiSpec> {
   /// ```dart
   /// final style = Style.create([attribute1, attribute2]);
   /// ```
-  factory CompoundStyle.create(Iterable<StyleAttribute> elements) {
+  factory CompoundStyle.create(Iterable<StyleElement> elements) {
     final styleList = <StyleAttribute>[];
     final modifierList = <ModifierAttribute>[];
     final variants = <VariantStyleAttribute>[];

@@ -17,13 +17,6 @@ sealed class Variant {
 
   String get key;
 
-  /// Operator for creating AND multi-variants
-  MultiVariant operator &(covariant Variant variant) =>
-      MultiVariant.and([this, variant]);
-
-  /// Operator for creating OR multi-variants
-  MultiVariant operator |(covariant Variant variant) =>
-      MultiVariant.or([this, variant]);
 }
 
 /// Manual variants that are only applied when explicitly requested.
@@ -167,97 +160,9 @@ class ContextVariantBuilder<S extends StyleAttribute<Object?>> extends Variant {
   S build(BuildContext context) => fn(context);
 }
 
-/// Operator for combining variants with AND/OR/NOT logic
-enum MultiVariantOperator { and, or, not }
-
-/// Variant that combines multiple variants with AND/OR logic.
-/// Supports complex conditional styling based on multiple conditions.
-@immutable
-final class MultiVariant extends ContextVariant {
-  final List<Variant> variants;
-  final MultiVariantOperator operatorType;
-
-  MultiVariant._(this.variants, {required this.operatorType})
-    : super('', (context) => false);
-
-  factory MultiVariant(
-    Iterable<Variant> variants, {
-    required MultiVariantOperator type,
-  }) {
-    final multiVariants = <MultiVariant>[];
-    final otherVariants = <Variant>[];
-
-    for (var variant in variants) {
-      if (variant is MultiVariant) {
-        if (variant.operatorType == type) {
-          otherVariants.addAll(variant.variants);
-        } else {
-          multiVariants.add(variant);
-        }
-      } else {
-        otherVariants.add(variant);
-      }
-    }
-
-    final combinedVariants = [...multiVariants, ...otherVariants];
-
-    return MultiVariant._(combinedVariants.toList(), operatorType: type);
-  }
-
-  factory MultiVariant.and(Iterable<Variant> variants) {
-    return MultiVariant(variants, type: MultiVariantOperator.and);
-  }
-
-  factory MultiVariant.or(Iterable<Variant> variants) {
-    return MultiVariant(variants, type: MultiVariantOperator.or);
-  }
-
-  factory MultiVariant.not(Variant variant) {
-    return MultiVariant._([variant], operatorType: MultiVariantOperator.not);
-  }
-
-  List<Object?> get props => [variants, operatorType];
-
-  @override
-  bool when(BuildContext context) {
-    final conditions = variants.map((variant) {
-      if (variant is ContextVariant) {
-        return variant.when(context);
-      }
-
-      // NamedVariants never match context conditions
-      return false;
-    }).toList();
-
-    switch (operatorType) {
-      case MultiVariantOperator.or:
-        return conditions.contains(true);
-      case MultiVariantOperator.and:
-        return conditions.every((e) => e);
-      case MultiVariantOperator.not:
-        return conditions.isNotEmpty ? !conditions.first : false;
-    }
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is MultiVariant &&
-          other.operatorType == operatorType &&
-          const DeepCollectionEquality().equals(other.variants, variants);
-
-  @override
-  String get key => 'MultiVariant(${variants.map((v) => v.key).join(', ')})';
-
-  @override
-  int get hashCode =>
-      Object.hash(operatorType, const DeepCollectionEquality().hash(variants));
-}
 
 // Common named variants
 const primary = NamedVariant('primary');
 const secondary = NamedVariant('secondary');
 const outlined = NamedVariant('outlined');
 
-// NOT operator for creating inverse variants
-MultiVariant not(Variant variant) => MultiVariant.not(variant);

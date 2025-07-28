@@ -7,7 +7,7 @@ import 'internal/compare_mixin.dart';
 /// Specs are the final resolved form of styling attributes after applying
 /// context-specific values and merging operations.
 @immutable
-abstract class Spec<T extends Spec<T>> with EqualityMixin {
+abstract class Spec<T extends Spec<T>> with Equatable {
   const Spec();
 
   Type get type => T;

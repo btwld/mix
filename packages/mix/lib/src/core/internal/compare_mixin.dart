@@ -31,9 +31,9 @@ bool _equals(List? list1, List? list2) {
   return true;
 }
 
-/// Checks if the given object implements [EqualityMixin].
+/// Checks if the given object implements [Equatable].
 bool _isEquatable(dynamic object) {
-  return object is EqualityMixin;
+  return object is Equatable;
 }
 
 /// Returns a string representation of [props] for debugging purposes.
@@ -58,7 +58,7 @@ String mapPropsToString(Type runtimeType, List<Object?> props) {
 ///
 /// Automatically implements [operator ==] and [hashCode] based on the [props] list,
 /// eliminating the need for manual implementation in most cases.
-mixin EqualityMixin {
+mixin Equatable {
   /// The properties based on which equality and hash code are computed.
   List<Object?> get props;
 
@@ -69,7 +69,7 @@ mixin EqualityMixin {
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        other is EqualityMixin &&
+        other is Equatable &&
             runtimeType == other.runtimeType &&
             _equals(props, other.props);
   }
@@ -88,7 +88,7 @@ mixin EqualityMixin {
 
   /// Returns a map of properties that differ between this object and another.
   @visibleForTesting
-  Map<String, String> getDiff(EqualityMixin other) {
+  Map<String, String> getDiff(Equatable other) {
     final diff = <String, String>{};
 
     // Return empty map if no differences
@@ -128,7 +128,7 @@ Map<String, String?> compareObjects(Object? obj1, Object? obj2) {
 
   if (obj1 == null || obj2 == null) {
     differences[obj1.runtimeType.toString()] = obj2.runtimeType.toString();
-  } else if (obj1 is EqualityMixin && obj2 is EqualityMixin) {
+  } else if (obj1 is Equatable && obj2 is Equatable) {
     final value = obj1.getDiff(obj2);
     if (value.isNotEmpty) {
       differences[obj1.runtimeType.toString()] = value.toString();

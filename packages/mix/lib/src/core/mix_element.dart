@@ -29,7 +29,7 @@ abstract class Mixable<T> {
 ///
 /// Combines the abilities to merge with other instances and resolve to concrete values
 /// using a [BuildContext]. This is the foundation for all styling elements in Mix.
-abstract class Mix<T> extends Mixable<T> with Resolvable<T>, EqualityMixin {
+abstract class Mix<T> extends Mixable<T> with Resolvable<T>, Equatable {
   const Mix();
 
   @override
