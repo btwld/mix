@@ -17,8 +17,8 @@ import 'icon_spec.dart';
 class IconSpecAttribute extends Style<IconSpec>
     with
         Diagnosticable,
-        ModifierMixin<IconSpecAttribute, IconSpec>,
-        VariantMixin<IconSpecAttribute, IconSpec> {
+        StyleModifierMixin<IconSpecAttribute, IconSpec>,
+        StyleVariantMixin<IconSpecAttribute, IconSpec> {
   final Prop<Color>? $color;
   final Prop<double>? $size;
   final Prop<double>? $weight;

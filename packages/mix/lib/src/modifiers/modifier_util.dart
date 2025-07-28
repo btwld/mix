@@ -139,7 +139,7 @@ final class ModifierUtility<T extends Style<Object?>>
 ///
 /// This mixin follows the same pattern as BorderRadiusMixin, providing
 /// a fluent API for applying modifiers to spec attributes.
-mixin ModifierMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
+mixin StyleModifierMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   /// Must be implemented by the class using this mixin
   T modifiers(List<ModifierAttribute> modifiers);
 

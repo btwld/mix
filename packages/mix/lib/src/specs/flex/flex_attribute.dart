@@ -21,8 +21,8 @@ import 'flex_spec.dart';
 class FlexSpecAttribute extends Style<FlexSpec>
     with
         Diagnosticable,
-        ModifierMixin<FlexSpecAttribute, FlexSpec>,
-        VariantMixin<FlexSpecAttribute, FlexSpec> {
+        StyleModifierMixin<FlexSpecAttribute, FlexSpec>,
+        StyleVariantMixin<FlexSpecAttribute, FlexSpec> {
   final Prop<Axis>? $direction;
   final Prop<MainAxisAlignment>? $mainAxisAlignment;
   final Prop<CrossAxisAlignment>? $crossAxisAlignment;

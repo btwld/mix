@@ -21,8 +21,8 @@ import 'stack_spec.dart';
 class StackSpecAttribute extends Style<StackSpec>
     with
         Diagnosticable,
-        ModifierMixin<StackSpecAttribute, StackSpec>,
-        VariantMixin<StackSpecAttribute, StackSpec> {
+        StyleModifierMixin<StackSpecAttribute, StackSpec>,
+        StyleVariantMixin<StackSpecAttribute, StackSpec> {
   final Prop<AlignmentGeometry>? $alignment;
   final Prop<StackFit>? $fit;
   final Prop<TextDirection>? $textDirection;

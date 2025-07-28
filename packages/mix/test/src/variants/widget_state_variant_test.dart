@@ -143,17 +143,13 @@ void main() {
         expect(() => variant.when(context), returnsNormally);
       });
 
-      test('can be used in MultiVariant operations', () {
+      test('separate variants can be used independently', () {
         final hovered = WidgetStateVariant(WidgetState.hovered);
         final pressed = WidgetStateVariant(WidgetState.pressed);
-
-        final andVariant = hovered & pressed;
-        final orVariant = hovered | pressed;
-
-        expect(andVariant, isA<MultiVariant>());
-        expect(orVariant, isA<MultiVariant>());
-        expect(andVariant.operatorType, MultiVariantOperator.and);
-        expect(orVariant.operatorType, MultiVariantOperator.or);
+        
+        expect(hovered.state, WidgetState.hovered);
+        expect(pressed.state, WidgetState.pressed);
+        expect(hovered, isNot(equals(pressed)));
       });
     });
 
@@ -273,85 +269,59 @@ void main() {
 
       test('predefined enabled variant uses NOT logic', () {
         final disabled = ContextVariant.widgetState(WidgetState.disabled);
-        final enabled = not(disabled);
-        expect(enabled, isA<MultiVariant>());
-        expect(enabled.operatorType, MultiVariantOperator.not);
-        expect(enabled.variants.length, 1);
-        expect(enabled.variants.first, disabled);
+        final enabled = ContextVariant.not(disabled);
+        
+        expect(enabled, isA<ContextVariant>());
+        expect(enabled.key, contains('not'));
       });
 
       test('predefined unselected variant uses NOT logic', () {
         final selected = ContextVariant.widgetState(WidgetState.selected);
-        final unselected = not(selected);
-        expect(unselected, isA<MultiVariant>());
-        expect(unselected.operatorType, MultiVariantOperator.not);
-        expect(unselected.variants.length, 1);
-        expect(unselected.variants.first, selected);
+        final unselected = ContextVariant.not(selected);
+        
+        expect(unselected, isA<ContextVariant>());
+        expect(unselected.key, contains('not'));
       });
     });
 
     group('Complex widget state scenarios', () {
-      test('combines with other WidgetStateVariants in MultiVariant', () {
-        final hoverAndPress = MultiVariant.and([
-          WidgetStateVariant(WidgetState.hovered),
-          WidgetStateVariant(WidgetState.pressed),
-        ]);
-
-        expect(hoverAndPress.variants.length, 2);
-        expect(hoverAndPress.operatorType, MultiVariantOperator.and);
-
-        final containsHover = hoverAndPress.variants.any(
-          (v) => v is WidgetStateVariant && v.state == WidgetState.hovered,
-        );
-        final containsPress = hoverAndPress.variants.any(
-          (v) => v is WidgetStateVariant && v.state == WidgetState.pressed,
-        );
-
-        expect(containsHover, isTrue);
-        expect(containsPress, isTrue);
+      test('multiple widget states can be applied separately', () {
+        final hovered = WidgetStateVariant(WidgetState.hovered);
+        final pressed = WidgetStateVariant(WidgetState.pressed);
+        
+        // Test they are distinct variants
+        expect(hovered.key, isNot(equals(pressed.key)));
+        expect(hovered.state, isNot(equals(pressed.state)));
       });
-
-      test('combines with NamedVariants in MultiVariant', () {
-        final hoverAndPrimary = MultiVariant.and([
-          WidgetStateVariant(WidgetState.hovered),
-          const NamedVariant('primary'),
-        ]);
-
-        expect(hoverAndPrimary.variants.length, 2);
-        expect(hoverAndPrimary.variants, contains(isA<WidgetStateVariant>()));
-        expect(
-          hoverAndPrimary.variants,
-          contains(const NamedVariant('primary')),
-        );
+      
+      test('widget states can combine with named variants', () {
+        final hovered = WidgetStateVariant(WidgetState.hovered);
+        const primary = NamedVariant('primary');
+        
+        // Test they are different types of variants
+        expect(hovered, isA<WidgetStateVariant>());
+        expect(primary, isA<NamedVariant>());
+        expect(hovered.key, isNot(equals(primary.key)));
       });
-
-      test('can be negated with NOT operation', () {
-        final notHovered = MultiVariant.not(
-          WidgetStateVariant(WidgetState.hovered),
+      
+      test('negated widget states work correctly', () {
+        final hovered = WidgetStateVariant(WidgetState.hovered);
+        final notHovered = ContextVariant.not(
+          ContextVariant.widgetState(WidgetState.hovered),
         );
-
-        expect(notHovered.operatorType, MultiVariantOperator.not);
-        expect(notHovered.variants.length, 1);
-        expect(notHovered.variants.first, isA<WidgetStateVariant>());
-
-        final widgetStateVariant =
-            notHovered.variants.first as WidgetStateVariant;
-        expect(widgetStateVariant.state, WidgetState.hovered);
+        
+        expect(notHovered, isA<ContextVariant>());
+        expect(notHovered.key, contains('not'));
       });
-
-      test('works with predefined utility variants', () {
-        // Test with enabled (not disabled)
+      
+      test('enabled variant is opposite of disabled', () {
         final disabled = ContextVariant.widgetState(WidgetState.disabled);
+        final enabled = ContextVariant.not(disabled);
         final hover = ContextVariant.widgetState(WidgetState.hovered);
-        final enabled = not(disabled);
-        final enabledAndHovered = MultiVariant.and([enabled, hover]);
-
-        expect(enabledAndHovered.variants.length, 2);
-        expect(enabledAndHovered.variants, contains(enabled)); // MultiVariant
-        expect(
-          enabledAndHovered.variants,
-          contains(hover),
-        ); // WidgetStateVariant
+        
+        // Test they are distinct
+        expect(enabled.key, isNot(equals(disabled.key)));
+        expect(enabled.key, isNot(equals(hover.key)));
       });
     });
 

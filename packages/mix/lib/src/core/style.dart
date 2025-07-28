@@ -198,31 +198,11 @@ final class VariantStyleAttribute<S extends Spec<S>> extends Mixable<S>
       otherVariants.contains(variant);
 
   VariantStyleAttribute<S>? removeVariants(Iterable<Variant> variantsToRemove) {
-    Variant? remainingVariant;
-    if (variant is MultiVariant) {
-      final multiVariant = variant as MultiVariant;
-      final remainingVariants = multiVariant.variants
-          .where((v) => !variantsToRemove.contains(v))
-          .toList();
-
-      if (remainingVariants.isEmpty) {
-        return null;
-      } else if (remainingVariants.length == 1) {
-        remainingVariant = remainingVariants.first;
-      } else {
-        remainingVariant = multiVariant.operatorType == MultiVariantOperator.and
-            ? MultiVariant.and(remainingVariants)
-            : MultiVariant.or(remainingVariants);
-      }
-    } else {
-      if (!variantsToRemove.contains(variant)) {
-        return this;
-      }
+    if (!variantsToRemove.contains(variant)) {
+      return this;
     }
 
-    return remainingVariant == null
-        ? null
-        : VariantStyleAttribute(remainingVariant, _style);
+    return null;
   }
 
   @override

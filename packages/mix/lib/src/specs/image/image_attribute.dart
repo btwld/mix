@@ -15,8 +15,8 @@ import 'image_spec.dart';
 class ImageSpecAttribute extends Style<ImageSpec>
     with
         Diagnosticable,
-        ModifierMixin<ImageSpecAttribute, ImageSpec>,
-        VariantMixin<ImageSpecAttribute, ImageSpec> {
+        StyleModifierMixin<ImageSpecAttribute, ImageSpec>,
+        StyleVariantMixin<ImageSpecAttribute, ImageSpec> {
   final Prop<double>? $width;
   final Prop<double>? $height;
   final Prop<Color>? $color;

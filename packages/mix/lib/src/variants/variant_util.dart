@@ -182,7 +182,7 @@ class OnContextVariantUtility<S extends Spec<S>, T extends Style<S>>
   /// Creates a variant attribute for the enabled state (opposite of disabled)
   VariantAttributeBuilder<S> get enabled {
     return VariantAttributeBuilder(
-      MultiVariant.not(ContextVariant.widgetState(WidgetState.disabled)),
+      ContextVariant.not(ContextVariant.widgetState(WidgetState.disabled)),
     );
   }
 
@@ -334,7 +334,7 @@ typedef VariantFactoryCallback<T extends Style<S>, S extends Spec<S>> =
 ///
 /// This mixin follows the same pattern as ModifierMixin, providing
 /// a fluent API for applying context variants to spec attributes.
-mixin VariantMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
+mixin StyleVariantMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   /// Must be implemented by the class using this mixin
   T variant(Variant variant, T style);
 
@@ -404,7 +404,7 @@ mixin VariantMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   /// Creates a variant for enabled state (opposite of disabled)
   T onEnabled(T style) {
     return variant(
-      MultiVariant.not(ContextVariant.widgetState(WidgetState.disabled)),
+      ContextVariant.not(ContextVariant.widgetState(WidgetState.disabled)),
       style,
     );
   }

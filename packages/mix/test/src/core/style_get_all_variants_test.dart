@@ -152,10 +152,7 @@ void main() {
         const namedVariant = NamedVariant('named');
         final widgetStateVariant1 = WidgetStateVariant(WidgetState.hovered);
         final widgetStateVariant2 = WidgetStateVariant(WidgetState.pressed);
-        final multiVariant = MultiVariant.and(const [
-          NamedVariant('multi1'),
-          NamedVariant('multi2'),
-        ]);
+        const multiNamedVariant = NamedVariant('multi');
 
         final varAttrs = [
           VariantStyleAttribute(
@@ -175,7 +172,7 @@ void main() {
             _MockSpecAttribute(width: 400.0),
           ), // Should be sorted earlier
           VariantStyleAttribute(
-            multiVariant,
+            multiNamedVariant,
             _MockSpecAttribute(width: 500.0),
           ), // Should be sorted earlier
         ];
@@ -191,8 +188,7 @@ void main() {
           activeStates: {WidgetState.hovered, WidgetState.pressed},
           namedVariants: {
             namedVariant,
-            const NamedVariant('multi1'),
-            const NamedVariant('multi2'),
+            multiNamedVariant,
           },
           expectedWidth: 300.0, // WidgetStateVariant2 (pressed) applied last
         );
@@ -453,16 +449,13 @@ void main() {
         final contextVariant = ContextVariant('context', (context) => true);
         const namedVariant = NamedVariant('named');
         final widgetStateVariant = WidgetStateVariant(WidgetState.hovered);
-        final multiVariant = MultiVariant.and([
-          ContextVariant('multi_context', (context) => true),
-          const NamedVariant('multi_named'),
-        ]);
+        const multiNamedVariant = NamedVariant('multi_named');
         final contextBuilder = ContextVariantBuilder<_MockSpecAttribute>(
           (context) => _MockSpecAttribute(width: 150.0, height: 500.0),
         );
 
         final varAttrs = [
-          VariantStyleAttribute(multiVariant, _MockSpecAttribute(width: 100.0)),
+          VariantStyleAttribute(multiNamedVariant, _MockSpecAttribute(width: 100.0)),
           VariantStyleAttribute(
             contextVariant,
             _MockSpecAttribute(width: 200.0),

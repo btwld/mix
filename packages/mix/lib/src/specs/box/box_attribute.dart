@@ -22,7 +22,7 @@ import 'box_spec.dart';
 
 abstract class StyleMixAttribute<T extends Style<S>, S extends Spec<S>>
     extends Style<S>
-    with ModifierMixin<T, S>, VariantMixin<T, S> {}
+    with StyleModifierMixin<T, S>, StyleVariantMixin<T, S> {}
 
 /// Attribute class for configuring [BoxSpec] properties.
 ///
@@ -31,8 +31,8 @@ abstract class StyleMixAttribute<T extends Style<S>, S extends Spec<S>>
 class BoxMix extends Style<BoxSpec>
     with
         Diagnosticable,
-        ModifierMixin<BoxMix, BoxSpec>,
-        VariantMixin<BoxMix, BoxSpec> {
+        StyleModifierMixin<BoxMix, BoxSpec>,
+        StyleVariantMixin<BoxMix, BoxSpec> {
   final Prop<AlignmentGeometry>? $alignment;
   final MixProp<EdgeInsetsGeometry>? $padding;
   final MixProp<EdgeInsetsGeometry>? $margin;
