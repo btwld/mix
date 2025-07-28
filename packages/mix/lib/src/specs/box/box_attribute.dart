@@ -10,6 +10,7 @@ import '../../properties/layout/constraints_mix.dart';
 import '../../properties/layout/constraints_util.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/layout/edge_insets_geometry_util.dart';
+import '../../properties/layout/transform_util.dart';
 import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/painting/border_radius_util.dart';
@@ -36,7 +37,8 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
         MarginMixin<BoxSpecAttribute, BoxSpec>,
         ConstraintsMixin<BoxSpecAttribute, BoxSpec>,
         DecorationMixin<BoxSpecAttribute, BoxSpec>,
-        ForegroundDecorationMixin<BoxSpecAttribute, BoxSpec> {
+        ForegroundDecorationMixin<BoxSpecAttribute, BoxSpec>,
+        TransformMixin<BoxSpecAttribute, BoxSpec> {
   final Prop<AlignmentGeometry>? $alignment;
   final MixProp<EdgeInsetsGeometry>? $padding;
   final MixProp<EdgeInsetsGeometry>? $margin;
@@ -244,6 +246,7 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
     return spec != null ? BoxSpecAttribute.value(spec) : null;
   }
 
+  @override
   BoxSpecAttribute transform(Matrix4 value) {
     return merge(BoxSpecAttribute.only(transform: value));
   }
@@ -457,38 +460,5 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
 }
 
 /// Extension
-/// Extension for decoration convenience methods
-
-/// Extension for transform effect convenience methods
-extension BoxSpecAttributeTransformExtension on BoxSpecAttribute {
-  /// Sets rotation transform effect
-  BoxSpecAttribute rotateEffect(double angle) {
-    return transform(Matrix4.rotationZ(angle));
-  }
-
-  /// Sets scale transform effect
-  BoxSpecAttribute scaleEffect(double scale) {
-    return transform(Matrix4.diagonal3Values(scale, scale, 1.0));
-  }
-
-  /// Sets translation transform effect
-  BoxSpecAttribute translateEffect(double x, double y) {
-    return transform(Matrix4.translationValues(x, y, 0.0));
-  }
-
-  /// Sets skew transform effect
-  BoxSpecAttribute skewEffect(double skewX, double skewY) {
-    final matrix = Matrix4.identity();
-    matrix.setEntry(0, 1, skewX);
-    matrix.setEntry(1, 0, skewY);
-
-    return transform(matrix);
-  }
-
-  /// Resets transform to identity (no effect)
-  BoxSpecAttribute transformReset() {
-    return transform(Matrix4.identity());
-  }
-}
 
 typedef BoxMix = BoxSpecAttribute;

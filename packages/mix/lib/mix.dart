@@ -68,6 +68,7 @@ export 'src/properties/layout/constraints_util.dart';
 export 'src/properties/layout/edge_insets_geometry_mix.dart';
 export 'src/properties/layout/edge_insets_geometry_util.dart'
     hide createEdgeInsetsMix;
+export 'src/properties/layout/enum_util.dart';
 export 'src/properties/layout/scalar_util.dart';
 export 'src/properties/painting/border_mix.dart';
 export 'src/properties/painting/border_radius_mix.dart';

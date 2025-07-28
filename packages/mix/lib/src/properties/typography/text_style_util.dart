@@ -3,8 +3,9 @@ import 'package:flutter/widgets.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
-import '../painting/color_util.dart';
+import '../layout/enum_util.dart';
 import '../layout/scalar_util.dart';
+import '../painting/color_util.dart';
 import '../painting/shadow_mix.dart';
 import 'text_style_mix.dart';
 
@@ -17,7 +18,7 @@ final class TextStyleUtility<T extends StyleAttribute<Object?>>
   );
 
   late final fontStyle = PropUtility<T, FontStyle>(
-    (prop) => call(TextStyleMix(fontStyle: prop),)
+    (prop) => call(TextStyleMix(fontStyle: prop)),
   );
 
   late final decoration = PropUtility<T, TextDecoration>(
@@ -25,7 +26,7 @@ final class TextStyleUtility<T extends StyleAttribute<Object?>>
   );
 
   late final fontSize = PropUtility<T, double>(
-    (prop) => call(TextStyleMix(fontSize: prop),)
+    (prop) => call(TextStyleMix(fontSize: prop)),
   );
 
   late final backgroundColor = ColorUtility<T>(
@@ -37,11 +38,11 @@ final class TextStyleUtility<T extends StyleAttribute<Object?>>
   );
 
   late final decorationStyle = PropUtility<T, TextDecorationStyle>(
-    (prop) => call(TextStyleMix(decorationStyle: prop),)
+    (prop) => call(TextStyleMix(decorationStyle: prop)),
   );
 
   late final textBaseline = PropUtility<T, TextBaseline>(
-    (prop) => call(TextStyleMix(textBaseline: prop),)
+    (prop) => call(TextStyleMix(textBaseline: prop)),
   );
 
   late final fontFamily = PropUtility<T, String>(

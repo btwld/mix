@@ -28,22 +28,23 @@ class BoxExampleApp extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               const Text(
-                'Using new \$box cascade API',
+                'Using new BoxMix() fluent API',
                 style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
               ),
               const SizedBox(height: 16),
 
-              // Cascade notation API
+              // Simple colored box
               Box(
-                style: $box
-                  ..color.red()
-                  ..width(100)
-                  ..height(100)
-                  ..borderRadius.circular(8),
+                style: BoxMix()
+                    .color(Colors.red)
+                    .width(100)
+                    .height(100)
+                    .roundedAll(8),
               ),
 
               const SizedBox(height: 16),
 
+              // Box with padding and text
               Box(
                 style: BoxMix()
                     .color(Colors.blue)
@@ -52,25 +53,27 @@ class BoxExampleApp extends StatelessWidget {
                     .paddingAll(16)
                     .roundedAll(12),
                 child: const Text(
-                  'Cascade API',
+                  'Fluent API',
                   style: TextStyle(color: Colors.white),
                 ),
               ),
 
               const SizedBox(height: 16),
 
-              // Cascade border access
+              // Box with border
               Box(
-                style: $box
-                  ..width(200)
-                  ..height(80)
-                  ..color.orange()
-                  ..padding.all(12)
-                  ..borderRadius.circular(16)
-                  ..border.width(2).color.black(),
+                style: BoxMix()
+                    .width(200)
+                    .height(80)
+                    .color(Colors.orange)
+                    .paddingAll(12)
+                    .roundedAll(16)
+                    .border(BoxBorderMix.all(
+                      BorderSideMix.only(width: 2, color: Colors.black),
+                    )),
                 child: const Center(
                   child: Text(
-                    'Cascade Border',
+                    'Box with Border',
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
@@ -78,58 +81,148 @@ class BoxExampleApp extends StatelessWidget {
 
               const SizedBox(height: 16),
 
-              // Cascade chaining
+              // Purple rounded box
               Box(
-                style: $box
-                  ..color.purple()
-                  ..width(120)
-                  ..height(120)
-                  ..borderRadius.circular(20)
-                  ..padding.all(8),
+                style: BoxMix()
+                    .color(Colors.purple)
+                    .width(120)
+                    .height(120)
+                    .roundedAll(20)
+                    .paddingAll(8),
                 child: const Center(
-                  child: Text('Cascade', style: TextStyle(color: Colors.white)),
+                  child: Text('Purple Box', style: TextStyle(color: Colors.white)),
                 ),
               ),
 
-              const SizedBox(height: 24),
-
-              const Text(
-                'Comparison: Old vs New API',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'Old: \$box.decoration.box.border.all.width(2)',
-                style: TextStyle(fontSize: 12, fontFamily: 'monospace'),
-              ),
-              const Text(
-                'Cascade: \$box..border.all.width(2)',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontFamily: 'monospace',
-                  color: Colors.green,
-                ),
-              ),
               const SizedBox(height: 16),
 
-              // Gradient example with flattened access
+              // Box with gradient
               Box(
-                style: $box
+                style: BoxMix()
                     .width(180)
                     .height(100)
-                    .color
-                    .purple()
-                    .borderRadius
-                    .circular(15),
+                    .linearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Colors.purple, Colors.blue],
+                    )
+                    .roundedAll(15)
+                    .paddingAll(16),
                 child: const Center(
                   child: Text(
-                    'Purple Box',
+                    'Gradient Box',
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Box with different corner radii
+              Box(
+                style: BoxMix()
+                    .color(Colors.teal)
+                    .width(160)
+                    .height(90)
+                    .rounded(
+                      topLeft: 20,
+                      topRight: 5,
+                      bottomLeft: 5,
+                      bottomRight: 20,
+                    )
+                    .paddingAll(12),
+                child: const Center(
+                  child: Text(
+                    'Custom Corners',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Box with shadows
+              Box(
+                style: BoxMix()
+                    .color(Colors.white)
+                    .width(140)
+                    .height(70)
+                    .roundedAll(10)
+                    .shadow(BoxShadowMix.only(
+                      color: Colors.black26,
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ))
+                    .paddingAll(12),
+                child: const Center(
+                  child: Text(
+                    'Shadow Box',
+                    style: TextStyle(color: Colors.black87),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Box with transform
+              Box(
+                style: BoxMix()
+                    .color(Colors.amber)
+                    .width(100)
+                    .height(100)
+                    .roundedAll(12)
+                    .rotate(0.2)
+                    .paddingAll(8),
+                child: const Center(
+                  child: Text(
+                    'Rotated',
+                    style: TextStyle(color: Colors.black87),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Box with scale transform
+              Box(
+                style: BoxMix()
+                    .color(Colors.green)
+                    .width(80)
+                    .height(80)
+                    .roundedAll(8)
+                    .scale(1.2)
+                    .paddingAll(8),
+                child: const Center(
+                  child: Text(
+                    'Scaled',
+                    style: TextStyle(color: Colors.white, fontSize: 12),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              const Text(
+                'API Examples',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'BoxMix().color(Colors.blue).width(150).height(80).paddingAll(16).roundedAll(12)',
+                style: TextStyle(fontSize: 12, fontFamily: 'monospace'),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                'BoxMix().linearGradient(colors: [Colors.purple, Colors.blue])',
+                style: TextStyle(fontSize: 12, fontFamily: 'monospace'),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                'BoxMix().rotate(0.2).scale(1.2).translate(10, 5)',
+                style: TextStyle(fontSize: 12, fontFamily: 'monospace'),
               ),
             ],
           ),
