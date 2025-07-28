@@ -125,9 +125,9 @@ class FractionallySizedBoxModifierAttribute
          alignment: Prop.maybe(alignment),
        );
 
-  /// Resolves to [FractionallySizedBoxModifier] using the provided [MixContext].
+  /// Resolves to [FractionallySizedBoxModifier] using the provided [BuildContext].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart

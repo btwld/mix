@@ -185,9 +185,9 @@ class ClipRectModifierAttribute
          clipBehavior: Prop.maybe(clipBehavior),
        );
 
-  /// Resolves to [ClipRectModifierSpec] using the provided [MixContext].
+  /// Resolves to [ClipRectModifierSpec] using the provided [BuildContext].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
@@ -336,9 +336,9 @@ class ClipRRectModifierAttribute extends ModifierAttribute<ClipRRectModifier> {
          clipBehavior: Prop.maybe(clipBehavior),
        );
 
-  /// Resolves to [ClipRRectModifier] using the provided [MixContext].
+  /// Resolves to [ClipRRectModifier] using the provided [BuildContext].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
@@ -469,9 +469,9 @@ class ClipPathModifierAttribute extends ModifierAttribute<ClipPathModifier> {
          clipBehavior: Prop.maybe(clipBehavior),
        );
 
-  /// Resolves to [ClipPathModifier] using the provided [MixContext].
+  /// Resolves to [ClipPathModifier] using the provided [BuildContext].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
@@ -588,9 +588,9 @@ class ClipTriangleModifierAttribute
   ClipTriangleModifierAttribute({Clip? clipBehavior})
     : this.raw(clipBehavior: Prop.maybe(clipBehavior));
 
-  /// Resolves to [ClipTriangleModifier] using the provided [MixContext].
+  /// Resolves to [ClipTriangleModifier] using the provided [BuildContext].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart

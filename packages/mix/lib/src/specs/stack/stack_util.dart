@@ -11,10 +11,10 @@ import 'stack_spec.dart';
 
 /// Mutable utility class for stack styling using composition over inheritance.
 ///
-/// Same API as StackSpecAttribute but with mutable internal state
+/// Same API as StackMix but with mutable internal state
 /// for cascade notation support: `$stack..alignment(Alignment.center)..fit(StackFit.expand)`
 class StackSpecUtility extends StyleAttributeBuilder<StackSpec> {
-  // STACK UTILITIES - Same as StackSpecAttribute but return StackSpecUtility for cascade
+  // STACK UTILITIES - Same as StackMix but return StackSpecUtility for cascade
 
   late final alignment = PropUtility<StackSpecUtility, AlignmentGeometry>(
     (prop) => _build(StackMix.raw(alignment: prop)),

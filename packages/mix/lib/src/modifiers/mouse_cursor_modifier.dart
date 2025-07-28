@@ -63,13 +63,13 @@ class MouseCursorDecorator extends Modifier<MouseCursorDecorator> {
 ///
 /// Use this class to configure the attributes of a [MouseCursorDecorator] and pass it to
 /// the [MouseCursorDecorator] constructor.
-class MouseCursorDecoratorSpecAttribute
+class MouseCursorDecoratorMix
     extends ModifierAttribute<MouseCursorDecorator> {
   final Prop<MouseCursor>? mouseCursor;
 
-  const MouseCursorDecoratorSpecAttribute.raw({this.mouseCursor});
+  const MouseCursorDecoratorMix.raw({this.mouseCursor});
 
-  MouseCursorDecoratorSpecAttribute({MouseCursor? mouseCursor})
+  MouseCursorDecoratorMix({MouseCursor? mouseCursor})
     : this.raw(mouseCursor: Prop.maybe(mouseCursor));
 
   /// Resolves to [MouseCursorDecorator] using the provided [BuildContext].
@@ -78,7 +78,7 @@ class MouseCursorDecoratorSpecAttribute
   /// defined in the property specification.
   ///
   /// ```dart
-  /// final mouseCursorDecoratorSpec = MouseCursorDecoratorSpecAttribute(...).resolve(context);
+  /// final mouseCursorDecoratorSpec = MouseCursorDecoratorMix(...).resolve(context);
   /// ```
   @override
   MouseCursorDecorator resolve(BuildContext context) {
@@ -87,38 +87,38 @@ class MouseCursorDecoratorSpecAttribute
     );
   }
 
-  /// Merges the properties of this [MouseCursorDecoratorSpecAttribute] with the properties of [other].
+  /// Merges the properties of this [MouseCursorDecoratorMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [MouseCursorDecoratorSpecAttribute] with the properties of [other] taking precedence over
+  /// [MouseCursorDecoratorMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  MouseCursorDecoratorSpecAttribute merge(
-    MouseCursorDecoratorSpecAttribute? other,
+  MouseCursorDecoratorMix merge(
+    MouseCursorDecoratorMix? other,
   ) {
     if (other == null) return this;
 
-    return MouseCursorDecoratorSpecAttribute.raw(
+    return MouseCursorDecoratorMix.raw(
       mouseCursor: MixHelpers.merge(mouseCursor, other.mouseCursor),
     );
   }
 
-  /// The list of properties that constitute the state of this [MouseCursorDecoratorSpecAttribute].
+  /// The list of properties that constitute the state of this [MouseCursorDecoratorMix].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [MouseCursorDecoratorSpecAttribute] instances for equality.
+  /// compare two [MouseCursorDecoratorMix] instances for equality.
   @override
   List<Object?> get props => [mouseCursor];
 }
 
 class MouseCursorModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, MouseCursorDecoratorSpecAttribute> {
+    extends MixUtility<T, MouseCursorDecoratorMix> {
   const MouseCursorModifierUtility(super.builder);
   T call(MouseCursor? mouseCursor) {
-    return builder(MouseCursorDecoratorSpecAttribute(mouseCursor: mouseCursor));
+    return builder(MouseCursorDecoratorMix(mouseCursor: mouseCursor));
   }
 
   T defer() => call(MouseCursor.defer);

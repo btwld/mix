@@ -83,9 +83,9 @@ class FlexibleModifierAttribute extends ModifierAttribute<FlexibleModifier>
   FlexibleModifierAttribute({int? flex, FlexFit? fit})
     : this.raw(flex: Prop.maybe(flex), fit: Prop.maybe(fit));
 
-  /// Resolves to [FlexibleModifier] using the provided [MixContext].
+  /// Resolves to [FlexibleModifier] using the provided [BuildContext].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart

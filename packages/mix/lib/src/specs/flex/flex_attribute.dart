@@ -150,7 +150,7 @@ class FlexMix extends Style<FlexSpec>
   ///
   /// ```dart
   /// const spec = FlexSpec(direction: Axis.horizontal, gap: 8.0);
-  /// final attr = FlexSpecAttribute.value(spec);
+  /// final attr = FlexMix.value(spec);
   /// ```
   FlexMix.value(FlexSpec spec)
     : this(
@@ -167,11 +167,11 @@ class FlexMix extends Style<FlexSpec>
 
   /// Constructor that accepts a nullable [FlexSpec] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [FlexSpecAttribute.value].
+  /// Returns null if the input is null, otherwise uses [FlexMix.value].
   ///
   /// ```dart
   /// const FlexSpec? spec = FlexSpec(direction: Axis.horizontal, gap: 8.0);
-  /// final attr = FlexSpecAttribute.maybeValue(spec); // Returns FlexSpecAttribute or null
+  /// final attr = FlexMix.maybeValue(spec); // Returns FlexMix or null
   /// ```
   static FlexMix? maybeValue(FlexSpec? spec) {
     return spec != null ? FlexMix.value(spec) : null;
@@ -249,7 +249,7 @@ class FlexMix extends Style<FlexSpec>
   /// defined in the property specification.
   ///
   /// ```dart
-  /// final flexSpec = FlexSpecAttribute(...).resolve(mix);
+  /// final flexSpec = FlexMix(...).resolve(mix);
   /// ```
   @override
   FlexSpec resolve(BuildContext context) {

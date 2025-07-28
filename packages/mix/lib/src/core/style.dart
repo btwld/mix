@@ -242,7 +242,7 @@ final class VariantStyleAttribute<S extends Spec<S>> extends Mixable<S>
 }
 
 /// Result of Style.resolve() containing fully resolved styling data
-/// Generic type parameter T for the resolved SpecAttribute
+/// Generic type parameter T for the resolved Mix
 class ResolvedStyle<V extends Spec<V>> with Equatable {
   final V? spec;
   final AnimationConfig? animation;
@@ -340,7 +340,7 @@ class CompoundStyle extends Style<MultiSpec> {
   /// Constructs a `Style` from an iterable of [Style] instances.
   ///
   /// This factory constructor segregates the style elements into attributes
-  /// and variants, initializing a new `MultiSpecAttribute` with these collections.
+  /// and variants, initializing a new `MultiMix` with these collections.
   /// Since Attribute extends StyleAttribute, this is backward compatible.
   ///
   /// Example:
@@ -363,14 +363,14 @@ class CompoundStyle extends Style<MultiSpec> {
         case ModifierAttribute():
           modifierList.add(element);
         case Style():
-          // Handle MultiSpecAttribute by merging it later
+          // Handle MultiMix by merging it later
           if (element is! CompoundStyle) {
             styleList.add(element);
           }
       }
     }
 
-    // Create the base MultiSpecAttribute
+    // Create the base MultiMix
     CompoundStyle result = CompoundStyle._(
       attributes: styleList,
       animation: animationConfig,
@@ -378,12 +378,12 @@ class CompoundStyle extends Style<MultiSpec> {
       variants: null,
     );
 
-    // Now handle MultiSpecAttribute elements by merging them
+    // Now handle MultiMix elements by merging them
     for (final element in elements) {
       if (element is CompoundStyle) {
         result = result.merge(element);
       }
-      // Skip VariantSpecAttribute for now - needs proper generic handling
+      // Skip VariantMix for now - needs proper generic handling
     }
 
     return result;

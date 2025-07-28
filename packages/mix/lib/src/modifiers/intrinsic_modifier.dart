@@ -69,9 +69,9 @@ class IntrinsicHeightModifierAttribute
     extends ModifierAttribute<IntrinsicHeightModifier> {
   const IntrinsicHeightModifierAttribute();
 
-  /// Resolves to [IntrinsicHeightModifier] using the provided [MixContext].
+  /// Resolves to [IntrinsicHeightModifier] using the provided [BuildContext].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
@@ -119,9 +119,9 @@ class IntrinsicWidthModifierAttribute
     extends ModifierAttribute<IntrinsicWidthModifier> {
   const IntrinsicWidthModifierAttribute();
 
-  /// Resolves to [IntrinsicWidthModifier] using the provided [MixContext].
+  /// Resolves to [IntrinsicWidthModifier] using the provided [BuildContext].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart

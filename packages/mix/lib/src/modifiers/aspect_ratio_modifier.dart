@@ -83,9 +83,9 @@ class AspectRatioModifierAttribute
   AspectRatioModifierAttribute({double? aspectRatio})
     : this.raw(aspectRatio: Prop.maybe(aspectRatio));
 
-  /// Resolves to [AspectRatioModifier] using the provided [MixContext].
+  /// Resolves to [AspectRatioModifier] using the provided [BuildContext].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart

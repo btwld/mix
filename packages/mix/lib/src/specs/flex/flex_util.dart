@@ -11,10 +11,10 @@ import 'flex_spec.dart';
 
 /// Mutable utility class for flex styling using composition over inheritance.
 ///
-/// Same API as FlexSpecAttribute but with mutable internal state
+/// Same API as FlexMix but with mutable internal state
 /// for cascade notation support: `$flex..direction(Axis.horizontal)..gap(8)`
 class FlexSpecUtility extends StyleAttributeBuilder<FlexSpec> {
-  // FLEX UTILITIES - Same as FlexSpecAttribute but return FlexSpecUtility for cascade
+  // FLEX UTILITIES - Same as FlexMix but return FlexSpecUtility for cascade
 
   late final direction = PropUtility<FlexSpecUtility, Axis>(
     (prop) => _build(FlexMix.raw(direction: prop)),

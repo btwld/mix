@@ -262,9 +262,9 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
     return merge(BorderMix(right: side));
   }
 
-  /// Resolves to [Border] using the provided [MixContext].
+  /// Resolves to [Border] using the provided [BuildContext].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
@@ -423,9 +423,9 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
     return merge(BorderDirectionalMix(end: side));
   }
 
-  /// Resolves to [BorderDirectional] using the provided [MixContext].
+  /// Resolves to [BorderDirectional] using the provided [BuildContext].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
@@ -570,9 +570,9 @@ final class BorderSideMix extends Mix<BorderSide>
     return merge(BorderSideMix(strokeAlign: value));
   }
 
-  /// Resolves to [BorderSide] using the provided [MixContext].
+  /// Resolves to [BorderSide] using the provided [BuildContext].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart

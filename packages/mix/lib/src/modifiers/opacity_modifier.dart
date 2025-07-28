@@ -81,9 +81,9 @@ class OpacityModifierAttribute extends ModifierAttribute<OpacityModifier>
   OpacityModifierAttribute({double? opacity})
     : this.raw(opacity: Prop.maybe(opacity));
 
-  /// Resolves to [OpacityModifier] using the provided [MixContext].
+  /// Resolves to [OpacityModifier] using the provided [BuildContext].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart

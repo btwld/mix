@@ -189,9 +189,9 @@ class DefaultTextStyleModifierAttribute
          textHeightBehavior: MixProp.maybe(textHeightBehavior),
        );
 
-  /// Resolves to [DefaultTextStyleModifier] using the provided [MixContext].
+  /// Resolves to [DefaultTextStyleModifier] using the provided [BuildContext].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart

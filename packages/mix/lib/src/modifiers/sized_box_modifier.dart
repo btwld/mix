@@ -86,9 +86,9 @@ class SizedBoxModifierAttribute extends ModifierAttribute<SizedBoxModifier>
   SizedBoxModifierAttribute({double? width, double? height})
     : this.raw(width: Prop.maybe(width), height: Prop.maybe(height));
 
-  /// Resolves to [SizedBoxModifier] using the provided [MixContext].
+  /// Resolves to [SizedBoxModifier] using the provided [BuildContext].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
+  /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
