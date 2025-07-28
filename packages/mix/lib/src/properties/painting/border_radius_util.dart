@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/prop.dart';
-import '../../core/spec.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
 import '../layout/scalar_util.dart';
@@ -179,12 +178,3 @@ final class BorderRadiusDirectionalUtility<T extends StyleAttribute<Object?>>
   T call(BorderRadiusDirectionalMix value) => builder(MixProp(value));
 }
 
-/// Mixin that provides convenient border radius methods
-mixin BorderRadiusMixin<T extends StyleAttribute<S>, S extends Spec<S>> on StyleAttribute<S> {
-  T borderRadius(BorderRadiusGeometryMix value);
-
-  /// Sets radius for all corners
-  T radiusAll(double value) {
-    return borderRadius(BorderRadiusMix.all(Radius.circular(value)));
-  }
-}

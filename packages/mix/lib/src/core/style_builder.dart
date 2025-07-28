@@ -1,12 +1,12 @@
 import 'package:flutter/widgets.dart';
 
-import '../modifiers/internal/render_modifier.dart';
 import '../animation/style_animation_builder.dart';
+import '../modifiers/internal/render_modifier.dart';
+import 'internal/mix_hoverable_region.dart';
 import 'providers/resolved_style_provider.dart';
+import 'providers/widget_state_provider.dart';
 import 'spec.dart';
 import 'style.dart';
-import 'internal/mix_hoverable_region.dart';
-import 'providers/widget_state_provider.dart';
 
 /// Builds widgets with Mix styling.
 ///
@@ -67,7 +67,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
     final widgetStates = widget.style?.widgetStates ?? {};
     // Calculate interactivity need early
     final needsToTrackWidgetState =
-        widget.controller == null || widgetStates.isNotEmpty;
+        widget.controller != null || widgetStates.isNotEmpty;
 
     final alreadyHasWidgetStateScope =
         WidgetStateProvider.maybeOf(context) != null;

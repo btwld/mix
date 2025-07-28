@@ -144,7 +144,7 @@ abstract class StyleAttribute<S extends Spec<S>>
       namedVariants: namedVariants,
     );
 
-    final resolvedSpec = resolve(context);
+    final resolvedSpec = styleData.resolve(context);
     final resolvedAnimation = styleData.$animation;
     final resolvedModifiers = styleData.$modifiers
         ?.map((modifier) => modifier.resolve(context))

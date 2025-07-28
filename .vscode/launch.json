@@ -16,6 +16,13 @@
       "flutterMode": "profile"
     },
     {
+      "name": "Mix Example",
+      "cwd": "packages/mix/example",
+      "request": "launch",
+      "type": "dart",
+      "args": ["--enable-experiment=dot-shorthands"]
+    },
+    {
       "name": "Launch Demo",
       "cwd": "demo",
       "request": "launch",

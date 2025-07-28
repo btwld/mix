@@ -123,10 +123,9 @@ final class WidgetStateVariant extends ContextVariant {
   final WidgetState state;
 
   WidgetStateVariant(this.state)
-    : super(
-        'widget_state_${state.name}',
-        (context) => WidgetStateProvider.hasState(context, state),
-      );
+    : super('widget_state_${state.name}', (context) {
+        return WidgetStateProvider.watchState(context, state);
+      });
 
   @override
   bool operator ==(Object other) =>

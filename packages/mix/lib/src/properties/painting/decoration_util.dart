@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../../core/prop.dart';
-import '../../core/spec.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
 import 'border_radius_util.dart';
 import 'border_util.dart';
 import 'color_util.dart';
-import 'decoration_image_mix.dart';
 import 'decoration_image_util.dart';
 import 'decoration_mix.dart';
-import 'gradient_mix.dart';
 import 'gradient_util.dart';
 import 'shadow_mix.dart';
 import 'shadow_util.dart';
@@ -144,80 +141,3 @@ final class ShapeDecorationUtility<T extends StyleAttribute<Object?>>
   T call(ShapeDecorationMix value) => builder(MixProp(value));
 }
 
-/// Mixin that provides decoration convenience methods for box styling
-mixin DecorationMixin<T extends StyleAttribute<S>, S extends Spec<S>>
-    on StyleAttribute<S> {
-  /// Must be implemented by the class using this mixin
-  T decoration(DecorationMix value);
-
-  /// Sets background color
-  T color(Color value) {
-    return decoration(DecorationMix.color(value));
-  }
-
-  /// Sets box shape
-  T shape(BoxShape value) {
-    return decoration(DecorationMix.shape(value));
-  }
-
-  /// Sets gradient with any GradientMix type
-  T gradient(GradientMix value) {
-    return decoration(DecorationMix.gradient(value));
-  }
-
-  /// Sets image decoration
-  T image(DecorationImageMix value) {
-    return decoration(DecorationMix.image(value));
-  }
-
-  /// Sets single shadow
-  T shadow(BoxShadowMix value) {
-    return decoration(BoxDecorationMix.boxShadow([value]));
-  }
-
-  /// Sets multiple shadows
-  T shadows(List<BoxShadowMix> value) {
-    return decoration(BoxDecorationMix.boxShadow(value));
-  }
-
-  /// Sets elevation shadow
-  T elevation(ElevationShadow value) {
-    return decoration(
-      BoxDecorationMix.boxShadow(BoxShadowMix.fromElevation(value)),
-    );
-  }
-
-  /// Creates a box decoration with specified properties
-  ///
-  /// This is the complex method similar to corners/insets
-  T boxDecoration(BoxDecorationMix value) {
-    return decoration(value);
-  }
-}
-
-/// Mixin for foreground decoration convenience methods
-mixin ForegroundDecorationMixin<T extends StyleAttribute<S>, S extends Spec<S>>
-    on StyleAttribute<S> {
-  /// Must be implemented by the class using this mixin
-  T foregroundDecoration(DecorationMix value);
-
-  /// Sets foreground color
-  T foregroundColor(Color value) {
-    return foregroundDecoration(DecorationMix.color(value));
-  }
-
-  /// Sets foreground gradient
-  T foregroundGradient(GradientMix value) {
-    return foregroundDecoration(DecorationMix.gradient(value));
-  }
-
-  /// Sets foreground shape
-  T foregroundShape(BoxShape value) {
-    return foregroundDecoration(DecorationMix.shape(value));
-  }
-
-  /// Sets foreground image
-  T foregroundImage(DecorationImageMix value) {
-    return foregroundDecoration(DecorationMix.image(value));
-  }
-}

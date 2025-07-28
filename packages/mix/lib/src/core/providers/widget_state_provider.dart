@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart' show setEquals;
 import 'package:flutter/widgets.dart'
     show WidgetState, InheritedModel, BuildContext, WidgetStatesController;
 
@@ -9,24 +8,45 @@ class WidgetStateProvider extends InheritedModel<WidgetState> {
     required super.child,
   });
 
+  /// Gets the [WidgetStateProvider] from the given [context] without establishing a dependency.
   static WidgetStateProvider? maybeOf(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType();
+    return context.getInheritedWidgetOfExactType<WidgetStateProvider>();
   }
 
-  static bool hasState(BuildContext context, WidgetState state) {
+  /// Gets the [WidgetStateProvider] from the given [context] and establishes a dependency.
+  static WidgetStateProvider? of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<WidgetStateProvider>();
+  }
+
+  /// Gets the current widget states from the given [context] without establishing a dependency.
+  static Set<WidgetState> statesOf(BuildContext context) {
+    return maybeOf(context)?.states ?? const {};
+  }
+
+  /// Watches for changes to a specific [state] and returns whether it's currently active.
+  /// 
+  /// This method establishes a dependency on the specific [state], causing the widget
+  /// to rebuild only when that particular state changes.
+  static bool watchState(BuildContext context, WidgetState state) {
     final provider = InheritedModel.inheritFrom<WidgetStateProvider>(
       context,
       aspect: state,
     );
-
     return provider?.states.contains(state) ?? false;
+  }
+
+  /// Checks if a specific [state] is currently active without establishing a dependency.
+  /// 
+  /// Use this when you need to check a state without causing rebuilds when it changes.
+  static bool hasState(BuildContext context, WidgetState state) {
+    return statesOf(context).contains(state);
   }
 
   final Set<WidgetState> states;
 
   @override
   bool updateShouldNotify(WidgetStateProvider oldWidget) {
-    return !setEquals(states, oldWidget.states);
+    return true;
   }
 
   @override
@@ -34,13 +54,29 @@ class WidgetStateProvider extends InheritedModel<WidgetState> {
     WidgetStateProvider oldWidget,
     Set<WidgetState> dependencies,
   ) {
-    // Only notify if a dependent state actually changed
+    // If the states haven't changed at all, no need to notify
+    if (oldWidget.states.length == states.length && 
+        oldWidget.states.containsAll(states)) {
+      return false;
+    }
+    
+    // If there are no dependencies registered, don't notify
+    if (dependencies.isEmpty) {
+      return false;
+    }
+    
+    // Check if any of the states this widget depends on have changed
     for (final state in dependencies) {
-      if (oldWidget.states.contains(state) != states.contains(state)) {
+      final wasActive = oldWidget.states.contains(state);
+      final isActive = states.contains(state);
+      
+      // Notify if the state changed (became active or inactive)
+      if (wasActive != isActive) {
         return true;
       }
     }
-
+    
+    // No relevant state changes for this widget's dependencies
     return false;
   }
 }
