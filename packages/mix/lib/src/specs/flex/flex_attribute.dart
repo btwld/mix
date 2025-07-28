@@ -300,6 +300,10 @@ class FlexMix extends Style<FlexSpec>
       animation: other.$animation ?? $animation,
       modifiers: mergeModifierLists($modifiers, other.$modifiers),
       variants: mergeVariantLists($variants, other.$variants),
+      orderOfModifiers: other.$orderOfModifiers.isNotEmpty
+          ? other.$orderOfModifiers
+          : $orderOfModifiers,
+      inherit: other.$inherit ?? $inherit,
     );
   }
 

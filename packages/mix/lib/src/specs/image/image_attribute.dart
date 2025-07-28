@@ -262,6 +262,10 @@ class ImageMix extends Style<ImageSpec>
       animation: other.$animation ?? $animation,
       modifiers: mergeModifierLists($modifiers, other.$modifiers),
       variants: mergeVariantLists($variants, other.$variants),
+      orderOfModifiers: other.$orderOfModifiers.isNotEmpty
+          ? other.$orderOfModifiers
+          : $orderOfModifiers,
+      inherit: other.$inherit ?? $inherit,
     );
   }
 

@@ -154,9 +154,9 @@ class BoxMix extends Style<BoxSpec>
     Prop<Matrix4>? transform,
     Prop<AlignmentGeometry>? transformAlignment,
     Prop<Clip>? clipBehavior,
-    super.animation,
-    super.modifiers,
     super.variants,
+    super.modifiers,
+    super.animation,
     super.orderOfModifiers,
     super.inherit,
   }) : $alignment = alignment,
@@ -194,9 +194,9 @@ class BoxMix extends Style<BoxSpec>
          transform: Prop.maybe(transform),
          transformAlignment: Prop.maybe(transformAlignment),
          clipBehavior: Prop.maybe(clipBehavior),
-         animation: animation,
-         modifiers: modifiers,
          variants: variants,
+         modifiers: modifiers,
+         animation: animation,
          orderOfModifiers: orderOfModifiers,
          inherit: inherit,
        );
@@ -478,9 +478,13 @@ class BoxMix extends Style<BoxSpec>
         other.$transformAlignment,
       ),
       clipBehavior: MixHelpers.merge($clipBehavior, other.$clipBehavior),
-      animation: other.$animation ?? $animation,
-      modifiers: mergeModifierLists($modifiers, other.$modifiers),
       variants: mergeVariantLists($variants, other.$variants),
+      modifiers: mergeModifierLists($modifiers, other.$modifiers),
+      animation: other.$animation ?? $animation,
+      orderOfModifiers: other.$orderOfModifiers.isNotEmpty
+          ? other.$orderOfModifiers
+          : $orderOfModifiers,
+      inherit: other.$inherit ?? $inherit,
     );
   }
 

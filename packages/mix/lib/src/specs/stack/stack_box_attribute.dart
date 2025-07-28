@@ -130,6 +130,10 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
       modifiers: mergeModifierLists($modifiers, other.$modifiers),
       animation: other.$animation ?? $animation,
       variants: mergeVariantLists($variants, other.$variants),
+      orderOfModifiers: other.$orderOfModifiers.isNotEmpty
+          ? other.$orderOfModifiers
+          : $orderOfModifiers,
+      inherit: other.$inherit ?? $inherit,
     );
   }
 
