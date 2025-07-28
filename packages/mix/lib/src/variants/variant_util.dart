@@ -308,7 +308,7 @@ class VariantAttributeBuilder<T extends Spec<T>> {
     }
 
     // Create a Style to contain the elements
-    final style = Style.create(elements);
+    final style = CompoundStyle.create(elements);
 
     return VariantStyleAttribute(variant, style);
   }

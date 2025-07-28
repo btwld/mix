@@ -5,7 +5,7 @@ final b = NamedVariant('b');
 
 // Wrong case
 
-final wrong_case = Style(
+final wrong_case = CompoundStyle(
   // expect_lint: mix_avoid_empty_variants
   a(),
   // expect_lint: mix_avoid_empty_variants
@@ -18,4 +18,7 @@ final wrong_case = Style(
 
 // Correct case
 
-final correct_case = Style(a($box.color.amber()), a(b($box.color.amber())));
+final correct_case = CompoundStyle(
+  a($box.color.amber()),
+  a(b($box.color.amber())),
+);

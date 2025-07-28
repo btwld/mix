@@ -5,7 +5,7 @@ final attribute = $box.alignment.center;
 
 // Wrong case
 // expect_lint: mix_max_number_of_attributes_per_style
-final wrong_case = Style(
+final wrong_case = CompoundStyle(
   attribute(),
   attribute(),
   attribute(),
@@ -44,7 +44,7 @@ final wrong_case = Style(
 
 // Correct case
 
-final correct_case = Style(
+final correct_case = CompoundStyle(
   attribute(),
   attribute(),
   attribute(),

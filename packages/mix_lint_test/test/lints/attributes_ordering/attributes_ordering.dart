@@ -1,6 +1,6 @@
 import 'package:mix/mix.dart';
 
-final ordered = Style(
+final ordered = CompoundStyle(
   $box.color.red(),
   $box.borderRadius(3),
   $flex.gap(3),
@@ -12,28 +12,36 @@ final ordered = Style(
 );
 
 // expect_lint: mix_attributes_ordering
-final outOrder = Style($box.color.red(), $flex.gap(3), $box.borderRadius(3));
+final outOrder = CompoundStyle(
+  $box.color.red(),
+  $flex.gap(3),
+  $box.borderRadius(3),
+);
 
 // expect_lint: mix_attributes_ordering
-final outOrder_2 = Style($box.color.red(), $flex.gap(3), $box.borderRadius(3));
+final outOrder_2 = CompoundStyle(
+  $box.color.red(),
+  $flex.gap(3),
+  $box.borderRadius(3),
+);
 
 final a = NamedVariant('a');
 final b = NamedVariant('b');
 final c = NamedVariant('c');
 
-final outOrder_3 = Style(
+final outOrder_3 = CompoundStyle(
   // expect_lint: mix_attributes_ordering
   a($box.color.red(), $flex.gap(3), $box.borderRadius(3)),
 );
 
-final outOrder_4 = Style(
+final outOrder_4 = CompoundStyle(
   a(
     // expect_lint: mix_attributes_ordering
     b($box.color.red(), $flex.gap(3), $box.borderRadius(3)),
   ),
 );
 
-final outOrder_5 = Style(
+final outOrder_5 = CompoundStyle(
   // expect_lint: mix_attributes_ordering
   a(
     $box.color.red(),
@@ -45,7 +53,7 @@ final outOrder_5 = Style(
   ),
 ).applyVariant(a, b);
 
-final inOrder_1 = Style(
+final inOrder_1 = CompoundStyle(
   $box.height(20),
   $flex.column(),
   $image.alignment.bottomCenter(),
@@ -58,7 +66,7 @@ final inOrder_1 = Style(
   test(),
 );
 
-final inOrder_2 = Style(
+final inOrder_2 = CompoundStyle(
   $flex.column(),
   $on.dark($box.height(20)),
   $text.capitalize(),
@@ -71,6 +79,6 @@ final inOrder_2 = Style(
   $image.alignment.bottomCenter(),
 );
 
-Style _style = Style($box.border.width(2));
+CompoundStyle _style = CompoundStyle($box.border.width(2));
 
-Style test() => Style($with.scale(1));
+CompoundStyle test() => CompoundStyle($with.scale(1));

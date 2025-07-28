@@ -6,7 +6,7 @@ Future<void> testOverrideModifiersOrder(
   WidgetTester tester, {
   required Widget Function(StyleAttribute, List<Type>) widgetBuilder,
 }) async {
-  final style = Style(
+  final style = CompoundStyle(
     VisibilityModifierAttribute(visible: true),
     OpacityModifierAttribute(opacity: 1.0),
     TransformModifierAttribute(),

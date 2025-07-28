@@ -1,7 +1,7 @@
 import 'package:mix/mix.dart';
 
 // expect_lint: mix_attributes_ordering
-final test1 = Style(
+final test1 = CompoundStyle(
   $flex.gap(3),
   $box.color.red(),
   $flex.row(),
@@ -13,25 +13,29 @@ final test1 = Style(
 );
 
 // expect_lint: mix_attributes_ordering
-final test2 = Style($box.color.red(), $flex.gap(3), $box.borderRadius(3));
+final test2 = CompoundStyle(
+  $box.color.red(),
+  $flex.gap(3),
+  $box.borderRadius(3),
+);
 
 final a = NamedVariant('a');
 final b = NamedVariant('b');
 final c = NamedVariant('c');
 
-final test3 = Style(
+final test3 = CompoundStyle(
   // expect_lint: mix_attributes_ordering
   a($box.color.red(), $flex.gap(3), $box.borderRadius(3)),
 );
 
-final test4 = Style(
+final test4 = CompoundStyle(
   a(
     // expect_lint: mix_attributes_ordering
     b($box.color.red(), $flex.gap(3), $box.borderRadius(3)),
   ),
 );
 
-final test5 = Style(
+final test5 = CompoundStyle(
   // expect_lint: mix_attributes_ordering
   a(
     $box.color.red(),

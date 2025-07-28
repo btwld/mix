@@ -96,7 +96,7 @@ void main() {
     });
 
     test('on getter can be used for variant utilities', () {
-      expect($on, isA<OnContextVariantUtility<MultiSpec, Style>>());
+      expect($on, isA<OnContextVariantUtility<MultiSpec, CompoundStyle>>());
       final hoverBuilder = $on.hover;
       expect(hoverBuilder, isA<VariantAttributeBuilder<MultiSpec>>());
     });

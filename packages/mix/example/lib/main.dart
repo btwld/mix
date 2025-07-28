@@ -88,7 +88,7 @@ class BoxExampleApp extends StatelessWidget {
 
               // Purple rounded box
               Box(
-                style: Style.box()
+                style: CompoundStyle.box()
                     .color(Colors.purple)
                     .width(120)
                     .translate(0,0)

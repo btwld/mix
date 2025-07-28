@@ -3,18 +3,18 @@ import 'package:mix/mix.dart';
 
 final variantA = NamedVariant('A');
 
-final case_1 = Style(
+final case_1 = CompoundStyle(
   $on.hover(
     // expect_lint: mix_avoid_variant_inside_context_variant
     variantA(),
   ),
 );
 
-final case_2 = Style(variantA(), $on.hover());
+final case_2 = CompoundStyle(variantA(), $on.hover());
 
-final case_3 = Style($on.hover(), variantA());
+final case_3 = CompoundStyle($on.hover(), variantA());
 
-final case_4 = Style(
+final case_4 = CompoundStyle(
   $on.hover(
     $on.hover(
       // expect_lint: mix_avoid_variant_inside_context_variant

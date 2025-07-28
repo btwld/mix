@@ -2,15 +2,16 @@ import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 
 import '../animation/animation_config.dart';
-import '../specs/box/box_attribute.dart';
-import '../specs/icon/icon_attribute.dart';
-import '../specs/text/text_attribute.dart';
 import '../variants/variant.dart';
 import 'internal/compare_mixin.dart';
 import 'internal/constants.dart';
 import 'mix_element.dart';
 import 'modifier.dart';
 import 'spec.dart';
+
+abstract class Style<S extends Spec<S>> extends Mixable<Style<S>> {
+  const Style();
+}
 
 /// Base class for style containers that can be resolved to specifications.
 ///
@@ -240,13 +241,37 @@ final class VariantStyleAttribute<S extends Spec<S>> extends StyleAttribute<S> {
   Object get mergeKey => variant.key;
 }
 
-class Style extends StyleAttribute<MultiSpec> {
-  static final box = BoxMix.new;
-  static final text = TextMix.new;
-  static final icon = IconSpecAttribute.new;
+/// Result of Style.resolve() containing fully resolved styling data
+/// Generic type parameter T for the resolved SpecAttribute
+class ResolvedStyle<V extends Spec<V>> {
+  final V? spec; // Resolved spec
+  final AnimationConfig? animation; // Animation config
+  final List<Modifier>? modifiers; // Modifiers config
+
+  const ResolvedStyle({this.spec, this.animation, this.modifiers});
+
+  /// Linearly interpolate between two ResolvedStyles
+  ResolvedStyle<V> lerp(ResolvedStyle<V>? other, double t) {
+    if (other == null || t == 0.0) return this;
+    if (t == 1.0) return other;
+
+    // Lerp the spec if it's a Spec type
+    final lerpedSpec = (spec as Spec<V>).lerp(other.spec, t);
+
+    // For modifiers and animation, use the target (end) values
+    // We can't meaningfully interpolate these
+    return ResolvedStyle(
+      spec: lerpedSpec,
+      animation: other.animation ?? animation,
+      modifiers: t < 0.5 ? modifiers : other.modifiers,
+    );
+  }
+}
+
+class CompoundStyle extends StyleAttribute<MultiSpec> {
   final Map<Object, StyleAttribute> _attributes;
 
-  Style._({
+  CompoundStyle._({
     required List<StyleAttribute> attributes,
     super.animation,
     super.modifiers,
@@ -269,7 +294,7 @@ class Style extends StyleAttribute<MultiSpec> {
   /// ```dart
   /// final style = Style(attribute1, attribute2, attribute3);
   /// ```
-  factory Style([
+  factory CompoundStyle([
     StyleAttribute? p1,
     StyleAttribute? p2,
     StyleAttribute? p3,
@@ -296,7 +321,7 @@ class Style extends StyleAttribute<MultiSpec> {
       p11, p12, p13, p14, p15, p16, p17, p18, p19, p20,
     ].whereType<StyleAttribute>();
 
-    return Style.create(params);
+    return CompoundStyle.create(params);
   }
 
   /// Constructs a `Style` from an iterable of [StyleAttribute] instances.
@@ -309,7 +334,7 @@ class Style extends StyleAttribute<MultiSpec> {
   /// ```dart
   /// final style = Style.create([attribute1, attribute2]);
   /// ```
-  factory Style.create(Iterable<StyleAttribute> elements) {
+  factory CompoundStyle.create(Iterable<StyleAttribute> elements) {
     final styleList = <StyleAttribute>[];
     final modifierList = <ModifierAttribute>[];
     final variants = <VariantStyleAttribute>[];
@@ -326,14 +351,14 @@ class Style extends StyleAttribute<MultiSpec> {
           modifierList.add(element);
         case StyleAttribute():
           // Handle MultiSpecAttribute by merging it later
-          if (element is! Style) {
+          if (element is! CompoundStyle) {
             styleList.add(element);
           }
       }
     }
 
     // Create the base MultiSpecAttribute
-    Style result = Style._(
+    CompoundStyle result = CompoundStyle._(
       attributes: styleList,
       animation: animationConfig,
       modifiers: modifierList.isEmpty ? null : modifierList,
@@ -342,7 +367,7 @@ class Style extends StyleAttribute<MultiSpec> {
 
     // Now handle MultiSpecAttribute elements by merging them
     for (final element in elements) {
-      if (element is Style) {
+      if (element is CompoundStyle) {
         result = result.merge(element);
       }
       // Skip VariantSpecAttribute for now - needs proper generic handling
@@ -351,14 +376,14 @@ class Style extends StyleAttribute<MultiSpec> {
     return result;
   }
 
-  Style.empty()
+  CompoundStyle.empty()
     : this._(attributes: [], animation: null, modifiers: null, variants: null);
 
   /// Returns the list of attributes in this style
   List<StyleAttribute> get attributes => _attributes.values.toList();
 
-  Style animate({Duration? duration, Curve? curve}) {
-    return Style._(
+  CompoundStyle animate({Duration? duration, Curve? curve}) {
+    return CompoundStyle._(
       attributes: _attributes.values.toList(),
       animation: AnimationConfig.curve(
         curve: curve ?? Curves.linear,
@@ -380,7 +405,7 @@ class Style extends StyleAttribute<MultiSpec> {
   }
 
   @override
-  Style merge(Style? other) {
+  CompoundStyle merge(CompoundStyle? other) {
     if (other == null) return this;
 
     final mergedAttributes = <StyleAttribute>[];
@@ -404,7 +429,7 @@ class Style extends StyleAttribute<MultiSpec> {
       }
     }
 
-    return Style._(
+    return CompoundStyle._(
       attributes: mergedAttributes,
       animation: other.$animation ?? $animation,
       modifiers: mergeModifierLists($modifiers, other.$modifiers),
@@ -414,31 +439,4 @@ class Style extends StyleAttribute<MultiSpec> {
 
   @override
   get props => [_attributes];
-}
-
-/// Result of Style.resolve() containing fully resolved styling data
-/// Generic type parameter T for the resolved SpecAttribute
-class ResolvedStyle<V extends Spec<V>> {
-  final V? spec; // Resolved spec
-  final AnimationConfig? animation; // Animation config
-  final List<Modifier>? modifiers; // Modifiers config
-
-  const ResolvedStyle({this.spec, this.animation, this.modifiers});
-
-  /// Linearly interpolate between two ResolvedStyles
-  ResolvedStyle<V> lerp(ResolvedStyle<V>? other, double t) {
-    if (other == null || t == 0.0) return this;
-    if (t == 1.0) return other;
-
-    // Lerp the spec if it's a Spec type
-    final lerpedSpec = (spec as Spec<V>).lerp(other.spec, t);
-
-    // For modifiers and animation, use the target (end) values
-    // We can't meaningfully interpolate these
-    return ResolvedStyle(
-      spec: lerpedSpec,
-      animation: other.animation ?? animation,
-      modifiers: t < 0.5 ? modifiers : other.modifiers,
-    );
-  }
 }
