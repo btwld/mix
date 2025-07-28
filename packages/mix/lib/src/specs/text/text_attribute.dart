@@ -6,6 +6,7 @@ import '../../core/directive.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
+import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../properties/typography/strut_style_mix.dart';
@@ -242,9 +243,9 @@ class TextMix extends Style<TextSpec>
     Prop<bool>? softWrap,
     List<Prop<MixDirective<String>>>? directives,
     super.animation,
-    super.modifiers,
+    super.modifierConfig,
     super.variants,
-    super.orderOfModifiers,
+
     super.inherit,
   }) : $overflow = overflow,
        $strutStyle = strutStyle,
@@ -271,7 +272,7 @@ class TextMix extends Style<TextSpec>
     bool? softWrap,
     List<MixDirective<String>>? directives,
     AnimationConfig? animation,
-    List<ModifierAttribute>? modifiers,
+    ModifierConfig? modifierConfig,
     List<VariantStyleAttribute<TextSpec>>? variants,
     List<Type>? orderOfModifiers,
     bool? inherit,
@@ -288,9 +289,8 @@ class TextMix extends Style<TextSpec>
          softWrap: Prop.maybe(softWrap),
          directives: directives?.map(Prop.new).toList(),
          animation: animation,
-         modifiers: modifiers,
+         modifierConfig: modifierConfig,
          variants: variants,
-         orderOfModifiers: orderOfModifiers,
          inherit: inherit,
        );
 
@@ -527,8 +527,8 @@ class TextMix extends Style<TextSpec>
   }
 
   @override
-  TextMix modifiers(List<ModifierAttribute> modifiers) {
-    return merge(TextMix(modifiers: modifiers));
+  TextMix modifier(ModifierConfig value) {
+    return merge(TextMix(modifierConfig: value));
   }
 
   /// Resolves to [TextSpec] using the provided [BuildContext].
@@ -588,11 +588,10 @@ class TextMix extends Style<TextSpec>
         strategy: ListMergeStrategy.append,
       ),
       animation: other.$animation ?? $animation,
-      modifiers: mergeModifierLists($modifiers, other.$modifiers),
+      modifierConfig:
+          $modifierConfig?.merge(other.$modifierConfig) ??
+          other.$modifierConfig,
       variants: mergeVariantLists($variants, other.$variants),
-      orderOfModifiers: other.$orderOfModifiers.isNotEmpty
-          ? other.$orderOfModifiers
-          : $orderOfModifiers,
       inherit: other.$inherit ?? $inherit,
     );
   }
@@ -666,7 +665,7 @@ class TextMix extends Style<TextSpec>
     $softWrap,
     $directives,
     $animation,
-    $modifiers,
+    $modifierConfig,
     $variants,
   ];
 }

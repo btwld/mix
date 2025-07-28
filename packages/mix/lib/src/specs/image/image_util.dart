@@ -4,6 +4,7 @@ import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show StyleAttributeBuilder;
 import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
+import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/color_util.dart';
 import '../../variants/variant_util.dart';
@@ -58,14 +59,14 @@ class ImageSpecUtility extends StyleAttributeBuilder<ImageSpec> {
   );
 
   late final wrap = ModifierUtility<ImageSpecUtility>(
-    (prop) => _build(ImageMix.raw(modifiers: [prop])),
+    (prop) =>
+        _build(ImageMix.raw(modifierConfig: ModifierConfig.modifier(prop))),
   );
 
   ImageMix _baseAttribute;
 
   ImageSpecUtility([ImageMix? attribute])
-    : _baseAttribute = attribute ?? ImageMix.raw(),
-      super();
+    : _baseAttribute = attribute ?? ImageMix.raw();
 
   /// Mutable builder - updates internal state and returns this for cascade
   ImageSpecUtility _build(ImageMix newAttribute) {

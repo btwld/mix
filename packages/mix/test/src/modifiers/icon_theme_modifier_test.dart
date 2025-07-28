@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
+import 'package:mix/src/modifiers/modifier_config.dart';
 
 import '../../helpers/testing_utils.dart';
 
@@ -151,7 +152,9 @@ void main() {
     late IconThemeModifierUtility<BoxMix> utility;
 
     setUp(() {
-      utility = IconThemeModifierUtility((attr) => BoxMix(modifiers: [attr]));
+      utility = IconThemeModifierUtility(
+        (attr) => BoxMix(modifierConfig: ModifierConfig.modifier(attr)),
+      );
     });
 
     test('call creates attribute with all properties', () {
@@ -161,8 +164,13 @@ void main() {
 
       final result = utility.call(color: color, size: size, opacity: opacity);
 
-      expect(result.$modifiers?.first, isA<IconThemeModifierAttribute>());
-      final attr = result.$modifiers!.first as IconThemeModifierAttribute;
+      expect(
+        result.$modifierConfig?.$modifiers?.first,
+        isA<IconThemeModifierAttribute>(),
+      );
+      final attr =
+          result.$modifierConfig!.$modifiers!.first
+              as IconThemeModifierAttribute;
       expect(attr.color?.value, color);
       expect(attr.size?.value, size);
       expect(attr.opacity?.value, opacity);
@@ -172,8 +180,8 @@ void main() {
       const color = Color(0xFF000000);
       final result = utility.color(color);
 
-      expect(result.$modifiers?.first, isA<IconThemeModifierAttribute>());
-      final attr = result.$modifiers!.first as IconThemeModifierAttribute;
+      expect(result.$modifierConfig?.$modifiers?.first, isA<IconThemeModifierAttribute>());
+      final attr = result.$modifierConfig!.$modifiers!.first as IconThemeModifierAttribute;
       expect(attr.color?.value, color);
     });
 
@@ -181,8 +189,8 @@ void main() {
       const size = 24.0;
       final result = utility.size(size);
 
-      expect(result.$modifiers?.first, isA<IconThemeModifierAttribute>());
-      final attr = result.$modifiers!.first as IconThemeModifierAttribute;
+      expect(result.$modifierConfig?.$modifiers?.first, isA<IconThemeModifierAttribute>());
+      final attr = result.$modifierConfig!.$modifiers!.first as IconThemeModifierAttribute;
       expect(attr.size?.value, size);
     });
 
@@ -190,8 +198,8 @@ void main() {
       const opacity = 0.8;
       final result = utility.opacity(opacity);
 
-      expect(result.$modifiers?.first, isA<IconThemeModifierAttribute>());
-      final attr = result.$modifiers!.first as IconThemeModifierAttribute;
+      expect(result.$modifierConfig?.$modifiers?.first, isA<IconThemeModifierAttribute>());
+      final attr = result.$modifierConfig!.$modifiers!.first as IconThemeModifierAttribute;
       expect(attr.opacity?.value, opacity);
     });
   });

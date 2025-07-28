@@ -5,11 +5,13 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
+import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/layout/constraints_mix.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
+import '../../properties/painting/border_radius_util.dart';
 import '../../properties/painting/decoration_image_mix.dart';
 import '../../properties/painting/decoration_mix.dart';
 import '../../properties/painting/gradient_mix.dart';
@@ -28,7 +30,8 @@ class BoxMix extends Style<BoxSpec>
     with
         Diagnosticable,
         StyleModifierMixin<BoxMix, BoxSpec>,
-        StyleVariantMixin<BoxMix, BoxSpec> {
+        StyleVariantMixin<BoxMix, BoxSpec>,
+        BorderRadiusMixin<BoxMix> {
   final Prop<AlignmentGeometry>? $alignment;
   final MixProp<EdgeInsetsGeometry>? $padding;
   final MixProp<EdgeInsetsGeometry>? $margin;
@@ -155,9 +158,9 @@ class BoxMix extends Style<BoxSpec>
     Prop<AlignmentGeometry>? transformAlignment,
     Prop<Clip>? clipBehavior,
     super.variants,
-    super.modifiers,
+    super.modifierConfig,
     super.animation,
-    super.orderOfModifiers,
+
     super.inherit,
   }) : $alignment = alignment,
        $padding = padding,
@@ -180,7 +183,7 @@ class BoxMix extends Style<BoxSpec>
     AlignmentGeometry? transformAlignment,
     Clip? clipBehavior,
     AnimationConfig? animation,
-    List<ModifierAttribute>? modifiers,
+    ModifierConfig? modifierConfig,
     List<VariantStyleAttribute<BoxSpec>>? variants,
     List<Type>? orderOfModifiers,
     bool? inherit,
@@ -195,9 +198,8 @@ class BoxMix extends Style<BoxSpec>
          transformAlignment: Prop.maybe(transformAlignment),
          clipBehavior: Prop.maybe(clipBehavior),
          variants: variants,
-         modifiers: modifiers,
+         modifierConfig: modifierConfig,
          animation: animation,
-         orderOfModifiers: orderOfModifiers,
          inherit: inherit,
        );
 
@@ -356,8 +358,8 @@ class BoxMix extends Style<BoxSpec>
   }
 
   /// Modifier instance method
-  BoxMix wrap(ModifierAttribute modifier) {
-    return merge(BoxMix(modifiers: [modifier]));
+  BoxMix wrap(ModifierConfig modifier) {
+    return merge(BoxMix(modifierConfig: modifier));
   }
 
   /// Border instance method
@@ -374,12 +376,6 @@ class BoxMix extends Style<BoxSpec>
 
   BoxMix margin(EdgeInsetsGeometryMix value) {
     return merge(BoxMix(margin: value));
-  }
-
-  /// Border radius instance method
-
-  BoxMix borderRadius(BorderRadiusGeometryMix value) {
-    return merge(BoxMix(decoration: DecorationMix.borderRadius(value)));
   }
 
   BoxMix transform(Matrix4 value) {
@@ -411,6 +407,13 @@ class BoxMix extends Style<BoxSpec>
     return decoration(DecorationMix.image(value));
   }
 
+  /// Border radius instance method
+
+  @override
+  BoxMix borderRadius(BorderRadiusGeometryMix value) {
+    return merge(BoxMix(decoration: DecorationMix.borderRadius(value)));
+  }
+
   @override
   BoxMix variants(List<VariantStyleAttribute<BoxSpec>> value) {
     return merge(BoxMix(variants: value));
@@ -423,8 +426,8 @@ class BoxMix extends Style<BoxSpec>
 
   /// The list of properties that constitute the state of this [BoxMix].
   @override
-  BoxMix modifiers(List<ModifierAttribute> value) {
-    return merge(BoxMix(modifiers: value));
+  BoxMix modifier(ModifierConfig value) {
+    return merge(BoxMix(modifierConfig: value));
   }
 
   /// Resolves to [BoxSpec] using the provided [BuildContext].
@@ -479,11 +482,10 @@ class BoxMix extends Style<BoxSpec>
       ),
       clipBehavior: MixHelpers.merge($clipBehavior, other.$clipBehavior),
       variants: mergeVariantLists($variants, other.$variants),
-      modifiers: mergeModifierLists($modifiers, other.$modifiers),
+      modifierConfig:
+          $modifierConfig?.merge(other.$modifierConfig) ??
+          other.$modifierConfig,
       animation: other.$animation ?? $animation,
-      orderOfModifiers: other.$orderOfModifiers.isNotEmpty
-          ? other.$orderOfModifiers
-          : $orderOfModifiers,
       inherit: other.$inherit ?? $inherit,
     );
   }
@@ -540,7 +542,7 @@ class BoxMix extends Style<BoxSpec>
     $transformAlignment,
     $clipBehavior,
     $animation,
-    $modifiers,
+    $modifierConfig,
     $variants,
   ];
 }

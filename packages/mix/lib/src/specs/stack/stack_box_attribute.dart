@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/style.dart';
+import '../../modifiers/modifier_config.dart';
 import '../../variants/variant.dart';
 import '../box/box_attribute.dart';
 import 'stack_attribute.dart';
@@ -22,10 +23,10 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
   const StackBoxMix({
     this.box,
     this.stack,
-    super.modifiers,
+    super.modifierConfig,
     super.animation,
     super.variants,
-    super.orderOfModifiers,
+
     super.inherit,
   });
 
@@ -91,8 +92,8 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
     return merge(StackBoxMix.animate(animation));
   }
 
-  StackBoxMix modifiers(List<ModifierAttribute> modifiers) {
-    return merge(StackBoxMix(modifiers: modifiers));
+  StackBoxMix modifier(ModifierConfig value) {
+    return merge(StackBoxMix(modifierConfig: value));
   }
 
   StackBoxMix variants(List<VariantStyleAttribute<ZBoxSpec>> variants) {
@@ -127,12 +128,12 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
     return StackBoxMix(
       box: box?.merge(other.box) ?? other.box,
       stack: stack?.merge(other.stack) ?? other.stack,
-      modifiers: mergeModifierLists($modifiers, other.$modifiers),
+      modifierConfig:
+          $modifierConfig?.merge(other.$modifierConfig) ??
+          other.$modifierConfig,
       animation: other.$animation ?? $animation,
       variants: mergeVariantLists($variants, other.$variants),
-      orderOfModifiers: other.$orderOfModifiers.isNotEmpty
-          ? other.$orderOfModifiers
-          : $orderOfModifiers,
+
       inherit: other.$inherit ?? $inherit,
     );
   }
@@ -171,14 +172,14 @@ class StackBoxSpecUtility {
   StackBoxMix only({
     BoxMix? box,
     StackMix? stack,
-    List<ModifierAttribute>? modifiers,
+    ModifierConfig? modifierConfig,
     AnimationConfig? animation,
     List<VariantStyleAttribute<ZBoxSpec>>? variants,
   }) {
     return StackBoxMix(
       box: box,
       stack: stack,
-      modifiers: modifiers,
+      modifierConfig: modifierConfig,
       animation: animation,
       variants: variants,
     );

@@ -5,6 +5,7 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
+import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../variants/variant.dart';
@@ -97,9 +98,9 @@ class IconMix extends Style<IconSpec>
     Prop<bool>? applyTextScaling,
     Prop<double>? fill,
     super.animation,
-    super.modifiers,
+    super.modifierConfig,
     super.variants,
-    super.orderOfModifiers,
+
     super.inherit,
   }) : $color = color,
        $size = size,
@@ -122,7 +123,7 @@ class IconMix extends Style<IconSpec>
     bool? applyTextScaling,
     double? fill,
     AnimationConfig? animation,
-    List<ModifierAttribute>? modifiers,
+    ModifierConfig? modifierConfig,
     List<VariantStyleAttribute<IconSpec>>? variants,
     List<Type>? orderOfModifiers,
     bool? inherit,
@@ -137,9 +138,8 @@ class IconMix extends Style<IconSpec>
          applyTextScaling: Prop.maybe(applyTextScaling),
          fill: Prop.maybe(fill),
          animation: animation,
-         modifiers: modifiers,
+         modifierConfig: modifierConfig,
          variants: variants,
-         orderOfModifiers: orderOfModifiers,
          inherit: inherit,
        );
 
@@ -226,8 +226,8 @@ class IconMix extends Style<IconSpec>
   }
 
   @override
-  IconMix modifiers(List<ModifierAttribute> modifiers) {
-    return merge(IconMix(modifiers: modifiers));
+  IconMix modifier(ModifierConfig value) {
+    return merge(IconMix(modifierConfig: value));
   }
 
   @override
@@ -263,11 +263,11 @@ class IconMix extends Style<IconSpec>
       ),
       fill: MixHelpers.merge($fill, other.$fill),
       animation: other.$animation ?? $animation,
-      modifiers: mergeModifierLists($modifiers, other.$modifiers),
+      modifierConfig:
+          $modifierConfig?.merge(other.$modifierConfig) ??
+          other.$modifierConfig,
       variants: mergeVariantLists($variants, other.$variants),
-      orderOfModifiers: other.$orderOfModifiers.isNotEmpty
-          ? other.$orderOfModifiers
-          : $orderOfModifiers,
+
       inherit: other.$inherit ?? $inherit,
     );
   }
@@ -320,7 +320,7 @@ class IconMix extends Style<IconSpec>
     $applyTextScaling,
     $fill,
     $animation,
-    $modifiers,
+    $modifierConfig,
     $variants,
   ];
 }

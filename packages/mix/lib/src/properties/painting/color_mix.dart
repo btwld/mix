@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 import '../../core/directive.dart';
 import '../../core/mix_element.dart';
@@ -61,6 +61,16 @@ class ColorMix extends Mix<Color> {
   factory ColorMix.shade(int amount) {
     return ColorMix.raw(Prop.directives([ShadeColorDirective(amount)]));
   }
+
+  static ColorMix get blue => ColorMix(Colors.blue);
+
+  static ColorMix get red => ColorMix(Colors.red);
+
+  static ColorMix get black => ColorMix(Colors.black);
+
+  static ColorMix get white => ColorMix(Colors.white);
+
+  static ColorMix get black26 => ColorMix(Colors.black26);
 
   /// Merges this ColorMix with a color token.
   ColorMix token(MixToken<Color> token) {

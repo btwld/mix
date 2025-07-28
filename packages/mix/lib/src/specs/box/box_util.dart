@@ -4,6 +4,7 @@ import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show StyleAttributeBuilder;
 import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
+import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/layout/constraints_util.dart';
 import '../../properties/layout/edge_insets_geometry_util.dart';
@@ -40,7 +41,7 @@ class BoxSpecUtility extends StyleAttributeBuilder<BoxSpec> {
   );
 
   late final wrap = ModifierUtility<BoxSpecUtility>(
-    (prop) => _build(BoxMix.raw(modifiers: [prop])),
+    (prop) => _build(BoxMix.raw(modifierConfig: ModifierConfig.modifier(prop))),
   );
 
   // FLATTENED ACCESS - Same as BoxMix

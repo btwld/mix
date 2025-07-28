@@ -794,9 +794,9 @@ class _MockSpecAttribute extends Style<MockSpec> {
     required this.width,
     this.height,
     super.variants,
-    super.modifiers,
+    super.modifierConfig,
     super.animation,
-    super.orderOfModifiers,
+
     super.inherit,
   });
 
@@ -813,9 +813,6 @@ class _MockSpecAttribute extends Style<MockSpec> {
       width: other.width != 0.0 ? other.width : width,
       height: other.height ?? height,
       variants: mergeVariantLists($variants, other.$variants),
-      orderOfModifiers: other.$orderOfModifiers.isNotEmpty
-          ? other.$orderOfModifiers
-          : $orderOfModifiers,
     );
   }
 

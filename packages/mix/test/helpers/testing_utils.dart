@@ -271,9 +271,9 @@ final class UtilityTestAttribute<T> extends Style<MockSpec<T>> {
   const UtilityTestAttribute(
     this.value, {
     super.variants,
-    super.modifiers,
+    super.modifierConfig,
     super.animation,
-    super.orderOfModifiers,
+
     super.inherit,
   });
 

@@ -147,6 +147,8 @@ sealed class PropBase<T> extends Mixable<T> with Resolvable<T> {
 
   const PropBase({this.directives, this.animation});
 
+  Type get type => T;
+
   /// The source of the property value
   PropSource<T>? get source;
 
@@ -409,6 +411,7 @@ class MixProp<V> extends PropBase<V> {
   bool get hasValue => source is MixPropValueSource<V>;
 
   bool get hasToken => source is MixPropTokenSource<V>;
+
   @visibleForTesting
   V resolveFromMixSources(
     List<MixPropSource<V>> sources,

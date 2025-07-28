@@ -39,6 +39,111 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
   // Lists of Mix types
   final List<MixProp<Shadow>>? shadows;
 
+  /// Factory for text color
+  factory TextStyleMix.color(Color value) {
+    return TextStyleMix(color: value);
+  }
+
+  /// Factory for background color
+  factory TextStyleMix.backgroundColor(Color value) {
+    return TextStyleMix(backgroundColor: value);
+  }
+
+  /// Factory for font size
+  factory TextStyleMix.fontSize(double value) {
+    return TextStyleMix(fontSize: value);
+  }
+
+  /// Factory for font weight
+  factory TextStyleMix.fontWeight(FontWeight value) {
+    return TextStyleMix(fontWeight: value);
+  }
+
+  /// Factory for font style
+  factory TextStyleMix.fontStyle(FontStyle value) {
+    return TextStyleMix(fontStyle: value);
+  }
+
+  /// Factory for letter spacing
+  factory TextStyleMix.letterSpacing(double value) {
+    return TextStyleMix(letterSpacing: value);
+  }
+
+  /// Factory for debug label
+  factory TextStyleMix.debugLabel(String value) {
+    return TextStyleMix(debugLabel: value);
+  }
+
+  /// Factory for word spacing
+  factory TextStyleMix.wordSpacing(double value) {
+    return TextStyleMix(wordSpacing: value);
+  }
+
+  /// Factory for text baseline
+  factory TextStyleMix.textBaseline(TextBaseline value) {
+    return TextStyleMix(textBaseline: value);
+  }
+
+  /// Factory for shadows
+  factory TextStyleMix.shadows(List<ShadowMix> value) {
+    return TextStyleMix(shadows: value);
+  }
+
+  /// Factory for font features
+  factory TextStyleMix.fontFeatures(List<FontFeature> value) {
+    return TextStyleMix(fontFeatures: value);
+  }
+
+  /// Factory for text decoration
+  factory TextStyleMix.decoration(TextDecoration value) {
+    return TextStyleMix(decoration: value);
+  }
+
+  /// Factory for decoration color
+  factory TextStyleMix.decorationColor(Color value) {
+    return TextStyleMix(decorationColor: value);
+  }
+
+  /// Factory for decoration style
+  factory TextStyleMix.decorationStyle(TextDecorationStyle value) {
+    return TextStyleMix(decorationStyle: value);
+  }
+
+  /// Factory for font variations
+  factory TextStyleMix.fontVariations(List<FontVariation> value) {
+    return TextStyleMix(fontVariations: value);
+  }
+
+  /// Factory for line height
+  factory TextStyleMix.height(double value) {
+    return TextStyleMix(height: value);
+  }
+
+  /// Factory for foreground paint
+  factory TextStyleMix.foreground(Paint value) {
+    return TextStyleMix(foreground: value);
+  }
+
+  /// Factory for background paint
+  factory TextStyleMix.background(Paint value) {
+    return TextStyleMix(background: value);
+  }
+
+  /// Factory for decoration thickness
+  factory TextStyleMix.decorationThickness(double value) {
+    return TextStyleMix(decorationThickness: value);
+  }
+
+  /// Factory for font family
+  factory TextStyleMix.fontFamily(String value) {
+    return TextStyleMix(fontFamily: value);
+  }
+
+  /// Factory for font family fallback
+  factory TextStyleMix.fontFamilyFallback(List<String> value) {
+    return TextStyleMix(fontFamilyFallback: value);
+  }
+
   TextStyleMix({
     Color? color,
     Color? backgroundColor,

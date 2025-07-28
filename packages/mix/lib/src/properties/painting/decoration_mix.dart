@@ -8,6 +8,7 @@ import '../../core/prop.dart';
 import 'border_mix.dart';
 import 'border_radius_mix.dart';
 import 'decoration_image_mix.dart';
+import 'decoration_merge_utils.dart';
 import 'gradient_mix.dart';
 import 'shadow_mix.dart';
 import 'shape_border_mix.dart';
@@ -91,43 +92,50 @@ sealed class DecorationMix<T extends Decoration> extends Mix<T> {
     return decoration != null ? DecorationMix.value(decoration) : null;
   }
 
-  /// Merges with another decoration of the same type.
-  /// This method is implemented by subclasses to handle type-specific merging.
-  @protected
-  DecorationMix<T> mergeDecoration(covariant DecorationMix<T> other);
-
   /// Merges two DecorationMix instances.
   ///
-  /// If both are the same type, delegates to [mergeDecoration].
-  /// If different types, returns [other] (override behavior).
+  /// If both are the same type, delegates to [merge].
+  /// If different types, checks if they can be merged and converts appropriately.
   /// If [other] is null, returns this instance.
-  @override
-  DecorationMix<T> merge(covariant DecorationMix<T>? other) {
-    if (other == null) return this;
+  static DecorationMix? tryMerge(DecorationMix? a, DecorationMix? b) {
+    if (b == null) return a;
+    if (a == null) return b;
 
-    return switch ((this, other)) {
-          (BoxDecorationMix a, BoxDecorationMix b) => a.mergeDecoration(b),
-          (ShapeDecorationMix a, ShapeDecorationMix b) => a.mergeDecoration(b),
-          (BoxDecorationMix a, ShapeDecorationMix b) => ShapeDecorationMix.raw(
-            shape: b.$shape,
-            color: MixHelpers.merge(a.$color, b.$color),
-            image: MixHelpers.merge(a.$image, b.$image),
-            gradient: MixHelpers.merge(a.$gradient, b.$gradient),
-            shadows: MixHelpers.mergeList(a.$boxShadow, b.$boxShadow),
-          ),
-          (ShapeDecorationMix a, BoxDecorationMix b) => BoxDecorationMix.raw(
-            border: b.$border,
-            borderRadius: b.$borderRadius,
-            shape: b.$shape,
-            backgroundBlendMode: b.$backgroundBlendMode,
-            color: MixHelpers.merge(a.$color, b.$color),
-            image: MixHelpers.merge(a.$image, b.$image),
-            gradient: MixHelpers.merge(a.$gradient, b.$gradient),
-            boxShadow: MixHelpers.mergeList(a.$boxShadow, b.$boxShadow),
-          ),
-        }
-        as DecorationMix<T>;
+    // If same type, use regular merge
+    if (a.runtimeType == b.runtimeType) {
+      return a.merge(b);
+    }
+
+    // Cross-type merging
+    if (a is BoxDecorationMix && b is ShapeDecorationMix) {
+      // Box can always receive Shape properties
+      return a.mergeableDecor(b);
+    }
+    
+    if (a is ShapeDecorationMix && b is BoxDecorationMix) {
+      // Shape can only receive Box if it's mergeable
+      if (!b.isMergeable) {
+        throw ArgumentError(
+          'Cannot merge BoxDecoration into ShapeDecoration: '
+          '${b.$backgroundBlendMode != null ? "backgroundBlendMode is not supported by ShapeDecoration" : "borders must be uniform for conversion"}'
+        );
+      }
+      return a.mergeableDecor(b);
+    }
+
+    throw UnimplementedError('Merging of ${a.runtimeType} and ${b.runtimeType} is not supported.');
   }
+
+  /// Returns true if this decoration can be merged with other decoration types.
+  bool get isMergeable;
+
+  /// Merges this decoration with another decoration of potentially different type.
+  DecorationMix? mergeableDecor(covariant DecorationMix? other);
+
+  /// Merges with another decoration of the same type.
+  /// This method is implemented by subclasses to handle type-specific merging.
+  @override
+  DecorationMix<T> merge(covariant DecorationMix<T>? other);
 }
 
 /// Mix-compatible representation of [BoxDecoration] for styling.
@@ -222,42 +230,42 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
 
   /// Returns a copy with the specified gradient.
   BoxDecorationMix gradient(GradientMix value) {
-    return mergeDecoration(BoxDecorationMix(gradient: value));
+    return merge(BoxDecorationMix(gradient: value));
   }
 
   /// Returns a copy with the specified background image.
   BoxDecorationMix image(DecorationImageMix image) {
-    return mergeDecoration(BoxDecorationMix(image: image));
+    return merge(BoxDecorationMix(image: image));
   }
 
   /// Returns a copy with the specified color.
   BoxDecorationMix color(Color value) {
-    return mergeDecoration(BoxDecorationMix(color: value));
+    return merge(BoxDecorationMix(color: value));
   }
 
   /// Returns a copy with the specified box shadows.
   BoxDecorationMix boxShadow(List<BoxShadowMix> value) {
-    return mergeDecoration(BoxDecorationMix(boxShadow: value));
+    return merge(BoxDecorationMix(boxShadow: value));
   }
 
   /// Returns a copy with the specified border.
   BoxDecorationMix border(BoxBorderMix value) {
-    return mergeDecoration(BoxDecorationMix(border: value));
+    return merge(BoxDecorationMix(border: value));
   }
 
   /// Returns a copy with the specified border radius.
   BoxDecorationMix borderRadius(BorderRadiusGeometryMix value) {
-    return mergeDecoration(BoxDecorationMix(borderRadius: value));
+    return merge(BoxDecorationMix(borderRadius: value));
   }
 
   /// Returns a copy with the specified shape.
   BoxDecorationMix shape(BoxShape value) {
-    return mergeDecoration(BoxDecorationMix(shape: value));
+    return merge(BoxDecorationMix(shape: value));
   }
 
   /// Returns a copy with the specified background blend mode.
   BoxDecorationMix backgroundBlendMode(BlendMode value) {
-    return mergeDecoration(BoxDecorationMix(backgroundBlendMode: value));
+    return merge(BoxDecorationMix(backgroundBlendMode: value));
   }
 
   /// Resolves to [BoxDecoration] using the provided [BuildContext].
@@ -275,9 +283,32 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
     );
   }
 
+  @override
+  BoxDecorationMix mergeableDecor(ShapeDecorationMix? other) {
+    if (other == null) return this;
+
+    // Extract shape properties from ShapeDecorationMix
+    final shapeBorder = other.$shape;
+    final (borderRadius, boxShape, side) = _extractShapeProperties(shapeBorder);
+
+    return merge(
+      BoxDecorationMix.raw(
+        border: side != null ? MixProp(BoxBorderMix.all(side)) : null,
+        borderRadius: borderRadius,
+        shape: boxShape,
+        color: other.$color,
+        image: other.$image,
+        gradient: other.$gradient,
+        boxShadow: other.$boxShadow,
+      ),
+    );
+  }
+
   /// Merges the properties of this [BoxDecorationMix] with the properties of [other].
   @override
-  BoxDecorationMix mergeDecoration(BoxDecorationMix other) {
+  BoxDecorationMix merge(BoxDecorationMix? other) {
+    if (other == null) return this;
+
     return BoxDecorationMix.raw(
       border: MixHelpers.merge($border, other.$border),
       borderRadius: MixHelpers.merge($borderRadius, other.$borderRadius),
@@ -291,6 +322,30 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
       gradient: MixHelpers.merge($gradient, other.$gradient),
       boxShadow: MixHelpers.mergeList($boxShadow, other.$boxShadow),
     );
+  }
+
+  @override
+  bool get isMergeable {
+    // Cannot merge if has backgroundBlendMode (ShapeDecoration doesn't support it)
+    if ($backgroundBlendMode != null) return false;
+    
+    // Check border uniformity for specific cases
+    if ($border != null) {
+      final shape = $shape?.value ?? BoxShape.rectangle;
+      final borderValue = $border!.value as BoxBorderMix;
+      
+      // Circle shape requires uniform borders
+      if (shape == BoxShape.circle) {
+        return DecorationMergeUtils.hasUniformBorders(borderValue);
+      }
+      
+      // Rectangle with borderRadius requires uniform borders
+      if ($borderRadius != null) {
+        return DecorationMergeUtils.hasUniformBorders(borderValue);
+      }
+    }
+    
+    return true;
   }
 
   @override
@@ -368,9 +423,33 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
     );
   }
 
+  @override
+  ShapeDecorationMix mergeableDecor(BoxDecorationMix? other) {
+    if (other == null) return this;
+
+    // Convert BoxDecorationMix properties to ShapeBorder
+    final shapeBorder = _fromBoxShape(
+      shape: other.$shape,
+      side: _extractBorderSide(other.$border),
+      borderRadius: other.$borderRadius,
+    );
+
+    return merge(
+      ShapeDecorationMix.raw(
+        shape: shapeBorder,
+        color: other.$color,
+        image: other.$image,
+        gradient: other.$gradient,
+        shadows: other.$boxShadow,
+      ),
+    );
+  }
+
   /// Merges the properties of this [ShapeDecorationMix] with the properties of [other].
   @override
-  ShapeDecorationMix mergeDecoration(ShapeDecorationMix other) {
+  ShapeDecorationMix merge(ShapeDecorationMix? other) {
+    if (other == null) return this;
+
     return ShapeDecorationMix.raw(
       shape: MixHelpers.merge($shape, other.$shape),
       color: MixHelpers.merge($color, other.$color),
@@ -381,9 +460,123 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
   }
 
   @override
+  bool get isMergeable {
+    final shape = $shape;
+    if (shape == null) return true;
+
+    // Check if it's a CircleBorderMix without eccentricity or RoundedRectangleBorderMix
+    if (shape is MixProp<CircleBorder>) {
+      // For now, we consider all CircleBorderMix as mergeable
+      // In the future, we might need to check eccentricity
+      return true;
+    }
+
+    return shape is MixProp<RoundedRectangleBorder>;
+  }
+
+  @override
   List<Object?> get props => [$shape, $color, $image, $gradient, shadows];
 
   @override
   ShapeDecoration get defaultValue =>
       const ShapeDecoration(shape: RoundedRectangleBorder());
+}
+
+/// Converts a [ShapeDecorationMix] to a [BoxDecorationMix].
+BoxDecorationMix _toBoxDecorationMix(ShapeDecorationMix decoration) {
+  final (borderRadius, boxShape, side) = _extractShapeProperties(
+    decoration.$shape,
+  );
+
+  return BoxDecorationMix.raw(
+    border: side != null ? MixProp(BoxBorderMix.all(side)) : null,
+    borderRadius: borderRadius,
+    shape: boxShape,
+    color: decoration.$color,
+    image: decoration.$image,
+    gradient: decoration.$gradient,
+    boxShadow: decoration.$boxShadow,
+  );
+}
+
+/// Converts a [BoxDecorationMix] to a [ShapeDecorationMix].
+ShapeDecorationMix _toShapeDecorationMix(BoxDecorationMix decoration) {
+  final shapeBorder = _fromBoxShape(
+    shape: decoration.$shape,
+    side: _extractBorderSide(decoration.$border),
+    borderRadius: decoration.$borderRadius,
+  );
+
+  return ShapeDecorationMix.raw(
+    shape: shapeBorder,
+    color: decoration.$color,
+    image: decoration.$image,
+    gradient: decoration.$gradient,
+    shadows: decoration.$boxShadow,
+  );
+}
+
+/// Creates a ShapeBorderMix from box decoration properties.
+MixProp<ShapeBorder>? _fromBoxShape({
+  required Prop<BoxShape>? shape,
+  required BorderSideMix? side,
+  required MixProp<BorderRadiusGeometry>? borderRadius,
+}) {
+  final boxShape = shape?.value;
+
+  switch (boxShape) {
+    case BoxShape.circle:
+      return side != null ? MixProp(CircleBorderMix(side: side)) : null;
+    case BoxShape.rectangle:
+    case null:
+      if (side != null || borderRadius != null) {
+        return MixProp(
+          RoundedRectangleBorderMix(
+            borderRadius: borderRadius?.value as BorderRadiusGeometryMix?,
+            side: side,
+          ),
+        );
+      }
+
+      return null;
+  }
+}
+
+/// Extracts shape properties from a ShapeBorderMix.
+(MixProp<BorderRadiusGeometry>?, Prop<BoxShape>?, BorderSideMix?)
+_extractShapeProperties(MixProp<ShapeBorder>? shape) {
+  if (shape == null) return (null, null, null);
+
+  final shapeValue = shape.value;
+  if (shapeValue is CircleBorderMix) {
+    final side = shapeValue.$side?.value as BorderSideMix?;
+
+    return (null, Prop(BoxShape.circle), side);
+  } else if (shapeValue is RoundedRectangleBorderMix) {
+    final side = shapeValue.$side?.value as BorderSideMix?;
+
+    return (shapeValue.$borderRadius, Prop(BoxShape.rectangle), side);
+  }
+
+  return (null, null, null);
+}
+
+/// Extracts a uniform border side from a BoxBorderMix.
+/// Returns null if borders are not uniform.
+BorderSideMix? _extractBorderSide(MixProp<BoxBorder>? border) {
+  if (border == null) return null;
+
+  final borderValue = border.value;
+  if (borderValue is BoxBorderMix) {
+    // Check if borders are uniform
+    if (!DecorationMergeUtils.hasUniformBorders(borderValue)) {
+      return null;
+    }
+    
+    // Get the uniform border side
+    final uniformSide = DecorationMergeUtils.getUniformBorderSide(borderValue);
+    return uniformSide?.value as BorderSideMix?;
+  }
+
+  return null;
 }

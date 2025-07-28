@@ -5,6 +5,7 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
+import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
@@ -98,9 +99,9 @@ class FlexMix extends Style<FlexSpec>
     Prop<Clip>? clipBehavior,
     Prop<double>? gap,
     super.animation,
-    super.modifiers,
+    super.modifierConfig,
     super.variants,
-    super.orderOfModifiers,
+
     super.inherit,
   }) : $direction = direction,
        $mainAxisAlignment = mainAxisAlignment,
@@ -123,7 +124,7 @@ class FlexMix extends Style<FlexSpec>
     Clip? clipBehavior,
     double? gap,
     AnimationConfig? animation,
-    List<ModifierAttribute>? modifiers,
+    ModifierConfig? modifierConfig,
     List<VariantStyleAttribute<FlexSpec>>? variants,
     List<Type>? orderOfModifiers,
     bool? inherit,
@@ -138,9 +139,8 @@ class FlexMix extends Style<FlexSpec>
          clipBehavior: Prop.maybe(clipBehavior),
          gap: Prop.maybe(gap),
          animation: animation,
-         modifiers: modifiers,
+         modifierConfig: modifierConfig,
          variants: variants,
-         orderOfModifiers: orderOfModifiers,
          inherit: inherit,
        );
 
@@ -239,8 +239,8 @@ class FlexMix extends Style<FlexSpec>
   }
 
   @override
-  FlexMix modifiers(List<ModifierAttribute> modifiers) {
-    return merge(FlexMix(modifiers: modifiers));
+  FlexMix modifier(ModifierConfig value) {
+    return merge(FlexMix(modifierConfig: value));
   }
 
   /// Resolves to [FlexSpec] using the provided [BuildContext].
@@ -298,11 +298,10 @@ class FlexMix extends Style<FlexSpec>
       clipBehavior: MixHelpers.merge($clipBehavior, other.$clipBehavior),
       gap: MixHelpers.merge($gap, other.$gap),
       animation: other.$animation ?? $animation,
-      modifiers: mergeModifierLists($modifiers, other.$modifiers),
+      modifierConfig:
+          $modifierConfig?.merge(other.$modifierConfig) ??
+          other.$modifierConfig,
       variants: mergeVariantLists($variants, other.$variants),
-      orderOfModifiers: other.$orderOfModifiers.isNotEmpty
-          ? other.$orderOfModifiers
-          : $orderOfModifiers,
       inherit: other.$inherit ?? $inherit,
     );
   }
@@ -344,7 +343,7 @@ class FlexMix extends Style<FlexSpec>
     $clipBehavior,
     $gap,
     $animation,
-    $modifiers,
+    $modifierConfig,
     $variants,
   ];
 }

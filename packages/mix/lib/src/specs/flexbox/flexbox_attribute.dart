@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/style.dart';
+import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../variants/variant.dart';
 import '../box/box_attribute.dart';
@@ -25,9 +26,9 @@ class FlexBoxMix extends Style<FlexBoxSpec>
     BoxMix? box,
     FlexMix? flex,
     super.animation,
-    super.modifiers,
+    super.modifierConfig,
     super.variants,
-    super.orderOfModifiers,
+
     super.inherit,
   }) : $box = box,
        $flex = flex;
@@ -115,8 +116,8 @@ class FlexBoxMix extends Style<FlexBoxSpec>
   }
 
   @override
-  FlexBoxMix modifiers(List<ModifierAttribute> modifiers) {
-    return merge(FlexBoxMix(modifiers: modifiers));
+  FlexBoxMix modifier(ModifierConfig value) {
+    return merge(FlexBoxMix(modifierConfig: value));
   }
 
   /// Merges the properties of this [FlexBoxMix] with the properties of [other].
@@ -135,11 +136,10 @@ class FlexBoxMix extends Style<FlexBoxSpec>
       box: $box?.merge(other.$box) ?? other.$box,
       flex: $flex?.merge(other.$flex) ?? other.$flex,
       animation: other.$animation ?? $animation,
-      modifiers: mergeModifierLists($modifiers, other.$modifiers),
+      modifierConfig:
+          $modifierConfig?.merge(other.$modifierConfig) ??
+          other.$modifierConfig,
       variants: mergeVariantLists($variants, other.$variants),
-      orderOfModifiers: other.$orderOfModifiers.isNotEmpty
-          ? other.$orderOfModifiers
-          : $orderOfModifiers,
       inherit: other.$inherit ?? $inherit,
     );
   }

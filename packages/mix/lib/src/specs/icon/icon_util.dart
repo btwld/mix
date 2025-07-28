@@ -4,6 +4,7 @@ import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show StyleAttributeBuilder;
 import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
+import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/color_util.dart';
 import '../../properties/painting/shadow_mix.dart';
@@ -60,14 +61,13 @@ class IconSpecUtility extends StyleAttributeBuilder<IconSpec> {
   );
 
   late final wrap = ModifierUtility<IconSpecUtility>(
-    (prop) => _build(IconMix(modifiers: [prop])),
+    (prop) => _build(IconMix(modifierConfig: ModifierConfig.modifier(prop))),
   );
 
   IconMix _baseAttribute;
 
   IconSpecUtility([IconMix? attribute])
-    : _baseAttribute = attribute ?? IconMix(),
-      super();
+    : _baseAttribute = attribute ?? IconMix();
 
   /// Mutable builder - updates internal state and returns this for cascade
   IconSpecUtility _build(IconMix newAttribute) {

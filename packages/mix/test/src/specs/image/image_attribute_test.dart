@@ -429,31 +429,31 @@ void main() {
     group('Modifiers', () {
       test('modifiers can be added to attribute', () {
         final attribute = ImageMix(
-          modifiers: [
+          modifierConfig: ModifierConfig(modifiers: [
             OpacityModifierAttribute(opacity: 0.5),
             ClipRRectModifierAttribute(
               borderRadius: BorderRadiusMix.all(Radius.circular(10)),
             ),
-          ],
+          ]),
         );
 
-        expect(attribute.$modifiers, isNotNull);
-        expect(attribute.$modifiers!.length, 2);
+        expect(attribute.$modifierConfig, isNotNull);
+        expect(attribute.$modifierConfig!.$modifiers!.length, 2);
       });
 
       test('modifiers merge correctly', () {
         final first = ImageMix(
-          modifiers: [OpacityModifierAttribute(opacity: 0.5)],
+          modifierConfig: ModifierConfig(modifiers: [OpacityModifierAttribute(opacity: 0.5)]),
         );
 
         final second = ImageMix(
-          modifiers: [AspectRatioModifierAttribute(aspectRatio: 16 / 9)],
+          modifierConfig: ModifierConfig(modifiers: [AspectRatioModifierAttribute(aspectRatio: 16 / 9)]),
         );
 
         final merged = first.merge(second);
 
         // Note: The actual merge behavior depends on the parent class implementation
-        expect(merged.$modifiers, isNotNull);
+        expect(merged.$modifierConfig, isNotNull);
       });
     });
 

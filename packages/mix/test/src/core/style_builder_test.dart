@@ -11,7 +11,7 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StyleBuilder(
+            home: StyleBuilder<BoxSpec>(
               style: boxAttribute,
               builder: (context, spec) {
                 expect(spec?.constraints?.minWidth, 100);
@@ -55,7 +55,7 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StyleBuilder(
+            home: StyleBuilder<BoxSpec>(
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(
@@ -78,7 +78,7 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StyleBuilder(
+            home: StyleBuilder<BoxSpec>(
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(
@@ -115,7 +115,7 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StyleBuilder(
+            home: StyleBuilder<BoxSpec>(
               style: startAttribute,
               builder: (context, spec) {
                 return Container(
@@ -142,7 +142,7 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StyleBuilder(
+            home: StyleBuilder<BoxSpec>(
               style: endAttribute,
               builder: (context, spec) {
                 return Container(
@@ -186,15 +186,19 @@ void main() {
             .width(100)
             .height(100)
             .alignment(Alignment.center)
-            .modifiers([
-              OpacityModifierAttribute(opacity: 0.5),
-              PaddingModifierAttribute(padding: EdgeInsetsMix.all(10)),
-              ClipOvalModifierAttribute(),
-            ]);
+            .wrap(
+              .modifiers([
+                OpacityModifierAttribute(opacity: 0.5),
+                PaddingModifierAttribute(
+                  padding: EdgeInsetsGeometryMix.all(10),
+                ),
+                ClipOvalModifierAttribute(),
+              ]),
+            );
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StyleBuilder(
+            home: StyleBuilder<BoxSpec>(
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(
@@ -232,14 +236,26 @@ void main() {
         final boxAttribute = BoxMix.width(100)
             .height(100)
             .color(Colors.blue)
-            .wrap(OpacityModifierAttribute(opacity: 0.5))
-            .wrap(PaddingModifierAttribute(padding: EdgeInsetsMix.all(10)))
-            .wrap(ClipOvalModifierAttribute())
-            .wrap(VisibilityModifierAttribute(visible: true));
+            .wrap(
+              ModifierConfig.modifier(OpacityModifierAttribute(opacity: 0.5)),
+            )
+            .wrap(
+              ModifierConfig.modifier(
+                PaddingModifierAttribute(
+                  padding: EdgeInsetsGeometryMix.all(10),
+                ),
+              ),
+            )
+            .wrap(ModifierConfig.modifier(ClipOvalModifierAttribute()))
+            .wrap(
+              ModifierConfig.modifier(
+                VisibilityModifierAttribute(visible: true),
+              ),
+            );
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StyleBuilder(
+            home: StyleBuilder<BoxSpec>(
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(
@@ -295,9 +311,17 @@ void main() {
         final boxAttribute = BoxMix.width(100)
             .height(100)
             .color(Colors.blue)
-            .wrap(OpacityModifierAttribute(opacity: 0.5))
-            .wrap(PaddingModifierAttribute(padding: EdgeInsetsMix.all(10)))
-            .wrap(ClipOvalModifierAttribute());
+            .wrap(
+              ModifierConfig.modifier(OpacityModifierAttribute(opacity: 0.5)),
+            )
+            .wrap(
+              ModifierConfig.modifier(
+                PaddingModifierAttribute(
+                  padding: EdgeInsetsGeometryMix.all(10),
+                ),
+              ),
+            )
+            .wrap(ModifierConfig.modifier(ClipOvalModifierAttribute()));
 
         const customOrder = [
           OpacityModifier,
@@ -307,9 +331,8 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StyleBuilder(
+            home: StyleBuilder<BoxSpec>(
               style: boxAttribute.orderOfModifiers(customOrder),
-
               builder: (context, spec) {
                 return Container(
                   decoration: spec?.decoration,
@@ -358,7 +381,7 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StyleBuilder(
+            home: StyleBuilder<BoxSpec>(
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(

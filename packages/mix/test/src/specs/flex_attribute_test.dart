@@ -459,31 +459,31 @@ void main() {
     group('Modifiers', () {
       test('modifiers can be added to attribute', () {
         final attribute = FlexMix(
-          modifiers: [
+          modifierConfig: ModifierConfig(modifiers: [
             OpacityModifierAttribute(opacity: 0.5),
             PaddingModifierAttribute(padding: EdgeInsetsMix.all(8.0)),
-          ],
+          ]),
         );
 
-        expect(attribute.$modifiers, isNotNull);
-        expect(attribute.$modifiers!.length, 2);
+        expect(attribute.$modifierConfig, isNotNull);
+        expect(attribute.$modifierConfig!.$modifiers!.length, 2);
       });
 
       test('modifiers merge correctly', () {
         final first = FlexMix(
-          modifiers: [OpacityModifierAttribute(opacity: 0.5)],
+          modifierConfig: ModifierConfig(modifiers: [OpacityModifierAttribute(opacity: 0.5)]),
         );
 
         final second = FlexMix(
-          modifiers: [
+          modifierConfig: ModifierConfig(modifiers: [
             PaddingModifierAttribute(padding: EdgeInsetsMix.all(8.0)),
-          ],
+          ]),
         );
 
         final merged = first.merge(second);
 
         // Note: The actual merge behavior depends on the parent class implementation
-        expect(merged.$modifiers, isNotNull);
+        expect(merged.$modifierConfig, isNotNull);
       });
     });
 

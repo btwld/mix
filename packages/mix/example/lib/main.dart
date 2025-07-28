@@ -91,13 +91,30 @@ class BoxExampleApp extends StatelessWidget {
                 style: Style.box()
                     .color(Colors.purple)
                     .width(120)
-                    .translate(0,0)
+                    
                     .height(120)
+                    // .corners(all:.circular(10))
+                    // .borderColor(all: Colors.white)
+                    // .borderWidth(left: 2)
+                    // .borderStyle(all:.solid)
+                    // .rounded(all:20)
+                    // .insets()
+                    // .outsets()
                     .onHovered(
                       .color(Colors.red)
-                      .translate(5, 5)                      
+                      .translate(5, 5)
+                      .wrap(
+                        .opacity(0.2)
+                      )                  
                     )
-                    .wrapOpacity(0.2)
+                    .wrap(
+                      .opacity(0.5)
+                      .defaultText(.style(
+                        .color(Colors.white),
+                        .fontSize(16),
+                        .fontWeight(.bold),
+                      )).scale()
+                    )
                     .borderRadius(.circular(20))
                     .animate(.linear(200.ms))
                     .padding(.all(8)),
@@ -162,7 +179,7 @@ class BoxExampleApp extends StatelessWidget {
 
               // Box with shadows
               Box(
-                style: $box()
+                style: Style.box()
                     .color(Colors.white)
                     .width(140)
                     .height(70)
@@ -173,10 +190,15 @@ class BoxExampleApp extends StatelessWidget {
                       .color(Colors.black26)
                       .blurRadius(8)
                       .offset(Offset(0, 4)),
+                    ).wrap(
+                      .opacity(0.5)
+                      .scale(1.2)
                     )
                     .padding(
                       .all(12)
                     ),
+
+                    
                 child: const Center(
                   child: Text(
                     'Shadow Box',

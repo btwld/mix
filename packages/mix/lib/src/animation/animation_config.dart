@@ -7,53 +7,168 @@ import '../core/internal/constants.dart';
 /// This sealed class provides different types of animation configurations
 /// for use with animated widgets and style transitions.
 sealed class AnimationConfig {
-  static const curve = CurveAnimationConfig.new;
-  static const linear = CurveAnimationConfig.linear;
-  static const decelerate = CurveAnimationConfig.decelerate;
-  static const fastLinearToSlowEaseIn =
-      CurveAnimationConfig.fastLinearToSlowEaseIn;
-  static const fastEaseInToSlowEaseOut =
-      CurveAnimationConfig.fastEaseInToSlowEaseOut;
-  static const ease = CurveAnimationConfig.ease;
-  static const easeIn = CurveAnimationConfig.easeIn;
-  static const easeInToLinear = CurveAnimationConfig.easeInToLinear;
-  static const easeInSine = CurveAnimationConfig.easeInSine;
-  static const easeInQuad = CurveAnimationConfig.easeInQuad;
-  static const easeInCubic = CurveAnimationConfig.easeInCubic;
-  static const easeInQuart = CurveAnimationConfig.easeInQuart;
-  static const easeInQuint = CurveAnimationConfig.easeInQuint;
-  static const easeInExpo = CurveAnimationConfig.easeInExpo;
-  static const easeInCirc = CurveAnimationConfig.easeInCirc;
-  static const easeInBack = CurveAnimationConfig.easeInBack;
-  static const easeOut = CurveAnimationConfig.easeOut;
-  static const linearToEaseOut = CurveAnimationConfig.linearToEaseOut;
-  static const easeOutSine = CurveAnimationConfig.easeOutSine;
-  static const easeOutQuad = CurveAnimationConfig.easeOutQuad;
-  static const easeOutCubic = CurveAnimationConfig.easeOutCubic;
-  static const easeOutQuart = CurveAnimationConfig.easeOutQuart;
-  static const easeOutQuint = CurveAnimationConfig.easeOutQuint;
-  static const easeOutExpo = CurveAnimationConfig.easeOutExpo;
-  static const easeOutCirc = CurveAnimationConfig.easeOutCirc;
-  static const easeOutBack = CurveAnimationConfig.easeOutBack;
-  static const easeInOut = CurveAnimationConfig.easeInOut;
-  static const easeInOutSine = CurveAnimationConfig.easeInOutSine;
-  static const easeInOutQuad = CurveAnimationConfig.easeInOutQuad;
-  static const easeInOutCubic = CurveAnimationConfig.easeInOutCubic;
-  static const easeInOutCubicEmphasized =
-      CurveAnimationConfig.easeInOutCubicEmphasized;
-  static const easeInOutQuart = CurveAnimationConfig.easeInOutQuart;
-  static const easeInOutQuint = CurveAnimationConfig.easeInOutQuint;
-  static const easeInOutExpo = CurveAnimationConfig.easeInOutExpo;
-  static const easeInOutCirc = CurveAnimationConfig.easeInOutCirc;
-  static const easeInOutBack = CurveAnimationConfig.easeInOutBack;
-  static const fastOutSlowIn = CurveAnimationConfig.fastOutSlowIn;
-  static const slowMiddle = CurveAnimationConfig.slowMiddle;
-  static const bounceIn = CurveAnimationConfig.bounceIn;
-  static const bounceOut = CurveAnimationConfig.bounceOut;
-  static const bounceInOut = CurveAnimationConfig.bounceInOut;
-  static const elasticIn = CurveAnimationConfig.elasticIn;
-  static const elasticOut = CurveAnimationConfig.elasticOut;
-  static const elasticInOut = CurveAnimationConfig.elasticInOut;
+  factory AnimationConfig.curve({
+    required Duration duration,
+    required Curve curve,
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig(duration: duration, curve: curve, onEnd: onEnd);
+
+  factory AnimationConfig.decelerate(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.decelerate(duration, onEnd: onEnd);
+  factory AnimationConfig.fastLinearToSlowEaseIn(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.fastLinearToSlowEaseIn(duration, onEnd: onEnd);
+  factory AnimationConfig.fastEaseInToSlowEaseOut(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.fastEaseInToSlowEaseOut(duration, onEnd: onEnd);
+  factory AnimationConfig.ease(Duration duration, {VoidCallback? onEnd}) =>
+      CurveAnimationConfig.ease(duration, onEnd: onEnd);
+  factory AnimationConfig.easeIn(Duration duration, {VoidCallback? onEnd}) =>
+      CurveAnimationConfig.easeIn(duration, onEnd: onEnd);
+  factory AnimationConfig.easeInToLinear(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.easeInToLinear(duration, onEnd: onEnd);
+  factory AnimationConfig.easeInSine(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.easeInSine(duration, onEnd: onEnd);
+  factory AnimationConfig.easeInQuad(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.easeInQuad(duration, onEnd: onEnd);
+  factory AnimationConfig.easeInCubic(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.easeInCubic(duration, onEnd: onEnd);
+  factory AnimationConfig.easeInQuart(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.easeInQuart(duration, onEnd: onEnd);
+  factory AnimationConfig.easeInQuint(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.easeInQuint(duration, onEnd: onEnd);
+  factory AnimationConfig.easeInExpo(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.easeInExpo(duration, onEnd: onEnd);
+  factory AnimationConfig.easeInCirc(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.easeInCirc(duration, onEnd: onEnd);
+  factory AnimationConfig.easeInBack(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.easeInBack(duration, onEnd: onEnd);
+  factory AnimationConfig.easeOut(Duration duration, {VoidCallback? onEnd}) =>
+      CurveAnimationConfig.easeOut(duration, onEnd: onEnd);
+  factory AnimationConfig.linearToEaseOut(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.linearToEaseOut(duration, onEnd: onEnd);
+  factory AnimationConfig.easeOutSine(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.easeOutSine(duration, onEnd: onEnd);
+  factory AnimationConfig.easeOutQuad(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.easeOutQuad(duration, onEnd: onEnd);
+  factory AnimationConfig.easeOutCubic(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.easeOutCubic(duration, onEnd: onEnd);
+  factory AnimationConfig.easeOutQuart(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.easeOutQuart(duration, onEnd: onEnd);
+  factory AnimationConfig.easeOutQuint(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.easeOutQuint(duration, onEnd: onEnd);
+  factory AnimationConfig.easeOutExpo(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.easeOutExpo(duration, onEnd: onEnd);
+  factory AnimationConfig.easeOutCirc(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.easeOutCirc(duration, onEnd: onEnd);
+  factory AnimationConfig.easeOutBack(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.easeOutBack(duration, onEnd: onEnd);
+  factory AnimationConfig.easeInOut(Duration duration, {VoidCallback? onEnd}) =>
+      CurveAnimationConfig.easeInOut(duration, onEnd: onEnd);
+  factory AnimationConfig.easeInOutSine(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.easeInOutSine(duration, onEnd: onEnd);
+  factory AnimationConfig.easeInOutQuad(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.easeInOutQuad(duration, onEnd: onEnd);
+  factory AnimationConfig.easeInOutCubic(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.easeInOutCubic(duration, onEnd: onEnd);
+  factory AnimationConfig.easeInOutCubicEmphasized(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.easeInOutCubicEmphasized(duration, onEnd: onEnd);
+  factory AnimationConfig.easeInOutQuart(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.easeInOutQuart(duration, onEnd: onEnd);
+  factory AnimationConfig.easeInOutQuint(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.easeInOutQuint(duration, onEnd: onEnd);
+  factory AnimationConfig.easeInOutExpo(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.easeInOutExpo(duration, onEnd: onEnd);
+  factory AnimationConfig.easeInOutCirc(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.easeInOutCirc(duration, onEnd: onEnd);
+  factory AnimationConfig.easeInOutBack(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.easeInOutBack(duration, onEnd: onEnd);
+  factory AnimationConfig.fastOutSlowIn(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.fastOutSlowIn(duration, onEnd: onEnd);
+  factory AnimationConfig.slowMiddle(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.slowMiddle(duration, onEnd: onEnd);
+  factory AnimationConfig.bounceIn(Duration duration, {VoidCallback? onEnd}) =>
+      CurveAnimationConfig.bounceIn(duration, onEnd: onEnd);
+  factory AnimationConfig.bounceOut(Duration duration, {VoidCallback? onEnd}) =>
+      CurveAnimationConfig.bounceOut(duration, onEnd: onEnd);
+  factory AnimationConfig.bounceInOut(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.bounceInOut(duration, onEnd: onEnd);
+  factory AnimationConfig.elasticIn(Duration duration, {VoidCallback? onEnd}) =>
+      CurveAnimationConfig.elasticIn(duration, onEnd: onEnd);
+  factory AnimationConfig.elasticOut(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.elasticOut(duration, onEnd: onEnd);
+  factory AnimationConfig.elasticInOut(
+    Duration duration, {
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.elasticInOut(duration, onEnd: onEnd);
+  factory AnimationConfig.linear(Duration duration, {VoidCallback? onEnd}) =>
+      CurveAnimationConfig.linear(duration, onEnd: onEnd);
 
   const AnimationConfig();
 

@@ -487,17 +487,17 @@ void main() {
     group('Modifiers', () {
       test('modifiers can be added to attribute', () {
         final attribute = BoxMix(
-          modifiers: [
+          modifierConfig: ModifierConfig(modifiers: [
             OpacityModifierAttribute(opacity: 0.5),
             TransformModifierAttribute(
               transform: Matrix4.identity(),
               alignment: Alignment.center,
             ),
-          ],
+          ]),
         );
 
-        expect(attribute.$modifiers, isNotNull);
-        expect(attribute.$modifiers!.length, 2);
+        expect(attribute.$modifierConfig, isNotNull);
+        expect(attribute.$modifierConfig!.$modifiers!.length, 2);
       });
 
       test('modifiers merge correctly', () {
@@ -506,8 +506,8 @@ void main() {
           transform: Matrix4.identity(),
         );
 
-        final first = BoxMix(modifiers: [opacityModifier]);
-        final second = BoxMix(modifiers: [transformModifier]);
+        final first = BoxMix(modifierConfig: ModifierConfig(modifiers: [opacityModifier]));
+        final second = BoxMix(modifierConfig: ModifierConfig(modifiers: [transformModifier]));
 
         final merged = first.merge(second);
 
@@ -517,7 +517,7 @@ void main() {
           TransformModifierAttribute(transform: Matrix4.identity()),
         ];
 
-        expect(merged.$modifiers, expectedModifiers);
+        expect(merged.$modifierConfig?.$modifiers, expectedModifiers);
       });
     });
 
@@ -673,7 +673,7 @@ void main() {
         expect(attribute.props, contains(attribute.$transformAlignment));
         expect(attribute.props, contains(attribute.$clipBehavior));
         expect(attribute.props, contains(attribute.$animation));
-        expect(attribute.props, contains(attribute.$modifiers));
+        expect(attribute.props, contains(attribute.$modifierConfig));
         expect(attribute.props, contains(attribute.$variants));
       });
     });
