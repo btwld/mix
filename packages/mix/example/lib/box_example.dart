@@ -90,6 +90,7 @@ class BoxExampleApp extends StatelessWidget {
                     .color(Colors.purple)
                     .width(120)
                     .height(120)
+                    .onHover(.color(Colors.purpleAccent))
                     .borderRadius(.circular(20))
                     .padding(.all(8)),
                 child: const Center(

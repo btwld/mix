@@ -199,7 +199,9 @@ void main() {
         final withBorder = BoxSpecAttribute().border(
           BoxBorderMix.all(BorderSideMix(width: 2.0)),
         );
-        final withBorderRadius = BoxSpecAttribute().radiusAll(8.0);
+        final withBorderRadius = BoxSpecAttribute().borderRadius(
+          BorderRadiusMix.all(Radius.circular(8.0)),
+        );
 
         // Each has only its specific decoration property
         final context = MockBuildContext();
@@ -231,7 +233,9 @@ void main() {
                 BoxBorderMix.all(BorderSideMix(width: 2.0)),
               ),
             )
-            .merge(BoxSpecAttribute().radiusAll(8.0));
+            .merge(BoxSpecAttribute().borderRadius(
+              BorderRadiusMix.all(Radius.circular(8.0)),
+            ));
 
         final context = MockBuildContext();
         final decoration =
@@ -245,40 +249,56 @@ void main() {
 
     group('Padding and Margin', () {
       test('padding methods create correct EdgeInsets', () {
-        final all = BoxSpecAttribute().paddingAll(16.0);
+        final all = BoxSpecAttribute().padding(EdgeInsetsMix.all(16.0));
         expect(all.$padding, isNotNull);
 
-        // Symmetric padding using vertical and horizontal utilities
-        final verticalPadding = BoxSpecAttribute().paddingVertical(8.0);
+        // Symmetric padding using vertical and horizontal
+        final verticalPadding = BoxSpecAttribute().padding(
+          EdgeInsetsMix.symmetric(vertical: 8.0),
+        );
         expect(verticalPadding.$padding, isNotNull);
 
-        final horizontalPadding = BoxSpecAttribute().paddingHorizontal(16.0);
+        final horizontalPadding = BoxSpecAttribute().padding(
+          EdgeInsetsMix.symmetric(horizontal: 16.0),
+        );
         expect(horizontalPadding.$padding, isNotNull);
 
         // Individual sides
-        final topPadding = BoxSpecAttribute().paddingTop(8.0);
+        final topPadding = BoxSpecAttribute().padding(
+          EdgeInsetsMix(top: 8.0),
+        );
         expect(topPadding.$padding, isNotNull);
 
-        final leftPadding = BoxSpecAttribute().paddingLeft(16.0);
+        final leftPadding = BoxSpecAttribute().padding(
+          EdgeInsetsMix(left: 16.0),
+        );
         expect(leftPadding.$padding, isNotNull);
       });
 
       test('margin methods create correct EdgeInsets', () {
-        final all = BoxSpecAttribute().marginAll(16.0);
+        final all = BoxSpecAttribute().margin(EdgeInsetsMix.all(16.0));
         expect(all.$margin, isNotNull);
 
-        // Symmetric margin using vertical and horizontal utilities
-        final verticalMargin = BoxSpecAttribute().marginVertical(8.0);
+        // Symmetric margin using vertical and horizontal
+        final verticalMargin = BoxSpecAttribute().margin(
+          EdgeInsetsMix.symmetric(vertical: 8.0),
+        );
         expect(verticalMargin.$margin, isNotNull);
 
-        final horizontalMargin = BoxSpecAttribute().marginHorizontal(16.0);
+        final horizontalMargin = BoxSpecAttribute().margin(
+          EdgeInsetsMix.symmetric(horizontal: 16.0),
+        );
         expect(horizontalMargin.$margin, isNotNull);
 
         // Individual sides
-        final topMargin = BoxSpecAttribute().marginTop(8.0);
+        final topMargin = BoxSpecAttribute().margin(
+          EdgeInsetsMix(top: 8.0),
+        );
         expect(topMargin.$margin, isNotNull);
 
-        final leftMargin = BoxSpecAttribute().marginLeft(16.0);
+        final leftMargin = BoxSpecAttribute().margin(
+          EdgeInsetsMix(left: 16.0),
+        );
         expect(leftMargin.$margin, isNotNull);
       });
     });
@@ -558,37 +578,37 @@ void main() {
           duration: const Duration(milliseconds: 300),
           curve: Curves.linear,
         );
-        final attribute = BoxSpecAttribute.animate(animation);
+        final attribute = BoxSpecAttribute.animation(animation);
 
         expect(attribute.$animation, equals(animation));
       });
     });
 
-    group('Utility Properties', () {
-      test('has all expected utility properties', () {
+    group('Utility Methods', () {
+      test('has all expected utility methods', () {
         final attribute = BoxSpecAttribute();
 
-        // Basic properties - just check they exist
-        expect(attribute.alignment, isNotNull);
-        expect(attribute.width, isNotNull);
-        expect(attribute.height, isNotNull);
-        expect(attribute.padding, isNotNull);
-        expect(attribute.margin, isNotNull);
-        expect(attribute.clipBehavior, isNotNull);
-        expect(attribute.transform, isNotNull);
-        expect(attribute.transformAlignment, isNotNull);
+        // Methods exist and return BoxSpecAttribute
+        expect(attribute.alignment(Alignment.center), isA<BoxSpecAttribute>());
+        expect(attribute.width(100), isA<BoxSpecAttribute>());
+        expect(attribute.height(100), isA<BoxSpecAttribute>());
+        expect(attribute.padding(EdgeInsetsMix.all(10)), isA<BoxSpecAttribute>());
+        expect(attribute.margin(EdgeInsetsMix.all(10)), isA<BoxSpecAttribute>());
+        expect(attribute.clipBehavior(Clip.none), isA<BoxSpecAttribute>());
+        expect(attribute.transform(Matrix4.identity()), isA<BoxSpecAttribute>());
+        expect(attribute.transformAlignment(Alignment.center), isA<BoxSpecAttribute>());
 
-        // Decoration utilities
-        expect(attribute.color, isNotNull);
-        expect(attribute.border, isNotNull);
-        expect(attribute.borderRadius, isNotNull);
-        expect(attribute.shadow, isNotNull);
+        // Decoration methods
+        expect(attribute.color(Colors.red), isA<BoxSpecAttribute>());
+        expect(attribute.border(BorderMix.all(BorderSideMix())), isA<BoxSpecAttribute>());
+        expect(attribute.borderRadius(BorderRadiusMix.all(Radius.circular(10))), isA<BoxSpecAttribute>());
+        expect(attribute.shadow(BoxShadowMix()), isA<BoxSpecAttribute>());
 
-        // Constraint utilities
-        expect(attribute.minWidth, isNotNull);
-        expect(attribute.maxWidth, isNotNull);
-        expect(attribute.minHeight, isNotNull);
-        expect(attribute.maxHeight, isNotNull);
+        // Constraint methods
+        expect(attribute.minWidth(100), isA<BoxSpecAttribute>());
+        expect(attribute.maxWidth(100), isA<BoxSpecAttribute>());
+        expect(attribute.minHeight(100), isA<BoxSpecAttribute>());
+        expect(attribute.maxHeight(100), isA<BoxSpecAttribute>());
       });
     });
 
@@ -702,8 +722,8 @@ void main() {
 
     group('Factory Methods', () {
       group('Dimension Factories', () {
-        test('height factory creates attribute with height constraint', () {
-          final attribute = BoxSpecAttribute.height(200.0);
+        test('height method creates attribute with height constraint', () {
+          final attribute = BoxSpecAttribute().height(200.0);
 
           expect(attribute.$constraints, isNotNull);
           final context = MockBuildContext();
@@ -712,8 +732,8 @@ void main() {
           expect(constraints?.maxHeight, 200.0);
         });
 
-        test('width factory creates attribute with width constraint', () {
-          final attribute = BoxSpecAttribute.width(100.0);
+        test('width method creates attribute with width constraint', () {
+          final attribute = BoxSpecAttribute().width(100.0);
 
           expect(attribute.$constraints, isNotNull);
           final context = MockBuildContext();
@@ -722,8 +742,8 @@ void main() {
           expect(constraints?.maxWidth, 100.0);
         });
 
-        test('minWidth factory creates attribute with minWidth constraint', () {
-          final attribute = BoxSpecAttribute.minWidth(50.0);
+        test('minWidth method creates attribute with minWidth constraint', () {
+          final attribute = BoxSpecAttribute().minWidth(50.0);
 
           expect(attribute.$constraints, isNotNull);
           final context = MockBuildContext();
@@ -731,8 +751,8 @@ void main() {
           expect(constraints?.minWidth, 50.0);
         });
 
-        test('maxWidth factory creates attribute with maxWidth constraint', () {
-          final attribute = BoxSpecAttribute.maxWidth(300.0);
+        test('maxWidth method creates attribute with maxWidth constraint', () {
+          final attribute = BoxSpecAttribute().maxWidth(300.0);
 
           expect(attribute.$constraints, isNotNull);
           final context = MockBuildContext();
@@ -741,9 +761,9 @@ void main() {
         });
 
         test(
-          'minHeight factory creates attribute with minHeight constraint',
+          'minHeight method creates attribute with minHeight constraint',
           () {
-            final attribute = BoxSpecAttribute.minHeight(75.0);
+            final attribute = BoxSpecAttribute().minHeight(75.0);
 
             expect(attribute.$constraints, isNotNull);
             final context = MockBuildContext();
@@ -753,9 +773,9 @@ void main() {
         );
 
         test(
-          'maxHeight factory creates attribute with maxHeight constraint',
+          'maxHeight method creates attribute with maxHeight constraint',
           () {
-            final attribute = BoxSpecAttribute.maxHeight(400.0);
+            final attribute = BoxSpecAttribute().maxHeight(400.0);
 
             expect(attribute.$constraints, isNotNull);
             final context = MockBuildContext();
@@ -775,7 +795,7 @@ void main() {
               minHeight: 150.0,
               maxHeight: 300.0,
             );
-            final attribute = BoxSpecAttribute.constraints(constraintsMix);
+            final attribute = BoxSpecAttribute().constraints(constraintsMix);
 
             expect(attribute.$constraints, isNotNull);
             final context = MockBuildContext();
@@ -791,7 +811,7 @@ void main() {
       group('Decoration Factories', () {
         test('decoration factory creates attribute with decoration', () {
           final decorationMix = BoxDecorationMix(color: Colors.blue);
-          final attribute = BoxSpecAttribute.decoration(decorationMix);
+          final attribute = BoxSpecAttribute().decoration(decorationMix);
 
           expect(attribute.$decoration, isNotNull);
           final context = MockBuildContext();
@@ -804,7 +824,7 @@ void main() {
           'foregroundDecoration factory creates attribute with foreground decoration',
           () {
             final decorationMix = BoxDecorationMix(color: Colors.green);
-            final attribute = BoxSpecAttribute.foregroundDecoration(
+            final attribute = BoxSpecAttribute().foregroundDecoration(
               decorationMix,
             );
 
@@ -821,7 +841,7 @@ void main() {
           final borderMix = BoxBorderMix.all(
             BorderSideMix(width: 2.0, color: Colors.red),
           );
-          final attribute = BoxSpecAttribute.border(borderMix);
+          final attribute = BoxSpecAttribute().border(borderMix);
 
           expect(attribute.$decoration, isNotNull);
           final context = MockBuildContext();
@@ -836,7 +856,7 @@ void main() {
             final borderRadiusMix = BorderRadiusMix.all(
               const Radius.circular(8.0),
             );
-            final attribute = BoxSpecAttribute.borderRadius(borderRadiusMix);
+            final attribute = BoxSpecAttribute().borderRadius(borderRadiusMix);
 
             expect(attribute.$decoration, isNotNull);
             final context = MockBuildContext();
@@ -849,14 +869,14 @@ void main() {
 
       group('Layout Factories', () {
         test('alignment factory creates attribute with alignment', () {
-          final attribute = BoxSpecAttribute.alignment(Alignment.topRight);
+          final attribute = BoxSpecAttribute().alignment(Alignment.topRight);
 
           expectProp(attribute.$alignment, Alignment.topRight);
         });
 
         test('padding factory creates attribute with padding', () {
           final paddingMix = EdgeInsetsMix.all(12.0);
-          final attribute = BoxSpecAttribute.padding(paddingMix);
+          final attribute = BoxSpecAttribute().padding(paddingMix);
 
           expect(attribute.$padding, isNotNull);
           final context = MockBuildContext();
@@ -866,7 +886,7 @@ void main() {
 
         test('margin factory creates attribute with margin', () {
           final marginMix = EdgeInsetsMix.all(8.0);
-          final attribute = BoxSpecAttribute.margin(marginMix);
+          final attribute = BoxSpecAttribute().margin(marginMix);
 
           expect(attribute.$margin, isNotNull);
           final context = MockBuildContext();
@@ -878,7 +898,7 @@ void main() {
       group('Transform Factories', () {
         test('transform factory creates attribute with transform', () {
           final transform = Matrix4.rotationZ(0.5);
-          final attribute = BoxSpecAttribute.transform(transform);
+          final attribute = BoxSpecAttribute().transform(transform);
 
           expectProp(attribute.$transform, transform);
         });
@@ -886,7 +906,7 @@ void main() {
         test(
           'transformAlignment factory creates attribute with transform alignment',
           () {
-            final attribute = BoxSpecAttribute.transformAlignment(
+            final attribute = BoxSpecAttribute().transformAlignment(
               Alignment.bottomLeft,
             );
 
@@ -897,7 +917,7 @@ void main() {
 
       group('Clip Factory', () {
         test('clipBehavior factory creates attribute with clip behavior', () {
-          final attribute = BoxSpecAttribute.clipBehavior(Clip.hardEdge);
+          final attribute = BoxSpecAttribute().clipBehavior(Clip.hardEdge);
 
           expectProp(attribute.$clipBehavior, Clip.hardEdge);
         });
@@ -963,7 +983,7 @@ void main() {
             duration: const Duration(milliseconds: 500),
             curve: Curves.linear,
           );
-          final attribute = BoxSpecAttribute.animate(animationConfig);
+          final attribute = BoxSpecAttribute().animate(animationConfig);
 
           expect(attribute.$animation, equals(animationConfig));
         });
@@ -997,13 +1017,13 @@ void main() {
           () {
             final attribute = BoxSpecAttribute();
 
-            final borderAttr = attribute.border(
-              BorderDirectionalMix(
+            final borderAttr = attribute.decoration(
+              BoxDecorationMix.border(BorderDirectionalMix(
                 start: BorderSideMix(width: 1.0, color: Colors.grey),
                 end: BorderSideMix(width: 1.0, color: Colors.grey),
                 top: BorderSideMix(width: 1.0, color: Colors.grey),
                 bottom: BorderSideMix(width: 1.0, color: Colors.grey),
-              ),
+              )),
             );
             expect(borderAttr, isA<BoxSpecAttribute>());
             expect(borderAttr.$decoration, isNotNull);
@@ -1131,7 +1151,7 @@ void main() {
         final attribute = BoxSpecAttribute()
             .width(150.0)
             .merge(BoxSpecAttribute().height(100.0))
-            .merge(BoxSpecAttribute().paddingAll(20.0))
+            .merge(BoxSpecAttribute().padding(EdgeInsetsMix.all(20.0)))
             .merge(
               BoxSpecAttribute().margin(
                 EdgeInsetsMix.symmetric(horizontal: 12.0, vertical: 8.0),

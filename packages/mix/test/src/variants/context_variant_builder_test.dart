@@ -9,7 +9,7 @@ void main() {
     group('Constructor', () {
       test('creates builder with function', () {
         final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute.width(100.0),
+          (context) => BoxSpecAttribute().width(100.0),
         );
 
         expect(builder, isA<ContextVariantBuilder<BoxSpecAttribute>>());
@@ -19,7 +19,7 @@ void main() {
 
       test('accepts different SpecAttribute types', () {
         final boxBuilder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute.width(100.0),
+          (context) => BoxSpecAttribute().width(100.0),
         );
 
         final flexBuilder = ContextVariantBuilder<FlexSpecAttribute>(
@@ -32,7 +32,7 @@ void main() {
 
       test('stores function correctly', () {
         BoxSpecAttribute builderFunction(BuildContext context) {
-          return BoxSpecAttribute.width(200.0);
+          return BoxSpecAttribute().width(200.0);
         }
 
         final builder = ContextVariantBuilder<BoxSpecAttribute>(
@@ -44,7 +44,7 @@ void main() {
 
       test('accepts anonymous functions', () {
         final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute.height(50.0),
+          (context) => BoxSpecAttribute().height(50.0),
         );
 
         expect(builder.fn, isA<Function>());
@@ -53,7 +53,7 @@ void main() {
       test('accepts closures with captured variables', () {
         const capturedWidth = 150.0;
         final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute.width(capturedWidth),
+          (context) => BoxSpecAttribute().width(capturedWidth),
         );
 
         expect(builder.fn, isA<Function>());
@@ -68,7 +68,7 @@ void main() {
     group('Key generation', () {
       test('key is based on function hashCode', () {
         BoxSpecAttribute builderFunction(BuildContext context) {
-          return BoxSpecAttribute.width(100.0);
+          return BoxSpecAttribute().width(100.0);
         }
 
         final builder = ContextVariantBuilder<BoxSpecAttribute>(
@@ -80,10 +80,10 @@ void main() {
 
       test('different functions have different keys', () {
         final builder1 = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute.width(100.0),
+          (context) => BoxSpecAttribute().width(100.0),
         );
         final builder2 = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute.width(200.0),
+          (context) => BoxSpecAttribute().width(200.0),
         );
 
         expect(builder1.key, isNot(equals(builder2.key)));
@@ -91,7 +91,7 @@ void main() {
 
       test('same function reference has same key', () {
         BoxSpecAttribute builderFunction(BuildContext context) {
-          return BoxSpecAttribute.width(100.0);
+          return BoxSpecAttribute().width(100.0);
         }
 
         final builder1 = ContextVariantBuilder<BoxSpecAttribute>(
@@ -106,7 +106,7 @@ void main() {
 
       test('key is consistent across calls', () {
         final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute.width(100.0),
+          (context) => BoxSpecAttribute().width(100.0),
         );
 
         final key1 = builder.key;
@@ -119,7 +119,7 @@ void main() {
     group('Equality and hashCode', () {
       test('equality based on function reference', () {
         BoxSpecAttribute builderFunction(BuildContext context) {
-          return BoxSpecAttribute.width(100.0);
+          return BoxSpecAttribute().width(100.0);
         }
 
         final builder1 = ContextVariantBuilder<BoxSpecAttribute>(
@@ -135,10 +135,10 @@ void main() {
 
       test('different functions are not equal', () {
         final builder1 = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute.width(100.0),
+          (context) => BoxSpecAttribute().width(100.0),
         );
         final builder2 = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute.width(100.0),
+          (context) => BoxSpecAttribute().width(100.0),
         );
 
         expect(builder1, isNot(equals(builder2)));
@@ -147,7 +147,7 @@ void main() {
 
       test('identical instances are equal', () {
         final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute.width(100.0),
+          (context) => BoxSpecAttribute().width(100.0),
         );
 
         expect(builder, equals(builder));
@@ -156,7 +156,7 @@ void main() {
 
       test('hashCode is consistent', () {
         final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute.width(100.0),
+          (context) => BoxSpecAttribute().width(100.0),
         );
 
         final hashCode1 = builder.hashCode;
@@ -167,7 +167,7 @@ void main() {
 
       test('hashCode matches function hashCode', () {
         BoxSpecAttribute builderFunction(BuildContext context) {
-          return BoxSpecAttribute.width(100.0);
+          return BoxSpecAttribute().width(100.0);
         }
 
         final builder = ContextVariantBuilder<BoxSpecAttribute>(
@@ -183,7 +183,7 @@ void main() {
         BuildContext? capturedContext;
         final builder = ContextVariantBuilder<BoxSpecAttribute>((context) {
           capturedContext = context;
-          return BoxSpecAttribute.width(100.0);
+          return BoxSpecAttribute().width(100.0);
         });
 
         final mockContext = MockBuildContext();
@@ -193,7 +193,7 @@ void main() {
       });
 
       test('returns function result', () {
-        final expectedAttribute = BoxSpecAttribute.width(150.0);
+        final expectedAttribute = BoxSpecAttribute().width(150.0);
         final builder = ContextVariantBuilder<BoxSpecAttribute>(
           (context) => expectedAttribute,
         );
@@ -205,7 +205,7 @@ void main() {
 
       test('works with different SpecAttribute types', () {
         final boxBuilder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute.width(100.0),
+          (context) => BoxSpecAttribute().width(100.0),
         );
         final flexBuilder = ContextVariantBuilder<FlexSpecAttribute>(
           (context) => FlexSpecAttribute(),
@@ -222,7 +222,7 @@ void main() {
       test('function can access context properties', () {
         final builder = ContextVariantBuilder<BoxSpecAttribute>((context) {
           final size = context.size ?? const Size(800, 600);
-          return BoxSpecAttribute.width(size.width);
+          return BoxSpecAttribute().width(size.width);
         });
 
         final result = builder.build(MockBuildContext());
@@ -237,8 +237,8 @@ void main() {
         final builder = ContextVariantBuilder<BoxSpecAttribute>((context) {
           final size = context.size ?? const Size(800, 600);
           return size.width > 1000
-              ? BoxSpecAttribute.width(200.0)
-              : BoxSpecAttribute.width(100.0);
+              ? BoxSpecAttribute().width(200.0)
+              : BoxSpecAttribute().width(100.0);
         });
 
         final smallContext = MockBuildContext();
@@ -255,7 +255,7 @@ void main() {
     group('Generic type handling', () {
       test('maintains generic type information', () {
         final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute.width(100.0),
+          (context) => BoxSpecAttribute().width(100.0),
         );
 
         final result = builder.build(MockBuildContext());
@@ -264,7 +264,7 @@ void main() {
 
       test('different generic types create different builder types', () {
         final boxBuilder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute.width(100.0),
+          (context) => BoxSpecAttribute().width(100.0),
         );
         final flexBuilder = ContextVariantBuilder<FlexSpecAttribute>(
           (context) => FlexSpecAttribute(),
@@ -275,7 +275,7 @@ void main() {
 
       test('can work with base SpecAttribute type', () {
         final builder = ContextVariantBuilder<StyleAttribute>(
-          (context) => BoxSpecAttribute.width(100.0),
+          (context) => BoxSpecAttribute().width(100.0),
         );
 
         final result = builder.build(MockBuildContext());
@@ -287,7 +287,7 @@ void main() {
     group('MultiVariant integration', () {
       test('can be combined with AND operator', () {
         final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute.width(100.0),
+          (context) => BoxSpecAttribute().width(100.0),
         );
         final contextVariant = ContextVariant('test', (context) => true);
 
@@ -301,7 +301,7 @@ void main() {
 
       test('can be combined with OR operator', () {
         final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute.width(100.0),
+          (context) => BoxSpecAttribute().width(100.0),
         );
         const namedVariant = NamedVariant('primary');
 
@@ -315,7 +315,7 @@ void main() {
 
       test('can be negated with NOT operation', () {
         final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute.width(100.0),
+          (context) => BoxSpecAttribute().width(100.0),
         );
         final notVariant = not(builder);
 
@@ -337,7 +337,7 @@ void main() {
               <= 1024 => 150.0,
               _ => 200.0,
             };
-            return BoxSpecAttribute.width(width);
+            return BoxSpecAttribute().width(width);
           });
 
           final result = builder.build(MockBuildContext());
@@ -383,7 +383,7 @@ void main() {
         const multiplier = 3;
 
         final builder = ContextVariantBuilder<BoxSpecAttribute>((context) {
-          return BoxSpecAttribute.width(baseWidth * multiplier);
+          return BoxSpecAttribute().width(baseWidth * multiplier);
         });
 
         final result = builder.build(MockBuildContext());
@@ -408,7 +408,7 @@ void main() {
         final builder = ContextVariantBuilder<BoxSpecAttribute>((context) {
           // This should compile without issues - context is properly typed
           expect(context, isA<BuildContext>());
-          return BoxSpecAttribute.width(100.0);
+          return BoxSpecAttribute().width(100.0);
         });
 
         builder.build(MockBuildContext());
@@ -416,7 +416,7 @@ void main() {
 
       test('maintains const constructor', () {
         BoxSpecAttribute builderFunction(BuildContext context) {
-          return BoxSpecAttribute.width(100.0);
+          return BoxSpecAttribute().width(100.0);
         }
 
         expect(
@@ -432,7 +432,7 @@ void main() {
 
         for (int i = 0; i < 1000; i++) {
           ContextVariantBuilder<BoxSpecAttribute>(
-            (context) => BoxSpecAttribute.width(i.toDouble()),
+            (context) => BoxSpecAttribute().width(i.toDouble()),
           );
         }
 
@@ -442,7 +442,7 @@ void main() {
 
       test('build method calls are efficient', () {
         final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute.width(100.0),
+          (context) => BoxSpecAttribute().width(100.0),
         );
         final context = MockBuildContext();
         final stopwatch = Stopwatch()..start();
@@ -457,7 +457,7 @@ void main() {
 
       test('key generation is efficient', () {
         final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute.width(100.0),
+          (context) => BoxSpecAttribute().width(100.0),
         );
         final stopwatch = Stopwatch()..start();
 
@@ -471,7 +471,7 @@ void main() {
 
       test('equality comparison is efficient', () {
         BoxSpecAttribute builderFunction(BuildContext context) {
-          return BoxSpecAttribute.width(100.0);
+          return BoxSpecAttribute().width(100.0);
         }
 
         final builder1 = ContextVariantBuilder<BoxSpecAttribute>(
@@ -494,7 +494,7 @@ void main() {
     group('Integration with other Mix components', () {
       test('can be used in Style resolution context', () {
         final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute.width(100.0),
+          (context) => BoxSpecAttribute().width(100.0),
         );
 
         // ContextVariantBuilder should integrate with the broader Mix system
@@ -505,9 +505,9 @@ void main() {
 
       test('works with VariantSpecAttribute wrapper', () {
         final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute.width(100.0),
+          (context) => BoxSpecAttribute().width(100.0),
         );
-        final style = BoxSpecAttribute.height(200.0);
+        final style = BoxSpecAttribute().height(200.0);
         final variantAttr = VariantStyleAttribute(builder, style);
 
         expect(variantAttr.variant, builder);
@@ -517,19 +517,19 @@ void main() {
 
       test('key works as mergeKey for VariantSpecAttribute', () {
         final builder1 = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute.width(100.0),
+          (context) => BoxSpecAttribute().width(100.0),
         );
         final builder2 = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute.width(200.0),
+          (context) => BoxSpecAttribute().width(200.0),
         );
 
         final style1 = VariantStyleAttribute(
           builder1,
-          BoxSpecAttribute.height(100.0),
+          BoxSpecAttribute().height(100.0),
         );
         final style2 = VariantStyleAttribute(
           builder2,
-          BoxSpecAttribute.height(200.0),
+          BoxSpecAttribute().height(200.0),
         );
 
         expect(style1.mergeKey, builder1.key);
@@ -545,7 +545,7 @@ void main() {
           context,
         ) {
           final size = context.size ?? const Size(800, 600);
-          return BoxSpecAttribute.width(size.width > 768 ? 200.0 : 100.0);
+          return BoxSpecAttribute().width(size.width > 768 ? 200.0 : 100.0);
         });
 
         final result = responsiveBuilder.build(MockBuildContext());
@@ -559,7 +559,7 @@ void main() {
         final themeBuilder = ContextVariantBuilder<BoxSpecAttribute>((context) {
           // In a real scenario, this would access Theme.of(context)
           // For testing, we'll simulate theme-based logic
-          return BoxSpecAttribute.width(120.0);
+          return BoxSpecAttribute().width(120.0);
         });
 
         final result = themeBuilder.build(MockBuildContext());
