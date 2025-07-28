@@ -85,35 +85,59 @@ class FlexBoxSpecUtility extends StyleAttributeBuilder<FlexBoxSpec> {
 
   // FLEX UTILITIES
   late final direction = PropUtility<FlexBoxSpecUtility, Axis>(
-    (prop) => _build(FlexBoxSpecAttribute(flex: FlexSpecAttribute(direction: prop))),
+    (prop) =>
+        _build(FlexBoxSpecAttribute(flex: FlexSpecAttribute(direction: prop))),
   );
 
-  late final mainAxisAlignment = PropUtility<FlexBoxSpecUtility, MainAxisAlignment>(
-    (prop) => _build(FlexBoxSpecAttribute(flex: FlexSpecAttribute(mainAxisAlignment: prop))),
-  );
+  late final mainAxisAlignment =
+      PropUtility<FlexBoxSpecUtility, MainAxisAlignment>(
+        (prop) => _build(
+          FlexBoxSpecAttribute(
+            flex: FlexSpecAttribute(mainAxisAlignment: prop),
+          ),
+        ),
+      );
 
-  late final crossAxisAlignment = PropUtility<FlexBoxSpecUtility, CrossAxisAlignment>(
-    (prop) => _build(FlexBoxSpecAttribute(flex: FlexSpecAttribute(crossAxisAlignment: prop))),
-  );
+  late final crossAxisAlignment =
+      PropUtility<FlexBoxSpecUtility, CrossAxisAlignment>(
+        (prop) => _build(
+          FlexBoxSpecAttribute(
+            flex: FlexSpecAttribute(crossAxisAlignment: prop),
+          ),
+        ),
+      );
 
   late final mainAxisSize = PropUtility<FlexBoxSpecUtility, MainAxisSize>(
-    (prop) => _build(FlexBoxSpecAttribute(flex: FlexSpecAttribute(mainAxisSize: prop))),
+    (prop) => _build(
+      FlexBoxSpecAttribute(flex: FlexSpecAttribute(mainAxisSize: prop)),
+    ),
   );
 
-  late final verticalDirection = PropUtility<FlexBoxSpecUtility, VerticalDirection>(
-    (prop) => _build(FlexBoxSpecAttribute(flex: FlexSpecAttribute(verticalDirection: prop))),
-  );
+  late final verticalDirection =
+      PropUtility<FlexBoxSpecUtility, VerticalDirection>(
+        (prop) => _build(
+          FlexBoxSpecAttribute(
+            flex: FlexSpecAttribute(verticalDirection: prop),
+          ),
+        ),
+      );
 
   late final flexTextDirection = PropUtility<FlexBoxSpecUtility, TextDirection>(
-    (prop) => _build(FlexBoxSpecAttribute(flex: FlexSpecAttribute(textDirection: prop))),
+    (prop) => _build(
+      FlexBoxSpecAttribute(flex: FlexSpecAttribute(textDirection: prop)),
+    ),
   );
 
   late final textBaseline = PropUtility<FlexBoxSpecUtility, TextBaseline>(
-    (prop) => _build(FlexBoxSpecAttribute(flex: FlexSpecAttribute(textBaseline: prop))),
+    (prop) => _build(
+      FlexBoxSpecAttribute(flex: FlexSpecAttribute(textBaseline: prop)),
+    ),
   );
 
   late final flexClipBehavior = PropUtility<FlexBoxSpecUtility, Clip>(
-    (prop) => _build(FlexBoxSpecAttribute(flex: FlexSpecAttribute(clipBehavior: prop))),
+    (prop) => _build(
+      FlexBoxSpecAttribute(flex: FlexSpecAttribute(clipBehavior: prop)),
+    ),
   );
 
   late final gap = PropUtility<FlexBoxSpecUtility, double>(
@@ -123,8 +147,7 @@ class FlexBoxSpecUtility extends StyleAttributeBuilder<FlexBoxSpec> {
   FlexBoxSpecAttribute _baseAttribute;
 
   FlexBoxSpecUtility([FlexBoxSpecAttribute? attribute])
-    : _baseAttribute = attribute ?? const FlexBoxSpecAttribute(),
-      super();
+    : _baseAttribute = attribute ?? const FlexBoxSpecAttribute();
 
   /// Mutable builder - updates internal state and returns this for cascade
   FlexBoxSpecUtility _build(FlexBoxSpecAttribute newAttribute) {

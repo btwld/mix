@@ -4,8 +4,6 @@ import '../../core/prop.dart';
 import '../../core/spec.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
-import 'border_mix.dart';
-import 'border_radius_mix.dart';
 import 'border_radius_util.dart';
 import 'border_util.dart';
 import 'color_util.dart';
@@ -150,74 +148,53 @@ final class ShapeDecorationUtility<T extends StyleAttribute<Object?>>
 /// Mixin that provides decoration convenience methods for box styling
 mixin DecorationMixin<T extends StyleAttribute<S>, S extends Spec<S>>
     on StyleAttribute<S> {
-  
   /// Must be implemented by the class using this mixin
   T decoration(DecorationMix value);
-  
+
   /// Sets background color
   T color(Color value) {
     return decoration(DecorationMix.color(value));
   }
-  
+
   /// Sets box shape
   T shape(BoxShape value) {
     return decoration(DecorationMix.shape(value));
   }
-  
+
   /// Sets gradient with any GradientMix type
   T gradient(GradientMix value) {
     return decoration(DecorationMix.gradient(value));
   }
-  
+
   /// Sets image decoration
   T image(DecorationImageMix value) {
     return decoration(DecorationMix.image(value));
   }
-  
+
   /// Sets single shadow
   T shadow(BoxShadowMix value) {
-    return boxDecoration(boxShadow: [value]);
+    return decoration(BoxDecorationMix.boxShadow([value]));
   }
-  
+
   /// Sets multiple shadows
   T shadows(List<BoxShadowMix> value) {
-    return boxDecoration(boxShadow: value);
+    return decoration(BoxDecorationMix.boxShadow(value));
   }
-  
+
   /// Sets elevation shadow
   T elevation(ElevationShadow value) {
-    return boxDecoration(
-      boxShadow: BoxShadowMix.fromElevation(value),
-    );
-  }
-  
-  /// Creates a box decoration with specified properties
-  /// 
-  /// This is the complex method similar to corners/insets
-  T boxDecoration({
-    BoxBorderMix? border,
-    BorderRadiusGeometryMix? borderRadius,
-    BoxShape? shape,
-    BlendMode? backgroundBlendMode,
-    Color? color,
-    DecorationImageMix? image,
-    GradientMix? gradient,
-    List<BoxShadowMix>? boxShadow,
-  }) {
     return decoration(
-      BoxDecorationMix.only(
-        border: border,
-        borderRadius: borderRadius,
-        shape: shape,
-        backgroundBlendMode: backgroundBlendMode,
-        color: color,
-        image: image,
-        gradient: gradient,
-        boxShadow: boxShadow,
-      ),
+      BoxDecorationMix.boxShadow(BoxShadowMix.fromElevation(value)),
     );
   }
-  
+
+  /// Creates a box decoration with specified properties
+  ///
+  /// This is the complex method similar to corners/insets
+  T boxDecoration(BoxDecorationMix value) {
+    return decoration(value);
+  }
+
   /// Creates a shape decoration with specified properties
   T shapeDecoration({
     ShapeBorderMix? shape,
@@ -236,195 +213,31 @@ mixin DecorationMixin<T extends StyleAttribute<S>, S extends Spec<S>>
       ),
     );
   }
-  
-  /// Linear gradient convenience method
-  T linearGradient({
-    AlignmentGeometry? begin,
-    AlignmentGeometry? end,
-    TileMode? tileMode,
-    GradientTransform? transform,
-    required List<Color> colors,
-    List<double>? stops,
-  }) {
-    return gradient(
-      LinearGradientMix.only(
-        begin: begin,
-        end: end,
-        tileMode: tileMode,
-        transform: transform,
-        colors: colors,
-        stops: stops,
-      ),
-    );
-  }
-  
-  /// Radial gradient convenience method
-  T radialGradient({
-    AlignmentGeometry? center,
-    double? radius,
-    TileMode? tileMode,
-    AlignmentGeometry? focal,
-    double? focalRadius,
-    GradientTransform? transform,
-    required List<Color> colors,
-    List<double>? stops,
-  }) {
-    return gradient(
-      RadialGradientMix.only(
-        center: center,
-        radius: radius,
-        tileMode: tileMode,
-        focal: focal,
-        focalRadius: focalRadius,
-        transform: transform,
-        colors: colors,
-        stops: stops,
-      ),
-    );
-  }
-  
-  /// Sweep gradient convenience method
-  T sweepGradient({
-    AlignmentGeometry? center,
-    double? startAngle,
-    double? endAngle,
-    TileMode? tileMode,
-    GradientTransform? transform,
-    required List<Color> colors,
-    List<double>? stops,
-  }) {
-    return gradient(
-      SweepGradientMix.only(
-        center: center,
-        startAngle: startAngle,
-        endAngle: endAngle,
-        tileMode: tileMode,
-        transform: transform,
-        colors: colors,
-        stops: stops,
-      ),
-    );
-  }
 }
 
 /// Mixin for foreground decoration convenience methods
 mixin ForegroundDecorationMixin<T extends StyleAttribute<S>, S extends Spec<S>>
     on StyleAttribute<S> {
-  
   /// Must be implemented by the class using this mixin
   T foregroundDecoration(DecorationMix value);
-  
+
   /// Sets foreground color
   T foregroundColor(Color value) {
     return foregroundDecoration(DecorationMix.color(value));
   }
-  
+
   /// Sets foreground gradient
   T foregroundGradient(GradientMix value) {
     return foregroundDecoration(DecorationMix.gradient(value));
   }
-  
+
   /// Sets foreground shape
   T foregroundShape(BoxShape value) {
     return foregroundDecoration(DecorationMix.shape(value));
   }
-  
+
   /// Sets foreground image
   T foregroundImage(DecorationImageMix value) {
     return foregroundDecoration(DecorationMix.image(value));
-  }
-  
-  /// Creates a foreground box decoration
-  T foregroundBoxDecoration({
-    BoxBorderMix? border,
-    BorderRadiusGeometryMix? borderRadius,
-    BoxShape? shape,
-    BlendMode? backgroundBlendMode,
-    Color? color,
-    DecorationImageMix? image,
-    GradientMix? gradient,
-    List<BoxShadowMix>? boxShadow,
-  }) {
-    return foregroundDecoration(
-      BoxDecorationMix.only(
-        border: border,
-        borderRadius: borderRadius,
-        shape: shape,
-        backgroundBlendMode: backgroundBlendMode,
-        color: color,
-        image: image,
-        gradient: gradient,
-        boxShadow: boxShadow,
-      ),
-    );
-  }
-  
-  /// Linear gradient for foreground
-  T foregroundLinearGradient({
-    AlignmentGeometry? begin,
-    AlignmentGeometry? end,
-    TileMode? tileMode,
-    GradientTransform? transform,
-    required List<Color> colors,
-    List<double>? stops,
-  }) {
-    return foregroundGradient(
-      LinearGradientMix.only(
-        begin: begin,
-        end: end,
-        tileMode: tileMode,
-        transform: transform,
-        colors: colors,
-        stops: stops,
-      ),
-    );
-  }
-  
-  /// Radial gradient for foreground
-  T foregroundRadialGradient({
-    AlignmentGeometry? center,
-    double? radius,
-    TileMode? tileMode,
-    AlignmentGeometry? focal,
-    double? focalRadius,
-    GradientTransform? transform,
-    required List<Color> colors,
-    List<double>? stops,
-  }) {
-    return foregroundGradient(
-      RadialGradientMix.only(
-        center: center,
-        radius: radius,
-        tileMode: tileMode,
-        focal: focal,
-        focalRadius: focalRadius,
-        transform: transform,
-        colors: colors,
-        stops: stops,
-      ),
-    );
-  }
-  
-  /// Sweep gradient for foreground
-  T foregroundSweepGradient({
-    AlignmentGeometry? center,
-    double? startAngle,
-    double? endAngle,
-    TileMode? tileMode,
-    GradientTransform? transform,
-    required List<Color> colors,
-    List<double>? stops,
-  }) {
-    return foregroundGradient(
-      SweepGradientMix.only(
-        center: center,
-        startAngle: startAngle,
-        endAngle: endAngle,
-        tileMode: tileMode,
-        transform: transform,
-        colors: colors,
-        stops: stops,
-      ),
-    );
   }
 }

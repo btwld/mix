@@ -19,11 +19,6 @@ class TestVariantAttribute extends StyleAttribute<BoxSpec>
   }
 
   @override
-  TestVariantAttribute createEmptyStyle() {
-    return const TestVariantAttribute();
-  }
-
-  @override
   BoxSpec resolve(BuildContext context) => const BoxSpec();
 
   @override
@@ -43,7 +38,8 @@ void main() {
   group('VariantMixin', () {
     test('onDark creates correct variant', () {
       const attribute = TestVariantAttribute();
-      final result = attribute.onDark((style) => style);
+      const style = TestVariantAttribute();
+      final result = attribute.onDark(style);
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
@@ -54,7 +50,8 @@ void main() {
 
     test('onLight creates correct variant', () {
       const attribute = TestVariantAttribute();
-      final result = attribute.onLight((style) => style);
+      const style = TestVariantAttribute();
+      final result = attribute.onLight(style);
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
@@ -65,7 +62,8 @@ void main() {
 
     test('onHover creates correct variant', () {
       const attribute = TestVariantAttribute();
-      final result = attribute.onHover((style) => style);
+      const style = TestVariantAttribute();
+      final result = attribute.onHover(style);
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
@@ -74,7 +72,8 @@ void main() {
 
     test('onPress creates correct variant', () {
       const attribute = TestVariantAttribute();
-      final result = attribute.onPress((style) => style);
+      const style = TestVariantAttribute();
+      final result = attribute.onPress(style);
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
@@ -83,7 +82,8 @@ void main() {
 
     test('onDisabled creates correct variant', () {
       const attribute = TestVariantAttribute();
-      final result = attribute.onDisabled((style) => style);
+      const style = TestVariantAttribute();
+      final result = attribute.onDisabled(style);
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
@@ -92,7 +92,8 @@ void main() {
 
     test('onEnabled creates correct variant', () {
       const attribute = TestVariantAttribute();
-      final result = attribute.onEnabled((style) => style);
+      const style = TestVariantAttribute();
+      final result = attribute.onEnabled(style);
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
@@ -101,7 +102,8 @@ void main() {
 
     test('onMobile creates correct variant', () {
       const attribute = TestVariantAttribute();
-      final result = attribute.onMobile((style) => style);
+      const style = TestVariantAttribute();
+      final result = attribute.onMobile(style);
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
@@ -110,7 +112,8 @@ void main() {
 
     test('onDesktop creates correct variant', () {
       const attribute = TestVariantAttribute();
-      final result = attribute.onDesktop((style) => style);
+      const style = TestVariantAttribute();
+      final result = attribute.onDesktop(style);
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
@@ -119,9 +122,10 @@ void main() {
 
     test('orientation variants work correctly', () {
       const attribute = TestVariantAttribute();
+      const style = TestVariantAttribute();
 
-      final portraitResult = attribute.onPortrait((style) => style);
-      final landscapeResult = attribute.onLandscape((style) => style);
+      final portraitResult = attribute.onPortrait(style);
+      final landscapeResult = attribute.onLandscape(style);
 
       expect(portraitResult.$variants!.length, 1);
       expect(landscapeResult.$variants!.length, 1);
@@ -131,9 +135,10 @@ void main() {
 
     test('direction variants work correctly', () {
       const attribute = TestVariantAttribute();
+      const style = TestVariantAttribute();
 
-      final ltrResult = attribute.onLtr((style) => style);
-      final rtlResult = attribute.onRtl((style) => style);
+      final ltrResult = attribute.onLtr(style);
+      final rtlResult = attribute.onRtl(style);
 
       expect(ltrResult.$variants!.length, 1);
       expect(rtlResult.$variants!.length, 1);
@@ -143,14 +148,15 @@ void main() {
 
     test('platform variants work correctly', () {
       const attribute = TestVariantAttribute();
+      const style = TestVariantAttribute();
 
-      final iosResult = attribute.onIos((style) => style);
-      final androidResult = attribute.onAndroid((style) => style);
-      final macosResult = attribute.onMacos((style) => style);
-      final windowsResult = attribute.onWindows((style) => style);
-      final linuxResult = attribute.onLinux((style) => style);
-      final fuchsiaResult = attribute.onFuchsia((style) => style);
-      final webResult = attribute.onWeb((style) => style);
+      final iosResult = attribute.onIos(style);
+      final androidResult = attribute.onAndroid(style);
+      final macosResult = attribute.onMacos(style);
+      final windowsResult = attribute.onWindows(style);
+      final linuxResult = attribute.onLinux(style);
+      final fuchsiaResult = attribute.onFuchsia(style);
+      final webResult = attribute.onWeb(style);
 
       expect(iosResult.$variants!.length, 1);
       expect(androidResult.$variants!.length, 1);
@@ -163,12 +169,13 @@ void main() {
 
     test('widget state variants work correctly', () {
       const attribute = TestVariantAttribute();
+      const style = TestVariantAttribute();
 
-      final focusResult = attribute.onFocus((style) => style);
-      final selectedResult = attribute.onSelected((style) => style);
-      final draggedResult = attribute.onDragged((style) => style);
-      final errorResult = attribute.onError((style) => style);
-      final scrolledUnderResult = attribute.onScrolledUnder((style) => style);
+      final focusResult = attribute.onFocus(style);
+      final selectedResult = attribute.onSelected(style);
+      final draggedResult = attribute.onDragged(style);
+      final errorResult = attribute.onError(style);
+      final scrolledUnderResult = attribute.onScrolledUnder(style);
 
       expect(focusResult.$variants!.length, 1);
       expect(selectedResult.$variants!.length, 1);
@@ -179,7 +186,8 @@ void main() {
 
     test('onTablet creates correct variant', () {
       const attribute = TestVariantAttribute();
-      final result = attribute.onTablet((style) => style);
+      const style = TestVariantAttribute();
+      final result = attribute.onTablet(style);
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
@@ -188,41 +196,37 @@ void main() {
 
     test('onBreakpoint creates correct variant', () {
       const attribute = TestVariantAttribute();
+      const style = TestVariantAttribute();
       final breakpoint = Breakpoint(minWidth: 800, maxWidth: 1200);
-      final result = attribute.onBreakpoint(breakpoint, (style) => style);
+      final result = attribute.onBreakpoint(breakpoint, style);
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
       expect(result.$variants!.first.variant, isA<ContextVariant>());
     });
 
-    test('builder function is called with blank style', () {
+    test('variant creates proper style attribute', () {
       const attribute = TestVariantAttribute();
-      TestVariantAttribute? receivedStyle;
+      const style = TestVariantAttribute();
 
-      attribute.onDark((style) {
-        receivedStyle = style;
-        return style;
-      });
-
-      expect(receivedStyle, isNotNull);
-      expect(receivedStyle, equals(const TestVariantAttribute()));
-    });
-
-    test('builder function can modify style', () {
-      const attribute = TestVariantAttribute();
-
-      final result = attribute.onDark((style) {
-        return const TestVariantAttribute(
-          variants: [VariantStyleAttribute(NamedVariant('test'), TestVariantAttribute())],
-        );
-      });
+      final result = attribute.onDark(style);
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
-      // The returned style should have the variant applied by onDark
-      final variantStyle = result.$variants!.first.value;
-      expect(variantStyle, isA<TestVariantAttribute>());
+      expect(result.$variants!.first.value, equals(style));
+    });
+
+    test('variant can be chained with different styles', () {
+      const attribute = TestVariantAttribute();
+      const darkStyle = TestVariantAttribute();
+      const hoverStyle = TestVariantAttribute();
+
+      final result = attribute.onDark(darkStyle).onHover(hoverStyle);
+
+      expect(result.$variants, isNotNull);
+      expect(result.$variants!.length, 2);
+      expect(result.$variants!.first.value, equals(darkStyle));
+      expect(result.$variants!.last.value, equals(hoverStyle));
     });
   });
 }

@@ -1,8 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/style.dart';
-import '../../core/style_widget.dart';
-import 'box_spec.dart';
+import '../../../mix.dart';
 
 /// A [Container] equivalent widget for applying styles using Mix.
 ///
@@ -35,12 +33,12 @@ import 'box_spec.dart';
 /// * [Container], which is the Flutter equivalent widget.
 class Box extends StyleWidget<BoxSpec> {
   const Box({
-    super.style,
+    BoxMix? style,
     super.key,
     super.inherit,
     this.child,
     super.orderOfModifiers,
-  });
+  }) : super(style: style ?? const BoxMix());
 
   /// The child widget that will receive the styles.
   final Widget? child;

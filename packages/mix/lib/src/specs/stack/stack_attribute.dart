@@ -18,7 +18,11 @@ import 'stack_spec.dart';
 ///
 /// Use this class to configure the attributes of a [StackSpec] and pass it to
 /// the [StackSpec] constructor.
-class StackSpecAttribute extends StyleAttribute<StackSpec> with Diagnosticable, ModifierMixin<StackSpecAttribute, StackSpec>, VariantMixin<StackSpecAttribute, StackSpec> {
+class StackSpecAttribute extends StyleAttribute<StackSpec>
+    with
+        Diagnosticable,
+        ModifierMixin<StackSpecAttribute, StackSpec>,
+        VariantMixin<StackSpecAttribute, StackSpec> {
   final Prop<AlignmentGeometry>? $alignment;
   final Prop<StackFit>? $fit;
   final Prop<TextDirection>? $textDirection;
@@ -108,13 +112,13 @@ class StackSpecAttribute extends StyleAttribute<StackSpec> with Diagnosticable, 
     return StackSpecAttribute.only(animation: animation);
   }
 
+  StackSpecAttribute variants(List<VariantStyleAttribute<StackSpec>> variants) {
+    return merge(StackSpecAttribute.only(variants: variants));
+  }
+
   @override
   StackSpecAttribute modifiers(List<ModifierAttribute> modifiers) {
     return merge(StackSpecAttribute.only(modifiers: modifiers));
-  }
-
-  StackSpecAttribute variants(List<VariantStyleAttribute<StackSpec>> variants) {
-    return merge(StackSpecAttribute.only(variants: variants));
   }
 
   /// Resolves to [StackSpec] using the provided [MixContext].
@@ -159,16 +163,12 @@ class StackSpecAttribute extends StyleAttribute<StackSpec> with Diagnosticable, 
     );
   }
 
-  /// The list of properties that constitute the state of this [StackSpecAttribute].
-  @override
-  StackSpecAttribute createEmptyStyle() {
-    return StackSpecAttribute();
-  }
-
   @override
   StackSpecAttribute variant(Variant variant, StackSpecAttribute style) {
     return merge(
-      StackSpecAttribute.only(variants: [VariantStyleAttribute(variant, style)]),
+      StackSpecAttribute.only(
+        variants: [VariantStyleAttribute(variant, style)],
+      ),
     );
   }
 

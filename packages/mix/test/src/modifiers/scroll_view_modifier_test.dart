@@ -653,7 +653,7 @@ void main() {
     });
 
     test('padding utility creates attribute with padding', () {
-      final result = utility.padding.all(16.0);
+      final result = utility.padding(EdgeInsetsMix.all(16.0));
       final attribute = result.value;
 
       expect(

@@ -15,7 +15,10 @@ import '../../variants/variant_util.dart';
 import 'icon_spec.dart';
 
 class IconSpecAttribute extends StyleAttribute<IconSpec>
-    with Diagnosticable, ModifierMixin<IconSpecAttribute, IconSpec>, VariantMixin<IconSpecAttribute, IconSpec> {
+    with
+        Diagnosticable,
+        ModifierMixin<IconSpecAttribute, IconSpec>,
+        VariantMixin<IconSpecAttribute, IconSpec> {
   final Prop<Color>? $color;
   final Prop<double>? $size;
   final Prop<double>? $weight;
@@ -141,10 +144,6 @@ class IconSpecAttribute extends StyleAttribute<IconSpec>
     return merge(IconSpecAttribute.only(modifiers: modifiers));
   }
 
-  IconSpecAttribute variants(List<VariantStyleAttribute<IconSpec>> variants) {
-    return merge(IconSpecAttribute.only(variants: variants));
-  }
-
   @override
   IconSpec resolve(BuildContext context) {
     return IconSpec(
@@ -207,11 +206,6 @@ class IconSpecAttribute extends StyleAttribute<IconSpec>
       ),
     );
     properties.add(DiagnosticsProperty('fill', $fill, defaultValue: null));
-  }
-
-  @override
-  IconSpecAttribute createEmptyStyle() {
-    return IconSpecAttribute();
   }
 
   @override

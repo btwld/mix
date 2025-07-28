@@ -100,7 +100,23 @@ sealed class DecorationMix<T extends Decoration> extends Mix<T> {
     return switch ((this, other)) {
           (BoxDecorationMix a, BoxDecorationMix b) => a.mergeDecoration(b),
           (ShapeDecorationMix a, ShapeDecorationMix b) => a.mergeDecoration(b),
-          _ => other, // Different types: override with other
+          (BoxDecorationMix a, ShapeDecorationMix b) => ShapeDecorationMix(
+            shape: b.$shape,
+            color: MixHelpers.merge(a.$color, b.$color),
+            image: MixHelpers.merge(a.$image, b.$image),
+            gradient: MixHelpers.merge(a.$gradient, b.$gradient),
+            shadows: MixHelpers.mergeList(a.$boxShadow, b.$boxShadow),
+          ),
+          (ShapeDecorationMix a, BoxDecorationMix b) => BoxDecorationMix(
+            border: b.$border,
+            borderRadius: b.$borderRadius,
+            shape: b.$shape,
+            backgroundBlendMode: b.$backgroundBlendMode,
+            color: MixHelpers.merge(a.$color, b.$color),
+            image: MixHelpers.merge(a.$image, b.$image),
+            gradient: MixHelpers.merge(a.$gradient, b.$gradient),
+            boxShadow: MixHelpers.mergeList(a.$boxShadow, b.$boxShadow),
+          ),
         }
         as DecorationMix<T>;
   }

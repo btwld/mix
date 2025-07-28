@@ -14,7 +14,6 @@ import '../../properties/layout/transform_util.dart';
 import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/painting/border_radius_util.dart';
-import '../../properties/painting/border_util.dart';
 import '../../properties/painting/decoration_mix.dart';
 import '../../properties/painting/decoration_util.dart';
 import '../../properties/painting/gradient_mix.dart';
@@ -29,16 +28,15 @@ import 'box_spec.dart';
 class BoxSpecAttribute extends StyleAttribute<BoxSpec>
     with
         Diagnosticable,
-        BorderRadiusMixin<BoxSpecAttribute, BoxSpec>,
         ModifierMixin<BoxSpecAttribute, BoxSpec>,
-        BorderMixin<BoxSpecAttribute, BoxSpec>,
         VariantMixin<BoxSpecAttribute, BoxSpec>,
-        PaddingMixin<BoxSpecAttribute, BoxSpec>,
-        MarginMixin<BoxSpecAttribute, BoxSpec>,
         ConstraintsMixin<BoxSpecAttribute, BoxSpec>,
         DecorationMixin<BoxSpecAttribute, BoxSpec>,
         ForegroundDecorationMixin<BoxSpecAttribute, BoxSpec>,
-        TransformMixin<BoxSpecAttribute, BoxSpec> {
+        TransformMixin<BoxSpecAttribute, BoxSpec>,
+        PaddingMixin<BoxSpecAttribute, BoxSpec>,
+        MarginMixin<BoxSpecAttribute, BoxSpec>,
+        BorderRadiusMixin<BoxSpecAttribute, BoxSpec> {
   final Prop<AlignmentGeometry>? $alignment;
   final MixProp<EdgeInsetsGeometry>? $padding;
   final MixProp<EdgeInsetsGeometry>? $margin;
@@ -246,11 +244,6 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
     return spec != null ? BoxSpecAttribute.value(spec) : null;
   }
 
-  @override
-  BoxSpecAttribute transform(Matrix4 value) {
-    return merge(BoxSpecAttribute.only(transform: value));
-  }
-
   BoxSpecAttribute transformAlignment(AlignmentGeometry value) {
     return merge(BoxSpecAttribute.only(transformAlignment: value));
   }
@@ -277,18 +270,12 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
     return merge(BoxSpecAttribute.only(variants: value));
   }
 
-  // Color instance method
+  // Border instance method
 
-  // Decoration instance method
-  @override
-  BoxSpecAttribute decoration(DecorationMix value) {
-    return merge(BoxSpecAttribute.only(decoration: value));
-  }
-
-  // Foreground decoration instance method
-  @override
-  BoxSpecAttribute foregroundDecoration(DecorationMix value) {
-    return merge(BoxSpecAttribute.only(foregroundDecoration: value));
+  BoxSpecAttribute border(BoxBorderMix value) {
+    return merge(
+      BoxSpecAttribute.only(decoration: DecorationMix.border(value)),
+    );
   }
 
   // Padding instance method
@@ -303,9 +290,31 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
     return merge(BoxSpecAttribute.only(margin: value));
   }
 
+  // Border radius instance method
   @override
-  BoxSpecAttribute createEmptyStyle() {
-    return BoxSpecAttribute();
+  BoxSpecAttribute borderRadius(BorderRadiusGeometryMix value) {
+    return merge(
+      BoxSpecAttribute.only(decoration: DecorationMix.borderRadius(value)),
+    );
+  }
+
+  @override
+  BoxSpecAttribute transform(Matrix4 value) {
+    return merge(BoxSpecAttribute.only(transform: value));
+  }
+
+  // Color instance method
+
+  // Decoration instance method
+  @override
+  BoxSpecAttribute decoration(DecorationMix value) {
+    return merge(BoxSpecAttribute.only(decoration: value));
+  }
+
+  // Foreground decoration instance method
+  @override
+  BoxSpecAttribute foregroundDecoration(DecorationMix value) {
+    return merge(BoxSpecAttribute.only(foregroundDecoration: value));
   }
 
   @override
@@ -319,22 +328,6 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
   @override
   BoxSpecAttribute constraints(BoxConstraintsMix value) {
     return merge(BoxSpecAttribute.only(constraints: value));
-  }
-
-  // Border instance method
-  @override
-  BoxSpecAttribute border(BoxBorderMix value) {
-    return merge(
-      BoxSpecAttribute.only(decoration: DecorationMix.border(value)),
-    );
-  }
-
-  // Border radius instance method
-  @override
-  BoxSpecAttribute borderRadius(BorderRadiusGeometryMix value) {
-    return merge(
-      BoxSpecAttribute.only(decoration: DecorationMix.borderRadius(value)),
-    );
   }
 
   /// The list of properties that constitute the state of this [BoxSpecAttribute].

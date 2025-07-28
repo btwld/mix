@@ -24,6 +24,50 @@ sealed class BorderRadiusGeometryMix<T extends BorderRadiusGeometry>
     };
   }
 
+  static BorderRadiusGeometryMix only({
+    Radius? topLeft,
+    Radius? topRight,
+    Radius? bottomLeft,
+    Radius? bottomRight,
+    Radius? topStart,
+    Radius? topEnd,
+    Radius? bottomStart,
+    Radius? bottomEnd,
+  }) {
+    if (topLeft != null ||
+        topRight != null ||
+        bottomLeft != null ||
+        bottomRight != null) {
+      return BorderRadiusMix.only(
+        topLeft: topLeft,
+        topRight: topRight,
+        bottomLeft: bottomLeft,
+        bottomRight: bottomRight,
+      );
+    } else if (topStart != null ||
+        topEnd != null ||
+        bottomStart != null ||
+        bottomEnd != null) {
+      return BorderRadiusDirectionalMix.only(
+        topStart: topStart,
+        topEnd: topEnd,
+        bottomStart: bottomStart,
+        bottomEnd: bottomEnd,
+      );
+    }
+
+    return BorderRadiusMix.only(
+      topLeft: topLeft,
+      topRight: topRight,
+      bottomLeft: bottomLeft,
+      bottomRight: bottomRight,
+    );
+  }
+
+  static BorderRadiusMix all(Radius radius) {
+    return BorderRadiusMix.all(radius);
+  }
+
   /// Creates a border radius with the same circular radius for all corners.
   static BorderRadiusMix circular(double radius) {
     return BorderRadiusMix.all(Radius.circular(radius));
@@ -45,6 +89,23 @@ sealed class BorderRadiusGeometryMix<T extends BorderRadiusGeometry>
   /// Creates a border radius with only the top-left corner rounded.
   static BorderRadiusMix topLeft(Radius radius) {
     return BorderRadiusMix.only(topLeft: radius);
+  }
+
+  static BorderRadiusMix top(Radius radius) {
+    return BorderRadiusMix.only(topLeft: radius, topRight: radius);
+  }
+
+  static BorderRadiusMix left(Radius radius) {
+    return BorderRadiusMix.only(topLeft: radius, bottomLeft: radius);
+  }
+
+  static BorderRadiusMix right(Radius radius) {
+    return BorderRadiusMix.only(topRight: radius, bottomRight: radius);
+  }
+
+  //bottom
+  static BorderRadiusMix bottom(Radius radius) {
+    return BorderRadiusMix.only(bottomLeft: radius, bottomRight: radius);
   }
 
   /// Creates a border radius with only the top-right corner rounded.
@@ -185,6 +246,11 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
         bottomLeft: radius,
         bottomRight: radius,
       );
+
+  /// Creates a [BorderRadiusMix] with all corners having the same circular radius.
+  factory BorderRadiusMix.circular(double radius) {
+    return BorderRadiusMix.all(Radius.circular(radius));
+  }
 
   /// Creates a [BorderRadiusMix] from a nullable [BorderRadius].
   ///

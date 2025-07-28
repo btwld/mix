@@ -19,7 +19,10 @@ import 'flex_spec.dart';
 /// Use this class to configure the attributes of a [FlexSpec] and pass it to
 /// the [FlexSpec] constructor.
 class FlexSpecAttribute extends StyleAttribute<FlexSpec>
-    with Diagnosticable, ModifierMixin<FlexSpecAttribute, FlexSpec>, VariantMixin<FlexSpecAttribute, FlexSpec> {
+    with
+        Diagnosticable,
+        ModifierMixin<FlexSpecAttribute, FlexSpec>,
+        VariantMixin<FlexSpecAttribute, FlexSpec> {
   final Prop<Axis>? $direction;
   final Prop<MainAxisAlignment>? $mainAxisAlignment;
   final Prop<CrossAxisAlignment>? $crossAxisAlignment;
@@ -261,15 +264,6 @@ class FlexSpecAttribute extends StyleAttribute<FlexSpec>
     properties.add(DiagnosticsProperty('textBaseline', $textBaseline));
     properties.add(DiagnosticsProperty('clipBehavior', $clipBehavior));
     properties.add(DiagnosticsProperty('gap', $gap));
-  }
-
-  /// The list of properties that constitute the state of this [FlexSpecAttribute].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [FlexSpecAttribute] instances for equality.
-  @override
-  FlexSpecAttribute createEmptyStyle() {
-    return FlexSpecAttribute();
   }
 
   @override

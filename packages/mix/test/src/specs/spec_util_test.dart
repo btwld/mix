@@ -10,9 +10,9 @@ void main() {
       expect($box, isNot(same($box)));
     });
 
-    test('\$flexbox returns FlexBoxSpecUtility singleton', () {
+    test('\$flexbox returns FlexBoxSpecUtility instance', () {
       expect($flexbox, isA<FlexBoxSpecUtility>());
-      expect($flexbox, same($flexbox)); // Singleton instance
+      expect($flexbox, isNot(same($flexbox))); // New instance each time
     });
 
     test('\$flex returns FlexSpecUtility instance', () {
@@ -71,7 +71,8 @@ void main() {
 
     test('flexbox getter provides utility methods', () {
       expect($flexbox, isA<FlexBoxSpecUtility>());
-      expect($flexbox, same(FlexBoxSpecUtility.self));
+      // Verify it can be used to create attributes
+      expect($flexbox.attribute, isA<FlexBoxSpecAttribute>());
     });
 
     test('image getter can be used to create attributes', () {
@@ -120,9 +121,9 @@ void main() {
       expect($wrap, isNot(same($wrap)));
     });
 
-    test('singleton getters return same instance', () {
-      // Test that singleton getters return the same instance
-      expect($flexbox, same($flexbox));
+    test('utility getters behave consistently', () {
+      // Test that utility getters return new instances consistently
+      expect($flexbox, isNot(same($flexbox)));
     });
 
     test('all getters return correct types', () {

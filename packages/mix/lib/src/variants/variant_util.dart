@@ -336,213 +336,150 @@ mixin VariantMixin<T extends StyleAttribute<S>, S extends Spec<S>>
   /// Must be implemented by the class using this mixin
   T variant(Variant variant, T style);
 
-  @protected
-  T createEmptyStyle();
-
   /// Creates a variant for dark mode
-  T onDark(T Function(T style) builder) {
-    return variant(
-      ContextVariant.platformBrightness(Brightness.dark),
-      builder(createEmptyStyle()),
-    );
+  T onDark(T style) {
+    return variant(ContextVariant.platformBrightness(Brightness.dark), style);
   }
 
   /// Creates a variant for light mode
-  T onLight(T Function(T style) builder) {
-    return variant(
-      ContextVariant.platformBrightness(Brightness.light),
-      builder(createEmptyStyle()),
-    );
+  T onLight(T style) {
+    return variant(ContextVariant.platformBrightness(Brightness.light), style);
   }
 
   /// Creates a variant for hover state
-  T onHover(T Function(T style) builder) {
-    return variant(
-      ContextVariant.widgetState(WidgetState.hovered),
-      builder(createEmptyStyle()),
-    );
+  T onHover(T style) {
+    return variant(ContextVariant.widgetState(WidgetState.hovered), style);
   }
 
   /// Creates a variant for pressed state
-  T onPress(T Function(T style) builder) {
-    return variant(
-      ContextVariant.widgetState(WidgetState.pressed),
-      builder(createEmptyStyle()),
-    );
+  T onPress(T style) {
+    return variant(ContextVariant.widgetState(WidgetState.pressed), style);
   }
 
   /// Creates a variant for focus state
-  T onFocus(T Function(T style) builder) {
-    return variant(
-      ContextVariant.widgetState(WidgetState.focused),
-      builder(createEmptyStyle()),
-    );
+  T onFocus(T style) {
+    return variant(ContextVariant.widgetState(WidgetState.focused), style);
   }
 
   /// Creates a variant for disabled state
-  T onDisabled(T Function(T style) builder) {
-    return variant(
-      ContextVariant.widgetState(WidgetState.disabled),
-      builder(createEmptyStyle()),
-    );
+  T onDisabled(T style) {
+    return variant(ContextVariant.widgetState(WidgetState.disabled), style);
   }
 
   /// Creates a variant for selected state
-  T onSelected(T Function(T style) builder) {
-    return variant(
-      ContextVariant.widgetState(WidgetState.selected),
-      builder(createEmptyStyle()),
-    );
+  T onSelected(T style) {
+    return variant(ContextVariant.widgetState(WidgetState.selected), style);
   }
 
   /// Creates a variant for error state
-  T onError(T Function(T style) builder) {
-    return variant(
-      ContextVariant.widgetState(WidgetState.error),
-      builder(createEmptyStyle()),
-    );
+  T onError(T style) {
+    return variant(ContextVariant.widgetState(WidgetState.error), style);
   }
 
   /// Creates a variant for scrolled under state
-  T onScrolledUnder(T Function(T style) builder) {
+  T onScrolledUnder(T style) {
     return variant(
       ContextVariant.widgetState(WidgetState.scrolledUnder),
-      builder(createEmptyStyle()),
+      style,
     );
   }
 
   /// Creates a variant for dragged state
-  T onDragged(T Function(T style) builder) {
-    return variant(
-      ContextVariant.widgetState(WidgetState.dragged),
-      builder(createEmptyStyle()),
-    );
+  T onDragged(T style) {
+    return variant(ContextVariant.widgetState(WidgetState.dragged), style);
   }
 
   /// Creates a variant for enabled state (opposite of disabled)
-  T onEnabled(T Function(T style) builder) {
+  T onEnabled(T style) {
     return variant(
       MultiVariant.not(ContextVariant.widgetState(WidgetState.disabled)),
-      builder(createEmptyStyle()),
+      style,
     );
   }
 
   /// Creates a variant for portrait orientation
-  T onPortrait(T Function(T style) builder) {
-    return variant(
-      ContextVariant.orientation(Orientation.portrait),
-      builder(createEmptyStyle()),
-    );
+  T onPortrait(T style) {
+    return variant(ContextVariant.orientation(Orientation.portrait), style);
   }
 
   /// Creates a variant for landscape orientation
-  T onLandscape(T Function(T style) builder) {
-    return variant(
-      ContextVariant.orientation(Orientation.landscape),
-      builder(createEmptyStyle()),
-    );
+  T onLandscape(T style) {
+    return variant(ContextVariant.orientation(Orientation.landscape), style);
   }
 
   /// Creates a variant for mobile breakpoint
-  T onMobile(T Function(T style) builder) {
+  T onMobile(T style) {
     return variant(
       ContextVariant.size('mobile', (size) => size.width <= 767),
-      builder(createEmptyStyle()),
+      style,
     );
   }
 
   /// Creates a variant for tablet breakpoint
-  T onTablet(T Function(T style) builder) {
+  T onTablet(T style) {
     return variant(
       ContextVariant.size(
         'tablet',
         (size) => size.width > 767 && size.width <= 1279,
       ),
-      builder(createEmptyStyle()),
+      style,
     );
   }
 
   /// Creates a variant for desktop breakpoint
-  T onDesktop(T Function(T style) builder) {
+  T onDesktop(T style) {
     return variant(
       ContextVariant.size('desktop', (size) => size.width > 1279),
-      builder(createEmptyStyle()),
+      style,
     );
   }
 
   /// Creates a variant for left-to-right text direction
-  T onLtr(T Function(T style) builder) {
-    return variant(
-      ContextVariant.directionality(TextDirection.ltr),
-      builder(createEmptyStyle()),
-    );
+  T onLtr(T style) {
+    return variant(ContextVariant.directionality(TextDirection.ltr), style);
   }
 
   /// Creates a variant for right-to-left text direction
-  T onRtl(T Function(T style) builder) {
-    return variant(
-      ContextVariant.directionality(TextDirection.rtl),
-      builder(createEmptyStyle()),
-    );
+  T onRtl(T style) {
+    return variant(ContextVariant.directionality(TextDirection.rtl), style);
   }
 
   /// Creates a variant for iOS platform
-  T onIos(T Function(T style) builder) {
-    return variant(
-      ContextVariant.platform(TargetPlatform.iOS),
-      builder(createEmptyStyle()),
-    );
+  T onIos(T style) {
+    return variant(ContextVariant.platform(TargetPlatform.iOS), style);
   }
 
   /// Creates a variant for Android platform
-  T onAndroid(T Function(T style) builder) {
-    return variant(
-      ContextVariant.platform(TargetPlatform.android),
-      builder(createEmptyStyle()),
-    );
+  T onAndroid(T style) {
+    return variant(ContextVariant.platform(TargetPlatform.android), style);
   }
 
   /// Creates a variant for macOS platform
-  T onMacos(T Function(T style) builder) {
-    return variant(
-      ContextVariant.platform(TargetPlatform.macOS),
-      builder(createEmptyStyle()),
-    );
+  T onMacos(T style) {
+    return variant(ContextVariant.platform(TargetPlatform.macOS), style);
   }
 
   /// Creates a variant for Windows platform
-  T onWindows(T Function(T style) builder) {
-    return variant(
-      ContextVariant.platform(TargetPlatform.windows),
-      builder(createEmptyStyle()),
-    );
+  T onWindows(T style) {
+    return variant(ContextVariant.platform(TargetPlatform.windows), style);
   }
 
   /// Creates a variant for Linux platform
-  T onLinux(T Function(T style) builder) {
-    return variant(
-      ContextVariant.platform(TargetPlatform.linux),
-      builder(createEmptyStyle()),
-    );
+  T onLinux(T style) {
+    return variant(ContextVariant.platform(TargetPlatform.linux), style);
   }
 
   /// Creates a variant for Fuchsia platform
-  T onFuchsia(T Function(T style) builder) {
-    return variant(
-      ContextVariant.platform(TargetPlatform.fuchsia),
-      builder(createEmptyStyle()),
-    );
+  T onFuchsia(T style) {
+    return variant(ContextVariant.platform(TargetPlatform.fuchsia), style);
   }
 
   /// Creates a variant for web platform
-  T onWeb(T Function(T style) builder) {
-    return variant(ContextVariant.web(), builder(createEmptyStyle()));
+  T onWeb(T style) {
+    return variant(ContextVariant.web(), style);
   }
 
-  T onBreakpoint(Breakpoint breakpoint, T Function(T style) builder) {
-    return variant(
-      ContextVariant.breakpoint(breakpoint),
-      builder(createEmptyStyle()),
-    );
+  T onBreakpoint(Breakpoint breakpoint, T style) {
+    return variant(ContextVariant.breakpoint(breakpoint), style);
   }
 }

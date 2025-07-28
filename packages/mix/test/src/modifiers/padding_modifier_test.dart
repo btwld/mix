@@ -342,7 +342,7 @@ void main() {
     });
 
     test('padding utility creates attributes', () {
-      final result = utility.padding.all(16.0);
+      final result = utility.padding(EdgeInsetsMix.all(16.0));
       final attribute = result.value;
 
       expect(attribute.padding, isNotNull);
@@ -355,12 +355,12 @@ void main() {
 
     test('padding utility supports various configurations', () {
       // Test all padding
-      final allResult = utility.padding.all(16.0);
+      final allResult = utility.padding(EdgeInsetsMix.all(16.0));
       final allAttr = allResult.value;
       expect(allAttr, resolvesTo(const PaddingModifier(EdgeInsets.all(16.0))));
 
       // Test horizontal padding
-      final horizontalResult = utility.padding.horizontal(15.0);
+      final horizontalResult = utility.padding(EdgeInsetsMix.symmetric(horizontal: 15.0));
       final horizontalAttr = horizontalResult.value;
       expect(
         horizontalAttr,
@@ -370,7 +370,7 @@ void main() {
       );
 
       // Test vertical padding
-      final verticalResult = utility.padding.vertical(25.0);
+      final verticalResult = utility.padding(EdgeInsetsMix.symmetric(vertical: 25.0));
       final verticalAttr = verticalResult.value;
       expect(
         verticalAttr,
@@ -378,14 +378,14 @@ void main() {
       );
 
       // Test individual sides
-      final topResult = utility.padding.top(10.0);
+      final topResult = utility.padding(EdgeInsetsMix.only(top: 10.0));
       final topAttr = topResult.value;
       expect(
         topAttr,
         resolvesTo(const PaddingModifier(EdgeInsets.only(top: 10.0))),
       );
 
-      final leftResult = utility.padding.left(20.0);
+      final leftResult = utility.padding(EdgeInsetsMix.only(left: 20.0));
       final leftAttr = leftResult.value;
       expect(
         leftAttr,

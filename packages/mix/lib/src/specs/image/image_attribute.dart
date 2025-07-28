@@ -13,7 +13,10 @@ import '../../variants/variant_util.dart';
 import 'image_spec.dart';
 
 class ImageSpecAttribute extends StyleAttribute<ImageSpec>
-    with Diagnosticable, ModifierMixin<ImageSpecAttribute, ImageSpec>, VariantMixin<ImageSpecAttribute, ImageSpec> {
+    with
+        Diagnosticable,
+        ModifierMixin<ImageSpecAttribute, ImageSpec>,
+        VariantMixin<ImageSpecAttribute, ImageSpec> {
   final Prop<double>? $width;
   final Prop<double>? $height;
   final Prop<Color>? $color;
@@ -158,13 +161,13 @@ class ImageSpecAttribute extends StyleAttribute<ImageSpec>
     return ImageSpecAttribute.only(animation: animation);
   }
 
+  ImageSpecAttribute variants(List<VariantStyleAttribute<ImageSpec>> variants) {
+    return merge(ImageSpecAttribute.only(variants: variants));
+  }
+
   @override
   ImageSpecAttribute modifiers(List<ModifierAttribute> modifiers) {
     return merge(ImageSpecAttribute.only(modifiers: modifiers));
-  }
-
-  ImageSpecAttribute variants(List<VariantStyleAttribute<ImageSpec>> variants) {
-    return merge(ImageSpecAttribute.only(variants: variants));
   }
 
   @override
@@ -229,14 +232,11 @@ class ImageSpecAttribute extends StyleAttribute<ImageSpec>
   }
 
   @override
-  ImageSpecAttribute createEmptyStyle() {
-    return ImageSpecAttribute();
-  }
-
-  @override
   ImageSpecAttribute variant(Variant variant, ImageSpecAttribute style) {
     return merge(
-      ImageSpecAttribute.only(variants: [VariantStyleAttribute(variant, style)]),
+      ImageSpecAttribute.only(
+        variants: [VariantStyleAttribute(variant, style)],
+      ),
     );
   }
 

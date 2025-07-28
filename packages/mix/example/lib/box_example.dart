@@ -39,7 +39,7 @@ class BoxExampleApp extends StatelessWidget {
                     .color(Colors.red)
                     .width(100)
                     .height(100)
-                    .roundedAll(8),
+                    .borderRadius(.circular(8)),
               ),
 
               const SizedBox(height: 16),
@@ -50,8 +50,8 @@ class BoxExampleApp extends StatelessWidget {
                     .color(Colors.blue)
                     .width(150)
                     .height(80)
-                    .paddingAll(16)
-                    .roundedAll(12),
+                    .padding(.all(16))
+                    .borderRadius(.circular(12)),
                 child: const Text(
                   'Fluent API',
                   style: TextStyle(color: Colors.white),
@@ -66,11 +66,14 @@ class BoxExampleApp extends StatelessWidget {
                     .width(200)
                     .height(80)
                     .color(Colors.orange)
-                    .paddingAll(12)
-                    .roundedAll(16)
-                    .border(BoxBorderMix.all(
-                      BorderSideMix.only(width: 2, color: Colors.black),
-                    )),
+                    .borderRadius(.circular(16))
+                    .onHover(.color(Colors.orangeAccent))
+                    .border(
+                      .all(
+                        .width(2)
+                        .color(Colors.white),
+                      ),
+                    ),
                 child: const Center(
                   child: Text(
                     'Box with Border',
@@ -87,10 +90,13 @@ class BoxExampleApp extends StatelessWidget {
                     .color(Colors.purple)
                     .width(120)
                     .height(120)
-                    .roundedAll(20)
-                    .paddingAll(8),
+                    .borderRadius(.circular(20))
+                    .padding(.all(8)),
                 child: const Center(
-                  child: Text('Purple Box', style: TextStyle(color: Colors.white)),
+                  child: Text(
+                    'Purple Box',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
 
@@ -101,13 +107,15 @@ class BoxExampleApp extends StatelessWidget {
                 style: BoxMix()
                     .width(180)
                     .height(100)
-                    .linearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [Colors.purple, Colors.blue],
+                    .gradient(
+                      .linear(
+                        .begin(Alignment.topLeft)
+                        .end(Alignment.bottomRight)
+                        .colors([Colors.purple, Colors.blue]),
+                      )
                     )
-                    .roundedAll(15)
-                    .paddingAll(16),
+                    .borderRadius(.circular(15))
+                    .padding(.all(16)),
                 child: const Center(
                   child: Text(
                     'Gradient Box',
@@ -127,13 +135,22 @@ class BoxExampleApp extends StatelessWidget {
                     .color(Colors.teal)
                     .width(160)
                     .height(90)
-                    .rounded(
-                      topLeft: 20,
-                      topRight: 5,
-                      bottomLeft: 5,
-                      bottomRight: 20,
+                    .borderRadius(
+                      .topLeft(
+                        .circular(20),
+                      )
+                      .topRight(
+                        .circular(10),
+                      )
+                      .bottomLeft(
+                        .circular(5),
+                      )
+                      .bottomRight(
+                        .circular(30),
+                      )
+                 
                     )
-                    .paddingAll(12),
+                    .padding(.all(12)),
                 child: const Center(
                   child: Text(
                     'Custom Corners',
@@ -146,17 +163,21 @@ class BoxExampleApp extends StatelessWidget {
 
               // Box with shadows
               Box(
-                style: BoxMix()
+                style: $box()
                     .color(Colors.white)
                     .width(140)
                     .height(70)
-                    .roundedAll(10)
-                    .shadow(BoxShadowMix.only(
-                      color: Colors.black26,
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ))
-                    .paddingAll(12),
+                    .borderRadius(
+                      .circular(10)
+                    )
+                    .shadow(
+                      .color(Colors.black26)
+                      .blurRadius(8)
+                      .offset(Offset(0, 4)),
+                    )
+                    .padding(
+                      .all(12)
+                    ),
                 child: const Center(
                   child: Text(
                     'Shadow Box',
@@ -173,9 +194,9 @@ class BoxExampleApp extends StatelessWidget {
                     .color(Colors.amber)
                     .width(100)
                     .height(100)
-                    .roundedAll(12)
+                    .borderRadius(.circular(12))
                     .rotate(0.2)
-                    .paddingAll(8),
+                    .padding(.all(8)),
                 child: const Center(
                   child: Text(
                     'Rotated',
@@ -192,9 +213,9 @@ class BoxExampleApp extends StatelessWidget {
                     .color(Colors.green)
                     .width(80)
                     .height(80)
-                    .roundedAll(8)
+                    .borderRadius(.circular(10))
                     .scale(1.2)
-                    .paddingAll(8),
+                    .padding(.all(8)),
                 child: const Center(
                   child: Text(
                     'Scaled',
@@ -211,7 +232,7 @@ class BoxExampleApp extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               const Text(
-                'BoxMix().color(Colors.blue).width(150).height(80).paddingAll(16).roundedAll(12)',
+                'BoxMix().color(Colors.blue).width(150).height(80).paddingAll(16).radiusAll(12)',
                 style: TextStyle(fontSize: 12, fontFamily: 'monospace'),
               ),
               const SizedBox(height: 4),

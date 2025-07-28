@@ -7,13 +7,13 @@ import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
+import '../../modifiers/modifier_util.dart';
 import '../../properties/typography/strut_style_mix.dart';
 import '../../properties/typography/strut_style_util.dart';
 import '../../properties/typography/text_height_behavior_mix.dart';
 import '../../properties/typography/text_height_behavior_util.dart';
 import '../../properties/typography/text_style_mix.dart';
 import '../../properties/typography/text_style_util.dart';
-import '../../modifiers/modifier_util.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'text_directives_util.dart';
@@ -26,7 +26,11 @@ import 'text_spec.dart';
 ///
 /// Use this class to configure the attributes of a [TextSpec] and pass it to
 /// the [TextSpec] constructor.
-class TextSpecAttribute extends StyleAttribute<TextSpec> with Diagnosticable, ModifierMixin<TextSpecAttribute, TextSpec>, VariantMixin<TextSpecAttribute, TextSpec> {
+class TextSpecAttribute extends StyleAttribute<TextSpec>
+    with
+        Diagnosticable,
+        ModifierMixin<TextSpecAttribute, TextSpec>,
+        VariantMixin<TextSpecAttribute, TextSpec> {
   final Prop<TextOverflow>? $overflow;
   final MixProp<StrutStyle>? $strutStyle;
   final Prop<TextAlign>? $textAlign;
@@ -273,13 +277,13 @@ class TextSpecAttribute extends StyleAttribute<TextSpec> with Diagnosticable, Mo
     return TextSpecAttribute.only(animation: animation);
   }
 
+  TextSpecAttribute variants(List<VariantStyleAttribute<TextSpec>> variants) {
+    return merge(TextSpecAttribute.only(variants: variants));
+  }
+
   @override
   TextSpecAttribute modifiers(List<ModifierAttribute> modifiers) {
     return merge(TextSpecAttribute.only(modifiers: modifiers));
-  }
-
-  TextSpecAttribute variants(List<VariantStyleAttribute<TextSpec>> variants) {
-    return merge(TextSpecAttribute.only(variants: variants));
   }
 
   /// Resolves to [TextSpec] using the provided [MixContext].
@@ -390,13 +394,6 @@ class TextSpecAttribute extends StyleAttribute<TextSpec> with Diagnosticable, Mo
     properties.add(
       DiagnosticsProperty('directives', $directives, defaultValue: null),
     );
-  }
-
-  /// The list of properties that constitute the state of this [TextSpecAttribute].
-  ///
-  @override
-  TextSpecAttribute createEmptyStyle() {
-    return TextSpecAttribute();
   }
 
   @override

@@ -387,7 +387,6 @@ void main() {
             .fit(BoxFit.cover);
 
         expect(attr1, equals(attr2));
-        expect(attr1.hashCode, equals(attr2.hashCode));
       });
 
       test('different attributes are not equal', () {

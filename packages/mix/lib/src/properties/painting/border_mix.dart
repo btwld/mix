@@ -20,6 +20,22 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
     return BorderMix.only(top: side, bottom: side, left: side, right: side);
   }
 
+  static BorderMix left(BorderSideMix side) {
+    return BorderMix.only(left: side);
+  }
+
+  static BorderMix right(BorderSideMix side) {
+    return BorderMix.only(right: side);
+  }
+
+  static BorderMix top(BorderSideMix side) {
+    return BorderMix.only(top: side);
+  }
+
+  static BorderMix bottom(BorderSideMix side) {
+    return BorderMix.only(bottom: side);
+  }
+
   /// Creates a border with symmetric sides using vertical and horizontal borders.
   ///
   /// The [vertical] border is applied to left and right sides,
@@ -46,6 +62,14 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
 
   static BorderDirectionalMix directional(BorderDirectionalMix mix) {
     return mix;
+  }
+
+  static BorderDirectionalMix start(BorderSideMix side) {
+    return BorderDirectionalMix.only(start: side);
+  }
+
+  static BorderDirectionalMix end(BorderSideMix side) {
+    return BorderDirectionalMix.only(end: side);
   }
 
   /// Merges two BoxBorderMix instances.

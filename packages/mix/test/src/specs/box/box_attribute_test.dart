@@ -198,12 +198,10 @@ void main() {
       test('decoration utilities create new instances', () {
         // Each decoration utility creates a new BoxSpecAttribute
         final withColor = BoxSpecAttribute().color(Colors.red);
-        final withBorder = BoxSpecAttribute().borders(
-          all: BorderSideMix.only(width: 2.0),
+        final withBorder = BoxSpecAttribute().border(
+          BoxBorderMix.all(BorderSideMix.only(width: 2.0)),
         );
-        final withBorderRadius = BoxSpecAttribute().corners(
-          all: const Radius.circular(8.0),
-        );
+        final withBorderRadius = BoxSpecAttribute().radiusAll(8.0);
 
         // Each has only its specific decoration property
         final context = MockBuildContext();
@@ -230,10 +228,12 @@ void main() {
       test('combine decorations with merge', () {
         final combined = BoxSpecAttribute()
             .color(Colors.red)
-            .merge(BoxSpecAttribute().borders(all: BorderSideMix.only(width: 2.0)))
             .merge(
-              BoxSpecAttribute().corners(all: const Radius.circular(8.0)),
-            );
+              BoxSpecAttribute().border(
+                BoxBorderMix.all(BorderSideMix.only(width: 2.0)),
+              ),
+            )
+            .merge(BoxSpecAttribute().radiusAll(8.0));
 
         final context = MockBuildContext();
         final decoration =
@@ -979,9 +979,7 @@ void main() {
         test('boxDecoration utility creates box decoration attributes', () {
           final attribute = BoxSpecAttribute();
 
-          final colorAttr = attribute.boxDecoration(
-            color: Colors.purple,
-          );
+          final colorAttr = attribute.color(Colors.purple);
           expect(colorAttr, isA<BoxSpecAttribute>());
           expect(colorAttr.$decoration, isNotNull);
         });
@@ -989,9 +987,7 @@ void main() {
         test('shapeDecoration utility creates shape decoration attributes', () {
           final attribute = BoxSpecAttribute();
 
-          final colorAttr = attribute.shapeDecoration(
-            color: Colors.orange,
-          );
+          final colorAttr = attribute.shapeDecoration(color: Colors.orange);
           expect(colorAttr, isA<BoxSpecAttribute>());
           expect(colorAttr.$decoration, isNotNull);
         });
@@ -1003,11 +999,13 @@ void main() {
           () {
             final attribute = BoxSpecAttribute();
 
-            final borderAttr = attribute.borders(
-              start: BorderSideMix.only(width: 1.0, color: Colors.grey),
-              end: BorderSideMix.only(width: 1.0, color: Colors.grey),
-              top: BorderSideMix.only(width: 1.0, color: Colors.grey),
-              bottom: BorderSideMix.only(width: 1.0, color: Colors.grey),
+            final borderAttr = attribute.border(
+              BorderDirectionalMix.only(
+                start: BorderSideMix.only(width: 1.0, color: Colors.grey),
+                end: BorderSideMix.only(width: 1.0, color: Colors.grey),
+                top: BorderSideMix.only(width: 1.0, color: Colors.grey),
+                bottom: BorderSideMix.only(width: 1.0, color: Colors.grey),
+              ),
             );
             expect(borderAttr, isA<BoxSpecAttribute>());
             expect(borderAttr.$decoration, isNotNull);
@@ -1019,11 +1017,13 @@ void main() {
           () {
             final attribute = BoxSpecAttribute();
 
-            final radiusAttr = attribute.corners(
-              topStart: const Radius.circular(12.0),
-              topEnd: const Radius.circular(12.0),
-              bottomStart: const Radius.circular(12.0),
-              bottomEnd: const Radius.circular(12.0),
+            final radiusAttr = attribute.borderRadius(
+              BorderRadiusGeometryMix.only(
+                topLeft: Radius.circular(12.0),
+                topRight: Radius.circular(12.0),
+                bottomLeft: Radius.circular(12.0),
+                bottomRight: Radius.circular(12.0),
+              ),
             );
             expect(radiusAttr, isA<BoxSpecAttribute>());
             expect(radiusAttr.$decoration, isNotNull);
@@ -1035,9 +1035,9 @@ void main() {
         test('gradient utility creates gradient attributes', () {
           final attribute = BoxSpecAttribute();
 
-          final gradientAttr = attribute.gradient(LinearGradientMix.only(
-            colors: [Colors.red, Colors.blue],
-          ));
+          final gradientAttr = attribute.gradient(
+            LinearGradientMix.only(colors: [Colors.red, Colors.blue]),
+          );
           expect(gradientAttr, isA<BoxSpecAttribute>());
           expect(gradientAttr.$decoration, isNotNull);
         });
@@ -1045,11 +1045,8 @@ void main() {
         test('linearGradient utility creates linear gradient attributes', () {
           final attribute = BoxSpecAttribute();
 
-          final gradientAttr = attribute.linearGradient(
-            colors: [
-              Colors.red,
-              Colors.blue,
-            ],
+          final gradientAttr = attribute.gradient(
+            LinearGradientMix.only(colors: [Colors.red, Colors.blue]),
           );
           expect(gradientAttr, isA<BoxSpecAttribute>());
           expect(gradientAttr.$decoration, isNotNull);
@@ -1058,11 +1055,8 @@ void main() {
         test('radialGradient utility creates radial gradient attributes', () {
           final attribute = BoxSpecAttribute();
 
-          final gradientAttr = attribute.radialGradient(
-            colors: [
-              Colors.yellow,
-              Colors.green,
-            ],
+          final gradientAttr = attribute.gradient(
+            RadialGradientMix.only(colors: [Colors.yellow, Colors.green]),
           );
           expect(gradientAttr, isA<BoxSpecAttribute>());
           expect(gradientAttr.$decoration, isNotNull);
@@ -1071,11 +1065,8 @@ void main() {
         test('sweepGradient utility creates sweep gradient attributes', () {
           final attribute = BoxSpecAttribute();
 
-          final gradientAttr = attribute.sweepGradient(
-            colors: [
-              Colors.pink,
-              Colors.cyan,
-            ],
+          final gradientAttr = attribute.gradient(
+            SweepGradientMix.only(colors: [Colors.pink, Colors.cyan]),
           );
           expect(gradientAttr, isA<BoxSpecAttribute>());
           expect(gradientAttr.$decoration, isNotNull);
